@@ -18,21 +18,30 @@ export default class EnforceContactDataSubmissionPlugin extends FlexPlugin {
    * @param flex { typeof import('@twilio/flex-ui') }
    * @param manager { import('@twilio/flex-ui').Manager }
    */
-  init(flex, manager) {
-    flex.Actions.registerAction("submitData", (payload) => {
-      flex.Actions.invokeAction("SetComponentState", {
-        name: "DataChanger", state: { canComplete: true }
-      });
-      // alert("data submitted!");
-    });
+  init(flex, manager) { 
+    const onCompleteTask = (sid) => {
+      flex.Actions.invokeAction("CompleteTask", { sid } );
+    }
+
+    // flex.Actions.registerAction("submitData", (payload) => {
+    //   flex.Actions.invokeAction("SetComponentState", {
+    //     name: "DataChanger", state: { canComplete: true }
+    //   });
+    //   // alert("data submitted!");
+    // });
     //flex.AgentDesktopView.Panel2.Content.add(
     // flex.Actions.addListener("beforeCompleteTask", (payload, abortFunction) => {
     //   if (!window.confirm("Did you submit your data?")) {
     //     abortFunction();
     //   }
     // });
+
+    flex.TaskCanvasHeader.Content.remove('actions', {
+      if: props => props.task && props.task.status === 'wrapping'
+    });
+
     flex.CRMContainer.Content.add(
-      <ContactDataSubmissionComponent key="demo-component" flexInstance={flex} />,
+      <ContactDataSubmissionComponent key="demo-component" onCompleteTask={onCompleteTask} />,
       {
         sortOrder: -1,
       }

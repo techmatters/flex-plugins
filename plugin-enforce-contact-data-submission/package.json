@@ -21,7 +21,6 @@
   },
   "dependencies": {
     "@craco/craco": "^5.0.2",
-    "@emotion/core": "^10.0.15",
     "core-js": "^2.6.5",
     "craco-config-flex-plugin": "^3.3.0-beta.0",
     "flex-plugin": "^3.3.0-beta.0",
