@@ -1,0 +1,48 @@
+{
+  "name": "plugin-signal",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "bootstrap": "flex-check-start",
+    "postinstall": "npm run bootstrap",
+    "prestart": "npm run bootstrap",
+    "start": "flex-plugin start",
+    "build": "flex-plugin build",
+    "predeploy": "npm run build",
+    "deploy": "flex-plugin deploy",
+    "test": "flex-plugin test --env=jsdom",
+    "list": "flex-plugin list",
+    "clear": "flex-plugin clear",
+    "remove": "flex-plugin remove",
+    "eject": "flex-plugin eject"
+  },
+  "devDependencies": {
+    "@twilio/flex-ui": "^1.11.2"
+  },
+  "dependencies": {
+    "@craco/craco": "^5.0.2",
+    "babel-polyfill": "^6.26.0",
+    "core-js": "^2.6.5",
+    "craco-config-flex-plugin": "^3.3.0-beta.0",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.14.0",
+    "flex-plugin": "^3.3.0-beta.0",
+    "flex-plugin-scripts": "^3.3.1-beta.0",
+    "react": "16.5.2",
+    "react-dom": "16.5.2",
+    "react-scripts": "^3.0.0",
+    "react-test-renderer": "^16.8.6"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
