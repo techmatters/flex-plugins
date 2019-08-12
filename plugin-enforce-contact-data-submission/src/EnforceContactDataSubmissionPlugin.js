@@ -12,8 +12,10 @@ export default class EnforceContactDataSubmissionPlugin extends FlexPlugin {
   }
 
   /**
-   * This code is run when your plugin is being started
-   * Use this to modify any UI components or attach to the actions framework
+   * This plugin removes the 'Complete' button in the TaskCanvasHeader and
+   * replaces its function with a button in the CRM pane.  This is to prevent
+   * an agent from completing a task before data has been submitted to
+   * the external HRM.
    *
    * @param flex { typeof import('@twilio/flex-ui') }
    * @param manager { import('@twilio/flex-ui').Manager }
@@ -23,30 +25,15 @@ export default class EnforceContactDataSubmissionPlugin extends FlexPlugin {
       flex.Actions.invokeAction("CompleteTask", { sid } );
     }
 
-    // flex.Actions.registerAction("submitData", (payload) => {
-    //   flex.Actions.invokeAction("SetComponentState", {
-    //     name: "DataChanger", state: { canComplete: true }
-    //   });
-    //   // alert("data submitted!");
-    // });
-    //flex.AgentDesktopView.Panel2.Content.add(
-    // flex.Actions.addListener("beforeCompleteTask", (payload, abortFunction) => {
-    //   if (!window.confirm("Did you submit your data?")) {
-    //     abortFunction();
-    //   }
-    // });
-
     flex.TaskCanvasHeader.Content.remove('actions', {
       if: props => props.task && props.task.status === 'wrapping'
     });
 
     flex.CRMContainer.Content.add(
-      <ContactDataSubmissionComponent key="demo-component" onCompleteTask={onCompleteTask} />,
+      <ContactDataSubmissionComponent key="contact-submission" onCompleteTask={onCompleteTask} />,
       {
         sortOrder: -1,
       }
     );
-
-
   }
 }
