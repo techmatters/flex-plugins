@@ -12,25 +12,25 @@ const taskListStyles = {
 // const ContactDataSubmissionComponent = () => {
 class ContactDataSubmissionComponent extends React.Component {
   constructor(props) {
-  	super(props);
-  	this.handleClick = this.handleClick.bind(this);
+    super(props);
+    this.handleClick = this.handleClick.bind(this);
   }
 
   handleClick() {
-  	this.props.onCompleteTask(this.props.task.sid);
+    this.props.onCompleteTask(this.props.task.sid);
   }
 
   getEndTaskButton() {
-  	if (this.props.task && this.props.task.status === 'wrapping') {
-  	  return (
-  	    <div style={taskListStyles}>
-  	      <button onClick={this.handleClick}>
-  	      	SUBMIT
-  	      </button>
-  	    </div>
-	    );
-  	}
-  	return null;
+    if (this.props.task && this.props.task.status === 'wrapping') {
+      return (
+        <div style={taskListStyles}>
+          <button onClick={this.handleClick}>
+            SUBMIT
+          </button>
+        </div>
+      );
+    }
+    return null;
   }
 
   render() {
