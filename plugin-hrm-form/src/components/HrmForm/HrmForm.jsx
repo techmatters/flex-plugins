@@ -6,10 +6,17 @@ import { HrmFormComponentStyles } from './HrmForm.Styles';
 // ^^ I'm totally breaking this just to get a working form going.  TODO(nick): don't break this
 class HrmForm extends React.Component {
   handleClick(e) {
-    fetch('http://localhost:8080/', {  
-      method: 'GET',
-      //mode: 'no-cors', // TODO(nick): don't do this in production
-      headers: { 'Content-Type': 'application/json' }
+    const data = {
+      taskId: 'TA123',
+      reservationId: 'TR123',
+      ageBracket: '13-15',
+      subcategory: 'Gang violence',
+      timestamp: 1568065107000
+    };
+    fetch('http://localhost:8080/contacts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
     })
     .then(function(response) {
       return response.json();
