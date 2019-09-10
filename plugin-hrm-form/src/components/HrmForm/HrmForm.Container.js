@@ -12,4 +12,6 @@ const mapDispatchToProps = (dispatch) => ({
   dismissBar: bindActionCreators(Actions.dismissBar, dispatch),
 });
 
+// See https://github.com/reduxjs/react-redux/blob/master/docs/api/connect.md#connect
+// "The connect() function connects a React component to a Redux store."
 export default connect(mapStateToProps, mapDispatchToProps)(HrmForm);
