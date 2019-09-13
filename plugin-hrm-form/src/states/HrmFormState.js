@@ -1,19 +1,19 @@
-const ACTION_DISMISS_BAR = 'DISMISS_BAR';
+const UPDATE_FORM = 'UPDATE_FORM';
 
 const initialState = {
-  isOpen: true,
+  subcategory: 'my category',
 };
 
 export class Actions {
-  static dismissBar = () => ({ type: ACTION_DISMISS_BAR });
+  static updateForm = (e) => ({ type: UPDATE_FORM, text: e.target.value });
 }
 
 export function reduce(state = initialState, action) {
   switch (action.type) {
-    case ACTION_DISMISS_BAR: {
+    case UPDATE_FORM: {
       return {
         ...state,
-        isOpen: false,
+        subcategory: action.text,
       };
     }
 
