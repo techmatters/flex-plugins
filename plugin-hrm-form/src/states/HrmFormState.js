@@ -1,11 +1,11 @@
 const ACTION_DISMISS_BAR = 'DISMISS_BAR';
 
 const initialState = {
-  isOpen: true,
+  subcategory: 'my category',
 };
 
 export class Actions {
-  static dismissBar = () => ({ type: ACTION_DISMISS_BAR });
+  static dismissBar = (e) => ({ type: ACTION_DISMISS_BAR, text: e.target.value });
 }
 
 export function reduce(state = initialState, action) {
@@ -13,7 +13,7 @@ export function reduce(state = initialState, action) {
     case ACTION_DISMISS_BAR: {
       return {
         ...state,
-        isOpen: false,
+        subcategory: action.text,
       };
     }
 

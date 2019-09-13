@@ -5,7 +5,7 @@ import { Actions } from '../../states/HrmFormState';
 import HrmForm from './HrmForm';
 
 const mapStateToProps = (state) => ({
-    isOpen: state['hrm-form'].hrmForm.isOpen,
+    subcategory: state['hrm-form'].hrmForm.subcategory,
 });
 
 const mapDispatchToProps = (dispatch) => ({

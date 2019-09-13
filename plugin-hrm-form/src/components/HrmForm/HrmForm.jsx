@@ -54,7 +54,7 @@ class HrmForm extends React.Component {
         <form onSubmit={this.handleSubmit}>
           <label>
             Subcategory:
-            <input type="text" value={this.state.formdata.subcategory} onChange={this.handleSubcategoryChange} />
+            <input type="text" value={this.props.subcategory} onChange={this.props.dismissBar} />
           </label>
           <input type="submit" value="Submit" />
         </form>
