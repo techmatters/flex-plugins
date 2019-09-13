@@ -5,11 +5,11 @@ import { Actions } from '../../states/HrmFormState';
 import HrmForm from './HrmForm';
 
 const mapStateToProps = (state) => ({
-    subcategory: state['hrm-form'].hrmForm.subcategory,
+  subcategory: state['hrm-form'].hrmForm.subcategory,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  dismissBar: bindActionCreators(Actions.dismissBar, dispatch),
+  updateForm: bindActionCreators(Actions.updateForm, dispatch),
 });
 
 // See https://github.com/reduxjs/react-redux/blob/master/docs/api/connect.md#connect
