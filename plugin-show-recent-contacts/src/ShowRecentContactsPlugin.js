@@ -4,9 +4,6 @@ import { FlexPlugin } from 'flex-plugin';
 import RecentContactsView from './components/RecentContactsView';
 import RecentContactsSidebarButton from './components/RecentContactsSidebarButton';
 
-//import CustomTaskListContainer from './components/CustomTaskList/CustomTaskList.Container';
-//import reducers, { namespace } from './states';
-
 const PLUGIN_NAME = 'ShowRecentContactsPlugin';
 
 export default class ShowRecentContactsPlugin extends FlexPlugin {
