@@ -1,29 +1,33 @@
-//import { connect } from 'react-redux';
-//import { bindActionCreators } from 'redux';
-
-//import { Actions } from '../../states/HrmFormState';
-//import HrmForm from './HrmForm';
-
-// const mapStateToProps = (state) => ({
-//   subcategory: state['hrm-form'].hrmForm.subcategory,
-// });
-
-// const mapDispatchToProps = (dispatch) => ({
-//   updateForm: bindActionCreators(Actions.updateForm, dispatch),
-// });
-
-// // See https://github.com/reduxjs/react-redux/blob/master/docs/api/connect.md#connect
-// // "The connect() function connects a React component to a Redux store."
-// export default connect(mapStateToProps, mapDispatchToProps)(HrmForm);
-
 import React from 'react'
 import HrmForm from './HrmForm'
 
 class HrmFormContainer extends React.Component {
   submit = values => {
+    let formdata = {
+      ...values,
+      ageBracket: '13-15',
+      timestamp: 0,
+      taskId: 'TA123',
+      reservationId: 'TR123'
+    };
     // print the form values to the console
-    console.log(values)
+    console.log(formdata);
+    fetch('http://localhost:8080/contacts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formdata)
+    })
+    .then(function(response) {
+      return response.json();
+    })
+    .then(function(myJson) {
+      console.log(JSON.stringify(myJson));
+    })
+    .catch(function(response) {
+      alert("Failed!: " + response);
+    });
   }
+
   render() {
     return <HrmForm onSubmit={this.submit} />
   }

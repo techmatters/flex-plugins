@@ -7,8 +7,6 @@ import { reducer as formReducer } from 'redux-form'
 export const namespace = 'hrmform';
 
 // Combine the reducers
-// TODO(nick): probs have better naming later.  But according to docs it needs to be 'form'
 export default combineReducers({
-//  hrmForm: HrmFormReducer,
-  form:    formReducer
+  form: formReducer
 });
