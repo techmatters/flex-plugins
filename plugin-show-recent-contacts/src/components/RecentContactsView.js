@@ -11,7 +11,7 @@ export default class RecentContactsView extends React.Component {
 
   componentWillMount() {
     const self = this;
-    fetch('http://localhost:8080/', {
+    fetch('http://localhost:8080/contacts/', {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
     })
@@ -21,7 +21,7 @@ export default class RecentContactsView extends React.Component {
     .then(function(myJson) {
       var myString = JSON.stringify(myJson);
       console.log(myString);
-      self.setState({myJson: myJson.reverse()});
+      self.setState({myJson: myJson});
     })
     .catch(function(response) {
       self.setState({myJson: "Failed!: " + response});
@@ -33,7 +33,7 @@ export default class RecentContactsView extends React.Component {
   render() {
     //const myJson = this.state.myJson;
     const myJson = {
-      "Table": this.state.myJson
+      "Recent Contacts": this.state.myJson
     };
     return (
       <div style={{ overflow: 'auto' }}>
