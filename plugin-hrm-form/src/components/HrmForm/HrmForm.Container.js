@@ -5,10 +5,9 @@ class HrmFormContainer extends React.Component {
   submit = values => {
     let formdata = {
       ...values,
-      ageBracket: '13-15',
       timestamp: 0,
-      taskId: 'TA123',
-      reservationId: 'TR123'
+      taskId: this.props.task.taskSid,
+      reservationId: this.props.task.sid
     };
     // print the form values to the console
     console.log(formdata);
@@ -29,6 +28,9 @@ class HrmFormContainer extends React.Component {
   }
 
   render() {
+    if (!this.props.task) {
+      return <p>No active tasks</p>;
+    }
     return <HrmForm onSubmit={this.submit} />
   }
 }
