@@ -25,7 +25,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     const options = { sortOrder: -1 };
     flex.CRMContainer
       .Content
-      .add(<HrmFormContainer key="hrm-form" />, options);
+      .replace(<HrmFormContainer key="hrm-form" />, options);
   }
 
   /**

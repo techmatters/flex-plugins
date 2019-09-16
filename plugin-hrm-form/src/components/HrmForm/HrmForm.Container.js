@@ -1,17 +1,39 @@
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import React from 'react'
+import HrmForm from './HrmForm'
 
-import { Actions } from '../../states/HrmFormState';
-import HrmForm from './HrmForm';
+class HrmFormContainer extends React.Component {
+  submit = values => {
+    const url = 'http://localhost:8080';
+    let formdata = {
+      ...values,
+      timestamp: 0,
+      taskId: this.props.task.taskSid,
+      reservationId: this.props.task.sid
+    };
+    // print the form values to the console
+    console.log(formdata);
+    fetch(url + '/contacts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formdata)
+    })
+    .then(function(response) {
+      return response.json();
+    })
+    .then(function(myJson) {
+      console.log(JSON.stringify(myJson));
+    })
+    .catch(function(response) {
+      alert("Failed!: " + response);
+    });
+  }
 
-const mapStateToProps = (state) => ({
-  subcategory: state['hrm-form'].hrmForm.subcategory,
-});
+  render() {
+    if (!this.props.task) {
+      return <p>No active tasks</p>;
+    }
+    return <HrmForm onSubmit={this.submit} />
+  }
+}
 
-const mapDispatchToProps = (dispatch) => ({
-  updateForm: bindActionCreators(Actions.updateForm, dispatch),
-});
-
-// See https://github.com/reduxjs/react-redux/blob/master/docs/api/connect.md#connect
-// "The connect() function connects a React component to a Redux store."
-export default connect(mapStateToProps, mapDispatchToProps)(HrmForm);
+export default HrmFormContainer;
