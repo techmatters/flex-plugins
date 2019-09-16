@@ -3,6 +3,7 @@ import HrmForm from './HrmForm'
 
 class HrmFormContainer extends React.Component {
   submit = values => {
+    const url = 'http://localhost:8080';
     let formdata = {
       ...values,
       timestamp: 0,
@@ -11,7 +12,7 @@ class HrmFormContainer extends React.Component {
     };
     // print the form values to the console
     console.log(formdata);
-    fetch('http://localhost:8080/contacts', {
+    fetch(url + '/contacts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formdata)

@@ -11,7 +11,8 @@ export default class RecentContactsView extends React.Component {
 
   componentWillMount() {
     const self = this;
-    fetch('http://localhost:8080/contacts/', {
+    const url = 'http://localhost:8080';
+    fetch(url + '/contacts/', {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
     })
