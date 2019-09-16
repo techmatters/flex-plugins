@@ -32,7 +32,14 @@ class HrmFormContainer extends React.Component {
     if (!this.props.task) {
       return <p>No active tasks</p>;
     }
-    return <HrmForm onSubmit={this.submit} />
+    return (
+      <div>
+        <HrmForm onSubmit={this.submit} />
+        { this.props.task.attributes && this.props.task.attributes.country &&
+          <p>Country: { this.props.task.attributes.country }</p>
+        }
+      </div>
+    );
   }
 }
 
