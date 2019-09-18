@@ -1,5 +1,6 @@
 import React from 'react';
 import { JsonToTable } from 'react-json-to-table';
+import { RecentContactsComponentStyles } from './RecentContacts.Styles';
 
 export default class RecentContactsView extends React.Component {
   constructor(props) {
@@ -32,14 +33,13 @@ export default class RecentContactsView extends React.Component {
 
 
   render() {
-    //const myJson = this.state.myJson;
     const myJson = {
       "Recent Contacts": this.state.myJson
     };
     return (
-      <div style={{ overflow: 'auto' }}>
-        <JsonToTable json={myJson} />
-      </div>
+      <RecentContactsComponentStyles>
+          <JsonToTable json={myJson} />
+      </RecentContactsComponentStyles>
     );
   }
 }
