@@ -3,7 +3,8 @@ import HrmForm from './HrmForm'
 
 class HrmFormContainer extends React.Component {
   submit = values => {
-    const url = 'http://localhost:8080';
+    const url = 'https://hrm.tl.barbarianrobot.com';
+    // const url = 'http://localhost:8080';
     let formdata = {
       ...values,
       timestamp: 0,
