@@ -27,6 +27,7 @@ class HrmFormContainer extends React.Component {
     .catch(function(response) {
       alert("Failed!: " + response);
     });
+    this.props.onCompleteTask(this.props.task.sid);
   }
 
   render() {
