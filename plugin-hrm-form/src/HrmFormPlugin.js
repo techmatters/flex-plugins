@@ -22,10 +22,18 @@ export default class HrmFormPlugin extends FlexPlugin {
   init(flex, manager) {
     this.registerReducers(manager);
 
+    const onCompleteTask = (sid) => {
+      flex.Actions.invokeAction("CompleteTask", { sid } );
+    }
+
+    flex.TaskCanvasHeader.Content.remove('actions', {
+      if: props => props.task && props.task.status === 'wrapping'
+    });
+
     const options = { sortOrder: -1 };
     flex.CRMContainer
       .Content
-      .replace(<HrmFormContainer key="hrm-form" />, options);
+      .replace(<HrmFormContainer key="hrm-form" onCompleteTask={onCompleteTask} />, options);
   }
 
   /**

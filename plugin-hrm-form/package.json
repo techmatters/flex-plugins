@@ -1,6 +1,6 @@
 {
   "name": "plugin-hrm-form",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "bootstrap": "flex-plugin check-start",
