@@ -18,12 +18,9 @@ const renderSelect = ({
           return (<option value={val}>{val}</option>)
         })}
       </select>
-      {touched && error && <span>{error}</span>}
     </div>
   </div>
 )
-
-const nonEmpty = value => (value ? undefined : 'Required')
 
 let HrmForm = props => {
   const { handleSubmit } = props;
@@ -35,14 +32,12 @@ let HrmForm = props => {
             name="ageBracket"
             component={renderSelect}
             label="AgeBracket"
-            validate={nonEmpty}
             options={["0-3", "4-6", "7-9", "10-12", "13-15", "16-17", "18-25"]}
           />
           <Field
             name="subcategory"
             component={renderSelect}
             label="Subcategory"
-            validate={nonEmpty}
             options={[
               "Emotional abuse",
               "Gang violence",
@@ -55,7 +50,7 @@ let HrmForm = props => {
             ]}
           />
         </div>
-        <button type="submit" disabled={!props.valid}>COMPLETE</button>
+        <button type="submit">COMPLETE</button>
       </form>
     </HrmFormComponentStyles>
   );
