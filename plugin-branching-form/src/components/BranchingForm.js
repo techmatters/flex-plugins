@@ -3,7 +3,18 @@ import React from 'react';
 const header = {
   backgroundColor: "rgb(79, 94, 122)",
   color: "#FFFFFF",
-  display: "block"
+  display: "block",
+  paddingLeft: 5,
+  // fontWeight: "bold",
+  letterSpacing: "2px",
+  fontSize: 18
+}
+
+const subsectionHeading = {
+  fontWeight: "bold", 
+  marginTop: 10, 
+  marginButton: 5,
+  paddingLeft: 5
 }
 
 const paddedDiv = {
@@ -12,7 +23,8 @@ const paddedDiv = {
 
 const col1 = {
   width: 150,
-  display: "inline-block"
+  display: "inline-block",
+  paddingLeft: 5
 }
 
 const col2 = {
@@ -23,7 +35,8 @@ const col2 = {
 const bigcol1 = {
   width: 250,
   marginRight: 10,
-  display: "inline-block"
+  display: "inline-block",
+  paddingLeft: 5
 }
 
 const bigcol2 = {
@@ -49,11 +62,35 @@ const category = {
   padding: 5 
 }
 
+const pad5 = {
+  paddingLeft: 5
+}
+
+const buttonStyle = {
+  alignSelf: "center",
+  height: "28px",
+  fontSize: "10px",
+  fontWeight: "bold",
+  letterSpacing: "1px",
+  whiteSpace: "nowrap",
+  color: "rgb(255, 255, 255)",
+  padding: "0px 16px",
+  borderWidth: "initial",
+  borderStyle: "none",
+  borderColor: "initial",
+  borderImage: "initial",
+  background: "linear-gradient(to top, rgb(25, 118, 210), rgb(25, 118, 210))",
+  outline: "none",
+  borderRadius: "100px",
+  cursor: "pointer",
+  margin: "10px 0px"
+}
+
 function BranchingFormCallType(props, state) {
   return (
     <div style={paddedDiv}>
       <span style={header}>
-        Call Type
+        CALL TYPE
       </span>
       <div style={paddedDiv}>
         <label>
@@ -156,10 +193,11 @@ function BranchingFormYesNoRadioButtons(props, state) {
 function BranchingFormRelationshipToChild(props, state) {
   return (
     <div style={paddedDiv}>
-      <label>
-        Relationship to Child:
+      <label style={pad5}>
+        Relationship to Child
       </label>
       <select style={spacyField}>
+        <option value="" hidden selected disabled>Select</option>
         <option value="friend">Friend</option>
         <option value="neighbor">Neighbor</option>
         <option value="parent">Parent</option>
@@ -176,9 +214,10 @@ function BranchingFormGenderAndAge(props, state) {
     <div style={paddedDiv}>
       <span style={bigcol1}>
         <label style={subcol1}>
-          Gender:
+          Gender*
         </label>
         <select style={subcol2}>
+          <option value="" hidden selected disabled>Required</option>
           <option value="male">Male</option>
           <option value="female">Female</option>
           <option value="other">Other</option>
@@ -187,9 +226,10 @@ function BranchingFormGenderAndAge(props, state) {
       </span>
       <span style={bigcol2}>
         <label style={subcol1}>
-          Age:
+          Age*
         </label>
         <select style={subcol2}>
+          <option value="" hidden selected disabled>Required</option>
           <option value="0-3">0-3</option>
           <option value="4-6">4-6</option>
           <option value="7-9">7-9</option>
@@ -197,6 +237,7 @@ function BranchingFormGenderAndAge(props, state) {
           <option value="13-15">13-15</option>
           <option value="16-17">16-17</option>
           <option value="18-25">18-25</option>
+          <option value=">25">&gt;25</option>
         </select>
       </span>
     </div>
@@ -229,8 +270,8 @@ function BranchingFormLanguageNationalityEthnicity(props, state) {
         </span>
       </div>
       <div style={paddedDiv}>
-        <label>
-          Ethnic Background/Race:
+        <label style={pad5}>
+          Ethnic Background/Race
         </label>
         <select style={spacyField}>
           <option value="ethnicity1">Ethnicity 1</option>
@@ -245,42 +286,42 @@ function BranchingFormLanguageNationalityEthnicity(props, state) {
 function BranchingFormLocation(props, state) {
   return (
     <>
-      <div style={{fontWeight: "bold", marginTop: 10, marginButton: 5}}>
-        Location:
+      <div style={subsectionHeading}>
+        Location
       </div>
       <div>
         <label style={col1}>
-          Street Address:
+          Street Address
         </label>
         <input style={col2} type="text" />
       </div>
       <div>
         <label style={col1}>
-          City:
+          City
         </label>
         <input style={col2} type="text" />
       </div>
       <div>
         <label style={col1}>
-          State/County:
+          State/County
         </label>
        <input style={col2} type="text" />
       </div>
       <div>
         <label style={col1}>
-          Postal Code:
+          Postal Code
         </label>
         <input style={col2} type="text" />
       </div>
       <div>
         <label style={col1}>
-          Phone #1:
+          Phone #1
         </label>
         <input style={col2} type="text" />
       </div>
       <div>
         <label style={col1}>
-          Phone #2:
+          Phone #2
         </label>
         <input style={col2} type="text" />
       </div>
@@ -292,7 +333,7 @@ function BranchingFormConfidentiality(props, state) {
   return (
     <>
       <div style={paddedDiv}>
-        <label>
+        <label style={pad5}>
           Keep Confidential:
         </label>
         <BranchingFormYesNoRadioButtons
@@ -302,7 +343,7 @@ function BranchingFormConfidentiality(props, state) {
         />
       </div>
       <div style={paddedDiv}>
-        <label>
+        <label style={pad5}>
           OK for Case Worker to Call?:
         </label>
         <BranchingFormYesNoRadioButtons
@@ -318,18 +359,18 @@ function BranchingFormConfidentiality(props, state) {
 function BranchingFormSchool(props, state) {
   return (
     <>
-      <div style={{fontWeight: "bold", marginTop: 10, marginButton: 5}}>
-        School:
+      <div style={subsectionHeading}>
+        School
       </div>
       <div>
         <label style={col1}>
-          Name:
+          Name
         </label>
         <input style={col2} type="text" />
       </div>
       <div>
         <label style={col1}>
-          Grade Level:
+          Grade Level
         </label>
         <input style={col2} type="text" />
       </div>
@@ -341,7 +382,7 @@ function BranchingFormChildSpecialIssues(props, state) {
   return (
     <>
       <div style={paddedDiv}>
-        <label>
+        <label style={pad5}>
           Refugee?:
         </label>
         <BranchingFormYesNoRadioButtons
@@ -359,7 +400,7 @@ function BranchingFormChildSpecialIssues(props, state) {
         />
       </div>
       <div style={paddedDiv}>
-        <label>
+        <label style={pad5}>
           HIV Positive?:
           <BranchingFormYesNoRadioButtons
             name="hiv"
@@ -374,9 +415,9 @@ function BranchingFormChildSpecialIssues(props, state) {
 
 function BranchingFormCallerInformation(props, state) {
   return (
-    <div className="section">
+    <div style={paddedDiv}>
       <span style={header}>
-        Caller Information
+        CALLER INFORMATION
       </span>
       <BranchingFormFirstLastName 
         first="callerfirstname" 
@@ -403,7 +444,7 @@ function BranchingFormChildInformation(props, state) {
   return (
     <div style={paddedDiv}>
       <span style={header}>
-        Child Information
+        CHILD INFORMATION
       </span>
       <BranchingFormFirstLastName 
         first="childfirstname" 
@@ -458,7 +499,7 @@ function BranchingFormIssueCategorization(props, state) {
   return (
     <div style={paddedDiv}>
       <span style={header}>
-        Issue Categorization
+        ISSUE CATEGORIZATION
       </span>
       <table>
         <tbody>
@@ -482,16 +523,16 @@ function BranchingFormCaseInformation(props, state) {
   return (
     <div style={paddedDiv}>
       <span style={header}>
-        Case Information
+        CASE INFORMATION
       </span>
       <div style={paddedDiv}>
-        <label>
+        <label style={pad5}>
           <span style={{verticalAlign: "top"}}>Call Summary:</span>
-          <textarea rows={20} cols={80}/>
         </label>
+        <textarea style={spacyField} rows={20} cols={80}/>
       </div>
       <div style={paddedDiv}>
-        <label>
+        <label style={pad5}>
           Referred to:
         </label>
         <select style={spacyField}>
@@ -502,7 +543,7 @@ function BranchingFormCaseInformation(props, state) {
         </select>
       </div>
       <div style={paddedDiv}>
-        <label>
+        <label style={pad5}>
           Status:
         </label>
         <input style={spacyField} type="radio" name="status" value="open"
@@ -523,7 +564,7 @@ function BranchingFormSummary(props, state) {
   return (
     <>
       <div style={paddedDiv}>
-        <label>
+        <label style={pad5}>
           Did you discuss rights with the child:
         </label>
         <BranchingFormYesNoRadioButtons
@@ -533,7 +574,7 @@ function BranchingFormSummary(props, state) {
         />
       </div>
       <div style={paddedDiv}>
-        <label>
+        <label style={pad5}>
           Did the child feel we solved their problem:
         </label>
         <BranchingFormYesNoRadioButtons
@@ -543,7 +584,7 @@ function BranchingFormSummary(props, state) {
         />
       </div>
       <div style={paddedDiv}>
-        <label>
+        <label style={pad5}>
           Would the child recommend us to a friend:
         </label>
         <BranchingFormYesNoRadioButtons
@@ -553,10 +594,11 @@ function BranchingFormSummary(props, state) {
         />
       </div>
       <div style={paddedDiv}>
-        <label>
+        <label style={pad5}>
           How did the child hear about us:
         </label>
         <select style={spacyField}>
+          <option value="" hidden selected disabled>Select</option>
           <option value="wordofmouth">Word of mouth</option>
           <option value="media">Media</option>
           <option value="friend">Friend</option>
@@ -579,9 +621,9 @@ class BranchingForm extends React.Component {
       'confidential': 'yes',
       'callpermission': 'yes',
       'refugee': 'no',
-      'specialneeds': '',
-      'hiv': '',
-      'status': '',
+      'specialneeds': 'no',
+      'hiv': 'no',
+      'status': 'inprogress',
       'discussrights': '',
       'solvedproblem': '',
       'recommend': ''
@@ -647,7 +689,7 @@ class BranchingForm extends React.Component {
             />
           </>
         }
-        <input type="submit" value="Submit" />
+        <button style={buttonStyle} type="submit">COMPLETE</button>
       </form>
     );
   }
