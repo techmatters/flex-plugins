@@ -1,7 +1,9 @@
 import React from 'react';
-import { FlexPlugin } from 'flex-plugin';
+import {
+  FlexPlugin
+} from 'flex-plugin';
 
-import BranchingForm from './components/BranchingForm';
+import CustomCRMContainer from './components/CRMContainer/CustomCRMContainer';
 
 const PLUGIN_NAME = 'BranchingFormPlugin';
 
@@ -21,6 +23,6 @@ export default class BranchingFormPlugin extends FlexPlugin {
     const options = { sortOrder: -1 };
     flex.CRMContainer
       .Content
-      .replace(<BranchingForm key="branching-form" />, options);
+      .replace(<CustomCRMContainer key="custom-crm-container" />, options);
   }
 }
