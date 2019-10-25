@@ -4,6 +4,7 @@ import { FlexPlugin } from 'flex-plugin';
 
 import CustomCRMContainer from './components/CustomCRMContainer';
 import reducers, { namespace } from './states';
+import { Actions } from './states/ContactState';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -26,6 +27,14 @@ export default class HrmFormPlugin extends FlexPlugin {
     flex.CRMContainer
       .Content
       .replace(<CustomCRMContainer key="custom-crm-container" />, options);
+
+    flex.Actions.addListener("beforeAcceptTask", (payload) => {
+      manager.store.dispatch(Actions.initializeContactState(payload.task.taskSid));
+    });
+
+    flex.Actions.addListener("afterCompleteTask", (payload) => {
+      manager.store.dispatch(Actions.removeContactState(payload.task.taskSid));
+    });
   }
 
   /**

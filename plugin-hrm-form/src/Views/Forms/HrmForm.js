@@ -7,9 +7,9 @@ const HrmForm = (props) => {
   return (
     <form>
       <InputLabel>Name</InputLabel>
-      <Input name="jrandomname" value={props.form ? props.form.jrandomname : 'placeholder'} onChange={(e) => props.handleChange(props.task.taskSid, e)}/>
+      <Input name="jrandomname" value={props.form ? props.form.jrandomname : 'not here'} onChange={(e) => props.handleChange(props.task.taskSid, e)}/>
       <InputLabel>Another Name</InputLabel>
-      <Input name="anothername" value={props.form ? props.form.anothername : 'placeholder'} onChange={(e) => props.handleChange(props.task.taskSid, e)}/>
+      <Input name="anothername" value={props.form ? props.form.anothername : 'not here'} onChange={(e) => props.handleChange(props.task.taskSid, e)}/>
     </form>
   );
 };
