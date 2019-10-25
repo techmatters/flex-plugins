@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { withTaskContext } from "@twilio/flex-ui";
+import HrmForm from './Forms/HrmForm';
 
 const wrapperStyle = {
   position: "absolute",
@@ -28,7 +29,7 @@ class TaskView extends Component {
 
     return (
       <div style={{ ...wrapperStyle, visibility: show }}>
-          <h1>Hello!  This is the task view for {thisTask.taskSid}</h1>
+          <HrmForm />
       </div>
     );
   }
