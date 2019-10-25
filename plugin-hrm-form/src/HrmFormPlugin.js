@@ -2,8 +2,8 @@ import React from 'react';
 import { VERSION } from '@twilio/flex-ui';
 import { FlexPlugin } from 'flex-plugin';
 
-import HrmFormContainer from './components/HrmForm/HrmForm.Container';
-import reducers, { namespace } from './states';
+import CustomCRMContainer from './components/CustomCRMContainer';
+// import reducers, { namespace } from './states';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -22,18 +22,10 @@ export default class HrmFormPlugin extends FlexPlugin {
   init(flex, manager) {
     this.registerReducers(manager);
 
-    const onCompleteTask = (sid) => {
-      flex.Actions.invokeAction("CompleteTask", { sid } );
-    }
-
-    flex.TaskCanvasHeader.Content.remove('actions', {
-      if: props => props.task && props.task.status === 'wrapping'
-    });
-
     const options = { sortOrder: -1 };
     flex.CRMContainer
       .Content
-      .replace(<HrmFormContainer key="hrm-form" onCompleteTask={onCompleteTask} />, options);
+      .replace(<CustomCRMContainer key="custom-crm-container" />, options);
   }
 
   /**
@@ -48,6 +40,6 @@ export default class HrmFormPlugin extends FlexPlugin {
       return;
     }
 
-    manager.store.addReducer(namespace, reducers);
+    // manager.store.addReducer(namespace, reducers);
   }
 }
