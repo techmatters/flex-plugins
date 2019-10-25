@@ -1,5 +1,5 @@
 import React from "react";
-import TaskView from "../Views/TaskView";
+import HrmFormController from './HrmFormController';
 import NoTaskView from "../Views/NoTaskView";
 import { connect } from "react-redux";
 
@@ -8,9 +8,9 @@ const CustomCRMContainer = (props) => {
 
   return (
     <div>
-      <NoTaskView key="no-task"></NoTaskView>
+      <NoTaskView key="no-task"/>
       {Array.from(tasks.values()).map(item => (
-        <TaskView thisTask={item} key={item.taskSid}></TaskView>
+        <HrmFormController thisTask={item} key={'controller-' + item.taskSid} />
       ))}
     </div>
   );
