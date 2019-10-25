@@ -1,10 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
-// import { bindActionCreators } from 'redux';
+import { bindActionCreators } from 'redux';
 import TaskView from '../Views/TaskView';
 import { withTaskContext } from "@twilio/flex-ui";
+import { namespace, contactFormsBase } from '../states';
 
-// import { Actions } from '../../states/CustomTaskListState';
+
+import { Actions } from '../states/ContactState';
 
 const HrmFormController = (props) => {
   // I don't think this should be needed, since we shouldn't be here
@@ -15,22 +17,25 @@ const HrmFormController = (props) => {
   }
 
   return (
-    <TaskView thisTask={props.thisTask} key={props.task.taskSid} />
+    <TaskView thisTask={props.thisTask} key={props.task.taskSid} form={props.form} handleChange={props.handleChange} />
   );
 }
 
 const mapStateToProps = (state, ownProps) => {
-  if (state['hrmform'] && ownProps && ownProps.thisTask) {
+  if (!state[namespace][contactFormsBase]['tasks'] ||
+        !state[namespace][contactFormsBase]['tasks'][ownProps.thisTask.taskSid]) {
     return {
-      form: state['hrmform'][ownProps.thisTask]
+      form: undefined
     };
   } else {
-    return null;
-  }
+    return {
+      form: state[namespace][contactFormsBase]['tasks'][ownProps.thisTask.taskSid]
+    }
+  } 
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  // handleChange: bindActionCreators(Actions.handleChange, dispatch)
+  handleChange: bindActionCreators(Actions.handleChange, dispatch)
 });
 
 export default withTaskContext(connect(mapStateToProps, mapDispatchToProps)(HrmFormController));

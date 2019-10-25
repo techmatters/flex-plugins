@@ -3,7 +3,7 @@ import { VERSION } from '@twilio/flex-ui';
 import { FlexPlugin } from 'flex-plugin';
 
 import CustomCRMContainer from './components/CustomCRMContainer';
-// import reducers, { namespace } from './states';
+import reducers, { namespace } from './states';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -40,6 +40,6 @@ export default class HrmFormPlugin extends FlexPlugin {
       return;
     }
 
-    // manager.store.addReducer(namespace, reducers);
+    manager.store.addReducer(namespace, reducers);
   }
 }

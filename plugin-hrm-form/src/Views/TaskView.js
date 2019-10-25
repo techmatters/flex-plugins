@@ -29,7 +29,7 @@ class TaskView extends Component {
 
     return (
       <div style={{ ...wrapperStyle, visibility: show }}>
-          <HrmForm />
+          <HrmForm form={this.props.form} handleChange={this.props.handleChange}/>
       </div>
     );
   }
