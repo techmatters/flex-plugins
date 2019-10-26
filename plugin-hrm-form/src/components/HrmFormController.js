@@ -15,7 +15,13 @@ const HrmFormController = (props) => {
   }
 
   return (
-    <TaskView thisTask={props.thisTask} key={props.task.taskSid} form={props.form} handleChange={props.handleChange} />
+    <TaskView 
+      thisTask={props.thisTask} 
+      key={props.task.taskSid} 
+      form={props.form} 
+      handleChange={props.handleChange} 
+      handleCallTypeButtonClick={props.handleCallTypeButtonClick}
+    />
   );
 }
 
@@ -27,7 +33,8 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  handleChange: bindActionCreators(Actions.handleChange, dispatch)
+  handleChange: bindActionCreators(Actions.handleChange, dispatch),
+  handleCallTypeButtonClick: bindActionCreators(Actions.handleCallTypeButtonClick, dispatch)
 });
 
 export default withTaskContext(connect(mapStateToProps, mapDispatchToProps)(HrmFormController));
