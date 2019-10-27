@@ -12,9 +12,9 @@ const HrmForm = (props) => {
       <Input name="jrandomname" value={props.form ? props.form.jrandomname : 'not here'} onChange={(e) => props.handleChange(props.task.taskSid, e)}/>
       <InputLabel>Another Name</InputLabel>
       <Input name="anothername" value={props.form ? props.form.anothername : 'not here'} onChange={(e) => props.handleChange(props.task.taskSid, e)}/>
-      {props.form && props.form.callType ? 
+      {false && props.form && props.form.callType ? 
         <TabbedForms form={props.form} handleChange={props.handleChange} /> :
-        <CallTypeButtons handleCallTypeButtonClick={props.handleCallTypeButtonClick} />
+        <CallTypeButtons form={props.form} handleCallTypeButtonClick={props.handleCallTypeButtonClick} />
       }
     </form>
   );

@@ -32,6 +32,10 @@ export default class HrmFormPlugin extends FlexPlugin {
       manager.store.dispatch(Actions.initializeContactState(payload.task.taskSid));
     });
 
+    flex.Actions.addListener("beforeCompleteTask", (payload, abortFunction) => {
+      manager.store.dispatch(Actions.saveContactState(payload.task.taskSid, abortFunction));
+    });
+
     flex.Actions.addListener("afterCompleteTask", (payload) => {
       manager.store.dispatch(Actions.removeContactState(payload.task.taskSid));
     });

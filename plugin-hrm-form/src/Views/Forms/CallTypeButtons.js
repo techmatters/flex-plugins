@@ -8,6 +8,7 @@ const CallTypeButtons = (props) => {
     return (
       <Button 
         variant="contained" 
+        color={(props.form && props.form.callType === callTypes[option]) ? 'primary' : 'secondary'}
         onClick={(e) => props.handleCallTypeButtonClick(props.task.taskSid, callTypes[option], e)}
       >
       {callTypes[option]}
