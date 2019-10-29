@@ -4,7 +4,8 @@ export function validateFormBeforeSubmit(form) {
   return isStandAloneCallType(form.callType);
 }
 
-function isStandAloneCallType(callType) {
+// Questionable whether we should export this
+export function isStandAloneCallType(callType) {
   return (callType !== callTypes.caller &&
           callType !== callTypes.child);
 }
