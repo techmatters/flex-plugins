@@ -12,11 +12,26 @@ const initialState = {
 
 const taskInitialStateFactory = () => {
     return {
-      jrandomname: 'add here',
-      anothername: 'another name',
       callType: '',
       callerInformation: {
-
+        name: {
+          firstName: '',
+          lastName: ''
+        },
+        relationshipToChild: '',
+        gender: '',
+        age: '',
+        language:'',
+        nationality: '',
+        ethnicity: '',
+        location: {
+          streetAddress: '',
+          city: '',
+          stateOrCounty: '',
+          postalCode: '',
+          phone1: '',
+          phone2: ''
+        }
       },
       childInformation: {
 
@@ -28,7 +43,11 @@ const taskInitialStateFactory = () => {
 };
 
 export class Actions {
-  static handleChange = (taskId, e) => ({type: HANDLE_CHANGE, name: e.target.name, value: e.target.value, taskId: taskId});
+  // static handleChange = (taskId, parents, e) => ({type: HANDLE_CHANGE, name: e.currentTarget.name, value: e.currentTarget.value, taskId: taskId, parents: parents});
+  static handleChange = function(taskId, parents, e) {
+    console.log(e);
+    return {type: HANDLE_CHANGE, name: e.target.name || e.currentTarget.name, value: e.target.value || e.currentTarget.value, taskId: taskId, parents: parents};
+  };
   // There has to be a better way to do this rather than a one-off, but MUI does not make it easy
   static handleCallTypeButtonClick = (taskId, value, e) => ({type: HANDLE_CALLTYPE_BUTTON_CLICK, taskId: taskId, value: value});
   static initializeContactState = (taskId) => ({type: INITIALIZE_CONTACT_STATE, taskId: taskId});
@@ -37,36 +56,69 @@ export class Actions {
   static removeContactState = (taskId) => ({type: REMOVE_CONTACT_STATE, taskId: taskId});
 }
 
+// TODO(Nick): rename
+function recursiveAddInner(original, parents, name, value) {
+  if (parents.length === 0) {
+    return { 
+      ...original,
+      [name] : value
+    };
+  }
+  return {
+    ...original,
+    [parents[0]]: recursiveAddInner(original[parents[0]], parents.slice(1), name, value)
+  }
+}
+
 export function reduce(state = initialState, action) {
   switch (action.type) {
     case HANDLE_CHANGE: {
-      console.log("!!!!!!!!!!!HANDLE CHANGE: action.name = " + action.name + ", action.value = " + action.value + ", task = " + action.taskId);
-      let updatedContactForm = state.tasks[action.taskId];
-      updatedContactForm = {
-        ...updatedContactForm,
-        [action.name]: action.value
-      };
+      console.log("!!!!!!!!!!!HANDLE CHANGE: action.name = " + action.name + ", action.value = " + action.value + ", task = " + action.taskId + ", parents: " + action.parents);
+      // let updatedContactForm = state.tasks[action.taskId];
+      // updatedContactForm = {
+      //   ...updatedContactForm,
+      //   [action.name]: action.value
+      // };
+      // we could probably replace the below if/else by having the first argument to recursiveaddinner be
+      //  state.tasks[action.taskId] || taskInitialStateFactory()
+      // but I want to be more explicit and log it.  Redux gets purged if there's a refresh and that's messy
+      var currentForm;
+      if (state.tasks[action.taskId]) {
+        currentForm = state.tasks[action.taskId];
+      } else {
+        currentForm = taskInitialStateFactory();
+        console.log("Had to recreate state for taskId " + action.taskId);
+      }
       return {
         ...state,
         tasks: {
           ...state.tasks,
-          [action.taskId]: updatedContactForm
+          [action.taskId]: recursiveAddInner(currentForm,
+                                             action.parents,
+                                             action.name,
+                                             action.value)
         }
       };
     }
 
     case HANDLE_CALLTYPE_BUTTON_CLICK: {
       console.log("!!!!!!!CALLTYPE BUTTON: " + action.value);
-      let updatedContactForm = state.tasks[action.taskId];
-      updatedContactForm = {
-        ...updatedContactForm,
+      // TODO(nick): make DRY with above case
+      if (state.tasks[action.taskId]) {
+        currentForm = state.tasks[action.taskId];
+      } else {
+        currentForm = taskInitialStateFactory();
+        console.log("Had to recreate state for taskId " + action.taskId);
+      }
+      currentForm = {
+        ...currentForm,
         callType: action.value
       };
       return {
         ...state,
         tasks: {
           ...state.tasks,
-          [action.taskId]: updatedContactForm
+          [action.taskId]: currentForm
         }
       };
     }

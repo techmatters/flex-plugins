@@ -1,7 +1,8 @@
 import { callTypes } from './DomainConstants'
 
 export function validateFormBeforeSubmit(form) {
-  return isStandAloneCallType(form.callType);
+  // return isStandAloneCallType(form.callType);
+  return true; // need to add more later
 }
 
 // Questionable whether we should export this

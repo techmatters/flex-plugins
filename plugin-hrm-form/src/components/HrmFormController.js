@@ -12,7 +12,7 @@ export function saveToHrm(form, abortFunction) {
   if (!validateFormBeforeSubmit(form)) {
     // we get "twilio-flex.min.js:274 Uncaught (in promise) Error: Action cancelled by before event"
     // is that okay?
-    if (!window.confirm("Save failed.  Are you sure you want to end the task without recording?")) {
+    if (!window.confirm("Validation failed.  Are you sure you want to end the task without recording?")) {
       abortFunction();
     }
     return false;
@@ -33,7 +33,7 @@ export function saveToHrm(form, abortFunction) {
   .then(function(response) {
     if (!response.ok) {
       console.log("Form error: " + response.statusText);
-      if (!window.confirm("Save failed.  Are you sure you want to end the task without recording?")) {
+      if (!window.confirm("Error from backend system.  Are you sure you want to end the task without recording?")) {
         abortFunction();
       }
     }
@@ -45,7 +45,7 @@ export function saveToHrm(form, abortFunction) {
   .catch(function(response) {
     console.log("Caught something");
     // TODO(nick): fix this. this isn't working I don't think the function is working from inside the promise.
-    if (!window.confirm("Save failed.  Are you sure you want to end the task without recording?")) {
+    if (!window.confirm("Unknown error saving form.  Are you sure you want to end the task without recording?")) {
       abortFunction();
     }
   });
