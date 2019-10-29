@@ -1,5 +1,4 @@
 import React from 'react';
-// import { Button } from '@material-ui/core';
 import { withTaskContext } from "@twilio/flex-ui";
 import { TabContainer } from '../../Styles/HrmStyles';
 import {Tabs, Tab, Typography} from "@material-ui/core";
