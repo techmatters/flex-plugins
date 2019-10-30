@@ -1,12 +1,12 @@
 import { combineReducers } from 'redux';
 
-//import { reduce as HrmFormReducer } from './HrmFormState';
-import { reducer as formReducer } from 'redux-form'
+import { reduce as ContactStateReducer } from './ContactState';
 
 // Register your redux store under a unique namespace
-export const namespace = 'hrmform';
+export const namespace = 'plugin-hrm-form';
+export const contactFormsBase = 'activeContacts';
 
 // Combine the reducers
 export default combineReducers({
-  form: formReducer
+  [contactFormsBase]: ContactStateReducer
 });

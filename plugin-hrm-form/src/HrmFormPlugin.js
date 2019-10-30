@@ -2,8 +2,9 @@ import React from 'react';
 import { VERSION } from '@twilio/flex-ui';
 import { FlexPlugin } from 'flex-plugin';
 
-import HrmFormContainer from './components/HrmForm/HrmForm.Container';
+import CustomCRMContainer from './components/CustomCRMContainer';
 import reducers, { namespace } from './states';
+import { Actions } from './states/ContactState';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -22,18 +23,22 @@ export default class HrmFormPlugin extends FlexPlugin {
   init(flex, manager) {
     this.registerReducers(manager);
 
-    const onCompleteTask = (sid) => {
-      flex.Actions.invokeAction("CompleteTask", { sid } );
-    }
-
-    flex.TaskCanvasHeader.Content.remove('actions', {
-      if: props => props.task && props.task.status === 'wrapping'
-    });
-
     const options = { sortOrder: -1 };
     flex.CRMContainer
       .Content
-      .replace(<HrmFormContainer key="hrm-form" onCompleteTask={onCompleteTask} />, options);
+      .replace(<CustomCRMContainer key="custom-crm-container" />, options);
+
+    flex.Actions.addListener("beforeAcceptTask", (payload) => {
+      manager.store.dispatch(Actions.initializeContactState(payload.task.taskSid));
+    });
+
+    flex.Actions.addListener("beforeCompleteTask", (payload, abortFunction) => {
+      manager.store.dispatch(Actions.saveContactState(payload.task.taskSid, abortFunction));
+    });
+
+    flex.Actions.addListener("afterCompleteTask", (payload) => {
+      manager.store.dispatch(Actions.removeContactState(payload.task.taskSid));
+    });
   }
 
   /**
