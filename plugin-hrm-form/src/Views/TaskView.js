@@ -7,7 +7,7 @@ const wrapperStyle = {
   margin: "0",
   padding: "0",
   border: "0px",
-  overflow: "hidden",
+  // overflow: "hidden",  // this prevents scrolling
   height: "100%",
   width: "100%"
 };
@@ -32,7 +32,8 @@ class TaskView extends Component {
           <HrmForm 
             form={this.props.form} 
             handleChange={this.props.handleChange}
-            handleCallTypeButtonClick={this.props.handleCallTypeButtonClick}/>
+            handleCallTypeButtonClick={this.props.handleCallTypeButtonClick}
+            handleCheckbox={this.props.handleCheckbox} />
       </div>
     );
   }

@@ -66,6 +66,7 @@ const HrmFormController = (props) => {
       form={props.form} 
       handleChange={props.handleChange} 
       handleCallTypeButtonClick={props.handleCallTypeButtonClick}
+      handleCheckbox={props.handleCheckbox}
     />
   );
 }
@@ -78,8 +79,9 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
+  handleCallTypeButtonClick: bindActionCreators(Actions.handleCallTypeButtonClick, dispatch),
   handleChange: bindActionCreators(Actions.handleChange, dispatch),
-  handleCallTypeButtonClick: bindActionCreators(Actions.handleCallTypeButtonClick, dispatch)
+  handleCheckbox: bindActionCreators(Actions.handleCheckbox, dispatch)
 });
 
 export default withTaskContext(connect(mapStateToProps, mapDispatchToProps)(HrmFormController));

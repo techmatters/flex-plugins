@@ -1,7 +1,7 @@
 import { saveToHrm } from '../components/HrmFormController';
 
 const HANDLE_CHANGE = 'HANDLE_CHANGE';
-const HANDLE_CALLTYPE_BUTTON_CLICK = 'HANDLE_CALLTYPE_BUTTON_CLICK';
+// const HANDLE_CALLTYPE_BUTTON_CLICK = 'HANDLE_CALLTYPE_BUTTON_CLICK';
 const INITIALIZE_CONTACT_STATE = 'INITIALIZE_CONTACT_STATE';
 const SAVE_CONTACT_STATE = 'SAVE_CONTACT_STATE';
 const REMOVE_CONTACT_STATE = 'REMOVE_CONTACT_STATE';
@@ -34,10 +34,86 @@ const taskInitialStateFactory = () => {
         }
       },
       childInformation: {
-
+        name: {
+          firstName: '',
+          lastName: ''
+        },
+        gender: '',
+        age: '',
+        language:'',
+        nationality: '',
+        ethnicity: '',
+        school: {
+          name: '',
+          gradeLevel: ''
+        },
+        location: {
+          streetAddress: '',
+          city: '',
+          stateOrCounty: '',
+          postalCode: '',
+          phone1: '',
+          phone2: ''
+        },
+        refugee: false,
+        disabledOrSpecialNeeds: false,
+        hiv: false
       },
       caseInformation: {
-
+        categories: {
+          category1: {
+            sub1: false,
+            sub2: false,
+            sub3: false,
+            sub4: false,
+            sub5: false,
+            sub6: false,
+          },
+          category2: {
+            sub1: false,
+            sub2: false,
+            sub3: false,
+            sub4: false,
+            sub5: false,
+            sub6: false,
+          },
+          category3: {
+            sub1: false,
+            sub2: false,
+            sub3: false,
+            sub4: false,
+            sub5: false,
+            sub6: false,
+          },
+          category4: {
+            sub1: false,
+            sub2: false,
+            sub3: false,
+            sub4: false,
+            sub5: false,
+            sub6: false,
+          },
+          category5: {
+            sub1: false,
+            sub2: false,
+            sub3: false,
+            sub4: false,
+            sub5: false,
+            sub6: false,
+          },
+          category6: {
+            sub1: false,
+            sub2: false,
+            sub3: false,
+            sub4: false,
+            sub5: false,
+            sub6: false,
+          },
+          howDidTheChildHearAboutUs: '',
+          didYouDiscussRightsWithTheChild: false,
+          didTheChildFeelWeSolvedTheirProblem: false,
+          wouldTheChildRecommendUsToAFriend: false
+        }
       }
     };
 };
@@ -48,8 +124,11 @@ export class Actions {
     console.log(e);
     return {type: HANDLE_CHANGE, name: e.target.name || e.currentTarget.name, value: e.target.value || e.currentTarget.value, taskId: taskId, parents: parents};
   };
+  // This makes me so sad
+  static handleCheckbox = (taskId, parents, name, value) => ({type: HANDLE_CHANGE, name: name, taskId: taskId, value: value, parents: parents});
   // There has to be a better way to do this rather than a one-off, but MUI does not make it easy
-  static handleCallTypeButtonClick = (taskId, value, e) => ({type: HANDLE_CALLTYPE_BUTTON_CLICK, taskId: taskId, value: value});
+  // static handleCallTypeButtonClick = (taskId, value, e) => ({type: HANDLE_CALLTYPE_BUTTON_CLICK, taskId: taskId, value: value});
+  static handleCallTypeButtonClick = (taskId, value, e) => ({type: HANDLE_CHANGE, name: 'callType', taskId: taskId, value: value, parents: []});
   static initializeContactState = (taskId) => ({type: INITIALIZE_CONTACT_STATE, taskId: taskId});
   // I'm really not sure if this should live here, but it seems like we need to come through the store
   static saveContactState = (taskId, abortFunction) => ({type: SAVE_CONTACT_STATE, taskId: taskId, abortFunction: abortFunction});
@@ -101,27 +180,27 @@ export function reduce(state = initialState, action) {
       };
     }
 
-    case HANDLE_CALLTYPE_BUTTON_CLICK: {
-      console.log("!!!!!!!CALLTYPE BUTTON: " + action.value);
-      // TODO(nick): make DRY with above case
-      if (state.tasks[action.taskId]) {
-        currentForm = state.tasks[action.taskId];
-      } else {
-        currentForm = taskInitialStateFactory();
-        console.log("Had to recreate state for taskId " + action.taskId);
-      }
-      currentForm = {
-        ...currentForm,
-        callType: action.value
-      };
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: currentForm
-        }
-      };
-    }
+    // case HANDLE_CALLTYPE_BUTTON_CLICK: {
+    //   console.log("!!!!!!!CALLTYPE BUTTON: " + action.value);
+    //   // TODO(nick): make DRY with above case
+    //   if (state.tasks[action.taskId]) {
+    //     currentForm = state.tasks[action.taskId];
+    //   } else {
+    //     currentForm = taskInitialStateFactory();
+    //     console.log("Had to recreate state for taskId " + action.taskId);
+    //   }
+    //   currentForm = {
+    //     ...currentForm,
+    //     callType: action.value
+    //   };
+    //   return {
+    //     ...state,
+    //     tasks: {
+    //       ...state.tasks,
+    //       [action.taskId]: currentForm
+    //     }
+    //   };
+    // }
 
     case INITIALIZE_CONTACT_STATE: {
       console.log("!!!!!!!!!CREATING NEW ENTRY FOR " + action.taskId);

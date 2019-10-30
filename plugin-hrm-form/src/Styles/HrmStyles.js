@@ -6,6 +6,7 @@ export const Container = styled("div")`
     display: flex;
     padding: 32px;
     flex-direction: column;
+    flex-wrap: wrap;
 `;
 
 export const TabContainer = styled("div")`
@@ -107,4 +108,26 @@ export const StyledButton = styled(Button)`
             false,
             p.disabled,
         )};
+`;
+
+export const TransparentButton = styled(Button)`
+    color: black;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 2px;
+`;
+
+export const CheckboxField = styled("div")`
+    display: flex;
+    flex-direction: row;
+    margin: 8px 0;
+    width: 320px;
+`;
+
+export const StyledCheckboxLabel = styled("label")`
+    text-transform: uppercase;
+    margin-top: auto;
+    margin-bottom: auto;
+    font-size: 12px;
+    letter-spacing: normal;
 `;
