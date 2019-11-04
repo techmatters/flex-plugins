@@ -23,10 +23,14 @@ export default class HrmFormPlugin extends FlexPlugin {
   init(flex, manager) {
     this.registerReducers(manager);
 
+    const onCompleteTask = (sid, task) => {
+      flex.Actions.invokeAction("CompleteTask", { sid, task } );
+    }
+
     const options = { sortOrder: -1 };
     flex.CRMContainer
       .Content
-      .replace(<CustomCRMContainer key="custom-crm-container" />, options);
+      .replace(<CustomCRMContainer key="custom-crm-container" handleCompleteTask={onCompleteTask} />, options);
 
     flex.Actions.addListener("beforeAcceptTask", (payload) => {
       manager.store.dispatch(Actions.initializeContactState(payload.task.taskSid));

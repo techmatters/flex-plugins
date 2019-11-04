@@ -13,6 +13,9 @@ const initialState = {
 const taskInitialStateFactory = () => {
     return {
       callType: '',
+      internal: {
+        tab: 0
+      },
       callerInformation: {
         name: {
           firstName: '',
@@ -108,12 +111,17 @@ const taskInitialStateFactory = () => {
             sub4: false,
             sub5: false,
             sub6: false,
-          },
-          howDidTheChildHearAboutUs: '',
-          didYouDiscussRightsWithTheChild: false,
-          didTheChildFeelWeSolvedTheirProblem: false,
-          wouldTheChildRecommendUsToAFriend: false
-        }
+          }
+        },
+        callSummary: '',
+        referredTo: '',
+        status: 'In Progress',
+        keepConfidential: true,
+        okForCaseWorkerToCall: false,
+        howDidTheChildHearAboutUs: '',
+        didYouDiscussRightsWithTheChild: false,
+        didTheChildFeelWeSolvedTheirProblem: false,
+        wouldTheChildRecommendUsToAFriend: false
       }
     };
 };
@@ -124,7 +132,7 @@ export class Actions {
     console.log(e);
     return {type: HANDLE_CHANGE, name: e.target.name || e.currentTarget.name, value: e.target.value || e.currentTarget.value, taskId: taskId, parents: parents};
   };
-  // This makes me so sad
+  // This makes me so sad too
   static handleCheckbox = (taskId, parents, name, value) => ({type: HANDLE_CHANGE, name: name, taskId: taskId, value: value, parents: parents});
   // There has to be a better way to do this rather than a one-off, but MUI does not make it easy
   // static handleCallTypeButtonClick = (taskId, value, e) => ({type: HANDLE_CALLTYPE_BUTTON_CLICK, taskId: taskId, value: value});
@@ -135,8 +143,7 @@ export class Actions {
   static removeContactState = (taskId) => ({type: REMOVE_CONTACT_STATE, taskId: taskId});
 }
 
-// TODO(Nick): rename
-function recursiveAddInner(original, parents, name, value) {
+function editNestedField(original, parents, name, value) {
   if (parents.length === 0) {
     return { 
       ...original,
@@ -145,7 +152,7 @@ function recursiveAddInner(original, parents, name, value) {
   }
   return {
     ...original,
-    [parents[0]]: recursiveAddInner(original[parents[0]], parents.slice(1), name, value)
+    [parents[0]]: editNestedField(original[parents[0]], parents.slice(1), name, value)
   }
 }
 
@@ -158,7 +165,7 @@ export function reduce(state = initialState, action) {
       //   ...updatedContactForm,
       //   [action.name]: action.value
       // };
-      // we could probably replace the below if/else by having the first argument to recursiveaddinner be
+      // we could probably replace the below if/else by having the first argument to editNestedField be
       //  state.tasks[action.taskId] || taskInitialStateFactory()
       // but I want to be more explicit and log it.  Redux gets purged if there's a refresh and that's messy
       var currentForm;
@@ -172,35 +179,13 @@ export function reduce(state = initialState, action) {
         ...state,
         tasks: {
           ...state.tasks,
-          [action.taskId]: recursiveAddInner(currentForm,
-                                             action.parents,
-                                             action.name,
-                                             action.value)
+          [action.taskId]: editNestedField(currentForm,
+                                           action.parents,
+                                           action.name,
+                                           action.value)
         }
       };
     }
-
-    // case HANDLE_CALLTYPE_BUTTON_CLICK: {
-    //   console.log("!!!!!!!CALLTYPE BUTTON: " + action.value);
-    //   // TODO(nick): make DRY with above case
-    //   if (state.tasks[action.taskId]) {
-    //     currentForm = state.tasks[action.taskId];
-    //   } else {
-    //     currentForm = taskInitialStateFactory();
-    //     console.log("Had to recreate state for taskId " + action.taskId);
-    //   }
-    //   currentForm = {
-    //     ...currentForm,
-    //     callType: action.value
-    //   };
-    //   return {
-    //     ...state,
-    //     tasks: {
-    //       ...state.tasks,
-    //       [action.taskId]: currentForm
-    //     }
-    //   };
-    // }
 
     case INITIALIZE_CONTACT_STATE: {
       console.log("!!!!!!!!!CREATING NEW ENTRY FOR " + action.taskId);

@@ -1,5 +1,5 @@
-import {default as styled} from "react-emotion";
-import {Input, Select, MenuItem} from "@material-ui/core";
+import {default as styled, keyframes} from "react-emotion";
+import {Checkbox, Input, Select, MenuItem} from "@material-ui/core";
 import {Button, getBackgroundWithHoverCSS} from "@twilio/flex-ui";
 
 export const Container = styled("div")`
@@ -97,6 +97,34 @@ export const StyledMenuItem = styled(MenuItem)`
 export const StyledButton = styled(Button)`
     color: white;
     text-transform: uppercase;
+    margin-bottom: 5px;
+    margin-right: 5px;
+    width: 320px;
+    border: ${props => (props.selected ? "2px solid #000000;" : "none")}
+    background-color: ${props => (props.disabled ? props.theme.colors.base5 : props.theme.colors.defaultButtonColor)};
+    ${p =>
+        getBackgroundWithHoverCSS(
+            p.disabled ? p.theme.colors.base5 : p.theme.colors.defaultButtonColor,
+            true,
+            false,
+            p.disabled,
+        )};
+`;
+
+const shadowPulse = keyframes`
+    0% {
+        box-shadow: 0 0 0 0px rgba(0, 0, 0, 0.2);
+    }
+    100% {
+        box-shadow: 0 0 0 20px rgba(0, 0, 0, 0);
+    }
+`;
+
+export const StyledFinishButton = styled(Button)`
+    animation: ${shadowPulse} 1s infinite;
+    color: white;
+    text-transform: uppercase;
+    margin-bottom: 5px;
     margin-right: 5px;
     width: 320px;
     border: ${props => (props.selected ? "2px solid #000000;" : "none")}
@@ -130,4 +158,40 @@ export const StyledCheckboxLabel = styled("label")`
     margin-bottom: auto;
     font-size: 12px;
     letter-spacing: normal;
+`;
+
+export const TopNav = styled("div")`
+    display: flex;
+    flex-direction: row;
+`;
+
+export const NameFields = styled("div")`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+`;
+
+export const ColumnarBlock = styled("div")`
+    display: flex;
+    flex-direction: column;
+`;
+
+export const TwoColumnLayout = styled("div")`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+`;
+
+export const StyledCheckbox = styled(Checkbox)`
+    width: 28 !important;
+    height: 28 !important;
+    border-sizing: border-box !important;
+    background-color: red !important;
+`;
+
+export const CategoryCheckboxField = styled("div")`
+    display: flex;
+    flex-direction: row;
+    margin: 8px 0;
+    width: 160px;
 `;

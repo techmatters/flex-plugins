@@ -67,6 +67,7 @@ const HrmFormController = (props) => {
       handleChange={props.handleChange} 
       handleCallTypeButtonClick={props.handleCallTypeButtonClick}
       handleCheckbox={props.handleCheckbox}
+      handleCompleteTask={props.handleCompleteTask}
     />
   );
 }
