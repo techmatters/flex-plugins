@@ -33,7 +33,9 @@ class TaskView extends Component {
             form={this.props.form} 
             handleChange={this.props.handleChange}
             handleCallTypeButtonClick={this.props.handleCallTypeButtonClick}
-            handleCheckbox={this.props.handleCheckbox} />
+            handleCheckbox={this.props.handleCheckbox} 
+            handleCompleteTask={this.props.handleCompleteTask}
+          />
       </div>
     );
   }
