@@ -139,7 +139,7 @@ export class Actions {
   static handleCallTypeButtonClick = (taskId, value, e) => ({type: HANDLE_CHANGE, name: 'callType', taskId: taskId, value: value, parents: []});
   static initializeContactState = (taskId) => ({type: INITIALIZE_CONTACT_STATE, taskId: taskId});
   // I'm really not sure if this should live here, but it seems like we need to come through the store
-  static saveContactState = (taskId, abortFunction) => ({type: SAVE_CONTACT_STATE, taskId: taskId, abortFunction: abortFunction});
+  static saveContactState = (task, abortFunction) => ({type: SAVE_CONTACT_STATE, task: task, abortFunction: abortFunction});
   static removeContactState = (taskId) => ({type: REMOVE_CONTACT_STATE, taskId: taskId});
 }
 
@@ -200,7 +200,7 @@ export function reduce(state = initialState, action) {
 
     case SAVE_CONTACT_STATE: {
       // TODO(nick): Make this a Promise instead?
-      saveToHrm(state.tasks[action.taskId], action.abortFunction);
+      saveToHrm(action.task, state.tasks[action.task.taskSid], action.abortFunction);
       return state;
     }
 

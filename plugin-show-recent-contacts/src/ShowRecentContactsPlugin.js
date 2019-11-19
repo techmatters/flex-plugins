@@ -19,13 +19,16 @@ export default class ShowRecentContactsPlugin extends FlexPlugin {
    * @param manager { import('@twilio/flex-ui').Manager }
    */
   init(flex, manager) {
+    const helpline = manager.store.getState().flex.worker.attributes.helpline;
+    console.log("Helpline = " + helpline);
+
     flex.SideNav.Content.add(
       <RecentContactsSidebarButton key="recent-contacts-button" />
     );
 
     flex.ViewCollection.Content.add(
       <View name="recent-contacts" key="recent-contacts">
-        <RecentContactsView />
+        <RecentContactsView helpline={helpline} />
       </View>
     );
   }

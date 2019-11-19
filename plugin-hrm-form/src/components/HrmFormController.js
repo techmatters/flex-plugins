@@ -8,7 +8,7 @@ import { Actions } from '../states/ContactState';
 import { validateFormBeforeSubmit } from '../states/ValidationRules';
 
 // should this be a static method on the class or separate.  Or should it even be here at all?
-export function saveToHrm(form, abortFunction) {
+export function saveToHrm(task, form, abortFunction) {
   if (!validateFormBeforeSubmit(form)) {
     // we get "twilio-flex.min.js:274 Uncaught (in promise) Error: Action cancelled by before event"
     // is that okay?
@@ -16,6 +16,23 @@ export function saveToHrm(form, abortFunction) {
       abortFunction();
     }
     return false;
+  }
+
+  // TODO(nick): we should really clone this before modifying it.  If the send fails and there's more editing
+  // then we'll have a problem
+
+  // Remove the internal state stuff
+  form.internal = undefined;
+
+  // Add task info
+  form.channel = task.channelType;
+  form.queueName = task.queueName;
+  if (task.channelType === 'facebook') {
+    form.number = task.defaultFrom.replace('messenger:', '');
+  } else if (task.channelType === 'whatsapp') {
+    form.number = task.defaultFrom.replace('whatsapp:', '');
+  } else {
+    form.number = task.defaultFrom;
   }
   
   const url = 'https://hrm.tl.barbarianrobot.com';
