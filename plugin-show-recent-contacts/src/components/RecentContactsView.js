@@ -11,7 +11,7 @@ export default class RecentContactsView extends React.Component {
 
   componentWillMount() {
     const self = this;
-    const url = 'https://hrm.tl.barbarianrobot.com';
+    var url = 'https://hrm.tl.barbarianrobot.com';
     // var url = 'http://localhost:8080';
     url += '/contacts';
     if (this.props.helpline) {
