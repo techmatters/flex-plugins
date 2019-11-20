@@ -105,7 +105,7 @@ export default class RecentContactsView extends React.Component {
                     <td>{this.valueOrNone(element.FormData && element.FormData.number)}</td>
                     <td>{this.valueOrNone(element.FormData && element.FormData.callType)}</td>
                     <td>{this.nameFor(element.FormData && element.FormData.callerInformation && element.FormData.callerInformation.name)}</td>
-                    <td>{this.nameFor(element.FormData && element.FormData.childInformation && element.FormData.callerInformation.name)}</td>
+                    <td>{this.nameFor(element.FormData && element.FormData.childInformation && element.FormData.childInformation.name)}</td>
                     <td>{this.listCategories(element.FormData)}</td>
                   </tr>
                 );
