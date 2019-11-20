@@ -9,39 +9,41 @@ import { default as styled } from 'react-emotion';
 export const RecentContactsComponentStyles = styled('div')`
   overflow: auto;
 
-  .json-to-table {
-      td,
-      th {
-        padding: 5px;
-        border: 1px solid rgb(190, 190, 190);
-      }
+  h1 {
+    font-size: 20px;
+  }
 
-      td {
-        text-align: left;
-      }
+  td,
+  th {
+    padding: 5px;
+    border: 1px solid rgb(190, 190, 190);
+  }
 
-      tr:nth-child(even) {
-        background-color: #eee;
-      }
+  td {
+    text-align: left;
+  }
 
-      th[scope="col"] {
-        background-color: #696969;
-        color: #fff;
-      }
+  tr:nth-child(even) {
+    background-color: #eee;
+  }
 
-      th[scope="row"] {
-        background-color: #d7d9f2;
-      }
+  th[scope="col"] {
+    background-color: #696969;
+    color: #fff;
+  }
 
-      caption {
-        caption-side: bottom;
-      }
+  th[scope="row"] {
+    background-color: #d7d9f2;
+  }
 
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        font-family: sans-serif;
-        font-size: 0.8rem;
-      }
+  caption {
+    caption-side: bottom;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: sans-serif;
+    font-size: 0.8rem;
   }
 `;
