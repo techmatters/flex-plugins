@@ -13,7 +13,8 @@ const HrmForm = (props) => {
           form={props.form}
           handleChange={props.handleChange}
           handleCheckbox={props.handleCheckbox}
-          handleCallTypeButtonClick={props.handleCallTypeButtonClick} /> :
+          handleCallTypeButtonClick={props.handleCallTypeButtonClick}
+          handleCompleteTask={props.handleCompleteTask} /> :
         <CallTypeButtons
           form={props.form}
           handleCallTypeButtonClick={props.handleCallTypeButtonClick}

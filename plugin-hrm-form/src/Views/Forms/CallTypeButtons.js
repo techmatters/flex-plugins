@@ -32,7 +32,6 @@ const CallTypeButtons = (props) => {
               End conversation and close task
             </StyledFinishButton>
           : ''}
-          { /* So I think that when the complete task action is fired, our beforeComplete will automatically save it */ }
       </Container>  
   );
 };
