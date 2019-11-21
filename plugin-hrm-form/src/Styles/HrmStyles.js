@@ -4,7 +4,7 @@ import {Button, getBackgroundWithHoverCSS} from "@twilio/flex-ui";
 
 export const Container = styled("div")`
     display: flex;
-    padding: 32px;
+    padding: 32px 32px 12px;
     flex-direction: column;
     flex-wrap: wrap;
 `;
@@ -97,10 +97,24 @@ export const StyledMenuItem = styled(MenuItem)`
 export const StyledButton = styled(Button)`
     color: white;
     text-transform: uppercase;
-    margin-bottom: 5px;
-    margin-right: 5px;
+    margin-bottom: 15px;
     width: 320px;
+    height: 48px;
     border: ${props => (props.selected ? "2px solid #000000;" : "none")}
+    background-color: ${props => (props.disabled ? props.theme.colors.base5 : props.theme.colors.defaultButtonColor)};
+    ${p =>
+        getBackgroundWithHoverCSS(
+            p.disabled ? p.theme.colors.base5 : p.theme.colors.defaultButtonColor,
+            true,
+            false,
+            p.disabled,
+        )};
+`;
+
+export const StyledNextStepButton = styled(Button)`
+    color: white;
+    text-transform: uppercase;
+    width: 200px;
     background-color: ${props => (props.disabled ? props.theme.colors.base5 : props.theme.colors.defaultButtonColor)};
     ${p =>
         getBackgroundWithHoverCSS(
@@ -124,9 +138,9 @@ export const StyledFinishButton = styled(Button)`
     animation: ${shadowPulse} 1s infinite;
     color: white;
     text-transform: uppercase;
-    margin-bottom: 5px;
-    margin-right: 5px;
+    margin-bottom: 15px;
     width: 320px;
+    height: 48px;
     border: ${props => (props.selected ? "2px solid #000000;" : "none")}
     background-color: ${props => (props.disabled ? props.theme.colors.base5 : props.theme.colors.defaultButtonColor)};
     ${p =>
@@ -163,6 +177,12 @@ export const StyledCheckboxLabel = styled("label")`
 export const TopNav = styled("div")`
     display: flex;
     flex-direction: row;
+`;
+
+export const BottomButtonBar = styled("div")`
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
 `;
 
 export const NameFields = styled("div")`

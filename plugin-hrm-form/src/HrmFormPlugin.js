@@ -24,6 +24,9 @@ export default class HrmFormPlugin extends FlexPlugin {
     this.registerReducers(manager);
 
     const onCompleteTask = (sid, task) => {
+      if (task.channelType === 'voice' && task.status !== 'wrapping') {
+        flex.Actions.invokeAction("HangupCall", { sid, task } );
+      }
       flex.Actions.invokeAction("CompleteTask", { sid, task } );
     }
 

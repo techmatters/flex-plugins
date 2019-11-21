@@ -1,6 +1,7 @@
 import React from 'react';
 import { withTaskContext } from "@twilio/flex-ui";
-import { CategoryCheckboxField,
+import { BottomButtonBar,
+         CategoryCheckboxField,
          CheckboxField,
          ColumnarBlock,
          Container,
@@ -9,6 +10,7 @@ import { CategoryCheckboxField,
          StyledInput,
          StyledLabel,
          StyledMenuItem,
+         StyledNextStepButton,
          StyledSelect,
          TextField,
          TopNav,
@@ -485,7 +487,6 @@ class TabbedForms extends React.PureComponent {
       </Container>
     );
 
-    // TODO MAKE THE FORM WORKKKKKKKKK
     // Case Information
     body[3] = (
       <Container>
@@ -634,6 +635,24 @@ class TabbedForms extends React.PureComponent {
           {tabs}
         </Tabs>
         {body[this.state.tab]}
+        <BottomButtonBar>
+          {this.state.tab < body.length - 1 ?
+            <StyledNextStepButton 
+              roundCorners={true}
+              theme={this.props.theme} 
+              onClick={(e) => this.setState({ tab: this.state.tab + 1})}
+            >
+              Next
+            </StyledNextStepButton> :
+            <StyledNextStepButton
+              roundCorners={true}
+              theme={this.props.theme}
+              onClick={(e) => this.props.handleCompleteTask(this.props.task.taskSid, this.props.task)}
+            >
+              Submit
+            </StyledNextStepButton>
+            }
+        </BottomButtonBar>
       </>
     );
   }
