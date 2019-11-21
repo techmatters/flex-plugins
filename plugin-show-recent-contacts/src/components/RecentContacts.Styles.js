@@ -26,16 +26,6 @@ export const RecentContactsComponentStyles = styled('div')`
   tr:nth-child(even) {
     background-color: #eee;
   }
-
-  th[scope="col"] {
-    background-color: #696969;
-    color: #fff;
-  }
-
-  th[scope="row"] {
-    background-color: #d7d9f2;
-  }
-
   caption {
     caption-side: bottom;
   }
@@ -45,5 +35,45 @@ export const RecentContactsComponentStyles = styled('div')`
     border-collapse: collapse;
     font-family: sans-serif;
     font-size: 0.8rem;
+  }
+`;
+
+export const RecentContactsContactViewStyles = styled('div')`
+  width: 100%;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+
+  section {
+    padding: 12px 0px;
+  }
+
+  h1 {
+    font-size: 20px;
+  }
+
+  h2 {
+    font-size: 16px;
+  }
+
+  table {
+    max-width: 800px;
+    font-family: sans-serif;
+    font-size: 0.8rem;
+  }
+
+  tr:nth-child(odd) {
+    background-color: #eee;
+  }
+
+  th {
+    width: 200px;
+    padding: 5px 0px;
+    text-align: left;
+  }
+
+  td {
+    padding: 5px 15px 0px;
   }
 `;
