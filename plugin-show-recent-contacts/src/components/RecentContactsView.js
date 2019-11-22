@@ -1,5 +1,6 @@
 import React from 'react';
 import { RecentContactsComponentStyles, RecentContactsContactViewStyles } from './RecentContacts.Styles';
+import { secret } from '../private/secret.js';
 
 export default class RecentContactsView extends React.Component {
   constructor(props) {
@@ -24,7 +25,8 @@ export default class RecentContactsView extends React.Component {
     }
     fetch(url, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json',
+                 'Authorization': `Basic ${btoa(secret)}`}
     })
     .then(function(response) {
       return response.json();

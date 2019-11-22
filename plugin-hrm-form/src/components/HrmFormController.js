@@ -6,6 +6,7 @@ import { withTaskContext } from "@twilio/flex-ui";
 import { namespace, contactFormsBase } from '../states';
 import { Actions } from '../states/ContactState';
 import { validateFormBeforeSubmit } from '../states/ValidationRules';
+import { secret } from '../private/secret.js';
 
 // should this be a static method on the class or separate.  Or should it even be here at all?
 export function saveToHrm(task, form, abortFunction) {
@@ -44,7 +45,8 @@ export function saveToHrm(task, form, abortFunction) {
   console.log("Sending: " + JSON.stringify(formdata));
   fetch(url + '/contacts', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json',
+               'Authorization': `Basic ${btoa(secret)}` },
     body: JSON.stringify(formdata)
   })
   .then(function(response) {
