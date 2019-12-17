@@ -26,14 +26,27 @@ import { callTypes } from '../../states/DomainConstants'
 class TabbedForms extends React.PureComponent {
   state = {
     tab: 0,
+    reportingcountry: ''
   };
 
   tabChange = (event, tab) => this.setState({tab});
+  reportingcountryChange = (event) => this.setState({reportingcountry: event.target.value});
+
+  reporters = {
+    "United Kingdom" : {
+      name: "IWF UK",
+      site: "https://report.iwf.org.uk/en/report"
+    },
+    "United States" : {
+      name: "NCMEC",
+      site: "https://report.cybertip.org/"
+    }
+  }
 
   render() {
     const taskId = this.props.task.taskSid;
 
-    let body = new Array(3);
+    let body = new Array(5);
 
     // Caller Information
     body[0] = (
@@ -608,11 +621,38 @@ class TabbedForms extends React.PureComponent {
       </Container>
     );
 
+    body[4] = (
+      <Container>
+        <p>Which country are you reporting to?</p>
+        <StyledSelect 
+          name="reportingcountry"
+          value={this.state.reportingcountry}
+          onChange={(e) => this.reportingcountryChange(e)}>
+          <StyledMenuItem hidden selected disabled value="">Select</StyledMenuItem>
+          <StyledMenuItem value="United Kingdom">United Kingdom</StyledMenuItem>
+          <StyledMenuItem value="United States">United States</StyledMenuItem>
+        </StyledSelect>
+        <p></p>
+        {this.state.reportingcountry ? 
+          <a href={this.reporters[this.state.reportingcountry]['site']} target="_blank">
+            <StyledNextStepButton 
+              roundCorners={true}
+              theme={this.props.theme} 
+              style={{marginTop: '10px'}}
+            >
+              Open {this.reporters[this.state.reportingcountry]['name']}
+            </StyledNextStepButton>
+          </a> : ''
+        }
+      </Container>
+    );
+
     let tabs = [
       <Tab label="Caller Information" />,
       <Tab label="Child Information" />,
       <Tab label="Issue Categorization" />,
-      <Tab label="Case Information" />
+      <Tab label="Case Information" />,
+      <Tab label="CSAM Report" />
     ];
 
     // TODO(nick): this is probably not the best way to hide the caller info tab
@@ -636,7 +676,7 @@ class TabbedForms extends React.PureComponent {
         </Tabs>
         {body[this.state.tab]}
         <BottomButtonBar>
-          {this.state.tab < body.length - 1 ?
+          {this.state.tab < body.length - 2 ?
             <StyledNextStepButton 
               roundCorners={true}
               theme={this.props.theme} 
@@ -644,13 +684,14 @@ class TabbedForms extends React.PureComponent {
             >
               Next
             </StyledNextStepButton> :
-            <StyledNextStepButton
-              roundCorners={true}
-              theme={this.props.theme}
-              onClick={(e) => this.props.handleCompleteTask(this.props.task.taskSid, this.props.task)}
-            >
-              Submit
-            </StyledNextStepButton>
+            this.state.tab < body.length - 1 ?
+              <StyledNextStepButton
+                roundCorners={true}
+                theme={this.props.theme}
+                onClick={(e) => this.props.handleCompleteTask(this.props.task.taskSid, this.props.task)}
+              >
+                Submit
+              </StyledNextStepButton> : ''
             }
         </BottomButtonBar>
       </>
