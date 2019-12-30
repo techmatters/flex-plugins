@@ -1,6 +1,6 @@
 {
   "name": "plugin-show-recent-contacts",
-  "version": "0.0.3",
+  "version": "0.2.1",
   "private": true,
   "scripts": {
     "bootstrap": "flex-plugin check-start",
