@@ -10,7 +10,11 @@ const CustomCRMContainer = (props) => {
     <div>
       <NoTaskView key="no-task"/>
       {Array.from(tasks.values()).map(item => (
-        <HrmFormController thisTask={item} key={'controller-' + item.taskSid} handleCompleteTask={props.handleCompleteTask} />
+        <HrmFormController
+          thisTask={item}
+          key={'controller-' + item.taskSid}
+          handleCompleteTask={props.handleCompleteTask}
+        />
       ))}
     </div>
   );

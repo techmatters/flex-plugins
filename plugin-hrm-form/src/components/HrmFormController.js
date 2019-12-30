@@ -9,7 +9,7 @@ import { validateFormBeforeSubmit } from '../states/ValidationRules';
 import { secret } from '../private/secret.js';
 
 // should this be a static method on the class or separate.  Or should it even be here at all?
-export function saveToHrm(task, form, abortFunction) {
+export function saveToHrm(task, form, abortFunction, hrmBaseUrl) {
   if (!validateFormBeforeSubmit(form)) {
     // we get "twilio-flex.min.js:274 Uncaught (in promise) Error: Action cancelled by before event"
     // is that okay?
@@ -35,15 +35,14 @@ export function saveToHrm(task, form, abortFunction) {
   } else {
     form.number = task.defaultFrom;
   }
-  
-  const url = 'https://hrm.tl.barbarianrobot.com';
-  // const url = 'http://localhost:8080';
+
   let formdata = {
     form: form
   };
+  console.log("Using base url: " + hrmBaseUrl);
   // print the form values to the console
   console.log("Sending: " + JSON.stringify(formdata));
-  fetch(url + '/contacts', {
+  fetch(hrmBaseUrl + '/contacts', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json',
                'Authorization': `Basic ${btoa(secret)}` },

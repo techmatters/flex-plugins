@@ -17,8 +17,7 @@ export default class RecentContactsView extends React.Component {
     if (this.state.lastLoad && Date.now() - this.state.lastLoad < 5000) return;
 
     const self = this;
-    var url = 'https://hrm.tl.barbarianrobot.com';
-    // var url = 'http://localhost:8080';
+    var url = this.props.hrmBaseUrl;
     url += '/contacts';
     if (this.props.helpline) {
       url += "?queueName=" + encodeURIComponent(this.props.helpline);

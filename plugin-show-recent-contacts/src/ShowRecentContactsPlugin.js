@@ -22,13 +22,20 @@ export default class ShowRecentContactsPlugin extends FlexPlugin {
     const helpline = manager.store.getState().flex.worker.attributes.helpline;
     console.log("Helpline = " + helpline);
 
+    const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
+    // TODO(nick): Eventually remove this log line or set to debug
+    console.log("HRM URL (recent contacts): " + hrmBaseUrl);
+    if (hrmBaseUrl === undefined) {
+      console.error("HRM base URL not defined, you must provide this to retrieve program data");
+    }
+
     flex.SideNav.Content.add(
       <RecentContactsSidebarButton key="recent-contacts-button" />
     );
 
     flex.ViewCollection.Content.add(
       <View name="recent-contacts" key="recent-contacts">
-        <RecentContactsView helpline={helpline} />
+        <RecentContactsView helpline={helpline} hrmBaseUrl={hrmBaseUrl} />
       </View>
     );
   }
