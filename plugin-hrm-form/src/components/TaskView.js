@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { withTaskContext } from "@twilio/flex-ui";
-import HrmForm from './Forms/HrmForm';
+import HrmForm from './HrmForm';
 
 const wrapperStyle = {
   position: "absolute",
