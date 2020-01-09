@@ -16,11 +16,11 @@ import { BottomButtonBar,
          TopNav,
          TwoColumnLayout,
          TransparentButton
-        } from '../../Styles/HrmStyles';
+        } from '../Styles/HrmStyles';
 import { Checkbox,
          Tab, 
          Tabs} from "@material-ui/core";
-import { callTypes } from '../../states/DomainConstants'
+import { callTypes } from '../states/DomainConstants'
 
 
 class TabbedForms extends React.PureComponent {
