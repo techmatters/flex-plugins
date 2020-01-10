@@ -53,7 +53,6 @@ class TabbedForms extends React.PureComponent {
                   </TextField> */ }
 
           <FieldFirstName
-            theme={this.props.theme}
             form={this.props.form}
             handleChange={this.props.handleChange}
             taskId={taskId}
@@ -61,7 +60,7 @@ class TabbedForms extends React.PureComponent {
 
           <TextField>
               <StyledLabel>Last name</StyledLabel>
-              <StyledInput theme={this.props.theme} 
+              <StyledInput
                 value={this.props.form.callerInformation.name.lastName}
                 name='lastName'
                 onChange={(e) => 
@@ -165,7 +164,7 @@ class TabbedForms extends React.PureComponent {
           <ColumnarBlock>
             <TextField>
                 <StyledLabel>Street Address</StyledLabel>
-                <StyledInput theme={this.props.theme} 
+                <StyledInput
                   name='streetAddress'
                   value={this.props.form.callerInformation.location.streetAddress}
                   onChange={(e) => 
@@ -177,7 +176,7 @@ class TabbedForms extends React.PureComponent {
 
             <TextField>
                 <StyledLabel>City</StyledLabel>
-                <StyledInput theme={this.props.theme} 
+                <StyledInput
                   name='city'
                   value={this.props.form.callerInformation.location.city}
                   onChange={(e) => 
@@ -189,7 +188,7 @@ class TabbedForms extends React.PureComponent {
 
             <TextField>
                 <StyledLabel>State/County</StyledLabel>
-                <StyledInput theme={this.props.theme} 
+                <StyledInput
                   name='stateOrCounty'
                   value={this.props.form.callerInformation.location.stateOrCounty}
                   onChange={(e) => 
@@ -201,7 +200,7 @@ class TabbedForms extends React.PureComponent {
 
             <TextField>
                 <StyledLabel>Postal Code</StyledLabel>
-                <StyledInput theme={this.props.theme} 
+                <StyledInput
                   name='postalCode'
                   value={this.props.form.callerInformation.location.postalCode}
                   onChange={(e) => 
@@ -213,7 +212,7 @@ class TabbedForms extends React.PureComponent {
 
             <TextField>
                 <StyledLabel>Phone #1</StyledLabel>
-                <StyledInput theme={this.props.theme} 
+                <StyledInput
                   name='phone1'
                   value={this.props.form.callerInformation.location.phone1}
                   onChange={(e) => 
@@ -225,7 +224,7 @@ class TabbedForms extends React.PureComponent {
 
             <TextField>
                 <StyledLabel>Phone #2</StyledLabel>
-                <StyledInput theme={this.props.theme} 
+                <StyledInput
                   name='phone2'
                   value={this.props.form.callerInformation.location.phone2}
                   onChange={(e) => 
@@ -245,7 +244,7 @@ class TabbedForms extends React.PureComponent {
         <NameFields>
           <TextField>
               <StyledLabel>First name</StyledLabel>
-              <StyledInput theme={this.props.theme} 
+              <StyledInput
                 name='firstName'
                 value={this.props.form.childInformation.name.firstName}
                 onChange={(e) => 
@@ -257,7 +256,7 @@ class TabbedForms extends React.PureComponent {
 
           <TextField>
               <StyledLabel>Last name</StyledLabel>
-              <StyledInput theme={this.props.theme} 
+              <StyledInput
                 value={this.props.form.childInformation.name.lastName}
                 name='lastName'
                 onChange={(e) => 
@@ -381,7 +380,7 @@ class TabbedForms extends React.PureComponent {
           <ColumnarBlock>
             <TextField>
                 <StyledLabel>Street Address</StyledLabel>
-                <StyledInput theme={this.props.theme} 
+                <StyledInput
                   name='streetAddress'
                   value={this.props.form.childInformation.location.streetAddress}
                   onChange={(e) => 
@@ -393,7 +392,7 @@ class TabbedForms extends React.PureComponent {
 
             <TextField>
                 <StyledLabel>City</StyledLabel>
-                <StyledInput theme={this.props.theme} 
+                <StyledInput
                   name='city'
                   value={this.props.form.childInformation.location.city}
                   onChange={(e) => 
@@ -405,7 +404,7 @@ class TabbedForms extends React.PureComponent {
 
             <TextField>
                 <StyledLabel>State/County</StyledLabel>
-                <StyledInput theme={this.props.theme} 
+                <StyledInput
                   name='stateOrCounty'
                   value={this.props.form.childInformation.location.stateOrCounty}
                   onChange={(e) => 
@@ -417,7 +416,7 @@ class TabbedForms extends React.PureComponent {
 
             <TextField>
                 <StyledLabel>Postal Code</StyledLabel>
-                <StyledInput theme={this.props.theme} 
+                <StyledInput
                   name='postalCode'
                   value={this.props.form.childInformation.location.postalCode}
                   onChange={(e) => 
@@ -429,7 +428,7 @@ class TabbedForms extends React.PureComponent {
 
             <TextField>
                 <StyledLabel>Phone #1</StyledLabel>
-                <StyledInput theme={this.props.theme} 
+                <StyledInput
                   name='phone1'
                   value={this.props.form.childInformation.location.phone1}
                   onChange={(e) => 
@@ -441,7 +440,7 @@ class TabbedForms extends React.PureComponent {
 
             <TextField>
               <StyledLabel>Phone #2</StyledLabel>
-              <StyledInput theme={this.props.theme} 
+              <StyledInput
                 name='phone2'
                 value={this.props.form.childInformation.location.phone2}
                 onChange={(e) => 
@@ -453,7 +452,7 @@ class TabbedForms extends React.PureComponent {
 
             <TextField>
                 <StyledLabel>School Name</StyledLabel>
-                <StyledInput theme={this.props.theme} 
+                <StyledInput
                   name='name'
                   value={this.props.form.childInformation.school.name}
                   onChange={(e) => 
@@ -465,7 +464,7 @@ class TabbedForms extends React.PureComponent {
 
             <TextField>
                 <StyledLabel>Grade Level</StyledLabel>
-                <StyledInput theme={this.props.theme} 
+                <StyledInput
                   name='gradeLevel'
                   value={this.props.form.childInformation.school.gradeLevel}
                   onChange={(e) => 
@@ -502,7 +501,7 @@ class TabbedForms extends React.PureComponent {
           <ColumnarBlock>
             <TextField>
               <StyledLabel>Call summary</StyledLabel>
-              <StyledInput multiline={true} rows={10} theme={this.props.theme} style={{width: "100%"}}
+              <StyledInput multiline={true} rows={10} style={{width: "100%"}}
                 name="callSummary"
                 value={this.props.form.caseInformation.callSummary}
                 onChange={(e) => this.props.handleChange(taskId, ['caseInformation'], e)}
@@ -647,14 +646,12 @@ class TabbedForms extends React.PureComponent {
           {this.state.tab < body.length - 1 ?
             <StyledNextStepButton 
               roundCorners={true}
-              theme={this.props.theme} 
               onClick={(e) => this.setState({ tab: this.state.tab + 1})}
             >
               Next
             </StyledNextStepButton> :
             <StyledNextStepButton
               roundCorners={true}
-              theme={this.props.theme}
               onClick={(e) => this.props.handleCompleteTask(this.props.task.taskSid, this.props.task)}
             >
               Submit

@@ -21,7 +21,6 @@ const FieldFirstName = (props) => {
     <TextField>
       <StyledLabel>First Name</StyledLabel>
       <StyledInput
-        theme={props.theme}
         name='firstName'
         value={props.form.callerInformation.name.firstName}
         onChange={(e) =>

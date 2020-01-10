@@ -8,7 +8,6 @@ exports[`FieldFirstName renders as planned 1`] = `
   <StyledInput
     name="firstName"
     onChange={[Function]}
-    theme={[MockFunction]}
     value="testValue"
   />
 </TextField>
