@@ -21,6 +21,7 @@ import { Checkbox,
          Tab, 
          Tabs} from "@material-ui/core";
 import { callTypes } from '../states/DomainConstants'
+import FieldFirstName from './FieldFirstName';
 
 
 class TabbedForms extends React.PureComponent {
@@ -39,7 +40,7 @@ class TabbedForms extends React.PureComponent {
     body[0] = (
       <Container>
         <NameFields>
-          <TextField>
+          { /* <TextField>
               <StyledLabel>First name</StyledLabel>
               <StyledInput theme={this.props.theme} 
                 name='firstName'
@@ -49,7 +50,14 @@ class TabbedForms extends React.PureComponent {
                                           ['callerInformation', 'name'],
                                           e)}
               />
-          </TextField>
+                  </TextField> */ }
+
+          <FieldFirstName
+            theme={this.props.theme}
+            form={this.props.form}
+            handleChange={this.props.handleChange}
+            taskId={taskId}
+          />
 
           <TextField>
               <StyledLabel>Last name</StyledLabel>
