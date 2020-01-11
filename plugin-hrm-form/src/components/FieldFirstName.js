@@ -5,20 +5,6 @@ import { StyledInput,
          TextField
 } from '../Styles/HrmStyles';
 
-      //     <TextField>
-      //     <StyledLabel>First name</StyledLabel>
-      //     <StyledInput theme={this.props.theme} 
-      //       name='firstName'
-      //       value={this.props.form.callerInformation.name.firstName}
-      //       onChange={(e) => 
-      //         this.props.handleChange(taskId,
-      //                                 ['callerInformation', 'name'],
-      //                                 e)}
-      //     />
-      // </TextField>
-      // error={true}
-      // <ErrorText>Required field</ErrorText>
-
 const FieldFirstName = (props) => {
   return (
     <TextField>
@@ -27,10 +13,15 @@ const FieldFirstName = (props) => {
         error={props.form.callerInformation.name.firstName.error !== null}
         name='firstName'
         value={props.form.callerInformation.name.firstName.value}
+        onBlur={() => props.handleBlur()}
         onChange={(e) =>
           props.handleChange(props.taskId,
                              ['callerInformation', 'name'],
                              e)}
+        onFocus={() => 
+          props.handleFocus(props.taskId,
+                            ['callerInformation', 'name'],
+                            'firstName')}
       />
       {props.form.callerInformation.name.firstName.error ?
         <ErrorText>{props.form.callerInformation.name.firstName.error}</ErrorText> :

@@ -1,11 +1,13 @@
 import { saveToHrm } from '../components/HrmFormController';
 import isEqual from 'lodash/isEqual';
 
-const HANDLE_CHANGE = 'HANDLE_CHANGE';
-// const HANDLE_CALLTYPE_BUTTON_CLICK = 'HANDLE_CALLTYPE_BUTTON_CLICK';
-const INITIALIZE_CONTACT_STATE = 'INITIALIZE_CONTACT_STATE';
-const SAVE_CONTACT_STATE = 'SAVE_CONTACT_STATE';
-const REMOVE_CONTACT_STATE = 'REMOVE_CONTACT_STATE';
+import { HANDLE_BLUR,
+         HANDLE_CHANGE,
+         HANDLE_FOCUS,
+         INITIALIZE_CONTACT_STATE,
+         REMOVE_CONTACT_STATE,
+         SAVE_CONTACT_STATE
+} from './ActionTypes';
 
 const initialState = {
   tasks: { }
@@ -148,6 +150,23 @@ export class Actions {
   static removeContactState = (taskId) => ({type: REMOVE_CONTACT_STATE, taskId: taskId});
 }
 
+// Will replace the below when we move over to field objects
+function editNestedFieldNew(original, parents, name, change) {
+  if (parents.length === 0) {
+    return {
+      ...original,
+      [name] : {
+        ...original[name],
+        ...change
+      }
+    };
+  }
+  return {
+    ...original,
+    [parents[0]]: editNestedFieldNew(original[parents[0]], parents.slice(1), name, change)
+  }
+}
+
 // VisibleForTesting
 export function editNestedField(original, parents, name, value) {
   // This is horrible, I promise I won't leave it for long
@@ -181,6 +200,36 @@ export function editNestedField(original, parents, name, value) {
 
 export function reduce(state = initialState, action) {
   switch (action.type) {
+    case HANDLE_BLUR: {
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: action.form
+        }
+      };
+    }
+
+    case HANDLE_FOCUS: {
+      let currentForm;
+      if (state.tasks[action.taskId]) {
+        currentForm = state.tasks[action.taskId];
+      } else {
+        currentForm = taskInitialStateFactory();
+        console.log("Had to recreate state for taskId " + action.taskId);
+      }
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: editNestedFieldNew(currentForm,
+                                              action.parents,
+                                              action.name,
+                                              {touched: true})
+        }
+      };
+    }
+
     case HANDLE_CHANGE: {
       console.log("!!!!!!!!!!!HANDLE CHANGE: action.name = " + action.name + ", action.value = " + action.value + ", task = " + action.taskId + ", parents: " + action.parents);
       // let updatedContactForm = state.tasks[action.taskId];
@@ -191,7 +240,7 @@ export function reduce(state = initialState, action) {
       // we could probably replace the below if/else by having the first argument to editNestedField be
       //  state.tasks[action.taskId] || taskInitialStateFactory()
       // but I want to be more explicit and log it.  Redux gets purged if there's a refresh and that's messy
-      var currentForm;
+      let currentForm;
       if (state.tasks[action.taskId]) {
         currentForm = state.tasks[action.taskId];
       } else {

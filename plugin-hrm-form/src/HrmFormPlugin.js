@@ -48,6 +48,11 @@ export default class HrmFormPlugin extends FlexPlugin {
                   handleCompleteTask={onCompleteTask}
                />, options);
 
+    // Must use submit buttons in CRM container to complete task
+    flex.TaskCanvasHeader.Content.remove('actions', {
+      if: props => props.task && props.task.status === 'wrapping'
+    });
+
     flex.Actions.addListener("beforeAcceptTask", (payload) => {
       manager.store.dispatch(Actions.initializeContactState(payload.task.taskSid));
     });

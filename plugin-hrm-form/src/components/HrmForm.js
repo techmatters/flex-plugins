@@ -11,10 +11,12 @@ const HrmForm = (props) => {
       {props.form && props.form.callType && !isStandAloneCallType(props.form.callType) ? 
         <TabbedForms
           form={props.form}
+          handleBlur={props.handleBlur}
           handleChange={props.handleChange}
           handleCheckbox={props.handleCheckbox}
           handleCallTypeButtonClick={props.handleCallTypeButtonClick}
-          handleCompleteTask={props.handleCompleteTask} /> :
+          handleCompleteTask={props.handleCompleteTask}
+          handleFocus={props.handleFocus} /> :
         <CallTypeButtons
           form={props.form}
           handleCallTypeButtonClick={props.handleCallTypeButtonClick}

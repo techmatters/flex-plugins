@@ -5,6 +5,7 @@ import TaskView from './TaskView';
 import { withTaskContext } from "@twilio/flex-ui";
 import { namespace, contactFormsBase } from '../states';
 import { Actions } from '../states/ContactState';
+import { handleBlur, handleFocus } from '../states/ActionCreators';
 import { validateFormBeforeSubmit } from '../states/ValidationRules';
 import { secret } from '../private/secret.js';
 import cloneDeep from 'lodash/cloneDeep';
@@ -88,11 +89,13 @@ const HrmFormController = (props) => {
     <TaskView 
       thisTask={props.thisTask} 
       key={props.task.taskSid} 
-      form={props.form} 
+      form={props.form}
+      handleBlur={props.handleBlur(props.form, props.task.taskSid)}
       handleChange={props.handleChange} 
       handleCallTypeButtonClick={props.handleCallTypeButtonClick}
       handleCheckbox={props.handleCheckbox}
       handleCompleteTask={props.handleCompleteTask}
+      handleFocus={props.handleFocus}
     />
   );
 }
@@ -105,9 +108,11 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
+  handleBlur: handleBlur(dispatch),
   handleCallTypeButtonClick: bindActionCreators(Actions.handleCallTypeButtonClick, dispatch),
   handleChange: bindActionCreators(Actions.handleChange, dispatch),
-  handleCheckbox: bindActionCreators(Actions.handleCheckbox, dispatch)
+  handleCheckbox: bindActionCreators(Actions.handleCheckbox, dispatch),
+  handleFocus: handleFocus(dispatch)
 });
 
 export default withTaskContext(connect(mapStateToProps, mapDispatchToProps)(HrmFormController));

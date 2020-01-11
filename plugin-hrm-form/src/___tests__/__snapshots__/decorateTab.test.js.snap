@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`decorateTab when invalid 1`] = `
+<Tab
+  label={
+    <React.Fragment>
+      <span
+        style={
+          Object {
+            "verticalAlign": "middle",
+          }
+        }
+      >
+        <ErrorIcon
+          fontSize="inherit"
+        />
+      </span>
+       
+      My Label
+       
+    </React.Fragment>
+  }
+/>
+`;
+
+exports[`decorateTab when valid 1`] = `
+<Tab
+  label="My Label"
+/>
+`;

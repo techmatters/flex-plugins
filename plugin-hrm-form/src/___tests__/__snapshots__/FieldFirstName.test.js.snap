@@ -8,7 +8,9 @@ exports[`FieldFirstName renders errors when not valid 1`] = `
   <StyledInput
     error={true}
     name="firstName"
+    onBlur={[Function]}
     onChange={[Function]}
+    onFocus={[Function]}
     value="testValue"
   />
   <ErrorText>
@@ -25,7 +27,9 @@ exports[`FieldFirstName renders initially 1`] = `
   <StyledInput
     error={false}
     name="firstName"
+    onBlur={[Function]}
     onChange={[Function]}
+    onFocus={[Function]}
     value=""
   />
   
@@ -40,7 +44,9 @@ exports[`FieldFirstName renders when valid 1`] = `
   <StyledInput
     error={false}
     name="firstName"
+    onBlur={[Function]}
     onChange={[Function]}
+    onFocus={[Function]}
     value="testValue"
   />
   

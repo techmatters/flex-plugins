@@ -36,7 +36,6 @@ test('FieldFirstName renders initially', () => {
 });
 
 test('FieldFirstName renders when valid', () => {
-  const theme = jest.fn();
   const form = {
     callerInformation: {
       name: {
@@ -62,7 +61,6 @@ test('FieldFirstName renders when valid', () => {
 });
 
 test('FieldFirstName renders errors when not valid', () => {
-  const theme = jest.fn();
   const form = {
     callerInformation: {
       name: {
