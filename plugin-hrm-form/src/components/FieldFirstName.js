@@ -24,6 +24,7 @@ const FieldFirstName = (props) => {
     <TextField>
       <StyledLabel>First Name</StyledLabel>
       <StyledInput
+        error={props.form.callerInformation.name.firstName.error !== null}
         name='firstName'
         value={props.form.callerInformation.name.firstName.value}
         onChange={(e) =>
@@ -31,6 +32,10 @@ const FieldFirstName = (props) => {
                              ['callerInformation', 'name'],
                              e)}
       />
+      {props.form.callerInformation.name.firstName.error ?
+        <ErrorText>{props.form.callerInformation.name.firstName.error}</ErrorText> :
+        ''
+      }
     </TextField>
   );
 };

@@ -1,14 +1,48 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`FieldFirstName renders as planned 1`] = `
+exports[`FieldFirstName renders errors when not valid 1`] = `
 <TextField>
   <StyledLabel>
     First Name
   </StyledLabel>
   <StyledInput
+    error={true}
     name="firstName"
     onChange={[Function]}
     value="testValue"
   />
+  <ErrorText>
+    This field is required
+  </ErrorText>
+</TextField>
+`;
+
+exports[`FieldFirstName renders initially 1`] = `
+<TextField>
+  <StyledLabel>
+    First Name
+  </StyledLabel>
+  <StyledInput
+    error={false}
+    name="firstName"
+    onChange={[Function]}
+    value=""
+  />
+  
+</TextField>
+`;
+
+exports[`FieldFirstName renders when valid 1`] = `
+<TextField>
+  <StyledLabel>
+    First Name
+  </StyledLabel>
+  <StyledInput
+    error={false}
+    name="firstName"
+    onChange={[Function]}
+    value="testValue"
+  />
+  
 </TextField>
 `;
