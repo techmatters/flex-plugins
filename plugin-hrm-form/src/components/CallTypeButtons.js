@@ -27,7 +27,7 @@ const CallTypeButtons = (props) => {
               style={{marginTop: '20px', border: '2px', backgroundColor: 'red'}}
               roundCorners={true}
               theme={props.theme}
-              onClick={(e) => props.handleCompleteTask(props.task.taskSid, props.task)}
+              onClick={() => props.handleSubmit(props.task)}
             >
               End conversation and close task
             </StyledFinishButton>

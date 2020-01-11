@@ -1,7 +1,9 @@
 import { HANDLE_BLUR,
          HANDLE_FOCUS
         } from './ActionTypes';
-import { validateOnBlur } from './ValidationRules';
+import { validateBeforeSubmit, 
+         validateOnBlur,
+         formIsValid } from './ValidationRules';
 
 export const handleBlur = dispatch => (form, taskId) => () => {
   console.log("Received blur event");
@@ -20,4 +22,18 @@ export const handleFocus = dispatch => (taskId, parents, name) => {
     name,
     taskId
   });
+}
+
+export const handleSubmit = dispatch => (form, handleCompleteTask) => (task) => {
+  const newForm = validateBeforeSubmit(form);
+  dispatch({
+    type: HANDLE_BLUR, // probably need to rename this
+    form: newForm,
+    taskId: task.taskSid
+  });
+  if (formIsValid(newForm)) {
+    handleCompleteTask(task.taskSid, task);
+  } else {
+    window.alert("There is a problem with your submission.  Please check the form for errors.");
+  }
 }

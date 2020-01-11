@@ -23,6 +23,7 @@ import { Checkbox,
 import { callTypes } from '../states/DomainConstants'
 import FieldFirstName from './FieldFirstName';
 import decorateTab from './decorateTab';
+import { formIsValid } from '../states/ValidationRules';
 
 
 class TabbedForms extends React.PureComponent {
@@ -655,7 +656,8 @@ class TabbedForms extends React.PureComponent {
             </StyledNextStepButton> :
             <StyledNextStepButton
               roundCorners={true}
-              onClick={(e) => this.props.handleCompleteTask(this.props.task.taskSid, this.props.task)}
+              onClick={() => this.props.handleSubmit(this.props.task)}
+              disabled={!formIsValid(this.props.form)}
             >
               Submit
             </StyledNextStepButton>

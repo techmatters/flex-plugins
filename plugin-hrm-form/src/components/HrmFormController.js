@@ -5,8 +5,7 @@ import TaskView from './TaskView';
 import { withTaskContext } from "@twilio/flex-ui";
 import { namespace, contactFormsBase } from '../states';
 import { Actions } from '../states/ContactState';
-import { handleBlur, handleFocus } from '../states/ActionCreators';
-import { validateFormBeforeSubmit } from '../states/ValidationRules';
+import { handleBlur, handleFocus, handleSubmit } from '../states/ActionCreators';
 import { secret } from '../private/secret.js';
 import cloneDeep from 'lodash/cloneDeep';
 
@@ -20,14 +19,7 @@ export function transformForm(form) {
 
 // should this be a static method on the class or separate.  Or should it even be here at all?
 export function saveToHrm(task, form, abortFunction, hrmBaseUrl) {
-  if (!validateFormBeforeSubmit(form)) {
-    // we get "twilio-flex.min.js:274 Uncaught (in promise) Error: Action cancelled by before event"
-    // is that okay?
-    if (!window.confirm("Validation failed.  Are you sure you want to end the task without recording?")) {
-      abortFunction();
-    }
-    return false;
-  }
+  // if we got this far, we assume the form is valid and ready to submit
 
   // We do a transform from the original and then add things.
   // Not sure if we should drop that all into one function or not.
@@ -94,7 +86,7 @@ const HrmFormController = (props) => {
       handleChange={props.handleChange} 
       handleCallTypeButtonClick={props.handleCallTypeButtonClick}
       handleCheckbox={props.handleCheckbox}
-      handleCompleteTask={props.handleCompleteTask}
+      handleSubmit={props.handleSubmit(props.form, props.handleCompleteTask)}
       handleFocus={props.handleFocus}
     />
   );
@@ -112,7 +104,8 @@ const mapDispatchToProps = (dispatch) => ({
   handleCallTypeButtonClick: bindActionCreators(Actions.handleCallTypeButtonClick, dispatch),
   handleChange: bindActionCreators(Actions.handleChange, dispatch),
   handleCheckbox: bindActionCreators(Actions.handleCheckbox, dispatch),
-  handleFocus: handleFocus(dispatch)
+  handleFocus: handleFocus(dispatch),
+  handleSubmit: handleSubmit(dispatch)
 });
 
 export default withTaskContext(connect(mapStateToProps, mapDispatchToProps)(HrmFormController));

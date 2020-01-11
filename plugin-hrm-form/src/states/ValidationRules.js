@@ -1,9 +1,12 @@
 import { callTypes } from './DomainConstants';
 import cloneDeep from 'lodash/cloneDeep';
 
-export function validateFormBeforeSubmit(form) {
-  // return isStandAloneCallType(form.callType);
-  return true; // need to add more later
+export function validateBeforeSubmit(form) {
+  if (isStandAloneCallType(form.callType)) {
+    return form;
+  }
+  // we need to also consider whether we care about caller information or just child
+  return validate(form, true);
 }
 
 // Questionable whether we should export this
@@ -16,9 +19,16 @@ export function isStandAloneCallType(callType) {
 // should this actually check for whether anything has changed?
 // not planning to do that yet, but could add it as an optimization
 export function validateOnBlur(form) {
+  return validate(form);
+}
+
+function validate(form, ignoredTouched = false) {
   let newForm = cloneDeep(form);
-  if (newForm.callerInformation.name.firstName.touched &&
+  if ((ignoredTouched || newForm.callerInformation.name.firstName.touched) &&
+      form.callType === callTypes.caller &&  // this is pretty bad
       !newForm.callerInformation.name.firstName.value) {
+        // explicitly set it to touched so it can't get unset later
+        newForm.callerInformation.name.firstName.touched = true;
         newForm.callerInformation.name.firstName.error = "This field is required";
   } else {
     newForm.callerInformation.name.firstName.error = null;

@@ -121,6 +121,7 @@ export const StyledNextStepButton = styled(Button)`
     text-transform: uppercase;
     width: 200px;
     background-color: ${props => (props.disabled ? props.theme.colors.base5 : props.theme.colors.defaultButtonColor)};
+    cursor: ${props => (props.disabled ? 'not-allowed' : 'default')};
     ${p =>
         getBackgroundWithHoverCSS(
             p.disabled ? p.theme.colors.base5 : p.theme.colors.defaultButtonColor,

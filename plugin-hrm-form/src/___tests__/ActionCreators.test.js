@@ -4,7 +4,7 @@ jest.mock('../states/ValidationRules', () => {
   };
 });
 import { validateOnBlur } from '../states/ValidationRules';
-import { handleFocus, handleBlur } from '../states/ActionCreators';
+import { handleFocus, handleBlur, handleSubmit } from '../states/ActionCreators';
 import { HANDLE_BLUR,
          HANDLE_FOCUS
         } from '../states/ActionTypes';
@@ -34,3 +34,30 @@ test('handleFocus sends the right action when called', () => {
     taskId
   });
 });
+
+
+describe('handleSubmit', () => {
+  test('blocks submit when form is invalid', () => {
+    const dispatch = jest.fn(x => x);
+    const taskId = 'WT1234';
+    handleSubmit(dispatch)(form, taskId)();
+    expect(dispatch.mock.calls.length).toBe(1);
+    expect(dispatch.mock.calls[0][0]).toStrictEqual({
+      type: HANDLE_BLUR,
+      form,
+      taskId
+    });
+  });
+
+  test('submits when form is valid', () => {
+    const dispatch = jest.fn(x => x);
+    const taskId = 'WT1234';
+    handleSubmit(dispatch)(form, taskId)();
+    expect(dispatch.mock.calls.length).toBe(2);
+    expect(dispatch.mock.calls[0][0]).toStrictEqual({
+      type: HANDLE_BLUR,
+      form,
+      taskId // grrrrrrr what about touched???????
+    })
+  });
+})
