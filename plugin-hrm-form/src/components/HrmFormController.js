@@ -7,6 +7,15 @@ import { namespace, contactFormsBase } from '../states';
 import { Actions } from '../states/ContactState';
 import { validateFormBeforeSubmit } from '../states/ValidationRules';
 import { secret } from '../private/secret.js';
+import cloneDeep from 'lodash/cloneDeep';
+
+// VisibleForTesting
+export function transformForm(form) {
+  let newForm = cloneDeep(form);
+  delete newForm.internal;
+  newForm.callerInformation.name.firstName = newForm.callerInformation.name.firstName.value;
+  return newForm;
+}
 
 // should this be a static method on the class or separate.  Or should it even be here at all?
 export function saveToHrm(task, form, abortFunction, hrmBaseUrl) {
@@ -19,25 +28,23 @@ export function saveToHrm(task, form, abortFunction, hrmBaseUrl) {
     return false;
   }
 
-  // TODO(nick): we should really clone this before modifying it.  If the send fails and there's more editing
-  // then we'll have a problem
-
-  // Remove the internal state stuff
-  form.internal = undefined;
-
+  // We do a transform from the original and then add things.
+  // Not sure if we should drop that all into one function or not.
+  // Probably.  It would just require passing the task.
+  let formToSend = transformForm(form);
   // Add task info
-  form.channel = task.channelType;
-  form.queueName = task.queueName;
+  formToSend.channel = task.channelType;
+  formToSend.queueName = task.queueName;
   if (task.channelType === 'facebook') {
-    form.number = task.defaultFrom.replace('messenger:', '');
+    formToSend.number = task.defaultFrom.replace('messenger:', '');
   } else if (task.channelType === 'whatsapp') {
-    form.number = task.defaultFrom.replace('whatsapp:', '');
+    formToSend.number = task.defaultFrom.replace('whatsapp:', '');
   } else {
-    form.number = task.defaultFrom;
+    formToSend.number = task.defaultFrom;
   }
 
   let formdata = {
-    form: form
+    form: formToSend
   };
   console.log("Using base url: " + hrmBaseUrl);
   // print the form values to the console

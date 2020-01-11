@@ -1,4 +1,5 @@
 import { saveToHrm } from '../components/HrmFormController';
+import isEqual from 'lodash/isEqual';
 
 const HANDLE_CHANGE = 'HANDLE_CHANGE';
 // const HANDLE_CALLTYPE_BUTTON_CLICK = 'HANDLE_CALLTYPE_BUTTON_CLICK';
@@ -18,7 +19,11 @@ const taskInitialStateFactory = () => {
       },
       callerInformation: {
         name: {
-          firstName: '',
+          firstName: {
+            value: '',
+            touched: false,
+            error: null
+          },
           lastName: ''
         },
         relationshipToChild: '',
@@ -143,7 +148,25 @@ export class Actions {
   static removeContactState = (taskId) => ({type: REMOVE_CONTACT_STATE, taskId: taskId});
 }
 
-function editNestedField(original, parents, name, value) {
+// VisibleForTesting
+export function editNestedField(original, parents, name, value) {
+  // This is horrible, I promise I won't leave it for long
+  if (name === 'firstName' &&
+      isEqual(parents, ['callerInformation', 'name'])) {
+    return {
+      ...original,
+      callerInformation: {
+        ...original.callerInformation,
+        name: {
+          ...original.callerInformation.name,
+          firstName: {
+            ...original.callerInformation.name.firstName,
+            value
+          }
+        }
+      }
+    }
+  }
   if (parents.length === 0) {
     return { 
       ...original,

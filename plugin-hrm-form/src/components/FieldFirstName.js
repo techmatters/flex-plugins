@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyledInput,
          StyledLabel,
+         ErrorText,
          TextField
 } from '../Styles/HrmStyles';
 
@@ -15,6 +16,8 @@ import { StyledInput,
       //                                 e)}
       //     />
       // </TextField>
+      // error={true}
+      // <ErrorText>Required field</ErrorText>
 
 const FieldFirstName = (props) => {
   return (
@@ -22,7 +25,7 @@ const FieldFirstName = (props) => {
       <StyledLabel>First Name</StyledLabel>
       <StyledInput
         name='firstName'
-        value={props.form.callerInformation.name.firstName}
+        value={props.form.callerInformation.name.firstName.value}
         onChange={(e) =>
           props.handleChange(props.taskId,
                              ['callerInformation', 'name'],

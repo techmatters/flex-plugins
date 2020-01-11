@@ -14,7 +14,11 @@ test('FieldFirstName renders as planned', () => {
   const form = {
     callerInformation: {
       name: {
-        firstName: 'testValue'
+        firstName: {
+          value: 'testValue',
+          touched: true,
+          error: null
+        }
       }
     }
   };
