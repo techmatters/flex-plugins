@@ -1,6 +1,6 @@
 import React from "react";
 import HrmFormController from './HrmFormController';
-import NoTaskView from "../Views/NoTaskView";
+import NoTaskView from "./NoTaskView";
 import { connect } from "react-redux";
 
 const CustomCRMContainer = (props) => {

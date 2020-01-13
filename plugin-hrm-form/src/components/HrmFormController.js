@@ -1,43 +1,43 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import TaskView from '../Views/TaskView';
+import TaskView from './TaskView';
 import { withTaskContext } from "@twilio/flex-ui";
 import { namespace, contactFormsBase } from '../states';
 import { Actions } from '../states/ContactState';
-import { validateFormBeforeSubmit } from '../states/ValidationRules';
+import { handleBlur, handleFocus, handleSubmit } from '../states/ActionCreators';
 import { secret } from '../private/secret.js';
+import cloneDeep from 'lodash/cloneDeep';
+
+// VisibleForTesting
+export function transformForm(form) {
+  let newForm = cloneDeep(form);
+  delete newForm.internal;
+  newForm.callerInformation.name.firstName = newForm.callerInformation.name.firstName.value;
+  return newForm;
+}
 
 // should this be a static method on the class or separate.  Or should it even be here at all?
 export function saveToHrm(task, form, abortFunction, hrmBaseUrl) {
-  if (!validateFormBeforeSubmit(form)) {
-    // we get "twilio-flex.min.js:274 Uncaught (in promise) Error: Action cancelled by before event"
-    // is that okay?
-    if (!window.confirm("Validation failed.  Are you sure you want to end the task without recording?")) {
-      abortFunction();
-    }
-    return false;
-  }
+  // if we got this far, we assume the form is valid and ready to submit
 
-  // TODO(nick): we should really clone this before modifying it.  If the send fails and there's more editing
-  // then we'll have a problem
-
-  // Remove the internal state stuff
-  form.internal = undefined;
-
+  // We do a transform from the original and then add things.
+  // Not sure if we should drop that all into one function or not.
+  // Probably.  It would just require passing the task.
+  let formToSend = transformForm(form);
   // Add task info
-  form.channel = task.channelType;
-  form.queueName = task.queueName;
+  formToSend.channel = task.channelType;
+  formToSend.queueName = task.queueName;
   if (task.channelType === 'facebook') {
-    form.number = task.defaultFrom.replace('messenger:', '');
+    formToSend.number = task.defaultFrom.replace('messenger:', '');
   } else if (task.channelType === 'whatsapp') {
-    form.number = task.defaultFrom.replace('whatsapp:', '');
+    formToSend.number = task.defaultFrom.replace('whatsapp:', '');
   } else {
-    form.number = task.defaultFrom;
+    formToSend.number = task.defaultFrom;
   }
 
   let formdata = {
-    form: form
+    form: formToSend
   };
   console.log("Using base url: " + hrmBaseUrl);
   // print the form values to the console
@@ -81,11 +81,13 @@ const HrmFormController = (props) => {
     <TaskView 
       thisTask={props.thisTask} 
       key={props.task.taskSid} 
-      form={props.form} 
+      form={props.form}
+      handleBlur={props.handleBlur(props.form, props.task.taskSid)}
       handleChange={props.handleChange} 
       handleCallTypeButtonClick={props.handleCallTypeButtonClick}
       handleCheckbox={props.handleCheckbox}
-      handleCompleteTask={props.handleCompleteTask}
+      handleSubmit={props.handleSubmit(props.form, props.handleCompleteTask)}
+      handleFocus={props.handleFocus}
     />
   );
 }
@@ -98,9 +100,12 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
+  handleBlur: handleBlur(dispatch),
   handleCallTypeButtonClick: bindActionCreators(Actions.handleCallTypeButtonClick, dispatch),
   handleChange: bindActionCreators(Actions.handleChange, dispatch),
-  handleCheckbox: bindActionCreators(Actions.handleCheckbox, dispatch)
+  handleCheckbox: bindActionCreators(Actions.handleCheckbox, dispatch),
+  handleFocus: handleFocus(dispatch),
+  handleSubmit: handleSubmit(dispatch)
 });
 
 export default withTaskContext(connect(mapStateToProps, mapDispatchToProps)(HrmFormController));

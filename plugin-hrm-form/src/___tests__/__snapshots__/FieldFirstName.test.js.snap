@@ -1,0 +1,81 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FieldFirstName renders errors when not valid 1`] = `
+<TextField>
+  <StyledLabel>
+    First Name
+    <span
+      style={
+        Object {
+          "color": "red",
+        }
+      }
+    >
+      *
+    </span>
+  </StyledLabel>
+  <StyledInput
+    error={true}
+    name="firstName"
+    onBlur={[Function]}
+    onChange={[Function]}
+    onFocus={[Function]}
+    value="testValue"
+  />
+  <ErrorText>
+    This field is required
+  </ErrorText>
+</TextField>
+`;
+
+exports[`FieldFirstName renders initially 1`] = `
+<TextField>
+  <StyledLabel>
+    First Name
+    <span
+      style={
+        Object {
+          "color": "red",
+        }
+      }
+    >
+      *
+    </span>
+  </StyledLabel>
+  <StyledInput
+    error={false}
+    name="firstName"
+    onBlur={[Function]}
+    onChange={[Function]}
+    onFocus={[Function]}
+    value=""
+  />
+  
+</TextField>
+`;
+
+exports[`FieldFirstName renders when valid 1`] = `
+<TextField>
+  <StyledLabel>
+    First Name
+    <span
+      style={
+        Object {
+          "color": "red",
+        }
+      }
+    >
+      *
+    </span>
+  </StyledLabel>
+  <StyledInput
+    error={false}
+    name="firstName"
+    onBlur={[Function]}
+    onChange={[Function]}
+    onFocus={[Function]}
+    value="testValue"
+  />
+  
+</TextField>
+`;

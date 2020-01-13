@@ -33,13 +33,18 @@ export const Header3 = styled("h3")`
     font-weight: bold;
     margin: 8px 0;
 `;
+export const ErrorText = styled("p")`
+    color: ${props => props.theme.colors.errorColor};
+    font-size: 10px;
+    line-height: 1.5;
+`;
 export const Text = styled("p")`
     font-size: 14px;
     line-height: 1.5;
 `;
 export const StyledInput = styled(Input)`
     display: flex;
-    flex-grow: 1;
+    flex-grow: 0;
     font-size: 12px;
     line-height: 1.33;
     letter-spacing: normal;
@@ -116,6 +121,7 @@ export const StyledNextStepButton = styled(Button)`
     text-transform: uppercase;
     width: 200px;
     background-color: ${props => (props.disabled ? props.theme.colors.base5 : props.theme.colors.defaultButtonColor)};
+    cursor: ${props => (props.disabled ? 'not-allowed' : 'default')};
     ${p =>
         getBackgroundWithHoverCSS(
             p.disabled ? p.theme.colors.base5 : p.theme.colors.defaultButtonColor,
