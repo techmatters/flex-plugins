@@ -13,6 +13,11 @@ exports[`decorateTab when invalid 1`] = `
       >
         <ErrorIcon
           fontSize="inherit"
+          style={
+            Object {
+              "color": "red",
+            }
+          }
         />
       </span>
        

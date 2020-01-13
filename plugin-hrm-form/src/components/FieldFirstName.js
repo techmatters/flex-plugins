@@ -8,7 +8,7 @@ import { StyledInput,
 const FieldFirstName = (props) => {
   return (
     <TextField>
-      <StyledLabel>First Name*</StyledLabel>
+      <StyledLabel>First Name<span style={{color: 'red'}}>*</span></StyledLabel>
       <StyledInput
         error={props.form.callerInformation.name.firstName.error !== null}
         name='firstName'

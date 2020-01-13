@@ -6,6 +6,7 @@ export function validateBeforeSubmit(form) {
     return form;
   }
   // we need to also consider whether we care about caller information or just child
+  // and if you start with caller type, get invalid, then switch to child type, it's still disabled
   return validate(form, true);
 }
 
@@ -22,9 +23,9 @@ export function validateOnBlur(form) {
   return validate(form);
 }
 
-function validate(form, ignoredTouched = false) {
+function validate(form, ignoreTouched = false) {
   let newForm = cloneDeep(form);
-  if ((ignoredTouched || newForm.callerInformation.name.firstName.touched) &&
+  if ((ignoreTouched || newForm.callerInformation.name.firstName.touched) &&
       form.callType === callTypes.caller &&  // this is pretty bad
       !newForm.callerInformation.name.firstName.value) {
         // explicitly set it to touched so it can't get unset later

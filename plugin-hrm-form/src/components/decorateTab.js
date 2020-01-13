@@ -10,7 +10,7 @@ const decorateTab = (label, formRoot) => {
     );  
   } else {
     return (
-      <Tab label={<><span style={{verticalAlign: 'middle'}}><ErrorIcon fontSize="inherit" /></span> {label} </>} />
+      <Tab label={<><span style={{verticalAlign: 'middle'}}><ErrorIcon fontSize="inherit" style={{color: 'red'}}/></span> {label} </>} />
     );
   }
 }

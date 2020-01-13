@@ -4,6 +4,15 @@ exports[`FieldFirstName renders errors when not valid 1`] = `
 <TextField>
   <StyledLabel>
     First Name
+    <span
+      style={
+        Object {
+          "color": "red",
+        }
+      }
+    >
+      *
+    </span>
   </StyledLabel>
   <StyledInput
     error={true}
@@ -23,6 +32,15 @@ exports[`FieldFirstName renders initially 1`] = `
 <TextField>
   <StyledLabel>
     First Name
+    <span
+      style={
+        Object {
+          "color": "red",
+        }
+      }
+    >
+      *
+    </span>
   </StyledLabel>
   <StyledInput
     error={false}
@@ -40,6 +58,15 @@ exports[`FieldFirstName renders when valid 1`] = `
 <TextField>
   <StyledLabel>
     First Name
+    <span
+      style={
+        Object {
+          "color": "red",
+        }
+      }
+    >
+      *
+    </span>
   </StyledLabel>
   <StyledInput
     error={false}
