@@ -30,7 +30,7 @@ export default class ShowRecentContactsPlugin extends FlexPlugin {
     if (hrmBaseUrl === undefined) {
       console.error("HRM base URL not defined, you must provide this to retrieve program data");
     }
-    console.log("UPDATED RECENT CONTACTS~~~~~~~~~~~~~~~~~~~~");
+
     flex.SideNav.Content.add(
       <RecentContactsSidebarButton key="recent-contacts-button" />
     );

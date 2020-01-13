@@ -42,18 +42,6 @@ class TabbedForms extends React.PureComponent {
     body[0] = (
       <Container>
         <NameFields>
-          { /* <TextField>
-              <StyledLabel>First name</StyledLabel>
-              <StyledInput theme={this.props.theme} 
-                name='firstName'
-                value={this.props.form.callerInformation.name.firstName}
-                onChange={(e) => 
-                  this.props.handleChange(taskId,
-                                          ['callerInformation', 'name'],
-                                          e)}
-              />
-                  </TextField> */ }
-
           <FieldFirstName
             form={this.props.form}
             handleBlur={this.props.handleBlur}
