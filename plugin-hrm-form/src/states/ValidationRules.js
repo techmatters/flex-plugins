@@ -53,7 +53,7 @@ export function formIsValid(form) {
 };
 
 export function moreThanThreeCategoriesSelected(categoryFormSection) {
-  let count = 0
+  let count = 0;
   for (const category of Object.keys(categoryFormSection)) {
     for (const subcategory of Object.keys(categoryFormSection[category])) {
       if (categoryFormSection[category][subcategory]) {

@@ -696,11 +696,6 @@ class TabbedForms extends React.PureComponent {
   }
 };
 
-// handleCheckbox(props.taskId,
-//   ['caseInformation', 'categories', 'category' + cat],
-//   'sub' + index, 
-//   !props.form.caseInformation.categories['category' + cat]['sub' + index])}
-
 function BranchingFormIssueCategory(props) {
   const cat = props.category;
   return (
@@ -714,7 +709,7 @@ function BranchingFormIssueCategory(props) {
             {/* TODO(nick): the inline style below is ugly */}
             <Checkbox 
               style={{ width: 30, height: 30, boxSizing: 'border-box' }}
-              checked={props.form.caseInformation.categories['category' + cat]['sub' + index]} 
+              checked={props.form.caseInformation.categories[`category${cat}`][`sub${index}`]} 
               id={id}
               onClick={() => props.handleCategoryToggle(props.taskId,
                                                         `category${cat}`,
