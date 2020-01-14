@@ -8,10 +8,11 @@ import { StyledInput,
 const FieldFirstName = (props) => {
   return (
     <TextField>
-      <StyledLabel>First Name<span style={{color: 'red'}}>*</span></StyledLabel>
+      <StyledLabel htmlFor="CallerInformation_FirstName">First Name<span style={{color: 'red'}}>*</span></StyledLabel>
       <StyledInput
         error={props.form.callerInformation.name.firstName.error !== null}
         name='firstName'
+        id="CallerInformation_FirstName"
         value={props.form.callerInformation.name.firstName.value}
         onBlur={() => props.handleBlur()}
         onChange={(e) =>
