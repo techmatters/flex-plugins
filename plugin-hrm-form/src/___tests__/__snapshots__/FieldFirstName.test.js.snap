@@ -2,7 +2,9 @@
 
 exports[`FieldFirstName renders errors when not valid 1`] = `
 <TextField>
-  <StyledLabel>
+  <StyledLabel
+    htmlFor="CallerInformation_FirstName"
+  >
     First Name
     <span
       style={
@@ -16,6 +18,7 @@ exports[`FieldFirstName renders errors when not valid 1`] = `
   </StyledLabel>
   <StyledInput
     error={true}
+    id="CallerInformation_FirstName"
     name="firstName"
     onBlur={[Function]}
     onChange={[Function]}
@@ -30,7 +33,9 @@ exports[`FieldFirstName renders errors when not valid 1`] = `
 
 exports[`FieldFirstName renders initially 1`] = `
 <TextField>
-  <StyledLabel>
+  <StyledLabel
+    htmlFor="CallerInformation_FirstName"
+  >
     First Name
     <span
       style={
@@ -44,6 +49,7 @@ exports[`FieldFirstName renders initially 1`] = `
   </StyledLabel>
   <StyledInput
     error={false}
+    id="CallerInformation_FirstName"
     name="firstName"
     onBlur={[Function]}
     onChange={[Function]}
@@ -56,7 +62,9 @@ exports[`FieldFirstName renders initially 1`] = `
 
 exports[`FieldFirstName renders when valid 1`] = `
 <TextField>
-  <StyledLabel>
+  <StyledLabel
+    htmlFor="CallerInformation_FirstName"
+  >
     First Name
     <span
       style={
@@ -70,6 +78,7 @@ exports[`FieldFirstName renders when valid 1`] = `
   </StyledLabel>
   <StyledInput
     error={false}
+    id="CallerInformation_FirstName"
     name="firstName"
     onBlur={[Function]}
     onChange={[Function]}
