@@ -1,4 +1,4 @@
-import { formIsValid, validateOnBlur, validateBeforeSubmit } from '../states/ValidationRules';
+import { formIsValid, moreThanThreeCategoriesSelected, validateOnBlur, validateBeforeSubmit } from '../states/ValidationRules';
 import { callTypes } from '../states/DomainConstants';
 
 describe('validateOnBlur', () => {
@@ -178,3 +178,114 @@ describe('validateBeforeSubmit', () => {
     expect(validateBeforeSubmit(form)).toStrictEqual(expected);
   });
 });
+
+describe('moreThanThreeCategoriesSelected', () => {
+  test('returns false when three categories', () => {
+    const categorySubForm = {
+      category1: {
+        sub1: true,
+        sub2: false,
+        sub3: false,
+        sub4: false,
+        sub5: false,
+        sub6: false,
+      },
+      category2: {
+        sub1: false,
+        sub2: false,
+        sub3: false,
+        sub4: false,
+        sub5: false,
+        sub6: false,
+      },
+      category3: {
+        sub1: false,
+        sub2: false,
+        sub3: false,
+        sub4: false,
+        sub5: true,
+        sub6: false,
+      },
+      category4: {
+        sub1: false,
+        sub2: false,
+        sub3: false,
+        sub4: true,
+        sub5: false,
+        sub6: false,
+      },
+      category5: {
+        sub1: false,
+        sub2: false,
+        sub3: false,
+        sub4: false,
+        sub5: false,
+        sub6: false,
+      },
+      category6: {
+        sub1: false,
+        sub2: false,
+        sub3: false,
+        sub4: false,
+        sub5: false,
+        sub6: false,
+      }
+    };
+    expect(moreThanThreeCategoriesSelected(categorySubForm)).toBe(false);
+  });
+
+
+  test('returns true when four categories', () => {
+    const categorySubForm = {
+      category1: {
+        sub1: true,
+        sub2: false,
+        sub3: false,
+        sub4: false,
+        sub5: false,
+        sub6: false,
+      },
+      category2: {
+        sub1: false,
+        sub2: false,
+        sub3: false,
+        sub4: true,
+        sub5: false,
+        sub6: false,
+      },
+      category3: {
+        sub1: false,
+        sub2: false,
+        sub3: false,
+        sub4: false,
+        sub5: true,
+        sub6: false,
+      },
+      category4: {
+        sub1: false,
+        sub2: false,
+        sub3: false,
+        sub4: true,
+        sub5: false,
+        sub6: false,
+      },
+      category5: {
+        sub1: false,
+        sub2: false,
+        sub3: false,
+        sub4: false,
+        sub5: false,
+        sub6: false,
+      },
+      category6: {
+        sub1: false,
+        sub2: false,
+        sub3: false,
+        sub4: false,
+        sub5: false,
+        sub6: false,
+      }
+    };
+    expect(moreThanThreeCategoriesSelected(categorySubForm)).toBe(true);
+  })
+})

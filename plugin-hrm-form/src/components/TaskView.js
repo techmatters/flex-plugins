@@ -32,6 +32,7 @@ class TaskView extends Component {
           <HrmForm
             form={this.props.form}
             handleBlur={this.props.handleBlur}
+            handleCategoryToggle={this.props.handleCategoryToggle}
             handleChange={this.props.handleChange}
             handleCallTypeButtonClick={this.props.handleCallTypeButtonClick}
             handleCheckbox={this.props.handleCheckbox}

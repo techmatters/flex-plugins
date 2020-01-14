@@ -51,3 +51,18 @@ export function formIsValid(form) {
   }
   return true;
 };
+
+export function moreThanThreeCategoriesSelected(categoryFormSection) {
+  let count = 0
+  for (const category of Object.keys(categoryFormSection)) {
+    for (const subcategory of Object.keys(categoryFormSection[category])) {
+      if (categoryFormSection[category][subcategory]) {
+        count++;
+        if (count > 3) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}

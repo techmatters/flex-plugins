@@ -1,9 +1,10 @@
 import { HANDLE_BLUR,
          HANDLE_FOCUS
         } from './ActionTypes';
-import { validateBeforeSubmit, 
-         validateOnBlur,
-         formIsValid } from './ValidationRules';
+import { formIsValid,
+         moreThanThreeCategoriesSelected,
+         validateBeforeSubmit, 
+         validateOnBlur } from './ValidationRules';
 
 export const handleBlur = dispatch => (form, taskId) => () => {
   console.log("Received blur event");
@@ -35,5 +36,26 @@ export const handleSubmit = dispatch => (form, handleCompleteTask) => (task) => 
     handleCompleteTask(task.taskSid, task);
   } else {
     window.alert("There is a problem with your submission.  Please check the form for errors.");
+  }
+}
+
+// This is not technically an ActionCreator.  It's more of a filter and/or validator, 
+// but it happens on an event.  Does it belong here?
+// This is also (dangerously?) hardcoding where the category information is.
+export const handleCategoryToggle = (form, handleCheckbox) => (taskId, category, subcategory, newValue) => {
+  const candidateCategories = {
+    ...form.caseInformation.categories,
+    [category]: {
+      ...form.caseInformation.categories[category],
+      [subcategory]: newValue
+    }
+  }
+  if (moreThanThreeCategoriesSelected(candidateCategories)) {
+    window.alert("You cannot select more than three category options");
+  } else {
+    handleCheckbox(taskId,
+                   ['caseInformation', 'categories', category],
+                   subcategory, 
+                   newValue);
   }
 }
