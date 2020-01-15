@@ -41,6 +41,128 @@ const defaultFormDefinition = {
     age: {
       type: FieldType.SELECT_SINGLE,
       validation: [ ValidationType.REQUIRED ]
+    },
+    language: {
+      type: FieldType.SELECT_SINGLE,
+      validation: null
+    },
+    nationality: {
+      type: FieldType.SELECT_SINGLE,
+      validation: null
+    },
+    ethnicity: {
+      type: FieldType.SELECT_SINGLE,
+      validation: null
+    },
+    location: {
+      type: FieldType.INTERMEDIATE,
+      streetAddress: {
+        type: FieldType.TEXT_INPUT,
+        validation: null
+      },
+      city: {
+        type: FieldType.TEXT_INPUT,
+        validation: null
+      },
+      stateOrCounty: {
+        type: FieldType.TEXT_INPUT,
+        validation: null
+      },
+      postalCode: {
+        type: FieldType.TEXT_INPUT,
+        validation: null
+      },
+      phone1: {
+        type: FieldType.TEXT_INPUT,
+        validation: null
+      },
+      phone2: {
+        type: FieldType.TEXT_INPUT,
+        validation: null
+      }
+    }
+  },
+  childInformation: {
+    type: FieldType.TAB,
+    name: {
+      type: FieldType.INTERMEDIATE,
+      firstName: {
+        type: FieldType.TEXT_INPUT,
+        validation: [ ValidationType.REQUIRED ]
+      },
+      lastName: {
+        type: FieldType.TEXT_INPUT,
+        validation: null
+      }
+    },
+    gender: {
+      type: FieldType.SELECT_SINGLE,
+      validation: [ ValidationType.REQUIRED ]
+    },
+    age: {
+      type: FieldType.SELECT_SINGLE,
+      validation: [ ValidationType.REQUIRED ]
+    },
+    language: {
+      type: FieldType.SELECT_SINGLE,
+      validation: null
+    },
+    nationality: {
+      type: FieldType.SELECT_SINGLE,
+      validation: null
+    },
+    ethnicity: {
+      type: FieldType.SELECT_SINGLE,
+      validation: null
+    },
+    school: {
+      name: {
+        type: FieldType.TEXT_INPUT,
+        validation: null
+      },
+      gradeLevel: {
+        type: FieldType.TEXT_INPUT,
+        validation: null
+      }
+    },
+    location: {
+      type: FieldType.INTERMEDIATE,
+      streetAddress: {
+        type: FieldType.TEXT_INPUT,
+        validation: null
+      },
+      city: {
+        type: FieldType.TEXT_INPUT,
+        validation: null
+      },
+      stateOrCounty: {
+        type: FieldType.TEXT_INPUT,
+        validation: null
+      },
+      postalCode: {
+        type: FieldType.TEXT_INPUT,
+        validation: null
+      },
+      phone1: {
+        type: FieldType.TEXT_INPUT,
+        validation: null
+      },
+      phone2: {
+        type: FieldType.TEXT_INPUT,
+        validation: null
+      }
+    },
+    refugee: {
+      type: FieldType.CHECKBOX,
+      value: false
+    },
+    disabledOrSpecialNeeds: {
+      type: FieldType.CHECKBOX,
+      value: false
+    },
+    hiv: {
+      type: FieldType.CHECKBOX,
+      value: false
     }
   },
   caseInformation: {
@@ -65,11 +187,37 @@ const defaultFormDefinition = {
         sub6: false,
       }
     },
+    callSummary: {
+      type: FieldType.TEXT_BOX,
+      validation: null
+    },
+    referredTo:  {
+      type: FieldType.SELECT_SINGLE,
+      validation: null
+    },
+    status:  {
+      value: 'In Progress',
+      type: FieldType.SELECT_SINGLE,
+      validation: null
+    },
     keepConfidential: {
       type: FieldType.CHECKBOX,
       value: true
     },
     okForCaseWorkerToCall: {
+      type: FieldType.CHECKBOX,
+      value: false
+    },
+    howDidTheChildHearAboutUs: '',
+    didYouDiscussRightsWithTheChild: {
+      type: FieldType.CHECKBOX,
+      value: false
+    },
+    didTheChildFeelWeSolvedTheirProblem: {
+      type: FieldType.CHECKBOX,
+      value: false
+    },
+    wouldTheChildRecommendUsToAFriend: {
       type: FieldType.CHECKBOX,
       value: false
     }
