@@ -5,7 +5,7 @@ import TaskView from './TaskView';
 import { withTaskContext } from "@twilio/flex-ui";
 import { namespace, contactFormsBase } from '../states';
 import { Actions } from '../states/ContactState';
-import { handleBlur, handleFocus, handleSubmit } from '../states/ActionCreators';
+import { handleBlur, handleCategoryToggle, handleFocus, handleSubmit } from '../states/ActionCreators';
 import { secret } from '../private/secret.js';
 import cloneDeep from 'lodash/cloneDeep';
 
@@ -85,6 +85,7 @@ const HrmFormController = (props) => {
       handleBlur={props.handleBlur(props.form, props.task.taskSid)}
       handleChange={props.handleChange} 
       handleCallTypeButtonClick={props.handleCallTypeButtonClick}
+      handleCategoryToggle={handleCategoryToggle(props.form, props.handleCheckbox)}
       handleCheckbox={props.handleCheckbox}
       handleSubmit={props.handleSubmit(props.form, props.handleCompleteTask)}
       handleFocus={props.handleFocus}

@@ -505,14 +505,14 @@ class TabbedForms extends React.PureComponent {
     body[2] = (
       <Container style={{display: 'flex', flexDirection: 'column'}}>
         <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginBottom: '20px'}}>
-          <BranchingFormIssueCategory category="1" handleCheckbox={this.props.handleCheckbox} taskId={taskId} form={this.props.form}/>
-          <BranchingFormIssueCategory category="2" handleCheckbox={this.props.handleCheckbox} taskId={taskId} form={this.props.form}/>
-          <BranchingFormIssueCategory category="3" handleCheckbox={this.props.handleCheckbox} taskId={taskId} form={this.props.form}/>
+          <BranchingFormIssueCategory category="1" handleCategoryToggle={this.props.handleCategoryToggle} taskId={taskId} form={this.props.form}/>
+          <BranchingFormIssueCategory category="2" handleCategoryToggle={this.props.handleCategoryToggle} taskId={taskId} form={this.props.form}/>
+          <BranchingFormIssueCategory category="3" handleCategoryToggle={this.props.handleCategoryToggle} taskId={taskId} form={this.props.form}/>
         </div>
         <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
-          <BranchingFormIssueCategory category="4" handleCheckbox={this.props.handleCheckbox} taskId={taskId} form={this.props.form}/>
-          <BranchingFormIssueCategory category="5" handleCheckbox={this.props.handleCheckbox} taskId={taskId} form={this.props.form}/>
-          <BranchingFormIssueCategory category="6" handleCheckbox={this.props.handleCheckbox} taskId={taskId} form={this.props.form}/>
+          <BranchingFormIssueCategory category="4" handleCategoryToggle={this.props.handleCategoryToggle} taskId={taskId} form={this.props.form}/>
+          <BranchingFormIssueCategory category="5" handleCategoryToggle={this.props.handleCategoryToggle} taskId={taskId} form={this.props.form}/>
+          <BranchingFormIssueCategory category="6" handleCategoryToggle={this.props.handleCategoryToggle} taskId={taskId} form={this.props.form}/>
         </div>
       </Container>
     );
@@ -709,12 +709,12 @@ function BranchingFormIssueCategory(props) {
             {/* TODO(nick): the inline style below is ugly */}
             <Checkbox 
               style={{ width: 30, height: 30, boxSizing: 'border-box' }}
-              checked={props.form.caseInformation.categories['category' + cat]['sub' + index]} 
+              checked={props.form.caseInformation.categories[`category${cat}`][`sub${index}`]} 
               id={id}
-              onClick={(e) => props.handleCheckbox(props.taskId,
-                                                   ['caseInformation', 'categories', 'category' + cat],
-                                                   'sub' + index, 
-                                                   !props.form.caseInformation.categories['category' + cat]['sub' + index])}
+              onClick={() => props.handleCategoryToggle(props.taskId,
+                                                        `category${cat}`,
+                                                        `sub${index}`,
+                                                        !props.form.caseInformation.categories[`category${cat}`][`sub${index}`])}
             />
             <StyledCheckboxLabel htmlFor={id}>Subcategory {index}</StyledCheckboxLabel>
           </CategoryCheckboxField>

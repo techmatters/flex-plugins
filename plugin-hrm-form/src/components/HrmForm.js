@@ -12,6 +12,7 @@ const HrmForm = (props) => {
         <TabbedForms
           form={props.form}
           handleBlur={props.handleBlur}
+          handleCategoryToggle={props.handleCategoryToggle}
           handleChange={props.handleChange}
           handleCheckbox={props.handleCheckbox}
           handleCallTypeButtonClick={props.handleCallTypeButtonClick}
