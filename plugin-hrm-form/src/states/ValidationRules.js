@@ -23,6 +23,7 @@ export function validateOnBlur(form) {
   return validate(form);
 }
 
+// TEST THISSSSSSSSSSS
 function validate(form, ignoreTouched = false) {
   let newForm = cloneDeep(form);
   if ((ignoreTouched || newForm.callerInformation.name.firstName.touched) &&
@@ -33,6 +34,16 @@ function validate(form, ignoreTouched = false) {
         newForm.callerInformation.name.firstName.error = "This field is required";
   } else {
     newForm.callerInformation.name.firstName.error = null;
+  }
+  
+  if ((ignoreTouched || newForm.childInformation.gender.touched) &&
+      !isStandAloneCallType(form.callType) &&  // this is pretty bad
+      !newForm.childInformation.gender.value) {
+        // explicitly set it to touched so it can't get unset later
+        newForm.childInformation.gender.touched = true;
+        newForm.childInformation.gender.error = "This field is required";
+  } else {
+    newForm.childInformation.gender.error = null;
   }
   return newForm;
 }

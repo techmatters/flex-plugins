@@ -1,0 +1,153 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FieldGender renders errors when not valid 1`] = `
+<TextField>
+  <StyledLabel
+    htmlFor="ChildInformation_Gender"
+  >
+    Gender
+    <span
+      style={
+        Object {
+          "color": "red",
+        }
+      }
+    >
+      *
+    </span>
+  </StyledLabel>
+  <StyledSelect
+    error={true}
+    id="ChildInformation_Gender"
+    name="gender"
+    onBlur={[Function]}
+    onChange={[Function]}
+    onFocus={[Function]}
+    value=""
+  >
+    <StyledMenuItem
+      value="Male"
+    >
+      Male
+    </StyledMenuItem>
+    <StyledMenuItem
+      value="Female"
+    >
+      Female
+    </StyledMenuItem>
+    <StyledMenuItem
+      value="Other"
+    >
+      Other
+    </StyledMenuItem>
+    <StyledMenuItem
+      value="Unknown"
+    >
+      Unknown
+    </StyledMenuItem>
+  </StyledSelect>
+  <ErrorText>
+    This field is required
+  </ErrorText>
+</TextField>
+`;
+
+exports[`FieldGender renders initially 1`] = `
+<TextField>
+  <StyledLabel
+    htmlFor="ChildInformation_Gender"
+  >
+    Gender
+    <span
+      style={
+        Object {
+          "color": "red",
+        }
+      }
+    >
+      *
+    </span>
+  </StyledLabel>
+  <StyledSelect
+    error={false}
+    id="ChildInformation_Gender"
+    name="gender"
+    onBlur={[Function]}
+    onChange={[Function]}
+    onFocus={[Function]}
+    value=""
+  >
+    <StyledMenuItem
+      value="Male"
+    >
+      Male
+    </StyledMenuItem>
+    <StyledMenuItem
+      value="Female"
+    >
+      Female
+    </StyledMenuItem>
+    <StyledMenuItem
+      value="Other"
+    >
+      Other
+    </StyledMenuItem>
+    <StyledMenuItem
+      value="Unknown"
+    >
+      Unknown
+    </StyledMenuItem>
+  </StyledSelect>
+  
+</TextField>
+`;
+
+exports[`FieldGender renders when valid 1`] = `
+<TextField>
+  <StyledLabel
+    htmlFor="ChildInformation_Gender"
+  >
+    Gender
+    <span
+      style={
+        Object {
+          "color": "red",
+        }
+      }
+    >
+      *
+    </span>
+  </StyledLabel>
+  <StyledSelect
+    error={false}
+    id="ChildInformation_Gender"
+    name="gender"
+    onBlur={[Function]}
+    onChange={[Function]}
+    onFocus={[Function]}
+    value="Female"
+  >
+    <StyledMenuItem
+      value="Male"
+    >
+      Male
+    </StyledMenuItem>
+    <StyledMenuItem
+      value="Female"
+    >
+      Female
+    </StyledMenuItem>
+    <StyledMenuItem
+      value="Other"
+    >
+      Other
+    </StyledMenuItem>
+    <StyledMenuItem
+      value="Unknown"
+    >
+      Unknown
+    </StyledMenuItem>
+  </StyledSelect>
+  
+</TextField>
+`;

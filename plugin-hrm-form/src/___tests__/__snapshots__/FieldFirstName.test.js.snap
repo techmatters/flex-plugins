@@ -23,7 +23,7 @@ exports[`FieldFirstName renders errors when not valid 1`] = `
     onBlur={[Function]}
     onChange={[Function]}
     onFocus={[Function]}
-    value="testValue"
+    value=""
   />
   <ErrorText>
     This field is required

@@ -1,31 +1,30 @@
 jest.mock('../Styles/HrmStyles', () => {
   return {
-    StyledInput: 'StyledInput',
-    StyledLabel: 'StyledLabel',
     ErrorText: 'ErrorText',
+    StyledLabel: 'StyledLabel',
+    StyledMenuItem: 'StyledMenuItem',
+    StyledSelect: 'StyledSelect',
     TextField: 'TextField'
   };
 });
 import React from 'react';
-import FieldFirstName from '../components/FieldFirstName';
+import FieldGender from '../components/FieldGender';
 import renderer from 'react-test-renderer';
 
-test('FieldFirstName renders initially', () => {
+test('FieldGender renders initially', () => {
   const form = {
-    callerInformation: {
-      name: {
-        firstName: {
-          value: '',
-          touched: false,
-          error: null
-        }
+    childInformation: {
+      gender: {
+        value: '',
+        touched: false,
+        error: null
       }
     }
   };
   const handleChange = jest.fn();
   const taskId = '';
   const component = renderer.create(
-    <FieldFirstName
+    <FieldGender
       form={form}
       handleChange={handleChange}
       taskId={taskId}
@@ -35,22 +34,20 @@ test('FieldFirstName renders initially', () => {
   expect(tree).toMatchSnapshot();
 });
 
-test('FieldFirstName renders when valid', () => {
+test('FieldGender renders when valid', () => {
   const form = {
-    callerInformation: {
-      name: {
-        firstName: {
-          value: 'testValue',
-          touched: false,
-          error: null
-        }
+    childInformation: {
+      gender: {
+        value: 'Female',
+        touched: false,
+        error: null
       }
     }
   };
   const handleChange = jest.fn();
   const taskId = '';
   const component = renderer.create(
-    <FieldFirstName
+    <FieldGender
       form={form}
       handleChange={handleChange}
       taskId={taskId}
@@ -60,22 +57,20 @@ test('FieldFirstName renders when valid', () => {
   expect(tree).toMatchSnapshot();
 });
 
-test('FieldFirstName renders errors when not valid', () => {
+test('FieldGender renders errors when not valid', () => {
   const form = {
-    callerInformation: {
-      name: {
-        firstName: {
-          value: '',
-          touched: true,
-          error: 'This field is required'
-        }
+    childInformation: {
+      gender: {
+        value: '',
+        touched: true,
+        error: 'This field is required'
       }
     }
   };
   const handleChange = jest.fn();
   const taskId = '';
   const component = renderer.create(
-    <FieldFirstName
+    <FieldGender
       form={form}
       handleChange={handleChange}
       taskId={taskId}

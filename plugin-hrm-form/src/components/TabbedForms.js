@@ -22,6 +22,7 @@ import { Checkbox,
          Tabs} from "@material-ui/core";
 import { callTypes } from '../states/DomainConstants'
 import FieldFirstName from './FieldFirstName';
+import FieldGender from './FieldGender';
 import decorateTab from './decorateTab';
 import { formIsValid } from '../states/ValidationRules';
 
@@ -276,7 +277,7 @@ class TabbedForms extends React.PureComponent {
 
         <TwoColumnLayout>
           <ColumnarBlock>
-            <TextField>
+            { /* <TextField>
                 <StyledLabel htmlFor="ChildInformation_Gender">Gender</StyledLabel>
                 <StyledSelect 
                   name="gender"
@@ -289,7 +290,15 @@ class TabbedForms extends React.PureComponent {
                   <StyledMenuItem value="Other">Other</StyledMenuItem>
                   <StyledMenuItem value="Unknown">Unknown</StyledMenuItem>
                 </StyledSelect>
-            </TextField>
+            </TextField> */ }
+
+            <FieldGender
+              form={this.props.form}
+              handleBlur={this.props.handleBlur}
+              handleChange={this.props.handleChange}
+              handleFocus={this.props.handleFocus}
+              taskId={taskId}
+            />
 
             <TextField>
                 <StyledLabel htmlFor="ChildInformation_Age">Age</StyledLabel>
@@ -649,7 +658,7 @@ class TabbedForms extends React.PureComponent {
 
     let tabs = [
       decorateTab("Caller Information", this.props.form.callerInformation),
-      <Tab label="Child Information" />,
+      decorateTab("Child Information", this.props.form.childInformation),
       <Tab label="Issue Categorization" />,
       <Tab label="Case Information" />
     ];

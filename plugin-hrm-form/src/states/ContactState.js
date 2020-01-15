@@ -48,7 +48,11 @@ const taskInitialStateFactory = () => {
           firstName: '',
           lastName: ''
         },
-        gender: '',
+        gender: {
+          value: '',
+          touched: false,
+          error: null
+        },
         age: '',
         language:'',
         nationality: '',
@@ -167,6 +171,7 @@ function editNestedFieldNew(original, parents, name, change) {
   }
 }
 
+/// TEST THIS AND MAKE IT GENERALLLLLLLLL
 // VisibleForTesting
 export function editNestedField(original, parents, name, value) {
   // This is horrible, I promise I won't leave it for long
@@ -182,6 +187,19 @@ export function editNestedField(original, parents, name, value) {
             ...original.callerInformation.name.firstName,
             value
           }
+        }
+      }
+    }
+  }
+  if (name === 'gender' &&
+      isEqual(parents, ['childInformation'])) {
+    return {
+      ...original,
+      childInformation: {
+        ...original.childInformation,
+        gender: {
+          ...original.callerInformation.gender,
+          value
         }
       }
     }
