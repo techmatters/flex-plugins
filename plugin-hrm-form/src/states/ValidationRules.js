@@ -91,6 +91,12 @@ function validateCaseInformation(original, callType, ignoreTouched) {
 
 // walk a form tree looking for non-null error values
 export function formIsValid(form) {
+  if ('callType' in form) {
+    if (isStandAloneCallType(form.callType.value)) {
+      return true;
+    }
+  }
+
   if ('error' in form && form.error !== null) {
     return false;
   }

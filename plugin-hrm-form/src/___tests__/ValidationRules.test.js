@@ -339,6 +339,29 @@ describe('validateOnBlur', () => {
 });
 
 describe('formIsValid', () => {
+  test('returns true if callType is standalone', () => {
+    const form = {
+      callType: {
+        type: FieldType.CALL_TYPE,
+        value: callTypes.hangup
+      },
+      callerInformation: {
+        type: FieldType.TAB,
+        name: {
+          type: FieldType.INTERMEDIATE,
+          firstName: {
+            type: FieldType.TEXT_INPUT,
+            validation: [ ValidationType.REQUIRED ],
+            value: '',
+            touched: true,
+            error: 'This is a big bad error'
+          }
+        }
+      }
+    };
+    expect(formIsValid(form)).toBe(true);
+  })
+
   test('returns true if no errors present', () => {
     const form = {
       callType: {
