@@ -47,9 +47,12 @@ export const handleCategoryToggle = (form, handleCheckbox) => (taskId, category,
     ...form.caseInformation.categories,
     [category]: {
       ...form.caseInformation.categories[category],
-      [subcategory]: newValue
+      [subcategory]: {
+        ...form.caseInformation.categories[category][subcategory],
+        value: newValue
+      }
     }
-  }
+  };
   if (moreThanThreeCategoriesSelected(candidateCategories)) {
     window.alert("You cannot select more than three category options");
   } else {

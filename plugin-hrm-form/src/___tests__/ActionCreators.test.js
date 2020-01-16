@@ -16,6 +16,7 @@ import { handleBlur,
          handleSubmit } from '../states/ActionCreators';
 import { HANDLE_BLUR,
          HANDLE_FOCUS } from '../states/ActionTypes';
+import { FieldType } from '../states/ContactFormStateFactory';
 
 test('handleBlur sends the right action when called', () => {
   const dispatch = jest.fn(x => x);
@@ -102,14 +103,31 @@ describe('handleCategoryToggle', () => {
   test('alerts on too many categories', () => {
     const form = {
       caseInformation: {
+        type: FieldType.TAB,
         categories: {
+          type: FieldType.CHECKBOX_FIELD,
+          validation: null,
           category1: {
-            sub1: true,
-            sub2: true
+            type: FieldType.INTERMEDIATE,
+            sub1: {
+              type: FieldType.CHECKBOX,
+              value: true
+            },
+            sub2:  {
+              type: FieldType.CHECKBOX,
+              value: true
+            }
           },
           category2: {
-            sub1: true,
-            sub2: false
+            type: FieldType.INTERMEDIATE,
+            sub1: {
+              type: FieldType.CHECKBOX,
+              value: true
+            },
+            sub2: {
+              type: FieldType.CHECKBOX,
+              value: false
+            }
           }
         }
       }
@@ -121,13 +139,29 @@ describe('handleCategoryToggle', () => {
     handleCategoryToggle(form, handleCheckbox)(taskId, 'category2', 'sub2', true);
     expect(moreThanThreeCategoriesSelected.mock.calls.length).toBe(1);
     expect(moreThanThreeCategoriesSelected.mock.calls[0][0]).toStrictEqual({
+      type: FieldType.CHECKBOX_FIELD,
+      validation: null,
       category1: {
-        sub1: true,
-        sub2: true
+        type: FieldType.INTERMEDIATE,
+        sub1: {
+          type: FieldType.CHECKBOX,
+          value: true
+        },
+        sub2:  {
+          type: FieldType.CHECKBOX,
+          value: true
+        }
       },
       category2: {
-        sub1: true,
-        sub2: true
+        type: FieldType.INTERMEDIATE,
+        sub1: {
+          type: FieldType.CHECKBOX,
+          value: true
+        },
+        sub2: {
+          type: FieldType.CHECKBOX,
+          value: true
+        }
       }
     });
     expect(window.alert.mock.calls.length).toBe(1);
@@ -137,14 +171,31 @@ describe('handleCategoryToggle', () => {
   test('saves data when not too many categories', () => {
     const form = {
       caseInformation: {
+        type: FieldType.TAB,
         categories: {
+          type: FieldType.CHECKBOX_FIELD,
+          validation: null,
           category1: {
-            sub1: true,
-            sub2: true
+            type: FieldType.INTERMEDIATE,
+            sub1: {
+              type: FieldType.CHECKBOX,
+              value: true
+            },
+            sub2:  {
+              type: FieldType.CHECKBOX,
+              value: true
+            }
           },
           category2: {
-            sub1: false,
-            sub2: false
+            type: FieldType.INTERMEDIATE,
+            sub1: {
+              type: FieldType.CHECKBOX,
+              value: false
+            },
+            sub2: {
+              type: FieldType.CHECKBOX,
+              value: false
+            }
           }
         }
       }
@@ -156,13 +207,29 @@ describe('handleCategoryToggle', () => {
     handleCategoryToggle(form, handleCheckbox)(taskId, 'category2', 'sub2', true);
     expect(moreThanThreeCategoriesSelected.mock.calls.length).toBe(1);
     expect(moreThanThreeCategoriesSelected.mock.calls[0][0]).toStrictEqual({
+      type: FieldType.CHECKBOX_FIELD,
+      validation: null,
       category1: {
-        sub1: true,
-        sub2: true
+        type: FieldType.INTERMEDIATE,
+        sub1: {
+          type: FieldType.CHECKBOX,
+          value: true
+        },
+        sub2:  {
+          type: FieldType.CHECKBOX,
+          value: true
+        }
       },
       category2: {
-        sub1: false,
-        sub2: true
+        type: FieldType.INTERMEDIATE,
+        sub1: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub2: {
+          type: FieldType.CHECKBOX,
+          value: true
+        }
       }
     });
     expect(window.alert.mock.calls.length).toBe(0);

@@ -35,20 +35,58 @@ test('generateInitialFormState operates as expected', () => {
         type: FieldType.CHECKBOX_FIELD,
         validation: [ ValidationType.REQUIRED ],
         category1: {
-          sub1: false,
-          sub2: false,
-          sub3: false,
-          sub4: false,
-          sub5: false,
-          sub6: false,
+          type: FieldType.INTERMEDIATE,
+          sub1: {
+            type: FieldType.CHECKBOX,
+            value: false
+          },
+          sub2: {
+            type: FieldType.CHECKBOX,
+            value: false
+          },
+          sub3: {
+            type: FieldType.CHECKBOX,
+            value: false
+          },
+          sub4: {
+            type: FieldType.CHECKBOX,
+            value: false
+          },
+          sub5: {
+            type: FieldType.CHECKBOX,
+            value: false
+          },
+          sub6: {
+            type: FieldType.CHECKBOX,
+            value: false
+          }
         },
         category2: {
-          sub1: false,
-          sub2: false,
-          sub3: false,
-          sub4: false,
-          sub5: false,
-          sub6: false,
+          type: FieldType.INTERMEDIATE,
+          sub1: {
+            type: FieldType.CHECKBOX,
+            value: false
+          },
+          sub2: {
+            type: FieldType.CHECKBOX,
+            value: false
+          },
+          sub3: {
+            type: FieldType.CHECKBOX,
+            value: false
+          },
+          sub4: {
+            type: FieldType.CHECKBOX,
+            value: false
+          },
+          sub5: {
+            type: FieldType.CHECKBOX,
+            value: false
+          },
+          sub6: {
+            type: FieldType.CHECKBOX,
+            value: false
+          }
         }
       },
       status:  {
@@ -113,20 +151,58 @@ test('generateInitialFormState operates as expected', () => {
         validation: [ ValidationType.REQUIRED ],
         error: null,
         category1: {
-          sub1: false,
-          sub2: false,
-          sub3: false,
-          sub4: false,
-          sub5: false,
-          sub6: false,
+          type: FieldType.INTERMEDIATE,
+          sub1: {
+            type: FieldType.CHECKBOX,
+            value: false
+          },
+          sub2: {
+            type: FieldType.CHECKBOX,
+            value: false
+          },
+          sub3: {
+            type: FieldType.CHECKBOX,
+            value: false
+          },
+          sub4: {
+            type: FieldType.CHECKBOX,
+            value: false
+          },
+          sub5: {
+            type: FieldType.CHECKBOX,
+            value: false
+          },
+          sub6: {
+            type: FieldType.CHECKBOX,
+            value: false
+          }
         },
         category2: {
-          sub1: false,
-          sub2: false,
-          sub3: false,
-          sub4: false,
-          sub5: false,
-          sub6: false,
+          type: FieldType.INTERMEDIATE,
+          sub1: {
+            type: FieldType.CHECKBOX,
+            value: false
+          },
+          sub2: {
+            type: FieldType.CHECKBOX,
+            value: false
+          },
+          sub3: {
+            type: FieldType.CHECKBOX,
+            value: false
+          },
+          sub4: {
+            type: FieldType.CHECKBOX,
+            value: false
+          },
+          sub5: {
+            type: FieldType.CHECKBOX,
+            value: false
+          },
+          sub6: {
+            type: FieldType.CHECKBOX,
+            value: false
+          }
         }
       },
       status: {

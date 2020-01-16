@@ -1,8 +1,10 @@
 import { saveToHrm } from '../components/HrmFormController';
 import isEqual from 'lodash/isEqual';
+import { generateInitialFormState } from './ContactFormStateFactory';
 
 import { HANDLE_BLUR,
          HANDLE_CHANGE,
+         HANDLE_CHANGE_NEW,
          HANDLE_FOCUS,
          INITIALIZE_CONTACT_STATE,
          REMOVE_CONTACT_STATE,
@@ -144,10 +146,11 @@ export class Actions {
     return {type: HANDLE_CHANGE, name: e.target.name || e.currentTarget.name, value: e.target.value || e.currentTarget.value, taskId: taskId, parents: parents};
   };
   // This makes me so sad too
+  // static handleCheckbox = (taskId, parents, name, value) => ({type: HANDLE_CHANGE, name: name, taskId: taskId, value: value, parents: parents});
   static handleCheckbox = (taskId, parents, name, value) => ({type: HANDLE_CHANGE, name: name, taskId: taskId, value: value, parents: parents});
   // There has to be a better way to do this rather than a one-off, but MUI does not make it easy
   // static handleCallTypeButtonClick = (taskId, value, e) => ({type: HANDLE_CALLTYPE_BUTTON_CLICK, taskId: taskId, value: value});
-  static handleCallTypeButtonClick = (taskId, value, e) => ({type: HANDLE_CHANGE, name: 'callType', taskId: taskId, value: value, parents: []});
+  static handleCallTypeButtonClick = (taskId, value, e) => ({type: HANDLE_CHANGE_NEW, name: 'callType', taskId: taskId, value: value, parents: []});
   static initializeContactState = (taskId) => ({type: INITIALIZE_CONTACT_STATE, taskId: taskId});
   // I'm really not sure if this should live here, but it seems like we need to come through the store
   static saveContactState = (task, abortFunction, hrmBaseUrl) => ({type: SAVE_CONTACT_STATE, task, abortFunction, hrmBaseUrl});
@@ -228,12 +231,34 @@ export function reduce(state = initialState, action) {
       };
     }
 
+    case HANDLE_CHANGE_NEW: {
+      let currentForm;
+      if (state.tasks[action.taskId]) {
+        currentForm = state.tasks[action.taskId];
+      } else {
+        // currentForm = taskInitialStateFactory();
+        currentForm = generateInitialFormState();
+        console.log("Had to recreate state for taskId " + action.taskId);
+      }
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: editNestedFieldNew(currentForm,
+                                              action.parents,
+                                              action.name,
+                                              {value: action.value})
+        }
+      };
+    }
+
     case HANDLE_FOCUS: {
       let currentForm;
       if (state.tasks[action.taskId]) {
         currentForm = state.tasks[action.taskId];
       } else {
-        currentForm = taskInitialStateFactory();
+        // currentForm = taskInitialStateFactory();
+        currentForm = generateInitialFormState();
         console.log("Had to recreate state for taskId " + action.taskId);
       }
       return {
@@ -262,17 +287,22 @@ export function reduce(state = initialState, action) {
       if (state.tasks[action.taskId]) {
         currentForm = state.tasks[action.taskId];
       } else {
-        currentForm = taskInitialStateFactory();
+        // currentForm = taskInitialStateFactory();
+        currentForm = generateInitialFormState();
         console.log("Had to recreate state for taskId " + action.taskId);
       }
       return {
         ...state,
         tasks: {
           ...state.tasks,
-          [action.taskId]: editNestedField(currentForm,
-                                           action.parents,
-                                           action.name,
-                                           action.value)
+          // [action.taskId]: editNestedField(currentForm,
+          //                                  action.parents,
+          //                                  action.name,
+          //                                  action.value)
+          [action.taskId]: editNestedFieldNew(currentForm,
+                                              action.parents,
+                                              action.name,
+                                              {value: action.value})
         }
       };
     }
@@ -283,7 +313,7 @@ export function reduce(state = initialState, action) {
         ...state,
         tasks: {
           ...state.tasks,
-          [action.taskId]: taskInitialStateFactory()
+          [action.taskId]: generateInitialFormState() //taskInitialStateFactory()
         }
       }
     }

@@ -1,5 +1,7 @@
 import { formIsValid, moreThanThreeCategoriesSelected, validateOnBlur, validateBeforeSubmit } from '../states/ValidationRules';
 import { callTypes } from '../states/DomainConstants';
+import { FieldType,
+         ValidationType } from '../states/ContactFormStateFactory';
 
 describe('validateOnBlur', () => {
   test('does not generate an error when field is not touched', () => {
@@ -182,53 +184,169 @@ describe('validateBeforeSubmit', () => {
 describe('moreThanThreeCategoriesSelected', () => {
   test('returns false when three categories', () => {
     const categorySubForm = {
+      type: FieldType.CHECKBOX_FIELD,
+      validation: [ ValidationType.REQUIRED ],
       category1: {
-        sub1: true,
-        sub2: false,
-        sub3: false,
-        sub4: false,
-        sub5: false,
-        sub6: false,
+        type: FieldType.INTERMEDIATE,
+        sub1: {
+          type: FieldType.CHECKBOX,
+          value: true
+        },
+        sub2: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub3: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub4: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub5: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub6: {
+          type: FieldType.CHECKBOX,
+          value: false
+        }
       },
       category2: {
-        sub1: false,
-        sub2: false,
-        sub3: false,
-        sub4: false,
-        sub5: false,
-        sub6: false,
+        type: FieldType.INTERMEDIATE,
+        sub1: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub2: {
+          type: FieldType.CHECKBOX,
+          value: true
+        },
+        sub3: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub4: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub5: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub6: {
+          type: FieldType.CHECKBOX,
+          value: false
+        }
       },
       category3: {
-        sub1: false,
-        sub2: false,
-        sub3: false,
-        sub4: false,
-        sub5: true,
-        sub6: false,
+        type: FieldType.INTERMEDIATE,
+        sub1: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub2: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub3: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub4: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub5: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub6: {
+          type: FieldType.CHECKBOX,
+          value: false
+        }
       },
       category4: {
-        sub1: false,
-        sub2: false,
-        sub3: false,
-        sub4: true,
-        sub5: false,
-        sub6: false,
+        type: FieldType.INTERMEDIATE,
+        sub1: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub2: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub3: {
+          type: FieldType.CHECKBOX,
+          value: true
+        },
+        sub4: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub5: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub6: {
+          type: FieldType.CHECKBOX,
+          value: false
+        }
       },
       category5: {
-        sub1: false,
-        sub2: false,
-        sub3: false,
-        sub4: false,
-        sub5: false,
-        sub6: false,
+        type: FieldType.INTERMEDIATE,
+        sub1: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub2: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub3: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub4: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub5: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub6: {
+          type: FieldType.CHECKBOX,
+          value: false
+        }
       },
       category6: {
-        sub1: false,
-        sub2: false,
-        sub3: false,
-        sub4: false,
-        sub5: false,
-        sub6: false,
+        type: FieldType.INTERMEDIATE,
+        sub1: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub2: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub3: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub4: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub5: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub6: {
+          type: FieldType.CHECKBOX,
+          value: false
+        }
       }
     };
     expect(moreThanThreeCategoriesSelected(categorySubForm)).toBe(false);
@@ -237,53 +355,169 @@ describe('moreThanThreeCategoriesSelected', () => {
 
   test('returns true when four categories', () => {
     const categorySubForm = {
+      type: FieldType.CHECKBOX_FIELD,
+      validation: [ ValidationType.REQUIRED ],
       category1: {
-        sub1: true,
-        sub2: false,
-        sub3: false,
-        sub4: false,
-        sub5: false,
-        sub6: false,
+        type: FieldType.INTERMEDIATE,
+        sub1: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub2: {
+          type: FieldType.CHECKBOX,
+          value: true
+        },
+        sub3: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub4: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub5: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub6: {
+          type: FieldType.CHECKBOX,
+          value: false
+        }
       },
       category2: {
-        sub1: false,
-        sub2: false,
-        sub3: false,
-        sub4: true,
-        sub5: false,
-        sub6: false,
+        type: FieldType.INTERMEDIATE,
+        sub1: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub2: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub3: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub4: {
+          type: FieldType.CHECKBOX,
+          value: true
+        },
+        sub5: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub6: {
+          type: FieldType.CHECKBOX,
+          value: false
+        }
       },
       category3: {
-        sub1: false,
-        sub2: false,
-        sub3: false,
-        sub4: false,
-        sub5: true,
-        sub6: false,
+        type: FieldType.INTERMEDIATE,
+        sub1: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub2: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub3: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub4: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub5: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub6: {
+          type: FieldType.CHECKBOX,
+          value: true
+        }
       },
       category4: {
-        sub1: false,
-        sub2: false,
-        sub3: false,
-        sub4: true,
-        sub5: false,
-        sub6: false,
+        type: FieldType.INTERMEDIATE,
+        sub1: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub2: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub3: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub4: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub5: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub6: {
+          type: FieldType.CHECKBOX,
+          value: false
+        }
       },
       category5: {
-        sub1: false,
-        sub2: false,
-        sub3: false,
-        sub4: false,
-        sub5: false,
-        sub6: false,
+        type: FieldType.INTERMEDIATE,
+        sub1: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub2: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub3: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub4: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub5: {
+          type: FieldType.CHECKBOX,
+          value: true
+        },
+        sub6: {
+          type: FieldType.CHECKBOX,
+          value: false
+        }
       },
       category6: {
-        sub1: false,
-        sub2: false,
-        sub3: false,
-        sub4: false,
-        sub5: false,
-        sub6: false,
+        type: FieldType.INTERMEDIATE,
+        sub1: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub2: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub3: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub4: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub5: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub6: {
+          type: FieldType.CHECKBOX,
+          value: false
+        }
       }
     };
     expect(moreThanThreeCategoriesSelected(categorySubForm)).toBe(true);

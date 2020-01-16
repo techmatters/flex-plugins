@@ -13,6 +13,8 @@ export const FieldType = {
   TEXT_INPUT: 'TEXT_INPUT'
 };
 
+// TODO: add tab order?
+
 const defaultFormDefinition = {
   callType: {
     type: FieldType.CALL_TYPE
@@ -116,6 +118,7 @@ const defaultFormDefinition = {
       validation: null
     },
     school: {
+      type: FieldType.INTERMEDIATE,
       name: {
         type: FieldType.TEXT_INPUT,
         validation: null
@@ -171,31 +174,177 @@ const defaultFormDefinition = {
       type: FieldType.CHECKBOX_FIELD,
       validation: [ ValidationType.REQUIRED ],
       category1: {
-        sub1: false,
-        sub2: false,
-        sub3: false,
-        sub4: false,
-        sub5: false,
-        sub6: false,
+        type: FieldType.INTERMEDIATE,
+        sub1: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub2: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub3: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub4: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub5: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub6: {
+          type: FieldType.CHECKBOX,
+          value: false
+        }
       },
       category2: {
-        sub1: false,
-        sub2: false,
-        sub3: false,
-        sub4: false,
-        sub5: false,
-        sub6: false,
+        type: FieldType.INTERMEDIATE,
+        sub1: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub2: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub3: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub4: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub5: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub6: {
+          type: FieldType.CHECKBOX,
+          value: false
+        }
+      },
+      category3: {
+        type: FieldType.INTERMEDIATE,
+        sub1: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub2: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub3: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub4: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub5: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub6: {
+          type: FieldType.CHECKBOX,
+          value: false
+        }
+      },
+      category4: {
+        type: FieldType.INTERMEDIATE,
+        sub1: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub2: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub3: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub4: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub5: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub6: {
+          type: FieldType.CHECKBOX,
+          value: false
+        }
+      },
+      category5: {
+        type: FieldType.INTERMEDIATE,
+        sub1: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub2: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub3: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub4: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub5: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub6: {
+          type: FieldType.CHECKBOX,
+          value: false
+        }
+      },
+      category6: {
+        type: FieldType.INTERMEDIATE,
+        sub1: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub2: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub3: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub4: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub5: {
+          type: FieldType.CHECKBOX,
+          value: false
+        },
+        sub6: {
+          type: FieldType.CHECKBOX,
+          value: false
+        }
       }
     },
     callSummary: {
       type: FieldType.TEXT_BOX,
       validation: null
     },
-    referredTo:  {
+    referredTo: {
       type: FieldType.SELECT_SINGLE,
       validation: null
     },
-    status:  {
+    status: {
       value: 'In Progress',
       type: FieldType.SELECT_SINGLE,
       validation: null
@@ -208,7 +357,10 @@ const defaultFormDefinition = {
       type: FieldType.CHECKBOX,
       value: false
     },
-    howDidTheChildHearAboutUs: '',
+    howDidTheChildHearAboutUs: {
+      type: FieldType.SELECT_SINGLE,
+      validation: null
+    },
     didYouDiscussRightsWithTheChild: {
       type: FieldType.CHECKBOX,
       value: false
@@ -226,7 +378,7 @@ const defaultFormDefinition = {
 
 export const generateInitialFormState = (formDefinition = defaultFormDefinition) => {
   let initialState = {};
-  Object.keys(formDefinition).filter(key => (key !== 'type')).forEach(key => {
+  Object.keys(formDefinition).filter(key => (key !== 'type' && key !== 'validation')).forEach(key => {
     switch (formDefinition[key].type) {
       case FieldType.CALL_TYPE:
         initialState[key] = {
@@ -241,8 +393,12 @@ export const generateInitialFormState = (formDefinition = defaultFormDefinition)
         };
         break;
       case FieldType.CHECKBOX_FIELD:
-        initialState[key] = cloneDeep(formDefinition[key]);
-        initialState[key].error = null;
+        initialState[key] = {
+          ...generateInitialFormState(formDefinition[key]),
+          type: formDefinition[key].type,
+          validation: (formDefinition[key].validation === null) ? null : Array.from(formDefinition[key].validation),
+          error: null
+        };
         break;
       case FieldType.INTERMEDIATE:
       case FieldType.TAB:

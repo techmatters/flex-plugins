@@ -2,7 +2,7 @@ import { callTypes } from './DomainConstants';
 import cloneDeep from 'lodash/cloneDeep';
 
 export function validateBeforeSubmit(form) {
-  if (isStandAloneCallType(form.callType)) {
+  if (isStandAloneCallType(form.callType.value)) {
     return form;
   }
   // we need to also consider whether we care about caller information or just child
@@ -37,7 +37,7 @@ function validate(form, ignoreTouched = false) {
   }
   
   if ((ignoreTouched || newForm.childInformation.gender.touched) &&
-      !isStandAloneCallType(form.callType) &&  // this is pretty bad
+      !isStandAloneCallType(form.callType.value) &&  // this is pretty bad
       !newForm.childInformation.gender.value) {
         // explicitly set it to touched so it can't get unset later
         newForm.childInformation.gender.touched = true;
@@ -65,9 +65,9 @@ export function formIsValid(form) {
 
 export function moreThanThreeCategoriesSelected(categoryFormSection) {
   let count = 0;
-  for (const category of Object.keys(categoryFormSection)) {
-    for (const subcategory of Object.keys(categoryFormSection[category])) {
-      if (categoryFormSection[category][subcategory]) {
+  for (const category of Object.keys(categoryFormSection).filter(key => key.startsWith('category'))) {
+    for (const subcategory of Object.keys(categoryFormSection[category]).filter(key => key.startsWith('sub'))) {
+      if (categoryFormSection[category][subcategory].value) {
         count++;
         if (count > 3) {
           return true;
