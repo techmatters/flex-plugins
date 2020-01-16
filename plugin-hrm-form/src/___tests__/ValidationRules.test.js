@@ -6,15 +6,24 @@ import { FieldType,
 describe('validateOnBlur', () => {
   test('does not generate an error when field is not touched', () => {
     const form = {
-      callType: callTypes.caller,
+      callType: {
+        type: FieldType.CALL_TYPE,
+        value: callTypes.child
+      },
       callerInformation: {
-        name: {
-          firstName: {
-            value: '',
-            touched: false,
-            error: null
-          }
+        // stub for test
+      },
+      childInformation: {
+        gender: {
+          type: FieldType.SELECT_SINGLE,
+          validation: [ ValidationType.REQUIRED ],
+          value: '',
+          touched: false,
+          error: null
         }
+      },
+      caseInformation: {
+        // stub for test
       }
     };
     const received = validateOnBlur(form);
@@ -24,15 +33,24 @@ describe('validateOnBlur', () => {
 
   test('does not generate an error when field has a value', () => {
     const form = {
-      callType: callTypes.caller,
+      callType: {
+        type: FieldType.CALL_TYPE,
+        value: callTypes.child
+      },
       callerInformation: {
-        name: {
-          firstName: {
-            value: 'testValue',
-            touched: true,
-            error: null
-          }
+        // stub for test
+      },
+      childInformation: {
+        gender: {
+          type: FieldType.SELECT_SINGLE,
+          validation: [ ValidationType.REQUIRED ],
+          value: 'testValue',
+          touched: true,
+          error: null
         }
+      },
+      caseInformation: {
+        // stub for test
       }
     };
     const received = validateOnBlur(form);
@@ -42,68 +60,298 @@ describe('validateOnBlur', () => {
 
   test('does generate an error when field is touched and has no value', () => {
     const form = {
-      callType: callTypes.caller,
+      callType: {
+        type: FieldType.CALL_TYPE,
+        value: callTypes.child
+      },
       callerInformation: {
-        name: {
-          firstName: {
-            value: '',
-            touched: true,
-            error: null
-          }
+        // stub for test
+      },
+      childInformation: {
+        gender: {
+          type: FieldType.SELECT_SINGLE,
+          validation: [ ValidationType.REQUIRED ],
+          value: '',
+          touched: true,
+          error: null
         }
+      },
+      caseInformation: {
+        // stub for test
       }
     };
     const expected = {
-      callType: callTypes.caller,
+      callType: {
+        type: FieldType.CALL_TYPE,
+        value: callTypes.child
+      },
       callerInformation: {
-        name: {
-          firstName: {
-            value: '',
-            touched: true,
-            error: 'This field is required'
-          }
+        // stub for test
+      },
+      childInformation: {
+        gender: {
+          type: FieldType.SELECT_SINGLE,
+          validation: [ ValidationType.REQUIRED ],
+          value: '',
+          touched: true,
+          error: 'This field is required'
         }
+      },
+      caseInformation: {
+        // stub for test
       }
     };
     expect(validateOnBlur(form)).toStrictEqual(expected);
-  })
+  });
 
   test('removes the error when field gets a value', () => {
     const form = {
-      callType: callTypes.caller,
+      callType: {
+        type: FieldType.CALL_TYPE,
+        value: callTypes.child
+      },
       callerInformation: {
-        name: {
-          firstName: {
-            value: 'myValue',
-            touched: true,
-            error: 'This field is required'
+        // stub for test
+      },
+      childInformation: {
+        gender: {
+          type: FieldType.SELECT_SINGLE,
+          validation: [ ValidationType.REQUIRED ],
+          value: 'testValue',
+          touched: true,
+          error: 'This field is required'
+        }
+      },
+      caseInformation: {
+        // stub for test
+      }
+    };
+    const expected = {
+      callType: {
+        type: FieldType.CALL_TYPE,
+        value: callTypes.child
+      },
+      callerInformation: {
+        // stub for test
+      },
+      childInformation: {
+        gender: {
+          type: FieldType.SELECT_SINGLE,
+          validation: [ ValidationType.REQUIRED ],
+          value: 'testValue',
+          touched: true,
+          error: null
+        }
+      },
+      caseInformation: {
+        // stub for test
+      }
+    };
+    expect(validateOnBlur(form)).toStrictEqual(expected);
+  });
+
+  test('generates error for CHECKBOX_FIELD type when no boxes checked', () => {
+    const form = {
+      callType: {
+        type: FieldType.CALL_TYPE,
+        value: callTypes.caller
+      },
+      callerInformation: {
+        // stub for test
+      },
+      childInformation: {
+        // stub for test
+      },
+      caseInformation: {
+        type: FieldType.TAB,
+        categories: {
+          type: FieldType.CHECKBOX_FIELD,
+          validation: [ ValidationType.REQUIRED ],
+          error: null,
+          touched: true,
+          category1: {
+            type: FieldType.INTERMEDIATE,
+            sub1: {
+              type: FieldType.CHECKBOX,
+              value: false
+            }
+          },
+          category2: {
+            type: FieldType.INTERMEDIATE,
+            sub1: {
+              type: FieldType.CHECKBOX,
+              value: false
+            }
           }
         }
       }
     };
     const expected = {
-      callType: callTypes.caller,
+      callType: {
+        type: FieldType.CALL_TYPE,
+        value: callTypes.caller
+      },
       callerInformation: {
-        name: {
-          firstName: {
-            value: 'myValue',
-            touched: true,
-            error: null
+        // stub for test
+      },
+      childInformation: {
+        // stub for test
+      },
+      caseInformation: {
+        type: FieldType.TAB,
+        categories: {
+          type: FieldType.CHECKBOX_FIELD,
+          validation: [ ValidationType.REQUIRED ],
+          error: 'You must check at least one option',
+          touched: true,
+          category1: {
+            type: FieldType.INTERMEDIATE,
+            sub1: {
+              type: FieldType.CHECKBOX,
+              value: false
+            }
+          },
+          category2: {
+            type: FieldType.INTERMEDIATE,
+            sub1: {
+              type: FieldType.CHECKBOX,
+              value: false
+            }
           }
         }
       }
     };
     expect(validateOnBlur(form)).toStrictEqual(expected);
-  })
+  });
+
+  test('does not generate error for CHECKBOX_FIELD type when not yet touched', () => {
+    const form = {
+      callType: {
+        type: FieldType.CALL_TYPE,
+        value: callTypes.caller
+      },
+      callerInformation: {
+        // stub for test
+      },
+      childInformation: {
+        // stub for test
+      },
+      caseInformation: {
+        type: FieldType.TAB,
+        categories: {
+          type: FieldType.CHECKBOX_FIELD,
+          validation: [ ValidationType.REQUIRED ],
+          error: null,
+          touched: false,
+          category1: {
+            type: FieldType.INTERMEDIATE,
+            sub1: {
+              type: FieldType.CHECKBOX,
+              value: false
+            }
+          },
+          category2: {
+            type: FieldType.INTERMEDIATE,
+            sub1: {
+              type: FieldType.CHECKBOX,
+              value: false
+            }
+          }
+        }
+      }
+    };
+    const received = validateOnBlur(form);
+    expect(received).toStrictEqual(form);
+    expect(received).not.toBe(form);
+  });
+
+  test('removes error for CHECKBOX_FIELD type when boxes checked', () => {
+    const form = {
+      callType: {
+        type: FieldType.CALL_TYPE,
+        value: callTypes.caller
+      },
+      callerInformation: {
+        // stub for test
+      },
+      childInformation: {
+        // stub for test
+      },
+      caseInformation: {
+        type: FieldType.TAB,
+        categories: {
+          type: FieldType.CHECKBOX_FIELD,
+          validation: [ ValidationType.REQUIRED ],
+          error: 'You must check at least one option',
+          category1: {
+            type: FieldType.INTERMEDIATE,
+            sub1: {
+              type: FieldType.CHECKBOX,
+              value: true
+            }
+          },
+          category2: {
+            type: FieldType.INTERMEDIATE,
+            sub1: {
+              type: FieldType.CHECKBOX,
+              value: false
+            }
+          }
+        }
+      }
+    };
+    const expected = {
+      callType: {
+        type: FieldType.CALL_TYPE,
+        value: callTypes.caller
+      },
+      callerInformation: {
+        // stub for test
+      },
+      childInformation: {
+        // stub for test
+      },
+      caseInformation: {
+        type: FieldType.TAB,
+        categories: {
+          type: FieldType.CHECKBOX_FIELD,
+          validation: [ ValidationType.REQUIRED ],
+          error: null,
+          category1: {
+            type: FieldType.INTERMEDIATE,
+            sub1: {
+              type: FieldType.CHECKBOX,
+              value: true
+            }
+          },
+          category2: {
+            type: FieldType.INTERMEDIATE,
+            sub1: {
+              type: FieldType.CHECKBOX,
+              value: false
+            }
+          }
+        }
+      }
+    };
+    expect(validateOnBlur(form)).toStrictEqual(expected);
+  });
 });
 
 describe('formIsValid', () => {
   test('returns true if no errors present', () => {
     const form = {
-      callType: callTypes.caller,
+      callType: {
+        type: FieldType.CALL_TYPE,
+        value: callTypes.caller
+      },
       callerInformation: {
+        type: FieldType.TAB,
         name: {
+          type: FieldType.INTERMEDIATE,
           firstName: {
+            type: FieldType.TEXT_INPUT,
+            validation: [ ValidationType.REQUIRED ],
             value: 'myValue',
             touched: true,
             error: null
@@ -116,11 +364,18 @@ describe('formIsValid', () => {
 
   test('returns false if an error is present', () => {
     const form = {
-      callType: callTypes.caller,
+      callType: {
+        type: FieldType.CALL_TYPE,
+        value: callTypes.caller
+      },
       callerInformation: {
+        type: FieldType.TAB,
         name: {
+          type: FieldType.INTERMEDIATE,
           firstName: {
-            value: 'myValue',
+            type: FieldType.TEXT_INPUT,
+            validation: [ ValidationType.REQUIRED ],
+            value: '',
             touched: true,
             error: 'This field is required'
           }
@@ -132,47 +387,85 @@ describe('formIsValid', () => {
 })
 
 describe('validateBeforeSubmit', () => {
-  test('only validate if callType is caller', () => {
-    Object.keys(callTypes)
-      .filter(type => (type !== callTypes.caller))
-      .forEach(type => {
-        const form = {
-          callType: callTypes.child,
-          callerInformation: {
-            name: {
-              firstName: {
-                value: '',
-                touched: true,
-                error: null
-              }
-            }
-          }
-        };
-        expect(validateBeforeSubmit(form)).toStrictEqual(form);
-      });
-  });
-
-  test('validates empty field even if not touched', () => {
+  test('validates fields even if not touched', () => {
     const form = {
-      callType: callTypes.caller,
+      callType: {
+        type: FieldType.CALL_TYPE,
+        value: callTypes.caller
+      },
       callerInformation: {
-        name: {
-          firstName: {
-            value: '',
-            touched: false,
-            error: null
+        // stub for test
+      },
+      childInformation: {
+        gender: {
+          type: FieldType.SELECT_SINGLE,
+          validation: [ ValidationType.REQUIRED ],
+          value: '',
+          touched: false,
+          error: null
+        }
+      },
+      caseInformation: {
+        type: FieldType.TAB,
+        categories: {
+          type: FieldType.CHECKBOX_FIELD,
+          validation: [ ValidationType.REQUIRED ],
+          error: null,
+          touched: false,
+          category1: {
+            type: FieldType.INTERMEDIATE,
+            sub1: {
+              type: FieldType.CHECKBOX,
+              value: false
+            }
+          },
+          category2: {
+            type: FieldType.INTERMEDIATE,
+            sub1: {
+              type: FieldType.CHECKBOX,
+              value: false
+            }
           }
         }
       }
     };
     const expected = {
-      callType: callTypes.caller,
+      callType: {
+        type: FieldType.CALL_TYPE,
+        value: callTypes.caller
+      },
       callerInformation: {
-        name: {
-          firstName: {
-            value: '',
-            touched: true,
-            error: 'This field is required'
+        // stub for test
+      },
+      childInformation: {
+        gender: {
+          type: FieldType.SELECT_SINGLE,
+          validation: [ ValidationType.REQUIRED ],
+          value: '',
+          touched: true,
+          error: 'This field is required'
+        }
+      },
+      caseInformation: {
+        type: FieldType.TAB,
+        categories: {
+          type: FieldType.CHECKBOX_FIELD,
+          validation: [ ValidationType.REQUIRED ],
+          touched: true,
+          error: 'You must check at least one option',
+          category1: {
+            type: FieldType.INTERMEDIATE,
+            sub1: {
+              type: FieldType.CHECKBOX,
+              value: false
+            }
+          },
+          category2: {
+            type: FieldType.INTERMEDIATE,
+            sub1: {
+              type: FieldType.CHECKBOX,
+              value: false
+            }
           }
         }
       }

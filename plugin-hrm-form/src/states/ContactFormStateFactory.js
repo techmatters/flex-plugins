@@ -1,6 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep';
 export const ValidationType = {
-  REQUIRED: 'REQUIRED'
+  REQUIRED: 'REQUIRED',  // Will not be applied if in the callerInformation tab and callType is not caller.  Will not be applied when callType is standalone.
 };
 export const FieldType = {
   CALL_TYPE: 'CALL_TYPE',
@@ -396,6 +396,7 @@ export const generateInitialFormState = (formDefinition = defaultFormDefinition)
         initialState[key] = {
           ...generateInitialFormState(formDefinition[key]),
           type: formDefinition[key].type,
+          touched: false,
           validation: (formDefinition[key].validation === null) ? null : Array.from(formDefinition[key].validation),
           error: null
         };

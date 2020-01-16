@@ -149,6 +149,7 @@ test('generateInitialFormState operates as expected', () => {
       categories: {
         type: FieldType.CHECKBOX_FIELD,
         validation: [ ValidationType.REQUIRED ],
+        touched: false,
         error: null,
         category1: {
           type: FieldType.INTERMEDIATE,

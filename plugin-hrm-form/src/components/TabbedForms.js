@@ -5,6 +5,7 @@ import { BottomButtonBar,
          CheckboxField,
          ColumnarBlock,
          Container,
+         ErrorText,
          NameFields,
          StyledCheckboxLabel,
          StyledInput,
@@ -513,6 +514,11 @@ class TabbedForms extends React.PureComponent {
     // Issue Categorization
     body[2] = (
       <Container style={{display: 'flex', flexDirection: 'column'}}>
+        {this.props.form.caseInformation.categories.error ? 
+          <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginBottom: '20px'}}>
+            <ErrorText>{this.props.form.caseInformation.categories.error}</ErrorText>
+          </div>
+           : ''}
         <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginBottom: '20px'}}>
           <BranchingFormIssueCategory category="1" handleCategoryToggle={this.props.handleCategoryToggle} taskId={taskId} form={this.props.form}/>
           <BranchingFormIssueCategory category="2" handleCategoryToggle={this.props.handleCategoryToggle} taskId={taskId} form={this.props.form}/>
@@ -525,6 +531,12 @@ class TabbedForms extends React.PureComponent {
         </div>
       </Container>
     );
+    // this is hokey
+    // we need to be able to mark that the categories field has been touched
+    // the only way to do this that I see is this.  Blech.
+    if (this.state.tab === 2 && !this.props.form.caseInformation.categories.touched) {
+      this.props.handleFocus(taskId, ['caseInformation'], 'categories');
+    }
 
     // Case Information
     body[3] = (
@@ -659,8 +671,8 @@ class TabbedForms extends React.PureComponent {
     let tabs = [
       decorateTab("Caller Information", this.props.form.callerInformation),
       decorateTab("Child Information", this.props.form.childInformation),
-      <Tab label="Issue Categorization" />,
-      <Tab label="Case Information" />
+      decorateTab("Issue Categorization", this.props.form.caseInformation.categories),
+      <Tab label="Case Information" />  // normal validate logic won't work here
     ];
 
     // TODO(nick): this is probably not the best way to hide the caller info tab
