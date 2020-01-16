@@ -23,9 +23,9 @@ import { Checkbox,
          Tabs} from "@material-ui/core";
 import { callTypes } from '../states/DomainConstants'
 import FieldFirstName from './FieldFirstName';
-import FieldGender from './FieldGender';
 import decorateTab from './decorateTab';
 import { formIsValid } from '../states/ValidationRules';
+import FieldSelect from './FieldSelect';
 
 
 class TabbedForms extends React.PureComponent {
@@ -245,6 +245,13 @@ class TabbedForms extends React.PureComponent {
       </Container>
     );
 
+    const curriedHandleChange = (taskId, parents, handleChange) => e => {
+      handleChange(taskId, parents, e);
+    }
+    const curriedHandleFocus = (taskId, parents, name, handleFocus) => () => {
+      handleFocus(taskId, parents, name);
+    }
+
     // Child Information
     body[1] = (
       <Container>
@@ -278,47 +285,27 @@ class TabbedForms extends React.PureComponent {
 
         <TwoColumnLayout>
           <ColumnarBlock>
-            { /* <TextField>
-                <StyledLabel htmlFor="ChildInformation_Gender">Gender</StyledLabel>
-                <StyledSelect 
-                  name="gender"
-                  id="ChildInformation_Gender"
-                  value={this.props.form.childInformation.gender}
-                  onChange={(e) => this.props.handleChange(taskId, ['childInformation'], e)}>
-                  <StyledMenuItem hidden selected disabled value="">Select</StyledMenuItem>
-                  <StyledMenuItem value="Male">Male</StyledMenuItem>
-                  <StyledMenuItem value="Female">Female</StyledMenuItem>
-                  <StyledMenuItem value="Other">Other</StyledMenuItem>
-                  <StyledMenuItem value="Unknown">Unknown</StyledMenuItem>
-                </StyledSelect>
-            </TextField> */ }
-
-            <FieldGender
-              form={this.props.form}
+            <FieldSelect
               handleBlur={this.props.handleBlur}
-              handleChange={this.props.handleChange}
-              handleFocus={this.props.handleFocus}
-              taskId={taskId}
+              handleChange={curriedHandleChange(taskId, ['childInformation'], this.props.handleChange)}
+              handleFocus={curriedHandleFocus(taskId, ['childInformation'], 'gender', this.props.handleFocus)}
+              store={this.props.form.childInformation.gender}
+              id="ChildInformation_Gender"
+              name="gender"
+              label="Gender"
+              options={['Male', 'Female', 'Other', 'Unknown']}
             />
 
-            <TextField>
-                <StyledLabel htmlFor="ChildInformation_Age">Age</StyledLabel>
-                <StyledSelect 
-                  name="age"
-                  id="ChildInformation_Age"
-                  value={this.props.form.childInformation.age.value}
-                  onChange={(e) => this.props.handleChange(taskId, ['childInformation'], e)}>
-                  <StyledMenuItem hidden selected disabled value="">Select</StyledMenuItem>
-                  <StyledMenuItem value="0-3">0-3</StyledMenuItem>
-                  <StyledMenuItem value="4-6">4-6</StyledMenuItem>
-                  <StyledMenuItem value="7-9">7-9</StyledMenuItem>
-                  <StyledMenuItem value="10-12">10-12</StyledMenuItem>
-                  <StyledMenuItem value="13-15">13-15</StyledMenuItem>
-                  <StyledMenuItem value="16-17">16-17</StyledMenuItem>
-                  <StyledMenuItem value="18-25">18-25</StyledMenuItem>
-                  <StyledMenuItem value=">25">&gt;25</StyledMenuItem>
-                </StyledSelect>
-            </TextField>
+            <FieldSelect
+              handleBlur={this.props.handleBlur}
+              handleChange={curriedHandleChange(taskId, ['childInformation'], this.props.handleChange)}
+              handleFocus={curriedHandleFocus(taskId, ['childInformation'], 'age', this.props.handleFocus)}
+              store={this.props.form.childInformation.age}
+              id="ChildInformation_Age"
+              name="age"
+              label="Age"
+              options={['0-3', '4-6', '7-9', '10-12', '13-15', '16-17', '18-25', '>25']}
+            />
 
             <TextField>
                 <StyledLabel htmlFor="ChildInformation_Language">Language</StyledLabel>

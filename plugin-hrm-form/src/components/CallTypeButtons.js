@@ -20,7 +20,7 @@ const CallTypeButtons = (props) => {
   return (
       <Container>
         { buttons }
-        {props.form && props.form.callType && props.form.callType && isStandAloneCallType(props.form.callType.value)
+        {props.form && props.form.callType && props.form.callType.value && isStandAloneCallType(props.form.callType.value)
           ? 
             <StyledFinishButton
               style={{marginTop: '20px', border: '2px', backgroundColor: 'red'}}

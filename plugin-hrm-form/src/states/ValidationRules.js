@@ -12,6 +12,7 @@ export function validateBeforeSubmit(form) {
 }
 
 // Questionable whether we should export this
+// Be careful, this returns true if it's empty
 export function isStandAloneCallType(callType) {
   return (callType !== callTypes.caller &&
           callType !== callTypes.child);
@@ -87,77 +88,6 @@ function validateCaseInformation(original, callType, ignoreTouched) {
   handleCallerOrChildInformationKeys(newForm, ignoreTouched);
   return newForm;
 }
-
-//   Object.keys(newForm).filter(key => (key !== 'type' && key !== 'validation' && key !== 'error')).forEach(key => {
-//     switch (form[key].type) {
-//       case FieldType.CALL_TYPE:
-//         newForm[key] = {
-//           ...formDefinition[key],
-//           value: ''
-//         };
-//         break;
-//       case FieldType.CHECKBOX:
-//         initialState[key] = {
-//           value: false,  // set default of false if not overridden
-//           ...formDefinition[key]
-//         };
-//         break;
-//       case FieldType.CHECKBOX_FIELD:
-//         initialState[key] = {
-//           ...generateInitialFormState(formDefinition[key]),
-//           type: formDefinition[key].type,
-//           validation: (formDefinition[key].validation === null) ? null : Array.from(formDefinition[key].validation),
-//           error: null
-//         };
-//         break;
-//       case FieldType.INTERMEDIATE:
-//       case FieldType.TAB:
-//         initialState[key] = {
-//           ...generateInitialFormState(formDefinition[key]),
-//           type: formDefinition[key].type
-//         };
-//         break;
-//       case FieldType.SELECT_SINGLE:
-//       case FieldType.TEXT_BOX:
-//       case FieldType.TEXT_INPUT:
-//         initialState[key] = {
-//           value: '',  // set default of empty if not overridden
-//           ...formDefinition[key],
-//           touched: false,
-//           error: null
-//         };
-//         break;
-//       default:
-//         throw new Error(`Unknown FieldType ${formDefinition[key].type} for key ${key} in ${JSON.stringify(formDefinition)}`);
-//     }
-//   });
-//   return initialState;
-// }
-
-// TEST THISSSSSSSSSSS
-// function validate(form, ignoreTouched = false) {
-//   let newForm = cloneDeep(form);
-//   if ((ignoreTouched || newForm.callerInformation.name.firstName.touched) &&
-//       form.callType === callTypes.caller &&  // this is pretty bad
-//       !newForm.callerInformation.name.firstName.value) {
-//         // explicitly set it to touched so it can't get unset later
-//         newForm.callerInformation.name.firstName.touched = true;
-//         newForm.callerInformation.name.firstName.error = "This field is required";
-//   } else {
-//     newForm.callerInformation.name.firstName.error = null;
-//   }
-  
-//   if ((ignoreTouched || newForm.childInformation.gender.touched) &&
-//       !isStandAloneCallType(form.callType.value) &&  // this is pretty bad
-//       !newForm.childInformation.gender.value) {
-//         // explicitly set it to touched so it can't get unset later
-//         newForm.childInformation.gender.touched = true;
-//         newForm.childInformation.gender.error = "This field is required";
-//   } else {
-//     newForm.childInformation.gender.error = null;
-//   }
-//   return newForm;
-// }
 
 // walk a form tree looking for non-null error values
 export function formIsValid(form) {

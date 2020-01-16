@@ -12,7 +12,8 @@ import { FieldType } from '../states/ContactFormStateFactory';
 // VisibleForTesting
 export function transformForm(form) {
   let newForm = {};
-  Object.keys(form).filter(key => (key !== 'type' && key !== 'validation' && key !== 'error')).forEach(key => {
+  const filterableFields = ['type', 'validation', 'error', 'touched'];
+  Object.keys(form).filter(key => !filterableFields.includes(key)).forEach(key => {
     switch (form[key].type) {
       case FieldType.CALL_TYPE:
       case FieldType.CHECKBOX:

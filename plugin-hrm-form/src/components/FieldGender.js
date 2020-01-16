@@ -6,6 +6,7 @@ import { ErrorText,
          TextField
 } from '../Styles/HrmStyles';
 
+// Delete this soon.
 // The way we're handling errors is pretty terrible, but passing in error={true}
 // isn't working
 const FieldGender = (props) => {

@@ -4,11 +4,21 @@ import { StyledInput,
          ErrorText,
          TextField
 } from '../Styles/HrmStyles';
+import { ValidationType } from '../states/ContactFormStateFactory';
+
+const requiredAsterisk = store => {
+  if (store.validation && store.validation.includes(ValidationType.REQUIRED)) {
+    return (
+      <span style={{color: 'red'}}>*</span>
+    );
+  }
+  return '';
+}
 
 const FieldFirstName = (props) => {
   return (
     <TextField>
-      <StyledLabel htmlFor="CallerInformation_FirstName">First Name<span style={{color: 'red'}}>*</span></StyledLabel>
+      <StyledLabel htmlFor="CallerInformation_FirstName">First Name{requiredAsterisk(props.form.callerInformation.name.firstName)}</StyledLabel>
       <StyledInput
         error={props.form.callerInformation.name.firstName.error !== null}
         name='firstName'

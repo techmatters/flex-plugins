@@ -8,7 +8,8 @@ jest.mock('../Styles/HrmStyles', () => {
   };
 });
 import React from 'react';
-import FieldGender from '../components/FieldGender';
+import FieldSelect from '../components/FieldSelect';
+import { ValidationType } from '../states/ContactFormStateFactory';
 import renderer from 'react-test-renderer';
 
 test('FieldGender renders initially', () => {
@@ -17,17 +18,21 @@ test('FieldGender renders initially', () => {
       gender: {
         value: '',
         touched: false,
-        error: null
+        error: null,
+        validation: [ ValidationType.REQUIRED ]
       }
     }
   };
-  const handleChange = jest.fn();
-  const taskId = '';
   const component = renderer.create(
-    <FieldGender
-      form={form}
-      handleChange={handleChange}
-      taskId={taskId}
+    <FieldSelect
+      handleBlur={jest.fn()}
+      handleChange={jest.fn()}
+      handleFocus={jest.fn()}
+      store={form.childInformation.gender}
+      id="ChildInformation_Gender"
+      name="gender"
+      label="Gender"
+      options={['Male', 'Female', 'Other', 'Unknown']}
     />
   );
   let tree = component.toJSON();
@@ -40,17 +45,23 @@ test('FieldGender renders when valid', () => {
       gender: {
         value: 'Female',
         touched: false,
-        error: null
+        error: null,
+        validation: [ ValidationType.REQUIRED ]
       }
     }
   };
   const handleChange = jest.fn();
   const taskId = '';
   const component = renderer.create(
-    <FieldGender
-      form={form}
-      handleChange={handleChange}
-      taskId={taskId}
+    <FieldSelect
+      handleBlur={jest.fn()}
+      handleChange={jest.fn()}
+      handleFocus={jest.fn()}
+      store={form.childInformation.gender}
+      id="ChildInformation_Gender"
+      name="gender"
+      label="Gender"
+      options={['Male', 'Female', 'Other', 'Unknown']}
     />
   );
   let tree = component.toJSON();
@@ -63,17 +74,23 @@ test('FieldGender renders errors when not valid', () => {
       gender: {
         value: '',
         touched: true,
-        error: 'This field is required'
+        error: 'This field is required',
+        validation: [ ValidationType.REQUIRED ]
       }
     }
   };
   const handleChange = jest.fn();
   const taskId = '';
   const component = renderer.create(
-    <FieldGender
-      form={form}
-      handleChange={handleChange}
-      taskId={taskId}
+    <FieldSelect
+      handleBlur={jest.fn()}
+      handleChange={jest.fn()}
+      handleFocus={jest.fn()}
+      store={form.childInformation.gender}
+      id="ChildInformation_Gender"
+      name="gender"
+      label="Gender"
+      options={['Male', 'Female', 'Other', 'Unknown']}
     />
   );
   let tree = component.toJSON();

@@ -1,4 +1,3 @@
-import cloneDeep from 'lodash/cloneDeep';
 export const ValidationType = {
   REQUIRED: 'REQUIRED',  // Will not be applied if in the callerInformation tab and callType is not caller.  Will not be applied when callType is standalone.
 };
@@ -25,7 +24,7 @@ const defaultFormDefinition = {
       type: FieldType.INTERMEDIATE,
       firstName: {
         type: FieldType.TEXT_INPUT,
-        validation: [ ValidationType.REQUIRED ]
+        validation: null
       },
       lastName: {
         type: FieldType.TEXT_INPUT,
@@ -38,11 +37,11 @@ const defaultFormDefinition = {
     },
     gender: {
       type: FieldType.SELECT_SINGLE,
-      validation: [ ValidationType.REQUIRED ]
+      validation: null
     },
     age: {
       type: FieldType.SELECT_SINGLE,
-      validation: [ ValidationType.REQUIRED ]
+      validation: null
     },
     language: {
       type: FieldType.SELECT_SINGLE,
@@ -90,7 +89,7 @@ const defaultFormDefinition = {
       type: FieldType.INTERMEDIATE,
       firstName: {
         type: FieldType.TEXT_INPUT,
-        validation: [ ValidationType.REQUIRED ]
+        validation: null
       },
       lastName: {
         type: FieldType.TEXT_INPUT,
