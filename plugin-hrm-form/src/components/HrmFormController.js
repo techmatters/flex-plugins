@@ -15,9 +15,10 @@ export function transformForm(form) {
   Object.keys(form).filter(key => (key !== 'type' && key !== 'validation' && key !== 'error')).forEach(key => {
     switch (form[key].type) {
       case FieldType.CALL_TYPE:
-        newForm[key] = form[key].value;
-        break;
       case FieldType.CHECKBOX:
+      case FieldType.SELECT_SINGLE:
+      case FieldType.TEXT_BOX:
+      case FieldType.TEXT_INPUT:
         newForm[key] = form[key].value;
         break;
       case FieldType.CHECKBOX_FIELD:
@@ -26,11 +27,6 @@ export function transformForm(form) {
         newForm[key] = {
           ...transformForm(form[key])
         };
-        break;
-      case FieldType.SELECT_SINGLE:
-      case FieldType.TEXT_BOX:
-      case FieldType.TEXT_INPUT:
-        newForm[key] = form[key].value;
         break;
       default:
         throw new Error(`Unknown FieldType ${form[key].type} for key ${key} in ${JSON.stringify(form)}`);
