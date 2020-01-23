@@ -1,0 +1,132 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FieldFirstName renders errors when not valid 1`] = `
+<TextField>
+  <StyledLabel
+    htmlFor="CallerInformation_FirstName"
+  >
+    First Name
+    <span
+      style={
+        Object {
+          "color": "red",
+        }
+      }
+    >
+      *
+    </span>
+  </StyledLabel>
+  <StyledInput
+    error={true}
+    id="CallerInformation_FirstName"
+    name="firstName"
+    onBlur={[Function]}
+    onChange={[Function]}
+    onFocus={[Function]}
+    value=""
+  />
+  <ErrorText>
+    This field is required
+  </ErrorText>
+</TextField>
+`;
+
+exports[`FieldFirstName renders initially when not required 1`] = `
+<TextField>
+  <StyledLabel
+    htmlFor="CallerInformation_FirstName"
+  >
+    First Name
+    
+  </StyledLabel>
+  <StyledInput
+    error={false}
+    id="CallerInformation_FirstName"
+    name="firstName"
+    onBlur={[Function]}
+    onChange={[Function]}
+    onFocus={[Function]}
+    value=""
+  />
+  
+</TextField>
+`;
+
+exports[`FieldFirstName renders initially when required 1`] = `
+<TextField>
+  <StyledLabel
+    htmlFor="CallerInformation_FirstName"
+  >
+    First Name
+    <span
+      style={
+        Object {
+          "color": "red",
+        }
+      }
+    >
+      *
+    </span>
+  </StyledLabel>
+  <StyledInput
+    error={false}
+    id="CallerInformation_FirstName"
+    name="firstName"
+    onBlur={[Function]}
+    onChange={[Function]}
+    onFocus={[Function]}
+    value=""
+  />
+  
+</TextField>
+`;
+
+exports[`FieldFirstName renders when valid and not required 1`] = `
+<TextField>
+  <StyledLabel
+    htmlFor="CallerInformation_FirstName"
+  >
+    First Name
+    
+  </StyledLabel>
+  <StyledInput
+    error={false}
+    id="CallerInformation_FirstName"
+    name="firstName"
+    onBlur={[Function]}
+    onChange={[Function]}
+    onFocus={[Function]}
+    value="testValue"
+  />
+  
+</TextField>
+`;
+
+exports[`FieldFirstName renders when valid and required 1`] = `
+<TextField>
+  <StyledLabel
+    htmlFor="CallerInformation_FirstName"
+  >
+    First Name
+    <span
+      style={
+        Object {
+          "color": "red",
+        }
+      }
+    >
+      *
+    </span>
+  </StyledLabel>
+  <StyledInput
+    error={false}
+    id="CallerInformation_FirstName"
+    name="firstName"
+    onBlur={[Function]}
+    onChange={[Function]}
+    onFocus={[Function]}
+    value="testValue"
+  />
+  
+</TextField>
+`;

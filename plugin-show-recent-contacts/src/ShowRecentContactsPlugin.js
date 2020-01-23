@@ -5,6 +5,7 @@ import RecentContactsView from './components/RecentContactsView';
 import RecentContactsSidebarButton from './components/RecentContactsSidebarButton';
 
 const PLUGIN_NAME = 'ShowRecentContactsPlugin';
+const PLUGIN_VERSION = '0.3.0';
 
 export default class ShowRecentContactsPlugin extends FlexPlugin {
   constructor() {
@@ -19,6 +20,7 @@ export default class ShowRecentContactsPlugin extends FlexPlugin {
    * @param manager { import('@twilio/flex-ui').Manager }
    */
   init(flex, manager) {
+    console.log(`Welcome to ${PLUGIN_NAME} Version ${PLUGIN_VERSION}`);
     const helpline = manager.store.getState().flex.worker.attributes.helpline;
     console.log("Helpline = " + helpline);
 
