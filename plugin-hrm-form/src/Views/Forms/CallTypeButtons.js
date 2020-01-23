@@ -1,8 +1,8 @@
 import React from 'react';
-import { Container, StyledButton, StyledFinishButton } from '../Styles/HrmStyles';
+import { Container, StyledButton, StyledFinishButton } from '../../Styles/HrmStyles';
 import { withTaskContext } from "@twilio/flex-ui";
-import { callTypes } from '../states/DomainConstants';
-import { isStandAloneCallType } from '../states/ValidationRules';
+import { callTypes } from '../../states/DomainConstants';
+import { isStandAloneCallType } from '../../states/ValidationRules';
 
 const CallTypeButtons = (props) => {
   // TODO(nick): Figure out how to get these to be separate
@@ -10,7 +10,8 @@ const CallTypeButtons = (props) => {
     return (
       <StyledButton 
         roundCorners={false}
-        selected={props.form && props.form.callType.value === callTypes[option]}
+        theme={props.theme} 
+        selected={props.form && props.form.callType === callTypes[option]}
         onClick={(e) => props.handleCallTypeButtonClick(props.task.taskSid, callTypes[option], e)}
       >
         {callTypes[option]}
@@ -20,12 +21,13 @@ const CallTypeButtons = (props) => {
   return (
       <Container>
         { buttons }
-        {props.form && props.form.callType && props.form.callType.value && isStandAloneCallType(props.form.callType.value)
+        {props.form && props.form.callType && isStandAloneCallType(props.form.callType)
           ? 
             <StyledFinishButton
               style={{marginTop: '20px', border: '2px', backgroundColor: 'red'}}
               roundCorners={true}
-              onClick={() => props.handleSubmit(props.task)}
+              theme={props.theme}
+              onClick={(e) => props.handleCompleteTask(props.task.taskSid, props.task)}
             >
               End conversation and close task
             </StyledFinishButton>
