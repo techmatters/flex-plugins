@@ -10,8 +10,7 @@ const CallTypeButtons = (props) => {
     return (
       <StyledButton 
         roundCorners={false}
-        theme={props.theme} 
-        selected={props.form && props.form.callType === callTypes[option]}
+        selected={props.form && props.form.callType.value === callTypes[option]}
         onClick={(e) => props.handleCallTypeButtonClick(props.task.taskSid, callTypes[option], e)}
       >
         {callTypes[option]}
@@ -21,12 +20,11 @@ const CallTypeButtons = (props) => {
   return (
       <Container>
         { buttons }
-        {props.form && props.form.callType && isStandAloneCallType(props.form.callType)
+        {props.form && props.form.callType && props.form.callType.value && isStandAloneCallType(props.form.callType.value)
           ? 
             <StyledFinishButton
               style={{marginTop: '20px', border: '2px', backgroundColor: 'red'}}
               roundCorners={true}
-              theme={props.theme}
               onClick={() => props.handleSubmit(props.task)}
             >
               End conversation and close task

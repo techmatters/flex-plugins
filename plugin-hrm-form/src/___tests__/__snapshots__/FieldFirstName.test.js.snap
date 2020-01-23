@@ -23,7 +23,7 @@ exports[`FieldFirstName renders errors when not valid 1`] = `
     onBlur={[Function]}
     onChange={[Function]}
     onFocus={[Function]}
-    value="testValue"
+    value=""
   />
   <ErrorText>
     This field is required
@@ -31,7 +31,28 @@ exports[`FieldFirstName renders errors when not valid 1`] = `
 </TextField>
 `;
 
-exports[`FieldFirstName renders initially 1`] = `
+exports[`FieldFirstName renders initially when not required 1`] = `
+<TextField>
+  <StyledLabel
+    htmlFor="CallerInformation_FirstName"
+  >
+    First Name
+    
+  </StyledLabel>
+  <StyledInput
+    error={false}
+    id="CallerInformation_FirstName"
+    name="firstName"
+    onBlur={[Function]}
+    onChange={[Function]}
+    onFocus={[Function]}
+    value=""
+  />
+  
+</TextField>
+`;
+
+exports[`FieldFirstName renders initially when required 1`] = `
 <TextField>
   <StyledLabel
     htmlFor="CallerInformation_FirstName"
@@ -60,7 +81,28 @@ exports[`FieldFirstName renders initially 1`] = `
 </TextField>
 `;
 
-exports[`FieldFirstName renders when valid 1`] = `
+exports[`FieldFirstName renders when valid and not required 1`] = `
+<TextField>
+  <StyledLabel
+    htmlFor="CallerInformation_FirstName"
+  >
+    First Name
+    
+  </StyledLabel>
+  <StyledInput
+    error={false}
+    id="CallerInformation_FirstName"
+    name="firstName"
+    onBlur={[Function]}
+    onChange={[Function]}
+    onFocus={[Function]}
+    value="testValue"
+  />
+  
+</TextField>
+`;
+
+exports[`FieldFirstName renders when valid and required 1`] = `
 <TextField>
   <StyledLabel
     htmlFor="CallerInformation_FirstName"

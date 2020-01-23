@@ -5,6 +5,7 @@ import { BottomButtonBar,
          CheckboxField,
          ColumnarBlock,
          Container,
+         ErrorText,
          NameFields,
          StyledCheckboxLabel,
          StyledInput,
@@ -24,6 +25,7 @@ import { callTypes } from '../states/DomainConstants'
 import FieldFirstName from './FieldFirstName';
 import decorateTab from './decorateTab';
 import { formIsValid } from '../states/ValidationRules';
+import FieldSelect from './FieldSelect';
 
 
 class TabbedForms extends React.PureComponent {
@@ -53,7 +55,7 @@ class TabbedForms extends React.PureComponent {
           <TextField>
               <StyledLabel htmlFor="CallerInformation_LastName">Last name</StyledLabel>
               <StyledInput
-                value={this.props.form.callerInformation.name.lastName}
+                value={this.props.form.callerInformation.name.lastName.value}
                 name='lastName'
                 id="CallerInformation_LastName"
                 onChange={(e) => 
@@ -71,7 +73,7 @@ class TabbedForms extends React.PureComponent {
                 <StyledSelect 
                   name="relationshipToChild"
                   id="CallerInformation_RelationshipToChild"
-                  value={this.props.form.callerInformation.relationshipToChild}
+                  value={this.props.form.callerInformation.relationshipToChild.value}
                   onChange={(e) => this.props.handleChange(taskId, ['callerInformation'], e)}>
                   <StyledMenuItem hidden selected disabled value="">Select</StyledMenuItem>
                   <StyledMenuItem value="Friend">Friend</StyledMenuItem>
@@ -88,7 +90,7 @@ class TabbedForms extends React.PureComponent {
                 <StyledSelect 
                   name="gender"
                   id="CallerInformation_Gender"
-                  value={this.props.form.callerInformation.gender}
+                  value={this.props.form.callerInformation.gender.value}
                   onChange={(e) => this.props.handleChange(taskId, ['callerInformation'], e)}>
                   <StyledMenuItem hidden selected disabled value="">Select</StyledMenuItem>
                   <StyledMenuItem value="Male">Male</StyledMenuItem>
@@ -103,7 +105,7 @@ class TabbedForms extends React.PureComponent {
                 <StyledSelect 
                   name="age"
                   id="CallerInformation_Age"
-                  value={this.props.form.callerInformation.age}
+                  value={this.props.form.callerInformation.age.value}
                   onChange={(e) => this.props.handleChange(taskId, ['callerInformation'], e)}>
                   <StyledMenuItem hidden selected disabled value="">Select</StyledMenuItem>
                   <StyledMenuItem value="0-3">0-3</StyledMenuItem>
@@ -122,7 +124,7 @@ class TabbedForms extends React.PureComponent {
                 <StyledSelect 
                   name="language"
                   id="CallerInformation_Language"
-                  value={this.props.form.callerInformation.language}
+                  value={this.props.form.callerInformation.language.value}
                   onChange={(e) => this.props.handleChange(taskId, ['callerInformation'], e)}>
                   <StyledMenuItem hidden selected disabled value="">Select</StyledMenuItem>
                   <StyledMenuItem value="Language 1">Language 1</StyledMenuItem>
@@ -136,7 +138,7 @@ class TabbedForms extends React.PureComponent {
                 <StyledSelect 
                   name="nationality"
                   id="CallerInformation_Nationality"
-                  value={this.props.form.callerInformation.nationality}
+                  value={this.props.form.callerInformation.nationality.value}
                   onChange={(e) => this.props.handleChange(taskId, ['callerInformation'], e)}>
                   <StyledMenuItem hidden selected disabled value="">Select</StyledMenuItem>
                   <StyledMenuItem value="Nationality 1">Nationality 1</StyledMenuItem>
@@ -150,7 +152,7 @@ class TabbedForms extends React.PureComponent {
                 <StyledSelect 
                   name="ethnicity"
                   id="CallerInformation_Ethnicity"
-                  value={this.props.form.callerInformation.ethnicity}
+                  value={this.props.form.callerInformation.ethnicity.value}
                   onChange={(e) => this.props.handleChange(taskId, ['callerInformation'], e)}>
                   <StyledMenuItem hidden selected disabled value="">Select</StyledMenuItem>
                   <StyledMenuItem value="Ethnicity 1">Ethnicity 1</StyledMenuItem>
@@ -166,7 +168,7 @@ class TabbedForms extends React.PureComponent {
                 <StyledInput
                   name='streetAddress'
                   id="CallerInformation_StreetAddress"
-                  value={this.props.form.callerInformation.location.streetAddress}
+                  value={this.props.form.callerInformation.location.streetAddress.value}
                   onChange={(e) => 
                     this.props.handleChange(taskId,
                                             ['callerInformation', 'location'],
@@ -179,7 +181,7 @@ class TabbedForms extends React.PureComponent {
                 <StyledInput
                   name='city'
                   id="CallerInformation_City"
-                  value={this.props.form.callerInformation.location.city}
+                  value={this.props.form.callerInformation.location.city.value}
                   onChange={(e) => 
                     this.props.handleChange(taskId,
                                             ['callerInformation', 'location'],
@@ -192,7 +194,7 @@ class TabbedForms extends React.PureComponent {
                 <StyledInput
                   name='stateOrCounty'
                   id="CallerInformation_StateOrCounty"
-                  value={this.props.form.callerInformation.location.stateOrCounty}
+                  value={this.props.form.callerInformation.location.stateOrCounty.value}
                   onChange={(e) => 
                     this.props.handleChange(taskId,
                                             ['callerInformation', 'location'],
@@ -205,7 +207,7 @@ class TabbedForms extends React.PureComponent {
                 <StyledInput
                   name='postalCode'
                   id="CallerInformation_PostalCode"
-                  value={this.props.form.callerInformation.location.postalCode}
+                  value={this.props.form.callerInformation.location.postalCode.value}
                   onChange={(e) => 
                     this.props.handleChange(taskId,
                                             ['callerInformation', 'location'],
@@ -218,7 +220,7 @@ class TabbedForms extends React.PureComponent {
                 <StyledInput
                   name='phone1'
                   id="CallerInformation_Phone1"
-                  value={this.props.form.callerInformation.location.phone1}
+                  value={this.props.form.callerInformation.location.phone1.value}
                   onChange={(e) => 
                     this.props.handleChange(taskId,
                                             ['callerInformation', 'location'],
@@ -231,7 +233,7 @@ class TabbedForms extends React.PureComponent {
                 <StyledInput
                   name='phone2'
                   id="CallerInformation_Phone2"
-                  value={this.props.form.callerInformation.location.phone2}
+                  value={this.props.form.callerInformation.location.phone2.value}
                   onChange={(e) => 
                     this.props.handleChange(taskId,
                                             ['callerInformation', 'location'],
@@ -243,6 +245,13 @@ class TabbedForms extends React.PureComponent {
       </Container>
     );
 
+    const curriedHandleChange = (taskId, parents, handleChange) => e => {
+      handleChange(taskId, parents, e);
+    }
+    const curriedHandleFocus = (taskId, parents, name, handleFocus) => () => {
+      handleFocus(taskId, parents, name);
+    }
+
     // Child Information
     body[1] = (
       <Container>
@@ -252,7 +261,7 @@ class TabbedForms extends React.PureComponent {
               <StyledInput
                 name='firstName'
                 id="ChildInformation_FirstName"
-                value={this.props.form.childInformation.name.firstName}
+                value={this.props.form.childInformation.name.firstName.value}
                 onChange={(e) => 
                   this.props.handleChange(taskId,
                                           ['childInformation', 'name'],
@@ -263,7 +272,7 @@ class TabbedForms extends React.PureComponent {
           <TextField>
               <StyledLabel htmlFor="ChildInformation_LastName">Last name</StyledLabel>
               <StyledInput
-                value={this.props.form.childInformation.name.lastName}
+                value={this.props.form.childInformation.name.lastName.value}
                 name='lastName'
                 id="ChildInformation_LastName"
                 onChange={(e) => 
@@ -276,46 +285,34 @@ class TabbedForms extends React.PureComponent {
 
         <TwoColumnLayout>
           <ColumnarBlock>
-            <TextField>
-                <StyledLabel htmlFor="ChildInformation_Gender">Gender</StyledLabel>
-                <StyledSelect 
-                  name="gender"
-                  id="ChildInformation_Gender"
-                  value={this.props.form.childInformation.gender}
-                  onChange={(e) => this.props.handleChange(taskId, ['childInformation'], e)}>
-                  <StyledMenuItem hidden selected disabled value="">Select</StyledMenuItem>
-                  <StyledMenuItem value="Male">Male</StyledMenuItem>
-                  <StyledMenuItem value="Female">Female</StyledMenuItem>
-                  <StyledMenuItem value="Other">Other</StyledMenuItem>
-                  <StyledMenuItem value="Unknown">Unknown</StyledMenuItem>
-                </StyledSelect>
-            </TextField>
+            <FieldSelect
+              handleBlur={this.props.handleBlur}
+              handleChange={curriedHandleChange(taskId, ['childInformation'], this.props.handleChange)}
+              handleFocus={curriedHandleFocus(taskId, ['childInformation'], 'gender', this.props.handleFocus)}
+              store={this.props.form.childInformation.gender}
+              id="ChildInformation_Gender"
+              name="gender"
+              label="Gender"
+              options={['Male', 'Female', 'Other', 'Unknown']}
+            />
 
-            <TextField>
-                <StyledLabel htmlFor="ChildInformation_Age">Age</StyledLabel>
-                <StyledSelect 
-                  name="age"
-                  id="ChildInformation_Age"
-                  value={this.props.form.childInformation.age}
-                  onChange={(e) => this.props.handleChange(taskId, ['childInformation'], e)}>
-                  <StyledMenuItem hidden selected disabled value="">Select</StyledMenuItem>
-                  <StyledMenuItem value="0-3">0-3</StyledMenuItem>
-                  <StyledMenuItem value="4-6">4-6</StyledMenuItem>
-                  <StyledMenuItem value="7-9">7-9</StyledMenuItem>
-                  <StyledMenuItem value="10-12">10-12</StyledMenuItem>
-                  <StyledMenuItem value="13-15">13-15</StyledMenuItem>
-                  <StyledMenuItem value="16-17">16-17</StyledMenuItem>
-                  <StyledMenuItem value="18-25">18-25</StyledMenuItem>
-                  <StyledMenuItem value=">25">&gt;25</StyledMenuItem>
-                </StyledSelect>
-            </TextField>
+            <FieldSelect
+              handleBlur={this.props.handleBlur}
+              handleChange={curriedHandleChange(taskId, ['childInformation'], this.props.handleChange)}
+              handleFocus={curriedHandleFocus(taskId, ['childInformation'], 'age', this.props.handleFocus)}
+              store={this.props.form.childInformation.age}
+              id="ChildInformation_Age"
+              name="age"
+              label="Age"
+              options={['0-3', '4-6', '7-9', '10-12', '13-15', '16-17', '18-25', '>25']}
+            />
 
             <TextField>
                 <StyledLabel htmlFor="ChildInformation_Language">Language</StyledLabel>
                 <StyledSelect 
                   name="language"
                   id="ChildInformation_Language"
-                  value={this.props.form.childInformation.language}
+                  value={this.props.form.childInformation.language.value}
                   onChange={(e) => this.props.handleChange(taskId, ['childInformation'], e)}>
                   <StyledMenuItem hidden selected disabled value="">Select</StyledMenuItem>
                   <StyledMenuItem value="Language 1">Language 1</StyledMenuItem>
@@ -329,7 +326,7 @@ class TabbedForms extends React.PureComponent {
                 <StyledSelect 
                   name="nationality"
                   id="ChildInformation_Nationality"
-                  value={this.props.form.childInformation.nationality}
+                  value={this.props.form.childInformation.nationality.value}
                   onChange={(e) => this.props.handleChange(taskId, ['childInformation'], e)}>
                   <StyledMenuItem hidden selected disabled value="">Select</StyledMenuItem>
                   <StyledMenuItem value="Nationality 1">Nationality 1</StyledMenuItem>
@@ -343,7 +340,7 @@ class TabbedForms extends React.PureComponent {
                 <StyledSelect 
                   name="ethnicity"
                   id="ChildInformation_Ethnicity"
-                  value={this.props.form.childInformation.ethnicity}
+                  value={this.props.form.childInformation.ethnicity.value}
                   onChange={(e) => this.props.handleChange(taskId, ['childInformation'], e)}>
                   <StyledMenuItem hidden selected disabled value="">Select</StyledMenuItem>
                   <StyledMenuItem value="Ethnicity 1">Ethnicity 1</StyledMenuItem>
@@ -355,12 +352,12 @@ class TabbedForms extends React.PureComponent {
             <CheckboxField>
               <Checkbox name='refugee' 
                   id="ChildInformation_Refugee"
-                  checked={this.props.form.childInformation.refugee} 
+                  checked={this.props.form.childInformation.refugee.value} 
                   onClick={(e) => 
                     this.props.handleCheckbox(taskId,
                                             ['childInformation'],
                                             'refugee', 
-                                            !this.props.form.childInformation.refugee)}
+                                            !this.props.form.childInformation.refugee.value)}
               />
               <StyledCheckboxLabel htmlFor="ChildInformation_Refugee">Refugee?</StyledCheckboxLabel>
             </CheckboxField>
@@ -368,12 +365,12 @@ class TabbedForms extends React.PureComponent {
             <CheckboxField>
               <Checkbox name='disabledOrSpecialNeeds' 
                   id="ChildInformation_DisabledOrSpecialNeeds"
-                  checked={this.props.form.childInformation.disabledOrSpecialNeeds} 
+                  checked={this.props.form.childInformation.disabledOrSpecialNeeds.value} 
                   onClick={(e) => 
                     this.props.handleCheckbox(taskId,
                                             ['childInformation'],
                                             'disabledOrSpecialNeeds', 
-                                            !this.props.form.childInformation.disabledOrSpecialNeeds)}
+                                            !this.props.form.childInformation.disabledOrSpecialNeeds.value)}
               />
               <StyledCheckboxLabel htmlFor="ChildInformation_DisabledOrSpecialNeeds">Disabled/Special Needs?</StyledCheckboxLabel>
             </CheckboxField>
@@ -381,12 +378,12 @@ class TabbedForms extends React.PureComponent {
             <CheckboxField>
               <Checkbox name='hiv' 
                   id="ChildInformation_HIV"
-                  checked={this.props.form.childInformation.hiv} 
+                  checked={this.props.form.childInformation.hiv.value} 
                   onClick={(e) => 
                     this.props.handleCheckbox(taskId,
                                             ['childInformation'],
                                             'hiv', 
-                                            !this.props.form.childInformation.hiv)}
+                                            !this.props.form.childInformation.hiv.value)}
               />
               <StyledCheckboxLabel htmlFor="ChildInformation_HIV">HIV Positive?</StyledCheckboxLabel>
             </CheckboxField>
@@ -398,7 +395,7 @@ class TabbedForms extends React.PureComponent {
                 <StyledInput
                   name='streetAddress'
                   id="ChildInformation_StreetAddress"
-                  value={this.props.form.childInformation.location.streetAddress}
+                  value={this.props.form.childInformation.location.streetAddress.value}
                   onChange={(e) => 
                     this.props.handleChange(taskId,
                                             ['childInformation', 'location'],
@@ -411,7 +408,7 @@ class TabbedForms extends React.PureComponent {
                 <StyledInput
                   name='city'
                   id="ChildInformation_City"
-                  value={this.props.form.childInformation.location.city}
+                  value={this.props.form.childInformation.location.city.value}
                   onChange={(e) => 
                     this.props.handleChange(taskId,
                                             ['childInformation', 'location'],
@@ -424,7 +421,7 @@ class TabbedForms extends React.PureComponent {
                 <StyledInput
                   name='stateOrCounty'
                   id="ChildInformation_StateOrCounty"
-                  value={this.props.form.childInformation.location.stateOrCounty}
+                  value={this.props.form.childInformation.location.stateOrCounty.value}
                   onChange={(e) => 
                     this.props.handleChange(taskId,
                                             ['childInformation', 'location'],
@@ -437,7 +434,7 @@ class TabbedForms extends React.PureComponent {
                 <StyledInput
                   name='postalCode'
                   id="ChildInformation_PostalCode"
-                  value={this.props.form.childInformation.location.postalCode}
+                  value={this.props.form.childInformation.location.postalCode.value}
                   onChange={(e) => 
                     this.props.handleChange(taskId,
                                             ['childInformation', 'location'],
@@ -450,7 +447,7 @@ class TabbedForms extends React.PureComponent {
                 <StyledInput
                   name='phone1'
                   id="ChildInformation_Phone1"
-                  value={this.props.form.childInformation.location.phone1}
+                  value={this.props.form.childInformation.location.phone1.value}
                   onChange={(e) => 
                     this.props.handleChange(taskId,
                                             ['childInformation', 'location'],
@@ -463,7 +460,7 @@ class TabbedForms extends React.PureComponent {
               <StyledInput
                 name='phone2'
                 id="ChildInformation_Phone2"
-                value={this.props.form.childInformation.location.phone2}
+                value={this.props.form.childInformation.location.phone2.value}
                 onChange={(e) => 
                   this.props.handleChange(taskId,
                                           ['childInformation', 'location'],
@@ -476,7 +473,7 @@ class TabbedForms extends React.PureComponent {
                 <StyledInput
                   name='name'
                   id="ChildInformation_SchoolName"
-                  value={this.props.form.childInformation.school.name}
+                  value={this.props.form.childInformation.school.name.value}
                   onChange={(e) => 
                     this.props.handleChange(taskId,
                                             ['childInformation', 'school'],
@@ -489,7 +486,7 @@ class TabbedForms extends React.PureComponent {
                 <StyledInput
                   name='gradeLevel'
                   id="ChildInformation_GradeLevel"
-                  value={this.props.form.childInformation.school.gradeLevel}
+                  value={this.props.form.childInformation.school.gradeLevel.value}
                   onChange={(e) => 
                     this.props.handleChange(taskId,
                                             ['childInformation', 'school'],
@@ -504,6 +501,11 @@ class TabbedForms extends React.PureComponent {
     // Issue Categorization
     body[2] = (
       <Container style={{display: 'flex', flexDirection: 'column'}}>
+        {this.props.form.caseInformation.categories.error ? 
+          <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginBottom: '20px'}}>
+            <ErrorText>{this.props.form.caseInformation.categories.error}</ErrorText>
+          </div>
+           : ''}
         <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginBottom: '20px'}}>
           <BranchingFormIssueCategory category="1" handleCategoryToggle={this.props.handleCategoryToggle} taskId={taskId} form={this.props.form}/>
           <BranchingFormIssueCategory category="2" handleCategoryToggle={this.props.handleCategoryToggle} taskId={taskId} form={this.props.form}/>
@@ -516,6 +518,12 @@ class TabbedForms extends React.PureComponent {
         </div>
       </Container>
     );
+    // this is hokey
+    // we need to be able to mark that the categories field has been touched
+    // the only way to do this that I see is this.  Blech.
+    if (this.state.tab === 2 && !this.props.form.caseInformation.categories.touched) {
+      this.props.handleFocus(taskId, ['caseInformation'], 'categories');
+    }
 
     // Case Information
     body[3] = (
@@ -527,7 +535,7 @@ class TabbedForms extends React.PureComponent {
               <StyledInput multiline={true} rows={10} style={{width: "100%"}}
                 name="callSummary"
                 id="CaseInformation_CallSummary"
-                value={this.props.form.caseInformation.callSummary}
+                value={this.props.form.caseInformation.callSummary.value}
                 onChange={(e) => this.props.handleChange(taskId, ['caseInformation'], e)}
               />
             </TextField>
@@ -537,7 +545,7 @@ class TabbedForms extends React.PureComponent {
                 <StyledSelect 
                   name="referredTo"
                   id="CaseInformation_ReferredTo"
-                  value={this.props.form.caseInformation.referredTo}
+                  value={this.props.form.caseInformation.referredTo.value}
                   onChange={(e) => this.props.handleChange(taskId, ['caseInformation'], e)}>
                   <StyledMenuItem hidden selected disabled value="">Select</StyledMenuItem>
                   <StyledMenuItem value="No Referral">No Referral</StyledMenuItem>
@@ -552,7 +560,7 @@ class TabbedForms extends React.PureComponent {
                 <StyledSelect 
                   name="status"
                   id="CaseInformation_Status"
-                  value={this.props.form.caseInformation.status}
+                  value={this.props.form.caseInformation.status.value}
                   onChange={(e) => this.props.handleChange(taskId, ['caseInformation'], e)}>
                   <StyledMenuItem hidden selected disabled value="">Select</StyledMenuItem>
                   <StyledMenuItem value="Open">Open</StyledMenuItem>
@@ -566,7 +574,7 @@ class TabbedForms extends React.PureComponent {
               <StyledSelect 
                 name="howDidTheChildHearAboutUs"
                 id="CaseInformation_HowDidTheChildHearAboutUs"
-                value={this.props.form.caseInformation.howDidTheChildHearAboutUs}
+                value={this.props.form.caseInformation.howDidTheChildHearAboutUs.value}
                 onChange={(e) => this.props.handleChange(taskId, ['caseInformation'], e)}>
                 <StyledMenuItem hidden selected disabled value="">Select</StyledMenuItem>
                 <StyledMenuItem value="Word of Mouth">Word of Mouth</StyledMenuItem>
@@ -581,12 +589,12 @@ class TabbedForms extends React.PureComponent {
             <CheckboxField>
                 <Checkbox name='keepConfidential'
                     id="CaseInformation_KeepConfidential" 
-                    checked={this.props.form.caseInformation.keepConfidential} 
+                    checked={this.props.form.caseInformation.keepConfidential.value} 
                     onClick={(e) => 
                       this.props.handleCheckbox(taskId,
                                               ['caseInformation'],
                                               'keepConfidential', 
-                                              !this.props.form.caseInformation.keepConfidential)}
+                                              !this.props.form.caseInformation.keepConfidential.value)}
                 />
                 <StyledCheckboxLabel htmlFor="CaseInformation_KeepConfidential">Keep Confidential?</StyledCheckboxLabel>
             </CheckboxField>
@@ -594,12 +602,12 @@ class TabbedForms extends React.PureComponent {
             <CheckboxField>
                 <Checkbox name='okForCaseWorkerToCall' 
                     id="CaseInformation_OkForCaseWorkerToCall"
-                    checked={this.props.form.caseInformation.okForCaseWorkerToCall} 
+                    checked={this.props.form.caseInformation.okForCaseWorkerToCall.value} 
                     onClick={(e) => 
                       this.props.handleCheckbox(taskId,
                                               ['caseInformation'],
                                               'okForCaseWorkerToCall', 
-                                              !this.props.form.caseInformation.okForCaseWorkerToCall)}
+                                              !this.props.form.caseInformation.okForCaseWorkerToCall.value)}
                 />
                 <StyledCheckboxLabel htmlFor="CaseInformation_OkForCaseWorkerToCall">OK for case worker to call?</StyledCheckboxLabel>
             </CheckboxField>
@@ -607,12 +615,12 @@ class TabbedForms extends React.PureComponent {
             <CheckboxField>
                 <Checkbox name='didYouDiscussRightsWithTheChild' 
                     id="CaseInformation_DidYouDiscussRightsWithTheChild"
-                    checked={this.props.form.caseInformation.didYouDiscussRightsWithTheChild} 
+                    checked={this.props.form.caseInformation.didYouDiscussRightsWithTheChild.value} 
                     onClick={(e) => 
                       this.props.handleCheckbox(taskId,
                                               ['caseInformation'],
                                               'didYouDiscussRightsWithTheChild', 
-                                              !this.props.form.caseInformation.didYouDiscussRightsWithTheChild)}
+                                              !this.props.form.caseInformation.didYouDiscussRightsWithTheChild.value)}
                 />
                 <StyledCheckboxLabel htmlFor="CaseInformation_DidYouDiscussRightsWithTheChild">Did you discuss rights with the child?</StyledCheckboxLabel>
             </CheckboxField>
@@ -620,12 +628,12 @@ class TabbedForms extends React.PureComponent {
             <CheckboxField>
               <Checkbox name='didTheChildFeelWeSolvedTheirProblem' 
                   id="CaseInformation_DidTheChildFeelWeSolvedTheirProblem"
-                  checked={this.props.form.caseInformation.didTheChildFeelWeSolvedTheirProblem} 
+                  checked={this.props.form.caseInformation.didTheChildFeelWeSolvedTheirProblem.value} 
                   onClick={(e) => 
                     this.props.handleCheckbox(taskId,
                                             ['caseInformation'],
                                             'didTheChildFeelWeSolvedTheirProblem', 
-                                            !this.props.form.caseInformation.didTheChildFeelWeSolvedTheirProblem)}
+                                            !this.props.form.caseInformation.didTheChildFeelWeSolvedTheirProblem.value)}
               />
               <StyledCheckboxLabel htmlFor="CaseInformation_DidTheChildFeelWeSolvedTheirProblem">Did the child feel we solved their problem?</StyledCheckboxLabel>
             </CheckboxField>
@@ -633,12 +641,12 @@ class TabbedForms extends React.PureComponent {
             <CheckboxField>
               <Checkbox name='wouldTheChildRecommendUsToAFriend' 
                   id="CaseInformation_WouldTheChildRecommendUsToAFriend"
-                  checked={this.props.form.caseInformation.wouldTheChildRecommendUsToAFriend} 
+                  checked={this.props.form.caseInformation.wouldTheChildRecommendUsToAFriend.value} 
                   onClick={(e) => 
                     this.props.handleCheckbox(taskId,
                                             ['caseInformation'],
                                             'wouldTheChildRecommendUsToAFriend', 
-                                            !this.props.form.caseInformation.wouldTheChildRecommendUsToAFriend)}
+                                            !this.props.form.caseInformation.wouldTheChildRecommendUsToAFriend.value)}
               />
               <StyledCheckboxLabel htmlFor="CaseInformation_WouldTheChildRecommendUsToAFriend">Would the child recommend us to a friend?</StyledCheckboxLabel>
             </CheckboxField>
@@ -649,13 +657,13 @@ class TabbedForms extends React.PureComponent {
 
     let tabs = [
       decorateTab("Caller Information", this.props.form.callerInformation),
-      <Tab label="Child Information" />,
-      <Tab label="Issue Categorization" />,
-      <Tab label="Case Information" />
+      decorateTab("Child Information", this.props.form.childInformation),
+      decorateTab("Issue Categorization", this.props.form.caseInformation.categories),
+      <Tab label="Case Information" />  // normal validate logic won't work here
     ];
 
     // TODO(nick): this is probably not the best way to hide the caller info tab
-    if (this.props.form.callType !== callTypes.caller) {
+    if (this.props.form.callType.value !== callTypes.caller) {
       tabs.shift();
       body.shift();
     }
@@ -709,12 +717,12 @@ function BranchingFormIssueCategory(props) {
             {/* TODO(nick): the inline style below is ugly */}
             <Checkbox 
               style={{ width: 30, height: 30, boxSizing: 'border-box' }}
-              checked={props.form.caseInformation.categories[`category${cat}`][`sub${index}`]} 
+              checked={props.form.caseInformation.categories[`category${cat}`][`sub${index}`].value} 
               id={id}
               onClick={() => props.handleCategoryToggle(props.taskId,
                                                         `category${cat}`,
                                                         `sub${index}`,
-                                                        !props.form.caseInformation.categories[`category${cat}`][`sub${index}`])}
+                                                        !props.form.caseInformation.categories[`category${cat}`][`sub${index}`].value)}
             />
             <StyledCheckboxLabel htmlFor={id}>Subcategory {index}</StyledCheckboxLabel>
           </CategoryCheckboxField>

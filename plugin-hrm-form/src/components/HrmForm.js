@@ -8,7 +8,7 @@ import { isStandAloneCallType } from '../states/ValidationRules';
 const HrmForm = (props) => {
   return (
     <>
-      {props.form && props.form.callType && !isStandAloneCallType(props.form.callType) ? 
+      {props.form && props.form.callType && props.form.callType.value && !isStandAloneCallType(props.form.callType.value) ? 
         <TabbedForms
           form={props.form}
           handleBlur={props.handleBlur}

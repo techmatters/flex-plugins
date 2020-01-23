@@ -7,13 +7,32 @@ import { namespace, contactFormsBase } from '../states';
 import { Actions } from '../states/ContactState';
 import { handleBlur, handleCategoryToggle, handleFocus, handleSubmit } from '../states/ActionCreators';
 import { secret } from '../private/secret.js';
-import cloneDeep from 'lodash/cloneDeep';
+import { FieldType } from '../states/ContactFormStateFactory';
 
 // VisibleForTesting
 export function transformForm(form) {
-  let newForm = cloneDeep(form);
-  delete newForm.internal;
-  newForm.callerInformation.name.firstName = newForm.callerInformation.name.firstName.value;
+  let newForm = {};
+  const filterableFields = ['type', 'validation', 'error', 'touched'];
+  Object.keys(form).filter(key => !filterableFields.includes(key)).forEach(key => {
+    switch (form[key].type) {
+      case FieldType.CALL_TYPE:
+      case FieldType.CHECKBOX:
+      case FieldType.SELECT_SINGLE:
+      case FieldType.TEXT_BOX:
+      case FieldType.TEXT_INPUT:
+        newForm[key] = form[key].value;
+        break;
+      case FieldType.CHECKBOX_FIELD:
+      case FieldType.INTERMEDIATE:
+      case FieldType.TAB:
+        newForm[key] = {
+          ...transformForm(form[key])
+        };
+        break;
+      default:
+        throw new Error(`Unknown FieldType ${form[key].type} for key ${key} in ${JSON.stringify(form)}`);
+    }
+  });
   return newForm;
 }
 

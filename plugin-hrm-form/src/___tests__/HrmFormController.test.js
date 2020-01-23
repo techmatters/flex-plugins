@@ -1,47 +1,92 @@
 import { transformForm } from '../components/HrmFormController';
+import { FieldType, ValidationType } from '../states/ContactFormStateFactory';
+import { callTypes } from '../states/DomainConstants';
 
 describe('transformForm', () => {
-  test('deepcopies form, makes firstName object with single value, and removes internal', () => {
+  test('removes control information and presents values only', () => {
     const oldForm = {      
-      callType: '',
-      internal: {
-        tab: 0
+      callType: {
+        type: FieldType.CALL_TYPE,
+        value: callTypes.caller
       },
       callerInformation: {
+        type: FieldType.TAB,
         name: {
+          type: FieldType.INTERMEDIATE,
           firstName: {
+            type: FieldType.TEXT_INPUT,
             value: 'myFirstName',
-            touched: false,
-            error: null
-          },
-          lastName: ''
+            touched: true,
+            error: null,
+            validation: null
+          }
         }
       },
       childInformation: {
-        name: {
-          firstName: '',
-          lastName: ''
+        type: FieldType.TAB,
+        gender: {
+          type: FieldType.SELECT_SINGLE,
+          validation: [ ValidationType.REQUIRED ],
+          touched: true,
+          value: 'Male'
+        },
+        refugee: {
+          type: FieldType.CHECKBOX,
+          value: false
+        }
+      },
+      caseInformation: {
+        type: FieldType.TAB,
+        categories: {
+          type: FieldType.CHECKBOX_FIELD,
+          validation: [ ValidationType.REQUIRED ],
+          error: null,
+          category1: {
+            type: FieldType.INTERMEDIATE,
+            sub1: {
+              type: FieldType.CHECKBOX,
+              value: true
+            },
+            sub2: {
+              type: FieldType.CHECKBOX,
+              value: false
+            }
+          }
+        },
+        status: {
+          value: '',
+          type: FieldType.SELECT_SINGLE,
+          validation: null
+        },
+        callSummary: {
+          type: FieldType.TEXT_BOX,
+          validation: null,
+          value: 'My summary'
         }
       }
     };
     const expected = {      
-      callType: '',
+      callType: callTypes.caller,
       callerInformation: {
         name: {
-          firstName: 'myFirstName',
-          lastName: ''
+          firstName: 'myFirstName'
         }
       },
       childInformation: {
-        name: {
-          firstName: '',
-          lastName: ''
-        }
+        gender: 'Male',
+        refugee: false
+      },
+      caseInformation: {
+        categories: {
+          category1: {
+            sub1: true,
+            sub2: false
+          }
+        },
+        status: '',
+        callSummary: 'My summary'
       }
     };
-    const received = transformForm(oldForm);
-    expect(received).toStrictEqual(expected);
-    expect(received).not.toBe(oldForm);
-    expect(received.childInformation).not.toBe(oldForm.childInformation);
+    expect(transformForm(oldForm)).toStrictEqual(expected);
   })
 });

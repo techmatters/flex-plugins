@@ -8,16 +8,18 @@ jest.mock('../Styles/HrmStyles', () => {
 });
 import React from 'react';
 import FieldFirstName from '../components/FieldFirstName';
+import { ValidationType } from '../states/ContactFormStateFactory';
 import renderer from 'react-test-renderer';
 
-test('FieldFirstName renders initially', () => {
+test('FieldFirstName renders initially when not required', () => {
   const form = {
     callerInformation: {
       name: {
         firstName: {
           value: '',
           touched: false,
-          error: null
+          error: null,
+          validation: null
         }
       }
     }
@@ -35,14 +37,41 @@ test('FieldFirstName renders initially', () => {
   expect(tree).toMatchSnapshot();
 });
 
-test('FieldFirstName renders when valid', () => {
+test('FieldFirstName renders initially when required', () => {
+  const form = {
+    callerInformation: {
+      name: {
+        firstName: {
+          value: '',
+          touched: false,
+          error: null,
+          validation: [ ValidationType.REQUIRED ]
+        }
+      }
+    }
+  };
+  const handleChange = jest.fn();
+  const taskId = '';
+  const component = renderer.create(
+    <FieldFirstName
+      form={form}
+      handleChange={handleChange}
+      taskId={taskId}
+    />
+  );
+  let tree = component.toJSON();
+  expect(tree).toMatchSnapshot();
+});
+
+test('FieldFirstName renders when valid and not required', () => {
   const form = {
     callerInformation: {
       name: {
         firstName: {
           value: 'testValue',
           touched: false,
-          error: null
+          error: null,
+          validation: null
         }
       }
     }
@@ -60,14 +89,42 @@ test('FieldFirstName renders when valid', () => {
   expect(tree).toMatchSnapshot();
 });
 
-test('FieldFirstName renders errors when not valid', () => {
+test('FieldFirstName renders when valid and required', () => {
   const form = {
     callerInformation: {
       name: {
         firstName: {
           value: 'testValue',
+          touched: false,
+          error: null,
+          validation: [ ValidationType.REQUIRED ]
+        }
+      }
+    }
+  };
+  const handleChange = jest.fn();
+  const taskId = '';
+  const component = renderer.create(
+    <FieldFirstName
+      form={form}
+      handleChange={handleChange}
+      taskId={taskId}
+    />
+  );
+  let tree = component.toJSON();
+  expect(tree).toMatchSnapshot();
+});
+
+
+test('FieldFirstName renders errors when not valid', () => {
+  const form = {
+    callerInformation: {
+      name: {
+        firstName: {
+          value: '',
           touched: true,
-          error: 'This field is required'
+          error: 'This field is required',
+          validation: [ ValidationType.REQUIRED ]
         }
       }
     }
