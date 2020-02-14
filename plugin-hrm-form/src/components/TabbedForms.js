@@ -22,10 +22,10 @@ import { Checkbox,
          Tab, 
          Tabs} from "@material-ui/core";
 import { callTypes } from '../states/DomainConstants'
-import FieldFirstName from './FieldFirstName';
 import decorateTab from './decorateTab';
 import { formIsValid } from '../states/ValidationRules';
 import FieldSelect from './FieldSelect';
+import FieldText from './FieldText'
 
 
 class TabbedForms extends React.PureComponent {
@@ -44,26 +44,27 @@ class TabbedForms extends React.PureComponent {
     body[0] = (
       <Container>
         <NameFields>
-          <FieldFirstName
-            form={this.props.form}
+          <FieldText
+            label="First name"
+            parents={['callerInformation', 'name']}
+            name="firstName"
+            field={this.props.form.callerInformation.name.firstName}
+            taskId={taskId}
             handleBlur={this.props.handleBlur}
             handleChange={this.props.handleChange}
             handleFocus={this.props.handleFocus}
-            taskId={taskId}
           />
 
-          <TextField>
-              <StyledLabel htmlFor="CallerInformation_LastName">Last name</StyledLabel>
-              <StyledInput
-                value={this.props.form.callerInformation.name.lastName.value}
-                name='lastName'
-                id="CallerInformation_LastName"
-                onChange={(e) => 
-                  this.props.handleChange(taskId,
-                                          ['callerInformation', 'name'],
-                                          e)}
-              />
-          </TextField>
+          <FieldText
+            label="Last name"
+            parents={['callerInformation', 'name']}
+            name="lastName"
+            field={this.props.form.callerInformation.name.lastName}
+            taskId={taskId}
+            handleBlur={this.props.handleBlur}
+            handleChange={this.props.handleChange}
+            handleFocus={this.props.handleFocus}
+          />
         </NameFields>
 
         <TwoColumnLayout>
@@ -163,83 +164,71 @@ class TabbedForms extends React.PureComponent {
           </ColumnarBlock>
 
           <ColumnarBlock>
-            <TextField>
-                <StyledLabel htmlFor="CallerInformation_StreetAddress">Street Address</StyledLabel>
-                <StyledInput
-                  name='streetAddress'
-                  id="CallerInformation_StreetAddress"
-                  value={this.props.form.callerInformation.location.streetAddress.value}
-                  onChange={(e) => 
-                    this.props.handleChange(taskId,
-                                            ['callerInformation', 'location'],
-                                            e)}
-                />
-            </TextField>
+            <FieldText
+              label="Street address"
+              parents={['callerInformation', 'location']}
+              name="streetAddress"
+              field={this.props.form.callerInformation.location.streetAddress}
+              taskId={taskId}
+              handleBlur={this.props.handleBlur}
+              handleChange={this.props.handleChange}
+              handleFocus={this.props.handleFocus}
+            />
 
-            <TextField>
-                <StyledLabel htmlFor="CallerInformation_City">City</StyledLabel>
-                <StyledInput
-                  name='city'
-                  id="CallerInformation_City"
-                  value={this.props.form.callerInformation.location.city.value}
-                  onChange={(e) => 
-                    this.props.handleChange(taskId,
-                                            ['callerInformation', 'location'],
-                                            e)}
-                />
-            </TextField>
+            <FieldText
+              label="City"
+              parents={['callerInformation', 'location']}
+              name="city"
+              field={this.props.form.callerInformation.location.city}
+              taskId={taskId}
+              handleBlur={this.props.handleBlur}
+              handleChange={this.props.handleChange}
+              handleFocus={this.props.handleFocus}
+            />
 
-            <TextField>
-                <StyledLabel htmlFor="CallerInformation_StateOrCounty">State/County</StyledLabel>
-                <StyledInput
-                  name='stateOrCounty'
-                  id="CallerInformation_StateOrCounty"
-                  value={this.props.form.callerInformation.location.stateOrCounty.value}
-                  onChange={(e) => 
-                    this.props.handleChange(taskId,
-                                            ['callerInformation', 'location'],
-                                            e)}
-                />
-            </TextField>
+            <FieldText
+              label="State/County"
+              parents={['callerInformation', 'location']}
+              name="stateOrCounty"
+              field={this.props.form.callerInformation.location.stateOrCounty}
+              taskId={taskId}
+              handleBlur={this.props.handleBlur}
+              handleChange={this.props.handleChange}
+              handleFocus={this.props.handleFocus}
+            />
 
-            <TextField>
-                <StyledLabel htmlFor="CallerInformation_PostalCode">Postal Code</StyledLabel>
-                <StyledInput
-                  name='postalCode'
-                  id="CallerInformation_PostalCode"
-                  value={this.props.form.callerInformation.location.postalCode.value}
-                  onChange={(e) => 
-                    this.props.handleChange(taskId,
-                                            ['callerInformation', 'location'],
-                                            e)}
-                />
-            </TextField>
+            <FieldText
+              label="Postal code"
+              parents={['callerInformation', 'location']}
+              name="postalCode"
+              field={this.props.form.callerInformation.location.postalCode}
+              taskId={taskId}
+              handleBlur={this.props.handleBlur}
+              handleChange={this.props.handleChange}
+              handleFocus={this.props.handleFocus}
+            />
 
-            <TextField>
-                <StyledLabel htmlFor="CallerInformation_Phone1">Phone #1</StyledLabel>
-                <StyledInput
-                  name='phone1'
-                  id="CallerInformation_Phone1"
-                  value={this.props.form.callerInformation.location.phone1.value}
-                  onChange={(e) => 
-                    this.props.handleChange(taskId,
-                                            ['callerInformation', 'location'],
-                                            e)}
-                />
-            </TextField>
+            <FieldText
+              label="Phone #1"
+              parents={['callerInformation', 'location']}
+              name="phone1"
+              field={this.props.form.callerInformation.location.phone1}
+              taskId={taskId}
+              handleBlur={this.props.handleBlur}
+              handleChange={this.props.handleChange}
+              handleFocus={this.props.handleFocus}
+            />
 
-            <TextField>
-                <StyledLabel htmlFor="CallerInformation_Phone2">Phone #2</StyledLabel>
-                <StyledInput
-                  name='phone2'
-                  id="CallerInformation_Phone2"
-                  value={this.props.form.callerInformation.location.phone2.value}
-                  onChange={(e) => 
-                    this.props.handleChange(taskId,
-                                            ['callerInformation', 'location'],
-                                            e)}
-                />
-            </TextField>
+            <FieldText
+              label="Phone #2"
+              parents={['callerInformation', 'location']}
+              name="phone2"
+              field={this.props.form.callerInformation.location.phone2}
+              taskId={taskId}
+              handleBlur={this.props.handleBlur}
+              handleChange={this.props.handleChange}
+              handleFocus={this.props.handleFocus}
+            />
           </ColumnarBlock>
         </TwoColumnLayout>
       </Container>
