@@ -14,11 +14,8 @@ const initialState = {
 };
 
 export class Actions {
-  // static handleChange = (taskId, parents, e) => ({type: HANDLE_CHANGE, name: e.currentTarget.name, value: e.currentTarget.value, taskId: taskId, parents: parents});
-  static handleChange = function(taskId, parents, e) {
-    console.log(e);
-    return {type: HANDLE_CHANGE, name: e.target.name || e.currentTarget.name, value: e.target.value || e.currentTarget.value, taskId: taskId, parents: parents};
-  };
+  static handleChange = (taskId, parents, name, value) =>
+    ({ type: HANDLE_CHANGE, name, taskId, value, parents })
   // This makes me so sad too
   // static handleCheckbox = (taskId, parents, name, value) => ({type: HANDLE_CHANGE, name: name, taskId: taskId, value: value, parents: parents});
   static handleCheckbox = (taskId, parents, name, value) => ({type: HANDLE_CHANGE, name: name, taskId: taskId, value: value, parents: parents});

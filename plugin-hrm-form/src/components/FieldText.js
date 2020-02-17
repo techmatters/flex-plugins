@@ -11,26 +11,20 @@ const RequiredAsterisk = ({ field }) => {
   return isRequired && <span style={{color: 'red'}}>*</span>;
 }
 
-const FieldText = ({ label, parents, name, field, taskId, handleBlur, handleChange, handleFocus }) => {
-  const id = [...parents, name].join('_');
-
-  return (
-    <TextField>
-      <StyledLabel htmlFor={id}>
-        {label}<RequiredAsterisk field={field} />
-      </StyledLabel>
-      <StyledInput
-        error={field.error !== null}
-        name={name}
-        id={id}
-        value={field.value}
-        onBlur={handleBlur}
-        onChange={(e) => handleChange(taskId, parents, e)}
-        onFocus={() => handleFocus(taskId, parents, name)}
-      />
-      {field.error && <ErrorText>{field.error}</ErrorText>}
-    </TextField>
-  );
-};
+const FieldText = ({ id, label, field, handleBlur, handleChange, handleFocus }) =>
+  <TextField>
+    <StyledLabel htmlFor={id}>
+      {label}<RequiredAsterisk field={field} />
+    </StyledLabel>
+    <StyledInput
+      id={id}
+      error={field.error !== null}
+      value={field.value}
+      onBlur={handleBlur}
+      onChange={handleChange}
+      onFocus={handleFocus}
+    />
+    {field.error && <ErrorText>{field.error}</ErrorText>}
+  </TextField>;
           
 export default FieldText;

@@ -35,6 +35,18 @@ class TabbedForms extends React.PureComponent {
 
   tabChange = (event, tab) => this.setState({tab});
 
+  curriedHandleChange = (parents, name) =>
+  (e) => this.props.handleChange(this.props.task.taskSid, parents, name, e.target.value);
+
+  curriedHandleFocus = (parents, name) =>
+    () => this.props.handleFocus(this.props.task.taskSid, parents, name);
+
+  defaultEventHandlers = (parents, name) => ({
+    handleBlur: this.props.handleBlur,
+    handleChange: this.curriedHandleChange(parents, name),
+    handleFocus: this.curriedHandleFocus(parents, name),
+  });
+
   render() {
     const taskId = this.props.task.taskSid;
 
@@ -45,201 +57,123 @@ class TabbedForms extends React.PureComponent {
       <Container>
         <NameFields>
           <FieldText
+            id="CallerInformation_FirstName"
             label="First name"
-            parents={['callerInformation', 'name']}
-            name="firstName"
             field={this.props.form.callerInformation.name.firstName}
-            taskId={taskId}
-            handleBlur={this.props.handleBlur}
-            handleChange={this.props.handleChange}
-            handleFocus={this.props.handleFocus}
+            {...this.defaultEventHandlers(['callerInformation', 'name'], 'firstName')}
           />
 
           <FieldText
+            id="CallerInformation_LastName"
             label="Last name"
-            parents={['callerInformation', 'name']}
-            name="lastName"
             field={this.props.form.callerInformation.name.lastName}
-            taskId={taskId}
-            handleBlur={this.props.handleBlur}
-            handleChange={this.props.handleChange}
-            handleFocus={this.props.handleFocus}
+            {...this.defaultEventHandlers(['callerInformation', 'name'], 'lastName')}
           />
         </NameFields>
 
         <TwoColumnLayout>
           <ColumnarBlock>
-            <TextField>
-                <StyledLabel htmlFor="CallerInformation_RelationshipToChild">Relationship to Child</StyledLabel>
-                <StyledSelect 
-                  name="relationshipToChild"
-                  id="CallerInformation_RelationshipToChild"
-                  value={this.props.form.callerInformation.relationshipToChild.value}
-                  onChange={(e) => this.props.handleChange(taskId, ['callerInformation'], e)}>
-                  <StyledMenuItem hidden selected disabled value="">Select</StyledMenuItem>
-                  <StyledMenuItem value="Friend">Friend</StyledMenuItem>
-                  <StyledMenuItem value="Neighbor">Neighbor</StyledMenuItem>
-                  <StyledMenuItem value="Parent">Parent</StyledMenuItem>
-                  <StyledMenuItem value="Grandparent">Grandparent</StyledMenuItem>
-                  <StyledMenuItem value="Teacher">Teacher</StyledMenuItem>
-                  <StyledMenuItem value="Other">Other</StyledMenuItem>
-                </StyledSelect>
-            </TextField>
+            <FieldSelect
+              store={this.props.form.callerInformation.relationshipToChild}
+              id="CallerInformation_RelationshipToChild"
+              name="relationshipToChild"
+              label="Relationship to Child"
+              options={['Friend', 'Neighbor', 'Parent', 'Grandparent', 'Teacher', 'Other']}
+              {...this.defaultEventHandlers(['callerInformation'], 'relationshipToChild')}
+            />
 
-            <TextField>
-                <StyledLabel htmlFor="CallerInformation_Gender">Gender</StyledLabel>
-                <StyledSelect 
-                  name="gender"
-                  id="CallerInformation_Gender"
-                  value={this.props.form.callerInformation.gender.value}
-                  onChange={(e) => this.props.handleChange(taskId, ['callerInformation'], e)}>
-                  <StyledMenuItem hidden selected disabled value="">Select</StyledMenuItem>
-                  <StyledMenuItem value="Male">Male</StyledMenuItem>
-                  <StyledMenuItem value="Female">Female</StyledMenuItem>
-                  <StyledMenuItem value="Other">Other</StyledMenuItem>
-                  <StyledMenuItem value="Unknown">Unknown</StyledMenuItem>
-                </StyledSelect>
-            </TextField>
+            <FieldSelect
+              store={this.props.form.callerInformation.gender}
+              id="CallerInformation_Gender"
+              name="gender"
+              label="Gender"
+              options={['Male', 'Female', 'Other', 'Unknown']}
+              {...this.defaultEventHandlers(['callerInformation'], 'gender')}
+            />
 
-            <TextField>
-                <StyledLabel htmlFor="CallerInformation_Age">Age</StyledLabel>
-                <StyledSelect 
-                  name="age"
-                  id="CallerInformation_Age"
-                  value={this.props.form.callerInformation.age.value}
-                  onChange={(e) => this.props.handleChange(taskId, ['callerInformation'], e)}>
-                  <StyledMenuItem hidden selected disabled value="">Select</StyledMenuItem>
-                  <StyledMenuItem value="0-3">0-3</StyledMenuItem>
-                  <StyledMenuItem value="4-6">4-6</StyledMenuItem>
-                  <StyledMenuItem value="7-9">7-9</StyledMenuItem>
-                  <StyledMenuItem value="10-12">10-12</StyledMenuItem>
-                  <StyledMenuItem value="13-15">13-15</StyledMenuItem>
-                  <StyledMenuItem value="16-17">16-17</StyledMenuItem>
-                  <StyledMenuItem value="18-25">18-25</StyledMenuItem>
-                  <StyledMenuItem value=">25">&gt;25</StyledMenuItem>
-                </StyledSelect>
-            </TextField>
+            <FieldSelect
+              store={this.props.form.callerInformation.age}
+              id="CallerInformation_Age"
+              name="age"
+              label="Age"
+              options={['0-3', '4-6', '7-9', '10-12', '13-15', '16-17', '18-25', '>25']}
+              {...this.defaultEventHandlers(['callerInformation'], 'age')}
+            />
 
-            <TextField>
-                <StyledLabel htmlFor="CallerInformation_Language">Language</StyledLabel>
-                <StyledSelect 
-                  name="language"
-                  id="CallerInformation_Language"
-                  value={this.props.form.callerInformation.language.value}
-                  onChange={(e) => this.props.handleChange(taskId, ['callerInformation'], e)}>
-                  <StyledMenuItem hidden selected disabled value="">Select</StyledMenuItem>
-                  <StyledMenuItem value="Language 1">Language 1</StyledMenuItem>
-                  <StyledMenuItem value="Language 2">Language 2</StyledMenuItem>
-                  <StyledMenuItem value="Language 3">Language 3</StyledMenuItem>
-                </StyledSelect>
-            </TextField>
+            <FieldSelect
+              store={this.props.form.callerInformation.language}
+              id="CallerInformation_Language"
+              name="language"
+              label="Language"
+              options={['Language 1', 'Language 2', 'Language 3']}
+              {...this.defaultEventHandlers(['callerInformation'], 'language')}
+            />
 
-            <TextField>
-                <StyledLabel htmlFor="CallerInformation_Nationality">Nationality</StyledLabel>
-                <StyledSelect 
-                  name="nationality"
-                  id="CallerInformation_Nationality"
-                  value={this.props.form.callerInformation.nationality.value}
-                  onChange={(e) => this.props.handleChange(taskId, ['callerInformation'], e)}>
-                  <StyledMenuItem hidden selected disabled value="">Select</StyledMenuItem>
-                  <StyledMenuItem value="Nationality 1">Nationality 1</StyledMenuItem>
-                  <StyledMenuItem value="Nationality 2">Nationality 2</StyledMenuItem>
-                  <StyledMenuItem value="Nationality 3">Nationality 3</StyledMenuItem>
-                </StyledSelect>
-            </TextField>
+            <FieldSelect
+              store={this.props.form.callerInformation.nationality}
+              id="CallerInformation_Nationality"
+              name="nationality"
+              label="Nationality"
+              options={['Nationality 1', 'Nationality 2', 'Nationality 3']}
+              {...this.defaultEventHandlers(['callerInformation'], 'nationality')}
+            />
 
-            <TextField>
-                <StyledLabel htmlFor="CallerInformation_Ethnicity">Ethnicity</StyledLabel>
-                <StyledSelect 
-                  name="ethnicity"
-                  id="CallerInformation_Ethnicity"
-                  value={this.props.form.callerInformation.ethnicity.value}
-                  onChange={(e) => this.props.handleChange(taskId, ['callerInformation'], e)}>
-                  <StyledMenuItem hidden selected disabled value="">Select</StyledMenuItem>
-                  <StyledMenuItem value="Ethnicity 1">Ethnicity 1</StyledMenuItem>
-                  <StyledMenuItem value="Ethnicity 2">Ethnicity 2</StyledMenuItem>
-                  <StyledMenuItem value="Ethnicity 3">Ethnicity 3</StyledMenuItem>
-                </StyledSelect>
-            </TextField>
+            <FieldSelect
+              store={this.props.form.callerInformation.ethnicity}
+              id="CallerInformation_Ethnicity"
+              name="ethnicity"
+              label="Ethnicity"
+              options={['Ethnicity 1', 'Ethnicity 2', 'Ethnicity 3']}
+              {...this.defaultEventHandlers(['callerInformation'], 'ethnicity')}
+            />
           </ColumnarBlock>
 
           <ColumnarBlock>
             <FieldText
+              id="CallerInformation_StreetAddress"
               label="Street address"
-              parents={['callerInformation', 'location']}
-              name="streetAddress"
               field={this.props.form.callerInformation.location.streetAddress}
-              taskId={taskId}
-              handleBlur={this.props.handleBlur}
-              handleChange={this.props.handleChange}
-              handleFocus={this.props.handleFocus}
+              {...this.defaultEventHandlers(['callerInformation', 'location'], 'streetAddress')}
             />
 
             <FieldText
+              id="CallerInformation_City"
               label="City"
-              parents={['callerInformation', 'location']}
-              name="city"
               field={this.props.form.callerInformation.location.city}
-              taskId={taskId}
-              handleBlur={this.props.handleBlur}
-              handleChange={this.props.handleChange}
-              handleFocus={this.props.handleFocus}
+              {...this.defaultEventHandlers(['callerInformation', 'location'], 'city')}
             />
 
             <FieldText
+              id="CallerInformation_State/Country"
               label="State/County"
-              parents={['callerInformation', 'location']}
-              name="stateOrCounty"
               field={this.props.form.callerInformation.location.stateOrCounty}
-              taskId={taskId}
-              handleBlur={this.props.handleBlur}
-              handleChange={this.props.handleChange}
-              handleFocus={this.props.handleFocus}
+              {...this.defaultEventHandlers(['callerInformation', 'location'], 'stateOrCounty')}
             />
 
             <FieldText
+              id="CallerInformation_PostalCode"
               label="Postal code"
-              parents={['callerInformation', 'location']}
-              name="postalCode"
               field={this.props.form.callerInformation.location.postalCode}
-              taskId={taskId}
-              handleBlur={this.props.handleBlur}
-              handleChange={this.props.handleChange}
-              handleFocus={this.props.handleFocus}
+              {...this.defaultEventHandlers(['callerInformation', 'location'], 'postalCode')}
             />
 
             <FieldText
+              id="CallerInformation_Phone#1"
               label="Phone #1"
-              parents={['callerInformation', 'location']}
-              name="phone1"
               field={this.props.form.callerInformation.location.phone1}
-              taskId={taskId}
-              handleBlur={this.props.handleBlur}
-              handleChange={this.props.handleChange}
-              handleFocus={this.props.handleFocus}
+              {...this.defaultEventHandlers(['callerInformation', 'location'], 'phone1')}
             />
 
             <FieldText
+              id="CallerInformation_Phone#2"
               label="Phone #2"
-              parents={['callerInformation', 'location']}
-              name="phone2"
               field={this.props.form.callerInformation.location.phone2}
-              taskId={taskId}
-              handleBlur={this.props.handleBlur}
-              handleChange={this.props.handleChange}
-              handleFocus={this.props.handleFocus}
+              {...this.defaultEventHandlers(['callerInformation', 'location'], 'phone2')}
             />
           </ColumnarBlock>
         </TwoColumnLayout>
       </Container>
     );
-
-    const curriedHandleChange = (taskId, parents, handleChange) => e => {
-      handleChange(taskId, parents, e);
-    }
-    const curriedHandleFocus = (taskId, parents, name, handleFocus) => () => {
-      handleFocus(taskId, parents, name);
-    }
 
     // Child Information
     body[1] = (
@@ -275,25 +209,21 @@ class TabbedForms extends React.PureComponent {
         <TwoColumnLayout>
           <ColumnarBlock>
             <FieldSelect
-              handleBlur={this.props.handleBlur}
-              handleChange={curriedHandleChange(taskId, ['childInformation'], this.props.handleChange)}
-              handleFocus={curriedHandleFocus(taskId, ['childInformation'], 'gender', this.props.handleFocus)}
               store={this.props.form.childInformation.gender}
               id="ChildInformation_Gender"
               name="gender"
               label="Gender"
               options={['Male', 'Female', 'Other', 'Unknown']}
+              {...this.defaultEventHandlers(['childInformation'], 'gender')}
             />
 
             <FieldSelect
-              handleBlur={this.props.handleBlur}
-              handleChange={curriedHandleChange(taskId, ['childInformation'], this.props.handleChange)}
-              handleFocus={curriedHandleFocus(taskId, ['childInformation'], 'age', this.props.handleFocus)}
               store={this.props.form.childInformation.age}
               id="ChildInformation_Age"
               name="age"
               label="Age"
               options={['0-3', '4-6', '7-9', '10-12', '13-15', '16-17', '18-25', '>25']}
+              {...this.defaultEventHandlers(['childInformation'], 'age')}
             />
 
             <TextField>

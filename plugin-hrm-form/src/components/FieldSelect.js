@@ -37,11 +37,9 @@ const FieldSelect = (props) => {
         value={props.store.value}
         style={props.store.error ?
                 {border: '1px solid #CB3232', boxShadow: '0px 0px 0px 2px rgba(234,16,16,0.2)'} : undefined}
-        onBlur={() => props.handleBlur()}
-        onChange={(e) =>
-          props.handleChange(e)}
-        onFocus={() => 
-          props.handleFocus()}
+        onBlur={props.handleBlur}
+        onChange={props.handleChange}
+        onFocus={props.handleFocus}
       >
         {renderOptions(props.options)}
       </StyledSelect>
