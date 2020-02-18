@@ -246,8 +246,8 @@ class TabbedForms extends React.PureComponent {
               <Checkbox name='refugee' 
                   id="ChildInformation_Refugee"
                   checked={this.props.form.childInformation.refugee.value} 
-                  onClick={(e) => 
-                    this.props.handleCheckbox(taskId,
+                  onClick={() => 
+                    this.props.handleChange(taskId,
                                             ['childInformation'],
                                             'refugee', 
                                             !this.props.form.childInformation.refugee.value)}
@@ -259,8 +259,8 @@ class TabbedForms extends React.PureComponent {
               <Checkbox name='disabledOrSpecialNeeds' 
                   id="ChildInformation_DisabledOrSpecialNeeds"
                   checked={this.props.form.childInformation.disabledOrSpecialNeeds.value} 
-                  onClick={(e) => 
-                    this.props.handleCheckbox(taskId,
+                  onClick={() => 
+                    this.props.handleChange(taskId,
                                             ['childInformation'],
                                             'disabledOrSpecialNeeds', 
                                             !this.props.form.childInformation.disabledOrSpecialNeeds.value)}
@@ -272,8 +272,8 @@ class TabbedForms extends React.PureComponent {
               <Checkbox name='hiv' 
                   id="ChildInformation_HIV"
                   checked={this.props.form.childInformation.hiv.value} 
-                  onClick={(e) => 
-                    this.props.handleCheckbox(taskId,
+                  onClick={() => 
+                    this.props.handleChange(taskId,
                                             ['childInformation'],
                                             'hiv', 
                                             !this.props.form.childInformation.hiv.value)}
@@ -416,8 +416,8 @@ class TabbedForms extends React.PureComponent {
                 <Checkbox name='keepConfidential'
                     id="CaseInformation_KeepConfidential" 
                     checked={this.props.form.caseInformation.keepConfidential.value} 
-                    onClick={(e) => 
-                      this.props.handleCheckbox(taskId,
+                    onClick={() => 
+                      this.props.handleChange(taskId,
                                               ['caseInformation'],
                                               'keepConfidential', 
                                               !this.props.form.caseInformation.keepConfidential.value)}
@@ -429,8 +429,8 @@ class TabbedForms extends React.PureComponent {
                 <Checkbox name='okForCaseWorkerToCall' 
                     id="CaseInformation_OkForCaseWorkerToCall"
                     checked={this.props.form.caseInformation.okForCaseWorkerToCall.value} 
-                    onClick={(e) => 
-                      this.props.handleCheckbox(taskId,
+                    onClick={() => 
+                      this.props.handleChange(taskId,
                                               ['caseInformation'],
                                               'okForCaseWorkerToCall', 
                                               !this.props.form.caseInformation.okForCaseWorkerToCall.value)}
@@ -442,8 +442,8 @@ class TabbedForms extends React.PureComponent {
                 <Checkbox name='didYouDiscussRightsWithTheChild' 
                     id="CaseInformation_DidYouDiscussRightsWithTheChild"
                     checked={this.props.form.caseInformation.didYouDiscussRightsWithTheChild.value} 
-                    onClick={(e) => 
-                      this.props.handleCheckbox(taskId,
+                    onClick={() => 
+                      this.props.handleChange(taskId,
                                               ['caseInformation'],
                                               'didYouDiscussRightsWithTheChild', 
                                               !this.props.form.caseInformation.didYouDiscussRightsWithTheChild.value)}
@@ -455,8 +455,8 @@ class TabbedForms extends React.PureComponent {
               <Checkbox name='didTheChildFeelWeSolvedTheirProblem' 
                   id="CaseInformation_DidTheChildFeelWeSolvedTheirProblem"
                   checked={this.props.form.caseInformation.didTheChildFeelWeSolvedTheirProblem.value} 
-                  onClick={(e) => 
-                    this.props.handleCheckbox(taskId,
+                  onClick={() => 
+                    this.props.handleChange(taskId,
                                             ['caseInformation'],
                                             'didTheChildFeelWeSolvedTheirProblem', 
                                             !this.props.form.caseInformation.didTheChildFeelWeSolvedTheirProblem.value)}
@@ -468,8 +468,8 @@ class TabbedForms extends React.PureComponent {
               <Checkbox name='wouldTheChildRecommendUsToAFriend' 
                   id="CaseInformation_WouldTheChildRecommendUsToAFriend"
                   checked={this.props.form.caseInformation.wouldTheChildRecommendUsToAFriend.value} 
-                  onClick={(e) => 
-                    this.props.handleCheckbox(taskId,
+                  onClick={() => 
+                    this.props.handleChange(taskId,
                                             ['caseInformation'],
                                             'wouldTheChildRecommendUsToAFriend', 
                                             !this.props.form.caseInformation.wouldTheChildRecommendUsToAFriend.value)}

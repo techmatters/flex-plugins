@@ -14,7 +14,6 @@ const HrmForm = (props) => {
           handleBlur={props.handleBlur}
           handleCategoryToggle={props.handleCategoryToggle}
           handleChange={props.handleChange}
-          handleCheckbox={props.handleCheckbox}
           handleCallTypeButtonClick={props.handleCallTypeButtonClick}
           handleSubmit={props.handleSubmit}
           handleFocus={props.handleFocus} /> :

@@ -16,9 +16,6 @@ const initialState = {
 export class Actions {
   static handleChange = (taskId, parents, name, value) =>
     ({ type: HANDLE_CHANGE, name, taskId, value, parents })
-  // This makes me so sad too
-  // static handleCheckbox = (taskId, parents, name, value) => ({type: HANDLE_CHANGE, name: name, taskId: taskId, value: value, parents: parents});
-  static handleCheckbox = (taskId, parents, name, value) => ({type: HANDLE_CHANGE, name: name, taskId: taskId, value: value, parents: parents});
   // There has to be a better way to do this rather than a one-off, but MUI does not make it easy
   // static handleCallTypeButtonClick = (taskId, value, e) => ({type: HANDLE_CALLTYPE_BUTTON_CLICK, taskId: taskId, value: value});
   static handleCallTypeButtonClick = (taskId, value, e) => ({type: HANDLE_CHANGE, name: 'callType', taskId: taskId, value: value, parents: []});
