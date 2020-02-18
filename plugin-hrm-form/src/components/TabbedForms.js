@@ -36,7 +36,12 @@ class TabbedForms extends React.PureComponent {
   tabChange = (event, tab) => this.setState({tab});
 
   curriedHandleChange = (parents, name) =>
-  (e) => this.props.handleChange(this.props.task.taskSid, parents, name, e.target.value);
+  (e) => this.props.handleChange(
+    this.props.task.taskSid,
+    parents,
+    name,
+    e.target.value || e.currentTarget.value
+  );
 
   curriedHandleFocus = (parents, name) =>
     () => this.props.handleFocus(this.props.task.taskSid, parents, name);
