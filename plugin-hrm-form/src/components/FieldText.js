@@ -4,12 +4,7 @@ import { StyledInput,
   ErrorText,
   TextField
 } from '../Styles/HrmStyles';
-import { ValidationType } from '../states/ContactFormStateFactory';
-
-const RequiredAsterisk = ({ field }) => {
-  const isRequired = field.validation && field.validation.includes(ValidationType.REQUIRED);
-  return isRequired && <span style={{color: 'red'}}>*</span>;
-}
+import RequiredAsterisk from './RequiredAsterisk';
 
 const FieldText = ({ id, label, field, handleBlur, handleChange, handleFocus }) =>
   <TextField>
