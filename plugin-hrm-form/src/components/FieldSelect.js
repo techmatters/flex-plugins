@@ -12,10 +12,10 @@ import { ValidationType } from '../states/ContactFormStateFactory';
 // id = id for form and for
 // label = what the user sees
 // name = the name of the field
-// store = the object in the redux store
+// field = the object in the redux store
 // options = an array of options
-const requiredAsterisk = store => {
-  if (store.validation && store.validation.includes(ValidationType.REQUIRED)) {
+const requiredAsterisk = field => {
+  if (field.validation && field.validation.includes(ValidationType.REQUIRED)) {
     return (
       <span style={{color: 'red'}}>*</span>
     );
@@ -30,12 +30,12 @@ const renderOptions = options => {
 const FieldSelect = (props) => {
   return (
     <TextField>
-      <StyledLabel htmlFor={props.id}>{props.label}{requiredAsterisk(props.store)}</StyledLabel>
+      <StyledLabel htmlFor={props.id}>{props.label}{requiredAsterisk(props.field)}</StyledLabel>
       <StyledSelect
         name={props.name}
         id={props.id}
-        value={props.store.value}
-        style={props.store.error ?
+        value={props.field.value}
+        style={props.field.error ?
                 {border: '1px solid #CB3232', boxShadow: '0px 0px 0px 2px rgba(234,16,16,0.2)'} : undefined}
         onBlur={props.handleBlur}
         onChange={props.handleChange}
@@ -43,8 +43,8 @@ const FieldSelect = (props) => {
       >
         {renderOptions(props.options)}
       </StyledSelect>
-      {props.store.error ?
-        <ErrorText>{props.store.error}</ErrorText> :
+      {props.field.error ?
+        <ErrorText>{props.field.error}</ErrorText> :
         ''
       }
     </TextField>

@@ -79,7 +79,7 @@ class TabbedForms extends React.PureComponent {
         <TwoColumnLayout>
           <ColumnarBlock>
             <FieldSelect
-              store={this.props.form.callerInformation.relationshipToChild}
+              field={this.props.form.callerInformation.relationshipToChild}
               id="CallerInformation_RelationshipToChild"
               name="relationshipToChild"
               label="Relationship to Child"
@@ -88,7 +88,7 @@ class TabbedForms extends React.PureComponent {
             />
 
             <FieldSelect
-              store={this.props.form.callerInformation.gender}
+              field={this.props.form.callerInformation.gender}
               id="CallerInformation_Gender"
               name="gender"
               label="Gender"
@@ -97,7 +97,7 @@ class TabbedForms extends React.PureComponent {
             />
 
             <FieldSelect
-              store={this.props.form.callerInformation.age}
+              field={this.props.form.callerInformation.age}
               id="CallerInformation_Age"
               name="age"
               label="Age"
@@ -106,7 +106,7 @@ class TabbedForms extends React.PureComponent {
             />
 
             <FieldSelect
-              store={this.props.form.callerInformation.language}
+              field={this.props.form.callerInformation.language}
               id="CallerInformation_Language"
               name="language"
               label="Language"
@@ -115,7 +115,7 @@ class TabbedForms extends React.PureComponent {
             />
 
             <FieldSelect
-              store={this.props.form.callerInformation.nationality}
+              field={this.props.form.callerInformation.nationality}
               id="CallerInformation_Nationality"
               name="nationality"
               label="Nationality"
@@ -124,7 +124,7 @@ class TabbedForms extends React.PureComponent {
             />
 
             <FieldSelect
-              store={this.props.form.callerInformation.ethnicity}
+              field={this.props.form.callerInformation.ethnicity}
               id="CallerInformation_Ethnicity"
               name="ethnicity"
               label="Ethnicity"
@@ -214,7 +214,7 @@ class TabbedForms extends React.PureComponent {
         <TwoColumnLayout>
           <ColumnarBlock>
             <FieldSelect
-              store={this.props.form.childInformation.gender}
+              field={this.props.form.childInformation.gender}
               id="ChildInformation_Gender"
               name="gender"
               label="Gender"
@@ -223,7 +223,7 @@ class TabbedForms extends React.PureComponent {
             />
 
             <FieldSelect
-              store={this.props.form.childInformation.age}
+              field={this.props.form.childInformation.age}
               id="ChildInformation_Age"
               name="age"
               label="Age"
