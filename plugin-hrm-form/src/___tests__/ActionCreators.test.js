@@ -132,11 +132,11 @@ describe('handleCategoryToggle', () => {
         }
       }
     };
-    const handleCheckbox = jest.fn();
+    const handleChange = jest.fn();
     const taskId = 'WT1234';
     moreThanThreeCategoriesSelected.mockReturnValueOnce(true);
     window.alert = jest.fn();
-    handleCategoryToggle(form, handleCheckbox)(taskId, 'category2', 'sub2', true);
+    handleCategoryToggle(form, handleChange)(taskId, 'category2', 'sub2', true);
     expect(moreThanThreeCategoriesSelected.mock.calls.length).toBe(1);
     expect(moreThanThreeCategoriesSelected.mock.calls[0][0]).toStrictEqual({
       type: FieldType.CHECKBOX_FIELD,
@@ -165,7 +165,7 @@ describe('handleCategoryToggle', () => {
       }
     });
     expect(window.alert.mock.calls.length).toBe(1);
-    expect(handleCheckbox.mock.calls.length).toBe(0);
+    expect(handleChange.mock.calls.length).toBe(0);
   });
 
   test('saves data when not too many categories', () => {
@@ -200,11 +200,11 @@ describe('handleCategoryToggle', () => {
         }
       }
     };
-    const handleCheckbox = jest.fn();
+    const handleChange = jest.fn();
     const taskId = 'WT1234';
     moreThanThreeCategoriesSelected.mockReturnValueOnce(false);
     window.alert = jest.fn();
-    handleCategoryToggle(form, handleCheckbox)(taskId, 'category2', 'sub2', true);
+    handleCategoryToggle(form, handleChange)(taskId, 'category2', 'sub2', true);
     expect(moreThanThreeCategoriesSelected.mock.calls.length).toBe(1);
     expect(moreThanThreeCategoriesSelected.mock.calls[0][0]).toStrictEqual({
       type: FieldType.CHECKBOX_FIELD,
@@ -233,10 +233,10 @@ describe('handleCategoryToggle', () => {
       }
     });
     expect(window.alert.mock.calls.length).toBe(0);
-    expect(handleCheckbox.mock.calls.length).toBe(1);
-    expect(handleCheckbox.mock.calls[0][0]).toBe(taskId);
-    expect(handleCheckbox.mock.calls[0][1]).toStrictEqual(['caseInformation', 'categories', 'category2']);
-    expect(handleCheckbox.mock.calls[0][2]).toBe('sub2');
-    expect(handleCheckbox.mock.calls[0][3]).toBe(true);
+    expect(handleChange.mock.calls.length).toBe(1);
+    expect(handleChange.mock.calls[0][0]).toBe(taskId);
+    expect(handleChange.mock.calls[0][1]).toStrictEqual(['caseInformation', 'categories', 'category2']);
+    expect(handleChange.mock.calls[0][2]).toBe('sub2');
+    expect(handleChange.mock.calls[0][3]).toBe(true);
   });
 });

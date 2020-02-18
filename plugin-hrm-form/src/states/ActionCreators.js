@@ -42,7 +42,7 @@ export const handleSubmit = dispatch => (form, handleCompleteTask) => (task) => 
 // This is not technically an ActionCreator.  It's more of a filter and/or validator, 
 // but it happens on an event.  Does it belong here?
 // This is also (dangerously?) hardcoding where the category information is.
-export const handleCategoryToggle = (form, handleCheckbox, handleBlur) => (taskId, category, subcategory, newValue) => {
+export const handleCategoryToggle = (form, handleChange, handleBlur) => (taskId, category, subcategory, newValue) => {
   const candidateCategories = {
     ...form.caseInformation.categories,
     [category]: {
@@ -56,7 +56,7 @@ export const handleCategoryToggle = (form, handleCheckbox, handleBlur) => (taskI
   if (moreThanThreeCategoriesSelected(candidateCategories)) {
     window.alert("You cannot select more than three category options");
   } else {
-    handleCheckbox(taskId,
+    handleChange(taskId,
                    ['caseInformation', 'categories', category],
                    subcategory, 
                    newValue);

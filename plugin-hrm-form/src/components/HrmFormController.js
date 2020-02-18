@@ -104,8 +104,7 @@ const HrmFormController = (props) => {
       handleBlur={props.handleBlur(props.form, props.task.taskSid)}
       handleChange={props.handleChange} 
       handleCallTypeButtonClick={props.handleCallTypeButtonClick}
-      handleCategoryToggle={handleCategoryToggle(props.form, props.handleCheckbox)}
-      handleCheckbox={props.handleCheckbox}
+      handleCategoryToggle={handleCategoryToggle(props.form, props.handleChange)}
       handleSubmit={props.handleSubmit(props.form, props.handleCompleteTask)}
       handleFocus={props.handleFocus}
     />
@@ -123,7 +122,6 @@ const mapDispatchToProps = (dispatch) => ({
   handleBlur: handleBlur(dispatch),
   handleCallTypeButtonClick: bindActionCreators(Actions.handleCallTypeButtonClick, dispatch),
   handleChange: bindActionCreators(Actions.handleChange, dispatch),
-  handleCheckbox: bindActionCreators(Actions.handleCheckbox, dispatch),
   handleFocus: handleFocus(dispatch),
   handleSubmit: handleSubmit(dispatch)
 });
