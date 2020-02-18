@@ -6,7 +6,7 @@ import { StyledInput,
 } from '../Styles/HrmStyles';
 import RequiredAsterisk from './RequiredAsterisk';
 
-const FieldText = ({ id, label, field, handleBlur, handleChange, handleFocus }) =>
+const FieldText = ({ id, label, field, rows, handleBlur, handleChange, handleFocus }) =>
   <TextField>
     <StyledLabel htmlFor={id}>
       {label}<RequiredAsterisk field={field} />
@@ -15,6 +15,8 @@ const FieldText = ({ id, label, field, handleBlur, handleChange, handleFocus }) 
       id={id}
       error={field.error !== null}
       value={field.value}
+      multiline={!!rows}
+      rows={rows}
       onBlur={handleBlur}
       onChange={handleChange}
       onFocus={handleFocus}

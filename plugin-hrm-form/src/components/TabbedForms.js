@@ -8,12 +8,8 @@ import { BottomButtonBar,
          ErrorText,
          NameFields,
          StyledCheckboxLabel,
-         StyledInput,
          StyledLabel,
-         StyledMenuItem,
          StyledNextStepButton,
-         StyledSelect,
-         TextField,
          TopNav,
          TwoColumnLayout,
          TransparentButton
@@ -184,31 +180,19 @@ class TabbedForms extends React.PureComponent {
     body[1] = (
       <Container>
         <NameFields>
-          <TextField>
-              <StyledLabel htmlFor="ChildInformation_FirstName">First name</StyledLabel>
-              <StyledInput
-                name='firstName'
-                id="ChildInformation_FirstName"
-                value={this.props.form.childInformation.name.firstName.value}
-                onChange={(e) => 
-                  this.props.handleChange(taskId,
-                                          ['childInformation', 'name'],
-                                          e)}
-              />
-          </TextField>
+          <FieldText
+            id="ChildInformation_FirstName"
+            label="First name"
+            field={this.props.form.childInformation.name.firstName}
+            {...this.defaultEventHandlers(['childInformation', 'name'], 'firstName')}
+          />
 
-          <TextField>
-              <StyledLabel htmlFor="ChildInformation_LastName">Last name</StyledLabel>
-              <StyledInput
-                value={this.props.form.childInformation.name.lastName.value}
-                name='lastName'
-                id="ChildInformation_LastName"
-                onChange={(e) => 
-                  this.props.handleChange(taskId,
-                                          ['childInformation', 'name'],
-                                          e)}
-              />
-          </TextField>
+          <FieldText
+            id="ChildInformation_FirstName"
+            label="Last name"
+            field={this.props.form.childInformation.name.lastName}
+            {...this.defaultEventHandlers(['childInformation', 'name'], 'lastName')}
+          />
         </NameFields>
 
         <TwoColumnLayout>
@@ -231,47 +215,32 @@ class TabbedForms extends React.PureComponent {
               {...this.defaultEventHandlers(['childInformation'], 'age')}
             />
 
-            <TextField>
-                <StyledLabel htmlFor="ChildInformation_Language">Language</StyledLabel>
-                <StyledSelect 
-                  name="language"
-                  id="ChildInformation_Language"
-                  value={this.props.form.childInformation.language.value}
-                  onChange={(e) => this.props.handleChange(taskId, ['childInformation'], e)}>
-                  <StyledMenuItem hidden selected disabled value="">Select</StyledMenuItem>
-                  <StyledMenuItem value="Language 1">Language 1</StyledMenuItem>
-                  <StyledMenuItem value="Language 2">Language 2</StyledMenuItem>
-                  <StyledMenuItem value="Language 3">Language 3</StyledMenuItem>
-                </StyledSelect>
-            </TextField>
+            <FieldSelect
+              field={this.props.form.childInformation.language}
+              id="ChildInformation_Language"
+              name="language"
+              label="Language"
+              options={['Language 1', 'Language 2', 'Language 3']}
+              {...this.defaultEventHandlers(['childInformation'], 'language')}
+            />
 
-            <TextField>
-                <StyledLabel htmlFor="ChildInformation_Nationality">Nationality</StyledLabel>
-                <StyledSelect 
-                  name="nationality"
-                  id="ChildInformation_Nationality"
-                  value={this.props.form.childInformation.nationality.value}
-                  onChange={(e) => this.props.handleChange(taskId, ['childInformation'], e)}>
-                  <StyledMenuItem hidden selected disabled value="">Select</StyledMenuItem>
-                  <StyledMenuItem value="Nationality 1">Nationality 1</StyledMenuItem>
-                  <StyledMenuItem value="Nationality 2">Nationality 2</StyledMenuItem>
-                  <StyledMenuItem value="Nationality 3">Nationality 3</StyledMenuItem>
-                </StyledSelect>
-            </TextField>
+            <FieldSelect
+              field={this.props.form.childInformation.nationality}
+              id="ChildInformation_Nationality"
+              name="nationality"
+              label="Nationality"
+              options={['Nationality 1', 'Nationality 2', 'Nationality 3']}
+              {...this.defaultEventHandlers(['childInformation'], 'nationality')}
+            />
 
-            <TextField>
-                <StyledLabel htmlFor="ChildInformation_Ethnicity">Ethnicity</StyledLabel>
-                <StyledSelect 
-                  name="ethnicity"
-                  id="ChildInformation_Ethnicity"
-                  value={this.props.form.childInformation.ethnicity.value}
-                  onChange={(e) => this.props.handleChange(taskId, ['childInformation'], e)}>
-                  <StyledMenuItem hidden selected disabled value="">Select</StyledMenuItem>
-                  <StyledMenuItem value="Ethnicity 1">Ethnicity 1</StyledMenuItem>
-                  <StyledMenuItem value="Ethnicity 2">Ethnicity 2</StyledMenuItem>
-                  <StyledMenuItem value="Ethnicity 3">Ethnicity 3</StyledMenuItem>
-                </StyledSelect>
-            </TextField>
+            <FieldSelect
+              field={this.props.form.childInformation.ethnicity}
+              id="ChildInformation_Ethnicity"
+              name="ethnicity"
+              label="Ethnicity"
+              options={['Ethnicity 1', 'Ethnicity 2', 'Ethnicity 3']}
+              {...this.defaultEventHandlers(['childInformation'], 'ethnicity')}
+            />
 
             <CheckboxField>
               <Checkbox name='refugee' 
@@ -314,109 +283,61 @@ class TabbedForms extends React.PureComponent {
           </ColumnarBlock>
 
           <ColumnarBlock>
-            <TextField>
-                <StyledLabel htmlFor="ChildInformation_StreetAddress">Street Address</StyledLabel>
-                <StyledInput
-                  name='streetAddress'
-                  id="ChildInformation_StreetAddress"
-                  value={this.props.form.childInformation.location.streetAddress.value}
-                  onChange={(e) => 
-                    this.props.handleChange(taskId,
-                                            ['childInformation', 'location'],
-                                            e)}
-                />
-            </TextField>
+            <FieldText
+              id="ChildInformation_StreetAddress"
+              label="Street address"
+              field={this.props.form.childInformation.location.streetAddress}
+              {...this.defaultEventHandlers(['childInformation', 'location'], 'streetAddress')}
+            />
 
-            <TextField>
-                <StyledLabel htmlFor="ChildInformation_City">City</StyledLabel>
-                <StyledInput
-                  name='city'
-                  id="ChildInformation_City"
-                  value={this.props.form.childInformation.location.city.value}
-                  onChange={(e) => 
-                    this.props.handleChange(taskId,
-                                            ['childInformation', 'location'],
-                                            e)}
-                />
-            </TextField>
+            <FieldText
+              id="ChildInformation_City"
+              label="City"
+              field={this.props.form.childInformation.location.city}
+              {...this.defaultEventHandlers(['childInformation', 'location'], 'city')}
+            />
 
-            <TextField>
-                <StyledLabel htmlFor="ChildInformation_StateOrCounty">State/County</StyledLabel>
-                <StyledInput
-                  name='stateOrCounty'
-                  id="ChildInformation_StateOrCounty"
-                  value={this.props.form.childInformation.location.stateOrCounty.value}
-                  onChange={(e) => 
-                    this.props.handleChange(taskId,
-                                            ['childInformation', 'location'],
-                                            e)}
-                />
-            </TextField>
+            <FieldText
+              id="ChildInformation_State/Country"
+              label="State/County"
+              field={this.props.form.childInformation.location.stateOrCounty}
+              {...this.defaultEventHandlers(['childInformation', 'location'], 'stateOrCounty')}
+            />
 
-            <TextField>
-                <StyledLabel htmlFor="ChildInformation_PostalCode">Postal Code</StyledLabel>
-                <StyledInput
-                  name='postalCode'
-                  id="ChildInformation_PostalCode"
-                  value={this.props.form.childInformation.location.postalCode.value}
-                  onChange={(e) => 
-                    this.props.handleChange(taskId,
-                                            ['childInformation', 'location'],
-                                            e)}
-                />
-            </TextField>
+            <FieldText
+              id="ChildInformation_PostalCode"
+              label="Postal code"
+              field={this.props.form.childInformation.location.postalCode}
+              {...this.defaultEventHandlers(['childInformation', 'location'], 'postalCode')}
+            />
 
-            <TextField>
-                <StyledLabel htmlFor="ChildInformation_Phone1">Phone #1</StyledLabel>
-                <StyledInput
-                  name='phone1'
-                  id="ChildInformation_Phone1"
-                  value={this.props.form.childInformation.location.phone1.value}
-                  onChange={(e) => 
-                    this.props.handleChange(taskId,
-                                            ['childInformation', 'location'],
-                                            e)}
-                />
-            </TextField>
+            <FieldText
+              id="ChildInformation_Phone#1"
+              label="Phone #1"
+              field={this.props.form.childInformation.location.phone1}
+              {...this.defaultEventHandlers(['childInformation', 'location'], 'phone1')}
+            />
 
-            <TextField>
-              <StyledLabel htmlFor="ChildInformation_Phone2">Phone #2</StyledLabel>
-              <StyledInput
-                name='phone2'
-                id="ChildInformation_Phone2"
-                value={this.props.form.childInformation.location.phone2.value}
-                onChange={(e) => 
-                  this.props.handleChange(taskId,
-                                          ['childInformation', 'location'],
-                                          e)}
-              />
-            </TextField>
+            <FieldText
+              id="ChildInformation_Phone#2"
+              label="Phone #2"
+              field={this.props.form.childInformation.location.phone2}
+              {...this.defaultEventHandlers(['childInformation', 'location'], 'phone2')}
+            />
 
-            <TextField>
-                <StyledLabel htmlFor="ChildInformation_SchoolName">School Name</StyledLabel>
-                <StyledInput
-                  name='name'
-                  id="ChildInformation_SchoolName"
-                  value={this.props.form.childInformation.school.name.value}
-                  onChange={(e) => 
-                    this.props.handleChange(taskId,
-                                            ['childInformation', 'school'],
-                                            e)}
-                />
-            </TextField>
+            <FieldText
+              id="ChildInformation_SchoolName"
+              label="School name"
+              field={this.props.form.childInformation.school.name}
+              {...this.defaultEventHandlers(['childInformation', 'school'], 'name')}
+            />
 
-            <TextField>
-                <StyledLabel htmlFor="ChildInformation_GradeLevel">Grade Level</StyledLabel>
-                <StyledInput
-                  name='gradeLevel'
-                  id="ChildInformation_GradeLevel"
-                  value={this.props.form.childInformation.school.gradeLevel.value}
-                  onChange={(e) => 
-                    this.props.handleChange(taskId,
-                                            ['childInformation', 'school'],
-                                            e)}
-                />
-            </TextField>
+            <FieldText
+              id="ChildInformation_GradeLevel"
+              label="Grade level"
+              field={this.props.form.childInformation.school.gradeLevel}
+              {...this.defaultEventHandlers(['childInformation', 'school'], 'gradeLevel')}
+            />
           </ColumnarBlock>
         </TwoColumnLayout>
       </Container>
@@ -454,59 +375,40 @@ class TabbedForms extends React.PureComponent {
       <Container>
         <TwoColumnLayout>
           <ColumnarBlock>
-            <TextField>
-              <StyledLabel htmlFor="CaseInformation_CallSummary">Call summary</StyledLabel>
-              <StyledInput multiline={true} rows={10} style={{width: "100%"}}
-                name="callSummary"
-                id="CaseInformation_CallSummary"
-                value={this.props.form.caseInformation.callSummary.value}
-                onChange={(e) => this.props.handleChange(taskId, ['caseInformation'], e)}
-              />
-            </TextField>
+            <FieldText
+              id="CaseInformation_CallSummary"
+              label="Call summary"
+              field={this.props.form.caseInformation.callSummary}
+              rows={10}
+              {...this.defaultEventHandlers(['caseInformation'], 'callSummary')}
+            />
 
-            <TextField>
-                <StyledLabel htmlFor="CaseInformation_ReferredTo">Referred To</StyledLabel>
-                <StyledSelect 
-                  name="referredTo"
-                  id="CaseInformation_ReferredTo"
-                  value={this.props.form.caseInformation.referredTo.value}
-                  onChange={(e) => this.props.handleChange(taskId, ['caseInformation'], e)}>
-                  <StyledMenuItem hidden selected disabled value="">Select</StyledMenuItem>
-                  <StyledMenuItem value="No Referral">No Referral</StyledMenuItem>
-                  <StyledMenuItem value="Referral 1">Referral 1</StyledMenuItem>
-                  <StyledMenuItem value="Referral 2">Referral 2</StyledMenuItem>
-                  <StyledMenuItem value="Referral 3">Referral 3</StyledMenuItem>
-                </StyledSelect>
-            </TextField>
+            <FieldSelect
+              field={this.props.form.caseInformation.referredTo}
+              id="CaseInformation_ReferredTo"
+              name="referredTo"
+              label="Referred To"
+              options={['No Referral', 'Referral 1', 'Referral 2', 'Referral 3']}
+              {...this.defaultEventHandlers(['caseInformation'], 'referredTo')}
+            />
 
-            <TextField>
-                <StyledLabel htmlFor="CaseInformation_Status">Status</StyledLabel>
-                <StyledSelect 
-                  name="status"
-                  id="CaseInformation_Status"
-                  value={this.props.form.caseInformation.status.value}
-                  onChange={(e) => this.props.handleChange(taskId, ['caseInformation'], e)}>
-                  <StyledMenuItem hidden selected disabled value="">Select</StyledMenuItem>
-                  <StyledMenuItem value="Open">Open</StyledMenuItem>
-                  <StyledMenuItem value="In Progress">In Progress</StyledMenuItem>
-                  <StyledMenuItem value="Closed">Closed</StyledMenuItem>
-                </StyledSelect>
-            </TextField>
+            <FieldSelect
+              field={this.props.form.caseInformation.status}
+              id="CaseInformation_Status"
+              name="status"
+              label="Status"
+              options={['Open', 'In Progress', 'Closed']}
+              {...this.defaultEventHandlers(['caseInformation'], 'status')}
+            />
 
-            <TextField>
-              <StyledLabel htmlFor="CaseInformation_HowDidTheChildHearAboutUs">How did the child hear about us?</StyledLabel>
-              <StyledSelect 
-                name="howDidTheChildHearAboutUs"
-                id="CaseInformation_HowDidTheChildHearAboutUs"
-                value={this.props.form.caseInformation.howDidTheChildHearAboutUs.value}
-                onChange={(e) => this.props.handleChange(taskId, ['caseInformation'], e)}>
-                <StyledMenuItem hidden selected disabled value="">Select</StyledMenuItem>
-                <StyledMenuItem value="Word of Mouth">Word of Mouth</StyledMenuItem>
-                <StyledMenuItem value="Media">Media</StyledMenuItem>
-                <StyledMenuItem value="Friend">Friend</StyledMenuItem>
-                <StyledMenuItem value="School">School</StyledMenuItem>
-              </StyledSelect>
-            </TextField>
+            <FieldSelect
+              field={this.props.form.caseInformation.howDidTheChildHearAboutUs}
+              id="CaseInformation_HowDidTheChildHearAboutUs"
+              name="howDidTheChildHearAboutUs"
+              label="How did the child hear about us?"
+              options={['Word of Mouth', 'Media', 'Friend', 'School']}
+              {...this.defaultEventHandlers(['caseInformation'], 'howDidTheChildHearAboutUs')}
+            />
           </ColumnarBlock>
 
           <ColumnarBlock>
