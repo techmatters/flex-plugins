@@ -1,6 +1,4 @@
-// import styled from '@emotion/styled';
-// import { keyframes } from 'emotion';
-import {default as styled, keyframes} from "react-emotion";
+import styled, { keyframes } from 'react-emotion';
 import { Input, Select, MenuItem } from '@material-ui/core';
 import { Button, getBackgroundWithHoverCSS } from '@twilio/flex-ui';
 

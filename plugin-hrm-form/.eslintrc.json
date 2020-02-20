@@ -10,6 +10,7 @@
     "no-console": "off",
     "no-warning-comments": "off",
     "no-confusing-arrow": "off",
-    "no-alert": "off"
+    "no-alert": "off",
+    "import/no-extraneous-dependencies": "off"
   }
 }
