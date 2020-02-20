@@ -27,41 +27,40 @@ export default class HrmFormPlugin extends FlexPlugin {
 
     const onCompleteTask = (sid, task) => {
       if (task.channelType === 'voice' && task.status !== 'wrapping') {
-        flex.Actions.invokeAction("HangupCall", { sid, task } );
+        flex.Actions.invokeAction('HangupCall', { sid, task });
       }
-      flex.Actions.invokeAction("CompleteTask", { sid, task } );
-    }
+      flex.Actions.invokeAction('CompleteTask', { sid, task });
+    };
 
     const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
+
     // TODO(nick): Eventually remove this log line or set to debug
-    console.log("HRM URL: " + hrmBaseUrl);
+    console.log(`HRM URL: ${hrmBaseUrl}`);
     if (hrmBaseUrl === undefined) {
-      console.error("HRM base URL not defined, you must provide this to save program data");
+      console.error('HRM base URL not defined, you must provide this to save program data');
     }
 
     // TODO(nick): Can we avoid passing down the task prop, maybe using context?
     const options = { sortOrder: -1 };
-    flex.CRMContainer
-      .Content
-      .replace(<CustomCRMContainer
-                  key="custom-crm-container"
-                  handleCompleteTask={onCompleteTask}
-               />, options);
+    flex.CRMContainer.Content.replace(
+      <CustomCRMContainer key="custom-crm-container" handleCompleteTask={onCompleteTask} />,
+      options,
+    );
 
     // Must use submit buttons in CRM container to complete task
     flex.TaskCanvasHeader.Content.remove('actions', {
-      if: props => props.task && props.task.status === 'wrapping'
+      if: props => props.task && props.task.status === 'wrapping',
     });
 
-    flex.Actions.addListener("beforeAcceptTask", (payload) => {
+    flex.Actions.addListener('beforeAcceptTask', payload => {
       manager.store.dispatch(Actions.initializeContactState(payload.task.taskSid));
     });
 
-    flex.Actions.addListener("beforeCompleteTask", (payload, abortFunction) => {
+    flex.Actions.addListener('beforeCompleteTask', (payload, abortFunction) => {
       manager.store.dispatch(Actions.saveContactState(payload.task, abortFunction, hrmBaseUrl));
     });
 
-    flex.Actions.addListener("afterCompleteTask", (payload) => {
+    flex.Actions.addListener('afterCompleteTask', payload => {
       manager.store.dispatch(Actions.removeContactState(payload.task.taskSid));
     });
   }
