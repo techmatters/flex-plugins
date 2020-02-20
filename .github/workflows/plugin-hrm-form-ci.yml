@@ -1,6 +1,6 @@
 name: Run plugin-hrm-form CI
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   build:
