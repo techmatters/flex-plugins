@@ -8,6 +8,7 @@ export const fieldType = PropTypes.shape({
   value: PropTypes.string,
   error: PropTypes.string,
   validation: PropTypes.string,
+  touched: PropTypes.bool,
 });
 
 const callTypeType = PropTypes.shape({
