@@ -21,6 +21,7 @@ jobs:
       run: |
         touch ./public/appConfig.js
         touch ./src/private/secret.js
+      working-directory: ./plugin-hrm-form
     - name: Install Packages
       run: npm install
       working-directory: ./plugin-hrm-form
