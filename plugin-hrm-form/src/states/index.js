@@ -8,5 +8,5 @@ export const contactFormsBase = 'activeContacts';
 
 // Combine the reducers
 export default combineReducers({
-  [contactFormsBase]: ContactStateReducer
+  [contactFormsBase]: ContactStateReducer,
 });

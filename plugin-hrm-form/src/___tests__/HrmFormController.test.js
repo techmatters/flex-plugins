@@ -1,13 +1,13 @@
 import { transformForm } from '../components/HrmFormController';
 import { FieldType, ValidationType } from '../states/ContactFormStateFactory';
-import { callTypes } from '../states/DomainConstants';
+import callTypes from '../states/DomainConstants';
 
 describe('transformForm', () => {
   test('removes control information and presents values only', () => {
-    const oldForm = {      
+    const oldForm = {
       callType: {
         type: FieldType.CALL_TYPE,
-        value: callTypes.caller
+        value: callTypes.caller,
       },
       callerInformation: {
         type: FieldType.TAB,
@@ -18,75 +18,75 @@ describe('transformForm', () => {
             value: 'myFirstName',
             touched: true,
             error: null,
-            validation: null
-          }
-        }
+            validation: null,
+          },
+        },
       },
       childInformation: {
         type: FieldType.TAB,
         gender: {
           type: FieldType.SELECT_SINGLE,
-          validation: [ ValidationType.REQUIRED ],
+          validation: [ValidationType.REQUIRED],
           touched: true,
-          value: 'Male'
+          value: 'Male',
         },
         refugee: {
           type: FieldType.CHECKBOX,
-          value: false
-        }
+          value: false,
+        },
       },
       caseInformation: {
         type: FieldType.TAB,
         categories: {
           type: FieldType.CHECKBOX_FIELD,
-          validation: [ ValidationType.REQUIRED ],
+          validation: [ValidationType.REQUIRED],
           error: null,
           category1: {
             type: FieldType.INTERMEDIATE,
             sub1: {
               type: FieldType.CHECKBOX,
-              value: true
+              value: true,
             },
             sub2: {
               type: FieldType.CHECKBOX,
-              value: false
-            }
-          }
+              value: false,
+            },
+          },
         },
         status: {
           value: '',
           type: FieldType.SELECT_SINGLE,
-          validation: null
+          validation: null,
         },
         callSummary: {
           type: FieldType.TEXT_BOX,
           validation: null,
-          value: 'My summary'
-        }
-      }
+          value: 'My summary',
+        },
+      },
     };
-    const expected = {      
+    const expected = {
       callType: callTypes.caller,
       callerInformation: {
         name: {
-          firstName: 'myFirstName'
-        }
+          firstName: 'myFirstName',
+        },
       },
       childInformation: {
         gender: 'Male',
-        refugee: false
+        refugee: false,
       },
       caseInformation: {
         categories: {
           category1: {
             sub1: true,
-            sub2: false
-          }
+            sub2: false,
+          },
         },
         status: '',
-        callSummary: 'My summary'
-      }
+        callSummary: 'My summary',
+      },
     };
     expect(transformForm(oldForm)).toStrictEqual(expected);
-  })
+  });
 });

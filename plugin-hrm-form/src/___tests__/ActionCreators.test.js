@@ -1,22 +1,21 @@
+import {
+  formIsValid,
+  moreThanThreeCategoriesSelected,
+  validateBeforeSubmit,
+  validateOnBlur,
+} from '../states/ValidationRules';
+import { handleBlur, handleCategoryToggle, handleFocus, handleSubmit } from '../states/ActionCreators';
+import { HANDLE_BLUR, HANDLE_FOCUS } from '../states/ActionTypes';
+import { FieldType } from '../states/ContactFormStateFactory';
+
 jest.mock('../states/ValidationRules', () => {
   return {
     formIsValid: jest.fn(),
     moreThanThreeCategoriesSelected: jest.fn(),
     validateBeforeSubmit: jest.fn(),
-    validateOnBlur: jest.fn(x => x)
+    validateOnBlur: jest.fn(x => x),
   };
 });
-import { formIsValid,
-         moreThanThreeCategoriesSelected,
-         validateBeforeSubmit,
-         validateOnBlur } from '../states/ValidationRules';
-import { handleBlur,
-         handleCategoryToggle,
-         handleFocus,
-         handleSubmit } from '../states/ActionCreators';
-import { HANDLE_BLUR,
-         HANDLE_FOCUS } from '../states/ActionTypes';
-import { FieldType } from '../states/ContactFormStateFactory';
 
 test('handleBlur sends the right action when called', () => {
   const dispatch = jest.fn(x => x);
@@ -27,7 +26,7 @@ test('handleBlur sends the right action when called', () => {
   expect(dispatch.mock.calls[0][0]).toStrictEqual({
     type: HANDLE_BLUR,
     form,
-    taskId
+    taskId,
   });
 });
 
@@ -40,10 +39,9 @@ test('handleFocus sends the right action when called', () => {
     type: HANDLE_FOCUS,
     parents: ['callerInformation', 'name'],
     name: 'firstName',
-    taskId
+    taskId,
   });
 });
-
 
 describe('handleSubmit', () => {
   test('blocks submit when form is invalid', () => {
@@ -51,10 +49,10 @@ describe('handleSubmit', () => {
     const handleCompleteTask = jest.fn();
     window.alert = jest.fn();
     const form = {
-      test: 'pretend an error is present'
-    }
+      test: 'pretend an error is present',
+    };
     const task = {
-      taskSid: 'WT1234'
+      taskSid: 'WT1234',
     };
     validateBeforeSubmit.mockReturnValueOnce(form);
     formIsValid.mockReturnValueOnce(false);
@@ -63,7 +61,7 @@ describe('handleSubmit', () => {
     expect(dispatch.mock.calls[0][0]).toStrictEqual({
       type: HANDLE_BLUR,
       form,
-      taskId: task.taskSid
+      taskId: task.taskSid,
     });
     expect(handleCompleteTask.mock.calls.length).toBe(0);
     expect(window.alert.mock.calls.length).toBe(1);
@@ -74,10 +72,10 @@ describe('handleSubmit', () => {
     const handleCompleteTask = jest.fn();
     window.alert = jest.fn();
     const form = {
-      test: 'pretend an error is not present'
-    }
+      test: 'pretend an error is not present',
+    };
     const task = {
-      taskSid: 'WT1234'
+      taskSid: 'WT1234',
     };
     validateBeforeSubmit.mockReturnValueOnce(form);
     formIsValid.mockReturnValueOnce(true);
@@ -86,14 +84,14 @@ describe('handleSubmit', () => {
     expect(dispatch.mock.calls[0][0]).toStrictEqual({
       type: HANDLE_BLUR,
       form,
-      taskId: task.taskSid
+      taskId: task.taskSid,
     });
     expect(handleCompleteTask.mock.calls.length).toBe(1);
     expect(handleCompleteTask.mock.calls[0][0]).toStrictEqual(task.taskSid);
     expect(handleCompleteTask.mock.calls[0][1]).toStrictEqual(task);
     expect(window.alert.mock.calls.length).toBe(0);
   });
-})
+});
 
 describe('handleCategoryToggle', () => {
   afterEach(() => {
@@ -111,26 +109,26 @@ describe('handleCategoryToggle', () => {
             type: FieldType.INTERMEDIATE,
             sub1: {
               type: FieldType.CHECKBOX,
-              value: true
+              value: true,
             },
-            sub2:  {
+            sub2: {
               type: FieldType.CHECKBOX,
-              value: true
-            }
+              value: true,
+            },
           },
           category2: {
             type: FieldType.INTERMEDIATE,
             sub1: {
               type: FieldType.CHECKBOX,
-              value: true
+              value: true,
             },
             sub2: {
               type: FieldType.CHECKBOX,
-              value: false
-            }
-          }
-        }
-      }
+              value: false,
+            },
+          },
+        },
+      },
     };
     const handleChange = jest.fn();
     const taskId = 'WT1234';
@@ -145,24 +143,24 @@ describe('handleCategoryToggle', () => {
         type: FieldType.INTERMEDIATE,
         sub1: {
           type: FieldType.CHECKBOX,
-          value: true
+          value: true,
         },
-        sub2:  {
+        sub2: {
           type: FieldType.CHECKBOX,
-          value: true
-        }
+          value: true,
+        },
       },
       category2: {
         type: FieldType.INTERMEDIATE,
         sub1: {
           type: FieldType.CHECKBOX,
-          value: true
+          value: true,
         },
         sub2: {
           type: FieldType.CHECKBOX,
-          value: true
-        }
-      }
+          value: true,
+        },
+      },
     });
     expect(window.alert.mock.calls.length).toBe(1);
     expect(handleChange.mock.calls.length).toBe(0);
@@ -179,26 +177,26 @@ describe('handleCategoryToggle', () => {
             type: FieldType.INTERMEDIATE,
             sub1: {
               type: FieldType.CHECKBOX,
-              value: true
+              value: true,
             },
-            sub2:  {
+            sub2: {
               type: FieldType.CHECKBOX,
-              value: true
-            }
+              value: true,
+            },
           },
           category2: {
             type: FieldType.INTERMEDIATE,
             sub1: {
               type: FieldType.CHECKBOX,
-              value: false
+              value: false,
             },
             sub2: {
               type: FieldType.CHECKBOX,
-              value: false
-            }
-          }
-        }
-      }
+              value: false,
+            },
+          },
+        },
+      },
     };
     const handleChange = jest.fn();
     const taskId = 'WT1234';
@@ -213,24 +211,24 @@ describe('handleCategoryToggle', () => {
         type: FieldType.INTERMEDIATE,
         sub1: {
           type: FieldType.CHECKBOX,
-          value: true
+          value: true,
         },
-        sub2:  {
+        sub2: {
           type: FieldType.CHECKBOX,
-          value: true
-        }
+          value: true,
+        },
       },
       category2: {
         type: FieldType.INTERMEDIATE,
         sub1: {
           type: FieldType.CHECKBOX,
-          value: false
+          value: false,
         },
         sub2: {
           type: FieldType.CHECKBOX,
-          value: true
-        }
-      }
+          value: true,
+        },
+      },
     });
     expect(window.alert.mock.calls.length).toBe(0);
     expect(handleChange.mock.calls.length).toBe(1);
