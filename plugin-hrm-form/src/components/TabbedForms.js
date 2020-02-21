@@ -1,46 +1,53 @@
 import React from 'react';
-import { withTaskContext } from "@twilio/flex-ui";
-import { BottomButtonBar,
-         CategoryCheckboxField,
-         CheckboxField,
-         ColumnarBlock,
-         Container,
-         ErrorText,
-         NameFields,
-         StyledCheckboxLabel,
-         StyledLabel,
-         StyledNextStepButton,
-         TopNav,
-         TwoColumnLayout,
-         TransparentButton
-        } from '../Styles/HrmStyles';
-import { Checkbox,
-         Tab, 
-         Tabs} from "@material-ui/core";
-import { callTypes } from '../states/DomainConstants'
+import PropTypes from 'prop-types';
+import { withTaskContext } from '@twilio/flex-ui';
+import { Checkbox, Tab, Tabs } from '@material-ui/core';
+
+import {
+  BottomButtonBar,
+  CheckboxField,
+  ColumnarBlock,
+  Container,
+  ErrorText,
+  NameFields,
+  StyledCheckboxLabel,
+  StyledNextStepButton,
+  TopNav,
+  TwoColumnLayout,
+  TransparentButton,
+} from '../Styles/HrmStyles';
+import callTypes from '../states/DomainConstants';
 import decorateTab from './decorateTab';
 import { formIsValid } from '../states/ValidationRules';
 import FieldSelect from './FieldSelect';
-import FieldText from './FieldText'
-
+import FieldText from './FieldText';
+import BranchingFormIssueCategory from './BranchingFormIssueCategory';
+import { formType, taskType } from '../types';
 
 class TabbedForms extends React.PureComponent {
+  static displayName = 'TabbedForms';
+
+  static propTypes = {
+    form: formType.isRequired,
+    task: taskType.isRequired,
+    handleBlur: PropTypes.func.isRequired,
+    handleCategoryToggle: PropTypes.func.isRequired,
+    handleChange: PropTypes.func.isRequired,
+    handleCallTypeButtonClick: PropTypes.func.isRequired,
+    handleSubmit: PropTypes.func.isRequired,
+    handleFocus: PropTypes.func.isRequired,
+  };
+
   state = {
     tab: 0,
   };
 
-  tabChange = (event, tab) => this.setState({tab});
+  tabChange = (event, tab) => this.setState({ tab });
 
-  curriedHandleChange = (parents, name) =>
-  (e) => this.props.handleChange(
-    this.props.task.taskSid,
-    parents,
-    name,
-    e.target.value || e.currentTarget.value
-  );
+  curriedHandleChange = (parents, name) => e =>
+    this.props.handleChange(this.props.task.taskSid, parents, name, e.target.value || e.currentTarget.value);
 
-  curriedHandleFocus = (parents, name) =>
-    () => this.props.handleFocus(this.props.task.taskSid, parents, name);
+  curriedHandleFocus = (parents, name) => () => this.props.handleFocus(this.props.task.taskSid, parents, name);
 
   defaultEventHandlers = (parents, name) => ({
     handleBlur: this.props.handleBlur,
@@ -51,7 +58,7 @@ class TabbedForms extends React.PureComponent {
   render() {
     const taskId = this.props.task.taskSid;
 
-    let body = new Array(3);
+    const body = new Array(3);
 
     // Caller Information
     body[0] = (
@@ -243,40 +250,54 @@ class TabbedForms extends React.PureComponent {
             />
 
             <CheckboxField>
-              <Checkbox name='refugee' 
-                  id="ChildInformation_Refugee"
-                  checked={this.props.form.childInformation.refugee.value} 
-                  onClick={() => 
-                    this.props.handleChange(taskId,
-                                            ['childInformation'],
-                                            'refugee', 
-                                            !this.props.form.childInformation.refugee.value)}
+              <Checkbox
+                name="refugee"
+                id="ChildInformation_Refugee"
+                checked={this.props.form.childInformation.refugee.value}
+                onClick={() =>
+                  this.props.handleChange(
+                    taskId,
+                    ['childInformation'],
+                    'refugee',
+                    !this.props.form.childInformation.refugee.value,
+                  )
+                }
               />
               <StyledCheckboxLabel htmlFor="ChildInformation_Refugee">Refugee?</StyledCheckboxLabel>
             </CheckboxField>
 
             <CheckboxField>
-              <Checkbox name='disabledOrSpecialNeeds' 
-                  id="ChildInformation_DisabledOrSpecialNeeds"
-                  checked={this.props.form.childInformation.disabledOrSpecialNeeds.value} 
-                  onClick={() => 
-                    this.props.handleChange(taskId,
-                                            ['childInformation'],
-                                            'disabledOrSpecialNeeds', 
-                                            !this.props.form.childInformation.disabledOrSpecialNeeds.value)}
+              <Checkbox
+                name="disabledOrSpecialNeeds"
+                id="ChildInformation_DisabledOrSpecialNeeds"
+                checked={this.props.form.childInformation.disabledOrSpecialNeeds.value}
+                onClick={() =>
+                  this.props.handleChange(
+                    taskId,
+                    ['childInformation'],
+                    'disabledOrSpecialNeeds',
+                    !this.props.form.childInformation.disabledOrSpecialNeeds.value,
+                  )
+                }
               />
-              <StyledCheckboxLabel htmlFor="ChildInformation_DisabledOrSpecialNeeds">Disabled/Special Needs?</StyledCheckboxLabel>
+              <StyledCheckboxLabel htmlFor="ChildInformation_DisabledOrSpecialNeeds">
+                Disabled/Special Needs?
+              </StyledCheckboxLabel>
             </CheckboxField>
 
             <CheckboxField>
-              <Checkbox name='hiv' 
-                  id="ChildInformation_HIV"
-                  checked={this.props.form.childInformation.hiv.value} 
-                  onClick={() => 
-                    this.props.handleChange(taskId,
-                                            ['childInformation'],
-                                            'hiv', 
-                                            !this.props.form.childInformation.hiv.value)}
+              <Checkbox
+                name="hiv"
+                id="ChildInformation_HIV"
+                checked={this.props.form.childInformation.hiv.value}
+                onClick={() =>
+                  this.props.handleChange(
+                    taskId,
+                    ['childInformation'],
+                    'hiv',
+                    !this.props.form.childInformation.hiv.value,
+                  )
+                }
               />
               <StyledCheckboxLabel htmlFor="ChildInformation_HIV">HIV Positive?</StyledCheckboxLabel>
             </CheckboxField>
@@ -345,27 +366,62 @@ class TabbedForms extends React.PureComponent {
 
     // Issue Categorization
     body[2] = (
-      <Container style={{display: 'flex', flexDirection: 'column'}}>
-        {this.props.form.caseInformation.categories.error ? 
-          <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginBottom: '20px'}}>
+      <Container style={{ display: 'flex', flexDirection: 'column' }}>
+        {this.props.form.caseInformation.categories.error ? (
+          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', marginBottom: '20px' }}>
             <ErrorText>{this.props.form.caseInformation.categories.error}</ErrorText>
           </div>
-           : ''}
-        <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginBottom: '20px'}}>
-          <BranchingFormIssueCategory category="1" handleCategoryToggle={this.props.handleCategoryToggle} taskId={taskId} form={this.props.form}/>
-          <BranchingFormIssueCategory category="2" handleCategoryToggle={this.props.handleCategoryToggle} taskId={taskId} form={this.props.form}/>
-          <BranchingFormIssueCategory category="3" handleCategoryToggle={this.props.handleCategoryToggle} taskId={taskId} form={this.props.form}/>
+        ) : (
+          ''
+        )}
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', marginBottom: '20px' }}>
+          <BranchingFormIssueCategory
+            category="1"
+            handleCategoryToggle={this.props.handleCategoryToggle}
+            taskId={taskId}
+            form={this.props.form}
+          />
+          <BranchingFormIssueCategory
+            category="2"
+            handleCategoryToggle={this.props.handleCategoryToggle}
+            taskId={taskId}
+            form={this.props.form}
+          />
+          <BranchingFormIssueCategory
+            category="3"
+            handleCategoryToggle={this.props.handleCategoryToggle}
+            taskId={taskId}
+            form={this.props.form}
+          />
         </div>
-        <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
-          <BranchingFormIssueCategory category="4" handleCategoryToggle={this.props.handleCategoryToggle} taskId={taskId} form={this.props.form}/>
-          <BranchingFormIssueCategory category="5" handleCategoryToggle={this.props.handleCategoryToggle} taskId={taskId} form={this.props.form}/>
-          <BranchingFormIssueCategory category="6" handleCategoryToggle={this.props.handleCategoryToggle} taskId={taskId} form={this.props.form}/>
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+          <BranchingFormIssueCategory
+            category="4"
+            handleCategoryToggle={this.props.handleCategoryToggle}
+            taskId={taskId}
+            form={this.props.form}
+          />
+          <BranchingFormIssueCategory
+            category="5"
+            handleCategoryToggle={this.props.handleCategoryToggle}
+            taskId={taskId}
+            form={this.props.form}
+          />
+          <BranchingFormIssueCategory
+            category="6"
+            handleCategoryToggle={this.props.handleCategoryToggle}
+            taskId={taskId}
+            form={this.props.form}
+          />
         </div>
       </Container>
     );
-    // this is hokey
-    // we need to be able to mark that the categories field has been touched
-    // the only way to do this that I see is this.  Blech.
+
+    /*
+     * this is hokey
+     * we need to be able to mark that the categories field has been touched
+     * the only way to do this that I see is this.  Blech.
+     */
     if (this.state.tab === 2 && !this.props.form.caseInformation.categories.touched) {
       this.props.handleFocus(taskId, ['caseInformation'], 'categories');
     }
@@ -413,79 +469,107 @@ class TabbedForms extends React.PureComponent {
 
           <ColumnarBlock>
             <CheckboxField>
-                <Checkbox name='keepConfidential'
-                    id="CaseInformation_KeepConfidential" 
-                    checked={this.props.form.caseInformation.keepConfidential.value} 
-                    onClick={() => 
-                      this.props.handleChange(taskId,
-                                              ['caseInformation'],
-                                              'keepConfidential', 
-                                              !this.props.form.caseInformation.keepConfidential.value)}
-                />
-                <StyledCheckboxLabel htmlFor="CaseInformation_KeepConfidential">Keep Confidential?</StyledCheckboxLabel>
-            </CheckboxField>
-
-            <CheckboxField>
-                <Checkbox name='okForCaseWorkerToCall' 
-                    id="CaseInformation_OkForCaseWorkerToCall"
-                    checked={this.props.form.caseInformation.okForCaseWorkerToCall.value} 
-                    onClick={() => 
-                      this.props.handleChange(taskId,
-                                              ['caseInformation'],
-                                              'okForCaseWorkerToCall', 
-                                              !this.props.form.caseInformation.okForCaseWorkerToCall.value)}
-                />
-                <StyledCheckboxLabel htmlFor="CaseInformation_OkForCaseWorkerToCall">OK for case worker to call?</StyledCheckboxLabel>
-            </CheckboxField>
-
-            <CheckboxField>
-                <Checkbox name='didYouDiscussRightsWithTheChild' 
-                    id="CaseInformation_DidYouDiscussRightsWithTheChild"
-                    checked={this.props.form.caseInformation.didYouDiscussRightsWithTheChild.value} 
-                    onClick={() => 
-                      this.props.handleChange(taskId,
-                                              ['caseInformation'],
-                                              'didYouDiscussRightsWithTheChild', 
-                                              !this.props.form.caseInformation.didYouDiscussRightsWithTheChild.value)}
-                />
-                <StyledCheckboxLabel htmlFor="CaseInformation_DidYouDiscussRightsWithTheChild">Did you discuss rights with the child?</StyledCheckboxLabel>
-            </CheckboxField>
-
-            <CheckboxField>
-              <Checkbox name='didTheChildFeelWeSolvedTheirProblem' 
-                  id="CaseInformation_DidTheChildFeelWeSolvedTheirProblem"
-                  checked={this.props.form.caseInformation.didTheChildFeelWeSolvedTheirProblem.value} 
-                  onClick={() => 
-                    this.props.handleChange(taskId,
-                                            ['caseInformation'],
-                                            'didTheChildFeelWeSolvedTheirProblem', 
-                                            !this.props.form.caseInformation.didTheChildFeelWeSolvedTheirProblem.value)}
+              <Checkbox
+                name="keepConfidential"
+                id="CaseInformation_KeepConfidential"
+                checked={this.props.form.caseInformation.keepConfidential.value}
+                onClick={() =>
+                  this.props.handleChange(
+                    taskId,
+                    ['caseInformation'],
+                    'keepConfidential',
+                    !this.props.form.caseInformation.keepConfidential.value,
+                  )
+                }
               />
-              <StyledCheckboxLabel htmlFor="CaseInformation_DidTheChildFeelWeSolvedTheirProblem">Did the child feel we solved their problem?</StyledCheckboxLabel>
+              <StyledCheckboxLabel htmlFor="CaseInformation_KeepConfidential">Keep Confidential?</StyledCheckboxLabel>
             </CheckboxField>
 
             <CheckboxField>
-              <Checkbox name='wouldTheChildRecommendUsToAFriend' 
-                  id="CaseInformation_WouldTheChildRecommendUsToAFriend"
-                  checked={this.props.form.caseInformation.wouldTheChildRecommendUsToAFriend.value} 
-                  onClick={() => 
-                    this.props.handleChange(taskId,
-                                            ['caseInformation'],
-                                            'wouldTheChildRecommendUsToAFriend', 
-                                            !this.props.form.caseInformation.wouldTheChildRecommendUsToAFriend.value)}
+              <Checkbox
+                name="okForCaseWorkerToCall"
+                id="CaseInformation_OkForCaseWorkerToCall"
+                checked={this.props.form.caseInformation.okForCaseWorkerToCall.value}
+                onClick={() =>
+                  this.props.handleChange(
+                    taskId,
+                    ['caseInformation'],
+                    'okForCaseWorkerToCall',
+                    !this.props.form.caseInformation.okForCaseWorkerToCall.value,
+                  )
+                }
               />
-              <StyledCheckboxLabel htmlFor="CaseInformation_WouldTheChildRecommendUsToAFriend">Would the child recommend us to a friend?</StyledCheckboxLabel>
+              <StyledCheckboxLabel htmlFor="CaseInformation_OkForCaseWorkerToCall">
+                OK for case worker to call?
+              </StyledCheckboxLabel>
+            </CheckboxField>
+
+            <CheckboxField>
+              <Checkbox
+                name="didYouDiscussRightsWithTheChild"
+                id="CaseInformation_DidYouDiscussRightsWithTheChild"
+                checked={this.props.form.caseInformation.didYouDiscussRightsWithTheChild.value}
+                onClick={() =>
+                  this.props.handleChange(
+                    taskId,
+                    ['caseInformation'],
+                    'didYouDiscussRightsWithTheChild',
+                    !this.props.form.caseInformation.didYouDiscussRightsWithTheChild.value,
+                  )
+                }
+              />
+              <StyledCheckboxLabel htmlFor="CaseInformation_DidYouDiscussRightsWithTheChild">
+                Did you discuss rights with the child?
+              </StyledCheckboxLabel>
+            </CheckboxField>
+
+            <CheckboxField>
+              <Checkbox
+                name="didTheChildFeelWeSolvedTheirProblem"
+                id="CaseInformation_DidTheChildFeelWeSolvedTheirProblem"
+                checked={this.props.form.caseInformation.didTheChildFeelWeSolvedTheirProblem.value}
+                onClick={() =>
+                  this.props.handleChange(
+                    taskId,
+                    ['caseInformation'],
+                    'didTheChildFeelWeSolvedTheirProblem',
+                    !this.props.form.caseInformation.didTheChildFeelWeSolvedTheirProblem.value,
+                  )
+                }
+              />
+              <StyledCheckboxLabel htmlFor="CaseInformation_DidTheChildFeelWeSolvedTheirProblem">
+                Did the child feel we solved their problem?
+              </StyledCheckboxLabel>
+            </CheckboxField>
+
+            <CheckboxField>
+              <Checkbox
+                name="wouldTheChildRecommendUsToAFriend"
+                id="CaseInformation_WouldTheChildRecommendUsToAFriend"
+                checked={this.props.form.caseInformation.wouldTheChildRecommendUsToAFriend.value}
+                onClick={() =>
+                  this.props.handleChange(
+                    taskId,
+                    ['caseInformation'],
+                    'wouldTheChildRecommendUsToAFriend',
+                    !this.props.form.caseInformation.wouldTheChildRecommendUsToAFriend.value,
+                  )
+                }
+              />
+              <StyledCheckboxLabel htmlFor="CaseInformation_WouldTheChildRecommendUsToAFriend">
+                Would the child recommend us to a friend?
+              </StyledCheckboxLabel>
             </CheckboxField>
           </ColumnarBlock>
         </TwoColumnLayout>
       </Container>
     );
 
-    let tabs = [
-      decorateTab("Caller Information", this.props.form.callerInformation),
-      decorateTab("Child Information", this.props.form.childInformation),
-      decorateTab("Issue Categorization", this.props.form.caseInformation.categories),
-      <Tab label="Case Information" />  // normal validate logic won't work here
+    const tabs = [
+      decorateTab('Caller Information', this.props.form.callerInformation),
+      decorateTab('Child Information', this.props.form.childInformation),
+      decorateTab('Issue Categorization', this.props.form.caseInformation.categories),
+      <Tab key="Case Information" label="Case Information" />, // normal validate logic won't work here
     ];
 
     // TODO(nick): this is probably not the best way to hide the caller info tab
@@ -497,25 +581,23 @@ class TabbedForms extends React.PureComponent {
     return (
       <>
         <TopNav>
-          <TransparentButton onClick={(e) => this.props.handleCallTypeButtonClick(taskId, '')}>&lt; BACK</TransparentButton>
+          <TransparentButton onClick={e => this.props.handleCallTypeButtonClick(taskId, '')}>
+            &lt; BACK
+          </TransparentButton>
         </TopNav>
-        <Tabs
-            name="tab"
-            value={this.state.tab}
-            onChange={this.tabChange}
-            centered
-        >
+        <Tabs name="tab" value={this.state.tab} onChange={this.tabChange} centered>
           {tabs}
         </Tabs>
         {body[this.state.tab]}
         <BottomButtonBar>
-          {this.state.tab < body.length - 1 ?
-            <StyledNextStepButton 
+          {this.state.tab < body.length - 1 ? (
+            <StyledNextStepButton
               roundCorners={true}
-              onClick={(e) => this.setState({ tab: this.state.tab + 1})}
+              onClick={() => this.setState(prevState => ({ tab: prevState.tab + 1 }))}
             >
               Next
-            </StyledNextStepButton> :
+            </StyledNextStepButton>
+          ) : (
             <StyledNextStepButton
               roundCorners={true}
               onClick={() => this.props.handleSubmit(this.props.task)}
@@ -523,39 +605,11 @@ class TabbedForms extends React.PureComponent {
             >
               Submit
             </StyledNextStepButton>
-            }
+          )}
         </BottomButtonBar>
       </>
     );
   }
-};
-
-function BranchingFormIssueCategory(props) {
-  const cat = props.category;
-  return (
-    <div style={{display: 'flex', flexDirection: 'column'}}>
-      <StyledLabel>Category {cat}</StyledLabel>
-      {Array.from(Array(6), (e, i) => {
-        const index = i + 1;
-        const id = `IssueCategorization_Category${props.category}_Subcategory${index}`;
-        return (
-          <CategoryCheckboxField>
-            {/* TODO(nick): the inline style below is ugly */}
-            <Checkbox 
-              style={{ width: 30, height: 30, boxSizing: 'border-box' }}
-              checked={props.form.caseInformation.categories[`category${cat}`][`sub${index}`].value} 
-              id={id}
-              onClick={() => props.handleCategoryToggle(props.taskId,
-                                                        `category${cat}`,
-                                                        `sub${index}`,
-                                                        !props.form.caseInformation.categories[`category${cat}`][`sub${index}`].value)}
-            />
-            <StyledCheckboxLabel htmlFor={id}>Subcategory {index}</StyledCheckboxLabel>
-          </CategoryCheckboxField>
-        );
-      })}
-    </div>
-  );
 }
 
 export default withTaskContext(TabbedForms);

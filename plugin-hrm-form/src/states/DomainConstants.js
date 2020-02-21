@@ -1,4 +1,4 @@
-export const callTypes = {
+const callTypes = {
   child: 'Child calling about self',
   caller: 'Someone calling about a child',
   silent: 'Silent',
@@ -6,5 +6,7 @@ export const callTypes = {
   joke: 'Joke',
   hangup: 'Hang up',
   wrongnumber: 'Wrong Number',
-  abusive: 'Abusive'
+  abusive: 'Abusive',
 };
+
+export default callTypes;
