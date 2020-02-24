@@ -10,7 +10,7 @@
     "build": "flex-plugin build",
     "predeploy": "npm run build",
     "deploy": "flex-plugin deploy",
-    "test": "flex-plugin test --env=jsdom",
+    "test": "craco test --env=jsdom",
     "list": "flex-plugin list",
     "clear": "flex-plugin clear",
     "remove": "flex-plugin remove",
@@ -26,10 +26,8 @@
     "prop-types": "^15.7.2",
     "react": "16.5.2",
     "react-dom": "16.5.2",
-    "react-redux": "^7.2.0",
-    "react-scripts": "3.2.0",
-    "react-test-renderer": "16.5.2",
-    "redux": "^4.0.5"
+    "react-scripts": "^3.4.0",
+    "react-test-renderer": "16.5.2"
   },
   "devDependencies": {
     "@twilio/flex-ui": "1.16.1",

@@ -3,7 +3,7 @@
 exports[`render FieldText with errors 1`] = `
 <TextField>
   <StyledLabel
-    htmlFor="callerInformation_name_firstName"
+    htmlFor="CallerInformation_FirstName"
   >
     First name
     <span
@@ -18,11 +18,11 @@ exports[`render FieldText with errors 1`] = `
   </StyledLabel>
   <StyledInput
     error={true}
-    id="callerInformation_name_firstName"
-    name="firstName"
+    id="CallerInformation_FirstName"
+    multiline={false}
     onBlur={[MockFunction]}
-    onChange={[Function]}
-    onFocus={[Function]}
+    onChange={[MockFunction]}
+    onFocus={[MockFunction]}
     value=""
   />
   <ErrorText>
@@ -34,17 +34,17 @@ exports[`render FieldText with errors 1`] = `
 exports[`render basic FieldText 1`] = `
 <TextField>
   <StyledLabel
-    htmlFor="callerInformation_name_firstName"
+    htmlFor="CallerInformation_FirstName"
   >
     First name
   </StyledLabel>
   <StyledInput
     error={false}
-    id="callerInformation_name_firstName"
-    name="firstName"
+    id="CallerInformation_FirstName"
+    multiline={false}
     onBlur={[MockFunction]}
-    onChange={[Function]}
-    onFocus={[Function]}
+    onChange={[MockFunction]}
+    onFocus={[MockFunction]}
     value=""
   />
 </TextField>
@@ -53,7 +53,7 @@ exports[`render basic FieldText 1`] = `
 exports[`render required FieldText 1`] = `
 <TextField>
   <StyledLabel
-    htmlFor="callerInformation_name_firstName"
+    htmlFor="CallerInformation_FirstName"
   >
     First name
     <span
@@ -68,11 +68,11 @@ exports[`render required FieldText 1`] = `
   </StyledLabel>
   <StyledInput
     error={false}
-    id="callerInformation_name_firstName"
-    name="firstName"
+    id="CallerInformation_FirstName"
+    multiline={false}
     onBlur={[MockFunction]}
-    onChange={[Function]}
-    onFocus={[Function]}
+    onChange={[MockFunction]}
+    onFocus={[MockFunction]}
     value=""
   />
 </TextField>

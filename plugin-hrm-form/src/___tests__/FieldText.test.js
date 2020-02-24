@@ -28,6 +28,7 @@ test('render basic FieldText', () => {
 
   const component = renderer.create(
     <FieldText
+      id="CallerInformation_FirstName"
       label="First name"
       parents={['callerInformation', 'name']}
       name="firstName"
@@ -56,6 +57,7 @@ test('render required FieldText', () => {
 
   const component = renderer.create(
     <FieldText
+      id="CallerInformation_FirstName"
       label="First name"
       parents={['callerInformation', 'name']}
       name="firstName"
@@ -84,6 +86,7 @@ test('render FieldText with errors', () => {
 
   const component = renderer.create(
     <FieldText
+      id="CallerInformation_FirstName"
       label="First name"
       parents={['callerInformation', 'name']}
       name="firstName"
