@@ -23,6 +23,7 @@ import FieldSelect from './FieldSelect';
 import FieldText from './FieldText';
 import BranchingFormIssueCategory from './BranchingFormIssueCategory';
 import { formType, taskType } from '../types';
+import Search from './Search';
 
 class TabbedForms extends React.PureComponent {
   static displayName = 'TabbedForms';
@@ -58,10 +59,12 @@ class TabbedForms extends React.PureComponent {
   render() {
     const taskId = this.props.task.taskSid;
 
-    const body = new Array(3);
+    const body = [];
+
+    body.push(<Search />);
 
     // Caller Information
-    body[0] = (
+    body.push(
       <Container>
         <NameFields>
           <FieldText
@@ -184,7 +187,7 @@ class TabbedForms extends React.PureComponent {
     );
 
     // Child Information
-    body[1] = (
+    body.push(
       <Container>
         <NameFields>
           <FieldText
@@ -365,7 +368,7 @@ class TabbedForms extends React.PureComponent {
     );
 
     // Issue Categorization
-    body[2] = (
+    body.push(
       <Container style={{ display: 'flex', flexDirection: 'column' }}>
         {this.props.form.caseInformation.categories.error ? (
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', marginBottom: '20px' }}>
@@ -427,7 +430,7 @@ class TabbedForms extends React.PureComponent {
     }
 
     // Case Information
-    body[3] = (
+    body.push(
       <Container>
         <TwoColumnLayout>
           <ColumnarBlock>
@@ -566,6 +569,7 @@ class TabbedForms extends React.PureComponent {
     );
 
     const tabs = [
+      <Tab key="Search" label="Search" />,
       decorateTab('Caller Information', this.props.form.callerInformation),
       decorateTab('Child Information', this.props.form.childInformation),
       decorateTab('Issue Categorization', this.props.form.caseInformation.categories),
