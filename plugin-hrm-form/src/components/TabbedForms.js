@@ -582,6 +582,9 @@ class TabbedForms extends React.PureComponent {
       body.shift();
     }
 
+    const showNextButton = this.state.tab !== 0 && this.state.tab < body.length - 1;
+    const showSubmitButton = this.state.tab === body.length - 1;
+
     return (
       <>
         <TopNav>
@@ -594,14 +597,15 @@ class TabbedForms extends React.PureComponent {
         </Tabs>
         {body[this.state.tab]}
         <BottomButtonBar>
-          {this.state.tab < body.length - 1 ? (
+          {showNextButton &&
             <StyledNextStepButton
               roundCorners={true}
               onClick={() => this.setState(prevState => ({ tab: prevState.tab + 1 }))}
             >
               Next
             </StyledNextStepButton>
-          ) : (
+          }
+          {showSubmitButton &&
             <StyledNextStepButton
               roundCorners={true}
               onClick={() => this.props.handleSubmit(this.props.task)}
@@ -609,7 +613,7 @@ class TabbedForms extends React.PureComponent {
             >
               Submit
             </StyledNextStepButton>
-          )}
+          }
         </BottomButtonBar>
       </>
     );
