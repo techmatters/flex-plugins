@@ -1,15 +1,14 @@
 import React from 'react';
+
 import SearchForm from './SearchForm';
 import SearchResults from './SearchResults';
 
-const handleSearch = async ({ firstName, lastName, counselor, area, phoneNumber, dateFrom, dateTo, time }) => {
-  console.log('>>> Search: ');
-  console.log({ firstName, lastName, counselor, area, phoneNumber, dateFrom, dateTo, time })
-  return results;
-};
-
 const results = [
   {
+    contactId: 'aaa',
+    date: 'Jan 2, 2020',
+    time: '10:14',
+    callType: 'Self',
     name: {
       firstName: 'Jill',
       lastName: 'Smith',
@@ -34,9 +33,14 @@ const results = [
     refugee: false,
     disabledOrSpecialNeeds: false,
     hiv: false,
-    callSummary: 'The child needs help',
+    categories: 'Category 1: Sub 1',
+    notes: 'The child needs help',
   },
   {
+    contactId: 'bbb',
+    date: 'Jan 2, 2020',
+    time: '10:14',
+    callType: 'Self',
     name: {
       firstName: 'Sarah',
       lastName: 'Park',
@@ -61,14 +65,24 @@ const results = [
     refugee: false,
     disabledOrSpecialNeeds: false,
     hiv: true,
-    callSummary: 'Young woman with HIV',
+    categories: 'Category 2: Sub 1',
+    notes: 'Young woman with HIV',
   },
 ];
 
-const Search = () =>
+const handleSearch = async ({ firstName, lastName, counselor, area, phoneNumber, dateFrom, dateTo, time }) => {
+  console.log('>>> Search: ');
+  console.log({ firstName, lastName, counselor, area, phoneNumber, dateFrom, dateTo, time });
+  return results;
+};
+
+const Search = () => (
   <div>
     <SearchForm handleSearch={handleSearch} />
     <SearchResults results={results} />
-  </div>;
+  </div>
+);
+
+Search.displayName = 'Search';
 
 export default Search;

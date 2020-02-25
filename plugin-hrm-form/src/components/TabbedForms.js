@@ -183,7 +183,7 @@ class TabbedForms extends React.PureComponent {
             />
           </ColumnarBlock>
         </TwoColumnLayout>
-      </Container>
+      </Container>,
     );
 
     // Child Information
@@ -364,7 +364,7 @@ class TabbedForms extends React.PureComponent {
             />
           </ColumnarBlock>
         </TwoColumnLayout>
-      </Container>
+      </Container>,
     );
 
     // Issue Categorization
@@ -417,7 +417,7 @@ class TabbedForms extends React.PureComponent {
             form={this.props.form}
           />
         </div>
-      </Container>
+      </Container>,
     );
 
     /*
@@ -565,7 +565,7 @@ class TabbedForms extends React.PureComponent {
             </CheckboxField>
           </ColumnarBlock>
         </TwoColumnLayout>
-      </Container>
+      </Container>,
     );
 
     const tabs = [
@@ -597,15 +597,15 @@ class TabbedForms extends React.PureComponent {
         </Tabs>
         {body[this.state.tab]}
         <BottomButtonBar>
-          {showNextButton &&
+          {showNextButton && (
             <StyledNextStepButton
               roundCorners={true}
               onClick={() => this.setState(prevState => ({ tab: prevState.tab + 1 }))}
             >
               Next
             </StyledNextStepButton>
-          }
-          {showSubmitButton &&
+          )}
+          {showSubmitButton && (
             <StyledNextStepButton
               roundCorners={true}
               onClick={() => this.props.handleSubmit(this.props.task)}
@@ -613,7 +613,7 @@ class TabbedForms extends React.PureComponent {
             >
               Submit
             </StyledNextStepButton>
-          }
+          )}
         </BottomButtonBar>
       </>
     );

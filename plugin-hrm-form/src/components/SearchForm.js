@@ -1,3 +1,4 @@
+/* eslint-disable no-empty-function */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
@@ -6,7 +7,7 @@ import FieldSelect from './FieldSelect';
 import FieldDate from './FieldDate';
 import { StyledButton } from '../Styles/HrmStyles';
 
-const getField = (value) => ({
+const getField = value => ({
   value,
   error: null,
   validation: null,
@@ -14,6 +15,8 @@ const getField = (value) => ({
 });
 
 class SearchForm extends Component {
+  static displayName = 'SearchForm';
+
   static propTypes = {
     handleSearch: PropTypes.func.isRequired,
   };
@@ -39,7 +42,7 @@ class SearchForm extends Component {
           label="First name"
           field={getField(firstName)}
           handleBlur={() => {}}
-          handleChange={(e) => this.setState({ firstName: e.target.value })}
+          handleChange={e => this.setState({ firstName: e.target.value })}
           handleFocus={() => {}}
         />
         <FieldText
@@ -47,7 +50,7 @@ class SearchForm extends Component {
           label="Last name"
           field={getField(lastName)}
           handleBlur={() => {}}
-          handleChange={(e) => this.setState({ lastName: e.target.value })}
+          handleChange={e => this.setState({ lastName: e.target.value })}
           handleFocus={() => {}}
         />
         <FieldSelect
@@ -57,7 +60,7 @@ class SearchForm extends Component {
           label="Counselor"
           options={['', 'Counselor 1', 'Counselor 2', 'Counselor 3']}
           handleBlur={() => {}}
-          handleChange={(e) => this.setState({ counselor: e.target.value })}
+          handleChange={e => this.setState({ counselor: e.target.value })}
           handleFocus={() => {}}
         />
         <FieldSelect
@@ -67,7 +70,7 @@ class SearchForm extends Component {
           label="Area"
           options={['', 'Area 1', 'Area 2', 'Area 3']}
           handleBlur={() => {}}
-          handleChange={(e) => this.setState({ area: e.target.value })}
+          handleChange={e => this.setState({ area: e.target.value })}
           handleFocus={() => {}}
         />
         <FieldText
@@ -75,7 +78,7 @@ class SearchForm extends Component {
           label="Customer phone number"
           field={getField(phoneNumber)}
           handleBlur={() => {}}
-          handleChange={(e) => this.setState({ phoneNumber: e.target.value })}
+          handleChange={e => this.setState({ phoneNumber: e.target.value })}
           handleFocus={() => {}}
         />
         <FieldDate
@@ -83,7 +86,7 @@ class SearchForm extends Component {
           label="From"
           field={getField(dateFrom)}
           handleBlur={() => {}}
-          handleChange={(e) => this.setState({ dateFrom: e.target.value })}
+          handleChange={e => this.setState({ dateFrom: e.target.value })}
           handleFocus={() => {}}
         />
         <FieldDate
@@ -91,7 +94,7 @@ class SearchForm extends Component {
           label="To"
           field={getField(dateTo)}
           handleBlur={() => {}}
-          handleChange={(e) => this.setState({ dateTo: e.target.value })}
+          handleChange={e => this.setState({ dateTo: e.target.value })}
           handleFocus={() => {}}
         />
         <FieldSelect
@@ -101,7 +104,7 @@ class SearchForm extends Component {
           label="Time"
           options={['', 'Time 1', 'Time 2', 'Time 3']}
           handleBlur={() => {}}
-          handleChange={(e) => this.setState({ time: e.target.value })}
+          handleChange={e => this.setState({ time: e.target.value })}
           handleFocus={() => {}}
         />
         <StyledButton roundCorners={true} onClick={() => this.props.handleSearch(this.state)}>
