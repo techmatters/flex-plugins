@@ -56,6 +56,23 @@ export default class HrmFormPlugin extends FlexPlugin {
       manager.store.dispatch(Actions.initializeContactState(payload.task.taskSid));
     });
 
+    flex.Actions.addListener('beforeWrapupTask', payload => {
+      const chatClient = manager.chatClient;
+      const channelSid = payload.task.attributes.channelSid;
+      console.log(`Channel SID = ${channelSid}`);
+      // chatClient.getUserChannelDescriptors().then(function(paginator) {
+      //   for (let i=0; i<paginator.items.length; i++) {
+      //     var channel = paginator.items[i];
+      //     if (channel.sid === channelSid) {
+      //       console.log(`Found channel with sid ${channel.sid}`);
+      //       console.log(`Type is ${Object.prototype.toString.call(channel)}`);
+      //       channel.sendMessage('All done here. Thanks!');
+      //     }
+      //   }
+      // });
+      chatClient.getChannelBySid(channelSid).then(channel => channel.sendMessage('All done here. Thanks!'));
+    });
+
     flex.Actions.addListener('beforeCompleteTask', (payload, abortFunction) => {
       manager.store.dispatch(Actions.saveContactState(payload.task, abortFunction, hrmBaseUrl));
     });
