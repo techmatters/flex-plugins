@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 
 import SearchForm from './SearchForm';
 import SearchResults from './SearchResults';
@@ -6,83 +6,109 @@ import SearchResults from './SearchResults';
 const results = [
   {
     contactId: 'aaa',
-    date: 'Jan 2, 2020',
-    time: '10:14',
-    callType: 'Self',
-    name: {
-      firstName: 'Jill',
-      lastName: 'Smith',
+    overview: {
+      dateTime: 'Jan 2, 2020 10:14',
+      name: 'Jill Smith',
+      customerNumber: '3120765',
+      callType: 'Self',
+      categories: 'Category 1: Sub 1',
+      counselor: 'Lisa',
+      notes: 'The child needs help',
     },
-    gender: 'Male',
-    age: '10-12',
-    language: 'Language 1',
-    nationality: 'Nationality 1',
-    ethnicity: 'Ethnicity 1',
-    school: {
-      name: 'State School',
-      gradeLevel: 'First grade',
+    details: {
+      childInformation: {
+        firstName: 'Jill',
+        lastName: 'Smith',
+        gender: 'Male',
+        age: '10-12',
+        language: 'Language 1',
+        nationality: 'Nationality 1',
+        ethnicity: 'Ethnicity 1',
+        refugee: false,
+        streetAddress: 'Howard St',
+        city: 'San Francisco',
+        stateOrCountry: 'CA',
+        postalCode: '94105',
+        phone1: '415-555-0155',
+        phone2: '415-555-0158',
+      },
+      caseInformation: {
+        callSummary: 'Lorem ipsum summary',
+        referredTo: 'Referral 1',
+        status: 'In Progress',
+        keepConfidential: false,
+        okForCaseWorkerToCall: true,
+        howDidTheChildHearAboutUs: 'Media',
+        didYouDiscussRightsWithTheChild: true,
+        didTheChildFeelWeSolvedTheirProblem: true,
+        wouldTheChildRecommendUsToAFriend: true,
+      },
     },
-    location: {
-      streetAddress: 'Howard St',
-      city: 'San Francisco',
-      stateOrCountry: 'CA',
-      postalCode: '94105',
-      phone1: '415-555-0155',
-      phone2: '415-555-0158',
-    },
-    refugee: false,
-    disabledOrSpecialNeeds: false,
-    hiv: false,
-    categories: 'Category 1: Sub 1',
-    notes: 'The child needs help',
   },
   {
     contactId: 'bbb',
-    date: 'Jan 2, 2020',
-    time: '10:14',
-    callType: 'Self',
-    name: {
-      firstName: 'Sarah',
-      lastName: 'Park',
+    overview: {
+      dateTime: 'Jan 15, 2020 09:30',
+      name: 'Sarah Park',
+      customerNumber: '4546311',
+      callType: 'Self',
+      categories: 'Category 1: Sub 2',
+      counselor: 'Jim',
+      notes: 'Young woman with HIV',
     },
-    gender: 'Female',
-    age: '18-25',
-    language: 'Language 2',
-    nationality: 'Nationality 2',
-    ethnicity: 'Ethnicity 2',
-    school: {
-      name: 'Federal School',
-      gradeLevel: 'Eighth grade',
+    details: {
+      childInformation: {
+        firstName: 'Sarah',
+        lastName: 'Park',
+        gender: 'Female',
+        age: '18-25',
+        language: 'Language 2',
+        nationality: 'Nationality 2',
+        ethnicity: 'Ethnicity 2',
+        refugee: true,
+        streetAddress: 'Main St',
+        city: 'San Francisco',
+        stateOrCountry: 'CA',
+        postalCode: '94205',
+        phone1: '415-565-0255',
+        phone2: '415-565-0258',
+      },
+      caseInformation: {
+        callSummary: 'Lorem ipsum summary 2',
+        referredTo: 'Referral 2',
+        status: 'Open',
+        keepConfidential: true,
+        okForCaseWorkerToCall: false,
+        howDidTheChildHearAboutUs: 'Word of Mouth',
+        didYouDiscussRightsWithTheChild: false,
+        didTheChildFeelWeSolvedTheirProblem: false,
+        wouldTheChildRecommendUsToAFriend: true,
+      },
     },
-    location: {
-      streetAddress: 'Mission St',
-      city: 'San Francisco',
-      stateOrCountry: 'CA',
-      postalCode: '94105',
-      phone1: '415-555-0260',
-      phone2: '415-555-0265',
-    },
-    refugee: false,
-    disabledOrSpecialNeeds: false,
-    hiv: true,
-    categories: 'Category 2: Sub 1',
-    notes: 'Young woman with HIV',
   },
 ];
 
-const handleSearch = async ({ firstName, lastName, counselor, area, phoneNumber, dateFrom, dateTo, time }) => {
-  console.log('>>> Search: ');
-  console.log({ firstName, lastName, counselor, area, phoneNumber, dateFrom, dateTo, time });
-  return results;
-};
+class Search extends Component {
+  static displayName = 'Search';
 
-const Search = () => (
-  <div>
-    <SearchForm handleSearch={handleSearch} />
-    <SearchResults results={results} />
-  </div>
-);
+  state = {
+    results: [],
+  };
 
-Search.displayName = 'Search';
+  handleSearch = ({ firstName, lastName, counselor, area, phoneNumber, dateFrom, dateTo, time }) => {
+    console.log('>>> Search: ');
+    console.log({ firstName, lastName, counselor, area, phoneNumber, dateFrom, dateTo, time });
+    this.setState({ results });
+  };
+
+  render() {
+    return (
+      <>
+        <SearchForm handleSearch={this.handleSearch} />
+        <SearchResults results={this.state.results} />
+      </>
+    );
+  }
+}
 
 export default Search;

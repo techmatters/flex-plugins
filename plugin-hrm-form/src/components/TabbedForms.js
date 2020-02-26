@@ -40,7 +40,7 @@ class TabbedForms extends React.PureComponent {
   };
 
   state = {
-    tab: 0,
+    tab: 1,
   };
 
   tabChange = (event, tab) => this.setState({ tab });

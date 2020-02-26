@@ -15,7 +15,7 @@ const callTypeType = PropTypes.shape({
   value: PropTypes.string,
 });
 
-export const nameType = PropTypes.shape({
+const nameType = PropTypes.shape({
   firstName: fieldType,
   lastName: fieldType,
 });
