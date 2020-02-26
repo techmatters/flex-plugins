@@ -56,21 +56,23 @@ export default class HrmFormPlugin extends FlexPlugin {
       manager.store.dispatch(Actions.initializeContactState(payload.task.taskSid));
     });
 
-    flex.Actions.addListener('beforeWrapupTask', payload => {
-      const chatClient = manager.chatClient;
-      const channelSid = payload.task.attributes.channelSid;
-      console.log(`Channel SID = ${channelSid}`);
-      // chatClient.getUserChannelDescriptors().then(function(paginator) {
-      //   for (let i=0; i<paginator.items.length; i++) {
-      //     var channel = paginator.items[i];
-      //     if (channel.sid === channelSid) {
-      //       console.log(`Found channel with sid ${channel.sid}`);
-      //       console.log(`Type is ${Object.prototype.toString.call(channel)}`);
-      //       channel.sendMessage('All done here. Thanks!');
-      //     }
-      //   }
-      // });
-      chatClient.getChannelBySid(channelSid).then(channel => channel.sendMessage('All done here. Thanks!'));
+    const exitMsg = 'All done here. Thanks!';
+    flex.Actions.replaceAction('WrapupTask', (payload, original) => {
+      // do not alter non-chat tasks
+      if(payload.task.taskChannelUniqueName !== 'chat') {
+        original(payload);
+      } else {
+        return new Promise(resolve => {
+          // send the message
+          flex.Actions.invokeAction('SendMessage', {
+            body: exitMsg,
+            channelSid: payload.task.attributes.channelSid,
+          }).then(response => {
+            // only after the message is sent, move task to wrap up
+            resolve(original(payload));
+          });
+        });
+      }
     });
 
     flex.Actions.addListener('beforeCompleteTask', (payload, abortFunction) => {
