@@ -76,7 +76,7 @@ class SearchResults extends Component {
 
   renderName(name, contactId) {
     return (
-      <span tabIndex={0} role="button" onClick={() => this.toggleShowDetails(contactId)}>
+      <span style={{ cursor: 'pointer' }} tabIndex={0} role="button" onClick={() => this.toggleShowDetails(contactId)}>
         {name}
       </span>
     );

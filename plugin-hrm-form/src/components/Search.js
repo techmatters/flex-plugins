@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+import { Container } from '../Styles/HrmStyles';
 import SearchForm from './SearchForm';
 import SearchResults from './SearchResults';
 
@@ -103,10 +104,10 @@ class Search extends Component {
 
   render() {
     return (
-      <>
+      <Container>
         <SearchForm handleSearch={this.handleSearch} />
         <SearchResults results={this.state.results} />
-      </>
+      </Container>
     );
   }
 }
