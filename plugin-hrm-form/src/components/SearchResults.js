@@ -81,7 +81,7 @@ class SearchResults extends Component {
 
   closeDialog = () => this.setState({ selectedCallSumary: '' });
 
-  clickCallSummary = selectedCallSumary => this.setState({ selectedCallSumary });
+  handleClickCallSummary = selectedCallSumary => this.setState({ selectedCallSumary });
 
   renderName(name, contactId) {
     return (
@@ -137,7 +137,7 @@ class SearchResults extends Component {
                     <StyledTableCell>{result.overview.callType}</StyledTableCell>
                     <StyledTableCell>{result.overview.categories}</StyledTableCell>
                     <StyledTableCell>{result.overview.counselor}</StyledTableCell>
-                    <StyledTableCell onClick={() => this.clickCallSummary(result.overview.callSummary)}>
+                    <StyledTableCell onClick={() => this.handleClickCallSummary(result.overview.callSummary)}>
                       <Tooltip title={result.overview.callSummary.substr(0, 200)}>
                         <span>{result.overview.callSummary}</span>
                       </Tooltip>
@@ -146,7 +146,10 @@ class SearchResults extends Component {
                   {this.state.showDetails[result.contactId] && (
                     <TableRow>
                       <StyledTableCell colSpan="8">
-                        <SearchResultDetails details={result.details} />
+                        <SearchResultDetails
+                          details={result.details}
+                          handleClickCallSummary={this.handleClickCallSummary}
+                        />
                       </StyledTableCell>
                     </TableRow>
                   )}

@@ -4,6 +4,7 @@ import { Tab, Tabs } from '@material-ui/core';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { StyledTableCell } from '../Styles/HrmStyles';
 
@@ -40,6 +41,7 @@ class SearchResultDetails extends Component {
         wouldTheChildRecommendUsToAFriend: PropTypes.bool,
       }),
     }).isRequired,
+    handleClickCallSummary: PropTypes.func.isRequired,
   };
 
   state = {
@@ -103,7 +105,11 @@ class SearchResultDetails extends Component {
         <TableBody>
           <TableRow>
             <StyledTableCell>Call Summary</StyledTableCell>
-            <StyledTableCell>{caseInformation.callSummary}</StyledTableCell>
+            <StyledTableCell onClick={() => this.props.handleClickCallSummary(caseInformation.callSummary)}>
+              <Tooltip title={caseInformation.callSummary.substr(0, 200)}>
+                <span>{caseInformation.callSummary}</span>
+              </Tooltip>
+            </StyledTableCell>
             <StyledTableCell>Referred To</StyledTableCell>
             <StyledTableCell>{caseInformation.referredTo}</StyledTableCell>
           </TableRow>
