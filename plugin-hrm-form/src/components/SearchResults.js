@@ -7,6 +7,9 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import CheckIcon from '@material-ui/icons/Check';
 import Tooltip from '@material-ui/core/Tooltip';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
 
 import SearchResultDetails from './SearchResultDetails';
 import { StyledTableCell } from '../Styles/HrmStyles';
@@ -62,6 +65,7 @@ class SearchResults extends Component {
 
   state = {
     showDetails: {},
+    selectedCallSumary: '',
   };
 
   toggleShowDetails(contactId) {
@@ -75,11 +79,26 @@ class SearchResults extends Component {
     });
   }
 
+  closeDialog = () => this.setState({ selectedCallSumary: '' });
+
+  clickCallSummary = selectedCallSumary => this.setState({ selectedCallSumary });
+
   renderName(name, contactId) {
     return (
       <span style={{ cursor: 'pointer' }} tabIndex={0} role="button" onClick={() => this.toggleShowDetails(contactId)}>
         {name}
       </span>
+    );
+  }
+
+  renderCallSummaryDialog() {
+    const isOpen = Boolean(this.state.selectedCallSumary);
+
+    return (
+      <Dialog onClose={this.closeDialog} open={isOpen}>
+        <DialogTitle id="simple-dialog-title">Call Summary</DialogTitle>
+        <DialogContent>{this.state.selectedCallSumary}</DialogContent>
+      </Dialog>
     );
   }
 
@@ -89,51 +108,54 @@ class SearchResults extends Component {
     }
 
     return (
-      <Paper>
-        <Table aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <StyledTableCell>&nbsp;</StyledTableCell>
-              <StyledTableCell>Date/Time</StyledTableCell>
-              <StyledTableCell>Child name</StyledTableCell>
-              <StyledTableCell>Customer #</StyledTableCell>
-              <StyledTableCell>Call type</StyledTableCell>
-              <StyledTableCell>Categories</StyledTableCell>
-              <StyledTableCell>Counselor</StyledTableCell>
-              <StyledTableCell>Call Summary</StyledTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {this.props.results.map(result => (
-              <>
-                <TableRow key={result.contactId}>
-                  <StyledTableCell>
-                    <CheckIcon />
-                  </StyledTableCell>
-                  <StyledTableCell>{result.overview.dateTime}</StyledTableCell>
-                  <StyledTableCell>{this.renderName(result.overview.name, result.contactId)}</StyledTableCell>
-                  <StyledTableCell>{result.overview.customerNumber}</StyledTableCell>
-                  <StyledTableCell>{result.overview.callType}</StyledTableCell>
-                  <StyledTableCell>{result.overview.categories}</StyledTableCell>
-                  <StyledTableCell>{result.overview.counselor}</StyledTableCell>
-                  <StyledTableCell>
-                    <Tooltip title={result.overview.callSummary.substr(0, 200)}>
-                      <span>{result.overview.callSummary}</span>
-                    </Tooltip>
-                  </StyledTableCell>
-                </TableRow>
-                {this.state.showDetails[result.contactId] && (
-                  <TableRow>
-                    <StyledTableCell colSpan="8">
-                      <SearchResultDetails details={result.details} />
+      <>
+        {this.renderCallSummaryDialog()}
+        <Paper>
+          <Table aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <StyledTableCell>&nbsp;</StyledTableCell>
+                <StyledTableCell>Date/Time</StyledTableCell>
+                <StyledTableCell>Child name</StyledTableCell>
+                <StyledTableCell>Customer #</StyledTableCell>
+                <StyledTableCell>Call type</StyledTableCell>
+                <StyledTableCell>Categories</StyledTableCell>
+                <StyledTableCell>Counselor</StyledTableCell>
+                <StyledTableCell>Call Summary</StyledTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {this.props.results.map(result => (
+                <>
+                  <TableRow key={result.contactId}>
+                    <StyledTableCell>
+                      <CheckIcon />
+                    </StyledTableCell>
+                    <StyledTableCell>{result.overview.dateTime}</StyledTableCell>
+                    <StyledTableCell>{this.renderName(result.overview.name, result.contactId)}</StyledTableCell>
+                    <StyledTableCell>{result.overview.customerNumber}</StyledTableCell>
+                    <StyledTableCell>{result.overview.callType}</StyledTableCell>
+                    <StyledTableCell>{result.overview.categories}</StyledTableCell>
+                    <StyledTableCell>{result.overview.counselor}</StyledTableCell>
+                    <StyledTableCell onClick={() => this.clickCallSummary(result.overview.callSummary)}>
+                      <Tooltip title={result.overview.callSummary.substr(0, 200)}>
+                        <span>{result.overview.callSummary}</span>
+                      </Tooltip>
                     </StyledTableCell>
                   </TableRow>
-                )}
-              </>
-            ))}
-          </TableBody>
-        </Table>
-      </Paper>
+                  {this.state.showDetails[result.contactId] && (
+                    <TableRow>
+                      <StyledTableCell colSpan="8">
+                        <SearchResultDetails details={result.details} />
+                      </StyledTableCell>
+                    </TableRow>
+                  )}
+                </>
+              ))}
+            </TableBody>
+          </Table>
+        </Paper>
+      </>
     );
   }
 }
