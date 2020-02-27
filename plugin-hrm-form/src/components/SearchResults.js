@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import CheckIcon from '@material-ui/icons/Check';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import SearchResultDetails from './SearchResultDetails';
+import { StyledTableCell } from '../Styles/HrmStyles';
 
 class SearchResults extends Component {
   static displayName = 'SearchResults';
@@ -92,36 +93,40 @@ class SearchResults extends Component {
         <Table aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>&nbsp;</TableCell>
-              <TableCell>Date/Time</TableCell>
-              <TableCell>Child name</TableCell>
-              <TableCell>Customer #</TableCell>
-              <TableCell>Call type</TableCell>
-              <TableCell>Categories</TableCell>
-              <TableCell>Counselor</TableCell>
-              <TableCell>Notes</TableCell>
+              <StyledTableCell>&nbsp;</StyledTableCell>
+              <StyledTableCell>Date/Time</StyledTableCell>
+              <StyledTableCell>Child name</StyledTableCell>
+              <StyledTableCell>Customer #</StyledTableCell>
+              <StyledTableCell>Call type</StyledTableCell>
+              <StyledTableCell>Categories</StyledTableCell>
+              <StyledTableCell>Counselor</StyledTableCell>
+              <StyledTableCell>Call Summary</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {this.props.results.map(result => (
               <>
                 <TableRow key={result.contactId}>
-                  <TableCell>
+                  <StyledTableCell>
                     <CheckIcon />
-                  </TableCell>
-                  <TableCell>{result.overview.dateTime}</TableCell>
-                  <TableCell>{this.renderName(result.overview.name, result.contactId)}</TableCell>
-                  <TableCell>{result.overview.customerNumber}</TableCell>
-                  <TableCell>{result.overview.callType}</TableCell>
-                  <TableCell>{result.overview.categories}</TableCell>
-                  <TableCell>{result.overview.counselor}</TableCell>
-                  <TableCell>{result.overview.notes}</TableCell>
+                  </StyledTableCell>
+                  <StyledTableCell>{result.overview.dateTime}</StyledTableCell>
+                  <StyledTableCell>{this.renderName(result.overview.name, result.contactId)}</StyledTableCell>
+                  <StyledTableCell>{result.overview.customerNumber}</StyledTableCell>
+                  <StyledTableCell>{result.overview.callType}</StyledTableCell>
+                  <StyledTableCell>{result.overview.categories}</StyledTableCell>
+                  <StyledTableCell>{result.overview.counselor}</StyledTableCell>
+                  <StyledTableCell>
+                    <Tooltip title={result.overview.callSummary.substr(0, 200)}>
+                      <span>{result.overview.callSummary}</span>
+                    </Tooltip>
+                  </StyledTableCell>
                 </TableRow>
                 {this.state.showDetails[result.contactId] && (
                   <TableRow>
-                    <TableCell colSpan="8">
+                    <StyledTableCell colSpan="8">
                       <SearchResultDetails details={result.details} />
-                    </TableCell>
+                    </StyledTableCell>
                   </TableRow>
                 )}
               </>

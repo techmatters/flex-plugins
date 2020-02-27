@@ -14,7 +14,8 @@ const results = [
       callType: 'Self',
       categories: 'Category 1: Sub 1',
       counselor: 'Lisa',
-      notes: 'The child needs help',
+      callSummary:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sit amet consectetur adipiscing elit ut aliquam purus sit. Egestas fringilla phasellus faucibus scelerisque eleifend. Faucibus scelerisque eleifend donec pretium vulputate sapien nec sagittis.',
     },
     details: {
       childInformation: {
@@ -34,7 +35,8 @@ const results = [
         phone2: '415-555-0158',
       },
       caseInformation: {
-        callSummary: 'Lorem ipsum summary',
+        callSummary:
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sit amet consectetur adipiscing elit ut aliquam purus sit. Egestas fringilla phasellus faucibus scelerisque eleifend. Faucibus scelerisque eleifend donec pretium vulputate sapien nec sagittis.',
         referredTo: 'Referral 1',
         status: 'In Progress',
         keepConfidential: false,
@@ -55,7 +57,8 @@ const results = [
       callType: 'Self',
       categories: 'Category 1: Sub 2',
       counselor: 'Jim',
-      notes: 'Young woman with HIV',
+      callSummary:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Tempor orci dapibus ultrices in iaculis nunc sed augue. Consequat nisl vel pretium lectus.',
     },
     details: {
       childInformation: {
@@ -75,7 +78,8 @@ const results = [
         phone2: '415-565-0258',
       },
       caseInformation: {
-        callSummary: 'Lorem ipsum summary 2',
+        callSummary:
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Tempor orci dapibus ultrices in iaculis nunc sed augue. Consequat nisl vel pretium lectus.',
         referredTo: 'Referral 2',
         status: 'Open',
         keepConfidential: true,

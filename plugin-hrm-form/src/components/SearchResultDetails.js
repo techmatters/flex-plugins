@@ -4,7 +4,8 @@ import { Tab, Tabs } from '@material-ui/core';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
-import TableCell from '@material-ui/core/TableCell';
+
+import { StyledTableCell } from '../Styles/HrmStyles';
 
 class SearchResultDetails extends Component {
   static displayName = 'SearchResultDetails';
@@ -50,46 +51,46 @@ class SearchResultDetails extends Component {
       <Table>
         <TableBody>
           <TableRow>
-            <TableCell>First Name</TableCell>
-            <TableCell>{childInformation.firstName}</TableCell>
-            <TableCell>Street Address</TableCell>
-            <TableCell>{childInformation.streetAddress}</TableCell>
+            <StyledTableCell>First Name</StyledTableCell>
+            <StyledTableCell>{childInformation.firstName}</StyledTableCell>
+            <StyledTableCell>Street Address</StyledTableCell>
+            <StyledTableCell>{childInformation.streetAddress}</StyledTableCell>
           </TableRow>
           <TableRow>
-            <TableCell>Last Name</TableCell>
-            <TableCell>{childInformation.lastName}</TableCell>
-            <TableCell>City</TableCell>
-            <TableCell>{childInformation.city}</TableCell>
+            <StyledTableCell>Last Name</StyledTableCell>
+            <StyledTableCell>{childInformation.lastName}</StyledTableCell>
+            <StyledTableCell>City</StyledTableCell>
+            <StyledTableCell>{childInformation.city}</StyledTableCell>
           </TableRow>
           <TableRow>
-            <TableCell>Gender</TableCell>
-            <TableCell>{childInformation.gender}</TableCell>
-            <TableCell>State/Country</TableCell>
-            <TableCell>{childInformation.stateOrCountry}</TableCell>
+            <StyledTableCell>Gender</StyledTableCell>
+            <StyledTableCell>{childInformation.gender}</StyledTableCell>
+            <StyledTableCell>State/Country</StyledTableCell>
+            <StyledTableCell>{childInformation.stateOrCountry}</StyledTableCell>
           </TableRow>
           <TableRow>
-            <TableCell>Age</TableCell>
-            <TableCell>{childInformation.age}</TableCell>
-            <TableCell>Postal Code</TableCell>
-            <TableCell>{childInformation.postalCode}</TableCell>
+            <StyledTableCell>Age</StyledTableCell>
+            <StyledTableCell>{childInformation.age}</StyledTableCell>
+            <StyledTableCell>Postal Code</StyledTableCell>
+            <StyledTableCell>{childInformation.postalCode}</StyledTableCell>
           </TableRow>
           <TableRow>
-            <TableCell>Language</TableCell>
-            <TableCell>{childInformation.language}</TableCell>
-            <TableCell>Phone #1</TableCell>
-            <TableCell>{childInformation.phone1}</TableCell>
+            <StyledTableCell>Language</StyledTableCell>
+            <StyledTableCell>{childInformation.language}</StyledTableCell>
+            <StyledTableCell>Phone #1</StyledTableCell>
+            <StyledTableCell>{childInformation.phone1}</StyledTableCell>
           </TableRow>
           <TableRow>
-            <TableCell>Nationality</TableCell>
-            <TableCell>{childInformation.nationality}</TableCell>
-            <TableCell>Phone #2</TableCell>
-            <TableCell>{childInformation.phone2}</TableCell>
+            <StyledTableCell>Nationality</StyledTableCell>
+            <StyledTableCell>{childInformation.nationality}</StyledTableCell>
+            <StyledTableCell>Phone #2</StyledTableCell>
+            <StyledTableCell>{childInformation.phone2}</StyledTableCell>
           </TableRow>
           <TableRow>
-            <TableCell>Ethnicity</TableCell>
-            <TableCell>{childInformation.ethnicity}</TableCell>
-            <TableCell>Refugee?</TableCell>
-            <TableCell>{childInformation.refugee ? 'Yes' : 'No'}</TableCell>
+            <StyledTableCell>Ethnicity</StyledTableCell>
+            <StyledTableCell>{childInformation.ethnicity}</StyledTableCell>
+            <StyledTableCell>Refugee?</StyledTableCell>
+            <StyledTableCell>{childInformation.refugee ? 'Yes' : 'No'}</StyledTableCell>
           </TableRow>
         </TableBody>
       </Table>
@@ -101,34 +102,34 @@ class SearchResultDetails extends Component {
       <Table>
         <TableBody>
           <TableRow>
-            <TableCell>Call Summary</TableCell>
-            <TableCell>{caseInformation.callSummary}</TableCell>
-            <TableCell>Referred To</TableCell>
-            <TableCell>{caseInformation.referredTo}</TableCell>
+            <StyledTableCell>Call Summary</StyledTableCell>
+            <StyledTableCell>{caseInformation.callSummary}</StyledTableCell>
+            <StyledTableCell>Referred To</StyledTableCell>
+            <StyledTableCell>{caseInformation.referredTo}</StyledTableCell>
           </TableRow>
           <TableRow>
-            <TableCell>Status</TableCell>
-            <TableCell>{caseInformation.status}</TableCell>
-            <TableCell>Keep Confidential</TableCell>
-            <TableCell>{caseInformation.keepConfidential ? 'Yes' : 'No'}</TableCell>
+            <StyledTableCell>Status</StyledTableCell>
+            <StyledTableCell>{caseInformation.status}</StyledTableCell>
+            <StyledTableCell>Keep Confidential</StyledTableCell>
+            <StyledTableCell>{caseInformation.keepConfidential ? 'Yes' : 'No'}</StyledTableCell>
           </TableRow>
           <TableRow>
-            <TableCell>Ok For Case Worker To Call?</TableCell>
-            <TableCell>{caseInformation.okForCaseWorkerToCall ? 'Yes' : 'No'}</TableCell>
-            <TableCell>How Did The Child Hear About Us?</TableCell>
-            <TableCell>{caseInformation.howDidTheChildHearAboutUs}</TableCell>
+            <StyledTableCell>Ok For Case Worker To Call?</StyledTableCell>
+            <StyledTableCell>{caseInformation.okForCaseWorkerToCall ? 'Yes' : 'No'}</StyledTableCell>
+            <StyledTableCell>How Did The Child Hear About Us?</StyledTableCell>
+            <StyledTableCell>{caseInformation.howDidTheChildHearAboutUs}</StyledTableCell>
           </TableRow>
           <TableRow>
-            <TableCell>Did You Discuss Rights With The Child?</TableCell>
-            <TableCell>{caseInformation.didYouDiscussRightsWithTheChild ? 'Yes' : 'No'}</TableCell>
-            <TableCell>Did The Child Feel We Solved Their Problem?</TableCell>
-            <TableCell>{caseInformation.didTheChildFeelWeSolvedTheirProblem ? 'Yes' : 'No'}</TableCell>
+            <StyledTableCell>Did You Discuss Rights With The Child?</StyledTableCell>
+            <StyledTableCell>{caseInformation.didYouDiscussRightsWithTheChild ? 'Yes' : 'No'}</StyledTableCell>
+            <StyledTableCell>Did The Child Feel We Solved Their Problem?</StyledTableCell>
+            <StyledTableCell>{caseInformation.didTheChildFeelWeSolvedTheirProblem ? 'Yes' : 'No'}</StyledTableCell>
           </TableRow>
           <TableRow>
-            <TableCell>Would The Child Recommend Us To A Friend?</TableCell>
-            <TableCell>{caseInformation.wouldTheChildRecommendUsToAFriend ? 'Yes' : 'No'}</TableCell>
-            <TableCell />
-            <TableCell />
+            <StyledTableCell>Would The Child Recommend Us To A Friend?</StyledTableCell>
+            <StyledTableCell>{caseInformation.wouldTheChildRecommendUsToAFriend ? 'Yes' : 'No'}</StyledTableCell>
+            <StyledTableCell />
+            <StyledTableCell />
           </TableRow>
         </TableBody>
       </Table>
