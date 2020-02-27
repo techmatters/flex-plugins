@@ -25,9 +25,13 @@ export default class HrmFormPlugin extends FlexPlugin {
     console.log(`Welcome to ${PLUGIN_NAME} Version ${PLUGIN_VERSION}`);
     this.registerReducers(manager);
 
-    const onCompleteTask = (sid, task) => {
-      if (task.channelType === 'voice' && task.status !== 'wrapping') {
-        flex.Actions.invokeAction('HangupCall', { sid, task });
+    const onCompleteTask = async (sid, task) => {
+      if (task.status !== 'wrapping') {
+        if (task.channelType === 'voice') {
+          await flex.Actions.invokeAction('HangupCall', { sid, task });
+        } else {
+          await flex.Actions.invokeAction('WrapupTask', { sid, task });
+        }
       }
       flex.Actions.invokeAction('CompleteTask', { sid, task });
     };
@@ -56,24 +60,21 @@ export default class HrmFormPlugin extends FlexPlugin {
       manager.store.dispatch(Actions.initializeContactState(payload.task.taskSid));
     });
 
-    const exitMsg = 'All done here. Thanks!';
-    flex.Actions.replaceAction('WrapupTask', (payload, original) => {
-      // do not alter non-chat tasks
-      if(payload.task.taskChannelUniqueName !== 'chat') {
+    const exitMsg =
+      'Thank you for contacting the helpline. The counselor has left the chat but ' +
+      "don't hesitate to reach out again if you need help.";
+    const sendGoodbyeMessage = async (payload, original) => {
+      if (payload.task.taskChannelUniqueName === 'chat') {
+        await flex.Actions.invokeAction('SendMessage', {
+          body: exitMsg,
+          channelSid: payload.task.attributes.channelSid,
+        });
         original(payload);
       } else {
-        return new Promise(resolve => {
-          // send the message
-          flex.Actions.invokeAction('SendMessage', {
-            body: exitMsg,
-            channelSid: payload.task.attributes.channelSid,
-          }).then(response => {
-            // only after the message is sent, move task to wrap up
-            resolve(original(payload));
-          });
-        });
+        original(payload);
       }
-    });
+    };
+    flex.Actions.replaceAction('WrapupTask', sendGoodbyeMessage);
 
     flex.Actions.addListener('beforeCompleteTask', (payload, abortFunction) => {
       manager.store.dispatch(Actions.saveContactState(payload.task, abortFunction, hrmBaseUrl));
