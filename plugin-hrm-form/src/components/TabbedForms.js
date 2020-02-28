@@ -37,6 +37,7 @@ class TabbedForms extends React.PureComponent {
     handleCallTypeButtonClick: PropTypes.func.isRequired,
     handleSubmit: PropTypes.func.isRequired,
     handleFocus: PropTypes.func.isRequired,
+    handleSelectSearchResult: PropTypes.func.isRequired,
   };
 
   state = {
@@ -62,7 +63,9 @@ class TabbedForms extends React.PureComponent {
 
     const body = [];
 
-    body.push(<Search />);
+    body.push(
+      <Search handleSelectSearchResult={searchResult => this.props.handleSelectSearchResult(searchResult, taskId)} />,
+    );
 
     // Caller Information
     if (isCallerType) {

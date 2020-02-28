@@ -23,6 +23,7 @@ const HrmForm = props => {
           handleCallTypeButtonClick={props.handleCallTypeButtonClick}
           handleSubmit={props.handleSubmit}
           handleFocus={props.handleFocus}
+          handleSelectSearchResult={props.handleSelectSearchResult}
         />
       ) : (
         <CallTypeButtons
@@ -44,6 +45,7 @@ HrmForm.propTypes = {
   handleCallTypeButtonClick: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   handleFocus: PropTypes.func.isRequired,
+  handleSelectSearchResult: PropTypes.func.isRequired,
 };
 
 export default withTaskContext(HrmForm);

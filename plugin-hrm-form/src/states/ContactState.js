@@ -7,6 +7,7 @@ import {
   INITIALIZE_CONTACT_STATE,
   REMOVE_CONTACT_STATE,
   SAVE_CONTACT_STATE,
+  HANDLE_SELECT_SEARCH_RESULT,
 } from './ActionTypes';
 import { countSelectedCategories } from './ValidationRules';
 
@@ -40,6 +41,12 @@ export class Actions {
   });
 
   static removeContactState = taskId => ({ type: REMOVE_CONTACT_STATE, taskId });
+
+  static handleSelectSearchResult = (searchResult, taskId) => ({
+    type: HANDLE_SELECT_SEARCH_RESULT,
+    searchResult,
+    taskId,
+  });
 }
 
 // Will replace the below when we move over to field objects
@@ -162,6 +169,13 @@ export function reduce(state = initialState, action) {
           ...state.tasks,
           [action.taskId]: undefined,
         },
+      };
+    }
+
+    case HANDLE_SELECT_SEARCH_RESULT: {
+      console.log({ tasskId: action.taskId, searchResult: action.searchResult });
+      return {
+        ...state,
       };
     }
 

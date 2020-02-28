@@ -61,6 +61,7 @@ class SearchResults extends Component {
         }),
       }),
     ).isRequired,
+    handleSelectSearchResult: PropTypes.func.isRequired,
   };
 
   state = {
@@ -129,7 +130,7 @@ class SearchResults extends Component {
                 <>
                   <TableRow key={result.contactId}>
                     <StyledTableCell>
-                      <CheckIcon />
+                      <CheckIcon onClick={() => this.props.handleSelectSearchResult(result)} />
                     </StyledTableCell>
                     <StyledTableCell>{result.overview.dateTime}</StyledTableCell>
                     <StyledTableCell>{this.renderName(result.overview.name, result.contactId)}</StyledTableCell>

@@ -118,6 +118,7 @@ const HrmFormController = props => {
       handleCategoryToggle={handleCategoryToggle(props.form, props.handleChange)}
       handleSubmit={props.handleSubmit(props.form, props.handleCompleteTask)}
       handleFocus={props.handleFocus}
+      handleSelectSearchResult={props.handleSelectSearchResult}
     />
   );
 };
@@ -135,6 +136,7 @@ const mapDispatchToProps = dispatch => ({
   handleChange: bindActionCreators(Actions.handleChange, dispatch),
   handleFocus: handleFocus(dispatch),
   handleSubmit: handleSubmit(dispatch),
+  handleSelectSearchResult: bindActionCreators(Actions.handleSelectSearchResult, dispatch),
 });
 
 HrmFormController.displayName = 'HrmFormController';
@@ -148,6 +150,7 @@ HrmFormController.propTypes = {
   handleCompleteTask: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   handleFocus: PropTypes.func.isRequired,
+  handleSelectSearchResult: PropTypes.func.isRequired,
 };
 
 export default withTaskContext(connect(mapStateToProps, mapDispatchToProps)(HrmFormController));

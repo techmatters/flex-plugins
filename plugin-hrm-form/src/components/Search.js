@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import { Container } from '../Styles/HrmStyles';
 import SearchForm from './SearchForm';
@@ -96,6 +97,10 @@ const results = [
 class Search extends Component {
   static displayName = 'Search';
 
+  static propTypes = {
+    handleSelectSearchResult: PropTypes.func.isRequired,
+  };
+
   state = {
     results: [],
   };
@@ -110,7 +115,7 @@ class Search extends Component {
     return (
       <Container>
         <SearchForm handleSearch={this.handleSearch} />
-        <SearchResults results={this.state.results} />
+        <SearchResults results={this.state.results} handleSelectSearchResult={this.props.handleSelectSearchResult} />
       </Container>
     );
   }
