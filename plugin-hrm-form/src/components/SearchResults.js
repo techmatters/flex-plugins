@@ -134,7 +134,10 @@ class SearchResults extends Component {
                 <>
                   <TableRow key={result.contactId}>
                     <StyledTableCell>
-                      <CheckIcon onClick={() => this.props.handleSelectSearchResult(result)} />
+                      <CheckIcon
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => this.props.handleSelectSearchResult(result)}
+                      />
                     </StyledTableCell>
                     <StyledTableCell>{result.overview.dateTime}</StyledTableCell>
                     <StyledTableCell>{this.renderName(result.overview.name, result.contactId)}</StyledTableCell>
