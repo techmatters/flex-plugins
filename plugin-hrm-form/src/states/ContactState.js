@@ -15,6 +15,28 @@ const initialState = {
   tasks: {},
 };
 
+function fillNewValues(originalObject, objectWithNewValues) {
+  if (objectWithNewValues === null || typeof objectWithNewValues === 'undefined') {
+    return originalObject;
+  }
+
+  const isLeaf = originalObject.hasOwnProperty('value');
+
+  if (isLeaf) {
+    return {
+      ...originalObject,
+      value: objectWithNewValues,
+      touched: true,
+    };
+  }
+
+  const keys = Object.keys(originalObject);
+  const values = keys.map(key => fillNewValues(originalObject[key], objectWithNewValues[key]));
+
+  const entries = keys.map((key, i) => [key, values[i]]);
+  return Object.fromEntries(entries);
+}
+
 export class Actions {
   static handleChange = (taskId, parents, name, value) => ({ type: HANDLE_CHANGE, name, taskId, value, parents });
 
@@ -173,9 +195,16 @@ export function reduce(state = initialState, action) {
     }
 
     case HANDLE_SELECT_SEARCH_RESULT: {
-      console.log({ tasskId: action.taskId, searchResult: action.searchResult });
+      const currentTask = state.tasks[action.taskId];
+      const searchResultDetails = action.searchResult.details;
+      const task = fillNewValues(currentTask, searchResultDetails);
+
       return {
         ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: task,
+        },
       };
     }
 

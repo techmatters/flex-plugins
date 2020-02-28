@@ -72,7 +72,7 @@ class SearchResultDetails extends Component {
             <StyledTableCell>Gender</StyledTableCell>
             <StyledTableCell>{childInformation.gender}</StyledTableCell>
             <StyledTableCell>State/Country</StyledTableCell>
-            <StyledTableCell>{childInformation.location.stateOrCountry}</StyledTableCell>
+            <StyledTableCell>{childInformation.location.stateOrCounty}</StyledTableCell>
           </TableRow>
           <TableRow>
             <StyledTableCell>Age</StyledTableCell>

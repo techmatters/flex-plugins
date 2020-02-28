@@ -32,7 +32,7 @@ const results = [
         location: {
           streetAddress: 'Howard St',
           city: 'San Francisco',
-          stateOrCountry: 'CA',
+          stateOrCounty: 'CA',
           postalCode: '94105',
           phone1: '415-555-0155',
           phone2: '415-555-0158',
@@ -79,7 +79,7 @@ const results = [
         location: {
           streetAddress: 'Main St',
           city: 'San Francisco',
-          stateOrCountry: 'CA',
+          stateOrCounty: 'CA',
           postalCode: '94205',
           phone1: '415-565-0255',
           phone2: '415-565-0258',
