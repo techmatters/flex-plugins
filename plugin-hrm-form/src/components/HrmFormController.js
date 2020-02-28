@@ -42,7 +42,7 @@ export function transformForm(form) {
 }
 
 // should this be a static method on the class or separate.  Or should it even be here at all?
-export function saveToHrm(task, form, abortFunction, hrmBaseUrl) {
+export function saveToHrm(task, form, abortFunction, hrmBaseUrl, workerSid) {
   // if we got this far, we assume the form is valid and ready to submit
 
   /*
@@ -55,6 +55,7 @@ export function saveToHrm(task, form, abortFunction, hrmBaseUrl) {
   // Add task info
   formToSend.channel = task.channelType;
   formToSend.queueName = task.queueName;
+  formToSend.counselor = workerSid;
   if (task.channelType === 'facebook') {
     formToSend.number = task.defaultFrom.replace('messenger:', '');
   } else if (task.channelType === 'whatsapp') {

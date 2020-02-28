@@ -15,47 +15,21 @@ export default class HrmFormPlugin extends FlexPlugin {
   }
 
   /**
-   * This code is run when your plugin is being started
-   * Use this to modify any UI components or attach to the actions framework
+   * This code is run when the plugin is being started
+   * It is ordered into three sections:
+   *  1. Initial startup
+   *  2. Setting up task lifecycle-related items
+   *  3. Replacing the CRM Container with our application
    *
    * @param flex { typeof import('@twilio/flex-ui') }
    * @param manager { import('@twilio/flex-ui').Manager }
    */
   init(flex, manager) {
+    // 1. Initial startup
     console.log(`Welcome to ${PLUGIN_NAME} Version ${PLUGIN_VERSION}`);
     this.registerReducers(manager);
 
-    const onCompleteTask = async (sid, task) => {
-      if (task.status !== 'wrapping') {
-        if (task.channelType === 'voice') {
-          await flex.Actions.invokeAction('HangupCall', { sid, task });
-        } else {
-          await flex.Actions.invokeAction('WrapupTask', { sid, task });
-        }
-      }
-      flex.Actions.invokeAction('CompleteTask', { sid, task });
-    };
-
-    const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
-
-    // TODO(nick): Eventually remove this log line or set to debug
-    console.log(`HRM URL: ${hrmBaseUrl}`);
-    if (hrmBaseUrl === undefined) {
-      console.error('HRM base URL not defined, you must provide this to save program data');
-    }
-
-    // TODO(nick): Can we avoid passing down the task prop, maybe using context?
-    const options = { sortOrder: -1 };
-    flex.CRMContainer.Content.replace(
-      <CustomCRMContainer key="custom-crm-container" handleCompleteTask={onCompleteTask} />,
-      options,
-    );
-
-    // Must use submit buttons in CRM container to complete task
-    flex.TaskCanvasHeader.Content.remove('actions', {
-      if: props => props.task && props.task.status === 'wrapping',
-    });
-
+    // 2. Setting up task lifecycle-related items
     flex.Actions.addListener('beforeAcceptTask', payload => {
       manager.store.dispatch(Actions.initializeContactState(payload.task.taskSid));
     });
@@ -76,13 +50,47 @@ export default class HrmFormPlugin extends FlexPlugin {
     };
     flex.Actions.replaceAction('WrapupTask', sendGoodbyeMessage);
 
+    // values we will need when saving contacts
+    const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
+    const workerSid = manager.workerClient.sid;
+
+    // TODO(nick): Eventually remove this log line or set to debug
+    console.log(`HRM URL: ${hrmBaseUrl}`);
+    if (hrmBaseUrl === undefined) {
+      console.error('HRM base URL not defined, you must provide this to save program data');
+    }
+
     flex.Actions.addListener('beforeCompleteTask', (payload, abortFunction) => {
-      manager.store.dispatch(Actions.saveContactState(payload.task, abortFunction, hrmBaseUrl));
+      manager.store.dispatch(Actions.saveContactState(payload.task, abortFunction, hrmBaseUrl, workerSid));
     });
 
     flex.Actions.addListener('afterCompleteTask', payload => {
       manager.store.dispatch(Actions.removeContactState(payload.task.taskSid));
     });
+
+    // 3. Replacing standard Flex containers with our application
+
+    // Must use submit buttons in CRM container to complete task
+    flex.TaskCanvasHeader.Content.remove('actions', {
+      if: props => props.task && props.task.status === 'wrapping',
+    });
+
+    const onCompleteTask = async (sid, task) => {
+      if (task.status !== 'wrapping') {
+        if (task.channelType === 'voice') {
+          await flex.Actions.invokeAction('HangupCall', { sid, task });
+        } else {
+          await flex.Actions.invokeAction('WrapupTask', { sid, task });
+        }
+      }
+      flex.Actions.invokeAction('CompleteTask', { sid, task });
+    };
+
+    const options = { sortOrder: -1 };
+    flex.CRMContainer.Content.replace(
+      <CustomCRMContainer key="custom-crm-container" handleCompleteTask={onCompleteTask} />,
+      options,
+    );
   }
 
   /**
