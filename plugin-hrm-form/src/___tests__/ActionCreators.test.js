@@ -19,7 +19,7 @@ jest.mock('../states/ValidationRules', () => {
 
 test('deliberate fail', () => {
   expect(true).toBe(false);
-})
+});
 
 test('handleBlur sends the right action when called', () => {
   const dispatch = jest.fn(x => x);
