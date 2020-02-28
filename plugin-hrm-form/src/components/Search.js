@@ -20,20 +20,24 @@ const results = [
     },
     details: {
       childInformation: {
-        firstName: 'Jill',
-        lastName: 'Smith',
+        name: {
+          firstName: 'Jill',
+          lastName: 'Smith',
+        },
         gender: 'Male',
         age: '10-12',
         language: 'Language 1',
         nationality: 'Nationality 1',
         ethnicity: 'Ethnicity 1',
+        location: {
+          streetAddress: 'Howard St',
+          city: 'San Francisco',
+          stateOrCountry: 'CA',
+          postalCode: '94105',
+          phone1: '415-555-0155',
+          phone2: '415-555-0158',
+        },
         refugee: false,
-        streetAddress: 'Howard St',
-        city: 'San Francisco',
-        stateOrCountry: 'CA',
-        postalCode: '94105',
-        phone1: '415-555-0155',
-        phone2: '415-555-0158',
       },
       caseInformation: {
         callSummary:
@@ -63,20 +67,24 @@ const results = [
     },
     details: {
       childInformation: {
-        firstName: 'Sarah',
-        lastName: 'Park',
+        name: {
+          firstName: 'Sarah',
+          lastName: 'Park',
+        },
         gender: 'Female',
         age: '18-25',
         language: 'Language 2',
         nationality: 'Nationality 2',
         ethnicity: 'Ethnicity 2',
+        location: {
+          streetAddress: 'Main St',
+          city: 'San Francisco',
+          stateOrCountry: 'CA',
+          postalCode: '94205',
+          phone1: '415-565-0255',
+          phone2: '415-565-0258',
+        },
         refugee: true,
-        streetAddress: 'Main St',
-        city: 'San Francisco',
-        stateOrCountry: 'CA',
-        postalCode: '94205',
-        phone1: '415-565-0255',
-        phone2: '415-565-0258',
       },
       caseInformation: {
         callSummary:

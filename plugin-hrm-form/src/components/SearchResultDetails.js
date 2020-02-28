@@ -14,20 +14,24 @@ class SearchResultDetails extends Component {
   static propTypes = {
     details: PropTypes.shape({
       childInformation: PropTypes.shape({
-        firstName: PropTypes.string,
-        lastName: PropTypes.string,
+        name: PropTypes.shape({
+          firstName: PropTypes.string,
+          lastName: PropTypes.string,
+        }),
         gender: PropTypes.string,
         age: PropTypes.string,
         language: PropTypes.string,
         nationality: PropTypes.string,
         ethnicity: PropTypes.string,
+        location: PropTypes.shape({
+          streetAddress: PropTypes.string,
+          city: PropTypes.string,
+          stateOrCounty: PropTypes.string,
+          postalCode: PropTypes.string,
+          phone1: PropTypes.string,
+          phone2: PropTypes.string,
+        }),
         refugee: PropTypes.bool,
-        streetAddress: PropTypes.string,
-        city: PropTypes.string,
-        stateOrCounty: PropTypes.string,
-        postalCode: PropTypes.string,
-        phone1: PropTypes.string,
-        phone2: PropTypes.string,
       }),
       caseInformation: PropTypes.shape({
         callSummary: PropTypes.string,
@@ -54,39 +58,39 @@ class SearchResultDetails extends Component {
         <TableBody>
           <TableRow>
             <StyledTableCell>First Name</StyledTableCell>
-            <StyledTableCell>{childInformation.firstName}</StyledTableCell>
+            <StyledTableCell>{childInformation.name.firstName}</StyledTableCell>
             <StyledTableCell>Street Address</StyledTableCell>
-            <StyledTableCell>{childInformation.streetAddress}</StyledTableCell>
+            <StyledTableCell>{childInformation.location.streetAddress}</StyledTableCell>
           </TableRow>
           <TableRow>
             <StyledTableCell>Last Name</StyledTableCell>
-            <StyledTableCell>{childInformation.lastName}</StyledTableCell>
+            <StyledTableCell>{childInformation.name.lastName}</StyledTableCell>
             <StyledTableCell>City</StyledTableCell>
-            <StyledTableCell>{childInformation.city}</StyledTableCell>
+            <StyledTableCell>{childInformation.location.city}</StyledTableCell>
           </TableRow>
           <TableRow>
             <StyledTableCell>Gender</StyledTableCell>
             <StyledTableCell>{childInformation.gender}</StyledTableCell>
             <StyledTableCell>State/Country</StyledTableCell>
-            <StyledTableCell>{childInformation.stateOrCountry}</StyledTableCell>
+            <StyledTableCell>{childInformation.location.stateOrCountry}</StyledTableCell>
           </TableRow>
           <TableRow>
             <StyledTableCell>Age</StyledTableCell>
             <StyledTableCell>{childInformation.age}</StyledTableCell>
             <StyledTableCell>Postal Code</StyledTableCell>
-            <StyledTableCell>{childInformation.postalCode}</StyledTableCell>
+            <StyledTableCell>{childInformation.location.postalCode}</StyledTableCell>
           </TableRow>
           <TableRow>
             <StyledTableCell>Language</StyledTableCell>
             <StyledTableCell>{childInformation.language}</StyledTableCell>
             <StyledTableCell>Phone #1</StyledTableCell>
-            <StyledTableCell>{childInformation.phone1}</StyledTableCell>
+            <StyledTableCell>{childInformation.location.phone1}</StyledTableCell>
           </TableRow>
           <TableRow>
             <StyledTableCell>Nationality</StyledTableCell>
             <StyledTableCell>{childInformation.nationality}</StyledTableCell>
             <StyledTableCell>Phone #2</StyledTableCell>
-            <StyledTableCell>{childInformation.phone2}</StyledTableCell>
+            <StyledTableCell>{childInformation.location.phone2}</StyledTableCell>
           </TableRow>
           <TableRow>
             <StyledTableCell>Ethnicity</StyledTableCell>

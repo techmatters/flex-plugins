@@ -32,20 +32,24 @@ class SearchResults extends Component {
         }).isRequired,
         details: PropTypes.shape({
           childInformation: PropTypes.shape({
-            firstName: PropTypes.string,
-            lastName: PropTypes.string,
+            name: PropTypes.shape({
+              firstName: PropTypes.string,
+              lastName: PropTypes.string,
+            }),
             gender: PropTypes.string,
             age: PropTypes.string,
             language: PropTypes.string,
             nationality: PropTypes.string,
             ethnicity: PropTypes.string,
+            location: PropTypes.shape({
+              streetAddress: PropTypes.string,
+              city: PropTypes.string,
+              stateOrCounty: PropTypes.string,
+              postalCode: PropTypes.string,
+              phone1: PropTypes.string,
+              phone2: PropTypes.string,
+            }),
             refugee: PropTypes.bool,
-            streetAddress: PropTypes.string,
-            city: PropTypes.string,
-            stateOrCounty: PropTypes.string,
-            postalCode: PropTypes.string,
-            phone1: PropTypes.string,
-            phone2: PropTypes.string,
           }),
           caseInformation: PropTypes.shape({
             callSummary: PropTypes.string,
