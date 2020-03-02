@@ -52,7 +52,7 @@ class SearchResultDetails extends Component {
     tab: 0,
   };
 
-  renderChildInformationDetails(childInformation) {
+  renderChildInformation(childInformation) {
     return (
       <Table>
         <TableBody>
@@ -103,6 +103,10 @@ class SearchResultDetails extends Component {
     );
   }
 
+  renderIssueCategorization(caseInformation) {
+    return <div>Issue Categorization Details</div>;
+  }
+
   renderCaseInformation(caseInformation) {
     return (
       <Table>
@@ -151,8 +155,8 @@ class SearchResultDetails extends Component {
   render() {
     const body = [];
 
-    body.push(this.renderChildInformationDetails(this.props.details.childInformation));
-    body.push(<div>Issue Categorization Details</div>);
+    body.push(this.renderChildInformation(this.props.details.childInformation));
+    body.push(this.renderIssueCategorization(this.props.details.caseInformation));
     body.push(this.renderCaseInformation(this.props.details.caseInformation));
 
     return (
