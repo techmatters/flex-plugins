@@ -602,7 +602,7 @@ class TabbedForms extends React.PureComponent {
             &lt; BACK
           </TransparentButton>
         </TopNav>
-        <Tabs name="tab" value={this.state.tab} onChange={this.tabChange} centered>
+        <Tabs name="tab" variant="scrollable" scrollButtons="auto" value={this.state.tab} onChange={this.tabChange}>
           {tabs}
         </Tabs>
         {body[this.state.tab]}
