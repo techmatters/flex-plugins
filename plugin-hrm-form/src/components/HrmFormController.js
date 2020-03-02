@@ -8,6 +8,7 @@ import TaskView from './TaskView';
 import { namespace, contactFormsBase } from '../states';
 import { Actions } from '../states/ContactState';
 import { handleBlur, handleCategoryToggle, handleFocus, handleSubmit } from '../states/ActionCreators';
+import { handleSelectSearchResult } from '../states/SearchContact';
 import secret from '../private/secret';
 import { FieldType } from '../states/ContactFormStateFactory';
 import { taskType } from '../types';
@@ -136,7 +137,7 @@ const mapDispatchToProps = dispatch => ({
   handleChange: bindActionCreators(Actions.handleChange, dispatch),
   handleFocus: handleFocus(dispatch),
   handleSubmit: handleSubmit(dispatch),
-  handleSelectSearchResult: bindActionCreators(Actions.handleSelectSearchResult, dispatch),
+  handleSelectSearchResult: bindActionCreators(handleSelectSearchResult, dispatch),
 });
 
 HrmFormController.displayName = 'HrmFormController';

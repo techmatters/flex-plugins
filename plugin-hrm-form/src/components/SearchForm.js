@@ -31,6 +31,12 @@ class SearchForm extends Component {
     dateTo: '',
   };
 
+  defaultEventHandlers = fieldName => ({
+    handleChange: e => this.setState({ [fieldName]: e.target.value }),
+    handleBlur: () => {},
+    handleFocus: () => {},
+  });
+
   render() {
     const { firstName, lastName, counselor, phoneNumber, dateFrom, dateTo } = this.state;
 
@@ -40,52 +46,35 @@ class SearchForm extends Component {
           id="Search_FirstName"
           label="First name"
           field={getField(firstName)}
-          handleBlur={() => {}}
-          handleChange={e => this.setState({ firstName: e.target.value })}
-          handleFocus={() => {}}
+          {...this.defaultEventHandlers('firstName')}
         />
         <FieldText
           id="Search_LastName"
           label="Last name"
           field={getField(lastName)}
-          handleBlur={() => {}}
-          handleChange={e => this.setState({ lastName: e.target.value })}
-          handleFocus={() => {}}
+          {...this.defaultEventHandlers('lastName')}
         />
         <FieldSelect
-          field={getField(counselor)}
           id="Search_Counselor"
           name="counselor"
           label="Counselor"
+          field={getField(counselor)}
           options={['', 'Counselor 1', 'Counselor 2', 'Counselor 3']}
-          handleBlur={() => {}}
-          handleChange={e => this.setState({ counselor: e.target.value })}
-          handleFocus={() => {}}
+          {...this.defaultEventHandlers('counselor')}
         />
         <FieldText
           id="Search_CustomerPhoneNumber"
           label="Customer phone"
           field={getField(phoneNumber)}
-          handleBlur={() => {}}
-          handleChange={e => this.setState({ phoneNumber: e.target.value })}
-          handleFocus={() => {}}
+          {...this.defaultEventHandlers('phoneNumber')}
         />
         <FieldDate
           id="Search_DateFrom"
           label="From"
           field={getField(dateFrom)}
-          handleBlur={() => {}}
-          handleChange={e => this.setState({ dateFrom: e.target.value })}
-          handleFocus={() => {}}
+          {...this.defaultEventHandlers('dateFrom')}
         />
-        <FieldDate
-          id="Search_DateTo"
-          label="To"
-          field={getField(dateTo)}
-          handleBlur={() => {}}
-          handleChange={e => this.setState({ dateTo: e.target.value })}
-          handleFocus={() => {}}
-        />
+        <FieldDate id="Search_DateTo" label="To" field={getField(dateTo)} {...this.defaultEventHandlers('dateTo')} />
         <StyledSearchButton roundCorners={true} onClick={() => this.props.handleSearch(this.state)}>
           <SearchIcon />
         </StyledSearchButton>

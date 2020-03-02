@@ -10,32 +10,11 @@ import {
   HANDLE_SELECT_SEARCH_RESULT,
 } from './ActionTypes';
 import { countSelectedCategories } from './ValidationRules';
+import { copySearchResultIntoTask } from './SearchContact';
 
 const initialState = {
   tasks: {},
 };
-
-function fillNewValues(originalObject, objectWithNewValues) {
-  if (objectWithNewValues === null || typeof objectWithNewValues === 'undefined') {
-    return originalObject;
-  }
-
-  const isLeaf = originalObject.hasOwnProperty('value');
-
-  if (isLeaf) {
-    return {
-      ...originalObject,
-      value: objectWithNewValues,
-      touched: true,
-    };
-  }
-
-  const keys = Object.keys(originalObject);
-  const values = keys.map(key => fillNewValues(originalObject[key], objectWithNewValues[key]));
-
-  const entries = keys.map((key, i) => [key, values[i]]);
-  return Object.fromEntries(entries);
-}
 
 export class Actions {
   static handleChange = (taskId, parents, name, value) => ({ type: HANDLE_CHANGE, name, taskId, value, parents });
@@ -63,12 +42,6 @@ export class Actions {
   });
 
   static removeContactState = taskId => ({ type: REMOVE_CONTACT_STATE, taskId });
-
-  static handleSelectSearchResult = (searchResult, taskId) => ({
-    type: HANDLE_SELECT_SEARCH_RESULT,
-    searchResult,
-    taskId,
-  });
 }
 
 // Will replace the below when we move over to field objects
@@ -196,8 +169,7 @@ export function reduce(state = initialState, action) {
 
     case HANDLE_SELECT_SEARCH_RESULT: {
       const currentTask = state.tasks[action.taskId];
-      const searchResultDetails = action.searchResult.details;
-      const task = fillNewValues(currentTask, searchResultDetails);
+      const task = copySearchResultIntoTask(currentTask, action.searchResult);
 
       return {
         ...state,
