@@ -26,15 +26,13 @@ class SearchForm extends Component {
     firstName: '',
     lastName: '',
     counselor: '',
-    area: '',
     phoneNumber: '',
     dateFrom: '',
     dateTo: '',
-    time: '',
   };
 
   render() {
-    const { firstName, lastName, counselor, area, phoneNumber, dateFrom, dateTo, time } = this.state;
+    const { firstName, lastName, counselor, phoneNumber, dateFrom, dateTo } = this.state;
 
     return (
       <SearchFields>
@@ -64,16 +62,6 @@ class SearchForm extends Component {
           handleChange={e => this.setState({ counselor: e.target.value })}
           handleFocus={() => {}}
         />
-        <FieldSelect
-          field={getField(area)}
-          id="Search_Area"
-          name="area"
-          label="Area"
-          options={['', 'Area 1', 'Area 2', 'Area 3']}
-          handleBlur={() => {}}
-          handleChange={e => this.setState({ area: e.target.value })}
-          handleFocus={() => {}}
-        />
         <FieldText
           id="Search_CustomerPhoneNumber"
           label="Customer phone"
@@ -96,16 +84,6 @@ class SearchForm extends Component {
           field={getField(dateTo)}
           handleBlur={() => {}}
           handleChange={e => this.setState({ dateTo: e.target.value })}
-          handleFocus={() => {}}
-        />
-        <FieldSelect
-          field={getField(time)}
-          id="Search_Time"
-          name="time"
-          label="Time"
-          options={['', 'Time 1', 'Time 2', 'Time 3']}
-          handleBlur={() => {}}
-          handleChange={e => this.setState({ time: e.target.value })}
           handleFocus={() => {}}
         />
         <StyledSearchButton roundCorners={true} onClick={() => this.props.handleSearch(this.state)}>

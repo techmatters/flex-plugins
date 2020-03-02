@@ -113,9 +113,9 @@ class Search extends Component {
     results: [],
   };
 
-  handleSearch = ({ firstName, lastName, counselor, area, phoneNumber, dateFrom, dateTo, time }) => {
+  handleSearch = ({ firstName, lastName, counselor, phoneNumber, dateFrom, dateTo }) => {
     console.log('>>> Search: ');
-    console.log({ firstName, lastName, counselor, area, phoneNumber, dateFrom, dateTo, time });
+    console.log({ firstName, lastName, counselor, phoneNumber, dateFrom, dateTo });
     this.setState({ results });
   };
 
