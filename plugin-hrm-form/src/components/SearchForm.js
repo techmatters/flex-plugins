@@ -1,11 +1,12 @@
 /* eslint-disable no-empty-function */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import SearchIcon from '@material-ui/icons/Search';
 
 import FieldText from './FieldText';
 import FieldSelect from './FieldSelect';
 import FieldDate from './FieldDate';
-import { StyledButton } from '../Styles/HrmStyles';
+import { SearchFields, StyledSearchButton } from '../Styles/HrmStyles';
 
 const getField = value => ({
   value,
@@ -36,7 +37,7 @@ class SearchForm extends Component {
     const { firstName, lastName, counselor, area, phoneNumber, dateFrom, dateTo, time } = this.state;
 
     return (
-      <div>
+      <SearchFields>
         <FieldText
           id="Search_FirstName"
           label="First name"
@@ -75,7 +76,7 @@ class SearchForm extends Component {
         />
         <FieldText
           id="Search_CustomerPhoneNumber"
-          label="Customer phone number"
+          label="Customer phone"
           field={getField(phoneNumber)}
           handleBlur={() => {}}
           handleChange={e => this.setState({ phoneNumber: e.target.value })}
@@ -107,10 +108,10 @@ class SearchForm extends Component {
           handleChange={e => this.setState({ time: e.target.value })}
           handleFocus={() => {}}
         />
-        <StyledButton roundCorners={true} onClick={() => this.props.handleSearch(this.state)}>
-          Search
-        </StyledButton>
-      </div>
+        <StyledSearchButton roundCorners={true} onClick={() => this.props.handleSearch(this.state)}>
+          <SearchIcon />
+        </StyledSearchButton>
+      </SearchFields>
     );
   }
 }

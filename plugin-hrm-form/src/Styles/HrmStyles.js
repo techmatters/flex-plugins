@@ -238,3 +238,17 @@ export const StyledTableCell = styled(TableCell)`
   overflow: hidden;
   white-space: nowrap;
 `;
+
+export const SearchFields = styled('div')`
+  display: flex;
+  flex-wrap: wrap;
+  div {
+    max-width: 160px;
+  }
+`;
+
+export const StyledSearchButton = styled(StyledNextStepButton)`
+  width: 100px;
+  margin-bottom: 8px;
+  margin-top: auto;
+`;

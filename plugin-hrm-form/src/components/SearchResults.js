@@ -12,7 +12,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 
 import SearchResultDetails from './SearchResultDetails';
-import { StyledTableCell } from '../Styles/HrmStyles';
+import { StyledTableCell, StyledLabel } from '../Styles/HrmStyles';
 
 class SearchResults extends Component {
   static displayName = 'SearchResults';
@@ -115,6 +115,7 @@ class SearchResults extends Component {
     return (
       <>
         {this.renderCallSummaryDialog()}
+        <StyledLabel style={{ marginTop: 30, marginBottom: 10 }}>Use existing contact</StyledLabel>
         <Paper>
           <Table aria-label="simple table">
             <TableHead>
