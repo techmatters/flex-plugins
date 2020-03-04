@@ -25,6 +25,11 @@ export default class HrmFormPlugin extends FlexPlugin {
     console.log(`Welcome to ${PLUGIN_NAME} Version ${PLUGIN_VERSION}`);
     this.registerReducers(manager);
 
+    // TODO: actually add this to the configuration.  Just don't want it hard-coded in a public repo.
+    const functionsBaseUrl = manager.serviceConfiguration.attributes.functions_base_url;
+    this.callTwilioFunc(functionsBaseUrl)
+      .then(data => console.log(JSON.stringify(data)));
+
     const onCompleteTask = async (sid, task) => {
       if (task.status !== 'wrapping') {
         if (task.channelType === 'voice') {
@@ -83,6 +88,24 @@ export default class HrmFormPlugin extends FlexPlugin {
     flex.Actions.addListener('afterCompleteTask', payload => {
       manager.store.dispatch(Actions.removeContactState(payload.task.taskSid));
     });
+  }
+
+  async callTwilioFunc(functionsBaseUrl) {
+    // Describe the body of your request
+    const body = { WorkspaceSid: 'WS...' };
+
+    // Set up the HTTP options for your request
+    const options = {
+      method: 'POST',
+      body: new URLSearchParams(body),
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+      }
+    };
+
+    // Make the network request using the Fetch API.
+    const resp = await fetch(`${functionsBaseUrl}/cumulative`, options);
+    return await resp.json();
   }
 
   /**
