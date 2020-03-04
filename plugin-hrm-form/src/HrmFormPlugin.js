@@ -37,6 +37,8 @@ export default class HrmFormPlugin extends FlexPlugin {
     };
 
     const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
+    const workerSid = manager.workerClient.sid;
+    const { helpline } = manager.workerClient.attributes;
 
     // TODO(nick): Eventually remove this log line or set to debug
     console.log(`HRM URL: ${hrmBaseUrl}`);
@@ -77,7 +79,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     flex.Actions.replaceAction('WrapupTask', sendGoodbyeMessage);
 
     flex.Actions.addListener('beforeCompleteTask', (payload, abortFunction) => {
-      manager.store.dispatch(Actions.saveContactState(payload.task, abortFunction, hrmBaseUrl));
+      manager.store.dispatch(Actions.saveContactState(payload.task, abortFunction, hrmBaseUrl, workerSid, helpline));
     });
 
     flex.Actions.addListener('afterCompleteTask', payload => {

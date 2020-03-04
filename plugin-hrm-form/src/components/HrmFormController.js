@@ -41,8 +41,22 @@ export function transformForm(form) {
   return newForm;
 }
 
+function getNumberFromTask(task) {
+  let number;
+
+  if (task.channelType === 'facebook') {
+    number = task.defaultFrom.replace('messenger:', '');
+  } else if (task.channelType === 'whatsapp') {
+    number = task.defaultFrom.replace('whatsapp:', '');
+  } else {
+    number = task.defaultFrom;
+  }
+
+  return number;
+}
+
 // should this be a static method on the class or separate.  Or should it even be here at all?
-export function saveToHrm(task, form, abortFunction, hrmBaseUrl) {
+export function saveToHrm(task, form, abortFunction, hrmBaseUrl, workerSid, helpline) {
   // if we got this far, we assume the form is valid and ready to submit
 
   /*
@@ -52,28 +66,22 @@ export function saveToHrm(task, form, abortFunction, hrmBaseUrl) {
    */
   const formToSend = transformForm(form);
 
-  // Add task info
-  formToSend.channel = task.channelType;
-  formToSend.queueName = task.queueName;
-  if (task.channelType === 'facebook') {
-    formToSend.number = task.defaultFrom.replace('messenger:', '');
-  } else if (task.channelType === 'whatsapp') {
-    formToSend.number = task.defaultFrom.replace('whatsapp:', '');
-  } else {
-    formToSend.number = task.defaultFrom;
-  }
-
-  const formdata = {
+  const body = {
     form: formToSend,
+    counselorId: workerSid,
+    queueName: task.queueName,
+    channel: task.channelType,
+    number: getNumberFromTask(task),
+    helpline,
   };
   console.log(`Using base url: ${hrmBaseUrl}`);
 
   // print the form values to the console
-  console.log(`Sending: ${JSON.stringify(formdata)}`);
+  console.log(`Sending: ${JSON.stringify(body)}`);
   fetch(`${hrmBaseUrl}/contacts`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Basic ${btoa(secret)}` },
-    body: JSON.stringify(formdata),
+    body: JSON.stringify(body),
   })
     .then(response => {
       if (!response.ok) {
