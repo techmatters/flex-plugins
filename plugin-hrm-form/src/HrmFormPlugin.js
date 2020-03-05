@@ -7,7 +7,7 @@ import reducers, { namespace } from './states';
 import { Actions } from './states/ContactState';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
-const PLUGIN_VERSION = '0.3.3';
+const PLUGIN_VERSION = '0.3.5';
 
 export default class HrmFormPlugin extends FlexPlugin {
   constructor() {
