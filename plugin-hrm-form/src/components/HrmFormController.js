@@ -68,7 +68,7 @@ export function saveToHrm(task, form, abortFunction, hrmBaseUrl, workerSid, help
 
   const body = {
     form: formToSend,
-    counselorId: workerSid,
+    twilioWorkerId: workerSid,
     queueName: task.queueName,
     channel: task.channelType,
     number: getNumberFromTask(task),
