@@ -30,7 +30,7 @@
     "react-test-renderer": "16.5.2"
   },
   "devDependencies": {
-    "@twilio/flex-ui": "1.16.1",
+    "@twilio/flex-ui": "1.14.1",
     "babel-eslint": "^10.0.3",
     "babel-polyfill": "^6.26.0",
     "enzyme": "^3.10.0",
