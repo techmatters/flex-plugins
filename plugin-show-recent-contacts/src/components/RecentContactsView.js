@@ -122,11 +122,11 @@ export default class RecentContactsView extends React.Component {
                   </tr>
                   <tr>
                     <th>Channel</th>
-                    <td>{this.valueOrNone(contact.FormData.channel)}</td>
+                    <td>{this.valueOrNone(contact.channel || contact.FormData.channel)}</td>
                   </tr>
                   <tr>
                     <th>Number</th>
-                    <td>{this.valueOrNone(contact.FormData.number)}</td>
+                    <td>{this.valueOrNone(contact.number || contact.FormData.number)}</td>
                   </tr>
                   <tr>
                     <th>Call type</th>
@@ -365,8 +365,8 @@ export default class RecentContactsView extends React.Component {
                   <tr>
                     <td>{this.formatDate(element.Date)}</td>
                     <td style={{textDecoration: 'underline', cursor: 'pointer'}} onClick={(e) => this.setState({id: element.id})}>{this.valueOrNone(element.id)}</td>
-                    <td>{this.valueOrNone(element.FormData && element.FormData.channel)}</td>
-                    <td>{this.valueOrNone(element.FormData && element.FormData.number)}</td>
+                    <td>{this.valueOrNone(element.channel || (element.FormData && element.FormData.channel))}</td>
+                    <td>{this.valueOrNone(element.number || (element.FormData && element.FormData.number))}</td>
                     <td>{this.valueOrNone(element.FormData && element.FormData.callType)}</td>
                     <td>{this.nameFor(element.FormData && element.FormData.callerInformation && element.FormData.callerInformation.name)}</td>
                     <td>{this.nameFor(element.FormData && element.FormData.childInformation && element.FormData.childInformation.name)}</td>
