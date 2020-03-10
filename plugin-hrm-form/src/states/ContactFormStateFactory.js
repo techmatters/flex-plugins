@@ -376,7 +376,14 @@ const defaultFormDefinition = {
 };
 
 export const generateInitialFormState = (formDefinition = defaultFormDefinition) => {
-  const initialState = {};
+  // get "clean state" with current date as startingTime
+  const initialState = {
+    metadata: {
+      startingTime: new Date(),
+      endingTime: null,
+    },
+  };
+
   Object.keys(formDefinition)
     .filter(key => key !== 'type' && key !== 'validation')
     .forEach(key => {

@@ -6,6 +6,7 @@ import {
   HANDLE_FOCUS,
   INITIALIZE_CONTACT_STATE,
   REMOVE_CONTACT_STATE,
+  SAVE_ENDING_TIME,
   SAVE_CONTACT_STATE,
 } from './ActionTypes';
 import { countSelectedCategories } from './ValidationRules';
@@ -42,6 +43,8 @@ export class Actions {
   });
 
   static removeContactState = taskId => ({ type: REMOVE_CONTACT_STATE, taskId });
+
+  static saveEndingTime = taskId => ({ type: SAVE_ENDING_TIME, taskId });
 }
 
 // Will replace the below when we move over to field objects
@@ -146,6 +149,25 @@ export function reduce(state = initialState, action) {
         tasks: {
           ...state.tasks,
           [action.taskId]: generateInitialFormState(), // taskInitialStateFactory()
+        },
+      };
+    }
+
+    case SAVE_ENDING_TIME: {
+      const taskToEnd = state.tasks[action.taskId];
+      const { metadata } = taskToEnd;
+      if (metadata.endingTime !== null) {
+        // task is voice -> endingTime setted at "HangupCall" event
+        return state;
+      }
+
+      const endedTask = { ...taskToEnd, metadata: { ...metadata, endingTime: new Date() } };
+
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: endedTask,
         },
       };
     }
