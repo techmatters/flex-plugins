@@ -156,11 +156,6 @@ export function reduce(state = initialState, action) {
     case SAVE_ENDING_TIME: {
       const taskToEnd = state.tasks[action.taskId];
       const { metadata } = taskToEnd;
-      if (metadata.endingTime !== null) {
-        // task is voice -> endingTime setted at "HangupCall" event
-        return state;
-      }
-
       const endedTask = { ...taskToEnd, metadata: { ...metadata, endingTime: new Date() } };
 
       return {

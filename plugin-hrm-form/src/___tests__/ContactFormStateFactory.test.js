@@ -224,10 +224,7 @@ test('generateInitialFormState operates as expected', () => {
     },
   };
 
-  /*
-   * const { metadata, ...rest } = testFormDefinition;
-   * expect(generateInitialFormState(testFormDefinition)).toStrictEqual(expected);
-   */
+  // we omit metadata because we can't know the exact time of form creation (metadata.startingTime)
   const generatedForm = generateInitialFormState(testFormDefinition);
   const testForm = _.omit(generatedForm, 'metadata');
   expect(testForm).toStrictEqual(expected);

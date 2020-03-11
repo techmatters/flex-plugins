@@ -375,14 +375,8 @@ const defaultFormDefinition = {
   },
 };
 
-export const generateInitialFormState = (formDefinition = defaultFormDefinition) => {
-  // get "clean state" with current date as startingTime
-  const initialState = {
-    metadata: {
-      startingTime: new Date(),
-      endingTime: null,
-    },
-  };
+const recursivelyGenerateInitialForm = formDefinition => {
+  const initialState = {};
 
   Object.keys(formDefinition)
     .filter(key => key !== 'type' && key !== 'validation')
@@ -402,7 +396,7 @@ export const generateInitialFormState = (formDefinition = defaultFormDefinition)
           break;
         case FieldType.CHECKBOX_FIELD:
           initialState[key] = {
-            ...generateInitialFormState(formDefinition[key]),
+            ...recursivelyGenerateInitialForm(formDefinition[key]),
             type: formDefinition[key].type,
             touched: false,
             validation: formDefinition[key].validation === null ? null : Array.from(formDefinition[key].validation),
@@ -412,7 +406,7 @@ export const generateInitialFormState = (formDefinition = defaultFormDefinition)
         case FieldType.INTERMEDIATE:
         case FieldType.TAB:
           initialState[key] = {
-            ...generateInitialFormState(formDefinition[key]),
+            ...recursivelyGenerateInitialForm(formDefinition[key]),
             type: formDefinition[key].type,
           };
           break;
@@ -432,5 +426,19 @@ export const generateInitialFormState = (formDefinition = defaultFormDefinition)
           );
       }
     });
+
   return initialState;
+};
+
+export const generateInitialFormState = (formDefinition = defaultFormDefinition) => {
+  // get "clean state" with current date as startingTime
+  const initialState = recursivelyGenerateInitialForm(formDefinition);
+  const metadata = {
+    startingTime: new Date(),
+    endingTime: null,
+  };
+
+  const generatedForm = { ...initialState, metadata };
+
+  return generatedForm;
 };
