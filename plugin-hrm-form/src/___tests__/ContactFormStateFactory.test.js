@@ -228,4 +228,10 @@ test('generateInitialFormState operates as expected', () => {
   const generatedForm = generateInitialFormState(testFormDefinition);
   const testForm = _.omit(generatedForm, 'metadata');
   expect(testForm).toStrictEqual(expected);
+  expect(generatedForm.metadata).toEqual(
+    expect.objectContaining({
+      startingTime: expect.any(Date),
+      endingTime: null,
+    }),
+  );
 });
