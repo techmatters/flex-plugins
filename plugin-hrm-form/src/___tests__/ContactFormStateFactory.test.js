@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import { FieldType, generateInitialFormState, ValidationType } from '../states/ContactFormStateFactory';
 
 test('generateInitialFormState operates as expected', () => {
@@ -221,5 +223,12 @@ test('generateInitialFormState operates as expected', () => {
       },
     },
   };
-  expect(generateInitialFormState(testFormDefinition)).toStrictEqual(expected);
+
+  /*
+   * const { metadata, ...rest } = testFormDefinition;
+   * expect(generateInitialFormState(testFormDefinition)).toStrictEqual(expected);
+   */
+  const generatedForm = generateInitialFormState(testFormDefinition);
+  const testForm = _.omit(generatedForm, 'metadata');
+  expect(testForm).toStrictEqual(expected);
 });
