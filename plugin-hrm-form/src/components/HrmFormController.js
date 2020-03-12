@@ -58,11 +58,12 @@ function getNumberFromTask(task) {
 // should this be a static method on the class or separate.  Or should it even be here at all?
 export function saveToHrm(task, form, abortFunction, hrmBaseUrl, workerSid, helpline) {
   // if we got this far, we assume the form is valid and ready to submit
-
-  const { startMillis, endMillis } = form.metadata;
+  
+  // metrics will be invalid if page was reloaded (form recreated and thus initial information will be lost)
+  const { startMillis, endMillis, recreated } = form.metadata;
   const milisecondsElapsed = endMillis - startMillis;
   const secondsElapsed = Math.floor(milisecondsElapsed / 1000);
-  const conversationDuration = secondsElapsed > 0 ? secondsElapsed : null;
+  const conversationDuration = !recreated ? secondsElapsed : null;
 
   /*
    * We do a transform from the original and then add things.

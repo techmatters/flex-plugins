@@ -436,9 +436,24 @@ export const generateInitialFormState = (formDefinition = defaultFormDefinition)
   const metadata = {
     startMillis: new Date().getTime(),
     endMillis: null,
+    recreated: false,
   };
 
-  const generatedForm = { ...initialState, metadata };
+  const initialForm = { ...initialState, metadata };
 
-  return generatedForm;
+  return initialForm;
+};
+
+export const recreateForm = (formDefinition = defaultFormDefinition) => {
+  // "recreated state" with startMillis nullified (as we lost initial information)
+  const initialState = recursivelyGenerateInitialForm(formDefinition);
+  const metadata = {
+    startMillis: null,
+    endMillis: null,
+    recreated: true,
+  };
+
+  const recreatedForm = { ...initialState, metadata };
+
+  return recreatedForm;
 };

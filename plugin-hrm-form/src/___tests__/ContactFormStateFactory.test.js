@@ -232,6 +232,7 @@ test('generateInitialFormState operates as expected', () => {
     expect.objectContaining({
       startMillis: expect.any(Number),
       endMillis: null,
+      recreated: false,
     }),
   );
 });
