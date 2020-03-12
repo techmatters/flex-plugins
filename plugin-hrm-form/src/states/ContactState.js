@@ -1,5 +1,5 @@
 import { saveToHrm } from '../components/HrmFormController';
-import { generateInitialFormState, recreateForm } from './ContactFormStateFactory';
+import { createBlankForm, recreateBlankForm } from './ContactFormStateFactory';
 import {
   HANDLE_BLUR,
   HANDLE_CHANGE,
@@ -83,7 +83,7 @@ export function reduce(state = initialState, action) {
         currentForm = state.tasks[action.taskId];
       } else {
         // currentForm = taskInitialStateFactory();
-        currentForm = recreateForm();
+        currentForm = recreateBlankForm();
         console.log(`Had to recreate state for taskId ${action.taskId}`);
       }
       return {
@@ -115,7 +115,7 @@ export function reduce(state = initialState, action) {
         currentForm = state.tasks[action.taskId];
       } else {
         // currentForm = taskInitialStateFactory();
-        currentForm = recreateForm();
+        currentForm = recreateBlankForm();
         console.log(`Had to recreate state for taskId ${action.taskId}`);
       }
       const newForm = editNestedField(currentForm, action.parents, action.name, { value: action.value });
@@ -149,7 +149,7 @@ export function reduce(state = initialState, action) {
         ...state,
         tasks: {
           ...state.tasks,
-          [action.taskId]: generateInitialFormState(), // taskInitialStateFactory()
+          [action.taskId]: createBlankForm(), // taskInitialStateFactory()
         },
       };
     }

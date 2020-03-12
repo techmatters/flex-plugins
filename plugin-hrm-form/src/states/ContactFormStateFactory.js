@@ -375,7 +375,7 @@ const defaultFormDefinition = {
   },
 };
 
-const recursivelyGenerateInitialForm = formDefinition => {
+const recursivelyCreateBlankForm = formDefinition => {
   const initialState = {};
 
   Object.keys(formDefinition)
@@ -396,7 +396,7 @@ const recursivelyGenerateInitialForm = formDefinition => {
           break;
         case FieldType.CHECKBOX_FIELD:
           initialState[key] = {
-            ...recursivelyGenerateInitialForm(formDefinition[key]),
+            ...recursivelyCreateBlankForm(formDefinition[key]),
             type: formDefinition[key].type,
             touched: false,
             validation: formDefinition[key].validation === null ? null : Array.from(formDefinition[key].validation),
@@ -406,7 +406,7 @@ const recursivelyGenerateInitialForm = formDefinition => {
         case FieldType.INTERMEDIATE:
         case FieldType.TAB:
           initialState[key] = {
-            ...recursivelyGenerateInitialForm(formDefinition[key]),
+            ...recursivelyCreateBlankForm(formDefinition[key]),
             type: formDefinition[key].type,
           };
           break;
@@ -430,30 +430,30 @@ const recursivelyGenerateInitialForm = formDefinition => {
   return initialState;
 };
 
-export const generateInitialFormState = (formDefinition = defaultFormDefinition) => {
-  // get "clean state" with current date (in milliseconds) as startMillis
-  const initialState = recursivelyGenerateInitialForm(formDefinition);
+/**
+ * @param {any} formDef
+ * The form definition we want to replicate.
+ * @param {Boolean} recreated
+ * Determines if we are initializing a form or recreating it
+ * @returns {any}
+ * A clean form plus metadata about it.
+ * If the form was recreated, it won't have a "starting time".
+ */
+export const createBlankForm = (formDef = defaultFormDefinition, recreated = false) => {
+  const initialState = recursivelyCreateBlankForm(formDef);
   const metadata = {
-    startMillis: new Date().getTime(),
+    startMillis: recreated ? null : new Date().getTime(),
     endMillis: null,
-    recreated: false,
+    recreated,
   };
 
-  const initialForm = { ...initialState, metadata };
+  const generatedForm = { ...initialState, metadata };
 
-  return initialForm;
+  return generatedForm;
 };
 
-export const recreateForm = (formDefinition = defaultFormDefinition) => {
-  // "recreated state" with startMillis nullified (as we lost initial information)
-  const initialState = recursivelyGenerateInitialForm(formDefinition);
-  const metadata = {
-    startMillis: null,
-    endMillis: null,
-    recreated: true,
-  };
-
-  const recreatedForm = { ...initialState, metadata };
+export const recreateBlankForm = () => {
+  const recreatedForm = createBlankForm(defaultFormDefinition, true);
 
   return recreatedForm;
 };
