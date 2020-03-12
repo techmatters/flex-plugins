@@ -59,9 +59,10 @@ function getNumberFromTask(task) {
 export function saveToHrm(task, form, abortFunction, hrmBaseUrl, workerSid, helpline) {
   // if we got this far, we assume the form is valid and ready to submit
 
-  const { startingTime, endingTime } = form.metadata;
-  const milisecondsElapsed = endingTime - startingTime;
-  const conversationDuration = Math.floor(milisecondsElapsed / 1000);
+  const { startMillis, endMillis } = form.metadata;
+  const milisecondsElapsed = endMillis - startMillis;
+  const secondsElapsed = Math.floor(milisecondsElapsed / 1000);
+  const conversationDuration = secondsElapsed > 0 ? secondsElapsed : null;
 
   /*
    * We do a transform from the original and then add things.

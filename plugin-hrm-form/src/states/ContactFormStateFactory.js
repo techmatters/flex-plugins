@@ -431,11 +431,11 @@ const recursivelyGenerateInitialForm = formDefinition => {
 };
 
 export const generateInitialFormState = (formDefinition = defaultFormDefinition) => {
-  // get "clean state" with current date as startingTime
+  // get "clean state" with current date (in milliseconds) as startMillis
   const initialState = recursivelyGenerateInitialForm(formDefinition);
   const metadata = {
-    startingTime: new Date(),
-    endingTime: null,
+    startMillis: new Date().getTime(),
+    endMillis: null,
   };
 
   const generatedForm = { ...initialState, metadata };

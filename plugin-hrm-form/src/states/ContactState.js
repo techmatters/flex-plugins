@@ -6,7 +6,7 @@ import {
   HANDLE_FOCUS,
   INITIALIZE_CONTACT_STATE,
   REMOVE_CONTACT_STATE,
-  SAVE_ENDING_TIME,
+  SAVE_END_MILLIS,
   SAVE_CONTACT_STATE,
 } from './ActionTypes';
 import { countSelectedCategories } from './ValidationRules';
@@ -44,7 +44,8 @@ export class Actions {
 
   static removeContactState = taskId => ({ type: REMOVE_CONTACT_STATE, taskId });
 
-  static saveEndingTime = taskId => ({ type: SAVE_ENDING_TIME, taskId });
+  // records the end time (in milliseconds)
+  static saveEndMillis = taskId => ({ type: SAVE_END_MILLIS, taskId });
 }
 
 // Will replace the below when we move over to field objects
@@ -153,10 +154,10 @@ export function reduce(state = initialState, action) {
       };
     }
 
-    case SAVE_ENDING_TIME: {
+    case SAVE_END_MILLIS: {
       const taskToEnd = state.tasks[action.taskId];
       const { metadata } = taskToEnd;
-      const endedTask = { ...taskToEnd, metadata: { ...metadata, endingTime: new Date() } };
+      const endedTask = { ...taskToEnd, metadata: { ...metadata, endMillis: new Date().getTime() } };
 
       return {
         ...state,

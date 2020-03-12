@@ -70,13 +70,13 @@ export default class HrmFormPlugin extends FlexPlugin {
       manager.store.dispatch(Actions.removeContactState(payload.task.taskSid));
     });
 
-    const saveEndingTime = (payload, original) => {
-      manager.store.dispatch(Actions.saveEndingTime(payload.task.taskSid));
+    const saveEndMillis = (payload, original) => {
+      manager.store.dispatch(Actions.saveEndMillis(payload.task.taskSid));
       original(payload);
     };
 
-    flex.Actions.replaceAction('HangupCall', saveEndingTime);
-    flex.Actions.replaceAction('WrapupTask', saveEndingTime);
+    flex.Actions.replaceAction('HangupCall', saveEndMillis);
+    flex.Actions.replaceAction('WrapupTask', saveEndMillis);
   }
 
   /**

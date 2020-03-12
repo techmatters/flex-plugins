@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { omit } from 'lodash';
 
 import { FieldType, generateInitialFormState, ValidationType } from '../states/ContactFormStateFactory';
 
@@ -224,14 +224,14 @@ test('generateInitialFormState operates as expected', () => {
     },
   };
 
-  // we omit metadata because we can't know the exact time of form creation (metadata.startingTime)
+  // we omit metadata because we can't know the exact time of form creation (metadata.startMillis)
   const generatedForm = generateInitialFormState(testFormDefinition);
-  const testForm = _.omit(generatedForm, 'metadata');
+  const testForm = omit(generatedForm, 'metadata');
   expect(testForm).toStrictEqual(expected);
   expect(generatedForm.metadata).toEqual(
     expect.objectContaining({
-      startingTime: expect.any(Date),
-      endingTime: null,
+      startMillis: expect.any(Number),
+      endMillis: null,
     }),
   );
 });
