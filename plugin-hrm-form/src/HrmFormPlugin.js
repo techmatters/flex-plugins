@@ -7,7 +7,7 @@ import reducers, { namespace } from './states';
 import { Actions } from './states/ContactState';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
-const PLUGIN_VERSION = '0.3.5';
+const PLUGIN_VERSION = '0.3.6';
 
 export default class HrmFormPlugin extends FlexPlugin {
   constructor() {
@@ -25,9 +25,13 @@ export default class HrmFormPlugin extends FlexPlugin {
     console.log(`Welcome to ${PLUGIN_NAME} Version ${PLUGIN_VERSION}`);
     this.registerReducers(manager);
 
-    const onCompleteTask = (sid, task) => {
-      if (task.channelType === 'voice' && task.status !== 'wrapping') {
-        flex.Actions.invokeAction('HangupCall', { sid, task });
+    const onCompleteTask = async (sid, task) => {
+      if (task.status !== 'wrapping') {
+        if (task.channelType === 'voice') {
+          await flex.Actions.invokeAction('HangupCall', { sid, task });
+        } else {
+          await flex.Actions.invokeAction('WrapupTask', { sid, task });
+        }
       }
       flex.Actions.invokeAction('CompleteTask', { sid, task });
     };
@@ -65,6 +69,14 @@ export default class HrmFormPlugin extends FlexPlugin {
     flex.Actions.addListener('afterCompleteTask', payload => {
       manager.store.dispatch(Actions.removeContactState(payload.task.taskSid));
     });
+
+    const saveEndMillis = (payload, original) => {
+      manager.store.dispatch(Actions.saveEndMillis(payload.task.taskSid));
+      original(payload);
+    };
+
+    flex.Actions.replaceAction('HangupCall', saveEndMillis);
+    flex.Actions.replaceAction('WrapupTask', saveEndMillis);
   }
 
   /**
