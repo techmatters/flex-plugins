@@ -149,7 +149,7 @@ export function reduce(state = initialState, action) {
         ...state,
         tasks: {
           ...state.tasks,
-          [action.taskId]: createBlankForm(), // taskInitialStateFactory()
+          [action.taskId]: createBlankForm(),
         },
       };
     }
