@@ -16,7 +16,7 @@ import { taskType } from '../types';
 // VisibleForTesting
 export function transformForm(form) {
   const newForm = {};
-  const filterableFields = ['type', 'validation', 'error', 'touched'];
+  const filterableFields = ['type', 'validation', 'error', 'touched', 'metadata'];
   Object.keys(form)
     .filter(key => !filterableFields.includes(key))
     .forEach(key => {
@@ -60,6 +60,13 @@ function getNumberFromTask(task) {
 export function saveToHrm(task, form, abortFunction, hrmBaseUrl, workerSid, helpline) {
   // if we got this far, we assume the form is valid and ready to submit
 
+  // metrics will be invalid if page was reloaded (form recreated and thus initial information will be lost)
+  const { startMillis, endMillis, recreated } = form.metadata;
+  const milisecondsElapsed = endMillis - startMillis;
+  const secondsElapsed = Math.floor(milisecondsElapsed / 1000);
+  const validMetrics = !recreated;
+  const conversationDuration = validMetrics ? secondsElapsed : null;
+
   /*
    * We do a transform from the original and then add things.
    * Not sure if we should drop that all into one function or not.
@@ -74,6 +81,7 @@ export function saveToHrm(task, form, abortFunction, hrmBaseUrl, workerSid, help
     channel: task.channelType,
     number: getNumberFromTask(task),
     helpline,
+    conversationDuration,
   };
   console.log(`Using base url: ${hrmBaseUrl}`);
 

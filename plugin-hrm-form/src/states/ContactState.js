@@ -1,11 +1,12 @@
 import { saveToHrm } from '../components/HrmFormController';
-import { generateInitialFormState } from './ContactFormStateFactory';
+import { createBlankForm, recreateBlankForm } from './ContactFormStateFactory';
 import {
   HANDLE_BLUR,
   HANDLE_CHANGE,
   HANDLE_FOCUS,
   INITIALIZE_CONTACT_STATE,
   REMOVE_CONTACT_STATE,
+  SAVE_END_MILLIS,
   SAVE_CONTACT_STATE,
   HANDLE_SELECT_SEARCH_RESULT,
 } from './ActionTypes';
@@ -44,6 +45,9 @@ export class Actions {
   });
 
   static removeContactState = taskId => ({ type: REMOVE_CONTACT_STATE, taskId });
+
+  // records the end time (in milliseconds)
+  static saveEndMillis = taskId => ({ type: SAVE_END_MILLIS, taskId });
 }
 
 // Will replace the below when we move over to field objects
@@ -81,7 +85,7 @@ export function reduce(state = initialState, action) {
         currentForm = state.tasks[action.taskId];
       } else {
         // currentForm = taskInitialStateFactory();
-        currentForm = generateInitialFormState();
+        currentForm = recreateBlankForm();
         console.log(`Had to recreate state for taskId ${action.taskId}`);
       }
       return {
@@ -113,7 +117,7 @@ export function reduce(state = initialState, action) {
         currentForm = state.tasks[action.taskId];
       } else {
         // currentForm = taskInitialStateFactory();
-        currentForm = generateInitialFormState();
+        currentForm = recreateBlankForm();
         console.log(`Had to recreate state for taskId ${action.taskId}`);
       }
       const newForm = editNestedField(currentForm, action.parents, action.name, { value: action.value });
@@ -147,7 +151,21 @@ export function reduce(state = initialState, action) {
         ...state,
         tasks: {
           ...state.tasks,
-          [action.taskId]: generateInitialFormState(), // taskInitialStateFactory()
+          [action.taskId]: createBlankForm(),
+        },
+      };
+    }
+
+    case SAVE_END_MILLIS: {
+      const taskToEnd = state.tasks[action.taskId];
+      const { metadata } = taskToEnd;
+      const endedTask = { ...taskToEnd, metadata: { ...metadata, endMillis: new Date().getTime() } };
+
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: endedTask,
         },
       };
     }
