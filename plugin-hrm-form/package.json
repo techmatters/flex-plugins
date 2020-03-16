@@ -14,23 +14,29 @@
     "list": "flex-plugin list",
     "clear": "flex-plugin clear",
     "remove": "flex-plugin remove",
-    "eject": "flex-plugin eject"
+    "eject": "flex-plugin eject",
+    "lint": "eslint --ext js --ext jsx src/",
+    "lint:fix": "npm run lint -- --fix"
   },
   "dependencies": {
     "craco-config-flex-plugin": "^3.0.4",
     "flex-plugin": "^3.0.0",
     "flex-plugin-scripts": "^3.0.4",
     "lodash": "^4.17.15",
+    "prop-types": "^15.7.2",
     "react": "16.5.2",
     "react-dom": "16.5.2",
-    "react-scripts": "3.2.0",
+    "react-scripts": "^3.4.0",
     "react-test-renderer": "16.5.2"
   },
   "devDependencies": {
     "@twilio/flex-ui": "1.14.1",
+    "babel-eslint": "^10.0.3",
     "babel-polyfill": "^6.26.0",
     "enzyme": "^3.10.0",
-    "enzyme-adapter-react-16": "^1.14.0"
+    "enzyme-adapter-react-16": "^1.14.0",
+    "eslint": "^6.8.0",
+    "eslint-config-twilio-react": "^1.20.2"
   },
   "browserslist": {
     "production": [

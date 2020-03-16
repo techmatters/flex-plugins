@@ -5,7 +5,7 @@ import RecentContactsView from './components/RecentContactsView';
 import RecentContactsSidebarButton from './components/RecentContactsSidebarButton';
 
 const PLUGIN_NAME = 'ShowRecentContactsPlugin';
-const PLUGIN_VERSION = '0.3.0';
+const PLUGIN_VERSION = '0.3.5';
 
 export default class ShowRecentContactsPlugin extends FlexPlugin {
   constructor() {

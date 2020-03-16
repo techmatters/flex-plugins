@@ -1,27 +1,29 @@
-import React from "react";
-import { withTaskContext } from "@twilio/flex-ui";
+import React from 'react';
+import { withTaskContext } from '@twilio/flex-ui';
+
+import { taskType } from '../types';
 
 const wrapperStyle = {
-  position: "absolute",
-	margin: "0",
-	padding: "0",
-	border: "0px",
-	overflow: "hidden",
-	height: "100%",
-	width: "100%"
+  position: 'absolute',
+  margin: '0',
+  padding: '0',
+  border: '0px',
+  overflow: 'hidden',
+  height: '100%',
+  width: '100%',
 };
 
-const NoTaskView = (props) => {
-    let { task } = props;
+const NoTaskView = props => {
+  const { task } = props;
 
-    let show = task && task.taskSid ? "hidden" : "visible";
+  const show = task && task.taskSid ? 'hidden' : 'visible';
 
-    return (
-        <div
-            style={{ ...wrapperStyle, visibility: show }}>
-            No Task Selected
-        </div>
-    )
-}
+  return <div style={{ ...wrapperStyle, visibility: show }}>No Task Selected</div>;
+};
+
+NoTaskView.displayName = 'NoTaskView';
+NoTaskView.propTypes = {
+  task: taskType.isRequired,
+};
 
 export default withTaskContext(NoTaskView);

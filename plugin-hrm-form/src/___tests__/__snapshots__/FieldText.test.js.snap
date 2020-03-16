@@ -1,0 +1,79 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`render FieldText with errors 1`] = `
+<TextField>
+  <StyledLabel
+    htmlFor="CallerInformation_FirstName"
+  >
+    First name
+    <span
+      style={
+        Object {
+          "color": "red",
+        }
+      }
+    >
+      *
+    </span>
+  </StyledLabel>
+  <StyledInput
+    error={true}
+    id="CallerInformation_FirstName"
+    multiline={false}
+    onBlur={[MockFunction]}
+    onChange={[MockFunction]}
+    onFocus={[MockFunction]}
+    value=""
+  />
+  <ErrorText>
+    This field is required
+  </ErrorText>
+</TextField>
+`;
+
+exports[`render basic FieldText 1`] = `
+<TextField>
+  <StyledLabel
+    htmlFor="CallerInformation_FirstName"
+  >
+    First name
+  </StyledLabel>
+  <StyledInput
+    error={false}
+    id="CallerInformation_FirstName"
+    multiline={false}
+    onBlur={[MockFunction]}
+    onChange={[MockFunction]}
+    onFocus={[MockFunction]}
+    value=""
+  />
+</TextField>
+`;
+
+exports[`render required FieldText 1`] = `
+<TextField>
+  <StyledLabel
+    htmlFor="CallerInformation_FirstName"
+  >
+    First name
+    <span
+      style={
+        Object {
+          "color": "red",
+        }
+      }
+    >
+      *
+    </span>
+  </StyledLabel>
+  <StyledInput
+    error={false}
+    id="CallerInformation_FirstName"
+    multiline={false}
+    onBlur={[MockFunction]}
+    onChange={[MockFunction]}
+    onFocus={[MockFunction]}
+    value=""
+  />
+</TextField>
+`;

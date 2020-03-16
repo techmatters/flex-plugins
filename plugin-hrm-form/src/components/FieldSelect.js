@@ -1,56 +1,61 @@
 import React from 'react';
-import { ErrorText,
-         StyledLabel,
-         StyledMenuItem,
-         StyledSelect,
-         TextField
-} from '../Styles/HrmStyles';
-import { ValidationType } from '../states/ContactFormStateFactory';
+import PropTypes from 'prop-types';
 
-// The way we're handling errors is pretty terrible, but passing in error={true}
-// isn't working
-// id = id for form and for
-// label = what the user sees
-// name = the name of the field
-// store = the object in the redux store
-// options = an array of options
-const requiredAsterisk = store => {
-  if (store.validation && store.validation.includes(ValidationType.REQUIRED)) {
-    return (
-      <span style={{color: 'red'}}>*</span>
-    );
-  }
-  return '';
-}
+import { ErrorText, StyledLabel, StyledMenuItem, StyledSelect, TextField } from '../Styles/HrmStyles';
+import RequiredAsterisk from './RequiredAsterisk';
+import { fieldType } from '../types';
+
+/*
+ * The way we're handling errors is pretty terrible, but passing in error={true}
+ * isn't working
+ * id = id for form and for
+ * label = what the user sees
+ * name = the name of the field
+ * field = the object in the redux store
+ * options = an array of options
+ */
 
 const renderOptions = options => {
-  return options.map(option => (<StyledMenuItem key={option} value={option}>{option}</StyledMenuItem>));
-}
+  return options.map(option => (
+    <StyledMenuItem key={option} value={option}>
+      {option}
+    </StyledMenuItem>
+  ));
+};
 
-const FieldSelect = (props) => {
-  return (
-    <TextField>
-      <StyledLabel htmlFor={props.id}>{props.label}{requiredAsterisk(props.store)}</StyledLabel>
-      <StyledSelect
-        name={props.name}
-        id={props.id}
-        value={props.store.value}
-        style={props.store.error ?
-                {border: '1px solid #CB3232', boxShadow: '0px 0px 0px 2px rgba(234,16,16,0.2)'} : undefined}
-        onBlur={() => props.handleBlur()}
-        onChange={(e) =>
-          props.handleChange(e)}
-        onFocus={() => 
-          props.handleFocus()}
-      >
-        {renderOptions(props.options)}
-      </StyledSelect>
-      {props.store.error ?
-        <ErrorText>{props.store.error}</ErrorText> :
-        ''
+const FieldSelect = ({ id, label, name, field, options, handleBlur, handleChange, handleFocus }) => (
+  <TextField>
+    <StyledLabel htmlFor={id}>
+      {label}
+      <RequiredAsterisk field={field} />
+    </StyledLabel>
+    <StyledSelect
+      name={name}
+      id={id}
+      value={field.value}
+      style={
+        field.error ? { border: '1px solid #CB3232', boxShadow: '0px 0px 0px 2px rgba(234,16,16,0.2)' } : undefined
       }
-    </TextField>
-  );
+      onBlur={handleBlur}
+      onChange={handleChange}
+      onFocus={handleFocus}
+    >
+      {renderOptions(options)}
+    </StyledSelect>
+    {field.error && <ErrorText>{field.error}</ErrorText>}
+  </TextField>
+);
+
+FieldSelect.displayName = 'FieldSelect';
+FieldSelect.propTypes = {
+  id: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  field: fieldType.isRequired,
+  options: PropTypes.arrayOf(PropTypes.string).isRequired,
+  handleBlur: PropTypes.func.isRequired,
+  handleChange: PropTypes.func.isRequired,
+  handleFocus: PropTypes.func.isRequired,
 };
 
 export default FieldSelect;

@@ -7,7 +7,7 @@ import reducers, { namespace } from './states';
 import { Actions } from './states/ContactState';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
-const PLUGIN_VERSION = '0.3.0';
+const PLUGIN_VERSION = '0.3.6';
 
 export default class HrmFormPlugin extends FlexPlugin {
   constructor() {
@@ -25,45 +25,58 @@ export default class HrmFormPlugin extends FlexPlugin {
     console.log(`Welcome to ${PLUGIN_NAME} Version ${PLUGIN_VERSION}`);
     this.registerReducers(manager);
 
-    const onCompleteTask = (sid, task) => {
-      if (task.channelType === 'voice' && task.status !== 'wrapping') {
-        flex.Actions.invokeAction("HangupCall", { sid, task } );
+    const onCompleteTask = async (sid, task) => {
+      if (task.status !== 'wrapping') {
+        if (task.channelType === 'voice') {
+          await flex.Actions.invokeAction('HangupCall', { sid, task });
+        } else {
+          await flex.Actions.invokeAction('WrapupTask', { sid, task });
+        }
       }
-      flex.Actions.invokeAction("CompleteTask", { sid, task } );
-    }
+      flex.Actions.invokeAction('CompleteTask', { sid, task });
+    };
 
     const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
+    const workerSid = manager.workerClient.sid;
+    const { helpline } = manager.workerClient.attributes;
+
     // TODO(nick): Eventually remove this log line or set to debug
-    console.log("HRM URL: " + hrmBaseUrl);
+    console.log(`HRM URL: ${hrmBaseUrl}`);
     if (hrmBaseUrl === undefined) {
-      console.error("HRM base URL not defined, you must provide this to save program data");
+      console.error('HRM base URL not defined, you must provide this to save program data');
     }
 
     // TODO(nick): Can we avoid passing down the task prop, maybe using context?
     const options = { sortOrder: -1 };
-    flex.CRMContainer
-      .Content
-      .replace(<CustomCRMContainer
-                  key="custom-crm-container"
-                  handleCompleteTask={onCompleteTask}
-               />, options);
+    flex.CRMContainer.Content.replace(
+      <CustomCRMContainer key="custom-crm-container" handleCompleteTask={onCompleteTask} />,
+      options,
+    );
 
     // Must use submit buttons in CRM container to complete task
     flex.TaskCanvasHeader.Content.remove('actions', {
-      if: props => props.task && props.task.status === 'wrapping'
+      if: props => props.task && props.task.status === 'wrapping',
     });
 
-    flex.Actions.addListener("beforeAcceptTask", (payload) => {
+    flex.Actions.addListener('beforeAcceptTask', payload => {
       manager.store.dispatch(Actions.initializeContactState(payload.task.taskSid));
     });
 
-    flex.Actions.addListener("beforeCompleteTask", (payload, abortFunction) => {
-      manager.store.dispatch(Actions.saveContactState(payload.task, abortFunction, hrmBaseUrl));
+    flex.Actions.addListener('beforeCompleteTask', (payload, abortFunction) => {
+      manager.store.dispatch(Actions.saveContactState(payload.task, abortFunction, hrmBaseUrl, workerSid, helpline));
     });
 
-    flex.Actions.addListener("afterCompleteTask", (payload) => {
+    flex.Actions.addListener('afterCompleteTask', payload => {
       manager.store.dispatch(Actions.removeContactState(payload.task.taskSid));
     });
+
+    const saveEndMillis = (payload, original) => {
+      manager.store.dispatch(Actions.saveEndMillis(payload.task.taskSid));
+      original(payload);
+    };
+
+    flex.Actions.replaceAction('HangupCall', saveEndMillis);
+    flex.Actions.replaceAction('WrapupTask', saveEndMillis);
   }
 
   /**

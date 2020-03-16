@@ -61,6 +61,7 @@ typings/
 .next
 
 # Flex related ignore
+pluginsService.js
 appConfig.js
 build/
 
