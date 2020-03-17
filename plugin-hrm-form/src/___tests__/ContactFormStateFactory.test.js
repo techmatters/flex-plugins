@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import { FieldType, generateInitialFormState, ValidationType } from '../states/ContactFormStateFactory';
-=======
 import { omit } from 'lodash';
->>>>>>> origin/staging
 
 import { FieldType, createBlankForm, ValidationType } from '../states/ContactFormStateFactory';
 

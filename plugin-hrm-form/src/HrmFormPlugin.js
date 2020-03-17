@@ -27,8 +27,7 @@ export default class HrmFormPlugin extends FlexPlugin {
 
     // TODO: actually add this to the configuration.  Just don't want it hard-coded in a public repo.
     const functionsBaseUrl = manager.serviceConfiguration.attributes.functions_base_url;
-    this.callTwilioFunc(functionsBaseUrl)
-      .then(data => console.log(JSON.stringify(data)));
+    this.callTwilioFunc(functionsBaseUrl).then(data => console.log(JSON.stringify(data)));
 
     const onCompleteTask = async (sid, task) => {
       if (task.status !== 'wrapping') {
@@ -93,13 +92,13 @@ export default class HrmFormPlugin extends FlexPlugin {
       method: 'POST',
       body: new URLSearchParams(body),
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-      }
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      },
     };
 
     // Make the network request using the Fetch API.
     const resp = await fetch(`${functionsBaseUrl}/cumulative`, options);
-    return await resp.json();
+    return resp.json();
   }
 
   /**
