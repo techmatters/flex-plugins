@@ -29,6 +29,7 @@ class TaskView extends Component {
     handleCallTypeButtonClick: PropTypes.func.isRequired,
     handleSubmit: PropTypes.func.isRequired,
     handleFocus: PropTypes.func.isRequired,
+    handleSelectSearchResult: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
@@ -55,6 +56,7 @@ class TaskView extends Component {
           handleCallTypeButtonClick={this.props.handleCallTypeButtonClick}
           handleSubmit={this.props.handleSubmit}
           handleFocus={this.props.handleFocus}
+          handleSelectSearchResult={this.props.handleSelectSearchResult}
         />
       </div>
     );

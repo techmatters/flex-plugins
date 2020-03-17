@@ -1,5 +1,5 @@
 import styled, { keyframes } from 'react-emotion';
-import { Input, Select, MenuItem } from '@material-ui/core';
+import { Input, Select, MenuItem, TableCell } from '@material-ui/core';
 import { Button, getBackgroundWithHoverCSS } from '@twilio/flex-ui';
 
 export const Container = styled('div')`
@@ -231,4 +231,24 @@ export const CategoryCheckboxField = styled('div')`
   flex-direction: row;
   margin: 8px 0;
   width: 160px;
+`;
+
+export const StyledTableCell = styled(TableCell)`
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+`;
+
+export const SearchFields = styled('div')`
+  display: flex;
+  flex-wrap: wrap;
+  div {
+    max-width: 160px;
+  }
+`;
+
+export const StyledSearchButton = styled(StyledNextStepButton)`
+  width: 100px;
+  margin-bottom: 8px;
+  margin-top: auto;
 `;

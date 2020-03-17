@@ -8,8 +8,10 @@ import {
   REMOVE_CONTACT_STATE,
   SAVE_END_MILLIS,
   SAVE_CONTACT_STATE,
+  HANDLE_SELECT_SEARCH_RESULT,
 } from './ActionTypes';
 import { countSelectedCategories } from './ValidationRules';
+import { copySearchResultIntoTask } from './SearchContact';
 
 const initialState = {
   tasks: {},
@@ -188,6 +190,19 @@ export function reduce(state = initialState, action) {
         tasks: {
           ...state.tasks,
           [action.taskId]: undefined,
+        },
+      };
+    }
+
+    case HANDLE_SELECT_SEARCH_RESULT: {
+      const currentTask = state.tasks[action.taskId];
+      const task = copySearchResultIntoTask(currentTask, action.searchResult);
+
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: task,
         },
       };
     }
