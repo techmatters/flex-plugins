@@ -35,11 +35,10 @@ export class Actions {
   static initializeContactState = taskId => ({ type: INITIALIZE_CONTACT_STATE, taskId });
 
   // I'm really not sure if this should live here, but it seems like we need to come through the store
-  static saveContactState = (task, abortFunction, hrmBaseUrl, workerSid, helpline) => ({
+  static saveContactState = (task, abortFunction, workerSid, helpline) => ({
     type: SAVE_CONTACT_STATE,
     task,
     abortFunction,
-    hrmBaseUrl,
     workerSid,
     helpline,
   });
@@ -172,14 +171,7 @@ export function reduce(state = initialState, action) {
 
     case SAVE_CONTACT_STATE: {
       // TODO(nick): Make this a Promise instead?
-      saveToHrm(
-        action.task,
-        state.tasks[action.task.taskSid],
-        action.abortFunction,
-        action.hrmBaseUrl,
-        action.workerSid,
-        action.helpline,
-      );
+      saveToHrm(action.task, state.tasks[action.task.taskSid], action.abortFunction, action.workerSid, action.helpline);
       return state;
     }
 

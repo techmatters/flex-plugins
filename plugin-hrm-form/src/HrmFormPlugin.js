@@ -5,6 +5,7 @@ import { FlexPlugin } from 'flex-plugin';
 import CustomCRMContainer from './components/CustomCRMContainer';
 import reducers, { namespace } from './states';
 import { Actions } from './states/ContactState';
+import hrmBaseUrl from './HrmBaseUrl';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 const PLUGIN_VERSION = '0.3.6';
@@ -36,7 +37,6 @@ export default class HrmFormPlugin extends FlexPlugin {
       flex.Actions.invokeAction('CompleteTask', { sid, task });
     };
 
-    const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
     const workerSid = manager.workerClient.sid;
     const { helpline } = manager.workerClient.attributes;
 

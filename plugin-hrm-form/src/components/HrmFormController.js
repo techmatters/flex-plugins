@@ -12,6 +12,7 @@ import { handleSelectSearchResult } from '../states/SearchContact';
 import secret from '../private/secret';
 import { FieldType } from '../states/ContactFormStateFactory';
 import { taskType } from '../types';
+import hrmBaseUrl from '../HrmBaseUrl';
 
 // VisibleForTesting
 export function transformForm(form) {
@@ -57,7 +58,7 @@ function getNumberFromTask(task) {
 }
 
 // should this be a static method on the class or separate.  Or should it even be here at all?
-export function saveToHrm(task, form, abortFunction, hrmBaseUrl, workerSid, helpline) {
+export function saveToHrm(task, form, abortFunction, workerSid, helpline) {
   // if we got this far, we assume the form is valid and ready to submit
 
   // metrics will be invalid if page was reloaded (form recreated and thus initial information will be lost)
