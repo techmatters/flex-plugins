@@ -7,7 +7,7 @@ import reducers, { namespace } from './states';
 import { Actions } from './states/ContactState';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
-const PLUGIN_VERSION = '0.3.4';
+const PLUGIN_VERSION = '0.3.6';
 
 export default class HrmFormPlugin extends FlexPlugin {
   constructor() {
@@ -42,6 +42,8 @@ export default class HrmFormPlugin extends FlexPlugin {
     };
 
     const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
+    const workerSid = manager.workerClient.sid;
+    const { helpline } = manager.workerClient.attributes;
 
     // TODO(nick): Eventually remove this log line or set to debug
     console.log(`HRM URL: ${hrmBaseUrl}`);
@@ -65,29 +67,21 @@ export default class HrmFormPlugin extends FlexPlugin {
       manager.store.dispatch(Actions.initializeContactState(payload.task.taskSid));
     });
 
-    const exitMsg =
-      'Thank you for contacting the helpline. The counselor has left the chat but ' +
-      "don't hesitate to reach out again if you need help.";
-    const sendGoodbyeMessage = async (payload, original) => {
-      if (payload.task.taskChannelUniqueName === 'chat') {
-        await flex.Actions.invokeAction('SendMessage', {
-          body: exitMsg,
-          channelSid: payload.task.attributes.channelSid,
-        });
-        original(payload);
-      } else {
-        original(payload);
-      }
-    };
-    flex.Actions.replaceAction('WrapupTask', sendGoodbyeMessage);
-
     flex.Actions.addListener('beforeCompleteTask', (payload, abortFunction) => {
-      manager.store.dispatch(Actions.saveContactState(payload.task, abortFunction, hrmBaseUrl));
+      manager.store.dispatch(Actions.saveContactState(payload.task, abortFunction, hrmBaseUrl, workerSid, helpline));
     });
 
     flex.Actions.addListener('afterCompleteTask', payload => {
       manager.store.dispatch(Actions.removeContactState(payload.task.taskSid));
     });
+
+    const saveEndMillis = (payload, original) => {
+      manager.store.dispatch(Actions.saveEndMillis(payload.task.taskSid));
+      original(payload);
+    };
+
+    flex.Actions.replaceAction('HangupCall', saveEndMillis);
+    flex.Actions.replaceAction('WrapupTask', saveEndMillis);
   }
 
   async callTwilioFunc(functionsBaseUrl) {

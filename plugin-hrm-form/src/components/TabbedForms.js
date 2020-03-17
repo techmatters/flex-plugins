@@ -23,6 +23,7 @@ import FieldSelect from './FieldSelect';
 import FieldText from './FieldText';
 import BranchingFormIssueCategory from './BranchingFormIssueCategory';
 import { formType, taskType } from '../types';
+import Search from './Search';
 
 class TabbedForms extends React.PureComponent {
   static displayName = 'TabbedForms';
@@ -36,10 +37,11 @@ class TabbedForms extends React.PureComponent {
     handleCallTypeButtonClick: PropTypes.func.isRequired,
     handleSubmit: PropTypes.func.isRequired,
     handleFocus: PropTypes.func.isRequired,
+    handleSelectSearchResult: PropTypes.func.isRequired,
   };
 
   state = {
-    tab: 0,
+    tab: 1,
   };
 
   tabChange = (event, tab) => this.setState({ tab });
@@ -55,136 +57,152 @@ class TabbedForms extends React.PureComponent {
     handleFocus: this.curriedHandleFocus(parents, name),
   });
 
+  handleSelectSearchResult = (searchResult, taskId) => {
+    this.props.handleSelectSearchResult(searchResult, taskId);
+
+    // For now, redirect to childInformation Tab (will be changed in the future)
+    const isCallerType = this.props.form.callType.value === callTypes.caller;
+    const tab = isCallerType ? 2 : 1;
+    this.setState({ tab });
+  };
+
   render() {
     const taskId = this.props.task.taskSid;
+    const isCallerType = this.props.form.callType.value === callTypes.caller;
 
-    const body = new Array(3);
+    const body = [];
 
-    // Caller Information
-    body[0] = (
-      <Container>
-        <NameFields>
-          <FieldText
-            id="CallerInformation_FirstName"
-            label="First name"
-            field={this.props.form.callerInformation.name.firstName}
-            {...this.defaultEventHandlers(['callerInformation', 'name'], 'firstName')}
-          />
-
-          <FieldText
-            id="CallerInformation_LastName"
-            label="Last name"
-            field={this.props.form.callerInformation.name.lastName}
-            {...this.defaultEventHandlers(['callerInformation', 'name'], 'lastName')}
-          />
-        </NameFields>
-
-        <TwoColumnLayout>
-          <ColumnarBlock>
-            <FieldSelect
-              field={this.props.form.callerInformation.relationshipToChild}
-              id="CallerInformation_RelationshipToChild"
-              name="relationshipToChild"
-              label="Relationship to Child"
-              options={['Friend', 'Neighbor', 'Parent', 'Grandparent', 'Teacher', 'Other']}
-              {...this.defaultEventHandlers(['callerInformation'], 'relationshipToChild')}
-            />
-
-            <FieldSelect
-              field={this.props.form.callerInformation.gender}
-              id="CallerInformation_Gender"
-              name="gender"
-              label="Gender"
-              options={['Male', 'Female', 'Other', 'Unknown']}
-              {...this.defaultEventHandlers(['callerInformation'], 'gender')}
-            />
-
-            <FieldSelect
-              field={this.props.form.callerInformation.age}
-              id="CallerInformation_Age"
-              name="age"
-              label="Age"
-              options={['0-3', '4-6', '7-9', '10-12', '13-15', '16-17', '18-25', '>25']}
-              {...this.defaultEventHandlers(['callerInformation'], 'age')}
-            />
-
-            <FieldSelect
-              field={this.props.form.callerInformation.language}
-              id="CallerInformation_Language"
-              name="language"
-              label="Language"
-              options={['Language 1', 'Language 2', 'Language 3']}
-              {...this.defaultEventHandlers(['callerInformation'], 'language')}
-            />
-
-            <FieldSelect
-              field={this.props.form.callerInformation.nationality}
-              id="CallerInformation_Nationality"
-              name="nationality"
-              label="Nationality"
-              options={['Nationality 1', 'Nationality 2', 'Nationality 3']}
-              {...this.defaultEventHandlers(['callerInformation'], 'nationality')}
-            />
-
-            <FieldSelect
-              field={this.props.form.callerInformation.ethnicity}
-              id="CallerInformation_Ethnicity"
-              name="ethnicity"
-              label="Ethnicity"
-              options={['Ethnicity 1', 'Ethnicity 2', 'Ethnicity 3']}
-              {...this.defaultEventHandlers(['callerInformation'], 'ethnicity')}
-            />
-          </ColumnarBlock>
-
-          <ColumnarBlock>
-            <FieldText
-              id="CallerInformation_StreetAddress"
-              label="Street address"
-              field={this.props.form.callerInformation.location.streetAddress}
-              {...this.defaultEventHandlers(['callerInformation', 'location'], 'streetAddress')}
-            />
-
-            <FieldText
-              id="CallerInformation_City"
-              label="City"
-              field={this.props.form.callerInformation.location.city}
-              {...this.defaultEventHandlers(['callerInformation', 'location'], 'city')}
-            />
-
-            <FieldText
-              id="CallerInformation_State/Country"
-              label="State/County"
-              field={this.props.form.callerInformation.location.stateOrCounty}
-              {...this.defaultEventHandlers(['callerInformation', 'location'], 'stateOrCounty')}
-            />
-
-            <FieldText
-              id="CallerInformation_PostalCode"
-              label="Postal code"
-              field={this.props.form.callerInformation.location.postalCode}
-              {...this.defaultEventHandlers(['callerInformation', 'location'], 'postalCode')}
-            />
-
-            <FieldText
-              id="CallerInformation_Phone#1"
-              label="Phone #1"
-              field={this.props.form.callerInformation.location.phone1}
-              {...this.defaultEventHandlers(['callerInformation', 'location'], 'phone1')}
-            />
-
-            <FieldText
-              id="CallerInformation_Phone#2"
-              label="Phone #2"
-              field={this.props.form.callerInformation.location.phone2}
-              {...this.defaultEventHandlers(['callerInformation', 'location'], 'phone2')}
-            />
-          </ColumnarBlock>
-        </TwoColumnLayout>
-      </Container>
+    body.push(
+      <Search handleSelectSearchResult={searchResult => this.handleSelectSearchResult(searchResult, taskId)} />,
     );
 
+    // Caller Information
+    if (isCallerType) {
+      body.push(
+        <Container>
+          <NameFields>
+            <FieldText
+              id="CallerInformation_FirstName"
+              label="First name"
+              field={this.props.form.callerInformation.name.firstName}
+              {...this.defaultEventHandlers(['callerInformation', 'name'], 'firstName')}
+            />
+
+            <FieldText
+              id="CallerInformation_LastName"
+              label="Last name"
+              field={this.props.form.callerInformation.name.lastName}
+              {...this.defaultEventHandlers(['callerInformation', 'name'], 'lastName')}
+            />
+          </NameFields>
+
+          <TwoColumnLayout>
+            <ColumnarBlock>
+              <FieldSelect
+                field={this.props.form.callerInformation.relationshipToChild}
+                id="CallerInformation_RelationshipToChild"
+                name="relationshipToChild"
+                label="Relationship to Child"
+                options={['Friend', 'Neighbor', 'Parent', 'Grandparent', 'Teacher', 'Other']}
+                {...this.defaultEventHandlers(['callerInformation'], 'relationshipToChild')}
+              />
+
+              <FieldSelect
+                field={this.props.form.callerInformation.gender}
+                id="CallerInformation_Gender"
+                name="gender"
+                label="Gender"
+                options={['Male', 'Female', 'Other', 'Unknown']}
+                {...this.defaultEventHandlers(['callerInformation'], 'gender')}
+              />
+
+              <FieldSelect
+                field={this.props.form.callerInformation.age}
+                id="CallerInformation_Age"
+                name="age"
+                label="Age"
+                options={['0-3', '4-6', '7-9', '10-12', '13-15', '16-17', '18-25', '>25']}
+                {...this.defaultEventHandlers(['callerInformation'], 'age')}
+              />
+
+              <FieldSelect
+                field={this.props.form.callerInformation.language}
+                id="CallerInformation_Language"
+                name="language"
+                label="Language"
+                options={['Language 1', 'Language 2', 'Language 3']}
+                {...this.defaultEventHandlers(['callerInformation'], 'language')}
+              />
+
+              <FieldSelect
+                field={this.props.form.callerInformation.nationality}
+                id="CallerInformation_Nationality"
+                name="nationality"
+                label="Nationality"
+                options={['Nationality 1', 'Nationality 2', 'Nationality 3']}
+                {...this.defaultEventHandlers(['callerInformation'], 'nationality')}
+              />
+
+              <FieldSelect
+                field={this.props.form.callerInformation.ethnicity}
+                id="CallerInformation_Ethnicity"
+                name="ethnicity"
+                label="Ethnicity"
+                options={['Ethnicity 1', 'Ethnicity 2', 'Ethnicity 3']}
+                {...this.defaultEventHandlers(['callerInformation'], 'ethnicity')}
+              />
+            </ColumnarBlock>
+
+            <ColumnarBlock>
+              <FieldText
+                id="CallerInformation_StreetAddress"
+                label="Street address"
+                field={this.props.form.callerInformation.location.streetAddress}
+                {...this.defaultEventHandlers(['callerInformation', 'location'], 'streetAddress')}
+              />
+
+              <FieldText
+                id="CallerInformation_City"
+                label="City"
+                field={this.props.form.callerInformation.location.city}
+                {...this.defaultEventHandlers(['callerInformation', 'location'], 'city')}
+              />
+
+              <FieldText
+                id="CallerInformation_State/Country"
+                label="State/County"
+                field={this.props.form.callerInformation.location.stateOrCounty}
+                {...this.defaultEventHandlers(['callerInformation', 'location'], 'stateOrCounty')}
+              />
+
+              <FieldText
+                id="CallerInformation_PostalCode"
+                label="Postal code"
+                field={this.props.form.callerInformation.location.postalCode}
+                {...this.defaultEventHandlers(['callerInformation', 'location'], 'postalCode')}
+              />
+
+              <FieldText
+                id="CallerInformation_Phone#1"
+                label="Phone #1"
+                field={this.props.form.callerInformation.location.phone1}
+                {...this.defaultEventHandlers(['callerInformation', 'location'], 'phone1')}
+              />
+
+              <FieldText
+                id="CallerInformation_Phone#2"
+                label="Phone #2"
+                field={this.props.form.callerInformation.location.phone2}
+                {...this.defaultEventHandlers(['callerInformation', 'location'], 'phone2')}
+              />
+            </ColumnarBlock>
+          </TwoColumnLayout>
+        </Container>,
+      );
+    }
+
     // Child Information
-    body[1] = (
+    body.push(
       <Container>
         <NameFields>
           <FieldText
@@ -361,11 +379,11 @@ class TabbedForms extends React.PureComponent {
             />
           </ColumnarBlock>
         </TwoColumnLayout>
-      </Container>
+      </Container>,
     );
 
     // Issue Categorization
-    body[2] = (
+    body.push(
       <Container style={{ display: 'flex', flexDirection: 'column' }}>
         {this.props.form.caseInformation.categories.error ? (
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', marginBottom: '20px' }}>
@@ -414,7 +432,7 @@ class TabbedForms extends React.PureComponent {
             form={this.props.form}
           />
         </div>
-      </Container>
+      </Container>,
     );
 
     /*
@@ -427,7 +445,7 @@ class TabbedForms extends React.PureComponent {
     }
 
     // Case Information
-    body[3] = (
+    body.push(
       <Container>
         <TwoColumnLayout>
           <ColumnarBlock>
@@ -562,21 +580,20 @@ class TabbedForms extends React.PureComponent {
             </CheckboxField>
           </ColumnarBlock>
         </TwoColumnLayout>
-      </Container>
+      </Container>,
     );
 
-    const tabs = [
-      decorateTab('Caller Information', this.props.form.callerInformation),
-      decorateTab('Child Information', this.props.form.childInformation),
-      decorateTab('Issue Categorization', this.props.form.caseInformation.categories),
-      <Tab key="Case Information" label="Case Information" />, // normal validate logic won't work here
-    ];
-
-    // TODO(nick): this is probably not the best way to hide the caller info tab
-    if (this.props.form.callType.value !== callTypes.caller) {
-      tabs.shift();
-      body.shift();
+    const tabs = [];
+    tabs.push(<Tab key="Search" label="Search" />);
+    if (isCallerType) {
+      tabs.push(decorateTab('Caller Information', this.props.form.callerInformation));
     }
+    tabs.push(decorateTab('Child Information', this.props.form.childInformation));
+    tabs.push(decorateTab('Issue Categorization', this.props.form.caseInformation.categories));
+    tabs.push(<Tab key="Case Information" label="Case Information" />);
+
+    const showNextButton = this.state.tab !== 0 && this.state.tab < body.length - 1;
+    const showSubmitButton = this.state.tab === body.length - 1;
 
     return (
       <>
@@ -585,19 +602,20 @@ class TabbedForms extends React.PureComponent {
             &lt; BACK
           </TransparentButton>
         </TopNav>
-        <Tabs name="tab" value={this.state.tab} onChange={this.tabChange} centered>
+        <Tabs name="tab" variant="scrollable" scrollButtons="auto" value={this.state.tab} onChange={this.tabChange}>
           {tabs}
         </Tabs>
         {body[this.state.tab]}
         <BottomButtonBar>
-          {this.state.tab < body.length - 1 ? (
+          {showNextButton && (
             <StyledNextStepButton
               roundCorners={true}
               onClick={() => this.setState(prevState => ({ tab: prevState.tab + 1 }))}
             >
               Next
             </StyledNextStepButton>
-          ) : (
+          )}
+          {showSubmitButton && (
             <StyledNextStepButton
               roundCorners={true}
               onClick={() => this.props.handleSubmit(this.props.task)}

@@ -375,8 +375,9 @@ const defaultFormDefinition = {
   },
 };
 
-export const generateInitialFormState = (formDefinition = defaultFormDefinition) => {
+const recursivelyCreateBlankForm = formDefinition => {
   const initialState = {};
+
   Object.keys(formDefinition)
     .filter(key => key !== 'type' && key !== 'validation')
     .forEach(key => {
@@ -395,7 +396,7 @@ export const generateInitialFormState = (formDefinition = defaultFormDefinition)
           break;
         case FieldType.CHECKBOX_FIELD:
           initialState[key] = {
-            ...generateInitialFormState(formDefinition[key]),
+            ...recursivelyCreateBlankForm(formDefinition[key]),
             type: formDefinition[key].type,
             touched: false,
             validation: formDefinition[key].validation === null ? null : Array.from(formDefinition[key].validation),
@@ -405,7 +406,7 @@ export const generateInitialFormState = (formDefinition = defaultFormDefinition)
         case FieldType.INTERMEDIATE:
         case FieldType.TAB:
           initialState[key] = {
-            ...generateInitialFormState(formDefinition[key]),
+            ...recursivelyCreateBlankForm(formDefinition[key]),
             type: formDefinition[key].type,
           };
           break;
@@ -425,5 +426,34 @@ export const generateInitialFormState = (formDefinition = defaultFormDefinition)
           );
       }
     });
+
   return initialState;
+};
+
+/**
+ * @param {any} formDef
+ * The form definition we want to replicate.
+ * @param {Boolean} recreated
+ * Determines if we are initializing a form or recreating it
+ * @returns {any}
+ * A clean form plus metadata about it.
+ * If the form was recreated, it won't have a "starting time".
+ */
+export const createBlankForm = (formDef = defaultFormDefinition, recreated = false) => {
+  const initialState = recursivelyCreateBlankForm(formDef);
+  const metadata = {
+    startMillis: recreated ? null : new Date().getTime(),
+    endMillis: null,
+    recreated,
+  };
+
+  const generatedForm = { ...initialState, metadata };
+
+  return generatedForm;
+};
+
+export const recreateBlankForm = () => {
+  const recreatedForm = createBlankForm(defaultFormDefinition, true);
+
+  return recreatedForm;
 };

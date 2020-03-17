@@ -8,6 +8,7 @@ import TaskView from './TaskView';
 import { namespace, contactFormsBase } from '../states';
 import { Actions } from '../states/ContactState';
 import { handleBlur, handleCategoryToggle, handleFocus, handleSubmit } from '../states/ActionCreators';
+import { handleSelectSearchResult } from '../states/SearchContact';
 import secret from '../private/secret';
 import { FieldType } from '../states/ContactFormStateFactory';
 import { taskType } from '../types';
@@ -15,7 +16,7 @@ import { taskType } from '../types';
 // VisibleForTesting
 export function transformForm(form) {
   const newForm = {};
-  const filterableFields = ['type', 'validation', 'error', 'touched'];
+  const filterableFields = ['type', 'validation', 'error', 'touched', 'metadata'];
   Object.keys(form)
     .filter(key => !filterableFields.includes(key))
     .forEach(key => {
@@ -41,9 +42,30 @@ export function transformForm(form) {
   return newForm;
 }
 
+function getNumberFromTask(task) {
+  let number;
+
+  if (task.channelType === 'facebook') {
+    number = task.defaultFrom.replace('messenger:', '');
+  } else if (task.channelType === 'whatsapp') {
+    number = task.defaultFrom.replace('whatsapp:', '');
+  } else {
+    number = task.defaultFrom;
+  }
+
+  return number;
+}
+
 // should this be a static method on the class or separate.  Or should it even be here at all?
-export function saveToHrm(task, form, abortFunction, hrmBaseUrl) {
+export function saveToHrm(task, form, abortFunction, hrmBaseUrl, workerSid, helpline) {
   // if we got this far, we assume the form is valid and ready to submit
+
+  // metrics will be invalid if page was reloaded (form recreated and thus initial information will be lost)
+  const { startMillis, endMillis, recreated } = form.metadata;
+  const milisecondsElapsed = endMillis - startMillis;
+  const secondsElapsed = Math.floor(milisecondsElapsed / 1000);
+  const validMetrics = !recreated;
+  const conversationDuration = validMetrics ? secondsElapsed : null;
 
   /*
    * We do a transform from the original and then add things.
@@ -52,28 +74,23 @@ export function saveToHrm(task, form, abortFunction, hrmBaseUrl) {
    */
   const formToSend = transformForm(form);
 
-  // Add task info
-  formToSend.channel = task.channelType;
-  formToSend.queueName = task.queueName;
-  if (task.channelType === 'facebook') {
-    formToSend.number = task.defaultFrom.replace('messenger:', '');
-  } else if (task.channelType === 'whatsapp') {
-    formToSend.number = task.defaultFrom.replace('whatsapp:', '');
-  } else {
-    formToSend.number = task.defaultFrom;
-  }
-
-  const formdata = {
+  const body = {
     form: formToSend,
+    twilioWorkerId: workerSid,
+    queueName: task.queueName,
+    channel: task.channelType,
+    number: getNumberFromTask(task),
+    helpline,
+    conversationDuration,
   };
   console.log(`Using base url: ${hrmBaseUrl}`);
 
   // print the form values to the console
-  console.log(`Sending: ${JSON.stringify(formdata)}`);
+  console.log(`Sending: ${JSON.stringify(body)}`);
   fetch(`${hrmBaseUrl}/contacts`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Basic ${btoa(secret)}` },
-    body: JSON.stringify(formdata),
+    body: JSON.stringify(body),
   })
     .then(response => {
       if (!response.ok) {
@@ -118,6 +135,7 @@ const HrmFormController = props => {
       handleCategoryToggle={handleCategoryToggle(props.form, props.handleChange)}
       handleSubmit={props.handleSubmit(props.form, props.handleCompleteTask)}
       handleFocus={props.handleFocus}
+      handleSelectSearchResult={props.handleSelectSearchResult}
     />
   );
 };
@@ -135,6 +153,7 @@ const mapDispatchToProps = dispatch => ({
   handleChange: bindActionCreators(Actions.handleChange, dispatch),
   handleFocus: handleFocus(dispatch),
   handleSubmit: handleSubmit(dispatch),
+  handleSelectSearchResult: bindActionCreators(handleSelectSearchResult, dispatch),
 });
 
 HrmFormController.displayName = 'HrmFormController';
@@ -148,6 +167,7 @@ HrmFormController.propTypes = {
   handleCompleteTask: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   handleFocus: PropTypes.func.isRequired,
+  handleSelectSearchResult: PropTypes.func.isRequired,
 };
 
 export default withTaskContext(connect(mapStateToProps, mapDispatchToProps)(HrmFormController));

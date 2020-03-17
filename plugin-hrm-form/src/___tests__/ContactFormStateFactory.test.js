@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 import { FieldType, generateInitialFormState, ValidationType } from '../states/ContactFormStateFactory';
+=======
+import { omit } from 'lodash';
+>>>>>>> origin/staging
 
-test('generateInitialFormState operates as expected', () => {
+import { FieldType, createBlankForm, ValidationType } from '../states/ContactFormStateFactory';
+
+test('createBlankForm operates as expected', () => {
   const testFormDefinition = {
     callType: {
       type: FieldType.CALL_TYPE,
@@ -221,5 +227,16 @@ test('generateInitialFormState operates as expected', () => {
       },
     },
   };
-  expect(generateInitialFormState(testFormDefinition)).toStrictEqual(expected);
+
+  // we omit metadata because we can't know the exact time of form creation (metadata.startMillis)
+  const generatedForm = createBlankForm(testFormDefinition);
+  const testForm = omit(generatedForm, 'metadata');
+  expect(testForm).toStrictEqual(expected);
+  expect(generatedForm.metadata).toEqual(
+    expect.objectContaining({
+      startMillis: expect.any(Number),
+      endMillis: null,
+      recreated: false,
+    }),
+  );
 });
