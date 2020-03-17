@@ -155,7 +155,14 @@ export function reduce(state = initialState, action) {
     }
 
     case SAVE_END_MILLIS: {
-      const taskToEnd = state.tasks[action.taskId];
+      const targetedTask = state.tasks[action.taskId];
+      let taskToEnd;
+      if (targetedTask === undefined) {
+        taskToEnd = recreateBlankForm();
+      } else {
+        taskToEnd = targetedTask;
+      }
+
       const { metadata } = taskToEnd;
       const endedTask = { ...taskToEnd, metadata: { ...metadata, endMillis: new Date().getTime() } };
 
