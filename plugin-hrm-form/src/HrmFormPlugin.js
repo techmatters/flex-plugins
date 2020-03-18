@@ -37,8 +37,7 @@ export default class HrmFormPlugin extends FlexPlugin {
       flex.Actions.invokeAction('CompleteTask', { sid, task });
     };
 
-    // const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
-    const hrmBaseUrl = 'http://localhost:8080';
+    const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
     const workerSid = manager.workerClient.sid;
     const { helpline } = manager.workerClient.attributes;
 
