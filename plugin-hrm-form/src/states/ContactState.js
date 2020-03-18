@@ -11,6 +11,26 @@ import {
 } from './ActionTypes';
 import { countSelectedCategories } from './ValidationRules';
 
+/**
+ * Looks for a particular task in the state object, and returns it if found.
+ * Returns recreated form otherwise
+ * @param tasks the current tasks object (retrieved from state)
+ * @param taskId the task we are looking for
+ * @returns if the task exists in state, returns its current form.
+ *  Otherwise returns a recreated blank form
+ */
+const findOrRecreate = (tasks, taskId) => {
+  const targetedTask = tasks[taskId];
+
+  if (targetedTask === undefined) {
+    const recreatedTask = recreateBlankForm();
+    console.log(`Had to recreate state for taskId ${taskId}`);
+    return recreatedTask;
+  }
+
+  return targetedTask;
+};
+
 const initialState = {
   tasks: {},
 };
@@ -78,14 +98,8 @@ export function reduce(state = initialState, action) {
     }
 
     case HANDLE_FOCUS: {
-      let currentForm;
-      if (state.tasks[action.taskId]) {
-        currentForm = state.tasks[action.taskId];
-      } else {
-        // currentForm = taskInitialStateFactory();
-        currentForm = recreateBlankForm();
-        console.log(`Had to recreate state for taskId ${action.taskId}`);
-      }
+      const currentForm = findOrRecreate(state.tasks, action.taskId);
+
       return {
         ...state,
         tasks: {
@@ -110,14 +124,8 @@ export function reduce(state = initialState, action) {
        *  state.tasks[action.taskId] || taskInitialStateFactory()
        * but I want to be more explicit and log it.  Redux gets purged if there's a refresh and that's messy
        */
-      let currentForm;
-      if (state.tasks[action.taskId]) {
-        currentForm = state.tasks[action.taskId];
-      } else {
-        // currentForm = taskInitialStateFactory();
-        currentForm = recreateBlankForm();
-        console.log(`Had to recreate state for taskId ${action.taskId}`);
-      }
+      const currentForm = findOrRecreate(state.tasks, action.taskId);
+
       const newForm = editNestedField(currentForm, action.parents, action.name, { value: action.value });
 
       /*
@@ -155,13 +163,7 @@ export function reduce(state = initialState, action) {
     }
 
     case SAVE_END_MILLIS: {
-      const targetedTask = state.tasks[action.taskId];
-      let taskToEnd;
-      if (targetedTask === undefined) {
-        taskToEnd = recreateBlankForm();
-      } else {
-        taskToEnd = targetedTask;
-      }
+      const taskToEnd = findOrRecreate(state.tasks, action.taskId);
 
       const { metadata } = taskToEnd;
       const endedTask = { ...taskToEnd, metadata: { ...metadata, endMillis: new Date().getTime() } };
