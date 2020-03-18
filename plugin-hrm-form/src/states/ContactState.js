@@ -114,16 +114,6 @@ export function reduce(state = initialState, action) {
         `!!!!!!!!!!!HANDLE CHANGE: action.name = ${action.name}, action.value = ${action.value}, task = ${action.taskId}, parents: ${action.parents}`,
       );
 
-      /*
-       * let updatedContactForm = state.tasks[action.taskId];
-       * updatedContactForm = {
-       *   ...updatedContactForm,
-       *   [action.name]: action.value
-       * };
-       * we could probably replace the below if/else by having the first argument to editNestedField be
-       *  state.tasks[action.taskId] || taskInitialStateFactory()
-       * but I want to be more explicit and log it.  Redux gets purged if there's a refresh and that's messy
-       */
       const currentForm = findOrRecreate(state.tasks, action.taskId);
 
       const newForm = editNestedField(currentForm, action.parents, action.name, { value: action.value });
