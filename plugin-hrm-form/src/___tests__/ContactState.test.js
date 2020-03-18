@@ -304,33 +304,6 @@ describe('reduce', () => {
       taskId: 'WT1234',
     };
 
-    const expected = {
-      tasks: {
-        WT1234: {
-          callType: '',
-          internal: {
-            tab: 0,
-          },
-          callerInformation: {
-            name: {
-              firstName: {
-                value: '',
-                touched: false,
-                error: null,
-              },
-              lastName: '',
-            },
-          },
-          childInformation: {
-            name: {
-              firstName: '',
-              lastName: '',
-            },
-          },
-        },
-      },
-    };
-
     /*
      * omit metadata because we can't know the exact time of form creation (metadata.startMillis)
      * the whole form is not tested for strict equality
@@ -338,7 +311,6 @@ describe('reduce', () => {
      */
     const result = reduce(initialState, action);
     const { WT1234 } = result.tasks;
-    const testTask = omit(WT1234, 'metadata');
     expect(WT1234.metadata).toEqual(
       expect.objectContaining({
         startMillis: null,
