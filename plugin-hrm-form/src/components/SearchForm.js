@@ -7,6 +7,7 @@ import FieldText from './FieldText';
 import FieldSelect from './FieldSelect';
 import FieldDate from './FieldDate';
 import { SearchFields, StyledSearchButton } from '../Styles/HrmStyles';
+import { withConfiguration } from '../ConfigurationContext';
 
 const getField = value => ({
   value,
@@ -19,6 +20,7 @@ class SearchForm extends Component {
   static displayName = 'SearchForm';
 
   static propTypes = {
+    helpline: PropTypes.func.isRequired,
     handleSearch: PropTypes.func.isRequired,
   };
 
@@ -39,6 +41,8 @@ class SearchForm extends Component {
 
   render() {
     const { firstName, lastName, counselor, phoneNumber, dateFrom, dateTo } = this.state;
+    const { helpline } = this.props;
+    const searchParams = { ...this.state, helpline };
 
     return (
       <SearchFields>
@@ -75,7 +79,7 @@ class SearchForm extends Component {
           {...this.defaultEventHandlers('dateFrom')}
         />
         <FieldDate id="Search_DateTo" label="To" field={getField(dateTo)} {...this.defaultEventHandlers('dateTo')} />
-        <StyledSearchButton roundCorners={true} onClick={() => this.props.handleSearch(this.state)}>
+        <StyledSearchButton roundCorners={true} onClick={() => this.props.handleSearch(searchParams)}>
           <SearchIcon />
         </StyledSearchButton>
       </SearchFields>
@@ -83,4 +87,4 @@ class SearchForm extends Component {
   }
 }
 
-export default SearchForm;
+export default withConfiguration(SearchForm);

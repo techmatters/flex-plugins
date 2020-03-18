@@ -5,7 +5,7 @@ import { FlexPlugin } from 'flex-plugin';
 import CustomCRMContainer from './components/CustomCRMContainer';
 import reducers, { namespace } from './states';
 import { Actions } from './states/ContactState';
-import hrmBaseUrl from './HrmBaseUrl';
+import ConfigurationContext from './ConfigurationContext';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 const PLUGIN_VERSION = '0.3.6';
@@ -37,6 +37,8 @@ export default class HrmFormPlugin extends FlexPlugin {
       flex.Actions.invokeAction('CompleteTask', { sid, task });
     };
 
+    // const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
+    const hrmBaseUrl = 'http://localhost:8080';
     const workerSid = manager.workerClient.sid;
     const { helpline } = manager.workerClient.attributes;
 
@@ -49,7 +51,9 @@ export default class HrmFormPlugin extends FlexPlugin {
     // TODO(nick): Can we avoid passing down the task prop, maybe using context?
     const options = { sortOrder: -1 };
     flex.CRMContainer.Content.replace(
-      <CustomCRMContainer key="custom-crm-container" handleCompleteTask={onCompleteTask} />,
+      <ConfigurationContext.Provider value={{ hrmBaseUrl, workerSid, helpline }} key="custom-crm-container">
+        <CustomCRMContainer handleCompleteTask={onCompleteTask} />
+      </ConfigurationContext.Provider>,
       options,
     );
 
@@ -63,7 +67,9 @@ export default class HrmFormPlugin extends FlexPlugin {
     });
 
     flex.Actions.addListener('beforeCompleteTask', (payload, abortFunction) => {
-      manager.store.dispatch(Actions.saveContactState(payload.task, abortFunction, hrmBaseUrl, workerSid, helpline));
+      manager.store.dispatch(
+        Actions.saveContactState(hrmBaseUrl, payload.task, abortFunction, hrmBaseUrl, workerSid, helpline),
+      );
     });
 
     flex.Actions.addListener('afterCompleteTask', payload => {

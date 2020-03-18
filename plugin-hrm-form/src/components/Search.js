@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { Container } from '../Styles/HrmStyles';
 import SearchForm from './SearchForm';
 import SearchResults from './SearchResults';
-import { searchContacts } from '../states/SearchContact';
+import { withConfiguration } from '../ConfigurationContext';
+import { searchContacts } from '../services/ContactService';
 
 class Search extends Component {
   static displayName = 'Search';
 
   static propTypes = {
-    helpline: PropTypes.string.isRequired,
+    hrmBaseUrl: PropTypes.string.isRequired,
     handleSelectSearchResult: PropTypes.func.isRequired,
   };
 
@@ -19,18 +19,9 @@ class Search extends Component {
     results: [],
   };
 
-  handleSearch = async ({ firstName, lastName, counselor, phoneNumber, dateFrom, dateTo, singleInput }) => {
-    const { helpline } = this.props;
-    const results = await searchContacts({
-      helpline,
-      firstName,
-      lastName,
-      counselor,
-      phoneNumber,
-      dateFrom,
-      dateTo,
-      singleInput,
-    });
+  handleSearch = async searchParams => {
+    const { hrmBaseUrl } = this.props;
+    const results = await searchContacts(hrmBaseUrl, searchParams);
     this.setState({ results });
   };
 
@@ -44,10 +35,4 @@ class Search extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    helpline: state.flex.worker.attributes.helpline,
-  };
-};
-
-export default connect(mapStateToProps)(Search);
+export default withConfiguration(Search);

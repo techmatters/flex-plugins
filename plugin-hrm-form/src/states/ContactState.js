@@ -1,4 +1,3 @@
-import { saveToHrm } from '../components/HrmFormController';
 import { createBlankForm, recreateBlankForm } from './ContactFormStateFactory';
 import {
   HANDLE_BLUR,
@@ -12,6 +11,7 @@ import {
 } from './ActionTypes';
 import { countSelectedCategories } from './ValidationRules';
 import { copySearchResultIntoTask } from './SearchContact';
+import { saveToHrm } from '../services/ContactService';
 
 const initialState = {
   tasks: {},
@@ -35,8 +35,9 @@ export class Actions {
   static initializeContactState = taskId => ({ type: INITIALIZE_CONTACT_STATE, taskId });
 
   // I'm really not sure if this should live here, but it seems like we need to come through the store
-  static saveContactState = (task, abortFunction, workerSid, helpline) => ({
+  static saveContactState = (hrmBaseUrl, task, abortFunction, workerSid, helpline) => ({
     type: SAVE_CONTACT_STATE,
+    hrmBaseUrl,
     task,
     abortFunction,
     workerSid,
@@ -170,8 +171,9 @@ export function reduce(state = initialState, action) {
     }
 
     case SAVE_CONTACT_STATE: {
-      // TODO(nick): Make this a Promise instead?
-      saveToHrm(action.task, state.tasks[action.task.taskSid], action.abortFunction, action.workerSid, action.helpline);
+      const { tasks } = state;
+      const { hrmBaseUrl, task, abortFunction, workerSid, helpline } = action;
+      saveToHrm(hrmBaseUrl, task, tasks[action.task.taskSid], abortFunction, workerSid, helpline);
       return state;
     }
 

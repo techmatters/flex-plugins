@@ -1,4 +1,4 @@
-import { transformForm } from '../components/HrmFormController';
+import { transformForm } from '../services/ContactService';
 import { FieldType, ValidationType } from '../states/ContactFormStateFactory';
 import callTypes from '../states/DomainConstants';
 

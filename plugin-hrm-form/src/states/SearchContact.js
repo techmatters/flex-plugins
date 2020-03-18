@@ -1,32 +1,10 @@
 import { HANDLE_SELECT_SEARCH_RESULT } from './ActionTypes';
-import secret from '../private/secret';
-import hrmBaseUrl from '../HrmBaseUrl';
 
 export const handleSelectSearchResult = (searchResult, taskId) => ({
   type: HANDLE_SELECT_SEARCH_RESULT,
   searchResult,
   taskId,
 });
-
-// TODO: implement real backend call
-export async function searchContacts(searchParams) {
-  try {
-    const response = await fetch(`${hrmBaseUrl}/contacts/search`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Basic ${btoa(secret)}` },
-      body: JSON.stringify(searchParams),
-    });
-
-    if (!response.ok) {
-      throw response.error();
-    }
-
-    return await response.json();
-  } catch (e) {
-    console.log('Error searching contacts: ', e);
-    return [];
-  }
-}
 
 function copyNewValues(originalObject, objectWithNewValues) {
   if (objectWithNewValues === null || typeof objectWithNewValues === 'undefined') {
