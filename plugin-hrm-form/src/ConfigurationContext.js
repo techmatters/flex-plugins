@@ -5,13 +5,13 @@ const ConfigurationContext = React.createContext(initialState);
 ConfigurationContext.displayName = 'ConfigurationContext';
 
 export const withConfiguration = Component => {
-  const WrappedComponent = props => (
+  const ConfiguredComponent = props => (
     <ConfigurationContext.Consumer>
       {configValues => <Component {...props} {...configValues} />}
     </ConfigurationContext.Consumer>
   );
-  WrappedComponent.displayName = 'WrappedComponent';
-  return WrappedComponent;
+  ConfiguredComponent.displayName = 'ConfiguredComponent';
+  return ConfiguredComponent;
 };
 
 export default ConfigurationContext;

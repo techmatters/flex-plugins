@@ -35,7 +35,7 @@ export class Actions {
   static initializeContactState = taskId => ({ type: INITIALIZE_CONTACT_STATE, taskId });
 
   // I'm really not sure if this should live here, but it seems like we need to come through the store
-  static saveContactState = (hrmBaseUrl, task, abortFunction, workerSid, helpline) => ({
+  static saveContactState = (task, abortFunction, hrmBaseUrl, workerSid, helpline) => ({
     type: SAVE_CONTACT_STATE,
     hrmBaseUrl,
     task,
@@ -173,7 +173,7 @@ export function reduce(state = initialState, action) {
     case SAVE_CONTACT_STATE: {
       const { tasks } = state;
       const { hrmBaseUrl, task, abortFunction, workerSid, helpline } = action;
-      saveToHrm(hrmBaseUrl, task, tasks[action.task.taskSid], abortFunction, workerSid, helpline);
+      saveToHrm(task, tasks[action.task.taskSid], abortFunction, hrmBaseUrl, workerSid, helpline);
       return state;
     }
 

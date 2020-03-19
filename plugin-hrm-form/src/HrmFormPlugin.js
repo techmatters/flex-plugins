@@ -66,9 +66,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     });
 
     flex.Actions.addListener('beforeCompleteTask', (payload, abortFunction) => {
-      manager.store.dispatch(
-        Actions.saveContactState(hrmBaseUrl, payload.task, abortFunction, hrmBaseUrl, workerSid, helpline),
-      );
+      manager.store.dispatch(Actions.saveContactState(payload.task, abortFunction, hrmBaseUrl, workerSid, helpline));
     });
 
     flex.Actions.addListener('afterCompleteTask', payload => {
