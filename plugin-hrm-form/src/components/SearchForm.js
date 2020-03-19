@@ -9,7 +9,7 @@ import FieldSelect from './FieldSelect';
 import FieldDate from './FieldDate';
 import { SearchFields, StyledSearchButton } from '../Styles/HrmStyles';
 import { withConfiguration } from '../ConfigurationContext';
-import { populateCounselors } from '../services/SearchService';
+import { populateCounselors } from '../services/ServerlessService';
 
 const getField = value => ({
   value,
