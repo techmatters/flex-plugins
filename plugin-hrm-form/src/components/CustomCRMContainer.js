@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import HrmFormController from './HrmFormController';
 import NoTaskView from './NoTaskView';
+import TaskView from './TaskView';
 import { taskType } from '../types';
 
 const CustomCRMContainer = props => {
@@ -13,11 +13,7 @@ const CustomCRMContainer = props => {
     <div>
       <NoTaskView key="no-task" />
       {Array.from(tasks.values()).map(item => (
-        <HrmFormController
-          thisTask={item}
-          key={`controller-${item.taskSid}`}
-          handleCompleteTask={props.handleCompleteTask}
-        />
+        <TaskView thisTask={item} key={`controller-${item.taskSid}`} handleCompleteTask={props.handleCompleteTask} />
       ))}
     </div>
   );

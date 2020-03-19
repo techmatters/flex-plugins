@@ -5,9 +5,10 @@ import { FlexPlugin } from 'flex-plugin';
 import CustomCRMContainer from './components/CustomCRMContainer';
 import reducers, { namespace } from './states';
 import { Actions } from './states/ContactState';
+import ConfigurationContext from './ConfigurationContext';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
-const PLUGIN_VERSION = '0.3.7';
+const PLUGIN_VERSION = '0.3.8';
 
 export default class HrmFormPlugin extends FlexPlugin {
   constructor() {
@@ -49,7 +50,9 @@ export default class HrmFormPlugin extends FlexPlugin {
     // TODO(nick): Can we avoid passing down the task prop, maybe using context?
     const options = { sortOrder: -1 };
     flex.CRMContainer.Content.replace(
-      <CustomCRMContainer key="custom-crm-container" handleCompleteTask={onCompleteTask} />,
+      <ConfigurationContext.Provider value={{ hrmBaseUrl, workerSid, helpline }} key="custom-crm-container">
+        <CustomCRMContainer handleCompleteTask={onCompleteTask} />
+      </ConfigurationContext.Provider>,
       options,
     );
 
