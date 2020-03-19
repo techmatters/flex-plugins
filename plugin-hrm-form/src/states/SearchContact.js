@@ -1,16 +1,10 @@
 import { HANDLE_SELECT_SEARCH_RESULT } from './ActionTypes';
-import searchResultMock from './SearchResultMock';
 
 export const handleSelectSearchResult = (searchResult, taskId) => ({
   type: HANDLE_SELECT_SEARCH_RESULT,
   searchResult,
   taskId,
 });
-
-// TODO: implement real backend call
-export function searchContacts({ firstName, lastName, counselor, phoneNumber, dateFrom, dateTo }) {
-  return Promise.resolve(searchResultMock);
-}
 
 function copyNewValues(originalObject, objectWithNewValues) {
   if (objectWithNewValues === null || typeof objectWithNewValues === 'undefined') {

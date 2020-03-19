@@ -22,23 +22,28 @@ import { fieldType } from '../types';
  * or and object containing label and value properties
  * @returns {StyledMenuItem[]} an array of styled MenuItems
  */
-const renderOptions = options => {
-  if (typeof options === 'object') {
-    return options.map(option => (
-      <StyledMenuItem key={option.value} value={option}>
-        {option.label}
-      </StyledMenuItem>
-    ));
-  }
-  return options.map(option => (
-    <StyledMenuItem key={option} value={option}>
-      {option}
-    </StyledMenuItem>
-  ));
-};
+const renderOptions = options =>
+  options.map(option => {
+    switch (typeof option) {
+      case 'string':
+        return (
+          <StyledMenuItem key={option} value={option}>
+            {option}
+          </StyledMenuItem>
+        );
+      case 'object':
+        return (
+          <StyledMenuItem key={option.value} value={option}>
+            {option.label}
+          </StyledMenuItem>
+        );
+      default:
+        throw new Error('Unexpected option type');
+    }
+  });
 
 const FieldSelect = ({ id, label, name, field, options, handleBlur, handleChange, handleFocus }) => {
-  const renderValue = typeof field.value === 'object' ? option => option.label : undefined;
+  const renderValue = typeof field.value === 'object' ? option => option.label : option => option;
 
   return (
     <TextField>

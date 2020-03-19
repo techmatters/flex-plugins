@@ -1,4 +1,3 @@
-import { saveToHrm } from '../components/HrmFormController';
 import { createBlankForm, recreateBlankForm } from './ContactFormStateFactory';
 import {
   HANDLE_BLUR,
@@ -12,6 +11,7 @@ import {
 } from './ActionTypes';
 import { countSelectedCategories } from './ValidationRules';
 import { copySearchResultIntoTask } from './SearchContact';
+import { saveToHrm } from '../services/ContactService';
 
 /**
  * Looks for a particular task in the state object, and returns it if found.
@@ -57,9 +57,9 @@ export class Actions {
   // I'm really not sure if this should live here, but it seems like we need to come through the store
   static saveContactState = (task, abortFunction, hrmBaseUrl, workerSid, helpline) => ({
     type: SAVE_CONTACT_STATE,
+    hrmBaseUrl,
     task,
     abortFunction,
-    hrmBaseUrl,
     workerSid,
     helpline,
   });
@@ -170,15 +170,9 @@ export function reduce(state = initialState, action) {
     }
 
     case SAVE_CONTACT_STATE: {
-      // TODO(nick): Make this a Promise instead?
-      saveToHrm(
-        action.task,
-        state.tasks[action.task.taskSid],
-        action.abortFunction,
-        action.hrmBaseUrl,
-        action.workerSid,
-        action.helpline,
-      );
+      const { tasks } = state;
+      const { hrmBaseUrl, task, abortFunction, workerSid, helpline } = action;
+      saveToHrm(task, tasks[action.task.taskSid], abortFunction, hrmBaseUrl, workerSid, helpline);
       return state;
     }
 

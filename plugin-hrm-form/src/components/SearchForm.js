@@ -3,11 +3,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import SearchIcon from '@material-ui/icons/Search';
 import { Manager } from '@twilio/flex-ui';
+import { omit } from 'lodash';
 
 import FieldText from './FieldText';
 import FieldSelect from './FieldSelect';
 import FieldDate from './FieldDate';
 import { SearchFields, StyledSearchButton } from '../Styles/HrmStyles';
+import { withConfiguration } from '../ConfigurationContext';
 
 const currentWorkspace = Manager.getInstance().serviceConfiguration.taskrouter_workspace_sid;
 
@@ -43,6 +45,7 @@ class SearchForm extends Component {
   static displayName = 'SearchForm';
 
   static propTypes = {
+    helpline: PropTypes.func.isRequired,
     handleSearch: PropTypes.func.isRequired,
   };
 
@@ -75,6 +78,13 @@ class SearchForm extends Component {
   render() {
     const { firstName, lastName, counselor, counselors, phoneNumber, dateFrom, dateTo } = this.state;
     const counselorsOptions = counselors.map(e => ({ label: e.friendlyName, value: e.sid }));
+
+    const { helpline } = this.props;
+    const searchParams = {
+      ...omit(this.state, 'counselors'),
+      counselor: counselor.value, // backend expects only counselor's SID
+      helpline,
+    };
 
     return (
       <SearchFields>
@@ -111,7 +121,7 @@ class SearchForm extends Component {
           {...this.defaultEventHandlers('dateFrom')}
         />
         <FieldDate id="Search_DateTo" label="To" field={getField(dateTo)} {...this.defaultEventHandlers('dateTo')} />
-        <StyledSearchButton roundCorners={true} onClick={() => this.props.handleSearch(this.state)}>
+        <StyledSearchButton roundCorners={true} onClick={() => this.props.handleSearch(searchParams)}>
           <SearchIcon />
         </StyledSearchButton>
       </SearchFields>
@@ -119,4 +129,4 @@ class SearchForm extends Component {
   }
 }
 
-export default SearchForm;
+export default withConfiguration(SearchForm);
