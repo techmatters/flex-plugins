@@ -2,11 +2,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import SearchIcon from '@material-ui/icons/Search';
+import { Manager } from '@twilio/flex-ui';
 
 import FieldText from './FieldText';
 import FieldSelect from './FieldSelect';
 import FieldDate from './FieldDate';
 import { SearchFields, StyledSearchButton } from '../Styles/HrmStyles';
+
+const currentWorkspace = Manager.getInstance().serviceConfiguration.taskrouter_workspace_sid;
 
 const getField = value => ({
   value,
@@ -14,6 +17,27 @@ const getField = value => ({
   validation: null,
   touched: false,
 });
+
+// TODO: should be added to the "urls exporting" module
+const serverlessUrl = 'https://serverless-9971-dev.twil.io';
+
+// TODO: should be migrated to our api/services file (module?)
+/**
+ * @param {string} workspaceSID The sid of the workspace
+ * @returns {{sid: string, friendlyName: string}[]}
+ */
+const fetchCounselors = async workspaceSID => {
+  const url = `${serverlessUrl}/populateCounselors?workspaceSID=${workspaceSID}`;
+
+  const response = await fetch(url);
+  const responseJson = await response.json();
+
+  if (!response.ok) {
+    throw new Error(responseJson.message);
+  }
+
+  return responseJson.prettyWorkers;
+};
 
 class SearchForm extends Component {
   static displayName = 'SearchForm';
@@ -25,11 +49,22 @@ class SearchForm extends Component {
   state = {
     firstName: '',
     lastName: '',
-    counselor: '',
+    counselor: { label: '', value: '' },
+    counselors: [],
     phoneNumber: '',
     dateFrom: '',
     dateTo: '',
   };
+
+  async componentDidMount() {
+    try {
+      const counselors = await fetchCounselors(currentWorkspace);
+
+      this.setState({ counselors });
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
 
   defaultEventHandlers = fieldName => ({
     handleChange: e => this.setState({ [fieldName]: e.target.value }),
@@ -38,7 +73,8 @@ class SearchForm extends Component {
   });
 
   render() {
-    const { firstName, lastName, counselor, phoneNumber, dateFrom, dateTo } = this.state;
+    const { firstName, lastName, counselor, counselors, phoneNumber, dateFrom, dateTo } = this.state;
+    const counselorsOptions = counselors.map(e => ({ label: e.friendlyName, value: e.sid }));
 
     return (
       <SearchFields>
@@ -59,7 +95,7 @@ class SearchForm extends Component {
           name="counselor"
           label="Counselor"
           field={getField(counselor)}
-          options={['', 'Counselor 1', 'Counselor 2', 'Counselor 3']}
+          options={[{ label: '', value: '' }, ...counselorsOptions]}
           {...this.defaultEventHandlers('counselor')}
         />
         <FieldText
