@@ -8,7 +8,7 @@ import { Actions } from './states/ContactState';
 import ConfigurationContext from './ConfigurationContext';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
-const PLUGIN_VERSION = '0.3.7';
+const PLUGIN_VERSION = '0.3.8';
 
 export default class HrmFormPlugin extends FlexPlugin {
   constructor() {
