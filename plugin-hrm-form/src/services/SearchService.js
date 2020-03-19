@@ -1,19 +1,20 @@
 /* eslint-disable import/prefer-default-export */
-import secret, { serverlessUrl } from '../private/secret';
+import fetchProtectedApi from './fetchProtectedApi';
+import { serverlessUrl } from '../private/secret';
 
 /**
+ * [Protected] Fetches the workers within a workspace
  * @param {string} workspaceSID The sid of the workspace
  * @returns {{sid: string, friendlyName: string}[]}
  */
-export const fetchCounselors = async workspaceSID => {
-  const url = `${serverlessUrl}/populateCounselors?workspaceSID=${workspaceSID}`;
+// export const fetchCounselors = async (workspaceSID, token) => {
+export const populateCounselors = async workspaceSID => {
+  const url = `${serverlessUrl}/populateCounselors`;
+  const body = {
+    workspaceSID,
+  };
 
-  const response = await fetch(url);
-  const responseJson = await response.json();
+  const { prettyWorkers } = await fetchProtectedApi(url, body);
 
-  if (!response.ok) {
-    throw new Error(responseJson.message);
-  }
-
-  return responseJson.prettyWorkers;
+  return prettyWorkers;
 };

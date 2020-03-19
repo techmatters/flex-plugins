@@ -9,7 +9,7 @@ import FieldSelect from './FieldSelect';
 import FieldDate from './FieldDate';
 import { SearchFields, StyledSearchButton } from '../Styles/HrmStyles';
 import { withConfiguration } from '../ConfigurationContext';
-import { fetchCounselors } from '../services/SearchService';
+import { populateCounselors } from '../services/SearchService';
 
 const getField = value => ({
   value,
@@ -39,10 +39,12 @@ class SearchForm extends Component {
 
   async componentDidMount() {
     try {
-      const counselors = await fetchCounselors(this.props.currentWorkspace);
+      const { currentWorkspace } = this.props;
+      const counselors = await populateCounselors(currentWorkspace);
 
       this.setState({ counselors });
     } catch (err) {
+      // TODO (Gian): probably we need to handle this in a nicer way
       console.log(err.message);
     }
   }

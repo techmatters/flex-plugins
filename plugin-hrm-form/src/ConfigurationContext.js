@@ -1,6 +1,11 @@
 import React from 'react';
 
-const initialState = { hrmBaseUrl: '', workerSid: '', helpline: '', currentWorkspace: '' };
+const initialState = {
+  hrmBaseUrl: '',
+  workerSid: '',
+  helpline: '',
+  currentWorkspace: '',
+};
 const ConfigurationContext = React.createContext(initialState);
 ConfigurationContext.displayName = 'ConfigurationContext';
 
