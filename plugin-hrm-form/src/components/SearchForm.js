@@ -10,6 +10,7 @@ import FieldSelect from './FieldSelect';
 import FieldDate from './FieldDate';
 import { SearchFields, StyledSearchButton } from '../Styles/HrmStyles';
 import { withConfiguration } from '../ConfigurationContext';
+import { fetchCounselors } from '../services/SearchService';
 
 const currentWorkspace = Manager.getInstance().serviceConfiguration.taskrouter_workspace_sid;
 
@@ -19,27 +20,6 @@ const getField = value => ({
   validation: null,
   touched: false,
 });
-
-// TODO: should be added to the "urls exporting" module
-const serverlessUrl = 'https://serverless-9971-dev.twil.io';
-
-// TODO: should be migrated to our api/services file (module?)
-/**
- * @param {string} workspaceSID The sid of the workspace
- * @returns {{sid: string, friendlyName: string}[]}
- */
-const fetchCounselors = async workspaceSID => {
-  const url = `${serverlessUrl}/populateCounselors?workspaceSID=${workspaceSID}`;
-
-  const response = await fetch(url);
-  const responseJson = await response.json();
-
-  if (!response.ok) {
-    throw new Error(responseJson.message);
-  }
-
-  return responseJson.prettyWorkers;
-};
 
 class SearchForm extends Component {
   static displayName = 'SearchForm';
