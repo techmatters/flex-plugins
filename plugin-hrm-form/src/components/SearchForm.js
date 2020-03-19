@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import SearchIcon from '@material-ui/icons/Search';
-import { Manager } from '@twilio/flex-ui';
 import { omit } from 'lodash';
 
 import FieldText from './FieldText';
@@ -11,8 +10,6 @@ import FieldDate from './FieldDate';
 import { SearchFields, StyledSearchButton } from '../Styles/HrmStyles';
 import { withConfiguration } from '../ConfigurationContext';
 import { fetchCounselors } from '../services/SearchService';
-
-const currentWorkspace = Manager.getInstance().serviceConfiguration.taskrouter_workspace_sid;
 
 const getField = value => ({
   value,
@@ -27,6 +24,7 @@ class SearchForm extends Component {
   static propTypes = {
     helpline: PropTypes.func.isRequired,
     handleSearch: PropTypes.func.isRequired,
+    currentWorkspace: PropTypes.string.isRequired,
   };
 
   state = {
@@ -41,7 +39,7 @@ class SearchForm extends Component {
 
   async componentDidMount() {
     try {
-      const counselors = await fetchCounselors(currentWorkspace);
+      const counselors = await fetchCounselors(this.props.currentWorkspace);
 
       this.setState({ counselors });
     } catch (err) {
