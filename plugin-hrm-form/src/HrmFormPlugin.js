@@ -1,5 +1,5 @@
 import React from 'react';
-import { VERSION, Manager } from '@twilio/flex-ui';
+import { VERSION } from '@twilio/flex-ui';
 import { FlexPlugin } from 'flex-plugin';
 
 import CustomCRMContainer from './components/CustomCRMContainer';
@@ -42,7 +42,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     const workerSid = manager.workerClient.sid;
     const { helpline } = manager.workerClient.attributes;
     const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
-    const getSsoToken = () => Manager.getInstance().store.getState().flex.session.ssoTokenPayload.token;
+    const getSsoToken = () => manager.store.getState().flex.session.ssoTokenPayload.token;
 
     // TODO(nick): Eventually remove this log line or set to debug
     console.log(`HRM URL: ${hrmBaseUrl}`);
