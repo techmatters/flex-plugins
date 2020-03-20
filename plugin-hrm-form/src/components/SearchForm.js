@@ -9,6 +9,7 @@ import FieldSelect from './FieldSelect';
 import FieldDate from './FieldDate';
 import { SearchFields, StyledSearchButton } from '../Styles/HrmStyles';
 import { withConfiguration } from '../ConfigurationContext';
+import { contextObject } from '../types';
 import { populateCounselors } from '../services/ServerlessService';
 
 const getField = value => ({
@@ -22,9 +23,8 @@ class SearchForm extends Component {
   static displayName = 'SearchForm';
 
   static propTypes = {
-    helpline: PropTypes.func.isRequired,
     handleSearch: PropTypes.func.isRequired,
-    currentWorkspace: PropTypes.string.isRequired,
+    context: contextObject.isRequired,
   };
 
   state = {
@@ -39,13 +39,13 @@ class SearchForm extends Component {
 
   async componentDidMount() {
     try {
-      const { currentWorkspace, helpline } = this.props;
-      const counselors = await populateCounselors(currentWorkspace, helpline);
+      const { context } = this.props;
+      const counselors = await populateCounselors(context);
 
       this.setState({ counselors });
     } catch (err) {
       // TODO (Gian): probably we need to handle this in a nicer way
-      console.log(err.message);
+      console.error(err.message);
     }
   }
 
@@ -59,7 +59,7 @@ class SearchForm extends Component {
     const { firstName, lastName, counselor, counselors, phoneNumber, dateFrom, dateTo } = this.state;
     const counselorsOptions = counselors.map(e => ({ label: e.fullName, value: e.sid }));
 
-    const { helpline } = this.props;
+    const { helpline } = this.props.context;
     const searchParams = {
       ...omit(this.state, 'counselors'),
       counselor: counselor.value, // backend expects only counselor's SID

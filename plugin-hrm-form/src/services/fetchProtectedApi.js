@@ -1,17 +1,18 @@
-import { Manager } from '@twilio/flex-ui';
-
 /**
  * Factored out function that handles a protected api call hosted in serverless toolkit.
  * Will throw Error if server responses with and http error code.
  * @param {string} url Url to fetch from.
- * @param {{}} body The body to send via fetch api (expected parameters for the route).
- * @returns {any}
+ * @param {{Token: string}} body The body to send via fetch api plus the api token.
+ * @returns {any} the api response (if not error)
  */
 const fetchProtectedApi = async (url, body) => {
-  const { token } = Manager.getInstance().store.getState().flex.session.ssoTokenPayload;
+  if (!body.Token) {
+    throw new Error("You can't acces a protected api without a token");
+  }
+
   const options = {
     method: 'POST',
-    body: new URLSearchParams({ ...body, Token: token }),
+    body: new URLSearchParams(body),
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
     },

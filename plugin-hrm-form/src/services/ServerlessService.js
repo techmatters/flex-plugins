@@ -1,18 +1,21 @@
 /* eslint-disable import/prefer-default-export */
 import fetchProtectedApi from './fetchProtectedApi';
-import { serverlessUrl } from '../private/secret';
 
 /**
  * [Protected] Fetches the workers within a workspace and helpline.
- * @param {string} workspaceSID The sid of the workspace
- * @param {string} helpline The helpline of the current worker
+ * @param {{serverlessBaseUrl: string,
+ *helpline: string,
+ *currentWorkspace: string,
+ *getSsoToken: () => ({ token: string })}} context
  * @returns {{sid: string, fullName: string}[]}
  */
-export const populateCounselors = async (workspaceSID, helpline) => {
-  const url = `${serverlessUrl}/populateCounselors`;
+export const populateCounselors = async context => {
+  const { serverlessBaseUrl, helpline, currentWorkspace, getSsoToken } = context;
+  const url = `${serverlessBaseUrl}/populateCounselors`;
   const body = {
-    workspaceSID,
+    workspaceSID: currentWorkspace,
     helpline,
+    Token: getSsoToken(),
   };
 
   const { workerSummaries } = await fetchProtectedApi(url, body);
