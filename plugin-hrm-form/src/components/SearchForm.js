@@ -39,8 +39,8 @@ class SearchForm extends Component {
 
   async componentDidMount() {
     try {
-      const { currentWorkspace } = this.props;
-      const counselors = await populateCounselors(currentWorkspace);
+      const { currentWorkspace, helpline } = this.props;
+      const counselors = await populateCounselors(currentWorkspace, helpline);
 
       this.setState({ counselors });
     } catch (err) {
@@ -57,7 +57,7 @@ class SearchForm extends Component {
 
   render() {
     const { firstName, lastName, counselor, counselors, phoneNumber, dateFrom, dateTo } = this.state;
-    const counselorsOptions = counselors.map(e => ({ label: e.friendlyName, value: e.sid }));
+    const counselorsOptions = counselors.map(e => ({ label: e.fullName, value: e.sid }));
 
     const { helpline } = this.props;
     const searchParams = {

@@ -3,18 +3,19 @@ import fetchProtectedApi from './fetchProtectedApi';
 import { serverlessUrl } from '../private/secret';
 
 /**
- * [Protected] Fetches the workers within a workspace
+ * [Protected] Fetches the workers within a workspace and helpline.
  * @param {string} workspaceSID The sid of the workspace
- * @returns {{sid: string, friendlyName: string}[]}
+ * @param {string} helpline The helpline of the current worker
+ * @returns {{sid: string, fullName: string}[]}
  */
-// export const fetchCounselors = async (workspaceSID, token) => {
-export const populateCounselors = async workspaceSID => {
+export const populateCounselors = async (workspaceSID, helpline) => {
   const url = `${serverlessUrl}/populateCounselors`;
   const body = {
     workspaceSID,
+    helpline,
   };
 
-  const { prettyWorkers } = await fetchProtectedApi(url, body);
+  const { workerSummaries } = await fetchProtectedApi(url, body);
 
-  return prettyWorkers;
+  return workerSummaries;
 };

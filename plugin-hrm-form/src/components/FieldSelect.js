@@ -5,16 +5,6 @@ import { ErrorText, StyledLabel, StyledMenuItem, StyledSelect, TextField } from 
 import RequiredAsterisk from './RequiredAsterisk';
 import { fieldType } from '../types';
 
-/*
- * The way we're handling errors is pretty terrible, but passing in error={true}
- * isn't working
- * id = id for form and for
- * label = what the user sees
- * name = the name of the field
- * field = the object in the redux store
- * options = an array of options
- */
-
 /**
  *
  * @param {string[] | {label: string, value: any}[]} options
