@@ -5,13 +5,14 @@ import { Container } from '../Styles/HrmStyles';
 import SearchForm from './SearchForm';
 import SearchResults from './SearchResults';
 import { withConfiguration } from '../ConfigurationContext';
+import { contextObject } from '../types';
 import { searchContacts } from '../services/ContactService';
 
 class Search extends Component {
   static displayName = 'Search';
 
   static propTypes = {
-    hrmBaseUrl: PropTypes.string.isRequired,
+    context: contextObject.isRequired,
     handleSelectSearchResult: PropTypes.func.isRequired,
   };
 
@@ -20,7 +21,7 @@ class Search extends Component {
   };
 
   handleSearch = async searchParams => {
-    const { hrmBaseUrl } = this.props;
+    const { hrmBaseUrl } = this.props.context;
     const results = await searchContacts(hrmBaseUrl, searchParams);
     this.setState({ results });
   };

@@ -87,3 +87,12 @@ export const formType = PropTypes.shape({
   childInformation: childInformationType,
   caseInformation: caseInformationType,
 });
+
+export const contextObject = PropTypes.shape({
+  hrmBaseUrl: PropTypes.string.isRequired,
+  serverlessBaseUrl: PropTypes.string.isRequired,
+  workerSid: PropTypes.string.isRequired,
+  helpline: PropTypes.string.isRequired,
+  currentWorkspace: PropTypes.string.isRequired,
+  getSsoToken: PropTypes.func.isRequired,
+});

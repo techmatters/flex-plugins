@@ -147,7 +147,7 @@ class SearchResults extends Component {
                     <StyledTableCell>{result.overview.categories}</StyledTableCell>
                     <StyledTableCell>{result.overview.counselor}</StyledTableCell>
                     <StyledTableCell onClick={() => this.handleClickCallSummary(result.overview.notes)}>
-                      <Tooltip title={result.overview.notes.substr(0, 200)}>
+                      <Tooltip title={result.overview.notes && result.overview.notes.substr(0, 200)}>
                         <span>{result.overview.notes}</span>
                       </Tooltip>
                     </StyledTableCell>

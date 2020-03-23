@@ -38,8 +38,11 @@ export default class HrmFormPlugin extends FlexPlugin {
     };
 
     const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
+    const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
     const workerSid = manager.workerClient.sid;
     const { helpline } = manager.workerClient.attributes;
+    const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
+    const getSsoToken = () => manager.store.getState().flex.session.ssoTokenPayload.token;
 
     // TODO(nick): Eventually remove this log line or set to debug
     console.log(`HRM URL: ${hrmBaseUrl}`);
@@ -50,7 +53,10 @@ export default class HrmFormPlugin extends FlexPlugin {
     // TODO(nick): Can we avoid passing down the task prop, maybe using context?
     const options = { sortOrder: -1 };
     flex.CRMContainer.Content.replace(
-      <ConfigurationContext.Provider value={{ hrmBaseUrl, workerSid, helpline }} key="custom-crm-container">
+      <ConfigurationContext.Provider
+        value={{ hrmBaseUrl, serverlessBaseUrl, workerSid, helpline, currentWorkspace, getSsoToken }}
+        key="custom-crm-container"
+      >
         <CustomCRMContainer handleCompleteTask={onCompleteTask} />
       </ConfigurationContext.Provider>,
       options,

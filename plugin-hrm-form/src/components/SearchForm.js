@@ -2,12 +2,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import SearchIcon from '@material-ui/icons/Search';
+import { omit } from 'lodash';
 
 import FieldText from './FieldText';
 import FieldSelect from './FieldSelect';
 import FieldDate from './FieldDate';
 import { SearchFields, StyledSearchButton } from '../Styles/HrmStyles';
 import { withConfiguration } from '../ConfigurationContext';
+import { contextObject } from '../types';
+import { populateCounselors } from '../services/ServerlessService';
 
 const getField = value => ({
   value,
@@ -20,18 +23,31 @@ class SearchForm extends Component {
   static displayName = 'SearchForm';
 
   static propTypes = {
-    helpline: PropTypes.func.isRequired,
     handleSearch: PropTypes.func.isRequired,
+    context: contextObject.isRequired,
   };
 
   state = {
     firstName: '',
     lastName: '',
-    counselor: '',
+    counselor: { label: '', value: '' },
+    counselors: [],
     phoneNumber: '',
     dateFrom: '',
     dateTo: '',
   };
+
+  async componentDidMount() {
+    try {
+      const { context } = this.props;
+      const counselors = await populateCounselors(context);
+
+      this.setState({ counselors });
+    } catch (err) {
+      // TODO (Gian): probably we need to handle this in a nicer way
+      console.error(err.message);
+    }
+  }
 
   defaultEventHandlers = fieldName => ({
     handleChange: e => this.setState({ [fieldName]: e.target.value }),
@@ -40,9 +56,15 @@ class SearchForm extends Component {
   });
 
   render() {
-    const { firstName, lastName, counselor, phoneNumber, dateFrom, dateTo } = this.state;
-    const { helpline } = this.props;
-    const searchParams = { ...this.state, helpline };
+    const { firstName, lastName, counselor, counselors, phoneNumber, dateFrom, dateTo } = this.state;
+    const counselorsOptions = counselors.map(e => ({ label: e.fullName, value: e.sid }));
+
+    const { helpline } = this.props.context;
+    const searchParams = {
+      ...omit(this.state, 'counselors'),
+      counselor: counselor.value, // backend expects only counselor's SID
+      helpline,
+    };
 
     return (
       <SearchFields>
@@ -63,7 +85,7 @@ class SearchForm extends Component {
           name="counselor"
           label="Counselor"
           field={getField(counselor)}
-          options={['', 'Counselor 1', 'Counselor 2', 'Counselor 3']}
+          options={[{ label: '', value: '' }, ...counselorsOptions]}
           {...this.defaultEventHandlers('counselor')}
         />
         <FieldText
