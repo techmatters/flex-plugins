@@ -40,7 +40,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
     const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
     const workerSid = manager.workerClient.sid;
-    const { helpline } = manager.workerClient.attributes || ''; // overrides undefined helpline with ''
+    const { helpline } = manager.workerClient.attributes;
     const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
     const getSsoToken = () => manager.store.getState().flex.session.ssoTokenPayload.token;
 
