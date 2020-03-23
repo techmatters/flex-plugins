@@ -14,7 +14,7 @@ export const populateCounselors = async context => {
   const url = `${serverlessBaseUrl}/populateCounselors`;
   const body = {
     workspaceSID: currentWorkspace,
-    helpline,
+    helpline: helpline || '',
     Token: getSsoToken(),
   };
 
