@@ -1,15 +1,15 @@
 import React from 'react';
-import { Tab } from '@material-ui/core';
 import ErrorIcon from '@material-ui/icons/Error';
 
+import { StyledTab } from '../Styles/HrmStyles';
 import { formIsValid } from '../states/ValidationRules';
 
 const decorateTab = (label, formRoot) => {
   if (formIsValid(formRoot)) {
-    return <Tab key={label} label={label} />;
+    return <StyledTab key={label} label={label} />;
   }
   return (
-    <Tab
+    <StyledTab
       key={label}
       label={
         <>

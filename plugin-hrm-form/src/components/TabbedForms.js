@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTaskContext } from '@twilio/flex-ui';
-import { Checkbox, Tab, Tabs } from '@material-ui/core';
+import { Checkbox } from '@material-ui/core';
+import SearchIcon from '@material-ui/icons/Search';
 
 import {
   BottomButtonBar,
@@ -9,12 +10,13 @@ import {
   ColumnarBlock,
   Container,
   ErrorText,
-  NameFields,
   StyledCheckboxLabel,
   StyledNextStepButton,
   TopNav,
   TwoColumnLayout,
   TransparentButton,
+  StyledTabs,
+  StyledTab,
 } from '../Styles/HrmStyles';
 import callTypes from '../states/DomainConstants';
 import decorateTab from './decorateTab';
@@ -80,24 +82,14 @@ class TabbedForms extends React.PureComponent {
     if (isCallerType) {
       body.push(
         <Container>
-          <NameFields>
-            <FieldText
-              id="CallerInformation_FirstName"
-              label="First name"
-              field={this.props.form.callerInformation.name.firstName}
-              {...this.defaultEventHandlers(['callerInformation', 'name'], 'firstName')}
-            />
-
-            <FieldText
-              id="CallerInformation_LastName"
-              label="Last name"
-              field={this.props.form.callerInformation.name.lastName}
-              {...this.defaultEventHandlers(['callerInformation', 'name'], 'lastName')}
-            />
-          </NameFields>
-
           <TwoColumnLayout>
             <ColumnarBlock>
+              <FieldText
+                id="CallerInformation_FirstName"
+                label="First name"
+                field={this.props.form.callerInformation.name.firstName}
+                {...this.defaultEventHandlers(['callerInformation', 'name'], 'firstName')}
+              />
               <FieldSelect
                 field={this.props.form.callerInformation.relationshipToChild}
                 id="CallerInformation_RelationshipToChild"
@@ -155,6 +147,12 @@ class TabbedForms extends React.PureComponent {
 
             <ColumnarBlock>
               <FieldText
+                id="CallerInformation_LastName"
+                label="Last name"
+                field={this.props.form.callerInformation.name.lastName}
+                {...this.defaultEventHandlers(['callerInformation', 'name'], 'lastName')}
+              />
+              <FieldText
                 id="CallerInformation_StreetAddress"
                 label="Street address"
                 field={this.props.form.callerInformation.location.streetAddress}
@@ -204,24 +202,15 @@ class TabbedForms extends React.PureComponent {
     // Child Information
     body.push(
       <Container>
-        <NameFields>
-          <FieldText
-            id="ChildInformation_FirstName"
-            label="First name"
-            field={this.props.form.childInformation.name.firstName}
-            {...this.defaultEventHandlers(['childInformation', 'name'], 'firstName')}
-          />
-
-          <FieldText
-            id="ChildInformation_FirstName"
-            label="Last name"
-            field={this.props.form.childInformation.name.lastName}
-            {...this.defaultEventHandlers(['childInformation', 'name'], 'lastName')}
-          />
-        </NameFields>
-
         <TwoColumnLayout>
           <ColumnarBlock>
+            <FieldText
+              id="ChildInformation_FirstName"
+              label="First name"
+              field={this.props.form.childInformation.name.firstName}
+              {...this.defaultEventHandlers(['childInformation', 'name'], 'firstName')}
+            />
+
             <FieldSelect
               field={this.props.form.childInformation.gender}
               id="ChildInformation_Gender"
@@ -322,6 +311,12 @@ class TabbedForms extends React.PureComponent {
           </ColumnarBlock>
 
           <ColumnarBlock>
+            <FieldText
+              id="ChildInformation_FirstName"
+              label="Last name"
+              field={this.props.form.childInformation.name.lastName}
+              {...this.defaultEventHandlers(['childInformation', 'name'], 'lastName')}
+            />
             <FieldText
               id="ChildInformation_StreetAddress"
               label="Street address"
@@ -584,13 +579,13 @@ class TabbedForms extends React.PureComponent {
     );
 
     const tabs = [];
-    tabs.push(<Tab key="Search" label="Search" />);
+    tabs.push(<StyledTab searchTab key="Search" icon={<SearchIcon />} />);
     if (isCallerType) {
-      tabs.push(decorateTab('Caller Information', this.props.form.callerInformation));
+      tabs.push(decorateTab('Add Caller Information', this.props.form.callerInformation));
     }
-    tabs.push(decorateTab('Child Information', this.props.form.childInformation));
-    tabs.push(decorateTab('Issue Categorization', this.props.form.caseInformation.categories));
-    tabs.push(<Tab key="Case Information" label="Case Information" />);
+    tabs.push(decorateTab('Add Child Information', this.props.form.childInformation));
+    tabs.push(decorateTab('Categorize Issue', this.props.form.caseInformation.categories));
+    tabs.push(<StyledTab key="Case Information" label="Add Case Summary" />);
 
     const showNextButton = this.state.tab !== 0 && this.state.tab < body.length - 1;
     const showSubmitButton = this.state.tab === body.length - 1;
@@ -602,9 +597,15 @@ class TabbedForms extends React.PureComponent {
             &lt; BACK
           </TransparentButton>
         </TopNav>
-        <Tabs name="tab" variant="scrollable" scrollButtons="auto" value={this.state.tab} onChange={this.tabChange}>
+        <StyledTabs
+          name="tab"
+          variant="scrollable"
+          scrollButtons="auto"
+          value={this.state.tab}
+          onChange={this.tabChange}
+        >
           {tabs}
-        </Tabs>
+        </StyledTabs>
         {body[this.state.tab]}
         <BottomButtonBar>
           {showNextButton && (

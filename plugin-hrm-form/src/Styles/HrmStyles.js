@@ -1,56 +1,25 @@
+import React from 'react';
 import styled, { keyframes } from 'react-emotion';
-import { Input, Select, MenuItem, TableCell } from '@material-ui/core';
+import { Input, Select, MenuItem, TableCell, Tabs, Tab } from '@material-ui/core';
 import { Button, getBackgroundWithHoverCSS } from '@twilio/flex-ui';
 
 export const Container = styled('div')`
   display: flex;
-  padding: 32px 32px 12px;
+  padding: 32px 20px 12px 20px;
   flex-direction: column;
   flex-wrap: wrap;
+  background-color: #ffffff;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  margin: 0 20px;
 `;
 
-/*
- * export const TabContainer = styled('div')`
- *   margin-top: 24px;
- * `;
- */
-
-/*
- * export const ButtonContainer = styled('div')`
- *   display: flex;
- *   margin-top: 24px;
- * `;
- */
-
-/*
- * export const Header1 = styled('h1')`
- *   font-size: 24px;
- *   font-weight: bold;
- *   margin: 8px 0;
- * `;
- * export const Header2 = styled('h2')`
- *   font-size: 20px;
- *   font-weight: bold;
- *   margin: 8px 0;
- * `;
- * export const Header3 = styled('h3')`
- *   font-size: 16px;
- *   font-weight: bold;
- *   margin: 8px 0;
- * `;
- */
 export const ErrorText = styled('p')`
   color: ${props => props.theme.colors.errorColor};
   font-size: 10px;
   line-height: 1.5;
 `;
 
-/*
- * export const Text = styled('p')`
- *   font-size: 14px;
- *   line-height: 1.5;
- * `;
- */
 export const StyledInput = styled(Input)`
   display: flex;
   flex-grow: 0;
@@ -69,7 +38,6 @@ export const TextField = styled('div')`
   display: flex;
   flex-direction: column;
   margin: 8px 0;
-  width: 320px;
 `;
 
 export const StyledLabel = styled('label')`
@@ -178,7 +146,6 @@ export const CheckboxField = styled('div')`
   display: flex;
   flex-direction: row;
   margin: 8px 0;
-  width: 320px;
 `;
 
 export const StyledCheckboxLabel = styled('label')`
@@ -200,15 +167,11 @@ export const BottomButtonBar = styled('div')`
   justify-content: center;
 `;
 
-export const NameFields = styled('div')`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-`;
-
 export const ColumnarBlock = styled('div')`
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
+  margin: 0 10px;
 `;
 
 export const TwoColumnLayout = styled('div')`
@@ -216,15 +179,6 @@ export const TwoColumnLayout = styled('div')`
   flex-direction: row;
   justify-content: space-around;
 `;
-
-/*
- * export const StyledCheckbox = styled(Checkbox)`
- *   width: 28 !important;
- *   height: 28 !important;
- *   border-sizing: border-box !important;
- *   background-color: red !important;
- * `;
- */
 
 export const CategoryCheckboxField = styled('div')`
   display: flex;
@@ -244,6 +198,7 @@ export const SearchFields = styled('div')`
   flex-wrap: wrap;
   div {
     max-width: 160px;
+    min-width: 160px;
   }
 `;
 
@@ -251,4 +206,26 @@ export const StyledSearchButton = styled(StyledNextStepButton)`
   width: 100px;
   margin-bottom: 8px;
   margin-top: auto;
+`;
+
+export const StyledTabs = styled(props => <Tabs {...props} classes={{ indicator: 'indicator' }} />)`
+  && .indicator {
+    background-color: transparent;
+  }
+`;
+
+export const StyledTab = styled(props => <Tab {...props} classes={{ selected: 'selected' }} />)`
+  && {
+    min-width: ${({ searchTab }) => (searchTab ? '50px' : '130px')};
+    width: ${({ searchTab }) => (searchTab ? '50px' : '130px')};
+    background-color: ${({ searchTab }) => (searchTab ? 'transparent' : '#d1d1d5')};
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    margin: 0 5px;
+    line-height: 18px;
+
+    &.selected {
+      background-color: #ffffff;
+    }
+  }
 `;
