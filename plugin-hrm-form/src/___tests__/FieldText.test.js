@@ -48,7 +48,7 @@ test('render required FieldText', () => {
     value: '',
     touched: false,
     error: null,
-    validation: [ValidationType.REQUIRED],
+    validation: ValidationType.REQUIRED,
   };
   const handleBlur = jest.fn();
   const handleChange = jest.fn();
@@ -77,7 +77,7 @@ test('render FieldText with errors', () => {
     value: '',
     touched: true,
     error: 'This field is required',
-    validation: [ValidationType.REQUIRED],
+    validation: ValidationType.REQUIRED,
   };
   const handleBlur = jest.fn();
   const handleChange = jest.fn();
