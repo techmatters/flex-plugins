@@ -7,7 +7,7 @@ export const taskType = PropTypes.shape({
 export const fieldType = PropTypes.shape({
   value: PropTypes.string,
   error: PropTypes.string,
-  validation: PropTypes.string,
+  validation: PropTypes.arrayOf(PropTypes.string),
   touched: PropTypes.bool,
 });
 
