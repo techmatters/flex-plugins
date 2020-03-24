@@ -252,3 +252,9 @@ export const StyledSearchButton = styled(StyledNextStepButton)`
   margin-bottom: 8px;
   margin-top: auto;
 `;
+
+export const RowDiv = styled('div')`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
