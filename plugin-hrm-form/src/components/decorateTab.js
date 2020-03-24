@@ -13,9 +13,9 @@ const decorateTab = (label, formRoot) => {
       key={label}
       label={
         <>
-          <span style={{ verticalAlign: 'middle' }}>
+          <div style={{ verticalAlign: 'middle' }}>
             <ErrorIcon fontSize="inherit" style={{ color: 'red' }} />
-          </span>{' '}
+          </div>{' '}
           {label}{' '}
         </>
       }
