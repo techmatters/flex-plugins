@@ -21,7 +21,7 @@ const CallTypeButtons = props => {
   ));
 
   return (
-    <Container>
+    <Container style={{ backgroundColor: 'transparent' }}>
       {buttons}
       {props.form &&
       props.form.callType &&

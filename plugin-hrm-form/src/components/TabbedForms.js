@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTaskContext } from '@twilio/flex-ui';
-import { Checkbox, Tab, Tabs } from '@material-ui/core';
+import { Checkbox } from '@material-ui/core';
+import SearchIcon from '@material-ui/icons/Search';
 
 import {
   BottomButtonBar,
@@ -15,6 +16,8 @@ import {
   TopNav,
   TwoColumnLayout,
   TransparentButton,
+  StyledTabs,
+  StyledTab,
 } from '../Styles/HrmStyles';
 import callTypes from '../states/DomainConstants';
 import decorateTab from './decorateTab';
@@ -87,7 +90,6 @@ class TabbedForms extends React.PureComponent {
               field={this.props.form.callerInformation.name.firstName}
               {...this.defaultEventHandlers(['callerInformation', 'name'], 'firstName')}
             />
-
             <FieldText
               id="CallerInformation_LastName"
               label="Last name"
@@ -211,9 +213,8 @@ class TabbedForms extends React.PureComponent {
             field={this.props.form.childInformation.name.firstName}
             {...this.defaultEventHandlers(['childInformation', 'name'], 'firstName')}
           />
-
           <FieldText
-            id="ChildInformation_FirstName"
+            id="ChildInformation_LastName"
             label="Last name"
             field={this.props.form.childInformation.name.lastName}
             {...this.defaultEventHandlers(['childInformation', 'name'], 'lastName')}
@@ -584,13 +585,13 @@ class TabbedForms extends React.PureComponent {
     );
 
     const tabs = [];
-    tabs.push(<Tab key="Search" label="Search" />);
+    tabs.push(<StyledTab searchTab key="Search" icon={<SearchIcon />} />);
     if (isCallerType) {
-      tabs.push(decorateTab('Caller Information', this.props.form.callerInformation));
+      tabs.push(decorateTab('Add Caller Information', this.props.form.callerInformation));
     }
-    tabs.push(decorateTab('Child Information', this.props.form.childInformation));
-    tabs.push(decorateTab('Issue Categorization', this.props.form.caseInformation.categories));
-    tabs.push(<Tab key="Case Information" label="Case Information" />);
+    tabs.push(decorateTab('Add Child Information', this.props.form.childInformation));
+    tabs.push(decorateTab('Categorize Issue', this.props.form.caseInformation.categories));
+    tabs.push(<StyledTab key="Case Information" label="Add Case Summary" />);
 
     const showNextButton = this.state.tab !== 0 && this.state.tab < body.length - 1;
     const showSubmitButton = this.state.tab === body.length - 1;
@@ -602,29 +603,37 @@ class TabbedForms extends React.PureComponent {
             &lt; BACK
           </TransparentButton>
         </TopNav>
-        <Tabs name="tab" variant="scrollable" scrollButtons="auto" value={this.state.tab} onChange={this.tabChange}>
+        <StyledTabs
+          name="tab"
+          variant="scrollable"
+          scrollButtons="auto"
+          value={this.state.tab}
+          onChange={this.tabChange}
+        >
           {tabs}
-        </Tabs>
+        </StyledTabs>
         {body[this.state.tab]}
-        <BottomButtonBar>
-          {showNextButton && (
-            <StyledNextStepButton
-              roundCorners={true}
-              onClick={() => this.setState(prevState => ({ tab: prevState.tab + 1 }))}
-            >
-              Next
-            </StyledNextStepButton>
-          )}
-          {showSubmitButton && (
-            <StyledNextStepButton
-              roundCorners={true}
-              onClick={() => this.props.handleSubmit(this.props.task)}
-              disabled={!formIsValid(this.props.form)}
-            >
-              Submit
-            </StyledNextStepButton>
-          )}
-        </BottomButtonBar>
+        {(showNextButton || showSubmitButton) && (
+          <BottomButtonBar>
+            {showNextButton && (
+              <StyledNextStepButton
+                roundCorners={true}
+                onClick={() => this.setState(prevState => ({ tab: prevState.tab + 1 }))}
+              >
+                Next
+              </StyledNextStepButton>
+            )}
+            {showSubmitButton && (
+              <StyledNextStepButton
+                roundCorners={true}
+                onClick={() => this.props.handleSubmit(this.props.task)}
+                disabled={!formIsValid(this.props.form)}
+              >
+                Submit
+              </StyledNextStepButton>
+            )}
+          </BottomButtonBar>
+        )}
       </>
     );
   }
