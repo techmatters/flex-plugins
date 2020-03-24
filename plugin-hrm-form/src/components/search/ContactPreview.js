@@ -15,6 +15,8 @@ import {
 } from '../../Styles/search';
 import { searchContactResult } from '../../types';
 
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
 /**
  * @param {string} str
  * @return {string}
@@ -23,10 +25,8 @@ const fstToUpper = str => {
   return str.split(' ')[0].toUpperCase();
 };
 
-const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
 /**
- * @param {string} str
+ * @param {string} dateStr
  * @return {string}
  */
 const formatDateString = dateStr => {
