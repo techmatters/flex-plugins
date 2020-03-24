@@ -31,27 +31,25 @@ const formatDateString = dateStr => {
   return `${months[month]} ${day}, ${year} ${time}`;
 };
 
-const ContactButtons = ({ onClickChain }) => {
-  return (
-    <ContactButtonsWrapper>
-      <IconButton onClick={onClickChain}>
-        <LinkIcon />
-      </IconButton>
-      <IconButton>
-        <FullscreenIcon />
-      </IconButton>
-      <IconButton>
-        <MoreHorizIcon />
-      </IconButton>
-    </ContactButtonsWrapper>
-  );
-};
+const ContactActionButtons = ({ onClickChain }) => (
+  <ContactButtonsWrapper>
+    <IconButton onClick={onClickChain}>
+      <LinkIcon />
+    </IconButton>
+    <IconButton>
+      <FullscreenIcon />
+    </IconButton>
+    <IconButton>
+      <MoreHorizIcon />
+    </IconButton>
+  </ContactButtonsWrapper>
+);
 
-ContactButtons.propTypes = {
+ContactActionButtons.propTypes = {
   onClickChain: PropTypes.func.isRequired,
 };
 
-ContactButtons.displayName = 'ContactButtons';
+ContactActionButtons.displayName = 'ContactActionButtons';
 
 const ContactLabels = ({ label1, label2, label3 }) => (
   <RowDiv style={{ marginLeft: 'auto' }}>
@@ -99,7 +97,7 @@ const ContactPreview = ({ contact, onClick, handleConnect }) => {
         <CardContent>
           <RowDiv>
             <Typography variant="title">{name}</Typography>
-            <ContactButtons onClickChain={() => handleConnect(contact)} />
+            <ContactActionButtons onClickChain={() => handleConnect(contact)} />
           </RowDiv>
           <RowDiv>
             <Typography variant="subtitle1" color="textSecondary">

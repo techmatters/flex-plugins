@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { Container } from '../Styles/HrmStyles';
 import SearchForm from './SearchForm';
 import SearchResults from './SearchResults';
-import { withConfiguration } from '../ConfigurationContext';
-import { contextObject } from '../types';
-import { searchContacts } from '../services/ContactService';
+import { Container } from '../../Styles/HrmStyles';
+import { withConfiguration } from '../../ConfigurationContext';
+import { contextObject } from '../../types';
+import { searchContacts } from '../../services/ContactService';
 
 class Search extends Component {
   static displayName = 'Search';

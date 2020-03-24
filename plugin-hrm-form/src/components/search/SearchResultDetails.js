@@ -6,7 +6,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { StyledTableCell } from '../Styles/HrmStyles';
+import { StyledTableCell } from '../../Styles/HrmStyles';
 
 class SearchResultDetails extends Component {
   static displayName = 'SearchResultDetails';
@@ -172,4 +172,6 @@ class SearchResultDetails extends Component {
   }
 }
 
+// TODO (Gian): Remove this when details are used again
+// eslint-disable-next-line import/no-unused-modules
 export default SearchResultDetails;

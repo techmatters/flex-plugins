@@ -4,13 +4,13 @@ import PropTypes from 'prop-types';
 import SearchIcon from '@material-ui/icons/Search';
 import { omit } from 'lodash';
 
-import FieldText from './FieldText';
-import FieldSelect from './FieldSelect';
-import FieldDate from './FieldDate';
-import { SearchFields, StyledSearchButton } from '../Styles/HrmStyles';
-import { withConfiguration } from '../ConfigurationContext';
-import { contextObject } from '../types';
-import { populateCounselors } from '../services/ServerlessService';
+import FieldText from '../FieldText';
+import FieldSelect from '../FieldSelect';
+import FieldDate from '../FieldDate';
+import { SearchFields, StyledSearchButton } from '../../Styles/HrmStyles';
+import { withConfiguration } from '../../ConfigurationContext';
+import { contextObject } from '../../types';
+import { populateCounselors } from '../../services/ServerlessService';
 
 const getField = value => ({
   value,

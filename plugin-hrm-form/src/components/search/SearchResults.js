@@ -6,8 +6,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import { List } from '@material-ui/core';
 
 // import SearchResultDetails from './SearchResultDetails';
-import ContactPreview from './search/ContactPreview';
-import { searchContactResult } from '../types';
+import ContactPreview from './ContactPreview';
+import { searchContactResult } from '../../types';
 
 class SearchResults extends Component {
   static displayName = 'SearchResults';
