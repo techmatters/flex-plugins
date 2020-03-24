@@ -12,7 +12,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 
 import SearchResultDetails from './SearchResultDetails';
-import { StyledTableCell, StyledLabel } from '../Styles/HrmStyles';
+import { Container, StyledTableCell, StyledLabel } from '../Styles/HrmStyles';
 
 class SearchResults extends Component {
   static displayName = 'SearchResults';
@@ -66,6 +66,8 @@ class SearchResults extends Component {
       }),
     ).isRequired,
     handleSelectSearchResult: PropTypes.func.isRequired,
+    handleBack: PropTypes.func.isRequired,
+    handleViewDetails: PropTypes.func.isRequired,
   };
 
   state = {
@@ -88,9 +90,11 @@ class SearchResults extends Component {
 
   handleClickCallSummary = selectedCallSumary => this.setState({ selectedCallSumary });
 
-  renderName(name, contactId) {
+  renderName(name, currentContact) {
+    const { handleViewDetails } = this.props;
+
     return (
-      <span style={{ cursor: 'pointer' }} tabIndex={0} role="button" onClick={() => this.toggleShowDetails(contactId)}>
+      <span style={{ cursor: 'pointer' }} tabIndex={0} role="button" onClick={() => handleViewDetails(currentContact)}>
         {name}
       </span>
     );
@@ -108,12 +112,11 @@ class SearchResults extends Component {
   }
 
   render() {
-    if (this.props.results.length === 0) {
-      return null;
-    }
-
     return (
-      <>
+      <Container>
+        <button type="button" onClick={this.props.handleBack}>
+          Back
+        </button>
         {this.renderCallSummaryDialog()}
         <StyledLabel style={{ marginTop: 30, marginBottom: 10 }}>Use existing contact</StyledLabel>
         <Paper>
@@ -141,7 +144,7 @@ class SearchResults extends Component {
                       />
                     </StyledTableCell>
                     <StyledTableCell>{result.overview.dateTime}</StyledTableCell>
-                    <StyledTableCell>{this.renderName(result.overview.name, result.contactId)}</StyledTableCell>
+                    <StyledTableCell>{this.renderName(result.overview.name, result.details)}</StyledTableCell>
                     <StyledTableCell>{result.overview.customerNumber}</StyledTableCell>
                     <StyledTableCell>{result.overview.callType}</StyledTableCell>
                     <StyledTableCell>{result.overview.categories}</StyledTableCell>
@@ -167,7 +170,7 @@ class SearchResults extends Component {
             </TableBody>
           </Table>
         </Paper>
-      </>
+      </Container>
     );
   }
 }
