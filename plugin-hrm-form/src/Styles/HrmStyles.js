@@ -245,7 +245,7 @@ export const StyledTab = styled(props => <Tab {...props} classes={{ selected: 's
   }
 `;
 
-export const RowDiv = styled('div')`
+export const Row = styled('div')`
   display: flex;
   flex-direction: row;
   align-items: center;

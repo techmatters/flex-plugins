@@ -1,11 +1,18 @@
 /* eslint-disable react/no-multi-comp */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Card, CardContent, IconButton, Typography } from '@material-ui/core';
+import { Button, Card, CardContent, IconButton, Typography } from '@material-ui/core';
 import { Fullscreen as FullscreenIcon, Link as LinkIcon, MoreHoriz as MoreHorizIcon } from '@material-ui/icons';
 
-import { ContactWrapper, ContactButtonsWrapper, ContactLabel } from '../../Styles/search';
-import { RowDiv } from '../../Styles/HrmStyles';
+import {
+  RowDiv,
+  ContactWrapper,
+  ContactButtonsWrapper,
+  ContactCallType,
+  ContactTag,
+  ContactDate,
+  TagFont,
+} from '../../Styles/search';
 import { searchContactResult } from '../../types';
 
 /**
@@ -51,36 +58,39 @@ ContactActionButtons.propTypes = {
 
 ContactActionButtons.displayName = 'ContactActionButtons';
 
-const ContactLabels = ({ label1, label2, label3 }) => (
+const ContactTags = ({ tag1, tag2, tag3 }) => (
   <RowDiv style={{ marginLeft: 'auto' }}>
-    <ContactLabel>
-      <Typography variant="caption">{label1}</Typography>
-    </ContactLabel>
-    {label2 && (
-      <ContactLabel>
-        <Typography variant="caption">{label2}</Typography>
-      </ContactLabel>
+    {tag1 && (
+      <ContactTag>
+        <TagFont>{tag1}</TagFont>
+      </ContactTag>
     )}
-    {label3 && (
-      <ContactLabel>
-        <Typography variant="caption">{label3}</Typography>
-      </ContactLabel>
+    {tag2 && (
+      <ContactTag>
+        <TagFont>{tag2}</TagFont>
+      </ContactTag>
+    )}
+    {tag3 && (
+      <ContactTag>
+        <TagFont>{tag3}</TagFont>
+      </ContactTag>
     )}
   </RowDiv>
 );
 
-ContactLabels.propTypes = {
-  label1: PropTypes.string.isRequired,
-  label2: PropTypes.string,
-  label3: PropTypes.string,
+ContactTags.propTypes = {
+  tag1: PropTypes.string,
+  tag2: PropTypes.string,
+  tag3: PropTypes.string,
 };
 
-ContactLabels.defaultProps = {
-  label2: '',
-  label3: '',
+ContactTags.defaultProps = {
+  tag1: '',
+  tag2: '',
+  tag3: '',
 };
 
-ContactLabels.displayName = 'ContactLabels';
+ContactTags.displayName = 'ContactLabels';
 
 const ContactPreview = ({ contact, onClick, handleConnect }) => {
   const name = contact.overview.name === ' ' ? 'Unknown' : contact.overview.name;
@@ -89,27 +99,41 @@ const ContactPreview = ({ contact, onClick, handleConnect }) => {
     (contact.details.caseInformation.callSummary && contact.details.caseInformation.callSummary.substr(0, 50)) ||
     '- No call summary -';
 
+  const longSummary = callSummary.length === 50;
+
   const dateString = formatDateString(contact.overview.dateTime);
 
   return (
     <ContactWrapper key={contact.contactId}>
-      <Card style={{ width: 'auto' }} onClick={() => onClick(contact.contactId)}>
+      <Card onClick={() => onClick(contact.contactId)}>
         <CardContent>
           <RowDiv>
-            <Typography variant="title">{name}</Typography>
+            <Typography variant="subtitle1">{name}</Typography>
             <ContactActionButtons onClickChain={() => handleConnect(contact)} />
           </RowDiv>
           <RowDiv>
-            <Typography variant="subtitle1" color="textSecondary">
+            <ContactCallType>
+              <TagFont>{fstToUpper(contact.overview.callType)}</TagFont>
+            </ContactCallType>
+            <Typography variant="subtitle2">Counselor: {contact.overview.counselor}</Typography>
+          </RowDiv>
+          <RowDiv>
+            <Typography variant="subtitle2" color="textSecondary">
               {callSummary}
-              {callSummary.length === 50 && '...'}
+              {longSummary && '...'}
+              {longSummary && (
+                <Button size="small" autoCapitalize={false} color="primary">
+                  more notes
+                </Button>
+              )}
             </Typography>
           </RowDiv>
           <RowDiv>
-            <Typography variant="caption" color="textSecondary">
+            {/* <Typography variant="caption" color="textSecondary">
               {dateString}
-            </Typography>
-            <ContactLabels label1={fstToUpper(contact.overview.callType)} label2="CAT. 2" label3="CAT3" />
+            </Typography> */}
+            <ContactDate>{dateString}</ContactDate>
+            <ContactTags tag1="TAG 1" tag2="TAG 2" tag3="TAG 3" />
           </RowDiv>
         </CardContent>
       </Card>
