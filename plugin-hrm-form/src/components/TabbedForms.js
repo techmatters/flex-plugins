@@ -613,25 +613,27 @@ class TabbedForms extends React.PureComponent {
           {tabs}
         </StyledTabs>
         {body[this.state.tab]}
-        <BottomButtonBar>
-          {showNextButton && (
-            <StyledNextStepButton
-              roundCorners={true}
-              onClick={() => this.setState(prevState => ({ tab: prevState.tab + 1 }))}
-            >
-              Next
-            </StyledNextStepButton>
-          )}
-          {showSubmitButton && (
-            <StyledNextStepButton
-              roundCorners={true}
-              onClick={() => this.props.handleSubmit(this.props.task)}
-              disabled={!formIsValid(this.props.form)}
-            >
-              Submit
-            </StyledNextStepButton>
-          )}
-        </BottomButtonBar>
+        {(showNextButton || showSubmitButton) && (
+          <BottomButtonBar>
+            {showNextButton && (
+              <StyledNextStepButton
+                roundCorners={true}
+                onClick={() => this.setState(prevState => ({ tab: prevState.tab + 1 }))}
+              >
+                Next
+              </StyledNextStepButton>
+            )}
+            {showSubmitButton && (
+              <StyledNextStepButton
+                roundCorners={true}
+                onClick={() => this.props.handleSubmit(this.props.task)}
+                disabled={!formIsValid(this.props.form)}
+              >
+                Submit
+              </StyledNextStepButton>
+            )}
+          </BottomButtonBar>
+        )}
       </>
     );
   }

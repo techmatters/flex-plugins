@@ -165,6 +165,9 @@ export const BottomButtonBar = styled('div')`
   display: flex;
   flex-direction: row;
   justify-content: center;
+  background-color: #ffffff;
+  margin: 0 20px;
+  padding: 20px 0;
 `;
 
 export const NameFields = styled('div')`
