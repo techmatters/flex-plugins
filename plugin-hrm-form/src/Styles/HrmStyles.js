@@ -167,17 +167,29 @@ export const BottomButtonBar = styled('div')`
   justify-content: center;
 `;
 
+export const NameFields = styled('div')`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  > div {
+    flex-grow: 1;
+    flex-basis: 0;
+    margin: 0 10px;
+  }
+`;
+
 export const ColumnarBlock = styled('div')`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  flex-basis: 0;
   margin: 0 10px;
 `;
 
 export const TwoColumnLayout = styled('div')`
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: space-between;
 `;
 
 export const CategoryCheckboxField = styled('div')`
@@ -196,7 +208,7 @@ export const StyledTableCell = styled(TableCell)`
 export const SearchFields = styled('div')`
   display: flex;
   flex-wrap: wrap;
-  div {
+  > div {
     max-width: 160px;
     min-width: 160px;
   }

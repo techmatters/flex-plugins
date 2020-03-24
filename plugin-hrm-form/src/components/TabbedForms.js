@@ -10,6 +10,7 @@ import {
   ColumnarBlock,
   Container,
   ErrorText,
+  NameFields,
   StyledCheckboxLabel,
   StyledNextStepButton,
   TopNav,
@@ -82,14 +83,23 @@ class TabbedForms extends React.PureComponent {
     if (isCallerType) {
       body.push(
         <Container>
+          <NameFields>
+            <FieldText
+              id="CallerInformation_FirstName"
+              label="First name"
+              field={this.props.form.callerInformation.name.firstName}
+              {...this.defaultEventHandlers(['callerInformation', 'name'], 'firstName')}
+            />
+            <FieldText
+              id="CallerInformation_LastName"
+              label="Last name"
+              field={this.props.form.callerInformation.name.lastName}
+              {...this.defaultEventHandlers(['callerInformation', 'name'], 'lastName')}
+            />
+          </NameFields>
+
           <TwoColumnLayout>
             <ColumnarBlock>
-              <FieldText
-                id="CallerInformation_FirstName"
-                label="First name"
-                field={this.props.form.callerInformation.name.firstName}
-                {...this.defaultEventHandlers(['callerInformation', 'name'], 'firstName')}
-              />
               <FieldSelect
                 field={this.props.form.callerInformation.relationshipToChild}
                 id="CallerInformation_RelationshipToChild"
@@ -147,12 +157,6 @@ class TabbedForms extends React.PureComponent {
 
             <ColumnarBlock>
               <FieldText
-                id="CallerInformation_LastName"
-                label="Last name"
-                field={this.props.form.callerInformation.name.lastName}
-                {...this.defaultEventHandlers(['callerInformation', 'name'], 'lastName')}
-              />
-              <FieldText
                 id="CallerInformation_StreetAddress"
                 label="Street address"
                 field={this.props.form.callerInformation.location.streetAddress}
@@ -202,15 +206,23 @@ class TabbedForms extends React.PureComponent {
     // Child Information
     body.push(
       <Container>
+        <NameFields>
+          <FieldText
+            id="ChildInformation_FirstName"
+            label="First name"
+            field={this.props.form.childInformation.name.firstName}
+            {...this.defaultEventHandlers(['childInformation', 'name'], 'firstName')}
+          />
+          <FieldText
+            id="ChildInformation_LastName"
+            label="Last name"
+            field={this.props.form.childInformation.name.lastName}
+            {...this.defaultEventHandlers(['childInformation', 'name'], 'lastName')}
+          />
+        </NameFields>
+
         <TwoColumnLayout>
           <ColumnarBlock>
-            <FieldText
-              id="ChildInformation_FirstName"
-              label="First name"
-              field={this.props.form.childInformation.name.firstName}
-              {...this.defaultEventHandlers(['childInformation', 'name'], 'firstName')}
-            />
-
             <FieldSelect
               field={this.props.form.childInformation.gender}
               id="ChildInformation_Gender"
@@ -311,12 +323,6 @@ class TabbedForms extends React.PureComponent {
           </ColumnarBlock>
 
           <ColumnarBlock>
-            <FieldText
-              id="ChildInformation_FirstName"
-              label="Last name"
-              field={this.props.form.childInformation.name.lastName}
-              {...this.defaultEventHandlers(['childInformation', 'name'], 'lastName')}
-            />
             <FieldText
               id="ChildInformation_StreetAddress"
               label="Street address"
