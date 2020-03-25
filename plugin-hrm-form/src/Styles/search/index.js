@@ -48,7 +48,7 @@ export const TagFont = styled('p')`
   text-align: left;
 `;
 
-export const ContactDate = styled('p')`
+export const LightFont = styled('p')`
   color: #000000;
   font-family: OpenSans;
   font-size: 13px;

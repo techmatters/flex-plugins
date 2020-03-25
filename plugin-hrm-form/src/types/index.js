@@ -141,4 +141,5 @@ export const searchContactResult = PropTypes.shape({
       wouldTheChildRecommendUsToAFriend: PropTypes.bool,
     }),
   }),
+  counselor: PropTypes.string,
 });
