@@ -2,14 +2,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import SearchIcon from '@material-ui/icons/Search';
-import { omit } from 'lodash';
 
 import FieldText from './FieldText';
 import FieldSelect from './FieldSelect';
 import FieldDate from './FieldDate';
 import { Container, SearchFields, StyledSearchButton } from '../Styles/HrmStyles';
 import { withConfiguration } from '../ConfigurationContext';
-import { contextObject } from '../types';
+import { contextObject, searchFormType } from '../types';
 import { populateCounselors } from '../services/ServerlessService';
 
 const getField = value => ({
@@ -24,17 +23,13 @@ class SearchForm extends Component {
 
   static propTypes = {
     handleSearch: PropTypes.func.isRequired,
+    handleSearchFormChange: PropTypes.func.isRequired,
     context: contextObject.isRequired,
+    values: searchFormType.isRequired,
   };
 
   state = {
-    firstName: '',
-    lastName: '',
-    counselor: { label: '', value: '' },
     counselors: [],
-    phoneNumber: '',
-    dateFrom: '',
-    dateTo: '',
   };
 
   async componentDidMount() {
@@ -50,18 +45,20 @@ class SearchForm extends Component {
   }
 
   defaultEventHandlers = fieldName => ({
-    handleChange: e => this.setState({ [fieldName]: e.target.value }),
+    handleChange: e => this.props.handleSearchFormChange(fieldName, e.target.value),
     handleBlur: () => {},
     handleFocus: () => {},
   });
 
   render() {
-    const { firstName, lastName, counselor, counselors, phoneNumber, dateFrom, dateTo } = this.state;
+    const { counselors } = this.state;
+    const { firstName, lastName, counselor, phoneNumber, dateFrom, dateTo } = this.props.values;
+
     const counselorsOptions = counselors.map(e => ({ label: e.fullName, value: e.sid }));
 
     const { helpline } = this.props.context;
     const searchParams = {
-      ...omit(this.state, 'counselors'),
+      ...this.props.values,
       counselor: counselor.value, // backend expects only counselor's SID
       helpline,
     };

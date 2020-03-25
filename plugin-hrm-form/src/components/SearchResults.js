@@ -13,58 +13,13 @@ import DialogContent from '@material-ui/core/DialogContent';
 
 import SearchResultDetails from './SearchResultDetails';
 import { Container, StyledTableCell, StyledLabel } from '../Styles/HrmStyles';
+import { searchResultType } from '../types';
 
 class SearchResults extends Component {
   static displayName = 'SearchResults';
 
   static propTypes = {
-    results: PropTypes.arrayOf(
-      PropTypes.shape({
-        contactId: PropTypes.string.isRequired,
-        overview: PropTypes.shape({
-          dateTime: PropTypes.string,
-          name: PropTypes.string,
-          customerNumber: PropTypes.string,
-          callType: PropTypes.string,
-          categories: PropTypes.string,
-          counselor: PropTypes.string,
-          notes: PropTypes.string,
-        }).isRequired,
-        details: PropTypes.shape({
-          childInformation: PropTypes.shape({
-            name: PropTypes.shape({
-              firstName: PropTypes.string,
-              lastName: PropTypes.string,
-            }),
-            gender: PropTypes.string,
-            age: PropTypes.string,
-            language: PropTypes.string,
-            nationality: PropTypes.string,
-            ethnicity: PropTypes.string,
-            location: PropTypes.shape({
-              streetAddress: PropTypes.string,
-              city: PropTypes.string,
-              stateOrCounty: PropTypes.string,
-              postalCode: PropTypes.string,
-              phone1: PropTypes.string,
-              phone2: PropTypes.string,
-            }),
-            refugee: PropTypes.bool,
-          }),
-          caseInformation: PropTypes.shape({
-            callSummary: PropTypes.string,
-            referredTo: PropTypes.string,
-            status: PropTypes.string,
-            keepConfidential: PropTypes.bool,
-            okForCaseWorkerToCall: PropTypes.bool,
-            howDidTheChildHearAboutUs: PropTypes.string,
-            didYouDiscussRightsWithTheChild: PropTypes.bool,
-            didTheChildFeelWeSolvedTheirProblem: PropTypes.bool,
-            wouldTheChildRecommendUsToAFriend: PropTypes.bool,
-          }),
-        }),
-      }),
-    ).isRequired,
+    results: PropTypes.arrayOf(searchResultType).isRequired,
     handleSelectSearchResult: PropTypes.func.isRequired,
     handleBack: PropTypes.func.isRequired,
     handleViewDetails: PropTypes.func.isRequired,

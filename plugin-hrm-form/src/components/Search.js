@@ -1,62 +1,83 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 
 import SearchForm from './SearchForm';
 import SearchResults from './SearchResults';
 import ContactDetails from './ContactDetails';
 import { withConfiguration } from '../ConfigurationContext';
-import { contextObject } from '../types';
-import { searchContacts } from '../services/ContactService';
+import { contextObject, contactType, searchResultType, searchFormType } from '../types';
+import { handleSearchFormChange, changeSearchPage, viewContactDetails, searchContacts } from '../states/SearchContact';
+import { namespace, searchContactsBase } from '../states';
 
-class Search extends Component {
-  static displayName = 'Search';
-
-  static propTypes = {
-    context: contextObject.isRequired,
-    handleSelectSearchResult: PropTypes.func.isRequired,
+const Search = props => {
+  const handleSearch = searchParams => {
+    const { hrmBaseUrl } = props.context;
+    props.searchContacts(hrmBaseUrl, searchParams);
   };
 
-  state = {
-    results: [],
-    currentPage: 'form',
-    currentContact: null,
-  };
+  const goToForm = () => props.changeSearchPage('form');
+  const goToResults = () => props.changeSearchPage('results');
 
-  handleSearch = async searchParams => {
-    const { hrmBaseUrl } = this.props.context;
-    const results = await searchContacts(hrmBaseUrl, searchParams);
-    this.setState({ results }, this.goToResults);
-  };
+  const { currentPage, currentContact, searchResult, isRequesting, error, form } = props;
+  console.log({ isRequesting, error });
 
-  changeCurrentPage = currentPage => this.setState({ currentPage });
-
-  goToForm = () => this.changeCurrentPage('form');
-
-  goToResults = () => this.changeCurrentPage('results');
-
-  viewDetails = currentContact => this.setState({ currentContact }, () => this.changeCurrentPage('details'));
-
-  render() {
-    const { currentPage, currentContact } = this.state;
-
-    switch (currentPage) {
-      case 'form':
-        return <SearchForm handleSearch={this.handleSearch} />;
-      case 'results':
-        return (
-          <SearchResults
-            results={this.state.results}
-            handleSelectSearchResult={this.props.handleSelectSearchResult}
-            handleBack={this.goToForm}
-            handleViewDetails={this.viewDetails}
-          />
-        );
-      case 'details':
-        return <ContactDetails contact={currentContact} handleBack={this.goToResults} />;
-      default:
-        return null;
-    }
+  switch (currentPage) {
+    case 'form':
+      return (
+        <SearchForm values={form} handleSearchFormChange={props.handleSearchFormChange} handleSearch={handleSearch} />
+      );
+    case 'results':
+      return (
+        <SearchResults
+          results={searchResult}
+          handleSelectSearchResult={props.handleSelectSearchResult}
+          handleBack={goToForm}
+          handleViewDetails={props.viewContactDetails}
+        />
+      );
+    case 'details':
+      return <ContactDetails contact={currentContact} handleBack={goToResults} />;
+    default:
+      return null;
   }
-}
+};
 
-export default withConfiguration(Search);
+Search.displayName = 'Search';
+Search.propTypes = {
+  context: contextObject.isRequired,
+  handleSelectSearchResult: PropTypes.func.isRequired,
+  handleSearchFormChange: PropTypes.func.isRequired,
+  searchContacts: PropTypes.func.isRequired,
+  changeSearchPage: PropTypes.func.isRequired,
+  viewContactDetails: PropTypes.func.isRequired,
+  currentPage: PropTypes.string.isRequired,
+  currentContact: contactType.isRequired,
+  form: searchFormType.isRequired,
+  searchResult: PropTypes.arrayOf(searchResultType).isRequired,
+  isRequesting: PropTypes.bool.isRequired,
+  error: PropTypes.instanceOf(Error).isRequired,
+};
+
+const mapStateToProps = state => {
+  const searchContactsState = state[namespace][searchContactsBase];
+
+  return {
+    currentPage: searchContactsState.currentPage,
+    currentContact: searchContactsState.currentContact,
+    form: searchContactsState.form,
+    searchResult: searchContactsState.searchResult,
+    isRequesting: searchContactsState.isRequesting,
+    error: searchContactsState.error,
+  };
+};
+
+const mapDispatchToProps = dispatch => ({
+  handleSearchFormChange: bindActionCreators(handleSearchFormChange, dispatch),
+  changeSearchPage: bindActionCreators(changeSearchPage, dispatch),
+  viewContactDetails: bindActionCreators(viewContactDetails, dispatch),
+  searchContacts: searchContacts(dispatch),
+});
+
+export default withConfiguration(connect(mapStateToProps, mapDispatchToProps)(Search));
