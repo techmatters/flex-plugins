@@ -2,7 +2,7 @@ import styled from 'react-emotion';
 
 import { Row } from '../HrmStyles';
 
-export const RowDiv = styled(Row)`
+export const StyledRow = styled(Row)`
   margin-bottom: 2px;
 `;
 

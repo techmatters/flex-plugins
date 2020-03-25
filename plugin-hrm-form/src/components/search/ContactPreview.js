@@ -5,7 +5,7 @@ import { Button, Card, CardContent, IconButton, Typography } from '@material-ui/
 import { Fullscreen as FullscreenIcon, Link as LinkIcon, MoreHoriz as MoreHorizIcon } from '@material-ui/icons';
 
 import {
-  RowDiv,
+  StyledRow,
   ContactWrapper,
   ContactButtonsWrapper,
   ContactCallType,
@@ -59,7 +59,7 @@ ContactActionButtons.propTypes = {
 ContactActionButtons.displayName = 'ContactActionButtons';
 
 const ContactTags = ({ tag1, tag2, tag3 }) => (
-  <RowDiv style={{ marginLeft: 'auto' }}>
+  <StyledRow style={{ marginLeft: 'auto' }}>
     {tag1 && (
       <ContactTag>
         <TagFont>{tag1}</TagFont>
@@ -75,7 +75,7 @@ const ContactTags = ({ tag1, tag2, tag3 }) => (
         <TagFont>{tag3}</TagFont>
       </ContactTag>
     )}
-  </RowDiv>
+  </StyledRow>
 );
 
 ContactTags.propTypes = {
@@ -107,17 +107,17 @@ const ContactPreview = ({ contact, onClick, handleConnect }) => {
     <ContactWrapper key={contact.contactId}>
       <Card onClick={() => onClick(contact.contactId)}>
         <CardContent>
-          <RowDiv>
+          <StyledRow>
             <Typography variant="subtitle1">{name}</Typography>
             <ContactActionButtons onClickChain={() => handleConnect(contact)} />
-          </RowDiv>
-          <RowDiv>
+          </StyledRow>
+          <StyledRow>
             <ContactCallType>
               <TagFont>{fstToUpper(contact.overview.callType)}</TagFont>
             </ContactCallType>
-            <Typography variant="subtitle2">Counselor: {contact.overview.counselor}</Typography>
-          </RowDiv>
-          <RowDiv>
+            <Typography variant="subtitle2">Counselor: {contact.counselor}</Typography>
+          </StyledRow>
+          <StyledRow>
             <Typography variant="subtitle2" color="textSecondary">
               {callSummary}
               {longSummary && '...'}
@@ -127,14 +127,11 @@ const ContactPreview = ({ contact, onClick, handleConnect }) => {
                 </Button>
               )}
             </Typography>
-          </RowDiv>
-          <RowDiv>
-            {/* <Typography variant="caption" color="textSecondary">
-              {dateString}
-            </Typography> */}
+          </StyledRow>
+          <StyledRow>
             <ContactDate>{dateString}</ContactDate>
             <ContactTags tag1="TAG 1" tag2="TAG 2" tag3="TAG 3" />
-          </RowDiv>
+          </StyledRow>
         </CardContent>
       </Card>
     </ContactWrapper>
