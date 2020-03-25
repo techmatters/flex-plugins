@@ -100,7 +100,12 @@ class SearchResults extends Component {
     );
   };
 
-  // captures the contact of each preview and the event so we can "pop over" the pressed button
+  /**
+   * Captures the contact of each preview and the event that fired it
+   * so we can "pop over" the pressed button
+   * @param {any} contact
+   * @returns {(e: React.MouseEvent<HTMLElement, MouseEvent>) => void}
+   */
   handleConnectConfirm = contact => e => {
     e.stopPropagation();
     this.setState({ anchorEl: e.currentTarget, contact });
