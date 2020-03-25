@@ -6,6 +6,16 @@ export const StyledRow = styled(Row)`
   margin-bottom: 2px;
 `;
 
+export const ConfirmPopoverText = styled('p')`
+  color: #000000;
+  font-family: OpenSans;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 16px;
+  text-align: left;
+  margin-bottom: 20px;
+`;
+
 export const ContactWrapper = styled('div')`
   margin-top: 5px;
   margin-bottom: 5px;

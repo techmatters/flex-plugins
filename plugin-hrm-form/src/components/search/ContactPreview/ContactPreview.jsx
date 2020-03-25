@@ -44,7 +44,7 @@ const ContactPreview = ({ contact, onClick, handleConnect }) => {
       <Card onClick={() => onClick(contact.contactId)}>
         <CardContent>
           {/** child's name and action buttons */}
-          <CardRow1 name={name} onClickChain={() => handleConnect(contact)} />
+          <CardRow1 name={name} onClickChain={handleConnect} />
           {/** call type and counselor's name */}
           <CardRow2 callType={fstToUpper(contact.overview.callType)} counselor={contact.counselor} />
           {/** call summary (notes) */}
