@@ -3,17 +3,17 @@ import PropTypes from 'prop-types';
 import { Typography } from '@material-ui/core';
 
 import { Row } from '../../../Styles/HrmStyles';
-import { RowWithMargin, ContactCallType, LightFont, TagFont } from '../../../Styles/search';
+import { RowWithMargin, ContactCallType, LightText, TagText } from '../../../Styles/search';
 
 const StyledRow = RowWithMargin(8);
 
 const CardRow2 = ({ callType, counselor }) => (
   <StyledRow>
     <ContactCallType>
-      <TagFont>{callType}</TagFont>
+      <TagText>{callType}</TagText>
     </ContactCallType>
     <Row>
-      <LightFont style={{ marginRight: 5 }}>Counselor: </LightFont>
+      <LightText style={{ marginRight: 5 }}>Counselor: </LightText>
       <Typography variant="subtitle2">{counselor}</Typography>
     </Row>
   </StyledRow>

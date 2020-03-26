@@ -3,10 +3,6 @@ import { Paper } from '@material-ui/core';
 
 import { Row, FontOpenSans } from '../HrmStyles';
 
-export const RowWithMargin = margin => styled(Row)`
-  margin-bottom: ${margin}px;
-`;
-
 export const AlertContainer = styled(Row)`
   background-color: #000000;
   opacity: 0.5;
@@ -24,6 +20,11 @@ export const ConfirmContainer = styled(Paper)`
   padding: 30px;
   padding-top: 60px;
   padding-bottom: 60px;
+`;
+
+// ContactPreview styles
+export const RowWithMargin = margin => styled(Row)`
+  margin-bottom: ${margin}px;
 `;
 
 export const ContactWrapper = styled('div')`
@@ -81,26 +82,26 @@ export const AlertText = styled(PopoverText)`
   margin-left: 20px;
 `;
 
-export const NameFont = styled(FontOpenSans)`
+export const NameText = styled(FontOpenSans)`
   font-size: 12px;
   font-weight: 700;
   line-height: 14px;
 `;
 
-export const SummaryFont = styled(FontOpenSans)`
+export const SummaryText = styled(FontOpenSans)`
   font-size: 13px;
   font-weight: 400;
   line-height: 16px;
 `;
 
-export const TagFont = styled(FontOpenSans)`
+export const TagText = styled(FontOpenSans)`
   font-size: 11px;
   font-weight: 400;
   line-height: 13px;
   opacity: 0.6570405505952381;
 `;
 
-export const LightFont = styled(FontOpenSans)`
+export const LightText = styled(FontOpenSans)`
   font-size: 13px;
   font-weight: 400;
   line-height: 16px;

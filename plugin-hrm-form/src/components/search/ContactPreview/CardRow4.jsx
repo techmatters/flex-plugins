@@ -2,27 +2,27 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { Row } from '../../../Styles/HrmStyles';
-import { RowWithMargin, ContactTag, LightFont, TagFont } from '../../../Styles/search';
+import { RowWithMargin, ContactTag, LightText, TagText } from '../../../Styles/search';
 
 const StyledRow = RowWithMargin(2);
 
 const CardRow4 = ({ dateString, tag1, tag2, tag3 }) => (
   <StyledRow>
-    <LightFont>{dateString}</LightFont>
+    <LightText>{dateString}</LightText>
     <Row style={{ marginLeft: 'auto' }}>
       {tag1 && (
         <ContactTag>
-          <TagFont>{tag1}</TagFont>
+          <TagText>{tag1}</TagText>
         </ContactTag>
       )}
       {tag2 && (
         <ContactTag>
-          <TagFont>{tag2}</TagFont>
+          <TagText>{tag2}</TagText>
         </ContactTag>
       )}
       {tag3 && (
         <ContactTag>
-          <TagFont>{tag3}</TagFont>
+          <TagText>{tag3}</TagText>
         </ContactTag>
       )}
     </Row>

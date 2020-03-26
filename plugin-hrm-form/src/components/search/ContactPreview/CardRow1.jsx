@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { IconButton } from '@material-ui/core';
 import { Fullscreen, Link, MoreHoriz } from '@material-ui/icons';
 
-import { NameFont, RowWithMargin, ContactButtonsWrapper, StyledIcon } from '../../../Styles/search';
+import { NameText, RowWithMargin, ContactButtonsWrapper, StyledIcon } from '../../../Styles/search';
 
 const StyledRow = RowWithMargin(0);
 
@@ -13,7 +13,7 @@ const MoreHorizIcon = StyledIcon(MoreHoriz);
 
 const CardRow1 = ({ name, onClickChain }) => (
   <StyledRow>
-    <NameFont>{name}</NameFont>
+    <NameText>{name}</NameText>
     <ContactButtonsWrapper>
       <IconButton onClick={onClickChain}>
         <LinkIcon />

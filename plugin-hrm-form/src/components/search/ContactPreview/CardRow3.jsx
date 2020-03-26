@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Button } from '@material-ui/core';
 
-import { RowWithMargin, SummaryFont, NoneTransform } from '../../../Styles/search';
+import { RowWithMargin, SummaryText, NoneTransform } from '../../../Styles/search';
 
 const StyledRow = RowWithMargin(5);
 
@@ -32,17 +32,17 @@ class CardRow3 extends React.Component {
         <Button size="small" color="primary" onClick={this.handleClick(false)}>
           <NoneTransform>less notes</NoneTransform>
         </Button>
-        <SummaryFont>{this.props.callSummary}</SummaryFont>
+        <SummaryText>{this.props.callSummary}</SummaryText>
         <Button size="small" color="primary">
           <NoneTransform>See full record</NoneTransform>
         </Button>
       </div>
     ) : (
       <StyledRow>
-        <SummaryFont>
+        <SummaryText>
           {this.shortSummary}
           {this.isLong && '...'}
-        </SummaryFont>
+        </SummaryText>
         {this.isLong && (
           <Button size="small" color="primary" onClick={this.handleClick(true)}>
             <NoneTransform>more notes</NoneTransform>
