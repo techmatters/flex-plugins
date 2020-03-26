@@ -21,7 +21,7 @@ const fstToUpper = str => {
 };
 
 /**
- * Formats the date in a clearer way than its received in contact
+ * Formats the date in a 12-hours clock style
  * @param {string} dateStr
  * @return {string}
  */
@@ -30,8 +30,13 @@ const formatDateString = dateStr => {
   const month = d.getMonth();
   const day = d.getDay();
   const year = d.getFullYear();
-  const time = `${d.getHours()}:${d.getMinutes()}`;
-  return `${months[month]} ${day}, ${year} ${time}`;
+  const h = d.getHours();
+  const in12 = h % 2;
+  const hours = in12 ? in12 : 12; // hour "00" is displayed as "12"
+  const m = d.getMinutes();
+  const minutes = m < 10 ? `0${m}` : m;
+  const meridiem = h > 11 ? 'pm' : 'am';
+  return `${months[month]} ${day}, ${year} ${hours}:${minutes}${meridiem}`;
 };
 
 const ContactPreview = ({ contact, onClick, handleConnect }) => {
@@ -39,9 +44,11 @@ const ContactPreview = ({ contact, onClick, handleConnect }) => {
 
   const dateString = formatDateString(contact.overview.dateTime);
 
+  const [tag1, tag2, tag3] = contact.tags;
+
   return (
     <ContactWrapper key={contact.contactId}>
-      <Card onClick={() => onClick(contact.contactId)}>
+      <Card onClick={() => onClick(`contact: ${contact.contactId}\ndate: ${contact.overview.dateTime}`)}>
         <CardContent>
           {/** child's name and action buttons */}
           <CardRow1 name={name} onClickChain={handleConnect} />
@@ -50,7 +57,7 @@ const ContactPreview = ({ contact, onClick, handleConnect }) => {
           {/** call summary (notes) */}
           <CardRow3 callSummary={contact.details.caseInformation.callSummary} />
           {/** date and call tags */}
-          <CardRow4 dateString={dateString} tag1="TAG 1" tag2="TAG 2" tag3="TAG 3" />
+          <CardRow4 dateString={dateString} tag1={tag1} tag2={tag2} tag3={tag3} />
         </CardContent>
       </Card>
     </ContactWrapper>

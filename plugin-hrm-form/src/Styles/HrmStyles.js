@@ -250,3 +250,9 @@ export const Row = styled('div')`
   flex-direction: row;
   align-items: center;
 `;
+
+export const FontOpenSans = styled('p')`
+  color: #000000;
+  font-family: Open Sans;
+  text-align: left;
+`;

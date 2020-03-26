@@ -1,19 +1,29 @@
 import styled from 'react-emotion';
+import { Paper } from '@material-ui/core';
 
-import { Row } from '../HrmStyles';
+import { Row, FontOpenSans } from '../HrmStyles';
 
-export const StyledRow = styled(Row)`
-  margin-bottom: 2px;
+export const RowWithMargin = margin => styled(Row)`
+  margin-bottom: ${margin}px;
 `;
 
-export const ConfirmPopoverText = styled('p')`
-  color: #000000;
-  font-family: OpenSans;
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 16px;
-  text-align: left;
-  margin-bottom: 20px;
+export const AlertContainer = styled(Row)`
+  background-color: #000000;
+  opacity: 0.5;
+  padding: 20px;
+  padding-left: 50px;
+  padding-right: 50px;
+  justify-content: center;
+`;
+
+export const ConfirmContainer = styled(Paper)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  padding-top: 60px;
+  padding-bottom: 60px;
 `;
 
 export const ContactWrapper = styled('div')`
@@ -31,11 +41,19 @@ export const ContactButtonsWrapper = styled('div')`
   margin-left: auto;
 `;
 
+export const StyledIcon = icon => styled(icon)`
+  opacity: 0.34;
+`;
+
+export const NoneTransform = styled('p')`
+  text-transform: none;
+`;
+
 const Tag = styled('div')`
-  border-radius: 5%;
+  border-radius: 6px;
   padding: 5px;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 15px;
+  padding-right: 15px;
 `;
 
 export const ContactTag = styled(Tag)`
@@ -48,22 +66,43 @@ export const ContactCallType = styled(Tag)`
   background-color: #9b9b9b;
 `;
 
-export const TagFont = styled('p')`
-  color: #000000;
-  font-family: OpenSans;
+const PopoverText = styled(FontOpenSans)`
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 16px;
+`;
+
+export const ConfirmText = styled(PopoverText)`
+  margin-bottom: 20px;
+`;
+
+export const AlertText = styled(PopoverText)`
+  color: #ffffff;
+  margin-left: 20px;
+`;
+
+export const NameFont = styled(FontOpenSans)`
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 14px;
+`;
+
+export const SummaryFont = styled(FontOpenSans)`
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 16px;
+`;
+
+export const TagFont = styled(FontOpenSans)`
   font-size: 11px;
   font-weight: 400;
   line-height: 13px;
   opacity: 0.6570405505952381;
-  text-align: left;
 `;
 
-export const LightFont = styled('p')`
-  color: #000000;
-  font-family: OpenSans;
+export const LightFont = styled(FontOpenSans)`
   font-size: 13px;
   font-weight: 400;
   line-height: 16px;
   opacity: 0.4611467633928572;
-  text-align: left;
 `;

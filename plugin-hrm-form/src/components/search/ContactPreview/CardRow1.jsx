@@ -1,13 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { IconButton, Typography } from '@material-ui/core';
-import { Fullscreen as FullscreenIcon, Link as LinkIcon, MoreHoriz as MoreHorizIcon } from '@material-ui/icons';
+import { IconButton } from '@material-ui/core';
+import { Fullscreen, Link, MoreHoriz } from '@material-ui/icons';
 
-import { StyledRow, ContactButtonsWrapper } from '../../../Styles/search';
+import { NameFont, RowWithMargin, ContactButtonsWrapper, StyledIcon } from '../../../Styles/search';
+
+const StyledRow = RowWithMargin(0);
+
+const LinkIcon = StyledIcon(Link);
+const FullscreenIcon = StyledIcon(Fullscreen);
+const MoreHorizIcon = StyledIcon(MoreHoriz);
 
 const CardRow1 = ({ name, onClickChain }) => (
   <StyledRow>
-    <Typography variant="subtitle1">{name}</Typography>
+    <NameFont>{name}</NameFont>
     <ContactButtonsWrapper>
       <IconButton onClick={onClickChain}>
         <LinkIcon />

@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
-import { Button, List, Paper, Popover } from '@material-ui/core';
+import { Button, List, Popover } from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/Check';
 
 // import SearchResultDetails from './SearchResultDetails';
 import ContactPreview from './ContactPreview';
 import { searchContactResult } from '../../types';
 import { Row } from '../../Styles/HrmStyles';
-import { ConfirmPopoverText } from '../../Styles/search';
+import { AlertContainer, AlertText, ConfirmContainer, ConfirmText } from '../../Styles/search';
 
 class SearchResults extends Component {
   static displayName = 'SearchResults';
@@ -24,6 +24,7 @@ class SearchResults extends Component {
     selectedSumary: '',
     anchorEl: null,
     contact: null,
+    connected: false,
   };
 
   closeDialog = () => this.setState({ selectedSumary: '' });
@@ -51,7 +52,12 @@ class SearchResults extends Component {
     };
 
     const handleConfirm = () => {
-      this.props.handleSelectSearchResult(this.state.contact);
+      const { contact } = this.state;
+      this.setState({ connected: true });
+      setTimeout(() => {
+        this.setState({ anchorEl: null, contact: null, connected: false });
+        this.props.handleSelectSearchResult(contact);
+      }, 1000);
     };
 
     return (
@@ -59,7 +65,6 @@ class SearchResults extends Component {
         id={id}
         open={isOpen}
         anchorEl={this.state.anchorEl}
-        // onClose={handleClose}
         anchorOrigin={{
           vertical: 'top',
           horizontal: 'left',
@@ -69,33 +74,30 @@ class SearchResults extends Component {
           horizontal: 'right',
         }}
       >
-        <Paper
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: 30,
-            paddingTop: 60,
-            paddingBottom: 60,
-          }}
-        >
-          <ConfirmPopoverText>{msg}</ConfirmPopoverText>
-          <Row>
-            <Button variant="text" size="medium" onClick={handleClose}>
-              cancel
-            </Button>
-            <Button
-              variant="contained"
-              size="medium"
-              onClick={handleConfirm}
-              style={{ backgroundColor: '#000', color: '#fff', marginLeft: 20 }}
-            >
-              <CheckIcon />
-              yes, connect
-            </Button>
-          </Row>
-        </Paper>
+        {this.state.connected ? (
+          <AlertContainer>
+            <CheckIcon style={{ color: '#fff' }} />
+            <AlertText>Connected!</AlertText>
+          </AlertContainer>
+        ) : (
+          <ConfirmContainer>
+            <ConfirmText>{msg}</ConfirmText>
+            <Row>
+              <Button variant="text" size="medium" onClick={handleClose}>
+                cancel
+              </Button>
+              <Button
+                variant="contained"
+                size="medium"
+                onClick={handleConfirm}
+                style={{ backgroundColor: '#000', color: '#fff', marginLeft: 20 }}
+              >
+                <CheckIcon />
+                yes, connect
+              </Button>
+            </Row>
+          </ConfirmContainer>
+        )}
       </Popover>
     );
   };

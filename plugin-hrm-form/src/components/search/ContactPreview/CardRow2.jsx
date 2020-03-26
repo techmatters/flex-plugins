@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import { Typography } from '@material-ui/core';
 
 import { Row } from '../../../Styles/HrmStyles';
-import { StyledRow, ContactCallType, LightFont, TagFont } from '../../../Styles/search';
+import { RowWithMargin, ContactCallType, LightFont, TagFont } from '../../../Styles/search';
+
+const StyledRow = RowWithMargin(8);
 
 const CardRow2 = ({ callType, counselor }) => (
   <StyledRow>
