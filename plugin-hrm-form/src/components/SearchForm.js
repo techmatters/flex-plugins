@@ -3,12 +3,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import SearchIcon from '@material-ui/icons/Search';
 
-import FieldText from '../FieldText';
-import FieldSelect from '../FieldSelect';
-import FieldDate from '../FieldDate';
-import { SearchFields, StyledSearchButton } from '../../Styles/HrmStyles';
-import { withConfiguration } from '../../ConfigurationContext';
-import { contextObject } from '../../types';
+import FieldText from './FieldText';
+import FieldSelect from './FieldSelect';
+import FieldDate from './FieldDate';
+import { SearchFields, StyledSearchButton } from '../Styles/HrmStyles';
+import { withConfiguration } from '../ConfigurationContext';
+import { contextObject } from '../types';
 
 const getField = value => ({
   value,

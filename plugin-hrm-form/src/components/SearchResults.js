@@ -7,10 +7,10 @@ import { Button, List, Popover } from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/Check';
 
 // import SearchResultDetails from './SearchResultDetails';
-import ContactPreview from './ContactPreview';
-import { searchContactResult } from '../../types';
-import { Row } from '../../Styles/HrmStyles';
-import { AlertContainer, AlertText, ConfirmContainer, ConfirmText } from '../../Styles/search';
+import ContactPreview from './search/ContactPreview';
+import { searchContactResult } from '../types';
+import { Row } from '../Styles/HrmStyles';
+import { AlertContainer, AlertText, ConfirmContainer, ConfirmText } from '../Styles/search';
 
 class SearchResults extends Component {
   static displayName = 'SearchResults';

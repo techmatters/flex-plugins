@@ -142,4 +142,5 @@ export const searchContactResult = PropTypes.shape({
     }),
   }),
   counselor: PropTypes.string,
+  tags: PropTypes.arrayOf(PropTypes.string),
 });

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import SearchForm from './search/SearchForm';
-import SearchResults from './search/SearchResults';
+import SearchForm from './SearchForm';
+import SearchResults from './SearchResults';
 import { Container } from '../Styles/HrmStyles';
 import { withConfiguration } from '../ConfigurationContext';
 import { contextObject } from '../types';
