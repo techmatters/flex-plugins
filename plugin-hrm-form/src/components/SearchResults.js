@@ -27,7 +27,7 @@ class SearchResults extends Component {
 
   state = {
     showDetails: {},
-    selectedCallSumary: '',
+    selectedCallSummary: '',
   };
 
   toggleShowDetails(contactId) {
@@ -41,9 +41,9 @@ class SearchResults extends Component {
     });
   }
 
-  closeDialog = () => this.setState({ selectedCallSumary: '' });
+  closeDialog = () => this.setState({ selectedCallSummary: '' });
 
-  handleClickCallSummary = selectedCallSumary => this.setState({ selectedCallSumary });
+  handleClickCallSummary = selectedCallSummary => this.setState({ selectedCallSummary });
 
   renderName(name, currentContact) {
     const { handleViewDetails } = this.props;
@@ -56,12 +56,12 @@ class SearchResults extends Component {
   }
 
   renderCallSummaryDialog() {
-    const isOpen = Boolean(this.state.selectedCallSumary);
+    const isOpen = Boolean(this.state.selectedCallSummary);
 
     return (
       <Dialog onClose={this.closeDialog} open={isOpen}>
         <DialogTitle id="simple-dialog-title">Call Summary</DialogTitle>
-        <DialogContent>{this.state.selectedCallSumary}</DialogContent>
+        <DialogContent>{this.state.selectedCallSummary}</DialogContent>
       </Dialog>
     );
   }

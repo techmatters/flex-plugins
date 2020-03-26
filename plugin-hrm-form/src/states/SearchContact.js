@@ -9,6 +9,12 @@ import {
 } from './ActionTypes';
 import { searchContacts as searchContactsApiCall } from '../services/ContactService';
 
+export const SearchPages = {
+  form: 'form',
+  results: 'results',
+  details: 'details',
+};
+
 export const handleSelectSearchResult = (searchResult, taskId) => ({
   type: HANDLE_SELECT_SEARCH_RESULT,
   searchResult,
@@ -63,7 +69,7 @@ export function copySearchResultIntoTask(currentTask, searchResult) {
 }
 
 const initialState = {
-  currentPage: 'form',
+  currentPage: SearchPages.form,
   currentContact: null,
   form: {
     firstName: '',
@@ -96,7 +102,7 @@ export function reduce(state = initialState, action) {
     case VIEW_CONTACT_DETAILS:
       return {
         ...state,
-        currentPage: 'details',
+        currentPage: SearchPages.details,
         currentContact: action.contact,
       };
     case SEARCH_CONTACTS_REQUEST:
@@ -109,7 +115,7 @@ export function reduce(state = initialState, action) {
         ...state,
         isRequesting: false,
         searchResult: action.searchResult,
-        currentPage: 'results',
+        currentPage: SearchPages.results,
         error: null,
       };
     case SEARCH_CONTACTS_FAILURE:

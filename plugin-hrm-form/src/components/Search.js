@@ -8,7 +8,13 @@ import SearchResults from './SearchResults';
 import ContactDetails from './ContactDetails';
 import { withConfiguration } from '../ConfigurationContext';
 import { contextObject, contactType, searchResultType, searchFormType } from '../types';
-import { handleSearchFormChange, changeSearchPage, viewContactDetails, searchContacts } from '../states/SearchContact';
+import {
+  handleSearchFormChange,
+  changeSearchPage,
+  viewContactDetails,
+  searchContacts,
+  SearchPages,
+} from '../states/SearchContact';
 import { namespace, searchContactsBase } from '../states';
 
 const Search = props => {
@@ -24,11 +30,11 @@ const Search = props => {
   console.log({ isRequesting, error });
 
   switch (currentPage) {
-    case 'form':
+    case SearchPages.form:
       return (
         <SearchForm values={form} handleSearchFormChange={props.handleSearchFormChange} handleSearch={handleSearch} />
       );
-    case 'results':
+    case SearchPages.results:
       return (
         <SearchResults
           results={searchResult}
@@ -37,7 +43,7 @@ const Search = props => {
           handleViewDetails={props.viewContactDetails}
         />
       );
-    case 'details':
+    case SearchPages.details:
       return <ContactDetails contact={currentContact} handleBack={goToResults} />;
     default:
       return null;
@@ -52,7 +58,7 @@ Search.propTypes = {
   searchContacts: PropTypes.func.isRequired,
   changeSearchPage: PropTypes.func.isRequired,
   viewContactDetails: PropTypes.func.isRequired,
-  currentPage: PropTypes.string.isRequired,
+  currentPage: PropTypes.oneOf(Object.keys(SearchPages)).isRequired,
   currentContact: contactType.isRequired,
   form: searchFormType.isRequired,
   searchResult: PropTypes.arrayOf(searchResultType).isRequired,
