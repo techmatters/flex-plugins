@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { Container } from '../Styles/HrmStyles';
-import { formType } from '../types';
+import { contactType } from '../types';
 import SearchResultDetails from './SearchResultDetails';
 
 const ContactDetails = props => (
@@ -17,7 +17,7 @@ const ContactDetails = props => (
 
 ContactDetails.displayName = 'ContactDetails';
 ContactDetails.propTypes = {
-  contact: formType.isRequired,
+  contact: contactType.isRequired,
   handleBack: PropTypes.func.isRequired,
 };
 

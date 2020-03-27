@@ -59,11 +59,15 @@ Search.propTypes = {
   changeSearchPage: PropTypes.func.isRequired,
   viewContactDetails: PropTypes.func.isRequired,
   currentPage: PropTypes.oneOf(Object.keys(SearchPages)).isRequired,
-  currentContact: contactType.isRequired,
+  currentContact: contactType,
   form: searchFormType.isRequired,
   searchResult: PropTypes.arrayOf(searchResultType).isRequired,
   isRequesting: PropTypes.bool.isRequired,
-  error: PropTypes.instanceOf(Error).isRequired,
+  error: PropTypes.instanceOf(Error),
+};
+Search.defaultProps = {
+  currentContact: null,
+  error: null,
 };
 
 const mapStateToProps = state => {

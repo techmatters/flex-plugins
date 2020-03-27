@@ -36,7 +36,8 @@
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
     "eslint": "^6.8.0",
-    "eslint-config-twilio-react": "^1.20.2"
+    "eslint-config-twilio-react": "^1.20.2",
+    "redux-mock-store": "^1.5.4"
   },
   "browserslist": {
     "production": [

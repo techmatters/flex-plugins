@@ -4,8 +4,13 @@ export const taskType = PropTypes.shape({
   taskSid: PropTypes.string,
 });
 
-export const fieldType = PropTypes.shape({
+export const counselorType = PropTypes.shape({
+  label: PropTypes.string,
   value: PropTypes.string,
+});
+
+export const fieldType = PropTypes.shape({
+  value: PropTypes.oneOfType([PropTypes.string, counselorType]),
   error: PropTypes.string,
   validation: PropTypes.arrayOf(PropTypes.string),
   touched: PropTypes.bool,
@@ -148,10 +153,7 @@ export const searchResultType = PropTypes.shape({
 export const searchFormType = PropTypes.shape({
   firstName: PropTypes.string,
   lastName: PropTypes.string,
-  counselor: PropTypes.shape({
-    label: PropTypes.string,
-    value: PropTypes.string,
-  }),
+  counselor: counselorType,
   phoneNumber: PropTypes.string,
   dateFrom: PropTypes.string,
   dateTo: PropTypes.string,

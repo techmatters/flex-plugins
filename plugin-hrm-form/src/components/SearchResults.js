@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -90,8 +90,8 @@ class SearchResults extends Component {
             </TableHead>
             <TableBody>
               {this.props.results.map(result => (
-                <>
-                  <TableRow key={result.contactId}>
+                <Fragment key={result.contactId}>
+                  <TableRow>
                     <StyledTableCell>
                       <CheckIcon
                         style={{ cursor: 'pointer' }}
@@ -120,7 +120,7 @@ class SearchResults extends Component {
                       </StyledTableCell>
                     </TableRow>
                   )}
-                </>
+                </Fragment>
               ))}
             </TableBody>
           </Table>
