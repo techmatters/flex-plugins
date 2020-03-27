@@ -40,7 +40,7 @@ const retrieveTags = contact => {
   const cats = Object.entries(details.caseInformation.categories);
   const subcats = cats.flatMap(([_, subs]) => Object.entries(subs));
 
-  const flattened = subcats.flatMap(([subcat, bool]) => {
+  const flattened = subcats.map(([subcat, bool]) => {
     if (bool) return subcat;
     return null;
   });
