@@ -39,12 +39,14 @@ const ContactPreview = ({ contact, onClick, handleConnect }) => {
 
   const [tag1, tag2, tag3] = contact.tags;
 
+  const mockedAction = () => onClick('Not implemented yet');
+
   return (
     <ContactWrapper key={contact.contactId}>
-      <Card onClick={() => onClick(`contact: ${contact.contactId}\ndate: ${contact.overview.dateTime}`)}>
+      <Card>
         <CardContent>
           {/** child's name and action buttons */}
-          <CardRow1 name={name} onClickChain={handleConnect} />
+          <CardRow1 name={name} onClickChain={handleConnect} onClickFull={mockedAction} onClickMore={mockedAction} />
           {/** call type and counselor's name */}
           <CardRow2 callType={mapAndToUpper(contact.overview.callType)} counselor={contact.counselor} />
           {/** call summary (notes) */}

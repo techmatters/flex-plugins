@@ -11,17 +11,17 @@ const LinkIcon = StyledIcon(Link);
 const FullscreenIcon = StyledIcon(Fullscreen);
 const MoreHorizIcon = StyledIcon(MoreHoriz);
 
-const CardRow1 = ({ name, onClickChain }) => (
+const CardRow1 = ({ name, onClickChain, onClickFull, onClickMore }) => (
   <StyledRow>
     <NameText>{name}</NameText>
     <ContactButtonsWrapper>
       <IconButton onClick={onClickChain}>
         <LinkIcon />
       </IconButton>
-      <IconButton>
+      <IconButton onClick={onClickFull}>
         <FullscreenIcon />
       </IconButton>
-      <IconButton>
+      <IconButton onClick={onClickMore}>
         <MoreHorizIcon />
       </IconButton>
     </ContactButtonsWrapper>
@@ -31,6 +31,8 @@ const CardRow1 = ({ name, onClickChain }) => (
 CardRow1.propTypes = {
   name: PropTypes.string.isRequired,
   onClickChain: PropTypes.func.isRequired,
+  onClickFull: PropTypes.func.isRequired,
+  onClickMore: PropTypes.func.isRequired,
 };
 
 CardRow1.displayName = 'CardRow1';

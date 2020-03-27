@@ -29,9 +29,6 @@ class CardRow3 extends React.Component {
   render() {
     return this.state.expanded ? (
       <div>
-        <Button size="small" color="primary" onClick={this.handleClick(false)}>
-          <NoneTransform>less notes</NoneTransform>
-        </Button>
         <SummaryText>{this.props.callSummary}</SummaryText>
         <Button size="small" color="primary">
           <NoneTransform>See full record</NoneTransform>

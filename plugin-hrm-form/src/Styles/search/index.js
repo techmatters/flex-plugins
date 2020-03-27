@@ -62,7 +62,7 @@ export const ContactTag = styled(Tag)`
   background-color: #d8d8d8;
 `;
 
-export const ContactCallType = styled(Tag)`
+export const CalltypeTag = styled(Tag)`
   margin-right: 10px;
   background-color: #9b9b9b;
 `;
@@ -101,9 +101,6 @@ export const TagText = styled(FontOpenSans)`
   opacity: 0.65;
 `;
 
-export const LightText = styled(FontOpenSans)`
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 16px;
+export const LightText = styled(SummaryText)`
   opacity: 0.46;
 `;

@@ -1,20 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Typography } from '@material-ui/core';
 
 import { Row } from '../../../Styles/HrmStyles';
-import { RowWithMargin, ContactCallType, LightText, TagText } from '../../../Styles/search';
+import { RowWithMargin, CalltypeTag, LightText, TagText, SummaryText } from '../../../Styles/search';
 
 const StyledRow = RowWithMargin(8);
 
 const CardRow2 = ({ callType, counselor }) => (
   <StyledRow>
-    <ContactCallType>
+    <CalltypeTag>
       <TagText>{callType}</TagText>
-    </ContactCallType>
+    </CalltypeTag>
     <Row>
       <LightText style={{ marginRight: 5 }}>Counselor: </LightText>
-      <Typography variant="subtitle2">{counselor}</Typography>
+      <SummaryText>{counselor}</SummaryText>
     </Row>
   </StyledRow>
 );
