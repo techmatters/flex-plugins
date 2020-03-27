@@ -2,30 +2,14 @@ import React from 'react';
 import renderer from 'react-test-renderer';
 import { format } from 'date-fns';
 
+import './mockStyled';
+
 import ContactPreview from '../components/search/ContactPreview';
 import { mapAndToUpper } from '../components/search/ContactPreview/ContactPreview';
 import ChildNameAndActions from '../components/search/ContactPreview/ChildNameAndActions';
 import CallTypeAndCounselor from '../components/search/ContactPreview/CallTypeAndCounselor';
 import CallSummary from '../components/search/ContactPreview/CallSummary';
 import DateAndTags from '../components/search/ContactPreview/DateAndTags';
-
-jest.mock('../Styles/search', () => ({
-  AlertContainer: 'AlertContainer',
-  ContactWrapper: 'ContactWrapper',
-  NameText: 'NameText',
-  ContactButtonsWrapper: 'ContactButtonsWrapper',
-  CalltypeTag: 'CalltypeTag',
-  CounselorText: 'CounselorText',
-  TagText: 'TagText',
-  SummaryText: 'SummaryText',
-  SummaryText: 'SummaryText',
-  NoneTransform: 'NoneTransform',
-  ContactTag: 'ContactTag',
-  DateText: 'DateText',
-  TagText: 'TagText',
-  RowWithMargin: () => 'RowWithMargin',
-  StyledIcon: () => 'StyledIcon',
-}));
 
 test('Test mapAndToUpper helper specification', () => {
   const mapSelf = 'CHILD CALLING ABOUT SELF';
@@ -82,9 +66,15 @@ test('<ContactPreview> should mount', () => {
 
   const onClick = jest.fn();
   const handleConnect = jest.fn();
+  const handleViewDetails = jest.fn();
 
   const component = renderer.create(
-    <ContactPreview contact={contact} onClick={onClick} handleConnect={handleConnect} />,
+    <ContactPreview
+      contact={contact}
+      onClick={onClick}
+      handleConnect={handleConnect}
+      handleViewDetails={handleViewDetails}
+    />,
   ).root;
 
   expect(() => component.findByType(ChildNameAndActions)).not.toThrow();
