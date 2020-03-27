@@ -6,7 +6,7 @@ import { RowWithMargin, ContactTag, DateText, TagText } from '../../../Styles/se
 
 const StyledRow = RowWithMargin(2);
 
-const CardRow4 = ({ dateString, tag1, tag2, tag3 }) => (
+const DateAndTags = ({ dateString, tag1, tag2, tag3 }) => (
   <StyledRow>
     <DateText>{dateString}</DateText>
     <Row style={{ marginLeft: 'auto' }}>
@@ -29,19 +29,19 @@ const CardRow4 = ({ dateString, tag1, tag2, tag3 }) => (
   </StyledRow>
 );
 
-CardRow4.propTypes = {
+DateAndTags.propTypes = {
   dateString: PropTypes.string.isRequired,
   tag1: PropTypes.string,
   tag2: PropTypes.string,
   tag3: PropTypes.string,
 };
 
-CardRow4.defaultProps = {
+DateAndTags.defaultProps = {
   tag1: '',
   tag2: '',
   tag3: '',
 };
 
-CardRow4.displayName = 'ContactLabels';
+DateAndTags.displayName = 'ContactLabels';
 
-export default CardRow4;
+export default DateAndTags;

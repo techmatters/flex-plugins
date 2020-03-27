@@ -4,10 +4,10 @@ import moment from 'moment';
 
 import ContactPreview from '../components/search/ContactPreview';
 import { mapAndToUpper } from '../components/search/ContactPreview/ContactPreview';
-import CardRow1 from '../components/search/ContactPreview/CardRow1';
-import CardRow2 from '../components/search/ContactPreview/CardRow2';
-import CardRow3 from '../components/search/ContactPreview/CardRow3';
-import CardRow4 from '../components/search/ContactPreview/CardRow4';
+import ChildNameAndActions from '../components/search/ContactPreview/ChildNameAndActions';
+import CallTypeAndCounselor from '../components/search/ContactPreview/CallTypeAndCounselor';
+import CallSummary from '../components/search/ContactPreview/CallSummary';
+import DateAndTags from '../components/search/ContactPreview/DateAndTags';
 
 jest.mock('../Styles/search', () => ({
   AlertContainer: 'AlertContainer',
@@ -87,17 +87,17 @@ test('<ContactPreview> should mount', () => {
     <ContactPreview contact={contact} onClick={onClick} handleConnect={handleConnect} />,
   ).root;
 
-  expect(() => component.findByType(CardRow1)).not.toThrow();
-  expect(() => component.findByType(CardRow2)).not.toThrow();
-  expect(() => component.findByType(CardRow3)).not.toThrow();
-  expect(() => component.findByType(CardRow4)).not.toThrow();
+  expect(() => component.findByType(ChildNameAndActions)).not.toThrow();
+  expect(() => component.findByType(CallTypeAndCounselor)).not.toThrow();
+  expect(() => component.findByType(CallSummary)).not.toThrow();
+  expect(() => component.findByType(DateAndTags)).not.toThrow();
   expect(() => component.findByType(NonExisting)).toThrow();
 
   const previewContact = component.props.contact;
-  const { name } = component.findByType(CardRow1).props;
-  const { callType, counselor } = component.findByType(CardRow2).props;
-  const { callSummary } = component.findByType(CardRow3).props;
-  const { dateString, tag1, tag2, tag3 } = component.findByType(CardRow4).props;
+  const { name } = component.findByType(ChildNameAndActions).props;
+  const { callType, counselor } = component.findByType(CallTypeAndCounselor).props;
+  const { callSummary } = component.findByType(CallSummary).props;
+  const { dateString, tag1, tag2, tag3 } = component.findByType(DateAndTags).props;
 
   expect(previewContact).toEqual(contact);
   expect(name).toEqual(contact.overview.name.toUpperCase());

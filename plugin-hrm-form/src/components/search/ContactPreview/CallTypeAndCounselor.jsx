@@ -6,7 +6,7 @@ import { RowWithMargin, CalltypeTag, CounselorText, TagText, SummaryText } from 
 
 const StyledRow = RowWithMargin(8);
 
-const CardRow2 = ({ callType, counselor }) => (
+const CallTypeAndCounselor = ({ callType, counselor }) => (
   <StyledRow>
     <CalltypeTag>
       <TagText>{callType}</TagText>
@@ -18,11 +18,11 @@ const CardRow2 = ({ callType, counselor }) => (
   </StyledRow>
 );
 
-CardRow2.propTypes = {
+CallTypeAndCounselor.propTypes = {
   callType: PropTypes.string.isRequired,
   counselor: PropTypes.string.isRequired,
 };
 
-CardRow2.displayName = 'CardRow2';
+CallTypeAndCounselor.displayName = 'CallTypeAndCounselor';
 
-export default CardRow2;
+export default CallTypeAndCounselor;

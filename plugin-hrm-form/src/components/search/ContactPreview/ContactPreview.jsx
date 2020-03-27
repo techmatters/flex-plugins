@@ -4,10 +4,10 @@ import moment from 'moment';
 import { Card, CardContent } from '@material-ui/core';
 
 import { ContactWrapper } from '../../../Styles/search';
-import CardRow1 from './CardRow1';
-import CardRow2 from './CardRow2';
-import CardRow3 from './CardRow3';
-import CardRow4 from './CardRow4';
+import ChildNameAndActions from './ChildNameAndActions';
+import CallTypeAndCounselor from './CallTypeAndCounselor';
+import CallSummary from './CallSummary';
+import DateAndTags from './DateAndTags';
 import { contactType } from '../../../types';
 
 const mapper = string => {
@@ -32,9 +32,13 @@ export const mapAndToUpper = str => {
 };
 
 const ContactPreview = ({ contact, onClick, handleConnect }) => {
-  const name = (contact.overview.name === ' ' ? 'Unknown' : contact.overview.name).toUpperCase();
+  const name = (contact.overview.name.trim() === '' ? 'Unknown' : contact.overview.name).toUpperCase();
 
   const dateString = moment(contact.overview.dateTime).format('MMM DD, YYYY HH:mm a');
+  const callType = mapAndToUpper(contact.overview.callType);
+  const { counselor } = contact;
+
+  const { callSummary } = contact.details.caseInformation;
 
   const [tag1, tag2, tag3] = contact.tags;
 
@@ -44,14 +48,15 @@ const ContactPreview = ({ contact, onClick, handleConnect }) => {
     <ContactWrapper key={contact.contactId}>
       <Card>
         <CardContent>
-          {/** child's name and action buttons */}
-          <CardRow1 name={name} onClickChain={handleConnect} onClickFull={mockedAction} onClickMore={mockedAction} />
-          {/** call type and counselor's name */}
-          <CardRow2 callType={mapAndToUpper(contact.overview.callType)} counselor={contact.counselor} />
-          {/** call summary (notes) */}
-          <CardRow3 callSummary={contact.details.caseInformation.callSummary} onClickFull={mockedAction} />
-          {/** date and call tags */}
-          <CardRow4 dateString={dateString} tag1={tag1} tag2={tag2} tag3={tag3} />
+          <ChildNameAndActions
+            name={name}
+            onClickChain={handleConnect}
+            onClickFull={mockedAction}
+            onClickMore={mockedAction}
+          />
+          <CallTypeAndCounselor callType={callType} counselor={counselor} />
+          <CallSummary callSummary={callSummary} onClickFull={mockedAction} />
+          <DateAndTags dateString={dateString} tag1={tag1} tag2={tag2} tag3={tag3} />
         </CardContent>
       </Card>
     </ContactWrapper>

@@ -6,8 +6,8 @@ import { RowWithMargin, SummaryText, NoneTransform } from '../../../Styles/searc
 
 const StyledRow = RowWithMargin(5);
 
-class CardRow3 extends React.Component {
-  static displayName = 'CardRow3';
+class CallSummary extends React.Component {
+  static displayName = 'CallSummary';
 
   static propTypes = {
     callSummary: PropTypes.string.isRequired,
@@ -51,4 +51,4 @@ class CardRow3 extends React.Component {
   }
 }
 
-export default CardRow3;
+export default CallSummary;
