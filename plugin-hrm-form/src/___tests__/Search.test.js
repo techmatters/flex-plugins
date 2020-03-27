@@ -36,10 +36,6 @@ jest.mock('../services/ServerlessService', () => ({
   populateCounselors: async () => [],
 }));
 
-jest.mock('../ConfigurationContext', () => ({
-  withConfiguration: Component => props => <Component context={mockContext} {...props} />,
-}));
-
 function createState({ currentPage, searchFormValues, currentContact, searchResult }) {
   return {
     'plugin-hrm-form': {
