@@ -34,7 +34,6 @@ const mapAndToUpper = str => {
 const ContactPreview = ({ contact, onClick, handleConnect }) => {
   const name = (contact.overview.name === ' ' ? 'Unknown' : contact.overview.name).toUpperCase();
 
-  // const dateString = formatDateString(contact.overview.dateTime);
   const dateString = moment(contact.overview.dateTime).format('MMM DD, YYYY HH:mm a');
 
   const [tag1, tag2, tag3] = contact.tags;
