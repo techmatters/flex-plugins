@@ -4,8 +4,13 @@ export const taskType = PropTypes.shape({
   taskSid: PropTypes.string,
 });
 
-export const fieldType = PropTypes.shape({
+export const counselorType = PropTypes.shape({
+  label: PropTypes.string,
   value: PropTypes.string,
+});
+
+export const fieldType = PropTypes.shape({
+  value: PropTypes.oneOfType([PropTypes.string, counselorType]),
   error: PropTypes.string,
   validation: PropTypes.arrayOf(PropTypes.string),
   touched: PropTypes.bool,
@@ -95,4 +100,61 @@ export const contextObject = PropTypes.shape({
   helpline: PropTypes.string.isRequired,
   currentWorkspace: PropTypes.string.isRequired,
   getSsoToken: PropTypes.func.isRequired,
+});
+
+export const contactType = PropTypes.shape({
+  childInformation: PropTypes.shape({
+    name: PropTypes.shape({
+      firstName: PropTypes.string,
+      lastName: PropTypes.string,
+    }),
+    gender: PropTypes.string,
+    age: PropTypes.string,
+    language: PropTypes.string,
+    nationality: PropTypes.string,
+    ethnicity: PropTypes.string,
+    location: PropTypes.shape({
+      streetAddress: PropTypes.string,
+      city: PropTypes.string,
+      stateOrCounty: PropTypes.string,
+      postalCode: PropTypes.string,
+      phone1: PropTypes.string,
+      phone2: PropTypes.string,
+    }),
+    refugee: PropTypes.bool,
+  }),
+  caseInformation: PropTypes.shape({
+    callSummary: PropTypes.string,
+    referredTo: PropTypes.string,
+    status: PropTypes.string,
+    keepConfidential: PropTypes.bool,
+    okForCaseWorkerToCall: PropTypes.bool,
+    howDidTheChildHearAboutUs: PropTypes.string,
+    didYouDiscussRightsWithTheChild: PropTypes.bool,
+    didTheChildFeelWeSolvedTheirProblem: PropTypes.bool,
+    wouldTheChildRecommendUsToAFriend: PropTypes.bool,
+  }),
+});
+
+export const searchResultType = PropTypes.shape({
+  contactId: PropTypes.string.isRequired,
+  overview: PropTypes.shape({
+    dateTime: PropTypes.string,
+    name: PropTypes.string,
+    customerNumber: PropTypes.string,
+    callType: PropTypes.string,
+    categories: PropTypes.string,
+    counselor: PropTypes.string,
+    notes: PropTypes.string,
+  }).isRequired,
+  details: contactType.isRequired,
+});
+
+export const searchFormType = PropTypes.shape({
+  firstName: PropTypes.string,
+  lastName: PropTypes.string,
+  counselor: counselorType,
+  phoneNumber: PropTypes.string,
+  dateFrom: PropTypes.string,
+  dateTo: PropTypes.string,
 });

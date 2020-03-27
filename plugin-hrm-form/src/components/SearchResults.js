@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -12,65 +12,22 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 
 import SearchResultDetails from './SearchResultDetails';
-import { StyledTableCell, StyledLabel } from '../Styles/HrmStyles';
+import { Container, StyledTableCell, StyledLabel } from '../Styles/HrmStyles';
+import { searchResultType } from '../types';
 
 class SearchResults extends Component {
   static displayName = 'SearchResults';
 
   static propTypes = {
-    results: PropTypes.arrayOf(
-      PropTypes.shape({
-        contactId: PropTypes.string.isRequired,
-        overview: PropTypes.shape({
-          dateTime: PropTypes.string,
-          name: PropTypes.string,
-          customerNumber: PropTypes.string,
-          callType: PropTypes.string,
-          categories: PropTypes.string,
-          counselor: PropTypes.string,
-          notes: PropTypes.string,
-        }).isRequired,
-        details: PropTypes.shape({
-          childInformation: PropTypes.shape({
-            name: PropTypes.shape({
-              firstName: PropTypes.string,
-              lastName: PropTypes.string,
-            }),
-            gender: PropTypes.string,
-            age: PropTypes.string,
-            language: PropTypes.string,
-            nationality: PropTypes.string,
-            ethnicity: PropTypes.string,
-            location: PropTypes.shape({
-              streetAddress: PropTypes.string,
-              city: PropTypes.string,
-              stateOrCounty: PropTypes.string,
-              postalCode: PropTypes.string,
-              phone1: PropTypes.string,
-              phone2: PropTypes.string,
-            }),
-            refugee: PropTypes.bool,
-          }),
-          caseInformation: PropTypes.shape({
-            callSummary: PropTypes.string,
-            referredTo: PropTypes.string,
-            status: PropTypes.string,
-            keepConfidential: PropTypes.bool,
-            okForCaseWorkerToCall: PropTypes.bool,
-            howDidTheChildHearAboutUs: PropTypes.string,
-            didYouDiscussRightsWithTheChild: PropTypes.bool,
-            didTheChildFeelWeSolvedTheirProblem: PropTypes.bool,
-            wouldTheChildRecommendUsToAFriend: PropTypes.bool,
-          }),
-        }),
-      }),
-    ).isRequired,
+    results: PropTypes.arrayOf(searchResultType).isRequired,
     handleSelectSearchResult: PropTypes.func.isRequired,
+    handleBack: PropTypes.func.isRequired,
+    handleViewDetails: PropTypes.func.isRequired,
   };
 
   state = {
     showDetails: {},
-    selectedCallSumary: '',
+    selectedCallSummary: '',
   };
 
   toggleShowDetails(contactId) {
@@ -84,36 +41,37 @@ class SearchResults extends Component {
     });
   }
 
-  closeDialog = () => this.setState({ selectedCallSumary: '' });
+  closeDialog = () => this.setState({ selectedCallSummary: '' });
 
-  handleClickCallSummary = selectedCallSumary => this.setState({ selectedCallSumary });
+  handleClickCallSummary = selectedCallSummary => this.setState({ selectedCallSummary });
 
-  renderName(name, contactId) {
+  renderName(name, currentContact) {
+    const { handleViewDetails } = this.props;
+
     return (
-      <span style={{ cursor: 'pointer' }} tabIndex={0} role="button" onClick={() => this.toggleShowDetails(contactId)}>
+      <span style={{ cursor: 'pointer' }} tabIndex={0} role="button" onClick={() => handleViewDetails(currentContact)}>
         {name}
       </span>
     );
   }
 
   renderCallSummaryDialog() {
-    const isOpen = Boolean(this.state.selectedCallSumary);
+    const isOpen = Boolean(this.state.selectedCallSummary);
 
     return (
       <Dialog onClose={this.closeDialog} open={isOpen}>
         <DialogTitle id="simple-dialog-title">Call Summary</DialogTitle>
-        <DialogContent>{this.state.selectedCallSumary}</DialogContent>
+        <DialogContent>{this.state.selectedCallSummary}</DialogContent>
       </Dialog>
     );
   }
 
   render() {
-    if (this.props.results.length === 0) {
-      return null;
-    }
-
     return (
-      <>
+      <Container>
+        <button type="button" onClick={this.props.handleBack}>
+          Back
+        </button>
         {this.renderCallSummaryDialog()}
         <StyledLabel style={{ marginTop: 30, marginBottom: 10 }}>Use existing contact</StyledLabel>
         <Paper>
@@ -132,8 +90,8 @@ class SearchResults extends Component {
             </TableHead>
             <TableBody>
               {this.props.results.map(result => (
-                <>
-                  <TableRow key={result.contactId}>
+                <Fragment key={result.contactId}>
+                  <TableRow>
                     <StyledTableCell>
                       <CheckIcon
                         style={{ cursor: 'pointer' }}
@@ -141,7 +99,7 @@ class SearchResults extends Component {
                       />
                     </StyledTableCell>
                     <StyledTableCell>{result.overview.dateTime}</StyledTableCell>
-                    <StyledTableCell>{this.renderName(result.overview.name, result.contactId)}</StyledTableCell>
+                    <StyledTableCell>{this.renderName(result.overview.name, result.details)}</StyledTableCell>
                     <StyledTableCell>{result.overview.customerNumber}</StyledTableCell>
                     <StyledTableCell>{result.overview.callType}</StyledTableCell>
                     <StyledTableCell>{result.overview.categories}</StyledTableCell>
@@ -162,12 +120,12 @@ class SearchResults extends Component {
                       </StyledTableCell>
                     </TableRow>
                   )}
-                </>
+                </Fragment>
               ))}
             </TableBody>
           </Table>
         </Paper>
-      </>
+      </Container>
     );
   }
 }

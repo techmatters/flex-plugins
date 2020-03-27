@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { ErrorText, StyledLabel, StyledMenuItem, StyledSelect, TextField } from '../Styles/HrmStyles';
 import RequiredAsterisk from './RequiredAsterisk';
-import { fieldType } from '../types';
+import { fieldType, counselorType } from '../types';
 
 /**
  *
@@ -66,7 +66,7 @@ FieldSelect.propTypes = {
   label: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   field: fieldType.isRequired,
-  options: PropTypes.arrayOf(PropTypes.string).isRequired,
+  options: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, counselorType])).isRequired,
   handleBlur: PropTypes.func.isRequired,
   handleChange: PropTypes.func.isRequired,
   handleFocus: PropTypes.func.isRequired,
