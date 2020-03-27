@@ -98,12 +98,12 @@ export const TagText = styled(FontOpenSans)`
   font-size: 11px;
   font-weight: 400;
   line-height: 13px;
-  opacity: 0.6570405505952381;
+  opacity: 0.65;
 `;
 
 export const LightText = styled(FontOpenSans)`
   font-size: 13px;
   font-weight: 400;
   line-height: 16px;
-  opacity: 0.4611467633928572;
+  opacity: 0.46;
 `;
