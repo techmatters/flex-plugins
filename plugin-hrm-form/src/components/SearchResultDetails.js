@@ -7,44 +7,13 @@ import TableRow from '@material-ui/core/TableRow';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import { StyledTableCell } from '../Styles/HrmStyles';
+import { contactType } from '../types';
 
 class SearchResultDetails extends Component {
   static displayName = 'SearchResultDetails';
 
   static propTypes = {
-    details: PropTypes.shape({
-      childInformation: PropTypes.shape({
-        name: PropTypes.shape({
-          firstName: PropTypes.string,
-          lastName: PropTypes.string,
-        }),
-        gender: PropTypes.string,
-        age: PropTypes.string,
-        language: PropTypes.string,
-        nationality: PropTypes.string,
-        ethnicity: PropTypes.string,
-        location: PropTypes.shape({
-          streetAddress: PropTypes.string,
-          city: PropTypes.string,
-          stateOrCounty: PropTypes.string,
-          postalCode: PropTypes.string,
-          phone1: PropTypes.string,
-          phone2: PropTypes.string,
-        }),
-        refugee: PropTypes.bool,
-      }),
-      caseInformation: PropTypes.shape({
-        callSummary: PropTypes.string,
-        referredTo: PropTypes.string,
-        status: PropTypes.string,
-        keepConfidential: PropTypes.bool,
-        okForCaseWorkerToCall: PropTypes.bool,
-        howDidTheChildHearAboutUs: PropTypes.string,
-        didYouDiscussRightsWithTheChild: PropTypes.bool,
-        didTheChildFeelWeSolvedTheirProblem: PropTypes.bool,
-        wouldTheChildRecommendUsToAFriend: PropTypes.bool,
-      }),
-    }).isRequired,
+    details: contactType.isRequired,
     handleClickCallSummary: PropTypes.func.isRequired,
   };
 

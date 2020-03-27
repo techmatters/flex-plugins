@@ -31,7 +31,7 @@ export const mapAndToUpper = str => {
   return mapped;
 };
 
-const ContactPreview = ({ contact, onClick, handleConnect }) => {
+const ContactPreview = ({ contact, onClick, handleConnect, handleViewDetails }) => {
   const name = (contact.overview.name.trim() === '' ? 'Unknown' : contact.overview.name).toUpperCase();
 
   const dateString = `${format(new Date(contact.overview.dateTime), 'MMM d, yyyy h:mm aaaaa')}m`;
@@ -51,11 +51,11 @@ const ContactPreview = ({ contact, onClick, handleConnect }) => {
           <ChildNameAndActions
             name={name}
             onClickChain={handleConnect}
-            onClickFull={mockedAction}
+            onClickFull={handleViewDetails}
             onClickMore={mockedAction}
           />
           <CallTypeAndCounselor callType={callType} counselor={counselor} />
-          <CallSummary callSummary={callSummary} onClickFull={mockedAction} />
+          <CallSummary callSummary={callSummary} onClickFull={handleViewDetails} />
           <DateAndTags dateString={dateString} tag1={tag1} tag2={tag2} tag3={tag3} />
         </CardContent>
       </Card>
@@ -69,6 +69,7 @@ ContactPreview.propTypes = {
   contact: contactType.isRequired,
   onClick: PropTypes.func.isRequired,
   handleConnect: PropTypes.func.isRequired,
+  handleViewDetails: PropTypes.func.isRequired,
 };
 
 export default ContactPreview;

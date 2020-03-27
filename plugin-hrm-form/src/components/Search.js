@@ -1,12 +1,21 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 
 import SearchForm from './SearchForm';
 import SearchResults from './SearchResults';
-import { Container } from '../Styles/HrmStyles';
+import ContactDetails from './ContactDetails';
 import { withConfiguration } from '../ConfigurationContext';
-import { contextObject } from '../types';
-import { searchContacts } from '../services/ContactService';
+import { contextObject, contactType, searchResultType, searchFormType } from '../types';
+import {
+  handleSearchFormChange,
+  changeSearchPage,
+  viewContactDetails,
+  searchContacts,
+  SearchPages,
+} from '../states/SearchContact';
+import { namespace, searchContactsBase } from '../states';
 import { populateCounselors } from '../services/ServerlessService';
 
 /**
@@ -29,42 +38,32 @@ const createCounselorsHash = counselors => {
   return hash;
 };
 
-/**
- * @param {any} contact a contact result object
- * @returns {string[]} returns an array conaining the tags of the contact as strings (if any)
- */
-const retrieveTags = contact => {
-  const { details } = contact;
-  if (!details || !details.caseInformation || !details.caseInformation.categories) return [];
-
-  const cats = Object.entries(details.caseInformation.categories);
-  const subcats = cats.flatMap(([_, subs]) => Object.entries(subs));
-
-  const flattened = subcats.map(([subcat, bool]) => {
-    if (bool) return subcat;
-    return null;
-  });
-
-  const tags = flattened.reduce((acc, curr) => {
-    if (curr) return [...acc, curr];
-    return acc;
-  }, []);
-
-  return tags;
-};
-
 class Search extends Component {
   static displayName = 'Search';
 
   static propTypes = {
     context: contextObject.isRequired,
     handleSelectSearchResult: PropTypes.func.isRequired,
+    handleSearchFormChange: PropTypes.func.isRequired,
+    searchContacts: PropTypes.func.isRequired,
+    changeSearchPage: PropTypes.func.isRequired,
+    viewContactDetails: PropTypes.func.isRequired,
+    currentPage: PropTypes.oneOf(Object.keys(SearchPages)).isRequired,
+    currentContact: contactType,
+    form: searchFormType.isRequired,
+    searchResult: PropTypes.arrayOf(searchResultType).isRequired,
+    isRequesting: PropTypes.bool.isRequired,
+    error: PropTypes.instanceOf(Error),
+  };
+
+  static defaultProps = {
+    currentContact: null,
+    error: null,
   };
 
   state = {
     counselors: [],
     counselorsHash: {},
-    results: [],
   };
 
   async componentDidMount() {
@@ -79,32 +78,65 @@ class Search extends Component {
     }
   }
 
-  addDetails = raw => {
-    const detailed = raw.map(contact => {
-      const counselor = this.state.counselorsHash[contact.overview.counselor] || 'Unknown';
-      const tags = retrieveTags(contact);
-      const det = { ...contact, counselor, tags };
-      return det;
-    });
-
-    return detailed;
-  };
-
   handleSearch = async searchParams => {
     const { hrmBaseUrl } = this.props.context;
-    const rawResults = await searchContacts(hrmBaseUrl, searchParams);
-    const detailedResults = this.addDetails(rawResults);
-    this.setState({ results: detailedResults });
+    this.props.searchContacts(hrmBaseUrl, searchParams, this.state.counselorsHash);
   };
 
+  goToForm = () => this.props.changeSearchPage('form');
+
+  goToResults = () => this.props.changeSearchPage('results');
+
   render() {
-    return (
-      <Container>
-        <SearchForm counselors={this.state.counselors} handleSearch={this.handleSearch} />
-        <SearchResults results={this.state.results} handleSelectSearchResult={this.props.handleSelectSearchResult} />
-      </Container>
-    );
+    const { currentPage, currentContact, searchResult, isRequesting, error, form } = this.props;
+    const { counselors } = this.state;
+    console.log({ isRequesting, error });
+
+    switch (currentPage) {
+      case SearchPages.form:
+        return (
+          <SearchForm
+            counselors={counselors}
+            values={form}
+            handleSearchFormChange={this.props.handleSearchFormChange}
+            handleSearch={this.handleSearch}
+          />
+        );
+      case SearchPages.results:
+        return (
+          <SearchResults
+            results={searchResult}
+            handleSelectSearchResult={this.props.handleSelectSearchResult}
+            handleBack={this.goToForm}
+            handleViewDetails={this.props.viewContactDetails}
+          />
+        );
+      case SearchPages.details:
+        return <ContactDetails contact={currentContact} handleBack={this.goToResults} />;
+      default:
+        return null;
+    }
   }
 }
 
-export default withConfiguration(Search);
+const mapStateToProps = state => {
+  const searchContactsState = state[namespace][searchContactsBase];
+
+  return {
+    currentPage: searchContactsState.currentPage,
+    currentContact: searchContactsState.currentContact,
+    form: searchContactsState.form,
+    searchResult: searchContactsState.searchResult,
+    isRequesting: searchContactsState.isRequesting,
+    error: searchContactsState.error,
+  };
+};
+
+const mapDispatchToProps = dispatch => ({
+  handleSearchFormChange: bindActionCreators(handleSearchFormChange, dispatch),
+  changeSearchPage: bindActionCreators(changeSearchPage, dispatch),
+  viewContactDetails: bindActionCreators(viewContactDetails, dispatch),
+  searchContacts: searchContacts(dispatch),
+});
+
+export default withConfiguration(connect(mapStateToProps, mapDispatchToProps)(Search));

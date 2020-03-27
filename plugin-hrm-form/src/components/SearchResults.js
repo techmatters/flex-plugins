@@ -5,9 +5,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import { Button, List, Popover } from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/Check';
 
-// import SearchResultDetails from './SearchResultDetails';
 import ContactPreview from './search/ContactPreview';
-import { contactType } from '../types';
+import { searchResultType } from '../types';
 import { Row } from '../Styles/HrmStyles';
 import { AlertContainer, AlertText, ConfirmContainer, ConfirmText } from '../Styles/search';
 
@@ -15,8 +14,10 @@ class SearchResults extends Component {
   static displayName = 'SearchResults';
 
   static propTypes = {
-    results: PropTypes.arrayOf(contactType).isRequired,
+    results: PropTypes.arrayOf(searchResultType).isRequired,
     handleSelectSearchResult: PropTypes.func.isRequired,
+    handleBack: PropTypes.func.isRequired,
+    handleViewDetails: PropTypes.func.isRequired,
   };
 
   state = {
@@ -112,13 +113,12 @@ class SearchResults extends Component {
   };
 
   render() {
-    if (this.props.results.length === 0) {
-      return null;
-    }
-
     // TODO (Gian): This should be a virtualized list instead (for performance reasons)
     return (
       <>
+        <button type="button" onClick={this.props.handleBack}>
+          Back
+        </button>
         <List>
           {this.renderSummaryDialog()}
           {this.renderConfirmPopover()}
@@ -128,6 +128,7 @@ class SearchResults extends Component {
               contact={contact}
               onClick={this.handleClickSummary}
               handleConnect={this.handleConnectConfirm(contact)}
+              handleViewDetails={() => this.props.handleViewDetails(contact.details)}
             />
           ))}
         </List>
