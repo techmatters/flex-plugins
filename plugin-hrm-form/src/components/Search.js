@@ -17,7 +17,7 @@ import { populateCounselors } from '../services/ServerlessService';
  * @returns {{}} an object containing for each counselor,
  * a property with its sid, and as a value the counselor's fullName
  */
-const cnslrsHash = counselors => {
+const createCounselorsHash = counselors => {
   const hash = counselors.reduce(
     (obj, counselor) => ({
       ...obj,
@@ -38,16 +38,11 @@ const retrieveTags = contact => {
   if (!details || !details.caseInformation || !details.caseInformation.categories) return [];
 
   const cats = Object.entries(details.caseInformation.categories);
-  const subcats = cats.map(c => [c[0], Object.entries(c[1])]);
-  const flattened = subcats.flatMap(s => {
-    const cat = s[0];
-    const f = s[1].flatMap(pair => {
-      const [subcat, bool] = pair;
-      if (bool) return cat + subcat; // remove cat if prefix is not needed anymore
-      return null;
-    });
+  const subcats = cats.flatMap(([_, subs]) => Object.entries(subs));
 
-    return f;
+  const flattened = subcats.flatMap(([subcat, bool]) => {
+    if (bool) return subcat;
+    return null;
   });
 
   const tags = flattened.reduce((acc, curr) => {
@@ -76,7 +71,7 @@ class Search extends Component {
     try {
       const { context } = this.props;
       const counselors = await populateCounselors(context);
-      const counselorsHash = cnslrsHash(counselors);
+      const counselorsHash = createCounselorsHash(counselors);
       this.setState({ counselors, counselorsHash });
     } catch (err) {
       // TODO (Gian): probably we need to handle this in a nicer way

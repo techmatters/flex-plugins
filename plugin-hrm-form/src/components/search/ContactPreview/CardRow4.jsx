@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { Row } from '../../../Styles/HrmStyles';
-import { RowWithMargin, ContactTag, LightText, TagText } from '../../../Styles/search';
+import { RowWithMargin, ContactTag, DateText, TagText } from '../../../Styles/search';
 
 const StyledRow = RowWithMargin(2);
 
 const CardRow4 = ({ dateString, tag1, tag2, tag3 }) => (
   <StyledRow>
-    <LightText>{dateString}</LightText>
+    <DateText>{dateString}</DateText>
     <Row style={{ marginLeft: 'auto' }}>
       {tag1 && (
         <ContactTag>

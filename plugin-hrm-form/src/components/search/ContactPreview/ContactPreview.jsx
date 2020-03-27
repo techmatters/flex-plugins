@@ -50,7 +50,7 @@ const ContactPreview = ({ contact, onClick, handleConnect }) => {
           {/** call type and counselor's name */}
           <CardRow2 callType={mapAndToUpper(contact.overview.callType)} counselor={contact.counselor} />
           {/** call summary (notes) */}
-          <CardRow3 callSummary={contact.details.caseInformation.callSummary} />
+          <CardRow3 callSummary={contact.details.caseInformation.callSummary} onClickFull={mockedAction} />
           {/** date and call tags */}
           <CardRow4 dateString={dateString} tag1={tag1} tag2={tag2} tag3={tag3} />
         </CardContent>

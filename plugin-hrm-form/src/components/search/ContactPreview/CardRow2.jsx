@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { Row } from '../../../Styles/HrmStyles';
-import { RowWithMargin, CalltypeTag, LightText, TagText, SummaryText } from '../../../Styles/search';
+import { RowWithMargin, CalltypeTag, CounselorText, TagText, SummaryText } from '../../../Styles/search';
 
 const StyledRow = RowWithMargin(8);
 
@@ -12,7 +12,7 @@ const CardRow2 = ({ callType, counselor }) => (
       <TagText>{callType}</TagText>
     </CalltypeTag>
     <Row>
-      <LightText style={{ marginRight: 5 }}>Counselor: </LightText>
+      <CounselorText style={{ marginRight: 5 }}>Counselor: </CounselorText>
       <SummaryText>{counselor}</SummaryText>
     </Row>
   </StyledRow>

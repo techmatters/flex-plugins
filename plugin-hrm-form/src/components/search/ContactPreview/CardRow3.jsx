@@ -11,6 +11,7 @@ class CardRow3 extends React.Component {
 
   static propTypes = {
     callSummary: PropTypes.string.isRequired,
+    onClickFull: PropTypes.func.isRequired,
   };
 
   state = {
@@ -30,7 +31,7 @@ class CardRow3 extends React.Component {
     return this.state.expanded ? (
       <div>
         <SummaryText>{this.props.callSummary}</SummaryText>
-        <Button size="small" color="primary">
+        <Button size="small" color="primary" onClick={this.props.onClickFull}>
           <NoneTransform>See full record</NoneTransform>
         </Button>
       </div>
