@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
+import { format } from 'date-fns';
 import { Card, CardContent } from '@material-ui/core';
 
 import { ContactWrapper } from '../../../Styles/search';
@@ -34,7 +34,7 @@ export const mapAndToUpper = str => {
 const ContactPreview = ({ contact, onClick, handleConnect }) => {
   const name = (contact.overview.name.trim() === '' ? 'Unknown' : contact.overview.name).toUpperCase();
 
-  const dateString = moment(contact.overview.dateTime).format('MMM DD, YYYY HH:mm a');
+  const dateString = `${format(new Date(contact.overview.dateTime), 'MMM d, yyyy h:mm aaaaa')}m`;
   const callType = mapAndToUpper(contact.overview.callType);
   const { counselor } = contact;
 

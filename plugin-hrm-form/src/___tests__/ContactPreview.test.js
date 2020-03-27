@@ -1,6 +1,6 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
-import moment from 'moment';
+import { format } from 'date-fns';
 
 import ContactPreview from '../components/search/ContactPreview';
 import { mapAndToUpper } from '../components/search/ContactPreview/ContactPreview';
@@ -78,7 +78,7 @@ test('<ContactPreview> should mount', () => {
     counselor: 'Counselor',
     tags: ['Tag1', 'Tag2'],
   };
-  const formatedDate = moment(contact.overview.dateTime).format('MMM DD, YYYY HH:mm a');
+  const formatedDate = `${format(new Date(contact.overview.dateTime), 'MMM d, yyyy h:mm aaaaa')}m`;
 
   const onClick = jest.fn();
   const handleConnect = jest.fn();

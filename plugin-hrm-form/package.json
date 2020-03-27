@@ -20,10 +20,10 @@
   },
   "dependencies": {
     "craco-config-flex-plugin": "^3.0.4",
+    "date-fns": "^2.11.1",
     "flex-plugin": "^3.0.0",
     "flex-plugin-scripts": "^3.0.4",
     "lodash": "^4.17.15",
-    "moment": "^2.24.0",
     "prop-types": "^15.7.2",
     "react": "16.5.2",
     "react-dom": "16.5.2",
