@@ -97,7 +97,7 @@ export const contextObject = PropTypes.shape({
   getSsoToken: PropTypes.func.isRequired,
 });
 
-export const searchContactResult = PropTypes.shape({
+export const contactType = PropTypes.shape({
   contactId: PropTypes.string.isRequired,
   overview: PropTypes.shape({
     dateTime: PropTypes.string,

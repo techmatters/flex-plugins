@@ -7,7 +7,7 @@ import CheckIcon from '@material-ui/icons/Check';
 
 // import SearchResultDetails from './SearchResultDetails';
 import ContactPreview from './search/ContactPreview';
-import { searchContactResult } from '../types';
+import { contactType } from '../types';
 import { Row } from '../Styles/HrmStyles';
 import { AlertContainer, AlertText, ConfirmContainer, ConfirmText } from '../Styles/search';
 
@@ -15,7 +15,7 @@ class SearchResults extends Component {
   static displayName = 'SearchResults';
 
   static propTypes = {
-    results: PropTypes.arrayOf(searchContactResult).isRequired,
+    results: PropTypes.arrayOf(contactType).isRequired,
     handleSelectSearchResult: PropTypes.func.isRequired,
   };
 

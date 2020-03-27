@@ -8,7 +8,7 @@ import CardRow1 from './CardRow1';
 import CardRow2 from './CardRow2';
 import CardRow3 from './CardRow3';
 import CardRow4 from './CardRow4';
-import { searchContactResult } from '../../../types';
+import { contactType } from '../../../types';
 
 const mapper = string => {
   if (string === 'SOMEONE') return 'CALLER';
@@ -25,7 +25,7 @@ const mapper = string => {
  * @param {string} str
  * @return {string}
  */
-const mapAndToUpper = str => {
+export const mapAndToUpper = str => {
   const fst = str.split(' ')[0].toUpperCase();
   const mapped = mapper(fst);
   return mapped;
@@ -61,7 +61,7 @@ const ContactPreview = ({ contact, onClick, handleConnect }) => {
 ContactPreview.displayName = 'ContactPreview';
 
 ContactPreview.propTypes = {
-  contact: searchContactResult.isRequired,
+  contact: contactType.isRequired,
   onClick: PropTypes.func.isRequired,
   handleConnect: PropTypes.func.isRequired,
 };
