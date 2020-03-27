@@ -141,4 +141,6 @@ class SearchResultDetails extends Component {
   }
 }
 
+// TODO (Gian): Remove this when details are used again
+// eslint-disable-next-line import/no-unused-modules
 export default SearchResultDetails;

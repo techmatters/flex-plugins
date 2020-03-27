@@ -244,3 +244,15 @@ export const StyledTab = styled(props => <Tab {...props} classes={{ selected: 's
     }
   }
 `;
+
+export const Row = styled('div')`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
+
+export const FontOpenSans = styled('p')`
+  color: #000000;
+  font-family: Open Sans;
+  text-align: left;
+`;

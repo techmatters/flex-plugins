@@ -3,6 +3,8 @@ import { Provider } from 'react-redux';
 import renderer from 'react-test-renderer';
 import configureMockStore from 'redux-mock-store';
 
+import './mockStyled';
+
 import Search from '../components/Search';
 import SearchForm from '../components/SearchForm';
 import SearchResults from '../components/SearchResults';
@@ -19,18 +21,6 @@ const mockContext = {
   currentWorkspace: '',
   getSsoToken: () => '',
 };
-
-jest.mock('../Styles/HrmStyles', () => ({
-  Container: 'Container',
-  SearchFields: 'SearchFields',
-  StyledSearchButton: 'StyledSearchButton',
-  StyledLabel: 'StyledLabel',
-  StyledInput: 'StyledInput',
-  TextField: 'TextField',
-  StyledMenuItem: 'StyledMenuItem',
-  StyledSelect: 'StyledSelect',
-  StyledTableCell: 'StyledTableCell',
-}));
 
 jest.mock('../services/ServerlessService', () => ({
   populateCounselors: async () => [],
@@ -100,7 +90,13 @@ test('<Search> should display <SearchResults />', () => {
         counselor: 'counselor-id',
         notes: 'Jill Smith Notes',
       },
-      details: {},
+      details: {
+        caseInformation: {
+          callSummary: 'Summary',
+        },
+      },
+      counselor: 'Counselor',
+      tags: ['Tag1', 'Tag2'],
     },
   ];
 

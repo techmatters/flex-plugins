@@ -9,6 +9,41 @@ import {
 } from './ActionTypes';
 import { searchContacts as searchContactsApiCall } from '../services/ContactService';
 
+/**
+ * @param {any} contact a contact result object
+ * @returns {string[]} returns an array conaining the tags of the contact as strings (if any)
+ */
+const retrieveTags = contact => {
+  const { details } = contact;
+  if (!details || !details.caseInformation || !details.caseInformation.categories) return [];
+
+  const cats = Object.entries(details.caseInformation.categories);
+  const subcats = cats.flatMap(([_, subs]) => Object.entries(subs));
+
+  const flattened = subcats.map(([subcat, bool]) => {
+    if (bool) return subcat;
+    return null;
+  });
+
+  const tags = flattened.reduce((acc, curr) => {
+    if (curr) return [...acc, curr];
+    return acc;
+  }, []);
+
+  return tags;
+};
+
+const addDetails = (counselorsHash, raw) => {
+  const detailed = raw.map(contact => {
+    const counselor = counselorsHash[contact.overview.counselor] || 'Unknown';
+    const tags = retrieveTags(contact);
+    const det = { ...contact, counselor, tags };
+    return det;
+  });
+
+  return detailed;
+};
+
 export const SearchPages = {
   form: 'form',
   results: 'results',
@@ -27,10 +62,12 @@ export const handleSearchFormChange = (name, value) => ({
   value,
 });
 
-export const searchContacts = dispatch => async (hrmBaseUrl, searchParams) => {
+export const searchContacts = dispatch => async (hrmBaseUrl, searchParams, counselorsHash) => {
   try {
     dispatch({ type: SEARCH_CONTACTS_REQUEST });
-    const searchResult = await searchContactsApiCall(hrmBaseUrl, searchParams);
+    const searchResultRaw = await searchContactsApiCall(hrmBaseUrl, searchParams);
+    const searchResult = addDetails(counselorsHash, searchResultRaw);
+
     dispatch({ type: SEARCH_CONTACTS_SUCCESS, searchResult });
   } catch (error) {
     dispatch({ type: SEARCH_CONTACTS_FAILURE, error });

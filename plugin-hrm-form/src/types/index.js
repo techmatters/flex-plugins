@@ -148,6 +148,8 @@ export const searchResultType = PropTypes.shape({
     notes: PropTypes.string,
   }).isRequired,
   details: contactType.isRequired,
+  counselor: PropTypes.string,
+  tags: PropTypes.arrayOf(PropTypes.string),
 });
 
 export const searchFormType = PropTypes.shape({

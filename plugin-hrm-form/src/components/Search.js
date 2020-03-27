@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
@@ -16,59 +16,108 @@ import {
   SearchPages,
 } from '../states/SearchContact';
 import { namespace, searchContactsBase } from '../states';
+import { populateCounselors } from '../services/ServerlessService';
 
-const Search = props => {
-  const handleSearch = searchParams => {
-    const { hrmBaseUrl } = props.context;
-    props.searchContacts(hrmBaseUrl, searchParams);
+/**
+ * @param {{
+ *  sid: string;
+ *  fullName: string;
+ *}[]} counselors
+ * @returns {{}} an object containing for each counselor,
+ * a property with its sid, and as a value the counselor's fullName
+ */
+const createCounselorsHash = counselors => {
+  const hash = counselors.reduce(
+    (obj, counselor) => ({
+      ...obj,
+      [counselor.sid]: counselor.fullName,
+    }),
+    {},
+  );
+
+  return hash;
+};
+
+class Search extends Component {
+  static displayName = 'Search';
+
+  static propTypes = {
+    context: contextObject.isRequired,
+    handleSelectSearchResult: PropTypes.func.isRequired,
+    handleSearchFormChange: PropTypes.func.isRequired,
+    searchContacts: PropTypes.func.isRequired,
+    changeSearchPage: PropTypes.func.isRequired,
+    viewContactDetails: PropTypes.func.isRequired,
+    currentPage: PropTypes.oneOf(Object.keys(SearchPages)).isRequired,
+    currentContact: contactType,
+    form: searchFormType.isRequired,
+    searchResult: PropTypes.arrayOf(searchResultType).isRequired,
+    isRequesting: PropTypes.bool.isRequired,
+    error: PropTypes.instanceOf(Error),
   };
 
-  const goToForm = () => props.changeSearchPage('form');
-  const goToResults = () => props.changeSearchPage('results');
+  static defaultProps = {
+    currentContact: null,
+    error: null,
+  };
 
-  const { currentPage, currentContact, searchResult, isRequesting, error, form } = props;
-  console.log({ isRequesting, error });
+  state = {
+    counselors: [],
+    counselorsHash: {},
+  };
 
-  switch (currentPage) {
-    case SearchPages.form:
-      return (
-        <SearchForm values={form} handleSearchFormChange={props.handleSearchFormChange} handleSearch={handleSearch} />
-      );
-    case SearchPages.results:
-      return (
-        <SearchResults
-          results={searchResult}
-          handleSelectSearchResult={props.handleSelectSearchResult}
-          handleBack={goToForm}
-          handleViewDetails={props.viewContactDetails}
-        />
-      );
-    case SearchPages.details:
-      return <ContactDetails contact={currentContact} handleBack={goToResults} />;
-    default:
-      return null;
+  async componentDidMount() {
+    try {
+      const { context } = this.props;
+      const counselors = await populateCounselors(context);
+      const counselorsHash = createCounselorsHash(counselors);
+      this.setState({ counselors, counselorsHash });
+    } catch (err) {
+      // TODO (Gian): probably we need to handle this in a nicer way
+      console.error(err.message);
+    }
   }
-};
 
-Search.displayName = 'Search';
-Search.propTypes = {
-  context: contextObject.isRequired,
-  handleSelectSearchResult: PropTypes.func.isRequired,
-  handleSearchFormChange: PropTypes.func.isRequired,
-  searchContacts: PropTypes.func.isRequired,
-  changeSearchPage: PropTypes.func.isRequired,
-  viewContactDetails: PropTypes.func.isRequired,
-  currentPage: PropTypes.oneOf(Object.keys(SearchPages)).isRequired,
-  currentContact: contactType,
-  form: searchFormType.isRequired,
-  searchResult: PropTypes.arrayOf(searchResultType).isRequired,
-  isRequesting: PropTypes.bool.isRequired,
-  error: PropTypes.instanceOf(Error),
-};
-Search.defaultProps = {
-  currentContact: null,
-  error: null,
-};
+  handleSearch = async searchParams => {
+    const { hrmBaseUrl } = this.props.context;
+    this.props.searchContacts(hrmBaseUrl, searchParams, this.state.counselorsHash);
+  };
+
+  goToForm = () => this.props.changeSearchPage('form');
+
+  goToResults = () => this.props.changeSearchPage('results');
+
+  render() {
+    const { currentPage, currentContact, searchResult, isRequesting, error, form } = this.props;
+    const { counselors } = this.state;
+    console.log({ isRequesting, error });
+
+    switch (currentPage) {
+      case SearchPages.form:
+        return (
+          <SearchForm
+            counselors={counselors}
+            values={form}
+            handleSearchFormChange={this.props.handleSearchFormChange}
+            handleSearch={this.handleSearch}
+          />
+        );
+      case SearchPages.results:
+        return (
+          <SearchResults
+            results={searchResult}
+            handleSelectSearchResult={this.props.handleSelectSearchResult}
+            handleBack={this.goToForm}
+            handleViewDetails={this.props.viewContactDetails}
+          />
+        );
+      case SearchPages.details:
+        return <ContactDetails contact={currentContact} handleBack={this.goToResults} />;
+      default:
+        return null;
+    }
+  }
+}
 
 const mapStateToProps = state => {
   const searchContactsState = state[namespace][searchContactsBase];

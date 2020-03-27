@@ -9,7 +9,6 @@ import FieldDate from './FieldDate';
 import { Container, SearchFields, StyledSearchButton } from '../Styles/HrmStyles';
 import { withConfiguration } from '../ConfigurationContext';
 import { contextObject, searchFormType } from '../types';
-import { populateCounselors } from '../services/ServerlessService';
 
 const getField = value => ({
   value,
@@ -25,24 +24,14 @@ class SearchForm extends Component {
     handleSearch: PropTypes.func.isRequired,
     handleSearchFormChange: PropTypes.func.isRequired,
     context: contextObject.isRequired,
+    counselors: PropTypes.arrayOf(
+      PropTypes.shape({
+        fullName: PropTypes.string,
+        sid: PropTypes.string,
+      }),
+    ).isRequired,
     values: searchFormType.isRequired,
   };
-
-  state = {
-    counselors: [],
-  };
-
-  async componentDidMount() {
-    try {
-      const { context } = this.props;
-      const counselors = await populateCounselors(context);
-
-      this.setState({ counselors });
-    } catch (err) {
-      // TODO (Gian): probably we need to handle this in a nicer way
-      console.error(err.message);
-    }
-  }
 
   defaultEventHandlers = fieldName => ({
     handleChange: e => this.props.handleSearchFormChange(fieldName, e.target.value),
@@ -51,10 +40,9 @@ class SearchForm extends Component {
   });
 
   render() {
-    const { counselors } = this.state;
     const { firstName, lastName, counselor, phoneNumber, dateFrom, dateTo } = this.props.values;
 
-    const counselorsOptions = counselors.map(e => ({ label: e.fullName, value: e.sid }));
+    const counselorsOptions = this.props.counselors.map(e => ({ label: e.fullName, value: e.sid }));
 
     const { helpline } = this.props.context;
     const searchParams = {

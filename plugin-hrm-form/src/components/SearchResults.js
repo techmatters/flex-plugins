@@ -1,19 +1,14 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import CheckIcon from '@material-ui/icons/Check';
-import Tooltip from '@material-ui/core/Tooltip';
 import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
+import { Button, List, Popover } from '@material-ui/core';
+import CheckIcon from '@material-ui/icons/Check';
 
-import SearchResultDetails from './SearchResultDetails';
-import { Container, StyledTableCell, StyledLabel } from '../Styles/HrmStyles';
+import ContactPreview from './search/ContactPreview';
 import { searchResultType } from '../types';
+import { Row } from '../Styles/HrmStyles';
+import { AlertContainer, AlertText, ConfirmContainer, ConfirmText } from '../Styles/search';
 
 class SearchResults extends Component {
   static displayName = 'SearchResults';
@@ -26,106 +21,118 @@ class SearchResults extends Component {
   };
 
   state = {
-    showDetails: {},
-    selectedCallSummary: '',
+    selectedSumary: '',
+    anchorEl: null,
+    contact: null,
+    connected: false,
   };
 
-  toggleShowDetails(contactId) {
-    this.setState(prevState => {
-      const showDetails = {
-        ...prevState.showDetails,
-        [contactId]: !prevState.showDetails[contactId],
-      };
+  closeDialog = () => this.setState({ selectedSumary: '' });
 
-      return { showDetails };
-    });
-  }
+  handleClickSummary = selectedSumary => this.setState({ selectedSumary });
 
-  closeDialog = () => this.setState({ selectedCallSummary: '' });
-
-  handleClickCallSummary = selectedCallSummary => this.setState({ selectedCallSummary });
-
-  renderName(name, currentContact) {
-    const { handleViewDetails } = this.props;
-
-    return (
-      <span style={{ cursor: 'pointer' }} tabIndex={0} role="button" onClick={() => handleViewDetails(currentContact)}>
-        {name}
-      </span>
-    );
-  }
-
-  renderCallSummaryDialog() {
-    const isOpen = Boolean(this.state.selectedCallSummary);
+  renderSummaryDialog() {
+    const isOpen = Boolean(this.state.selectedSumary);
 
     return (
       <Dialog onClose={this.closeDialog} open={isOpen}>
-        <DialogTitle id="simple-dialog-title">Call Summary</DialogTitle>
-        <DialogContent>{this.state.selectedCallSummary}</DialogContent>
+        <DialogContent>{this.state.selectedSumary}</DialogContent>
       </Dialog>
     );
   }
 
-  render() {
+  renderConfirmPopover = () => {
+    const isOpen = Boolean(this.state.anchorEl);
+    const id = isOpen ? 'simple-popover' : undefined;
+    const msg = "Connect current caller's record with this record?";
+
+    const handleClose = () => {
+      this.setState({ anchorEl: null, contact: null });
+    };
+
+    const handleConfirm = () => {
+      const { contact } = this.state;
+      this.setState({ connected: true });
+      setTimeout(() => {
+        this.setState({ anchorEl: null, contact: null, connected: false });
+        this.props.handleSelectSearchResult(contact);
+      }, 1000);
+    };
+
     return (
-      <Container>
+      <Popover
+        id={id}
+        open={isOpen}
+        anchorEl={this.state.anchorEl}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+      >
+        {this.state.connected ? (
+          <AlertContainer>
+            <CheckIcon style={{ color: '#fff' }} />
+            <AlertText>Connected!</AlertText>
+          </AlertContainer>
+        ) : (
+          <ConfirmContainer>
+            <ConfirmText>{msg}</ConfirmText>
+            <Row>
+              <Button variant="text" size="medium" onClick={handleClose}>
+                cancel
+              </Button>
+              <Button
+                variant="contained"
+                size="medium"
+                onClick={handleConfirm}
+                style={{ backgroundColor: '#000', color: '#fff', marginLeft: 20 }}
+              >
+                <CheckIcon />
+                yes, connect
+              </Button>
+            </Row>
+          </ConfirmContainer>
+        )}
+      </Popover>
+    );
+  };
+
+  /**
+   * Captures the contact of each preview and the event that fired it
+   * so we can "pop over" the pressed button
+   * @param {any} contact
+   * @returns {(e: React.MouseEvent<HTMLElement, MouseEvent>) => void}
+   */
+  handleConnectConfirm = contact => e => {
+    e.stopPropagation();
+    this.setState({ anchorEl: e.currentTarget, contact });
+  };
+
+  render() {
+    // TODO (Gian): This should be a virtualized list instead (for performance reasons)
+    return (
+      <>
         <button type="button" onClick={this.props.handleBack}>
           Back
         </button>
-        {this.renderCallSummaryDialog()}
-        <StyledLabel style={{ marginTop: 30, marginBottom: 10 }}>Use existing contact</StyledLabel>
-        <Paper>
-          <Table aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <StyledTableCell>&nbsp;</StyledTableCell>
-                <StyledTableCell>Date/Time</StyledTableCell>
-                <StyledTableCell>Child name</StyledTableCell>
-                <StyledTableCell>Customer #</StyledTableCell>
-                <StyledTableCell>Call type</StyledTableCell>
-                <StyledTableCell>Categories</StyledTableCell>
-                <StyledTableCell>Counselor</StyledTableCell>
-                <StyledTableCell>Call Summary</StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {this.props.results.map(result => (
-                <Fragment key={result.contactId}>
-                  <TableRow>
-                    <StyledTableCell>
-                      <CheckIcon
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => this.props.handleSelectSearchResult(result)}
-                      />
-                    </StyledTableCell>
-                    <StyledTableCell>{result.overview.dateTime}</StyledTableCell>
-                    <StyledTableCell>{this.renderName(result.overview.name, result.details)}</StyledTableCell>
-                    <StyledTableCell>{result.overview.customerNumber}</StyledTableCell>
-                    <StyledTableCell>{result.overview.callType}</StyledTableCell>
-                    <StyledTableCell>{result.overview.categories}</StyledTableCell>
-                    <StyledTableCell>{result.overview.counselor}</StyledTableCell>
-                    <StyledTableCell onClick={() => this.handleClickCallSummary(result.overview.notes)}>
-                      <Tooltip title={result.overview.notes && result.overview.notes.substr(0, 200)}>
-                        <span>{result.overview.notes}</span>
-                      </Tooltip>
-                    </StyledTableCell>
-                  </TableRow>
-                  {this.state.showDetails[result.contactId] && (
-                    <TableRow>
-                      <StyledTableCell colSpan="8">
-                        <SearchResultDetails
-                          details={result.details}
-                          handleClickCallSummary={this.handleClickCallSummary}
-                        />
-                      </StyledTableCell>
-                    </TableRow>
-                  )}
-                </Fragment>
-              ))}
-            </TableBody>
-          </Table>
-        </Paper>
-      </Container>
+        <List>
+          {this.renderSummaryDialog()}
+          {this.renderConfirmPopover()}
+          {this.props.results.map(contact => (
+            <ContactPreview
+              key={contact.contactId}
+              contact={contact}
+              onClick={this.handleClickSummary}
+              handleConnect={this.handleConnectConfirm(contact)}
+              handleViewDetails={() => this.props.handleViewDetails(contact.details)}
+            />
+          ))}
+        </List>
+      </>
     );
   }
 }
