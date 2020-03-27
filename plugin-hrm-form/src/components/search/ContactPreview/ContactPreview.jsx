@@ -10,32 +10,26 @@ import CallSummary from './CallSummary';
 import DateAndTags from './DateAndTags';
 import { contactType } from '../../../types';
 
-const mapper = string => {
-  if (string === 'SOMEONE') return 'CALLER';
-  if (string === 'CHILD') return 'SELF';
-  return string;
-};
-
 /**
- * Returns first word of the string as uppercase
- * and maps as specified:
- * CHILD -> SELF
- * SOMEONE -> CALLER
- * anything else is unchanged
  * @param {string} str
  * @return {string}
  */
-export const mapAndToUpper = str => {
-  const fst = str.split(' ')[0].toUpperCase();
-  const mapped = mapper(fst);
-  return mapped;
+export const mapCallType = str => {
+  switch (str) {
+    case 'Child calling about self':
+      return 'SELF';
+    case 'Someone calling about a child':
+      return 'CALLER';
+    default:
+      return str.toUpperCase();
+  }
 };
 
 const ContactPreview = ({ contact, onClick, handleConnect, handleViewDetails }) => {
   const name = (contact.overview.name.trim() === '' ? 'Unknown' : contact.overview.name).toUpperCase();
 
   const dateString = `${format(new Date(contact.overview.dateTime), 'MMM d, yyyy h:mm aaaaa')}m`;
-  const callType = mapAndToUpper(contact.overview.callType);
+  const callType = mapCallType(contact.overview.callType);
   const { counselor } = contact;
 
   const { callSummary } = contact.details.caseInformation;

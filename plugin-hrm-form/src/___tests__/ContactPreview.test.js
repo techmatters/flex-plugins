@@ -5,20 +5,20 @@ import { format } from 'date-fns';
 import './mockStyled';
 
 import ContactPreview from '../components/search/ContactPreview';
-import { mapAndToUpper } from '../components/search/ContactPreview/ContactPreview';
+import { mapCallType } from '../components/search/ContactPreview/ContactPreview';
 import ChildNameAndActions from '../components/search/ContactPreview/ChildNameAndActions';
 import CallTypeAndCounselor from '../components/search/ContactPreview/CallTypeAndCounselor';
 import CallSummary from '../components/search/ContactPreview/CallSummary';
 import DateAndTags from '../components/search/ContactPreview/DateAndTags';
 
-test('Test mapAndToUpper helper specification', () => {
-  const mapSelf = 'CHILD CALLING ABOUT SELF';
-  const mapCaller = 'SOMEONE CALLING ABOUT A CHILD';
+test('Test mapCallType helper specification', () => {
+  const mapSelf = 'Child calling about self';
+  const mapCaller = 'Someone calling about a child';
   const string = 'anything else';
 
-  expect(mapAndToUpper(mapSelf)).toEqual('SELF');
-  expect(mapAndToUpper(mapCaller)).toEqual('CALLER');
-  expect(mapAndToUpper(string)).toEqual('ANYTHING');
+  expect(mapCallType(mapSelf)).toEqual('SELF');
+  expect(mapCallType(mapCaller)).toEqual('CALLER');
+  expect(mapCallType(string)).toEqual('ANYTHING ELSE');
 });
 
 test('<ContactPreview> should mount', () => {
@@ -91,7 +91,7 @@ test('<ContactPreview> should mount', () => {
 
   expect(previewContact).toEqual(contact);
   expect(name).toEqual(contact.overview.name.toUpperCase());
-  expect(callType).toEqual(mapAndToUpper(contact.overview.callType));
+  expect(callType).toEqual(mapCallType(contact.overview.callType));
   expect(counselor).toEqual(contact.counselor);
   expect(callSummary).toEqual(contact.details.caseInformation.callSummary);
   expect(dateString).toEqual(formatedDate);
