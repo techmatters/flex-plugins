@@ -30,7 +30,7 @@ CategoryEntry.displayName = 'CategoryEntry';
 
 CategoryEntry.propTypes = {
   description: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
 };
 
 export default CategoryEntry;

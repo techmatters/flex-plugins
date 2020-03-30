@@ -111,37 +111,50 @@ test('<Search> should display <SearchResults />', () => {
 test('<Search> should display <ContactDetails />', () => {
   const currentPage = SearchPages.details;
   const currentContact = {
-    childInformation: {
-      name: {
-        firstName: 'Jill',
-        lastName: 'Smith',
+    details: {
+      childInformation: {
+        name: {
+          firstName: 'Jill',
+          lastName: 'Smith',
+        },
+        gender: 'Other',
+        age: '18-25',
+        language: 'Language 1',
+        nationality: 'Nationality 1',
+        ethnicity: 'Ethnicity 1',
+        location: {
+          streetAddress: '',
+          city: '',
+          stateOrCounty: '',
+          postalCode: '',
+          phone1: '',
+          phone2: '',
+        },
+        refugee: false,
       },
-      gender: 'Other',
-      age: '18-25',
-      language: 'Language 1',
-      nationality: 'Nationality 1',
-      ethnicity: 'Ethnicity 1',
-      location: {
-        streetAddress: '',
-        city: '',
-        stateOrCounty: '',
-        postalCode: '',
-        phone1: '',
-        phone2: '',
+      caseInformation: {
+        callSummary: 'Child calling about self',
+        referredTo: '',
+        status: 'In Progress',
+        keepConfidential: true,
+        okForCaseWorkerToCall: false,
+        howDidTheChildHearAboutUs: '',
+        didYouDiscussRightsWithTheChild: false,
+        didTheChildFeelWeSolvedTheirProblem: false,
+        wouldTheChildRecommendUsToAFriend: false,
       },
-      refugee: false,
     },
-    caseInformation: {
-      callSummary: 'Child calling about self',
-      referredTo: '',
-      status: 'In Progress',
-      keepConfidential: true,
-      okForCaseWorkerToCall: false,
-      howDidTheChildHearAboutUs: '',
-      didYouDiscussRightsWithTheChild: false,
-      didTheChildFeelWeSolvedTheirProblem: false,
-      wouldTheChildRecommendUsToAFriend: false,
+    overview: {
+      dateTime: '2020-03-10',
+      name: 'Jill Smith',
+      customerNumber: 'Anonymous',
+      callType: 'Child calling about self',
+      categories: 'TBD',
+      counselor: 'counselor-id',
+      notes: 'Jill Smith Notes',
     },
+    counselor: 'Counselor',
+    tags: ['Tag1', 'Tag2'],
   };
 
   const initialState = createState({ currentPage, currentContact });
