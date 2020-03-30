@@ -32,7 +32,7 @@ const renderOptions = options =>
     }
   });
 
-const FieldSelect = ({ id, label, name, field, options, handleBlur, handleChange, handleFocus }) => {
+const FieldSelect = ({ id, label, placeholder, name, field, options, handleBlur, handleChange, handleFocus }) => {
   const renderValue = typeof field.value === 'object' ? option => option.label : option => option;
 
   return (
@@ -64,12 +64,16 @@ FieldSelect.displayName = 'FieldSelect';
 FieldSelect.propTypes = {
   id: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
+  placeholder: PropTypes.string,
   name: PropTypes.string.isRequired,
   field: fieldType.isRequired,
   options: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, counselorType])).isRequired,
   handleBlur: PropTypes.func.isRequired,
   handleChange: PropTypes.func.isRequired,
   handleFocus: PropTypes.func.isRequired,
+};
+FieldSelect.defaultProps = {
+  placeholder: '',
 };
 
 export default FieldSelect;

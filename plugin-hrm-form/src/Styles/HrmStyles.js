@@ -20,6 +20,9 @@ export const ErrorText = styled('p')`
   line-height: 1.5;
 `;
 
+const grey1 = '#ECEDF1';
+const blue1 = '#003B81';
+
 export const StyledInput = styled(Input)`
   display: flex;
   flex-grow: 0;
@@ -28,6 +31,19 @@ export const StyledInput = styled(Input)`
   letter-spacing: normal;
   input {
     padding-right: 26px;
+    width: 217px;
+    height: 36px;
+    border-radius: 4px;
+    background-color: rgba(236, 237, 241, 0.37);
+    border: none;
+  }
+  input[type='date'] {
+    width: 102px;
+  }
+  input:focus {
+    background-color: rgba(236, 237, 241, 0.37);
+    box-shadow: none;
+    border: 1px solid rgba(0, 59, 129, 0.37);
   }
   background-color: ${props => props.theme.colors.base1};
   color: ${props =>
@@ -43,8 +59,9 @@ export const TextField = styled('div')`
 export const StyledLabel = styled('label')`
   text-transform: uppercase;
   margin-bottom: 8px;
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 2px;
+  min-height: 18px;
 `;
 
 export const StyledSelect = styled(Select)`
@@ -208,14 +225,14 @@ export const StyledTableCell = styled(TableCell)`
   white-space: nowrap;
 `;
 
-export const SearchFields = styled('div')`
-  display: flex;
-  flex-wrap: wrap;
-  > div {
-    max-width: 160px;
-    min-width: 160px;
-  }
-`;
+// export const SearchFields = styled('div')`
+//   display: flex;
+//   flex-wrap: wrap;
+//   > div {
+//     max-width: 160px;
+//     min-width: 160px;
+//   }
+// `;
 
 export const StyledSearchButton = styled(StyledNextStepButton)`
   width: 100px;
