@@ -2,8 +2,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Container } from '../Styles/HrmStyles';
-import { contactType } from '../types';
+import { Container } from '../../../Styles/HrmStyles';
+import { contactType } from '../../../types';
 import SearchResultDetails from './SearchResultDetails';
 
 const ContactDetails = props => (

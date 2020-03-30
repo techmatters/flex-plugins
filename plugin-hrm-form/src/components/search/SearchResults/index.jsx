@@ -5,10 +5,10 @@ import DialogContent from '@material-ui/core/DialogContent';
 import { Button, List, Popover } from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/Check';
 
-import ContactPreview from './search/ContactPreview';
-import { searchResultType } from '../types';
-import { Row } from '../Styles/HrmStyles';
-import { AlertContainer, AlertText, ConfirmContainer, ConfirmText } from '../Styles/search';
+import ContactPreview from '../ContactPreview';
+import { searchResultType } from '../../../types';
+import { Row } from '../../../Styles/HrmStyles';
+import { AlertContainer, AlertText, ConfirmContainer, ConfirmText } from '../../../Styles/search';
 
 class SearchResults extends Component {
   static displayName = 'SearchResults';

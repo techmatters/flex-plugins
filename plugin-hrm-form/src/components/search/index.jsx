@@ -6,17 +6,17 @@ import PropTypes from 'prop-types';
 import SearchForm from './SearchForm';
 import SearchResults from './SearchResults';
 import ContactDetails from './ContactDetails';
-import { withConfiguration } from '../ConfigurationContext';
-import { contextObject, contactType, searchResultType, searchFormType } from '../types';
+import { withConfiguration } from '../../ConfigurationContext';
+import { contextObject, contactType, searchResultType, searchFormType } from '../../types';
 import {
   handleSearchFormChange,
   changeSearchPage,
   viewContactDetails,
   searchContacts,
   SearchPages,
-} from '../states/SearchContact';
-import { namespace, searchContactsBase } from '../states';
-import { populateCounselors } from '../services/ServerlessService';
+} from '../../states/SearchContact';
+import { namespace, searchContactsBase } from '../../states';
+import { populateCounselors } from '../../services/ServerlessService';
 
 /**
  * @param {{
