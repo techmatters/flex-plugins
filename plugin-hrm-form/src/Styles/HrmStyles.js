@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { keyframes } from 'react-emotion';
-import { Input, Select, MenuItem, TableCell, Tabs, Tab } from '@material-ui/core';
+import { Input, Select, MenuItem, Tabs, Tab } from '@material-ui/core';
 import { Button, getBackgroundWithHoverCSS } from '@twilio/flex-ui';
 
 export const Container = styled('div')`
@@ -202,11 +202,15 @@ export const CategoryCheckboxField = styled('div')`
   width: 160px;
 `;
 
-export const StyledTableCell = styled(TableCell)`
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-`;
+/*
+ * (Gian) Not used, can be deleted?
+ *
+ * export const StyledTableCell = styled(TableCell)`
+ *   text-overflow: ellipsis;
+ *   overflow: hidden;
+ *   white-space: nowrap;
+ * `;
+ */
 
 export const SearchFields = styled('div')`
   display: flex;

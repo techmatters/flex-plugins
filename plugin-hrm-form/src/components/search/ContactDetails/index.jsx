@@ -1,17 +1,25 @@
 /* eslint-disable no-empty-function */
 import React from 'react';
 import PropTypes from 'prop-types';
+import { IconButton } from '@material-ui/core';
+import ChevronLeft from '@material-ui/icons/ChevronLeft';
 
-import { Container } from '../../../Styles/HrmStyles';
+import { Container, Row } from '../../../Styles/HrmStyles';
+import { BackText, ContactDetailsIcon } from '../../../Styles/search';
 import { contactType } from '../../../types';
-import SearchResultDetails from './SearchResultDetails';
+import Details from './Details';
 
-const ContactDetails = props => (
+const ChevronLeftIcon = ContactDetailsIcon(ChevronLeft);
+
+const ContactDetails = ({ contact, handleBack }) => (
   <Container>
-    <button type="button" onClick={props.handleBack}>
-      Back
-    </button>
-    <SearchResultDetails details={props.contact} handleClickCallSummary={() => {}} />
+    <Row>
+      <IconButton onClick={handleBack}>
+        <ChevronLeftIcon />
+      </IconButton>
+      <BackText>RETURN TO RESULTS</BackText>
+    </Row>
+    <Details contact={contact} handleClickCallSummary={() => {}} />
   </Container>
 );
 

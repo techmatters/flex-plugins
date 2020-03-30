@@ -21,22 +21,22 @@ class SearchResults extends Component {
   };
 
   state = {
-    selectedSumary: '',
+    mockedMessage: '',
     anchorEl: null,
     contact: null,
     connected: false,
   };
 
-  closeDialog = () => this.setState({ selectedSumary: '' });
+  closeDialog = () => this.setState({ mockedMessage: '' });
 
-  handleClickSummary = selectedSumary => this.setState({ selectedSumary });
+  handleClickMock = mockedMessage => this.setState({ mockedMessage });
 
-  renderSummaryDialog() {
-    const isOpen = Boolean(this.state.selectedSumary);
+  renderMockDialog() {
+    const isOpen = Boolean(this.state.mockedMessage);
 
     return (
       <Dialog onClose={this.closeDialog} open={isOpen}>
-        <DialogContent>{this.state.selectedSumary}</DialogContent>
+        <DialogContent>{this.state.mockedMessage}</DialogContent>
       </Dialog>
     );
   }
@@ -120,15 +120,15 @@ class SearchResults extends Component {
           Back
         </button>
         <List>
-          {this.renderSummaryDialog()}
+          {this.renderMockDialog()}
           {this.renderConfirmPopover()}
           {this.props.results.map(contact => (
             <ContactPreview
               key={contact.contactId}
               contact={contact}
-              onClick={this.handleClickSummary}
+              onClick={this.handleClickMock}
               handleConnect={this.handleConnectConfirm(contact)}
-              handleViewDetails={() => this.props.handleViewDetails(contact.details)}
+              handleViewDetails={() => this.props.handleViewDetails(contact)}
             />
           ))}
         </List>
