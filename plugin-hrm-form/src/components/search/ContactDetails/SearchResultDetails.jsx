@@ -6,8 +6,8 @@ import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { StyledTableCell } from '../Styles/HrmStyles';
-import { contactType } from '../types';
+import { StyledTableCell } from '../../../Styles/HrmStyles';
+import { contactType } from '../../../types';
 
 class SearchResultDetails extends Component {
   static displayName = 'SearchResultDetails';

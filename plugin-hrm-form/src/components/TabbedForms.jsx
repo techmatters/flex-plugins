@@ -26,7 +26,7 @@ import FieldSelect from './FieldSelect';
 import FieldText from './FieldText';
 import BranchingFormIssueCategory from './BranchingFormIssueCategory';
 import { formType, taskType } from '../types';
-import Search from './Search';
+import Search from './search';
 
 class TabbedForms extends React.PureComponent {
   static displayName = 'TabbedForms';

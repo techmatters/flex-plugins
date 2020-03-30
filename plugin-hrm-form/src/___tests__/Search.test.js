@@ -5,22 +5,13 @@ import configureMockStore from 'redux-mock-store';
 
 import './mockStyled';
 
-import Search from '../components/Search';
-import SearchForm from '../components/SearchForm';
-import SearchResults from '../components/SearchResults';
-import ContactDetails from '../components/ContactDetails';
+import Search from '../components/search';
+import SearchForm from '../components/search/SearchForm';
+import SearchResults from '../components/search/SearchResults';
+import ContactDetails from '../components/search/ContactDetails';
 import { SearchPages } from '../states/SearchContact';
 
 const mockStore = configureMockStore([]);
-
-const mockContext = {
-  hrmBaseUrl: '',
-  serverlessBaseUrl: '',
-  workerSid: '',
-  helpline: '',
-  currentWorkspace: '',
-  getSsoToken: () => '',
-};
 
 jest.mock('../services/ServerlessService', () => ({
   populateCounselors: async () => [],
