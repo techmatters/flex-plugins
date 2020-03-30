@@ -32,11 +32,25 @@ const renderOptions = options =>
     }
   });
 
-const FieldSelect = ({ id, label, placeholder, name, field, options, handleBlur, handleChange, handleFocus }) => {
-  const renderValue = typeof field.value === 'object' ? option => option.label : option => option;
+const FieldSelect = ({
+  id,
+  label,
+  placeholder,
+  name,
+  field,
+  options,
+  handleBlur,
+  handleChange,
+  handleFocus,
+  ...rest
+}) => {
+  const isPlaceholder = !(typeof field.value === 'object' ? Boolean(field.value.label) : Boolean(field.value));
+
+  const renderValue =
+    typeof field.value === 'object' ? option => option.label || placeholder : option => option || placeholder;
 
   return (
-    <TextField>
+    <TextField {...rest}>
       <StyledLabel htmlFor={id}>
         {label}
         <RequiredAsterisk field={field} />
@@ -52,8 +66,9 @@ const FieldSelect = ({ id, label, placeholder, name, field, options, handleBlur,
         onChange={handleChange}
         onFocus={handleFocus}
         renderValue={renderValue}
+        isPlaceholder={isPlaceholder}
       >
-        {renderOptions(options)}
+        {renderOptions(options, placeholder)}
       </StyledSelect>
       {field.error && <ErrorText>{field.error}</ErrorText>}
     </TextField>

@@ -20,9 +20,6 @@ export const ErrorText = styled('p')`
   line-height: 1.5;
 `;
 
-const grey1 = '#ECEDF1';
-const blue1 = '#003B81';
-
 export const StyledInput = styled(Input)`
   display: flex;
   flex-grow: 0;
@@ -65,9 +62,17 @@ export const StyledLabel = styled('label')`
 `;
 
 export const StyledSelect = styled(Select)`
-  width: 100%;
   flex-grow: 0;
   flex-shrink: 0;
+  width: 217px;
+  div[role='button'] {
+    height: 36px;
+    line-height: 22px;
+    border-radius: 4px;
+    background-color: rgba(236, 237, 241, 0.37);
+    border: none;
+    color: ${({ isPlaceholder }) => (isPlaceholder ? 'darkgray' : 'currentColor')};
+  }
   .Twilio-Dropdown {
     height: 100%;
   }

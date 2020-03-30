@@ -60,7 +60,7 @@ class SearchForm extends Component {
             placeholder="First"
             field={getField(firstName)}
             {...this.defaultEventHandlers('firstName')}
-            style={{ marginRight: 30 }}
+            style={{ marginRight: 25 }}
           />
           <FieldText
             id="Search_LastName"
@@ -70,14 +70,16 @@ class SearchForm extends Component {
           />
         </div>
 
-        <div>
+        <div style={{ display: 'flex' }}>
           <FieldSelect
             id="Search_Counselor"
             name="counselor"
             label="Counselor"
+            placeholder="Name"
             field={getField(counselor)}
             options={[{ label: '', value: '' }, ...counselorsOptions]}
             {...this.defaultEventHandlers('counselor')}
+            style={{ marginRight: 25 }}
           />
           <FieldDate
             id="Search_DateFrom"
@@ -87,7 +89,7 @@ class SearchForm extends Component {
           />
           <FieldDate id="Search_DateTo" label="To" field={getField(dateTo)} {...this.defaultEventHandlers('dateTo')} />
         </div>
-        <div>
+        <div style={{ display: 'flex' }}>
           <FieldText
             id="Search_CustomerPhoneNumber"
             label="Customer phone"
