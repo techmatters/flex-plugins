@@ -42,6 +42,26 @@ const checkForDataContact = s => {
 };
 
 /**
+ * If a word length is more than 30 chars, it will break it with a hyphen and line break
+ * @param {string} w
+ */
+const maxLength30 = w => {
+  if (w.length < 30) return w;
+  const init = w.substr(0, 29);
+  const tail = maxLength30(w.substr(29));
+  return `${init}-\n${tail}`;
+};
+
+/**
+ * @param {string} s
+ */
+const formatCallSummary = s => {
+  const words = s.split(' ');
+  const fixedWords = words.map(w => maxLength30(w));
+  return fixedWords.join(' ');
+};
+
+/**
  * Helper for conditionally passing an entry to a Section in a typesafe way
  * @param {boolean} pred
  * @param {{ description: string, value: string | number | boolean}} entry
@@ -50,6 +70,7 @@ const checkForDataContact = s => {
 const maybeEntry = (pred, entry) => (pred ? entry : null);
 
 const Details = ({ contact, handleClickCallSummary }) => {
+  // Object destructuring on contact
   const { overview, details, counselor, tags } = contact;
   const { dateTime, name, customerNumber, callType, channel, conversationDuration } = overview;
   const { gender, age, language, nationality, ethnicity, location, refugee } = details.childInformation;
@@ -75,7 +96,9 @@ const Details = ({ contact, handleClickCallSummary }) => {
     location: callerLocation,
   } = details.callerInformation;
 
+  // Format the obtained information
   const isDataContact = checkForDataContact(callType);
+  const formattedCallSummary = formatCallSummary(callSummary);
   const nameOrUnknown = formatName(name);
   const nameUpperCase = nameOrUnknown.toUpperCase();
   const formattedDate = `${format(new Date(dateTime), 'MMM d, yyyy / h:mm aaaaa')}m`;
@@ -111,7 +134,7 @@ const Details = ({ contact, handleClickCallSummary }) => {
         expanded
         sectionTitle="General details"
         entries={[
-          { description: 'Channel', value: channel },
+          { description: 'Channel', value: channel.charAt(0).toUpperCase() + channel.slice(1) },
           maybeEntry(Boolean(customerNumber), { description: 'Phone Number', value: customerNumber }),
           { description: 'Conversation Duration', value: conversationDuration },
           { description: 'Counselor', value: counselor },
@@ -167,7 +190,7 @@ const Details = ({ contact, handleClickCallSummary }) => {
         <Section
           sectionTitle="Case summary"
           entries={[
-            { description: 'Call Summary', value: callSummary },
+            { description: 'Call Summary', value: formattedCallSummary },
             { description: 'Status', value: status },
             { description: 'Referred by?', value: referredTo },
             { description: 'Keep Confidential?', value: keepConfidential },

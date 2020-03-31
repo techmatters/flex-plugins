@@ -143,6 +143,7 @@ const BoldDetailFont = styled(FontOpenSans)`
 
 export const BackText = styled(BoldDetailFont)`
   letter-spacing: 2px;
+  margin-left: 15px;
 `;
 
 export const DetNameText = styled(BoldDetailFont)`

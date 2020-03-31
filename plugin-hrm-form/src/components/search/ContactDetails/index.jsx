@@ -1,7 +1,7 @@
 /* eslint-disable no-empty-function */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { IconButton } from '@material-ui/core';
+import { ButtonBase } from '@material-ui/core';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 
 import { Container, Row } from '../../../Styles/HrmStyles';
@@ -14,10 +14,12 @@ const ChevronLeftIcon = ContactDetailsIcon(ChevronLeft);
 const ContactDetails = ({ contact, handleBack }) => (
   <Container>
     <Row>
-      <IconButton onClick={handleBack}>
-        <ChevronLeftIcon />
-      </IconButton>
-      <BackText>RETURN TO RESULTS</BackText>
+      <ButtonBase onClick={handleBack}>
+        <Row>
+          <ChevronLeftIcon />
+          <BackText>RETURN TO RESULTS</BackText>
+        </Row>
+      </ButtonBase>
     </Row>
     <Details contact={contact} handleClickCallSummary={() => {}} />
   </Container>

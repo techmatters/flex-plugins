@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Collapse } from '@material-ui/core';
+import { ButtonBase, Collapse } from '@material-ui/core';
 import { ArrowDropDownTwoTone, ArrowDropUpTwoTone } from '@material-ui/icons';
 
 import SectionEntry from './SectionEntry';
@@ -51,10 +51,10 @@ class Section extends React.Component {
     return (
       <>
         <SectionTitleContainer>
-          <SectionTitleText>{this.props.sectionTitle.toUpperCase()}</SectionTitleText>
-          <Button size="small" style={{ padding: 0 }} onClick={this.handleExpandClick}>
+          <ButtonBase style={{ width: '100%', padding: 0 }} onClick={this.handleExpandClick}>
+            <SectionTitleText>{this.props.sectionTitle.toUpperCase()}</SectionTitleText>
             {this.state.expanded ? <ArrowUpIcon /> : <ArrowDownIcon />}
-          </Button>
+          </ButtonBase>
         </SectionTitleContainer>
         <Collapse in={this.state.expanded} timeout="auto">
           {this.props.entries.map(this.renderSectionEntry)}
