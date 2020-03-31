@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import SearchIcon from '@material-ui/icons/Search';
+import DateRangeIcon from '@material-ui/icons/DateRange';
 
 import FieldText from '../../FieldText';
 import FieldSelect from '../../FieldSelect';
@@ -83,11 +84,20 @@ class SearchForm extends Component {
           />
           <FieldDate
             id="Search_DateFrom"
-            label="From"
+            label="Date range"
+            placeholder="Start"
             field={getField(dateFrom)}
             {...this.defaultEventHandlers('dateFrom')}
+            style={{ marginRight: '10px' }}
           />
-          <FieldDate id="Search_DateTo" label="To" field={getField(dateTo)} {...this.defaultEventHandlers('dateTo')} />
+          <FieldDate
+            id="Search_DateTo"
+            placeholder="End"
+            field={getField(dateTo)}
+            {...this.defaultEventHandlers('dateTo')}
+            style={{ marginRight: '10px' }}
+          />
+          <DateRangeIcon style={{ opacity: 0.37, marginTop: 'auto', marginBottom: '15px' }} />
         </div>
         <div style={{ display: 'flex' }}>
           <FieldText

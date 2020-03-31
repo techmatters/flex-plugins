@@ -27,7 +27,6 @@ export const StyledInput = styled(Input)`
   line-height: 1.33;
   letter-spacing: normal;
   input {
-    padding-right: 26px;
     width: 217px;
     height: 36px;
     border-radius: 4px;
@@ -35,7 +34,12 @@ export const StyledInput = styled(Input)`
     border: none;
   }
   input[type='date'] {
-    width: 102px;
+    padding-right: 7px;
+  }
+  input[type='date']::-webkit-clear-button,
+  input[type='date']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    display: none;
   }
   input:focus {
     background-color: rgba(236, 237, 241, 0.37);
@@ -229,15 +233,6 @@ export const StyledTableCell = styled(TableCell)`
   overflow: hidden;
   white-space: nowrap;
 `;
-
-// export const SearchFields = styled('div')`
-//   display: flex;
-//   flex-wrap: wrap;
-//   > div {
-//     max-width: 160px;
-//     min-width: 160px;
-//   }
-// `;
 
 export const StyledSearchButton = styled(StyledNextStepButton)`
   width: 100px;
