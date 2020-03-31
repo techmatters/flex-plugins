@@ -134,6 +134,8 @@ export const contactType = PropTypes.shape({
     didTheChildFeelWeSolvedTheirProblem: PropTypes.bool,
     wouldTheChildRecommendUsToAFriend: PropTypes.bool,
   }),
+  callType: PropTypes.string,
+  callerInformation: callerInformationType,
 });
 
 export const searchResultType = PropTypes.shape({
@@ -146,6 +148,8 @@ export const searchResultType = PropTypes.shape({
     categories: PropTypes.string,
     counselor: PropTypes.string,
     notes: PropTypes.string,
+    channel: PropTypes.string,
+    conversationDuration: PropTypes.number,
   }).isRequired,
   details: contactType.isRequired,
   counselor: PropTypes.string,

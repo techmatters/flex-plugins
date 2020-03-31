@@ -122,13 +122,13 @@ export const DetailsContainer = styled('div')`
   padding-right: ${containerPadding}px;
 `;
 
-export const CategoryTitleContainer = styled(Row)`
+export const SectionTitleContainer = styled(Row)`
   background-color: #ecedf1;
   padding: 8px;
   padding-left: 18px;
 `;
 
-export const NameContainer = styled(CategoryTitleContainer)`
+export const NameContainer = styled(SectionTitleContainer)`
   background-color: #000000;
   border-radius: 4px 4px 0 0;
   margin-top: 20px;
@@ -150,7 +150,7 @@ export const DetNameText = styled(BoldDetailFont)`
   margin-right: auto;
 `;
 
-export const CategoryTitleText = styled(FontOpenSans)`
+export const SectionTitleText = styled(FontOpenSans)`
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 1.8px;
@@ -164,10 +164,10 @@ const BodyText = styled(FontOpenSans)`
   line-height: 16px;
 `;
 
-export const CategoryDescriptionText = styled(BodyText)`
+export const SectionDescriptionText = styled(BodyText)`
   color: #9b9b9b;
   text-align: right;
   margin-right: 15px;
 `;
 
-export const CategoryValueText = BodyText;
+export const SectionValueText = BodyText;
