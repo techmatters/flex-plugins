@@ -9,6 +9,7 @@ import Search from '../components/search';
 import SearchForm from '../components/search/SearchForm';
 import SearchResults from '../components/search/SearchResults';
 import ContactDetails from '../components/search/ContactDetails';
+import { formatName, formatAddress } from '../components/search/ContactDetails/Details';
 import { SearchPages } from '../states/SearchContact';
 
 const mockStore = configureMockStore([]);
@@ -143,6 +144,26 @@ test('<Search> should display <ContactDetails />', () => {
         didTheChildFeelWeSolvedTheirProblem: false,
         wouldTheChildRecommendUsToAFriend: false,
       },
+      callerInformation: {
+        name: {
+          firstName: '',
+          lastName: '',
+        },
+        relationshipToChild: '',
+        gender: '',
+        age: '',
+        language: '',
+        nationality: '',
+        ethnicity: '',
+        location: {
+          city: '',
+          phone1: '',
+          phone2: '',
+          postalCode: '',
+          stateOrCounty: '',
+          streetAddress: '',
+        },
+      },
     },
     overview: {
       dateTime: '2020-03-10',
@@ -152,6 +173,8 @@ test('<Search> should display <ContactDetails />', () => {
       categories: 'TBD',
       counselor: 'counselor-id',
       notes: 'Jill Smith Notes',
+      channel: 'web',
+      conversationDuration: 10,
     },
     counselor: 'Counselor',
     tags: ['Tag1', 'Tag2'],
@@ -172,4 +195,29 @@ test('<Search> should display <ContactDetails />', () => {
 
   const contactProps = component.findByType(ContactDetails).props.contact;
   expect(contactProps).toEqual(currentContact);
+});
+
+test('Test name and address formatters', () => {
+  const name = 'Some name';
+  const expectName = formatName(name);
+  const expectUnknown = formatName(' ');
+
+  expect(expectName).toEqual(name);
+  expect(expectUnknown).toEqual('Unknown');
+
+  const addr1 = ['Street', 'City', 'State', 'CP'];
+  const expectedAddr1 = 'Street, City, State CP';
+  const formattedAddr1 = formatAddress(addr1[0], addr1[1], addr1[2], addr1[3]);
+
+  const addr2 = ['', 'City', 'State', ''];
+  const expectedAddr2 = 'City, State';
+  const formattedAddr2 = formatAddress(addr2[0], addr2[1], addr2[2], addr2[3]);
+
+  const addr3 = ['', '', '', ''];
+  const expectedAddr3 = '';
+  const formattedAddr3 = formatAddress(addr3[0], addr3[1], addr3[2], addr3[3]);
+
+  expect(formattedAddr1).toEqual(expectedAddr1);
+  expect(formattedAddr2).toEqual(expectedAddr2);
+  expect(formattedAddr3).toEqual(expectedAddr3);
 });

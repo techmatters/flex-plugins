@@ -202,16 +202,6 @@ export const CategoryCheckboxField = styled('div')`
   width: 160px;
 `;
 
-/*
- * (Gian) Not used, can be deleted?
- *
- * export const StyledTableCell = styled(TableCell)`
- *   text-overflow: ellipsis;
- *   overflow: hidden;
- *   white-space: nowrap;
- * `;
- */
-
 export const SearchFields = styled('div')`
   display: flex;
   flex-wrap: wrap;

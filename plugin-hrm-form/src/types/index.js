@@ -134,8 +134,26 @@ export const contactType = PropTypes.shape({
     didTheChildFeelWeSolvedTheirProblem: PropTypes.bool,
     wouldTheChildRecommendUsToAFriend: PropTypes.bool,
   }),
-  callType: PropTypes.string,
-  callerInformation: callerInformationType,
+  callerInformation: PropTypes.shape({
+    name: PropTypes.shape({
+      firstName: PropTypes.string,
+      lastName: PropTypes.string,
+    }),
+    relationshipToChild: PropTypes.string,
+    gender: PropTypes.string,
+    age: PropTypes.string,
+    language: PropTypes.string,
+    nationality: PropTypes.string,
+    ethnicity: PropTypes.string,
+    location: PropTypes.shape({
+      city: PropTypes.string,
+      phone1: PropTypes.string,
+      phone2: PropTypes.string,
+      postalCode: PropTypes.string,
+      stateOrCounty: PropTypes.string,
+      streetAddress: PropTypes.string,
+    }),
+  }),
 });
 
 export const searchResultType = PropTypes.shape({
