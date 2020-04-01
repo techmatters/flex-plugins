@@ -6,7 +6,8 @@
 jest.mock('../Styles/HrmStyles', () => ({
   Container: 'Container',
   SearchFields: 'SearchFields',
-  StyledSearchButton: 'StyledSearchButton',
+  StyledNextStepButton: 'StyledNextStepButton',
+  BottomButtonBar: 'BottomButtonBar',
   StyledLabel: 'StyledLabel',
   StyledInput: 'StyledInput',
   TextField: 'TextField',
