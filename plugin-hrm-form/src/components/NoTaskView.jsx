@@ -3,22 +3,15 @@ import { withTaskContext } from '@twilio/flex-ui';
 
 import { taskType } from '../types';
 
-const wrapperStyle = {
-  position: 'absolute',
-  margin: '0',
-  padding: '0',
-  border: '0px',
-  overflow: 'hidden',
-  height: '100%',
-  width: '100%',
-};
-
 const NoTaskView = props => {
   const { task } = props;
+  const hide = task && task.taskSid;
 
-  const show = task && task.taskSid ? 'hidden' : 'visible';
+  if (hide) {
+    return null;
+  }
 
-  return <div style={{ ...wrapperStyle, visibility: show }}>No Task Selected</div>;
+  return <div style={{ height: '100%' }}>No Task Selected</div>;
 };
 
 NoTaskView.displayName = 'NoTaskView';

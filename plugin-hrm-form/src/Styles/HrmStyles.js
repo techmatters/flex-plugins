@@ -3,15 +3,32 @@ import styled, { keyframes } from 'react-emotion';
 import { Input, Select, MenuItem, TableCell, Tabs, Tab } from '@material-ui/core';
 import { Button, getBackgroundWithHoverCSS } from '@twilio/flex-ui';
 
+export const Absolute = styled('div')`
+  position: absolute;
+  top: ${({ top }) => top || 'auto'};
+  bottom: ${({ bottom }) => bottom || 'auto'};
+  left: ${({ left }) => left || 'auto'};
+  right: ${({ right }) => right || 'auto'};
+`;
+
+export const TabbedFormsContainer = styled('div')`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+`;
+
+const containerLeftRightMargin = '20px';
 export const Container = styled('div')`
   display: flex;
   padding: 32px 20px 12px 20px;
   flex-direction: column;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   background-color: #ffffff;
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
-  margin: 0 20px;
+  margin: 0 ${containerLeftRightMargin};
+  height: 100%;
+  overflow-y: auto;
 `;
 
 export const ErrorText = styled('p')`
@@ -188,12 +205,10 @@ export const TopNav = styled('div')`
 `;
 
 export const BottomButtonBar = styled('div')`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  background-color: #ffffff;
-  margin: 0 20px;
-  padding: 20px 0;
+  margin: 0 ${containerLeftRightMargin};
+  height: 55px;
+  flex-shrink: 0;
+  background: red;
 `;
 
 export const NameFields = styled('div')`
@@ -244,6 +259,7 @@ export const StyledTabs = styled(props => <Tabs {...props} classes={{ indicator:
   && .indicator {
     background-color: transparent;
   }
+  flex-shrink: 0;
 `;
 
 export const StyledTab = styled(props => <Tab {...props} classes={{ selected: 'selected' }} />)`
