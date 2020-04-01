@@ -137,10 +137,12 @@ export const StyledButton = styled(Button)`
 `;
 
 export const StyledNextStepButton = styled(Button)`
-  color: white;
+  color: ${props => props.theme.colors.buttonTextColor};
   text-transform: uppercase;
-  width: 200px;
-  background-color: ${props => (props.disabled ? props.theme.colors.base5 : props.theme.colors.defaultButtonColor)};
+  margin: 0;
+  padding: 7px 23px;
+  background-color: ${props =>
+    props.disabled ? props.theme.colors.disabledColor : props.theme.colors.defaultButtonColor};
   cursor: ${props => (props.disabled ? 'not-allowed' : 'default')};
   ${p =>
     getBackgroundWithHoverCSS(
@@ -205,10 +207,17 @@ export const TopNav = styled('div')`
 `;
 
 export const BottomButtonBar = styled('div')`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   margin: 0 ${containerLeftRightMargin};
+  padding: 0 20px;
   height: 55px;
   flex-shrink: 0;
-  background: red;
+  background-color: #f9fafb;
+  border-top: 1px solid #c6cad8;
+  box-shadow: 0 -2px 4px 0 rgba(0, 0, 0, 0.14);
+  z-index: 1;
 `;
 
 export const NameFields = styled('div')`
@@ -247,12 +256,6 @@ export const StyledTableCell = styled(TableCell)`
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-`;
-
-export const StyledSearchButton = styled(StyledNextStepButton)`
-  width: 100px;
-  margin-bottom: 8px;
-  margin-top: auto;
 `;
 
 export const StyledTabs = styled(props => <Tabs {...props} classes={{ indicator: 'indicator' }} />)`

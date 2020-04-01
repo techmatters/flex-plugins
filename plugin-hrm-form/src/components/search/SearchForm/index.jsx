@@ -6,7 +6,7 @@ import DateRangeIcon from '@material-ui/icons/DateRange';
 import FieldText from '../../FieldText';
 import FieldSelect from '../../FieldSelect';
 import FieldDate from '../../FieldDate';
-import { Container, StyledSearchButton, Row, BottomButtonBar } from '../../../Styles/HrmStyles';
+import { Container, StyledNextStepButton, Row, BottomButtonBar } from '../../../Styles/HrmStyles';
 import { withConfiguration } from '../../../ConfigurationContext';
 import { contextObject, searchFormType } from '../../../types';
 
@@ -109,9 +109,9 @@ class SearchForm extends Component {
           </Row>
         </Container>
         <BottomButtonBar>
-          <StyledSearchButton roundCorners={true} onClick={() => this.props.handleSearch(searchParams)}>
+          <StyledNextStepButton roundCorners={true} onClick={() => this.props.handleSearch(searchParams)}>
             Search
-          </StyledSearchButton>
+          </StyledNextStepButton>
         </BottomButtonBar>
       </>
     );
