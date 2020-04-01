@@ -25,7 +25,7 @@ export const mapCallType = str => {
   }
 };
 
-const ContactPreview = ({ contact, onClick, handleConnect, handleViewDetails }) => {
+const ContactPreview = ({ contact, handleConnect, handleViewDetails, handleMockedMessage }) => {
   const name = (contact.overview.name.trim() === '' ? 'Unknown' : contact.overview.name).toUpperCase();
 
   const dateString = `${format(new Date(contact.overview.dateTime), 'MMM d, yyyy h:mm aaaaa')}m`;
@@ -36,8 +36,6 @@ const ContactPreview = ({ contact, onClick, handleConnect, handleViewDetails }) 
 
   const [tag1, tag2, tag3] = contact.tags;
 
-  const mockedAction = () => onClick('Not implemented yet');
-
   return (
     <ContactWrapper key={contact.contactId}>
       <Card>
@@ -46,7 +44,7 @@ const ContactPreview = ({ contact, onClick, handleConnect, handleViewDetails }) 
             name={name}
             onClickChain={handleConnect}
             onClickFull={handleViewDetails}
-            onClickMore={mockedAction}
+            onClickMore={handleMockedMessage}
           />
           <CallTypeAndCounselor callType={callType} counselor={counselor} />
           <CallSummary callSummary={callSummary} onClickFull={handleViewDetails} />
@@ -61,9 +59,9 @@ ContactPreview.displayName = 'ContactPreview';
 
 ContactPreview.propTypes = {
   contact: contactType.isRequired,
-  onClick: PropTypes.func.isRequired,
   handleConnect: PropTypes.func.isRequired,
   handleViewDetails: PropTypes.func.isRequired,
+  handleMockedMessage: PropTypes.func.isRequired,
 };
 
 export default ContactPreview;

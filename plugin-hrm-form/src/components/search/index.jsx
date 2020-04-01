@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
 
 import SearchForm from './SearchForm';
 import SearchResults from './SearchResults';
@@ -62,6 +64,7 @@ class Search extends Component {
   };
 
   state = {
+    mockedMessage: '',
     counselors: [],
     counselorsHash: {},
   };
@@ -78,6 +81,20 @@ class Search extends Component {
     }
   }
 
+  closeDialog = () => this.setState({ mockedMessage: '' });
+
+  handleMockedMessage = mockedMessage => this.setState({ mockedMessage: 'Not implemented yet!' });
+
+  renderMockDialog() {
+    const isOpen = Boolean(this.state.mockedMessage);
+
+    return (
+      <Dialog onClose={this.closeDialog} open={isOpen}>
+        <DialogContent>{this.state.mockedMessage}</DialogContent>
+      </Dialog>
+    );
+  }
+
   handleSearch = async searchParams => {
     const { hrmBaseUrl } = this.props.context;
     this.props.searchContacts(hrmBaseUrl, searchParams, this.state.counselorsHash);
@@ -87,11 +104,7 @@ class Search extends Component {
 
   goToResults = () => this.props.changeSearchPage('results');
 
-  render() {
-    const { currentPage, currentContact, searchResult, isRequesting, error, form } = this.props;
-    const { counselors } = this.state;
-    console.log({ isRequesting, error });
-
+  renderSearchPages(currentPage, currentContact, searchResult, form, counselors) {
     switch (currentPage) {
       case SearchPages.form:
         return (
@@ -109,13 +122,33 @@ class Search extends Component {
             handleSelectSearchResult={this.props.handleSelectSearchResult}
             handleBack={this.goToForm}
             handleViewDetails={this.props.viewContactDetails}
+            handleMockedMessage={this.handleMockedMessage}
           />
         );
       case SearchPages.details:
-        return <ContactDetails contact={currentContact} handleBack={this.goToResults} />;
+        return (
+          <ContactDetails
+            contact={currentContact}
+            handleBack={this.goToResults}
+            handleMockedMessage={this.handleMockedMessage}
+          />
+        );
       default:
         return null;
     }
+  }
+
+  render() {
+    const { currentPage, currentContact, searchResult, isRequesting, error, form } = this.props;
+    const { counselors } = this.state;
+    console.log({ isRequesting, error });
+
+    return (
+      <>
+        {this.renderMockDialog()}
+        {this.renderSearchPages(currentPage, currentContact, searchResult, form, counselors)}
+      </>
+    );
   }
 }
 

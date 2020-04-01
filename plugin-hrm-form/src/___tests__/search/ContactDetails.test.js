@@ -1,11 +1,11 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 
-import './mockStyled';
+import '../mockStyled';
 
-import ContactDetails from '../components/search/ContactDetails';
-import Section from '../components/search/ContactDetails/Section';
-import callTypes from '../states/DomainConstants';
+import ContactDetails from '../../components/search/ContactDetails';
+import Section from '../../components/search/ContactDetails/Section';
+import callTypes from '../../states/DomainConstants';
 
 const contactOfType = type => ({
   details: {
@@ -76,10 +76,15 @@ const contactOfType = type => ({
   tags: ['Tag1', 'Tag2'],
 });
 
+const handleBack = jest.fn();
+const handleMockedMessage = jest.fn();
+
 test(`<ContactDetails> with contact of type ${callTypes.child}`, () => {
   const contact = contactOfType(callTypes.child);
 
-  const component = renderer.create(<ContactDetails contact={contact} handleBack={() => null} />).root;
+  const component = renderer.create(
+    <ContactDetails contact={contact} handleBack={handleBack} handleMockedMessage={handleMockedMessage} />,
+  ).root;
 
   const sections = component.findAllByType(Section);
   const sectionsCount = sections.length;
@@ -89,8 +94,9 @@ test(`<ContactDetails> with contact of type ${callTypes.child}`, () => {
 test(`<ContactDetails> with contact of type ${callTypes.caller}`, () => {
   const contact = contactOfType(callTypes.caller);
 
-  const component = renderer.create(<ContactDetails contact={contact} handleBack={() => null} />).root;
-
+  const component = renderer.create(
+    <ContactDetails contact={contact} handleBack={handleBack} handleMockedMessage={handleMockedMessage} />,
+  ).root;
   const sections = component.findAllByType(Section);
   const sectionsCount = sections.length;
   expect(sectionsCount).toEqual(5);
@@ -99,8 +105,9 @@ test(`<ContactDetails> with contact of type ${callTypes.caller}`, () => {
 test(`<ContactDetails> with a non data (standalone) contact`, () => {
   const contact = contactOfType('anything else');
 
-  const component = renderer.create(<ContactDetails contact={contact} handleBack={() => null} />).root;
-
+  const component = renderer.create(
+    <ContactDetails contact={contact} handleBack={handleBack} handleMockedMessage={handleMockedMessage} />,
+  ).root;
   const sections = component.findAllByType(Section);
   const sectionsCount = sections.length;
   expect(sectionsCount).toEqual(1);

@@ -3,17 +3,17 @@ import { Provider } from 'react-redux';
 import renderer from 'react-test-renderer';
 import configureMockStore from 'redux-mock-store';
 
-import './mockStyled';
+import '../mockStyled';
 
-import Search from '../components/search';
-import SearchForm from '../components/search/SearchForm';
-import SearchResults from '../components/search/SearchResults';
-import ContactDetails from '../components/search/ContactDetails';
-import { SearchPages } from '../states/SearchContact';
+import Search from '../../components/search';
+import SearchForm from '../../components/search/SearchForm';
+import SearchResults from '../../components/search/SearchResults';
+import ContactDetails from '../../components/search/ContactDetails';
+import { SearchPages } from '../../states/SearchContact';
 
 const mockStore = configureMockStore([]);
 
-jest.mock('../services/ServerlessService', () => ({
+jest.mock('../../services/ServerlessService', () => ({
   populateCounselors: async () => [],
 }));
 

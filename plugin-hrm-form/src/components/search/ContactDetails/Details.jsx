@@ -21,7 +21,7 @@ const MoreHorizIcon = ContactDetailsIcon(MoreHoriz);
  */
 const maybeEntry = (pred, entry) => (pred ? entry : null);
 
-const Details = ({ contact, handleClickCallSummary }) => {
+const Details = ({ contact, handleMockedMessage }) => {
   // Object destructuring on contact
   const { overview, details, counselor, tags } = contact;
   const { dateTime, name, customerNumber, callType, channel, conversationDuration } = overview;
@@ -75,7 +75,7 @@ const Details = ({ contact, handleClickCallSummary }) => {
     <DetailsContainer>
       <NameContainer>
         <DetNameText>{nameUpperCase}</DetNameText>
-        <ButtonBase style={{ padding: 0 }} onClick={() => /* TODO: this must be implemented */ console.log(contact)}>
+        <ButtonBase style={{ padding: 0 }} onClick={handleMockedMessage}>
           <MoreHorizIcon style={{ color: '#ffffff' }} />
         </ButtonBase>
       </NameContainer>
@@ -159,7 +159,7 @@ Details.displayName = 'Details';
 
 Details.propTypes = {
   contact: contactType.isRequired,
-  handleClickCallSummary: PropTypes.func.isRequired,
+  handleMockedMessage: PropTypes.func.isRequired,
 };
 
 export default Details;

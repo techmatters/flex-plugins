@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
-import { Button, List, Popover } from '@material-ui/core';
+import { Button, ButtonBase, List, Popover } from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/Check';
 
 import ContactPreview from '../ContactPreview';
 import { searchResultType } from '../../../types';
 import { Row } from '../../../Styles/HrmStyles';
-import { AlertContainer, AlertText, ConfirmContainer, ConfirmText } from '../../../Styles/search';
+import { AlertContainer, AlertText, ConfirmContainer, ConfirmText, BackIcon, BackText } from '../../../Styles/search';
 
 class SearchResults extends Component {
   static displayName = 'SearchResults';
@@ -18,28 +16,14 @@ class SearchResults extends Component {
     handleSelectSearchResult: PropTypes.func.isRequired,
     handleBack: PropTypes.func.isRequired,
     handleViewDetails: PropTypes.func.isRequired,
+    handleMockedMessage: PropTypes.func.isRequired,
   };
 
   state = {
-    mockedMessage: '',
     anchorEl: null,
     contact: null,
     connected: false,
   };
-
-  closeDialog = () => this.setState({ mockedMessage: '' });
-
-  handleClickMock = mockedMessage => this.setState({ mockedMessage });
-
-  renderMockDialog() {
-    const isOpen = Boolean(this.state.mockedMessage);
-
-    return (
-      <Dialog onClose={this.closeDialog} open={isOpen}>
-        <DialogContent>{this.state.mockedMessage}</DialogContent>
-      </Dialog>
-    );
-  }
 
   renderConfirmPopover = () => {
     const isOpen = Boolean(this.state.anchorEl);
@@ -116,19 +100,21 @@ class SearchResults extends Component {
     // TODO (Gian): This should be a virtualized list instead (for performance reasons)
     return (
       <>
-        <button type="button" onClick={this.props.handleBack}>
-          Back
-        </button>
+        <ButtonBase onClick={this.props.handleBack}>
+          <Row>
+            <BackIcon />
+            <BackText>BACK TO SEARCH</BackText>
+          </Row>
+        </ButtonBase>
         <List>
-          {this.renderMockDialog()}
           {this.renderConfirmPopover()}
           {this.props.results.map(contact => (
             <ContactPreview
               key={contact.contactId}
               contact={contact}
-              onClick={this.handleClickMock}
               handleConnect={this.handleConnectConfirm(contact)}
               handleViewDetails={() => this.props.handleViewDetails(contact)}
+              handleMockedMessage={this.props.handleMockedMessage}
             />
           ))}
         </List>

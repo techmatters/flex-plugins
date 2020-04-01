@@ -26,6 +26,7 @@ test('Test address formatter', () => {
   expect(formattedAddr2).toEqual(expectedAddr2);
   expect(formattedAddr3).toEqual(expectedAddr3);
 });
+
 test('Test conversation duration formatter', () => {
   const duration1 = 42;
   const expectedDuration1 = '42s';
@@ -39,9 +40,14 @@ test('Test conversation duration formatter', () => {
   const expectedDuration3 = '1h 12m 0s';
   const formattedDuration3 = formatDuration(duration3);
 
+  const duration4 = 36729;
+  const expectedDuration4 = '10h 12m 9s';
+  const formattedDuration4 = formatDuration(duration4);
+
   expect(formattedDuration1).toEqual(expectedDuration1);
   expect(formattedDuration2).toEqual(expectedDuration2);
   expect(formattedDuration3).toEqual(expectedDuration3);
+  expect(formattedDuration4).toEqual(expectedDuration4);
 });
 
 test('Test contact channel formatter', () => {

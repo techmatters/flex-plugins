@@ -1,5 +1,6 @@
 import styled from 'react-emotion';
 import { Paper } from '@material-ui/core';
+import ChevronLeft from '@material-ui/icons/ChevronLeft';
 
 import { Row, FontOpenSans } from '../HrmStyles';
 
@@ -20,6 +21,12 @@ export const ConfirmContainer = styled(Paper)`
   padding: 30px;
   padding-top: 60px;
   padding-bottom: 60px;
+`;
+
+export const BackIcon = styled(ChevronLeft)`
+  color: #000000;
+  width: 50px;
+  height: 50px;
 `;
 
 // ContactPreview styles
