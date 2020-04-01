@@ -47,7 +47,7 @@ export const StyledInput = styled(Input)`
     width: 217px;
     height: 36px;
     border-radius: 4px;
-    background-color: rgba(236, 237, 241, 0.37);
+    background-color: ${props => props.theme.colors.inputBackgroundColor};
     border: none;
   }
   input[type='date'] {
@@ -59,7 +59,7 @@ export const StyledInput = styled(Input)`
     display: none;
   }
   input:focus {
-    background-color: rgba(236, 237, 241, 0.37);
+    background-color: ${props => props.theme.colors.inputBackgroundColor};
     box-shadow: none;
     border: 1px solid rgba(0, 59, 129, 0.37);
   }
@@ -90,7 +90,7 @@ export const StyledSelect = styled(Select)`
     height: 36px;
     line-height: 22px;
     border-radius: 4px;
-    background-color: rgba(236, 237, 241, 0.37);
+    background-color: ${props => props.theme.colors.inputBackgroundColor};
     border: none;
     color: ${({ isPlaceholder }) => (isPlaceholder ? 'darkgray' : 'currentColor')};
   }
