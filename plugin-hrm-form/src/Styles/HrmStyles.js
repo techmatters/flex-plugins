@@ -120,6 +120,7 @@ export const StyledMenuItem = styled(MenuItem)`
 `;
 
 export const StyledButton = styled(Button)`
+    flex-shrink: 0;
     color: white;
     text-transform: uppercase;
     margin-bottom: 15px;
@@ -163,6 +164,7 @@ const shadowPulse = keyframes`
 `;
 
 export const StyledFinishButton = styled(Button)`
+    flex-shrink: 0;
     animation: ${shadowPulse} 1s infinite;
     color: white;
     text-transform: uppercase;
