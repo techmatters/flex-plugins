@@ -51,6 +51,8 @@ class SearchForm extends Component {
       helpline,
     };
 
+    const isTouched = firstName || lastName || (counselor && counselor.value) || phoneNumber || dateFrom || dateTo;
+
     return (
       <>
         <Container>
@@ -109,7 +111,11 @@ class SearchForm extends Component {
           </Row>
         </Container>
         <BottomButtonBar>
-          <StyledNextStepButton roundCorners={true} onClick={() => this.props.handleSearch(searchParams)}>
+          <StyledNextStepButton
+            disabled={!isTouched}
+            roundCorners={true}
+            onClick={() => this.props.handleSearch(searchParams)}
+          >
             Search
           </StyledNextStepButton>
         </BottomButtonBar>
