@@ -1,65 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
-import { Button } from '@material-ui/core';
+import { ButtonBase } from '@material-ui/core';
 import { MoreHoriz } from '@material-ui/icons';
 
 import { DetailsContainer, NameContainer, DetNameText, ContactDetailsIcon } from '../../../Styles/search';
 import Section from './Section';
+import callTypes from '../../../states/DomainConstants';
+import { isStandAloneCallType } from '../../../states/ValidationRules';
 import { contactType } from '../../../types';
+import { formatAddress, formatChannel, formatDuration, formatName } from '../../../utils';
 
 const MoreHorizIcon = ContactDetailsIcon(MoreHoriz);
-
-/**
- * @param {string} name
- */
-export const formatName = name => (name.trim() === '' ? 'Unknown' : name);
-
-/**
- * @param {string} street
- * @param {string} city
- * @param {string} state
- * @param {string} postalCode
- */
-export const formatAddress = (street, city, state, postalCode) => {
-  const commaSeparated = [street, city, state].filter(s => s.trim()).join(', ');
-  const withPostalCode = [commaSeparated, postalCode].filter(s => s.trim()).join(' ');
-  return withPostalCode;
-};
-
-/**
- * @param {string} s
- */
-const checkForDataContact = s => {
-  switch (s) {
-    case 'Someone calling about a child':
-      return true;
-    case 'Child calling about self':
-      return true;
-    default:
-      return false;
-  }
-};
-
-/**
- * If a word length is more than 30 chars, it will break it with a hyphen and line break
- * @param {string} w
- */
-const maxLength30 = w => {
-  if (w.length < 30) return w;
-  const init = w.substr(0, 29);
-  const tail = maxLength30(w.substr(29));
-  return `${init}-\n${tail}`;
-};
-
-/**
- * @param {string} s
- */
-const formatCallSummary = s => {
-  const words = s.split(' ');
-  const fixedWords = words.map(w => maxLength30(w));
-  return fixedWords.join(' ');
-};
 
 /**
  * Helper for conditionally passing an entry to a Section in a typesafe way
@@ -97,11 +49,12 @@ const Details = ({ contact, handleClickCallSummary }) => {
   } = details.callerInformation;
 
   // Format the obtained information
-  const isDataContact = checkForDataContact(callType);
-  const formattedCallSummary = formatCallSummary(callSummary);
+  const isDataContact = !isStandAloneCallType(callType);
   const nameOrUnknown = formatName(name);
   const nameUpperCase = nameOrUnknown.toUpperCase();
+  const formattedChannel = formatChannel(channel);
   const formattedDate = `${format(new Date(dateTime), 'MMM d, yyyy / h:mm aaaaa')}m`;
+  const formattedDuration = formatDuration(conversationDuration);
   const { streetAddress, city, stateOrCounty, postalCode, phone1, phone2 } = location;
   const formattedAddress = formatAddress(streetAddress, city, stateOrCounty, postalCode);
 
@@ -122,26 +75,22 @@ const Details = ({ contact, handleClickCallSummary }) => {
     <DetailsContainer>
       <NameContainer>
         <DetNameText>{nameUpperCase}</DetNameText>
-        <Button
-          size="small"
-          style={{ padding: 0 }}
-          onClick={() => /* TODO: this must be implemented */ console.log(contact)}
-        >
+        <ButtonBase style={{ padding: 0 }} onClick={() => /* TODO: this must be implemented */ console.log(contact)}>
           <MoreHorizIcon style={{ color: '#ffffff' }} />
-        </Button>
+        </ButtonBase>
       </NameContainer>
       <Section
         expanded
         sectionTitle="General details"
         entries={[
-          { description: 'Channel', value: channel.charAt(0).toUpperCase() + channel.slice(1) },
-          maybeEntry(Boolean(customerNumber), { description: 'Phone Number', value: customerNumber }),
-          { description: 'Conversation Duration', value: conversationDuration },
+          { description: 'Channel', value: formattedChannel },
+          { description: 'Phone Number', value: channel === 'voice' ? customerNumber : '' },
+          { description: 'Conversation Duration', value: formattedDuration },
           { description: 'Counselor', value: counselor },
           { description: 'Date/Time', value: formattedDate },
         ]}
       />
-      {callType === 'Someone calling about a child' && (
+      {callType === callTypes.caller && (
         <Section
           sectionTitle="Caller information"
           entries={[
@@ -190,7 +139,7 @@ const Details = ({ contact, handleClickCallSummary }) => {
         <Section
           sectionTitle="Case summary"
           entries={[
-            { description: 'Call Summary', value: formattedCallSummary },
+            { description: 'Call Summary', value: callSummary },
             { description: 'Status', value: status },
             { description: 'Referred by?', value: referredTo },
             { description: 'Keep Confidential?', value: keepConfidential },

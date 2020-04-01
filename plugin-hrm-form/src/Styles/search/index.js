@@ -92,6 +92,9 @@ export const SummaryText = styled(FontOpenSans)`
   font-size: 13px;
   font-weight: 400;
   line-height: 16px;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  max-width: 40em;
 `;
 
 export const CounselorText = styled(SummaryText)`
@@ -116,7 +119,7 @@ export const ContactDetailsIcon = icon => styled(icon)`
   height: 50px;
 `;
 
-const containerPadding = 50;
+const containerPadding = 40;
 export const DetailsContainer = styled('div')`
   padding-left: ${containerPadding}px;
   padding-right: ${containerPadding}px;
@@ -171,4 +174,8 @@ export const SectionDescriptionText = styled(BodyText)`
   margin-right: 15px;
 `;
 
-export const SectionValueText = BodyText;
+export const SectionValueText = styled(BodyText)`
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  max-width: 40em;
+`;
