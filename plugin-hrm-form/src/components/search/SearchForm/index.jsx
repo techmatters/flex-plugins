@@ -1,7 +1,6 @@
 /* eslint-disable no-empty-function */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import DateRangeIcon from '@material-ui/icons/DateRange';
 
 import FieldText from '../../FieldText';
 import FieldSelect from '../../FieldSelect';
@@ -99,7 +98,6 @@ class SearchForm extends Component {
               {...this.defaultEventHandlers('dateTo')}
               style={{ marginRight: '10px' }}
             />
-            <DateRangeIcon style={{ opacity: 0.37, marginTop: 'auto', marginBottom: '15px' }} />
           </Row>
           <Row>
             <FieldText
