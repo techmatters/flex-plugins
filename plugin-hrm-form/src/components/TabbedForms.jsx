@@ -13,6 +13,7 @@ import {
   NameFields,
   StyledCheckboxLabel,
   StyledNextStepButton,
+  TabbedFormsContainer,
   TopNav,
   TwoColumnLayout,
   TransparentButton,
@@ -597,7 +598,7 @@ class TabbedForms extends React.PureComponent {
     const showSubmitButton = this.state.tab === body.length - 1;
 
     return (
-      <>
+      <TabbedFormsContainer>
         <TopNav>
           <TransparentButton onClick={e => this.props.handleCallTypeButtonClick(taskId, '')}>
             &lt; BACK
@@ -634,7 +635,7 @@ class TabbedForms extends React.PureComponent {
             )}
           </BottomButtonBar>
         )}
-      </>
+      </TabbedFormsContainer>
     );
   }
 }

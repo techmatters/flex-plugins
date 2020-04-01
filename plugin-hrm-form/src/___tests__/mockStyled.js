@@ -6,7 +6,8 @@
 jest.mock('../Styles/HrmStyles', () => ({
   Container: 'Container',
   SearchFields: 'SearchFields',
-  StyledSearchButton: 'StyledSearchButton',
+  StyledNextStepButton: 'StyledNextStepButton',
+  BottomButtonBar: 'BottomButtonBar',
   StyledLabel: 'StyledLabel',
   StyledInput: 'StyledInput',
   TextField: 'TextField',
@@ -22,7 +23,7 @@ jest.mock('../Styles/search', () => ({
   ConfirmContainer: 'ConfirmContainer',
   ContactWrapper: 'ContactWrapper',
   ContactButtonsWrapper: 'ContactButtonsWrapper',
-  NoneTransform: 'NoneTransform',
+  StyledLink: 'StyledLink',
   ContactTag: 'ContactTag',
   CalltypeTag: 'CalltypeTag',
   ConfirmText: 'ConfirmText',

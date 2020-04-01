@@ -1,5 +1,6 @@
+import React from 'react';
 import styled from 'react-emotion';
-import { Paper } from '@material-ui/core';
+import { Paper, Button } from '@material-ui/core';
 
 import { Row, FontOpenSans } from '../HrmStyles';
 
@@ -31,8 +32,9 @@ export const ContactWrapper = styled('div')`
   margin-top: 5px;
   margin-bottom: 5px;
 
-  &:hover{
-    box-shadow: -1px 7px 29px 0px rgba(0,0,0,0.3);
+  &:hover {
+    box-shadow: -1px 7px 29px 0px rgba(0, 0, 0, 0.3);
+  }
 `;
 
 export const ContactButtonsWrapper = styled('div')`
@@ -46,8 +48,15 @@ export const StyledIcon = icon => styled(icon)`
   opacity: 0.34;
 `;
 
-export const NoneTransform = styled('p')`
-  text-transform: none;
+export const StyledLink = styled(({ onClick, ...rest }) => <Button size="small" onClick={onClick} {...rest} />)`
+  span {
+    text-transform: none;
+    color: #1874e1;
+  }
+
+  &&:hover {
+    background-color: ${props => props.theme.colors.hyperlinkHoverBackgroundColor};
+  }
 `;
 
 const Tag = styled('div')`

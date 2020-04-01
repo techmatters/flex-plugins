@@ -6,6 +6,7 @@ import CustomCRMContainer from './components/CustomCRMContainer';
 import reducers, { namespace } from './states';
 import { Actions } from './states/ContactState';
 import ConfigurationContext from './ConfigurationContext';
+import HrmTheme from './Styles/HrmTheme';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 const PLUGIN_VERSION = '0.3.9';
@@ -25,6 +26,11 @@ export default class HrmFormPlugin extends FlexPlugin {
   init(flex, manager) {
     console.log(`Welcome to ${PLUGIN_NAME} Version ${PLUGIN_VERSION}`);
     this.registerReducers(manager);
+
+    const configuration = {
+      colorTheme: HrmTheme,
+    };
+    manager.updateConfig(configuration);
 
     const onCompleteTask = async (sid, task) => {
       if (task.status !== 'wrapping') {

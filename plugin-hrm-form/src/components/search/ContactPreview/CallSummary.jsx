@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button } from '@material-ui/core';
 
-import { RowWithMargin, SummaryText, NoneTransform } from '../../../Styles/search';
+import { RowWithMargin, SummaryText, StyledLink } from '../../../Styles/search';
 
 const StyledRow = RowWithMargin(5);
 
@@ -31,9 +30,7 @@ class CallSummary extends React.Component {
     return this.state.expanded ? (
       <div>
         <SummaryText>{this.props.callSummary}</SummaryText>
-        <Button size="small" color="primary" onClick={this.props.onClickFull}>
-          <NoneTransform>See full record</NoneTransform>
-        </Button>
+        <StyledLink onClick={this.props.onClickFull}>See full record</StyledLink>
       </div>
     ) : (
       <StyledRow>
@@ -41,11 +38,7 @@ class CallSummary extends React.Component {
           {this.shortSummary}
           {this.isLong && '...'}
         </SummaryText>
-        {this.isLong && (
-          <Button size="small" color="primary" onClick={this.handleClick(true)}>
-            <NoneTransform>more notes</NoneTransform>
-          </Button>
-        )}
+        {this.isLong && <StyledLink onClick={this.handleClick(true)}>more notes</StyledLink>}
       </StyledRow>
     );
   }

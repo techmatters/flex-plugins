@@ -1,12 +1,11 @@
 /* eslint-disable no-empty-function */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import SearchIcon from '@material-ui/icons/Search';
 
 import FieldText from '../../FieldText';
 import FieldSelect from '../../FieldSelect';
 import FieldDate from '../../FieldDate';
-import { Container, SearchFields, StyledSearchButton } from '../../../Styles/HrmStyles';
+import { Container, StyledNextStepButton, Row, BottomButtonBar } from '../../../Styles/HrmStyles';
 import { withConfiguration } from '../../../ConfigurationContext';
 import { contextObject, searchFormType } from '../../../types';
 
@@ -51,47 +50,74 @@ class SearchForm extends Component {
       helpline,
     };
 
+    const isTouched = firstName || lastName || (counselor && counselor.value) || phoneNumber || dateFrom || dateTo;
+
     return (
-      <Container>
-        <SearchFields>
-          <FieldText
-            id="Search_FirstName"
-            label="First name"
-            field={getField(firstName)}
-            {...this.defaultEventHandlers('firstName')}
-          />
-          <FieldText
-            id="Search_LastName"
-            label="Last name"
-            field={getField(lastName)}
-            {...this.defaultEventHandlers('lastName')}
-          />
-          <FieldSelect
-            id="Search_Counselor"
-            name="counselor"
-            label="Counselor"
-            field={getField(counselor)}
-            options={[{ label: '', value: '' }, ...counselorsOptions]}
-            {...this.defaultEventHandlers('counselor')}
-          />
-          <FieldText
-            id="Search_CustomerPhoneNumber"
-            label="Customer phone"
-            field={getField(phoneNumber)}
-            {...this.defaultEventHandlers('phoneNumber')}
-          />
-          <FieldDate
-            id="Search_DateFrom"
-            label="From"
-            field={getField(dateFrom)}
-            {...this.defaultEventHandlers('dateFrom')}
-          />
-          <FieldDate id="Search_DateTo" label="To" field={getField(dateTo)} {...this.defaultEventHandlers('dateTo')} />
-          <StyledSearchButton roundCorners={true} onClick={() => this.props.handleSearch(searchParams)}>
-            <SearchIcon />
-          </StyledSearchButton>
-        </SearchFields>
-      </Container>
+      <>
+        <Container>
+          <Row>
+            <FieldText
+              id="Search_FirstName"
+              label="Child name"
+              placeholder="First"
+              field={getField(firstName)}
+              {...this.defaultEventHandlers('firstName')}
+              style={{ marginRight: 25 }}
+            />
+            <FieldText
+              id="Search_LastName"
+              placeholder="Last"
+              field={getField(lastName)}
+              {...this.defaultEventHandlers('lastName')}
+            />
+          </Row>
+
+          <Row>
+            <FieldSelect
+              id="Search_Counselor"
+              name="counselor"
+              label="Counselor"
+              placeholder="Name"
+              field={getField(counselor)}
+              options={[{ label: '', value: '' }, ...counselorsOptions]}
+              {...this.defaultEventHandlers('counselor')}
+              style={{ marginRight: 25 }}
+            />
+            <FieldDate
+              id="Search_DateFrom"
+              label="Date range"
+              placeholder="Start Date"
+              field={getField(dateFrom)}
+              {...this.defaultEventHandlers('dateFrom')}
+              style={{ marginRight: '10px' }}
+            />
+            <FieldDate
+              id="Search_DateTo"
+              placeholder="End Date"
+              field={getField(dateTo)}
+              {...this.defaultEventHandlers('dateTo')}
+              style={{ marginRight: '10px' }}
+            />
+          </Row>
+          <Row>
+            <FieldText
+              id="Search_CustomerPhoneNumber"
+              label="Customer phone"
+              field={getField(phoneNumber)}
+              {...this.defaultEventHandlers('phoneNumber')}
+            />
+          </Row>
+        </Container>
+        <BottomButtonBar>
+          <StyledNextStepButton
+            disabled={!isTouched}
+            roundCorners={true}
+            onClick={() => this.props.handleSearch(searchParams)}
+          >
+            Search
+          </StyledNextStepButton>
+        </BottomButtonBar>
+      </>
     );
   }
 }

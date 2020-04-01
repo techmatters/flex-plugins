@@ -3,15 +3,32 @@ import styled, { keyframes } from 'react-emotion';
 import { Input, Select, MenuItem, TableCell, Tabs, Tab } from '@material-ui/core';
 import { Button, getBackgroundWithHoverCSS } from '@twilio/flex-ui';
 
+export const Absolute = styled('div')`
+  position: absolute;
+  top: ${({ top }) => top || 'auto'};
+  bottom: ${({ bottom }) => bottom || 'auto'};
+  left: ${({ left }) => left || 'auto'};
+  right: ${({ right }) => right || 'auto'};
+`;
+
+export const TabbedFormsContainer = styled('div')`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+`;
+
+const containerLeftRightMargin = '20px';
 export const Container = styled('div')`
   display: flex;
   padding: 32px 20px 12px 20px;
   flex-direction: column;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   background-color: #ffffff;
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
-  margin: 0 20px;
+  margin: 0 ${containerLeftRightMargin};
+  height: 100%;
+  overflow-y: auto;
 `;
 
 export const ErrorText = styled('p')`
@@ -27,7 +44,24 @@ export const StyledInput = styled(Input)`
   line-height: 1.33;
   letter-spacing: normal;
   input {
-    padding-right: 26px;
+    width: 217px;
+    height: 36px;
+    border-radius: 4px;
+    background-color: ${props => props.theme.colors.inputBackgroundColor};
+    border: none;
+  }
+  input[type='date'] {
+    padding-right: 7px;
+  }
+  input[type='date']::-webkit-clear-button,
+  input[type='date']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    display: none;
+  }
+  input:focus {
+    background-color: ${props => props.theme.colors.inputBackgroundColor};
+    box-shadow: none;
+    border: 1px solid rgba(0, 59, 129, 0.37);
   }
   background-color: ${props => props.theme.colors.base1};
   color: ${props =>
@@ -43,14 +77,23 @@ export const TextField = styled('div')`
 export const StyledLabel = styled('label')`
   text-transform: uppercase;
   margin-bottom: 8px;
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 2px;
+  min-height: 18px;
 `;
 
 export const StyledSelect = styled(Select)`
-  width: 100%;
   flex-grow: 0;
   flex-shrink: 0;
+  width: 217px;
+  div[role='button'] {
+    height: 36px;
+    line-height: 22px;
+    border-radius: 4px;
+    background-color: ${props => props.theme.colors.inputBackgroundColor};
+    border: none;
+    color: ${({ isPlaceholder }) => (isPlaceholder ? 'darkgray' : 'currentColor')};
+  }
   .Twilio-Dropdown {
     height: 100%;
   }
@@ -77,6 +120,7 @@ export const StyledMenuItem = styled(MenuItem)`
 `;
 
 export const StyledButton = styled(Button)`
+    flex-shrink: 0;
     color: white;
     text-transform: uppercase;
     margin-bottom: 15px;
@@ -94,10 +138,12 @@ export const StyledButton = styled(Button)`
 `;
 
 export const StyledNextStepButton = styled(Button)`
-  color: white;
+  color: ${props => props.theme.colors.buttonTextColor};
   text-transform: uppercase;
-  width: 200px;
-  background-color: ${props => (props.disabled ? props.theme.colors.base5 : props.theme.colors.defaultButtonColor)};
+  margin: 0;
+  padding: 7px 23px;
+  background-color: ${props =>
+    props.disabled ? props.theme.colors.disabledColor : props.theme.colors.defaultButtonColor};
   cursor: ${props => (props.disabled ? 'not-allowed' : 'default')};
   ${p =>
     getBackgroundWithHoverCSS(
@@ -118,6 +164,7 @@ const shadowPulse = keyframes`
 `;
 
 export const StyledFinishButton = styled(Button)`
+    flex-shrink: 0;
     animation: ${shadowPulse} 1s infinite;
     color: white;
     text-transform: uppercase;
@@ -163,11 +210,16 @@ export const TopNav = styled('div')`
 
 export const BottomButtonBar = styled('div')`
   display: flex;
-  flex-direction: row;
-  justify-content: center;
-  background-color: #ffffff;
-  margin: 0 20px;
-  padding: 20px 0;
+  align-items: center;
+  justify-content: flex-end;
+  margin: 0 ${containerLeftRightMargin};
+  padding: 0 20px;
+  height: 55px;
+  flex-shrink: 0;
+  background-color: #f9fafb;
+  border-top: 1px solid #c6cad8;
+  box-shadow: 0 -2px 4px 0 rgba(0, 0, 0, 0.14);
+  z-index: 1;
 `;
 
 export const NameFields = styled('div')`
@@ -208,25 +260,11 @@ export const StyledTableCell = styled(TableCell)`
   white-space: nowrap;
 `;
 
-export const SearchFields = styled('div')`
-  display: flex;
-  flex-wrap: wrap;
-  > div {
-    max-width: 160px;
-    min-width: 160px;
-  }
-`;
-
-export const StyledSearchButton = styled(StyledNextStepButton)`
-  width: 100px;
-  margin-bottom: 8px;
-  margin-top: auto;
-`;
-
 export const StyledTabs = styled(props => <Tabs {...props} classes={{ indicator: 'indicator' }} />)`
   && .indicator {
     background-color: transparent;
   }
+  flex-shrink: 0;
 `;
 
 export const StyledTab = styled(props => <Tab {...props} classes={{ selected: 'selected' }} />)`
