@@ -1,4 +1,4 @@
-import { formatName, formatAddress, formatDuration, formatChannel } from '../utils';
+import { formatName, formatAddress, formatDuration } from '../../utils';
 
 test('Test name formatter', () => {
   const name = 'Some name';
@@ -48,37 +48,4 @@ test('Test conversation duration formatter', () => {
   expect(formattedDuration2).toEqual(expectedDuration2);
   expect(formattedDuration3).toEqual(expectedDuration3);
   expect(formattedDuration4).toEqual(expectedDuration4);
-});
-
-test('Test contact channel formatter', () => {
-  const ch1 = 'facebook';
-  const expectCh1 = 'Facebook Messenger';
-  const fmtCh1 = formatChannel(ch1);
-
-  const ch2 = 'web';
-  const expectCh2 = 'Chat';
-  const fmtCh2 = formatChannel(ch2);
-
-  const ch3 = 'voice';
-  const expectCh3 = 'Voice';
-  const fmtCh3 = formatChannel(ch3);
-
-  const ch4 = 'sms';
-  const expectCh4 = 'SMS';
-  const fmtCh4 = formatChannel(ch4);
-
-  const ch5 = 'whatsapp';
-  const expectCh5 = 'WhatsApp';
-  const fmtCh5 = formatChannel(ch5);
-
-  const undef = 'anything else';
-  const expectUndef = 'Undefined';
-  const fmtUndef = formatChannel(undef);
-
-  expect(fmtCh1).toEqual(expectCh1);
-  expect(fmtCh2).toEqual(expectCh2);
-  expect(fmtCh3).toEqual(expectCh3);
-  expect(fmtCh4).toEqual(expectCh4);
-  expect(fmtCh5).toEqual(expectCh5);
-  expect(fmtUndef).toEqual(expectUndef);
 });

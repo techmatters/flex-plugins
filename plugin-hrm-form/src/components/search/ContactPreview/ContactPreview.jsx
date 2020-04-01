@@ -9,24 +9,10 @@ import CallTypeAndCounselor from './CallTypeAndCounselor';
 import CallSummary from './CallSummary';
 import DateAndTags from './DateAndTags';
 import { contactType } from '../../../types';
-
-/**
- * @param {string} str
- * @return {string}
- */
-export const mapCallType = str => {
-  switch (str) {
-    case 'Child calling about self':
-      return 'SELF';
-    case 'Someone calling about a child':
-      return 'CALLER';
-    default:
-      return str.toUpperCase();
-  }
-};
+import { formatName, mapCallType } from '../../../utils';
 
 const ContactPreview = ({ contact, handleConnect, handleViewDetails, handleMockedMessage }) => {
-  const name = (contact.overview.name.trim() === '' ? 'Unknown' : contact.overview.name).toUpperCase();
+  const name = formatName(contact.overview.name).toUpperCase();
 
   const dateString = `${format(new Date(contact.overview.dateTime), 'MMM d, yyyy h:mm aaaaa')}m`;
   const callType = mapCallType(contact.overview.callType);

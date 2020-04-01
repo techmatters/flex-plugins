@@ -9,7 +9,7 @@ import Section from './Section';
 import callTypes from '../../../states/DomainConstants';
 import { isStandAloneCallType } from '../../../states/ValidationRules';
 import { contactType } from '../../../types';
-import { formatAddress, formatChannel, formatDuration, formatName } from '../../../utils';
+import { formatAddress, formatDuration, formatName, mapChannel } from '../../../utils';
 
 const MoreHorizIcon = ContactDetailsIcon(MoreHoriz);
 
@@ -52,7 +52,7 @@ const Details = ({ contact, handleMockedMessage }) => {
   const isDataContact = !isStandAloneCallType(callType);
   const nameOrUnknown = formatName(name);
   const nameUpperCase = nameOrUnknown.toUpperCase();
-  const formattedChannel = formatChannel(channel);
+  const formattedChannel = mapChannel(channel);
   const formattedDate = `${format(new Date(dateTime), 'MMM d, yyyy / h:mm aaaaa')}m`;
   const formattedDuration = formatDuration(conversationDuration);
   const { streetAddress, city, stateOrCounty, postalCode, phone1, phone2 } = location;

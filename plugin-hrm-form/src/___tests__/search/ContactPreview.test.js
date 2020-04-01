@@ -5,24 +5,14 @@ import { format } from 'date-fns';
 import '../mockStyled';
 
 import ContactPreview from '../../components/search/ContactPreview';
-import { mapCallType } from '../../components/search/ContactPreview/ContactPreview';
 import ChildNameAndActions from '../../components/search/ContactPreview/ChildNameAndActions';
 import CallTypeAndCounselor from '../../components/search/ContactPreview/CallTypeAndCounselor';
 import CallSummary from '../../components/search/ContactPreview/CallSummary';
 import DateAndTags from '../../components/search/ContactPreview/DateAndTags';
+import { mapCallType } from '../../utils';
 
 const NonExisting = () => <>NonExisting</>;
 NonExisting.displayName = 'NonExisting';
-
-test('Test mapCallType helper specification', () => {
-  const mapSelf = 'Child calling about self';
-  const mapCaller = 'Someone calling about a child';
-  const string = 'anything else';
-
-  expect(mapCallType(mapSelf)).toEqual('SELF');
-  expect(mapCallType(mapCaller)).toEqual('CALLER');
-  expect(mapCallType(string)).toEqual('ANYTHING ELSE');
-});
 
 test('<ContactPreview> should mount', () => {
   const contact = {

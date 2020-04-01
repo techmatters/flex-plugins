@@ -31,23 +31,3 @@ export const formatDuration = inSeconds => {
 
   return `${hh}${mm}${ss}`;
 };
-
-/**
- * @param {string} channel
- */
-export const formatChannel = channel => {
-  switch (channel) {
-    case 'facebook':
-      return 'Facebook Messenger';
-    case 'web':
-      return 'Chat';
-    case 'voice':
-      return 'Voice';
-    case 'sms':
-      return 'SMS';
-    case 'whatsapp':
-      return 'WhatsApp';
-    default:
-      return 'Undefined';
-  }
-};
