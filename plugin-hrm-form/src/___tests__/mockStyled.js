@@ -23,7 +23,7 @@ jest.mock('../Styles/search', () => ({
   ConfirmContainer: 'ConfirmContainer',
   ContactWrapper: 'ContactWrapper',
   ContactButtonsWrapper: 'ContactButtonsWrapper',
-  NoneTransform: 'NoneTransform',
+  StyledLink: 'StyledLink',
   ContactTag: 'ContactTag',
   CalltypeTag: 'CalltypeTag',
   ConfirmText: 'ConfirmText',
