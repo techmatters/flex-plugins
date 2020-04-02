@@ -7,7 +7,7 @@ import { MoreHoriz } from '@material-ui/icons';
 import { DetailsContainer, NameContainer, DetNameText, ContactDetailsIcon } from '../../../Styles/search';
 import Section from './Section';
 import callTypes from '../../../states/DomainConstants';
-import { isStandAloneCallType } from '../../../states/ValidationRules';
+import { isNonDataCallType } from '../../../states/ValidationRules';
 import { contactType } from '../../../types';
 import { formatAddress, formatDuration, formatName, mapChannel } from '../../../utils';
 
@@ -24,8 +24,9 @@ const maybeEntry = (pred, entry) => (pred ? entry : null);
 const Details = ({ contact, handleMockedMessage }) => {
   // Object destructuring on contact
   const { overview, details, counselor, tags } = contact;
-  const { dateTime, name, customerNumber, callType, channel, conversationDuration } = overview;
-  const { gender, age, language, nationality, ethnicity, location, refugee } = details.childInformation;
+  const { dateTime, name: childName, customerNumber, callType, channel, conversationDuration } = overview;
+  const child = details.childInformation;
+  const caller = details.callerInformation;
   const {
     callSummary,
     referredTo,
@@ -37,44 +38,35 @@ const Details = ({ contact, handleMockedMessage }) => {
     didTheChildFeelWeSolvedTheirProblem,
     wouldTheChildRecommendUsToAFriend,
   } = details.caseInformation;
-  const {
-    name: callerNameObj,
-    relationshipToChild: callerRelationship,
-    gender: callerGender,
-    age: callerAge,
-    language: callerLanguage,
-    nationality: callerNationality,
-    ethnicity: callerEthnicity,
-    location: callerLocation,
-  } = details.callerInformation;
 
   // Format the obtained information
-  const isDataContact = !isStandAloneCallType(callType);
-  const nameOrUnknown = formatName(name);
-  const nameUpperCase = nameOrUnknown.toUpperCase();
+  const isDataCall = !isNonDataCallType(callType);
+  const childOrUnknown = formatName(childName);
+  const childUpperCased = childOrUnknown.toUpperCase();
   const formattedChannel = mapChannel(channel);
   const formattedDate = `${format(new Date(dateTime), 'MMM d, yyyy / h:mm aaaaa')}m`;
   const formattedDuration = formatDuration(conversationDuration);
-  const { streetAddress, city, stateOrCounty, postalCode, phone1, phone2 } = location;
-  const formattedAddress = formatAddress(streetAddress, city, stateOrCounty, postalCode);
+  const formattedChildAddress = formatAddress(
+    child.location.streetAddress,
+    child.location.city,
+    child.location.stateOrCounty,
+    child.location.postalCode,
+  );
 
-  const callerName = `${callerNameObj.firstName} ${callerNameObj.lastName}`;
+  const callerName = `${caller.name.firstName} ${caller.name.lastName}`;
   const callerOrUnknown = formatName(callerName);
-  const {
-    streetAddress: callerStreet,
-    city: callerCity,
-    stateOrCounty: callerState,
-    postalCode: callerPC,
-    phone1: callerPhone1,
-    phone2: callerPhone2,
-  } = callerLocation;
-  const formattedCallerAddress = formatAddress(callerStreet, callerCity, callerState, callerPC);
+  const formattedCallerAddress = formatAddress(
+    caller.location.streetAddress,
+    caller.location.city,
+    caller.location.stateOrCounty,
+    caller.location.postalCode,
+  );
   const [tag1, tag2, tag3] = tags;
 
   return (
     <DetailsContainer>
       <NameContainer>
-        <DetNameText>{nameUpperCase}</DetNameText>
+        <DetNameText>{childUpperCased}</DetNameText>
         <ButtonBase style={{ padding: 0 }} onClick={handleMockedMessage}>
           <MoreHorizIcon style={{ color: '#ffffff' }} />
         </ButtonBase>
@@ -95,36 +87,36 @@ const Details = ({ contact, handleMockedMessage }) => {
           sectionTitle="Caller information"
           entries={[
             { description: 'Name', value: callerOrUnknown },
-            { description: 'Relationship to Child', value: callerRelationship },
+            { description: 'Relationship to Child', value: caller.relationshipToChild },
             { description: 'Address', value: formattedCallerAddress },
-            maybeEntry(Boolean(callerPhone1), { description: 'Phone', value: callerPhone1 }),
-            maybeEntry(Boolean(callerPhone2), { description: 'Phone', value: callerPhone2 }),
-            { description: 'Gender', value: callerGender },
-            { description: 'Age Range', value: callerAge },
-            { description: 'Language', value: callerLanguage },
-            { description: 'Nationality', value: callerNationality },
-            { description: 'Ethnicity', value: callerEthnicity },
+            maybeEntry(Boolean(caller.location.phone1), { description: 'Phone', value: caller.location.phone1 }),
+            maybeEntry(Boolean(caller.location.phone2), { description: 'Phone', value: caller.location.phone2 }),
+            { description: 'Gender', value: caller.gender },
+            { description: 'Age Range', value: caller.age },
+            { description: 'Language', value: caller.language },
+            { description: 'Nationality', value: caller.nationality },
+            { description: 'Ethnicity', value: caller.ethnicity },
           ]}
         />
       )}
-      {isDataContact && (
+      {isDataCall && (
         <Section
           sectionTitle="Child information"
           entries={[
-            { description: 'Name', value: nameOrUnknown },
-            { description: 'Address', value: formattedAddress },
-            maybeEntry(Boolean(phone1), { description: 'Phone', value: phone1 }),
-            maybeEntry(Boolean(phone2), { description: 'Phone', value: phone2 }),
-            { description: 'Gender', value: gender },
-            { description: 'Age Range', value: age },
-            { description: 'Language', value: language },
-            { description: 'Nationality', value: nationality },
-            { description: 'Ethnicity', value: ethnicity },
-            { description: 'Is Refugee?', value: refugee },
+            { description: 'Name', value: childOrUnknown },
+            { description: 'Address', value: formattedChildAddress },
+            maybeEntry(Boolean(child.location.phone1), { description: 'Phone', value: child.location.phone1 }),
+            maybeEntry(Boolean(child.location.phone2), { description: 'Phone', value: child.location.phone2 }),
+            { description: 'Gender', value: child.gender },
+            { description: 'Age Range', value: child.age },
+            { description: 'Language', value: child.language },
+            { description: 'Nationality', value: child.nationality },
+            { description: 'Ethnicity', value: child.ethnicity },
+            { description: 'Is Refugee?', value: child.refugee },
           ]}
         />
       )}
-      {isDataContact && (
+      {isDataCall && (
         <Section
           sectionTitle="Issue categorization"
           entries={[
@@ -135,7 +127,7 @@ const Details = ({ contact, handleMockedMessage }) => {
           ]}
         />
       )}
-      {isDataContact && (
+      {isDataCall && (
         <Section
           sectionTitle="Case summary"
           entries={[

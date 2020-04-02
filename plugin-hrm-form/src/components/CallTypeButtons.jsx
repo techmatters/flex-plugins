@@ -4,7 +4,7 @@ import { withTaskContext } from '@twilio/flex-ui';
 
 import { Container, StyledButton, StyledFinishButton } from '../Styles/HrmStyles';
 import callTypes from '../states/DomainConstants';
-import { isStandAloneCallType } from '../states/ValidationRules';
+import { isNonDataCallType } from '../states/ValidationRules';
 import { formType, taskType } from '../types';
 
 const CallTypeButtons = props => {
@@ -26,7 +26,7 @@ const CallTypeButtons = props => {
       {props.form &&
       props.form.callType &&
       props.form.callType.value &&
-      isStandAloneCallType(props.form.callType.value) ? (
+      isNonDataCallType(props.form.callType.value) ? (
         <StyledFinishButton
           style={{ marginTop: '20px', border: '2px', backgroundColor: 'red' }}
           roundCorners={true}
