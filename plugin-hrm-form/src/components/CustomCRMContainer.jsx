@@ -5,17 +5,18 @@ import { connect } from 'react-redux';
 import NoTaskView from './NoTaskView';
 import TaskView from './TaskView';
 import { taskType } from '../types';
+import { Absolute } from '../Styles/HrmStyles';
 
 const CustomCRMContainer = props => {
   const { tasks } = props;
 
   return (
-    <div>
+    <Absolute top="0" bottom="0" left="0" right="0">
       <NoTaskView key="no-task" />
       {Array.from(tasks.values()).map(item => (
         <TaskView thisTask={item} key={`controller-${item.taskSid}`} handleCompleteTask={props.handleCompleteTask} />
       ))}
-    </div>
+    </Absolute>
   );
 };
 

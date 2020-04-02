@@ -11,17 +11,6 @@ import { Actions } from '../states/ContactState';
 import { handleBlur, handleCategoryToggle, handleFocus, handleSubmit } from '../states/ActionCreators';
 import { handleSelectSearchResult } from '../states/SearchContact';
 
-const wrapperStyle = {
-  position: 'absolute',
-  margin: '0',
-  padding: '0',
-  border: '0px',
-
-  // overflow: "hidden",  // this prevents scrolling
-  height: '100%',
-  width: '100%',
-};
-
 class TaskView extends Component {
   static displayName = 'TaskView';
 
@@ -49,15 +38,15 @@ class TaskView extends Component {
   render() {
     const { task, thisTask, form } = this.props;
 
-    if (!task) {
+    // If this task is not the active task, hide it
+    const show = task && task.taskSid === thisTask.taskSid;
+
+    if (!show) {
       return null;
     }
 
-    // If this task is not the active task, hide it
-    const show = task && task.taskSid === thisTask.taskSid ? 'visible' : 'hidden';
-
     return (
-      <div style={{ ...wrapperStyle, visibility: show }}>
+      <div style={{ height: '100%' }}>
         <HrmForm
           form={form}
           handleBlur={this.props.handleBlur(form, task.taskSid)}

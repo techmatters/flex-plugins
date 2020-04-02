@@ -32,11 +32,25 @@ const renderOptions = options =>
     }
   });
 
-const FieldSelect = ({ id, label, name, field, options, handleBlur, handleChange, handleFocus }) => {
-  const renderValue = typeof field.value === 'object' ? option => option.label : option => option;
+const FieldSelect = ({
+  id,
+  label,
+  placeholder,
+  name,
+  field,
+  options,
+  handleBlur,
+  handleChange,
+  handleFocus,
+  ...rest
+}) => {
+  const isPlaceholder = !(typeof field.value === 'object' ? Boolean(field.value.label) : Boolean(field.value));
+
+  const renderValue =
+    typeof field.value === 'object' ? option => option.label || placeholder : option => option || placeholder;
 
   return (
-    <TextField>
+    <TextField {...rest}>
       <StyledLabel htmlFor={id}>
         {label}
         <RequiredAsterisk field={field} />
@@ -52,8 +66,9 @@ const FieldSelect = ({ id, label, name, field, options, handleBlur, handleChange
         onChange={handleChange}
         onFocus={handleFocus}
         renderValue={renderValue}
+        isPlaceholder={isPlaceholder}
       >
-        {renderOptions(options)}
+        {renderOptions(options, placeholder)}
       </StyledSelect>
       {field.error && <ErrorText>{field.error}</ErrorText>}
     </TextField>
@@ -64,12 +79,16 @@ FieldSelect.displayName = 'FieldSelect';
 FieldSelect.propTypes = {
   id: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
+  placeholder: PropTypes.string,
   name: PropTypes.string.isRequired,
   field: fieldType.isRequired,
   options: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, counselorType])).isRequired,
   handleBlur: PropTypes.func.isRequired,
   handleChange: PropTypes.func.isRequired,
   handleFocus: PropTypes.func.isRequired,
+};
+FieldSelect.defaultProps = {
+  placeholder: '',
 };
 
 export default FieldSelect;
