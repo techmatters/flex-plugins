@@ -8,6 +8,7 @@ import {
   SEARCH_CONTACTS_FAILURE,
 } from './ActionTypes';
 import { searchContacts as searchContactsApiCall } from '../services/ContactService';
+import callTypes from './DomainConstants';
 
 /**
  * @param {any} contact a contact result object
@@ -100,9 +101,44 @@ function copyNewValues(originalObject, objectWithNewValues) {
   return Object.fromEntries(entries);
 }
 
+function copyCallerInformation(original, newValues) {
+  const callerInformation = copyNewValues(original.callerInformation, newValues.callerInformation);
+  return { ...original, callerInformation };
+}
+
+function copyChildInformation(original, newValues) {
+  const childInformation = copyNewValues(original.childInformation, newValues.childInformation);
+  return { ...original, childInformation };
+}
+
+/**
+ * Partially copies values from the contact (newValues) into the form (original)
+ * based on the type calls of both
+ * @param {{ callType: { value: string; }; }} original
+ * @param {{ callType: string; }} newValues
+ */
+function partiallyCopyValues(original, newValues) {
+  switch (newValues.callType) {
+    case callTypes.caller: {
+      if (original.callType.value === callTypes.caller) {
+        return copyCallerInformation(original, newValues);
+      }
+      if (original.callType.value === callTypes.child) {
+        return copyChildInformation(original, newValues);
+      }
+      return original;
+    }
+    case callTypes.child: {
+      return copyChildInformation(original, newValues);
+    }
+    default:
+      return original;
+  }
+}
+
 export function copySearchResultIntoTask(currentTask, searchResult) {
   const searchResultDetails = searchResult.details;
-  return copyNewValues(currentTask, searchResultDetails);
+  return partiallyCopyValues(currentTask, searchResultDetails);
 }
 
 const initialState = {
