@@ -29,10 +29,6 @@ export const RowWithMargin = margin => styled(Row)`
 export const ContactWrapper = styled('div')`
   margin-top: 5px;
   margin-bottom: 5px;
-
-  &:hover {
-    box-shadow: -1px 7px 29px 0px rgba(0, 0, 0, 0.3);
-  }
 `;
 
 export const ContactButtonsWrapper = styled('div')`
