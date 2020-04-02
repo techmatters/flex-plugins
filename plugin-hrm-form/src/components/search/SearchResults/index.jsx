@@ -47,6 +47,7 @@ class SearchResults extends Component {
       <Popover
         id={id}
         open={isOpen}
+        onClose={handleClose}
         anchorEl={this.state.anchorEl}
         anchorOrigin={{
           vertical: 'top',
@@ -100,12 +101,12 @@ class SearchResults extends Component {
     // TODO (Gian): This should be a virtualized list instead (for performance reasons)
     return (
       <>
-        <ButtonBase onClick={this.props.handleBack}>
-          <Row>
+        <Row>
+          <ButtonBase onClick={this.props.handleBack}>
             <BackIcon />
             <BackText>BACK TO SEARCH</BackText>
-          </Row>
-        </ButtonBase>
+          </ButtonBase>
+        </Row>
         <List>
           {this.renderConfirmPopover()}
           {this.props.results.map(contact => (
