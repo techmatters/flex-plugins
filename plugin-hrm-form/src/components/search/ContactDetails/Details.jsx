@@ -61,6 +61,8 @@ const Details = ({ contact, handleMockedMessage }) => {
     caller.location.stateOrCounty,
     caller.location.postalCode,
   );
+
+  const isPhoneContact = channel === 'voice' || channel === 'sms' || channel === 'whatsapp';
   const [tag1, tag2, tag3] = tags;
 
   return (
@@ -76,7 +78,7 @@ const Details = ({ contact, handleMockedMessage }) => {
         sectionTitle="General details"
         entries={[
           { description: 'Channel', value: formattedChannel },
-          { description: 'Phone Number', value: channel === 'voice' ? customerNumber : '' },
+          { description: 'Phone Number', value: isPhoneContact ? customerNumber : '' },
           { description: 'Conversation Duration', value: formattedDuration },
           { description: 'Counselor', value: counselor },
           { description: 'Date/Time', value: formattedDate },
