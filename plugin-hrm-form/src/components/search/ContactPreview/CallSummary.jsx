@@ -17,9 +17,11 @@ class CallSummary extends React.Component {
     expanded: false,
   };
 
-  shortSummary = (this.props.callSummary && this.props.callSummary.substr(0, 50)) || '- No call summary -';
+  shortSummary = (this.props.callSummary && this.props.callSummary.substr(0, 55)) || '- No call summary -';
 
-  isLong = this.shortSummary.length === 50;
+  formattedShortSummary = this.shortSummary.replace(/\n/gi, ' ').padEnd(55, ' ');
+
+  isLong = this.shortSummary.length === 55;
 
   handleClick = bool => event => {
     event.stopPropagation();
@@ -35,7 +37,7 @@ class CallSummary extends React.Component {
     ) : (
       <StyledRow>
         <SummaryText>
-          {this.shortSummary}
+          {this.formattedShortSummary}
           {this.isLong && '...'}
         </SummaryText>
         {this.isLong && <StyledLink onClick={this.handleClick(true)}>more notes</StyledLink>}

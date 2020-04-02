@@ -134,6 +134,26 @@ export const contactType = PropTypes.shape({
     didTheChildFeelWeSolvedTheirProblem: PropTypes.bool,
     wouldTheChildRecommendUsToAFriend: PropTypes.bool,
   }),
+  callerInformation: PropTypes.shape({
+    name: PropTypes.shape({
+      firstName: PropTypes.string,
+      lastName: PropTypes.string,
+    }),
+    relationshipToChild: PropTypes.string,
+    gender: PropTypes.string,
+    age: PropTypes.string,
+    language: PropTypes.string,
+    nationality: PropTypes.string,
+    ethnicity: PropTypes.string,
+    location: PropTypes.shape({
+      city: PropTypes.string,
+      phone1: PropTypes.string,
+      phone2: PropTypes.string,
+      postalCode: PropTypes.string,
+      stateOrCounty: PropTypes.string,
+      streetAddress: PropTypes.string,
+    }),
+  }),
 });
 
 export const searchResultType = PropTypes.shape({
@@ -146,6 +166,8 @@ export const searchResultType = PropTypes.shape({
     categories: PropTypes.string,
     counselor: PropTypes.string,
     notes: PropTypes.string,
+    channel: PropTypes.string,
+    conversationDuration: PropTypes.number,
   }).isRequired,
   details: contactType.isRequired,
   counselor: PropTypes.string,

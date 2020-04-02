@@ -1,17 +1,24 @@
 /* eslint-disable no-empty-function */
 import React from 'react';
 import PropTypes from 'prop-types';
+import { ButtonBase } from '@material-ui/core';
 
-import { Container } from '../../../Styles/HrmStyles';
+import { Container, Row } from '../../../Styles/HrmStyles';
+import { BackText, BackIcon } from '../../../Styles/search';
 import { contactType } from '../../../types';
-import SearchResultDetails from './SearchResultDetails';
+import Details from './Details';
 
-const ContactDetails = props => (
+const ContactDetails = ({ contact, handleBack, handleMockedMessage }) => (
   <Container>
-    <button type="button" onClick={props.handleBack}>
-      Back
-    </button>
-    <SearchResultDetails details={props.contact} handleClickCallSummary={() => {}} />
+    <Row>
+      <ButtonBase onClick={handleBack}>
+        <Row>
+          <BackIcon />
+          <BackText>RETURN TO RESULTS</BackText>
+        </Row>
+      </ButtonBase>
+    </Row>
+    <Details contact={contact} handleMockedMessage={handleMockedMessage} />
   </Container>
 );
 
@@ -19,6 +26,7 @@ ContactDetails.displayName = 'ContactDetails';
 ContactDetails.propTypes = {
   contact: contactType.isRequired,
   handleBack: PropTypes.func.isRequired,
+  handleMockedMessage: PropTypes.func.isRequired,
 };
 
 export default ContactDetails;

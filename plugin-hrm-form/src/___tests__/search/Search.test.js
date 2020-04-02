@@ -3,17 +3,17 @@ import { Provider } from 'react-redux';
 import renderer from 'react-test-renderer';
 import configureMockStore from 'redux-mock-store';
 
-import './mockStyled';
+import '../mockStyled';
 
-import Search from '../components/search';
-import SearchForm from '../components/search/SearchForm';
-import SearchResults from '../components/search/SearchResults';
-import ContactDetails from '../components/search/ContactDetails';
-import { SearchPages } from '../states/SearchContact';
+import Search from '../../components/search';
+import SearchForm from '../../components/search/SearchForm';
+import SearchResults from '../../components/search/SearchResults';
+import ContactDetails from '../../components/search/ContactDetails';
+import { SearchPages } from '../../states/SearchContact';
 
 const mockStore = configureMockStore([]);
 
-jest.mock('../services/ServerlessService', () => ({
+jest.mock('../../services/ServerlessService', () => ({
   populateCounselors: async () => [],
 }));
 
@@ -111,37 +111,72 @@ test('<Search> should display <SearchResults />', () => {
 test('<Search> should display <ContactDetails />', () => {
   const currentPage = SearchPages.details;
   const currentContact = {
-    childInformation: {
-      name: {
-        firstName: 'Jill',
-        lastName: 'Smith',
+    details: {
+      childInformation: {
+        name: {
+          firstName: 'Jill',
+          lastName: 'Smith',
+        },
+        gender: 'Other',
+        age: '18-25',
+        language: 'Language 1',
+        nationality: 'Nationality 1',
+        ethnicity: 'Ethnicity 1',
+        location: {
+          streetAddress: '',
+          city: '',
+          stateOrCounty: '',
+          postalCode: '',
+          phone1: '',
+          phone2: '',
+        },
+        refugee: false,
       },
-      gender: 'Other',
-      age: '18-25',
-      language: 'Language 1',
-      nationality: 'Nationality 1',
-      ethnicity: 'Ethnicity 1',
-      location: {
-        streetAddress: '',
-        city: '',
-        stateOrCounty: '',
-        postalCode: '',
-        phone1: '',
-        phone2: '',
+      caseInformation: {
+        callSummary: 'Child calling about self',
+        referredTo: '',
+        status: 'In Progress',
+        keepConfidential: true,
+        okForCaseWorkerToCall: false,
+        howDidTheChildHearAboutUs: '',
+        didYouDiscussRightsWithTheChild: false,
+        didTheChildFeelWeSolvedTheirProblem: false,
+        wouldTheChildRecommendUsToAFriend: false,
       },
-      refugee: false,
+      callerInformation: {
+        name: {
+          firstName: '',
+          lastName: '',
+        },
+        relationshipToChild: '',
+        gender: '',
+        age: '',
+        language: '',
+        nationality: '',
+        ethnicity: '',
+        location: {
+          city: '',
+          phone1: '',
+          phone2: '',
+          postalCode: '',
+          stateOrCounty: '',
+          streetAddress: '',
+        },
+      },
     },
-    caseInformation: {
-      callSummary: 'Child calling about self',
-      referredTo: '',
-      status: 'In Progress',
-      keepConfidential: true,
-      okForCaseWorkerToCall: false,
-      howDidTheChildHearAboutUs: '',
-      didYouDiscussRightsWithTheChild: false,
-      didTheChildFeelWeSolvedTheirProblem: false,
-      wouldTheChildRecommendUsToAFriend: false,
+    overview: {
+      dateTime: '2020-03-10',
+      name: 'Jill Smith',
+      customerNumber: 'Anonymous',
+      callType: 'Child calling about self',
+      categories: 'TBD',
+      counselor: 'counselor-id',
+      notes: 'Jill Smith Notes',
+      channel: 'web',
+      conversationDuration: 10,
     },
+    counselor: 'Counselor',
+    tags: ['Tag1', 'Tag2'],
   };
 
   const initialState = createState({ currentPage, currentContact });

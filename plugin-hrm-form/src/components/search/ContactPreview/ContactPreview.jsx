@@ -9,24 +9,10 @@ import CallTypeAndCounselor from './CallTypeAndCounselor';
 import CallSummary from './CallSummary';
 import DateAndTags from './DateAndTags';
 import { contactType } from '../../../types';
+import { formatName, mapCallType } from '../../../utils';
 
-/**
- * @param {string} str
- * @return {string}
- */
-export const mapCallType = str => {
-  switch (str) {
-    case 'Child calling about self':
-      return 'SELF';
-    case 'Someone calling about a child':
-      return 'CALLER';
-    default:
-      return str.toUpperCase();
-  }
-};
-
-const ContactPreview = ({ contact, onClick, handleConnect, handleViewDetails }) => {
-  const name = (contact.overview.name.trim() === '' ? 'Unknown' : contact.overview.name).toUpperCase();
+const ContactPreview = ({ contact, handleConnect, handleViewDetails, handleMockedMessage }) => {
+  const name = formatName(contact.overview.name).toUpperCase();
 
   const dateString = `${format(new Date(contact.overview.dateTime), 'MMM d, yyyy h:mm aaaaa')}m`;
   const callType = mapCallType(contact.overview.callType);
@@ -36,8 +22,6 @@ const ContactPreview = ({ contact, onClick, handleConnect, handleViewDetails }) 
 
   const [tag1, tag2, tag3] = contact.tags;
 
-  const mockedAction = () => onClick('Not implemented yet');
-
   return (
     <ContactWrapper key={contact.contactId}>
       <Card>
@@ -46,7 +30,7 @@ const ContactPreview = ({ contact, onClick, handleConnect, handleViewDetails }) 
             name={name}
             onClickChain={handleConnect}
             onClickFull={handleViewDetails}
-            onClickMore={mockedAction}
+            onClickMore={handleMockedMessage}
           />
           <CallTypeAndCounselor callType={callType} counselor={counselor} />
           <CallSummary callSummary={callSummary} onClickFull={handleViewDetails} />
@@ -61,9 +45,9 @@ ContactPreview.displayName = 'ContactPreview';
 
 ContactPreview.propTypes = {
   contact: contactType.isRequired,
-  onClick: PropTypes.func.isRequired,
   handleConnect: PropTypes.func.isRequired,
   handleViewDetails: PropTypes.func.isRequired,
+  handleMockedMessage: PropTypes.func.isRequired,
 };
 
 export default ContactPreview;

@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "@twilio/flex-ui": "1.18.0",
+    "@types/jest": "^25.1.4",
     "babel-eslint": "^10.0.3",
     "babel-polyfill": "^6.26.0",
     "enzyme": "^3.10.0",

@@ -2,24 +2,17 @@ import React from 'react';
 import renderer from 'react-test-renderer';
 import { format } from 'date-fns';
 
-import './mockStyled';
+import '../mockStyled';
 
-import ContactPreview from '../components/search/ContactPreview';
-import { mapCallType } from '../components/search/ContactPreview/ContactPreview';
-import ChildNameAndActions from '../components/search/ContactPreview/ChildNameAndActions';
-import CallTypeAndCounselor from '../components/search/ContactPreview/CallTypeAndCounselor';
-import CallSummary from '../components/search/ContactPreview/CallSummary';
-import DateAndTags from '../components/search/ContactPreview/DateAndTags';
+import ContactPreview from '../../components/search/ContactPreview';
+import ChildNameAndActions from '../../components/search/ContactPreview/ChildNameAndActions';
+import CallTypeAndCounselor from '../../components/search/ContactPreview/CallTypeAndCounselor';
+import CallSummary from '../../components/search/ContactPreview/CallSummary';
+import DateAndTags from '../../components/search/ContactPreview/DateAndTags';
+import { mapCallType } from '../../utils';
 
-test('Test mapCallType helper specification', () => {
-  const mapSelf = 'Child calling about self';
-  const mapCaller = 'Someone calling about a child';
-  const string = 'anything else';
-
-  expect(mapCallType(mapSelf)).toEqual('SELF');
-  expect(mapCallType(mapCaller)).toEqual('CALLER');
-  expect(mapCallType(string)).toEqual('ANYTHING ELSE');
-});
+const NonExisting = () => <>NonExisting</>;
+NonExisting.displayName = 'NonExisting';
 
 test('<ContactPreview> should mount', () => {
   const contact = {
@@ -64,16 +57,16 @@ test('<ContactPreview> should mount', () => {
   };
   const formatedDate = `${format(new Date(contact.overview.dateTime), 'MMM d, yyyy h:mm aaaaa')}m`;
 
-  const onClick = jest.fn();
   const handleConnect = jest.fn();
   const handleViewDetails = jest.fn();
+  const handleMockedMessage = jest.fn();
 
   const component = renderer.create(
     <ContactPreview
       contact={contact}
-      onClick={onClick}
       handleConnect={handleConnect}
       handleViewDetails={handleViewDetails}
+      handleMockedMessage={handleMockedMessage}
     />,
   ).root;
 

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { IconButton } from '@material-ui/core';
 import { Fullscreen, Link, MoreHoriz } from '@material-ui/icons';
 
-import { NameText, RowWithMargin, ContactButtonsWrapper, StyledIcon } from '../../../Styles/search';
+import { PrevNameText, RowWithMargin, ContactButtonsWrapper, StyledIcon } from '../../../Styles/search';
 
 const StyledRow = RowWithMargin(0);
 
@@ -13,7 +13,7 @@ const MoreHorizIcon = StyledIcon(MoreHoriz);
 
 const ChildNameAndActions = ({ name, onClickChain, onClickFull, onClickMore }) => (
   <StyledRow>
-    <NameText>{name}</NameText>
+    <PrevNameText>{name}</PrevNameText>
     <ContactButtonsWrapper>
       <IconButton onClick={onClickChain}>
         <LinkIcon />

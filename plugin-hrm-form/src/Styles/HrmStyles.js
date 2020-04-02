@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { keyframes } from 'react-emotion';
-import { Input, Select, MenuItem, TableCell, Tabs, Tab } from '@material-ui/core';
+import { Input, Select, MenuItem, Tabs, Tab } from '@material-ui/core';
 import { Button, getBackgroundWithHoverCSS } from '@twilio/flex-ui';
 
 export const Absolute = styled('div')`
@@ -252,12 +252,6 @@ export const CategoryCheckboxField = styled('div')`
   flex-direction: row;
   margin: 8px 0;
   width: 160px;
-`;
-
-export const StyledTableCell = styled(TableCell)`
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
 `;
 
 export const StyledTabs = styled(props => <Tabs {...props} classes={{ indicator: 'indicator' }} />)`
