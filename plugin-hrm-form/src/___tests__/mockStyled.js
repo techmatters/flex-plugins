@@ -19,7 +19,6 @@ jest.mock('../Styles/HrmStyles', () => ({
 }));
 
 jest.mock('../Styles/search', () => ({
-  AlertContainer: 'AlertContainer',
   ConfirmContainer: 'ConfirmContainer',
   ContactWrapper: 'ContactWrapper',
   ContactButtonsWrapper: 'ContactButtonsWrapper',
@@ -27,7 +26,6 @@ jest.mock('../Styles/search', () => ({
   ContactTag: 'ContactTag',
   CalltypeTag: 'CalltypeTag',
   ConfirmText: 'ConfirmText',
-  AlertText: 'AlertText',
   PrevNameText: 'PrevNameText',
   SummaryText: 'SummaryText',
   CounselorText: 'CounselorText',
