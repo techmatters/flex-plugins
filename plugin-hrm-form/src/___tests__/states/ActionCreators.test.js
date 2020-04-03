@@ -3,12 +3,12 @@ import {
   moreThanThreeCategoriesSelected,
   validateBeforeSubmit,
   validateOnBlur,
-} from '../states/ValidationRules';
-import { handleBlur, handleCategoryToggle, handleFocus, handleSubmit } from '../states/ActionCreators';
-import { HANDLE_BLUR, HANDLE_FOCUS } from '../states/ActionTypes';
-import { FieldType } from '../states/ContactFormStateFactory';
+} from '../../states/ValidationRules';
+import { handleBlur, handleCategoryToggle, handleFocus, handleSubmit } from '../../states/ActionCreators';
+import { HANDLE_BLUR, HANDLE_FOCUS } from '../../states/ActionTypes';
+import { FieldType } from '../../states/ContactFormStateFactory';
 
-jest.mock('../states/ValidationRules', () => {
+jest.mock('../../states/ValidationRules', () => {
   return {
     formIsValid: jest.fn(),
     moreThanThreeCategoriesSelected: jest.fn(),

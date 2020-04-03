@@ -1,6 +1,6 @@
 import { omit } from 'lodash';
 
-import { FieldType, createBlankForm, ValidationType } from '../states/ContactFormStateFactory';
+import { FieldType, createBlankForm, ValidationType } from '../../states/ContactFormStateFactory';
 
 test('createBlankForm operates as expected', () => {
   const testFormDefinition = {

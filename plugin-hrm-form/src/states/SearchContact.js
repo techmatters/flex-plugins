@@ -9,6 +9,9 @@ import {
 } from './ActionTypes';
 import { searchContacts as searchContactsApiCall } from '../services/ContactService';
 import callTypes from './DomainConstants';
+import { createBlankForm } from './ContactFormStateFactory';
+
+const { childInformation: blankChildInformation, callerInformation: blankCallerInformation } = createBlankForm();
 
 /**
  * @param {any} contact a contact result object
@@ -102,12 +105,12 @@ function copyNewValues(originalObject, objectWithNewValues) {
 }
 
 function copyCallerInformation(original, newValues) {
-  const callerInformation = copyNewValues(original.callerInformation, newValues.callerInformation);
+  const callerInformation = copyNewValues(blankCallerInformation, newValues.callerInformation);
   return { ...original, callerInformation };
 }
 
 function copyChildInformation(original, newValues) {
-  const childInformation = copyNewValues(original.childInformation, newValues.childInformation);
+  const childInformation = copyNewValues(blankChildInformation, newValues.childInformation);
   return { ...original, childInformation };
 }
 
@@ -116,6 +119,7 @@ function copyChildInformation(original, newValues) {
  * based on the type calls of both
  * @param {{ callType: { value: string; }; }} original
  * @param {{ callType: string; }} newValues
+ * @returns {{ callType: { value: string; }; }} a new form with caller or child information copied over
  */
 function partiallyCopyValues(original, newValues) {
   switch (newValues.callType) {
