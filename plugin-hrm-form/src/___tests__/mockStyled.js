@@ -29,6 +29,7 @@ jest.mock('../Styles/search', () => ({
   ConfirmText: 'ConfirmText',
   PrevNameText: 'PrevNameText',
   SummaryText: 'SummaryText',
+  ShortSummaryText: 'ShortSummaryText',
   CounselorText: 'CounselorText',
   DateText: 'DateText',
   TagText: 'TagText',
