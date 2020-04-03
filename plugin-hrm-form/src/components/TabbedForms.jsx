@@ -79,7 +79,10 @@ class TabbedForms extends React.PureComponent {
     const body = [];
 
     body.push(
-      <Search handleSelectSearchResult={searchResult => this.handleSelectSearchResult(searchResult, taskId)} />,
+      <Search
+        currentIsCaller={isCallerType}
+        handleSelectSearchResult={searchResult => this.handleSelectSearchResult(searchResult, taskId)}
+      />,
     );
 
     // Caller Information

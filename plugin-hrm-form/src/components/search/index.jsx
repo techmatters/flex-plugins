@@ -45,6 +45,7 @@ class Search extends Component {
 
   static propTypes = {
     context: contextObject.isRequired,
+    currentIsCaller: PropTypes.bool.isRequired,
     handleSelectSearchResult: PropTypes.func.isRequired,
     handleSearchFormChange: PropTypes.func.isRequired,
     searchContacts: PropTypes.func.isRequired,
@@ -118,6 +119,7 @@ class Search extends Component {
       case SearchPages.results:
         return (
           <SearchResults
+            currentIsCaller={this.props.currentIsCaller}
             results={searchResult}
             handleSelectSearchResult={this.props.handleSelectSearchResult}
             handleBack={this.goToForm}

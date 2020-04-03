@@ -13,6 +13,7 @@ class SearchResults extends Component {
   static displayName = 'SearchResults';
 
   static propTypes = {
+    currentIsCaller: PropTypes.bool.isRequired,
     results: PropTypes.arrayOf(searchResultType).isRequired,
     handleSelectSearchResult: PropTypes.func.isRequired,
     handleBack: PropTypes.func.isRequired,
@@ -34,7 +35,8 @@ class SearchResults extends Component {
       case callTypes.child:
         return this.msgTemplate('child');
       case callTypes.caller:
-        return this.msgTemplate('caller');
+        if (this.props.currentIsCaller) return this.msgTemplate('caller');
+        return this.msgTemplate('child');
       default:
         return '';
     }
