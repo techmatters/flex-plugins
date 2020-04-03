@@ -6,8 +6,8 @@ import { Button, getBackgroundWithHoverCSS } from '@twilio/flex-ui';
 export const Box = styled('div')`
   ${({ marginTop }) => marginTop && `margin-top: ${marginTop};`}
   ${({ marginBottom }) => marginBottom && `margin-bottom: ${marginBottom};`}
-  ${({ marginLeft}) => marginLeft && `margin-left: ${marginLeft};`}
-  ${({ marginRight}) => marginRight && `margin-right: ${marginRight};`}
+  ${({ marginLeft }) => marginLeft && `margin-left: ${marginLeft};`}
+  ${({ marginRight }) => marginRight && `margin-right: ${marginRight};`}
   ${({ paddingTop }) => paddingTop && `padding-top: ${paddingTop};`}
   ${({ paddingBottom }) => paddingBottom && `padding-bottom: ${paddingBottom};`}
   ${({ paddingLeft }) => paddingLeft && `padding-left: ${paddingLeft};`}
