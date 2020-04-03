@@ -1,7 +1,10 @@
+import fromentries from 'fromentries';
+
 import { reduce } from '../../states/ContactState';
 import { handleSelectSearchResult } from '../../states/SearchContact';
 import callTypes from '../../states/DomainConstants';
 
+Object.fromEntries = fromentries;
 /*
  * (Gian) while this function lives inside SearchContact, it actually targets ContactState's reducer.
  * Should this test be in here?
