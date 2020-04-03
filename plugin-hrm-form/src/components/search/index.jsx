@@ -45,7 +45,7 @@ class Search extends Component {
 
   static propTypes = {
     context: contextObject.isRequired,
-    currentIsCaller: PropTypes.bool.isRequired,
+    currentIsCaller: PropTypes.bool,
     handleSelectSearchResult: PropTypes.func.isRequired,
     handleSearchFormChange: PropTypes.func.isRequired,
     searchContacts: PropTypes.func.isRequired,
@@ -60,6 +60,7 @@ class Search extends Component {
   };
 
   static defaultProps = {
+    currentIsCaller: false,
     currentContact: null,
     error: null,
   };
