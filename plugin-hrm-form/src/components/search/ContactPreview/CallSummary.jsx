@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { RowWithMargin, SummaryText, StyledLink } from '../../../Styles/search';
-
-const StyledRow = RowWithMargin(5);
+import { Row, Box } from '../../../Styles/HrmStyles';
+import { SummaryText, StyledLink } from '../../../Styles/search';
 
 class CallSummary extends React.Component {
   static displayName = 'CallSummary';
@@ -35,13 +34,15 @@ class CallSummary extends React.Component {
         <StyledLink onClick={this.props.onClickFull}>See full record</StyledLink>
       </div>
     ) : (
-      <StyledRow>
-        <SummaryText>
-          {this.formattedShortSummary}
-          {this.isLong && '...'}
-        </SummaryText>
-        {this.isLong && <StyledLink onClick={this.handleClick(true)}>more notes</StyledLink>}
-      </StyledRow>
+      <Box marginBottom="5px">
+        <Row style={{ height: '23px' }}>
+          <SummaryText>
+            {this.formattedShortSummary}
+            {this.isLong && '...'}
+          </SummaryText>
+          {this.isLong && <StyledLink onClick={this.handleClick(true)}>more notes</StyledLink>}
+        </Row>
+      </Box>
     );
   }
 }

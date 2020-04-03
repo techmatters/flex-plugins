@@ -22,15 +22,15 @@ export const BackIcon = styled(ChevronLeft)`
 `;
 
 // ContactPreview styles
-export const RowWithMargin = margin => styled(Row)`
-  margin-bottom: ${margin}px;
-`;
-
 export const ContactWrapper = styled('div')`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   margin-top: 15px;
   margin-bottom: 15px;
+  padding: 5px 20px 20px 20px;
   width: 520px;
-  height: 153px;
+  background-color: #ffffff;
 `;
 
 export const ContactButtonsWrapper = styled('div')`
