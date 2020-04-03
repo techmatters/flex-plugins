@@ -107,7 +107,7 @@ class SearchResults extends Component {
           </Row>
           <Row style={{ paddingLeft: '24px' }}>
             <BackText>
-              {resultsCount} result{resultsCount > 0 && 's'}
+              {resultsCount} result{resultsCount !== 1 && 's'}
             </BackText>
           </Row>
         </ResultsHeader>

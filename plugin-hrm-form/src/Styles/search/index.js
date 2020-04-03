@@ -30,6 +30,7 @@ export const ContactWrapper = styled('div')`
   margin-bottom: 15px;
   padding: 5px 20px 20px 20px;
   width: 520px;
+  box-sizing: border-box;
   background-color: #ffffff;
 `;
 
@@ -94,7 +95,12 @@ export const SummaryText = styled(FontOpenSans)`
   line-height: 16px;
   overflow-wrap: anywhere;
   white-space: pre-wrap;
-  max-width: 40em;
+  max-width: 390px;
+`;
+
+export const ShortSummaryText = styled(SummaryText)`
+  white-space: nowrap;
+  overflow: hidden;
 `;
 
 export const CounselorText = styled(SummaryText)`
