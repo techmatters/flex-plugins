@@ -1,3 +1,5 @@
+import { omit } from 'lodash';
+
 import { createBlankForm, recreateBlankForm } from './ContactFormStateFactory';
 import {
   HANDLE_BLUR,
@@ -180,10 +182,7 @@ export function reduce(state = initialState, action) {
       console.log(`!!!!!!!!!DELETING ENTRY FOR ${action.taskId}`);
       return {
         ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: undefined,
-        },
+        tasks: omit(state.tasks, action.taskId),
       };
     }
 

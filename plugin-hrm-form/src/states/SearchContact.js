@@ -3,6 +3,7 @@ import {
   HANDLE_SEARCH_FORM_CHANGE,
   CHANGE_SEARCH_PAGE,
   VIEW_CONTACT_DETAILS,
+  REMOVE_CONTACT_STATE,
   SEARCH_CONTACTS_REQUEST,
   SEARCH_CONTACTS_SUCCESS,
   SEARCH_CONTACTS_FAILURE,
@@ -182,6 +183,8 @@ export function reduce(state = initialState, action) {
         currentPage: SearchPages.details,
         currentContact: action.contact,
       };
+    case REMOVE_CONTACT_STATE:
+      return initialState;
     case SEARCH_CONTACTS_REQUEST:
       return {
         ...state,
