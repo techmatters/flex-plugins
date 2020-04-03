@@ -7,8 +7,6 @@ import ContactPreview from '../ContactPreview';
 import { searchResultType } from '../../../types';
 import { Row } from '../../../Styles/HrmStyles';
 import {
-  AlertContainer,
-  AlertText,
   ConfirmContainer,
   ConfirmText,
   BackIcon,
@@ -32,7 +30,6 @@ class SearchResults extends Component {
   state = {
     anchorEl: null,
     contact: null,
-    connected: false,
   };
 
   renderConfirmPopover = () => {
@@ -46,11 +43,7 @@ class SearchResults extends Component {
 
     const handleConfirm = () => {
       const { contact } = this.state;
-      this.setState({ connected: true });
-      setTimeout(() => {
-        this.setState({ anchorEl: null, contact: null, connected: false });
-        this.props.handleSelectSearchResult(contact);
-      }, 1000);
+      this.props.handleSelectSearchResult(contact); // no need to clear state as this unmounts
     };
 
     return (
@@ -68,30 +61,23 @@ class SearchResults extends Component {
           horizontal: 'right',
         }}
       >
-        {this.state.connected ? (
-          <AlertContainer>
-            <CheckIcon style={{ color: '#fff' }} />
-            <AlertText>Connected!</AlertText>
-          </AlertContainer>
-        ) : (
-          <ConfirmContainer>
-            <ConfirmText>{msg}</ConfirmText>
-            <Row>
-              <Button variant="text" size="medium" onClick={handleClose}>
-                cancel
-              </Button>
-              <Button
-                variant="contained"
-                size="medium"
-                onClick={handleConfirm}
-                style={{ backgroundColor: '#000', color: '#fff', marginLeft: 20 }}
-              >
-                <CheckIcon />
-                yes, connect
-              </Button>
-            </Row>
-          </ConfirmContainer>
-        )}
+        <ConfirmContainer>
+          <ConfirmText>{msg}</ConfirmText>
+          <Row>
+            <Button variant="text" size="medium" onClick={handleClose}>
+              cancel
+            </Button>
+            <Button
+              variant="contained"
+              size="medium"
+              onClick={handleConfirm}
+              style={{ backgroundColor: '#000', color: '#fff', marginLeft: 20 }}
+            >
+              <CheckIcon />
+              yes, connect
+            </Button>
+          </Row>
+        </ConfirmContainer>
       </Popover>
     );
   };

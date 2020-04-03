@@ -5,15 +5,6 @@ import ChevronLeft from '@material-ui/icons/ChevronLeft';
 
 import { Row, FontOpenSans, Container, BottomButtonBar } from '../HrmStyles';
 
-export const AlertContainer = styled(Row)`
-  background-color: #000000;
-  opacity: 0.5;
-  padding: 20px;
-  padding-left: 50px;
-  padding-right: 50px;
-  justify-content: center;
-`;
-
 export const ConfirmContainer = styled(Paper)`
   display: flex;
   flex-direction: column;
@@ -40,10 +31,6 @@ export const ContactWrapper = styled('div')`
   margin-bottom: 15px;
   width: 520px;
   height: 153px;
-
-  &:hover {
-    box-shadow: -1px 7px 29px 0px rgba(0, 0, 0, 0.3);
-  }
 `;
 
 export const ContactButtonsWrapper = styled('div')`
@@ -93,11 +80,6 @@ const PopoverText = styled(FontOpenSans)`
 
 export const ConfirmText = styled(PopoverText)`
   margin-bottom: 20px;
-`;
-
-export const AlertText = styled(PopoverText)`
-  color: #ffffff;
-  margin-left: 20px;
 `;
 
 export const PrevNameText = styled(FontOpenSans)`
