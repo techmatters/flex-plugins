@@ -3,10 +3,11 @@ import { handleSelectSearchResult } from '../../states/SearchContact';
 import callTypes from '../../states/DomainConstants';
 
 /*
- * (Gian) while this function lives inside SearchContact, it actually targets ContactState's reducer
- * should this test be in here?
+ * (Gian) while this function lives inside SearchContact, it actually targets ContactState's reducer.
+ * Should this test be in here?
  */
 describe('handleSelectSearchResult action creator', () => {
+  // Simulate a state for a child's call
   const childCalling = {
     tasks: {
       WT123: {
@@ -46,6 +47,7 @@ describe('handleSelectSearchResult action creator', () => {
     },
   };
 
+  // Simulate a state for a caller's call
   const callerCalling = {
     tasks: {
       WT123: {
@@ -115,6 +117,24 @@ describe('handleSelectSearchResult action creator', () => {
       childInformation: {
         name: {
           firstName: 'Stored child',
+          lastName: '',
+        },
+      },
+    },
+  };
+
+  const otherContact = {
+    details: {
+      callType: 'anything else',
+      callerInformation: {
+        name: {
+          firstName: 'anything else',
+          lastName: '',
+        },
+      },
+      childInformation: {
+        name: {
+          firstName: 'anything else',
           lastName: '',
         },
       },
@@ -203,5 +223,16 @@ describe('handleSelectSearchResult action creator', () => {
       callerCalling.tasks.WT123.childInformation.name.lastName.value,
     );
     expect(childInformation.gender).toBeUndefined();
+  });
+
+  test('Test any other combination will leave form untouched', () => {
+    const action = handleSelectSearchResult(otherContact, 'WT123');
+
+    const result1 = reduce(childCalling, action);
+    const result2 = reduce(callerCalling, action);
+
+    // Test that neither of the "current call" states would be modified
+    expect(result1).toStrictEqual(childCalling);
+    expect(result2).toStrictEqual(callerCalling);
   });
 });
