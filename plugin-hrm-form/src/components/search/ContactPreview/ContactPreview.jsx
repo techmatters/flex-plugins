@@ -10,12 +10,14 @@ import CallSummary from './CallSummary';
 import DateAndTags from './DateAndTags';
 import { contactType } from '../../../types';
 import { formatName, mapCallType } from '../../../utils';
+import { isNonDataCallType } from '../../../states/ValidationRules';
 
 const ContactPreview = ({ contact, handleConnect, handleViewDetails, handleMockedMessage }) => {
   const name = formatName(contact.overview.name).toUpperCase();
 
   const dateString = `${format(new Date(contact.overview.dateTime), 'MMM d, yyyy h:mm aaaaa')}m`;
   const callType = mapCallType(contact.overview.callType);
+  const isNonDataContact = isNonDataCallType(contact.overview.callType);
   const { counselor } = contact;
 
   const { callSummary } = contact.details.caseInformation;
@@ -28,6 +30,7 @@ const ContactPreview = ({ contact, handleConnect, handleViewDetails, handleMocke
         <CardContent>
           <ChildNameAndActions
             name={name}
+            isNonDataContact={isNonDataContact}
             onClickChain={handleConnect}
             onClickFull={handleViewDetails}
             onClickMore={handleMockedMessage}
