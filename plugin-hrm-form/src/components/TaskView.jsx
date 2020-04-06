@@ -6,10 +6,10 @@ import { withTaskContext } from '@twilio/flex-ui';
 
 import HrmForm from './HrmForm';
 import { formType, taskType } from '../types';
-import { namespace, contactFormsBase } from '../states';
+import { namespace, contactFormsBase, searchContactsBase } from '../states';
 import { Actions } from '../states/ContactState';
 import { handleBlur, handleCategoryToggle, handleFocus, handleSubmit } from '../states/ActionCreators';
-import { handleSelectSearchResult } from '../states/SearchContact';
+import { handleSelectSearchResult, recreateSearchContact } from '../states/SearchContact';
 
 class TaskView extends Component {
   static displayName = 'TaskView';
@@ -18,6 +18,7 @@ class TaskView extends Component {
     task: taskType.isRequired,
     thisTask: taskType.isRequired,
     form: formType.isRequired,
+    searchStateExists: PropTypes.bool.isRequired,
     handleBlur: PropTypes.func.isRequired,
     handleChange: PropTypes.func.isRequired,
     handleCallTypeButtonClick: PropTypes.func.isRequired,
@@ -25,10 +26,15 @@ class TaskView extends Component {
     handleSubmit: PropTypes.func.isRequired,
     handleFocus: PropTypes.func.isRequired,
     handleSelectSearchResult: PropTypes.func.isRequired,
+    recreateSearchContact: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
     console.log('IFrame mounted');
+    if (!this.props.searchStateExists) {
+      // (Gian) maybe this can be used to recreate the form too?
+      this.props.recreateSearchContact(this.props.thisTask.taskSid);
+    }
   }
 
   componentWillUnmount() {
@@ -63,9 +69,13 @@ class TaskView extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  // Check if the entry for this task exists in searchContacts
+  const searchStateExists = Boolean(state[namespace][searchContactsBase].tasks[ownProps.thisTask.taskSid]);
+
   // This should already have been created when beforeAcceptTask is fired
   return {
     form: state[namespace][contactFormsBase].tasks[ownProps.thisTask.taskSid],
+    searchStateExists,
   };
 };
 
@@ -76,6 +86,7 @@ const mapDispatchToProps = dispatch => ({
   handleFocus: handleFocus(dispatch),
   handleSubmit: handleSubmit(dispatch),
   handleSelectSearchResult: bindActionCreators(handleSelectSearchResult, dispatch),
+  recreateSearchContact: bindActionCreators(recreateSearchContact, dispatch),
 });
 
 export default withTaskContext(connect(mapStateToProps, mapDispatchToProps)(TaskView));

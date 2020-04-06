@@ -1,9 +1,13 @@
+import { omit } from 'lodash';
+
 import {
+  INITIALIZE_CONTACT_STATE,
+  REMOVE_CONTACT_STATE,
+  RECREATE_SEARCH_CONTACT,
   HANDLE_SELECT_SEARCH_RESULT,
   HANDLE_SEARCH_FORM_CHANGE,
   CHANGE_SEARCH_PAGE,
   VIEW_CONTACT_DETAILS,
-  REMOVE_CONTACT_STATE,
   SEARCH_CONTACTS_REQUEST,
   SEARCH_CONTACTS_SUCCESS,
   SEARCH_CONTACTS_FAILURE,
@@ -55,33 +59,36 @@ export const SearchPages = {
   details: 'details',
 };
 
+export const recreateSearchContact = taskId => ({ type: RECREATE_SEARCH_CONTACT, taskId });
+
 export const handleSelectSearchResult = (searchResult, taskId) => ({
   type: HANDLE_SELECT_SEARCH_RESULT,
   searchResult,
   taskId,
 });
 
-export const handleSearchFormChange = (name, value) => ({
+export const handleSearchFormChange = taskId => (name, value) => ({
   type: HANDLE_SEARCH_FORM_CHANGE,
   name,
   value,
+  taskId,
 });
 
-export const searchContacts = dispatch => async (hrmBaseUrl, searchParams, counselorsHash) => {
+export const searchContacts = dispatch => taskId => async (hrmBaseUrl, searchParams, counselorsHash) => {
   try {
     dispatch({ type: SEARCH_CONTACTS_REQUEST });
     const searchResultRaw = await searchContactsApiCall(hrmBaseUrl, searchParams);
     const searchResult = addDetails(counselorsHash, searchResultRaw);
 
-    dispatch({ type: SEARCH_CONTACTS_SUCCESS, searchResult });
+    dispatch({ type: SEARCH_CONTACTS_SUCCESS, searchResult, taskId });
   } catch (error) {
     dispatch({ type: SEARCH_CONTACTS_FAILURE, error });
   }
 };
 
-export const changeSearchPage = page => ({ type: CHANGE_SEARCH_PAGE, page });
+export const changeSearchPage = taskId => page => ({ type: CHANGE_SEARCH_PAGE, page, taskId });
 
-export const viewContactDetails = contact => ({ type: VIEW_CONTACT_DETAILS, contact });
+export const viewContactDetails = taskId => contact => ({ type: VIEW_CONTACT_DETAILS, contact, taskId });
 
 function copyNewValues(originalObject, objectWithNewValues) {
   if (objectWithNewValues === null || typeof objectWithNewValues === 'undefined') {
@@ -147,6 +154,12 @@ export function copySearchResultIntoTask(currentTask, searchResult) {
 }
 
 const initialState = {
+  tasks: {},
+  isRequesting: false,
+  error: null,
+};
+
+const newTaskEntry = {
   currentPage: SearchPages.form,
   currentContact: null,
   form: {
@@ -158,46 +171,82 @@ const initialState = {
     dateTo: '',
   },
   searchResult: [],
-  isRequesting: false,
-  error: null,
 };
 
 export function reduce(state = initialState, action) {
   switch (action.type) {
-    case HANDLE_SEARCH_FORM_CHANGE:
+    case INITIALIZE_CONTACT_STATE:
       return {
         ...state,
-        form: {
-          ...state.form,
-          [action.name]: action.value,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: newTaskEntry,
         },
       };
-    case CHANGE_SEARCH_PAGE:
+    case RECREATE_SEARCH_CONTACT:
       return {
         ...state,
-        currentPage: action.page,
-      };
-    case VIEW_CONTACT_DETAILS:
-      return {
-        ...state,
-        currentPage: SearchPages.details,
-        currentContact: action.contact,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: newTaskEntry,
+        },
       };
     case REMOVE_CONTACT_STATE:
-      return initialState;
+      return {
+        ...initialState,
+        tasks: omit(state.tasks, action.taskId),
+      };
+    case HANDLE_SEARCH_FORM_CHANGE: {
+      const task = state.tasks[action.taskId];
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: { ...task, form: { ...task.form, [action.name]: action.value } },
+        },
+      };
+    }
+    case CHANGE_SEARCH_PAGE: {
+      const task = state.tasks[action.taskId];
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: { ...task, currentPage: action.page },
+        },
+      };
+    }
+    case VIEW_CONTACT_DETAILS: {
+      const task = state.tasks[action.taskId];
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: { ...task, currentPage: SearchPages.details, currentContact: action.contact },
+        },
+      };
+    }
     case SEARCH_CONTACTS_REQUEST:
       return {
         ...state,
         isRequesting: true,
       };
-    case SEARCH_CONTACTS_SUCCESS:
+    case SEARCH_CONTACTS_SUCCESS: {
+      const task = state.tasks[action.taskId];
       return {
         ...state,
         isRequesting: false,
-        searchResult: action.searchResult,
-        currentPage: SearchPages.results,
         error: null,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...task,
+            searchResult: action.searchResult,
+            currentPage: SearchPages.results,
+          },
+        },
       };
+    }
     case SEARCH_CONTACTS_FAILURE:
       return {
         ...state,

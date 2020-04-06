@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
+import { withTaskContext } from '@twilio/flex-ui';
 
 import SearchForm from './SearchForm';
 import SearchResults from './SearchResults';
@@ -155,24 +156,30 @@ class Search extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, ownProps) => {
   const searchContactsState = state[namespace][searchContactsBase];
+  const taskId = ownProps.task.taskSid;
+  const taskSearchState = searchContactsState.tasks[taskId];
 
   return {
-    currentPage: searchContactsState.currentPage,
-    currentContact: searchContactsState.currentContact,
-    form: searchContactsState.form,
-    searchResult: searchContactsState.searchResult,
     isRequesting: searchContactsState.isRequesting,
     error: searchContactsState.error,
+    currentPage: taskSearchState.currentPage,
+    currentContact: taskSearchState.currentContact,
+    form: taskSearchState.form,
+    searchResult: taskSearchState.searchResult,
   };
 };
 
-const mapDispatchToProps = dispatch => ({
-  handleSearchFormChange: bindActionCreators(handleSearchFormChange, dispatch),
-  changeSearchPage: bindActionCreators(changeSearchPage, dispatch),
-  viewContactDetails: bindActionCreators(viewContactDetails, dispatch),
-  searchContacts: searchContacts(dispatch),
-});
+const mapDispatchToProps = (dispatch, ownProps) => {
+  const taskId = ownProps.task.taskSid;
 
-export default withConfiguration(connect(mapStateToProps, mapDispatchToProps)(Search));
+  return {
+    handleSearchFormChange: bindActionCreators(handleSearchFormChange(taskId), dispatch),
+    changeSearchPage: bindActionCreators(changeSearchPage(taskId), dispatch),
+    viewContactDetails: bindActionCreators(viewContactDetails(taskId), dispatch),
+    searchContacts: searchContacts(dispatch)(taskId),
+  };
+};
+
+export default withTaskContext(withConfiguration(connect(mapStateToProps, mapDispatchToProps)(Search)));
