@@ -83,7 +83,7 @@ class SearchResults extends Component {
               style={{ backgroundColor: '#000', color: '#fff', marginLeft: 20 }}
             >
               <CheckIcon />
-              yes, connect
+              yes, copy
             </Button>
           </Row>
         </ConfirmContainer>
