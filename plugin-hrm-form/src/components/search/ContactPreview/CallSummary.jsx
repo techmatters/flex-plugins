@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { truncate } from 'lodash';
 
-import { RowWithMargin, SummaryText, StyledLink } from '../../../Styles/search';
+import { Row, Box } from '../../../Styles/HrmStyles';
+import { SummaryText, ShortSummaryText, StyledLink } from '../../../Styles/search';
 
-const StyledRow = RowWithMargin(5);
+const CHAR_LIMIT = 45;
 
 class CallSummary extends React.Component {
   static displayName = 'CallSummary';
@@ -17,11 +19,18 @@ class CallSummary extends React.Component {
     expanded: false,
   };
 
-  shortSummary = (this.props.callSummary && this.props.callSummary.substr(0, 55)) || '- No call summary -';
+  getShortSummary() {
+    const { callSummary } = this.props;
 
-  formattedShortSummary = this.shortSummary.replace(/\n/gi, ' ').padEnd(55, ' ');
+    if (!callSummary) {
+      return '- No call summary -';
+    }
 
-  isLong = this.shortSummary.length === 55;
+    return truncate(callSummary, {
+      length: CHAR_LIMIT,
+      separator: /,?\.* +/, // TODO(murilo): Check other punctuations
+    });
+  }
 
   handleClick = bool => event => {
     event.stopPropagation();
@@ -29,19 +38,21 @@ class CallSummary extends React.Component {
   };
 
   render() {
+    const { callSummary } = this.props;
+    const isLong = callSummary.length > CHAR_LIMIT;
+
     return this.state.expanded ? (
       <div>
         <SummaryText>{this.props.callSummary}</SummaryText>
         <StyledLink onClick={this.props.onClickFull}>See full record</StyledLink>
       </div>
     ) : (
-      <StyledRow>
-        <SummaryText>
-          {this.formattedShortSummary}
-          {this.isLong && '...'}
-        </SummaryText>
-        {this.isLong && <StyledLink onClick={this.handleClick(true)}>more notes</StyledLink>}
-      </StyledRow>
+      <Box marginBottom="5px">
+        <Row style={{ height: '23px' }}>
+          <ShortSummaryText>{this.getShortSummary()}</ShortSummaryText>
+          {isLong && <StyledLink onClick={this.handleClick(true)}>more notes</StyledLink>}
+        </Row>
+      </Box>
     );
   }
 }

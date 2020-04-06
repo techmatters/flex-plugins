@@ -3,6 +3,17 @@ import styled, { keyframes } from 'react-emotion';
 import { Input, Select, MenuItem, Tabs, Tab } from '@material-ui/core';
 import { Button, getBackgroundWithHoverCSS } from '@twilio/flex-ui';
 
+export const Box = styled('div')`
+  ${({ marginTop }) => marginTop && `margin-top: ${marginTop};`}
+  ${({ marginBottom }) => marginBottom && `margin-bottom: ${marginBottom};`}
+  ${({ marginLeft }) => marginLeft && `margin-left: ${marginLeft};`}
+  ${({ marginRight }) => marginRight && `margin-right: ${marginRight};`}
+  ${({ paddingTop }) => paddingTop && `padding-top: ${paddingTop};`}
+  ${({ paddingBottom }) => paddingBottom && `padding-bottom: ${paddingBottom};`}
+  ${({ paddingLeft }) => paddingLeft && `padding-left: ${paddingLeft};`}
+  ${({ paddingRight }) => paddingRight && `padding-right: ${paddingRight};`}
+`;
+
 export const Absolute = styled('div')`
   position: absolute;
   top: ${({ top }) => top || 'auto'};

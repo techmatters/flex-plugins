@@ -3,16 +3,15 @@ import PropTypes from 'prop-types';
 import { IconButton } from '@material-ui/core';
 import { Fullscreen, Link, MoreHoriz } from '@material-ui/icons';
 
-import { PrevNameText, RowWithMargin, ContactButtonsWrapper, StyledIcon } from '../../../Styles/search';
-
-const StyledRow = RowWithMargin(0);
+import { Row } from '../../../Styles/HrmStyles';
+import { PrevNameText, ContactButtonsWrapper, StyledIcon } from '../../../Styles/search';
 
 const LinkIcon = StyledIcon(Link);
 const FullscreenIcon = StyledIcon(Fullscreen);
 const MoreHorizIcon = StyledIcon(MoreHoriz);
 
 const ChildNameAndActions = ({ name, onClickChain, onClickFull, onClickMore }) => (
-  <StyledRow>
+  <Row>
     <PrevNameText>{name}</PrevNameText>
     <ContactButtonsWrapper>
       <IconButton onClick={onClickChain}>
@@ -25,7 +24,7 @@ const ChildNameAndActions = ({ name, onClickChain, onClickFull, onClickMore }) =
         <MoreHorizIcon />
       </IconButton>
     </ContactButtonsWrapper>
-  </StyledRow>
+  </Row>
 );
 
 ChildNameAndActions.propTypes = {

@@ -9,7 +9,7 @@ import ConfigurationContext from './ConfigurationContext';
 import HrmTheme from './Styles/HrmTheme';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
-const PLUGIN_VERSION = '0.3.9';
+const PLUGIN_VERSION = '0.3.10';
 
 export default class HrmFormPlugin extends FlexPlugin {
   constructor() {

@@ -14,7 +14,7 @@ const ContactDetails = ({ contact, handleBack, handleMockedMessage }) => (
       <ButtonBase onClick={handleBack}>
         <Row>
           <BackIcon />
-          <BackText>RETURN TO RESULTS</BackText>
+          <BackText>Return to results</BackText>
         </Row>
       </ButtonBase>
     </Row>

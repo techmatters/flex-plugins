@@ -3,7 +3,7 @@ import styled from 'react-emotion';
 import { Paper, Button } from '@material-ui/core';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 
-import { Row, FontOpenSans } from '../HrmStyles';
+import { Row, FontOpenSans, Container, BottomButtonBar } from '../HrmStyles';
 
 export const ConfirmContainer = styled(Paper)`
   display: flex;
@@ -22,13 +22,16 @@ export const BackIcon = styled(ChevronLeft)`
 `;
 
 // ContactPreview styles
-export const RowWithMargin = margin => styled(Row)`
-  margin-bottom: ${margin}px;
-`;
-
 export const ContactWrapper = styled('div')`
-  margin-top: 5px;
-  margin-bottom: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  padding: 5px 20px 20px 20px;
+  width: 520px;
+  box-sizing: border-box;
+  background-color: #ffffff;
 `;
 
 export const ContactButtonsWrapper = styled('div')`
@@ -92,7 +95,12 @@ export const SummaryText = styled(FontOpenSans)`
   line-height: 16px;
   overflow-wrap: anywhere;
   white-space: pre-wrap;
-  max-width: 40em;
+  max-width: 390px;
+`;
+
+export const ShortSummaryText = styled(SummaryText)`
+  white-space: nowrap;
+  overflow: hidden;
 `;
 
 export const CounselorText = styled(SummaryText)`
@@ -145,6 +153,7 @@ const BoldDetailFont = styled(FontOpenSans)`
 export const BackText = styled(BoldDetailFont)`
   letter-spacing: 2px;
   margin-left: 15px;
+  text-transform: uppercase;
 `;
 
 export const DetNameText = styled(BoldDetailFont)`
@@ -176,4 +185,28 @@ export const SectionValueText = styled(BodyText)`
   overflow-wrap: anywhere;
   white-space: pre-wrap;
   max-width: 40em;
+`;
+
+// SearchResults styles
+export const ResultsHeader = styled(Container)`
+  min-height: 75px;
+  padding-bottom: 23px;
+  justify-content: space-between;
+  flex-basis: 0;
+  flex-grow: 0;
+`;
+
+export const ListContainer = styled(BottomButtonBar)`
+  flex-basis: 0;
+  flex-grow: 1;
+  padding: 0;
+`;
+
+export const ScrollableList = styled('div')`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
 `;

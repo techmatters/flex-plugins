@@ -1,32 +1,32 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Row } from '../../../Styles/HrmStyles';
-import { RowWithMargin, ContactTag, DateText, TagText } from '../../../Styles/search';
-
-const StyledRow = RowWithMargin(2);
+import { Row, Box } from '../../../Styles/HrmStyles';
+import { ContactTag, DateText, TagText } from '../../../Styles/search';
 
 const DateAndTags = ({ dateString, tag1, tag2, tag3 }) => (
-  <StyledRow>
-    <DateText>{dateString}</DateText>
-    <Row style={{ marginLeft: 'auto' }}>
-      {tag1 && (
-        <ContactTag>
-          <TagText>{tag1}</TagText>
-        </ContactTag>
-      )}
-      {tag2 && (
-        <ContactTag>
-          <TagText>{tag2}</TagText>
-        </ContactTag>
-      )}
-      {tag3 && (
-        <ContactTag>
-          <TagText>{tag3}</TagText>
-        </ContactTag>
-      )}
+  <Box marginBottom="2px">
+    <Row style={{ height: '23px' }}>
+      <DateText>{dateString}</DateText>
+      <Row style={{ marginLeft: 'auto' }}>
+        {tag1 && (
+          <ContactTag>
+            <TagText>{tag1}</TagText>
+          </ContactTag>
+        )}
+        {tag2 && (
+          <ContactTag>
+            <TagText>{tag2}</TagText>
+          </ContactTag>
+        )}
+        {tag3 && (
+          <ContactTag>
+            <TagText>{tag3}</TagText>
+          </ContactTag>
+        )}
+      </Row>
     </Row>
-  </StyledRow>
+  </Box>
 );
 
 DateAndTags.propTypes = {
