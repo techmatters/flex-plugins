@@ -9,6 +9,4 @@ const callTypes = {
   abusive: 'Abusive',
 };
 
-export const isNonDataCallType = callType => ![callTypes.child, callTypes.caller].includes(callType);
-
 export default callTypes;

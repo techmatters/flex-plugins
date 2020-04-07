@@ -1,6 +1,6 @@
 import secret from '../private/secret';
 import { FieldType, recreateBlankForm } from '../states/ContactFormStateFactory';
-import { isNonDataCallType } from '../states/DomainConstants';
+import { isNonDataCallType } from '../states/ValidationRules';
 
 export async function searchContacts(hrmBaseUrl, searchParams) {
   try {
