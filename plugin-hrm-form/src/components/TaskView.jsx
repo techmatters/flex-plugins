@@ -30,15 +30,10 @@ class TaskView extends Component {
   };
 
   componentDidMount() {
-    console.log('IFrame mounted');
     if (!this.props.searchStateExists) {
       // (Gian) maybe this can be used to recreate the form too?
       this.props.recreateSearchContact(this.props.thisTask.taskSid);
     }
-  }
-
-  componentWillUnmount() {
-    console.log('IFrame unmounted');
   }
 
   render() {
