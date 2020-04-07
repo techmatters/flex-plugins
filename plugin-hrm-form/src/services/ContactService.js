@@ -1,5 +1,6 @@
 import secret from '../private/secret';
-import { FieldType } from '../states/ContactFormStateFactory';
+import { FieldType, recreateBlankForm } from '../states/ContactFormStateFactory';
+import { isNonDataCallType } from '../states/ValidationRules';
 
 export async function searchContacts(hrmBaseUrl, searchParams) {
   try {
@@ -73,12 +74,24 @@ export function saveToHrm(task, form, abortFunction, hrmBaseUrl, workerSid, help
   const validMetrics = !recreated;
   const conversationDuration = validMetrics ? secondsElapsed : null;
 
+  const callType = form.callType.value;
+
+  let rawForm = form;
+
+  if (isNonDataCallType(callType)) {
+    rawForm = {
+      ...recreateBlankForm(),
+      callType: form.callType,
+      metadata: form.metadata,
+    };
+  }
+
   /*
    * We do a transform from the original and then add things.
    * Not sure if we should drop that all into one function or not.
    * Probably.  It would just require passing the task.
    */
-  const formToSend = transformForm(form);
+  const formToSend = transformForm(rawForm);
 
   const body = {
     form: formToSend,

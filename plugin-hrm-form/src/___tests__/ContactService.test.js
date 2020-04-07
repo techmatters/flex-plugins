@@ -1,5 +1,5 @@
-import { transformForm } from '../services/ContactService';
-import { FieldType, ValidationType } from '../states/ContactFormStateFactory';
+import { transformForm, saveToHrm } from '../services/ContactService';
+import { FieldType, ValidationType, recreateBlankForm } from '../states/ContactFormStateFactory';
 import callTypes from '../states/DomainConstants';
 
 describe('transformForm', () => {
@@ -88,5 +88,70 @@ describe('transformForm', () => {
       },
     };
     expect(transformForm(oldForm)).toStrictEqual(expected);
+  });
+});
+
+const createForm = ({ callType, childFirstName }) => {
+  const blankForm = recreateBlankForm();
+
+  return {
+    ...blankForm,
+    callType: {
+      type: FieldType.CALL_TYPE,
+      value: callType,
+    },
+    childInformation: {
+      ...blankForm.childInformation,
+      name: {
+        ...blankForm.childInformation.name,
+        firstName: {
+          type: FieldType.TEXT_INPUT,
+          value: childFirstName,
+          touched: true,
+          error: null,
+          validation: null,
+        },
+      },
+    },
+  };
+};
+
+const getFormFromPOST = mockedFetch => JSON.parse(mockedFetch.mock.calls[0][1].body).form;
+
+describe('saveToHrm()', () => {
+  const task = {
+    queueName: 'queueName',
+    channelType: 'web',
+    defaultFrom: 'Anonymous',
+  };
+  const abortFunction = jest.fn();
+  const hrmBaseUrl = 'hrmBaseUrl';
+  const workerSid = 'worker-sid';
+  const helpline = 'helpline';
+
+  test('data calltype saves form data', async () => {
+    const form = createForm({ callType: callTypes.child, childFirstName: 'Jill' });
+    const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => Promise.resolve());
+
+    await saveToHrm(task, form, abortFunction, hrmBaseUrl, workerSid, helpline);
+
+    const formFromPOST = getFormFromPOST(mockedFetch);
+    expect(formFromPOST.callType).toEqual(callTypes.child);
+    expect(formFromPOST.childInformation.name.firstName).toEqual('Jill');
+
+    mockedFetch.mockClear();
+  });
+
+  test('non-data calltype do not save form data', async () => {
+    const form = createForm({ callType: callTypes.hangup, childFirstName: 'Jill' });
+    const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => Promise.resolve());
+
+    await saveToHrm(task, form, abortFunction, hrmBaseUrl, workerSid, helpline);
+
+    const formFromPOST = getFormFromPOST(mockedFetch);
+    expect(formFromPOST.callType).toEqual(callTypes.hangup);
+    expect(formFromPOST.childInformation.name.firstName).toEqual('');
+
+    mockedFetch.mockClear();
   });
 });
