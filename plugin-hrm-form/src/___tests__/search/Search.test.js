@@ -34,10 +34,10 @@ function createState(taskId, { currentPage, searchFormValues, currentContact, se
               dateTo: '',
             },
             searchResult: searchResult || [],
+            isRequesting: false,
+            error: null,
           },
         },
-        isRequesting: false,
-        error: null,
       },
     },
   };

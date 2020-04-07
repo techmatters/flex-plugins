@@ -162,8 +162,8 @@ const mapStateToProps = (state, ownProps) => {
   const taskSearchState = searchContactsState.tasks[taskId];
 
   return {
-    isRequesting: searchContactsState.isRequesting,
-    error: searchContactsState.error,
+    isRequesting: taskSearchState.isRequesting,
+    error: taskSearchState.error,
     currentPage: taskSearchState.currentPage,
     currentContact: taskSearchState.currentContact,
     form: taskSearchState.form,

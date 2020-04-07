@@ -76,13 +76,13 @@ export const handleSearchFormChange = taskId => (name, value) => ({
 
 export const searchContacts = dispatch => taskId => async (hrmBaseUrl, searchParams, counselorsHash) => {
   try {
-    dispatch({ type: SEARCH_CONTACTS_REQUEST });
+    dispatch({ type: SEARCH_CONTACTS_REQUEST, taskId });
     const searchResultRaw = await searchContactsApiCall(hrmBaseUrl, searchParams);
     const searchResult = addDetails(counselorsHash, searchResultRaw);
 
     dispatch({ type: SEARCH_CONTACTS_SUCCESS, searchResult, taskId });
   } catch (error) {
-    dispatch({ type: SEARCH_CONTACTS_FAILURE, error });
+    dispatch({ type: SEARCH_CONTACTS_FAILURE, error, taskId });
   }
 };
 
@@ -155,8 +155,6 @@ export function copySearchResultIntoTask(currentTask, searchResult) {
 
 const initialState = {
   tasks: {},
-  isRequesting: false,
-  error: null,
 };
 
 const newTaskEntry = {
@@ -171,6 +169,8 @@ const newTaskEntry = {
     dateTo: '',
   },
   searchResult: [],
+  isRequesting: false,
+  error: null,
 };
 
 export function reduce(state = initialState, action) {
@@ -193,7 +193,7 @@ export function reduce(state = initialState, action) {
       };
     case REMOVE_CONTACT_STATE:
       return {
-        ...initialState,
+        ...state,
         tasks: omit(state.tasks, action.taskId),
       };
     case HANDLE_SEARCH_FORM_CHANGE: {
@@ -226,33 +226,51 @@ export function reduce(state = initialState, action) {
         },
       };
     }
-    case SEARCH_CONTACTS_REQUEST:
+    case SEARCH_CONTACTS_REQUEST: {
+      const task = state.tasks[action.taskId];
       return {
         ...state,
-        isRequesting: true,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...task,
+            isRequesting: true,
+          },
+        },
       };
+    }
     case SEARCH_CONTACTS_SUCCESS: {
       const task = state.tasks[action.taskId];
       return {
         ...state,
-        isRequesting: false,
-        error: null,
         tasks: {
           ...state.tasks,
           [action.taskId]: {
             ...task,
             searchResult: action.searchResult,
             currentPage: SearchPages.results,
+            isRequesting: false,
+            error: null,
           },
         },
       };
     }
-    case SEARCH_CONTACTS_FAILURE:
+    case SEARCH_CONTACTS_FAILURE: {
+      const task = state.tasks[action.taskId];
       return {
         ...state,
-        isRequesting: false,
-        error: action.error,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...task,
+            searchResult: action.searchResult,
+            currentPage: SearchPages.results,
+            isRequesting: false,
+            error: action.error,
+          },
+        },
       };
+    }
     default:
       return state;
   }

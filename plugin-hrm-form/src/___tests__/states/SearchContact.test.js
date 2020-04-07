@@ -253,8 +253,6 @@ describe('handleSelectSearchResult action creator', () => {
 describe('SearchContact reducer', () => {
   const initialState = {
     tasks: {},
-    isRequesting: false,
-    error: null,
   };
   const newTaskEntry = {
     currentPage: SearchPages.form,
@@ -268,6 +266,8 @@ describe('SearchContact reducer', () => {
       dateTo: '',
     },
     searchResult: [],
+    isRequesting: false,
+    error: null,
   };
   const task = { taskSid: 'WT123' };
 
@@ -334,11 +334,11 @@ describe('SearchContact reducer', () => {
   });
 
   test('SEARCH_CONTACTS_FAILURE action', () => {
-    const action = { type: SEARCH_CONTACTS_FAILURE, error: 'Some error' };
+    const action = { type: SEARCH_CONTACTS_FAILURE, error: 'Some error', taskId: task.taskSid };
     const result = SearchFormReducer(state, action);
 
-    expect(omit(result, 'error')).toStrictEqual(omit(state, 'error'));
-    expect(result.error).toBe('Some error');
+    const { tasks } = result;
+    expect(tasks[task.taskSid].error).toBe('Some error');
     state = result;
   });
 
