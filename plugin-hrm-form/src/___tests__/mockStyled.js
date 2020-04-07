@@ -16,6 +16,7 @@ jest.mock('../Styles/HrmStyles', () => ({
   StyledTableCell: 'StyledTableCell',
   Row: 'Row',
   FontOpenSans: 'FontOpenSans',
+  Box: 'Box',
 }));
 
 jest.mock('../Styles/search', () => ({
@@ -28,10 +29,10 @@ jest.mock('../Styles/search', () => ({
   ConfirmText: 'ConfirmText',
   PrevNameText: 'PrevNameText',
   SummaryText: 'SummaryText',
+  ShortSummaryText: 'ShortSummaryText',
   CounselorText: 'CounselorText',
   DateText: 'DateText',
   TagText: 'TagText',
-  RowWithMargin: () => 'RowWithMargin',
   StyledIcon: () => 'StyledIcon',
   ContactDetailsIcon: () => 'ContactDetailsIcon',
   DetailsContainer: 'DetailsContainer',
@@ -45,4 +46,7 @@ jest.mock('../Styles/search', () => ({
   BodyText: 'BodyText',
   SectionDescriptionText: 'SectionDescriptionText',
   SectionValueText: 'SectionValueText',
+  ResultsHeader: 'ResultsHeader',
+  ListContainer: 'ListContainer',
+  ScrollableList: 'ScrollableList',
 }));

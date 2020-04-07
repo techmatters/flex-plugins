@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
-import { Card, CardContent } from '@material-ui/core';
 
 import { ContactWrapper } from '../../../Styles/search';
 import ChildNameAndActions from './ChildNameAndActions';
@@ -26,20 +25,16 @@ const ContactPreview = ({ contact, handleConnect, handleViewDetails, handleMocke
 
   return (
     <ContactWrapper key={contact.contactId}>
-      <Card>
-        <CardContent>
-          <ChildNameAndActions
-            name={name}
-            isNonDataContact={isNonDataContact}
-            onClickChain={handleConnect}
-            onClickFull={handleViewDetails}
-            onClickMore={handleMockedMessage}
-          />
-          <CallTypeAndCounselor callType={callType} counselor={counselor} />
-          <CallSummary callSummary={callSummary} onClickFull={handleViewDetails} />
-          <DateAndTags dateString={dateString} tag1={tag1} tag2={tag2} tag3={tag3} />
-        </CardContent>
-      </Card>
+      <ChildNameAndActions
+        name={name}
+        isNonDataContact={isNonDataContact}
+        onClickChain={handleConnect}
+        onClickFull={handleViewDetails}
+        onClickMore={handleMockedMessage}
+      />
+      <CallTypeAndCounselor callType={callType} counselor={counselor} />
+      <CallSummary callSummary={callSummary} onClickFull={handleViewDetails} />
+      <DateAndTags dateString={dateString} tag1={tag1} tag2={tag2} tag3={tag3} />
     </ContactWrapper>
   );
 };

@@ -1,21 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Row } from '../../../Styles/HrmStyles';
-import { RowWithMargin, CalltypeTag, CounselorText, TagText, SummaryText } from '../../../Styles/search';
-
-const StyledRow = RowWithMargin(8);
+import { Row, Box } from '../../../Styles/HrmStyles';
+import { CalltypeTag, CounselorText, TagText, SummaryText } from '../../../Styles/search';
 
 const CallTypeAndCounselor = ({ callType, counselor }) => (
-  <StyledRow>
-    <CalltypeTag>
-      <TagText>{callType}</TagText>
-    </CalltypeTag>
+  <Box marginBottom="8px">
     <Row>
-      <CounselorText style={{ marginRight: 5 }}>Counselor: </CounselorText>
-      <SummaryText>{counselor}</SummaryText>
+      <CalltypeTag>
+        <TagText>{callType}</TagText>
+      </CalltypeTag>
+      <Row>
+        <CounselorText style={{ marginRight: 5 }}>Counselor: </CounselorText>
+        <SummaryText>{counselor}</SummaryText>
+      </Row>
     </Row>
-  </StyledRow>
+  </Box>
 );
 
 CallTypeAndCounselor.propTypes = {

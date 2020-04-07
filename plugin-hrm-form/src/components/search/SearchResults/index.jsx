@@ -1,12 +1,20 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, ButtonBase, List, Popover } from '@material-ui/core';
+import { Button, ButtonBase, Popover } from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/Check';
 
 import ContactPreview from '../ContactPreview';
 import { searchResultType } from '../../../types';
 import { Row } from '../../../Styles/HrmStyles';
-import { ConfirmContainer, ConfirmText, BackIcon, BackText } from '../../../Styles/search';
+import {
+  ConfirmContainer,
+  ConfirmText,
+  BackIcon,
+  BackText,
+  ResultsHeader,
+  ListContainer,
+  ScrollableList,
+} from '../../../Styles/search';
 import callTypes from '../../../states/DomainConstants';
 
 class SearchResults extends Component {
@@ -103,27 +111,37 @@ class SearchResults extends Component {
   };
 
   render() {
+    const resultsCount = this.props.results.length;
     // TODO (Gian): This should be a virtualized list instead (for performance reasons)
     return (
       <>
-        <Row>
-          <ButtonBase onClick={this.props.handleBack}>
-            <BackIcon />
-            <BackText>BACK TO SEARCH</BackText>
-          </ButtonBase>
-        </Row>
-        <List>
-          {this.renderConfirmPopover()}
-          {this.props.results.map(contact => (
-            <ContactPreview
-              key={contact.contactId}
-              contact={contact}
-              handleConnect={this.handleConnectConfirm(contact)}
-              handleViewDetails={() => this.props.handleViewDetails(contact)}
-              handleMockedMessage={this.props.handleMockedMessage}
-            />
-          ))}
-        </List>
+        <ResultsHeader>
+          <Row>
+            <ButtonBase onClick={this.props.handleBack}>
+              <BackIcon />
+              <BackText>Return to search criteria</BackText>
+            </ButtonBase>
+          </Row>
+          <Row style={{ paddingLeft: '24px' }}>
+            <BackText>
+              {resultsCount} result{resultsCount !== 1 && 's'}
+            </BackText>
+          </Row>
+        </ResultsHeader>
+        {this.renderConfirmPopover()}
+        <ListContainer>
+          <ScrollableList>
+            {this.props.results.map(contact => (
+              <ContactPreview
+                key={contact.contactId}
+                contact={contact}
+                handleConnect={this.handleConnectConfirm(contact)}
+                handleViewDetails={() => this.props.handleViewDetails(contact)}
+                handleMockedMessage={this.props.handleMockedMessage}
+              />
+            ))}
+          </ScrollableList>
+        </ListContainer>
       </>
     );
   }
