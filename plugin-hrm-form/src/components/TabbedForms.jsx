@@ -64,9 +64,11 @@ class TabbedForms extends React.PureComponent {
   handleSelectSearchResult = (searchResult, taskId) => {
     this.props.handleSelectSearchResult(searchResult, taskId);
 
-    // For now, redirect to childInformation Tab (will be changed in the future)
-    const isCallerType = this.props.form.callType.value === callTypes.caller;
-    const tab = isCallerType ? 2 : 1;
+    // Redirects to the tab where data is being copied to
+    const currentIsCaller = this.props.form.callType.value === callTypes.caller;
+    const selectedIsChild = searchResult.details.callType === callTypes.child;
+    const tab = currentIsCaller && selectedIsChild ? 2 : 1;
+
     this.setState({ tab });
   };
 
@@ -77,7 +79,10 @@ class TabbedForms extends React.PureComponent {
     const body = [];
 
     body.push(
-      <Search handleSelectSearchResult={searchResult => this.handleSelectSearchResult(searchResult, taskId)} />,
+      <Search
+        currentIsCaller={isCallerType}
+        handleSelectSearchResult={searchResult => this.handleSelectSearchResult(searchResult, taskId)}
+      />,
     );
 
     // Caller Information

@@ -3,9 +3,9 @@ import {
   moreThanThreeCategoriesSelected,
   validateOnBlur,
   validateBeforeSubmit,
-} from '../states/ValidationRules';
-import callTypes from '../states/DomainConstants';
-import { FieldType, ValidationType } from '../states/ContactFormStateFactory';
+} from '../../states/ValidationRules';
+import callTypes from '../../states/DomainConstants';
+import { FieldType, ValidationType } from '../../states/ContactFormStateFactory';
 
 describe('validateOnBlur', () => {
   test('does not generate an error when field is not touched', () => {

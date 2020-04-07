@@ -15,11 +15,13 @@ import {
   ListContainer,
   ScrollableList,
 } from '../../../Styles/search';
+import callTypes from '../../../states/DomainConstants';
 
 class SearchResults extends Component {
   static displayName = 'SearchResults';
 
   static propTypes = {
+    currentIsCaller: PropTypes.bool.isRequired,
     results: PropTypes.arrayOf(searchResultType).isRequired,
     handleSelectSearchResult: PropTypes.func.isRequired,
     handleBack: PropTypes.func.isRequired,
@@ -30,12 +32,27 @@ class SearchResults extends Component {
   state = {
     anchorEl: null,
     contact: null,
+    msg: '',
+  };
+
+  msgTemplate = w => `Copy ${w} information from this record to new contact?`;
+
+  copyDataOf = contact => {
+    if (!contact) return '';
+    switch (contact.details.callType) {
+      case callTypes.child:
+        return this.msgTemplate('child');
+      case callTypes.caller:
+        if (this.props.currentIsCaller) return this.msgTemplate('caller');
+        return this.msgTemplate('child');
+      default:
+        return '';
+    }
   };
 
   renderConfirmPopover = () => {
     const isOpen = Boolean(this.state.anchorEl);
     const id = isOpen ? 'simple-popover' : undefined;
-    const msg = "Connect current caller's record with this record?";
 
     const handleClose = () => {
       this.setState({ anchorEl: null, contact: null });
@@ -62,7 +79,7 @@ class SearchResults extends Component {
         }}
       >
         <ConfirmContainer>
-          <ConfirmText>{msg}</ConfirmText>
+          <ConfirmText>{this.state.msg}</ConfirmText>
           <Row>
             <Button variant="text" size="medium" onClick={handleClose}>
               cancel
@@ -74,7 +91,7 @@ class SearchResults extends Component {
               style={{ backgroundColor: '#000', color: '#fff', marginLeft: 20 }}
             >
               <CheckIcon />
-              yes, connect
+              yes, copy
             </Button>
           </Row>
         </ConfirmContainer>
@@ -90,7 +107,7 @@ class SearchResults extends Component {
    */
   handleConnectConfirm = contact => e => {
     e.stopPropagation();
-    this.setState({ anchorEl: e.currentTarget, contact });
+    this.setState({ anchorEl: e.currentTarget, contact, msg: this.copyDataOf(contact) });
   };
 
   render() {
