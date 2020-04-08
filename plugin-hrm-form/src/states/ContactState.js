@@ -1,3 +1,5 @@
+import { omit } from 'lodash';
+
 import { createBlankForm, recreateBlankForm } from './ContactFormStateFactory';
 import {
   HANDLE_BLUR,
@@ -16,7 +18,7 @@ import { saveToHrm } from '../services/ContactService';
 /**
  * Looks for a particular task in the state object, and returns it if found.
  * Returns recreated form otherwise
- * @param {} tasks the current tasks object (retrieved from state)
+ * @param {{ [x: string]: any; }} tasks the current tasks object (retrieved from state)
  * @param {string} taskId the task we are looking for
  * @returns if the task exists in state, returns its current form.
  *  Otherwise returns a recreated blank form
@@ -180,10 +182,7 @@ export function reduce(state = initialState, action) {
       console.log(`!!!!!!!!!DELETING ENTRY FOR ${action.taskId}`);
       return {
         ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: undefined,
-        },
+        tasks: omit(state.tasks, action.taskId),
       };
     }
 

@@ -58,7 +58,7 @@ class SearchForm extends Component {
           <Row>
             <FieldText
               id="Search_FirstName"
-              label="Child name"
+              label="Name"
               placeholder="First"
               field={getField(firstName)}
               {...this.defaultEventHandlers('firstName')}

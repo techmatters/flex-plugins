@@ -12,6 +12,7 @@ const getResultsLabel = component => component.findAllByType(BackText)[1].childr
 test('<SearchResults> with 0 results', () => {
   const component = renderer.create(
     <SearchResults
+      currentIsCaller={false}
       results={[]}
       handleSelectSearchResult={jest.fn()}
       handleBack={jest.fn()}
@@ -51,6 +52,7 @@ test('<SearchResults> with 1 result', () => {
 
   const component = renderer.create(
     <SearchResults
+      currentIsCaller={false}
       results={results}
       handleSelectSearchResult={jest.fn()}
       handleBack={jest.fn()}
@@ -109,6 +111,7 @@ test('<SearchResults> with multiple results', () => {
 
   const component = renderer.create(
     <SearchResults
+      currentIsCaller={false}
       results={results}
       handleSelectSearchResult={jest.fn()}
       handleBack={jest.fn()}

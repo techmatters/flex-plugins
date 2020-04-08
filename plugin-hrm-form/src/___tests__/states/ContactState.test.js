@@ -1,7 +1,7 @@
 import { omit } from 'lodash';
 
-import { HANDLE_BLUR, HANDLE_FOCUS, SAVE_END_MILLIS } from '../states/ActionTypes';
-import { reduce } from '../states/ContactState';
+import { HANDLE_BLUR, HANDLE_FOCUS, SAVE_END_MILLIS } from '../../states/ActionTypes';
+import { reduce } from '../../states/ContactState';
 
 // THE TESTS IN HERE ARE A MESS AND NEED TO BE FIXED
 
