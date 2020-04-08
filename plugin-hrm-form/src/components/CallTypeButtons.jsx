@@ -20,7 +20,8 @@ import callTypes from '../states/DomainConstants';
 import { isNonDataCallType } from '../states/ValidationRules';
 import { formType, taskType, localizationType } from '../types';
 
-const isDialogOpen = form => form && form.callType && form.callType.value && isNonDataCallType(form.callType.value);
+const isDialogOpen = form =>
+  Boolean(form && form.callType && form.callType.value && isNonDataCallType(form.callType.value));
 
 const clearCallType = props => props.handleCallTypeButtonClick(props.task.taskSid, '');
 
