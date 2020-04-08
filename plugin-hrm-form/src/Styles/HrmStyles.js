@@ -4,6 +4,8 @@ import { Input, Select, MenuItem, Tabs, Tab } from '@material-ui/core';
 import { Button, getBackgroundWithHoverCSS } from '@twilio/flex-ui';
 
 export const Box = styled('div')`
+  ${({ width }) => width && `width: ${width};`}
+  ${({ height }) => height && `height: ${height};`}
   ${({ marginTop }) => marginTop && `margin-top: ${marginTop};`}
   ${({ marginBottom }) => marginBottom && `margin-bottom: ${marginBottom};`}
   ${({ marginLeft }) => marginLeft && `margin-left: ${marginLeft};`}
