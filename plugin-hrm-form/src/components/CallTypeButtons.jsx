@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withTaskContext } from '@twilio/flex-ui';
 import FaceIcon from '@material-ui/icons/Face';
 
+import { withLocalization } from '../hocs/LocalizationContext';
 import { Box, Row } from '../Styles/HrmStyles';
 import {
   Container,
@@ -17,14 +18,15 @@ import {
 } from '../Styles/callTypeButtons';
 import callTypes from '../states/DomainConstants';
 import { isNonDataCallType } from '../states/ValidationRules';
-import { formType, taskType } from '../types';
+import { formType, taskType, localizationType } from '../types';
 
 const isDialogOpen = form => form && form.callType && form.callType.value && isNonDataCallType(form.callType.value);
 
 const clearCallType = props => props.handleCallTypeButtonClick(props.task.taskSid, '');
 
 const CallTypeButtons = props => {
-  const { form, task } = props;
+  const { form, task, localization } = props;
+  const { strings, isCallTask } = localization;
 
   return (
     <>
@@ -65,10 +67,12 @@ const CallTypeButtons = props => {
         <Box marginLeft="auto">
           <CloseButton onClick={() => clearCallType(props)} />
         </Box>
-        <CloseTaskDialogText>End contact and close task?</CloseTaskDialogText>
+        <CloseTaskDialogText>Are you sure?</CloseTaskDialogText>
         <Box marginBottom="32px">
           <Row>
-            <ConfirmButton onClick={() => props.handleSubmit(task)}>End chat</ConfirmButton>
+            <ConfirmButton onClick={() => props.handleSubmit(task)}>
+              {isCallTask(task) ? strings.TaskHeaderEndCall : strings.TaskHeaderEndChat}
+            </ConfirmButton>
             <CancelButton onClick={() => clearCallType(props)}>Cancel</CancelButton>
           </Row>
         </Box>
@@ -83,6 +87,7 @@ CallTypeButtons.propTypes = {
   task: taskType.isRequired,
   handleCallTypeButtonClick: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
+  localization: localizationType.isRequired,
 };
 
-export default withTaskContext(CallTypeButtons);
+export default withLocalization(withTaskContext(CallTypeButtons));
