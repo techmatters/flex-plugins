@@ -9,8 +9,8 @@ import { withTaskContext } from '@twilio/flex-ui';
 import SearchForm from './SearchForm';
 import SearchResults from './SearchResults';
 import ContactDetails from './ContactDetails';
-import { withConfiguration } from '../../ConfigurationContext';
-import { contextObject, contactType, searchResultType, searchFormType } from '../../types';
+import { withConfiguration } from '../../contexts/ConfigurationContext';
+import { configurationType, contactType, searchResultType, searchFormType } from '../../types';
 import {
   handleSearchFormChange,
   changeSearchPage,
@@ -45,7 +45,7 @@ class Search extends Component {
   static displayName = 'Search';
 
   static propTypes = {
-    context: contextObject.isRequired,
+    configuration: configurationType.isRequired,
     currentIsCaller: PropTypes.bool,
     handleSelectSearchResult: PropTypes.func.isRequired,
     handleSearchFormChange: PropTypes.func.isRequired,
@@ -74,8 +74,8 @@ class Search extends Component {
 
   async componentDidMount() {
     try {
-      const { context } = this.props;
-      const counselors = await populateCounselors(context);
+      const { configuration } = this.props;
+      const counselors = await populateCounselors(configuration);
       const counselorsHash = createCounselorsHash(counselors);
       this.setState({ counselors, counselorsHash });
     } catch (err) {
@@ -99,7 +99,7 @@ class Search extends Component {
   }
 
   handleSearch = async searchParams => {
-    const { hrmBaseUrl } = this.props.context;
+    const { hrmBaseUrl } = this.props.configuration;
     this.props.searchContacts(hrmBaseUrl, searchParams, this.state.counselorsHash);
   };
 

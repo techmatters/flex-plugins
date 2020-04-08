@@ -50,3 +50,15 @@ jest.mock('../Styles/search', () => ({
   ListContainer: 'ListContainer',
   ScrollableList: 'ScrollableList',
 }));
+
+jest.mock('../Styles/callTypeButtons', () => ({
+  Container: 'Container',
+  Label: 'Label',
+  DataCallTypeButton: 'DataCallTypeButton',
+  NonDataCallTypeButton: 'NonDataCallTypeButton',
+  CloseTaskDialog: 'CloseTaskDialog',
+  CloseTaskDialogText: 'CloseTaskDialogText',
+  ConfirmButton: 'ConfirmButton',
+  CancelButton: 'CancelButton',
+  CloseButton: 'CloseButton',
+}));

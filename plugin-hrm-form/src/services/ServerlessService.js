@@ -6,11 +6,11 @@ import fetchProtectedApi from './fetchProtectedApi';
  * @param {{serverlessBaseUrl: string,
  *helpline: string,
  *currentWorkspace: string,
- *getSsoToken: () => ({ token: string })}} context
+ *getSsoToken: () => ({ token: string })}} configuration
  * @returns {{sid: string, fullName: string}[]}
  */
-export const populateCounselors = async context => {
-  const { serverlessBaseUrl, helpline, currentWorkspace, getSsoToken } = context;
+export const populateCounselors = async configuration => {
+  const { serverlessBaseUrl, helpline, currentWorkspace, getSsoToken } = configuration;
   const url = `${serverlessBaseUrl}/populateCounselors`;
   const body = {
     workspaceSID: currentWorkspace,

@@ -20,7 +20,7 @@ ConfigurationContext.displayName = 'ConfigurationContext';
 export const withConfiguration = Component => {
   const ConfiguredComponent = props => (
     <ConfigurationContext.Consumer>
-      {context => <Component {...props} context={context} />}
+      {context => <Component {...props} configuration={context} />}
     </ConfigurationContext.Consumer>
   );
   ConfiguredComponent.displayName = 'ConfiguredComponent';
