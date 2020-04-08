@@ -9,7 +9,7 @@ import { withTaskContext } from '@twilio/flex-ui';
 import SearchForm from './SearchForm';
 import SearchResults from './SearchResults';
 import ContactDetails from './ContactDetails';
-import { withConfiguration } from '../../hocs/ConfigurationContext';
+import { withConfiguration } from '../../contexts/ConfigurationContext';
 import { configurationType, contactType, searchResultType, searchFormType } from '../../types';
 import {
   handleSearchFormChange,

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTaskContext } from '@twilio/flex-ui';
 import FaceIcon from '@material-ui/icons/Face';
 
-import { withLocalization } from '../hocs/LocalizationContext';
+import { withLocalization } from '../contexts/LocalizationContext';
 import { Box, Row } from '../Styles/HrmStyles';
 import {
   Container,

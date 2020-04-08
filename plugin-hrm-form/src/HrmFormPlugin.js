@@ -5,8 +5,8 @@ import { FlexPlugin } from 'flex-plugin';
 import CustomCRMContainer from './components/CustomCRMContainer';
 import reducers, { namespace } from './states';
 import { Actions } from './states/ContactState';
-import ConfigurationContext from './hocs/ConfigurationContext';
-import LocalizationContext from './hocs/LocalizationContext';
+import ConfigurationContext from './contexts/ConfigurationContext';
+import LocalizationContext from './contexts/LocalizationContext';
 import HrmTheme from './Styles/HrmTheme';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
