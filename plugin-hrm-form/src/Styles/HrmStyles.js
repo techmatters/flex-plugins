@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { keyframes } from 'react-emotion';
+import styled from 'react-emotion';
 import { Input, Select, MenuItem, Tabs, Tab } from '@material-ui/core';
 import { Button, getBackgroundWithHoverCSS } from '@twilio/flex-ui';
 
@@ -147,15 +147,6 @@ export const StyledNextStepButton = styled(Button)`
       false,
       p.disabled,
     )};
-`;
-
-const shadowPulse = keyframes`
-    0% {
-        box-shadow: 0 0 0 0px rgba(0, 0, 0, 0.2);
-    }
-    100% {
-        box-shadow: 0 0 0 20px rgba(0, 0, 0, 0);
-    }
 `;
 
 export const TransparentButton = styled(Button)`
