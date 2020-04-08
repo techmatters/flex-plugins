@@ -117,8 +117,8 @@ const Details = ({ contact, handleMockedMessage }) => {
             { description: 'School Name', value: child.school.name },
             { description: 'Grade Level', value: child.school.gradeLevel },
             { description: 'Refugee?', value: child.refugee },
-            { description: 'HIV Positive?', value: child.hiv },
             { description: 'Disabled/Special Needs?', value: child.disabledOrSpecialNeeds },
+            { description: 'HIV Positive?', value: child.hiv },
           ]}
         />
       )}
@@ -139,7 +139,7 @@ const Details = ({ contact, handleMockedMessage }) => {
           entries={[
             { description: 'Call Summary', value: callSummary },
             { description: 'Status', value: status },
-            { description: 'Referred to?', value: referredTo },
+            { description: 'Referred To', value: referredTo },
             { description: 'Keep Confidential?', value: keepConfidential },
             { description: 'OK for the case worker to call?', value: okForCaseWorkerToCall },
             { description: 'How did the child hear about us?', value: howDidTheChildHearAboutUs },
