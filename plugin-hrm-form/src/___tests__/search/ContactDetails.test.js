@@ -28,6 +28,12 @@ const contactOfType = type => ({
         phone2: '',
       },
       refugee: false,
+      disabledOrSpecialNeeds: false,
+      hiv: false,
+      school: {
+        name: 'school',
+        gradeLevel: 'some',
+      },
     },
     caseInformation: {
       callSummary: type,

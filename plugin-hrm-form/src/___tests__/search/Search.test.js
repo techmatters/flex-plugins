@@ -137,6 +137,12 @@ test('<Search> should display <ContactDetails />', () => {
           phone2: '',
         },
         refugee: false,
+        disabledOrSpecialNeeds: false,
+        hiv: false,
+        school: {
+          name: 'school',
+          gradeLevel: 'some',
+        },
       },
       caseInformation: {
         callSummary: 'Child calling about self',
