@@ -91,8 +91,8 @@ const Details = ({ contact, handleMockedMessage }) => {
             { description: 'Name', value: callerOrUnknown },
             { description: 'Relationship to Child', value: caller.relationshipToChild },
             { description: 'Address', value: formattedCallerAddress },
-            maybeEntry(Boolean(caller.location.phone1), { description: 'Phone', value: caller.location.phone1 }),
-            maybeEntry(Boolean(caller.location.phone2), { description: 'Phone', value: caller.location.phone2 }),
+            { description: 'Phone #1', value: caller.location.phone1 },
+            { description: 'Phone #2', value: caller.location.phone2 },
             { description: 'Gender', value: caller.gender },
             { description: 'Age Range', value: caller.age },
             { description: 'Language', value: caller.language },
@@ -107,14 +107,18 @@ const Details = ({ contact, handleMockedMessage }) => {
           entries={[
             { description: 'Name', value: childOrUnknown },
             { description: 'Address', value: formattedChildAddress },
-            maybeEntry(Boolean(child.location.phone1), { description: 'Phone', value: child.location.phone1 }),
-            maybeEntry(Boolean(child.location.phone2), { description: 'Phone', value: child.location.phone2 }),
+            { description: 'Phone #1', value: child.location.phone1 },
+            { description: 'Phone #2', value: child.location.phone2 },
             { description: 'Gender', value: child.gender },
             { description: 'Age Range', value: child.age },
             { description: 'Language', value: child.language },
             { description: 'Nationality', value: child.nationality },
             { description: 'Ethnicity', value: child.ethnicity },
-            { description: 'Is Refugee?', value: child.refugee },
+            { description: 'School Name', value: child.school.name },
+            { description: 'Grade Level', value: child.school.gradeLevel },
+            { description: 'Refugee?', value: child.refugee },
+            { description: 'HIV Positive?', value: child.hiv },
+            { description: 'Disabled/Special Needs?', value: child.disabledOrSpecialNeeds },
           ]}
         />
       )}
@@ -135,7 +139,7 @@ const Details = ({ contact, handleMockedMessage }) => {
           entries={[
             { description: 'Call Summary', value: callSummary },
             { description: 'Status', value: status },
-            { description: 'Referred by?', value: referredTo },
+            { description: 'Referred to?', value: referredTo },
             { description: 'Keep Confidential?', value: keepConfidential },
             { description: 'OK for the case worker to call?', value: okForCaseWorkerToCall },
             { description: 'How did the child hear about us?', value: howDidTheChildHearAboutUs },

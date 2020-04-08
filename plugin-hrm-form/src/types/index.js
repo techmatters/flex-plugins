@@ -122,6 +122,12 @@ export const contactType = PropTypes.shape({
       phone2: PropTypes.string,
     }),
     refugee: PropTypes.bool,
+    disabledOrSpecialNeeds: PropTypes.bool,
+    hiv: PropTypes.bool,
+    school: PropTypes.shape({
+      name: PropTypes.string,
+      gradeLevel: PropTypes.string,
+    }),
   }),
   caseInformation: PropTypes.shape({
     callSummary: PropTypes.string,
