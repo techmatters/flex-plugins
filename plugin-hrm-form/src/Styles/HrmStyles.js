@@ -132,24 +132,6 @@ export const StyledMenuItem = styled(MenuItem)`
   min-width: 0;
 `;
 
-export const StyledButton = styled(Button)`
-    flex-shrink: 0;
-    color: white;
-    text-transform: uppercase;
-    margin-bottom: 15px;
-    width: 320px;
-    height: 48px;
-    border: ${props => (props.selected ? '2px solid #000000;' : 'none')}
-    background-color: ${props => (props.disabled ? props.theme.colors.base5 : props.theme.colors.defaultButtonColor)};
-    ${p =>
-      getBackgroundWithHoverCSS(
-        p.disabled ? p.theme.colors.base5 : p.theme.colors.defaultButtonColor,
-        true,
-        false,
-        p.disabled,
-      )};
-`;
-
 export const StyledNextStepButton = styled(Button)`
   color: ${props => props.theme.colors.buttonTextColor};
   text-transform: uppercase;
@@ -174,25 +156,6 @@ const shadowPulse = keyframes`
     100% {
         box-shadow: 0 0 0 20px rgba(0, 0, 0, 0);
     }
-`;
-
-export const StyledFinishButton = styled(Button)`
-    flex-shrink: 0;
-    animation: ${shadowPulse} 1s infinite;
-    color: white;
-    text-transform: uppercase;
-    margin-bottom: 15px;
-    width: 320px;
-    height: 48px;
-    border: ${props => (props.selected ? '2px solid #000000;' : 'none')}
-    background-color: ${props => (props.disabled ? props.theme.colors.base5 : props.theme.colors.defaultButtonColor)};
-    ${p =>
-      getBackgroundWithHoverCSS(
-        p.disabled ? p.theme.colors.base5 : p.theme.colors.defaultButtonColor,
-        true,
-        false,
-        p.disabled,
-      )};
 `;
 
 export const TransparentButton = styled(Button)`
