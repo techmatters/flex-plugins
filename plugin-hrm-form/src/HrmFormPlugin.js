@@ -91,13 +91,45 @@ export default class HrmFormPlugin extends FlexPlugin {
       manager.store.dispatch(Actions.removeContactState(payload.task.taskSid));
     });
 
-    const saveEndMillis = (payload, original) => {
+    const goodbyeMsg =
+      'The counselor has left the chat. Thank you for reaching out. Please contact us again if you need more help.';
+
+    const shouldSayGoodbye = channel =>
+      channel === channelTypes.facebook || channel === channelTypes.sms || channel === channelTypes.whatsapp;
+
+    const sendGoodbyeMessage = async payload => {
+      if (shouldSayGoodbye(payload.task.channelType)) {
+        await flex.Actions.invokeAction('SendMessage', {
+          body: goodbyeMsg,
+          channelSid: payload.task.attributes.channelSid,
+        });
+      }
+    };
+
+    const saveEndMillis = async payload => {
       manager.store.dispatch(Actions.saveEndMillis(payload.task.taskSid));
+    };
+
+    /**
+     * @param {import('@twilio/flex-ui').ActionFunction} fun
+     * @returns {import('@twilio/flex-ui').ReplacedActionFunction}
+     * A function that calls fun with the payload of the replaced action
+     * and continues with the Twilio execution
+     */
+    const replaceWithFun = fun => async (payload, original) => {
+      await fun(payload);
       original(payload);
     };
 
-    flex.Actions.replaceAction('HangupCall', saveEndMillis);
-    flex.Actions.replaceAction('WrapupTask', saveEndMillis);
+    const hangupCall = replaceWithFun(saveEndMillis);
+
+    const wrapupTask = replaceWithFun(async payload => {
+      await sendGoodbyeMessage(payload);
+      saveEndMillis(payload);
+    });
+
+    flex.Actions.replaceAction('HangupCall', hangupCall);
+    flex.Actions.replaceAction('WrapupTask', wrapupTask);
   }
 
   /**
