@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { StyledInput, StyledLabel, ErrorText, TextField } from '../Styles/HrmStyles';
+import { StyledInput, StyledLabel, ErrorText, TextField } from '../styles/HrmStyles';
 import RequiredAsterisk from './RequiredAsterisk';
 import { fieldType } from '../types';
 

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { formType } from '../../types';
 import BranchingFormIssueCategory from './BranchingFormIssueCategory';
-import { Container, ErrorText } from '../../Styles/HrmStyles';
+import { Container, ErrorText } from '../../styles/HrmStyles';
 
 const IssueCategorizationTab = ({ form, taskId, handleCategoryToggle }) => (
   <Container style={{ display: 'flex', flexDirection: 'column' }}>

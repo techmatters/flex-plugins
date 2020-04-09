@@ -1,7 +1,7 @@
 import React from 'react';
 import ErrorIcon from '@material-ui/icons/Error';
 
-import { StyledTab } from '../Styles/HrmStyles';
+import { StyledTab } from '../styles/HrmStyles';
 import { formIsValid } from '../states/ValidationRules';
 
 const decorateTab = (label, formRoot) => {

@@ -3,8 +3,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ButtonBase } from '@material-ui/core';
 
-import { Container, Row } from '../../../Styles/HrmStyles';
-import { BackText, BackIcon } from '../../../Styles/search';
+import { Container, Row } from '../../../styles/HrmStyles';
+import { BackText, BackIcon } from '../../../styles/search';
 import { contactType } from '../../../types';
 import Details from './Details';
 

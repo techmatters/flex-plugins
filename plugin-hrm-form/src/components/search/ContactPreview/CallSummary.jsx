@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { truncate } from 'lodash';
 
-import { Row, Box } from '../../../Styles/HrmStyles';
-import { SummaryText, ShortSummaryText, StyledLink } from '../../../Styles/search';
+import { Row, Box } from '../../../styles/HrmStyles';
+import { SummaryText, ShortSummaryText, StyledLink } from '../../../styles/search';
 
 const CHAR_LIMIT = 45;
 

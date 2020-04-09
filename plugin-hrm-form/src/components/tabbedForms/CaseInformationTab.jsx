@@ -5,7 +5,7 @@ import { Checkbox } from '@material-ui/core';
 import { caseInformationType } from '../../types';
 import FieldText from '../FieldText';
 import FieldSelect from '../FieldSelect';
-import { ColumnarBlock, Container, TwoColumnLayout, CheckboxField, StyledCheckboxLabel } from '../../Styles/HrmStyles';
+import { ColumnarBlock, Container, TwoColumnLayout, CheckboxField, StyledCheckboxLabel } from '../../styles/HrmStyles';
 
 const CaseInformationTab = ({ caseInformation, handleCheckboxClick, defaultEventHandlers }) => (
   <Container>

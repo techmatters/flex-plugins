@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { callerInformationType } from '../../types';
 import FieldText from '../FieldText';
 import FieldSelect from '../FieldSelect';
-import { ColumnarBlock, Container, NameFields, TwoColumnLayout } from '../../Styles/HrmStyles';
+import { ColumnarBlock, Container, NameFields, TwoColumnLayout } from '../../styles/HrmStyles';
 
 const CallerInformationTab = ({ callerInformation, defaultEventHandlers }) => (
   <Container>

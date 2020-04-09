@@ -4,7 +4,7 @@ import { ButtonBase, Collapse } from '@material-ui/core';
 import { ArrowDropDownTwoTone, ArrowDropUpTwoTone } from '@material-ui/icons';
 
 import SectionEntry from './SectionEntry';
-import { SectionTitleContainer, SectionTitleText, ContactDetailsIcon } from '../../../Styles/search';
+import { SectionTitleContainer, SectionTitleText, ContactDetailsIcon } from '../../../styles/search';
 
 const ArrowDownIcon = ContactDetailsIcon(ArrowDropDownTwoTone);
 const ArrowUpIcon = ContactDetailsIcon(ArrowDropUpTwoTone);

@@ -5,7 +5,7 @@ import '../mockStyled';
 
 import SearchResults from '../../components/search/SearchResults';
 import ContactPreview from '../../components/search/ContactPreview';
-import { BackText } from '../../Styles/search';
+import { BackText } from '../../styles/search';
 
 const getResultsLabel = component => component.findAllByType(BackText)[1].children.join('');
 

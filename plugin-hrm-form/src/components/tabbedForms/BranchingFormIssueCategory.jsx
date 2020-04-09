@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Checkbox } from '@material-ui/core';
 
-import { CategoryCheckboxField, StyledCheckboxLabel, StyledLabel } from '../../Styles/HrmStyles';
+import { CategoryCheckboxField, StyledCheckboxLabel, StyledLabel } from '../../styles/HrmStyles';
 import { formType } from '../../types';
 
 const BranchingFormIssueCategory = props => {

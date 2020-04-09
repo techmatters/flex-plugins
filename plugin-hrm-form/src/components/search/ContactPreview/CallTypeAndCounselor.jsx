@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Row, Box } from '../../../Styles/HrmStyles';
-import { CalltypeTag, CounselorText, TagText, SummaryText } from '../../../Styles/search';
+import { Row, Box } from '../../../styles/HrmStyles';
+import { CalltypeTag, CounselorText, TagText, SummaryText } from '../../../styles/search';
 
 const CallTypeAndCounselor = ({ callType, counselor }) => (
   <Box marginBottom="8px">

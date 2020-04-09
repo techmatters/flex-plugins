@@ -12,7 +12,7 @@ import {
   TwoColumnLayout,
   CheckboxField,
   StyledCheckboxLabel,
-} from '../../Styles/HrmStyles';
+} from '../../styles/HrmStyles';
 
 const ChildInformationTab = ({ childInformation, handleCheckboxClick, defaultEventHandlers }) => (
   <Container>

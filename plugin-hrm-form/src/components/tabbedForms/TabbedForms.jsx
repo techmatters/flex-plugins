@@ -11,7 +11,7 @@ import {
   TransparentButton,
   StyledTabs,
   StyledTab,
-} from '../../Styles/HrmStyles';
+} from '../../styles/HrmStyles';
 import callTypes from '../../states/DomainConstants';
 import decorateTab from '../decorateTab';
 import { formIsValid } from '../../states/ValidationRules';
