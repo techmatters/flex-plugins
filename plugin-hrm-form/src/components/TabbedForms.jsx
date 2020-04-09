@@ -42,13 +42,8 @@ class TabbedForms extends React.PureComponent {
     handleSubmit: PropTypes.func.isRequired,
     handleFocus: PropTypes.func.isRequired,
     handleSelectSearchResult: PropTypes.func.isRequired,
+    changeTab: PropTypes.func.isRequired,
   };
-
-  state = {
-    tab: 1,
-  };
-
-  tabChange = (event, tab) => this.setState({ tab });
 
   curriedHandleChange = (parents, name) => e =>
     this.props.handleChange(this.props.task.taskSid, parents, name, e.target.value || e.currentTarget.value);
@@ -69,10 +64,16 @@ class TabbedForms extends React.PureComponent {
     const selectedIsChild = searchResult.details.callType === callTypes.child;
     const tab = currentIsCaller && selectedIsChild ? 2 : 1;
 
-    this.setState({ tab });
+    this.props.changeTab(tab, taskId);
+  };
+
+  handleTabsChange = (event, tab) => {
+    const taskId = this.props.task.taskSid;
+    this.props.changeTab(tab, taskId);
   };
 
   render() {
+    const { tab } = this.props.form.metadata;
     const taskId = this.props.task.taskSid;
     const isCallerType = this.props.form.callType.value === callTypes.caller;
 
@@ -447,7 +448,7 @@ class TabbedForms extends React.PureComponent {
      * we need to be able to mark that the categories field has been touched
      * the only way to do this that I see is this.  Blech.
      */
-    if (this.state.tab === 2 && !this.props.form.caseInformation.categories.touched) {
+    if (tab === 2 && !this.props.form.caseInformation.categories.touched) {
       this.props.handleFocus(taskId, ['caseInformation'], 'categories');
     }
 
@@ -599,8 +600,8 @@ class TabbedForms extends React.PureComponent {
     tabs.push(decorateTab('Categorize Issue', this.props.form.caseInformation.categories));
     tabs.push(<StyledTab key="Case Information" label="Add Case Summary" />);
 
-    const showNextButton = this.state.tab !== 0 && this.state.tab < body.length - 1;
-    const showSubmitButton = this.state.tab === body.length - 1;
+    const showNextButton = tab !== 0 && tab < body.length - 1;
+    const showSubmitButton = tab === body.length - 1;
 
     return (
       <TabbedFormsContainer>
@@ -609,23 +610,14 @@ class TabbedForms extends React.PureComponent {
             &lt; BACK
           </TransparentButton>
         </TopNav>
-        <StyledTabs
-          name="tab"
-          variant="scrollable"
-          scrollButtons="auto"
-          value={this.state.tab}
-          onChange={this.tabChange}
-        >
+        <StyledTabs name="tab" variant="scrollable" scrollButtons="auto" value={tab} onChange={this.handleTabsChange}>
           {tabs}
         </StyledTabs>
-        {body[this.state.tab]}
+        {body[tab]}
         {(showNextButton || showSubmitButton) && (
           <BottomButtonBar>
             {showNextButton && (
-              <StyledNextStepButton
-                roundCorners={true}
-                onClick={() => this.setState(prevState => ({ tab: prevState.tab + 1 }))}
-              >
+              <StyledNextStepButton roundCorners={true} onClick={() => this.props.changeTab(tab + 1, taskId)}>
                 Next
               </StyledNextStepButton>
             )}

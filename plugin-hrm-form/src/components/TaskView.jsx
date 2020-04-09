@@ -27,6 +27,7 @@ class TaskView extends Component {
     handleFocus: PropTypes.func.isRequired,
     handleSelectSearchResult: PropTypes.func.isRequired,
     recreateSearchContact: PropTypes.func.isRequired,
+    changeTab: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
@@ -57,6 +58,7 @@ class TaskView extends Component {
           handleSubmit={this.props.handleSubmit(form, this.props.handleCompleteTask)}
           handleFocus={this.props.handleFocus}
           handleSelectSearchResult={this.props.handleSelectSearchResult}
+          changeTab={this.props.changeTab}
         />
       </div>
     );
@@ -82,6 +84,7 @@ const mapDispatchToProps = dispatch => ({
   handleSubmit: handleSubmit(dispatch),
   handleSelectSearchResult: bindActionCreators(handleSelectSearchResult, dispatch),
   recreateSearchContact: bindActionCreators(recreateSearchContact, dispatch),
+  changeTab: bindActionCreators(Actions.changeTab, dispatch),
 });
 
 export default withTaskContext(connect(mapStateToProps, mapDispatchToProps)(TaskView));

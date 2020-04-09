@@ -24,6 +24,7 @@ const HrmForm = props => {
           handleSubmit={props.handleSubmit}
           handleFocus={props.handleFocus}
           handleSelectSearchResult={props.handleSelectSearchResult}
+          changeTab={props.changeTab}
         />
       ) : (
         <CallTypeButtons
@@ -46,6 +47,7 @@ HrmForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   handleFocus: PropTypes.func.isRequired,
   handleSelectSearchResult: PropTypes.func.isRequired,
+  changeTab: PropTypes.func.isRequired,
 };
 
 export default withTaskContext(HrmForm);
