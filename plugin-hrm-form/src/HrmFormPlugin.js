@@ -98,12 +98,10 @@ export default class HrmFormPlugin extends FlexPlugin {
       channel === channelTypes.facebook || channel === channelTypes.sms || channel === channelTypes.whatsapp;
 
     const sendGoodbyeMessage = async payload => {
-      if (shouldSayGoodbye(payload.task.channelType)) {
-        await flex.Actions.invokeAction('SendMessage', {
-          body: goodbyeMsg,
-          channelSid: payload.task.attributes.channelSid,
-        });
-      }
+      await flex.Actions.invokeAction('SendMessage', {
+        body: goodbyeMsg,
+        channelSid: payload.task.attributes.channelSid,
+      });
     };
 
     const saveEndMillis = async payload => {
@@ -116,16 +114,27 @@ export default class HrmFormPlugin extends FlexPlugin {
      * A function that calls fun with the payload of the replaced action
      * and continues with the Twilio execution
      */
-    const replaceWithFun = fun => async (payload, original) => {
+    const fromActionFunction = fun => async (payload, original) => {
       await fun(payload);
       original(payload);
     };
 
-    const hangupCall = replaceWithFun(saveEndMillis);
+    const hangupCall = fromActionFunction(saveEndMillis);
 
-    const wrapupTask = replaceWithFun(async payload => {
-      await sendGoodbyeMessage(payload);
-      saveEndMillis(payload);
+    function timeout(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    const wrapupTask = fromActionFunction(async payload => {
+      if (shouldSayGoodbye(payload.task.channelType)) {
+        await sendGoodbyeMessage(payload);
+        /*
+         * console.log('\n\n\n AFTER MESSAGE WAS SENT \n\n\n')
+         * await timeout(1000);
+         * console.log('\n\n\n AFTER AWAITING 1 SECOND \n\n\n')
+         */
+      }
+      await saveEndMillis(payload);
     });
 
     flex.Actions.replaceAction('HangupCall', hangupCall);
