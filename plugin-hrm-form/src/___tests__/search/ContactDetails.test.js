@@ -5,7 +5,7 @@ import '../mockStyled';
 
 import ContactDetails from '../../components/search/ContactDetails';
 import Section from '../../components/search/ContactDetails/Section';
-import callTypes from '../../states/DomainConstants';
+import callTypes, { channelTypes } from '../../states/DomainConstants';
 
 const contactOfType = type => ({
   details: {
@@ -75,7 +75,7 @@ const contactOfType = type => ({
     categories: 'TBD',
     counselor: 'counselor-id',
     notes: 'Jill Smith Notes',
-    channel: 'web',
+    channel: channelTypes.web,
     conversationDuration: 10,
   },
   counselor: 'Counselor',

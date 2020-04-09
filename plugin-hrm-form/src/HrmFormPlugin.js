@@ -7,6 +7,7 @@ import reducers, { namespace } from './states';
 import { Actions } from './states/ContactState';
 import ConfigurationContext from './ConfigurationContext';
 import HrmTheme from './Styles/HrmTheme';
+import { channelTypes } from './states/DomainConstants';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 const PLUGIN_VERSION = '0.3.10';
@@ -34,7 +35,7 @@ export default class HrmFormPlugin extends FlexPlugin {
 
     const onCompleteTask = async (sid, task) => {
       if (task.status !== 'wrapping') {
-        if (task.channelType === 'voice') {
+        if (task.channelType === channelTypes.voice) {
           await flex.Actions.invokeAction('HangupCall', { sid, task });
         } else {
           await flex.Actions.invokeAction('WrapupTask', { sid, task });

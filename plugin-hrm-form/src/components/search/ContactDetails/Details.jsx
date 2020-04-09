@@ -6,7 +6,7 @@ import { MoreHoriz } from '@material-ui/icons';
 
 import { DetailsContainer, NameContainer, DetNameText, ContactDetailsIcon } from '../../../Styles/search';
 import Section from './Section';
-import callTypes from '../../../states/DomainConstants';
+import callTypes, { channelTypes } from '../../../states/DomainConstants';
 import { isNonDataCallType } from '../../../states/ValidationRules';
 import { contactType } from '../../../types';
 import { formatAddress, formatDuration, formatName, mapChannel } from '../../../utils';
@@ -62,7 +62,8 @@ const Details = ({ contact, handleMockedMessage }) => {
     caller.location.postalCode,
   );
 
-  const isPhoneContact = channel === 'voice' || channel === 'sms' || channel === 'whatsapp';
+  const isPhoneContact =
+    channel === channelTypes.voice || channel === channelTypes.sms || channel === channelTypes.whatsapp;
   const [tag1, tag2, tag3] = tags;
 
   return (

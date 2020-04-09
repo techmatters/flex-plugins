@@ -1,4 +1,4 @@
-import callTypes from '../states/DomainConstants';
+import callTypes, { channelTypes } from '../states/DomainConstants';
 
 /**
  * @param {string} str
@@ -20,15 +20,15 @@ export const mapCallType = str => {
  */
 export const mapChannel = channel => {
   switch (channel) {
-    case 'facebook':
+    case channelTypes.facebook:
       return 'Facebook Messenger';
-    case 'web':
+    case channelTypes.web:
       return 'Chat';
-    case 'voice':
+    case channelTypes.voice:
       return 'Voice';
-    case 'sms':
+    case channelTypes.sms:
       return 'SMS';
-    case 'whatsapp':
+    case channelTypes.whatsapp:
       return 'WhatsApp';
     default:
       return 'Undefined';

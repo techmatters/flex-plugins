@@ -9,4 +9,12 @@ const callTypes = {
   abusive: 'Abusive',
 };
 
+export const channelTypes = {
+  facebook: 'facebook',
+  web: 'web',
+  voice: 'voice',
+  sms: 'sms',
+  whatsapp: 'whatsapp',
+};
+
 export default callTypes;

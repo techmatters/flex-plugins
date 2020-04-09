@@ -1,4 +1,5 @@
 import { mapCallType, mapChannel } from '../../utils';
+import { channelTypes } from '../../states/DomainConstants';
 
 test('Test contact call type mapper', () => {
   const mapSelf = 'Child calling about self';
@@ -11,23 +12,23 @@ test('Test contact call type mapper', () => {
 });
 
 test('Test contact channel mapper', () => {
-  const ch1 = 'facebook';
+  const ch1 = channelTypes.facebook;
   const expectCh1 = 'Facebook Messenger';
   const fmtCh1 = mapChannel(ch1);
 
-  const ch2 = 'web';
+  const ch2 = channelTypes.web;
   const expectCh2 = 'Chat';
   const fmtCh2 = mapChannel(ch2);
 
-  const ch3 = 'voice';
+  const ch3 = channelTypes.voice;
   const expectCh3 = 'Voice';
   const fmtCh3 = mapChannel(ch3);
 
-  const ch4 = 'sms';
+  const ch4 = channelTypes.sms;
   const expectCh4 = 'SMS';
   const fmtCh4 = mapChannel(ch4);
 
-  const ch5 = 'whatsapp';
+  const ch5 = channelTypes.whatsapp;
   const expectCh5 = 'WhatsApp';
   const fmtCh5 = mapChannel(ch5);
 
