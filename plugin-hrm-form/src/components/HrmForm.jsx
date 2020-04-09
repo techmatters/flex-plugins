@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTaskContext } from '@twilio/flex-ui';
 
 import CallTypeButtons from './CallTypeButtons';
-import TabbedForms from './TabbedForms';
+import TabbedForms from './tabbedForms';
 import { isNonDataCallType } from '../states/ValidationRules';
 import { formType } from '../types';
 
