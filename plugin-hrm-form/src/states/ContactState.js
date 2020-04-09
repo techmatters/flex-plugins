@@ -46,7 +46,7 @@ export class Actions {
    * There has to be a better way to do this rather than a one-off, but MUI does not make it easy
    * static handleCallTypeButtonClick = (taskId, value, e) => ({type: HANDLE_CALLTYPE_BUTTON_CLICK, taskId: taskId, value: value});
    */
-  static handleCallTypeButtonClick = (taskId, value, e) => ({
+  static handleCallTypeButtonClick = (taskId, value) => ({
     type: HANDLE_CHANGE,
     name: 'callType',
     taskId,

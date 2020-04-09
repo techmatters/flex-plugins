@@ -1,6 +1,7 @@
 const HrmTheme = {
   baseName: 'HrmTheme',
   colors: {
+    base2: '#f6f6f6',
     buttonTextColor: '#ffffff',
     disabledColor: '#d8d8d8',
     defaultButtonColor: '#000000',

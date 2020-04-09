@@ -1,9 +1,11 @@
 import React from 'react';
-import styled, { keyframes } from 'react-emotion';
+import styled from 'react-emotion';
 import { Input, Select, MenuItem, Tabs, Tab } from '@material-ui/core';
 import { Button, getBackgroundWithHoverCSS } from '@twilio/flex-ui';
 
 export const Box = styled('div')`
+  ${({ width }) => width && `width: ${width};`}
+  ${({ height }) => height && `height: ${height};`}
   ${({ marginTop }) => marginTop && `margin-top: ${marginTop};`}
   ${({ marginBottom }) => marginBottom && `margin-bottom: ${marginBottom};`}
   ${({ marginLeft }) => marginLeft && `margin-left: ${marginLeft};`}
@@ -130,24 +132,6 @@ export const StyledMenuItem = styled(MenuItem)`
   min-width: 0;
 `;
 
-export const StyledButton = styled(Button)`
-    flex-shrink: 0;
-    color: white;
-    text-transform: uppercase;
-    margin-bottom: 15px;
-    width: 320px;
-    height: 48px;
-    border: ${props => (props.selected ? '2px solid #000000;' : 'none')}
-    background-color: ${props => (props.disabled ? props.theme.colors.base5 : props.theme.colors.defaultButtonColor)};
-    ${p =>
-      getBackgroundWithHoverCSS(
-        p.disabled ? p.theme.colors.base5 : p.theme.colors.defaultButtonColor,
-        true,
-        false,
-        p.disabled,
-      )};
-`;
-
 export const StyledNextStepButton = styled(Button)`
   color: ${props => props.theme.colors.buttonTextColor};
   text-transform: uppercase;
@@ -163,34 +147,6 @@ export const StyledNextStepButton = styled(Button)`
       false,
       p.disabled,
     )};
-`;
-
-const shadowPulse = keyframes`
-    0% {
-        box-shadow: 0 0 0 0px rgba(0, 0, 0, 0.2);
-    }
-    100% {
-        box-shadow: 0 0 0 20px rgba(0, 0, 0, 0);
-    }
-`;
-
-export const StyledFinishButton = styled(Button)`
-    flex-shrink: 0;
-    animation: ${shadowPulse} 1s infinite;
-    color: white;
-    text-transform: uppercase;
-    margin-bottom: 15px;
-    width: 320px;
-    height: 48px;
-    border: ${props => (props.selected ? '2px solid #000000;' : 'none')}
-    background-color: ${props => (props.disabled ? props.theme.colors.base5 : props.theme.colors.defaultButtonColor)};
-    ${p =>
-      getBackgroundWithHoverCSS(
-        p.disabled ? p.theme.colors.base5 : p.theme.colors.defaultButtonColor,
-        true,
-        false,
-        p.disabled,
-      )};
 `;
 
 export const TransparentButton = styled(Button)`

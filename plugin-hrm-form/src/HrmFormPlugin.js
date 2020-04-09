@@ -1,11 +1,12 @@
 import React from 'react';
-import { VERSION } from '@twilio/flex-ui';
+import { VERSION, TaskHelper } from '@twilio/flex-ui';
 import { FlexPlugin } from 'flex-plugin';
 
 import CustomCRMContainer from './components/CustomCRMContainer';
 import reducers, { namespace } from './states';
 import { Actions } from './states/ContactState';
-import ConfigurationContext from './ConfigurationContext';
+import ConfigurationContext from './contexts/ConfigurationContext';
+import LocalizationContext from './contexts/LocalizationContext';
 import HrmTheme from './Styles/HrmTheme';
 import { channelTypes } from './states/DomainConstants';
 
@@ -50,6 +51,8 @@ export default class HrmFormPlugin extends FlexPlugin {
     const { helpline } = manager.workerClient.attributes;
     const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
     const getSsoToken = () => manager.store.getState().flex.session.ssoTokenPayload.token;
+    const { strings } = manager;
+    const { isCallTask } = TaskHelper;
 
     // TODO(nick): Eventually remove this log line or set to debug
     console.log(`HRM URL: ${hrmBaseUrl}`);
@@ -64,7 +67,9 @@ export default class HrmFormPlugin extends FlexPlugin {
         value={{ hrmBaseUrl, serverlessBaseUrl, workerSid, helpline, currentWorkspace, getSsoToken }}
         key="custom-crm-container"
       >
-        <CustomCRMContainer handleCompleteTask={onCompleteTask} />
+        <LocalizationContext.Provider value={{ strings, isCallTask }}>
+          <CustomCRMContainer handleCompleteTask={onCompleteTask} />
+        </LocalizationContext.Provider>
       </ConfigurationContext.Provider>,
       options,
     );
