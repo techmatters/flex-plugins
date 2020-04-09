@@ -6,8 +6,8 @@ import fetchProtectedApi from './fetchProtectedApi';
  * @param {{serverlessBaseUrl: string,
  *helpline: string,
  *currentWorkspace: string,
- *getSsoToken: () => ({ token: string })}} configuration
- * @returns {{sid: string, fullName: string}[]}
+ *getSsoToken: () => string }} configuration
+ * @returns {Promise< {sid: string, fullName: string}[] >}
  */
 export const populateCounselors = async configuration => {
   const { serverlessBaseUrl, helpline, currentWorkspace, getSsoToken } = configuration;
