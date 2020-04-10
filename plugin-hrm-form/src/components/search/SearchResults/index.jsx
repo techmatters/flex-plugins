@@ -14,6 +14,7 @@ import {
   ResultsHeader,
   ListContainer,
   ScrollableList,
+  CancelButton,
 } from '../../../styles/search';
 import callTypes from '../../../states/DomainConstants';
 
@@ -81,10 +82,12 @@ class SearchResults extends Component {
         <ConfirmContainer>
           <ConfirmText>{this.state.msg}</ConfirmText>
           <Row>
-            <Button variant="text" size="medium" onClick={handleClose}>
+            <CancelButton tabIndex={2} variant="text" size="medium" onClick={handleClose}>
               cancel
-            </Button>
+            </CancelButton>
             <Button
+              autoFocus
+              tabIndex={1}
               variant="contained"
               size="medium"
               onClick={handleConfirm}

@@ -49,6 +49,7 @@ jest.mock('../styles/search', () => ({
   ResultsHeader: 'ResultsHeader',
   ListContainer: 'ListContainer',
   ScrollableList: 'ScrollableList',
+  CancelButton: 'CancelButton',
 }));
 
 jest.mock('../styles/callTypeButtons', () => ({

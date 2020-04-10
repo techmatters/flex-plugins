@@ -66,15 +66,17 @@ const CallTypeButtons = props => {
       </Container>
       <CloseTaskDialog onClose={() => clearCallType(props)} open={isDialogOpen(form)}>
         <Box marginLeft="auto">
-          <CloseButton onClick={() => clearCallType(props)} />
+          <CloseButton tabIndex={3} onClick={() => clearCallType(props)} />
         </Box>
         <CloseTaskDialogText>Are you sure?</CloseTaskDialogText>
         <Box marginBottom="32px">
           <Row>
-            <ConfirmButton onClick={() => props.handleSubmit(task)}>
+            <ConfirmButton autoFocus tabIndex={1} onClick={() => props.handleSubmit(task)}>
               {isCallTask(task) ? strings.TaskHeaderEndCall : strings.TaskHeaderEndChat}
             </ConfirmButton>
-            <CancelButton onClick={() => clearCallType(props)}>Cancel</CancelButton>
+            <CancelButton tabIndex={2} onClick={() => clearCallType(props)}>
+              Cancel
+            </CancelButton>
           </Row>
         </Box>
       </CloseTaskDialog>

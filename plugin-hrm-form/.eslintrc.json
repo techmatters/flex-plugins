@@ -11,6 +11,7 @@
     "no-warning-comments": "off",
     "no-confusing-arrow": "off",
     "no-alert": "off",
-    "import/no-extraneous-dependencies": "off"
+    "import/no-extraneous-dependencies": "off",
+    "jsx-a11y/tabindex-no-positive": "off"
   }
 }

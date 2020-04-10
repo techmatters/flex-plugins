@@ -83,6 +83,12 @@ export const ConfirmText = styled(PopoverText)`
   margin-bottom: 20px;
 `;
 
+export const CancelButton = styled(Button)`
+  &:focus {
+    background-color: rgba(34, 34, 34, 0.08);
+  }
+`;
+
 export const PrevNameText = styled(FontOpenSans)`
   font-size: 12px;
   font-weight: 700;
