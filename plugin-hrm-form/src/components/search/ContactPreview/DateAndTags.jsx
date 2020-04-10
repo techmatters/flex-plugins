@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Row, Box } from '../../../Styles/HrmStyles';
-import { ContactTag, DateText, TagText } from '../../../Styles/search';
+import { Row, Box } from '../../../styles/HrmStyles';
+import { ContactTag, DateText, TagText } from '../../../styles/search';
 
 const DateAndTags = ({ dateString, tag1, tag2, tag3 }) => (
   <Box marginBottom="2px">

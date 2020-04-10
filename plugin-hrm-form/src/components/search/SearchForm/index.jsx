@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import FieldText from '../../FieldText';
 import FieldSelect from '../../FieldSelect';
 import FieldDate from '../../FieldDate';
-import { Container, StyledNextStepButton, Row, BottomButtonBar } from '../../../Styles/HrmStyles';
+import { Container, StyledNextStepButton, Row, BottomButtonBar } from '../../../styles/HrmStyles';
 import { withConfiguration } from '../../../contexts/ConfigurationContext';
 import { configurationType, searchFormType } from '../../../types';
 

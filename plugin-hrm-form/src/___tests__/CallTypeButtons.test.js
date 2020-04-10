@@ -3,7 +3,7 @@ import renderer from 'react-test-renderer';
 
 import './mockStyled';
 import CallTypeButtons from '../components/CallTypeButtons';
-import { DataCallTypeButton, NonDataCallTypeButton, ConfirmButton, CancelButton } from '../Styles/callTypeButtons';
+import { DataCallTypeButton, NonDataCallTypeButton, ConfirmButton, CancelButton } from '../styles/callTypeButtons';
 import LocalizationContext from '../contexts/LocalizationContext';
 import callTypes from '../states/DomainConstants';
 

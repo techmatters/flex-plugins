@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { IconButton } from '@material-ui/core';
 import { Fullscreen, Link, MoreHoriz } from '@material-ui/icons';
 
-import { Row } from '../../../Styles/HrmStyles';
-import { PrevNameText, ContactButtonsWrapper, StyledIcon } from '../../../Styles/search';
+import { Row } from '../../../styles/HrmStyles';
+import { PrevNameText, ContactButtonsWrapper, StyledIcon } from '../../../styles/search';
 
 const LinkIcon = StyledIcon(Link);
 const FullscreenIcon = StyledIcon(Fullscreen);
