@@ -121,18 +121,9 @@ export default class HrmFormPlugin extends FlexPlugin {
 
     const hangupCall = fromActionFunction(saveEndMillis);
 
-    function timeout(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
     const wrapupTask = fromActionFunction(async payload => {
       if (shouldSayGoodbye(payload.task.channelType)) {
         await sendGoodbyeMessage(payload);
-        /*
-         * console.log('\n\n\n AFTER MESSAGE WAS SENT \n\n\n')
-         * await timeout(1000);
-         * console.log('\n\n\n AFTER AWAITING 1 SECOND \n\n\n')
-         */
       }
       await saveEndMillis(payload);
     });
