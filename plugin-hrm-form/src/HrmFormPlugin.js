@@ -121,6 +121,7 @@ export default class HrmFormPlugin extends FlexPlugin {
 
     const hangupCall = fromActionFunction(saveEndMillis);
 
+    // This action is causing a rage condition. Link to issue https://github.com/twilio/flex-plugin-builder/issues/243
     const wrapupTask = fromActionFunction(async payload => {
       if (shouldSayGoodbye(payload.task.channelType)) {
         await sendGoodbyeMessage(payload);
