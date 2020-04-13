@@ -4,7 +4,7 @@ import { withTaskContext } from '@twilio/flex-ui';
 import FaceIcon from '@material-ui/icons/Face';
 
 import { withLocalization } from '../contexts/LocalizationContext';
-import { Box, Row } from '../Styles/HrmStyles';
+import { Box, Row } from '../styles/HrmStyles';
 import {
   Container,
   Label,
@@ -15,7 +15,7 @@ import {
   ConfirmButton,
   CancelButton,
   CloseButton,
-} from '../Styles/callTypeButtons';
+} from '../styles/callTypeButtons';
 import callTypes from '../states/DomainConstants';
 import { isNonDataCallType } from '../states/ValidationRules';
 import { formType, taskType, localizationType } from '../types';

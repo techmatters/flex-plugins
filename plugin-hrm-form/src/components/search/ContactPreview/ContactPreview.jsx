@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
 
-import { ContactWrapper } from '../../../Styles/search';
+import { ContactWrapper } from '../../../styles/search';
 import ChildNameAndActions from './ChildNameAndActions';
 import CallTypeAndCounselor from './CallTypeAndCounselor';
 import CallSummary from './CallSummary';

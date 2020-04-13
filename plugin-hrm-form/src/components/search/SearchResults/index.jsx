@@ -5,7 +5,7 @@ import CheckIcon from '@material-ui/icons/Check';
 
 import ContactPreview from '../ContactPreview';
 import { searchResultType } from '../../../types';
-import { Row } from '../../../Styles/HrmStyles';
+import { Row } from '../../../styles/HrmStyles';
 import {
   ConfirmContainer,
   ConfirmText,
@@ -14,7 +14,7 @@ import {
   ResultsHeader,
   ListContainer,
   ScrollableList,
-} from '../../../Styles/search';
+} from '../../../styles/search';
 import callTypes from '../../../states/DomainConstants';
 
 class SearchResults extends Component {

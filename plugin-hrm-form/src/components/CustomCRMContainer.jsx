@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import NoTaskView from './NoTaskView';
 import TaskView from './TaskView';
 import { taskType } from '../types';
-import { Absolute } from '../Styles/HrmStyles';
+import { Absolute } from '../styles/HrmStyles';
 
 const CustomCRMContainer = props => {
   const { tasks } = props;

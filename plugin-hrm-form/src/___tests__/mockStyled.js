@@ -3,7 +3,7 @@
  * Should be imported before the components making use of the styled
  */
 
-jest.mock('../Styles/HrmStyles', () => ({
+jest.mock('../styles/HrmStyles', () => ({
   Container: 'Container',
   SearchFields: 'SearchFields',
   StyledNextStepButton: 'StyledNextStepButton',
@@ -19,7 +19,7 @@ jest.mock('../Styles/HrmStyles', () => ({
   Box: 'Box',
 }));
 
-jest.mock('../Styles/search', () => ({
+jest.mock('../styles/search', () => ({
   ConfirmContainer: 'ConfirmContainer',
   ContactWrapper: 'ContactWrapper',
   ContactButtonsWrapper: 'ContactButtonsWrapper',
@@ -51,7 +51,7 @@ jest.mock('../Styles/search', () => ({
   ScrollableList: 'ScrollableList',
 }));
 
-jest.mock('../Styles/callTypeButtons', () => ({
+jest.mock('../styles/callTypeButtons', () => ({
   Container: 'Container',
   Label: 'Label',
   DataCallTypeButton: 'DataCallTypeButton',

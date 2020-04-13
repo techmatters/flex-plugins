@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { ErrorText, StyledLabel, StyledMenuItem, StyledSelect, TextField } from '../Styles/HrmStyles';
+import { ErrorText, StyledLabel, StyledMenuItem, StyledSelect, TextField } from '../styles/HrmStyles';
 import RequiredAsterisk from './RequiredAsterisk';
 import { fieldType, counselorType } from '../types';
 

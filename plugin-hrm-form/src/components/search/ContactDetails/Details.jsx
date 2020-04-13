@@ -4,7 +4,7 @@ import { format } from 'date-fns';
 import { ButtonBase } from '@material-ui/core';
 import { MoreHoriz } from '@material-ui/icons';
 
-import { DetailsContainer, NameContainer, DetNameText, ContactDetailsIcon } from '../../../Styles/search';
+import { DetailsContainer, NameContainer, DetNameText, ContactDetailsIcon } from '../../../styles/search';
 import Section from './Section';
 import callTypes, { channelTypes } from '../../../states/DomainConstants';
 import { isNonDataCallType } from '../../../states/ValidationRules';

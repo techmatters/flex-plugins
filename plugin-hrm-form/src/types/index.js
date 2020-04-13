@@ -48,7 +48,7 @@ const categoriesType = PropTypes.shape({
   categories: PropTypes.arrayOf(categoryType),
 });
 
-const childInformationType = PropTypes.shape({
+export const childInformationType = PropTypes.shape({
   name: nameType,
   gender: fieldType,
   age: fieldType,
@@ -62,7 +62,7 @@ const childInformationType = PropTypes.shape({
   hiv: fieldType,
 });
 
-const callerInformationType = PropTypes.shape({
+export const callerInformationType = PropTypes.shape({
   name: nameType,
   relationshipToChild: fieldType,
   gender: fieldType,
@@ -73,7 +73,7 @@ const callerInformationType = PropTypes.shape({
   location: locationType,
 });
 
-const caseInformationType = PropTypes.shape({
+export const caseInformationType = PropTypes.shape({
   categories: categoriesType,
   callSummary: fieldType,
   referredTo: fieldType,

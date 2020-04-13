@@ -10,6 +10,7 @@ import {
   SAVE_END_MILLIS,
   SAVE_CONTACT_STATE,
   HANDLE_SELECT_SEARCH_RESULT,
+  CHANGE_TAB,
 } from './ActionTypes';
 import { countSelectedCategories } from './ValidationRules';
 import { copySearchResultIntoTask } from './SearchContact';
@@ -70,6 +71,8 @@ export class Actions {
 
   // records the end time (in milliseconds)
   static saveEndMillis = taskId => ({ type: SAVE_END_MILLIS, taskId });
+
+  static changeTab = (tab, taskId) => ({ type: CHANGE_TAB, tab, taskId });
 }
 
 // Will replace the below when we move over to field objects
@@ -195,6 +198,20 @@ export function reduce(state = initialState, action) {
         tasks: {
           ...state.tasks,
           [action.taskId]: task,
+        },
+      };
+    }
+
+    case CHANGE_TAB: {
+      const currentTask = state.tasks[action.taskId];
+      const { metadata } = currentTask;
+      const taskWithUpdatedTab = { ...currentTask, metadata: { ...metadata, tab: action.tab } };
+
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: taskWithUpdatedTab,
         },
       };
     }

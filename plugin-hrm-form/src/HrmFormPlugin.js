@@ -7,7 +7,7 @@ import reducers, { namespace } from './states';
 import { Actions } from './states/ContactState';
 import ConfigurationContext from './contexts/ConfigurationContext';
 import LocalizationContext from './contexts/LocalizationContext';
-import HrmTheme from './Styles/HrmTheme';
+import HrmTheme from './styles/HrmTheme';
 import { channelTypes } from './states/DomainConstants';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
