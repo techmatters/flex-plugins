@@ -1,6 +1,6 @@
 import { transformForm, saveToHrm } from '../services/ContactService';
 import { FieldType, ValidationType, recreateBlankForm } from '../states/ContactFormStateFactory';
-import callTypes from '../states/DomainConstants';
+import callTypes, { channelTypes } from '../states/DomainConstants';
 
 describe('transformForm', () => {
   test('removes control information and presents values only', () => {
@@ -121,7 +121,7 @@ const getFormFromPOST = mockedFetch => JSON.parse(mockedFetch.mock.calls[0][1].b
 describe('saveToHrm()', () => {
   const task = {
     queueName: 'queueName',
-    channelType: 'web',
+    channelType: channelTypes.web,
     defaultFrom: 'Anonymous',
   };
   const abortFunction = jest.fn();

@@ -1,6 +1,7 @@
 import secret from '../private/secret';
 import { FieldType, recreateBlankForm } from '../states/ContactFormStateFactory';
 import { isNonDataCallType } from '../states/ValidationRules';
+import { channelTypes } from '../states/DomainConstants';
 
 export async function searchContacts(hrmBaseUrl, searchParams) {
   try {
@@ -24,9 +25,9 @@ export async function searchContacts(hrmBaseUrl, searchParams) {
 function getNumberFromTask(task) {
   let number;
 
-  if (task.channelType === 'facebook') {
+  if (task.channelType === channelTypes.facebook) {
     number = task.defaultFrom.replace('messenger:', '');
-  } else if (task.channelType === 'whatsapp') {
+  } else if (task.channelType === channelTypes.whatsapp) {
     number = task.defaultFrom.replace('whatsapp:', '');
   } else {
     number = task.defaultFrom;

@@ -8,6 +8,7 @@ import { Actions } from './states/ContactState';
 import ConfigurationContext from './contexts/ConfigurationContext';
 import LocalizationContext from './contexts/LocalizationContext';
 import HrmTheme from './styles/HrmTheme';
+import { channelTypes } from './states/DomainConstants';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 const PLUGIN_VERSION = '0.3.10';
@@ -35,7 +36,7 @@ export default class HrmFormPlugin extends FlexPlugin {
 
     const onCompleteTask = async (sid, task) => {
       if (task.status !== 'wrapping') {
-        if (task.channelType === 'voice') {
+        if (task.channelType === channelTypes.voice) {
           await flex.Actions.invokeAction('HangupCall', { sid, task });
         } else {
           await flex.Actions.invokeAction('WrapupTask', { sid, task });
@@ -90,13 +91,46 @@ export default class HrmFormPlugin extends FlexPlugin {
       manager.store.dispatch(Actions.removeContactState(payload.task.taskSid));
     });
 
-    const saveEndMillis = (payload, original) => {
+    const goodbyeMsg =
+      'The counselor has left the chat. Thank you for reaching out. Please contact us again if you need more help.';
+
+    const shouldSayGoodbye = channel =>
+      channel === channelTypes.facebook || channel === channelTypes.sms || channel === channelTypes.whatsapp;
+
+    const sendGoodbyeMessage = async payload => {
+      await flex.Actions.invokeAction('SendMessage', {
+        body: goodbyeMsg,
+        channelSid: payload.task.attributes.channelSid,
+      });
+    };
+
+    const saveEndMillis = async payload => {
       manager.store.dispatch(Actions.saveEndMillis(payload.task.taskSid));
+    };
+
+    /**
+     * @param {import('@twilio/flex-ui').ActionFunction} fun
+     * @returns {import('@twilio/flex-ui').ReplacedActionFunction}
+     * A function that calls fun with the payload of the replaced action
+     * and continues with the Twilio execution
+     */
+    const fromActionFunction = fun => async (payload, original) => {
+      await fun(payload);
       original(payload);
     };
 
-    flex.Actions.replaceAction('HangupCall', saveEndMillis);
-    flex.Actions.replaceAction('WrapupTask', saveEndMillis);
+    const hangupCall = fromActionFunction(saveEndMillis);
+
+    // This action is causing a rage condition. Link to issue https://github.com/twilio/flex-plugin-builder/issues/243
+    const wrapupTask = fromActionFunction(async payload => {
+      if (shouldSayGoodbye(payload.task.channelType)) {
+        await sendGoodbyeMessage(payload);
+      }
+      await saveEndMillis(payload);
+    });
+
+    flex.Actions.replaceAction('HangupCall', hangupCall);
+    flex.Actions.replaceAction('WrapupTask', wrapupTask);
   }
 
   /**

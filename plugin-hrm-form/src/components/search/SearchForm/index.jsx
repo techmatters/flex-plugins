@@ -52,6 +52,11 @@ class SearchForm extends Component {
 
     const isTouched = firstName || lastName || (counselor && counselor.value) || phoneNumber || dateFrom || dateTo;
 
+    const submitSearch = () => this.props.handleSearch(searchParams);
+    const submitOnEnter = event => {
+      if (event.key === 'Enter') submitSearch();
+    };
+
     return (
       <>
         <Container>
@@ -63,12 +68,14 @@ class SearchForm extends Component {
               field={getField(firstName)}
               {...this.defaultEventHandlers('firstName')}
               style={{ marginRight: 25 }}
+              onKeyPress={submitOnEnter}
             />
             <FieldText
               id="Search_LastName"
               placeholder="Last"
               field={getField(lastName)}
               {...this.defaultEventHandlers('lastName')}
+              onKeyPress={submitOnEnter}
             />
           </Row>
 
@@ -105,15 +112,12 @@ class SearchForm extends Component {
               label="Customer phone"
               field={getField(phoneNumber)}
               {...this.defaultEventHandlers('phoneNumber')}
+              onKeyPress={submitOnEnter}
             />
           </Row>
         </Container>
         <BottomButtonBar>
-          <StyledNextStepButton
-            disabled={!isTouched}
-            roundCorners={true}
-            onClick={() => this.props.handleSearch(searchParams)}
-          >
+          <StyledNextStepButton disabled={!isTouched} roundCorners={true} onClick={submitSearch}>
             Search
           </StyledNextStepButton>
         </BottomButtonBar>

@@ -10,6 +10,7 @@ import SearchForm from '../../components/search/SearchForm';
 import SearchResults from '../../components/search/SearchResults';
 import ContactDetails from '../../components/search/ContactDetails';
 import { SearchPages } from '../../states/SearchContact';
+import { channelTypes } from '../../states/DomainConstants';
 
 const mockStore = configureMockStore([]);
 
@@ -184,7 +185,7 @@ test('<Search> should display <ContactDetails />', () => {
       categories: 'TBD',
       counselor: 'counselor-id',
       notes: 'Jill Smith Notes',
-      channel: 'web',
+      channel: channelTypes.web,
       conversationDuration: 10,
     },
     counselor: 'Counselor',
