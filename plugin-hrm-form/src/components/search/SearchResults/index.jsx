@@ -17,6 +17,7 @@ import {
   CancelButton,
 } from '../../../styles/search';
 import callTypes from '../../../states/DomainConstants';
+import TabPressWrapper from '../../TabPressWrapper';
 
 class SearchResults extends Component {
   static displayName = 'SearchResults';
@@ -79,25 +80,27 @@ class SearchResults extends Component {
           horizontal: 'right',
         }}
       >
-        <ConfirmContainer>
-          <ConfirmText>{this.state.msg}</ConfirmText>
-          <Row>
-            <CancelButton tabIndex={2} variant="text" size="medium" onClick={handleClose}>
-              cancel
-            </CancelButton>
-            <Button
-              autoFocus
-              tabIndex={1}
-              variant="contained"
-              size="medium"
-              onClick={handleConfirm}
-              style={{ backgroundColor: '#000', color: '#fff', marginLeft: 20 }}
-            >
-              <CheckIcon />
-              yes, copy
-            </Button>
-          </Row>
-        </ConfirmContainer>
+        <TabPressWrapper>
+          <ConfirmContainer>
+            <ConfirmText>{this.state.msg}</ConfirmText>
+            <Row>
+              <CancelButton tabIndex={2} variant="text" size="medium" onClick={handleClose}>
+                cancel
+              </CancelButton>
+              <Button
+                autoFocus
+                tabIndex={1}
+                variant="contained"
+                size="medium"
+                onClick={handleConfirm}
+                style={{ backgroundColor: '#000', color: '#fff', marginLeft: 20 }}
+              >
+                <CheckIcon />
+                yes, copy
+              </Button>
+            </Row>
+          </ConfirmContainer>
+        </TabPressWrapper>
       </Popover>
     );
   };

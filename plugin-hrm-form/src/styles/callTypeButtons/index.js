@@ -62,12 +62,15 @@ export const NonDataCallTypeButton = styled(Button)`
 
 export const CloseTaskDialog = styled(props => <Dialog {...props} classes={{ paper: 'paper' }} />)`
   && .paper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 5px;
     width: 350px;
   }
+`;
+
+export const NonDataCallTypeDialogContainer = styled('div')`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5px;
 `;
 
 export const CloseTaskDialogText = styled('p')`
@@ -80,6 +83,10 @@ export const ConfirmButton = styled(Button)`
   text-transform: uppercase;
   color: ${props => props.theme.colors.declineTextColor};
   ${p => getBackgroundWithHoverCSS(p.theme.colors.declineColor, true, false, p.disabled)};
+
+  &:focus {
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 3px 3px 0px;
+  }
 `;
 
 export const CancelButton = styled(Button)`
