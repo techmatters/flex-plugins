@@ -85,6 +85,11 @@ export const ConfirmButton = styled(Button)`
 export const CancelButton = styled(Button)`
   text-transform: uppercase;
   margin-left: 30px;
+
+  &:focus {
+    background-color: rgba(0, 0, 0, 0.2);
+    background-blend-mode: color;
+  }
 `;
 
 export const CloseButton = styled(props => (
@@ -94,5 +99,9 @@ export const CloseButton = styled(props => (
 ))`
   && .label {
     color: ${props => props.theme.colors.defaultButtonColor};
+  }
+
+  &:focus {
+    background-color: rgba(0, 0, 0, 0.08);
   }
 `;
