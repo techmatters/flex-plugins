@@ -3,6 +3,7 @@ import { VERSION, TaskHelper } from '@twilio/flex-ui';
 import { FlexPlugin } from 'flex-plugin';
 
 import CustomCRMContainer from './components/CustomCRMContainer';
+import QueuesStatus from './components/QueuesStatus';
 import reducers, { namespace } from './states';
 import { Actions } from './states/ContactState';
 import ConfigurationContext from './contexts/ConfigurationContext';
@@ -59,6 +60,14 @@ export default class HrmFormPlugin extends FlexPlugin {
     if (hrmBaseUrl === undefined) {
       console.error('HRM base URL not defined, you must provide this to save program data');
     }
+
+    flex.AgentDesktopView.Panel1.Content.add(
+      <QueuesStatus key="queue-status" insightsClient={manager.insightsClient} />,
+      {
+        sortOrder: -1,
+        align: 'start',
+      },
+    );
 
     // TODO(nick): Can we avoid passing down the task prop, maybe using context?
     const options = { sortOrder: -1 };
