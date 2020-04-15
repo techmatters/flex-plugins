@@ -6,12 +6,15 @@
  * Usage: <TabPressWrapper><YourComponent /></TabPressWrapper>
  *
  * What it requires?
- * It requires that every navigable element of <YourComponent> has a unique tabIndex value.
+ * It requires that every navigable element of <YourComponent> has a tabIndex value.
  *
  * How does it work?
  * 1) It detects the first and last navigable elements according to the tabIndexes.
- * 2) It adds a Ref to these elements, in order to access the HTML native element.
- * 3) It listens to 'tab' or 'shift+tab' key presses:
+ * 2) In case of elements with same tabIndex
+ *   a) First element will be the first one found with min tabIndex
+ *   b) Last element will be the last one found with max tabIndex
+ * 3) It adds a Ref to these elements, in order to access the HTML native element.
+ * 4) It listens to 'tab' or 'shift+tab' key presses:
  *    a) If it's on the lastElement and listens to a 'tab', it focus the firstElement
  *    b) If it's on the firstElement and listens a 'shif+tab', it focus the lastElement
  *    c) Otherwise, it lets the browser handle it
