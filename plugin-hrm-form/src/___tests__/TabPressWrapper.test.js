@@ -50,6 +50,22 @@ test('<TabPressWrapper> children with only one tabIndex', () => {
   expect(lastElement).toBeNull();
 });
 
+test('<TabPressWrapper> children with tabIndexes: 1, 2 and 3', () => {
+  const component = renderer.create(
+    <TabPressWrapper>
+      <button id="tabIndex1" type="button" tabIndex={1} />
+      <button id="tabIndex2" type="button" tabIndex={2} />
+      <button id="tabIndex3" type="button" tabIndex={3} />
+    </TabPressWrapper>,
+  );
+
+  const firstElement = getFirstElement(component);
+  const lastElement = getLastElement(component);
+
+  expect(firstElement.props.id).toEqual('tabIndex1');
+  expect(lastElement.props.id).toEqual('tabIndex3');
+});
+
 test('<TabPressWrapper> not only first level children with tabIndexes: 1, 2 and 3', () => {
   const component = renderer.create(
     <TabPressWrapper>
