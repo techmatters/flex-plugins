@@ -62,4 +62,5 @@ jest.mock('../styles/callTypeButtons', () => ({
   ConfirmButton: 'ConfirmButton',
   CancelButton: 'CancelButton',
   CloseButton: 'CloseButton',
+  NonDataCallTypeDialogContainer: 'NonDataCallTypeDialogContainer',
 }));
