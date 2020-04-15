@@ -27,7 +27,11 @@ class TabPressWrapper extends Component {
   static displayName = 'TabPressWrapper';
 
   static propTypes = {
-    children: PropTypes.node.isRequired,
+    children: PropTypes.node,
+  };
+
+  static defaultProps = {
+    children: null,
   };
 
   constructor(props) {
@@ -35,27 +39,37 @@ class TabPressWrapper extends Component {
 
     this.firstElementRef = createRef();
     this.lastElementRef = createRef();
+    this.foundFirstElement = false;
   }
 
   state = {
+    tabIndexCount: 0,
     childrenWithRef: null,
   };
 
   componentDidMount() {
     const { children } = this.props;
 
-    const maxTabIndex = this.countTabIndexElements(children);
-    const childrenWithRef = this.addRefToFirstAndLastElement(children, maxTabIndex);
+    const minTabIndex = this.findMinTabIndex(children);
+    const maxTabIndex = this.findMaxTabIndex(children);
+
+    const childrenWithRef = this.addRefToFirstAndLastElement(children, minTabIndex, maxTabIndex);
 
     this.setState({ childrenWithRef });
   }
+
+  incrementTabIndexCount = () => this.setState(prevState => ({ tabIndexCount: prevState.tabIndexCount + 1 }));
+
+  isSingleElement = () => this.state.tabIndexCount === 1;
 
   handleTab = (key, event) => {
     const { activeElement } = document;
     const isFirstElement = activeElement === this.firstElementRef.current;
     const isLastElement = activeElement === this.lastElementRef.current;
 
-    if (isLastElement && key === 'tab') {
+    if (isFirstElement && this.isSingleElement()) {
+      this.focusElement(this.firstElementRef, event);
+    } else if (isLastElement && key === 'tab') {
       this.focusElement(this.firstElementRef, event);
     } else if (isFirstElement && key === 'shift+tab') {
       this.focusElement(this.lastElementRef, event);
@@ -67,6 +81,30 @@ class TabPressWrapper extends Component {
     event.stopPropagation();
     elementRef.current.focus();
   };
+
+  reduceChildren = (children, comparator, initialValue) =>
+    React.Children.toArray(children).reduce((result, element) => {
+      const hasTabIndex = Boolean(element.props && !isNullOrUndefined(element.props.tabIndex));
+      const hasChildren = Boolean(element.props && !isNullOrUndefined(element.props.children));
+
+      if (hasTabIndex) {
+        const { tabIndex } = element.props;
+
+        if (result === null || comparator(tabIndex, result)) {
+          return tabIndex;
+        }
+
+        return result;
+      } else if (hasChildren) {
+        return this.reduceChildren(element.props.children, comparator, result);
+      }
+
+      return result;
+    }, initialValue);
+
+  findMinTabIndex = children => this.reduceChildren(children, (tabIndex, minTabIndex) => tabIndex < minTabIndex, null);
+
+  findMaxTabIndex = children => this.reduceChildren(children, (tabIndex, maxTabIndex) => tabIndex > maxTabIndex, null);
 
   countTabIndexElements = children => {
     let childrenCount = 0;
@@ -85,17 +123,20 @@ class TabPressWrapper extends Component {
     return childrenCount;
   };
 
-  addRefToFirstAndLastElement = (children, maxTabIndex) =>
+  addRefToFirstAndLastElement = (children, minTabIndex, maxTabIndex) =>
     React.Children.map(children, element => {
       const hasTabIndex = Boolean(element.props && !isNullOrUndefined(element.props.tabIndex));
       const hasChildren = Boolean(element.props && !isNullOrUndefined(element.props.children));
 
       if (hasTabIndex) {
+        this.incrementTabIndexCount();
+
         const { tabIndex } = element.props;
-        const isFirstElement = tabIndex === 1;
+        const isFirstElement = tabIndex === minTabIndex;
         const isLastElement = tabIndex === maxTabIndex;
 
-        if (isFirstElement) {
+        if (isFirstElement && !this.foundFirstElement) {
+          this.foundFirstElement = true;
           return this.addRef(element, this.firstElementRef);
         }
 
@@ -105,7 +146,7 @@ class TabPressWrapper extends Component {
 
         return element;
       } else if (hasChildren) {
-        const updatedChildren = this.addRefToFirstAndLastElement(element.props.children, maxTabIndex);
+        const updatedChildren = this.addRefToFirstAndLastElement(element.props.children, minTabIndex, maxTabIndex);
         return React.cloneElement(element, {}, updatedChildren);
       }
 
