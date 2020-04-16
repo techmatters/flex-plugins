@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
-import { ButtonBase } from '@material-ui/core';
-import { MoreHoriz } from '@material-ui/icons';
+import { ButtonBase, IconButton } from '@material-ui/core';
+import { MoreHoriz, Link as LinkIcon } from '@material-ui/icons';
 
 import { DetailsContainer, NameContainer, DetNameText, ContactDetailsIcon } from '../../../styles/search';
 import Section from './Section';
@@ -21,7 +21,7 @@ const MoreHorizIcon = ContactDetailsIcon(MoreHoriz);
  */
 const maybeEntry = (pred, entry) => (pred ? entry : null);
 
-const Details = ({ contact, handleMockedMessage }) => {
+const Details = ({ contact, handleClickChain, handleMockedMessage }) => {
   // Object destructuring on contact
   const { overview, details, counselor, tags } = contact;
   const { dateTime, name: childName, customerNumber, callType, channel, conversationDuration } = overview;
@@ -66,10 +66,19 @@ const Details = ({ contact, handleMockedMessage }) => {
     channel === channelTypes.voice || channel === channelTypes.sms || channel === channelTypes.whatsapp;
   const [tag1, tag2, tag3] = tags;
 
+  const isNonDataContact = isNonDataCallType(contact.overview.callType);
+
   return (
     <DetailsContainer>
       <NameContainer>
         <DetNameText>{childUpperCased}</DetNameText>
+        <IconButton
+          onClick={handleClickChain}
+          isDisabled={isNonDataContact}
+          style={{ paddingTop: 0, paddingBottom: 0 }}
+        >
+          <LinkIcon style={{ color: '#ffffff' }} />
+        </IconButton>
         <ButtonBase style={{ padding: 0 }} onClick={handleMockedMessage}>
           <MoreHorizIcon style={{ color: '#ffffff' }} />
         </ButtonBase>
@@ -158,6 +167,7 @@ Details.displayName = 'Details';
 
 Details.propTypes = {
   contact: contactType.isRequired,
+  handleClickChain: PropTypes.func.isRequired,
   handleMockedMessage: PropTypes.func.isRequired,
 };
 
