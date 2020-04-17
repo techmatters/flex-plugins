@@ -3,7 +3,7 @@ import { VERSION, TaskHelper } from '@twilio/flex-ui';
 import { FlexPlugin } from 'flex-plugin';
 
 import CustomCRMContainer from './components/CustomCRMContainer';
-import QueuesStatus from './components/QueuesStatus';
+import QueuesStatus from './components/queuesStatus';
 import reducers, { namespace } from './states';
 import { Actions } from './states/ContactState';
 import ConfigurationContext from './contexts/ConfigurationContext';

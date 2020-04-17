@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { initializeQueuesStatus, updateQueuesStatus, initializePendingTasks } from './helpers';
+import { initializeQueuesStatus, updateQueuesStatus } from './helpers';
 import { Row } from '../../styles/HrmStyles';
 
 class QueuesStatus extends React.Component {
@@ -29,14 +29,12 @@ class QueuesStatus extends React.Component {
 
       const tasksQuery = await this.props.insightsClient.liveQuery('tr-task', '');
 
-      const pendingTasks = initializePendingTasks(tasksQuery.getItems());
-      const queuesStatus = refreshQueuesStatus(pendingTasks);
+      const queuesStatus = refreshQueuesStatus(tasksQuery.getItems());
 
       tasksQuery.on('itemUpdated', args => {
         console.log('TASK UPDATED', args);
         // here we are assigning a new object for every change
-        const newPendingTasks = initializePendingTasks(tasksQuery.getItems());
-        const newQueuesStatus = refreshQueuesStatus(newPendingTasks);
+        const newQueuesStatus = refreshQueuesStatus(tasksQuery.getItems());
         this.setState({ queuesStatus: newQueuesStatus });
       });
 
