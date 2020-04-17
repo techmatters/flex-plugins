@@ -444,6 +444,7 @@ export const createBlankForm = (formDef = defaultFormDefinition, recreated = fal
   const metadata = {
     startMillis: recreated ? null : new Date().getTime(),
     endMillis: null,
+    tab: 1,
     recreated,
   };
 

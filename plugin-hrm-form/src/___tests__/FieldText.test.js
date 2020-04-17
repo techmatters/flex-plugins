@@ -4,7 +4,7 @@ import renderer from 'react-test-renderer';
 import FieldText from '../components/FieldText';
 import { ValidationType } from '../states/ContactFormStateFactory';
 
-jest.mock('../Styles/HrmStyles', () => {
+jest.mock('../styles/HrmStyles', () => {
   return {
     StyledInput: 'StyledInput',
     StyledLabel: 'StyledLabel',

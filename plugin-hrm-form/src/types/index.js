@@ -4,10 +4,15 @@ export const taskType = PropTypes.shape({
   taskSid: PropTypes.string,
 });
 
-export const fieldType = PropTypes.shape({
+export const counselorType = PropTypes.shape({
+  label: PropTypes.string,
   value: PropTypes.string,
+});
+
+export const fieldType = PropTypes.shape({
+  value: PropTypes.oneOfType([PropTypes.string, counselorType]),
   error: PropTypes.string,
-  validation: PropTypes.string,
+  validation: PropTypes.arrayOf(PropTypes.string),
   touched: PropTypes.bool,
 });
 
@@ -43,7 +48,7 @@ const categoriesType = PropTypes.shape({
   categories: PropTypes.arrayOf(categoryType),
 });
 
-const childInformationType = PropTypes.shape({
+export const childInformationType = PropTypes.shape({
   name: nameType,
   gender: fieldType,
   age: fieldType,
@@ -57,7 +62,7 @@ const childInformationType = PropTypes.shape({
   hiv: fieldType,
 });
 
-const callerInformationType = PropTypes.shape({
+export const callerInformationType = PropTypes.shape({
   name: nameType,
   relationshipToChild: fieldType,
   gender: fieldType,
@@ -68,7 +73,7 @@ const callerInformationType = PropTypes.shape({
   location: locationType,
 });
 
-const caseInformationType = PropTypes.shape({
+export const caseInformationType = PropTypes.shape({
   categories: categoriesType,
   callSummary: fieldType,
   referredTo: fieldType,
@@ -86,4 +91,105 @@ export const formType = PropTypes.shape({
   callerInformation: callerInformationType,
   childInformation: childInformationType,
   caseInformation: caseInformationType,
+});
+
+export const configurationType = PropTypes.shape({
+  hrmBaseUrl: PropTypes.string.isRequired,
+  serverlessBaseUrl: PropTypes.string.isRequired,
+  workerSid: PropTypes.string.isRequired,
+  helpline: PropTypes.string.isRequired,
+  currentWorkspace: PropTypes.string.isRequired,
+  getSsoToken: PropTypes.func.isRequired,
+});
+
+export const localizationType = PropTypes.shape({
+  strings: PropTypes.object.isRequired,
+  isCallTask: PropTypes.func.isRequired,
+});
+
+export const contactType = PropTypes.shape({
+  childInformation: PropTypes.shape({
+    name: PropTypes.shape({
+      firstName: PropTypes.string,
+      lastName: PropTypes.string,
+    }),
+    gender: PropTypes.string,
+    age: PropTypes.string,
+    language: PropTypes.string,
+    nationality: PropTypes.string,
+    ethnicity: PropTypes.string,
+    location: PropTypes.shape({
+      streetAddress: PropTypes.string,
+      city: PropTypes.string,
+      stateOrCounty: PropTypes.string,
+      postalCode: PropTypes.string,
+      phone1: PropTypes.string,
+      phone2: PropTypes.string,
+    }),
+    refugee: PropTypes.bool,
+    disabledOrSpecialNeeds: PropTypes.bool,
+    hiv: PropTypes.bool,
+    school: PropTypes.shape({
+      name: PropTypes.string,
+      gradeLevel: PropTypes.string,
+    }),
+  }),
+  caseInformation: PropTypes.shape({
+    callSummary: PropTypes.string,
+    referredTo: PropTypes.string,
+    status: PropTypes.string,
+    keepConfidential: PropTypes.bool,
+    okForCaseWorkerToCall: PropTypes.bool,
+    howDidTheChildHearAboutUs: PropTypes.string,
+    didYouDiscussRightsWithTheChild: PropTypes.bool,
+    didTheChildFeelWeSolvedTheirProblem: PropTypes.bool,
+    wouldTheChildRecommendUsToAFriend: PropTypes.bool,
+  }),
+  callerInformation: PropTypes.shape({
+    name: PropTypes.shape({
+      firstName: PropTypes.string,
+      lastName: PropTypes.string,
+    }),
+    relationshipToChild: PropTypes.string,
+    gender: PropTypes.string,
+    age: PropTypes.string,
+    language: PropTypes.string,
+    nationality: PropTypes.string,
+    ethnicity: PropTypes.string,
+    location: PropTypes.shape({
+      city: PropTypes.string,
+      phone1: PropTypes.string,
+      phone2: PropTypes.string,
+      postalCode: PropTypes.string,
+      stateOrCounty: PropTypes.string,
+      streetAddress: PropTypes.string,
+    }),
+  }),
+});
+
+export const searchResultType = PropTypes.shape({
+  contactId: PropTypes.string.isRequired,
+  overview: PropTypes.shape({
+    dateTime: PropTypes.string,
+    name: PropTypes.string,
+    customerNumber: PropTypes.string,
+    callType: PropTypes.string,
+    categories: PropTypes.string,
+    counselor: PropTypes.string,
+    notes: PropTypes.string,
+    channel: PropTypes.string,
+    conversationDuration: PropTypes.number,
+  }).isRequired,
+  details: contactType.isRequired,
+  counselor: PropTypes.string,
+  tags: PropTypes.arrayOf(PropTypes.string),
+});
+
+export const searchFormType = PropTypes.shape({
+  firstName: PropTypes.string,
+  lastName: PropTypes.string,
+  counselor: counselorType,
+  phoneNumber: PropTypes.string,
+  dateFrom: PropTypes.string,
+  dateTo: PropTypes.string,
 });

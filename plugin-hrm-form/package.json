@@ -20,23 +20,28 @@
   },
   "dependencies": {
     "craco-config-flex-plugin": "^3.0.4",
+    "date-fns": "^2.11.1",
     "flex-plugin": "^3.0.0",
     "flex-plugin-scripts": "^3.0.4",
     "lodash": "^4.17.15",
     "prop-types": "^15.7.2",
     "react": "16.5.2",
     "react-dom": "16.5.2",
+    "react-keyboard-event-handler": "^1.5.4",
     "react-scripts": "^3.4.0",
     "react-test-renderer": "16.5.2"
   },
   "devDependencies": {
-    "@twilio/flex-ui": "1.14.1",
+    "@twilio/flex-ui": "1.18.0",
+    "@types/jest": "^25.1.4",
     "babel-eslint": "^10.0.3",
     "babel-polyfill": "^6.26.0",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
     "eslint": "^6.8.0",
-    "eslint-config-twilio-react": "^1.20.2"
+    "eslint-config-twilio-react": "^1.21.0",
+    "fromentries": "^1.2.0",
+    "redux-mock-store": "^1.5.4"
   },
   "browserslist": {
     "production": [

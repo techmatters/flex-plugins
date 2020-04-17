@@ -7,7 +7,7 @@ import { FieldType, ValidationType } from './ContactFormStateFactory';
  * Questionable whether we should export this
  * Be careful, this returns true if it's empty
  */
-export function isStandAloneCallType(callType) {
+export function isNonDataCallType(callType) {
   return callType !== callTypes.caller && callType !== callTypes.child;
 }
 
@@ -74,7 +74,7 @@ function validateCaseInformation(original, callType, ignoreTouched) {
 }
 
 function validate(form, ignoreTouched = false) {
-  if (isStandAloneCallType(form.callType.value)) {
+  if (isNonDataCallType(form.callType.value)) {
     return form;
   }
   let newForm = {};
@@ -88,7 +88,7 @@ function validate(form, ignoreTouched = false) {
 }
 
 export function validateBeforeSubmit(form) {
-  if (isStandAloneCallType(form.callType.value)) {
+  if (isNonDataCallType(form.callType.value)) {
     return form;
   }
 
@@ -111,7 +111,7 @@ export function validateOnBlur(form) {
 // walk a form tree looking for non-null error values
 export function formIsValid(form) {
   if ('callType' in form) {
-    if (isStandAloneCallType(form.callType.value)) {
+    if (isNonDataCallType(form.callType.value)) {
       return true;
     }
   }

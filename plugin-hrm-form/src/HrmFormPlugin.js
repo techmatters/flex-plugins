@@ -1,13 +1,17 @@
 import React from 'react';
-import { VERSION } from '@twilio/flex-ui';
+import { VERSION, TaskHelper } from '@twilio/flex-ui';
 import { FlexPlugin } from 'flex-plugin';
 
 import CustomCRMContainer from './components/CustomCRMContainer';
 import reducers, { namespace } from './states';
 import { Actions } from './states/ContactState';
+import ConfigurationContext from './contexts/ConfigurationContext';
+import LocalizationContext from './contexts/LocalizationContext';
+import HrmTheme from './styles/HrmTheme';
+import { channelTypes } from './states/DomainConstants';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
-const PLUGIN_VERSION = '0.3.7';
+const PLUGIN_VERSION = '0.4.0';
 
 export default class HrmFormPlugin extends FlexPlugin {
   constructor() {
@@ -25,9 +29,14 @@ export default class HrmFormPlugin extends FlexPlugin {
     console.log(`Welcome to ${PLUGIN_NAME} Version ${PLUGIN_VERSION}`);
     this.registerReducers(manager);
 
+    const configuration = {
+      colorTheme: HrmTheme,
+    };
+    manager.updateConfig(configuration);
+
     const onCompleteTask = async (sid, task) => {
       if (task.status !== 'wrapping') {
-        if (task.channelType === 'voice') {
+        if (task.channelType === channelTypes.voice) {
           await flex.Actions.invokeAction('HangupCall', { sid, task });
         } else {
           await flex.Actions.invokeAction('WrapupTask', { sid, task });
@@ -37,8 +46,13 @@ export default class HrmFormPlugin extends FlexPlugin {
     };
 
     const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
+    const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
     const workerSid = manager.workerClient.sid;
     const { helpline } = manager.workerClient.attributes;
+    const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
+    const getSsoToken = () => manager.store.getState().flex.session.ssoTokenPayload.token;
+    const { strings } = manager;
+    const { isCallTask } = TaskHelper;
 
     // TODO(nick): Eventually remove this log line or set to debug
     console.log(`HRM URL: ${hrmBaseUrl}`);
@@ -49,7 +63,14 @@ export default class HrmFormPlugin extends FlexPlugin {
     // TODO(nick): Can we avoid passing down the task prop, maybe using context?
     const options = { sortOrder: -1 };
     flex.CRMContainer.Content.replace(
-      <CustomCRMContainer key="custom-crm-container" handleCompleteTask={onCompleteTask} />,
+      <ConfigurationContext.Provider
+        value={{ hrmBaseUrl, serverlessBaseUrl, workerSid, helpline, currentWorkspace, getSsoToken }}
+        key="custom-crm-container"
+      >
+        <LocalizationContext.Provider value={{ strings, isCallTask }}>
+          <CustomCRMContainer handleCompleteTask={onCompleteTask} />
+        </LocalizationContext.Provider>
+      </ConfigurationContext.Provider>,
       options,
     );
 
@@ -70,13 +91,46 @@ export default class HrmFormPlugin extends FlexPlugin {
       manager.store.dispatch(Actions.removeContactState(payload.task.taskSid));
     });
 
-    const saveEndMillis = (payload, original) => {
+    const goodbyeMsg =
+      'The counselor has left the chat. Thank you for reaching out. Please contact us again if you need more help.';
+
+    const shouldSayGoodbye = channel =>
+      channel === channelTypes.facebook || channel === channelTypes.sms || channel === channelTypes.whatsapp;
+
+    const sendGoodbyeMessage = async payload => {
+      await flex.Actions.invokeAction('SendMessage', {
+        body: goodbyeMsg,
+        channelSid: payload.task.attributes.channelSid,
+      });
+    };
+
+    const saveEndMillis = async payload => {
       manager.store.dispatch(Actions.saveEndMillis(payload.task.taskSid));
+    };
+
+    /**
+     * @param {import('@twilio/flex-ui').ActionFunction} fun
+     * @returns {import('@twilio/flex-ui').ReplacedActionFunction}
+     * A function that calls fun with the payload of the replaced action
+     * and continues with the Twilio execution
+     */
+    const fromActionFunction = fun => async (payload, original) => {
+      await fun(payload);
       original(payload);
     };
 
-    flex.Actions.replaceAction('HangupCall', saveEndMillis);
-    flex.Actions.replaceAction('WrapupTask', saveEndMillis);
+    const hangupCall = fromActionFunction(saveEndMillis);
+
+    // This action is causing a rage condition. Link to issue https://github.com/twilio/flex-plugin-builder/issues/243
+    const wrapupTask = fromActionFunction(async payload => {
+      if (shouldSayGoodbye(payload.task.channelType)) {
+        await sendGoodbyeMessage(payload);
+      }
+      await saveEndMillis(payload);
+    });
+
+    flex.Actions.replaceAction('HangupCall', hangupCall);
+    flex.Actions.replaceAction('WrapupTask', wrapupTask);
   }
 
   /**

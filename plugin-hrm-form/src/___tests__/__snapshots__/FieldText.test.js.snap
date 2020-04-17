@@ -1,7 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`render FieldText with errors 1`] = `
-<TextField>
+<TextField
+  name="firstName"
+  parents={
+    Array [
+      "callerInformation",
+      "name",
+    ]
+  }
+  taskId=""
+>
   <StyledLabel
     htmlFor="CallerInformation_FirstName"
   >
@@ -23,6 +32,7 @@ exports[`render FieldText with errors 1`] = `
     onBlur={[MockFunction]}
     onChange={[MockFunction]}
     onFocus={[MockFunction]}
+    placeholder=""
     value=""
   />
   <ErrorText>
@@ -32,7 +42,16 @@ exports[`render FieldText with errors 1`] = `
 `;
 
 exports[`render basic FieldText 1`] = `
-<TextField>
+<TextField
+  name="firstName"
+  parents={
+    Array [
+      "callerInformation",
+      "name",
+    ]
+  }
+  taskId=""
+>
   <StyledLabel
     htmlFor="CallerInformation_FirstName"
   >
@@ -45,13 +64,23 @@ exports[`render basic FieldText 1`] = `
     onBlur={[MockFunction]}
     onChange={[MockFunction]}
     onFocus={[MockFunction]}
+    placeholder=""
     value=""
   />
 </TextField>
 `;
 
 exports[`render required FieldText 1`] = `
-<TextField>
+<TextField
+  name="firstName"
+  parents={
+    Array [
+      "callerInformation",
+      "name",
+    ]
+  }
+  taskId=""
+>
   <StyledLabel
     htmlFor="CallerInformation_FirstName"
   >
@@ -73,6 +102,7 @@ exports[`render required FieldText 1`] = `
     onBlur={[MockFunction]}
     onChange={[MockFunction]}
     onFocus={[MockFunction]}
+    placeholder=""
     value=""
   />
 </TextField>

@@ -1,4 +1,5 @@
-import { saveToHrm } from '../components/HrmFormController';
+import { omit } from 'lodash';
+
 import { createBlankForm, recreateBlankForm } from './ContactFormStateFactory';
 import {
   HANDLE_BLUR,
@@ -8,14 +9,18 @@ import {
   REMOVE_CONTACT_STATE,
   SAVE_END_MILLIS,
   SAVE_CONTACT_STATE,
+  HANDLE_SELECT_SEARCH_RESULT,
+  CHANGE_TAB,
 } from './ActionTypes';
 import { countSelectedCategories } from './ValidationRules';
+import { copySearchResultIntoTask } from './SearchContact';
+import { saveToHrm } from '../services/ContactService';
 
 /**
  * Looks for a particular task in the state object, and returns it if found.
  * Returns recreated form otherwise
- * @param tasks the current tasks object (retrieved from state)
- * @param taskId the task we are looking for
+ * @param {{ [x: string]: any; }} tasks the current tasks object (retrieved from state)
+ * @param {string} taskId the task we are looking for
  * @returns if the task exists in state, returns its current form.
  *  Otherwise returns a recreated blank form
  */
@@ -42,7 +47,7 @@ export class Actions {
    * There has to be a better way to do this rather than a one-off, but MUI does not make it easy
    * static handleCallTypeButtonClick = (taskId, value, e) => ({type: HANDLE_CALLTYPE_BUTTON_CLICK, taskId: taskId, value: value});
    */
-  static handleCallTypeButtonClick = (taskId, value, e) => ({
+  static handleCallTypeButtonClick = (taskId, value) => ({
     type: HANDLE_CHANGE,
     name: 'callType',
     taskId,
@@ -55,9 +60,9 @@ export class Actions {
   // I'm really not sure if this should live here, but it seems like we need to come through the store
   static saveContactState = (task, abortFunction, hrmBaseUrl, workerSid, helpline) => ({
     type: SAVE_CONTACT_STATE,
+    hrmBaseUrl,
     task,
     abortFunction,
-    hrmBaseUrl,
     workerSid,
     helpline,
   });
@@ -66,6 +71,8 @@ export class Actions {
 
   // records the end time (in milliseconds)
   static saveEndMillis = taskId => ({ type: SAVE_END_MILLIS, taskId });
+
+  static changeTab = (tab, taskId) => ({ type: CHANGE_TAB, tab, taskId });
 }
 
 // Will replace the below when we move over to field objects
@@ -168,15 +175,9 @@ export function reduce(state = initialState, action) {
     }
 
     case SAVE_CONTACT_STATE: {
-      // TODO(nick): Make this a Promise instead?
-      saveToHrm(
-        action.task,
-        state.tasks[action.task.taskSid],
-        action.abortFunction,
-        action.hrmBaseUrl,
-        action.workerSid,
-        action.helpline,
-      );
+      const { tasks } = state;
+      const { hrmBaseUrl, task, abortFunction, workerSid, helpline } = action;
+      saveToHrm(task, tasks[action.task.taskSid], abortFunction, hrmBaseUrl, workerSid, helpline);
       return state;
     }
 
@@ -184,9 +185,33 @@ export function reduce(state = initialState, action) {
       console.log(`!!!!!!!!!DELETING ENTRY FOR ${action.taskId}`);
       return {
         ...state,
+        tasks: omit(state.tasks, action.taskId),
+      };
+    }
+
+    case HANDLE_SELECT_SEARCH_RESULT: {
+      const currentTask = state.tasks[action.taskId];
+      const task = copySearchResultIntoTask(currentTask, action.searchResult);
+
+      return {
+        ...state,
         tasks: {
           ...state.tasks,
-          [action.taskId]: undefined,
+          [action.taskId]: task,
+        },
+      };
+    }
+
+    case CHANGE_TAB: {
+      const currentTask = state.tasks[action.taskId];
+      const { metadata } = currentTask;
+      const taskWithUpdatedTab = { ...currentTask, metadata: { ...metadata, tab: action.tab } };
+
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: taskWithUpdatedTab,
         },
       };
     }
