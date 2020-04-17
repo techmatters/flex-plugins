@@ -3,22 +3,13 @@ import PropTypes from 'prop-types';
 import { withTaskContext } from '@twilio/flex-ui';
 import FaceIcon from '@material-ui/icons/Face';
 
-import { withLocalization } from '../contexts/LocalizationContext';
-import { Box, Row } from '../styles/HrmStyles';
-import {
-  Container,
-  Label,
-  DataCallTypeButton,
-  NonDataCallTypeButton,
-  CloseTaskDialog,
-  CloseTaskDialogText,
-  ConfirmButton,
-  CancelButton,
-  CloseButton,
-} from '../styles/callTypeButtons';
-import callTypes from '../states/DomainConstants';
-import { isNonDataCallType } from '../states/ValidationRules';
-import { formType, taskType, localizationType } from '../types';
+import { withLocalization } from '../../contexts/LocalizationContext';
+import { Box } from '../../styles/HrmStyles';
+import { Container, Label, DataCallTypeButton, NonDataCallTypeButton } from '../../styles/callTypeButtons';
+import callTypes from '../../states/DomainConstants';
+import { isNonDataCallType } from '../../states/ValidationRules';
+import { formType, taskType, localizationType } from '../../types';
+import NonDataCallTypeDialog from './NonDataCallTypeDialog';
 
 const isDialogOpen = form =>
   Boolean(form && form.callType && form.callType.value && isNonDataCallType(form.callType.value));
@@ -64,20 +55,12 @@ const CallTypeButtons = props => {
             ))}
         </Box>
       </Container>
-      <CloseTaskDialog onClose={() => clearCallType(props)} open={isDialogOpen(form)}>
-        <Box marginLeft="auto">
-          <CloseButton onClick={() => clearCallType(props)} />
-        </Box>
-        <CloseTaskDialogText>Are you sure?</CloseTaskDialogText>
-        <Box marginBottom="32px">
-          <Row>
-            <ConfirmButton onClick={() => props.handleSubmit(task)}>
-              {isCallTask(task) ? strings.TaskHeaderEndCall : strings.TaskHeaderEndChat}
-            </ConfirmButton>
-            <CancelButton onClick={() => clearCallType(props)}>Cancel</CancelButton>
-          </Row>
-        </Box>
-      </CloseTaskDialog>
+      <NonDataCallTypeDialog
+        isOpen={isDialogOpen(form)}
+        confirmLabel={isCallTask(task) ? strings.TaskHeaderEndCall : strings.TaskHeaderEndChat}
+        handleConfirm={() => props.handleSubmit(task)}
+        handleCancel={() => clearCallType(props)}
+      />
     </>
   );
 };

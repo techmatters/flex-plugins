@@ -12,7 +12,7 @@ import HrmTheme from './styles/HrmTheme';
 import { channelTypes } from './states/DomainConstants';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
-const PLUGIN_VERSION = '0.3.10';
+const PLUGIN_VERSION = '0.4.0';
 
 export default class HrmFormPlugin extends FlexPlugin {
   constructor() {

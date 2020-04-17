@@ -1,21 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, ButtonBase, Popover } from '@material-ui/core';
-import CheckIcon from '@material-ui/icons/Check';
+import { ButtonBase } from '@material-ui/core';
 
 import ContactPreview from '../ContactPreview';
 import { searchResultType } from '../../../types';
 import { Row } from '../../../styles/HrmStyles';
-import {
-  ConfirmContainer,
-  ConfirmText,
-  BackIcon,
-  BackText,
-  ResultsHeader,
-  ListContainer,
-  ScrollableList,
-} from '../../../styles/search';
-import callTypes from '../../../states/DomainConstants';
+import { BackIcon, BackText, ResultsHeader, ListContainer, ScrollableList } from '../../../styles/search';
+import ConnectDialog from '../ConnectDialog';
 
 class SearchResults extends Component {
   static displayName = 'SearchResults';
@@ -30,88 +21,34 @@ class SearchResults extends Component {
   };
 
   state = {
-    anchorEl: null,
-    contact: null,
-    msg: '',
+    currentContact: null,
   };
 
-  msgTemplate = w => `Copy ${w} information from this record to new contact?`;
-
-  copyDataOf = contact => {
-    if (!contact) return '';
-    switch (contact.details.callType) {
-      case callTypes.child:
-        return this.msgTemplate('child');
-      case callTypes.caller:
-        if (this.props.currentIsCaller) return this.msgTemplate('caller');
-        return this.msgTemplate('child');
-      default:
-        return '';
-    }
+  handleCloseDialog = () => {
+    this.setState({ anchorEl: null, currentContact: null });
   };
 
-  renderConfirmPopover = () => {
-    const isOpen = Boolean(this.state.anchorEl);
-    const id = isOpen ? 'simple-popover' : undefined;
-
-    const handleClose = () => {
-      this.setState({ anchorEl: null, contact: null });
-    };
-
-    const handleConfirm = () => {
-      const { contact } = this.state;
-      this.props.handleSelectSearchResult(contact); // no need to clear state as this unmounts
-    };
-
-    return (
-      <Popover
-        id={id}
-        open={isOpen}
-        onClose={handleClose}
-        anchorEl={this.state.anchorEl}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-      >
-        <ConfirmContainer>
-          <ConfirmText>{this.state.msg}</ConfirmText>
-          <Row>
-            <Button variant="text" size="medium" onClick={handleClose}>
-              cancel
-            </Button>
-            <Button
-              variant="contained"
-              size="medium"
-              onClick={handleConfirm}
-              style={{ backgroundColor: '#000', color: '#fff', marginLeft: 20 }}
-            >
-              <CheckIcon />
-              yes, copy
-            </Button>
-          </Row>
-        </ConfirmContainer>
-      </Popover>
-    );
+  handleConfirmDialog = () => {
+    const { currentContact } = this.state;
+    this.props.handleSelectSearchResult(currentContact);
   };
 
   /**
    * Captures the contact of each preview and the event that fired it
    * so we can "pop over" the pressed button
-   * @param {any} contact
+   * @param {any} currentContact
    * @returns {(e: React.MouseEvent<HTMLElement, MouseEvent>) => void}
    */
-  handleConnectConfirm = contact => e => {
+  handleOpenConnectDialog = currentContact => e => {
     e.stopPropagation();
-    this.setState({ anchorEl: e.currentTarget, contact, msg: this.copyDataOf(contact) });
+    this.setState({ anchorEl: e.currentTarget, currentContact });
   };
 
   render() {
-    const resultsCount = this.props.results.length;
+    const { currentContact } = this.state;
+    const { currentIsCaller, results } = this.props;
+    const resultsCount = results.length;
+
     // TODO (Gian): This should be a virtualized list instead (for performance reasons)
     return (
       <>
@@ -128,14 +65,20 @@ class SearchResults extends Component {
             </BackText>
           </Row>
         </ResultsHeader>
-        {this.renderConfirmPopover()}
+        <ConnectDialog
+          anchorEl={this.state.anchorEl}
+          currentIsCaller={currentIsCaller}
+          contact={currentContact}
+          handleConfirm={this.handleConfirmDialog}
+          handleClose={this.handleCloseDialog}
+        />
         <ListContainer>
           <ScrollableList>
             {this.props.results.map(contact => (
               <ContactPreview
                 key={contact.contactId}
                 contact={contact}
-                handleConnect={this.handleConnectConfirm(contact)}
+                handleOpenConnectDialog={this.handleOpenConnectDialog(contact)}
                 handleViewDetails={() => this.props.handleViewDetails(contact)}
                 handleMockedMessage={this.props.handleMockedMessage}
               />
