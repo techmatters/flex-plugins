@@ -132,8 +132,10 @@ class Search extends Component {
       case SearchPages.details:
         return (
           <ContactDetails
+            currentIsCaller={this.props.currentIsCaller}
             contact={currentContact}
             handleBack={this.goToResults}
+            handleSelectSearchResult={this.props.handleSelectSearchResult}
             handleMockedMessage={this.handleMockedMessage}
           />
         );
