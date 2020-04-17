@@ -39,7 +39,7 @@ class SearchResults extends Component {
    * @param {any} currentContact
    * @returns {(e: React.MouseEvent<HTMLElement, MouseEvent>) => void}
    */
-  handleClickChain = currentContact => e => {
+  handleOpenConnectDialog = currentContact => e => {
     e.stopPropagation();
     this.setState({ anchorEl: e.currentTarget, currentContact });
   };
@@ -78,7 +78,7 @@ class SearchResults extends Component {
               <ContactPreview
                 key={contact.contactId}
                 contact={contact}
-                handleClickChain={this.handleClickChain(contact)}
+                handleOpenConnectDialog={this.handleOpenConnectDialog(contact)}
                 handleViewDetails={() => this.props.handleViewDetails(contact)}
                 handleMockedMessage={this.props.handleMockedMessage}
               />

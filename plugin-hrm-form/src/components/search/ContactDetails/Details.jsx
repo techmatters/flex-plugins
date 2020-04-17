@@ -21,7 +21,7 @@ const MoreHorizIcon = ContactDetailsIcon(MoreHoriz);
  */
 const maybeEntry = (pred, entry) => (pred ? entry : null);
 
-const Details = ({ contact, handleClickChain, handleMockedMessage }) => {
+const Details = ({ contact, handleOpenConnectDialog, handleMockedMessage }) => {
   // Object destructuring on contact
   const { overview, details, counselor, tags } = contact;
   const { dateTime, name: childName, customerNumber, callType, channel, conversationDuration } = overview;
@@ -73,7 +73,7 @@ const Details = ({ contact, handleClickChain, handleMockedMessage }) => {
       <NameContainer>
         <DetNameText>{childUpperCased}</DetNameText>
         <IconButton
-          onClick={handleClickChain}
+          onClick={handleOpenConnectDialog}
           isDisabled={isNonDataContact}
           style={{ paddingTop: 0, paddingBottom: 0 }}
         >
@@ -167,7 +167,7 @@ Details.displayName = 'Details';
 
 Details.propTypes = {
   contact: contactType.isRequired,
-  handleClickChain: PropTypes.func.isRequired,
+  handleOpenConnectDialog: PropTypes.func.isRequired,
   handleMockedMessage: PropTypes.func.isRequired,
 };
 

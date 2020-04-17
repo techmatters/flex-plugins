@@ -11,7 +11,7 @@ import { contactType } from '../../../types';
 import { formatName, mapCallType } from '../../../utils';
 import { isNonDataCallType } from '../../../states/ValidationRules';
 
-const ContactPreview = ({ contact, handleClickChain, handleViewDetails, handleMockedMessage }) => {
+const ContactPreview = ({ contact, handleOpenConnectDialog, handleViewDetails, handleMockedMessage }) => {
   const name = formatName(contact.overview.name).toUpperCase();
 
   const dateString = `${format(new Date(contact.overview.dateTime), 'MMM d, yyyy h:mm aaaaa')}m`;
@@ -28,7 +28,7 @@ const ContactPreview = ({ contact, handleClickChain, handleViewDetails, handleMo
       <ChildNameAndActions
         name={name}
         isNonDataContact={isNonDataContact}
-        onClickChain={handleClickChain}
+        onClickChain={handleOpenConnectDialog}
         onClickFull={handleViewDetails}
         onClickMore={handleMockedMessage}
       />
@@ -43,7 +43,7 @@ ContactPreview.displayName = 'ContactPreview';
 
 ContactPreview.propTypes = {
   contact: contactType.isRequired,
-  handleClickChain: PropTypes.func.isRequired,
+  handleOpenConnectDialog: PropTypes.func.isRequired,
   handleViewDetails: PropTypes.func.isRequired,
   handleMockedMessage: PropTypes.func.isRequired,
 };

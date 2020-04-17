@@ -33,7 +33,7 @@ class ContactDetails extends Component {
     this.props.handleSelectSearchResult(contact);
   };
 
-  handleClickChain = e => {
+  handleOpenConnectDialog = e => {
     e.stopPropagation();
     this.setState({ anchorEl: e.currentTarget });
   };
@@ -60,7 +60,7 @@ class ContactDetails extends Component {
         </Row>
         <Details
           contact={contact}
-          handleClickChain={this.handleClickChain}
+          handleOpenConnectDialog={this.handleOpenConnectDialog}
           handleMockedMessage={this.props.handleMockedMessage}
         />
       </Container>
