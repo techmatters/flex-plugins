@@ -66,9 +66,9 @@ export const updateQueuesStatus = queuesStatus => tasks => Object.values(tasks).
  *  intervalId: NodeJS.Timeout;
  * } }}
  */
-export const calculateQueuesWait = (queuesStatus, queuesLongestWait, callback) =>
+export const calculateQueuesIntervals = (queuesStatus, queuesIntervals, callback) =>
   Object.entries(queuesStatus).reduce((acc, [qName, qStatus]) => {
-    const thisQueue = queuesLongestWait && queuesLongestWait[qName];
+    const thisQueue = queuesIntervals && queuesIntervals[qName];
     const noTasksWaiting = qStatus.longestWaitingTask.taskId === null;
     const newLongestWaitingTaskId = !thisQueue || thisQueue.longestWaitingTaskId !== qStatus.longestWaitingTask.taskId;
 
@@ -87,5 +87,5 @@ export const calculateQueuesWait = (queuesStatus, queuesLongestWait, callback) =
     }
 
     // same task is the longest waiting for this queue
-    return { ...acc, [qName]: queuesLongestWait[qName] };
+    return { ...acc, [qName]: queuesIntervals[qName] };
   }, {});

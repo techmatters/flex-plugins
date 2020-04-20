@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import QueueCard from './QueueCard';
-import { initializeQueuesStatus, updateQueuesStatus, calculateQueuesWait } from './helpers';
+import { initializeQueuesStatus, updateQueuesStatus, calculateQueuesIntervals } from './helpers';
 import { Container, HeaderContainer, QueuesContainer } from '../../styles/queuesStatus';
 
 class QueuesStatus extends React.Component {
@@ -24,18 +24,18 @@ class QueuesStatus extends React.Component {
   state = {
     tasksQuery: null,
     queuesStatus: null,
-    queuesLongestWait: null, // for each queue -> { longestWaitingTaskId, waitingMinutes, intervalId }
+    queuesIntervals: null, // for each queue -> { longestWaitingTaskId, waitingMinutes, intervalId }
   };
 
   async componentDidMount() {
     try {
       const eachMinute = qName =>
         this.setState(prev => ({
-          queuesLongestWait: {
-            ...prev.queuesLongestWait,
+          queuesIntervals: {
+            ...prev.queuesIntervals,
             [qName]: {
-              ...prev.queuesLongestWait[qName],
-              waitingMinutes: prev.queuesLongestWait[qName].waitingMinutes + 1,
+              ...prev.queuesIntervals[qName],
+              waitingMinutes: prev.queuesIntervals[qName].waitingMinutes + 1,
             },
           },
         }));
@@ -49,36 +49,38 @@ class QueuesStatus extends React.Component {
 
       const tasksQuery = await this.props.insightsClient.liveQuery('tr-task', '');
 
+      // returns a new queuesStatus and queuesIntervals
+      const updateState = () => {
+        const queuesStatus = updateFromClean(tasksQuery.getItems());
+        const prevQueuesIntervals = this.state.queuesIntervals;
+        const queuesIntervals = calculateQueuesIntervals(queuesStatus, prevQueuesIntervals, eachMinute);
+        return { queuesStatus, queuesIntervals };
+      };
+
       tasksQuery.on('itemUpdated', args => {
         console.log('TASK UPDATED', args);
         // here we are assigning a new object for every change
-        const queuesStatus = updateFromClean(tasksQuery.getItems());
-        const prevQueuesLongestWait = this.state.queuesLongestWait;
-        const queuesLongestWait = calculateQueuesWait(queuesStatus, prevQueuesLongestWait, eachMinute);
-
-        this.setState({ queuesStatus, queuesLongestWait });
+        const { queuesStatus, queuesIntervals } = updateState();
+        this.setState({ queuesStatus, queuesIntervals });
       });
 
-      const queuesStatus = updateFromClean(tasksQuery.getItems());
-      const prevQueuesLongestWait = this.state.queuesLongestWait;
-      const queuesLongestWait = calculateQueuesWait(queuesStatus, prevQueuesLongestWait, eachMinute);
-
-      this.setState({ tasksQuery, queuesStatus, queuesLongestWait });
+      const { queuesStatus, queuesIntervals } = updateState();
+      this.setState({ tasksQuery, queuesStatus, queuesIntervals });
     } catch (err) {
       console.log('Error when subscribing to live updates', err);
     }
   }
 
   componentWillUnmount() {
-    const { tasksQuery, queuesLongestWait } = this.state;
+    const { tasksQuery, queuesIntervals } = this.state;
     // unsuscribe
     if (tasksQuery) tasksQuery.close();
     // clear all timers
-    Object.values(queuesLongestWait).forEach(({ intervalId }) => clearInterval(intervalId));
+    Object.values(queuesIntervals).forEach(({ intervalId }) => clearInterval(intervalId));
   }
 
   render() {
-    const { queuesStatus, queuesLongestWait } = this.state;
+    const { queuesStatus, queuesIntervals } = this.state;
     return (
       queuesStatus && (
         <>
@@ -86,7 +88,7 @@ class QueuesStatus extends React.Component {
             <HeaderContainer>Contacts waiting</HeaderContainer>
             <QueuesContainer>
               {Object.entries(queuesStatus).map(([qName, qStatus]) => {
-                const thisQueue = queuesLongestWait && queuesLongestWait[qName];
+                const thisQueue = queuesIntervals && queuesIntervals[qName];
                 const waitingMinutesMsg =
                   // eslint-disable-next-line no-nested-ternary
                   thisQueue === null
