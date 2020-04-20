@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { initializeQueuesStatus, updateQueuesStatus } from './helpers';
-import { Row } from '../../styles/HrmStyles';
+import QueueCard from './QueueCard';
+import { initializeQueuesStatus, updateQueuesStatus, calculateQueuesWait } from './helpers';
+import { Container, HeaderContainer, QueuesContainer } from '../../styles/queuesStatus';
 
 class QueuesStatus extends React.Component {
   static displayName = 'QueuesStatus';
@@ -11,64 +12,101 @@ class QueuesStatus extends React.Component {
     insightsClient: PropTypes.shape({
       liveQuery: PropTypes.func,
     }).isRequired,
+    colors: PropTypes.shape({
+      voiceColor: PropTypes.shape({ Accepted: PropTypes.string }),
+      webColor: PropTypes.shape({ Accepted: PropTypes.string }),
+      facebookColor: PropTypes.shape({ Accepted: PropTypes.string }),
+      smsColor: PropTypes.shape({ Accepted: PropTypes.string }),
+      whatsappColor: PropTypes.shape({ Accepted: PropTypes.string }),
+    }).isRequired,
   };
 
   state = {
-    queuesStatus: null,
     tasksQuery: null,
+    queuesStatus: null,
+    queuesLongestWait: null, // for each queue -> { longestWaitingTaskId, waitingMinutes, intervalId }
   };
 
   async componentDidMount() {
     try {
+      const eachMinute = qName =>
+        this.setState(prev => ({
+          queuesLongestWait: {
+            ...prev.queuesLongestWait,
+            [qName]: {
+              ...prev.queuesLongestWait[qName],
+              waitingMinutes: prev.queuesLongestWait[qName].waitingMinutes + 1,
+            },
+          },
+        }));
+
       const q = await this.props.insightsClient.liveQuery('tr-queue', '');
       const queues = q.getItems();
       q.close();
 
       const cleanQueuesStatus = initializeQueuesStatus(queues);
-      const refreshQueuesStatus = updateQueuesStatus(cleanQueuesStatus);
+      const updateFromClean = updateQueuesStatus(cleanQueuesStatus);
 
       const tasksQuery = await this.props.insightsClient.liveQuery('tr-task', '');
-
-      const queuesStatus = refreshQueuesStatus(tasksQuery.getItems());
 
       tasksQuery.on('itemUpdated', args => {
         console.log('TASK UPDATED', args);
         // here we are assigning a new object for every change
-        const newQueuesStatus = refreshQueuesStatus(tasksQuery.getItems());
-        this.setState({ queuesStatus: newQueuesStatus });
+        const queuesStatus = updateFromClean(tasksQuery.getItems());
+        const prevQueuesLongestWait = this.state.queuesLongestWait;
+        const queuesLongestWait = calculateQueuesWait(queuesStatus, prevQueuesLongestWait, eachMinute);
+
+        this.setState({ queuesStatus, queuesLongestWait });
       });
 
-      this.setState({ queuesStatus, tasksQuery });
+      const queuesStatus = updateFromClean(tasksQuery.getItems());
+      const prevQueuesLongestWait = this.state.queuesLongestWait;
+      const queuesLongestWait = calculateQueuesWait(queuesStatus, prevQueuesLongestWait, eachMinute);
 
-      console.log('queuesStatus initialized');
+      this.setState({ tasksQuery, queuesStatus, queuesLongestWait });
     } catch (err) {
       console.log('Error when subscribing to live updates', err);
     }
   }
 
   componentWillUnmount() {
-    const { tasksQuery } = this.state;
+    const { tasksQuery, queuesLongestWait } = this.state;
     // unsuscribe
     if (tasksQuery) tasksQuery.close();
+    // clear all timers
+    Object.values(queuesLongestWait).forEach(({ intervalId }) => clearInterval(intervalId));
   }
 
   render() {
-    const { queuesStatus } = this.state;
+    const { queuesStatus, queuesLongestWait } = this.state;
     return (
       queuesStatus && (
         <>
-          {Object.keys(queuesStatus).map(key => (
-            <>
-              <p>Queue: {key}</p>
-              <Row>
-                <p style={{ margin: 5 }}>Calls: {queuesStatus[key].voice}</p>
-                <p style={{ margin: 5 }}>SMS: {queuesStatus[key].sms}</p>
-                <p style={{ margin: 5 }}>FB: {queuesStatus[key].facebook}</p>
-                <p style={{ margin: 5 }}>WA: {queuesStatus[key].whatsapp}</p>
-                <p style={{ margin: 5 }}>Web: {queuesStatus[key].web}</p>
-              </Row>
-            </>
-          ))}
+          <Container>
+            <HeaderContainer>Contacts waiting</HeaderContainer>
+            <QueuesContainer>
+              {Object.entries(queuesStatus).map(([qName, qStatus]) => {
+                const thisQueue = queuesLongestWait && queuesLongestWait[qName];
+                const waitingMinutesMsg =
+                  // eslint-disable-next-line no-nested-ternary
+                  thisQueue === null
+                    ? 'None'
+                    : thisQueue.waitingMinutes === 0
+                    ? 'Less than 1 minute'
+                    : `${thisQueue.waitingMinutes} minute${thisQueue.waitingMinutes > 1 ? 's' : ''}`;
+
+                return (
+                  <QueueCard
+                    key={qName}
+                    qName={qName}
+                    qStatus={qStatus}
+                    colors={this.props.colors}
+                    waitingMinutesMsg={waitingMinutesMsg}
+                  />
+                );
+              })}
+            </QueuesContainer>
+          </Container>
         </>
       )
     );

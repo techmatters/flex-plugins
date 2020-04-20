@@ -61,8 +61,25 @@ export default class HrmFormPlugin extends FlexPlugin {
       console.error('HRM base URL not defined, you must provide this to save program data');
     }
 
-    flex.AgentDesktopView.Panel1.Content.add(
-      <QueuesStatus key="queue-status" insightsClient={manager.insightsClient} />,
+    // voice color right now is same as web color. Should this change?
+    const voiceColor = flex.DefaultTaskChannels.Chat.colors.main;
+    const webColor = flex.DefaultTaskChannels.Chat.colors.main;
+    const facebookColor = flex.DefaultTaskChannels.ChatMessenger.colors.main;
+    const smsColor = flex.DefaultTaskChannels.ChatSms.colors.main;
+    const whatsappColor = flex.DefaultTaskChannels.ChatWhatsApp.colors.main;
+
+    flex.TaskListContainer.Content.add(
+      <QueuesStatus
+        key="queue-status"
+        insightsClient={manager.insightsClient}
+        colors={{
+          voiceColor,
+          webColor,
+          facebookColor,
+          smsColor,
+          whatsappColor,
+        }}
+      />,
       {
         sortOrder: -1,
         align: 'start',
