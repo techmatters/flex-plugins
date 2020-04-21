@@ -1,7 +1,7 @@
 import styled from 'react-emotion';
 import { transparentize } from 'polished';
 
-import { FontOpenSans } from '../HrmStyles';
+import { FontOpenSans, Row } from '../HrmStyles';
 
 export const Container = styled('div')`
   width: 100%;
@@ -9,11 +9,11 @@ export const Container = styled('div')`
   padding: 5px;
 `;
 
-export const HeaderContainer = styled('div')`
+export const HeaderContainer = styled(Row)`
   width: auto;
+  justify-items: flex-start;
   background-color: #f6f6f6;
   border-radius: 2px;
-  padding: 12px;
   text-transform: uppercase;
   color: #192b33;
   font-size: 10px;

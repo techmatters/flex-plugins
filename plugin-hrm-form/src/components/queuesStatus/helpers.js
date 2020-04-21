@@ -69,16 +69,15 @@ export const updateQueuesStatus = (cleanQueuesStatus, tasks, prevQueuesStatus, c
       !prevStatus || newStatus.longestWaitingTask.taskId !== prevStatus.longestWaitingTask.taskId;
 
     if (noTasksWaiting) {
-      console.log('noTasksWaiting', qName);
       if (prevStatus) clearTimeout(prevStatus.longestWaitingTask.intervalId);
       return acc;
     }
 
+    const waitingMillis = new Date().getTime() - new Date(newStatus.longestWaitingTask.updated).getTime();
+    const waitingMinutes = Math.floor(waitingMillis / (60 * 1000)); // should use Math.round instead?
+
     if (newLongestWaitingTaskId) {
-      console.log('newLongestWaitingTaskId', qName);
       if (prevStatus) clearTimeout(prevStatus.longestWaitingTask.intervalId);
-      const waitingMillis = new Date().getTime() - new Date(newStatus.longestWaitingTask.updated).getTime();
-      const waitingMinutes = Math.floor(waitingMillis / (60 * 1000));
       const intervalId = setInterval(() => callback(qName), 1000 * 60);
       return {
         ...acc,
@@ -90,7 +89,13 @@ export const updateQueuesStatus = (cleanQueuesStatus, tasks, prevQueuesStatus, c
     }
 
     // at this point, prevStatus.longestWaitingTask is the longest waiting for this queue
-    const { waitingMinutes, intervalId } = prevStatus.longestWaitingTask;
-    return { ...acc, [qName]: { ...newStatus, waitingMinutes, intervalId } };
+    const { intervalId } = prevStatus.longestWaitingTask;
+    return {
+      ...acc,
+      [qName]: {
+        ...newStatus,
+        longestWaitingTask: { ...newStatus.longestWaitingTask, waitingMinutes, intervalId },
+      },
+    };
   }, intermidiate);
 };
