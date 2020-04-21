@@ -56,20 +56,20 @@ class QueuesStatus extends React.Component {
 
       const tasksQuery = await this.props.insightsClient.liveQuery('tr-task', '');
 
-      const updateState = () => {
+      const getNewQueuesStatus = () => {
         const tasks = tasksQuery.getItems();
         const prevQueuesStatus = this.state.queuesStatus;
         const queuesStatus = updateQueuesStatus(cleanQueuesStatus, tasks, prevQueuesStatus, eachMinute);
         return queuesStatus;
       };
 
-      const queuesStatus = updateState();
+      const queuesStatus = getNewQueuesStatus();
       this.setState({ tasksQuery, queuesStatus, expanded: true, loading: false });
 
       tasksQuery.on('itemUpdated', args => {
         console.log('TASK UPDATED', args);
         // here we can filter and update only if the task belongs to a queue the user cares about
-        const newQueuesStatus = updateState();
+        const newQueuesStatus = getNewQueuesStatus();
         this.setState({ queuesStatus: newQueuesStatus });
       });
     } catch (err) {
