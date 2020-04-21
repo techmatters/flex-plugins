@@ -109,7 +109,7 @@ class SearchForm extends Component {
           <Row>
             <FieldText
               id="Search_CustomerPhoneNumber"
-              label="Customer phone"
+              label="Phone"
               field={getField(phoneNumber)}
               {...this.defaultEventHandlers('phoneNumber')}
               onKeyPress={submitOnEnter}
