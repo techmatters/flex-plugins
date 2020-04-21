@@ -153,7 +153,7 @@ const Details = ({ contact, handleOpenConnectDialog, handleMockedMessage }) => {
             { description: 'Keep Confidential?', value: keepConfidential },
             { description: 'OK for the case worker to call?', value: okForCaseWorkerToCall },
             { description: 'How did the child hear about us?', value: howDidTheChildHearAboutUs },
-            { description: 'Did you discuss right with the child?', value: didYouDiscussRightsWithTheChild },
+            { description: 'Did you discuss rights with the child?', value: didYouDiscussRightsWithTheChild },
             { description: 'Did the child feel we solved their problem?', value: didTheChildFeelWeSolvedTheirProblem },
             { description: 'Would the child recommend us to a friend?', value: wouldTheChildRecommendUsToAFriend },
           ]}
