@@ -11,8 +11,16 @@ import {
   WaitTimeValue,
 } from '../../styles/queuesStatus';
 
-const QueuesCard = ({ qName, qStatus, colors, waitingMinutesMsg }) => {
+const QueuesCard = ({ qName, qStatus, colors }) => {
   const { voiceColor, smsColor, facebookColor, whatsappColor, webColor } = colors;
+  const { taskId, waitingMinutes } = qStatus.longestWaitingTask;
+  const waitingMinutesMsg =
+    // eslint-disable-next-line no-nested-ternary
+    taskId === null
+      ? 'None'
+      : waitingMinutes === 0
+      ? 'Less than 1 minute'
+      : `${waitingMinutes} minute${waitingMinutes > 1 ? 's' : ''}`;
 
   return (
     <>
@@ -63,7 +71,9 @@ QueuesCard.propTypes = {
     whatsapp: PropTypes.number,
     longestWaitingTask: PropTypes.shape({
       taskId: PropTypes.string,
-      timeWaiting: PropTypes.string,
+      updated: PropTypes.string,
+      waitingMinutes: PropTypes.number,
+      intervalId: PropTypes.number,
     }),
   }).isRequired,
   colors: PropTypes.shape({
@@ -73,7 +83,6 @@ QueuesCard.propTypes = {
     smsColor: PropTypes.shape({ Accepted: PropTypes.string }),
     whatsappColor: PropTypes.shape({ Accepted: PropTypes.string }),
   }).isRequired,
-  waitingMinutesMsg: PropTypes.string.isRequired,
 };
 
 export default QueuesCard;

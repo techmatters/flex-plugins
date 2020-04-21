@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import QueueCard from './QueueCard';
-import { initializeQueuesStatus, updateQueuesStatus, calculateQueuesIntervals } from './helpers';
+import { initializeQueuesStatus, updateQueuesStatus } from './helpers';
 import { Container, HeaderContainer, QueuesContainer } from '../../styles/queuesStatus';
 
 class QueuesStatus extends React.Component {
@@ -24,18 +24,20 @@ class QueuesStatus extends React.Component {
   state = {
     tasksQuery: null,
     queuesStatus: null,
-    queuesIntervals: null, // for each queue -> { longestWaitingTaskId, waitingMinutes, intervalId }
   };
 
   async componentDidMount() {
     try {
       const eachMinute = qName =>
         this.setState(prev => ({
-          queuesIntervals: {
-            ...prev.queuesIntervals,
+          queuesStatus: {
+            ...prev.queuesStatus,
             [qName]: {
-              ...prev.queuesIntervals[qName],
-              waitingMinutes: prev.queuesIntervals[qName].waitingMinutes + 1,
+              ...prev.queuesStatus[qName],
+              longestWaitingTask: {
+                ...prev.queuesStatus[qName].longestWaitingTask,
+                waitingMinutes: prev.queuesStatus[qName].longestWaitingTask.waitingMinutes + 1,
+              },
             },
           },
         }));
@@ -45,68 +47,51 @@ class QueuesStatus extends React.Component {
       q.close();
 
       const cleanQueuesStatus = initializeQueuesStatus(queues);
-      const updateFromClean = updateQueuesStatus(cleanQueuesStatus);
 
       const tasksQuery = await this.props.insightsClient.liveQuery('tr-task', '');
 
-      // returns a new queuesStatus and queuesIntervals
+      // returns a new queuesStatus
       const updateState = () => {
-        const queuesStatus = updateFromClean(tasksQuery.getItems());
-        const prevQueuesIntervals = this.state.queuesIntervals;
-        const queuesIntervals = calculateQueuesIntervals(queuesStatus, prevQueuesIntervals, eachMinute);
-        return { queuesStatus, queuesIntervals };
+        const tasks = tasksQuery.getItems();
+        const prevQueuesStatus = this.state.queuesStatus;
+        const queuesStatus = updateQueuesStatus(cleanQueuesStatus, tasks, prevQueuesStatus, eachMinute);
+        return queuesStatus;
       };
+
+      const queuesStatus = updateState();
+      this.setState({ tasksQuery, queuesStatus });
 
       tasksQuery.on('itemUpdated', args => {
         console.log('TASK UPDATED', args);
         // here we are assigning a new object for every change
-        const { queuesStatus, queuesIntervals } = updateState();
-        this.setState({ queuesStatus, queuesIntervals });
+        const newQueuesStatus = updateState();
+        this.setState({ queuesStatus: newQueuesStatus });
       });
-
-      const { queuesStatus, queuesIntervals } = updateState();
-      this.setState({ tasksQuery, queuesStatus, queuesIntervals });
     } catch (err) {
       console.log('Error when subscribing to live updates', err);
     }
   }
 
   componentWillUnmount() {
-    const { tasksQuery, queuesIntervals } = this.state;
+    const { tasksQuery, queuesStatus } = this.state;
     // unsuscribe
     if (tasksQuery) tasksQuery.close();
     // clear all timers
-    Object.values(queuesIntervals).forEach(({ intervalId }) => clearInterval(intervalId));
+    Object.values(queuesStatus).forEach(({ longestWaitingTask }) => clearInterval(longestWaitingTask.intervalId));
   }
 
   render() {
-    const { queuesStatus, queuesIntervals } = this.state;
+    const { queuesStatus } = this.state;
+    console.log('QUEUESSTATUS', queuesStatus);
     return (
       queuesStatus && (
         <>
           <Container>
             <HeaderContainer>Contacts waiting</HeaderContainer>
             <QueuesContainer>
-              {Object.entries(queuesStatus).map(([qName, qStatus]) => {
-                const thisQueue = queuesIntervals && queuesIntervals[qName];
-                const waitingMinutesMsg =
-                  // eslint-disable-next-line no-nested-ternary
-                  thisQueue === null
-                    ? 'None'
-                    : thisQueue.waitingMinutes === 0
-                    ? 'Less than 1 minute'
-                    : `${thisQueue.waitingMinutes} minute${thisQueue.waitingMinutes > 1 ? 's' : ''}`;
-
-                return (
-                  <QueueCard
-                    key={qName}
-                    qName={qName}
-                    qStatus={qStatus}
-                    colors={this.props.colors}
-                    waitingMinutesMsg={waitingMinutesMsg}
-                  />
-                );
-              })}
+              {Object.entries(queuesStatus).map(([qName, qStatus]) => (
+                <QueueCard key={qName} qName={qName} qStatus={qStatus} colors={this.props.colors} />
+              ))}
             </QueuesContainer>
           </Container>
         </>

@@ -1,7 +1,9 @@
 import { channelTypes } from '../../states/DomainConstants';
 
 /**
- * @type {{ [K in keyof channelTypes]: number } & { longestWaitingTask: { taskId: string; updated: string } }}
+ * @type {{ [K in keyof channelTypes]: number } & {
+ *  longestWaitingTask: { taskId: string; updated: string; waitingMinutes: number; intervalId: NodeJS.Timeout; },
+ * }}
  */
 export const newQueueEntry = {
   facebook: 0,
@@ -9,7 +11,7 @@ export const newQueueEntry = {
   voice: 0,
   web: 0,
   whatsapp: 0,
-  longestWaitingTask: { taskId: null, updated: null },
+  longestWaitingTask: { taskId: null, updated: null, waitingMinutes: null, intervalId: null },
 };
 
 /**
@@ -41,7 +43,7 @@ export const addPendingTasks = (acc, task) => {
   const longestWaitingTask =
     currentOldest.updated !== null && currentOldest.updated < updated
       ? currentOldest
-      : { taskId: task.task_sid, updated };
+      : { taskId: task.task_sid, updated, waitingMinutes: null, intervalId: null };
 
   return {
     ...acc,
@@ -55,37 +57,40 @@ export const addPendingTasks = (acc, task) => {
 
 /**
  *
- * @returns {(tasks: any) => ({ [queue_name: string]: typeof newQueueEntry })}
+ * @returns {{ [queue_name: string]: typeof newQueueEntry }}
  */
-export const updateQueuesStatus = queuesStatus => tasks => Object.values(tasks).reduce(addPendingTasks, queuesStatus);
+export const updateQueuesStatus = (cleanQueuesStatus, tasks, prevQueuesStatus, callback) => {
+  const intermidiate = Object.values(tasks).reduce(addPendingTasks, cleanQueuesStatus);
 
-/**
- * @returns {{ [queue_name: string]: {
- *  longestWaitingTaskId: string;
- *  waitingMinutes: number;
- *  intervalId: NodeJS.Timeout;
- * } }}
- */
-export const calculateQueuesIntervals = (queuesStatus, queuesIntervals, callback) =>
-  Object.entries(queuesStatus).reduce((acc, [qName, qStatus]) => {
-    const thisQueue = queuesIntervals && queuesIntervals[qName];
-    const noTasksWaiting = qStatus.longestWaitingTask.taskId === null;
-    const newLongestWaitingTaskId = !thisQueue || thisQueue.longestWaitingTaskId !== qStatus.longestWaitingTask.taskId;
+  return Object.entries(intermidiate).reduce((acc, [qName, newStatus]) => {
+    const prevStatus = prevQueuesStatus && prevQueuesStatus[qName];
+    const noTasksWaiting = newStatus.longestWaitingTask.taskId === null;
+    const newLongestWaitingTaskId =
+      !prevStatus || newStatus.longestWaitingTask.taskId !== prevStatus.longestWaitingTask.taskId;
 
     if (noTasksWaiting) {
-      if (thisQueue) clearTimeout(thisQueue.intervalId);
-      return { ...acc, [qName]: null };
+      console.log('noTasksWaiting', qName);
+      if (prevStatus) clearTimeout(prevStatus.longestWaitingTask.intervalId);
+      return acc;
     }
 
     if (newLongestWaitingTaskId) {
-      if (thisQueue) clearInterval(thisQueue.intervalId);
-      const longestWaitingTaskId = qStatus.longestWaitingTask.taskId;
-      const waitingMillis = new Date().getTime() - new Date(qStatus.longestWaitingTask.updated).getTime();
+      console.log('newLongestWaitingTaskId', qName);
+      if (prevStatus) clearTimeout(prevStatus.longestWaitingTask.intervalId);
+      const waitingMillis = new Date().getTime() - new Date(newStatus.longestWaitingTask.updated).getTime();
       const waitingMinutes = Math.floor(waitingMillis / (60 * 1000));
       const intervalId = setInterval(() => callback(qName), 1000 * 60);
-      return { ...acc, [qName]: { longestWaitingTaskId, waitingMinutes, intervalId } };
+      return {
+        ...acc,
+        [qName]: {
+          ...newStatus,
+          longestWaitingTask: { ...newStatus.longestWaitingTask, waitingMinutes, intervalId },
+        },
+      };
     }
 
-    // same task is the longest waiting for this queue
-    return { ...acc, [qName]: queuesIntervals[qName] };
-  }, {});
+    // at this point, prevStatus.longestWaitingTask is the longest waiting for this queue
+    const { waitingMinutes, intervalId } = prevStatus.longestWaitingTask;
+    return { ...acc, [qName]: { ...newStatus, waitingMinutes, intervalId } };
+  }, intermidiate);
+};
