@@ -8,6 +8,10 @@ import { initializeQueuesStatus, updateQueuesStatus } from './helpers';
 import { Container, HeaderContainer, QueuesContainer } from '../../styles/queuesStatus';
 import { Box, ErrorText } from '../../styles/HrmStyles';
 
+function timeout(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 class QueuesStatus extends React.Component {
   static displayName = 'QueuesStatus';
 
@@ -47,6 +51,8 @@ class QueuesStatus extends React.Component {
             },
           },
         }));
+
+      await timeout(500);
 
       const q = await this.props.insightsClient.liveQuery('tr-queue', '');
       const queues = q.getItems();

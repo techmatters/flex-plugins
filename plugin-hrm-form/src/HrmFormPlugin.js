@@ -70,7 +70,7 @@ export default class HrmFormPlugin extends FlexPlugin {
 
     flex.TaskListContainer.Content.add(
       <QueuesStatus
-        key="queue-status"
+        key="queues-status"
         insightsClient={manager.insightsClient}
         colors={{
           voiceColor,
