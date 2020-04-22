@@ -2,7 +2,7 @@ import { channelTypes } from '../../states/DomainConstants';
 
 /**
  * @type {{ [K in keyof channelTypes]: number } & {
- *  longestWaitingTask: { taskId: string; updated: string; waitingMinutes: number; intervalId: NodeJS.Timeout; },
+ *  longestWaitingTask: { taskId: string; updated: string; waitingMinutes: number; },
  * }}
  */
 export const newQueueEntry = {
@@ -11,7 +11,7 @@ export const newQueueEntry = {
   voice: 0,
   web: 0,
   whatsapp: 0,
-  longestWaitingTask: { taskId: null, updated: null, waitingMinutes: null, intervalId: null },
+  longestWaitingTask: { taskId: null, updated: null, waitingMinutes: null },
 };
 
 /**
@@ -51,34 +51,34 @@ export const addPendingTasks = (acc, task) => {
   };
 };
 
+export const getIntermidiateStatus = (cleanQueuesStatus, tasks) =>
+  Object.values(tasks).reduce(addPendingTasks, cleanQueuesStatus);
+
 /**
  * @returns {{ [queue_name: string]: typeof newQueueEntry }}
  */
-export const getNewQueuesStatus = (cleanQueuesStatus, tasks, prevQueuesStatus, eachMinute) => {
-  const intermidiate = Object.values(tasks).reduce(addPendingTasks, cleanQueuesStatus);
+export const getNewQueuesStatus = (intermidiateStatus, prevQueuesStatus) => {
+  // const intermidiate = Object.values(tasks).reduce(addPendingTasks, cleanQueuesStatus);
 
-  return Object.entries(intermidiate).reduce((acc, [qName, newStatus]) => {
+  return Object.entries(intermidiateStatus).reduce((acc, [qName, newStatus]) => {
     const prevStatus = prevQueuesStatus && prevQueuesStatus[qName];
     const noTasksWaiting = newStatus.longestWaitingTask.taskId === null;
     const newLongestWaitingTaskId =
       !prevStatus || newStatus.longestWaitingTask.taskId !== prevStatus.longestWaitingTask.taskId;
 
     if (noTasksWaiting) {
-      if (prevStatus) clearTimeout(prevStatus.longestWaitingTask.intervalId);
       return acc;
     }
 
     const waitingMillis = new Date().getTime() - new Date(newStatus.longestWaitingTask.updated).getTime();
-    const waitingMinutes = Math.floor(waitingMillis / (60 * 1000)); // should use Math.round instead?
+    const waitingMinutes = Math.round(waitingMillis / (60 * 1000));
 
     if (newLongestWaitingTaskId) {
-      if (prevStatus) clearTimeout(prevStatus.longestWaitingTask.intervalId);
-      const intervalId = setInterval(() => eachMinute(qName, prevQueuesStatus), 1000 * 60);
       return {
         ...acc,
         [qName]: {
           ...newStatus,
-          longestWaitingTask: { ...newStatus.longestWaitingTask, waitingMinutes, intervalId },
+          longestWaitingTask: { ...newStatus.longestWaitingTask, waitingMinutes },
         },
       };
     }
@@ -92,5 +92,20 @@ export const getNewQueuesStatus = (cleanQueuesStatus, tasks, prevQueuesStatus, e
         longestWaitingTask: { ...newStatus.longestWaitingTask, waitingMinutes, intervalId },
       },
     };
-  }, intermidiate);
+  }, intermidiateStatus);
 };
+
+export const increaseWait = queuesStatus =>
+  Object.entries(queuesStatus).reduce(
+    (acc, [qName, qStatus]) => ({
+      ...acc,
+      [qName]: {
+        ...qStatus,
+        longestWaitingTask: {
+          ...qStatus.longestWaitingTask,
+          waitingMinutes: qStatus.longestWaitingTask.waitingMinutes + 1,
+        },
+      },
+    }),
+    {},
+  );

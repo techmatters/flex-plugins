@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { queuesStatusInit, queuesStatusUpdate, queuesStatusFailure } from '../../states/QueuesStatus';
-import { initializeQueuesStatus, getNewQueuesStatus } from './helpers';
+import { queuesStatusUpdate, queuesStatusFailure, queuesStatusTick } from '../../states/QueuesStatus';
+import { initializeQueuesStatus, getIntermidiateStatus } from './helpers';
 import { namespace, queuesStatusBase } from '../../states';
 
 class QueuesStatusWriter extends React.Component {
@@ -19,33 +19,19 @@ class QueuesStatusWriter extends React.Component {
       error: PropTypes.string,
       loading: PropTypes.bool,
     }).isRequired,
-    queuesStatusInit: PropTypes.func.isRequired,
     queuesStatusUpdate: PropTypes.func.isRequired,
     queuesStatusFailure: PropTypes.func.isRequired,
+    queuesStatusTick: PropTypes.func.isRequired,
   };
 
   state = {
     tasksQuery: null,
+    intervalId: null,
   };
 
   async componentDidMount() {
     try {
       // increase by 1 the longest wait each minute
-      const eachMinute = (qName, prevQueuesStatus) => {
-        const queuesStatus = {
-          ...prevQueuesStatus,
-          [qName]: {
-            ...prevQueuesStatus[qName],
-            longestWaitingTask: {
-              ...prevQueuesStatus[qName].longestWaitingTask,
-              waitingMinutes: prevQueuesStatus[qName].longestWaitingTask.waitingMinutes + 1,
-            },
-          },
-        };
-
-        this.props.queuesStatusUpdate(queuesStatus);
-      };
-
       const q = await this.props.insightsClient.liveQuery('tr-queue', '');
       const queues = q.getItems();
       q.close();
@@ -54,19 +40,17 @@ class QueuesStatusWriter extends React.Component {
 
       const tasksQuery = await this.props.insightsClient.liveQuery('tr-task', '');
 
-      const updateQueuesStatus = (init = false) => {
-        console.log('UPDATER PROPS', this.props.queuesStatusState.queuesStatus);
+      const updateQueuesStatus = () => {
         const tasks = tasksQuery.getItems();
-        const prevQueuesStatus = this.props.queuesStatusState.queuesStatus;
-        const queuesStatus = getNewQueuesStatus(cleanQueuesStatus, tasks, prevQueuesStatus, eachMinute);
-        if (init) {
-          this.props.queuesStatusInit(queuesStatus);
-          return;
-        }
-        this.props.queuesStatusUpdate(queuesStatus);
+        const intermidiateStatus = getIntermidiateStatus(cleanQueuesStatus, tasks);
+        const intervalId = setInterval(this.props.queuesStatusTick, 1000 * 60);
+
+        clearInterval(this.state.intervalId);
+        this.setState({ intervalId });
+        this.props.queuesStatusUpdate(intermidiateStatus);
       };
 
-      this.setState({ tasksQuery }, () => updateQueuesStatus(true));
+      this.setState({ tasksQuery }, updateQueuesStatus);
 
       tasksQuery.on('itemUpdated', args => {
         console.log('TASK UPDATED', args);
@@ -84,16 +68,14 @@ class QueuesStatusWriter extends React.Component {
   }
 
   componentWillUnmount() {
-    const { queuesStatus } = this.props.queuesStatusState;
-    const { tasksQuery } = this.state;
+    const { tasksQuery, intervalId } = this.state;
     // unsuscribe
     if (tasksQuery) tasksQuery.close();
     // clear all timers
-    Object.values(queuesStatus).forEach(({ longestWaitingTask }) => clearInterval(longestWaitingTask.intervalId));
+    clearInterval(intervalId);
   }
 
   render() {
-    console.log('WRITER PROPS', this.props.queuesStatusState.queuesStatus)
     return null;
   }
 }
@@ -106,9 +88,9 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    queuesStatusInit: bindActionCreators(queuesStatusInit, dispatch),
     queuesStatusUpdate: bindActionCreators(queuesStatusUpdate, dispatch),
     queuesStatusFailure: bindActionCreators(queuesStatusFailure, dispatch),
+    queuesStatusTick: bindActionCreators(queuesStatusTick, dispatch),
   };
 };
 

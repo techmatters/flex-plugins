@@ -46,7 +46,6 @@ class QueuesStatus extends React.Component {
   render() {
     const { queuesStatus, error } = this.props.queuesStatusState;
     const { expanded } = this.state;
-    console.log('READER PROPS', this.props.queuesStatusState.queuesStatus)
     return (
       <>
         <Container>

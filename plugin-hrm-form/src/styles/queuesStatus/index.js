@@ -4,7 +4,7 @@ import { transparentize } from 'polished';
 import { FontOpenSans, Row } from '../HrmStyles';
 
 export const Container = styled('div')`
-  width: 300px;
+  width: 100%;
   background-color: #ffffff;
   padding: 5px;
 `;

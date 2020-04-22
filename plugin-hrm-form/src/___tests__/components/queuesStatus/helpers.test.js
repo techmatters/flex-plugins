@@ -5,6 +5,7 @@ import {
   newQueueEntry,
   initializeQueuesStatus,
   addPendingTasks,
+  getIntermidiateStatus,
   getNewQueuesStatus,
 } from '../../../components/queuesStatus/helpers';
 import { channelTypes } from '../../../states/DomainConstants';
@@ -15,7 +16,6 @@ test('Test newQueueEntry', () => {
     taskId: null,
     updated: null,
     waitingMinutes: null,
-    intervalId: null,
   });
 });
 
@@ -84,7 +84,8 @@ test('Test addPendingTasks', () => {
 
 let queuesStatus;
 test('Test getNewQueuesStatus with null prevQueuesStatus (first run)', () => {
-  const result = getNewQueuesStatus(cleanQueuesStatus, tasks, null, jest.fn());
+  const intermidiate = getIntermidiateStatus(cleanQueuesStatus, tasks);
+  const result = getNewQueuesStatus(intermidiate, null);
   expect(Object.keys(result).length).toBe(3);
   expect(result[queuesNames[0]].facebook).toBe(2);
   expect(result[queuesNames[1]].web).toBe(1);
@@ -95,7 +96,8 @@ test('Test getNewQueuesStatus with null prevQueuesStatus (first run)', () => {
 });
 
 test('Test getNewQueuesStatus with same pending tasks', () => {
-  const result = getNewQueuesStatus(cleanQueuesStatus, omit(tasks, 'T5'), queuesStatus, jest.fn());
+  const intermidiate = getIntermidiateStatus(cleanQueuesStatus, omit(tasks, 'T5'));
+  const result = getNewQueuesStatus(intermidiate, queuesStatus);
   expect(result).toStrictEqual(queuesStatus);
 });
 
@@ -111,7 +113,8 @@ const tasks2 = {
 };
 
 test('Test getNewQueuesStatus with a new pending task (with older date_update)', () => {
-  const result = getNewQueuesStatus(cleanQueuesStatus, tasks2, queuesStatus, jest.fn());
+  const intermidiate = getIntermidiateStatus(cleanQueuesStatus, tasks2);
+  const result = getNewQueuesStatus(intermidiate, queuesStatus);
   expect(Object.keys(result).length).toBe(3);
   expect(result[queuesNames[0]].facebook).toBe(3);
   expect(result[queuesNames[1]].web).toBe(1);
