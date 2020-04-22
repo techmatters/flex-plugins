@@ -5,7 +5,7 @@ import {
   newQueueEntry,
   initializeQueuesStatus,
   addPendingTasks,
-  updateQueuesStatus,
+  getNewQueuesStatus,
 } from '../../../components/queuesStatus/helpers';
 import { channelTypes } from '../../../states/DomainConstants';
 
@@ -83,8 +83,8 @@ test('Test addPendingTasks', () => {
 });
 
 let queuesStatus;
-test('Test updateQueuesStatus with null prevQueuesStatus (first run)', () => {
-  const result = updateQueuesStatus(cleanQueuesStatus, tasks, null, jest.fn());
+test('Test getNewQueuesStatus with null prevQueuesStatus (first run)', () => {
+  const result = getNewQueuesStatus(cleanQueuesStatus, tasks, null, jest.fn());
   expect(Object.keys(result).length).toBe(3);
   expect(result[queuesNames[0]].facebook).toBe(2);
   expect(result[queuesNames[1]].web).toBe(1);
@@ -94,8 +94,8 @@ test('Test updateQueuesStatus with null prevQueuesStatus (first run)', () => {
   queuesStatus = result;
 });
 
-test('Test updateQueuesStatus with same pending tasks', () => {
-  const result = updateQueuesStatus(cleanQueuesStatus, omit(tasks, 'T5'), queuesStatus, jest.fn());
+test('Test getNewQueuesStatus with same pending tasks', () => {
+  const result = getNewQueuesStatus(cleanQueuesStatus, omit(tasks, 'T5'), queuesStatus, jest.fn());
   expect(result).toStrictEqual(queuesStatus);
 });
 
@@ -110,8 +110,8 @@ const tasks2 = {
   },
 };
 
-test('Test updateQueuesStatus with a new pending task (with older date_update)', () => {
-  const result = updateQueuesStatus(cleanQueuesStatus, tasks2, queuesStatus, jest.fn());
+test('Test getNewQueuesStatus with a new pending task (with older date_update)', () => {
+  const result = getNewQueuesStatus(cleanQueuesStatus, tasks2, queuesStatus, jest.fn());
   expect(Object.keys(result).length).toBe(3);
   expect(result[queuesNames[0]].facebook).toBe(3);
   expect(result[queuesNames[1]].web).toBe(1);

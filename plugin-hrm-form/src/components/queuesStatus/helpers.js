@@ -25,8 +25,7 @@ export const initializeQueuesStatus = queues =>
     .reduce((acc, q) => ({ ...acc, [q.queue_name]: newQueueEntry }), {});
 
 /**
- * @param {{ [queue_name: string]: typeof newQueueEntry }} acc
- * @param {{ task_sid: string; status: string; date_updated: string; attributes: { channelType: string; }; queue_name: string; }} task
+ * Adds each pending tasks to the appropiate queue and channel
  * @returns {{ [queue_name: string]: typeof newQueueEntry }}
  */
 export const addPendingTasks = (acc, task) => {
@@ -52,39 +51,26 @@ export const addPendingTasks = (acc, task) => {
 };
 
 /**
- * @returns {{ [queue_name: string]: typeof newQueueEntry }}
+ * Adds the timers for each queue (if there are pending tasks) and calculates the longest wait time
+ * @returns {(acc, [qName, newStatus]) => { [queue_name: string]: typeof newQueueEntry }}
  */
-export const updateQueuesStatus = (cleanQueuesStatus, tasks, prevQueuesStatus, callback) => {
-  const intermidiate = Object.values(tasks).reduce(addPendingTasks, cleanQueuesStatus);
+const addTimers = (prevQueuesStatus, eachMinute) => (acc, [qName, newStatus]) => {
+  const prevStatus = prevQueuesStatus && prevQueuesStatus[qName];
+  const noTasksWaiting = newStatus.longestWaitingTask.taskId === null;
+  const newLongestWaitingTaskId =
+    !prevStatus || newStatus.longestWaitingTask.taskId !== prevStatus.longestWaitingTask.taskId;
 
-  return Object.entries(intermidiate).reduce((acc, [qName, newStatus]) => {
-    const prevStatus = prevQueuesStatus && prevQueuesStatus[qName];
-    const noTasksWaiting = newStatus.longestWaitingTask.taskId === null;
-    const newLongestWaitingTaskId =
-      !prevStatus || newStatus.longestWaitingTask.taskId !== prevStatus.longestWaitingTask.taskId;
+  if (noTasksWaiting) {
+    if (prevStatus) clearTimeout(prevStatus.longestWaitingTask.intervalId);
+    return acc;
+  }
 
-    if (noTasksWaiting) {
-      if (prevStatus) clearTimeout(prevStatus.longestWaitingTask.intervalId);
-      return acc;
-    }
+  const waitingMillis = new Date().getTime() - new Date(newStatus.longestWaitingTask.updated).getTime();
+  const waitingMinutes = Math.floor(waitingMillis / (60 * 1000)); // should use Math.round instead?
 
-    const waitingMillis = new Date().getTime() - new Date(newStatus.longestWaitingTask.updated).getTime();
-    const waitingMinutes = Math.floor(waitingMillis / (60 * 1000)); // should use Math.round instead?
-
-    if (newLongestWaitingTaskId) {
-      if (prevStatus) clearTimeout(prevStatus.longestWaitingTask.intervalId);
-      const intervalId = setInterval(() => callback(qName), 1000 * 60);
-      return {
-        ...acc,
-        [qName]: {
-          ...newStatus,
-          longestWaitingTask: { ...newStatus.longestWaitingTask, waitingMinutes, intervalId },
-        },
-      };
-    }
-
-    // at this point, prevStatus.longestWaitingTask is the longest waiting for this queue
-    const { intervalId } = prevStatus.longestWaitingTask;
+  if (newLongestWaitingTaskId) {
+    if (prevStatus) clearTimeout(prevStatus.longestWaitingTask.intervalId);
+    const intervalId = setInterval(() => eachMinute(qName), 1000 * 60);
     return {
       ...acc,
       [qName]: {
@@ -92,5 +78,26 @@ export const updateQueuesStatus = (cleanQueuesStatus, tasks, prevQueuesStatus, c
         longestWaitingTask: { ...newStatus.longestWaitingTask, waitingMinutes, intervalId },
       },
     };
-  }, intermidiate);
+  }
+
+  // at this point, prevStatus.longestWaitingTask is the longest waiting for this queue
+  const { intervalId } = prevStatus.longestWaitingTask;
+  return {
+    ...acc,
+    [qName]: {
+      ...newStatus,
+      longestWaitingTask: { ...newStatus.longestWaitingTask, waitingMinutes, intervalId },
+    },
+  };
+};
+
+/**
+ * @returns {{ [queue_name: string]: typeof newQueueEntry }}
+ */
+export const getNewQueuesStatus = (cleanQueuesStatus, tasks, prevQueuesStatus, eachMinute) => {
+  const intermidiate = Object.values(tasks).reduce(addPendingTasks, cleanQueuesStatus);
+
+  const newQueuesStatus = Object.entries(intermidiate).reduce(addTimers(prevQueuesStatus, eachMinute), intermidiate);
+
+  return newQueuesStatus;
 };

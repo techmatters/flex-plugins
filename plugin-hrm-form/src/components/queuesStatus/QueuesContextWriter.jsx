@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { initializeQueuesStatus, updateQueuesStatus } from './helpers';
+import { initializeQueuesStatus, getNewQueuesStatus } from './helpers';
 import { withQueuesContext } from '../../contexts/QueuesStatusContext';
 
 function timeout(ms) {
@@ -31,6 +31,7 @@ class QueuesContextWriter extends React.Component {
 
   async componentDidMount() {
     try {
+      // increases by 1 the waiting time each minute
       const eachMinute = qName =>
         this.props.queuesContext.setState(prev => ({
           queuesStatus: {
@@ -58,7 +59,7 @@ class QueuesContextWriter extends React.Component {
       const updateQueuesContext = () => {
         const tasks = tasksQuery.getItems();
         const prevQueuesStatus = this.props.queuesContext.state.queuesStatus;
-        const queuesStatus = updateQueuesStatus(cleanQueuesStatus, tasks, prevQueuesStatus, eachMinute);
+        const queuesStatus = getNewQueuesStatus(cleanQueuesStatus, tasks, prevQueuesStatus, eachMinute);
         this.props.queuesContext.setState({ queuesStatus, loading: false });
       };
 
@@ -66,11 +67,14 @@ class QueuesContextWriter extends React.Component {
 
       tasksQuery.on('itemUpdated', args => {
         console.log('TASK UPDATED', args);
-        // here we can filter and update only if the task belongs to a queue the user cares about
-        updateQueuesContext();
+        const { status } = args.value;
+        if (status === 'pending' || status === 'reserved' || status === 'canceled') {
+          // here we can filter and update only if the task belongs to a queue the user cares about
+          updateQueuesContext();
+        }
       });
     } catch (err) {
-      const error = "Error, couldn't subscribing to live updates";
+      const error = "Error, couldn't subscribe to live updates";
       this.props.queuesContext.setState({ error });
       console.log(error, err);
     }

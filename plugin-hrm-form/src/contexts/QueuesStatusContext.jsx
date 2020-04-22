@@ -33,10 +33,11 @@ export class QueuesContextProvider extends React.Component {
   };
 
   render() {
+    const { queuesStatus, error, loading } = this.state;
     return (
       <Provider
         value={{
-          state: this.state,
+          state: { queuesStatus, error, loading },
           setState: this.setState.bind(this),
         }}
       >
