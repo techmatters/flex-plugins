@@ -69,7 +69,8 @@ export default class HrmFormPlugin extends FlexPlugin {
     const facebookColor = flex.DefaultTaskChannels.ChatMessenger.colors.main;
     const smsColor = flex.DefaultTaskChannels.ChatSms.colors.main;
     const whatsappColor = flex.DefaultTaskChannels.ChatWhatsApp.colors.main;
-    flex.AgentDesktopView.Panel1.Content.add(
+    // flex.AgentDesktopView.Panel1.Content.add(
+    flex.TaskListContainer.Content.add(
       <QueuesContextProvider key="queue-status-context">
         <QueuesContextWriter insightsClient={manager.insightsClient} key="queue-status-writer" />
         <QueuesStatus

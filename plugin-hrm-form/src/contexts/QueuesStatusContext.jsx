@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const defaultValue = {
-  state: { queuesStatus: null, error: 'No context provider suplied' },
+  state: { queuesStatus: null, error: 'No context provider suplied', loading: false },
   setState: undefined,
 };
 
@@ -29,6 +29,7 @@ export class QueuesContextProvider extends React.Component {
   state = {
     queuesStatus: null,
     error: null,
+    loading: true,
   };
 
   render() {

@@ -4,6 +4,10 @@ import PropTypes from 'prop-types';
 import { initializeQueuesStatus, updateQueuesStatus } from './helpers';
 import { withQueuesContext } from '../../contexts/QueuesStatusContext';
 
+function timeout(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 class QueuesContextWriter extends React.Component {
   static displayName = 'QueuesContextWriter';
 
@@ -15,6 +19,7 @@ class QueuesContextWriter extends React.Component {
       state: PropTypes.shape({
         queuesStatus: PropTypes.shape({}),
         error: PropTypes.string,
+        loading: PropTypes.bool,
       }),
       setState: PropTypes.func.isRequired,
     }).isRequired,
@@ -40,6 +45,8 @@ class QueuesContextWriter extends React.Component {
           },
         }));
 
+      await timeout(500);
+
       const q = await this.props.insightsClient.liveQuery('tr-queue', '');
       const queues = q.getItems();
       q.close();
@@ -52,7 +59,7 @@ class QueuesContextWriter extends React.Component {
         const tasks = tasksQuery.getItems();
         const prevQueuesStatus = this.props.queuesContext.state.queuesStatus;
         const queuesStatus = updateQueuesStatus(cleanQueuesStatus, tasks, prevQueuesStatus, eachMinute);
-        this.props.queuesContext.setState({ queuesStatus });
+        this.props.queuesContext.setState({ queuesStatus, loading: false });
       };
 
       this.setState({ tasksQuery }, () => updateQueuesContext());

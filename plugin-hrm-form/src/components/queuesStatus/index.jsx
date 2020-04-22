@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Collapse } from '@material-ui/core';
+import { CircularProgress, Collapse } from '@material-ui/core';
 import { ArrowDropDownTwoTone, ArrowDropUpTwoTone } from '@material-ui/icons';
 
 import QueueCard from './QueueCard';
@@ -23,6 +23,7 @@ class QueuesStatus extends React.Component {
       state: PropTypes.shape({
         queuesStatus: PropTypes.shape({}),
         error: PropTypes.string,
+        loading: PropTypes.bool,
       }),
     }).isRequired,
   };
@@ -34,6 +35,8 @@ class QueuesStatus extends React.Component {
   handleExpandClick = () => this.setState(prev => ({ expanded: !prev.expanded }));
 
   renderHeaderIcon = () => {
+    if (this.props.queuesContext.state.loading) return <CircularProgress size={12} color="inherit" />;
+
     return this.state.expanded ? (
       <ArrowDropUpTwoTone style={{ padding: 0, fontSize: 18 }} />
     ) : (
@@ -44,7 +47,6 @@ class QueuesStatus extends React.Component {
   render() {
     const { queuesStatus, error } = this.props.queuesContext.state;
     const { expanded } = this.state;
-    console.log('QUEUES READER', this.props.queuesContext)
     return (
       <>
         <Container>
