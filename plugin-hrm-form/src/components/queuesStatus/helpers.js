@@ -54,7 +54,7 @@ export const addPendingTasks = (acc, task) => {
 /**
  * @returns {{ [queue_name: string]: typeof newQueueEntry }}
  */
-export const updateQueuesStatus = (cleanQueuesStatus, tasks, prevQueuesStatus, callback) => {
+export const getNewQueuesStatus = (cleanQueuesStatus, tasks, prevQueuesStatus, eachMinute) => {
   const intermidiate = Object.values(tasks).reduce(addPendingTasks, cleanQueuesStatus);
 
   return Object.entries(intermidiate).reduce((acc, [qName, newStatus]) => {
@@ -73,7 +73,7 @@ export const updateQueuesStatus = (cleanQueuesStatus, tasks, prevQueuesStatus, c
 
     if (newLongestWaitingTaskId) {
       if (prevStatus) clearTimeout(prevStatus.longestWaitingTask.intervalId);
-      const intervalId = setInterval(() => callback(qName), 1000 * 60);
+      const intervalId = setInterval(() => eachMinute(qName, prevQueuesStatus), 1000 * 60);
       return {
         ...acc,
         [qName]: {

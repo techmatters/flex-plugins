@@ -4,12 +4,11 @@ import { FlexPlugin } from 'flex-plugin';
 
 import CustomCRMContainer from './components/CustomCRMContainer';
 import QueuesStatus from './components/queuesStatus';
-import QueuesContextWriter from './components/queuesStatus/QueuesContextWriter';
+import QueuesStatusWriter from './components/queuesStatus/QueuesStatusWriter';
 import reducers, { namespace } from './states';
 import { Actions } from './states/ContactState';
 import ConfigurationContext from './contexts/ConfigurationContext';
 import LocalizationContext from './contexts/LocalizationContext';
-import { QueuesContextProvider } from './contexts/QueuesStatusContext';
 import HrmTheme from './styles/HrmTheme';
 import { channelTypes } from './states/DomainConstants';
 
@@ -63,27 +62,31 @@ export default class HrmFormPlugin extends FlexPlugin {
       console.error('HRM base URL not defined, you must provide this to save program data');
     }
 
+    flex.AgentDesktopView.Panel1.Content.add(
+      <QueuesStatusWriter insightsClient={manager.insightsClient} key="queue-status-writer" />,
+      {
+        sortOrder: -1,
+        align: 'start',
+      },
+    );
+
     // voice color right now is same as web color. Should this change?
     const voiceColor = flex.DefaultTaskChannels.Chat.colors.main;
     const webColor = flex.DefaultTaskChannels.Chat.colors.main;
     const facebookColor = flex.DefaultTaskChannels.ChatMessenger.colors.main;
     const smsColor = flex.DefaultTaskChannels.ChatSms.colors.main;
     const whatsappColor = flex.DefaultTaskChannels.ChatWhatsApp.colors.main;
-    // flex.AgentDesktopView.Panel1.Content.add(
     flex.TaskListContainer.Content.add(
-      <QueuesContextProvider key="queue-status-context">
-        <QueuesContextWriter insightsClient={manager.insightsClient} key="queue-status-writer" />
-        <QueuesStatus
-          key="queue-status"
-          colors={{
-            voiceColor,
-            webColor,
-            facebookColor,
-            smsColor,
-            whatsappColor,
-          }}
-        />
-      </QueuesContextProvider>,
+      <QueuesStatus
+        key="queue-status"
+        colors={{
+          voiceColor,
+          webColor,
+          facebookColor,
+          smsColor,
+          whatsappColor,
+        }}
+      />,
       {
         sortOrder: -1,
         align: 'start',
@@ -166,7 +169,7 @@ export default class HrmFormPlugin extends FlexPlugin {
   /**
    * Registers the plugin reducers
    *
-   * @param manager { Flex.Manager }
+   * @param {import('@twilio/flex-ui').Manager} manager
    */
   registerReducers(manager) {
     if (!manager.store.addReducer) {

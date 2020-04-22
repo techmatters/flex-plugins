@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { CircularProgress, Collapse } from '@material-ui/core';
 import { ArrowDropDownTwoTone, ArrowDropUpTwoTone } from '@material-ui/icons';
 
 import QueueCard from './QueueCard';
 import { Container, HeaderContainer, QueuesContainer } from '../../styles/queuesStatus';
 import { Box, ErrorText } from '../../styles/HrmStyles';
-import { withQueuesContext } from '../../contexts/QueuesStatusContext';
+import { namespace, queuesStatusBase } from '../../states';
 
 class QueuesStatus extends React.Component {
   static displayName = 'QueuesStatus';
@@ -19,12 +20,10 @@ class QueuesStatus extends React.Component {
       smsColor: PropTypes.shape({ Accepted: PropTypes.string }),
       whatsappColor: PropTypes.shape({ Accepted: PropTypes.string }),
     }).isRequired,
-    queuesContext: PropTypes.shape({
-      state: PropTypes.shape({
-        queuesStatus: PropTypes.shape({}),
-        error: PropTypes.string,
-        loading: PropTypes.bool,
-      }),
+    queuesStatusState: PropTypes.shape({
+      queuesStatus: PropTypes.shape({}),
+      error: PropTypes.string,
+      loading: PropTypes.bool,
     }).isRequired,
   };
 
@@ -35,7 +34,7 @@ class QueuesStatus extends React.Component {
   handleExpandClick = () => this.setState(prev => ({ expanded: !prev.expanded }));
 
   renderHeaderIcon = () => {
-    if (this.props.queuesContext.state.loading) return <CircularProgress size={12} color="inherit" />;
+    if (this.props.queuesStatusState.loading) return <CircularProgress size={12} color="inherit" />;
 
     return this.state.expanded ? (
       <ArrowDropUpTwoTone style={{ padding: 0, fontSize: 18 }} />
@@ -45,8 +44,9 @@ class QueuesStatus extends React.Component {
   };
 
   render() {
-    const { queuesStatus, error } = this.props.queuesContext.state;
+    const { queuesStatus, error } = this.props.queuesStatusState;
     const { expanded } = this.state;
+    console.log('READER PROPS', this.props.queuesStatusState.queuesStatus)
     return (
       <>
         <Container>
@@ -71,4 +71,10 @@ class QueuesStatus extends React.Component {
   }
 }
 
-export default withQueuesContext(QueuesStatus);
+const mapStateToProps = (state, ownProps) => {
+  const queuesStatusState = state[namespace][queuesStatusBase];
+
+  return { queuesStatusState };
+};
+
+export default connect(mapStateToProps, null)(QueuesStatus);
