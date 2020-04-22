@@ -4,10 +4,12 @@ import { FlexPlugin } from 'flex-plugin';
 
 import CustomCRMContainer from './components/CustomCRMContainer';
 import QueuesStatus from './components/queuesStatus';
+import QueuesContextWriter from './components/queuesStatus/QueuesContextWriter';
 import reducers, { namespace } from './states';
 import { Actions } from './states/ContactState';
 import ConfigurationContext from './contexts/ConfigurationContext';
 import LocalizationContext from './contexts/LocalizationContext';
+import { QueuesContextProvider } from './contexts/QueuesStatusContext';
 import HrmTheme from './styles/HrmTheme';
 import { channelTypes } from './states/DomainConstants';
 
@@ -67,19 +69,20 @@ export default class HrmFormPlugin extends FlexPlugin {
     const facebookColor = flex.DefaultTaskChannels.ChatMessenger.colors.main;
     const smsColor = flex.DefaultTaskChannels.ChatSms.colors.main;
     const whatsappColor = flex.DefaultTaskChannels.ChatWhatsApp.colors.main;
-
-    flex.TaskListContainer.Content.add(
-      <QueuesStatus
-        key="queue-status"
-        insightsClient={manager.insightsClient}
-        colors={{
-          voiceColor,
-          webColor,
-          facebookColor,
-          smsColor,
-          whatsappColor,
-        }}
-      />,
+    flex.AgentDesktopView.Panel1.Content.add(
+      <QueuesContextProvider key="queue-status-context">
+        <QueuesContextWriter insightsClient={manager.insightsClient} key="queue-status-writer" />
+        <QueuesStatus
+          key="queue-status"
+          colors={{
+            voiceColor,
+            webColor,
+            facebookColor,
+            smsColor,
+            whatsappColor,
+          }}
+        />
+      </QueuesContextProvider>,
       {
         sortOrder: -1,
         align: 'start',
