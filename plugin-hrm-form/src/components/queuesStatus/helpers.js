@@ -26,11 +26,7 @@ export const initializeQueuesStatus = queues =>
 
 /**
  * @param {{ [queue_name: string]: typeof newQueueEntry }} acc
- * @param {{
- *  task_sid: string; status: string;
- *  date_updated: string;
- *  attributes: { channelType: string; };
- *  queue_name: string; }} task
+ * @param {{ task_sid: string; status: string; date_updated: string; attributes: { channelType: string; }; queue_name: string; }} task
  * @returns {{ [queue_name: string]: typeof newQueueEntry }}
  */
 export const addPendingTasks = (acc, task) => {
@@ -56,7 +52,6 @@ export const addPendingTasks = (acc, task) => {
 };
 
 /**
- *
  * @returns {{ [queue_name: string]: typeof newQueueEntry }}
  */
 export const updateQueuesStatus = (cleanQueuesStatus, tasks, prevQueuesStatus, callback) => {
