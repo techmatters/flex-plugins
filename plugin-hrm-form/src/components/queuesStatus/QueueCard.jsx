@@ -37,7 +37,7 @@ class QueuesCard extends React.PureComponent {
   };
 
   state = {
-    waitingMinutes: null,
+    waitingMinutes: 0,
     intervalId: null,
   };
 
@@ -67,7 +67,7 @@ class QueuesCard extends React.PureComponent {
       60 * 1000,
     );
 
-    this.setState({ intervalId });
+    this.setState({ intervalId, waitingMinutes: 0 });
   };
 
   renderChannel = (channel, color, value, marginLeft) => (
