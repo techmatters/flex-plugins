@@ -41,6 +41,10 @@ class QueuesCard extends React.PureComponent {
     intervalId: null,
   };
 
+  componentDidMount() {
+    if (this.props.longestWaitingDate) this.setNewInterval();
+  }
+
   componentDidUpdate(prevProps, prevState) {
     const { longestWaitingDate } = this.props;
 
@@ -66,6 +70,13 @@ class QueuesCard extends React.PureComponent {
     this.setState({ intervalId });
   };
 
+  renderChannel = (channel, color, value, marginLeft) => (
+    <ChannelColumn marginLeft={marginLeft}>
+      <ChannelBox backgroundColor={color}>{value}</ChannelBox>
+      <ChannelLabel>{channel}</ChannelLabel>
+    </ChannelColumn>
+  );
+
   render() {
     const { qName, colors, facebook, sms, voice, web, whatsapp, longestWaitingDate } = this.props;
     const { voiceColor, smsColor, facebookColor, whatsappColor, webColor } = colors;
@@ -77,26 +88,11 @@ class QueuesCard extends React.PureComponent {
           <QueueName>{qName}</QueueName>
           <Box marginTop="7px" marginBottom="14px">
             <Row>
-              <ChannelColumn>
-                <ChannelBox backgroundColor={voiceColor.Accepted}>{voice}</ChannelBox>
-                <ChannelLabel>Calls</ChannelLabel>
-              </ChannelColumn>
-              <ChannelColumn marginLeft>
-                <ChannelBox backgroundColor={smsColor.Accepted}>{sms}</ChannelBox>
-                <ChannelLabel>SMS</ChannelLabel>
-              </ChannelColumn>
-              <ChannelColumn marginLeft>
-                <ChannelBox backgroundColor={facebookColor.Accepted}>{facebook}</ChannelBox>
-                <ChannelLabel>FB</ChannelLabel>
-              </ChannelColumn>
-              <ChannelColumn marginLeft>
-                <ChannelBox backgroundColor={whatsappColor.Accepted}>{whatsapp}</ChannelBox>
-                <ChannelLabel>WA</ChannelLabel>
-              </ChannelColumn>
-              <ChannelColumn marginLeft>
-                <ChannelBox backgroundColor={webColor.Accepted}>{web}</ChannelBox>
-                <ChannelLabel>Chat</ChannelLabel>
-              </ChannelColumn>
+              {this.renderChannel('Calls', voiceColor.Accepted, voice, false)}
+              {this.renderChannel('SMS', smsColor.Accepted, sms, true)}
+              {this.renderChannel('FB', facebookColor.Accepted, facebook, true)}
+              {this.renderChannel('WA', whatsappColor.Accepted, whatsapp, true)}
+              {this.renderChannel('Chat', webColor.Accepted, web, true)}
             </Row>
           </Box>
           <Row>
