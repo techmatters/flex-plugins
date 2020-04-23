@@ -1,7 +1,7 @@
 import { channelTypes } from '../../states/DomainConstants';
 
 /**
- * @type {{ [K in keyof channelTypes]: number } & { longestWaitingTask: string; }}
+ * @type {{ [K in keyof channelTypes]: number } & { longestWaitingDate: string; }}
  */
 export const newQueueEntry = {
   facebook: 0,
@@ -9,7 +9,7 @@ export const newQueueEntry = {
   voice: 0,
   web: 0,
   whatsapp: 0,
-  longestWaitingTask: null,
+  longestWaitingDate: null,
 };
 
 /**
@@ -32,15 +32,15 @@ export const addPendingTasks = (acc, task) => {
   const updated = task.date_updated;
   const channel = task.attributes.channelType;
   const queue = task.queue_name;
-  const currentOldest = acc[queue].longestWaitingTask;
-  const longestWaitingTask = currentOldest !== null && currentOldest < updated ? currentOldest : updated;
+  const currentOldest = acc[queue].longestWaitingDate;
+  const longestWaitingDate = currentOldest !== null && currentOldest < updated ? currentOldest : updated;
 
   return {
     ...acc,
     [queue]: {
       ...acc[queue],
       [channel]: acc[queue][channel] + 1,
-      longestWaitingTask,
+      longestWaitingDate,
     },
   };
 };

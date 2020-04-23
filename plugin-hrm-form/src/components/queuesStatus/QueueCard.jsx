@@ -22,7 +22,7 @@ class QueuesCard extends React.PureComponent {
     voice: PropTypes.number.isRequired,
     web: PropTypes.number.isRequired,
     whatsapp: PropTypes.number.isRequired,
-    longestWaitingTask: PropTypes.string.isRequired,
+    longestWaitingDate: PropTypes.string.isRequired,
     colors: PropTypes.shape({
       voiceColor: PropTypes.shape({ Accepted: PropTypes.string }),
       webColor: PropTypes.shape({ Accepted: PropTypes.string }),
@@ -38,12 +38,12 @@ class QueuesCard extends React.PureComponent {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { longestWaitingTask } = this.props;
+    const { longestWaitingDate } = this.props;
 
-    if (prevProps.longestWaitingTask !== longestWaitingTask) {
+    if (prevProps.longestWaitingDate !== longestWaitingDate) {
       clearTimeout(prevState.intervalId);
 
-      if (longestWaitingTask) {
+      if (longestWaitingDate) {
         this.setNewInterval();
       }
     }
@@ -63,12 +63,12 @@ class QueuesCard extends React.PureComponent {
   };
 
   render() {
-    const { qName, colors, facebook, sms, voice, web, whatsapp, longestWaitingTask } = this.props;
+    const { qName, colors, facebook, sms, voice, web, whatsapp, longestWaitingDate } = this.props;
     const { voiceColor, smsColor, facebookColor, whatsappColor, webColor } = colors;
-    const waitingMinutes = longestWaitingTask && differenceInMinutes(new Date(), new Date(longestWaitingTask));
+    const waitingMinutes = longestWaitingDate && differenceInMinutes(new Date(), new Date(longestWaitingDate));
     const waitingMinutesMsg =
       // eslint-disable-next-line no-nested-ternary
-      longestWaitingTask === null
+      longestWaitingDate === null
         ? 'None'
         : waitingMinutes === 0
         ? 'Less than 1 minute'

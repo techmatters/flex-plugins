@@ -11,7 +11,7 @@ import { channelTypes } from '../../../states/DomainConstants';
 
 test('Test newQueueEntry', () => {
   Object.keys(channelTypes).forEach(key => expect(newQueueEntry[key]).toEqual(0));
-  expect(newQueueEntry.longestWaitingTask).toBeNull();
+  expect(newQueueEntry.longestWaitingDate).toBeNull();
 });
 
 const queuesNames = ['Queue One', 'Queue Two', 'Queue Nine Nine'];
@@ -83,8 +83,8 @@ test('Test getNewQueuesStatus', () => {
   expect(Object.keys(result).length).toBe(3); // 3 queues
   expect(result[queuesNames[0]].facebook).toBe(2);
   expect(result[queuesNames[1]].web).toBe(1);
-  expect(result[queuesNames[0]].longestWaitingTask).toBe(tasks.T3.date_updated);
-  expect(result[queuesNames[1]].longestWaitingTask).toBe(tasks.T2.date_updated);
+  expect(result[queuesNames[0]].longestWaitingDate).toBe(tasks.T3.date_updated);
+  expect(result[queuesNames[1]].longestWaitingDate).toBe(tasks.T2.date_updated);
 
   queuesStatus = result;
 });
@@ -110,8 +110,8 @@ test('Test getNewQueuesStatus with a new pending task (with older date_update)',
   expect(Object.keys(result).length).toBe(3); // 3 queues
   expect(result[queuesNames[0]].facebook).toBe(3);
   expect(result[queuesNames[1]].web).toBe(1);
-  expect(result[queuesNames[0]].longestWaitingTask).toBe(tasks2.T6.date_updated);
-  expect(result[queuesNames[1]].longestWaitingTask).toBe(tasks2.T2.date_updated);
+  expect(result[queuesNames[0]].longestWaitingDate).toBe(tasks2.T6.date_updated);
+  expect(result[queuesNames[1]].longestWaitingDate).toBe(tasks2.T2.date_updated);
 
   queuesStatus = result;
 });
@@ -132,8 +132,8 @@ test('Test getNewQueuesStatus with a new pending task (with newer date_update)',
   expect(Object.keys(result).length).toBe(3); // 3 queues
   expect(result[queuesNames[0]].facebook).toBe(4);
   expect(result[queuesNames[1]].web).toBe(1);
-  expect(result[queuesNames[0]].longestWaitingTask).toBe(tasks3.T6.date_updated);
-  expect(result[queuesNames[1]].longestWaitingTask).toBe(tasks3.T2.date_updated);
+  expect(result[queuesNames[0]].longestWaitingDate).toBe(tasks3.T6.date_updated);
+  expect(result[queuesNames[1]].longestWaitingDate).toBe(tasks3.T2.date_updated);
 
   queuesStatus = result;
 });
