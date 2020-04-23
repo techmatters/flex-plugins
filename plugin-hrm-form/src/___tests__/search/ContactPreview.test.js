@@ -57,14 +57,14 @@ test('<ContactPreview> should mount', () => {
   };
   const formatedDate = `${format(new Date(contact.overview.dateTime), 'MMM d, yyyy h:mm aaaaa')}m`;
 
-  const handleConnect = jest.fn();
+  const handleOpenConnectDialog = jest.fn();
   const handleViewDetails = jest.fn();
   const handleMockedMessage = jest.fn();
 
   const component = renderer.create(
     <ContactPreview
       contact={contact}
-      handleConnect={handleConnect}
+      handleOpenConnectDialog={handleOpenConnectDialog}
       handleViewDetails={handleViewDetails}
       handleMockedMessage={handleMockedMessage}
     />,

@@ -62,9 +62,9 @@ test('Test <QueuesStatus> after update', () => {
   };
   const queuesStatusState = {
     queuesStatus: {
-      Q1: { facebook: 1, sms: 2, voice: 3, web: 4, whatsapp: 5, longestWaitingDate: secondsAgo },
-      Q2: { facebook: 5, sms: 4, voice: 3, web: 2, whatsapp: 1, longestWaitingDate: oneMinuteAgo },
-      Q3: { facebook: 2, sms: 2, voice: 2, web: 2, whatsapp: 2, longestWaitingDate: twoMinutesAgo },
+      Q1: { facebook: 1, sms: 2, voice: 3, web: 4, whatsapp: 5, longestWaitingDate: secondsAgo.toISOString() },
+      Q2: { facebook: 5, sms: 4, voice: 3, web: 2, whatsapp: 1, longestWaitingDate: oneMinuteAgo.toISOString() },
+      Q3: { facebook: 2, sms: 2, voice: 2, web: 2, whatsapp: 2, longestWaitingDate: twoMinutesAgo.toISOString() },
       Q4: { facebook: 0, sms: 0, voice: 0, web: 0, whatsapp: 0, longestWaitingDate: null },
     },
     error: null,
@@ -108,7 +108,7 @@ test('Test <QueuesStatus> after error', () => {
   };
   const queuesStatusState = {
     queuesStatus: {
-      Q1: { facebook: 1, sms: 2, voice: 3, web: 4, whatsapp: 5, longestWaitingDate: secondsAgo },
+      Q1: { facebook: 1, sms: 2, voice: 3, web: 4, whatsapp: 5, longestWaitingDate: secondsAgo.toISOString() },
     },
     error: 'Some error occured',
     loading: true,

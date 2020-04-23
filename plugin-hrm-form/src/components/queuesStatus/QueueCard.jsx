@@ -22,7 +22,7 @@ class QueuesCard extends React.PureComponent {
     voice: PropTypes.number.isRequired,
     web: PropTypes.number.isRequired,
     whatsapp: PropTypes.number.isRequired,
-    longestWaitingDate: PropTypes.string.isRequired,
+    longestWaitingDate: PropTypes.string,
     colors: PropTypes.shape({
       voiceColor: PropTypes.shape({ Accepted: PropTypes.string }),
       webColor: PropTypes.shape({ Accepted: PropTypes.string }),
@@ -30,6 +30,10 @@ class QueuesCard extends React.PureComponent {
       smsColor: PropTypes.shape({ Accepted: PropTypes.string }),
       whatsappColor: PropTypes.shape({ Accepted: PropTypes.string }),
     }).isRequired,
+  };
+
+  static defaultProps = {
+    longestWaitingDate: null,
   };
 
   state = {
