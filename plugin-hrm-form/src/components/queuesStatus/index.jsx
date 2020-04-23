@@ -21,7 +21,7 @@ class QueuesStatus extends React.Component {
     }).isRequired,
     queuesContext: PropTypes.shape({
       state: PropTypes.shape({
-        queuesStatus: PropTypes.shape({}),
+        queuesStatus: PropTypes.shape({}), // become this a proptype and export it
         error: PropTypes.string,
         loading: PropTypes.bool,
       }),
@@ -61,7 +61,7 @@ class QueuesStatus extends React.Component {
               {error && <ErrorText>{error}</ErrorText>}
               {queuesStatus &&
                 Object.entries(queuesStatus).map(([qName, qStatus]) => (
-                  <QueueCard key={qName} qName={qName} qStatus={qStatus} colors={this.props.colors} />
+                  <QueueCard key={qName} qName={qName} colors={this.props.colors} {...qStatus} />
                 ))}
             </QueuesContainer>
           </Collapse>

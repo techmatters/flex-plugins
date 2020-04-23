@@ -31,21 +31,6 @@ class QueuesContextWriter extends React.Component {
 
   async componentDidMount() {
     try {
-      // increases by 1 the waiting time each minute
-      const eachMinute = qName =>
-        this.props.queuesContext.setState(prev => ({
-          queuesStatus: {
-            ...prev.queuesStatus,
-            [qName]: {
-              ...prev.queuesStatus[qName],
-              longestWaitingTask: {
-                ...prev.queuesStatus[qName].longestWaitingTask,
-                waitingMinutes: prev.queuesStatus[qName].longestWaitingTask.waitingMinutes + 1,
-              },
-            },
-          },
-        }));
-
       await timeout(500);
 
       const q = await this.props.insightsClient.liveQuery('tr-queue', '');
@@ -58,12 +43,12 @@ class QueuesContextWriter extends React.Component {
 
       const updateQueuesContext = () => {
         const tasks = tasksQuery.getItems();
-        const prevQueuesStatus = this.props.queuesContext.state.queuesStatus;
-        const queuesStatus = getNewQueuesStatus(cleanQueuesStatus, tasks, prevQueuesStatus, eachMinute);
+        const queuesStatus = getNewQueuesStatus(cleanQueuesStatus, tasks);
         this.props.queuesContext.setState({ queuesStatus, loading: false });
       };
 
-      this.setState({ tasksQuery }, () => updateQueuesContext());
+      updateQueuesContext();
+      this.setState({ tasksQuery });
 
       tasksQuery.on('itemUpdated', args => {
         console.log('TASK UPDATED', args);
@@ -81,12 +66,9 @@ class QueuesContextWriter extends React.Component {
   }
 
   componentWillUnmount() {
-    const { queuesStatus } = this.props.queuesContext.state;
     const { tasksQuery } = this.state;
     // unsuscribe
     if (tasksQuery) tasksQuery.close();
-    // clear all timers
-    Object.values(queuesStatus).forEach(({ longestWaitingTask }) => clearInterval(longestWaitingTask.intervalId));
   }
 
   render() {

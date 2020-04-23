@@ -1,9 +1,7 @@
 import { channelTypes } from '../../states/DomainConstants';
 
 /**
- * @type {{ [K in keyof channelTypes]: number } & {
- *  longestWaitingTask: { taskId: string; updated: string; waitingMinutes: number; intervalId: NodeJS.Timeout; },
- * }}
+ * @type {{ [K in keyof channelTypes]: number } & { longestWaitingTask: string; }}
  */
 export const newQueueEntry = {
   facebook: 0,
@@ -11,7 +9,7 @@ export const newQueueEntry = {
   voice: 0,
   web: 0,
   whatsapp: 0,
-  longestWaitingTask: { taskId: null, updated: null, waitingMinutes: null, intervalId: null },
+  longestWaitingTask: null,
 };
 
 /**
@@ -25,7 +23,7 @@ export const initializeQueuesStatus = queues =>
     .reduce((acc, q) => ({ ...acc, [q.queue_name]: newQueueEntry }), {});
 
 /**
- * Adds each pending tasks to the appropiate queue and channel
+ * Adds each pending tasks to the appropiate queue and channel, recording wich is the oldest
  * @returns {{ [queue_name: string]: typeof newQueueEntry }}
  */
 export const addPendingTasks = (acc, task) => {
@@ -35,10 +33,7 @@ export const addPendingTasks = (acc, task) => {
   const channel = task.attributes.channelType;
   const queue = task.queue_name;
   const currentOldest = acc[queue].longestWaitingTask;
-  const longestWaitingTask =
-    currentOldest.updated !== null && currentOldest.updated < updated
-      ? currentOldest
-      : { taskId: task.task_sid, updated, waitingMinutes: null, intervalId: null };
+  const longestWaitingTask = currentOldest !== null && currentOldest < updated ? currentOldest : updated;
 
   return {
     ...acc,
@@ -51,53 +46,10 @@ export const addPendingTasks = (acc, task) => {
 };
 
 /**
- * Adds the timers for each queue (if there are pending tasks) and calculates the longest wait time
- * @returns {(acc, [qName, newStatus]) => { [queue_name: string]: typeof newQueueEntry }}
- */
-const addTimers = (prevQueuesStatus, eachMinute) => (acc, [qName, newStatus]) => {
-  const prevStatus = prevQueuesStatus && prevQueuesStatus[qName];
-  const noTasksWaiting = newStatus.longestWaitingTask.taskId === null;
-  const newLongestWaitingTaskId =
-    !prevStatus || newStatus.longestWaitingTask.taskId !== prevStatus.longestWaitingTask.taskId;
-
-  if (noTasksWaiting) {
-    if (prevStatus) clearTimeout(prevStatus.longestWaitingTask.intervalId);
-    return acc;
-  }
-
-  const waitingMillis = new Date().getTime() - new Date(newStatus.longestWaitingTask.updated).getTime();
-  const waitingMinutes = Math.floor(waitingMillis / (60 * 1000)); // should use Math.round instead?
-
-  if (newLongestWaitingTaskId) {
-    if (prevStatus) clearTimeout(prevStatus.longestWaitingTask.intervalId);
-    const intervalId = setInterval(() => eachMinute(qName), 1000 * 60);
-    return {
-      ...acc,
-      [qName]: {
-        ...newStatus,
-        longestWaitingTask: { ...newStatus.longestWaitingTask, waitingMinutes, intervalId },
-      },
-    };
-  }
-
-  // at this point, prevStatus.longestWaitingTask is the longest waiting for this queue
-  const { intervalId } = prevStatus.longestWaitingTask;
-  return {
-    ...acc,
-    [qName]: {
-      ...newStatus,
-      longestWaitingTask: { ...newStatus.longestWaitingTask, waitingMinutes, intervalId },
-    },
-  };
-};
-
-/**
  * @returns {{ [queue_name: string]: typeof newQueueEntry }}
  */
-export const getNewQueuesStatus = (cleanQueuesStatus, tasks, prevQueuesStatus, eachMinute) => {
-  const intermidiate = Object.values(tasks).reduce(addPendingTasks, cleanQueuesStatus);
-
-  const newQueuesStatus = Object.entries(intermidiate).reduce(addTimers(prevQueuesStatus, eachMinute), intermidiate);
+export const getNewQueuesStatus = (cleanQueuesStatus, tasks) => {
+  const newQueuesStatus = Object.values(tasks).reduce(addPendingTasks, cleanQueuesStatus);
 
   return newQueuesStatus;
 };
