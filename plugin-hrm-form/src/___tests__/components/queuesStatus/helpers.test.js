@@ -5,18 +5,13 @@ import {
   newQueueEntry,
   initializeQueuesStatus,
   addPendingTasks,
-  getIntermidiateStatus,
   getNewQueuesStatus,
 } from '../../../components/queuesStatus/helpers';
 import { channelTypes } from '../../../states/DomainConstants';
 
 test('Test newQueueEntry', () => {
   Object.keys(channelTypes).forEach(key => expect(newQueueEntry[key]).toEqual(0));
-  expect(newQueueEntry.longestWaitingTask).toStrictEqual({
-    taskId: null,
-    updated: null,
-    waitingMinutes: null,
-  });
+  expect(newQueueEntry.longestWaitingDate).toBeNull();
 });
 
 const queuesNames = ['Queue One', 'Queue Two', 'Queue Nine Nine'];
@@ -83,21 +78,19 @@ test('Test addPendingTasks', () => {
 });
 
 let queuesStatus;
-test('Test getNewQueuesStatus with null prevQueuesStatus (first run)', () => {
-  const intermidiate = getIntermidiateStatus(cleanQueuesStatus, tasks);
-  const result = getNewQueuesStatus(intermidiate, null);
-  expect(Object.keys(result).length).toBe(3);
+test('Test getNewQueuesStatus', () => {
+  const result = getNewQueuesStatus(cleanQueuesStatus, tasks);
+  expect(Object.keys(result).length).toBe(3); // 3 queues
   expect(result[queuesNames[0]].facebook).toBe(2);
   expect(result[queuesNames[1]].web).toBe(1);
-  expect(result[queuesNames[0]].longestWaitingTask.updated).toBe(tasks.T3.date_updated);
-  expect(result[queuesNames[1]].longestWaitingTask.updated).toBe(tasks.T2.date_updated);
+  expect(result[queuesNames[0]].longestWaitingDate).toBe(tasks.T3.date_updated);
+  expect(result[queuesNames[1]].longestWaitingDate).toBe(tasks.T2.date_updated);
 
   queuesStatus = result;
 });
 
-test('Test getNewQueuesStatus with same pending tasks', () => {
-  const intermidiate = getIntermidiateStatus(cleanQueuesStatus, omit(tasks, 'T5'));
-  const result = getNewQueuesStatus(intermidiate, queuesStatus);
+test('Test getNewQueuesStatus with different non pending task', () => {
+  const result = getNewQueuesStatus(cleanQueuesStatus, omit(tasks, 'T5'));
   expect(result).toStrictEqual(queuesStatus);
 });
 
@@ -113,13 +106,34 @@ const tasks2 = {
 };
 
 test('Test getNewQueuesStatus with a new pending task (with older date_update)', () => {
-  const intermidiate = getIntermidiateStatus(cleanQueuesStatus, tasks2);
-  const result = getNewQueuesStatus(intermidiate, queuesStatus);
-  expect(Object.keys(result).length).toBe(3);
+  const result = getNewQueuesStatus(cleanQueuesStatus, tasks2);
+  expect(Object.keys(result).length).toBe(3); // 3 queues
   expect(result[queuesNames[0]].facebook).toBe(3);
   expect(result[queuesNames[1]].web).toBe(1);
-  expect(result[queuesNames[0]].longestWaitingTask.updated).toBe(tasks2.T6.date_updated);
-  expect(result[queuesNames[1]].longestWaitingTask.updated).toBe(tasks2.T2.date_updated);
+  expect(result[queuesNames[0]].longestWaitingDate).toBe(tasks2.T6.date_updated);
+  expect(result[queuesNames[1]].longestWaitingDate).toBe(tasks2.T2.date_updated);
+
+  queuesStatus = result;
+});
+
+const tasks3 = {
+  ...tasks2,
+  T7: {
+    task_sid: 'T7',
+    status: 'pending',
+    date_updated: '2020-03-14T21:25:00.013Z',
+    attributes: { channelType: channelTypes.facebook },
+    queue_name: queuesNames[0],
+  },
+};
+
+test('Test getNewQueuesStatus with a new pending task (with newer date_update)', () => {
+  const result = getNewQueuesStatus(cleanQueuesStatus, tasks3);
+  expect(Object.keys(result).length).toBe(3); // 3 queues
+  expect(result[queuesNames[0]].facebook).toBe(4);
+  expect(result[queuesNames[1]].web).toBe(1);
+  expect(result[queuesNames[0]].longestWaitingDate).toBe(tasks3.T6.date_updated);
+  expect(result[queuesNames[1]].longestWaitingDate).toBe(tasks3.T2.date_updated);
 
   queuesStatus = result;
 });

@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { CircularProgress, Collapse } from '@material-ui/core';
 import { ArrowDropDownTwoTone, ArrowDropUpTwoTone } from '@material-ui/icons';
+import { connect } from 'react-redux';
 
+import { namespace, queuesStatusBase } from '../../states';
 import QueueCard from './QueueCard';
 import { Container, HeaderContainer, QueuesContainer } from '../../styles/queuesStatus';
 import { Box, ErrorText } from '../../styles/HrmStyles';
-import { namespace, queuesStatusBase } from '../../states';
 
 class QueuesStatus extends React.Component {
   static displayName = 'QueuesStatus';
@@ -60,7 +60,7 @@ class QueuesStatus extends React.Component {
               {error && <ErrorText>{error}</ErrorText>}
               {queuesStatus &&
                 Object.entries(queuesStatus).map(([qName, qStatus]) => (
-                  <QueueCard key={qName} qName={qName} qStatus={qStatus} colors={this.props.colors} />
+                  <QueueCard key={qName} qName={qName} colors={this.props.colors} {...qStatus} />
                 ))}
             </QueuesContainer>
           </Collapse>
