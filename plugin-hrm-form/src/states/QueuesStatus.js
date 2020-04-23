@@ -12,14 +12,13 @@ const initialState = {
 
 export function reduce(state = initialState, action) {
   switch (action.type) {
-    case QUEUES_STATUS_UPDATE: {
+    case QUEUES_STATUS_UPDATE:
       return {
         ...state,
         error: null,
         loading: false,
         queuesStatus: action.queuesStatus,
       };
-    }
     case QUEUES_STATUS_FAILURE:
       return {
         ...state,
