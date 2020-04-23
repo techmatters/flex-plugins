@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { differenceInMinutes } from 'date-fns';
+import { formatDistanceToNow } from 'date-fns';
 
 import { Box, Row } from '../../styles/HrmStyles';
 import {
@@ -65,14 +65,7 @@ class QueuesCard extends React.PureComponent {
   render() {
     const { qName, colors, facebook, sms, voice, web, whatsapp, longestWaitingDate } = this.props;
     const { voiceColor, smsColor, facebookColor, whatsappColor, webColor } = colors;
-    const waitingMinutes = longestWaitingDate && differenceInMinutes(new Date(), new Date(longestWaitingDate));
-    const waitingMinutesMsg =
-      // eslint-disable-next-line no-nested-ternary
-      longestWaitingDate === null
-        ? 'None'
-        : waitingMinutes === 0
-        ? 'Less than 1 minute'
-        : `${waitingMinutes} minute${waitingMinutes > 1 ? 's' : ''}`;
+    const waitingMinutesMsg = longestWaitingDate === null ? 'none' : formatDistanceToNow(new Date(longestWaitingDate));
 
     return (
       <>

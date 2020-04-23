@@ -8,7 +8,7 @@ import { reduce as QueuesStatusReducer } from './QueuesStatus';
 export const namespace = 'plugin-hrm-form';
 export const contactFormsBase = 'activeContacts';
 export const searchContactsBase = 'searchContacts';
-export const queuesStatusBase = 'queuesStatus';
+export const queuesStatusBase = 'queuesStatusState';
 
 // Combine the reducers
 export default combineReducers({

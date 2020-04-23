@@ -17,6 +17,7 @@ jest.mock('../styles/HrmStyles', () => ({
   Row: 'Row',
   FontOpenSans: 'FontOpenSans',
   Box: 'Box',
+  ErrorText: 'ErrorText',
 }));
 
 jest.mock('../styles/search', () => ({
@@ -63,4 +64,16 @@ jest.mock('../styles/callTypeButtons', () => ({
   CancelButton: 'CancelButton',
   CloseButton: 'CloseButton',
   NonDataCallTypeDialogContainer: 'NonDataCallTypeDialogContainer',
+}));
+
+jest.mock('../styles/queuesStatus', () => ({
+  Container: 'Container',
+  HeaderContainer: 'HeaderContainer',
+  QueuesContainer: 'QueuesContainer',
+  QueueName: 'QueueName',
+  ChannelColumn: 'ChannelColumn',
+  ChannelBox: 'ChannelBox',
+  ChannelLabel: 'ChannelLabel',
+  WaitTimeLabel: 'WaitTimeLabel',
+  WaitTimeValue: 'WaitTimeValue',
 }));
