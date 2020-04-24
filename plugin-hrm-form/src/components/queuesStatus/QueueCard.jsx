@@ -73,7 +73,7 @@ class QueuesCard extends React.PureComponent {
 
   renderChannel = (channel, color, value, marginLeft) => (
     <ChannelColumn marginLeft={marginLeft}>
-      <ChannelBox backgroundColor={color}>{value}</ChannelBox>
+      <ChannelBox isZero={value === 0} backgroundColor={color}>{value}</ChannelBox>
       <ChannelLabel>{channel}</ChannelLabel>
     </ChannelColumn>
   );

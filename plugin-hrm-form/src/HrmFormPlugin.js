@@ -10,6 +10,7 @@ import { Actions } from './states/ContactState';
 import ConfigurationContext from './contexts/ConfigurationContext';
 import LocalizationContext from './contexts/LocalizationContext';
 import HrmTheme from './styles/HrmTheme';
+import './styles/GlobalOverrides';
 import { channelTypes } from './states/DomainConstants';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
@@ -70,8 +71,7 @@ export default class HrmFormPlugin extends FlexPlugin {
       },
     );
 
-    // voice color right now is same as web color. Should this change?
-    const voiceColor = flex.DefaultTaskChannels.Chat.colors.main; // Call.colors.main({ status: 'pending' }),
+    const voiceColor = { Accepted: flex.DefaultTaskChannels.Call.colors.main() };
     const webColor = flex.DefaultTaskChannels.Chat.colors.main;
     const facebookColor = flex.DefaultTaskChannels.ChatMessenger.colors.main;
     const smsColor = flex.DefaultTaskChannels.ChatSms.colors.main;

@@ -63,7 +63,7 @@ class QueuesStatusWriter extends React.Component {
 
   componentWillUnmount() {
     const { tasksQuery } = this.state;
-    // unsuscribe
+    // unsubscribe
     if (tasksQuery) tasksQuery.close();
   }
 

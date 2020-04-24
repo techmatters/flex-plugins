@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { CircularProgress, Collapse } from '@material-ui/core';
+import { CircularProgress, Collapse, Divider } from '@material-ui/core';
 import { ArrowDropDownTwoTone, ArrowDropUpTwoTone } from '@material-ui/icons';
 import { connect } from 'react-redux';
 
@@ -65,6 +65,7 @@ class QueuesStatus extends React.Component {
             </QueuesContainer>
           </Collapse>
         </Container>
+        <Divider style={{ marginLeft: 1 }} />
       </>
     );
   }

@@ -5,13 +5,14 @@ import { FontOpenSans, Row } from '../HrmStyles';
 export const Container = styled('div')`
   width: 100%;
   background-color: #ffffff;
-  padding: 5px;
+  padding-top: 5px;
+  padding-bottom: 14px;
 `;
 
 export const HeaderContainer = styled(Row)`
   width: auto;
   justify-items: flex-start;
-  background-color: #f6f6f6;
+  background-color: ${props => props.theme.colors.base2};
   border-radius: 2px;
   text-transform: uppercase;
   color: #192b33;
@@ -49,7 +50,8 @@ export const ChannelBox = styled('div')`
   font-weight: 600;
   line-height: 14px;
   margin-bottom: 5px;
-  background-color: ${props => `${props.backgroundColor}26`};
+  color: ${props => (props.isZero ? '#949EB4' : '#000000')};
+  background-color: ${props => `${props.backgroundColor}26` /* adds 0.15 opacity alpha to the hex string */};
 `;
 
 export const ChannelLabel = styled(FontOpenSans)`

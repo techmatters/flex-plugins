@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import { channelTypes } from '../../states/DomainConstants';
 
 /**
@@ -23,7 +24,7 @@ export const initializeQueuesStatus = queues =>
     .reduce((acc, q) => ({ ...acc, [q.queue_name]: newQueueEntry }), {});
 
 /**
- * Adds each pending tasks to the appropiate queue and channel, recording wich is the oldest
+ * Adds each pending tasks to the appropiate queue and channel, recording which is the oldest
  * @returns {{ [queue_name: string]: typeof newQueueEntry }}
  */
 export const addPendingTasks = (acc, task) => {
