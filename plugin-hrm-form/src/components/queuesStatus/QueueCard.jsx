@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { formatDistanceToNow } from 'date-fns';
+import { differenceInMinutes } from 'date-fns';
 
 import { Box, Row } from '../../styles/HrmStyles';
 import {
@@ -67,7 +67,8 @@ class QueuesCard extends React.PureComponent {
       60 * 1000,
     );
 
-    this.setState({ intervalId, waitingMinutes: 0 });
+    const waitingMinutes = differenceInMinutes(new Date(), new Date(this.props.longestWaitingDate));
+    this.setState({ intervalId, waitingMinutes });
   };
 
   renderChannel = (channel, color, value, marginLeft) => (
@@ -77,10 +78,16 @@ class QueuesCard extends React.PureComponent {
     </ChannelColumn>
   );
 
+  getWaitingMessage = () => {
+    if (this.props.longestWaitingDate === null) return 'none';
+    if (this.state.waitingMinutes === 0) return 'less than a minute';
+    if (this.state.waitingMinutes === 1) return '1 minute';
+    return `${this.state.waitingMinutes} minutes`;
+  };
+
   render() {
-    const { qName, colors, facebook, sms, voice, web, whatsapp, longestWaitingDate } = this.props;
+    const { qName, colors, facebook, sms, voice, web, whatsapp } = this.props;
     const { voiceColor, smsColor, facebookColor, whatsappColor, webColor } = colors;
-    const waitingMinutesMsg = longestWaitingDate === null ? 'none' : formatDistanceToNow(new Date(longestWaitingDate));
 
     return (
       <>
@@ -97,7 +104,7 @@ class QueuesCard extends React.PureComponent {
           </Box>
           <Row>
             <WaitTimeLabel>Longest wait time:</WaitTimeLabel>
-            <WaitTimeValue>{waitingMinutesMsg}</WaitTimeValue>
+            <WaitTimeValue>{this.getWaitingMessage()}</WaitTimeValue>
           </Row>
         </Box>
       </>

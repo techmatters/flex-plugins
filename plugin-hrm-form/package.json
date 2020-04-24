@@ -24,7 +24,6 @@
     "flex-plugin": "^3.0.0",
     "flex-plugin-scripts": "^3.0.4",
     "lodash": "^4.17.15",
-    "polished": "^3.5.2",
     "prop-types": "^15.7.2",
     "react": "16.5.2",
     "react-dom": "16.5.2",

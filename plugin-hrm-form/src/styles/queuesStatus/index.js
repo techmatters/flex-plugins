@@ -1,5 +1,4 @@
 import styled from 'react-emotion';
-import { transparentize } from 'polished';
 
 import { FontOpenSans, Row } from '../HrmStyles';
 
@@ -46,11 +45,11 @@ export const ChannelBox = styled('div')`
   justify-content: center;
   width: 32px;
   height: 26px;
-  background-color: ${props => transparentize('0.85', props.backgroundColor)};
   font-size: 12px;
   font-weight: 600;
   line-height: 14px;
   margin-bottom: 5px;
+  background-color: ${props => `${props.backgroundColor}26`};
 `;
 
 export const ChannelLabel = styled(FontOpenSans)`
