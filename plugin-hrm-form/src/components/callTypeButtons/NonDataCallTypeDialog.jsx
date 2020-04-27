@@ -17,7 +17,7 @@ const NonDataCallTypeDialog = ({ isOpen, confirmLabel, handleConfirm, handleCanc
     <TabPressWrapper>
       <NonDataCallTypeDialogContainer>
         <Box marginLeft="auto">
-          <CloseButton tabIndex={3} onClick={handleCancel} />
+          <CloseButton tabIndex={3} aria-label="Close" onClick={handleCancel} />
         </Box>
         <CloseTaskDialogText>Are you sure?</CloseTaskDialogText>
         <Box marginBottom="32px">
