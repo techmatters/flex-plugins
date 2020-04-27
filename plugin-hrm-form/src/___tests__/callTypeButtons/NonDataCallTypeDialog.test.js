@@ -1,7 +1,7 @@
 import React from 'react';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
-import { StorelessThemeProvider as MaterialStorelessThemeProvider } from '@twilio/flex-ui';
+import { StorelessThemeProvider } from '@twilio/flex-ui';
 
 import HrmTheme from '../../styles/HrmTheme';
 import NonDataCallTypeDialog from '../../components/callTypeButtons/NonDataCallTypeDialog';
@@ -14,14 +14,14 @@ test('a11y', async () => {
   };
 
   const wrapper = mount(
-    <MaterialStorelessThemeProvider themeConf={themeConf}>
+    <StorelessThemeProvider themeConf={themeConf}>
       <NonDataCallTypeDialog
         isOpen={true}
         confirmLabel="End Chat"
         handleConfirm={() => null}
         handleCancel={() => null}
       />
-    </MaterialStorelessThemeProvider>,
+    </StorelessThemeProvider>,
   );
 
   const rules = {
