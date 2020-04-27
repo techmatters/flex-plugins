@@ -57,7 +57,7 @@ const CallTypeButtons = props => {
       </Container>
       <NonDataCallTypeDialog
         isOpen={isDialogOpen(form)}
-        confirmLabel={isCallTask(task) ? strings.TaskHeaderEndCall : strings.TaskHeaderEndChat}
+        isCallTask={isCallTask(task)}
         handleConfirm={() => props.handleSubmit(task)}
         handleCancel={() => clearCallType(props)}
       />

@@ -7,11 +7,14 @@ import reducers, { namespace } from './states';
 import { Actions } from './states/ContactState';
 import ConfigurationContext from './contexts/ConfigurationContext';
 import LocalizationContext from './contexts/LocalizationContext';
+import Translator from './components/translator';
 import HrmTheme from './styles/HrmTheme';
 import { channelTypes } from './states/DomainConstants';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 const PLUGIN_VERSION = '0.4.1';
+const defaultLanguage = 'en';
+const defaultTranslation = require(`./translations/${defaultLanguage}/translation`);
 
 export default class HrmFormPlugin extends FlexPlugin {
   constructor() {
@@ -51,16 +54,22 @@ export default class HrmFormPlugin extends FlexPlugin {
     const { helpline } = manager.workerClient.attributes;
     const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
     const getSsoToken = () => manager.store.getState().flex.session.ssoTokenPayload.token;
-    const { strings } = manager;
+    // const { strings } = manager;
     const { isCallTask } = TaskHelper;
 
-    strings.ChatWelcomeText = 'Conversation started';
+    // assign new object containing default strings + translation overrides
+    manager.strings = { ...manager.strings, ...defaultTranslation };
 
     // TODO(nick): Eventually remove this log line or set to debug
     console.log(`HRM URL: ${hrmBaseUrl}`);
     if (hrmBaseUrl === undefined) {
       console.error('HRM base URL not defined, you must provide this to save program data');
     }
+
+    const setNewStrings = newStrings => (manager.strings = newStrings);
+    flex.SideNav.Content.add(
+      <Translator manager={manager} setNewStrings={setNewStrings} defaultLanguage={defaultLanguage} key="translator" />,
+    );
 
     // TODO(nick): Can we avoid passing down the task prop, maybe using context?
     const options = { sortOrder: -1 };
@@ -69,7 +78,7 @@ export default class HrmFormPlugin extends FlexPlugin {
         value={{ hrmBaseUrl, serverlessBaseUrl, workerSid, helpline, currentWorkspace, getSsoToken }}
         key="custom-crm-container"
       >
-        <LocalizationContext.Provider value={{ strings, isCallTask }}>
+        <LocalizationContext.Provider value={{ strings: { ...manager.strings }, isCallTask }}>
           <CustomCRMContainer handleCompleteTask={onCompleteTask} />
         </LocalizationContext.Provider>
       </ConfigurationContext.Provider>,
@@ -93,15 +102,13 @@ export default class HrmFormPlugin extends FlexPlugin {
       manager.store.dispatch(Actions.removeContactState(payload.task.taskSid));
     });
 
-    const goodbyeMsg =
-      'The counselor has left the chat. Thank you for reaching out. Please contact us again if you need more help.';
-
     const shouldSayGoodbye = channel =>
       channel === channelTypes.facebook || channel === channelTypes.sms || channel === channelTypes.whatsapp;
 
     const sendGoodbyeMessage = async payload => {
+      const { GoodbyeMsg } = manager.strings;
       await flex.Actions.invokeAction('SendMessage', {
-        body: goodbyeMsg,
+        body: GoodbyeMsg,
         channelSid: payload.task.attributes.channelSid,
       });
     };

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Template } from '@twilio/flex-ui';
 
 import { Box, Row } from '../../styles/HrmStyles';
 import {
@@ -12,7 +13,7 @@ import {
 } from '../../styles/callTypeButtons';
 import TabPressWrapper from '../TabPressWrapper';
 
-const NonDataCallTypeDialog = ({ isOpen, confirmLabel, handleConfirm, handleCancel }) => (
+const NonDataCallTypeDialog = ({ isOpen, isCallTask, handleConfirm, handleCancel }) => (
   <CloseTaskDialog onClose={handleCancel} open={isOpen}>
     <TabPressWrapper>
       <NonDataCallTypeDialogContainer>
@@ -23,7 +24,7 @@ const NonDataCallTypeDialog = ({ isOpen, confirmLabel, handleConfirm, handleCanc
         <Box marginBottom="32px">
           <Row>
             <ConfirmButton autoFocus tabIndex={1} onClick={handleConfirm}>
-              {confirmLabel}
+              <Template code={isCallTask ? 'TaskHeaderEndCall' : 'TaskHeaderEndChat'} />
             </ConfirmButton>
             <CancelButton tabIndex={2} onClick={handleCancel}>
               Cancel
@@ -38,7 +39,7 @@ const NonDataCallTypeDialog = ({ isOpen, confirmLabel, handleConfirm, handleCanc
 NonDataCallTypeDialog.displayName = 'NonDataCallTypeDialog';
 NonDataCallTypeDialog.propTypes = {
   isOpen: PropTypes.bool.isRequired,
-  confirmLabel: PropTypes.string.isRequired,
+  isCallTask: PropTypes.bool.isRequired,
   handleConfirm: PropTypes.func.isRequired,
   handleCancel: PropTypes.func.isRequired,
 };
