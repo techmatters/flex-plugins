@@ -63,6 +63,28 @@ const tasks = {
     task_sid: 'T5',
     status: 'wrapping',
   },
+  T6: {
+    task_sid: 'T6',
+    status: 'pending',
+    channel_type: 'voice',
+    date_updated: '2020-04-14T21:36:00.012Z',
+    attributes: { channelType: channelTypes.facebook }, // this should be ignored
+    queue_name: queuesNames[0],
+  },
+  T7: {
+    task_sid: 'T7',
+    status: 'pending',
+    date_updated: '2020-04-14T21:36:00.012Z',
+    attributes: { channelType: channelTypes.sms },
+    queue_name: queuesNames[0],
+  },
+  T8: {
+    task_sid: 'T8',
+    status: 'pending',
+    date_updated: '2020-04-14T21:36:00.012Z',
+    attributes: { channelType: channelTypes.whatsapp },
+    queue_name: queuesNames[0],
+  },
 };
 
 test('Test addPendingTasks', () => {
@@ -70,11 +92,18 @@ test('Test addPendingTasks', () => {
   const result2 = addPendingTasks(result1, tasks.T2);
   const result3 = addPendingTasks(result2, tasks.T4);
   const result4 = addPendingTasks(result3, tasks.T3);
+  const result5 = addPendingTasks(result4, tasks.T6);
+  const result6 = addPendingTasks(result4, tasks.T7);
+  const result7 = addPendingTasks(result4, tasks.T8);
 
   expect(result1[queuesNames[0]].facebook).toBe(1);
   expect(result2[queuesNames[1]].web).toBe(1);
   expect(result3).toStrictEqual(result2);
   expect(result4[queuesNames[0]].facebook).toBe(2);
+  expect(result5[queuesNames[0]].facebook).toBe(2); // not changed
+  expect(result5[queuesNames[0]].voice).toBe(1);
+  expect(result6[queuesNames[0]].sms).toBe(1);
+  expect(result7[queuesNames[0]].whatsapp).toBe(1);
 });
 
 let queuesStatus;
@@ -82,6 +111,9 @@ test('Test getNewQueuesStatus', () => {
   const result = getNewQueuesStatus(cleanQueuesStatus, tasks);
   expect(Object.keys(result).length).toBe(3); // 3 queues
   expect(result[queuesNames[0]].facebook).toBe(2);
+  expect(result[queuesNames[0]].voice).toBe(1);
+  expect(result[queuesNames[0]].sms).toBe(1);
+  expect(result[queuesNames[0]].whatsapp).toBe(1);
   expect(result[queuesNames[1]].web).toBe(1);
   expect(result[queuesNames[0]].longestWaitingDate).toBe(tasks.T3.date_updated);
   expect(result[queuesNames[1]].longestWaitingDate).toBe(tasks.T2.date_updated);
@@ -96,8 +128,8 @@ test('Test getNewQueuesStatus with different non pending task', () => {
 
 const tasks2 = {
   ...tasks,
-  T6: {
-    task_sid: 'T6',
+  T9: {
+    task_sid: 'T9',
     status: 'pending',
     date_updated: '2020-03-14T21:25:00.012Z',
     attributes: { channelType: channelTypes.facebook },
@@ -109,8 +141,10 @@ test('Test getNewQueuesStatus with a new pending task (with older date_update)',
   const result = getNewQueuesStatus(cleanQueuesStatus, tasks2);
   expect(Object.keys(result).length).toBe(3); // 3 queues
   expect(result[queuesNames[0]].facebook).toBe(3);
+  expect(result[queuesNames[0]].sms).toBe(1);
+  expect(result[queuesNames[0]].whatsapp).toBe(1);
   expect(result[queuesNames[1]].web).toBe(1);
-  expect(result[queuesNames[0]].longestWaitingDate).toBe(tasks2.T6.date_updated);
+  expect(result[queuesNames[0]].longestWaitingDate).toBe(tasks2.T9.date_updated);
   expect(result[queuesNames[1]].longestWaitingDate).toBe(tasks2.T2.date_updated);
 
   queuesStatus = result;
@@ -118,8 +152,8 @@ test('Test getNewQueuesStatus with a new pending task (with older date_update)',
 
 const tasks3 = {
   ...tasks2,
-  T7: {
-    task_sid: 'T7',
+  T10: {
+    task_sid: 'T10',
     status: 'pending',
     date_updated: '2020-03-14T21:25:00.013Z',
     attributes: { channelType: channelTypes.facebook },
@@ -131,8 +165,10 @@ test('Test getNewQueuesStatus with a new pending task (with newer date_update)',
   const result = getNewQueuesStatus(cleanQueuesStatus, tasks3);
   expect(Object.keys(result).length).toBe(3); // 3 queues
   expect(result[queuesNames[0]].facebook).toBe(4);
+  expect(result[queuesNames[0]].sms).toBe(1);
+  expect(result[queuesNames[0]].whatsapp).toBe(1);
   expect(result[queuesNames[1]].web).toBe(1);
-  expect(result[queuesNames[0]].longestWaitingDate).toBe(tasks3.T6.date_updated);
+  expect(result[queuesNames[0]].longestWaitingDate).toBe(tasks3.T9.date_updated);
   expect(result[queuesNames[1]].longestWaitingDate).toBe(tasks3.T2.date_updated);
 
   queuesStatus = result;
