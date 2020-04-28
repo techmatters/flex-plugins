@@ -7,6 +7,9 @@ export const Container = styled('div')`
   background-color: #ffffff;
   padding-top: 5px;
   padding-bottom: 14px;
+  border-style: solid;
+  border-width: 0px 0px 1px 0px;
+  border-color: ${props => props.theme.colors.base2border};
 `;
 
 export const HeaderContainer = styled(Row)`
@@ -14,6 +17,9 @@ export const HeaderContainer = styled(Row)`
   justify-items: flex-start;
   background-color: ${props => props.theme.colors.base2};
   border-radius: 2px;
+  border-style: solid;
+  border-width: 1px 0px 1px 1px;
+  border-color: ${props => props.theme.colors.base2border};
   text-transform: uppercase;
   color: #192b33;
   font-size: 10px;
@@ -50,7 +56,7 @@ export const ChannelBox = styled('div')`
   font-weight: 600;
   line-height: 14px;
   margin-bottom: 5px;
-  color: ${props => (props.isZero ? '#949EB4' : '#000000')};
+  color: ${props => (props.isZero ? '#646D7F' : '#000000')};
   background-color: ${props => `${props.backgroundColor}26` /* adds 0.15 opacity alpha to the hex string */};
 `;
 
