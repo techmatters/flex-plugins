@@ -16,7 +16,7 @@ export const HeaderContainer = styled(Row)`
   border-radius: 2px;
   border-style: solid;
   border-width: 1px 0px 1px 0px;
-  border-color: ${props => props.theme.colors.base2border};
+  border-color: ${props => props.theme.colors.base4};
   text-transform: uppercase;
   color: #192b33;
   font-size: 10px;
