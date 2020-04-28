@@ -1,7 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import TranslateIcon from '@material-ui/icons/TranslateOutlined';
-import { Template } from '@twilio/flex-ui';
+import { CircularProgress, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
+import { namespace, configurationBase } from '../../states';
+import { changeLanguage } from '../../states/ConfigurationState';
 
 class Translator extends React.Component {
   static displayName = 'Translator';
@@ -13,12 +17,12 @@ class Translator extends React.Component {
       }),
     }).isRequired,
     setNewStrings: PropTypes.func.isRequired,
-    defaultLanguage: PropTypes.string.isRequired,
-    showLabel: PropTypes.bool.isRequired,
+    language: PropTypes.string.isRequired,
+    changeLanguage: PropTypes.func.isRequired,
   };
 
   state = {
-    language: this.props.defaultLanguage,
+    loading: false,
   };
 
   translate = async language => {
@@ -27,40 +31,55 @@ class Translator extends React.Component {
       const translation = (await import(`../../translations/${language}/translation`)).default;
       const newStrings = { ...strings, ...translation };
       this.props.setNewStrings(newStrings);
+      this.props.changeLanguage(language);
+      setTimeout(() => this.setState({ loading: false }), 1000);
     } catch (err) {
       console.log('Error while loading translation', err);
     }
   };
 
   // this function should receive the new language selected (passed via event?)
-  handleClick = async () => {
-    // eslint-disable-next-line react/no-access-state-in-setstate
-    const language = this.state.language === 'en' ? 'es' : 'en';
-    await this.translate(language);
-    this.setState({ language });
+  handleChange = e => {
+    const language = e.target.value;
+    if (!this.state.loading && language !== this.props.language) {
+      this.setState({ loading: true }, () => this.translate(language));
+    }
   };
 
   render() {
+    const { TranslateButtonAriaLabel } = this.props.manager.strings;
+
     return (
-      <button
-        className="Twilio-Side-Link css-1omrnme"
-        type="button"
-        aria-label={this.props.manager.strings.TranslateButtonAriaLabel}
-        onClick={this.handleClick}
-      >
-        <div className="Twilio-Side-Link-IconContainer css-14ypp0a">
-          <div className="Twilio-Icon Twilio-Icon-AgentBold  css-y8bnhq">
-            <TranslateIcon width="1em" height="1em" viewBox="0 0 24 24" className="Twilio-Icon-Content" />
-          </div>
-        </div>
-        {this.props.showLabel && (
-          <div className="css-1xm4x2c">
-            <Template code="TranslateButtonAriaLabel" />
-          </div>
-        )}
-      </button>
+      <FormControl variant="filled">
+        <InputLabel id={`${TranslateButtonAriaLabel}-label`}>{TranslateButtonAriaLabel}</InputLabel>
+        <Select
+          labelId={`${TranslateButtonAriaLabel}-label`}
+          id={TranslateButtonAriaLabel}
+          value={this.props.language}
+          onChange={this.handleChange}
+          disabled={this.state.loading}
+        >
+          <MenuItem value="en">English</MenuItem>
+          <MenuItem value="es">Español</MenuItem>
+        </Select>
+        {this.state.loading && <CircularProgress style={{ position: 'absolute', flex: 1 }} />}
+      </FormControl>
     );
   }
 }
 
-export default Translator;
+const mapStateToProps = (state, ownProps) => {
+  const configurationState = state[namespace][configurationBase];
+
+  return {
+    language: configurationState.language,
+  };
+};
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    changeLanguage: bindActionCreators(changeLanguage, dispatch),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Translator);

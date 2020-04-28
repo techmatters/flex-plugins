@@ -8,12 +8,13 @@ import { Actions } from './states/ContactState';
 import ConfigurationContext from './contexts/ConfigurationContext';
 import LocalizationContext from './contexts/LocalizationContext';
 import Translator from './components/translator';
+import SettingsSideLink from './components/sideLinks/SettingsSideLink';
 import HrmTheme from './styles/HrmTheme';
 import { channelTypes } from './states/DomainConstants';
+import { defaultLanguage } from './states/ConfigurationState';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 const PLUGIN_VERSION = '0.4.1';
-const defaultLanguage = 'en';
 const defaultTranslation = require(`./translations/${defaultLanguage}/translation`);
 
 export default class HrmFormPlugin extends FlexPlugin {
@@ -54,7 +55,6 @@ export default class HrmFormPlugin extends FlexPlugin {
     const { helpline } = manager.workerClient.attributes;
     const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
     const getSsoToken = () => manager.store.getState().flex.session.ssoTokenPayload.token;
-    // const { strings } = manager;
     const { isCallTask } = TaskHelper;
 
     // assign new object containing default strings + translation overrides
@@ -67,8 +67,22 @@ export default class HrmFormPlugin extends FlexPlugin {
     }
 
     const setNewStrings = newStrings => (manager.strings = newStrings);
+    flex.ViewCollection.Content.add(
+      <flex.View name="settings" key="settings-view">
+        <div>
+          <Translator manager={manager} setNewStrings={setNewStrings} key="translator" />
+        </div>
+      </flex.View>,
+    );
+
     flex.SideNav.Content.add(
-      <Translator manager={manager} setNewStrings={setNewStrings} defaultLanguage={defaultLanguage} key="translator" />,
+      <SettingsSideLink
+        key="SettingsSideLink"
+        onClick={() => flex.Actions.invokeAction('NavigateToView', { viewName: 'settings' })}
+      />,
+      {
+        align: 'end',
+      },
     );
 
     // TODO(nick): Can we avoid passing down the task prop, maybe using context?
@@ -78,7 +92,7 @@ export default class HrmFormPlugin extends FlexPlugin {
         value={{ hrmBaseUrl, serverlessBaseUrl, workerSid, helpline, currentWorkspace, getSsoToken }}
         key="custom-crm-container"
       >
-        <LocalizationContext.Provider value={{ strings: { ...manager.strings }, isCallTask }}>
+        <LocalizationContext.Provider value={{ strings: manager.strings, isCallTask }}>
           <CustomCRMContainer handleCompleteTask={onCompleteTask} />
         </LocalizationContext.Provider>
       </ConfigurationContext.Provider>,

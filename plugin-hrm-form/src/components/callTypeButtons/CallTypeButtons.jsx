@@ -18,7 +18,7 @@ const clearCallType = props => props.handleCallTypeButtonClick(props.task.taskSi
 
 const CallTypeButtons = props => {
   const { form, task, localization } = props;
-  const { strings, isCallTask } = localization;
+  const { isCallTask } = localization;
 
   return (
     <>
