@@ -125,7 +125,7 @@
   "WorkerSkillsSaved": "Changes saved successfully",
   "WorkerSkillsError": "Failed to save changes",
   "WorkerSkillsReverted": "Changes reverted",
-  "ChatWelcomeText": "Conversation started with customer",
+  "ChatWelcomeText": "Conversation started",
   "UiVersionDeprecated": "{{message}}",
   "RuntimeLoginLabel": "Runtime domain",
   "RuntimeLoginPlaceholder": "Your Runtime Domain",

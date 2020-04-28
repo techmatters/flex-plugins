@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Template, SideLink } from '@twilio/flex-ui';
 
 const SettingsSideLink = props => {
-  console.log('SettingsSideLink', props);
   const { showLabel, activeView, onClick } = props;
   return (
     <SideLink
