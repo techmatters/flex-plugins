@@ -31,7 +31,7 @@ export const addPendingTasks = (acc, task) => {
   if (task.status !== 'pending') return acc;
 
   const updated = task.date_updated;
-  const channel = task.attributes.channelType;
+  const channel = task.channel_type === 'voice' ? 'voice' : task.attributes.channelType;
   const queue = task.queue_name;
   const currentOldest = acc[queue].longestWaitingDate;
   const longestWaitingDate = currentOldest !== null && currentOldest < updated ? currentOldest : updated;
