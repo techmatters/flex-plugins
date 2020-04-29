@@ -1,6 +1,6 @@
 import styled from 'react-emotion';
 
-import { FontOpenSans, Row } from '../HrmStyles';
+import { FontOpenSans, ButtonRow } from '../HrmStyles';
 
 export const Container = styled('div')`
   width: 100%;
@@ -9,8 +9,8 @@ export const Container = styled('div')`
   padding-bottom: 14px;
 `;
 
-export const HeaderContainer = styled(Row)`
-  width: auto;
+export const HeaderContainer = styled(ButtonRow)`
+  width: 100%;
   justify-items: flex-start;
   background-color: ${props => props.theme.colors.base2};
   border-radius: 2px;

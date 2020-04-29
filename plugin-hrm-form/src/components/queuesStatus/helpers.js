@@ -28,13 +28,13 @@ export const initializeQueuesStatus = queues =>
  * @returns {{ [queue_name: string]: typeof newQueueEntry }}
  */
 export const addPendingTasks = (acc, task) => {
-  if (task.status !== 'pending') return acc;
+  if (task.status !== 'pending' && task.status !== 'reserved') return acc;
 
-  const updated = task.date_updated;
+  const created = task.date_created;
   const channel = task.channel_type === 'voice' ? 'voice' : task.attributes.channelType;
   const queue = task.queue_name;
   const currentOldest = acc[queue].longestWaitingDate;
-  const longestWaitingDate = currentOldest !== null && currentOldest < updated ? currentOldest : updated;
+  const longestWaitingDate = currentOldest !== null && currentOldest < created ? currentOldest : created;
 
   return {
     ...acc,

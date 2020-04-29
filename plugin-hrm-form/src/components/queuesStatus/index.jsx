@@ -49,13 +49,17 @@ class QueuesStatus extends React.Component {
     return (
       <>
         <Container>
-          <HeaderContainer onClick={this.handleExpandClick} role="button">
+          <HeaderContainer
+            onClick={this.handleExpandClick}
+            role="button"
+            aria-label={`Contacts waiting ${this.state.expanded ? 'press to collapse' : 'press to expand'}`}
+          >
             <Box marginTop="12px" marginRight="5px" marginBottom="12px" marginLeft="12px">
               Contacts waiting
             </Box>
             {this.renderHeaderIcon()}
           </HeaderContainer>
-          <Collapse in={expanded} timeout="auto">
+          <Collapse in={expanded} timeout="auto" unmountOnExit>
             <QueuesContainer>
               {error && <ErrorText>{error}</ErrorText>}
               {queuesStatus &&

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { differenceInMinutes } from 'date-fns';
 
-import { Box, Row } from '../../styles/HrmStyles';
+import { Box, Row, HiddenText } from '../../styles/HrmStyles';
 import {
   QueueName,
   ChannelColumn,
@@ -71,8 +71,8 @@ class QueuesCard extends React.PureComponent {
     this.setState({ intervalId, waitingMinutes });
   };
 
-  renderChannel = (channel, color, value, marginLeft) => (
-    <ChannelColumn marginLeft={marginLeft}>
+  renderChannel = (channel, color, value, marginLeft, channelAria) => (
+    <ChannelColumn marginLeft={marginLeft} aria-label={`${value} ${channelAria || channel},`}>
       <ChannelBox isZero={value === 0} backgroundColor={color}>
         {value}
       </ChannelBox>
@@ -93,14 +93,15 @@ class QueuesCard extends React.PureComponent {
 
     return (
       <>
-        <Box paddingLeft="10px" paddingTop="10px">
+        <Box paddingLeft="10px" paddingTop="10px" tabIndex={0}>
+          <HiddenText>Queue name:</HiddenText>
           <QueueName>{qName}</QueueName>
           <Box marginTop="7px" marginBottom="14px">
             <Row>
               {this.renderChannel('Calls', voiceColor.Accepted, voice, false)}
               {this.renderChannel('SMS', smsColor.Accepted, sms, true)}
-              {this.renderChannel('FB', facebookColor.Accepted, facebook, true)}
-              {this.renderChannel('WA', whatsappColor.Accepted, whatsapp, true)}
+              {this.renderChannel('FB', facebookColor.Accepted, facebook, true, 'Facebook')}
+              {this.renderChannel('WA', whatsappColor.Accepted, whatsapp, true, 'Whatsapp')}
               {this.renderChannel('Chat', webColor.Accepted, web, true)}
             </Row>
           </Box>

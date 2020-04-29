@@ -49,7 +49,7 @@ class QueuesStatusWriter extends React.Component {
       tasksQuery.on('itemUpdated', args => {
         console.log('TASK UPDATED', args);
         const { status } = args.value;
-        if (status === 'pending' || status === 'reserved' || status === 'canceled') {
+        if (status === 'pending' || status === 'assigned' || status === 'canceled') {
           // here we can filter and update only if the task belongs to a queue the user cares about
           updateQueuesState();
         }
