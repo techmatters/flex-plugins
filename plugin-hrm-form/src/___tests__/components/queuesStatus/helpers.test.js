@@ -37,27 +37,27 @@ const tasks = {
   T1: {
     task_sid: 'T1',
     status: 'pending',
-    date_updated: '2020-04-14T21:36:28.045Z',
+    date_created: '2020-04-14T21:36:28.045Z',
     attributes: { channelType: channelTypes.facebook },
     queue_name: queuesNames[0],
   },
   T2: {
     task_sid: 'T2',
     status: 'pending',
-    date_updated: '2020-04-14T21:36:26.033Z',
+    date_created: '2020-04-14T21:36:26.033Z',
     attributes: { channelType: channelTypes.web },
     queue_name: queuesNames[1],
   },
   T3: {
     task_sid: 'T3',
-    status: 'pending',
-    date_updated: '2020-04-14T21:25:00.012Z',
+    status: 'reserved',
+    date_created: '2020-04-14T21:25:00.012Z',
     attributes: { channelType: channelTypes.facebook },
     queue_name: queuesNames[0],
   },
   T4: {
     task_sid: 'T4',
-    status: 'reserved',
+    status: 'assigned',
   },
   T5: {
     task_sid: 'T5',
@@ -67,21 +67,21 @@ const tasks = {
     task_sid: 'T6',
     status: 'pending',
     channel_type: 'voice',
-    date_updated: '2020-04-14T21:36:00.012Z',
+    date_created: '2020-04-14T21:36:00.012Z',
     attributes: { channelType: channelTypes.facebook }, // this should be ignored
     queue_name: queuesNames[0],
   },
   T7: {
     task_sid: 'T7',
     status: 'pending',
-    date_updated: '2020-04-14T21:36:00.012Z',
+    date_created: '2020-04-14T21:36:00.012Z',
     attributes: { channelType: channelTypes.sms },
     queue_name: queuesNames[0],
   },
   T8: {
     task_sid: 'T8',
     status: 'pending',
-    date_updated: '2020-04-14T21:36:00.012Z',
+    date_created: '2020-04-14T21:36:00.012Z',
     attributes: { channelType: channelTypes.whatsapp },
     queue_name: queuesNames[0],
   },
@@ -115,8 +115,8 @@ test('Test getNewQueuesStatus', () => {
   expect(result[queuesNames[0]].sms).toBe(1);
   expect(result[queuesNames[0]].whatsapp).toBe(1);
   expect(result[queuesNames[1]].web).toBe(1);
-  expect(result[queuesNames[0]].longestWaitingDate).toBe(tasks.T3.date_updated);
-  expect(result[queuesNames[1]].longestWaitingDate).toBe(tasks.T2.date_updated);
+  expect(result[queuesNames[0]].longestWaitingDate).toBe(tasks.T3.date_created);
+  expect(result[queuesNames[1]].longestWaitingDate).toBe(tasks.T2.date_created);
 
   queuesStatus = result;
 });
@@ -131,7 +131,7 @@ const tasks2 = {
   T9: {
     task_sid: 'T9',
     status: 'pending',
-    date_updated: '2020-03-14T21:25:00.012Z',
+    date_created: '2020-03-14T21:25:00.012Z',
     attributes: { channelType: channelTypes.facebook },
     queue_name: queuesNames[0],
   },
@@ -144,8 +144,8 @@ test('Test getNewQueuesStatus with a new pending task (with older date_update)',
   expect(result[queuesNames[0]].sms).toBe(1);
   expect(result[queuesNames[0]].whatsapp).toBe(1);
   expect(result[queuesNames[1]].web).toBe(1);
-  expect(result[queuesNames[0]].longestWaitingDate).toBe(tasks2.T9.date_updated);
-  expect(result[queuesNames[1]].longestWaitingDate).toBe(tasks2.T2.date_updated);
+  expect(result[queuesNames[0]].longestWaitingDate).toBe(tasks2.T9.date_created);
+  expect(result[queuesNames[1]].longestWaitingDate).toBe(tasks2.T2.date_created);
 
   queuesStatus = result;
 });
@@ -155,7 +155,7 @@ const tasks3 = {
   T10: {
     task_sid: 'T10',
     status: 'pending',
-    date_updated: '2020-03-14T21:25:00.013Z',
+    date_created: '2020-03-14T21:25:00.013Z',
     attributes: { channelType: channelTypes.facebook },
     queue_name: queuesNames[0],
   },
@@ -168,8 +168,8 @@ test('Test getNewQueuesStatus with a new pending task (with newer date_update)',
   expect(result[queuesNames[0]].sms).toBe(1);
   expect(result[queuesNames[0]].whatsapp).toBe(1);
   expect(result[queuesNames[1]].web).toBe(1);
-  expect(result[queuesNames[0]].longestWaitingDate).toBe(tasks3.T9.date_updated);
-  expect(result[queuesNames[1]].longestWaitingDate).toBe(tasks3.T2.date_updated);
+  expect(result[queuesNames[0]].longestWaitingDate).toBe(tasks3.T9.date_created);
+  expect(result[queuesNames[1]].longestWaitingDate).toBe(tasks3.T2.date_created);
 
   queuesStatus = result;
 });

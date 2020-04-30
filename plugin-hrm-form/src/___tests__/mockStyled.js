@@ -18,6 +18,8 @@ jest.mock('../styles/HrmStyles', () => ({
   FontOpenSans: 'FontOpenSans',
   Box: 'Box',
   ErrorText: 'ErrorText',
+  ButtonRow: 'ButtonRow',
+  HiddenText: 'HiddenText',
 }));
 
 jest.mock('../styles/search', () => ({
