@@ -47,29 +47,27 @@ class QueuesStatus extends React.Component {
     const { queuesStatus, error } = this.props.queuesStatusState;
     const { expanded } = this.state;
     return (
-      <>
-        <Container>
-          <HeaderContainer
-            onClick={this.handleExpandClick}
-            role="button"
-            aria-label={`Contacts waiting ${this.state.expanded ? 'press to collapse' : 'press to expand'}`}
-          >
-            <Box marginTop="12px" marginRight="5px" marginBottom="12px" marginLeft="12px">
-              Contacts waiting
-            </Box>
-            {this.renderHeaderIcon()}
-          </HeaderContainer>
-          <Collapse in={expanded} timeout="auto" unmountOnExit>
-            <QueuesContainer>
-              {error && <ErrorText>{error}</ErrorText>}
-              {queuesStatus &&
-                Object.entries(queuesStatus).map(([qName, qStatus]) => (
-                  <QueueCard key={qName} qName={qName} colors={this.props.colors} {...qStatus} />
-                ))}
-            </QueuesContainer>
-          </Collapse>
-        </Container>
-      </>
+      <Container role="complementary">
+        <HeaderContainer
+          onClick={this.handleExpandClick}
+          role="button"
+          aria-label={`Contacts waiting ${this.state.expanded ? 'press to collapse' : 'press to expand'}`}
+        >
+          <Box marginTop="12px" marginRight="5px" marginBottom="12px" marginLeft="12px">
+            Contacts waiting
+          </Box>
+          {this.renderHeaderIcon()}
+        </HeaderContainer>
+        <Collapse in={expanded} timeout="auto" unmountOnExit>
+          <QueuesContainer>
+            {error && <ErrorText>{error}</ErrorText>}
+            {queuesStatus &&
+              Object.entries(queuesStatus).map(([qName, qStatus]) => (
+                <QueueCard key={qName} qName={qName} colors={this.props.colors} {...qStatus} />
+              ))}
+          </QueuesContainer>
+        </Collapse>
+      </Container>
     );
   }
 }
