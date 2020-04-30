@@ -54,6 +54,10 @@ class QueuesStatusWriter extends React.Component {
           updateQueuesState();
         }
       });
+
+      tasksQuery.on('itemRemoved', args => {
+        updateQueuesState();
+      });
     } catch (err) {
       const error = "Error, couldn't subscribe to live updates";
       this.props.queuesStatusFailure({ error });
