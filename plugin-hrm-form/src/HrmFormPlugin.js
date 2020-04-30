@@ -14,7 +14,7 @@ import './styles/GlobalOverrides';
 import { channelTypes } from './states/DomainConstants';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
-const PLUGIN_VERSION = '0.4.0';
+const PLUGIN_VERSION = '0.4.1';
 
 export default class HrmFormPlugin extends FlexPlugin {
   constructor() {
@@ -56,6 +56,8 @@ export default class HrmFormPlugin extends FlexPlugin {
     const getSsoToken = () => manager.store.getState().flex.session.ssoTokenPayload.token;
     const { strings } = manager;
     const { isCallTask } = TaskHelper;
+
+    strings.ChatWelcomeText = 'Conversation started';
 
     // TODO(nick): Eventually remove this log line or set to debug
     console.log(`HRM URL: ${hrmBaseUrl}`);
