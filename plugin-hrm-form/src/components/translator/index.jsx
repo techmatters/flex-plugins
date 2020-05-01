@@ -2,12 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { CircularProgress, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 
 import { namespace, configurationBase } from '../../states';
-import { changeLanguage } from '../../states/ConfigurationState';
 
-class Translator extends React.Component {
+class Translator extends React.PureComponent {
   static displayName = 'Translator';
 
   static propTypes = {
@@ -16,33 +14,22 @@ class Translator extends React.Component {
         TranslateButtonAriaLabel: PropTypes.string,
       }),
     }).isRequired,
-    setNewStrings: PropTypes.func.isRequired,
+    changeLanguageUI: PropTypes.string.isRequired,
     language: PropTypes.string.isRequired,
-    changeLanguage: PropTypes.func.isRequired,
   };
 
   state = {
     loading: false,
   };
 
-  translate = async language => {
-    try {
-      const { strings } = this.props.manager;
-      const translation = (await import(`../../translations/${language}/translation`)).default;
-      const newStrings = { ...strings, ...translation };
-      this.props.setNewStrings(newStrings);
-      this.props.changeLanguage(language);
-      setTimeout(() => this.setState({ loading: false }), 1000);
-    } catch (err) {
-      console.log('Error while loading translation', err);
-    }
-  };
-
-  // this function should receive the new language selected (passed via event?)
+  // receives the new language selected (passed via event value)
   handleChange = e => {
     const language = e.target.value;
     if (!this.state.loading && language !== this.props.language) {
-      this.setState({ loading: true }, () => this.translate(language));
+      this.setState({ loading: true }, async () => {
+        await this.props.changeLanguageUI(language);
+        setTimeout(() => this.setState({ loading: false }), 1000);
+      });
     }
   };
 
@@ -59,7 +46,7 @@ class Translator extends React.Component {
           onChange={this.handleChange}
           disabled={this.state.loading}
         >
-          <MenuItem value="en">English</MenuItem>
+          <MenuItem value="en-US">English</MenuItem>
           <MenuItem value="es">Español</MenuItem>
         </Select>
         {this.state.loading && <CircularProgress style={{ position: 'absolute', flex: 1 }} />}
@@ -76,10 +63,4 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-  return {
-    changeLanguage: bindActionCreators(changeLanguage, dispatch),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Translator);
+export default connect(mapStateToProps, null)(Translator);

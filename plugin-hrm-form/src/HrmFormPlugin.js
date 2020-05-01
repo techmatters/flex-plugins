@@ -11,11 +11,13 @@ import Translator from './components/translator';
 import SettingsSideLink from './components/sideLinks/SettingsSideLink';
 import HrmTheme from './styles/HrmTheme';
 import { channelTypes } from './states/DomainConstants';
-import { defaultLanguage } from './states/ConfigurationState';
+import { defaultLanguage, changeLanguage } from './states/ConfigurationState';
+import { configuredLanguage } from './private/secret';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 const PLUGIN_VERSION = '0.4.1';
-const defaultTranslation = require(`./translations/${defaultLanguage}/translation`);
+const defaultTranslation = require(`./translations/${defaultLanguage}/flexUI.json`);
+const defaultMessages = require(`./translations/${defaultLanguage}/messages.json`);
 
 export default class HrmFormPlugin extends FlexPlugin {
   constructor() {
@@ -33,6 +35,58 @@ export default class HrmFormPlugin extends FlexPlugin {
     console.log(`Welcome to ${PLUGIN_NAME} Version ${PLUGIN_VERSION}`);
     this.registerReducers(manager);
 
+    const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
+    // const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
+    const serverlessBaseUrl = 'https://serverless-9971-dev.twil.io';
+    const workerSid = manager.workerClient.sid;
+    const { helpline, counselorLanguage, helplineLanguage } = manager.workerClient.attributes;
+    const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
+    const getSsoToken = () => manager.store.getState().flex.session.ssoTokenPayload.token;
+    const { isCallTask } = TaskHelper;
+
+    const twilioStrings = { ...manager.strings }; // save the originals
+    const setNewStrings = newStrings => (manager.strings = { ...manager.strings, ...newStrings });
+    const translationErrorMsg = 'Could not translate, using default';
+
+    const changeLanguageUI = async language => {
+      try {
+        if (language === defaultLanguage) {
+          setNewStrings({ ...twilioStrings, ...defaultTranslation });
+        } else {
+          const response = await fetch(`${serverlessBaseUrl}/translations/${language}/flexUI.json`);
+          const translation = await response.json();
+          setNewStrings(translation);
+        }
+        manager.store.dispatch(changeLanguage(language));
+        flex.Actions.invokeAction('NavigateToView', { viewName: manager.store.getState().flex.view.activeView }); // force a re-render
+        console.log('Translation OK');
+      } catch (err) {
+        window.alert(translationErrorMsg);
+        console.error(translationErrorMsg, err);
+      }
+    };
+
+    const fetchGoodbyeMsg = async language => {
+      try {
+        if (language && language !== defaultLanguage) {
+          const response = await fetch(`${serverlessBaseUrl}/translations/${language}/messages.json`);
+          const messages = await response.json();
+          return messages.GoodbyeMsg ? messages.GoodbyeMsg : defaultMessages.GoodbyeMsg;
+        }
+
+        return defaultMessages.GoodbyeMsg;
+      } catch (err) {
+        window.alert(translationErrorMsg);
+        console.error(translationErrorMsg, err);
+        return defaultMessages.GoodbyeMsg;
+      }
+    };
+
+    // configure UI language
+    setNewStrings(defaultTranslation);
+    const language = counselorLanguage || helplineLanguage || configuredLanguage;
+    if (language && language !== defaultLanguage) changeLanguageUI(language);
+
     const configuration = {
       colorTheme: HrmTheme,
     };
@@ -49,28 +103,16 @@ export default class HrmFormPlugin extends FlexPlugin {
       flex.Actions.invokeAction('CompleteTask', { sid, task });
     };
 
-    const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
-    const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
-    const workerSid = manager.workerClient.sid;
-    const { helpline } = manager.workerClient.attributes;
-    const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
-    const getSsoToken = () => manager.store.getState().flex.session.ssoTokenPayload.token;
-    const { isCallTask } = TaskHelper;
-
-    // assign new object containing default strings + translation overrides
-    manager.strings = { ...manager.strings, ...defaultTranslation };
-
     // TODO(nick): Eventually remove this log line or set to debug
     console.log(`HRM URL: ${hrmBaseUrl}`);
     if (hrmBaseUrl === undefined) {
       console.error('HRM base URL not defined, you must provide this to save program data');
     }
 
-    const setNewStrings = newStrings => (manager.strings = newStrings);
     flex.ViewCollection.Content.add(
       <flex.View name="settings" key="settings-view">
         <div>
-          <Translator manager={manager} setNewStrings={setNewStrings} key="translator" />
+          <Translator manager={manager} changeLanguageUI={changeLanguageUI} key="translator" />
         </div>
       </flex.View>,
     );
@@ -119,8 +161,14 @@ export default class HrmFormPlugin extends FlexPlugin {
     const shouldSayGoodbye = channel =>
       channel === channelTypes.facebook || channel === channelTypes.sms || channel === channelTypes.whatsapp;
 
+    const getTaskLanguage = task =>
+      task.attributes.language ||
+      manager.store.getState().flex.worker.attributes.helplineLanguage ||
+      configuredLanguage;
+
     const sendGoodbyeMessage = async payload => {
-      const { GoodbyeMsg } = manager.strings;
+      const taskLanguage = getTaskLanguage(payload.task);
+      const GoodbyeMsg = await fetchGoodbyeMsg(taskLanguage);
       await flex.Actions.invokeAction('SendMessage', {
         body: GoodbyeMsg,
         channelSid: payload.task.attributes.channelSid,
