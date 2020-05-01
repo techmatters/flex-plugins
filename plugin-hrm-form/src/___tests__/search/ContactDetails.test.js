@@ -84,12 +84,19 @@ const contactOfType = type => ({
 
 const handleBack = jest.fn();
 const handleMockedMessage = jest.fn();
+const handleSelectSearchResult = jest.fn();
 
 test(`<ContactDetails> with contact of type ${callTypes.child}`, () => {
   const contact = contactOfType(callTypes.child);
 
   const component = renderer.create(
-    <ContactDetails contact={contact} handleBack={handleBack} handleMockedMessage={handleMockedMessage} />,
+    <ContactDetails
+      contact={contact}
+      currentIsCaller={false}
+      handleBack={handleBack}
+      handleMockedMessage={handleMockedMessage}
+      handleSelectSearchResult={handleSelectSearchResult}
+    />,
   ).root;
 
   const sections = component.findAllByType(Section);
@@ -101,7 +108,13 @@ test(`<ContactDetails> with contact of type ${callTypes.caller}`, () => {
   const contact = contactOfType(callTypes.caller);
 
   const component = renderer.create(
-    <ContactDetails contact={contact} handleBack={handleBack} handleMockedMessage={handleMockedMessage} />,
+    <ContactDetails
+      contact={contact}
+      currentIsCaller={true}
+      handleBack={handleBack}
+      handleMockedMessage={handleMockedMessage}
+      handleSelectSearchResult={handleSelectSearchResult}
+    />,
   ).root;
   const sections = component.findAllByType(Section);
   const sectionsCount = sections.length;
@@ -112,7 +125,13 @@ test(`<ContactDetails> with a non data (standalone) contact`, () => {
   const contact = contactOfType('anything else');
 
   const component = renderer.create(
-    <ContactDetails contact={contact} handleBack={handleBack} handleMockedMessage={handleMockedMessage} />,
+    <ContactDetails
+      contact={contact}
+      currentIsCaller={false}
+      handleBack={handleBack}
+      handleMockedMessage={handleMockedMessage}
+      handleSelectSearchResult={handleSelectSearchResult}
+    />,
   ).root;
   const sections = component.findAllByType(Section);
   const sectionsCount = sections.length;
