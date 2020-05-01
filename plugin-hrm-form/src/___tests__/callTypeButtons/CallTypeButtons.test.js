@@ -2,11 +2,11 @@ import React from 'react';
 import renderer from 'react-test-renderer';
 import { Template } from '@twilio/flex-ui';
 
-import './mockStyled';
-import CallTypeButtons from '../components/callTypeButtons';
-import { DataCallTypeButton, NonDataCallTypeButton, ConfirmButton, CancelButton } from '../styles/callTypeButtons';
-import LocalizationContext from '../contexts/LocalizationContext';
-import callTypes from '../states/DomainConstants';
+import '../mockStyled';
+import CallTypeButtons from '../../components/callTypeButtons';
+import { DataCallTypeButton, NonDataCallTypeButton, ConfirmButton, CancelButton } from '../../styles/callTypeButtons';
+import LocalizationContext from '../../contexts/LocalizationContext';
+import callTypes from '../../states/DomainConstants';
 
 const task = {
   taskSid: 'task-sid',
