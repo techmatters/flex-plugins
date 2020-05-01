@@ -8,6 +8,7 @@ import { namespace, queuesStatusBase } from '../../states';
 import QueueCard from './QueueCard';
 import { Container, HeaderContainer, QueuesContainer } from '../../styles/queuesStatus';
 import { Box, ErrorText } from '../../styles/HrmStyles';
+import { TLHPaddingLeft } from '../../styles/GlobalOverrides';
 
 class QueuesStatus extends React.Component {
   static displayName = 'QueuesStatus';
@@ -53,7 +54,7 @@ class QueuesStatus extends React.Component {
           role="button"
           aria-label={`Contacts waiting ${this.state.expanded ? 'press to collapse' : 'press to expand'}`}
         >
-          <Box marginTop="12px" marginRight="5px" marginBottom="12px" marginLeft="12px">
+          <Box marginTop="12px" marginRight="5px" marginBottom="12px" marginLeft={TLHPaddingLeft}>
             Contacts waiting
           </Box>
           {this.renderHeaderIcon()}

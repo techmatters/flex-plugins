@@ -7,6 +7,9 @@ export const Container = styled('div')`
   background-color: #ffffff;
   padding-top: 5px;
   padding-bottom: 14px;
+  border-style: solid;
+  border-width: 0px 0px 1px 0px;
+  border-color: ${props => props.theme.colors.base4};
 `;
 
 export const HeaderContainer = styled(ButtonRow)`
@@ -23,6 +26,7 @@ export const HeaderContainer = styled(ButtonRow)`
   font-weight: 700;
   letter-spacing: 1.67px;
   line-height: 12px;
+  padding: 0px;
 `;
 
 export const QueuesContainer = styled('div')`

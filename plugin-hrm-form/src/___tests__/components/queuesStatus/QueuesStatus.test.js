@@ -6,7 +6,6 @@ import { mount } from 'enzyme';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 
-// import '../../mockStyled';
 import HrmTheme from '../../../styles/HrmTheme';
 import QueuesStatus from '../../../components/queuesStatus';
 import QueueCard from '../../../components/queuesStatus/QueueCard';
