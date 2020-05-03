@@ -22,3 +22,11 @@ export const populateCounselors = async configuration => {
 
   return workerSummaries;
 };
+
+export const getTranslation = async (configuration, body) => {
+  const { serverlessBaseUrl, getSsoToken } = configuration;
+  const url = `${serverlessBaseUrl}/getTranslation`;
+
+  const translation = await fetchProtectedApi(url, { ...body, Token: getSsoToken() });
+  return translation;
+};

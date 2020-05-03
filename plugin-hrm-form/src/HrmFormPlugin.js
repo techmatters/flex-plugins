@@ -13,6 +13,7 @@ import HrmTheme from './styles/HrmTheme';
 import { channelTypes } from './states/DomainConstants';
 import { defaultLanguage, changeLanguage } from './states/ConfigurationState';
 import { configuredLanguage } from './private/secret';
+import { getTranslation } from './services/ServerlessService';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 const PLUGIN_VERSION = '0.4.1';
@@ -52,8 +53,8 @@ export default class HrmFormPlugin extends FlexPlugin {
         if (language === defaultLanguage) {
           setNewStrings({ ...twilioStrings, ...defaultTranslation });
         } else {
-          const response = await fetch(`${serverlessBaseUrl}/translations/${language}/flexUI.json`);
-          const translation = await response.json();
+          const body = { language };
+          const translation = await getTranslation({ serverlessBaseUrl, getSsoToken }, body);
           setNewStrings(translation);
         }
         manager.store.dispatch(changeLanguage(language));
