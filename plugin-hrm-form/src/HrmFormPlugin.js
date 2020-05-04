@@ -36,8 +36,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     this.registerReducers(manager);
 
     const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
-    // const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
-    const serverlessBaseUrl = 'https://serverless-9971-dev.twil.io';
+    const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
     const workerSid = manager.workerClient.sid;
     const { helpline, counselorLanguage, helplineLanguage } = manager.workerClient.attributes;
     const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
