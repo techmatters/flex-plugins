@@ -71,11 +71,15 @@ const ConnectDialog = ({ anchorEl, currentIsCaller, contact, handleConfirm, hand
 
 ConnectDialog.displayName = 'ConnectDialog';
 ConnectDialog.propTypes = {
-  anchorEl: PropTypes.instanceOf(Element).isRequired,
+  anchorEl: PropTypes.instanceOf(Element),
   currentIsCaller: PropTypes.bool.isRequired,
-  contact: contactType.isRequired,
+  contact: contactType,
   handleConfirm: PropTypes.func.isRequired,
   handleClose: PropTypes.func.isRequired,
+};
+ConnectDialog.defaultProps = {
+  anchorEl: null,
+  contact: null,
 };
 
 export default ConnectDialog;

@@ -3,11 +3,14 @@ import { VERSION, TaskHelper } from '@twilio/flex-ui';
 import { FlexPlugin } from 'flex-plugin';
 
 import CustomCRMContainer from './components/CustomCRMContainer';
+import QueuesStatus from './components/queuesStatus';
+import QueuesStatusWriter from './components/queuesStatus/QueuesStatusWriter';
 import reducers, { namespace } from './states';
 import { Actions } from './states/ContactState';
 import ConfigurationContext from './contexts/ConfigurationContext';
 import LocalizationContext from './contexts/LocalizationContext';
 import HrmTheme from './styles/HrmTheme';
+import './styles/GlobalOverrides';
 import { channelTypes } from './states/DomainConstants';
 import { configuredLanguage } from './private/secret';
 import { addDeveloperUtils, initLocalization } from './utils/pluginHelpers';
@@ -77,6 +80,36 @@ export default class HrmFormPlugin extends FlexPlugin {
     // utilities for developers only
     if (manager.store.getState().flex.worker.attributes.helpline === '') addDeveloperUtils(flex, manager, translateUI);
 
+    flex.MainContainer.Content.add(
+      <QueuesStatusWriter insightsClient={manager.insightsClient} key="queue-status-writer" />,
+      {
+        sortOrder: -1,
+        align: 'start',
+      },
+    );
+
+    const voiceColor = { Accepted: flex.DefaultTaskChannels.Call.colors.main() };
+    const webColor = flex.DefaultTaskChannels.Chat.colors.main;
+    const facebookColor = flex.DefaultTaskChannels.ChatMessenger.colors.main;
+    const smsColor = flex.DefaultTaskChannels.ChatSms.colors.main;
+    const whatsappColor = flex.DefaultTaskChannels.ChatWhatsApp.colors.main;
+    flex.TaskListContainer.Content.add(
+      <QueuesStatus
+        key="queue-status"
+        colors={{
+          voiceColor,
+          webColor,
+          facebookColor,
+          smsColor,
+          whatsappColor,
+        }}
+      />,
+      {
+        sortOrder: -1,
+        align: 'start',
+      },
+    );
+
     // TODO(nick): Can we avoid passing down the task prop, maybe using context?
     const options = { sortOrder: -1 };
     flex.CRMContainer.Content.replace(
@@ -142,7 +175,7 @@ export default class HrmFormPlugin extends FlexPlugin {
 
     const hangupCall = fromActionFunction(saveEndMillis);
 
-    // This action is causing a rage condition. Link to issue https://github.com/twilio/flex-plugin-builder/issues/243
+    // This action is causing a race condition. Link to issue https://github.com/twilio/flex-plugin-builder/issues/243
     const wrapupTask = fromActionFunction(async payload => {
       if (shouldSayGoodbye(payload.task.channelType)) {
         await sendGoodbyeMessage(payload);
@@ -157,7 +190,7 @@ export default class HrmFormPlugin extends FlexPlugin {
   /**
    * Registers the plugin reducers
    *
-   * @param manager { Flex.Manager }
+   * @param {import('@twilio/flex-ui').Manager} manager
    */
   registerReducers(manager) {
     if (!manager.store.addReducer) {

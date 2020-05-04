@@ -67,3 +67,5 @@ build/
 
 # Auth
 private/
+
+.vscode

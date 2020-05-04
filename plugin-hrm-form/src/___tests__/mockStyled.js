@@ -64,3 +64,15 @@ jest.mock('../styles/callTypeButtons', () => ({
   CloseButton: 'CloseButton',
   NonDataCallTypeDialogContainer: 'NonDataCallTypeDialogContainer',
 }));
+
+jest.mock('../styles/queuesStatus', () => ({
+  Container: 'Container',
+  HeaderContainer: 'HeaderContainer',
+  QueuesContainer: 'QueuesContainer',
+  QueueName: 'QueueName',
+  ChannelColumn: 'ChannelColumn',
+  ChannelBox: 'ChannelBox',
+  ChannelLabel: 'ChannelLabel',
+  WaitTimeLabel: 'WaitTimeLabel',
+  WaitTimeValue: 'WaitTimeValue',
+}));
