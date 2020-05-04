@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withTaskContext } from '@twilio/flex-ui';
+import { withTaskContext, Template } from '@twilio/flex-ui';
 import FaceIcon from '@material-ui/icons/Face';
 
 import { withLocalization } from '../../contexts/LocalizationContext';
@@ -29,14 +29,14 @@ const CallTypeButtons = props => {
             <Box width="50px" marginRight="5px">
               <FaceIcon />
             </Box>
-            {callTypes.child}
+            <Template code="CallType-child" />
           </DataCallTypeButton>
           <DataCallTypeButton onClick={() => props.handleCallTypeButtonClick(task.taskSid, callTypes.caller)}>
             <Box width="50px" marginRight="5px">
               <FaceIcon style={{ marginRight: '-5px' }} />
               <FaceIcon />
             </Box>
-            {callTypes.caller}
+            <Template code="CallType-caller" />
           </DataCallTypeButton>
         </Box>
 
@@ -50,7 +50,7 @@ const CallTypeButtons = props => {
                 onClick={() => props.handleCallTypeButtonClick(task.taskSid, callTypes[callType])}
                 marginRight={i % 2 === 0}
               >
-                {callTypes[callType]}
+                <Template code={`CallType-${callType}`} />
               </NonDataCallTypeButton>
             ))}
         </Box>

@@ -14,7 +14,7 @@ class Translator extends React.PureComponent {
         TranslateButtonAriaLabel: PropTypes.string,
       }),
     }).isRequired,
-    changeLanguageUI: PropTypes.string.isRequired,
+    translateUI: PropTypes.func.isRequired,
     language: PropTypes.string.isRequired,
   };
 
@@ -27,7 +27,7 @@ class Translator extends React.PureComponent {
     const language = e.target.value;
     if (!this.state.loading && language !== this.props.language) {
       this.setState({ loading: true }, async () => {
-        await this.props.changeLanguageUI(language);
+        await this.props.translateUI(language);
         setTimeout(() => this.setState({ loading: false }), 1000);
       });
     }

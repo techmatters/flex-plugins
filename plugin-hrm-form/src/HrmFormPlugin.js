@@ -7,18 +7,14 @@ import reducers, { namespace } from './states';
 import { Actions } from './states/ContactState';
 import ConfigurationContext from './contexts/ConfigurationContext';
 import LocalizationContext from './contexts/LocalizationContext';
-import Translator from './components/translator';
-import SettingsSideLink from './components/sideLinks/SettingsSideLink';
 import HrmTheme from './styles/HrmTheme';
 import { channelTypes } from './states/DomainConstants';
-import { defaultLanguage, changeLanguage } from './states/ConfigurationState';
 import { configuredLanguage } from './private/secret';
-import { getTranslation } from './services/ServerlessService';
+import { addDeveloperUtils, initLocalization } from './utils/pluginHelpers';
+import { changeLanguage } from './states/ConfigurationState';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 const PLUGIN_VERSION = '0.4.1';
-const defaultTranslation = require(`./translations/${defaultLanguage}/flexUI.json`);
-const defaultMessages = require(`./translations/${defaultLanguage}/messages.json`);
 
 export default class HrmFormPlugin extends FlexPlugin {
   constructor() {
@@ -37,55 +33,24 @@ export default class HrmFormPlugin extends FlexPlugin {
     this.registerReducers(manager);
 
     const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
-    const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
+    // const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
+    const serverlessBaseUrl = 'https://serverless-9971-dev.twil.io';
     const workerSid = manager.workerClient.sid;
     const { helpline, counselorLanguage, helplineLanguage } = manager.workerClient.attributes;
     const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
     const getSsoToken = () => manager.store.getState().flex.session.ssoTokenPayload.token;
     const { isCallTask } = TaskHelper;
 
+    // localization setup (translates the UI if necessary)
     const twilioStrings = { ...manager.strings }; // save the originals
     const setNewStrings = newStrings => (manager.strings = { ...manager.strings, ...newStrings });
-    const translationErrorMsg = 'Could not translate, using default';
-
-    const changeLanguageUI = async language => {
-      try {
-        if (language === defaultLanguage) {
-          setNewStrings({ ...twilioStrings, ...defaultTranslation });
-        } else {
-          const body = { language };
-          const translation = await getTranslation({ serverlessBaseUrl, getSsoToken }, body);
-          setNewStrings(translation);
-        }
-        manager.store.dispatch(changeLanguage(language));
-        flex.Actions.invokeAction('NavigateToView', { viewName: manager.store.getState().flex.view.activeView }); // force a re-render
-        console.log('Translation OK');
-      } catch (err) {
-        window.alert(translationErrorMsg);
-        console.error(translationErrorMsg, err);
-      }
+    const afterNewStrings = language => {
+      manager.store.dispatch(changeLanguage(language));
+      flex.Actions.invokeAction('NavigateToView', { viewName: manager.store.getState().flex.view.activeView }); // force a re-render
     };
-
-    const fetchGoodbyeMsg = async language => {
-      try {
-        if (language && language !== defaultLanguage) {
-          const response = await fetch(`${serverlessBaseUrl}/translations/${language}/messages.json`);
-          const messages = await response.json();
-          return messages.GoodbyeMsg ? messages.GoodbyeMsg : defaultMessages.GoodbyeMsg;
-        }
-
-        return defaultMessages.GoodbyeMsg;
-      } catch (err) {
-        window.alert(translationErrorMsg);
-        console.error(translationErrorMsg, err);
-        return defaultMessages.GoodbyeMsg;
-      }
-    };
-
-    // configure UI language
-    setNewStrings(defaultTranslation);
-    const language = counselorLanguage || helplineLanguage || configuredLanguage;
-    if (language && language !== defaultLanguage) changeLanguageUI(language);
+    const localizationConfig = { twilioStrings, serverlessBaseUrl, getSsoToken, setNewStrings, afterNewStrings };
+    const initialLanguage = counselorLanguage || helplineLanguage || configuredLanguage;
+    const { translateUI, getGoodbyeMsg } = initLocalization(localizationConfig, initialLanguage);
 
     const configuration = {
       colorTheme: HrmTheme,
@@ -109,23 +74,8 @@ export default class HrmFormPlugin extends FlexPlugin {
       console.error('HRM base URL not defined, you must provide this to save program data');
     }
 
-    flex.ViewCollection.Content.add(
-      <flex.View name="settings" key="settings-view">
-        <div>
-          <Translator manager={manager} changeLanguageUI={changeLanguageUI} key="translator" />
-        </div>
-      </flex.View>,
-    );
-
-    flex.SideNav.Content.add(
-      <SettingsSideLink
-        key="SettingsSideLink"
-        onClick={() => flex.Actions.invokeAction('NavigateToView', { viewName: 'settings' })}
-      />,
-      {
-        align: 'end',
-      },
-    );
+    // utilities for developers only
+    if (manager.store.getState().flex.worker.attributes.helpline === '') addDeveloperUtils(flex, manager, translateUI);
 
     // TODO(nick): Can we avoid passing down the task prop, maybe using context?
     const options = { sortOrder: -1 };
@@ -168,9 +118,9 @@ export default class HrmFormPlugin extends FlexPlugin {
 
     const sendGoodbyeMessage = async payload => {
       const taskLanguage = getTaskLanguage(payload.task);
-      const GoodbyeMsg = await fetchGoodbyeMsg(taskLanguage);
+      const goodbyeMsg = await getGoodbyeMsg(taskLanguage);
       await flex.Actions.invokeAction('SendMessage', {
-        body: GoodbyeMsg,
+        body: goodbyeMsg,
         channelSid: payload.task.attributes.channelSid,
       });
     };

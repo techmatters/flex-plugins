@@ -30,3 +30,11 @@ export const getTranslation = async (configuration, body) => {
   const translation = await fetchProtectedApi(url, { ...body, Token: getSsoToken() });
   return translation;
 };
+
+export const getMessages = async (configuration, body) => {
+  const { serverlessBaseUrl, getSsoToken } = configuration;
+  const url = `${serverlessBaseUrl}/getMessages`;
+
+  const messages = await fetchProtectedApi(url, { ...body, Token: getSsoToken() });
+  return messages;
+};
