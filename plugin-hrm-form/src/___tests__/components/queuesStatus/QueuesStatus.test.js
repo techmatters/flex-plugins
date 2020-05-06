@@ -215,7 +215,7 @@ test('Test <QueuesStatus> without helpline', () => {
     expect(QueueCards[0].props.whatsapp).toBe(9);
     const WaitTimeValue1 = component.findByType(WaitTimeValue).props;
     expect(WaitTimeValue1.children).toBe('none');
-  })
+  });
 });
 
 test('Test <QueuesStatus> after error', () => {
