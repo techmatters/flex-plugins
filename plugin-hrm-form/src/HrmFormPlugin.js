@@ -43,7 +43,10 @@ export default class HrmFormPlugin extends FlexPlugin {
     const getSsoToken = () => manager.store.getState().flex.session.ssoTokenPayload.token;
     const { isCallTask } = TaskHelper;
 
-    // localization setup (translates the UI if necessary)
+    /*
+     * localization setup (translates the UI if necessary)
+     * WARNING: the way this is done right now is "hacky". More info in initLocalization declaration
+     */
     const twilioStrings = { ...manager.strings }; // save the originals
     const setNewStrings = newStrings => (manager.strings = { ...manager.strings, ...newStrings });
     const afterNewStrings = language => {

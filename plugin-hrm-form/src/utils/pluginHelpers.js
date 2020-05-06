@@ -57,6 +57,8 @@ const initGetGoodbyeMsg = localizationConfig => async language => {
 };
 
 /**
+ * WARNING: the way this is done right now is "hacky", as it changes an object reference (setNewStrings) and then forces a re-render (afterNewStrings). The safe way of doing this would be 1) async init method 2) having acces to a function that updates the ContextProvider state that wraps the entire app. A fallback is to move translations within the code (avoiding the asynchronus operation).
+ *
  * Receives localization config object and initial language. Based on this, translates de UI
  * to match the counselor's preferences (if needed).
  * Returns the functions used for further localization, attaching to them the localization config object
