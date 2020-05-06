@@ -94,7 +94,7 @@ class QueuesCard extends React.PureComponent {
     return (
       <>
         <Box paddingLeft="10px" paddingTop="10px" tabIndex={0}>
-          <HiddenText>Queue name:</HiddenText>
+          <HiddenText>Contacts waiting. Queue name:</HiddenText>
           <QueueName>{qName}</QueueName>
           <Box marginTop="7px" marginBottom="14px">
             <Row>
