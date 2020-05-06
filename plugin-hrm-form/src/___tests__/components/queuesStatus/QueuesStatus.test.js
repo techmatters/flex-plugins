@@ -174,8 +174,10 @@ test('Test <QueuesStatus> without helpline', () => {
       smsColor: { Accepted: '#000000' },
       whatsappColor: { Accepted: '#000000' },
     },
-    helpline: '',
   };
+
+  const ownProps1 = { ...ownProps, helpline: '' };
+  const ownProps2 = { ...ownProps };
 
   const queuesStatusState = {
     queuesStatus: {
@@ -191,24 +193,29 @@ test('Test <QueuesStatus> without helpline', () => {
   const initialState = createState(queuesStatusState);
   const store = mockStore(initialState);
 
-  const component = renderer.create(
-    <StorelessThemeProvider themeConf={themeConf}>
-      <Provider store={store}>
-        <QueuesStatus {...ownProps} />
-      </Provider>
-    </StorelessThemeProvider>,
-  ).root;
+  const [component1, component2] = [ownProps1, ownProps2].map(
+    props =>
+      renderer.create(
+        <StorelessThemeProvider themeConf={themeConf}>
+          <Provider store={store}>
+            <QueuesStatus {...props} />
+          </Provider>
+        </StorelessThemeProvider>,
+      ).root,
+  );
 
-  expect(() => component.findAllByType(QueueCard)).not.toThrow();
-  const QueueCards = component.findAllByType(QueueCard);
-  expect(QueueCards).toHaveLength(1);
-  expect(QueueCards[0].props.facebook).toBe(9);
-  expect(QueueCards[0].props.sms).toBe(9);
-  expect(QueueCards[0].props.voice).toBe(9);
-  expect(QueueCards[0].props.web).toBe(9);
-  expect(QueueCards[0].props.whatsapp).toBe(9);
-  const WaitTimeValue1 = component.findByType(WaitTimeValue).props;
-  expect(WaitTimeValue1.children).toBe('none');
+  [component1, component2].forEach(component => {
+    expect(() => component.findAllByType(QueueCard)).not.toThrow();
+    const QueueCards = component.findAllByType(QueueCard);
+    expect(QueueCards).toHaveLength(1);
+    expect(QueueCards[0].props.facebook).toBe(9);
+    expect(QueueCards[0].props.sms).toBe(9);
+    expect(QueueCards[0].props.voice).toBe(9);
+    expect(QueueCards[0].props.web).toBe(9);
+    expect(QueueCards[0].props.whatsapp).toBe(9);
+    const WaitTimeValue1 = component.findByType(WaitTimeValue).props;
+    expect(WaitTimeValue1.children).toBe('none');
+  })
 });
 
 test('Test <QueuesStatus> after error', () => {
