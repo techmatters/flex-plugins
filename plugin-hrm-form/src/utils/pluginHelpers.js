@@ -12,6 +12,7 @@ const defaultMessages = require(`../translations/${defaultLanguage}/messages.jso
 const translationErrorMsg = 'Could not translate, using default';
 
 /**
+ * Given localization config object, returns a function that receives a language and fetches the UI translation
  * @returns {(language: string) => Promise<void>}
  */
 const initTranslateUI = localizationConfig => async language => {
@@ -34,6 +35,7 @@ const initTranslateUI = localizationConfig => async language => {
 };
 
 /**
+ * Given localization config object, returns a function that receives a language and fetches the appropiate good bye message
  * @returns {(language: string) => Promise<void>}
  */
 const initGetGoodbyeMsg = localizationConfig => async language => {
@@ -55,7 +57,9 @@ const initGetGoodbyeMsg = localizationConfig => async language => {
 };
 
 /**
- *
+ * Receives localization config object and initial language. Based on this, translates de UI
+ * to match the counselor's preferences (if needed).
+ * Returns the functions used for further localization, attaching to them the localization config object
  * @param {{ twilioStrings: any; serverlessBaseUrl: string; getSsoToken: () => string; setNewStrings: (newStrings: any) => void; afterNewStrings: (language: string) => void; }} localizationConfig
  * @param {string} initialLanguage
  */

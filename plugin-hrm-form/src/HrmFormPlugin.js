@@ -12,7 +12,6 @@ import LocalizationContext from './contexts/LocalizationContext';
 import HrmTheme from './styles/HrmTheme';
 import './styles/GlobalOverrides';
 import { channelTypes } from './states/DomainConstants';
-import { configuredLanguage } from './private/secret';
 import { addDeveloperUtils, initLocalization } from './utils/pluginHelpers';
 import { changeLanguage } from './states/ConfigurationState';
 
@@ -37,6 +36,7 @@ export default class HrmFormPlugin extends FlexPlugin {
 
     const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
     const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
+    const { configuredLanguage } = manager.serviceConfiguration.attributes;
     const workerSid = manager.workerClient.sid;
     const { helpline, counselorLanguage, helplineLanguage } = manager.workerClient.attributes;
     const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
@@ -102,6 +102,7 @@ export default class HrmFormPlugin extends FlexPlugin {
           smsColor,
           whatsappColor,
         }}
+        manager={manager}
       />,
       {
         sortOrder: -1,
@@ -116,7 +117,7 @@ export default class HrmFormPlugin extends FlexPlugin {
         value={{ hrmBaseUrl, serverlessBaseUrl, workerSid, helpline, currentWorkspace, getSsoToken }}
         key="custom-crm-container"
       >
-        <LocalizationContext.Provider value={{ strings: manager.strings, isCallTask }}>
+        <LocalizationContext.Provider value={{ manager, isCallTask }}>
           <CustomCRMContainer handleCompleteTask={onCompleteTask} />
         </LocalizationContext.Provider>
       </ConfigurationContext.Provider>,
