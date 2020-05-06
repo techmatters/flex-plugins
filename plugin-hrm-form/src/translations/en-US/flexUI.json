@@ -1,10 +1,6 @@
 {  
   "TranslateButtonAriaLabel": "Change language",
 
-  "QueuesStatusWidgetLabel": "Contacts waiting",
-  "PressToCollapse": "press to collapse",
-  "PressToExpand": "press to expand",
-
   "CallType-child": "Child calling about self",
   "CallType-caller": "Someone calling about a child",
   "CallType-silent": "Silent",

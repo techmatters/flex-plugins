@@ -102,7 +102,6 @@ export default class HrmFormPlugin extends FlexPlugin {
           smsColor,
           whatsappColor,
         }}
-        manager={manager}
       />,
       {
         sortOrder: -1,

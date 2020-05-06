@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Template } from '@twilio/flex-ui';
 import { CircularProgress, Collapse } from '@material-ui/core';
 import { ArrowDropDownTwoTone, ArrowDropUpTwoTone } from '@material-ui/icons';
 import { connect } from 'react-redux';
@@ -21,13 +20,6 @@ class QueuesStatus extends React.Component {
       facebookColor: PropTypes.shape({ Accepted: PropTypes.string }),
       smsColor: PropTypes.shape({ Accepted: PropTypes.string }),
       whatsappColor: PropTypes.shape({ Accepted: PropTypes.string }),
-    }).isRequired,
-    manager: PropTypes.shape({
-      strings: PropTypes.shape({
-        QueuesStatusWidgetLabel: PropTypes.string,
-        PressToCollapse: PropTypes.string,
-        PressToExpand: PropTypes.string,
-      }),
     }).isRequired,
     queuesStatusState: PropTypes.shape({
       queuesStatus: PropTypes.shape({}),
@@ -55,17 +47,15 @@ class QueuesStatus extends React.Component {
   render() {
     const { queuesStatus, error } = this.props.queuesStatusState;
     const { expanded } = this.state;
-    const { QueuesStatusWidgetLabel, PressToCollapse, PressToExpand } = this.props.manager.strings;
-
     return (
       <Container role="complementary">
         <HeaderContainer
           onClick={this.handleExpandClick}
           role="button"
-          aria-label={`${QueuesStatusWidgetLabel} ${this.state.expanded ? PressToCollapse : PressToExpand}`}
+          aria-label={`Contacts waiting ${this.state.expanded ? 'press to collapse' : 'press to expand'}`}
         >
           <Box marginTop="12px" marginRight="5px" marginBottom="12px" marginLeft={TLHPaddingLeft}>
-            <Template code="QueuesStatusWidgetLabel" />
+            Contacts waiting
           </Box>
           {this.renderHeaderIcon()}
         </HeaderContainer>
