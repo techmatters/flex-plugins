@@ -10,7 +10,6 @@ import { TLHPaddingLeft } from '../../styles/GlobalOverrides';
 
 const QueuesStatus = ({ colors, helpline, queuesStatusState }) => {
   const { queuesStatus, error } = queuesStatusState;
-  const hasHelpline = helpline && queuesStatus[helpline];
 
   return (
     <Container role="complementary" tabIndex={0}>
@@ -22,8 +21,10 @@ const QueuesStatus = ({ colors, helpline, queuesStatusState }) => {
       <QueuesContainer>
         {error && <ErrorText>{error}</ErrorText>}
         {queuesStatus &&
-          (hasHelpline ? (
-            <QueueCard key={`${helpline}-queue`} qName={helpline} colors={colors} {...queuesStatus[helpline]} />
+          (helpline ? (
+            queuesStatus[helpline] && (
+              <QueueCard key={`${helpline}-queue`} qName={helpline} colors={colors} {...queuesStatus[helpline]} />
+            )
           ) : (
             <QueueCard key="Admin-queue" qName="Admin" colors={colors} {...queuesStatus.Admin} />
           ))}

@@ -119,6 +119,44 @@ test('Test <QueuesStatus> after update (with helpline)', () => {
   expect(WaitTimeValue4.children).toBe('none');
 });
 
+test('Test <QueuesStatus> with non existing helpline', () => {
+  const ownProps = {
+    colors: {
+      voiceColor: { Accepted: '#000000' },
+      webColor: { Accepted: '#000000' },
+      facebookColor: { Accepted: '#000000' },
+      smsColor: { Accepted: '#000000' },
+      whatsappColor: { Accepted: '#000000' },
+    },
+    helpline: 'Non Existing',
+  };
+
+  const queuesStatusState = {
+    queuesStatus: {
+      Q1: { facebook: 1, sms: 2, voice: 3, web: 4, whatsapp: 5, longestWaitingDate: null },
+      Q2: { facebook: 5, sms: 4, voice: 3, web: 2, whatsapp: 1, longestWaitingDate: null },
+      Q3: { facebook: 2, sms: 2, voice: 2, web: 2, whatsapp: 2, longestWaitingDate: null },
+      Q4: { facebook: 0, sms: 0, voice: 0, web: 0, whatsapp: 0, longestWaitingDate: null },
+      Admin: { facebook: 9, sms: 9, voice: 9, web: 9, whatsapp: 9, longestWaitingDate: null },
+    },
+    error: null,
+    loading: true,
+  };
+  const initialState = createState(queuesStatusState);
+  const store = mockStore(initialState);
+
+  const component = renderer.create(
+    <StorelessThemeProvider themeConf={themeConf}>
+      <Provider store={store}>
+        <QueuesStatus {...ownProps} />
+      </Provider>
+    </StorelessThemeProvider>,
+  ).root;
+
+  expect(() => component.findByType(QueueCard)).toThrow();
+  expect(() => component.findByType(ErrorText)).toThrow();
+});
+
 test('Test <QueuesStatus> without helpline', () => {
   const ownProps = {
     colors: {
