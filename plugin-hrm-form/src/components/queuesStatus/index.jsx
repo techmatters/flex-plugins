@@ -1,7 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { CircularProgress, Collapse } from '@material-ui/core';
-import { ArrowDropDownTwoTone, ArrowDropUpTwoTone } from '@material-ui/icons';
 import { connect } from 'react-redux';
 
 import { namespace, queuesStatusBase } from '../../states';
@@ -10,68 +8,53 @@ import { Container, HeaderContainer, QueuesContainer } from '../../styles/queues
 import { Box, ErrorText } from '../../styles/HrmStyles';
 import { TLHPaddingLeft } from '../../styles/GlobalOverrides';
 
-class QueuesStatus extends React.Component {
-  static displayName = 'QueuesStatus';
+const QueuesStatus = ({ colors, helpline, queuesStatusState }) => {
+  const { queuesStatus, error } = queuesStatusState;
+  const hasHelpline = helpline && queuesStatus[helpline];
 
-  static propTypes = {
-    colors: PropTypes.shape({
-      voiceColor: PropTypes.shape({ Accepted: PropTypes.string }),
-      webColor: PropTypes.shape({ Accepted: PropTypes.string }),
-      facebookColor: PropTypes.shape({ Accepted: PropTypes.string }),
-      smsColor: PropTypes.shape({ Accepted: PropTypes.string }),
-      whatsappColor: PropTypes.shape({ Accepted: PropTypes.string }),
-    }).isRequired,
-    queuesStatusState: PropTypes.shape({
-      queuesStatus: PropTypes.shape({}),
-      error: PropTypes.string,
-      loading: PropTypes.bool,
-    }).isRequired,
-  };
+  return (
+    <Container role="complementary">
+      <HeaderContainer>
+        <Box marginTop="12px" marginRight="5px" marginBottom="12px" marginLeft={TLHPaddingLeft}>
+          Contacts waiting
+        </Box>
+      </HeaderContainer>
+      <QueuesContainer>
+        {error && <ErrorText>{error}</ErrorText>}
+        {queuesStatus &&
+          (hasHelpline ? (
+            <QueueCard key={`${helpline}-queue`} qName={helpline} colors={colors} {...queuesStatus[helpline]} />
+          ) : (
+            <QueueCard key="Admin-queue" qName="Admin" colors={colors} {...queuesStatus.Admin} />
+          ))}
+      </QueuesContainer>
+    </Container>
+  );
+};
 
-  state = {
-    expanded: true,
-  };
+QueuesStatus.displayName = 'QueuesStatus';
 
-  handleExpandClick = () => this.setState(prev => ({ expanded: !prev.expanded }));
+QueuesStatus.propTypes = {
+  colors: PropTypes.shape({
+    voiceColor: PropTypes.shape({ Accepted: PropTypes.string }),
+    webColor: PropTypes.shape({ Accepted: PropTypes.string }),
+    facebookColor: PropTypes.shape({ Accepted: PropTypes.string }),
+    smsColor: PropTypes.shape({ Accepted: PropTypes.string }),
+    whatsappColor: PropTypes.shape({ Accepted: PropTypes.string }),
+  }).isRequired,
+  helpline: PropTypes.string,
+  queuesStatusState: PropTypes.shape({
+    queuesStatus: PropTypes.shape({
+      Admin: PropTypes.shape({}),
+    }),
+    error: PropTypes.string,
+    loading: PropTypes.bool,
+  }).isRequired,
+};
 
-  renderHeaderIcon = () => {
-    if (this.props.queuesStatusState.loading) return <CircularProgress size={12} color="inherit" />;
-
-    return this.state.expanded ? (
-      <ArrowDropUpTwoTone style={{ padding: 0, fontSize: 18 }} />
-    ) : (
-      <ArrowDropDownTwoTone style={{ padding: 0, fontSize: 18 }} />
-    );
-  };
-
-  render() {
-    const { queuesStatus, error } = this.props.queuesStatusState;
-    const { expanded } = this.state;
-    return (
-      <Container role="complementary">
-        <HeaderContainer
-          onClick={this.handleExpandClick}
-          role="button"
-          aria-label={`Contacts waiting ${this.state.expanded ? 'press to collapse' : 'press to expand'}`}
-        >
-          <Box marginTop="12px" marginRight="5px" marginBottom="12px" marginLeft={TLHPaddingLeft}>
-            Contacts waiting
-          </Box>
-          {this.renderHeaderIcon()}
-        </HeaderContainer>
-        <Collapse in={expanded} timeout="auto" unmountOnExit>
-          <QueuesContainer>
-            {error && <ErrorText>{error}</ErrorText>}
-            {queuesStatus &&
-              Object.entries(queuesStatus).map(([qName, qStatus]) => (
-                <QueueCard key={qName} qName={qName} colors={this.props.colors} {...qStatus} />
-              ))}
-          </QueuesContainer>
-        </Collapse>
-      </Container>
-    );
-  }
-}
+QueuesStatus.defaultProps = {
+  helpline: undefined,
+};
 
 const mapStateToProps = (state, ownProps) => {
   const queuesStatusState = state[namespace][queuesStatusBase];
