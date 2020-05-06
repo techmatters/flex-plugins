@@ -119,7 +119,7 @@ test('Test <QueuesStatus> after update (with helpline)', () => {
   expect(WaitTimeValue4.children).toBe('none');
 });
 
-test('Test <QueuesStatus> with non existing helpline', () => {
+test('Test <QueuesStatus> with non existing helpline shows Admin', () => {
   const ownProps = {
     colors: {
       voiceColor: { Accepted: '#000000' },
@@ -153,8 +153,16 @@ test('Test <QueuesStatus> with non existing helpline', () => {
     </StorelessThemeProvider>,
   ).root;
 
-  expect(() => component.findByType(QueueCard)).toThrow();
-  expect(() => component.findByType(ErrorText)).toThrow();
+  expect(() => component.findAllByType(QueueCard)).not.toThrow();
+  const QueueCards = component.findAllByType(QueueCard);
+  expect(QueueCards).toHaveLength(1);
+  expect(QueueCards[0].props.facebook).toBe(9);
+  expect(QueueCards[0].props.sms).toBe(9);
+  expect(QueueCards[0].props.voice).toBe(9);
+  expect(QueueCards[0].props.web).toBe(9);
+  expect(QueueCards[0].props.whatsapp).toBe(9);
+  const WaitTimeValue1 = component.findByType(WaitTimeValue).props;
+  expect(WaitTimeValue1.children).toBe('none');
 });
 
 test('Test <QueuesStatus> without helpline', () => {

@@ -21,10 +21,8 @@ const QueuesStatus = ({ colors, helpline, queuesStatusState }) => {
       <QueuesContainer>
         {error && <ErrorText>{error}</ErrorText>}
         {queuesStatus &&
-          (helpline ? (
-            queuesStatus[helpline] && (
-              <QueueCard key={`${helpline}-queue`} qName={helpline} colors={colors} {...queuesStatus[helpline]} />
-            )
+          (helpline && queuesStatus[helpline] ? (
+            <QueueCard key={`${helpline}-queue`} qName={helpline} colors={colors} {...queuesStatus[helpline]} />
           ) : (
             <QueueCard key="Admin-queue" qName="Admin" colors={colors} {...queuesStatus.Admin} />
           ))}
