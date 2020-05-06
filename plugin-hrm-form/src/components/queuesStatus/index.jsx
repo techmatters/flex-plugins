@@ -13,7 +13,7 @@ const QueuesStatus = ({ colors, helpline, queuesStatusState }) => {
   const hasHelpline = helpline && queuesStatus[helpline];
 
   return (
-    <Container role="complementary">
+    <Container role="complementary" tabIndex={0}>
       <HeaderContainer>
         <Box marginTop="12px" marginRight="5px" marginBottom="12px" marginLeft={TLHPaddingLeft}>
           Contacts waiting
