@@ -25,8 +25,8 @@ const isNotWaiting = status => status !== 'pending' && status !== 'reserved';
 const suscribedToQueue = (queue, queues) => Boolean(queues[queue]);
 
 /**
- * Checks if a task is waiting and if counselor is suscribed to task queue (using information from cleanQueuesStatus)
  * Adds each waiting tasks to the appropiate queue and channel, recording which is the oldest
+ * If counselor is not suscribed to a queue, acc[queue] will be undefined
  * @returns {{ [qName: string]: typeof newQueueEntry }}
  */
 export const addPendingTasks = (acc, task) => {
