@@ -66,7 +66,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     }
 
     flex.MainContainer.Content.add(
-      <QueuesStatusWriter insightsClient={manager.insightsClient} key="queue-status-writer" />,
+      <QueuesStatusWriter insightsClient={manager.insightsClient} key="queue-status-writer" helpline={helpline} />,
       {
         sortOrder: -1,
         align: 'start',
@@ -88,7 +88,6 @@ export default class HrmFormPlugin extends FlexPlugin {
           smsColor,
           whatsappColor,
         }}
-        helpline={helpline}
       />,
       {
         sortOrder: -1,

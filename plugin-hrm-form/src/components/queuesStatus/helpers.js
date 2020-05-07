@@ -14,21 +14,23 @@ export const newQueueEntry = {
 };
 
 /**
- * @param {{ [s: string]: { queue_name: string }; }} queues
- * @returns {{ [queue_name: string]: typeof newQueueEntry }}
+ * @param {string[]} queues
+ * @returns {{ [qName: string]: typeof newQueueEntry }}
  */
 export const initializeQueuesStatus = queues =>
-  Object.values(queues)
-    // eslint-disable-next-line no-nested-ternary
-    .sort((a, b) => (a.queue_name < b.queue_name ? -1 : a.queue_name > b.queue_name ? 1 : 0))
-    .reduce((acc, q) => ({ ...acc, [q.queue_name]: newQueueEntry }), {});
+  // eslint-disable-next-line no-nested-ternary
+  queues.sort((a, b) => (a < b ? -1 : a > b ? 1 : 0)).reduce((acc, qName) => ({ ...acc, [qName]: newQueueEntry }), {});
+
+const isNotWaiting = status => status !== 'pending' && status !== 'reserved';
+const suscribedToQueue = (queue, queues) => Boolean(queues[queue]);
 
 /**
- * Adds each pending tasks to the appropiate queue and channel, recording which is the oldest
- * @returns {{ [queue_name: string]: typeof newQueueEntry }}
+ * Checks if a task is waiting and if counselor is suscribed to task queue (using information from cleanQueuesStatus)
+ * Adds each waiting tasks to the appropiate queue and channel, recording which is the oldest
+ * @returns {{ [qName: string]: typeof newQueueEntry }}
  */
 export const addPendingTasks = (acc, task) => {
-  if (task.status !== 'pending' && task.status !== 'reserved') return acc;
+  if (isNotWaiting(task.status) || !suscribedToQueue(task.queue_name, acc)) return acc;
 
   const created = task.date_created;
   const channel = task.channel_type === 'voice' ? 'voice' : task.attributes.channelType;
@@ -47,7 +49,7 @@ export const addPendingTasks = (acc, task) => {
 };
 
 /**
- * @returns {{ [queue_name: string]: typeof newQueueEntry }}
+ * @returns {{ [qName: string]: typeof newQueueEntry }}
  */
 export const getNewQueuesStatus = (cleanQueuesStatus, tasks) => {
   const newQueuesStatus = Object.values(tasks).reduce(addPendingTasks, cleanQueuesStatus);

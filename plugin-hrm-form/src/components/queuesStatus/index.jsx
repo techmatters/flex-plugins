@@ -8,7 +8,7 @@ import { Container, HeaderContainer, QueuesContainer } from '../../styles/queues
 import { Box, ErrorText } from '../../styles/HrmStyles';
 import { TLHPaddingLeft } from '../../styles/GlobalOverrides';
 
-const QueuesStatus = ({ colors, helpline, queuesStatusState }) => {
+const QueuesStatus = ({ colors, queuesStatusState }) => {
   const { queuesStatus, error } = queuesStatusState;
 
   return (
@@ -21,10 +21,8 @@ const QueuesStatus = ({ colors, helpline, queuesStatusState }) => {
       <QueuesContainer>
         {error && <ErrorText>{error}</ErrorText>}
         {queuesStatus &&
-          (helpline && queuesStatus[helpline] ? (
-            <QueueCard key={`${helpline}-queue`} qName={helpline} colors={colors} {...queuesStatus[helpline]} />
-          ) : (
-            <QueueCard key="Admin-queue" qName="Admin" colors={colors} {...queuesStatus.Admin} />
+          Object.entries(queuesStatus).map(([qName, qStatus]) => (
+            <QueueCard key={qName} qName={qName} colors={colors} {...qStatus} />
           ))}
       </QueuesContainer>
     </Container>
@@ -41,7 +39,6 @@ QueuesStatus.propTypes = {
     smsColor: PropTypes.shape({ Accepted: PropTypes.string }),
     whatsappColor: PropTypes.shape({ Accepted: PropTypes.string }),
   }).isRequired,
-  helpline: PropTypes.string,
   queuesStatusState: PropTypes.shape({
     queuesStatus: PropTypes.shape({
       Admin: PropTypes.shape({}),
@@ -49,10 +46,6 @@ QueuesStatus.propTypes = {
     error: PropTypes.string,
     loading: PropTypes.bool,
   }).isRequired,
-};
-
-QueuesStatus.defaultProps = {
-  helpline: undefined,
 };
 
 const mapStateToProps = (state, ownProps) => {

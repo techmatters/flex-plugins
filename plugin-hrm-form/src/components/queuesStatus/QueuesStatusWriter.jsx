@@ -14,6 +14,7 @@ class QueuesStatusWriter extends React.Component {
     insightsClient: PropTypes.shape({
       liveQuery: PropTypes.func,
     }).isRequired,
+    helpline: PropTypes.string.isRequired,
     queuesStatusState: PropTypes.shape({
       queuesStatus: PropTypes.shape({}),
       error: PropTypes.string,
@@ -28,12 +29,16 @@ class QueuesStatusWriter extends React.Component {
   };
 
   async componentDidMount() {
+    const { helpline } = this.props;
     try {
       const q = await this.props.insightsClient.liveQuery('tr-queue', '');
-      const queues = q.getItems();
+      const queues = Object.values(q.getItems()).reduce((acc, queue) => [...acc, queue.queue_name], []);
       q.close();
 
-      const cleanQueuesStatus = initializeQueuesStatus(queues);
+      // builds the array of queues the counselor cares about (for now will always be one)
+      const counselorQueues = helpline && queues.includes(helpline) ? [helpline] : ['Admin'];
+
+      const cleanQueuesStatus = initializeQueuesStatus(counselorQueues);
 
       const tasksQuery = await this.props.insightsClient.liveQuery('tr-task', '');
 
@@ -43,14 +48,16 @@ class QueuesStatusWriter extends React.Component {
         this.props.queuesStatusUpdate(queuesStatus);
       };
 
+      const shouldUpdate = status => status === 'pending' || status === 'assigned' || status === 'canceled';
+
       updateQueuesState();
       this.setState({ tasksQuery });
 
       tasksQuery.on('itemUpdated', args => {
         console.log('TASK UPDATED', args);
-        const { status } = args.value;
-        if (status === 'pending' || status === 'assigned' || status === 'canceled') {
-          // here we can filter and update only if the task belongs to a queue the user cares about
+        // eslint-disable-next-line camelcase
+        const { status, queue_name } = args.value;
+        if (counselorQueues.includes(queue_name) && shouldUpdate(status)) {
           updateQueuesState();
         }
       });
@@ -60,7 +67,7 @@ class QueuesStatusWriter extends React.Component {
       });
     } catch (err) {
       const error = "Error, couldn't subscribe to live updates";
-      this.props.queuesStatusFailure({ error });
+      this.props.queuesStatusFailure(error);
       console.log(error, err);
     }
   }
