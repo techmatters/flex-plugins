@@ -7,14 +7,14 @@ import { queuesStatusUpdate, queuesStatusFailure } from '../../states/QueuesStat
 import { initializeQueuesStatus, getNewQueuesStatus } from './helpers';
 import { namespace, queuesStatusBase } from '../../states';
 
-class QueuesStatusWriter extends React.Component {
+export class QueuesStatusWriter extends React.Component {
   static displayName = 'QueuesStatusWriter';
 
   static propTypes = {
     insightsClient: PropTypes.shape({
       liveQuery: PropTypes.func,
     }).isRequired,
-    helpline: PropTypes.string.isRequired,
+    helpline: PropTypes.string,
     queuesStatusState: PropTypes.shape({
       queuesStatus: PropTypes.shape({}),
       error: PropTypes.string,
@@ -23,6 +23,15 @@ class QueuesStatusWriter extends React.Component {
     queuesStatusUpdate: PropTypes.func.isRequired,
     queuesStatusFailure: PropTypes.func.isRequired,
   };
+
+  static defaultProps = {
+    helpline: undefined,
+  };
+
+  constructor(props) {
+    super(props);
+    this.updateQueuesState = this.updateQueuesState.bind(this);
+  }
 
   state = {
     tasksQuery: null,
@@ -42,33 +51,27 @@ class QueuesStatusWriter extends React.Component {
 
       const tasksQuery = await this.props.insightsClient.liveQuery('tr-task', '');
 
-      const updateQueuesState = () => {
-        const tasks = tasksQuery.getItems();
-        const queuesStatus = getNewQueuesStatus(cleanQueuesStatus, tasks);
-        this.props.queuesStatusUpdate(queuesStatus);
-      };
+      this.updateQueuesState(tasksQuery, cleanQueuesStatus);
+      this.setState({ tasksQuery });
 
       const shouldUpdate = status => status === 'pending' || status === 'assigned' || status === 'canceled';
-
-      updateQueuesState();
-      this.setState({ tasksQuery });
 
       tasksQuery.on('itemUpdated', args => {
         console.log('TASK UPDATED', args);
         // eslint-disable-next-line camelcase
         const { status, queue_name } = args.value;
         if (counselorQueues.includes(queue_name) && shouldUpdate(status)) {
-          updateQueuesState();
+          this.updateQueuesState(tasksQuery, cleanQueuesStatus);
         }
       });
 
       tasksQuery.on('itemRemoved', args => {
-        updateQueuesState();
+        this.updateQueuesState(tasksQuery, cleanQueuesStatus);
       });
     } catch (err) {
       const error = "Error, couldn't subscribe to live updates";
       this.props.queuesStatusFailure(error);
-      console.log(error, err);
+      console.error(error, err);
     }
   }
 
@@ -76,6 +79,12 @@ class QueuesStatusWriter extends React.Component {
     const { tasksQuery } = this.state;
     // unsubscribe
     if (tasksQuery) tasksQuery.close();
+  }
+
+  updateQueuesState(tasksQuery, prevQueuesStatus) {
+    const tasks = tasksQuery.getItems();
+    const queuesStatus = getNewQueuesStatus(prevQueuesStatus, tasks);
+    this.props.queuesStatusUpdate(queuesStatus);
   }
 
   render() {
