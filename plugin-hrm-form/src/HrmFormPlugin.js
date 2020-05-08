@@ -80,7 +80,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     }
 
     // utilities for developers only
-    if (manager.store.getState().flex.worker.attributes.helpline === '') addDeveloperUtils(flex, manager, translateUI);
+    if (!Boolean(helpline)) addDeveloperUtils(flex, manager, translateUI);
 
     flex.MainContainer.Content.add(
       <QueuesStatusWriter insightsClient={manager.insightsClient} key="queue-status-writer" />,
