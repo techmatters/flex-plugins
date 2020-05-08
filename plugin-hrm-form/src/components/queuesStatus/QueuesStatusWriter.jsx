@@ -43,7 +43,7 @@ export class InnerQueuesStatusWriter extends React.Component {
     const { helpline } = this.props;
     try {
       const q = await this.props.insightsClient.liveQuery('tr-queue', '');
-      const queues = Object.values(q.getItems()).reduce((acc, queue) => [...acc, queue.queue_name], []);
+      const queues = this.getQueuesNames(q.getItems());
       q.close();
 
       // builds the array of queues the counselor cares about (for now will always be one)
@@ -53,15 +53,12 @@ export class InnerQueuesStatusWriter extends React.Component {
 
       const tasksQuery = await this.props.insightsClient.liveQuery('tr-task', '');
 
-      const initialTasks = tasksQuery.getItems();
+      const tasksItems = tasksQuery.getItems();
 
-      const trackedTasks = Object.entries(initialTasks).reduce(
-        (acc, [sid, task]) =>
-          counselorQueues.includes(task.queue_name) && isWaiting(task.status) ? { ...acc, [sid]: true } : acc,
-        {},
-      );
+      // tasks that are waiting and belong to a queue the counselor cares about, at the moment of this component mount
+      const trackedTasks = this.waitingInCounselorQueues(tasksItems, counselorQueues);
 
-      this.updateQueuesState(initialTasks, cleanQueuesStatus);
+      this.updateQueuesState(tasksItems, cleanQueuesStatus);
       this.setState({ tasksQuery, trackedTasks });
 
       const shouldUpdate = status => status === 'pending' || status === 'assigned' || status === 'canceled';
@@ -98,10 +95,19 @@ export class InnerQueuesStatusWriter extends React.Component {
     if (tasksQuery) tasksQuery.close();
   }
 
+  getQueuesNames = queuesItems => Object.values(queuesItems).reduce((acc, queue) => [...acc, queue.queue_name], []);
+
   updateQueuesState(tasks, prevQueuesStatus) {
     const queuesStatus = getNewQueuesStatus(prevQueuesStatus, tasks);
     this.props.queuesStatusUpdate(queuesStatus);
   }
+
+  waitingInCounselorQueues = (tasksItems, counselorQueues) =>
+    Object.entries(tasksItems).reduce(
+      (acc, [sid, task]) =>
+        isWaiting(task.status) && counselorQueues.includes(task.queue_name) ? { ...acc, [sid]: true } : acc,
+      {},
+    );
 
   render() {
     return null;

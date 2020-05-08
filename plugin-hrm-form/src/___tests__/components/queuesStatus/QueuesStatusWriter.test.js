@@ -118,6 +118,8 @@ describe('QueuesStatusWriter should subscribe to Admin queue only', () => {
   });
 
   test('Test events', () => {
+    expect(mounted.state().trackedTasks).toStrictEqual({ T1: true, T3: true });
+
     // simulate new state (adding tasks)
     innerTasks.T4 = newTasks.T4;
     innerTasks.T5 = newTasks.T5;
@@ -128,6 +130,7 @@ describe('QueuesStatusWriter should subscribe to Admin queue only', () => {
 
     events.itemUpdated({ key: 'T5', value: newTasks.T5 });
     expect(queuesStatusUpdate).toHaveBeenCalledWith({ Admin: newQueuesStatus.Admin });
+    expect(mounted.state().trackedTasks).toStrictEqual({ T1: true, T3: true, T5: true });
 
     spy.mockClear();
     queuesStatusUpdate.mockClear();
@@ -142,6 +145,7 @@ describe('QueuesStatusWriter should subscribe to Admin queue only', () => {
 
     events.itemRemoved({ key: 'T1' });
     expect(queuesStatusUpdate).toHaveBeenCalledWith({ Admin: afterDeleteQueuesStatus.Admin });
+    expect(mounted.state().trackedTasks).toStrictEqual({ T3: true, T5: true });
   });
 
   test('Test unmount', () => {
@@ -212,6 +216,8 @@ describe('QueuesStatusWriter should subscribe to Q1 queue only', () => {
   });
 
   test('Test events', () => {
+    expect(mounted.state().trackedTasks).toStrictEqual({ T2: true });
+
     // simulate new state
     innerTasks.T4 = newTasks.T4;
     innerTasks.T5 = newTasks.T5;
@@ -220,8 +226,9 @@ describe('QueuesStatusWriter should subscribe to Q1 queue only', () => {
     events.itemUpdated({ value: newTasks.T5 });
     expect(queuesStatusUpdate).not.toHaveBeenCalled();
 
-    events.itemUpdated({ value: newTasks.T4 });
+    events.itemUpdated({ key: 'T4', value: newTasks.T4 });
     expect(queuesStatusUpdate).toHaveBeenCalledWith({ Q1: newQueuesStatus.Q1 });
+    expect(mounted.state().trackedTasks).toStrictEqual({ T2: true, T4: true });
 
     spy.mockClear();
     queuesStatusUpdate.mockClear();
@@ -236,6 +243,7 @@ describe('QueuesStatusWriter should subscribe to Q1 queue only', () => {
 
     events.itemRemoved({ key: 'T2' });
     expect(queuesStatusUpdate).toHaveBeenCalledWith({ Q1: afterDeleteQueuesStatus.Q1 });
+    expect(mounted.state().trackedTasks).toStrictEqual({ T4: true });
   });
 
   test('Test unmount', () => {
