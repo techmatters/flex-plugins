@@ -57,7 +57,7 @@ const queuesStatus = getNewQueuesStatus(clearQueuesStatus, tasks);
 const newQueuesStatus = getNewQueuesStatus(clearQueuesStatus, { ...tasks, ...newTasks });
 const afterDeleteQueuesStatus = getNewQueuesStatus(clearQueuesStatus, { T3: tasks.T3, ...newTasks });
 
-test('Test <QueuesStatusWriter> should suscribe to Admin queue only', () => {
+describe('QueuesStatusWriter should subscribe to Admin queue only', () => {
   const events = {};
 
   const innerTasks = {};
@@ -80,10 +80,10 @@ test('Test <QueuesStatusWriter> should suscribe to Admin queue only', () => {
     insightsClient: {
       liveQuery: jest.fn((query, _) => {
         if (query === 'tr-queue') {
-          return new Promise(resolve => resolve(queuesQuery));
+          return Promise.resolve(queuesQuery);
         }
         if (query === 'tr-task') {
-          return new Promise(resolve => resolve(tasksQuery));
+          return Promise.resolve(tasksQuery);
         }
 
         return undefined;
@@ -100,51 +100,57 @@ test('Test <QueuesStatusWriter> should suscribe to Admin queue only', () => {
   const queuesStatusFailure = jest.fn();
   const reduxProps = { queuesStatusState, queuesStatusUpdate, queuesStatusFailure };
 
-  const mounted = mount(<QueuesStatusWriter {...ownProps} {...reduxProps} />);
+  let mounted;
+  test('Test mount', async () => {
+    mounted = mount(<QueuesStatusWriter {...ownProps} {...reduxProps} />);
 
-  return Promise.resolve(mounted)
-    .then(() => undefined)
-    .then(() => {
-      expect(ownProps.insightsClient.liveQuery).toHaveBeenCalledTimes(2);
-      expect(spy).toHaveBeenCalledWith(tasksQuery.getItems(), { Admin: newQueueEntry });
-      expect(queuesStatusUpdate).toHaveBeenCalledWith({ Admin: queuesStatus.Admin });
-      expect(queuesStatusFailure).not.toHaveBeenCalled();
-      expect(mounted.state('tasksQuery')).not.toBeNull();
+    await Promise.resolve(); // resolves queuesQuery
+    await Promise.resolve(); // resolves tasksQuery
 
-      spy.mockClear();
-      queuesStatusUpdate.mockClear();
+    expect(ownProps.insightsClient.liveQuery).toHaveBeenCalledTimes(2);
+    expect(spy).toHaveBeenCalledWith(tasksQuery.getItems(), { Admin: newQueueEntry });
+    expect(queuesStatusUpdate).toHaveBeenCalledWith({ Admin: queuesStatus.Admin });
+    expect(queuesStatusFailure).not.toHaveBeenCalled();
+    expect(mounted.state('tasksQuery')).not.toBeNull();
 
-      // simulate new state (adding tasks)
-      innerTasks.T4 = newTasks.T4;
-      innerTasks.T5 = newTasks.T5;
+    spy.mockClear();
+    queuesStatusUpdate.mockClear();
+  });
 
-      // simulate update events
-      events.itemUpdated({ key: 'T4', value: newTasks.T4 });
-      expect(queuesStatusUpdate).not.toHaveBeenCalled();
+  test('Test events', () => {
+    // simulate new state (adding tasks)
+    innerTasks.T4 = newTasks.T4;
+    innerTasks.T5 = newTasks.T5;
 
-      events.itemUpdated({ key: 'T5', value: newTasks.T5 });
-      expect(queuesStatusUpdate).toHaveBeenCalledWith({ Admin: newQueuesStatus.Admin });
+    // simulate update events
+    events.itemUpdated({ key: 'T4', value: newTasks.T4 });
+    expect(queuesStatusUpdate).not.toHaveBeenCalled();
 
-      spy.mockClear();
-      queuesStatusUpdate.mockClear();
+    events.itemUpdated({ key: 'T5', value: newTasks.T5 });
+    expect(queuesStatusUpdate).toHaveBeenCalledWith({ Admin: newQueuesStatus.Admin });
 
-      // simulate new state (removing tasks)
-      delete innerTasks.T1;
-      delete innerTasks.T2;
+    spy.mockClear();
+    queuesStatusUpdate.mockClear();
 
-      // simulate removed events
-      events.itemRemoved({ key: 'T2' });
-      expect(queuesStatusUpdate).not.toHaveBeenCalled();
+    // simulate new state (removing tasks)
+    delete innerTasks.T1;
+    delete innerTasks.T2;
 
-      events.itemRemoved({ key: 'T1' });
-      expect(queuesStatusUpdate).toHaveBeenCalledWith({ Admin: afterDeleteQueuesStatus.Admin });
+    // simulate removed events
+    events.itemRemoved({ key: 'T2' });
+    expect(queuesStatusUpdate).not.toHaveBeenCalled();
 
-      mounted.unmount();
-      expect(tasksQuery.close).toBeCalled();
-    });
+    events.itemRemoved({ key: 'T1' });
+    expect(queuesStatusUpdate).toHaveBeenCalledWith({ Admin: afterDeleteQueuesStatus.Admin });
+  });
+
+  test('Test unmount', () => {
+    mounted.unmount();
+    expect(tasksQuery.close).toBeCalled();
+  });
 });
 
-test('Test <QueuesStatusWriter> should suscribe to Q1 queue only', () => {
+describe('QueuesStatusWriter should subscribe to Q1 queue only', () => {
   const events = {};
 
   const innerTasks = {};
@@ -167,10 +173,10 @@ test('Test <QueuesStatusWriter> should suscribe to Q1 queue only', () => {
     insightsClient: {
       liveQuery: jest.fn((query, _) => {
         if (query === 'tr-queue') {
-          return new Promise(resolve => resolve(queuesQuery));
+          return Promise.resolve(queuesQuery);
         }
         if (query === 'tr-task') {
-          return new Promise(resolve => resolve(tasksQuery));
+          return Promise.resolve(tasksQuery);
         }
 
         return undefined;
@@ -188,85 +194,127 @@ test('Test <QueuesStatusWriter> should suscribe to Q1 queue only', () => {
   const queuesStatusFailure = jest.fn();
   const reduxProps = { queuesStatusState, queuesStatusUpdate, queuesStatusFailure };
 
-  const mounted = mount(<QueuesStatusWriter {...ownProps} {...reduxProps} />);
+  let mounted;
+  test('Test mount', async () => {
+    mounted = mount(<QueuesStatusWriter {...ownProps} {...reduxProps} />);
 
-  return Promise.resolve(mounted)
-    .then(() => undefined)
-    .then(() => {
-      expect(ownProps.insightsClient.liveQuery).toHaveBeenCalledTimes(2);
-      expect(spy).toHaveBeenCalledWith(tasksQuery.getItems(), { Q1: newQueueEntry });
-      expect(queuesStatusUpdate).toHaveBeenCalledWith({ Q1: queuesStatus.Q1 });
-      expect(queuesStatusFailure).not.toHaveBeenCalled();
-      expect(mounted.state('tasksQuery')).not.toBeNull();
+    await Promise.resolve(); // resolves queuesQuery
+    await Promise.resolve(); // resolves tasksQuery    .then(() => undefined)
 
-      spy.mockClear();
-      queuesStatusUpdate.mockClear();
+    expect(ownProps.insightsClient.liveQuery).toHaveBeenCalledTimes(2);
+    expect(spy).toHaveBeenCalledWith(tasksQuery.getItems(), { Q1: newQueueEntry });
+    expect(queuesStatusUpdate).toHaveBeenCalledWith({ Q1: queuesStatus.Q1 });
+    expect(queuesStatusFailure).not.toHaveBeenCalled();
+    expect(mounted.state('tasksQuery')).not.toBeNull();
 
-      // simulate new state
-      innerTasks.T4 = newTasks.T4;
-      innerTasks.T5 = newTasks.T5;
+    spy.mockClear();
+    queuesStatusUpdate.mockClear();
+  });
 
-      // simulate events
-      events.itemUpdated({ value: newTasks.T5 });
-      expect(queuesStatusUpdate).not.toHaveBeenCalled();
+  test('Test events', () => {
+    // simulate new state
+    innerTasks.T4 = newTasks.T4;
+    innerTasks.T5 = newTasks.T5;
 
-      events.itemUpdated({ value: newTasks.T4 });
-      expect(queuesStatusUpdate).toHaveBeenCalledWith({ Q1: newQueuesStatus.Q1 });
+    // simulate events
+    events.itemUpdated({ value: newTasks.T5 });
+    expect(queuesStatusUpdate).not.toHaveBeenCalled();
 
-      spy.mockClear();
-      queuesStatusUpdate.mockClear();
+    events.itemUpdated({ value: newTasks.T4 });
+    expect(queuesStatusUpdate).toHaveBeenCalledWith({ Q1: newQueuesStatus.Q1 });
 
-      // simulate new state (removing tasks)
-      delete innerTasks.T1;
-      delete innerTasks.T2;
+    spy.mockClear();
+    queuesStatusUpdate.mockClear();
 
-      // simulate removed events
-      events.itemRemoved({ key: 'T1' });
-      expect(queuesStatusUpdate).not.toHaveBeenCalled();
+    // simulate new state (removing tasks)
+    delete innerTasks.T1;
+    delete innerTasks.T2;
 
-      events.itemRemoved({ key: 'T2' });
-      expect(queuesStatusUpdate).toHaveBeenCalledWith({ Q1: afterDeleteQueuesStatus.Q1 });
+    // simulate removed events
+    events.itemRemoved({ key: 'T1' });
+    expect(queuesStatusUpdate).not.toHaveBeenCalled();
 
-      mounted.unmount();
-      expect(tasksQuery.close).toBeCalled();
-    });
+    events.itemRemoved({ key: 'T2' });
+    expect(queuesStatusUpdate).toHaveBeenCalledWith({ Q1: afterDeleteQueuesStatus.Q1 });
+  });
+
+  test('Test unmount', () => {
+    mounted.unmount();
+    expect(tasksQuery.close).toBeCalled();
+  });
 });
 
-test('Test <QueuesStatusWriter> should fail', () => {
-  const ownProps = {
-    insightsClient: {
-      liveQuery: jest.fn((query, _) => {
-        if (query === 'tr-queue') {
-          return new Promise((resolve, reject) => reject(new Error('Some error')));
-        }
-        if (query === 'tr-task') {
-          return new Promise((resolve, reject) => reject(new Error('Some error')));
-        }
+describe('QueuesStatusWriter should fail trying to subscribe', () => {
+  test('Test fail on queuesQuery', async () => {
+    const ownProps = {
+      insightsClient: {
+        liveQuery: jest.fn((query, _) => {
+          if (query === 'tr-queue') {
+            return Promise.reject(new Error('Some error'));
+          }
+          if (query === 'tr-task') {
+            return Promise.reject(new Error('Some error'));
+          }
 
-        return undefined;
-      }),
-    },
-  };
+          return undefined;
+        }),
+      },
+    };
 
-  const queuesStatusState = {
-    queuesStatus: null,
-    error: 'Not initialized',
-    loading: true,
-  };
-  const queuesStatusUpdate = jest.fn();
-  const queuesStatusFailure = jest.fn();
-  const reduxProps = { queuesStatusState, queuesStatusUpdate, queuesStatusFailure };
+    const queuesStatusState = {
+      queuesStatus: null,
+      error: 'Not initialized',
+      loading: true,
+    };
+    const queuesStatusUpdate = jest.fn();
+    const queuesStatusFailure = jest.fn();
+    const reduxProps = { queuesStatusState, queuesStatusUpdate, queuesStatusFailure };
 
-  const mounted = mount(<QueuesStatusWriter {...ownProps} {...reduxProps} />);
+    const mounted = mount(<QueuesStatusWriter {...ownProps} {...reduxProps} />);
 
-  return (
-    Promise.resolve(mounted)
-      // .then(() => undefined) fails on the 1st await so we need only 1 then clause
-      .then(() => {
-        expect(ownProps.insightsClient.liveQuery).toHaveBeenCalledTimes(1);
-        expect(queuesStatusFailure).toHaveBeenCalledWith("Error, couldn't subscribe to live updates");
-        expect(queuesStatusUpdate).not.toHaveBeenCalled();
-        expect(mounted.state('tasksQuery')).toBeNull();
-      })
-  );
+    await Promise.resolve(); // resolves queuesQuery
+
+    expect(ownProps.insightsClient.liveQuery).toHaveBeenCalledTimes(1);
+    expect(queuesStatusFailure).toHaveBeenCalledWith("Error, couldn't subscribe to live updates");
+    expect(queuesStatusUpdate).not.toHaveBeenCalled();
+    expect(mounted.state('tasksQuery')).toBeNull();
+  });
+
+  test('Test fail on tasksQuery', async () => {
+    const queuesQuery = { getItems: () => queues, close: jest.fn() };
+
+    const ownProps = {
+      insightsClient: {
+        liveQuery: jest.fn((query, _) => {
+          if (query === 'tr-queue') {
+            return Promise.resolve(queuesQuery);
+          }
+          if (query === 'tr-task') {
+            return Promise.reject(new Error('Some error'));
+          }
+
+          return undefined;
+        }),
+      },
+    };
+
+    const queuesStatusState = {
+      queuesStatus: null,
+      error: 'Not initialized',
+      loading: true,
+    };
+    const queuesStatusUpdate = jest.fn();
+    const queuesStatusFailure = jest.fn();
+    const reduxProps = { queuesStatusState, queuesStatusUpdate, queuesStatusFailure };
+
+    const mounted = mount(<QueuesStatusWriter {...ownProps} {...reduxProps} />);
+
+    await Promise.resolve(); // resolves queuesQuery
+    await Promise.resolve(); // resolves tasksQuery
+
+    expect(ownProps.insightsClient.liveQuery).toHaveBeenCalledTimes(2);
+    expect(queuesStatusFailure).toHaveBeenCalledWith("Error, couldn't subscribe to live updates");
+    expect(queuesStatusUpdate).not.toHaveBeenCalled();
+    expect(mounted.state('tasksQuery')).toBeNull();
+  });
 });
