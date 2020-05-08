@@ -21,7 +21,7 @@ export const initializeQueuesStatus = queues =>
   // eslint-disable-next-line no-nested-ternary
   queues.sort((a, b) => (a < b ? -1 : a > b ? 1 : 0)).reduce((acc, qName) => ({ ...acc, [qName]: newQueueEntry }), {});
 
-const isNotWaiting = status => status !== 'pending' && status !== 'reserved';
+export const isWaiting = status => status === 'pending' || status === 'reserved';
 const subscribedToQueue = (queue, queues) => Boolean(queues[queue]);
 
 /**
@@ -30,7 +30,7 @@ const subscribedToQueue = (queue, queues) => Boolean(queues[queue]);
  * @returns {{ [qName: string]: typeof newQueueEntry }}
  */
 export const addPendingTasks = (acc, task) => {
-  if (isNotWaiting(task.status) || !subscribedToQueue(task.queue_name, acc)) return acc;
+  if (!isWaiting(task.status) || !subscribedToQueue(task.queue_name, acc)) return acc;
 
   const created = task.date_created;
   const channel = task.channel_type === 'voice' ? 'voice' : task.attributes.channelType;

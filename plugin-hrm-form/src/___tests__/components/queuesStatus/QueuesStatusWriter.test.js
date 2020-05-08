@@ -2,7 +2,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
 
-import { QueuesStatusWriter } from '../../../components/queuesStatus/QueuesStatusWriter';
+import { InnerQueuesStatusWriter as QueuesStatusWriter } from '../../../components/queuesStatus/QueuesStatusWriter';
 import { channelTypes } from '../../../states/DomainConstants';
 import { newQueueEntry, initializeQueuesStatus, getNewQueuesStatus } from '../../../components/queuesStatus/helpers';
 
@@ -55,6 +55,7 @@ const newTasks = {
 const clearQueuesStatus = initializeQueuesStatus(Object.keys(queues));
 const queuesStatus = getNewQueuesStatus(clearQueuesStatus, tasks);
 const newQueuesStatus = getNewQueuesStatus(clearQueuesStatus, { ...tasks, ...newTasks });
+const afterDeleteQueuesStatus = getNewQueuesStatus(clearQueuesStatus, { T3: tasks.T3, ...newTasks });
 
 test('Test <QueuesStatusWriter> should suscribe to Admin queue only', () => {
   const events = {};
@@ -64,12 +65,13 @@ test('Test <QueuesStatusWriter> should suscribe to Admin queue only', () => {
   innerTasks.T2 = tasks.T2;
   innerTasks.T3 = tasks.T3;
 
-  const queuesQuery = { getItems: () => queues, close: () => undefined };
+  const queuesQuery = { getItems: () => queues, close: jest.fn() };
   const tasksQuery = {
     getItems: () => innerTasks,
     on: jest.fn((event, cb) => {
       events[event] = cb;
     }),
+    close: jest.fn(),
   };
 
   const spy = jest.spyOn(QueuesStatusWriter.prototype, 'updateQueuesState');
@@ -104,23 +106,41 @@ test('Test <QueuesStatusWriter> should suscribe to Admin queue only', () => {
     .then(() => undefined)
     .then(() => {
       expect(ownProps.insightsClient.liveQuery).toHaveBeenCalledTimes(2);
-      expect(spy).toHaveBeenCalledWith(tasksQuery, { Admin: newQueueEntry });
+      expect(spy).toHaveBeenCalledWith(tasksQuery.getItems(), { Admin: newQueueEntry });
       expect(queuesStatusUpdate).toHaveBeenCalledWith({ Admin: queuesStatus.Admin });
       expect(queuesStatusFailure).not.toHaveBeenCalled();
+      expect(mounted.state('tasksQuery')).not.toBeNull();
 
       spy.mockClear();
       queuesStatusUpdate.mockClear();
 
-      // simulate new state
+      // simulate new state (adding tasks)
       innerTasks.T4 = newTasks.T4;
       innerTasks.T5 = newTasks.T5;
 
-      // simulate events
-      events.itemUpdated({ value: newTasks.T4 });
+      // simulate update events
+      events.itemUpdated({ key: 'T4', value: newTasks.T4 });
       expect(queuesStatusUpdate).not.toHaveBeenCalled();
 
-      events.itemUpdated({ value: newTasks.T5 });
+      events.itemUpdated({ key: 'T5', value: newTasks.T5 });
       expect(queuesStatusUpdate).toHaveBeenCalledWith({ Admin: newQueuesStatus.Admin });
+
+      spy.mockClear();
+      queuesStatusUpdate.mockClear();
+
+      // simulate new state (removing tasks)
+      delete innerTasks.T1;
+      delete innerTasks.T2;
+
+      // simulate removed events
+      events.itemRemoved({ key: 'T2' });
+      expect(queuesStatusUpdate).not.toHaveBeenCalled();
+
+      events.itemRemoved({ key: 'T1' });
+      expect(queuesStatusUpdate).toHaveBeenCalledWith({ Admin: afterDeleteQueuesStatus.Admin });
+
+      mounted.unmount();
+      expect(tasksQuery.close).toBeCalled();
     });
 });
 
@@ -132,12 +152,13 @@ test('Test <QueuesStatusWriter> should suscribe to Q1 queue only', () => {
   innerTasks.T2 = tasks.T2;
   innerTasks.T3 = tasks.T3;
 
-  const queuesQuery = { getItems: () => queues, close: () => undefined };
+  const queuesQuery = { getItems: () => queues, close: jest.fn() };
   const tasksQuery = {
     getItems: () => innerTasks,
     on: jest.fn((event, cb) => {
       events[event] = cb;
     }),
+    close: jest.fn(),
   };
 
   const spy = jest.spyOn(QueuesStatusWriter.prototype, 'updateQueuesState');
@@ -173,9 +194,10 @@ test('Test <QueuesStatusWriter> should suscribe to Q1 queue only', () => {
     .then(() => undefined)
     .then(() => {
       expect(ownProps.insightsClient.liveQuery).toHaveBeenCalledTimes(2);
-      expect(spy).toHaveBeenCalledWith(tasksQuery, { Q1: newQueueEntry });
+      expect(spy).toHaveBeenCalledWith(tasksQuery.getItems(), { Q1: newQueueEntry });
       expect(queuesStatusUpdate).toHaveBeenCalledWith({ Q1: queuesStatus.Q1 });
       expect(queuesStatusFailure).not.toHaveBeenCalled();
+      expect(mounted.state('tasksQuery')).not.toBeNull();
 
       spy.mockClear();
       queuesStatusUpdate.mockClear();
@@ -190,6 +212,23 @@ test('Test <QueuesStatusWriter> should suscribe to Q1 queue only', () => {
 
       events.itemUpdated({ value: newTasks.T4 });
       expect(queuesStatusUpdate).toHaveBeenCalledWith({ Q1: newQueuesStatus.Q1 });
+
+      spy.mockClear();
+      queuesStatusUpdate.mockClear();
+
+      // simulate new state (removing tasks)
+      delete innerTasks.T1;
+      delete innerTasks.T2;
+
+      // simulate removed events
+      events.itemRemoved({ key: 'T1' });
+      expect(queuesStatusUpdate).not.toHaveBeenCalled();
+
+      events.itemRemoved({ key: 'T2' });
+      expect(queuesStatusUpdate).toHaveBeenCalledWith({ Q1: afterDeleteQueuesStatus.Q1 });
+
+      mounted.unmount();
+      expect(tasksQuery.close).toBeCalled();
     });
 });
 
@@ -227,6 +266,7 @@ test('Test <QueuesStatusWriter> should fail', () => {
         expect(ownProps.insightsClient.liveQuery).toHaveBeenCalledTimes(1);
         expect(queuesStatusFailure).toHaveBeenCalledWith("Error, couldn't subscribe to live updates");
         expect(queuesStatusUpdate).not.toHaveBeenCalled();
+        expect(mounted.state('tasksQuery')).toBeNull();
       })
   );
 });

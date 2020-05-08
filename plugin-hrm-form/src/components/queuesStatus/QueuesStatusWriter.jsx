@@ -2,12 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { omit } from 'lodash';
 
 import { queuesStatusUpdate, queuesStatusFailure } from '../../states/QueuesStatus';
-import { initializeQueuesStatus, getNewQueuesStatus } from './helpers';
+import { initializeQueuesStatus, getNewQueuesStatus, isWaiting } from './helpers';
 import { namespace, queuesStatusBase } from '../../states';
 
-export class QueuesStatusWriter extends React.Component {
+export class InnerQueuesStatusWriter extends React.Component {
   static displayName = 'QueuesStatusWriter';
 
   static propTypes = {
@@ -35,6 +36,7 @@ export class QueuesStatusWriter extends React.Component {
 
   state = {
     tasksQuery: null,
+    trackedTasks: null,
   };
 
   async componentDidMount() {
@@ -51,8 +53,16 @@ export class QueuesStatusWriter extends React.Component {
 
       const tasksQuery = await this.props.insightsClient.liveQuery('tr-task', '');
 
-      this.updateQueuesState(tasksQuery, cleanQueuesStatus);
-      this.setState({ tasksQuery });
+      const initialTasks = tasksQuery.getItems();
+
+      const trackedTasks = Object.entries(initialTasks).reduce(
+        (acc, [sid, task]) =>
+          counselorQueues.includes(task.queue_name) && isWaiting(task.status) ? { ...acc, [sid]: true } : acc,
+        {},
+      );
+
+      this.updateQueuesState(initialTasks, cleanQueuesStatus);
+      this.setState({ tasksQuery, trackedTasks });
 
       const shouldUpdate = status => status === 'pending' || status === 'assigned' || status === 'canceled';
 
@@ -61,12 +71,19 @@ export class QueuesStatusWriter extends React.Component {
         // eslint-disable-next-line camelcase
         const { status, queue_name } = args.value;
         if (counselorQueues.includes(queue_name) && shouldUpdate(status)) {
-          this.updateQueuesState(tasksQuery, cleanQueuesStatus);
+          console.log('TASK UPDATED INNER');
+          this.updateQueuesState(tasksQuery.getItems(), cleanQueuesStatus);
+          this.setState(prev => ({ trackedTasks: { ...prev.trackedTasks, [args.key]: true } }));
         }
       });
 
       tasksQuery.on('itemRemoved', args => {
-        this.updateQueuesState(tasksQuery, cleanQueuesStatus);
+        console.log('TASK REMOVED', args);
+        if (this.state.trackedTasks[args.key]) {
+          console.log('TASK REMOVED INNER');
+          this.updateQueuesState(tasksQuery.getItems(), cleanQueuesStatus);
+          this.setState(prev => ({ trackedTasks: omit(prev.trackedTasks, args.key) }));
+        }
       });
     } catch (err) {
       const error = "Error, couldn't subscribe to live updates";
@@ -81,8 +98,7 @@ export class QueuesStatusWriter extends React.Component {
     if (tasksQuery) tasksQuery.close();
   }
 
-  updateQueuesState(tasksQuery, prevQueuesStatus) {
-    const tasks = tasksQuery.getItems();
+  updateQueuesState(tasks, prevQueuesStatus) {
     const queuesStatus = getNewQueuesStatus(prevQueuesStatus, tasks);
     this.props.queuesStatusUpdate(queuesStatus);
   }
@@ -105,4 +121,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(QueuesStatusWriter);
+export default connect(mapStateToProps, mapDispatchToProps)(InnerQueuesStatusWriter);
