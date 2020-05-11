@@ -26,9 +26,9 @@ jest.mock('../../services/ServerlessService', () => ({
   }),
 }));
 
-let strings = { FakeTwilioString: 'FakeTwilioString' };
+const twilioStrings = { FakeTwilioString: 'FakeTwilioString' };
+let strings = { ...twilioStrings };
 
-const twilioStrings = { ...strings };
 const setNewStrings = jest.fn(newStrings => (strings = { ...strings, ...newStrings }));
 const afterNewStrings = jest.fn();
 
@@ -46,7 +46,7 @@ describe('Test initTranslateUI', () => {
   test('Default language', async () => {
     await translateUI(defaultLanguage);
 
-    expect(strings).toStrictEqual({ ...strings, ...defaultTranslation });
+    expect(strings).toStrictEqual({ ...twilioStrings, ...defaultTranslation });
     expect(setNewStrings).toHaveBeenCalled();
     expect(afterNewStrings).toHaveBeenCalled();
     setNewStrings.mockClear();
@@ -56,7 +56,7 @@ describe('Test initTranslateUI', () => {
   test('Non default language', async () => {
     await translateUI('es');
 
-    expect(strings).toStrictEqual({ ...strings, ...esTranslation });
+    expect(strings).toStrictEqual({ ...twilioStrings, ...defaultTranslation, ...esTranslation });
     expect(setNewStrings).toHaveBeenCalled();
     expect(afterNewStrings).toHaveBeenCalled();
     setNewStrings.mockClear();
@@ -95,12 +95,12 @@ describe('Test initGetGoodbyeMsg', () => {
   });
 });
 
-strings = { FakeTwilioString: 'FakeTwilioString' };
+strings = { ...twilioStrings };
 describe('Test initLocalization', () => {
   test('Default language', () => {
     const { translateUI, getGoodbyeMsg } = initLocalization(localizationConfig, defaultLanguage);
 
-    expect(strings).toStrictEqual({ ...strings, ...defaultTranslation });
+    expect(strings).toStrictEqual({ ...twilioStrings, ...defaultTranslation });
     expect(setNewStrings).toHaveBeenCalled();
     expect(afterNewStrings).not.toHaveBeenCalled();
     setNewStrings.mockClear();
@@ -113,7 +113,7 @@ describe('Test initLocalization', () => {
     await Promise.resolve(); // await inner call to translateUI
     await Promise.resolve(); // await inner call to getTranslation (nested in translateUI)
 
-    expect(strings).toStrictEqual({ ...strings, ...esTranslation });
+    expect(strings).toStrictEqual({ ...twilioStrings, ...defaultTranslation, ...esTranslation });
     expect(setNewStrings).toHaveBeenCalled();
     expect(afterNewStrings).toHaveBeenCalled();
     setNewStrings.mockClear();
@@ -126,7 +126,7 @@ describe('Test initLocalization', () => {
     await Promise.resolve(); // await inner call to translateUI
     await Promise.resolve(); // await inner call to getTranslation (nested in translateUI)
 
-    expect(strings).toStrictEqual({ ...strings, ...defaultTranslation });
+    expect(strings).toStrictEqual({ ...twilioStrings, ...defaultTranslation });
     expect(setNewStrings).toHaveBeenCalled();
     expect(afterNewStrings).not.toHaveBeenCalled();
     setNewStrings.mockClear();
