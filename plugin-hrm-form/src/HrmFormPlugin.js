@@ -146,10 +146,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     const shouldSayGoodbye = channel =>
       channel === channelTypes.facebook || channel === channelTypes.sms || channel === channelTypes.whatsapp;
 
-    const getTaskLanguage = task =>
-      task.attributes.language ||
-      manager.store.getState().flex.worker.attributes.helplineLanguage ||
-      configuredLanguage;
+    const getTaskLanguage = task => task.attributes.language || helplineLanguage || configuredLanguage;
 
     const sendGoodbyeMessage = async payload => {
       const taskLanguage = getTaskLanguage(payload.task);
