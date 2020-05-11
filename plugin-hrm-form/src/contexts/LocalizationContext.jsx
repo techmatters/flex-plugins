@@ -1,7 +1,7 @@
 import React from 'react';
 
 const initialState = {
-  strings: null,
+  manager: { strings: null },
   isCallTask: () => null,
 };
 

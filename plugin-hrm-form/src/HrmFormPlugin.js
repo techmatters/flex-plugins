@@ -12,6 +12,8 @@ import LocalizationContext from './contexts/LocalizationContext';
 import HrmTheme from './styles/HrmTheme';
 import './styles/GlobalOverrides';
 import { channelTypes } from './states/DomainConstants';
+import { addDeveloperUtils, initLocalization } from './utils/pluginHelpers';
+import { changeLanguage } from './states/ConfigurationState';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 const PLUGIN_VERSION = '0.4.1';
@@ -32,6 +34,29 @@ export default class HrmFormPlugin extends FlexPlugin {
     console.log(`Welcome to ${PLUGIN_NAME} Version ${PLUGIN_VERSION}`);
     this.registerReducers(manager);
 
+    const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
+    const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
+    const { configuredLanguage } = manager.serviceConfiguration.attributes;
+    const workerSid = manager.workerClient.sid;
+    const { helpline, counselorLanguage, helplineLanguage } = manager.workerClient.attributes;
+    const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
+    const getSsoToken = () => manager.store.getState().flex.session.ssoTokenPayload.token;
+    const { isCallTask } = TaskHelper;
+
+    /*
+     * localization setup (translates the UI if necessary)
+     * WARNING: the way this is done right now is "hacky". More info in initLocalization declaration
+     */
+    const twilioStrings = { ...manager.strings }; // save the originals
+    const setNewStrings = newStrings => (manager.strings = { ...manager.strings, ...newStrings });
+    const afterNewStrings = language => {
+      manager.store.dispatch(changeLanguage(language));
+      flex.Actions.invokeAction('NavigateToView', { viewName: manager.store.getState().flex.view.activeView }); // force a re-render
+    };
+    const localizationConfig = { twilioStrings, serverlessBaseUrl, getSsoToken, setNewStrings, afterNewStrings };
+    const initialLanguage = counselorLanguage || helplineLanguage || configuredLanguage;
+    const { translateUI, getGoodbyeMsg } = initLocalization(localizationConfig, initialLanguage);
+
     const configuration = {
       colorTheme: HrmTheme,
     };
@@ -48,22 +73,14 @@ export default class HrmFormPlugin extends FlexPlugin {
       flex.Actions.invokeAction('CompleteTask', { sid, task });
     };
 
-    const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
-    const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
-    const workerSid = manager.workerClient.sid;
-    const { helpline } = manager.workerClient.attributes;
-    const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
-    const getSsoToken = () => manager.store.getState().flex.session.ssoTokenPayload.token;
-    const { strings } = manager;
-    const { isCallTask } = TaskHelper;
-
-    strings.ChatWelcomeText = 'Conversation started';
-
     // TODO(nick): Eventually remove this log line or set to debug
     console.log(`HRM URL: ${hrmBaseUrl}`);
     if (hrmBaseUrl === undefined) {
       console.error('HRM base URL not defined, you must provide this to save program data');
     }
+
+    // utilities for developers only
+    if (!Boolean(helpline)) addDeveloperUtils(flex, manager, translateUI);
 
     flex.MainContainer.Content.add(
       <QueuesStatusWriter insightsClient={manager.insightsClient} key="queue-status-writer" />,
@@ -102,7 +119,7 @@ export default class HrmFormPlugin extends FlexPlugin {
         value={{ hrmBaseUrl, serverlessBaseUrl, workerSid, helpline, currentWorkspace, getSsoToken }}
         key="custom-crm-container"
       >
-        <LocalizationContext.Provider value={{ strings, isCallTask }}>
+        <LocalizationContext.Provider value={{ manager, isCallTask }}>
           <CustomCRMContainer handleCompleteTask={onCompleteTask} />
         </LocalizationContext.Provider>
       </ConfigurationContext.Provider>,
@@ -126,13 +143,14 @@ export default class HrmFormPlugin extends FlexPlugin {
       manager.store.dispatch(Actions.removeContactState(payload.task.taskSid));
     });
 
-    const goodbyeMsg =
-      'The counselor has left the chat. Thank you for reaching out. Please contact us again if you need more help.';
-
     const shouldSayGoodbye = channel =>
       channel === channelTypes.facebook || channel === channelTypes.sms || channel === channelTypes.whatsapp;
 
+    const getTaskLanguage = task => task.attributes.language || helplineLanguage || configuredLanguage;
+
     const sendGoodbyeMessage = async payload => {
+      const taskLanguage = getTaskLanguage(payload.task);
+      const goodbyeMsg = await getGoodbyeMsg(taskLanguage);
       await flex.Actions.invokeAction('SendMessage', {
         body: goodbyeMsg,
         channelSid: payload.task.attributes.channelSid,

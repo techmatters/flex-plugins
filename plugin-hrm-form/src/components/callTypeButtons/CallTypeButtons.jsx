@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withTaskContext } from '@twilio/flex-ui';
+import { withTaskContext, Template } from '@twilio/flex-ui';
 import FaceIcon from '@material-ui/icons/Face';
 
 import { withLocalization } from '../../contexts/LocalizationContext';
@@ -18,7 +18,7 @@ const clearCallType = props => props.handleCallTypeButtonClick(props.task.taskSi
 
 const CallTypeButtons = props => {
   const { form, task, localization } = props;
-  const { strings, isCallTask } = localization;
+  const { isCallTask } = localization;
 
   return (
     <>
@@ -29,14 +29,14 @@ const CallTypeButtons = props => {
             <Box width="50px" marginRight="5px">
               <FaceIcon />
             </Box>
-            {callTypes.child}
+            <Template code="CallType-child" />
           </DataCallTypeButton>
           <DataCallTypeButton onClick={() => props.handleCallTypeButtonClick(task.taskSid, callTypes.caller)}>
             <Box width="50px" marginRight="5px">
               <FaceIcon style={{ marginRight: '-5px' }} />
               <FaceIcon />
             </Box>
-            {callTypes.caller}
+            <Template code="CallType-caller" />
           </DataCallTypeButton>
         </Box>
 
@@ -50,14 +50,14 @@ const CallTypeButtons = props => {
                 onClick={() => props.handleCallTypeButtonClick(task.taskSid, callTypes[callType])}
                 marginRight={i % 2 === 0}
               >
-                {callTypes[callType]}
+                <Template code={`CallType-${callType}`} />
               </NonDataCallTypeButton>
             ))}
         </Box>
       </Container>
       <NonDataCallTypeDialog
         isOpen={isDialogOpen(form)}
-        confirmLabel={isCallTask(task) ? strings.TaskHeaderEndCall : strings.TaskHeaderEndChat}
+        isCallTask={isCallTask(task)}
         handleConfirm={() => props.handleSubmit(task)}
         handleCancel={() => clearCallType(props)}
       />
