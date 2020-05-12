@@ -5,21 +5,15 @@ import { FontOpenSans, Row } from '../HrmStyles';
 export const Container = styled('div')`
   width: 100%;
   background-color: #ffffff;
-  padding-top: 5px;
   padding-bottom: 14px;
   border-style: solid;
-  border-width: 0px 0px 1px 0px;
-  border-color: ${props => props.theme.colors.base4};
 `;
 
 export const HeaderContainer = styled(Row)`
   width: 100%;
   justify-items: flex-start;
   background-color: ${props => props.theme.colors.base2};
-  border-radius: 2px;
-  border-style: solid;
-  border-width: 1px 0px 1px 0px;
-  border-color: ${props => props.theme.colors.base4};
+  border-width: 0px;
   text-transform: uppercase;
   color: #192b33;
   font-size: 10px;

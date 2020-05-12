@@ -233,6 +233,10 @@ export default class HrmFormPlugin extends FlexPlugin {
     if (hrmBaseUrl === undefined) {
       console.error('HRM base URL not defined, you must provide this to save program data');
     }
+
+    flex.MainHeader.Content.remove('logo');
+    flex.MainHeader.Content.remove('mute-button');
+    flex.MainHeader.Content.remove('user-controls');
   }
 
   /**
