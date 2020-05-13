@@ -83,7 +83,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     if (!Boolean(helpline)) addDeveloperUtils(flex, manager, translateUI);
 
     flex.MainContainer.Content.add(
-      <QueuesStatusWriter insightsClient={manager.insightsClient} key="queue-status-writer" />,
+      <QueuesStatusWriter insightsClient={manager.insightsClient} key="queue-status-writer" helpline={helpline} />,
       {
         sortOrder: -1,
         align: 'start',

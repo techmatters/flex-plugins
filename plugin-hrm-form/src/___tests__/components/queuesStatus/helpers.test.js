@@ -17,14 +17,10 @@ test('Test newQueueEntry', () => {
 const queuesNames = ['Queue One', 'Queue Two', 'Queue Nine Nine'];
 let cleanQueuesStatus;
 test('Test initializeQueuesStatus', () => {
-  const queues = {
-    Q1: { queue_name: queuesNames[0] },
-    Q2: { queue_name: queuesNames[1] },
-    Q99: { queue_name: queuesNames[2] },
-  };
+  const counselorQueues = [...queuesNames];
+  const result = initializeQueuesStatus(counselorQueues);
 
-  const result = initializeQueuesStatus(queues);
-
+  expect(Object.keys(result)).toHaveLength(3);
   Object.keys(result).forEach(key => {
     expect(result[key]).toStrictEqual(newQueueEntry);
     expect(queuesNames.some(item => item === key)).toBeTruthy();

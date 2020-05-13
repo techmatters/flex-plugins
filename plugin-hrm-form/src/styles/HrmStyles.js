@@ -250,12 +250,6 @@ export const Row = styled('div')`
   align-items: center;
 `;
 
-export const ButtonRow = styled('button')`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-`;
-
 export const FontOpenSans = styled('p')`
   color: #000000;
   font-family: Open Sans;
