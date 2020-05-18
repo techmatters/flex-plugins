@@ -38,3 +38,17 @@ export const getMessages = async (configuration, body) => {
   const messages = await fetchProtectedApi(url, { ...body, Token: getSsoToken() });
   return messages;
 };
+
+export const setTaskConversationsAttributes = async (configuration, taskSID, conversationsAttributes) => {
+  const { serverlessBaseUrl, currentWorkspace, getSsoToken } = configuration;
+  const url = `${serverlessBaseUrl}/setTaskConversationsAttributes`;
+  const body = {
+    workspaceSID: currentWorkspace,
+    taskSID,
+    conversationsAttributes: JSON.stringify(conversationsAttributes),
+    Token: getSsoToken(),
+  };
+
+  const updatedTask = await fetchProtectedApi(url, body);
+  return updatedTask;
+};
