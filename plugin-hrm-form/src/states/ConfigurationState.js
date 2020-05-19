@@ -1,7 +1,5 @@
 import { CHANGE_LANGUAGE } from './ActionTypes';
-
-// default language to initialize plugin
-export const defaultLanguage = 'en-US';
+import { defaultLanguage } from '../utils/pluginHelpers';
 
 export const changeLanguage = language => ({ type: CHANGE_LANGUAGE, language });
 
