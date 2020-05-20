@@ -37,6 +37,7 @@ export const closeTransfer = async task => {
     });
   } else {
     // if the call being closed is the new one (i.e. rejecting transfer)
+    Actions.invokeAction('HangupCall', { sid: task.sid });
     Actions.invokeAction('CompleteTask', { sid: task.sid });
   }
 };

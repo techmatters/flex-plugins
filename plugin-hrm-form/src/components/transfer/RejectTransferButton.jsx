@@ -6,14 +6,14 @@ import { StyledButton } from '../../styles/HrmStyles';
 import { closeTransfer, rejectTransfer } from './helpers';
 
 const handleRejectTransfer = async transferredTask => {
-  const originalTask = TaskHelper.getTaskByTaskSid(transferredTask.attributes.transferMeta.originalReservation);
-  console.log('ORIGINAL TASK1', transferredTask.attributes.transferMeta.originalReservation, originalTask)
-  await closeTransfer(transferredTask);
-
-  console.log('ORIGINAL TASK2', originalTask)
-  await rejectTransfer(originalTask);
-  console.log('TRANSFERRED TASK', transferredTask)
-  await rejectTransfer(transferredTask)
+  if (TaskHelper.isChatBasedTask(transferredTask)) {
+    const originalTask = TaskHelper.getTaskByTaskSid(transferredTask.attributes.transferMeta.originalReservation);
+    await closeTransfer(transferredTask);
+    await rejectTransfer(originalTask);
+  } else {
+    await closeTransfer(transferredTask);
+    await rejectTransfer(transferredTask);
+  }
 };
 
 const RejectTransferButton = ({ theme, task }) => {

@@ -6,15 +6,16 @@ import { StyledButton } from '../../styles/HrmStyles';
 import { closeTransfer, completeTransfer } from './helpers';
 
 const handleCompleteTransfer = async transferredTask => {
-  const originalTask = TaskHelper.getTaskByTaskSid(transferredTask.attributes.transferMeta.originalReservation);
-  await closeTransfer(originalTask);
+  // const originalTask = TaskHelper.getTaskByTaskSid(transferredTask.attributes.transferMeta.originalReservation);
+  // await closeTransfer(originalTask);
 
-  await completeTransfer(transferredTask);
+  // await completeTransfer(transferredTask);
 };
 
 const CompleteTransferButton = ({ theme, task }) => {
   return (
     <StyledButton
+      disabled //<<<<<<<<<<<<<<<<<<<<<<<<<
       color={theme.colors.base11}
       background={theme.colors.base2}
       onClick={() => handleCompleteTransfer(task)}
