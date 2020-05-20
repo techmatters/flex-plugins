@@ -3,8 +3,10 @@ import { View } from '@twilio/flex-ui';
 
 import Translator from '../components/translator';
 import SettingsSideLink from '../components/sideLinks/SettingsSideLink';
-import { defaultLanguage } from '../states/ConfigurationState';
 import { getTranslation, getMessages } from '../services/ServerlessService';
+
+// default language to initialize plugin
+export const defaultLanguage = 'en-US';
 
 const defaultTranslation = require(`../translations/${defaultLanguage}/flexUI.json`);
 const defaultMessages = require(`../translations/${defaultLanguage}/messages.json`);
