@@ -1,9 +1,10 @@
 import React from 'react';
-import { VERSION, TaskHelper } from '@twilio/flex-ui';
+import * as Flex from '@twilio/flex-ui';
 import { FlexPlugin } from 'flex-plugin';
 
 import CustomCRMContainer from './components/CustomCRMContainer';
 import QueuesStatus from './components/queuesStatus';
+import TransferButton from './components/transfer/TransferButton';
 import QueuesStatusWriter from './components/queuesStatus/QueuesStatusWriter';
 import reducers, { namespace } from './states';
 import { Actions } from './states/ContactState';
@@ -11,12 +12,93 @@ import ConfigurationContext from './contexts/ConfigurationContext';
 import LocalizationContext from './contexts/LocalizationContext';
 import HrmTheme from './styles/HrmTheme';
 import './styles/GlobalOverrides';
-import { channelTypes } from './states/DomainConstants';
+import { channelTypes, transferStatuses } from './states/DomainConstants';
 import { addDeveloperUtils, initLocalization } from './utils/pluginHelpers';
 import { changeLanguage } from './states/ConfigurationState';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 const PLUGIN_VERSION = '0.4.1';
+const DEFAULT_TRANSFER_MODE = 'COLD';
+
+const setUpComponents = () => {
+  Flex.TaskCanvasHeader.Content.add(<TransferButton key="chat-transfer-button" />, {
+    sortOrder: 1,
+    if: props => props.task.taskStatus === 'assigned',
+  });
+};
+
+// eslint-disable-next-line consistent-return
+const transferOverride = async (payload, original) => {
+  console.log('TRANSFER PAYLOAD', payload);
+
+  const mode = payload.options.mode || DEFAULT_TRANSFER_MODE;
+
+  // Set transfer metadata
+  const updatedAttributes = {
+    ...payload.task.attributes,
+    transferMeta: {
+      mode,
+      originalTask: payload.task.taskSid,
+      originalCounselor: payload.task.workerSid,
+      transferStatus: transferStatuses.transferring,
+      formDocument: null, // the name of the Sync document where the form is stored (save it before this)
+    },
+  };
+  await payload.task.setAttributes(updatedAttributes);
+
+  if (!Flex.TaskHelper.isChatBasedTask(payload.task)) {
+    return original(payload);
+  }
+
+  const manager = Flex.Manager.getInstance();
+  // const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
+  const serverlessBaseUrl = 'http://localhost:3000';
+
+  const body = {
+    Token: manager.user.token,
+    mode,
+    taskSid: payload.task.taskSid,
+    targetSid: payload.targetSid,
+    workerName: manager.user.identity,
+  };
+
+  await fetch(`${serverlessBaseUrl}/transferChat`, {
+    method: 'POST',
+    body: new URLSearchParams(body),
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+    },
+  });
+};
+
+const setUpActions = () => {
+  Flex.Actions.replaceAction('TransferTask', (payload, original) => transferOverride(payload, original));
+
+  /*
+   * Flex.Actions.replaceAction('WrapupTask', async (payload, original) => {
+   *   if (payload.task.attributes.warmTransfer) {
+   *     // Set the channelSid and ProxySessionSID to a dummy value. This keeps the session alive
+   *     const updatedAttributes = {
+   *       ...payload.task.attributes,
+   *       channelSid: 'CH00000000000000000000000000000000',
+   *       proxySessionSID: 'KC00000000000000000000000000000000',
+   *     };
+   *
+   *     await payload.task.setAttributes(updatedAttributes);
+   *   }
+   *
+   *   original(payload);
+   * });
+   */
+
+  Flex.Actions.addListener('beforeWrapupTask', (payload, abortFunction) => {
+    console.log('ACCEPT TASK EVENT', payload);
+  });
+
+  Flex.Actions.addListener('beforeAcceptTask', (payload, abortFunction) => {
+    console.log('ACCEPT TASK EVENT', payload);
+  });
+};
 
 export default class HrmFormPlugin extends FlexPlugin {
   constructor() {
@@ -41,7 +123,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     const { helpline, counselorLanguage, helplineLanguage } = manager.workerClient.attributes;
     const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
     const getSsoToken = () => manager.store.getState().flex.session.ssoTokenPayload.token;
-    const { isCallTask } = TaskHelper;
+    const { isCallTask } = Flex.TaskHelper;
 
     /*
      * localization setup (translates the UI if necessary)
@@ -143,47 +225,8 @@ export default class HrmFormPlugin extends FlexPlugin {
       manager.store.dispatch(Actions.removeContactState(payload.task.taskSid));
     });
 
-    const shouldSayGoodbye = channel =>
-      channel === channelTypes.facebook || channel === channelTypes.sms || channel === channelTypes.whatsapp;
-
-    const getTaskLanguage = task => task.attributes.language || helplineLanguage || configuredLanguage;
-
-    const sendGoodbyeMessage = async payload => {
-      const taskLanguage = getTaskLanguage(payload.task);
-      const goodbyeMsg = await getGoodbyeMsg(taskLanguage);
-      await flex.Actions.invokeAction('SendMessage', {
-        body: goodbyeMsg,
-        channelSid: payload.task.attributes.channelSid,
-      });
-    };
-
-    const saveEndMillis = async payload => {
-      manager.store.dispatch(Actions.saveEndMillis(payload.task.taskSid));
-    };
-
-    /**
-     * @param {import('@twilio/flex-ui').ActionFunction} fun
-     * @returns {import('@twilio/flex-ui').ReplacedActionFunction}
-     * A function that calls fun with the payload of the replaced action
-     * and continues with the Twilio execution
-     */
-    const fromActionFunction = fun => async (payload, original) => {
-      await fun(payload);
-      original(payload);
-    };
-
-    const hangupCall = fromActionFunction(saveEndMillis);
-
-    // This action is causing a race condition. Link to issue https://github.com/twilio/flex-plugin-builder/issues/243
-    const wrapupTask = fromActionFunction(async payload => {
-      if (shouldSayGoodbye(payload.task.channelType)) {
-        await sendGoodbyeMessage(payload);
-      }
-      await saveEndMillis(payload);
-    });
-
-    flex.Actions.replaceAction('HangupCall', hangupCall);
-    flex.Actions.replaceAction('WrapupTask', wrapupTask);
+    setUpComponents();
+    setUpActions();
   }
 
   /**
@@ -194,7 +237,7 @@ export default class HrmFormPlugin extends FlexPlugin {
   registerReducers(manager) {
     if (!manager.store.addReducer) {
       // eslint: disable-next-line
-      console.error(`You need FlexUI > 1.9.0 to use built-in redux; you are currently on ${VERSION}`);
+      console.error(`You need FlexUI > 1.9.0 to use built-in redux; you are currently on ${Flex.VERSION}`);
       return;
     }
 
