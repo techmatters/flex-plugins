@@ -1,6 +1,8 @@
 import React from 'react';
-import { Actions, StyledButton, withTheme } from '@twilio/flex-ui';
+import { Actions } from '@twilio/flex-ui';
 import PropTypes from 'prop-types';
+
+import { StyledButton } from '../../styles/HrmStyles'
 
 const TransferButton = ({ theme }) => {
   return (
@@ -24,4 +26,4 @@ TransferButton.propTypes = {
   }).isRequired,
 };
 
-export default withTheme(TransferButton);
+export default TransferButton;

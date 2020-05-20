@@ -4,7 +4,8 @@ import { FlexPlugin } from 'flex-plugin';
 
 import CustomCRMContainer from './components/CustomCRMContainer';
 import QueuesStatus from './components/queuesStatus';
-import TransferButton from './components/transfer/TransferButton';
+import { TransferButton, CompleteTransferButton, RejectTransferButton } from './components/transfer';
+import { isOriginal, isTransferring } from './components/transfer/helpers';
 import QueuesStatusWriter from './components/queuesStatus/QueuesStatusWriter';
 import reducers, { namespace } from './states';
 import { Actions } from './states/ContactState';
@@ -12,18 +13,32 @@ import ConfigurationContext from './contexts/ConfigurationContext';
 import LocalizationContext from './contexts/LocalizationContext';
 import HrmTheme from './styles/HrmTheme';
 import './styles/GlobalOverrides';
-import { channelTypes, transferStatuses } from './states/DomainConstants';
+import { channelTypes, transferModes, transferStatuses } from './states/DomainConstants';
 import { addDeveloperUtils, initLocalization } from './utils/pluginHelpers';
 import { changeLanguage } from './states/ConfigurationState';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 const PLUGIN_VERSION = '0.4.1';
-const DEFAULT_TRANSFER_MODE = 'COLD';
+const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
 const setUpComponents = () => {
-  Flex.TaskCanvasHeader.Content.add(<TransferButton key="chat-transfer-button" />, {
+  Flex.TaskCanvasHeader.Content.add(<TransferButton key="transfer-button" />, {
     sortOrder: 1,
-    if: props => props.task.taskStatus === 'assigned',
+    if: props => props.task.taskStatus === 'assigned' && !isTransferring(props.task),
+  });
+
+  Flex.TaskCanvasHeader.Content.remove('actions', {
+    if: props => isTransferring(props.task),
+  });
+
+  Flex.TaskCanvasHeader.Content.add(<CompleteTransferButton key="complete-transfer-button" />, {
+    sortOrder: 1,
+    if: props => !isOriginal(props.task) && isTransferring(props.task),
+  });
+
+  Flex.TaskCanvasHeader.Content.add(<RejectTransferButton key="reject-transfer-button" />, {
+    sortOrder: 1,
+    if: props => !isOriginal(props.task) && isTransferring(props.task),
   });
 };
 
@@ -37,11 +52,11 @@ const transferOverride = async (payload, original) => {
   const updatedAttributes = {
     ...payload.task.attributes,
     transferMeta: {
-      mode,
       originalTask: payload.task.taskSid,
+      originalReservation: payload.task.sid,
       originalCounselor: payload.task.workerSid,
-      transferStatus: transferStatuses.transferring,
-      formDocument: null, // the name of the Sync document where the form is stored (save it before this)
+      transferStatus: mode === transferModes.warm ? transferStatuses.transferring : transferStatuses.completed,
+      formDocument: null, // the name of the Sync document where the form is stored (TODO: save it before this)
     },
   };
   await payload.task.setAttributes(updatedAttributes);
@@ -73,27 +88,6 @@ const transferOverride = async (payload, original) => {
 
 const setUpActions = () => {
   Flex.Actions.replaceAction('TransferTask', (payload, original) => transferOverride(payload, original));
-
-  /*
-   * Flex.Actions.replaceAction('WrapupTask', async (payload, original) => {
-   *   if (payload.task.attributes.warmTransfer) {
-   *     // Set the channelSid and ProxySessionSID to a dummy value. This keeps the session alive
-   *     const updatedAttributes = {
-   *       ...payload.task.attributes,
-   *       channelSid: 'CH00000000000000000000000000000000',
-   *       proxySessionSID: 'KC00000000000000000000000000000000',
-   *     };
-   *
-   *     await payload.task.setAttributes(updatedAttributes);
-   *   }
-   *
-   *   original(payload);
-   * });
-   */
-
-  Flex.Actions.addListener('beforeWrapupTask', (payload, abortFunction) => {
-    console.log('ACCEPT TASK EVENT', payload);
-  });
 
   Flex.Actions.addListener('beforeAcceptTask', (payload, abortFunction) => {
     console.log('ACCEPT TASK EVENT', payload);
@@ -218,12 +212,58 @@ export default class HrmFormPlugin extends FlexPlugin {
     });
 
     flex.Actions.addListener('beforeCompleteTask', (payload, abortFunction) => {
-      manager.store.dispatch(Actions.saveContactState(payload.task, abortFunction, hrmBaseUrl, workerSid, helpline));
+      console.log('BEFORE COMPLETE', payload);
+      console.log('WILL SUBMIT FORM?', !isTransferring(payload.task));
+      if (!isTransferring(payload.task)) {
+        manager.store.dispatch(Actions.saveContactState(payload.task, abortFunction, hrmBaseUrl, workerSid, helpline));
+      }
     });
 
     flex.Actions.addListener('afterCompleteTask', payload => {
       manager.store.dispatch(Actions.removeContactState(payload.task.taskSid));
     });
+
+    const shouldSayGoodbye = channel =>
+      channel === channelTypes.facebook || channel === channelTypes.sms || channel === channelTypes.whatsapp;
+
+    const getTaskLanguage = task => task.attributes.language || helplineLanguage || configuredLanguage;
+
+    const sendGoodbyeMessage = async payload => {
+      const taskLanguage = getTaskLanguage(payload.task);
+      const goodbyeMsg = await getGoodbyeMsg(taskLanguage);
+      await flex.Actions.invokeAction('SendMessage', {
+        body: goodbyeMsg,
+        channelSid: payload.task.attributes.channelSid,
+      });
+    };
+
+    const saveEndMillis = async payload => {
+      manager.store.dispatch(Actions.saveEndMillis(payload.task.taskSid));
+    };
+
+    /**
+     * @param {import('@twilio/flex-ui').ActionFunction} fun
+     * @returns {import('@twilio/flex-ui').ReplacedActionFunction}
+     * A function that calls fun with the payload of the replaced action
+     * and continues with the Twilio execution
+     */
+    const fromActionFunction = fun => async (payload, original) => {
+      await fun(payload);
+      original(payload);
+    };
+
+    const hangupCall = fromActionFunction(saveEndMillis);
+
+    // This action is causing a race condition. Link to issue https://github.com/twilio/flex-plugin-builder/issues/243
+    const wrapupTask = fromActionFunction(async payload => {
+      if (shouldSayGoodbye(payload.task.channelType)) {
+        await sendGoodbyeMessage(payload);
+      }
+      await saveEndMillis(payload);
+    });
+
+    flex.Actions.replaceAction('HangupCall', hangupCall);
+    flex.Actions.replaceAction('WrapupTask', wrapupTask);
 
     setUpComponents();
     setUpActions();

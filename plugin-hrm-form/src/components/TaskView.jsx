@@ -10,6 +10,7 @@ import { namespace, contactFormsBase, searchContactsBase } from '../states';
 import { Actions } from '../states/ContactState';
 import { handleBlur, handleCategoryToggle, handleFocus, handleSubmit } from '../states/ActionCreators';
 import { handleSelectSearchResult, recreateSearchContact } from '../states/SearchContact';
+import { isTransferring } from './transfer/helpers';
 
 class TaskView extends Component {
   static displayName = 'TaskView';
@@ -41,7 +42,7 @@ class TaskView extends Component {
     const { task, thisTask, form } = this.props;
 
     // If this task is not the active task, hide it
-    const show = task && task.taskSid === thisTask.taskSid;
+    const show = task && task.taskSid === thisTask.taskSid; // && !isTransferring(thisTask);
 
     if (!show) {
       return null;
@@ -49,6 +50,7 @@ class TaskView extends Component {
 
     return (
       <div style={{ height: '100%' }}>
+        {isTransferring(thisTask) && <p>WILL HIDE WILL HIDE WILL HIDE WILL HIDE WILL HIDE</p>}
         <HrmForm
           form={form}
           handleBlur={this.props.handleBlur(form, task.taskSid)}
