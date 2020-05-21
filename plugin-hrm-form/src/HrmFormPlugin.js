@@ -16,10 +16,25 @@ import './styles/GlobalOverrides';
 import { channelTypes, transferModes, transferStatuses } from './states/DomainConstants';
 import { addDeveloperUtils, initLocalization } from './utils/pluginHelpers';
 import { changeLanguage } from './states/ConfigurationState';
+import { transferChatStart } from './services/ServerlessService';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 const PLUGIN_VERSION = '0.4.1';
 const DEFAULT_TRANSFER_MODE = transferModes.cold;
+
+export const getConfig = () => {
+  const manager = Flex.Manager.getInstance();
+
+  const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
+  // const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
+  const serverlessBaseUrl = 'http://localhost:3000';
+  const workerSid = manager.workerClient.sid;
+  const { helpline } = manager.workerClient.attributes;
+  const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
+  const { token } = manager.user;
+
+  return { hrmBaseUrl, serverlessBaseUrl, workerSid, helpline, currentWorkspace, token };
+};
 
 const setUpComponents = () => {
   Flex.TaskCanvasHeader.Content.add(<TransferButton key="transfer-button" />, {
@@ -66,24 +81,15 @@ const transferOverride = async (payload, original) => {
   }
 
   const manager = Flex.Manager.getInstance();
-  // const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
-  const serverlessBaseUrl = 'http://localhost:3000';
 
   const body = {
-    Token: manager.user.token,
     mode,
     taskSid: payload.task.taskSid,
     targetSid: payload.targetSid,
     workerName: manager.user.identity,
   };
 
-  await fetch(`${serverlessBaseUrl}/transferChat`, {
-    method: 'POST',
-    body: new URLSearchParams(body),
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-    },
-  });
+  await transferChatStart(body);
 };
 
 const setUpActions = () => {

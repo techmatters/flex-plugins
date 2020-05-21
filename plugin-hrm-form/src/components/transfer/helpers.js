@@ -1,5 +1,6 @@
-import { Actions, TaskHelper, ITask, TaskReservationStatus } from '@twilio/flex-ui';
+import { Actions, ITask } from '@twilio/flex-ui';
 
+import { transferChatResolve } from '../../services/ServerlessService';
 import { transferStatuses } from '../../states/DomainConstants';
 
 /**
@@ -15,31 +16,44 @@ export const isTransferring = task =>
   task.attributes.transferMeta && task.attributes.transferMeta.transferStatus === transferStatuses.transferring;
 
 /**
- * completes the given task, making sure the channel is kept open if task is chat based
+ * completes the given task, making sure the channel is kept open
+ * @param {string} closeSid task to close
+ * @param {string} keepSid task to keep
+ * @param {string} newStatus resolution of the transfer (either "completed" or "rejected")
+ * @returns {Promise<void>}
+ */
+export const resolveTransferChat = async (closeSid, keepSid, newStatus) => {
+  const body = { closeSid, keepSid, newStatus };
+
+  try {
+    await transferChatResolve(body);
+  } catch (err) {
+    console.log(`Error while closing task ${closeSid}`, err);
+    window.alert('Error while closing task');
+  }
+};
+
+/**
+ * Kicks the other participant in call and then closes the original task
  * @param {ITask} task
  * @returns {Promise<void>}
  */
-export const closeTransfer = async task => {
-  if (TaskHelper.isChatBasedTask(task)) {
-    const updatedAttributes = {
-      ...task.attributes,
-      channelSid: 'CH00000000000000000000000000000000',
-      proxySessionSID: 'KC00000000000000000000000000000000',
-    };
-    await task.setAttributes(updatedAttributes);
+export const closeCallOriginal = async task => {
+  await Actions.invokeAction('KickParticipant', {
+    sid: task.sid,
+    targetSid: task.attributes.transferMeta.originalCounselor,
+  });
+  await Actions.invokeAction('CompleteTask', { sid: task.attributes.transferMeta.originalReservation });
+};
 
-    Actions.invokeAction('CompleteTask', { task });
-  } else if (isOriginal(task)) {
-    // if the call being closed is the original (i.e. completing transfer)
-    Actions.invokeAction('KickParticipant', {
-      sid: task.sid,
-      targetSid: task.attributes.transferMeta.originalCounselor,
-    });
-  } else {
-    // if the call being closed is the new one (i.e. rejecting transfer)
-    Actions.invokeAction('HangupCall', { sid: task.sid });
-    Actions.invokeAction('CompleteTask', { sid: task.sid });
-  }
+/**
+ * Hangs the current call and closes the task being transfered to the new counselor
+ * @param {ITask} task
+ * @returns {Promise<void>}
+ */
+export const closeCallSelf = async task => {
+  await Actions.invokeAction('HangupCall', { sid: task.sid });
+  await Actions.invokeAction('CompleteTask', { sid: task.sid });
 };
 
 /**
@@ -57,6 +71,6 @@ const updateTransferStatus = newStatus => async task => {
   await task.setAttributes(updatedAttributes);
 };
 
-export const completeTransfer = updateTransferStatus(transferStatuses.completed);
+export const setTransferCompleted = updateTransferStatus(transferStatuses.completed);
 
-export const rejectTransfer = updateTransferStatus(transferStatuses.rejected);
+export const setTransferRejected = updateTransferStatus(transferStatuses.rejected);
