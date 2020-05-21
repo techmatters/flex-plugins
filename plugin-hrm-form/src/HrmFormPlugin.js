@@ -16,7 +16,11 @@ import { addDeveloperUtils, initLocalization } from './utils/pluginHelpers';
 import { changeLanguage } from './states/ConfigurationState';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
-const PLUGIN_VERSION = '0.4.1';
+const PLUGIN_VERSION = '0.4.2';
+
+function timeout(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 export default class HrmFormPlugin extends FlexPlugin {
   constructor() {
@@ -70,6 +74,7 @@ export default class HrmFormPlugin extends FlexPlugin {
           await flex.Actions.invokeAction('WrapupTask', { sid, task });
         }
       }
+      await timeout(500);
       flex.Actions.invokeAction('CompleteTask', { sid, task });
     };
 
