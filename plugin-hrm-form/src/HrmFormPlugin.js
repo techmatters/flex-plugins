@@ -5,7 +5,12 @@ import { FlexPlugin } from 'flex-plugin';
 import CustomCRMContainer from './components/CustomCRMContainer';
 import QueuesStatus from './components/queuesStatus';
 import { TransferButton, CompleteTransferButton, RejectTransferButton } from './components/transfer';
-import { isOriginal, isTransferring } from './components/transfer/helpers';
+import {
+  isTransferring,
+  showTransferButton,
+  showTransferControls,
+  shouldSubmitForm,
+} from './components/transfer/helpers';
 import QueuesStatusWriter from './components/queuesStatus/QueuesStatusWriter';
 import reducers, { namespace } from './states';
 import { Actions } from './states/ContactState';
@@ -26,8 +31,7 @@ export const getConfig = () => {
   const manager = Flex.Manager.getInstance();
 
   const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
-  // const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
-  const serverlessBaseUrl = 'http://localhost:3000';
+  const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
   const workerSid = manager.workerClient.sid;
   const { helpline } = manager.workerClient.attributes;
   const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
@@ -39,7 +43,7 @@ export const getConfig = () => {
 const setUpComponents = () => {
   Flex.TaskCanvasHeader.Content.add(<TransferButton key="transfer-button" />, {
     sortOrder: 1,
-    if: props => props.task.taskStatus === 'assigned' && !isTransferring(props.task),
+    if: props => showTransferButton(props.task),
   });
 
   Flex.TaskCanvasHeader.Content.remove('actions', {
@@ -48,12 +52,12 @@ const setUpComponents = () => {
 
   Flex.TaskCanvasHeader.Content.add(<CompleteTransferButton key="complete-transfer-button" />, {
     sortOrder: 1,
-    if: props => !isOriginal(props.task) && isTransferring(props.task),
+    if: props => showTransferControls(props.task),
   });
 
   Flex.TaskCanvasHeader.Content.add(<RejectTransferButton key="reject-transfer-button" />, {
     sortOrder: 1,
-    if: props => !isOriginal(props.task) && isTransferring(props.task),
+    if: props => showTransferControls(props.task),
   });
 };
 
@@ -219,8 +223,8 @@ export default class HrmFormPlugin extends FlexPlugin {
 
     flex.Actions.addListener('beforeCompleteTask', (payload, abortFunction) => {
       console.log('BEFORE COMPLETE', payload);
-      console.log('WILL SUBMIT FORM?', !isTransferring(payload.task));
-      if (!isTransferring(payload.task)) {
+      console.log('WILL SUBMIT FORM?', shouldSubmitForm(payload.task));
+      if (shouldSubmitForm(payload.task)) {
         manager.store.dispatch(Actions.saveContactState(payload.task, abortFunction, hrmBaseUrl, workerSid, helpline));
       }
     });

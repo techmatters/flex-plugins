@@ -1,5 +1,5 @@
 import React from 'react';
-import { TaskHelper, StateHelper } from '@twilio/flex-ui';
+import { TaskHelper } from '@twilio/flex-ui';
 import PropTypes from 'prop-types';
 
 import { StyledButton } from '../../styles/HrmStyles';

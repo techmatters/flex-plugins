@@ -1,4 +1,4 @@
-import { Actions, ITask } from '@twilio/flex-ui';
+import { Actions, ITask, TaskHelper } from '@twilio/flex-ui';
 
 import { transferChatResolve } from '../../services/ServerlessService';
 import { transferStatuses } from '../../states/DomainConstants';
@@ -6,17 +6,57 @@ import { transferStatuses } from '../../states/DomainConstants';
 /**
  * @param {ITask} task
  */
+// eslint-disable-next-line import/no-unused-modules
 export const isOriginal = task =>
   task.attributes.transferMeta && task.attributes.transferMeta.originalReservation === task.sid;
 
 /**
- * @param {ITask} task
+ * @param {string} status
+ * @returns {(task: ITask) => boolean}
  */
-export const isTransferring = task =>
-  task.attributes.transferMeta && task.attributes.transferMeta.transferStatus === transferStatuses.transferring;
+const isTaskInTransferStatus = status => task =>
+  task.attributes.transferMeta && task.attributes.transferMeta.transferStatus === status;
+
+export const isTransferring = isTaskInTransferStatus(transferStatuses.transferring);
+
+const isTransferRejected = isTaskInTransferStatus(transferStatuses.rejected);
+
+const isTransferCompleted = isTaskInTransferStatus(transferStatuses.completed);
 
 /**
- * completes the given task, making sure the channel is kept open
+ * @param {ITask} task
+ */
+export const showTransferButton = task =>
+  TaskHelper.isTaskAccepted(task) && !TaskHelper.isInWrapupMode(task) && !isTransferring(task);
+
+/**
+ * @param {ITask} task
+ */
+export const showTransferControls = task =>
+  !isOriginal(task) && isTransferring(task) && TaskHelper.isTaskAccepted(task);
+
+/**
+ * @param {ITask} task
+ */
+const shouldSubmitFormChat = task => TaskHelper.isChatBasedTask(task) && !isTransferring(task); // status updated satus closing
+
+/**
+ * A call should be submitted
+ * - from original task if a transfer was initiated but it was rejected
+ * - from non original task if a transfer was initiated and it was accepted
+ * @param {ITask} task
+ */
+const shouldSubmitFormCall = task =>
+  TaskHelper.isCallTask(task) &&
+  ((isOriginal(task) && isTransferRejected(task)) || (!isOriginal(task) && isTransferCompleted(task)));
+
+/**
+ * @param {ITask} task
+ */
+export const shouldSubmitForm = task => shouldSubmitFormCall(task) || shouldSubmitFormChat(task);
+
+/**
+ * completes the first task and keeps the second as the valid, making sure the channel is kept open
  * @param {string} closeSid task to close
  * @param {string} keepSid task to keep
  * @param {string} newStatus resolution of the transfer (either "completed" or "rejected")
@@ -43,7 +83,6 @@ export const closeCallOriginal = async task => {
     sid: task.sid,
     targetSid: task.attributes.transferMeta.originalCounselor,
   });
-  await Actions.invokeAction('CompleteTask', { sid: task.attributes.transferMeta.originalReservation });
 };
 
 /**
@@ -53,7 +92,6 @@ export const closeCallOriginal = async task => {
  */
 export const closeCallSelf = async task => {
   await Actions.invokeAction('HangupCall', { sid: task.sid });
-  await Actions.invokeAction('CompleteTask', { sid: task.sid });
 };
 
 /**

@@ -2,7 +2,7 @@ import React from 'react';
 import { Actions } from '@twilio/flex-ui';
 import PropTypes from 'prop-types';
 
-import { StyledButton } from '../../styles/HrmStyles'
+import { StyledButton } from '../../styles/HrmStyles';
 
 const TransferButton = ({ theme }) => {
   return (

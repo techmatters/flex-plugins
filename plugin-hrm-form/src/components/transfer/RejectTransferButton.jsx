@@ -10,7 +10,7 @@ const handleRejectTransfer = async transferredTask => {
   if (TaskHelper.isChatBasedTask(transferredTask)) {
     const closeSid = transferredTask.taskSid;
     const keepSid = transferredTask.attributes.transferMeta.originalTask;
-    await resolveTransferChat(closeSid, keepSid, transferStatuses.completed);
+    await resolveTransferChat(closeSid, keepSid, transferStatuses.rejected);
   } else {
     await closeCallSelf(transferredTask);
     await setTransferRejected(transferredTask);
