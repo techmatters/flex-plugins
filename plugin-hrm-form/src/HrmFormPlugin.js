@@ -18,10 +18,6 @@ import { changeLanguage } from './states/ConfigurationState';
 const PLUGIN_NAME = 'HrmFormPlugin';
 const PLUGIN_VERSION = '0.4.2';
 
-function timeout(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 export default class HrmFormPlugin extends FlexPlugin {
   constructor() {
     super(PLUGIN_NAME);
@@ -74,7 +70,6 @@ export default class HrmFormPlugin extends FlexPlugin {
           await flex.Actions.invokeAction('WrapupTask', { sid, task });
         }
       }
-      await timeout(500);
       flex.Actions.invokeAction('CompleteTask', { sid, task });
     };
 
@@ -174,7 +169,7 @@ export default class HrmFormPlugin extends FlexPlugin {
      */
     const fromActionFunction = fun => async (payload, original) => {
       await fun(payload);
-      original(payload);
+      await original(payload);
     };
 
     const hangupCall = fromActionFunction(saveEndMillis);
