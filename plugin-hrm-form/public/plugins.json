@@ -8,6 +8,6 @@
         "@twilio/flex-ui": "^1.11.2"
       }
     ],
-    "src": "http://localhost:3003/plugin-hrm-form.js"
+    "src": "http://localhost:3000/plugin-hrm-form.js"
   }
 ]

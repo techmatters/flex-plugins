@@ -50,7 +50,7 @@ class TaskView extends Component {
 
     return (
       <div style={{ height: '100%' }}>
-        {shouldSubmitForm(thisTask) && <p>WILL HIDE WILL HIDE WILL HIDE WILL HIDE WILL HIDE</p>}
+        {!shouldSubmitForm(thisTask) && <p>WILL HIDE WILL HIDE WILL HIDE WILL HIDE WILL HIDE</p>}
         <HrmForm
           form={form}
           handleBlur={this.props.handleBlur(form, task.taskSid)}

@@ -2,6 +2,10 @@ import { Actions, ITask, TaskHelper } from '@twilio/flex-ui';
 
 import { transferChatResolve } from '../../services/ServerlessService';
 import { transferStatuses } from '../../states/DomainConstants';
+/**
+ * @param {ITask} task
+ */
+const noTranferStarted = task => !Boolean(task.attributes.transferMeta);
 
 /**
  * @param {ITask} task
@@ -48,7 +52,9 @@ const shouldSubmitFormChat = task => TaskHelper.isChatBasedTask(task) && !isTran
  */
 const shouldSubmitFormCall = task =>
   TaskHelper.isCallTask(task) &&
-  ((isOriginal(task) && isTransferRejected(task)) || (!isOriginal(task) && isTransferCompleted(task)));
+  (noTranferStarted(task) ||
+    (isOriginal(task) && isTransferRejected(task)) ||
+    (!isOriginal(task) && isTransferCompleted(task)));
 
 /**
  * @param {ITask} task
