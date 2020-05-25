@@ -59,8 +59,7 @@ export const saveInsightsData = async (configuration, task, taskSID) => {
   }
 
   const { serverlessBaseUrl, currentWorkspace, getSsoToken } = configuration;
-  const url = 'http://localhost:3000/setTaskInsightsData';
-  // const url = `${serverlessBaseUrl}/setTaskInsightsData`;
+  const url = `${serverlessBaseUrl}/setTaskInsightsData`;
   const body = {
     workspaceSID: currentWorkspace,
     taskSID,
