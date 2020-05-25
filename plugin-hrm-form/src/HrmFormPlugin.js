@@ -34,8 +34,7 @@ export const getConfig = () => {
   const manager = Flex.Manager.getInstance();
 
   const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
-  // const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
-  const serverlessBaseUrl = 'http://localhost:3000';
+  const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
   const workerSid = manager.workerClient.sid;
   const { helpline } = manager.workerClient.attributes;
   const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
@@ -146,8 +145,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     this.registerReducers(manager);
 
     const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
-    // const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
-    const serverlessBaseUrl = 'http://localhost:3000';
+    const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
     const { configuredLanguage } = manager.serviceConfiguration.attributes;
     const workerSid = manager.workerClient.sid;
     const { helpline, counselorLanguage, helplineLanguage } = manager.workerClient.attributes;
