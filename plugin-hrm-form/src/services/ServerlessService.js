@@ -1,5 +1,7 @@
+/* eslint-disable camelcase */
 /* eslint-disable import/prefer-default-export */
 import fetchProtectedApi from './fetchProtectedApi';
+import { isNonDataCallType } from '../states/ValidationRules';
 
 /**
  * [Protected] Fetches the workers within a workspace and helpline.
@@ -39,13 +41,31 @@ export const getMessages = async (configuration, body) => {
   return messages;
 };
 
-export const setTaskConversationsAttributes = async (configuration, taskSID, conversationsAttributes) => {
+export const saveInsightsData = async (configuration, task, taskSID) => {
+  const callType = task.callType.value;
+  const hasCustomerData = !isNonDataCallType(callType);
+
+  const conversations = {
+    conversation_attribute_1: callType,
+  };
+
+  let customers = {};
+  if (hasCustomerData) {
+    const { childInformation } = task;
+    customers = {
+      gender: childInformation.gender.value,
+      year_of_birth: childInformation.age.value,
+    };
+  }
+
   const { serverlessBaseUrl, currentWorkspace, getSsoToken } = configuration;
-  const url = `${serverlessBaseUrl}/setTaskConversationsAttributes`;
+  const url = 'http://localhost:3000/setTaskInsightsData';
+  // const url = `${serverlessBaseUrl}/setTaskInsightsData`;
   const body = {
     workspaceSID: currentWorkspace,
     taskSID,
-    conversationsAttributes: JSON.stringify(conversationsAttributes),
+    conversations: JSON.stringify(conversations),
+    customers: JSON.stringify(customers),
     Token: getSsoToken(),
   };
 

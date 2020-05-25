@@ -5,7 +5,7 @@ import { FlexPlugin } from 'flex-plugin';
 import CustomCRMContainer from './components/CustomCRMContainer';
 import QueuesStatus from './components/queuesStatus';
 import QueuesStatusWriter from './components/queuesStatus/QueuesStatusWriter';
-import reducers, { namespace } from './states';
+import reducers, { namespace, contactFormsBase } from './states';
 import { Actions } from './states/ContactState';
 import ConfigurationContext from './contexts/ConfigurationContext';
 import LocalizationContext from './contexts/LocalizationContext';
@@ -14,6 +14,7 @@ import './styles/GlobalOverrides';
 import { channelTypes } from './states/DomainConstants';
 import { addDeveloperUtils, initLocalization } from './utils/pluginHelpers';
 import { changeLanguage } from './states/ConfigurationState';
+import { saveInsightsData } from './services/ServerlessService';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 const PLUGIN_VERSION = '0.4.1';
@@ -57,10 +58,10 @@ export default class HrmFormPlugin extends FlexPlugin {
     const initialLanguage = counselorLanguage || helplineLanguage || configuredLanguage;
     const { translateUI, getGoodbyeMsg } = initLocalization(localizationConfig, initialLanguage);
 
-    const configuration = {
+    const managerConfiguration = {
       colorTheme: HrmTheme,
     };
-    manager.updateConfig(configuration);
+    manager.updateConfig(managerConfiguration);
 
     const onCompleteTask = async (sid, task) => {
       if (task.status !== 'wrapping') {
@@ -135,8 +136,17 @@ export default class HrmFormPlugin extends FlexPlugin {
       manager.store.dispatch(Actions.initializeContactState(payload.task.taskSid));
     });
 
-    flex.Actions.addListener('beforeCompleteTask', (payload, abortFunction) => {
+    const saveInsights = async payload => {
+      const { taskSid } = payload.task;
+      const task = manager.store.getState()[namespace][contactFormsBase].tasks[taskSid];
+      const configuration = { serverlessBaseUrl, currentWorkspace, getSsoToken };
+
+      await saveInsightsData(configuration, task, taskSid);
+    };
+
+    flex.Actions.addListener('beforeCompleteTask', async (payload, abortFunction) => {
       manager.store.dispatch(Actions.saveContactState(payload.task, abortFunction, hrmBaseUrl, workerSid, helpline));
+      await saveInsights(payload);
     });
 
     flex.Actions.addListener('afterCompleteTask', payload => {
