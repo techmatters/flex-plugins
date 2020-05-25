@@ -1,5 +1,4 @@
-import { initTranslateUI, initGetGoodbyeMsg, initLocalization } from '../../utils/pluginHelpers';
-import { defaultLanguage } from '../../states/ConfigurationState';
+import { initTranslateUI, initGetGoodbyeMsg, initLocalization, defaultLanguage } from '../../utils/pluginHelpers';
 
 console.log = jest.fn();
 console.error = jest.fn();

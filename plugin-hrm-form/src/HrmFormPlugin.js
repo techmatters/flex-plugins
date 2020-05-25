@@ -17,7 +17,7 @@ import { changeLanguage } from './states/ConfigurationState';
 import { saveInsightsData } from './services/ServerlessService';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
-const PLUGIN_VERSION = '0.4.1';
+const PLUGIN_VERSION = '0.4.2';
 
 export default class HrmFormPlugin extends FlexPlugin {
   constructor() {
@@ -179,7 +179,7 @@ export default class HrmFormPlugin extends FlexPlugin {
      */
     const fromActionFunction = fun => async (payload, original) => {
       await fun(payload);
-      original(payload);
+      await original(payload);
     };
 
     const hangupCall = fromActionFunction(saveEndMillis);
