@@ -1,7 +1,9 @@
 import { Actions, ITask, TaskHelper } from '@twilio/flex-ui';
 
 import { transferChatResolve } from '../../services/ServerlessService';
-import { transferStatuses } from '../../states/DomainConstants';
+import { transferStatuses, transferModes } from '../../states/DomainConstants';
+import { getSharedStateClient } from '../../HrmFormPlugin';
+
 /**
  * @param {ITask} task
  */
@@ -13,6 +15,12 @@ const noTranferStarted = task => !Boolean(task.attributes.transferMeta);
 // eslint-disable-next-line import/no-unused-modules
 export const isOriginal = task =>
   task.attributes.transferMeta && task.attributes.transferMeta.originalReservation === task.sid;
+
+/**
+ * @param {ITask} task
+ */
+export const isWarmTransfer = task =>
+  task.attributes.transferMeta && task.attributes.transferMeta.mode === transferModes.warm;
 
 /**
  * @param {string} status
@@ -118,3 +126,69 @@ const updateTransferStatus = newStatus => async task => {
 export const setTransferCompleted = updateTransferStatus(transferStatuses.completed);
 
 export const setTransferRejected = updateTransferStatus(transferStatuses.rejected);
+
+/**
+ * Saves the actual form into the Sync Client
+ * @param {*} form form for current contact or undefined
+ * @param {string} taskSid
+ */
+export const saveFormSharedState = async (form, taskSid) => {
+  const sharedStateClient = getSharedStateClient();
+  if (saveFormSharedState === undefined || sharedStateClient.connectionState !== 'connected') {
+    window.alert("Can't access Shared State, form won't be saved");
+    return null;
+  }
+
+  const documentName = form ? `pending-form-${taskSid}` : null;
+  if (documentName) {
+    const document = await sharedStateClient.document(documentName);
+    const val = await document.set(form, { ttl: 86400 });
+    console.log('SYNC DOCUMENT SAVED', 'Doc name:', documentName, 'Value stored:', val);
+  }
+
+  return documentName;
+};
+
+/**
+ * Restores the contact form from Sync Client (if there is any)
+ * @param {ITask} task
+ */
+export const loadFormSharedState = async task => {
+  const sharedStateClient = getSharedStateClient();
+  if (saveFormSharedState === undefined || sharedStateClient.connectionState !== 'connected') {
+    window.alert("Can't access Shared State, form can't be restored");
+    return null;
+  }
+
+  const documentName = task.attributes.transferMeta.formDocument;
+  if (documentName) {
+    const document = await sharedStateClient.document(documentName);
+    console.log('DOCUMENT RETRIEVED', document);
+    return document.value;
+  }
+
+  return null;
+};
+
+/**
+ * Saves transfer metadata into task attributes
+ * @param {ITask} task
+ * @param {string} mode one of transferModes
+ * @param {string} documentName name to retrieve the form or null if there were no form to save
+ */
+export const setTransferMeta = async (task, mode, documentName) => {
+  // Set transfer metadata
+  const updatedAttributes = {
+    ...task.attributes,
+    transferMeta: {
+      originalTask: task.taskSid,
+      originalReservation: task.sid,
+      originalCounselor: task.workerSid,
+      transferStatus: mode === transferModes.warm ? transferStatuses.transferring : transferStatuses.completed,
+      formDocument: documentName,
+      mode,
+    },
+  };
+
+  await task.setAttributes(updatedAttributes);
+};

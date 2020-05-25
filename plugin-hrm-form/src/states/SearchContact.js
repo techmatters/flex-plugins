@@ -90,7 +90,7 @@ export const changeSearchPage = taskId => page => ({ type: CHANGE_SEARCH_PAGE, p
 
 export const viewContactDetails = taskId => contact => ({ type: VIEW_CONTACT_DETAILS, contact, taskId });
 
-function copyNewValues(originalObject, objectWithNewValues) {
+export function copyNewValues(originalObject, objectWithNewValues) {
   if (objectWithNewValues === null || typeof objectWithNewValues === 'undefined') {
     return originalObject;
   }

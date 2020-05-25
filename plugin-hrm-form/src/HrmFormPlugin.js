@@ -1,6 +1,7 @@
 import React from 'react';
 import * as Flex from '@twilio/flex-ui';
 import { FlexPlugin } from 'flex-plugin';
+import SyncClient from 'twilio-sync';
 
 import CustomCRMContainer from './components/CustomCRMContainer';
 import QueuesStatus from './components/queuesStatus';
@@ -10,18 +11,20 @@ import {
   showTransferButton,
   showTransferControls,
   shouldSubmitForm,
+  saveFormSharedState,
+  setTransferMeta,
 } from './components/transfer/helpers';
 import QueuesStatusWriter from './components/queuesStatus/QueuesStatusWriter';
-import reducers, { namespace } from './states';
+import reducers, { namespace, contactFormsBase } from './states';
 import { Actions } from './states/ContactState';
 import ConfigurationContext from './contexts/ConfigurationContext';
 import LocalizationContext from './contexts/LocalizationContext';
 import HrmTheme from './styles/HrmTheme';
 import './styles/GlobalOverrides';
-import { channelTypes, transferModes, transferStatuses } from './states/DomainConstants';
+import { channelTypes, transferModes } from './states/DomainConstants';
 import { addDeveloperUtils, initLocalization } from './utils/pluginHelpers';
 import { changeLanguage } from './states/ConfigurationState';
-import { transferChatStart } from './services/ServerlessService';
+import { transferChatStart, issueSyncToken } from './services/ServerlessService';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 const PLUGIN_VERSION = '0.4.1';
@@ -32,13 +35,44 @@ export const getConfig = () => {
 
   const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
   // const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
-  const serverlessBaseUrl = 'https://serverless-9971-dev.twil.io';
+  const serverlessBaseUrl = 'http://localhost:3000';
   const workerSid = manager.workerClient.sid;
   const { helpline } = manager.workerClient.attributes;
   const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
   const { token } = manager.user;
 
   return { hrmBaseUrl, serverlessBaseUrl, workerSid, helpline, currentWorkspace, token };
+};
+
+/**
+ * Sync Client to store shared documents. TODO: This will be much safer if stored in a component's state
+ * @type {SyncClient}
+ */
+let sharedStateClient;
+export const getSharedStateClient = () => sharedStateClient;
+
+const setUpSharedState = () => {
+  // initializes sync client for shared state
+  const updateSharedStateToken = async () => {
+    try {
+      const syncToken = await issueSyncToken({});
+      console.log('SYNC TOKEN ISSUED', syncToken);
+      if (sharedStateClient) {
+        await sharedStateClient.updateToken(syncToken);
+      } else {
+        sharedStateClient = new SyncClient(syncToken);
+        sharedStateClient.on('tokenAboutToExpire', () => {
+          console.log('SYNC TOKEN ABOUT TO EXPIRE');
+          updateSharedStateToken();
+        });
+      }
+      console.log('SYNC TOKEN UPDATED', getSharedStateClient());
+    } catch (err) {
+      console.log('SYNC TOKEN ERROR', err);
+    }
+  };
+
+  updateSharedStateToken();
 };
 
 const setUpComponents = () => {
@@ -66,26 +100,20 @@ const setUpComponents = () => {
 const transferOverride = async (payload, original) => {
   console.log('TRANSFER PAYLOAD', payload);
 
+  const manager = Flex.Manager.getInstance();
+
+  // save current form state as sync document (if there is a form)
+  const form = manager.store.getState()[namespace][contactFormsBase].tasks[payload.task.taskSid];
+  const documentName = await saveFormSharedState(form, payload.task.taskSid);
+
   const mode = payload.options.mode || DEFAULT_TRANSFER_MODE;
 
-  // Set transfer metadata
-  const updatedAttributes = {
-    ...payload.task.attributes,
-    transferMeta: {
-      originalTask: payload.task.taskSid,
-      originalReservation: payload.task.sid,
-      originalCounselor: payload.task.workerSid,
-      transferStatus: mode === transferModes.warm ? transferStatuses.transferring : transferStatuses.completed,
-      formDocument: null, // the name of the Sync document where the form is stored (TODO: save it before this)
-    },
-  };
-  await payload.task.setAttributes(updatedAttributes);
+  // set metadata for the transfer
+  await setTransferMeta(payload.task, mode, documentName);
 
   if (!Flex.TaskHelper.isChatBasedTask(payload.task)) {
     return original(payload);
   }
-
-  const manager = Flex.Manager.getInstance();
 
   const body = {
     mode,
@@ -99,10 +127,6 @@ const transferOverride = async (payload, original) => {
 
 const setUpActions = () => {
   Flex.Actions.replaceAction('TransferTask', (payload, original) => transferOverride(payload, original));
-
-  Flex.Actions.addListener('beforeAcceptTask', (payload, abortFunction) => {
-    console.log('ACCEPT TASK EVENT', payload);
-  });
 };
 
 export default class HrmFormPlugin extends FlexPlugin {
@@ -123,7 +147,7 @@ export default class HrmFormPlugin extends FlexPlugin {
 
     const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
     // const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
-    const serverlessBaseUrl = 'https://serverless-9971-dev.twil.io';
+    const serverlessBaseUrl = 'http://localhost:3000';
     const { configuredLanguage } = manager.serviceConfiguration.attributes;
     const workerSid = manager.workerClient.sid;
     const { helpline, counselorLanguage, helplineLanguage } = manager.workerClient.attributes;
@@ -277,6 +301,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     flex.Actions.replaceAction('HangupCall', hangupCall);
     flex.Actions.replaceAction('WrapupTask', wrapupTask);
 
+    setUpSharedState();
     setUpComponents();
     setUpActions();
   }

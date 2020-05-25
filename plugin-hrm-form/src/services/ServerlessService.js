@@ -54,3 +54,12 @@ export const transferChatResolve = async body => {
   const closedTask = await fetchProtectedApi(url, { ...body, Token: token });
   return closedTask;
 };
+
+export const issueSyncToken = async body => {
+  const { serverlessBaseUrl, token } = getConfig();
+  const url = `${serverlessBaseUrl}/issueSyncToken`;
+
+  const res = await fetchProtectedApi(url, { ...body, Token: token });
+  const syncToken = res.token;
+  return syncToken;
+};

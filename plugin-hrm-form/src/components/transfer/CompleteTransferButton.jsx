@@ -1,12 +1,21 @@
 import React from 'react';
 import { TaskHelper } from '@twilio/flex-ui';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import { StyledButton } from '../../styles/HrmStyles';
-import { resolveTransferChat, closeCallOriginal, setTransferCompleted } from './helpers';
+import {
+  resolveTransferChat,
+  closeCallOriginal,
+  setTransferCompleted,
+  loadFormSharedState,
+  isWarmTransfer,
+} from './helpers';
 import { transferStatuses } from '../../states/DomainConstants';
+import { Actions } from '../../states/ContactState';
 
-const handleCompleteTransfer = async transferredTask => {
+const handleCompleteTransfer = async (transferredTask, restoreEntireForm) => {
   if (TaskHelper.isChatBasedTask(transferredTask)) {
     const closeSid = transferredTask.attributes.transferMeta.originalTask;
     const keepSid = transferredTask.taskSid;
@@ -15,14 +24,20 @@ const handleCompleteTransfer = async transferredTask => {
     await closeCallOriginal(transferredTask);
     await setTransferCompleted(transferredTask);
   }
+
+  // restore the state of the previous form (if there is any)
+  if (isWarmTransfer(transferredTask)) {
+    const form = await loadFormSharedState(transferredTask);
+    if (form) restoreEntireForm(form, transferredTask.taskSid);
+  }
 };
 
-const CompleteTransferButton = ({ theme, task }) => {
+const CompleteTransferButton = ({ theme, task, restoreEntireForm }) => {
   return (
     <StyledButton
       color={theme.colors.base11}
       background={theme.colors.base2}
-      onClick={() => handleCompleteTransfer(task)}
+      onClick={() => handleCompleteTransfer(task, restoreEntireForm)}
     >
       Complete Transfer
     </StyledButton>
@@ -44,6 +59,11 @@ CompleteTransferButton.propTypes = {
       }),
     }),
   }).isRequired,
+  restoreEntireForm: PropTypes.func.isRequired,
 };
 
-export default CompleteTransferButton;
+const mapDispatchToProps = dispatch => ({
+  restoreEntireForm: bindActionCreators(Actions.restoreEntireForm, dispatch),
+});
+
+export default connect(null, mapDispatchToProps)(CompleteTransferButton);
