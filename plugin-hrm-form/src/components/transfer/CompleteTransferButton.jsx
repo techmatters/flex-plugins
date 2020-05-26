@@ -25,7 +25,7 @@ const handleCompleteTransfer = async (transferredTask, restoreEntireForm) => {
     await setTransferCompleted(transferredTask);
   }
 
-  // restore the state of the previous form (if there is any)
+  // restore the state of the previous form for warm transfer (if there is any)
   if (isWarmTransfer(transferredTask)) {
     const form = await loadFormSharedState(transferredTask);
     if (form) restoreEntireForm(form, transferredTask.taskSid);

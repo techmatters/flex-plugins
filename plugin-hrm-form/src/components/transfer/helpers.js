@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import { Actions, ITask, TaskHelper } from '@twilio/flex-ui';
 
 import { transferChatResolve } from '../../services/ServerlessService';
@@ -21,6 +22,12 @@ export const isOriginal = task =>
  */
 export const isWarmTransfer = task =>
   task.attributes.transferMeta && task.attributes.transferMeta.mode === transferModes.warm;
+
+/**
+ * @param {ITask} task
+ */
+export const isColdTransfer = task =>
+  task.attributes.transferMeta && task.attributes.transferMeta.mode === transferModes.cold;
 
 /**
  * @param {string} status
@@ -173,7 +180,7 @@ export const loadFormSharedState = async task => {
 /**
  * Saves transfer metadata into task attributes
  * @param {ITask} task
- * @param {string} mode one of transferModes
+ * @param {"COLD" | "WARM"} mode
  * @param {string} documentName name to retrieve the form or null if there were no form to save
  */
 export const setTransferMeta = async (task, mode, documentName) => {

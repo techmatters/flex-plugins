@@ -8,10 +8,12 @@ import QueuesStatus from './components/queuesStatus';
 import { TransferButton, CompleteTransferButton, RejectTransferButton } from './components/transfer';
 import {
   isTransferring,
+  isColdTransfer,
   showTransferButton,
   showTransferControls,
   shouldSubmitForm,
   saveFormSharedState,
+  loadFormSharedState,
   setTransferMeta,
 } from './components/transfer/helpers';
 import QueuesStatusWriter from './components/queuesStatus/QueuesStatusWriter';
@@ -34,7 +36,8 @@ export const getConfig = () => {
   const manager = Flex.Manager.getInstance();
 
   const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
-  const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
+  // const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
+  const serverlessBaseUrl = 'https://serverless-9971-dev.twil.io';
   const workerSid = manager.workerClient.sid;
   const { helpline } = manager.workerClient.attributes;
   const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
@@ -44,34 +47,34 @@ export const getConfig = () => {
 };
 
 /**
- * Sync Client to store shared documents. TODO: This will be much safer if stored in a component's state
+ * Sync Client to store shared documents. TODO: This will be much safer if stored in state (maybe Redux? but how acces to it from handlers?)
  * @type {SyncClient}
  */
 let sharedStateClient;
 export const getSharedStateClient = () => sharedStateClient;
 
-const setUpSharedState = () => {
-  // initializes sync client for shared state
+const setUpSharedStateClient = () => {
   const updateSharedStateToken = async () => {
     try {
       const syncToken = await issueSyncToken({});
-      console.log('SYNC TOKEN ISSUED', syncToken);
-      if (sharedStateClient) {
-        await sharedStateClient.updateToken(syncToken);
-      } else {
-        sharedStateClient = new SyncClient(syncToken);
-        sharedStateClient.on('tokenAboutToExpire', () => {
-          console.log('SYNC TOKEN ABOUT TO EXPIRE');
-          updateSharedStateToken();
-        });
-      }
-      console.log('SYNC TOKEN UPDATED', getSharedStateClient());
+      await sharedStateClient.updateToken(syncToken);
     } catch (err) {
       console.log('SYNC TOKEN ERROR', err);
     }
   };
 
-  updateSharedStateToken();
+  // initializes sync client for shared state
+  const initSharedStateClient = async () => {
+    try {
+      const syncToken = await issueSyncToken({});
+      sharedStateClient = new SyncClient(syncToken);
+      sharedStateClient.on('tokenAboutToExpire', () => updateSharedStateToken());
+    } catch (err) {
+      console.log('SYNC CLIENT INIT ERROR', err);
+    }
+  };
+
+  initSharedStateClient();
 };
 
 const setUpComponents = () => {
@@ -124,8 +127,18 @@ const transferOverride = async (payload, original) => {
   await transferChatStart(body);
 };
 
+const restoreFormIfCold = async payload => {
+  if (isColdTransfer(payload.task)) {
+    const manager = Flex.Manager.getInstance();
+    const form = await loadFormSharedState(payload.task);
+    if (form) manager.store.dispatch(Actions.restoreEntireForm(form, payload.task.taskSid));
+  }
+};
+
 const setUpActions = () => {
   Flex.Actions.replaceAction('TransferTask', (payload, original) => transferOverride(payload, original));
+
+  Flex.Actions.addListener('afterAcceptTask', payload => restoreFormIfCold(payload));
 };
 
 export default class HrmFormPlugin extends FlexPlugin {
@@ -145,7 +158,8 @@ export default class HrmFormPlugin extends FlexPlugin {
     this.registerReducers(manager);
 
     const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
-    const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
+    // const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
+    const serverlessBaseUrl = 'https://serverless-9971-dev.twil.io';
     const { configuredLanguage } = manager.serviceConfiguration.attributes;
     const workerSid = manager.workerClient.sid;
     const { helpline, counselorLanguage, helplineLanguage } = manager.workerClient.attributes;
@@ -288,7 +302,6 @@ export default class HrmFormPlugin extends FlexPlugin {
 
     const hangupCall = fromActionFunction(saveEndMillis);
 
-    // This action is causing a race condition. Link to issue https://github.com/twilio/flex-plugin-builder/issues/243
     const wrapupTask = fromActionFunction(async payload => {
       if (shouldSayGoodbye(payload.task.channelType)) {
         await sendGoodbyeMessage(payload);
@@ -299,7 +312,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     flex.Actions.replaceAction('HangupCall', hangupCall);
     flex.Actions.replaceAction('WrapupTask', wrapupTask);
 
-    setUpSharedState();
+    setUpSharedStateClient();
     setUpComponents();
     setUpActions();
   }
