@@ -1,9 +1,9 @@
 // eslint-disable-next-line no-unused-vars
-import { Actions, ITask, TaskHelper } from '@twilio/flex-ui';
+import { Actions, ITask, TaskHelper, StateHelper } from '@twilio/flex-ui';
 
 import { transferChatResolve } from '../../services/ServerlessService';
 import { transferStatuses, transferModes } from '../../states/DomainConstants';
-import { getSharedStateClient } from '../../HrmFormPlugin';
+import { getConfig, getSharedStateClient } from '../../HrmFormPlugin';
 
 /**
  * @param {ITask} task
@@ -77,14 +77,15 @@ const shouldSubmitFormCall = task =>
 export const shouldSubmitForm = task => shouldSubmitFormCall(task) || shouldSubmitFormChat(task);
 
 /**
- * completes the first task and keeps the second as the valid, making sure the channel is kept open
+ * Completes the first task and keeps the second as the valid, making sure the channel is kept open
  * @param {string} closeSid task to close
  * @param {string} keepSid task to keep
+ * @param {string} kickMember sid of the member that must be removed from channel
  * @param {string} newStatus resolution of the transfer (either "completed" or "rejected")
  * @returns {Promise<void>}
  */
-export const resolveTransferChat = async (closeSid, keepSid, newStatus) => {
-  const body = { closeSid, keepSid, newStatus };
+const resolveTransferChat = async (closeSid, keepSid, kickMember, newStatus) => {
+  const body = { closeSid, keepSid, kickMember, newStatus };
 
   try {
     await transferChatResolve(body);
@@ -92,6 +93,60 @@ export const resolveTransferChat = async (closeSid, keepSid, newStatus) => {
     console.log(`Error while closing task ${closeSid}`, err);
     window.alert('Error while closing task');
   }
+};
+
+const dontTransform = char =>
+  (char >= 'A' && char <= 'Z') || (char >= 'a' && char <= 'z') || (char >= '0' && char <= '9');
+
+/**
+ * Helper to match the transformation Twilio does on identity for the member resources
+ * @param {string} str
+ */
+const transformIdentity = str => {
+  const transformed = [...str].map(char =>
+    dontTransform(char)
+      ? char
+      : `_${char
+          .charCodeAt(0)
+          .toString(16)
+          .toUpperCase()}`,
+  );
+  return transformed.join('');
+};
+
+/**
+ * Takes the task and identity of the counselor to kick, and returns it's memberSid
+ * @param {ITask} task
+ * @param {string} kickIdentity
+ */
+const getKickMember = (task, kickIdentity) => {
+  const ChatChannel = StateHelper.getChatChannelStateForTask(task);
+  const Member = ChatChannel.members.get(transformIdentity(kickIdentity));
+  return (Member && Member.source && Member.source.sid) || '';
+};
+
+/**
+ * Kicks the other participant in chat and then closes the original task
+ * @param {ITask} task
+ */
+export const closeChatOriginal = async task => {
+  const closeSid = task.attributes.transferMeta.originalTask;
+  const keepSid = task.taskSid;
+  const kickMember = getKickMember(task, task.attributes.ignoreAgent);
+  await resolveTransferChat(closeSid, keepSid, kickMember, transferStatuses.completed);
+};
+
+/**
+ * Leaves the current chat and closes the task being transfered to the new counselor
+ * @param {ITask} task
+ */
+export const closeChatSelf = async task => {
+  const closeSid = task.taskSid;
+  const keepSid = task.attributes.transferMeta.originalTask;
+  const { identity } = getConfig();
+  const kickMember = getKickMember(task, identity);
+
+  await resolveTransferChat(closeSid, keepSid, kickMember, transferStatuses.completed);
 };
 
 /**

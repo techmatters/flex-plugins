@@ -3,17 +3,17 @@ import { TaskHelper } from '@twilio/flex-ui';
 import PropTypes from 'prop-types';
 
 import { StyledButton } from '../../styles/HrmStyles';
-import { resolveTransferChat, closeCallSelf, setTransferRejected } from './helpers';
-import { transferStatuses } from '../../states/DomainConstants';
+import { closeChatSelf, closeCallSelf, setTransferRejected } from './helpers';
 
-const handleRejectTransfer = async transferredTask => {
-  if (TaskHelper.isChatBasedTask(transferredTask)) {
-    const closeSid = transferredTask.taskSid;
-    const keepSid = transferredTask.attributes.transferMeta.originalTask;
-    await resolveTransferChat(closeSid, keepSid, transferStatuses.rejected);
+/**
+ * @param {import('@twilio/flex-ui').ITask} task the transferred task
+ */
+const handleRejectTransfer = async task => {
+  if (TaskHelper.isChatBasedTask(task)) {
+    closeChatSelf(task);
   } else {
-    await closeCallSelf(transferredTask);
-    await setTransferRejected(transferredTask);
+    await closeCallSelf(task);
+    await setTransferRejected(task);
   }
 };
 

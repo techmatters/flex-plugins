@@ -36,14 +36,13 @@ export const getConfig = () => {
   const manager = Flex.Manager.getInstance();
 
   const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
-  // const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
-  const serverlessBaseUrl = 'https://serverless-9971-dev.twil.io';
+  const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
   const workerSid = manager.workerClient.sid;
   const { helpline } = manager.workerClient.attributes;
   const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
-  const { token } = manager.user;
+  const { identity, token } = manager.user;
 
-  return { hrmBaseUrl, serverlessBaseUrl, workerSid, helpline, currentWorkspace, token };
+  return { hrmBaseUrl, serverlessBaseUrl, workerSid, helpline, currentWorkspace, identity, token };
 };
 
 /**
@@ -158,8 +157,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     this.registerReducers(manager);
 
     const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
-    // const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
-    const serverlessBaseUrl = 'https://serverless-9971-dev.twil.io';
+    const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
     const { configuredLanguage } = manager.serviceConfiguration.attributes;
     const workerSid = manager.workerClient.sid;
     const { helpline, counselorLanguage, helplineLanguage } = manager.workerClient.attributes;

@@ -6,29 +6,30 @@ import { bindActionCreators } from 'redux';
 
 import { StyledButton } from '../../styles/HrmStyles';
 import {
-  resolveTransferChat,
+  closeChatOriginal,
   closeCallOriginal,
   setTransferCompleted,
   loadFormSharedState,
   isWarmTransfer,
 } from './helpers';
-import { transferStatuses } from '../../states/DomainConstants';
 import { Actions } from '../../states/ContactState';
 
-const handleCompleteTransfer = async (transferredTask, restoreEntireForm) => {
-  if (TaskHelper.isChatBasedTask(transferredTask)) {
-    const closeSid = transferredTask.attributes.transferMeta.originalTask;
-    const keepSid = transferredTask.taskSid;
-    await resolveTransferChat(closeSid, keepSid, transferStatuses.completed);
+/**
+ * @param {import('@twilio/flex-ui').ITask} task the transferred task
+ * @param {typeof Actions.restoreEntireForm} restoreEntireForm
+ */
+const handleCompleteTransfer = async (task, restoreEntireForm) => {
+  if (TaskHelper.isChatBasedTask(task)) {
+    await closeChatOriginal(task);
   } else {
-    await closeCallOriginal(transferredTask);
-    await setTransferCompleted(transferredTask);
+    await closeCallOriginal(task);
+    await setTransferCompleted(task);
   }
 
   // restore the state of the previous form for warm transfer (if there is any)
-  if (isWarmTransfer(transferredTask)) {
-    const form = await loadFormSharedState(transferredTask);
-    if (form) restoreEntireForm(form, transferredTask.taskSid);
+  if (isWarmTransfer(task)) {
+    const form = await loadFormSharedState(task);
+    if (form) restoreEntireForm(form, task.taskSid);
   }
 };
 
