@@ -14,7 +14,7 @@ import './styles/GlobalOverrides';
 import { channelTypes } from './states/DomainConstants';
 import { addDeveloperUtils, initLocalization } from './utils/pluginHelpers';
 import { changeLanguage } from './states/ConfigurationState';
-import { saveInsightsData } from './services/ServerlessService';
+import { saveInsightsData } from './services/InsightsService';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 const PLUGIN_VERSION = '0.4.2';
@@ -139,9 +139,8 @@ export default class HrmFormPlugin extends FlexPlugin {
     const saveInsights = async payload => {
       const { taskSid } = payload.task;
       const task = manager.store.getState()[namespace][contactFormsBase].tasks[taskSid];
-      const configuration = { serverlessBaseUrl, currentWorkspace, getSsoToken };
 
-      await saveInsightsData(configuration, task, taskSid);
+      await saveInsightsData(payload.task, task);
     };
 
     flex.Actions.addListener('beforeCompleteTask', async (payload, abortFunction) => {
