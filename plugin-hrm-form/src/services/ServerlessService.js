@@ -54,7 +54,7 @@ export const saveInsightsData = async (configuration, task, taskSID) => {
     const { childInformation } = task;
     customers = {
       gender: childInformation.gender.value,
-      year_of_birth: childInformation.age.value,
+      customer_attribute_1: childInformation.age.value,
     };
   }
 
