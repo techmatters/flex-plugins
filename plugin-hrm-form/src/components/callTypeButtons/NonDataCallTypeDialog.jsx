@@ -24,6 +24,7 @@ const NonDataCallTypeDialog = ({ isOpen, isCallTask, handleConfirm, handleCancel
         <Box marginBottom="32px">
           <Row>
             <ConfirmButton autoFocus tabIndex={1} onClick={handleConfirm}>
+              {/* eslint-disable-next-line react/jsx-max-depth */}
               <Template code={isCallTask ? 'TaskHeaderEndCall' : 'TaskHeaderEndChat'} />
             </ConfirmButton>
             <CancelButton tabIndex={2} onClick={handleCancel}>

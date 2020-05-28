@@ -47,7 +47,7 @@ export const getGoodbyeMsg = async language => {
   try {
     if (language && language !== defaultLanguage) {
       const body = { language };
-      const messagesJSON = await getMessages({ serverlessBaseUrl, getSsoToken }, body);
+      const messagesJSON = await getMessages(body);
       const messages = await (typeof messagesJSON === 'string'
         ? JSON.parse(messagesJSON)
         : Promise.resolve(messagesJSON));
