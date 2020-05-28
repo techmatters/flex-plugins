@@ -113,7 +113,10 @@ const setUpComponents = setupObject => {
   // TODO(nick): Can we avoid passing down the task prop, maybe using context?
   const options = { sortOrder: -1 };
   Flex.CRMContainer.Content.replace(
-    <LocalizationContext.Provider value={{ manager, isCallTask: Flex.TaskHelper.isCallTask }}>
+    <LocalizationContext.Provider
+      value={{ manager, isCallTask: Flex.TaskHelper.isCallTask }}
+      key="custom-crm-container"
+    >
       <CustomCRMContainer handleCompleteTask={onCompleteTask} />
     </LocalizationContext.Provider>,
     options,
