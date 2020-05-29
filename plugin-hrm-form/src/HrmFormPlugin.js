@@ -235,8 +235,6 @@ export default class HrmFormPlugin extends FlexPlugin {
     }
 
     flex.MainHeader.Content.remove('logo');
-    flex.MainHeader.Content.remove('mute-button');
-    flex.MainHeader.Content.remove('user-controls');
   }
 
   /**
