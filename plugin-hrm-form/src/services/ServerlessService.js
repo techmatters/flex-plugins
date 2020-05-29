@@ -1,5 +1,4 @@
 /* eslint-disable camelcase */
-/* eslint-disable import/prefer-default-export */
 import fetchProtectedApi from './fetchProtectedApi';
 import { isNonDataCallType } from '../states/ValidationRules';
 import { getConfig } from '../HrmFormPlugin';
@@ -67,4 +66,20 @@ export const saveInsightsData = async (task, taskSID) => {
 
   const updatedTask = await fetchProtectedApi(url, body);
   return updatedTask;
+};
+
+export const transferChatStart = async body => {
+  const { serverlessBaseUrl, token } = getConfig();
+  const url = `${serverlessBaseUrl}/transferChatStart`;
+
+  const newTask = await fetchProtectedApi(url, { ...body, Token: token });
+  return newTask;
+};
+
+export const transferChatResolve = async body => {
+  const { serverlessBaseUrl, token } = getConfig();
+  const url = `${serverlessBaseUrl}/transferChatResolve`;
+
+  const closedTask = await fetchProtectedApi(url, { ...body, Token: token });
+  return closedTask;
 };

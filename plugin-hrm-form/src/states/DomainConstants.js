@@ -17,4 +17,15 @@ export const channelTypes = {
   whatsapp: 'whatsapp',
 };
 
+export const transferModes = {
+  cold: 'COLD',
+  warm: 'WARM',
+};
+
+export const transferStatuses = {
+  transferring: 'transferring',
+  completed: 'completed',
+  rejected: 'rejected',
+};
+
 export default callTypes;
