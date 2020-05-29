@@ -106,11 +106,10 @@ const setUpComponents = setupObject => {
         await Flex.Actions.invokeAction('WrapupTask', { sid, task });
       }
     }
-    // should we await here?
+
     Flex.Actions.invokeAction('CompleteTask', { sid, task });
   };
 
-  // TODO(nick): Can we avoid passing down the task prop, maybe using context?
   const options = { sortOrder: -1 };
   Flex.CRMContainer.Content.replace(
     <LocalizationContext.Provider
