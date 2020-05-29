@@ -1,7 +1,6 @@
 /* eslint-disable camelcase */
 /* eslint-disable import/prefer-default-export */
 import fetchProtectedApi from './fetchProtectedApi';
-import { isNonDataCallType } from '../states/ValidationRules';
 import { getConfig } from '../HrmFormPlugin';
 
 /**
@@ -36,35 +35,4 @@ export const getMessages = async body => {
 
   const messages = await fetchProtectedApi(url, { ...body, Token: token });
   return messages;
-};
-
-export const saveInsightsData = async (task, taskSID) => {
-  const callType = task.callType.value;
-  const hasCustomerData = !isNonDataCallType(callType);
-
-  const conversations = {
-    conversation_attribute_1: callType,
-  };
-
-  let customers = {};
-  if (hasCustomerData) {
-    const { childInformation } = task;
-    customers = {
-      gender: childInformation.gender.value,
-      customer_attribute_1: childInformation.age.value,
-    };
-  }
-
-  const { serverlessBaseUrl, currentWorkspace, token } = getConfig();
-  const url = `${serverlessBaseUrl}/setTaskInsightsData`;
-  const body = {
-    workspaceSID: currentWorkspace,
-    taskSID,
-    conversations: JSON.stringify(conversations),
-    customers: JSON.stringify(customers),
-    Token: token,
-  };
-
-  const updatedTask = await fetchProtectedApi(url, body);
-  return updatedTask;
 };
