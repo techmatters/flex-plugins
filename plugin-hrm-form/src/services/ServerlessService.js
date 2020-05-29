@@ -1,22 +1,19 @@
 /* eslint-disable camelcase */
 /* eslint-disable import/prefer-default-export */
 import fetchProtectedApi from './fetchProtectedApi';
+import { getConfig } from '../HrmFormPlugin';
 
 /**
  * [Protected] Fetches the workers within a workspace and helpline.
- * @param {{serverlessBaseUrl: string,
- *helpline: string,
- *currentWorkspace: string,
- *getSsoToken: () => string }} configuration
  * @returns {Promise< {sid: string, fullName: string}[] >}
  */
-export const populateCounselors = async configuration => {
-  const { serverlessBaseUrl, helpline, currentWorkspace, getSsoToken } = configuration;
+export const populateCounselors = async () => {
+  const { serverlessBaseUrl, helpline, currentWorkspace, token } = getConfig();
   const url = `${serverlessBaseUrl}/populateCounselors`;
   const body = {
     workspaceSID: currentWorkspace,
     helpline: helpline || '',
-    Token: getSsoToken(),
+    Token: token,
   };
 
   const { workerSummaries } = await fetchProtectedApi(url, body);
@@ -24,18 +21,18 @@ export const populateCounselors = async configuration => {
   return workerSummaries;
 };
 
-export const getTranslation = async (configuration, body) => {
-  const { serverlessBaseUrl, getSsoToken } = configuration;
+export const getTranslation = async body => {
+  const { serverlessBaseUrl, token } = getConfig();
   const url = `${serverlessBaseUrl}/getTranslation`;
 
-  const translation = await fetchProtectedApi(url, { ...body, Token: getSsoToken() });
+  const translation = await fetchProtectedApi(url, { ...body, Token: token });
   return translation;
 };
 
-export const getMessages = async (configuration, body) => {
-  const { serverlessBaseUrl, getSsoToken } = configuration;
+export const getMessages = async body => {
+  const { serverlessBaseUrl, token } = getConfig();
   const url = `${serverlessBaseUrl}/getMessages`;
 
-  const messages = await fetchProtectedApi(url, { ...body, Token: getSsoToken() });
+  const messages = await fetchProtectedApi(url, { ...body, Token: token });
   return messages;
 };

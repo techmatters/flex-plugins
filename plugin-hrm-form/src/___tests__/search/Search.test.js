@@ -4,6 +4,7 @@ import renderer from 'react-test-renderer';
 import configureMockStore from 'redux-mock-store';
 
 import '../mockStyled';
+import '../mockGetConfig';
 
 import Search from '../../components/search';
 import SearchForm from '../../components/search/SearchForm';

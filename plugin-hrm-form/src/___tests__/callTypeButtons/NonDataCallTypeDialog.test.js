@@ -15,12 +15,7 @@ test('a11y', async () => {
 
   const wrapper = mount(
     <StorelessThemeProvider themeConf={themeConf}>
-      <NonDataCallTypeDialog
-        isOpen={true}
-        confirmLabel="End Chat"
-        handleConfirm={() => null}
-        handleCancel={() => null}
-      />
+      <NonDataCallTypeDialog isOpen={true} handleConfirm={() => null} handleCancel={() => null} isCallTask={true} />
     </StorelessThemeProvider>,
   );
 

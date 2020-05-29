@@ -60,7 +60,6 @@ test('<CallTypeButtons> renders dialog with END CHAT button', () => {
   ).root;
 
   const confirmButtonText = getConfirmButtonText(component);
-  console.log(confirmButtonText);
 
   expect(confirmButtonText.props).toStrictEqual(withEndChat.props);
   expect(confirmButtonText.type).toStrictEqual(withEndChat.type);

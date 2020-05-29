@@ -1,4 +1,4 @@
-import { initTranslateUI, initGetGoodbyeMsg, initLocalization, defaultLanguage } from '../../utils/pluginHelpers';
+import { initTranslateUI, getGoodbyeMsg, initLocalization, defaultLanguage } from '../../utils/pluginHelpers';
 
 console.log = jest.fn();
 console.error = jest.fn();
@@ -15,11 +15,11 @@ const mockTranslations = {
 };
 
 jest.mock('../../services/ServerlessService', () => ({
-  getTranslation: jest.fn(async (config, body) => {
+  getTranslation: jest.fn(async body => {
     if (mockTranslations[body.language]) return JSON.stringify(mockTranslations[body.language].flexUI);
     throw new Error('404 translation not found');
   }),
-  getMessages: jest.fn(async (config, body) => {
+  getMessages: jest.fn(async body => {
     if (mockTranslations[body.language]) return JSON.stringify(mockTranslations[body.language].messages);
     throw new Error('404 translation not found');
   }),
@@ -33,8 +33,6 @@ const afterNewStrings = jest.fn();
 
 const localizationConfig = {
   twilioStrings,
-  serverlessBaseUrl: '',
-  getSsoToken: jest.fn(),
   setNewStrings,
   afterNewStrings,
 };
@@ -72,9 +70,7 @@ describe('Test initTranslateUI', () => {
   });
 });
 
-describe('Test initGetGoodbyeMsg', () => {
-  const getGoodbyeMsg = initGetGoodbyeMsg(localizationConfig);
-
+describe('Test getGoodbyeMsg', () => {
   test('Default language', async () => {
     const goodbyeMsg = await getGoodbyeMsg(defaultLanguage);
 
@@ -97,7 +93,7 @@ describe('Test initGetGoodbyeMsg', () => {
 strings = { ...twilioStrings };
 describe('Test initLocalization', () => {
   test('Default language', () => {
-    const { translateUI, getGoodbyeMsg } = initLocalization(localizationConfig, defaultLanguage);
+    const unused = initLocalization(localizationConfig, defaultLanguage);
 
     expect(strings).toStrictEqual({ ...twilioStrings, ...defaultTranslation });
     expect(setNewStrings).toHaveBeenCalled();
@@ -107,7 +103,7 @@ describe('Test initLocalization', () => {
   });
 
   test('Non default language', async () => {
-    const { translateUI, getGoodbyeMsg } = initLocalization(localizationConfig, 'es');
+    const unused = initLocalization(localizationConfig, 'es');
 
     await Promise.resolve(); // await inner call to translateUI
     await Promise.resolve(); // await inner call to getTranslation (nested in translateUI)
@@ -120,7 +116,7 @@ describe('Test initLocalization', () => {
   });
 
   test('Expect default (non existing translation)', async () => {
-    const { translateUI, getGoodbyeMsg } = initLocalization(localizationConfig, 'non existing');
+    const unused = initLocalization(localizationConfig, 'non existing');
 
     await Promise.resolve(); // await inner call to translateUI
     await Promise.resolve(); // await inner call to getTranslation (nested in translateUI)

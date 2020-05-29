@@ -9,8 +9,7 @@ import { withTaskContext } from '@twilio/flex-ui';
 import SearchForm from './SearchForm';
 import SearchResults from './SearchResults';
 import ContactDetails from './ContactDetails';
-import { withConfiguration } from '../../contexts/ConfigurationContext';
-import { configurationType, contactType, searchResultType, searchFormType } from '../../types';
+import { contactType, searchResultType, searchFormType } from '../../types';
 import {
   handleSearchFormChange,
   changeSearchPage,
@@ -20,6 +19,7 @@ import {
 } from '../../states/SearchContact';
 import { namespace, searchContactsBase } from '../../states';
 import { populateCounselors } from '../../services/ServerlessService';
+import { getConfig } from '../../HrmFormPlugin';
 
 /**
  * @param {{
@@ -45,7 +45,6 @@ class Search extends Component {
   static displayName = 'Search';
 
   static propTypes = {
-    configuration: configurationType.isRequired,
     currentIsCaller: PropTypes.bool,
     handleSelectSearchResult: PropTypes.func.isRequired,
     handleSearchFormChange: PropTypes.func.isRequired,
@@ -74,8 +73,7 @@ class Search extends Component {
 
   async componentDidMount() {
     try {
-      const { configuration } = this.props;
-      const counselors = await populateCounselors(configuration);
+      const counselors = await populateCounselors();
       const counselorsHash = createCounselorsHash(counselors);
       this.setState({ counselors, counselorsHash });
     } catch (err) {
@@ -99,7 +97,7 @@ class Search extends Component {
   }
 
   handleSearch = async searchParams => {
-    const { hrmBaseUrl } = this.props.configuration;
+    const { hrmBaseUrl } = getConfig();
     this.props.searchContacts(hrmBaseUrl, searchParams, this.state.counselorsHash);
   };
 
@@ -184,4 +182,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default withTaskContext(withConfiguration(connect(mapStateToProps, mapDispatchToProps)(Search)));
+export default withTaskContext(connect(mapStateToProps, mapDispatchToProps)(Search));
