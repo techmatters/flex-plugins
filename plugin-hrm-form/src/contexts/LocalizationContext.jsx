@@ -1,5 +1,8 @@
 import React from 'react';
 
+/**
+ * @type {{ manager: any; isCallTask: (task: import('@twilio/flex-ui').ITask) => boolean }}
+ */
 const initialState = {
   manager: { strings: null },
   isCallTask: () => null,
