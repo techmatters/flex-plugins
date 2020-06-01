@@ -2,6 +2,7 @@ import React from 'react';
 import * as Flex from '@twilio/flex-ui';
 import { FlexPlugin } from 'flex-plugin';
 
+import './styles/GlobalOverrides';
 import CustomCRMContainer from './components/CustomCRMContainer';
 import QueuesStatus from './components/queuesStatus';
 import QueuesStatusWriter from './components/queuesStatus/QueuesStatusWriter';
@@ -9,9 +10,9 @@ import reducers, { namespace, contactFormsBase } from './states';
 import { Actions } from './states/ContactState';
 import LocalizationContext from './contexts/LocalizationContext';
 import HrmTheme from './styles/HrmTheme';
-import './styles/GlobalOverrides';
 import { channelTypes } from './states/DomainConstants';
 import { addDeveloperUtils, initLocalization } from './utils/pluginHelpers';
+import * as TransferHelpers from './utils/transfer';
 import { changeLanguage } from './states/ConfigurationState';
 import { saveInsightsData } from './services/ServerlessService';
 
