@@ -93,8 +93,8 @@ export const resolveTransferChat = async (closeSid, keepSid, kickMember, newStat
   }
 };
 
-export const dontTransform = char =>
-  (char >= 'A' && char <= 'Z') || (char >= 'a' && char <= 'z') || (char >= '0' && char <= '9');
+export const shouldReplaceChar = char =>
+  !(char >= 'A' && char <= 'Z') && !(char >= 'a' && char <= 'z') && !(char >= '0' && char <= '9');
 
 /**
  * Helper to match the transformation Twilio does on identity for the member resources
@@ -102,12 +102,12 @@ export const dontTransform = char =>
  */
 export const transformIdentity = str => {
   const transformed = [...str].map(char =>
-    dontTransform(char)
-      ? char
-      : `_${char
+    shouldReplaceChar(char)
+      ? `_${char
           .charCodeAt(0)
           .toString(16)
-          .toUpperCase()}`,
+          .toUpperCase()}`
+      : char,
   );
   return transformed.join('');
 };
@@ -144,7 +144,7 @@ export const closeChatSelf = async task => {
   const { identity } = getConfig();
   const kickMember = getKickMember(task, identity);
 
-  await resolveTransferChat(closeSid, keepSid, kickMember, transferStatuses.completed);
+  await resolveTransferChat(closeSid, keepSid, kickMember, transferStatuses.rejected);
 };
 
 /**
@@ -190,7 +190,7 @@ export const setTransferRejected = updateTransferStatus(transferStatuses.rejecte
 /**
  * Saves transfer metadata into task attributes
  * @param {ITask} task
- * @param {"COLD" | "WARM"} mode
+ * @param {string} mode
  * @param {string} documentName name to retrieve the form or null if there were no form to save
  */
 export const setTransferMeta = async (task, mode, documentName) => {
