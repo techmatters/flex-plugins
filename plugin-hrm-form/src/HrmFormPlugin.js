@@ -14,7 +14,7 @@ import { channelTypes } from './states/DomainConstants';
 import { addDeveloperUtils, initLocalization } from './utils/pluginHelpers';
 import * as TransferHelpers from './utils/transfer';
 import { changeLanguage } from './states/ConfigurationState';
-import { saveInsightsData } from './services/ServerlessService';
+import { saveInsightsData } from './services/InsightsService';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 const PLUGIN_VERSION = '0.4.2';
@@ -141,7 +141,7 @@ const setUpActions = setupObject => {
     const { taskSid } = payload.task;
     const task = manager.store.getState()[namespace][contactFormsBase].tasks[taskSid];
 
-    await saveInsightsData(task, taskSid);
+    await saveInsightsData(payload.task, task);
   };
 
   Flex.Actions.addListener('beforeCompleteTask', async (payload, abortFunction) => {

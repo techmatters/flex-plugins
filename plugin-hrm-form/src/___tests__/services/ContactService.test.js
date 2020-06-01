@@ -1,6 +1,6 @@
-import { transformForm, saveToHrm } from '../services/ContactService';
-import { FieldType, ValidationType, recreateBlankForm } from '../states/ContactFormStateFactory';
-import callTypes, { channelTypes } from '../states/DomainConstants';
+import { transformForm, saveToHrm } from '../../services/ContactService';
+import { FieldType, ValidationType, recreateBlankForm } from '../../states/ContactFormStateFactory';
+import callTypes, { channelTypes } from '../../states/DomainConstants';
 
 describe('transformForm', () => {
   test('removes control information and presents values only', () => {
