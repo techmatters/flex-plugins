@@ -38,7 +38,7 @@ export const isTransferring = isTaskInTransferStatus(transferStatuses.transferri
 
 export const isTransferRejected = isTaskInTransferStatus(transferStatuses.rejected);
 
-export const isTransferCompleted = isTaskInTransferStatus(transferStatuses.completed);
+export const isTransferAccepted = isTaskInTransferStatus(transferStatuses.accepted);
 
 /**
  * @param {ITask} task
@@ -67,7 +67,7 @@ export const shouldSubmitFormCall = task =>
   TaskHelper.isCallTask(task) &&
   (!tranferStarted(task) ||
     (isOriginal(task) && isTransferRejected(task)) ||
-    (!isOriginal(task) && isTransferCompleted(task)));
+    (!isOriginal(task) && isTransferAccepted(task)));
 
 /**
  * @param {ITask} task
@@ -79,7 +79,7 @@ export const shouldSubmitForm = task => shouldSubmitFormCall(task) || shouldSubm
  * @param {string} closeSid task to close
  * @param {string} keepSid task to keep
  * @param {string} kickMember sid of the member that must be removed from channel
- * @param {string} newStatus resolution of the transfer (either "completed" or "rejected")
+ * @param {string} newStatus resolution of the transfer (either "accepted" or "rejected")
  * @returns {Promise<void>}
  */
 export const resolveTransferChat = async (closeSid, keepSid, kickMember, newStatus) => {
@@ -131,7 +131,7 @@ export const closeChatOriginal = async task => {
   const closeSid = task.attributes.transferMeta.originalTask;
   const keepSid = task.taskSid;
   const kickMember = getKickMember(task, task.attributes.ignoreAgent);
-  await resolveTransferChat(closeSid, keepSid, kickMember, transferStatuses.completed);
+  await resolveTransferChat(closeSid, keepSid, kickMember, transferStatuses.accepted);
 };
 
 /**
@@ -183,7 +183,7 @@ export const updateTransferStatus = newStatus => async task => {
   await task.setAttributes(updatedAttributes);
 };
 
-export const setTransferCompleted = updateTransferStatus(transferStatuses.completed);
+export const setTransferAccepted = updateTransferStatus(transferStatuses.accepted);
 
 export const setTransferRejected = updateTransferStatus(transferStatuses.rejected);
 
@@ -201,7 +201,7 @@ export const setTransferMeta = async (task, mode, documentName) => {
       originalTask: task.taskSid,
       originalReservation: task.sid,
       originalCounselor: task.workerSid,
-      transferStatus: mode === transferModes.warm ? transferStatuses.transferring : transferStatuses.completed,
+      transferStatus: mode === transferModes.warm ? transferStatuses.transferring : transferStatuses.accepted,
       formDocument: documentName,
       mode,
     },

@@ -1,5 +1,5 @@
 import TransferButton from './TransferButton';
-import CompleteTransferButton from './CompleteTransferButton';
+import AcceptTransferButton from './AcceptTransferButton';
 import RejectTransferButton from './RejectTransferButton';
 
-export { TransferButton, CompleteTransferButton, RejectTransferButton };
+export { TransferButton, AcceptTransferButton, RejectTransferButton };

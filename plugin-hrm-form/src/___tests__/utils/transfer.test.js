@@ -67,12 +67,12 @@ describe('Transfer mode, status and conditionals helpers', () => {
 
   test('isTransferring', async () => {
     const task1 = createTask({ transferMeta: { transferStatus: transferStatuses.transferring } });
-    const task2 = createTask({ transferMeta: { transferStatus: transferStatuses.completed } });
+    const task2 = createTask({ transferMeta: { transferStatus: transferStatuses.accepted } });
     const task3 = createTask({ transferMeta: { transferStatus: transferStatuses.rejected } });
     const task4 = createTask();
 
     expect(TransferHelpers.isTransferring(task1)).toBe(true); // transferring
-    expect(TransferHelpers.isTransferring(task2)).toBe(false); // completed
+    expect(TransferHelpers.isTransferring(task2)).toBe(false); // accepted
     expect(TransferHelpers.isTransferring(task3)).toBe(false); // rejected
     expect(TransferHelpers.isTransferring(task4)).toBe(false); // not transferred
   });
@@ -80,31 +80,31 @@ describe('Transfer mode, status and conditionals helpers', () => {
   test('isTransferRejected', async () => {
     const task1 = createTask({ transferMeta: { transferStatus: transferStatuses.rejected } });
     const task2 = createTask({ transferMeta: { transferStatus: transferStatuses.transferring } });
-    const task3 = createTask({ transferMeta: { transferStatus: transferStatuses.completed } });
+    const task3 = createTask({ transferMeta: { transferStatus: transferStatuses.accepted } });
     const task4 = createTask();
 
     expect(TransferHelpers.isTransferRejected(task1)).toBe(true); // rejected
     expect(TransferHelpers.isTransferRejected(task2)).toBe(false); // transferring
-    expect(TransferHelpers.isTransferRejected(task3)).toBe(false); // completed
+    expect(TransferHelpers.isTransferRejected(task3)).toBe(false); // accepted
     expect(TransferHelpers.isTransferRejected(task4)).toBe(false); // not transferred
   });
 
-  test('isTransferCompleted', async () => {
-    const task1 = createTask({ transferMeta: { transferStatus: transferStatuses.completed } });
+  test('isTransferAccepted', async () => {
+    const task1 = createTask({ transferMeta: { transferStatus: transferStatuses.accepted } });
     const task2 = createTask({ transferMeta: { transferStatus: transferStatuses.transferring } });
     const task3 = createTask({ transferMeta: { transferStatus: transferStatuses.rejected } });
     const task4 = createTask();
 
-    expect(TransferHelpers.isTransferCompleted(task1)).toBe(true); // completed
-    expect(TransferHelpers.isTransferCompleted(task2)).toBe(false); // transferring
-    expect(TransferHelpers.isTransferCompleted(task3)).toBe(false); // rejected
-    expect(TransferHelpers.isTransferCompleted(task4)).toBe(false); // not transferred
+    expect(TransferHelpers.isTransferAccepted(task1)).toBe(true); // accepted
+    expect(TransferHelpers.isTransferAccepted(task2)).toBe(false); // transferring
+    expect(TransferHelpers.isTransferAccepted(task3)).toBe(false); // rejected
+    expect(TransferHelpers.isTransferAccepted(task4)).toBe(false); // not transferred
   });
 
   test('showTransferButton', async () => {
     const task1 = createTask({ transferMeta: { transferStatus: transferStatuses.transferring } });
     const [task2c, task2r] = await Promise.all([task1.accept(), task1.accept()]);
-    await TransferHelpers.setTransferCompleted(task2c);
+    await TransferHelpers.setTransferAccepted(task2c);
     await TransferHelpers.setTransferRejected(task2r);
     const [task3c, task3r] = await Promise.all([task2c.wrapUp(), task2c.wrapUp()]);
     const [task4c, task4r] = await Promise.all([task2c.complete(), task2c.complete()]);
@@ -126,13 +126,13 @@ describe('Transfer mode, status and conditionals helpers', () => {
     );
     const task3 = await task2.accept();
     const [task4c, task4r] = [{ ...task3 }, { ...task3 }];
-    await TransferHelpers.setTransferCompleted(task4c);
-    await TransferHelpers.setTransferCompleted(task4r);
+    await TransferHelpers.setTransferAccepted(task4c);
+    await TransferHelpers.setTransferRejected(task4r);
 
     expect(TransferHelpers.showTransferControls(task1)).toBe(false); // is original
     expect(TransferHelpers.showTransferControls(task2)).toBe(false); // pending
     expect(TransferHelpers.showTransferControls(task3)).toBe(true); // ok
-    expect(TransferHelpers.showTransferControls(task4c)).toBe(false); // completed
+    expect(TransferHelpers.showTransferControls(task4c)).toBe(false); // accepted
     expect(TransferHelpers.showTransferControls(task4r)).toBe(false); // rejected
   });
 
@@ -146,10 +146,10 @@ describe('Transfer mode, status and conditionals helpers', () => {
       { taskChannelUniqueName: 'voice' },
     );
     const [taskCc, taskCr] = [{ ...taskC }, { ...taskC }];
-    await TransferHelpers.setTransferCompleted(taskCc);
+    await TransferHelpers.setTransferAccepted(taskCc);
     await TransferHelpers.setTransferRejected(taskCr);
     const [taskVc, taskVr] = [{ ...taskV }, { ...taskV }];
-    await TransferHelpers.setTransferCompleted(taskVc);
+    await TransferHelpers.setTransferAccepted(taskVc);
     await TransferHelpers.setTransferRejected(taskVr);
     const task2 = createTask({}, { taskChannelUniqueName: 'chat' });
 
@@ -177,19 +177,19 @@ describe('Transfer mode, status and conditionals helpers', () => {
     );
     const [taskV1c, taskV1r] = [{ ...taskV1 }, { ...taskV1 }];
     const [taskV2c, taskV2r] = [{ ...taskV2 }, { ...taskV2 }];
-    await TransferHelpers.setTransferCompleted(taskV1c);
+    await TransferHelpers.setTransferAccepted(taskV1c);
     await TransferHelpers.setTransferRejected(taskV1r);
-    await TransferHelpers.setTransferCompleted(taskV2c);
+    await TransferHelpers.setTransferAccepted(taskV2c);
     await TransferHelpers.setTransferRejected(taskV2r);
     const [taskCc, taskCr] = [{ ...taskC }, { ...taskC }];
-    await TransferHelpers.setTransferCompleted(taskCc);
+    await TransferHelpers.setTransferAccepted(taskCc);
     await TransferHelpers.setTransferRejected(taskCr);
     const task2 = createTask({}, { taskChannelUniqueName: 'voice' });
 
     expect(TransferHelpers.shouldSubmitFormCall(taskV1)).toBe(false); // transferring
     expect(TransferHelpers.shouldSubmitFormCall(taskV2)).toBe(false); // transferring
     expect(TransferHelpers.shouldSubmitFormCall(taskC)).toBe(false); // not call
-    expect(TransferHelpers.shouldSubmitFormCall(taskV1c)).toBe(false); // original but completed (control to 2nd counselor)
+    expect(TransferHelpers.shouldSubmitFormCall(taskV1c)).toBe(false); // original but accepted (control to 2nd counselor)
     expect(TransferHelpers.shouldSubmitFormCall(taskV1r)).toBe(true); // ok
     expect(TransferHelpers.shouldSubmitFormCall(taskV2c)).toBe(true); // ok
     expect(TransferHelpers.shouldSubmitFormCall(taskV2r)).toBe(false); // transferred task rejected
@@ -238,7 +238,7 @@ describe('Kick, close and helpers', () => {
       closeSid: task.attributes.transferMeta.originalTask,
       keepSid: task.taskSid,
       kickMember: TransferHelpers.getKickMember(task, 'some@identity'),
-      newStatus: transferStatuses.completed,
+      newStatus: transferStatuses.accepted,
     };
 
     await TransferHelpers.closeChatOriginal(task);
@@ -259,15 +259,15 @@ describe('Kick, close and helpers', () => {
     expect(transferChatResolve).toBeCalledWith(expected);
   });
 
-  test('setTransferCompleted', async () => {
+  test('setTransferAccepted', async () => {
     const before = { ...task };
-    await TransferHelpers.setTransferCompleted(task);
+    await TransferHelpers.setTransferAccepted(task);
 
     const { attributes, ...after } = before;
     const { transferMeta, ...afterAttributes } = attributes;
     const { transferStatus, ...afterTransferMeta } = transferMeta;
 
-    expect(task.attributes.transferMeta.transferStatus).toBe(transferStatuses.completed);
+    expect(task.attributes.transferMeta.transferStatus).toBe(transferStatuses.accepted);
     expect(after).toStrictEqual(omit(before, 'attributes'));
     expect(afterAttributes).toStrictEqual(omit(before.attributes, 'transferMeta'));
     expect(afterTransferMeta).toStrictEqual(omit(before.attributes.transferMeta, 'transferStatus'));
@@ -297,7 +297,7 @@ describe('Kick, close and helpers', () => {
       originalTask: 'task1',
       originalReservation: 'reservation1',
       originalCounselor: 'worker1',
-      transferStatus: transferStatuses.completed,
+      transferStatus: transferStatuses.accepted,
       formDocument: 'some string',
       mode: transferModes.cold,
     };

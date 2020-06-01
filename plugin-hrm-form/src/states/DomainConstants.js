@@ -24,7 +24,7 @@ export const transferModes = {
 
 export const transferStatuses = {
   transferring: 'transferring',
-  completed: 'completed',
+  accepted: 'accepted',
   rejected: 'rejected',
 };
 

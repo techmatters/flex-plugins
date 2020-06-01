@@ -3,34 +3,34 @@ import { TaskHelper } from '@twilio/flex-ui';
 import PropTypes from 'prop-types';
 
 import { StyledButton } from '../../styles/HrmStyles';
-import { closeChatOriginal, closeCallOriginal, setTransferCompleted } from '../../utils/transfer';
+import { closeChatOriginal, closeCallOriginal, setTransferAccepted } from '../../utils/transfer';
 
 /**
  * @param {import('@twilio/flex-ui').ITask} task the transferred task
  */
-const handleCompleteTransfer = async task => {
+const handleAcceptTransfer = async task => {
   if (TaskHelper.isChatBasedTask(task)) {
     await closeChatOriginal(task);
   } else {
     await closeCallOriginal(task);
-    await setTransferCompleted(task);
+    await setTransferAccepted(task);
   }
 };
 
-const CompleteTransferButton = ({ theme, task }) => {
+const AcceptTransferButton = ({ theme, task }) => {
   return (
     <StyledButton
       color={theme.colors.base11}
       background={theme.colors.base2}
-      onClick={() => handleCompleteTransfer(task)}
+      onClick={() => handleAcceptTransfer(task)}
     >
       Accept Transfer
     </StyledButton>
   );
 };
 
-CompleteTransferButton.displayName = 'CompleteTransferButton';
-CompleteTransferButton.propTypes = {
+AcceptTransferButton.displayName = 'AcceptTransferButton';
+AcceptTransferButton.propTypes = {
   theme: PropTypes.shape({
     colors: PropTypes.shape({
       base2: PropTypes.string,
@@ -46,4 +46,4 @@ CompleteTransferButton.propTypes = {
   }).isRequired,
 };
 
-export default CompleteTransferButton;
+export default AcceptTransferButton;
