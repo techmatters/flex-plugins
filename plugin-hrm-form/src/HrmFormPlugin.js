@@ -125,6 +125,8 @@ const setUpComponents = setupObject => {
   Flex.TaskCanvasHeader.Content.remove('actions', {
     if: props => props.task && props.task.status === 'wrapping',
   });
+
+  Flex.MainHeader.Content.remove('logo');
 };
 
 const setUpActions = setupObject => {
@@ -233,8 +235,6 @@ export default class HrmFormPlugin extends FlexPlugin {
     if (hrmBaseUrl === undefined) {
       console.error('HRM base URL not defined, you must provide this to save program data');
     }
-
-    flex.MainHeader.Content.remove('logo');
   }
 
   /**
