@@ -8,6 +8,26 @@ injectGlobal`
   div.Twilio-ModalPopupWithEntryControl {
     padding-top: 7px;
     padding-bottom: 7px;
-    border-width: 0px 0px 1px 0px;
+  }
+  div.Twilio-SideNav-Container {
+    margin-right: 5px;
+  } 
+  div.Twilio-MainHeader {
+    margin-bottom: 5px;
+  }
+  button.Twilio-TaskListFilter-TaskFilterButton {
+    margin-right: 10px;
+  }
+  button.Twilio-TaskListFilter-TaskFilterButton > div.Twilio-Icon-Filter {
+    margin-left: auto;
+  }
+  button.Twilio-TaskListFilter-TaskFilterButton > div.Twilio-Icon-FilterUp {
+    margin-left: auto;
+  }
+  button.Twilio-TaskCanvasHeader-EndButton {
+    border-radius: 5px;
+  }
+  button.Twilio-MessageInput-SendButton {
+    background: rgba(216, 27, 96, 0.8);
   }
 `;

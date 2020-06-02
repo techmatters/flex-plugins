@@ -138,8 +138,12 @@ export const resolveTransferChat = async (closeSid, keepSid, kickMember, newStat
   }
 };
 
-export const shouldReplaceChar = char =>
-  !(char >= 'A' && char <= 'Z') && !(char >= 'a' && char <= 'z') && !(char >= '0' && char <= '9');
+const letterNumber = /^[0-9a-zA-Z]+$/;
+/**
+ * @param {string} char
+ */
+export const shouldReplaceChar = char => !char.match(letterNumber);
+// !(char >= 'A' && char <= 'Z') && !(char >= 'a' && char <= 'z') && !(char >= '0' && char <= '9');
 
 /**
  * Helper to match the transformation Twilio does on identity for the member resources

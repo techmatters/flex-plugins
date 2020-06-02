@@ -130,6 +130,8 @@ const setUpComponents = setupObject => {
     if: props => props.task && props.task.status === 'wrapping',
   });
 
+  Flex.MainHeader.Content.remove('logo');
+
   // Transfer related components
   Flex.TaskCanvasHeader.Content.add(<TransferButton key="transfer-button" />, {
     sortOrder: 1,
