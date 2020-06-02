@@ -3,18 +3,14 @@ import { TaskHelper } from '@twilio/flex-ui';
 import PropTypes from 'prop-types';
 
 import { StyledButton } from '../../styles/HrmStyles';
-import { closeChatOriginal, closeCallOriginal, setTransferAccepted } from '../../utils/transfer';
+import { closeChatOriginal, closeCallOriginal } from '../../utils/transfer';
 
 /**
  * @param {import('@twilio/flex-ui').ITask} task the transferred task
  */
 const handleAcceptTransfer = async task => {
-  if (TaskHelper.isChatBasedTask(task)) {
-    await closeChatOriginal(task);
-  } else {
-    await closeCallOriginal(task);
-    await setTransferAccepted(task);
-  }
+  if (TaskHelper.isChatBasedTask(task)) await closeChatOriginal(task);
+  else await closeCallOriginal(task);
 };
 
 const AcceptTransferButton = ({ theme, task }) => {

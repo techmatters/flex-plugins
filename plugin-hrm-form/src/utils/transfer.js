@@ -44,7 +44,10 @@ export const isTransferAccepted = isTaskInTransferStatus(transferStatuses.accept
  * @param {ITask} task
  */
 export const showTransferButton = task =>
-  TaskHelper.isTaskAccepted(task) && task.taskStatus === 'assigned' && !isTransferring(task);
+  TaskHelper.isTaskAccepted(task) &&
+  task.taskStatus === 'assigned' &&
+  task.status === 'accepted' &&
+  !isTransferring(task);
 
 /**
  * @param {ITask} task
@@ -73,6 +76,48 @@ export const shouldSubmitFormCall = task =>
  * @param {ITask} task
  */
 export const shouldSubmitForm = task => shouldSubmitFormCall(task) || shouldSubmitFormChat(task);
+
+/**
+ * @param {string} newStatus
+ * @returns {(task: ITask) => Promise<void>}
+ */
+export const updateTransferStatus = newStatus => async task => {
+  const updatedAttributes = {
+    ...task.attributes,
+    transferMeta: {
+      ...task.attributes.transferMeta,
+      transferStatus: newStatus,
+    },
+  };
+  await task.setAttributes(updatedAttributes);
+};
+
+export const setTransferAccepted = updateTransferStatus(transferStatuses.accepted);
+
+export const setTransferRejected = updateTransferStatus(transferStatuses.rejected);
+
+/**
+ * Saves transfer metadata into task attributes
+ * @param {ITask} task
+ * @param {string} mode
+ * @param {string} documentName name to retrieve the form or null if there were no form to save
+ */
+export const setTransferMeta = async (task, mode, documentName) => {
+  // Set transfer metadata
+  const updatedAttributes = {
+    ...task.attributes,
+    transferMeta: {
+      originalTask: task.taskSid,
+      originalReservation: task.sid,
+      originalCounselor: task.workerSid,
+      transferStatus: mode === transferModes.warm ? transferStatuses.transferring : transferStatuses.accepted,
+      formDocument: documentName,
+      mode,
+    },
+  };
+
+  await task.setAttributes(updatedAttributes);
+};
 
 /**
  * Completes the first task and keeps the second as the valid, making sure the channel is kept open
@@ -157,6 +202,7 @@ export const closeCallOriginal = async task => {
     sid: task.sid,
     targetSid: task.attributes.transferMeta.originalCounselor,
   });
+  await setTransferAccepted(task);
 };
 
 /**
@@ -166,46 +212,5 @@ export const closeCallOriginal = async task => {
  */
 export const closeCallSelf = async task => {
   await Actions.invokeAction('HangupCall', { sid: task.sid });
-};
-
-/**
- * @param {string} newStatus
- * @returns {(task: ITask) => Promise<void>}
- */
-export const updateTransferStatus = newStatus => async task => {
-  const updatedAttributes = {
-    ...task.attributes,
-    transferMeta: {
-      ...task.attributes.transferMeta,
-      transferStatus: newStatus,
-    },
-  };
-  await task.setAttributes(updatedAttributes);
-};
-
-export const setTransferAccepted = updateTransferStatus(transferStatuses.accepted);
-
-export const setTransferRejected = updateTransferStatus(transferStatuses.rejected);
-
-/**
- * Saves transfer metadata into task attributes
- * @param {ITask} task
- * @param {string} mode
- * @param {string} documentName name to retrieve the form or null if there were no form to save
- */
-export const setTransferMeta = async (task, mode, documentName) => {
-  // Set transfer metadata
-  const updatedAttributes = {
-    ...task.attributes,
-    transferMeta: {
-      originalTask: task.taskSid,
-      originalReservation: task.sid,
-      originalCounselor: task.workerSid,
-      transferStatus: mode === transferModes.warm ? transferStatuses.transferring : transferStatuses.accepted,
-      formDocument: documentName,
-      mode,
-    },
-  };
-
-  await task.setAttributes(updatedAttributes);
+  await setTransferRejected(task);
 };

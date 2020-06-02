@@ -165,7 +165,7 @@ const transferOverride = async (payload, original) => {
   await TransferHelpers.setTransferMeta(payload.task, mode, documentName);
 
   if (!Flex.TaskHelper.isChatBasedTask(payload.task)) {
-    await original(payload);
+    return original(payload);
   }
 
   const body = {
@@ -175,7 +175,7 @@ const transferOverride = async (payload, original) => {
     workerName: manager.user.identity,
   };
 
-  await transferChatStart(body);
+  return transferChatStart(body);
 };
 
 /**
