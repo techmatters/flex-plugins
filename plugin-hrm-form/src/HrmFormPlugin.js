@@ -125,6 +125,8 @@ const setUpComponents = setupObject => {
   Flex.TaskCanvasHeader.Content.remove('actions', {
     if: props => props.task && props.task.status === 'wrapping',
   });
+
+  Flex.MainHeader.Content.remove('logo');
 };
 
 const setUpActions = setupObject => {
