@@ -10,5 +10,9 @@
   "CallType-joke": "Joke",
   "CallType-hangup": "Hang up",
   "CallType-wrongnumber": "Wrong Number",
-  "CallType-abusive": "Abusive"
+  "CallType-abusive": "Abusive",
+
+  "Transfer-TransferButton": "Transfer",
+  "Transfer-AcceptTransferButton": "Accept Transfer",
+  "Transfer-RejectTransferButton": "Reject Transfer"
 }

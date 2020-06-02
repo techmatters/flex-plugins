@@ -1,5 +1,5 @@
 import React from 'react';
-import { TaskHelper } from '@twilio/flex-ui';
+import { TaskHelper, Template } from '@twilio/flex-ui';
 import PropTypes from 'prop-types';
 
 import { StyledButton } from '../../styles/HrmStyles';
@@ -20,7 +20,7 @@ const AcceptTransferButton = ({ theme, task }) => {
       background={theme.colors.base2}
       onClick={() => handleAcceptTransfer(task)}
     >
-      Accept Transfer
+      <Template code="Transfer-AcceptTransferButton" />
     </StyledButton>
   );
 };
