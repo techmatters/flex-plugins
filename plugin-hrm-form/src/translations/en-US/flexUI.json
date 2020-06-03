@@ -1,5 +1,6 @@
 {
   "ChatWelcomeText": "Conversation started",
+  "TaskHeaderEndCall": "Hang Up",
   "TaskHeaderEndChat": "End Chat",
   "TranslateButtonAriaLabel": "Change language",
 
