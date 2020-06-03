@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { withTaskContext } from '@twilio/flex-ui';
 
 import HrmForm from './HrmForm';
+import FormNotEditable from './FormNotEditable';
 import { formType, taskType } from '../types';
 import { namespace, contactFormsBase, searchContactsBase } from '../states';
 import { Actions } from '../states/ContactState';
@@ -50,7 +51,7 @@ class TaskView extends Component {
 
     return (
       <div style={{ height: '100%' }}>
-        {!shouldSubmitForm(thisTask) && <p>WILL HIDE WILL HIDE WILL HIDE WILL HIDE WILL HIDE</p>}
+        {!shouldSubmitForm(thisTask) && <FormNotEditable />}
         <HrmForm
           form={form}
           handleBlur={this.props.handleBlur(form, task.taskSid)}

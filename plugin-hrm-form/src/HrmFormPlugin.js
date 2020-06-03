@@ -64,6 +64,27 @@ const setUpLocalization = config => {
   return initLocalization(localizationConfig, initialLanguage);
 };
 
+const setUpTransferComponents = () => {
+  Flex.TaskCanvasHeader.Content.add(<TransferButton key="transfer-button" />, {
+    sortOrder: 1,
+    if: props => TransferHelpers.showTransferButton(props.task),
+  });
+
+  Flex.TaskCanvasHeader.Content.remove('actions', {
+    if: props => TransferHelpers.isTransferring(props.task),
+  });
+
+  Flex.TaskCanvasHeader.Content.add(<AcceptTransferButton key="complete-transfer-button" />, {
+    sortOrder: 1,
+    if: props => TransferHelpers.showTransferControls(props.task),
+  });
+
+  Flex.TaskCanvasHeader.Content.add(<RejectTransferButton key="reject-transfer-button" />, {
+    sortOrder: 1,
+    if: props => TransferHelpers.showTransferControls(props.task),
+  });
+};
+
 const setUpComponents = setupObject => {
   const manager = Flex.Manager.getInstance();
 
@@ -132,25 +153,7 @@ const setUpComponents = setupObject => {
 
   Flex.MainHeader.Content.remove('logo');
 
-  // Transfer related components
-  Flex.TaskCanvasHeader.Content.add(<TransferButton key="transfer-button" />, {
-    sortOrder: 1,
-    if: props => TransferHelpers.showTransferButton(props.task),
-  });
-
-  Flex.TaskCanvasHeader.Content.remove('actions', {
-    if: props => TransferHelpers.isTransferring(props.task),
-  });
-
-  Flex.TaskCanvasHeader.Content.add(<AcceptTransferButton key="complete-transfer-button" />, {
-    sortOrder: 1,
-    if: props => TransferHelpers.showTransferControls(props.task),
-  });
-
-  Flex.TaskCanvasHeader.Content.add(<RejectTransferButton key="reject-transfer-button" />, {
-    sortOrder: 1,
-    if: props => TransferHelpers.showTransferControls(props.task),
-  });
+  setUpTransferComponents();
 };
 
 const transferOverride = async (payload, original) => {
@@ -210,10 +213,8 @@ const setUpActions = setupObject => {
   Flex.Actions.addListener('beforeCompleteTask', async (payload, abortFunction) => {
     if (TransferHelpers.shouldSubmitForm(payload.task)) {
       manager.store.dispatch(Actions.saveContactState(payload.task, abortFunction, hrmBaseUrl, workerSid, helpline));
+      await saveInsights(payload);
     }
-
-    // This should be inside the above if, or we wan't to allways save insights?
-    await saveInsights(payload);
   });
 
   Flex.Actions.addListener('afterCompleteTask', payload => {
