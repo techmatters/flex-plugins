@@ -18,7 +18,7 @@ const channels = { channel1 };
 StateHelper.getChatChannelStateForTask = task => channels[task.taskChannelSid];
 
 describe('Transfer mode, status and conditionals helpers', () => {
-  test('tranferStarted', async () => {
+  test('hasTransferStarted', async () => {
     const task1 = createTask({});
     const task2 = createTask({
       transferMeta: {
@@ -31,18 +31,18 @@ describe('Transfer mode, status and conditionals helpers', () => {
       },
     });
 
-    expect(TransferHelpers.tranferStarted(task1)).toBe(false); // not transferred
-    expect(TransferHelpers.tranferStarted(task2)).toBe(true); // transferred
+    expect(TransferHelpers.hasTransferStarted(task1)).toBe(false); // not transferred
+    expect(TransferHelpers.hasTransferStarted(task2)).toBe(true); // transferred
   });
 
-  test('isOriginal', async () => {
+  test('isOriginalReservation', async () => {
     const task1 = createTask({ transferMeta: { originalReservation: 'task1' } }, { sid: 'task1' });
     const task2 = createTask({ transferMeta: { originalReservation: 'task2' } }, { sid: 'task3' });
     const task3 = createTask();
 
-    expect(TransferHelpers.isOriginal(task1)).toBe(true); // is original
-    expect(TransferHelpers.isOriginal(task2)).toBe(false); // not original
-    expect(TransferHelpers.isOriginal(task3)).toBe(false); // not transferred
+    expect(TransferHelpers.isOriginalReservation(task1)).toBe(true); // is original
+    expect(TransferHelpers.isOriginalReservation(task2)).toBe(false); // not original
+    expect(TransferHelpers.isOriginalReservation(task3)).toBe(false); // not transferred
   });
 
   test('isWarmTransfer', async () => {
@@ -101,7 +101,7 @@ describe('Transfer mode, status and conditionals helpers', () => {
     expect(TransferHelpers.isTransferAccepted(task4)).toBe(false); // not transferred
   });
 
-  test('showTransferButton', async () => {
+  test('shouldShowTransferButton', async () => {
     const task1 = createTask({ transferMeta: { transferStatus: transferStatuses.transferring } });
     const [task2c, task2r] = await Promise.all([task1.accept(), task1.accept()]);
     await TransferHelpers.setTransferAccepted(task2c);
@@ -109,16 +109,16 @@ describe('Transfer mode, status and conditionals helpers', () => {
     const [task3c, task3r] = await Promise.all([task2c.wrapUp(), task2c.wrapUp()]);
     const [task4c, task4r] = await Promise.all([task2c.complete(), task2c.complete()]);
 
-    expect(TransferHelpers.showTransferButton(task1)).toBe(false); // pending
-    expect(TransferHelpers.showTransferButton(task2c)).toBe(true); // ok
-    expect(TransferHelpers.showTransferButton(task2r)).toBe(true); // ok
-    expect(TransferHelpers.showTransferButton(task3c)).toBe(false); // wraping
-    expect(TransferHelpers.showTransferButton(task3r)).toBe(false); // wraping
-    expect(TransferHelpers.showTransferButton(task4c)).toBe(false); // complete
-    expect(TransferHelpers.showTransferButton(task4r)).toBe(false); // complete
+    expect(TransferHelpers.shouldShowTransferButton(task1)).toBe(false); // pending
+    expect(TransferHelpers.shouldShowTransferButton(task2c)).toBe(true); // ok
+    expect(TransferHelpers.shouldShowTransferButton(task2r)).toBe(true); // ok
+    expect(TransferHelpers.shouldShowTransferButton(task3c)).toBe(false); // wraping
+    expect(TransferHelpers.shouldShowTransferButton(task3r)).toBe(false); // wraping
+    expect(TransferHelpers.shouldShowTransferButton(task4c)).toBe(false); // complete
+    expect(TransferHelpers.shouldShowTransferButton(task4r)).toBe(false); // complete
   });
 
-  test('showTransferControls', async () => {
+  test('shouldShowTransferControls', async () => {
     const task1 = createTask({ transferMeta: { originalReservation: 'task1' } }, { sid: 'task1' });
     const task2 = createTask(
       { transferMeta: { originalReservation: 'task1', transferStatus: transferStatuses.transferring } },
@@ -129,11 +129,11 @@ describe('Transfer mode, status and conditionals helpers', () => {
     await TransferHelpers.setTransferAccepted(task4c);
     await TransferHelpers.setTransferRejected(task4r);
 
-    expect(TransferHelpers.showTransferControls(task1)).toBe(false); // is original
-    expect(TransferHelpers.showTransferControls(task2)).toBe(false); // pending
-    expect(TransferHelpers.showTransferControls(task3)).toBe(true); // ok
-    expect(TransferHelpers.showTransferControls(task4c)).toBe(false); // accepted
-    expect(TransferHelpers.showTransferControls(task4r)).toBe(false); // rejected
+    expect(TransferHelpers.shouldShowTransferControls(task1)).toBe(false); // is original
+    expect(TransferHelpers.shouldShowTransferControls(task2)).toBe(false); // pending
+    expect(TransferHelpers.shouldShowTransferControls(task3)).toBe(true); // ok
+    expect(TransferHelpers.shouldShowTransferControls(task4c)).toBe(false); // accepted
+    expect(TransferHelpers.shouldShowTransferControls(task4r)).toBe(false); // rejected
   });
 
   test('shouldSubmitFormChat', async () => {

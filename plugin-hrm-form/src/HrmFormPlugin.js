@@ -67,7 +67,7 @@ const setUpLocalization = config => {
 const setUpTransferComponents = () => {
   Flex.TaskCanvasHeader.Content.add(<TransferButton key="transfer-button" />, {
     sortOrder: 1,
-    if: props => TransferHelpers.showTransferButton(props.task),
+    if: props => TransferHelpers.shouldShowTransferButton(props.task),
   });
 
   Flex.TaskCanvasHeader.Content.remove('actions', {
@@ -76,12 +76,12 @@ const setUpTransferComponents = () => {
 
   Flex.TaskCanvasHeader.Content.add(<AcceptTransferButton key="complete-transfer-button" />, {
     sortOrder: 1,
-    if: props => TransferHelpers.showTransferControls(props.task),
+    if: props => TransferHelpers.shouldShowTransferControls(props.task),
   });
 
   Flex.TaskCanvasHeader.Content.add(<RejectTransferButton key="reject-transfer-button" />, {
     sortOrder: 1,
-    if: props => TransferHelpers.showTransferControls(props.task),
+    if: props => TransferHelpers.shouldShowTransferControls(props.task),
   });
 };
 

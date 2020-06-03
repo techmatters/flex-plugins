@@ -7,12 +7,12 @@ import { getConfig } from '../HrmFormPlugin';
 /**
  * @param {ITask} task
  */
-export const tranferStarted = task => Boolean(task.attributes.transferMeta);
+export const hasTransferStarted = task => Boolean(task.attributes.transferMeta);
 
 /**
  * @param {ITask} task
  */
-export const isOriginal = task =>
+export const isOriginalReservation = task =>
   Boolean(task.attributes.transferMeta && task.attributes.transferMeta.originalReservation === task.sid);
 
 /**
@@ -43,7 +43,7 @@ export const isTransferAccepted = isTaskInTransferStatus(transferStatuses.accept
 /**
  * @param {ITask} task
  */
-export const showTransferButton = task =>
+export const shouldShowTransferButton = task =>
   TaskHelper.isTaskAccepted(task) &&
   task.taskStatus === 'assigned' &&
   task.status === 'accepted' &&
@@ -52,8 +52,8 @@ export const showTransferButton = task =>
 /**
  * @param {ITask} task
  */
-export const showTransferControls = task =>
-  !isOriginal(task) && isTransferring(task) && TaskHelper.isTaskAccepted(task);
+export const shouldShowTransferControls = task =>
+  !isOriginalReservation(task) && isTransferring(task) && TaskHelper.isTaskAccepted(task);
 
 /**
  * @param {ITask} task
@@ -68,9 +68,9 @@ export const shouldSubmitFormChat = task => TaskHelper.isChatBasedTask(task) && 
  */
 export const shouldSubmitFormCall = task =>
   TaskHelper.isCallTask(task) &&
-  (!tranferStarted(task) ||
-    (isOriginal(task) && isTransferRejected(task)) ||
-    (!isOriginal(task) && isTransferAccepted(task)));
+  (!hasTransferStarted(task) ||
+    (isOriginalReservation(task) && isTransferRejected(task)) ||
+    (!isOriginalReservation(task) && isTransferAccepted(task)));
 
 /**
  * @param {ITask} task
