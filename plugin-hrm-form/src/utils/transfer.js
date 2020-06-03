@@ -1,6 +1,7 @@
+// eslint-disable-next-line no-unused-vars
 import { Actions, ITask, TaskHelper, StateHelper } from '@twilio/flex-ui';
 
-import { transferChatStart, transferChatResolve } from '../services/ServerlessService';
+import { transferChatResolve } from '../services/ServerlessService';
 import { transferStatuses, transferModes } from '../states/DomainConstants';
 import { getConfig } from '../HrmFormPlugin';
 
@@ -206,6 +207,10 @@ export const closeCallOriginal = async task => {
     targetSid: task.attributes.transferMeta.originalCounselor,
   });
   await setTransferAccepted(task);
+  /*
+   * TODO
+   *  Actions.invokeAction('CompleteTask', { sid: task.attributes.transferMeta.originalReservation });
+   */
 };
 
 /**
@@ -216,4 +221,8 @@ export const closeCallOriginal = async task => {
 export const closeCallSelf = async task => {
   await Actions.invokeAction('HangupCall', { sid: task.sid });
   await setTransferRejected(task);
+  /*
+   * TODO
+   * await Actions.invokeAction('CompleteTask', { sid: task.sid });
+   */
 };

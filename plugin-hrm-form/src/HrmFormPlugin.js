@@ -1,6 +1,7 @@
 import React from 'react';
 import * as Flex from '@twilio/flex-ui';
 import { FlexPlugin } from 'flex-plugin';
+import SyncClient from 'twilio-sync';
 
 import './styles/GlobalOverrides';
 import CustomCRMContainer from './components/CustomCRMContainer';
@@ -14,13 +15,44 @@ import HrmTheme from './styles/HrmTheme';
 import { channelTypes, transferModes } from './states/DomainConstants';
 import { addDeveloperUtils, initLocalization } from './utils/pluginHelpers';
 import * as TransferHelpers from './utils/transfer';
+import { saveFormSharedState, loadFormSharedState } from './utils/sharedState';
 import { changeLanguage } from './states/ConfigurationState';
 import { saveInsightsData } from './services/InsightsService';
-import { transferChatStart } from './services/ServerlessService';
+import { issueSyncToken, transferChatStart } from './services/ServerlessService';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 const PLUGIN_VERSION = '0.4.2';
 const DEFAULT_TRANSFER_MODE = transferModes.cold;
+
+/**
+ * Sync Client used to store and share documents across counselors
+ * @type {SyncClient}
+ */
+let sharedStateClient;
+
+const setUpSharedStateClient = () => {
+  const updateSharedStateToken = async () => {
+    try {
+      const syncToken = await issueSyncToken();
+      await sharedStateClient.updateToken(syncToken);
+    } catch (err) {
+      console.log('SYNC TOKEN ERROR', err);
+    }
+  };
+
+  // initializes sync client for shared state
+  const initSharedStateClient = async () => {
+    try {
+      const syncToken = await issueSyncToken();
+      sharedStateClient = new SyncClient(syncToken);
+      sharedStateClient.on('tokenAboutToExpire', () => updateSharedStateToken());
+    } catch (err) {
+      console.log('SYNC CLIENT INIT ERROR', err);
+    }
+  };
+
+  initSharedStateClient();
+};
 
 export const getConfig = () => {
   const manager = Flex.Manager.getInstance();
@@ -44,6 +76,7 @@ export const getConfig = () => {
     configuredLanguage,
     identity,
     token,
+    sharedStateClient,
   };
 };
 
@@ -161,8 +194,9 @@ const transferOverride = async (payload, original) => {
 
   const manager = Flex.Manager.getInstance();
 
-  // TODO: save current form state as sync document (if there is a form)
-  const documentName = null;
+  // save current form state as sync document (if there is a form)
+  const form = manager.store.getState()[namespace][contactFormsBase].tasks[payload.task.taskSid];
+  const documentName = await saveFormSharedState(form, payload.task);
 
   const mode = payload.options.mode || DEFAULT_TRANSFER_MODE;
 
@@ -181,6 +215,14 @@ const transferOverride = async (payload, original) => {
   };
 
   return transferChatStart(body);
+};
+
+const restoreFormIfCold = async payload => {
+  if (TransferHelpers.isColdTransfer(payload.task)) {
+    const manager = Flex.Manager.getInstance();
+    const form = await loadFormSharedState(payload.task);
+    if (form) manager.store.dispatch(Actions.restoreEntireForm(form, payload.task.taskSid));
+  }
 };
 
 /**
@@ -221,6 +263,8 @@ const setUpActions = setupObject => {
     manager.store.dispatch(Actions.removeContactState(payload.task.taskSid));
   });
 
+  Flex.Actions.addListener('afterAcceptTask', restoreFormIfCold);
+
   const shouldSayGoodbye = channel =>
     channel === channelTypes.facebook || channel === channelTypes.sms || channel === channelTypes.whatsapp;
 
@@ -239,12 +283,18 @@ const setUpActions = setupObject => {
     manager.store.dispatch(Actions.saveEndMillis(payload.task.taskSid));
   };
 
-  const hangupCall = fromActionFunction(saveEndMillis);
+  const hangupCall = fromActionFunction(async payload => {
+    await saveEndMillis(payload);
+
+    /*
+     * TODO
+     * if the counselor should not send the form to hrm, we complete the task upon hangup
+     * if (!TransferHelpers.shouldSubmitForm) Flex.Actions.invokeAction('CompleteTask', payload.task);
+     */
+  });
 
   const wrapupTask = fromActionFunction(async payload => {
-    if (shouldSayGoodbye(payload.task.channelType)) {
-      await sendGoodbyeMessage(payload);
-    }
+    if (shouldSayGoodbye(payload.task.channelType)) await sendGoodbyeMessage(payload);
     await saveEndMillis(payload);
   });
 
@@ -278,6 +328,8 @@ export default class HrmFormPlugin extends FlexPlugin {
     const { translateUI, getGoodbyeMsg } = setUpLocalization(config);
 
     const setupObject = { ...config, translateUI, getGoodbyeMsg };
+
+    setUpSharedStateClient();
     setUpComponents(setupObject);
     setUpActions(setupObject);
 
