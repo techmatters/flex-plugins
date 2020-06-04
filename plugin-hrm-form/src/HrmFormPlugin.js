@@ -173,11 +173,15 @@ const transferOverride = async (payload, original) => {
     return original(payload);
   }
 
+  const workerName = manager.user.identity;
+  const memberToKick = mode === transferModes.cold ? TransferHelpers.getMemberToKick(payload.task, workerName) : '';
+
   const body = {
     mode,
     taskSid: payload.task.taskSid,
     targetSid: payload.targetSid,
-    workerName: manager.user.identity,
+    workerName,
+    memberToKick,
   };
 
   return transferChatStart(body);

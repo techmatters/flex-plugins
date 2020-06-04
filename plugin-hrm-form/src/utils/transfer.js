@@ -1,6 +1,7 @@
+// eslint-disable-next-line no-unused-vars
 import { Actions, ITask, TaskHelper, StateHelper } from '@twilio/flex-ui';
 
-import { transferChatStart, transferChatResolve } from '../services/ServerlessService';
+import { transferChatResolve } from '../services/ServerlessService';
 import { transferStatuses, transferModes } from '../states/DomainConstants';
 import { getConfig } from '../HrmFormPlugin';
 
