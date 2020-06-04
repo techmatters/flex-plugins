@@ -8,8 +8,7 @@ import { StyledMenuItem, StyledListItemText, NoIcon } from '../../styles/menu';
 const MenuItem = ({ Icon, text, red, onClick, theme }) => (
   <StyledMenuItem onClick={onClick}>
     <ListItemIcon>
-      {Icon && <Icon nativeColor={red ? theme.colors.declineColor : theme.colors.defaultButtonColor} />}
-      {!Icon && <NoIcon />}
+      {Icon ? <Icon nativeColor={red ? theme.colors.declineColor : theme.colors.defaultButtonColor} /> : <NoIcon />}
     </ListItemIcon>
     <StyledListItemText primary={text} red={red} />
   </StyledMenuItem>

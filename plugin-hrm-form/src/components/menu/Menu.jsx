@@ -26,7 +26,7 @@ Menu.propTypes = {
   open: PropTypes.bool.isRequired,
   anchorEl: PropTypes.instanceOf(Element).isRequired,
   onClickAway: PropTypes.func.isRequired,
-  children: PropTypes.node,
+  children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
 };
 Menu.defaultProps = {
   children: null,
