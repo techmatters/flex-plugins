@@ -58,24 +58,25 @@ export const shouldShowTransferControls = task =>
 /**
  * @param {ITask} task
  */
-export const shouldSubmitFormChat = task => TaskHelper.isChatBasedTask(task) && !isTransferring(task);
+export const hasTaskControlChat = task => TaskHelper.isChatBasedTask(task) && !isTransferring(task);
 
 /**
- * A call should be submitted
- * - from original task if a transfer was initiated but it was rejected
- * - from non original task if a transfer was initiated and it was accepted
+ * A counselor controls a call taks if
+ * - task is original and a transfer was initiated but it was rejected
+ * - task non original and a transfer was initiated and it was accepted
  * @param {ITask} task
  */
-export const shouldSubmitFormCall = task =>
+export const hasTaskControlCall = task =>
   TaskHelper.isCallTask(task) &&
   (!hasTransferStarted(task) ||
     (isOriginalReservation(task) && isTransferRejected(task)) ||
     (!isOriginalReservation(task) && isTransferAccepted(task)));
 
 /**
+ * Indicates if the current counselor has control over the task. Used to know if counselor should send form to hrm and pevent the form from being edited
  * @param {ITask} task
  */
-export const shouldSubmitForm = task => shouldSubmitFormCall(task) || shouldSubmitFormChat(task);
+export const hasTaskControl = task => hasTaskControlCall(task) || hasTaskControlChat(task);
 
 /**
  * @param {string} newStatus

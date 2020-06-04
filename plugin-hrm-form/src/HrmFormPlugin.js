@@ -211,7 +211,7 @@ const setUpActions = setupObject => {
   };
 
   Flex.Actions.addListener('beforeCompleteTask', async (payload, abortFunction) => {
-    if (TransferHelpers.shouldSubmitForm(payload.task)) {
+    if (TransferHelpers.hasTaskControl(payload.task)) {
       manager.store.dispatch(Actions.saveContactState(payload.task, abortFunction, hrmBaseUrl, workerSid, helpline));
       await saveInsights(payload);
     }
