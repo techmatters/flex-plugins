@@ -222,10 +222,10 @@ describe('Kick, close and helpers', () => {
     expect(TransferHelpers.transformIdentity('.')).toBe('_2E');
   });
 
-  test('getKickMember', async () => {
+  test('getMemberToKick', async () => {
     const task = createTask({}, { taskChannelSid: 'channel1' });
-    expect(TransferHelpers.getKickMember(task, 'some@identity')).toBe('member1');
-    expect(TransferHelpers.getKickMember(task, 'non existing')).toBe('');
+    expect(TransferHelpers.getMemberToKick(task, 'some@identity')).toBe('member1');
+    expect(TransferHelpers.getMemberToKick(task, 'non existing')).toBe('');
   });
 
   const task = createTask(
@@ -237,7 +237,7 @@ describe('Kick, close and helpers', () => {
     const expected = {
       closeSid: task.attributes.transferMeta.originalTask,
       keepSid: task.taskSid,
-      kickMember: TransferHelpers.getKickMember(task, 'some@identity'),
+      memberToKick: TransferHelpers.getMemberToKick(task, 'some@identity'),
       newStatus: transferStatuses.accepted,
     };
 
@@ -250,7 +250,7 @@ describe('Kick, close and helpers', () => {
     const expected = {
       keepSid: task.attributes.transferMeta.originalTask,
       closeSid: task.taskSid,
-      kickMember: '',
+      memberToKick: '',
       newStatus: transferStatuses.rejected,
     };
 
