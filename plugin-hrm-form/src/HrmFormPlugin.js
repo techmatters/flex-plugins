@@ -223,9 +223,8 @@ const transferOverride = async (payload, original) => {
 
 const restoreFormIfCold = async payload => {
   if (TransferHelpers.isColdTransfer(payload.task)) {
-    const manager = Flex.Manager.getInstance();
     const form = await loadFormSharedState(payload.task);
-    if (form) manager.store.dispatch(Actions.restoreEntireForm(form, payload.task.taskSid));
+    if (form) Flex.Manager.getInstance().store.dispatch(Actions.restoreEntireForm(form, payload.task.taskSid));
   }
 };
 
