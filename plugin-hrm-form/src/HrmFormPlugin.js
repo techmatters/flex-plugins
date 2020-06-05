@@ -235,8 +235,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     };
     manager.updateConfig(managerConfiguration);
 
-    // TODO(nick): Eventually remove this log line or set to debug
-    // fail hard here?  is that possible?
+    // TODO(nick): Eventually remove this log line or set to debug.  Should we fail hard here?
     const { hrmBaseUrl } = config;
     console.log(`HRM URL: ${hrmBaseUrl}`);
     if (hrmBaseUrl === undefined) {
