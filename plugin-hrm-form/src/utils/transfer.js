@@ -218,7 +218,7 @@ export const closeCallOriginal = async task => {
 };
 
 /**
- * Hangs the current call and closes the task being transfered to the new counselor
+ * Hangs the current call and closes the task being transfered to the new counselor (i.e. this task)
  * @param {ITask} task
  * @returns {Promise<void>}
  */
