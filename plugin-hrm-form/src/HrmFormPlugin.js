@@ -207,11 +207,15 @@ const transferOverride = async (payload, original) => {
     return original(payload);
   }
 
+  const workerName = manager.user.identity;
+  const memberToKick = mode === transferModes.cold ? TransferHelpers.getMemberToKick(payload.task, workerName) : '';
+
   const body = {
     mode,
     taskSid: payload.task.taskSid,
     targetSid: payload.targetSid,
-    workerName: manager.user.identity,
+    workerName,
+    memberToKick,
   };
 
   return transferChatStart(body);
@@ -253,7 +257,7 @@ const setUpActions = setupObject => {
   };
 
   Flex.Actions.addListener('beforeCompleteTask', async (payload, abortFunction) => {
-    if (TransferHelpers.shouldSubmitForm(payload.task)) {
+    if (TransferHelpers.hasTaskControl(payload.task)) {
       manager.store.dispatch(Actions.saveContactState(payload.task, abortFunction, hrmBaseUrl, workerSid, helpline));
       await saveInsights(payload);
     }

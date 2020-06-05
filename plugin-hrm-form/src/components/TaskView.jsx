@@ -11,7 +11,7 @@ import { namespace, contactFormsBase, searchContactsBase } from '../states';
 import { Actions } from '../states/ContactState';
 import { handleBlur, handleCategoryToggle, handleFocus, handleSubmit } from '../states/ActionCreators';
 import { handleSelectSearchResult, recreateSearchContact } from '../states/SearchContact';
-import { shouldSubmitForm } from '../utils/transfer';
+import { hasTaskControl } from '../utils/transfer';
 
 class TaskView extends Component {
   static displayName = 'TaskView';
@@ -51,7 +51,7 @@ class TaskView extends Component {
 
     return (
       <div style={{ height: '100%' }}>
-        {!shouldSubmitForm(thisTask) && <FormNotEditable />}
+        {!hasTaskControl(thisTask) && <FormNotEditable />}
         <HrmForm
           form={form}
           handleBlur={this.props.handleBlur(form, task.taskSid)}

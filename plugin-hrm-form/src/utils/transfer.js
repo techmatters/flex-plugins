@@ -59,24 +59,25 @@ export const shouldShowTransferControls = task =>
 /**
  * @param {ITask} task
  */
-export const shouldSubmitFormChat = task => TaskHelper.isChatBasedTask(task) && !isTransferring(task);
+export const hasTaskControlChat = task => TaskHelper.isChatBasedTask(task) && !isTransferring(task);
 
 /**
- * A call should be submitted
- * - from original task if a transfer was initiated but it was rejected
- * - from non original task if a transfer was initiated and it was accepted
+ * A counselor controls a call taks if
+ * - task is original and a transfer was initiated but it was rejected
+ * - task non original and a transfer was initiated and it was accepted
  * @param {ITask} task
  */
-export const shouldSubmitFormCall = task =>
+export const hasTaskControlCall = task =>
   TaskHelper.isCallTask(task) &&
   (!hasTransferStarted(task) ||
     (isOriginalReservation(task) && isTransferRejected(task)) ||
     (!isOriginalReservation(task) && isTransferAccepted(task)));
 
 /**
+ * Indicates if the current counselor has control over the task. Used to know if counselor should send form to hrm and pevent the form from being edited
  * @param {ITask} task
  */
-export const shouldSubmitForm = task => shouldSubmitFormCall(task) || shouldSubmitFormChat(task);
+export const hasTaskControl = task => hasTaskControlCall(task) || hasTaskControlChat(task);
 
 /**
  * @param {string} newStatus
@@ -124,12 +125,12 @@ export const setTransferMeta = async (task, mode, documentName) => {
  * Completes the first task and keeps the second as the valid, making sure the channel is kept open
  * @param {string} closeSid task to close
  * @param {string} keepSid task to keep
- * @param {string} kickMember sid of the member that must be removed from channel
+ * @param {string} memberToKick sid of the member that must be removed from channel
  * @param {string} newStatus resolution of the transfer (either "accepted" or "rejected")
  * @returns {Promise<void>}
  */
-export const resolveTransferChat = async (closeSid, keepSid, kickMember, newStatus) => {
-  const body = { closeSid, keepSid, kickMember, newStatus };
+export const resolveTransferChat = async (closeSid, keepSid, memberToKick, newStatus) => {
+  const body = { closeSid, keepSid, memberToKick, newStatus };
 
   try {
     await transferChatResolve(body);
@@ -166,7 +167,7 @@ export const transformIdentity = str => {
  * @param {ITask} task
  * @param {string} kickIdentity
  */
-export const getKickMember = (task, kickIdentity) => {
+export const getMemberToKick = (task, kickIdentity) => {
   const ChatChannel = StateHelper.getChatChannelStateForTask(task);
   const Member = ChatChannel.members.get(transformIdentity(kickIdentity));
   return (Member && Member.source && Member.source.sid) || '';
@@ -179,8 +180,8 @@ export const getKickMember = (task, kickIdentity) => {
 export const closeChatOriginal = async task => {
   const closeSid = task.attributes.transferMeta.originalTask;
   const keepSid = task.taskSid;
-  const kickMember = getKickMember(task, task.attributes.ignoreAgent);
-  await resolveTransferChat(closeSid, keepSid, kickMember, transferStatuses.accepted);
+  const memberToKick = getMemberToKick(task, task.attributes.ignoreAgent);
+  await resolveTransferChat(closeSid, keepSid, memberToKick, transferStatuses.accepted);
 };
 
 /**
@@ -191,9 +192,9 @@ export const closeChatSelf = async task => {
   const closeSid = task.taskSid;
   const keepSid = task.attributes.transferMeta.originalTask;
   const { identity } = getConfig();
-  const kickMember = getKickMember(task, identity);
+  const memberToKick = getMemberToKick(task, identity);
 
-  await resolveTransferChat(closeSid, keepSid, kickMember, transferStatuses.rejected);
+  await resolveTransferChat(closeSid, keepSid, memberToKick, transferStatuses.rejected);
 };
 
 /**

@@ -136,7 +136,7 @@ describe('Transfer mode, status and conditionals helpers', () => {
     expect(TransferHelpers.shouldShowTransferControls(task4r)).toBe(false); // rejected
   });
 
-  test('shouldSubmitFormChat', async () => {
+  test('hasTaskControlChat', async () => {
     const taskC = createTask(
       { transferMeta: { transferStatus: transferStatuses.transferring } },
       { taskChannelUniqueName: 'chat' },
@@ -153,16 +153,16 @@ describe('Transfer mode, status and conditionals helpers', () => {
     await TransferHelpers.setTransferRejected(taskVr);
     const task2 = createTask({}, { taskChannelUniqueName: 'chat' });
 
-    expect(TransferHelpers.shouldSubmitFormChat(taskC)).toBe(false); // transferring
-    expect(TransferHelpers.shouldSubmitFormChat(taskV)).toBe(false); // transferring
-    expect(TransferHelpers.shouldSubmitFormChat(taskCc)).toBe(true); // ok
-    expect(TransferHelpers.shouldSubmitFormChat(taskCr)).toBe(true); // ok
-    expect(TransferHelpers.shouldSubmitFormChat(taskVc)).toBe(false); // not voice
-    expect(TransferHelpers.shouldSubmitFormChat(taskVr)).toBe(false); // not voice
-    expect(TransferHelpers.shouldSubmitFormChat(task2)).toBe(true); // ok
+    expect(TransferHelpers.hasTaskControlChat(taskC)).toBe(false); // transferring
+    expect(TransferHelpers.hasTaskControlChat(taskV)).toBe(false); // transferring
+    expect(TransferHelpers.hasTaskControlChat(taskCc)).toBe(true); // ok
+    expect(TransferHelpers.hasTaskControlChat(taskCr)).toBe(true); // ok
+    expect(TransferHelpers.hasTaskControlChat(taskVc)).toBe(false); // not voice
+    expect(TransferHelpers.hasTaskControlChat(taskVr)).toBe(false); // not voice
+    expect(TransferHelpers.hasTaskControlChat(task2)).toBe(true); // ok
   });
 
-  test('shouldSubmitFormCall', async () => {
+  test('hasTaskControlCall', async () => {
     const taskV1 = createTask(
       { transferMeta: { transferStatus: transferStatuses.transferring, originalReservation: 'task1' } },
       { taskChannelUniqueName: 'voice', sid: 'task1' },
@@ -186,16 +186,16 @@ describe('Transfer mode, status and conditionals helpers', () => {
     await TransferHelpers.setTransferRejected(taskCr);
     const task2 = createTask({}, { taskChannelUniqueName: 'voice' });
 
-    expect(TransferHelpers.shouldSubmitFormCall(taskV1)).toBe(false); // transferring
-    expect(TransferHelpers.shouldSubmitFormCall(taskV2)).toBe(false); // transferring
-    expect(TransferHelpers.shouldSubmitFormCall(taskC)).toBe(false); // not call
-    expect(TransferHelpers.shouldSubmitFormCall(taskV1c)).toBe(false); // original but accepted (control to 2nd counselor)
-    expect(TransferHelpers.shouldSubmitFormCall(taskV1r)).toBe(true); // ok
-    expect(TransferHelpers.shouldSubmitFormCall(taskV2c)).toBe(true); // ok
-    expect(TransferHelpers.shouldSubmitFormCall(taskV2r)).toBe(false); // transferred task rejected
-    expect(TransferHelpers.shouldSubmitFormCall(taskCc)).toBe(false); // not call
-    expect(TransferHelpers.shouldSubmitFormCall(taskCr)).toBe(false); // not call
-    expect(TransferHelpers.shouldSubmitFormCall(task2)).toBe(true); // ok
+    expect(TransferHelpers.hasTaskControlCall(taskV1)).toBe(false); // transferring
+    expect(TransferHelpers.hasTaskControlCall(taskV2)).toBe(false); // transferring
+    expect(TransferHelpers.hasTaskControlCall(taskC)).toBe(false); // not call
+    expect(TransferHelpers.hasTaskControlCall(taskV1c)).toBe(false); // original but accepted (control to 2nd counselor)
+    expect(TransferHelpers.hasTaskControlCall(taskV1r)).toBe(true); // ok
+    expect(TransferHelpers.hasTaskControlCall(taskV2c)).toBe(true); // ok
+    expect(TransferHelpers.hasTaskControlCall(taskV2r)).toBe(false); // transferred task rejected
+    expect(TransferHelpers.hasTaskControlCall(taskCc)).toBe(false); // not call
+    expect(TransferHelpers.hasTaskControlCall(taskCr)).toBe(false); // not call
+    expect(TransferHelpers.hasTaskControlCall(task2)).toBe(true); // ok
   });
 });
 
@@ -222,10 +222,10 @@ describe('Kick, close and helpers', () => {
     expect(TransferHelpers.transformIdentity('.')).toBe('_2E');
   });
 
-  test('getKickMember', async () => {
+  test('getMemberToKick', async () => {
     const task = createTask({}, { taskChannelSid: 'channel1' });
-    expect(TransferHelpers.getKickMember(task, 'some@identity')).toBe('member1');
-    expect(TransferHelpers.getKickMember(task, 'non existing')).toBe('');
+    expect(TransferHelpers.getMemberToKick(task, 'some@identity')).toBe('member1');
+    expect(TransferHelpers.getMemberToKick(task, 'non existing')).toBe('');
   });
 
   const task = createTask(
@@ -237,7 +237,7 @@ describe('Kick, close and helpers', () => {
     const expected = {
       closeSid: task.attributes.transferMeta.originalTask,
       keepSid: task.taskSid,
-      kickMember: TransferHelpers.getKickMember(task, 'some@identity'),
+      memberToKick: TransferHelpers.getMemberToKick(task, 'some@identity'),
       newStatus: transferStatuses.accepted,
     };
 
@@ -250,7 +250,7 @@ describe('Kick, close and helpers', () => {
     const expected = {
       keepSid: task.attributes.transferMeta.originalTask,
       closeSid: task.taskSid,
-      kickMember: '',
+      memberToKick: '',
       newStatus: transferStatuses.rejected,
     };
 
