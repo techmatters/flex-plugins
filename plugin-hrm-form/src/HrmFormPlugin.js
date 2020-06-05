@@ -288,12 +288,6 @@ const setUpActions = setupObject => {
 
   const hangupCall = fromActionFunction(async payload => {
     await saveEndMillis(payload);
-
-    /*
-     * TODO
-     * if the counselor should not send the form to hrm, we complete the task upon hangup
-     * if (!TransferHelpers.shouldSubmitForm) Flex.Actions.invokeAction('CompleteTask', payload.task);
-     */
   });
 
   const wrapupTask = fromActionFunction(async payload => {
