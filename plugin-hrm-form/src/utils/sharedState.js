@@ -16,7 +16,7 @@ export const saveFormSharedState = async (form, task) => {
 
   if (documentName) {
     const document = await sharedStateClient.document(documentName);
-    const val = await document.set(form, { ttl: 86400 });
+    await document.set(form, { ttl: 86400 });
     return documentName;
   }
 
