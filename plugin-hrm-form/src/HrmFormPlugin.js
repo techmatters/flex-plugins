@@ -28,6 +28,7 @@ export const getConfig = () => {
   const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
   const { identity, token } = manager.user;
   const { configuredLanguage } = manager.serviceConfiguration.attributes;
+  const featureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
 
   return {
     hrmBaseUrl,
@@ -40,6 +41,7 @@ export const getConfig = () => {
     configuredLanguage,
     identity,
     token,
+    featureFlags,
   };
 };
 
@@ -147,7 +149,10 @@ const setUpActions = setupObject => {
 
   Flex.Actions.addListener('beforeCompleteTask', async (payload, abortFunction) => {
     manager.store.dispatch(Actions.saveContactState(payload.task, abortFunction, hrmBaseUrl, workerSid, helpline));
-    await saveInsights(payload);
+    const { featureFlags } = getConfig();
+    if (featureFlags.enable_save_insights) {
+      await saveInsights(payload);
+    }
   });
 
   Flex.Actions.addListener('afterCompleteTask', payload => {
@@ -229,7 +234,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     };
     manager.updateConfig(managerConfiguration);
 
-    // TODO(nick): Eventually remove this log line or set to debug
+    // TODO(nick): Eventually remove this log line or set to debug.  Should we fail hard here?
     const { hrmBaseUrl } = config;
     console.log(`HRM URL: ${hrmBaseUrl}`);
     if (hrmBaseUrl === undefined) {
