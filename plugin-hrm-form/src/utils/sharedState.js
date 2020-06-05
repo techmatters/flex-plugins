@@ -17,7 +17,6 @@ export const saveFormSharedState = async (form, task) => {
   if (documentName) {
     const document = await sharedStateClient.document(documentName);
     const val = await document.set(form, { ttl: 86400 });
-console.log('SYNC DOCUMENT SAVED', 'Doc name:', documentName, 'Value stored:', val);
     return documentName;
   }
 
@@ -43,7 +42,6 @@ export const loadFormSharedState = async task => {
   const documentName = task.attributes.transferMeta.formDocument;
   if (documentName) {
     const document = await sharedStateClient.document(documentName);
-console.log('DOCUMENT RETRIEVED', document);
     return document.value;
   }
 
