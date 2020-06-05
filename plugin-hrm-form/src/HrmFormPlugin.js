@@ -28,7 +28,6 @@ export const getConfig = () => {
   const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
   const { identity, token } = manager.user;
   const { configuredLanguage } = manager.serviceConfiguration.attributes;
-  // TODO: should we fail hard if this isn't present?  Or is the default empty object fine?
   const featureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
 
   return {
