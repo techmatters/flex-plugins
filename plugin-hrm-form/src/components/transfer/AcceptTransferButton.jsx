@@ -29,7 +29,7 @@ const AcceptTransferButton = ({ theme, task, restoreEntireForm }) => {
     <StyledButton
       color={theme.colors.base11}
       background={theme.colors.base2}
-      onClick={() => handleAcceptTransfer(task, restoreEntireForm)}
+      onClick={() => handleAcceptTransfer(task, removeContactState)}
     >
       <Template code="Transfer-AcceptTransferButton" />
     </StyledButton>

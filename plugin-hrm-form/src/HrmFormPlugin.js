@@ -228,6 +228,17 @@ const restoreFormIfCold = async payload => {
   }
 };
 
+const closeCallIfCold = async payload => {
+  const { task } = payload;
+  if (
+    Flex.TaskHelper.isCallTask(task) &&
+    TransferHelpers.isColdTransfer(task) &&
+    !TransferHelpers.hasTaskControl(task)
+  ) {
+    Flex.Actions.invokeAction('CompleteTask', { sid: task.sid });
+  }
+};
+
 /**
  * @param {import('@twilio/flex-ui').ActionFunction} fun
  * @returns {import('@twilio/flex-ui').ReplacedActionFunction}
@@ -267,6 +278,7 @@ const setUpActions = setupObject => {
   });
 
   Flex.Actions.addListener('afterAcceptTask', restoreFormIfCold);
+  Flex.Actions.addListener('afterTransferTask', closeCallIfCold);
 
   const shouldSayGoodbye = channel =>
     channel === channelTypes.facebook || channel === channelTypes.sms || channel === channelTypes.whatsapp;
