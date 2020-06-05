@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import { Actions, ITask, TaskHelper, StateHelper } from '@twilio/flex-ui';
 
-import { transferChatResolve } from '../services/ServerlessService';
+import { transferChatResolve, transferCallResolve } from '../services/ServerlessService';
 import { transferStatuses, transferModes } from '../states/DomainConstants';
 import { getConfig } from '../HrmFormPlugin';
 
@@ -208,10 +208,13 @@ export const closeCallOriginal = async task => {
     targetSid: task.attributes.transferMeta.originalCounselor,
   });
   await setTransferAccepted(task);
-  /*
-   * TODO
-   *  Actions.invokeAction('CompleteTask', { sid: task.attributes.transferMeta.originalReservation });
-   */
+
+  // We can't close the task of another worker from Flex, so we close the original call via serverless function using Taskrouter API
+  const body = {
+    taskSid: task.attributes.transferMeta.originalTask,
+    reservationSid: task.attributes.transferMeta.originalReservation,
+  };
+  await transferCallResolve(body);
 };
 
 /**
@@ -222,8 +225,5 @@ export const closeCallOriginal = async task => {
 export const closeCallSelf = async task => {
   await Actions.invokeAction('HangupCall', { sid: task.sid });
   await setTransferRejected(task);
-  /*
-   * TODO
-   * await Actions.invokeAction('CompleteTask', { sid: task.sid });
-   */
+  await Actions.invokeAction('CompleteTask', { sid: task.sid });
 };
