@@ -6,7 +6,10 @@ import { getConfig } from '../HrmFormPlugin';
  * @param {import("@twilio/flex-ui").ITask} task
  */
 export const saveFormSharedState = async (form, task) => {
-  const { sharedStateClient, strings } = getConfig();
+  const { featureFlags, sharedStateClient, strings } = getConfig();
+
+  if (!featureFlags.enable_shared_state) return null;
+
   if (sharedStateClient === undefined || sharedStateClient.connectionState !== 'connected') {
     window.alert(strings.SharedStateSaveFormError);
     return null;
@@ -28,7 +31,10 @@ export const saveFormSharedState = async (form, task) => {
  * @param {import("@twilio/flex-ui").ITask} task
  */
 export const loadFormSharedState = async task => {
-  const { sharedStateClient, strings } = getConfig();
+  const { featureFlags, sharedStateClient, strings } = getConfig();
+
+  if (!featureFlags.enable_shared_state) return null;
+
   if (sharedStateClient === undefined || sharedStateClient.connectionState !== 'connected') {
     window.alert(strings.SharedStateLoadFormError);
     return null;

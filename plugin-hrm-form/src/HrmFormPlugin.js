@@ -64,6 +64,7 @@ export const getConfig = () => {
   const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
   const { identity, token } = manager.user;
   const { configuredLanguage } = manager.serviceConfiguration.attributes;
+  const featureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
   const { strings } = manager;
 
   return {
@@ -77,6 +78,7 @@ export const getConfig = () => {
     configuredLanguage,
     identity,
     token,
+    featureFlags,
     sharedStateClient,
     strings,
   };
@@ -273,9 +275,12 @@ const setUpActions = setupObject => {
   };
 
   Flex.Actions.addListener('beforeCompleteTask', async (payload, abortFunction) => {
+    const { featureFlags } = getConfig();
     if (TransferHelpers.hasTaskControl(payload.task)) {
       manager.store.dispatch(Actions.saveContactState(payload.task, abortFunction, hrmBaseUrl, workerSid, helpline));
-      await saveInsights(payload);
+      if (featureFlags.enable_save_insights) {
+        await saveInsights(payload);
+      }
     }
   });
 
@@ -346,7 +351,7 @@ export default class HrmFormPlugin extends FlexPlugin {
 
     const setupObject = { ...config, translateUI, getGoodbyeMsg };
 
-    setUpSharedStateClient();
+    if (config.featureFlags.enable_shared_state) setUpSharedStateClient();
     setUpComponents(setupObject);
     setUpActions(setupObject);
 
@@ -355,7 +360,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     };
     manager.updateConfig(managerConfiguration);
 
-    // TODO(nick): Eventually remove this log line or set to debug
+    // TODO(nick): Eventually remove this log line or set to debug.  Should we fail hard here?
     const { hrmBaseUrl } = config;
     console.log(`HRM URL: ${hrmBaseUrl}`);
     if (hrmBaseUrl === undefined) {
