@@ -1,0 +1,41 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import RootRef from '@material-ui/core/RootRef';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import Popper from '@material-ui/core/Popper';
+
+import { StyledPaper, StyledMenuList } from '../../styles/menu';
+
+const preventWhenClickingAnchorEl = (fn, anchorEl) => event => {
+  if (anchorEl.contains(event.target)) return;
+  fn(event);
+};
+
+/**
+ * TODO: If we want to make this component close on hitting ESC,
+ * we need to use Material's Menu instead of MenuItem, because it supports onClose method
+ */
+const Menu = ({ open, anchorEl, children, onClickAway }) => (
+  <Popper open={open} anchorEl={anchorEl}>
+    <StyledPaper>
+      <ClickAwayListener onClickAway={preventWhenClickingAnchorEl(onClickAway, anchorEl)}>
+        <RootRef rootRef={rootRef => rootRef && rootRef.focus()}>
+          <StyledMenuList tabIndex={0}>{children}</StyledMenuList>
+        </RootRef>
+      </ClickAwayListener>
+    </StyledPaper>
+  </Popper>
+);
+
+Menu.displayName = 'Menu';
+Menu.propTypes = {
+  open: PropTypes.bool.isRequired,
+  anchorEl: PropTypes.instanceOf(Element).isRequired,
+  onClickAway: PropTypes.func.isRequired,
+  children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
+};
+Menu.defaultProps = {
+  children: null,
+};
+
+export default Menu;

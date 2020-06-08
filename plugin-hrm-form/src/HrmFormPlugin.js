@@ -32,6 +32,7 @@ export const getConfig = () => {
   const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
   const { identity, token } = manager.user;
   const { configuredLanguage } = manager.serviceConfiguration.attributes;
+  const featureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
 
   return {
     hrmBaseUrl,
@@ -44,6 +45,7 @@ export const getConfig = () => {
     configuredLanguage,
     identity,
     token,
+    featureFlags,
   };
 };
 
@@ -88,7 +90,7 @@ const setUpTransferComponents = () => {
 const setUpComponents = setupObject => {
   const manager = Flex.Manager.getInstance();
 
-  const { helpline, translateUI } = setupObject;
+  const { helpline, translateUI, featureFlags } = setupObject;
 
   // utilities for developers only
   if (!Boolean(helpline)) addDeveloperUtils(manager, translateUI);
@@ -153,7 +155,7 @@ const setUpComponents = setupObject => {
 
   Flex.MainHeader.Content.remove('logo');
 
-  setUpTransferComponents();
+  if (featureFlags.enable_transfers) setUpTransferComponents();
 };
 
 const transferOverride = async (payload, original) => {
@@ -201,7 +203,15 @@ const fromActionFunction = fun => async (payload, original) => {
 const setUpActions = setupObject => {
   const manager = Flex.Manager.getInstance();
 
-  const { hrmBaseUrl, workerSid, helpline, helplineLanguage, configuredLanguage, getGoodbyeMsg } = setupObject;
+  const {
+    hrmBaseUrl,
+    workerSid,
+    helpline,
+    helplineLanguage,
+    configuredLanguage,
+    getGoodbyeMsg,
+    featureFlags,
+  } = setupObject;
 
   Flex.Actions.addListener('beforeAcceptTask', payload => {
     manager.store.dispatch(Actions.initializeContactState(payload.task.taskSid));
@@ -215,9 +225,11 @@ const setUpActions = setupObject => {
   };
 
   Flex.Actions.addListener('beforeCompleteTask', async (payload, abortFunction) => {
-    if (TransferHelpers.hasTaskControl(payload.task)) {
+    if (!featureFlags.enable_transfers || TransferHelpers.hasTaskControl(payload.task)) {
       manager.store.dispatch(Actions.saveContactState(payload.task, abortFunction, hrmBaseUrl, workerSid, helpline));
-      await saveInsights(payload);
+      if (featureFlags.enable_save_insights) {
+        await saveInsights(payload);
+      }
     }
   });
 
@@ -254,7 +266,7 @@ const setUpActions = setupObject => {
 
   Flex.Actions.replaceAction('HangupCall', hangupCall);
   Flex.Actions.replaceAction('WrapupTask', wrapupTask);
-  Flex.Actions.replaceAction('TransferTask', transferOverride);
+  if (featureFlags.enable_transfers) Flex.Actions.replaceAction('TransferTask', transferOverride);
 };
 
 export default class HrmFormPlugin extends FlexPlugin {
@@ -290,7 +302,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     };
     manager.updateConfig(managerConfiguration);
 
-    // TODO(nick): Eventually remove this log line or set to debug
+    // TODO(nick): Eventually remove this log line or set to debug.  Should we fail hard here?
     const { hrmBaseUrl } = config;
     console.log(`HRM URL: ${hrmBaseUrl}`);
     if (hrmBaseUrl === undefined) {

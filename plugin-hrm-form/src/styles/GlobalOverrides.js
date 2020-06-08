@@ -25,7 +25,9 @@ injectGlobal`
     margin-left: auto;
   }
   button.Twilio-TaskCanvasHeader-EndButton {
-    border-radius: 5px;
+    border-radius: 14px;
+    font-size: 13px;
+    letter-spacing: 0px;
   }
   button.Twilio-MessageInput-SendButton {
     background: rgba(216, 27, 96, 0.8);
