@@ -19,7 +19,7 @@ import { saveInsightsData } from './services/InsightsService';
 import { transferChatStart } from './services/ServerlessService';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
-const PLUGIN_VERSION = '0.4.2';
+const PLUGIN_VERSION = '0.5.0';
 const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
 export const getConfig = () => {
