@@ -147,6 +147,15 @@ export const StyledNextStepButton = styled(Button)`
       false,
       p.disabled,
     )};
+
+  &&:focus {
+    background-color: rgba(255, 255, 255, 0.2);
+    background-blend-mode: color;
+  }
+
+  &&:active {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
 `;
 
 export const TransparentButton = styled(Button)`
