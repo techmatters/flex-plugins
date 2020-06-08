@@ -2,21 +2,25 @@ import React from 'react';
 import * as Flex from '@twilio/flex-ui';
 import { FlexPlugin } from 'flex-plugin';
 
+import './styles/GlobalOverrides';
 import CustomCRMContainer from './components/CustomCRMContainer';
 import QueuesStatus from './components/queuesStatus';
 import QueuesStatusWriter from './components/queuesStatus/QueuesStatusWriter';
+import { TransferButton, AcceptTransferButton, RejectTransferButton } from './components/transfer';
 import reducers, { namespace, contactFormsBase } from './states';
 import { Actions } from './states/ContactState';
 import LocalizationContext from './contexts/LocalizationContext';
 import HrmTheme from './styles/HrmTheme';
-import './styles/GlobalOverrides';
-import { channelTypes } from './states/DomainConstants';
+import { channelTypes, transferModes } from './states/DomainConstants';
 import { addDeveloperUtils, initLocalization } from './utils/pluginHelpers';
+import * as TransferHelpers from './utils/transfer';
 import { changeLanguage } from './states/ConfigurationState';
 import { saveInsightsData } from './services/InsightsService';
+import { transferChatStart } from './services/ServerlessService';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 const PLUGIN_VERSION = '0.5.0';
+const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
 export const getConfig = () => {
   const manager = Flex.Manager.getInstance();
@@ -62,10 +66,31 @@ const setUpLocalization = config => {
   return initLocalization(localizationConfig, initialLanguage);
 };
 
+const setUpTransferComponents = () => {
+  Flex.TaskCanvasHeader.Content.add(<TransferButton key="transfer-button" />, {
+    sortOrder: 1,
+    if: props => TransferHelpers.shouldShowTransferButton(props.task),
+  });
+
+  Flex.TaskCanvasHeader.Content.remove('actions', {
+    if: props => TransferHelpers.isTransferring(props.task),
+  });
+
+  Flex.TaskCanvasHeader.Content.add(<AcceptTransferButton key="complete-transfer-button" />, {
+    sortOrder: 1,
+    if: props => TransferHelpers.shouldShowTransferControls(props.task),
+  });
+
+  Flex.TaskCanvasHeader.Content.add(<RejectTransferButton key="reject-transfer-button" />, {
+    sortOrder: 1,
+    if: props => TransferHelpers.shouldShowTransferControls(props.task),
+  });
+};
+
 const setUpComponents = setupObject => {
   const manager = Flex.Manager.getInstance();
 
-  const { helpline, translateUI } = setupObject;
+  const { helpline, translateUI, featureFlags } = setupObject;
 
   // utilities for developers only
   if (!Boolean(helpline)) addDeveloperUtils(manager, translateUI);
@@ -129,12 +154,64 @@ const setUpComponents = setupObject => {
   });
 
   Flex.MainHeader.Content.remove('logo');
+
+  if (featureFlags.enable_transfers) setUpTransferComponents();
+};
+
+const transferOverride = async (payload, original) => {
+  console.log('TRANSFER PAYLOAD', payload);
+
+  const manager = Flex.Manager.getInstance();
+
+  // TODO: save current form state as sync document (if there is a form)
+  const documentName = null;
+
+  const mode = payload.options.mode || DEFAULT_TRANSFER_MODE;
+
+  // set metadata for the transfer
+  await TransferHelpers.setTransferMeta(payload.task, mode, documentName);
+
+  if (!Flex.TaskHelper.isChatBasedTask(payload.task)) {
+    return original(payload);
+  }
+
+  const workerName = manager.user.identity;
+  const memberToKick = mode === transferModes.cold ? TransferHelpers.getMemberToKick(payload.task, workerName) : '';
+
+  const body = {
+    mode,
+    taskSid: payload.task.taskSid,
+    targetSid: payload.targetSid,
+    workerName,
+    memberToKick,
+  };
+
+  return transferChatStart(body);
+};
+
+/**
+ * @param {import('@twilio/flex-ui').ActionFunction} fun
+ * @returns {import('@twilio/flex-ui').ReplacedActionFunction}
+ * A function that calls fun with the payload of the replaced action
+ * and continues with the Twilio execution
+ */
+const fromActionFunction = fun => async (payload, original) => {
+  await fun(payload);
+  await original(payload);
 };
 
 const setUpActions = setupObject => {
   const manager = Flex.Manager.getInstance();
 
-  const { hrmBaseUrl, workerSid, helpline, helplineLanguage, configuredLanguage, getGoodbyeMsg } = setupObject;
+  const {
+    hrmBaseUrl,
+    workerSid,
+    helpline,
+    helplineLanguage,
+    configuredLanguage,
+    getGoodbyeMsg,
+    featureFlags,
+  } = setupObject;
 
   Flex.Actions.addListener('beforeAcceptTask', payload => {
     manager.store.dispatch(Actions.initializeContactState(payload.task.taskSid));
@@ -148,10 +225,11 @@ const setUpActions = setupObject => {
   };
 
   Flex.Actions.addListener('beforeCompleteTask', async (payload, abortFunction) => {
-    manager.store.dispatch(Actions.saveContactState(payload.task, abortFunction, hrmBaseUrl, workerSid, helpline));
-    const { featureFlags } = getConfig();
-    if (featureFlags.enable_save_insights) {
-      await saveInsights(payload);
+    if (!featureFlags.enable_transfers || TransferHelpers.hasTaskControl(payload.task)) {
+      manager.store.dispatch(Actions.saveContactState(payload.task, abortFunction, hrmBaseUrl, workerSid, helpline));
+      if (featureFlags.enable_save_insights) {
+        await saveInsights(payload);
+      }
     }
   });
 
@@ -177,17 +255,6 @@ const setUpActions = setupObject => {
     manager.store.dispatch(Actions.saveEndMillis(payload.task.taskSid));
   };
 
-  /**
-   * @param {import('@twilio/flex-ui').ActionFunction} fun
-   * @returns {import('@twilio/flex-ui').ReplacedActionFunction}
-   * A function that calls fun with the payload of the replaced action
-   * and continues with the Twilio execution
-   */
-  const fromActionFunction = fun => async (payload, original) => {
-    await fun(payload);
-    await original(payload);
-  };
-
   const hangupCall = fromActionFunction(saveEndMillis);
 
   const wrapupTask = fromActionFunction(async payload => {
@@ -199,6 +266,7 @@ const setUpActions = setupObject => {
 
   Flex.Actions.replaceAction('HangupCall', hangupCall);
   Flex.Actions.replaceAction('WrapupTask', wrapupTask);
+  if (featureFlags.enable_transfers) Flex.Actions.replaceAction('TransferTask', transferOverride);
 };
 
 export default class HrmFormPlugin extends FlexPlugin {
