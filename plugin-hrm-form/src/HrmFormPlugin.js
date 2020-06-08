@@ -296,7 +296,7 @@ const setUpActions = setupObject => {
   });
 
   Flex.Actions.addListener('afterAcceptTask', restoreFormIfColdTransfer);
-  Flex.Actions.addListener('afterTransferTask', closeCallIfColdTransfer);
+  if (!featureFlags.enable_transfers) Flex.Actions.addListener('afterTransferTask', closeCallIfColdTransfer);
 
   const shouldSayGoodbye = channel =>
     channel === channelTypes.facebook || channel === channelTypes.sms || channel === channelTypes.whatsapp;
