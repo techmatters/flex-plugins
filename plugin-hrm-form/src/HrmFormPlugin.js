@@ -21,7 +21,7 @@ import { saveInsightsData } from './services/InsightsService';
 import { issueSyncToken, transferChatStart } from './services/ServerlessService';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
-const PLUGIN_VERSION = '0.4.2';
+const PLUGIN_VERSION = '0.5.0';
 const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
 /**
@@ -316,9 +316,7 @@ const setUpActions = setupObject => {
     manager.store.dispatch(Actions.saveEndMillis(payload.task.taskSid));
   };
 
-  const hangupCall = fromActionFunction(async payload => {
-    await saveEndMillis(payload);
-  });
+  const hangupCall = fromActionFunction(saveEndMillis);
 
   const wrapupTask = fromActionFunction(async payload => {
     if (shouldSayGoodbye(payload.task.channelType)) {
