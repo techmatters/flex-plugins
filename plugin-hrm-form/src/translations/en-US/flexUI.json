@@ -12,6 +12,9 @@
   "CallType-wrongnumber": "Wrong Number",
   "CallType-abusive": "Abusive",
 
+  "SharedStateSaveFormError": "The information stored in the form couldn't be saved. Task will be transferred anyway.",
+  "SharedStateLoadFormError": "The information stored in the form by previous counselor couldn't be retrieved. Starting current task with clear contact form.",
+
   "Transfer-TransferButton": "Transfer",
   "Transfer-AcceptTransferButton": "Accept Transfer",
   "Transfer-RejectTransferButton": "Reject Transfer"

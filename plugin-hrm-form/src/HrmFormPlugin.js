@@ -64,6 +64,7 @@ export const getConfig = () => {
   const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
   const { identity, token } = manager.user;
   const { configuredLanguage } = manager.serviceConfiguration.attributes;
+  const { strings } = manager;
 
   return {
     hrmBaseUrl,
@@ -77,6 +78,7 @@ export const getConfig = () => {
     identity,
     token,
     sharedStateClient,
+    strings,
   };
 };
 
@@ -189,13 +191,15 @@ const setUpComponents = setupObject => {
   setUpTransferComponents();
 };
 
+const getStateContactForms = taskSid => {
+  return Flex.Manager.getInstance().store.getState()[namespace][contactFormsBase].tasks[taskSid];
+};
+
 const transferOverride = async (payload, original) => {
   console.log('TRANSFER PAYLOAD', payload);
 
-  const manager = Flex.Manager.getInstance();
-
   // save current form state as sync document (if there is a form)
-  const form = manager.store.getState()[namespace][contactFormsBase].tasks[payload.task.taskSid];
+  const form = getStateContactForms(payload.task.taskSid);
   const documentName = await saveFormSharedState(form, payload.task);
 
   const mode = payload.options.mode || DEFAULT_TRANSFER_MODE;
@@ -206,6 +210,8 @@ const transferOverride = async (payload, original) => {
   if (!Flex.TaskHelper.isChatBasedTask(payload.task)) {
     return original(payload);
   }
+
+  const manager = Flex.Manager.getInstance();
 
   const workerName = manager.user.identity;
   const memberToKick = mode === transferModes.cold ? TransferHelpers.getMemberToKick(payload.task, workerName) : '';
@@ -221,14 +227,14 @@ const transferOverride = async (payload, original) => {
   return transferChatStart(body);
 };
 
-const restoreFormIfCold = async payload => {
+const restoreFormIfColdTransfer = async payload => {
   if (TransferHelpers.isColdTransfer(payload.task)) {
     const form = await loadFormSharedState(payload.task);
     if (form) Flex.Manager.getInstance().store.dispatch(Actions.restoreEntireForm(form, payload.task.taskSid));
   }
 };
 
-const closeCallIfCold = async payload => {
+const closeCallIfColdTransfer = async payload => {
   const { task } = payload;
   if (
     Flex.TaskHelper.isCallTask(task) &&
@@ -261,7 +267,7 @@ const setUpActions = setupObject => {
 
   const saveInsights = async payload => {
     const { taskSid } = payload.task;
-    const task = manager.store.getState()[namespace][contactFormsBase].tasks[taskSid];
+    const task = getStateContactForms(taskSid);
 
     await saveInsightsData(payload.task, task);
   };
@@ -277,8 +283,8 @@ const setUpActions = setupObject => {
     manager.store.dispatch(Actions.removeContactState(payload.task.taskSid));
   });
 
-  Flex.Actions.addListener('afterAcceptTask', restoreFormIfCold);
-  Flex.Actions.addListener('afterTransferTask', closeCallIfCold);
+  Flex.Actions.addListener('afterAcceptTask', restoreFormIfColdTransfer);
+  Flex.Actions.addListener('afterTransferTask', closeCallIfColdTransfer);
 
   const shouldSayGoodbye = channel =>
     channel === channelTypes.facebook || channel === channelTypes.sms || channel === channelTypes.whatsapp;
@@ -303,7 +309,9 @@ const setUpActions = setupObject => {
   });
 
   const wrapupTask = fromActionFunction(async payload => {
-    if (shouldSayGoodbye(payload.task.channelType)) await sendGoodbyeMessage(payload);
+    if (shouldSayGoodbye(payload.task.channelType)) {
+      await sendGoodbyeMessage(payload);
+    }
     await saveEndMillis(payload);
   });
 

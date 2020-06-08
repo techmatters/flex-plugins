@@ -6,9 +6,9 @@ import { getConfig } from '../HrmFormPlugin';
  * @param {import("@twilio/flex-ui").ITask} task
  */
 export const saveFormSharedState = async (form, task) => {
-  const { sharedStateClient } = getConfig();
+  const { sharedStateClient, strings } = getConfig();
   if (sharedStateClient === undefined || sharedStateClient.connectionState !== 'connected') {
-    window.alert("Can't access Shared State, form won't be saved");
+    window.alert(strings.SharedStateSaveFormError);
     return null;
   }
 
@@ -16,7 +16,7 @@ export const saveFormSharedState = async (form, task) => {
 
   if (documentName) {
     const document = await sharedStateClient.document(documentName);
-    await document.set(form, { ttl: 86400 });
+    await document.set(form, { ttl: 86400 }); // set time to live to 24 hours
     return documentName;
   }
 
@@ -28,9 +28,9 @@ export const saveFormSharedState = async (form, task) => {
  * @param {import("@twilio/flex-ui").ITask} task
  */
 export const loadFormSharedState = async task => {
-  const { sharedStateClient } = getConfig();
+  const { sharedStateClient, strings } = getConfig();
   if (sharedStateClient === undefined || sharedStateClient.connectionState !== 'connected') {
-    window.alert("Can't access Shared State, form can't be restored");
+    window.alert(strings.SharedStateLoadFormError);
     return null;
   }
 
