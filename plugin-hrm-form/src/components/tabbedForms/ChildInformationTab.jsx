@@ -13,6 +13,7 @@ import {
   CheckboxField,
   StyledCheckboxLabel,
 } from '../../styles/HrmStyles';
+import { genderOptions, ageOptions } from './SelectOptions';
 
 const ChildInformationTab = ({ childInformation, handleCheckboxClick, defaultEventHandlers }) => (
   <Container>
@@ -38,7 +39,7 @@ const ChildInformationTab = ({ childInformation, handleCheckboxClick, defaultEve
           id="ChildInformation_Gender"
           name="gender"
           label="Gender"
-          options={['Male', 'Female', 'Other', 'Unknown']}
+          options={genderOptions}
           {...defaultEventHandlers(['childInformation'], 'gender')}
         />
 
@@ -47,7 +48,7 @@ const ChildInformationTab = ({ childInformation, handleCheckboxClick, defaultEve
           id="ChildInformation_Age"
           name="age"
           label="Age"
-          options={['0-3', '4-6', '7-9', '10-12', '13-15', '16-17', '18-25', '>25']}
+          options={ageOptions}
           {...defaultEventHandlers(['childInformation'], 'age')}
         />
 

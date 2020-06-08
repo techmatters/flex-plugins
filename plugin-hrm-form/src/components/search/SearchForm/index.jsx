@@ -6,8 +6,8 @@ import FieldText from '../../FieldText';
 import FieldSelect from '../../FieldSelect';
 import FieldDate from '../../FieldDate';
 import { Container, StyledNextStepButton, Row, BottomButtonBar } from '../../../styles/HrmStyles';
-import { withConfiguration } from '../../../contexts/ConfigurationContext';
-import { configurationType, searchFormType } from '../../../types';
+import { searchFormType } from '../../../types';
+import { getConfig } from '../../../HrmFormPlugin';
 
 const getField = value => ({
   value,
@@ -22,7 +22,6 @@ class SearchForm extends Component {
   static propTypes = {
     handleSearch: PropTypes.func.isRequired,
     handleSearchFormChange: PropTypes.func.isRequired,
-    configuration: configurationType.isRequired,
     counselors: PropTypes.arrayOf(
       PropTypes.shape({
         fullName: PropTypes.string,
@@ -43,7 +42,7 @@ class SearchForm extends Component {
 
     const counselorsOptions = this.props.counselors.map(e => ({ label: e.fullName, value: e.sid }));
 
-    const { helpline } = this.props.configuration;
+    const { helpline } = getConfig();
     const searchParams = {
       ...this.props.values,
       counselor: counselor.value, // backend expects only counselor's SID
@@ -126,4 +125,4 @@ class SearchForm extends Component {
   }
 }
 
-export default withConfiguration(SearchForm);
+export default SearchForm;

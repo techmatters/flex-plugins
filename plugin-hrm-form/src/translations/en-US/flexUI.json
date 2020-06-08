@@ -1,0 +1,15 @@
+{
+  "ChatWelcomeText": "Conversation started",
+  "TaskHeaderEndCall": "Hang Up",
+  "TaskHeaderEndChat": "End Chat",
+  "TranslateButtonAriaLabel": "Change language",
+
+  "CallType-child": "Child calling about self",
+  "CallType-caller": "Someone calling about a child",
+  "CallType-silent": "Silent",
+  "CallType-blank": "Blank",
+  "CallType-joke": "Joke",
+  "CallType-hangup": "Hang up",
+  "CallType-wrongnumber": "Wrong Number",
+  "CallType-abusive": "Abusive"
+}

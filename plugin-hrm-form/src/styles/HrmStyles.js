@@ -147,6 +147,15 @@ export const StyledNextStepButton = styled(Button)`
       false,
       p.disabled,
     )};
+
+  &&:focus {
+    background-color: rgba(255, 255, 255, 0.2);
+    background-blend-mode: color;
+  }
+
+  &&:active {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
 `;
 
 export const TransparentButton = styled(Button)`
@@ -254,4 +263,12 @@ export const FontOpenSans = styled('p')`
   color: #000000;
   font-family: Open Sans;
   text-align: left;
+`;
+
+// used for screen readers only
+export const HiddenText = styled('p')`
+  width: 0px;
+  height: 0px;
+  font-size: 0px;
+  line-height: 0px;
 `;

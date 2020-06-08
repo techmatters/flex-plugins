@@ -1,11 +1,12 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
+import { Template } from '@twilio/flex-ui';
 
-import './mockStyled';
-import CallTypeButtons from '../components/callTypeButtons';
-import { DataCallTypeButton, NonDataCallTypeButton, ConfirmButton, CancelButton } from '../styles/callTypeButtons';
-import LocalizationContext from '../contexts/LocalizationContext';
-import callTypes from '../states/DomainConstants';
+import '../mockStyled';
+import CallTypeButtons from '../../components/callTypeButtons';
+import { DataCallTypeButton, NonDataCallTypeButton, ConfirmButton, CancelButton } from '../../styles/callTypeButtons';
+import LocalizationContext from '../../contexts/LocalizationContext';
+import callTypes from '../../states/DomainConstants';
 
 const task = {
   taskSid: 'task-sid',
@@ -15,6 +16,9 @@ const strings = {
   TaskHeaderEndCall: 'HANG UP',
   TaskHeaderEndChat: 'END CHAT',
 };
+
+const withEndCall = <Template code="TaskHeaderEndCall" />;
+const withEndChat = <Template code="TaskHeaderEndChat" />;
 
 afterEach(() => {
   jest.resetAllMocks();
@@ -57,7 +61,8 @@ test('<CallTypeButtons> renders dialog with END CHAT button', () => {
 
   const confirmButtonText = getConfirmButtonText(component);
 
-  expect(confirmButtonText).toEqual(strings.TaskHeaderEndChat);
+  expect(confirmButtonText.props).toStrictEqual(withEndChat.props);
+  expect(confirmButtonText.type).toStrictEqual(withEndChat.type);
 });
 
 test('<CallTypeButtons> renders dialog with HANG UP button', () => {
@@ -76,7 +81,8 @@ test('<CallTypeButtons> renders dialog with HANG UP button', () => {
 
   const confirmButtonText = getConfirmButtonText(component);
 
-  expect(confirmButtonText).toEqual(strings.TaskHeaderEndCall);
+  expect(confirmButtonText.props).toStrictEqual(withEndCall.props);
+  expect(confirmButtonText.type).toStrictEqual(withEndCall.type);
 });
 
 test('<CallTypeButtons> click on CallType button', () => {

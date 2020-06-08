@@ -93,15 +93,6 @@ export const formType = PropTypes.shape({
   caseInformation: caseInformationType,
 });
 
-export const configurationType = PropTypes.shape({
-  hrmBaseUrl: PropTypes.string.isRequired,
-  serverlessBaseUrl: PropTypes.string.isRequired,
-  workerSid: PropTypes.string.isRequired,
-  helpline: PropTypes.string.isRequired,
-  currentWorkspace: PropTypes.string.isRequired,
-  getSsoToken: PropTypes.func.isRequired,
-});
-
 export const localizationType = PropTypes.shape({
   strings: PropTypes.object.isRequired,
   isCallTask: PropTypes.func.isRequired,

@@ -5,6 +5,7 @@ import { callerInformationType } from '../../types';
 import FieldText from '../FieldText';
 import FieldSelect from '../FieldSelect';
 import { ColumnarBlock, Container, NameFields, TwoColumnLayout } from '../../styles/HrmStyles';
+import { genderOptions, ageOptions } from './SelectOptions';
 
 const CallerInformationTab = ({ callerInformation, defaultEventHandlers }) => (
   <Container>
@@ -39,7 +40,7 @@ const CallerInformationTab = ({ callerInformation, defaultEventHandlers }) => (
           id="CallerInformation_Gender"
           name="gender"
           label="Gender"
-          options={['Male', 'Female', 'Other', 'Unknown']}
+          options={genderOptions}
           {...defaultEventHandlers(['callerInformation'], 'gender')}
         />
 
@@ -48,7 +49,7 @@ const CallerInformationTab = ({ callerInformation, defaultEventHandlers }) => (
           id="CallerInformation_Age"
           name="age"
           label="Age"
-          options={['0-3', '4-6', '7-9', '10-12', '13-15', '16-17', '18-25', '>25']}
+          options={ageOptions}
           {...defaultEventHandlers(['callerInformation'], 'age')}
         />
 
