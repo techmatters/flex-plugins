@@ -16,7 +16,7 @@ import { changeLanguage } from './states/ConfigurationState';
 import { saveInsightsData } from './services/InsightsService';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
-const PLUGIN_VERSION = '0.4.2';
+const PLUGIN_VERSION = '0.5.0';
 
 export const getConfig = () => {
   const manager = Flex.Manager.getInstance();
