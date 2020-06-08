@@ -41,7 +41,7 @@ export const loadFormSharedState = async task => {
   }
 
   if (!task.attributes.transferMeta) {
-    window.alert('Task not transferred');
+    console.error('This function should not be called on non-transferred task.');
     return null;
   }
 
