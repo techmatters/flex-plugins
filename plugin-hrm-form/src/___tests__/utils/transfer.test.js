@@ -1,15 +1,18 @@
-import { StateHelper } from '@twilio/flex-ui';
+import { StateHelper, Actions } from '@twilio/flex-ui';
 import { omit } from 'lodash';
 
 import '../mockGetConfig';
 import * as TransferHelpers from '../../utils/transfer';
 import { transferModes, transferStatuses } from '../../states/DomainConstants';
 import { createTask } from '../helpers';
-import { transferChatResolve } from '../../services/ServerlessService';
+import { transferChatResolve, transferCallResolve } from '../../services/ServerlessService';
 
 jest.mock('../../services/ServerlessService', () => ({
   transferChatResolve: jest.fn(),
+  transferCallResolve: jest.fn(),
 }));
+
+Actions.invokeAction = jest.fn();
 
 const members = new Map();
 members.set('some_40identity', { source: { sid: 'member1' } });
@@ -229,8 +232,15 @@ describe('Kick, close and helpers', () => {
   });
 
   const task = createTask(
-    { ignoreAgent: 'some@identity', transferMeta: { originalTask: 'task1' } },
-    { taskSid: 'task2', taskChannelSid: 'channel1' },
+    {
+      ignoreAgent: 'some@identity',
+      transferMeta: {
+        originalTask: 'task1',
+        originalReservation: 'reservation1',
+        originalCounselor: 'some@identity',
+      },
+    },
+    { sid: 'reservation2', taskSid: 'task2', taskChannelSid: 'channel1' },
   );
 
   test('closeChatOriginal', async () => {
@@ -257,6 +267,28 @@ describe('Kick, close and helpers', () => {
     await TransferHelpers.closeChatSelf(task);
 
     expect(transferChatResolve).toBeCalledWith(expected);
+  });
+
+  test('closeCallOriginal', async () => {
+    const expected1 = { sid: 'reservation2', targetSid: 'some@identity' };
+    const expected2 = { taskSid: 'task1', reservationSid: 'reservation1' };
+
+    await TransferHelpers.closeCallOriginal(task);
+
+    expect(Actions.invokeAction).toBeCalledWith('KickParticipant', expected1);
+    expect(task.attributes.transferMeta.transferStatus).toBe(transferStatuses.accepted);
+    expect(transferCallResolve).toBeCalledWith(expected2);
+  });
+
+  test('closeCallSelf', async () => {
+    const expected1 = { sid: 'reservation2' };
+    const expected2 = { sid: 'reservation2' };
+
+    await TransferHelpers.closeCallSelf(task);
+
+    expect(Actions.invokeAction).toBeCalledWith('HangupCall', expected1);
+    expect(task.attributes.transferMeta.transferStatus).toBe(transferStatuses.rejected);
+    expect(Actions.invokeAction).toBeCalledWith('CompleteTask', expected2);
   });
 
   test('setTransferAccepted', async () => {

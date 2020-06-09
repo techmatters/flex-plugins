@@ -11,6 +11,7 @@ import {
   SAVE_CONTACT_STATE,
   HANDLE_SELECT_SEARCH_RESULT,
   CHANGE_TAB,
+  RESTORE_ENTIRE_FORM,
 } from './ActionTypes';
 import { countSelectedCategories } from './ValidationRules';
 import { copySearchResultIntoTask } from './SearchContact';
@@ -73,6 +74,12 @@ export class Actions {
   static saveEndMillis = taskId => ({ type: SAVE_END_MILLIS, taskId });
 
   static changeTab = (tab, taskId) => ({ type: CHANGE_TAB, tab, taskId });
+
+  static restoreEntireForm = (form, taskId) => ({
+    type: RESTORE_ENTIRE_FORM,
+    form,
+    taskId,
+  });
 }
 
 // Will replace the below when we move over to field objects
@@ -212,6 +219,16 @@ export function reduce(state = initialState, action) {
         tasks: {
           ...state.tasks,
           [action.taskId]: taskWithUpdatedTab,
+        },
+      };
+    }
+
+    case RESTORE_ENTIRE_FORM: {
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: action.form,
         },
       };
     }
