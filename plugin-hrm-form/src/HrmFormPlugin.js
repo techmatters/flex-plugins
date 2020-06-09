@@ -356,7 +356,7 @@ export default class HrmFormPlugin extends FlexPlugin {
 
     const setupObject = { ...config, translateUI, getGoodbyeMsg };
 
-    if (config.featureFlags.enable_shared_state) setUpSharedStateClient();
+    if (config.featureFlags.enable_transfers) setUpSharedStateClient();
     setUpComponents(setupObject);
     setUpActions(setupObject);
 

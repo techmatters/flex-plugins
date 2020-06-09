@@ -8,7 +8,7 @@ import { getConfig } from '../HrmFormPlugin';
 export const saveFormSharedState = async (form, task) => {
   const { featureFlags, sharedStateClient, strings } = getConfig();
 
-  if (!featureFlags.enable_shared_state) return null;
+  if (!featureFlags.enable_transfers) return null;
 
   if (sharedStateClient === undefined || sharedStateClient.connectionState !== 'connected') {
     window.alert(strings.SharedStateSaveFormError);
@@ -33,7 +33,7 @@ export const saveFormSharedState = async (form, task) => {
 export const loadFormSharedState = async task => {
   const { featureFlags, sharedStateClient, strings } = getConfig();
 
-  if (!featureFlags.enable_shared_state) return null;
+  if (!featureFlags.enable_transfers) return null;
 
   if (sharedStateClient === undefined || sharedStateClient.connectionState !== 'connected') {
     window.alert(strings.SharedStateLoadFormError);
