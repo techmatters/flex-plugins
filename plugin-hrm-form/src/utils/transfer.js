@@ -233,11 +233,11 @@ export const closeCallSelf = async task => {
  * Following helpers are used by TransferredTaskJanitor, as it will check for reservations instead of tasks, in order to unify the behavior of chat and call based tasks.
  */
 
-const shouldCloseOriginalReservation = reservation =>
+export const shouldCloseOriginalReservation = reservation =>
   reservation.reservation_sid === reservation.attributes.transferMeta.originalReservation &&
   reservation.attributes.transferMeta.transferStatus === transferStatuses.accepted;
 
-const shouldCloseTransferredReservation = reservation =>
+export const shouldCloseTransferredReservation = reservation =>
   reservation.reservation_sid !== reservation.attributes.transferMeta.originalReservation &&
   reservation.attributes.transferMeta.transferStatus === transferStatuses.rejected;
 

@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { StateHelper, Actions } from '@twilio/flex-ui';
 import { omit } from 'lodash';
 
@@ -312,5 +313,129 @@ describe('Kick, close and helpers', () => {
 
     await TransferHelpers.setTransferMeta(warmTask, transferModes.warm, 'some string');
     expect(warmTask.attributes.transferMeta).toStrictEqual(warmExpected);
+  });
+});
+
+describe('TransferredTaskJanitor helpers', () => {
+  const createReservation = (sid, workerSid) => ({
+    reservation_sid: sid,
+    worker_sid: workerSid,
+    status: 'pending',
+    attributes: {},
+    accept() {
+      return { ...this, status: 'accepted' };
+    },
+    wrapUp() {
+      return { ...this, status: 'wrapup' };
+    },
+    complete() {
+      return { ...this, status: 'completed' };
+    },
+    setTransferMeta(transferMeta) {
+      return { ...this, attributes: { ...this.attributes, transferMeta } };
+    },
+  });
+
+  const createTransferMeta = transferStatus => ({
+    originalTask: 'task1',
+    originalReservation: 'reservation1',
+    originalCounselor: 'worker1',
+    transferStatus,
+  });
+
+  test('shouldCloseOriginalReservation (accepted)', async () => {
+    const reservation1 = createReservation('reservation1', 'worker1');
+    const reservation2 = createReservation('reservation2', 'worker2');
+
+    const acceptedMeta = createTransferMeta(transferStatuses.accepted);
+    const withAcceptedMeta1 = reservation1.setTransferMeta(acceptedMeta);
+    const withAcceptedMeta2 = reservation2.setTransferMeta(acceptedMeta);
+
+    expect(TransferHelpers.shouldCloseOriginalReservation(withAcceptedMeta1)).toBe(true);
+    expect(TransferHelpers.shouldCloseOriginalReservation(withAcceptedMeta2)).toBe(false);
+  });
+
+  test('shouldCloseOriginalReservation (rejected)', async () => {
+    const reservation1 = createReservation('reservation1', 'worker1');
+    const reservation2 = createReservation('reservation2', 'worker2');
+
+    const rejectedMeta = createTransferMeta(transferStatuses.rejected);
+    const withRejectedMeta1 = reservation1.setTransferMeta(rejectedMeta);
+    const withRejectedMeta2 = reservation2.setTransferMeta(rejectedMeta);
+
+    expect(TransferHelpers.shouldCloseOriginalReservation(withRejectedMeta1)).toBe(false);
+    expect(TransferHelpers.shouldCloseOriginalReservation(withRejectedMeta2)).toBe(false);
+  });
+
+  test('shouldCloseTransferredReservation (accepted)', async () => {
+    const reservation1 = createReservation('reservation1', 'worker1');
+    const reservation2 = createReservation('reservation2', 'worker2');
+
+    const acceptedMeta = createTransferMeta(transferStatuses.accepted);
+    const withAcceptedMeta1 = reservation1.setTransferMeta(acceptedMeta);
+    const withAcceptedMeta2 = reservation2.setTransferMeta(acceptedMeta);
+
+    expect(TransferHelpers.shouldCloseTransferredReservation(withAcceptedMeta1)).toBe(false);
+    expect(TransferHelpers.shouldCloseTransferredReservation(withAcceptedMeta2)).toBe(false);
+  });
+
+  test('shouldCloseTransferredReservation (rejected)', async () => {
+    const reservation1 = createReservation('reservation1', 'worker1');
+    const reservation2 = createReservation('reservation2', 'worker2');
+
+    const rejectedMeta = createTransferMeta(transferStatuses.rejected);
+    const withRejectedMeta1 = reservation1.setTransferMeta(rejectedMeta);
+    const withRejectedMeta2 = reservation2.setTransferMeta(rejectedMeta);
+
+    expect(TransferHelpers.shouldCloseTransferredReservation(withRejectedMeta1)).toBe(false);
+    expect(TransferHelpers.shouldCloseTransferredReservation(withRejectedMeta2)).toBe(true);
+  });
+
+  test('shouldInvokeCompleteTask (accepted)', () => {
+    const reservation1 = createReservation('reservation1', 'worker1');
+    const reservation2 = createReservation('reservation2', 'worker2');
+
+    const acceptedMeta = createTransferMeta(transferStatuses.accepted);
+    const withAcceptedMeta1 = reservation1.setTransferMeta(acceptedMeta);
+    const withAcceptedMeta2 = reservation2.setTransferMeta(acceptedMeta);
+
+    const sict = TransferHelpers.shouldInvokeCompleteTask;
+
+    // pending
+    expect(sict(withAcceptedMeta1, withAcceptedMeta1.worker_sid)).toBe(false);
+    expect(sict(withAcceptedMeta2, withAcceptedMeta2.worker_sid)).toBe(false);
+    // accepted
+    expect(sict(withAcceptedMeta1.accept(), withAcceptedMeta1.worker_sid)).toBe(false);
+    expect(sict(withAcceptedMeta2.accept(), withAcceptedMeta2.worker_sid)).toBe(false);
+    // wrapup
+    expect(sict(withAcceptedMeta1.wrapUp(), withAcceptedMeta1.worker_sid)).toBe(true);
+    expect(sict(withAcceptedMeta2.wrapUp(), withAcceptedMeta2.worker_sid)).toBe(false);
+    // completed
+    expect(sict(withAcceptedMeta1.complete(), withAcceptedMeta1.worker_sid)).toBe(false);
+    expect(sict(withAcceptedMeta2.complete(), withAcceptedMeta2.worker_sid)).toBe(false);
+  });
+
+  test('shouldInvokeCompleteTask (rejected)', () => {
+    const reservation1 = createReservation('reservation1', 'worker1');
+    const reservation2 = createReservation('reservation2', 'worker2');
+
+    const rejectedMeta = createTransferMeta(transferStatuses.rejected);
+    const withRejectedMeta1 = reservation1.setTransferMeta(rejectedMeta);
+    const withRejectedMeta2 = reservation2.setTransferMeta(rejectedMeta);
+
+    const sict = TransferHelpers.shouldInvokeCompleteTask;
+
+    // pending
+    expect(sict(withRejectedMeta1, withRejectedMeta1.worker_sid)).toBe(false);
+    expect(sict(withRejectedMeta2, withRejectedMeta2.worker_sid)).toBe(false);
+    // accepted
+    expect(sict(withRejectedMeta1.accept(), withRejectedMeta1.worker_sid)).toBe(false);
+    expect(sict(withRejectedMeta2.accept(), withRejectedMeta2.worker_sid)).toBe(false);
+    // wrapup
+    expect(sict(withRejectedMeta1.wrapUp(), withRejectedMeta1.worker_sid)).toBe(false);
+    expect(sict(withRejectedMeta2.wrapUp(), withRejectedMeta2.worker_sid)).toBe(true);
+    // completed
+    expect(sict(withRejectedMeta1.complete(), withRejectedMeta1.worker_sid)).toBe(false);
+    expect(sict(withRejectedMeta2.complete(), withRejectedMeta2.worker_sid)).toBe(false);
   });
 });
