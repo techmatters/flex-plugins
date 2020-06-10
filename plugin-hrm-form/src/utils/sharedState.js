@@ -10,20 +10,25 @@ export const saveFormSharedState = async (form, task) => {
 
   if (!featureFlags.enable_transfers) return null;
 
-  if (sharedStateClient === undefined || sharedStateClient.connectionState !== 'connected') {
-    window.alert(strings.SharedStateSaveFormError);
+  try {
+    if (sharedStateClient === undefined || sharedStateClient.connectionState !== 'connected') {
+      window.alert(strings.SharedStateSaveFormError);
+      return null;
+    }
+
+    const documentName = form ? `pending-form-${task.taskSid}` : null;
+
+    if (documentName) {
+      const document = await sharedStateClient.document(documentName);
+      await document.set(form, { ttl: 86400 }); // set time to live to 24 hours
+      return documentName;
+    }
+
+    return null;
+  } catch (err) {
+    console.error('Error while saving form to shared state', err);
     return null;
   }
-
-  const documentName = form ? `pending-form-${task.taskSid}` : null;
-
-  if (documentName) {
-    const document = await sharedStateClient.document(documentName);
-    await document.set(form, { ttl: 86400 }); // set time to live to 24 hours
-    return documentName;
-  }
-
-  return null;
 };
 
 /**
@@ -32,24 +37,28 @@ export const saveFormSharedState = async (form, task) => {
  */
 export const loadFormSharedState = async task => {
   const { featureFlags, sharedStateClient, strings } = getConfig();
-
   if (!featureFlags.enable_transfers) return null;
 
-  if (sharedStateClient === undefined || sharedStateClient.connectionState !== 'connected') {
-    window.alert(strings.SharedStateLoadFormError);
+  try {
+    if (sharedStateClient === undefined || sharedStateClient.connectionState !== 'connected') {
+      window.alert(strings.SharedStateLoadFormError);
+      return null;
+    }
+
+    if (!task.attributes.transferMeta) {
+      console.error('This function should not be called on non-transferred task.');
+      return null;
+    }
+
+    const documentName = task.attributes.transferMeta.formDocument;
+    if (documentName) {
+      const document = await sharedStateClient.document(documentName);
+      return document.value;
+    }
+
+    return null;
+  } catch (err) {
+    console.error('Error while loading form from shared state', err);
     return null;
   }
-
-  if (!task.attributes.transferMeta) {
-    console.error('This function should not be called on non-transferred task.');
-    return null;
-  }
-
-  const documentName = task.attributes.transferMeta.formDocument;
-  if (documentName) {
-    const document = await sharedStateClient.document(documentName);
-    return document.value;
-  }
-
-  return null;
 };
