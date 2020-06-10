@@ -30,6 +30,37 @@ const DEFAULT_TRANSFER_MODE = transferModes.cold;
  */
 let sharedStateClient;
 
+export const getConfig = () => {
+  const manager = Flex.Manager.getInstance();
+
+  const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
+  // const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
+  const serverlessBaseUrl = 'http://localhost:3000';
+  const workerSid = manager.workerClient.sid;
+  const { helpline, counselorLanguage, helplineLanguage } = manager.workerClient.attributes;
+  const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
+  const { identity, token } = manager.user;
+  const { configuredLanguage } = manager.serviceConfiguration.attributes;
+  const featureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
+  const { strings } = manager;
+
+  return {
+    hrmBaseUrl,
+    serverlessBaseUrl,
+    workerSid,
+    helpline,
+    currentWorkspace,
+    counselorLanguage,
+    helplineLanguage,
+    configuredLanguage,
+    identity,
+    token,
+    featureFlags,
+    sharedStateClient,
+    strings,
+  };
+};
+
 const setUpSharedStateClient = () => {
   const updateSharedStateToken = async () => {
     try {
@@ -54,34 +85,20 @@ const setUpSharedStateClient = () => {
   initSharedStateClient();
 };
 
-export const getConfig = () => {
-  const manager = Flex.Manager.getInstance();
+const setUpTransferredTaskJanitor = async setupObject => {
+  const { workerSid } = setupObject;
+  const query = 'data.attributes.channelSid == "CH00000000000000000000000000000000"';
+  const reservationQuery = await Flex.Manager.getInstance().insightsClient.liveQuery('tr-reservation', query);
+  reservationQuery.on('itemUpdated', args => {
+    if (TransferHelpers.shouldInvokeCompleteTask(args.value, workerSid)) {
+      Flex.Actions.invokeAction('CompleteTask', { sid: args.value.reservation_sid });
+    }
+  });
+};
 
-  const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
-  const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
-  const workerSid = manager.workerClient.sid;
-  const { helpline, counselorLanguage, helplineLanguage } = manager.workerClient.attributes;
-  const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
-  const { identity, token } = manager.user;
-  const { configuredLanguage } = manager.serviceConfiguration.attributes;
-  const featureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
-  const { strings } = manager;
-
-  return {
-    hrmBaseUrl,
-    serverlessBaseUrl,
-    workerSid,
-    helpline,
-    currentWorkspace,
-    counselorLanguage,
-    helplineLanguage,
-    configuredLanguage,
-    identity,
-    token,
-    featureFlags,
-    sharedStateClient,
-    strings,
-  };
+const setUpTransfers = setupObject => {
+  setUpSharedStateClient();
+  setUpTransferredTaskJanitor(setupObject);
 };
 
 const setUpLocalization = config => {
@@ -209,7 +226,11 @@ const transferOverride = async (payload, original) => {
   // set metadata for the transfer
   await TransferHelpers.setTransferMeta(payload.task, mode, documentName);
 
-  if (!Flex.TaskHelper.isChatBasedTask(payload.task)) {
+  if (Flex.TaskHelper.isCallTask(payload.task)) {
+    if (TransferHelpers.isColdTransfer(payload.task) && !TransferHelpers.hasTaskControl(payload.task)) {
+      await TransferHelpers.setDummyChannelSid(payload.task);
+    }
+
     return original(payload);
   }
 
@@ -229,21 +250,10 @@ const transferOverride = async (payload, original) => {
   return transferChatStart(body);
 };
 
-const restoreFormIfColdTransfer = async payload => {
-  if (TransferHelpers.isColdTransfer(payload.task)) {
+const restoreFormIfTransfer = async payload => {
+  if (TransferHelpers.hasTransferStarted(payload.task)) {
     const form = await loadFormSharedState(payload.task);
     if (form) Flex.Manager.getInstance().store.dispatch(Actions.restoreEntireForm(form, payload.task.taskSid));
-  }
-};
-
-const closeCallIfColdTransfer = async payload => {
-  const { task } = payload;
-  if (
-    Flex.TaskHelper.isCallTask(task) &&
-    TransferHelpers.isColdTransfer(task) &&
-    !TransferHelpers.hasTaskControl(task)
-  ) {
-    Flex.Actions.invokeAction('CompleteTask', { sid: task.sid });
   }
 };
 
@@ -295,8 +305,7 @@ const setUpActions = setupObject => {
     manager.store.dispatch(Actions.removeContactState(payload.task.taskSid));
   });
 
-  Flex.Actions.addListener('afterAcceptTask', restoreFormIfColdTransfer);
-  if (!featureFlags.enable_transfers) Flex.Actions.addListener('afterTransferTask', closeCallIfColdTransfer);
+  if (featureFlags.enable_transfers) Flex.Actions.addListener('afterAcceptTask', restoreFormIfTransfer);
 
   const shouldSayGoodbye = channel =>
     channel === channelTypes.facebook || channel === channelTypes.sms || channel === channelTypes.whatsapp;
@@ -356,7 +365,7 @@ export default class HrmFormPlugin extends FlexPlugin {
 
     const setupObject = { ...config, translateUI, getGoodbyeMsg };
 
-    if (config.featureFlags.enable_shared_state) setUpSharedStateClient();
+    if (config.featureFlags.enable_transfers) setUpTransfers(setupObject);
     setUpComponents(setupObject);
     setUpActions(setupObject);
 

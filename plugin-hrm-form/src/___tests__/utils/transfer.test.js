@@ -5,11 +5,10 @@ import '../mockGetConfig';
 import * as TransferHelpers from '../../utils/transfer';
 import { transferModes, transferStatuses } from '../../states/DomainConstants';
 import { createTask } from '../helpers';
-import { transferChatResolve, transferCallResolve } from '../../services/ServerlessService';
+import { transferChatResolve } from '../../services/ServerlessService';
 
 jest.mock('../../services/ServerlessService', () => ({
   transferChatResolve: jest.fn(),
-  transferCallResolve: jest.fn(),
 }));
 
 Actions.invokeAction = jest.fn();
@@ -139,66 +138,30 @@ describe('Transfer mode, status and conditionals helpers', () => {
     expect(TransferHelpers.shouldShowTransferControls(task4r)).toBe(false); // rejected
   });
 
-  test('hasTaskControlChat', async () => {
-    const taskC = createTask(
-      { transferMeta: { transferStatus: transferStatuses.transferring } },
-      { taskChannelUniqueName: 'chat' },
-    );
-    const taskV = createTask(
-      { transferMeta: { transferStatus: transferStatuses.transferring } },
-      { taskChannelUniqueName: 'voice' },
-    );
-    const [taskCc, taskCr] = [{ ...taskC }, { ...taskC }];
-    await TransferHelpers.setTransferAccepted(taskCc);
-    await TransferHelpers.setTransferRejected(taskCr);
-    const [taskVc, taskVr] = [{ ...taskV }, { ...taskV }];
-    await TransferHelpers.setTransferAccepted(taskVc);
-    await TransferHelpers.setTransferRejected(taskVr);
-    const task2 = createTask({}, { taskChannelUniqueName: 'chat' });
-
-    expect(TransferHelpers.hasTaskControlChat(taskC)).toBe(false); // transferring
-    expect(TransferHelpers.hasTaskControlChat(taskV)).toBe(false); // transferring
-    expect(TransferHelpers.hasTaskControlChat(taskCc)).toBe(true); // ok
-    expect(TransferHelpers.hasTaskControlChat(taskCr)).toBe(true); // ok
-    expect(TransferHelpers.hasTaskControlChat(taskVc)).toBe(false); // not voice
-    expect(TransferHelpers.hasTaskControlChat(taskVr)).toBe(false); // not voice
-    expect(TransferHelpers.hasTaskControlChat(task2)).toBe(true); // ok
-  });
-
-  test('hasTaskControlCall', async () => {
-    const taskV1 = createTask(
+  test('hasTaskControl', async () => {
+    const task1 = createTask(
       { transferMeta: { transferStatus: transferStatuses.transferring, originalReservation: 'task1' } },
-      { taskChannelUniqueName: 'voice', sid: 'task1' },
+      { sid: 'task1' },
     );
-    const taskV2 = createTask(
+    const task2 = createTask(
       { transferMeta: { transferStatus: transferStatuses.transferring, originalReservation: 'task1' } },
-      { taskChannelUniqueName: 'voice', sid: 'task2' },
+      { sid: 'task2' },
     );
-    const taskC = createTask(
-      { transferMeta: { transferStatus: transferStatuses.transferring } },
-      { taskChannelUniqueName: 'chat' },
-    );
-    const [taskV1c, taskV1r] = [{ ...taskV1 }, { ...taskV1 }];
-    const [taskV2c, taskV2r] = [{ ...taskV2 }, { ...taskV2 }];
-    await TransferHelpers.setTransferAccepted(taskV1c);
-    await TransferHelpers.setTransferRejected(taskV1r);
-    await TransferHelpers.setTransferAccepted(taskV2c);
-    await TransferHelpers.setTransferRejected(taskV2r);
-    const [taskCc, taskCr] = [{ ...taskC }, { ...taskC }];
-    await TransferHelpers.setTransferAccepted(taskCc);
-    await TransferHelpers.setTransferRejected(taskCr);
-    const task2 = createTask({}, { taskChannelUniqueName: 'voice' });
+    const [task1c, task1r] = [{ ...task1 }, { ...task1 }];
+    const [task2c, task2r] = [{ ...task2 }, { ...task2 }];
+    await TransferHelpers.setTransferAccepted(task1c);
+    await TransferHelpers.setTransferRejected(task1r);
+    await TransferHelpers.setTransferAccepted(task2c);
+    await TransferHelpers.setTransferRejected(task2r);
+    const task3 = createTask({});
 
-    expect(TransferHelpers.hasTaskControlCall(taskV1)).toBe(false); // transferring
-    expect(TransferHelpers.hasTaskControlCall(taskV2)).toBe(false); // transferring
-    expect(TransferHelpers.hasTaskControlCall(taskC)).toBe(false); // not call
-    expect(TransferHelpers.hasTaskControlCall(taskV1c)).toBe(false); // original but accepted (control to 2nd counselor)
-    expect(TransferHelpers.hasTaskControlCall(taskV1r)).toBe(true); // ok
-    expect(TransferHelpers.hasTaskControlCall(taskV2c)).toBe(true); // ok
-    expect(TransferHelpers.hasTaskControlCall(taskV2r)).toBe(false); // transferred task rejected
-    expect(TransferHelpers.hasTaskControlCall(taskCc)).toBe(false); // not call
-    expect(TransferHelpers.hasTaskControlCall(taskCr)).toBe(false); // not call
-    expect(TransferHelpers.hasTaskControlCall(task2)).toBe(true); // ok
+    expect(TransferHelpers.hasTaskControl(task1)).toBe(false); // transferring
+    expect(TransferHelpers.hasTaskControl(task2)).toBe(false); // transferring
+    expect(TransferHelpers.hasTaskControl(task1c)).toBe(false); // original but accepted (control to 2nd counselor)
+    expect(TransferHelpers.hasTaskControl(task1r)).toBe(true); // ok
+    expect(TransferHelpers.hasTaskControl(task2c)).toBe(true); // ok
+    expect(TransferHelpers.hasTaskControl(task2r)).toBe(false); // transferred task rejected
+    expect(TransferHelpers.hasTaskControl(task3)).toBe(true); // ok
   });
 });
 
@@ -271,24 +234,20 @@ describe('Kick, close and helpers', () => {
 
   test('closeCallOriginal', async () => {
     const expected1 = { sid: 'reservation2', targetSid: 'some@identity' };
-    const expected2 = { taskSid: 'task1', reservationSid: 'reservation1' };
 
     await TransferHelpers.closeCallOriginal(task);
 
-    expect(Actions.invokeAction).toBeCalledWith('KickParticipant', expected1);
     expect(task.attributes.transferMeta.transferStatus).toBe(transferStatuses.accepted);
-    expect(transferCallResolve).toBeCalledWith(expected2);
+    expect(Actions.invokeAction).toBeCalledWith('KickParticipant', expected1);
   });
 
   test('closeCallSelf', async () => {
     const expected1 = { sid: 'reservation2' };
-    const expected2 = { sid: 'reservation2' };
 
     await TransferHelpers.closeCallSelf(task);
 
-    expect(Actions.invokeAction).toBeCalledWith('HangupCall', expected1);
     expect(task.attributes.transferMeta.transferStatus).toBe(transferStatuses.rejected);
-    expect(Actions.invokeAction).toBeCalledWith('CompleteTask', expected2);
+    expect(Actions.invokeAction).toBeCalledWith('HangupCall', expected1);
   });
 
   test('setTransferAccepted', async () => {
