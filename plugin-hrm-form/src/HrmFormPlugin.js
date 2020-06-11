@@ -235,14 +235,15 @@ const transferOverride = async (payload, original) => {
 
   const manager = Flex.Manager.getInstance();
 
-  const workerName = manager.user.identity;
-  const memberToKick = mode === transferModes.cold ? TransferHelpers.getMemberToKick(payload.task, workerName) : '';
+  const workerSid = manager.workerClient.sid;
+  const { identity } = manager.user;
+  const memberToKick = mode === transferModes.cold ? TransferHelpers.getMemberToKick(payload.task, identity) : '';
 
   const body = {
     mode,
     taskSid: payload.task.taskSid,
     targetSid: payload.targetSid,
-    workerName,
+    ignoreAgent: workerSid,
     memberToKick,
   };
 
