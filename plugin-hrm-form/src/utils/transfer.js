@@ -57,22 +57,17 @@ export const shouldShowTransferControls = task =>
   !isOriginalReservation(task) && isTransferring(task) && TaskHelper.isTaskAccepted(task);
 
 /**
- * Indicates if the current counselor has control over the task. Used to know if counselor should send form to hrm backend and pevent the form from being edited
+ * Indicates if the current counselor has sole control over the task. Used to know if counselor should send form to hrm backend and prevent the form from being edited
  * A counselor controls a task if
  * - transfer was not initiated
- * - task is original and a transfer was initiated but it was rejected
- * - task non original and a transfer was initiated and it was accepted
+ * - this is the original reservation and a transfer was initiated and then rejected
+ * - this is not the original reservation and a transfer was initiated and then accepted
  * @param {ITask} task
  */
 export const hasTaskControl = task =>
   !hasTransferStarted(task) ||
   (isOriginalReservation(task) && isTransferRejected(task)) ||
   (!isOriginalReservation(task) && isTransferAccepted(task));
-
-/**
- * @param {ITask} task
- */
-// export const hasTaskControl = task => hasTaskControlCall(task) || hasTaskControlChat(task);
 
 /**
  * Sets attributes.channelSid to a dummy value to start tracking the task in TransferredTaskJanitor
