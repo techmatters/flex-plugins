@@ -268,75 +268,87 @@ const fromActionFunction = fun => async (payload, original) => {
   await original(payload);
 };
 
-const setUpActions = setupObject => {
+const saveEndMillis = async payload => {
   const manager = Flex.Manager.getInstance();
+  manager.store.dispatch(Actions.saveEndMillis(payload.task.taskSid));
+};
 
-  const {
-    hrmBaseUrl,
-    workerSid,
-    helpline,
-    helplineLanguage,
-    configuredLanguage,
-    getGoodbyeMsg,
-    featureFlags,
-  } = setupObject;
+const hangupCall = fromActionFunction(saveEndMillis);
 
-  Flex.Actions.addListener('beforeAcceptTask', payload => {
-    manager.store.dispatch(Actions.initializeContactState(payload.task.taskSid));
-  });
+const shouldSayGoodbye = channel =>
+  channel === channelTypes.facebook || channel === channelTypes.sms || channel === channelTypes.whatsapp;
 
-  const saveInsights = async payload => {
-    const { taskSid } = payload.task;
-    const task = getStateContactForms(taskSid);
-
-    await saveInsightsData(payload.task, task);
-  };
-
-  Flex.Actions.addListener('beforeCompleteTask', async (payload, abortFunction) => {
-    if (!featureFlags.enable_transfers || TransferHelpers.hasTaskControl(payload.task)) {
-      manager.store.dispatch(Actions.saveContactState(payload.task, abortFunction, hrmBaseUrl, workerSid, helpline));
-      if (featureFlags.enable_save_insights) {
-        await saveInsights(payload);
-      }
-    }
-  });
-
-  Flex.Actions.addListener('afterCompleteTask', payload => {
-    manager.store.dispatch(Actions.removeContactState(payload.task.taskSid));
-  });
-
-  if (featureFlags.enable_transfers) Flex.Actions.addListener('afterAcceptTask', restoreFormIfTransfer);
-
-  const shouldSayGoodbye = channel =>
-    channel === channelTypes.facebook || channel === channelTypes.sms || channel === channelTypes.whatsapp;
+const sendGoodbyeMessage = setupObject => async payload => {
+  const { getGoodbyeMsg, helplineLanguage, configuredLanguage } = setupObject;
 
   const getTaskLanguage = task => task.attributes.language || helplineLanguage || configuredLanguage;
 
-  const sendGoodbyeMessage = async payload => {
-    const taskLanguage = getTaskLanguage(payload.task);
-    const goodbyeMsg = await getGoodbyeMsg(taskLanguage);
-    await Flex.Actions.invokeAction('SendMessage', {
-      body: goodbyeMsg,
-      channelSid: payload.task.attributes.channelSid,
-    });
-  };
+  const taskLanguage = getTaskLanguage(payload.task);
+  const goodbyeMsg = await getGoodbyeMsg(taskLanguage);
+  await Flex.Actions.invokeAction('SendMessage', {
+    body: goodbyeMsg,
+    channelSid: payload.task.attributes.channelSid,
+  });
+};
 
-  const saveEndMillis = async payload => {
-    manager.store.dispatch(Actions.saveEndMillis(payload.task.taskSid));
-  };
-
-  const hangupCall = fromActionFunction(saveEndMillis);
-
-  const wrapupTask = fromActionFunction(async payload => {
+const wrapupTask = setupObject =>
+  fromActionFunction(async payload => {
     if (shouldSayGoodbye(payload.task.channelType)) {
-      await sendGoodbyeMessage(payload);
+      await sendGoodbyeMessage(setupObject)(payload);
     }
     await saveEndMillis(payload);
   });
 
-  Flex.Actions.replaceAction('HangupCall', hangupCall);
-  Flex.Actions.replaceAction('WrapupTask', wrapupTask);
+const initializeContactForm = payload => {
+  const manager = Flex.Manager.getInstance();
+  manager.store.dispatch(Actions.initializeContactState(payload.task.taskSid));
+};
+
+const removeContactForm = payload => {
+  const manager = Flex.Manager.getInstance();
+  manager.store.dispatch(Actions.removeContactState(payload.task.taskSid));
+};
+
+const saveInsights = async payload => {
+  const { taskSid } = payload.task;
+  const task = getStateContactForms(taskSid);
+
+  await saveInsightsData(payload.task, task);
+};
+
+const sendFormToBackend = setUpObject => async (payload, abortFunction) => {
+  const { hrmBaseUrl, workerSid, helpline, featureFlags } = setUpObject;
+
+  const manager = Flex.Manager.getInstance();
+
+  if (!featureFlags.enable_transfers || TransferHelpers.hasTaskControl(payload.task)) {
+    manager.store.dispatch(Actions.saveContactState(payload.task, abortFunction, hrmBaseUrl, workerSid, helpline));
+    if (featureFlags.enable_save_insights) {
+      await saveInsights(payload);
+    }
+  }
+};
+
+const setUpActions = setupObject => {
+  const { featureFlags } = setupObject;
+
+  // bind setupObject to the functions that requires some initializaton
+  const wrapupOverride = wrapupTask(setupObject);
+  const beforeCompleteAction = sendFormToBackend(setupObject);
+
+  Flex.Actions.addListener('beforeAcceptTask', initializeContactForm);
+
+  if (featureFlags.enable_transfers) Flex.Actions.addListener('afterAcceptTask', restoreFormIfTransfer);
+
   if (featureFlags.enable_transfers) Flex.Actions.replaceAction('TransferTask', transferOverride);
+
+  Flex.Actions.replaceAction('HangupCall', hangupCall);
+
+  Flex.Actions.replaceAction('WrapupTask', wrapupOverride);
+
+  Flex.Actions.addListener('beforeCompleteTask', beforeCompleteAction);
+
+  Flex.Actions.addListener('afterCompleteTask', removeContactForm);
 };
 
 export default class HrmFormPlugin extends FlexPlugin {
