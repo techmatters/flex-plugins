@@ -52,7 +52,7 @@ const defaultsNNS = {
  *  unholdParticipant: () => Promise<ReturnType<createTask>>
  *  cancelTransfer: () => Promise<ReturnType<createTask>>
  *  kick: () => Promise<ReturnType<createTask>>
- *  setAttributes: () => Promise<ReturnType<createTask>>
+ *  setAttributes: (newAttributes: any) => Promise<ReturnType<createTask>>
  *  wrapUp: () => Promise<ReturnType<createTask>>
  * }}
  */

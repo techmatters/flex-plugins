@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import { Actions, ITask, TaskHelper, StateHelper } from '@twilio/flex-ui';
 
-import { transferChatResolve, transferCallResolve } from '../services/ServerlessService';
+import { transferChatResolve } from '../services/ServerlessService';
 import { transferStatuses, transferModes } from '../states/DomainConstants';
 import { getConfig } from '../HrmFormPlugin';
 
@@ -57,29 +57,32 @@ export const shouldShowTransferControls = task =>
   !isOriginalReservation(task) && isTransferring(task) && TaskHelper.isTaskAccepted(task);
 
 /**
+ * Indicates if the current counselor has sole control over the task. Used to know if counselor should send form to hrm backend and prevent the form from being edited
+ * A counselor controls a task if
+ * - transfer was not initiated
+ * - this is the original reservation and a transfer was initiated and then rejected
+ * - this is not the original reservation and a transfer was initiated and then accepted
  * @param {ITask} task
  */
-export const hasTaskControlChat = task => TaskHelper.isChatBasedTask(task) && !isTransferring(task);
+export const hasTaskControl = task =>
+  !hasTransferStarted(task) ||
+  (isOriginalReservation(task) && isTransferRejected(task)) ||
+  (!isOriginalReservation(task) && isTransferAccepted(task));
 
 /**
- * A counselor controls a call taks if
- * - task is original and a transfer was initiated but it was rejected
- * - task non original and a transfer was initiated and it was accepted
+ * Sets attributes.channelSid to a dummy value to start tracking the task in TransferredTaskJanitor
  * @param {ITask} task
  */
-export const hasTaskControlCall = task =>
-  TaskHelper.isCallTask(task) &&
-  (!hasTransferStarted(task) ||
-    (isOriginalReservation(task) && isTransferRejected(task)) ||
-    (!isOriginalReservation(task) && isTransferAccepted(task)));
+export const setDummyChannelSid = async task => {
+  const updatedAttributes = {
+    ...task.attributes,
+    channelSid: 'CH00000000000000000000000000000000',
+  };
+  await task.setAttributes(updatedAttributes);
+};
 
 /**
- * Indicates if the current counselor has control over the task. Used to know if counselor should send form to hrm and pevent the form from being edited
- * @param {ITask} task
- */
-export const hasTaskControl = task => hasTaskControlCall(task) || hasTaskControlChat(task);
-
-/**
+ * Updates the state of the transfer and adds a dummy channelSid to start tracking the task in TransferredTaskJanitor
  * @param {string} newStatus
  * @returns {(task: ITask) => Promise<void>}
  */
@@ -90,6 +93,7 @@ export const updateTransferStatus = newStatus => async task => {
       ...task.attributes.transferMeta,
       transferStatus: newStatus,
     },
+    channelSid: 'CH00000000000000000000000000000000',
   };
   await task.setAttributes(updatedAttributes);
 };
@@ -203,18 +207,11 @@ export const closeChatSelf = async task => {
  * @returns {Promise<void>}
  */
 export const closeCallOriginal = async task => {
+  await setTransferAccepted(task);
   await Actions.invokeAction('KickParticipant', {
     sid: task.sid,
     targetSid: task.attributes.transferMeta.originalCounselor,
   });
-  await setTransferAccepted(task);
-
-  // We can't close the task of another worker from Flex, so we close the original call via serverless function using Taskrouter API
-  const body = {
-    taskSid: task.attributes.transferMeta.originalTask,
-    reservationSid: task.attributes.transferMeta.originalReservation,
-  };
-  await transferCallResolve(body);
 };
 
 /**
@@ -223,7 +220,24 @@ export const closeCallOriginal = async task => {
  * @returns {Promise<void>}
  */
 export const closeCallSelf = async task => {
-  await Actions.invokeAction('HangupCall', { sid: task.sid });
   await setTransferRejected(task);
-  await Actions.invokeAction('CompleteTask', { sid: task.sid });
+  await Actions.invokeAction('HangupCall', { sid: task.sid });
 };
+
+/**
+ * Following helpers are used by TransferredTaskJanitor, as it will check for reservations instead of tasks, in order to unify the behavior of chat and call based tasks.
+ */
+
+export const shouldCloseOriginalReservation = reservation =>
+  reservation.reservation_sid === reservation.attributes.transferMeta.originalReservation &&
+  reservation.attributes.transferMeta.transferStatus === transferStatuses.accepted;
+
+export const shouldCloseTransferredReservation = reservation =>
+  reservation.reservation_sid !== reservation.attributes.transferMeta.originalReservation &&
+  reservation.attributes.transferMeta.transferStatus === transferStatuses.rejected;
+
+export const shouldCloseReservation = reservation =>
+  shouldCloseOriginalReservation(reservation) || shouldCloseTransferredReservation(reservation);
+
+export const shouldInvokeCompleteTask = (reservation, workerSid) =>
+  shouldCloseReservation(reservation) && reservation.status === 'wrapup' && reservation.worker_sid === workerSid;

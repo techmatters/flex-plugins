@@ -52,14 +52,6 @@ export const transferChatResolve = async body => {
   return closedTask;
 };
 
-export const transferCallResolve = async body => {
-  const { serverlessBaseUrl, token } = getConfig();
-  const url = `${serverlessBaseUrl}/transferCallResolve`;
-
-  const closedTask = await fetchProtectedApi(url, { ...body, Token: token });
-  return closedTask;
-};
-
 /**
  * @returns {Promise<string>}
  */

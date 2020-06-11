@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { StateHelper, Actions } from '@twilio/flex-ui';
 import { omit } from 'lodash';
 
@@ -5,11 +6,10 @@ import '../mockGetConfig';
 import * as TransferHelpers from '../../utils/transfer';
 import { transferModes, transferStatuses } from '../../states/DomainConstants';
 import { createTask } from '../helpers';
-import { transferChatResolve, transferCallResolve } from '../../services/ServerlessService';
+import { transferChatResolve } from '../../services/ServerlessService';
 
 jest.mock('../../services/ServerlessService', () => ({
   transferChatResolve: jest.fn(),
-  transferCallResolve: jest.fn(),
 }));
 
 Actions.invokeAction = jest.fn();
@@ -139,66 +139,30 @@ describe('Transfer mode, status and conditionals helpers', () => {
     expect(TransferHelpers.shouldShowTransferControls(task4r)).toBe(false); // rejected
   });
 
-  test('hasTaskControlChat', async () => {
-    const taskC = createTask(
-      { transferMeta: { transferStatus: transferStatuses.transferring } },
-      { taskChannelUniqueName: 'chat' },
-    );
-    const taskV = createTask(
-      { transferMeta: { transferStatus: transferStatuses.transferring } },
-      { taskChannelUniqueName: 'voice' },
-    );
-    const [taskCc, taskCr] = [{ ...taskC }, { ...taskC }];
-    await TransferHelpers.setTransferAccepted(taskCc);
-    await TransferHelpers.setTransferRejected(taskCr);
-    const [taskVc, taskVr] = [{ ...taskV }, { ...taskV }];
-    await TransferHelpers.setTransferAccepted(taskVc);
-    await TransferHelpers.setTransferRejected(taskVr);
-    const task2 = createTask({}, { taskChannelUniqueName: 'chat' });
-
-    expect(TransferHelpers.hasTaskControlChat(taskC)).toBe(false); // transferring
-    expect(TransferHelpers.hasTaskControlChat(taskV)).toBe(false); // transferring
-    expect(TransferHelpers.hasTaskControlChat(taskCc)).toBe(true); // ok
-    expect(TransferHelpers.hasTaskControlChat(taskCr)).toBe(true); // ok
-    expect(TransferHelpers.hasTaskControlChat(taskVc)).toBe(false); // not voice
-    expect(TransferHelpers.hasTaskControlChat(taskVr)).toBe(false); // not voice
-    expect(TransferHelpers.hasTaskControlChat(task2)).toBe(true); // ok
-  });
-
-  test('hasTaskControlCall', async () => {
-    const taskV1 = createTask(
+  test('hasTaskControl', async () => {
+    const task1 = createTask(
       { transferMeta: { transferStatus: transferStatuses.transferring, originalReservation: 'task1' } },
-      { taskChannelUniqueName: 'voice', sid: 'task1' },
+      { sid: 'task1' },
     );
-    const taskV2 = createTask(
+    const task2 = createTask(
       { transferMeta: { transferStatus: transferStatuses.transferring, originalReservation: 'task1' } },
-      { taskChannelUniqueName: 'voice', sid: 'task2' },
+      { sid: 'task2' },
     );
-    const taskC = createTask(
-      { transferMeta: { transferStatus: transferStatuses.transferring } },
-      { taskChannelUniqueName: 'chat' },
-    );
-    const [taskV1c, taskV1r] = [{ ...taskV1 }, { ...taskV1 }];
-    const [taskV2c, taskV2r] = [{ ...taskV2 }, { ...taskV2 }];
-    await TransferHelpers.setTransferAccepted(taskV1c);
-    await TransferHelpers.setTransferRejected(taskV1r);
-    await TransferHelpers.setTransferAccepted(taskV2c);
-    await TransferHelpers.setTransferRejected(taskV2r);
-    const [taskCc, taskCr] = [{ ...taskC }, { ...taskC }];
-    await TransferHelpers.setTransferAccepted(taskCc);
-    await TransferHelpers.setTransferRejected(taskCr);
-    const task2 = createTask({}, { taskChannelUniqueName: 'voice' });
+    const [task1c, task1r] = [{ ...task1 }, { ...task1 }];
+    const [task2c, task2r] = [{ ...task2 }, { ...task2 }];
+    await TransferHelpers.setTransferAccepted(task1c);
+    await TransferHelpers.setTransferRejected(task1r);
+    await TransferHelpers.setTransferAccepted(task2c);
+    await TransferHelpers.setTransferRejected(task2r);
+    const task3 = createTask({});
 
-    expect(TransferHelpers.hasTaskControlCall(taskV1)).toBe(false); // transferring
-    expect(TransferHelpers.hasTaskControlCall(taskV2)).toBe(false); // transferring
-    expect(TransferHelpers.hasTaskControlCall(taskC)).toBe(false); // not call
-    expect(TransferHelpers.hasTaskControlCall(taskV1c)).toBe(false); // original but accepted (control to 2nd counselor)
-    expect(TransferHelpers.hasTaskControlCall(taskV1r)).toBe(true); // ok
-    expect(TransferHelpers.hasTaskControlCall(taskV2c)).toBe(true); // ok
-    expect(TransferHelpers.hasTaskControlCall(taskV2r)).toBe(false); // transferred task rejected
-    expect(TransferHelpers.hasTaskControlCall(taskCc)).toBe(false); // not call
-    expect(TransferHelpers.hasTaskControlCall(taskCr)).toBe(false); // not call
-    expect(TransferHelpers.hasTaskControlCall(task2)).toBe(true); // ok
+    expect(TransferHelpers.hasTaskControl(task1)).toBe(false); // transferring
+    expect(TransferHelpers.hasTaskControl(task2)).toBe(false); // transferring
+    expect(TransferHelpers.hasTaskControl(task1c)).toBe(false); // original but accepted (control to 2nd counselor)
+    expect(TransferHelpers.hasTaskControl(task1r)).toBe(true); // ok
+    expect(TransferHelpers.hasTaskControl(task2c)).toBe(true); // ok
+    expect(TransferHelpers.hasTaskControl(task2r)).toBe(false); // transferred task rejected
+    expect(TransferHelpers.hasTaskControl(task3)).toBe(true); // ok
   });
 });
 
@@ -271,24 +235,20 @@ describe('Kick, close and helpers', () => {
 
   test('closeCallOriginal', async () => {
     const expected1 = { sid: 'reservation2', targetSid: 'some@identity' };
-    const expected2 = { taskSid: 'task1', reservationSid: 'reservation1' };
 
     await TransferHelpers.closeCallOriginal(task);
 
-    expect(Actions.invokeAction).toBeCalledWith('KickParticipant', expected1);
     expect(task.attributes.transferMeta.transferStatus).toBe(transferStatuses.accepted);
-    expect(transferCallResolve).toBeCalledWith(expected2);
+    expect(Actions.invokeAction).toBeCalledWith('KickParticipant', expected1);
   });
 
   test('closeCallSelf', async () => {
     const expected1 = { sid: 'reservation2' };
-    const expected2 = { sid: 'reservation2' };
 
     await TransferHelpers.closeCallSelf(task);
 
-    expect(Actions.invokeAction).toBeCalledWith('HangupCall', expected1);
     expect(task.attributes.transferMeta.transferStatus).toBe(transferStatuses.rejected);
-    expect(Actions.invokeAction).toBeCalledWith('CompleteTask', expected2);
+    expect(Actions.invokeAction).toBeCalledWith('HangupCall', expected1);
   });
 
   test('setTransferAccepted', async () => {
@@ -353,5 +313,129 @@ describe('Kick, close and helpers', () => {
 
     await TransferHelpers.setTransferMeta(warmTask, transferModes.warm, 'some string');
     expect(warmTask.attributes.transferMeta).toStrictEqual(warmExpected);
+  });
+});
+
+describe('TransferredTaskJanitor helpers', () => {
+  const createReservation = (sid, workerSid) => ({
+    reservation_sid: sid,
+    worker_sid: workerSid,
+    status: 'pending',
+    attributes: {},
+    accept() {
+      return { ...this, status: 'accepted' };
+    },
+    wrapUp() {
+      return { ...this, status: 'wrapup' };
+    },
+    complete() {
+      return { ...this, status: 'completed' };
+    },
+    setTransferMeta(transferMeta) {
+      return { ...this, attributes: { ...this.attributes, transferMeta } };
+    },
+  });
+
+  const createTransferMeta = transferStatus => ({
+    originalTask: 'task1',
+    originalReservation: 'reservation1',
+    originalCounselor: 'worker1',
+    transferStatus,
+  });
+
+  test('shouldCloseOriginalReservation (accepted)', async () => {
+    const reservation1 = createReservation('reservation1', 'worker1');
+    const reservation2 = createReservation('reservation2', 'worker2');
+
+    const acceptedMeta = createTransferMeta(transferStatuses.accepted);
+    const withAcceptedMeta1 = reservation1.setTransferMeta(acceptedMeta);
+    const withAcceptedMeta2 = reservation2.setTransferMeta(acceptedMeta);
+
+    expect(TransferHelpers.shouldCloseOriginalReservation(withAcceptedMeta1)).toBe(true);
+    expect(TransferHelpers.shouldCloseOriginalReservation(withAcceptedMeta2)).toBe(false);
+  });
+
+  test('shouldCloseOriginalReservation (rejected)', async () => {
+    const reservation1 = createReservation('reservation1', 'worker1');
+    const reservation2 = createReservation('reservation2', 'worker2');
+
+    const rejectedMeta = createTransferMeta(transferStatuses.rejected);
+    const withRejectedMeta1 = reservation1.setTransferMeta(rejectedMeta);
+    const withRejectedMeta2 = reservation2.setTransferMeta(rejectedMeta);
+
+    expect(TransferHelpers.shouldCloseOriginalReservation(withRejectedMeta1)).toBe(false);
+    expect(TransferHelpers.shouldCloseOriginalReservation(withRejectedMeta2)).toBe(false);
+  });
+
+  test('shouldCloseTransferredReservation (accepted)', async () => {
+    const reservation1 = createReservation('reservation1', 'worker1');
+    const reservation2 = createReservation('reservation2', 'worker2');
+
+    const acceptedMeta = createTransferMeta(transferStatuses.accepted);
+    const withAcceptedMeta1 = reservation1.setTransferMeta(acceptedMeta);
+    const withAcceptedMeta2 = reservation2.setTransferMeta(acceptedMeta);
+
+    expect(TransferHelpers.shouldCloseTransferredReservation(withAcceptedMeta1)).toBe(false);
+    expect(TransferHelpers.shouldCloseTransferredReservation(withAcceptedMeta2)).toBe(false);
+  });
+
+  test('shouldCloseTransferredReservation (rejected)', async () => {
+    const reservation1 = createReservation('reservation1', 'worker1');
+    const reservation2 = createReservation('reservation2', 'worker2');
+
+    const rejectedMeta = createTransferMeta(transferStatuses.rejected);
+    const withRejectedMeta1 = reservation1.setTransferMeta(rejectedMeta);
+    const withRejectedMeta2 = reservation2.setTransferMeta(rejectedMeta);
+
+    expect(TransferHelpers.shouldCloseTransferredReservation(withRejectedMeta1)).toBe(false);
+    expect(TransferHelpers.shouldCloseTransferredReservation(withRejectedMeta2)).toBe(true);
+  });
+
+  test('shouldInvokeCompleteTask (accepted)', () => {
+    const reservation1 = createReservation('reservation1', 'worker1');
+    const reservation2 = createReservation('reservation2', 'worker2');
+
+    const acceptedMeta = createTransferMeta(transferStatuses.accepted);
+    const withAcceptedMeta1 = reservation1.setTransferMeta(acceptedMeta);
+    const withAcceptedMeta2 = reservation2.setTransferMeta(acceptedMeta);
+
+    const sict = TransferHelpers.shouldInvokeCompleteTask;
+
+    // pending
+    expect(sict(withAcceptedMeta1, withAcceptedMeta1.worker_sid)).toBe(false);
+    expect(sict(withAcceptedMeta2, withAcceptedMeta2.worker_sid)).toBe(false);
+    // accepted
+    expect(sict(withAcceptedMeta1.accept(), withAcceptedMeta1.worker_sid)).toBe(false);
+    expect(sict(withAcceptedMeta2.accept(), withAcceptedMeta2.worker_sid)).toBe(false);
+    // wrapup
+    expect(sict(withAcceptedMeta1.wrapUp(), withAcceptedMeta1.worker_sid)).toBe(true);
+    expect(sict(withAcceptedMeta2.wrapUp(), withAcceptedMeta2.worker_sid)).toBe(false);
+    // completed
+    expect(sict(withAcceptedMeta1.complete(), withAcceptedMeta1.worker_sid)).toBe(false);
+    expect(sict(withAcceptedMeta2.complete(), withAcceptedMeta2.worker_sid)).toBe(false);
+  });
+
+  test('shouldInvokeCompleteTask (rejected)', () => {
+    const reservation1 = createReservation('reservation1', 'worker1');
+    const reservation2 = createReservation('reservation2', 'worker2');
+
+    const rejectedMeta = createTransferMeta(transferStatuses.rejected);
+    const withRejectedMeta1 = reservation1.setTransferMeta(rejectedMeta);
+    const withRejectedMeta2 = reservation2.setTransferMeta(rejectedMeta);
+
+    const sict = TransferHelpers.shouldInvokeCompleteTask;
+
+    // pending
+    expect(sict(withRejectedMeta1, withRejectedMeta1.worker_sid)).toBe(false);
+    expect(sict(withRejectedMeta2, withRejectedMeta2.worker_sid)).toBe(false);
+    // accepted
+    expect(sict(withRejectedMeta1.accept(), withRejectedMeta1.worker_sid)).toBe(false);
+    expect(sict(withRejectedMeta2.accept(), withRejectedMeta2.worker_sid)).toBe(false);
+    // wrapup
+    expect(sict(withRejectedMeta1.wrapUp(), withRejectedMeta1.worker_sid)).toBe(false);
+    expect(sict(withRejectedMeta2.wrapUp(), withRejectedMeta2.worker_sid)).toBe(true);
+    // completed
+    expect(sict(withRejectedMeta1.complete(), withRejectedMeta1.worker_sid)).toBe(false);
+    expect(sict(withRejectedMeta2.complete(), withRejectedMeta2.worker_sid)).toBe(false);
   });
 });
