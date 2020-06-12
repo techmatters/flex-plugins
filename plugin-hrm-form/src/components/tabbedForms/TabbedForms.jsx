@@ -46,6 +46,11 @@ const TabbedForms = props => {
     props.changeTab(tab, taskId);
   };
 
+  const handleBackButton = () => {
+    props.handleCallTypeButtonClick(taskId, '');
+    props.changeRoute('select-call-type', taskId);
+  };
+
   const { tab } = form.metadata;
   const isCallerType = form.callType.value === callTypes.caller;
 
@@ -103,7 +108,7 @@ const TabbedForms = props => {
   return (
     <TabbedFormsContainer>
       <TopNav>
-        <TransparentButton onClick={e => props.handleCallTypeButtonClick(taskId, '')}>&lt; BACK</TransparentButton>
+        <TransparentButton onClick={handleBackButton}>&lt; BACK</TransparentButton>
       </TopNav>
       <StyledTabs name="tab" variant="scrollable" scrollButtons="auto" value={tab} onChange={handleTabsChange}>
         {tabs}
@@ -126,6 +131,7 @@ TabbedForms.propTypes = {
   handleFocus: PropTypes.func.isRequired,
   handleSelectSearchResult: PropTypes.func.isRequired,
   changeTab: PropTypes.func.isRequired,
+  changeRoute: PropTypes.func.isRequired,
 };
 
 export default withTaskContext(TabbedForms);

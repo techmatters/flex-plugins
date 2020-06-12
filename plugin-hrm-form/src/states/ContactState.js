@@ -11,6 +11,7 @@ import {
   SAVE_CONTACT_STATE,
   HANDLE_SELECT_SEARCH_RESULT,
   CHANGE_TAB,
+  CHANGE_ROUTE,
 } from './ActionTypes';
 import { countSelectedCategories } from './ValidationRules';
 import { copySearchResultIntoTask } from './SearchContact';
@@ -73,6 +74,8 @@ export class Actions {
   static saveEndMillis = taskId => ({ type: SAVE_END_MILLIS, taskId });
 
   static changeTab = (tab, taskId) => ({ type: CHANGE_TAB, tab, taskId });
+
+  static changeRoute = (route, taskId) => ({ type: CHANGE_ROUTE, route, taskId });
 }
 
 // Will replace the below when we move over to field objects
@@ -212,6 +215,21 @@ export function reduce(state = initialState, action) {
         tasks: {
           ...state.tasks,
           [action.taskId]: taskWithUpdatedTab,
+        },
+      };
+    }
+
+    case CHANGE_ROUTE: {
+      console.log({ taskId: action.taskId, tasks: state.tasks });
+      const currentTask = state.tasks[action.taskId];
+      const { metadata } = currentTask;
+      const taskWithUpdatedRoute = { ...currentTask, metadata: { ...metadata, route: action.route } };
+
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: taskWithUpdatedRoute,
         },
       };
     }

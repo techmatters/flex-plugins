@@ -20,18 +20,23 @@ const CallTypeButtons = props => {
   const { form, task, localization } = props;
   const { isCallTask } = localization;
 
+  const handleCallTypeButtonClick = (taskSid, callType) => {
+    props.handleCallTypeButtonClick(taskSid, callType);
+    props.changeRoute('tabbed-forms', taskSid);
+  };
+
   return (
     <>
       <Container>
         <Box marginBottom="29px">
           <Label>categorize this contact</Label>
-          <DataCallTypeButton onClick={() => props.handleCallTypeButtonClick(task.taskSid, callTypes.child)}>
+          <DataCallTypeButton onClick={() => handleCallTypeButtonClick(task.taskSid, callTypes.child)}>
             <Box width="50px" marginRight="5px">
               <FaceIcon />
             </Box>
             <Template code="CallType-child" />
           </DataCallTypeButton>
-          <DataCallTypeButton onClick={() => props.handleCallTypeButtonClick(task.taskSid, callTypes.caller)}>
+          <DataCallTypeButton onClick={() => handleCallTypeButtonClick(task.taskSid, callTypes.caller)}>
             <Box width="50px" marginRight="5px">
               <FaceIcon style={{ marginRight: '-5px' }} />
               <FaceIcon />
@@ -72,6 +77,7 @@ CallTypeButtons.propTypes = {
   handleCallTypeButtonClick: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   localization: localizationType.isRequired,
+  changeRoute: PropTypes.func.isRequired,
 };
 
 export default withLocalization(withTaskContext(CallTypeButtons));
