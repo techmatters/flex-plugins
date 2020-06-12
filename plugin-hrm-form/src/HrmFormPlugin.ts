@@ -1,19 +1,15 @@
-import React from 'react';
 import * as Flex from '@twilio/flex-ui';
 import { FlexPlugin } from 'flex-plugin';
 import SyncClient from 'twilio-sync';
 
 import './styles/GlobalOverrides';
-import CustomCRMContainer from './components/CustomCRMContainer';
-import QueuesStatus from './components/queuesStatus';
-import QueuesStatusWriter from './components/queuesStatus/QueuesStatusWriter';
-import { TransferButton, AcceptTransferButton, RejectTransferButton } from './components/transfer';
+import { SetupObject } from './utils/types';
 import reducers, { namespace } from './states';
-import LocalizationContext from './contexts/LocalizationContext';
 import HrmTheme from './styles/HrmTheme';
-import { channelTypes, transferModes } from './states/DomainConstants';
-import { addDeveloperUtils, initLocalization } from './utils/pluginHelpers';
-import * as Actions from './utils/setUpActions';
+import { transferModes } from './states/DomainConstants';
+import { initLocalization } from './utils/pluginHelpers';
+import * as ActionFunctions from './utils/setUpActions';
+import * as Components from './utils/setUpComponents';
 import * as TransferHelpers from './utils/transfer';
 import { changeLanguage } from './states/ConfigurationState';
 import { issueSyncToken } from './services/ServerlessService';
@@ -24,9 +20,8 @@ export const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
 /**
  * Sync Client used to store and share documents across counselors
- * @type {SyncClient}
  */
-let sharedStateClient;
+let sharedStateClient: SyncClient;
 
 export const getConfig = () => {
   const manager = Flex.Manager.getInstance();
@@ -82,7 +77,7 @@ const setUpSharedStateClient = () => {
   initSharedStateClient();
 };
 
-const setUpTransferredTaskJanitor = async setupObject => {
+const setUpTransferredTaskJanitor = async (setupObject: SetupObject) => {
   const { workerSid } = setupObject;
   const query = 'data.attributes.channelSid == "CH00000000000000000000000000000000"';
   const reservationQuery = await Flex.Manager.getInstance().insightsClient.liveQuery('tr-reservation', query);
@@ -93,12 +88,12 @@ const setUpTransferredTaskJanitor = async setupObject => {
   });
 };
 
-const setUpTransfers = setupObject => {
+const setUpTransfers = (setupObject: SetupObject) => {
   setUpSharedStateClient();
   setUpTransferredTaskJanitor(setupObject);
 };
 
-const setUpLocalization = config => {
+const setUpLocalization = (config: ReturnType<typeof getConfig>) => {
   const manager = Flex.Manager.getInstance();
 
   const { counselorLanguage, helplineLanguage, configuredLanguage } = config;
@@ -115,119 +110,43 @@ const setUpLocalization = config => {
   return initLocalization(localizationConfig, initialLanguage);
 };
 
-const setUpTransferComponents = () => {
-  Flex.TaskCanvasHeader.Content.add(<TransferButton key="transfer-button" />, {
-    sortOrder: 1,
-    if: props => TransferHelpers.shouldShowTransferButton(props.task),
-  });
+const setUpComponents = (setupObject: SetupObject) => {
+  const { helpline, featureFlags } = setupObject;
 
-  Flex.TaskCanvasHeader.Content.remove('actions', {
-    if: props => TransferHelpers.isTransferring(props.task),
-  });
+  // setUp (add) dynamic components
+  Components.setUpQueuesStatusWriter(setupObject);
+  Components.setUpQueuesStatus();
+  Components.setUpCustomCRMContainer();
+  if (featureFlags.enable_transfers) Components.setUpTransferComponents();
 
-  Flex.TaskCanvasHeader.Content.add(<AcceptTransferButton key="complete-transfer-button" />, {
-    sortOrder: 1,
-    if: props => TransferHelpers.shouldShowTransferControls(props.task),
-  });
+  if (!Boolean(helpline)) Components.setUpDeveloperComponents(setupObject); // utilities for developers only
 
-  Flex.TaskCanvasHeader.Content.add(<RejectTransferButton key="reject-transfer-button" />, {
-    sortOrder: 1,
-    if: props => TransferHelpers.shouldShowTransferControls(props.task),
-  });
+  // remove dynamic components
+  Components.removeActionsIfWrapping();
+  Components.removeLogo();
 };
 
-const setUpComponents = setupObject => {
-  const manager = Flex.Manager.getInstance();
-
-  const { helpline, translateUI, featureFlags } = setupObject;
-
-  // utilities for developers only
-  if (!Boolean(helpline)) addDeveloperUtils(manager, translateUI);
-
-  Flex.MainContainer.Content.add(
-    <QueuesStatusWriter insightsClient={manager.insightsClient} key="queue-status-writer" helpline={helpline} />,
-    {
-      sortOrder: -1,
-      align: 'start',
-    },
-  );
-
-  const voiceColor = { Accepted: Flex.DefaultTaskChannels.Call.colors.main() };
-  const webColor = Flex.DefaultTaskChannels.Chat.colors.main;
-  const facebookColor = Flex.DefaultTaskChannels.ChatMessenger.colors.main;
-  const smsColor = Flex.DefaultTaskChannels.ChatSms.colors.main;
-  const whatsappColor = Flex.DefaultTaskChannels.ChatWhatsApp.colors.main;
-  Flex.TaskListContainer.Content.add(
-    <QueuesStatus
-      key="queue-status"
-      colors={{
-        voiceColor,
-        webColor,
-        facebookColor,
-        smsColor,
-        whatsappColor,
-      }}
-    />,
-    {
-      sortOrder: -1,
-      align: 'start',
-    },
-  );
-
-  const onCompleteTask = async (sid, task) => {
-    if (task.status !== 'wrapping') {
-      if (task.channelType === channelTypes.voice) {
-        await Flex.Actions.invokeAction('HangupCall', { sid, task });
-      } else {
-        await Flex.Actions.invokeAction('WrapupTask', { sid, task });
-      }
-    }
-
-    Flex.Actions.invokeAction('CompleteTask', { sid, task });
-  };
-
-  const options = { sortOrder: -1 };
-  Flex.CRMContainer.Content.replace(
-    <LocalizationContext.Provider
-      value={{ manager, isCallTask: Flex.TaskHelper.isCallTask }}
-      key="custom-crm-container"
-    >
-      <CustomCRMContainer handleCompleteTask={onCompleteTask} />
-    </LocalizationContext.Provider>,
-    options,
-  );
-
-  // Must use submit buttons in CRM container to complete task
-  Flex.TaskCanvasHeader.Content.remove('actions', {
-    if: props => props.task && props.task.status === 'wrapping',
-  });
-
-  Flex.MainHeader.Content.remove('logo');
-
-  if (featureFlags.enable_transfers) setUpTransferComponents();
-};
-
-const setUpActions = setupObject => {
+const setUpActions = (setupObject: SetupObject) => {
   const { featureFlags } = setupObject;
 
   // bind setupObject to the functions that requires some initializaton
-  const transferOverride = Actions.customTransferTask(setupObject);
-  const wrapupOverride = Actions.wrapupTask(setupObject);
-  const beforeCompleteAction = Actions.sendFormToBackend(setupObject);
+  const transferOverride = ActionFunctions.customTransferTask(setupObject);
+  const wrapupOverride = ActionFunctions.wrapupTask(setupObject);
+  const beforeCompleteAction = ActionFunctions.sendFormToBackend(setupObject);
 
-  Flex.Actions.addListener('beforeAcceptTask', Actions.initializeContactForm);
+  Flex.Actions.addListener('beforeAcceptTask', ActionFunctions.initializeContactForm);
 
-  if (featureFlags.enable_transfers) Flex.Actions.addListener('afterAcceptTask', Actions.restoreFormIfTransfer);
+  if (featureFlags.enable_transfers) Flex.Actions.addListener('afterAcceptTask', ActionFunctions.restoreFormIfTransfer);
 
   if (featureFlags.enable_transfers) Flex.Actions.replaceAction('TransferTask', transferOverride);
 
-  Flex.Actions.replaceAction('HangupCall', Actions.hangupCall);
+  Flex.Actions.replaceAction('HangupCall', ActionFunctions.hangupCall);
 
   Flex.Actions.replaceAction('WrapupTask', wrapupOverride);
 
   Flex.Actions.addListener('beforeCompleteTask', beforeCompleteAction);
 
-  Flex.Actions.addListener('afterCompleteTask', Actions.removeContactForm);
+  Flex.Actions.addListener('afterCompleteTask', ActionFunctions.removeContactForm);
 };
 
 export default class HrmFormPlugin extends FlexPlugin {

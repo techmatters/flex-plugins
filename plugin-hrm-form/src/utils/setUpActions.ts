@@ -1,7 +1,6 @@
-import { Manager, TaskHelper, Actions as FlexActions } from '@twilio/flex-ui';
+import { Manager, TaskHelper, Actions as FlexActions, ActionFunction, ReplacedActionFunction } from '@twilio/flex-ui';
 
-// eslint-disable-next-line no-unused-vars
-import { DEFAULT_TRANSFER_MODE, getConfig } from '../HrmFormPlugin';
+import { DEFAULT_TRANSFER_MODE } from '../HrmFormPlugin';
 import { saveInsightsData } from '../services/InsightsService';
 import { transferChatStart } from '../services/ServerlessService';
 import { namespace, contactFormsBase } from '../states';
@@ -9,47 +8,42 @@ import { Actions } from '../states/ContactState';
 import { channelTypes, transferModes } from '../states/DomainConstants';
 import * as TransferHelpers from './transfer';
 import { saveFormSharedState, loadFormSharedState } from './sharedState';
+import { SetupObject } from './types';
 
 /**
  * Given a taskSid, retrieves the state of the form (stored in redux) for that task
- * @param {string} taskSid
  */
-const getStateContactForms = taskSid => {
+const getStateContactForms = (taskSid: string) => {
   return Manager.getInstance().store.getState()[namespace][contactFormsBase].tasks[taskSid];
 };
 
 /**
  * Saves the end time of the conversation (used to save the duration of the conversation)
- * @param {{ task: any }} payload
  */
-const saveEndMillis = async payload => {
+const saveEndMillis: ActionFunction = async payload => {
   Manager.getInstance().store.dispatch(Actions.saveEndMillis(payload.task.taskSid));
 };
 
 /**
- * @param {import('@twilio/flex-ui').ActionFunction} fun
- * @returns {import('@twilio/flex-ui').ReplacedActionFunction}
  * A function that calls fun with the payload of the replaced action
  * and continues with the Twilio execution
  */
-const fromActionFunction = fun => async (payload, original) => {
+const fromActionFunction = (fun: ActionFunction): ReplacedActionFunction => async (payload, original) => {
   await fun(payload);
   await original(payload);
 };
 
 /**
  * Initializes an empty form (in redux store) for the task within payload
- * @param {{ task: any }} payload
  */
-export const initializeContactForm = payload => {
+export const initializeContactForm = (payload: { task: any }) => {
   Manager.getInstance().store.dispatch(Actions.initializeContactState(payload.task.taskSid));
 };
 
 /**
  * If the task within payload is a transferred one, load the form of the previous counselor (if possible)
- * @param {{ task: any }} payload
  */
-export const restoreFormIfTransfer = async payload => {
+export const restoreFormIfTransfer = async (payload: { task: any }) => {
   if (TransferHelpers.hasTransferStarted(payload.task)) {
     const form = await loadFormSharedState(payload.task);
     if (form) Manager.getInstance().store.dispatch(Actions.restoreEntireForm(form, payload.task.taskSid));
@@ -58,10 +52,8 @@ export const restoreFormIfTransfer = async payload => {
 
 /**
  * Custom override for TransferTask action. Saves the form to share with another counseler (if possible) and then starts the transfer
- * @param {ReturnType<getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string> }} setupObject
- * @returns {import('@twilio/flex-ui').ReplacedActionFunction}
  */
-export const customTransferTask = setupObject => async (payload, original) => {
+export const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction => async (payload, original) => {
   console.log('TRANSFER PAYLOAD', payload);
 
   // save current form state as sync document (if there is a form)
@@ -99,17 +91,14 @@ export const hangupCall = fromActionFunction(saveEndMillis);
 
 /**
  * Helper to determine if the counselor should send a message before leaving the chat
- * @param {string} channel
  */
-const shouldSayGoodbye = channel =>
+const shouldSayGoodbye = (channel: string) =>
   channel === channelTypes.facebook || channel === channelTypes.sms || channel === channelTypes.whatsapp;
 
 /**
  * Sends the message before leaving the chat
- * @param {ReturnType<getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string> }} setupObject
- * @returns {import('@twilio/flex-ui').ActionFunction}
  */
-const sendGoodbyeMessage = setupObject => async payload => {
+const sendGoodbyeMessage = (setupObject: SetupObject): ActionFunction => async payload => {
   const { getGoodbyeMsg, helplineLanguage, configuredLanguage } = setupObject;
 
   const getTaskLanguage = task => task.attributes.language || helplineLanguage || configuredLanguage;
@@ -124,10 +113,8 @@ const sendGoodbyeMessage = setupObject => async payload => {
 
 /**
  * Override for WrapupTask action. Sends a message before leaving (if it should) and saves the end time of the conversation
- * @param {ReturnType<getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string> }} setupObject
- * @returns {import('@twilio/flex-ui').ReplacedActionFunction}
  */
-export const wrapupTask = setupObject =>
+export const wrapupTask = (setupObject: SetupObject) =>
   fromActionFunction(async payload => {
     if (shouldSayGoodbye(payload.task.channelType)) {
       await sendGoodbyeMessage(setupObject)(payload);
@@ -137,9 +124,8 @@ export const wrapupTask = setupObject =>
 
 /**
  * Saves custom attributes of the task (for Flex Insights)
- * @param {{ task: any }} payload
  */
-const saveInsights = async payload => {
+const saveInsights = async (payload: { task: any }) => {
   const { taskSid } = payload.task;
   const task = getStateContactForms(taskSid);
 
@@ -148,9 +134,8 @@ const saveInsights = async payload => {
 
 /**
  * Submits the form to the hrm backend (if it should), and saves the insights. Used before task is completed
- * @param {ReturnType<getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string> }} setupObject
  */
-export const sendFormToBackend = setupObject => async (payload, abortFunction) => {
+export const sendFormToBackend = (setupObject: SetupObject) => async (payload, abortFunction) => {
   const { hrmBaseUrl, workerSid, helpline, featureFlags } = setupObject;
 
   const manager = Manager.getInstance();
@@ -165,9 +150,8 @@ export const sendFormToBackend = setupObject => async (payload, abortFunction) =
 
 /**
  * Removes the form state from the redux store. Used after a task is completed
- * @param {{ task: any }} payload
  */
-export const removeContactForm = payload => {
+export const removeContactForm = (payload: { task: any }) => {
   const manager = Manager.getInstance();
   manager.store.dispatch(Actions.removeContactState(payload.task.taskSid));
 };
