@@ -13,7 +13,7 @@ import LocalizationContext from './contexts/LocalizationContext';
 import HrmTheme from './styles/HrmTheme';
 import { channelTypes, transferModes } from './states/DomainConstants';
 import { addDeveloperUtils, initLocalization } from './utils/pluginHelpers';
-import * as Actions from './utils/setUpActions';
+import * as ActionFunctions from './utils/setUpActions';
 import * as TransferHelpers from './utils/transfer';
 import { changeLanguage } from './states/ConfigurationState';
 import { issueSyncToken } from './services/ServerlessService';
@@ -211,23 +211,23 @@ const setUpActions = setupObject => {
   const { featureFlags } = setupObject;
 
   // bind setupObject to the functions that requires some initializaton
-  const transferOverride = Actions.customTransferTask(setupObject);
-  const wrapupOverride = Actions.wrapupTask(setupObject);
-  const beforeCompleteAction = Actions.sendFormToBackend(setupObject);
+  const transferOverride = ActionFunctions.customTransferTask(setupObject);
+  const wrapupOverride = ActionFunctions.wrapupTask(setupObject);
+  const beforeCompleteAction = ActionFunctions.sendFormToBackend(setupObject);
 
-  Flex.Actions.addListener('beforeAcceptTask', Actions.initializeContactForm);
+  Flex.Actions.addListener('beforeAcceptTask', ActionFunctions.initializeContactForm);
 
-  if (featureFlags.enable_transfers) Flex.Actions.addListener('afterAcceptTask', Actions.restoreFormIfTransfer);
+  if (featureFlags.enable_transfers) Flex.Actions.addListener('afterAcceptTask', ActionFunctions.restoreFormIfTransfer);
 
   if (featureFlags.enable_transfers) Flex.Actions.replaceAction('TransferTask', transferOverride);
 
-  Flex.Actions.replaceAction('HangupCall', Actions.hangupCall);
+  Flex.Actions.replaceAction('HangupCall', ActionFunctions.hangupCall);
 
   Flex.Actions.replaceAction('WrapupTask', wrapupOverride);
 
   Flex.Actions.addListener('beforeCompleteTask', beforeCompleteAction);
 
-  Flex.Actions.addListener('afterCompleteTask', Actions.removeContactForm);
+  Flex.Actions.addListener('afterCompleteTask', ActionFunctions.removeContactForm);
 };
 
 export default class HrmFormPlugin extends FlexPlugin {
