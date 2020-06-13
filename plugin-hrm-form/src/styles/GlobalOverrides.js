@@ -32,4 +32,12 @@ injectGlobal`
   button.Twilio-MessageInput-SendButton {
     background: rgba(216, 27, 96, 0.8);
   }
+
+  div.Twilio-WorkerDirectory-ButtonContainer > button.Twilio-IconButton[title=Consult] {
+    display: none;
+  }
+
+  button.Twilio-CallCanvas-HangupButton[title=Leave] {
+    display: none;
+  }
 `;
