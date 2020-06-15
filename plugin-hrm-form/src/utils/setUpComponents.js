@@ -10,12 +10,13 @@ import LocalizationContext from '../contexts/LocalizationContext';
 import { channelTypes } from '../states/DomainConstants';
 import Translator from '../components/translator';
 import SettingsSideLink from '../components/sideLinks/SettingsSideLink';
-import { SetupObject } from './types';
-
+// eslint-disable-next-line no-unused-vars
+import { getConfig } from '../HrmFormPlugin';
 /**
  * Add an "invisible" component that tracks the state of the queues, updating the pending tasks in each channel
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
  */
-export const setUpQueuesStatusWriter = (setupObject: SetupObject) => {
+export const setUpQueuesStatusWriter = setupObject => {
   const { helpline } = setupObject;
 
   Flex.MainContainer.Content.add(
@@ -62,8 +63,10 @@ export const setUpQueuesStatus = () => {
 
 /**
  * Function used to manually complete a task (making sure it transitions to wrapping state first).
+ * @param {string} sid
+ * @param {import('@twilio/flex-ui').ITask} task
  */
-const onCompleteTask = async (sid: string, task: Flex.ITask) => {
+const onCompleteTask = async (sid, task) => {
   if (task.status !== 'wrapping') {
     if (task.channelType === channelTypes.voice) {
       await Flex.Actions.invokeAction('HangupCall', { sid, task });
@@ -120,8 +123,9 @@ export const setUpTransferComponents = () => {
 
 /**
  * Add components used only by developers
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
  */
-export const setUpDeveloperComponents = (setupObject: SetupObject) => {
+export const setUpDeveloperComponents = setupObject => {
   const manager = Flex.Manager.getInstance();
 
   const { translateUI } = setupObject;
