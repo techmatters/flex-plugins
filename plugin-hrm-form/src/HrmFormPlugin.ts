@@ -124,6 +124,8 @@ const setUpComponents = (setupObject: SetupObject) => {
   // remove dynamic components
   Components.removeActionsIfWrapping();
   Components.removeLogo();
+  Components.removeDirectoryButton();
+  Components.removeActionsIfTransferring();
 };
 
 const setUpActions = (setupObject: SetupObject) => {

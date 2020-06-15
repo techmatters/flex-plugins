@@ -161,3 +161,29 @@ export const removeActionsIfWrapping = () => {
 export const removeLogo = () => {
   Flex.MainHeader.Content.remove('logo');
 };
+
+/**
+ * Removes open directory button from Call Canvas Actions (bottom buttons)
+ */
+export const removeDirectoryButton = () => {
+  Flex.CallCanvasActions.Content.remove('directory');
+};
+
+/**
+ * Removes hangup/kick participant in task that is being transferred
+ */
+export const removeActionsIfTransferring = () => {
+  const hasNoControlAndIsWarm = task => !TransferHelpers.hasTaskControl(task) && TransferHelpers.isWarmTransfer(task);
+
+  Flex.TaskListButtons.Content.remove('hangup', {
+    if: props => hasNoControlAndIsWarm(props.task),
+  });
+
+  Flex.CallCanvasActions.Content.remove('hangup', {
+    if: props => hasNoControlAndIsWarm(props.task),
+  });
+
+  Flex.ParticipantCanvas.Content.remove('actions', {
+    if: props => hasNoControlAndIsWarm(props.task) && (props.participant.participantType === 'worker'),
+  });
+};
