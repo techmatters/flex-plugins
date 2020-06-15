@@ -188,6 +188,6 @@ export const removeActionsIfTransferring = () => {
   });
 
   Flex.ParticipantCanvas.Content.remove('actions', {
-    if: props => hasNoControlAndIsWarm(props.task) && (props.participant.participantType === 'worker'),
+    if: props => hasNoControlAndIsWarm(props.task) && props.participant.participantType === 'worker',
   });
 };
