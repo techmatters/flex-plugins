@@ -134,7 +134,7 @@ const setUpComponents = setupObject => {
 const setUpActions = setupObject => {
   const manager = Flex.Manager.getInstance();
 
-  const { hrmBaseUrl, workerSid, helpline, helplineLanguage, configuredLanguage, getGoodbyeMsg } = setupObject;
+  const { helplineLanguage, configuredLanguage, getGoodbyeMsg } = setupObject;
 
   Flex.Actions.addListener('beforeAcceptTask', payload => {
     manager.store.dispatch(Actions.initializeContactState(payload.task.taskSid));
@@ -148,7 +148,6 @@ const setUpActions = setupObject => {
   };
 
   Flex.Actions.addListener('beforeCompleteTask', async (payload, abortFunction) => {
-    manager.store.dispatch(Actions.saveContactState(payload.task, abortFunction, hrmBaseUrl, workerSid, helpline));
     const { featureFlags } = getConfig();
     if (featureFlags.enable_save_insights) {
       await saveInsights(payload);

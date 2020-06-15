@@ -10,6 +10,7 @@ import { namespace, contactFormsBase, searchContactsBase } from '../states';
 import { Actions } from '../states/ContactState';
 import { handleBlur, handleCategoryToggle, handleFocus, handleSubmit } from '../states/ActionCreators';
 import { handleSelectSearchResult, recreateSearchContact } from '../states/SearchContact';
+import { getConfig } from '../HrmFormPlugin';
 
 class TaskView extends Component {
   static displayName = 'TaskView';
@@ -48,6 +49,8 @@ class TaskView extends Component {
       return null;
     }
 
+    const { hrmBaseUrl, workerSid, helpline } = getConfig();
+
     return (
       <div style={{ height: '100%' }}>
         <HrmForm
@@ -56,7 +59,8 @@ class TaskView extends Component {
           handleCategoryToggle={handleCategoryToggle(form, this.props.handleChange)}
           handleChange={this.props.handleChange}
           handleCallTypeButtonClick={this.props.handleCallTypeButtonClick}
-          handleSubmit={this.props.handleSubmit(form, this.props.handleCompleteTask)}
+          handleSubmit={this.props.handleSubmit(form, hrmBaseUrl, workerSid, helpline, this.props.handleCompleteTask)}
+          handleCompleteTask={this.props.handleCompleteTask}
           handleFocus={this.props.handleFocus}
           handleSelectSearchResult={this.props.handleSelectSearchResult}
           changeTab={this.props.changeTab}

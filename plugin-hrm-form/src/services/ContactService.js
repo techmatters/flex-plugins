@@ -65,7 +65,7 @@ export function transformForm(form) {
   return newForm;
 }
 
-export function saveToHrm(task, form, abortFunction, hrmBaseUrl, workerSid, helpline) {
+export async function saveToHrm(task, form, abortFunction, hrmBaseUrl, workerSid, helpline) {
   // if we got this far, we assume the form is valid and ready to submit
 
   // metrics will be invalid if page was reloaded (form recreated and thus initial information will be lost)
@@ -107,29 +107,51 @@ export function saveToHrm(task, form, abortFunction, hrmBaseUrl, workerSid, help
 
   // print the form values to the console
   console.log(`Sending: ${JSON.stringify(body)}`);
-  fetch(`${hrmBaseUrl}/contacts`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Authorization: `Basic ${btoa(secret)}` },
-    body: JSON.stringify(body),
-  })
-    .then(response => {
-      if (!response.ok) {
-        console.log(`Form error: ${response.statusText}`);
-        if (!window.confirm('Error from backend system.  Are you sure you want to end the task without recording?')) {
-          abortFunction();
-        }
-      }
-      return response.json();
-    })
-    .then(myJson => {
-      console.log(`Received: ${JSON.stringify(myJson)}`);
-    })
-    .catch(response => {
-      console.log('Caught something');
+  try {
+    const response = await fetch(`${hrmBaseUrl}/contacts`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Basic ${btoa(secret)}` },
+      body: JSON.stringify(body),
+    });
 
-      // TODO(nick): fix this. this isn't working I don't think the function is working from inside the promise.
-      if (!window.confirm('Unknown error saving form.  Are you sure you want to end the task without recording?')) {
+    if (!response.ok) {
+      console.log(`Form error: ${response.statusText}`);
+      if (!window.confirm('Error from backend system.  Are you sure you want to end the task without recording?')) {
         abortFunction();
       }
+    }
+    const responseJson = await response.json();
+    console.log(`Received: ${JSON.stringify(responseJson)}`);
+    return responseJson;
+  } catch (e) {
+    console.log('Caught something');
+
+    // TODO(nick): fix this. this isn't working I don't think the function is working from inside the promise.
+    if (!window.confirm('Unknown error saving form.  Are you sure you want to end the task without recording?')) {
+      abortFunction();
+    }
+
+    return null;
+  }
+}
+
+export async function connectToCase(hrmBaseUrl, contactId, caseId) {
+  const body = { caseId };
+  try {
+    const response = await fetch(`${hrmBaseUrl}/contacts/${contactId}/connectToCase`, {
+    // const response = await fetch(`http://localhost:8080/contacts/${contactId}/connectToCase`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', Authorization: `Basic ${btoa(secret)}` },
+      body: JSON.stringify(body),
     });
+
+    if (!response.ok) {
+      throw response.error();
+    }
+
+    return await response.json();
+  } catch (e) {
+    console.log('Error connecting contact to case: ', e);
+    return [];
+  }
 }

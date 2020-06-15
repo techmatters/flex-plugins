@@ -4,6 +4,7 @@ import { withTaskContext } from '@twilio/flex-ui';
 
 import CallTypeButtons from './callTypeButtons';
 import TabbedForms from './tabbedForms';
+import Case from './case';
 import { formType } from '../types';
 
 const HrmForm = props => {
@@ -27,7 +28,7 @@ const HrmForm = props => {
       );
 
     case 'new-case':
-      return <h1>New Case</h1>;
+      return <Case handleCompleteTask={props.handleCompleteTask} />;
 
     case 'select-call-type':
     default:
@@ -51,6 +52,7 @@ HrmForm.propTypes = {
   handleChange: PropTypes.func.isRequired,
   handleCallTypeButtonClick: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
+  handleCompleteTask: PropTypes.func.isRequired,
   handleFocus: PropTypes.func.isRequired,
   handleSelectSearchResult: PropTypes.func.isRequired,
   changeTab: PropTypes.func.isRequired,

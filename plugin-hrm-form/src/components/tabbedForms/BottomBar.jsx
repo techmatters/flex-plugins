@@ -11,6 +11,9 @@ import { formIsValid } from '../../states/ValidationRules';
 import { formType, taskType } from '../../types';
 import { BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import { Actions } from '../../states/ContactState';
+import { getConfig } from '../../HrmFormPlugin';
+import { createCase } from '../../services/CaseService';
+import { saveToHrm, connectToCase } from '../../services/ContactService';
 
 class BottomBar extends Component {
   static displayName = 'BottomBar';
@@ -34,6 +37,23 @@ class BottomBar extends Component {
     this.setState(prevState => ({ anchorEl: e.currentTarget || e.target, isMenuOpen: !prevState.isMenuOpen }));
   };
 
+  createCase = async () => {
+    const { task, form } = this.props;
+    const { taskSid } = task;
+    const { hrmBaseUrl, workerSid, helpline } = getConfig();
+
+    const caseRecord = {
+      helpline,
+      status: 'open',
+      twilioWorkerId: workerSid,
+    };
+
+    const contact = await saveToHrm(task, form, () => null, hrmBaseUrl, workerSid, helpline);
+    const caseFromDB = await createCase(hrmBaseUrl, caseRecord);
+    await connectToCase(hrmBaseUrl, contact.id, caseFromDB.id);
+    this.props.changeRoute('new-case', taskSid);
+  };
+
   handleNext = () => {
     const { task, form } = this.props;
     const { tab } = form.metadata;
@@ -46,23 +66,18 @@ class BottomBar extends Component {
   };
 
   render() {
-    const { tabs, form, task } = this.props;
+    const { tabs, form } = this.props;
     const { isMenuOpen, anchorEl } = this.state;
 
     const { tab } = form.metadata;
     const showNextButton = tab !== 0 && tab < tabs - 1;
     const showSubmitButton = tab === tabs - 1;
     const isSubmitButtonDisabled = !formIsValid(form);
-    const { taskSid } = task;
 
     return (
       <>
         <Menu anchorEl={anchorEl} open={isMenuOpen} onClickAway={() => this.setState({ isMenuOpen: false })}>
-          <MenuItem
-            Icon={FolderIcon}
-            text="Open New Case"
-            onClick={() => this.props.changeRoute('new-case', taskSid)}
-          />
+          <MenuItem Icon={FolderIcon} text="Open New Case" onClick={this.createCase} />
           <MenuItem Icon={AddIcon} text="Add to Existing Case" onClick={() => console.log('>> Existing Case 2')} />
         </Menu>
         <BottomButtonBar>

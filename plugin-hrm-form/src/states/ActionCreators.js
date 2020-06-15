@@ -1,4 +1,4 @@
-import { HANDLE_BLUR, HANDLE_FOCUS } from './ActionTypes';
+import { HANDLE_BLUR, HANDLE_FOCUS, SAVE_CONTACT_STATE } from './ActionTypes';
 import { formIsValid, moreThanThreeCategoriesSelected, validateBeforeSubmit, validateOnBlur } from './ValidationRules';
 
 export const handleBlur = dispatch => (form, taskId) => () => {
@@ -20,7 +20,7 @@ export const handleFocus = dispatch => (taskId, parents, name) => {
   });
 };
 
-export const handleSubmit = dispatch => (form, handleCompleteTask) => task => {
+export const handleSubmit = dispatch => (form, hrmBaseUrl, workerSid, helpline, handleCompleteTask) => task => {
   const newForm = validateBeforeSubmit(form);
   dispatch({
     type: HANDLE_BLUR, // probably need to rename this
@@ -28,6 +28,14 @@ export const handleSubmit = dispatch => (form, handleCompleteTask) => task => {
     taskId: task.taskSid,
   });
   if (formIsValid(newForm)) {
+    dispatch({
+      type: SAVE_CONTACT_STATE,
+      hrmBaseUrl,
+      task,
+      abortFunction: () => null,
+      workerSid,
+      helpline,
+    });
     handleCompleteTask(task.taskSid, task);
   } else {
     window.alert('There is a problem with your submission.  Please check the form for errors.');
