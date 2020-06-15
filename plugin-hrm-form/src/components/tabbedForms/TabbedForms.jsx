@@ -114,7 +114,13 @@ const TabbedForms = props => {
         {tabs}
       </StyledTabs>
       {body[tab]}
-      <BottomBar tabs={tabs.length} form={form} changeTab={props.changeTab} handleSubmit={props.handleSubmit} />
+      <BottomBar
+        tabs={tabs.length}
+        form={form}
+        changeTab={props.changeTab}
+        handleCompleteTask={props.handleCompleteTask}
+        handleValidateForm={props.handleValidateForm}
+      />
     </TabbedFormsContainer>
   );
 };
@@ -127,11 +133,12 @@ TabbedForms.propTypes = {
   handleCategoryToggle: PropTypes.func.isRequired,
   handleChange: PropTypes.func.isRequired,
   handleCallTypeButtonClick: PropTypes.func.isRequired,
-  handleSubmit: PropTypes.func.isRequired,
+  handleCompleteTask: PropTypes.func.isRequired,
   handleFocus: PropTypes.func.isRequired,
   handleSelectSearchResult: PropTypes.func.isRequired,
   changeTab: PropTypes.func.isRequired,
   changeRoute: PropTypes.func.isRequired,
+  handleValidateForm: PropTypes.func.isRequired,
 };
 
 export default withTaskContext(TabbedForms);

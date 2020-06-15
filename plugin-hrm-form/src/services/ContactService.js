@@ -107,51 +107,33 @@ export async function saveToHrm(task, form, abortFunction, hrmBaseUrl, workerSid
 
   // print the form values to the console
   console.log(`Sending: ${JSON.stringify(body)}`);
-  try {
-    const response = await fetch(`${hrmBaseUrl}/contacts`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Basic ${btoa(secret)}` },
-      body: JSON.stringify(body),
-    });
+  const response = await fetch(`${hrmBaseUrl}/contacts`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Basic ${btoa(secret)}` },
+    body: JSON.stringify(body),
+  });
 
-    if (!response.ok) {
-      console.log(`Form error: ${response.statusText}`);
-      if (!window.confirm('Error from backend system.  Are you sure you want to end the task without recording?')) {
-        abortFunction();
-      }
+  if (!response.ok) {
+    console.log(`Form error: ${response.statusText}`);
+    if (!window.confirm('Error from backend system.  Are you sure you want to end the task without recording?')) {
+      throw new Error(response.statusText);
     }
-    const responseJson = await response.json();
-    console.log(`Received: ${JSON.stringify(responseJson)}`);
-    return responseJson;
-  } catch (e) {
-    console.log('Caught something');
-
-    // TODO(nick): fix this. this isn't working I don't think the function is working from inside the promise.
-    if (!window.confirm('Unknown error saving form.  Are you sure you want to end the task without recording?')) {
-      abortFunction();
-    }
-
-    return null;
   }
+
+  return response.json();
 }
 
 export async function connectToCase(hrmBaseUrl, contactId, caseId) {
   const body = { caseId };
-  try {
-    const response = await fetch(`${hrmBaseUrl}/contacts/${contactId}/connectToCase`, {
-    // const response = await fetch(`http://localhost:8080/contacts/${contactId}/connectToCase`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json', Authorization: `Basic ${btoa(secret)}` },
-      body: JSON.stringify(body),
-    });
+  const response = await fetch(`${hrmBaseUrl}/contacts/${contactId}/connectToCase`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', Authorization: `Basic ${btoa(secret)}` },
+    body: JSON.stringify(body),
+  });
 
-    if (!response.ok) {
-      throw response.error();
-    }
-
-    return await response.json();
-  } catch (e) {
-    console.log('Error connecting contact to case: ', e);
-    return [];
+  if (!response.ok) {
+    throw response.error();
   }
+
+  return response.json();
 }

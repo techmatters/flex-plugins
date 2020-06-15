@@ -8,9 +8,8 @@ import HrmForm from './HrmForm';
 import { formType, taskType } from '../types';
 import { namespace, contactFormsBase, searchContactsBase } from '../states';
 import { Actions } from '../states/ContactState';
-import { handleBlur, handleCategoryToggle, handleFocus, handleSubmit } from '../states/ActionCreators';
+import { handleBlur, handleCategoryToggle, handleFocus, handleValidateForm } from '../states/ActionCreators';
 import { handleSelectSearchResult, recreateSearchContact } from '../states/SearchContact';
-import { getConfig } from '../HrmFormPlugin';
 
 class TaskView extends Component {
   static displayName = 'TaskView';
@@ -24,12 +23,12 @@ class TaskView extends Component {
     handleChange: PropTypes.func.isRequired,
     handleCallTypeButtonClick: PropTypes.func.isRequired,
     handleCompleteTask: PropTypes.func.isRequired,
-    handleSubmit: PropTypes.func.isRequired,
     handleFocus: PropTypes.func.isRequired,
     handleSelectSearchResult: PropTypes.func.isRequired,
     recreateSearchContact: PropTypes.func.isRequired,
     changeTab: PropTypes.func.isRequired,
     changeRoute: PropTypes.func.isRequired,
+    handleValidateForm: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
@@ -49,8 +48,6 @@ class TaskView extends Component {
       return null;
     }
 
-    const { hrmBaseUrl, workerSid, helpline } = getConfig();
-
     return (
       <div style={{ height: '100%' }}>
         <HrmForm
@@ -59,12 +56,12 @@ class TaskView extends Component {
           handleCategoryToggle={handleCategoryToggle(form, this.props.handleChange)}
           handleChange={this.props.handleChange}
           handleCallTypeButtonClick={this.props.handleCallTypeButtonClick}
-          handleSubmit={this.props.handleSubmit(form, hrmBaseUrl, workerSid, helpline, this.props.handleCompleteTask)}
           handleCompleteTask={this.props.handleCompleteTask}
           handleFocus={this.props.handleFocus}
           handleSelectSearchResult={this.props.handleSelectSearchResult}
           changeTab={this.props.changeTab}
           changeRoute={this.props.changeRoute}
+          handleValidateForm={this.props.handleValidateForm(form, task.taskSid)}
         />
       </div>
     );
@@ -87,11 +84,11 @@ const mapDispatchToProps = dispatch => ({
   handleCallTypeButtonClick: bindActionCreators(Actions.handleCallTypeButtonClick, dispatch),
   handleChange: bindActionCreators(Actions.handleChange, dispatch),
   handleFocus: handleFocus(dispatch),
-  handleSubmit: handleSubmit(dispatch),
   handleSelectSearchResult: bindActionCreators(handleSelectSearchResult, dispatch),
   recreateSearchContact: bindActionCreators(recreateSearchContact, dispatch),
   changeTab: bindActionCreators(Actions.changeTab, dispatch),
   changeRoute: bindActionCreators(Actions.changeRoute, dispatch),
+  handleValidateForm: handleValidateForm(dispatch),
 });
 
 export default withTaskContext(connect(mapStateToProps, mapDispatchToProps)(TaskView));

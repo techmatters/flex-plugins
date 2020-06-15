@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 import { withTaskContext } from '@twilio/flex-ui';
 import FolderIcon from '@material-ui/icons/FolderOpen';
 import AddIcon from '@material-ui/icons/Add';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
 
 import { Menu, MenuItem } from '../menu';
 import { formIsValid } from '../../states/ValidationRules';
@@ -22,14 +24,16 @@ class BottomBar extends Component {
     tabs: PropTypes.number.isRequired,
     form: formType.isRequired,
     changeTab: PropTypes.func.isRequired,
-    handleSubmit: PropTypes.func.isRequired,
+    handleCompleteTask: PropTypes.func.isRequired,
     task: taskType.isRequired,
     changeRoute: PropTypes.func.isRequired,
+    handleValidateForm: PropTypes.func.isRequired,
   };
 
   state = {
     anchorEl: null,
     isMenuOpen: false,
+    mockedMessage: null,
   };
 
   toggleCaseMenu = e => {
@@ -37,7 +41,11 @@ class BottomBar extends Component {
     this.setState(prevState => ({ anchorEl: e.currentTarget || e.target, isMenuOpen: !prevState.isMenuOpen }));
   };
 
-  createCase = async () => {
+  handleMockedMessage = () => this.setState({ mockedMessage: 'Not implemented yet!', isMenuOpen: false });
+
+  closeMockedMessage = () => this.setState({ mockedMessage: null });
+
+  handleOpenNewCase = async () => {
     const { task, form } = this.props;
     const { taskSid } = task;
     const { hrmBaseUrl, workerSid, helpline } = getConfig();
@@ -48,10 +56,17 @@ class BottomBar extends Component {
       twilioWorkerId: workerSid,
     };
 
-    const contact = await saveToHrm(task, form, () => null, hrmBaseUrl, workerSid, helpline);
-    const caseFromDB = await createCase(hrmBaseUrl, caseRecord);
-    await connectToCase(hrmBaseUrl, contact.id, caseFromDB.id);
-    this.props.changeRoute('new-case', taskSid);
+    const newForm = this.props.handleValidateForm();
+
+    if (formIsValid(newForm)) {
+      const contact = await saveToHrm(task, form, () => null, hrmBaseUrl, workerSid, helpline);
+      const caseFromDB = await createCase(hrmBaseUrl, caseRecord);
+      await connectToCase(hrmBaseUrl, contact.id, caseFromDB.id);
+      this.props.changeRoute('new-case', taskSid);
+    } else {
+      this.setState({ isMenuOpen: false });
+      window.alert('There is a problem with your submission.  Please check the form for errors.');
+    }
   };
 
   handleNext = () => {
@@ -60,25 +75,46 @@ class BottomBar extends Component {
     this.props.changeTab(tab + 1, task.taskSid);
   };
 
-  handleSubmit = () => {
-    const { task } = this.props;
-    this.props.handleSubmit(task);
+  handleSubmit = async () => {
+    const { task, form } = this.props;
+    const { hrmBaseUrl, workerSid, helpline } = getConfig();
+
+    const newForm = this.props.handleValidateForm();
+
+    try {
+      if (formIsValid(newForm)) {
+        await saveToHrm(task, form, () => null, hrmBaseUrl, workerSid, helpline);
+        this.props.handleCompleteTask(task.taskSid, task);
+      } else {
+        this.setState({ isMenuOpen: false });
+        window.alert('There is a problem with your submission.  Please check the form for errors.');
+      }
+    } catch (error) {
+      console.log(JSON.stringify(error));
+      if (!window.confirm('Error from backend system.  Are you sure you want to end the task without recording?')) {
+        this.props.handleCompleteTask(task.taskSid, task);
+      }
+    }
   };
 
   render() {
     const { tabs, form } = this.props;
-    const { isMenuOpen, anchorEl } = this.state;
+    const { isMenuOpen, anchorEl, mockedMessage } = this.state;
 
     const { tab } = form.metadata;
     const showNextButton = tab !== 0 && tab < tabs - 1;
     const showSubmitButton = tab === tabs - 1;
     const isSubmitButtonDisabled = !formIsValid(form);
+    const isMockedMessageOpen = Boolean(mockedMessage);
 
     return (
       <>
+        <Dialog onClose={this.closeMockedMessage} open={isMockedMessageOpen}>
+          <DialogContent>{mockedMessage}</DialogContent>
+        </Dialog>
         <Menu anchorEl={anchorEl} open={isMenuOpen} onClickAway={() => this.setState({ isMenuOpen: false })}>
-          <MenuItem Icon={FolderIcon} text="Open New Case" onClick={this.createCase} />
-          <MenuItem Icon={AddIcon} text="Add to Existing Case" onClick={() => console.log('>> Existing Case 2')} />
+          <MenuItem Icon={FolderIcon} text="Open New Case" onClick={this.handleOpenNewCase} />
+          <MenuItem Icon={AddIcon} text="Add to Existing Case" onClick={this.handleMockedMessage} />
         </Menu>
         <BottomButtonBar>
           {showNextButton && (
@@ -88,7 +124,7 @@ class BottomBar extends Component {
           )}
           {showSubmitButton && (
             <>
-              <StyledNextStepButton roundCorners={true} onClick={this.toggleCaseMenu}>
+              <StyledNextStepButton roundCorners={true} onClick={this.toggleCaseMenu} disabled={isSubmitButtonDisabled}>
                 Save and Add to Case...
               </StyledNextStepButton>
               <StyledNextStepButton roundCorners={true} onClick={this.handleSubmit} disabled={isSubmitButtonDisabled}>

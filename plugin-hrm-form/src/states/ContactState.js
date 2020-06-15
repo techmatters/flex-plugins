@@ -3,19 +3,18 @@ import { omit } from 'lodash';
 import { createBlankForm, recreateBlankForm } from './ContactFormStateFactory';
 import {
   HANDLE_BLUR,
+  HANDLE_VALIDATE_FORM,
   HANDLE_CHANGE,
   HANDLE_FOCUS,
   INITIALIZE_CONTACT_STATE,
   REMOVE_CONTACT_STATE,
   SAVE_END_MILLIS,
-  SAVE_CONTACT_STATE,
   HANDLE_SELECT_SEARCH_RESULT,
   CHANGE_TAB,
   CHANGE_ROUTE,
 } from './ActionTypes';
 import { countSelectedCategories } from './ValidationRules';
 import { copySearchResultIntoTask } from './SearchContact';
-import { saveToHrm } from '../services/ContactService';
 
 /**
  * Looks for a particular task in the state object, and returns it if found.
@@ -58,16 +57,6 @@ export class Actions {
 
   static initializeContactState = taskId => ({ type: INITIALIZE_CONTACT_STATE, taskId });
 
-  // I'm really not sure if this should live here, but it seems like we need to come through the store
-  static saveContactState = (task, abortFunction, hrmBaseUrl, workerSid, helpline) => ({
-    type: SAVE_CONTACT_STATE,
-    hrmBaseUrl,
-    task,
-    abortFunction,
-    workerSid,
-    helpline,
-  });
-
   static removeContactState = taskId => ({ type: REMOVE_CONTACT_STATE, taskId });
 
   // records the end time (in milliseconds)
@@ -98,6 +87,16 @@ function editNestedField(original, parents, name, change) {
 export function reduce(state = initialState, action) {
   switch (action.type) {
     case HANDLE_BLUR: {
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: action.form,
+        },
+      };
+    }
+
+    case HANDLE_VALIDATE_FORM: {
       return {
         ...state,
         tasks: {
@@ -175,13 +174,6 @@ export function reduce(state = initialState, action) {
           [action.taskId]: endedTask,
         },
       };
-    }
-
-    case SAVE_CONTACT_STATE: {
-      const { tasks } = state;
-      const { hrmBaseUrl, task, abortFunction, workerSid, helpline } = action;
-      saveToHrm(task, tasks[action.task.taskSid], abortFunction, hrmBaseUrl, workerSid, helpline);
-      return state;
     }
 
     case REMOVE_CONTACT_STATE: {
