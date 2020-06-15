@@ -3,7 +3,6 @@ import { FlexPlugin } from 'flex-plugin';
 import SyncClient from 'twilio-sync';
 
 import './styles/GlobalOverrides';
-import { SetupObject } from './utils/types';
 import reducers, { namespace } from './states';
 import HrmTheme from './styles/HrmTheme';
 import { transferModes } from './states/DomainConstants';
@@ -20,8 +19,9 @@ export const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
 /**
  * Sync Client used to store and share documents across counselors
+ * @type {SyncClient}
  */
-let sharedStateClient: SyncClient;
+let sharedStateClient;
 
 export const getConfig = () => {
   const manager = Flex.Manager.getInstance();
@@ -77,7 +77,10 @@ const setUpSharedStateClient = () => {
   initSharedStateClient();
 };
 
-const setUpTransferredTaskJanitor = async (setupObject: SetupObject) => {
+/**
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
+ */
+const setUpTransferredTaskJanitor = async setupObject => {
   const { workerSid } = setupObject;
   const query = 'data.attributes.channelSid == "CH00000000000000000000000000000000"';
   const reservationQuery = await Flex.Manager.getInstance().insightsClient.liveQuery('tr-reservation', query);
@@ -88,12 +91,18 @@ const setUpTransferredTaskJanitor = async (setupObject: SetupObject) => {
   });
 };
 
-const setUpTransfers = (setupObject: SetupObject) => {
+/**
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
+ */
+const setUpTransfers = setupObject => {
   setUpSharedStateClient();
   setUpTransferredTaskJanitor(setupObject);
 };
 
-const setUpLocalization = (config: ReturnType<typeof getConfig>) => {
+/**
+ * @param {ReturnType<typeof getConfig>} config
+ */
+const setUpLocalization = config => {
   const manager = Flex.Manager.getInstance();
 
   const { counselorLanguage, helplineLanguage, configuredLanguage } = config;
@@ -110,7 +119,10 @@ const setUpLocalization = (config: ReturnType<typeof getConfig>) => {
   return initLocalization(localizationConfig, initialLanguage);
 };
 
-const setUpComponents = (setupObject: SetupObject) => {
+/**
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
+ */
+const setUpComponents = setupObject => {
   const { helpline, featureFlags } = setupObject;
 
   // setUp (add) dynamic components
@@ -128,7 +140,10 @@ const setUpComponents = (setupObject: SetupObject) => {
   Components.removeActionsIfTransferring();
 };
 
-const setUpActions = (setupObject: SetupObject) => {
+/**
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
+ */
+const setUpActions = setupObject => {
   const { featureFlags } = setupObject;
 
   // bind setupObject to the functions that requires some initializaton
