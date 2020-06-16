@@ -5,11 +5,13 @@ import PropTypes from 'prop-types';
 import { withTaskContext } from '@twilio/flex-ui';
 
 import HrmForm from './HrmForm';
+import FormNotEditable from './FormNotEditable';
 import { formType, taskType } from '../types';
 import { namespace, contactFormsBase, searchContactsBase } from '../states';
 import { Actions } from '../states/ContactState';
 import { handleBlur, handleCategoryToggle, handleFocus, handleValidateForm } from '../states/ActionCreators';
 import { handleSelectSearchResult, recreateSearchContact } from '../states/SearchContact';
+import { hasTaskControl } from '../utils/transfer';
 
 class TaskView extends Component {
   static displayName = 'TaskView';
@@ -50,6 +52,7 @@ class TaskView extends Component {
 
     return (
       <div style={{ height: '100%' }}>
+        {!hasTaskControl(thisTask) && <FormNotEditable />}
         <HrmForm
           form={form}
           handleBlur={this.props.handleBlur(form, task.taskSid)}

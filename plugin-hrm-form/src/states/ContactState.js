@@ -13,6 +13,7 @@ import {
   CHANGE_TAB,
   CHANGE_ROUTE,
   SET_CONNECTED_CASE,
+  RESTORE_ENTIRE_FORM,
 } from './ActionTypes';
 import { countSelectedCategories } from './ValidationRules';
 import { copySearchResultIntoTask } from './SearchContact';
@@ -68,6 +69,11 @@ export class Actions {
   static changeRoute = (route, taskId) => ({ type: CHANGE_ROUTE, route, taskId });
 
   static setConnectedCase = (connectedCase, taskId) => ({ type: SET_CONNECTED_CASE, connectedCase, taskId });
+  static restoreEntireForm = (form, taskId) => ({
+    type: RESTORE_ENTIRE_FORM,
+    form,
+    taskId,
+  });
 }
 
 // Will replace the below when we move over to field objects
@@ -238,6 +244,16 @@ export function reduce(state = initialState, action) {
         tasks: {
           ...state.tasks,
           [action.taskId]: taskWithConnectedCase,
+        },
+      };
+    }
+
+    case RESTORE_ENTIRE_FORM: {
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: action.form,
         },
       };
     }

@@ -1,22 +1,27 @@
-import React from 'react';
 import * as Flex from '@twilio/flex-ui';
 import { FlexPlugin } from 'flex-plugin';
+import SyncClient from 'twilio-sync';
 
-import CustomCRMContainer from './components/CustomCRMContainer';
-import QueuesStatus from './components/queuesStatus';
-import QueuesStatusWriter from './components/queuesStatus/QueuesStatusWriter';
-import reducers, { namespace, contactFormsBase } from './states';
-import { Actions } from './states/ContactState';
-import LocalizationContext from './contexts/LocalizationContext';
-import HrmTheme from './styles/HrmTheme';
 import './styles/GlobalOverrides';
-import { channelTypes } from './states/DomainConstants';
-import { addDeveloperUtils, initLocalization } from './utils/pluginHelpers';
+import reducers, { namespace } from './states';
+import HrmTheme from './styles/HrmTheme';
+import { transferModes } from './states/DomainConstants';
+import { initLocalization } from './utils/pluginHelpers';
+import * as ActionFunctions from './utils/setUpActions';
+import * as Components from './utils/setUpComponents';
+import * as TransferHelpers from './utils/transfer';
 import { changeLanguage } from './states/ConfigurationState';
-import { saveInsightsData } from './services/InsightsService';
+import { issueSyncToken } from './services/ServerlessService';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
-const PLUGIN_VERSION = '0.4.2';
+const PLUGIN_VERSION = '0.5.0';
+export const DEFAULT_TRANSFER_MODE = transferModes.cold;
+
+/**
+ * Sync Client used to store and share documents across counselors
+ * @type {SyncClient}
+ */
+let sharedStateClient;
 
 export const getConfig = () => {
   const manager = Flex.Manager.getInstance();
@@ -29,6 +34,7 @@ export const getConfig = () => {
   const { identity, token } = manager.user;
   const { configuredLanguage } = manager.serviceConfiguration.attributes;
   const featureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
+  const { strings } = manager;
 
   return {
     hrmBaseUrl,
@@ -42,9 +48,60 @@ export const getConfig = () => {
     identity,
     token,
     featureFlags,
+    sharedStateClient,
+    strings,
   };
 };
 
+const setUpSharedStateClient = () => {
+  const updateSharedStateToken = async () => {
+    try {
+      const syncToken = await issueSyncToken();
+      await sharedStateClient.updateToken(syncToken);
+    } catch (err) {
+      console.log('SYNC TOKEN ERROR', err);
+    }
+  };
+
+  // initializes sync client for shared state
+  const initSharedStateClient = async () => {
+    try {
+      const syncToken = await issueSyncToken();
+      sharedStateClient = new SyncClient(syncToken);
+      sharedStateClient.on('tokenAboutToExpire', () => updateSharedStateToken());
+    } catch (err) {
+      console.log('SYNC CLIENT INIT ERROR', err);
+    }
+  };
+
+  initSharedStateClient();
+};
+
+/**
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
+ */
+const setUpTransferredTaskJanitor = async setupObject => {
+  const { workerSid } = setupObject;
+  const query = 'data.attributes.channelSid == "CH00000000000000000000000000000000"';
+  const reservationQuery = await Flex.Manager.getInstance().insightsClient.liveQuery('tr-reservation', query);
+  reservationQuery.on('itemUpdated', args => {
+    if (TransferHelpers.shouldInvokeCompleteTask(args.value, workerSid)) {
+      Flex.Actions.invokeAction('CompleteTask', { sid: args.value.reservation_sid });
+    }
+  });
+};
+
+/**
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
+ */
+const setUpTransfers = setupObject => {
+  setUpSharedStateClient();
+  setUpTransferredTaskJanitor(setupObject);
+};
+
+/**
+ * @param {ReturnType<typeof getConfig>} config
+ */
 const setUpLocalization = config => {
   const manager = Flex.Manager.getInstance();
 
@@ -62,142 +119,53 @@ const setUpLocalization = config => {
   return initLocalization(localizationConfig, initialLanguage);
 };
 
+/**
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
+ */
 const setUpComponents = setupObject => {
-  const manager = Flex.Manager.getInstance();
+  const { helpline, featureFlags } = setupObject;
 
-  const { helpline, translateUI } = setupObject;
+  // setUp (add) dynamic components
+  Components.setUpQueuesStatusWriter(setupObject);
+  Components.setUpQueuesStatus();
+  Components.setUpCustomCRMContainer();
+  if (featureFlags.enable_transfers) Components.setUpTransferComponents();
 
-  // utilities for developers only
-  if (!Boolean(helpline)) addDeveloperUtils(manager, translateUI);
+  if (!Boolean(helpline)) Components.setUpDeveloperComponents(setupObject); // utilities for developers only
 
-  Flex.MainContainer.Content.add(
-    <QueuesStatusWriter insightsClient={manager.insightsClient} key="queue-status-writer" helpline={helpline} />,
-    {
-      sortOrder: -1,
-      align: 'start',
-    },
-  );
-
-  const voiceColor = { Accepted: Flex.DefaultTaskChannels.Call.colors.main() };
-  const webColor = Flex.DefaultTaskChannels.Chat.colors.main;
-  const facebookColor = Flex.DefaultTaskChannels.ChatMessenger.colors.main;
-  const smsColor = Flex.DefaultTaskChannels.ChatSms.colors.main;
-  const whatsappColor = Flex.DefaultTaskChannels.ChatWhatsApp.colors.main;
-  Flex.TaskListContainer.Content.add(
-    <QueuesStatus
-      key="queue-status"
-      colors={{
-        voiceColor,
-        webColor,
-        facebookColor,
-        smsColor,
-        whatsappColor,
-      }}
-    />,
-    {
-      sortOrder: -1,
-      align: 'start',
-    },
-  );
-
-  const onCompleteTask = async (sid, task) => {
-    if (task.status !== 'wrapping') {
-      if (task.channelType === channelTypes.voice) {
-        await Flex.Actions.invokeAction('HangupCall', { sid, task });
-      } else {
-        await Flex.Actions.invokeAction('WrapupTask', { sid, task });
-      }
-    }
-
-    Flex.Actions.invokeAction('CompleteTask', { sid, task });
-  };
-
-  const options = { sortOrder: -1 };
-  Flex.CRMContainer.Content.replace(
-    <LocalizationContext.Provider
-      value={{ manager, isCallTask: Flex.TaskHelper.isCallTask }}
-      key="custom-crm-container"
-    >
-      <CustomCRMContainer handleCompleteTask={onCompleteTask} />
-    </LocalizationContext.Provider>,
-    options,
-  );
-
-  // Must use submit buttons in CRM container to complete task
-  Flex.TaskCanvasHeader.Content.remove('actions', {
-    if: props => props.task && props.task.status === 'wrapping',
-  });
-
-  Flex.MainHeader.Content.remove('logo');
+  // remove dynamic components
+  Components.removeActionsIfWrapping();
+  Components.removeLogo();
+  if (featureFlags.enable_transfers) {
+    Components.removeDirectoryButton();
+    Components.removeActionsIfTransferring();
+  }
 };
 
+/**
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
+ */
 const setUpActions = setupObject => {
-  const manager = Flex.Manager.getInstance();
+  const { featureFlags } = setupObject;
 
-  const { helplineLanguage, configuredLanguage, getGoodbyeMsg } = setupObject;
+  // bind setupObject to the functions that requires some initializaton
+  const transferOverride = ActionFunctions.customTransferTask(setupObject);
+  const wrapupOverride = ActionFunctions.wrapupTask(setupObject);
+  const beforeCompleteAction = ActionFunctions.sendInsightsData(setupObject);
 
-  Flex.Actions.addListener('beforeAcceptTask', payload => {
-    manager.store.dispatch(Actions.initializeContactState(payload.task.taskSid));
-  });
+  Flex.Actions.addListener('beforeAcceptTask', ActionFunctions.initializeContactForm);
 
-  const saveInsights = async payload => {
-    const { taskSid } = payload.task;
-    const task = manager.store.getState()[namespace][contactFormsBase].tasks[taskSid];
+  if (featureFlags.enable_transfers) Flex.Actions.addListener('afterAcceptTask', ActionFunctions.restoreFormIfTransfer);
 
-    await saveInsightsData(payload.task, task);
-  };
+  if (featureFlags.enable_transfers) Flex.Actions.replaceAction('TransferTask', transferOverride);
 
-  Flex.Actions.addListener('beforeCompleteTask', async (payload, abortFunction) => {
-    const { featureFlags } = getConfig();
-    if (featureFlags.enable_save_insights) {
-      await saveInsights(payload);
-    }
-  });
+  Flex.Actions.replaceAction('HangupCall', ActionFunctions.hangupCall);
 
-  Flex.Actions.addListener('afterCompleteTask', payload => {
-    manager.store.dispatch(Actions.removeContactState(payload.task.taskSid));
-  });
+  Flex.Actions.replaceAction('WrapupTask', wrapupOverride);
 
-  const shouldSayGoodbye = channel =>
-    channel === channelTypes.facebook || channel === channelTypes.sms || channel === channelTypes.whatsapp;
+  Flex.Actions.addListener('beforeCompleteTask', beforeCompleteAction);
 
-  const getTaskLanguage = task => task.attributes.language || helplineLanguage || configuredLanguage;
-
-  const sendGoodbyeMessage = async payload => {
-    const taskLanguage = getTaskLanguage(payload.task);
-    const goodbyeMsg = await getGoodbyeMsg(taskLanguage);
-    await Flex.Actions.invokeAction('SendMessage', {
-      body: goodbyeMsg,
-      channelSid: payload.task.attributes.channelSid,
-    });
-  };
-
-  const saveEndMillis = async payload => {
-    manager.store.dispatch(Actions.saveEndMillis(payload.task.taskSid));
-  };
-
-  /**
-   * @param {import('@twilio/flex-ui').ActionFunction} fun
-   * @returns {import('@twilio/flex-ui').ReplacedActionFunction}
-   * A function that calls fun with the payload of the replaced action
-   * and continues with the Twilio execution
-   */
-  const fromActionFunction = fun => async (payload, original) => {
-    await fun(payload);
-    await original(payload);
-  };
-
-  const hangupCall = fromActionFunction(saveEndMillis);
-
-  const wrapupTask = fromActionFunction(async payload => {
-    if (shouldSayGoodbye(payload.task.channelType)) {
-      await sendGoodbyeMessage(payload);
-    }
-    await saveEndMillis(payload);
-  });
-
-  Flex.Actions.replaceAction('HangupCall', hangupCall);
-  Flex.Actions.replaceAction('WrapupTask', wrapupTask);
+  Flex.Actions.addListener('afterCompleteTask', ActionFunctions.removeContactForm);
 };
 
 export default class HrmFormPlugin extends FlexPlugin {
@@ -225,6 +193,8 @@ export default class HrmFormPlugin extends FlexPlugin {
     const { translateUI, getGoodbyeMsg } = setUpLocalization(config);
 
     const setupObject = { ...config, translateUI, getGoodbyeMsg };
+
+    if (config.featureFlags.enable_transfers) setUpTransfers(setupObject);
     setUpComponents(setupObject);
     setUpActions(setupObject);
 
