@@ -191,6 +191,11 @@ export const removeActionsIfTransferring = () => {
   });
 };
 
+/**
+ * @param {string} str
+ */
+const uppercaseFirst = str => str[0].toUpperCase() + str.slice(1);
+
 export const setUpIncomingTransferMessage = () => {
   // here we use manager instead of setupObject, so manager.strings will always have the latest version of strings
   const manager = Flex.Manager.getInstance();
@@ -204,25 +209,25 @@ export const setUpIncomingTransferMessage = () => {
   Flex.DefaultTaskChannels.Chat.templates.TaskListItem.secondLine = task =>
     TransferHelpers.hasTransferStarted(task) && task.status === 'pending'
       ? `${manager.strings['Transfer-Chat']} ${task.attributes.transferMeta.originalCounselorName} (${task.queueName})`
-      : dafaultChat[task.status[0].toUpperCase() + task.status.slice(1)];
+      : dafaultChat[uppercaseFirst(task.status)];
 
   Flex.DefaultTaskChannels.ChatLine.templates.TaskListItem.secondLine = task =>
     TransferHelpers.hasTransferStarted(task) && task.status === 'pending'
       ? `${manager.strings['Transfer-ChatLine']} ${task.attributes.transferMeta.originalCounselorName} (${task.queueName})`
-      : dafaultChatLine[task.status[0].toUpperCase() + task.status.slice(1)];
+      : dafaultChatLine[uppercaseFirst(task.status)];
 
   Flex.DefaultTaskChannels.ChatMessenger.templates.TaskListItem.secondLine = task =>
     TransferHelpers.hasTransferStarted(task) && task.status === 'pending'
       ? `${manager.strings['Transfer-ChatMessenger']} ${task.attributes.transferMeta.originalCounselorName} (${task.queueName})`
-      : dafaultChatMessenger[task.status[0].toUpperCase() + task.status.slice(1)];
+      : dafaultChatMessenger[uppercaseFirst(task.status)];
 
   Flex.DefaultTaskChannels.ChatSms.templates.TaskListItem.secondLine = task =>
     TransferHelpers.hasTransferStarted(task) && task.status === 'pending'
       ? `${manager.strings['Transfer-ChatSms']} ${task.attributes.transferMeta.originalCounselorName} (${task.queueName})`
-      : dafaultChatSms[task.status[0].toUpperCase() + task.status.slice(1)];
+      : dafaultChatSms[uppercaseFirst(task.status)];
 
   Flex.DefaultTaskChannels.ChatWhatsApp.templates.TaskListItem.secondLine = task =>
     TransferHelpers.hasTransferStarted(task) && task.status === 'pending'
       ? `${manager.strings['Transfer-TaskLineChatWhatsAppReserved']} ${task.attributes.transferMeta.originalCounselorName} (${task.queueName})`
-      : dafaultChatWhatsApp[task.status[0].toUpperCase() + task.status.slice(1)];
+      : dafaultChatWhatsApp[uppercaseFirst(task.status)];
 };
