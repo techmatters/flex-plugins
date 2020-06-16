@@ -23,5 +23,6 @@
   "Transfer-TaskLineChatLineReserved": "Request from",
   "Transfer-TaskLineChatMessengerReserved": "Request from",
   "Transfer-TaskLineChatSmsReserved": "Request from",
-  "Transfer-TaskLineChatWhatsAppReserved": "Request from"
+  "Transfer-TaskLineChatWhatsAppReserved": "Request from",
+  "Transfer-FormNotEditable": "Form locked until transfer is completed."
 }

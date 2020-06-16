@@ -21,13 +21,15 @@ import CallerInformationTab from './CallerInformationTab';
 import ChildInformationTab from './ChildInformationTab';
 import IssueCategorizationTab from './IssueCategorizationTab';
 import CaseInformationTab from './CaseInformationTab';
+import { hasTaskControl } from '../../utils/transfer';
 
 const TabbedForms = props => {
   const { task, form } = props;
   const taskId = task.taskSid;
 
-  const curriedHandleChange = (parents, name) => e =>
-    props.handleChange(taskId, parents, name, e.target.value || e.currentTarget.value);
+  const curriedHandleChange = (parents, name) => e => {
+    if (hasTaskControl(task)) props.handleChange(taskId, parents, name, e.target.value || e.currentTarget.value);
+  };
 
   const curriedHandleFocus = (parents, name) => () => props.handleFocus(taskId, parents, name);
 
@@ -48,10 +50,20 @@ const TabbedForms = props => {
     props.changeTab(tab, taskId);
   };
 
-  const handleCheckboxClick = (parents, name, value) => props.handleChange(taskId, parents, name, value);
+  const handleCheckboxClick = (parents, name, value) => {
+    if (hasTaskControl(task)) props.handleChange(taskId, parents, name, value);
+  };
+
+  const handleCategoryToggle = (taskSID, category, subcategory, newValue) => {
+    if (hasTaskControl(task)) props.handleCategoryToggle(taskSID, category, subcategory, newValue);
+  };
 
   const handleTabsChange = (event, tab) => {
     props.changeTab(tab, taskId);
+  };
+
+  const handleSubmit = () => {
+    if (hasTaskControl(task)) props.handleSubmit(task);
   };
 
   const { tab } = form.metadata;
@@ -80,7 +92,7 @@ const TabbedForms = props => {
     />,
   );
 
-  body.push(<IssueCategorizationTab form={form} taskId={taskId} handleCategoryToggle={props.handleCategoryToggle} />);
+  body.push(<IssueCategorizationTab form={form} taskId={taskId} handleCategoryToggle={handleCategoryToggle} />);
 
   body.push(
     <CaseInformationTab
@@ -128,11 +140,7 @@ const TabbedForms = props => {
             </StyledNextStepButton>
           )}
           {showSubmitButton && (
-            <StyledNextStepButton
-              roundCorners={true}
-              onClick={() => props.handleSubmit(task)}
-              disabled={!formIsValid(form)}
-            >
+            <StyledNextStepButton roundCorners={true} onClick={handleSubmit} disabled={!formIsValid(form)}>
               Submit
             </StyledNextStepButton>
           )}
