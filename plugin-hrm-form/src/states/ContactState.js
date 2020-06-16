@@ -69,6 +69,7 @@ export class Actions {
   static changeRoute = (route, taskId) => ({ type: CHANGE_ROUTE, route, taskId });
 
   static setConnectedCase = (connectedCase, taskId) => ({ type: SET_CONNECTED_CASE, connectedCase, taskId });
+
   static restoreEntireForm = (form, taskId) => ({
     type: RESTORE_ENTIRE_FORM,
     form,
