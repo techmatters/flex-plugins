@@ -36,7 +36,6 @@ export const setUpQueuesStatusWriter = setupObject => {
  * Add a widget at the beginnig of the TaskListContainer, which shows the pending tasks in each channel (consumes from QueuesStatusWriter)
  */
 export const setUpQueuesStatus = () => {
-  // this is coming as a function so we need to disable TS, as it won't type otherwise
   const voiceColor = { Accepted: Flex.DefaultTaskChannels.Call.colors.main() };
   const webColor = Flex.DefaultTaskChannels.Chat.colors.main;
   const facebookColor = Flex.DefaultTaskChannels.ChatMessenger.colors.main;
@@ -190,4 +189,40 @@ export const removeActionsIfTransferring = () => {
   Flex.ParticipantCanvas.Content.remove('actions', {
     if: props => hasNoControlAndIsWarm(props.task) && props.participant.participantType === 'worker',
   });
+};
+
+export const setUpIncomingTransferMessage = () => {
+  // here we use manager instead of setupObject, so manager.strings will always have the latest version of strings
+  const manager = Flex.Manager.getInstance();
+
+  const dafaultChat = Flex.DefaultTaskChannels.Chat.templates.TaskListItem.secondLine;
+  const dafaultChatLine = Flex.DefaultTaskChannels.ChatLine.templates.TaskListItem.secondLine;
+  const dafaultChatMessenger = Flex.DefaultTaskChannels.ChatMessenger.templates.TaskListItem.secondLine;
+  const dafaultChatSms = Flex.DefaultTaskChannels.ChatSms.templates.TaskListItem.secondLine;
+  const dafaultChatWhatsApp = Flex.DefaultTaskChannels.ChatWhatsApp.templates.TaskListItem.secondLine;
+
+  Flex.DefaultTaskChannels.Chat.templates.TaskListItem.secondLine = task =>
+    TransferHelpers.hasTransferStarted(task) && task.status === 'pending'
+      ? `${manager.strings['Transfer-Chat']} ${task.attributes.transferMeta.originalCounselorName} (${task.queueName})`
+      : dafaultChat[task.status[0].toUpperCase() + task.status.slice(1)];
+
+  Flex.DefaultTaskChannels.ChatLine.templates.TaskListItem.secondLine = task =>
+    TransferHelpers.hasTransferStarted(task) && task.status === 'pending'
+      ? `${manager.strings['Transfer-ChatLine']} ${task.attributes.transferMeta.originalCounselorName} (${task.queueName})`
+      : dafaultChatLine[task.status[0].toUpperCase() + task.status.slice(1)];
+
+  Flex.DefaultTaskChannels.ChatMessenger.templates.TaskListItem.secondLine = task =>
+    TransferHelpers.hasTransferStarted(task) && task.status === 'pending'
+      ? `${manager.strings['Transfer-ChatMessenger']} ${task.attributes.transferMeta.originalCounselorName} (${task.queueName})`
+      : dafaultChatMessenger[task.status[0].toUpperCase() + task.status.slice(1)];
+
+  Flex.DefaultTaskChannels.ChatSms.templates.TaskListItem.secondLine = task =>
+    TransferHelpers.hasTransferStarted(task) && task.status === 'pending'
+      ? `${manager.strings['Transfer-ChatSms']} ${task.attributes.transferMeta.originalCounselorName} (${task.queueName})`
+      : dafaultChatSms[task.status[0].toUpperCase() + task.status.slice(1)];
+
+  Flex.DefaultTaskChannels.ChatWhatsApp.templates.TaskListItem.secondLine = task =>
+    TransferHelpers.hasTransferStarted(task) && task.status === 'pending'
+      ? `${manager.strings['Transfer-TaskLineChatWhatsAppReserved']} ${task.attributes.transferMeta.originalCounselorName} (${task.queueName})`
+      : dafaultChatWhatsApp[task.status[0].toUpperCase() + task.status.slice(1)];
 };

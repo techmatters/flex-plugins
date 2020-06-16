@@ -18,5 +18,10 @@
 
   "Transfer-TransferButton": "Transfer",
   "Transfer-AcceptTransferButton": "Accept Transfer",
-  "Transfer-RejectTransferButton": "Reject Transfer"
+  "Transfer-RejectTransferButton": "Reject Transfer",
+  "Transfer-TaskLineChatReserved": "Request from",
+  "Transfer-TaskLineChatLineReserved": "Request from",
+  "Transfer-TaskLineChatMessengerReserved": "Request from",
+  "Transfer-TaskLineChatSmsReserved": "Request from",
+  "Transfer-TaskLineChatWhatsAppReserved": "Request from"
 }

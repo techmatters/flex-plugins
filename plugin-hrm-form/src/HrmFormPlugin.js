@@ -32,6 +32,7 @@ export const getConfig = () => {
   const { helpline, counselorLanguage, helplineLanguage } = manager.workerClient.attributes;
   const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
   const { identity, token } = manager.user;
+  const counselorName = manager.workerClient.attributes.full_name;
   const { configuredLanguage } = manager.serviceConfiguration.attributes;
   const featureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
   const { strings } = manager;
@@ -47,6 +48,7 @@ export const getConfig = () => {
     configuredLanguage,
     identity,
     token,
+    counselorName,
     featureFlags,
     sharedStateClient,
     strings,
@@ -129,7 +131,10 @@ const setUpComponents = setupObject => {
   Components.setUpQueuesStatusWriter(setupObject);
   Components.setUpQueuesStatus();
   Components.setUpCustomCRMContainer();
-  if (featureFlags.enable_transfers) Components.setUpTransferComponents();
+  if (featureFlags.enable_transfers) {
+    Components.setUpTransferComponents();
+    Components.setUpIncomingTransferMessage();
+  }
 
   if (!Boolean(helpline)) Components.setUpDeveloperComponents(setupObject); // utilities for developers only
 

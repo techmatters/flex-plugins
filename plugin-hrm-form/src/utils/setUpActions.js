@@ -65,6 +65,8 @@ export const restoreFormIfTransfer = async payload => {
 export const customTransferTask = setupObject => async (payload, original) => {
   console.log('TRANSFER PAYLOAD', payload);
 
+  const { identity, workerSid, counselorName } = setupObject;
+
   // save current form state as sync document (if there is a form)
   const form = getStateContactForms(payload.task.taskSid);
   const documentName = await saveFormSharedState(form, payload.task);
@@ -72,7 +74,7 @@ export const customTransferTask = setupObject => async (payload, original) => {
   const mode = payload.options.mode || DEFAULT_TRANSFER_MODE;
 
   // set metadata for the transfer
-  await TransferHelpers.setTransferMeta(payload.task, mode, documentName);
+  await TransferHelpers.setTransferMeta(payload.task, mode, documentName, counselorName);
 
   if (TaskHelper.isCallTask(payload.task)) {
     if (TransferHelpers.isColdTransfer(payload.task) && !TransferHelpers.hasTaskControl(payload.task)) {
@@ -82,7 +84,6 @@ export const customTransferTask = setupObject => async (payload, original) => {
     return original(payload);
   }
 
-  const { identity, workerSid } = setupObject;
   const memberToKick = mode === transferModes.cold ? TransferHelpers.getMemberToKick(payload.task, identity) : '';
 
   const body = {
