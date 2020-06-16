@@ -136,6 +136,10 @@ const setUpComponents = setupObject => {
   // remove dynamic components
   Components.removeActionsIfWrapping();
   Components.removeLogo();
+  if (featureFlags.enable_transfers) {
+    Components.removeDirectoryButton();
+    Components.removeActionsIfTransferring();
+  }
 };
 
 /**
