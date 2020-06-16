@@ -1,4 +1,4 @@
-import { Manager, TaskHelper, Actions as FlexActions } from '@twilio/flex-ui';
+import { Manager, TaskHelper, Actions as FlexActions, ActionFunction, ReplacedActionFunction } from '@twilio/flex-ui';
 
 // eslint-disable-next-line no-unused-vars
 import { DEFAULT_TRANSFER_MODE, getConfig } from '../HrmFormPlugin';
@@ -20,17 +20,17 @@ const getStateContactForms = taskSid => {
 
 /**
  * Saves the end time of the conversation (used to save the duration of the conversation)
- * @param {{ task: any }} payload
+ * @type {ActionFunction}
  */
 const saveEndMillis = async payload => {
   Manager.getInstance().store.dispatch(Actions.saveEndMillis(payload.task.taskSid));
 };
 
 /**
- * @param {import('@twilio/flex-ui').ActionFunction} fun
- * @returns {import('@twilio/flex-ui').ReplacedActionFunction}
  * A function that calls fun with the payload of the replaced action
  * and continues with the Twilio execution
+ * @param {ActionFunction} fun
+ * @returns {ReplacedActionFunction}
  */
 const fromActionFunction = fun => async (payload, original) => {
   await fun(payload);
@@ -58,8 +58,8 @@ export const restoreFormIfTransfer = async payload => {
 
 /**
  * Custom override for TransferTask action. Saves the form to share with another counseler (if possible) and then starts the transfer
- * @param {ReturnType<getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string> }} setupObject
- * @returns {import('@twilio/flex-ui').ReplacedActionFunction}
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
+ * @returns {ReplacedActionFunction}
  */
 export const customTransferTask = setupObject => async (payload, original) => {
   console.log('TRANSFER PAYLOAD', payload);
@@ -106,8 +106,8 @@ const shouldSayGoodbye = channel =>
 
 /**
  * Sends the message before leaving the chat
- * @param {ReturnType<getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string> }} setupObject
- * @returns {import('@twilio/flex-ui').ActionFunction}
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
+ * @returns {ActionFunction}
  */
 const sendGoodbyeMessage = setupObject => async payload => {
   const { getGoodbyeMsg, helplineLanguage, configuredLanguage } = setupObject;
@@ -124,8 +124,7 @@ const sendGoodbyeMessage = setupObject => async payload => {
 
 /**
  * Override for WrapupTask action. Sends a message before leaving (if it should) and saves the end time of the conversation
- * @param {ReturnType<getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string> }} setupObject
- * @returns {import('@twilio/flex-ui').ReplacedActionFunction}
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
  */
 export const wrapupTask = setupObject =>
   fromActionFunction(async payload => {
@@ -148,7 +147,7 @@ const saveInsights = async payload => {
 
 /**
  * Submits the form to the hrm backend (if it should), and saves the insights. Used before task is completed
- * @param {ReturnType<getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string> }} setupObject
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
  */
 export const sendFormToBackend = setupObject => async (payload, abortFunction) => {
   const { hrmBaseUrl, workerSid, helpline, featureFlags } = setupObject;

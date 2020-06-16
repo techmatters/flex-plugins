@@ -1,19 +1,14 @@
-import React from 'react';
 import * as Flex from '@twilio/flex-ui';
 import { FlexPlugin } from 'flex-plugin';
 import SyncClient from 'twilio-sync';
 
 import './styles/GlobalOverrides';
-import CustomCRMContainer from './components/CustomCRMContainer';
-import QueuesStatus from './components/queuesStatus';
-import QueuesStatusWriter from './components/queuesStatus/QueuesStatusWriter';
-import { TransferButton, AcceptTransferButton, RejectTransferButton } from './components/transfer';
 import reducers, { namespace } from './states';
-import LocalizationContext from './contexts/LocalizationContext';
 import HrmTheme from './styles/HrmTheme';
-import { channelTypes, transferModes } from './states/DomainConstants';
-import { addDeveloperUtils, initLocalization } from './utils/pluginHelpers';
+import { transferModes } from './states/DomainConstants';
+import { initLocalization } from './utils/pluginHelpers';
 import * as ActionFunctions from './utils/setUpActions';
+import * as Components from './utils/setUpComponents';
 import * as TransferHelpers from './utils/transfer';
 import { changeLanguage } from './states/ConfigurationState';
 import { issueSyncToken } from './services/ServerlessService';
@@ -82,6 +77,9 @@ const setUpSharedStateClient = () => {
   initSharedStateClient();
 };
 
+/**
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
+ */
 const setUpTransferredTaskJanitor = async setupObject => {
   const { workerSid } = setupObject;
   const query = 'data.attributes.channelSid == "CH00000000000000000000000000000000"';
@@ -93,11 +91,17 @@ const setUpTransferredTaskJanitor = async setupObject => {
   });
 };
 
+/**
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
+ */
 const setUpTransfers = setupObject => {
   setUpSharedStateClient();
   setUpTransferredTaskJanitor(setupObject);
 };
 
+/**
+ * @param {ReturnType<typeof getConfig>} config
+ */
 const setUpLocalization = config => {
   const manager = Flex.Manager.getInstance();
 
@@ -115,98 +119,28 @@ const setUpLocalization = config => {
   return initLocalization(localizationConfig, initialLanguage);
 };
 
-const setUpTransferComponents = () => {
-  Flex.TaskCanvasHeader.Content.add(<TransferButton key="transfer-button" />, {
-    sortOrder: 1,
-    if: props => TransferHelpers.shouldShowTransferButton(props.task),
-  });
-
-  Flex.TaskCanvasHeader.Content.remove('actions', {
-    if: props => TransferHelpers.isTransferring(props.task),
-  });
-
-  Flex.TaskCanvasHeader.Content.add(<AcceptTransferButton key="complete-transfer-button" />, {
-    sortOrder: 1,
-    if: props => TransferHelpers.shouldShowTransferControls(props.task),
-  });
-
-  Flex.TaskCanvasHeader.Content.add(<RejectTransferButton key="reject-transfer-button" />, {
-    sortOrder: 1,
-    if: props => TransferHelpers.shouldShowTransferControls(props.task),
-  });
-};
-
+/**
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
+ */
 const setUpComponents = setupObject => {
-  const manager = Flex.Manager.getInstance();
+  const { helpline, featureFlags } = setupObject;
 
-  const { helpline, translateUI, featureFlags } = setupObject;
+  // setUp (add) dynamic components
+  Components.setUpQueuesStatusWriter(setupObject);
+  Components.setUpQueuesStatus();
+  Components.setUpCustomCRMContainer();
+  if (featureFlags.enable_transfers) Components.setUpTransferComponents();
 
-  // utilities for developers only
-  if (!Boolean(helpline)) addDeveloperUtils(manager, translateUI);
+  if (!Boolean(helpline)) Components.setUpDeveloperComponents(setupObject); // utilities for developers only
 
-  Flex.MainContainer.Content.add(
-    <QueuesStatusWriter insightsClient={manager.insightsClient} key="queue-status-writer" helpline={helpline} />,
-    {
-      sortOrder: -1,
-      align: 'start',
-    },
-  );
-
-  const voiceColor = { Accepted: Flex.DefaultTaskChannels.Call.colors.main() };
-  const webColor = Flex.DefaultTaskChannels.Chat.colors.main;
-  const facebookColor = Flex.DefaultTaskChannels.ChatMessenger.colors.main;
-  const smsColor = Flex.DefaultTaskChannels.ChatSms.colors.main;
-  const whatsappColor = Flex.DefaultTaskChannels.ChatWhatsApp.colors.main;
-  Flex.TaskListContainer.Content.add(
-    <QueuesStatus
-      key="queue-status"
-      colors={{
-        voiceColor,
-        webColor,
-        facebookColor,
-        smsColor,
-        whatsappColor,
-      }}
-    />,
-    {
-      sortOrder: -1,
-      align: 'start',
-    },
-  );
-
-  const onCompleteTask = async (sid, task) => {
-    if (task.status !== 'wrapping') {
-      if (task.channelType === channelTypes.voice) {
-        await Flex.Actions.invokeAction('HangupCall', { sid, task });
-      } else {
-        await Flex.Actions.invokeAction('WrapupTask', { sid, task });
-      }
-    }
-
-    Flex.Actions.invokeAction('CompleteTask', { sid, task });
-  };
-
-  const options = { sortOrder: -1 };
-  Flex.CRMContainer.Content.replace(
-    <LocalizationContext.Provider
-      value={{ manager, isCallTask: Flex.TaskHelper.isCallTask }}
-      key="custom-crm-container"
-    >
-      <CustomCRMContainer handleCompleteTask={onCompleteTask} />
-    </LocalizationContext.Provider>,
-    options,
-  );
-
-  // Must use submit buttons in CRM container to complete task
-  Flex.TaskCanvasHeader.Content.remove('actions', {
-    if: props => props.task && props.task.status === 'wrapping',
-  });
-
-  Flex.MainHeader.Content.remove('logo');
-
-  if (featureFlags.enable_transfers) setUpTransferComponents();
+  // remove dynamic components
+  Components.removeActionsIfWrapping();
+  Components.removeLogo();
 };
 
+/**
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
+ */
 const setUpActions = setupObject => {
   const { featureFlags } = setupObject;
 

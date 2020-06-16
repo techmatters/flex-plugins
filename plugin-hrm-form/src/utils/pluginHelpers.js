@@ -1,8 +1,3 @@
-import React from 'react';
-import { View, ViewCollection, SideNav, Actions } from '@twilio/flex-ui';
-
-import Translator from '../components/translator';
-import SettingsSideLink from '../components/sideLinks/SettingsSideLink';
 import { getTranslation, getMessages } from '../services/ServerlessService';
 
 // default language to initialize plugin
@@ -83,24 +78,4 @@ export const initLocalization = (localizationConfig, initialLanguage) => {
     translateUI,
     getGoodbyeMsg,
   };
-};
-
-export const addDeveloperUtils = (manager, translateUI) => {
-  ViewCollection.Content.add(
-    <View name="settings" key="settings-view">
-      <div>
-        <Translator manager={manager} translateUI={translateUI} key="translator" />
-      </div>
-    </View>,
-  );
-
-  SideNav.Content.add(
-    <SettingsSideLink
-      key="SettingsSideLink"
-      onClick={() => Actions.invokeAction('NavigateToView', { viewName: 'settings' })}
-    />,
-    {
-      align: 'end',
-    },
-  );
 };
