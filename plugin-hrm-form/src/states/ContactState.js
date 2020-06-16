@@ -12,6 +12,7 @@ import {
   HANDLE_SELECT_SEARCH_RESULT,
   CHANGE_TAB,
   CHANGE_ROUTE,
+  SET_CONNECTED_CASE,
 } from './ActionTypes';
 import { countSelectedCategories } from './ValidationRules';
 import { copySearchResultIntoTask } from './SearchContact';
@@ -65,6 +66,8 @@ export class Actions {
   static changeTab = (tab, taskId) => ({ type: CHANGE_TAB, tab, taskId });
 
   static changeRoute = (route, taskId) => ({ type: CHANGE_ROUTE, route, taskId });
+
+  static setConnectedCase = (connectedCase, taskId) => ({ type: SET_CONNECTED_CASE, connectedCase, taskId });
 }
 
 // Will replace the below when we move over to field objects
@@ -212,7 +215,6 @@ export function reduce(state = initialState, action) {
     }
 
     case CHANGE_ROUTE: {
-      console.log({ taskId: action.taskId, tasks: state.tasks });
       const currentTask = state.tasks[action.taskId];
       const { metadata } = currentTask;
       const taskWithUpdatedRoute = { ...currentTask, metadata: { ...metadata, route: action.route } };
@@ -222,6 +224,20 @@ export function reduce(state = initialState, action) {
         tasks: {
           ...state.tasks,
           [action.taskId]: taskWithUpdatedRoute,
+        },
+      };
+    }
+
+    case SET_CONNECTED_CASE: {
+      const currentTask = state.tasks[action.taskId];
+      const { metadata } = currentTask;
+      const taskWithConnectedCase = { ...currentTask, metadata: { ...metadata, connectedCase: action.connectedCase } };
+
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: taskWithConnectedCase,
         },
       };
     }

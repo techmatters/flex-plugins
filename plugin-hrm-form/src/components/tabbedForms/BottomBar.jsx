@@ -28,6 +28,7 @@ class BottomBar extends Component {
     task: taskType.isRequired,
     changeRoute: PropTypes.func.isRequired,
     handleValidateForm: PropTypes.func.isRequired,
+    setConnectedCase: PropTypes.func.isRequired,
   };
 
   state = {
@@ -63,6 +64,7 @@ class BottomBar extends Component {
       const caseFromDB = await createCase(hrmBaseUrl, caseRecord);
       await connectToCase(hrmBaseUrl, contact.id, caseFromDB.id);
       this.props.changeRoute('new-case', taskSid);
+      this.props.setConnectedCase(caseFromDB, taskSid);
     } else {
       this.setState({ isMenuOpen: false });
       window.alert('There is a problem with your submission.  Please check the form for errors.');
@@ -140,6 +142,7 @@ class BottomBar extends Component {
 
 const mapDispatchToProps = dispatch => ({
   changeRoute: bindActionCreators(Actions.changeRoute, dispatch),
+  setConnectedCase: bindActionCreators(Actions.setConnectedCase, dispatch),
 });
 
 export default withTaskContext(connect(null, mapDispatchToProps)(BottomBar));

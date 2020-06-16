@@ -24,3 +24,6 @@ export const QUEUES_STATUS_FAILURE = 'QUEUES_STATUS_FAILURE';
 
 // Configuration State
 export const CHANGE_LANGUAGE = 'CHANGE_LANGUAGE';
+
+// Case
+export const SET_CONNECTED_CASE = 'SET_CONNECTED_CASE';
