@@ -108,6 +108,7 @@ class BottomBar extends Component {
     const showSubmitButton = tab === tabs - 1;
     const isSubmitButtonDisabled = !formIsValid(form);
     const isMockedMessageOpen = Boolean(mockedMessage);
+    const { featureFlags } = getConfig();
 
     return (
       <>
@@ -126,9 +127,15 @@ class BottomBar extends Component {
           )}
           {showSubmitButton && (
             <>
-              <StyledNextStepButton roundCorners={true} onClick={this.toggleCaseMenu} disabled={isSubmitButtonDisabled}>
-                Save and Add to Case...
-              </StyledNextStepButton>
+              {featureFlags.enable_case_management && (
+                <StyledNextStepButton
+                  roundCorners={true}
+                  onClick={this.toggleCaseMenu}
+                  disabled={isSubmitButtonDisabled}
+                >
+                  Save and Add to Case...
+                </StyledNextStepButton>
+              )}
               <StyledNextStepButton roundCorners={true} onClick={this.handleSubmit} disabled={isSubmitButtonDisabled}>
                 Submit
               </StyledNextStepButton>
