@@ -106,9 +106,12 @@ class BottomBar extends Component {
     const { tab } = form.metadata;
     const showNextButton = tab !== 0 && tab < tabs - 1;
     const showSubmitButton = tab === tabs - 1;
+    const showBottomBar = showNextButton || showSubmitButton;
     const isSubmitButtonDisabled = !formIsValid(form);
     const isMockedMessageOpen = Boolean(mockedMessage);
     const { featureFlags } = getConfig();
+
+    if (!showBottomBar) return null;
 
     return (
       <>
