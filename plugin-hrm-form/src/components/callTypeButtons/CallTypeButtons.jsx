@@ -10,6 +10,8 @@ import callTypes from '../../states/DomainConstants';
 import { isNonDataCallType } from '../../states/ValidationRules';
 import { formType, taskType, localizationType } from '../../types';
 import NonDataCallTypeDialog from './NonDataCallTypeDialog';
+import { getConfig } from '../../HrmFormPlugin';
+import { saveToHrm } from '../../services/ContactService';
 
 const isDialogOpen = form =>
   Boolean(form && form.callType && form.callType.value && isNonDataCallType(form.callType.value));
@@ -23,6 +25,13 @@ const CallTypeButtons = props => {
   const handleCallTypeButtonClick = (taskSid, callType) => {
     props.handleCallTypeButtonClick(taskSid, callType);
     props.changeRoute('tabbed-forms', taskSid);
+  };
+
+  const handleConfirmNonDataCallType = async () => {
+    const { hrmBaseUrl, workerSid, helpline } = getConfig();
+
+    await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
+    props.handleCompleteTask(task.taskSid, task);
   };
 
   return (
@@ -63,7 +72,7 @@ const CallTypeButtons = props => {
       <NonDataCallTypeDialog
         isOpen={isDialogOpen(form)}
         isCallTask={isCallTask(task)}
-        handleConfirm={() => props.handleSubmit(task)}
+        handleConfirm={handleConfirmNonDataCallType}
         handleCancel={() => clearCallType(props)}
       />
     </>
@@ -75,9 +84,9 @@ CallTypeButtons.propTypes = {
   form: formType.isRequired,
   task: taskType.isRequired,
   handleCallTypeButtonClick: PropTypes.func.isRequired,
-  handleSubmit: PropTypes.func.isRequired,
   localization: localizationType.isRequired,
   changeRoute: PropTypes.func.isRequired,
+  handleCompleteTask: PropTypes.func.isRequired,
 };
 
 export default withLocalization(withTaskContext(CallTypeButtons));

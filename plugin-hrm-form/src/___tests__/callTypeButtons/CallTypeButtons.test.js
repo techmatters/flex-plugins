@@ -3,6 +3,7 @@ import renderer from 'react-test-renderer';
 import { Template } from '@twilio/flex-ui';
 
 import '../mockStyled';
+import '../mockGetConfig';
 import CallTypeButtons from '../../components/callTypeButtons';
 import { DataCallTypeButton, NonDataCallTypeButton, ConfirmButton, CancelButton } from '../../styles/callTypeButtons';
 import LocalizationContext from '../../contexts/LocalizationContext';
@@ -20,6 +21,10 @@ const strings = {
 const withEndCall = <Template code="TaskHeaderEndCall" />;
 const withEndChat = <Template code="TaskHeaderEndChat" />;
 
+jest.mock('../../services/ContactService', () => ({
+  saveToHrm: () => Promise.resolve(),
+}));
+
 afterEach(() => {
   jest.resetAllMocks();
 });
@@ -34,7 +39,13 @@ test('<CallTypeButtons> inital render (no dialog)', () => {
 
   const component = renderer.create(
     <LocalizationContext.Provider value={{ strings, isCallTask }}>
-      <CallTypeButtons form={form} task={task} handleCallTypeButtonClick={jest.fn()} handleSubmit={jest.fn()} />
+      <CallTypeButtons
+        form={form}
+        task={task}
+        handleCallTypeButtonClick={jest.fn()}
+        changeRoute={jest.fn()}
+        handleCompleteTask={jest.fn()}
+      />
     </LocalizationContext.Provider>,
   ).root;
 
@@ -55,7 +66,13 @@ test('<CallTypeButtons> renders dialog with END CHAT button', () => {
 
   const component = renderer.create(
     <LocalizationContext.Provider value={{ strings, isCallTask }}>
-      <CallTypeButtons form={form} task={task} handleCallTypeButtonClick={jest.fn()} handleSubmit={jest.fn()} />
+      <CallTypeButtons
+        form={form}
+        task={task}
+        handleCallTypeButtonClick={jest.fn()}
+        changeRoute={jest.fn()}
+        handleCompleteTask={jest.fn()}
+      />
     </LocalizationContext.Provider>,
   ).root;
 
@@ -75,7 +92,13 @@ test('<CallTypeButtons> renders dialog with HANG UP button', () => {
 
   const component = renderer.create(
     <LocalizationContext.Provider value={{ strings, isCallTask }}>
-      <CallTypeButtons form={form} task={task} handleCallTypeButtonClick={jest.fn()} handleSubmit={jest.fn()} />
+      <CallTypeButtons
+        form={form}
+        task={task}
+        handleCallTypeButtonClick={jest.fn()}
+        changeRoute={jest.fn()}
+        handleCompleteTask={jest.fn()}
+      />
     </LocalizationContext.Provider>,
   ).root;
 
@@ -94,7 +117,7 @@ test('<CallTypeButtons> click on CallType button', () => {
   const isCallTask = () => false;
 
   const handleCallTypeButtonClick = jest.fn();
-  const handleSubmit = jest.fn();
+  const changeRoute = jest.fn();
 
   const component = renderer.create(
     <LocalizationContext.Provider value={{ strings, isCallTask }}>
@@ -102,7 +125,8 @@ test('<CallTypeButtons> click on CallType button', () => {
         form={form}
         task={task}
         handleCallTypeButtonClick={handleCallTypeButtonClick}
-        handleSubmit={jest.fn()}
+        changeRoute={changeRoute}
+        handleCompleteTask={jest.fn()}
       />
     </LocalizationContext.Provider>,
   ).root;
@@ -110,10 +134,10 @@ test('<CallTypeButtons> click on CallType button', () => {
   component.findAllByType(DataCallTypeButton)[0].props.onClick();
 
   expect(handleCallTypeButtonClick).toHaveBeenCalledWith(task.taskSid, callTypes.child);
-  expect(handleSubmit).not.toHaveBeenCalled();
+  expect(changeRoute).toHaveBeenCalledWith('tabbed-forms', task.taskSid);
 });
 
-test('<CallTypeButtons> click on END CHAT button', () => {
+test('<CallTypeButtons> click on END CHAT button', async () => {
   const form = {
     callType: {
       value: '',
@@ -122,7 +146,8 @@ test('<CallTypeButtons> click on END CHAT button', () => {
   const isCallTask = () => false;
 
   const handleCallTypeButtonClick = jest.fn();
-  const handleSubmit = jest.fn();
+  const changeRoute = jest.fn();
+  const handleCompleteTask = jest.fn();
 
   const component = renderer.create(
     <LocalizationContext.Provider value={{ strings, isCallTask }}>
@@ -130,15 +155,17 @@ test('<CallTypeButtons> click on END CHAT button', () => {
         form={form}
         task={task}
         handleCallTypeButtonClick={handleCallTypeButtonClick}
-        handleSubmit={handleSubmit}
+        changeRoute={changeRoute}
+        handleCompleteTask={handleCompleteTask}
       />
     </LocalizationContext.Provider>,
   ).root;
 
-  component.findByType(ConfirmButton).props.onClick();
+  await component.findByType(ConfirmButton).props.onClick();
 
   expect(handleCallTypeButtonClick).not.toHaveBeenCalled();
-  expect(handleSubmit).toHaveBeenCalled();
+  expect(changeRoute).not.toHaveBeenCalled();
+  expect(handleCompleteTask).toHaveBeenCalledWith(task.taskSid, task);
 });
 
 test('<CallTypeButtons> click on CANCEL button', () => {
@@ -150,7 +177,8 @@ test('<CallTypeButtons> click on CANCEL button', () => {
   const isCallTask = () => false;
 
   const handleCallTypeButtonClick = jest.fn();
-  const handleSubmit = jest.fn();
+  const changeRoute = jest.fn();
+  const handleCompleteTask = jest.fn();
 
   const component = renderer.create(
     <LocalizationContext.Provider value={{ strings, isCallTask }}>
@@ -158,7 +186,8 @@ test('<CallTypeButtons> click on CANCEL button', () => {
         form={form}
         task={task}
         handleCallTypeButtonClick={handleCallTypeButtonClick}
-        handleSubmit={handleSubmit}
+        changeRoute={changeRoute}
+        handleCompleteTask={handleCompleteTask}
       />
     </LocalizationContext.Provider>,
   ).root;
@@ -166,5 +195,6 @@ test('<CallTypeButtons> click on CANCEL button', () => {
   component.findByType(CancelButton).props.onClick();
 
   expect(handleCallTypeButtonClick).toHaveBeenCalledWith(task.taskSid, '');
-  expect(handleSubmit).not.toHaveBeenCalled();
+  expect(changeRoute).not.toHaveBeenCalled();
+  expect(handleCompleteTask).not.toHaveBeenCalled();
 });

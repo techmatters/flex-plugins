@@ -38,7 +38,7 @@ const HrmForm = props => {
           form={props.form}
           handleCallTypeButtonClick={props.handleCallTypeButtonClick}
           changeTab={props.changeTab}
-          handleSubmit={props.handleSubmit}
+          handleCompleteTask={props.handleCompleteTask}
           changeRoute={props.changeRoute}
         />
       );
@@ -52,7 +52,6 @@ HrmForm.propTypes = {
   handleCategoryToggle: PropTypes.func.isRequired,
   handleChange: PropTypes.func.isRequired,
   handleCallTypeButtonClick: PropTypes.func.isRequired,
-  handleSubmit: PropTypes.func.isRequired,
   handleCompleteTask: PropTypes.func.isRequired,
   handleFocus: PropTypes.func.isRequired,
   handleSelectSearchResult: PropTypes.func.isRequired,

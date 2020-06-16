@@ -59,7 +59,7 @@ class BottomBar extends Component {
     const newForm = this.props.handleValidateForm();
 
     if (formIsValid(newForm)) {
-      const contact = await saveToHrm(task, form, () => null, hrmBaseUrl, workerSid, helpline);
+      const contact = await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
       const caseFromDB = await createCase(hrmBaseUrl, caseRecord);
       await connectToCase(hrmBaseUrl, contact.id, caseFromDB.id);
       this.props.changeRoute('new-case', taskSid);
@@ -83,7 +83,7 @@ class BottomBar extends Component {
 
     try {
       if (formIsValid(newForm)) {
-        await saveToHrm(task, form, () => null, hrmBaseUrl, workerSid, helpline);
+        await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
         this.props.handleCompleteTask(task.taskSid, task);
       } else {
         this.setState({ isMenuOpen: false });

@@ -124,16 +124,19 @@ describe('saveToHrm()', () => {
     channelType: channelTypes.web,
     defaultFrom: 'Anonymous',
   };
-  const abortFunction = jest.fn();
   const hrmBaseUrl = 'hrmBaseUrl';
   const workerSid = 'worker-sid';
   const helpline = 'helpline';
+  const fetchSuccess = Promise.resolve({
+    ok: true,
+    json: () => Promise.resolve(),
+  });
 
   test('data calltype saves form data', async () => {
     const form = createForm({ callType: callTypes.child, childFirstName: 'Jill' });
-    const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => Promise.resolve());
+    const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
 
-    await saveToHrm(task, form, abortFunction, hrmBaseUrl, workerSid, helpline);
+    await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
 
     const formFromPOST = getFormFromPOST(mockedFetch);
     expect(formFromPOST.callType).toEqual(callTypes.child);
@@ -144,9 +147,9 @@ describe('saveToHrm()', () => {
 
   test('non-data calltype do not save form data', async () => {
     const form = createForm({ callType: callTypes.hangup, childFirstName: 'Jill' });
-    const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => Promise.resolve());
+    const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
 
-    await saveToHrm(task, form, abortFunction, hrmBaseUrl, workerSid, helpline);
+    await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
 
     const formFromPOST = getFormFromPOST(mockedFetch);
     expect(formFromPOST.callType).toEqual(callTypes.hangup);

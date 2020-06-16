@@ -65,7 +65,7 @@ export function transformForm(form) {
   return newForm;
 }
 
-export async function saveToHrm(task, form, abortFunction, hrmBaseUrl, workerSid, helpline) {
+export async function saveToHrm(task, form, hrmBaseUrl, workerSid, helpline) {
   // if we got this far, we assume the form is valid and ready to submit
 
   // metrics will be invalid if page was reloaded (form recreated and thus initial information will be lost)
