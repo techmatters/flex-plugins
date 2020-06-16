@@ -33,10 +33,10 @@ export const setUpQueuesStatusWriter = setupObject => {
 };
 
 /**
- * Add a widget at the begginig of the TaskListContainer, which shows the pending tasks in each channel (consumes from QueuesStatusWriter)
+ * Add a widget at the beginnig of the TaskListContainer, which shows the pending tasks in each channel (consumes from QueuesStatusWriter)
  */
 export const setUpQueuesStatus = () => {
-  // @ts-ignore this is comming as a function so we need to disable TS, as it won't type otherwise
+  // this is coming as a function so we need to disable TS, as it won't type otherwise
   const voiceColor = { Accepted: Flex.DefaultTaskChannels.Call.colors.main() };
   const webColor = Flex.DefaultTaskChannels.Chat.colors.main;
   const facebookColor = Flex.DefaultTaskChannels.ChatMessenger.colors.main;
