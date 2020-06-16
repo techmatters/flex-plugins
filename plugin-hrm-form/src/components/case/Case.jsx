@@ -13,7 +13,9 @@ const Case = props => {
   return (
     <div>
       Case #1234
-      <button type="button" onClick={saveAndEnd}>Save and end</button>
+      <button type="button" onClick={saveAndEnd}>
+        Save and end
+      </button>
     </div>
   );
 };

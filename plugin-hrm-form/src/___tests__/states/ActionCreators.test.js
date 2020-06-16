@@ -4,8 +4,8 @@ import {
   validateBeforeSubmit,
   validateOnBlur,
 } from '../../states/ValidationRules';
-import { handleBlur, handleCategoryToggle, handleFocus, handleSubmit } from '../../states/ActionCreators';
-import { HANDLE_BLUR, HANDLE_FOCUS } from '../../states/ActionTypes';
+import { handleBlur, handleCategoryToggle, handleFocus, handleValidateForm } from '../../states/ActionCreators';
+import { HANDLE_BLUR, HANDLE_FOCUS, HANDLE_VALIDATE_FORM } from '../../states/ActionTypes';
 import { FieldType } from '../../states/ContactFormStateFactory';
 
 jest.mock('../../states/ValidationRules', () => {
@@ -43,11 +43,9 @@ test('handleFocus sends the right action when called', () => {
   });
 });
 
-describe('handleSubmit', () => {
-  test('blocks submit when form is invalid', () => {
+describe('handleValidateForm', () => {
+  test('dispatch HANDLE_VALIDATE_FORM and returns validated form', () => {
     const dispatch = jest.fn(x => x);
-    const handleCompleteTask = jest.fn();
-    window.alert = jest.fn();
     const form = {
       test: 'pretend an error is present',
     };
@@ -56,40 +54,14 @@ describe('handleSubmit', () => {
     };
     validateBeforeSubmit.mockReturnValueOnce(form);
     formIsValid.mockReturnValueOnce(false);
-    handleSubmit(dispatch)(form, handleCompleteTask)(task);
+    const validatedForm = handleValidateForm(dispatch)(form, task.taskSid)();
     expect(dispatch.mock.calls.length).toBe(1);
     expect(dispatch.mock.calls[0][0]).toStrictEqual({
-      type: HANDLE_BLUR,
+      type: HANDLE_VALIDATE_FORM,
       form,
       taskId: task.taskSid,
     });
-    expect(handleCompleteTask.mock.calls.length).toBe(0);
-    expect(window.alert.mock.calls.length).toBe(1);
-  });
-
-  test('submits when form is valid', () => {
-    const dispatch = jest.fn(x => x);
-    const handleCompleteTask = jest.fn();
-    window.alert = jest.fn();
-    const form = {
-      test: 'pretend an error is not present',
-    };
-    const task = {
-      taskSid: 'WT1234',
-    };
-    validateBeforeSubmit.mockReturnValueOnce(form);
-    formIsValid.mockReturnValueOnce(true);
-    handleSubmit(dispatch)(form, handleCompleteTask)(task);
-    expect(dispatch.mock.calls.length).toBe(1);
-    expect(dispatch.mock.calls[0][0]).toStrictEqual({
-      type: HANDLE_BLUR,
-      form,
-      taskId: task.taskSid,
-    });
-    expect(handleCompleteTask.mock.calls.length).toBe(1);
-    expect(handleCompleteTask.mock.calls[0][0]).toStrictEqual(task.taskSid);
-    expect(handleCompleteTask.mock.calls[0][1]).toStrictEqual(task);
-    expect(window.alert.mock.calls.length).toBe(0);
+    expect(validatedForm).toStrictEqual(form);
   });
 });
 
