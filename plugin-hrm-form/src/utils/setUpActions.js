@@ -20,14 +20,6 @@ const getStateContactForms = taskSid => {
 };
 
 /**
- * Saves the end time of the conversation (used to save the duration of the conversation)
- * @type {ActionFunction}
- */
-const saveEndMillis = async payload => {
-  Manager.getInstance().store.dispatch(Actions.saveEndMillis(payload.task.taskSid));
-};
-
-/**
  * A function that calls fun with the payload of the replaced action
  * and continues with the Twilio execution
  * @param {ActionFunction} fun
@@ -96,8 +88,6 @@ export const customTransferTask = setupObject => async (payload, original) => {
   return transferChatStart(body);
 };
 
-export const hangupCall = fromActionFunction(saveEndMillis);
-
 /**
  * Helper to determine if the counselor should send a message before leaving the chat
  * @param {string} channel
@@ -132,7 +122,6 @@ export const wrapupTask = setupObject =>
     if (shouldSayGoodbye(payload.task.channelType)) {
       await sendGoodbyeMessage(setupObject)(payload);
     }
-    await saveEndMillis(payload);
   });
 
 /**

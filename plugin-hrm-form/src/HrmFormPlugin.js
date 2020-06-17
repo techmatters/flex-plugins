@@ -159,8 +159,6 @@ const setUpActions = setupObject => {
 
   if (featureFlags.enable_transfers) Flex.Actions.replaceAction('TransferTask', transferOverride);
 
-  Flex.Actions.replaceAction('HangupCall', ActionFunctions.hangupCall);
-
   Flex.Actions.replaceAction('WrapupTask', wrapupOverride);
 
   Flex.Actions.addListener('beforeCompleteTask', beforeCompleteAction);
