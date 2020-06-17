@@ -57,16 +57,21 @@ class BottomBar extends Component {
       twilioWorkerId: workerSid,
     };
 
+    this.setState({ isMenuOpen: false });
+
     const newForm = this.props.handleValidateForm();
 
     if (formIsValid(newForm)) {
-      const contact = await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
-      const caseFromDB = await createCase(hrmBaseUrl, caseRecord);
-      await connectToCase(hrmBaseUrl, contact.id, caseFromDB.id);
-      this.props.changeRoute('new-case', taskSid);
-      this.props.setConnectedCase(caseFromDB, taskSid);
+      try {
+        const contact = await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
+        const caseFromDB = await createCase(hrmBaseUrl, caseRecord);
+        await connectToCase(hrmBaseUrl, contact.id, caseFromDB.id);
+        this.props.changeRoute('new-case', taskSid);
+        this.props.setConnectedCase(caseFromDB, taskSid);
+      } catch (error) {
+        window.alert('Error from backend system.');
+      }
     } else {
-      this.setState({ isMenuOpen: false });
       window.alert('There is a problem with your submission.  Please check the form for errors.');
     }
   };
@@ -83,19 +88,17 @@ class BottomBar extends Component {
 
     const newForm = this.props.handleValidateForm();
 
-    try {
-      if (formIsValid(newForm)) {
+    if (formIsValid(newForm)) {
+      try {
         await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
         this.props.handleCompleteTask(task.taskSid, task);
-      } else {
-        this.setState({ isMenuOpen: false });
-        window.alert('There is a problem with your submission.  Please check the form for errors.');
+      } catch (error) {
+        if (!window.confirm('Error from backend system.  Are you sure you want to end the task without recording?')) {
+          this.props.handleCompleteTask(task.taskSid, task);
+        }
       }
-    } catch (error) {
-      console.log(JSON.stringify(error));
-      if (!window.confirm('Error from backend system.  Are you sure you want to end the task without recording?')) {
-        this.props.handleCompleteTask(task.taskSid, task);
-      }
+    } else {
+      window.alert('There is a problem with your submission.  Please check the form for errors.');
     }
   };
 

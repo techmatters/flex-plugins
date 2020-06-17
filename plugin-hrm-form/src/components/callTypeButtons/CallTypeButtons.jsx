@@ -30,8 +30,14 @@ const CallTypeButtons = props => {
   const handleConfirmNonDataCallType = async () => {
     const { hrmBaseUrl, workerSid, helpline } = getConfig();
 
-    await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
-    props.handleCompleteTask(task.taskSid, task);
+    try {
+      await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
+      props.handleCompleteTask(task.taskSid, task);
+    } catch (error) {
+      if (!window.confirm('Error from backend system.  Are you sure you want to end the task without recording?')) {
+        props.handleCompleteTask(task.taskSid, task);
+      }
+    }
   };
 
   return (

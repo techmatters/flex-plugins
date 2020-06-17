@@ -8,7 +8,9 @@ export async function createCase(hrmBaseUrl, caseRecord) {
   });
 
   if (!response.ok) {
-    throw response.error();
+    const error = response.error();
+    console.log(JSON.stringify(error));
+    throw error;
   }
 
   return response.json();

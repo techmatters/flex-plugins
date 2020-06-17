@@ -114,10 +114,9 @@ export async function saveToHrm(task, form, hrmBaseUrl, workerSid, helpline) {
   });
 
   if (!response.ok) {
-    console.log(`Form error: ${response.statusText}`);
-    if (!window.confirm('Error from backend system.  Are you sure you want to end the task without recording?')) {
-      throw new Error(response.statusText);
-    }
+    const error = response.error();
+    console.log(JSON.stringify(error));
+    throw error;
   }
 
   return response.json();
@@ -132,7 +131,9 @@ export async function connectToCase(hrmBaseUrl, contactId, caseId) {
   });
 
   if (!response.ok) {
-    throw response.error();
+    const error = response.error();
+    console.log(JSON.stringify(error));
+    throw error;
   }
 
   return response.json();
