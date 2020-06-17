@@ -22,7 +22,7 @@ const CallTypeButtons = props => {
   const { form, task, localization } = props;
   const { isCallTask } = localization;
 
-  const handleCallTypeButtonClick = (taskSid, callType) => {
+  const handleClick = (taskSid, callType) => {
     props.handleCallTypeButtonClick(taskSid, callType);
     props.changeRoute('tabbed-forms', taskSid);
   };
@@ -39,13 +39,13 @@ const CallTypeButtons = props => {
       <Container>
         <Box marginBottom="29px">
           <Label>categorize this contact</Label>
-          <DataCallTypeButton onClick={() => handleCallTypeButtonClick(task.taskSid, callTypes.child)}>
+          <DataCallTypeButton onClick={() => handleClick(task.taskSid, callTypes.child)}>
             <Box width="50px" marginRight="5px">
               <FaceIcon />
             </Box>
             <Template code="CallType-child" />
           </DataCallTypeButton>
-          <DataCallTypeButton onClick={() => handleCallTypeButtonClick(task.taskSid, callTypes.caller)}>
+          <DataCallTypeButton onClick={() => handleClick(task.taskSid, callTypes.caller)}>
             <Box width="50px" marginRight="5px">
               <FaceIcon style={{ marginRight: '-5px' }} />
               <FaceIcon />
