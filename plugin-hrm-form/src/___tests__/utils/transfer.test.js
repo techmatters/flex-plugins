@@ -318,6 +318,27 @@ describe('Kick, close and helpers', () => {
     await TransferHelpers.setTransferMeta(warmTask, transferModes.warm, 'some string', counselorName);
     expect(warmTask.attributes.transferMeta).toStrictEqual(warmExpected);
   });
+
+  test('clearTransferMeta', async () => {
+    const anotherTask = createTask(
+      { something: 'something' },
+      { sid: 'reservation1', taskSid: 'task1', taskChannelSid: 'channel1', workerSid: 'worker1' },
+    );
+
+    const counselorName = 'full name';
+
+    await TransferHelpers.setTransferMeta(anotherTask, transferModes.cold, 'some string', counselorName);
+    expect(anotherTask.attributes.transferMeta).not.toBeUndefined();
+
+    await TransferHelpers.clearTransferMeta(anotherTask);
+    expect(anotherTask.attributes.transferMeta).toBeUndefined();
+
+    await TransferHelpers.setTransferMeta(anotherTask, transferModes.warm, 'some string', counselorName);
+    expect(anotherTask.attributes.transferMeta).not.toBeUndefined();
+
+    await TransferHelpers.clearTransferMeta(anotherTask);
+    expect(anotherTask.attributes.transferMeta).toBeUndefined();
+  });
 });
 
 describe('TransferredTaskJanitor helpers', () => {

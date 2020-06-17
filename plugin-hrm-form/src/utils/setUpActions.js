@@ -58,6 +58,19 @@ export const restoreFormIfTransfer = async payload => {
 };
 
 /**
+ * @type {ReplacedActionFunction}
+ */
+const safeCallTransfer = async (payload, original) => {
+  try {
+    await original(payload);
+  } catch (err) {
+    const { strings } = Manager.getInstance();
+    await TransferHelpers.clearTransferMeta(payload.task);
+    window.alert(strings['Transfer-CantTransferToOffline']);
+  }
+};
+
+/**
  * Custom override for TransferTask action. Saves the form to share with another counseler (if possible) and then starts the transfer
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
  * @returns {ReplacedActionFunction}
@@ -81,7 +94,7 @@ export const customTransferTask = setupObject => async (payload, original) => {
       await TransferHelpers.setDummyChannelSid(payload.task);
     }
 
-    return original(payload);
+    return safeCallTransfer(payload, original);
   }
 
   const memberToKick = mode === transferModes.cold ? TransferHelpers.getMemberToKick(payload.task, identity) : '';

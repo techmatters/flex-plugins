@@ -128,6 +128,15 @@ export const setTransferMeta = async (task, mode, documentName, counselorName) =
 };
 
 /**
+ * @param {ITask} task
+ */
+export const clearTransferMeta = async task => {
+  const { transferMeta, ...attributes } = task.attributes;
+
+  await task.setAttributes(attributes);
+};
+
+/**
  * Completes the first task and keeps the second as the valid, making sure the channel is kept open
  * @param {string} closeSid task to close
  * @param {string} keepSid task to keep
