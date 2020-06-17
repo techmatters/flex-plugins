@@ -149,11 +149,6 @@ export const setUpDeveloperComponents = setupObject => {
 };
 
 /**
- * @param {string} str
- */
-const uppercaseFirst = str => str[0].toUpperCase() + str.slice(1);
-
-/**
  *
  * @param {import('@twilio/flex-ui').ITask} task
  */
@@ -169,7 +164,7 @@ const setSecondLine = chatChannel => {
   const { channel, string } = chatChannel;
   const defaultStrings = Flex.DefaultTaskChannels[channel].templates.TaskListItem.secondLine;
 
-  Flex.DefaultTaskChannels[channel].templates.TaskListItem.secondLine = task => {
+  Flex.DefaultTaskChannels[channel].templates.TaskListItem.secondLine = (task, componentType) => {
     if (isIncomingTransfer(task) && task.attributes.transferTargetType === 'queue') {
       const { originalCounselorName } = task.attributes.transferMeta;
       return `${manager.strings[string]} ${originalCounselorName} (${task.queueName})`;
@@ -180,7 +175,7 @@ const setSecondLine = chatChannel => {
       return `${manager.strings[string]} ${originalCounselorName} (direct)`;
     }
 
-    return defaultStrings[uppercaseFirst(task.status)];
+    return Flex.TaskChannelHelper.getTemplateForStatus(task, defaultStrings, componentType);
   };
 };
 
