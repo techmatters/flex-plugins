@@ -11,6 +11,7 @@ jest.mock('../HrmFormPlugin', () => ({
       configuredLanguage: '',
       identity: '',
       token: '',
+      counselorName: '',
     };
   },
 }));

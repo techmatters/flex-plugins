@@ -36,7 +36,6 @@ export const setUpQueuesStatusWriter = setupObject => {
  * Add a widget at the beginnig of the TaskListContainer, which shows the pending tasks in each channel (consumes from QueuesStatusWriter)
  */
 export const setUpQueuesStatus = () => {
-  // this is coming as a function so we need to disable TS, as it won't type otherwise
   const voiceColor = { Accepted: Flex.DefaultTaskChannels.Call.colors.main() };
   const webColor = Flex.DefaultTaskChannels.Chat.colors.main;
   const facebookColor = Flex.DefaultTaskChannels.ChatMessenger.colors.main;
@@ -147,6 +146,49 @@ export const setUpDeveloperComponents = setupObject => {
       align: 'end',
     },
   );
+};
+
+/**
+ *
+ * @param {import('@twilio/flex-ui').ITask} task
+ */
+const isIncomingTransfer = task => TransferHelpers.hasTransferStarted(task) && task.status === 'pending';
+
+/**
+ * @param {{ channel: string; string: string; }} chatChannel
+ */
+const setSecondLine = chatChannel => {
+  // here we use manager instead of setupObject, so manager.strings will always have the latest version of strings
+  const manager = Flex.Manager.getInstance();
+
+  const { channel, string } = chatChannel;
+  const defaultStrings = Flex.DefaultTaskChannels[channel].templates.TaskListItem.secondLine;
+
+  Flex.DefaultTaskChannels[channel].templates.TaskListItem.secondLine = (task, componentType) => {
+    if (isIncomingTransfer(task) && task.attributes.transferTargetType === 'queue') {
+      const { originalCounselorName } = task.attributes.transferMeta;
+      return `${manager.strings[string]} ${originalCounselorName} (${task.queueName})`;
+    }
+
+    if (isIncomingTransfer(task) && task.attributes.transferTargetType === 'worker') {
+      const { originalCounselorName } = task.attributes.transferMeta;
+      return `${manager.strings[string]} ${originalCounselorName} (direct)`;
+    }
+
+    return Flex.TaskChannelHelper.getTemplateForStatus(task, defaultStrings, componentType);
+  };
+};
+
+export const setUpIncomingTransferMessage = () => {
+  const chatChannels = [
+    { channel: 'Chat', string: 'Transfer-TaskLineChatReserved' },
+    { channel: 'ChatLine', string: 'Transfer-TaskLineChatLineReserved' },
+    { channel: 'ChatMessenger', string: 'Transfer-TaskLineChatMessengerReserved' },
+    { channel: 'ChatSms', string: 'Transfer-TaskLineChatSmsReserved' },
+    { channel: 'ChatWhatsApp', string: 'Transfer-TaskLineChatWhatsAppReserved' },
+  ];
+
+  chatChannels.forEach(el => setSecondLine(el));
 };
 
 /**
