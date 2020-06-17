@@ -3,14 +3,26 @@ import PropTypes from 'prop-types';
 import { withTaskContext } from '@twilio/flex-ui';
 
 import { taskType, formType } from '../../types';
+import { getConfig } from '../../HrmFormPlugin';
+import { fillEndMillis } from '../../utils/conversationDuration';
+import { saveToHrm, connectToCase } from '../../services/ContactService';
 
 const Case = props => {
   const { connectedCase } = props.form.metadata;
   if (!connectedCase) return null;
 
-  const saveAndEnd = () => {
-    const { task } = props;
-    props.handleCompleteTask(task.taskSid, task);
+  const saveAndEnd = async () => {
+    const { task, form } = props;
+    const { hrmBaseUrl, workerSid, helpline } = getConfig();
+
+    try {
+      const formWithEndMillis = fillEndMillis(form);
+      const contact = await saveToHrm(task, formWithEndMillis, hrmBaseUrl, workerSid, helpline);
+      await connectToCase(hrmBaseUrl, contact.id, connectedCase.id);
+      props.handleCompleteTask(task.taskSid, task);
+    } catch (error) {
+      window.alert('Error from backend system.');
+    }
   };
 
   return (

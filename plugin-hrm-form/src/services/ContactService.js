@@ -2,6 +2,7 @@ import secret from '../private/secret';
 import { FieldType, recreateBlankForm } from '../states/ContactFormStateFactory';
 import { isNonDataCallType } from '../states/ValidationRules';
 import { channelTypes } from '../states/DomainConstants';
+import { getConversationDuration } from '../utils/conversationDuration';
 
 export async function searchContacts(hrmBaseUrl, searchParams) {
   try {
@@ -67,14 +68,7 @@ export function transformForm(form) {
 
 export async function saveToHrm(task, form, hrmBaseUrl, workerSid, helpline) {
   // if we got this far, we assume the form is valid and ready to submit
-
-  // metrics will be invalid if page was reloaded (form recreated and thus initial information will be lost)
-  const { startMillis, endMillis, recreated } = form.metadata;
-  const milisecondsElapsed = endMillis - startMillis;
-  const secondsElapsed = Math.floor(milisecondsElapsed / 1000);
-  const validMetrics = !recreated;
-  const conversationDuration = validMetrics ? secondsElapsed : null;
-
+  const conversationDuration = getConversationDuration(form);
   const callType = form.callType.value;
 
   let rawForm = form;

@@ -15,7 +15,8 @@ import { BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import { Actions } from '../../states/ContactState';
 import { getConfig } from '../../HrmFormPlugin';
 import { createCase } from '../../services/CaseService';
-import { saveToHrm, connectToCase } from '../../services/ContactService';
+import { saveToHrm } from '../../services/ContactService';
+import { fillEndMillis } from '../../utils/conversationDuration';
 
 class BottomBar extends Component {
   static displayName = 'BottomBar';
@@ -47,7 +48,7 @@ class BottomBar extends Component {
   closeMockedMessage = () => this.setState({ mockedMessage: null });
 
   handleOpenNewCase = async () => {
-    const { task, form } = this.props;
+    const { task } = this.props;
     const { taskSid } = task;
     const { hrmBaseUrl, workerSid, helpline } = getConfig();
 
@@ -63,9 +64,7 @@ class BottomBar extends Component {
 
     if (formIsValid(newForm)) {
       try {
-        const contact = await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
         const caseFromDB = await createCase(hrmBaseUrl, caseRecord);
-        await connectToCase(hrmBaseUrl, contact.id, caseFromDB.id);
         this.props.changeRoute('new-case', taskSid);
         this.props.setConnectedCase(caseFromDB, taskSid);
       } catch (error) {
@@ -83,14 +82,15 @@ class BottomBar extends Component {
   };
 
   handleSubmit = async () => {
-    const { task, form } = this.props;
+    const { task } = this.props;
     const { hrmBaseUrl, workerSid, helpline } = getConfig();
 
     const newForm = this.props.handleValidateForm();
 
     if (formIsValid(newForm)) {
       try {
-        await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
+        const formWithEndMillis = fillEndMillis(newForm);
+        await saveToHrm(task, formWithEndMillis, hrmBaseUrl, workerSid, helpline);
         this.props.handleCompleteTask(task.taskSid, task);
       } catch (error) {
         if (!window.confirm('Error from backend system.  Are you sure you want to end the task without recording?')) {
