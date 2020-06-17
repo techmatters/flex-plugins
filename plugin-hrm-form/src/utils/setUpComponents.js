@@ -153,40 +153,47 @@ export const setUpDeveloperComponents = setupObject => {
  */
 const uppercaseFirst = str => str[0].toUpperCase() + str.slice(1);
 
-export const setUpIncomingTransferMessage = () => {
+/**
+ *
+ * @param {import('@twilio/flex-ui').ITask} task
+ */
+const isIncomingTransfer = task => TransferHelpers.hasTransferStarted(task) && task.status === 'pending';
+
+/**
+ * @param {{ channel: string; string: string; }} chatChannel
+ */
+const setSecondLine = chatChannel => {
   // here we use manager instead of setupObject, so manager.strings will always have the latest version of strings
   const manager = Flex.Manager.getInstance();
 
-  const dafaultChat = Flex.DefaultTaskChannels.Chat.templates.TaskListItem.secondLine;
-  const dafaultChatLine = Flex.DefaultTaskChannels.ChatLine.templates.TaskListItem.secondLine;
-  const dafaultChatMessenger = Flex.DefaultTaskChannels.ChatMessenger.templates.TaskListItem.secondLine;
-  const dafaultChatSms = Flex.DefaultTaskChannels.ChatSms.templates.TaskListItem.secondLine;
-  const dafaultChatWhatsApp = Flex.DefaultTaskChannels.ChatWhatsApp.templates.TaskListItem.secondLine;
+  const { channel, string } = chatChannel;
+  const defaultStrings = Flex.DefaultTaskChannels[channel].templates.TaskListItem.secondLine;
 
-  Flex.DefaultTaskChannels.Chat.templates.TaskListItem.secondLine = task =>
-    TransferHelpers.hasTransferStarted(task) && task.status === 'pending'
-      ? `${manager.strings['Transfer-TaskLineChatReserved']} ${task.attributes.transferMeta.originalCounselorName} (${task.queueName})`
-      : dafaultChat[uppercaseFirst(task.status)];
+  Flex.DefaultTaskChannels[channel].templates.TaskListItem.secondLine = task => {
+    if (isIncomingTransfer(task) && task.attributes.transferTargetType === 'queue') {
+      const { originalCounselorName } = task.attributes.transferMeta;
+      return `${manager.strings[string]} ${originalCounselorName} (${task.queueName})`;
+    }
 
-  Flex.DefaultTaskChannels.ChatLine.templates.TaskListItem.secondLine = task =>
-    TransferHelpers.hasTransferStarted(task) && task.status === 'pending'
-      ? `${manager.strings['Transfer-TaskLineChatLineReserved']} ${task.attributes.transferMeta.originalCounselorName} (${task.queueName})`
-      : dafaultChatLine[uppercaseFirst(task.status)];
+    if (isIncomingTransfer(task) && task.attributes.transferTargetType === 'worker') {
+      const { originalCounselorName } = task.attributes.transferMeta;
+      return `${manager.strings[string]} ${originalCounselorName} (direct)`;
+    }
 
-  Flex.DefaultTaskChannels.ChatMessenger.templates.TaskListItem.secondLine = task =>
-    TransferHelpers.hasTransferStarted(task) && task.status === 'pending'
-      ? `${manager.strings['Transfer-TaskLineChatMessengerReserved']} ${task.attributes.transferMeta.originalCounselorName} (${task.queueName})`
-      : dafaultChatMessenger[uppercaseFirst(task.status)];
+    return defaultStrings[uppercaseFirst(task.status)];
+  };
+};
 
-  Flex.DefaultTaskChannels.ChatSms.templates.TaskListItem.secondLine = task =>
-    TransferHelpers.hasTransferStarted(task) && task.status === 'pending'
-      ? `${manager.strings['Transfer-TaskLineChatSmsReserved']} ${task.attributes.transferMeta.originalCounselorName} (${task.queueName})`
-      : dafaultChatSms[uppercaseFirst(task.status)];
+export const setUpIncomingTransferMessage = () => {
+  const chatChannels = [
+    { channel: 'Chat', string: 'Transfer-TaskLineChatReserved' },
+    { channel: 'ChatLine', string: 'Transfer-TaskLineChatLineReserved' },
+    { channel: 'ChatMessenger', string: 'Transfer-TaskLineChatMessengerReserved' },
+    { channel: 'ChatSms', string: 'Transfer-TaskLineChatSmsReserved' },
+    { channel: 'ChatWhatsApp', string: 'Transfer-TaskLineChatWhatsAppReserved' },
+  ];
 
-  Flex.DefaultTaskChannels.ChatWhatsApp.templates.TaskListItem.secondLine = task =>
-    TransferHelpers.hasTransferStarted(task) && task.status === 'pending'
-      ? `${manager.strings['Transfer-TaskLineChatWhatsAppReserved']} ${task.attributes.transferMeta.originalCounselorName} (${task.queueName})`
-      : dafaultChatWhatsApp[uppercaseFirst(task.status)];
+  chatChannels.forEach(el => setSecondLine(el));
 };
 
 /**
