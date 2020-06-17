@@ -4,7 +4,6 @@ import { withTaskContext } from '@twilio/flex-ui';
 
 import { taskType, formType } from '../../types';
 import { getConfig } from '../../HrmFormPlugin';
-import { fillEndMillis } from '../../utils/conversationDuration';
 import { saveToHrm, connectToCase } from '../../services/ContactService';
 
 const Case = props => {
@@ -16,8 +15,7 @@ const Case = props => {
     const { hrmBaseUrl, workerSid, helpline } = getConfig();
 
     try {
-      const formWithEndMillis = fillEndMillis(form);
-      const contact = await saveToHrm(task, formWithEndMillis, hrmBaseUrl, workerSid, helpline);
+      const contact = await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
       await connectToCase(hrmBaseUrl, contact.id, connectedCase.id);
       props.handleCompleteTask(task.taskSid, task);
     } catch (error) {

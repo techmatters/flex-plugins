@@ -2,7 +2,7 @@ import secret from '../private/secret';
 import { FieldType, recreateBlankForm } from '../states/ContactFormStateFactory';
 import { isNonDataCallType } from '../states/ValidationRules';
 import { channelTypes } from '../states/DomainConstants';
-import { getConversationDuration } from '../utils/conversationDuration';
+import { getConversationDuration, fillEndMillis } from '../utils/conversationDuration';
 
 export async function searchContacts(hrmBaseUrl, searchParams) {
   try {
@@ -66,9 +66,21 @@ export function transformForm(form) {
   return newForm;
 }
 
-export async function saveToHrm(task, form, hrmBaseUrl, workerSid, helpline) {
+/**
+ * Function that saves the form to Contacts table.
+ * If you don't intend to complete the twilio task, set shouldFillEndMillis=false
+ *
+ * @param  task
+ * @param form
+ * @param hrmBaseUrl
+ * @param workerSid
+ * @param helpline
+ * @param shouldFillEndMillis
+ */
+export async function saveToHrm(task, form, hrmBaseUrl, workerSid, helpline, shouldFillEndMillis = true) {
   // if we got this far, we assume the form is valid and ready to submit
-  const conversationDuration = getConversationDuration(form);
+  const metadata = shouldFillEndMillis ? fillEndMillis(form.metadata) : form.metadata;
+  const conversationDuration = getConversationDuration(metadata);
   const callType = form.callType.value;
 
   let rawForm = form;

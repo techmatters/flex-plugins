@@ -12,7 +12,6 @@ import { formType, taskType, localizationType } from '../../types';
 import NonDataCallTypeDialog from './NonDataCallTypeDialog';
 import { getConfig } from '../../HrmFormPlugin';
 import { saveToHrm } from '../../services/ContactService';
-import { fillEndMillis } from '../../utils/conversationDuration';
 
 const isDialogOpen = form =>
   Boolean(form && form.callType && form.callType.value && isNonDataCallType(form.callType.value));
@@ -32,8 +31,7 @@ const CallTypeButtons = props => {
     const { hrmBaseUrl, workerSid, helpline } = getConfig();
 
     try {
-      const formWithEndMillis = fillEndMillis(form);
-      await saveToHrm(task, formWithEndMillis, hrmBaseUrl, workerSid, helpline);
+      await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
       props.handleCompleteTask(task.taskSid, task);
     } catch (error) {
       if (!window.confirm('Error from backend system.  Are you sure you want to end the task without recording?')) {

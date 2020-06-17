@@ -16,7 +16,6 @@ import { Actions } from '../../states/ContactState';
 import { getConfig } from '../../HrmFormPlugin';
 import { createCase } from '../../services/CaseService';
 import { saveToHrm } from '../../services/ContactService';
-import { fillEndMillis } from '../../utils/conversationDuration';
 
 class BottomBar extends Component {
   static displayName = 'BottomBar';
@@ -89,8 +88,7 @@ class BottomBar extends Component {
 
     if (formIsValid(newForm)) {
       try {
-        const formWithEndMillis = fillEndMillis(newForm);
-        await saveToHrm(task, formWithEndMillis, hrmBaseUrl, workerSid, helpline);
+        await saveToHrm(task, newForm, hrmBaseUrl, workerSid, helpline);
         this.props.handleCompleteTask(task.taskSid, task);
       } catch (error) {
         if (!window.confirm('Error from backend system.  Are you sure you want to end the task without recording?')) {
