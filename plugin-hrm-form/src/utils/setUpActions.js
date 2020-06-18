@@ -48,23 +48,33 @@ export const initializeContactForm = payload => {
 
 /**
  * If the task within payload is a transferred one, load the form of the previous counselor (if possible)
- * @param {{ task: any }} payload
+ * @param {import('@twilio/flex-ui').ITask} task
  */
-const restoreFormIfTransfer = async payload => {
-  if (TransferHelpers.hasTransferStarted(payload.task)) {
-    const form = await loadFormSharedState(payload.task);
-    if (form) Manager.getInstance().store.dispatch(Actions.restoreEntireForm(form, payload.task.taskSid));
+const restoreFormIfTransfer = async task => {
+  if (TransferHelpers.hasTransferStarted(task)) {
+    const form = await loadFormSharedState(task);
+    if (form) Manager.getInstance().store.dispatch(Actions.restoreEntireForm(form, task.taskSid));
   }
 };
 
-const takeControlIfColdTransfer = async task => {
+/**
+ * If the task is transferred, set the reservation sid who controls the task (according to transfer mode)
+ * @param {import('@twilio/flex-ui').ITask} task
+ */
+const setProperControlIfTransfer = async task => {
   if (TransferHelpers.hasTransferStarted(task) && TransferHelpers.isColdTransfer(task))
     await TransferHelpers.takeTaskControl(task);
+
+  if (TransferHelpers.hasTransferStarted(task) && TransferHelpers.isWarmTransfer(task))
+    await TransferHelpers.clearTaskControl(task);
 };
 
-export const afterAcceptTask = async task => {
-  await restoreFormIfTransfer(task);
-  await takeControlIfColdTransfer(task);
+/**
+ * @type {ActionFunction}
+ */
+export const afterAcceptTask = async payload => {
+  await setProperControlIfTransfer(payload.task);
+  await restoreFormIfTransfer(payload.task);
 };
 
 /**

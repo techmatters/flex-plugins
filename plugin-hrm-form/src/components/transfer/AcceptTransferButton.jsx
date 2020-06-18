@@ -5,8 +5,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { StyledButton } from '../../styles/HrmStyles';
-import { closeChatOriginal, closeCallOriginal, isWarmTransfer } from '../../utils/transfer';
-import { loadFormSharedState } from '../../utils/sharedState';
+import { closeChatOriginal, closeCallOriginal } from '../../utils/transfer';
 import { Actions } from '../../states/ContactState';
 
 /**
@@ -16,12 +15,6 @@ import { Actions } from '../../states/ContactState';
 const handleAcceptTransfer = async (task, restoreEntireForm) => {
   if (TaskHelper.isChatBasedTask(task)) await closeChatOriginal(task);
   else await closeCallOriginal(task);
-
-  // restore the state of the previous form for warm transfer (if there is any)
-  if (isWarmTransfer(task)) {
-    const form = await loadFormSharedState(task);
-    if (form) restoreEntireForm(form, task.taskSid);
-  }
 };
 
 const AcceptTransferButton = ({ theme, task, restoreEntireForm }) => {

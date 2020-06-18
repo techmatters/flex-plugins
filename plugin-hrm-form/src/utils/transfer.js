@@ -67,8 +67,24 @@ export const shouldShowTransferControls = task =>
 export const hasTaskControl = task =>
   !hasTransferStarted(task) ||
   task.attributes.transferMeta.sidWithTaskControl === task.sid ||
-  (isOriginalReservation(task) && isTransferRejected(task)) ||
-  (!isOriginalReservation(task) && isTransferAccepted(task));
+  (isOriginalReservation(task) && isTransferRejected(task)) || // this will be removed
+  (!isOriginalReservation(task) && isTransferAccepted(task)); // this will be removed
+
+/**
+ * @param {ITask} task
+ * @param {string} sidWithTaskControl
+ */
+const setTaskControl = async (task, sidWithTaskControl) => {
+  const updatedAttributes = {
+    ...task.attributes,
+    transferMeta: {
+      ...task.attributes.transferMeta,
+      sidWithTaskControl,
+    },
+  };
+
+  await task.setAttributes(updatedAttributes);
+};
 
 /**
  * Takes control of the given task (only for call tasks for now)
@@ -76,15 +92,27 @@ export const hasTaskControl = task =>
  */
 export const takeTaskControl = async task => {
   if (TaskHelper.isCallTask(task)) {
-    const updatedAttributes = {
-      ...task.attributes,
-      transferMeta: {
-        ...task.attributes.transferMeta,
-        sidWithTaskControl: task.sid,
-      },
-    };
+    await setTaskControl(task, task.sid);
+  }
+};
 
-    await task.setAttributes(updatedAttributes);
+/**
+ * Returns control of the given task to original counselor (only for call tasks for now)
+ * @param {ITask} task
+ */
+export const returnTaskControl = async task => {
+  if (TaskHelper.isCallTask(task)) {
+    await setTaskControl(task, task.attributes.transferMeta.originalReservation);
+  }
+};
+
+/**
+ * Removes the control of the given task (only for call tasks for now)
+ * @param {ITask} task
+ */
+export const clearTaskControl = async task => {
+  if (TaskHelper.isCallTask(task)) {
+    await setTaskControl(task, '');
   }
 };
 
@@ -123,8 +151,7 @@ export const setTransferRejected = updateTransferStatus(transferStatuses.rejecte
 
 /**
  * Saves transfer metadata into task attributes
- * @param {ITask} task
- * @param {string} mode
+ * @param {{ task: ITask, options: { mode: string }, targetSid: string }} payload
  * @param {string} documentName name to retrieve the form or null if there were no form to save
  * @param {string} counselorName
  */
@@ -245,6 +272,7 @@ export const closeChatSelf = async task => {
  */
 export const closeCallOriginal = async task => {
   await setTransferAccepted(task);
+  await takeTaskControl(task);
   await Actions.invokeAction('KickParticipant', {
     sid: task.sid,
     targetSid: task.attributes.transferMeta.originalCounselor,
@@ -258,6 +286,7 @@ export const closeCallOriginal = async task => {
  */
 export const closeCallSelf = async task => {
   await setTransferRejected(task);
+  await returnTaskControl(task);
   await Actions.invokeAction('HangupCall', { sid: task.sid });
 };
 

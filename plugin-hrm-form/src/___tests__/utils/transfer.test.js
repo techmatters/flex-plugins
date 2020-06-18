@@ -181,6 +181,52 @@ describe('Transfer mode, status and conditionals helpers', () => {
 
     expect(task.attributes.transferMeta.sidWithTaskControl).toBe(undefined);
   });
+
+  test('returnTaskControl (voice task)', async () => {
+    const task = createTask(
+      { transferMeta: { originalReservation: 'reservationX' } },
+      { sid: 'task1', taskChannelUniqueName: 'voice' },
+    );
+
+    await TransferHelpers.returnTaskControl(task);
+
+    expect(task.attributes.transferMeta.sidWithTaskControl).toBe(task.attributes.transferMeta.originalReservation);
+  });
+
+  // this should change when true warm transfer for chat task is implemented
+  test('returnTaskControl (chat task)', async () => {
+    const task = createTask(
+      { transferMeta: { originalReservation: 'reservationX' } },
+      { sid: 'task1', taskChannelUniqueName: 'chat' },
+    );
+
+    await TransferHelpers.returnTaskControl(task);
+
+    expect(task.attributes.transferMeta.sidWithTaskControl).toBe(undefined);
+  });
+
+  test('clearTaskControl (voice task)', async () => {
+    const task = createTask(
+      { transferMeta: { originalReservation: 'reservationX' } },
+      { sid: 'task1', taskChannelUniqueName: 'voice' },
+    );
+
+    await TransferHelpers.clearTaskControl(task);
+
+    expect(task.attributes.transferMeta.sidWithTaskControl).toBe('');
+  });
+
+  // this should change when true warm transfer for chat task is implemented
+  test('clearTaskControl (chat task)', async () => {
+    const task = createTask(
+      { transferMeta: { originalReservation: 'reservationX' } },
+      { sid: 'task1', taskChannelUniqueName: 'chat' },
+    );
+
+    await TransferHelpers.clearTaskControl(task);
+
+    expect(task.attributes.transferMeta.sidWithTaskControl).toBe(undefined);
+  });
 });
 
 describe('Kick, close and helpers', () => {
