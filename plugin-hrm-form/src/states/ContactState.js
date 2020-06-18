@@ -8,6 +8,7 @@ import {
   HANDLE_FOCUS,
   INITIALIZE_CONTACT_STATE,
   REMOVE_CONTACT_STATE,
+  SAVE_END_MILLIS,
   HANDLE_SELECT_SEARCH_RESULT,
   CHANGE_TAB,
   CHANGE_ROUTE,
@@ -59,6 +60,9 @@ export class Actions {
   static initializeContactState = taskId => ({ type: INITIALIZE_CONTACT_STATE, taskId });
 
   static removeContactState = taskId => ({ type: REMOVE_CONTACT_STATE, taskId });
+
+  // records the end time (in milliseconds)
+  static saveEndMillis = taskId => ({ type: SAVE_END_MILLIS, taskId });
 
   static changeTab = (tab, taskId) => ({ type: CHANGE_TAB, tab, taskId });
 
@@ -163,6 +167,21 @@ export function reduce(state = initialState, action) {
         tasks: {
           ...state.tasks,
           [action.taskId]: createBlankForm(),
+        },
+      };
+    }
+
+    case SAVE_END_MILLIS: {
+      const taskToEnd = findOrRecreate(state.tasks, action.taskId);
+
+      const { metadata } = taskToEnd;
+      const endedTask = { ...taskToEnd, metadata: { ...metadata, endMillis: new Date().getTime() } };
+
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: endedTask,
         },
       };
     }

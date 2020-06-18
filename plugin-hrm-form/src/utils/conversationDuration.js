@@ -2,7 +2,7 @@ import { isNullOrUndefined } from './checkers';
 
 export const fillEndMillis = metadata => ({
   ...metadata,
-  endMillis: new Date().getTime(),
+  endMillis: metadata.endMillis || new Date().getTime(),
 });
 
 /**
