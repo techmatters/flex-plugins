@@ -107,8 +107,9 @@ export const setTransferRejected = updateTransferStatus(transferStatuses.rejecte
  * @param {ITask} task
  * @param {string} mode
  * @param {string} documentName name to retrieve the form or null if there were no form to save
+ * @param {string} counselorName
  */
-export const setTransferMeta = async (task, mode, documentName) => {
+export const setTransferMeta = async (task, mode, documentName, counselorName) => {
   // Set transfer metadata
   const updatedAttributes = {
     ...task.attributes,
@@ -116,6 +117,7 @@ export const setTransferMeta = async (task, mode, documentName) => {
       originalTask: task.taskSid,
       originalReservation: task.sid,
       originalCounselor: task.workerSid,
+      originalCounselorName: counselorName,
       transferStatus: mode === transferModes.warm ? transferStatuses.transferring : transferStatuses.accepted,
       formDocument: documentName,
       mode,

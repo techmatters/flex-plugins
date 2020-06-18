@@ -16,6 +16,7 @@ import { Actions } from '../../states/ContactState';
 import { getConfig } from '../../HrmFormPlugin';
 import { createCase } from '../../services/CaseService';
 import { saveToHrm } from '../../services/ContactService';
+import { hasTaskControl } from '../../utils/transfer';
 
 class BottomBar extends Component {
   static displayName = 'BottomBar';
@@ -51,6 +52,8 @@ class BottomBar extends Component {
     const { taskSid } = task;
     const { hrmBaseUrl, workerSid, helpline } = getConfig();
 
+    if (!hasTaskControl(task)) return;
+
     const caseRecord = {
       helpline,
       status: 'open',
@@ -83,6 +86,8 @@ class BottomBar extends Component {
   handleSubmit = async () => {
     const { task } = this.props;
     const { hrmBaseUrl, workerSid, helpline } = getConfig();
+
+    if (!hasTaskControl(task)) return;
 
     const newForm = this.props.handleValidateForm();
 

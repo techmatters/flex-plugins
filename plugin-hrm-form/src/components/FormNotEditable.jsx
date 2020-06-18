@@ -1,4 +1,5 @@
 import React from 'react';
+import { Template } from '@twilio/flex-ui';
 import { AppBar, Toolbar, Typography } from '@material-ui/core';
 import { InfoTwoTone } from '@material-ui/icons';
 
@@ -10,7 +11,7 @@ const FormNotEditable = () => (
       <Row>
         <InfoTwoTone style={{ fontSize: 26, marginRight: 10 }} />
         <Typography variant="subtitle1" style={{ color: '#ffffff' }}>
-          Task is being transferred. In the final version, this form will not be editable.
+          <Template code="Transfer-FormNotEditable" />
         </Typography>
       </Row>
     </Toolbar>

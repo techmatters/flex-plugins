@@ -285,16 +285,19 @@ describe('Kick, close and helpers', () => {
       { sid: 'reservation1', taskSid: 'task1', taskChannelSid: 'channel1', workerSid: 'worker1' },
     );
 
+    const counselorName = 'full name';
+
     const coldExpected = {
       originalTask: 'task1',
       originalReservation: 'reservation1',
       originalCounselor: 'worker1',
+      originalCounselorName: counselorName,
       transferStatus: transferStatuses.accepted,
       formDocument: 'some string',
       mode: transferModes.cold,
     };
 
-    await TransferHelpers.setTransferMeta(coldTask, transferModes.cold, 'some string');
+    await TransferHelpers.setTransferMeta(coldTask, transferModes.cold, 'some string', counselorName);
     expect(coldTask.attributes.transferMeta).toStrictEqual(coldExpected);
 
     const warmTask = createTask(
@@ -306,12 +309,13 @@ describe('Kick, close and helpers', () => {
       originalTask: 'task1',
       originalReservation: 'reservation1',
       originalCounselor: 'worker1',
+      originalCounselorName: counselorName,
       transferStatus: transferStatuses.transferring,
       formDocument: 'some string',
       mode: transferModes.warm,
     };
 
-    await TransferHelpers.setTransferMeta(warmTask, transferModes.warm, 'some string');
+    await TransferHelpers.setTransferMeta(warmTask, transferModes.warm, 'some string', counselorName);
     expect(warmTask.attributes.transferMeta).toStrictEqual(warmExpected);
   });
 });
