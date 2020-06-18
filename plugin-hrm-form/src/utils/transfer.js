@@ -8,7 +8,7 @@ import { getConfig } from '../HrmFormPlugin';
 /**
  * @param {ITask} task
  */
-export const hasTransferStarted = task => Boolean(task.attributes.transferMeta);
+export const hasTransferStarted = task => Boolean(task.attributes && task.attributes.transferMeta);
 
 /**
  * @param {ITask} task
@@ -66,8 +66,27 @@ export const shouldShowTransferControls = task =>
  */
 export const hasTaskControl = task =>
   !hasTransferStarted(task) ||
+  task.attributes.transferMeta.sidWithTaskControl === task.sid ||
   (isOriginalReservation(task) && isTransferRejected(task)) ||
   (!isOriginalReservation(task) && isTransferAccepted(task));
+
+/**
+ * Takes control of the given task (only for call tasks for now)
+ * @param {ITask} task
+ */
+export const takeTaskControl = async task => {
+  if (TaskHelper.isCallTask(task)) {
+    const updatedAttributes = {
+      ...task.attributes,
+      transferMeta: {
+        ...task.attributes.transferMeta,
+        sidWithTaskControl: task.sid,
+      },
+    };
+
+    await task.setAttributes(updatedAttributes);
+  }
+};
 
 /**
  * Sets attributes.channelSid to a dummy value to start tracking the task in TransferredTaskJanitor
@@ -109,18 +128,25 @@ export const setTransferRejected = updateTransferStatus(transferStatuses.rejecte
  * @param {string} documentName name to retrieve the form or null if there were no form to save
  * @param {string} counselorName
  */
-export const setTransferMeta = async (task, mode, documentName, counselorName) => {
+export const setTransferMeta = async (payload, documentName, counselorName) => {
+  const { task, options, targetSid } = payload;
+  const { mode } = options;
+  const targetType = targetSid.startsWith('WK') ? 'worker' : 'queue';
+
   // Set transfer metadata
   const updatedAttributes = {
     ...task.attributes,
+    transferStarted: true,
     transferMeta: {
       originalTask: task.taskSid,
       originalReservation: task.sid,
       originalCounselor: task.workerSid,
       originalCounselorName: counselorName,
+      sidWithTaskControl: mode === transferModes.warm ? task.sid : '',
       transferStatus: mode === transferModes.warm ? transferStatuses.transferring : transferStatuses.accepted,
       formDocument: documentName,
       mode,
+      targetType,
     },
   };
 
@@ -131,7 +157,7 @@ export const setTransferMeta = async (task, mode, documentName, counselorName) =
  * @param {ITask} task
  */
 export const clearTransferMeta = async task => {
-  const { transferMeta, ...attributes } = task.attributes;
+  const { transferMeta, transferStarted, ...attributes } = task.attributes;
 
   await task.setAttributes(attributes);
 };
@@ -239,6 +265,14 @@ export const closeCallSelf = async task => {
  * Following helpers are used by TransferredTaskJanitor, as it will check for reservations instead of tasks, in order to unify the behavior of chat and call based tasks.
  */
 
+export const someoneHasTaskControll = reservation => reservation.attributes.transferMeta.sidWithTaskControl !== '';
+
+export const reservationHasTaskControl = reservation =>
+  reservation.attributes.transferMeta.sidWithTaskControl === reservation.reservation_sid;
+
+export const taskControlledByOther = reservation =>
+  someoneHasTaskControll(reservation) && !reservationHasTaskControl(reservation);
+
 export const shouldCloseOriginalReservation = reservation =>
   reservation.reservation_sid === reservation.attributes.transferMeta.originalReservation &&
   reservation.attributes.transferMeta.transferStatus === transferStatuses.accepted;
@@ -251,4 +285,12 @@ export const shouldCloseReservation = reservation =>
   shouldCloseOriginalReservation(reservation) || shouldCloseTransferredReservation(reservation);
 
 export const shouldInvokeCompleteTask = (reservation, workerSid) =>
-  shouldCloseReservation(reservation) && reservation.status === 'wrapup' && reservation.worker_sid === workerSid;
+  reservation.status === 'wrapup' &&
+  (taskControlledByOther(reservation) || shouldCloseReservation(reservation)) &&
+  reservation.worker_sid === workerSid;
+
+export const shouldTakeControlBack = (reservation, workerSid) =>
+  reservation.status === 'rejected' &&
+  reservation.attributes.transferMeta.targetType === 'worker' &&
+  reservation.attributes.transferMeta.originalCounselor === workerSid &&
+  reservation.attributes.transferMeta.mode === transferModes.warm;

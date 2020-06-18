@@ -50,11 +50,21 @@ export const initializeContactForm = payload => {
  * If the task within payload is a transferred one, load the form of the previous counselor (if possible)
  * @param {{ task: any }} payload
  */
-export const restoreFormIfTransfer = async payload => {
+const restoreFormIfTransfer = async payload => {
   if (TransferHelpers.hasTransferStarted(payload.task)) {
     const form = await loadFormSharedState(payload.task);
     if (form) Manager.getInstance().store.dispatch(Actions.restoreEntireForm(form, payload.task.taskSid));
   }
+};
+
+const takeControlIfColdTransfer = async task => {
+  if (TransferHelpers.hasTransferStarted(task) && TransferHelpers.isColdTransfer(task))
+    await TransferHelpers.takeTaskControl(task);
+};
+
+export const afterAcceptTask = async task => {
+  await restoreFormIfTransfer(task);
+  await takeControlIfColdTransfer(task);
 };
 
 /**
@@ -87,7 +97,7 @@ export const customTransferTask = setupObject => async (payload, original) => {
   const mode = payload.options.mode || DEFAULT_TRANSFER_MODE;
 
   // set metadata for the transfer
-  await TransferHelpers.setTransferMeta(payload.task, mode, documentName, counselorName);
+  await TransferHelpers.setTransferMeta(payload, documentName, counselorName);
 
   if (TaskHelper.isCallTask(payload.task)) {
     if (TransferHelpers.isColdTransfer(payload.task) && !TransferHelpers.hasTaskControl(payload.task)) {

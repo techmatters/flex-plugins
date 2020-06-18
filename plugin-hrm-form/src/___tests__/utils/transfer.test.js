@@ -164,6 +164,23 @@ describe('Transfer mode, status and conditionals helpers', () => {
     expect(TransferHelpers.hasTaskControl(task2r)).toBe(false); // transferred task rejected
     expect(TransferHelpers.hasTaskControl(task3)).toBe(true); // ok
   });
+
+  test('takeTaskControl (voice task)', async () => {
+    const task = createTask({ transferMeta: {} }, { sid: 'task1', taskChannelUniqueName: 'voice' });
+
+    await TransferHelpers.takeTaskControl(task);
+
+    expect(task.attributes.transferMeta.sidWithTaskControl).toBe(task.sid);
+  });
+
+  // this should change when true warm transfer for chat task is implemented
+  test('takeTaskControl (chat task)', async () => {
+    const task = createTask({ transferMeta: {} }, { sid: 'task1', taskChannelUniqueName: 'chat' });
+
+    await TransferHelpers.takeTaskControl(task);
+
+    expect(task.attributes.transferMeta.sidWithTaskControl).toBe(undefined);
+  });
 });
 
 describe('Kick, close and helpers', () => {
@@ -285,6 +302,12 @@ describe('Kick, close and helpers', () => {
       { sid: 'reservation1', taskSid: 'task1', taskChannelSid: 'channel1', workerSid: 'worker1' },
     );
 
+    const coldPayload = {
+      targetSid: 'WKworker2',
+      options: { mode: transferModes.cold },
+      task: coldTask,
+    };
+
     const counselorName = 'full name';
 
     const coldExpected = {
@@ -295,49 +318,75 @@ describe('Kick, close and helpers', () => {
       transferStatus: transferStatuses.accepted,
       formDocument: 'some string',
       mode: transferModes.cold,
+      sidWithTaskControl: '',
+      targetType: 'worker',
     };
 
-    await TransferHelpers.setTransferMeta(coldTask, transferModes.cold, 'some string', counselorName);
+    await TransferHelpers.setTransferMeta(coldPayload, 'some string', counselorName);
     expect(coldTask.attributes.transferMeta).toStrictEqual(coldExpected);
 
     const warmTask = createTask(
       {},
-      { sid: 'reservation1', taskSid: 'task1', taskChannelSid: 'channel1', workerSid: 'worker1' },
+      { sid: 'reservation1', taskSid: 'task1', taskChannelSid: 'channel1', workerSid: 'WKworker1' },
     );
 
     const warmExpected = {
       originalTask: 'task1',
       originalReservation: 'reservation1',
-      originalCounselor: 'worker1',
+      originalCounselor: 'WKworker1',
       originalCounselorName: counselorName,
       transferStatus: transferStatuses.transferring,
       formDocument: 'some string',
       mode: transferModes.warm,
+      sidWithTaskControl: warmTask.sid,
+      targetType: 'worker',
     };
 
-    await TransferHelpers.setTransferMeta(warmTask, transferModes.warm, 'some string', counselorName);
+    const warmPayload = {
+      targetSid: 'WKworker2',
+      options: { mode: transferModes.warm },
+      task: warmTask,
+    };
+
+    await TransferHelpers.setTransferMeta(warmPayload, 'some string', counselorName);
     expect(warmTask.attributes.transferMeta).toStrictEqual(warmExpected);
   });
 
   test('clearTransferMeta', async () => {
     const anotherTask = createTask(
       { something: 'something' },
-      { sid: 'reservation1', taskSid: 'task1', taskChannelSid: 'channel1', workerSid: 'worker1' },
+      { sid: 'reservation1', taskSid: 'task1', taskChannelSid: 'channel1', workerSid: 'WKworker1' },
     );
 
     const counselorName = 'full name';
 
-    await TransferHelpers.setTransferMeta(anotherTask, transferModes.cold, 'some string', counselorName);
+    const coldPayload = {
+      targetSid: 'WKworker2',
+      options: { mode: transferModes.cold },
+      task: anotherTask,
+    };
+
+    await TransferHelpers.setTransferMeta(coldPayload, 'some string', counselorName);
     expect(anotherTask.attributes.transferMeta).not.toBeUndefined();
+    expect(anotherTask.attributes.transferStarted).toBeTruthy();
 
     await TransferHelpers.clearTransferMeta(anotherTask);
     expect(anotherTask.attributes.transferMeta).toBeUndefined();
+    expect(anotherTask.attributes.transferStarted).toBeFalsy();
 
-    await TransferHelpers.setTransferMeta(anotherTask, transferModes.warm, 'some string', counselorName);
+    const warmPayload = {
+      targetSid: 'WKworker2',
+      options: { mode: transferModes.warm },
+      task: anotherTask,
+    };
+
+    await TransferHelpers.setTransferMeta(warmPayload, 'some string', counselorName);
     expect(anotherTask.attributes.transferMeta).not.toBeUndefined();
+    expect(anotherTask.attributes.transferStarted).toBeTruthy();
 
     await TransferHelpers.clearTransferMeta(anotherTask);
     expect(anotherTask.attributes.transferMeta).toBeUndefined();
+    expect(anotherTask.attributes.transferStarted).toBeFalsy();
   });
 });
 
@@ -356,16 +405,52 @@ describe('TransferredTaskJanitor helpers', () => {
     complete() {
       return { ...this, status: 'completed' };
     },
+    reject() {
+      return { ...this, status: 'rejected' };
+    },
     setTransferMeta(transferMeta) {
       return { ...this, attributes: { ...this.attributes, transferMeta } };
     },
   });
 
-  const createTransferMeta = transferStatus => ({
+  const createTransferMeta = (transferStatus, sidWithTaskControl = '') => ({
     originalTask: 'task1',
     originalReservation: 'reservation1',
     originalCounselor: 'worker1',
     transferStatus,
+    sidWithTaskControl,
+  });
+
+  test('someoneHasTaskControll', async () => {
+    const reservation = createReservation('reservation1', 'worker1');
+
+    const withControl = reservation.setTransferMeta({ sidWithTaskControl: 'worker1' });
+    const withouthControl = reservation.setTransferMeta({ sidWithTaskControl: '' });
+
+    expect(TransferHelpers.someoneHasTaskControll(withControl)).toBe(true);
+    expect(TransferHelpers.someoneHasTaskControll(withouthControl)).toBe(false);
+  });
+
+  test('reservationHasTaskControl', async () => {
+    const reservation1 = createReservation('reservation1', 'worker1');
+    const reservation2 = createReservation('reservation2', 'worker2');
+
+    const withControl = reservation1.setTransferMeta({ sidWithTaskControl: 'reservation1' });
+    const withouthControl = reservation2.setTransferMeta({ sidWithTaskControl: 'reservation1' });
+
+    expect(TransferHelpers.reservationHasTaskControl(withControl)).toBe(true);
+    expect(TransferHelpers.reservationHasTaskControl(withouthControl)).toBe(false);
+  });
+
+  test('taskControlledByOther', async () => {
+    const reservation1 = createReservation('reservation1', 'worker1');
+    const reservation2 = createReservation('reservation2', 'worker2');
+
+    const withControl = reservation1.setTransferMeta({ sidWithTaskControl: 'reservation1' });
+    const withouthControl = reservation2.setTransferMeta({ sidWithTaskControl: 'reservation1' });
+
+    expect(TransferHelpers.taskControlledByOther(withControl)).toBe(false);
+    expect(TransferHelpers.taskControlledByOther(withouthControl)).toBe(true);
   });
 
   test('shouldCloseOriginalReservation (accepted)', async () => {
@@ -420,7 +505,7 @@ describe('TransferredTaskJanitor helpers', () => {
     const reservation1 = createReservation('reservation1', 'worker1');
     const reservation2 = createReservation('reservation2', 'worker2');
 
-    const acceptedMeta = createTransferMeta(transferStatuses.accepted);
+    const acceptedMeta = createTransferMeta(transferStatuses.accepted, 'reservation2');
     const withAcceptedMeta1 = reservation1.setTransferMeta(acceptedMeta);
     const withAcceptedMeta2 = reservation2.setTransferMeta(acceptedMeta);
 
@@ -444,7 +529,7 @@ describe('TransferredTaskJanitor helpers', () => {
     const reservation1 = createReservation('reservation1', 'worker1');
     const reservation2 = createReservation('reservation2', 'worker2');
 
-    const rejectedMeta = createTransferMeta(transferStatuses.rejected);
+    const rejectedMeta = createTransferMeta(transferStatuses.rejected, 'reservation1');
     const withRejectedMeta1 = reservation1.setTransferMeta(rejectedMeta);
     const withRejectedMeta2 = reservation2.setTransferMeta(rejectedMeta);
 
@@ -462,5 +547,38 @@ describe('TransferredTaskJanitor helpers', () => {
     // completed
     expect(sict(withRejectedMeta1.complete(), withRejectedMeta1.worker_sid)).toBe(false);
     expect(sict(withRejectedMeta2.complete(), withRejectedMeta2.worker_sid)).toBe(false);
+  });
+
+  test('shouldTakeControlBack', async () => {
+    const reservation = createReservation('reservation1', 'worker1');
+    const withAttr = reservation.setTransferMeta({
+      targetType: 'worker',
+      originalCounselor: 'worker1',
+      mode: transferModes.warm,
+    });
+
+    expect(TransferHelpers.shouldTakeControlBack(withAttr, 'worker1')).toBe(false);
+    expect(TransferHelpers.shouldTakeControlBack(withAttr.accept(), 'worker1')).toBe(false);
+    expect(TransferHelpers.shouldTakeControlBack(withAttr.wrapUp(), 'worker1')).toBe(false);
+    expect(TransferHelpers.shouldTakeControlBack(withAttr.complete(), 'worker1')).toBe(false);
+    expect(TransferHelpers.shouldTakeControlBack(withAttr.reject(), 'worker1')).toBe(true);
+
+    expect(TransferHelpers.shouldTakeControlBack(withAttr.reject(), 'worker2')).toBe(false);
+
+    const cold = reservation.setTransferMeta({
+      targetType: 'worker',
+      originalCounselor: 'worker1',
+      mode: transferModes.cold,
+    });
+
+    expect(TransferHelpers.shouldTakeControlBack(cold.reject(), 'worker1')).toBe(false);
+
+    const toQueue = reservation.setTransferMeta({
+      targetType: 'queue',
+      originalCounselor: 'worker1',
+      mode: transferModes.warm,
+    });
+
+    expect(TransferHelpers.shouldTakeControlBack(toQueue.reject(), 'worker1')).toBe(false);
   });
 });
