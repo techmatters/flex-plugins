@@ -117,18 +117,6 @@ export const clearTaskControl = async task => {
 };
 
 /**
- * Sets attributes.channelSid to a dummy value to start tracking the task in TransferredTaskJanitor
- * @param {ITask} task
- */
-export const setDummyChannelSid = async task => {
-  const updatedAttributes = {
-    ...task.attributes,
-    channelSid: 'CH00000000000000000000000000000000',
-  };
-  await task.setAttributes(updatedAttributes);
-};
-
-/**
  * Updates the state of the transfer and adds a dummy channelSid to start tracking the task in TransferredTaskJanitor
  * @param {string} newStatus
  * @returns {(task: ITask) => Promise<void>}

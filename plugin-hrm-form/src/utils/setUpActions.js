@@ -110,10 +110,6 @@ export const customTransferTask = setupObject => async (payload, original) => {
   await TransferHelpers.setTransferMeta(payload, documentName, counselorName);
 
   if (TaskHelper.isCallTask(payload.task)) {
-    if (TransferHelpers.isColdTransfer(payload.task) && !TransferHelpers.hasTaskControl(payload.task)) {
-      await TransferHelpers.setDummyChannelSid(payload.task);
-    }
-
     return safeCallTransfer(payload, original);
   }
 
