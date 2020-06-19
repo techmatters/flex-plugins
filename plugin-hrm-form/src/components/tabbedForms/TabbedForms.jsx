@@ -66,6 +66,10 @@ const TabbedForms = props => {
     if (hasTaskControl(task)) props.handleSubmit(task);
   };
 
+  const handleBackButtonClick = () => {
+    if (hasTaskControl(task)) props.handleCallTypeButtonClick(taskId, '');
+  };
+
   const { tab } = form.metadata;
   const isCallerType = form.callType.value === callTypes.caller;
 
@@ -126,7 +130,7 @@ const TabbedForms = props => {
   return (
     <TabbedFormsContainer>
       <TopNav>
-        <TransparentButton onClick={e => props.handleCallTypeButtonClick(taskId, '')}>&lt; BACK</TransparentButton>
+        <TransparentButton onClick={handleBackButtonClick}>&lt; BACK</TransparentButton>
       </TopNav>
       <StyledTabs name="tab" variant="scrollable" scrollButtons="auto" value={tab} onChange={handleTabsChange}>
         {tabs}

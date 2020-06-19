@@ -10,6 +10,7 @@ import callTypes from '../../states/DomainConstants';
 import { isNonDataCallType } from '../../states/ValidationRules';
 import { formType, taskType, localizationType } from '../../types';
 import NonDataCallTypeDialog from './NonDataCallTypeDialog';
+import { hasTaskControl } from '../../utils/transfer';
 
 const isDialogOpen = form =>
   Boolean(form && form.callType && form.callType.value && isNonDataCallType(form.callType.value));
@@ -20,18 +21,30 @@ const CallTypeButtons = props => {
   const { form, task, localization } = props;
   const { isCallTask } = localization;
 
+  const handleChildTypeClick = () => {
+    if (hasTaskControl(task)) props.handleCallTypeButtonClick(task.taskSid, callTypes.child);
+  };
+
+  const handleCallerTypeClick = () => {
+    if (hasTaskControl(task)) props.handleCallTypeButtonClick(task.taskSid, callTypes.caller);
+  };
+
+  const handleNonDataTypeClick = callType => {
+    if (hasTaskControl(task)) props.handleCallTypeButtonClick(task.taskSid, callTypes[callType]);
+  };
+
   return (
     <>
       <Container>
         <Box marginBottom="29px">
           <Label>categorize this contact</Label>
-          <DataCallTypeButton onClick={() => props.handleCallTypeButtonClick(task.taskSid, callTypes.child)}>
+          <DataCallTypeButton onClick={handleChildTypeClick}>
             <Box width="50px" marginRight="5px">
               <FaceIcon />
             </Box>
             <Template code="CallType-child" />
           </DataCallTypeButton>
-          <DataCallTypeButton onClick={() => props.handleCallTypeButtonClick(task.taskSid, callTypes.caller)}>
+          <DataCallTypeButton onClick={handleCallerTypeClick}>
             <Box width="50px" marginRight="5px">
               <FaceIcon style={{ marginRight: '-5px' }} />
               <FaceIcon />
@@ -47,7 +60,7 @@ const CallTypeButtons = props => {
             .map((callType, i) => (
               <NonDataCallTypeButton
                 key={callType}
-                onClick={() => props.handleCallTypeButtonClick(task.taskSid, callTypes[callType])}
+                onClick={() => handleNonDataTypeClick(callType)}
                 marginRight={i % 2 === 0}
               >
                 <Template code={`CallType-${callType}`} />

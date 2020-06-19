@@ -157,7 +157,7 @@ export const setTransferMeta = async (payload, documentName, counselorName) => {
       originalReservation: task.sid,
       originalCounselor: task.workerSid,
       originalCounselorName: counselorName,
-      sidWithTaskControl: mode === transferModes.warm ? task.sid : '',
+      sidWithTaskControl: '',
       transferStatus: mode === transferModes.warm ? transferStatuses.transferring : transferStatuses.accepted,
       formDocument: documentName,
       mode,

@@ -64,9 +64,6 @@ const restoreFormIfTransfer = async task => {
 const setProperControlIfTransfer = async task => {
   if (TransferHelpers.hasTransferStarted(task) && TransferHelpers.isColdTransfer(task))
     await TransferHelpers.takeTaskControl(task);
-
-  if (TransferHelpers.hasTransferStarted(task) && TransferHelpers.isWarmTransfer(task))
-    await TransferHelpers.clearTaskControl(task);
 };
 
 /**
