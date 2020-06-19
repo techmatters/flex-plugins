@@ -79,11 +79,12 @@ ConnectDialog.propTypes = {
   contact: contactType,
   handleConfirm: PropTypes.func.isRequired,
   handleClose: PropTypes.func.isRequired,
-  task: PropTypes.shape({}).isRequired,
+  task: PropTypes.shape({}),
 };
 ConnectDialog.defaultProps = {
   anchorEl: null,
   contact: null,
+  task: {},
 };
 
 export default withTaskContext(ConnectDialog);

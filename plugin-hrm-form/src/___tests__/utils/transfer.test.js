@@ -384,7 +384,7 @@ describe('Kick, close and helpers', () => {
       transferStatus: transferStatuses.transferring,
       formDocument: 'some string',
       mode: transferModes.warm,
-      sidWithTaskControl: warmTask.sid,
+      sidWithTaskControl: '',
       targetType: 'worker',
     };
 
