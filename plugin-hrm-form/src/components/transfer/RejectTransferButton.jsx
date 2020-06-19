@@ -30,7 +30,7 @@ RejectTransferButton.displayName = 'RejectTransferButton';
 RejectTransferButton.propTypes = {
   theme: PropTypes.shape({
     colors: PropTypes.shape({
-      base2: PropTypes.string,
+      base1: PropTypes.string,
       base11: PropTypes.string,
     }),
   }).isRequired,
