@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withTaskContext, Template } from '@twilio/flex-ui';
+import { withTaskContext } from '@twilio/flex-ui';
 
 import { taskType, formType } from '../../types';
 import { getConfig } from '../../HrmFormPlugin';
