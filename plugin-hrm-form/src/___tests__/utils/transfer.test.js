@@ -454,6 +454,9 @@ describe('TransferredTaskJanitor helpers', () => {
     reject() {
       return { ...this, status: 'rejected' };
     },
+    timeout() {
+      return { ...this, status: 'timeout' };
+    },
     setTransferMeta(transferMeta) {
       return { ...this, attributes: { ...this.attributes, transferMeta } };
     },
@@ -608,8 +611,10 @@ describe('TransferredTaskJanitor helpers', () => {
     expect(TransferHelpers.shouldTakeControlBack(withAttr.wrapUp(), 'worker1')).toBe(false);
     expect(TransferHelpers.shouldTakeControlBack(withAttr.complete(), 'worker1')).toBe(false);
     expect(TransferHelpers.shouldTakeControlBack(withAttr.reject(), 'worker1')).toBe(true);
+    expect(TransferHelpers.shouldTakeControlBack(withAttr.timeout(), 'worker1')).toBe(true);
 
     expect(TransferHelpers.shouldTakeControlBack(withAttr.reject(), 'worker2')).toBe(false);
+    expect(TransferHelpers.shouldTakeControlBack(withAttr.timeout(), 'worker2')).toBe(false);
 
     const cold = reservation.setTransferMeta({
       targetType: 'worker',
@@ -618,6 +623,7 @@ describe('TransferredTaskJanitor helpers', () => {
     });
 
     expect(TransferHelpers.shouldTakeControlBack(cold.reject(), 'worker1')).toBe(false);
+    expect(TransferHelpers.shouldTakeControlBack(cold.timeout(), 'worker1')).toBe(false);
 
     const toQueue = reservation.setTransferMeta({
       targetType: 'queue',
@@ -626,5 +632,6 @@ describe('TransferredTaskJanitor helpers', () => {
     });
 
     expect(TransferHelpers.shouldTakeControlBack(toQueue.reject(), 'worker1')).toBe(false);
+    expect(TransferHelpers.shouldTakeControlBack(toQueue.timeout(), 'worker1')).toBe(false);
   });
 });
