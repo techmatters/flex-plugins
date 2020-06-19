@@ -72,7 +72,7 @@ const CallTypeButtons = props => {
             .map((callType, i) => (
               <NonDataCallTypeButton
                 key={callType}
-                onClick={() => handleNonDataTypeClick(callType)}
+                onClick={() => handleConfirmNonDataCallType(callType)}
                 marginRight={i % 2 === 0}
               >
                 <Template code={`CallType-${callType}`} />

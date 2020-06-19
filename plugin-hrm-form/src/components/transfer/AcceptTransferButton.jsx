@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { StyledButton } from '../../styles/HrmStyles';
+import { TransferStyledButton } from '../../styles/HrmStyles';
 import { closeChatOriginal, closeCallOriginal } from '../../utils/transfer';
 import { Actions } from '../../states/ContactState';
 
@@ -19,13 +19,14 @@ const handleAcceptTransfer = async (task, restoreEntireForm) => {
 
 const AcceptTransferButton = ({ theme, task, restoreEntireForm }) => {
   return (
-    <StyledButton
+    <TransferStyledButton
       color={theme.colors.base11}
-      background={theme.colors.base2}
+      background={theme.colors.base1}
+      taller
       onClick={() => handleAcceptTransfer(task, restoreEntireForm)}
     >
       <Template code="Transfer-AcceptTransferButton" />
-    </StyledButton>
+    </TransferStyledButton>
   );
 };
 

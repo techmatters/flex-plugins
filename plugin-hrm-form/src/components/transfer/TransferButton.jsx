@@ -2,17 +2,17 @@ import React from 'react';
 import { Actions, Template } from '@twilio/flex-ui';
 import PropTypes from 'prop-types';
 
-import { StyledButton } from '../../styles/HrmStyles';
+import { TransferStyledButton } from '../../styles/HrmStyles';
 
 const TransferButton = ({ theme }) => {
   return (
-    <StyledButton
+    <TransferStyledButton
       color={theme.colors.base11}
-      background={theme.colors.base2}
+      background={theme.colors.base1}
       onClick={() => Actions.invokeAction('ShowDirectory')}
     >
       <Template code="Transfer-TransferButton" />
-    </StyledButton>
+    </TransferStyledButton>
   );
 };
 
