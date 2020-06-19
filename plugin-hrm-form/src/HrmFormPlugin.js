@@ -156,7 +156,7 @@ const setUpActions = setupObject => {
   // bind setupObject to the functions that requires some initializaton
   const transferOverride = ActionFunctions.customTransferTask(setupObject);
   const wrapupOverride = ActionFunctions.wrapupTask(setupObject);
-  const beforeCompleteAction = ActionFunctions.sendFormToBackend(setupObject);
+  const beforeCompleteAction = ActionFunctions.sendInsightsData(setupObject);
 
   Flex.Actions.addListener('beforeAcceptTask', ActionFunctions.initializeContactForm);
 

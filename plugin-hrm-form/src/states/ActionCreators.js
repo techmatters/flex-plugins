@@ -1,5 +1,5 @@
-import { HANDLE_BLUR, HANDLE_FOCUS } from './ActionTypes';
-import { formIsValid, moreThanThreeCategoriesSelected, validateBeforeSubmit, validateOnBlur } from './ValidationRules';
+import { HANDLE_BLUR, HANDLE_FOCUS, HANDLE_VALIDATE_FORM } from './ActionTypes';
+import { moreThanThreeCategoriesSelected, validateBeforeSubmit, validateOnBlur } from './ValidationRules';
 
 export const handleBlur = dispatch => (form, taskId) => () => {
   console.log('Received blur event');
@@ -10,6 +10,17 @@ export const handleBlur = dispatch => (form, taskId) => () => {
   });
 };
 
+export const handleValidateForm = dispatch => (form, taskId) => () => {
+  const newForm = validateBeforeSubmit(form);
+  dispatch({
+    type: HANDLE_VALIDATE_FORM,
+    form: validateOnBlur(newForm),
+    taskId,
+  });
+
+  return newForm;
+};
+
 export const handleFocus = dispatch => (taskId, parents, name) => {
   console.log(`handleFocus called with taskId = ${taskId}, parents = ${JSON.stringify(parents)}, name = ${name}`);
   dispatch({
@@ -18,20 +29,6 @@ export const handleFocus = dispatch => (taskId, parents, name) => {
     name,
     taskId,
   });
-};
-
-export const handleSubmit = dispatch => (form, handleCompleteTask) => task => {
-  const newForm = validateBeforeSubmit(form);
-  dispatch({
-    type: HANDLE_BLUR, // probably need to rename this
-    form: newForm,
-    taskId: task.taskSid,
-  });
-  if (formIsValid(newForm)) {
-    handleCompleteTask(task.taskSid, task);
-  } else {
-    window.alert('There is a problem with your submission.  Please check the form for errors.');
-  }
 };
 
 /*
