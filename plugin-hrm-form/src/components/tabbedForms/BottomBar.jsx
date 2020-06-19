@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
-import { withTaskContext } from '@twilio/flex-ui';
+import { withTaskContext, Template } from '@twilio/flex-ui';
 import FolderIcon from '@material-ui/icons/FolderOpen';
 import AddIcon from '@material-ui/icons/Add';
 import Dialog from '@material-ui/core/Dialog';
@@ -43,14 +43,14 @@ class BottomBar extends Component {
     this.setState(prevState => ({ anchorEl: e.currentTarget || e.target, isMenuOpen: !prevState.isMenuOpen }));
   };
 
-  handleMockedMessage = () => this.setState({ mockedMessage: 'Not implemented yet!', isMenuOpen: false });
+  handleMockedMessage = () => this.setState({ mockedMessage: <Template code="NotImplemented" />, isMenuOpen: false });
 
   closeMockedMessage = () => this.setState({ mockedMessage: null });
 
   handleOpenNewCase = async () => {
     const { task } = this.props;
     const { taskSid } = task;
-    const { hrmBaseUrl, workerSid, helpline } = getConfig();
+    const { hrmBaseUrl, workerSid, helpline, strings } = getConfig();
 
     if (!hasTaskControl(task)) return;
 
@@ -70,10 +70,10 @@ class BottomBar extends Component {
         this.props.changeRoute('new-case', taskSid);
         this.props.setConnectedCase(caseFromDB, taskSid);
       } catch (error) {
-        window.alert('Error from backend system.');
+        window.alert(strings['Error-Backend']);
       }
     } else {
-      window.alert('There is a problem with your submission.  Please check the form for errors.');
+      window.alert(strings['Error-Form']);
     }
   };
 
@@ -85,7 +85,7 @@ class BottomBar extends Component {
 
   handleSubmit = async () => {
     const { task } = this.props;
-    const { hrmBaseUrl, workerSid, helpline } = getConfig();
+    const { hrmBaseUrl, workerSid, helpline, strings } = getConfig();
 
     if (!hasTaskControl(task)) return;
 
@@ -96,12 +96,12 @@ class BottomBar extends Component {
         await saveToHrm(task, newForm, hrmBaseUrl, workerSid, helpline);
         this.props.handleCompleteTask(task.taskSid, task);
       } catch (error) {
-        if (!window.confirm('Error from backend system.  Are you sure you want to end the task without recording?')) {
+        if (!window.confirm(strings['Error-ContinueWithoutRecording'])) {
           this.props.handleCompleteTask(task.taskSid, task);
         }
       }
     } else {
-      window.alert('There is a problem with your submission.  Please check the form for errors.');
+      window.alert(strings['Error-Form']);
     }
   };
 
@@ -125,13 +125,21 @@ class BottomBar extends Component {
           <DialogContent>{mockedMessage}</DialogContent>
         </Dialog>
         <Menu anchorEl={anchorEl} open={isMenuOpen} onClickAway={() => this.setState({ isMenuOpen: false })}>
-          <MenuItem Icon={FolderIcon} text="Open New Case" onClick={this.handleOpenNewCase} />
-          <MenuItem Icon={AddIcon} text="Add to Existing Case" onClick={this.handleMockedMessage} />
+          <MenuItem
+            Icon={FolderIcon}
+            text={<Template code="BottomBar-OpenNewCase" />}
+            onClick={this.handleOpenNewCase}
+          />
+          <MenuItem
+            Icon={AddIcon}
+            text={<Template code="BottomBar-AddToExistingCase" />}
+            onClick={this.handleMockedMessage}
+          />
         </Menu>
         <BottomButtonBar>
           {showNextButton && (
             <StyledNextStepButton roundCorners={true} onClick={this.handleNext}>
-              Next
+              <Template code="BottomBar-Next" />
             </StyledNextStepButton>
           )}
           {showSubmitButton && (
@@ -142,11 +150,11 @@ class BottomBar extends Component {
                   onClick={this.toggleCaseMenu}
                   disabled={isSubmitButtonDisabled}
                 >
-                  Save and Add to Case...
+                  <Template code="BottomBar-SaveAndAddToCase" />
                 </StyledNextStepButton>
               )}
               <StyledNextStepButton roundCorners={true} onClick={this.handleSubmit} disabled={isSubmitButtonDisabled}>
-                Submit
+                <Template code="BottomBar-Submit" />
               </StyledNextStepButton>
             </>
           )}

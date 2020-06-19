@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withTaskContext } from '@twilio/flex-ui';
+import { withTaskContext, Template } from '@twilio/flex-ui';
 
 import { taskType, formType } from '../../types';
 import { getConfig } from '../../HrmFormPlugin';
@@ -12,14 +12,14 @@ const Case = props => {
 
   const saveAndEnd = async () => {
     const { task, form } = props;
-    const { hrmBaseUrl, workerSid, helpline } = getConfig();
+    const { hrmBaseUrl, workerSid, helpline, strings } = getConfig();
 
     try {
       const contact = await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
       await connectToCase(hrmBaseUrl, contact.id, connectedCase.id);
       props.handleCompleteTask(task.taskSid, task);
     } catch (error) {
-      window.alert('Error from backend system.');
+      window.alert(strings['Error-Backend']);
     }
   };
 
