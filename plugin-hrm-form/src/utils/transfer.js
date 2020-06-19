@@ -307,7 +307,7 @@ export const shouldInvokeCompleteTask = (reservation, workerSid) =>
   reservation.worker_sid === workerSid;
 
 export const shouldTakeControlBack = (reservation, workerSid) =>
-  reservation.status === 'rejected' &&
+  (reservation.status === 'rejected' || reservation.status === 'timeout') &&
   reservation.attributes.transferMeta.targetType === 'worker' &&
   reservation.attributes.transferMeta.originalCounselor === workerSid &&
   reservation.attributes.transferMeta.mode === transferModes.warm;
