@@ -75,15 +75,15 @@ export const afterAcceptTask = async payload => {
 };
 
 /**
- * @type {ReplacedActionFunction}
+ * Prevents wrong task states when transfer fails (e.g. transferring to an offline worker)
+ * @param {() => Promise<void>} transferFunction
+ * @param {import('@twilio/flex-ui').ITask} task
  */
-const safeCallTransfer = async (payload, original) => {
+const safeTransfer = async (transferFunction, task) => {
   try {
-    await original(payload);
+    await transferFunction();
   } catch (err) {
-    const { strings } = Manager.getInstance();
-    await TransferHelpers.clearTransferMeta(payload.task);
-    window.alert(strings['Transfer-CantTransferToOffline']);
+    await TransferHelpers.clearTransferMeta(task);
   }
 };
 
@@ -107,7 +107,13 @@ export const customTransferTask = setupObject => async (payload, original) => {
   await TransferHelpers.setTransferMeta(payload, documentName, counselorName);
 
   if (TaskHelper.isCallTask(payload.task)) {
-    return safeCallTransfer(payload, original);
+    return safeTransfer(() => original(payload), payload.task);
+  }
+
+  if (mode === transferModes.warm) {
+    await TransferHelpers.clearTransferMeta(payload.task);
+    window.alert(Manager.getInstance().strings['Transfer-ChatWarmNotAllowed']);
+    return Promise.resolve();
   }
 
   const memberToKick = mode === transferModes.cold ? TransferHelpers.getMemberToKick(payload.task, identity) : '';
@@ -120,7 +126,11 @@ export const customTransferTask = setupObject => async (payload, original) => {
     memberToKick,
   };
 
-  return transferChatStart(body);
+  return safeTransfer(() => transferChatStart(body), payload.task);
+};
+
+export const afterCancelTransfer = payload => {
+  TransferHelpers.clearTransferMeta(payload.task);
 };
 
 export const hangupCall = fromActionFunction(saveEndMillis);

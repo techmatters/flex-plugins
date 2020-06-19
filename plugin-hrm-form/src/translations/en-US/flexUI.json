@@ -25,5 +25,5 @@
   "Transfer-TaskLineChatSmsReserved": "Request from",
   "Transfer-TaskLineChatWhatsAppReserved": "Request from",
   "Transfer-FormNotEditable": "Form locked until transfer is completed.",
-  "Transfer-CantTransferToOffline": "Error: can't transfer to an offline counselor!"
+  "Transfer-ChatWarmNotAllowed": "Warm transfer for chats is currently not supported."
 }

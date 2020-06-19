@@ -171,6 +171,9 @@ const setUpActions = setupObject => {
 
   if (featureFlags.enable_transfers) Flex.Actions.replaceAction('TransferTask', transferOverride);
 
+  if (featureFlags.enable_transfers)
+    Flex.Actions.addListener('afterCancelTransfer', ActionFunctions.afterCancelTransfer);
+
   Flex.Actions.replaceAction('HangupCall', ActionFunctions.hangupCall);
 
   Flex.Actions.replaceAction('WrapupTask', wrapupOverride);

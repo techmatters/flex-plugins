@@ -470,14 +470,14 @@ describe('TransferredTaskJanitor helpers', () => {
     sidWithTaskControl,
   });
 
-  test('someoneHasTaskControll', async () => {
+  test('someoneHasTaskControl', async () => {
     const reservation = createReservation('reservation1', 'worker1');
 
     const withControl = reservation.setTransferMeta({ sidWithTaskControl: 'worker1' });
     const withouthControl = reservation.setTransferMeta({ sidWithTaskControl: '' });
 
-    expect(TransferHelpers.someoneHasTaskControll(withControl)).toBe(true);
-    expect(TransferHelpers.someoneHasTaskControll(withouthControl)).toBe(false);
+    expect(TransferHelpers.someoneHasTaskControl(withControl)).toBe(true);
+    expect(TransferHelpers.someoneHasTaskControl(withouthControl)).toBe(false);
   });
 
   test('reservationHasTaskControl', async () => {
