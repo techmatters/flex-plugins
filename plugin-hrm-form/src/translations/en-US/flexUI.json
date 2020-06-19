@@ -25,5 +25,16 @@
   "Transfer-TaskLineChatSmsReserved": "Request from",
   "Transfer-TaskLineChatWhatsAppReserved": "Request from",
   "Transfer-FormNotEditable": "Form locked until transfer is completed.",
-  "Transfer-ChatWarmNotAllowed": "Warm transfer for chats is currently not supported."
+  "Transfer-ChatWarmNotAllowed": "Warm transfer for chats is currently not supported.",
+
+  "BottomBar-Next": "Next",
+  "BottomBar-SaveAndAddToCase": "Save and Add to Case...",
+  "BottomBar-Submit": "Submit",
+  "BottomBar-OpenNewCase": "Open New Case",
+  "BottomBar-AddToExistingCase": "Add to Existing Case",
+
+  "NotImplemented": "Not implemented yet!",
+  "Error-Backend": "Error from backend system.",
+  "Error-ContinueWithoutRecording": "Error from backend system.  Are you sure you want to end the task without recording?",
+  "Error-Form": "There is a problem with your submission.  Please check the form for errors."
 }

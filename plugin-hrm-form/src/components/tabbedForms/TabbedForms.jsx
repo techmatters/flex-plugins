@@ -3,24 +3,16 @@ import PropTypes from 'prop-types';
 import { withTaskContext } from '@twilio/flex-ui';
 import SearchIcon from '@material-ui/icons/Search';
 
-import {
-  BottomButtonBar,
-  StyledNextStepButton,
-  TabbedFormsContainer,
-  TopNav,
-  TransparentButton,
-  StyledTabs,
-  StyledTab,
-} from '../../styles/HrmStyles';
+import { TabbedFormsContainer, TopNav, TransparentButton, StyledTabs, StyledTab } from '../../styles/HrmStyles';
 import callTypes from '../../states/DomainConstants';
 import decorateTab from '../decorateTab';
-import { formIsValid } from '../../states/ValidationRules';
 import { formType, taskType } from '../../types';
 import Search from '../search';
 import CallerInformationTab from './CallerInformationTab';
 import ChildInformationTab from './ChildInformationTab';
 import IssueCategorizationTab from './IssueCategorizationTab';
 import CaseInformationTab from './CaseInformationTab';
+import BottomBar from './BottomBar';
 import { hasTaskControl } from '../../utils/transfer';
 
 const TabbedForms = props => {
@@ -62,12 +54,11 @@ const TabbedForms = props => {
     props.changeTab(tab, taskId);
   };
 
-  const handleSubmit = () => {
-    if (hasTaskControl(task)) props.handleSubmit(task);
-  };
+  const handleBackButton = () => {
+    if (!hasTaskControl(task)) return;
 
-  const handleBackButtonClick = () => {
-    if (hasTaskControl(task)) props.handleCallTypeButtonClick(taskId, '');
+    props.handleCallTypeButtonClick(taskId, '');
+    props.changeRoute('select-call-type', taskId);
   };
 
   const { tab } = form.metadata;
@@ -124,32 +115,22 @@ const TabbedForms = props => {
   tabs.push(decorateTab('Categorize Issue', form.caseInformation.categories));
   tabs.push(<StyledTab key="Case Information" label="Add Case Summary" />);
 
-  const showNextButton = tab !== 0 && tab < body.length - 1;
-  const showSubmitButton = tab === body.length - 1;
-
   return (
     <TabbedFormsContainer>
       <TopNav>
-        <TransparentButton onClick={handleBackButtonClick}>&lt; BACK</TransparentButton>
+        <TransparentButton onClick={handleBackButton}>&lt; BACK</TransparentButton>
       </TopNav>
       <StyledTabs name="tab" variant="scrollable" scrollButtons="auto" value={tab} onChange={handleTabsChange}>
         {tabs}
       </StyledTabs>
       {body[tab]}
-      {(showNextButton || showSubmitButton) && (
-        <BottomButtonBar>
-          {showNextButton && (
-            <StyledNextStepButton roundCorners={true} onClick={() => props.changeTab(tab + 1, taskId)}>
-              Next
-            </StyledNextStepButton>
-          )}
-          {showSubmitButton && (
-            <StyledNextStepButton roundCorners={true} onClick={handleSubmit} disabled={!formIsValid(form)}>
-              Submit
-            </StyledNextStepButton>
-          )}
-        </BottomButtonBar>
-      )}
+      <BottomBar
+        tabs={tabs.length}
+        form={form}
+        changeTab={props.changeTab}
+        handleCompleteTask={props.handleCompleteTask}
+        handleValidateForm={props.handleValidateForm}
+      />
     </TabbedFormsContainer>
   );
 };
@@ -162,10 +143,12 @@ TabbedForms.propTypes = {
   handleCategoryToggle: PropTypes.func.isRequired,
   handleChange: PropTypes.func.isRequired,
   handleCallTypeButtonClick: PropTypes.func.isRequired,
-  handleSubmit: PropTypes.func.isRequired,
+  handleCompleteTask: PropTypes.func.isRequired,
   handleFocus: PropTypes.func.isRequired,
   handleSelectSearchResult: PropTypes.func.isRequired,
   changeTab: PropTypes.func.isRequired,
+  changeRoute: PropTypes.func.isRequired,
+  handleValidateForm: PropTypes.func.isRequired,
 };
 
 export default withTaskContext(TabbedForms);

@@ -11,6 +11,8 @@ import { isNonDataCallType } from '../../states/ValidationRules';
 import { formType, taskType, localizationType } from '../../types';
 import NonDataCallTypeDialog from './NonDataCallTypeDialog';
 import { hasTaskControl } from '../../utils/transfer';
+import { getConfig } from '../../HrmFormPlugin';
+import { saveToHrm } from '../../services/ContactService';
 
 const isDialogOpen = form =>
   Boolean(form && form.callType && form.callType.value && isNonDataCallType(form.callType.value));
@@ -21,16 +23,26 @@ const CallTypeButtons = props => {
   const { form, task, localization } = props;
   const { isCallTask } = localization;
 
-  const handleChildTypeClick = () => {
-    if (hasTaskControl(task)) props.handleCallTypeButtonClick(task.taskSid, callTypes.child);
+  const handleClick = (taskSid, callType) => {
+    if (!hasTaskControl(task)) return;
+
+    props.handleCallTypeButtonClick(taskSid, callType);
+    props.changeRoute('tabbed-forms', taskSid);
   };
 
-  const handleCallerTypeClick = () => {
-    if (hasTaskControl(task)) props.handleCallTypeButtonClick(task.taskSid, callTypes.caller);
-  };
+  const handleConfirmNonDataCallType = async () => {
+    if (!hasTaskControl(task)) return;
 
-  const handleNonDataTypeClick = callType => {
-    if (hasTaskControl(task)) props.handleCallTypeButtonClick(task.taskSid, callTypes[callType]);
+    const { hrmBaseUrl, workerSid, helpline, strings } = getConfig();
+
+    try {
+      await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
+      props.handleCompleteTask(task.taskSid, task);
+    } catch (error) {
+      if (!window.confirm(strings['Error-ContinueWithoutRecording'])) {
+        props.handleCompleteTask(task.taskSid, task);
+      }
+    }
   };
 
   return (
@@ -38,13 +50,13 @@ const CallTypeButtons = props => {
       <Container>
         <Box marginBottom="29px">
           <Label>categorize this contact</Label>
-          <DataCallTypeButton onClick={handleChildTypeClick}>
+          <DataCallTypeButton onClick={() => handleClick(task.taskSid, callTypes.child)}>
             <Box width="50px" marginRight="5px">
               <FaceIcon />
             </Box>
             <Template code="CallType-child" />
           </DataCallTypeButton>
-          <DataCallTypeButton onClick={handleCallerTypeClick}>
+          <DataCallTypeButton onClick={() => handleClick(task.taskSid, callTypes.caller)}>
             <Box width="50px" marginRight="5px">
               <FaceIcon style={{ marginRight: '-5px' }} />
               <FaceIcon />
@@ -71,7 +83,7 @@ const CallTypeButtons = props => {
       <NonDataCallTypeDialog
         isOpen={isDialogOpen(form)}
         isCallTask={isCallTask(task)}
-        handleConfirm={() => props.handleSubmit(task)}
+        handleConfirm={handleConfirmNonDataCallType}
         handleCancel={() => clearCallType(props)}
       />
     </>
@@ -83,8 +95,9 @@ CallTypeButtons.propTypes = {
   form: formType.isRequired,
   task: taskType.isRequired,
   handleCallTypeButtonClick: PropTypes.func.isRequired,
-  handleSubmit: PropTypes.func.isRequired,
   localization: localizationType.isRequired,
+  changeRoute: PropTypes.func.isRequired,
+  handleCompleteTask: PropTypes.func.isRequired,
 };
 
 export default withLocalization(withTaskContext(CallTypeButtons));

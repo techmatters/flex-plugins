@@ -187,13 +187,10 @@ const saveInsights = async payload => {
  * Submits the form to the hrm backend (if it should), and saves the insights. Used before task is completed
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
  */
-export const sendFormToBackend = setupObject => async (payload, abortFunction) => {
-  const { hrmBaseUrl, workerSid, helpline, featureFlags } = setupObject;
-
-  const manager = Manager.getInstance();
+export const sendInsightsData = setupObject => async payload => {
+  const { featureFlags } = setupObject;
 
   if (!featureFlags.enable_transfers || TransferHelpers.hasTaskControl(payload.task)) {
-    manager.store.dispatch(Actions.saveContactState(payload.task, abortFunction, hrmBaseUrl, workerSid, helpline));
     if (featureFlags.enable_save_insights) {
       await saveInsights(payload);
     }
