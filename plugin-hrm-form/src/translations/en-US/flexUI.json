@@ -25,6 +25,7 @@
   "Transfer-TaskLineChatSmsReserved": "Request from",
   "Transfer-TaskLineChatWhatsAppReserved": "Request from",
   "Transfer-FormNotEditable": "Form locked until transfer is completed.",
+  "Transfer-ChatWarmNotAllowed": "Warm transfer for chats is currently not supported.",
 
   "BottomBar-Next": "Next",
   "BottomBar-SaveAndAddToCase": "Save and Add to Case...",

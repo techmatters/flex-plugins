@@ -273,7 +273,7 @@ export const HiddenText = styled('p')`
   line-height: 0px;
 `;
 
-export const StyledButton = styled('button')`
+export const TransferStyledButton = styled('button')`
   background: ${props => (props.background ? props.background : '#ccc')};
   color: ${props => (props.color ? props.color : '#000')};
   letter-spacing: 0px;
@@ -281,15 +281,13 @@ export const StyledButton = styled('button')`
   font-weight: bold;
   margin-right: 1em;
   padding: 0px 16px;
-  height: 28px;
+  height: ${props => (props.taller ? 35 : 28)}px;
   font-size: 13px;
   outline: none;
-  border-radius: 100px;
-  align-self: center;
-  border-width: initial;
-  border-style: none;
-  border-color: initial;
+  border-width: 1px;
+  border-color: ${props => (props.color ? props.color : '#000')};
   border-radius: 14px;
+  align-self: center;
   &:hover {
     cursor: pointer;
   }

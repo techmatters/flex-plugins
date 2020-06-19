@@ -84,11 +84,18 @@ const setUpSharedStateClient = () => {
  */
 const setUpTransferredTaskJanitor = async setupObject => {
   const { workerSid } = setupObject;
-  const query = 'data.attributes.channelSid == "CH00000000000000000000000000000000"';
+  const query =
+    'data.attributes.transferStarted == "true" || data.attributes.channelSid == "CH00000000000000000000000000000000"';
   const reservationQuery = await Flex.Manager.getInstance().insightsClient.liveQuery('tr-reservation', query);
   reservationQuery.on('itemUpdated', args => {
     if (TransferHelpers.shouldInvokeCompleteTask(args.value, workerSid)) {
       Flex.Actions.invokeAction('CompleteTask', { sid: args.value.reservation_sid });
+      return;
+    }
+
+    if (TransferHelpers.shouldTakeControlBack(args.value, workerSid)) {
+      const task = Flex.TaskHelper.getTaskByTaskSid(args.value.attributes.transferMeta.originalReservation);
+      TransferHelpers.clearTransferMeta(task);
     }
   });
 };
@@ -160,9 +167,12 @@ const setUpActions = setupObject => {
 
   Flex.Actions.addListener('beforeAcceptTask', ActionFunctions.initializeContactForm);
 
-  if (featureFlags.enable_transfers) Flex.Actions.addListener('afterAcceptTask', ActionFunctions.restoreFormIfTransfer);
+  if (featureFlags.enable_transfers) Flex.Actions.addListener('afterAcceptTask', ActionFunctions.afterAcceptTask);
 
   if (featureFlags.enable_transfers) Flex.Actions.replaceAction('TransferTask', transferOverride);
+
+  if (featureFlags.enable_transfers)
+    Flex.Actions.addListener('afterCancelTransfer', ActionFunctions.afterCancelTransfer);
 
   Flex.Actions.replaceAction('HangupCall', ActionFunctions.hangupCall);
 

@@ -48,12 +48,42 @@ export const initializeContactForm = payload => {
 
 /**
  * If the task within payload is a transferred one, load the form of the previous counselor (if possible)
- * @param {{ task: any }} payload
+ * @param {import('@twilio/flex-ui').ITask} task
  */
-export const restoreFormIfTransfer = async payload => {
-  if (TransferHelpers.hasTransferStarted(payload.task)) {
-    const form = await loadFormSharedState(payload.task);
-    if (form) Manager.getInstance().store.dispatch(Actions.restoreEntireForm(form, payload.task.taskSid));
+const restoreFormIfTransfer = async task => {
+  if (TransferHelpers.hasTransferStarted(task)) {
+    const form = await loadFormSharedState(task);
+    if (form) Manager.getInstance().store.dispatch(Actions.restoreEntireForm(form, task.taskSid));
+  }
+};
+
+/**
+ * If the task is transferred, set the reservation sid who controls the task (according to transfer mode)
+ * @param {import('@twilio/flex-ui').ITask} task
+ */
+const setProperControlIfTransfer = async task => {
+  if (TransferHelpers.hasTransferStarted(task) && TransferHelpers.isColdTransfer(task))
+    await TransferHelpers.takeTaskControl(task);
+};
+
+/**
+ * @type {ActionFunction}
+ */
+export const afterAcceptTask = async payload => {
+  await setProperControlIfTransfer(payload.task);
+  await restoreFormIfTransfer(payload.task);
+};
+
+/**
+ * Prevents wrong task states when transfer fails (e.g. transferring to an offline worker)
+ * @param {() => Promise<void>} transferFunction
+ * @param {import('@twilio/flex-ui').ITask} task
+ */
+const safeTransfer = async (transferFunction, task) => {
+  try {
+    await transferFunction();
+  } catch (err) {
+    await TransferHelpers.clearTransferMeta(task);
   }
 };
 
@@ -74,14 +104,16 @@ export const customTransferTask = setupObject => async (payload, original) => {
   const mode = payload.options.mode || DEFAULT_TRANSFER_MODE;
 
   // set metadata for the transfer
-  await TransferHelpers.setTransferMeta(payload.task, mode, documentName, counselorName);
+  await TransferHelpers.setTransferMeta(payload, documentName, counselorName);
 
   if (TaskHelper.isCallTask(payload.task)) {
-    if (TransferHelpers.isColdTransfer(payload.task) && !TransferHelpers.hasTaskControl(payload.task)) {
-      await TransferHelpers.setDummyChannelSid(payload.task);
-    }
+    return safeTransfer(() => original(payload), payload.task);
+  }
 
-    return original(payload);
+  if (mode === transferModes.warm) {
+    await TransferHelpers.clearTransferMeta(payload.task);
+    window.alert(Manager.getInstance().strings['Transfer-ChatWarmNotAllowed']);
+    return Promise.resolve();
   }
 
   const memberToKick = mode === transferModes.cold ? TransferHelpers.getMemberToKick(payload.task, identity) : '';
@@ -94,7 +126,11 @@ export const customTransferTask = setupObject => async (payload, original) => {
     memberToKick,
   };
 
-  return transferChatStart(body);
+  return safeTransfer(() => transferChatStart(body), payload.task);
+};
+
+export const afterCancelTransfer = payload => {
+  TransferHelpers.clearTransferMeta(payload.task);
 };
 
 export const hangupCall = fromActionFunction(saveEndMillis);

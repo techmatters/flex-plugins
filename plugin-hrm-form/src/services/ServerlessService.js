@@ -1,4 +1,6 @@
 /* eslint-disable camelcase */
+import { Notifications } from '@twilio/flex-ui';
+
 import fetchProtectedApi from './fetchProtectedApi';
 import { getConfig } from '../HrmFormPlugin';
 
@@ -38,10 +40,20 @@ export const getMessages = async body => {
 
 export const transferChatStart = async body => {
   const { serverlessBaseUrl, token } = getConfig();
-  const url = `${serverlessBaseUrl}/transferChatStart`;
 
-  const newTask = await fetchProtectedApi(url, { ...body, Token: token });
-  return newTask;
+  try {
+    const url = `${serverlessBaseUrl}/transferChatStart`;
+
+    const newTask = await fetchProtectedApi(url, { ...body, Token: token });
+    return newTask;
+  } catch (err) {
+    Notifications.showNotification('TransferFailed', {
+      reason: `Worker ${body.targetSid} is not available.`,
+    });
+
+    // propagate the error
+    throw err;
+  }
 };
 
 export const transferChatResolve = async body => {

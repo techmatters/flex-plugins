@@ -10,6 +10,7 @@ import callTypes from '../../states/DomainConstants';
 import { isNonDataCallType } from '../../states/ValidationRules';
 import { formType, taskType, localizationType } from '../../types';
 import NonDataCallTypeDialog from './NonDataCallTypeDialog';
+import { hasTaskControl } from '../../utils/transfer';
 import { getConfig } from '../../HrmFormPlugin';
 import { saveToHrm } from '../../services/ContactService';
 
@@ -23,11 +24,15 @@ const CallTypeButtons = props => {
   const { isCallTask } = localization;
 
   const handleClick = (taskSid, callType) => {
+    if (!hasTaskControl(task)) return;
+
     props.handleCallTypeButtonClick(taskSid, callType);
     props.changeRoute('tabbed-forms', taskSid);
   };
 
   const handleConfirmNonDataCallType = async () => {
+    if (!hasTaskControl(task)) return;
+
     const { hrmBaseUrl, workerSid, helpline, strings } = getConfig();
 
     try {
@@ -67,7 +72,7 @@ const CallTypeButtons = props => {
             .map((callType, i) => (
               <NonDataCallTypeButton
                 key={callType}
-                onClick={() => props.handleCallTypeButtonClick(task.taskSid, callTypes[callType])}
+                onClick={() => handleConfirmNonDataCallType(callType)}
                 marginRight={i % 2 === 0}
               >
                 <Template code={`CallType-${callType}`} />
