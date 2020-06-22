@@ -13,8 +13,9 @@ export function isNonDataCallType(callType) {
 
 export function countSelectedCategories(categoryFormSection) {
   let count = 0;
-  for (const category of Object.keys(categoryFormSection).filter(key => key.startsWith('category'))) {
-    for (const subcategory of Object.keys(categoryFormSection[category]).filter(key => key.startsWith('sub'))) {
+  const notCategory = ['error', 'touched', 'type', 'validation'];
+  for (const category of Object.keys(categoryFormSection).filter(key => !notCategory.includes(key))) {
+    for (const subcategory of Object.keys(categoryFormSection[category]).filter(key => key !== 'type')) {
       if (categoryFormSection[category][subcategory].value) {
         count += 1;
       }

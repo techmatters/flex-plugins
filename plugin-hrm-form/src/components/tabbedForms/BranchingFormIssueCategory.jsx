@@ -30,28 +30,6 @@ const BranchingFormIssueCategory = props => {
           </CategoryCheckboxField>
         );
       })}
-      {/* Array.from(Array(6), (e, i) => {
-        const index = i + 1;
-        const id = `IssueCategorization_Category${props.category}_Subcategory${index}`;
-        return (
-          <CategoryCheckboxField>
-            <Checkbox
-              style={{ width: 30, height: 30, boxSizing: 'border-box' }}
-              checked={props.form.caseInformation.categories[`category${cat}`][`sub${index}`].value}
-              id={id}
-              onClick={() =>
-                props.handleCategoryToggle(
-                  props.taskId,
-                  `category${cat}`,
-                  `sub${index}`,
-                  !props.form.caseInformation.categories[`category${cat}`][`sub${index}`].value,
-                )
-              }
-            />
-            <StyledCheckboxLabel htmlFor={id}>Subcategory {index}</StyledCheckboxLabel>
-          </CategoryCheckboxField>
-        );
-      })*/}
     </div>
   );
 };
@@ -59,7 +37,7 @@ const BranchingFormIssueCategory = props => {
 BranchingFormIssueCategory.displayName = 'BranchingFormIssueCategory';
 BranchingFormIssueCategory.propTypes = {
   category: PropTypes.string.isRequired,
-  subcategories: PropTypes.arrayOf(PropTypes.any),
+  subcategories: PropTypes.arrayOf(PropTypes.any).isRequired,
   handleCategoryToggle: PropTypes.func.isRequired,
   taskId: PropTypes.string.isRequired,
   form: formType.isRequired,
