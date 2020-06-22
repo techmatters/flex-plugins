@@ -8,7 +8,7 @@ import { getConfig } from '../HrmFormPlugin';
 /**
  * @param {ITask} task
  */
-export const hasTransferStarted = task => Boolean(task.attributes.transferMeta);
+export const hasTransferStarted = task => Boolean(task.attributes && task.attributes.transferMeta);
 
 /**
  * @param {ITask} task
@@ -66,19 +66,54 @@ export const shouldShowTransferControls = task =>
  */
 export const hasTaskControl = task =>
   !hasTransferStarted(task) ||
-  (isOriginalReservation(task) && isTransferRejected(task)) ||
-  (!isOriginalReservation(task) && isTransferAccepted(task));
+  task.attributes.transferMeta.sidWithTaskControl === task.sid ||
+  (isOriginalReservation(task) && isTransferRejected(task)) || // this will be removed
+  (!isOriginalReservation(task) && isTransferAccepted(task)); // this will be removed
 
 /**
- * Sets attributes.channelSid to a dummy value to start tracking the task in TransferredTaskJanitor
  * @param {ITask} task
+ * @param {string} sidWithTaskControl
  */
-export const setDummyChannelSid = async task => {
+const setTaskControl = async (task, sidWithTaskControl) => {
   const updatedAttributes = {
     ...task.attributes,
-    channelSid: 'CH00000000000000000000000000000000',
+    transferMeta: {
+      ...task.attributes.transferMeta,
+      sidWithTaskControl,
+    },
   };
+
   await task.setAttributes(updatedAttributes);
+};
+
+/**
+ * Takes control of the given task (only for call tasks for now)
+ * @param {ITask} task
+ */
+export const takeTaskControl = async task => {
+  if (TaskHelper.isCallTask(task)) {
+    await setTaskControl(task, task.sid);
+  }
+};
+
+/**
+ * Returns control of the given task to original counselor (only for call tasks for now)
+ * @param {ITask} task
+ */
+export const returnTaskControl = async task => {
+  if (TaskHelper.isCallTask(task)) {
+    await setTaskControl(task, task.attributes.transferMeta.originalReservation);
+  }
+};
+
+/**
+ * Removes the control of the given task (only for call tasks for now)
+ * @param {ITask} task
+ */
+export const clearTaskControl = async task => {
+  if (TaskHelper.isCallTask(task)) {
+    await setTaskControl(task, '');
+  }
 };
 
 /**
@@ -104,27 +139,42 @@ export const setTransferRejected = updateTransferStatus(transferStatuses.rejecte
 
 /**
  * Saves transfer metadata into task attributes
- * @param {ITask} task
- * @param {string} mode
+ * @param {{ task: ITask, options: { mode: string }, targetSid: string }} payload
  * @param {string} documentName name to retrieve the form or null if there were no form to save
  * @param {string} counselorName
  */
-export const setTransferMeta = async (task, mode, documentName, counselorName) => {
+export const setTransferMeta = async (payload, documentName, counselorName) => {
+  const { task, options, targetSid } = payload;
+  const { mode } = options;
+  const targetType = targetSid.startsWith('WK') ? 'worker' : 'queue';
+
   // Set transfer metadata
   const updatedAttributes = {
     ...task.attributes,
+    transferStarted: true,
     transferMeta: {
       originalTask: task.taskSid,
       originalReservation: task.sid,
       originalCounselor: task.workerSid,
       originalCounselorName: counselorName,
+      sidWithTaskControl: '',
       transferStatus: mode === transferModes.warm ? transferStatuses.transferring : transferStatuses.accepted,
       formDocument: documentName,
       mode,
+      targetType,
     },
   };
 
   await task.setAttributes(updatedAttributes);
+};
+
+/**
+ * @param {ITask} task
+ */
+export const clearTransferMeta = async task => {
+  const { transferMeta, transferStarted, ...attributes } = task.attributes;
+
+  await task.setAttributes(attributes);
 };
 
 /**
@@ -210,6 +260,7 @@ export const closeChatSelf = async task => {
  */
 export const closeCallOriginal = async task => {
   await setTransferAccepted(task);
+  await takeTaskControl(task);
   await Actions.invokeAction('KickParticipant', {
     sid: task.sid,
     targetSid: task.attributes.transferMeta.originalCounselor,
@@ -223,12 +274,21 @@ export const closeCallOriginal = async task => {
  */
 export const closeCallSelf = async task => {
   await setTransferRejected(task);
+  await returnTaskControl(task);
   await Actions.invokeAction('HangupCall', { sid: task.sid });
 };
 
 /**
  * Following helpers are used by TransferredTaskJanitor, as it will check for reservations instead of tasks, in order to unify the behavior of chat and call based tasks.
  */
+
+export const someoneHasTaskControl = reservation => reservation.attributes.transferMeta.sidWithTaskControl !== '';
+
+export const reservationHasTaskControl = reservation =>
+  reservation.attributes.transferMeta.sidWithTaskControl === reservation.reservation_sid;
+
+export const taskControlledByOther = reservation =>
+  someoneHasTaskControl(reservation) && !reservationHasTaskControl(reservation);
 
 export const shouldCloseOriginalReservation = reservation =>
   reservation.reservation_sid === reservation.attributes.transferMeta.originalReservation &&
@@ -242,4 +302,12 @@ export const shouldCloseReservation = reservation =>
   shouldCloseOriginalReservation(reservation) || shouldCloseTransferredReservation(reservation);
 
 export const shouldInvokeCompleteTask = (reservation, workerSid) =>
-  shouldCloseReservation(reservation) && reservation.status === 'wrapup' && reservation.worker_sid === workerSid;
+  reservation.status === 'wrapup' &&
+  (taskControlledByOther(reservation) || shouldCloseReservation(reservation)) &&
+  reservation.worker_sid === workerSid;
+
+export const shouldTakeControlBack = (reservation, workerSid) =>
+  (reservation.status === 'rejected' || reservation.status === 'timeout') &&
+  reservation.attributes.transferMeta.targetType === 'worker' &&
+  reservation.attributes.transferMeta.originalCounselor === workerSid &&
+  reservation.attributes.transferMeta.mode === transferModes.warm;

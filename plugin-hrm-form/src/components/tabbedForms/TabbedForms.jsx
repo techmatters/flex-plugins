@@ -55,6 +55,8 @@ const TabbedForms = props => {
   };
 
   const handleBackButton = () => {
+    if (!hasTaskControl(task)) return;
+
     props.handleCallTypeButtonClick(taskId, '');
     props.changeRoute('select-call-type', taskId);
   };

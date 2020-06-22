@@ -4,9 +4,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { StyledButton } from '../../styles/HrmStyles';
-import { closeChatOriginal, closeCallOriginal, isWarmTransfer } from '../../utils/transfer';
-import { loadFormSharedState } from '../../utils/sharedState';
+import { TransferStyledButton } from '../../styles/HrmStyles';
+import { closeChatOriginal, closeCallOriginal } from '../../utils/transfer';
 import { Actions } from '../../states/ContactState';
 
 /**
@@ -16,23 +15,18 @@ import { Actions } from '../../states/ContactState';
 const handleAcceptTransfer = async (task, restoreEntireForm) => {
   if (TaskHelper.isChatBasedTask(task)) await closeChatOriginal(task);
   else await closeCallOriginal(task);
-
-  // restore the state of the previous form for warm transfer (if there is any)
-  if (isWarmTransfer(task)) {
-    const form = await loadFormSharedState(task);
-    if (form) restoreEntireForm(form, task.taskSid);
-  }
 };
 
 const AcceptTransferButton = ({ theme, task, restoreEntireForm }) => {
   return (
-    <StyledButton
+    <TransferStyledButton
       color={theme.colors.base11}
-      background={theme.colors.base2}
+      background={theme.colors.base1}
+      taller
       onClick={() => handleAcceptTransfer(task, restoreEntireForm)}
     >
       <Template code="Transfer-AcceptTransferButton" />
-    </StyledButton>
+    </TransferStyledButton>
   );
 };
 
@@ -40,7 +34,7 @@ AcceptTransferButton.displayName = 'AcceptTransferButton';
 AcceptTransferButton.propTypes = {
   theme: PropTypes.shape({
     colors: PropTypes.shape({
-      base2: PropTypes.string,
+      base1: PropTypes.string,
       base11: PropTypes.string,
     }),
   }).isRequired,

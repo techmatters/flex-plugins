@@ -10,6 +10,7 @@ import callTypes from '../../states/DomainConstants';
 import { isNonDataCallType } from '../../states/ValidationRules';
 import { formType, taskType, localizationType } from '../../types';
 import NonDataCallTypeDialog from './NonDataCallTypeDialog';
+import { hasTaskControl } from '../../utils/transfer';
 import { getConfig } from '../../HrmFormPlugin';
 import { saveToHrm } from '../../services/ContactService';
 
@@ -23,11 +24,21 @@ const CallTypeButtons = props => {
   const { isCallTask } = localization;
 
   const handleClick = (taskSid, callType) => {
+    if (!hasTaskControl(task)) return;
+
     props.handleCallTypeButtonClick(taskSid, callType);
+  };
+
+  const handleClickAndRedirect = (taskSid, callType) => {
+    if (!hasTaskControl(task)) return;
+
+    handleClick(taskSid, callType);
     props.changeRoute('tabbed-forms', taskSid);
   };
 
   const handleConfirmNonDataCallType = async () => {
+    if (!hasTaskControl(task)) return;
+
     const { hrmBaseUrl, workerSid, helpline, strings } = getConfig();
 
     try {
@@ -45,13 +56,13 @@ const CallTypeButtons = props => {
       <Container>
         <Box marginBottom="29px">
           <Label>categorize this contact</Label>
-          <DataCallTypeButton onClick={() => handleClick(task.taskSid, callTypes.child)}>
+          <DataCallTypeButton onClick={() => handleClickAndRedirect(task.taskSid, callTypes.child)}>
             <Box width="50px" marginRight="5px">
               <FaceIcon />
             </Box>
             <Template code="CallType-child" />
           </DataCallTypeButton>
-          <DataCallTypeButton onClick={() => handleClick(task.taskSid, callTypes.caller)}>
+          <DataCallTypeButton onClick={() => handleClickAndRedirect(task.taskSid, callTypes.caller)}>
             <Box width="50px" marginRight="5px">
               <FaceIcon style={{ marginRight: '-5px' }} />
               <FaceIcon />
@@ -67,7 +78,7 @@ const CallTypeButtons = props => {
             .map((callType, i) => (
               <NonDataCallTypeButton
                 key={callType}
-                onClick={() => props.handleCallTypeButtonClick(task.taskSid, callTypes[callType])}
+                onClick={() => handleClick(task.taskSid, callTypes[callType])}
                 marginRight={i % 2 === 0}
               >
                 <Template code={`CallType-${callType}`} />
