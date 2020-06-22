@@ -6,16 +6,35 @@ import { CategoryCheckboxField, StyledCheckboxLabel, StyledLabel } from '../../s
 import { formType } from '../../types';
 
 const BranchingFormIssueCategory = props => {
-  const cat = props.category;
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <StyledLabel>Category {cat}</StyledLabel>
-      {Array.from(Array(6), (e, i) => {
+      <StyledLabel>{props.category}</StyledLabel>
+      {props.subcategories.map(([subcategoryName, subcategory]) => {
+        const id = `IssueCategorization_${props.category}_${subcategoryName}`;
+        return (
+          <CategoryCheckboxField key={id}>
+            <Checkbox
+              style={{ width: 30, height: 30, boxSizing: 'border-box' }}
+              checked={props.form.caseInformation.categories[props.category][subcategoryName].value}
+              id={id}
+              onClick={() =>
+                props.handleCategoryToggle(
+                  props.taskId,
+                  props.category,
+                  subcategoryName,
+                  !props.form.caseInformation.categories[props.category][subcategoryName].value,
+                )
+              }
+            />
+            <StyledCheckboxLabel htmlFor={id}>{subcategoryName}</StyledCheckboxLabel>
+          </CategoryCheckboxField>
+        );
+      })}
+      {/* Array.from(Array(6), (e, i) => {
         const index = i + 1;
         const id = `IssueCategorization_Category${props.category}_Subcategory${index}`;
         return (
           <CategoryCheckboxField>
-            {/* TODO(nick): the inline style below is ugly */}
             <Checkbox
               style={{ width: 30, height: 30, boxSizing: 'border-box' }}
               checked={props.form.caseInformation.categories[`category${cat}`][`sub${index}`].value}
@@ -32,7 +51,7 @@ const BranchingFormIssueCategory = props => {
             <StyledCheckboxLabel htmlFor={id}>Subcategory {index}</StyledCheckboxLabel>
           </CategoryCheckboxField>
         );
-      })}
+      })*/}
     </div>
   );
 };
@@ -40,6 +59,7 @@ const BranchingFormIssueCategory = props => {
 BranchingFormIssueCategory.displayName = 'BranchingFormIssueCategory';
 BranchingFormIssueCategory.propTypes = {
   category: PropTypes.string.isRequired,
+  subcategories: PropTypes.arrayOf(PropTypes.any),
   handleCategoryToggle: PropTypes.func.isRequired,
   taskId: PropTypes.string.isRequired,
   form: formType.isRequired,

@@ -172,29 +172,21 @@ const defaultFormDefinition = {
     categories: {
       type: FieldType.CHECKBOX_FIELD,
       validation: [ValidationType.REQUIRED],
-      category1: {
+      'Missing children': {
         type: FieldType.INTERMEDIATE,
-        sub1: {
+        'Child abduction': {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        sub2: {
+        'Lost, injured or otherwise missing child': {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        sub3: {
+        Runaway: {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        sub4: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub5: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub6: {
+        'Unspecified/Other': {
           type: FieldType.CHECKBOX,
           value: false,
         },
