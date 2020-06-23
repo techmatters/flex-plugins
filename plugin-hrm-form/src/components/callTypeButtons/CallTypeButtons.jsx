@@ -27,6 +27,12 @@ const CallTypeButtons = props => {
     if (!hasTaskControl(task)) return;
 
     props.handleCallTypeButtonClick(taskSid, callType);
+  };
+
+  const handleClickAndRedirect = (taskSid, callType) => {
+    if (!hasTaskControl(task)) return;
+
+    handleClick(taskSid, callType);
     props.changeRoute('tabbed-forms', taskSid);
   };
 
@@ -50,13 +56,13 @@ const CallTypeButtons = props => {
       <Container>
         <Box marginBottom="29px">
           <Label>categorize this contact</Label>
-          <DataCallTypeButton onClick={() => handleClick(task.taskSid, callTypes.child)}>
+          <DataCallTypeButton onClick={() => handleClickAndRedirect(task.taskSid, callTypes.child)}>
             <Box width="50px" marginRight="5px">
               <FaceIcon />
             </Box>
             <Template code="CallType-child" />
           </DataCallTypeButton>
-          <DataCallTypeButton onClick={() => handleClick(task.taskSid, callTypes.caller)}>
+          <DataCallTypeButton onClick={() => handleClickAndRedirect(task.taskSid, callTypes.caller)}>
             <Box width="50px" marginRight="5px">
               <FaceIcon style={{ marginRight: '-5px' }} />
               <FaceIcon />
@@ -72,7 +78,7 @@ const CallTypeButtons = props => {
             .map((callType, i) => (
               <NonDataCallTypeButton
                 key={callType}
-                onClick={() => handleConfirmNonDataCallType(callType)}
+                onClick={() => handleClick(task.taskSid, callTypes[callType])}
                 marginRight={i % 2 === 0}
               >
                 <Template code={`CallType-${callType}`} />
