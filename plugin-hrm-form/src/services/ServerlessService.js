@@ -56,14 +56,6 @@ export const transferChatStart = async body => {
   }
 };
 
-export const transferChatResolve = async body => {
-  const { serverlessBaseUrl, token } = getConfig();
-  const url = `${serverlessBaseUrl}/transferChatResolve`;
-
-  const closedTask = await fetchProtectedApi(url, { ...body, Token: token });
-  return closedTask;
-};
-
 /**
  * @returns {Promise<string>}
  */

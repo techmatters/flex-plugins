@@ -6,11 +6,6 @@ import '../mockGetConfig';
 import * as TransferHelpers from '../../utils/transfer';
 import { transferModes, transferStatuses } from '../../states/DomainConstants';
 import { createTask } from '../helpers';
-import { transferChatResolve } from '../../services/ServerlessService';
-
-jest.mock('../../services/ServerlessService', () => ({
-  transferChatResolve: jest.fn(),
-}));
 
 Actions.invokeAction = jest.fn();
 
@@ -141,25 +136,45 @@ describe('Transfer mode, status and conditionals helpers', () => {
 
   test('hasTaskControl', async () => {
     const task1 = createTask(
-      { transferMeta: { transferStatus: transferStatuses.transferring, originalReservation: 'task1' } },
+      {
+        transferMeta: {
+          transferStatus: transferStatuses.transferring,
+          originalReservation: 'task1',
+          sidWithTaskControl: '',
+        },
+      },
       { sid: 'task1' },
     );
     const task2 = createTask(
-      { transferMeta: { transferStatus: transferStatuses.transferring, originalReservation: 'task1' } },
+      {
+        transferMeta: {
+          transferStatus: transferStatuses.transferring,
+          originalReservation: 'task1',
+          sidWithTaskControl: '',
+        },
+      },
       { sid: 'task2' },
     );
     const [task1c, task1r] = [{ ...task1 }, { ...task1 }];
     const [task2c, task2r] = [{ ...task2 }, { ...task2 }];
     await TransferHelpers.setTransferAccepted(task1c);
+    await TransferHelpers.takeTaskControl(task1c);
+
     await TransferHelpers.setTransferRejected(task1r);
+    await TransferHelpers.returnTaskControl(task1r);
+
     await TransferHelpers.setTransferAccepted(task2c);
+    await TransferHelpers.takeTaskControl(task2c);
+
     await TransferHelpers.setTransferRejected(task2r);
+    await TransferHelpers.returnTaskControl(task2r);
+
     const task3 = createTask({});
 
     expect(TransferHelpers.hasTaskControl(task1)).toBe(false); // transferring
     expect(TransferHelpers.hasTaskControl(task2)).toBe(false); // transferring
-    expect(TransferHelpers.hasTaskControl(task1c)).toBe(false); // original but accepted (control to 2nd counselor)
-    expect(TransferHelpers.hasTaskControl(task1r)).toBe(true); // ok
+    expect(TransferHelpers.hasTaskControl(task1c)).toBe(true); // original but accepted (control to 2nd counselor)
+    expect(TransferHelpers.hasTaskControl(task1r)).toBe(false); // ok
     expect(TransferHelpers.hasTaskControl(task2c)).toBe(true); // ok
     expect(TransferHelpers.hasTaskControl(task2r)).toBe(false); // transferred task rejected
     expect(TransferHelpers.hasTaskControl(task3)).toBe(true); // ok
@@ -173,13 +188,12 @@ describe('Transfer mode, status and conditionals helpers', () => {
     expect(task.attributes.transferMeta.sidWithTaskControl).toBe(task.sid);
   });
 
-  // this should change when true warm transfer for chat task is implemented
   test('takeTaskControl (chat task)', async () => {
     const task = createTask({ transferMeta: {} }, { sid: 'task1', taskChannelUniqueName: 'chat' });
 
     await TransferHelpers.takeTaskControl(task);
 
-    expect(task.attributes.transferMeta.sidWithTaskControl).toBe(undefined);
+    expect(task.attributes.transferMeta.sidWithTaskControl).toBe(task.sid);
   });
 
   test('returnTaskControl (voice task)', async () => {
@@ -270,32 +284,6 @@ describe('Kick, close and helpers', () => {
     { sid: 'reservation2', taskSid: 'task2', taskChannelSid: 'channel1' },
   );
 
-  test('closeChatOriginal', async () => {
-    const expected = {
-      closeSid: task.attributes.transferMeta.originalTask,
-      keepSid: task.taskSid,
-      memberToKick: TransferHelpers.getMemberToKick(task, 'some@identity'),
-      newStatus: transferStatuses.accepted,
-    };
-
-    await TransferHelpers.closeChatOriginal(task);
-
-    expect(transferChatResolve).toBeCalledWith(expected);
-  });
-
-  test('closeChatOriginal', async () => {
-    const expected = {
-      keepSid: task.attributes.transferMeta.originalTask,
-      closeSid: task.taskSid,
-      memberToKick: '',
-      newStatus: transferStatuses.rejected,
-    };
-
-    await TransferHelpers.closeChatSelf(task);
-
-    expect(transferChatResolve).toBeCalledWith(expected);
-  });
-
   test('closeCallOriginal', async () => {
     const expected1 = { sid: 'reservation2', targetSid: 'some@identity' };
 
@@ -364,7 +352,7 @@ describe('Kick, close and helpers', () => {
       transferStatus: transferStatuses.accepted,
       formDocument: 'some string',
       mode: transferModes.cold,
-      sidWithTaskControl: '',
+      sidWithTaskControl: 'WR00000000000000000000000000000000',
       targetType: 'worker',
     };
 
@@ -500,54 +488,6 @@ describe('TransferredTaskJanitor helpers', () => {
 
     expect(TransferHelpers.taskControlledByOther(withControl)).toBe(false);
     expect(TransferHelpers.taskControlledByOther(withouthControl)).toBe(true);
-  });
-
-  test('shouldCloseOriginalReservation (accepted)', async () => {
-    const reservation1 = createReservation('reservation1', 'worker1');
-    const reservation2 = createReservation('reservation2', 'worker2');
-
-    const acceptedMeta = createTransferMeta(transferStatuses.accepted);
-    const withAcceptedMeta1 = reservation1.setTransferMeta(acceptedMeta);
-    const withAcceptedMeta2 = reservation2.setTransferMeta(acceptedMeta);
-
-    expect(TransferHelpers.shouldCloseOriginalReservation(withAcceptedMeta1)).toBe(true);
-    expect(TransferHelpers.shouldCloseOriginalReservation(withAcceptedMeta2)).toBe(false);
-  });
-
-  test('shouldCloseOriginalReservation (rejected)', async () => {
-    const reservation1 = createReservation('reservation1', 'worker1');
-    const reservation2 = createReservation('reservation2', 'worker2');
-
-    const rejectedMeta = createTransferMeta(transferStatuses.rejected);
-    const withRejectedMeta1 = reservation1.setTransferMeta(rejectedMeta);
-    const withRejectedMeta2 = reservation2.setTransferMeta(rejectedMeta);
-
-    expect(TransferHelpers.shouldCloseOriginalReservation(withRejectedMeta1)).toBe(false);
-    expect(TransferHelpers.shouldCloseOriginalReservation(withRejectedMeta2)).toBe(false);
-  });
-
-  test('shouldCloseTransferredReservation (accepted)', async () => {
-    const reservation1 = createReservation('reservation1', 'worker1');
-    const reservation2 = createReservation('reservation2', 'worker2');
-
-    const acceptedMeta = createTransferMeta(transferStatuses.accepted);
-    const withAcceptedMeta1 = reservation1.setTransferMeta(acceptedMeta);
-    const withAcceptedMeta2 = reservation2.setTransferMeta(acceptedMeta);
-
-    expect(TransferHelpers.shouldCloseTransferredReservation(withAcceptedMeta1)).toBe(false);
-    expect(TransferHelpers.shouldCloseTransferredReservation(withAcceptedMeta2)).toBe(false);
-  });
-
-  test('shouldCloseTransferredReservation (rejected)', async () => {
-    const reservation1 = createReservation('reservation1', 'worker1');
-    const reservation2 = createReservation('reservation2', 'worker2');
-
-    const rejectedMeta = createTransferMeta(transferStatuses.rejected);
-    const withRejectedMeta1 = reservation1.setTransferMeta(rejectedMeta);
-    const withRejectedMeta2 = reservation2.setTransferMeta(rejectedMeta);
-
-    expect(TransferHelpers.shouldCloseTransferredReservation(withRejectedMeta1)).toBe(false);
-    expect(TransferHelpers.shouldCloseTransferredReservation(withRejectedMeta2)).toBe(true);
   });
 
   test('shouldInvokeCompleteTask (accepted)', () => {
