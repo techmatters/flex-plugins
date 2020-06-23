@@ -2,8 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { formType } from '../../types';
-import BranchingFormIssueCategory from './BranchingFormIssueCategory';
+import IssueCategory from './IssueCategory';
 import { Container, ErrorText } from '../../styles/HrmStyles';
+import { isNotCategory, isNotSubcategory } from '../../states/ValidationRules';
+
+const getCategories = form => {
+  if (!form || !form.caseInformation || !form.caseInformation.categories) return [];
+
+  return Object.entries(form.caseInformation.categories).filter(([name]) => !isNotCategory(name));
+};
+
+const filterSubcategories = subcategories => Object.keys(subcategories).filter(name => !isNotSubcategory(name));
 
 const IssueCategorizationTab = ({ form, taskId, handleCategoryToggle }) => (
   <Container style={{ display: 'flex', flexDirection: 'column' }}>
@@ -14,45 +23,26 @@ const IssueCategorizationTab = ({ form, taskId, handleCategoryToggle }) => (
     ) : (
       ''
     )}
-    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', marginBottom: '20px' }}>
-      <BranchingFormIssueCategory
-        category="1"
-        handleCategoryToggle={handleCategoryToggle}
-        taskId={taskId}
-        form={form}
-      />
-      <BranchingFormIssueCategory
-        category="2"
-        handleCategoryToggle={handleCategoryToggle}
-        taskId={taskId}
-        form={form}
-      />
-      <BranchingFormIssueCategory
-        category="3"
-        handleCategoryToggle={handleCategoryToggle}
-        taskId={taskId}
-        form={form}
-      />
-    </div>
-    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
-      <BranchingFormIssueCategory
-        category="4"
-        handleCategoryToggle={handleCategoryToggle}
-        taskId={taskId}
-        form={form}
-      />
-      <BranchingFormIssueCategory
-        category="5"
-        handleCategoryToggle={handleCategoryToggle}
-        taskId={taskId}
-        form={form}
-      />
-      <BranchingFormIssueCategory
-        category="6"
-        handleCategoryToggle={handleCategoryToggle}
-        taskId={taskId}
-        form={form}
-      />
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginBottom: '20px',
+        width: 'fit-content',
+      }}
+    >
+      {getCategories(form).map(([name, subcategories]) => (
+        <IssueCategory
+          key={name}
+          color={subcategories.color}
+          category={name}
+          subcategories={filterSubcategories(subcategories)}
+          handleCategoryToggle={handleCategoryToggle}
+          taskId={taskId}
+          form={form}
+        />
+      ))}
     </div>
   </Container>
 );

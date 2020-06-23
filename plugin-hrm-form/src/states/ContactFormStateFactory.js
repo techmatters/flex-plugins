@@ -172,164 +172,314 @@ const defaultFormDefinition = {
     categories: {
       type: FieldType.CHECKBOX_FIELD,
       validation: [ValidationType.REQUIRED],
-      category1: {
+      'Missing children': {
         type: FieldType.INTERMEDIATE,
-        sub1: {
+        color: '#BBE3FF',
+        'Child abduction': {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        sub2: {
+        'Lost, injured or otherwise missing child': {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        sub3: {
+        Runaway: {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        sub4: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub5: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub6: {
+        'Unspecified/Other': {
           type: FieldType.CHECKBOX,
           value: false,
         },
       },
-      category2: {
+      Violence: {
         type: FieldType.INTERMEDIATE,
-        sub1: {
+        color: '#F5A623',
+        Bullying: {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        sub2: {
+        'Child / Early marriage': {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        sub3: {
+        'Commercial sexual exploitation (offline)': {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        sub4: {
+        'Economic exploitation': {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        sub5: {
+        'Female Genital Mutilation (FGM)': {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        sub6: {
+        'Gender-based harmful traditional practices (other than FGM)': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+        'Harmful or hazardous labour': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+        'Mental / Emotional violence': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+        'Neglect (or negligent treatment)': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+        'Non-Gender-Based harmful traditional practices': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+        'Online sexual abuse': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+        'Online sexual exploitation': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+        'Physical violence': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+        'Sexual violence': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+        'Unspecified/Other': {
           type: FieldType.CHECKBOX,
           value: false,
         },
       },
-      category3: {
+      'Mental Health': {
         type: FieldType.INTERMEDIATE,
-        sub1: {
+        color: '#F8E900',
+        'Addictive behaviours': {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        sub2: {
+        'Concerns about the self': {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        sub3: {
+        'Emotional distress – anger problems': {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        sub4: {
+        'Emotional distress – fear and anxiety problems': {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        sub5: {
+        'Emotional distress – mood problems': {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        sub6: {
+        'Problems with eating behaviour': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+        'Self-harming behaviours': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+        'Substance use': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+        'Suicidal thoughts and suicide attempts': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+        'Unspecified/Other': {
           type: FieldType.CHECKBOX,
           value: false,
         },
       },
-      category4: {
+      'Physical Health': {
         type: FieldType.INTERMEDIATE,
-        sub1: {
+        color: '#E86B6B',
+        'Medical or lifestyle information about HIV/AIDS': {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        sub2: {
+        'Medical problems': {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        sub3: {
+        'Pregnancy and Maternal care': {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        sub4: {
+        'Sexual and reproductive health': {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        sub5: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub6: {
+        'Unspecified/Other': {
           type: FieldType.CHECKBOX,
           value: false,
         },
       },
-      category5: {
+      Accessibility: {
         type: FieldType.INTERMEDIATE,
-        sub1: {
+        color: '#8055BA',
+        Education: {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        sub2: {
+        'Essential needs': {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        sub3: {
+        'General healthcare services': {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        sub4: {
+        'Legal services and advice': {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        sub5: {
+        'Mental health services': {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        sub6: {
+        'Sexual health services': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+        'Socio-economical services': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+        'Unspecified/Other': {
           type: FieldType.CHECKBOX,
           value: false,
         },
       },
-      category6: {
+      'Discrimination and Exclusion': {
         type: FieldType.INTERMEDIATE,
-        sub1: {
+        color: '#B971AF',
+        'Ethnicity/nationality': {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        sub2: {
+        'Financial Situation': {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        sub3: {
+        'Gender identity and expression/sexual identity': {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        sub4: {
+        Health: {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        sub5: {
+        'Philosophical or religious beliefs': {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        sub6: {
+        'Unspecified/Other': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+      },
+      'Family Relationships': {
+        type: FieldType.INTERMEDIATE,
+        color: '#239613',
+        'Adoption, fostering, and extended family placement': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+        'Relationship to parents': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+        'Relationship with sibling(s)': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+        'Unspecified/Other': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+      },
+      'Peer Relationships': {
+        type: FieldType.INTERMEDIATE,
+        color: '#9AD703',
+        'Friends and Friendships': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+        'Romantic Relationships': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+        'Unspecified/Other': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+      },
+      School: {
+        type: FieldType.INTERMEDIATE,
+        color: '#55AFAF',
+        'Academic issues': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+        'Teacher and school problems': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+        'Unspecified/Other': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+      },
+      Sexuality: {
+        type: FieldType.INTERMEDIATE,
+        color: '#506BA5',
+        'Sexuality and gender identity': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+        'Sexual behaviours': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+        'Unspecified/Other': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+      },
+      'Information & Other Non-Counselling contacts': {
+        type: FieldType.INTERMEDIATE,
+        color: '#767777',
+        'Complaints about the child helpline': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+        'Questions by parents': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+        'Questions about the child helpline': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+        'Questions about other services': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+        '"Thank you for your assistance"': {
+          type: FieldType.CHECKBOX,
+          value: false,
+        },
+        'Unspecified/Other': {
           type: FieldType.CHECKBOX,
           value: false,
         },
@@ -379,7 +529,7 @@ const recursivelyCreateBlankForm = formDefinition => {
   const initialState = {};
 
   Object.keys(formDefinition)
-    .filter(key => key !== 'type' && key !== 'validation')
+    .filter(key => key !== 'type' && key !== 'validation' && key !== 'color')
     .forEach(key => {
       switch (formDefinition[key].type) {
         case FieldType.CALL_TYPE:
@@ -404,6 +554,12 @@ const recursivelyCreateBlankForm = formDefinition => {
           };
           break;
         case FieldType.INTERMEDIATE:
+          initialState[key] = {
+            ...recursivelyCreateBlankForm(formDefinition[key]),
+            type: formDefinition[key].type,
+            ...(formDefinition[key].color && { color: formDefinition[key].color }),
+          };
+          break;
         case FieldType.TAB:
           initialState[key] = {
             ...recursivelyCreateBlankForm(formDefinition[key]),
