@@ -267,15 +267,15 @@ const defaultFormDefinition = {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        'Emotional distress –anger problems': {
+        'Emotional distress – anger problems': {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        'Emotional distress –fear and anxiety problems': {
+        'Emotional distress – fear and anxiety problems': {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        'Emotional distress –mood problems': {
+        'Emotional distress – mood problems': {
           type: FieldType.CHECKBOX,
           value: false,
         },
@@ -475,7 +475,7 @@ const defaultFormDefinition = {
           type: FieldType.CHECKBOX,
           value: false,
         },
-        '“Thank you for your assistance”': {
+        '"Thank you for your assistance"': {
           type: FieldType.CHECKBOX,
           value: false,
         },
@@ -554,6 +554,12 @@ const recursivelyCreateBlankForm = formDefinition => {
           };
           break;
         case FieldType.INTERMEDIATE:
+          initialState[key] = {
+            ...recursivelyCreateBlankForm(formDefinition[key]),
+            type: formDefinition[key].type,
+            ...(formDefinition[key].color && { color: formDefinition[key].color }),
+          };
+          break;
         case FieldType.TAB:
           initialState[key] = {
             ...recursivelyCreateBlankForm(formDefinition[key]),

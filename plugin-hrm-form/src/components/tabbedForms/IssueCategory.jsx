@@ -5,11 +5,12 @@ import { Checkbox } from '@material-ui/core';
 import { CategoryCheckboxField, StyledCheckboxLabel, StyledLabel } from '../../styles/HrmStyles';
 import { formType } from '../../types';
 
-const BranchingFormIssueCategory = props => {
+const IssueCategory = props => {
+  console.log({ color: props.color });
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <StyledLabel>{props.category}</StyledLabel>
-      {props.subcategories.map(([subcategoryName, subcategory]) => {
+      {props.subcategories.map(subcategoryName => {
         const id = `IssueCategorization_${props.category}_${subcategoryName}`;
         return (
           <CategoryCheckboxField key={id}>
@@ -34,13 +35,14 @@ const BranchingFormIssueCategory = props => {
   );
 };
 
-BranchingFormIssueCategory.displayName = 'BranchingFormIssueCategory';
-BranchingFormIssueCategory.propTypes = {
+IssueCategory.displayName = 'IssueCategory';
+IssueCategory.propTypes = {
+  color: PropTypes.string.isRequired,
   category: PropTypes.string.isRequired,
-  subcategories: PropTypes.arrayOf(PropTypes.any).isRequired,
+  subcategories: PropTypes.arrayOf(PropTypes.string).isRequired,
   handleCategoryToggle: PropTypes.func.isRequired,
   taskId: PropTypes.string.isRequired,
   form: formType.isRequired,
 };
 
-export default BranchingFormIssueCategory;
+export default IssueCategory;

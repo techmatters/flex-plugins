@@ -2,17 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { formType } from '../../types';
-import BranchingFormIssueCategory from './BranchingFormIssueCategory';
+import IssueCategory from './IssueCategory';
 import { Container, ErrorText } from '../../styles/HrmStyles';
+import { isNotCategory, isNotSubcategory } from '../../states/ValidationRules';
 
 const getCategories = form => {
   if (!form || !form.caseInformation || !form.caseInformation.categories) return [];
 
-  const notCategory = ['error', 'touched', 'type', 'validation'];
-  return Object.entries(form.caseInformation.categories).filter(([name]) => !notCategory.includes(name));
+  return Object.entries(form.caseInformation.categories).filter(([name]) => !isNotCategory(name));
 };
 
-const filterSubcategories = subcategories => Object.entries(subcategories).filter(([name]) => name !== 'type');
+const filterSubcategories = subcategories => Object.keys(subcategories).filter(name => !isNotSubcategory(name));
 
 const IssueCategorizationTab = ({ form, taskId, handleCategoryToggle }) => (
   <Container style={{ display: 'flex', flexDirection: 'column' }}>
@@ -33,8 +33,9 @@ const IssueCategorizationTab = ({ form, taskId, handleCategoryToggle }) => (
       }}
     >
       {getCategories(form).map(([name, subcategories]) => (
-        <BranchingFormIssueCategory
+        <IssueCategory
           key={name}
+          color={subcategories.color}
           category={name}
           subcategories={filterSubcategories(subcategories)}
           handleCategoryToggle={handleCategoryToggle}

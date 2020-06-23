@@ -36,6 +36,7 @@ test('createBlankForm operates as expected', () => {
         validation: [ValidationType.REQUIRED],
         category1: {
           type: FieldType.INTERMEDIATE,
+          color: '#ff0000',
           sub1: {
             type: FieldType.CHECKBOX,
             value: false,
@@ -63,6 +64,7 @@ test('createBlankForm operates as expected', () => {
         },
         category2: {
           type: FieldType.INTERMEDIATE,
+          color: '#00ff00',
           sub1: {
             type: FieldType.CHECKBOX,
             value: false,
@@ -153,6 +155,7 @@ test('createBlankForm operates as expected', () => {
         error: null,
         category1: {
           type: FieldType.INTERMEDIATE,
+          color: '#ff0000',
           sub1: {
             type: FieldType.CHECKBOX,
             value: false,
@@ -180,6 +183,7 @@ test('createBlankForm operates as expected', () => {
         },
         category2: {
           type: FieldType.INTERMEDIATE,
+          color: '#00ff00',
           sub1: {
             type: FieldType.CHECKBOX,
             value: false,

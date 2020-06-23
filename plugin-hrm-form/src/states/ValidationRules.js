@@ -11,11 +11,20 @@ export function isNonDataCallType(callType) {
   return callType !== callTypes.caller && callType !== callTypes.child;
 }
 
+export function isNotCategory(value) {
+  const notCategory = ['error', 'touched', 'type', 'validation', 'color'];
+  return notCategory.includes(value);
+}
+
+export function isNotSubcategory(value) {
+  const notSubcategory = ['type', 'color'];
+  return notSubcategory.includes(value);
+}
+
 export function countSelectedCategories(categoryFormSection) {
   let count = 0;
-  const notCategory = ['error', 'touched', 'type', 'validation'];
-  for (const category of Object.keys(categoryFormSection).filter(key => !notCategory.includes(key))) {
-    for (const subcategory of Object.keys(categoryFormSection[category]).filter(key => key !== 'type')) {
+  for (const category of Object.keys(categoryFormSection).filter(key => !isNotCategory(key))) {
+    for (const subcategory of Object.keys(categoryFormSection[category]).filter(key => !isNotSubcategory(key))) {
       if (categoryFormSection[category][subcategory].value) {
         count += 1;
       }
