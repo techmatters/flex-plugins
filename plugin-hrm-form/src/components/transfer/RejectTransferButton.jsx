@@ -9,7 +9,7 @@ import { closeCallSelf } from '../../utils/transfer';
  * @param {import('@twilio/flex-ui').ITask} task the transferred task
  */
 const handleRejectTransfer = async task => {
-  if (TaskHelper.isChatBasedTask(task)) return; // this case should never happend
+  if (TaskHelper.isChatBasedTask(task)) return; // this case should never happen
 
   await closeCallSelf(task);
 };
