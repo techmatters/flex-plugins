@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { CategoryCheckboxField, StyledCategoryCheckbox, StyledCategoryCheckboxLabel } from '../../styles/HrmStyles';
 import { formType } from '../../types';
-import Section from '../search/ContactDetails/Section';
+import Section from '../Section';
 
 const IssueCategory = props => {
   const lighterColor = `${props.color}99`; // Hex with alpha 0.6
