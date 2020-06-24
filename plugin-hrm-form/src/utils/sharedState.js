@@ -19,8 +19,10 @@ export const saveFormSharedState = async (form, task) => {
     const documentName = form ? `pending-form-${task.taskSid}` : null;
 
     if (documentName) {
+      const newForm = { ...form, metadata: { ...form.metadata, tab: 1 } };
+
       const document = await sharedStateClient.document(documentName);
-      await document.set(form, { ttl: 86400 }); // set time to live to 24 hours
+      await document.set(newForm, { ttl: 86400 }); // set time to live to 24 hours
       return documentName;
     }
 
