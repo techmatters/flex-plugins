@@ -131,9 +131,11 @@ describe('Test with connected sharedState', () => {
   test('saveFormSharedState', async () => {
     const { saveFormSharedState } = require('../../utils/sharedState');
 
+    const expected = { ...form, metadata: { ...form.metadata, tab: 1 } };
+
     const documentName = await saveFormSharedState(form, task);
     expect(documentName).toBe('pending-form-taskSid');
-    expect(mockSharedState.documents[documentName].value).toStrictEqual(form);
+    expect(mockSharedState.documents[documentName].value).toStrictEqual(expected);
     await task.setAttributes({
       transferMeta: { transferStatus: transferStatuses.accepted, formDocument: documentName },
     });
@@ -142,8 +144,10 @@ describe('Test with connected sharedState', () => {
   test('loadFormSharedState', async () => {
     const { loadFormSharedState } = require('../../utils/sharedState');
 
+    const expected = { ...form, metadata: { ...form.metadata, tab: 1 } };
+
     const loadedForm = await loadFormSharedState(task);
-    expect(loadedForm).toStrictEqual(form);
+    expect(loadedForm).toStrictEqual(expected);
   });
 });
 
