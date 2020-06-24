@@ -7,6 +7,8 @@ const colors = {
   inputBackgroundColor: 'rgba(236, 237, 241, 0.37)',
   hyperlinkColor: '#1874e1',
   hyperlinkHoverBackgroundColor: 'rgba(24, 116, 225, 0.08)',
+  categoryTextColor: '#192b33',
+  categoryDisabledColor: '#a0a8bd',
 };
 
 const overrides = {

@@ -26,7 +26,7 @@ const IssueCategorizationTab = ({ form, taskId, handleCategoryToggle }) => (
     <div
       style={{
         display: 'flex',
-        flexDirection: 'row',
+        flexDirection: 'column',
         justifyContent: 'center',
         marginBottom: '20px',
         width: 'fit-content',
