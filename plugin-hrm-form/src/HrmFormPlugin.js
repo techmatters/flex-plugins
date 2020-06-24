@@ -94,7 +94,9 @@ const setUpTransferredTaskJanitor = async setupObject => {
 
     if (TransferHelpers.shouldTakeControlBack(args.value, workerSid)) {
       const task = Flex.TaskHelper.getTaskByTaskSid(args.value.attributes.transferMeta.originalReservation);
-      TransferHelpers.clearTransferMeta(task);
+      TransferHelpers.takeTaskControl(task).then(async () => {
+        await TransferHelpers.clearTransferMeta(task);
+      });
     }
   });
 };
