@@ -1,38 +1,37 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import {
-  CategoryCheckboxField,
-  StyledCategoryCheckbox,
-  StyledCategoryCheckboxLabel,
-  StyledLabel,
-} from '../../styles/HrmStyles';
+import { CategoryCheckboxField, StyledCategoryCheckbox, StyledCategoryCheckboxLabel } from '../../styles/HrmStyles';
 import { formType } from '../../types';
+import Section from '../search/ContactDetails/Section';
 
 const IssueCategory = props => {
-  const color = `${props.color}99`; // Hex with alpha 0.6
+  const lighterColor = `${props.color}99`; // Hex with alpha 0.6
   return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <StyledLabel>{props.category}</StyledLabel>
-      {props.subcategories.map(subcategoryName => {
-        const id = `IssueCategorization_${props.category}_${subcategoryName}`;
-        const { value } = props.form.caseInformation.categories[props.category][subcategoryName];
-        const disabled = false;
-        return (
-          <CategoryCheckboxField key={id} color={color} selected={value} disabled={disabled}>
-            <StyledCategoryCheckbox
-              disabled={disabled}
-              color={color}
-              checked={value}
-              id={id}
-              onClick={() => props.handleCategoryToggle(props.taskId, props.category, subcategoryName, !value)}
-            />
-            <StyledCategoryCheckboxLabel htmlFor={id} disabled={disabled}>
-              {subcategoryName}
-            </StyledCategoryCheckboxLabel>
-          </CategoryCheckboxField>
-        );
-      })}
+    <div style={{ marginBottom: 6 }}>
+      <Section sectionTitle={props.category} color={props.color}>
+        <div style={{ display: 'flex', flexDirection: 'column', padding: '10px 0 10px 6px' }}>
+          {props.subcategories.map(subcategoryName => {
+            const id = `IssueCategorization_${props.category}_${subcategoryName}`;
+            const { value } = props.form.caseInformation.categories[props.category][subcategoryName];
+            const disabled = false;
+            return (
+              <CategoryCheckboxField key={id} color={lighterColor} selected={value} disabled={disabled}>
+                <StyledCategoryCheckbox
+                  disabled={disabled}
+                  color={lighterColor}
+                  checked={value}
+                  id={id}
+                  onClick={() => props.handleCategoryToggle(props.taskId, props.category, subcategoryName, !value)}
+                />
+                <StyledCategoryCheckboxLabel htmlFor={id} disabled={disabled}>
+                  {subcategoryName}
+                </StyledCategoryCheckboxLabel>
+              </CategoryCheckboxField>
+            );
+          })}
+        </div>
+      </Section>
     </div>
   );
 };

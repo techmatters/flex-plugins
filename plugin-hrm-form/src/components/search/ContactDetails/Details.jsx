@@ -6,20 +6,13 @@ import { MoreHoriz, Link as LinkIcon } from '@material-ui/icons';
 
 import { DetailsContainer, NameContainer, DetNameText, ContactDetailsIcon } from '../../../styles/search';
 import Section from './Section';
+import SectionEntry from './SectionEntry';
 import callTypes, { channelTypes } from '../../../states/DomainConstants';
 import { isNonDataCallType } from '../../../states/ValidationRules';
 import { contactType } from '../../../types';
 import { formatAddress, formatDuration, formatName, mapChannel } from '../../../utils';
 
 const MoreHorizIcon = ContactDetailsIcon(MoreHoriz);
-
-/**
- * Helper for conditionally passing an entry to a Section in a typesafe way
- * @param {boolean} pred
- * @param {{ description: string, value: string | number | boolean}} entry
- * @returns Returns the entry if predicate is satisfied, or null otherwise
- */
-const maybeEntry = (pred, entry) => (pred ? entry : null);
 
 const Details = ({ contact, handleOpenConnectDialog, handleMockedMessage }) => {
   // Object destructuring on contact
@@ -83,81 +76,71 @@ const Details = ({ contact, handleOpenConnectDialog, handleMockedMessage }) => {
           <MoreHorizIcon style={{ color: '#ffffff' }} />
         </ButtonBase>
       </NameContainer>
-      <Section
-        expanded
-        sectionTitle="General details"
-        entries={[
-          { description: 'Channel', value: formattedChannel },
-          { description: 'Phone Number', value: isPhoneContact ? customerNumber : '' },
-          { description: 'Conversation Duration', value: formattedDuration },
-          { description: 'Counselor', value: counselor },
-          { description: 'Date/Time', value: formattedDate },
-        ]}
-      />
+      <Section expanded sectionTitle="General details">
+        <SectionEntry description="Channel" value={formattedChannel} />
+        <SectionEntry description="Phone Number" value={isPhoneContact ? customerNumber : ''} />
+        <SectionEntry description="Conversation Duration" value={formattedDuration} />
+        <SectionEntry description="Counselor" value={counselor} />
+        <SectionEntry description="Date/Time" value={formattedDate} />
+      </Section>
       {callType === callTypes.caller && (
-        <Section
-          sectionTitle="Caller information"
-          entries={[
-            { description: 'Name', value: callerOrUnknown },
-            { description: 'Relationship to Child', value: caller.relationshipToChild },
-            { description: 'Address', value: formattedCallerAddress },
-            { description: 'Phone #1', value: caller.location.phone1 },
-            { description: 'Phone #2', value: caller.location.phone2 },
-            { description: 'Gender', value: caller.gender },
-            { description: 'Age Range', value: caller.age },
-            { description: 'Language', value: caller.language },
-            { description: 'Nationality', value: caller.nationality },
-            { description: 'Ethnicity', value: caller.ethnicity },
-          ]}
-        />
+        <Section sectionTitle="Caller information">
+          <SectionEntry description="Name" value={callerOrUnknown} />
+          <SectionEntry description="Relationship to Child" value={caller.relationshipToChild} />
+          <SectionEntry description="Address" value={formattedCallerAddress} />
+          <SectionEntry description="Phone #1" value={caller.location.phone1} />
+          <SectionEntry description="Phone #2" value={caller.location.phone2} />
+          <SectionEntry description="Gender" value={caller.gender} />
+          <SectionEntry description="Age Range" value={caller.age} />
+          <SectionEntry description="Language" value={caller.language} />
+          <SectionEntry description="Nationality" value={caller.nationality} />
+          <SectionEntry description="Ethnicity" value={caller.ethnicity} />
+        </Section>
       )}
       {isDataCall && (
-        <Section
-          sectionTitle="Child information"
-          entries={[
-            { description: 'Name', value: childOrUnknown },
-            { description: 'Address', value: formattedChildAddress },
-            { description: 'Phone #1', value: child.location.phone1 },
-            { description: 'Phone #2', value: child.location.phone2 },
-            { description: 'Gender', value: child.gender },
-            { description: 'Age Range', value: child.age },
-            { description: 'Language', value: child.language },
-            { description: 'Nationality', value: child.nationality },
-            { description: 'Ethnicity', value: child.ethnicity },
-            { description: 'School Name', value: child.school.name },
-            { description: 'Grade Level', value: child.school.gradeLevel },
-            { description: 'Refugee?', value: child.refugee },
-            { description: 'Disabled/Special Needs?', value: child.disabledOrSpecialNeeds },
-            { description: 'HIV Positive?', value: child.hiv },
-          ]}
-        />
+        <Section sectionTitle="Child information">
+          <SectionEntry description="Name" value={childOrUnknown} />
+          <SectionEntry description="Address" value={formattedChildAddress} />
+          <SectionEntry description="Phone #1" value={child.location.phone1} />
+          <SectionEntry description="Phone #2" value={child.location.phone2} />
+          <SectionEntry description="Gender" value={child.gender} />
+          <SectionEntry description="Age Range" value={child.age} />
+          <SectionEntry description="Language" value={child.language} />
+          <SectionEntry description="Nationality" value={child.nationality} />
+          <SectionEntry description="Ethnicity" value={child.ethnicity} />
+          <SectionEntry description="School Name" value={child.school.name} />
+          <SectionEntry description="Grade Level" value={child.school.gradeLevel} />
+          <SectionEntry description="Refugee?" value={child.refugee} />
+          <SectionEntry description="Disabled/Special Needs?" value={child.disabledOrSpecialNeeds} />
+          <SectionEntry description="HIV Positive?" value={child.hiv} />
+        </Section>
       )}
       {isDataCall && (
-        <Section
-          sectionTitle="Issue categorization"
-          entries={[
-            maybeEntry(Boolean(tag1), { description: 'Category 1', value: tag1 }),
-            maybeEntry(Boolean(tag2), { description: 'Category 2', value: tag2 }),
-            maybeEntry(Boolean(tag3), { description: 'Category 3', value: tag3 }),
-            maybeEntry(!(tag1 || tag2 || tag3), { description: 'No category provided', value: '' }),
-          ]}
-        />
+        <Section sectionTitle="Issue categorization">
+          {Boolean(tag1) && <SectionEntry description="Category 1" value={tag1} />}
+          {Boolean(tag2) && <SectionEntry description="Category 2" value={tag2} />}
+          {Boolean(tag3) && <SectionEntry description="Category 3" value={tag3} />}
+          {!(tag1 || tag2 || tag3) && <SectionEntry description="No category provided" value="" />}
+        </Section>
       )}
       {isDataCall && (
-        <Section
-          sectionTitle="Case summary"
-          entries={[
-            { description: 'Call Summary', value: callSummary },
-            { description: 'Status', value: status },
-            { description: 'Referred To', value: referredTo },
-            { description: 'Keep Confidential?', value: keepConfidential },
-            { description: 'OK for the case worker to call?', value: okForCaseWorkerToCall },
-            { description: 'How did the child hear about us?', value: howDidTheChildHearAboutUs },
-            { description: 'Did you discuss rights with the child?', value: didYouDiscussRightsWithTheChild },
-            { description: 'Did the child feel we solved their problem?', value: didTheChildFeelWeSolvedTheirProblem },
-            { description: 'Would the child recommend us to a friend?', value: wouldTheChildRecommendUsToAFriend },
-          ]}
-        />
+        <Section sectionTitle="Case summary">
+          <SectionEntry description="Call Summary" value={callSummary} />
+          <SectionEntry description="Status" value={status} />
+          <SectionEntry description="Referred To" value={referredTo} />
+          <SectionEntry description="Keep Confidential?" value={keepConfidential} />
+          <SectionEntry description="OK for the case worker to call?" value={okForCaseWorkerToCall} />
+          <SectionEntry description="How did the child hear about us?" value={howDidTheChildHearAboutUs} />
+          <SectionEntry description="Did you discuss rights with the child?" value={didYouDiscussRightsWithTheChild} />
+          <SectionEntry
+            description="Did the child feel we solved their problem?"
+            value={didTheChildFeelWeSolvedTheirProblem}
+          />
+          <SectionEntry
+            description="Would the child recommend us to a friend?"
+            value={wouldTheChildRecommendUsToAFriend}
+          />
+        </Section>
       )}
     </DetailsContainer>
   );

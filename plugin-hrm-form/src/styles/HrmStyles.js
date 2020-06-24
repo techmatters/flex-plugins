@@ -232,11 +232,10 @@ export const TwoColumnLayout = styled('div')`
 export const CategoryCheckboxField = styled('div')`
   display: flex;
   flex-direction: row;
-  margin: ${({ selected, disabled }) => {
-    if (disabled || selected) return '6px 0';
-    return '5px 0';
-  }};
+  margin: 4px 0;
   width: fit-content;
+  height: 34px;
+  box-sizing: border-box;
   border: ${({ selected, disabled, color }) => {
     if (disabled || selected) return 'none';
     return `1px solid ${color}`;

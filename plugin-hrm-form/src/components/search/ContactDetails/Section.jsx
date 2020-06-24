@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { ButtonBase, Collapse } from '@material-ui/core';
 import { ArrowDropDownTwoTone, ArrowDropUpTwoTone } from '@material-ui/icons';
 
-import SectionEntry from './SectionEntry';
 import { SectionTitleContainer, SectionTitleText, ContactDetailsIcon } from '../../../styles/search';
 
 const ArrowDownIcon = ContactDetailsIcon(ArrowDropDownTwoTone);
@@ -14,12 +13,8 @@ class Section extends React.Component {
 
   static propTypes = {
     sectionTitle: PropTypes.string.isRequired,
-    entries: PropTypes.arrayOf(
-      PropTypes.shape({
-        description: PropTypes.string,
-        value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.bool]),
-      }),
-    ).isRequired,
+    color: PropTypes.string.isRequired,
+    children: PropTypes.node.isRequired,
     expanded: PropTypes.bool,
   };
 
@@ -37,27 +32,17 @@ class Section extends React.Component {
     }));
   };
 
-  /**
-   * @param {{ description: string, value: string | number | boolean}} entry
-   * @param {number} index
-   */
-  renderSectionEntry = (entry, index) => {
-    if (!entry) return null;
-    const { description, value } = entry;
-    return <SectionEntry key={`${description}${index}`} description={description} value={value} />;
-  };
-
   render() {
     return (
       <>
-        <SectionTitleContainer>
+        <SectionTitleContainer color={this.props.color}>
           <ButtonBase style={{ width: '100%', padding: 0 }} onClick={this.handleExpandClick}>
             <SectionTitleText>{this.props.sectionTitle.toUpperCase()}</SectionTitleText>
             {this.state.expanded ? <ArrowUpIcon /> : <ArrowDownIcon />}
           </ButtonBase>
         </SectionTitleContainer>
         <Collapse in={this.state.expanded} timeout="auto">
-          {this.props.entries.map(this.renderSectionEntry)}
+          {this.props.children}
         </Collapse>
       </>
     );
