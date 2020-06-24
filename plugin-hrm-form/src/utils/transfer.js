@@ -247,8 +247,14 @@ export const taskControlledByOther = reservation =>
 export const shouldInvokeCompleteTask = (reservation, workerSid) =>
   reservation.status === 'wrapup' && taskControlledByOther(reservation) && reservation.worker_sid === workerSid;
 
-export const shouldTakeControlBack = (reservation, workerSid) =>
+export const transferAborted = reservation => 
   (reservation.status === 'rejected' || reservation.status === 'timeout') &&
-  reservation.attributes.transferMeta.targetType === 'worker' &&
+  reservation.attributes.transferMeta.targetType === 'worker';
+
+export const callerLeftWhileTransferring = reservation => reservation.status === 'wrapup' && !someoneHasTaskControl(reservation);
+
+export const shouldTakeControlBack = (reservation, workerSid) =>
+  (transferAborted(reservation) || callerLeftWhileTransferring(reservation)) &&
   reservation.attributes.transferMeta.originalCounselor === workerSid &&
   reservation.attributes.transferMeta.mode === transferModes.warm;
+
