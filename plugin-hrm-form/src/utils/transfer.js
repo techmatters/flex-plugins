@@ -121,10 +121,6 @@ export const updateTransferStatus = newStatus => async task => {
     transferMeta: {
       ...task.attributes.transferMeta,
       transferStatus: newStatus,
-      /*
-       * sidWithTaskControl:
-       *   newStatus === transferStatuses.accepted ? task.sid : task.attributes.transferMeta.originalReservation,
-       */
     },
   };
   await task.setAttributes(updatedAttributes);
