@@ -61,7 +61,7 @@ const restoreFormIfTransfer = async task => {
  * If the task is transferred, set the reservation sid who controls the task (according to transfer mode)
  * @param {import('@twilio/flex-ui').ITask} task
  */
-const setProperControlIfTransfer = async task => {
+const takeControlIfTransfer = async task => {
   if (TransferHelpers.hasTransferStarted(task) && TransferHelpers.isColdTransfer(task))
     await TransferHelpers.takeTaskControl(task);
 };
@@ -70,7 +70,7 @@ const setProperControlIfTransfer = async task => {
  * @type {ActionFunction}
  */
 export const afterAcceptTask = async payload => {
-  await setProperControlIfTransfer(payload.task);
+  await takeControlIfTransfer(payload.task);
   await restoreFormIfTransfer(payload.task);
 };
 

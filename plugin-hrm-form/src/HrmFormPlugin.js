@@ -84,8 +84,7 @@ const setUpSharedStateClient = () => {
  */
 const setUpTransferredTaskJanitor = async setupObject => {
   const { workerSid } = setupObject;
-  const query =
-    'data.attributes.transferStarted == "true" || data.attributes.channelSid == "CH00000000000000000000000000000000"';
+  const query = 'data.attributes.transferStarted == "true"';
   const reservationQuery = await Flex.Manager.getInstance().insightsClient.liveQuery('tr-reservation', query);
   reservationQuery.on('itemUpdated', args => {
     if (TransferHelpers.shouldInvokeCompleteTask(args.value, workerSid)) {
