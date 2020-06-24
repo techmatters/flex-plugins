@@ -1,33 +1,35 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Checkbox } from '@material-ui/core';
 
-import { CategoryCheckboxField, StyledCheckboxLabel, StyledLabel } from '../../styles/HrmStyles';
+import {
+  CategoryCheckboxField,
+  StyledCategoryCheckbox,
+  StyledCategoryCheckboxLabel,
+  StyledLabel,
+} from '../../styles/HrmStyles';
 import { formType } from '../../types';
 
 const IssueCategory = props => {
-  console.log({ color: props.color });
+  const color = `${props.color}99`; // Hex with alpha 0.6
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <StyledLabel>{props.category}</StyledLabel>
       {props.subcategories.map(subcategoryName => {
         const id = `IssueCategorization_${props.category}_${subcategoryName}`;
+        const { value } = props.form.caseInformation.categories[props.category][subcategoryName];
+        const disabled = false;
         return (
-          <CategoryCheckboxField key={id}>
-            <Checkbox
-              style={{ width: 30, height: 30, boxSizing: 'border-box' }}
-              checked={props.form.caseInformation.categories[props.category][subcategoryName].value}
+          <CategoryCheckboxField key={id} color={color} selected={value} disabled={disabled}>
+            <StyledCategoryCheckbox
+              disabled={disabled}
+              color={color}
+              checked={value}
               id={id}
-              onClick={() =>
-                props.handleCategoryToggle(
-                  props.taskId,
-                  props.category,
-                  subcategoryName,
-                  !props.form.caseInformation.categories[props.category][subcategoryName].value,
-                )
-              }
+              onClick={() => props.handleCategoryToggle(props.taskId, props.category, subcategoryName, !value)}
             />
-            <StyledCheckboxLabel htmlFor={id}>{subcategoryName}</StyledCheckboxLabel>
+            <StyledCategoryCheckboxLabel htmlFor={id} disabled={disabled}>
+              {subcategoryName}
+            </StyledCategoryCheckboxLabel>
           </CategoryCheckboxField>
         );
       })}

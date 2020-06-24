@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'react-emotion';
-import { Input, Select, MenuItem, Tabs, Tab } from '@material-ui/core';
+import { Input, Select, MenuItem, Tabs, Tab, Checkbox } from '@material-ui/core';
 import { Button, getBackgroundWithHoverCSS } from '@twilio/flex-ui';
 
 export const Box = styled('div')`
@@ -179,6 +179,12 @@ export const StyledCheckboxLabel = styled('label')`
   letter-spacing: normal;
 `;
 
+export const StyledCategoryCheckboxLabel = styled(StyledCheckboxLabel)`
+  text-transform: none;
+  color: ${({ disabled, theme }) =>
+    disabled ? `${theme.colors.categoryTextColor}33` : theme.colors.categoryTextColor};
+`;
+
 export const TopNav = styled('div')`
   display: flex;
   flex-direction: row;
@@ -226,8 +232,39 @@ export const TwoColumnLayout = styled('div')`
 export const CategoryCheckboxField = styled('div')`
   display: flex;
   flex-direction: row;
-  margin: 8px 0;
-  width: 160px;
+  margin: ${({ selected, disabled }) => {
+    if (disabled || selected) return '6px 0';
+    return '5px 0';
+  }};
+  width: fit-content;
+  border: ${({ selected, disabled, color }) => {
+    if (disabled || selected) return 'none';
+    return `1px solid ${color}`;
+  }};
+  border-radius: 2px;
+  padding-right: 15px;
+  background-color: ${({ selected, disabled, color, theme }) => {
+    if (disabled) return `${theme.colors.categoryDisabledColor}33`; // Hex with alpha 0.2
+    if (selected) return color;
+    return 'initial';
+  }};
+`;
+
+export const StyledCategoryCheckbox = styled(props => (
+  <Checkbox {...props} classes={{ root: 'root', checked: 'checked' }} />
+))`
+  &&&.root {
+    color: ${({ disabled, color, theme }) => (disabled ? `${theme.colors.categoryDisabledColor}33` : color)};
+    padding: 8px;
+
+    &.checked {
+      color: white;
+    }
+
+    svg {
+      font-size: 16px;
+    }
+  }
 `;
 
 export const StyledTabs = styled(props => <Tabs {...props} classes={{ indicator: 'indicator' }} />)`
