@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'react-emotion';
 import { Input, Select, MenuItem, Tabs, Tab, Checkbox } from '@material-ui/core';
 import { Button, getBackgroundWithHoverCSS } from '@twilio/flex-ui';
-import hexToRgba from 'hex-to-rgba';
 
 export const Box = styled('div')`
   ${({ width }) => width && `width: ${width};`}
@@ -183,7 +182,7 @@ export const StyledCheckboxLabel = styled('label')`
 export const StyledCategoryCheckboxLabel = styled(StyledCheckboxLabel)`
   text-transform: none;
   color: ${({ disabled, theme }) =>
-    disabled ? hexToRgba(theme.colors.categoryTextColor, 0.2) : theme.colors.categoryTextColor};
+    disabled ? `${theme.colors.categoryTextColor}33` : theme.colors.categoryTextColor};
 `;
 
 export const TopNav = styled('div')`
@@ -245,7 +244,7 @@ export const CategoryCheckboxField = styled('div')`
   border-radius: 2px;
   padding-right: 15px;
   background-color: ${({ selected, disabled, color, theme }) => {
-    if (disabled) return hexToRgba(theme.colors.categoryDisabledColor, 0.2);
+    if (disabled) return `${theme.colors.categoryDisabledColor}33`; // Hex with alpha 0.2
     if (selected) return color;
     return 'initial';
   }};
@@ -255,7 +254,7 @@ export const StyledCategoryCheckbox = styled(props => (
   <Checkbox {...props} classes={{ root: 'root', checked: 'checked' }} />
 ))`
   &&&.root {
-    color: ${({ disabled, color, theme }) => (disabled ? hexToRgba(theme.colors.categoryDisabledColor, 0.2) : color)};
+    color: ${({ disabled, color, theme }) => (disabled ? `${theme.colors.categoryDisabledColor}33` : color)};
     padding: 8px;
 
     &.checked {

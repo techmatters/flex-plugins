@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import hexToRgba from 'hex-to-rgba';
 
 import {
   CategoryCheckboxField,
@@ -11,7 +10,7 @@ import {
 import { formType } from '../../types';
 
 const IssueCategory = props => {
-  const color = hexToRgba(props.color, '0.6');
+  const color = `${props.color}99`; // Hex with alpha 0.6
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <StyledLabel>{props.category}</StyledLabel>
