@@ -4,7 +4,7 @@ import renderer from 'react-test-renderer';
 import '../mockStyled';
 
 import ContactDetails from '../../components/search/ContactDetails';
-import Section from '../../components/search/ContactDetails/Section';
+import Section from '../../components/Section';
 import callTypes, { channelTypes } from '../../states/DomainConstants';
 
 const contactOfType = type => ({
