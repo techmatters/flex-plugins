@@ -240,11 +240,23 @@ export const reservationHasTaskControl = reservation =>
 export const taskControlledByOther = reservation =>
   someoneHasTaskControl(reservation) && !reservationHasTaskControl(reservation);
 
+export const callerLeftWhileTransferring = reservation =>
+  reservation.status === 'wrapup' && !someoneHasTaskControl(reservation);
+
+export const callerLeftAndThisShouldClose = reservation =>
+  callerLeftWhileTransferring(reservation) &&
+  reservation.attributes.transferMeta.originalCounselor !== reservation.worker_sid;
+
 export const shouldInvokeCompleteTask = (reservation, workerSid) =>
-  reservation.status === 'wrapup' && taskControlledByOther(reservation) && reservation.worker_sid === workerSid;
+  reservation.status === 'wrapup' &&
+  (taskControlledByOther(reservation) || callerLeftAndThisShouldClose(reservation)) &&
+  reservation.worker_sid === workerSid;
+
+export const transferAborted = reservation =>
+  (reservation.status === 'rejected' || reservation.status === 'timeout') &&
+  reservation.attributes.transferMeta.targetType === 'worker';
 
 export const shouldTakeControlBack = (reservation, workerSid) =>
-  (reservation.status === 'rejected' || reservation.status === 'timeout') &&
-  reservation.attributes.transferMeta.targetType === 'worker' &&
+  (transferAborted(reservation) || callerLeftWhileTransferring(reservation)) &&
   reservation.attributes.transferMeta.originalCounselor === workerSid &&
   reservation.attributes.transferMeta.mode === transferModes.warm;
