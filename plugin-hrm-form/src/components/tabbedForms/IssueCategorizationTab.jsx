@@ -29,7 +29,6 @@ const IssueCategorizationTab = ({ form, taskId, handleCategoryToggle }) => (
         flexDirection: 'column',
         justifyContent: 'center',
         marginBottom: '20px',
-        width: 'fit-content',
       }}
     >
       {getCategories(form).map(([name, subcategories]) => (
