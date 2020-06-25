@@ -43,7 +43,7 @@ class TaskView extends Component {
   render() {
     const { task, thisTask, form } = this.props;
 
-    // If this task is not the active task, hide it
+    // If this task is not the active task, or if the task is not accepted yet, hide it
     const show = task && task.taskSid === thisTask.taskSid && !TaskHelper.isPending(task);
 
     if (!show) {

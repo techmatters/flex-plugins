@@ -12,8 +12,8 @@ export const saveFormSharedState = async (form, task) => {
 
   try {
     if (sharedStateClient === undefined || sharedStateClient.connectionState !== 'connected') {
-      window.alert(strings.SharedStateSaveFormError);
       console.error('Error with Sync Client conection. Sync Client object is: ', sharedStateClient);
+      window.alert(strings.SharedStateSaveFormError);
       return null;
     }
 
@@ -44,8 +44,8 @@ export const loadFormSharedState = async task => {
 
   try {
     if (sharedStateClient === undefined || sharedStateClient.connectionState !== 'connected') {
-      window.alert(strings.SharedStateLoadFormError);
       console.error('Error with Sync Client conection. Sync Client object is: ', sharedStateClient);
+      window.alert(strings.SharedStateLoadFormError);
       return null;
     }
 
