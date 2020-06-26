@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Template } from '@twilio/flex-ui';
 import { Grid } from '@material-ui/core';
 
-import { DetailsContainer, DetailDescription, DetailValue, ActiveStatusFont } from '../../styles/case';
+import { DetailsContainer, DetailDescription, DetailValue, OpenStatusFont } from '../../styles/case';
 
 const CaseDetails = ({ name, counselor, createdAt, status }) => {
   return (
@@ -29,9 +29,9 @@ const CaseDetails = ({ name, counselor, createdAt, status }) => {
         </Grid>
         <Grid item xs>
           <div style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <ActiveStatusFont>
+            <OpenStatusFont>
               <Template code="Case-CaseDetailsStatusOpen" />
-            </ActiveStatusFont>
+            </OpenStatusFont>
           </div>
         </Grid>
       </Grid>
