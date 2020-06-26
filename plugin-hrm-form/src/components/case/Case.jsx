@@ -1,10 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withTaskContext } from '@twilio/flex-ui';
+import { Template, withTaskContext } from '@twilio/flex-ui';
 
 import { taskType, formType } from '../../types';
 import { getConfig } from '../../HrmFormPlugin';
 import { saveToHrm, connectToCase } from '../../services/ContactService';
+import { Box } from '../../styles/HrmStyles';
+import { CaseContainer, CaseNumberFont, CaseSectionFont } from '../../styles/case';
+import CaseDetails from './CaseDetails';
 
 const Case = props => {
   const { connectedCase } = props.form.metadata;
@@ -24,12 +27,24 @@ const Case = props => {
   };
 
   return (
-    <div>
-      Case #{connectedCase.id}
-      <button type="button" onClick={saveAndEnd}>
-        Save and end
+    <CaseContainer>
+      <Box paddingRight="45px">
+        <Box marginLeft="25px" marginTop="22px">
+          <CaseNumberFont>
+            <Template code="Case-CaseNumber" /> #{connectedCase.id}
+          </CaseNumberFont>
+        </Box>
+        <Box marginLeft="40px" marginTop="13px">
+          <CaseSectionFont>
+            <Template code="Case-CaseDetailsSection" />
+          </CaseSectionFont>
+          <CaseDetails />
+        </Box>
+      </Box>
+      <button type="button" onClick={saveAndEnd} style={{ marginTop: 'auto', alignSelf: 'flex-end' }}>
+        <Template code="BottomBar-SaveAndAddToCase" />
       </button>
-    </div>
+    </CaseContainer>
   );
 };
 
