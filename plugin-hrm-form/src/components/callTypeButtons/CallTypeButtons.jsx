@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withTaskContext, Template } from '@twilio/flex-ui';
+import { withTaskContext, TaskHelper, Template } from '@twilio/flex-ui';
 import FaceIcon from '@material-ui/icons/Face';
 
 import { withLocalization } from '../../contexts/LocalizationContext';
@@ -89,6 +89,7 @@ const CallTypeButtons = props => {
       <NonDataCallTypeDialog
         isOpen={isDialogOpen(form)}
         isCallTask={isCallTask(task)}
+        isInWrapupMode={TaskHelper.isInWrapupMode(task)}
         handleConfirm={handleConfirmNonDataCallType}
         handleCancel={() => clearCallType(props)}
       />
