@@ -6,7 +6,7 @@ import { Template } from '@twilio/flex-ui';
 
 import { formType } from '../../types';
 import IssueCategory from './IssueCategory';
-import { Container, CategoryErrorText } from '../../styles/HrmStyles';
+import { Container, CategoryErrorText, ToggleViewButton } from '../../styles/HrmStyles';
 import { isNotCategory, isNotSubcategory } from '../../states/ValidationRules';
 
 const getCategories = form => {
@@ -28,40 +28,12 @@ const IssueCategorizationTab = ({ form, taskId, handleCategoryToggle }) => (
           <CategoryErrorText>{form.caseInformation.categories.error}</CategoryErrorText>
         )}
       </span>
-      <div
-        style={{
-          display: 'inline-flex',
-          width: '37px',
-          height: '37px',
-          minHeight: '37px',
-          borderRadius: '1px',
-          alignItems: 'center',
-          justifyContent: 'center',
-          boxSizing: 'border-box',
-          backgroundColor: '#a0a8bdcc',
-          opacity: '20%',
-          cursor: 'pointer',
-        }}
-      >
-        <GridIcon style={{ fontSize: '18px' }} />
-      </div>
-      <div
-        style={{
-          display: 'inline-flex',
-          width: '37px',
-          height: '37px',
-          minHeight: '37px',
-          border: '1px solid #a0a8bd33',
-          borderRadius: '1px',
-          alignItems: 'center',
-          justifyContent: 'center',
-          boxSizing: 'border-box',
-          color: '#000000cc',
-          cursor: 'pointer',
-        }}
-      >
-        <ListIcon style={{ fontSize: '18px' }} />
-      </div>
+      <ToggleViewButton>
+        <GridIcon />
+      </ToggleViewButton>
+      <ToggleViewButton active>
+        <ListIcon />
+      </ToggleViewButton>
     </div>
     <div
       style={{

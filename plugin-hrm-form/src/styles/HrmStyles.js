@@ -277,6 +277,26 @@ export const StyledCategoryCheckbox = styled(props => (
   }
 `;
 
+export const ToggleViewButton = styled('div')`
+  display: inline-flex;
+  width: 37px;
+  height: 37px;
+  min-height: 37px;
+  border-radius: 1px;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  cursor: pointer;
+  border: ${({ active }) => (active ? '1px solid #a0a8bd33' : 'none')};
+  color: ${({ active }) => (active ? '#000000cc' : 'initial')};
+  background-color: ${({ active }) => (active ? 'initial' : '#a0a8bdcc')};
+  opacity: ${({ active }) => (active ? 'initial' : '20%')};
+
+  > svg {
+    font-size: 18px;
+  }
+`;
+
 export const StyledTabs = styled(props => <Tabs {...props} classes={{ indicator: 'indicator' }} />)`
   && .indicator {
     background-color: transparent;
