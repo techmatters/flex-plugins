@@ -254,7 +254,7 @@ export const CategoryCheckboxField = styled('div')`
   border-radius: 2px;
   padding-right: 15px;
   background-color: ${({ selected, disabled, color, theme }) => {
-    if (disabled) return `${theme.colors.categoryDisabledColor}33`; // Hex with alpha 0.2
+    if (disabled) return `${theme.colors.categoryDisabledColor}14`; // Hex with alpha 0.08
     if (selected) return color;
     return 'initial';
   }};
