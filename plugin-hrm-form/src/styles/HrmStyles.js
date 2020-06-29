@@ -50,6 +50,17 @@ export const ErrorText = styled('p')`
   line-height: 1.5;
 `;
 
+export const CategoryErrorText = styled('p')`
+  color: ${props => props.theme.colors.darkTextColor};
+  font-size: 12px;
+  font-weight: 400;
+
+  &:before {
+    color: ${props => props.theme.colors.errorColor};
+    content: '* ';
+  }
+`;
+
 export const StyledInput = styled(Input)`
   display: flex;
   flex-grow: 0;

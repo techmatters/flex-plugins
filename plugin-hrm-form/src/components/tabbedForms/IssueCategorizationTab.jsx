@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import ListIcon from '@material-ui/icons/List';
+import { Template } from '@twilio/flex-ui';
 
 import { formType } from '../../types';
 import IssueCategory from './IssueCategory';
-import { Container, ErrorText } from '../../styles/HrmStyles';
+import { Container, CategoryErrorText } from '../../styles/HrmStyles';
 import { isNotCategory, isNotSubcategory } from '../../states/ValidationRules';
 
 const getCategories = form => {
@@ -16,13 +18,33 @@ const filterSubcategories = subcategories => Object.keys(subcategories).filter(n
 
 const IssueCategorizationTab = ({ form, taskId, handleCategoryToggle }) => (
   <Container style={{ display: 'flex', flexDirection: 'column' }}>
-    {form.caseInformation.categories.error ? (
-      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', marginBottom: '20px' }}>
-        <ErrorText>{form.caseInformation.categories.error}</ErrorText>
+    <p style={{ textTransform: 'uppercase' }}>
+      <Template code="Categories-Title" />
+    </p>
+    <div style={{ display: 'flex', alignItems: 'center', margin: '6px 0' }}>
+      <span style={{ flexGrow: 1 }}>
+        {form.caseInformation.categories.error && (
+          <CategoryErrorText>{form.caseInformation.categories.error}</CategoryErrorText>
+        )}
+      </span>
+      <div
+        style={{
+          display: 'inline-flex',
+          width: '37px',
+          height: '37px',
+          minHeight: '37px',
+          border: '1px solid #a0a8bd',
+          borderRadius: '2px',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxSizing: 'border-box',
+          color: '#000000CC',
+          opacity: '80%',
+        }}
+      >
+        <ListIcon style={{ fontSize: '18px' }} />
       </div>
-    ) : (
-      ''
-    )}
+    </div>
     <div
       style={{
         display: 'flex',

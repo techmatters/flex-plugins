@@ -17,6 +17,7 @@ import {
 } from './ActionTypes';
 import { countSelectedCategories } from './ValidationRules';
 import { copySearchResultIntoTask } from './SearchContact';
+import { getConfig } from '../HrmFormPlugin';
 
 /**
  * Looks for a particular task in the state object, and returns it if found.
@@ -133,6 +134,8 @@ export function reduce(state = initialState, action) {
         `!!!!!!!!!!!HANDLE CHANGE: action.name = ${action.name}, action.value = ${action.value}, task = ${action.taskId}, parents: ${action.parents}`,
       );
 
+      const { strings } = getConfig();
+
       const currentForm = findOrRecreate(state.tasks, action.taskId);
 
       const newForm = editNestedField(currentForm, action.parents, action.name, { value: action.value });
@@ -147,7 +150,7 @@ export function reduce(state = initialState, action) {
         if (countSelectedCategories(newForm.caseInformation.categories) > 0) {
           newForm.caseInformation.categories.error = null;
         } else {
-          newForm.caseInformation.categories.error = 'You must check at least one option';
+          newForm.caseInformation.categories.error = strings['Error-CategoryRequired'];
         }
       }
 
