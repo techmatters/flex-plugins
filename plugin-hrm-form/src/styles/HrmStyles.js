@@ -50,10 +50,22 @@ export const ErrorText = styled('p')`
   line-height: 1.5;
 `;
 
-export const CategoryErrorText = styled('p')`
+export const CategoryTitle = styled('p')`
+  text-transform: uppercase;
+  font-weight: 600;
+`;
+
+export const CategorySubtitleSection = styled('div')`
+  display: flex;
+  align-items: center;
+  margin: 6px 0;
+`;
+
+export const CategoryRequiredText = styled('p')`
   color: ${props => props.theme.colors.darkTextColor};
   font-size: 12px;
   font-weight: 400;
+  flex-grow: 1;
 
   &:before {
     color: ${props => props.theme.colors.errorColor};
@@ -295,6 +307,13 @@ export const ToggleViewButton = styled('div')`
   > svg {
     font-size: 18px;
   }
+`;
+
+export const CategoriesWrapper = styled('div')`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 20px;
 `;
 
 export const StyledTabs = styled(props => <Tabs {...props} classes={{ indicator: 'indicator' }} />)`

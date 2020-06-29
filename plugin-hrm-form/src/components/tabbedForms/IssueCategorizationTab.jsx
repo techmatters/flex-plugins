@@ -6,7 +6,14 @@ import { Template } from '@twilio/flex-ui';
 
 import { formType } from '../../types';
 import IssueCategory from './IssueCategory';
-import { Container, CategoryErrorText, ToggleViewButton } from '../../styles/HrmStyles';
+import {
+  Container,
+  CategoryTitle,
+  CategorySubtitleSection,
+  CategoryRequiredText,
+  ToggleViewButton,
+  CategoriesWrapper,
+} from '../../styles/HrmStyles';
 import { isNotCategory, isNotSubcategory } from '../../states/ValidationRules';
 
 const getCategories = form => {
@@ -18,31 +25,22 @@ const getCategories = form => {
 const filterSubcategories = subcategories => Object.keys(subcategories).filter(name => !isNotSubcategory(name));
 
 const IssueCategorizationTab = ({ form, taskId, handleCategoryToggle }) => (
-  <Container style={{ display: 'flex', flexDirection: 'column' }}>
-    <p style={{ textTransform: 'uppercase' }}>
+  <Container>
+    <CategoryTitle>
       <Template code="Categories-Title" />
-    </p>
-    <div style={{ display: 'flex', alignItems: 'center', margin: '6px 0' }}>
-      <span style={{ flexGrow: 1 }}>
-        {form.caseInformation.categories.error && (
-          <CategoryErrorText>{form.caseInformation.categories.error}</CategoryErrorText>
-        )}
-      </span>
+    </CategoryTitle>
+    <CategorySubtitleSection>
+      <CategoryRequiredText>
+        <Template code="Error-CategoryRequired" />
+      </CategoryRequiredText>
       <ToggleViewButton>
         <GridIcon />
       </ToggleViewButton>
       <ToggleViewButton active>
         <ListIcon />
       </ToggleViewButton>
-    </div>
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        marginBottom: '20px',
-      }}
-    >
+    </CategorySubtitleSection>
+    <CategoriesWrapper>
       {getCategories(form).map(([name, subcategories]) => (
         <IssueCategory
           key={name}
@@ -54,7 +52,7 @@ const IssueCategorizationTab = ({ form, taskId, handleCategoryToggle }) => (
           form={form}
         />
       ))}
-    </div>
+    </CategoriesWrapper>
   </Container>
 );
 
