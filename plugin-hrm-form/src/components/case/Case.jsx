@@ -1,17 +1,28 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Template, withTaskContext } from '@twilio/flex-ui';
+import { connect } from 'react-redux';
+import { format } from 'date-fns';
 
+import { namespace, contactFormsBase, configurationBase } from '../../states';
 import { taskType, formType } from '../../types';
 import { getConfig } from '../../HrmFormPlugin';
 import { saveToHrm, connectToCase } from '../../services/ContactService';
 import { Box } from '../../styles/HrmStyles';
 import { CaseContainer, CaseNumberFont, CaseSectionFont } from '../../styles/case';
 import CaseDetails from './CaseDetails';
+import { formatName } from '../../utils';
 
 const Case = props => {
   const { connectedCase } = props.form.metadata;
+
   if (!connectedCase) return null;
+
+  const { firstName, lastName } = props.form.childInformation.name;
+  const name = formatName(`${firstName.value} ${lastName.value}`);
+  const { createdAt, twilioWorkerId, status } = connectedCase;
+  const counselor = props.counselorsHash[twilioWorkerId];
+  const date = `${format(new Date(createdAt), 'M/d/yyyy')}`;
 
   const saveAndEnd = async () => {
     const { task, form } = props;
@@ -38,7 +49,7 @@ const Case = props => {
           <CaseSectionFont>
             <Template code="Case-CaseDetailsSection" />
           </CaseSectionFont>
-          <CaseDetails />
+          <CaseDetails name={name} status={status} counselor={counselor} date={date} />
         </Box>
       </Box>
       <button type="button" onClick={saveAndEnd} style={{ marginTop: 'auto', alignSelf: 'flex-end' }}>
@@ -53,6 +64,12 @@ Case.propTypes = {
   handleCompleteTask: PropTypes.func.isRequired,
   task: taskType.isRequired,
   form: formType.isRequired,
+  counselorsHash: PropTypes.shape({}).isRequired,
 };
 
-export default withTaskContext(Case);
+const mapStateToProps = (state, ownProps) => ({
+  form: state[namespace][contactFormsBase].tasks[ownProps.task.taskSid],
+  counselorsHash: state[namespace][configurationBase].counselors.hash,
+});
+
+export default withTaskContext(connect(mapStateToProps)(Case));

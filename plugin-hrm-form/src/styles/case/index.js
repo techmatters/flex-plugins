@@ -52,7 +52,12 @@ export const DetailDescription = styled(DetailEntryText)`
 export const DetailValue = DetailEntryText;
 
 export const OpenStatusFont = styled(DetailEntryText)`
-  color: #2BB826;
+  color: #2bb826;
+  font-size: 13px;
+  text-transform: uppercase;
+`;
+
+export const DefaultStatusFont = styled(DetailEntryText)`
   font-size: 13px;
   text-transform: uppercase;
 `;

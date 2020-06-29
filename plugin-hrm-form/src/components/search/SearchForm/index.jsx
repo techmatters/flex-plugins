@@ -1,6 +1,7 @@
 /* eslint-disable no-empty-function */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import FieldText from '../../FieldText';
 import FieldSelect from '../../FieldSelect';
@@ -8,6 +9,7 @@ import FieldDate from '../../FieldDate';
 import { Container, StyledNextStepButton, Row, BottomButtonBar } from '../../../styles/HrmStyles';
 import { searchFormType } from '../../../types';
 import { getConfig } from '../../../HrmFormPlugin';
+import { namespace, configurationBase } from '../../../states';
 
 const getField = value => ({
   value,
@@ -125,4 +127,8 @@ class SearchForm extends Component {
   }
 }
 
-export default SearchForm;
+const mapStateToProps = state => ({
+  counselors: state[namespace][configurationBase].counselors.list,
+});
+
+export default connect(mapStateToProps)(SearchForm);
