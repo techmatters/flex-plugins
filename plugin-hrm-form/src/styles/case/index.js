@@ -35,10 +35,6 @@ export const DetailsContainer = styled(Row)`
   margin-top: 10px;
 `;
 
-export const DetailEntry = styled('div')`
-  margin-right: 25px;
-`;
-
 const DetailEntryText = styled(FontOpenSans)`
   font-size: 11px;
   font-weight: 600;

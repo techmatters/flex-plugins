@@ -29,7 +29,7 @@ class Search extends Component {
     searchContacts: PropTypes.func.isRequired,
     changeSearchPage: PropTypes.func.isRequired,
     viewContactDetails: PropTypes.func.isRequired,
-    currentPage: PropTypes.oneOf(Object.keys(SearchPages)).isRequired,
+    currentPage: PropTypes.oneOf(Object.keys({ ...SearchPages })).isRequired,
     currentContact: contactType,
     form: searchFormType.isRequired,
     searchResult: PropTypes.arrayOf(searchResultType).isRequired,
