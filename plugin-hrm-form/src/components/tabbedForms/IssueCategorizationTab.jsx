@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ListIcon from '@material-ui/icons/List';
+import GridIcon from '@material-ui/icons/GridOn';
 import { Template } from '@twilio/flex-ui';
 
 import { formType } from '../../types';
@@ -33,13 +34,30 @@ const IssueCategorizationTab = ({ form, taskId, handleCategoryToggle }) => (
           width: '37px',
           height: '37px',
           minHeight: '37px',
-          border: '1px solid #a0a8bd',
-          borderRadius: '2px',
+          borderRadius: '1px',
           alignItems: 'center',
           justifyContent: 'center',
           boxSizing: 'border-box',
-          color: '#000000CC',
-          opacity: '80%',
+          backgroundColor: '#a0a8bdcc',
+          opacity: '20%',
+          cursor: 'pointer',
+        }}
+      >
+        <GridIcon style={{ fontSize: '18px' }} />
+      </div>
+      <div
+        style={{
+          display: 'inline-flex',
+          width: '37px',
+          height: '37px',
+          minHeight: '37px',
+          border: '1px solid #a0a8bd33',
+          borderRadius: '1px',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxSizing: 'border-box',
+          color: '#000000cc',
+          cursor: 'pointer',
         }}
       >
         <ListIcon style={{ fontSize: '18px' }} />
