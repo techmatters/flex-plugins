@@ -17,15 +17,19 @@ const IssueCategory = props => {
             const { value } = props.form.caseInformation.categories[props.category][subcategoryName];
             const selectedCategories = countSelectedCategories(props.form.caseInformation.categories);
             const disabled = selectedCategories === 3 && !value;
+            const handleClickCheckboxField = e => {
+              e.preventDefault();
+              props.handleCategoryToggle(props.taskId, props.category, subcategoryName, !value);
+            };
             return (
-              <CategoryCheckboxField key={id} color={lighterColor} selected={value} disabled={disabled}>
-                <StyledCategoryCheckbox
-                  disabled={disabled}
-                  color={lighterColor}
-                  checked={value}
-                  id={id}
-                  onClick={() => props.handleCategoryToggle(props.taskId, props.category, subcategoryName, !value)}
-                />
+              <CategoryCheckboxField
+                key={id}
+                onClick={handleClickCheckboxField}
+                color={lighterColor}
+                selected={value}
+                disabled={disabled}
+              >
+                <StyledCategoryCheckbox disabled={disabled} color={lighterColor} checked={value} id={id} />
                 <StyledCategoryCheckboxLabel htmlFor={id} disabled={disabled}>
                   {subcategoryName}
                 </StyledCategoryCheckboxLabel>

@@ -206,6 +206,7 @@ export const StyledCategoryCheckboxLabel = styled(StyledCheckboxLabel)`
   text-transform: none;
   color: ${({ disabled, theme }) =>
     disabled ? `${theme.colors.categoryTextColor}33` : theme.colors.categoryTextColor};
+  cursor: ${({ disabled }) => (disabled ? 'initial' : 'pointer')};
 `;
 
 export const TopNav = styled('div')`
@@ -270,6 +271,7 @@ export const CategoryCheckboxField = styled('div')`
     if (selected) return color;
     return 'initial';
   }};
+  cursor: ${({ disabled }) => (disabled ? 'initial' : 'pointer')};
 `;
 
 export const StyledCategoryCheckbox = styled(props => (
