@@ -256,7 +256,7 @@ export const TwoColumnLayout = styled('div')`
 export const CategoryCheckboxField = styled('div')`
   display: flex;
   flex-direction: row;
-  margin: 4px 0;
+  margin: 4px 4px 4px 0;
   width: fit-content;
   height: 34px;
   box-sizing: border-box;
@@ -316,6 +316,13 @@ export const CategoriesWrapper = styled('div')`
   flex-direction: column;
   justify-content: center;
   margin-bottom: 20px;
+`;
+
+export const SubcategoriesWrapper = styled('div')`
+  display: flex;
+  padding: 10px 0 10px 6px;
+  flex-wrap: wrap;
+  flex-direction: ${({ gridView }) => (gridView ? 'row' : 'column')};
 `;
 
 export const StyledTabs = styled(props => <Tabs {...props} classes={{ indicator: 'indicator' }} />)`

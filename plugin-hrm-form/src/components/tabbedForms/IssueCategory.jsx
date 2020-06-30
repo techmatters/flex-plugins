@@ -1,7 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { CategoryCheckboxField, StyledCategoryCheckbox, StyledCategoryCheckboxLabel } from '../../styles/HrmStyles';
+import {
+  Box,
+  SubcategoriesWrapper,
+  CategoryCheckboxField,
+  StyledCategoryCheckbox,
+  StyledCategoryCheckboxLabel,
+} from '../../styles/HrmStyles';
 import { formType } from '../../types';
 import Section from '../Section';
 import { countSelectedCategories } from '../../states/ValidationRules';
@@ -9,9 +15,14 @@ import { countSelectedCategories } from '../../states/ValidationRules';
 const IssueCategory = props => {
   const lighterColor = `${props.color}99`; // Hex with alpha 0.6
   return (
-    <div style={{ marginBottom: 6 }}>
-      <Section sectionTitle={props.category} color={props.color}>
-        <div style={{ display: 'flex', flexDirection: 'column', padding: '10px 0 10px 6px' }}>
+    <Box marginBottom="6px">
+      <Section
+        sectionTitle={props.category}
+        color={props.color}
+        expanded={props.expanded}
+        handleExpandClick={() => props.handleExpandCategory(props.category, props.taskId)}
+      >
+        <SubcategoriesWrapper gridView={props.gridView}>
           {props.subcategories.map(subcategoryName => {
             const id = `IssueCategorization_${props.category}_${subcategoryName}`;
             const { value } = props.form.caseInformation.categories[props.category][subcategoryName];
@@ -36,9 +47,9 @@ const IssueCategory = props => {
               </CategoryCheckboxField>
             );
           })}
-        </div>
+        </SubcategoriesWrapper>
       </Section>
-    </div>
+    </Box>
   );
 };
 
@@ -47,9 +58,12 @@ IssueCategory.propTypes = {
   color: PropTypes.string.isRequired,
   category: PropTypes.string.isRequired,
   subcategories: PropTypes.arrayOf(PropTypes.string).isRequired,
+  gridView: PropTypes.bool.isRequired,
+  expanded: PropTypes.bool.isRequired,
   handleCategoryToggle: PropTypes.func.isRequired,
   taskId: PropTypes.string.isRequired,
   form: formType.isRequired,
+  handleExpandCategory: PropTypes.func.isRequired,
 };
 
 export default IssueCategory;

@@ -14,7 +14,13 @@ import { formatAddress, formatDuration, formatName, mapChannel } from '../../../
 
 const MoreHorizIcon = ContactDetailsIcon(MoreHoriz);
 
-const Details = ({ contact, handleOpenConnectDialog, handleMockedMessage }) => {
+const Details = ({
+  contact,
+  detailsExpanded,
+  handleOpenConnectDialog,
+  handleMockedMessage,
+  handleExpandDetailsSection,
+}) => {
   // Object destructuring on contact
   const { overview, details, counselor, tags } = contact;
   const { dateTime, name: childName, customerNumber, callType, channel, conversationDuration } = overview;
@@ -76,7 +82,11 @@ const Details = ({ contact, handleOpenConnectDialog, handleMockedMessage }) => {
           <MoreHorizIcon style={{ color: '#ffffff' }} />
         </ButtonBase>
       </NameContainer>
-      <Section expanded sectionTitle="General details">
+      <Section
+        sectionTitle="General details"
+        expanded={detailsExpanded['General details']}
+        handleExpandClick={() => handleExpandDetailsSection('General details')}
+      >
         <SectionEntry description="Channel" value={formattedChannel} />
         <SectionEntry description="Phone Number" value={isPhoneContact ? customerNumber : ''} />
         <SectionEntry description="Conversation Duration" value={formattedDuration} />
@@ -84,7 +94,11 @@ const Details = ({ contact, handleOpenConnectDialog, handleMockedMessage }) => {
         <SectionEntry description="Date/Time" value={formattedDate} />
       </Section>
       {callType === callTypes.caller && (
-        <Section sectionTitle="Caller information">
+        <Section
+          sectionTitle="Caller information"
+          expanded={detailsExpanded['Caller information']}
+          handleExpandClick={() => handleExpandDetailsSection('Caller information')}
+        >
           <SectionEntry description="Name" value={callerOrUnknown} />
           <SectionEntry description="Relationship to Child" value={caller.relationshipToChild} />
           <SectionEntry description="Address" value={formattedCallerAddress} />
@@ -98,7 +112,11 @@ const Details = ({ contact, handleOpenConnectDialog, handleMockedMessage }) => {
         </Section>
       )}
       {isDataCall && (
-        <Section sectionTitle="Child information">
+        <Section
+          sectionTitle="Child information"
+          expanded={detailsExpanded['Child information']}
+          handleExpandClick={() => handleExpandDetailsSection('Child information')}
+        >
           <SectionEntry description="Name" value={childOrUnknown} />
           <SectionEntry description="Address" value={formattedChildAddress} />
           <SectionEntry description="Phone #1" value={child.location.phone1} />
@@ -116,7 +134,11 @@ const Details = ({ contact, handleOpenConnectDialog, handleMockedMessage }) => {
         </Section>
       )}
       {isDataCall && (
-        <Section sectionTitle="Issue categorization">
+        <Section
+          sectionTitle="Issue categorization"
+          expanded={detailsExpanded['Issue categorization']}
+          handleExpandClick={() => handleExpandDetailsSection('Issue categorization')}
+        >
           {Boolean(tag1) && <SectionEntry description="Category 1" value={tag1} />}
           {Boolean(tag2) && <SectionEntry description="Category 2" value={tag2} />}
           {Boolean(tag3) && <SectionEntry description="Category 3" value={tag3} />}
@@ -124,7 +146,11 @@ const Details = ({ contact, handleOpenConnectDialog, handleMockedMessage }) => {
         </Section>
       )}
       {isDataCall && (
-        <Section sectionTitle="Case summary">
+        <Section
+          sectionTitle="Case summary"
+          expanded={detailsExpanded['Case summary']}
+          handleExpandClick={() => handleExpandDetailsSection('Case summary')}
+        >
           <SectionEntry description="Call Summary" value={callSummary} />
           <SectionEntry description="Status" value={status} />
           <SectionEntry description="Referred To" value={referredTo} />
@@ -150,8 +176,10 @@ Details.displayName = 'Details';
 
 Details.propTypes = {
   contact: contactType.isRequired,
+  detailsExpanded: PropTypes.object.isRequired,
   handleOpenConnectDialog: PropTypes.func.isRequired,
   handleMockedMessage: PropTypes.func.isRequired,
+  handleExpandDetailsSection: PropTypes.func.isRequired,
 };
 
 export default Details;

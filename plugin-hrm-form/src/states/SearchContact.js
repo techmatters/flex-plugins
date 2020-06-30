@@ -11,6 +11,7 @@ import {
   SEARCH_CONTACTS_REQUEST,
   SEARCH_CONTACTS_SUCCESS,
   SEARCH_CONTACTS_FAILURE,
+  HANDLE_EXPAND_DETAILS_SECTION,
 } from './ActionTypes';
 import { searchContacts as searchContactsApiCall } from '../services/ContactService';
 import callTypes from './DomainConstants';
@@ -90,6 +91,8 @@ export const changeSearchPage = taskId => page => ({ type: CHANGE_SEARCH_PAGE, p
 
 export const viewContactDetails = taskId => contact => ({ type: VIEW_CONTACT_DETAILS, contact, taskId });
 
+export const handleExpandDetailsSection = taskId => section => ({ type: HANDLE_EXPAND_DETAILS_SECTION, section, taskId });
+
 function copyNewValues(originalObject, objectWithNewValues) {
   if (objectWithNewValues === null || typeof objectWithNewValues === 'undefined') {
     return originalObject;
@@ -168,6 +171,13 @@ const newTaskEntry = {
     dateFrom: '',
     dateTo: '',
   },
+  detailsExpanded: {
+    'General details': true,
+    'Caller information': false,
+    'Child information': false,
+    'Issue categorization': false,
+    'Case summary': false,
+  },
   searchResult: [],
   isRequesting: false,
   error: null,
@@ -223,6 +233,23 @@ export function reduce(state = initialState, action) {
         tasks: {
           ...state.tasks,
           [action.taskId]: { ...task, currentPage: SearchPages.details, currentContact: action.contact },
+        },
+      };
+    }
+    case HANDLE_EXPAND_DETAILS_SECTION: {
+      const task = state.tasks[action.taskId];
+      const { detailsExpanded } = task;
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...task,
+            detailsExpanded: {
+              ...detailsExpanded,
+              [action.section]: !detailsExpanded[action.section],
+            },
+          },
         },
       };
     }

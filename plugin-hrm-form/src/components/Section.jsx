@@ -8,45 +8,30 @@ import { SectionTitleContainer, SectionTitleText, ContactDetailsIcon } from '../
 const ArrowDownIcon = ContactDetailsIcon(ArrowDropDownTwoTone);
 const ArrowUpIcon = ContactDetailsIcon(ArrowDropUpTwoTone);
 
-class Section extends React.Component {
-  static displayName = 'Section';
+const Section = ({ color, sectionTitle, expanded, children, handleExpandClick }) => (
+  <>
+    <SectionTitleContainer color={color}>
+      <ButtonBase style={{ width: '100%', padding: 0 }} onClick={handleExpandClick}>
+        <SectionTitleText>{sectionTitle.toUpperCase()}</SectionTitleText>
+        {expanded ? <ArrowUpIcon /> : <ArrowDownIcon />}
+      </ButtonBase>
+    </SectionTitleContainer>
+    <Collapse in={expanded} timeout="auto">
+      {children}
+    </Collapse>
+  </>
+);
 
-  static propTypes = {
-    sectionTitle: PropTypes.string.isRequired,
-    color: PropTypes.string.isRequired,
-    children: PropTypes.node.isRequired,
-    expanded: PropTypes.bool,
-  };
-
-  static defaultProps = {
-    expanded: false,
-  };
-
-  state = {
-    expanded: this.props.expanded, // receive from props only when component is initialized
-  };
-
-  handleExpandClick = () => {
-    this.setState(prevState => ({
-      expanded: !prevState.expanded,
-    }));
-  };
-
-  render() {
-    return (
-      <>
-        <SectionTitleContainer color={this.props.color}>
-          <ButtonBase style={{ width: '100%', padding: 0 }} onClick={this.handleExpandClick}>
-            <SectionTitleText>{this.props.sectionTitle.toUpperCase()}</SectionTitleText>
-            {this.state.expanded ? <ArrowUpIcon /> : <ArrowDownIcon />}
-          </ButtonBase>
-        </SectionTitleContainer>
-        <Collapse in={this.state.expanded} timeout="auto">
-          {this.props.children}
-        </Collapse>
-      </>
-    );
-  }
-}
+Section.displayName = 'Section';
+Section.propTypes = {
+  sectionTitle: PropTypes.string.isRequired,
+  color: PropTypes.string.isRequired,
+  children: PropTypes.node.isRequired,
+  expanded: PropTypes.bool,
+  handleExpandClick: PropTypes.func.isRequired,
+};
+Section.defaultProps = {
+  expanded: false,
+};
 
 export default Section;
