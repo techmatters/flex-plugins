@@ -19,7 +19,7 @@ jest.mock('../../services/ServerlessService', () => ({
   populateCounselors: async () => [],
 }));
 
-function createState(taskId, { currentPage, searchFormValues, currentContact, searchResult }) {
+function createState(taskId, { currentPage, searchFormValues, currentContact, searchResult, detailsExpanded }) {
   return {
     'plugin-hrm-form': {
       searchContacts: {
@@ -36,6 +36,7 @@ function createState(taskId, { currentPage, searchFormValues, currentContact, se
               dateTo: '',
             },
             searchResult: searchResult || [],
+            detailsExpanded: detailsExpanded || {},
             isRequesting: false,
             error: null,
           },
@@ -192,9 +193,12 @@ test('<Search> should display <ContactDetails />', () => {
     counselor: 'Counselor',
     tags: ['Tag1', 'Tag2'],
   };
+  const detailsExpanded = {
+    'General details': true,
+  };
   const task = { taskSid: 'WT123' };
 
-  const initialState = createState(task.taskSid, { currentPage, currentContact });
+  const initialState = createState(task.taskSid, { currentPage, currentContact, detailsExpanded });
   const store = mockStore(initialState);
 
   const component = renderer.create(

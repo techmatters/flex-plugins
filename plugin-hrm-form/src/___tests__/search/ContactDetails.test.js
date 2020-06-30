@@ -85,6 +85,9 @@ const contactOfType = type => ({
 const handleBack = jest.fn();
 const handleMockedMessage = jest.fn();
 const handleSelectSearchResult = jest.fn();
+const detailsExpanded = {
+  'General details': true,
+};
 
 test(`<ContactDetails> with contact of type ${callTypes.child}`, () => {
   const contact = contactOfType(callTypes.child);
@@ -96,6 +99,7 @@ test(`<ContactDetails> with contact of type ${callTypes.child}`, () => {
       handleBack={handleBack}
       handleMockedMessage={handleMockedMessage}
       handleSelectSearchResult={handleSelectSearchResult}
+      detailsExpanded={detailsExpanded}
     />,
   ).root;
 
@@ -114,6 +118,7 @@ test(`<ContactDetails> with contact of type ${callTypes.caller}`, () => {
       handleBack={handleBack}
       handleMockedMessage={handleMockedMessage}
       handleSelectSearchResult={handleSelectSearchResult}
+      detailsExpanded={detailsExpanded}
     />,
   ).root;
   const sections = component.findAllByType(Section);
@@ -131,6 +136,7 @@ test(`<ContactDetails> with a non data (standalone) contact`, () => {
       handleBack={handleBack}
       handleMockedMessage={handleMockedMessage}
       handleSelectSearchResult={handleSelectSearchResult}
+      detailsExpanded={detailsExpanded}
     />,
   ).root;
   const sections = component.findAllByType(Section);
