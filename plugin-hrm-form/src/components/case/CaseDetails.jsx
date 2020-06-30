@@ -12,7 +12,7 @@ const renderCaseStatus = status => {
   switch (status) {
     case caseStatuses.open:
       return (
-        <OpenStatusFont>
+        <OpenStatusFont aria-label="Status: ">
           <Template code="Case-CaseDetailsStatusOpen" />
         </OpenStatusFont>
       );
@@ -23,27 +23,27 @@ const renderCaseStatus = status => {
 
 const CaseDetails = ({ name, counselor, date, status }) => {
   return (
-    <DetailsContainer>
-      <Grid container spacing={24} justify="center">
-        <Grid item xs>
+    <DetailsContainer tabIndex={0} role="grid" aria-labelledby="Case-CaseDetailsSection-label">
+      <Grid container spacing={24} justify="center" role="row">
+        <Grid item xs role="gridcell" tabIndex={-1}>
           <DetailDescription>
             <Template code="Case-CaseDetailsChildName" />
           </DetailDescription>
           <DetailValue>{name}</DetailValue>
         </Grid>
-        <Grid item xs>
+        <Grid item xs role="gridcell" tabIndex={-1}>
           <DetailDescription>
             <Template code="Case-CaseDetailsOwner" />
           </DetailDescription>
           <DetailValue>{counselor}</DetailValue>
         </Grid>
-        <Grid item xs>
+        <Grid item xs role="gridcell" tabIndex={-1}>
           <DetailDescription>
             <Template code="Case-CaseDetailsDateOpened" />
           </DetailDescription>
           <DetailValue>{date}</DetailValue>
         </Grid>
-        <Grid item xs>
+        <Grid item xs role="gridcell" tabIndex={-1}>
           <div style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             {renderCaseStatus(status)}
           </div>

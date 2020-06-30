@@ -46,7 +46,7 @@ const Case = props => {
           </CaseNumberFont>
         </Box>
         <Box marginLeft="40px" marginTop="13px">
-          <CaseSectionFont>
+          <CaseSectionFont id="Case-CaseDetailsSection-label">
             <Template code="Case-CaseDetailsSection" />
           </CaseSectionFont>
           <CaseDetails name={name} status={status} counselor={counselor} date={date} />
