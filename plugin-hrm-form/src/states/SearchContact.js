@@ -91,7 +91,11 @@ export const changeSearchPage = taskId => page => ({ type: CHANGE_SEARCH_PAGE, p
 
 export const viewContactDetails = taskId => contact => ({ type: VIEW_CONTACT_DETAILS, contact, taskId });
 
-export const handleExpandDetailsSection = taskId => section => ({ type: HANDLE_EXPAND_DETAILS_SECTION, section, taskId });
+export const handleExpandDetailsSection = taskId => section => ({
+  type: HANDLE_EXPAND_DETAILS_SECTION,
+  section,
+  taskId,
+});
 
 function copyNewValues(originalObject, objectWithNewValues) {
   if (objectWithNewValues === null || typeof objectWithNewValues === 'undefined') {

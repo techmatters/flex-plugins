@@ -77,7 +77,7 @@ IssueCategorizationTab.propTypes = {
   taskId: PropTypes.string.isRequired,
   handleCategoryToggle: PropTypes.func.isRequired,
   gridView: PropTypes.bool.isRequired,
-  expanded: PropTypes.object.isRequired,
+  expanded: PropTypes.objectOf(PropTypes.bool).isRequired,
   setCategoriesGridView: PropTypes.func.isRequired,
   handleExpandCategory: PropTypes.func.isRequired,
 };

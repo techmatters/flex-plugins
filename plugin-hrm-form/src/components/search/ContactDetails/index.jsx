@@ -15,7 +15,7 @@ class ContactDetails extends Component {
   static propTypes = {
     currentIsCaller: PropTypes.bool.isRequired,
     contact: contactType.isRequired,
-    detailsExpanded: PropTypes.object.isRequired,
+    detailsExpanded: PropTypes.objectOf(PropTypes.bool).isRequired,
     handleBack: PropTypes.func.isRequired,
     handleSelectSearchResult: PropTypes.func.isRequired,
     handleMockedMessage: PropTypes.func.isRequired,

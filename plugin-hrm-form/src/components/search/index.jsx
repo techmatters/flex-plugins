@@ -57,7 +57,7 @@ class Search extends Component {
     currentContact: contactType,
     form: searchFormType.isRequired,
     searchResult: PropTypes.arrayOf(searchResultType).isRequired,
-    detailsExpanded: PropTypes.object.isRequired,
+    detailsExpanded: PropTypes.objectOf(PropTypes.bool).isRequired,
     isRequesting: PropTypes.bool.isRequired,
     error: PropTypes.instanceOf(Error),
   };

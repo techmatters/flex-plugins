@@ -176,7 +176,7 @@ Details.displayName = 'Details';
 
 Details.propTypes = {
   contact: contactType.isRequired,
-  detailsExpanded: PropTypes.object.isRequired,
+  detailsExpanded: PropTypes.objectOf(PropTypes.bool).isRequired,
   handleOpenConnectDialog: PropTypes.func.isRequired,
   handleMockedMessage: PropTypes.func.isRequired,
   handleExpandDetailsSection: PropTypes.func.isRequired,
