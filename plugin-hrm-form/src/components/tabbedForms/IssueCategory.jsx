@@ -16,7 +16,7 @@ const IssueCategory = props => {
             const id = `IssueCategorization_${props.category}_${subcategoryName}`;
             const { value } = props.form.caseInformation.categories[props.category][subcategoryName];
             const selectedCategories = countSelectedCategories(props.form.caseInformation.categories);
-            const disabled = selectedCategories === 3 && !value;
+            const disabled = selectedCategories >= 3 && !value;
             const handleClickCheckboxField = e => {
               e.preventDefault();
               props.handleCategoryToggle(props.taskId, props.category, subcategoryName, !value);
