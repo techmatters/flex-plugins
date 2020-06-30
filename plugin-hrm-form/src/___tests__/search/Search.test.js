@@ -46,6 +46,10 @@ function createState(taskId, { currentPage, searchFormValues, currentContact, se
   };
 }
 
+const detailsExpanded = {
+  'General details': true,
+};
+
 test('<Search> should display <SearchForm />', () => {
   const currentPage = SearchPages.form;
   const searchFormValues = {
@@ -58,7 +62,7 @@ test('<Search> should display <SearchForm />', () => {
   };
   const task = { taskSid: 'WT123' };
 
-  const initialState = createState(task.taskSid, { currentPage, searchFormValues });
+  const initialState = createState(task.taskSid, { currentPage, searchFormValues, detailsExpanded });
   const store = mockStore(initialState);
 
   const component = renderer.create(
@@ -100,7 +104,7 @@ test('<Search> should display <SearchResults />', () => {
   ];
   const task = { taskSid: 'WT123' };
 
-  const initialState = createState(task.taskSid, { currentPage, searchResult });
+  const initialState = createState(task.taskSid, { currentPage, searchResult, detailsExpanded });
   const store = mockStore(initialState);
 
   const component = renderer.create(
@@ -192,9 +196,6 @@ test('<Search> should display <ContactDetails />', () => {
     },
     counselor: 'Counselor',
     tags: ['Tag1', 'Tag2'],
-  };
-  const detailsExpanded = {
-    'General details': true,
   };
   const task = { taskSid: 'WT123' };
 
