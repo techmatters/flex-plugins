@@ -50,6 +50,29 @@ export const ErrorText = styled('p')`
   line-height: 1.5;
 `;
 
+export const CategoryTitle = styled('p')`
+  text-transform: uppercase;
+  font-weight: 600;
+`;
+
+export const CategorySubtitleSection = styled('div')`
+  display: flex;
+  align-items: center;
+  margin: 6px 0;
+`;
+
+export const CategoryRequiredText = styled('p')`
+  color: ${props => props.theme.colors.darkTextColor};
+  font-size: 12px;
+  font-weight: 400;
+  flex-grow: 1;
+
+  &:before {
+    color: ${props => props.theme.colors.errorColor};
+    content: '* ';
+  }
+`;
+
 export const StyledInput = styled(Input)`
   display: flex;
   flex-grow: 0;
@@ -183,6 +206,7 @@ export const StyledCategoryCheckboxLabel = styled(StyledCheckboxLabel)`
   text-transform: none;
   color: ${({ disabled, theme }) =>
     disabled ? `${theme.colors.categoryTextColor}33` : theme.colors.categoryTextColor};
+  cursor: ${({ disabled }) => (disabled ? 'initial' : 'pointer')};
 `;
 
 export const TopNav = styled('div')`
@@ -243,10 +267,11 @@ export const CategoryCheckboxField = styled('div')`
   border-radius: 2px;
   padding-right: 15px;
   background-color: ${({ selected, disabled, color, theme }) => {
-    if (disabled) return `${theme.colors.categoryDisabledColor}33`; // Hex with alpha 0.2
+    if (disabled) return `${theme.colors.categoryDisabledColor}14`; // Hex with alpha 0.08
     if (selected) return color;
     return 'initial';
   }};
+  cursor: ${({ disabled }) => (disabled ? 'initial' : 'pointer')};
 `;
 
 export const StyledCategoryCheckbox = styled(props => (
@@ -264,6 +289,33 @@ export const StyledCategoryCheckbox = styled(props => (
       font-size: 16px;
     }
   }
+`;
+
+export const ToggleViewButton = styled('div')`
+  display: inline-flex;
+  width: 37px;
+  height: 37px;
+  min-height: 37px;
+  border-radius: 1px;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  cursor: pointer;
+  border: ${({ active }) => (active ? '1px solid #a0a8bd33' : 'none')};
+  color: ${({ active }) => (active ? '#000000cc' : 'initial')};
+  background-color: ${({ active }) => (active ? 'initial' : '#a0a8bdcc')};
+  opacity: ${({ active }) => (active ? 'initial' : '20%')};
+
+  > svg {
+    font-size: 18px;
+  }
+`;
+
+export const CategoriesWrapper = styled('div')`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 20px;
 `;
 
 export const StyledTabs = styled(props => <Tabs {...props} classes={{ indicator: 'indicator' }} />)`

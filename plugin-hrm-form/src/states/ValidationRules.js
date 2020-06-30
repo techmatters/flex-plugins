@@ -2,6 +2,7 @@ import cloneDeep from 'lodash/cloneDeep';
 
 import callTypes from './DomainConstants';
 import { FieldType, ValidationType } from './ContactFormStateFactory';
+import { getConfig } from '../HrmFormPlugin';
 
 /*
  * Questionable whether we should export this
@@ -35,6 +36,8 @@ export function countSelectedCategories(categoryFormSection) {
 
 // NOTE: MODIFIES INPUT
 function handleCallerOrChildInformationKeys(formToModify, ignoreTouched) {
+  const { strings } = getConfig();
+
   Object.keys(formToModify)
     .filter(key => key !== 'type' && key !== 'validation' && key !== 'error')
     .forEach(key => {
@@ -45,7 +48,7 @@ function handleCallerOrChildInformationKeys(formToModify, ignoreTouched) {
           const field = formToModify[key];
           if (field.type === FieldType.CHECKBOX_FIELD) {
             if ((ignoreTouched || field.touched) && countSelectedCategories(field) === 0) {
-              field.error = 'You must check at least one option';
+              field.error = strings['Error-CategoryRequired'];
               field.touched = true;
             } else {
               field.error = null;

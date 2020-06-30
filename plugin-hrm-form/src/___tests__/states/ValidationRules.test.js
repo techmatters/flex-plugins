@@ -1,3 +1,5 @@
+import '../mockGetConfig';
+
 import {
   formIsValid,
   moreThanThreeCategoriesSelected,
@@ -209,7 +211,7 @@ describe('validateOnBlur', () => {
         categories: {
           type: FieldType.CHECKBOX_FIELD,
           validation: [ValidationType.REQUIRED],
-          error: 'You must check at least one option',
+          error: 'Required 1 category minimum, 3 categories maximum',
           touched: true,
           category1: {
             type: FieldType.INTERMEDIATE,
@@ -293,7 +295,7 @@ describe('validateOnBlur', () => {
         categories: {
           type: FieldType.CHECKBOX_FIELD,
           validation: [ValidationType.REQUIRED],
-          error: 'You must check at least one option',
+          error: 'Required 1 category minimum, 3 categories maximum',
           category1: {
             type: FieldType.INTERMEDIATE,
             color: '#ff0000',
@@ -492,7 +494,7 @@ describe('validateBeforeSubmit', () => {
           type: FieldType.CHECKBOX_FIELD,
           validation: [ValidationType.REQUIRED],
           touched: true,
-          error: 'You must check at least one option',
+          error: 'Required 1 category minimum, 3 categories maximum',
           category1: {
             type: FieldType.INTERMEDIATE,
             color: '#ff0000',

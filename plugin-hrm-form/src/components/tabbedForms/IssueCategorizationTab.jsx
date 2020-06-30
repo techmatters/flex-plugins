@@ -1,9 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import ListIcon from '@material-ui/icons/List';
+import GridIcon from '@material-ui/icons/GridOn';
+import { Template } from '@twilio/flex-ui';
 
 import { formType } from '../../types';
 import IssueCategory from './IssueCategory';
-import { Container, ErrorText } from '../../styles/HrmStyles';
+import {
+  Container,
+  CategoryTitle,
+  CategorySubtitleSection,
+  CategoryRequiredText,
+  ToggleViewButton,
+  CategoriesWrapper,
+} from '../../styles/HrmStyles';
 import { isNotCategory, isNotSubcategory } from '../../states/ValidationRules';
 
 const getCategories = form => {
@@ -15,22 +25,22 @@ const getCategories = form => {
 const filterSubcategories = subcategories => Object.keys(subcategories).filter(name => !isNotSubcategory(name));
 
 const IssueCategorizationTab = ({ form, taskId, handleCategoryToggle }) => (
-  <Container style={{ display: 'flex', flexDirection: 'column' }}>
-    {form.caseInformation.categories.error ? (
-      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', marginBottom: '20px' }}>
-        <ErrorText>{form.caseInformation.categories.error}</ErrorText>
-      </div>
-    ) : (
-      ''
-    )}
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        marginBottom: '20px',
-      }}
-    >
+  <Container>
+    <CategoryTitle>
+      <Template code="Categories-Title" />
+    </CategoryTitle>
+    <CategorySubtitleSection>
+      <CategoryRequiredText>
+        <Template code="Error-CategoryRequired" />
+      </CategoryRequiredText>
+      <ToggleViewButton>
+        <GridIcon />
+      </ToggleViewButton>
+      <ToggleViewButton active>
+        <ListIcon />
+      </ToggleViewButton>
+    </CategorySubtitleSection>
+    <CategoriesWrapper>
       {getCategories(form).map(([name, subcategories]) => (
         <IssueCategory
           key={name}
@@ -42,7 +52,7 @@ const IssueCategorizationTab = ({ form, taskId, handleCategoryToggle }) => (
           form={form}
         />
       ))}
-    </div>
+    </CategoriesWrapper>
   </Container>
 );
 

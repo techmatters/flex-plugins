@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { CategoryCheckboxField, StyledCategoryCheckbox, StyledCategoryCheckboxLabel } from '../../styles/HrmStyles';
 import { formType } from '../../types';
 import Section from '../Section';
+import { countSelectedCategories } from '../../states/ValidationRules';
 
 const IssueCategory = props => {
   const lighterColor = `${props.color}99`; // Hex with alpha 0.6
@@ -14,16 +15,21 @@ const IssueCategory = props => {
           {props.subcategories.map(subcategoryName => {
             const id = `IssueCategorization_${props.category}_${subcategoryName}`;
             const { value } = props.form.caseInformation.categories[props.category][subcategoryName];
-            const disabled = false;
+            const selectedCategories = countSelectedCategories(props.form.caseInformation.categories);
+            const disabled = selectedCategories >= 3 && !value;
+            const handleClickCheckboxField = e => {
+              e.preventDefault();
+              props.handleCategoryToggle(props.taskId, props.category, subcategoryName, !value);
+            };
             return (
-              <CategoryCheckboxField key={id} color={lighterColor} selected={value} disabled={disabled}>
-                <StyledCategoryCheckbox
-                  disabled={disabled}
-                  color={lighterColor}
-                  checked={value}
-                  id={id}
-                  onClick={() => props.handleCategoryToggle(props.taskId, props.category, subcategoryName, !value)}
-                />
+              <CategoryCheckboxField
+                key={id}
+                onClick={handleClickCheckboxField}
+                color={lighterColor}
+                selected={value}
+                disabled={disabled}
+              >
+                <StyledCategoryCheckbox disabled={disabled} color={lighterColor} checked={value} id={id} />
                 <StyledCategoryCheckboxLabel htmlFor={id} disabled={disabled}>
                   {subcategoryName}
                 </StyledCategoryCheckboxLabel>
