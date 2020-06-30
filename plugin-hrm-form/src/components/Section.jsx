@@ -25,13 +25,14 @@ const Section = ({ color, sectionTitle, expanded, children, handleExpandClick })
 Section.displayName = 'Section';
 Section.propTypes = {
   sectionTitle: PropTypes.string.isRequired,
-  color: PropTypes.string.isRequired,
+  color: PropTypes.string,
   children: PropTypes.node.isRequired,
   expanded: PropTypes.bool,
   handleExpandClick: PropTypes.func.isRequired,
 };
 Section.defaultProps = {
   expanded: false,
+  color: null,
 };
 
 export default Section;
