@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Template, withTaskContext } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
-import { format } from 'date-fns';
 
 import { namespace, contactFormsBase, configurationBase } from '../../states';
 import { taskType, formType } from '../../types';
@@ -22,7 +21,7 @@ const Case = props => {
   const name = formatName(`${firstName.value} ${lastName.value}`);
   const { createdAt, twilioWorkerId, status } = connectedCase;
   const counselor = props.counselorsHash[twilioWorkerId];
-  const date = `${format(new Date(createdAt), 'M/d/yyyy')}`;
+  const date = new Date(createdAt).toLocaleDateString();
 
   const saveAndEnd = async () => {
     const { task, form } = props;

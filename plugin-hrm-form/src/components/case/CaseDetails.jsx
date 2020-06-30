@@ -5,6 +5,7 @@ import { Template } from '@twilio/flex-ui';
 import { Grid } from '@material-ui/core';
 
 import { DetailsContainer, DetailDescription, DetailValue, OpenStatusFont, DefaultStatusFont } from '../../styles/case';
+import { HiddenText } from '../../styles/HrmStyles';
 import { caseStatuses } from '../../states/DomainConstants';
 
 // eslint-disable-next-line react/display-name
@@ -12,7 +13,10 @@ const renderCaseStatus = status => {
   switch (status) {
     case caseStatuses.open:
       return (
-        <OpenStatusFont aria-label="Status: ">
+        <OpenStatusFont>
+          <HiddenText>
+            <Template code="Case-CaseDetailsStatusLabel" />
+          </HiddenText>
           <Template code="Case-CaseDetailsStatusOpen" />
         </OpenStatusFont>
       );
