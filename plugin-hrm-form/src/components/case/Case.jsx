@@ -21,7 +21,7 @@ const Case = props => {
   const name = formatName(`${firstName.value} ${lastName.value}`);
   const { createdAt, twilioWorkerId, status } = connectedCase;
   const counselor = props.counselorsHash[twilioWorkerId];
-  const date = new Date(createdAt).toLocaleDateString();
+  const date = new Date(createdAt).toLocaleDateString(navigator.language);
 
   const saveAndEnd = async () => {
     const { task, form } = props;
