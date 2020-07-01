@@ -9,7 +9,9 @@ import CustomCRMContainer from '../components/CustomCRMContainer';
 import LocalizationContext from '../contexts/LocalizationContext';
 import { channelTypes } from '../states/DomainConstants';
 import Translator from '../components/translator';
+import CaseList from '../components/caseList';
 import SettingsSideLink from '../components/sideLinks/SettingsSideLink';
+import CaseListSideLink from '../components/sideLinks/CaseListSideLink';
 // eslint-disable-next-line no-unused-vars
 import { getConfig } from '../HrmFormPlugin';
 /**
@@ -189,6 +191,29 @@ export const setUpIncomingTransferMessage = () => {
   ];
 
   chatChannels.forEach(el => setSecondLine(el));
+};
+
+/**
+ * Add components used only by developers
+ */
+export const setUpCaseList = () => {
+  Flex.ViewCollection.Content.add(
+    <Flex.View name="case-list" key="case-list-view">
+      <CaseList />
+    </Flex.View>,
+  );
+
+  Flex.SideNav.Content.add(
+    <CaseListSideLink
+      key="CaseListSideLink"
+      onClick={() => Flex.Actions.invokeAction('NavigateToView', { viewName: 'case-list' })}
+    />,
+    /*
+     * {
+     *   align: 'start',
+     * },
+     */
+  );
 };
 
 /**

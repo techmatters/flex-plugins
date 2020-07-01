@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 
 import { namespace, queuesStatusBase } from '../../states';
 import QueueCard from './QueueCard';
-import { Container, HeaderContainer, QueuesContainer } from '../../styles/queuesStatus';
-import { Box, ErrorText } from '../../styles/HrmStyles';
+import { Container, QueuesContainer } from '../../styles/queuesStatus';
+import { Box, ErrorText, HeaderContainer } from '../../styles/HrmStyles';
 import { TLHPaddingLeft } from '../../styles/GlobalOverrides';
 
 const QueuesStatus = ({ colors, queuesStatusState }) => {
