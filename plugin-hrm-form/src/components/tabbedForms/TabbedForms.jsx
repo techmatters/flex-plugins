@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withTaskContext } from '@twilio/flex-ui';
-import { Template } from '@twilio/flex-ui';
+import { withTaskContext, Template } from '@twilio/flex-ui';
 import SearchIcon from '@material-ui/icons/Search';
 
 import { TabbedFormsContainer, TopNav, TransparentButton, StyledTabs, StyledTab } from '../../styles/HrmStyles';
