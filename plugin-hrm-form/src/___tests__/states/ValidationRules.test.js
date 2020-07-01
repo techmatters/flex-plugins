@@ -5,8 +5,6 @@ import {
   moreThanThreeCategoriesSelected,
   validateOnBlur,
   validateBeforeSubmit,
-  isNotCategory,
-  isNotSubcategory,
 } from '../../states/ValidationRules';
 import callTypes from '../../states/DomainConstants';
 import { FieldType, ValidationType } from '../../states/ContactFormStateFactory';
