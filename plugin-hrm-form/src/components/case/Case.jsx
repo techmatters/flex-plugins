@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withTaskContext } from '@twilio/flex-ui';
+import { withTaskContext, Template } from '@twilio/flex-ui';
 
 import { taskType, formType } from '../../types';
 import { getConfig } from '../../HrmFormPlugin';
@@ -27,7 +27,7 @@ const Case = props => {
     <div>
       Case #{connectedCase.id}
       <button type="button" onClick={saveAndEnd}>
-        Save and end
+        <Template code="Case-Save" />
       </button>
     </div>
   );

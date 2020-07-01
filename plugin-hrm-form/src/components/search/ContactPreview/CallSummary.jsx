@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { truncate } from 'lodash';
+import { Template } from '@twilio/flex-ui';
 
 import { Row, Box } from '../../../styles/HrmStyles';
 import { SummaryText, ShortSummaryText, StyledLink } from '../../../styles/search';
@@ -23,7 +24,7 @@ class CallSummary extends React.Component {
     const { callSummary } = this.props;
 
     if (!callSummary) {
-      return '- No call summary -';
+      return <Template code="CallSummary-None" />;
     }
 
     return truncate(callSummary, {
@@ -44,13 +45,19 @@ class CallSummary extends React.Component {
     return this.state.expanded ? (
       <div>
         <SummaryText>{this.props.callSummary}</SummaryText>
-        <StyledLink onClick={this.props.onClickFull}>See full record</StyledLink>
+        <StyledLink onClick={this.props.onClickFull}>
+          <Template code="CallSummary-ViewFull" />
+        </StyledLink>
       </div>
     ) : (
       <Box marginBottom="5px">
         <Row style={{ height: '23px' }}>
           <ShortSummaryText>{this.getShortSummary()}</ShortSummaryText>
-          {isLong && <StyledLink onClick={this.handleClick(true)}>more notes</StyledLink>}
+          {isLong && (
+            <StyledLink onClick={this.handleClick(true)}>
+              <Template code="CallSummary-MoreNotes" />
+            </StyledLink>
+          )}
         </Row>
       </Box>
     );

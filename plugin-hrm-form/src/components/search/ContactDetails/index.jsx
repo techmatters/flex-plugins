@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { ButtonBase } from '@material-ui/core';
+import { Template } from '@twilio/flex-ui';
 
 import { Container, Row } from '../../../styles/HrmStyles';
 import { BackText, BackIcon } from '../../../styles/search';
@@ -54,7 +55,9 @@ class ContactDetails extends Component {
           <ButtonBase onClick={this.props.handleBack}>
             <Row>
               <BackIcon />
-              <BackText>Return to results</BackText>
+              <BackText>
+                <Template code="ContactDetailsIndex-Back" />
+              </BackText>
             </Row>
           </ButtonBase>
         </Row>

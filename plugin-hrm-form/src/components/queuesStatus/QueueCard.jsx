@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { differenceInMinutes } from 'date-fns';
+import { Template } from '@twilio/flex-ui';
 
 import { Box, Row, HiddenText } from '../../styles/HrmStyles';
 import {
@@ -81,10 +82,15 @@ class QueuesCard extends React.PureComponent {
   );
 
   getWaitingMessage = () => {
-    if (this.props.longestWaitingDate === null) return 'none';
-    if (this.state.waitingMinutes === 0) return 'less than a minute';
-    if (this.state.waitingMinutes === 1) return '1 minute';
-    return `${this.state.waitingMinutes} minutes`;
+    if (this.props.longestWaitingDate === null) return <Template code="QueueCard-None" />;
+    if (this.state.waitingMinutes === 0) return <Template code="QueueCard-LessThanMinute" />;
+    if (this.state.waitingMinutes === 1) return <Template code="QueueCard-OneMinute" />;
+    return (
+      <Row>
+        {this.state.waitingMinutes}
+        <Template code="QueueCard-Minutes" />
+      </Row>
+    );
   };
 
   render() {
@@ -106,7 +112,9 @@ class QueuesCard extends React.PureComponent {
             </Row>
           </Box>
           <Row>
-            <WaitTimeLabel>Longest wait time:</WaitTimeLabel>
+            <WaitTimeLabel>
+              <Template code="QueueCard-WaitLabel" />
+            </WaitTimeLabel>
             <WaitTimeValue>{this.getWaitingMessage()}</WaitTimeValue>
           </Row>
         </Box>

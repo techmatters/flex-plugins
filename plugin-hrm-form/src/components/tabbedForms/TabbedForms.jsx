@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTaskContext } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 import SearchIcon from '@material-ui/icons/Search';
 
 import { TabbedFormsContainer, TopNav, TransparentButton, StyledTabs, StyledTab } from '../../styles/HrmStyles';
@@ -109,11 +110,11 @@ const TabbedForms = props => {
   const tabs = [];
   tabs.push(<StyledTab searchTab key="Search" icon={<SearchIcon />} />);
   if (isCallerType) {
-    tabs.push(decorateTab('Add Caller Information', form.callerInformation));
+    tabs.push(decorateTab('TabbedForms-AddCallerInfoTab', form.callerInformation));
   }
-  tabs.push(decorateTab('Add Child Information', form.childInformation));
-  tabs.push(decorateTab('Categorize Issue', form.caseInformation.categories));
-  tabs.push(<StyledTab key="Case Information" label="Add Case Summary" />);
+  tabs.push(decorateTab('TabbedForms-AddChildInfoTab', form.childInformation));
+  tabs.push(decorateTab('TabbedForms-CategoriesTab', form.caseInformation.categories));
+  tabs.push(<StyledTab key="Case Information" label={<Template code="TabbedForms-AddCaseInfoTab" />} />);
 
   return (
     <TabbedFormsContainer>

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { ButtonBase } from '@material-ui/core';
+import { Template } from '@twilio/flex-ui';
 
 import ContactPreview from '../ContactPreview';
 import { searchResultType } from '../../../types';
@@ -56,12 +57,18 @@ class SearchResults extends Component {
           <Row>
             <ButtonBase onClick={this.props.handleBack}>
               <BackIcon />
-              <BackText>Return to search criteria</BackText>
+              <BackText>
+                <Template code="SearchResultsIndex-Back" />
+              </BackText>
             </ButtonBase>
           </Row>
           <Row style={{ paddingLeft: '24px' }}>
             <BackText>
-              {resultsCount} result{resultsCount !== 1 && 's'}
+              {resultsCount}
+              {resultsCount === 1
+                ? <Template code="SearchResultsIndex-Result" /> 
+                : <Template code="SearchResultsIndex-Results" />
+              }
             </BackText>
           </Row>
         </ResultsHeader>

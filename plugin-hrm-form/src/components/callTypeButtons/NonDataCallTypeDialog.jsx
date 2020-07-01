@@ -28,7 +28,8 @@ const NonDataCallTypeDialog = ({ isOpen, isCallTask, handleConfirm, handleCancel
               <Template code={isCallTask ? 'TaskHeaderEndCall' : 'TaskHeaderEndChat'} />
             </ConfirmButton>
             <CancelButton tabIndex={2} onClick={handleCancel}>
-              Cancel
+              {/* eslint-disable-next-line react/jsx-max-depth */}
+              <Template code="CancelButton" />
             </CancelButton>
           </Row>
         </Box>
