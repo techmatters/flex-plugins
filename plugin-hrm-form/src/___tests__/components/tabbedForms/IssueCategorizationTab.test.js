@@ -2,7 +2,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 
-import { IssueCategorizationTab } from '../../../components/tabbedForms/IssueCategorizationTab';
+import { UnconnectedIssueCategorizationTab } from '../../../components/tabbedForms/IssueCategorizationTab';
 import { ToggleViewButton } from '../../../styles/HrmStyles';
 import HrmTheme from '../../../styles/HrmTheme';
 
@@ -19,7 +19,7 @@ test('Click on view subcategories as grid icon', () => {
 
   const wrapper = mount(
     <StorelessThemeProvider themeConf={themeConf}>
-      <IssueCategorizationTab
+      <UnconnectedIssueCategorizationTab
         form={{}}
         taskId={taskId}
         handleCategoryToggle={jest.fn()}
@@ -42,7 +42,7 @@ test('Click on view subcategories as list icon', () => {
 
   const wrapper = mount(
     <StorelessThemeProvider themeConf={themeConf}>
-      <IssueCategorizationTab
+      <UnconnectedIssueCategorizationTab
         form={{}}
         taskId={taskId}
         handleCategoryToggle={jest.fn()}

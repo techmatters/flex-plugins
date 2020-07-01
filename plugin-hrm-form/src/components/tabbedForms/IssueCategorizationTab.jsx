@@ -28,7 +28,7 @@ const getCategories = form => {
 
 const filterSubcategories = subcategories => Object.keys(subcategories).filter(name => !isNotSubcategory(name));
 
-export const IssueCategorizationTab = ({
+const IssueCategorizationTab = ({
   form,
   taskId,
   handleCategoryToggle,
@@ -97,4 +97,5 @@ const mapDispatchToProps = dispatch => ({
   handleExpandCategory: bindActionCreators(Actions.handleExpandCategory, dispatch),
 });
 
+export const UnconnectedIssueCategorizationTab = IssueCategorizationTab;
 export default connect(mapStateToProps, mapDispatchToProps)(IssueCategorizationTab);
