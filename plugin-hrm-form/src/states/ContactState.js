@@ -14,6 +14,8 @@ import {
   CHANGE_ROUTE,
   SET_CONNECTED_CASE,
   RESTORE_ENTIRE_FORM,
+  SET_CATEGORIES_GRID_VIEW,
+  HANDLE_EXPAND_CATEGORY,
 } from './ActionTypes';
 import { countSelectedCategories } from './ValidationRules';
 import { copySearchResultIntoTask } from './SearchContact';
@@ -76,6 +78,10 @@ export class Actions {
     form,
     taskId,
   });
+
+  static setCategoriesGridView = (gridView, taskId) => ({ type: SET_CATEGORIES_GRID_VIEW, gridView, taskId });
+
+  static handleExpandCategory = (category, taskId) => ({ type: HANDLE_EXPAND_CATEGORY, category, taskId });
 }
 
 // Will replace the below when we move over to field objects
@@ -248,6 +254,57 @@ export function reduce(state = initialState, action) {
         tasks: {
           ...state.tasks,
           [action.taskId]: taskWithConnectedCase,
+        },
+      };
+    }
+
+    case SET_CATEGORIES_GRID_VIEW: {
+      const currentTask = state.tasks[action.taskId];
+      const { metadata } = currentTask;
+      const { categories } = metadata;
+      const taskWithCategoriesViewToggled = {
+        ...currentTask,
+        metadata: {
+          ...metadata,
+          categories: {
+            ...categories,
+            gridView: action.gridView,
+          },
+        },
+      };
+
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: taskWithCategoriesViewToggled,
+        },
+      };
+    }
+
+    case HANDLE_EXPAND_CATEGORY: {
+      const currentTask = state.tasks[action.taskId];
+      const { metadata } = currentTask;
+      const { categories } = metadata;
+      const taskWithCategoriesExpanded = {
+        ...currentTask,
+        metadata: {
+          ...metadata,
+          categories: {
+            ...categories,
+            expanded: {
+              ...categories.expanded,
+              [action.category]: !categories.expanded[action.category],
+            },
+          },
+        },
+      };
+
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: taskWithCategoriesExpanded,
         },
       };
     }

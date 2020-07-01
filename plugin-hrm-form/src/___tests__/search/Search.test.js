@@ -19,7 +19,7 @@ jest.mock('../../services/ServerlessService', () => ({
   populateCounselors: async () => [],
 }));
 
-function createState(taskId, { currentPage, searchFormValues, currentContact, searchResult }) {
+function createState(taskId, { currentPage, searchFormValues, currentContact, searchResult, detailsExpanded }) {
   return {
     'plugin-hrm-form': {
       searchContacts: {
@@ -36,6 +36,7 @@ function createState(taskId, { currentPage, searchFormValues, currentContact, se
               dateTo: '',
             },
             searchResult: searchResult || [],
+            detailsExpanded: detailsExpanded || {},
             isRequesting: false,
             error: null,
           },
@@ -44,6 +45,10 @@ function createState(taskId, { currentPage, searchFormValues, currentContact, se
     },
   };
 }
+
+const detailsExpanded = {
+  'General details': true,
+};
 
 test('<Search> should display <SearchForm />', () => {
   const currentPage = SearchPages.form;
@@ -57,12 +62,12 @@ test('<Search> should display <SearchForm />', () => {
   };
   const task = { taskSid: 'WT123' };
 
-  const initialState = createState(task.taskSid, { currentPage, searchFormValues });
+  const initialState = createState(task.taskSid, { currentPage, searchFormValues, detailsExpanded });
   const store = mockStore(initialState);
 
   const component = renderer.create(
     <Provider store={store}>
-      <Search task={task} handleSelectSearchResult={() => null} />
+      <Search task={task} handleSelectSearchResult={() => null} handleExpandDetailsSection={() => null} />
     </Provider>,
   ).root;
 
@@ -99,12 +104,12 @@ test('<Search> should display <SearchResults />', () => {
   ];
   const task = { taskSid: 'WT123' };
 
-  const initialState = createState(task.taskSid, { currentPage, searchResult });
+  const initialState = createState(task.taskSid, { currentPage, searchResult, detailsExpanded });
   const store = mockStore(initialState);
 
   const component = renderer.create(
     <Provider store={store}>
-      <Search task={task} handleSelectSearchResult={() => null} />
+      <Search task={task} handleSelectSearchResult={() => null} handleExpandDetailsSection={() => null} />
     </Provider>,
   ).root;
 
@@ -194,12 +199,12 @@ test('<Search> should display <ContactDetails />', () => {
   };
   const task = { taskSid: 'WT123' };
 
-  const initialState = createState(task.taskSid, { currentPage, currentContact });
+  const initialState = createState(task.taskSid, { currentPage, currentContact, detailsExpanded });
   const store = mockStore(initialState);
 
   const component = renderer.create(
     <Provider store={store}>
-      <Search task={task} handleSelectSearchResult={() => null} />
+      <Search task={task} handleSelectSearchResult={() => null} handleExpandDetailsSection={() => null} />
     </Provider>,
   ).root;
 

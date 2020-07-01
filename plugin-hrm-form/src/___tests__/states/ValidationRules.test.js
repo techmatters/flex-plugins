@@ -5,7 +5,6 @@ import {
   moreThanThreeCategoriesSelected,
   validateOnBlur,
   validateBeforeSubmit,
-  isNotCategory,
 } from '../../states/ValidationRules';
 import callTypes from '../../states/DomainConstants';
 import { FieldType, ValidationType } from '../../states/ContactFormStateFactory';
@@ -869,34 +868,5 @@ describe('moreThanThreeCategoriesSelected', () => {
       },
     };
     expect(moreThanThreeCategoriesSelected(categorySubForm)).toBe(true);
-  });
-});
-
-describe('isNotCategory', () => {
-  test('returns true', () => {
-    expect(isNotCategory('error')).toBe(true);
-    expect(isNotCategory('touched')).toBe(true);
-    expect(isNotCategory('type')).toBe(true);
-    expect(isNotCategory('validation')).toBe(true);
-    expect(isNotCategory('color')).toBe(true);
-  });
-
-  test('returns false', () => {
-    expect(isNotCategory('Missing children')).toBe(false);
-    expect(isNotCategory('Violence')).toBe(false);
-    expect(isNotCategory('Mental Health')).toBe(false);
-  });
-});
-
-describe('isNotSubcategory', () => {
-  test('returns true', () => {
-    expect(isNotCategory('type')).toBe(true);
-    expect(isNotCategory('color')).toBe(true);
-  });
-
-  test('returns false', () => {
-    expect(isNotCategory('Child abduction')).toBe(false);
-    expect(isNotCategory('Bullying')).toBe(false);
-    expect(isNotCategory('Addictive behaviours')).toBe(false);
   });
 });

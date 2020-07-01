@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import ListIcon from '@material-ui/icons/List';
 import GridIcon from '@material-ui/icons/GridOn';
 import { Template } from '@twilio/flex-ui';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import { formType } from '../../types';
 import IssueCategory from './IssueCategory';
@@ -14,7 +16,9 @@ import {
   ToggleViewButton,
   CategoriesWrapper,
 } from '../../styles/HrmStyles';
-import { isNotCategory, isNotSubcategory } from '../../states/ValidationRules';
+import { isNotCategory, isNotSubcategory } from '../../states/ContactFormStateFactory';
+import { Actions } from '../../states/ContactState';
+import { namespace, contactFormsBase } from '../../states';
 
 const getCategories = form => {
   if (!form || !form.caseInformation || !form.caseInformation.categories) return [];
@@ -24,7 +28,15 @@ const getCategories = form => {
 
 const filterSubcategories = subcategories => Object.keys(subcategories).filter(name => !isNotSubcategory(name));
 
-const IssueCategorizationTab = ({ form, taskId, handleCategoryToggle }) => (
+const IssueCategorizationTab = ({
+  form,
+  taskId,
+  handleCategoryToggle,
+  gridView,
+  expanded,
+  setCategoriesGridView,
+  handleExpandCategory,
+}) => (
   <Container>
     <CategoryTitle>
       <Template code="Categories-Title" />
@@ -33,10 +45,10 @@ const IssueCategorizationTab = ({ form, taskId, handleCategoryToggle }) => (
       <CategoryRequiredText>
         <Template code="Error-CategoryRequired" />
       </CategoryRequiredText>
-      <ToggleViewButton>
+      <ToggleViewButton onClick={() => setCategoriesGridView(true, taskId)} active={gridView}>
         <GridIcon />
       </ToggleViewButton>
-      <ToggleViewButton active>
+      <ToggleViewButton onClick={() => setCategoriesGridView(false, taskId)} active={!gridView}>
         <ListIcon />
       </ToggleViewButton>
     </CategorySubtitleSection>
@@ -50,6 +62,9 @@ const IssueCategorizationTab = ({ form, taskId, handleCategoryToggle }) => (
           handleCategoryToggle={handleCategoryToggle}
           taskId={taskId}
           form={form}
+          gridView={gridView}
+          expanded={expanded[name]}
+          handleExpandCategory={handleExpandCategory}
         />
       ))}
     </CategoriesWrapper>
@@ -61,6 +76,26 @@ IssueCategorizationTab.propTypes = {
   form: formType.isRequired,
   taskId: PropTypes.string.isRequired,
   handleCategoryToggle: PropTypes.func.isRequired,
+  gridView: PropTypes.bool.isRequired,
+  expanded: PropTypes.objectOf(PropTypes.bool).isRequired,
+  setCategoriesGridView: PropTypes.func.isRequired,
+  handleExpandCategory: PropTypes.func.isRequired,
 };
 
-export default IssueCategorizationTab;
+const mapStateToProps = (state, ownProps) => {
+  const { categories } = state[namespace][contactFormsBase].tasks[ownProps.taskId].metadata;
+  const { gridView, expanded } = categories;
+
+  return {
+    gridView,
+    expanded,
+  };
+};
+
+const mapDispatchToProps = dispatch => ({
+  setCategoriesGridView: bindActionCreators(Actions.setCategoriesGridView, dispatch),
+  handleExpandCategory: bindActionCreators(Actions.handleExpandCategory, dispatch),
+});
+
+export const UnconnectedIssueCategorizationTab = IssueCategorizationTab;
+export default connect(mapStateToProps, mapDispatchToProps)(IssueCategorizationTab);

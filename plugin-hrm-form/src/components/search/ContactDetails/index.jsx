@@ -15,9 +15,11 @@ class ContactDetails extends Component {
   static propTypes = {
     currentIsCaller: PropTypes.bool.isRequired,
     contact: contactType.isRequired,
+    detailsExpanded: PropTypes.objectOf(PropTypes.bool).isRequired,
     handleBack: PropTypes.func.isRequired,
     handleSelectSearchResult: PropTypes.func.isRequired,
     handleMockedMessage: PropTypes.func.isRequired,
+    handleExpandDetailsSection: PropTypes.func.isRequired,
   };
 
   state = {
@@ -39,7 +41,7 @@ class ContactDetails extends Component {
   };
 
   render() {
-    const { contact, currentIsCaller } = this.props;
+    const { contact, detailsExpanded, currentIsCaller } = this.props;
 
     return (
       <Container>
@@ -60,8 +62,10 @@ class ContactDetails extends Component {
         </Row>
         <Details
           contact={contact}
+          detailsExpanded={detailsExpanded}
           handleOpenConnectDialog={this.handleOpenConnectDialog}
           handleMockedMessage={this.props.handleMockedMessage}
+          handleExpandDetailsSection={this.props.handleExpandDetailsSection}
         />
       </Container>
     );

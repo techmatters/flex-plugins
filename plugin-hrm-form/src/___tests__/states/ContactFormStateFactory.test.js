@@ -1,6 +1,12 @@
 import { omit } from 'lodash';
 
-import { FieldType, createBlankForm, ValidationType } from '../../states/ContactFormStateFactory';
+import {
+  FieldType,
+  createBlankForm,
+  ValidationType,
+  isNotCategory,
+  isNotSubcategory,
+} from '../../states/ContactFormStateFactory';
 
 test('createBlankForm operates as expected', () => {
   const testFormDefinition = {
@@ -239,4 +245,33 @@ test('createBlankForm operates as expected', () => {
       recreated: false,
     }),
   );
+});
+
+describe('isNotCategory', () => {
+  test('returns true', () => {
+    expect(isNotCategory('error')).toBe(true);
+    expect(isNotCategory('touched')).toBe(true);
+    expect(isNotCategory('type')).toBe(true);
+    expect(isNotCategory('validation')).toBe(true);
+    expect(isNotCategory('color')).toBe(true);
+  });
+
+  test('returns false', () => {
+    expect(isNotCategory('Missing children')).toBe(false);
+    expect(isNotCategory('Violence')).toBe(false);
+    expect(isNotCategory('Mental Health')).toBe(false);
+  });
+});
+
+describe('isNotSubcategory', () => {
+  test('returns true', () => {
+    expect(isNotSubcategory('type')).toBe(true);
+    expect(isNotSubcategory('color')).toBe(true);
+  });
+
+  test('returns false', () => {
+    expect(isNotSubcategory('Child abduction')).toBe(false);
+    expect(isNotSubcategory('Bullying')).toBe(false);
+    expect(isNotSubcategory('Addictive behaviours')).toBe(false);
+  });
 });

@@ -12,6 +12,16 @@ export const FieldType = {
   TEXT_INPUT: 'TEXT_INPUT',
 };
 
+export function isNotCategory(value) {
+  const notCategory = ['error', 'touched', 'type', 'validation', 'color'];
+  return notCategory.includes(value);
+}
+
+export function isNotSubcategory(value) {
+  const notSubcategory = ['type', 'color'];
+  return notSubcategory.includes(value);
+}
+
 // TODO: add tab order?
 
 const defaultFormDefinition = {
@@ -586,6 +596,17 @@ const recursivelyCreateBlankForm = formDefinition => {
   return initialState;
 };
 
+const createCategoriesMetadata = formDef => {
+  const expanded = Object.keys(formDef.caseInformation.categories)
+    .filter(key => !isNotCategory(key))
+    .reduce((result, key) => ({ ...result, [key]: false }), {});
+
+  return {
+    gridView: false,
+    expanded,
+  };
+};
+
 /**
  * @param {any} formDef
  * The form definition we want to replicate.
@@ -602,6 +623,7 @@ export const createBlankForm = (formDef = defaultFormDefinition, recreated = fal
     endMillis: null,
     tab: 1,
     recreated,
+    categories: createCategoriesMetadata(formDef),
   };
 
   const generatedForm = { ...initialState, metadata };
