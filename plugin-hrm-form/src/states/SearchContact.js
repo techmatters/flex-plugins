@@ -164,6 +164,14 @@ const initialState = {
   tasks: {},
 };
 
+export const ContactDetailsSections = {
+  GENERAL_DETAILS: 'General details',
+  CALLER_INFORMATION: 'Caller information',
+  CHILD_INFORMATION: 'Child information',
+  ISSUE_CATEGORIZATION: 'Issue categorization',
+  CASE_SUMMARY: 'Case summary',
+};
+
 const newTaskEntry = {
   currentPage: SearchPages.form,
   currentContact: null,
@@ -176,11 +184,11 @@ const newTaskEntry = {
     dateTo: '',
   },
   detailsExpanded: {
-    'General details': true,
-    'Caller information': false,
-    'Child information': false,
-    'Issue categorization': false,
-    'Case summary': false,
+    [ContactDetailsSections.GENERAL_DETAILS]: true,
+    [ContactDetailsSections.CALLER_INFORMATION]: false,
+    [ContactDetailsSections.CHILD_INFORMATION]: false,
+    [ContactDetailsSections.ISSUE_CATEGORIZATION]: false,
+    [ContactDetailsSections.CASE_SUMMARY]: false,
   },
   searchResult: [],
   isRequesting: false,

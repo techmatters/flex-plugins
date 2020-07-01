@@ -11,6 +11,7 @@ import callTypes, { channelTypes } from '../../../states/DomainConstants';
 import { isNonDataCallType } from '../../../states/ValidationRules';
 import { contactType } from '../../../types';
 import { formatAddress, formatDuration, formatName, mapChannel } from '../../../utils';
+import { ContactDetailsSections } from '../../../states/SearchContact';
 
 const MoreHorizIcon = ContactDetailsIcon(MoreHoriz);
 
@@ -67,6 +68,14 @@ const Details = ({
 
   const isNonDataContact = isNonDataCallType(contact.overview.callType);
 
+  const {
+    GENERAL_DETAILS,
+    CALLER_INFORMATION,
+    CHILD_INFORMATION,
+    ISSUE_CATEGORIZATION,
+    CASE_SUMMARY,
+  } = ContactDetailsSections;
+
   return (
     <DetailsContainer>
       <NameContainer>
@@ -83,9 +92,9 @@ const Details = ({
         </ButtonBase>
       </NameContainer>
       <Section
-        sectionTitle="General details"
-        expanded={detailsExpanded['General details']}
-        handleExpandClick={() => handleExpandDetailsSection('General details')}
+        sectionTitle={GENERAL_DETAILS}
+        expanded={detailsExpanded[GENERAL_DETAILS]}
+        handleExpandClick={() => handleExpandDetailsSection(GENERAL_DETAILS)}
       >
         <SectionEntry description="Channel" value={formattedChannel} />
         <SectionEntry description="Phone Number" value={isPhoneContact ? customerNumber : ''} />
@@ -95,9 +104,9 @@ const Details = ({
       </Section>
       {callType === callTypes.caller && (
         <Section
-          sectionTitle="Caller information"
-          expanded={detailsExpanded['Caller information']}
-          handleExpandClick={() => handleExpandDetailsSection('Caller information')}
+          sectionTitle={CALLER_INFORMATION}
+          expanded={detailsExpanded[CALLER_INFORMATION]}
+          handleExpandClick={() => handleExpandDetailsSection(CALLER_INFORMATION)}
         >
           <SectionEntry description="Name" value={callerOrUnknown} />
           <SectionEntry description="Relationship to Child" value={caller.relationshipToChild} />
@@ -113,9 +122,9 @@ const Details = ({
       )}
       {isDataCall && (
         <Section
-          sectionTitle="Child information"
-          expanded={detailsExpanded['Child information']}
-          handleExpandClick={() => handleExpandDetailsSection('Child information')}
+          sectionTitle={CHILD_INFORMATION}
+          expanded={detailsExpanded[CHILD_INFORMATION]}
+          handleExpandClick={() => handleExpandDetailsSection(CHILD_INFORMATION)}
         >
           <SectionEntry description="Name" value={childOrUnknown} />
           <SectionEntry description="Address" value={formattedChildAddress} />
@@ -135,9 +144,9 @@ const Details = ({
       )}
       {isDataCall && (
         <Section
-          sectionTitle="Issue categorization"
-          expanded={detailsExpanded['Issue categorization']}
-          handleExpandClick={() => handleExpandDetailsSection('Issue categorization')}
+          sectionTitle={ISSUE_CATEGORIZATION}
+          expanded={detailsExpanded[ISSUE_CATEGORIZATION]}
+          handleExpandClick={() => handleExpandDetailsSection(ISSUE_CATEGORIZATION)}
         >
           {Boolean(tag1) && <SectionEntry description="Category 1" value={tag1} />}
           {Boolean(tag2) && <SectionEntry description="Category 2" value={tag2} />}
@@ -147,9 +156,9 @@ const Details = ({
       )}
       {isDataCall && (
         <Section
-          sectionTitle="Case summary"
-          expanded={detailsExpanded['Case summary']}
-          handleExpandClick={() => handleExpandDetailsSection('Case summary')}
+          sectionTitle={CASE_SUMMARY}
+          expanded={detailsExpanded[CASE_SUMMARY]}
+          handleExpandClick={() => handleExpandDetailsSection(CASE_SUMMARY)}
         >
           <SectionEntry description="Call Summary" value={callSummary} />
           <SectionEntry description="Status" value={status} />
