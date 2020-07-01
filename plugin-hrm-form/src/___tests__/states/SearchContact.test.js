@@ -265,6 +265,13 @@ describe('SearchContact reducer', () => {
       dateFrom: '',
       dateTo: '',
     },
+    detailsExpanded: {
+      'General details': true,
+      'Caller information': false,
+      'Child information': false,
+      'Issue categorization': false,
+      'Case summary': false,
+    },
     searchResult: [],
     isRequesting: false,
     error: null,

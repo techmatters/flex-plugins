@@ -1,5 +1,3 @@
-import { isNotCategory } from './ValidationRules';
-
 export const ValidationType = {
   REQUIRED: 'REQUIRED', // Will not be applied if in the callerInformation tab and callType is not caller.  Will not be applied when callType is standalone.
 };
@@ -13,6 +11,16 @@ export const FieldType = {
   TEXT_BOX: 'TEXT_BOX',
   TEXT_INPUT: 'TEXT_INPUT',
 };
+
+export function isNotCategory(value) {
+  const notCategory = ['error', 'touched', 'type', 'validation', 'color'];
+  return notCategory.includes(value);
+}
+
+export function isNotSubcategory(value) {
+  const notSubcategory = ['type', 'color'];
+  return notSubcategory.includes(value);
+}
 
 // TODO: add tab order?
 

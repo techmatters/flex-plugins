@@ -1,7 +1,7 @@
 import cloneDeep from 'lodash/cloneDeep';
 
 import callTypes from './DomainConstants';
-import { FieldType, ValidationType } from './ContactFormStateFactory';
+import { FieldType, ValidationType, isNotCategory, isNotSubcategory } from './ContactFormStateFactory';
 import { getConfig } from '../HrmFormPlugin';
 
 /*
@@ -10,16 +10,6 @@ import { getConfig } from '../HrmFormPlugin';
  */
 export function isNonDataCallType(callType) {
   return callType !== callTypes.caller && callType !== callTypes.child;
-}
-
-export function isNotCategory(value) {
-  const notCategory = ['error', 'touched', 'type', 'validation', 'color'];
-  return notCategory.includes(value);
-}
-
-export function isNotSubcategory(value) {
-  const notSubcategory = ['type', 'color'];
-  return notSubcategory.includes(value);
 }
 
 export function countSelectedCategories(categoryFormSection) {

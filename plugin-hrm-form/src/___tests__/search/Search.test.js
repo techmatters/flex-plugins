@@ -67,7 +67,7 @@ test('<Search> should display <SearchForm />', () => {
 
   const component = renderer.create(
     <Provider store={store}>
-      <Search task={task} handleSelectSearchResult={() => null} />
+      <Search task={task} handleSelectSearchResult={() => null} handleExpandDetailsSection={() => null} />
     </Provider>,
   ).root;
 
@@ -109,7 +109,7 @@ test('<Search> should display <SearchResults />', () => {
 
   const component = renderer.create(
     <Provider store={store}>
-      <Search task={task} handleSelectSearchResult={() => null} />
+      <Search task={task} handleSelectSearchResult={() => null} handleExpandDetailsSection={() => null} />
     </Provider>,
   ).root;
 
@@ -204,7 +204,7 @@ test('<Search> should display <ContactDetails />', () => {
 
   const component = renderer.create(
     <Provider store={store}>
-      <Search task={task} handleSelectSearchResult={() => null} />
+      <Search task={task} handleSelectSearchResult={() => null} handleExpandDetailsSection={() => null} />
     </Provider>,
   ).root;
 

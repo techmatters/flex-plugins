@@ -16,7 +16,7 @@ import {
   ToggleViewButton,
   CategoriesWrapper,
 } from '../../styles/HrmStyles';
-import { isNotCategory, isNotSubcategory } from '../../states/ValidationRules';
+import { isNotCategory, isNotSubcategory } from '../../states/ContactFormStateFactory';
 import { Actions } from '../../states/ContactState';
 import { namespace, contactFormsBase } from '../../states';
 
