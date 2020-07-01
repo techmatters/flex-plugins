@@ -28,7 +28,7 @@ const getCategories = form => {
 
 const filterSubcategories = subcategories => Object.keys(subcategories).filter(name => !isNotSubcategory(name));
 
-const IssueCategorizationTab = ({
+export const IssueCategorizationTab = ({
   form,
   taskId,
   handleCategoryToggle,
