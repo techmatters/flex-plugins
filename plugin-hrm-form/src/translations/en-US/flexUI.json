@@ -18,6 +18,7 @@
   "CallType-hangup": "Hang up",
   "CallType-wrongnumber": "Wrong Number",
   "CallType-abusive": "Abusive",
+  "CallType-CloseContact": "Close Contact",
 
   "CallTypeAndCounselor-Label": "Counselor: ",
 
