@@ -13,7 +13,6 @@ import { WaitTimeValue } from '../../../styles/queuesStatus';
 import { ErrorText } from '../../../styles/HrmStyles';
 
 expect.extend(toHaveNoViolations);
-
 const mockStore = configureMockStore([]);
 
 const themeConf = {

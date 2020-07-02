@@ -29,7 +29,7 @@ const HrmForm = props => {
       );
 
     case 'new-case':
-      return <Case form={props.form} handleCompleteTask={props.handleCompleteTask} />;
+      return <Case handleCompleteTask={props.handleCompleteTask} />;
 
     case 'select-call-type':
     default:
