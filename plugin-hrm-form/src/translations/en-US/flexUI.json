@@ -3,6 +3,7 @@
   "TaskHeaderEndCall": "Hang Up",
   "TaskHeaderEndChat": "End Chat",
   "TranslateButtonAriaLabel": "Change language",
+  "CloseButton": "Close",
   "CancelButton": "Cancel",
 
   "CallSummary-None": "- No call summary -",
@@ -35,8 +36,11 @@
   "QueueCard-LessThanMinute": "less than a minute",
   "QueueCard-OneMinute": "1 minute",
   "QueueCard-Minutes": "&nbsp;minutes",
+  "QueueCard-Name": "Queue name: ",
 
   "QueueIndex-ContactsWaiting": "Contacts waiting",
+
+  "NonDataCallTypeDialog-CloseConfirm": "Are you sure?",
 
   "SearchResultsIndex-Back": "Return to search criteria",
   "SearchResultsIndex-Result": " result",
