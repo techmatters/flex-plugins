@@ -12,7 +12,6 @@ const resolveValue = value => {
   if (typeof value === 'string' && value.trim()) return value;
   if (typeof value === 'number') return value.toString();
   if (typeof value === 'boolean') {
-    // note: unsure about styling here, is this the React way?
     if (value) return <Template code="SectionEntry-Yes" />;
     return <Template code="SectionEntry-No" />;
   }
