@@ -4,7 +4,7 @@ import renderer from 'react-test-renderer';
 import configureMockStore from 'redux-mock-store';
 import { mount } from 'enzyme';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
-import { StorelessThemeProvider } from '@twilio/flex-ui';
+import { StorelessThemeProvider, Template } from '@twilio/flex-ui';
 
 import HrmTheme from '../../../styles/HrmTheme';
 import QueuesStatus from '../../../components/queuesStatus';
@@ -100,14 +100,20 @@ test('Test <QueuesStatus> after update', () => {
   const QueuesCards = component.findAllByType(QueueCard);
   expect(QueuesCards).toHaveLength(5);
 
+  const lessThanMinute = <Template code="QueueCard-LessThanMinute" />;
+  const oneMinute = <Template code="QueueCard-OneMinute" />;
+  const minutes = <Template code="QueueCard-Minutes" component="span" />;
+  const none = <Template code="QueueCard-None" />;
+
   const WaitTimeValue1 = QueuesCards[0].findByType(WaitTimeValue).props;
   const WaitTimeValue2 = QueuesCards[1].findByType(WaitTimeValue).props;
   const WaitTimeValue3 = QueuesCards[2].findByType(WaitTimeValue).props;
   const WaitTimeValue4 = QueuesCards[3].findByType(WaitTimeValue).props;
-  expect(WaitTimeValue1.children).toBe('less than a minute');
-  expect(WaitTimeValue2.children).toBe('1 minute');
-  expect(WaitTimeValue3.children).toBe('2 minutes');
-  expect(WaitTimeValue4.children).toBe('none');
+  expect(WaitTimeValue1.children.props).toStrictEqual(lessThanMinute.props);
+  expect(WaitTimeValue2.children.props).toStrictEqual(oneMinute.props);
+  expect(WaitTimeValue3.children.props.children[0]).toEqual(2);
+  expect(WaitTimeValue3.children.props.children[1].props).toStrictEqual(minutes.props);
+  expect(WaitTimeValue4.children.props).toStrictEqual(none.props);
 });
 
 test('Test <QueuesStatus> after error', () => {
