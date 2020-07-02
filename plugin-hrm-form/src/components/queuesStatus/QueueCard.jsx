@@ -86,10 +86,10 @@ class QueuesCard extends React.PureComponent {
     if (this.state.waitingMinutes === 0) return <Template code="QueueCard-LessThanMinute" />;
     if (this.state.waitingMinutes === 1) return <Template code="QueueCard-OneMinute" />;
     return (
-      <Row>
+      <>
         {this.state.waitingMinutes}
-        <Template code="QueueCard-Minutes" />
-      </Row>
+        <Template code="QueueCard-Minutes" component="span" />
+      </>
     );
   };
 
@@ -100,10 +100,10 @@ class QueuesCard extends React.PureComponent {
     return (
       <>
         <Box paddingLeft="10px" paddingTop="10px">
-          <HiddenText id="QueueCard-Name">
+          <HiddenText id={`name-${qName}`}>
             <Template code="QueueCard-Name" />
           </HiddenText>
-          <HiddenText aria-labelledby="QueueCard-Name" />
+          <HiddenText aria-labelledby={`name-${qName}`} />
           <QueueName>{qName}</QueueName>
           <Box marginTop="7px" marginBottom="14px">
             <Row>
