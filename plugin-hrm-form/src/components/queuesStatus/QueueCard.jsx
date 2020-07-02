@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { differenceInMinutes } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
 
-import { getConfig } from '../../HrmFormPlugin';
 import { Box, Row, HiddenText } from '../../styles/HrmStyles';
 import {
   QueueName,
@@ -97,12 +96,14 @@ class QueuesCard extends React.PureComponent {
   render() {
     const { qName, colors, facebook, sms, voice, web, whatsapp } = this.props;
     const { voiceColor, smsColor, facebookColor, whatsappColor, webColor } = colors;
-    const { strings } = getConfig();
 
     return (
       <>
         <Box paddingLeft="10px" paddingTop="10px">
-          <HiddenText aria-label={strings['QueueCard-Name']} />
+          <HiddenText id="QueueCard-Name">
+            <Template code="QueueCard-Name" />
+          </HiddenText>
+          <HiddenText aria-labelledby="QueueCard-Name" />
           <QueueName>{qName}</QueueName>
           <Box marginTop="7px" marginBottom="14px">
             <Row>

@@ -55,7 +55,9 @@ const CallTypeButtons = props => {
     <>
       <Container>
         <Box marginBottom="29px">
-          <Template style={{ width: 'auto' }} code="CallTypeButtons-Categorize" />
+          <Label style={{ width: 'auto' }}>
+            <Template code="CallTypeButtons-Categorize" />
+          </Label>
           <DataCallTypeButton onClick={() => handleClickAndRedirect(task.taskSid, callTypes.child)}>
             <Box width="50px" marginRight="5px">
               <FaceIcon />

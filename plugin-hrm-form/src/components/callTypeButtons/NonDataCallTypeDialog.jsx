@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Template } from '@twilio/flex-ui';
 
-import { getConfig } from '../../HrmFormPlugin';
 import { Box, Row, HiddenText } from '../../styles/HrmStyles';
 import {
   CloseTaskDialog,
@@ -14,15 +13,13 @@ import {
 } from '../../styles/callTypeButtons';
 import TabPressWrapper from '../TabPressWrapper';
 
-// const { strings } = getConfig();
-
 const NonDataCallTypeDialog = ({ isOpen, isCallTask, handleConfirm, handleCancel }) => (
   <CloseTaskDialog onClose={handleCancel} open={isOpen}>
     <TabPressWrapper>
       <NonDataCallTypeDialogContainer>
         <Box marginLeft="auto">
-          <HiddenText>
-            <Template code="CloseButton" id="CloseButton" />
+          <HiddenText id="CloseButton">
+            <Template code="CloseButton" />
           </HiddenText>
           <CloseButton tabIndex={3} aria-labelledby="CloseButton" onClick={handleCancel} />
         </Box>

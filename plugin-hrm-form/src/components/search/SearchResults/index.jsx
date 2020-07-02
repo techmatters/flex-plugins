@@ -65,10 +65,11 @@ class SearchResults extends Component {
           <Row style={{ paddingLeft: '24px' }}>
             <BackText>
               {resultsCount}
-              {resultsCount === 1
-                ? <Template code="SearchResultsIndex-Result" /> 
-                : <Template code="SearchResultsIndex-Results" />
-              }
+              {resultsCount === 1 ? (
+                <Template code="SearchResultsIndex-Result" />
+              ) : (
+                <Template code="SearchResultsIndex-Results" />
+              )}
             </BackText>
           </Row>
         </ResultsHeader>
