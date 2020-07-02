@@ -21,8 +21,10 @@ exports[`decorateTab when invalid 1`] = `
         />
       </div>
        
-      My Label
-       
+      <t
+        className="Twilio"
+        code="My Label"
+      />
     </React.Fragment>
   }
 />
@@ -30,6 +32,11 @@ exports[`decorateTab when invalid 1`] = `
 
 exports[`decorateTab when valid 1`] = `
 <StyledTab
-  label="My Label"
+  label={
+    <t
+      className="Twilio"
+      code="My Label"
+    />
+  }
 />
 `;
