@@ -18,10 +18,9 @@ const NonDataCallTypeDialog = ({ isOpen, isCallTask, handleConfirm, handleCancel
     <TabPressWrapper>
       <NonDataCallTypeDialogContainer>
         <Box marginLeft="auto">
-          <HiddenText id="CloseButton">
-            <Template code="CloseButton" />
-          </HiddenText>
-          <CloseButton tabIndex={3} aria-labelledby="CloseButton" onClick={handleCancel} />
+          <Template code="CloseButton" />
+          <HiddenText id="CloseButton" />
+          <CloseButton tabIndex={3} aria-label="CloseButton" onClick={handleCancel} />
         </Box>
         <CloseTaskDialogText>
           <Template code="NonDataCallTypeDialog-CloseConfirm" />
