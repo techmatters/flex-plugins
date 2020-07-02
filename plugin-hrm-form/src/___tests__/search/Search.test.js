@@ -15,13 +15,15 @@ import { channelTypes } from '../../states/DomainConstants';
 
 const mockStore = configureMockStore([]);
 
-jest.mock('../../services/ServerlessService', () => ({
-  populateCounselors: async () => [],
-}));
-
 function createState(taskId, { currentPage, searchFormValues, currentContact, searchResult }) {
   return {
     'plugin-hrm-form': {
+      configuration: {
+        counselors: {
+          list: [],
+          hash: {},
+        },
+      },
       searchContacts: {
         tasks: {
           [taskId]: {
