@@ -22,7 +22,7 @@ class CaseList extends React.PureComponent {
     return (
       <CaseListContainer>
         <HeaderContainer>
-          <Box marginTop="15px" marginBottom="14px" marginLeft={TLHPaddingLeft}>
+          <Box marginTop="15px" marginBottom="14px" marginLeft={TLHPaddingLeft} id="CaseList-AllCases-label">
             <Template code="CaseList-AllCases" />
           </Box>
         </HeaderContainer>

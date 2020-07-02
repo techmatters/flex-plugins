@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { truncate } from 'lodash';
 
 import { Row, Box } from '../../../styles/HrmStyles';
 import { SummaryText, ShortSummaryText, StyledLink } from '../../../styles/search';
+import { getShortSummary } from '../../../utils';
 
 const CHAR_LIMIT = 45;
 
@@ -18,19 +18,6 @@ class CallSummary extends React.Component {
   state = {
     expanded: false,
   };
-
-  getShortSummary() {
-    const { callSummary } = this.props;
-
-    if (!callSummary) {
-      return '- No call summary -';
-    }
-
-    return truncate(callSummary, {
-      length: CHAR_LIMIT,
-      separator: /,?\.* +/, // TODO(murilo): Check other punctuations
-    });
-  }
 
   handleClick = bool => event => {
     event.stopPropagation();
@@ -49,7 +36,7 @@ class CallSummary extends React.Component {
     ) : (
       <Box marginBottom="5px">
         <Row style={{ height: '23px' }}>
-          <ShortSummaryText>{this.getShortSummary()}</ShortSummaryText>
+          <ShortSummaryText>{getShortSummary(this.props.callSummary, CHAR_LIMIT)}</ShortSummaryText>
           {isLong && <StyledLink onClick={this.handleClick(true)}>more notes</StyledLink>}
         </Row>
       </Box>

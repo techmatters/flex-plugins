@@ -11,14 +11,11 @@ import {
   TableRow,
 } from '@material-ui/core';
 
-import {
-  CaseListTableCell,
-  CaseListTableRow,
-  TableContainer,
-  CaseListBodyCell,
-  TableBodyActiveFont,
-} from '../../styles/caseList';
+import { CaseListTableRow, TableContainer, CaseListBodyCell, TableBodyActiveFont } from '../../styles/caseList';
 import CaseListTableHead from './CaseListTableHead';
+import { getShortSummary } from '../../utils';
+
+const CHAR_LIMIT = 200;
 
 /**
  * This component is splitted to make it easier to read, but is basically a 8 columns Table (7 for data, 1 for the "expand" button)
@@ -26,7 +23,7 @@ import CaseListTableHead from './CaseListTableHead';
 const CaseListTable = ({ caseList }) => {
   return (
     <TableContainer>
-      <Table>
+      <Table tabIndex={0} aria-labelledby="CaseList-AllCases-label">
         <CaseListTableHead />
         <TableBody>
           <CaseListTableRow>
@@ -38,11 +35,10 @@ const CaseListTable = ({ caseList }) => {
             </CaseListBodyCell>
             <CaseListBodyCell>
               <TableBodyActiveFont>
-                Jill Peterson called to say Kurt was thinking of taking his Fanny pack leggings hammock, excepteur id
-                celiac irure direct trade put a bird on it enamel pin banjo quinoa exercitation. Umami pickled in shabby
-                chic, aliquip… readymade aliqua. Quinoa authentic ex, keffiyeh squid do laboris ut officia tattooed
-                skateboard. Artisan cloud bread XOXO dolore hoodie cillum salvia wayfarers small batch adipisicing lyft
-                sunt.
+                {getShortSummary(
+                  'Jill Peterson called to say Kurt was thinking of taking his Fanny pack leggings hammock, excepteur id celiac irure direct trade put a bird on it enamel pin banjo quinoa exercitation. Umami pickled in shabby chic, aliquip… readymade aliqua. Quinoa authentic ex, keffiyeh squid do laboris ut officia tattooed skateboard. Artisan cloud bread XOXO dolore hoodie cillum salvia wayfarers small batch adipisicing lyft sunt.',
+                  CHAR_LIMIT,
+                )}
               </TableBodyActiveFont>
             </CaseListBodyCell>
             <CaseListBodyCell>

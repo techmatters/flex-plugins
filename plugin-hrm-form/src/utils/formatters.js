@@ -1,3 +1,5 @@
+import { truncate } from 'lodash';
+
 /**
  * @param {string} name
  */
@@ -30,4 +32,18 @@ export const formatDuration = inSeconds => {
   const ss = `${seconds}s`;
 
   return `${hh}${mm}${ss}`;
+};
+
+/**
+ * @param {number} charLimit
+ */
+export const getShortSummary = (summary, charLimit) => {
+  if (!summary) {
+    return '- No call summary -';
+  }
+
+  return truncate(summary, {
+    length: charLimit,
+    separator: /,?\.* +/, // TODO(murilo): Check other punctuations
+  });
 };

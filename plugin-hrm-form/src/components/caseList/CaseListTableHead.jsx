@@ -2,47 +2,47 @@ import React from 'react';
 import { TableHead, TableRow } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
 
-import { TableHeaderFont, CaseListTableCell } from '../../styles/caseList';
+import { TableHeaderFont, CaseListHeadCell } from '../../styles/caseList';
 
 const CaseListTableHead = () => (
   <TableHead>
     <TableRow>
-      <CaseListTableCell>
+      <CaseListHeadCell>
         <TableHeaderFont>
           <Template code="CaseList-THCase" />
         </TableHeaderFont>
-      </CaseListTableCell>
-      <CaseListTableCell>
+      </CaseListHeadCell>
+      <CaseListHeadCell>
         <TableHeaderFont>
           <Template code="CaseList-THChildName" />
         </TableHeaderFont>
-      </CaseListTableCell>
-      <CaseListTableCell style={{ width: '35%' }}>
+      </CaseListHeadCell>
+      <CaseListHeadCell style={{ width: '35%' }}>
         <TableHeaderFont>
           <Template code="CaseList-THSummary" />
         </TableHeaderFont>
-      </CaseListTableCell>
-      <CaseListTableCell>
+      </CaseListHeadCell>
+      <CaseListHeadCell>
         <TableHeaderFont>
           <Template code="CaseList-THCounselor" />
         </TableHeaderFont>
-      </CaseListTableCell>
-      <CaseListTableCell>
+      </CaseListHeadCell>
+      <CaseListHeadCell>
         <TableHeaderFont>
           <Template code="CaseList-THOpened" />
         </TableHeaderFont>
-      </CaseListTableCell>
-      <CaseListTableCell>
+      </CaseListHeadCell>
+      <CaseListHeadCell>
         <TableHeaderFont>
           <Template code="CaseList-THUpdated" />
         </TableHeaderFont>
-      </CaseListTableCell>
-      <CaseListTableCell>
+      </CaseListHeadCell>
+      <CaseListHeadCell>
         <TableHeaderFont>
           <Template code="CaseList-THCategor" />
         </TableHeaderFont>
-      </CaseListTableCell>
-      <CaseListTableCell />
+      </CaseListHeadCell>
+      <CaseListHeadCell />
     </TableRow>
   </TableHead>
 );

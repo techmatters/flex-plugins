@@ -15,12 +15,15 @@ export const CaseListContainer = styled(Absolute)`
   background-color: ${props => props.theme.colors.base2};
 `;
 
-export const CaseListTableCell = styled(TableCell)`
+const CaseListTableCell = styled(TableCell)`
   border-bottom: 0px !important;
   text-transform: none !important;
 `;
 
+export const CaseListHeadCell = CaseListTableCell;
+
 export const CaseListBodyCell = styled(CaseListTableCell)`
+  height: 85px !important;
   max-height: 85px !important;
   vertical-align: top !important;
   padding-top: 12px !important;
