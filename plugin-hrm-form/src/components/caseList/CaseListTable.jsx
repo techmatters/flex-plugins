@@ -11,7 +11,7 @@ import {
   TableRow,
 } from '@material-ui/core';
 
-import { CaseListTableRow, TableContainer, CaseListBodyCell, TableBodyActiveFont } from '../../styles/caseList';
+import { CaseListTableRow, TableContainer, CaseListTableCell, TableBodyActiveFont } from '../../styles/caseList';
 import CaseListTableHead from './CaseListTableHead';
 import { getShortSummary } from '../../utils';
 
@@ -27,37 +27,37 @@ const CaseListTable = ({ caseList }) => {
         <CaseListTableHead />
         <TableBody>
           <CaseListTableRow>
-            <CaseListBodyCell>
+            <CaseListTableCell>
               <TableBodyActiveFont>#123456</TableBodyActiveFont>
-            </CaseListBodyCell>
-            <CaseListBodyCell>
+            </CaseListTableCell>
+            <CaseListTableCell>
               <TableBodyActiveFont>Kurt McKinley</TableBodyActiveFont>
-            </CaseListBodyCell>
-            <CaseListBodyCell>
+            </CaseListTableCell>
+            <CaseListTableCell>
               <TableBodyActiveFont>
                 {getShortSummary(
                   'Jill Peterson called to say Kurt was thinking of taking his Fanny pack leggings hammock, excepteur id celiac irure direct trade put a bird on it enamel pin banjo quinoa exercitation. Umami pickled in shabby chic, aliquip… readymade aliqua. Quinoa authentic ex, keffiyeh squid do laboris ut officia tattooed skateboard. Artisan cloud bread XOXO dolore hoodie cillum salvia wayfarers small batch adipisicing lyft sunt.',
                   CHAR_LIMIT,
                 )}
               </TableBodyActiveFont>
-            </CaseListBodyCell>
-            <CaseListBodyCell>
+            </CaseListTableCell>
+            <CaseListTableCell>
               <TableBodyActiveFont>Gianfranco Paoloni</TableBodyActiveFont>
-            </CaseListBodyCell>
-            <CaseListBodyCell>
+            </CaseListTableCell>
+            <CaseListTableCell>
               <TableBodyActiveFont>Jun 8, 2019</TableBodyActiveFont>
-            </CaseListBodyCell>
-            <CaseListBodyCell>
+            </CaseListTableCell>
+            <CaseListTableCell>
               <TableBodyActiveFont>Jul 10, 2019</TableBodyActiveFont>
-            </CaseListBodyCell>
-            <CaseListBodyCell>
+            </CaseListTableCell>
+            <CaseListTableCell>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <span>1</span>
                 <span>2</span>
                 <span>3</span>
               </div>
-            </CaseListBodyCell>
-            <CaseListBodyCell />
+            </CaseListTableCell>
+            <CaseListTableCell />
           </CaseListTableRow>
         </TableBody>
       </Table>

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'react-emotion';
-import { TableCell, TableRow } from '@material-ui/core';
+import { TableCell, TableRow, withStyles } from '@material-ui/core';
 
 import { Absolute, FontOpenSans } from '../HrmStyles';
 
@@ -15,19 +15,29 @@ export const CaseListContainer = styled(Absolute)`
   background-color: ${props => props.theme.colors.base2};
 `;
 
-const CaseListTableCell = styled(TableCell)`
-  border-bottom: 0px !important;
-  text-transform: none !important;
+export const CaseListRowContainer = styled('div')`
+  border-bottom: 5px solid ${props => props.theme.colors.base2};
 `;
 
-export const CaseListHeadCell = CaseListTableCell;
+export const CaseListTableCell = withStyles(theme => ({
+  root: {
+    borderBottom: 0,
+    textTransform: 'none',
+  },
+  // head: {},
+  body: {
+    height: 85,
+    verticalAlign: 'top',
+    paddingTop: 12,
+  },
+}))(TableCell);
 
-export const CaseListBodyCell = styled(CaseListTableCell)`
-  height: 85px !important;
-  max-height: 85px !important;
-  vertical-align: top !important;
-  padding-top: 12px !important;
-`;
+/*
+ * const CaseListTableCell = styled(TableCell)`
+ *   border-bottom: 0px !important;
+ *   text-transform: none !important;
+ * `;
+ */
 
 export const CaseListTableRow = styled(TableRow)`
   background: #ffffff;
