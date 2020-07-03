@@ -5,7 +5,7 @@ function buildConversationsObject(task) {
   const callType = task.callType.value;
 
   return {
-    conversation_attribute_1: callType,
+    conversation_attribute_2: callType,
   };
 }
 
