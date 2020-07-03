@@ -5,6 +5,7 @@ import CaseListTable from './CaseListTable';
 import { Box, HeaderContainer, Row } from '../../styles/HrmStyles';
 import { CaseListContainer } from '../../styles/caseList';
 import { TLHPaddingLeft } from '../../styles/GlobalOverrides';
+import { getCases } from '../../services/CaseService';
 
 class CaseList extends React.PureComponent {
   static displayName = 'CaseList';
@@ -14,8 +15,10 @@ class CaseList extends React.PureComponent {
   };
 
   async componentDidMount() {
-    const caseList = ['case1', 'case2', 'case3'];
-    setTimeout(() => this.setState({ caseList }), 1000);
+    const caseList = await getCases();
+    console.log('HERE HERE HERE');
+    console.log(caseList);
+    this.setState({ caseList });
   }
 
   render() {
@@ -26,10 +29,7 @@ class CaseList extends React.PureComponent {
             <Template code="CaseList-AllCases" />
           </Box>
         </HeaderContainer>
-        {/* {this.state.caseList.map(item => (
-          <span key={item}>{item}</span>
-        ))} */}
-        <CaseListTable />
+        <CaseListTable caseList={this.state.caseList} />
         <Row>
           <span style={{ margin: 3 }}>1</span>
           <span style={{ margin: 3 }}>2</span>

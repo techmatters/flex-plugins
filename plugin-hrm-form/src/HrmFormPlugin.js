@@ -143,8 +143,8 @@ const setUpComponents = setupObject => {
     Components.setUpTransferComponents();
     Components.setUpIncomingTransferMessage();
   }
-  // if (featureFlags.enable_case_management) Components.setUpCaseList();
-  if (true) Components.setUpCaseList();
+
+  if (featureFlags.enable_case_management) Components.setUpCaseList();
 
   if (!Boolean(helpline)) Components.setUpDeveloperComponents(setupObject); // utilities for developers only
 

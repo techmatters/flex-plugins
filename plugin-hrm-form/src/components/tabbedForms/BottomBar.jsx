@@ -50,7 +50,7 @@ class BottomBar extends Component {
   handleOpenNewCase = async () => {
     const { task } = this.props;
     const { taskSid } = task;
-    const { hrmBaseUrl, workerSid, helpline, strings } = getConfig();
+    const { workerSid, helpline, strings } = getConfig();
 
     if (!hasTaskControl(task)) return;
 
@@ -66,7 +66,7 @@ class BottomBar extends Component {
 
     if (formIsValid(newForm)) {
       try {
-        const caseFromDB = await createCase(hrmBaseUrl, caseRecord);
+        const caseFromDB = await createCase(caseRecord);
         this.props.changeRoute('new-case', taskSid);
         this.props.setConnectedCase(caseFromDB, taskSid);
       } catch (error) {
