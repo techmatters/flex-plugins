@@ -2,8 +2,12 @@ import secret from '../private/secret';
 import { FieldType, recreateBlankForm } from '../states/ContactFormStateFactory';
 import { isNonDataCallType } from '../states/ValidationRules';
 import { channelTypes } from '../states/DomainConstants';
+import { getConversationDuration, fillEndMillis } from '../utils/conversationDuration';
+import { getConfig } from '../HrmFormPlugin';
 
-export async function searchContacts(hrmBaseUrl, searchParams) {
+export async function searchContacts(searchParams) {
+  const { hrmBaseUrl } = getConfig();
+
   try {
     const response = await fetch(`${hrmBaseUrl}/contacts/search`, {
       method: 'POST',
@@ -65,16 +69,21 @@ export function transformForm(form) {
   return newForm;
 }
 
-export function saveToHrm(task, form, abortFunction, hrmBaseUrl, workerSid, helpline) {
+/**
+ * Function that saves the form to Contacts table.
+ * If you don't intend to complete the twilio task, set shouldFillEndMillis=false
+ *
+ * @param  task
+ * @param form
+ * @param hrmBaseUrl
+ * @param workerSid
+ * @param helpline
+ * @param shouldFillEndMillis
+ */
+export async function saveToHrm(task, form, hrmBaseUrl, workerSid, helpline, shouldFillEndMillis = true) {
   // if we got this far, we assume the form is valid and ready to submit
-
-  // metrics will be invalid if page was reloaded (form recreated and thus initial information will be lost)
-  const { startMillis, endMillis, recreated } = form.metadata;
-  const milisecondsElapsed = endMillis - startMillis;
-  const secondsElapsed = Math.floor(milisecondsElapsed / 1000);
-  const validMetrics = !recreated;
-  const conversationDuration = validMetrics ? secondsElapsed : null;
-
+  const metadata = shouldFillEndMillis ? fillEndMillis(form.metadata) : form.metadata;
+  const conversationDuration = getConversationDuration(metadata);
   const callType = form.callType.value;
 
   let rawForm = form;
@@ -107,29 +116,34 @@ export function saveToHrm(task, form, abortFunction, hrmBaseUrl, workerSid, help
 
   // print the form values to the console
   console.log(`Sending: ${JSON.stringify(body)}`);
-  fetch(`${hrmBaseUrl}/contacts`, {
+  const response = await fetch(`${hrmBaseUrl}/contacts`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Basic ${btoa(secret)}` },
     body: JSON.stringify(body),
-  })
-    .then(response => {
-      if (!response.ok) {
-        console.log(`Form error: ${response.statusText}`);
-        if (!window.confirm('Error from backend system.  Are you sure you want to end the task without recording?')) {
-          abortFunction();
-        }
-      }
-      return response.json();
-    })
-    .then(myJson => {
-      console.log(`Received: ${JSON.stringify(myJson)}`);
-    })
-    .catch(response => {
-      console.log('Caught something');
+  });
 
-      // TODO(nick): fix this. this isn't working I don't think the function is working from inside the promise.
-      if (!window.confirm('Unknown error saving form.  Are you sure you want to end the task without recording?')) {
-        abortFunction();
-      }
-    });
+  if (!response.ok) {
+    const error = response.error();
+    console.log(JSON.stringify(error));
+    throw error;
+  }
+
+  return response.json();
+}
+
+export async function connectToCase(hrmBaseUrl, contactId, caseId) {
+  const body = { caseId };
+  const response = await fetch(`${hrmBaseUrl}/contacts/${contactId}/connectToCase`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', Authorization: `Basic ${btoa(secret)}` },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    const error = response.error();
+    console.log(JSON.stringify(error));
+    throw error;
+  }
+
+  return response.json();
 }

@@ -2,14 +2,16 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
-import { withTaskContext } from '@twilio/flex-ui';
+import { withTaskContext, TaskHelper } from '@twilio/flex-ui';
 
 import HrmForm from './HrmForm';
+import FormNotEditable from './FormNotEditable';
 import { formType, taskType } from '../types';
 import { namespace, contactFormsBase, searchContactsBase } from '../states';
 import { Actions } from '../states/ContactState';
-import { handleBlur, handleCategoryToggle, handleFocus, handleSubmit } from '../states/ActionCreators';
+import { handleBlur, handleCategoryToggle, handleFocus, handleValidateForm } from '../states/ActionCreators';
 import { handleSelectSearchResult, recreateSearchContact } from '../states/SearchContact';
+import { hasTaskControl } from '../utils/transfer';
 
 class TaskView extends Component {
   static displayName = 'TaskView';
@@ -23,11 +25,12 @@ class TaskView extends Component {
     handleChange: PropTypes.func.isRequired,
     handleCallTypeButtonClick: PropTypes.func.isRequired,
     handleCompleteTask: PropTypes.func.isRequired,
-    handleSubmit: PropTypes.func.isRequired,
     handleFocus: PropTypes.func.isRequired,
     handleSelectSearchResult: PropTypes.func.isRequired,
     recreateSearchContact: PropTypes.func.isRequired,
     changeTab: PropTypes.func.isRequired,
+    changeRoute: PropTypes.func.isRequired,
+    handleValidateForm: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
@@ -40,8 +43,8 @@ class TaskView extends Component {
   render() {
     const { task, thisTask, form } = this.props;
 
-    // If this task is not the active task, hide it
-    const show = task && task.taskSid === thisTask.taskSid;
+    // If this task is not the active task, or if the task is not accepted yet, hide it
+    const show = task && task.taskSid === thisTask.taskSid && !TaskHelper.isPending(task);
 
     if (!show) {
       return null;
@@ -49,16 +52,19 @@ class TaskView extends Component {
 
     return (
       <div style={{ height: '100%' }}>
+        {!hasTaskControl(thisTask) && <FormNotEditable />}
         <HrmForm
           form={form}
           handleBlur={this.props.handleBlur(form, task.taskSid)}
           handleCategoryToggle={handleCategoryToggle(form, this.props.handleChange)}
           handleChange={this.props.handleChange}
           handleCallTypeButtonClick={this.props.handleCallTypeButtonClick}
-          handleSubmit={this.props.handleSubmit(form, this.props.handleCompleteTask)}
+          handleCompleteTask={this.props.handleCompleteTask}
           handleFocus={this.props.handleFocus}
           handleSelectSearchResult={this.props.handleSelectSearchResult}
           changeTab={this.props.changeTab}
+          changeRoute={this.props.changeRoute}
+          handleValidateForm={this.props.handleValidateForm(form, task.taskSid)}
         />
       </div>
     );
@@ -81,10 +87,11 @@ const mapDispatchToProps = dispatch => ({
   handleCallTypeButtonClick: bindActionCreators(Actions.handleCallTypeButtonClick, dispatch),
   handleChange: bindActionCreators(Actions.handleChange, dispatch),
   handleFocus: handleFocus(dispatch),
-  handleSubmit: handleSubmit(dispatch),
   handleSelectSearchResult: bindActionCreators(handleSelectSearchResult, dispatch),
   recreateSearchContact: bindActionCreators(recreateSearchContact, dispatch),
   changeTab: bindActionCreators(Actions.changeTab, dispatch),
+  changeRoute: bindActionCreators(Actions.changeRoute, dispatch),
+  handleValidateForm: handleValidateForm(dispatch),
 });
 
 export default withTaskContext(connect(mapStateToProps, mapDispatchToProps)(TaskView));

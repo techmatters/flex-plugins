@@ -2,14 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import CheckIcon from '@material-ui/icons/Check';
 import { Button, Popover } from '@material-ui/core';
+import { withTaskContext } from '@twilio/flex-ui';
 
 import { Row } from '../../styles/HrmStyles';
 import { ConfirmContainer, ConfirmText, CancelButton } from '../../styles/search';
 import TabPressWrapper from '../TabPressWrapper';
 import callTypes from '../../states/DomainConstants';
 import { contactType } from '../../types';
+import { hasTaskControl } from '../../utils/transfer';
 
-const ConnectDialog = ({ anchorEl, currentIsCaller, contact, handleConfirm, handleClose }) => {
+const ConnectDialog = ({ anchorEl, currentIsCaller, contact, handleConfirm, handleClose, task }) => {
   const isOpen = Boolean(anchorEl);
   const id = isOpen ? 'simple-popover' : undefined;
 
@@ -58,6 +60,7 @@ const ConnectDialog = ({ anchorEl, currentIsCaller, contact, handleConfirm, hand
               size="medium"
               onClick={handleConfirm}
               style={{ backgroundColor: '#000', color: '#fff', marginLeft: 20 }}
+              disabled={!hasTaskControl(task)}
             >
               <CheckIcon />
               yes, copy
@@ -76,10 +79,12 @@ ConnectDialog.propTypes = {
   contact: contactType,
   handleConfirm: PropTypes.func.isRequired,
   handleClose: PropTypes.func.isRequired,
+  task: PropTypes.shape({}),
 };
 ConnectDialog.defaultProps = {
   anchorEl: null,
   contact: null,
+  task: {},
 };
 
-export default ConnectDialog;
+export default withTaskContext(ConnectDialog);

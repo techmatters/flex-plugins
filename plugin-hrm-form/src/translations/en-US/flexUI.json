@@ -11,5 +11,43 @@
   "CallType-joke": "Joke",
   "CallType-hangup": "Hang up",
   "CallType-wrongnumber": "Wrong Number",
-  "CallType-abusive": "Abusive"
+  "CallType-abusive": "Abusive",
+
+  "CallType-CloseContact": "Close Contact",
+
+  "SharedStateSaveFormError": "The information stored in the form couldn't be saved. Task will be transferred anyway.",
+  "SharedStateLoadFormError": "The information stored in the form by previous counselor couldn't be retrieved. Starting current task with clear contact form.",
+
+  "Transfer-TransferButton": "Transfer",
+  "Transfer-AcceptTransferButton": "Accept Transfer",
+  "Transfer-RejectTransferButton": "Reject Transfer",
+  "TaskLineCallTransferWorker": "Transfer from {{task.incomingTransferObject.worker.fullName}} (direct)",
+  "TaskLineCallTransferQueue": "Transfer from {{task.incomingTransferObject.worker.fullName}} ({{task.incomingTransferObject.queue.name}})",
+
+  "Transfer-TaskLineChatReserved": "Transfer from",
+  "Transfer-TaskLineChatLineReserved": "Transfer from",
+  "Transfer-TaskLineChatMessengerReserved": "Transfer from",
+  "Transfer-TaskLineChatSmsReserved": "Transfer from",
+  "Transfer-TaskLineChatWhatsAppReserved": "Transfer from",
+  "Transfer-FormNotEditable": "Form locked until transfer is completed.",
+  "Transfer-ChatWarmNotAllowed": "Warm transfer for chats is currently not supported.",
+
+  "BottomBar-Next": "Next",
+  "BottomBar-SaveAndAddToCase": "Save and Add to Case...",
+  "BottomBar-Submit": "Submit",
+  "BottomBar-OpenNewCase": "Open New Case",
+  "BottomBar-AddToExistingCase": "Add to Existing Case",
+
+  "NotImplemented": "Not implemented yet!",
+  "Error-Backend": "Error from backend system.",
+  "Error-ContinueWithoutRecording": "Error from backend system.  Are you sure you want to end the task without recording?",
+  "Error-Form": "There is a problem with your submission.  Please check the form for errors.",
+
+  "Case-CaseNumber": "Case",
+  "Case-CaseDetailsSection": "Case Details",
+  "Case-CaseDetailsChildName": "Child Name",
+  "Case-CaseDetailsOwner": "Counselor",
+  "Case-CaseDetailsDateOpened": "Date Opened",
+  "Case-CaseDetailsStatusLabel": "Status",
+  "Case-CaseDetailsStatusOpen": "Open"
 }

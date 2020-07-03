@@ -3,7 +3,7 @@
  * Will throw Error if server responses with and http error code.
  * @param {string} url Url to fetch from.
  * @param {{Token: string}} body The body to send via fetch api plus the api token.
- * @returns {any} the api response (if not error)
+ * @returns {Promise<any>} the api response (if not error)
  */
 const fetchProtectedApi = async (url, body) => {
   if (!body.Token) {

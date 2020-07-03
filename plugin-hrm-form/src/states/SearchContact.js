@@ -74,10 +74,10 @@ export const handleSearchFormChange = taskId => (name, value) => ({
   taskId,
 });
 
-export const searchContacts = dispatch => taskId => async (hrmBaseUrl, searchParams, counselorsHash) => {
+export const searchContacts = dispatch => taskId => async (searchParams, counselorsHash) => {
   try {
     dispatch({ type: SEARCH_CONTACTS_REQUEST, taskId });
-    const searchResultRaw = await searchContactsApiCall(hrmBaseUrl, searchParams);
+    const searchResultRaw = await searchContactsApiCall(searchParams);
     const searchResult = addDetails(counselorsHash, searchResultRaw);
 
     dispatch({ type: SEARCH_CONTACTS_SUCCESS, searchResult, taskId });
