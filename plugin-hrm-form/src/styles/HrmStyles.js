@@ -306,3 +306,7 @@ export const HeaderContainer = styled(Row)`
   line-height: 12px;
   padding: 0px;
 `;
+
+export const StyledIcon = icon => styled(icon)`
+  opacity: 0.34;
+`;

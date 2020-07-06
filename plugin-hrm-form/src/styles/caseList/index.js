@@ -1,8 +1,7 @@
-import React from 'react';
 import styled from 'react-emotion';
 import { Table, TableCell, TableRow, withStyles } from '@material-ui/core';
 
-import { Absolute, FontOpenSans } from '../HrmStyles';
+import { Absolute, FontOpenSans, Row } from '../HrmStyles';
 
 export const TableContainer = styled('div')`
   border-left: 15px solid ${props => props.theme.colors.base2};
@@ -22,7 +21,7 @@ export const CLTable = withStyles({
   },
 })(Table);
 
-export const CLTableRow = withStyles(theme => ({
+export const CLTableRow = withStyles({
   root: {
     height: 85,
     background: '#ffffff',
@@ -32,6 +31,15 @@ export const CLTableRow = withStyles(theme => ({
     borderRadius: 4,
     boxShadow: '0 1px 1px 0 rgba(0, 0, 0, 0.06)',
   },
+})(TableRow);
+
+export const CLFooterRow = withStyles(theme => ({
+  root: {
+    height: 'auto',
+    verticalAlign: 'top',
+    backgroundColor: theme.colors.base2,
+    marginTop: -5,
+  },
 }))(TableRow);
 
 export const CLTableCell = withStyles(theme => ({
@@ -39,7 +47,6 @@ export const CLTableCell = withStyles(theme => ({
     borderBottom: 0,
     textTransform: 'none',
   },
-  // head: {},
   body: {
     verticalAlign: 'top',
     paddingTop: 12,
@@ -53,22 +60,18 @@ export const CLTableHeaderFont = styled(FontOpenSans)`
   letter-spacing: 1px;
 `;
 
-export const CLTableBodyActiveFont = styled(FontOpenSans)`
-  color: #192b33;
+export const CLTableBodyFont = styled(FontOpenSans)`
+  color: ${props => (props.isOpenCase ? '#192b33' : '#666c7c')};
   font-size: 12px;
   line-height: 18px;
   font-weight: 600;
-`;
-
-export const CLTableBodyInactiveFont = styled(CLTableBodyActiveFont)`
-  color: #666c7c;
 `;
 
 export const CLCaseNumberContainer = styled('div')`
   display: inline-block;
   margin-left: 12;
   padding: 0 6px;
-  border: 1px solid #192b33;
+  border: ${props => (props.isOpenCase ? '1px solid #192b33' : '0')};
   border-radius: 2px;
 `;
 
@@ -85,4 +88,42 @@ export const CatergoryFont = styled(FontOpenSans)`
   font-size: 11px;
   letter-spacing: 0.1px;
   line-height: 14px;
+`;
+
+export const ActionsContainer = styled(Row)`
+  display: flex;
+  width: '100%';
+  justify-content: flex-end;
+`;
+
+export const addHover = Component =>
+  withStyles({
+    root: {
+      '&:hover': {
+        borderRadius: '50%',
+        backgroundColor: '#a0a8bd66',
+      },
+    },
+  })(Component);
+
+export const PaginationButton = styled('div')`
+  background-color: ${props => (props.highlight ? '#1976D2' : 'transparent')};
+  box-shadow: ${props => (props.highlight ? '0 1px 1px 0 rgba(0, 0, 0, 0.06)' : '0')};
+  border-radius: 4px;
+  padding: 5px 10px;
+  margin: 10px 5px 0 5px;
+`;
+
+export const ButtonText = styled(FontOpenSans)`
+  font-size: 13px;
+  color: ${props => (props.highlight ? '#ffffff' : '#666c7c')};
+  font-weight: ${props => (props.highlight ? 700 : 600)};
+`;
+
+export const LoadingContainer = styled('div')`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
 `;

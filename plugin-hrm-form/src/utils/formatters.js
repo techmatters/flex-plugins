@@ -3,7 +3,7 @@ import { truncate } from 'lodash';
 /**
  * @param {string} name
  */
-export const formatName = name => (name.trim() === '' ? 'Unknown' : name);
+export const formatName = name => (name && name.trim() !== '' ? name : 'Unknown');
 
 /**
  * @param {string} street
@@ -37,8 +37,10 @@ export const formatDuration = inSeconds => {
 /**
  * @param {number} charLimit
  */
-export const getShortSummary = (summary, charLimit) => {
+export const getShortSummary = (summary, charLimit, chooseMessage) => {
   if (!summary) {
+    if (chooseMessage === 'case') return '- No case summary -';
+
     return '- No call summary -';
   }
 

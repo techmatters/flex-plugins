@@ -1,6 +1,6 @@
 import styled from 'react-emotion';
 
-import { FontOpenSans, Row } from '../HrmStyles';
+import { FontOpenSans } from '../HrmStyles';
 
 export const Container = styled('div')`
   width: 100%;
