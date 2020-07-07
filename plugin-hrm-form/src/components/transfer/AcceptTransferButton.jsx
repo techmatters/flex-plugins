@@ -1,29 +1,26 @@
 import React from 'react';
 import { TaskHelper, Template } from '@twilio/flex-ui';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 
 import { TransferStyledButton } from '../../styles/HrmStyles';
-import { closeChatOriginal, closeCallOriginal } from '../../utils/transfer';
-import { Actions } from '../../states/ContactState';
+import { closeCallOriginal } from '../../utils/transfer';
 
 /**
  * @param {import('@twilio/flex-ui').ITask} task the transferred task
- * @param {typeof Actions.restoreEntireForm} restoreEntireForm
  */
-const handleAcceptTransfer = async (task, restoreEntireForm) => {
-  if (TaskHelper.isChatBasedTask(task)) await closeChatOriginal(task);
-  else await closeCallOriginal(task);
+const handleAcceptTransfer = async task => {
+  if (TaskHelper.isChatBasedTask(task)) return; // this case should never happen
+
+  await closeCallOriginal(task);
 };
 
-const AcceptTransferButton = ({ theme, task, restoreEntireForm }) => {
+const AcceptTransferButton = ({ theme, task }) => {
   return (
     <TransferStyledButton
       color={theme.colors.base11}
       background={theme.colors.base1}
       taller
-      onClick={() => handleAcceptTransfer(task, restoreEntireForm)}
+      onClick={() => handleAcceptTransfer(task)}
     >
       <Template code="Transfer-AcceptTransferButton" />
     </TransferStyledButton>
@@ -45,11 +42,6 @@ AcceptTransferButton.propTypes = {
       }),
     }),
   }).isRequired,
-  restoreEntireForm: PropTypes.func.isRequired,
 };
 
-const mapDispatchToProps = dispatch => ({
-  restoreEntireForm: bindActionCreators(Actions.restoreEntireForm, dispatch),
-});
-
-export default connect(null, mapDispatchToProps)(AcceptTransferButton);
+export default AcceptTransferButton;

@@ -1,9 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import { Actions, ITask, TaskHelper, StateHelper } from '@twilio/flex-ui';
 
-import { transferChatResolve } from '../services/ServerlessService';
 import { transferStatuses, transferModes } from '../states/DomainConstants';
-import { getConfig } from '../HrmFormPlugin';
 
 /**
  * @param {ITask} task
@@ -65,10 +63,7 @@ export const shouldShowTransferControls = task =>
  * @param {ITask} task
  */
 export const hasTaskControl = task =>
-  !hasTransferStarted(task) ||
-  task.attributes.transferMeta.sidWithTaskControl === task.sid ||
-  (isOriginalReservation(task) && isTransferRejected(task)) || // this will be removed
-  (!isOriginalReservation(task) && isTransferAccepted(task)); // this will be removed
+  !hasTransferStarted(task) || task.attributes.transferMeta.sidWithTaskControl === task.sid;
 
 /**
  * @param {ITask} task
@@ -87,13 +82,11 @@ const setTaskControl = async (task, sidWithTaskControl) => {
 };
 
 /**
- * Takes control of the given task (only for call tasks for now)
+ * Takes control of the given task
  * @param {ITask} task
  */
 export const takeTaskControl = async task => {
-  if (TaskHelper.isCallTask(task)) {
-    await setTaskControl(task, task.sid);
-  }
+  await setTaskControl(task, task.sid);
 };
 
 /**
@@ -124,11 +117,11 @@ export const clearTaskControl = async task => {
 export const updateTransferStatus = newStatus => async task => {
   const updatedAttributes = {
     ...task.attributes,
+    transferStarted: true,
     transferMeta: {
       ...task.attributes.transferMeta,
       transferStatus: newStatus,
     },
-    channelSid: 'CH00000000000000000000000000000000',
   };
   await task.setAttributes(updatedAttributes);
 };
@@ -157,7 +150,7 @@ export const setTransferMeta = async (payload, documentName, counselorName) => {
       originalReservation: task.sid,
       originalCounselor: task.workerSid,
       originalCounselorName: counselorName,
-      sidWithTaskControl: '',
+      sidWithTaskControl: mode === transferModes.warm ? '' : 'WR00000000000000000000000000000000', // if cold, set control to dummy value so Task Janitor completes this one
       transferStatus: mode === transferModes.warm ? transferStatuses.transferring : transferStatuses.accepted,
       formDocument: documentName,
       mode,
@@ -175,25 +168,6 @@ export const clearTransferMeta = async task => {
   const { transferMeta, transferStarted, ...attributes } = task.attributes;
 
   await task.setAttributes(attributes);
-};
-
-/**
- * Completes the first task and keeps the second as the valid, making sure the channel is kept open
- * @param {string} closeSid task to close
- * @param {string} keepSid task to keep
- * @param {string} memberToKick sid of the member that must be removed from channel
- * @param {string} newStatus resolution of the transfer (either "accepted" or "rejected")
- * @returns {Promise<void>}
- */
-export const resolveTransferChat = async (closeSid, keepSid, memberToKick, newStatus) => {
-  const body = { closeSid, keepSid, memberToKick, newStatus };
-
-  try {
-    await transferChatResolve(body);
-  } catch (err) {
-    console.log(`Error while closing task ${closeSid}`, err);
-    window.alert('Error while closing task');
-  }
 };
 
 const letterNumber = /^[0-9a-zA-Z]+$/;
@@ -227,30 +201,6 @@ export const getMemberToKick = (task, kickIdentity) => {
   const ChatChannel = StateHelper.getChatChannelStateForTask(task);
   const Member = ChatChannel.members.get(transformIdentity(kickIdentity));
   return (Member && Member.source && Member.source.sid) || '';
-};
-
-/**
- * Kicks the other participant in chat and then closes the original task
- * @param {ITask} task
- */
-export const closeChatOriginal = async task => {
-  const closeSid = task.attributes.transferMeta.originalTask;
-  const keepSid = task.taskSid;
-  const memberToKick = getMemberToKick(task, task.attributes.ignoreAgent);
-  await resolveTransferChat(closeSid, keepSid, memberToKick, transferStatuses.accepted);
-};
-
-/**
- * Leaves the current chat and closes the task being transfered to the new counselor
- * @param {ITask} task
- */
-export const closeChatSelf = async task => {
-  const closeSid = task.taskSid;
-  const keepSid = task.attributes.transferMeta.originalTask;
-  const { identity } = getConfig();
-  const memberToKick = getMemberToKick(task, identity);
-
-  await resolveTransferChat(closeSid, keepSid, memberToKick, transferStatuses.rejected);
 };
 
 /**
@@ -290,24 +240,23 @@ export const reservationHasTaskControl = reservation =>
 export const taskControlledByOther = reservation =>
   someoneHasTaskControl(reservation) && !reservationHasTaskControl(reservation);
 
-export const shouldCloseOriginalReservation = reservation =>
-  reservation.reservation_sid === reservation.attributes.transferMeta.originalReservation &&
-  reservation.attributes.transferMeta.transferStatus === transferStatuses.accepted;
+export const callerLeftWhileTransferring = reservation =>
+  reservation.status === 'wrapup' && !someoneHasTaskControl(reservation);
 
-export const shouldCloseTransferredReservation = reservation =>
-  reservation.reservation_sid !== reservation.attributes.transferMeta.originalReservation &&
-  reservation.attributes.transferMeta.transferStatus === transferStatuses.rejected;
-
-export const shouldCloseReservation = reservation =>
-  shouldCloseOriginalReservation(reservation) || shouldCloseTransferredReservation(reservation);
+export const callerLeftAndThisShouldClose = reservation =>
+  callerLeftWhileTransferring(reservation) &&
+  reservation.attributes.transferMeta.originalCounselor !== reservation.worker_sid;
 
 export const shouldInvokeCompleteTask = (reservation, workerSid) =>
   reservation.status === 'wrapup' &&
-  (taskControlledByOther(reservation) || shouldCloseReservation(reservation)) &&
+  (taskControlledByOther(reservation) || callerLeftAndThisShouldClose(reservation)) &&
   reservation.worker_sid === workerSid;
 
-export const shouldTakeControlBack = (reservation, workerSid) =>
+export const transferAborted = reservation =>
   (reservation.status === 'rejected' || reservation.status === 'timeout') &&
-  reservation.attributes.transferMeta.targetType === 'worker' &&
+  reservation.attributes.transferMeta.targetType === 'worker';
+
+export const shouldTakeControlBack = (reservation, workerSid) =>
+  (transferAborted(reservation) || callerLeftWhileTransferring(reservation)) &&
   reservation.attributes.transferMeta.originalCounselor === workerSid &&
   reservation.attributes.transferMeta.mode === transferModes.warm;

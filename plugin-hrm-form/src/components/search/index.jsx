@@ -18,29 +18,7 @@ import {
   SearchPages,
   handleExpandDetailsSection,
 } from '../../states/SearchContact';
-import { namespace, searchContactsBase } from '../../states';
-import { populateCounselors } from '../../services/ServerlessService';
-import { getConfig } from '../../HrmFormPlugin';
-
-/**
- * @param {{
- *  sid: string;
- *  fullName: string;
- *}[]} counselors
- * @returns {{}} an object containing for each counselor,
- * a property with its sid, and as a value the counselor's fullName
- */
-const createCounselorsHash = counselors => {
-  const hash = counselors.reduce(
-    (obj, counselor) => ({
-      ...obj,
-      [counselor.sid]: counselor.fullName,
-    }),
-    {},
-  );
-
-  return hash;
-};
+import { namespace, searchContactsBase, configurationBase } from '../../states';
 
 class Search extends Component {
   static displayName = 'Search';
@@ -53,13 +31,14 @@ class Search extends Component {
     changeSearchPage: PropTypes.func.isRequired,
     viewContactDetails: PropTypes.func.isRequired,
     handleExpandDetailsSection: PropTypes.func.isRequired,
-    currentPage: PropTypes.oneOf(Object.keys(SearchPages)).isRequired,
+    currentPage: PropTypes.oneOf(Object.keys({ ...SearchPages })).isRequired,
     currentContact: contactType,
     form: searchFormType.isRequired,
     searchResult: PropTypes.arrayOf(searchResultType).isRequired,
     detailsExpanded: PropTypes.objectOf(PropTypes.bool).isRequired,
     isRequesting: PropTypes.bool.isRequired,
     error: PropTypes.instanceOf(Error),
+    counselorsHash: PropTypes.shape({}).isRequired,
   };
 
   static defaultProps = {
@@ -70,20 +49,7 @@ class Search extends Component {
 
   state = {
     mockedMessage: '',
-    counselors: [],
-    counselorsHash: {},
   };
-
-  async componentDidMount() {
-    try {
-      const counselors = await populateCounselors();
-      const counselorsHash = createCounselorsHash(counselors);
-      this.setState({ counselors, counselorsHash });
-    } catch (err) {
-      // TODO (Gian): probably we need to handle this in a nicer way
-      console.error(err.message);
-    }
-  }
 
   closeDialog = () => this.setState({ mockedMessage: '' });
 
@@ -100,20 +66,18 @@ class Search extends Component {
   }
 
   handleSearch = async searchParams => {
-    const { hrmBaseUrl } = getConfig();
-    this.props.searchContacts(hrmBaseUrl, searchParams, this.state.counselorsHash);
+    this.props.searchContacts(searchParams, this.props.counselorsHash);
   };
 
   goToForm = () => this.props.changeSearchPage('form');
 
   goToResults = () => this.props.changeSearchPage('results');
 
-  renderSearchPages(currentPage, currentContact, searchResult, form, counselors) {
+  renderSearchPages(currentPage, currentContact, searchResult, form) {
     switch (currentPage) {
       case SearchPages.form:
         return (
           <SearchForm
-            counselors={counselors}
             values={form}
             handleSearchFormChange={this.props.handleSearchFormChange}
             handleSearch={this.handleSearch}
@@ -149,13 +113,12 @@ class Search extends Component {
 
   render() {
     const { currentPage, currentContact, searchResult, isRequesting, error, form } = this.props;
-    const { counselors } = this.state;
     console.log({ isRequesting, error });
 
     return (
       <>
         {this.renderMockDialog()}
-        {this.renderSearchPages(currentPage, currentContact, searchResult, form, counselors)}
+        {this.renderSearchPages(currentPage, currentContact, searchResult, form)}
       </>
     );
   }
@@ -165,6 +128,7 @@ const mapStateToProps = (state, ownProps) => {
   const searchContactsState = state[namespace][searchContactsBase];
   const taskId = ownProps.task.taskSid;
   const taskSearchState = searchContactsState.tasks[taskId];
+  const { counselors } = state[namespace][configurationBase];
 
   return {
     isRequesting: taskSearchState.isRequesting,
@@ -174,6 +138,7 @@ const mapStateToProps = (state, ownProps) => {
     form: taskSearchState.form,
     searchResult: taskSearchState.searchResult,
     detailsExpanded: taskSearchState.detailsExpanded,
+    counselorsHash: counselors.hash,
   };
 };
 

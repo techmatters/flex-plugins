@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
-import { withTaskContext } from '@twilio/flex-ui';
+import { withTaskContext, TaskHelper } from '@twilio/flex-ui';
 
 import HrmForm from './HrmForm';
 import FormNotEditable from './FormNotEditable';
@@ -43,8 +43,8 @@ class TaskView extends Component {
   render() {
     const { task, thisTask, form } = this.props;
 
-    // If this task is not the active task, hide it
-    const show = task && task.taskSid === thisTask.taskSid;
+    // If this task is not the active task, or if the task is not accepted yet, hide it
+    const show = task && task.taskSid === thisTask.taskSid && !TaskHelper.isPending(task);
 
     if (!show) {
       return null;

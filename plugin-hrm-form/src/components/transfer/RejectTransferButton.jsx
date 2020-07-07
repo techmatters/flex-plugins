@@ -3,14 +3,15 @@ import { TaskHelper, Template } from '@twilio/flex-ui';
 import PropTypes from 'prop-types';
 
 import { TransferStyledButton } from '../../styles/HrmStyles';
-import { closeChatSelf, closeCallSelf } from '../../utils/transfer';
+import { closeCallSelf } from '../../utils/transfer';
 
 /**
  * @param {import('@twilio/flex-ui').ITask} task the transferred task
  */
 const handleRejectTransfer = async task => {
-  if (TaskHelper.isChatBasedTask(task)) closeChatSelf(task);
-  else await closeCallSelf(task);
+  if (TaskHelper.isChatBasedTask(task)) return; // this case should never happen
+
+  await closeCallSelf(task);
 };
 
 const RejectTransferButton = ({ theme, task }) => {

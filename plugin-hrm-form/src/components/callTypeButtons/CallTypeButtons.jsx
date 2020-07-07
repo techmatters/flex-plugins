@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withTaskContext, Template } from '@twilio/flex-ui';
+import { withTaskContext, TaskHelper, Template } from '@twilio/flex-ui';
 import FaceIcon from '@material-ui/icons/Face';
 
 import { withLocalization } from '../../contexts/LocalizationContext';
@@ -55,7 +55,9 @@ const CallTypeButtons = props => {
     <>
       <Container>
         <Box marginBottom="29px">
-          <Label>categorize this contact</Label>
+          <Label style={{ width: 'auto' }}>
+            <Template code="CallTypeButtons-Categorize" />
+          </Label>
           <DataCallTypeButton onClick={() => handleClickAndRedirect(task.taskSid, callTypes.child)}>
             <Box width="50px" marginRight="5px">
               <FaceIcon />
@@ -72,7 +74,9 @@ const CallTypeButtons = props => {
         </Box>
 
         <Box>
-          <Label>Or was this contact…</Label>
+          <Label style={{ width: 'auto' }}>
+            <Template code="CallTypeButtons-Or" />
+          </Label>
           {Object.keys(callTypes)
             .filter(callType => isNonDataCallType(callTypes[callType]))
             .map((callType, i) => (
@@ -89,6 +93,7 @@ const CallTypeButtons = props => {
       <NonDataCallTypeDialog
         isOpen={isDialogOpen(form)}
         isCallTask={isCallTask(task)}
+        isInWrapupMode={TaskHelper.isInWrapupMode(task)}
         handleConfirm={handleConfirmNonDataCallType}
         handleCancel={() => clearCallType(props)}
       />

@@ -22,6 +22,12 @@ jest.mock('../../services/ServerlessService', () => ({
 function createState(taskId, { currentPage, searchFormValues, currentContact, searchResult, detailsExpanded }) {
   return {
     'plugin-hrm-form': {
+      configuration: {
+        counselors: {
+          list: [],
+          hash: {},
+        },
+      },
       searchContacts: {
         tasks: {
           [taskId]: {

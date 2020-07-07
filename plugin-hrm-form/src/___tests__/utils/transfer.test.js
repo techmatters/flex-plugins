@@ -6,11 +6,6 @@ import '../mockGetConfig';
 import * as TransferHelpers from '../../utils/transfer';
 import { transferModes, transferStatuses } from '../../states/DomainConstants';
 import { createTask } from '../helpers';
-import { transferChatResolve } from '../../services/ServerlessService';
-
-jest.mock('../../services/ServerlessService', () => ({
-  transferChatResolve: jest.fn(),
-}));
 
 Actions.invokeAction = jest.fn();
 
@@ -141,25 +136,45 @@ describe('Transfer mode, status and conditionals helpers', () => {
 
   test('hasTaskControl', async () => {
     const task1 = createTask(
-      { transferMeta: { transferStatus: transferStatuses.transferring, originalReservation: 'task1' } },
+      {
+        transferMeta: {
+          transferStatus: transferStatuses.transferring,
+          originalReservation: 'task1',
+          sidWithTaskControl: '',
+        },
+      },
       { sid: 'task1' },
     );
     const task2 = createTask(
-      { transferMeta: { transferStatus: transferStatuses.transferring, originalReservation: 'task1' } },
+      {
+        transferMeta: {
+          transferStatus: transferStatuses.transferring,
+          originalReservation: 'task1',
+          sidWithTaskControl: '',
+        },
+      },
       { sid: 'task2' },
     );
     const [task1c, task1r] = [{ ...task1 }, { ...task1 }];
     const [task2c, task2r] = [{ ...task2 }, { ...task2 }];
     await TransferHelpers.setTransferAccepted(task1c);
+    await TransferHelpers.takeTaskControl(task1c);
+
     await TransferHelpers.setTransferRejected(task1r);
+    await TransferHelpers.returnTaskControl(task1r);
+
     await TransferHelpers.setTransferAccepted(task2c);
+    await TransferHelpers.takeTaskControl(task2c);
+
     await TransferHelpers.setTransferRejected(task2r);
+    await TransferHelpers.returnTaskControl(task2r);
+
     const task3 = createTask({});
 
     expect(TransferHelpers.hasTaskControl(task1)).toBe(false); // transferring
     expect(TransferHelpers.hasTaskControl(task2)).toBe(false); // transferring
-    expect(TransferHelpers.hasTaskControl(task1c)).toBe(false); // original but accepted (control to 2nd counselor)
-    expect(TransferHelpers.hasTaskControl(task1r)).toBe(true); // ok
+    expect(TransferHelpers.hasTaskControl(task1c)).toBe(true); // original but accepted (control to 2nd counselor)
+    expect(TransferHelpers.hasTaskControl(task1r)).toBe(false); // ok
     expect(TransferHelpers.hasTaskControl(task2c)).toBe(true); // ok
     expect(TransferHelpers.hasTaskControl(task2r)).toBe(false); // transferred task rejected
     expect(TransferHelpers.hasTaskControl(task3)).toBe(true); // ok
@@ -173,13 +188,12 @@ describe('Transfer mode, status and conditionals helpers', () => {
     expect(task.attributes.transferMeta.sidWithTaskControl).toBe(task.sid);
   });
 
-  // this should change when true warm transfer for chat task is implemented
   test('takeTaskControl (chat task)', async () => {
     const task = createTask({ transferMeta: {} }, { sid: 'task1', taskChannelUniqueName: 'chat' });
 
     await TransferHelpers.takeTaskControl(task);
 
-    expect(task.attributes.transferMeta.sidWithTaskControl).toBe(undefined);
+    expect(task.attributes.transferMeta.sidWithTaskControl).toBe(task.sid);
   });
 
   test('returnTaskControl (voice task)', async () => {
@@ -270,32 +284,6 @@ describe('Kick, close and helpers', () => {
     { sid: 'reservation2', taskSid: 'task2', taskChannelSid: 'channel1' },
   );
 
-  test('closeChatOriginal', async () => {
-    const expected = {
-      closeSid: task.attributes.transferMeta.originalTask,
-      keepSid: task.taskSid,
-      memberToKick: TransferHelpers.getMemberToKick(task, 'some@identity'),
-      newStatus: transferStatuses.accepted,
-    };
-
-    await TransferHelpers.closeChatOriginal(task);
-
-    expect(transferChatResolve).toBeCalledWith(expected);
-  });
-
-  test('closeChatOriginal', async () => {
-    const expected = {
-      keepSid: task.attributes.transferMeta.originalTask,
-      closeSid: task.taskSid,
-      memberToKick: '',
-      newStatus: transferStatuses.rejected,
-    };
-
-    await TransferHelpers.closeChatSelf(task);
-
-    expect(transferChatResolve).toBeCalledWith(expected);
-  });
-
   test('closeCallOriginal', async () => {
     const expected1 = { sid: 'reservation2', targetSid: 'some@identity' };
 
@@ -364,7 +352,7 @@ describe('Kick, close and helpers', () => {
       transferStatus: transferStatuses.accepted,
       formDocument: 'some string',
       mode: transferModes.cold,
-      sidWithTaskControl: '',
+      sidWithTaskControl: 'WR00000000000000000000000000000000',
       targetType: 'worker',
     };
 
@@ -502,52 +490,63 @@ describe('TransferredTaskJanitor helpers', () => {
     expect(TransferHelpers.taskControlledByOther(withouthControl)).toBe(true);
   });
 
-  test('shouldCloseOriginalReservation (accepted)', async () => {
-    const reservation1 = createReservation('reservation1', 'worker1');
-    const reservation2 = createReservation('reservation2', 'worker2');
+  test('callerLeftWhileTransferring', async () => {
+    const reservation = createReservation('reservation1', 'worker1');
 
-    const acceptedMeta = createTransferMeta(transferStatuses.accepted);
-    const withAcceptedMeta1 = reservation1.setTransferMeta(acceptedMeta);
-    const withAcceptedMeta2 = reservation2.setTransferMeta(acceptedMeta);
+    const withControll = reservation.setTransferMeta({ sidWithTaskControl: 'reservation1' });
+    const withoutControll = reservation.setTransferMeta({ sidWithTaskControl: '' });
 
-    expect(TransferHelpers.shouldCloseOriginalReservation(withAcceptedMeta1)).toBe(true);
-    expect(TransferHelpers.shouldCloseOriginalReservation(withAcceptedMeta2)).toBe(false);
+    expect(TransferHelpers.callerLeftWhileTransferring(withControll)).toBe(false);
+    expect(TransferHelpers.callerLeftWhileTransferring(withoutControll)).toBe(false);
+    expect(TransferHelpers.callerLeftWhileTransferring(withControll.accept())).toBe(false);
+    expect(TransferHelpers.callerLeftWhileTransferring(withoutControll.accept())).toBe(false);
+    expect(TransferHelpers.callerLeftWhileTransferring(withControll.reject())).toBe(false);
+    expect(TransferHelpers.callerLeftWhileTransferring(withoutControll.reject())).toBe(false);
+    expect(TransferHelpers.callerLeftWhileTransferring(withControll.complete())).toBe(false);
+    expect(TransferHelpers.callerLeftWhileTransferring(withoutControll.complete())).toBe(false);
+    expect(TransferHelpers.callerLeftWhileTransferring(withControll.wrapUp())).toBe(false);
+
+    expect(TransferHelpers.callerLeftWhileTransferring(withoutControll.wrapUp())).toBe(true);
   });
 
-  test('shouldCloseOriginalReservation (rejected)', async () => {
+  test('callerLeftAndThisShouldClose', async () => {
     const reservation1 = createReservation('reservation1', 'worker1');
     const reservation2 = createReservation('reservation2', 'worker2');
 
-    const rejectedMeta = createTransferMeta(transferStatuses.rejected);
-    const withRejectedMeta1 = reservation1.setTransferMeta(rejectedMeta);
-    const withRejectedMeta2 = reservation2.setTransferMeta(rejectedMeta);
+    const withControll1 = reservation1.setTransferMeta({
+      sidWithTaskControl: 'reservation1',
+      originalCounselor: 'worker1',
+    });
+    const withoutControll1 = reservation1.setTransferMeta({ sidWithTaskControl: '', originalCounselor: 'worker1' });
 
-    expect(TransferHelpers.shouldCloseOriginalReservation(withRejectedMeta1)).toBe(false);
-    expect(TransferHelpers.shouldCloseOriginalReservation(withRejectedMeta2)).toBe(false);
-  });
+    const withControll2 = reservation2.setTransferMeta({
+      sidWithTaskControl: 'reservation1',
+      originalCounselor: 'worker1',
+    });
+    const withoutControll2 = reservation2.setTransferMeta({ sidWithTaskControl: '', originalCounselor: 'worker1' });
 
-  test('shouldCloseTransferredReservation (accepted)', async () => {
-    const reservation1 = createReservation('reservation1', 'worker1');
-    const reservation2 = createReservation('reservation2', 'worker2');
+    expect(TransferHelpers.callerLeftAndThisShouldClose(withControll1)).toBe(false);
+    expect(TransferHelpers.callerLeftAndThisShouldClose(withoutControll1)).toBe(false);
+    expect(TransferHelpers.callerLeftAndThisShouldClose(withControll1.accept())).toBe(false);
+    expect(TransferHelpers.callerLeftAndThisShouldClose(withoutControll1.accept())).toBe(false);
+    expect(TransferHelpers.callerLeftAndThisShouldClose(withControll1.reject())).toBe(false);
+    expect(TransferHelpers.callerLeftAndThisShouldClose(withoutControll1.reject())).toBe(false);
+    expect(TransferHelpers.callerLeftAndThisShouldClose(withControll1.complete())).toBe(false);
+    expect(TransferHelpers.callerLeftAndThisShouldClose(withoutControll1.complete())).toBe(false);
+    expect(TransferHelpers.callerLeftAndThisShouldClose(withControll1.wrapUp())).toBe(false);
+    expect(TransferHelpers.callerLeftAndThisShouldClose(withoutControll1.wrapUp())).toBe(false);
 
-    const acceptedMeta = createTransferMeta(transferStatuses.accepted);
-    const withAcceptedMeta1 = reservation1.setTransferMeta(acceptedMeta);
-    const withAcceptedMeta2 = reservation2.setTransferMeta(acceptedMeta);
+    expect(TransferHelpers.callerLeftAndThisShouldClose(withControll2)).toBe(false);
+    expect(TransferHelpers.callerLeftAndThisShouldClose(withoutControll2)).toBe(false);
+    expect(TransferHelpers.callerLeftAndThisShouldClose(withControll2.accept())).toBe(false);
+    expect(TransferHelpers.callerLeftAndThisShouldClose(withoutControll2.accept())).toBe(false);
+    expect(TransferHelpers.callerLeftAndThisShouldClose(withControll2.reject())).toBe(false);
+    expect(TransferHelpers.callerLeftAndThisShouldClose(withoutControll2.reject())).toBe(false);
+    expect(TransferHelpers.callerLeftAndThisShouldClose(withControll2.complete())).toBe(false);
+    expect(TransferHelpers.callerLeftAndThisShouldClose(withoutControll2.complete())).toBe(false);
+    expect(TransferHelpers.callerLeftAndThisShouldClose(withControll2.wrapUp())).toBe(false);
 
-    expect(TransferHelpers.shouldCloseTransferredReservation(withAcceptedMeta1)).toBe(false);
-    expect(TransferHelpers.shouldCloseTransferredReservation(withAcceptedMeta2)).toBe(false);
-  });
-
-  test('shouldCloseTransferredReservation (rejected)', async () => {
-    const reservation1 = createReservation('reservation1', 'worker1');
-    const reservation2 = createReservation('reservation2', 'worker2');
-
-    const rejectedMeta = createTransferMeta(transferStatuses.rejected);
-    const withRejectedMeta1 = reservation1.setTransferMeta(rejectedMeta);
-    const withRejectedMeta2 = reservation2.setTransferMeta(rejectedMeta);
-
-    expect(TransferHelpers.shouldCloseTransferredReservation(withRejectedMeta1)).toBe(false);
-    expect(TransferHelpers.shouldCloseTransferredReservation(withRejectedMeta2)).toBe(true);
+    expect(TransferHelpers.callerLeftAndThisShouldClose(withoutControll2.wrapUp())).toBe(true);
   });
 
   test('shouldInvokeCompleteTask (accepted)', () => {
@@ -598,23 +597,105 @@ describe('TransferredTaskJanitor helpers', () => {
     expect(sict(withRejectedMeta2.complete(), withRejectedMeta2.worker_sid)).toBe(false);
   });
 
-  test('shouldTakeControlBack', async () => {
+  test('shouldInvokeCompleteTask (callerLeftAndThisShouldClose)', () => {
+    const reservation1 = createReservation('reservation1', 'worker1');
+    const reservation2 = createReservation('reservation2', 'worker2');
+
+    const withControll1 = reservation1.setTransferMeta({
+      sidWithTaskControl: 'reservation1',
+      originalCounselor: 'worker1',
+    });
+    const withoutControll1 = reservation1.setTransferMeta({ sidWithTaskControl: '', originalCounselor: 'worker1' });
+
+    const withControll2 = reservation2.setTransferMeta({
+      sidWithTaskControl: 'reservation1',
+      originalCounselor: 'worker1',
+    });
+    const withoutControll2 = reservation2.setTransferMeta({ sidWithTaskControl: '', originalCounselor: 'worker1' });
+
+    const sict = TransferHelpers.shouldInvokeCompleteTask;
+
+    expect(sict(withControll1, 'worker1')).toBe(false);
+    expect(sict(withoutControll1, 'worker1')).toBe(false);
+    expect(sict(withControll1.accept(), 'worker1')).toBe(false);
+    expect(sict(withoutControll1.accept(), 'worker1')).toBe(false);
+    expect(sict(withControll1.reject(), 'worker1')).toBe(false);
+    expect(sict(withoutControll1.reject(), 'worker1')).toBe(false);
+    expect(sict(withControll1.complete(), 'worker1')).toBe(false);
+    expect(sict(withoutControll1.complete(), 'worker1')).toBe(false);
+    expect(sict(withControll1.wrapUp(), 'worker1')).toBe(false);
+    expect(sict(withoutControll1.wrapUp(), 'worker1')).toBe(false);
+    expect(sict(withControll1, 'worker2')).toBe(false);
+    expect(sict(withoutControll1, 'worker2')).toBe(false);
+    expect(sict(withControll1.accept(), 'worker2')).toBe(false);
+    expect(sict(withoutControll1.accept(), 'worker2')).toBe(false);
+    expect(sict(withControll1.reject(), 'worker2')).toBe(false);
+    expect(sict(withoutControll1.reject(), 'worker2')).toBe(false);
+    expect(sict(withControll1.complete(), 'worker2')).toBe(false);
+    expect(sict(withoutControll1.complete(), 'worker2')).toBe(false);
+    expect(sict(withControll1.wrapUp(), 'worker2')).toBe(false);
+    expect(sict(withoutControll1.wrapUp(), 'worker2')).toBe(false);
+
+    expect(sict(withControll2, 'worker1')).toBe(false);
+    expect(sict(withoutControll2, 'worker1')).toBe(false);
+    expect(sict(withControll2.accept(), 'worker1')).toBe(false);
+    expect(sict(withoutControll2.accept(), 'worker1')).toBe(false);
+    expect(sict(withControll2.reject(), 'worker1')).toBe(false);
+    expect(sict(withoutControll2.reject(), 'worker1')).toBe(false);
+    expect(sict(withControll2.complete(), 'worker1')).toBe(false);
+    expect(sict(withoutControll2.complete(), 'worker1')).toBe(false);
+    expect(sict(withControll2.wrapUp(), 'worker1')).toBe(false);
+    expect(sict(withoutControll2.wrapUp(), 'worker1')).toBe(false);
+    expect(sict(withControll2, 'worker2')).toBe(false);
+    expect(sict(withoutControll2, 'worker2')).toBe(false);
+    expect(sict(withControll2.accept(), 'worker2')).toBe(false);
+    expect(sict(withoutControll2.accept(), 'worker2')).toBe(false);
+    expect(sict(withControll2.reject(), 'worker2')).toBe(false);
+    expect(sict(withoutControll2.reject(), 'worker2')).toBe(false);
+    expect(sict(withControll2.complete(), 'worker2')).toBe(false);
+    expect(sict(withoutControll2.complete(), 'worker2')).toBe(false);
+    expect(sict(withControll2.wrapUp(), 'worker2')).toBe(true); // this is tested above
+
+    expect(sict(withoutControll2.wrapUp(), 'worker2')).toBe(true);
+  });
+
+  test('transferAborted', async () => {
+    const reservation = createReservation('reservation', 'worker1');
+
+    const toQueue = reservation.setTransferMeta({ targetType: 'queue' });
+    const toWorker = reservation.setTransferMeta({ targetType: 'worker' });
+
+    expect(TransferHelpers.transferAborted(toQueue)).toBe(false);
+    expect(TransferHelpers.transferAborted(toWorker)).toBe(false);
+    expect(TransferHelpers.transferAborted(toQueue.accept())).toBe(false);
+    expect(TransferHelpers.transferAborted(toWorker.accept())).toBe(false);
+    expect(TransferHelpers.transferAborted(toQueue.complete())).toBe(false);
+    expect(TransferHelpers.transferAborted(toWorker.complete())).toBe(false);
+    expect(TransferHelpers.transferAborted(toQueue.wrapUp())).toBe(false);
+    expect(TransferHelpers.transferAborted(toWorker.wrapUp())).toBe(false);
+    expect(TransferHelpers.transferAborted(toQueue.reject())).toBe(false);
+    expect(TransferHelpers.transferAborted(toWorker.reject())).toBe(true);
+    expect(TransferHelpers.transferAborted(toQueue.timeout())).toBe(false);
+    expect(TransferHelpers.transferAborted(toWorker.timeout())).toBe(true);
+  });
+
+  test('shouldTakeControlBack (transferAborted)', async () => {
     const reservation = createReservation('reservation1', 'worker1');
-    const withAttr = reservation.setTransferMeta({
+    const warm = reservation.setTransferMeta({
       targetType: 'worker',
       originalCounselor: 'worker1',
       mode: transferModes.warm,
     });
 
-    expect(TransferHelpers.shouldTakeControlBack(withAttr, 'worker1')).toBe(false);
-    expect(TransferHelpers.shouldTakeControlBack(withAttr.accept(), 'worker1')).toBe(false);
-    expect(TransferHelpers.shouldTakeControlBack(withAttr.wrapUp(), 'worker1')).toBe(false);
-    expect(TransferHelpers.shouldTakeControlBack(withAttr.complete(), 'worker1')).toBe(false);
-    expect(TransferHelpers.shouldTakeControlBack(withAttr.reject(), 'worker1')).toBe(true);
-    expect(TransferHelpers.shouldTakeControlBack(withAttr.timeout(), 'worker1')).toBe(true);
+    expect(TransferHelpers.shouldTakeControlBack(warm, 'worker1')).toBe(false);
+    expect(TransferHelpers.shouldTakeControlBack(warm.accept(), 'worker1')).toBe(false);
+    expect(TransferHelpers.shouldTakeControlBack(warm.wrapUp(), 'worker1')).toBe(false);
+    expect(TransferHelpers.shouldTakeControlBack(warm.complete(), 'worker1')).toBe(false);
+    expect(TransferHelpers.shouldTakeControlBack(warm.reject(), 'worker1')).toBe(true);
+    expect(TransferHelpers.shouldTakeControlBack(warm.timeout(), 'worker1')).toBe(true);
 
-    expect(TransferHelpers.shouldTakeControlBack(withAttr.reject(), 'worker2')).toBe(false);
-    expect(TransferHelpers.shouldTakeControlBack(withAttr.timeout(), 'worker2')).toBe(false);
+    expect(TransferHelpers.shouldTakeControlBack(warm.reject(), 'worker2')).toBe(false);
+    expect(TransferHelpers.shouldTakeControlBack(warm.timeout(), 'worker2')).toBe(false);
 
     const cold = reservation.setTransferMeta({
       targetType: 'worker',
@@ -633,5 +714,33 @@ describe('TransferredTaskJanitor helpers', () => {
 
     expect(TransferHelpers.shouldTakeControlBack(toQueue.reject(), 'worker1')).toBe(false);
     expect(TransferHelpers.shouldTakeControlBack(toQueue.timeout(), 'worker1')).toBe(false);
+  });
+
+  test('shouldTakeControlBack (callerLeftWhileTransferring)', async () => {
+    const reservation = createReservation('reservation1', 'worker1');
+
+    const withControll = reservation.setTransferMeta({
+      sidWithTaskControl: 'reservation1',
+      mode: transferModes.warm,
+      originalCounselor: reservation.worker_sid,
+    });
+    const withoutControll = reservation.setTransferMeta({
+      sidWithTaskControl: '',
+      mode: transferModes.warm,
+      originalCounselor: reservation.worker_sid,
+    });
+
+    expect(TransferHelpers.shouldTakeControlBack(withControll, reservation.worker_sid)).toBe(false);
+    expect(TransferHelpers.shouldTakeControlBack(withoutControll, reservation.worker_sid)).toBe(false);
+    expect(TransferHelpers.shouldTakeControlBack(withControll.accept(), reservation.worker_sid)).toBe(false);
+    expect(TransferHelpers.shouldTakeControlBack(withoutControll.accept(), reservation.worker_sid)).toBe(false);
+    expect(TransferHelpers.shouldTakeControlBack(withControll.reject(), reservation.worker_sid)).toBe(false);
+    expect(TransferHelpers.shouldTakeControlBack(withoutControll.reject(), reservation.worker_sid)).toBe(false);
+    expect(TransferHelpers.shouldTakeControlBack(withControll.complete(), reservation.worker_sid)).toBe(false);
+    expect(TransferHelpers.shouldTakeControlBack(withoutControll.complete(), reservation.worker_sid)).toBe(false);
+    expect(TransferHelpers.shouldTakeControlBack(withControll.wrapUp(), reservation.worker_sid)).toBe(false);
+
+    expect(TransferHelpers.shouldTakeControlBack(withoutControll.wrapUp(), reservation.worker_sid)).toBe(true);
+    expect(TransferHelpers.shouldTakeControlBack(withoutControll.wrapUp(), 'not the worker')).toBe(false);
   });
 });

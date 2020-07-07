@@ -28,4 +28,9 @@ export const transferStatuses = {
   rejected: 'rejected',
 };
 
+export const caseStatuses = {
+  open: 'open',
+  closed: 'closed',
+};
+
 export default callTypes;

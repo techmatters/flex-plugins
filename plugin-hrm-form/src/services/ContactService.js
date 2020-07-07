@@ -3,8 +3,11 @@ import { FieldType, recreateBlankForm } from '../states/ContactFormStateFactory'
 import { isNonDataCallType } from '../states/ValidationRules';
 import { channelTypes } from '../states/DomainConstants';
 import { getConversationDuration, fillEndMillis } from '../utils/conversationDuration';
+import { getConfig } from '../HrmFormPlugin';
 
-export async function searchContacts(hrmBaseUrl, searchParams) {
+export async function searchContacts(searchParams) {
+  const { hrmBaseUrl } = getConfig();
+
   try {
     const response = await fetch(`${hrmBaseUrl}/contacts/search`, {
       method: 'POST',
