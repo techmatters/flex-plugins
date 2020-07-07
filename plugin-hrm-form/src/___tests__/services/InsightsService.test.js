@@ -26,7 +26,7 @@ test('saveInsightsData for non-data callType', async () => {
     taskSid: 'task-sid',
     conversations: {
       content: 'content',
-      conversation_attribute_1: 'Abusive',
+      conversation_attribute_2: 'Abusive',
     },
     customers: {},
   };
@@ -34,7 +34,7 @@ test('saveInsightsData for non-data callType', async () => {
   expect(twilioTask.setAttributes).toHaveBeenCalledWith(expectedNewAttributes);
 });
 
-test('saveInsightsData for non-data callType', async () => {
+test('saveInsightsData for data callType', async () => {
   const previousAttributtes = {
     taskSid: 'task-sid',
     conversations: {
@@ -62,6 +62,34 @@ test('saveInsightsData for non-data callType', async () => {
         value: 'Boy',
       },
     },
+    caseInformation: {
+      categories: {
+        'Missing children': {
+          'Child abduction': {
+            value: false,
+          },
+          'Unspecified/Other': {
+            value: true,
+          },
+        },
+        Violence: {
+          Bullying: {
+            value: true,
+          },
+          'Unspecified/Other': {
+            value: false,
+          },
+        },
+        'Mental Health': {
+          'Addictive behaviours': {
+            value: true,
+          },
+          'Unspecified/Other': {
+            value: false,
+          },
+        },
+      },
+    },
   };
 
   await saveInsightsData(twilioTask, task);
@@ -70,7 +98,10 @@ test('saveInsightsData for non-data callType', async () => {
     taskSid: 'task-sid',
     conversations: {
       content: 'content',
-      conversation_attribute_1: 'Child calling about self',
+      conversation_attribute_1: 'Unspecified/Other - Missing children;Bullying',
+      conversation_attribute_2: 'Child calling about self',
+      conversation_attribute_3: 'Unspecified/Other - Missing children',
+      conversation_attribute_4: 'Bullying',
     },
     customers: {
       name: 'John Doe',

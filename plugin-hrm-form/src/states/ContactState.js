@@ -14,9 +14,12 @@ import {
   CHANGE_ROUTE,
   SET_CONNECTED_CASE,
   RESTORE_ENTIRE_FORM,
+  SET_CATEGORIES_GRID_VIEW,
+  HANDLE_EXPAND_CATEGORY,
 } from './ActionTypes';
 import { countSelectedCategories } from './ValidationRules';
 import { copySearchResultIntoTask } from './SearchContact';
+import { getConfig } from '../HrmFormPlugin';
 
 /**
  * Looks for a particular task in the state object, and returns it if found.
@@ -75,6 +78,10 @@ export class Actions {
     form,
     taskId,
   });
+
+  static setCategoriesGridView = (gridView, taskId) => ({ type: SET_CATEGORIES_GRID_VIEW, gridView, taskId });
+
+  static handleExpandCategory = (category, taskId) => ({ type: HANDLE_EXPAND_CATEGORY, category, taskId });
 }
 
 // Will replace the below when we move over to field objects
@@ -133,6 +140,8 @@ export function reduce(state = initialState, action) {
         `!!!!!!!!!!!HANDLE CHANGE: action.name = ${action.name}, action.value = ${action.value}, task = ${action.taskId}, parents: ${action.parents}`,
       );
 
+      const { strings } = getConfig();
+
       const currentForm = findOrRecreate(state.tasks, action.taskId);
 
       const newForm = editNestedField(currentForm, action.parents, action.name, { value: action.value });
@@ -147,7 +156,7 @@ export function reduce(state = initialState, action) {
         if (countSelectedCategories(newForm.caseInformation.categories) > 0) {
           newForm.caseInformation.categories.error = null;
         } else {
-          newForm.caseInformation.categories.error = 'You must check at least one option';
+          newForm.caseInformation.categories.error = strings['Error-CategoryRequired'];
         }
       }
 
@@ -245,6 +254,57 @@ export function reduce(state = initialState, action) {
         tasks: {
           ...state.tasks,
           [action.taskId]: taskWithConnectedCase,
+        },
+      };
+    }
+
+    case SET_CATEGORIES_GRID_VIEW: {
+      const currentTask = state.tasks[action.taskId];
+      const { metadata } = currentTask;
+      const { categories } = metadata;
+      const taskWithCategoriesViewToggled = {
+        ...currentTask,
+        metadata: {
+          ...metadata,
+          categories: {
+            ...categories,
+            gridView: action.gridView,
+          },
+        },
+      };
+
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: taskWithCategoriesViewToggled,
+        },
+      };
+    }
+
+    case HANDLE_EXPAND_CATEGORY: {
+      const currentTask = state.tasks[action.taskId];
+      const { metadata } = currentTask;
+      const { categories } = metadata;
+      const taskWithCategoriesExpanded = {
+        ...currentTask,
+        metadata: {
+          ...metadata,
+          categories: {
+            ...categories,
+            expanded: {
+              ...categories.expanded,
+              [action.category]: !categories.expanded[action.category],
+            },
+          },
+        },
+      };
+
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: taskWithCategoriesExpanded,
         },
       };
     }

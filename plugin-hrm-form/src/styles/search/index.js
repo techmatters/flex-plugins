@@ -141,6 +141,7 @@ export const SectionTitleContainer = styled(Row)`
   background-color: #ecedf1;
   padding: 8px;
   padding-left: 18px;
+  border-left: ${({ color }) => (color ? `6px solid ${color}` : 'none')};
 `;
 
 export const NameContainer = styled(SectionTitleContainer)`

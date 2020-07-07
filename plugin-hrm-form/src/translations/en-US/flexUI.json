@@ -73,6 +73,8 @@
   "BottomBar-OpenNewCase": "Open New Case",
   "BottomBar-AddToExistingCase": "Add to Existing Case",
 
+  "Categories-Title": "Categorize this contact",
+  
   "TabbedForms-AddCallerInfoTab": "Add Caller Information",
   "TabbedForms-AddChildInfoTab": "Add Child Information",
   "TabbedForms-CategoriesTab": "Categorize Issue",
@@ -82,6 +84,7 @@
   "Error-Backend": "Error from backend system.",
   "Error-ContinueWithoutRecording": "Error from backend system.  Are you sure you want to end the task without recording?",
   "Error-Form": "There is a problem with your submission.  Please check the form for errors.",
+  "Error-CategoryRequired": "Required 1 category minimum, 3 categories maximum",
 
   "Case-CaseNumber": "Case",
   "Case-CaseDetailsSection": "Case Details",
