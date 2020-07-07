@@ -7,7 +7,7 @@ import { CLTableHeaderFont, CLTableCell } from '../../styles/caseList';
 const CaseListTableHead = () => (
   <TableHead>
     <TableRow>
-      <CLTableCell style={{ width: '7%' }}>
+      <CLTableCell style={{ width: '8%' }}>
         <CLTableHeaderFont>
           <Template code="CaseList-THCase" />
         </CLTableHeaderFont>
@@ -39,7 +39,7 @@ const CaseListTableHead = () => (
       </CLTableCell>
       <CLTableCell>
         <CLTableHeaderFont>
-          <Template code="CaseList-THCategor" />
+          <Template code="CaseList-THCategory" />
         </CLTableHeaderFont>
       </CLTableCell>
       <CLTableCell />

@@ -1,7 +1,7 @@
 import styled from 'react-emotion';
 import { Table, TableCell, TableRow, withStyles } from '@material-ui/core';
 
-import { Absolute, FontOpenSans, Row } from '../HrmStyles';
+import { Absolute, FontOpenSans } from '../HrmStyles';
 
 export const TableContainer = styled('div')`
   border-left: 15px solid ${props => props.theme.colors.base2};
@@ -53,11 +53,36 @@ export const CLTableCell = withStyles(theme => ({
   },
 }))(TableCell);
 
+export const CLNumberCell = withStyles({
+  body: {
+    paddingLeft: '10px !important',
+  },
+})(CLTableCell);
+
+export const CLNamesCell = withStyles({
+  body: {
+    paddingRight: 10,
+  },
+})(CLTableCell);
+
+export const CLSummaryCell = withStyles({
+  body: {
+    paddingRight: 30,
+  },
+})(CLTableCell);
+
+export const CLActionCell = withStyles({
+  body: {
+    paddingRight: '10px !important',
+    textAlign: 'right',
+  },
+})(CLTableCell);
+
 export const CLTableHeaderFont = styled(FontOpenSans)`
   font-weight: 600;
   font-size: 12px;
   line-height: 30px;
-  letter-spacing: 1px;
+  letter-spacing: 0;
 `;
 
 export const CLTableBodyFont = styled(FontOpenSans)`
@@ -69,7 +94,6 @@ export const CLTableBodyFont = styled(FontOpenSans)`
 
 export const CLCaseNumberContainer = styled('div')`
   display: inline-block;
-  margin-left: 12;
   padding: 0 6px;
   border: ${props => (props.isOpenCase ? '1px solid #192b33' : '0')};
   border-radius: 2px;
@@ -88,12 +112,6 @@ export const CatergoryFont = styled(FontOpenSans)`
   font-size: 11px;
   letter-spacing: 0.1px;
   line-height: 14px;
-`;
-
-export const ActionsContainer = styled(Row)`
-  display: flex;
-  width: '100%';
-  justify-content: flex-end;
 `;
 
 export const addHover = Component =>

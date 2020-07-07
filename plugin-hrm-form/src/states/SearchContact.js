@@ -15,37 +15,17 @@ import {
 import { searchContacts as searchContactsApiCall } from '../services/ContactService';
 import callTypes from './DomainConstants';
 import { createBlankForm } from './ContactFormStateFactory';
+import { retrieveCategories } from '../utils';
 
 const { childInformation: blankChildInformation, callerInformation: blankCallerInformation } = createBlankForm();
-
-/**
- * @param {any} contact a contact result object
- * @returns {string[]} returns an array conaining the tags of the contact as strings (if any)
- */
-const retrieveTags = contact => {
-  const { details } = contact;
-  if (!details || !details.caseInformation || !details.caseInformation.categories) return [];
-
-  const cats = Object.entries(details.caseInformation.categories);
-  const subcats = cats.flatMap(([_, subs]) => Object.entries(subs));
-
-  const flattened = subcats.map(([subcat, bool]) => {
-    if (bool) return subcat;
-    return null;
-  });
-
-  const tags = flattened.reduce((acc, curr) => {
-    if (curr) return [...acc, curr];
-    return acc;
-  }, []);
-
-  return tags;
-};
 
 const addDetails = (counselorsHash, raw) => {
   const detailed = raw.map(contact => {
     const counselor = counselorsHash[contact.overview.counselor] || 'Unknown';
-    const tags = retrieveTags(contact);
+    const tags =
+      !contact.details || !contact.details.caseInformation || !contact.details.caseInformation.categories
+        ? []
+        : retrieveCategories(contact.details.caseInformation.categories);
     const det = { ...contact, counselor, tags };
     return det;
   });

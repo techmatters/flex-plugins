@@ -17,6 +17,7 @@ jest.mock('../styles/HrmStyles', () => ({
   Row: 'Row',
   FontOpenSans: 'FontOpenSans',
   Box: 'Box',
+  StyledIcon: () => 'StyledIcon',
 }));
 
 jest.mock('../styles/search', () => ({
@@ -33,7 +34,6 @@ jest.mock('../styles/search', () => ({
   CounselorText: 'CounselorText',
   DateText: 'DateText',
   TagText: 'TagText',
-  StyledIcon: () => 'StyledIcon',
   ContactDetailsIcon: () => 'ContactDetailsIcon',
   DetailsContainer: 'DetailsContainer',
   SectionTitleContainer: 'SectionTitleContainer',

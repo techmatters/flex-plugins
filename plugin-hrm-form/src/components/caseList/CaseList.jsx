@@ -3,9 +3,7 @@ import { Template } from '@twilio/flex-ui';
 import { CircularProgress, Dialog, DialogContent } from '@material-ui/core';
 
 import CaseListTable from './CaseListTable';
-import { Box, HeaderContainer } from '../../styles/HrmStyles';
 import { CaseListContainer, LoadingContainer } from '../../styles/caseList';
-import { TLHPaddingLeft } from '../../styles/GlobalOverrides';
 import { getCases } from '../../services/CaseService';
 
 class CaseList extends React.PureComponent {
@@ -45,19 +43,12 @@ class CaseList extends React.PureComponent {
               <CircularProgress size={50} />
             </LoadingContainer>
           ) : (
-            <>
-              <HeaderContainer>
-                <Box marginTop="15px" marginBottom="14px" marginLeft={TLHPaddingLeft} id="CaseList-AllCases-label">
-                  <Template code="CaseList-AllCases" />
-                </Box>
-              </HeaderContainer>
-              <CaseListTable
-                caseList={this.state.caseList}
-                page={this.state.page}
-                handleChangePage={this.handleChangePage}
-                handleMockedMessage={this.handleMockedMessage}
-              />
-            </>
+            <CaseListTable
+              caseList={this.state.caseList}
+              page={this.state.page}
+              handleChangePage={this.handleChangePage}
+              handleMockedMessage={this.handleMockedMessage}
+            />
           )}
         </CaseListContainer>
       </>

@@ -58,5 +58,8 @@
   "CaseList-THCounselor": "Counselor",
   "CaseList-THOpened": "Opened",
   "CaseList-THUpdated": "Updated",
-  "CaseList-THCategor": "Category"
+  "CaseList-THCategory": "Category",
+  "CaseList-ExpandButton": "Open case details",
+  "CaseList-PrevPage": "Previous page",
+  "CaseList-NextPage": "Next page"
 }

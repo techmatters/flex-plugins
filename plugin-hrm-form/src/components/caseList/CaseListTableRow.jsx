@@ -4,18 +4,22 @@ import { format } from 'date-fns';
 import { ButtonBase } from '@material-ui/core';
 import { Fullscreen } from '@material-ui/icons';
 import { connect } from 'react-redux';
+import { Template } from '@twilio/flex-ui';
 
 import {
   CLTableRow,
   CLTableCell,
+  CLNamesCell,
+  CLSummaryCell,
+  CLNumberCell,
+  CLActionCell,
   CLTableBodyFont,
   CLCaseNumberContainer,
   CategoryTag,
   CatergoryFont,
-  ActionsContainer,
   addHover,
 } from '../../styles/caseList';
-import { StyledIcon } from '../../styles/HrmStyles';
+import { HiddenText, StyledIcon } from '../../styles/HrmStyles';
 import { formatName, getShortSummary } from '../../utils';
 import { namespace, configurationBase } from '../../states';
 import { caseStatuses } from '../../states/DomainConstants';
@@ -23,31 +27,41 @@ import { caseStatuses } from '../../states/DomainConstants';
 const CHAR_LIMIT = 200;
 const FullscreenIcon = addHover(StyledIcon(Fullscreen));
 
+// eslint-disable-next-line react/display-name
+const renderCategory = category => (
+  <div style={{ width: '100%' }} key={`category-tag-${category}`}>
+    <CategoryTag>
+      <CatergoryFont>{category}</CatergoryFont>
+    </CategoryTag>
+  </div>
+);
+
+// eslint-disable-next-line react/no-multi-comp
 const CaseListTableRow = ({ caseItem, counselorsHash, handleMockedMessage }) => {
-  // const caseInfo = caseItem.info ? JSON.parse(caseItem.info) : {};
   const name = formatName(caseItem.childName);
   const summary = getShortSummary(caseItem.callSummary, CHAR_LIMIT, 'case');
   const counselor = formatName(counselorsHash[caseItem.twilioWorkerId]);
   const opened = `${format(new Date(caseItem.createdAt), 'MMM d, yyyy')}`;
   const updated = `${format(new Date(caseItem.updatedAt), 'MMM d, yyyy')}`;
+  const { categories } = caseItem;
   const isOpenCase = caseItem.status === caseStatuses.open;
 
   return (
     <CLTableRow>
-      <CLTableCell>
+      <CLNumberCell>
         <CLCaseNumberContainer isOpenCase={isOpenCase}>
           <CLTableBodyFont isOpenCase={isOpenCase}>#{caseItem.id}</CLTableBodyFont>
         </CLCaseNumberContainer>
-      </CLTableCell>
-      <CLTableCell>
+      </CLNumberCell>
+      <CLNamesCell>
         <CLTableBodyFont isOpenCase={isOpenCase}>{name}</CLTableBodyFont>
-      </CLTableCell>
-      <CLTableCell>
+      </CLNamesCell>
+      <CLSummaryCell>
         <CLTableBodyFont isOpenCase={isOpenCase}>{summary}</CLTableBodyFont>
-      </CLTableCell>
-      <CLTableCell>
+      </CLSummaryCell>
+      <CLNamesCell>
         <CLTableBodyFont isOpenCase={isOpenCase}>{counselor}</CLTableBodyFont>
-      </CLTableCell>
+      </CLNamesCell>
       <CLTableCell>
         <CLTableBodyFont isOpenCase={isOpenCase}>{opened}</CLTableBodyFont>
       </CLTableCell>
@@ -56,24 +70,18 @@ const CaseListTableRow = ({ caseItem, counselorsHash, handleMockedMessage }) => 
       </CLTableCell>
       <CLTableCell>
         <div style={{ display: 'inline-block', flexDirection: 'column' }}>
-          <CategoryTag>
-            <CatergoryFont>abuse</CatergoryFont>
-          </CategoryTag>
-          <CategoryTag>
-            <CatergoryFont>suicide</CatergoryFont>
-          </CategoryTag>
-          <CategoryTag>
-            <CatergoryFont>something</CatergoryFont>
-          </CategoryTag>
+          {categories && categories.map(category => renderCategory(category))}
         </div>
       </CLTableCell>
-      <CLTableCell>
-        <ActionsContainer>
-          <ButtonBase onClick={() => handleMockedMessage()}>
-            <FullscreenIcon />
-          </ButtonBase>
-        </ActionsContainer>
-      </CLTableCell>
+      <CLActionCell>
+        <ButtonBase onClick={() => handleMockedMessage()}>
+          <HiddenText>
+            <Template code="CaseList-ExpandButton" />
+            {caseItem.id}
+          </HiddenText>
+          <FullscreenIcon />
+        </ButtonBase>
+      </CLActionCell>
     </CLTableRow>
   );
 };
@@ -89,6 +97,7 @@ CaseListTableRow.propTypes = {
     info: PropTypes.string,
     childName: PropTypes.string,
     callSummary: PropTypes.string,
+    categories: PropTypes.arrayOf(PropTypes.string),
   }).isRequired,
   counselorsHash: PropTypes.shape({}).isRequired,
   handleMockedMessage: PropTypes.func.isRequired,
