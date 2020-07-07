@@ -3,6 +3,12 @@
   "TaskHeaderEndCall": "Hang Up",
   "TaskHeaderEndChat": "End Chat",
   "TranslateButtonAriaLabel": "Change language",
+  "CloseButton": "Close",
+  "CancelButton": "Cancel",
+
+  "CallSummary-None": "- No call summary -",
+  "CallSummary-ViewFull": "See full record",
+  "CallSummary-MoreNotes": "more notes",
 
   "CallType-child": "Child calling about self",
   "CallType-caller": "Someone calling about a child",
@@ -12,8 +18,37 @@
   "CallType-hangup": "Hang up",
   "CallType-wrongnumber": "Wrong Number",
   "CallType-abusive": "Abusive",
-
   "CallType-CloseContact": "Close Contact",
+
+  "CallTypeAndCounselor-Label": "Counselor: ",
+
+  "CallTypeButtons-Categorize": "categorize this contact",
+  "CallTypeButtons-Or": "Or was this contact…",
+
+  "Case-Save": "Save and end",
+
+  "ConnectDialog-Child": "Copy child information from this record to new contact?",
+  "ConnectDialog-Caller": "Copy caller information from this record to new contact?",
+
+  "ContactDetailsIndex-Back": "Return to results",
+
+  "QueueCard-WaitLabel": "Longest wait time:",
+  "QueueCard-None": "none",
+  "QueueCard-LessThanMinute": "less than a minute",
+  "QueueCard-OneMinute": "1 minute",
+  "QueueCard-Minutes": "&nbsp;minutes",
+  "QueueCard-Name": "Queue name: ",
+
+  "QueueIndex-ContactsWaiting": "Contacts waiting",
+
+  "NonDataCallTypeDialog-CloseConfirm": "Are you sure?",
+
+  "SearchResultsIndex-Back": "Return to search criteria",
+  "SearchResultsIndex-Result": " result",
+  "SearchResultsIndex-Results": " results",
+
+  "SectionEntry-Yes": "Yes",
+  "SectionEntry-No": "No",
 
   "SharedStateSaveFormError": "The information stored in the form couldn't be saved. Task will be transferred anyway.",
   "SharedStateLoadFormError": "The information stored in the form by previous counselor couldn't be retrieved. Starting current task with clear contact form.",
@@ -37,6 +72,11 @@
   "BottomBar-Submit": "Submit",
   "BottomBar-OpenNewCase": "Open New Case",
   "BottomBar-AddToExistingCase": "Add to Existing Case",
+
+  "TabbedForms-AddCallerInfoTab": "Add Caller Information",
+  "TabbedForms-AddChildInfoTab": "Add Child Information",
+  "TabbedForms-CategoriesTab": "Categorize Issue",
+  "TabbedForms-AddCaseInfoTab": "Add Case Summary",
 
   "NotImplemented": "Not implemented yet!",
   "Error-Backend": "Error from backend system.",

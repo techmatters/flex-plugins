@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import CheckIcon from '@material-ui/icons/Check';
 import { Button, Popover } from '@material-ui/core';
-import { withTaskContext } from '@twilio/flex-ui';
+import { withTaskContext, Template } from '@twilio/flex-ui';
 
 import { Row } from '../../styles/HrmStyles';
 import { ConfirmContainer, ConfirmText, CancelButton } from '../../styles/search';
@@ -15,17 +15,16 @@ const ConnectDialog = ({ anchorEl, currentIsCaller, contact, handleConfirm, hand
   const isOpen = Boolean(anchorEl);
   const id = isOpen ? 'simple-popover' : undefined;
 
-  const msgTemplate = w => `Copy ${w} information from this record to new contact?`;
-
   const getText = () => {
     const callType = contact && contact.details && contact.details.callType;
     if (!callType) return '';
 
     switch (callType) {
       case callTypes.child:
-        return msgTemplate('child');
+        return <Template code="ConnectDialog-Child" />;
       case callTypes.caller:
-        return msgTemplate(currentIsCaller ? 'caller' : 'child');
+        if (currentIsCaller) return <Template code="ConnectDialog-Caller" />;
+        return <Template code="ConnectDialog-Child" />;
       default:
         return '';
     }
