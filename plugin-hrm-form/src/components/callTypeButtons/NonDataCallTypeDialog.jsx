@@ -13,7 +13,7 @@ import {
 } from '../../styles/callTypeButtons';
 import TabPressWrapper from '../TabPressWrapper';
 
-const NonDataCallTypeDialog = ({ isOpen, isCallTask, handleConfirm, handleCancel }) => (
+const NonDataCallTypeDialog = ({ isOpen, isCallTask, isInWrapupMode, handleConfirm, handleCancel }) => (
   <CloseTaskDialog onClose={handleCancel} open={isOpen}>
     <TabPressWrapper>
       <NonDataCallTypeDialogContainer>
@@ -24,8 +24,11 @@ const NonDataCallTypeDialog = ({ isOpen, isCallTask, handleConfirm, handleCancel
         <Box marginBottom="32px">
           <Row>
             <ConfirmButton autoFocus tabIndex={1} onClick={handleConfirm}>
-              {/* eslint-disable-next-line react/jsx-max-depth */}
-              <Template code={isCallTask ? 'TaskHeaderEndCall' : 'TaskHeaderEndChat'} />
+              {/* eslint-disable react/jsx-max-depth,no-nested-ternary */}
+              <Template
+                code={isInWrapupMode ? 'CallType-CloseContact' : isCallTask ? 'TaskHeaderEndCall' : 'TaskHeaderEndChat'}
+              />
+              {/* eslint-enable react/jsx-max-depth,no-nested-ternary */}
             </ConfirmButton>
             <CancelButton tabIndex={2} onClick={handleCancel}>
               Cancel
@@ -41,6 +44,7 @@ NonDataCallTypeDialog.displayName = 'NonDataCallTypeDialog';
 NonDataCallTypeDialog.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   isCallTask: PropTypes.bool.isRequired,
+  isInWrapupMode: PropTypes.bool.isRequired,
   handleConfirm: PropTypes.func.isRequired,
   handleCancel: PropTypes.func.isRequired,
 };
