@@ -16,7 +16,7 @@ const CASES_PER_PAGE = 5;
  * This component is splitted to make it easier to read, but is basically a 8 columns Table (7 for data, 1 for the "expand" button)
  */
 const CaseListTable = ({ caseList, page, handleChangePage, handleMockedMessage }) => {
-  const pagesCount = Math.floor(caseList.length / CASES_PER_PAGE);
+  const pagesCount = Math.floor(caseList.length / CASES_PER_PAGE) + 1;
   const from = page * 5;
   const to = from + 5;
 
