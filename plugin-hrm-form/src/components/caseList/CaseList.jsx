@@ -6,25 +6,34 @@ import CaseListTable from './CaseListTable';
 import { CaseListContainer, LoadingContainer } from '../../styles/caseList';
 import { getCases } from '../../services/CaseService';
 
+export const CASES_PER_PAGE = 5;
+
 class CaseList extends React.PureComponent {
   static displayName = 'CaseList';
 
   state = {
     loading: true,
     caseList: [],
+    caseCount: 0,
     page: 0,
     mockedMessage: null,
   };
 
   async componentDidMount() {
-    const caseList = await getCases();
-    console.log('HERE HERE HERE');
-    console.log(caseList);
-    this.setState({ caseList, loading: false });
+    this.fetchCaseList(0);
   }
 
-  handleChangePage = page => {
-    this.setState({ page });
+  fetchCaseList = async page => {
+    this.setState({ loading: true });
+    const { cases, count } = await getCases(CASES_PER_PAGE, CASES_PER_PAGE * page);
+    console.log('HERE HERE HERE');
+    console.log(cases, count);
+    this.setState({ page, caseList: cases, caseCount: count, loading: false });
+  };
+
+  handleChangePage = async page => {
+    await this.fetchCaseList(page);
+    // this.setState({ page });
   };
 
   handleMockedMessage = () => this.setState({ mockedMessage: <Template code="NotImplemented" /> });
@@ -45,6 +54,7 @@ class CaseList extends React.PureComponent {
           ) : (
             <CaseListTable
               caseList={this.state.caseList}
+              caseCount={this.state.caseCount}
               page={this.state.page}
               handleChangePage={this.handleChangePage}
               handleMockedMessage={this.handleMockedMessage}

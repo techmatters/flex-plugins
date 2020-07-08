@@ -40,7 +40,7 @@ const mockedCaseList = [
 ];
 
 jest.mock('../../../services/CaseService', () => ({
-  getCases: () => Promise.resolve(mockedCaseList),
+  getCases: () => Promise.resolve({ cases: mockedCaseList, count: mockedCaseList.length }),
 }));
 
 expect.extend(toHaveNoViolations);

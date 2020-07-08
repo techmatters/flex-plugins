@@ -11,7 +11,12 @@ export async function createCase(caseRecord) {
   return responseJson;
 }
 
-export async function getCases() {
+export async function getCases(limit, offset) {
+  if (limit !== undefined && offset !== undefined) {
+    const responseJson = await fetchHrmApi(`/cases?limit=${limit}&offset=${offset}`);
+    return responseJson;
+  }
+
   const responseJson = await fetchHrmApi('/cases');
 
   return responseJson;
