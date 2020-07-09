@@ -98,10 +98,8 @@ test('saveInsightsData for data callType', async () => {
     taskSid: 'task-sid',
     conversations: {
       content: 'content',
-      conversation_attribute_1: 'Unspecified/Other - Missing children;Bullying',
+      conversation_attribute_1: 'Unspecified/Other - Missing children;Bullying;Addictive behaviours',
       conversation_attribute_2: 'Child calling about self',
-      conversation_attribute_3: 'Unspecified/Other - Missing children',
-      conversation_attribute_4: 'Bullying',
     },
     customers: {
       name: 'John Doe',

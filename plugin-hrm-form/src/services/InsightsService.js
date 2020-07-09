@@ -19,7 +19,7 @@ function getSubcategories(task) {
     });
   });
 
-  return result.splice(0, 2);
+  return result.splice(0, 3);
 }
 
 function buildConversationsObject(task) {
@@ -33,8 +33,6 @@ function buildConversationsObject(task) {
   return {
     conversation_attribute_1: subcategories.join(';'),
     conversation_attribute_2: callType,
-    conversation_attribute_3: subcategories[0],
-    conversation_attribute_4: subcategories[1],
   };
 }
 
