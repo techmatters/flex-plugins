@@ -19,7 +19,6 @@ function getSubcategories(task) {
     });
   });
 
-  // grab all three categories -- does this do that?  this comment can be removed
   return result.splice(0, 3);
 }
 
