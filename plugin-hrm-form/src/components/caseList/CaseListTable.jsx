@@ -14,7 +14,7 @@ import { CASES_PER_PAGE } from './CaseList';
 /**
  * This component is splitted to make it easier to read, but is basically a 8 columns Table (7 for data, 1 for the "expand" button)
  */
-const CaseListTable = ({ caseList, caseCount, page, handleChangePage, handleMockedMessage }) => {
+const CaseListTable = ({ caseList, caseCount, page, handleChangePage, openMockedMessage }) => {
   const pagesCount = Math.floor(caseCount / CASES_PER_PAGE) + 1;
   /*
    * const from = page * 5;
@@ -32,11 +32,11 @@ const CaseListTable = ({ caseList, caseCount, page, handleChangePage, handleMock
         <CLTable tabIndex={0} aria-labelledby="CaseList-AllCases-label">
           <CaseListTableHead />
           <TableBody>
-            {caseList.map(caseItem => (
+            {caseList.map((caseItem) => (
               <CaseListTableRow
                 caseItem={caseItem}
                 key={`CaseListItem-${caseItem.id}`}
-                handleMockedMessage={handleMockedMessage}
+                openMockedMessage={openMockedMessage}
               />
             ))}
           </TableBody>
@@ -53,7 +53,7 @@ CaseListTable.propTypes = {
   caseCount: PropTypes.number.isRequired,
   page: PropTypes.number.isRequired,
   handleChangePage: PropTypes.func.isRequired,
-  handleMockedMessage: PropTypes.func.isRequired,
+  openMockedMessage: PropTypes.func.isRequired,
 };
 
 export default CaseListTable;
