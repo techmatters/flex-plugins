@@ -3,15 +3,21 @@ import { Table, TableCell, TableRow, withStyles } from '@material-ui/core';
 
 import { Absolute, FontOpenSans } from '../HrmStyles';
 
-export const TableContainer = styled('div')`
-  border-left: 15px solid ${props => props.theme.colors.base2};
-  border-right: 10px solid ${props => props.theme.colors.base2};
-`;
-
 export const CaseListContainer = styled(Absolute)`
   height: 100%;
   width: 100%;
   background-color: ${props => props.theme.colors.base2};
+`;
+
+export const CenteredContainer = styled(CaseListContainer)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const TableContainer = styled('div')`
+  border-left: 15px solid ${props => props.theme.colors.base2};
+  border-right: 10px solid ${props => props.theme.colors.base2};
 `;
 
 export const CLTable = withStyles({
@@ -138,10 +144,7 @@ export const ButtonText = styled(FontOpenSans)`
   font-weight: ${props => (props.highlight ? 700 : 600)};
 `;
 
-export const LoadingContainer = styled('div')`
-  display: flex;
-  width: 100%;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
+export const SomethingWentWrogText = styled(FontOpenSans)`
+  color: ${props => props.theme.colors.errorColor};
+  font-size: 20px;
 `;
