@@ -92,5 +92,19 @@
   "Case-CaseDetailsOwner": "Counselor",
   "Case-CaseDetailsDateOpened": "Date Opened",
   "Case-CaseDetailsStatusLabel": "Status",
-  "Case-CaseDetailsStatusOpen": "Open"
+  "Case-CaseDetailsStatusOpen": "Open",
+
+  "SideNavCaseList": "Case List",
+  
+  "CaseList-AllCases": "All Cases",
+  "CaseList-THCase": "Case #",
+  "CaseList-THChildName": "Child's Name",
+  "CaseList-THSummary": "Summary",
+  "CaseList-THCounselor": "Counselor",
+  "CaseList-THOpened": "Opened",
+  "CaseList-THUpdated": "Updated",
+  "CaseList-THCategory": "Category",
+  "CaseList-ExpandButton": "Open case details",
+  "CaseList-PrevPage": "Previous page",
+  "CaseList-NextPage": "Next page"
 }

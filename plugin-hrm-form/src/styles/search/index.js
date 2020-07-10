@@ -41,10 +41,6 @@ export const ContactButtonsWrapper = styled('div')`
   margin-left: auto;
 `;
 
-export const StyledIcon = icon => styled(icon)`
-  opacity: 0.34;
-`;
-
 export const StyledLink = styled(({ onClick, ...rest }) => <Button size="small" onClick={onClick} {...rest} />)`
   span {
     text-transform: none;

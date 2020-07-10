@@ -1,7 +1,9 @@
+import { truncate } from 'lodash';
+
 /**
  * @param {string} name
  */
-export const formatName = name => (name.trim() === '' ? 'Unknown' : name);
+export const formatName = name => (name && name.trim() !== '' ? name : 'Unknown');
 
 /**
  * @param {string} street
@@ -30,4 +32,41 @@ export const formatDuration = inSeconds => {
   const ss = `${seconds}s`;
 
   return `${hh}${mm}${ss}`;
+};
+
+/**
+ * @param {number} charLimit
+ */
+export const getShortSummary = (summary, charLimit, chooseMessage = 'call') => {
+  if (!summary) {
+    if (chooseMessage === 'case') return '- No case summary -';
+
+    return '- No call summary -';
+  }
+
+  return truncate(summary, {
+    length: charLimit,
+    separator: /,?\.* +/, // TODO(murilo): Check other punctuations
+  });
+};
+
+/**
+ * @param {{ [category: string]: { [subcategory: string]: boolean } }} categories categories object
+ * @returns {string[]} returns an array conaining the tags of the contact as strings (if any)
+ */
+export const retrieveCategories = categories => {
+  const cats = Object.entries(categories);
+  const subcats = cats.flatMap(([_, subs]) => Object.entries(subs));
+
+  const flattened = subcats.map(([subcat, bool]) => {
+    if (bool) return subcat;
+    return null;
+  });
+
+  const tags = flattened.reduce((acc, curr) => {
+    if (curr) return [...acc, curr];
+    return acc;
+  }, []);
+
+  return tags;
 };

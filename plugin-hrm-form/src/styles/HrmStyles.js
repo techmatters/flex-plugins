@@ -387,3 +387,21 @@ export const TransferStyledButton = styled('button')`
     cursor: pointer;
   }
 `;
+
+export const HeaderContainer = styled(Row)`
+  width: 100%;
+  justify-items: flex-start;
+  background-color: ${props => props.theme.colors.base2};
+  border-width: 0px;
+  text-transform: uppercase;
+  color: #192b33;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.67px;
+  line-height: 12px;
+  padding: 0px;
+`;
+
+export const StyledIcon = icon => styled(icon)`
+  opacity: 0.34;
+`;
