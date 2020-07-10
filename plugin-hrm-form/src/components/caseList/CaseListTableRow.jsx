@@ -16,7 +16,7 @@ import {
   CLTableBodyFont,
   CLCaseNumberContainer,
   CategoryTag,
-  CatergoryFont,
+  CategoryFont,
   addHover,
 } from '../../styles/caseList';
 import { HiddenText, StyledIcon } from '../../styles/HrmStyles';
@@ -31,7 +31,7 @@ const FullscreenIcon = addHover(StyledIcon(Fullscreen));
 const renderCategory = category => (
   <div style={{ width: '100%' }} key={`category-tag-${category}`}>
     <CategoryTag>
-      <CatergoryFont>{category}</CatergoryFont>
+      <CategoryFont>{category}</CategoryFont>
     </CategoryTag>
   </div>
 );

@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { ButtonBase } from '@material-ui/core';
+import { Template } from '@twilio/flex-ui';
 
 import { Container, Row } from '../../../styles/HrmStyles';
 import { BackText, BackIcon } from '../../../styles/search';
@@ -15,9 +16,11 @@ class ContactDetails extends Component {
   static propTypes = {
     currentIsCaller: PropTypes.bool.isRequired,
     contact: contactType.isRequired,
+    detailsExpanded: PropTypes.objectOf(PropTypes.bool).isRequired,
     handleBack: PropTypes.func.isRequired,
     handleSelectSearchResult: PropTypes.func.isRequired,
     handleMockedMessage: PropTypes.func.isRequired,
+    handleExpandDetailsSection: PropTypes.func.isRequired,
   };
 
   state = {
@@ -39,7 +42,7 @@ class ContactDetails extends Component {
   };
 
   render() {
-    const { contact, currentIsCaller } = this.props;
+    const { contact, detailsExpanded, currentIsCaller } = this.props;
 
     return (
       <Container>
@@ -54,14 +57,18 @@ class ContactDetails extends Component {
           <ButtonBase onClick={this.props.handleBack}>
             <Row>
               <BackIcon />
-              <BackText>Return to results</BackText>
+              <BackText>
+                <Template code="ContactDetailsIndex-Back" />
+              </BackText>
             </Row>
           </ButtonBase>
         </Row>
         <Details
           contact={contact}
+          detailsExpanded={detailsExpanded}
           handleOpenConnectDialog={this.handleOpenConnectDialog}
           handleMockedMessage={this.props.handleMockedMessage}
+          handleExpandDetailsSection={this.props.handleExpandDetailsSection}
         />
       </Container>
     );

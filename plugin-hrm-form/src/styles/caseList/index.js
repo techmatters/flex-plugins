@@ -114,7 +114,7 @@ export const CategoryTag = styled('div')`
   text-transform: uppercase;
 `;
 
-export const CatergoryFont = styled(FontOpenSans)`
+export const CategoryFont = styled(FontOpenSans)`
   font-size: 11px;
   letter-spacing: 0.1px;
   line-height: 14px;

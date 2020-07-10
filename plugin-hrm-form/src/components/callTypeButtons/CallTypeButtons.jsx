@@ -55,7 +55,9 @@ const CallTypeButtons = props => {
     <>
       <Container>
         <Box marginBottom="29px">
-          <Label>categorize this contact</Label>
+          <Label style={{ width: 'auto' }}>
+            <Template code="CallTypeButtons-Categorize" />
+          </Label>
           <DataCallTypeButton onClick={() => handleClickAndRedirect(task.taskSid, callTypes.child)}>
             <Box width="50px" marginRight="5px">
               <FaceIcon />
@@ -72,7 +74,9 @@ const CallTypeButtons = props => {
         </Box>
 
         <Box>
-          <Label>Or was this contact…</Label>
+          <Label style={{ width: 'auto' }}>
+            <Template code="CallTypeButtons-Or" />
+          </Label>
           {Object.keys(callTypes)
             .filter(callType => isNonDataCallType(callTypes[callType]))
             .map((callType, i) => (
