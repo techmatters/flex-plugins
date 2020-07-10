@@ -186,6 +186,16 @@ const setUpActions = setupObject => {
   Flex.Actions.addListener('afterCompleteTask', ActionFunctions.removeContactForm);
 };
 
+/**
+ * @param  {...string} taskChannels
+ */
+const enableChatCapabilities = (...taskChannels) => {
+  const customChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel('custom-chat-channel', task =>
+    taskChannels.includes(task.taskChannelUniqueName),
+  );
+  Flex.TaskChannels.register(customChatChannel);
+};
+
 export default class HrmFormPlugin extends FlexPlugin {
   constructor() {
     super(PLUGIN_NAME);
@@ -215,6 +225,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     if (config.featureFlags.enable_transfers) setUpTransfers(setupObject);
     setUpComponents(setupObject);
     setUpActions(setupObject);
+    enableChatCapabilities('whatsapp', 'web');
 
     const managerConfiguration = {
       colorTheme: HrmTheme,
