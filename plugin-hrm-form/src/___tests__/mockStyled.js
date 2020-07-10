@@ -19,6 +19,7 @@ jest.mock('../styles/HrmStyles', () => ({
   Box: 'Box',
   StyledIcon: () => 'StyledIcon',
   HiddenText: 'HiddenText',
+  Absolute: 'Absolute',
 }));
 
 jest.mock('../styles/search', () => ({
