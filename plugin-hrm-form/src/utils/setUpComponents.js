@@ -208,11 +208,6 @@ export const setUpCaseList = () => {
       key="CaseListSideLink"
       onClick={() => Flex.Actions.invokeAction('NavigateToView', { viewName: 'case-list' })}
     />,
-    /*
-     * {
-     *   align: 'start',
-     * },
-     */
   );
 };
 

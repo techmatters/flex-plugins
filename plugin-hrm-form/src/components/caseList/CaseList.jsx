@@ -18,8 +18,6 @@ class CaseList extends React.PureComponent {
 
   async componentDidMount() {
     const caseList = await getCases();
-    console.log('HERE HERE HERE');
-    console.log(caseList);
     this.setState({ caseList, loading: false });
   }
 
