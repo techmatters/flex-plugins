@@ -16,6 +16,7 @@ import {
   viewContactDetails,
   searchContacts,
   SearchPages,
+  handleExpandDetailsSection,
 } from '../../states/SearchContact';
 import { namespace, searchContactsBase, configurationBase } from '../../states';
 
@@ -29,10 +30,12 @@ class Search extends Component {
     searchContacts: PropTypes.func.isRequired,
     changeSearchPage: PropTypes.func.isRequired,
     viewContactDetails: PropTypes.func.isRequired,
+    handleExpandDetailsSection: PropTypes.func.isRequired,
     currentPage: PropTypes.oneOf(Object.keys({ ...SearchPages })).isRequired,
     currentContact: contactType,
     form: searchFormType.isRequired,
     searchResult: PropTypes.arrayOf(searchResultType).isRequired,
+    detailsExpanded: PropTypes.objectOf(PropTypes.bool).isRequired,
     isRequesting: PropTypes.bool.isRequired,
     error: PropTypes.instanceOf(Error),
     counselorsHash: PropTypes.shape({}).isRequired,
@@ -96,9 +99,11 @@ class Search extends Component {
           <ContactDetails
             currentIsCaller={this.props.currentIsCaller}
             contact={currentContact}
+            detailsExpanded={this.props.detailsExpanded}
             handleBack={this.goToResults}
             handleSelectSearchResult={this.props.handleSelectSearchResult}
             handleMockedMessage={this.handleMockedMessage}
+            handleExpandDetailsSection={this.props.handleExpandDetailsSection}
           />
         );
       default:
@@ -132,6 +137,7 @@ const mapStateToProps = (state, ownProps) => {
     currentContact: taskSearchState.currentContact,
     form: taskSearchState.form,
     searchResult: taskSearchState.searchResult,
+    detailsExpanded: taskSearchState.detailsExpanded,
     counselorsHash: counselors.hash,
   };
 };
@@ -143,6 +149,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     handleSearchFormChange: bindActionCreators(handleSearchFormChange(taskId), dispatch),
     changeSearchPage: bindActionCreators(changeSearchPage(taskId), dispatch),
     viewContactDetails: bindActionCreators(viewContactDetails(taskId), dispatch),
+    handleExpandDetailsSection: bindActionCreators(handleExpandDetailsSection(taskId), dispatch),
     searchContacts: searchContacts(dispatch)(taskId),
   };
 };

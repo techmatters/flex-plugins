@@ -37,7 +37,7 @@ export const formatDuration = inSeconds => {
 /**
  * @param {number} charLimit
  */
-export const getShortSummary = (summary, charLimit, chooseMessage) => {
+export const getShortSummary = (summary, charLimit, chooseMessage = 'call') => {
   if (!summary) {
     if (chooseMessage === 'case') return '- No case summary -';
 

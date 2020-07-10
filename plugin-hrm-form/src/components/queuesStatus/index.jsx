@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Template } from '@twilio/flex-ui';
 
 import { namespace, queuesStatusBase } from '../../states';
 import QueueCard from './QueueCard';
@@ -15,7 +16,7 @@ const QueuesStatus = ({ colors, queuesStatusState }) => {
     <Container role="complementary" tabIndex={0}>
       <HeaderContainer>
         <Box marginTop="12px" marginRight="5px" marginBottom="12px" marginLeft={TLHPaddingLeft}>
-          Contacts waiting
+          <Template code="QueueIndex-ContactsWaiting" />
         </Box>
       </HeaderContainer>
       <QueuesContainer>

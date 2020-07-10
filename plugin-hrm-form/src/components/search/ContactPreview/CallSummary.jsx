@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Template } from '@twilio/flex-ui';
 
 import { Row, Box } from '../../../styles/HrmStyles';
 import { SummaryText, ShortSummaryText, StyledLink } from '../../../styles/search';
@@ -31,13 +32,19 @@ class CallSummary extends React.Component {
     return this.state.expanded ? (
       <div>
         <SummaryText>{this.props.callSummary}</SummaryText>
-        <StyledLink onClick={this.props.onClickFull}>See full record</StyledLink>
+        <StyledLink onClick={this.props.onClickFull}>
+          <Template code="CallSummary-ViewFull" />
+        </StyledLink>
       </div>
     ) : (
       <Box marginBottom="5px">
         <Row style={{ height: '23px' }}>
           <ShortSummaryText>{getShortSummary(this.props.callSummary, CHAR_LIMIT)}</ShortSummaryText>
-          {isLong && <StyledLink onClick={this.handleClick(true)}>more notes</StyledLink>}
+          {isLong && (
+            <StyledLink onClick={this.handleClick(true)}>
+              <Template code="CallSummary-MoreNotes" />
+            </StyledLink>
+          )}
         </Row>
       </Box>
     );

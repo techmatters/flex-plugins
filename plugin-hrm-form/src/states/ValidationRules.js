@@ -1,7 +1,8 @@
 import cloneDeep from 'lodash/cloneDeep';
 
 import callTypes from './DomainConstants';
-import { FieldType, ValidationType } from './ContactFormStateFactory';
+import { FieldType, ValidationType, isNotCategory, isNotSubcategory } from './ContactFormStateFactory';
+import { getConfig } from '../HrmFormPlugin';
 
 /*
  * Questionable whether we should export this
@@ -13,8 +14,8 @@ export function isNonDataCallType(callType) {
 
 export function countSelectedCategories(categoryFormSection) {
   let count = 0;
-  for (const category of Object.keys(categoryFormSection).filter(key => key.startsWith('category'))) {
-    for (const subcategory of Object.keys(categoryFormSection[category]).filter(key => key.startsWith('sub'))) {
+  for (const category of Object.keys(categoryFormSection).filter(key => !isNotCategory(key))) {
+    for (const subcategory of Object.keys(categoryFormSection[category]).filter(key => !isNotSubcategory(key))) {
       if (categoryFormSection[category][subcategory].value) {
         count += 1;
       }
@@ -25,6 +26,8 @@ export function countSelectedCategories(categoryFormSection) {
 
 // NOTE: MODIFIES INPUT
 function handleCallerOrChildInformationKeys(formToModify, ignoreTouched) {
+  const { strings } = getConfig();
+
   Object.keys(formToModify)
     .filter(key => key !== 'type' && key !== 'validation' && key !== 'error')
     .forEach(key => {
@@ -35,7 +38,7 @@ function handleCallerOrChildInformationKeys(formToModify, ignoreTouched) {
           const field = formToModify[key];
           if (field.type === FieldType.CHECKBOX_FIELD) {
             if ((ignoreTouched || field.touched) && countSelectedCategories(field) === 0) {
-              field.error = 'You must check at least one option';
+              field.error = strings['Error-CategoryRequired'];
               field.touched = true;
             } else {
               field.error = null;

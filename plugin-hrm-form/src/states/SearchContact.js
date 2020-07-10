@@ -11,6 +11,7 @@ import {
   SEARCH_CONTACTS_REQUEST,
   SEARCH_CONTACTS_SUCCESS,
   SEARCH_CONTACTS_FAILURE,
+  HANDLE_EXPAND_DETAILS_SECTION,
 } from './ActionTypes';
 import { searchContacts as searchContactsApiCall } from '../services/ContactService';
 import callTypes from './DomainConstants';
@@ -69,6 +70,12 @@ export const searchContacts = dispatch => taskId => async (searchParams, counsel
 export const changeSearchPage = taskId => page => ({ type: CHANGE_SEARCH_PAGE, page, taskId });
 
 export const viewContactDetails = taskId => contact => ({ type: VIEW_CONTACT_DETAILS, contact, taskId });
+
+export const handleExpandDetailsSection = taskId => section => ({
+  type: HANDLE_EXPAND_DETAILS_SECTION,
+  section,
+  taskId,
+});
 
 function copyNewValues(originalObject, objectWithNewValues) {
   if (objectWithNewValues === null || typeof objectWithNewValues === 'undefined') {
@@ -137,6 +144,14 @@ const initialState = {
   tasks: {},
 };
 
+export const ContactDetailsSections = {
+  GENERAL_DETAILS: 'General details',
+  CALLER_INFORMATION: 'Caller information',
+  CHILD_INFORMATION: 'Child information',
+  ISSUE_CATEGORIZATION: 'Issue categorization',
+  CASE_SUMMARY: 'Case summary',
+};
+
 const newTaskEntry = {
   currentPage: SearchPages.form,
   currentContact: null,
@@ -147,6 +162,13 @@ const newTaskEntry = {
     phoneNumber: '',
     dateFrom: '',
     dateTo: '',
+  },
+  detailsExpanded: {
+    [ContactDetailsSections.GENERAL_DETAILS]: true,
+    [ContactDetailsSections.CALLER_INFORMATION]: false,
+    [ContactDetailsSections.CHILD_INFORMATION]: false,
+    [ContactDetailsSections.ISSUE_CATEGORIZATION]: false,
+    [ContactDetailsSections.CASE_SUMMARY]: false,
   },
   searchResult: [],
   isRequesting: false,
@@ -203,6 +225,23 @@ export function reduce(state = initialState, action) {
         tasks: {
           ...state.tasks,
           [action.taskId]: { ...task, currentPage: SearchPages.details, currentContact: action.contact },
+        },
+      };
+    }
+    case HANDLE_EXPAND_DETAILS_SECTION: {
+      const task = state.tasks[action.taskId];
+      const { detailsExpanded } = task;
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...task,
+            detailsExpanded: {
+              ...detailsExpanded,
+              [action.section]: !detailsExpanded[action.section],
+            },
+          },
         },
       };
     }
