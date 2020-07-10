@@ -46,12 +46,6 @@ const mockedCaseList = [
 
 jest.mock('../../../services/CaseService', () => ({ getCases: jest.fn() }));
 
-/*
- * jest.mock('../../../services/CaseService', () => ({
- *   getCases: () => Promise.resolve({ cases: mockedCaseList, count: mockedCaseList.length }),
- * }));
- */
-
 expect.extend(toHaveNoViolations);
 const mockStore = configureMockStore([]);
 
