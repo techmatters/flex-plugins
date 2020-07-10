@@ -7,7 +7,7 @@ import { mount } from 'enzyme';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 
 import HrmTheme from '../../../styles/HrmTheme';
-import { SomethingWentWrogText } from '../../../styles/caseList';
+import { SomethingWentWrongText } from '../../../styles/caseList';
 import CaseList from '../../../components/caseList';
 import CaseListTable from '../../../components/caseList/CaseListTable';
 import CaseListTableHead from '../../../components/caseList/CaseListTableHead';
@@ -137,7 +137,7 @@ test('Should not render (error)', async () => {
   await Promise.resolve();
 
   expect(() => component.findByType(CaseList).findByType(CaseListTable)).toThrow();
-  expect(() => component.findByType(CaseList).findByType(SomethingWentWrogText)).not.toThrow();
+  expect(() => component.findByType(CaseList).findByType(SomethingWentWrongText)).not.toThrow();
   expect(component.findByType(CaseList).instance.state.error).toBeTruthy();
 });
 

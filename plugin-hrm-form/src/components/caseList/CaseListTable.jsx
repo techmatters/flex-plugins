@@ -15,11 +15,7 @@ import { CASES_PER_PAGE } from './CaseList';
  * This component is splitted to make it easier to read, but is basically a 8 columns Table (7 for data, 1 for the "expand" button)
  */
 const CaseListTable = ({ caseList, caseCount, page, handleChangePage, handleMockedMessage }) => {
-  const pagesCount = Math.floor(caseCount / CASES_PER_PAGE) + 1;
-  /*
-   * const from = page * 5;
-   * const to = from + 5;
-   */
+  const pagesCount = Math.ceil(caseCount / CASES_PER_PAGE);
 
   return (
     <>

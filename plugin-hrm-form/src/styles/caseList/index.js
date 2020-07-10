@@ -144,7 +144,7 @@ export const ButtonText = styled(FontOpenSans)`
   font-weight: ${props => (props.highlight ? 700 : 600)};
 `;
 
-export const SomethingWentWrogText = styled(FontOpenSans)`
+export const SomethingWentWrongText = styled(FontOpenSans)`
   color: ${props => props.theme.colors.errorColor};
   font-size: 20px;
 `;

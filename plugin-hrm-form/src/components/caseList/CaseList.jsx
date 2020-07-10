@@ -3,7 +3,7 @@ import { Template } from '@twilio/flex-ui';
 import { CircularProgress, Dialog, DialogContent } from '@material-ui/core';
 
 import CaseListTable from './CaseListTable';
-import { CaseListContainer, CenteredContainer, SomethingWentWrogText } from '../../styles/caseList';
+import { CaseListContainer, CenteredContainer, SomethingWentWrongText } from '../../styles/caseList';
 import { getCases } from '../../services/CaseService';
 
 export const CASES_PER_PAGE = 5;
@@ -49,9 +49,9 @@ class CaseList extends React.PureComponent {
     if (this.state.error)
       return (
         <CenteredContainer>
-          <SomethingWentWrogText>
+          <SomethingWentWrongText>
             <Template code="CaseList-SomethingWentWrog" />
-          </SomethingWentWrogText>
+          </SomethingWentWrongText>
         </CenteredContainer>
       );
 
