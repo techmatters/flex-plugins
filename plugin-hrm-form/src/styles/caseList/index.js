@@ -68,6 +68,10 @@ export const CLNumberCell = withStyles({
 export const CLNamesCell = withStyles({
   body: {
     paddingRight: 10,
+    display: '-webkit-box',
+    WebkitLineClamp: 4,
+    WebkitBoxOrient: 'vertical',
+    overflow: 'hidden',
   },
 })(CLTableCell);
 
@@ -96,6 +100,7 @@ export const CLTableBodyFont = styled(FontOpenSans)`
   font-size: 12px;
   line-height: 18px;
   font-weight: 600;
+  max-height: ${() => 85 - 12 /* 85px of cell height - 12px of padding*/}px;
 `;
 
 export const CLCaseNumberContainer = styled('div')`
@@ -107,6 +112,7 @@ export const CLCaseNumberContainer = styled('div')`
 
 export const CategoryTag = styled('div')`
   display: inline-block;
+  white-space: nowrap;
   border-radius: 6px;
   padding: 0px 13px;
   margin: 3px 0;

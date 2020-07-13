@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
-import { ButtonBase } from '@material-ui/core';
+import { ButtonBase, Tooltip } from '@material-ui/core';
 import { Fullscreen } from '@material-ui/icons';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
@@ -27,14 +27,26 @@ import { caseStatuses } from '../../states/DomainConstants';
 const CHAR_LIMIT = 200;
 const FullscreenIcon = addHover(StyledIcon(Fullscreen));
 
+/**
+ * @param {string} category
+ */
 // eslint-disable-next-line react/display-name
-const renderCategory = category => (
-  <div style={{ width: '100%' }} key={`category-tag-${category}`}>
-    <CategoryTag>
-      <CategoryFont>{category}</CategoryFont>
-    </CategoryTag>
-  </div>
-);
+const renderCategory = category => {
+  const tag =
+    category.length > 17 && !category.toUpperCase().includes('UNSPECIFIED/OTHER')
+      ? `${category.substr(0, 15)}...`
+      : category.substr(0, 17);
+
+  return (
+    <div style={{ width: '100%' }} key={`category-tag-${category}`}>
+      <Tooltip title={category}>
+        <CategoryTag>
+          <CategoryFont>{tag}</CategoryFont>
+        </CategoryTag>
+      </Tooltip>
+    </div>
+  );
+};
 
 // eslint-disable-next-line react/no-multi-comp
 const CaseListTableRow = ({ caseItem, counselorsHash, handleMockedMessage }) => {
