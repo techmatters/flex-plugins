@@ -107,5 +107,5 @@
   "CaseList-ExpandButton": "Open case details",
   "CaseList-PrevPage": "Previous page",
   "CaseList-NextPage": "Next page",
-  "CaseList-SomethingWentWrog": "Something went wrong while loading cases list. Please retry in a moment."
+  "CaseList-SomethingWentWrong": "Something went wrong while loading cases list. Please retry in a moment."
 }
