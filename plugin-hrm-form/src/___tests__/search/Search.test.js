@@ -95,7 +95,7 @@ test('<Search> should display <SearchResults />', () => {
         name: 'Jill Smith',
         customerNumber: 'Anonymous',
         callType: 'Child calling about self',
-        categories: 'TBD',
+        categories: ['Tag1', 'Tag2'],
         counselor: 'counselor-id',
         notes: 'Jill Smith Notes',
       },
@@ -105,7 +105,6 @@ test('<Search> should display <SearchResults />', () => {
         },
       },
       counselor: 'Counselor',
-      tags: ['Tag1', 'Tag2'],
     },
   ];
   const task = { taskSid: 'WT123' };
@@ -194,14 +193,13 @@ test('<Search> should display <ContactDetails />', () => {
       name: 'Jill Smith',
       customerNumber: 'Anonymous',
       callType: 'Child calling about self',
-      categories: 'TBD',
+      categories: ['Tag1', 'Tag2'],
       counselor: 'counselor-id',
       notes: 'Jill Smith Notes',
       channel: channelTypes.web,
       conversationDuration: 10,
     },
     counselor: 'Counselor',
-    tags: ['Tag1', 'Tag2'],
   };
   const task = { taskSid: 'WT123' };
 
