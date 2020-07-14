@@ -17,9 +17,8 @@ import {
   CLCaseNumberContainer,
   CategoryTag,
   CategoryFont,
-  addHover,
 } from '../../styles/caseList';
-import { HiddenText, StyledIcon } from '../../styles/HrmStyles';
+import { HiddenText, StyledIcon, addHover } from '../../styles/HrmStyles';
 import { formatName, getShortSummary } from '../../utils';
 import { namespace, configurationBase } from '../../states';
 import { caseStatuses } from '../../states/DomainConstants';

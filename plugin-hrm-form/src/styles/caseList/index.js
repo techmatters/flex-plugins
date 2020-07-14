@@ -126,16 +126,6 @@ export const CategoryFont = styled(FontOpenSans)`
   line-height: 14px;
 `;
 
-export const addHover = Component =>
-  withStyles({
-    root: {
-      '&:hover': {
-        borderRadius: '50%',
-        backgroundColor: '#a0a8bd66',
-      },
-    },
-  })(Component);
-
 export const PaginationButton = styled('div')`
   background-color: ${props => (props.highlight ? '#1976D2' : 'transparent')};
   box-shadow: ${props => (props.highlight ? '0 1px 1px 0 rgba(0, 0, 0, 0.06)' : '0')};

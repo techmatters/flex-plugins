@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'react-emotion';
-import { Input, Select, MenuItem, Tabs, Tab, Checkbox } from '@material-ui/core';
+import { Input, Select, MenuItem, Tabs, Tab, Checkbox, withStyles } from '@material-ui/core';
 import { Button, getBackgroundWithHoverCSS } from '@twilio/flex-ui';
 
 export const Box = styled('div')`
@@ -405,3 +405,13 @@ export const HeaderContainer = styled(Row)`
 export const StyledIcon = icon => styled(icon)`
   opacity: 0.34;
 `;
+
+export const addHover = Component =>
+  withStyles({
+    root: {
+      '&:hover': {
+        borderRadius: '50%',
+        backgroundColor: '#a0a8bd66',
+      },
+    },
+  })(Component);

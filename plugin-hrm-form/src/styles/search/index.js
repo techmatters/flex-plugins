@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'react-emotion';
-import { Paper, Button } from '@material-ui/core';
+import { ButtonBase, Paper, Button, withStyles } from '@material-ui/core';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 
 import { Row, FontOpenSans, Container, BottomButtonBar } from '../HrmStyles';
@@ -214,3 +214,12 @@ export const ScrollableList = styled('div')`
   height: 100%;
   overflow-y: auto;
 `;
+
+export const StyledButtonBase = withStyles({
+  root: {
+    margin: 10,
+  },
+  disabled: {
+    color: 'rgba(0, 0, 0, 0.26)',
+  },
+})(ButtonBase);

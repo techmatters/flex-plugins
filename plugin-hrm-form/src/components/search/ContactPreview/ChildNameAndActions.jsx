@@ -1,28 +1,38 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { IconButton } from '@material-ui/core';
+import { Template } from '@twilio/flex-ui';
+import { ButtonBase } from '@material-ui/core';
 import { Fullscreen, Link, MoreHoriz } from '@material-ui/icons';
 
-import { Row, StyledIcon } from '../../../styles/HrmStyles';
-import { PrevNameText, ContactButtonsWrapper } from '../../../styles/search';
+import { Row, StyledIcon, HiddenText, addHover } from '../../../styles/HrmStyles';
+import { PrevNameText, ContactButtonsWrapper, StyledButtonBase } from '../../../styles/search';
 
-const LinkIcon = StyledIcon(Link);
-const FullscreenIcon = StyledIcon(Fullscreen);
-const MoreHorizIcon = StyledIcon(MoreHoriz);
+const LinkIcon = addHover(StyledIcon(Link));
+const FullscreenIcon = addHover(StyledIcon(Fullscreen));
+const MoreHorizIcon = addHover(StyledIcon(MoreHoriz));
 
 const ChildNameAndActions = ({ name, isNonDataContact, onClickChain, onClickFull, onClickMore }) => (
   <Row>
     <PrevNameText>{name}</PrevNameText>
     <ContactButtonsWrapper>
-      <IconButton onClick={onClickChain} disabled={isNonDataContact}>
+      <StyledButtonBase onClick={onClickChain} disabled={isNonDataContact}>
+        <HiddenText>
+          <Template code="ContactPreview-CopyButton" />
+        </HiddenText>
         <LinkIcon />
-      </IconButton>
-      <IconButton onClick={onClickFull}>
+      </StyledButtonBase>
+      <StyledButtonBase onClick={onClickFull}>
+        <HiddenText>
+          <Template code="ContactPreview-ExpandButton" />
+        </HiddenText>
         <FullscreenIcon />
-      </IconButton>
-      <IconButton onClick={onClickMore}>
+      </StyledButtonBase>
+      <StyledButtonBase onClick={onClickMore}>
+        <HiddenText>
+          <Template code="ContactPreview-MoreOptionsButton" />
+        </HiddenText>
         <MoreHorizIcon />
-      </IconButton>
+      </StyledButtonBase>
     </ContactButtonsWrapper>
   </Row>
 );
