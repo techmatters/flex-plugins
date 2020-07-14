@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Template } from '@twilio/flex-ui';
-import { ButtonBase } from '@material-ui/core';
 import { Fullscreen, Link, MoreHoriz } from '@material-ui/icons';
 
 import { Row, StyledIcon, HiddenText, addHover } from '../../../styles/HrmStyles';
