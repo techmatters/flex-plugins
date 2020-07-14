@@ -21,7 +21,7 @@ const ContactPreview = ({ contact, handleOpenConnectDialog, handleViewDetails, h
 
   const { callSummary } = contact.details.caseInformation;
 
-  const [tag1, tag2, tag3] = contact.tags;
+  const [category1, category2, category3] = contact.overview.categories;
 
   return (
     <ContactWrapper key={contact.contactId}>
@@ -34,7 +34,7 @@ const ContactPreview = ({ contact, handleOpenConnectDialog, handleViewDetails, h
       />
       <CallTypeAndCounselor callType={callType} counselor={counselor} />
       <CallSummary callSummary={callSummary} onClickFull={handleViewDetails} />
-      <DateAndTags dateString={dateString} tag1={tag1} tag2={tag2} tag3={tag3} />
+      <DateAndTags dateString={dateString} category1={category1} category2={category2} category3={category3} />
     </ContactWrapper>
   );
 };

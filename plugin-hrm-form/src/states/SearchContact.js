@@ -16,18 +16,13 @@ import {
 import { searchContacts as searchContactsApiCall } from '../services/ContactService';
 import callTypes from './DomainConstants';
 import { createBlankForm } from './ContactFormStateFactory';
-import { retrieveCategories } from '../utils';
 
 const { childInformation: blankChildInformation, callerInformation: blankCallerInformation } = createBlankForm();
 
 const addDetails = (counselorsHash, raw) => {
   const detailed = raw.map(contact => {
     const counselor = counselorsHash[contact.overview.counselor] || 'Unknown';
-    const tags =
-      !contact.details || !contact.details.caseInformation || !contact.details.caseInformation.categories
-        ? []
-        : retrieveCategories(contact.details.caseInformation.categories);
-    const det = { ...contact, counselor, tags };
+    const det = { ...contact, counselor };
     return det;
   });
 

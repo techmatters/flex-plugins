@@ -22,9 +22,9 @@ test('<ContactPreview> should mount', () => {
       name: 'Name Last',
       customerNumber: '',
       callType: 'CHILD CALLING ABOUT SELF',
-      categories: '',
       counselor: '',
       notes: '',
+      categories: ['Tag1', 'Tag2'],
     },
     details: {
       childInformation: {
@@ -53,7 +53,6 @@ test('<ContactPreview> should mount', () => {
       },
     },
     counselor: 'Counselor',
-    tags: ['Tag1', 'Tag2'],
   };
   const formatedDate = `${format(new Date(contact.overview.dateTime), 'MMM d, yyyy h:mm aaaaa')}m`;
 
@@ -80,7 +79,7 @@ test('<ContactPreview> should mount', () => {
   const { name } = component.findByType(ChildNameAndActions).props;
   const { callType, counselor } = component.findByType(CallTypeAndCounselor).props;
   const { callSummary } = component.findByType(CallSummary).props;
-  const { dateString, tag1, tag2, tag3 } = component.findByType(DateAndTags).props;
+  const { dateString, category1, category2, category3 } = component.findByType(DateAndTags).props;
 
   expect(previewContact).toEqual(contact);
   expect(name).toEqual(contact.overview.name.toUpperCase());
@@ -88,7 +87,7 @@ test('<ContactPreview> should mount', () => {
   expect(counselor).toEqual(contact.counselor);
   expect(callSummary).toEqual(contact.details.caseInformation.callSummary);
   expect(dateString).toEqual(formatedDate);
-  expect(tag1).toEqual(contact.tags[0]);
-  expect(tag2).toEqual(contact.tags[1]);
-  expect(tag3).toEqual('');
+  expect(category1).toEqual(contact.overview.categories[0]);
+  expect(category2).toEqual(contact.overview.categories[1]);
+  expect(category3).toEqual('');
 });

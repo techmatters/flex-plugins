@@ -54,13 +54,14 @@ export const StyledLink = styled(({ onClick, ...rest }) => <Button size="small" 
 
 const Tag = styled('div')`
   border-radius: 6px;
-  padding: 5px;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding: 5px 15px;
 `;
 
 export const ContactTag = styled(Tag)`
-  margin-left: 10px;
+  display: inline-block;
+  white-space: nowrap;
+  margin-left: 6px;
+  padding: 5px 12px;
   background-color: #d8d8d8;
 `;
 

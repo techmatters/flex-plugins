@@ -23,8 +23,8 @@ const Details = ({
   handleExpandDetailsSection,
 }) => {
   // Object destructuring on contact
-  const { overview, details, counselor, tags } = contact;
-  const { dateTime, name: childName, customerNumber, callType, channel, conversationDuration } = overview;
+  const { overview, details, counselor } = contact;
+  const { dateTime, name: childName, customerNumber, callType, channel, conversationDuration, categories } = overview;
   const child = details.childInformation;
   const caller = details.callerInformation;
   const {
@@ -64,7 +64,7 @@ const Details = ({
 
   const isPhoneContact =
     channel === channelTypes.voice || channel === channelTypes.sms || channel === channelTypes.whatsapp;
-  const [tag1, tag2, tag3] = tags;
+  const [category1, category2, category3] = categories;
 
   const isNonDataContact = isNonDataCallType(contact.overview.callType);
 
@@ -148,10 +148,10 @@ const Details = ({
           expanded={detailsExpanded[ISSUE_CATEGORIZATION]}
           handleExpandClick={() => handleExpandDetailsSection(ISSUE_CATEGORIZATION)}
         >
-          {Boolean(tag1) && <SectionEntry description="Category 1" value={tag1} />}
-          {Boolean(tag2) && <SectionEntry description="Category 2" value={tag2} />}
-          {Boolean(tag3) && <SectionEntry description="Category 3" value={tag3} />}
-          {!(tag1 || tag2 || tag3) && <SectionEntry description="No category provided" value="" />}
+          {Boolean(category1) && <SectionEntry description="Category 1" value={category1} />}
+          {Boolean(category2) && <SectionEntry description="Category 2" value={category2} />}
+          {Boolean(category3) && <SectionEntry description="Category 3" value={category3} />}
+          {!(category1 || category2 || category3) && <SectionEntry description="No category provided" value="" />}
         </Section>
       )}
       {isDataCall && (
