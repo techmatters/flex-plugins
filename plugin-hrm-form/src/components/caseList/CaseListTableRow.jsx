@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
-import { ButtonBase } from '@material-ui/core';
+import { ButtonBase, Tooltip } from '@material-ui/core';
 import { Fullscreen } from '@material-ui/icons';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';

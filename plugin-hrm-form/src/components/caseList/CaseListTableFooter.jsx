@@ -21,7 +21,7 @@ const renderPaginationButton = (page, handleChangePage) => n => {
   if (n === -1)
     return (
       <PaginationButton key={`ellipsis-${Math.random()}`}>
-        <ButtonText>...</ButtonText>
+        <ButtonText style={{ paddingTop: 5 }}>...</ButtonText>
       </PaginationButton>
     );
 
@@ -37,7 +37,7 @@ const renderPaginationButton = (page, handleChangePage) => n => {
 const ChevronButton = ({ chevronDirection, onClick, templateCode }) => {
   const ChevronIcon = chevronDirection === 'left' ? ChevronLeft : ChevronRight;
   return (
-    <ButtonBase onClick={onClick}>
+    <ButtonBase onClick={onClick} style={{ paddingTop: 5 }}>
       <PaginationButton>
         <HiddenText>
           <Template code={templateCode} />
