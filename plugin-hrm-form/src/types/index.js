@@ -165,7 +165,7 @@ export const searchResultType = PropTypes.shape({
     name: PropTypes.string,
     customerNumber: PropTypes.string,
     callType: PropTypes.string,
-    categories: PropTypes.arrayOf(PropTypes.shape({})),
+    categories: PropTypes.shape({}),
     counselor: PropTypes.string,
     notes: PropTypes.string,
     channel: PropTypes.string,

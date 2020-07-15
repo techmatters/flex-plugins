@@ -61,4 +61,69 @@ describe('test formatCategories', () => {
     expect(result).toHaveLength(1);
     expect(result[0]).toBe('something');
   });
+
+  test('with 1 category, 2 subcategories', async () => {
+    const categories = {
+      category1: ['something', 'another'],
+    };
+
+    const result = formatCategories(categories);
+
+    expect(result).toHaveLength(2);
+    expect(result[0]).toBe('something');
+    expect(result[1]).toBe('another');
+  });
+
+  test('with 1 category, 3 subcategories', async () => {
+    const categories = {
+      category1: ['something', 'another', 'and more'],
+    };
+
+    const result = formatCategories(categories);
+
+    expect(result).toHaveLength(3);
+    expect(result[0]).toBe('something');
+    expect(result[1]).toBe('another');
+    expect(result[2]).toBe('and more');
+  });
+
+  test('with 2 categories, 2 subcategories', async () => {
+    const categories = {
+      category1: ['something'],
+      category2: ['another'],
+    };
+
+    const result = formatCategories(categories);
+
+    expect(result).toHaveLength(2);
+    expect(result[0]).toBe('something');
+    expect(result[1]).toBe('another');
+  });
+
+  test('with 2 categories, 3 subcategories', async () => {
+    const categories = {
+      category1: ['something'],
+      category2: ['another', 'and more'],
+    };
+
+    const result = formatCategories(categories);
+
+    expect(result).toHaveLength(3);
+    expect(result[0]).toBe('something');
+    expect(result[1]).toBe('another');
+    expect(result[2]).toBe('and more');
+  });
+
+  test('test with "Unspecified/Other" subcategories', async () => {
+    const categories = {
+      category1: ['Unspecified/Other'],
+      category2: ['Unspecified/Other'],
+    };
+
+    const result = formatCategories(categories);
+
+    expect(result).toHaveLength(2);
+    expect(result[0]).toBe('Unspecified/Other - category1');
+    expect(result[1]).toBe('Unspecified/Other - category2');
+  });
 });
