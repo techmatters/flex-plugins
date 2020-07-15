@@ -190,25 +190,25 @@ const enableChatCapabilities = () => {
   const customWhatsappChannel = {
     ...Flex.DefaultTaskChannels.ChatWhatsApp,
     name: 'custom-whatsapp-channel',
-    isApplicable: task => task.taskChannelUniqueName === 'whatsapp',
+    isApplicable: task => task.taskChannelUniqueName === 'WhatsApp',
   };
 
   const customFacebookChannel = {
     ...Flex.DefaultTaskChannels.ChatMessenger,
     name: 'custom-facebook-channel',
-    isApplicable: task => task.taskChannelUniqueName === 'facebook',
+    isApplicable: task => task.taskChannelUniqueName === 'Facebook',
   };
 
   const customWebChannel = {
     ...Flex.DefaultTaskChannels.Chat,
     name: 'custom-web-channel',
-    isApplicable: task => task.taskChannelUniqueName === 'web',
+    isApplicable: task => task.taskChannelUniqueName === 'Web',
   };
 
   const customSmsChannel = {
     ...Flex.DefaultTaskChannels.ChatSms,
     name: 'custom-sms-channel',
-    isApplicable: task => task.taskChannelUniqueName === 'sms',
+    isApplicable: task => task.taskChannelUniqueName === 'SMS',
   };
 
   Flex.TaskChannels.register(customWhatsappChannel);
