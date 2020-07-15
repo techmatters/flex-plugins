@@ -9,16 +9,13 @@ import { TLHPaddingLeft } from '../../styles/GlobalOverrides';
 import CaseListTableHead from './CaseListTableHead';
 import CaseListTableRow from './CaseListTableRow';
 import CaseListTableFooter from './CaseListTableFooter';
-
-const CASES_PER_PAGE = 5;
+import { CASES_PER_PAGE } from './CaseList';
 
 /**
  * This component is splitted to make it easier to read, but is basically a 8 columns Table (7 for data, 1 for the "expand" button)
  */
-const CaseListTable = ({ caseList, page, handleChangePage, handleMockedMessage }) => {
-  const pagesCount = Math.floor(caseList.length / CASES_PER_PAGE) + 1;
-  const from = page * 5;
-  const to = from + 5;
+const CaseListTable = ({ caseList, caseCount, page, handleChangePage, handleMockedMessage }) => {
+  const pagesCount = Math.ceil(caseCount / CASES_PER_PAGE);
 
   return (
     <>
@@ -31,7 +28,7 @@ const CaseListTable = ({ caseList, page, handleChangePage, handleMockedMessage }
         <CLTable tabIndex={0} aria-labelledby="CaseList-AllCases-label">
           <CaseListTableHead />
           <TableBody>
-            {caseList.slice(from, to).map(caseItem => (
+            {caseList.map(caseItem => (
               <CaseListTableRow
                 caseItem={caseItem}
                 key={`CaseListItem-${caseItem.id}`}
@@ -49,6 +46,7 @@ const CaseListTable = ({ caseList, page, handleChangePage, handleMockedMessage }
 CaseListTable.displayName = 'CaseListTable';
 CaseListTable.propTypes = {
   caseList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  caseCount: PropTypes.number.isRequired,
   page: PropTypes.number.isRequired,
   handleChangePage: PropTypes.func.isRequired,
   handleMockedMessage: PropTypes.func.isRequired,

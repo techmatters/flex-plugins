@@ -7,12 +7,17 @@ import { mount } from 'enzyme';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 
 import HrmTheme from '../../../styles/HrmTheme';
+import { SomethingWentWrongText } from '../../../styles/caseList';
 import CaseList from '../../../components/caseList';
 import CaseListTable from '../../../components/caseList/CaseListTable';
 import CaseListTableHead from '../../../components/caseList/CaseListTableHead';
 import CaseListTableRow from '../../../components/caseList/CaseListTableRow';
 import CaseListTableFooter from '../../../components/caseList/CaseListTableFooter';
 import { namespace, configurationBase } from '../../../states';
+import { getCases } from '../../../services/CaseService';
+
+console.log = () => null;
+console.error = () => null;
 
 const mockedCaseList = [
   {
@@ -39,9 +44,7 @@ const mockedCaseList = [
   },
 ];
 
-jest.mock('../../../services/CaseService', () => ({
-  getCases: () => Promise.resolve(mockedCaseList),
-}));
+jest.mock('../../../services/CaseService', () => ({ getCases: jest.fn() }));
 
 expect.extend(toHaveNoViolations);
 const mockStore = configureMockStore([]);
@@ -57,6 +60,9 @@ function createState(state) {
 }
 
 test('Should render', async () => {
+  // @ts-ignore
+  getCases.mockReturnValueOnce(Promise.resolve({ cases: mockedCaseList, count: mockedCaseList.length }));
+
   const initialState = createState({
     [configurationBase]: {
       counselors: {
@@ -77,6 +83,7 @@ test('Should render', async () => {
 
   expect(() => component.findByType(CaseList).findByType(CaseListTable)).toThrow();
 
+  // wait for async onComponentDidMount
   await Promise.resolve();
 
   expect(() => component.findByType(CaseList).findByType(CaseListTable)).not.toThrow();
@@ -84,10 +91,8 @@ test('Should render', async () => {
   const table = component.findByType(CaseList).findByType(CaseListTable);
 
   expect(table.findAllByType(CaseListTableHead)).toHaveLength(1);
-  // const head = table.findByType(CaseListTableHead);
 
   expect(table.findAllByType(CaseListTableFooter)).toHaveLength(1);
-  // const footer = table.findByType(CaseListTableHead);
 
   const rows = table.findAllByType(CaseListTableRow);
   expect(rows).toHaveLength(2);
@@ -96,7 +101,44 @@ test('Should render', async () => {
   expect(row2.props.caseItem).toStrictEqual(mockedCaseList[1]);
 });
 
+test('Should not render (error)', async () => {
+  // @ts-ignore
+  getCases.mockImplementationOnce(async () => {
+    throw new Error('Some error');
+  });
+
+  const initialState = createState({
+    [configurationBase]: {
+      counselors: {
+        list: [],
+        hash: { worker1: 'worker1 name' },
+      },
+    },
+  });
+  const store = mockStore(initialState);
+
+  const component = renderer.create(
+    <StorelessThemeProvider themeConf={themeConf}>
+      <Provider store={store}>
+        <CaseList />
+      </Provider>
+    </StorelessThemeProvider>,
+  ).root;
+
+  expect(() => component.findByType(CaseList).findByType(CaseListTable)).toThrow();
+
+  // wait for async onComponentDidMount
+  await Promise.resolve();
+
+  expect(() => component.findByType(CaseList).findByType(CaseListTable)).toThrow();
+  expect(() => component.findByType(CaseList).findByType(SomethingWentWrongText)).not.toThrow();
+  expect(component.findByType(CaseList).instance.state.error).toBeTruthy();
+});
+
 test('a11y', async () => {
+  // @ts-ignore
+  getCases.mockReturnValueOnce(Promise.resolve({ cases: mockedCaseList, count: mockedCaseList.length }));
+
   const initialState = createState({
     [configurationBase]: {
       counselors: {
@@ -119,6 +161,7 @@ test('a11y', async () => {
     region: { enabled: false },
   };
 
+  // wait for async onComponentDidMount
   await Promise.resolve();
 
   const axe = configureAxe({ rules });

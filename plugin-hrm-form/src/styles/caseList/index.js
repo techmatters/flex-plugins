@@ -3,15 +3,21 @@ import { Table, TableCell, TableRow, withStyles } from '@material-ui/core';
 
 import { Absolute, FontOpenSans } from '../HrmStyles';
 
-export const TableContainer = styled('div')`
-  border-left: 15px solid ${props => props.theme.colors.base2};
-  border-right: 10px solid ${props => props.theme.colors.base2};
-`;
-
 export const CaseListContainer = styled(Absolute)`
   height: 100%;
   width: 100%;
   background-color: ${props => props.theme.colors.base2};
+`;
+
+export const CenteredContainer = styled(CaseListContainer)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const TableContainer = styled('div')`
+  border-left: 15px solid ${props => props.theme.colors.base2};
+  border-right: 10px solid ${props => props.theme.colors.base2};
 `;
 
 export const CLTable = withStyles({
@@ -62,6 +68,10 @@ export const CLNumberCell = withStyles({
 export const CLNamesCell = withStyles({
   body: {
     paddingRight: 10,
+    display: '-webkit-box',
+    WebkitLineClamp: 4,
+    WebkitBoxOrient: 'vertical',
+    overflow: 'hidden',
   },
 })(CLTableCell);
 
@@ -90,6 +100,7 @@ export const CLTableBodyFont = styled(FontOpenSans)`
   font-size: 12px;
   line-height: 18px;
   font-weight: 600;
+  max-height: ${() => 85 - 12 /* 85px of cell height - 12px of padding*/}px;
 `;
 
 export const CLCaseNumberContainer = styled('div')`
@@ -101,6 +112,7 @@ export const CLCaseNumberContainer = styled('div')`
 
 export const CategoryTag = styled('div')`
   display: inline-block;
+  white-space: nowrap;
   border-radius: 6px;
   padding: 0px 13px;
   margin: 3px 0;
@@ -138,10 +150,7 @@ export const ButtonText = styled(FontOpenSans)`
   font-weight: ${props => (props.highlight ? 700 : 600)};
 `;
 
-export const LoadingContainer = styled('div')`
-  display: flex;
-  width: 100%;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
+export const SomethingWentWrongText = styled(FontOpenSans)`
+  color: ${props => props.theme.colors.errorColor};
+  font-size: 20px;
 `;
