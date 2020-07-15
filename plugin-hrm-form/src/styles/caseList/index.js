@@ -24,6 +24,9 @@ export const CLTable = withStyles({
   root: {
     borderCollapse: 'separate',
     borderSpacing: '0 5px',
+    '&:focus': {
+      outline: 'none',
+    },
   },
 })(Table);
 
