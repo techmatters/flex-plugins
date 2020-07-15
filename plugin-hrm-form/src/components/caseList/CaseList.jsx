@@ -50,7 +50,7 @@ class CaseList extends React.PureComponent {
       return (
         <CenteredContainer>
           <SomethingWentWrongText>
-            <Template code="CaseList-SomethingWentWrog" />
+            <Template code="CaseList-SomethingWentWrong" />
           </SomethingWentWrongText>
         </CenteredContainer>
       );
