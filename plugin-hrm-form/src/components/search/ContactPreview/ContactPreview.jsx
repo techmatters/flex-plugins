@@ -8,7 +8,7 @@ import CallTypeAndCounselor from './CallTypeAndCounselor';
 import CallSummary from './CallSummary';
 import DateAndTags from './DateAndTags';
 import { contactType } from '../../../types';
-import { formatName, mapCallType } from '../../../utils';
+import { formatName, formatCategories, mapCallType } from '../../../utils';
 import { isNonDataCallType } from '../../../states/ValidationRules';
 
 const ContactPreview = ({ contact, handleOpenConnectDialog, handleViewDetails, handleMockedMessage }) => {
@@ -21,7 +21,7 @@ const ContactPreview = ({ contact, handleOpenConnectDialog, handleViewDetails, h
 
   const { callSummary } = contact.details.caseInformation;
 
-  const [category1, category2, category3] = contact.overview.categories;
+  const [category1, category2, category3] = formatCategories(contact.overview.categories);
 
   return (
     <ContactWrapper key={contact.contactId}>

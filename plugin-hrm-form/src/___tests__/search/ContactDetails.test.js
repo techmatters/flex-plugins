@@ -72,7 +72,7 @@ const contactOfType = type => ({
     name: 'Jill Smith',
     customerNumber: 'Anonymous',
     callType: type,
-    categories: 'TBD',
+    categories: { category1: ['Tag1', 'Tag2'] },
     counselor: 'counselor-id',
     notes: 'Jill Smith Notes',
     channel: channelTypes.web,

@@ -19,7 +19,7 @@ import {
   CategoryFont,
 } from '../../styles/caseList';
 import { HiddenText, StyledIcon, addHover } from '../../styles/HrmStyles';
-import { formatName, getShortSummary } from '../../utils';
+import { formatName, formatCategories, getShortSummary } from '../../utils';
 import { namespace, configurationBase } from '../../states';
 import { caseStatuses } from '../../states/DomainConstants';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
@@ -46,7 +46,7 @@ const CaseListTableRow = ({ caseItem, counselorsHash, handleMockedMessage }) => 
   const counselor = formatName(counselorsHash[caseItem.twilioWorkerId]);
   const opened = `${format(new Date(caseItem.createdAt), 'MMM d, yyyy')}`;
   const updated = `${format(new Date(caseItem.updatedAt), 'MMM d, yyyy')}`;
-  const { categories } = caseItem;
+  const categories = formatCategories(caseItem.categories);
   const isOpenCase = caseItem.status === caseStatuses.open;
 
   return (

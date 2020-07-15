@@ -10,7 +10,7 @@ import SectionEntry from './SectionEntry';
 import callTypes, { channelTypes } from '../../../states/DomainConstants';
 import { isNonDataCallType } from '../../../states/ValidationRules';
 import { contactType } from '../../../types';
-import { formatAddress, formatDuration, formatName, mapChannel } from '../../../utils';
+import { formatAddress, formatDuration, formatName, formatCategories, mapChannel } from '../../../utils';
 import { ContactDetailsSections } from '../../../states/SearchContact';
 
 const MoreHorizIcon = ContactDetailsIcon(MoreHoriz);
@@ -64,7 +64,7 @@ const Details = ({
 
   const isPhoneContact =
     channel === channelTypes.voice || channel === channelTypes.sms || channel === channelTypes.whatsapp;
-  const [category1, category2, category3] = categories;
+  const [category1, category2, category3] = formatCategories(categories);
 
   const isNonDataContact = isNonDataCallType(contact.overview.callType);
 

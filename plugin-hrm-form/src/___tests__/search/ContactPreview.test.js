@@ -24,7 +24,7 @@ test('<ContactPreview> should mount', () => {
       callType: 'CHILD CALLING ABOUT SELF',
       counselor: '',
       notes: '',
-      categories: ['Tag1', 'Tag2'],
+      categories: { category1: ['Tag1', 'Tag2'] },
     },
     details: {
       childInformation: {
@@ -87,7 +87,7 @@ test('<ContactPreview> should mount', () => {
   expect(counselor).toEqual(contact.counselor);
   expect(callSummary).toEqual(contact.details.caseInformation.callSummary);
   expect(dateString).toEqual(formatedDate);
-  expect(category1).toEqual(contact.overview.categories[0]);
-  expect(category2).toEqual(contact.overview.categories[1]);
+  expect(category1).toEqual(contact.overview.categories.category1[0]);
+  expect(category2).toEqual(contact.overview.categories.category1[1]);
   expect(category3).toEqual('');
 });

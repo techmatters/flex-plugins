@@ -1,4 +1,4 @@
-import { formatName, formatAddress, formatDuration } from '../../utils';
+import { formatName, formatAddress, formatDuration, formatCategories } from '../../utils';
 
 test('Test name formatter', () => {
   const name = 'Some name';
@@ -48,4 +48,17 @@ test('Test conversation duration formatter', () => {
   expect(formattedDuration2).toEqual(expectedDuration2);
   expect(formattedDuration3).toEqual(expectedDuration3);
   expect(formattedDuration4).toEqual(expectedDuration4);
+});
+
+describe('test formatCategories', () => {
+  test('with 1 category, 1 subcategory', async () => {
+    const categories = {
+      category1: ['something'],
+    };
+
+    const result = formatCategories(categories);
+
+    expect(result).toHaveLength(1);
+    expect(result[0]).toBe('something');
+  });
 });
