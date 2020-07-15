@@ -21,7 +21,7 @@ const renderPaginationButton = (page, handleChangePage) => n => {
   if (n === -1)
     return (
       <PaginationButton key={`ellipsis-${Math.random()}`}>
-        <ButtonText>...</ButtonText>
+        <ButtonText style={{ paddingTop: 5 }}>...</ButtonText>
       </PaginationButton>
     );
 
