@@ -29,7 +29,7 @@ export const ContactWrapper = styled('div')`
   margin-top: 15px;
   margin-bottom: 15px;
   padding: 5px 20px 20px 20px;
-  width: 520px;
+  width: 550px;
   box-sizing: border-box;
   background-color: #ffffff;
 `;
