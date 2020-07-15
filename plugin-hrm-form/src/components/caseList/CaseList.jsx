@@ -28,8 +28,6 @@ class CaseList extends React.PureComponent {
     this.setState({ loading: true });
     try {
       const { cases, count } = await getCases(CASES_PER_PAGE, CASES_PER_PAGE * page);
-      console.log('HERE HERE HERE');
-      console.log(cases, count);
       this.setState({ page, caseList: cases, caseCount: count, loading: false });
     } catch (error) {
       console.error(error);

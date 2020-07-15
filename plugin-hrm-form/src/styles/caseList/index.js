@@ -24,6 +24,9 @@ export const CLTable = withStyles({
   root: {
     borderCollapse: 'separate',
     borderSpacing: '0 5px',
+    '&:focus': {
+      outline: 'none',
+    },
   },
 })(Table);
 
@@ -125,16 +128,6 @@ export const CategoryFont = styled(FontOpenSans)`
   letter-spacing: 0.1px;
   line-height: 14px;
 `;
-
-export const addHover = Component =>
-  withStyles({
-    root: {
-      '&:hover': {
-        borderRadius: '50%',
-        backgroundColor: '#a0a8bd66',
-      },
-    },
-  })(Component);
 
 export const PaginationButton = styled('div')`
   background-color: ${props => (props.highlight ? '#1976D2' : 'transparent')};

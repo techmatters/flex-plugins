@@ -51,22 +51,13 @@ export const getShortSummary = (summary, charLimit, chooseMessage = 'call') => {
 };
 
 /**
- * @param {{ [category: string]: { [subcategory: string]: boolean } }} categories categories object
- * @returns {string[]} returns an array conaining the tags of the contact as strings (if any)
+ * Takes the categories object comming from the API and turns it into a strings array for ease of presentation
+ * adding the category if the subcategory is "Unspecified/Other"
+ * @param {{ [category: string]: string[] }} categories
+ * @returns {string[]}
  */
-export const retrieveCategories = categories => {
-  const cats = Object.entries(categories);
-  const subcats = cats.flatMap(([_, subs]) => Object.entries(subs));
-
-  const flattened = subcats.map(([subcat, bool]) => {
-    if (bool) return subcat;
-    return null;
-  });
-
-  const tags = flattened.reduce((acc, curr) => {
-    if (curr) return [...acc, curr];
-    return acc;
-  }, []);
-
-  return tags;
-};
+export const formatCategories = categories =>
+  // maybe we should define domain constants for the categories/subcategories in case we change them?
+  Object.entries(categories).flatMap(([cat, subcats]) =>
+    subcats.map(subcat => (subcat === 'Unspecified/Other' ? `${subcat} - ${cat}` : subcat)),
+  );
