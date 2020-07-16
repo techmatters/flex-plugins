@@ -1,4 +1,6 @@
 {
+    "extends": ["prettier"],
+    "plugins": ["prettier"],
     "env": {
         "browser": true,
         "commonjs": true,
@@ -8,5 +10,6 @@
         "ecmaVersion": 11
     },
     "rules": {
+	"prettier/prettier": ["error"]
     }
 }
