@@ -60,7 +60,19 @@ export const setUpQueuesStatus = () => {
       align: 'start',
     },
   );
+
+  Flex.TaskListContainer.Content.add(
+    <div key="new-task">
+      <h1>Add a task!</h1>
+    </div>,
+    {
+      sortOrder: 100,
+      align: 'start',
+    },
+  );
 };
+
+
 
 /**
  * Function used to manually complete a task (making sure it transitions to wrapping state first).
