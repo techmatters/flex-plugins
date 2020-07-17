@@ -182,12 +182,7 @@ export const shouldReplaceChar = char => !char.match(letterNumber);
  */
 export const transformIdentity = str => {
   const transformed = [...str].map(char =>
-    shouldReplaceChar(char)
-      ? `_${char
-          .charCodeAt(0)
-          .toString(16)
-          .toUpperCase()}`
-      : char,
+    shouldReplaceChar(char) ? `_${char.charCodeAt(0).toString(16).toUpperCase()}` : char,
   );
   return transformed.join('');
 };

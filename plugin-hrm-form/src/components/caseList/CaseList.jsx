@@ -46,7 +46,7 @@ function reducer(state, action) {
 const CaseList = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const fetchCaseList = async (page) => {
+  const fetchCaseList = async page => {
     try {
       dispatch({ type: 'fetchStarted' });
       const { cases, count } = await getCases(CASES_PER_PAGE, CASES_PER_PAGE * page);
@@ -61,7 +61,7 @@ const CaseList = () => {
     fetchCaseList(0);
   }, []);
 
-  const handleChangePage = async (page) => {
+  const handleChangePage = async page => {
     await fetchCaseList(page);
   };
 
