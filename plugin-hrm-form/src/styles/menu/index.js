@@ -1,10 +1,17 @@
 import React from 'react';
 import styled from 'react-emotion';
+import Popper from '@material-ui/core/Popper';
 import Paper from '@material-ui/core/Paper';
 import MenuList from '@material-ui/core/MenuList';
 import MenuItem from '@material-ui/core/MenuItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import CancelIcon from '@material-ui/icons/Cancel';
+
+export const StyledPopper = styled(Popper)`
+  & {
+    z-index: 1;
+  }
+`;
 
 export const StyledPaper = styled(Paper)`
   width: fit-content;

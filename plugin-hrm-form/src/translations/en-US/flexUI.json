@@ -25,8 +25,6 @@
   "CallTypeButtons-Categorize": "categorize this contact",
   "CallTypeButtons-Or": "Or was this contact…",
 
-  "Case-Save": "Save and end",
-
   "ConnectDialog-Child": "Copy child information from this record to new contact?",
   "ConnectDialog-Caller": "Copy caller information from this record to new contact?",
 
@@ -69,9 +67,13 @@
 
   "BottomBar-Next": "Next",
   "BottomBar-SaveAndAddToCase": "Save and Add to Case...",
-  "BottomBar-Submit": "Submit",
+  "BottomBar-SaveContact": "Save Contact",
   "BottomBar-OpenNewCase": "Open New Case",
   "BottomBar-AddToExistingCase": "Add to Existing Case",
+  "BottomBar-Cancel": "Cancel",
+  "BottomBar-AddThisContactToExistingCase": "Add this Contact to Existing Case",
+  "BottomBar-CancelNewCaseAndClose": "Yes, Cancel New Case and Close",
+  "BottomBar-SaveAndEnd": "Save and End",
 
   "Categories-Title": "Categorize this contact",
   

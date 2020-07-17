@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 import { withTaskContext, Template } from '@twilio/flex-ui';
-import FolderIcon from '@material-ui/icons/FolderOpen';
+import FolderOpenIcon from '@material-ui/icons/FolderOpen';
+import FolderIcon from '@material-ui/icons/Folder';
 import AddIcon from '@material-ui/icons/Add';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -11,7 +12,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import { Menu, MenuItem } from '../menu';
 import { formIsValid } from '../../states/ValidationRules';
 import { formType, taskType } from '../../types';
-import { BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
+import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import { Actions } from '../../states/ContactState';
 import { getConfig } from '../../HrmFormPlugin';
 import { createCase } from '../../services/CaseService';
@@ -126,7 +127,7 @@ class BottomBar extends Component {
         </Dialog>
         <Menu anchorEl={anchorEl} open={isMenuOpen} onClickAway={() => this.setState({ isMenuOpen: false })}>
           <MenuItem
-            Icon={FolderIcon}
+            Icon={FolderOpenIcon}
             text={<Template code="BottomBar-OpenNewCase" />}
             onClick={this.handleOpenNewCase}
           />
@@ -145,16 +146,20 @@ class BottomBar extends Component {
           {showSubmitButton && (
             <>
               {featureFlags.enable_case_management && (
-                <StyledNextStepButton
-                  roundCorners={true}
-                  onClick={this.toggleCaseMenu}
-                  disabled={isSubmitButtonDisabled}
-                >
-                  <Template code="BottomBar-SaveAndAddToCase" />
-                </StyledNextStepButton>
+                <Box marginRight="15px">
+                  <StyledNextStepButton
+                    roundCorners
+                    secondary
+                    onClick={this.toggleCaseMenu}
+                    disabled={isSubmitButtonDisabled}
+                  >
+                    <FolderIcon style={{ fontSize: '16px', marginRight: '10px' }} />
+                    <Template code="BottomBar-SaveAndAddToCase" />
+                  </StyledNextStepButton>
+                </Box>
               )}
               <StyledNextStepButton roundCorners={true} onClick={this.handleSubmit} disabled={isSubmitButtonDisabled}>
-                <Template code="BottomBar-Submit" />
+                <Template code="BottomBar-SaveContact" />
               </StyledNextStepButton>
             </>
           )}
