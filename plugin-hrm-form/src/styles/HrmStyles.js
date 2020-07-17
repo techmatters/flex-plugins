@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React from 'react';
 import styled from 'react-emotion';
 import { Input, Select, MenuItem, Tabs, Tab, Checkbox } from '@material-ui/core';
@@ -30,7 +31,7 @@ export const TabbedFormsContainer = styled('div')`
   height: 100%;
 `;
 
-const containerLeftRightMargin = '20px';
+const containerLeftRightMargin = '5px';
 export const Container = styled('div')`
   display: flex;
   padding: 32px 20px 12px 20px;
@@ -156,16 +157,29 @@ export const StyledMenuItem = styled(MenuItem)`
 `;
 
 export const StyledNextStepButton = styled(Button)`
-  color: ${props => props.theme.colors.buttonTextColor};
-  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  letter-spacing: normal;
+  color: ${props =>
+    props.secondary ? props.theme.colors.secondaryButtonTextColor : props.theme.colors.buttonTextColor};
+  border: ${({ secondary }) => (secondary ? '1px solid' : 'none')};
   margin: 0;
   padding: 7px 23px;
   background-color: ${props =>
-    props.disabled ? props.theme.colors.disabledColor : props.theme.colors.defaultButtonColor};
+    props.disabled
+      ? props.theme.colors.disabledColor
+      : props.secondary
+      ? props.theme.colors.secondaryButtonColor
+      : props.theme.colors.defaultButtonColor};
   cursor: ${props => (props.disabled ? 'not-allowed' : 'default')};
   ${p =>
     getBackgroundWithHoverCSS(
-      p.disabled ? p.theme.colors.base5 : p.theme.colors.defaultButtonColor,
+      p.disabled
+        ? p.theme.colors.base5
+        : p.secondary
+        ? p.theme.colors.secondaryButtonColor
+        : p.theme.colors.defaultButtonColor,
       true,
       false,
       p.disabled,

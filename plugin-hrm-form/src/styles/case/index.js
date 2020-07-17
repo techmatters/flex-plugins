@@ -6,8 +6,6 @@ export const CaseContainer = styled('div')`
   display: flex;
   flex-direction: column;
   height: 100%;
-  background-color: #ffffff;
-  margin-left: 5px;
 `;
 
 export const CaseNumberFont = styled(FontOpenSans)`
