@@ -21,3 +21,13 @@ export async function getCases(limit, offset) {
 
   return responseJson;
 }
+
+export async function cancelCase(caseId) {
+  const options = {
+    method: 'DELETE',
+  };
+
+  const responseJson = await fetchHrmApi(`/cases/${caseId}`, options);
+
+  return responseJson;
+}

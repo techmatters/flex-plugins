@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Template, withTaskContext } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import AddIcon from '@material-ui/icons/Add';
 import CancelIcon from '@material-ui/icons/Cancel';
 import Dialog from '@material-ui/core/Dialog';
@@ -11,11 +12,13 @@ import { namespace, contactFormsBase, configurationBase } from '../../states';
 import { taskType, formType } from '../../types';
 import { getConfig } from '../../HrmFormPlugin';
 import { saveToHrm, connectToCase } from '../../services/ContactService';
+import { cancelCase } from '../../services/CaseService';
 import { Box, Container, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseContainer, CaseNumberFont, CaseSectionFont } from '../../styles/case';
 import CaseDetails from './CaseDetails';
 import { Menu, MenuItem } from '../menu';
 import { formatName } from '../../utils';
+import { Actions } from '../../states/ContactState';
 
 class Case extends Component {
   static displayName = 'Case';
@@ -25,6 +28,8 @@ class Case extends Component {
     task: taskType.isRequired,
     form: formType.isRequired,
     counselorsHash: PropTypes.shape({}).isRequired,
+    changeRoute: PropTypes.func.isRequired,
+    setConnectedCase: PropTypes.func.isRequired,
   };
 
   state = {
@@ -41,6 +46,15 @@ class Case extends Component {
   handleMockedMessage = () => this.setState({ mockedMessage: <Template code="NotImplemented" />, isMenuOpen: false });
 
   closeMockedMessage = () => this.setState({ mockedMessage: null });
+
+  handleCancelNewCaseAndClose = async () => {
+    const { task, form } = this.props;
+    const { connectedCase } = form.metadata;
+    await cancelCase(connectedCase.id);
+
+    this.props.changeRoute('tabbed-forms', task.taskSid);
+    this.props.setConnectedCase(null, task.taskSid);
+  };
 
   render() {
     const { anchorEl, isMenuOpen, mockedMessage } = this.state;
@@ -94,7 +108,7 @@ class Case extends Component {
             red
             Icon={CancelIcon}
             text={<Template code="BottomBar-CancelNewCaseAndClose" />}
-            onClick={() => null}
+            onClick={this.handleCancelNewCaseAndClose}
           />
         </Menu>
         <BottomButtonBar>
@@ -117,4 +131,9 @@ const mapStateToProps = (state, ownProps) => ({
   counselorsHash: state[namespace][configurationBase].counselors.hash,
 });
 
-export default withTaskContext(connect(mapStateToProps)(Case));
+const mapDispatchToProps = dispatch => ({
+  changeRoute: bindActionCreators(Actions.changeRoute, dispatch),
+  setConnectedCase: bindActionCreators(Actions.setConnectedCase, dispatch),
+});
+
+export default withTaskContext(connect(mapStateToProps, mapDispatchToProps)(Case));
