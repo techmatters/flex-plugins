@@ -155,6 +155,9 @@ test('a11y', async () => {
     region: { enabled: false },
   };
 
+  // await async effect
+  await Promise.resolve();
+
   const axe = configureAxe({ rules });
   const results = await axe(wrapper.getDOMNode());
 
