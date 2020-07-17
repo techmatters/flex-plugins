@@ -50,7 +50,7 @@ const CaseListTableRow = ({ caseItem, counselorsHash, openMockedMessage }) => {
   const isOpenCase = caseItem.status === caseStatuses.open;
 
   return (
-    <CLTableRow>
+    <CLTableRow data-testid="CaseList-TableRow">
       <CLNumberCell>
         <CLCaseNumberContainer isOpenCase={isOpenCase}>
           <CLTableBodyFont isOpenCase={isOpenCase}>#{caseItem.id}</CLTableBodyFont>

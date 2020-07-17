@@ -72,7 +72,7 @@ const CaseList = () => {
   if (state.error)
     return (
       <CenteredContainer>
-        <SomethingWentWrongText>
+        <SomethingWentWrongText data-testid="CaseList-SomethingWentWrongText">
           <Template code="CaseList-SomethingWentWrong" />
         </SomethingWentWrongText>
       </CenteredContainer>

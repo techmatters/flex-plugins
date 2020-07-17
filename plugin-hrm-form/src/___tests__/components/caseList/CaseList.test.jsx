@@ -1,22 +1,18 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import renderer from 'react-test-renderer';
+import { render, screen, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom/extend-expect';
 import configureMockStore from 'redux-mock-store';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 
 import HrmTheme from '../../../styles/HrmTheme';
-import { SomethingWentWrongText } from '../../../styles/caseList';
 import CaseList from '../../../components/caseList';
-import CaseListTable from '../../../components/caseList/CaseListTable';
-import CaseListTableHead from '../../../components/caseList/CaseListTableHead';
-import CaseListTableRow from '../../../components/caseList/CaseListTableRow';
-import CaseListTableFooter from '../../../components/caseList/CaseListTableFooter';
 import { namespace, configurationBase } from '../../../states';
 import { getCases } from '../../../services/CaseService';
 
-console.log = () => null;
+// console.log = () => null;
 console.error = () => null;
 
 const mockedCaseList = [
@@ -73,32 +69,30 @@ test('Should render', async () => {
   });
   const store = mockStore(initialState);
 
-  const component = renderer.create(
+  render(
     <StorelessThemeProvider themeConf={themeConf}>
       <Provider store={store}>
         <CaseList />
       </Provider>
     </StorelessThemeProvider>,
-  ).root;
+  );
 
-  expect(() => component.findByType(CaseList).findByType(CaseListTable)).toThrow();
+  expect(screen.queryByTestId('CaseList-Table')).toBeNull();
 
-  // wait for async onComponentDidMount
-  await Promise.resolve();
+  await waitFor(() => screen.getByTestId('CaseList-Table'));
 
-  expect(() => component.findByType(CaseList).findByType(CaseListTable)).not.toThrow();
+  expect(screen.getByTestId('CaseList-Table')).toBeInTheDocument();
 
-  const table = component.findByType(CaseList).findByType(CaseListTable);
+  expect(screen.getAllByTestId('CaseList-TableHead')).toHaveLength(1);
 
-  expect(table.findAllByType(CaseListTableHead)).toHaveLength(1);
+  expect(screen.getAllByTestId('CaseList-TableFooter')).toHaveLength(1);
 
-  expect(table.findAllByType(CaseListTableFooter)).toHaveLength(1);
-
-  const rows = table.findAllByType(CaseListTableRow);
+  const rows = screen.getAllByTestId('CaseList-TableRow');
   expect(rows).toHaveLength(2);
+
   const [row1, row2] = rows;
-  expect(row1.props.caseItem).toStrictEqual(mockedCaseList[0]);
-  expect(row2.props.caseItem).toStrictEqual(mockedCaseList[1]);
+  expect(row1.textContent).toContain('Michael Smith');
+  expect(row2.textContent).toContain('Sonya Michels');
 });
 
 test('Should not render (error)', async () => {
@@ -117,22 +111,22 @@ test('Should not render (error)', async () => {
   });
   const store = mockStore(initialState);
 
-  const component = renderer.create(
+  render(
     <StorelessThemeProvider themeConf={themeConf}>
       <Provider store={store}>
         <CaseList />
       </Provider>
     </StorelessThemeProvider>,
-  ).root;
+  );
 
-  expect(() => component.findByType(CaseList).findByType(CaseListTable)).toThrow();
+  expect(screen.queryByTestId('CaseList-Table')).toBeNull();
 
-  // wait for async onComponentDidMount
-  await Promise.resolve();
+  await waitFor(() => screen.getByTestId('CaseList-SomethingWentWrongText'));
 
-  expect(() => component.findByType(CaseList).findByType(CaseListTable)).toThrow();
-  expect(() => component.findByType(CaseList).findByType(SomethingWentWrongText)).not.toThrow();
-  expect(component.findByType(CaseList).instance.state.error).toBeTruthy();
+  expect(screen.queryByTestId('CaseList-Table')).toBeNull();
+
+  expect(screen.getByTestId('CaseList-SomethingWentWrongText')).toBeInTheDocument();
+  expect(screen.getByTestId('CaseList-SomethingWentWrongText').textContent).toBe('CaseList-SomethingWentWrong');
 });
 
 test('a11y', async () => {

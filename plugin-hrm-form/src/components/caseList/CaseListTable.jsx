@@ -25,7 +25,7 @@ const CaseListTable = ({ caseList, caseCount, page, handleChangePage, openMocked
         </Box>
       </HeaderContainer>
       <TableContainer>
-        <CLTable tabIndex={0} aria-labelledby="CaseList-AllCases-label">
+        <CLTable tabIndex={0} aria-labelledby="CaseList-AllCases-label" data-testid="CaseList-Table">
           <CaseListTableHead />
           <TableBody>
             {caseList.map(caseItem => (
