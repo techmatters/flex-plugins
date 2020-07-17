@@ -56,6 +56,20 @@ class Case extends Component {
     this.props.setConnectedCase(null, task.taskSid);
   };
 
+  handleSaveAndEnd = async () => {
+    const { task, form } = this.props;
+    const { connectedCase } = form.metadata;
+    const { hrmBaseUrl, workerSid, helpline, strings } = getConfig();
+
+    try {
+      const contact = await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
+      await connectToCase(hrmBaseUrl, contact.id, connectedCase.id);
+      this.props.handleCompleteTask(task.taskSid, task);
+    } catch (error) {
+      window.alert(strings['Error-Backend']);
+    }
+  };
+
   render() {
     const { anchorEl, isMenuOpen, mockedMessage } = this.state;
     const { connectedCase } = this.props.form.metadata;
@@ -68,19 +82,6 @@ class Case extends Component {
     const { createdAt, twilioWorkerId, status } = connectedCase;
     const counselor = this.props.counselorsHash[twilioWorkerId];
     const date = new Date(createdAt).toLocaleDateString(navigator.language);
-
-    const saveAndEnd = async () => {
-      const { task, form } = this.props;
-      const { hrmBaseUrl, workerSid, helpline, strings } = getConfig();
-
-      try {
-        const contact = await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
-        await connectToCase(hrmBaseUrl, contact.id, connectedCase.id);
-        this.props.handleCompleteTask(task.taskSid, task);
-      } catch (error) {
-        window.alert(strings['Error-Backend']);
-      }
-    };
 
     return (
       <CaseContainer>
@@ -117,7 +118,7 @@ class Case extends Component {
               <Template code="BottomBar-Cancel" />
             </StyledNextStepButton>
           </Box>
-          <StyledNextStepButton roundCorners onClick={saveAndEnd}>
+          <StyledNextStepButton roundCorners onClick={this.handleSaveAndEnd}>
             <Template code="BottomBar-SaveAndEnd" />
           </StyledNextStepButton>
         </BottomButtonBar>
