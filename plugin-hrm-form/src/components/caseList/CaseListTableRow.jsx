@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
-import { ButtonBase, Tooltip } from '@material-ui/core';
+import { ButtonBase } from '@material-ui/core';
 import { Fullscreen } from '@material-ui/icons';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
@@ -17,36 +17,27 @@ import {
   CLCaseNumberContainer,
   CategoryTag,
   CategoryFont,
-  addHover,
 } from '../../styles/caseList';
-import { HiddenText, StyledIcon } from '../../styles/HrmStyles';
-import { formatName, getShortSummary } from '../../utils';
+import { HiddenText, StyledIcon, addHover } from '../../styles/HrmStyles';
+import { formatName, formatCategories, getShortSummary } from '../../utils';
 import { namespace, configurationBase } from '../../states';
 import { caseStatuses } from '../../states/DomainConstants';
+import CategoryWithTooltip from '../common/CategoryWithTooltip';
 
 const CHAR_LIMIT = 200;
 const FullscreenIcon = addHover(StyledIcon(Fullscreen));
 
 /**
- * @param {string} category
+ * @param {string} tag
  */
 // eslint-disable-next-line react/display-name
-const renderCategory = category => {
-  const tag =
-    category.length > 17 && !category.toUpperCase().includes('UNSPECIFIED/OTHER')
-      ? `${category.substr(0, 15)}...`
-      : category.substr(0, 17);
-
-  return (
-    <div style={{ width: '100%' }} key={`category-tag-${category}`}>
-      <Tooltip title={category}>
-        <CategoryTag>
-          <CategoryFont>{tag}</CategoryFont>
-        </CategoryTag>
-      </Tooltip>
-    </div>
-  );
-};
+const renderTag = tag => (
+  <div style={{ width: '100%' }}>
+    <CategoryTag>
+      <CategoryFont>{tag}</CategoryFont>
+    </CategoryTag>
+  </div>
+);
 
 // eslint-disable-next-line react/no-multi-comp
 const CaseListTableRow = ({ caseItem, counselorsHash, handleMockedMessage }) => {
@@ -55,7 +46,7 @@ const CaseListTableRow = ({ caseItem, counselorsHash, handleMockedMessage }) => 
   const counselor = formatName(counselorsHash[caseItem.twilioWorkerId]);
   const opened = `${format(new Date(caseItem.createdAt), 'MMM d, yyyy')}`;
   const updated = `${format(new Date(caseItem.updatedAt), 'MMM d, yyyy')}`;
-  const { categories } = caseItem;
+  const categories = formatCategories(caseItem.categories);
   const isOpenCase = caseItem.status === caseStatuses.open;
 
   return (
@@ -82,7 +73,10 @@ const CaseListTableRow = ({ caseItem, counselorsHash, handleMockedMessage }) => 
       </CLTableCell>
       <CLTableCell>
         <div style={{ display: 'inline-block', flexDirection: 'column' }}>
-          {categories && categories.map(category => renderCategory(category))}
+          {categories &&
+            categories.map(category => (
+              <CategoryWithTooltip renderTag={renderTag} category={category} key={`category-tag-${category}`} />
+            ))}
         </div>
       </CLTableCell>
       <CLActionCell>

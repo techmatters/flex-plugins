@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'react-emotion';
-import { Paper, Button } from '@material-ui/core';
+import { ButtonBase, Paper, Button, withStyles } from '@material-ui/core';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 
 import { Row, FontOpenSans, Container, BottomButtonBar } from '../HrmStyles';
@@ -29,7 +29,7 @@ export const ContactWrapper = styled('div')`
   margin-top: 15px;
   margin-bottom: 15px;
   padding: 5px 20px 20px 20px;
-  width: 520px;
+  width: 550px;
   box-sizing: border-box;
   background-color: #ffffff;
 `;
@@ -54,13 +54,14 @@ export const StyledLink = styled(({ onClick, ...rest }) => <Button size="small" 
 
 const Tag = styled('div')`
   border-radius: 6px;
-  padding: 5px;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding: 5px 15px;
 `;
 
 export const ContactTag = styled(Tag)`
-  margin-left: 10px;
+  display: inline-block;
+  white-space: nowrap;
+  margin-left: 6px;
+  padding: 5px 12px;
   background-color: #d8d8d8;
 `;
 
@@ -213,3 +214,12 @@ export const ScrollableList = styled('div')`
   height: 100%;
   overflow-y: auto;
 `;
+
+export const StyledButtonBase = withStyles({
+  root: {
+    margin: 10,
+  },
+  disabled: {
+    color: 'rgba(0, 0, 0, 0.26)',
+  },
+})(ButtonBase);

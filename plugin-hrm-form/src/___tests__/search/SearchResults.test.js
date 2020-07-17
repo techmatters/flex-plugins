@@ -41,7 +41,7 @@ test('<SearchResults> with 1 result', () => {
         name: 'Jill Smith',
         customerNumber: 'Anonymous',
         callType: 'Child calling about self',
-        categories: 'TBD',
+        categories: { category1: ['Tag1', 'Tag2'] },
         counselor: 'counselor-id',
         notes: 'Jill Smith Notes',
       },
@@ -51,7 +51,6 @@ test('<SearchResults> with 1 result', () => {
         },
       },
       counselor: 'Counselor',
-      tags: ['Tag1', 'Tag2'],
     },
   ];
 
@@ -82,7 +81,7 @@ test('<SearchResults> with multiple results', () => {
         name: 'Jill Smith',
         customerNumber: 'Anonymous',
         callType: 'Child calling about self',
-        categories: 'TBD',
+        categories: { category1: ['Tag1', 'Tag2'] },
         counselor: 'counselor-id',
         notes: 'Jill Smith Notes',
       },
@@ -92,7 +91,6 @@ test('<SearchResults> with multiple results', () => {
         },
       },
       counselor: 'Counselor',
-      tags: ['Tag1', 'Tag2'],
     },
     {
       contactId: 'Sarah-Park-id',
@@ -101,7 +99,7 @@ test('<SearchResults> with multiple results', () => {
         name: 'Sarah Park',
         customerNumber: 'Anonymous',
         callType: 'Child calling about self',
-        categories: 'TBD',
+        categories: { category1: ['Tag3'] },
         counselor: 'counselor-id',
         notes: 'Jill Smith Notes',
       },
@@ -111,7 +109,6 @@ test('<SearchResults> with multiple results', () => {
         },
       },
       counselor: 'Counselor',
-      tags: ['Tag3'],
     },
   ];
 

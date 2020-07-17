@@ -18,6 +18,7 @@ jest.mock('../styles/HrmStyles', () => ({
   FontOpenSans: 'FontOpenSans',
   Box: 'Box',
   StyledIcon: () => 'StyledIcon',
+  addHover: () => 'ComponentWithHover',
   HiddenText: 'HiddenText',
   Absolute: 'Absolute',
 }));
@@ -52,6 +53,7 @@ jest.mock('../styles/search', () => ({
   ListContainer: 'ListContainer',
   ScrollableList: 'ScrollableList',
   CancelButton: 'CancelButton',
+  StyledButtonBase: 'StyledButtonBase',
 }));
 
 jest.mock('../styles/callTypeButtons', () => ({

@@ -29,7 +29,7 @@ const mockedCaseList = [
     info: '',
     childName: 'Michael Smith',
     callSummary: 'Summary',
-    categories: ['cat1'],
+    categories: { category1: ['cat1'] },
   },
   {
     id: '2',
@@ -40,7 +40,7 @@ const mockedCaseList = [
     info: '',
     childName: 'Sonya Michels',
     callSummary: 'Summary',
-    categories: ['cat2'],
+    categories: { category1: ['cat2'] },
   },
 ];
 
