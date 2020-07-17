@@ -27,7 +27,5 @@ export async function cancelCase(caseId) {
     method: 'DELETE',
   };
 
-  const responseJson = await fetchHrmApi(`/cases/${caseId}`, options);
-
-  return responseJson;
+  await fetchHrmApi(`/cases/${caseId}`, options);
 }
