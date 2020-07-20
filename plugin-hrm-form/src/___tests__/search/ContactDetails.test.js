@@ -4,7 +4,7 @@ import renderer from 'react-test-renderer';
 import '../mockStyled';
 
 import ContactDetails from '../../components/search/ContactDetails';
-import Section from '../../components/search/ContactDetails/Section';
+import Section from '../../components/Section';
 import callTypes, { channelTypes } from '../../states/DomainConstants';
 
 const contactOfType = type => ({
@@ -72,7 +72,7 @@ const contactOfType = type => ({
     name: 'Jill Smith',
     customerNumber: 'Anonymous',
     callType: type,
-    categories: 'TBD',
+    categories: { category1: ['Tag1', 'Tag2'] },
     counselor: 'counselor-id',
     notes: 'Jill Smith Notes',
     channel: channelTypes.web,
@@ -85,6 +85,10 @@ const contactOfType = type => ({
 const handleBack = jest.fn();
 const handleMockedMessage = jest.fn();
 const handleSelectSearchResult = jest.fn();
+const handleExpandDetailsSection = jest.fn();
+const detailsExpanded = {
+  'General details': true,
+};
 
 test(`<ContactDetails> with contact of type ${callTypes.child}`, () => {
   const contact = contactOfType(callTypes.child);
@@ -96,6 +100,8 @@ test(`<ContactDetails> with contact of type ${callTypes.child}`, () => {
       handleBack={handleBack}
       handleMockedMessage={handleMockedMessage}
       handleSelectSearchResult={handleSelectSearchResult}
+      detailsExpanded={detailsExpanded}
+      handleExpandDetailsSection={handleExpandDetailsSection}
     />,
   ).root;
 
@@ -114,6 +120,8 @@ test(`<ContactDetails> with contact of type ${callTypes.caller}`, () => {
       handleBack={handleBack}
       handleMockedMessage={handleMockedMessage}
       handleSelectSearchResult={handleSelectSearchResult}
+      detailsExpanded={detailsExpanded}
+      handleExpandDetailsSection={handleExpandDetailsSection}
     />,
   ).root;
   const sections = component.findAllByType(Section);
@@ -131,6 +139,8 @@ test(`<ContactDetails> with a non data (standalone) contact`, () => {
       handleBack={handleBack}
       handleMockedMessage={handleMockedMessage}
       handleSelectSearchResult={handleSelectSearchResult}
+      detailsExpanded={detailsExpanded}
+      handleExpandDetailsSection={handleExpandDetailsSection}
     />,
   ).root;
   const sections = component.findAllByType(Section);

@@ -165,7 +165,7 @@ export const searchResultType = PropTypes.shape({
     name: PropTypes.string,
     customerNumber: PropTypes.string,
     callType: PropTypes.string,
-    categories: PropTypes.string,
+    categories: PropTypes.shape({}),
     counselor: PropTypes.string,
     notes: PropTypes.string,
     channel: PropTypes.string,
@@ -173,7 +173,6 @@ export const searchResultType = PropTypes.shape({
   }).isRequired,
   details: contactType.isRequired,
   counselor: PropTypes.string,
-  tags: PropTypes.arrayOf(PropTypes.string),
 });
 
 export const searchFormType = PropTypes.shape({

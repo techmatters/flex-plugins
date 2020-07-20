@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Template } from '@twilio/flex-ui';
 
-import { Box, Row } from '../../styles/HrmStyles';
+import { Box, Row, HiddenText } from '../../styles/HrmStyles';
 import {
   CloseTaskDialog,
   CloseTaskDialogText,
@@ -18,9 +18,14 @@ const NonDataCallTypeDialog = ({ isOpen, isCallTask, isInWrapupMode, handleConfi
     <TabPressWrapper>
       <NonDataCallTypeDialogContainer>
         <Box marginLeft="auto">
-          <CloseButton tabIndex={3} aria-label="Close" onClick={handleCancel} />
+          <HiddenText id="CloseButton">
+            <Template code="CloseButton" />
+          </HiddenText>
+          <CloseButton tabIndex={3} aria-label="CloseButton" onClick={handleCancel} />
         </Box>
-        <CloseTaskDialogText>Are you sure?</CloseTaskDialogText>
+        <CloseTaskDialogText>
+          <Template code="NonDataCallTypeDialog-CloseConfirm" />
+        </CloseTaskDialogText>
         <Box marginBottom="32px">
           <Row>
             <ConfirmButton autoFocus tabIndex={1} onClick={handleConfirm}>
@@ -31,7 +36,8 @@ const NonDataCallTypeDialog = ({ isOpen, isCallTask, isInWrapupMode, handleConfi
               {/* eslint-enable react/jsx-max-depth,no-nested-ternary */}
             </ConfirmButton>
             <CancelButton tabIndex={2} onClick={handleCancel}>
-              Cancel
+              {/* eslint-disable-next-line react/jsx-max-depth */}
+              <Template code="CancelButton" />
             </CancelButton>
           </Row>
         </Box>

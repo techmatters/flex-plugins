@@ -3,6 +3,12 @@
   "TaskHeaderEndCall": "Hang Up",
   "TaskHeaderEndChat": "End Chat",
   "TranslateButtonAriaLabel": "Change language",
+  "CloseButton": "Close",
+  "CancelButton": "Cancel",
+
+  "CallSummary-None": "- No call summary -",
+  "CallSummary-ViewFull": "See full record",
+  "CallSummary-MoreNotes": "more notes",
 
   "CallType-child": "Child calling about self",
   "CallType-caller": "Someone calling about a child",
@@ -12,8 +18,35 @@
   "CallType-hangup": "Hang up",
   "CallType-wrongnumber": "Wrong Number",
   "CallType-abusive": "Abusive",
-
   "CallType-CloseContact": "Close Contact",
+
+  "CallTypeAndCounselor-Label": "Counselor: ",
+
+  "CallTypeButtons-Categorize": "categorize this contact",
+  "CallTypeButtons-Or": "Or was this contact…",
+
+  "ConnectDialog-Child": "Copy child information from this record to new contact?",
+  "ConnectDialog-Caller": "Copy caller information from this record to new contact?",
+
+  "ContactDetailsIndex-Back": "Return to results",
+
+  "QueueCard-WaitLabel": "Longest wait time:",
+  "QueueCard-None": "none",
+  "QueueCard-LessThanMinute": "less than a minute",
+  "QueueCard-OneMinute": "1 minute",
+  "QueueCard-Minutes": "&nbsp;minutes",
+  "QueueCard-Name": "Queue name: ",
+
+  "QueueIndex-ContactsWaiting": "Contacts waiting",
+
+  "NonDataCallTypeDialog-CloseConfirm": "Are you sure?",
+
+  "SearchResultsIndex-Back": "Return to search criteria",
+  "SearchResultsIndex-Result": " result",
+  "SearchResultsIndex-Results": " results",
+
+  "SectionEntry-Yes": "Yes",
+  "SectionEntry-No": "No",
 
   "SharedStateSaveFormError": "The information stored in the form couldn't be saved. Task will be transferred anyway.",
   "SharedStateLoadFormError": "The information stored in the form by previous counselor couldn't be retrieved. Starting current task with clear contact form.",
@@ -34,14 +67,26 @@
 
   "BottomBar-Next": "Next",
   "BottomBar-SaveAndAddToCase": "Save and Add to Case...",
-  "BottomBar-Submit": "Submit",
+  "BottomBar-SaveContact": "Save Contact",
   "BottomBar-OpenNewCase": "Open New Case",
   "BottomBar-AddToExistingCase": "Add to Existing Case",
+  "BottomBar-Cancel": "Cancel",
+  "BottomBar-AddThisContactToExistingCase": "Add this Contact to Existing Case",
+  "BottomBar-CancelNewCaseAndClose": "Yes, Cancel New Case and Close",
+  "BottomBar-SaveAndEnd": "Save and End",
+
+  "Categories-Title": "Categorize this contact",
+  
+  "TabbedForms-AddCallerInfoTab": "Add Caller Information",
+  "TabbedForms-AddChildInfoTab": "Add Child Information",
+  "TabbedForms-CategoriesTab": "Categorize Issue",
+  "TabbedForms-AddCaseInfoTab": "Add Case Summary",
 
   "NotImplemented": "Not implemented yet!",
   "Error-Backend": "Error from backend system.",
   "Error-ContinueWithoutRecording": "Error from backend system.  Are you sure you want to end the task without recording?",
   "Error-Form": "There is a problem with your submission.  Please check the form for errors.",
+  "Error-CategoryRequired": "Required 1 category minimum, 3 categories maximum",
 
   "Case-CaseNumber": "Case",
   "Case-CaseDetailsSection": "Case Details",
@@ -49,5 +94,24 @@
   "Case-CaseDetailsOwner": "Counselor",
   "Case-CaseDetailsDateOpened": "Date Opened",
   "Case-CaseDetailsStatusLabel": "Status",
-  "Case-CaseDetailsStatusOpen": "Open"
+  "Case-CaseDetailsStatusOpen": "Open",
+
+  "SideNavCaseList": "Case List",
+  
+  "CaseList-AllCases": "All Cases",
+  "CaseList-THCase": "Case #",
+  "CaseList-THChildName": "Child's Name",
+  "CaseList-THSummary": "Summary",
+  "CaseList-THCounselor": "Counselor",
+  "CaseList-THOpened": "Opened",
+  "CaseList-THUpdated": "Updated",
+  "CaseList-THCategory": "Category",
+  "CaseList-ExpandButton": "Open case details",
+  "CaseList-PrevPage": "Previous page",
+  "CaseList-NextPage": "Next page",
+  "CaseList-SomethingWentWrong": "Something went wrong while loading cases list. Please retry in a moment.",
+
+  "ContactPreview-CopyButton": "Copy informaton",
+  "ContactPreview-ExpandButton": "Open case details",
+  "ContactPreview-MoreOptionsButton": "More options"
 }

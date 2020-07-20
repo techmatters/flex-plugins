@@ -1,5 +1,6 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
+import { Template } from '@twilio/flex-ui';
 
 import '../mockStyled';
 
@@ -7,7 +8,10 @@ import SearchResults from '../../components/search/SearchResults';
 import ContactPreview from '../../components/search/ContactPreview';
 import { BackText } from '../../styles/search';
 
-const getResultsLabel = component => component.findAllByType(BackText)[1].children.join('');
+const getResultsLabel = component => component.findAllByType(BackText)[1].children;
+
+const resultTemp = <Template code="SearchResultsIndex-Result" />;
+const resultsTemp = <Template code="SearchResultsIndex-Results" />;
 
 test('<SearchResults> with 0 results', () => {
   const component = renderer.create(
@@ -23,7 +27,8 @@ test('<SearchResults> with 0 results', () => {
 
   const resultsLabel = getResultsLabel(component);
 
-  expect(resultsLabel).toEqual('0 results');
+  expect(resultsLabel[0]).toEqual('0');
+  expect(resultsLabel[1].props).toStrictEqual(resultsTemp.props);
   expect(() => component.findByType(ContactPreview)).toThrow();
 });
 
@@ -36,7 +41,7 @@ test('<SearchResults> with 1 result', () => {
         name: 'Jill Smith',
         customerNumber: 'Anonymous',
         callType: 'Child calling about self',
-        categories: 'TBD',
+        categories: { category1: ['Tag1', 'Tag2'] },
         counselor: 'counselor-id',
         notes: 'Jill Smith Notes',
       },
@@ -46,7 +51,6 @@ test('<SearchResults> with 1 result', () => {
         },
       },
       counselor: 'Counselor',
-      tags: ['Tag1', 'Tag2'],
     },
   ];
 
@@ -63,7 +67,8 @@ test('<SearchResults> with 1 result', () => {
 
   const resultsLabel = getResultsLabel(component);
 
-  expect(resultsLabel).toEqual('1 result');
+  expect(resultsLabel[0]).toEqual('1');
+  expect(resultsLabel[1].props).toStrictEqual(resultTemp.props);
   expect(() => component.findByType(ContactPreview)).not.toThrow();
 });
 
@@ -76,7 +81,7 @@ test('<SearchResults> with multiple results', () => {
         name: 'Jill Smith',
         customerNumber: 'Anonymous',
         callType: 'Child calling about self',
-        categories: 'TBD',
+        categories: { category1: ['Tag1', 'Tag2'] },
         counselor: 'counselor-id',
         notes: 'Jill Smith Notes',
       },
@@ -86,7 +91,6 @@ test('<SearchResults> with multiple results', () => {
         },
       },
       counselor: 'Counselor',
-      tags: ['Tag1', 'Tag2'],
     },
     {
       contactId: 'Sarah-Park-id',
@@ -95,7 +99,7 @@ test('<SearchResults> with multiple results', () => {
         name: 'Sarah Park',
         customerNumber: 'Anonymous',
         callType: 'Child calling about self',
-        categories: 'TBD',
+        categories: { category1: ['Tag3'] },
         counselor: 'counselor-id',
         notes: 'Jill Smith Notes',
       },
@@ -105,7 +109,6 @@ test('<SearchResults> with multiple results', () => {
         },
       },
       counselor: 'Counselor',
-      tags: ['Tag3'],
     },
   ];
 
@@ -122,6 +125,7 @@ test('<SearchResults> with multiple results', () => {
 
   const resultsLabel = getResultsLabel(component);
 
-  expect(resultsLabel).toEqual('2 results');
+  expect(resultsLabel[0]).toEqual('2');
+  expect(resultsLabel[1].props).toStrictEqual(resultsTemp.props);
   expect(() => component.findAllByType(ContactPreview)).not.toThrow();
 });

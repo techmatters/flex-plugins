@@ -3,27 +3,24 @@ import PropTypes from 'prop-types';
 
 import { Row, Box } from '../../../styles/HrmStyles';
 import { ContactTag, DateText, TagText } from '../../../styles/search';
+import CategoryWithTooltip from '../../common/CategoryWithTooltip';
 
-const DateAndTags = ({ dateString, tag1, tag2, tag3 }) => (
+// eslint-disable-next-line react/display-name
+const renderTag = tag => (
+  <ContactTag>
+    <TagText>{tag}</TagText>
+  </ContactTag>
+);
+
+// eslint-disable-next-line react/no-multi-comp
+const DateAndTags = ({ dateString, category1, category2, category3 }) => (
   <Box marginBottom="2px">
     <Row style={{ height: '23px' }}>
       <DateText>{dateString}</DateText>
       <Row style={{ marginLeft: 'auto' }}>
-        {tag1 && (
-          <ContactTag>
-            <TagText>{tag1}</TagText>
-          </ContactTag>
-        )}
-        {tag2 && (
-          <ContactTag>
-            <TagText>{tag2}</TagText>
-          </ContactTag>
-        )}
-        {tag3 && (
-          <ContactTag>
-            <TagText>{tag3}</TagText>
-          </ContactTag>
-        )}
+        {category1 && <CategoryWithTooltip renderTag={renderTag} category={category1} />}
+        {category2 && <CategoryWithTooltip renderTag={renderTag} category={category2} />}
+        {category3 && <CategoryWithTooltip renderTag={renderTag} category={category3} />}
       </Row>
     </Row>
   </Box>
@@ -31,15 +28,15 @@ const DateAndTags = ({ dateString, tag1, tag2, tag3 }) => (
 
 DateAndTags.propTypes = {
   dateString: PropTypes.string.isRequired,
-  tag1: PropTypes.string,
-  tag2: PropTypes.string,
-  tag3: PropTypes.string,
+  category1: PropTypes.string,
+  category2: PropTypes.string,
+  category3: PropTypes.string,
 };
 
 DateAndTags.defaultProps = {
-  tag1: '',
-  tag2: '',
-  tag3: '',
+  category1: '',
+  category2: '',
+  category3: '',
 };
 
 DateAndTags.displayName = 'ContactLabels';

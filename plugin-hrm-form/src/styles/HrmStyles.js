@@ -1,6 +1,7 @@
+/* eslint-disable no-nested-ternary */
 import React from 'react';
 import styled from 'react-emotion';
-import { Input, Select, MenuItem, Tabs, Tab } from '@material-ui/core';
+import { Input, Select, MenuItem, Tabs, Tab, Checkbox, withStyles } from '@material-ui/core';
 import { Button, getBackgroundWithHoverCSS } from '@twilio/flex-ui';
 
 export const Box = styled('div')`
@@ -30,7 +31,7 @@ export const TabbedFormsContainer = styled('div')`
   height: 100%;
 `;
 
-const containerLeftRightMargin = '20px';
+const containerLeftRightMargin = '5px';
 export const Container = styled('div')`
   display: flex;
   padding: 32px 20px 12px 20px;
@@ -48,6 +49,29 @@ export const ErrorText = styled('p')`
   color: ${props => props.theme.colors.errorColor};
   font-size: 10px;
   line-height: 1.5;
+`;
+
+export const CategoryTitle = styled('p')`
+  text-transform: uppercase;
+  font-weight: 600;
+`;
+
+export const CategorySubtitleSection = styled('div')`
+  display: flex;
+  align-items: center;
+  margin: 6px 0;
+`;
+
+export const CategoryRequiredText = styled('p')`
+  color: ${props => props.theme.colors.darkTextColor};
+  font-size: 12px;
+  font-weight: 400;
+  flex-grow: 1;
+
+  &:before {
+    color: ${props => props.theme.colors.errorColor};
+    content: '* ';
+  }
 `;
 
 export const StyledInput = styled(Input)`
@@ -133,16 +157,29 @@ export const StyledMenuItem = styled(MenuItem)`
 `;
 
 export const StyledNextStepButton = styled(Button)`
-  color: ${props => props.theme.colors.buttonTextColor};
-  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  letter-spacing: normal;
+  color: ${props =>
+    props.secondary ? props.theme.colors.secondaryButtonTextColor : props.theme.colors.buttonTextColor};
+  border: ${({ secondary }) => (secondary ? '1px solid' : 'none')};
   margin: 0;
   padding: 7px 23px;
   background-color: ${props =>
-    props.disabled ? props.theme.colors.disabledColor : props.theme.colors.defaultButtonColor};
+    props.disabled
+      ? props.theme.colors.disabledColor
+      : props.secondary
+      ? props.theme.colors.secondaryButtonColor
+      : props.theme.colors.defaultButtonColor};
   cursor: ${props => (props.disabled ? 'not-allowed' : 'default')};
   ${p =>
     getBackgroundWithHoverCSS(
-      p.disabled ? p.theme.colors.base5 : p.theme.colors.defaultButtonColor,
+      p.disabled
+        ? p.theme.colors.base5
+        : p.secondary
+        ? p.theme.colors.secondaryButtonColor
+        : p.theme.colors.defaultButtonColor,
       true,
       false,
       p.disabled,
@@ -177,6 +214,13 @@ export const StyledCheckboxLabel = styled('label')`
   margin-bottom: auto;
   font-size: 12px;
   letter-spacing: normal;
+`;
+
+export const StyledCategoryCheckboxLabel = styled(StyledCheckboxLabel)`
+  text-transform: none;
+  color: ${({ disabled, theme }) =>
+    disabled ? `${theme.colors.categoryTextColor}33` : theme.colors.categoryTextColor};
+  cursor: ${({ disabled }) => (disabled ? 'initial' : 'pointer')};
 `;
 
 export const TopNav = styled('div')`
@@ -226,8 +270,73 @@ export const TwoColumnLayout = styled('div')`
 export const CategoryCheckboxField = styled('div')`
   display: flex;
   flex-direction: row;
-  margin: 8px 0;
-  width: 160px;
+  margin: 4px 4px 4px 0;
+  width: fit-content;
+  height: 34px;
+  box-sizing: border-box;
+  border: ${({ selected, disabled, color }) => {
+    if (disabled || selected) return 'none';
+    return `1px solid ${color}`;
+  }};
+  border-radius: 2px;
+  padding-right: 15px;
+  background-color: ${({ selected, disabled, color, theme }) => {
+    if (disabled) return `${theme.colors.categoryDisabledColor}14`; // Hex with alpha 0.08
+    if (selected) return color;
+    return 'initial';
+  }};
+  cursor: ${({ disabled }) => (disabled ? 'initial' : 'pointer')};
+`;
+
+export const StyledCategoryCheckbox = styled(props => (
+  <Checkbox {...props} classes={{ root: 'root', checked: 'checked' }} />
+))`
+  &&&.root {
+    color: ${({ disabled, color, theme }) => (disabled ? `${theme.colors.categoryDisabledColor}33` : color)};
+    padding: 8px;
+
+    &.checked {
+      color: white;
+    }
+
+    svg {
+      font-size: 16px;
+    }
+  }
+`;
+
+export const ToggleViewButton = styled('div')`
+  display: inline-flex;
+  width: 37px;
+  height: 37px;
+  min-height: 37px;
+  border-radius: 1px;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  cursor: pointer;
+  border: ${({ active }) => (active ? '1px solid #a0a8bd33' : 'none')};
+  color: ${({ active }) => (active ? '#000000cc' : 'initial')};
+  background-color: ${({ active }) => (active ? 'initial' : '#a0a8bdcc')};
+  opacity: ${({ active }) => (active ? 'initial' : '20%')};
+
+  > svg {
+    font-size: 18px;
+  }
+`;
+
+export const CategoriesWrapper = styled('div')`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 20px;
+`;
+
+export const SubcategoriesWrapper = styled('div')`
+  display: flex;
+  padding: 10px 0 10px 6px;
+  flex-wrap: wrap;
+  flex-direction: ${({ gridView }) => (gridView ? 'row' : 'column')};
 `;
 
 export const StyledTabs = styled(props => <Tabs {...props} classes={{ indicator: 'indicator' }} />)`
@@ -292,3 +401,31 @@ export const TransferStyledButton = styled('button')`
     cursor: pointer;
   }
 `;
+
+export const HeaderContainer = styled(Row)`
+  width: 100%;
+  justify-items: flex-start;
+  background-color: ${props => props.theme.colors.base2};
+  border-width: 0px;
+  text-transform: uppercase;
+  color: #192b33;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.67px;
+  line-height: 12px;
+  padding: 0px;
+`;
+
+export const StyledIcon = icon => styled(icon)`
+  opacity: 0.34;
+`;
+
+export const addHover = Component =>
+  withStyles({
+    root: {
+      '&:hover': {
+        borderRadius: '50%',
+        backgroundColor: '#a0a8bd66',
+      },
+    },
+  })(Component);

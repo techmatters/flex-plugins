@@ -144,6 +144,8 @@ const setUpComponents = setupObject => {
     Components.setUpIncomingTransferMessage();
   }
 
+  if (featureFlags.enable_case_management) Components.setUpCaseList();
+
   if (!Boolean(helpline)) Components.setUpDeveloperComponents(setupObject); // utilities for developers only
 
   // remove dynamic components
@@ -184,6 +186,37 @@ const setUpActions = setupObject => {
   Flex.Actions.addListener('afterCompleteTask', ActionFunctions.removeContactForm);
 };
 
+const enableChatCapabilities = () => {
+  const customWhatsappChannel = {
+    ...Flex.DefaultTaskChannels.ChatWhatsApp,
+    name: 'custom-whatsapp-channel',
+    isApplicable: task => task.taskChannelUniqueName === 'WhatsApp',
+  };
+
+  const customFacebookChannel = {
+    ...Flex.DefaultTaskChannels.ChatMessenger,
+    name: 'custom-facebook-channel',
+    isApplicable: task => task.taskChannelUniqueName === 'Facebook',
+  };
+
+  const customWebChannel = {
+    ...Flex.DefaultTaskChannels.Chat,
+    name: 'custom-web-channel',
+    isApplicable: task => task.taskChannelUniqueName === 'Web',
+  };
+
+  const customSmsChannel = {
+    ...Flex.DefaultTaskChannels.ChatSms,
+    name: 'custom-sms-channel',
+    isApplicable: task => task.taskChannelUniqueName === 'SMS',
+  };
+
+  Flex.TaskChannels.register(customWhatsappChannel);
+  Flex.TaskChannels.register(customFacebookChannel);
+  Flex.TaskChannels.register(customWebChannel);
+  Flex.TaskChannels.register(customSmsChannel);
+};
+
 export default class HrmFormPlugin extends FlexPlugin {
   constructor() {
     super(PLUGIN_NAME);
@@ -213,6 +246,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     if (config.featureFlags.enable_transfers) setUpTransfers(setupObject);
     setUpComponents(setupObject);
     setUpActions(setupObject);
+    enableChatCapabilities();
 
     const managerConfiguration = {
       colorTheme: HrmTheme,

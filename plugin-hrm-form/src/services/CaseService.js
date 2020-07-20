@@ -1,17 +1,31 @@
-import secret from '../private/secret';
+import fetchHrmApi from './fetchHrmApi';
 
-export async function createCase(hrmBaseUrl, caseRecord) {
-  const response = await fetch(`${hrmBaseUrl}/cases`, {
+export async function createCase(caseRecord) {
+  const options = {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', Authorization: `Basic ${btoa(secret)}` },
     body: JSON.stringify(caseRecord),
-  });
+  };
 
-  if (!response.ok) {
-    const error = response.error();
-    console.log(JSON.stringify(error));
-    throw error;
+  const responseJson = await fetchHrmApi('/cases', options);
+
+  return responseJson;
+}
+
+export async function getCases(limit, offset) {
+  if (limit !== undefined && offset !== undefined) {
+    const responseJson = await fetchHrmApi(`/cases?limit=${limit}&offset=${offset}`);
+    return responseJson;
   }
 
-  return response.json();
+  const responseJson = await fetchHrmApi('/cases');
+
+  return responseJson;
+}
+
+export async function cancelCase(caseId) {
+  const options = {
+    method: 'DELETE',
+  };
+
+  await fetchHrmApi(`/cases/${caseId}`, options);
 }

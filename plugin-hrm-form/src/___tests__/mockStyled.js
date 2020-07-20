@@ -17,6 +17,10 @@ jest.mock('../styles/HrmStyles', () => ({
   Row: 'Row',
   FontOpenSans: 'FontOpenSans',
   Box: 'Box',
+  StyledIcon: () => 'StyledIcon',
+  addHover: () => 'ComponentWithHover',
+  HiddenText: 'HiddenText',
+  Absolute: 'Absolute',
 }));
 
 jest.mock('../styles/search', () => ({
@@ -33,7 +37,6 @@ jest.mock('../styles/search', () => ({
   CounselorText: 'CounselorText',
   DateText: 'DateText',
   TagText: 'TagText',
-  StyledIcon: () => 'StyledIcon',
   ContactDetailsIcon: () => 'ContactDetailsIcon',
   DetailsContainer: 'DetailsContainer',
   SectionTitleContainer: 'SectionTitleContainer',
@@ -50,6 +53,7 @@ jest.mock('../styles/search', () => ({
   ListContainer: 'ListContainer',
   ScrollableList: 'ScrollableList',
   CancelButton: 'CancelButton',
+  StyledButtonBase: 'StyledButtonBase',
 }));
 
 jest.mock('../styles/callTypeButtons', () => ({
