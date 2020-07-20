@@ -59,13 +59,10 @@ async function copyAndPostFlow(
 
   console.log(JSON.stringify(newFlow, null, 1));
   const Confirm = require("prompt-confirm");
-  const prompt = new Confirm({
-    name: "continue",
-    message: "This studio flow will be posted. Continue?",
-  });
+  const prompt = new Confirm("This studio flow will be posted. Continue?");
 
   const answer = await prompt.run();
-  if (!answer.continue) return;
+  if (!answer) return;
 
   if (update) {
     newClient.studio
