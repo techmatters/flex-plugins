@@ -5,11 +5,12 @@
   "scripts": {
     "lint": "eslint --ext js .",
     "lint:fix": "npm run lint -- --fix",
-    "copy_flow": "node copyFlow.js"
+    "copyFlow": "node copyFlow.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "prompt-confirm": "^2.0.4",
     "twilio": "^3.48.0",
     "yargs": "^15.4.1"
   },
