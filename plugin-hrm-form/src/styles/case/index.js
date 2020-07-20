@@ -55,3 +55,24 @@ export const DefaultStatusFont = styled(DetailEntryText)`
   font-size: 13px;
   text-transform: uppercase;
 `;
+
+export const CaseAddButtonFont = styled(FontOpenSans)`
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 14px;
+  color: #1976d2;
+`;
+
+export const CaseActionTitle = styled(FontOpenSans)`
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 17px;
+  color: #22333b;
+`;
+
+export const CaseActionDetailFont = styled(FontOpenSans)`
+  font-style: italic;
+  font-size: 12px;
+  line-height: 30px;
+  opacity: 67%;
+`;

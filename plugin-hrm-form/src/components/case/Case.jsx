@@ -13,12 +13,14 @@ import { taskType, formType } from '../../types';
 import { getConfig } from '../../HrmFormPlugin';
 import { saveToHrm, connectToCase } from '../../services/ContactService';
 import { cancelCase } from '../../services/CaseService';
-import { Box, Container, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
+import { Box, Container, BottomButtonBar, StyledNextStepButton, Row } from '../../styles/HrmStyles';
 import { CaseContainer, CaseNumberFont, CaseSectionFont } from '../../styles/case';
 import CaseDetails from './CaseDetails';
 import { Menu, MenuItem } from '../menu';
 import { formatName } from '../../utils';
 import { Actions } from '../../states/ContactState';
+import CaseAddButton from './CaseAddButton';
+import AddNote from './AddNote';
 
 class Case extends Component {
   static displayName = 'Case';
@@ -36,6 +38,7 @@ class Case extends Component {
     anchorEl: null,
     isMenuOpen: false,
     mockedMessage: null,
+    editCaseAction: null,
   };
 
   toggleCaseMenu = e => {
@@ -71,7 +74,7 @@ class Case extends Component {
   };
 
   render() {
-    const { anchorEl, isMenuOpen, mockedMessage } = this.state;
+    const { anchorEl, isMenuOpen, mockedMessage, editCaseAction } = this.state;
     const { connectedCase } = this.props.form.metadata;
 
     if (!connectedCase) return null;
@@ -83,47 +86,60 @@ class Case extends Component {
     const counselor = this.props.counselorsHash[twilioWorkerId];
     const date = new Date(createdAt).toLocaleDateString(navigator.language);
 
-    return (
-      <CaseContainer>
-        <Container>
-          <CaseNumberFont>
-            <Template code="Case-CaseNumber" /> #{connectedCase.id}
-          </CaseNumberFont>
-          <Box marginLeft="25px" marginTop="13px">
-            <CaseSectionFont id="Case-CaseDetailsSection-label">
-              <Template code="Case-CaseDetailsSection" />
-            </CaseSectionFont>
-            <CaseDetails name={name} status={status} counselor={counselor} date={date} />
-          </Box>
-        </Container>
-        <Dialog onClose={this.closeMockedMessage} open={isMockedMessageOpen}>
-          <DialogContent>{mockedMessage}</DialogContent>
-        </Dialog>
-        <Menu anchorEl={anchorEl} open={isMenuOpen} onClickAway={() => this.setState({ isMenuOpen: false })}>
-          <MenuItem
-            Icon={AddIcon}
-            text={<Template code="BottomBar-AddThisContactToExistingCase" />}
-            onClick={this.handleMockedMessage}
-          />
-          <MenuItem
-            red
-            Icon={CancelIcon}
-            text={<Template code="BottomBar-CancelNewCaseAndClose" />}
-            onClick={this.handleCancelNewCaseAndClose}
-          />
-        </Menu>
-        <BottomButtonBar>
-          <Box marginRight="15px">
-            <StyledNextStepButton secondary roundCorners onClick={this.toggleCaseMenu}>
-              <Template code="BottomBar-Cancel" />
-            </StyledNextStepButton>
-          </Box>
-          <StyledNextStepButton roundCorners onClick={this.handleSaveAndEnd}>
-            <Template code="BottomBar-SaveAndEnd" />
-          </StyledNextStepButton>
-        </BottomButtonBar>
-      </CaseContainer>
-    );
+    switch (editCaseAction) {
+      case 'AddNote':
+        return <AddNote onClickClose={() => this.setState({ editCaseAction: null })} />;
+      default:
+        return (
+          <CaseContainer>
+            <Container>
+              <CaseNumberFont>
+                <Template code="Case-CaseNumber" /> #{connectedCase.id}
+              </CaseNumberFont>
+              <Box marginLeft="25px" marginTop="13px">
+                <CaseDetails name={name} status={status} counselor={counselor} date={date} />
+              </Box>
+              <Box marginLeft="25px" marginTop="25px">
+                <Row>
+                  <CaseSectionFont id="Case-TimelineSection-label">
+                    <Template code="Case-TimelineSection" />
+                  </CaseSectionFont>
+                  <CaseAddButton
+                    templateCode="Case-AddNote"
+                    onClick={() => this.setState({ editCaseAction: 'AddNote' })}
+                  />
+                </Row>
+              </Box>
+            </Container>
+            <Dialog onClose={this.closeMockedMessage} open={isMockedMessageOpen}>
+              <DialogContent>{mockedMessage}</DialogContent>
+            </Dialog>
+            <Menu anchorEl={anchorEl} open={isMenuOpen} onClickAway={() => this.setState({ isMenuOpen: false })}>
+              <MenuItem
+                Icon={AddIcon}
+                text={<Template code="BottomBar-AddThisContactToExistingCase" />}
+                onClick={this.handleMockedMessage}
+              />
+              <MenuItem
+                red
+                Icon={CancelIcon}
+                text={<Template code="BottomBar-CancelNewCaseAndClose" />}
+                onClick={this.handleCancelNewCaseAndClose}
+              />
+            </Menu>
+            <BottomButtonBar>
+              <Box marginRight="15px">
+                <StyledNextStepButton secondary roundCorners onClick={this.toggleCaseMenu}>
+                  <Template code="BottomBar-Cancel" />
+                </StyledNextStepButton>
+              </Box>
+              <StyledNextStepButton roundCorners onClick={this.handleSaveAndEnd}>
+                <Template code="BottomBar-SaveAndEnd" />
+              </StyledNextStepButton>
+            </BottomButtonBar>
+          </CaseContainer>
+        );
+    }
   }
 }
 

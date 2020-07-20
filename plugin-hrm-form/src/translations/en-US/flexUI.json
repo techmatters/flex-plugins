@@ -90,11 +90,13 @@
 
   "Case-CaseNumber": "Case",
   "Case-CaseDetailsSection": "Case Details",
+  "Case-TimelineSection": "Timeline",
   "Case-CaseDetailsChildName": "Child Name",
   "Case-CaseDetailsOwner": "Counselor",
   "Case-CaseDetailsDateOpened": "Date Opened",
   "Case-CaseDetailsStatusLabel": "Status",
   "Case-CaseDetailsStatusOpen": "Open",
+  "Case-AddNote": "Add Note",
 
   "SideNavCaseList": "Case List",
   
