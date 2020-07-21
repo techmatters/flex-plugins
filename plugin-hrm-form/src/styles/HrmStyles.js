@@ -236,7 +236,7 @@ export const BottomButtonBar = styled('div')`
   padding: 0 20px;
   height: 55px;
   flex-shrink: 0;
-  background-color: #f9fafb;
+  background-color: ${props => (props.backgroundColor ? props.backgroundColor : '#f9fafb')};
   border-top: 1px solid #c6cad8;
   box-shadow: 0 -2px 4px 0 rgba(0, 0, 0, 0.14);
   z-index: 1;

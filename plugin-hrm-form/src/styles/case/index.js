@@ -76,3 +76,25 @@ export const CaseActionDetailFont = styled(FontOpenSans)`
   line-height: 30px;
   opacity: 67%;
 `;
+
+export const CaseActionTextArea = styled('textarea')`
+  width: 65%;
+  background-color: #ffffff;
+  font-family: Open Sans;
+  font-size: 12px;
+  line-height: 15px;
+  margin-top: 10px;
+  padding: 5px;
+  border-style: none;
+  border-radius: 4px;
+`;
+
+export const CaseActionButtonBar = styled('div')`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 20px;
+  height: 55px;
+  flex-shrink: 0;
+  background-color: ${props => props.theme.base2};
+`;

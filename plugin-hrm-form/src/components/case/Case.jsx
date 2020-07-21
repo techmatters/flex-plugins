@@ -88,7 +88,7 @@ class Case extends Component {
 
     switch (editCaseAction) {
       case 'AddNote':
-        return <AddNote onClickClose={() => this.setState({ editCaseAction: null })} />;
+        return <AddNote counselor={counselor} onClickClose={() => this.setState({ editCaseAction: null })} />;
       default:
         return (
           <CaseContainer>
