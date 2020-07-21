@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Template, withTaskContext } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { CircularProgress } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import CancelIcon from '@material-ui/icons/Cancel';
 import Dialog from '@material-ui/core/Dialog';
@@ -12,9 +13,9 @@ import { namespace, contactFormsBase, configurationBase } from '../../states';
 import { taskType, formType } from '../../types';
 import { getConfig } from '../../HrmFormPlugin';
 import { saveToHrm, connectToCase } from '../../services/ContactService';
-import { cancelCase } from '../../services/CaseService';
+import { cancelCase, updateCase } from '../../services/CaseService';
 import { Box, Container, BottomButtonBar, StyledNextStepButton, Row } from '../../styles/HrmStyles';
-import { CaseContainer, CaseNumberFont, CaseSectionFont } from '../../styles/case';
+import { CaseContainer, CenteredContainer, CaseNumberFont, CaseSectionFont } from '../../styles/case';
 import CaseDetails from './CaseDetails';
 import { Menu, MenuItem } from '../menu';
 import { formatName } from '../../utils';
@@ -39,6 +40,7 @@ class Case extends Component {
     isMenuOpen: false,
     mockedMessage: null,
     editCaseAction: null,
+    loading: false,
   };
 
   toggleCaseMenu = e => {
@@ -73,11 +75,41 @@ class Case extends Component {
     }
   };
 
+  handleSaveNote = async newNote => {
+    try {
+      this.setState({ loading: true });
+      const { task, form } = this.props;
+      const { connectedCase } = form.metadata;
+      const { info } = connectedCase;
+      const newNoteObj = { note: newNote, createdAt: new Date().toISOString() };
+      const notes = info && info.notes ? [...info.notes, newNoteObj] : [newNoteObj];
+      const newInfo = info ? { ...info, notes } : { notes };
+      const caseFromDB = await updateCase(connectedCase.id, { info: newInfo });
+      this.props.changeRoute('new-case', task.taskSid);
+      this.props.setConnectedCase(caseFromDB, task.taskSid); // update store to the new state of the case
+      this.setState({ loading: false, editCaseAction: null });
+    } catch (error) {
+      console.error(error);
+      this.setState({ loading: false });
+      const { strings } = getConfig();
+      window.alert(strings['Error-Backend']);
+    }
+  };
+
+  handleClose = () => this.setState({ editCaseAction: null });
+
   render() {
-    const { anchorEl, isMenuOpen, mockedMessage, editCaseAction } = this.state;
+    const { anchorEl, isMenuOpen, mockedMessage, editCaseAction, loading } = this.state;
     const { connectedCase } = this.props.form.metadata;
 
     if (!connectedCase) return null;
+
+    if (loading)
+      return (
+        <CenteredContainer>
+          <CircularProgress size={50} />
+        </CenteredContainer>
+      );
 
     const isMockedMessageOpen = Boolean(mockedMessage);
     const { firstName, lastName } = this.props.form.childInformation.name;
@@ -88,7 +120,7 @@ class Case extends Component {
 
     switch (editCaseAction) {
       case 'AddNote':
-        return <AddNote counselor={counselor} onClickClose={() => this.setState({ editCaseAction: null })} />;
+        return <AddNote counselor={counselor} handleSaveNote={this.handleSaveNote} onClickClose={this.handleClose} />;
       default:
         return (
           <CaseContainer>

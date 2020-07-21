@@ -29,3 +29,14 @@ export async function cancelCase(caseId) {
 
   await fetchHrmApi(`/cases/${caseId}`, options);
 }
+
+export async function updateCase(caseId, body) {
+  const options = {
+    method: 'PUT',
+    body: JSON.stringify(body),
+  };
+
+  const responseJson = await fetchHrmApi(`/cases/${caseId}`, options);
+
+  return responseJson;
+}

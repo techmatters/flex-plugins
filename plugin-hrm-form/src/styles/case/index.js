@@ -8,6 +8,11 @@ export const CaseContainer = styled('div')`
   height: 100%;
 `;
 
+export const CenteredContainer = styled(CaseContainer)`
+  align-items: center;
+  justify-content: center;
+`;
+
 export const CaseNumberFont = styled(FontOpenSans)`
   font-size: 14px;
   font-weight: 600;
@@ -78,6 +83,7 @@ export const CaseActionDetailFont = styled(FontOpenSans)`
 `;
 
 export const CaseActionTextArea = styled('textarea')`
+  resize: none;
   width: 65%;
   background-color: #ffffff;
   font-family: Open Sans;
