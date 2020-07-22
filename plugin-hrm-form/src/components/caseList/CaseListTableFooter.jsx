@@ -68,7 +68,7 @@ const CaseListTableFooter = ({ page, pagesCount, handleChangePage }) => {
   };
 
   return (
-    <TableFooter>
+    <TableFooter data-testid="CaseList-TableFooter">
       <CLFooterRow>
         <TableCell colSpan={8}>
           <div style={{ display: 'flex', width: '100%', justifyContent: 'center' }}>
