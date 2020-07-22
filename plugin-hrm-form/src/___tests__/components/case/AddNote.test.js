@@ -1,4 +1,6 @@
 import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom/extend-expect';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
@@ -22,19 +24,31 @@ test('Test close functionality', async () => {
     onClickClose,
   };
 
-  const wrapper = mount(
+  render(
     <StorelessThemeProvider themeConf={themeConf}>
       <AddNote {...ownProps} />
     </StorelessThemeProvider>,
   );
 
+  // expect(onClickClose).not.toHaveBeenCalled();
+
+  /*
+   * wrapper
+   *   .find('button')
+   *   .find('t')
+   *   .findWhere(t => t.prop('code') === 'BottomBar-Cancel')
+   *   .simulate('click');
+   */
+
+  // expect(onClickClose).toHaveBeenCalled();
+
+  // onClickClose.mockClear();
+
+  // /////////////
   expect(onClickClose).not.toHaveBeenCalled();
 
-  wrapper
-    .find('ButtonBase')
-    .find('t')
-    .findWhere(t => t.prop('code') === 'Case-CloseButton')
-    .simulate('click');
+  expect(screen.getByTestId('Case-AddNoteScreen-CloseCross')).toBeInTheDocument();
+  screen.getByTestId('Case-AddNoteScreen-CloseCross').click();
 
   expect(onClickClose).toHaveBeenCalled();
 
@@ -42,25 +56,30 @@ test('Test close functionality', async () => {
 
   expect(onClickClose).not.toHaveBeenCalled();
 
-  wrapper
-    .find('button')
-    .find('t')
-    .findWhere(t => t.prop('code') === 'BottomBar-Cancel')
-    .simulate('click');
+  expect(screen.getByTestId('Case-AddNoteScreen-CloseButton')).toBeInTheDocument();
+  screen.getByTestId('Case-AddNoteScreen-CloseButton').click();
 
   expect(onClickClose).toHaveBeenCalled();
 
-  onClickClose.mockClear();
+  // expect(screen.getByTestId('CaseList-Table')).toBeInTheDocument();
+
+  // expect(screen.getAllByTestId('CaseList-TableHead')).toHaveLength(1);
+
+  // expect(screen.getAllByTestId('CaseList-TableFooter')).toHaveLength(1);
+
+  /*
+   * const rows = screen.getAllByTestId('CaseList-TableRow');
+   * expect(rows).toHaveLength(2);
+   */
+
+  /*
+   * const [row1, row2] = rows;
+   * expect(row1.textContent).toContain('Michael Smith');
+   * expect(row2.textContent).toContain('Sonya Michels');
+   */
 });
 
 test('Test input/add note functionality', async () => {
-  const clickOnSaveNote = wrapper => {
-    wrapper
-      .find('button')
-      .find('t')
-      .findWhere(t => t.prop('code') === 'BottomBar-SaveNote')
-      .simulate('click');
-  };
   const handleSaveNote = jest.fn();
   const onClickClose = jest.fn();
 
@@ -70,7 +89,7 @@ test('Test input/add note functionality', async () => {
     onClickClose,
   };
 
-  const wrapper = mount(
+  render(
     <StorelessThemeProvider themeConf={themeConf}>
       <AddNote {...ownProps} />
     </StorelessThemeProvider>,
@@ -78,9 +97,11 @@ test('Test input/add note functionality', async () => {
 
   expect(handleSaveNote).not.toHaveBeenCalled();
 
-  wrapper.find('textarea').simulate('change', { target: { value: 'Some note' } });
+  const textarea = screen.getByTestId('Case-AddNoteScreen-TextArea');
+  fireEvent.change(textarea, { target: { value: 'Some note' } });
 
-  clickOnSaveNote(wrapper);
+  screen.getByTestId('Case-AddNoteScreen-SaveNote').click();
+
   expect(handleSaveNote).toHaveBeenCalledWith('Some note');
 });
 
