@@ -23,7 +23,7 @@ class AddNote extends React.PureComponent {
   };
 
   state = {
-    newNote: null,
+    newNote: '',
   };
 
   render() {

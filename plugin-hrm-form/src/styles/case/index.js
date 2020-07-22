@@ -88,6 +88,7 @@ export const CaseActionTextArea = styled('textarea')`
   background-color: #ffffff;
   font-family: Open Sans;
   font-size: 12px;
+  font-weight: 500;
   line-height: 15px;
   margin-top: 10px;
   padding: 5px;
