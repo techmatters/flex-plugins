@@ -5,7 +5,7 @@ import { Template } from '@twilio/flex-ui';
 import { CLTableHeaderFont, CLTableCell } from '../../styles/caseList';
 
 const CaseListTableHead = () => (
-  <TableHead>
+  <TableHead data-testid="CaseList-TableHead">
     <TableRow>
       <CLTableCell style={{ width: '8%' }}>
         <CLTableHeaderFont>

@@ -40,7 +40,7 @@ const renderTag = tag => (
 );
 
 // eslint-disable-next-line react/no-multi-comp
-const CaseListTableRow = ({ caseItem, counselorsHash, handleMockedMessage }) => {
+const CaseListTableRow = ({ caseItem, counselorsHash, openMockedMessage }) => {
   const name = formatName(caseItem.childName);
   const summary = getShortSummary(caseItem.callSummary, CHAR_LIMIT, 'case');
   const counselor = formatName(counselorsHash[caseItem.twilioWorkerId]);
@@ -50,7 +50,7 @@ const CaseListTableRow = ({ caseItem, counselorsHash, handleMockedMessage }) => 
   const isOpenCase = caseItem.status === caseStatuses.open;
 
   return (
-    <CLTableRow>
+    <CLTableRow data-testid="CaseList-TableRow">
       <CLNumberCell>
         <CLCaseNumberContainer isOpenCase={isOpenCase}>
           <CLTableBodyFont isOpenCase={isOpenCase}>#{caseItem.id}</CLTableBodyFont>
@@ -80,7 +80,7 @@ const CaseListTableRow = ({ caseItem, counselorsHash, handleMockedMessage }) => 
         </div>
       </CLTableCell>
       <CLActionCell>
-        <ButtonBase onClick={() => handleMockedMessage()}>
+        <ButtonBase onClick={() => openMockedMessage()}>
           <HiddenText>
             <Template code="CaseList-ExpandButton" />
             {caseItem.id}
@@ -95,7 +95,7 @@ const CaseListTableRow = ({ caseItem, counselorsHash, handleMockedMessage }) => 
 CaseListTableRow.displayName = 'CaseListTableRow';
 CaseListTableRow.propTypes = {
   caseItem: PropTypes.shape({
-    id: PropTypes.string,
+    id: PropTypes.number,
     twilioWorkerId: PropTypes.string,
     createdAt: PropTypes.string,
     updatedAt: PropTypes.string,
@@ -106,7 +106,7 @@ CaseListTableRow.propTypes = {
     categories: PropTypes.arrayOf(PropTypes.string),
   }).isRequired,
   counselorsHash: PropTypes.shape({}).isRequired,
-  handleMockedMessage: PropTypes.func.isRequired,
+  openMockedMessage: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
