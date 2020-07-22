@@ -375,7 +375,7 @@ export const FontOpenSans = styled('p')`
 `;
 
 // used for screen readers only
-export const HiddenText = styled('p')`
+export const HiddenText = styled('span')`
   width: 0px;
   height: 0px;
   font-size: 0px;

@@ -196,6 +196,55 @@ test('click cancel button', () => {
   expect(cancelCase).toHaveBeenCalled();
 });
 
+test('click Add Note button', async () => {
+  const ownProps = {
+    task: {
+      taskSid: 'task1',
+    },
+    handleCompleteTask: jest.fn(),
+  };
+  const initialState = createState({
+    [configurationBase]: {
+      counselors: {
+        list: [],
+        hash: { worker1: 'worker1 name' },
+      },
+    },
+    [contactFormsBase]: {
+      tasks: {
+        task1: {
+          childInformation: {
+            name: { firstName: { value: 'first' }, lastName: { value: 'first' } },
+          },
+          metadata: {
+            connectedCase: {
+              createdAt: '12345',
+              twilioWorkerId: 'worker1',
+              status: 'open',
+            },
+          },
+        },
+      },
+    },
+  });
+  const store = mockStore(initialState);
+
+  const wrapper = mount(
+    <StorelessThemeProvider themeConf={themeConf}>
+      <Provider store={store}>
+        <Case {...ownProps} />
+      </Provider>
+    </StorelessThemeProvider>,
+  );
+
+  const CaseWrapper = wrapper.find('Case');
+
+  expect(CaseWrapper.state().editCaseAction).toBeFalsy();
+
+  CaseWrapper.find('CaseAddButton').simulate('click');
+  expect(CaseWrapper.state().editCaseAction).toBe('AddNote');
+});
+
 const Wrapped = withTheme(props => <Case {...props} />);
 
 test('a11y', async () => {
