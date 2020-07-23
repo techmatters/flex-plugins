@@ -8,17 +8,20 @@ export const CaseListContainer = styled(Absolute)`
   width: 100%;
   background-color: ${props => props.theme.colors.base2};
 `;
+CaseListContainer.displayName = 'CaseListContainer';
 
 export const CenteredContainer = styled(CaseListContainer)`
   display: flex;
   align-items: center;
   justify-content: center;
 `;
+CenteredContainer.displayName = 'CenteredContainer';
 
 export const TableContainer = styled('div')`
   border-left: 15px solid ${props => props.theme.colors.base2};
   border-right: 10px solid ${props => props.theme.colors.base2};
 `;
+TableContainer.displayName = 'TableContainer';
 
 export const CLTable = withStyles({
   root: {
@@ -29,6 +32,7 @@ export const CLTable = withStyles({
     },
   },
 })(Table);
+CLTable.displayName = 'CLTable';
 
 export const CLTableRow = withStyles({
   root: {
@@ -41,6 +45,7 @@ export const CLTableRow = withStyles({
     boxShadow: '0 1px 1px 0 rgba(0, 0, 0, 0.06)',
   },
 })(TableRow);
+CLTableRow.displayName = 'CLTableRow';
 
 export const CLFooterRow = withStyles(theme => ({
   root: {
@@ -50,6 +55,7 @@ export const CLFooterRow = withStyles(theme => ({
     marginTop: -5,
   },
 }))(TableRow);
+CLFooterRow.displayName = 'CLFooterRow';
 
 export const CLTableCell = withStyles(theme => ({
   root: {
@@ -61,12 +67,14 @@ export const CLTableCell = withStyles(theme => ({
     paddingTop: 12,
   },
 }))(TableCell);
+CLTableCell.displayName = 'CLTableCell';
 
 export const CLNumberCell = withStyles({
   body: {
     paddingLeft: '10px !important',
   },
 })(CLTableCell);
+CLNumberCell.displayName = 'CLNumberCell';
 
 export const CLNamesCell = withStyles({
   body: {
@@ -77,12 +85,14 @@ export const CLNamesCell = withStyles({
     overflow: 'hidden',
   },
 })(CLTableCell);
+CLNamesCell.displayName = 'CLNamesCell';
 
 export const CLSummaryCell = withStyles({
   body: {
     paddingRight: 30,
   },
 })(CLTableCell);
+CLSummaryCell.displayName = 'CLSummaryCell';
 
 export const CLActionCell = withStyles({
   body: {
