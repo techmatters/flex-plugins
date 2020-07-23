@@ -29,45 +29,30 @@ function buildConversationsObject(task) {
   if (!hasCustomerData) return { conversation_attribute_2: callType };
 
   const subcategories = getSubcategories(task);
+  const { childInformation } = task;
 
   return {
     conversation_attribute_1: subcategories.join(';'),
     conversation_attribute_2: callType,
+    conversation_attribute_3: childInformation.gender.value,
+    conversation_attribute_4: childInformation.age.value,
   };
 }
 
-function buildCustomersObject(task) {
-  const callType = task.callType.value;
-  const hasCustomerData = !isNonDataCallType(callType);
-
-  if (!hasCustomerData) return {};
-
-  const { childInformation } = task;
-  return {
-    gender: childInformation.gender.value,
-    customer_attribute_1: childInformation.age.value,
-  };
-}
-
-function mergeAttributes(previousAttributes, { conversations, customers }) {
+function mergeAttributes(previousAttributes, { conversations }) {
   return {
     ...previousAttributes,
     conversations: {
       ...previousAttributes.conversations,
       ...conversations,
     },
-    customers: {
-      ...previousAttributes.customers,
-      ...customers,
-    },
   };
 }
 
 export async function saveInsightsData(twilioTask, task) {
   const conversations = buildConversationsObject(task);
-  const customers = buildCustomersObject(task);
   const previousAttributes = twilioTask.attributes;
-  const newAttributes = mergeAttributes(previousAttributes, { conversations, customers });
+  const newAttributes = mergeAttributes(previousAttributes, { conversations });
 
   await twilioTask.setAttributes(newAttributes);
 }
