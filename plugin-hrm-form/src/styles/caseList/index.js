@@ -100,6 +100,7 @@ export const CLActionCell = withStyles({
     textAlign: 'right',
   },
 })(CLTableCell);
+CLActionCell.displayName = 'CLActionCell';
 
 export const CLTableHeaderFont = styled(FontOpenSans)`
   font-weight: 600;
@@ -107,6 +108,7 @@ export const CLTableHeaderFont = styled(FontOpenSans)`
   line-height: 30px;
   letter-spacing: 0;
 `;
+CLTableHeaderFont.displayName = 'CLTableHeaderFont';
 
 export const CLTableBodyFont = styled(FontOpenSans)`
   color: ${props => (props.isOpenCase ? '#192b33' : '#666c7c')};
@@ -115,6 +117,7 @@ export const CLTableBodyFont = styled(FontOpenSans)`
   font-weight: 600;
   max-height: ${() => 85 - 12 /* 85px of cell height - 12px of padding*/}px;
 `;
+CLTableBodyFont.displayName = 'CLTableBodyFont';
 
 export const CLCaseNumberContainer = styled('div')`
   display: inline-block;
@@ -122,6 +125,7 @@ export const CLCaseNumberContainer = styled('div')`
   border: ${props => (props.isOpenCase ? '1px solid #192b33' : '0')};
   border-radius: 2px;
 `;
+CLCaseNumberContainer.displayName = 'CLCaseNumberContainer';
 
 export const CategoryTag = styled('div')`
   display: inline-block;
@@ -132,12 +136,14 @@ export const CategoryTag = styled('div')`
   background-color: #a0a8bd66;
   text-transform: uppercase;
 `;
+CategoryTag.displayName = 'CategoryTag';
 
 export const CategoryFont = styled(FontOpenSans)`
   font-size: 11px;
   letter-spacing: 0.1px;
   line-height: 14px;
 `;
+CategoryFont.displayName = 'CategoryFont';
 
 export const PaginationButton = styled('div')`
   background-color: ${props => (props.highlight ? '#1976D2' : 'transparent')};
@@ -146,14 +152,17 @@ export const PaginationButton = styled('div')`
   padding: 5px 10px;
   margin: 5px 5px 0 5px;
 `;
+PaginationButton.displayName = 'PaginationButton';
 
 export const ButtonText = styled(FontOpenSans)`
   font-size: 13px;
   color: ${props => (props.highlight ? '#ffffff' : '#666c7c')};
   font-weight: ${props => (props.highlight ? 700 : 600)};
 `;
+ButtonText.displayName = 'ButtonText';
 
 export const SomethingWentWrongText = styled(FontOpenSans)`
   color: ${props => props.theme.colors.errorColor};
   font-size: 20px;
 `;
+SomethingWentWrongText.displayName = 'SomethingWentWrongText';
