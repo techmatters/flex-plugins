@@ -21,7 +21,21 @@ import { Menu, MenuItem } from '../menu';
 import { formatName } from '../../utils';
 import { Actions } from '../../states/ContactState';
 import CaseAddButton from './CaseAddButton';
+import CaseSummary from './CaseSummary';
 import AddNote from './AddNote';
+
+const addNote = caseInfo => newNote => {
+  const newNoteObj = { note: newNote, createdAt: new Date().toISOString() };
+  const notes = caseInfo && caseInfo.notes ? [...caseInfo.notes, newNoteObj] : [newNoteObj];
+  const newCaseInfo = caseInfo ? { ...caseInfo, notes } : { notes };
+  return newCaseInfo;
+};
+
+const editSummary = caseInfo => summary => {
+  const newCaseInfo = caseInfo ? { ...caseInfo, summary } : { summary };
+  console.log('HERE HERE', caseInfo, summary);
+  return newCaseInfo;
+};
 
 class Case extends Component {
   static displayName = 'Case';
@@ -41,6 +55,10 @@ class Case extends Component {
     mockedMessage: null,
     editCaseAction: null,
     loading: false,
+    summary:
+      this.props.form.metadata.connectedCase && this.props.form.metadata.connectedCase.info
+        ? this.props.form.metadata.connectedCase.info.summary
+        : '',
   };
 
   toggleCaseMenu = e => {
@@ -75,17 +93,15 @@ class Case extends Component {
     }
   };
 
-  handleSaveNote = async newNote => {
+  bindUpdateCase = getNewInfoFunction => async param => {
     try {
       this.setState({ loading: true });
       const { task, form } = this.props;
       const { connectedCase } = form.metadata;
       const { info } = connectedCase;
-      const newNoteObj = { note: newNote, createdAt: new Date().toISOString() };
-      const notes = info && info.notes ? [...info.notes, newNoteObj] : [newNoteObj];
-      const newInfo = info ? { ...info, notes } : { notes };
-      const caseFromDB = await updateCase(connectedCase.id, { info: newInfo });
-      this.props.changeRoute('new-case', task.taskSid);
+      const newCaseInfo = getNewInfoFunction(info)(param);
+      const caseFromDB = await updateCase(connectedCase.id, { info: newCaseInfo });
+      // this.props.changeRoute('new-case', task.taskSid);
       this.props.setConnectedCase(caseFromDB, task.taskSid); // update store to the new state of the case
       this.setState({ loading: false, editCaseAction: null });
     } catch (error) {
@@ -96,7 +112,13 @@ class Case extends Component {
     }
   };
 
+  handleSaveNote = this.bindUpdateCase(addNote);
+
+  handleEditSummary = this.bindUpdateCase(caseInfo => e => editSummary(caseInfo)(e.target.value));
+
   handleClose = () => this.setState({ editCaseAction: null });
+
+  onChangeSummary = e => this.setState({ summary: e.target.value });
 
   render() {
     const { anchorEl, isMenuOpen, mockedMessage, editCaseAction, loading } = this.state;
@@ -141,6 +163,13 @@ class Case extends Component {
                     onClick={() => this.setState({ editCaseAction: 'AddNote' })}
                   />
                 </Row>
+              </Box>
+              <Box marginLeft="25px" marginTop="25px">
+                <CaseSummary
+                  summary={this.state.summary}
+                  onChange={this.onChangeSummary}
+                  onBlur={this.handleEditSummary}
+                />
               </Box>
             </Container>
             <Dialog onClose={this.closeMockedMessage} open={isMockedMessageOpen}>

@@ -96,6 +96,24 @@ export const CaseActionTextArea = styled('textarea')`
   border-radius: 4px;
 `;
 
+export const CaseSummaryTextArea = styled('textarea')`
+  resize: none;
+  height: 100%;
+  width: 100%;
+  background-color: #f6f6f6;
+  font-family: Open Sans;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 15px;
+  margin: 10px 0px;
+  padding: 5px;
+  border-style: none;
+  border-radius: 4px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+`;
+
 export const CaseActionButtonBar = styled('div')`
   display: flex;
   align-items: center;
