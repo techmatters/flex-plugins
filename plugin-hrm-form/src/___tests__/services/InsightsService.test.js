@@ -28,7 +28,6 @@ test('saveInsightsData for non-data callType', async () => {
       content: 'content',
       conversation_attribute_2: 'Abusive',
     },
-    customers: {},
   };
 
   expect(twilioTask.setAttributes).toHaveBeenCalledWith(expectedNewAttributes);
@@ -100,11 +99,11 @@ test('saveInsightsData for data callType', async () => {
       content: 'content',
       conversation_attribute_1: 'Unspecified/Other - Missing children;Bullying;Addictive behaviours',
       conversation_attribute_2: 'Child calling about self',
+      conversation_attribute_3: 'Boy',
+      conversation_attribute_4: '13-15'
     },
     customers: {
       name: 'John Doe',
-      customer_attribute_1: '13-15',
-      gender: 'Boy',
     },
   };
 
