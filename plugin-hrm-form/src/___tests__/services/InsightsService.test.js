@@ -39,9 +39,6 @@ test('saveInsightsData for data callType', async () => {
     conversations: {
       content: 'content',
     },
-    customers: {
-      name: 'John Doe',
-    },
   };
 
   const twilioTask = {
@@ -101,9 +98,6 @@ test('saveInsightsData for data callType', async () => {
       conversation_attribute_2: 'Child calling about self',
       conversation_attribute_3: 'Boy',
       conversation_attribute_4: '13-15',
-    },
-    customers: {
-      name: 'John Doe',
     },
   };
 
