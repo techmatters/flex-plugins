@@ -19,6 +19,7 @@ import CaseDetails from './CaseDetails';
 import { Menu, MenuItem } from '../menu';
 import { formatName } from '../../utils';
 import { Actions } from '../../states/ContactState';
+import Timeline from './Timeline';
 
 class Case extends Component {
   static displayName = 'Case';
@@ -72,15 +73,16 @@ class Case extends Component {
 
   render() {
     const { anchorEl, isMenuOpen, mockedMessage } = this.state;
-    const { connectedCase } = this.props.form.metadata;
+    const { task, form, counselorsHash } = this.props;
+    const { connectedCase } = form.metadata;
 
     if (!connectedCase) return null;
 
     const isMockedMessageOpen = Boolean(mockedMessage);
-    const { firstName, lastName } = this.props.form.childInformation.name;
+    const { firstName, lastName } = form.childInformation.name;
     const name = formatName(`${firstName.value} ${lastName.value}`);
     const { createdAt, twilioWorkerId, status } = connectedCase;
-    const counselor = this.props.counselorsHash[twilioWorkerId];
+    const counselor = counselorsHash[twilioWorkerId];
     const date = new Date(createdAt).toLocaleDateString(navigator.language);
 
     return (
@@ -94,6 +96,7 @@ class Case extends Component {
               <Template code="Case-CaseDetailsSection" />
             </CaseSectionFont>
             <CaseDetails name={name} status={status} counselor={counselor} date={date} />
+            <Timeline task={task} form={form} />
           </Box>
         </Container>
         <Dialog onClose={this.closeMockedMessage} open={isMockedMessageOpen}>

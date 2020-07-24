@@ -1,4 +1,6 @@
+import React from 'react';
 import styled from 'react-emotion';
+import { Button } from '@twilio/flex-ui';
 
 import { FontOpenSans, Row } from '../HrmStyles';
 
@@ -54,4 +56,14 @@ export const OpenStatusFont = styled(DetailEntryText)`
 export const DefaultStatusFont = styled(DetailEntryText)`
   font-size: 13px;
   text-transform: uppercase;
+`;
+
+export const ViewButton = styled(props => <Button roundCorners={false} {...props} />)`
+  color: #192b33;
+  background-color: #ecedf1;
+  border-radius: 4px;
+  font-weight: normal;
+  letter-spacing: normal;
+  font-size: 12px;
+  box-shadow: none;
 `;
