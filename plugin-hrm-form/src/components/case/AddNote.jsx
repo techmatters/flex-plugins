@@ -4,14 +4,8 @@ import { Template } from '@twilio/flex-ui';
 import { ButtonBase } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 
-import { Box, Row, HiddenText, StyledNextStepButton } from '../../styles/HrmStyles';
-import {
-  CaseContainer,
-  CaseActionTitle,
-  CaseActionDetailFont,
-  CaseActionTextArea,
-  CaseActionButtonBar,
-} from '../../styles/case';
+import { Box, Row, HiddenText, StyledNextStepButton, BottomButtonBar } from '../../styles/HrmStyles';
+import { CaseContainer, CaseActionTitle, CaseActionDetailFont, CaseActionTextArea } from '../../styles/case';
 
 const AddNote = ({ counselor, handleSaveNote, onClickClose }) => {
   const [newNote, setNewNote] = useState('');
@@ -50,7 +44,7 @@ const AddNote = ({ counselor, handleSaveNote, onClickClose }) => {
         />
       </Box>
       <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
-      <CaseActionButtonBar>
+      <BottomButtonBar secondary>
         <Box marginRight="15px">
           <StyledNextStepButton
             secondary
@@ -69,7 +63,7 @@ const AddNote = ({ counselor, handleSaveNote, onClickClose }) => {
         >
           <Template code="BottomBar-SaveNote" />
         </StyledNextStepButton>
-      </CaseActionButtonBar>
+      </BottomButtonBar>
     </CaseContainer>
   );
 };

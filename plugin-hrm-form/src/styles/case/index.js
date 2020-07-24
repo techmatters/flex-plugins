@@ -95,13 +95,3 @@ export const CaseActionTextArea = styled('textarea')`
   border-style: none;
   border-radius: 4px;
 `;
-
-export const CaseActionButtonBar = styled('div')`
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding: 0 20px;
-  height: 55px;
-  flex-shrink: 0;
-  background-color: ${props => props.theme.base2};
-`;

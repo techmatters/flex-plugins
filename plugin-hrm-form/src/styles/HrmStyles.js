@@ -232,14 +232,14 @@ export const BottomButtonBar = styled('div')`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  margin: 0 ${containerLeftRightMargin};
-  padding: 0 20px;
   height: 55px;
   flex-shrink: 0;
-  background-color: #f9fafb;
-  border-top: 1px solid #c6cad8;
-  box-shadow: 0 -2px 4px 0 rgba(0, 0, 0, 0.14);
-  z-index: 1;
+  padding: 0 20px;
+  background-color: ${props => (props.secondary ? props.theme.base2 : '#f9fafb')};
+  ${({ secondary }) => !secondary && `margin: 0 ${containerLeftRightMargin};`}
+  ${({ secondary }) => !secondary && 'border-top: 1px solid #c6cad8;'}
+  ${({ secondary }) => !secondary && 'box-shadow: 0 -2px 4px 0 rgba(0, 0, 0, 0.14);'}
+  ${({ secondary }) => !secondary && 'z-index: 1;'}
 `;
 
 export const NameFields = styled('div')`
