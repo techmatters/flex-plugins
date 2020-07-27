@@ -236,7 +236,6 @@ export const BottomButtonBar = styled('div')`
   flex-shrink: 0;
   padding: 0 20px;
   background-color: #f9fafb;
-  margin: 0 ${containerLeftRightMargin};
   z-index: 1;
   border-top: 1px solid #c6cad9;
   box-shadow: 0 -2px 2px -7px #192b331a;

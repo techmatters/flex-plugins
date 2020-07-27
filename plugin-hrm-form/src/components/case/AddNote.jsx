@@ -6,14 +6,14 @@ import { Close } from '@material-ui/icons';
 
 import { getConfig } from '../../HrmFormPlugin';
 import { Box, Row, HiddenText, StyledNextStepButton, BottomButtonBar } from '../../styles/HrmStyles';
-import { CaseContainer, CaseActionTitle, CaseActionDetailFont, CaseActionTextArea } from '../../styles/case';
+import { AddNoteContainer, CaseActionTitle, CaseActionDetailFont, CaseActionTextArea } from '../../styles/case';
 
 const AddNote = ({ counselor, handleSaveNote, onClickClose }) => {
   const [newNote, setNewNote] = useState('');
   const { strings } = getConfig();
 
   return (
-    <CaseContainer>
+    <AddNoteContainer>
       <Box height="100%" paddingTop="20px" paddingLeft="30px" paddingRight="10px">
         <Row>
           <CaseActionTitle style={{ marginTop: 'auto' }}>
@@ -67,7 +67,7 @@ const AddNote = ({ counselor, handleSaveNote, onClickClose }) => {
           <Template code="BottomBar-SaveNote" />
         </StyledNextStepButton>
       </BottomButtonBar>
-    </CaseContainer>
+    </AddNoteContainer>
   );
 };
 

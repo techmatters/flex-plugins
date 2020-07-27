@@ -9,6 +9,11 @@ export const CaseContainer = styled('div')`
 `;
 CaseContainer.displayName = 'CaseContainer';
 
+export const AddNoteContainer = styled(CaseContainer)`
+  background-color: #ffffff;
+`;
+AddNoteContainer.displayName = 'AddNoteContainer';
+
 export const CenteredContainer = styled(CaseContainer)`
   align-items: center;
   justify-content: center;
@@ -97,7 +102,7 @@ CaseActionDetailFont.displayName = 'CaseActionDetailFont';
 export const CaseActionTextArea = styled('textarea')`
   resize: none;
   width: 65%;
-  background-color: #ffffff;
+  background-color: ${props => props.theme.colors.base2};
   font-family: Open Sans;
   font-size: 12px;
   font-weight: 500;
