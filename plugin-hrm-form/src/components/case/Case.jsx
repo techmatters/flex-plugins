@@ -72,8 +72,6 @@ class Case extends Component {
     try {
       const contact = await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
       const caseFromDB = await updateCase(connectedCase.id, { info: connectedCase.info });
-      console.log('HERE HERE FROM REDUX', connectedCase)
-      console.log('HERE HERE FROM DB', caseFromDB)
       await connectToCase(hrmBaseUrl, contact.id, connectedCase.id);
       this.props.handleCompleteTask(task.taskSid, task);
     } catch (error) {
@@ -134,7 +132,7 @@ class Case extends Component {
           <AddNote
             counselor={counselor}
             value={temporaryCaseInfo}
-            onChage={this.handleOnChangeNote}
+            onChange={this.handleOnChangeNote}
             handleSaveNote={this.handleSaveNote}
             onClickClose={this.handleClose}
           />

@@ -10,6 +10,7 @@ import HrmTheme from '../../../styles/HrmTheme';
 import Case from '../../../components/case';
 import CaseDetails from '../../../components/case/CaseDetails';
 import { namespace, configurationBase, contactFormsBase } from '../../../states';
+import { Actions } from '../../../states/ContactState';
 import { cancelCase } from '../../../services/CaseService';
 
 jest.mock('../../../services/CaseService');
@@ -228,6 +229,7 @@ test('click Add Note button', async () => {
     },
   });
   const store = mockStore(initialState);
+  store.dispatch = jest.fn();
 
   const wrapper = mount(
     <StorelessThemeProvider themeConf={themeConf}>
@@ -239,10 +241,13 @@ test('click Add Note button', async () => {
 
   const CaseWrapper = wrapper.find('Case');
 
-  expect(CaseWrapper.state().editCaseAction).toBeFalsy();
-
   CaseWrapper.find('CaseAddButton').simulate('click');
-  expect(CaseWrapper.state().editCaseAction).toBe('AddNote');
+  expect(store.dispatch).toHaveBeenCalledWith({
+    route: 'new-case',
+    subroute: 'add-note',
+    taskId: 'task1',
+    type: 'CHANGE_ROUTE',
+  });
 });
 
 const Wrapped = withTheme(props => <Case {...props} />);

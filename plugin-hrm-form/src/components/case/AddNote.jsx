@@ -8,7 +8,7 @@ import { getConfig } from '../../HrmFormPlugin';
 import { Box, Row, HiddenText, StyledNextStepButton, BottomButtonBar } from '../../styles/HrmStyles';
 import { AddNoteContainer, CaseActionTitle, CaseActionDetailFont, CaseActionTextArea } from '../../styles/case';
 
-const AddNote = ({ counselor, value, onChage, handleSaveNote, onClickClose }) => {
+const AddNote = ({ counselor, value, onChange, handleSaveNote, onClickClose }) => {
   const { strings } = getConfig();
 
   return (
@@ -42,26 +42,26 @@ const AddNote = ({ counselor, value, onChage, handleSaveNote, onClickClose }) =>
           placeholder={strings['Case-AddNoteTypeHere']}
           rows={25}
           value={value}
-          onChange={e => onChage(e.target.value)}
+          onChange={e => onChange(e.target.value)}
         />
       </Box>
       <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
       <BottomButtonBar>
         <Box marginRight="15px">
           <StyledNextStepButton
+            data-testid="Case-AddNoteScreen-CloseButton"
             secondary
             roundCorners
             onClick={onClickClose}
-            data-testid="Case-AddNoteScreen-CloseButton"
           >
             <Template code="BottomBar-Cancel" />
           </StyledNextStepButton>
         </Box>
         <StyledNextStepButton
+          data-testid="Case-AddNoteScreen-SaveNote"
           roundCorners
           onClick={handleSaveNote}
           disabled={!value}
-          data-testid="Case-AddNoteScreen-SaveNote"
         >
           <Template code="BottomBar-SaveNote" />
         </StyledNextStepButton>
@@ -74,7 +74,7 @@ AddNote.displayName = 'AddNote';
 AddNote.propTypes = {
   counselor: PropTypes.string.isRequired,
   value: PropTypes.string,
-  onChage: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
   handleSaveNote: PropTypes.func.isRequired,
   onClickClose: PropTypes.func.isRequired,
 };
