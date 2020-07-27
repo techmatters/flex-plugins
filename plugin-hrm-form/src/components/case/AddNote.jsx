@@ -44,7 +44,7 @@ const AddNote = ({ counselor, handleSaveNote, onClickClose }) => {
         />
       </Box>
       <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
-      <BottomButtonBar secondary>
+      <BottomButtonBar>
         <Box marginRight="15px">
           <StyledNextStepButton
             secondary

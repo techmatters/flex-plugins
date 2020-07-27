@@ -94,4 +94,7 @@ export const CaseActionTextArea = styled('textarea')`
   padding: 5px;
   border-style: none;
   border-radius: 4px;
+  :focus {
+    outline: none;
+  }
 `;

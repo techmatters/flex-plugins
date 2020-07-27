@@ -30,21 +30,6 @@ test('Test close functionality', async () => {
     </StorelessThemeProvider>,
   );
 
-  // expect(onClickClose).not.toHaveBeenCalled();
-
-  /*
-   * wrapper
-   *   .find('button')
-   *   .find('t')
-   *   .findWhere(t => t.prop('code') === 'BottomBar-Cancel')
-   *   .simulate('click');
-   */
-
-  // expect(onClickClose).toHaveBeenCalled();
-
-  // onClickClose.mockClear();
-
-  // /////////////
   expect(onClickClose).not.toHaveBeenCalled();
 
   expect(screen.getByTestId('Case-AddNoteScreen-CloseCross')).toBeInTheDocument();
@@ -60,23 +45,6 @@ test('Test close functionality', async () => {
   screen.getByTestId('Case-AddNoteScreen-CloseButton').click();
 
   expect(onClickClose).toHaveBeenCalled();
-
-  // expect(screen.getByTestId('CaseList-Table')).toBeInTheDocument();
-
-  // expect(screen.getAllByTestId('CaseList-TableHead')).toHaveLength(1);
-
-  // expect(screen.getAllByTestId('CaseList-TableFooter')).toHaveLength(1);
-
-  /*
-   * const rows = screen.getAllByTestId('CaseList-TableRow');
-   * expect(rows).toHaveLength(2);
-   */
-
-  /*
-   * const [row1, row2] = rows;
-   * expect(row1.textContent).toContain('Michael Smith');
-   * expect(row2.textContent).toContain('Sonya Michels');
-   */
 });
 
 test('Test input/add note functionality', async () => {
