@@ -4,11 +4,13 @@ import { Template } from '@twilio/flex-ui';
 import { ButtonBase } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 
+import { getConfig } from '../../HrmFormPlugin';
 import { Box, Row, HiddenText, StyledNextStepButton, BottomButtonBar } from '../../styles/HrmStyles';
 import { CaseContainer, CaseActionTitle, CaseActionDetailFont, CaseActionTextArea } from '../../styles/case';
 
 const AddNote = ({ counselor, handleSaveNote, onClickClose }) => {
   const [newNote, setNewNote] = useState('');
+  const { strings } = getConfig();
 
   return (
     <CaseContainer>
@@ -38,6 +40,7 @@ const AddNote = ({ counselor, handleSaveNote, onClickClose }) => {
         <CaseActionTextArea
           data-testid="Case-AddNoteScreen-TextArea"
           aria-labelledby="Case-TypeHere-label"
+          placeholder={strings['Case-AddNoteTypeHere']}
           rows={25}
           value={newNote}
           onChange={e => setNewNote(e.target.value)}
