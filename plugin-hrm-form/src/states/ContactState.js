@@ -13,6 +13,8 @@ import {
   CHANGE_TAB,
   CHANGE_ROUTE,
   SET_CONNECTED_CASE,
+  UPDATE_CASE_INFO,
+  TEMPORARY_CASE_INFO,
   RESTORE_ENTIRE_FORM,
   SET_CATEGORIES_GRID_VIEW,
   HANDLE_EXPAND_CATEGORY,
@@ -69,9 +71,13 @@ export class Actions {
 
   static changeTab = (tab, taskId) => ({ type: CHANGE_TAB, tab, taskId });
 
-  static changeRoute = (route, taskId) => ({ type: CHANGE_ROUTE, route, taskId });
+  static changeRoute = (route, taskId, subroute) => ({ type: CHANGE_ROUTE, route, taskId, subroute });
 
   static setConnectedCase = (connectedCase, taskId) => ({ type: SET_CONNECTED_CASE, connectedCase, taskId });
+
+  static updateCaseInfo = (info, taskId) => ({ type: UPDATE_CASE_INFO, info, taskId });
+
+  static temporaryCaseInfo = (string, taskId) => ({ type: TEMPORARY_CASE_INFO, string, taskId });
 
   static restoreEntireForm = (form, taskId) => ({
     type: RESTORE_ENTIRE_FORM,
@@ -101,6 +107,7 @@ function editNestedField(original, parents, name, change) {
   };
 }
 
+// eslint-disable-next-line complexity
 export function reduce(state = initialState, action) {
   switch (action.type) {
     case HANDLE_BLUR: {
@@ -233,7 +240,8 @@ export function reduce(state = initialState, action) {
     case CHANGE_ROUTE: {
       const currentTask = state.tasks[action.taskId];
       const { metadata } = currentTask;
-      const taskWithUpdatedRoute = { ...currentTask, metadata: { ...metadata, route: action.route } };
+      const { route, subroute } = action;
+      const taskWithUpdatedRoute = { ...currentTask, metadata: { ...metadata, route, subroute } };
 
       return {
         ...state,
@@ -254,6 +262,35 @@ export function reduce(state = initialState, action) {
         tasks: {
           ...state.tasks,
           [action.taskId]: taskWithConnectedCase,
+        },
+      };
+    }
+
+    case UPDATE_CASE_INFO: {
+      const currentTask = state.tasks[action.taskId];
+      const { metadata } = currentTask;
+      const { connectedCase } = metadata;
+      const updatedCase = { ...connectedCase, info: action.info };
+      const taskWithUpdatedCase = { ...currentTask, metadata: { ...metadata, connectedCase: updatedCase } };
+
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: taskWithUpdatedCase,
+        },
+      };
+    }
+
+    case TEMPORARY_CASE_INFO: {
+      const currentTask = state.tasks[action.taskId];
+      const { metadata } = currentTask;
+
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: { ...currentTask, metadata: { ...metadata, temporaryCaseInfo: action.string } },
         },
       };
     }

@@ -33,13 +33,14 @@ class Case extends Component {
     counselorsHash: PropTypes.shape({}).isRequired,
     changeRoute: PropTypes.func.isRequired,
     setConnectedCase: PropTypes.func.isRequired,
+    updateCaseInfo: PropTypes.func.isRequired,
+    temporaryCaseInfo: PropTypes.func.isRequired,
   };
 
   state = {
     anchorEl: null,
     isMenuOpen: false,
     mockedMessage: null,
-    editCaseAction: null,
     loading: false,
   };
 
@@ -62,45 +63,54 @@ class Case extends Component {
   };
 
   handleSaveAndEnd = async () => {
+    this.setState({ loading: true });
+
     const { task, form } = this.props;
     const { connectedCase } = form.metadata;
     const { hrmBaseUrl, workerSid, helpline, strings } = getConfig();
 
     try {
       const contact = await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
+      const caseFromDB = await updateCase(connectedCase.id, { info: connectedCase.info });
+      console.log('HERE HERE FROM REDUX', connectedCase)
+      console.log('HERE HERE FROM DB', caseFromDB)
       await connectToCase(hrmBaseUrl, contact.id, connectedCase.id);
       this.props.handleCompleteTask(task.taskSid, task);
     } catch (error) {
-      window.alert(strings['Error-Backend']);
-    }
-  };
-
-  handleSaveNote = async newNote => {
-    try {
-      this.setState({ loading: true });
-      const { task, form } = this.props;
-      const { connectedCase } = form.metadata;
-      const { info } = connectedCase;
-      const newNoteObj = { note: newNote, createdAt: new Date().toISOString() };
-      const notes = info && info.notes ? [...info.notes, newNoteObj] : [newNoteObj];
-      const newInfo = info ? { ...info, notes } : { notes };
-      const caseFromDB = await updateCase(connectedCase.id, { info: newInfo });
-      this.props.changeRoute('new-case', task.taskSid);
-      this.props.setConnectedCase(caseFromDB, task.taskSid); // update store to the new state of the case
-      this.setState({ loading: false, editCaseAction: null });
-    } catch (error) {
       console.error(error);
-      this.setState({ loading: false });
-      const { strings } = getConfig();
       window.alert(strings['Error-Backend']);
+    } finally {
+      this.setState({ loading: false });
     }
   };
 
-  handleClose = () => this.setState({ editCaseAction: null });
+  handleOnChangeNote = newNote => {
+    const { task } = this.props;
+    this.props.temporaryCaseInfo(newNote, task.taskSid);
+  };
+
+  handleSaveNote = () => {
+    const { task, form } = this.props;
+    const { connectedCase, temporaryCaseInfo } = form.metadata;
+    const { info } = connectedCase;
+    const newNoteObj = { note: temporaryCaseInfo, createdAt: new Date().toISOString() };
+    const notes = info && info.notes ? [...info.notes, newNoteObj] : [newNoteObj];
+    const newInfo = info ? { ...info, notes } : { notes };
+    this.props.updateCaseInfo(newInfo, task.taskSid);
+    this.props.changeRoute('new-case', this.props.task.taskSid);
+  };
+
+  handleClose = () => {
+    const { task } = this.props;
+    this.props.temporaryCaseInfo(null, task.taskSid);
+    this.props.changeRoute('new-case', task.taskSid);
+  };
+
+  onClickAddNote = () => this.props.changeRoute('new-case', this.props.task.taskSid, 'add-note');
 
   render() {
-    const { anchorEl, isMenuOpen, mockedMessage, editCaseAction, loading } = this.state;
-    const { connectedCase } = this.props.form.metadata;
+    const { anchorEl, isMenuOpen, mockedMessage, loading } = this.state;
+    const { connectedCase, subroute, temporaryCaseInfo } = this.props.form.metadata;
 
     if (!connectedCase) return null;
 
@@ -118,9 +128,17 @@ class Case extends Component {
     const counselor = this.props.counselorsHash[twilioWorkerId];
     const date = new Date(createdAt).toLocaleDateString(navigator.language);
 
-    switch (editCaseAction) {
-      case 'AddNote':
-        return <AddNote counselor={counselor} handleSaveNote={this.handleSaveNote} onClickClose={this.handleClose} />;
+    switch (subroute) {
+      case 'add-note':
+        return (
+          <AddNote
+            counselor={counselor}
+            value={temporaryCaseInfo}
+            onChage={this.handleOnChangeNote}
+            handleSaveNote={this.handleSaveNote}
+            onClickClose={this.handleClose}
+          />
+        );
       default:
         return (
           <CaseContainer>
@@ -136,10 +154,7 @@ class Case extends Component {
                   <CaseSectionFont id="Case-TimelineSection-label">
                     <Template code="Case-TimelineSection" />
                   </CaseSectionFont>
-                  <CaseAddButton
-                    templateCode="Case-AddNote"
-                    onClick={() => this.setState({ editCaseAction: 'AddNote' })}
-                  />
+                  <CaseAddButton templateCode="Case-AddNote" onClick={this.onClickAddNote} />
                 </Row>
               </Box>
             </Container>
@@ -183,6 +198,8 @@ const mapStateToProps = (state, ownProps) => ({
 const mapDispatchToProps = dispatch => ({
   changeRoute: bindActionCreators(Actions.changeRoute, dispatch),
   setConnectedCase: bindActionCreators(Actions.setConnectedCase, dispatch),
+  updateCaseInfo: bindActionCreators(Actions.updateCaseInfo, dispatch),
+  temporaryCaseInfo: bindActionCreators(Actions.temporaryCaseInfo, dispatch),
 });
 
 export default withTaskContext(connect(mapStateToProps, mapDispatchToProps)(Case));

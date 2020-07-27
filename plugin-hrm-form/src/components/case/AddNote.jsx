@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Template } from '@twilio/flex-ui';
 import { ButtonBase } from '@material-ui/core';
@@ -8,8 +8,7 @@ import { getConfig } from '../../HrmFormPlugin';
 import { Box, Row, HiddenText, StyledNextStepButton, BottomButtonBar } from '../../styles/HrmStyles';
 import { AddNoteContainer, CaseActionTitle, CaseActionDetailFont, CaseActionTextArea } from '../../styles/case';
 
-const AddNote = ({ counselor, handleSaveNote, onClickClose }) => {
-  const [newNote, setNewNote] = useState('');
+const AddNote = ({ counselor, value, onChage, handleSaveNote, onClickClose }) => {
   const { strings } = getConfig();
 
   return (
@@ -42,8 +41,8 @@ const AddNote = ({ counselor, handleSaveNote, onClickClose }) => {
           aria-labelledby="Case-TypeHere-label"
           placeholder={strings['Case-AddNoteTypeHere']}
           rows={25}
-          value={newNote}
-          onChange={e => setNewNote(e.target.value)}
+          value={value}
+          onChange={e => onChage(e.target.value)}
         />
       </Box>
       <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
@@ -60,8 +59,8 @@ const AddNote = ({ counselor, handleSaveNote, onClickClose }) => {
         </Box>
         <StyledNextStepButton
           roundCorners
-          onClick={() => handleSaveNote(newNote)}
-          disabled={!newNote}
+          onClick={handleSaveNote}
+          disabled={!value}
           data-testid="Case-AddNoteScreen-SaveNote"
         >
           <Template code="BottomBar-SaveNote" />
@@ -74,8 +73,14 @@ const AddNote = ({ counselor, handleSaveNote, onClickClose }) => {
 AddNote.displayName = 'AddNote';
 AddNote.propTypes = {
   counselor: PropTypes.string.isRequired,
+  value: PropTypes.string,
+  onChage: PropTypes.func.isRequired,
   handleSaveNote: PropTypes.func.isRequired,
   onClickClose: PropTypes.func.isRequired,
+};
+
+AddNote.defaultProps = {
+  value: '',
 };
 
 export default AddNote;
