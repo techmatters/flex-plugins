@@ -5,12 +5,14 @@
   "scripts": {
     "lint": "eslint --ext js .",
     "lint:fix": "npm run lint -- --fix",
-    "copyFlow": "node copyFlow.js"
+    "copyFlow": "node copyFlow.js",
+    "configure": "node configureNewAccount.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "prompt-confirm": "^2.0.4",
+    "sleep": "^6.3.0",
     "twilio": "^3.48.0",
     "yargs": "^15.4.1"
   },
