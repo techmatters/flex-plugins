@@ -10,7 +10,6 @@ import HrmTheme from '../../../styles/HrmTheme';
 import Case from '../../../components/case';
 import CaseDetails from '../../../components/case/CaseDetails';
 import { namespace, configurationBase, contactFormsBase } from '../../../states';
-import { Actions } from '../../../states/ContactState';
 import { cancelCase } from '../../../services/CaseService';
 
 jest.mock('../../../services/CaseService');
