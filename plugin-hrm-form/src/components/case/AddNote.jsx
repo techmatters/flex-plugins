@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import { ButtonBase } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
@@ -7,9 +8,24 @@ import { Close } from '@material-ui/icons';
 import { getConfig } from '../../HrmFormPlugin';
 import { Box, Row, HiddenText, StyledNextStepButton, BottomButtonBar } from '../../styles/HrmStyles';
 import { AddNoteContainer, CaseActionTitle, CaseActionDetailFont, CaseActionTextArea } from '../../styles/case';
+import { taskType, formType } from '../../types';
+import { Actions } from '../../states/ContactState';
+import { namespace, contactFormsBase } from '../../states';
 
-const AddNote = ({ counselor, value, onChange, handleSaveNote, onClickClose }) => {
+const AddNote = ({ task, form, counselor, onClickClose, dispatch }) => {
   const { strings } = getConfig();
+  const { connectedCase, temporaryCaseInfo } = form.metadata;
+
+  const handleOnChangeNote = newNote => dispatch(Actions.temporaryCaseInfo(newNote, task.taskSid));
+
+  const handleSaveNote = () => {
+    const { info } = connectedCase;
+    const newNoteObj = { note: temporaryCaseInfo, createdAt: new Date().toISOString() };
+    const notes = info && info.notes ? [...info.notes, newNoteObj] : [newNoteObj];
+    const newInfo = info ? { ...info, notes } : { notes };
+    dispatch(Actions.updateCaseInfo(newInfo, task.taskSid));
+    dispatch(Actions.changeRoute('new-case', task.taskSid));
+  };
 
   return (
     <AddNoteContainer>
@@ -41,8 +57,8 @@ const AddNote = ({ counselor, value, onChange, handleSaveNote, onClickClose }) =
           aria-labelledby="Case-TypeHere-label"
           placeholder={strings['Case-AddNoteTypeHere']}
           rows={25}
-          value={value}
-          onChange={e => onChange(e.target.value)}
+          value={temporaryCaseInfo}
+          onChange={e => handleOnChangeNote(e.target.value)}
         />
       </Box>
       <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
@@ -61,7 +77,7 @@ const AddNote = ({ counselor, value, onChange, handleSaveNote, onClickClose }) =
           data-testid="Case-AddNoteScreen-SaveNote"
           roundCorners
           onClick={handleSaveNote}
-          disabled={!value}
+          disabled={!temporaryCaseInfo}
         >
           <Template code="BottomBar-SaveNote" />
         </StyledNextStepButton>
@@ -72,15 +88,15 @@ const AddNote = ({ counselor, value, onChange, handleSaveNote, onClickClose }) =
 
 AddNote.displayName = 'AddNote';
 AddNote.propTypes = {
+  task: taskType.isRequired,
+  form: formType.isRequired,
   counselor: PropTypes.string.isRequired,
-  value: PropTypes.string,
-  onChange: PropTypes.func.isRequired,
-  handleSaveNote: PropTypes.func.isRequired,
   onClickClose: PropTypes.func.isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
-AddNote.defaultProps = {
-  value: '',
-};
+const mapStateToProps = (state, ownProps) => ({
+  form: state[namespace][contactFormsBase].tasks[ownProps.task.taskSid],
+});
 
-export default AddNote;
+export default connect(mapStateToProps)(AddNote);

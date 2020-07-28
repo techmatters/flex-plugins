@@ -33,7 +33,6 @@ class Case extends Component {
     counselorsHash: PropTypes.shape({}).isRequired,
     changeRoute: PropTypes.func.isRequired,
     setConnectedCase: PropTypes.func.isRequired,
-    updateCaseInfo: PropTypes.func.isRequired,
     temporaryCaseInfo: PropTypes.func.isRequired,
   };
 
@@ -71,7 +70,7 @@ class Case extends Component {
 
     try {
       const contact = await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
-      const caseFromDB = await updateCase(connectedCase.id, { info: connectedCase.info });
+      await updateCase(connectedCase.id, { info: connectedCase.info });
       await connectToCase(hrmBaseUrl, contact.id, connectedCase.id);
       this.props.handleCompleteTask(task.taskSid, task);
     } catch (error) {
@@ -80,22 +79,6 @@ class Case extends Component {
     } finally {
       this.setState({ loading: false });
     }
-  };
-
-  handleOnChangeNote = newNote => {
-    const { task } = this.props;
-    this.props.temporaryCaseInfo(newNote, task.taskSid);
-  };
-
-  handleSaveNote = () => {
-    const { task, form } = this.props;
-    const { connectedCase, temporaryCaseInfo } = form.metadata;
-    const { info } = connectedCase;
-    const newNoteObj = { note: temporaryCaseInfo, createdAt: new Date().toISOString() };
-    const notes = info && info.notes ? [...info.notes, newNoteObj] : [newNoteObj];
-    const newInfo = info ? { ...info, notes } : { notes };
-    this.props.updateCaseInfo(newInfo, task.taskSid);
-    this.props.changeRoute('new-case', this.props.task.taskSid);
   };
 
   handleClose = () => {
@@ -108,7 +91,7 @@ class Case extends Component {
 
   render() {
     const { anchorEl, isMenuOpen, mockedMessage, loading } = this.state;
-    const { connectedCase, subroute, temporaryCaseInfo } = this.props.form.metadata;
+    const { connectedCase, subroute } = this.props.form.metadata;
 
     if (!connectedCase) return null;
 
@@ -128,15 +111,7 @@ class Case extends Component {
 
     switch (subroute) {
       case 'add-note':
-        return (
-          <AddNote
-            counselor={counselor}
-            value={temporaryCaseInfo}
-            onChange={this.handleOnChangeNote}
-            handleSaveNote={this.handleSaveNote}
-            onClickClose={this.handleClose}
-          />
-        );
+        return <AddNote task={this.props.task} counselor={counselor} onClickClose={this.handleClose} />;
       default:
         return (
           <CaseContainer>
@@ -196,7 +171,6 @@ const mapStateToProps = (state, ownProps) => ({
 const mapDispatchToProps = dispatch => ({
   changeRoute: bindActionCreators(Actions.changeRoute, dispatch),
   setConnectedCase: bindActionCreators(Actions.setConnectedCase, dispatch),
-  updateCaseInfo: bindActionCreators(Actions.updateCaseInfo, dispatch),
   temporaryCaseInfo: bindActionCreators(Actions.temporaryCaseInfo, dispatch),
 });
 
