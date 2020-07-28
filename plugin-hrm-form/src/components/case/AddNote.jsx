@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import { ButtonBase } from '@material-ui/core';
@@ -12,19 +13,19 @@ import { taskType, formType } from '../../types';
 import { Actions } from '../../states/ContactState';
 import { namespace, contactFormsBase } from '../../states';
 
-const AddNote = ({ task, form, counselor, onClickClose, dispatch }) => {
+const AddNote = ({ task, form, counselor, onClickClose, updateTemporaryCaseInfo, updateCaseInfo, changeRoute }) => {
   const { strings } = getConfig();
   const { connectedCase, temporaryCaseInfo } = form.metadata;
 
-  const handleOnChangeNote = newNote => dispatch(Actions.temporaryCaseInfo(newNote, task.taskSid));
+  const handleOnChangeNote = newNote => updateTemporaryCaseInfo(newNote, task.taskSid);
 
   const handleSaveNote = () => {
     const { info } = connectedCase;
     const newNoteObj = { note: temporaryCaseInfo, createdAt: new Date().toISOString() };
     const notes = info && info.notes ? [...info.notes, newNoteObj] : [newNoteObj];
     const newInfo = info ? { ...info, notes } : { notes };
-    dispatch(Actions.updateCaseInfo(newInfo, task.taskSid));
-    dispatch(Actions.changeRoute('new-case', task.taskSid));
+    updateCaseInfo(newInfo, task.taskSid);
+    changeRoute('new-case', task.taskSid);
   };
 
   return (
@@ -92,11 +93,19 @@ AddNote.propTypes = {
   form: formType.isRequired,
   counselor: PropTypes.string.isRequired,
   onClickClose: PropTypes.func.isRequired,
-  dispatch: PropTypes.func.isRequired,
+  updateTemporaryCaseInfo: PropTypes.func.isRequired,
+  updateCaseInfo: PropTypes.func.isRequired,
+  changeRoute: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state, ownProps) => ({
   form: state[namespace][contactFormsBase].tasks[ownProps.task.taskSid],
 });
 
-export default connect(mapStateToProps)(AddNote);
+const mapDispatchToProps = dispatch => ({
+  updateTemporaryCaseInfo: bindActionCreators(Actions.temporaryCaseInfo, dispatch),
+  updateCaseInfo: bindActionCreators(Actions.updateCaseInfo, dispatch),
+  changeRoute: bindActionCreators(Actions.changeRoute, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddNote);
