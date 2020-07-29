@@ -183,3 +183,12 @@ export const searchFormType = PropTypes.shape({
   dateFrom: PropTypes.string,
   dateTo: PropTypes.string,
 });
+
+export const caseType = PropTypes.shape({
+  status: PropTypes.string,
+  helpline: PropTypes.string,
+  twilioWorkerId: PropTypes.string,
+  info: PropTypes.shape({
+    notes: PropTypes.arrayOf(PropTypes.string),
+  }),
+});

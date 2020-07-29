@@ -74,6 +74,7 @@
   "BottomBar-AddThisContactToExistingCase": "Add this Contact to Existing Case",
   "BottomBar-CancelNewCaseAndClose": "Yes, Cancel New Case and Close",
   "BottomBar-SaveAndEnd": "Save and End",
+  "BottomBar-SaveNote": "Save Note",
 
   "Categories-Title": "Categorize this contact",
   
@@ -90,11 +91,17 @@
 
   "Case-CaseNumber": "Case",
   "Case-CaseDetailsSection": "Case Details",
+  "Case-TimelineSection": "Timeline",
   "Case-CaseDetailsChildName": "Child Name",
   "Case-CaseDetailsOwner": "Counselor",
   "Case-CaseDetailsDateOpened": "Date Opened",
   "Case-CaseDetailsStatusLabel": "Status",
   "Case-CaseDetailsStatusOpen": "Open",
+  "Case-AddNote": "Add Note",
+  "Case-AddNoteTypeHere": "Type here to add note",
+  "Case-AddNoteAdded": "Added:",
+  "Case-AddNoteCounselor": "Counselor:",
+  "Case-CloseButton": "Close",
 
   "SideNavCaseList": "Case List",
   

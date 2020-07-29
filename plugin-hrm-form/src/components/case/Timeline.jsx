@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
+import { Template } from '@twilio/flex-ui';
+import PropTypes from 'prop-types';
 
 import TimelineIcon from './TimelineIcon';
 import { CaseSectionFont, ViewButton } from '../../styles/case';
-import { Box } from '../../styles/HrmStyles';
-import { taskType, formType } from '../../types';
+import { Box, Row } from '../../styles/HrmStyles';
+import { taskType, formType, caseType } from '../../types';
 import { isNullOrUndefined } from '../../utils/checkers';
+import CaseAddButton from './CaseAddButton';
+import { getActivities } from '../../services/CaseService';
 
 // const timeline = [
 //   {
@@ -40,8 +44,18 @@ import { isNullOrUndefined } from '../../utils/checkers';
 //   },
 // ];
 
-const Timeline = ({ task, form }) => {
-  const timeline = [];
+const Timeline = ({ task, form, caseId, onClickAddNote }) => {
+  const [timeline, setTimeline] = useState([]);
+
+  useEffect(() => {
+    async function updateTimeline() {
+      const activities = await getActivities(caseId);
+      setTimeline(activities);
+    }
+
+    updateTimeline();
+  }, [caseId]);
+
   const isCreatingCase = isNullOrUndefined(
     timeline.find(activity => ['whatsapp', 'facebook', 'web', 'sms'].includes(activity.type)),
   );
@@ -55,7 +69,12 @@ const Timeline = ({ task, form }) => {
   return (
     <div style={{ marginTop: '25px' }}>
       <div style={{ marginBottom: '10px' }}>
-        <CaseSectionFont>Timeline</CaseSectionFont>
+        <Row>
+          <CaseSectionFont id="Case-TimelineSection-label">
+            <Template code="Case-TimelineSection" />
+          </CaseSectionFont>
+          <CaseAddButton templateCode="Case-AddNote" onClick={onClickAddNote} />
+        </Row>
       </div>
       {timeline
         .sort((a, b) => b.date.localeCompare(a.date))
@@ -92,6 +111,8 @@ Timeline.displayName = 'Timeline';
 Timeline.propTypes = {
   task: taskType.isRequired,
   form: formType.isRequired,
+  caseId: PropTypes.number.isRequired,
+  onClickAddNote: PropTypes.func.isRequired,
 };
 
 export default Timeline;

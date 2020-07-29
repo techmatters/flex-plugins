@@ -10,6 +10,7 @@ import HrmTheme from '../../../styles/HrmTheme';
 import Case from '../../../components/case';
 import CaseDetails from '../../../components/case/CaseDetails';
 import { namespace, configurationBase, contactFormsBase } from '../../../states';
+import { Actions } from '../../../states/ContactState';
 import { cancelCase } from '../../../services/CaseService';
 
 jest.mock('../../../services/CaseService');
@@ -194,6 +195,59 @@ test('click cancel button', () => {
   clickCancelCase(wrapper);
 
   expect(cancelCase).toHaveBeenCalled();
+});
+
+test('click Add Note button', async () => {
+  const ownProps = {
+    task: {
+      taskSid: 'task1',
+    },
+    handleCompleteTask: jest.fn(),
+  };
+  const initialState = createState({
+    [configurationBase]: {
+      counselors: {
+        list: [],
+        hash: { worker1: 'worker1 name' },
+      },
+    },
+    [contactFormsBase]: {
+      tasks: {
+        task1: {
+          childInformation: {
+            name: { firstName: { value: 'first' }, lastName: { value: 'first' } },
+          },
+          metadata: {
+            connectedCase: {
+              createdAt: '12345',
+              twilioWorkerId: 'worker1',
+              status: 'open',
+            },
+          },
+        },
+      },
+    },
+  });
+  const store = mockStore(initialState);
+  store.dispatch = jest.fn();
+
+  const wrapper = mount(
+    <StorelessThemeProvider themeConf={themeConf}>
+      <Provider store={store}>
+        <Case {...ownProps} />
+      </Provider>
+    </StorelessThemeProvider>,
+  );
+
+  const CaseWrapper = wrapper.find('Case');
+
+  CaseWrapper.find('CaseAddButton').simulate('click');
+  expect(store.dispatch).toHaveBeenCalledWith({
+    route: 'new-case',
+    subroute: 'add-note',
+    taskId: 'task1',
+    type: 'CHANGE_ROUTE',
+  });
 });
 
 const Wrapped = withTheme(props => <Case {...props} />);

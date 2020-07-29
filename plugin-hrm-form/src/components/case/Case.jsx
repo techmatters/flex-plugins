@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Template, withTaskContext } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { CircularProgress } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import CancelIcon from '@material-ui/icons/Cancel';
 import Dialog from '@material-ui/core/Dialog';
@@ -12,14 +13,15 @@ import { namespace, contactFormsBase, configurationBase } from '../../states';
 import { taskType, formType } from '../../types';
 import { getConfig } from '../../HrmFormPlugin';
 import { saveToHrm, connectToCase } from '../../services/ContactService';
-import { cancelCase } from '../../services/CaseService';
+import { cancelCase, updateCase } from '../../services/CaseService';
 import { Box, Container, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
-import { CaseContainer, CaseNumberFont, CaseSectionFont } from '../../styles/case';
+import { CaseContainer, CenteredContainer, CaseNumberFont } from '../../styles/case';
 import CaseDetails from './CaseDetails';
 import { Menu, MenuItem } from '../menu';
 import { formatName } from '../../utils';
 import { Actions } from '../../states/ContactState';
 import Timeline from './Timeline';
+import AddNote from './AddNote';
 
 class Case extends Component {
   static displayName = 'Case';
@@ -31,12 +33,15 @@ class Case extends Component {
     counselorsHash: PropTypes.shape({}).isRequired,
     changeRoute: PropTypes.func.isRequired,
     setConnectedCase: PropTypes.func.isRequired,
+    updateCaseInfo: PropTypes.func.isRequired,
+    temporaryCaseInfo: PropTypes.func.isRequired,
   };
 
   state = {
     anchorEl: null,
     isMenuOpen: false,
     mockedMessage: null,
+    loading: false,
   };
 
   toggleCaseMenu = e => {
@@ -58,25 +63,64 @@ class Case extends Component {
   };
 
   handleSaveAndEnd = async () => {
+    this.setState({ loading: true });
+
     const { task, form } = this.props;
     const { connectedCase } = form.metadata;
     const { hrmBaseUrl, workerSid, helpline, strings } = getConfig();
 
     try {
       const contact = await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
+      await updateCase(connectedCase.id, { info: connectedCase.info });
       await connectToCase(hrmBaseUrl, contact.id, connectedCase.id);
       this.props.handleCompleteTask(task.taskSid, task);
     } catch (error) {
+      console.error(error);
       window.alert(strings['Error-Backend']);
+    } finally {
+      this.setState({ loading: false });
     }
   };
 
+  handleOnChangeNote = newNote => {
+    const { task } = this.props;
+    this.props.temporaryCaseInfo(newNote, task.taskSid);
+  };
+
+  handleSaveNote = async () => {
+    const { task, form } = this.props;
+    const { connectedCase, temporaryCaseInfo } = form.metadata;
+    const { info } = connectedCase;
+    // const newNoteObj = { note: temporaryCaseInfo, createdAt: new Date().toISOString() };
+    const newNoteObj = temporaryCaseInfo;
+    const notes = info && info.notes ? [...info.notes, newNoteObj] : [newNoteObj];
+    const newInfo = info ? { ...info, notes } : { notes };
+    await updateCase(connectedCase.id, { info: newInfo });
+    this.props.updateCaseInfo(newInfo, task.taskSid);
+    this.props.changeRoute('new-case', this.props.task.taskSid);
+  };
+
+  handleClose = () => {
+    const { task } = this.props;
+    this.props.temporaryCaseInfo(null, task.taskSid);
+    this.props.changeRoute('new-case', task.taskSid);
+  };
+
+  onClickAddNote = () => this.props.changeRoute('new-case', this.props.task.taskSid, 'add-note');
+
   render() {
-    const { anchorEl, isMenuOpen, mockedMessage } = this.state;
+    const { anchorEl, isMenuOpen, mockedMessage, loading } = this.state;
     const { task, form, counselorsHash } = this.props;
-    const { connectedCase } = form.metadata;
+    const { connectedCase, subroute, temporaryCaseInfo } = form.metadata;
 
     if (!connectedCase) return null;
+
+    if (loading)
+      return (
+        <CenteredContainer>
+          <CircularProgress size={50} />
+        </CenteredContainer>
+      );
 
     const isMockedMessageOpen = Boolean(mockedMessage);
     const { firstName, lastName } = form.childInformation.name;
@@ -85,48 +129,60 @@ class Case extends Component {
     const counselor = counselorsHash[twilioWorkerId];
     const date = new Date(createdAt).toLocaleDateString(navigator.language);
 
-    return (
-      <CaseContainer>
-        <Container>
-          <CaseNumberFont>
-            <Template code="Case-CaseNumber" /> #{connectedCase.id}
-          </CaseNumberFont>
-          <Box marginLeft="25px" marginTop="13px">
-            <CaseSectionFont id="Case-CaseDetailsSection-label">
-              <Template code="Case-CaseDetailsSection" />
-            </CaseSectionFont>
-            <CaseDetails name={name} status={status} counselor={counselor} date={date} />
-            <Timeline task={task} form={form} />
-          </Box>
-        </Container>
-        <Dialog onClose={this.closeMockedMessage} open={isMockedMessageOpen}>
-          <DialogContent>{mockedMessage}</DialogContent>
-        </Dialog>
-        <Menu anchorEl={anchorEl} open={isMenuOpen} onClickAway={() => this.setState({ isMenuOpen: false })}>
-          <MenuItem
-            Icon={AddIcon}
-            text={<Template code="BottomBar-AddThisContactToExistingCase" />}
-            onClick={this.handleMockedMessage}
+    switch (subroute) {
+      case 'add-note':
+        return (
+          <AddNote
+            counselor={counselor}
+            value={temporaryCaseInfo}
+            onChange={this.handleOnChangeNote}
+            handleSaveNote={this.handleSaveNote}
+            onClickClose={this.handleClose}
           />
-          <MenuItem
-            red
-            Icon={CancelIcon}
-            text={<Template code="BottomBar-CancelNewCaseAndClose" />}
-            onClick={this.handleCancelNewCaseAndClose}
-          />
-        </Menu>
-        <BottomButtonBar>
-          <Box marginRight="15px">
-            <StyledNextStepButton secondary roundCorners onClick={this.toggleCaseMenu}>
-              <Template code="BottomBar-Cancel" />
-            </StyledNextStepButton>
-          </Box>
-          <StyledNextStepButton roundCorners onClick={this.handleSaveAndEnd}>
-            <Template code="BottomBar-SaveAndEnd" />
-          </StyledNextStepButton>
-        </BottomButtonBar>
-      </CaseContainer>
-    );
+        );
+      default:
+        return (
+          <CaseContainer>
+            <Container>
+              <CaseNumberFont>
+                <Template code="Case-CaseNumber" /> #{connectedCase.id}
+              </CaseNumberFont>
+              <Box marginLeft="25px" marginTop="13px">
+                <CaseDetails name={name} status={status} counselor={counselor} date={date} />
+              </Box>
+              <Box marginLeft="25px" marginTop="25px">
+                <Timeline caseId={connectedCase.id} task={task} form={form} onClickAddNote={this.onClickAddNote} />
+              </Box>
+            </Container>
+            <Dialog onClose={this.closeMockedMessage} open={isMockedMessageOpen}>
+              <DialogContent>{mockedMessage}</DialogContent>
+            </Dialog>
+            <Menu anchorEl={anchorEl} open={isMenuOpen} onClickAway={() => this.setState({ isMenuOpen: false })}>
+              <MenuItem
+                Icon={AddIcon}
+                text={<Template code="BottomBar-AddThisContactToExistingCase" />}
+                onClick={this.handleMockedMessage}
+              />
+              <MenuItem
+                red
+                Icon={CancelIcon}
+                text={<Template code="BottomBar-CancelNewCaseAndClose" />}
+                onClick={this.handleCancelNewCaseAndClose}
+              />
+            </Menu>
+            <BottomButtonBar>
+              <Box marginRight="15px">
+                <StyledNextStepButton secondary roundCorners onClick={this.toggleCaseMenu}>
+                  <Template code="BottomBar-Cancel" />
+                </StyledNextStepButton>
+              </Box>
+              <StyledNextStepButton roundCorners onClick={this.handleSaveAndEnd}>
+                <Template code="BottomBar-SaveAndEnd" />
+              </StyledNextStepButton>
+            </BottomButtonBar>
+          </CaseContainer>
+        );
+    }
   }
 }
 
@@ -138,6 +194,8 @@ const mapStateToProps = (state, ownProps) => ({
 const mapDispatchToProps = dispatch => ({
   changeRoute: bindActionCreators(Actions.changeRoute, dispatch),
   setConnectedCase: bindActionCreators(Actions.setConnectedCase, dispatch),
+  updateCaseInfo: bindActionCreators(Actions.updateCaseInfo, dispatch),
+  temporaryCaseInfo: bindActionCreators(Actions.temporaryCaseInfo, dispatch),
 });
 
 export default withTaskContext(connect(mapStateToProps, mapDispatchToProps)(Case));

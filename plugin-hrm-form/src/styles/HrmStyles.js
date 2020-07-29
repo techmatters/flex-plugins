@@ -232,14 +232,13 @@ export const BottomButtonBar = styled('div')`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  margin: 0 ${containerLeftRightMargin};
-  padding: 0 20px;
   height: 55px;
   flex-shrink: 0;
+  padding: 0 20px;
   background-color: #f9fafb;
-  border-top: 1px solid #c6cad8;
-  box-shadow: 0 -2px 4px 0 rgba(0, 0, 0, 0.14);
   z-index: 1;
+  border-top: 1px solid #c6cad9;
+  box-shadow: 0 -2px 2px -7px #192b331a;
 `;
 
 export const NameFields = styled('div')`
@@ -375,7 +374,7 @@ export const FontOpenSans = styled('p')`
 `;
 
 // used for screen readers only
-export const HiddenText = styled('p')`
+export const HiddenText = styled('span')`
   width: 0px;
   height: 0px;
   font-size: 0px;

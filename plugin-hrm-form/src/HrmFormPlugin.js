@@ -26,7 +26,8 @@ let sharedStateClient;
 export const getConfig = () => {
   const manager = Flex.Manager.getInstance();
 
-  const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
+  const hrmBaseUrl = 'http://localhost:8080';
+  // const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
   const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
   const workerSid = manager.workerClient.sid;
   const { helpline, counselorLanguage, helplineLanguage } = manager.workerClient.attributes;

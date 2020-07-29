@@ -17,11 +17,15 @@ const MenuItem = ({ Icon, text, red, onClick, theme }) => (
 MenuItem.displayName = 'MenuItem';
 MenuItem.propTypes = {
   Icon: PropTypes.elementType,
-  text: PropTypes.string.isRequired,
+  text: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
   red: PropTypes.bool,
   onClick: PropTypes.func,
-  // eslint-disable-next-line react/forbid-prop-types
-  theme: PropTypes.object.isRequired,
+  theme: PropTypes.shape({
+    colors: PropTypes.shape({
+      declineColor: PropTypes.string,
+      defaultButtonColor: PropTypes.string,
+    }),
+  }).isRequired,
 };
 MenuItem.defaultProps = {
   Icon: null,
