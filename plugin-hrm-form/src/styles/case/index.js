@@ -77,7 +77,6 @@ export const DefaultStatusFont = styled(DetailEntryText)`
 `;
 DefaultStatusFont.displayName = 'DefaultStatusFont';
 
-
 export const ViewButton = styled(props => <Button roundCorners={false} {...props} />)`
   color: #192b33;
   background-color: #ecedf1;

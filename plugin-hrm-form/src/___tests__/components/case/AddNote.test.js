@@ -4,32 +4,71 @@ import '@testing-library/jest-dom/extend-expect';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
+import { Provider } from 'react-redux';
+import configureMockStore from 'redux-mock-store';
 
 import '../../mockGetConfig';
 import HrmTheme from '../../../styles/HrmTheme';
 import AddNote from '../../../components/case/AddNote';
+import { configurationBase, contactFormsBase, namespace } from '../../../states';
+import { Actions } from '../../../states/ContactState';
 
 expect.extend(toHaveNoViolations);
+
+const mockStore = configureMockStore([]);
+
+const state = {
+  [namespace]: {
+    [configurationBase]: {
+      counselors: {
+        list: [],
+        hash: { worker1: 'worker1 name' },
+      },
+    },
+    [contactFormsBase]: {
+      tasks: {
+        task1: {
+          childInformation: {
+            name: { firstName: { value: 'first' }, lastName: { value: 'last' } },
+          },
+          metadata: {
+            temporaryCaseInfo: 'Mocked temp value',
+            connectedCase: {
+              createdAt: 1593469560208,
+              twilioWorkerId: 'worker1',
+              status: 'open',
+              info: null,
+            },
+          },
+        },
+      },
+    },
+  },
+};
+
+const store = mockStore(state);
+store.dispatch = jest.fn();
 
 const themeConf = {
   colorTheme: HrmTheme,
 };
 
 test('Test close functionality', async () => {
-  const onChange = jest.fn();
-  const handleSaveNote = jest.fn();
   const onClickClose = jest.fn();
 
   const ownProps = {
     counselor: 'Someone',
-    onChange,
-    handleSaveNote,
     onClickClose,
+    task: {
+      taskSid: 'task1',
+    },
   };
 
   render(
     <StorelessThemeProvider themeConf={themeConf}>
-      <AddNote {...ownProps} />
+      <Provider store={store}>
+        <AddNote {...ownProps} />
+      </Provider>
     </StorelessThemeProvider>,
   );
 
@@ -51,53 +90,62 @@ test('Test close functionality', async () => {
 });
 
 test('Test input/add note functionality', async () => {
-  const handleSaveNote = jest.fn();
-  const onChange = jest.fn();
   const onClickClose = jest.fn();
 
   const ownProps = {
     counselor: 'Someone',
-    value: 'some value',
-    onChange,
-    handleSaveNote,
     onClickClose,
+    task: {
+      taskSid: 'task1',
+    },
   };
 
   render(
     <StorelessThemeProvider themeConf={themeConf}>
-      <AddNote {...ownProps} />
+      <Provider store={store}>
+        <AddNote {...ownProps} />
+      </Provider>
     </StorelessThemeProvider>,
   );
 
-  expect(onChange).not.toHaveBeenCalled();
-  expect(handleSaveNote).not.toHaveBeenCalled();
+  expect(store.dispatch).not.toHaveBeenCalled();
 
   const textarea = screen.getByTestId('Case-AddNoteScreen-TextArea');
   fireEvent.change(textarea, { target: { value: 'Some note' } });
 
-  expect(onChange).toHaveBeenCalled();
-  expect(handleSaveNote).not.toHaveBeenCalled();
+  expect(store.dispatch).toHaveBeenCalledWith(Actions.temporaryCaseInfo('Some note', ownProps.task.taskSid));
+
+  store.dispatch.mockClear();
+  expect(store.dispatch).not.toHaveBeenCalled();
 
   screen.getByTestId('Case-AddNoteScreen-SaveNote').click();
 
-  expect(handleSaveNote).toHaveBeenCalled();
+  expect(store.dispatch).toHaveBeenCalledTimes(2);
+  const updateCaseCall = store.dispatch.mock.calls[0][0];
+  expect(updateCaseCall.type).toBe('UPDATE_CASE_INFO');
+  expect(updateCaseCall.taskId).toBe(ownProps.task.taskSid);
+  expect(updateCaseCall.info.notes[0].note).toBe('Mocked temp value');
+
+  expect(store.dispatch).toHaveBeenCalledWith(Actions.changeRoute('new-case', ownProps.task.taskSid));
+  store.dispatch.mockClear();
 });
 
 test('a11y', async () => {
-  const onChange = jest.fn();
-  const handleSaveNote = jest.fn();
   const onClickClose = jest.fn();
 
   const ownProps = {
     counselor: 'Someone',
-    onChange,
-    handleSaveNote,
     onClickClose,
+    task: {
+      taskSid: 'task1',
+    },
   };
 
   const wrapper = mount(
     <StorelessThemeProvider themeConf={themeConf}>
-      <AddNote {...ownProps} />
+      <Provider store={store}>
+        <AddNote {...ownProps} />
+      </Provider>
     </StorelessThemeProvider>,
   );
 

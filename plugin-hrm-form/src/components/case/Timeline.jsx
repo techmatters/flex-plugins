@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import TimelineIcon from './TimelineIcon';
 import { CaseSectionFont, ViewButton } from '../../styles/case';
 import { Box, Row } from '../../styles/HrmStyles';
-import { taskType, formType, caseType } from '../../types';
+import { taskType, formType } from '../../types';
 import { isNullOrUndefined } from '../../utils/checkers';
 import CaseAddButton from './CaseAddButton';
 import { getActivities } from '../../services/CaseService';

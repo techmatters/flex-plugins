@@ -43,4 +43,4 @@ export async function updateCase(caseId, body) {
 
 export async function getActivities(caseId) {
   return fetchHrmApi(`/cases/${caseId}/activities/`);
-};
+}
