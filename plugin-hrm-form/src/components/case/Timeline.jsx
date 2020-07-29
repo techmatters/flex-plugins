@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
 import PropTypes from 'prop-types';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
 
 import TimelineIcon from './TimelineIcon';
 import { CaseSectionFont, ViewButton } from '../../styles/case';
@@ -11,40 +13,8 @@ import { isNullOrUndefined } from '../../utils/checkers';
 import CaseAddButton from './CaseAddButton';
 import { getActivities } from '../../services/CaseService';
 
-// const timeline = [
-//   {
-//     date: '2020-07-5 13:27:31',
-//     type: 'note',
-//     text:
-//       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum in semper purus, ac finibus lacus. Morbi suscipit varius ex eget sodales. Curabitur non mauris ac velit tincidunt sodales. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Suspendisse potenti.',
-//   },
-//   {
-//     date: '2020-03-03 13:27:31',
-//     type: 'facebook',
-//     text:
-//       'Integer ultrices volutpat eros nec pellentesque. Sed vel ante ac orci porta egestas. Integer suscipit pellentesque orci, accumsan auctor leo egestas eget. Fusce tincidunt sollicitudin hendrerit. Quisque volutpat ante tellus, vel rhoncus lectus bibendum ut. Pellentesque a tortor ac mi cursus dapibus aliquet suscipit odio.',
-//   },
-//   {
-//     date: '2020-03-03 13:27:31',
-//     type: 'whatsapp',
-//     text:
-//       'Integer ultrices volutpat eros nec pellentesque. Sed vel ante ac orci porta egestas. Integer suscipit pellentesque orci, accumsan auctor leo egestas eget. Fusce tincidunt sollicitudin hendrerit. Quisque volutpat ante tellus, vel rhoncus lectus bibendum ut. Pellentesque a tortor ac mi cursus dapibus aliquet suscipit odio.',
-//   },
-//   {
-//     date: '2020-03-03 13:27:31',
-//     type: 'web',
-//     text:
-//       'Integer ultrices volutpat eros nec pellentesque. Sed vel ante ac orci porta egestas. Integer suscipit pellentesque orci, accumsan auctor leo egestas eget. Fusce tincidunt sollicitudin hendrerit. Quisque volutpat ante tellus, vel rhoncus lectus bibendum ut. Pellentesque a tortor ac mi cursus dapibus aliquet suscipit odio.',
-//   },
-//   {
-//     date: '2020-03-03 13:27:31',
-//     type: 'sms',
-//     text:
-//       'Integer ultrices volutpat eros nec pellentesque. Sed vel ante ac orci porta egestas. Integer suscipit pellentesque orci, accumsan auctor leo egestas eget. Fusce tincidunt sollicitudin hendrerit. Quisque volutpat ante tellus, vel rhoncus lectus bibendum ut. Pellentesque a tortor ac mi cursus dapibus aliquet suscipit odio.',
-//   },
-// ];
-
 const Timeline = ({ task, form, caseId, onClickAddNote }) => {
+  const [mockedMessage, setMockedMessage] = useState(null);
   const [timeline, setTimeline] = useState([]);
 
   useEffect(() => {
@@ -68,6 +38,9 @@ const Timeline = ({ task, form, caseId, onClickAddNote }) => {
   }
   return (
     <div style={{ marginTop: '25px' }}>
+      <Dialog onClose={() => setMockedMessage(null)} open={Boolean(mockedMessage)}>
+        <DialogContent>{mockedMessage}</DialogContent>
+      </Dialog>
       <div style={{ marginBottom: '10px' }}>
         <Row>
           <CaseSectionFont id="Case-TimelineSection-label">
@@ -98,7 +71,7 @@ const Timeline = ({ task, form, caseId, onClickAddNote }) => {
                 {activity.text}
               </span>
               <Box marginLeft="5px">
-                <ViewButton>View</ViewButton>
+                <ViewButton onClick={() => setMockedMessage(<Template code="NotImplemented" />)}>View</ViewButton>
               </Box>
             </div>
           );
