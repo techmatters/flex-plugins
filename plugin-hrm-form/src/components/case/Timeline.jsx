@@ -6,7 +6,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 
 import TimelineIcon from './TimelineIcon';
-import { CaseSectionFont, ViewButton } from '../../styles/case';
+import { CaseSectionFont, ViewButton, TimelineRow, TimelineDate, TimelineText } from '../../styles/case';
 import { Box, Row } from '../../styles/HrmStyles';
 import { taskType, formType } from '../../types';
 import { isNullOrUndefined } from '../../utils/checkers';
@@ -37,46 +37,34 @@ const Timeline = ({ task, form, caseId, onClickAddNote }) => {
     });
   }
   return (
-    <div style={{ marginTop: '25px' }}>
+    <Box marginTop="25px">
       <Dialog onClose={() => setMockedMessage(null)} open={Boolean(mockedMessage)}>
         <DialogContent>{mockedMessage}</DialogContent>
       </Dialog>
-      <div style={{ marginBottom: '10px' }}>
+      <Box marginBottom="10px">
         <Row>
           <CaseSectionFont id="Case-TimelineSection-label">
             <Template code="Case-TimelineSection" />
           </CaseSectionFont>
           <CaseAddButton templateCode="Case-AddNote" onClick={onClickAddNote} />
         </Row>
-      </div>
+      </Box>
       {timeline
         .sort((a, b) => b.date.localeCompare(a.date))
         .map((activity, index) => {
           const date = new Date(activity.date).toLocaleDateString(navigator.language);
           return (
-            <div
-              key={index}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                backgroundColor: '#F6F6F67D',
-                height: '40px',
-                marginBottom: '3px',
-                padding: '0 15px',
-              }}
-            >
-              <div style={{ fontWeight: 'bold', minWidth: '65px', textAlign: 'center' }}>{date}</div>
+            <TimelineRow key={index}>
+              <TimelineDate>{date}</TimelineDate>
               <TimelineIcon type={activity.type} />
-              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flexGrow: 1 }}>
-                {activity.text}
-              </span>
+              <TimelineText>{activity.text}</TimelineText>
               <Box marginLeft="5px">
                 <ViewButton onClick={() => setMockedMessage(<Template code="NotImplemented" />)}>View</ViewButton>
               </Box>
-            </div>
+            </TimelineRow>
           );
         })}
-    </div>
+    </Box>
   );
 };
 

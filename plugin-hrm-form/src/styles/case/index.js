@@ -129,3 +129,37 @@ export const CaseActionTextArea = styled('textarea')`
   }
 `;
 CaseActionTextArea.displayName = 'CaseActionTextArea';
+
+export const TimelineRow = styled('div')`
+  display: flex;
+  align-items: center;
+  background-color: #f6f6f67d;
+  height: 40px;
+  margin-bottom: 3px;
+  padding: 0 15px;
+`;
+TimelineRow.displayName = 'TimelineRow';
+
+export const TimelineDate = styled('div')`
+  font-weight: bold;
+  min-width: 65px;
+  text-align: center;
+`;
+TimelineDate.displayName = 'TimelineDate';
+
+export const TimelineText = styled('span')`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-grow: 1;
+`;
+TimelineText.displayName = 'TimelineText';
+
+export const TimelineIconContainer = styled('div')`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+`;
+TimelineIconContainer.displayName = 'TimelineIconContainer';

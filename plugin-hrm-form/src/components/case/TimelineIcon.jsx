@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import * as Flex from '@twilio/flex-ui';
 import NoteIcon from '@material-ui/icons/NoteAdd';
 
+import { TimelineIconContainer } from '../../styles/case';
+
 const TimelineIcon = ({ type }) => {
   let icon;
   switch (type) {
@@ -25,11 +27,7 @@ const TimelineIcon = ({ type }) => {
       break;
   }
 
-  return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: '40px', height: '40px'}}>
-      {icon}
-    </div>
-  );
+  return <TimelineIconContainer>{icon}</TimelineIconContainer>;
 };
 
 TimelineIcon.displayName = 'TimelineIcon';
