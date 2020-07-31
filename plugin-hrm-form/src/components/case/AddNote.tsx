@@ -1,23 +1,41 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
-import PropTypes from 'prop-types';
-import { bindActionCreators } from 'redux';
+import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { Template } from '@twilio/flex-ui';
+import { Template, ITask } from '@twilio/flex-ui';
 import { ButtonBase } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 
 import { getConfig } from '../../HrmFormPlugin';
 import { Box, Row, HiddenText, StyledNextStepButton, BottomButtonBar } from '../../styles/HrmStyles';
 import { AddNoteContainer, CaseActionTitle, CaseActionDetailFont, CaseActionTextArea } from '../../styles/case';
-import { taskType, formType } from '../../types';
+import { namespace, connectedCaseBase } from '../../states';
+import * as CaseActions from '../../states/case/actions';
+import { CaseState } from '../../states/case/reducer';
 import { Actions } from '../../states/ContactState';
-import { namespace, contactFormsBase } from '../../states';
 
-const AddNote = ({ task, form, counselor, onClickClose, updateTemporaryCaseInfo, updateCaseInfo, changeRoute }) => {
+type OwnProps = {
+  task: ITask;
+  counselor: string;
+  onClickClose: () => void;
+};
+
+// eslint-disable-next-line no-use-before-define
+type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+
+const AddNote: React.FC<Props> = ({
+  task,
+  counselor,
+  connectedCaseState,
+  onClickClose,
+  updateTempInfo,
+  updateCaseInfo,
+  changeRoute,
+}) => {
   const { strings } = getConfig();
-  const { connectedCase, temporaryCaseInfo } = form.metadata;
+  const { connectedCase, temporaryCaseInfo } = connectedCaseState;
 
-  const handleOnChangeNote = newNote => updateTemporaryCaseInfo(newNote, task.taskSid);
+  const handleOnChangeNote = (newNote: string) => updateTempInfo(newNote, task.taskSid);
 
   const handleSaveNote = () => {
     const { info } = connectedCase;
@@ -88,23 +106,17 @@ const AddNote = ({ task, form, counselor, onClickClose, updateTemporaryCaseInfo,
 };
 
 AddNote.displayName = 'AddNote';
-AddNote.propTypes = {
-  task: taskType.isRequired,
-  form: formType.isRequired,
-  counselor: PropTypes.string.isRequired,
-  onClickClose: PropTypes.func.isRequired,
-  updateTemporaryCaseInfo: PropTypes.func.isRequired,
-  updateCaseInfo: PropTypes.func.isRequired,
-  changeRoute: PropTypes.func.isRequired,
+
+const mapStateToProps = (state, ownProps: OwnProps) => {
+  const caseState: CaseState = state[namespace][connectedCaseBase]; // casting type as inference is not working for the store yet
+  const connectedCaseState = caseState.tasks[ownProps.task.taskSid];
+
+  return { connectedCaseState };
 };
 
-const mapStateToProps = (state, ownProps) => ({
-  form: state[namespace][contactFormsBase].tasks[ownProps.task.taskSid],
-});
-
-const mapDispatchToProps = dispatch => ({
-  updateTemporaryCaseInfo: bindActionCreators(Actions.temporaryCaseInfo, dispatch),
-  updateCaseInfo: bindActionCreators(Actions.updateCaseInfo, dispatch),
+const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
+  updateTempInfo: bindActionCreators(CaseActions.updateTempInfo, dispatch),
+  updateCaseInfo: bindActionCreators(CaseActions.updateCaseInfo, dispatch),
   changeRoute: bindActionCreators(Actions.changeRoute, dispatch),
 });
 
