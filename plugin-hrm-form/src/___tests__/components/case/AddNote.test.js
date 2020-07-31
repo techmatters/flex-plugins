@@ -10,8 +10,10 @@ import configureMockStore from 'redux-mock-store';
 import '../../mockGetConfig';
 import HrmTheme from '../../../styles/HrmTheme';
 import AddNote from '../../../components/case/AddNote';
-import { configurationBase, contactFormsBase, namespace } from '../../../states';
+import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../../states';
 import { Actions } from '../../../states/ContactState';
+import * as CaseActions from '../../../states/case/actions';
+import { UPDATE_CASE_INFO } from '../../../states/case/types';
 
 expect.extend(toHaveNoViolations);
 
@@ -31,14 +33,19 @@ const state = {
           childInformation: {
             name: { firstName: { value: 'first' }, lastName: { value: 'last' } },
           },
-          metadata: {
-            temporaryCaseInfo: 'Mocked temp value',
-            connectedCase: {
-              createdAt: 1593469560208,
-              twilioWorkerId: 'worker1',
-              status: 'open',
-              info: null,
-            },
+          metadata: {},
+        },
+      },
+    },
+    [connectedCaseBase]: {
+      tasks: {
+        task1: {
+          temporaryCaseInfo: 'Mocked temp value',
+          connectedCase: {
+            createdAt: 1593469560208,
+            twilioWorkerId: 'worker1',
+            status: 'open',
+            info: null,
           },
         },
       },
@@ -113,7 +120,7 @@ test('Test input/add note functionality', async () => {
   const textarea = screen.getByTestId('Case-AddNoteScreen-TextArea');
   fireEvent.change(textarea, { target: { value: 'Some note' } });
 
-  expect(store.dispatch).toHaveBeenCalledWith(Actions.temporaryCaseInfo('Some note', ownProps.task.taskSid));
+  expect(store.dispatch).toHaveBeenCalledWith(CaseActions.updateTempInfo('Some note', ownProps.task.taskSid));
 
   store.dispatch.mockClear();
   expect(store.dispatch).not.toHaveBeenCalled();
@@ -122,7 +129,7 @@ test('Test input/add note functionality', async () => {
 
   expect(store.dispatch).toHaveBeenCalledTimes(2);
   const updateCaseCall = store.dispatch.mock.calls[0][0];
-  expect(updateCaseCall.type).toBe('UPDATE_CASE_INFO');
+  expect(updateCaseCall.type).toBe(UPDATE_CASE_INFO);
   expect(updateCaseCall.taskId).toBe(ownProps.task.taskSid);
   expect(updateCaseCall.info.notes[0].note).toBe('Mocked temp value');
 

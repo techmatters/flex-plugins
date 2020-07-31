@@ -11,7 +11,7 @@ import '../../mockGetConfig';
 import HrmTheme from '../../../styles/HrmTheme';
 import Case from '../../../components/case';
 import CaseDetails from '../../../components/case/CaseDetails';
-import { namespace, configurationBase, contactFormsBase } from '../../../states';
+import { namespace, configurationBase, contactFormsBase, connectedCaseBase } from '../../../states';
 import { cancelCase } from '../../../services/CaseService';
 
 jest.mock('../../../services/CaseService');
@@ -62,11 +62,12 @@ test('Case (should return null)', () => {
           childInformation: {
             name: { firstName: { value: 'first' }, lastName: { value: 'first' } },
           },
-          metadata: {
-            connectedCase: null,
-          },
+          metadata: {},
         },
       },
+    },
+    [connectedCaseBase]: {
+      tasks: {},
     },
   });
   const store = mockStore(initialState);
@@ -103,13 +104,19 @@ test('Case (should render)', () => {
           childInformation: {
             name: { firstName: { value: 'first' }, lastName: { value: 'last' } },
           },
-          metadata: {
-            connectedCase: {
-              createdAt: 1593469560208,
-              twilioWorkerId: 'worker1',
-              status: 'open',
-            },
+          metadata: {},
+        },
+      },
+    },
+    [connectedCaseBase]: {
+      tasks: {
+        task1: {
+          connectedCase: {
+            createdAt: 1593469560208,
+            twilioWorkerId: 'worker1',
+            status: 'open',
           },
+          temporaryCaseInfo: '',
         },
       },
     },
@@ -171,13 +178,19 @@ test('click cancel button', () => {
           childInformation: {
             name: { firstName: { value: 'first' }, lastName: { value: 'first' } },
           },
-          metadata: {
-            connectedCase: {
-              createdAt: '12345',
-              twilioWorkerId: 'worker1',
-              status: 'open',
-            },
+          metadata: {},
+        },
+      },
+    },
+    [connectedCaseBase]: {
+      tasks: {
+        task1: {
+          connectedCase: {
+            createdAt: '12345',
+            twilioWorkerId: 'worker1',
+            status: 'open',
           },
+          temporaryCaseInfo: '',
         },
       },
     },
@@ -218,13 +231,19 @@ test('click Add Note button', async () => {
           childInformation: {
             name: { firstName: { value: 'first' }, lastName: { value: 'first' } },
           },
-          metadata: {
-            connectedCase: {
-              createdAt: '12345',
-              twilioWorkerId: 'worker1',
-              status: 'open',
-            },
+          metadata: {},
+        },
+      },
+    },
+    [connectedCaseBase]: {
+      tasks: {
+        task1: {
+          connectedCase: {
+            createdAt: '12345',
+            twilioWorkerId: 'worker1',
+            status: 'open',
           },
+          temporaryCaseInfo: '',
         },
       },
     },
@@ -271,13 +290,19 @@ test('edit case summary', async () => {
           childInformation: {
             name: { firstName: { value: 'first' }, lastName: { value: 'first' } },
           },
-          metadata: {
-            connectedCase: {
-              createdAt: '12345',
-              twilioWorkerId: 'worker1',
-              status: 'open',
-            },
+          metadata: {},
+        },
+      },
+    },
+    [connectedCaseBase]: {
+      tasks: {
+        task1: {
+          connectedCase: {
+            createdAt: '12345',
+            twilioWorkerId: 'worker1',
+            status: 'open',
           },
+          temporaryCaseInfo: '',
         },
       },
     },
@@ -324,13 +349,19 @@ test('a11y', async () => {
           childInformation: {
             name: { firstName: { value: 'first' }, lastName: { value: 'first' } },
           },
-          metadata: {
-            connectedCase: {
-              createdAt: '12345',
-              twilioWorkerId: 'worker1',
-              status: 'open',
-            },
+          metadata: {},
+        },
+      },
+    },
+    [connectedCaseBase]: {
+      tasks: {
+        task1: {
+          connectedCase: {
+            createdAt: '12345',
+            twilioWorkerId: 'worker1',
+            status: 'open',
           },
+          temporaryCaseInfo: '',
         },
       },
     },
