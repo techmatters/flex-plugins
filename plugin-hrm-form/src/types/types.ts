@@ -1,9 +1,13 @@
+/* eslint-disable import/no-unused-modules */
+
+export type CaseStatus = 'open' | 'close';
+
 // This type is incomplete as we don't know the types for the remaining properties (perpetrators, etc)
 export type CaseInfo = { summary?: string; notes?: { note: string; createdAt: string }[] };
 
 export type Case = {
   id: number;
-  status: string;
+  status: CaseStatus;
   helpline: string;
   twilioWorkerId: string;
   info?: CaseInfo;
