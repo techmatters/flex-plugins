@@ -11,7 +11,6 @@ import {
   SAVE_END_MILLIS,
   HANDLE_SELECT_SEARCH_RESULT,
   CHANGE_TAB,
-  CHANGE_ROUTE,
   RESTORE_ENTIRE_FORM,
   SET_CATEGORIES_GRID_VIEW,
   HANDLE_EXPAND_CATEGORY,
@@ -67,8 +66,6 @@ export class Actions {
   static saveEndMillis = taskId => ({ type: SAVE_END_MILLIS, taskId });
 
   static changeTab = (tab, taskId) => ({ type: CHANGE_TAB, tab, taskId });
-
-  static changeRoute = (route, taskId, subroute) => ({ type: CHANGE_ROUTE, route, taskId, subroute });
 
   static restoreEntireForm = (form, taskId) => ({
     type: RESTORE_ENTIRE_FORM,
@@ -223,21 +220,6 @@ export function reduce(state = initialState, action) {
         tasks: {
           ...state.tasks,
           [action.taskId]: taskWithUpdatedTab,
-        },
-      };
-    }
-
-    case CHANGE_ROUTE: {
-      const currentTask = state.tasks[action.taskId];
-      const { metadata } = currentTask;
-      const { route, subroute } = action;
-      const taskWithUpdatedRoute = { ...currentTask, metadata: { ...metadata, route, subroute } };
-
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: taskWithUpdatedRoute,
         },
       };
     }
