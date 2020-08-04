@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { Template, ITask } from '@twilio/flex-ui';
 import { ButtonBase } from '@material-ui/core';
@@ -11,8 +10,8 @@ import { Box, Row, HiddenText, StyledNextStepButton, BottomButtonBar } from '../
 import { AddNoteContainer, CaseActionTitle, CaseActionDetailFont, CaseActionTextArea } from '../../styles/case';
 import { namespace, connectedCaseBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
+import * as RoutingActions from '../../states/routing/actions';
 import { CaseState } from '../../states/case/reducer';
-import { Actions } from '../../states/ContactState';
 
 type OwnProps = {
   task: ITask;
@@ -21,7 +20,7 @@ type OwnProps = {
 };
 
 // eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
 const AddNote: React.FC<Props> = ({
   task,
@@ -43,7 +42,7 @@ const AddNote: React.FC<Props> = ({
     const notes = info && info.notes ? [...info.notes, newNoteObj] : [newNoteObj];
     const newInfo = info ? { ...info, notes } : { notes };
     updateCaseInfo(newInfo, task.taskSid);
-    changeRoute('new-case', task.taskSid);
+    changeRoute({ route: 'new-case' }, task.taskSid);
   };
 
   return (
@@ -114,10 +113,10 @@ const mapStateToProps = (state, ownProps: OwnProps) => {
   return { connectedCaseState };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
-  updateTempInfo: bindActionCreators(CaseActions.updateTempInfo, dispatch),
-  updateCaseInfo: bindActionCreators(CaseActions.updateCaseInfo, dispatch),
-  changeRoute: bindActionCreators(Actions.changeRoute, dispatch),
-});
+const mapDispatchToProps = {
+  updateTempInfo: CaseActions.updateTempInfo,
+  updateCaseInfo: CaseActions.updateCaseInfo,
+  changeRoute: RoutingActions.changeRoute,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddNote);

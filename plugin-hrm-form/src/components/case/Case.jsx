@@ -9,7 +9,7 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 
-import { namespace, contactFormsBase, connectedCaseBase, configurationBase } from '../../states';
+import { namespace, contactFormsBase, connectedCaseBase, configurationBase, routingBase } from '../../states';
 import { taskType, formType } from '../../types';
 import { getConfig } from '../../HrmFormPlugin';
 import { saveToHrm, connectToCase } from '../../services/ContactService';
@@ -19,8 +19,8 @@ import { CaseContainer, CenteredContainer, CaseNumberFont, CaseSectionFont } fro
 import CaseDetails from './CaseDetails';
 import { Menu, MenuItem } from '../menu';
 import { formatName } from '../../utils';
-import { Actions } from '../../states/ContactState';
 import * as CaseActions from '../../states/case/actions';
+import * as RoutingActions from '../../states/routing/actions';
 import CaseAddButton from './CaseAddButton';
 import AddNote from './AddNote';
 import CaseSummary from './CaseSummary';
@@ -45,6 +45,7 @@ class Case extends Component {
     changeRoute: PropTypes.func.isRequired,
     removeConnectedCase: PropTypes.func.isRequired,
     updateTempInfo: PropTypes.func.isRequired,
+    routing: PropTypes.shape({ subroute: PropTypes.string }).isRequired,
   };
 
   state = {
@@ -68,7 +69,7 @@ class Case extends Component {
     const { connectedCase } = this.props.connectedCaseState;
     await cancelCase(connectedCase.id);
 
-    this.props.changeRoute('tabbed-forms', task.taskSid);
+    this.props.changeRoute({ route: 'tabbed-forms' }, task.taskSid);
     this.props.removeConnectedCase(task.taskSid);
   };
 
@@ -95,14 +96,14 @@ class Case extends Component {
   handleClose = () => {
     const { task } = this.props;
     this.props.updateTempInfo(null, task.taskSid);
-    this.props.changeRoute('new-case', task.taskSid);
+    this.props.changeRoute({ route: 'new-case' }, task.taskSid);
   };
 
-  onClickAddNote = () => this.props.changeRoute('new-case', this.props.task.taskSid, 'add-note');
+  onClickAddNote = () => this.props.changeRoute({ route: 'new-case', subroute: 'add-note' }, this.props.task.taskSid);
 
   render() {
     const { anchorEl, isMenuOpen, mockedMessage, loading } = this.state;
-    const { subroute } = this.props.form.metadata;
+    const { subroute } = this.props.routing;
 
     if (!this.props.connectedCaseState) return null;
 
@@ -183,10 +184,11 @@ const mapStateToProps = (state, ownProps) => ({
   form: state[namespace][contactFormsBase].tasks[ownProps.task.taskSid],
   connectedCaseState: state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid],
   counselorsHash: state[namespace][configurationBase].counselors.hash,
+  routing: state[namespace][routingBase].tasks[ownProps.task.taskSid],
 });
 
 const mapDispatchToProps = dispatch => ({
-  changeRoute: bindActionCreators(Actions.changeRoute, dispatch),
+  changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
   removeConnectedCase: bindActionCreators(CaseActions.removeConnectedCase, dispatch),
   updateTempInfo: bindActionCreators(CaseActions.updateTempInfo, dispatch),
 });

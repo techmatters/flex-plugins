@@ -29,7 +29,6 @@ class TaskView extends Component {
     handleSelectSearchResult: PropTypes.func.isRequired,
     recreateSearchContact: PropTypes.func.isRequired,
     changeTab: PropTypes.func.isRequired,
-    changeRoute: PropTypes.func.isRequired,
     handleValidateForm: PropTypes.func.isRequired,
   };
 
@@ -63,7 +62,6 @@ class TaskView extends Component {
           handleFocus={this.props.handleFocus}
           handleSelectSearchResult={this.props.handleSelectSearchResult}
           changeTab={this.props.changeTab}
-          changeRoute={this.props.changeRoute}
           handleValidateForm={this.props.handleValidateForm(form, task.taskSid)}
         />
       </div>
@@ -90,7 +88,6 @@ const mapDispatchToProps = dispatch => ({
   handleSelectSearchResult: bindActionCreators(handleSelectSearchResult, dispatch),
   recreateSearchContact: bindActionCreators(recreateSearchContact, dispatch),
   changeTab: bindActionCreators(Actions.changeTab, dispatch),
-  changeRoute: bindActionCreators(Actions.changeRoute, dispatch),
   handleValidateForm: handleValidateForm(dispatch),
 });
 
