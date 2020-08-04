@@ -1,8 +1,8 @@
 import { omit } from 'lodash';
 
-import { REMOVE_CONTACT_STATE } from '../ActionTypes';
 import { Case } from '../../types/types';
-import { CaseActionType, REMOVE_CONNECTED_CASE, SET_CONNECTED_CASE, UPDATE_CASE_INFO, UPDATE_TEMP_INFO } from './types';
+import { CaseActionType, SET_CONNECTED_CASE, REMOVE_CONNECTED_CASE, UPDATE_CASE_INFO, UPDATE_TEMP_INFO } from './types';
+import { GeneralActionType, REMOVE_CONTACT_STATE } from '../types';
 
 export type CaseState = {
   tasks: {
@@ -14,7 +14,7 @@ const initialState: CaseState = {
   tasks: {},
 };
 
-export function reduce(state = initialState, action: CaseActionType) {
+export function reduce(state = initialState, action: CaseActionType | GeneralActionType) {
   switch (action.type) {
     case SET_CONNECTED_CASE:
       return {
@@ -27,14 +27,16 @@ export function reduce(state = initialState, action: CaseActionType) {
           },
         },
       };
-    // @ts-ignore TODO: maybe we need a "common" action for this, that triggers this in all of the reducers
+    case REMOVE_CONNECTED_CASE:
+      return {
+        ...state,
+        tasks: omit(state.tasks, action.taskId),
+      };
     case REMOVE_CONTACT_STATE:
       return {
         ...state,
-        // @ts-ignore
         tasks: omit(state.tasks, action.taskId),
       };
-    // case REMOVE_CONNECTED_CASE:
     case UPDATE_CASE_INFO: {
       const { connectedCase } = state.tasks[action.taskId];
       const updatedCase = { ...connectedCase, info: action.info };

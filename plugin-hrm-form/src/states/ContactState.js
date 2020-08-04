@@ -6,8 +6,6 @@ import {
   HANDLE_VALIDATE_FORM,
   HANDLE_CHANGE,
   HANDLE_FOCUS,
-  INITIALIZE_CONTACT_STATE,
-  REMOVE_CONTACT_STATE,
   SAVE_END_MILLIS,
   HANDLE_SELECT_SEARCH_RESULT,
   CHANGE_TAB,
@@ -15,6 +13,7 @@ import {
   SET_CATEGORIES_GRID_VIEW,
   HANDLE_EXPAND_CATEGORY,
 } from './ActionTypes';
+import { INITIALIZE_CONTACT_STATE, REMOVE_CONTACT_STATE } from './types';
 import { countSelectedCategories } from './ValidationRules';
 import { copySearchResultIntoTask } from './SearchContact';
 import { getConfig } from '../HrmFormPlugin';
@@ -57,10 +56,6 @@ export class Actions {
     value,
     parents: [],
   });
-
-  static initializeContactState = taskId => ({ type: INITIALIZE_CONTACT_STATE, taskId });
-
-  static removeContactState = taskId => ({ type: REMOVE_CONTACT_STATE, taskId });
 
   // records the end time (in milliseconds)
   static saveEndMillis = taskId => ({ type: SAVE_END_MILLIS, taskId });

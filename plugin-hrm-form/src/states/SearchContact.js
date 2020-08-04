@@ -1,8 +1,6 @@
 import { omit } from 'lodash';
 
 import {
-  INITIALIZE_CONTACT_STATE,
-  REMOVE_CONTACT_STATE,
   RECREATE_SEARCH_CONTACT,
   HANDLE_SELECT_SEARCH_RESULT,
   HANDLE_SEARCH_FORM_CHANGE,
@@ -13,6 +11,7 @@ import {
   SEARCH_CONTACTS_FAILURE,
   HANDLE_EXPAND_DETAILS_SECTION,
 } from './ActionTypes';
+import { INITIALIZE_CONTACT_STATE, REMOVE_CONTACT_STATE } from './types';
 import { searchContacts as searchContactsApiCall } from '../services/ContactService';
 import callTypes from './DomainConstants';
 import { createBlankForm } from './ContactFormStateFactory';

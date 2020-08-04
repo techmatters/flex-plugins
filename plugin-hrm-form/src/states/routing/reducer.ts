@@ -1,7 +1,8 @@
 import { omit } from 'lodash';
 
-import { INITIALIZE_CONTACT_STATE, REMOVE_CONTACT_STATE, RECREATE_SEARCH_CONTACT } from '../ActionTypes';
+import { RECREATE_SEARCH_CONTACT } from '../ActionTypes';
 import { AppRoutes, RoutingActionType, CHANGE_ROUTE } from './types';
+import { GeneralActionType, INITIALIZE_CONTACT_STATE, REMOVE_CONTACT_STATE } from '../types';
 
 export type RoutingState = {
   tasks: {
@@ -17,9 +18,8 @@ const newTaskEntry = {
   route: 'select-call-type',
 };
 
-export function reduce(state = initialState, action: RoutingActionType) {
+export function reduce(state = initialState, action: RoutingActionType | GeneralActionType) {
   switch (action.type) {
-    // @ts-ignore TODO: maybe we need a "common" action for this, that triggers this in all of the reducers
     case INITIALIZE_CONTACT_STATE: {
       return {
         ...state,
@@ -35,10 +35,10 @@ export function reduce(state = initialState, action: RoutingActionType) {
         ...state,
         tasks: {
           ...state.tasks,
+          // @ts-ignore
           [action.taskId]: newTaskEntry,
         },
       };
-    // @ts-ignore TODO: maybe we need a "common" action for this, that triggers this in all of the reducers
     case REMOVE_CONTACT_STATE:
       return {
         ...state,
