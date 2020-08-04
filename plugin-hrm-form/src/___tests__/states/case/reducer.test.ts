@@ -1,6 +1,7 @@
 import { reduce } from '../../../states/case/reducer';
 import * as types from '../../../states/case/types';
 import * as actions from '../../../states/case/actions';
+import * as GeneralActions from '../../../states/actions';
 import { Case } from '../../../types/types';
 
 const task = { taskSid: 'task1' };
@@ -15,6 +16,11 @@ describe('test reducer', () => {
     expect(result).toStrictEqual(expected);
 
     state = result;
+  });
+
+  test('should ignore INITIALIZE_CONTACT_STATE', async () => {
+    const result = reduce(state, GeneralActions.initializeContactState(task.taskSid));
+    expect(result).toStrictEqual(state);
   });
 
   test('should handle SET_CONNECTED_CASE', async () => {
@@ -46,6 +52,15 @@ describe('test reducer', () => {
     const expected = { tasks: {} };
 
     const result = reduce(state, actions.removeConnectedCase(task.taskSid));
+    expect(result).toStrictEqual(expected);
+
+    // state = result; no assignment here as we don't want to lose the only task in the state, it will be reused in following tests
+  });
+
+  test('should handle REMOVE_CONTACT_STATE', async () => {
+    const expected = { tasks: {} };
+
+    const result = reduce(state, GeneralActions.removeContactState(task.taskSid));
     expect(result).toStrictEqual(expected);
 
     // state = result; no assignment here as we don't want to lose the only task in the state, it will be reused in following tests
