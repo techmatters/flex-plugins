@@ -298,6 +298,7 @@ describe('useState mocked', () => {
             },
             metadata: {
               connectedCase: {
+                id: 123,
                 createdAt: '12345',
                 twilioWorkerId: 'worker1',
                 status: 'open',
