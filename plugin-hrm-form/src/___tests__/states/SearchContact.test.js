@@ -1,7 +1,7 @@
 import fromentries from 'fromentries';
-import { omit } from 'lodash';
 
-import { SEARCH_CONTACTS_SUCCESS, SEARCH_CONTACTS_FAILURE, REMOVE_CONTACT_STATE } from '../../states/ActionTypes';
+import { SEARCH_CONTACTS_SUCCESS, SEARCH_CONTACTS_FAILURE } from '../../states/ActionTypes';
+import { REMOVE_CONTACT_STATE } from '../../states/types';
 import { reduce as ContactStateReducer } from '../../states/ContactState';
 import {
   changeSearchPage,
@@ -344,6 +344,8 @@ describe('SearchContact reducer', () => {
     const action = { type: SEARCH_CONTACTS_FAILURE, error: 'Some error', taskId: task.taskSid };
     const result = SearchFormReducer(state, action);
 
+    console.log(state);
+    console.log(result);
     const { tasks } = result;
     expect(tasks[task.taskSid].error).toBe('Some error');
     state = result;

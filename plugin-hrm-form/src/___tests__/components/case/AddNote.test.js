@@ -11,7 +11,7 @@ import '../../mockGetConfig';
 import HrmTheme from '../../../styles/HrmTheme';
 import AddNote from '../../../components/case/AddNote';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../../states';
-import { Actions } from '../../../states/ContactState';
+import * as RoutingActions from '../../../states/routing/actions';
 import * as CaseActions from '../../../states/case/actions';
 import { UPDATE_CASE_INFO } from '../../../states/case/types';
 
@@ -133,7 +133,7 @@ test('Test input/add note functionality', async () => {
   expect(updateCaseCall.taskId).toBe(ownProps.task.taskSid);
   expect(updateCaseCall.info.notes[0].note).toBe('Mocked temp value');
 
-  expect(store.dispatch).toHaveBeenCalledWith(Actions.changeRoute('new-case', ownProps.task.taskSid));
+  expect(store.dispatch).toHaveBeenCalledWith(RoutingActions.changeRoute({ route: 'new-case' }, ownProps.task.taskSid));
   store.dispatch.mockClear();
 });
 

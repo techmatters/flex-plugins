@@ -11,7 +11,7 @@ import '../../mockGetConfig';
 import HrmTheme from '../../../styles/HrmTheme';
 import Case from '../../../components/case';
 import CaseDetails from '../../../components/case/CaseDetails';
-import { namespace, configurationBase, contactFormsBase, connectedCaseBase } from '../../../states';
+import { namespace, configurationBase, contactFormsBase, connectedCaseBase, routingBase } from '../../../states';
 import { cancelCase } from '../../../services/CaseService';
 
 jest.mock('../../../services/CaseService');
@@ -69,6 +69,7 @@ test('Case (should return null)', () => {
     [connectedCaseBase]: {
       tasks: {},
     },
+    [routingBase]: { tasks: { task1: { route: 'new-case' } } },
   });
   const store = mockStore(initialState);
 
@@ -120,6 +121,7 @@ test('Case (should render)', () => {
         },
       },
     },
+    [routingBase]: { tasks: { task1: { route: 'new-case' } } },
   };
   const initialState = createState(state);
   const store = mockStore(initialState);
@@ -194,6 +196,7 @@ test('click cancel button', () => {
         },
       },
     },
+    [routingBase]: { tasks: { task1: { route: 'new-case' } } },
   });
   const store = mockStore(initialState);
 
@@ -247,6 +250,7 @@ test('click Add Note button', async () => {
         },
       },
     },
+    [routingBase]: { tasks: { task1: { route: 'new-case' } } },
   });
   const store = mockStore(initialState);
   store.dispatch = jest.fn();
@@ -263,8 +267,7 @@ test('click Add Note button', async () => {
 
   CaseWrapper.find('CaseAddButton').simulate('click');
   expect(store.dispatch).toHaveBeenCalledWith({
-    route: 'new-case',
-    subroute: 'add-note',
+    routing: { route: 'new-case', subroute: 'add-note' },
     taskId: 'task1',
     type: 'CHANGE_ROUTE',
   });
@@ -306,6 +309,7 @@ test('edit case summary', async () => {
         },
       },
     },
+    [routingBase]: { tasks: { task1: { route: 'new-case' } } },
   });
   const store = mockStore(initialState);
   store.dispatch = jest.fn();
@@ -365,6 +369,7 @@ test('a11y', async () => {
         },
       },
     },
+    [routingBase]: { tasks: { task1: { route: 'new-case' } } },
   });
   const store = mockStore(initialState);
 

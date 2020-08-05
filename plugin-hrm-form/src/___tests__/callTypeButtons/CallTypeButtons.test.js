@@ -134,7 +134,7 @@ test('<CallTypeButtons> click on CallType button', () => {
   component.findAllByType(DataCallTypeButton)[0].props.onClick();
 
   expect(handleCallTypeButtonClick).toHaveBeenCalledWith(task.taskSid, callTypes.child);
-  expect(changeRoute).toHaveBeenCalledWith('tabbed-forms', task.taskSid);
+  expect(changeRoute).toHaveBeenCalledWith({ route: 'tabbed-forms' }, task.taskSid);
 });
 
 test('<CallTypeButtons> click on END CHAT button', async () => {
