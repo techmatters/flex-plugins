@@ -112,21 +112,24 @@ export const CaseActionDetailFont = styled(FontOpenSans)`
 `;
 CaseActionDetailFont.displayName = 'CaseActionDetailFont';
 
-export const CaseActionTextArea = styled('textarea')`
+const BaseTextArea = styled('textarea')`
   resize: none;
-  width: 65%;
   background-color: ${props => props.theme.colors.base2};
   font-family: Open Sans;
-  font-size: 12px;
   font-weight: 500;
+  font-size: 12px;
   line-height: 15px;
-  margin-top: 10px;
   padding: 5px;
   border-style: none;
   border-radius: 4px;
   :focus {
     outline: none;
   }
+`;
+
+export const CaseActionTextArea = styled(BaseTextArea)`
+  width: 65%;
+  margin-top: 10px;
 `;
 CaseActionTextArea.displayName = 'CaseActionTextArea';
 
@@ -163,3 +166,13 @@ export const TimelineIconContainer = styled('div')`
   height: 40px;
 `;
 TimelineIconContainer.displayName = 'TimelineIconContainer';
+
+export const CaseSummaryTextArea = styled(BaseTextArea)`
+  height: 100%;
+  width: 100%;
+  margin: 10px 0px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+`;
+CaseSummaryTextArea.displayName = 'CaseSummaryTextArea';

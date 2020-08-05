@@ -4,8 +4,10 @@ import renderer from 'react-test-renderer';
 import configureMockStore from 'redux-mock-store';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { StorelessThemeProvider, withTheme } from '@twilio/flex-ui';
 
+import '../../mockGetConfig';
 import HrmTheme from '../../../styles/HrmTheme';
 import Case from '../../../components/case';
 import CaseDetails from '../../../components/case/CaseDetails';
@@ -274,8 +276,59 @@ describe('useState mocked', () => {
       type: 'CHANGE_ROUTE',
     });
   });
+  test('edit case summary', async () => {
+    const ownProps = {
+      task: {
+        taskSid: 'task1',
+      },
+      handleCompleteTask: jest.fn(),
+    };
+    const initialState = createState({
+      [configurationBase]: {
+        counselors: {
+          list: [],
+          hash: { worker1: 'worker1 name' },
+        },
+      },
+      [contactFormsBase]: {
+        tasks: {
+          task1: {
+            childInformation: {
+              name: { firstName: { value: 'first' }, lastName: { value: 'first' } },
+            },
+            metadata: {
+              connectedCase: {
+                createdAt: '12345',
+                twilioWorkerId: 'worker1',
+                status: 'open',
+              },
+            },
+            caseInformation: {
+              callSummary: { value: 'contact call summary' },
+            },
+          },
+        },
+      },
+    });
+    const store = mockStore(initialState);
+    store.dispatch = jest.fn();
 
-  const Wrapped = withTheme(props => <Case {...props} />);
+    render(
+      <StorelessThemeProvider themeConf={themeConf}>
+        <Provider store={store}>
+          <Case {...ownProps} />
+        </Provider>
+      </StorelessThemeProvider>,
+    );
+
+    const textarea = screen.getByTestId('Case-CaseSummary-TextArea');
+    fireEvent.change(textarea, { target: { value: 'Some summary' } });
+
+    const updateCaseCall = store.dispatch.mock.calls[0][0];
+    expect(updateCaseCall.type).toBe('UPDATE_CASE_INFO');
+    expect(updateCaseCall.taskId).toBe(ownProps.task.taskSid);
+    expect(updateCaseCall.info.summary).toBe('Some summary');
+  });
 
   test('a11y', async () => {
     getActivities.mockReturnValueOnce(Promise.resolve([]));
