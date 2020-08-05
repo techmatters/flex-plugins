@@ -22,6 +22,7 @@ import { formatName } from '../../utils';
 import { Actions } from '../../states/ContactState';
 import CaseAddButton from './CaseAddButton';
 import AddNote from './AddNote';
+import CaseSummary from './CaseSummary';
 
 class Case extends Component {
   static displayName = 'Case';
@@ -129,6 +130,9 @@ class Case extends Component {
                   </CaseSectionFont>
                   <CaseAddButton templateCode="Case-AddNote" onClick={this.onClickAddNote} />
                 </Row>
+              </Box>
+              <Box marginLeft="25px" marginTop="25px">
+                <CaseSummary task={this.props.task} />
               </Box>
             </Container>
             <Dialog onClose={this.closeMockedMessage} open={isMockedMessageOpen}>

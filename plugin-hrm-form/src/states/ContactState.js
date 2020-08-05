@@ -271,7 +271,10 @@ export function reduce(state = initialState, action) {
       const { metadata } = currentTask;
       const { connectedCase } = metadata;
       const updatedCase = { ...connectedCase, info: action.info };
-      const taskWithUpdatedCase = { ...currentTask, metadata: { ...metadata, connectedCase: updatedCase } };
+      const taskWithUpdatedCase = {
+        ...currentTask,
+        metadata: { ...metadata, connectedCase: updatedCase, temporaryCaseInfo: '' },
+      };
 
       return {
         ...state,
