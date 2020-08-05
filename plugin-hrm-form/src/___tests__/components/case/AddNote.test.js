@@ -13,6 +13,10 @@ import AddNote from '../../../components/case/AddNote';
 import { configurationBase, contactFormsBase, namespace } from '../../../states';
 import { Actions } from '../../../states/ContactState';
 
+jest.mock('../../../services/CaseService');
+
+const flushPromises = () => new Promise(setImmediate);
+
 expect.extend(toHaveNoViolations);
 
 const mockStore = configureMockStore([]);
@@ -119,12 +123,13 @@ test('Test input/add note functionality', async () => {
   expect(store.dispatch).not.toHaveBeenCalled();
 
   screen.getByTestId('Case-AddNoteScreen-SaveNote').click();
+  await flushPromises();
 
-  expect(store.dispatch).toHaveBeenCalledTimes(2);
+  expect(store.dispatch).toHaveBeenCalledTimes(3);
   const updateCaseCall = store.dispatch.mock.calls[0][0];
   expect(updateCaseCall.type).toBe('UPDATE_CASE_INFO');
   expect(updateCaseCall.taskId).toBe(ownProps.task.taskSid);
-  expect(updateCaseCall.info.notes[0].note).toBe('Mocked temp value');
+  expect(updateCaseCall.info.notes[0]).toBe('Mocked temp value');
 
   expect(store.dispatch).toHaveBeenCalledWith(Actions.changeRoute('new-case', ownProps.task.taskSid));
   store.dispatch.mockClear();
