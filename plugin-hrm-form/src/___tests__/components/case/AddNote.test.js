@@ -13,7 +13,11 @@ import AddNote from '../../../components/case/AddNote';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../../states';
 import * as RoutingActions from '../../../states/routing/actions';
 import * as CaseActions from '../../../states/case/actions';
-import { UPDATE_CASE_INFO } from '../../../states/case/types';
+import { updateCase } from '../../../services/CaseService';
+
+jest.mock('../../../services/CaseService');
+
+const flushPromises = () => new Promise(setImmediate);
 
 expect.extend(toHaveNoViolations);
 
@@ -97,6 +101,11 @@ test('Test close functionality', async () => {
 });
 
 test('Test input/add note functionality', async () => {
+  const note = 'Some note';
+  const updatedCase = {
+    info: { notes: [note] },
+  };
+  updateCase.mockReturnValueOnce(Promise.resolve(updatedCase));
   const onClickClose = jest.fn();
 
   const ownProps = {
@@ -118,20 +127,22 @@ test('Test input/add note functionality', async () => {
   expect(store.dispatch).not.toHaveBeenCalled();
 
   const textarea = screen.getByTestId('Case-AddNoteScreen-TextArea');
-  fireEvent.change(textarea, { target: { value: 'Some note' } });
+  fireEvent.change(textarea, { target: { value: note } });
 
-  expect(store.dispatch).toHaveBeenCalledWith(CaseActions.updateTempInfo('Some note', ownProps.task.taskSid));
+  expect(store.dispatch).toHaveBeenCalledWith(CaseActions.updateTempInfo(note, ownProps.task.taskSid));
 
   store.dispatch.mockClear();
   expect(store.dispatch).not.toHaveBeenCalled();
 
   screen.getByTestId('Case-AddNoteScreen-SaveNote').click();
+  await flushPromises();
 
-  expect(store.dispatch).toHaveBeenCalledTimes(2);
-  const updateCaseCall = store.dispatch.mock.calls[0][0];
-  expect(updateCaseCall.type).toBe(UPDATE_CASE_INFO);
-  expect(updateCaseCall.taskId).toBe(ownProps.task.taskSid);
-  expect(updateCaseCall.info.notes[0].note).toBe('Mocked temp value');
+  expect(store.dispatch).toHaveBeenCalledTimes(3);
+  expect(updateCase).toHaveBeenCalled();
+  const setConnectedCaseCall = store.dispatch.mock.calls[0][0];
+  expect(setConnectedCaseCall.type).toBe('SET_CONNECTED_CASE');
+  expect(setConnectedCaseCall.taskId).toBe(ownProps.task.taskSid);
+  expect(setConnectedCaseCall.connectedCase).toBe(updatedCase);
 
   expect(store.dispatch).toHaveBeenCalledWith(RoutingActions.changeRoute({ route: 'new-case' }, ownProps.task.taskSid));
   store.dispatch.mockClear();

@@ -344,8 +344,6 @@ describe('SearchContact reducer', () => {
     const action = { type: SEARCH_CONTACTS_FAILURE, error: 'Some error', taskId: task.taskSid };
     const result = SearchFormReducer(state, action);
 
-    console.log(state);
-    console.log(result);
     const { tasks } = result;
     expect(tasks[task.taskSid].error).toBe('Some error');
     state = result;

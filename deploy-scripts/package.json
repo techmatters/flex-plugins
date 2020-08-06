@@ -1,0 +1,28 @@
+{
+  "name": "deploy-scripts",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "lint": "eslint --ext js .",
+    "lint:fix": "npm run lint -- --fix",
+    "copyFlow": "node copyFlow.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "prompt-confirm": "^2.0.4",
+    "twilio": "^3.48.0",
+    "yargs": "^15.4.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.4.0",
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-import-resolver-webpack": "^0.12.2",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-react": "^7.20.3",
+    "prettier": "^2.0.5"
+  }
+}
