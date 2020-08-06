@@ -14,13 +14,13 @@ import { taskType, formType } from '../../types';
 import { getConfig } from '../../HrmFormPlugin';
 import { saveToHrm, connectToCase } from '../../services/ContactService';
 import { cancelCase, updateCase } from '../../services/CaseService';
-import { Box, Container, BottomButtonBar, StyledNextStepButton, Row } from '../../styles/HrmStyles';
-import { CaseContainer, CenteredContainer, CaseNumberFont, CaseSectionFont } from '../../styles/case';
+import { Box, Container, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
+import { CaseContainer, CenteredContainer, CaseNumberFont } from '../../styles/case';
 import CaseDetails from './CaseDetails';
 import { Menu, MenuItem } from '../menu';
 import { formatName } from '../../utils';
 import { Actions } from '../../states/ContactState';
-import CaseAddButton from './CaseAddButton';
+import Timeline from './Timeline';
 import AddNote from './AddNote';
 import CaseSummary from './CaseSummary';
 
@@ -92,7 +92,8 @@ class Case extends Component {
 
   render() {
     const { anchorEl, isMenuOpen, mockedMessage, loading } = this.state;
-    const { connectedCase, subroute } = this.props.form.metadata;
+    const { task, form, counselorsHash } = this.props;
+    const { connectedCase, subroute } = form.metadata;
 
     if (!connectedCase) return null;
 
@@ -104,10 +105,10 @@ class Case extends Component {
       );
 
     const isMockedMessageOpen = Boolean(mockedMessage);
-    const { firstName, lastName } = this.props.form.childInformation.name;
+    const { firstName, lastName } = form.childInformation.name;
     const name = formatName(`${firstName.value} ${lastName.value}`);
     const { createdAt, twilioWorkerId, status } = connectedCase;
-    const counselor = this.props.counselorsHash[twilioWorkerId];
+    const counselor = counselorsHash[twilioWorkerId];
     const date = new Date(createdAt).toLocaleDateString(navigator.language);
 
     switch (subroute) {
@@ -124,12 +125,7 @@ class Case extends Component {
                 <CaseDetails name={name} status={status} counselor={counselor} date={date} />
               </Box>
               <Box marginLeft="25px" marginTop="25px">
-                <Row>
-                  <CaseSectionFont id="Case-TimelineSection-label">
-                    <Template code="Case-TimelineSection" />
-                  </CaseSectionFont>
-                  <CaseAddButton templateCode="Case-AddNote" onClick={this.onClickAddNote} />
-                </Row>
+                <Timeline caseId={connectedCase.id} task={task} form={form} onClickAddNote={this.onClickAddNote} />
               </Box>
               <Box marginLeft="25px" marginTop="25px">
                 <CaseSummary task={this.props.task} />

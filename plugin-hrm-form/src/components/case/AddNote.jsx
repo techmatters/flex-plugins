@@ -12,19 +12,22 @@ import { AddNoteContainer, CaseActionTitle, CaseActionDetailFont, CaseActionText
 import { taskType, formType } from '../../types';
 import { Actions } from '../../states/ContactState';
 import { namespace, contactFormsBase } from '../../states';
+import { updateCase } from '../../services/CaseService';
 
-const AddNote = ({ task, form, counselor, onClickClose, updateTemporaryCaseInfo, updateCaseInfo, changeRoute }) => {
+const AddNote = ({ task, form, counselor, onClickClose, updateTemporaryCaseInfo, changeRoute, setConnectedCase }) => {
   const { strings } = getConfig();
   const { connectedCase, temporaryCaseInfo } = form.metadata;
 
   const handleOnChangeNote = newNote => updateTemporaryCaseInfo(newNote, task.taskSid);
 
-  const handleSaveNote = () => {
-    const { info } = connectedCase;
-    const newNoteObj = { note: temporaryCaseInfo, createdAt: new Date().toISOString() };
-    const notes = info && info.notes ? [...info.notes, newNoteObj] : [newNoteObj];
+  const handleSaveNote = async () => {
+    const { info, id } = connectedCase;
+    const newNote = temporaryCaseInfo;
+    const notes = info && info.notes ? [...info.notes, newNote] : [newNote];
     const newInfo = info ? { ...info, notes } : { notes };
-    updateCaseInfo(newInfo, task.taskSid);
+    const updatedCase = await updateCase(id, { info: newInfo });
+    setConnectedCase(updatedCase, task.taskSid);
+    updateTemporaryCaseInfo('', task.taskSid);
     changeRoute('new-case', task.taskSid);
   };
 
@@ -94,8 +97,8 @@ AddNote.propTypes = {
   counselor: PropTypes.string.isRequired,
   onClickClose: PropTypes.func.isRequired,
   updateTemporaryCaseInfo: PropTypes.func.isRequired,
-  updateCaseInfo: PropTypes.func.isRequired,
   changeRoute: PropTypes.func.isRequired,
+  setConnectedCase: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state, ownProps) => ({
@@ -104,8 +107,8 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = dispatch => ({
   updateTemporaryCaseInfo: bindActionCreators(Actions.temporaryCaseInfo, dispatch),
-  updateCaseInfo: bindActionCreators(Actions.updateCaseInfo, dispatch),
   changeRoute: bindActionCreators(Actions.changeRoute, dispatch),
+  setConnectedCase: bindActionCreators(Actions.setConnectedCase, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddNote);

@@ -1,4 +1,6 @@
+import React from 'react';
 import styled from 'react-emotion';
+import { Button } from '@twilio/flex-ui';
 
 import { FontOpenSans, Row } from '../HrmStyles';
 
@@ -29,7 +31,7 @@ export const CaseNumberFont = styled(FontOpenSans)`
 CaseNumberFont.displayName = 'CaseNumberFont';
 
 export const CaseSectionFont = styled(FontOpenSans)`
-  color: #192b33;
+  color: ${({ theme }) => theme.colors.categoryTextColor};
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 1.67px;
@@ -75,6 +77,17 @@ export const DefaultStatusFont = styled(DetailEntryText)`
 `;
 DefaultStatusFont.displayName = 'DefaultStatusFont';
 
+export const ViewButton = styled(props => <Button roundCorners={false} {...props} />)`
+  color: ${({ theme }) => theme.colors.categoryTextColor};
+  background-color: #ecedf1;
+  border-radius: 4px;
+  font-weight: normal;
+  letter-spacing: normal;
+  font-size: 12px;
+  box-shadow: none;
+`;
+ViewButton.displayName = 'ViewButton';
+
 export const CaseAddButtonFont = styled(FontOpenSans)`
   font-weight: 600;
   font-size: 12px;
@@ -119,6 +132,40 @@ export const CaseActionTextArea = styled(BaseTextArea)`
   margin-top: 10px;
 `;
 CaseActionTextArea.displayName = 'CaseActionTextArea';
+
+export const TimelineRow = styled('div')`
+  display: flex;
+  align-items: center;
+  background-color: #f6f6f67d;
+  height: 40px;
+  margin-bottom: 3px;
+  padding: 0 15px;
+`;
+TimelineRow.displayName = 'TimelineRow';
+
+export const TimelineDate = styled('div')`
+  font-weight: bold;
+  min-width: 65px;
+  text-align: center;
+`;
+TimelineDate.displayName = 'TimelineDate';
+
+export const TimelineText = styled('span')`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-grow: 1;
+`;
+TimelineText.displayName = 'TimelineText';
+
+export const TimelineIconContainer = styled('div')`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+`;
+TimelineIconContainer.displayName = 'TimelineIconContainer';
 
 export const CaseSummaryTextArea = styled(BaseTextArea)`
   height: 100%;
