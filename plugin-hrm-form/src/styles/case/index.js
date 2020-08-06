@@ -31,7 +31,7 @@ export const CaseNumberFont = styled(FontOpenSans)`
 CaseNumberFont.displayName = 'CaseNumberFont';
 
 export const CaseSectionFont = styled(FontOpenSans)`
-  color: #192b33;
+  color: ${({ theme }) => theme.colors.categoryTextColor};
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 1.67px;
@@ -78,7 +78,7 @@ export const DefaultStatusFont = styled(DetailEntryText)`
 DefaultStatusFont.displayName = 'DefaultStatusFont';
 
 export const ViewButton = styled(props => <Button roundCorners={false} {...props} />)`
-  color: #192b33;
+  color: ${({ theme }) => theme.colors.categoryTextColor};
   background-color: #ecedf1;
   border-radius: 4px;
   font-weight: normal;

@@ -30,11 +30,13 @@ const Timeline = ({ task, form, caseId, onClickAddNote }) => {
     timeline.find(activity => ['whatsapp', 'facebook', 'web', 'sms'].includes(activity.type)),
   );
   if (isCreatingCase) {
-    timeline.push({
+    const connectCaseActivity = {
       date: format(Date.now(), 'yyyy-MM-dd HH:mm:ss'),
       type: task.channelType,
       text: form.caseInformation.callSummary.value,
-    });
+    };
+
+    setTimeline([...timeline, connectCaseActivity]);
   }
   return (
     <Box marginTop="25px">
