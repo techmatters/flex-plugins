@@ -40,3 +40,7 @@ export async function updateCase(caseId, body) {
 
   return responseJson;
 }
+
+export async function getActivities(caseId) {
+  return fetchHrmApi(`/cases/${caseId}/activities/`);
+}

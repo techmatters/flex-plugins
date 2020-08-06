@@ -13,6 +13,7 @@ import { namespace, connectedCaseBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import { CaseState } from '../../states/case/reducer';
 import { Actions } from '../../states/ContactState';
+import { updateCase } from '../../services/CaseService';
 
 type OwnProps = {
   task: ITask;
@@ -29,20 +30,22 @@ const AddNote: React.FC<Props> = ({
   connectedCaseState,
   onClickClose,
   updateTempInfo,
-  updateCaseInfo,
   changeRoute,
+  setConnectedCase,
 }) => {
   const { strings } = getConfig();
   const { connectedCase, temporaryCaseInfo } = connectedCaseState;
 
   const handleOnChangeNote = (newNote: string) => updateTempInfo(newNote, task.taskSid);
 
-  const handleSaveNote = () => {
-    const { info } = connectedCase;
-    const newNoteObj = { note: temporaryCaseInfo, createdAt: new Date().toISOString() };
-    const notes = info && info.notes ? [...info.notes, newNoteObj] : [newNoteObj];
+  const handleSaveNote = async () => {
+    const { info, id } = connectedCase;
+    const newNote = temporaryCaseInfo;
+    const notes = info && info.notes ? [...info.notes, newNote] : [newNote];
     const newInfo = info ? { ...info, notes } : { notes };
-    updateCaseInfo(newInfo, task.taskSid);
+    const updatedCase = await updateCase(id, { info: newInfo });
+    setConnectedCase(updatedCase, task.taskSid);
+    updateTempInfo('', task.taskSid);
     changeRoute('new-case', task.taskSid);
   };
 
@@ -116,7 +119,7 @@ const mapStateToProps = (state, ownProps: OwnProps) => {
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
   updateTempInfo: bindActionCreators(CaseActions.updateTempInfo, dispatch),
-  updateCaseInfo: bindActionCreators(CaseActions.updateCaseInfo, dispatch),
+  setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
   changeRoute: bindActionCreators(Actions.changeRoute, dispatch),
 });
 
