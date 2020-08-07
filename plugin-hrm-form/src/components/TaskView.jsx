@@ -31,6 +31,7 @@ class TaskView extends Component {
     changeTab: PropTypes.func.isRequired,
     changeRoute: PropTypes.func.isRequired,
     handleValidateForm: PropTypes.func.isRequired,
+    prepopulateForm: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
@@ -48,6 +49,33 @@ class TaskView extends Component {
 
     if (!show) {
       return null;
+    }
+
+    console.log(task);
+    if (task.attributes.memory) {
+      const { answers } = task.attributes.memory.twilio.collected_data.collect_caller_info;
+      const gender = answers.gender.answer;
+      const ageNum = parseInt(answers.age.answer, 10);
+      let ageStr;
+      if (ageNum >= 0 && ageNum <= 3) {
+        ageStr = '0-03';
+      } else if (ageNum >= 4 && ageNum <= 6) {
+        ageStr = '04-06';
+      } else if (ageNum >= 7 && ageNum <= 9) {
+        ageStr = '07-09';
+      } else if (ageNum >= 10 && ageNum <= 12) {
+        ageStr = '10-12';
+      } else if (ageNum >= 13 && ageNum <= 15) {
+        ageStr = '13-15';
+      } else if (ageNum >= 16 && ageNum <= 17) {
+        ageStr = '16-17';
+      } else if (ageNum >= 18 && ageNum <= 25) {
+        ageStr = '18-25';
+      } else {
+        ageStr = '>25';
+      }
+
+      this.props.prepopulateForm(gender, ageStr, task.taskSid);
     }
 
     return (
@@ -92,6 +120,7 @@ const mapDispatchToProps = dispatch => ({
   changeTab: bindActionCreators(Actions.changeTab, dispatch),
   changeRoute: bindActionCreators(Actions.changeRoute, dispatch),
   handleValidateForm: handleValidateForm(dispatch),
+  prepopulateForm: bindActionCreators(Actions.prepopulateForm, dispatch),
 });
 
 export default withTaskContext(connect(mapStateToProps, mapDispatchToProps)(TaskView));

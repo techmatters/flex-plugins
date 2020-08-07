@@ -18,6 +18,7 @@ import {
   RESTORE_ENTIRE_FORM,
   SET_CATEGORIES_GRID_VIEW,
   HANDLE_EXPAND_CATEGORY,
+  PREPOPULATE_FORM,
 } from './ActionTypes';
 import { countSelectedCategories } from './ValidationRules';
 import { copySearchResultIntoTask } from './SearchContact';
@@ -88,6 +89,8 @@ export class Actions {
   static setCategoriesGridView = (gridView, taskId) => ({ type: SET_CATEGORIES_GRID_VIEW, gridView, taskId });
 
   static handleExpandCategory = (category, taskId) => ({ type: HANDLE_EXPAND_CATEGORY, category, taskId });
+
+  static prepopulateForm = (gender, age, taskId) => ({ type: PREPOPULATE_FORM, gender, age, taskId });
 }
 
 // Will replace the below when we move over to field objects
@@ -248,6 +251,32 @@ export function reduce(state = initialState, action) {
         tasks: {
           ...state.tasks,
           [action.taskId]: taskWithUpdatedRoute,
+        },
+      };
+    }
+
+    case PREPOPULATE_FORM: {
+      const currentTask = state.tasks[action.taskId];
+      const { gender, age } = action;
+
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...currentTask,
+            childInformation: {
+              ...currentTask.childInformation,
+              gender: {
+                ...currentTask.childInformation.gender,
+                value: gender,
+              },
+              age: {
+                ...currentTask.childInformation.age,
+                value: age,
+              },
+            },
+          },
         },
       };
     }
