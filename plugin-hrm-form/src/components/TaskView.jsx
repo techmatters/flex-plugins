@@ -41,6 +41,7 @@ class TaskView extends Component {
     }
   }
 
+  // eslint-disable-next-line complexity
   render() {
     const { task, thisTask, form } = this.props;
 
@@ -52,7 +53,13 @@ class TaskView extends Component {
     }
 
     console.log(task);
-    if (task.attributes.memory) {
+    /**
+     * Murilo: when you call prepopulate you actually endup changing props.form,
+     * which triggers a re-render that triggers another call to prePopulate causing infinite loop.
+     * So I did this quick fix just to see if the rest of the code is fine.
+     */
+    const shouldPrepopulateForm = task.attributes.memory && form && !form.childInformation.gender.value;
+    if (shouldPrepopulateForm) {
       const { answers } = task.attributes.memory.twilio.collected_data.collect_caller_info;
       const gender = answers.gender.answer;
       const ageNum = parseInt(answers.age.answer, 10);
