@@ -3,19 +3,30 @@ import { omit } from 'lodash';
 import { Case } from '../../types/types';
 import {
   CaseActionType,
+<<<<<<< HEAD
   ViewNoteInfo,
   TemporaryCaseInfo,
+=======
+>>>>>>> Perpetrators changes
   SET_CONNECTED_CASE,
   REMOVE_CONNECTED_CASE,
   UPDATE_CASE_INFO,
   UPDATE_TEMP_INFO,
+<<<<<<< HEAD
   UPDATE_VIEW_NOTE_INFO,
+=======
+  TemporaryCaseInfo,
+>>>>>>> Perpetrators changes
 } from './types';
 import { GeneralActionType, REMOVE_CONTACT_STATE } from '../types';
 
 export type CaseState = {
   tasks: {
+<<<<<<< HEAD
     [taskId: string]: { connectedCase: Case; temporaryCaseInfo?: TemporaryCaseInfo; viewNoteInfo: ViewNoteInfo };
+=======
+    [taskId: string]: { connectedCase: Case; temporaryCaseInfo?: TemporaryCaseInfo };
+>>>>>>> Perpetrators changes
   };
 };
 

@@ -107,6 +107,9 @@ class Case extends Component {
   onClickAddPerpetrator = () =>
     this.props.changeRoute({ route: 'new-case', subroute: 'add-perpetrator' }, this.props.task.taskSid);
 
+  onClickAddPerpetrator = () =>
+    this.props.changeRoute({ route: 'new-case', subroute: 'add-perpetrator' }, this.props.task.taskSid);
+
   render() {
     const { anchorEl, isMenuOpen, mockedMessage, loading } = this.state;
     const { subroute } = this.props.routing;
@@ -151,6 +154,13 @@ class Case extends Component {
               </Box>
               <Box marginLeft="25px" marginTop="25px">
                 <Timeline caseId={connectedCase.id} task={task} form={form} />
+              </Box>
+              <Box marginLeft="25px" marginTop="25px">
+                <Perpetrators
+                  perpetrators={perpetrators}
+                  onClickAddPerpetrator={this.onClickAddPerpetrator}
+                  onClickView={this.handleMockedMessage}
+                />
               </Box>
               <Box marginLeft="25px" marginTop="25px">
                 <Perpetrators
