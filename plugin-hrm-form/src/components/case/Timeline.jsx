@@ -6,7 +6,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 
 import TimelineIcon from './TimelineIcon';
-import { CaseSectionFont, ViewButton, TimelineRow, TimelineBoldText, TimelineText } from '../../styles/case';
+import { CaseSectionFont, ViewButton, TimelineRow, TimelineDate, TimelineText } from '../../styles/case';
 import { Box, Row } from '../../styles/HrmStyles';
 import { taskType, formType } from '../../types';
 import { isNullOrUndefined } from '../../utils/checkers';
@@ -57,7 +57,7 @@ const Timeline = ({ task, form, caseId, onClickAddNote }) => {
           const date = new Date(activity.date).toLocaleDateString(navigator.language);
           return (
             <TimelineRow key={index}>
-              <TimelineBoldText>{date}</TimelineBoldText>
+              <TimelineDate>{date}</TimelineDate>
               <TimelineIcon type={activity.type} />
               <TimelineText>{activity.text}</TimelineText>
               <Box marginLeft="auto" marginRight="10px">

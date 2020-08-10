@@ -156,12 +156,12 @@ export const TimelineRow = styled('div')`
 `;
 TimelineRow.displayName = 'TimelineRow';
 
-export const TimelineBoldText = styled('div')`
+export const TimelineDate = styled('div')`
   font-weight: bold;
   min-width: 65px;
   text-align: center;
 `;
-TimelineBoldText.displayName = 'TimelineBoldText';
+TimelineDate.displayName = 'TimelineDate';
 
 export const TimelineText = styled('span')`
   overflow: hidden;
@@ -171,7 +171,7 @@ export const TimelineText = styled('span')`
 `;
 TimelineText.displayName = 'TimelineText';
 
-export const InformationBoldText = styled(TimelineBoldText)`
+export const InformationBoldText = styled(TimelineDate)`
   text-align: left;
 `;
 InformationBoldText.displayName = 'InformationBoldText';
