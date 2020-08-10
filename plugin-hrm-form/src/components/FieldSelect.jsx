@@ -32,6 +32,9 @@ const renderOptions = options =>
     }
   });
 
+/**
+ * @type {React.FC<any>}
+ */
 const FieldSelect = ({
   id,
   label,

@@ -85,8 +85,8 @@ test('Test close functionality', async () => {
 
   expect(onClickClose).not.toHaveBeenCalled();
 
-  expect(screen.getByTestId('Case-AddNoteScreen-CloseCross')).toBeInTheDocument();
-  screen.getByTestId('Case-AddNoteScreen-CloseCross').click();
+  expect(screen.getByTestId('Case-CloseCross')).toBeInTheDocument();
+  screen.getByTestId('Case-CloseCross').click();
 
   expect(onClickClose).toHaveBeenCalled();
 
@@ -94,8 +94,8 @@ test('Test close functionality', async () => {
 
   expect(onClickClose).not.toHaveBeenCalled();
 
-  expect(screen.getByTestId('Case-AddNoteScreen-CloseButton')).toBeInTheDocument();
-  screen.getByTestId('Case-AddNoteScreen-CloseButton').click();
+  expect(screen.getByTestId('Case-CloseButton')).toBeInTheDocument();
+  screen.getByTestId('Case-CloseButton').click();
 
   expect(onClickClose).toHaveBeenCalled();
 });

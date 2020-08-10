@@ -6,7 +6,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 
 import TimelineIcon from './TimelineIcon';
-import { CaseSectionFont, ViewButton, TimelineRow, TimelineDate, TimelineText } from '../../styles/case';
+import { CaseSectionFont, ViewButton, TimelineRow, TimelineBoldText, TimelineText } from '../../styles/case';
 import { Box, Row } from '../../styles/HrmStyles';
 import { taskType, formType } from '../../types';
 import { isNullOrUndefined } from '../../utils/checkers';
@@ -57,10 +57,10 @@ const Timeline = ({ task, form, caseId, onClickAddNote }) => {
           const date = new Date(activity.date).toLocaleDateString(navigator.language);
           return (
             <TimelineRow key={index}>
-              <TimelineDate>{date}</TimelineDate>
+              <TimelineBoldText>{date}</TimelineBoldText>
               <TimelineIcon type={activity.type} />
               <TimelineText>{activity.text}</TimelineText>
-              <Box marginLeft="5px">
+              <Box marginLeft="auto" marginRight="10px">
                 <ViewButton onClick={() => setMockedMessage(<Template code="NotImplemented" />)}>View</ViewButton>
               </Box>
             </TimelineRow>

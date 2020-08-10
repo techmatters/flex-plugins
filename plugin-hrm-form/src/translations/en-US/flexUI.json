@@ -75,6 +75,8 @@
   "BottomBar-CancelNewCaseAndClose": "Yes, Cancel New Case and Close",
   "BottomBar-SaveAndEnd": "Save and End",
   "BottomBar-SaveNote": "Save Note",
+  "BottomBar-SaveAndAddAnotherPerpetrator": "Save and Add Another Perpetrator",
+  "BottomBar-SavePerpetrator": "Save Perpetrator",
 
   "Categories-Title": "Categorize this contact",
   
@@ -92,6 +94,7 @@
   "Case-CaseNumber": "Case",
   "Case-CaseDetailsSection": "Case Details",
   "Case-TimelineSection": "Timeline",
+  "Case-AddPerpetratprSection": "Perpetrators",
   "Case-CaseSummarySection": "Case Summary",
   "Case-CaseDetailsChildName": "Child Name",
   "Case-CaseDetailsOwner": "Counselor",
@@ -99,11 +102,18 @@
   "Case-CaseDetailsStatusLabel": "Status",
   "Case-CaseDetailsStatusOpen": "Open",
   "Case-AddNote": "Add Note",
+  "Case-AddPerpetrator": "Add Perpetrator",
   "Case-AddNoteTypeHere": "Type here to add note...",
   "Case-AddCaseSummaryHere": "Add case summary here...",
-  "Case-AddNoteAdded": "Added:",
-  "Case-AddNoteCounselor": "Counselor:",
+  "Case-ActionHeaderAdded": "Added:",
+  "Case-ActionHeaderCounselor": "Counselor:",
   "Case-CloseButton": "Close",
+  "Case-ViewButton": "View",
+  "Case-PerpetratorName": "Perpetrator Name: ",
+  "Case-PerpetratorGender": "Gender: ",
+  "Case-PerpetratorAge": "Age: ",
+  "Case-PerpetratorRelationship": "Relationship to child: ",
+  "Case-NoPerpetrators": "No Perpetrators Listed",
 
   "SideNavCaseList": "Case List",
   
@@ -122,5 +132,20 @@
 
   "ContactPreview-CopyButton": "Copy informaton",
   "ContactPreview-ExpandButton": "Open case details",
-  "ContactPreview-MoreOptionsButton": "More options"
+  "ContactPreview-MoreOptionsButton": "More options",
+
+  "CallerForm-FirstName": "First name",
+  "CallerForm-LastName": "Last name",
+  "CallerForm-RelationshipToChild": "Relationship to Child",
+  "CallerForm-Gender": "Gender",
+  "CallerForm-Age": "Age",
+  "CallerForm-Language": "Language",
+  "CallerForm-Nationality": "Nationality",
+  "CallerForm-Ethnicity": "Ethnicity",
+  "CallerForm-StreetAddress": "Street address",
+  "CallerForm-City": "City",
+  "CallerForm-State/County": "State/County",
+  "CallerForm-PostalCode": "Postal code",
+  "CallerForm-Phone#1": "Phone #1",
+  "CallerForm-Phone#2": "Phone #2"
 }

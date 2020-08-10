@@ -11,10 +11,19 @@ export const CaseContainer = styled('div')`
 `;
 CaseContainer.displayName = 'CaseContainer';
 
-export const AddNoteContainer = styled(CaseContainer)`
+export const CaseActionContainer = styled(CaseContainer)`
   background-color: #ffffff;
 `;
-AddNoteContainer.displayName = 'AddNoteContainer';
+CaseActionContainer.displayName = 'CaseActionContainer';
+
+export const CaseActionFormContainer = styled('div')`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  overflow-y: auto;
+  padding: 20px 10px 0 30px;
+`;
 
 export const CenteredContainer = styled(CaseContainer)`
   align-items: center;
@@ -77,7 +86,11 @@ export const DefaultStatusFont = styled(DetailEntryText)`
 `;
 DefaultStatusFont.displayName = 'DefaultStatusFont';
 
-export const ViewButton = styled(props => <Button roundCorners={false} {...props} />)`
+type ViewButtonProps = {
+  onClick: () => void;
+};
+
+export const ViewButton = styled<ViewButtonProps>(props => <Button roundCorners={false} {...props} />)`
   color: ${({ theme }) => theme.colors.categoryTextColor};
   background-color: #ecedf1;
   border-radius: 4px;
@@ -143,12 +156,12 @@ export const TimelineRow = styled('div')`
 `;
 TimelineRow.displayName = 'TimelineRow';
 
-export const TimelineDate = styled('div')`
+export const TimelineBoldText = styled('div')`
   font-weight: bold;
   min-width: 65px;
   text-align: center;
 `;
-TimelineDate.displayName = 'TimelineDate';
+TimelineBoldText.displayName = 'TimelineBoldText';
 
 export const TimelineText = styled('span')`
   overflow: hidden;
@@ -157,6 +170,16 @@ export const TimelineText = styled('span')`
   flex-grow: 1;
 `;
 TimelineText.displayName = 'TimelineText';
+
+export const InformationBoldText = styled(TimelineBoldText)`
+  text-align: left;
+`;
+InformationBoldText.displayName = 'InformationBoldText';
+
+export const PlaceHolderText = styled(TimelineText)`
+  opacity: 0.5;
+`;
+PlaceHolderText.displayName = 'PlaceHolderText';
 
 export const TimelineIconContainer = styled('div')`
   display: flex;
@@ -168,9 +191,11 @@ export const TimelineIconContainer = styled('div')`
 TimelineIconContainer.displayName = 'TimelineIconContainer';
 
 export const CaseSummaryTextArea = styled(BaseTextArea)`
+  background-color: #f6f6f67d;
   height: 100%;
   width: 100%;
   margin: 10px 0px;
+  padding-left: 15px;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;

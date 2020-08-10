@@ -1,13 +1,12 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Template, ITask } from '@twilio/flex-ui';
-import { ButtonBase } from '@material-ui/core';
-import { Close } from '@material-ui/icons';
 
+import ActionHeader from './ActionHeader';
 import { getConfig } from '../../HrmFormPlugin';
-import { Box, Row, HiddenText, StyledNextStepButton, BottomButtonBar } from '../../styles/HrmStyles';
-import { AddNoteContainer, CaseActionTitle, CaseActionDetailFont, CaseActionTextArea } from '../../styles/case';
+import { Box, HiddenText, StyledNextStepButton, BottomButtonBar } from '../../styles/HrmStyles';
+import { CaseActionContainer, CaseActionTextArea } from '../../styles/case';
 import { namespace, connectedCaseBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
@@ -32,6 +31,10 @@ const AddNote: React.FC<Props> = ({
   changeRoute,
   setConnectedCase,
 }) => {
+  useEffect(() => {
+    updateTempInfo('', task.taskSid);
+  }, [task.taskSid, updateTempInfo]);
+
   const { strings } = getConfig();
   const { connectedCase, temporaryCaseInfo } = connectedCaseState;
 
@@ -48,28 +51,12 @@ const AddNote: React.FC<Props> = ({
     changeRoute({ route: 'new-case' }, task.taskSid);
   };
 
+  if (typeof temporaryCaseInfo !== 'string') return null;
+
   return (
-    <AddNoteContainer>
+    <CaseActionContainer>
       <Box height="100%" paddingTop="20px" paddingLeft="30px" paddingRight="10px">
-        <Row>
-          <CaseActionTitle style={{ marginTop: 'auto' }}>
-            <Template code="Case-AddNote" />
-          </CaseActionTitle>
-          <ButtonBase onClick={onClickClose} style={{ marginLeft: 'auto' }} data-testid="Case-AddNoteScreen-CloseCross">
-            <HiddenText>
-              <Template code="Case-CloseButton" />
-            </HiddenText>
-            <Close />
-          </ButtonBase>
-        </Row>
-        <Row>
-          <CaseActionDetailFont style={{ marginRight: 20 }}>
-            <Template code="Case-AddNoteAdded" /> {new Date().toLocaleDateString(navigator.language)}
-          </CaseActionDetailFont>
-          <CaseActionDetailFont style={{ marginRight: 20 }}>
-            <Template code="Case-AddNoteCounselor" /> {counselor}
-          </CaseActionDetailFont>
-        </Row>
+        <ActionHeader titleTemplate="Case-AddNote" onClickClose={onClickClose} counselor={counselor} />
         <HiddenText id="Case-TypeHere-label">
           <Template code="Case-AddNoteTypeHere" />
         </HiddenText>
@@ -85,12 +72,7 @@ const AddNote: React.FC<Props> = ({
       <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
       <BottomButtonBar>
         <Box marginRight="15px">
-          <StyledNextStepButton
-            data-testid="Case-AddNoteScreen-CloseButton"
-            secondary
-            roundCorners
-            onClick={onClickClose}
-          >
+          <StyledNextStepButton data-testid="Case-CloseButton" secondary roundCorners onClick={onClickClose}>
             <Template code="BottomBar-Cancel" />
           </StyledNextStepButton>
         </Box>
@@ -103,7 +85,7 @@ const AddNote: React.FC<Props> = ({
           <Template code="BottomBar-SaveNote" />
         </StyledNextStepButton>
       </BottomButtonBar>
-    </AddNoteContainer>
+    </CaseActionContainer>
   );
 };
 
