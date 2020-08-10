@@ -1,12 +1,19 @@
 import { omit } from 'lodash';
 
 import { Case } from '../../types/types';
-import { CaseActionType, SET_CONNECTED_CASE, REMOVE_CONNECTED_CASE, UPDATE_CASE_INFO, UPDATE_TEMP_INFO } from './types';
+import {
+  CaseActionType,
+  SET_CONNECTED_CASE,
+  REMOVE_CONNECTED_CASE,
+  UPDATE_CASE_INFO,
+  UPDATE_TEMP_INFO,
+  TemporaryCaseInfo,
+} from './types';
 import { GeneralActionType, REMOVE_CONTACT_STATE } from '../types';
 
 export type CaseState = {
   tasks: {
-    [taskId: string]: { connectedCase: Case; temporaryCaseInfo: string };
+    [taskId: string]: { connectedCase: Case; temporaryCaseInfo?: TemporaryCaseInfo };
   };
 };
 
@@ -23,7 +30,7 @@ export function reduce(state = initialState, action: CaseActionType | GeneralAct
           ...state.tasks,
           [action.taskId]: {
             connectedCase: action.connectedCase,
-            temporaryCaseInfo: '',
+            temporaryCaseInfo: null,
           },
         },
       };
@@ -46,7 +53,7 @@ export function reduce(state = initialState, action: CaseActionType | GeneralAct
           ...state.tasks,
           [action.taskId]: {
             connectedCase: updatedCase,
-            temporaryCaseInfo: '',
+            temporaryCaseInfo: null,
           },
         },
       };
@@ -58,7 +65,7 @@ export function reduce(state = initialState, action: CaseActionType | GeneralAct
           ...state.tasks,
           [action.taskId]: {
             ...state.tasks[action.taskId],
-            temporaryCaseInfo: action.string,
+            temporaryCaseInfo: action.value,
           },
         },
       };
