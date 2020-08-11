@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { format } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
 import PropTypes from 'prop-types';
@@ -12,8 +14,10 @@ import { taskType, formType } from '../../types';
 import { isNullOrUndefined } from '../../utils/checkers';
 import CaseAddButton from './CaseAddButton';
 import { getActivities } from '../../services/CaseService';
+import * as CaseActions from '../../states/case/actions';
+import * as RoutingActions from '../../states/routing/actions';
 
-const Timeline = ({ task, form, caseId, onClickAddNote }) => {
+const Timeline = ({ task, form, caseId, changeRoute, updateViewNoteInfo }) => {
   const [mockedMessage, setMockedMessage] = useState(null);
   const [timeline, setTimeline] = useState([]);
 
@@ -38,6 +42,23 @@ const Timeline = ({ task, form, caseId, onClickAddNote }) => {
 
     setTimeline([...timeline, connectCaseActivity]);
   }
+
+  const handleOnClickView = activity => {
+    if (activity.type === 'note') {
+      const info = {
+        note: activity.text,
+        counselor: activity.twilioWorkerId,
+        date: new Date(activity.date).toLocaleDateString(navigator.language),
+      };
+      updateViewNoteInfo(info, task.taskSid);
+      changeRoute({ route: 'new-case', subroute: 'view-note' }, task.taskSid);
+    } else {
+      setMockedMessage(<Template code="NotImplemented" />);
+    }
+  };
+
+  const handleAddNoteClick = () => changeRoute({ route: 'new-case', subroute: 'add-note' }, task.taskSid);
+
   return (
     <Box marginTop="25px">
       <Dialog onClose={() => setMockedMessage(null)} open={Boolean(mockedMessage)}>
@@ -48,7 +69,7 @@ const Timeline = ({ task, form, caseId, onClickAddNote }) => {
           <CaseSectionFont id="Case-TimelineSection-label">
             <Template code="Case-TimelineSection" />
           </CaseSectionFont>
-          <CaseAddButton templateCode="Case-AddNote" onClick={onClickAddNote} />
+          <CaseAddButton templateCode="Case-AddNote" onClick={handleAddNoteClick} />
         </Row>
       </Box>
       {timeline
@@ -61,7 +82,7 @@ const Timeline = ({ task, form, caseId, onClickAddNote }) => {
               <TimelineIcon type={activity.type} />
               <TimelineText>{activity.text}</TimelineText>
               <Box marginLeft="5px">
-                <ViewButton onClick={() => setMockedMessage(<Template code="NotImplemented" />)}>View</ViewButton>
+                <ViewButton onClick={() => handleOnClickView(activity)}>View</ViewButton>
               </Box>
             </TimelineRow>
           );
@@ -75,7 +96,13 @@ Timeline.propTypes = {
   task: taskType.isRequired,
   form: formType.isRequired,
   caseId: PropTypes.number.isRequired,
-  onClickAddNote: PropTypes.func.isRequired,
+  changeRoute: PropTypes.func.isRequired,
+  updateViewNoteInfo: PropTypes.func.isRequired,
 };
 
-export default Timeline;
+const mapDispatchToProps = dispatch => ({
+  changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
+  updateViewNoteInfo: bindActionCreators(CaseActions.updateViewNoteInfo, dispatch),
+});
+
+export default connect(null, mapDispatchToProps)(Timeline);
