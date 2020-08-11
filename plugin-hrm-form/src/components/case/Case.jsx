@@ -9,7 +9,7 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 
-import { namespace, contactFormsBase, connectedCaseBase, configurationBase } from '../../states';
+import { namespace, contactFormsBase, configurationBase } from '../../states';
 import { taskType, formType } from '../../types';
 import { getConfig } from '../../HrmFormPlugin';
 import { saveToHrm, connectToCase } from '../../services/ContactService';
@@ -20,7 +20,6 @@ import CaseDetails from './CaseDetails';
 import { Menu, MenuItem } from '../menu';
 import { formatName } from '../../utils';
 import { Actions } from '../../states/ContactState';
-import * as CaseActions from '../../states/case/actions';
 import Timeline from './Timeline';
 import AddNote from './AddNote';
 import CaseSummary from './CaseSummary';
@@ -32,19 +31,10 @@ class Case extends Component {
     handleCompleteTask: PropTypes.func.isRequired,
     task: taskType.isRequired,
     form: formType.isRequired,
-    connectedCaseState: PropTypes.shape({
-      connectedCase: PropTypes.shape({
-        id: PropTypes.number,
-        createdAt: PropTypes.string,
-        twilioWorkerId: PropTypes.string,
-        status: PropTypes.string,
-        info: PropTypes.shape({}),
-      }),
-    }).isRequired,
     counselorsHash: PropTypes.shape({}).isRequired,
     changeRoute: PropTypes.func.isRequired,
-    removeConnectedCase: PropTypes.func.isRequired,
-    updateTempInfo: PropTypes.func.isRequired,
+    setConnectedCase: PropTypes.func.isRequired,
+    temporaryCaseInfo: PropTypes.func.isRequired,
   };
 
   state = {
@@ -64,19 +54,19 @@ class Case extends Component {
   closeMockedMessage = () => this.setState({ mockedMessage: null });
 
   handleCancelNewCaseAndClose = async () => {
-    const { task } = this.props;
-    const { connectedCase } = this.props.connectedCaseState;
+    const { task, form } = this.props;
+    const { connectedCase } = form.metadata;
     await cancelCase(connectedCase.id);
 
     this.props.changeRoute('tabbed-forms', task.taskSid);
-    this.props.removeConnectedCase(task.taskSid);
+    this.props.setConnectedCase(null, task.taskSid);
   };
 
   handleSaveAndEnd = async () => {
     this.setState({ loading: true });
 
     const { task, form } = this.props;
-    const { connectedCase } = this.props.connectedCaseState;
+    const { connectedCase } = form.metadata;
     const { hrmBaseUrl, workerSid, helpline, strings } = getConfig();
 
     try {
@@ -94,7 +84,7 @@ class Case extends Component {
 
   handleClose = () => {
     const { task } = this.props;
-    this.props.updateTempInfo(null, task.taskSid);
+    this.props.temporaryCaseInfo(null, task.taskSid);
     this.props.changeRoute('new-case', task.taskSid);
   };
 
@@ -102,13 +92,10 @@ class Case extends Component {
 
   render() {
     const { anchorEl, isMenuOpen, mockedMessage, loading } = this.state;
-
-    if (!this.props.connectedCaseState) return null;
-
     const { task, form, counselorsHash } = this.props;
-    const { subroute } = form.metadata;
+    const { connectedCase, subroute } = form.metadata;
 
-    const { connectedCase } = this.props.connectedCaseState;
+    if (!connectedCase) return null;
 
     if (loading)
       return (
@@ -178,14 +165,13 @@ class Case extends Component {
 
 const mapStateToProps = (state, ownProps) => ({
   form: state[namespace][contactFormsBase].tasks[ownProps.task.taskSid],
-  connectedCaseState: state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid],
   counselorsHash: state[namespace][configurationBase].counselors.hash,
 });
 
 const mapDispatchToProps = dispatch => ({
   changeRoute: bindActionCreators(Actions.changeRoute, dispatch),
-  removeConnectedCase: bindActionCreators(CaseActions.removeConnectedCase, dispatch),
-  updateTempInfo: bindActionCreators(CaseActions.updateTempInfo, dispatch),
+  setConnectedCase: bindActionCreators(Actions.setConnectedCase, dispatch),
+  temporaryCaseInfo: bindActionCreators(Actions.temporaryCaseInfo, dispatch),
 });
 
 export default withTaskContext(connect(mapStateToProps, mapDispatchToProps)(Case));

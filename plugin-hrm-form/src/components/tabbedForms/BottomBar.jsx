@@ -14,7 +14,6 @@ import { formIsValid } from '../../states/ValidationRules';
 import { formType, taskType } from '../../types';
 import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import { Actions } from '../../states/ContactState';
-import * as CaseActions from '../../states/case/actions';
 import { getConfig } from '../../HrmFormPlugin';
 import { createCase } from '../../services/CaseService';
 import { saveToHrm } from '../../services/ContactService';
@@ -172,7 +171,7 @@ class BottomBar extends Component {
 
 const mapDispatchToProps = dispatch => ({
   changeRoute: bindActionCreators(Actions.changeRoute, dispatch),
-  setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
+  setConnectedCase: bindActionCreators(Actions.setConnectedCase, dispatch),
 });
 
 export default withTaskContext(connect(null, mapDispatchToProps)(BottomBar));

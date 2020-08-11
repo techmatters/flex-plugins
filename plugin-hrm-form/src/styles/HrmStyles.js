@@ -2,22 +2,9 @@
 import React from 'react';
 import styled from 'react-emotion';
 import { Input, Select, MenuItem, Tabs, Tab, Checkbox, withStyles } from '@material-ui/core';
-import { Button, getBackgroundWithHoverCSS, TabsProps } from '@twilio/flex-ui';
+import { Button, getBackgroundWithHoverCSS } from '@twilio/flex-ui';
 
-type BoxProps = {
-  width?: string;
-  height?: string;
-  marginTop?: string;
-  marginBottom?: string;
-  marginLeft?: string;
-  marginRight?: string;
-  paddingTop?: string;
-  paddingBottom?: string;
-  paddingLeft?: string;
-  paddingRight?: string;
-};
-
-export const Box = styled('div')<BoxProps>`
+export const Box = styled('div')`
   ${({ width }) => width && `width: ${width};`}
   ${({ height }) => height && `height: ${height};`}
   ${({ marginTop }) => marginTop && `margin-top: ${marginTop};`}
@@ -30,14 +17,7 @@ export const Box = styled('div')<BoxProps>`
   ${({ paddingRight }) => paddingRight && `padding-right: ${paddingRight};`}
 `;
 
-type AbsoluteProps = {
-  top?: string;
-  bottom?: string;
-  left?: string;
-  right?: string;
-};
-
-export const Absolute = styled('div')<AbsoluteProps>`
+export const Absolute = styled('div')`
   position: absolute;
   top: ${({ top }) => top || 'auto'};
   bottom: ${({ bottom }) => bottom || 'auto'};
@@ -139,11 +119,7 @@ export const StyledLabel = styled('label')`
   min-height: 18px;
 `;
 
-type StyledSelectProps = {
-  isPlaceholder?: boolean;
-};
-
-export const StyledSelect = styled(Select)<StyledSelectProps>`
+export const StyledSelect = styled(Select)`
   flex-grow: 0;
   flex-shrink: 0;
   width: 217px;
@@ -180,12 +156,7 @@ export const StyledMenuItem = styled(MenuItem)`
   min-width: 0;
 `;
 
-type StyledNextStepButtonProps = {
-  secondary?: boolean;
-  disabled?: boolean;
-};
-
-export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
+export const StyledNextStepButton = styled(Button)`
   display: flex;
   align-items: center;
   font-size: 12px;
@@ -245,9 +216,7 @@ export const StyledCheckboxLabel = styled('label')`
   letter-spacing: normal;
 `;
 
-type StyledCategoryCheckboxLabelProps = { disabled?: boolean };
-
-export const StyledCategoryCheckboxLabel = styled(StyledCheckboxLabel)<StyledCategoryCheckboxLabelProps>`
+export const StyledCategoryCheckboxLabel = styled(StyledCheckboxLabel)`
   text-transform: none;
   color: ${({ disabled, theme }) =>
     disabled ? `${theme.colors.categoryTextColor}33` : theme.colors.categoryTextColor};
@@ -297,13 +266,7 @@ export const TwoColumnLayout = styled('div')`
   justify-content: space-between;
 `;
 
-type BaseCheckboxProps = {
-  color: string;
-  selected?: boolean;
-  disabled?: boolean;
-};
-
-export const CategoryCheckboxField = styled('div')<BaseCheckboxProps>`
+export const CategoryCheckboxField = styled('div')`
   display: flex;
   flex-direction: row;
   margin: 4px 4px 4px 0;
@@ -326,7 +289,7 @@ export const CategoryCheckboxField = styled('div')<BaseCheckboxProps>`
 
 export const StyledCategoryCheckbox = styled(props => (
   <Checkbox {...props} classes={{ root: 'root', checked: 'checked' }} />
-))<BaseCheckboxProps>`
+))`
   &&&.root {
     color: ${({ disabled, color, theme }) => (disabled ? `${theme.colors.categoryDisabledColor}33` : color)};
     padding: 8px;
@@ -341,9 +304,7 @@ export const StyledCategoryCheckbox = styled(props => (
   }
 `;
 
-type ToggleViewButtonProps = { active?: boolean };
-
-export const ToggleViewButton = styled('div')<ToggleViewButtonProps>`
+export const ToggleViewButton = styled('div')`
   display: inline-flex;
   width: 37px;
   height: 37px;
@@ -370,27 +331,21 @@ export const CategoriesWrapper = styled('div')`
   margin-bottom: 20px;
 `;
 
-type SubcategoriesWrapperProps = { gridView?: boolean };
-
-export const SubcategoriesWrapper = styled('div')<SubcategoriesWrapperProps>`
+export const SubcategoriesWrapper = styled('div')`
   display: flex;
   padding: 10px 0 10px 6px;
   flex-wrap: wrap;
   flex-direction: ${({ gridView }) => (gridView ? 'row' : 'column')};
 `;
 
-export const StyledTabs = styled((props: TabsProps & { value: any }) => (
-  <Tabs {...props} classes={{ indicator: 'indicator' }} />
-))`
+export const StyledTabs = styled(props => <Tabs {...props} classes={{ indicator: 'indicator' }} />)`
   && .indicator {
     background-color: transparent;
   }
   flex-shrink: 0;
 `;
 
-type StyledTabProps = { searchTab?: boolean };
-
-export const StyledTab = styled(props => <Tab {...props} classes={{ selected: 'selected' }} />)<StyledTabProps>`
+export const StyledTab = styled(props => <Tab {...props} classes={{ selected: 'selected' }} />)`
   && {
     min-width: ${({ searchTab }) => (searchTab ? '50px' : '130px')};
     width: ${({ searchTab }) => (searchTab ? '50px' : '130px')};
@@ -426,13 +381,7 @@ export const HiddenText = styled('span')`
   line-height: 0px;
 `;
 
-type TransferStyledButtonProps = {
-  background?: string;
-  color?: string;
-  taller?: boolean;
-};
-
-export const TransferStyledButton = styled('button')<TransferStyledButtonProps>`
+export const TransferStyledButton = styled('button')`
   background: ${props => (props.background ? props.background : '#ccc')};
   color: ${props => (props.color ? props.color : '#000')};
   letter-spacing: 0px;
