@@ -1,7 +1,9 @@
 import { omit } from 'lodash';
 
 import { HANDLE_BLUR, HANDLE_FOCUS, SAVE_END_MILLIS } from '../../states/ActionTypes';
+import { recreateContactState } from '../../states/actions';
 import { reduce } from '../../states/ContactState';
+import { createBlankForm } from '../../states/ContactFormStateFactory';
 
 // THE TESTS IN HERE ARE A MESS AND NEED TO BE FIXED
 
@@ -318,5 +320,43 @@ describe('reduce', () => {
         recreated: true,
       }),
     );
+  });
+
+  let state;
+  test('RECREATE_CONTACT_STATE works fine with undefined form', () => {
+    const initialState = {
+      tasks: {},
+    };
+
+    const action = recreateContactState('WT1234');
+
+    const result = reduce(initialState, action);
+    const { WT1234 } = result.tasks;
+
+    expect(omit(WT1234, 'metadata')).toStrictEqual(omit(createBlankForm(), 'metadata'));
+    expect(WT1234.metadata.startMillis).toBeNull();
+    expect(WT1234.metadata.recreated).toBeTruthy();
+
+    state = result;
+  });
+
+  test('RECREATE_CONTACT_STATE does nothing with existing form', () => {
+    expect(state.tasks.WT1234.callerInformation.name.firstName.touched).toBeFalsy();
+
+    const result1 = reduce(state, {
+      type: HANDLE_FOCUS,
+      parents: ['callerInformation', 'name'],
+      name: 'firstName',
+      taskId: 'WT1234',
+    });
+
+    expect(result1.tasks.WT1234.callerInformation.name.firstName.touched).toBeTruthy();
+
+    const action = recreateContactState('WT1234');
+    const result2 = reduce(result1, action);
+    const { WT1234 } = result2.tasks;
+
+    // if this remains truthy after recreateContactState, the form was not touched by the action
+    expect(WT1234.callerInformation.name.firstName.touched).toBeTruthy();
   });
 });

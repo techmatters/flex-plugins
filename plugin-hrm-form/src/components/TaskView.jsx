@@ -21,6 +21,7 @@ class TaskView extends Component {
     task: taskType.isRequired,
     thisTask: taskType.isRequired,
     form: formType.isRequired,
+    contactFormStateExists: PropTypes.bool.isRequired,
     routingStateExists: PropTypes.bool.isRequired,
     searchStateExists: PropTypes.bool.isRequired,
     handleBlur: PropTypes.func.isRequired,
@@ -35,8 +36,8 @@ class TaskView extends Component {
   };
 
   componentDidMount() {
-    const { routingStateExists, searchStateExists } = this.props;
-    if (!routingStateExists || !searchStateExists) {
+    const { contactFormStateExists, routingStateExists, searchStateExists } = this.props;
+    if (!contactFormStateExists || !routingStateExists || !searchStateExists) {
       // (Gian) maybe this can be used to recreate the form too?
       this.props.recreateContactState(this.props.thisTask.taskSid);
     }
@@ -74,12 +75,14 @@ class TaskView extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   // Check if the entry for this task exists in each reducer
+  const contactFormStateExists = Boolean(state[namespace][contactFormsBase].tasks[ownProps.thisTask.taskSid]);
   const routingStateExists = Boolean(state[namespace][routingBase].tasks[ownProps.thisTask.taskSid]);
   const searchStateExists = Boolean(state[namespace][searchContactsBase].tasks[ownProps.thisTask.taskSid]);
 
   // This should already have been created when beforeAcceptTask is fired
   return {
     form: state[namespace][contactFormsBase].tasks[ownProps.thisTask.taskSid],
+    contactFormStateExists,
     routingStateExists,
     searchStateExists,
   };
