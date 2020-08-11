@@ -2,7 +2,7 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
-import { CallerFormValues } from '../common/forms/CallerForm';
+import { CaseInfo } from '../../types/types';
 import { Box, Row } from '../../styles/HrmStyles';
 import { CaseSectionFont, TimelineRow, PlaceHolderText } from '../../styles/case';
 import CaseAddButton from './CaseAddButton';
@@ -11,7 +11,7 @@ import InformationRow from './InformationRow';
 type OwnProps = {
   onClickAddPerpetrator: () => void;
   onClickView: () => void;
-  perpetrators: CallerFormValues[];
+  perpetrators: CaseInfo['perpetrators'];
 };
 
 const Perpetrators: React.FC<OwnProps> = ({ onClickAddPerpetrator, onClickView, perpetrators }) => {
@@ -26,8 +26,8 @@ const Perpetrators: React.FC<OwnProps> = ({ onClickAddPerpetrator, onClickView, 
         </Row>
       </Box>
       {perpetrators.length ? (
-        perpetrators.map((perpetrator, index) => (
-          <InformationRow key={`perpetrator-${index}`} person={perpetrator} onClickView={onClickView} />
+        perpetrators.map((p, index) => (
+          <InformationRow key={`perpetrator-${index}`} person={p.perpetrator} onClickView={onClickView} />
         ))
       ) : (
         <TimelineRow>
