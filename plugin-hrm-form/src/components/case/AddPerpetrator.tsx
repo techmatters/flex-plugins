@@ -14,7 +14,7 @@ import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseState } from '../../states/case/reducer';
 import { DefaultEventHandlers } from '../common/forms/types';
-import { getCallerFormValues } from '../common/forms/helpers';
+import { getFormValues } from '../common/forms/helpers';
 
 // @ts-ignore     TODO: fix this type error (createBlankForm must be typed or maybe create a separate function)
 const newFormEntry: CallerFormInformation = createBlankForm().callerInformation;
@@ -59,7 +59,9 @@ const AddPerpetrator: React.FC<Props> = ({
     if (!temporaryCaseInfo || typeof temporaryCaseInfo === 'string') return;
 
     const { info } = connectedCaseState.connectedCase;
-    const newPerpetrator = getCallerFormValues(temporaryCaseInfo);
+    const perpetrator = getFormValues(temporaryCaseInfo);
+    const createdAt = new Date().toISOString();
+    const newPerpetrator = { perpetrator, createdAt };
     const perpetrators = info && info.perpetrators ? [...info.perpetrators, newPerpetrator] : [newPerpetrator];
     const newInfo = info ? { ...info, perpetrators } : { perpetrators };
     updateCaseInfo(newInfo, task.taskSid);
