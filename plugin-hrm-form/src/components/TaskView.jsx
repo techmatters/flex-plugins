@@ -7,10 +7,11 @@ import { withTaskContext, TaskHelper } from '@twilio/flex-ui';
 import HrmForm from './HrmForm';
 import FormNotEditable from './FormNotEditable';
 import { formType, taskType } from '../types';
-import { namespace, contactFormsBase, searchContactsBase } from '../states';
+import { namespace, contactFormsBase, searchContactsBase, routingBase } from '../states';
 import { Actions } from '../states/ContactState';
 import { handleBlur, handleCategoryToggle, handleFocus, handleValidateForm } from '../states/ActionCreators';
-import { handleSelectSearchResult, recreateSearchContact } from '../states/SearchContact';
+import * as GeneralActions from '../states/actions';
+import { handleSelectSearchResult } from '../states/SearchContact';
 import { hasTaskControl } from '../utils/transfer';
 
 class TaskView extends Component {
@@ -20,6 +21,7 @@ class TaskView extends Component {
     task: taskType.isRequired,
     thisTask: taskType.isRequired,
     form: formType.isRequired,
+    routingStateExists: PropTypes.bool.isRequired,
     searchStateExists: PropTypes.bool.isRequired,
     handleBlur: PropTypes.func.isRequired,
     handleChange: PropTypes.func.isRequired,
@@ -27,15 +29,16 @@ class TaskView extends Component {
     handleCompleteTask: PropTypes.func.isRequired,
     handleFocus: PropTypes.func.isRequired,
     handleSelectSearchResult: PropTypes.func.isRequired,
-    recreateSearchContact: PropTypes.func.isRequired,
+    recreateContactState: PropTypes.func.isRequired,
     changeTab: PropTypes.func.isRequired,
     handleValidateForm: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
-    if (!this.props.searchStateExists) {
+    const { routingStateExists, searchStateExists } = this.props;
+    if (!routingStateExists || !searchStateExists) {
       // (Gian) maybe this can be used to recreate the form too?
-      this.props.recreateSearchContact(this.props.thisTask.taskSid);
+      this.props.recreateContactState(this.props.thisTask.taskSid);
     }
   }
 
@@ -70,12 +73,14 @@ class TaskView extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  // Check if the entry for this task exists in searchContacts
+  // Check if the entry for this task exists in each reducer
+  const routingStateExists = Boolean(state[namespace][routingBase].tasks[ownProps.thisTask.taskSid]);
   const searchStateExists = Boolean(state[namespace][searchContactsBase].tasks[ownProps.thisTask.taskSid]);
 
   // This should already have been created when beforeAcceptTask is fired
   return {
     form: state[namespace][contactFormsBase].tasks[ownProps.thisTask.taskSid],
+    routingStateExists,
     searchStateExists,
   };
 };
@@ -86,9 +91,9 @@ const mapDispatchToProps = dispatch => ({
   handleChange: bindActionCreators(Actions.handleChange, dispatch),
   handleFocus: handleFocus(dispatch),
   handleSelectSearchResult: bindActionCreators(handleSelectSearchResult, dispatch),
-  recreateSearchContact: bindActionCreators(recreateSearchContact, dispatch),
   changeTab: bindActionCreators(Actions.changeTab, dispatch),
   handleValidateForm: handleValidateForm(dispatch),
+  recreateContactState: bindActionCreators(GeneralActions.recreateContactState, dispatch),
 });
 
 export default withTaskContext(connect(mapStateToProps, mapDispatchToProps)(TaskView));
