@@ -13,7 +13,7 @@ import {
   SET_CATEGORIES_GRID_VIEW,
   HANDLE_EXPAND_CATEGORY,
 } from './ActionTypes';
-import { INITIALIZE_CONTACT_STATE, REMOVE_CONTACT_STATE } from './types';
+import { INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE } from './types';
 import { countSelectedCategories } from './ValidationRules';
 import { copySearchResultIntoTask } from './SearchContact';
 import { getConfig } from '../HrmFormPlugin';
@@ -165,6 +165,18 @@ export function reduce(state = initialState, action) {
         tasks: {
           ...state.tasks,
           [action.taskId]: createBlankForm(),
+        },
+      };
+    }
+
+    case RECREATE_CONTACT_STATE: {
+      if (state.tasks[action.taskId]) return state;
+
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: recreateBlankForm(),
         },
       };
     }

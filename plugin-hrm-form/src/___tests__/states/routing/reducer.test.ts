@@ -48,5 +48,37 @@ describe('test reducer (specific actions)', () => {
 
     const result = reduce(state, GeneralActions.removeContactState(task.taskSid));
     expect(result).toStrictEqual(expected);
+
+    state = result;
+  });
+
+  test('should handle RECREATE_CONTACT_STATE and recreate it', async () => {
+    const expected = {
+      tasks: {
+        task1: { route: 'select-call-type' },
+      },
+    };
+
+    const result = reduce(state, GeneralActions.recreateContactState(task.taskSid));
+    expect(result).toStrictEqual(expected);
+
+    state = result;
+  });
+
+  test('should handle RECREATE_CONTACT_STATE and do nothing', async () => {
+    const expected = {
+      tasks: {
+        task1: { route: 'new-case' },
+      },
+    };
+
+    const result1 = reduce(state, actions.changeRoute({ route: 'new-case' }, task.taskSid));
+
+    state = result1;
+
+    const result2 = reduce(state, GeneralActions.recreateContactState(task.taskSid));
+    expect(result2).toStrictEqual(expected);
+
+    state = result2;
   });
 });

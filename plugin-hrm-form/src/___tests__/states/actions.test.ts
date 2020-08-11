@@ -13,6 +13,15 @@ describe('test action creators', () => {
     expect(actions.initializeContactState(task.taskSid)).toStrictEqual(expected);
   });
 
+  test('recreateContactState', async () => {
+    const expected: types.GeneralActionType = {
+      type: types.RECREATE_CONTACT_STATE,
+      taskId: task.taskSid,
+    };
+
+    expect(actions.recreateContactState(task.taskSid)).toStrictEqual(expected);
+  });
+
   test('removeContactState', async () => {
     const expected: types.GeneralActionType = {
       type: types.REMOVE_CONTACT_STATE,
