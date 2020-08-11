@@ -1,5 +1,13 @@
 import { Case, CaseInfo } from '../../types/types';
-import { CaseActionType, SET_CONNECTED_CASE, REMOVE_CONNECTED_CASE, UPDATE_CASE_INFO, UPDATE_TEMP_INFO } from './types';
+import {
+  CaseActionType,
+  ViewNoteInfo,
+  SET_CONNECTED_CASE,
+  REMOVE_CONNECTED_CASE,
+  UPDATE_CASE_INFO,
+  UPDATE_TEMP_INFO,
+  UPDATE_VIEW_NOTE_INFO,
+} from './types';
 
 // Action creators
 export const setConnectedCase = (connectedCase: Case, taskId: string): CaseActionType => ({
@@ -22,5 +30,11 @@ export const updateCaseInfo = (info: CaseInfo, taskId: string): CaseActionType =
 export const updateTempInfo = (string: string, taskId: string): CaseActionType => ({
   type: UPDATE_TEMP_INFO,
   string,
+  taskId,
+});
+
+export const updateViewNoteInfo = (info: ViewNoteInfo, taskId: string): CaseActionType => ({
+  type: UPDATE_VIEW_NOTE_INFO,
+  info,
   taskId,
 });
