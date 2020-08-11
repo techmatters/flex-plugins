@@ -10,8 +10,10 @@ import configureMockStore from 'redux-mock-store';
 import '../../mockGetConfig';
 import HrmTheme from '../../../styles/HrmTheme';
 import AddNote from '../../../components/case/AddNote';
-import { configurationBase, contactFormsBase, namespace } from '../../../states';
+import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../../states';
 import { Actions } from '../../../states/ContactState';
+import * as CaseActions from '../../../states/case/actions';
+import { UPDATE_CASE_INFO } from '../../../states/case/types';
 import { updateCase } from '../../../services/CaseService';
 
 jest.mock('../../../services/CaseService');
@@ -36,14 +38,19 @@ const state = {
           childInformation: {
             name: { firstName: { value: 'first' }, lastName: { value: 'last' } },
           },
-          metadata: {
-            temporaryCaseInfo: 'Mocked temp value',
-            connectedCase: {
-              createdAt: 1593469560208,
-              twilioWorkerId: 'worker1',
-              status: 'open',
-              info: null,
-            },
+          metadata: {},
+        },
+      },
+    },
+    [connectedCaseBase]: {
+      tasks: {
+        task1: {
+          temporaryCaseInfo: 'Mocked temp value',
+          connectedCase: {
+            createdAt: 1593469560208,
+            twilioWorkerId: 'worker1',
+            status: 'open',
+            info: null,
           },
         },
       },
@@ -123,7 +130,7 @@ test('Test input/add note functionality', async () => {
   const textarea = screen.getByTestId('Case-AddNoteScreen-TextArea');
   fireEvent.change(textarea, { target: { value: note } });
 
-  expect(store.dispatch).toHaveBeenCalledWith(Actions.temporaryCaseInfo(note, ownProps.task.taskSid));
+  expect(store.dispatch).toHaveBeenCalledWith(CaseActions.updateTempInfo(note, ownProps.task.taskSid));
 
   store.dispatch.mockClear();
   expect(store.dispatch).not.toHaveBeenCalled();

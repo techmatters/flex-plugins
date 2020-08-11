@@ -11,7 +11,7 @@ import '../../mockGetConfig';
 import HrmTheme from '../../../styles/HrmTheme';
 import Case from '../../../components/case';
 import CaseDetails from '../../../components/case/CaseDetails';
-import { namespace, configurationBase, contactFormsBase } from '../../../states';
+import { namespace, configurationBase, contactFormsBase, connectedCaseBase } from '../../../states';
 import { cancelCase, getActivities } from '../../../services/CaseService';
 
 jest.mock('react', () => ({
@@ -63,23 +63,25 @@ describe('useState mocked', () => {
       },
       handleCompleteTask: jest.fn(),
     };
+
     const initialState = createState({
-      [configurationBase]: {
-        counselors: {
-          list: [],
-          hash: { worker1: 'worker1 name' },
-        },
-      },
       [contactFormsBase]: {
         tasks: {
           task1: {
             childInformation: {
               name: { firstName: { value: 'first' }, lastName: { value: 'first' } },
             },
-            metadata: {
-              connectedCase: null,
-            },
+            metadata: {},
           },
+        },
+      },
+      [connectedCaseBase]: {
+        tasks: {},
+      },
+      [configurationBase]: {
+        counselors: {
+          list: [],
+          hash: { worker1: 'worker1 name' },
         },
       },
     });
@@ -117,21 +119,28 @@ describe('useState mocked', () => {
             childInformation: {
               name: { firstName: { value: 'first' }, lastName: { value: 'last' } },
             },
-            metadata: {
-              connectedCase: {
-                id: 123,
-                createdAt: 1593469560208,
-                twilioWorkerId: 'worker1',
-                status: 'open',
-              },
-            },
             caseInformation: {
               callSummary: { value: 'contact call summary' },
             },
+            metadata: {},
+          },
+        },
+      },
+      [connectedCaseBase]: {
+        tasks: {
+          task1: {
+            connectedCase: {
+              id: 123,
+              createdAt: 1593469560208,
+              twilioWorkerId: 'worker1',
+              status: 'open',
+            },
+            temporaryCaseInfo: '',
           },
         },
       },
     };
+
     const initialState = createState(state);
     const store = mockStore(initialState);
 
@@ -189,17 +198,24 @@ describe('useState mocked', () => {
             childInformation: {
               name: { firstName: { value: 'first' }, lastName: { value: 'first' } },
             },
-            metadata: {
-              connectedCase: {
-                id: 123,
-                createdAt: '12345',
-                twilioWorkerId: 'worker1',
-                status: 'open',
-              },
-            },
+            metadata: {},
             caseInformation: {
               callSummary: { value: 'contact call summary' },
             },
+          },
+          temporaryCaseInfo: '',
+        },
+      },
+      [connectedCaseBase]: {
+        tasks: {
+          task1: {
+            connectedCase: {
+              id: 123,
+              createdAt: 1593469560208,
+              twilioWorkerId: 'worker1',
+              status: 'open',
+            },
+            temporaryCaseInfo: '',
           },
         },
       },
@@ -240,17 +256,24 @@ describe('useState mocked', () => {
             childInformation: {
               name: { firstName: { value: 'first' }, lastName: { value: 'first' } },
             },
-            metadata: {
-              connectedCase: {
-                id: 123,
-                createdAt: '12345',
-                twilioWorkerId: 'worker1',
-                status: 'open',
-              },
-            },
+            metadata: {},
             caseInformation: {
               callSummary: { value: 'contact call summary' },
             },
+          },
+          temporaryCaseInfo: '',
+        },
+      },
+      [connectedCaseBase]: {
+        tasks: {
+          task1: {
+            connectedCase: {
+              id: 123,
+              createdAt: 1593469560208,
+              twilioWorkerId: 'worker1',
+              status: 'open',
+            },
+            temporaryCaseInfo: '',
           },
         },
       },
@@ -276,6 +299,7 @@ describe('useState mocked', () => {
       type: 'CHANGE_ROUTE',
     });
   });
+
   test('edit case summary', async () => {
     const ownProps = {
       task: {
@@ -296,17 +320,23 @@ describe('useState mocked', () => {
             childInformation: {
               name: { firstName: { value: 'first' }, lastName: { value: 'first' } },
             },
-            metadata: {
-              connectedCase: {
-                id: 123,
-                createdAt: '12345',
-                twilioWorkerId: 'worker1',
-                status: 'open',
-              },
-            },
+            metadata: {},
             caseInformation: {
               callSummary: { value: 'contact call summary' },
             },
+          },
+        },
+      },
+      [connectedCaseBase]: {
+        tasks: {
+          task1: {
+            connectedCase: {
+              id: 123,
+              createdAt: 1593469560208,
+              twilioWorkerId: 'worker1',
+              status: 'open',
+            },
+            temporaryCaseInfo: '',
           },
         },
       },
@@ -331,6 +361,67 @@ describe('useState mocked', () => {
     expect(updateCaseCall.info.summary).toBe('Some summary');
   });
 
+  test('edit case summary', async () => {
+    const ownProps = {
+      task: {
+        taskSid: 'task1',
+      },
+      handleCompleteTask: jest.fn(),
+    };
+    const initialState = createState({
+      [configurationBase]: {
+        counselors: {
+          list: [],
+          hash: { worker1: 'worker1 name' },
+        },
+      },
+      [contactFormsBase]: {
+        tasks: {
+          task1: {
+            childInformation: {
+              name: { firstName: { value: 'first' }, lastName: { value: 'first' } },
+            },
+            caseInformation: {
+              callSummary: { value: 'contact call summary' },
+            },
+            metadata: {},
+          },
+        },
+      },
+      [connectedCaseBase]: {
+        tasks: {
+          task1: {
+            connectedCase: {
+              createdAt: '12345',
+              twilioWorkerId: 'worker1',
+              status: 'open',
+            },
+            temporaryCaseInfo: '',
+          },
+        },
+      },
+    });
+    const store = mockStore(initialState);
+    store.dispatch = jest.fn();
+
+    render(
+      <StorelessThemeProvider themeConf={themeConf}>
+        <Provider store={store}>
+          <Case {...ownProps} />
+        </Provider>
+      </StorelessThemeProvider>,
+    );
+
+    const textarea = screen.getByTestId('Case-CaseSummary-TextArea');
+    fireEvent.change(textarea, { target: { value: 'Some summary' } });
+
+    const updateCaseCall = store.dispatch.mock.calls[0][0];
+    expect(updateCaseCall.type).toBe('UPDATE_CASE_INFO');
+    expect(updateCaseCall.taskId).toBe(ownProps.task.taskSid);
+    expect(updateCaseCall.info.summary).toBe('Some summary');
+  });
+
+  const Wrapped = withTheme(props => <Case {...props} />);
   test('a11y', async () => {
     getActivities.mockReturnValueOnce(Promise.resolve([]));
 
@@ -353,17 +444,24 @@ describe('useState mocked', () => {
             childInformation: {
               name: { firstName: { value: 'first' }, lastName: { value: 'first' } },
             },
-            metadata: {
-              connectedCase: {
-                id: 123,
-                createdAt: '12345',
-                twilioWorkerId: 'worker1',
-                status: 'open',
-              },
-            },
+            metadata: {},
             caseInformation: {
               callSummary: { value: 'contact call summary' },
             },
+          },
+          temporaryCaseInfo: '',
+        },
+      },
+      [connectedCaseBase]: {
+        tasks: {
+          task1: {
+            connectedCase: {
+              id: 123,
+              createdAt: 1593469560208,
+              twilioWorkerId: 'worker1',
+              status: 'open',
+            },
+            temporaryCaseInfo: '',
           },
         },
       },
