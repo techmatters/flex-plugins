@@ -13,8 +13,8 @@ import { Menu, MenuItem } from '../menu';
 import { formIsValid } from '../../states/ValidationRules';
 import { formType, taskType } from '../../types';
 import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
-import { Actions } from '../../states/ContactState';
 import * as CaseActions from '../../states/case/actions';
+import * as RoutingActions from '../../states/routing/actions';
 import { getConfig } from '../../HrmFormPlugin';
 import { createCase } from '../../services/CaseService';
 import { saveToHrm } from '../../services/ContactService';
@@ -69,7 +69,7 @@ class BottomBar extends Component {
     if (formIsValid(newForm)) {
       try {
         const caseFromDB = await createCase(caseRecord);
-        this.props.changeRoute('new-case', taskSid);
+        this.props.changeRoute({ route: 'new-case' }, taskSid);
         this.props.setConnectedCase(caseFromDB, taskSid);
       } catch (error) {
         window.alert(strings['Error-Backend']);
@@ -171,7 +171,7 @@ class BottomBar extends Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  changeRoute: bindActionCreators(Actions.changeRoute, dispatch),
+  changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
   setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
 });
 

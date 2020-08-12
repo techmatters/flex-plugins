@@ -16,7 +16,7 @@
     "clear": "flex-plugin clear",
     "remove": "flex-plugin remove",
     "eject": "flex-plugin eject",
-    "lint": "eslint --ext js --ext jsx src/",
+    "lint": "eslint --ext js --ext jsx --ext ts --ext tsx src/",
     "lint:fix": "npm run lint -- --fix"
   },
   "dependencies": {

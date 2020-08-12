@@ -1,9 +1,9 @@
 import { omit } from 'lodash';
 
 import { Case } from '../../types/types';
-import { CaseActionType, REMOVE_CONNECTED_CASE, SET_CONNECTED_CASE, UPDATE_CASE_INFO, UPDATE_TEMP_INFO } from './types';
+import { CaseActionType, SET_CONNECTED_CASE, REMOVE_CONNECTED_CASE, UPDATE_CASE_INFO, UPDATE_TEMP_INFO } from './types';
+import { GeneralActionType, REMOVE_CONTACT_STATE } from '../types';
 
-// eslint-disable-next-line import/no-unused-modules
 export type CaseState = {
   tasks: {
     [taskId: string]: { connectedCase: Case; temporaryCaseInfo: string };
@@ -14,7 +14,7 @@ const initialState: CaseState = {
   tasks: {},
 };
 
-export function reduce(state = initialState, action: CaseActionType) {
+export function reduce(state = initialState, action: CaseActionType | GeneralActionType) {
   switch (action.type) {
     case SET_CONNECTED_CASE:
       return {
@@ -28,6 +28,11 @@ export function reduce(state = initialState, action: CaseActionType) {
         },
       };
     case REMOVE_CONNECTED_CASE:
+      return {
+        ...state,
+        tasks: omit(state.tasks, action.taskId),
+      };
+    case REMOVE_CONTACT_STATE:
       return {
         ...state,
         tasks: omit(state.tasks, action.taskId),
