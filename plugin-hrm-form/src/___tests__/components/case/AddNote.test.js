@@ -124,6 +124,7 @@ test('Test input/add note functionality', async () => {
     </StorelessThemeProvider>,
   );
 
+  store.dispatch.mockClear();
   expect(store.dispatch).not.toHaveBeenCalled();
 
   const textarea = screen.getByTestId('Case-AddNoteScreen-TextArea');
