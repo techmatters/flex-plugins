@@ -2,41 +2,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
+import { ButtonBase } from '@material-ui/core';
+import { Close } from '@material-ui/icons';
 
-import { BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
+import { Container, Row, HiddenText, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import { namespace, connectedCaseBase, configurationBase } from '../../states';
 import { CaseState } from '../../states/case/reducer';
 import * as RoutingActions from '../../states/routing/actions';
+import { CaseContainer, CaseActionTitle, CaseActionDetailFont, NoteContainer } from '../../styles/case';
 
 type OwnProps = {
   taskSid: string;
 };
-
-// eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
-
-const ViewNote: React.FC<Props> = ({ taskSid, connectedCaseState, changeRoute, counselorsHash }) => {
-  const { counselor, date, note } = connectedCaseState.viewNoteInfo;
-  const counselorName = counselorsHash[counselor] || 'Unknown';
-
-  const handleClose = () => changeRoute({ route: 'new-case' }, taskSid);
-
-  return (
-    <>
-      <h1>View Note</h1>
-      <h2>Counselor: {counselorName}</h2>
-      <h2>Date: {date}</h2>
-      <h2>Note: {note}</h2>
-      <BottomButtonBar>
-        <StyledNextStepButton roundCorners onClick={handleClose}>
-          <Template code="CloseButton" />
-        </StyledNextStepButton>
-      </BottomButtonBar>
-    </>
-  );
-};
-
-ViewNote.displayName = 'ViewNote';
 
 const mapStateToProps = (state, ownProps: OwnProps) => {
   const caseState: CaseState = state[namespace][connectedCaseBase]; // casting type as inference is not working for the store yet
@@ -49,5 +26,48 @@ const mapStateToProps = (state, ownProps: OwnProps) => {
 const mapDispatchToProps = {
   changeRoute: RoutingActions.changeRoute,
 };
+
+type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+
+const ViewNote: React.FC<Props> = ({ taskSid, connectedCaseState, changeRoute, counselorsHash }) => {
+  const { counselor, date, note } = connectedCaseState.viewNoteInfo;
+  const counselorName = counselorsHash[counselor] || 'Unknown';
+
+  const handleClose = () => changeRoute({ route: 'new-case' }, taskSid);
+
+  return (
+    <CaseContainer>
+      <Container>
+        <Row>
+          <CaseActionTitle style={{ marginTop: 'auto' }}>
+            <Template code="Case-Note" />
+          </CaseActionTitle>
+          <ButtonBase onClick={handleClose} style={{ marginLeft: 'auto' }}>
+            <HiddenText>
+              <Template code="Case-CloseButton" />
+            </HiddenText>
+            <Close />
+          </ButtonBase>
+        </Row>
+        <Row>
+          <CaseActionDetailFont style={{ marginRight: 20 }}>
+            <Template code="Case-AddNoteAdded" /> {date}
+          </CaseActionDetailFont>
+          <CaseActionDetailFont style={{ marginRight: 20 }}>
+            <Template code="Case-AddNoteCounselor" /> {counselorName}
+          </CaseActionDetailFont>
+        </Row>
+        <NoteContainer>{note}</NoteContainer>
+      </Container>
+      <BottomButtonBar>
+        <StyledNextStepButton roundCorners onClick={handleClose}>
+          <Template code="CloseButton" />
+        </StyledNextStepButton>
+      </BottomButtonBar>
+    </CaseContainer>
+  );
+};
+
+ViewNote.displayName = 'ViewNote';
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewNote);
