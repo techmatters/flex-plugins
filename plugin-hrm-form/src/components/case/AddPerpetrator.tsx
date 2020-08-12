@@ -17,7 +17,7 @@ import { DefaultEventHandlers } from '../common/forms/types';
 import { getFormValues } from '../common/forms/helpers';
 
 // @ts-ignore     TODO: fix this type error (createBlankForm must be typed or maybe create a separate function)
-const newFormEntry: CallerFormInformation = createBlankForm().callerInformation;
+export const newFormEntry: CallerFormInformation = createBlankForm().callerInformation;
 
 type OwnProps = {
   task: ITask;
