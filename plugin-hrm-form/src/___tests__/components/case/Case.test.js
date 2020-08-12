@@ -142,6 +142,7 @@ describe('useState mocked', () => {
       },
       [routingBase]: { tasks: { task1: { route: 'new-case' } } },
     };
+
     const initialState = createState(state);
     const store = mockStore(initialState);
 
