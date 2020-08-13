@@ -201,3 +201,9 @@ export const CaseSummaryTextArea = styled(BaseTextArea)`
   box-sizing: border-box;
 `;
 CaseSummaryTextArea.displayName = 'CaseSummaryTextArea';
+
+export const RowItemContainer = styled(Row)`
+  white-space: nowrap;
+  overflow: hidden;
+`;
+RowItemContainer.displayName = 'RowItemContainer';
