@@ -4,8 +4,8 @@ import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
 import { CallerFormValues } from '../common/forms/CallerForm';
-import { TimelineRow, InformationBoldText, TimelineText, ViewButton } from '../../styles/case';
-import { Box, Row, HiddenText } from '../../styles/HrmStyles';
+import { TimelineRow, InformationBoldText, TimelineText, ViewButton, RowItemContainer } from '../../styles/case';
+import { Box, HiddenText } from '../../styles/HrmStyles';
 import { formatName } from '../../utils';
 
 type OwnProps = {
@@ -14,12 +14,7 @@ type OwnProps = {
 };
 
 const RowItem: React.FC<{ isName?: boolean }> = ({ children, isName }) => (
-  /*
-   * <Grid item xs role="gridcell" tabIndex={-1} style={{ alignItems: 'center', justifyContent: 'center' }}>
-   *   {children}
-   * </Grid>
-   */
-  <Row style={{ flex: isName ? 1.5 : 1 }}>{children}</Row>
+  <RowItemContainer style={{ flex: isName ? 1.5 : 1 }}>{children}</RowItemContainer>
 );
 RowItem.displayName = 'RowItem';
 
