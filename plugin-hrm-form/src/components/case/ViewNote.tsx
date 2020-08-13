@@ -42,7 +42,7 @@ const ViewNote: React.FC<Props> = ({ taskSid, connectedCaseState, changeRoute, c
           <CaseActionTitle style={{ marginTop: 'auto' }}>
             <Template code="Case-Note" />
           </CaseActionTitle>
-          <ButtonBase onClick={handleClose} style={{ marginLeft: 'auto' }}>
+          <ButtonBase onClick={handleClose} style={{ marginLeft: 'auto' }} data-testid="Case-ViewNoteScreen-CloseCross">
             <HiddenText>
               <Template code="Case-CloseButton" />
             </HiddenText>
@@ -51,16 +51,17 @@ const ViewNote: React.FC<Props> = ({ taskSid, connectedCaseState, changeRoute, c
         </Row>
         <Row>
           <CaseActionDetailFont style={{ marginRight: 20 }}>
-            <Template code="Case-AddNoteAdded" /> {date}
+            <Template code="Case-AddNoteAdded" /> <span data-testid="Case-ViewNoteScreen-Date">{date}</span>
           </CaseActionDetailFont>
           <CaseActionDetailFont style={{ marginRight: 20 }}>
-            <Template code="Case-AddNoteCounselor" /> {counselorName}
+            <Template code="Case-AddNoteCounselor" />{' '}
+            <span data-testid="Case-ViewNoteScreen-Counselor">{counselorName}</span>
           </CaseActionDetailFont>
         </Row>
-        <NoteContainer>{note}</NoteContainer>
+        <NoteContainer data-testid="Case-ViewNoteScreen-Note">{note}</NoteContainer>
       </Container>
       <BottomButtonBar>
-        <StyledNextStepButton roundCorners onClick={handleClose}>
+        <StyledNextStepButton roundCorners onClick={handleClose} data-testid="Case-ViewNoteScreen-CloseButton">
           <Template code="CloseButton" />
         </StyledNextStepButton>
       </BottomButtonBar>
@@ -70,4 +71,5 @@ const ViewNote: React.FC<Props> = ({ taskSid, connectedCaseState, changeRoute, c
 
 ViewNote.displayName = 'ViewNote';
 
+export const UnconnectedViewNote = ViewNote;
 export default connect(mapStateToProps, mapDispatchToProps)(ViewNote);
