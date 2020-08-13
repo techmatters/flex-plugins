@@ -1,9 +1,6 @@
 import { omit } from 'lodash';
 
 import {
-  INITIALIZE_CONTACT_STATE,
-  REMOVE_CONTACT_STATE,
-  RECREATE_SEARCH_CONTACT,
   HANDLE_SELECT_SEARCH_RESULT,
   HANDLE_SEARCH_FORM_CHANGE,
   CHANGE_SEARCH_PAGE,
@@ -13,6 +10,7 @@ import {
   SEARCH_CONTACTS_FAILURE,
   HANDLE_EXPAND_DETAILS_SECTION,
 } from './ActionTypes';
+import { INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE } from './types';
 import { searchContacts as searchContactsApiCall } from '../services/ContactService';
 import callTypes from './DomainConstants';
 import { createBlankForm } from './ContactFormStateFactory';
@@ -34,8 +32,6 @@ export const SearchPages = {
   results: 'results',
   details: 'details',
 };
-
-export const recreateSearchContact = taskId => ({ type: RECREATE_SEARCH_CONTACT, taskId });
 
 export const handleSelectSearchResult = (searchResult, taskId) => ({
   type: HANDLE_SELECT_SEARCH_RESULT,
@@ -180,7 +176,9 @@ export function reduce(state = initialState, action) {
           [action.taskId]: newTaskEntry,
         },
       };
-    case RECREATE_SEARCH_CONTACT:
+    case RECREATE_CONTACT_STATE:
+      if (state.tasks[action.taskId]) return state;
+
       return {
         ...state,
         tasks: {

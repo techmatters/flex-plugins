@@ -1,14 +1,38 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withTaskContext } from '@twilio/flex-ui';
+import { withTaskContext, ITask } from '@twilio/flex-ui';
+import { connect } from 'react-redux';
 
 import CallTypeButtons from './callTypeButtons';
 import TabbedForms from './tabbedForms';
 import Case from './case';
 import { formType } from '../types';
+import { namespace, routingBase } from '../states';
+import * as RoutingActions from '../states/routing/actions';
+import { RoutingState } from '../states/routing/reducer';
 
-const HrmForm = props => {
-  const route = props.form && props.form.metadata && props.form.metadata.route;
+type OwnProps = {
+  task: ITask;
+  form: any;
+  handleBlur: any;
+  handleCategoryToggle: any;
+  handleChange: any;
+  handleCallTypeButtonClick: any;
+  handleCompleteTask: any;
+  handleFocus: any;
+  handleSelectSearchResult: any;
+  changeTab: any;
+  handleValidateForm: any;
+};
+
+// eslint-disable-next-line no-use-before-define
+type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+
+const HrmForm: React.FC<Props> = props => {
+  // eslint-disable-next-line react/prop-types
+  if (!props.routing) return null;
+  // eslint-disable-next-line react/prop-types
+  const { route } = props.routing;
 
   switch (route) {
     case 'tabbed-forms':
@@ -60,4 +84,15 @@ HrmForm.propTypes = {
   handleValidateForm: PropTypes.func.isRequired,
 };
 
-export default withTaskContext(HrmForm);
+const mapStateToProps = (state, ownProps: OwnProps) => {
+  const routingState: RoutingState = state[namespace][routingBase];
+
+  return { routing: routingState.tasks[ownProps.task.taskSid] };
+};
+
+const mapDispatchToProps = {
+  changeRoute: RoutingActions.changeRoute,
+};
+
+// @ts-ignore
+export default withTaskContext(connect(mapStateToProps, mapDispatchToProps)(HrmForm));

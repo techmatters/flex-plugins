@@ -6,20 +6,15 @@ import {
   HANDLE_VALIDATE_FORM,
   HANDLE_CHANGE,
   HANDLE_FOCUS,
-  INITIALIZE_CONTACT_STATE,
-  REMOVE_CONTACT_STATE,
   SAVE_END_MILLIS,
   HANDLE_SELECT_SEARCH_RESULT,
   CHANGE_TAB,
-  CHANGE_ROUTE,
-  SET_CONNECTED_CASE,
-  UPDATE_CASE_INFO,
-  TEMPORARY_CASE_INFO,
   RESTORE_ENTIRE_FORM,
   SET_CATEGORIES_GRID_VIEW,
   HANDLE_EXPAND_CATEGORY,
   PREPOPULATE_FORM,
 } from './ActionTypes';
+import { INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE } from './types';
 import { countSelectedCategories } from './ValidationRules';
 import { copySearchResultIntoTask } from './SearchContact';
 import { getConfig } from '../HrmFormPlugin';
@@ -63,22 +58,10 @@ export class Actions {
     parents: [],
   });
 
-  static initializeContactState = taskId => ({ type: INITIALIZE_CONTACT_STATE, taskId });
-
-  static removeContactState = taskId => ({ type: REMOVE_CONTACT_STATE, taskId });
-
   // records the end time (in milliseconds)
   static saveEndMillis = taskId => ({ type: SAVE_END_MILLIS, taskId });
 
   static changeTab = (tab, taskId) => ({ type: CHANGE_TAB, tab, taskId });
-
-  static changeRoute = (route, taskId, subroute) => ({ type: CHANGE_ROUTE, route, taskId, subroute });
-
-  static setConnectedCase = (connectedCase, taskId) => ({ type: SET_CONNECTED_CASE, connectedCase, taskId });
-
-  static updateCaseInfo = (info, taskId) => ({ type: UPDATE_CASE_INFO, info, taskId });
-
-  static temporaryCaseInfo = (string, taskId) => ({ type: TEMPORARY_CASE_INFO, string, taskId });
 
   static restoreEntireForm = (form, taskId) => ({
     type: RESTORE_ENTIRE_FORM,
@@ -186,6 +169,18 @@ export function reduce(state = initialState, action) {
         tasks: {
           ...state.tasks,
           [action.taskId]: createBlankForm(),
+        },
+      };
+    }
+
+    case RECREATE_CONTACT_STATE: {
+      if (state.tasks[action.taskId]) return state;
+
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: recreateBlankForm(),
         },
       };
     }
