@@ -51,7 +51,8 @@ const ViewNote: React.FC<Props> = ({ taskSid, connectedCaseState, changeRoute, c
         </Row>
         <Row>
           <CaseActionDetailFont style={{ marginRight: 20 }}>
-            <Template code="Case-AddNoteAdded" /> <span data-testid="Case-ViewNoteScreen-Date">{date}</span>
+            <Template code="Case-AddNoteAdded" />
+            <span data-testid="Case-ViewNoteScreen-Date">{` ${date}`}</span>
           </CaseActionDetailFont>
           <CaseActionDetailFont style={{ marginRight: 20 }}>
             <Template code="Case-AddNoteCounselor" />{' '}
