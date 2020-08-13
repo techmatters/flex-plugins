@@ -158,7 +158,7 @@ describe('Test AddPerpetrator', () => {
 
     const ownProps = {
       counselor: 'Someone',
-      onClickClose: () => {},
+      onClickClose: jest.fn(),
       task,
     };
 
