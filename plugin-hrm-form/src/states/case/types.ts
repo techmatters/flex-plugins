@@ -16,8 +16,6 @@ export type ViewNoteInfo = {
 
 export type TemporaryCaseInfo = string | CallerFormInformation;
 
-export type TemporaryCaseInfo = string | CallerFormInformation;
-
 type SetConnectedCaseAction = {
   type: typeof SET_CONNECTED_CASE;
   connectedCase: Case;

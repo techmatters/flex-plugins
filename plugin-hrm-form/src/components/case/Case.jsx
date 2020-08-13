@@ -23,9 +23,11 @@ import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import Timeline from './Timeline';
 import AddNote from './AddNote';
+import Households from './Households';
 import Perpetrators from './Perpetrators';
-import AddPerpetrator from './AddPerpetrator';
 import CaseSummary from './CaseSummary';
+import AddHousehold from './AddHousehold';
+import AddPerpetrator from './AddPerpetrator';
 import ViewNote from './ViewNote';
 
 class Case extends Component {
@@ -42,6 +44,7 @@ class Case extends Component {
         twilioWorkerId: PropTypes.string,
         status: PropTypes.string,
         info: PropTypes.shape({
+          households: PropTypes.arrayOf(PropTypes.shape({})),
           perpetrators: PropTypes.arrayOf(PropTypes.shape({})),
         }),
       }),
@@ -107,6 +110,9 @@ class Case extends Component {
   onClickAddPerpetrator = () =>
     this.props.changeRoute({ route: 'new-case', subroute: 'add-perpetrator' }, this.props.task.taskSid);
 
+  onClickAddHousehold = () =>
+    this.props.changeRoute({ route: 'new-case', subroute: 'add-household' }, this.props.task.taskSid);
+
   onClickAddPerpetrator = () =>
     this.props.changeRoute({ route: 'new-case', subroute: 'add-perpetrator' }, this.props.task.taskSid);
 
@@ -133,13 +139,18 @@ class Case extends Component {
     const { createdAt, twilioWorkerId, status, info } = connectedCase;
     const counselor = counselorsHash[twilioWorkerId];
     const date = new Date(createdAt).toLocaleDateString(navigator.language);
+    const households = info && info.households ? info.households : [];
     const perpetrators = info && info.perpetrators ? info.perpetrators : [];
+
+    const addScreenProps = { task: this.props.task, counselor, onClickClose: this.handleClose };
 
     switch (subroute) {
       case 'add-note':
-        return <AddNote task={this.props.task} counselor={counselor} onClickClose={this.handleClose} />;
+        return <AddNote {...addScreenProps} />;
+      case 'add-household':
+        return <AddHousehold {...addScreenProps} />;
       case 'add-perpetrator':
-        return <AddPerpetrator task={this.props.task} counselor={counselor} onClickClose={this.handleClose} />;
+        return <AddPerpetrator {...addScreenProps} />;
       case 'view-note':
         return <ViewNote taskSid={this.props.task.taskSid} />;
       default:
@@ -156,9 +167,9 @@ class Case extends Component {
                 <Timeline caseId={connectedCase.id} task={task} form={form} />
               </Box>
               <Box marginLeft="25px" marginTop="25px">
-                <Perpetrators
-                  perpetrators={perpetrators}
-                  onClickAddPerpetrator={this.onClickAddPerpetrator}
+                <Households
+                  households={households}
+                  onClickAddHousehold={this.onClickAddHousehold}
                   onClickView={this.handleMockedMessage}
                 />
               </Box>

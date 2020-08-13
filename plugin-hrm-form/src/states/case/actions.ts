@@ -2,18 +2,12 @@ import { Case, CaseInfo } from '../../types/types';
 import {
   CaseActionType,
   TemporaryCaseInfo,
-<<<<<<< HEAD
   ViewNoteInfo,
-=======
->>>>>>> Perpetrators changes
   SET_CONNECTED_CASE,
   REMOVE_CONNECTED_CASE,
   UPDATE_CASE_INFO,
   UPDATE_TEMP_INFO,
-<<<<<<< HEAD
   UPDATE_VIEW_NOTE_INFO,
-=======
->>>>>>> Perpetrators changes
 } from './types';
 
 // Action creators
