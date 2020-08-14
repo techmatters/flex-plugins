@@ -24,6 +24,7 @@ import * as RoutingActions from '../../states/routing/actions';
 import Timeline from './Timeline';
 import AddNote from './AddNote';
 import CaseSummary from './CaseSummary';
+import ViewContact from './ViewContact';
 
 class Case extends Component {
   static displayName = 'Case';
@@ -128,6 +129,8 @@ class Case extends Component {
     switch (subroute) {
       case 'add-note':
         return <AddNote task={this.props.task} counselor={counselor} onClickClose={this.handleClose} />;
+      case 'view-contact':
+        return <ViewContact task={this.props.task} />;
       default:
         return (
           <CaseContainer>

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { format } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
 import PropTypes from 'prop-types';
@@ -12,8 +14,9 @@ import { taskType, formType } from '../../types';
 import { isNullOrUndefined } from '../../utils/checkers';
 import CaseAddButton from './CaseAddButton';
 import { getActivities } from '../../services/CaseService';
+import * as RoutingActions from '../../states/routing/actions';
 
-const Timeline = ({ task, form, caseId, onClickAddNote }) => {
+const Timeline = ({ task, form, caseId, onClickAddNote, changeRoute }) => {
   const [mockedMessage, setMockedMessage] = useState(null);
   const [timeline, setTimeline] = useState([]);
 
@@ -38,6 +41,20 @@ const Timeline = ({ task, form, caseId, onClickAddNote }) => {
 
     setTimeline([...timeline, connectCaseActivity]);
   }
+
+  const handleOnClickView = activity => {
+    if (['whatsapp', 'facebook', 'sms', 'web'].includes(activity.type)) {
+      // const info = {
+      //   note: activity.text,
+      //   counselor: activity.twilioWorkerId,
+      //   date: new Date(activity.date).toLocaleDateString(navigator.language),
+      // };
+      // updateViewNoteInfo(info, task.taskSid);
+      changeRoute({ route: 'new-case', subroute: 'view-contact' }, task.taskSid);
+    } else {
+      setMockedMessage(<Template code="NotImplemented" />);
+    }
+  };
   return (
     <Box marginTop="25px">
       <Dialog onClose={() => setMockedMessage(null)} open={Boolean(mockedMessage)}>
@@ -61,7 +78,7 @@ const Timeline = ({ task, form, caseId, onClickAddNote }) => {
               <TimelineIcon type={activity.type} />
               <TimelineText>{activity.text}</TimelineText>
               <Box marginLeft="5px">
-                <ViewButton onClick={() => setMockedMessage(<Template code="NotImplemented" />)}>View</ViewButton>
+                <ViewButton onClick={() => handleOnClickView(activity)}>View</ViewButton>
               </Box>
             </TimelineRow>
           );
@@ -76,6 +93,13 @@ Timeline.propTypes = {
   form: formType.isRequired,
   caseId: PropTypes.number.isRequired,
   onClickAddNote: PropTypes.func.isRequired,
+  changeRoute: PropTypes.func.isRequired,
+  // updateViewNoteInfo: PropTypes.func.isRequired,
 };
 
-export default Timeline;
+const mapDispatchToProps = dispatch => ({
+  changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
+  // updateViewNoteInfo: bindActionCreators(CaseActions.updateViewNoteInfo, dispatch),
+});
+
+export default connect(null, mapDispatchToProps)(Timeline);
