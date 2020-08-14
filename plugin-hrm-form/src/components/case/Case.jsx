@@ -23,6 +23,8 @@ import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import Timeline from './Timeline';
 import AddNote from './AddNote';
+import Perpetrators from './Perpetrators';
+import AddPerpetrator from './AddPerpetrator';
 import CaseSummary from './CaseSummary';
 import ViewNote from './ViewNote';
 
@@ -39,7 +41,9 @@ class Case extends Component {
         createdAt: PropTypes.string,
         twilioWorkerId: PropTypes.string,
         status: PropTypes.string,
-        info: PropTypes.shape({}),
+        info: PropTypes.shape({
+          perpetrators: PropTypes.arrayOf(PropTypes.shape({})),
+        }),
       }),
     }).isRequired,
     counselorsHash: PropTypes.shape({}).isRequired,
@@ -100,6 +104,9 @@ class Case extends Component {
     this.props.changeRoute({ route: 'new-case' }, task.taskSid);
   };
 
+  onClickAddPerpetrator = () =>
+    this.props.changeRoute({ route: 'new-case', subroute: 'add-perpetrator' }, this.props.task.taskSid);
+
   render() {
     const { anchorEl, isMenuOpen, mockedMessage, loading } = this.state;
     const { subroute } = this.props.routing;
@@ -120,13 +127,16 @@ class Case extends Component {
     const isMockedMessageOpen = Boolean(mockedMessage);
     const { firstName, lastName } = form.childInformation.name;
     const name = formatName(`${firstName.value} ${lastName.value}`);
-    const { createdAt, twilioWorkerId, status } = connectedCase;
+    const { createdAt, twilioWorkerId, status, info } = connectedCase;
     const counselor = counselorsHash[twilioWorkerId];
     const date = new Date(createdAt).toLocaleDateString(navigator.language);
+    const perpetrators = info && info.perpetrators ? info.perpetrators : [];
 
     switch (subroute) {
       case 'add-note':
         return <AddNote task={this.props.task} counselor={counselor} onClickClose={this.handleClose} />;
+      case 'add-perpetrator':
+        return <AddPerpetrator task={this.props.task} counselor={counselor} onClickClose={this.handleClose} />;
       case 'view-note':
         return <ViewNote taskSid={this.props.task.taskSid} />;
       default:
@@ -141,6 +151,13 @@ class Case extends Component {
               </Box>
               <Box marginLeft="25px" marginTop="25px">
                 <Timeline caseId={connectedCase.id} task={task} form={form} />
+              </Box>
+              <Box marginLeft="25px" marginTop="25px">
+                <Perpetrators
+                  perpetrators={perpetrators}
+                  onClickAddPerpetrator={this.onClickAddPerpetrator}
+                  onClickView={this.handleMockedMessage}
+                />
               </Box>
               <Box marginLeft="25px" marginTop="25px">
                 <CaseSummary task={this.props.task} />

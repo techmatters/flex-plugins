@@ -1,4 +1,5 @@
 import { Case, CaseInfo } from '../../types/types';
+import { CallerFormInformation } from '../../components/common/forms/CallerForm';
 
 // Action types
 export const SET_CONNECTED_CASE = 'SET_CONNECTED_CASE';
@@ -12,6 +13,8 @@ export type ViewNoteInfo = {
   counselor: string;
   date: string;
 };
+
+export type TemporaryCaseInfo = string | CallerFormInformation;
 
 type SetConnectedCaseAction = {
   type: typeof SET_CONNECTED_CASE;
@@ -32,7 +35,7 @@ type UpdateCaseInfoAction = {
 
 type TemporaryCaseInfoAction = {
   type: typeof UPDATE_TEMP_INFO;
-  string: string;
+  value: TemporaryCaseInfo;
   taskId: string;
 };
 

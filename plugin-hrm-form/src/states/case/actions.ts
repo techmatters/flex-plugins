@@ -1,6 +1,7 @@
 import { Case, CaseInfo } from '../../types/types';
 import {
   CaseActionType,
+  TemporaryCaseInfo,
   ViewNoteInfo,
   SET_CONNECTED_CASE,
   REMOVE_CONNECTED_CASE,
@@ -27,9 +28,9 @@ export const updateCaseInfo = (info: CaseInfo, taskId: string): CaseActionType =
   taskId,
 });
 
-export const updateTempInfo = (string: string, taskId: string): CaseActionType => ({
+export const updateTempInfo = (value: TemporaryCaseInfo, taskId: string): CaseActionType => ({
   type: UPDATE_TEMP_INFO,
-  string,
+  value,
   taskId,
 });
 

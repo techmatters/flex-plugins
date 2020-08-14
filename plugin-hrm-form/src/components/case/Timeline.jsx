@@ -81,7 +81,7 @@ const Timeline = ({ task, form, caseId, changeRoute, updateViewNoteInfo }) => {
               <TimelineDate>{date}</TimelineDate>
               <TimelineIcon type={activity.type} />
               <TimelineText>{activity.text}</TimelineText>
-              <Box marginLeft="5px">
+              <Box marginLeft="auto" marginRight="10px">
                 <ViewButton onClick={() => handleOnClickView(activity)}>View</ViewButton>
               </Box>
             </TimelineRow>
