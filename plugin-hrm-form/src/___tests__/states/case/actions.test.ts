@@ -55,4 +55,19 @@ describe('test action creators', () => {
 
     expect(actions.updateTempInfo(string, task.taskSid)).toStrictEqual(expectedAction);
   });
+
+  test('updateViewNoteInfo', async () => {
+    const info = {
+      note: 'note',
+      counselor: 'counselor-hash',
+      date: '8/12/2020',
+    };
+    const expectedAction: types.CaseActionType = {
+      type: types.UPDATE_VIEW_NOTE_INFO,
+      taskId: task.taskSid,
+      info,
+    };
+
+    expect(actions.updateViewNoteInfo(info, task.taskSid)).toStrictEqual(expectedAction);
+  });
 });
