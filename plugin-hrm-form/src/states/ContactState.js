@@ -235,21 +235,6 @@ export function reduce(state = initialState, action) {
       };
     }
 
-    case CHANGE_ROUTE: {
-      const currentTask = state.tasks[action.taskId];
-      const { metadata } = currentTask;
-      const { route, subroute } = action;
-      const taskWithUpdatedRoute = { ...currentTask, metadata: { ...metadata, route, subroute } };
-
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: taskWithUpdatedRoute,
-        },
-      };
-    }
-
     case PREPOPULATE_FORM: {
       const currentTask = state.tasks[action.taskId];
       const { gender, age } = action;
@@ -272,52 +257,6 @@ export function reduce(state = initialState, action) {
               },
             },
           },
-        },
-      };
-    }
-
-    case SET_CONNECTED_CASE: {
-      const currentTask = state.tasks[action.taskId];
-      const { metadata } = currentTask;
-      const taskWithConnectedCase = { ...currentTask, metadata: { ...metadata, connectedCase: action.connectedCase } };
-
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: taskWithConnectedCase,
-        },
-      };
-    }
-
-    case UPDATE_CASE_INFO: {
-      const currentTask = state.tasks[action.taskId];
-      const { metadata } = currentTask;
-      const { connectedCase } = metadata;
-      const updatedCase = { ...connectedCase, info: action.info };
-      const taskWithUpdatedCase = {
-        ...currentTask,
-        metadata: { ...metadata, connectedCase: updatedCase, temporaryCaseInfo: '' },
-      };
-
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: taskWithUpdatedCase,
-        },
-      };
-    }
-
-    case TEMPORARY_CASE_INFO: {
-      const currentTask = state.tasks[action.taskId];
-      const { metadata } = currentTask;
-
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: { ...currentTask, metadata: { ...metadata, temporaryCaseInfo: action.string } },
         },
       };
     }
