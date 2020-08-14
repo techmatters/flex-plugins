@@ -14,7 +14,7 @@ import * as GeneralActions from '../states/actions';
 import * as RoutingActions from '../states/routing/actions';
 import { handleSelectSearchResult } from '../states/SearchContact';
 import { hasTaskControl } from '../utils/transfer';
-import { callTypes } from '../states/DomainConstants';
+import callTypes from '../states/DomainConstants';
 
 class TaskView extends Component {
   static displayName = 'TaskView';
