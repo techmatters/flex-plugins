@@ -36,7 +36,8 @@ class TaskView extends Component {
     changeTab: PropTypes.func.isRequired,
     changeRoute: PropTypes.func.isRequired,
     handleValidateForm: PropTypes.func.isRequired,
-    prepopulateForm: PropTypes.func.isRequired,
+    prepopulateFormChild: PropTypes.func.isRequired,
+    prepopulateFormCaller: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
@@ -60,16 +61,17 @@ class TaskView extends Component {
 
     // If this task came from the pre-survey
     if (task.attributes.memory) {
+      const { answers } = task.attributes.memory.twilio.collected_data.collect_survey;
       /*
-       * Conditional to prevent infinite rendering
+       * Prevent rendering infinite loop
        * If the user answered the first question, then there will be data to fill in
        */
       const shouldPrepopulateForm =
-        task.attributes.memory.twilio.collected_data.collect_survey.answers.about_self.answer &&
+        answers.about_self.answer &&
         form &&
-        !form.childInformation.gender.value;
+        !(form.childInformation.gender.value || form.callerInformation.gender.value);
+
       if (shouldPrepopulateForm) {
-        const { answers } = task.attributes.memory.twilio.collected_data.collect_survey;
         let gender = answers.gender.answer;
         if (gender === undefined) {
           gender = 'Unknown';
@@ -100,19 +102,14 @@ class TaskView extends Component {
           }
         }
 
-        /*
-         * Currently always populates child information
-         * Not sure whether to make a second redux action to populate the caller form
-         * Or to have a single redux action which checks a boolean
-         */
-        this.props.prepopulateForm(gender, ageStr, task.taskSid);
-
-        // Change call type based on survey answers
+        // Change call type and fill form based on survey answers
         const child = answers.about_self.answer === 'Yes';
         if (child) {
           form.callType.value = callTypes.child;
+          this.props.prepopulateFormChild(gender, ageStr, task.taskSid);
         } else {
           form.callType.value = callTypes.caller;
+          this.props.prepopulateFormCaller(gender, ageStr, task.taskSid);
         }
 
         // Open tabbed form to first tab
@@ -164,7 +161,8 @@ const mapDispatchToProps = dispatch => ({
   handleSelectSearchResult: bindActionCreators(handleSelectSearchResult, dispatch),
   changeTab: bindActionCreators(Actions.changeTab, dispatch),
   handleValidateForm: handleValidateForm(dispatch),
-  prepopulateForm: bindActionCreators(Actions.prepopulateForm, dispatch),
+  prepopulateFormChild: bindActionCreators(Actions.prepopulateFormChild, dispatch),
+  prepopulateFormCaller: bindActionCreators(Actions.prepopulateFormCaller, dispatch),
   recreateContactState: bindActionCreators(GeneralActions.recreateContactState, dispatch),
   changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
 });

@@ -12,7 +12,8 @@ import {
   RESTORE_ENTIRE_FORM,
   SET_CATEGORIES_GRID_VIEW,
   HANDLE_EXPAND_CATEGORY,
-  PREPOPULATE_FORM,
+  PREPOPULATE_FORM_CHILD,
+  PREPOPULATE_FORM_CALLER,
 } from './ActionTypes';
 import { INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE } from './types';
 import { countSelectedCategories } from './ValidationRules';
@@ -73,7 +74,9 @@ export class Actions {
 
   static handleExpandCategory = (category, taskId) => ({ type: HANDLE_EXPAND_CATEGORY, category, taskId });
 
-  static prepopulateForm = (gender, age, taskId) => ({ type: PREPOPULATE_FORM, gender, age, taskId });
+  static prepopulateFormChild = (gender, age, taskId) => ({ type: PREPOPULATE_FORM_CHILD, gender, age, taskId });
+
+  static prepopulateFormCaller = (gender, age, taskId) => ({ type: PREPOPULATE_FORM_CALLER, gender, age, taskId });
 }
 
 // Will replace the below when we move over to field objects
@@ -235,7 +238,7 @@ export function reduce(state = initialState, action) {
       };
     }
 
-    case PREPOPULATE_FORM: {
+    case PREPOPULATE_FORM_CHILD: {
       const currentTask = state.tasks[action.taskId];
       const { gender, age } = action;
 
@@ -253,6 +256,32 @@ export function reduce(state = initialState, action) {
               },
               age: {
                 ...currentTask.childInformation.age,
+                value: age,
+              },
+            },
+          },
+        },
+      };
+    }
+
+    case PREPOPULATE_FORM_CALLER: {
+      const currentTask = state.tasks[action.taskId];
+      const { gender, age } = action;
+
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...currentTask,
+            callerInformation: {
+              ...currentTask.callerInformation,
+              gender: {
+                ...currentTask.callerInformation.gender,
+                value: gender,
+              },
+              age: {
+                ...currentTask.callerInformation.age,
                 value: age,
               },
             },
