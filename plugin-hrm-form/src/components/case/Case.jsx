@@ -107,9 +107,6 @@ class Case extends Component {
     this.props.changeRoute({ route: 'new-case' }, task.taskSid);
   };
 
-  onClickAddPerpetrator = () =>
-    this.props.changeRoute({ route: 'new-case', subroute: 'add-perpetrator' }, this.props.task.taskSid);
-
   onClickAddHousehold = () =>
     this.props.changeRoute({ route: 'new-case', subroute: 'add-household' }, this.props.task.taskSid);
 
