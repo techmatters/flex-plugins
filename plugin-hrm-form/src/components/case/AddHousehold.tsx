@@ -28,7 +28,7 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-const AddPerpetrator: React.FC<Props> = ({
+const AddHousehold: React.FC<Props> = ({
   task,
   counselor,
   onClickClose,
@@ -55,32 +55,32 @@ const AddPerpetrator: React.FC<Props> = ({
     },
   });
 
-  function savePerpetrator() {
+  function saveHousehold() {
     if (!temporaryCaseInfo || typeof temporaryCaseInfo === 'string') return;
 
     const { info } = connectedCaseState.connectedCase;
-    const perpetrator = getFormValues(temporaryCaseInfo);
+    const household = getFormValues(temporaryCaseInfo);
     const createdAt = new Date().toISOString();
-    const newPerpetrator = { perpetrator, createdAt };
-    const perpetrators = info && info.perpetrators ? [...info.perpetrators, newPerpetrator] : [newPerpetrator];
-    const newInfo = info ? { ...info, perpetrators } : { perpetrators };
+    const newHousehold = { household, createdAt };
+    const households = info && info.households ? [...info.households, newHousehold] : [newHousehold];
+    const newInfo = info ? { ...info, households } : { households };
     updateCaseInfo(newInfo, task.taskSid);
   }
 
-  function savePerpetratorAndStay() {
-    savePerpetrator();
+  function saveHouseholdAndStay() {
+    saveHousehold();
     updateTempInfo(newFormEntry, task.taskSid);
   }
 
-  function savePerpetratorAndLeave() {
-    savePerpetrator();
+  function saveHouseholdAndLeave() {
+    saveHousehold();
     changeRoute({ route: 'new-case' }, task.taskSid);
   }
 
   return (
     <CaseActionContainer>
       <CaseActionFormContainer>
-        <ActionHeader titleTemplate="Case-AddPerpetrator" onClickClose={onClickClose} counselor={counselor} />
+        <ActionHeader titleTemplate="Case-AddHousehold" onClickClose={onClickClose} counselor={counselor} />
         <CallerForm callerInformation={temporaryCaseInfo} defaultEventHandlers={defaultEventHandlers} />
       </CaseActionFormContainer>
       <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
@@ -92,29 +92,29 @@ const AddPerpetrator: React.FC<Props> = ({
         </Box>
         <Box marginRight="15px">
           <StyledNextStepButton
-            data-testid="Case-AddPerpetratorScreen-SaveAndAddAnotherPerpetrator"
+            data-testid="Case-AddHouseholdScreen-SaveAndAddAnotherHousehold"
             secondary
             roundCorners
-            onClick={savePerpetratorAndStay}
+            onClick={saveHouseholdAndStay}
             disabled={!temporaryCaseInfo}
           >
-            <Template code="BottomBar-SaveAndAddAnotherPerpetrator" />
+            <Template code="BottomBar-SaveAndAddAnotherHousehold" />
           </StyledNextStepButton>
         </Box>
         <StyledNextStepButton
-          data-testid="Case-AddPerpetratorScreen-SavePerpetrator"
+          data-testid="Case-AddHouseholdScreen-SaveHousehold"
           roundCorners
-          onClick={savePerpetratorAndLeave}
+          onClick={saveHouseholdAndLeave}
           disabled={!temporaryCaseInfo}
         >
-          <Template code="BottomBar-SavePerpetrator" />
+          <Template code="BottomBar-SaveHousehold" />
         </StyledNextStepButton>
       </BottomButtonBar>
     </CaseActionContainer>
   );
 };
 
-AddPerpetrator.displayName = 'AddPerpetrator';
+AddHousehold.displayName = 'AddHousehold';
 
 const mapStateToProps = (state, ownProps: OwnProps) => {
   const caseState: CaseState = state[namespace][connectedCaseBase]; // casting type as inference is not working for the store yet
@@ -129,4 +129,4 @@ const mapDispatchToProps = {
   changeRoute: RoutingActions.changeRoute,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddPerpetrator);
+export default connect(mapStateToProps, mapDispatchToProps)(AddHousehold);

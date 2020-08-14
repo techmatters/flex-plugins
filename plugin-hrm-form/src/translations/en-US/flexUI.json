@@ -77,6 +77,8 @@
   "BottomBar-SaveNote": "Save Note",
   "BottomBar-SaveAndAddAnotherPerpetrator": "Save and Add Another Perpetrator",
   "BottomBar-SavePerpetrator": "Save Perpetrator",
+  "BottomBar-SaveAndAddAnotherHousehold": "Save and Add Another Member",
+  "BottomBar-SaveHousehold": "Save Member",
 
   "Categories-Title": "Categorize this contact",
   
@@ -94,7 +96,8 @@
   "Case-CaseNumber": "Case",
   "Case-CaseDetailsSection": "Case Details",
   "Case-TimelineSection": "Timeline",
-  "Case-AddPerpetratprSection": "Perpetrators",
+  "Case-AddPerpetratorSection": "Perpetrators",
+  "Case-AddHouseholdSection": "Household Information",
   "Case-CaseSummarySection": "Case Summary",
   "Case-CaseDetailsChildName": "Child Name",
   "Case-CaseDetailsOwner": "Counselor",
@@ -102,6 +105,7 @@
   "Case-CaseDetailsStatusLabel": "Status",
   "Case-CaseDetailsStatusOpen": "Open",
   "Case-AddNote": "Add Note",
+  "Case-AddHousehold": "Add Household Member",
   "Case-AddPerpetrator": "Add Perpetrator",
   "Case-AddNoteTypeHere": "Type here to add note...",
   "Case-AddCaseSummaryHere": "Add case summary here...",
@@ -115,6 +119,7 @@
   "Case-PerpetratorRelationship": "Relationship to child: ",
   "Case-NoPerpetrators": "No Perpetrators Listed",
   "Case-Note": "Note",
+  "Case-NoHouseholds": "No Household Members Listed",
 
   "SideNavCaseList": "Case List",
   

@@ -9,30 +9,30 @@ import CaseAddButton from './CaseAddButton';
 import InformationRow from './InformationRow';
 
 type OwnProps = {
-  onClickAddPerpetrator: () => void;
+  onClickAddHousehold: () => void;
   onClickView: () => void;
-  perpetrators: CaseInfo['perpetrators'];
+  households: CaseInfo['households'];
 };
 
-const Perpetrators: React.FC<OwnProps> = ({ onClickAddPerpetrator, onClickView, perpetrators }) => {
+const Households: React.FC<OwnProps> = ({ onClickAddHousehold, onClickView, households }) => {
   return (
     <>
       <Box marginBottom="10px">
         <Row>
-          <CaseSectionFont id="Case-AddPerpetratorSection-label">
-            <Template code="Case-AddPerpetratorSection" />
+          <CaseSectionFont id="Case-AddHouseholdSection-label">
+            <Template code="Case-AddHouseholdSection" />
           </CaseSectionFont>
-          <CaseAddButton templateCode="Case-AddPerpetrator" onClick={onClickAddPerpetrator} />
+          <CaseAddButton templateCode="Case-AddHousehold" onClick={onClickAddHousehold} />
         </Row>
       </Box>
-      {perpetrators.length ? (
-        perpetrators.map((p, index) => (
-          <InformationRow key={`perpetrator-${index}`} person={p.perpetrator} onClickView={onClickView} />
+      {households.length ? (
+        households.map((h, index) => (
+          <InformationRow key={`household-${index}`} person={h.household} onClickView={onClickView} />
         ))
       ) : (
         <TimelineRow>
           <PlaceHolderText>
-            <Template code="Case-NoPerpetrators" />
+            <Template code="Case-NoHouseholds" />
           </PlaceHolderText>
         </TimelineRow>
       )}
@@ -40,6 +40,6 @@ const Perpetrators: React.FC<OwnProps> = ({ onClickAddPerpetrator, onClickView, 
   );
 };
 
-Perpetrators.displayName = 'Perpetrators';
+Households.displayName = 'Households';
 
-export default Perpetrators;
+export default Households;
