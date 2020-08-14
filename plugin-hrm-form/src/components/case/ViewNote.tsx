@@ -10,6 +10,7 @@ import { namespace, connectedCaseBase, configurationBase } from '../../states';
 import { CaseState } from '../../states/case/reducer';
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseContainer, CaseActionTitle, CaseActionDetailFont, NoteContainer } from '../../styles/case';
+import ActionHeader from './ActionHeader';
 
 type OwnProps = {
   taskSid: string;
@@ -38,27 +39,7 @@ const ViewNote: React.FC<Props> = ({ taskSid, connectedCaseState, changeRoute, c
   return (
     <CaseContainer>
       <Container>
-        <Row>
-          <CaseActionTitle style={{ marginTop: 'auto' }}>
-            <Template code="Case-Note" />
-          </CaseActionTitle>
-          <ButtonBase onClick={handleClose} style={{ marginLeft: 'auto' }} data-testid="Case-ViewNoteScreen-CloseCross">
-            <HiddenText>
-              <Template code="Case-CloseButton" />
-            </HiddenText>
-            <Close />
-          </ButtonBase>
-        </Row>
-        <Row>
-          <CaseActionDetailFont style={{ marginRight: 20 }}>
-            <Template code="Case-AddNoteAdded" />
-            <span data-testid="Case-ViewNoteScreen-Date">{` ${date}`}</span>
-          </CaseActionDetailFont>
-          <CaseActionDetailFont style={{ marginRight: 20 }}>
-            <Template code="Case-AddNoteCounselor" />{' '}
-            <span data-testid="Case-ViewNoteScreen-Counselor">{counselorName}</span>
-          </CaseActionDetailFont>
-        </Row>
+        <ActionHeader titleTemplate="Case-Note" onClickClose={handleClose} counselor={counselorName} added={date} />
         <NoteContainer data-testid="Case-ViewNoteScreen-Note">{note}</NoteContainer>
       </Container>
       <BottomButtonBar>

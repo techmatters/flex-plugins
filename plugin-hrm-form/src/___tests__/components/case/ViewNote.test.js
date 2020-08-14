@@ -42,8 +42,8 @@ test('displays counselor, date and note', () => {
     </StorelessThemeProvider>,
   );
 
-  expect(screen.getByTestId('Case-ViewNoteScreen-Counselor')).toHaveTextContent(counselor);
-  expect(screen.getByTestId('Case-ViewNoteScreen-Date')).toHaveTextContent(date);
+  expect(screen.getByTestId('Case-ActionHeaderCounselor')).toHaveTextContent(counselor);
+  expect(screen.getByTestId('Case-ActionHeaderAdded')).toHaveTextContent(date);
   expect(screen.getByTestId('Case-ViewNoteScreen-Note')).toHaveTextContent(note);
 });
 
@@ -77,8 +77,8 @@ test('click on x button', () => {
     </StorelessThemeProvider>,
   );
 
-  expect(screen.getByTestId('Case-ViewNoteScreen-CloseCross')).toBeInTheDocument();
-  screen.getByTestId('Case-ViewNoteScreen-CloseCross').click();
+  expect(screen.getByTestId('Case-CloseCross')).toBeInTheDocument();
+  screen.getByTestId('Case-CloseCross').click();
 
   expect(changeRoute).toHaveBeenCalledWith({ route: 'new-case' }, taskSid);
 });

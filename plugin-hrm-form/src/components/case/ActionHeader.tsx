@@ -31,10 +31,10 @@ const ActionHeader: React.FC<Props> = ({ titleTemplate, onClickClose, added, cou
         </ButtonBase>
       </Row>
       <Row style={{ width: '100%' }}>
-        <CaseActionDetailFont style={{ marginRight: 20 }}>
+        <CaseActionDetailFont style={{ marginRight: 20 }} data-testid="Case-ActionHeaderAdded">
           <Template code="Case-ActionHeaderAdded" /> {added || new Date().toLocaleDateString(navigator.language)}
         </CaseActionDetailFont>
-        <CaseActionDetailFont style={{ marginRight: 20 }}>
+        <CaseActionDetailFont style={{ marginRight: 20 }} data-testid="Case-ActionHeaderCounselor">
           <Template code="Case-ActionHeaderCounselor" /> {counselor}
         </CaseActionDetailFont>
       </Row>
