@@ -5,8 +5,7 @@ export const CHANGE_ROUTE = 'CHANGE_ROUTE';
 export type AppRoutes =
   // TODO: enum the possible subroutes on each route
   | { route: 'tabbed-forms' }
-  | { route: 'new-case'; subroute?: 'add-note' }
-  | { route: 'new-case'; subroute?: 'view-note' }
+  | { route: 'new-case'; subroute?: 'add-note' | 'view-note' }
   | { route: 'select-call-type' };
 
 type ChangeRouteAction = {
