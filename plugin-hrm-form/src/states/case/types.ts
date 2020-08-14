@@ -6,6 +6,13 @@ export const SET_CONNECTED_CASE = 'SET_CONNECTED_CASE';
 export const REMOVE_CONNECTED_CASE = 'REMOVE_CONNECTED_CASE';
 export const UPDATE_CASE_INFO = 'UPDATE_CASE_INFO';
 export const UPDATE_TEMP_INFO = 'UPDATE_TEMP_INFO';
+export const UPDATE_VIEW_NOTE_INFO = 'UPDATE_VIEW_NOTE_INFO';
+
+export type ViewNoteInfo = {
+  note: string;
+  counselor: string;
+  date: string;
+};
 
 export type TemporaryCaseInfo = string | CallerFormInformation;
 
@@ -32,8 +39,15 @@ type TemporaryCaseInfoAction = {
   taskId: string;
 };
 
+type UpdateViewNoteInfoAction = {
+  type: typeof UPDATE_VIEW_NOTE_INFO;
+  taskId: string;
+  info: ViewNoteInfo;
+};
+
 export type CaseActionType =
   | SetConnectedCaseAction
   | RemoveConnectedCaseAction
   | UpdateCaseInfoAction
-  | TemporaryCaseInfoAction;
+  | TemporaryCaseInfoAction
+  | UpdateViewNoteInfoAction;

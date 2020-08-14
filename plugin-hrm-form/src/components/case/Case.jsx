@@ -26,6 +26,7 @@ import AddNote from './AddNote';
 import Perpetrators from './Perpetrators';
 import AddPerpetrator from './AddPerpetrator';
 import CaseSummary from './CaseSummary';
+import ViewNote from './ViewNote';
 
 class Case extends Component {
   static displayName = 'Case';
@@ -103,8 +104,6 @@ class Case extends Component {
     this.props.changeRoute({ route: 'new-case' }, task.taskSid);
   };
 
-  onClickAddNote = () => this.props.changeRoute({ route: 'new-case', subroute: 'add-note' }, this.props.task.taskSid);
-
   onClickAddPerpetrator = () =>
     this.props.changeRoute({ route: 'new-case', subroute: 'add-perpetrator' }, this.props.task.taskSid);
 
@@ -138,6 +137,8 @@ class Case extends Component {
         return <AddNote task={this.props.task} counselor={counselor} onClickClose={this.handleClose} />;
       case 'add-perpetrator':
         return <AddPerpetrator task={this.props.task} counselor={counselor} onClickClose={this.handleClose} />;
+      case 'view-note':
+        return <ViewNote taskSid={this.props.task.taskSid} />;
       default:
         return (
           <CaseContainer>
@@ -149,7 +150,7 @@ class Case extends Component {
                 <CaseDetails name={name} status={status} counselor={counselor} date={date} />
               </Box>
               <Box marginLeft="25px" marginTop="25px">
-                <Timeline caseId={connectedCase.id} task={task} form={form} onClickAddNote={this.onClickAddNote} />
+                <Timeline caseId={connectedCase.id} task={task} form={form} />
               </Box>
               <Box marginLeft="25px" marginTop="25px">
                 <Perpetrators

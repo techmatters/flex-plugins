@@ -207,3 +207,13 @@ export const RowItemContainer = styled(Row)`
   overflow: hidden;
 `;
 RowItemContainer.displayName = 'RowItemContainer';
+export const NoteContainer = styled('div')`
+  white-space: break-spaces;
+  font-family: 'Open Sans', sans-serif;
+  line-height: 30px;
+  font-size: 17px;
+  width: 85%;
+  margin: 10px auto 0px;
+  text-align: justify;
+`;
+NoteContainer.displayName = 'NoteContainer';

@@ -3,17 +3,19 @@ import { omit } from 'lodash';
 import { Case } from '../../types/types';
 import {
   CaseActionType,
+  ViewNoteInfo,
+  TemporaryCaseInfo,
   SET_CONNECTED_CASE,
   REMOVE_CONNECTED_CASE,
   UPDATE_CASE_INFO,
   UPDATE_TEMP_INFO,
-  TemporaryCaseInfo,
+  UPDATE_VIEW_NOTE_INFO,
 } from './types';
 import { GeneralActionType, REMOVE_CONTACT_STATE } from '../types';
 
 export type CaseState = {
   tasks: {
-    [taskId: string]: { connectedCase: Case; temporaryCaseInfo?: TemporaryCaseInfo };
+    [taskId: string]: { connectedCase: Case; temporaryCaseInfo?: TemporaryCaseInfo; viewNoteInfo: ViewNoteInfo };
   };
 };
 
@@ -66,6 +68,17 @@ export function reduce(state = initialState, action: CaseActionType | GeneralAct
           [action.taskId]: {
             ...state.tasks[action.taskId],
             temporaryCaseInfo: action.value,
+          },
+        },
+      };
+    case UPDATE_VIEW_NOTE_INFO:
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...state.tasks[action.taskId],
+            viewNoteInfo: action.info,
           },
         },
       };
