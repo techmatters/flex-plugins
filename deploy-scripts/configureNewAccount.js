@@ -24,18 +24,18 @@ async function createMatchingList(orig, copy, prefix, props, baseFn) {
 
       // Might need to add something where IDs are copied
 
-      const friendlyN = obj.friendlyName;
-      let newObj = copy.find((e) => e.friendlyName === friendlyN);
+      const { friendlyName } = obj;
+      let newObj = copy.find((e) => e.friendlyName === friendlyName);
 
       if (newObj == null) {
-        newConfig.friendlyName = friendlyN;
+        newConfig.friendlyName = friendlyName;
         newObj = await baseFn.create(newConfig);
       } else {
         await baseFn(newObj.sid).update(newConfig);
       }
 
-      oldIdDict[prefix + friendlyN] = obj.sid;
-      newIdDict[prefix + friendlyN] = newObj.sid;
+      oldIdDict[prefix + friendlyName] = obj.sid;
+      newIdDict[prefix + friendlyName] = newObj.sid;
     })
   );
 }
@@ -68,13 +68,13 @@ async function setUpTaskRouter(newAccSid, newAccAuth) {
   const oldWSes = await client.taskrouter.workspaces.list();
   await Promise.all(
     oldWSes.map(async (oldWS) => {
-      const friendlyN = oldWS.friendlyName;
-      oldIdDict[`WS_${friendlyN}`] = oldWS.sid;
+      const { friendlyName } = oldWS;
+      oldIdDict[`WS_${friendlyName}`] = oldWS.sid;
       const newWS = await newClient.taskrouter.workspaces.create({
-        friendlyName: friendlyN,
+        friendlyName,
         template: oldWS.prioritizeQueueOrder === "FIFO" ? "FIFO" : "NONE",
       });
-      newIdDict[`WS_${friendlyN}`] = newWS.sid;
+      newIdDict[`WS_${friendlyName}`] = newWS.sid;
     })
   );
 
