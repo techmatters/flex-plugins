@@ -14,9 +14,10 @@ import { taskType, formType } from '../../types';
 import { isNullOrUndefined } from '../../utils/checkers';
 import CaseAddButton from './CaseAddButton';
 import { getActivities } from '../../services/CaseService';
+import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 
-const Timeline = ({ task, form, caseId, onClickAddNote, changeRoute }) => {
+const Timeline = ({ task, form, caseId, changeRoute, updateViewNoteInfo }) => {
   const [mockedMessage, setMockedMessage] = useState(null);
   const [timeline, setTimeline] = useState([]);
 
@@ -43,18 +44,24 @@ const Timeline = ({ task, form, caseId, onClickAddNote, changeRoute }) => {
   }
 
   const handleOnClickView = activity => {
-    if (['whatsapp', 'facebook', 'sms', 'web'].includes(activity.type)) {
-      // const info = {
-      //   note: activity.text,
-      //   counselor: activity.twilioWorkerId,
-      //   date: new Date(activity.date).toLocaleDateString(navigator.language),
-      // };
+    if (activity.type === 'note') {
+      const info = {
+        note: activity.text,
+        counselor: activity.twilioWorkerId,
+        date: new Date(activity.date).toLocaleDateString(navigator.language),
+      };
+      updateViewNoteInfo(info, task.taskSid);
+      changeRoute({ route: 'new-case', subroute: 'view-note' }, task.taskSid);
+    } else if(['whatsapp', 'facebook', 'sms', 'web'].includes(activity.type)) {
       // updateTempInfo(info, task.taskSid);
       changeRoute({ route: 'new-case', subroute: 'view-contact' }, task.taskSid);
     } else {
       setMockedMessage(<Template code="NotImplemented" />);
     }
   };
+
+  const handleAddNoteClick = () => changeRoute({ route: 'new-case', subroute: 'add-note' }, task.taskSid);
+
   return (
     <Box marginTop="25px">
       <Dialog onClose={() => setMockedMessage(null)} open={Boolean(mockedMessage)}>
@@ -65,7 +72,7 @@ const Timeline = ({ task, form, caseId, onClickAddNote, changeRoute }) => {
           <CaseSectionFont id="Case-TimelineSection-label">
             <Template code="Case-TimelineSection" />
           </CaseSectionFont>
-          <CaseAddButton templateCode="Case-AddNote" onClick={onClickAddNote} />
+          <CaseAddButton templateCode="Case-AddNote" onClick={handleAddNoteClick} />
         </Row>
       </Box>
       {timeline
@@ -77,7 +84,7 @@ const Timeline = ({ task, form, caseId, onClickAddNote, changeRoute }) => {
               <TimelineDate>{date}</TimelineDate>
               <TimelineIcon type={activity.type} />
               <TimelineText>{activity.text}</TimelineText>
-              <Box marginLeft="5px">
+              <Box marginLeft="auto" marginRight="10px">
                 <ViewButton onClick={() => handleOnClickView(activity)}>View</ViewButton>
               </Box>
             </TimelineRow>
@@ -92,14 +99,13 @@ Timeline.propTypes = {
   task: taskType.isRequired,
   form: formType.isRequired,
   caseId: PropTypes.number.isRequired,
-  onClickAddNote: PropTypes.func.isRequired,
   changeRoute: PropTypes.func.isRequired,
-  // updateViewNoteInfo: PropTypes.func.isRequired,
+  updateViewNoteInfo: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = dispatch => ({
   changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
-  // updateViewNoteInfo: bindActionCreators(CaseActions.updateViewNoteInfo, dispatch),
+  updateViewNoteInfo: bindActionCreators(CaseActions.updateViewNoteInfo, dispatch),
 });
 
 export default connect(null, mapDispatchToProps)(Timeline);

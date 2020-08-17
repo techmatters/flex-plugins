@@ -11,10 +11,19 @@ export const CaseContainer = styled('div')`
 `;
 CaseContainer.displayName = 'CaseContainer';
 
-export const AddNoteContainer = styled(CaseContainer)`
+export const CaseActionContainer = styled(CaseContainer)`
   background-color: #ffffff;
 `;
-AddNoteContainer.displayName = 'AddNoteContainer';
+CaseActionContainer.displayName = 'CaseActionContainer';
+
+export const CaseActionFormContainer = styled('div')`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  overflow-y: auto;
+  padding: 20px 10px 0 30px;
+`;
 
 export const CenteredContainer = styled(CaseContainer)`
   align-items: center;
@@ -77,7 +86,11 @@ export const DefaultStatusFont = styled(DetailEntryText)`
 `;
 DefaultStatusFont.displayName = 'DefaultStatusFont';
 
-export const ViewButton = styled(props => <Button roundCorners={false} {...props} />)`
+type ViewButtonProps = {
+  onClick: () => void;
+};
+
+export const ViewButton = styled<ViewButtonProps>(props => <Button roundCorners={false} {...props} />)`
   color: ${({ theme }) => theme.colors.categoryTextColor};
   background-color: #ecedf1;
   border-radius: 4px;
@@ -158,6 +171,16 @@ export const TimelineText = styled('span')`
 `;
 TimelineText.displayName = 'TimelineText';
 
+export const InformationBoldText = styled(TimelineDate)`
+  text-align: left;
+`;
+InformationBoldText.displayName = 'InformationBoldText';
+
+export const PlaceHolderText = styled(TimelineText)`
+  opacity: 0.5;
+`;
+PlaceHolderText.displayName = 'PlaceHolderText';
+
 export const TimelineIconContainer = styled('div')`
   display: flex;
   align-items: center;
@@ -168,11 +191,30 @@ export const TimelineIconContainer = styled('div')`
 TimelineIconContainer.displayName = 'TimelineIconContainer';
 
 export const CaseSummaryTextArea = styled(BaseTextArea)`
+  background-color: #f6f6f67d;
   height: 100%;
   width: 100%;
   margin: 10px 0px;
+  padding-left: 15px;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 `;
 CaseSummaryTextArea.displayName = 'CaseSummaryTextArea';
+
+export const RowItemContainer = styled(Row)`
+  white-space: nowrap;
+  overflow: hidden;
+`;
+RowItemContainer.displayName = 'RowItemContainer';
+
+export const NoteContainer = styled('div')`
+  white-space: break-spaces;
+  font-family: 'Open Sans', sans-serif;
+  line-height: 30px;
+  font-size: 17px;
+  width: 85%;
+  margin: 10px auto 0px;
+  text-align: justify;
+`;
+NoteContainer.displayName = 'NoteContainer';

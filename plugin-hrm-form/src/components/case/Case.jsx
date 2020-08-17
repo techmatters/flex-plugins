@@ -23,8 +23,13 @@ import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import Timeline from './Timeline';
 import AddNote from './AddNote';
+import Households from './Households';
+import Perpetrators from './Perpetrators';
 import CaseSummary from './CaseSummary';
 import ViewContact from './ViewContact';
+import AddHousehold from './AddHousehold';
+import AddPerpetrator from './AddPerpetrator';
+import ViewNote from './ViewNote';
 
 class Case extends Component {
   static displayName = 'Case';
@@ -39,7 +44,10 @@ class Case extends Component {
         createdAt: PropTypes.string,
         twilioWorkerId: PropTypes.string,
         status: PropTypes.string,
-        info: PropTypes.shape({}),
+        info: PropTypes.shape({
+          households: PropTypes.arrayOf(PropTypes.shape({})),
+          perpetrators: PropTypes.arrayOf(PropTypes.shape({})),
+        }),
       }),
     }).isRequired,
     counselorsHash: PropTypes.shape({}).isRequired,
@@ -100,7 +108,11 @@ class Case extends Component {
     this.props.changeRoute({ route: 'new-case' }, task.taskSid);
   };
 
-  onClickAddNote = () => this.props.changeRoute({ route: 'new-case', subroute: 'add-note' }, this.props.task.taskSid);
+  onClickAddHousehold = () =>
+    this.props.changeRoute({ route: 'new-case', subroute: 'add-household' }, this.props.task.taskSid);
+
+  onClickAddPerpetrator = () =>
+    this.props.changeRoute({ route: 'new-case', subroute: 'add-perpetrator' }, this.props.task.taskSid);
 
   render() {
     const { anchorEl, isMenuOpen, mockedMessage, loading } = this.state;
@@ -122,15 +134,25 @@ class Case extends Component {
     const isMockedMessageOpen = Boolean(mockedMessage);
     const { firstName, lastName } = form.childInformation.name;
     const name = formatName(`${firstName.value} ${lastName.value}`);
-    const { createdAt, twilioWorkerId, status } = connectedCase;
+    const { createdAt, twilioWorkerId, status, info } = connectedCase;
     const counselor = counselorsHash[twilioWorkerId];
     const date = new Date(createdAt).toLocaleDateString(navigator.language);
+    const households = info && info.households ? info.households : [];
+    const perpetrators = info && info.perpetrators ? info.perpetrators : [];
+
+    const addScreenProps = { task: this.props.task, counselor, onClickClose: this.handleClose };
 
     switch (subroute) {
       case 'add-note':
-        return <AddNote task={this.props.task} counselor={counselor} onClickClose={this.handleClose} />;
+        return <AddNote {...addScreenProps} />;
       case 'view-contact':
         return <ViewContact task={this.props.task} />;
+      case 'add-household':
+        return <AddHousehold {...addScreenProps} />;
+      case 'add-perpetrator':
+        return <AddPerpetrator {...addScreenProps} />;
+      case 'view-note':
+        return <ViewNote taskSid={this.props.task.taskSid} />;
       default:
         return (
           <CaseContainer>
@@ -142,7 +164,21 @@ class Case extends Component {
                 <CaseDetails name={name} status={status} counselor={counselor} date={date} />
               </Box>
               <Box marginLeft="25px" marginTop="25px">
-                <Timeline caseId={connectedCase.id} task={task} form={form} onClickAddNote={this.onClickAddNote} />
+                <Timeline caseId={connectedCase.id} task={task} form={form} />
+              </Box>
+              <Box marginLeft="25px" marginTop="25px">
+                <Households
+                  households={households}
+                  onClickAddHousehold={this.onClickAddHousehold}
+                  onClickView={this.handleMockedMessage}
+                />
+              </Box>
+              <Box marginLeft="25px" marginTop="25px">
+                <Perpetrators
+                  perpetrators={perpetrators}
+                  onClickAddPerpetrator={this.onClickAddPerpetrator}
+                  onClickView={this.handleMockedMessage}
+                />
               </Box>
               <Box marginLeft="25px" marginTop="25px">
                 <CaseSummary task={this.props.task} />
