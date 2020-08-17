@@ -5,7 +5,8 @@
   "scripts": {
     "lint": "eslint --ext js .",
     "lint:fix": "npm run lint -- --fix",
-    "copyFlow": "node copyFlow.js"
+    "copyFlow": "node copyFlow.js",
+    "configure": "node configureNewAccount.js"
   },
   "author": "",
   "license": "ISC",
@@ -17,6 +18,7 @@
   "devDependencies": {
     "eslint": "^7.4.0",
     "eslint-config-airbnb": "^18.2.0",
+    "eslint-config-airbnb-base": "^14.2.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-import-resolver-webpack": "^0.12.2",
     "eslint-plugin-import": "^2.22.0",

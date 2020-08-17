@@ -40,7 +40,7 @@ describe('test reducer', () => {
       taskId: task.taskSid,
     };
 
-    const expected = { tasks: { task1: { connectedCase, temporaryCaseInfo: '' } } };
+    const expected = { tasks: { task1: { connectedCase, temporaryCaseInfo: null } } };
 
     const result = reduce(state, actions.setConnectedCase(connectedCase, task.taskSid));
     expect(result).toStrictEqual(expected);
@@ -67,7 +67,7 @@ describe('test reducer', () => {
   });
 
   test('should handle UPDATE_CASE_INFO', async () => {
-    const info = { summary: 'Some summary', notes: [{ note: 'Some note', createdAt: '2020-07-31T20:39:37.408Z' }] };
+    const info = { summary: 'Some summary', notes: ['Some note'] };
 
     const { connectedCase, temporaryCaseInfo } = state.tasks.task1;
     const expected = { tasks: { task1: { connectedCase: { ...connectedCase, info }, temporaryCaseInfo } } };
@@ -85,6 +85,21 @@ describe('test reducer', () => {
     const expected = { tasks: { task1: { connectedCase, temporaryCaseInfo: string } } };
 
     const result = reduce(state, actions.updateTempInfo(string, task.taskSid));
+    expect(result).toStrictEqual(expected);
+
+    state = result;
+  });
+
+  test('should handle UPDATE_VIEW_NOTE_INFO', async () => {
+    const info = {
+      note: 'note',
+      counselor: 'counselor-hash',
+      date: '8/12/2020',
+    };
+
+    const expected = { tasks: { task1: { ...state.tasks.task1, viewNoteInfo: info } } };
+
+    const result = reduce(state, actions.updateViewNoteInfo(info, task.taskSid));
     expect(result).toStrictEqual(expected);
 
     state = result;

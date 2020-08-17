@@ -5,6 +5,9 @@ import { StyledInput, StyledLabel, ErrorText, TextField } from '../styles/HrmSty
 import RequiredAsterisk from './RequiredAsterisk';
 import { fieldType } from '../types';
 
+/**
+ * @type {React.FC<any>}
+ */
 const FieldText = ({ id, label, placeholder, field, rows, handleBlur, handleChange, handleFocus, ...rest }) => (
   <TextField {...rest}>
     <StyledLabel htmlFor={id}>
@@ -27,9 +30,6 @@ const FieldText = ({ id, label, placeholder, field, rows, handleBlur, handleChan
 );
 
 FieldText.displayName = 'FieldText';
-FieldText.defaultProps = {
-  rows: undefined,
-};
 
 FieldText.propTypes = {
   id: PropTypes.string.isRequired,
@@ -44,6 +44,7 @@ FieldText.propTypes = {
 FieldText.defaultProps = {
   label: '',
   placeholder: '',
+  rows: undefined,
 };
 
 export default FieldText;

@@ -35,7 +35,7 @@ describe('test action creators', () => {
   });
 
   test('updateCaseInfo', async () => {
-    const info = { summary: 'Some summary', notes: [{ note: 'Some note', createdAt: '2020-07-31T20:39:37.408Z' }] };
+    const info = { summary: 'Some summary', notes: ['Some note'] };
     const expectedAction: types.CaseActionType = {
       type: types.UPDATE_CASE_INFO,
       info,
@@ -46,13 +46,28 @@ describe('test action creators', () => {
   });
 
   test('updateTempInfo', async () => {
-    const string = 'Some string here';
+    const value = 'Some string here';
     const expectedAction: types.CaseActionType = {
       type: types.UPDATE_TEMP_INFO,
-      string,
+      value,
       taskId: task.taskSid,
     };
 
-    expect(actions.updateTempInfo(string, task.taskSid)).toStrictEqual(expectedAction);
+    expect(actions.updateTempInfo(value, task.taskSid)).toStrictEqual(expectedAction);
+  });
+
+  test('updateViewNoteInfo', async () => {
+    const info = {
+      note: 'note',
+      counselor: 'counselor-hash',
+      date: '8/12/2020',
+    };
+    const expectedAction: types.CaseActionType = {
+      type: types.UPDATE_VIEW_NOTE_INFO,
+      taskId: task.taskSid,
+      info,
+    };
+
+    expect(actions.updateViewNoteInfo(info, task.taskSid)).toStrictEqual(expectedAction);
   });
 });

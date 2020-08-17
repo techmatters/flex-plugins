@@ -2,9 +2,13 @@
   "extends": [
     "twilio-react"
   ],
-  "parser": "babel-eslint",
+  "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "ecmaVersion": 2019
+    "ecmaVersion": 2019,
+    "sourceType": "module", 
+    "ecmaFeatures": { 
+    "jsx": true
+   }
   },
   "rules": {
     "no-console": "off",

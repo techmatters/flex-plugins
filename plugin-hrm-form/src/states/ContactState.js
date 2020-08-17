@@ -80,7 +80,7 @@ export class Actions {
 }
 
 // Will replace the below when we move over to field objects
-function editNestedField(original, parents, name, change) {
+export function editNestedField(original, parents, name, change) {
   if (parents.length === 0) {
     return {
       ...original,
