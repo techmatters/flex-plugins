@@ -4,20 +4,21 @@ import { format } from 'date-fns';
 import { ButtonBase, IconButton } from '@material-ui/core';
 import { MoreHoriz, Link as LinkIcon } from '@material-ui/icons';
 
-import { DetailsContainer, NameContainer, DetNameText, ContactDetailsIcon } from '../../../styles/search';
-import Section from '../../Section';
+import { DetailsContainer, NameContainer, DetNameText, ContactDetailsIcon } from '../styles/search';
+import Section from './Section';
 import SectionEntry from './SectionEntry';
-import callTypes, { channelTypes } from '../../../states/DomainConstants';
-import { isNonDataCallType } from '../../../states/ValidationRules';
-import { contactType } from '../../../types';
-import { formatAddress, formatDuration, formatName, formatCategories, mapChannel } from '../../../utils';
-import { ContactDetailsSections } from '../../../states/SearchContact';
+import callTypes, { channelTypes } from '../states/DomainConstants';
+import { isNonDataCallType } from '../states/ValidationRules';
+import { contactType } from '../types';
+import { formatAddress, formatDuration, formatName, formatCategories, mapChannel } from '../utils';
+import { ContactDetailsSections } from '../states/SearchContact';
 
 const MoreHorizIcon = ContactDetailsIcon(MoreHoriz);
 
 const Details = ({
   contact,
   detailsExpanded,
+  showActionIcons,
   handleOpenConnectDialog,
   handleMockedMessage,
   handleExpandDetailsSection,
@@ -80,16 +81,20 @@ const Details = ({
     <DetailsContainer>
       <NameContainer>
         <DetNameText>{childUpperCased}</DetNameText>
-        <IconButton
-          onClick={handleOpenConnectDialog}
-          isDisabled={isNonDataContact}
-          style={{ paddingTop: 0, paddingBottom: 0 }}
-        >
-          <LinkIcon style={{ color: '#ffffff' }} />
-        </IconButton>
-        <ButtonBase style={{ padding: 0 }} onClick={handleMockedMessage}>
-          <MoreHorizIcon style={{ color: '#ffffff' }} />
-        </ButtonBase>
+        {showActionIcons && (
+          <>
+            <IconButton
+              onClick={handleOpenConnectDialog}
+              disabled={isNonDataContact}
+              style={{ paddingTop: 0, paddingBottom: 0 }}
+            >
+              <LinkIcon style={{ color: '#ffffff' }} />
+            </IconButton>
+            <ButtonBase style={{ padding: 0 }} onClick={handleMockedMessage}>
+              <MoreHorizIcon style={{ color: '#ffffff' }} />
+            </ButtonBase>
+          </>
+        )}
       </NameContainer>
       <Section
         sectionTitle={GENERAL_DETAILS}
@@ -186,9 +191,10 @@ Details.displayName = 'Details';
 Details.propTypes = {
   contact: contactType.isRequired,
   detailsExpanded: PropTypes.objectOf(PropTypes.bool).isRequired,
-  handleOpenConnectDialog: PropTypes.func.isRequired,
-  handleMockedMessage: PropTypes.func.isRequired,
+  handleOpenConnectDialog: PropTypes.func,
+  handleMockedMessage: PropTypes.func,
   handleExpandDetailsSection: PropTypes.func.isRequired,
+  showActionIcons: PropTypes.bool,
 };
 
 export default Details;

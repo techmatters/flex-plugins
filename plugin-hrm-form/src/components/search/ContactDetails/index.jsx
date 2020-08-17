@@ -7,7 +7,7 @@ import { Template } from '@twilio/flex-ui';
 import { Container, Row } from '../../../styles/HrmStyles';
 import { BackText, BackIcon } from '../../../styles/search';
 import { contactType } from '../../../types';
-import Details from './Details';
+import GeneralContactDetails from '../../ContactDetails';
 import ConnectDialog from '../ConnectDialog';
 
 class ContactDetails extends Component {
@@ -63,7 +63,8 @@ class ContactDetails extends Component {
             </Row>
           </ButtonBase>
         </Row>
-        <Details
+        <GeneralContactDetails
+          showActionIcons
           contact={contact}
           detailsExpanded={detailsExpanded}
           handleOpenConnectDialog={this.handleOpenConnectDialog}

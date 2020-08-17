@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Grid } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
 
-import { SectionDescriptionText, SectionValueText } from '../../../styles/search';
+import { SectionDescriptionText, SectionValueText } from '../styles/search';
 
 /**
  * @param {string | number | boolean} value The value for a particular SectionEntry

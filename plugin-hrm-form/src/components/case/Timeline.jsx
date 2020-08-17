@@ -49,7 +49,7 @@ const Timeline = ({ task, form, caseId, onClickAddNote, changeRoute }) => {
       //   counselor: activity.twilioWorkerId,
       //   date: new Date(activity.date).toLocaleDateString(navigator.language),
       // };
-      // updateViewNoteInfo(info, task.taskSid);
+      // updateTempInfo(info, task.taskSid);
       changeRoute({ route: 'new-case', subroute: 'view-contact' }, task.taskSid);
     } else {
       setMockedMessage(<Template code="NotImplemented" />);

@@ -11,9 +11,89 @@ import { namespace, connectedCaseBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseState } from '../../states/case/reducer';
+import ContactDetails from '../ContactDetails';
 
 type OwnProps = {
   task: ITask;
+};
+
+const contact = {
+  contactId: 971,
+  counselor: 'Murilo OKTA Machado',
+  overview: {
+    dateTime: '2020-04-09T18:54:58.497Z',
+    name: 'James Bond',
+    customerNumber: 'Anonymous',
+    callType: 'Someone calling about a child',
+    categories: {
+      category1: ['sub1'],
+      category2: ['sub2'],
+      category3: ['sub3'],
+    },
+    counselor: 'WKd3d289370720216aab7e3db023e80f3e',
+    notes: 'Lorem Ipsum Bond',
+    channel: 'web',
+    conversationDuration: null,
+  },
+  details: {
+    childInformation: {
+      name: {
+        firstName:'James',
+        lastName: 'Bond',
+      },
+      gender: 'boy',
+      age: '03-06',
+      language: 'language1',
+      nationality: 'nationality1',
+      ethnicity: 'ethnicity1',
+      location: {
+        streetAddress: 'Orange St',
+        city: 'San Francisco',
+        stateOrCounty: 'CA',
+        postalCode: '51011',
+        phone1: '2025550134',
+        phone2: '2025550134',
+      },
+      refugee: false,
+      disabledOrSpecialNeeds: false,
+      hiv: false,
+      school: {
+        name: 'Orange School',
+        gradeLevel: 'Third Grade',
+      },
+    },
+    caseInformation: {
+      callSummary: 'Summary',
+      referredTo: 'Referral 1',
+      status: 'Oopen',
+      keepConfidential: false,
+      okForCaseWorkerToCall: true,
+      howDidTheChildHearAboutUs: 'Media',
+      didYouDiscussRightsWithTheChild: true,
+      didTheChildFeelWeSolvedTheirProblem: false,
+      wouldTheChildRecommendUsToAFriend: true,
+    },
+    callerInformation: {
+      name: {
+        firstName: 'John',
+        lastName: 'Doe',
+      },
+      relationshipToChild: 'Neighbor',
+      gender: 'boy',
+      age: '16-18',
+      language: 'language1',
+      nationality: 'nationality1',
+      ethnicity: 'ethnicity1',
+      location: {
+        streetAddress: 'Orange St',
+        city: 'San Francisco',
+        stateOrCounty: 'CA',
+        postalCode: '51011',
+        phone1: '2025550134',
+        phone2: '2025550134',
+      },
+    },
+  },
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -44,6 +124,11 @@ const ViewContact: React.FC<Props> = ({ task, changeRoute }) => {
           <Template code="Case-AddNoteCounselor" /> counselor-name
         </CaseActionDetailFont>
       </Row>
+      <ContactDetails
+        contact={contact}
+        detailsExpanded={{}}
+        handleExpandDetailsSection={() => null}
+      />
       </Container>
       <BottomButtonBar>
         <StyledNextStepButton roundCorners onClick={handleClose}>
