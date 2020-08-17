@@ -2,9 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import RootRef from '@material-ui/core/RootRef';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import Popper from '@material-ui/core/Popper';
 
-import { StyledPaper, StyledMenuList } from '../../styles/menu';
+import { StyledPopper, StyledPaper, StyledMenuList } from '../../styles/menu';
 
 const preventWhenClickingAnchorEl = (fn, anchorEl) => event => {
   if (anchorEl.contains(event.target)) return;
@@ -16,7 +15,7 @@ const preventWhenClickingAnchorEl = (fn, anchorEl) => event => {
  * we need to use Material's Menu instead of MenuItem, because it supports onClose method
  */
 const Menu = ({ open, anchorEl, children, onClickAway }) => (
-  <Popper open={open} anchorEl={anchorEl}>
+  <StyledPopper open={open} anchorEl={anchorEl}>
     <StyledPaper>
       <ClickAwayListener onClickAway={preventWhenClickingAnchorEl(onClickAway, anchorEl)}>
         <RootRef rootRef={rootRef => rootRef && rootRef.focus()}>
@@ -24,17 +23,18 @@ const Menu = ({ open, anchorEl, children, onClickAway }) => (
         </RootRef>
       </ClickAwayListener>
     </StyledPaper>
-  </Popper>
+  </StyledPopper>
 );
 
 Menu.displayName = 'Menu';
 Menu.propTypes = {
   open: PropTypes.bool.isRequired,
-  anchorEl: PropTypes.instanceOf(Element).isRequired,
+  anchorEl: PropTypes.instanceOf(Element),
   onClickAway: PropTypes.func.isRequired,
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
 };
 Menu.defaultProps = {
+  anchorEl: null,
   children: null,
 };
 

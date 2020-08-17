@@ -37,9 +37,13 @@ const fetchHrmApi = async (endPoint, options = {}) => {
     throw error;
   }
 
-  const responseJson = await response.json();
+  let result;
 
-  return responseJson;
+  try {
+    result = await response.json();
+  } finally {
+    return result;
+  }
 };
 
 export default fetchHrmApi;

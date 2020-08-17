@@ -33,7 +33,7 @@ const CallTypeButtons = props => {
     if (!hasTaskControl(task)) return;
 
     handleClick(taskSid, callType);
-    props.changeRoute('tabbed-forms', taskSid);
+    props.changeRoute({ route: 'tabbed-forms' }, taskSid);
   };
 
   const handleConfirmNonDataCallType = async () => {

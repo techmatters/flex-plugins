@@ -25,8 +25,6 @@
   "CallTypeButtons-Categorize": "categorize this contact",
   "CallTypeButtons-Or": "Or was this contact…",
 
-  "Case-Save": "Save and end",
-
   "ConnectDialog-Child": "Copy child information from this record to new contact?",
   "ConnectDialog-Caller": "Copy caller information from this record to new contact?",
 
@@ -69,9 +67,18 @@
 
   "BottomBar-Next": "Next",
   "BottomBar-SaveAndAddToCase": "Save and Add to Case...",
-  "BottomBar-Submit": "Submit",
+  "BottomBar-SaveContact": "Save Contact",
   "BottomBar-OpenNewCase": "Open New Case",
   "BottomBar-AddToExistingCase": "Add to Existing Case",
+  "BottomBar-Cancel": "Cancel",
+  "BottomBar-AddThisContactToExistingCase": "Add this Contact to Existing Case",
+  "BottomBar-CancelNewCaseAndClose": "Yes, Cancel New Case and Close",
+  "BottomBar-SaveAndEnd": "Save and End",
+  "BottomBar-SaveNote": "Save Note",
+  "BottomBar-SaveAndAddAnotherPerpetrator": "Save and Add Another Perpetrator",
+  "BottomBar-SavePerpetrator": "Save Perpetrator",
+  "BottomBar-SaveAndAddAnotherHousehold": "Save and Add Another Member",
+  "BottomBar-SaveHousehold": "Save Member",
 
   "Categories-Title": "Categorize this contact",
   
@@ -88,11 +95,31 @@
 
   "Case-CaseNumber": "Case",
   "Case-CaseDetailsSection": "Case Details",
+  "Case-TimelineSection": "Timeline",
+  "Case-AddPerpetratorSection": "Perpetrators",
+  "Case-AddHouseholdSection": "Household Information",
+  "Case-CaseSummarySection": "Case Summary",
   "Case-CaseDetailsChildName": "Child Name",
   "Case-CaseDetailsOwner": "Counselor",
   "Case-CaseDetailsDateOpened": "Date Opened",
   "Case-CaseDetailsStatusLabel": "Status",
   "Case-CaseDetailsStatusOpen": "Open",
+  "Case-AddNote": "Add Note",
+  "Case-AddHousehold": "Add Household Member",
+  "Case-AddPerpetrator": "Add Perpetrator",
+  "Case-AddNoteTypeHere": "Type here to add note...",
+  "Case-AddCaseSummaryHere": "Add case summary here...",
+  "Case-ActionHeaderAdded": "Added:",
+  "Case-ActionHeaderCounselor": "Counselor:",
+  "Case-CloseButton": "Close",
+  "Case-ViewButton": "View",
+  "Case-PerpetratorName": "Perpetrator Name: ",
+  "Case-PerpetratorGender": "Gender: ",
+  "Case-PerpetratorAge": "Age: ",
+  "Case-PerpetratorRelationship": "Relationship to child: ",
+  "Case-NoPerpetrators": "No Perpetrators Listed",
+  "Case-Note": "Note",
+  "Case-NoHouseholds": "No Household Members Listed",
 
   "SideNavCaseList": "Case List",
   
@@ -111,5 +138,20 @@
 
   "ContactPreview-CopyButton": "Copy informaton",
   "ContactPreview-ExpandButton": "Open case details",
-  "ContactPreview-MoreOptionsButton": "More options"
+  "ContactPreview-MoreOptionsButton": "More options",
+
+  "CallerForm-FirstName": "First name",
+  "CallerForm-LastName": "Last name",
+  "CallerForm-RelationshipToChild": "Relationship to Child",
+  "CallerForm-Gender": "Gender",
+  "CallerForm-Age": "Age",
+  "CallerForm-Language": "Language",
+  "CallerForm-Nationality": "Nationality",
+  "CallerForm-Ethnicity": "Ethnicity",
+  "CallerForm-StreetAddress": "Street address",
+  "CallerForm-City": "City",
+  "CallerForm-State/County": "State/County",
+  "CallerForm-PostalCode": "Postal code",
+  "CallerForm-Phone#1": "Phone #1",
+  "CallerForm-Phone#2": "Phone #2"
 }

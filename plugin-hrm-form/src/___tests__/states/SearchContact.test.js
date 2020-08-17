@@ -1,13 +1,13 @@
 import fromentries from 'fromentries';
-import { omit } from 'lodash';
 
-import { SEARCH_CONTACTS_SUCCESS, SEARCH_CONTACTS_FAILURE, REMOVE_CONTACT_STATE } from '../../states/ActionTypes';
+import { SEARCH_CONTACTS_SUCCESS, SEARCH_CONTACTS_FAILURE } from '../../states/ActionTypes';
+import { REMOVE_CONTACT_STATE } from '../../states/types';
+import { recreateContactState } from '../../states/actions';
 import { reduce as ContactStateReducer } from '../../states/ContactState';
 import {
   changeSearchPage,
   handleSelectSearchResult,
   handleSearchFormChange,
-  recreateSearchContact,
   reduce as SearchFormReducer,
   SearchPages,
   viewContactDetails,
@@ -279,14 +279,29 @@ describe('SearchContact reducer', () => {
   const task = { taskSid: 'WT123' };
 
   let state = null;
-  test('recreateSearchContact action creator', () => {
-    const action = recreateSearchContact(task.taskSid);
+  test('recreateContactState action creator (should recreate the state)', () => {
+    const action = recreateContactState(task.taskSid);
     const result = SearchFormReducer(initialState, action);
 
     const { tasks } = result;
     expect(tasks[task.taskSid]).not.toBeUndefined();
     expect(tasks[task.taskSid]).toStrictEqual(newTaskEntry);
     state = result;
+  });
+
+  test('recreateContactState action creator (should do nothing)', () => {
+    const action = recreateContactState(task.taskSid);
+
+    const result1 = SearchFormReducer(state, handleSearchFormChange(task.taskSid)('firstName', 'one value'));
+
+    const result2 = SearchFormReducer(result1, action);
+
+    const { tasks } = result2;
+    expect(tasks[task.taskSid]).not.toBeUndefined();
+    expect(tasks[task.taskSid]).not.toStrictEqual(newTaskEntry);
+    expect(tasks[task.taskSid].form.firstName).toBe('one value');
+
+    // state = result2; we don't want to assing this as a new state
   });
 
   test('handleSearchFormChange action creator', () => {

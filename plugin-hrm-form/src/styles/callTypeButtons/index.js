@@ -39,6 +39,8 @@ export const DataCallTypeButton = styled(Button)`
   }
 `;
 
+DataCallTypeButton.displayName = 'DataCallTypeButton';
+
 export const NonDataCallTypeButton = styled(Button)`
   width: 140px;
   height: 44px;
