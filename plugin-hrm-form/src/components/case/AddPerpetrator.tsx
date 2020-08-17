@@ -13,7 +13,7 @@ import { namespace, connectedCaseBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseState } from '../../states/case/reducer';
-import { DefaultEventHandlers } from '../common/forms/types';
+import { DefaultEventHandlers, FormValues } from '../common/forms/types';
 import { getFormValues } from '../common/forms/helpers';
 
 // @ts-ignore     TODO: fix this type error (createBlankForm must be typed or maybe create a separate function)
@@ -59,7 +59,7 @@ const AddPerpetrator: React.FC<Props> = ({
     if (!temporaryCaseInfo || typeof temporaryCaseInfo === 'string') return;
 
     const { info } = connectedCaseState.connectedCase;
-    const perpetrator = getFormValues(temporaryCaseInfo);
+    const perpetrator = getFormValues(temporaryCaseInfo) as FormValues<CallerFormInformation>;
     const createdAt = new Date().toISOString();
     const newPerpetrator = { perpetrator, createdAt };
     const perpetrators = info && info.perpetrators ? [...info.perpetrators, newPerpetrator] : [newPerpetrator];
@@ -81,7 +81,10 @@ const AddPerpetrator: React.FC<Props> = ({
     <CaseActionContainer>
       <CaseActionFormContainer>
         <ActionHeader titleTemplate="Case-AddPerpetrator" onClickClose={onClickClose} counselor={counselor} />
-        <CallerForm callerInformation={temporaryCaseInfo} defaultEventHandlers={defaultEventHandlers} />
+        <CallerForm
+          callerInformation={temporaryCaseInfo as CallerFormInformation}
+          defaultEventHandlers={defaultEventHandlers}
+        />
       </CaseActionFormContainer>
       <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
       <BottomButtonBar>

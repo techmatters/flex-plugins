@@ -14,7 +14,11 @@ export type ViewNoteInfo = {
   date: string;
 };
 
-export type TemporaryCaseInfo = string | CallerFormInformation;
+export type ViewContact = {
+  detailsExpanded: {string: boolean};
+};
+
+export type TemporaryCaseInfo = string | CallerFormInformation | ViewContact;
 
 type SetConnectedCaseAction = {
   type: typeof SET_CONNECTED_CASE;

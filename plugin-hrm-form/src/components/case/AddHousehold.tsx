@@ -13,7 +13,7 @@ import { namespace, connectedCaseBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseState } from '../../states/case/reducer';
-import { DefaultEventHandlers } from '../common/forms/types';
+import { DefaultEventHandlers, FormValues } from '../common/forms/types';
 import { getFormValues } from '../common/forms/helpers';
 
 // @ts-ignore     TODO: fix this type error (createBlankForm must be typed or maybe create a separate function)
@@ -59,7 +59,7 @@ const AddHousehold: React.FC<Props> = ({
     if (!temporaryCaseInfo || typeof temporaryCaseInfo === 'string') return;
 
     const { info } = connectedCaseState.connectedCase;
-    const household = getFormValues(temporaryCaseInfo);
+    const household = getFormValues(temporaryCaseInfo) as FormValues<CallerFormInformation>;
     const createdAt = new Date().toISOString();
     const newHousehold = { household, createdAt };
     const households = info && info.households ? [...info.households, newHousehold] : [newHousehold];
@@ -81,7 +81,10 @@ const AddHousehold: React.FC<Props> = ({
     <CaseActionContainer>
       <CaseActionFormContainer>
         <ActionHeader titleTemplate="Case-AddHousehold" onClickClose={onClickClose} counselor={counselor} />
-        <CallerForm callerInformation={temporaryCaseInfo} defaultEventHandlers={defaultEventHandlers} />
+        <CallerForm
+          callerInformation={temporaryCaseInfo as CallerFormInformation}
+          defaultEventHandlers={defaultEventHandlers}
+        />
       </CaseActionFormContainer>
       <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
       <BottomButtonBar>
