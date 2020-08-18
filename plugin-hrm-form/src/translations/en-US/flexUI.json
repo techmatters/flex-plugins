@@ -82,10 +82,10 @@
 
   "Categories-Title": "Categorize this contact",
   
-  "TabbedForms-AddCallerInfoTab": "Add Caller Information",
-  "TabbedForms-AddChildInfoTab": "Add Child Information",
-  "TabbedForms-CategoriesTab": "Categorize Issue",
-  "TabbedForms-AddCaseInfoTab": "Add Case Summary",
+  "TabbedForms-AddCallerInfoTab": "Caller Information",
+  "TabbedForms-AddChildInfoTab": "Child Information",
+  "TabbedForms-CategoriesTab": "Categories",
+  "TabbedForms-AddCaseInfoTab": "Summary",
 
   "NotImplemented": "Not implemented yet!",
   "Error-Backend": "Error from backend system.",

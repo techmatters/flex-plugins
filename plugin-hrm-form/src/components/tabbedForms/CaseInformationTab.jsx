@@ -13,7 +13,7 @@ const CaseInformationTab = ({ caseInformation, handleCheckboxClick, defaultEvent
       <ColumnarBlock>
         <FieldText
           id="CaseInformation_CallSummary"
-          label="Call summary"
+          label="Contact summary"
           field={caseInformation.callSummary}
           rows={10}
           {...defaultEventHandlers(['caseInformation'], 'callSummary')}
