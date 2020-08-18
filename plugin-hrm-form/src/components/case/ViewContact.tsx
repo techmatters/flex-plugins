@@ -12,6 +12,7 @@ import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseState } from '../../states/case/reducer';
 import ContactDetails from '../ContactDetails';
+import { ViewContact as ViewContactType } from '../../states/case/types';
 
 type OwnProps = {
   task: ITask;
@@ -38,7 +39,7 @@ const contact = {
   details: {
     childInformation: {
       name: {
-        firstName:'James',
+        firstName: 'James',
         lastName: 'Bond',
       },
       gender: 'boy',
@@ -99,36 +100,43 @@ const contact = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-const ViewContact: React.FC<Props> = ({ task, changeRoute }) => {
+const ViewContact: React.FC<Props> = ({ task, changeRoute, detailsExpanded, updateTempInfo }) => {
   const handleClose = () => changeRoute({ route: 'new-case' }, task.taskSid);
+
+  const handleExpandDetailsSection = section => {
+    const updatedDetailsExpanded = {
+      ...detailsExpanded,
+      [section]: !detailsExpanded[section],
+    };
+    const tempInfo = { detailsExpanded: updatedDetailsExpanded };
+    updateTempInfo(tempInfo, task.taskSid);
+  };
 
   return (
     <CaseContainer>
       <Container>
-      <Row>
-        <CaseActionTitle style={{ marginTop: 'auto' }}>
-          View Contact
-        </CaseActionTitle>
-        <ButtonBase onClick={handleClose} style={{ marginLeft: 'auto' }}>
-          <HiddenText>
-            <Template code="Case-CloseButton" />
-          </HiddenText>
-          <Close />
-        </ButtonBase>
-      </Row>
-      <Row>
-        <CaseActionDetailFont style={{ marginRight: 20 }}>
-          <Template code="Case-AddNoteAdded" /> 01/01/01
-        </CaseActionDetailFont>
-        <CaseActionDetailFont style={{ marginRight: 20 }}>
-          <Template code="Case-AddNoteCounselor" /> counselor-name
-        </CaseActionDetailFont>
-      </Row>
-      <ContactDetails
-        contact={contact}
-        detailsExpanded={{}}
-        handleExpandDetailsSection={() => null}
-      />
+        <Row>
+          <CaseActionTitle style={{ marginTop: 'auto' }}>View Contact</CaseActionTitle>
+          <ButtonBase onClick={handleClose} style={{ marginLeft: 'auto' }}>
+            <HiddenText>
+              <Template code="Case-CloseButton" />
+            </HiddenText>
+            <Close />
+          </ButtonBase>
+        </Row>
+        <Row>
+          <CaseActionDetailFont style={{ marginRight: 20 }}>
+            <Template code="Case-AddNoteAdded" /> 01/01/01
+          </CaseActionDetailFont>
+          <CaseActionDetailFont style={{ marginRight: 20 }}>
+            <Template code="Case-AddNoteCounselor" /> counselor-name
+          </CaseActionDetailFont>
+        </Row>
+        <ContactDetails
+          contact={contact}
+          detailsExpanded={detailsExpanded}
+          handleExpandDetailsSection={handleExpandDetailsSection}
+        />
       </Container>
       <BottomButtonBar>
         <StyledNextStepButton roundCorners onClick={handleClose}>
@@ -143,9 +151,9 @@ ViewContact.displayName = 'ViewContact';
 
 const mapStateToProps = (state, ownProps: OwnProps) => {
   const caseState: CaseState = state[namespace][connectedCaseBase]; // casting type as inference is not working for the store yet
-  const connectedCaseState = caseState.tasks[ownProps.task.taskSid];
+  const { detailsExpanded } = caseState.tasks[ownProps.task.taskSid].temporaryCaseInfo as ViewContactType;
 
-  return { connectedCaseState };
+  return { detailsExpanded };
 };
 
 const mapDispatchToProps = {

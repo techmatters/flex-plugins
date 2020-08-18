@@ -16,8 +16,9 @@ import CaseAddButton from './CaseAddButton';
 import { getActivities } from '../../services/CaseService';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
+import { ContactDetailsSections } from '../../states/SearchContact';
 
-const Timeline = ({ task, form, caseId, changeRoute, updateViewNoteInfo }) => {
+const Timeline = ({ task, form, caseId, changeRoute, updateViewNoteInfo, updateTempInfo }) => {
   const [mockedMessage, setMockedMessage] = useState(null);
   const [timeline, setTimeline] = useState([]);
 
@@ -52,8 +53,16 @@ const Timeline = ({ task, form, caseId, changeRoute, updateViewNoteInfo }) => {
       };
       updateViewNoteInfo(info, task.taskSid);
       changeRoute({ route: 'new-case', subroute: 'view-note' }, task.taskSid);
-    } else if(['whatsapp', 'facebook', 'sms', 'web'].includes(activity.type)) {
-      // updateTempInfo(info, task.taskSid);
+    } else if (['whatsapp', 'facebook', 'sms', 'web'].includes(activity.type)) {
+      const detailsExpanded = {
+        [ContactDetailsSections.GENERAL_DETAILS]: true,
+        [ContactDetailsSections.CALLER_INFORMATION]: false,
+        [ContactDetailsSections.CHILD_INFORMATION]: false,
+        [ContactDetailsSections.ISSUE_CATEGORIZATION]: false,
+        [ContactDetailsSections.CASE_SUMMARY]: false,
+      };
+      const tempInfo = { detailsExpanded };
+      updateTempInfo(tempInfo, task.taskSid);
       changeRoute({ route: 'new-case', subroute: 'view-contact' }, task.taskSid);
     } else {
       setMockedMessage(<Template code="NotImplemented" />);
@@ -106,6 +115,7 @@ Timeline.propTypes = {
 const mapDispatchToProps = dispatch => ({
   changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
   updateViewNoteInfo: bindActionCreators(CaseActions.updateViewNoteInfo, dispatch),
+  updateTempInfo: bindActionCreators(CaseActions.updateTempInfo, dispatch),
 });
 
 export default connect(null, mapDispatchToProps)(Timeline);
