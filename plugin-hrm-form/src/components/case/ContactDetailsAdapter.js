@@ -1,5 +1,10 @@
+/**
+ * TODO(murilo): This file replicates some code from the hrm repo. We should implement
+ * a better solution later on.
+ */
+
 import { transformForm, getNumberFromTask } from '../../services/ContactService';
-import { fillEndMillis, getConversationDuration } from '../../utils/conversationDuration';
+import { getConversationDuration } from '../../utils/conversationDuration';
 
 /**
  * @param {string[]} accumulator
@@ -38,8 +43,7 @@ export const adaptFormToContactDetails = (task, form, date, counselor) => {
   const categories = retrieveCategories(caseInformation.categories);
   const notes = caseInformation.callSummary;
   const { channelType } = task;
-  const metadata = fillEndMillis(form.metadata);
-  const conversationDuration = getConversationDuration(metadata);
+  const conversationDuration = getConversationDuration(form.metadata);
 
   return {
     overview: {
