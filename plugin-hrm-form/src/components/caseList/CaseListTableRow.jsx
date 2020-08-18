@@ -42,7 +42,8 @@ const renderTag = tag => (
 // eslint-disable-next-line react/no-multi-comp
 const CaseListTableRow = ({ caseItem, counselorsHash, openMockedMessage }) => {
   const name = formatName(caseItem.childName);
-  const summary = getShortSummary(caseItem.callSummary, CHAR_LIMIT, 'case');
+  const summary = caseItem.info && caseItem.info.summary;
+  const shortSummary = getShortSummary(summary, CHAR_LIMIT, 'case');
   const counselor = formatName(counselorsHash[caseItem.twilioWorkerId]);
   const opened = `${format(new Date(caseItem.createdAt), 'MMM d, yyyy')}`;
   const updated = `${format(new Date(caseItem.updatedAt), 'MMM d, yyyy')}`;
@@ -60,7 +61,7 @@ const CaseListTableRow = ({ caseItem, counselorsHash, openMockedMessage }) => {
         <CLTableBodyFont isOpenCase={isOpenCase}>{name}</CLTableBodyFont>
       </CLNamesCell>
       <CLSummaryCell>
-        <CLTableBodyFont isOpenCase={isOpenCase}>{summary}</CLTableBodyFont>
+        <CLTableBodyFont isOpenCase={isOpenCase}>{shortSummary}</CLTableBodyFont>
       </CLSummaryCell>
       <CLNamesCell>
         <CLTableBodyFont isOpenCase={isOpenCase}>{counselor}</CLTableBodyFont>
