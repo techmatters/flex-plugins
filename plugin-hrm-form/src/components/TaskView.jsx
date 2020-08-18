@@ -11,10 +11,8 @@ import { namespace, contactFormsBase, searchContactsBase, routingBase } from '..
 import { Actions } from '../states/ContactState';
 import { handleBlur, handleCategoryToggle, handleFocus, handleValidateForm } from '../states/ActionCreators';
 import * as GeneralActions from '../states/actions';
-import * as RoutingActions from '../states/routing/actions';
 import { handleSelectSearchResult } from '../states/SearchContact';
 import { hasTaskControl } from '../utils/transfer';
-import callTypes from '../states/DomainConstants';
 
 class TaskView extends Component {
   static displayName = 'TaskView';
@@ -34,12 +32,10 @@ class TaskView extends Component {
     handleSelectSearchResult: PropTypes.func.isRequired,
     recreateContactState: PropTypes.func.isRequired,
     changeTab: PropTypes.func.isRequired,
-    changeRoute: PropTypes.func.isRequired,
     handleValidateForm: PropTypes.func.isRequired,
-    prepopulateFormChild: PropTypes.func.isRequired,
-    prepopulateFormCaller: PropTypes.func.isRequired,
   };
 
+  // eslint-disable-next-line complexity
   componentDidMount() {
     const { contactFormStateExists, routingStateExists, searchStateExists } = this.props;
     if (!contactFormStateExists || !routingStateExists || !searchStateExists) {
@@ -48,7 +44,6 @@ class TaskView extends Component {
     }
   }
 
-  // eslint-disable-next-line complexity
   render() {
     const { task, thisTask, form } = this.props;
 
@@ -57,65 +52,6 @@ class TaskView extends Component {
 
     if (!show) {
       return null;
-    }
-
-    // If this task came from the pre-survey
-    if (task.attributes.memory) {
-      const { answers } = task.attributes.memory.twilio.collected_data.collect_survey;
-      /*
-       * Prevent rendering infinite loop
-       * If the user answered the first question, then there will be data to fill in
-       */
-      const shouldPrepopulateForm =
-        answers.about_self.answer &&
-        form &&
-        !(form.childInformation.gender.value || form.callerInformation.gender.value);
-
-      if (shouldPrepopulateForm) {
-        let gender = answers.gender.answer;
-        if (gender === undefined) {
-          gender = 'Unknown';
-        }
-
-        const age = answers.age.answer;
-        let ageStr;
-        if (age === undefined) {
-          ageStr = 'Unknown';
-        } else {
-          const ageNum = parseInt(age, 10);
-          if (ageNum >= 0 && ageNum <= 3) {
-            ageStr = '0-03';
-          } else if (ageNum >= 4 && ageNum <= 6) {
-            ageStr = '04-06';
-          } else if (ageNum >= 7 && ageNum <= 9) {
-            ageStr = '07-09';
-          } else if (ageNum >= 10 && ageNum <= 12) {
-            ageStr = '10-12';
-          } else if (ageNum >= 13 && ageNum <= 15) {
-            ageStr = '13-15';
-          } else if (ageNum >= 16 && ageNum <= 17) {
-            ageStr = '16-17';
-          } else if (ageNum >= 18 && ageNum <= 25) {
-            ageStr = '18-25';
-          } else {
-            ageStr = '>25';
-          }
-        }
-
-        // Change call type and fill form based on survey answers
-        const child = answers.about_self.answer === 'Yes';
-        if (child) {
-          form.callType.value = callTypes.child;
-          this.props.prepopulateFormChild(gender, ageStr, task.taskSid);
-        } else {
-          form.callType.value = callTypes.caller;
-          this.props.prepopulateFormCaller(gender, ageStr, task.taskSid);
-        }
-
-        // Open tabbed form to first tab
-        this.props.changeRoute({ route: 'tabbed-forms' }, task.taskSid);
-        this.props.changeTab(1, task.taskSid);
-      }
     }
 
     return (
@@ -161,10 +97,7 @@ const mapDispatchToProps = dispatch => ({
   handleSelectSearchResult: bindActionCreators(handleSelectSearchResult, dispatch),
   changeTab: bindActionCreators(Actions.changeTab, dispatch),
   handleValidateForm: handleValidateForm(dispatch),
-  prepopulateFormChild: bindActionCreators(Actions.prepopulateFormChild, dispatch),
-  prepopulateFormCaller: bindActionCreators(Actions.prepopulateFormCaller, dispatch),
   recreateContactState: bindActionCreators(GeneralActions.recreateContactState, dispatch),
-  changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
 });
 
 export default withTaskContext(connect(mapStateToProps, mapDispatchToProps)(TaskView));

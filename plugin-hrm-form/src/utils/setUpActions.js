@@ -11,6 +11,7 @@ import * as GeneralActions from '../states/actions';
 import { channelTypes, transferModes } from '../states/DomainConstants';
 import * as TransferHelpers from './transfer';
 import { saveFormSharedState, loadFormSharedState } from './sharedState';
+import { prepopulateForm } from './prepopulateForm';
 
 /**
  * Given a taskSid, retrieves the state of the form (stored in redux) for that task
@@ -71,8 +72,10 @@ const takeControlIfTransfer = async task => {
  * @type {ActionFunction}
  */
 export const afterAcceptTask = async payload => {
-  await takeControlIfTransfer(payload.task);
-  await restoreFormIfTransfer(payload.task);
+  const { task } = payload;
+  await takeControlIfTransfer(task);
+  await restoreFormIfTransfer(task);
+  prepopulateForm(task);
 };
 
 /**

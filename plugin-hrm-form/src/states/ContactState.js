@@ -248,6 +248,10 @@ export function reduce(state = initialState, action) {
           ...state.tasks,
           [action.taskId]: {
             ...currentTask,
+            callType: {
+              ...currentTask.callType,
+              value: 'Child calling about self',
+            },
             childInformation: {
               ...currentTask.childInformation,
               gender: {
@@ -274,6 +278,10 @@ export function reduce(state = initialState, action) {
           ...state.tasks,
           [action.taskId]: {
             ...currentTask,
+            callType: {
+              ...currentTask.callType,
+              value: 'Someone calling about a child',
+            },
             callerInformation: {
               ...currentTask.callerInformation,
               gender: {
