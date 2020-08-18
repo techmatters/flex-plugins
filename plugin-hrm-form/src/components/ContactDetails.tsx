@@ -196,5 +196,10 @@ Details.propTypes = {
   handleExpandDetailsSection: PropTypes.func.isRequired,
   showActionIcons: PropTypes.bool,
 };
+Details.defaultProps = {
+  handleOpenConnectDialog: () => null,
+  handleMockedMessage: () => null,
+  showActionIcons: false,
+};
 
 export default Details;
