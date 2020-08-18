@@ -2,14 +2,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
-import { ButtonBase } from '@material-ui/core';
-import { Close } from '@material-ui/icons';
 
-import { Container, Row, HiddenText, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
+import { Container, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import { namespace, connectedCaseBase, configurationBase } from '../../states';
 import { CaseState } from '../../states/case/reducer';
 import * as RoutingActions from '../../states/routing/actions';
-import { CaseContainer, CaseActionTitle, CaseActionDetailFont, NoteContainer } from '../../styles/case';
+import { CaseContainer, NoteContainer } from '../../styles/case';
 import ActionHeader from './ActionHeader';
 
 type OwnProps = {
