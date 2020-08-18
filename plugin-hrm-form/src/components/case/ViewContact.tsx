@@ -1,106 +1,77 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Template, ITask } from '@twilio/flex-ui';
-import { ButtonBase } from '@material-ui/core';
-import { Close } from '@material-ui/icons';
 
-import { Container, Row, HiddenText, StyledNextStepButton, BottomButtonBar } from '../../styles/HrmStyles';
-import { CaseContainer, CaseActionTitle, CaseActionDetailFont } from '../../styles/case';
-import { namespace, connectedCaseBase } from '../../states';
+import { Container, StyledNextStepButton, BottomButtonBar } from '../../styles/HrmStyles';
+import { CaseContainer } from '../../styles/case';
+import { namespace, connectedCaseBase, contactFormsBase, configurationBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
-import { CaseState } from '../../states/case/reducer';
 import ContactDetails from '../ContactDetails';
 import { ViewContact as ViewContactType } from '../../states/case/types';
+import { transformForm, getNumberFromTask } from '../../services/ContactService';
+import { fillEndMillis, getConversationDuration } from '../../utils/conversationDuration';
+import ActionHeader from './ActionHeader';
 
 type OwnProps = {
   task: ITask;
 };
 
-const contact = {
-  contactId: 971,
-  counselor: 'Murilo OKTA Machado',
-  overview: {
-    dateTime: '2020-04-09T18:54:58.497Z',
-    name: 'James Bond',
-    customerNumber: 'Anonymous',
-    callType: 'Someone calling about a child',
-    categories: {
-      category1: ['sub1'],
-      category2: ['sub2'],
-      category3: ['sub3'],
+const adaptFormToContactDetails = (task, form, date, counselor) => {
+  const details = transformForm(form);
+  const dateTime = date;
+  const name = `${details.childInformation.name.firstName} ${details.childInformation.name.lastName}`;
+  const customerNumber = getNumberFromTask(task);
+  const { callType, caseInformation } = details;
+  // const categories = retrieveCategories(caseInformation.categories);
+  const categories = {
+    category1: ['sub1'],
+    category2: ['sub2'],
+    category3: ['sub3'],
+  };
+  const notes = caseInformation.callSummary;
+  const { channelType } = task;
+  const metadata = fillEndMillis(form.metadata);
+  const conversationDuration = getConversationDuration(metadata);
+
+  return {
+    overview: {
+      dateTime,
+      name,
+      customerNumber,
+      callType,
+      categories,
+      counselor,
+      notes,
+      channel: channelType,
+      conversationDuration,
     },
-    counselor: 'WKd3d289370720216aab7e3db023e80f3e',
-    notes: 'Lorem Ipsum Bond',
-    channel: 'web',
-    conversationDuration: null,
-  },
-  details: {
-    childInformation: {
-      name: {
-        firstName: 'James',
-        lastName: 'Bond',
-      },
-      gender: 'boy',
-      age: '03-06',
-      language: 'language1',
-      nationality: 'nationality1',
-      ethnicity: 'ethnicity1',
-      location: {
-        streetAddress: 'Orange St',
-        city: 'San Francisco',
-        stateOrCounty: 'CA',
-        postalCode: '51011',
-        phone1: '2025550134',
-        phone2: '2025550134',
-      },
-      refugee: false,
-      disabledOrSpecialNeeds: false,
-      hiv: false,
-      school: {
-        name: 'Orange School',
-        gradeLevel: 'Third Grade',
-      },
-    },
-    caseInformation: {
-      callSummary: 'Summary',
-      referredTo: 'Referral 1',
-      status: 'Oopen',
-      keepConfidential: false,
-      okForCaseWorkerToCall: true,
-      howDidTheChildHearAboutUs: 'Media',
-      didYouDiscussRightsWithTheChild: true,
-      didTheChildFeelWeSolvedTheirProblem: false,
-      wouldTheChildRecommendUsToAFriend: true,
-    },
-    callerInformation: {
-      name: {
-        firstName: 'John',
-        lastName: 'Doe',
-      },
-      relationshipToChild: 'Neighbor',
-      gender: 'boy',
-      age: '16-18',
-      language: 'language1',
-      nationality: 'nationality1',
-      ethnicity: 'ethnicity1',
-      location: {
-        streetAddress: 'Orange St',
-        city: 'San Francisco',
-        stateOrCounty: 'CA',
-        postalCode: '51011',
-        phone1: '2025550134',
-        phone2: '2025550134',
-      },
-    },
-  },
+    counselor,
+    details,
+  };
 };
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-const ViewContact: React.FC<Props> = ({ task, changeRoute, detailsExpanded, updateTempInfo }) => {
+const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, updateTempInfo, changeRoute }) => {
+  const { detailsExpanded, contactId, date, counselor } = tempInfo;
+  const counselorName = counselorsHash[counselor] || 'Unknown';
+
+  const [contact, setContact] = useState(null);
+  useEffect(() => {
+    if (!contactId) {
+      const result = adaptFormToContactDetails(task, form, date, counselorName);
+      console.log({ result });
+      setContact(result);
+    }
+  }, [contactId, task, form, date, counselorName]);
+
+  if (!contact) {
+    return null;
+  }
+
   const handleClose = () => changeRoute({ route: 'new-case' }, task.taskSid);
 
   const handleExpandDetailsSection = section => {
@@ -108,30 +79,14 @@ const ViewContact: React.FC<Props> = ({ task, changeRoute, detailsExpanded, upda
       ...detailsExpanded,
       [section]: !detailsExpanded[section],
     };
-    const tempInfo = { detailsExpanded: updatedDetailsExpanded };
-    updateTempInfo(tempInfo, task.taskSid);
+    const updatedTempInfo = { detailsExpanded: updatedDetailsExpanded, date, counselor };
+    updateTempInfo(updatedTempInfo, task.taskSid);
   };
 
   return (
     <CaseContainer>
       <Container>
-        <Row>
-          <CaseActionTitle style={{ marginTop: 'auto' }}>View Contact</CaseActionTitle>
-          <ButtonBase onClick={handleClose} style={{ marginLeft: 'auto' }}>
-            <HiddenText>
-              <Template code="Case-CloseButton" />
-            </HiddenText>
-            <Close />
-          </ButtonBase>
-        </Row>
-        <Row>
-          <CaseActionDetailFont style={{ marginRight: 20 }}>
-            <Template code="Case-AddNoteAdded" /> 01/01/01
-          </CaseActionDetailFont>
-          <CaseActionDetailFont style={{ marginRight: 20 }}>
-            <Template code="Case-AddNoteCounselor" /> counselor-name
-          </CaseActionDetailFont>
-        </Row>
+        <ActionHeader titleTemplate="Case-Contact" onClickClose={handleClose} counselor={counselorName} added={date} />
         <ContactDetails
           contact={contact}
           detailsExpanded={detailsExpanded}
@@ -150,10 +105,12 @@ const ViewContact: React.FC<Props> = ({ task, changeRoute, detailsExpanded, upda
 ViewContact.displayName = 'ViewContact';
 
 const mapStateToProps = (state, ownProps: OwnProps) => {
-  const caseState: CaseState = state[namespace][connectedCaseBase]; // casting type as inference is not working for the store yet
-  const { detailsExpanded } = caseState.tasks[ownProps.task.taskSid].temporaryCaseInfo as ViewContactType;
+  const form = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
+  const counselorsHash = state[namespace][configurationBase].counselors.hash;
+  const tempInfo = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid]
+    .temporaryCaseInfo as ViewContactType;
 
-  return { detailsExpanded };
+  return { form, counselorsHash, tempInfo };
 };
 
 const mapDispatchToProps = {

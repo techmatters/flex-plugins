@@ -15,7 +15,10 @@ export type ViewNoteInfo = {
 };
 
 export type ViewContact = {
-  detailsExpanded: {string: boolean};
+  contactId?: string;
+  detailsExpanded: { string: boolean };
+  date: string;
+  counselor: string;
 };
 
 export type TemporaryCaseInfo = string | CallerFormInformation | ViewContact;

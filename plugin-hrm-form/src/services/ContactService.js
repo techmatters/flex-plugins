@@ -26,7 +26,7 @@ export async function searchContacts(searchParams) {
   }
 }
 
-function getNumberFromTask(task) {
+export function getNumberFromTask(task) {
   let number;
 
   if (task.channelType === channelTypes.facebook) {
