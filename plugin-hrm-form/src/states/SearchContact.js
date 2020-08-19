@@ -140,7 +140,7 @@ export const ContactDetailsSections = {
   CALLER_INFORMATION: 'Caller information',
   CHILD_INFORMATION: 'Child information',
   ISSUE_CATEGORIZATION: 'Issue categorization',
-  CASE_SUMMARY: 'Case summary',
+  CONTACT_SUMMARY: 'Contact summary',
 };
 
 const newTaskEntry = {
@@ -159,7 +159,7 @@ const newTaskEntry = {
     [ContactDetailsSections.CALLER_INFORMATION]: false,
     [ContactDetailsSections.CHILD_INFORMATION]: false,
     [ContactDetailsSections.ISSUE_CATEGORIZATION]: false,
-    [ContactDetailsSections.CASE_SUMMARY]: false,
+    [ContactDetailsSections.CONTACT_SUMMARY]: false,
   },
   searchResult: [],
   isRequesting: false,

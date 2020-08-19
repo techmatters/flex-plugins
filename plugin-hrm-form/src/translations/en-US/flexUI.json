@@ -154,5 +154,7 @@
   "CallerForm-State/County": "State/County",
   "CallerForm-PostalCode": "Postal code",
   "CallerForm-Phone#1": "Phone #1",
-  "CallerForm-Phone#2": "Phone #2"
+  "CallerForm-Phone#2": "Phone #2",
+
+  "ContactDetails-GeneralDetails": "General Details"
 }

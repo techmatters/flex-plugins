@@ -65,7 +65,7 @@ const Timeline = ({ task, form, caseId, changeRoute, updateViewNoteInfo, updateT
         [ContactDetailsSections.CALLER_INFORMATION]: false,
         [ContactDetailsSections.CHILD_INFORMATION]: false,
         [ContactDetailsSections.ISSUE_CATEGORIZATION]: false,
-        [ContactDetailsSections.CASE_SUMMARY]: false,
+        [ContactDetailsSections.CONTACT_SUMMARY]: false,
       };
       const { contactId } = activity;
       const tempInfo = { detailsExpanded, contactId, date, counselor };

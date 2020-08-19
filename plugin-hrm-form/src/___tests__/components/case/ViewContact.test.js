@@ -108,7 +108,7 @@ const detailsExpanded = {
   [ContactDetailsSections.CALLER_INFORMATION]: false,
   [ContactDetailsSections.CHILD_INFORMATION]: false,
   [ContactDetailsSections.ISSUE_CATEGORIZATION]: false,
-  [ContactDetailsSections.CASE_SUMMARY]: false,
+  [ContactDetailsSections.CONTACT_SUMMARY]: false,
 };
 
 const tempInfo = {

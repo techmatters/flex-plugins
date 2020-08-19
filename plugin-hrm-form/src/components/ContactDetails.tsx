@@ -12,6 +12,7 @@ import { isNonDataCallType } from '../states/ValidationRules';
 import { contactType } from '../types';
 import { formatAddress, formatDuration, formatName, formatCategories, mapChannel } from '../utils';
 import { ContactDetailsSections } from '../states/SearchContact';
+import { getConfig } from '../HrmFormPlugin';
 
 const MoreHorizIcon = ContactDetailsIcon(MoreHoriz);
 
@@ -69,12 +70,14 @@ const Details = ({
 
   const isNonDataContact = isNonDataCallType(contact.overview.callType);
 
+  const { strings } = getConfig();
+
   const {
     GENERAL_DETAILS,
     CALLER_INFORMATION,
     CHILD_INFORMATION,
     ISSUE_CATEGORIZATION,
-    CASE_SUMMARY,
+    CONTACT_SUMMARY,
   } = ContactDetailsSections;
 
   return (
@@ -97,7 +100,7 @@ const Details = ({
         )}
       </NameContainer>
       <Section
-        sectionTitle={GENERAL_DETAILS}
+        sectionTitle={strings['ContactDetails-GeneralDetails']}
         expanded={detailsExpanded[GENERAL_DETAILS]}
         handleExpandClick={() => handleExpandDetailsSection(GENERAL_DETAILS)}
       >
@@ -109,7 +112,7 @@ const Details = ({
       </Section>
       {callType === callTypes.caller && (
         <Section
-          sectionTitle={CALLER_INFORMATION}
+          sectionTitle={strings['TabbedForms-AddCallerInfoTab']}
           expanded={detailsExpanded[CALLER_INFORMATION]}
           handleExpandClick={() => handleExpandDetailsSection(CALLER_INFORMATION)}
         >
@@ -127,7 +130,7 @@ const Details = ({
       )}
       {isDataCall && (
         <Section
-          sectionTitle={CHILD_INFORMATION}
+          sectionTitle={strings['TabbedForms-AddChildInfoTab']}
           expanded={detailsExpanded[CHILD_INFORMATION]}
           handleExpandClick={() => handleExpandDetailsSection(CHILD_INFORMATION)}
           buttonDataTestid="ContactDetails-Section-ChildInformation"
@@ -150,7 +153,7 @@ const Details = ({
       )}
       {isDataCall && (
         <Section
-          sectionTitle={ISSUE_CATEGORIZATION}
+          sectionTitle={strings['TabbedForms-CategoriesTab']}
           expanded={detailsExpanded[ISSUE_CATEGORIZATION]}
           handleExpandClick={() => handleExpandDetailsSection(ISSUE_CATEGORIZATION)}
         >
@@ -162,9 +165,9 @@ const Details = ({
       )}
       {isDataCall && (
         <Section
-          sectionTitle={CASE_SUMMARY}
-          expanded={detailsExpanded[CASE_SUMMARY]}
-          handleExpandClick={() => handleExpandDetailsSection(CASE_SUMMARY)}
+          sectionTitle={strings['TabbedForms-AddCaseInfoTab']}
+          expanded={detailsExpanded[CONTACT_SUMMARY]}
+          handleExpandClick={() => handleExpandDetailsSection(CONTACT_SUMMARY)}
         >
           <SectionEntry description="Call Summary" value={callSummary} />
           <SectionEntry description="Status" value={status} />
