@@ -78,7 +78,7 @@ const Details = ({
   } = ContactDetailsSections;
 
   return (
-    <DetailsContainer>
+    <DetailsContainer data-testid="ContactDetails-Container">
       <NameContainer>
         <DetNameText>{childUpperCased}</DetNameText>
         {showActionIcons && (

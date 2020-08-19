@@ -72,7 +72,7 @@ const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, up
         />
       </Container>
       <BottomButtonBar>
-        <StyledNextStepButton roundCorners onClick={handleClose}>
+        <StyledNextStepButton roundCorners onClick={handleClose} data-testid="Case-ViewContactScreen-CloseButton">
           <Template code="CloseButton" />
         </StyledNextStepButton>
       </BottomButtonBar>
@@ -82,4 +82,5 @@ const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, up
 
 ViewContact.displayName = 'ViewContact';
 
+export const UnconnectedViewContact = ViewContact;
 export default connect(mapStateToProps, mapDispatchToProps)(ViewContact);
