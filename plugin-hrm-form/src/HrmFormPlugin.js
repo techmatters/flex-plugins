@@ -170,7 +170,7 @@ const setUpActions = setupObject => {
 
   Flex.Actions.addListener('beforeAcceptTask', ActionFunctions.initializeContactForm);
 
-  if (featureFlags.enable_transfers) Flex.Actions.addListener('afterAcceptTask', ActionFunctions.afterAcceptTask);
+  Flex.Actions.addListener('afterAcceptTask', ActionFunctions.afterAcceptTask(setupObject));
 
   if (featureFlags.enable_transfers) Flex.Actions.replaceAction('TransferTask', transferOverride);
 

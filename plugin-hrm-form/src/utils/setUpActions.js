@@ -71,10 +71,14 @@ const takeControlIfTransfer = async task => {
 /**
  * @type {ActionFunction}
  */
-export const afterAcceptTask = async payload => {
+export const afterAcceptTask = setupObject => async payload => {
+  const { featureFlags } = setupObject;
   const { task } = payload;
-  await takeControlIfTransfer(task);
-  await restoreFormIfTransfer(task);
+
+  if (featureFlags.enable_transfers) {
+    await takeControlIfTransfer(task);
+    await restoreFormIfTransfer(task);
+  }
   prepopulateForm(task);
 };
 
