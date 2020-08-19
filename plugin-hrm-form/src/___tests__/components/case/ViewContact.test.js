@@ -5,6 +5,8 @@ import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
 
+import '../../mockGetConfig';
+
 import { UnconnectedViewContact } from '../../../components/case/ViewContact';
 import HrmTheme from '../../../styles/HrmTheme';
 import { ContactDetailsSections } from '../../../states/SearchContact';

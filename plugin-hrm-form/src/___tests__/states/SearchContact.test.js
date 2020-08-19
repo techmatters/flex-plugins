@@ -270,7 +270,7 @@ describe('SearchContact reducer', () => {
       'Caller information': false,
       'Child information': false,
       'Issue categorization': false,
-      'Case summary': false,
+      'Contact summary': false,
     },
     searchResult: [],
     isRequesting: false,

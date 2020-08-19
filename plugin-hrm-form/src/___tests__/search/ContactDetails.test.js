@@ -2,6 +2,7 @@ import React from 'react';
 import renderer from 'react-test-renderer';
 
 import '../mockStyled';
+import '../mockGetConfig';
 
 import ContactDetails from '../../components/search/ContactDetails';
 import Section from '../../components/Section';
