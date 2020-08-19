@@ -183,7 +183,35 @@ test('click on close button', () => {
   expect(changeRoute).toHaveBeenCalledWith({ route: 'new-case' }, task.taskSid);
 });
 
-// TODO: test updateTempInfo
+test('click on expand section', async () => {
+  const updateTempInfo = jest.fn();
+  adaptFormToContactDetails.mockReturnValueOnce(contact);
+
+  render(
+    <StorelessThemeProvider themeConf={themeConf}>
+      <UnconnectedViewContact
+        task={task}
+        form={{}}
+        counselorsHash={counselorsHash}
+        tempInfo={tempInfo}
+        updateTempInfo={updateTempInfo}
+        changeRoute={jest.fn()}
+      />
+    </StorelessThemeProvider>,
+  );
+
+  const updatedTempInfo = {
+    ...tempInfo,
+    detailsExpanded: {
+      ...tempInfo.detailsExpanded,
+      [ContactDetailsSections.CHILD_INFORMATION]: !tempInfo.detailsExpanded[ContactDetailsSections.CHILD_INFORMATION],
+    },
+  };
+
+  screen.getByTestId('ContactDetails-Section-ChildInformation').click();
+
+  expect(updateTempInfo).toHaveBeenCalledWith(updatedTempInfo, task.taskSid);
+});
 
 test('a11y', async () => {
   adaptFormToContactDetails.mockReturnValueOnce(contact);

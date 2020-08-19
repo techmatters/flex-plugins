@@ -130,6 +130,7 @@ const Details = ({
           sectionTitle={CHILD_INFORMATION}
           expanded={detailsExpanded[CHILD_INFORMATION]}
           handleExpandClick={() => handleExpandDetailsSection(CHILD_INFORMATION)}
+          buttonDataTestid="ContactDetails-Section-ChildInformation"
         >
           <SectionEntry description="Name" value={childOrUnknown} />
           <SectionEntry description="Address" value={formattedChildAddress} />
