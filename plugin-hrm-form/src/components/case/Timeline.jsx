@@ -16,8 +16,10 @@ import CaseAddButton from './CaseAddButton';
 import { getActivities } from '../../services/CaseService';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
+import { ContactDetailsSections } from '../../states/SearchContact';
+import { getConfig } from '../../HrmFormPlugin';
 
-const Timeline = ({ task, form, caseId, changeRoute, updateViewNoteInfo }) => {
+const Timeline = ({ task, form, caseId, changeRoute, updateViewNoteInfo, updateTempInfo }) => {
   const [mockedMessage, setMockedMessage] = useState(null);
   const [timeline, setTimeline] = useState([]);
 
@@ -34,24 +36,41 @@ const Timeline = ({ task, form, caseId, changeRoute, updateViewNoteInfo }) => {
     timeline.find(activity => ['whatsapp', 'facebook', 'web', 'sms'].includes(activity.type)),
   );
   if (isCreatingCase) {
+    const { workerSid } = getConfig();
     const connectCaseActivity = {
       date: format(Date.now(), 'yyyy-MM-dd HH:mm:ss'),
       type: task.channelType,
       text: form.caseInformation.callSummary.value,
+      counselor: workerSid,
     };
 
     setTimeline([...timeline, connectCaseActivity]);
   }
 
   const handleOnClickView = activity => {
+    const { counselor } = activity;
+    const date = new Date(activity.date).toLocaleDateString(navigator.language);
+
     if (activity.type === 'note') {
       const info = {
         note: activity.text,
-        counselor: activity.twilioWorkerId,
-        date: new Date(activity.date).toLocaleDateString(navigator.language),
+        counselor,
+        date,
       };
       updateViewNoteInfo(info, task.taskSid);
       changeRoute({ route: 'new-case', subroute: 'view-note' }, task.taskSid);
+    } else if (['whatsapp', 'facebook', 'sms', 'web'].includes(activity.type)) {
+      const detailsExpanded = {
+        [ContactDetailsSections.GENERAL_DETAILS]: true,
+        [ContactDetailsSections.CALLER_INFORMATION]: false,
+        [ContactDetailsSections.CHILD_INFORMATION]: false,
+        [ContactDetailsSections.ISSUE_CATEGORIZATION]: false,
+        [ContactDetailsSections.CONTACT_SUMMARY]: false,
+      };
+      const { contactId } = activity;
+      const tempInfo = { detailsExpanded, contactId, date, counselor };
+      updateTempInfo(tempInfo, task.taskSid);
+      changeRoute({ route: 'new-case', subroute: 'view-contact' }, task.taskSid);
     } else {
       setMockedMessage(<Template code="NotImplemented" />);
     }
@@ -98,11 +117,13 @@ Timeline.propTypes = {
   caseId: PropTypes.number.isRequired,
   changeRoute: PropTypes.func.isRequired,
   updateViewNoteInfo: PropTypes.func.isRequired,
+  updateTempInfo: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = dispatch => ({
   changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
   updateViewNoteInfo: bindActionCreators(CaseActions.updateViewNoteInfo, dispatch),
+  updateTempInfo: bindActionCreators(CaseActions.updateTempInfo, dispatch),
 });
 
 export default connect(null, mapDispatchToProps)(Timeline);

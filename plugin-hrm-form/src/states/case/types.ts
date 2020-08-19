@@ -14,7 +14,26 @@ export type ViewNoteInfo = {
   date: string;
 };
 
-export type TemporaryCaseInfo = string | CallerFormInformation;
+export type ViewContact = {
+  contactId?: string;
+  detailsExpanded: { [section: string]: boolean };
+  date: string;
+  counselor: string;
+};
+
+export function isViewContact(object: any): object is ViewContact {
+  return (
+    typeof object === 'object' &&
+    (!object.contactId || typeof object.contactId === 'string') &&
+    typeof object.detailsExpanded === 'object' &&
+    Object.keys(object.detailsExpanded).every(key => typeof key === 'string') &&
+    Object.values(object.detailsExpanded).every(value => typeof value === 'boolean') &&
+    typeof object.date === 'string' &&
+    typeof object.counselor === 'string'
+  );
+}
+
+export type TemporaryCaseInfo = string | CallerFormInformation | ViewContact;
 
 type SetConnectedCaseAction = {
   type: typeof SET_CONNECTED_CASE;

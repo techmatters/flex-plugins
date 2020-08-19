@@ -15,6 +15,7 @@ import * as RoutingActions from '../../states/routing/actions';
 import { CaseState } from '../../states/case/reducer';
 import { DefaultEventHandlers } from '../common/forms/types';
 import { getFormValues } from '../common/forms/helpers';
+import { isViewContact } from '../../states/case/types';
 
 // @ts-ignore     TODO: fix this type error (createBlankForm must be typed or maybe create a separate function)
 export const newFormEntry: CallerFormInformation = createBlankForm().callerInformation;
@@ -43,7 +44,7 @@ const AddPerpetrator: React.FC<Props> = ({
   }, [task.taskSid, updateTempInfo]);
 
   const { temporaryCaseInfo } = connectedCaseState;
-  if (!temporaryCaseInfo || typeof temporaryCaseInfo === 'string') return null;
+  if (!temporaryCaseInfo || typeof temporaryCaseInfo === 'string' || isViewContact(temporaryCaseInfo)) return null;
 
   const callerInformation = connectedCaseState.temporaryCaseInfo;
   const defaultEventHandlers: DefaultEventHandlers = (parents, name) => ({
@@ -56,7 +57,7 @@ const AddPerpetrator: React.FC<Props> = ({
   });
 
   function savePerpetrator() {
-    if (!temporaryCaseInfo || typeof temporaryCaseInfo === 'string') return;
+    if (!temporaryCaseInfo || typeof temporaryCaseInfo === 'string' || isViewContact(temporaryCaseInfo)) return;
 
     const { info } = connectedCaseState.connectedCase;
     const perpetrator = getFormValues(temporaryCaseInfo);

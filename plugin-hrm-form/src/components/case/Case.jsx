@@ -26,6 +26,7 @@ import AddNote from './AddNote';
 import Households from './Households';
 import Perpetrators from './Perpetrators';
 import CaseSummary from './CaseSummary';
+import ViewContact from './ViewContact';
 import AddHousehold from './AddHousehold';
 import AddPerpetrator from './AddPerpetrator';
 import ViewNote from './ViewNote';
@@ -144,6 +145,8 @@ class Case extends Component {
     switch (subroute) {
       case 'add-note':
         return <AddNote {...addScreenProps} />;
+      case 'view-contact':
+        return <ViewContact task={this.props.task} />;
       case 'add-household':
         return <AddHousehold {...addScreenProps} />;
       case 'add-perpetrator':

@@ -4,20 +4,22 @@ import { format } from 'date-fns';
 import { ButtonBase, IconButton } from '@material-ui/core';
 import { MoreHoriz, Link as LinkIcon } from '@material-ui/icons';
 
-import { DetailsContainer, NameContainer, DetNameText, ContactDetailsIcon } from '../../../styles/search';
-import Section from '../../Section';
+import { DetailsContainer, NameContainer, DetNameText, ContactDetailsIcon } from '../styles/search';
+import Section from './Section';
 import SectionEntry from './SectionEntry';
-import callTypes, { channelTypes } from '../../../states/DomainConstants';
-import { isNonDataCallType } from '../../../states/ValidationRules';
-import { contactType } from '../../../types';
-import { formatAddress, formatDuration, formatName, formatCategories, mapChannel } from '../../../utils';
-import { ContactDetailsSections } from '../../../states/SearchContact';
+import callTypes, { channelTypes } from '../states/DomainConstants';
+import { isNonDataCallType } from '../states/ValidationRules';
+import { contactType } from '../types';
+import { formatAddress, formatDuration, formatName, formatCategories, mapChannel } from '../utils';
+import { ContactDetailsSections } from '../states/SearchContact';
+import { getConfig } from '../HrmFormPlugin';
 
 const MoreHorizIcon = ContactDetailsIcon(MoreHoriz);
 
 const Details = ({
   contact,
   detailsExpanded,
+  showActionIcons,
   handleOpenConnectDialog,
   handleMockedMessage,
   handleExpandDetailsSection,
@@ -68,31 +70,37 @@ const Details = ({
 
   const isNonDataContact = isNonDataCallType(contact.overview.callType);
 
+  const { strings } = getConfig();
+
   const {
     GENERAL_DETAILS,
     CALLER_INFORMATION,
     CHILD_INFORMATION,
     ISSUE_CATEGORIZATION,
-    CASE_SUMMARY,
+    CONTACT_SUMMARY,
   } = ContactDetailsSections;
 
   return (
-    <DetailsContainer>
+    <DetailsContainer data-testid="ContactDetails-Container">
       <NameContainer>
         <DetNameText>{childUpperCased}</DetNameText>
-        <IconButton
-          onClick={handleOpenConnectDialog}
-          isDisabled={isNonDataContact}
-          style={{ paddingTop: 0, paddingBottom: 0 }}
-        >
-          <LinkIcon style={{ color: '#ffffff' }} />
-        </IconButton>
-        <ButtonBase style={{ padding: 0 }} onClick={handleMockedMessage}>
-          <MoreHorizIcon style={{ color: '#ffffff' }} />
-        </ButtonBase>
+        {showActionIcons && (
+          <>
+            <IconButton
+              onClick={handleOpenConnectDialog}
+              disabled={isNonDataContact}
+              style={{ paddingTop: 0, paddingBottom: 0 }}
+            >
+              <LinkIcon style={{ color: '#ffffff' }} />
+            </IconButton>
+            <ButtonBase style={{ padding: 0 }} onClick={handleMockedMessage}>
+              <MoreHorizIcon style={{ color: '#ffffff' }} />
+            </ButtonBase>
+          </>
+        )}
       </NameContainer>
       <Section
-        sectionTitle={GENERAL_DETAILS}
+        sectionTitle={strings['ContactDetails-GeneralDetails']}
         expanded={detailsExpanded[GENERAL_DETAILS]}
         handleExpandClick={() => handleExpandDetailsSection(GENERAL_DETAILS)}
       >
@@ -104,7 +112,7 @@ const Details = ({
       </Section>
       {callType === callTypes.caller && (
         <Section
-          sectionTitle={CALLER_INFORMATION}
+          sectionTitle={strings['TabbedForms-AddCallerInfoTab']}
           expanded={detailsExpanded[CALLER_INFORMATION]}
           handleExpandClick={() => handleExpandDetailsSection(CALLER_INFORMATION)}
         >
@@ -122,9 +130,10 @@ const Details = ({
       )}
       {isDataCall && (
         <Section
-          sectionTitle={CHILD_INFORMATION}
+          sectionTitle={strings['TabbedForms-AddChildInfoTab']}
           expanded={detailsExpanded[CHILD_INFORMATION]}
           handleExpandClick={() => handleExpandDetailsSection(CHILD_INFORMATION)}
+          buttonDataTestid="ContactDetails-Section-ChildInformation"
         >
           <SectionEntry description="Name" value={childOrUnknown} />
           <SectionEntry description="Address" value={formattedChildAddress} />
@@ -144,7 +153,7 @@ const Details = ({
       )}
       {isDataCall && (
         <Section
-          sectionTitle={ISSUE_CATEGORIZATION}
+          sectionTitle={strings['TabbedForms-CategoriesTab']}
           expanded={detailsExpanded[ISSUE_CATEGORIZATION]}
           handleExpandClick={() => handleExpandDetailsSection(ISSUE_CATEGORIZATION)}
         >
@@ -156,9 +165,9 @@ const Details = ({
       )}
       {isDataCall && (
         <Section
-          sectionTitle={CASE_SUMMARY}
-          expanded={detailsExpanded[CASE_SUMMARY]}
-          handleExpandClick={() => handleExpandDetailsSection(CASE_SUMMARY)}
+          sectionTitle={strings['TabbedForms-AddCaseInfoTab']}
+          expanded={detailsExpanded[CONTACT_SUMMARY]}
+          handleExpandClick={() => handleExpandDetailsSection(CONTACT_SUMMARY)}
         >
           <SectionEntry description="Call Summary" value={callSummary} />
           <SectionEntry description="Status" value={status} />
@@ -186,9 +195,15 @@ Details.displayName = 'Details';
 Details.propTypes = {
   contact: contactType.isRequired,
   detailsExpanded: PropTypes.objectOf(PropTypes.bool).isRequired,
-  handleOpenConnectDialog: PropTypes.func.isRequired,
-  handleMockedMessage: PropTypes.func.isRequired,
+  handleOpenConnectDialog: PropTypes.func,
+  handleMockedMessage: PropTypes.func,
   handleExpandDetailsSection: PropTypes.func.isRequired,
+  showActionIcons: PropTypes.bool,
+};
+Details.defaultProps = {
+  handleOpenConnectDialog: () => null,
+  handleMockedMessage: () => null,
+  showActionIcons: false,
 };
 
 export default Details;

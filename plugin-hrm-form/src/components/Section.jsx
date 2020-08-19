@@ -8,10 +8,10 @@ import { SectionTitleContainer, SectionTitleText, ContactDetailsIcon } from '../
 const ArrowDownIcon = ContactDetailsIcon(ArrowDropDownTwoTone);
 const ArrowUpIcon = ContactDetailsIcon(ArrowDropUpTwoTone);
 
-const Section = ({ color, sectionTitle, expanded, children, handleExpandClick }) => (
+const Section = ({ color, sectionTitle, expanded, children, handleExpandClick, buttonDataTestid }) => (
   <>
     <SectionTitleContainer color={color}>
-      <ButtonBase style={{ width: '100%', padding: 0 }} onClick={handleExpandClick}>
+      <ButtonBase style={{ width: '100%', padding: 0 }} onClick={handleExpandClick} data-testid={buttonDataTestid}>
         <SectionTitleText>{sectionTitle.toUpperCase()}</SectionTitleText>
         {expanded ? <ArrowUpIcon /> : <ArrowDownIcon />}
       </ButtonBase>
@@ -29,10 +29,12 @@ Section.propTypes = {
   children: PropTypes.node.isRequired,
   expanded: PropTypes.bool,
   handleExpandClick: PropTypes.func.isRequired,
+  buttonDataTestid: PropTypes.string,
 };
 Section.defaultProps = {
   expanded: false,
   color: null,
+  buttonDataTestid: null,
 };
 
 export default Section;
