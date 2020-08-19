@@ -9,15 +9,14 @@ import { namespace, connectedCaseBase, contactFormsBase, configurationBase } fro
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import ContactDetails from '../ContactDetails';
-import { ViewContact as ViewContactType } from '../../states/case/types';
 import ActionHeader from './ActionHeader';
 import { adaptFormToContactDetails } from './ContactDetailsAdapter';
+import { isViewContact } from '../../states/case/types';
 
 const mapStateToProps = (state, ownProps: OwnProps) => {
   const form = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
-  const tempInfo = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid]
-    .temporaryCaseInfo as ViewContactType;
+  const tempInfo = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid].temporaryCaseInfo;
 
   return { form, counselorsHash, tempInfo };
 };
@@ -35,9 +34,9 @@ type OwnProps = {
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
 const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, updateTempInfo, changeRoute }) => {
+  const [contact, setContact] = useState(null);
   const { detailsExpanded, contactId, date, counselor } = tempInfo;
   const counselorName = counselorsHash[counselor] || 'Unknown';
-  const [contact, setContact] = useState(null);
 
   useEffect(() => {
     if (!contactId) {
@@ -46,9 +45,7 @@ const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, up
     }
   }, [contactId, task, form, date, counselorName]);
 
-  if (!contact) {
-    return null;
-  }
+  if (!isViewContact(tempInfo) || !contact) return null;
 
   const handleClose = () => changeRoute({ route: 'new-case' }, task.taskSid);
 

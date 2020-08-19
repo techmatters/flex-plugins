@@ -13,8 +13,9 @@ import { namespace, connectedCaseBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseState } from '../../states/case/reducer';
-import { DefaultEventHandlers, FormValues } from '../common/forms/types';
+import { DefaultEventHandlers } from '../common/forms/types';
 import { getFormValues } from '../common/forms/helpers';
+import { isViewContact } from '../../states/case/types';
 
 // @ts-ignore     TODO: fix this type error (createBlankForm must be typed or maybe create a separate function)
 export const newFormEntry: CallerFormInformation = createBlankForm().callerInformation;
@@ -43,7 +44,7 @@ const AddPerpetrator: React.FC<Props> = ({
   }, [task.taskSid, updateTempInfo]);
 
   const { temporaryCaseInfo } = connectedCaseState;
-  if (!temporaryCaseInfo || typeof temporaryCaseInfo === 'string') return null;
+  if (!temporaryCaseInfo || typeof temporaryCaseInfo === 'string' || isViewContact(temporaryCaseInfo)) return null;
 
   const callerInformation = connectedCaseState.temporaryCaseInfo;
   const defaultEventHandlers: DefaultEventHandlers = (parents, name) => ({
@@ -56,10 +57,10 @@ const AddPerpetrator: React.FC<Props> = ({
   });
 
   function savePerpetrator() {
-    if (!temporaryCaseInfo || typeof temporaryCaseInfo === 'string') return;
+    if (!temporaryCaseInfo || typeof temporaryCaseInfo === 'string' || isViewContact(temporaryCaseInfo)) return;
 
     const { info } = connectedCaseState.connectedCase;
-    const perpetrator = getFormValues(temporaryCaseInfo) as FormValues<CallerFormInformation>;
+    const perpetrator = getFormValues(temporaryCaseInfo);
     const createdAt = new Date().toISOString();
     const newPerpetrator = { perpetrator, createdAt };
     const perpetrators = info && info.perpetrators ? [...info.perpetrators, newPerpetrator] : [newPerpetrator];
@@ -81,10 +82,7 @@ const AddPerpetrator: React.FC<Props> = ({
     <CaseActionContainer>
       <CaseActionFormContainer>
         <ActionHeader titleTemplate="Case-AddPerpetrator" onClickClose={onClickClose} counselor={counselor} />
-        <CallerForm
-          callerInformation={temporaryCaseInfo as CallerFormInformation}
-          defaultEventHandlers={defaultEventHandlers}
-        />
+        <CallerForm callerInformation={temporaryCaseInfo} defaultEventHandlers={defaultEventHandlers} />
       </CaseActionFormContainer>
       <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
       <BottomButtonBar>

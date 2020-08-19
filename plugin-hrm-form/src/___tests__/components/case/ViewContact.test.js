@@ -114,7 +114,9 @@ const detailsExpanded = {
 };
 
 const tempInfo = {
-  detailsExpanded,
+  detailsExpanded: {
+    section: true,
+  },
   counselor: 'john-doe-hash',
   date: '8/12/2020',
 };
