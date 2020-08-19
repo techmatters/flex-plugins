@@ -4,7 +4,7 @@ We are dedicated to open source and openness.  This means that everything here l
 
 # Guidelines for submitters
 
-As a submitter, you want to strive for zero comments from the reviewer on problems -- bugs, poor styling or factoring, etc.  Do your best to spot and address issues before you submit a PR for review.  However, we all overlook things sometimes and there is no shame in a reviewer find mistakes.  We are all part of one team.
+As a submitter, you want to strive for zero comments from the reviewer on problems -- bugs, poor styling or factoring, etc.  Do your best to spot and address issues before you submit a PR for review.  However, we all overlook things sometimes and there is no shame in a reviewer finding mistakes.  We are all part of one team.
 
 Here is a checklist of things to check before asking for a review:
 * Is this PR a good size for review?  Should it be separated out into separate PRs to make review easier?
