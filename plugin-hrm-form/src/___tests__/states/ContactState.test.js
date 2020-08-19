@@ -1,6 +1,12 @@
 import { omit } from 'lodash';
 
-import { HANDLE_BLUR, HANDLE_FOCUS, SAVE_END_MILLIS } from '../../states/ActionTypes';
+import {
+  HANDLE_BLUR,
+  HANDLE_FOCUS,
+  SAVE_END_MILLIS,
+  PREPOPULATE_FORM_CHILD,
+  PREPOPULATE_FORM_CALLER,
+} from '../../states/ActionTypes';
 import { recreateContactState } from '../../states/actions';
 import { reduce } from '../../states/ContactState';
 import { createBlankForm } from '../../states/ContactFormStateFactory';
@@ -358,5 +364,181 @@ describe('reduce', () => {
 
     // if this remains truthy after recreateContactState, the form was not touched by the action
     expect(WT1234.callerInformation.name.firstName.touched).toBeTruthy();
+  });
+
+  test('PREPOPULATE_FORM_CHILD alters only the fields it should', () => {
+    const initialState = {
+      tasks: {
+        WT1234: {
+          callType: {
+            value: 'Child calling about self',
+          },
+          callerInformation: {
+            name: '',
+          },
+          childInformation: {
+            name: {
+              firstName: {
+                value: '',
+                touched: false,
+                error: null,
+              },
+              lastName: '',
+            },
+            gender: {
+              value: '',
+              touched: false,
+              error: null,
+            },
+            age: {
+              value: '',
+              touched: false,
+              error: null,
+            },
+          },
+        },
+        WT5678: {
+          callType: {
+            value: 'Someone calling about a child',
+          },
+        },
+      },
+    };
+
+    const action = {
+      type: PREPOPULATE_FORM_CHILD,
+      gender: 'Boy',
+      age: 'Unknown',
+      taskId: 'WT1234',
+    };
+
+    const expectedTasks = {
+      WT1234: {
+        callType: {
+          value: 'Child calling about self',
+        },
+        callerInformation: {
+          name: '',
+        },
+        childInformation: {
+          name: {
+            firstName: {
+              value: '',
+              touched: false,
+              error: null,
+            },
+            lastName: '',
+          },
+          gender: {
+            value: 'Boy',
+            touched: false,
+            error: null,
+          },
+          age: {
+            value: 'Unknown',
+            touched: false,
+            error: null,
+          },
+        },
+      },
+      WT5678: {
+        callType: {
+          value: 'Someone calling about a child',
+        },
+      },
+    };
+
+    const result = reduce(initialState, action);
+    const { tasks } = result;
+
+    expect(tasks).toEqual(expectedTasks);
+  });
+
+  test('PREPOPULATE_FORM_CALLER alters only the fields it should', () => {
+    const initialState = {
+      tasks: {
+        WT1234: {
+          callType: {
+            value: 'Someone calling about a child',
+          },
+          callerInformation: {
+            name: {
+              firstName: {
+                value: '',
+                touched: false,
+                error: null,
+              },
+              lastName: '',
+            },
+            gender: {
+              value: '',
+              touched: false,
+              error: null,
+            },
+            age: {
+              value: '',
+              touched: false,
+              error: null,
+            },
+          },
+          childInformation: {
+            name: '',
+          },
+        },
+        WT5678: {
+          callType: {
+            value: 'Someone calling about a child',
+          },
+        },
+      },
+    };
+
+    const action = {
+      type: PREPOPULATE_FORM_CALLER,
+      gender: 'Girl',
+      age: '18-25',
+      taskId: 'WT1234',
+    };
+
+    const expectedTasks = {
+      WT1234: {
+        callType: {
+          value: 'Someone calling about a child',
+        },
+        callerInformation: {
+          name: {
+            firstName: {
+              value: '',
+              touched: false,
+              error: null,
+            },
+            lastName: '',
+          },
+          gender: {
+            value: 'Girl',
+            touched: false,
+            error: null,
+          },
+          age: {
+            value: '18-25',
+            touched: false,
+            error: null,
+          },
+        },
+        childInformation: {
+          name: '',
+        },
+      },
+      WT5678: {
+        callType: {
+          value: 'Someone calling about a child',
+        },
+      },
+    };
+
+    const result = reduce(initialState, action);
+    const { tasks } = result;
+
+    expect(tasks).toEqual(expectedTasks);
   });
 });

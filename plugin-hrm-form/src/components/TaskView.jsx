@@ -35,6 +35,7 @@ class TaskView extends Component {
     handleValidateForm: PropTypes.func.isRequired,
   };
 
+  // eslint-disable-next-line complexity
   componentDidMount() {
     const { contactFormStateExists, routingStateExists, searchStateExists } = this.props;
     if (!contactFormStateExists || !routingStateExists || !searchStateExists) {

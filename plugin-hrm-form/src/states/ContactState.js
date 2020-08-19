@@ -12,6 +12,8 @@ import {
   RESTORE_ENTIRE_FORM,
   SET_CATEGORIES_GRID_VIEW,
   HANDLE_EXPAND_CATEGORY,
+  PREPOPULATE_FORM_CHILD,
+  PREPOPULATE_FORM_CALLER,
 } from './ActionTypes';
 import { INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE } from './types';
 import { countSelectedCategories } from './ValidationRules';
@@ -71,6 +73,10 @@ export class Actions {
   static setCategoriesGridView = (gridView, taskId) => ({ type: SET_CATEGORIES_GRID_VIEW, gridView, taskId });
 
   static handleExpandCategory = (category, taskId) => ({ type: HANDLE_EXPAND_CATEGORY, category, taskId });
+
+  static prepopulateFormChild = (gender, age, taskId) => ({ type: PREPOPULATE_FORM_CHILD, gender, age, taskId });
+
+  static prepopulateFormCaller = (gender, age, taskId) => ({ type: PREPOPULATE_FORM_CALLER, gender, age, taskId });
 }
 
 // Will replace the below when we move over to field objects
@@ -90,6 +96,7 @@ export function editNestedField(original, parents, name, change) {
   };
 }
 
+// eslint-disable-next-line complexity
 export function reduce(state = initialState, action) {
   switch (action.type) {
     case HANDLE_BLUR: {
@@ -227,6 +234,66 @@ export function reduce(state = initialState, action) {
         tasks: {
           ...state.tasks,
           [action.taskId]: taskWithUpdatedTab,
+        },
+      };
+    }
+
+    case PREPOPULATE_FORM_CHILD: {
+      const currentTask = state.tasks[action.taskId];
+      const { gender, age } = action;
+
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...currentTask,
+            callType: {
+              ...currentTask.callType,
+              value: 'Child calling about self',
+            },
+            childInformation: {
+              ...currentTask.childInformation,
+              gender: {
+                ...currentTask.childInformation.gender,
+                value: gender,
+              },
+              age: {
+                ...currentTask.childInformation.age,
+                value: age,
+              },
+            },
+          },
+        },
+      };
+    }
+
+    case PREPOPULATE_FORM_CALLER: {
+      const currentTask = state.tasks[action.taskId];
+      const { gender, age } = action;
+
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...currentTask,
+            callType: {
+              ...currentTask.callType,
+              value: 'Someone calling about a child',
+            },
+            callerInformation: {
+              ...currentTask.callerInformation,
+              gender: {
+                ...currentTask.callerInformation.gender,
+                value: gender,
+              },
+              age: {
+                ...currentTask.callerInformation.age,
+                value: age,
+              },
+            },
+          },
         },
       };
     }
