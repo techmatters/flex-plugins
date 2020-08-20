@@ -16,6 +16,8 @@ import { CaseState } from '../../states/case/reducer';
 import { DefaultEventHandlers } from '../common/forms/types';
 import { getFormValues } from '../common/forms/helpers';
 import { isViewContact } from '../../states/case/types';
+import { isPerpetratorEntry } from '../../types/types';
+import { getConfig } from '../../HrmFormPlugin';
 
 // @ts-ignore     TODO: fix this type error (createBlankForm must be typed or maybe create a separate function)
 export const newFormEntry: CallerFormInformation = createBlankForm().callerInformation;
@@ -44,7 +46,13 @@ const AddPerpetrator: React.FC<Props> = ({
   }, [task.taskSid, updateTempInfo]);
 
   const { temporaryCaseInfo } = connectedCaseState;
-  if (!temporaryCaseInfo || typeof temporaryCaseInfo === 'string' || isViewContact(temporaryCaseInfo)) return null;
+  if (
+    !temporaryCaseInfo ||
+    typeof temporaryCaseInfo === 'string' ||
+    isViewContact(temporaryCaseInfo) ||
+    isPerpetratorEntry(temporaryCaseInfo)
+  )
+    return null;
 
   const callerInformation = connectedCaseState.temporaryCaseInfo;
   const defaultEventHandlers: DefaultEventHandlers = (parents, name) => ({
@@ -57,12 +65,19 @@ const AddPerpetrator: React.FC<Props> = ({
   });
 
   function savePerpetrator() {
-    if (!temporaryCaseInfo || typeof temporaryCaseInfo === 'string' || isViewContact(temporaryCaseInfo)) return;
+    if (
+      !temporaryCaseInfo ||
+      typeof temporaryCaseInfo === 'string' ||
+      isViewContact(temporaryCaseInfo) ||
+      isPerpetratorEntry(temporaryCaseInfo)
+    )
+      return;
 
     const { info } = connectedCaseState.connectedCase;
     const perpetrator = getFormValues(temporaryCaseInfo);
     const createdAt = new Date().toISOString();
-    const newPerpetrator = { perpetrator, createdAt };
+    const { workerSid } = getConfig();
+    const newPerpetrator = { perpetrator, createdAt, twilioWorkerId: workerSid };
     const perpetrators = info && info.perpetrators ? [...info.perpetrators, newPerpetrator] : [newPerpetrator];
     const newInfo = info ? { ...info, perpetrators } : { perpetrators };
     updateCaseInfo(newInfo, task.taskSid);
