@@ -36,10 +36,7 @@ TimelineIcon.propTypes = {
 const DefaultIcon = ({ defaultTaskChannel }) => (
   <div
     style={{
-      color:
-        typeof defaultTaskChannel.colors.main === 'function'
-          ? defaultTaskChannel.colors.main()
-          : defaultTaskChannel.colors.main.Accepted,
+      color: typeof defaultTaskChannel.colors.main === 'function' ? '#3276CB' : defaultTaskChannel.colors.main.Accepted,
     }}
   >
     <Flex.Icon
