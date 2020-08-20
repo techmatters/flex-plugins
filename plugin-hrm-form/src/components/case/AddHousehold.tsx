@@ -16,7 +16,7 @@ import { CaseState } from '../../states/case/reducer';
 import { DefaultEventHandlers } from '../common/forms/types';
 import { getFormValues } from '../common/forms/helpers';
 import { isViewContact } from '../../states/case/types';
-import { isPerpetratorEntry } from '../../types/types';
+import { isHouseholdEntry, isPerpetratorEntry } from '../../types/types';
 import { getConfig } from '../../HrmFormPlugin';
 
 // @ts-ignore     TODO: fix this type error (createBlankForm must be typed or maybe create a separate function)
@@ -50,6 +50,7 @@ const AddHousehold: React.FC<Props> = ({
     !temporaryCaseInfo ||
     typeof temporaryCaseInfo === 'string' ||
     isViewContact(temporaryCaseInfo) ||
+    isHouseholdEntry(temporaryCaseInfo) ||
     isPerpetratorEntry(temporaryCaseInfo)
   )
     return null;
@@ -69,6 +70,7 @@ const AddHousehold: React.FC<Props> = ({
       !temporaryCaseInfo ||
       typeof temporaryCaseInfo === 'string' ||
       isViewContact(temporaryCaseInfo) ||
+      isHouseholdEntry(temporaryCaseInfo) ||
       isPerpetratorEntry(temporaryCaseInfo)
     )
       return;

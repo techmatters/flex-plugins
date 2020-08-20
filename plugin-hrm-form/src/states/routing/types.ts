@@ -7,7 +7,14 @@ export type AppRoutes =
   | { route: 'tabbed-forms' }
   | {
       route: 'new-case';
-      subroute?: 'add-note' | 'add-household' | 'add-perpetrator' | 'view-contact' | 'view-note' | 'view-perpetrator';
+      subroute?:
+        | 'add-note'
+        | 'add-household'
+        | 'add-perpetrator'
+        | 'view-contact'
+        | 'view-note'
+        | 'view-household'
+        | 'view-perpetrator';
     }
   | { route: 'select-call-type' };
 

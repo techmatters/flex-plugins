@@ -2,7 +2,7 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
-import { CaseInfo } from '../../types/types';
+import { CaseInfo, HouseholdEntry } from '../../types/types';
 import { Box, Row } from '../../styles/HrmStyles';
 import { CaseSectionFont, TimelineRow, PlaceHolderText } from '../../styles/case';
 import CaseAddButton from './CaseAddButton';
@@ -10,7 +10,7 @@ import InformationRow from './InformationRow';
 
 type OwnProps = {
   onClickAddHousehold: () => void;
-  onClickView: () => void;
+  onClickView: (household: HouseholdEntry) => void;
   households: CaseInfo['households'];
 };
 
@@ -27,7 +27,7 @@ const Households: React.FC<OwnProps> = ({ onClickAddHousehold, onClickView, hous
       </Box>
       {households.length ? (
         households.map((h, index) => (
-          <InformationRow key={`household-${index}`} person={h.household} onClickView={onClickView} />
+          <InformationRow key={`household-${index}`} person={h.household} onClickView={() => onClickView(h)} />
         ))
       ) : (
         <TimelineRow>

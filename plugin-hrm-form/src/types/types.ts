@@ -17,6 +17,15 @@ export function isPerpetratorEntry(entry: any): entry is PerpetratorEntry {
 
 export type HouseholdEntry = { household: CallerFormValues; createdAt: string; twilioWorkerId: string };
 
+export function isHouseholdEntry(entry: any): entry is HouseholdEntry {
+  return (
+    typeof entry === 'object' &&
+    typeof entry.createdAt === 'string' &&
+    typeof entry.twilioWorkerId === 'string' &&
+    typeof entry.household === 'object' // couldn't make typeguard for recursive type
+  );
+}
+
 export type CaseInfo = {
   summary?: string;
   notes?: string[];
