@@ -30,6 +30,7 @@ import ViewContact from './ViewContact';
 import AddHousehold from './AddHousehold';
 import AddPerpetrator from './AddPerpetrator';
 import ViewNote from './ViewNote';
+import ViewPerpetrator from './ViewPerpetrator';
 
 class Case extends Component {
   static displayName = 'Case';
@@ -114,6 +115,11 @@ class Case extends Component {
   onClickAddPerpetrator = () =>
     this.props.changeRoute({ route: 'new-case', subroute: 'add-perpetrator' }, this.props.task.taskSid);
 
+  onClickViewPerpetrator = perpetrator => {
+    this.props.updateTempInfo(perpetrator, this.props.task.taskSid);
+    this.props.changeRoute({ route: 'new-case', subroute: 'view-perpetrator' }, this.props.task.taskSid);
+  };
+
   render() {
     const { anchorEl, isMenuOpen, mockedMessage, loading } = this.state;
     const { subroute } = this.props.routing;
@@ -145,14 +151,16 @@ class Case extends Component {
     switch (subroute) {
       case 'add-note':
         return <AddNote {...addScreenProps} />;
-      case 'view-contact':
-        return <ViewContact task={this.props.task} />;
       case 'add-household':
         return <AddHousehold {...addScreenProps} />;
       case 'add-perpetrator':
         return <AddPerpetrator {...addScreenProps} />;
+      case 'view-contact':
+        return <ViewContact task={this.props.task} />;
       case 'view-note':
         return <ViewNote taskSid={this.props.task.taskSid} />;
+      case 'view-perpetrator':
+        return <ViewPerpetrator task={this.props.task} onClickClose={this.handleClose} />;
       default:
         return (
           <CaseContainer>
@@ -177,7 +185,7 @@ class Case extends Component {
                 <Perpetrators
                   perpetrators={perpetrators}
                   onClickAddPerpetrator={this.onClickAddPerpetrator}
-                  onClickView={this.handleMockedMessage}
+                  onClickView={this.onClickViewPerpetrator}
                 />
               </Box>
               <Box marginLeft="25px" marginTop="25px">
