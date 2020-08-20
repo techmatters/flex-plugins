@@ -30,7 +30,7 @@ const TimelineIcon = ({ type }) => <TimelineIconContainer>{getIcon(type)}</Timel
 
 TimelineIcon.displayName = 'TimelineIcon';
 TimelineIcon.propTypes = {
-  type: PropTypes.oneOf(Object.values(channelTypes)).isRequired,
+  type: PropTypes.oneOf([...Object.values(channelTypes), 'note']).isRequired,
 };
 
 const DefaultIcon = ({ defaultTaskChannel }) => (
