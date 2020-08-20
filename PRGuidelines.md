@@ -16,6 +16,7 @@ Here is a checklist of things to check before asking for a review:
 * Have you removed any commented-out code, unnecessary commenting or anything else that doesn't need to live in the final production version?
 * Have you added appropriate unit testing?
 * Have you double-checked the mockups, specs or issues to see that you've implemented what is expected?
+* If you're making UI changes, did you test behavior with voice calls?  Voice often behaves differently from text channels.
 
 
 # Guidelines for reviewers

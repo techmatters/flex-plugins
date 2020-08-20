@@ -29,6 +29,7 @@ export const Box = styled('div')<BoxProps>`
   ${({ paddingLeft }) => paddingLeft && `padding-left: ${paddingLeft};`}
   ${({ paddingRight }) => paddingRight && `padding-right: ${paddingRight};`}
 `;
+Box.displayName = 'Box';
 
 type AbsoluteProps = {
   top?: string;
@@ -44,12 +45,14 @@ export const Absolute = styled('div')<AbsoluteProps>`
   left: ${({ left }) => left || 'auto'};
   right: ${({ right }) => right || 'auto'};
 `;
+Absolute.displayName = 'Absolute';
 
 export const TabbedFormsContainer = styled('div')`
   display: flex;
   flex-direction: column;
   height: 100%;
 `;
+TabbedFormsContainer.displayName = 'TabbedFormsContainer';
 
 const containerLeftRightMargin = '5px';
 export const Container = styled('div')`
@@ -64,23 +67,27 @@ export const Container = styled('div')`
   height: 100%;
   overflow-y: auto;
 `;
+Container.displayName = 'Container';
 
 export const ErrorText = styled('p')`
   color: ${props => props.theme.colors.errorColor};
   font-size: 10px;
   line-height: 1.5;
 `;
+ErrorText.displayName = 'ErrorText';
 
 export const CategoryTitle = styled('p')`
   text-transform: uppercase;
   font-weight: 600;
 `;
+CategoryTitle.displayName = 'CategoryTitle';
 
 export const CategorySubtitleSection = styled('div')`
   display: flex;
   align-items: center;
   margin: 6px 0;
 `;
+CategorySubtitleSection.displayName = 'CategorySubtitleSection';
 
 export const CategoryRequiredText = styled('p')`
   color: ${props => props.theme.colors.darkTextColor};
@@ -93,6 +100,7 @@ export const CategoryRequiredText = styled('p')`
     content: '* ';
   }
 `;
+CategoryRequiredText.displayName = 'CategoryRequiredText';
 
 export const StyledInput = styled(Input)`
   display: flex;
@@ -124,12 +132,14 @@ export const StyledInput = styled(Input)`
   color: ${props =>
     props.theme.calculated.lightTheme ? props.theme.colors.darkTextColor : props.theme.colors.lightTextColor};
 `;
+StyledInput.displayName = 'StyledInput';
 
 export const TextField = styled('div')`
   display: flex;
   flex-direction: column;
   margin: 8px 0;
 `;
+TextField.displayName = 'TextField';
 
 export const StyledLabel = styled('label')`
   text-transform: uppercase;
@@ -138,6 +148,7 @@ export const StyledLabel = styled('label')`
   letter-spacing: 2px;
   min-height: 18px;
 `;
+StyledLabel.displayName = 'StyledLabel';
 
 type StyledSelectProps = {
   isPlaceholder?: boolean;
@@ -170,6 +181,7 @@ export const StyledSelect = styled(Select)<StyledSelectProps>`
   color: ${props =>
     props.theme.calculated.lightTheme ? props.theme.colors.darkTextColor : props.theme.colors.lightTextColor};
 `;
+StyledSelect.displayName = 'StyledSelect';
 
 export const StyledMenuItem = styled(MenuItem)`
   box-sizing: border-box;
@@ -179,6 +191,7 @@ export const StyledMenuItem = styled(MenuItem)`
   padding: 0 12px;
   min-width: 0;
 `;
+StyledMenuItem.displayName = 'StyledMenuItem';
 
 type StyledNextStepButtonProps = {
   secondary?: boolean;
@@ -223,6 +236,7 @@ export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
     background-color: rgba(255, 255, 255, 0.3);
   }
 `;
+StyledNextStepButton.displayName = 'StyledNextStepButton';
 
 export const TransparentButton = styled(Button)`
   color: black;
@@ -230,12 +244,14 @@ export const TransparentButton = styled(Button)`
   font-size: 12px;
   letter-spacing: 2px;
 `;
+TransparentButton.displayName = 'TransparentButton';
 
 export const CheckboxField = styled('div')`
   display: flex;
   flex-direction: row;
   margin: 8px 0;
 `;
+CheckboxField.displayName = 'CheckboxField';
 
 export const StyledCheckboxLabel = styled('label')`
   text-transform: uppercase;
@@ -244,6 +260,7 @@ export const StyledCheckboxLabel = styled('label')`
   font-size: 12px;
   letter-spacing: normal;
 `;
+StyledCheckboxLabel.displayName = 'StyledCheckboxLabel';
 
 type StyledCategoryCheckboxLabelProps = { disabled?: boolean };
 
@@ -253,11 +270,13 @@ export const StyledCategoryCheckboxLabel = styled(StyledCheckboxLabel)<StyledCat
     disabled ? `${theme.colors.categoryTextColor}33` : theme.colors.categoryTextColor};
   cursor: ${({ disabled }) => (disabled ? 'initial' : 'pointer')};
 `;
+StyledCategoryCheckboxLabel.displayName = 'StyledCategoryCheckboxLabel';
 
 export const TopNav = styled('div')`
   display: flex;
   flex-direction: row;
 `;
+TopNav.displayName = 'TopNav';
 
 export const BottomButtonBar = styled('div')`
   display: flex;
@@ -271,6 +290,7 @@ export const BottomButtonBar = styled('div')`
   border-top: 1px solid #c6cad9;
   box-shadow: 0 -2px 2px -7px #192b331a;
 `;
+BottomButtonBar.displayName = 'BottomButtonBar';
 
 export const NameFields = styled('div')`
   display: flex;
@@ -282,6 +302,7 @@ export const NameFields = styled('div')`
     margin: 0 10px;
   }
 `;
+NameFields.displayName = 'NameFields';
 
 export const ColumnarBlock = styled('div')`
   display: flex;
@@ -290,12 +311,14 @@ export const ColumnarBlock = styled('div')`
   flex-basis: 0;
   margin: 0 10px;
 `;
+ColumnarBlock.displayName = 'ColumnarBlock';
 
 export const TwoColumnLayout = styled('div')`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 `;
+TwoColumnLayout.displayName = 'TwoColumnLayout';
 
 type BaseCheckboxProps = {
   color: string;
@@ -323,6 +346,7 @@ export const CategoryCheckboxField = styled('div')<BaseCheckboxProps>`
   }};
   cursor: ${({ disabled }) => (disabled ? 'initial' : 'pointer')};
 `;
+CategoryCheckboxField.displayName = 'CategoryCheckboxField';
 
 export const StyledCategoryCheckbox = styled(props => (
   <Checkbox {...props} classes={{ root: 'root', checked: 'checked' }} />
@@ -340,6 +364,7 @@ export const StyledCategoryCheckbox = styled(props => (
     }
   }
 `;
+StyledCategoryCheckbox.displayName = 'StyledCategoryCheckbox';
 
 type ToggleViewButtonProps = { active?: boolean };
 
@@ -362,6 +387,7 @@ export const ToggleViewButton = styled('div')<ToggleViewButtonProps>`
     font-size: 18px;
   }
 `;
+ToggleViewButton.displayName = 'ToggleViewButton';
 
 export const CategoriesWrapper = styled('div')`
   display: flex;
@@ -369,6 +395,7 @@ export const CategoriesWrapper = styled('div')`
   justify-content: center;
   margin-bottom: 20px;
 `;
+CategoriesWrapper.displayName = 'CategoriesWrapper';
 
 type SubcategoriesWrapperProps = { gridView?: boolean };
 
@@ -378,6 +405,7 @@ export const SubcategoriesWrapper = styled('div')<SubcategoriesWrapperProps>`
   flex-wrap: wrap;
   flex-direction: ${({ gridView }) => (gridView ? 'row' : 'column')};
 `;
+SubcategoriesWrapper.displayName = 'SubcategoriesWrapper';
 
 export const StyledTabs = styled((props: TabsProps & { value: any }) => (
   <Tabs {...props} classes={{ indicator: 'indicator' }} />
@@ -387,6 +415,7 @@ export const StyledTabs = styled((props: TabsProps & { value: any }) => (
   }
   flex-shrink: 0;
 `;
+StyledTabs.displayName = 'StyledTabs';
 
 type StyledTabProps = { searchTab?: boolean };
 
@@ -405,18 +434,21 @@ export const StyledTab = styled(props => <Tab {...props} classes={{ selected: 's
     }
   }
 `;
+StyledTab.displayName = 'StyledTab';
 
 export const Row = styled('div')`
   display: flex;
   flex-direction: row;
   align-items: center;
 `;
+Row.displayName = 'Row';
 
 export const FontOpenSans = styled('p')`
   color: #000000;
   font-family: Open Sans;
   text-align: left;
 `;
+FontOpenSans.displayName = 'FontOpenSans';
 
 // used for screen readers only
 export const HiddenText = styled('span')`
@@ -425,6 +457,7 @@ export const HiddenText = styled('span')`
   font-size: 0px;
   line-height: 0px;
 `;
+HiddenText.displayName = 'HiddenText';
 
 type TransferStyledButtonProps = {
   background?: string;
@@ -451,6 +484,7 @@ export const TransferStyledButton = styled('button')<TransferStyledButtonProps>`
     cursor: pointer;
   }
 `;
+TransferStyledButton.displayName = 'TransferStyledButton';
 
 export const HeaderContainer = styled(Row)`
   width: 100%;
@@ -465,10 +499,12 @@ export const HeaderContainer = styled(Row)`
   line-height: 12px;
   padding: 0px;
 `;
+HeaderContainer.displayName = 'HeaderContainer';
 
 export const StyledIcon = icon => styled(icon)`
   opacity: 0.34;
 `;
+StyledIcon.displayName = 'StyledIcon';
 
 export const addHover = Component =>
   withStyles({
