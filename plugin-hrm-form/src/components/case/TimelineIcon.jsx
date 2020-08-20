@@ -5,39 +5,47 @@ import * as Flex from '@twilio/flex-ui';
 import NoteIcon from '@material-ui/icons/NoteAdd';
 
 import { TimelineIconContainer } from '../../styles/case';
+import { channelTypes } from '../../states/DomainConstants';
 
-const TimelineIcon = ({ type }) => {
-  let icon;
+// eslint-disable-next-line react/display-name
+const getIcon = type => {
   switch (type) {
-    case 'whatsapp':
-      icon = <DefaultIcon defaultTaskChannel={Flex.DefaultTaskChannels.ChatWhatsApp} />;
-      break;
-    case 'facebook':
-      icon = <DefaultIcon defaultTaskChannel={Flex.DefaultTaskChannels.ChatMessenger} />;
-      break;
-    case 'web':
-      icon = <DefaultIcon defaultTaskChannel={Flex.DefaultTaskChannels.Chat} />;
-      break;
-    case 'sms':
-      icon = <DefaultIcon defaultTaskChannel={Flex.DefaultTaskChannels.ChatSms} />;
-      break;
+    case channelTypes.whatsapp:
+      return <DefaultIcon defaultTaskChannel={Flex.DefaultTaskChannels.ChatWhatsApp} />;
+    case channelTypes.facebook:
+      return <DefaultIcon defaultTaskChannel={Flex.DefaultTaskChannels.ChatMessenger} />;
+    case channelTypes.web:
+      return <DefaultIcon defaultTaskChannel={Flex.DefaultTaskChannels.Chat} />;
+    case channelTypes.sms:
+      return <DefaultIcon defaultTaskChannel={Flex.DefaultTaskChannels.ChatSms} />;
+    case channelTypes.voice:
+      return <DefaultIcon defaultTaskChannel={Flex.DefaultTaskChannels.Call} />;
     case 'note':
     default:
-      icon = <NoteIcon style={{ opacity: 0.62, fontSize: '20px' }} />;
-      break;
+      return <NoteIcon style={{ opacity: 0.62, fontSize: '20px' }} />;
   }
-
-  return <TimelineIconContainer>{icon}</TimelineIconContainer>;
 };
+
+const TimelineIcon = ({ type }) => <TimelineIconContainer>{getIcon(type)}</TimelineIconContainer>;
 
 TimelineIcon.displayName = 'TimelineIcon';
 TimelineIcon.propTypes = {
-  type: PropTypes.oneOf(['whatsapp', 'facebook', 'web', 'sms', 'note']).isRequired,
+  type: PropTypes.oneOf([...Object.values(channelTypes), 'note']).isRequired,
 };
 
 const DefaultIcon = ({ defaultTaskChannel }) => (
-  <div style={{ color: defaultTaskChannel.colors.main.Accepted }}>
-    <Flex.Icon icon={defaultTaskChannel.icons.active} />
+  <div
+    style={{
+      color: typeof defaultTaskChannel.colors.main === 'function' ? '#3276CB' : defaultTaskChannel.colors.main.Accepted,
+    }}
+  >
+    <Flex.Icon
+      icon={
+        typeof defaultTaskChannel.icons.active === 'function'
+          ? defaultTaskChannel.icons.main
+          : defaultTaskChannel.icons.active
+      }
+    />
   </div>
 );
 

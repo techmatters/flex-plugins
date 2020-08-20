@@ -11,13 +11,19 @@ import TimelineIcon from './TimelineIcon';
 import { CaseSectionFont, ViewButton, TimelineRow, TimelineDate, TimelineText } from '../../styles/case';
 import { Box, Row } from '../../styles/HrmStyles';
 import { taskType, formType } from '../../types';
-import { isNullOrUndefined } from '../../utils/checkers';
 import CaseAddButton from './CaseAddButton';
 import { getActivities } from '../../services/CaseService';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { ContactDetailsSections } from '../../states/SearchContact';
 import { getConfig } from '../../HrmFormPlugin';
+import { channelTypes } from '../../states/DomainConstants';
+
+const channelsArray = Object.values(channelTypes);
+
+const isConnectedCaseActivity = activity => channelsArray.includes(activity.type);
+
+const sortActivities = activities => activities.sort((a, b) => b.date.localeCompare(a.date));
 
 const Timeline = ({ task, form, caseId, changeRoute, updateViewNoteInfo, updateTempInfo }) => {
   const [mockedMessage, setMockedMessage] = useState(null);
@@ -26,26 +32,27 @@ const Timeline = ({ task, form, caseId, changeRoute, updateViewNoteInfo, updateT
   useEffect(() => {
     async function updateTimeline() {
       const activities = await getActivities(caseId);
-      setTimeline(activities);
+      setTimeline(sortActivities(activities));
     }
 
     updateTimeline();
   }, [caseId]);
 
-  const isCreatingCase = isNullOrUndefined(
-    timeline.find(activity => ['whatsapp', 'facebook', 'web', 'sms'].includes(activity.type)),
-  );
-  if (isCreatingCase) {
-    const { workerSid } = getConfig();
-    const connectCaseActivity = {
-      date: format(Date.now(), 'yyyy-MM-dd HH:mm:ss'),
-      type: task.channelType,
-      text: form.caseInformation.callSummary.value,
-      counselor: workerSid,
-    };
+  useEffect(() => {
+    const isCreatingCase = !timeline.some(isConnectedCaseActivity);
 
-    setTimeline([...timeline, connectCaseActivity]);
-  }
+    if (isCreatingCase) {
+      const { workerSid } = getConfig();
+      const connectCaseActivity = {
+        date: format(Date.now(), 'yyyy-MM-dd HH:mm:ss'),
+        type: task.channelType,
+        text: form.caseInformation.callSummary.value,
+        counselor: workerSid,
+      };
+
+      setTimeline(t => sortActivities([...t, connectCaseActivity]));
+    }
+  }, [form, task, timeline]);
 
   const handleOnClickView = activity => {
     const { counselor } = activity;
@@ -59,7 +66,7 @@ const Timeline = ({ task, form, caseId, changeRoute, updateViewNoteInfo, updateT
       };
       updateViewNoteInfo(info, task.taskSid);
       changeRoute({ route: 'new-case', subroute: 'view-note' }, task.taskSid);
-    } else if (['whatsapp', 'facebook', 'sms', 'web'].includes(activity.type)) {
+    } else if (channelsArray.includes(activity.type)) {
       const detailsExpanded = {
         [ContactDetailsSections.GENERAL_DETAILS]: true,
         [ContactDetailsSections.CALLER_INFORMATION]: false,
@@ -91,21 +98,19 @@ const Timeline = ({ task, form, caseId, changeRoute, updateViewNoteInfo, updateT
           <CaseAddButton templateCode="Case-AddNote" onClick={handleAddNoteClick} />
         </Row>
       </Box>
-      {timeline
-        .sort((a, b) => b.date.localeCompare(a.date))
-        .map((activity, index) => {
-          const date = new Date(activity.date).toLocaleDateString(navigator.language);
-          return (
-            <TimelineRow key={index}>
-              <TimelineDate>{date}</TimelineDate>
-              <TimelineIcon type={activity.type} />
-              <TimelineText>{activity.text}</TimelineText>
-              <Box marginLeft="auto" marginRight="10px">
-                <ViewButton onClick={() => handleOnClickView(activity)}>View</ViewButton>
-              </Box>
-            </TimelineRow>
-          );
-        })}
+      {timeline.map((activity, index) => {
+        const date = new Date(activity.date).toLocaleDateString(navigator.language);
+        return (
+          <TimelineRow key={index}>
+            <TimelineDate>{date}</TimelineDate>
+            <TimelineIcon type={activity.type} />
+            <TimelineText>{activity.text}</TimelineText>
+            <Box marginLeft="auto" marginRight="10px">
+              <ViewButton onClick={() => handleOnClickView(activity)}>View</ViewButton>
+            </Box>
+          </TimelineRow>
+        );
+      })}
     </Box>
   );
 };
