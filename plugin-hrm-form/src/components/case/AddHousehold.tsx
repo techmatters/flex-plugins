@@ -1,13 +1,12 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Template, ITask } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 
 import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseActionContainer, CaseActionFormContainer } from '../../styles/case';
 import ActionHeader from './ActionHeader';
-import CallerForm, { CallerFormInformation } from '../common/forms/CallerForm';
-import { createBlankForm } from '../../states/ContactFormStateFactory';
+import { CallerForm, newCallerFormInformation as newFormEntry } from '../common/forms';
 import { editNestedField } from '../../states/ContactState';
 import { namespace, connectedCaseBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
@@ -18,9 +17,6 @@ import { getFormValues } from '../common/forms/helpers';
 import { isViewContact } from '../../states/case/types';
 import { isHouseholdEntry, isPerpetratorEntry } from '../../types/types';
 import { getConfig } from '../../HrmFormPlugin';
-
-// @ts-ignore     TODO: fix this type error (createBlankForm must be typed or maybe create a separate function)
-export const newFormEntry: CallerFormInformation = createBlankForm().callerInformation;
 
 type OwnProps = {
   task: ITask;
@@ -40,12 +36,8 @@ const AddHousehold: React.FC<Props> = ({
   updateCaseInfo,
   changeRoute,
 }) => {
-  useEffect(() => {
-    // set temporaryCaseInfo as clean form on mount
-    updateTempInfo(newFormEntry, task.taskSid);
-  }, [task.taskSid, updateTempInfo]);
-
   const { temporaryCaseInfo } = connectedCaseState;
+
   if (
     !temporaryCaseInfo ||
     typeof temporaryCaseInfo === 'string' ||

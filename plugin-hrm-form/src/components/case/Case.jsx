@@ -21,6 +21,7 @@ import { Menu, MenuItem } from '../menu';
 import { formatName } from '../../utils';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
+import { newCallerFormInformation } from '../common/forms';
 import Timeline from './Timeline';
 import AddNote from './AddNote';
 import Households from './Households';
@@ -105,16 +106,19 @@ class Case extends Component {
   };
 
   handleClose = () => {
-    const { task } = this.props;
-    this.props.updateTempInfo(null, task.taskSid);
-    this.props.changeRoute({ route: 'new-case' }, task.taskSid);
+    this.props.updateTempInfo(null, this.props.task.taskSid);
+    this.props.changeRoute({ route: 'new-case' }, this.props.task.taskSid);
   };
 
-  onClickAddHousehold = () =>
+  onClickAddHousehold = () => {
+    this.props.updateTempInfo(newCallerFormInformation, this.props.task.taskSid);
     this.props.changeRoute({ route: 'new-case', subroute: 'add-household' }, this.props.task.taskSid);
+  };
 
-  onClickAddPerpetrator = () =>
+  onClickAddPerpetrator = () => {
+    this.props.updateTempInfo(newCallerFormInformation, this.props.task.taskSid);
     this.props.changeRoute({ route: 'new-case', subroute: 'add-perpetrator' }, this.props.task.taskSid);
+  };
 
   onClickViewHousehold = household => {
     this.props.updateTempInfo(household, this.props.task.taskSid);
