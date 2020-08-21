@@ -56,13 +56,12 @@ const Timeline = ({ task, form, caseId, changeRoute, updateViewNoteInfo, updateT
 
   const handleOnClickView = activity => {
     const { counselor } = activity;
-    const date = new Date(activity.date).toLocaleDateString(navigator.language);
 
     if (activity.type === 'note') {
       const info = {
         note: activity.text,
         counselor,
-        date,
+        date: new Date(activity.date).toLocaleDateString(navigator.language),
       };
       updateViewNoteInfo(info, task.taskSid);
       changeRoute({ route: 'new-case', subroute: 'view-note' }, task.taskSid);
@@ -75,7 +74,7 @@ const Timeline = ({ task, form, caseId, changeRoute, updateViewNoteInfo, updateT
         [ContactDetailsSections.CONTACT_SUMMARY]: false,
       };
       const { contactId } = activity;
-      const tempInfo = { detailsExpanded, contactId, date, counselor };
+      const tempInfo = { detailsExpanded, contactId, date: activity.date, counselor };
       updateTempInfo(tempInfo, task.taskSid);
       changeRoute({ route: 'new-case', subroute: 'view-contact' }, task.taskSid);
     } else {

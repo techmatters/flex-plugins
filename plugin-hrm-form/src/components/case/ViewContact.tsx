@@ -58,10 +58,17 @@ const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, up
     updateTempInfo(updatedTempInfo, task.taskSid);
   };
 
+  const dateString = new Date(date).toLocaleDateString(navigator.language);
+
   return (
     <CaseContainer>
       <Container>
-        <ActionHeader titleTemplate="Case-Contact" onClickClose={handleClose} counselor={counselorName} added={date} />
+        <ActionHeader
+          titleTemplate="Case-Contact"
+          onClickClose={handleClose}
+          counselor={counselorName}
+          added={dateString}
+        />
         <ContactDetails
           contact={contact}
           detailsExpanded={detailsExpanded}
