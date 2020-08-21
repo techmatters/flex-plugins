@@ -50,7 +50,7 @@ const ViewPerpetrator: React.FC<Props> = ({ counselorsHash, temporaryCaseInfo, o
         </Box>
       </Container>
       <BottomButtonBar>
-        <StyledNextStepButton roundCorners onClick={onClickClose} data-testid="Case-ViewPerpetratorScreen-CloseButton">
+        <StyledNextStepButton roundCorners onClick={onClickClose} data-testid="Case-CloseButton">
           <Template code="CloseButton" />
         </StyledNextStepButton>
       </BottomButtonBar>

@@ -50,7 +50,7 @@ const ViewHousehold: React.FC<Props> = ({ counselorsHash, temporaryCaseInfo, onC
         </Box>
       </Container>
       <BottomButtonBar>
-        <StyledNextStepButton roundCorners onClick={onClickClose} data-testid="Case-ViewHouseholdScreen-CloseButton">
+        <StyledNextStepButton roundCorners onClick={onClickClose} data-testid="Case-CloseButton">
           <Template code="CloseButton" />
         </StyledNextStepButton>
       </BottomButtonBar>
