@@ -14,8 +14,6 @@ import * as RoutingActions from '../../states/routing/actions';
 import { CaseState } from '../../states/case/reducer';
 import { DefaultEventHandlers } from '../common/forms/types';
 import { getFormValues } from '../common/forms/helpers';
-import { isViewContact } from '../../states/case/types';
-import { isHouseholdEntry, isPerpetratorEntry } from '../../types/types';
 import { getConfig } from '../../HrmFormPlugin';
 
 type OwnProps = {
