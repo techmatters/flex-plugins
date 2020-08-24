@@ -1,6 +1,6 @@
 import { Manager } from '@twilio/flex-ui';
 
-import { mapAge } from './mappers';
+import { mapAge, mapGender } from './mappers';
 import { Actions } from '../states/ContactState';
 import * as RoutingActions from '../states/routing/actions';
 
@@ -9,10 +9,7 @@ export const prepopulateForm = task => {
   if (task.attributes.memory) {
     const { answers } = task.attributes.memory.twilio.collected_data.collect_survey;
 
-    let gender = answers.gender.answer;
-    if (gender === undefined) {
-      gender = 'Unknown';
-    }
+    const gender = answers.gender.error ? 'Unknown' : mapGender(answers.gender.answer);
     const age = mapAge(answers.age.answer);
 
     if (answers.about_self.answer === 'Yes') {
