@@ -38,37 +38,22 @@ const AddPerpetrator: React.FC<Props> = ({
 }) => {
   const { temporaryCaseInfo } = connectedCaseState;
 
-  if (
-    !temporaryCaseInfo ||
-    typeof temporaryCaseInfo === 'string' ||
-    isViewContact(temporaryCaseInfo) ||
-    isHouseholdEntry(temporaryCaseInfo) ||
-    isPerpetratorEntry(temporaryCaseInfo)
-  )
-    return null;
+  if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-perpetrator') return null;
 
-  const callerInformation = connectedCaseState.temporaryCaseInfo;
   const defaultEventHandlers: DefaultEventHandlers = (parents, name) => ({
     handleBlur: () => undefined,
     handleFocus: () => undefined,
     handleChange: event => {
-      const newForm = editNestedField(callerInformation, parents, name, { value: event.target.value });
-      updateTempInfo(newForm, task.taskSid);
+      const newForm = editNestedField(temporaryCaseInfo.info, parents, name, { value: event.target.value });
+      updateTempInfo({ screen: 'add-perpetrator', info: newForm }, task.taskSid);
     },
   });
 
   function savePerpetrator() {
-    if (
-      !temporaryCaseInfo ||
-      typeof temporaryCaseInfo === 'string' ||
-      isViewContact(temporaryCaseInfo) ||
-      isHouseholdEntry(temporaryCaseInfo) ||
-      isPerpetratorEntry(temporaryCaseInfo)
-    )
-      return;
+    if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-perpetrator') return;
 
     const { info } = connectedCaseState.connectedCase;
-    const perpetrator = getFormValues(temporaryCaseInfo);
+    const perpetrator = getFormValues(temporaryCaseInfo.info);
     const createdAt = new Date().toISOString();
     const { workerSid } = getConfig();
     const newPerpetrator = { perpetrator, createdAt, twilioWorkerId: workerSid };
@@ -79,19 +64,19 @@ const AddPerpetrator: React.FC<Props> = ({
 
   function savePerpetratorAndStay() {
     savePerpetrator();
-    updateTempInfo(newFormEntry, task.taskSid);
+    updateTempInfo({ screen: 'add-perpetrator', info: newFormEntry }, task.taskSid);
   }
 
   function savePerpetratorAndLeave() {
     savePerpetrator();
-    changeRoute({ route: 'new-case' }, task.taskSid);
+    onClickClose();
   }
 
   return (
     <CaseActionContainer>
       <CaseActionFormContainer>
         <ActionHeader titleTemplate="Case-AddPerpetrator" onClickClose={onClickClose} counselor={counselor} />
-        <CallerForm callerInformation={temporaryCaseInfo} defaultEventHandlers={defaultEventHandlers} />
+        <CallerForm callerInformation={temporaryCaseInfo.info} defaultEventHandlers={defaultEventHandlers} />
       </CaseActionFormContainer>
       <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
       <BottomButtonBar>

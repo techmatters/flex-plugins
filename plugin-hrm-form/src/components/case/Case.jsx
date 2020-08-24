@@ -111,22 +111,22 @@ class Case extends Component {
   };
 
   onClickAddHousehold = () => {
-    this.props.updateTempInfo(newCallerFormInformation, this.props.task.taskSid);
+    this.props.updateTempInfo({ screen: 'add-household', info: newCallerFormInformation }, this.props.task.taskSid);
     this.props.changeRoute({ route: 'new-case', subroute: 'add-household' }, this.props.task.taskSid);
   };
 
   onClickAddPerpetrator = () => {
-    this.props.updateTempInfo(newCallerFormInformation, this.props.task.taskSid);
+    this.props.updateTempInfo({ screen: 'add-perpetrator', info: newCallerFormInformation }, this.props.task.taskSid);
     this.props.changeRoute({ route: 'new-case', subroute: 'add-perpetrator' }, this.props.task.taskSid);
   };
 
   onClickViewHousehold = household => {
-    this.props.updateTempInfo(household, this.props.task.taskSid);
+    this.props.updateTempInfo({ screen: 'view-household', info: household }, this.props.task.taskSid);
     this.props.changeRoute({ route: 'new-case', subroute: 'view-household' }, this.props.task.taskSid);
   };
 
   onClickViewPerpetrator = perpetrator => {
-    this.props.updateTempInfo(perpetrator, this.props.task.taskSid);
+    this.props.updateTempInfo({ screen: 'view-perpetrator', info: perpetrator }, this.props.task.taskSid);
     this.props.changeRoute({ route: 'new-case', subroute: 'view-perpetrator' }, this.props.task.taskSid);
   };
 

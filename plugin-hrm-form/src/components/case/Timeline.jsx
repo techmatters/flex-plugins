@@ -76,7 +76,7 @@ const Timeline = ({ task, form, caseId, changeRoute, updateViewNoteInfo, updateT
       };
       const { contactId } = activity;
       const tempInfo = { detailsExpanded, contactId, date, counselor };
-      updateTempInfo(tempInfo, task.taskSid);
+      updateTempInfo({ screen: 'view-contact', info: tempInfo }, task.taskSid);
       changeRoute({ route: 'new-case', subroute: 'view-contact' }, task.taskSid);
     } else {
       setMockedMessage(<Template code="NotImplemented" />);
@@ -84,7 +84,7 @@ const Timeline = ({ task, form, caseId, changeRoute, updateViewNoteInfo, updateT
   };
 
   const handleAddNoteClick = () => {
-    updateTempInfo('', task.taskSid);
+    updateTempInfo({ screen: 'add-note', info: '' }, task.taskSid);
     changeRoute({ route: 'new-case', subroute: 'add-note' }, task.taskSid);
   };
 
