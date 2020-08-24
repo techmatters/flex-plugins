@@ -1,4 +1,5 @@
 import { Case, CaseInfo, HouseholdEntry, PerpetratorEntry } from '../../types/types';
+import { NewCaseSubroutes } from '../routing/types';
 import { CallerFormInformation } from '../../components/common/forms/CallerForm';
 
 // Action types
@@ -33,7 +34,14 @@ export function isViewContact(object: any): object is ViewContact {
   );
 }
 
-export type TemporaryCaseInfo = string | CallerFormInformation | ViewContact | HouseholdEntry | PerpetratorEntry;
+export type TemporaryCaseInfo =
+  | { screen: typeof NewCaseSubroutes.AddNote; info: string }
+  | { screen: typeof NewCaseSubroutes.AddHousehold; info: CallerFormInformation }
+  | { screen: typeof NewCaseSubroutes.AddPerpetrator; info: CallerFormInformation }
+  | { screen: typeof NewCaseSubroutes.ViewContact; info: ViewContact }
+  | { screen: typeof NewCaseSubroutes.ViewNote; info: string }
+  | { screen: typeof NewCaseSubroutes.ViewHousehold; info: HouseholdEntry }
+  | { screen: typeof NewCaseSubroutes.ViewPerpetrator; info: PerpetratorEntry };
 
 type SetConnectedCaseAction = {
   type: typeof SET_CONNECTED_CASE;
