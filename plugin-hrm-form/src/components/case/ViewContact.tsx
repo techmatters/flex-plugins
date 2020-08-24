@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Template, ITask } from '@twilio/flex-ui';
 
@@ -11,7 +11,6 @@ import * as RoutingActions from '../../states/routing/actions';
 import ContactDetails from '../ContactDetails';
 import ActionHeader from './ActionHeader';
 import { adaptFormToContactDetails } from './ContactDetailsAdapter';
-import { isViewContact } from '../../states/case/types';
 import { CaseState } from '../../states/case/reducer';
 
 const mapStateToProps = (state, ownProps: OwnProps) => {

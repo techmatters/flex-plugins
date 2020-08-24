@@ -38,7 +38,7 @@ const AddNote: React.FC<Props> = ({
 
   const handleSaveNote = async () => {
     const { info, id } = connectedCase;
-    const newNote = temporaryCaseInfo;
+    const newNote = temporaryCaseInfo.info;
     const notes = info && info.notes ? [...info.notes, newNote] : [newNote];
     const newInfo = info ? { ...info, notes } : { notes };
     const updatedCase = await updateCase(id, { info: newInfo });
