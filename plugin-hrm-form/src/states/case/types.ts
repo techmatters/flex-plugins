@@ -22,6 +22,7 @@ export type ViewContact = {
   counselor: string;
 };
 
+// Should we remove this type-guard
 export function isViewContact(object: any): object is ViewContact {
   return (
     typeof object === 'object' &&
