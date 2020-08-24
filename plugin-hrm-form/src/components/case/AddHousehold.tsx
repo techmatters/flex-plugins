@@ -1,13 +1,12 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Template, ITask } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 
 import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseActionContainer, CaseActionFormContainer } from '../../styles/case';
 import ActionHeader from './ActionHeader';
-import CallerForm, { CallerFormInformation } from '../common/forms/CallerForm';
-import { createBlankForm } from '../../states/ContactFormStateFactory';
+import { CallerForm, newCallerFormInformation as newFormEntry } from '../common/forms';
 import { editNestedField } from '../../states/ContactState';
 import { namespace, connectedCaseBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
@@ -16,9 +15,8 @@ import { CaseState } from '../../states/case/reducer';
 import { DefaultEventHandlers } from '../common/forms/types';
 import { getFormValues } from '../common/forms/helpers';
 import { isViewContact } from '../../states/case/types';
-
-// @ts-ignore     TODO: fix this type error (createBlankForm must be typed or maybe create a separate function)
-export const newFormEntry: CallerFormInformation = createBlankForm().callerInformation;
+import { isHouseholdEntry, isPerpetratorEntry } from '../../types/types';
+import { getConfig } from '../../HrmFormPlugin';
 
 type OwnProps = {
   task: ITask;
@@ -38,13 +36,16 @@ const AddHousehold: React.FC<Props> = ({
   updateCaseInfo,
   changeRoute,
 }) => {
-  useEffect(() => {
-    // set temporaryCaseInfo as clean form on mount
-    updateTempInfo(newFormEntry, task.taskSid);
-  }, [task.taskSid, updateTempInfo]);
-
   const { temporaryCaseInfo } = connectedCaseState;
-  if (!temporaryCaseInfo || typeof temporaryCaseInfo === 'string' || isViewContact(temporaryCaseInfo)) return null;
+
+  if (
+    !temporaryCaseInfo ||
+    typeof temporaryCaseInfo === 'string' ||
+    isViewContact(temporaryCaseInfo) ||
+    isHouseholdEntry(temporaryCaseInfo) ||
+    isPerpetratorEntry(temporaryCaseInfo)
+  )
+    return null;
 
   const callerInformation = connectedCaseState.temporaryCaseInfo;
   const defaultEventHandlers: DefaultEventHandlers = (parents, name) => ({
@@ -57,12 +58,20 @@ const AddHousehold: React.FC<Props> = ({
   });
 
   function saveHousehold() {
-    if (!temporaryCaseInfo || typeof temporaryCaseInfo === 'string' || isViewContact(temporaryCaseInfo)) return;
+    if (
+      !temporaryCaseInfo ||
+      typeof temporaryCaseInfo === 'string' ||
+      isViewContact(temporaryCaseInfo) ||
+      isHouseholdEntry(temporaryCaseInfo) ||
+      isPerpetratorEntry(temporaryCaseInfo)
+    )
+      return;
 
     const { info } = connectedCaseState.connectedCase;
     const household = getFormValues(temporaryCaseInfo);
     const createdAt = new Date().toISOString();
-    const newHousehold = { household, createdAt };
+    const { workerSid } = getConfig();
+    const newHousehold = { household, createdAt, twilioWorkerId: workerSid };
     const households = info && info.households ? [...info.households, newHousehold] : [newHousehold];
     const newInfo = info ? { ...info, households } : { households };
     updateCaseInfo(newInfo, task.taskSid);

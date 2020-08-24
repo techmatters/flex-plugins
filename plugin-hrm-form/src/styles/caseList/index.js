@@ -154,6 +154,12 @@ export const PaginationButton = styled('div')`
 `;
 PaginationButton.displayName = 'PaginationButton';
 
+export const PaginationChevron = styled(PaginationButton)`
+  margin: 0;
+  padding-bottom: 10px;
+`;
+PaginationChevron.displayName = 'PaginationChevron';
+
 export const ButtonText = styled(FontOpenSans)`
   font-size: 13px;
   color: ${props => (props.highlight ? '#ffffff' : '#666c7c')};

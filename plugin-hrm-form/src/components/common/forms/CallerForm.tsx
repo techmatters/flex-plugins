@@ -36,7 +36,7 @@ type Props = {
   defaultEventHandlers: DefaultEventHandlers;
 };
 
-const CallerForm: React.FC<Props> = ({ callerInformation, defaultEventHandlers }) => (
+export const CallerForm: React.FC<Props> = ({ callerInformation, defaultEventHandlers }) => (
   <Container>
     <NameFields>
       <FieldText
@@ -146,5 +146,3 @@ const CallerForm: React.FC<Props> = ({ callerInformation, defaultEventHandlers }
 );
 
 CallerForm.displayName = 'CallerForm';
-
-export default CallerForm;

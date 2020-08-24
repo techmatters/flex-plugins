@@ -34,7 +34,7 @@ const SectionEntry = ({ description, value }) => {
 SectionEntry.displayName = 'SectionEntry';
 
 SectionEntry.propTypes = {
-  description: PropTypes.string.isRequired,
+  description: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.bool]).isRequired,
 };
 

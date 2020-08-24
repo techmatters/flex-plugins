@@ -7,11 +7,13 @@ import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 
+import '../../mockGetConfig';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../../states';
 import * as RoutingActions from '../../../states/routing/actions';
 import * as CaseActions from '../../../states/case/actions';
 import { UPDATE_TEMP_INFO, UPDATE_CASE_INFO } from '../../../states/case/types';
-import AddPerpetrator, { newFormEntry } from '../../../components/case/AddPerpetrator';
+import AddPerpetrator from '../../../components/case/AddPerpetrator';
+import { newCallerFormInformation } from '../../../components/common/forms';
 import HrmTheme from '../../../styles/HrmTheme';
 import { getFormValues } from '../../../components/common/forms/helpers';
 
@@ -61,7 +63,7 @@ const state2 = {
     [connectedCaseBase]: {
       tasks: {
         task1: {
-          temporaryCaseInfo: newFormEntry,
+          temporaryCaseInfo: newCallerFormInformation,
           connectedCase: {
             createdAt: 1593469560208,
             twilioWorkerId: 'worker1',
@@ -173,9 +175,6 @@ describe('Test AddPerpetrator', () => {
     // inputTestIds.forEach(testId => expect(screen.getByTestId(testId)).toBeInTheDocument());
     inputsLabels.forEach(label => expect(screen.getByLabelText(label)).toBeInTheDocument());
 
-    expect(store2.dispatch).toHaveBeenCalledWith(CaseActions.updateTempInfo(newFormEntry, task.taskSid));
-    // clear the call made by useEffect
-    store2.dispatch.mockClear();
     expect(store2.dispatch).not.toHaveBeenCalled();
 
     const inputs = inputsLabels.map(label => screen.getByLabelText(label));
@@ -200,7 +199,7 @@ describe('Test AddPerpetrator', () => {
       expect(store2.dispatch).toHaveBeenCalled();
       expect(store2.dispatch.mock.calls[0][0].type).toBe(UPDATE_TEMP_INFO);
       // check that something changed in the form
-      expect(store2.dispatch.mock.calls[0][0].value).not.toStrictEqual(newFormEntry);
+      expect(store2.dispatch.mock.calls[0][0].value).not.toStrictEqual(newCallerFormInformation);
     });
   });
 
@@ -250,7 +249,7 @@ describe('Test AddPerpetrator', () => {
     );
 
     // component calls useEffect and thus calls updateTempInfo
-    expect(store2.dispatch).toHaveBeenCalledWith(CaseActions.updateTempInfo(newFormEntry, task.taskSid));
+    expect(store2.dispatch).toHaveBeenCalledWith(CaseActions.updateTempInfo(newCallerFormInformation, task.taskSid));
   });
 
   test('a11y', async () => {

@@ -82,7 +82,10 @@ const Timeline = ({ task, form, caseId, changeRoute, updateViewNoteInfo, updateT
     }
   };
 
-  const handleAddNoteClick = () => changeRoute({ route: 'new-case', subroute: 'add-note' }, task.taskSid);
+  const handleAddNoteClick = () => {
+    updateTempInfo('', task.taskSid);
+    changeRoute({ route: 'new-case', subroute: 'add-note' }, task.taskSid);
+  };
 
   return (
     <Box marginTop="25px">

@@ -121,6 +121,10 @@
   "Case-Note": "Note",
   "Case-NoHouseholds": "No Household Members Listed",
   "Case-Contact": "Contact",
+  "Case-ViewHousehold": "View Household Member",
+  "Case-ViewHouseholdTitle": "Household Member",
+  "Case-ViewPerpetrator": "View Perpetrator",
+  "Case-ViewPerpetratorTitle": "Perpetrator",
 
   "SideNavCaseList": "Case List",
   
@@ -155,6 +159,17 @@
   "CallerForm-PostalCode": "Postal code",
   "CallerForm-Phone#1": "Phone #1",
   "CallerForm-Phone#2": "Phone #2",
+
+  "CallerSection-Name": "Name",
+  "CallerSection-RelationshipToChild": "Relationship to Child",
+  "CallerSection-Address": "Address",
+  "CallerSection-Phone#1": "Phone #1",
+  "CallerSection-Phone#2": "Phone #2",
+  "CallerSection-Gender": "Gender",
+  "CallerSection-AgeRange": "Age Range",
+  "CallerSection-Language": "Language",
+  "CallerSection-Nationality": "Nationality",
+  "CallerSection-Ethnicity": "Ethnicity",
 
   "ContactDetails-GeneralDetails": "General Details"
 }

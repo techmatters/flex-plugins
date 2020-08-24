@@ -47,7 +47,7 @@ const InformationRow: React.FC<OwnProps> = ({ person, onClickView }) => {
       </RowItem>
       <RowItem>
         <Box marginLeft="auto" marginRight="10px">
-          <ViewButton onClick={onClickView}>
+          <ViewButton onClick={onClickView} data-testid="Case-InformationRow-ViewButton">
             <Template code="Case-ViewButton" />
           </ViewButton>
         </Box>

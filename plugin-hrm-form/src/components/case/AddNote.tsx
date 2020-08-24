@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Template, ITask } from '@twilio/flex-ui';
 
@@ -31,10 +31,6 @@ const AddNote: React.FC<Props> = ({
   changeRoute,
   setConnectedCase,
 }) => {
-  useEffect(() => {
-    updateTempInfo('', task.taskSid);
-  }, [task.taskSid, updateTempInfo]);
-
   const { strings } = getConfig();
   const { connectedCase, temporaryCaseInfo } = connectedCaseState;
 

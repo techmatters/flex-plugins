@@ -12,6 +12,7 @@ import HrmTheme from '../../../styles/HrmTheme';
 import Case from '../../../components/case';
 import CaseDetails from '../../../components/case/CaseDetails';
 import { namespace, configurationBase, contactFormsBase, connectedCaseBase, routingBase } from '../../../states';
+import { UPDATE_TEMP_INFO } from '../../../states/case/types';
 import { cancelCase, getActivities } from '../../../services/CaseService';
 
 jest.mock('react', () => ({
@@ -35,6 +36,30 @@ global.document.createRange = () => ({
 
 expect.extend(toHaveNoViolations);
 const mockStore = configureMockStore([]);
+
+const entry = {
+  name: {
+    firstName: 'first',
+    lastName: 'last',
+  },
+  location: {
+    streetAddress: 'street',
+    city: 'city',
+    stateOrCounty: 'state',
+    postalCode: 'code',
+    phone1: 'phone1',
+    phone2: 'phone2',
+  },
+  age: 'age',
+  ethnicity: 'ethnicity',
+  gender: 'gender',
+  language: 'language',
+  nationality: 'nationality',
+  relationshipToChild: 'relationshipToChild',
+};
+
+const perpetratorEntry = { perpetrator: entry, createdAt: '2020-06-29T22:26:00.208Z', twilioWorkerId: 'worker1' };
+const householdEntry = { household: entry, createdAt: '2020-06-29T22:26:00.208Z', twilioWorkerId: 'worker1' };
 
 function createState(state) {
   return {
@@ -129,12 +154,30 @@ describe('useState mocked', () => {
             createdAt: 1593469560208,
             twilioWorkerId: 'worker1',
             status: 'open',
+            info: null,
           },
           temporaryCaseInfo: '',
         },
       },
     },
     [routingBase]: { tasks: { task1: { route: 'new-case' } } },
+  });
+
+  const addInfoToCase = info => ({
+    [namespace]: {
+      ...initialState[namespace],
+      [connectedCaseBase]: {
+        tasks: {
+          task1: {
+            ...initialState[namespace][connectedCaseBase].tasks.task1,
+            connectedCase: {
+              ...initialState[namespace][connectedCaseBase].tasks.task1.connectedCase,
+              info,
+            },
+          },
+        },
+      },
+    },
   });
 
   test('Case (should render)', async () => {
@@ -288,6 +331,80 @@ describe('useState mocked', () => {
       routing: {
         route: 'new-case',
         subroute: 'add-perpetrator',
+      },
+      taskId: 'task1',
+      type: 'CHANGE_ROUTE',
+    });
+  });
+
+  test('click View Household button', async () => {
+    const ownProps = {
+      task: {
+        taskSid: 'task1',
+      },
+      handleCompleteTask: jest.fn(),
+    };
+
+    const stateWithHousehold = addInfoToCase({ households: [householdEntry] });
+    const store = mockStore(stateWithHousehold);
+    store.dispatch = jest.fn();
+
+    render(
+      <StorelessThemeProvider themeConf={themeConf}>
+        <Provider store={store}>
+          <Case {...ownProps} />
+        </Provider>
+      </StorelessThemeProvider>,
+    );
+
+    screen.getByTestId('Case-InformationRow-ViewButton').click();
+
+    expect(store.dispatch).toHaveBeenCalledWith({
+      value: householdEntry,
+      taskId: 'task1',
+      type: UPDATE_TEMP_INFO,
+    });
+    expect(store.dispatch).toHaveBeenCalledWith({
+      routing: {
+        route: 'new-case',
+        subroute: 'view-household',
+      },
+      taskId: 'task1',
+      type: 'CHANGE_ROUTE',
+    });
+  });
+
+  test('click View Perpetrator button', async () => {
+    const ownProps = {
+      task: {
+        taskSid: 'task1',
+      },
+      handleCompleteTask: jest.fn(),
+    };
+
+    const stateWithPerpetrators = addInfoToCase({ perpetrators: [perpetratorEntry] });
+    const store = mockStore(stateWithPerpetrators);
+    store.dispatch = jest.fn();
+
+    render(
+      <StorelessThemeProvider themeConf={themeConf}>
+        <Provider store={store}>
+          <Case {...ownProps} />
+        </Provider>
+      </StorelessThemeProvider>,
+    );
+
+    screen.getByTestId('Case-InformationRow-ViewButton').click();
+
+    expect(store.dispatch).toHaveBeenCalledWith({
+      value: perpetratorEntry,
+      taskId: 'task1',
+      type: UPDATE_TEMP_INFO,
+    });
+    expect(store.dispatch).toHaveBeenCalledWith({
+      routing: {
+        route: 'new-case',
+        subroute: 'view-perpetrator',
       },
       taskId: 'task1',
       type: 'CHANGE_ROUTE',

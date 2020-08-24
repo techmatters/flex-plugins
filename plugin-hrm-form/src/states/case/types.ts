@@ -1,4 +1,4 @@
-import { Case, CaseInfo } from '../../types/types';
+import { Case, CaseInfo, HouseholdEntry, PerpetratorEntry } from '../../types/types';
 import { CallerFormInformation } from '../../components/common/forms/CallerForm';
 
 // Action types
@@ -33,7 +33,7 @@ export function isViewContact(object: any): object is ViewContact {
   );
 }
 
-export type TemporaryCaseInfo = string | CallerFormInformation | ViewContact;
+export type TemporaryCaseInfo = string | CallerFormInformation | ViewContact | HouseholdEntry | PerpetratorEntry;
 
 type SetConnectedCaseAction = {
   type: typeof SET_CONNECTED_CASE;
