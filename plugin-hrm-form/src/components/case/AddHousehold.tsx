@@ -89,7 +89,6 @@ const AddHousehold: React.FC<Props> = ({
             secondary
             roundCorners
             onClick={saveHouseholdAndStay}
-            disabled={!temporaryCaseInfo}
           >
             <Template code="BottomBar-SaveAndAddAnotherHousehold" />
           </StyledNextStepButton>
@@ -98,7 +97,6 @@ const AddHousehold: React.FC<Props> = ({
           data-testid="Case-AddHouseholdScreen-SaveHousehold"
           roundCorners
           onClick={saveHouseholdAndLeave}
-          disabled={!temporaryCaseInfo}
         >
           <Template code="BottomBar-SaveHousehold" />
         </StyledNextStepButton>
