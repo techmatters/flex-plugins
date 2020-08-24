@@ -155,7 +155,8 @@ export const PaginationButton = styled('div')`
 PaginationButton.displayName = 'PaginationButton';
 
 export const PaginationChevron = styled(PaginationButton)`
-  margin-bottom: 10px;
+  margin: 0;
+  padding-bottom: 10px;
 `;
 PaginationChevron.displayName = 'PaginationChevron';
 
