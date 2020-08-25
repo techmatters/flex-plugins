@@ -1,9 +1,6 @@
 import { omit } from 'lodash';
 
 import {
-  INITIALIZE_CONTACT_STATE,
-  REMOVE_CONTACT_STATE,
-  RECREATE_SEARCH_CONTACT,
   HANDLE_SELECT_SEARCH_RESULT,
   HANDLE_SEARCH_FORM_CHANGE,
   CHANGE_SEARCH_PAGE,
@@ -13,6 +10,7 @@ import {
   SEARCH_CONTACTS_FAILURE,
   HANDLE_EXPAND_DETAILS_SECTION,
 } from './ActionTypes';
+import { INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE } from './types';
 import { searchContacts as searchContactsApiCall } from '../services/ContactService';
 import callTypes from './DomainConstants';
 import { createBlankForm } from './ContactFormStateFactory';
@@ -34,8 +32,6 @@ export const SearchPages = {
   results: 'results',
   details: 'details',
 };
-
-export const recreateSearchContact = taskId => ({ type: RECREATE_SEARCH_CONTACT, taskId });
 
 export const handleSelectSearchResult = (searchResult, taskId) => ({
   type: HANDLE_SELECT_SEARCH_RESULT,
@@ -144,7 +140,7 @@ export const ContactDetailsSections = {
   CALLER_INFORMATION: 'Caller information',
   CHILD_INFORMATION: 'Child information',
   ISSUE_CATEGORIZATION: 'Issue categorization',
-  CASE_SUMMARY: 'Case summary',
+  CONTACT_SUMMARY: 'Contact summary',
 };
 
 const newTaskEntry = {
@@ -163,7 +159,7 @@ const newTaskEntry = {
     [ContactDetailsSections.CALLER_INFORMATION]: false,
     [ContactDetailsSections.CHILD_INFORMATION]: false,
     [ContactDetailsSections.ISSUE_CATEGORIZATION]: false,
-    [ContactDetailsSections.CASE_SUMMARY]: false,
+    [ContactDetailsSections.CONTACT_SUMMARY]: false,
   },
   searchResult: [],
   isRequesting: false,
@@ -180,7 +176,9 @@ export function reduce(state = initialState, action) {
           [action.taskId]: newTaskEntry,
         },
       };
-    case RECREATE_SEARCH_CONTACT:
+    case RECREATE_CONTACT_STATE:
+      if (state.tasks[action.taskId]) return state;
+
       return {
         ...state,
         tasks: {

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Grid } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
 
-import { SectionDescriptionText, SectionValueText } from '../../../styles/search';
+import { SectionDescriptionText, SectionValueText } from '../styles/search';
 
 /**
  * @param {string | number | boolean} value The value for a particular SectionEntry
@@ -34,7 +34,7 @@ const SectionEntry = ({ description, value }) => {
 SectionEntry.displayName = 'SectionEntry';
 
 SectionEntry.propTypes = {
-  description: PropTypes.string.isRequired,
+  description: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.bool]).isRequired,
 };
 

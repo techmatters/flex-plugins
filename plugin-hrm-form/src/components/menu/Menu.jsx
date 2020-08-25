@@ -29,11 +29,12 @@ const Menu = ({ open, anchorEl, children, onClickAway }) => (
 Menu.displayName = 'Menu';
 Menu.propTypes = {
   open: PropTypes.bool.isRequired,
-  anchorEl: PropTypes.instanceOf(Element).isRequired,
+  anchorEl: PropTypes.instanceOf(Element),
   onClickAway: PropTypes.func.isRequired,
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
 };
 Menu.defaultProps = {
+  anchorEl: null,
   children: null,
 };
 

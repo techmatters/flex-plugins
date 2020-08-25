@@ -14,7 +14,7 @@ import { changeLanguage } from './states/ConfigurationState';
 import { issueSyncToken } from './services/ServerlessService';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
-const PLUGIN_VERSION = '0.6.0';
+const PLUGIN_VERSION = '0.8.0';
 export const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
 /**
@@ -170,7 +170,7 @@ const setUpActions = setupObject => {
 
   Flex.Actions.addListener('beforeAcceptTask', ActionFunctions.initializeContactForm);
 
-  if (featureFlags.enable_transfers) Flex.Actions.addListener('afterAcceptTask', ActionFunctions.afterAcceptTask);
+  Flex.Actions.addListener('afterAcceptTask', ActionFunctions.afterAcceptTask(setupObject));
 
   if (featureFlags.enable_transfers) Flex.Actions.replaceAction('TransferTask', transferOverride);
 

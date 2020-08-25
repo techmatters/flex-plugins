@@ -8,17 +8,20 @@ export const CaseListContainer = styled(Absolute)`
   width: 100%;
   background-color: ${props => props.theme.colors.base2};
 `;
+CaseListContainer.displayName = 'CaseListContainer';
 
 export const CenteredContainer = styled(CaseListContainer)`
   display: flex;
   align-items: center;
   justify-content: center;
 `;
+CenteredContainer.displayName = 'CenteredContainer';
 
 export const TableContainer = styled('div')`
   border-left: 15px solid ${props => props.theme.colors.base2};
   border-right: 10px solid ${props => props.theme.colors.base2};
 `;
+TableContainer.displayName = 'TableContainer';
 
 export const CLTable = withStyles({
   root: {
@@ -29,6 +32,7 @@ export const CLTable = withStyles({
     },
   },
 })(Table);
+CLTable.displayName = 'CLTable';
 
 export const CLTableRow = withStyles({
   root: {
@@ -41,6 +45,7 @@ export const CLTableRow = withStyles({
     boxShadow: '0 1px 1px 0 rgba(0, 0, 0, 0.06)',
   },
 })(TableRow);
+CLTableRow.displayName = 'CLTableRow';
 
 export const CLFooterRow = withStyles(theme => ({
   root: {
@@ -50,6 +55,7 @@ export const CLFooterRow = withStyles(theme => ({
     marginTop: -5,
   },
 }))(TableRow);
+CLFooterRow.displayName = 'CLFooterRow';
 
 export const CLTableCell = withStyles(theme => ({
   root: {
@@ -61,12 +67,14 @@ export const CLTableCell = withStyles(theme => ({
     paddingTop: 12,
   },
 }))(TableCell);
+CLTableCell.displayName = 'CLTableCell';
 
 export const CLNumberCell = withStyles({
   body: {
     paddingLeft: '10px !important',
   },
 })(CLTableCell);
+CLNumberCell.displayName = 'CLNumberCell';
 
 export const CLNamesCell = withStyles({
   body: {
@@ -77,12 +85,14 @@ export const CLNamesCell = withStyles({
     overflow: 'hidden',
   },
 })(CLTableCell);
+CLNamesCell.displayName = 'CLNamesCell';
 
 export const CLSummaryCell = withStyles({
   body: {
     paddingRight: 30,
   },
 })(CLTableCell);
+CLSummaryCell.displayName = 'CLSummaryCell';
 
 export const CLActionCell = withStyles({
   body: {
@@ -90,6 +100,7 @@ export const CLActionCell = withStyles({
     textAlign: 'right',
   },
 })(CLTableCell);
+CLActionCell.displayName = 'CLActionCell';
 
 export const CLTableHeaderFont = styled(FontOpenSans)`
   font-weight: 600;
@@ -97,6 +108,7 @@ export const CLTableHeaderFont = styled(FontOpenSans)`
   line-height: 30px;
   letter-spacing: 0;
 `;
+CLTableHeaderFont.displayName = 'CLTableHeaderFont';
 
 export const CLTableBodyFont = styled(FontOpenSans)`
   color: ${props => (props.isOpenCase ? '#192b33' : '#666c7c')};
@@ -105,6 +117,7 @@ export const CLTableBodyFont = styled(FontOpenSans)`
   font-weight: 600;
   max-height: ${() => 85 - 12 /* 85px of cell height - 12px of padding*/}px;
 `;
+CLTableBodyFont.displayName = 'CLTableBodyFont';
 
 export const CLCaseNumberContainer = styled('div')`
   display: inline-block;
@@ -112,6 +125,7 @@ export const CLCaseNumberContainer = styled('div')`
   border: ${props => (props.isOpenCase ? '1px solid #192b33' : '0')};
   border-radius: 2px;
 `;
+CLCaseNumberContainer.displayName = 'CLCaseNumberContainer';
 
 export const CategoryTag = styled('div')`
   display: inline-block;
@@ -122,12 +136,14 @@ export const CategoryTag = styled('div')`
   background-color: #a0a8bd66;
   text-transform: uppercase;
 `;
+CategoryTag.displayName = 'CategoryTag';
 
 export const CategoryFont = styled(FontOpenSans)`
   font-size: 11px;
   letter-spacing: 0.1px;
   line-height: 14px;
 `;
+CategoryFont.displayName = 'CategoryFont';
 
 export const PaginationButton = styled('div')`
   background-color: ${props => (props.highlight ? '#1976D2' : 'transparent')};
@@ -136,14 +152,23 @@ export const PaginationButton = styled('div')`
   padding: 5px 10px;
   margin: 5px 5px 0 5px;
 `;
+PaginationButton.displayName = 'PaginationButton';
+
+export const PaginationChevron = styled(PaginationButton)`
+  margin: 0;
+  padding-bottom: 10px;
+`;
+PaginationChevron.displayName = 'PaginationChevron';
 
 export const ButtonText = styled(FontOpenSans)`
   font-size: 13px;
   color: ${props => (props.highlight ? '#ffffff' : '#666c7c')};
   font-weight: ${props => (props.highlight ? 700 : 600)};
 `;
+ButtonText.displayName = 'ButtonText';
 
 export const SomethingWentWrongText = styled(FontOpenSans)`
   color: ${props => props.theme.colors.errorColor};
   font-size: 20px;
 `;
+SomethingWentWrongText.displayName = 'SomethingWentWrongText';

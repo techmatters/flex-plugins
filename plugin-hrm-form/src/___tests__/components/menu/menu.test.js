@@ -76,10 +76,7 @@ test('call menuItem onClick', () => {
     </StorelessThemeProvider>,
   );
 
-  wrapper
-    .find('MenuItem')
-    .find({ text: 'Open New Case' })
-    .simulate('click');
+  wrapper.find('MenuItem').find({ text: 'Open New Case' }).simulate('click');
   expect(onClick).toHaveBeenCalled();
 });
 

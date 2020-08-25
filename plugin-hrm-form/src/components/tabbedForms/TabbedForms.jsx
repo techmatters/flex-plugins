@@ -58,7 +58,7 @@ const TabbedForms = props => {
     if (!hasTaskControl(task)) return;
 
     props.handleCallTypeButtonClick(taskId, '');
-    props.changeRoute('select-call-type', taskId);
+    props.changeRoute({ route: 'select-call-type' }, taskId);
   };
 
   const { tab } = form.metadata;

@@ -7,7 +7,7 @@ import { TableFooter, TableCell, ButtonBase } from '@material-ui/core';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 import { Template } from '@twilio/flex-ui';
 
-import { PaginationButton, ButtonText, CLFooterRow } from '../../styles/caseList';
+import { PaginationButton, PaginationChevron, ButtonText, CLFooterRow } from '../../styles/caseList';
 import { HiddenText } from '../../styles/HrmStyles';
 
 export const getPaginationNumbers = (page, pageCount) => {
@@ -21,7 +21,7 @@ const renderPaginationButton = (page, handleChangePage) => n => {
   if (n === -1)
     return (
       <PaginationButton key={`ellipsis-${Math.random()}`}>
-        <ButtonText style={{ paddingTop: 5 }}>...</ButtonText>
+        <ButtonText style={{ paddingTop: 10 }}>...</ButtonText>
       </PaginationButton>
     );
 
@@ -37,15 +37,15 @@ const renderPaginationButton = (page, handleChangePage) => n => {
 const ChevronButton = ({ chevronDirection, onClick, templateCode }) => {
   const ChevronIcon = chevronDirection === 'left' ? ChevronLeft : ChevronRight;
   return (
-    <ButtonBase onClick={onClick} style={{ paddingTop: 5 }}>
-      <PaginationButton>
+    <ButtonBase onClick={onClick}>
+      <PaginationChevron>
         <HiddenText>
           <Template code={templateCode} />
         </HiddenText>
         <ButtonText>
           <ChevronIcon />
         </ButtonText>
-      </PaginationButton>
+      </PaginationChevron>
     </ButtonBase>
   );
 };
@@ -68,7 +68,7 @@ const CaseListTableFooter = ({ page, pagesCount, handleChangePage }) => {
   };
 
   return (
-    <TableFooter>
+    <TableFooter data-testid="CaseList-TableFooter">
       <CLFooterRow>
         <TableCell colSpan={8}>
           <div style={{ display: 'flex', width: '100%', justifyContent: 'center' }}>

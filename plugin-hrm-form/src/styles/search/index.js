@@ -171,6 +171,7 @@ export const SectionTitleText = styled(FontOpenSans)`
   letter-spacing: 1.8px;
   line-height: 13px;
   margin-right: auto;
+  text-transform: uppercase;
 `;
 
 const BodyText = styled(FontOpenSans)`

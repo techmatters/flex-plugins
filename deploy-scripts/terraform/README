@@ -1,0 +1,8 @@
+STEPS TO GET THIS TERRAFORM WORKING:
+
+1) Install Terraform. Instructions at https://learn.hashicorp.com/tutorials/terraform/install-cli.
+2) Clone/download the terraform-provider-twilio repo located at https://github.com/appian/terraform-provider-twilio.
+3) You need to build the plugin in order to use it, and to build it you need to install Go 1.12. There's various guides online for this. I had to try several things on Linux to get it to work, so good luck.
+4) Build the plugin, and follow the git repo directions on where to put it.
+5) Run "terraform init" in this folder.
+6) Run "terraform apply -var-file=staging.tfvars"

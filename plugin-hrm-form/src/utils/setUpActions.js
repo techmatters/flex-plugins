@@ -7,9 +7,11 @@ import { saveInsightsData } from '../services/InsightsService';
 import { transferChatStart } from '../services/ServerlessService';
 import { namespace, contactFormsBase } from '../states';
 import { Actions } from '../states/ContactState';
+import * as GeneralActions from '../states/actions';
 import { channelTypes, transferModes } from '../states/DomainConstants';
 import * as TransferHelpers from './transfer';
 import { saveFormSharedState, loadFormSharedState } from './sharedState';
+import { prepopulateForm } from './prepopulateForm';
 
 /**
  * Given a taskSid, retrieves the state of the form (stored in redux) for that task
@@ -43,7 +45,7 @@ const fromActionFunction = fun => async (payload, original) => {
  * @param {{ task: any }} payload
  */
 export const initializeContactForm = payload => {
-  Manager.getInstance().store.dispatch(Actions.initializeContactState(payload.task.taskSid));
+  Manager.getInstance().store.dispatch(GeneralActions.initializeContactState(payload.task.taskSid));
 };
 
 /**
@@ -69,9 +71,15 @@ const takeControlIfTransfer = async task => {
 /**
  * @type {ActionFunction}
  */
-export const afterAcceptTask = async payload => {
-  await takeControlIfTransfer(payload.task);
-  await restoreFormIfTransfer(payload.task);
+export const afterAcceptTask = setupObject => async payload => {
+  const { featureFlags } = setupObject;
+  const { task } = payload;
+
+  if (featureFlags.enable_transfers) {
+    await takeControlIfTransfer(task);
+    await restoreFormIfTransfer(task);
+  }
+  prepopulateForm(task);
 };
 
 /**
@@ -203,5 +211,5 @@ export const sendInsightsData = setupObject => async payload => {
  */
 export const removeContactForm = payload => {
   const manager = Manager.getInstance();
-  manager.store.dispatch(Actions.removeContactState(payload.task.taskSid));
+  manager.store.dispatch(GeneralActions.removeContactState(payload.task.taskSid));
 };
