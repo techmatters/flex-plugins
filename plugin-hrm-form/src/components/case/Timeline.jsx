@@ -47,7 +47,7 @@ const Timeline = ({ task, form, caseId, changeRoute, updateViewNoteInfo, updateT
         date: format(Date.now(), 'yyyy-MM-dd HH:mm:ss'),
         type: task.channelType,
         text: form.caseInformation.callSummary.value,
-        counselor: workerSid,
+        twilioWorkerId: workerSid,
       };
 
       setTimeline(t => sortActivities([...t, connectCaseActivity]));
@@ -55,12 +55,12 @@ const Timeline = ({ task, form, caseId, changeRoute, updateViewNoteInfo, updateT
   }, [form, task, timeline]);
 
   const handleOnClickView = activity => {
-    const { counselor } = activity;
+    const { twilioWorkerId } = activity;
 
     if (activity.type === 'note') {
       const info = {
         note: activity.text,
-        counselor,
+        counselor: twilioWorkerId,
         date: new Date(activity.date).toLocaleDateString(navigator.language),
       };
       updateViewNoteInfo(info, task.taskSid);
@@ -74,7 +74,7 @@ const Timeline = ({ task, form, caseId, changeRoute, updateViewNoteInfo, updateT
         [ContactDetailsSections.CONTACT_SUMMARY]: false,
       };
       const { contactId } = activity;
-      const tempInfo = { detailsExpanded, contactId, date: activity.date, counselor };
+      const tempInfo = { detailsExpanded, contactId, date: activity.date, counselor: twilioWorkerId };
       updateTempInfo(tempInfo, task.taskSid);
       changeRoute({ route: 'new-case', subroute: 'view-contact' }, task.taskSid);
     } else {
