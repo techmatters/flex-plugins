@@ -54,7 +54,7 @@ describe('CaseListTableFooter', () => {
     ).root;
 
     expect(() => component.findAllByType(PaginationButton)).not.toThrow();
-    expect(component.findAllByType(PaginationButton)).toHaveLength(14);
+    expect(component.findAllByType(PaginationButton)).toHaveLength(12);
   });
 
   test('page 10/20', async () => {
@@ -65,7 +65,7 @@ describe('CaseListTableFooter', () => {
     ).root;
 
     expect(() => component.findAllByType(PaginationButton)).not.toThrow();
-    expect(component.findAllByType(PaginationButton)).toHaveLength(15);
+    expect(component.findAllByType(PaginationButton)).toHaveLength(13);
   });
 
   test('page 20/20', async () => {
@@ -76,6 +76,6 @@ describe('CaseListTableFooter', () => {
     ).root;
 
     expect(() => component.findAllByType(PaginationButton)).not.toThrow();
-    expect(component.findAllByType(PaginationButton)).toHaveLength(14);
+    expect(component.findAllByType(PaginationButton)).toHaveLength(12);
   });
 });
