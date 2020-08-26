@@ -173,13 +173,11 @@ const setSecondLine = chatChannel => {
         ? manager.strings['Transfer-Warm']
         : manager.strings['Transfer-Cold'];
 
-     const baseMessage = `${mode} ${manager.strings[string]} ${originalCounselorName}`;
+      const baseMessage = `${mode} ${manager.strings[string]} ${originalCounselorName}`;
 
-      if (task.attributes.transferTargetType === 'queue')
-        return `${baseMessage} (${task.queueName})`;
+      if (task.attributes.transferTargetType === 'queue') return `${baseMessage} (${task.queueName})`;
 
-      if (task.attributes.transferTargetType === 'worker')
-        return `${baseMessage} (direct)`;
+      if (task.attributes.transferTargetType === 'worker') return `${baseMessage} (direct)`;
 
       return baseMessage;
     }
