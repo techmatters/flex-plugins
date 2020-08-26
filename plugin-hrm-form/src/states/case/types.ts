@@ -22,19 +22,6 @@ export type ViewContact = {
   counselor: string;
 };
 
-// Should we remove this type-guard
-export function isViewContact(object: any): object is ViewContact {
-  return (
-    typeof object === 'object' &&
-    (!object.contactId || typeof object.contactId === 'string') &&
-    typeof object.detailsExpanded === 'object' &&
-    Object.keys(object.detailsExpanded).every(key => typeof key === 'string') &&
-    Object.values(object.detailsExpanded).every(value => typeof value === 'boolean') &&
-    typeof object.date === 'string' &&
-    typeof object.counselor === 'string'
-  );
-}
-
 export type TemporaryCaseInfo =
   | { screen: typeof NewCaseSubroutes.AddNote; info: string }
   | { screen: typeof NewCaseSubroutes.AddHousehold; info: CallerFormInformation }
