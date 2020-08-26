@@ -74,7 +74,7 @@ const Timeline = ({ task, form, caseId, changeRoute, updateViewNoteInfo, updateT
         [ContactDetailsSections.CONTACT_SUMMARY]: false,
       };
       const { contactId } = activity;
-      const tempInfo = { detailsExpanded, contactId, date, counselor };
+      const tempInfo = { detailsExpanded, contactId, date: activity.date, counselor: twilioWorkerId };
       updateTempInfo({ screen: 'view-contact', info: tempInfo }, task.taskSid);
       changeRoute({ route: 'new-case', subroute: 'view-contact' }, task.taskSid);
     } else {
