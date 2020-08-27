@@ -167,14 +167,19 @@ const setSecondLine = chatChannel => {
   const defaultStrings = Flex.DefaultTaskChannels[channel].templates.TaskListItem.secondLine;
 
   Flex.DefaultTaskChannels[channel].templates.TaskListItem.secondLine = (task, componentType) => {
-    if (isIncomingTransfer(task) && task.attributes.transferTargetType === 'queue') {
+    if (isIncomingTransfer(task)) {
       const { originalCounselorName } = task.attributes.transferMeta;
-      return `${manager.strings[string]} ${originalCounselorName} (${task.queueName})`;
-    }
+      const mode = TransferHelpers.isWarmTransfer(task)
+        ? manager.strings['Transfer-Warm']
+        : manager.strings['Transfer-Cold'];
 
-    if (isIncomingTransfer(task) && task.attributes.transferTargetType === 'worker') {
-      const { originalCounselorName } = task.attributes.transferMeta;
-      return `${manager.strings[string]} ${originalCounselorName} (direct)`;
+      const baseMessage = `${mode} ${manager.strings[string]} ${originalCounselorName}`;
+
+      if (task.attributes.transferTargetType === 'queue') return `${baseMessage} (${task.queueName})`;
+
+      if (task.attributes.transferTargetType === 'worker') return `${baseMessage} (direct)`;
+
+      return baseMessage;
     }
 
     return Flex.TaskChannelHelper.getTemplateForStatus(task, defaultStrings, componentType);
@@ -183,6 +188,7 @@ const setSecondLine = chatChannel => {
 
 export const setUpIncomingTransferMessage = () => {
   const chatChannels = [
+    { channel: 'Call', string: 'Transfer-TaskLineCallReserved' },
     { channel: 'Chat', string: 'Transfer-TaskLineChatReserved' },
     { channel: 'ChatLine', string: 'Transfer-TaskLineChatLineReserved' },
     { channel: 'ChatMessenger', string: 'Transfer-TaskLineChatMessengerReserved' },
