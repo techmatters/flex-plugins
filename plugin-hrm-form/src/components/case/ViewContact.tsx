@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Template, ITask } from '@twilio/flex-ui';
 
@@ -11,14 +11,15 @@ import * as RoutingActions from '../../states/routing/actions';
 import ContactDetails from '../ContactDetails';
 import ActionHeader from './ActionHeader';
 import { adaptFormToContactDetails } from './ContactDetailsAdapter';
-import { isViewContact } from '../../states/case/types';
+import { CaseState } from '../../states/case/reducer';
 
 const mapStateToProps = (state, ownProps: OwnProps) => {
   const form = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
-  const tempInfo = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid].temporaryCaseInfo;
+  const caseState: CaseState = state[namespace][connectedCaseBase];
+  const { temporaryCaseInfo } = caseState.tasks[ownProps.task.taskSid];
 
-  return { form, counselorsHash, tempInfo };
+  return { form, counselorsHash, tempInfo: temporaryCaseInfo };
 };
 
 const mapDispatchToProps = {
@@ -34,18 +35,14 @@ type OwnProps = {
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
 const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, updateTempInfo, changeRoute }) => {
-  const [contact, setContact] = useState(null);
-  const { detailsExpanded, contactId, date, counselor } = tempInfo;
+  if (!tempInfo || tempInfo.screen !== 'view-contact') return null;
+
+  const { detailsExpanded, contactId, date, counselor } = tempInfo.info;
   const counselorName = counselorsHash[counselor] || 'Unknown';
 
-  useEffect(() => {
-    if (!contactId) {
-      const adaptedForm = adaptFormToContactDetails(task, form, date, counselorName);
-      setContact(adaptedForm);
-    }
-  }, [contactId, task, form, date, counselorName]);
+  const contact = contactId ? null : adaptFormToContactDetails(task, form, date, counselorName);
 
-  if (!isViewContact(tempInfo) || !contact) return null;
+  if (!contact) return null;
 
   const handleClose = () => changeRoute({ route: 'new-case' }, task.taskSid);
 
@@ -55,7 +52,7 @@ const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, up
       [section]: !detailsExpanded[section],
     };
     const updatedTempInfo = { detailsExpanded: updatedDetailsExpanded, date, counselor };
-    updateTempInfo(updatedTempInfo, task.taskSid);
+    updateTempInfo({ screen: 'view-contact', info: updatedTempInfo }, task.taskSid);
   };
 
   const dateString = new Date(date).toLocaleDateString(navigator.language);

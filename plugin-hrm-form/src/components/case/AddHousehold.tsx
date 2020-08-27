@@ -14,8 +14,6 @@ import * as RoutingActions from '../../states/routing/actions';
 import { CaseState } from '../../states/case/reducer';
 import { DefaultEventHandlers } from '../common/forms/types';
 import { getFormValues } from '../common/forms/helpers';
-import { isViewContact } from '../../states/case/types';
-import { isHouseholdEntry, isPerpetratorEntry } from '../../types/types';
 import { getConfig } from '../../HrmFormPlugin';
 
 type OwnProps = {
@@ -38,37 +36,22 @@ const AddHousehold: React.FC<Props> = ({
 }) => {
   const { temporaryCaseInfo } = connectedCaseState;
 
-  if (
-    !temporaryCaseInfo ||
-    typeof temporaryCaseInfo === 'string' ||
-    isViewContact(temporaryCaseInfo) ||
-    isHouseholdEntry(temporaryCaseInfo) ||
-    isPerpetratorEntry(temporaryCaseInfo)
-  )
-    return null;
+  if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-household') return null;
 
-  const callerInformation = connectedCaseState.temporaryCaseInfo;
   const defaultEventHandlers: DefaultEventHandlers = (parents, name) => ({
     handleBlur: () => undefined,
     handleFocus: () => undefined,
     handleChange: event => {
-      const newForm = editNestedField(callerInformation, parents, name, { value: event.target.value });
-      updateTempInfo(newForm, task.taskSid);
+      const newForm = editNestedField(temporaryCaseInfo.info, parents, name, { value: event.target.value });
+      updateTempInfo({ screen: 'add-household', info: newForm }, task.taskSid);
     },
   });
 
   function saveHousehold() {
-    if (
-      !temporaryCaseInfo ||
-      typeof temporaryCaseInfo === 'string' ||
-      isViewContact(temporaryCaseInfo) ||
-      isHouseholdEntry(temporaryCaseInfo) ||
-      isPerpetratorEntry(temporaryCaseInfo)
-    )
-      return;
+    if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-household') return;
 
     const { info } = connectedCaseState.connectedCase;
-    const household = getFormValues(temporaryCaseInfo);
+    const household = getFormValues(temporaryCaseInfo.info);
     const createdAt = new Date().toISOString();
     const { workerSid } = getConfig();
     const newHousehold = { household, createdAt, twilioWorkerId: workerSid };
@@ -79,19 +62,19 @@ const AddHousehold: React.FC<Props> = ({
 
   function saveHouseholdAndStay() {
     saveHousehold();
-    updateTempInfo(newFormEntry, task.taskSid);
+    updateTempInfo({ screen: 'add-household', info: newFormEntry }, task.taskSid);
   }
 
   function saveHouseholdAndLeave() {
     saveHousehold();
-    changeRoute({ route: 'new-case' }, task.taskSid);
+    onClickClose();
   }
 
   return (
     <CaseActionContainer>
       <CaseActionFormContainer>
         <ActionHeader titleTemplate="Case-AddHousehold" onClickClose={onClickClose} counselor={counselor} />
-        <CallerForm callerInformation={temporaryCaseInfo} defaultEventHandlers={defaultEventHandlers} />
+        <CallerForm callerInformation={temporaryCaseInfo.info} defaultEventHandlers={defaultEventHandlers} />
       </CaseActionFormContainer>
       <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
       <BottomButtonBar>
@@ -106,7 +89,6 @@ const AddHousehold: React.FC<Props> = ({
             secondary
             roundCorners
             onClick={saveHouseholdAndStay}
-            disabled={!temporaryCaseInfo}
           >
             <Template code="BottomBar-SaveAndAddAnotherHousehold" />
           </StyledNextStepButton>
@@ -115,7 +97,6 @@ const AddHousehold: React.FC<Props> = ({
           data-testid="Case-AddHouseholdScreen-SaveHousehold"
           roundCorners
           onClick={saveHouseholdAndLeave}
-          disabled={!temporaryCaseInfo}
         >
           <Template code="BottomBar-SaveHousehold" />
         </StyledNextStepButton>

@@ -61,7 +61,7 @@ const state = {
     [connectedCaseBase]: {
       tasks: {
         task1: {
-          temporaryCaseInfo: perpetratorEntry,
+          temporaryCaseInfo: { screen: 'view-perpetrator', info: perpetratorEntry },
           connectedCase: {
             createdAt: 1593469560208,
             twilioWorkerId: 'worker1',

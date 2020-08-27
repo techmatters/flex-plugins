@@ -1,20 +1,23 @@
 // Action types
 export const CHANGE_ROUTE = 'CHANGE_ROUTE';
 
+export const NewCaseSubroutes = {
+  AddNote: 'add-note',
+  AddHousehold: 'add-household',
+  AddPerpetrator: 'add-perpetrator',
+  ViewContact: 'view-contact',
+  ViewNote: 'view-note',
+  ViewHousehold: 'view-household',
+  ViewPerpetrator: 'view-perpetrator',
+} as const;
+
 // The different routes we have in our app
 export type AppRoutes =
   // TODO: enum the possible subroutes on each route
   | { route: 'tabbed-forms' }
   | {
       route: 'new-case';
-      subroute?:
-        | 'add-note'
-        | 'add-household'
-        | 'add-perpetrator'
-        | 'view-contact'
-        | 'view-note'
-        | 'view-household'
-        | 'view-perpetrator';
+      subroute?: typeof NewCaseSubroutes[keyof typeof NewCaseSubroutes];
     }
   | { route: 'select-call-type' };
 
