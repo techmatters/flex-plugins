@@ -41,26 +41,27 @@ async function setUpFieldTypes(clientFn, newClientFn) {
       fieldValues = fieldValues.reverse();
 
       // SYNCHRONIZING ISSUES IS HERE ////////////////////////////////////
-      fieldValues.forEach(async (v) => {
-        await newClientFn(newField.sid).fieldValues.create({
+      fieldValues.reduce(async (previousPromise, v) => {
+        await previousPromise;
+        return newClientFn(newField.sid).fieldValues.create({
           language: v.language,
           value: v.value,
           synonymOf: v.synonymOf,
         });
-      });
+      }, Promise.resolve());
     })
   );
 }
 
-async function copyAssitant() {
-  const file = await fs.readFile("staging.json", "utf8");
+async function copyAssitant(oldIdsFile, newIdsFile) {
+  const file = await fs.readFile(oldIdsFile, "utf8");
   const ids = JSON.parse(file);
   const accountSid = ids.AccountSid;
   const authToken = ids.AuthToken;
   // eslint-disable-next-line global-require
   const client = require("twilio")(accountSid, authToken);
 
-  const newFile = await fs.readFile("prod.json", "utf8");
+  const newFile = await fs.readFile(newIdsFile, "utf8");
   const newIds = JSON.parse(newFile);
   const newSid = newIds.AccountSid;
   const newAuthToken = newIds.AuthToken;
@@ -72,7 +73,7 @@ async function copyAssitant() {
   const bot = await client.autopilot.assistants(botId).fetch();
   const newBot = await newClient.autopilot.assistants.create({
     friendlyName: bot.friendlyName,
-    uniqueName: "", // PICK A NAME AND INSERT IT HERE, NEEDS TO BE SOMETHING THAT ISN'T BEING USED
+    uniqueName: bot.uniqueName, // IF YOU GET AN ERROR THAT IT ALREADY EXISTS, JUST PUT ANOTHER STRING IN HERE
   });
   const newBotId = newBot.sid;
 
@@ -87,4 +88,22 @@ async function copyAssitant() {
   );
 }
 
-copyAssitant();
+const { argv } = require("yargs")
+  .usage("npm run copyBot -- --fromIds {file} --toIds {file}")
+  .alias("f", "fromIds")
+  .alias("t", "toIds")
+  .describe(
+    "f",
+    "JSON filename with original account SIDs. To copy a bot on Twilio, " +
+      "this file must have the key 'Bot_to_Copy' with a value of the bot's " +
+      "SID."
+  )
+  .describe(
+    "t",
+    "JSON filename with SIDs of the account being copied to. The key names have " +
+      "no required format, but corresponding SIDs must have the same keys " +
+      "across the two files."
+  )
+  .demandOption(["fromIds", "toIds"]);
+
+copyAssitant(argv.fromIds, argv.toIds);
