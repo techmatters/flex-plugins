@@ -40,7 +40,6 @@ async function setUpFieldTypes(clientFn, newClientFn) {
       // Need to reverse because some words are synonyms of a word after it
       fieldValues = fieldValues.reverse();
 
-      // SYNCHRONIZING ISSUES IS HERE ////////////////////////////////////
       fieldValues.reduce(async (previousPromise, v) => {
         await previousPromise;
         return newClientFn(newField.sid).fieldValues.create({
