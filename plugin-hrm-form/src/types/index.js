@@ -62,16 +62,19 @@ export const childInformationType = PropTypes.shape({
   hiv: fieldType,
 });
 
-export const callerInformationType = PropTypes.shape({
-  name: nameType,
-  relationshipToChild: fieldType,
-  gender: fieldType,
-  age: fieldType,
-  language: fieldType,
-  nationality: fieldType,
-  ethnicity: fieldType,
-  location: locationType,
-});
+/*
+ * Currently unused. Should we remove this or keep it for some time?
+ * export const callerInformationType = PropTypes.shape({
+ *   name: nameType,
+ *   relationshipToChild: fieldType,
+ *   gender: fieldType,
+ *   age: fieldType,
+ *   language: fieldType,
+ *   nationality: fieldType,
+ *   ethnicity: fieldType,
+ *   location: locationType,
+ * });
+ */
 
 export const caseInformationType = PropTypes.shape({
   categories: categoriesType,
