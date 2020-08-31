@@ -13,6 +13,7 @@ import { contactType } from '../types';
 import { formatAddress, formatDuration, formatName, formatCategories, mapChannel } from '../utils';
 import { ContactDetailsSections } from '../states/SearchContact';
 import { getConfig } from '../HrmFormPlugin';
+import { CallerSection } from './common/ContactDetails';
 
 const MoreHorizIcon = ContactDetailsIcon(MoreHoriz);
 
@@ -28,7 +29,6 @@ const Details = ({
   const { overview, details, counselor } = contact;
   const { dateTime, name: childName, customerNumber, callType, channel, conversationDuration, categories } = overview;
   const child = details.childInformation;
-  const caller = details.callerInformation;
   const {
     callSummary,
     referredTo,
@@ -53,15 +53,6 @@ const Details = ({
     child.location.city,
     child.location.stateOrCounty,
     child.location.postalCode,
-  );
-
-  const callerName = `${caller.name.firstName} ${caller.name.lastName}`;
-  const callerOrUnknown = formatName(callerName);
-  const formattedCallerAddress = formatAddress(
-    caller.location.streetAddress,
-    caller.location.city,
-    caller.location.stateOrCounty,
-    caller.location.postalCode,
   );
 
   const isPhoneContact =
@@ -111,22 +102,12 @@ const Details = ({
         <SectionEntry description="Date/Time" value={formattedDate} />
       </Section>
       {callType === callTypes.caller && (
-        <Section
-          sectionTitle={strings['TabbedForms-AddCallerInfoTab']}
+        <CallerSection
           expanded={detailsExpanded[CALLER_INFORMATION]}
           handleExpandClick={() => handleExpandDetailsSection(CALLER_INFORMATION)}
-        >
-          <SectionEntry description="Name" value={callerOrUnknown} />
-          <SectionEntry description="Relationship to Child" value={caller.relationshipToChild} />
-          <SectionEntry description="Address" value={formattedCallerAddress} />
-          <SectionEntry description="Phone #1" value={caller.location.phone1} />
-          <SectionEntry description="Phone #2" value={caller.location.phone2} />
-          <SectionEntry description="Gender" value={caller.gender} />
-          <SectionEntry description="Age Range" value={caller.age} />
-          <SectionEntry description="Language" value={caller.language} />
-          <SectionEntry description="Nationality" value={caller.nationality} />
-          <SectionEntry description="Ethnicity" value={caller.ethnicity} />
-        </Section>
+          sectionTitleTemplate="TabbedForms-AddCallerInfoTab"
+          values={details.callerInformation}
+        />
       )}
       {isDataCall && (
         <Section
