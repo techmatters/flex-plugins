@@ -89,19 +89,4 @@ describe('test reducer', () => {
 
     state = result;
   });
-
-  test('should handle UPDATE_VIEW_NOTE_INFO', async () => {
-    const info = {
-      note: 'note',
-      counselor: 'counselor-hash',
-      date: '8/12/2020',
-    };
-
-    const expected = { tasks: { task1: { ...state.tasks.task1, viewNoteInfo: info } } };
-
-    const result = reduce(state, actions.updateViewNoteInfo(info, task.taskSid));
-    expect(result).toStrictEqual(expected);
-
-    state = result;
-  });
 });

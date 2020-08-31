@@ -25,7 +25,7 @@ const isConnectedCaseActivity = activity => channelsArray.includes(activity.type
 
 const sortActivities = activities => activities.sort((a, b) => b.date.localeCompare(a.date));
 
-const Timeline = ({ task, form, caseId, changeRoute, updateViewNoteInfo, updateTempInfo }) => {
+const Timeline = ({ task, form, caseId, changeRoute, updateTempInfo }) => {
   const [mockedMessage, setMockedMessage] = useState(null);
   const [timeline, setTimeline] = useState([]);
 
@@ -63,7 +63,7 @@ const Timeline = ({ task, form, caseId, changeRoute, updateViewNoteInfo, updateT
         counselor: twilioWorkerId,
         date: new Date(activity.date).toLocaleDateString(navigator.language),
       };
-      updateViewNoteInfo(info, task.taskSid);
+      updateTempInfo({ screen: 'view-note', info }, task.taskSid);
       changeRoute({ route: 'new-case', subroute: 'view-note' }, task.taskSid);
     } else if (channelsArray.includes(activity.type)) {
       const detailsExpanded = {
@@ -123,13 +123,11 @@ Timeline.propTypes = {
   form: formType.isRequired,
   caseId: PropTypes.number.isRequired,
   changeRoute: PropTypes.func.isRequired,
-  updateViewNoteInfo: PropTypes.func.isRequired,
   updateTempInfo: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = dispatch => ({
   changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
-  updateViewNoteInfo: bindActionCreators(CaseActions.updateViewNoteInfo, dispatch),
   updateTempInfo: bindActionCreators(CaseActions.updateTempInfo, dispatch),
 });
 
