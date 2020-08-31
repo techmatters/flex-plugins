@@ -21,7 +21,7 @@ const initialState: CaseState = {
   tasks: {},
 };
 
-export function reduce(state = initialState, action: CaseActionType | GeneralActionType) {
+export function reduce(state = initialState, action: CaseActionType | GeneralActionType): CaseState {
   switch (action.type) {
     case SET_CONNECTED_CASE:
       return {
