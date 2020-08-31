@@ -15,7 +15,7 @@ export const newQueueEntry = {
 
 /**
  * @param {string[]} queues
- * @returns {{ [qName: string]: typeof newQueueEntry }}
+ * @returns {import('../../states/queuesStatus/types').QueuesStatus}
  */
 export const initializeQueuesStatus = queues =>
   // eslint-disable-next-line no-nested-ternary
@@ -27,7 +27,7 @@ const subscribedToQueue = (queue, queues) => Boolean(queues[queue]);
 /**
  * Adds each waiting tasks to the appropiate queue and channel, recording which is the oldest
  * If counselor is not subscribed to a queue, acc[queue] will be undefined
- * @returns {{ [qName: string]: typeof newQueueEntry }}
+ * @returns {import('../../states/queuesStatus/types').QueuesStatus}
  */
 export const addPendingTasks = (acc, task) => {
   if (!isWaiting(task.status) || !subscribedToQueue(task.queue_name, acc)) return acc;
@@ -49,7 +49,7 @@ export const addPendingTasks = (acc, task) => {
 };
 
 /**
- * @returns {{ [qName: string]: typeof newQueueEntry }}
+ * @returns {import('../../states/queuesStatus/types').QueuesStatus}
  */
 export const getNewQueuesStatus = (cleanQueuesStatus, tasks) => {
   const newQueuesStatus = Object.values(tasks).reduce(addPendingTasks, cleanQueuesStatus);
