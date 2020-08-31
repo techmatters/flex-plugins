@@ -3,7 +3,7 @@ import { ConfigurationActionType, CHANGE_LANGUAGE, POPULATE_COUNSELORS, Counselo
 // Action creators
 export const changeLanguage = (language: string): ConfigurationActionType => ({ type: CHANGE_LANGUAGE, language });
 
-export const populateCounselorsState = (counselorsList: CounselorsList) => ({
+export const populateCounselorsState = (counselorsList: CounselorsList): ConfigurationActionType => ({
   type: POPULATE_COUNSELORS,
   counselorsList,
 });
