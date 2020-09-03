@@ -10,14 +10,14 @@ import SearchForm from './SearchForm';
 import SearchResults from './SearchResults';
 import ContactDetails from './ContactDetails';
 import { contactType, searchResultType, searchFormType } from '../../types';
+import { SearchPages } from '../../states/search/types';
 import {
   handleSearchFormChange,
   changeSearchPage,
   viewContactDetails,
   searchContacts,
-  SearchPages,
   handleExpandDetailsSection,
-} from '../../states/SearchContact';
+} from '../../states/search/actions';
 import { namespace, searchContactsBase, configurationBase } from '../../states';
 
 class Search extends Component {

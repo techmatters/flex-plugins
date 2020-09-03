@@ -11,7 +11,7 @@ import callTypes, { channelTypes } from '../states/DomainConstants';
 import { isNonDataCallType } from '../states/ValidationRules';
 import { contactType } from '../types';
 import { formatAddress, formatDuration, formatName, formatCategories, mapChannel } from '../utils';
-import { ContactDetailsSections } from '../states/SearchContact';
+import { ContactDetailsSections } from '../states/search/types';
 import { getConfig } from '../HrmFormPlugin';
 import { CallerSection } from './common/ContactDetails';
 

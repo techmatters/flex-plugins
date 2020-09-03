@@ -49,7 +49,6 @@ const newTaskEntry: TaskEntry = {
   error: null,
 };
 
-// eslint-disable-next-line import/no-unused-modules
 export function reduce(state = initialState, action) {
   switch (action.type) {
     case INITIALIZE_CONTACT_STATE:
