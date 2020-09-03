@@ -11,7 +11,7 @@ type TaskEntry = {
   detailsExpanded: {
     [key in t.ContactDetailsSectionsType]: boolean;
   };
-  searchResult: t.DetailerSearchResult;
+  searchResult: t.DetailedSearchResult;
   isRequesting: boolean;
   error: any;
 };

@@ -42,7 +42,7 @@ export const SearchPages = {
 
 export type SearchPagesType = typeof SearchPages[keyof typeof SearchPages];
 
-export type DetailerSearchResult = ReturnType<typeof addDetails>;
+export type DetailedSearchResult = ReturnType<typeof addDetails>;
 
 // Supported action object types
 type SearchFormChangeAction = {
