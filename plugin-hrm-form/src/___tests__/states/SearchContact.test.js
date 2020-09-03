@@ -1,17 +1,11 @@
 import fromentries from 'fromentries';
 
-import { SEARCH_CONTACTS_SUCCESS, SEARCH_CONTACTS_FAILURE } from '../../states/ActionTypes';
+import { SEARCH_CONTACTS_SUCCESS, SEARCH_CONTACTS_FAILURE, SearchPages } from '../../states/search/types';
 import { REMOVE_CONTACT_STATE } from '../../states/types';
 import { recreateContactState } from '../../states/actions';
-import { reduce as ContactStateReducer } from '../../states/ContactState';
-import {
-  changeSearchPage,
-  handleSelectSearchResult,
-  handleSearchFormChange,
-  reduce as SearchFormReducer,
-  SearchPages,
-  viewContactDetails,
-} from '../../states/SearchContact';
+import { reduce as ContactStateReducer, handleSelectSearchResult } from '../../states/ContactState';
+import { changeSearchPage, handleSearchFormChange, viewContactDetails } from '../../states/search/actions';
+import { reduce as SearchFormReducer } from '../../states/search/reducer';
 import callTypes from '../../states/DomainConstants';
 
 Object.fromEntries = fromentries;

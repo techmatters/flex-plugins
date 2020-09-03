@@ -80,7 +80,7 @@ export class Actions {
 }
 
 export const handleSelectSearchResult = (searchResult, taskId) => ({
-  type: t.HANDLE_SELECT_SEARCH_RESULT,
+  type: HANDLE_SELECT_SEARCH_RESULT,
   searchResult,
   taskId,
 });
