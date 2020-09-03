@@ -1,7 +1,7 @@
 import { omit } from 'lodash';
 
 import * as t from './types';
-import { INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE } from '../types';
+import { INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE, GeneralActionType } from '../types';
 import { SearchContactResult } from '../../types/types';
 
 type TaskEntry = {
@@ -26,7 +26,7 @@ const initialState: SearchState = {
   tasks: {},
 };
 
-const newTaskEntry: TaskEntry = {
+export const newTaskEntry: TaskEntry = {
   currentPage: t.SearchPages.form,
   currentContact: null,
   form: {
@@ -49,7 +49,7 @@ const newTaskEntry: TaskEntry = {
   error: null,
 };
 
-export function reduce(state = initialState, action) {
+export function reduce(state = initialState, action: t.SearchActionType | GeneralActionType): SearchState {
   switch (action.type) {
     case INITIALIZE_CONTACT_STATE:
       return {
@@ -158,7 +158,6 @@ export function reduce(state = initialState, action) {
           ...state.tasks,
           [action.taskId]: {
             ...task,
-            searchResult: action.searchResult,
             currentPage: t.SearchPages.results,
             isRequesting: false,
             error: action.error,

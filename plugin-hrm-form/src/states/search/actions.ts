@@ -8,31 +8,31 @@ import { searchContacts as searchContactsApiCall } from '../../services/ContactS
 import { addDetails } from './helpers';
 
 // Action creators
-
-// this type is not as strict as it could be. Got stuck and moved on
-export const handleSearchFormChange = (taskId: string) => (name, value): t.SearchActionType => ({
-  type: t.HANDLE_SEARCH_FORM_CHANGE,
-  name,
-  value,
-  taskId,
-});
+export const handleSearchFormChange = (taskId: string) => <K extends keyof t.SearchFormValues>(
+  name: K,
+  value: t.SearchFormValues[K],
+): t.SearchActionType => {
+  return {
+    type: t.HANDLE_SEARCH_FORM_CHANGE,
+    name,
+    value,
+    taskId,
+  } as t.SearchActionType; // casting cause inference is not providing enough information, but the restrictions are made in argument types
+};
 
 export const searchContacts = (dispatch: Dispatch<any>) => (taskId: string) => async (
   searchParams: any,
   counselorsHash: ConfigurationState['counselors']['hash'],
 ) => {
   try {
-    const requestAction: t.SearchActionType = { type: t.SEARCH_CONTACTS_REQUEST, taskId };
-    dispatch(requestAction);
+    dispatch({ type: t.SEARCH_CONTACTS_REQUEST, taskId });
 
     const searchResultRaw = await searchContactsApiCall(searchParams);
     const searchResult = addDetails(counselorsHash, searchResultRaw);
 
-    const successAction: t.SearchActionType = { type: t.SEARCH_CONTACTS_SUCCESS, searchResult, taskId };
-    dispatch(successAction);
+    dispatch({ type: t.SEARCH_CONTACTS_SUCCESS, searchResult, taskId });
   } catch (error) {
-    const failureAction: t.SearchActionType = { type: t.SEARCH_CONTACTS_FAILURE, error, taskId };
-    dispatch(failureAction);
+    dispatch({ type: t.SEARCH_CONTACTS_FAILURE, error, taskId });
   }
 };
 
