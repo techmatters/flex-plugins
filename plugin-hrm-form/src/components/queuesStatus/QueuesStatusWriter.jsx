@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { omit } from 'lodash';
 
-import { queuesStatusUpdate, queuesStatusFailure } from '../../states/QueuesStatus';
+import { queuesStatusUpdate, queuesStatusFailure } from '../../states/queuesStatus/actions';
 import { initializeQueuesStatus, getNewQueuesStatus, isWaiting } from './helpers';
 import { namespace, queuesStatusBase } from '../../states';
 
