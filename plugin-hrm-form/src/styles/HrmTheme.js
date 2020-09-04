@@ -1,4 +1,4 @@
-const colors = {
+export const colors = {
   base1: '#ffffff',
   base2: '#f6f6f6',
   buttonTextColor: '#ffffff',
