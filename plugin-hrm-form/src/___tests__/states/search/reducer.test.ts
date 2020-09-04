@@ -134,7 +134,7 @@ describe('search reducer', () => {
     const searchResult = [
       { contactId: 'fake contact result 1', overview: {}, details: {}, counselor: '' },
       { contactId: 'fake contact result 2', overview: {}, details: {}, counselor: '' },
-    ] as t.DetailerSearchResult; // type casting to avoid writing an entire DetailerSearchResult
+    ] as t.DetailedSearchResult; // type casting to avoid writing an entire DetailedSearchResult
     const action: t.SearchActionType = {
       type: t.SEARCH_CONTACTS_SUCCESS,
       searchResult,

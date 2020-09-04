@@ -56,7 +56,7 @@ type SearchContactsRequestAction = { type: typeof SEARCH_CONTACTS_REQUEST; taskI
 
 type SearchContactsSuccessAction = {
   type: typeof SEARCH_CONTACTS_SUCCESS;
-  searchResult: DetailerSearchResult;
+  searchResult: DetailedSearchResult;
   taskId: string;
 };
 
