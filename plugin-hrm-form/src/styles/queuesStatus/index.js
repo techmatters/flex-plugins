@@ -12,8 +12,8 @@ export const Container = styled('div')`
 `;
 
 export const QueuesContainer = styled('div')`
-  width: auto;
-  ${props => props.marginRight && 'margin-right: 30px;'}
+  width: 100%;
+  ${props => props.paddingRight && 'padding-right: 30px;'}
 `;
 
 export const QueueName = styled(FontOpenSans)`

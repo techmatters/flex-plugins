@@ -71,15 +71,12 @@ export const setUpQueuesStatus = () => {
         smsColor,
         whatsappColor,
       }}
-      marginRight
+      paddingRight
     />,
     {
       sortOrder: -1,
       align: 'start',
-      if: props => {
-        console.log('>>>  ', props.tasks.size, props);
-        return props.tasks && !props.tasks.size;
-      },
+      if: props => props.tasks && !props.tasks.size,
     },
   );
 };
