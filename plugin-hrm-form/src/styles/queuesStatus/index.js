@@ -7,13 +7,18 @@ export const Container = styled('div')`
   flex-grow: 0;
   flex-direction: column;
   background-color: #ffffff;
-  padding-bottom: 14px;
   border-style: solid;
 `;
 
-export const QueuesContainer = styled('div')`
+export const BackgroundWrapper = styled('div')`
   width: 100%;
-  ${props => props.paddingRight && 'padding-right: 30px;'}
+  ${props => props.noActiveTasks && `background-color: ${props.theme.colors.base2};`}
+`;
+
+export const QueuesContainer = styled('div')`
+  width: auto;
+  background-color: #ffffff;
+  padding-bottom: 14px;
 `;
 
 export const QueueName = styled(FontOpenSans)`

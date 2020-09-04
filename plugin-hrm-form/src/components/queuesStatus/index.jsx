@@ -5,27 +5,29 @@ import { Template } from '@twilio/flex-ui';
 
 import { namespace, queuesStatusBase } from '../../states';
 import QueueCard from './QueueCard';
-import { Container, QueuesContainer } from '../../styles/queuesStatus';
+import { Container, QueuesContainer, BackgroundWrapper } from '../../styles/queuesStatus';
 import { Box, ErrorText, HeaderContainer } from '../../styles/HrmStyles';
 import { TLHPaddingLeft } from '../../styles/GlobalOverrides';
 
-const QueuesStatus = ({ colors, queuesStatusState, paddingRight }) => {
+const QueuesStatus = ({ colors, queuesStatusState, noActiveTasks }) => {
   const { queuesStatus, error } = queuesStatusState;
 
   return (
     <Container role="complementary" tabIndex={0}>
-      <HeaderContainer>
-        <Box marginTop="12px" marginRight="5px" marginBottom="12px" marginLeft={TLHPaddingLeft}>
-          <Template code="QueueIndex-ContactsWaiting" />
-        </Box>
-      </HeaderContainer>
-      <QueuesContainer paddingRight={paddingRight}>
-        {error && <ErrorText>{error}</ErrorText>}
-        {queuesStatus &&
-          Object.entries(queuesStatus).map(([qName, qStatus]) => (
-            <QueueCard key={qName} qName={qName} colors={colors} {...qStatus} />
-          ))}
-      </QueuesContainer>
+      <BackgroundWrapper noActiveTasks={noActiveTasks}>
+        <HeaderContainer>
+          <Box marginTop="12px" marginRight="5px" marginBottom="12px" marginLeft={TLHPaddingLeft}>
+            <Template code="QueueIndex-ContactsWaiting" />
+          </Box>
+        </HeaderContainer>
+        <QueuesContainer>
+          {error && <ErrorText>{error}</ErrorText>}
+          {queuesStatus &&
+            Object.entries(queuesStatus).map(([qName, qStatus]) => (
+              <QueueCard key={qName} qName={qName} colors={colors} {...qStatus} />
+            ))}
+        </QueuesContainer>
+      </BackgroundWrapper>
     </Container>
   );
 };
@@ -47,11 +49,11 @@ QueuesStatus.propTypes = {
     error: PropTypes.string,
     loading: PropTypes.bool,
   }).isRequired,
-  paddingRight: PropTypes.bool,
+  noActiveTasks: PropTypes.bool,
 };
 
 QueuesStatus.defaultProps = {
-  paddingRight: false,
+  noActiveTasks: false,
 };
 
 const mapStateToProps = (state, ownProps) => {

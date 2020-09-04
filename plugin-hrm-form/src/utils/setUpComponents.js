@@ -61,7 +61,7 @@ export const setUpQueuesStatus = () => {
     },
   );
 
-  Flex.AgentDesktopView.Content.add(
+  Flex.AgentDesktopView.Panel1.Content.add(
     <QueuesStatus
       key="queue-status-agent-desktop"
       colors={{
@@ -71,12 +71,15 @@ export const setUpQueuesStatus = () => {
         smsColor,
         whatsappColor,
       }}
-      paddingRight
+      noActiveTasks
     />,
     {
       sortOrder: -1,
       align: 'start',
-      if: props => props.tasks && !props.tasks.size,
+      if: props => {
+        console.log(props);
+        return props.tasks && !props.tasks.size;
+      },
     },
   );
 };
