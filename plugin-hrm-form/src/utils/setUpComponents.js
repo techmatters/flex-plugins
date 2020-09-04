@@ -78,7 +78,9 @@ export const setUpQueuesStatus = () => {
       align: 'start',
       if: props => {
         if (!props.tasks || props.tasks.size) {
-          Flex.Actions.invokeAction('SelectTask', { sid: props.tasks.values().next().value.sid });
+          if (props.tasks.size === 1)
+            Flex.Actions.invokeAction('SelectTask', { sid: props.tasks.values().next().value.sid });
+
           return false;
         }
 
