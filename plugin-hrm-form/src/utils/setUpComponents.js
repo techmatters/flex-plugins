@@ -76,7 +76,14 @@ export const setUpQueuesStatus = () => {
     {
       sortOrder: -1,
       align: 'start',
-      if: props => props.tasks && !props.tasks.size,
+      if: props => {
+        if (!props.tasks || props.tasks.size) {
+          Flex.Actions.invokeAction('SelectTask', { sid: props.tasks.values().next().value.sid });
+          return false;
+        }
+
+        return true;
+      },
     },
   );
 };
