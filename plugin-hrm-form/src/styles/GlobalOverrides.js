@@ -1,7 +1,5 @@
 import { injectGlobal } from 'react-emotion';
 
-import { colors } from './HrmTheme';
-
 // Task list header padding (matches the ALL TASKS button padding)
 export const TLHPaddingLeft = '12px';
 
@@ -33,8 +31,5 @@ injectGlobal`
   }
   button.Twilio-MessageInput-SendButton {
     background: rgba(216, 27, 96, 0.8);
-  }
-  div.css-tega07 {
-    background-color: ${colors.base2};
   }
 `;
