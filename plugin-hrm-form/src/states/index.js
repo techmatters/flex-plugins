@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 
 import { reduce as ContactStateReducer } from './ContactState';
-import { reduce as SearchFormReducer } from './SearchContact';
+import { reduce as SearchFormReducer } from './search/reducer';
 import { reduce as ConnectedCaseReducer } from './case/reducer';
 import { reduce as QueuesStatusReducer } from './queuesStatus/reducer';
 import { reduce as ConfigurationReducer } from './configuration/reducer';

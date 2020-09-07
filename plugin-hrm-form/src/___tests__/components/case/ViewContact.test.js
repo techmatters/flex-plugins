@@ -9,7 +9,7 @@ import '../../mockGetConfig';
 
 import { UnconnectedViewContact } from '../../../components/case/ViewContact';
 import HrmTheme from '../../../styles/HrmTheme';
-import { ContactDetailsSections } from '../../../states/SearchContact';
+import { ContactDetailsSections } from '../../../components/common/ContactDetails';
 import { adaptFormToContactDetails } from '../../../components/case/ContactDetailsAdapter';
 
 expect.extend(toHaveNoViolations);
