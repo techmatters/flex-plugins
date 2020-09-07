@@ -5,6 +5,7 @@ import * as t from './types';
 import { ConfigurationState } from '../configuration/reducer';
 import { SearchContactResult } from '../../types/types';
 import { searchContacts as searchContactsApiCall } from '../../services/ContactService';
+import { ContactDetailsSectionsType } from '../../components/common/ContactDetails';
 import { addDetails } from './helpers';
 
 // Action creators
@@ -48,7 +49,7 @@ export const viewContactDetails = (taskId: string) => (contact: SearchContactRes
   taskId,
 });
 
-export const handleExpandDetailsSection = (taskId: string) => (section: t.ContactDetailsSectionsType) => ({
+export const handleExpandDetailsSection = (taskId: string) => (section: ContactDetailsSectionsType) => ({
   type: t.HANDLE_EXPAND_DETAILS_SECTION,
   section,
   taskId,

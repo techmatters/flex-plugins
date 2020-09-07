@@ -11,9 +11,8 @@ import callTypes, { channelTypes } from '../states/DomainConstants';
 import { isNonDataCallType } from '../states/ValidationRules';
 import { contactType } from '../types';
 import { formatAddress, formatDuration, formatName, formatCategories, mapChannel } from '../utils';
-import { ContactDetailsSections } from '../states/search/types';
+import { CallerSection, ContactDetailsSections } from './common/ContactDetails';
 import { getConfig } from '../HrmFormPlugin';
-import { CallerSection } from './common/ContactDetails';
 
 const MoreHorizIcon = ContactDetailsIcon(MoreHoriz);
 

@@ -15,7 +15,7 @@ import CaseAddButton from './CaseAddButton';
 import { getActivities } from '../../services/CaseService';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
-import { ContactDetailsSections } from '../../states/search/types';
+import { ContactDetailsSections } from '../common/ContactDetails';
 import { getConfig } from '../../HrmFormPlugin';
 import { channelTypes } from '../../states/DomainConstants';
 

@@ -1,6 +1,6 @@
 import * as t from '../../../states/search/types';
 import * as actions from '../../../states/search/actions';
-import { addDetails } from '../../../states/search/helpers';
+import { ContactDetailsSections } from '../../../components/common/ContactDetails';
 import { SearchContactResult } from '../../../types/types';
 import { searchContacts } from '../../../services/ContactService';
 
@@ -30,10 +30,10 @@ describe('test action creators', () => {
   });
 
   test('handleExpandDetailsSection', () => {
-    expect(actions.handleExpandDetailsSection(taskId)(t.ContactDetailsSections.CALLER_INFORMATION)).toStrictEqual({
+    expect(actions.handleExpandDetailsSection(taskId)(ContactDetailsSections.CALLER_INFORMATION)).toStrictEqual({
       type: t.HANDLE_EXPAND_DETAILS_SECTION,
       taskId,
-      section: t.ContactDetailsSections.CALLER_INFORMATION,
+      section: ContactDetailsSections.CALLER_INFORMATION,
     });
   });
 

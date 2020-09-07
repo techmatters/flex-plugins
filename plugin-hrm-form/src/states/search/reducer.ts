@@ -3,13 +3,14 @@ import { omit } from 'lodash';
 import * as t from './types';
 import { INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE, GeneralActionType } from '../types';
 import { SearchContactResult } from '../../types/types';
+import { ContactDetailsSections, ContactDetailsSectionsType } from '../../components/common/ContactDetails';
 
 type TaskEntry = {
   currentPage: t.SearchPagesType;
   currentContact: SearchContactResult;
   form: t.SearchFormValues;
   detailsExpanded: {
-    [key in t.ContactDetailsSectionsType]: boolean;
+    [key in ContactDetailsSectionsType]: boolean;
   };
   searchResult: t.DetailedSearchResult;
   isRequesting: boolean;
@@ -38,11 +39,11 @@ export const newTaskEntry: TaskEntry = {
     dateTo: '',
   },
   detailsExpanded: {
-    [t.ContactDetailsSections.GENERAL_DETAILS]: true,
-    [t.ContactDetailsSections.CALLER_INFORMATION]: false,
-    [t.ContactDetailsSections.CHILD_INFORMATION]: false,
-    [t.ContactDetailsSections.ISSUE_CATEGORIZATION]: false,
-    [t.ContactDetailsSections.CONTACT_SUMMARY]: false,
+    [ContactDetailsSections.GENERAL_DETAILS]: true,
+    [ContactDetailsSections.CALLER_INFORMATION]: false,
+    [ContactDetailsSections.CHILD_INFORMATION]: false,
+    [ContactDetailsSections.ISSUE_CATEGORIZATION]: false,
+    [ContactDetailsSections.CONTACT_SUMMARY]: false,
   },
   searchResult: [],
   isRequesting: false,

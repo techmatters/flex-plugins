@@ -1,5 +1,6 @@
 import { SearchContactResult } from '../../types/types';
 import { addDetails } from './helpers';
+import { ContactDetailsSectionsType } from '../../components/common/ContactDetails';
 // Action types
 export const HANDLE_SEARCH_FORM_CHANGE = 'HANDLE_SEARCH_FORM_CHANGE';
 export const CHANGE_SEARCH_PAGE = 'CHANGE_SEARCH_PAGE';
@@ -22,17 +23,6 @@ export const newSearchFormEntry = {
 export type SearchFormValues = {
   [K in keyof typeof newSearchFormEntry]: typeof newSearchFormEntry[K];
 };
-
-// this was inside search reducer, but it's used in ContactDetails and Timeline components. Should this be moved to a more common/shared place?
-export const ContactDetailsSections = {
-  GENERAL_DETAILS: 'General details',
-  CALLER_INFORMATION: 'Caller information',
-  CHILD_INFORMATION: 'Child information',
-  ISSUE_CATEGORIZATION: 'Issue categorization',
-  CONTACT_SUMMARY: 'Contact summary',
-} as const;
-
-export type ContactDetailsSectionsType = typeof ContactDetailsSections[keyof typeof ContactDetailsSections];
 
 export const SearchPages = {
   form: 'form',

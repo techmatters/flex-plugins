@@ -3,6 +3,7 @@ import fromentries from 'fromentries';
 import * as t from '../../../states/search/types';
 import { handleSearchFormChange } from '../../../states/search/actions';
 import { SearchContactResult } from '../../../types/types';
+import { ContactDetailsSections } from '../../../components/common/ContactDetails';
 import {
   INITIALIZE_CONTACT_STATE,
   RECREATE_CONTACT_STATE,
@@ -157,18 +158,18 @@ describe('search reducer', () => {
   });
 
   test('HANDLE_EXPAND_DETAILS_SECTION action', () => {
-    expect(state.tasks[task.taskSid].detailsExpanded[t.ContactDetailsSections.ISSUE_CATEGORIZATION]).toBeFalsy();
+    expect(state.tasks[task.taskSid].detailsExpanded[ContactDetailsSections.ISSUE_CATEGORIZATION]).toBeFalsy();
     const action: t.SearchActionType = {
       type: t.HANDLE_EXPAND_DETAILS_SECTION,
-      section: t.ContactDetailsSections.ISSUE_CATEGORIZATION,
+      section: ContactDetailsSections.ISSUE_CATEGORIZATION,
       taskId: task.taskSid,
     };
     const result1 = reduce(state, action);
 
-    expect(result1.tasks[task.taskSid].detailsExpanded[t.ContactDetailsSections.ISSUE_CATEGORIZATION]).toBeTruthy();
+    expect(result1.tasks[task.taskSid].detailsExpanded[ContactDetailsSections.ISSUE_CATEGORIZATION]).toBeTruthy();
 
     const result2 = reduce(result1, action);
 
-    expect(result2.tasks[task.taskSid].detailsExpanded[t.ContactDetailsSections.ISSUE_CATEGORIZATION]).toBeFalsy();
+    expect(result2.tasks[task.taskSid].detailsExpanded[ContactDetailsSections.ISSUE_CATEGORIZATION]).toBeFalsy();
   });
 });
