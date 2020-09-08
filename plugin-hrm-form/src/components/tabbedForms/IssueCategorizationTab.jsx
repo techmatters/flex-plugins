@@ -19,6 +19,7 @@ import {
 import { isNotCategory, isNotSubcategory } from '../../states/ContactFormStateFactory';
 import { Actions } from '../../states/ContactState';
 import { namespace, contactFormsBase } from '../../states';
+import { getCategoryColor } from '../../utils/categories';
 
 const getCategories = form => {
   if (!form || !form.caseInformation || !form.caseInformation.categories) return [];
@@ -56,7 +57,7 @@ const IssueCategorizationTab = ({
       {getCategories(form).map(([name, subcategories]) => (
         <IssueCategory
           key={name}
-          color={subcategories.color}
+          color={getCategoryColor(name)}
           category={name}
           subcategories={filterSubcategories(subcategories)}
           handleCategoryToggle={handleCategoryToggle}
