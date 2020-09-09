@@ -43,7 +43,7 @@ export function getNumberFromTask(task) {
 // VisibleForTesting
 export function transformForm(form) {
   const newForm = {};
-  const filterableFields = ['type', 'validation', 'error', 'touched', 'metadata', 'color'];
+  const filterableFields = ['type', 'validation', 'error', 'touched', 'metadata'];
   Object.keys(form)
     .filter(key => !filterableFields.includes(key))
     .forEach(key => {
