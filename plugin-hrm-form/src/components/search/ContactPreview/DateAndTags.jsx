@@ -2,14 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { Row, Box } from '../../../styles/HrmStyles';
-import { ContactTag, DateText, TagText } from '../../../styles/search';
+import { ContactTag, DateText, TagText, TagMiddleDot } from '../../../styles/search';
 import CategoryWithTooltip from '../../common/CategoryWithTooltip';
 import { getContactTags } from '../../../utils/categories';
 
 // eslint-disable-next-line react/display-name
-const renderTag = tag => (
-  <ContactTag>
-    <TagText>{tag}</TagText>
+const renderTag = (tag, color) => (
+  <ContactTag color={color}>
+    <TagMiddleDot color={color} />
+    <TagText color={color}>{tag}</TagText>
   </ContactTag>
 );
 

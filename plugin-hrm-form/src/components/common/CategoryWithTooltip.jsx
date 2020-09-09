@@ -16,16 +16,21 @@ export const getTag = category =>
  * the same element wrapped in a Tooltip, with the category truncated to fit "UNSPECIFIED/OTHER" string
  * @param {{ renderTag: (tag: string) => JSX.Element; category: string }} props
  */
-const CategoryWithTooltip = ({ renderTag, category }) => {
+const CategoryWithTooltip = ({ renderTag, category, color }) => {
   const tag = getTag(category);
+  console.log({ color });
 
-  return <Tooltip title={category}>{renderTag(tag)}</Tooltip>;
+  return <Tooltip title={category}>{renderTag(tag, color)}</Tooltip>;
 };
 
 CategoryWithTooltip.displayName = 'CategoryWithTooltip';
 CategoryWithTooltip.propTypes = {
   renderTag: PropTypes.func.isRequired,
   category: PropTypes.string.isRequired,
+  color: PropTypes.string,
+};
+CategoryWithTooltip.defaultProps = {
+  color: '#000000',
 };
 
 export default CategoryWithTooltip;

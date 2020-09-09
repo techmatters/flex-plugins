@@ -58,11 +58,13 @@ const Tag = styled('div')`
 `;
 
 export const ContactTag = styled(Tag)`
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 2px;
   white-space: nowrap;
   margin-left: 6px;
   padding: 5px 12px;
-  background-color: #d8d8d8;
+  background-color: ${props => (props.color ? `${props.color}1a` : '#d8d8d8')};
 `;
 
 export const CalltypeTag = styled(Tag)`
@@ -115,10 +117,21 @@ export const DateText = styled(SummaryText)`
 `;
 
 export const TagText = styled(FontOpenSans)`
+  display: inline-block;
   font-size: 11px;
   font-weight: 400;
   line-height: 13px;
   opacity: 0.65;
+  color: #192b33e8;
+`;
+
+export const TagMiddleDot = styled('div')`
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  border-radius: 100%;
+  margin-right: 1ch;
+  background-color: ${props => props.color};
 `;
 
 // ContactDetails styles

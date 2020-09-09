@@ -40,7 +40,7 @@ const categories: CategoriesColor = {
   },
 };
 
-const defaultColor = '#000';
+const defaultColor = '#9b9b9b';
 
 export const getCategoryColor = category => (categories[category] ? categories[category].color : defaultColor);
 
