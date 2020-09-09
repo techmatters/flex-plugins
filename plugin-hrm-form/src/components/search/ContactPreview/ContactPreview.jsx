@@ -34,7 +34,13 @@ const ContactPreview = ({ contact, handleOpenConnectDialog, handleViewDetails, h
       />
       <CallTypeAndCounselor callType={callType} counselor={counselor} />
       <CallSummary callSummary={callSummary} onClickFull={handleViewDetails} />
-      <DateAndTags dateString={dateString} category1={category1} category2={category2} category3={category3} />
+      <DateAndTags
+        dateString={dateString}
+        categories={contact.overview.categories}
+        category1={category1}
+        category2={category2}
+        category3={category3}
+      />
     </ContactWrapper>
   );
 };

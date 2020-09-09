@@ -40,4 +40,19 @@ const categories: CategoriesColor = {
   },
 };
 
-export const getCategoryColor = category => categories[category].color;
+const defaultColor = '#000';
+
+export const getCategoryColor = category => (categories[category] ? categories[category].color : defaultColor);
+
+type ContactCategories = {
+  [category: string]: string[];
+};
+
+const getCategoryLabel = (category, subcategory) =>
+  subcategory === 'Unspecified/Other' ? `${subcategory} - ${category}` : subcategory;
+
+export const getContactTags = (contactCategories: ContactCategories) =>
+  Object.entries(contactCategories).map(([category, [subcategory]]) => ({
+    label: getCategoryLabel(category, subcategory),
+    color: getCategoryColor(category),
+  }));
