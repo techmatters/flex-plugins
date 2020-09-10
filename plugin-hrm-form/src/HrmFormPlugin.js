@@ -10,6 +10,7 @@ import { initLocalization } from './utils/pluginHelpers';
 import * as ActionFunctions from './utils/setUpActions';
 import * as Components from './utils/setUpComponents';
 import * as TransferHelpers from './utils/transfer';
+import { setUpRollbarLogger } from './utils/setUpRollbar';
 import { changeLanguage } from './states/configuration/actions';
 import { issueSyncToken } from './services/ServerlessService';
 
@@ -247,6 +248,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     setUpComponents(setupObject);
     setUpActions(setupObject);
     enableChatCapabilities();
+    setUpRollbarLogger(this, manager.workerClient);
 
     const managerConfiguration = {
       colorTheme: HrmTheme,
