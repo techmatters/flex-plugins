@@ -1,17 +1,21 @@
 const fs = require("fs").promises;
+const { replaceIncidence } = require("./helpers");
 
-async function setUpTasks(clientFn, newClientFn) {
+async function setUpTasks(clientFn, newClientFn, fromIds, toIds) {
   const taskList = await clientFn.list();
   await Promise.all(
     taskList.map(async (task) => {
       // The task actions need to be gotten separately
-      const actions = clientFn(task.sid).taskActions().fetch();
+      const taskActions = await clientFn(task.sid).taskActions().fetch();
+      const actions = JSON.parse(
+        replaceIncidence(fromIds, toIds, JSON.stringify(taskActions.data))
+      );
 
       // Create a copy of this task
       const newTask = await newClientFn.create({
         friendlyName: task.friendlyName,
         uniqueName: task.uniqueName,
-        actions: actions.data,
+        actions,
       });
 
       // Now that we have our Task, add in all the samples
@@ -54,39 +58,40 @@ async function setUpFieldTypes(clientFn, newClientFn) {
 
 async function copyAssitant(oldIdsFile, newIdsFile) {
   const file = await fs.readFile(oldIdsFile, "utf8");
-  const ids = JSON.parse(file);
-  const accountSid = ids.AccountSid;
-  const authToken = ids.AuthToken;
+  const fromIds = JSON.parse(file);
+  const accountSid = fromIds.AccountSid;
+  const authToken = fromIds.AuthToken;
   // eslint-disable-next-line global-require
   const client = require("twilio")(accountSid, authToken);
 
   const newFile = await fs.readFile(newIdsFile, "utf8");
-  const newIds = JSON.parse(newFile);
-  const newSid = newIds.AccountSid;
-  const newAuthToken = newIds.AuthToken;
+  const toIds = JSON.parse(newFile);
+
+  const newSid = toIds.AccountSid;
+  const newAuthToken = toIds.AuthToken;
   // eslint-disable-next-line global-require
   const newClient = require("twilio")(newSid, newAuthToken);
 
-  const botId = ids.Bot_To_Copy;
+  const botId = fromIds.Bot_To_Copy;
+  const fromBot = client.autopilot.assistants(botId);
+  const bot = await fromBot.fetch();
 
-  const bot = await client.autopilot.assistants(botId).fetch();
   const newBot = await newClient.autopilot.assistants.create({
     friendlyName: bot.friendlyName,
     uniqueName: bot.uniqueName, // IF YOU GET AN ERROR THAT IT ALREADY EXISTS, JUST PUT ANOTHER STRING IN HERE
   });
   const newBotId = newBot.sid;
+  const toBot = newClient.autopilot.assistants(newBotId);
 
-  await setUpTasks(
-    client.autopilot.assistants(botId).tasks,
-    newClient.autopilot.assistants(newBotId).tasks
-  );
+  await setUpTasks(fromBot.tasks, toBot.tasks, fromIds, toIds);
 
-  await setUpFieldTypes(
-    client.autopilot.assistants(botId).fieldTypes,
-    newClient.autopilot.assistants(newBotId).fieldTypes
-  );
+  await setUpFieldTypes(fromBot.fieldTypes, toBot.fieldTypes);
+
+  const defaults = (await bot.defaults().get().fetch()).data;
+  await toBot.defaults().update({ defaults });
 }
 
+// eslint-disable-next-line import/order
 const { argv } = require("yargs")
   .usage("npm run copyBot -- --fromIds {file} --toIds {file}")
   .alias("f", "fromIds")
