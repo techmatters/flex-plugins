@@ -30,7 +30,8 @@
     "react-dom": "^16.13.1",
     "react-keyboard-event-handler": "^1.5.4",
     "react-scripts": "^3.4.0",
-    "react-test-renderer": "16.13.1"
+    "react-test-renderer": "16.13.1",
+    "rollbar": "^2.19.3"
   },
   "devDependencies": {
     "@testing-library/dom": "^7.21.0",
