@@ -3,20 +3,16 @@ import PropTypes from 'prop-types';
 import { format } from 'date-fns';
 
 import { ContactWrapper } from '../../../styles/search';
-import ChildNameAndActions from './ChildNameAndActions';
+import ChildNameAndDate from './ChildNameAndDate';
 import CallTypeAndCounselor from './CallTypeAndCounselor';
 import CallSummary from './CallSummary';
 import DateAndTags from './DateAndTags';
 import { contactType } from '../../../types';
-import { formatName, formatCategories, mapCallType } from '../../../utils';
-import { isNonDataCallType } from '../../../states/ValidationRules';
+import { formatCategories, mapCallType } from '../../../utils';
 
 const ContactPreview = ({ contact, handleOpenConnectDialog, handleViewDetails, handleMockedMessage }) => {
-  const name = formatName(contact.overview.name).toUpperCase();
-
   const dateString = `${format(new Date(contact.overview.dateTime), 'MMM d, yyyy h:mm aaaaa')}m`;
   const callType = mapCallType(contact.overview.callType);
-  const isNonDataContact = isNonDataCallType(contact.overview.callType);
   const { counselor } = contact;
 
   const { callSummary } = contact.details.caseInformation;
@@ -25,12 +21,13 @@ const ContactPreview = ({ contact, handleOpenConnectDialog, handleViewDetails, h
 
   return (
     <ContactWrapper key={contact.contactId}>
-      <ChildNameAndActions
-        name={name}
-        isNonDataContact={isNonDataContact}
-        onClickChain={handleOpenConnectDialog}
+      <ChildNameAndDate
+        channel={contact.overview.channel}
+        callType={contact.overview.callType}
+        name={contact.overview.name}
+        number={contact.overview.customerNumber}
+        date={contact.overview.dateTime}
         onClickFull={handleViewDetails}
-        onClickMore={handleMockedMessage}
       />
       <CallTypeAndCounselor callType={callType} counselor={counselor} />
       <CallSummary callSummary={callSummary} onClickFull={handleViewDetails} />

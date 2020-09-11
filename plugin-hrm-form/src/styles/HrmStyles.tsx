@@ -31,6 +31,21 @@ export const Box = styled('div')<BoxProps>`
 `;
 Box.displayName = 'Box';
 
+type FlexProps = {
+  inline?: boolean;
+  flexDirection?: string;
+  alignItems?: string;
+  justifyContent?: string;
+};
+
+export const Flex = styled(Box)<FlexProps>`
+  display: ${({ inline }) => inline ? 'inline-flex' : 'flex'};
+  ${({ flexDirection }) => flexDirection && `flex-direction: ${flexDirection};`}
+  ${({ alignItems }) => alignItems && `align-items: ${alignItems};`}
+  ${({ justifyContent }) => justifyContent && `justify-content: ${justifyContent};`}
+`;
+Flex.displayName = 'Flex';
+
 type AbsoluteProps = {
   top?: string;
   bottom?: string;

@@ -5,7 +5,7 @@ import { format } from 'date-fns';
 import '../mockStyled';
 
 import ContactPreview from '../../components/search/ContactPreview';
-import ChildNameAndActions from '../../components/search/ContactPreview/ChildNameAndActions';
+import ChildNameAndDate from '../../components/search/ContactPreview/ChildNameAndDate';
 import CallTypeAndCounselor from '../../components/search/ContactPreview/CallTypeAndCounselor';
 import CallSummary from '../../components/search/ContactPreview/CallSummary';
 import DateAndTags from '../../components/search/ContactPreview/DateAndTags';
@@ -69,14 +69,14 @@ test('<ContactPreview> should mount', () => {
     />,
   ).root;
 
-  expect(() => component.findByType(ChildNameAndActions)).not.toThrow();
+  expect(() => component.findByType(ChildNameAndDate)).not.toThrow();
   expect(() => component.findByType(CallTypeAndCounselor)).not.toThrow();
   expect(() => component.findByType(CallSummary)).not.toThrow();
   expect(() => component.findByType(DateAndTags)).not.toThrow();
   expect(() => component.findByType(NonExisting)).toThrow();
 
   const previewContact = component.props.contact;
-  const { name } = component.findByType(ChildNameAndActions).props;
+  const { name } = component.findByType(ChildNameAndDate).props;
   const { callType, counselor } = component.findByType(CallTypeAndCounselor).props;
   const { callSummary } = component.findByType(CallSummary).props;
   const { dateString, category1, category2, category3 } = component.findByType(DateAndTags).props;

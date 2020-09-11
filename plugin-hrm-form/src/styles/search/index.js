@@ -39,6 +39,7 @@ export const ContactButtonsWrapper = styled('div')`
   flex-direction: row;
   align-self: flex-start;
   margin-left: auto;
+  align-items: center;
 `;
 
 export const StyledLink = styled(({ onClick, ...rest }) => <Button size="small" onClick={onClick} {...rest} />)`
@@ -88,10 +89,18 @@ export const CancelButton = styled(Button)`
   }
 `;
 
+export const SilentText = styled('div')`
+  background-color: #f0f1f4;
+  color: #404c52;
+  padding: 2px 10px;
+  border-radius: 2px;
+`;
+
 export const PrevNameText = styled(FontOpenSans)`
   font-size: 12px;
   font-weight: 700;
   line-height: 14px;
+  color: #182b33;
 `;
 
 export const SummaryText = styled(FontOpenSans)`
