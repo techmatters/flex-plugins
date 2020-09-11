@@ -86,6 +86,9 @@ async function copyAssitant(oldIdsFile, newIdsFile) {
   await setUpTasks(fromBot.tasks, toBot.tasks, fromIds, toIds);
 
   await setUpFieldTypes(fromBot.fieldTypes, toBot.fieldTypes);
+
+  const defaults = (await bot.defaults().get().fetch()).data;
+  await toBot.defaults().update({ defaults });
 }
 
 // eslint-disable-next-line import/order
