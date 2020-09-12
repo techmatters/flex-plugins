@@ -1,23 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { format } from 'date-fns';
 
 import { ContactWrapper } from '../../../styles/search';
 import ChildNameAndDate from './ChildNameAndDate';
-import CallTypeAndCounselor from './CallTypeAndCounselor';
 import CallSummary from './CallSummary';
-import DateAndTags from './DateAndTags';
+import TagsAndCounselor from './TagsAndCounselor';
 import { contactType } from '../../../types';
-import { formatCategories, mapCallType } from '../../../utils';
 
 const ContactPreview = ({ contact, handleOpenConnectDialog, handleViewDetails, handleMockedMessage }) => {
-  const dateString = `${format(new Date(contact.overview.dateTime), 'MMM d, yyyy h:mm aaaaa')}m`;
-  const callType = mapCallType(contact.overview.callType);
   const { counselor } = contact;
 
   const { callSummary } = contact.details.caseInformation;
-
-  const [category1, category2, category3] = formatCategories(contact.overview.categories);
 
   return (
     <ContactWrapper key={contact.contactId}>
@@ -29,15 +22,8 @@ const ContactPreview = ({ contact, handleOpenConnectDialog, handleViewDetails, h
         date={contact.overview.dateTime}
         onClickFull={handleViewDetails}
       />
-      <CallTypeAndCounselor callType={callType} counselor={counselor} />
       <CallSummary callSummary={callSummary} onClickFull={handleViewDetails} />
-      <DateAndTags
-        dateString={dateString}
-        categories={contact.overview.categories}
-        category1={category1}
-        category2={category2}
-        category3={category3}
-      />
+      <TagsAndCounselor counselor={counselor} categories={contact.overview.categories} />
     </ContactWrapper>
   );
 };

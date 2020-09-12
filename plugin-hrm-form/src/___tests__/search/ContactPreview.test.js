@@ -8,7 +8,7 @@ import ContactPreview from '../../components/search/ContactPreview';
 import ChildNameAndDate from '../../components/search/ContactPreview/ChildNameAndDate';
 import CallTypeAndCounselor from '../../components/search/ContactPreview/CallTypeAndCounselor';
 import CallSummary from '../../components/search/ContactPreview/CallSummary';
-import DateAndTags from '../../components/search/ContactPreview/DateAndTags';
+import DateAndTags from '../../components/search/ContactPreview/TagsAndCounselor';
 import { mapCallType } from '../../utils';
 
 const NonExisting = () => <>NonExisting</>;

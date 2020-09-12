@@ -3,7 +3,7 @@ import styled from 'react-emotion';
 import { ButtonBase, Paper, Button, withStyles } from '@material-ui/core';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 
-import { Row, FontOpenSans, Container, BottomButtonBar } from '../HrmStyles';
+import { Flex, Row, FontOpenSans, Container, BottomButtonBar } from '../HrmStyles';
 
 export const ConfirmContainer = styled(Paper)`
   display: flex;
@@ -63,7 +63,7 @@ export const ContactTag = styled(Tag)`
   align-items: center;
   border-radius: 2px;
   white-space: nowrap;
-  margin-left: 6px;
+  margin-right: 6px;
   padding: 5px 12px;
   background-color: ${props => (props.color ? `${props.color}1a` : '#d8d8d8')};
 `;
@@ -125,6 +125,21 @@ export const DateText = styled(SummaryText)`
   opacity: 0.46;
 `;
 
+export const TagsWrapper = styled(Flex)`
+  min-width: 0;
+  margin-right: 5px;
+
+  div:last-child {
+    min-width: 0;
+
+    p {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+`;
+
 export const TagText = styled(FontOpenSans)`
   display: inline-block;
   font-size: 11px;
@@ -137,6 +152,7 @@ export const TagText = styled(FontOpenSans)`
 export const TagMiddleDot = styled('div')`
   display: inline-block;
   width: 4px;
+  min-width: 4px;
   height: 4px;
   border-radius: 100%;
   margin-right: 1ch;

@@ -39,7 +39,7 @@ type FlexProps = {
 };
 
 export const Flex = styled(Box)<FlexProps>`
-  display: ${({ inline }) => inline ? 'inline-flex' : 'flex'};
+  display: ${({ inline }) => (inline ? 'inline-flex' : 'flex')};
   ${({ flexDirection }) => flexDirection && `flex-direction: ${flexDirection};`}
   ${({ alignItems }) => alignItems && `align-items: ${alignItems};`}
   ${({ justifyContent }) => justifyContent && `justify-content: ${justifyContent};`}
