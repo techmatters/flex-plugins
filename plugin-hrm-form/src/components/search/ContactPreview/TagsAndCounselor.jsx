@@ -38,7 +38,7 @@ const TagsAndCounselor = ({ counselor, categories }) => {
 
 TagsAndCounselor.propTypes = {
   counselor: PropTypes.string.isRequired,
-  categories: PropTypes.any.isRequired,
+  categories: PropTypes.PropTypes.shape({}).isRequired,
 };
 
 TagsAndCounselor.displayName = 'TagsAndCounselor';

@@ -58,6 +58,7 @@ jest.mock('../styles/search', () => ({
   ScrollableList: 'ScrollableList',
   CancelButton: 'CancelButton',
   StyledButtonBase: 'StyledButtonBase',
+  SilentText: 'SilentText',
 }));
 
 jest.mock('../styles/callTypeButtons', () => ({

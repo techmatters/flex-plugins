@@ -82,11 +82,6 @@ export const ContactTag = styled(Tag)`
   background-color: ${props => (props.color ? `${props.color}1a` : '#d8d8d8')};
 `;
 
-export const CalltypeTag = styled(Tag)`
-  margin-right: 10px;
-  background-color: #9b9b9b;
-`;
-
 const PopoverText = styled(FontOpenSans)`
   font-size: 20px;
   font-weight: 600;
