@@ -26,12 +26,13 @@ export const ContactWrapper = styled('div')`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin-top: 15px;
-  margin-bottom: 15px;
-  padding: 5px 20px 20px 20px;
+  margin-top: 10px;
+  padding: 5px 20px 10px 20px;
   width: 550px;
   box-sizing: border-box;
   background-color: #ffffff;
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
 `;
 
 export const ContactButtonsWrapper = styled('div')`
@@ -118,7 +119,7 @@ export const ShortSummaryText = styled(SummaryText)`
 `;
 
 export const CounselorText = styled(SummaryText)`
-  opacity: 0.74;
+  opacity: 0.46;
 `;
 
 export const DateText = styled(SummaryText)`
@@ -256,7 +257,7 @@ export const ScrollableList = styled('div')`
 
 export const StyledButtonBase = withStyles({
   root: {
-    margin: 10,
+    margin: 5,
   },
   disabled: {
     color: 'rgba(0, 0, 0, 0.26)',

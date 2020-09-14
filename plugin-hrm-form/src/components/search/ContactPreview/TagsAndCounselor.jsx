@@ -20,7 +20,7 @@ const TagsAndCounselor = ({ counselor, categories }) => {
   const [category1, category2, category3] = getContactTags(categories);
 
   return (
-    <Flex justifyContent="space-between" height="23px" marginBottom="2px">
+    <Flex justifyContent="space-between" height="23px" marginTop="10px">
       <TagsWrapper>
         {category1 && <CategoryWithTooltip renderTag={renderTag} category={category1.label} color={category1.color} />}
         {category2 && <CategoryWithTooltip renderTag={renderTag} category={category2.label} color={category2.color} />}
