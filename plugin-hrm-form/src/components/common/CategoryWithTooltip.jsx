@@ -18,7 +18,6 @@ export const getTag = category =>
  */
 const CategoryWithTooltip = ({ renderTag, category, color }) => {
   const tag = getTag(category);
-  console.log({ color });
 
   return <Tooltip title={category}>{renderTag(tag, color)}</Tooltip>;
 };
