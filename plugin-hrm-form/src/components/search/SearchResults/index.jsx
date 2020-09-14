@@ -88,7 +88,6 @@ class SearchResults extends Component {
                 contact={contact}
                 handleOpenConnectDialog={this.handleOpenConnectDialog(contact)}
                 handleViewDetails={() => this.props.handleViewDetails(contact)}
-                handleMockedMessage={this.props.handleMockedMessage}
               />
             ))}
           </ScrollableList>

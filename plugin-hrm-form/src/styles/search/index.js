@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'react-emotion';
 import { ButtonBase, Paper, Button, withStyles } from '@material-ui/core';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
+import Link from '@material-ui/icons/Link';
 
 import { Flex, Row, FontOpenSans, Container, BottomButtonBar } from '../HrmStyles';
 
@@ -34,6 +35,18 @@ export const ContactWrapper = styled('div')`
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.06);
   border-radius: 4px;
 `;
+
+export const ConnectIcon = withStyles({
+  root: {
+    borderRadius: '50%',
+    backgroundColor: '#a0a8bd66',
+    opacity: 0.34,
+    padding: '5px',
+    '&:hover': {
+      opacity: 0.2,
+    },
+  },
+})(Link);
 
 export const ContactButtonsWrapper = styled('div')`
   display: flex;
