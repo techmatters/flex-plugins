@@ -10,12 +10,12 @@ import { initLocalization } from './utils/pluginHelpers';
 import * as ActionFunctions from './utils/setUpActions';
 import * as Components from './utils/setUpComponents';
 import * as TransferHelpers from './utils/transfer';
-import { setUpRollbarLogger } from './utils/setUpRollbar';
+import setUpMonitoring from './utils/setUpMonitoring';
 import { changeLanguage } from './states/configuration/actions';
 import { issueSyncToken } from './services/ServerlessService';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
-const PLUGIN_VERSION = '0.8.0';
+export const PLUGIN_VERSION = '0.8.0';
 export const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
 /**
@@ -248,7 +248,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     setUpComponents(setupObject);
     setUpActions(setupObject);
     enableChatCapabilities();
-    setUpRollbarLogger(this, manager.workerClient);
+    setUpMonitoring(this, manager.workerClient);
 
     const managerConfiguration = {
       colorTheme: HrmTheme,
