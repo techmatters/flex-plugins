@@ -18,7 +18,6 @@ class SearchResults extends Component {
     handleSelectSearchResult: PropTypes.func.isRequired,
     handleBack: PropTypes.func.isRequired,
     handleViewDetails: PropTypes.func.isRequired,
-    handleMockedMessage: PropTypes.func.isRequired,
   };
 
   state = {
