@@ -36,7 +36,10 @@ function recReplaceIds(flow, oldIdDict, newIdDict) {
 
               if (idName == null) {
                 throw new Error(
-                  `ERROR: The id ${val} is not present in the fromId file.`
+                  `The flow being copied refers to a value ${val}, ` +
+                    "but no key with such a value is present in the fromIds file. " +
+                    "Please add a key-value pair for this value to fromIds, and an analogous one " +
+                    "to the toIds file, with the value to be used in the new flow."
                 );
               } else {
                 val = newIdDict[idName];
