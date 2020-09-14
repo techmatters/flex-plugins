@@ -20,6 +20,7 @@
     "lint:fix": "npm run lint -- --fix"
   },
   "dependencies": {
+    "@datadog/browser-rum": "^1.19.0",
     "craco-config-flex-plugin": "latest",
     "date-fns": "^2.11.1",
     "flex-plugin": "latest",
