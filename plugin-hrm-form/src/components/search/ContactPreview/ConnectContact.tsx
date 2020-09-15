@@ -5,9 +5,10 @@ import { Template } from '@twilio/flex-ui';
 import { isNonDataCallType } from '../../../states/ValidationRules';
 import { StyledButtonBase, ConnectIcon } from '../../../styles/search';
 import { Flex, Box, HiddenText } from '../../../styles/HrmStyles';
+import { CallTypes } from '../../../states/DomainConstants';
 
 type OwnProps = {
-  callType: string;
+  callType: CallTypes;
   onOpenConnectDialog: () => void;
 };
 

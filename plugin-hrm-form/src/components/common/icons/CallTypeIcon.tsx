@@ -2,12 +2,12 @@
 import React from 'react';
 import FaceIcon from '@material-ui/icons/Face';
 
-import callTypes from '../../../states/DomainConstants';
+import callTypes, { CallTypes } from '../../../states/DomainConstants';
 import { Flex } from '../../../styles/HrmStyles';
 import { SilentText } from '../../../styles/search';
 
 type OwnProps = {
-  callType: string;
+  callType: CallTypes;
   fontSize: string;
 };
 

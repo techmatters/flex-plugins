@@ -8,13 +8,13 @@ import { Flex, Row, StyledIcon, HiddenText, addHover } from '../../../styles/Hrm
 import { PrevNameText, ContactButtonsWrapper, StyledButtonBase, DateText } from '../../../styles/search';
 import { isNonDataCallType } from '../../../states/ValidationRules';
 import CallTypeIcon from '../../common/icons/CallTypeIcon';
-import { channelTypes } from '../../../states/DomainConstants';
+import { channelTypes, ChannelTypes, CallTypes } from '../../../states/DomainConstants';
 
 const FullscreenIcon = addHover(StyledIcon(Fullscreen));
 
 type OwnProps = {
-  channel: string;
-  callType: string;
+  channel: ChannelTypes;
+  callType: CallTypes;
   name?: string;
   number?: string;
   date: string;
