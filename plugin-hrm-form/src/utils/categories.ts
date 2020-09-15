@@ -1,3 +1,5 @@
+import HrmTheme from '../styles/HrmTheme';
+
 type CategoriesColor = {
   [category: string]: {
     color: string;
@@ -40,9 +42,8 @@ const categories: CategoriesColor = {
   },
 };
 
-const defaultColor = '#9b9b9b';
-
-export const getCategoryColor = category => (categories[category] ? categories[category].color : defaultColor);
+export const getCategoryColor = category =>
+  categories[category] ? categories[category].color : HrmTheme.colors.defaultCategoryColor;
 
 type ContactCategories = {
   [category: string]: string[];
