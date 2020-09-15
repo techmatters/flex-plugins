@@ -18,7 +18,6 @@ class SearchResults extends Component {
     handleSelectSearchResult: PropTypes.func.isRequired,
     handleBack: PropTypes.func.isRequired,
     handleViewDetails: PropTypes.func.isRequired,
-    handleMockedMessage: PropTypes.func.isRequired,
   };
 
   state = {
@@ -88,7 +87,6 @@ class SearchResults extends Component {
                 contact={contact}
                 handleOpenConnectDialog={this.handleOpenConnectDialog(contact)}
                 handleViewDetails={() => this.props.handleViewDetails(contact)}
-                handleMockedMessage={this.props.handleMockedMessage}
               />
             ))}
           </ScrollableList>

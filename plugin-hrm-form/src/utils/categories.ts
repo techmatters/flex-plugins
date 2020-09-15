@@ -1,3 +1,5 @@
+import HrmTheme from '../styles/HrmTheme';
+
 type CategoriesColor = {
   [category: string]: {
     color: string;
@@ -40,4 +42,18 @@ const categories: CategoriesColor = {
   },
 };
 
-export const getCategoryColor = category => categories[category].color;
+export const getCategoryColor = category =>
+  categories[category] ? categories[category].color : HrmTheme.colors.defaultCategoryColor;
+
+type ContactCategories = {
+  [category: string]: string[];
+};
+
+const getCategoryLabel = (category, subcategory) =>
+  subcategory === 'Unspecified/Other' ? `${subcategory} - ${category}` : subcategory;
+
+export const getContactTags = (contactCategories: ContactCategories) =>
+  Object.entries(contactCategories).map(([category, [subcategory]]) => ({
+    label: getCategoryLabel(category, subcategory),
+    color: getCategoryColor(category),
+  }));

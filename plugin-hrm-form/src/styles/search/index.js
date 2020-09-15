@@ -2,8 +2,9 @@ import React from 'react';
 import styled from 'react-emotion';
 import { ButtonBase, Paper, Button, withStyles } from '@material-ui/core';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
+import Link from '@material-ui/icons/Link';
 
-import { Row, FontOpenSans, Container, BottomButtonBar } from '../HrmStyles';
+import { Flex, Row, FontOpenSans, Container, BottomButtonBar } from '../HrmStyles';
 
 export const ConfirmContainer = styled(Paper)`
   display: flex;
@@ -26,19 +27,33 @@ export const ContactWrapper = styled('div')`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin-top: 15px;
-  margin-bottom: 15px;
-  padding: 5px 20px 20px 20px;
+  margin-top: 10px;
+  padding: 5px 20px 10px 20px;
   width: 550px;
   box-sizing: border-box;
   background-color: #ffffff;
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
 `;
+
+export const ConnectIcon = withStyles({
+  root: {
+    borderRadius: '50%',
+    backgroundColor: '#a0a8bd66',
+    opacity: 0.34,
+    padding: '5px',
+    '&:hover': {
+      opacity: 0.2,
+    },
+  },
+})(Link);
 
 export const ContactButtonsWrapper = styled('div')`
   display: flex;
   flex-direction: row;
   align-self: flex-start;
   margin-left: auto;
+  align-items: center;
 `;
 
 export const StyledLink = styled(({ onClick, ...rest }) => <Button size="small" onClick={onClick} {...rest} />)`
@@ -58,16 +73,13 @@ const Tag = styled('div')`
 `;
 
 export const ContactTag = styled(Tag)`
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 2px;
   white-space: nowrap;
-  margin-left: 6px;
+  margin-right: 6px;
   padding: 5px 12px;
-  background-color: #d8d8d8;
-`;
-
-export const CalltypeTag = styled(Tag)`
-  margin-right: 10px;
-  background-color: #9b9b9b;
+  background-color: ${props => (props.color ? `${props.color}1a` : '#d8d8d8')};
 `;
 
 const PopoverText = styled(FontOpenSans)`
@@ -86,10 +98,18 @@ export const CancelButton = styled(Button)`
   }
 `;
 
+export const SilentText = styled('div')`
+  background-color: #f0f1f4;
+  color: #404c52;
+  padding: 2px 10px;
+  border-radius: 2px;
+`;
+
 export const PrevNameText = styled(FontOpenSans)`
   font-size: 12px;
   font-weight: 700;
   line-height: 14px;
+  color: #182b33;
 `;
 
 export const SummaryText = styled(FontOpenSans)`
@@ -107,18 +127,45 @@ export const ShortSummaryText = styled(SummaryText)`
 `;
 
 export const CounselorText = styled(SummaryText)`
-  opacity: 0.74;
+  opacity: 0.46;
 `;
 
 export const DateText = styled(SummaryText)`
   opacity: 0.46;
 `;
 
+export const TagsWrapper = styled(Flex)`
+  min-width: 0;
+  margin-right: 5px;
+
+  div:last-child {
+    min-width: 0;
+
+    p {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+`;
+
 export const TagText = styled(FontOpenSans)`
+  display: inline-block;
   font-size: 11px;
   font-weight: 400;
   line-height: 13px;
   opacity: 0.65;
+  color: #192b33e8;
+`;
+
+export const TagMiddleDot = styled('div')`
+  display: inline-block;
+  width: 4px;
+  min-width: 4px;
+  height: 4px;
+  border-radius: 100%;
+  margin-right: 1ch;
+  background-color: ${props => props.color};
 `;
 
 // ContactDetails styles
@@ -218,7 +265,7 @@ export const ScrollableList = styled('div')`
 
 export const StyledButtonBase = withStyles({
   root: {
-    margin: 10,
+    margin: 5,
   },
   disabled: {
     color: 'rgba(0, 0, 0, 0.26)',
