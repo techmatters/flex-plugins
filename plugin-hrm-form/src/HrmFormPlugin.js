@@ -231,6 +231,8 @@ export default class HrmFormPlugin extends FlexPlugin {
    * @param manager { import('@twilio/flex-ui').Manager }
    */
   init(flex, manager) {
+    setUpMonitoring(this, manager.workerClient);
+
     console.log(`Welcome to ${PLUGIN_NAME} Version ${PLUGIN_VERSION}`);
     this.registerReducers(manager);
 
@@ -248,7 +250,6 @@ export default class HrmFormPlugin extends FlexPlugin {
     setUpComponents(setupObject);
     setUpActions(setupObject);
     enableChatCapabilities();
-    setUpMonitoring(this, manager.workerClient);
 
     const managerConfiguration = {
       colorTheme: HrmTheme,
