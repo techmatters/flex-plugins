@@ -1,5 +1,5 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Template } from '@twilio/flex-ui';
 
 import { Flex } from '../../../styles/HrmStyles';
@@ -15,8 +15,15 @@ const renderTag = (tag, color) => (
   </ContactTag>
 );
 
+type OwnProps = {
+  counselor: string;
+  categories: { [category: string]: string[] };
+};
+
+type Props = OwnProps;
+
 // eslint-disable-next-line react/no-multi-comp
-const TagsAndCounselor = ({ counselor, categories }) => {
+const TagsAndCounselor: React.FC<Props> = ({ counselor, categories }) => {
   const [category1, category2, category3] = getContactTags(categories);
 
   return (
@@ -34,11 +41,6 @@ const TagsAndCounselor = ({ counselor, categories }) => {
       </Flex>
     </Flex>
   );
-};
-
-TagsAndCounselor.propTypes = {
-  counselor: PropTypes.string.isRequired,
-  categories: PropTypes.PropTypes.shape({}).isRequired,
 };
 
 TagsAndCounselor.displayName = 'TagsAndCounselor';
