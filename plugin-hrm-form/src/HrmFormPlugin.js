@@ -9,12 +9,13 @@ import { transferModes } from './states/DomainConstants';
 import { initLocalization } from './utils/pluginHelpers';
 import * as ActionFunctions from './utils/setUpActions';
 import * as Components from './utils/setUpComponents';
+import setUpMonitoring from './utils/setUpMonitoring';
 import * as TransferHelpers from './utils/transfer';
 import { changeLanguage } from './states/ConfigurationState';
 import { issueSyncToken } from './services/ServerlessService';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
-const PLUGIN_VERSION = '0.8.0';
+export const PLUGIN_VERSION = '0.8.0';
 export const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
 /**
@@ -230,6 +231,8 @@ export default class HrmFormPlugin extends FlexPlugin {
    * @param manager { import('@twilio/flex-ui').Manager }
    */
   init(flex, manager) {
+    setUpMonitoring(this, manager.workerClient);
+
     console.log(`Welcome to ${PLUGIN_NAME} Version ${PLUGIN_VERSION}`);
     this.registerReducers(manager);
 
