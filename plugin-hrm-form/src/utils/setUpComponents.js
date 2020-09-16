@@ -76,10 +76,7 @@ export const setUpQueuesStatus = () => {
     {
       sortOrder: -1,
       align: 'start',
-      if: props => {
-        console.log(props);
-        return props.tasks && !props.tasks.size;
-      },
+      if: props => props.tasks && !props.tasks.size,
     },
   );
 };
