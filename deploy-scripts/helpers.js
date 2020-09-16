@@ -15,10 +15,7 @@
 const replaceIncidence = (fromIds, toIds, string) => {
   const from = Object.keys(fromIds);
 
-  const result = from.reduce(
-    (prev, key) => prev.replace(fromIds[key], toIds[key]),
-    string
-  );
+  const result = from.reduce((prev, key) => prev.replace(fromIds[key], toIds[key]), string);
 
   return result;
 };

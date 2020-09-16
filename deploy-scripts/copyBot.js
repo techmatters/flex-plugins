@@ -1,5 +1,5 @@
-const fs = require("fs").promises;
-const { replaceIncidence } = require("./helpers");
+const fs = require('fs').promises;
+const { replaceIncidence } = require('./helpers');
 
 async function setUpTasks(clientFn, newClientFn, fromIds, toIds) {
   const taskList = await clientFn.list();
@@ -8,7 +8,7 @@ async function setUpTasks(clientFn, newClientFn, fromIds, toIds) {
       // The task actions need to be gotten separately
       const taskActions = await clientFn(task.sid).taskActions().fetch();
       const actions = JSON.parse(
-        replaceIncidence(fromIds, toIds, JSON.stringify(taskActions.data))
+        replaceIncidence(fromIds, toIds, JSON.stringify(taskActions.data)),
       );
 
       // Create a copy of this task
@@ -26,7 +26,7 @@ async function setUpTasks(clientFn, newClientFn, fromIds, toIds) {
           taggedText: s.taggedText,
         });
       });
-    })
+    }),
   );
 }
 
@@ -52,25 +52,25 @@ async function setUpFieldTypes(clientFn, newClientFn) {
           synonymOf: v.synonymOf,
         });
       }, Promise.resolve());
-    })
+    }),
   );
 }
 
 async function copyAssitant(oldIdsFile, newIdsFile) {
-  const file = await fs.readFile(oldIdsFile, "utf8");
+  const file = await fs.readFile(oldIdsFile, 'utf8');
   const fromIds = JSON.parse(file);
   const accountSid = fromIds.AccountSid;
   const authToken = fromIds.AuthToken;
   // eslint-disable-next-line global-require
-  const client = require("twilio")(accountSid, authToken);
+  const client = require('twilio')(accountSid, authToken);
 
-  const newFile = await fs.readFile(newIdsFile, "utf8");
+  const newFile = await fs.readFile(newIdsFile, 'utf8');
   const toIds = JSON.parse(newFile);
 
   const newSid = toIds.AccountSid;
   const newAuthToken = toIds.AuthToken;
   // eslint-disable-next-line global-require
-  const newClient = require("twilio")(newSid, newAuthToken);
+  const newClient = require('twilio')(newSid, newAuthToken);
 
   const botId = fromIds.Bot_To_Copy;
   const fromBot = client.autopilot.assistants(botId);
@@ -92,22 +92,22 @@ async function copyAssitant(oldIdsFile, newIdsFile) {
 }
 
 // eslint-disable-next-line import/order
-const { argv } = require("yargs")
-  .usage("npm run copyBot -- --fromIds {file} --toIds {file}")
-  .alias("f", "fromIds")
-  .alias("t", "toIds")
+const { argv } = require('yargs')
+  .usage('npm run copyBot -- --fromIds {file} --toIds {file}')
+  .alias('f', 'fromIds')
+  .alias('t', 'toIds')
   .describe(
-    "f",
-    "JSON filename with original account SIDs. To copy a bot on Twilio, " +
+    'f',
+    'JSON filename with original account SIDs. To copy a bot on Twilio, ' +
       "this file must have the key 'Bot_to_Copy' with a value of the bot's " +
-      "SID."
+      'SID.',
   )
   .describe(
-    "t",
-    "JSON filename with SIDs of the account being copied to. The key names have " +
-      "no required format, but corresponding SIDs must have the same keys " +
-      "across the two files."
+    't',
+    'JSON filename with SIDs of the account being copied to. The key names have ' +
+      'no required format, but corresponding SIDs must have the same keys ' +
+      'across the two files.',
   )
-  .demandOption(["fromIds", "toIds"]);
+  .demandOption(['fromIds', 'toIds']);
 
 copyAssitant(argv.fromIds, argv.toIds);
