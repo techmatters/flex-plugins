@@ -46,7 +46,7 @@ export const setUpQueuesStatus = () => {
 
   Flex.TaskListContainer.Content.add(
     <QueuesStatus
-      key="queue-status"
+      key="queue-status-task-list"
       colors={{
         voiceColor,
         webColor,
@@ -58,6 +58,25 @@ export const setUpQueuesStatus = () => {
     {
       sortOrder: -1,
       align: 'start',
+    },
+  );
+
+  Flex.AgentDesktopView.Panel1.Content.add(
+    <QueuesStatus
+      key="queue-status-agent-desktop"
+      colors={{
+        voiceColor,
+        webColor,
+        facebookColor,
+        smsColor,
+        whatsappColor,
+      }}
+      noActiveTasks
+    />,
+    {
+      sortOrder: -1,
+      align: 'start',
+      if: props => props.tasks && !props.tasks.size,
     },
   );
 };
