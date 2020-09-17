@@ -8,6 +8,7 @@ import { searchResultType } from '../../../types';
 import { Row } from '../../../styles/HrmStyles';
 import { BackIcon, BackText, ResultsHeader, ListContainer, ScrollableList } from '../../../styles/search';
 import ConnectDialog from '../ConnectDialog';
+import CaseListTableFooter from '../../caseList/CaseListTableFooter';
 
 class SearchResults extends Component {
   static displayName = 'SearchResults';
@@ -49,7 +50,6 @@ class SearchResults extends Component {
     const { currentIsCaller, results } = this.props;
     const resultsCount = results.length;
 
-    // TODO (Gian): This should be a virtualized list instead (for performance reasons)
     return (
       <>
         <ResultsHeader>
@@ -89,6 +89,7 @@ class SearchResults extends Component {
                 handleViewDetails={() => this.props.handleViewDetails(contact)}
               />
             ))}
+            <CaseListTableFooter page={2} pagesCount={100} handleChangePage={() => null} transparent />
           </ScrollableList>
         </ListContainer>
       </>

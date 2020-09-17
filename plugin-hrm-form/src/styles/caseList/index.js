@@ -47,14 +47,12 @@ export const CLTableRow = withStyles({
 })(TableRow);
 CLTableRow.displayName = 'CLTableRow';
 
-export const CLFooterRow = withStyles(theme => ({
-  root: {
-    height: 'auto',
-    verticalAlign: 'top',
-    backgroundColor: theme.colors.base2,
-    marginTop: -5,
-  },
-}))(TableRow);
+export const CLFooterRow = styled(TableRow)`
+  height: auto;
+  vertical-align: top;
+  background-color: ${props => (props.transparent ? 'transparent' : props.theme.colors.base2)};
+  margin-top: -5;
+`;
 CLFooterRow.displayName = 'CLFooterRow';
 
 export const CLTableCell = withStyles(theme => ({

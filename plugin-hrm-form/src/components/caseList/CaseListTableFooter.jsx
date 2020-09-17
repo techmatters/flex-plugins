@@ -56,7 +56,7 @@ ChevronButton.propTypes = {
   templateCode: PropTypes.string.isRequired,
 };
 
-const CaseListTableFooter = ({ page, pagesCount, handleChangePage }) => {
+const CaseListTableFooter = ({ page, pagesCount, handleChangePage, transparent }) => {
   const renderButtons = renderPaginationButton(page, handleChangePage);
 
   const decreasePage = () => {
@@ -69,7 +69,7 @@ const CaseListTableFooter = ({ page, pagesCount, handleChangePage }) => {
 
   return (
     <TableFooter data-testid="CaseList-TableFooter">
-      <CLFooterRow>
+      <CLFooterRow transparent={transparent}>
         <TableCell colSpan={8}>
           <div style={{ display: 'flex', width: '100%', justifyContent: 'center' }}>
             <ChevronButton chevronDirection="left" onClick={decreasePage} templateCode="CaseList-PrevPage" />
@@ -87,6 +87,10 @@ CaseListTableFooter.propTypes = {
   page: PropTypes.number.isRequired,
   pagesCount: PropTypes.number.isRequired,
   handleChangePage: PropTypes.func.isRequired,
+  transparent: PropTypes.bool,
+};
+CaseListTableFooter.defaultProps = {
+  transparent: false,
 };
 
 export default CaseListTableFooter;
