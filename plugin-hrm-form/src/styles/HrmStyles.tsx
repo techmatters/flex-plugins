@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import React from 'react';
 import styled from 'react-emotion';
-import { Input, Select, MenuItem, Tabs, Tab, Checkbox, withStyles } from '@material-ui/core';
+import { Input, Select, MenuItem, Tabs, Tab, Checkbox, withStyles, TableRow } from '@material-ui/core';
 import { Button, getBackgroundWithHoverCSS, TabsProps } from '@twilio/flex-ui';
 
 type BoxProps = {
@@ -530,3 +530,15 @@ export const addHover = Component =>
       },
     },
   })(Component);
+
+type PaginationRowProps = {
+  transparent?: boolean;
+};
+
+export const PaginationRow = styled(TableRow)<PaginationRowProps>`
+  height: auto;
+  vertical-align: top;
+  background-color: ${props => (props.transparent ? 'transparent' : props.theme.colors.base2)};
+  margin-top: -5;
+`;
+PaginationRow.displayName = 'PaginationRow';

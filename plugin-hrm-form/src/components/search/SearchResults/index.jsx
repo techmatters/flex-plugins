@@ -8,7 +8,7 @@ import { searchResultType } from '../../../types';
 import { Row } from '../../../styles/HrmStyles';
 import { BackIcon, BackText, ResultsHeader, ListContainer, ScrollableList } from '../../../styles/search';
 import ConnectDialog from '../ConnectDialog';
-import CaseListTableFooter from '../../caseList/CaseListTableFooter';
+import Pagination from '../../Pagination';
 
 class SearchResults extends Component {
   static displayName = 'SearchResults';
@@ -89,7 +89,7 @@ class SearchResults extends Component {
                 handleViewDetails={() => this.props.handleViewDetails(contact)}
               />
             ))}
-            <CaseListTableFooter page={2} pagesCount={100} handleChangePage={() => null} transparent />
+            <Pagination page={2} pagesCount={100} handleChangePage={() => null} transparent />
           </ScrollableList>
         </ListContainer>
       </>
