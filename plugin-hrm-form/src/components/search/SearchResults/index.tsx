@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import { ButtonBase } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
@@ -11,13 +12,19 @@ import Pagination from '../../Pagination';
 
 type SearchResultsProps = {
   currentIsCaller: boolean;
-  results: SearchContactResult[];
+  results: SearchContactResult;
   handleSelectSearchResult: (contact) => void;
   handleBack: () => void;
   handleViewDetails: (contact) => void;
 };
 
-const SearchResults: React.FC<SearchResultsProps> = ({currentIsCaller, results, handleSelectSearchResult, handleBack, handleViewDetails}) => {
+const SearchResults: React.FC<SearchResultsProps> = ({
+  currentIsCaller,
+  results,
+  handleSelectSearchResult,
+  handleBack,
+  handleViewDetails,
+}) => {
   const [currentContact, setCurrentContact] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -30,13 +37,15 @@ const SearchResults: React.FC<SearchResultsProps> = ({currentIsCaller, results, 
     handleSelectSearchResult(currentContact);
   };
 
-  const handleOpenConnectDialog = currentContact => e => {
+  const handleOpenConnectDialog = contact => e => {
     e.stopPropagation();
     setAnchorEl(e.currentTarget);
-    setCurrentContact(currentContact);
+    setCurrentContact(contact);
   };
+  console.log({ results });
 
-  const resultsCount = results.length;
+  const { contacts } = results;
+  const resultsCount = contacts.length;
 
   return (
     <>
@@ -69,7 +78,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({currentIsCaller, results, 
       />
       <ListContainer>
         <ScrollableList>
-          {results.map(contact => (
+          {contacts.map(contact => (
             <ContactPreview
               key={contact.contactId}
               contact={contact}

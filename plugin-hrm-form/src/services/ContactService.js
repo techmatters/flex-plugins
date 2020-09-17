@@ -22,7 +22,7 @@ export async function searchContacts(searchParams) {
     return await response.json();
   } catch (e) {
     console.log('Error searching contacts: ', e);
-    return [];
+    return { count: 0, contacts: [] };
   }
 }
 

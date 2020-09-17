@@ -1,7 +1,7 @@
 import * as t from '../../../states/search/types';
 import * as actions from '../../../states/search/actions';
 import { ContactDetailsSections } from '../../../components/common/ContactDetails';
-import { SearchContactResult } from '../../../types/types';
+import { SearchContact } from '../../../types/types';
 import { searchContacts } from '../../../services/ContactService';
 
 jest.mock('../../../services/ContactService', () => ({ searchContacts: jest.fn() }));
@@ -48,7 +48,7 @@ describe('test action creators', () => {
 
   test('viewContactDetails', () => {
     const contact: unknown = { contactId: 'fake contact', overview: {}, details: {}, counselor: '', tags: [] };
-    const typedContact = contact as SearchContactResult; // type casting to avoid writing an entire SearchContactResult
+    const typedContact = contact as SearchContact; // type casting to avoid writing an entire SearchContact
 
     expect(actions.viewContactDetails(taskId)(typedContact)).toStrictEqual({
       type: t.VIEW_CONTACT_DETAILS,

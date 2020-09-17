@@ -2,12 +2,12 @@ import { omit } from 'lodash';
 
 import * as t from './types';
 import { INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE, GeneralActionType } from '../types';
-import { SearchContactResult } from '../../types/types';
+import { SearchContact } from '../../types/types';
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../../components/common/ContactDetails';
 
 type TaskEntry = {
   currentPage: t.SearchPagesType;
-  currentContact: SearchContactResult;
+  currentContact: SearchContact;
   form: t.SearchFormValues;
   detailsExpanded: {
     [key in ContactDetailsSectionsType]: boolean;

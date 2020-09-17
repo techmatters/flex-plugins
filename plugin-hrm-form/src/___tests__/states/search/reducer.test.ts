@@ -2,7 +2,7 @@ import fromentries from 'fromentries';
 
 import * as t from '../../../states/search/types';
 import { handleSearchFormChange } from '../../../states/search/actions';
-import { SearchContactResult } from '../../../types/types';
+import { SearchContact } from '../../../types/types';
 import { ContactDetailsSections } from '../../../components/common/ContactDetails';
 import {
   INITIALIZE_CONTACT_STATE,
@@ -107,7 +107,7 @@ describe('search reducer', () => {
     const contact: unknown = { contactId: 'fake contact', overview: {}, details: {}, counselor: '', tags: [] };
     const action: t.SearchActionType = {
       type: t.VIEW_CONTACT_DETAILS,
-      contact: contact as SearchContactResult, // type casting to avoid writing an entire SearchContactResult
+      contact: contact as SearchContact, // type casting to avoid writing an entire SearchContact
       taskId: task.taskSid,
     };
     const result = reduce(state, action);
