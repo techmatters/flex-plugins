@@ -61,7 +61,7 @@ const setUpSharedStateClient = () => {
       const syncToken = await issueSyncToken();
       await sharedStateClient.updateToken(syncToken);
     } catch (err) {
-      console.log('SYNC TOKEN ERROR', err);
+      console.error('SYNC TOKEN ERROR', err);
     }
   };
 
@@ -72,7 +72,7 @@ const setUpSharedStateClient = () => {
       sharedStateClient = new SyncClient(syncToken);
       sharedStateClient.on('tokenAboutToExpire', () => updateSharedStateToken());
     } catch (err) {
-      console.log('SYNC CLIENT INIT ERROR', err);
+      console.error('SYNC CLIENT INIT ERROR', err);
     }
   };
 
