@@ -4,12 +4,26 @@ import { isNonDataCallType } from '../states/ValidationRules';
 import { channelTypes } from '../states/DomainConstants';
 import { getConversationDuration, fillEndMillis } from '../utils/conversationDuration';
 import { getConfig } from '../HrmFormPlugin';
+import { isNullOrUndefined } from '../utils';
 
-export async function searchContacts(searchParams) {
+function getLimitAndOffsetParams(limit, offset) {
+  const hasLimit = !isNullOrUndefined(limit);
+  const hasOffset = !isNullOrUndefined(offset);
+
+  if (!hasLimit && !hasOffset) return '';
+
+  const appendLimit = hasLimit ? `limit=${limit}` : '';
+  const appendOffset = hasOffset ? `offset=${offset}` : '';
+  return `?${[appendLimit, appendOffset].filter(e => e).join('&')}`;
+}
+
+export async function searchContacts(searchParams, limit, offset) {
   const { hrmBaseUrl } = getConfig();
+  const queryParams = getLimitAndOffsetParams(limit, offset);
+  console.log({ limit, offset, queryParams });
 
   try {
-    const response = await fetch(`${hrmBaseUrl}/contacts/search`, {
+    const response = await fetch(`${hrmBaseUrl}/contacts/search${queryParams}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Basic ${btoa(secret)}` },
       body: JSON.stringify(searchParams),

@@ -24,11 +24,14 @@ export const handleSearchFormChange = (taskId: string) => <K extends keyof t.Sea
 export const searchContacts = (dispatch: Dispatch<any>) => (taskId: string) => async (
   searchParams: any,
   counselorsHash: ConfigurationState['counselors']['hash'],
+  limit: number,
+  offset: number,
 ) => {
   try {
+    console.log({ limit, offset });
     dispatch({ type: t.SEARCH_CONTACTS_REQUEST, taskId });
 
-    const searchResultRaw = await searchContactsApiCall(searchParams);
+    const searchResultRaw = await searchContactsApiCall(searchParams, limit, offset);
     const contactsWithCounselorName = addDetails(counselorsHash, searchResultRaw.contacts);
     const searchResult = { ...searchResultRaw, contacts: contactsWithCounselorName };
 

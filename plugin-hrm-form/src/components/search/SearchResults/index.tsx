@@ -10,10 +10,13 @@ import { BackIcon, BackText, ResultsHeader, ListContainer, ScrollableList } from
 import ConnectDialog from '../ConnectDialog';
 import Pagination from '../../Pagination';
 
+export const CONTACTS_PER_PAGE = 2;
+
 type SearchResultsProps = {
   currentIsCaller: boolean;
   results: SearchContactResult;
   handleSelectSearchResult: (contact) => void;
+  handleSearch: (offset) => void;
   handleBack: () => void;
   handleViewDetails: (contact) => void;
 };
@@ -22,11 +25,13 @@ const SearchResults: React.FC<SearchResultsProps> = ({
   currentIsCaller,
   results,
   handleSelectSearchResult,
+  handleSearch,
   handleBack,
   handleViewDetails,
 }) => {
   const [currentContact, setCurrentContact] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [page, setPage] = useState(0);
 
   const handleCloseDialog = () => {
     setCurrentContact(null);
@@ -37,15 +42,20 @@ const SearchResults: React.FC<SearchResultsProps> = ({
     handleSelectSearchResult(currentContact);
   };
 
+  const handleChangePage = newPage => {
+    setPage(newPage);
+    handleSearch(CONTACTS_PER_PAGE * newPage);
+  };
+
   const handleOpenConnectDialog = contact => e => {
     e.stopPropagation();
     setAnchorEl(e.currentTarget);
     setCurrentContact(contact);
   };
-  console.log({ results });
 
-  const { contacts } = results;
+  const { contacts, count } = results;
   const resultsCount = contacts.length;
+  const pagesCount = Math.ceil(count / CONTACTS_PER_PAGE);
 
   return (
     <>
@@ -86,7 +96,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
               handleViewDetails={() => handleViewDetails(contact)}
             />
           ))}
-          <Pagination page={2} pagesCount={100} handleChangePage={() => null} transparent />
+          <Pagination page={page} pagesCount={pagesCount} handleChangePage={handleChangePage} transparent />
         </ScrollableList>
       </ListContainer>
     </>
