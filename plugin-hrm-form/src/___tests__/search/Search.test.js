@@ -87,26 +87,30 @@ test('<Search> should display <SearchForm />', () => {
 
 test('<Search> should display <SearchResults />', () => {
   const currentPage = SearchPages.results;
-  const searchResult = [
-    {
-      contactId: 'Jill-Smith-id',
-      overview: {
-        dateTime: '2020-03-10',
-        name: 'Jill Smith',
-        customerNumber: 'Anonymous',
-        callType: 'Child calling about self',
-        categories: { category1: ['Tag1', 'Tag2'] },
-        counselor: 'counselor-id',
-        notes: 'Jill Smith Notes',
-      },
-      details: {
-        caseInformation: {
-          callSummary: 'Summary',
+  const searchResult = {
+    count: 1,
+    contacts: [
+      {
+        contactId: 'Jill-Smith-id',
+        overview: {
+          dateTime: '2020-03-10',
+          name: 'Jill Smith',
+          customerNumber: 'Anonymous',
+          callType: 'Child calling about self',
+          categories: { category1: ['Tag1', 'Tag2'] },
+          counselor: 'counselor-id',
+          notes: 'Jill Smith Notes',
         },
+        details: {
+          caseInformation: {
+            callSummary: 'Summary',
+          },
+        },
+        counselor: 'Counselor',
       },
-      counselor: 'Counselor',
-    },
-  ];
+    ],
+  };
+
   const task = { taskSid: 'WT123' };
 
   const initialState = createState(task.taskSid, { currentPage, searchResult, detailsExpanded });

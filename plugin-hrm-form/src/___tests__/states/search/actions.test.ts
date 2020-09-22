@@ -3,6 +3,7 @@ import * as actions from '../../../states/search/actions';
 import { ContactDetailsSections } from '../../../components/common/ContactDetails';
 import { SearchContact } from '../../../types/types';
 import { searchContacts } from '../../../services/ContactService';
+import { CONTACTS_PER_PAGE } from '../../../components/search/SearchResults';
 
 jest.mock('../../../services/ContactService', () => ({ searchContacts: jest.fn() }));
 jest.mock('../../../states/search/helpers', () => ({ addDetails: jest.fn((_hash, xs) => xs) }));
@@ -60,12 +61,15 @@ describe('test action creators', () => {
   test('searchContacts (succes)', async () => {
     const contact = { contactId: 'fake contact', overview: {}, details: {}, counselor: '', tags: [] };
 
-    const searchResult = [contact];
+    const searchResult = {
+      count: 1,
+      contacts: [contact],
+    };
     // @ts-ignore
     searchContacts.mockReturnValueOnce(Promise.resolve(searchResult));
     const dispatch = jest.fn();
 
-    await actions.searchContacts(dispatch)(taskId)(null, null);
+    await actions.searchContacts(dispatch)(taskId)(null, null, CONTACTS_PER_PAGE, 0);
 
     expect(dispatch).toBeCalledTimes(2);
     expect(dispatch).toBeCalledWith({ type: t.SEARCH_CONTACTS_REQUEST, taskId });
@@ -78,7 +82,7 @@ describe('test action creators', () => {
     searchContacts.mockReturnValueOnce(Promise.reject(error));
     const dispatch = jest.fn();
 
-    await actions.searchContacts(dispatch)(taskId)(null, null);
+    await actions.searchContacts(dispatch)(taskId)(null, null, CONTACTS_PER_PAGE, 0);
 
     expect(dispatch).toBeCalledTimes(2);
     expect(dispatch).toBeCalledWith({ type: t.SEARCH_CONTACTS_REQUEST, taskId });

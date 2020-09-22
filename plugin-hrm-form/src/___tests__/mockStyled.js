@@ -15,6 +15,7 @@ jest.mock('../styles/HrmStyles', () => ({
   StyledSelect: 'StyledSelect',
   StyledTableCell: 'StyledTableCell',
   Row: 'Row',
+  PaginationRow: 'PaginationRow',
   FontOpenSans: 'FontOpenSans',
   Box: 'Box',
   Flex: 'Flex',
