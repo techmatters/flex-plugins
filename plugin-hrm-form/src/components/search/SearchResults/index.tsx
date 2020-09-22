@@ -10,7 +10,7 @@ import { BackIcon, BackText, ResultsHeader, ListContainer, ScrollableList } from
 import ConnectDialog from '../ConnectDialog';
 import Pagination from '../../Pagination';
 
-export const CONTACTS_PER_PAGE = 10;
+export const CONTACTS_PER_PAGE = 20;
 
 type SearchResultsProps = {
   currentIsCaller: boolean;
