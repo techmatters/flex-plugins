@@ -3,41 +3,19 @@ import { FieldType, recreateBlankForm } from '../states/ContactFormStateFactory'
 import { isNonDataCallType } from '../states/ValidationRules';
 import { channelTypes } from '../states/DomainConstants';
 import { getConversationDuration, fillEndMillis } from '../utils/conversationDuration';
-import { getConfig } from '../HrmFormPlugin';
-import { isNullOrUndefined } from '../utils';
-
-function getLimitAndOffsetParams(limit, offset) {
-  const hasLimit = !isNullOrUndefined(limit);
-  const hasOffset = !isNullOrUndefined(offset);
-
-  if (!hasLimit && !hasOffset) return '';
-
-  const appendLimit = hasLimit ? `limit=${limit}` : '';
-  const appendOffset = hasOffset ? `offset=${offset}` : '';
-  return `?${[appendLimit, appendOffset].filter(e => e).join('&')}`;
-}
+import { getLimitAndOffsetParams } from './PaginationParams';
+import fetchHrmApi from './fetchHrmApi';
 
 export async function searchContacts(searchParams, limit, offset) {
-  const { hrmBaseUrl } = getConfig();
   const queryParams = getLimitAndOffsetParams(limit, offset);
-  console.log({ limit, offset, queryParams });
 
-  try {
-    const response = await fetch(`${hrmBaseUrl}/contacts/search${queryParams}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Basic ${btoa(secret)}` },
-      body: JSON.stringify(searchParams),
-    });
+  const options = {
+    method: 'POST',
+    body: JSON.stringify(searchParams),
+  };
 
-    if (!response.ok) {
-      throw response.error();
-    }
-
-    return await response.json();
-  } catch (e) {
-    console.log('Error searching contacts: ', e);
-    return { count: 0, contacts: [] };
-  }
+  const responseJson = await fetchHrmApi(`/contacts/search${queryParams}`, options);
+  return responseJson;
 }
 
 export function getNumberFromTask(task) {
