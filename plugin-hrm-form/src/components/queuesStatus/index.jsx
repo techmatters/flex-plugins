@@ -9,7 +9,7 @@ import { Container, QueuesContainer } from '../../styles/queuesStatus';
 import { Box, ErrorText, HeaderContainer } from '../../styles/HrmStyles';
 import { TLHPaddingLeft } from '../../styles/GlobalOverrides';
 
-const QueuesStatus = ({ colors, queuesStatusState }) => {
+const QueuesStatus = ({ colors, queuesStatusState, paddingRight }) => {
   const { queuesStatus, error } = queuesStatusState;
 
   return (
@@ -19,7 +19,7 @@ const QueuesStatus = ({ colors, queuesStatusState }) => {
           <Template code="QueueIndex-ContactsWaiting" />
         </Box>
       </HeaderContainer>
-      <QueuesContainer>
+      <QueuesContainer paddingRight={paddingRight}>
         {error && <ErrorText>{error}</ErrorText>}
         {queuesStatus &&
           Object.entries(queuesStatus).map(([qName, qStatus]) => (
@@ -47,6 +47,11 @@ QueuesStatus.propTypes = {
     error: PropTypes.string,
     loading: PropTypes.bool,
   }).isRequired,
+  paddingRight: PropTypes.bool,
+};
+
+QueuesStatus.defaultProps = {
+  paddingRight: false,
 };
 
 const mapStateToProps = (state, ownProps) => {
