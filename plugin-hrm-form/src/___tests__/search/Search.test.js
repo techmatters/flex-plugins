@@ -10,7 +10,7 @@ import Search from '../../components/search';
 import SearchForm from '../../components/search/SearchForm';
 import SearchResults from '../../components/search/SearchResults';
 import ContactDetails from '../../components/search/ContactDetails';
-import { SearchPages } from '../../states/SearchContact';
+import { SearchPages } from '../../states/search/types';
 import { channelTypes } from '../../states/DomainConstants';
 
 const mockStore = configureMockStore([]);
