@@ -570,9 +570,9 @@ export const ManualPullContent = styled('div')`
 ManualPullContent.displayName = 'ManualPullContent';
 
 export const ManualPullText = styled(FontOpenSans)`
-  color: #0D74D5;
+  color: #0d74d5;
   font-size: 12px;
   line-height: 16px;
   font-weight: 600;
-`
+`;
 ManualPullText.displayName = 'ManualPullText';
