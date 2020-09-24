@@ -12,6 +12,7 @@ import Translator from '../components/translator';
 import CaseList from '../components/caseList';
 import SettingsSideLink from '../components/sideLinks/SettingsSideLink';
 import CaseListSideLink from '../components/sideLinks/CaseListSideLink';
+import ManualPullButton from '../components/ManualPullButton';
 // eslint-disable-next-line no-unused-vars
 import { getConfig } from '../HrmFormPlugin';
 /**
@@ -225,6 +226,13 @@ export const setUpIncomingTransferMessage = () => {
   ];
 
   chatChannels.forEach(el => setSecondLine(el));
+};
+
+export const setUpManualPulling = () => {
+  Flex.TaskList.Content.add(<ManualPullButton key="manual-pull-button" />, {
+    sortOrder: Infinity,
+    align: 'start',
+  });
 };
 
 /**
