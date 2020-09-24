@@ -4,7 +4,7 @@ import { ButtonBase } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
 
 import ContactPreview from '../ContactPreview';
-import { SearchContactResult } from '../../../types/types';
+import { SearchContactResult, SearchContact } from '../../../types/types';
 import { Row } from '../../../styles/HrmStyles';
 import { BackIcon, BackText, ResultsHeader, ListContainer, ScrollableList } from '../../../styles/search';
 import ConnectDialog from '../ConnectDialog';
@@ -15,10 +15,10 @@ export const CONTACTS_PER_PAGE = 20;
 type SearchResultsProps = {
   currentIsCaller: boolean;
   results: SearchContactResult;
-  handleSelectSearchResult: (contact) => void;
-  handleSearch: (offset) => void;
+  handleSelectSearchResult: (contact: SearchContact) => void;
+  handleSearch: (offset: number) => void;
   handleBack: () => void;
-  handleViewDetails: (contact) => void;
+  handleViewDetails: (contact: SearchContact) => void;
 };
 
 const SearchResults: React.FC<SearchResultsProps> = ({
@@ -96,7 +96,9 @@ const SearchResults: React.FC<SearchResultsProps> = ({
               handleViewDetails={() => handleViewDetails(contact)}
             />
           ))}
-          <Pagination page={page} pagesCount={pagesCount} handleChangePage={handleChangePage} transparent />
+          {pagesCount > 1 && (
+            <Pagination page={page} pagesCount={pagesCount} handleChangePage={handleChangePage} transparent />
+          )}
         </ScrollableList>
       </ListContainer>
     </>

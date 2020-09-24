@@ -28,7 +28,6 @@ export const searchContacts = (dispatch: Dispatch<any>) => (taskId: string) => a
   offset: number,
 ) => {
   try {
-    console.log({ limit, offset });
     dispatch({ type: t.SEARCH_CONTACTS_REQUEST, taskId });
 
     const searchResultRaw = await searchContactsApiCall(searchParams, limit, offset);
