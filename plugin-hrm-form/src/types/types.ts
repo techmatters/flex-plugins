@@ -69,7 +69,7 @@ export type ContactValues = {
 };
 
 // Information about a single contact, as expected from search contacts endpoint (we might want to reuse this type in backend) - (is this a correct placement for this?)
-export type SearchContactResult = {
+export type SearchContact = {
   contactId: string;
   overview: {
     dateTime: string;
@@ -84,4 +84,9 @@ export type SearchContactResult = {
   };
   details: ContactValues;
   counselor: string;
+};
+
+export type SearchContactResult = {
+  count: number;
+  contacts: SearchContact[];
 };

@@ -3,7 +3,7 @@ import { Dispatch } from 'redux';
 
 import * as t from './types';
 import { ConfigurationState } from '../configuration/reducer';
-import { SearchContactResult } from '../../types/types';
+import { SearchContact } from '../../types/types';
 import { searchContacts as searchContactsApiCall } from '../../services/ContactService';
 import { ContactDetailsSectionsType } from '../../components/common/ContactDetails';
 import { addDetails } from './helpers';
@@ -24,12 +24,15 @@ export const handleSearchFormChange = (taskId: string) => <K extends keyof t.Sea
 export const searchContacts = (dispatch: Dispatch<any>) => (taskId: string) => async (
   searchParams: any,
   counselorsHash: ConfigurationState['counselors']['hash'],
+  limit: number,
+  offset: number,
 ) => {
   try {
     dispatch({ type: t.SEARCH_CONTACTS_REQUEST, taskId });
 
-    const searchResultRaw = await searchContactsApiCall(searchParams);
-    const searchResult = addDetails(counselorsHash, searchResultRaw);
+    const searchResultRaw = await searchContactsApiCall(searchParams, limit, offset);
+    const contactsWithCounselorName = addDetails(counselorsHash, searchResultRaw.contacts);
+    const searchResult = { ...searchResultRaw, contacts: contactsWithCounselorName };
 
     dispatch({ type: t.SEARCH_CONTACTS_SUCCESS, searchResult, taskId });
   } catch (error) {
@@ -43,7 +46,7 @@ export const changeSearchPage = (taskId: string) => (page: t.SearchPagesType): t
   taskId,
 });
 
-export const viewContactDetails = (taskId: string) => (contact: SearchContactResult): t.SearchActionType => ({
+export const viewContactDetails = (taskId: string) => (contact: SearchContact): t.SearchActionType => ({
   type: t.VIEW_CONTACT_DETAILS,
   contact,
   taskId,

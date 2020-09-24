@@ -1,4 +1,4 @@
-import { SearchContactResult } from '../../types/types';
+import { SearchContact } from '../../types/types';
 import { addDetails } from './helpers';
 import { ContactDetailsSectionsType } from '../../components/common/ContactDetails';
 // Action types
@@ -55,7 +55,7 @@ type SearchContactsFailureAction = { type: typeof SEARCH_CONTACTS_FAILURE; error
 // maybe we can migrate this to be handled by the routing instead later on?
 type SearchChangePageAction = { type: typeof CHANGE_SEARCH_PAGE; page: SearchPagesType; taskId: string };
 
-type SearchViewContactAction = { type: typeof VIEW_CONTACT_DETAILS; contact: SearchContactResult; taskId: string };
+type SearchViewContactAction = { type: typeof VIEW_CONTACT_DETAILS; contact: SearchContact; taskId: string };
 
 type SearchExpandSectionAction = {
   type: typeof HANDLE_EXPAND_DETAILS_SECTION;

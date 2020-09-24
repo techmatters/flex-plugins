@@ -8,7 +8,7 @@ import { Box, HeaderContainer } from '../../styles/HrmStyles';
 import { TLHPaddingLeft } from '../../styles/GlobalOverrides';
 import CaseListTableHead from './CaseListTableHead';
 import CaseListTableRow from './CaseListTableRow';
-import CaseListTableFooter from './CaseListTableFooter';
+import Pagination from '../Pagination';
 import { CASES_PER_PAGE } from './CaseList';
 
 /**
@@ -36,7 +36,7 @@ const CaseListTable = ({ caseList, caseCount, page, handleChangePage, openMocked
               />
             ))}
           </TableBody>
-          <CaseListTableFooter page={page} pagesCount={pagesCount} handleChangePage={handleChangePage} />
+          <Pagination page={page} pagesCount={pagesCount} handleChangePage={handleChangePage} />
         </CLTable>
       </TableContainer>
     </>

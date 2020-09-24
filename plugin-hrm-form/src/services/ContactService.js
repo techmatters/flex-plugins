@@ -3,27 +3,19 @@ import { FieldType, recreateBlankForm } from '../states/ContactFormStateFactory'
 import { isNonDataCallType } from '../states/ValidationRules';
 import { channelTypes } from '../states/DomainConstants';
 import { getConversationDuration, fillEndMillis } from '../utils/conversationDuration';
-import { getConfig } from '../HrmFormPlugin';
+import { getLimitAndOffsetParams } from './PaginationParams';
+import fetchHrmApi from './fetchHrmApi';
 
-export async function searchContacts(searchParams) {
-  const { hrmBaseUrl } = getConfig();
+export async function searchContacts(searchParams, limit, offset) {
+  const queryParams = getLimitAndOffsetParams(limit, offset);
 
-  try {
-    const response = await fetch(`${hrmBaseUrl}/contacts/search`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Basic ${btoa(secret)}` },
-      body: JSON.stringify(searchParams),
-    });
+  const options = {
+    method: 'POST',
+    body: JSON.stringify(searchParams),
+  };
 
-    if (!response.ok) {
-      throw response.error();
-    }
-
-    return await response.json();
-  } catch (e) {
-    console.log('Error searching contacts: ', e);
-    return [];
-  }
+  const responseJson = await fetchHrmApi(`/contacts/search${queryParams}`, options);
+  return responseJson;
 }
 
 export function getNumberFromTask(task) {
