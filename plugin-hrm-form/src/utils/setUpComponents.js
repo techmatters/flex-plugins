@@ -34,10 +34,22 @@ export const setUpQueuesStatusWriter = setupObject => {
   );
 };
 
+// Re-renders UI if there is a new reservation created and no active tasks (avoid a visual bug with QueuesStatus when there are no tasks)
+const setUpRerenderOnReservation = () => {
+  const manager = Flex.Manager.getInstance();
+
+  manager.workerClient.on('reservationCreated', reservation => {
+    const { tasks } = manager.store.getState().flex.worker;
+    if (tasks.size === 1) Flex.Actions.invokeAction('SelectTask', { sid: reservation.sid });
+  });
+};
+
 /**
  * Add a widget at the beginnig of the TaskListContainer, which shows the pending tasks in each channel (consumes from QueuesStatusWriter)
  */
 export const setUpQueuesStatus = () => {
+  setUpRerenderOnReservation();
+
   const voiceColor = { Accepted: Flex.DefaultTaskChannels.Call.colors.main() };
   const webColor = Flex.DefaultTaskChannels.Chat.colors.main;
   const facebookColor = Flex.DefaultTaskChannels.ChatMessenger.colors.main;
@@ -76,16 +88,7 @@ export const setUpQueuesStatus = () => {
     {
       sortOrder: -1,
       align: 'start',
-      if: props => {
-        if (!props.tasks || props.tasks.size) {
-          if (props.tasks.size === 1)
-            Flex.Actions.invokeAction('SelectTask', { sid: props.tasks.values().next().value.sid });
-
-          return false;
-        }
-
-        return true;
-      },
+      if: props => !props.tasks || !props.tasks.size,
     },
   );
 };
