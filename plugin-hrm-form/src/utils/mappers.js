@@ -41,7 +41,10 @@ export const mapAge = age => {
     ageStr = 'Unknown';
   } else {
     const ageNum = parseInt(age, 10);
-    if (ageNum >= 0 && ageNum <= 3) {
+    if (isNaN(ageNum)) {
+      ageStr = 'Unknown';
+    }
+    else if (ageNum >= 0 && ageNum <= 3) {
       ageStr = '0-03';
     } else if (ageNum >= 4 && ageNum <= 6) {
       ageStr = '04-06';
@@ -55,8 +58,11 @@ export const mapAge = age => {
       ageStr = '16-17';
     } else if (ageNum >= 18 && ageNum <= 25) {
       ageStr = '18-25';
-    } else {
+    } else if (ageNum > 25 && ageNum <= 100) {
       ageStr = '>25';
+    } else {
+      console.error("Invalid age value: %s", ageStr);
+      ageStr = 'Unknown';
     }
   }
 

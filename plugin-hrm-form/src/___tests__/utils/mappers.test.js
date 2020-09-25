@@ -1,4 +1,4 @@
-import { mapCallType, mapChannel } from '../../utils';
+import { mapAge, mapCallType, mapChannel } from '../../utils';
 import { channelTypes } from '../../states/DomainConstants';
 
 test('Test contact call type mapper', () => {
@@ -42,4 +42,8 @@ test('Test contact channel mapper', () => {
   expect(fmtCh4).toEqual(expectCh4);
   expect(fmtCh5).toEqual(expectCh5);
   expect(fmtUndef).toEqual(expectUndef);
+});
+
+test('mapAge can handle Unknown', () => {
+  expect(mapAge('Unknown')).toEqual('Unknown');
 });
