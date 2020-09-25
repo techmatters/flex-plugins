@@ -7,7 +7,7 @@ import { rollbarAccessToken, datadogAccessToken } from '../private/secret';
 
 const environment = 'production'; // maybe we should use envars for this?
 
-function setUpDatadogRum() {
+function setUpDatadogRum(workerClient) {
   datadogRum.init({
     applicationId: 'a9a65b9e-69a4-438e-ae45-4c47e52fb0fa',
     clientToken: datadogAccessToken,
@@ -17,6 +17,13 @@ function setUpDatadogRum() {
     sampleRate: 100,
     trackInteractions: true,
     // service: 'my-web-application',
+  });
+
+  datadogRum.addRumGlobalContext('person', {
+    id: workerClient.sid,
+    account: workerClient.accountSid,
+    workspace: workerClient.workspaceSid,
+    helpline: workerClient.attributes.helpline,
   });
 }
 
@@ -76,5 +83,5 @@ function setUpRollbarLogger(plugin, workerClient) {
 
 export default function setUpMonitoring(plugin, workerClient) {
   setUpRollbarLogger(plugin, workerClient);
-  setUpDatadogRum();
+  setUpDatadogRum(workerClient);
 }
