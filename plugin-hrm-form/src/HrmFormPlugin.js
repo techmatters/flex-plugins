@@ -147,6 +147,8 @@ const setUpComponents = setupObject => {
 
   if (featureFlags.enable_case_management) Components.setUpCaseList();
 
+  if (featureFlags.enable_manual_pulling) Components.setUpManualPulling();
+
   if (!Boolean(helpline)) Components.setUpDeveloperComponents(setupObject); // utilities for developers only
 
   // remove dynamic components

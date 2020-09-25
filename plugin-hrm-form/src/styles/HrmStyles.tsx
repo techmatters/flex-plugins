@@ -2,7 +2,7 @@
 import React from 'react';
 import styled from 'react-emotion';
 import { Input, Select, MenuItem, Tabs, Tab, Checkbox, withStyles, TableRow } from '@material-ui/core';
-import { Button, getBackgroundWithHoverCSS, TabsProps } from '@twilio/flex-ui';
+import { Button, Icon, getBackgroundWithHoverCSS, TabsProps } from '@twilio/flex-ui';
 
 type BoxProps = {
   width?: string;
@@ -542,3 +542,37 @@ export const PaginationRow = styled(TableRow)<PaginationRowProps>`
   margin-top: -5;
 `;
 PaginationRow.displayName = 'PaginationRow';
+
+export const ManualPullIconContainer = styled('div')`
+  display: flex;
+  flex: 0 0 44px;
+  height: 44px;
+  background-color: #ffffff;
+ManualPullIcon.displayName = 'ManualPullIcon';
+`;
+ManualPullIconContainer.displayName = 'ManualPullIconContainer';
+
+export const ManualPullIcon = styled(Icon)`
+  display: flex;
+  flex: 0 0 auto;
+  margin: auto;
+  color: #000000;
+`;
+ManualPullIcon.displayName = 'ManualPullIcon';
+
+export const ManualPullContent = styled('div')`
+  display: flex;
+  flex: 1 1 auto;
+  overflow: hidden;
+  padding-right: auto;
+  padding-left: 12px;
+`;
+ManualPullContent.displayName = 'ManualPullContent';
+
+export const ManualPullText = styled(FontOpenSans)`
+  color: #0d74d5;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+`;
+ManualPullText.displayName = 'ManualPullText';
