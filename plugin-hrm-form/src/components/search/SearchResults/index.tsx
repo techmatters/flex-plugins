@@ -17,6 +17,7 @@ type SearchResultsProps = {
   results: SearchContactResult;
   handleSelectSearchResult: (contact: SearchContact) => void;
   handleSearch: (offset: number) => void;
+  toggleNonDataContacts: () => void;
   handleBack: () => void;
   handleViewDetails: (contact: SearchContact) => void;
 };
@@ -26,6 +27,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
   results,
   handleSelectSearchResult,
   handleSearch,
+  toggleNonDataContacts,
   handleBack,
   handleViewDetails,
 }) => {
@@ -47,6 +49,11 @@ const SearchResults: React.FC<SearchResultsProps> = ({
     handleSearch(CONTACTS_PER_PAGE * newPage);
   };
 
+  const handleToggleNonDataContact = () => {
+    setPage(0);
+    toggleNonDataContacts();
+  };
+
   const handleOpenConnectDialog = contact => e => {
     e.stopPropagation();
     setAnchorEl(e.currentTarget);
@@ -54,7 +61,6 @@ const SearchResults: React.FC<SearchResultsProps> = ({
   };
 
   const { contacts, count } = results;
-  const resultsCount = contacts.length;
   const pagesCount = Math.ceil(count / CONTACTS_PER_PAGE);
 
   return (
@@ -70,8 +76,8 @@ const SearchResults: React.FC<SearchResultsProps> = ({
         </Row>
         <Row style={{ paddingLeft: '24px' }}>
           <BackText>
-            {resultsCount}
-            {resultsCount === 1 ? (
+            {count}
+            {count === 1 ? (
               <Template code="SearchResultsIndex-Result" />
             ) : (
               <Template code="SearchResultsIndex-Results" />
@@ -88,6 +94,9 @@ const SearchResults: React.FC<SearchResultsProps> = ({
       />
       <ListContainer>
         <ScrollableList>
+          <button type="button" onClick={handleToggleNonDataContact}>
+            Toggle
+          </button>
           {contacts.map(contact => (
             <ContactPreview
               key={contact.contactId}
