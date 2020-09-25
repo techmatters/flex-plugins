@@ -6,7 +6,16 @@ import { Template } from '@twilio/flex-ui';
 import ContactPreview from '../ContactPreview';
 import { SearchContactResult, SearchContact } from '../../../types/types';
 import { Row } from '../../../styles/HrmStyles';
-import { BackIcon, BackText, ResultsHeader, ListContainer, ScrollableList } from '../../../styles/search';
+import {
+  BackIcon,
+  BackText,
+  ResultsHeader,
+  ListContainer,
+  ScrollableList,
+  StyledFormControlLabel,
+  StyledSwitch,
+  SwitchLabel,
+} from '../../../styles/search';
 import ConnectDialog from '../ConnectDialog';
 import Pagination from '../../Pagination';
 
@@ -15,6 +24,7 @@ export const CONTACTS_PER_PAGE = 20;
 type SearchResultsProps = {
   currentIsCaller: boolean;
   results: SearchContactResult;
+  onlyDataContacts: boolean;
   handleSelectSearchResult: (contact: SearchContact) => void;
   handleSearch: (offset: number) => void;
   toggleNonDataContacts: () => void;
@@ -25,6 +35,7 @@ type SearchResultsProps = {
 const SearchResults: React.FC<SearchResultsProps> = ({
   currentIsCaller,
   results,
+  onlyDataContacts,
   handleSelectSearchResult,
   handleSearch,
   toggleNonDataContacts,
@@ -94,9 +105,15 @@ const SearchResults: React.FC<SearchResultsProps> = ({
       />
       <ListContainer>
         <ScrollableList>
-          <button type="button" onClick={handleToggleNonDataContact}>
-            Toggle
-          </button>
+          <StyledFormControlLabel
+            control={<StyledSwitch checked={!onlyDataContacts} onChange={handleToggleNonDataContact} />}
+            label={
+              <SwitchLabel>
+                <Template code="SearchResultsIndex-NonDataCalls" />
+              </SwitchLabel>
+            }
+            labelPlacement="start"
+          />
           {contacts.map(contact => (
             <ContactPreview
               key={contact.contactId}

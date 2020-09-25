@@ -109,6 +109,7 @@ class Search extends Component {
           <SearchResults
             currentIsCaller={this.props.currentIsCaller}
             results={searchResult}
+            onlyDataContacts={this.state.searchParams.onlyDataContacts}
             handleSelectSearchResult={this.props.handleSelectSearchResult}
             handleSearch={this.setOffsetAndHandleSearch}
             toggleNonDataContacts={this.toggleNonDataContacts}
