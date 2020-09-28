@@ -49,7 +49,7 @@ class Search extends Component {
 
   state = {
     mockedMessage: '',
-    searchParams: null,
+    searchParams: {},
     offset: 0,
   };
 
@@ -67,17 +67,27 @@ class Search extends Component {
     );
   }
 
-  handleSearch = async () => {
+  handleSearch = () => {
     const { searchParams, offset } = this.state;
     this.props.searchContacts(searchParams, this.props.counselorsHash, CONTACTS_PER_PAGE, offset);
   };
 
-  setSearchParamsAndHandleSearch = async searchParams => {
+  setSearchParamsAndHandleSearch = searchParams => {
     this.setState({ searchParams, offset: 0 }, this.handleSearch);
   };
 
-  setOffsetAndHandleSearch = async offset => {
+  setOffsetAndHandleSearch = offset => {
     this.setState({ offset }, this.handleSearch);
+  };
+
+  toggleNonDataContacts = () => {
+    const { searchParams } = this.state;
+    const { onlyDataContacts } = searchParams;
+    const updatedSearchParams = {
+      ...searchParams,
+      onlyDataContacts: !onlyDataContacts,
+    };
+    this.setState({ searchParams: updatedSearchParams, offset: 0 }, this.handleSearch);
   };
 
   goToForm = () => this.props.changeSearchPage('form');
@@ -99,8 +109,10 @@ class Search extends Component {
           <SearchResults
             currentIsCaller={this.props.currentIsCaller}
             results={searchResult}
+            onlyDataContacts={this.state.searchParams.onlyDataContacts}
             handleSelectSearchResult={this.props.handleSelectSearchResult}
             handleSearch={this.setOffsetAndHandleSearch}
+            toggleNonDataContacts={this.toggleNonDataContacts}
             handleBack={this.goToForm}
             handleViewDetails={this.props.viewContactDetails}
             handleMockedMessage={this.handleMockedMessage}

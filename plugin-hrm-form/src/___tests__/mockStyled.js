@@ -60,6 +60,9 @@ jest.mock('../styles/search', () => ({
   CancelButton: 'CancelButton',
   StyledButtonBase: 'StyledButtonBase',
   SilentText: 'SilentText',
+  StyledFormControlLabel: 'StyledFormControlLabel',
+  StyledSwitch: 'StyledSwitch',
+  SwitchLabel: 'SwitchLabel',
 }));
 
 jest.mock('../styles/callTypeButtons', () => ({

@@ -40,6 +40,7 @@ function createState(taskId, { currentPage, searchFormValues, currentContact, se
               phoneNumber: '',
               dateFrom: '',
               dateTo: '',
+              onlyDataContacts: false,
             },
             searchResult: searchResult || [],
             detailsExpanded: detailsExpanded || {},

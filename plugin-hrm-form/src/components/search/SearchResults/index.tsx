@@ -6,7 +6,16 @@ import { Template } from '@twilio/flex-ui';
 import ContactPreview from '../ContactPreview';
 import { SearchContactResult, SearchContact } from '../../../types/types';
 import { Row } from '../../../styles/HrmStyles';
-import { BackIcon, BackText, ResultsHeader, ListContainer, ScrollableList } from '../../../styles/search';
+import {
+  BackIcon,
+  BackText,
+  ResultsHeader,
+  ListContainer,
+  ScrollableList,
+  StyledFormControlLabel,
+  StyledSwitch,
+  SwitchLabel,
+} from '../../../styles/search';
 import ConnectDialog from '../ConnectDialog';
 import Pagination from '../../Pagination';
 
@@ -15,8 +24,10 @@ export const CONTACTS_PER_PAGE = 20;
 type SearchResultsProps = {
   currentIsCaller: boolean;
   results: SearchContactResult;
+  onlyDataContacts: boolean;
   handleSelectSearchResult: (contact: SearchContact) => void;
   handleSearch: (offset: number) => void;
+  toggleNonDataContacts: () => void;
   handleBack: () => void;
   handleViewDetails: (contact: SearchContact) => void;
 };
@@ -24,8 +35,10 @@ type SearchResultsProps = {
 const SearchResults: React.FC<SearchResultsProps> = ({
   currentIsCaller,
   results,
+  onlyDataContacts,
   handleSelectSearchResult,
   handleSearch,
+  toggleNonDataContacts,
   handleBack,
   handleViewDetails,
 }) => {
@@ -47,6 +60,11 @@ const SearchResults: React.FC<SearchResultsProps> = ({
     handleSearch(CONTACTS_PER_PAGE * newPage);
   };
 
+  const handleToggleNonDataContact = () => {
+    setPage(0);
+    toggleNonDataContacts();
+  };
+
   const handleOpenConnectDialog = contact => e => {
     e.stopPropagation();
     setAnchorEl(e.currentTarget);
@@ -54,7 +72,6 @@ const SearchResults: React.FC<SearchResultsProps> = ({
   };
 
   const { contacts, count } = results;
-  const resultsCount = contacts.length;
   const pagesCount = Math.ceil(count / CONTACTS_PER_PAGE);
 
   return (
@@ -70,8 +87,8 @@ const SearchResults: React.FC<SearchResultsProps> = ({
         </Row>
         <Row style={{ paddingLeft: '24px' }}>
           <BackText>
-            {resultsCount}
-            {resultsCount === 1 ? (
+            {count}
+            {count === 1 ? (
               <Template code="SearchResultsIndex-Result" />
             ) : (
               <Template code="SearchResultsIndex-Results" />
@@ -88,6 +105,15 @@ const SearchResults: React.FC<SearchResultsProps> = ({
       />
       <ListContainer>
         <ScrollableList>
+          <StyledFormControlLabel
+            control={<StyledSwitch checked={!onlyDataContacts} onChange={handleToggleNonDataContact} />}
+            label={
+              <SwitchLabel>
+                <Template code="SearchResultsIndex-NonDataContacts" />
+              </SwitchLabel>
+            }
+            labelPlacement="start"
+          />
           {contacts.map(contact => (
             <ContactPreview
               key={contact.contactId}

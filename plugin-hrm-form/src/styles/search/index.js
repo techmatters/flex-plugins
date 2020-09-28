@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'react-emotion';
-import { ButtonBase, Paper, Button, withStyles } from '@material-ui/core';
+import { ButtonBase, Paper, Button, FormControlLabel, Switch, withStyles } from '@material-ui/core';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import Link from '@material-ui/icons/Link';
 
@@ -271,3 +271,38 @@ export const StyledButtonBase = withStyles({
     color: 'rgba(0, 0, 0, 0.26)',
   },
 })(ButtonBase);
+
+export const StyledFormControlLabel = styled(FormControlLabel)`
+  width: 565px;
+`;
+StyledFormControlLabel.displayName = 'StyledFormControlLabel';
+
+export const StyledSwitch = withStyles({
+  icon: {
+    border: 'none',
+    width: '18px',
+    height: '18px',
+  },
+  switchBase: {
+    transform: 'translateX(6px)',
+  },
+  checked: {
+    transform: 'translateX(17px)',
+  },
+  bar: {
+    width: '40px',
+    height: '22px',
+    marginTop: '-11px',
+    borderRadius: '13px',
+    backgroundColor: '#D2DBE7',
+    '$checked$checked + &': {
+      backgroundColor: '#1D2B32',
+    },
+  },
+})(Switch);
+StyledSwitch.displayName = 'StyledSwitch';
+
+export const SwitchLabel = styled(SummaryText)`
+  margin-right: 5px;
+`;
+SwitchLabel.displayName = 'SwitchLabel';
