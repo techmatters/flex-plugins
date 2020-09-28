@@ -109,7 +109,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
             control={<StyledSwitch checked={!onlyDataContacts} onChange={handleToggleNonDataContact} />}
             label={
               <SwitchLabel>
-                <Template code="SearchResultsIndex-NonDataCalls" />
+                <Template code="SearchResultsIndex-NonDataContacts" />
               </SwitchLabel>
             }
             labelPlacement="start"

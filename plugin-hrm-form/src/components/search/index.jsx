@@ -49,7 +49,7 @@ class Search extends Component {
 
   state = {
     mockedMessage: '',
-    searchParams: null,
+    searchParams: {},
     offset: 0,
   };
 
