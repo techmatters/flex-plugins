@@ -275,6 +275,7 @@ export const StyledButtonBase = withStyles({
 export const StyledFormControlLabel = styled(FormControlLabel)`
   width: 565px;
 `;
+StyledFormControlLabel.displayName = 'StyledFormControlLabel';
 
 export const StyledSwitch = withStyles({
   icon: {
@@ -299,7 +300,9 @@ export const StyledSwitch = withStyles({
     },
   },
 })(Switch);
+StyledSwitch.displayName = 'StyledSwitch';
 
 export const SwitchLabel = styled(SummaryText)`
   margin-right: 5px;
 `;
+SwitchLabel.displayName = 'SwitchLabel';
