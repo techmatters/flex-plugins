@@ -13,6 +13,7 @@ import * as TransferHelpers from './utils/transfer';
 import setUpMonitoring from './utils/setUpMonitoring';
 import { changeLanguage } from './states/configuration/actions';
 import { issueSyncToken } from './services/ServerlessService';
+import { requestTask } from './utils/manualPull';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 export const PLUGIN_VERSION = '0.8.0';
@@ -172,6 +173,8 @@ const setUpActions = setupObject => {
   const beforeCompleteAction = ActionFunctions.sendInsightsData(setupObject);
 
   Flex.Actions.addListener('beforeAcceptTask', ActionFunctions.initializeContactForm);
+
+  Flex.Actions.addListener('beforeWrapupTask', ActionFunctions.beforeWrapupTask(setupObject));
 
   Flex.Actions.addListener('afterAcceptTask', ActionFunctions.afterAcceptTask(setupObject));
 

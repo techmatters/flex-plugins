@@ -12,6 +12,7 @@ import { channelTypes, transferModes } from '../states/DomainConstants';
 import * as TransferHelpers from './transfer';
 import { saveFormSharedState, loadFormSharedState } from './sharedState';
 import { prepopulateForm } from './prepopulateForm';
+import { requestTask } from './manualPull';
 
 /**
  * Given a taskSid, retrieves the state of the form (stored in redux) for that task
@@ -46,6 +47,17 @@ const fromActionFunction = fun => async (payload, original) => {
  */
 export const initializeContactForm = payload => {
   Manager.getInstance().store.dispatch(GeneralActions.initializeContactState(payload.task.taskSid));
+};
+
+/**
+ * @type {ActionFunction}
+ */
+export const beforeWrapupTask = setupObject => async payload => {
+  const { featureFlags } = setupObject;
+  const { task } = payload;
+  if (featureFlags.enable_manual_pulling && task.taskChannelUniqueName === 'chat') {
+    requestTask(false);
+  }
 };
 
 /**

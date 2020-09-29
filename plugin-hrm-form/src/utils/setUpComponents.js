@@ -232,8 +232,9 @@ export const setUpIncomingTransferMessage = () => {
 };
 
 export const setUpManualPulling = () => {
-  Flex.TaskList.Content.add(<ManualPullButton key="manual-pull-button" />, {
-    sortOrder: Infinity,
+  const worker = Flex.Manager.getInstance().workerClient;
+  Flex.TaskList.Content.add(<ManualPullButton key="manual-pull-button"  worker={worker}/>, {
+    sortOrder: -1,
     align: 'start',
   });
 };
