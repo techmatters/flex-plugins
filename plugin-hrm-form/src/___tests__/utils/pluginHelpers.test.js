@@ -1,4 +1,4 @@
-import { initTranslateUI, getGoodbyeMsg, initLocalization, defaultLanguage } from '../../utils/pluginHelpers';
+import { initTranslateUI, getMessage, initLocalization, defaultLanguage } from '../../utils/pluginHelpers';
 
 console.log = jest.fn();
 console.error = jest.fn();
@@ -7,7 +7,10 @@ const defaultTranslation = require(`../../translations/${defaultLanguage}/flexUI
 const defaultMessages = require(`../../translations/${defaultLanguage}/messages.json`);
 
 const esTranslation = { 'CallType-child': 'Menor llamando por si mismo' };
-const esMessages = { GoodbyeMsg: 'El consejero abandonó el chat.' };
+const esMessages = {
+  WelcomeMsg: 'Hola, soy el consejero. ¿Como puedo ayudarte?',
+  GoodbyeMsg: 'El consejero abandonó el chat.',
+};
 
 const mockTranslations = {
   [defaultLanguage]: { flexUI: defaultTranslation, messages: defaultMessages },
@@ -70,22 +73,28 @@ describe('Test initTranslateUI', () => {
   });
 });
 
-describe('Test getGoodbyeMsg', () => {
+describe('Test getMessage', () => {
   test('Default language', async () => {
-    const goodbyeMsg = await getGoodbyeMsg(defaultLanguage);
+    const welcomeMsg = await getMessage('WelcomeMsg')(defaultLanguage);
+    expect(welcomeMsg).toStrictEqual(defaultMessages.WelcomeMsg);
 
+    const goodbyeMsg = await getMessage('GoodbyeMsg')(defaultLanguage);
     expect(goodbyeMsg).toStrictEqual(defaultMessages.GoodbyeMsg);
   });
 
   test('Non default language', async () => {
-    const goodbyeMsg = await getGoodbyeMsg('es');
+    const welcomeMsg = await getMessage('WelcomeMsg')('es');
+    expect(welcomeMsg).toStrictEqual(esMessages.WelcomeMsg);
 
+    const goodbyeMsg = await getMessage('GoodbyeMsg')('es');
     expect(goodbyeMsg).toStrictEqual(esMessages.GoodbyeMsg);
   });
 
   test('Expect default (non existing translation)', async () => {
-    const goodbyeMsg = await getGoodbyeMsg('non existing');
+    const welcomeMsg = await getMessage('WelcomeMsg')('non existing');
+    expect(welcomeMsg).toStrictEqual(defaultMessages.WelcomeMsg);
 
+    const goodbyeMsg = await getMessage('GoodbyeMsg')('non existing');
     expect(goodbyeMsg).toStrictEqual(defaultMessages.GoodbyeMsg);
   });
 });
