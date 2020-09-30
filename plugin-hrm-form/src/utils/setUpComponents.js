@@ -15,9 +15,10 @@ import CaseListSideLink from '../components/sideLinks/CaseListSideLink';
 import ManualPullButton from '../components/ManualPullButton';
 // eslint-disable-next-line no-unused-vars
 import { getConfig } from '../HrmFormPlugin';
+
 /**
  * Add an "invisible" component that tracks the state of the queues, updating the pending tasks in each channel
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
  */
 export const setUpQueuesStatusWriter = setupObject => {
   const { helpline } = setupObject;
@@ -156,7 +157,7 @@ export const setUpTransferComponents = () => {
 
 /**
  * Add components used only by developers
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
  */
 export const setUpDeveloperComponents = setupObject => {
   const manager = Flex.Manager.getInstance();
