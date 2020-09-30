@@ -1,14 +1,14 @@
 import { Manager } from '@twilio/flex-ui';
-export const requestTask = (adjustment) => {
+export const adjustTaskCapacity = (adjustment) => {
     const url = 'https://periwinkle-jaguar-1552.twil.io/change-task-amount';
     const worker = Manager.getInstance().workerClient;
     let channelSid = '';
-    worker.channels.forEach(channel => {
-    console.log(channel);
-        if(channel.taskChannelUniqueName === 'chat'){
-            channelSid = channel.sid;
+    for (const channel of worker.channels){
+        if(channel[1].taskChannelUniqueName === 'chat'){
+            channelSid = channel[1].sid;
+            break;
         }
-    });
+    }
   console.log(channelSid);
     let data = {
       workerSid: worker.sid,
@@ -17,7 +17,6 @@ export const requestTask = (adjustment) => {
       workerLimit: worker.attributes.maxMessageCapacity,
       increasing: adjustment,
     };
-    console.log(data);
     const defaultOptions = {
       method: 'POST',
       headers: {

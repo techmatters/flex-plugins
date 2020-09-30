@@ -73,6 +73,7 @@ export function transformForm(form) {
  * @param shouldFillEndMillis
  */
 export async function saveToHrm(task, form, hrmBaseUrl, workerSid, helpline, shouldFillEndMillis = true) {
+  return;
   // if we got this far, we assume the form is valid and ready to submit
   const metadata = shouldFillEndMillis ? fillEndMillis(form.metadata) : form.metadata;
   const conversationDuration = getConversationDuration(metadata);

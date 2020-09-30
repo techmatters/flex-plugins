@@ -1,7 +1,7 @@
 import React, { ObjectHTMLAttributes } from 'react';
 import { Manager, Actions } from '@twilio/flex-ui';
 import { ButtonBase } from '@material-ui/core';
-import { requestTask } from '../../utils/manualPull';
+import { adjustTaskCapacity } from '../../utils/manualPull';
 import { ManualPullIconContainer, ManualPullIcon, ManualPullContent, ManualPullText } from '../../styles/HrmStyles';
 
 type Props = {
@@ -10,7 +10,7 @@ type Props = {
 
 const ManualPullButton: React.FC<Props> = () => {
 
-  return(<ButtonBase onClick={(e) => requestTask(true)} className="Twilio-TaskListBaseItem-UpperArea css-xz5ie1">
+  return(<ButtonBase onClick={(e) => adjustTaskCapacity(true)} className="Twilio-TaskListBaseItem-UpperArea css-xz5ie1">
     <ManualPullIconContainer>
       <ManualPullIcon icon="Add" />
     </ManualPullIconContainer>
