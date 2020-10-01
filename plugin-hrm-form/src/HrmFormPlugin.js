@@ -81,7 +81,7 @@ const setUpSharedStateClient = () => {
 };
 
 /**
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
  */
 const setUpTransferredTaskJanitor = async setupObject => {
   const { workerSid } = setupObject;
@@ -103,7 +103,7 @@ const setUpTransferredTaskJanitor = async setupObject => {
 };
 
 /**
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
  */
 const setUpTransfers = setupObject => {
   setUpSharedStateClient();
@@ -131,7 +131,7 @@ const setUpLocalization = config => {
 };
 
 /**
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
  */
 const setUpComponents = setupObject => {
   const { helpline, featureFlags } = setupObject;
@@ -161,7 +161,7 @@ const setUpComponents = setupObject => {
 };
 
 /**
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
  */
 const setUpActions = setupObject => {
   const { featureFlags } = setupObject;
@@ -244,9 +244,9 @@ export default class HrmFormPlugin extends FlexPlugin {
      * localization setup (translates the UI if necessary)
      * WARNING: the way this is done right now is "hacky". More info in initLocalization declaration
      */
-    const { translateUI, getGoodbyeMsg } = setUpLocalization(config);
+    const { translateUI, getMessage } = setUpLocalization(config);
 
-    const setupObject = { ...config, translateUI, getGoodbyeMsg };
+    const setupObject = { ...config, translateUI, getMessage };
 
     if (config.featureFlags.enable_transfers) setUpTransfers(setupObject);
     setUpComponents(setupObject);
