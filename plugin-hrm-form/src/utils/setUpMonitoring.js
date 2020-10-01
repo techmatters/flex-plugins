@@ -29,7 +29,7 @@ function setUpDatadogRum(workerClient) {
 
 function setUpRollbarLogger(plugin, workerClient) {
   plugin.Rollbar = new Rollbar({
-    reportLevel: 'warning',
+    reportLevel: 'error',
     accessToken: rollbarAccessToken,
     captureUncaught: true,
     captureUnhandledRejections: true,
@@ -43,6 +43,8 @@ function setUpRollbarLogger(plugin, workerClient) {
       },
     },
     ignoredMessages: ['Warning: Failed prop type'],
+    maxItems: 500,
+    ignoreDuplicateErrors: true,
   });
 
   const myLogManager = new Flex.Log.LogManager({
@@ -82,6 +84,6 @@ function setUpRollbarLogger(plugin, workerClient) {
 }
 
 export default function setUpMonitoring(plugin, workerClient) {
-  setUpRollbarLogger(plugin, workerClient);
   setUpDatadogRum(workerClient);
+  setUpRollbarLogger(plugin, workerClient);
 }
