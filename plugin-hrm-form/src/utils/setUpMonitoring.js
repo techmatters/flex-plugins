@@ -28,7 +28,7 @@ function setUpDatadogRum(workerClient) {
 
 function setUpRollbarLogger(plugin, workerClient) {
   plugin.Rollbar = new Rollbar({
-    reportLevel: 'warning',
+    reportLevel: 'error',
     accessToken: rollbarAccessToken,
     captureUncaught: true,
     captureUnhandledRejections: true,

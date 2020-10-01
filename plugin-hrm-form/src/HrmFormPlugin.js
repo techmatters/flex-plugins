@@ -233,7 +233,7 @@ export default class HrmFormPlugin extends FlexPlugin {
    * @param manager { import('@twilio/flex-ui').Manager }
    */
   init(flex, manager) {
-    setUpMonitoring(this, manager.workerClient);
+    if (!process.env.NO_MONITORING) setUpMonitoring(this, manager.workerClient);
 
     console.log(`Welcome to ${PLUGIN_NAME} Version ${PLUGIN_VERSION}`);
     this.registerReducers(manager);
