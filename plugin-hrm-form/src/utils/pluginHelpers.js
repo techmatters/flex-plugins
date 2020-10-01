@@ -34,7 +34,7 @@ export const initTranslateUI = localizationConfig => async language => {
 };
 
 /**
- * Function that receives a language and a message key and fetches the appropiate message from serverless translations
+ * Function that receives a language and a message key and fetches the appropriate message from serverless translations
  * @param {string} messageKey
  * @returns {(language: string) => Promise<string>}
  */
