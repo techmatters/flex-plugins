@@ -10,15 +10,13 @@ type PopulateCounselorsReturn = { sid: string; fullName: string }[];
  * [Protected] Fetches the workers within a workspace and helpline.
  */
 export const populateCounselors = async (): Promise<PopulateCounselorsReturn> => {
-  const { serverlessBaseUrl, helpline, currentWorkspace, token } = getConfig();
-  const url = `${serverlessBaseUrl}/populateCounselors`;
+  const { helpline, currentWorkspace } = getConfig();
   const body = {
     workspaceSID: currentWorkspace,
     helpline: helpline || '',
-    Token: token,
   };
 
-  const { workerSummaries } = await fetchProtectedApi(url, body);
+  const { workerSummaries } = await fetchProtectedApi('/populateCounselors', body);
 
   return workerSummaries;
 };
@@ -27,19 +25,13 @@ type GetTranslationBody = { language: string };
 
 // Returns translations json for Flex in string format
 export const getTranslation = async (body: GetTranslationBody): Promise<string> => {
-  const { serverlessBaseUrl, token } = getConfig();
-  const url = `${serverlessBaseUrl}/getTranslation`;
-
-  const translation = await fetchProtectedApi(url, { ...body, Token: token });
+  const translation = await fetchProtectedApi('/getTranslation', body);
   return translation;
 };
 
 // Returns translations json for system messages in string format
 export const getMessages = async (body: GetTranslationBody): Promise<string> => {
-  const { serverlessBaseUrl, token } = getConfig();
-  const url = `${serverlessBaseUrl}/getMessages`;
-
-  const messages = await fetchProtectedApi(url, { ...body, Token: token });
+  const messages = await fetchProtectedApi('/getMessages', body);
   return messages;
 };
 
@@ -54,13 +46,9 @@ type TransferChatStartBody = {
 type TrasferChatStartReturn = { closed: string; kept: string };
 
 export const transferChatStart = async (body: TransferChatStartBody): Promise<TrasferChatStartReturn> => {
-  const { serverlessBaseUrl, token } = getConfig();
-
   try {
-    const url = `${serverlessBaseUrl}/transferChatStart`;
-
-    const newTask = await fetchProtectedApi(url, { ...body, Token: token });
-    return newTask;
+    const result = await fetchProtectedApi('/transferChatStart', body);
+    return result;
   } catch (err) {
     Notifications.showNotification('TransferFailed', {
       reason: `Worker ${body.targetSid} is not available.`,
@@ -72,10 +60,7 @@ export const transferChatStart = async (body: TransferChatStartBody): Promise<Tr
 };
 
 export const issueSyncToken = async (): Promise<string> => {
-  const { serverlessBaseUrl, token } = getConfig();
-  const url = `${serverlessBaseUrl}/issueSyncToken`;
-
-  const res = await fetchProtectedApi(url, { Token: token });
+  const res = await fetchProtectedApi('/issueSyncToken');
   const syncToken = res.token;
   return syncToken;
 };
