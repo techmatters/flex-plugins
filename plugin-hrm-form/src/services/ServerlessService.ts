@@ -4,11 +4,12 @@ import { Notifications } from '@twilio/flex-ui';
 import fetchProtectedApi from './fetchProtectedApi';
 import { getConfig } from '../HrmFormPlugin';
 
+type PopulateCounselorsReturn = { sid: string; fullName: string }[];
+
 /**
  * [Protected] Fetches the workers within a workspace and helpline.
- * @returns {Promise< {sid: string, fullName: string}[] >}
  */
-export const populateCounselors = async () => {
+export const populateCounselors = async (): Promise<PopulateCounselorsReturn> => {
   const { serverlessBaseUrl, helpline, currentWorkspace, token } = getConfig();
   const url = `${serverlessBaseUrl}/populateCounselors`;
   const body = {
@@ -22,7 +23,10 @@ export const populateCounselors = async () => {
   return workerSummaries;
 };
 
-export const getTranslation = async body => {
+type GetTranslationBody = { language: string };
+
+// Returns translations json for Flex in string format
+export const getTranslation = async (body: GetTranslationBody): Promise<string> => {
   const { serverlessBaseUrl, token } = getConfig();
   const url = `${serverlessBaseUrl}/getTranslation`;
 
@@ -30,7 +34,8 @@ export const getTranslation = async body => {
   return translation;
 };
 
-export const getMessages = async body => {
+// Returns translations json for system messages in string format
+export const getMessages = async (body: GetTranslationBody): Promise<string> => {
   const { serverlessBaseUrl, token } = getConfig();
   const url = `${serverlessBaseUrl}/getMessages`;
 
@@ -38,7 +43,17 @@ export const getMessages = async body => {
   return messages;
 };
 
-export const transferChatStart = async body => {
+type TransferChatStartBody = {
+  taskSid: string;
+  targetSid: string;
+  ignoreAgent: string;
+  mode: string;
+  memberToKick: string;
+};
+
+type TrasferChatStartReturn = { closed: string; kept: string };
+
+export const transferChatStart = async (body: TransferChatStartBody): Promise<TrasferChatStartReturn> => {
   const { serverlessBaseUrl, token } = getConfig();
 
   try {
@@ -56,10 +71,7 @@ export const transferChatStart = async body => {
   }
 };
 
-/**
- * @returns {Promise<string>}
- */
-export const issueSyncToken = async () => {
+export const issueSyncToken = async (): Promise<string> => {
   const { serverlessBaseUrl, token } = getConfig();
   const url = `${serverlessBaseUrl}/issueSyncToken`;
 
