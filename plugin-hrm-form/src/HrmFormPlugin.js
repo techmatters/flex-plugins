@@ -185,7 +185,7 @@ const setUpActions = setupObject => {
 
   Flex.Actions.replaceAction('HangupCall', ActionFunctions.hangupCall);
 
-  Flex.Actions.replaceAction('beforeWrapupTask', beforeWrapupAction);
+  Flex.Actions.addListener('beforeWrapupTask', beforeWrapupAction);
 
   Flex.Actions.replaceAction('WrapupTask', wrapupOverride);
 

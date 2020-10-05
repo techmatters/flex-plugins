@@ -69,8 +69,8 @@ export const issueSyncToken = async (): Promise<string> => {
 export const adjustChatCapacity = async (adjustment: 'increase' | 'decrease'): Promise<void> => {
   const { worker, workerSid } = getConfig();
 
-  const chatChannel = Array.from(worker.channels).find(c => c[1].taskChannelUniqueName === 'chat') as { sid: string }; // type-casting as some Twilio types are missing
-  const channelSid = chatChannel.sid;
+  // find will return a tuple with [channelSid, channelResource]
+  const [channelSid] = Array.from(worker.channels).find(c => c[1].taskChannelUniqueName === 'chat') as [string, any]; // type-casting as some Twilio types are missing
 
   const body = {
     workspaceSid: worker.workspaceSid,

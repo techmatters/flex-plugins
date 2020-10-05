@@ -179,7 +179,7 @@ export const hangupCall = fromActionFunction(saveEndMillis);
 export const beforeWrapupTask = setupObject => async payload => {
   const { featureFlags } = setupObject;
   const { task } = payload;
-  if (featureFlags.enable_manual_pulling && task.taskChannelUniqueName === 'chat') adjustChatCapacity('decrease');
+  if (featureFlags.enable_manual_pulling && task.taskChannelUniqueName === 'chat') await adjustChatCapacity('decrease');
 };
 
 /**
