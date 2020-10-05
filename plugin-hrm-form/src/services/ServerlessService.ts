@@ -81,4 +81,6 @@ export const adjustChatCapacity = async (adjustment: 'increase' | 'decrease'): P
   };
 
   const response = await fetchProtectedApi('/adjustChatCapacity', body);
+
+  return response;
 };
