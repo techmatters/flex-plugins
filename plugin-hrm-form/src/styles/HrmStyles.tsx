@@ -548,7 +548,6 @@ export const ManualPullIconContainer = styled('div')`
   flex: 0 0 44px;
   height: 44px;
   background-color: #ffffff;
-ManualPullIcon.displayName = 'ManualPullIcon';
 `;
 ManualPullIconContainer.displayName = 'ManualPullIconContainer';
 
