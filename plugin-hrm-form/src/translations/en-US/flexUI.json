@@ -175,5 +175,7 @@
   "CallerSection-Nationality": "Nationality",
   "CallerSection-Ethnicity": "Ethnicity",
 
-  "ContactDetails-GeneralDetails": "General Details"
+  "ContactDetails-GeneralDetails": "General Details",
+
+  "ManualPullButtonText": "Add Another Task"
 }

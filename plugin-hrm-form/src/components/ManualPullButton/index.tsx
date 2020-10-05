@@ -1,5 +1,6 @@
 import React from 'react';
 import { ButtonBase } from '@material-ui/core';
+import { Template } from '@twilio/flex-ui';
 
 import { ManualPullIconContainer, ManualPullIcon, ManualPullContent, ManualPullText } from '../../styles/HrmStyles';
 import { adjustChatCapacity } from '../../services/ServerlessService';
@@ -16,7 +17,9 @@ const ManualPullButton: React.FC<Props> = () => (
       <ManualPullIcon icon="Add" />
     </ManualPullIconContainer>
     <ManualPullContent>
-      <ManualPullText>Add Another Task</ManualPullText>
+      <ManualPullText>
+        <Template code="ManualPullButtonText" />
+      </ManualPullText>
     </ManualPullContent>
   </ButtonBase>
 );
