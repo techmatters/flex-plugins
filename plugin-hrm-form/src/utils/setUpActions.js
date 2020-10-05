@@ -4,7 +4,7 @@ import { Manager, TaskHelper, Actions as FlexActions, ActionFunction, ReplacedAc
 // eslint-disable-next-line no-unused-vars
 import { DEFAULT_TRANSFER_MODE, getConfig } from '../HrmFormPlugin';
 import { saveInsightsData } from '../services/InsightsService';
-import { transferChatStart, adjustTaskCapacity } from '../services/ServerlessService';
+import { transferChatStart, adjustChatCapacity } from '../services/ServerlessService';
 import { namespace, contactFormsBase } from '../states';
 import { Actions } from '../states/ContactState';
 import * as GeneralActions from '../states/actions';
@@ -179,7 +179,7 @@ export const hangupCall = fromActionFunction(saveEndMillis);
 export const beforeWrapupTask = setupObject => async payload => {
   const { featureFlags } = setupObject;
   const { task } = payload;
-  if (featureFlags.enable_manual_pulling && task.taskChannelUniqueName === 'chat') adjustTaskCapacity('decrease');
+  if (featureFlags.enable_manual_pulling && task.taskChannelUniqueName === 'chat') adjustChatCapacity('decrease');
 };
 
 /**

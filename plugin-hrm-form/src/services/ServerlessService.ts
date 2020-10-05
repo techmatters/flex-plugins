@@ -66,19 +66,19 @@ export const issueSyncToken = async (): Promise<string> => {
 };
 
 // eslint-disable-next-line import/no-unused-modules
-export const adjustTaskCapacity = async (adjustment: 'increase' | 'decrease'): Promise<void> => {
+export const adjustChatCapacity = async (adjustment: 'increase' | 'decrease'): Promise<void> => {
   const { worker, workerSid } = getConfig();
 
   const chatChannel = Array.from(worker.channels).find(c => c[1].taskChannelUniqueName === 'chat') as { sid: string }; // type-casting as some Twilio types are missing
   const channelSid = chatChannel.sid;
 
   const body = {
-    // workspaceSid: worker.workspaceSid, // we already have this in serverless
+    workspaceSid: worker.workspaceSid,
     workerSid,
     channelSid,
     workerLimit: worker.attributes.maxMessageCapacity,
     adjustment,
   };
 
-  const response = await fetchProtectedApi('/changeTaskAmount', body);
+  const response = await fetchProtectedApi('/adjustChatCapacity', body);
 };

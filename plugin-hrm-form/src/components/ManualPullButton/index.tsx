@@ -2,10 +2,10 @@ import React from 'react';
 import { ButtonBase } from '@material-ui/core';
 
 import { ManualPullIconContainer, ManualPullIcon, ManualPullContent, ManualPullText } from '../../styles/HrmStyles';
-import { adjustTaskCapacity } from '../../services/ServerlessService';
+import { adjustChatCapacity } from '../../services/ServerlessService';
 
 const increaseChatCapacity = async () => {
-  await adjustTaskCapacity('increase');
+  await adjustChatCapacity('increase');
 };
 
 type Props = {};
