@@ -4,7 +4,7 @@ import { Manager, TaskHelper, Actions as FlexActions, ActionFunction, ReplacedAc
 // eslint-disable-next-line no-unused-vars
 import { DEFAULT_TRANSFER_MODE, getConfig } from '../HrmFormPlugin';
 import { saveInsightsData } from '../services/InsightsService';
-import { transferChatStart } from '../services/ServerlessService';
+import { transferChatStart, adjustTaskCapacity } from '../services/ServerlessService';
 import { namespace, contactFormsBase } from '../states';
 import { Actions } from '../states/ContactState';
 import * as GeneralActions from '../states/actions';
@@ -171,6 +171,16 @@ export const afterCancelTransfer = payload => {
 };
 
 export const hangupCall = fromActionFunction(saveEndMillis);
+
+/**
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
+ * @returns {ActionFunction}
+ */
+export const beforeWrapupTask = setupObject => async payload => {
+  const { featureFlags } = setupObject;
+  const { task } = payload;
+  if (featureFlags.enable_manual_pulling && task.taskChannelUniqueName === 'chat') adjustTaskCapacity('decrease');
+};
 
 /**
  * Helper to determine if the counselor should send a message before leaving the chat
