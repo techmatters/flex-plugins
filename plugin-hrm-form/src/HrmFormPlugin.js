@@ -29,8 +29,7 @@ export const getConfig = () => {
 
   const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
   const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
-  const worker = manager.workerClient;
-  const workerSid = worker.sid;
+  const workerSid = manager.workerClient.sid;
   const { helpline, counselorLanguage, helplineLanguage } = manager.workerClient.attributes;
   const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
   const { identity, token } = manager.user;
@@ -42,7 +41,6 @@ export const getConfig = () => {
   return {
     hrmBaseUrl,
     serverlessBaseUrl,
-    worker,
     workerSid,
     helpline,
     currentWorkspace,

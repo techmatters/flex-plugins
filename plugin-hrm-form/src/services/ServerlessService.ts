@@ -67,16 +67,10 @@ export const issueSyncToken = async (): Promise<string> => {
 
 // eslint-disable-next-line import/no-unused-modules
 export const adjustChatCapacity = async (adjustment: 'increase' | 'decrease'): Promise<void> => {
-  const { worker, workerSid } = getConfig();
-
-  // find will return a tuple with [channelSid, channelResource]
-  const [channelSid] = Array.from(worker.channels).find(c => c[1].taskChannelUniqueName === 'chat') as [string, any]; // type-casting as some Twilio types are missing
+  const { workerSid } = getConfig();
 
   const body = {
-    workspaceSid: worker.workspaceSid,
     workerSid,
-    channelSid,
-    workerLimit: worker.attributes.maxMessageCapacity,
     adjustment,
   };
 
