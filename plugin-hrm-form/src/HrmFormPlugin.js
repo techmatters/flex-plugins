@@ -169,6 +169,7 @@ const setUpActions = setupObject => {
   // bind setupObject to the functions that requires some initializaton
   const transferOverride = ActionFunctions.customTransferTask(setupObject);
   const wrapupOverride = ActionFunctions.wrapupTask(setupObject);
+  const beforeWrapupAction = ActionFunctions.beforeWrapupTask(setupObject);
   const beforeCompleteAction = ActionFunctions.sendInsightsData(setupObject);
 
   Flex.Actions.addListener('beforeAcceptTask', ActionFunctions.initializeContactForm);
@@ -181,6 +182,8 @@ const setUpActions = setupObject => {
     Flex.Actions.addListener('afterCancelTransfer', ActionFunctions.afterCancelTransfer);
 
   Flex.Actions.replaceAction('HangupCall', ActionFunctions.hangupCall);
+
+  Flex.Actions.addListener('beforeWrapupTask', beforeWrapupAction);
 
   Flex.Actions.replaceAction('WrapupTask', wrapupOverride);
 

@@ -13,7 +13,7 @@ import CaseList from '../components/caseList';
 import SettingsSideLink from '../components/sideLinks/SettingsSideLink';
 import CaseListSideLink from '../components/sideLinks/CaseListSideLink';
 import ManualPullButton from '../components/ManualPullButton';
-// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line
 import { getConfig } from '../HrmFormPlugin';
 
 /**
