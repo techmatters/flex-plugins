@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 
 import type { QueuesStatusState } from '../../states/queuesStatus/reducer';
 import { namespace, queuesStatusBase } from '../../states';
-import { isChatPending } from '../queuesStatus/helpers';
+import { isAnyChatPending } from '../queuesStatus/helpers';
 import { ManualPullIconContainer, ManualPullIcon, ManualPullContent, ManualPullText } from '../../styles/HrmStyles';
 import { adjustChatCapacity } from '../../services/ServerlessService';
 
@@ -20,8 +20,7 @@ type OwnProps = {};
 type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 
 const ManualPullButton: React.FC<Props> = ({ queuesStatusState }) => {
-  const disabled = !isChatPending(queuesStatusState.queuesStatus);
-  // Object.values(queuesStatusState.queuesStatus).forEach(e => console.log(e));
+  const disabled = !isAnyChatPending(queuesStatusState.queuesStatus);
 
   return (
     <ButtonBase
