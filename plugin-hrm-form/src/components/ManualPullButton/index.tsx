@@ -4,8 +4,7 @@ import { ButtonBase } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 
-import type { QueuesStatusState } from '../../states/queuesStatus/reducer';
-import { namespace, queuesStatusBase } from '../../states';
+import { namespace, queuesStatusBase, RootState } from '../../states';
 import { isAnyChatPending } from '../queuesStatus/helpers';
 import { ManualPullIconContainer, ManualPullIcon, ManualPullContent, ManualPullText } from '../../styles/HrmStyles';
 import { adjustChatCapacity } from '../../services/ServerlessService';
@@ -42,8 +41,8 @@ const ManualPullButton: React.FC<Props> = ({ queuesStatusState }) => {
 
 ManualPullButton.displayName = 'ManualPullButton';
 
-const mapStateToProps = (state, ownProps: OwnProps) => {
-  const queuesStatusState: QueuesStatusState = state[namespace][queuesStatusBase]; // casting type as inference is not working for the store yet
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
+  const queuesStatusState = state[namespace][queuesStatusBase]; // casting type as inference is not working for the store yet
 
   return { queuesStatusState };
 };
