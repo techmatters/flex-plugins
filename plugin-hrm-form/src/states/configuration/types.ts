@@ -1,6 +1,7 @@
 // Action types
 export const CHANGE_LANGUAGE = 'CHANGE_LANGUAGE';
 export const POPULATE_COUNSELORS = 'POPULATE_COUNSELORS';
+export const CHAT_CAPACITY_UPDATED = 'CHAT_CAPACITY_UPDATED';
 
 export type CounselorsList = {
   sid: string;
@@ -17,4 +18,9 @@ type PopulateCounselorsAction = {
   counselorsList: CounselorsList;
 };
 
-export type ConfigurationActionType = ChangeLanguageAction | PopulateCounselorsAction;
+type ChatCapacityUpdatedAction = {
+  type: typeof CHAT_CAPACITY_UPDATED;
+  capacity: number;
+};
+
+export type ConfigurationActionType = ChangeLanguageAction | PopulateCounselorsAction | ChatCapacityUpdatedAction;
