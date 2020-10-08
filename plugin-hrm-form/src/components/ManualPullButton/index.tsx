@@ -4,7 +4,7 @@ import { ButtonBase } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 
-import { namespace, queuesStatusBase, RootState } from '../../states';
+import { configurationBase, namespace, queuesStatusBase, RootState } from '../../states';
 import { isAnyChatPending } from '../queuesStatus/helpers';
 import { ManualPullIconContainer, ManualPullIcon, ManualPullContent, ManualPullText } from '../../styles/HrmStyles';
 import { adjustChatCapacity } from '../../services/ServerlessService';
@@ -18,8 +18,9 @@ type OwnProps = {};
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 
-const ManualPullButton: React.FC<Props> = ({ queuesStatusState }) => {
-  const disabled = !isAnyChatPending(queuesStatusState.queuesStatus);
+const ManualPullButton: React.FC<Props> = ({ queuesStatusState, chatChannelCapacity, workerAttr }) => {
+  const maxCapacityReached = chatChannelCapacity === workerAttr.maxMessageCapacity;
+  const disabled = maxCapacityReached || !isAnyChatPending(queuesStatusState.queuesStatus);
 
   return (
     <ButtonBase
@@ -42,9 +43,11 @@ const ManualPullButton: React.FC<Props> = ({ queuesStatusState }) => {
 ManualPullButton.displayName = 'ManualPullButton';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
-  const queuesStatusState = state[namespace][queuesStatusBase]; // casting type as inference is not working for the store yet
+  const queuesStatusState = state[namespace][queuesStatusBase];
+  const { chatChannelCapacity } = state[namespace][configurationBase].workerInfo;
+  const { attributes: workerAttr } = state.flex.worker;
 
-  return { queuesStatusState };
+  return { queuesStatusState, chatChannelCapacity, workerAttr };
 };
 
 export default connect(mapStateToProps, null)(ManualPullButton);
