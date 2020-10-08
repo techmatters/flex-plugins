@@ -1,3 +1,4 @@
+import type { FlexState } from '@twilio/flex-ui';
 import { combineReducers } from 'redux';
 
 import { reduce as ContactStateReducer } from './ContactState';
@@ -16,12 +17,22 @@ export const queuesStatusBase = 'queuesStatusState';
 export const configurationBase = 'configuration';
 export const routingBase = 'routing';
 
-// Combine the reducers
-export default combineReducers({
+const reducers = {
   [contactFormsBase]: ContactStateReducer,
   [searchContactsBase]: SearchFormReducer,
   [queuesStatusBase]: QueuesStatusReducer,
   [connectedCaseBase]: ConnectedCaseReducer,
   [configurationBase]: ConfigurationReducer,
   [routingBase]: RoutingReducer,
-});
+};
+
+// Combine the reducers
+const reducer = combineReducers(reducers);
+
+export default reducer;
+
+type HrmState = {
+  [P in keyof typeof reducers]: ReturnType<typeof reducers[P]>;
+};
+
+export type RootState = FlexState & { [namespace]: HrmState };
