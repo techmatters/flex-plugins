@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { ButtonBase } from '@material-ui/core';
-import { Template } from '@twilio/flex-ui';
+import { Notifications, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 
 import { configurationBase, namespace, queuesStatusBase, RootState } from '../../states';
@@ -9,16 +9,34 @@ import { isAnyChatPending } from '../queuesStatus/helpers';
 import { ManualPullIconContainer, ManualPullIcon, ManualPullContent, ManualPullText } from '../../styles/HrmStyles';
 import { adjustChatCapacity } from '../../services/ServerlessService';
 
-const increaseChatCapacity = async () => {
-  await adjustChatCapacity('increase');
+type OwnProps = {
+  workerClient: import('@twilio/flex-ui').Manager['workerClient'];
 };
-
-type OwnProps = {};
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 
-const ManualPullButton: React.FC<Props> = ({ queuesStatusState, chatChannelCapacity, workerAttr }) => {
+const ManualPullButton: React.FC<Props> = ({ queuesStatusState, chatChannelCapacity, workerAttr, workerClient }) => {
+  const increaseChatCapacity = async () => {
+    let alertTimeout = null;
+
+    const eventHandler = () => {
+      console.log('>>>> Reservation created, removing timeout: ', alertTimeout);
+      clearTimeout(alertTimeout);
+    };
+
+    alertTimeout = setTimeout(async () => {
+      workerClient.removeListener('reservationCreated', eventHandler);
+      console.log('>>>> Tiemout expired, decreasing capacity!');
+      Notifications.showNotification('NoTaskAssignableNotification');
+      await adjustChatCapacity('decrease');
+    }, 5000);
+
+    workerClient.once('reservationCreated', eventHandler);
+
+    await adjustChatCapacity('increase');
+  };
+
   const maxCapacityReached = chatChannelCapacity === workerAttr.maxMessageCapacity;
   const disabled = maxCapacityReached || !isAnyChatPending(queuesStatusState.queuesStatus);
 

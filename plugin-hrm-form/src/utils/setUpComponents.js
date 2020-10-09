@@ -244,7 +244,14 @@ export const setUpManualPulling = () => {
     if (channel.taskChannelUniqueName === 'chat') manager.store.dispatch(chatCapacityUpdated(channel.capacity));
   });
 
-  Flex.TaskList.Content.add(<ManualPullButton key="manual-pull-button" />, {
+  Flex.Notifications.registerNotification({
+    id: 'NoTaskAssignableNotification',
+    content: <Flex.Template code="NoTaskAssignableNotification" />,
+    timeout: 5000,
+    type: Flex.NotificationType.warning,
+  });
+
+  Flex.TaskList.Content.add(<ManualPullButton key="manual-pull-button" workerClient={manager.workerClient} />, {
     sortOrder: Infinity,
     align: 'start',
   });
