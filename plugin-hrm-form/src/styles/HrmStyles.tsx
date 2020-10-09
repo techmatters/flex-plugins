@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import React from 'react';
 import styled from 'react-emotion';
-import { Input, Select, MenuItem, Tabs, Tab, Checkbox, withStyles, TableRow } from '@material-ui/core';
+import { ButtonBase, Input, Select, MenuItem, Tabs, Tab, Checkbox, withStyles, TableRow } from '@material-ui/core';
 import { Button, Icon, getBackgroundWithHoverCSS, TabsProps } from '@twilio/flex-ui';
 
 type BoxProps = {
@@ -575,3 +575,25 @@ export const ManualPullText = styled(FontOpenSans)`
   font-weight: 600;
 `;
 ManualPullText.displayName = 'ManualPullText';
+
+export const ManualPullButtonBase = withStyles({
+  root: {
+    '&:hover': {
+      backgroundColor: '#ECEDF1',
+    },
+    '&:hover > div': {
+      backgroundColor: '#ECEDF1',
+    },
+  },
+  disabled: {
+    opacity: 0.3,
+    color: '#192B33',
+    '& svg': {
+      color: '#192B33',
+    },
+    '& p': {
+      color: '#192B33',
+    },
+  },
+})(ButtonBase);
+ManualPullButtonBase.displayName = 'ManualPullButtonBase';

@@ -1,12 +1,17 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { ButtonBase } from '@material-ui/core';
 import { Notifications, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 
 import { configurationBase, namespace, queuesStatusBase, RootState } from '../../states';
 import { isAnyChatPending } from '../queuesStatus/helpers';
-import { ManualPullIconContainer, ManualPullIcon, ManualPullContent, ManualPullText } from '../../styles/HrmStyles';
+import {
+  ManualPullButtonBase,
+  ManualPullIconContainer,
+  ManualPullIcon,
+  ManualPullContent,
+  ManualPullText,
+} from '../../styles/HrmStyles';
 import { adjustChatCapacity } from '../../services/ServerlessService';
 
 type OwnProps = {
@@ -17,17 +22,16 @@ type OwnProps = {
 type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 
 const ManualPullButton: React.FC<Props> = ({ queuesStatusState, chatChannelCapacity, workerAttr, workerClient }) => {
+  // Increase chat capacity, if no reservation is created within 5 seconds, capacity is decreased and shows a notification.
   const increaseChatCapacity = async () => {
     let alertTimeout = null;
 
     const eventHandler = () => {
-      console.log('>>>> Reservation created, removing timeout: ', alertTimeout);
       clearTimeout(alertTimeout);
     };
 
     alertTimeout = setTimeout(async () => {
       workerClient.removeListener('reservationCreated', eventHandler);
-      console.log('>>>> Tiemout expired, decreasing capacity!');
       Notifications.showNotification('NoTaskAssignableNotification');
       await adjustChatCapacity('decrease');
     }, 5000);
@@ -41,7 +45,7 @@ const ManualPullButton: React.FC<Props> = ({ queuesStatusState, chatChannelCapac
   const disabled = maxCapacityReached || !isAnyChatPending(queuesStatusState.queuesStatus);
 
   return (
-    <ButtonBase
+    <ManualPullButtonBase
       onClick={increaseChatCapacity}
       className="Twilio-TaskListBaseItem-UpperArea css-xz5ie1"
       disabled={disabled}
@@ -54,7 +58,7 @@ const ManualPullButton: React.FC<Props> = ({ queuesStatusState, chatChannelCapac
           <Template code="ManualPullButtonText" />
         </ManualPullText>
       </ManualPullContent>
-    </ButtonBase>
+    </ManualPullButtonBase>
   );
 };
 
