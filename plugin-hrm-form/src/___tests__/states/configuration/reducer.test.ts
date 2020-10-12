@@ -7,7 +7,13 @@ describe('test reducer', () => {
   let state = undefined;
 
   test('should return initial state', async () => {
-    const expected = { language: defaultLanguage, counselors: { list: [], hash: {} } };
+    const expected = {
+      language: defaultLanguage,
+      counselors: { list: [], hash: {} },
+      workerInfo: {
+        chatChannelCapacity: 0,
+      },
+    };
 
     const result = reduce(state, {});
     expect(result).toStrictEqual(expected);
@@ -36,6 +42,16 @@ describe('test reducer', () => {
     const expected = { ...state, counselors };
 
     const result = reduce(state, actions.populateCounselorsState(counselorsList));
+    expect(result).toStrictEqual(expected);
+
+    state = result;
+  });
+
+  test('should handle CHAT_CAPACITY_UPDATED', async () => {
+    const chatChannelCapacity = 2;
+    const expected = { ...state, workerInfo: { chatChannelCapacity } };
+
+    const result = reduce(state, actions.chatCapacityUpdated(chatChannelCapacity));
     expect(result).toStrictEqual(expected);
 
     state = result;
