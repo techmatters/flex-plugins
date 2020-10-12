@@ -2,15 +2,16 @@
 import { saveInsightsData } from '../../services/InsightsService';
 
 test('saveInsightsData for non-data callType', async () => {
-  const previousAttributtes = {
+  const previousAttributes = {
     taskSid: 'task-sid',
+    channelType: 'sms',
     conversations: {
       content: 'content',
     },
   };
 
   const twilioTask = {
-    attributes: previousAttributtes,
+    attributes: previousAttributes,
     setAttributes: jest.fn(),
   };
 
@@ -24,9 +25,11 @@ test('saveInsightsData for non-data callType', async () => {
 
   const expectedNewAttributes = {
     taskSid: 'task-sid',
+    channelType: 'sms',
     conversations: {
       content: 'content',
       conversation_attribute_2: 'Abusive',
+      conversation_attribute_6: 'SMS',
     },
   };
 
@@ -34,15 +37,16 @@ test('saveInsightsData for non-data callType', async () => {
 });
 
 test('saveInsightsData for data callType', async () => {
-  const previousAttributtes = {
+  const previousAttributes = {
     taskSid: 'task-sid',
+    channelType: 'voice',
     conversations: {
       content: 'content',
     },
   };
 
   const twilioTask = {
-    attributes: previousAttributtes,
+    attributes: previousAttributes,
     setAttributes: jest.fn(),
   };
 
@@ -92,12 +96,14 @@ test('saveInsightsData for data callType', async () => {
 
   const expectedNewAttributes = {
     taskSid: 'task-sid',
+    channelType: 'voice',
     conversations: {
       content: 'content',
       conversation_attribute_1: 'Unspecified/Other - Missing children;Bullying;Addictive behaviours',
       conversation_attribute_2: 'Child calling about self',
       conversation_attribute_3: 'Boy',
       conversation_attribute_4: '13-15',
+      conversation_attribute_6: 'Voice',
     },
   };
 

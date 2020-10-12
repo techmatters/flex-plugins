@@ -35,6 +35,18 @@ export const mapChannel = channel => {
   }
 };
 
+// Flex Insights reporting uses slightly different channel names than other uses
+export const mapChannelForInsights = channel => {
+  switch (channel) {
+    case channelTypes.facebook:
+      return 'Facebook';
+    case channelTypes.web:
+      return 'Web';
+    default:
+      return mapChannel(channel);
+  }
+};
+
 export const mapAge = age => {
   let ageStr;
   if (age === undefined) {
