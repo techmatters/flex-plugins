@@ -13,6 +13,7 @@ import CaseList from '../components/caseList';
 import SettingsSideLink from '../components/sideLinks/SettingsSideLink';
 import CaseListSideLink from '../components/sideLinks/CaseListSideLink';
 import ManualPullButton from '../components/ManualPullButton';
+import { chatCapacityUpdated } from '../states/configuration/actions';
 // eslint-disable-next-line
 import { getConfig } from '../HrmFormPlugin';
 
@@ -233,7 +234,24 @@ export const setUpIncomingTransferMessage = () => {
 };
 
 export const setUpManualPulling = () => {
-  Flex.TaskList.Content.add(<ManualPullButton key="manual-pull-button" />, {
+  const manager = Flex.Manager.getInstance();
+
+  const [, chatChannel] = Array.from(manager.workerClient.channels).find(c => c[1].taskChannelUniqueName === 'chat');
+
+  manager.store.dispatch(chatCapacityUpdated(chatChannel.capacity));
+
+  chatChannel.on('capacityUpdated', channel => {
+    if (channel.taskChannelUniqueName === 'chat') manager.store.dispatch(chatCapacityUpdated(channel.capacity));
+  });
+
+  Flex.Notifications.registerNotification({
+    id: 'NoTaskAssignableNotification',
+    content: <Flex.Template code="NoTaskAssignableNotification" />,
+    timeout: 5000,
+    type: Flex.NotificationType.warning,
+  });
+
+  Flex.TaskList.Content.add(<ManualPullButton key="manual-pull-button" workerClient={manager.workerClient} />, {
     sortOrder: Infinity,
     align: 'start',
   });

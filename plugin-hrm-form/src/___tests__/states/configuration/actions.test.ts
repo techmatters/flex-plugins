@@ -23,4 +23,11 @@ describe('test action creators', () => {
       counselorsList,
     });
   });
+
+  test('chatCapacityUpdated', async () => {
+    expect(actions.chatCapacityUpdated(2)).toStrictEqual({
+      type: types.CHAT_CAPACITY_UPDATED,
+      capacity: 2,
+    });
+  });
 });

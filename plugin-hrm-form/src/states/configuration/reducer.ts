@@ -1,13 +1,14 @@
-import { ConfigurationActionType, CHANGE_LANGUAGE, POPULATE_COUNSELORS, CounselorsList } from './types';
+import * as t from './types';
 import { defaultLanguage } from '../../utils/pluginHelpers';
 import { createCounselorsHash } from '../helpers';
 
 export type ConfigurationState = {
   language: string;
   counselors: {
-    list: CounselorsList;
+    list: t.CounselorsList;
     hash: { [sid: string]: string };
   };
+  workerInfo: { chatChannelCapacity: number };
 };
 
 const initialState: ConfigurationState = {
@@ -16,21 +17,31 @@ const initialState: ConfigurationState = {
     list: [],
     hash: {},
   },
+  workerInfo: { chatChannelCapacity: 0 },
 };
 
 // eslint-disable-next-line import/no-unused-modules
-export function reduce(state = initialState, action: ConfigurationActionType): ConfigurationState {
+export function reduce(state = initialState, action: t.ConfigurationActionType): ConfigurationState {
   switch (action.type) {
-    case CHANGE_LANGUAGE:
+    case t.CHANGE_LANGUAGE:
       return {
         ...state,
         language: action.language,
       };
-    case POPULATE_COUNSELORS: {
+    case t.POPULATE_COUNSELORS: {
       const counselorsHash = createCounselorsHash(action.counselorsList);
       return {
         ...state,
         counselors: { list: action.counselorsList, hash: counselorsHash },
+      };
+    }
+    case t.CHAT_CAPACITY_UPDATED: {
+      return {
+        ...state,
+        workerInfo: {
+          ...state.workerInfo,
+          chatChannelCapacity: action.capacity,
+        },
       };
     }
     default:
