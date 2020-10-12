@@ -29,7 +29,7 @@ describe('test reducer', () => {
     expect(result).toStrictEqual(expected);
   });
 
-  test('should handle CHANGE_LANGUAGE', async () => {
+  test('should handle POPULATE_COUNSELORS', async () => {
     const counselorsList: types.CounselorsList = [
       { sid: '1', fullName: '1' },
       { sid: '2', fullName: '2' },
