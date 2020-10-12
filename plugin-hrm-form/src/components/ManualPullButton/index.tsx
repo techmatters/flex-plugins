@@ -26,17 +26,17 @@ const ManualPullButton: React.FC<Props> = ({ queuesStatusState, chatChannelCapac
   const increaseChatCapacity = async () => {
     let alertTimeout = null;
 
-    const eventHandler = () => {
+    const cancelTimeout = () => {
       clearTimeout(alertTimeout);
     };
 
     alertTimeout = setTimeout(async () => {
-      workerClient.removeListener('reservationCreated', eventHandler);
+      workerClient.removeListener('reservationCreated', cancelTimeout);
       Notifications.showNotification('NoTaskAssignableNotification');
       await adjustChatCapacity('decrease');
     }, 5000);
 
-    workerClient.once('reservationCreated', eventHandler);
+    workerClient.once('reservationCreated', cancelTimeout);
 
     await adjustChatCapacity('increase');
   };
