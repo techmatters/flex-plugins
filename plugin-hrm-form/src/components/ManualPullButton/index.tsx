@@ -21,7 +21,7 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 
-const ManualPullButton: React.FC<Props> = ({ queuesStatusState, chatChannelCapacity, workerAttr, workerClient }) => {
+const ManualPullButton: React.FC<Props> = ({ queuesStatusState, chatChannelCapacity, worker, workerClient }) => {
   // Increase chat capacity, if no reservation is created within 5 seconds, capacity is decreased and shows a notification.
   const increaseChatCapacity = async () => {
     let alertTimeout = null;
@@ -41,7 +41,8 @@ const ManualPullButton: React.FC<Props> = ({ queuesStatusState, chatChannelCapac
     await adjustChatCapacity('increase');
   };
 
-  const maxCapacityReached = chatChannelCapacity === workerAttr.maxMessageCapacity;
+  const { maxMessageCapacity } = worker.attributes;
+  const maxCapacityReached = chatChannelCapacity === maxMessageCapacity;
   const disabled = maxCapacityReached || !isAnyChatPending(queuesStatusState.queuesStatus);
 
   return (
@@ -67,9 +68,9 @@ ManualPullButton.displayName = 'ManualPullButton';
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const queuesStatusState = state[namespace][queuesStatusBase];
   const { chatChannelCapacity } = state[namespace][configurationBase].workerInfo;
-  const { attributes: workerAttr } = state.flex.worker;
+  const { worker } = state.flex;
 
-  return { queuesStatusState, chatChannelCapacity, workerAttr };
+  return { queuesStatusState, chatChannelCapacity, worker };
 };
 
 export default connect(mapStateToProps, null)(ManualPullButton);
