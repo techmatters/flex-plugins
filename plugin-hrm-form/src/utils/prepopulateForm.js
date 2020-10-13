@@ -17,9 +17,9 @@ export const prepopulateForm = task => {
 
     if (answers.about_self.answer === 'Yes') {
       Manager.getInstance().store.dispatch(Actions.prepopulateFormChild(gender, age, task.taskSid));
-    } else {
+    } else if (answers.about_self.answer === 'No') {
       Manager.getInstance().store.dispatch(Actions.prepopulateFormCaller(gender, age, task.taskSid));
-    }
+    } else return;
 
     // Open tabbed form to first tab
     Manager.getInstance().store.dispatch(RoutingActions.changeRoute({ route: 'tabbed-forms' }, task.taskSid));
