@@ -9,8 +9,8 @@ export const prepopulateForm = task => {
   if (task.attributes.memory) {
     const { answers } = task.attributes.memory.twilio.collected_data.collect_survey;
 
-    const gender = answers.gender.error ? 'Unknown' : mapGender(answers.gender.answer);
-    const age = mapAge(answers.age.answer);
+    const gender = !answers.gender || answers.gender.error ? 'Unknown' : mapGender(answers.gender.answer);
+    const age = !answers.age || answers.age.error ? 'Unknown' : mapAge(answers.age.answer);
 
     if (answers.about_self.answer === 'Yes') {
       Manager.getInstance().store.dispatch(Actions.prepopulateFormChild(gender, age, task.taskSid));
