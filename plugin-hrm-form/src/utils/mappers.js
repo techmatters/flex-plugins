@@ -42,6 +42,8 @@ export const mapChannelForInsights = channel => {
       return 'Facebook';
     case channelTypes.web:
       return 'Web';
+    case channelTypes.voice:
+      return 'Call';
     default:
       return mapChannel(channel);
   }
