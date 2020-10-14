@@ -15,7 +15,7 @@ import { changeLanguage } from './states/configuration/actions';
 import { issueSyncToken } from './services/ServerlessService';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
-export const PLUGIN_VERSION = '0.8.0';
+export const PLUGIN_VERSION = '0.9.0';
 export const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
 /**
