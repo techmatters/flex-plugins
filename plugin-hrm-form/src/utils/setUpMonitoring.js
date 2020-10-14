@@ -1,4 +1,3 @@
-/* eslint-disable import/no-unused-modules */
 import * as Flex from '@twilio/flex-ui';
 import Rollbar from 'rollbar';
 import { datadogRum } from '@datadog/browser-rum';
@@ -6,12 +5,14 @@ import { datadogRum } from '@datadog/browser-rum';
 import { PLUGIN_VERSION } from '../HrmFormPlugin';
 import { rollbarAccessToken, datadogAccessToken } from '../private/secret';
 
+const environment = 'staging'; // maybe we should use envars for this?
+
 function setUpDatadogRum(workerClient) {
   datadogRum.init({
     applicationId: 'a9a65b9e-69a4-438e-ae45-4c47e52fb0fa',
     clientToken: datadogAccessToken,
     site: 'datadoghq.com',
-    env: 'staging',
+    env: environment,
     version: PLUGIN_VERSION,
     sampleRate: 100,
     trackInteractions: true,
@@ -33,7 +34,7 @@ function setUpRollbarLogger(plugin, workerClient) {
     captureUncaught: true,
     captureUnhandledRejections: true,
     payload: {
-      environment: 'staging',
+      environment,
       person: {
         id: workerClient.sid,
         account: workerClient.accountSid,
