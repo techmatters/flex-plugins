@@ -5,7 +5,8 @@ import { datadogRum } from '@datadog/browser-rum';
 import { PLUGIN_VERSION } from '../HrmFormPlugin';
 import { rollbarAccessToken, datadogAccessToken } from '../private/secret';
 
-const environment = 'staging'; // maybe we should use envars for this?
+
+const environment = 'production'; // maybe we should use envars for this?
 
 function setUpDatadogRum(workerClient) {
   datadogRum.init({
