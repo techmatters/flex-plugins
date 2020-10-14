@@ -9,8 +9,8 @@ import { transferModes } from './states/DomainConstants';
 import { initLocalization } from './utils/pluginHelpers';
 import * as ActionFunctions from './utils/setUpActions';
 import * as Components from './utils/setUpComponents';
-import * as TransferHelpers from './utils/transfer';
 import setUpMonitoring from './utils/setUpMonitoring';
+import * as TransferHelpers from './utils/transfer';
 import { changeLanguage } from './states/configuration/actions';
 import { issueSyncToken } from './services/ServerlessService';
 
