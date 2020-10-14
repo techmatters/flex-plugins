@@ -15,7 +15,7 @@ import CaseAddButton from './CaseAddButton';
 import { getActivities } from '../../services/CaseService';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
-import { ContactDetailsSections } from '../../states/SearchContact';
+import { ContactDetailsSections } from '../common/ContactDetails';
 import { getConfig } from '../../HrmFormPlugin';
 import { channelTypes } from '../../states/DomainConstants';
 
@@ -25,7 +25,7 @@ const isConnectedCaseActivity = activity => channelsArray.includes(activity.type
 
 const sortActivities = activities => activities.sort((a, b) => b.date.localeCompare(a.date));
 
-const Timeline = ({ task, form, caseId, changeRoute, updateViewNoteInfo, updateTempInfo }) => {
+const Timeline = ({ task, form, caseId, changeRoute, updateTempInfo }) => {
   const [mockedMessage, setMockedMessage] = useState(null);
   const [timeline, setTimeline] = useState([]);
 
@@ -63,7 +63,7 @@ const Timeline = ({ task, form, caseId, changeRoute, updateViewNoteInfo, updateT
         counselor: twilioWorkerId,
         date: new Date(activity.date).toLocaleDateString(navigator.language),
       };
-      updateViewNoteInfo(info, task.taskSid);
+      updateTempInfo({ screen: 'view-note', info }, task.taskSid);
       changeRoute({ route: 'new-case', subroute: 'view-note' }, task.taskSid);
     } else if (channelsArray.includes(activity.type)) {
       const detailsExpanded = {
@@ -75,7 +75,7 @@ const Timeline = ({ task, form, caseId, changeRoute, updateViewNoteInfo, updateT
       };
       const { contactId } = activity;
       const tempInfo = { detailsExpanded, contactId, date: activity.date, counselor: twilioWorkerId };
-      updateTempInfo(tempInfo, task.taskSid);
+      updateTempInfo({ screen: 'view-contact', info: tempInfo }, task.taskSid);
       changeRoute({ route: 'new-case', subroute: 'view-contact' }, task.taskSid);
     } else {
       setMockedMessage(<Template code="NotImplemented" />);
@@ -83,7 +83,7 @@ const Timeline = ({ task, form, caseId, changeRoute, updateViewNoteInfo, updateT
   };
 
   const handleAddNoteClick = () => {
-    updateTempInfo('', task.taskSid);
+    updateTempInfo({ screen: 'add-note', info: '' }, task.taskSid);
     changeRoute({ route: 'new-case', subroute: 'add-note' }, task.taskSid);
   };
 
@@ -123,13 +123,11 @@ Timeline.propTypes = {
   form: formType.isRequired,
   caseId: PropTypes.number.isRequired,
   changeRoute: PropTypes.func.isRequired,
-  updateViewNoteInfo: PropTypes.func.isRequired,
   updateTempInfo: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = dispatch => ({
   changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
-  updateViewNoteInfo: bindActionCreators(CaseActions.updateViewNoteInfo, dispatch),
   updateTempInfo: bindActionCreators(CaseActions.updateTempInfo, dispatch),
 });
 

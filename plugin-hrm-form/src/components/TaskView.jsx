@@ -8,10 +8,9 @@ import HrmForm from './HrmForm';
 import FormNotEditable from './FormNotEditable';
 import { formType, taskType } from '../types';
 import { namespace, contactFormsBase, searchContactsBase, routingBase } from '../states';
-import { Actions } from '../states/ContactState';
+import { Actions, handleSelectSearchResult } from '../states/ContactState';
 import { handleBlur, handleCategoryToggle, handleFocus, handleValidateForm } from '../states/ActionCreators';
 import * as GeneralActions from '../states/actions';
-import { handleSelectSearchResult } from '../states/SearchContact';
 import { hasTaskControl } from '../utils/transfer';
 
 class TaskView extends Component {

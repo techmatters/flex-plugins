@@ -4,7 +4,7 @@ import { Manager, TaskHelper, Actions as FlexActions, ActionFunction, ReplacedAc
 // eslint-disable-next-line no-unused-vars
 import { DEFAULT_TRANSFER_MODE, getConfig } from '../HrmFormPlugin';
 import { saveInsightsData } from '../services/InsightsService';
-import { transferChatStart } from '../services/ServerlessService';
+import { transferChatStart, adjustChatCapacity } from '../services/ServerlessService';
 import { namespace, contactFormsBase } from '../states';
 import { Actions } from '../states/ContactState';
 import * as GeneralActions from '../states/actions';
@@ -68,10 +68,32 @@ const takeControlIfTransfer = async task => {
     await TransferHelpers.takeTaskControl(task);
 };
 
+const getTaskLanguage = ({ helplineLanguage, configuredLanguage }) => ({ task }) =>
+  task.attributes.language || helplineLanguage || configuredLanguage;
+
 /**
- * @type {ActionFunction}
+ * @param {string} messageKey
+ * @returns {(setupObject: ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }) => ActionFunction}
+ */
+const sendMessageOfKey = messageKey => setupObject => async payload => {
+  const { getMessage } = setupObject;
+  const taskLanguage = getTaskLanguage(setupObject)(payload);
+  const message = await getMessage(messageKey)(taskLanguage);
+  await FlexActions.invokeAction('SendMessage', {
+    body: message,
+    channelSid: payload.task.attributes.channelSid,
+  });
+};
+
+const sendWelcomeMessage = sendMessageOfKey('WelcomeMsg');
+const sendGoodbyeMessage = sendMessageOfKey('GoodbyeMsg');
+
+/**
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
+ * @returns {ActionFunction}
  */
 export const afterAcceptTask = setupObject => async payload => {
+  const manager = Manager.getInstance();
   const { featureFlags } = setupObject;
   const { task } = payload;
 
@@ -79,7 +101,14 @@ export const afterAcceptTask = setupObject => async payload => {
     await takeControlIfTransfer(task);
     await restoreFormIfTransfer(task);
   }
+
   prepopulateForm(task);
+
+  // To enable for all chat based task, change condition to "if (TaskHelper.isChatBasedTask(task))"
+  if (task.attributes.channelType === channelTypes.web) {
+    // Ignore event payload as we already have everything we want in afterAcceptTask arguments
+    manager.chatClient.once('channelJoined', () => setTimeout(() => sendWelcomeMessage(setupObject)(payload), 0));
+  }
 };
 
 /**
@@ -97,7 +126,7 @@ const safeTransfer = async (transferFunction, task) => {
 
 /**
  * Custom override for TransferTask action. Saves the form to share with another counseler (if possible) and then starts the transfer
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
  * @returns {ReplacedActionFunction}
  */
 export const customTransferTask = setupObject => async (payload, original) => {
@@ -144,6 +173,16 @@ export const afterCancelTransfer = payload => {
 export const hangupCall = fromActionFunction(saveEndMillis);
 
 /**
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
+ * @returns {ActionFunction}
+ */
+export const beforeWrapupTask = setupObject => async payload => {
+  const { featureFlags } = setupObject;
+  const { task } = payload;
+  if (featureFlags.enable_manual_pulling && task.taskChannelUniqueName === 'chat') await adjustChatCapacity('decrease');
+};
+
+/**
  * Helper to determine if the counselor should send a message before leaving the chat
  * @param {string} channel
  */
@@ -151,26 +190,8 @@ const shouldSayGoodbye = channel =>
   channel === channelTypes.facebook || channel === channelTypes.sms || channel === channelTypes.whatsapp;
 
 /**
- * Sends the message before leaving the chat
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
- * @returns {ActionFunction}
- */
-const sendGoodbyeMessage = setupObject => async payload => {
-  const { getGoodbyeMsg, helplineLanguage, configuredLanguage } = setupObject;
-
-  const getTaskLanguage = task => task.attributes.language || helplineLanguage || configuredLanguage;
-
-  const taskLanguage = getTaskLanguage(payload.task);
-  const goodbyeMsg = await getGoodbyeMsg(taskLanguage);
-  await FlexActions.invokeAction('SendMessage', {
-    body: goodbyeMsg,
-    channelSid: payload.task.attributes.channelSid,
-  });
-};
-
-/**
  * Override for WrapupTask action. Sends a message before leaving (if it should) and saves the end time of the conversation
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
  */
 export const wrapupTask = setupObject =>
   fromActionFunction(async payload => {
@@ -193,7 +214,7 @@ const saveInsights = async payload => {
 
 /**
  * Submits the form to the hrm backend (if it should), and saves the insights. Used before task is completed
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
  */
 export const sendInsightsData = setupObject => async payload => {
   const { featureFlags } = setupObject;

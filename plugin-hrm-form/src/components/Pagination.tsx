@@ -1,14 +1,13 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react/no-multi-comp */
-/* eslint-disable react/display-name */
 import React from 'react';
-import PropTypes from 'prop-types';
 import { range } from 'lodash';
 import { TableFooter, TableCell, ButtonBase } from '@material-ui/core';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 import { Template } from '@twilio/flex-ui';
 
-import { PaginationButton, PaginationChevron, ButtonText, CLFooterRow } from '../../styles/caseList';
-import { HiddenText } from '../../styles/HrmStyles';
+import { PaginationButton, PaginationChevron, ButtonText } from '../styles/caseList';
+import { HiddenText, PaginationRow } from '../styles/HrmStyles';
 
 export const getPaginationNumbers = (page, pageCount) => {
   if (pageCount <= 11) return range(pageCount);
@@ -34,7 +33,13 @@ const renderPaginationButton = (page, handleChangePage) => n => {
   );
 };
 
-const ChevronButton = ({ chevronDirection, onClick, templateCode }) => {
+type ChevronButtonProps = {
+  chevronDirection: 'left' | 'right';
+  onClick: () => void;
+  templateCode: string;
+};
+
+const ChevronButton: React.FC<ChevronButtonProps> = ({ chevronDirection, onClick, templateCode }) => {
   const ChevronIcon = chevronDirection === 'left' ? ChevronLeft : ChevronRight;
   return (
     <ButtonBase onClick={onClick}>
@@ -49,14 +54,16 @@ const ChevronButton = ({ chevronDirection, onClick, templateCode }) => {
     </ButtonBase>
   );
 };
+ChevronButton.displayName = 'ChevronButton';
 
-ChevronButton.propTypes = {
-  chevronDirection: PropTypes.oneOf(['left', 'right']).isRequired,
-  onClick: PropTypes.func.isRequired,
-  templateCode: PropTypes.string.isRequired,
+type PaginationProps = {
+  page: number;
+  pagesCount: number;
+  handleChangePage: (page: number) => void;
+  transparent?: boolean;
 };
 
-const CaseListTableFooter = ({ page, pagesCount, handleChangePage }) => {
+const Pagination: React.FC<PaginationProps> = ({ page, pagesCount, handleChangePage, transparent }) => {
   const renderButtons = renderPaginationButton(page, handleChangePage);
 
   const decreasePage = () => {
@@ -69,7 +76,7 @@ const CaseListTableFooter = ({ page, pagesCount, handleChangePage }) => {
 
   return (
     <TableFooter data-testid="CaseList-TableFooter">
-      <CLFooterRow>
+      <PaginationRow transparent={transparent}>
         <TableCell colSpan={8}>
           <div style={{ display: 'flex', width: '100%', justifyContent: 'center' }}>
             <ChevronButton chevronDirection="left" onClick={decreasePage} templateCode="CaseList-PrevPage" />
@@ -77,16 +84,14 @@ const CaseListTableFooter = ({ page, pagesCount, handleChangePage }) => {
             <ChevronButton chevronDirection="right" onClick={increasePage} templateCode="CaseList-NextPage" />
           </div>
         </TableCell>
-      </CLFooterRow>
+      </PaginationRow>
     </TableFooter>
   );
 };
 
-CaseListTableFooter.displayName = 'CaseListTableFooter';
-CaseListTableFooter.propTypes = {
-  page: PropTypes.number.isRequired,
-  pagesCount: PropTypes.number.isRequired,
-  handleChangePage: PropTypes.func.isRequired,
+Pagination.displayName = 'Pagination';
+Pagination.defaultProps = {
+  transparent: false,
 };
 
-export default CaseListTableFooter;
+export default Pagination;
