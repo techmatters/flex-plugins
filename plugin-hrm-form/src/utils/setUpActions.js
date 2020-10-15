@@ -173,16 +173,6 @@ export const afterCancelTransfer = payload => {
 export const hangupCall = fromActionFunction(saveEndMillis);
 
 /**
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
- * @returns {ActionFunction}
- */
-export const beforeWrapupTask = setupObject => async payload => {
-  const { featureFlags } = setupObject;
-  const { task } = payload;
-  if (featureFlags.enable_manual_pulling && task.taskChannelUniqueName === 'chat') await adjustChatCapacity('decrease');
-};
-
-/**
  * Helper to determine if the counselor should send a message before leaving the chat
  * @param {string} channel
  */
@@ -215,8 +205,9 @@ const saveInsights = async payload => {
 /**
  * Submits the form to the hrm backend (if it should), and saves the insights. Used before task is completed
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
+ * @returns {ActionFunction}
  */
-export const sendInsightsData = setupObject => async payload => {
+const sendInsightsData = setupObject => async payload => {
   const { featureFlags } = setupObject;
 
   if (!featureFlags.enable_transfers || TransferHelpers.hasTaskControl(payload.task)) {
@@ -224,6 +215,25 @@ export const sendInsightsData = setupObject => async payload => {
       await saveInsights(payload);
     }
   }
+};
+
+/**
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
+ * @returns {ActionFunction}
+ */
+const decreaseChatCapacity = setupObject => async payload => {
+  const { featureFlags } = setupObject;
+  const { task } = payload;
+  if (featureFlags.enable_manual_pulling && task.taskChannelUniqueName === 'chat') await adjustChatCapacity('decrease');
+};
+
+/**
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
+ * @returns {ActionFunction}
+ */
+export const beforeCompleteTask = setupObject => async payload => {
+  await sendInsightsData(setupObject)(payload);
+  await decreaseChatCapacity(setupObject)(payload);
 };
 
 /**
