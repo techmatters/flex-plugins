@@ -47,16 +47,6 @@ export const CLTableRow = withStyles({
 })(TableRow);
 CLTableRow.displayName = 'CLTableRow';
 
-export const CLFooterRow = withStyles(theme => ({
-  root: {
-    height: 'auto',
-    verticalAlign: 'top',
-    backgroundColor: theme.colors.base2,
-    marginTop: -5,
-  },
-}))(TableRow);
-CLFooterRow.displayName = 'CLFooterRow';
-
 export const CLTableCell = withStyles(theme => ({
   root: {
     borderBottom: 0,
@@ -110,7 +100,11 @@ export const CLTableHeaderFont = styled(FontOpenSans)`
 `;
 CLTableHeaderFont.displayName = 'CLTableHeaderFont';
 
-export const CLTableBodyFont = styled(FontOpenSans)`
+type CLTableBodyFontProps = {
+  isOpenCase: boolean;
+};
+
+export const CLTableBodyFont = styled(FontOpenSans)<CLTableBodyFontProps>`
   color: ${props => (props.isOpenCase ? '#192b33' : '#666c7c')};
   font-size: 12px;
   line-height: 18px;
@@ -119,7 +113,11 @@ export const CLTableBodyFont = styled(FontOpenSans)`
 `;
 CLTableBodyFont.displayName = 'CLTableBodyFont';
 
-export const CLCaseNumberContainer = styled('div')`
+type CLCaseNumberContainerProps = {
+  isOpenCase: boolean;
+};
+
+export const CLCaseNumberContainer = styled('div')<CLCaseNumberContainerProps>`
   display: inline-block;
   padding: 0 6px;
   border: ${props => (props.isOpenCase ? '1px solid #192b33' : '0')};
@@ -145,7 +143,11 @@ export const CategoryFont = styled(FontOpenSans)`
 `;
 CategoryFont.displayName = 'CategoryFont';
 
-export const PaginationButton = styled('div')`
+type PaginationButtonProps = {
+  highlight?: Boolean;
+};
+
+export const PaginationButton = styled('div')<PaginationButtonProps>`
   background-color: ${props => (props.highlight ? '#1976D2' : 'transparent')};
   box-shadow: ${props => (props.highlight ? '0 1px 1px 0 rgba(0, 0, 0, 0.06)' : '0')};
   border-radius: 4px;
@@ -160,7 +162,11 @@ export const PaginationChevron = styled(PaginationButton)`
 `;
 PaginationChevron.displayName = 'PaginationChevron';
 
-export const ButtonText = styled(FontOpenSans)`
+type ButtonTextProps = {
+  highlight?: Boolean;
+};
+
+export const ButtonText = styled(FontOpenSans)<ButtonTextProps>`
   font-size: 13px;
   color: ${props => (props.highlight ? '#ffffff' : '#666c7c')};
   font-weight: ${props => (props.highlight ? 700 : 600)};

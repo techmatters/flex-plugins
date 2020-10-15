@@ -8,95 +8,9 @@ import {
   PREPOPULATE_FORM_CALLER,
 } from '../../states/ActionTypes';
 import { recreateContactState } from '../../states/actions';
-import { reduce } from '../../states/ContactState';
+import { reduce, handleSelectSearchResult } from '../../states/ContactState';
 import { createBlankForm } from '../../states/ContactFormStateFactory';
-
-// THE TESTS IN HERE ARE A MESS AND NEED TO BE FIXED
-
-/*
- * describe('editedNestedField', () => {
- *   const original = {
- *     callType: '',
- *     internal: {
- *       tab: 0
- *     },
- *     callerInformation: {
- *       name: {
- *         firstName: {
- *           value: '',
- *           touched: false,
- *           error: null
- *         },
- *         lastName: ''
- *       }
- *     },
- *     childInformation: {
- *       name: {
- *         firstName: '',
- *         lastName: ''
- *       }
- *     }
- *   };
- */
-
-/*
- *   test('edits a normal nested field', () => {
- *     const expected = {
- *       callType: '',
- *       internal: {
- *         tab: 0
- *       },
- *       callerInformation: {
- *         name: {
- *           firstName: {
- *             value: '',
- *             touched: false,
- *             error: null
- *           },
- *           lastName: ''
- *         }
- *       },
- *       childInformation: {
- *         name: {
- *           firstName: '',
- *           lastName: 'aNewLastName'
- *         }
- *       }
- *     };
- *     expect(editNestedField(original, ['childInformation', 'name'], 'lastName', 'aNewLastName'))
- *       .toStrictEqual(expected);
- *   });
- */
-
-/*
- *   test('edits callerInformation firstName all special like', () => {
- *     const expected = {
- *       callType: '',
- *       internal: {
- *         tab: 0
- *       },
- *       callerInformation: {
- *         name: {
- *           firstName: {
- *             value: 'aNewFirstName',
- *             touched: false,
- *             error: null
- *           },
- *           lastName: ''
- *         }
- *       },
- *       childInformation: {
- *         name: {
- *           firstName: '',
- *           lastName: ''
- *         }
- *       }
- *     };
- *     expect(editNestedField(original, ['callerInformation', 'name'], 'firstName', 'aNewFirstName'))
- *       .toStrictEqual(expected);
- *   })
- * });
- */
+import callTypes from '../../states/DomainConstants';
 
 describe('reduce', () => {
   test('HANDLE_BLUR updates the whole form', () => {
@@ -540,5 +454,236 @@ describe('reduce', () => {
     const { tasks } = result;
 
     expect(tasks).toEqual(expectedTasks);
+  });
+});
+
+describe('handleSelectSearchResult action creator', () => {
+  // Simulate a state for a child's call
+  const childCalling = {
+    tasks: {
+      WT123: {
+        callType: { value: callTypes.child },
+        internal: {
+          tab: 0,
+        },
+        callerInformation: {
+          name: {
+            firstName: {
+              value: '',
+              touched: false,
+              error: null,
+            },
+            lastName: {
+              value: '',
+              touched: false,
+              error: null,
+            },
+          },
+        },
+        childInformation: {
+          name: {
+            firstName: {
+              value: 'Child',
+              touched: true,
+              error: null,
+            },
+            lastName: {
+              value: '',
+              touched: false,
+              error: null,
+            },
+          },
+        },
+      },
+    },
+  };
+
+  // Simulate a state for a caller's call
+  const callerCalling = {
+    tasks: {
+      WT123: {
+        callType: { value: callTypes.caller },
+        internal: {
+          tab: 0,
+        },
+        callerInformation: {
+          name: {
+            firstName: {
+              value: 'Caller',
+              touched: true,
+              error: null,
+            },
+            lastName: {
+              value: '',
+              touched: false,
+              error: null,
+            },
+          },
+        },
+        childInformation: {
+          name: {
+            firstName: {
+              value: 'Another child',
+              touched: true,
+              error: null,
+            },
+            lastName: {
+              value: '',
+              touched: false,
+              error: null,
+            },
+          },
+        },
+      },
+    },
+  };
+
+  const childContact = {
+    details: {
+      callType: callTypes.child,
+      callerInformation: {
+        name: {
+          firstName: '',
+          lastName: '',
+        },
+      },
+      childInformation: {
+        name: {
+          firstName: 'Stored name',
+          lastName: 'Stored last',
+        },
+      },
+    },
+  };
+
+  const callerContact = {
+    details: {
+      callType: callTypes.caller,
+      callerInformation: {
+        name: {
+          firstName: 'Stored caller',
+          lastName: '',
+        },
+      },
+      childInformation: {
+        name: {
+          firstName: 'Stored child',
+          lastName: '',
+        },
+      },
+    },
+  };
+
+  const otherContact = {
+    details: {
+      callType: 'anything else',
+      callerInformation: {
+        name: {
+          firstName: 'anything else',
+          lastName: '',
+        },
+      },
+      childInformation: {
+        name: {
+          firstName: 'anything else',
+          lastName: '',
+        },
+      },
+    },
+  };
+
+  test('Current call type SELF, selected contact type SELF', () => {
+    const action = handleSelectSearchResult(childContact, 'WT123');
+    const result = reduce(childCalling, action);
+    const { callerInformation, childInformation } = result.tasks.WT123;
+
+    const { details } = childContact;
+    // Test if childInformation was generated from blank and then copied the values in the search result
+    expect(childInformation.name.firstName.value).toStrictEqual(details.childInformation.name.firstName);
+    expect(childInformation.name.lastName.value).toStrictEqual(details.childInformation.name.lastName);
+    expect(childInformation.gender.value).toStrictEqual(''); // should be generated
+
+    // Test if callerInformation was left untouched
+    expect(callerInformation.name.firstName.value).toStrictEqual(
+      childCalling.tasks.WT123.callerInformation.name.firstName.value,
+    );
+    expect(callerInformation.name.lastName.value).toStrictEqual(
+      childCalling.tasks.WT123.callerInformation.name.lastName.value,
+    );
+    expect(callerInformation.gender).toBeUndefined();
+  });
+
+  test('Current call type SELF, selected contact type CALLER', () => {
+    const action = handleSelectSearchResult(callerContact, 'WT123');
+    const result = reduce(childCalling, action);
+    const { callerInformation, childInformation } = result.tasks.WT123;
+
+    const { details } = callerContact;
+    // Test if childInformation was generated from blank and then copied the values in the search result
+    expect(childInformation.name.firstName.value).toStrictEqual(details.childInformation.name.firstName);
+    expect(childInformation.name.lastName.value).toStrictEqual(details.childInformation.name.lastName);
+    expect(childInformation.gender.value).toStrictEqual(''); // should be generated
+
+    // Test if callerInformation was left untouched
+    expect(callerInformation.name.firstName.value).toStrictEqual(
+      childCalling.tasks.WT123.callerInformation.name.firstName.value,
+    );
+    expect(callerInformation.name.lastName.value).toStrictEqual(
+      childCalling.tasks.WT123.callerInformation.name.lastName.value,
+    );
+    expect(callerInformation.gender).toBeUndefined();
+  });
+
+  test('Current call type CALLER, selected contact type SELF', () => {
+    const action = handleSelectSearchResult(childContact, 'WT123');
+    const result = reduce(callerCalling, action);
+    const { callerInformation, childInformation } = result.tasks.WT123;
+
+    const { details } = childContact;
+    // Test if childInformation was generated from blank and then copied the values in the search result
+    expect(childInformation.name.firstName.value).toStrictEqual(details.childInformation.name.firstName);
+    expect(childInformation.name.lastName.value).toStrictEqual(details.childInformation.name.lastName);
+    expect(childInformation.gender.value).toStrictEqual(''); // should be generated
+
+    // Test if callerInformation was left untouched
+    expect(callerInformation.name.firstName.value).toStrictEqual(
+      callerCalling.tasks.WT123.callerInformation.name.firstName.value,
+    );
+    expect(callerInformation.name.lastName.value).toStrictEqual(
+      callerCalling.tasks.WT123.callerInformation.name.lastName.value,
+    );
+    expect(callerInformation.gender).toBeUndefined();
+  });
+
+  test('Current call type CALLER, selected contact type CALLER', () => {
+    const action = handleSelectSearchResult(callerContact, 'WT123');
+    const result = reduce(callerCalling, action);
+    const { callerInformation, childInformation } = result.tasks.WT123;
+
+    const { details } = callerContact;
+    // Test if callerInformation was generated from blank and then copied the values in the search result
+    expect(callerInformation.name.firstName.value).toStrictEqual(details.callerInformation.name.firstName);
+    expect(callerInformation.name.lastName.value).toStrictEqual(details.callerInformation.name.lastName);
+    expect(callerInformation.gender.value).toStrictEqual(''); // should be generated
+
+    // Test if childInformation was left untouched
+    expect(childInformation.name.firstName.value).toStrictEqual(
+      callerCalling.tasks.WT123.childInformation.name.firstName.value,
+    );
+    expect(childInformation.name.lastName.value).toStrictEqual(
+      callerCalling.tasks.WT123.childInformation.name.lastName.value,
+    );
+    expect(childInformation.gender).toBeUndefined();
+  });
+
+  test('Test any other combination will leave form untouched', () => {
+    const action = handleSelectSearchResult(otherContact, 'WT123');
+
+    const result1 = reduce(childCalling, action);
+    const result2 = reduce(callerCalling, action);
+
+    // Test that neither of the "current call" states would be modified
+    expect(result1).toStrictEqual(childCalling);
+    expect(result2).toStrictEqual(callerCalling);
   });
 });

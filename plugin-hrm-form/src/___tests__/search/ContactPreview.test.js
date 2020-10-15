@@ -5,10 +5,9 @@ import { format } from 'date-fns';
 import '../mockStyled';
 
 import ContactPreview from '../../components/search/ContactPreview';
-import ChildNameAndActions from '../../components/search/ContactPreview/ChildNameAndActions';
-import CallTypeAndCounselor from '../../components/search/ContactPreview/CallTypeAndCounselor';
+import ChildNameAndDate from '../../components/search/ContactPreview/ChildNameAndDate';
 import CallSummary from '../../components/search/ContactPreview/CallSummary';
-import DateAndTags from '../../components/search/ContactPreview/DateAndTags';
+import TagsAndCounselor from '../../components/search/ContactPreview/TagsAndCounselor';
 import { mapCallType } from '../../utils';
 
 const NonExisting = () => <>NonExisting</>;
@@ -19,8 +18,9 @@ test('<ContactPreview> should mount', () => {
     contactId: '123',
     overview: {
       dateTime: '2019-01-01T00:00:00.000Z',
+      channel: 'whatsapp',
       name: 'Name Last',
-      customerNumber: '',
+      customerNumber: '+12025550440',
       callType: 'CHILD CALLING ABOUT SELF',
       counselor: '',
       notes: '',
@@ -54,40 +54,35 @@ test('<ContactPreview> should mount', () => {
     },
     counselor: 'Counselor',
   };
-  const formatedDate = `${format(new Date(contact.overview.dateTime), 'MMM d, yyyy h:mm aaaaa')}m`;
 
   const handleOpenConnectDialog = jest.fn();
   const handleViewDetails = jest.fn();
-  const handleMockedMessage = jest.fn();
 
   const component = renderer.create(
     <ContactPreview
       contact={contact}
       handleOpenConnectDialog={handleOpenConnectDialog}
       handleViewDetails={handleViewDetails}
-      handleMockedMessage={handleMockedMessage}
     />,
   ).root;
 
-  expect(() => component.findByType(ChildNameAndActions)).not.toThrow();
-  expect(() => component.findByType(CallTypeAndCounselor)).not.toThrow();
+  expect(() => component.findByType(ChildNameAndDate)).not.toThrow();
   expect(() => component.findByType(CallSummary)).not.toThrow();
-  expect(() => component.findByType(DateAndTags)).not.toThrow();
+  expect(() => component.findByType(TagsAndCounselor)).not.toThrow();
   expect(() => component.findByType(NonExisting)).toThrow();
 
   const previewContact = component.props.contact;
-  const { name } = component.findByType(ChildNameAndActions).props;
-  const { callType, counselor } = component.findByType(CallTypeAndCounselor).props;
+  const { channel, callType, name, number, date } = component.findByType(ChildNameAndDate).props;
   const { callSummary } = component.findByType(CallSummary).props;
-  const { dateString, category1, category2, category3 } = component.findByType(DateAndTags).props;
+  const { counselor, categories } = component.findByType(TagsAndCounselor).props;
 
   expect(previewContact).toEqual(contact);
-  expect(name).toEqual(contact.overview.name.toUpperCase());
+  expect(name).toEqual(contact.overview.name);
   expect(callType).toEqual(mapCallType(contact.overview.callType));
-  expect(counselor).toEqual(contact.counselor);
+  expect(channel).toEqual(contact.overview.channel);
+  expect(number).toEqual(contact.overview.customerNumber);
   expect(callSummary).toEqual(contact.details.caseInformation.callSummary);
-  expect(dateString).toEqual(formatedDate);
-  expect(category1).toEqual(contact.overview.categories.category1[0]);
-  expect(category2).toEqual(contact.overview.categories.category1[1]);
-  expect(category3).toEqual('');
+  expect(counselor).toEqual(contact.counselor);
+  expect(date).toEqual(contact.overview.dateTime);
+  expect(categories).toEqual(contact.overview.categories);
 });

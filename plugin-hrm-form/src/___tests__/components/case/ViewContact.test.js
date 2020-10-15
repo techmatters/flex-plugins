@@ -9,7 +9,7 @@ import '../../mockGetConfig';
 
 import { UnconnectedViewContact } from '../../../components/case/ViewContact';
 import HrmTheme from '../../../styles/HrmTheme';
-import { ContactDetailsSections } from '../../../states/SearchContact';
+import { ContactDetailsSections } from '../../../components/common/ContactDetails';
 import { adaptFormToContactDetails } from '../../../components/case/ContactDetailsAdapter';
 
 expect.extend(toHaveNoViolations);
@@ -114,11 +114,14 @@ const detailsExpanded = {
 };
 
 const tempInfo = {
-  detailsExpanded: {
-    section: true,
+  screen: 'view-contact',
+  info: {
+    detailsExpanded: {
+      section: true,
+    },
+    counselor: 'john-doe-hash',
+    date: '8/12/2020',
   },
-  counselor: 'john-doe-hash',
-  date: '8/12/2020',
 };
 
 test('displays counselor, date and contact details', () => {
@@ -206,9 +209,14 @@ test('click on expand section', async () => {
 
   const updatedTempInfo = {
     ...tempInfo,
-    detailsExpanded: {
-      ...tempInfo.detailsExpanded,
-      [ContactDetailsSections.CHILD_INFORMATION]: !tempInfo.detailsExpanded[ContactDetailsSections.CHILD_INFORMATION],
+    info: {
+      ...tempInfo.info,
+      detailsExpanded: {
+        ...tempInfo.info.detailsExpanded,
+        [ContactDetailsSections.CHILD_INFORMATION]: !tempInfo.info.detailsExpanded[
+          ContactDetailsSections.CHILD_INFORMATION
+        ],
+      },
     },
   };
 

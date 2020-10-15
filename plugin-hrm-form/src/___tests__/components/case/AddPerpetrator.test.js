@@ -41,7 +41,7 @@ const state1 = {
     [connectedCaseBase]: {
       tasks: {
         task1: {
-          temporaryCaseInfo: '',
+          temporaryCaseInfo: null,
           connectedCase: {
             createdAt: 1593469560208,
             twilioWorkerId: 'worker1',
@@ -63,7 +63,7 @@ const state2 = {
     [connectedCaseBase]: {
       tasks: {
         task1: {
-          temporaryCaseInfo: newCallerFormInformation,
+          temporaryCaseInfo: { screen: 'add-perpetrator', info: newCallerFormInformation },
           connectedCase: {
             createdAt: 1593469560208,
             twilioWorkerId: 'worker1',
@@ -224,20 +224,18 @@ describe('Test AddPerpetrator', () => {
     store2.dispatch.mockClear();
     screen.getByTestId('Case-AddPerpetratorScreen-SavePerpetrator').click();
 
-    expect(store2.dispatch).toHaveBeenCalledTimes(2);
+    expect(store2.dispatch).toHaveBeenCalledTimes(1);
     const setConnectedCaseCall1 = store2.dispatch.mock.calls[0][0];
     expect(setConnectedCaseCall1.type).toBe(UPDATE_CASE_INFO);
     expect(setConnectedCaseCall1.taskId).toBe(ownProps.task.taskSid);
     expect(setConnectedCaseCall1.info.perpetrators[0].perpetrator).toStrictEqual(
-      getFormValues(state2[namespace][connectedCaseBase].tasks.task1.temporaryCaseInfo),
+      getFormValues(newCallerFormInformation),
     );
-
-    expect(store2.dispatch).toHaveBeenCalledWith(
-      RoutingActions.changeRoute({ route: 'new-case' }, ownProps.task.taskSid),
-    );
+    expect(onClickClose).toHaveBeenCalled();
 
     // Save and stay
     store2.dispatch.mockClear();
+    onClickClose.mockClear();
     screen.getByTestId('Case-AddPerpetratorScreen-SaveAndAddAnotherPerpetrator').click();
 
     expect(store2.dispatch).toHaveBeenCalledTimes(2);
@@ -245,11 +243,8 @@ describe('Test AddPerpetrator', () => {
     expect(setConnectedCaseCall2.type).toBe(UPDATE_CASE_INFO);
     expect(setConnectedCaseCall2.taskId).toBe(ownProps.task.taskSid);
     expect(setConnectedCaseCall2.info.perpetrators[0].perpetrator).toStrictEqual(
-      getFormValues(state2[namespace][connectedCaseBase].tasks.task1.temporaryCaseInfo),
+      getFormValues(newCallerFormInformation),
     );
-
-    // component calls useEffect and thus calls updateTempInfo
-    expect(store2.dispatch).toHaveBeenCalledWith(CaseActions.updateTempInfo(newCallerFormInformation, task.taskSid));
   });
 
   test('a11y', async () => {

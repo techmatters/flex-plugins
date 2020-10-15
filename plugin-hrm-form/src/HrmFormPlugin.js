@@ -11,11 +11,12 @@ import * as ActionFunctions from './utils/setUpActions';
 import * as Components from './utils/setUpComponents';
 import setUpMonitoring from './utils/setUpMonitoring';
 import * as TransferHelpers from './utils/transfer';
-import { changeLanguage } from './states/ConfigurationState';
+import { changeLanguage } from './states/configuration/actions';
 import { issueSyncToken } from './services/ServerlessService';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
-export const PLUGIN_VERSION = '0.8.0';
+export const PLUGIN_VERSION = '0.9.0';
+
 export const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
 /**
@@ -62,7 +63,7 @@ const setUpSharedStateClient = () => {
       const syncToken = await issueSyncToken();
       await sharedStateClient.updateToken(syncToken);
     } catch (err) {
-      console.log('SYNC TOKEN ERROR', err);
+      console.error('SYNC TOKEN ERROR', err);
     }
   };
 
@@ -73,7 +74,7 @@ const setUpSharedStateClient = () => {
       sharedStateClient = new SyncClient(syncToken);
       sharedStateClient.on('tokenAboutToExpire', () => updateSharedStateToken());
     } catch (err) {
-      console.log('SYNC CLIENT INIT ERROR', err);
+      console.error('SYNC CLIENT INIT ERROR', err);
     }
   };
 
@@ -81,7 +82,7 @@ const setUpSharedStateClient = () => {
 };
 
 /**
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
  */
 const setUpTransferredTaskJanitor = async setupObject => {
   const { workerSid } = setupObject;
@@ -103,7 +104,7 @@ const setUpTransferredTaskJanitor = async setupObject => {
 };
 
 /**
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
  */
 const setUpTransfers = setupObject => {
   setUpSharedStateClient();
@@ -131,7 +132,7 @@ const setUpLocalization = config => {
 };
 
 /**
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
  */
 const setUpComponents = setupObject => {
   const { helpline, featureFlags } = setupObject;
@@ -147,6 +148,8 @@ const setUpComponents = setupObject => {
 
   if (featureFlags.enable_case_management) Components.setUpCaseList();
 
+  if (featureFlags.enable_manual_pulling) Components.setUpManualPulling();
+
   if (!Boolean(helpline)) Components.setUpDeveloperComponents(setupObject); // utilities for developers only
 
   // remove dynamic components
@@ -159,7 +162,7 @@ const setUpComponents = setupObject => {
 };
 
 /**
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
  */
 const setUpActions = setupObject => {
   const { featureFlags } = setupObject;
@@ -167,7 +170,7 @@ const setUpActions = setupObject => {
   // bind setupObject to the functions that requires some initializaton
   const transferOverride = ActionFunctions.customTransferTask(setupObject);
   const wrapupOverride = ActionFunctions.wrapupTask(setupObject);
-  const beforeCompleteAction = ActionFunctions.sendInsightsData(setupObject);
+  const beforeCompleteAction = ActionFunctions.beforeCompleteTask(setupObject);
 
   Flex.Actions.addListener('beforeAcceptTask', ActionFunctions.initializeContactForm);
 
@@ -187,37 +190,6 @@ const setUpActions = setupObject => {
   Flex.Actions.addListener('afterCompleteTask', ActionFunctions.removeContactForm);
 };
 
-const enableChatCapabilities = () => {
-  const customWhatsappChannel = {
-    ...Flex.DefaultTaskChannels.ChatWhatsApp,
-    name: 'custom-whatsapp-channel',
-    isApplicable: task => task.taskChannelUniqueName === 'WhatsApp',
-  };
-
-  const customFacebookChannel = {
-    ...Flex.DefaultTaskChannels.ChatMessenger,
-    name: 'custom-facebook-channel',
-    isApplicable: task => task.taskChannelUniqueName === 'Facebook',
-  };
-
-  const customWebChannel = {
-    ...Flex.DefaultTaskChannels.Chat,
-    name: 'custom-web-channel',
-    isApplicable: task => task.taskChannelUniqueName === 'Web',
-  };
-
-  const customSmsChannel = {
-    ...Flex.DefaultTaskChannels.ChatSms,
-    name: 'custom-sms-channel',
-    isApplicable: task => task.taskChannelUniqueName === 'SMS',
-  };
-
-  Flex.TaskChannels.register(customWhatsappChannel);
-  Flex.TaskChannels.register(customFacebookChannel);
-  Flex.TaskChannels.register(customWebChannel);
-  Flex.TaskChannels.register(customSmsChannel);
-};
-
 export default class HrmFormPlugin extends FlexPlugin {
   constructor() {
     super(PLUGIN_NAME);
@@ -231,7 +203,8 @@ export default class HrmFormPlugin extends FlexPlugin {
    * @param manager { import('@twilio/flex-ui').Manager }
    */
   init(flex, manager) {
-    if (!process.env.NO_MONITORING) setUpMonitoring(this, manager.workerClient);
+    const monitoringEnv = manager.serviceConfiguration.attributes.monitoringEnv || 'staging';
+    if (!process.env.NO_MONITORING) setUpMonitoring(this, manager.workerClient, monitoringEnv);
 
     console.log(`Welcome to ${PLUGIN_NAME} Version ${PLUGIN_VERSION}`);
     this.registerReducers(manager);
@@ -242,14 +215,13 @@ export default class HrmFormPlugin extends FlexPlugin {
      * localization setup (translates the UI if necessary)
      * WARNING: the way this is done right now is "hacky". More info in initLocalization declaration
      */
-    const { translateUI, getGoodbyeMsg } = setUpLocalization(config);
+    const { translateUI, getMessage } = setUpLocalization(config);
 
-    const setupObject = { ...config, translateUI, getGoodbyeMsg };
+    const setupObject = { ...config, translateUI, getMessage };
 
     if (config.featureFlags.enable_transfers) setUpTransfers(setupObject);
     setUpComponents(setupObject);
     setUpActions(setupObject);
-    enableChatCapabilities();
 
     const managerConfiguration = {
       colorTheme: HrmTheme,

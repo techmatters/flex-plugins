@@ -4,7 +4,7 @@ import { Manager, TaskHelper, Actions as FlexActions, ActionFunction, ReplacedAc
 // eslint-disable-next-line no-unused-vars
 import { DEFAULT_TRANSFER_MODE, getConfig } from '../HrmFormPlugin';
 import { saveInsightsData } from '../services/InsightsService';
-import { transferChatStart } from '../services/ServerlessService';
+import { transferChatStart, adjustChatCapacity } from '../services/ServerlessService';
 import { namespace, contactFormsBase } from '../states';
 import { Actions } from '../states/ContactState';
 import * as GeneralActions from '../states/actions';
@@ -53,10 +53,8 @@ export const initializeContactForm = payload => {
  * @param {import('@twilio/flex-ui').ITask} task
  */
 const restoreFormIfTransfer = async task => {
-  if (TransferHelpers.hasTransferStarted(task)) {
-    const form = await loadFormSharedState(task);
-    if (form) Manager.getInstance().store.dispatch(Actions.restoreEntireForm(form, task.taskSid));
-  }
+  const form = await loadFormSharedState(task);
+  if (form) Manager.getInstance().store.dispatch(Actions.restoreEntireForm(form, task.taskSid));
 };
 
 /**
@@ -64,22 +62,54 @@ const restoreFormIfTransfer = async task => {
  * @param {import('@twilio/flex-ui').ITask} task
  */
 const takeControlIfTransfer = async task => {
-  if (TransferHelpers.hasTransferStarted(task) && TransferHelpers.isColdTransfer(task))
-    await TransferHelpers.takeTaskControl(task);
+  if (TransferHelpers.isColdTransfer(task)) await TransferHelpers.takeTaskControl(task);
 };
 
 /**
- * @type {ActionFunction}
+ * @param {import('@twilio/flex-ui').ITask} task
+ */
+const handleTransferredTask = async task => {
+  await takeControlIfTransfer(task);
+  await restoreFormIfTransfer(task);
+};
+
+const getTaskLanguage = ({ helplineLanguage, configuredLanguage }) => ({ task }) =>
+  task.attributes.language || helplineLanguage || configuredLanguage;
+
+/**
+ * @param {string} messageKey
+ * @returns {(setupObject: ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }) => ActionFunction}
+ */
+const sendMessageOfKey = messageKey => setupObject => async payload => {
+  const { getMessage } = setupObject;
+  const taskLanguage = getTaskLanguage(setupObject)(payload);
+  const message = await getMessage(messageKey)(taskLanguage);
+  await FlexActions.invokeAction('SendMessage', {
+    body: message,
+    channelSid: payload.task.attributes.channelSid,
+  });
+};
+
+const sendWelcomeMessage = sendMessageOfKey('WelcomeMsg');
+const sendGoodbyeMessage = sendMessageOfKey('GoodbyeMsg');
+
+/**
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
+ * @returns {ActionFunction}
  */
 export const afterAcceptTask = setupObject => async payload => {
+  const manager = Manager.getInstance();
   const { featureFlags } = setupObject;
   const { task } = payload;
 
-  if (featureFlags.enable_transfers) {
-    await takeControlIfTransfer(task);
-    await restoreFormIfTransfer(task);
+  if (featureFlags.enable_transfers && TransferHelpers.hasTransferStarted(task)) handleTransferredTask(task);
+  else prepopulateForm(task);
+
+  // To enable for all chat based task, change condition to "if (TaskHelper.isChatBasedTask(task))"
+  if (task.attributes.channelType === channelTypes.web) {
+    // Ignore event payload as we already have everything we want in afterAcceptTask arguments
+    manager.chatClient.once('channelJoined', () => setTimeout(() => sendWelcomeMessage(setupObject)(payload), 0));
   }
-  prepopulateForm(task);
 };
 
 /**
@@ -97,7 +127,7 @@ const safeTransfer = async (transferFunction, task) => {
 
 /**
  * Custom override for TransferTask action. Saves the form to share with another counseler (if possible) and then starts the transfer
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
  * @returns {ReplacedActionFunction}
  */
 export const customTransferTask = setupObject => async (payload, original) => {
@@ -151,26 +181,8 @@ const shouldSayGoodbye = channel =>
   channel === channelTypes.facebook || channel === channelTypes.sms || channel === channelTypes.whatsapp;
 
 /**
- * Sends the message before leaving the chat
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
- * @returns {ActionFunction}
- */
-const sendGoodbyeMessage = setupObject => async payload => {
-  const { getGoodbyeMsg, helplineLanguage, configuredLanguage } = setupObject;
-
-  const getTaskLanguage = task => task.attributes.language || helplineLanguage || configuredLanguage;
-
-  const taskLanguage = getTaskLanguage(payload.task);
-  const goodbyeMsg = await getGoodbyeMsg(taskLanguage);
-  await FlexActions.invokeAction('SendMessage', {
-    body: goodbyeMsg,
-    channelSid: payload.task.attributes.channelSid,
-  });
-};
-
-/**
  * Override for WrapupTask action. Sends a message before leaving (if it should) and saves the end time of the conversation
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
  */
 export const wrapupTask = setupObject =>
   fromActionFunction(async payload => {
@@ -193,9 +205,10 @@ const saveInsights = async payload => {
 
 /**
  * Submits the form to the hrm backend (if it should), and saves the insights. Used before task is completed
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
+ * @returns {ActionFunction}
  */
-export const sendInsightsData = setupObject => async payload => {
+const sendInsightsData = setupObject => async payload => {
   const { featureFlags } = setupObject;
 
   if (!featureFlags.enable_transfers || TransferHelpers.hasTaskControl(payload.task)) {
@@ -203,6 +216,25 @@ export const sendInsightsData = setupObject => async payload => {
       await saveInsights(payload);
     }
   }
+};
+
+/**
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
+ * @returns {ActionFunction}
+ */
+const decreaseChatCapacity = setupObject => async payload => {
+  const { featureFlags } = setupObject;
+  const { task } = payload;
+  if (featureFlags.enable_manual_pulling && task.taskChannelUniqueName === 'chat') await adjustChatCapacity('decrease');
+};
+
+/**
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
+ * @returns {ActionFunction}
+ */
+export const beforeCompleteTask = setupObject => async payload => {
+  await sendInsightsData(setupObject)(payload);
+  await decreaseChatCapacity(setupObject)(payload);
 };
 
 /**

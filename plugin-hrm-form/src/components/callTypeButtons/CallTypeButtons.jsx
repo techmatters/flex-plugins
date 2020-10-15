@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTaskContext, TaskHelper, Template } from '@twilio/flex-ui';
-import FaceIcon from '@material-ui/icons/Face';
 
 import { withLocalization } from '../../contexts/LocalizationContext';
-import { Box } from '../../styles/HrmStyles';
+import { Box, Flex } from '../../styles/HrmStyles';
 import { Container, Label, DataCallTypeButton, NonDataCallTypeButton } from '../../styles/callTypeButtons';
 import callTypes from '../../states/DomainConstants';
 import { isNonDataCallType } from '../../states/ValidationRules';
@@ -13,6 +12,7 @@ import NonDataCallTypeDialog from './NonDataCallTypeDialog';
 import { hasTaskControl } from '../../utils/transfer';
 import { getConfig } from '../../HrmFormPlugin';
 import { saveToHrm } from '../../services/ContactService';
+import CallTypeIcon from '../common/icons/CallTypeIcon';
 
 const isDialogOpen = form =>
   Boolean(form && form.callType && form.callType.value && isNonDataCallType(form.callType.value));
@@ -59,16 +59,15 @@ const CallTypeButtons = props => {
             <Template code="CallTypeButtons-Categorize" />
           </Label>
           <DataCallTypeButton onClick={() => handleClickAndRedirect(task.taskSid, callTypes.child)}>
-            <Box width="50px" marginRight="5px">
-              <FaceIcon />
-            </Box>
+            <Flex width="50px" marginRight="5px">
+              <CallTypeIcon callType={callTypes.child} />
+            </Flex>
             <Template code="CallType-child" />
           </DataCallTypeButton>
           <DataCallTypeButton onClick={() => handleClickAndRedirect(task.taskSid, callTypes.caller)}>
-            <Box width="50px" marginRight="5px">
-              <FaceIcon style={{ marginRight: '-5px' }} />
-              <FaceIcon />
-            </Box>
+            <Flex width="50px" marginRight="5px">
+              <CallTypeIcon callType={callTypes.caller} />
+            </Flex>
             <Template code="CallType-caller" />
           </DataCallTypeButton>
         </Box>
