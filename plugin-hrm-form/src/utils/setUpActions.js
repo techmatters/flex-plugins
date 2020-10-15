@@ -53,10 +53,8 @@ export const initializeContactForm = payload => {
  * @param {import('@twilio/flex-ui').ITask} task
  */
 const restoreFormIfTransfer = async task => {
-  if (TransferHelpers.hasTransferStarted(task)) {
-    const form = await loadFormSharedState(task);
-    if (form) Manager.getInstance().store.dispatch(Actions.restoreEntireForm(form, task.taskSid));
-  }
+  const form = await loadFormSharedState(task);
+  if (form) Manager.getInstance().store.dispatch(Actions.restoreEntireForm(form, task.taskSid));
 };
 
 /**
@@ -64,8 +62,15 @@ const restoreFormIfTransfer = async task => {
  * @param {import('@twilio/flex-ui').ITask} task
  */
 const takeControlIfTransfer = async task => {
-  if (TransferHelpers.hasTransferStarted(task) && TransferHelpers.isColdTransfer(task))
-    await TransferHelpers.takeTaskControl(task);
+  if (TransferHelpers.isColdTransfer(task)) await TransferHelpers.takeTaskControl(task);
+};
+
+/**
+ * @param {import('@twilio/flex-ui').ITask} task
+ */
+const handleTransferredTask = async task => {
+  await takeControlIfTransfer(task);
+  await restoreFormIfTransfer(task);
 };
 
 const getTaskLanguage = ({ helplineLanguage, configuredLanguage }) => ({ task }) =>
@@ -97,12 +102,8 @@ export const afterAcceptTask = setupObject => async payload => {
   const { featureFlags } = setupObject;
   const { task } = payload;
 
-  if (featureFlags.enable_transfers) {
-    await takeControlIfTransfer(task);
-    await restoreFormIfTransfer(task);
-  }
-
-  prepopulateForm(task);
+  if (featureFlags.enable_transfers && TransferHelpers.hasTransferStarted(task)) handleTransferredTask(task);
+  else prepopulateForm(task);
 
   // To enable for all chat based task, change condition to "if (TaskHelper.isChatBasedTask(task))"
   if (task.attributes.channelType === channelTypes.web) {
