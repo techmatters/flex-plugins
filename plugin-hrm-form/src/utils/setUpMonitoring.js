@@ -5,14 +5,12 @@ import { datadogRum } from '@datadog/browser-rum';
 import { PLUGIN_VERSION } from '../HrmFormPlugin';
 import { rollbarAccessToken, datadogAccessToken } from '../private/secret';
 
-const environment = 'production'; // maybe we should use envars for this?
-
-function setUpDatadogRum(workerClient) {
+function setUpDatadogRum(workerClient, monitoringEnv) {
   datadogRum.init({
     applicationId: 'a9a65b9e-69a4-438e-ae45-4c47e52fb0fa',
     clientToken: datadogAccessToken,
     site: 'datadoghq.com',
-    env: environment,
+    env: monitoringEnv,
     version: PLUGIN_VERSION,
     sampleRate: 100,
     trackInteractions: true,
@@ -27,14 +25,14 @@ function setUpDatadogRum(workerClient) {
   });
 }
 
-function setUpRollbarLogger(plugin, workerClient) {
+function setUpRollbarLogger(plugin, workerClient, monitoringEnv) {
   plugin.Rollbar = new Rollbar({
     reportLevel: 'error',
     accessToken: rollbarAccessToken,
     captureUncaught: true,
     captureUnhandledRejections: true,
     payload: {
-      environment,
+      environment: monitoringEnv,
       person: {
         id: workerClient.sid,
         account: workerClient.accountSid,
@@ -83,7 +81,7 @@ function setUpRollbarLogger(plugin, workerClient) {
   myLogManager.prepare().then(myLogManager.start);
 }
 
-export default function setUpMonitoring(plugin, workerClient) {
-  setUpDatadogRum(workerClient);
-  setUpRollbarLogger(plugin, workerClient);
+export default function setUpMonitoring(plugin, workerClient, monitoringEnv) {
+  setUpDatadogRum(workerClient, monitoringEnv);
+  setUpRollbarLogger(plugin, workerClient, monitoringEnv);
 }

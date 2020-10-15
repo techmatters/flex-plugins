@@ -53,10 +53,8 @@ export const initializeContactForm = payload => {
  * @param {import('@twilio/flex-ui').ITask} task
  */
 const restoreFormIfTransfer = async task => {
-  if (TransferHelpers.hasTransferStarted(task)) {
-    const form = await loadFormSharedState(task);
-    if (form) Manager.getInstance().store.dispatch(Actions.restoreEntireForm(form, task.taskSid));
-  }
+  const form = await loadFormSharedState(task);
+  if (form) Manager.getInstance().store.dispatch(Actions.restoreEntireForm(form, task.taskSid));
 };
 
 /**
@@ -64,8 +62,15 @@ const restoreFormIfTransfer = async task => {
  * @param {import('@twilio/flex-ui').ITask} task
  */
 const takeControlIfTransfer = async task => {
-  if (TransferHelpers.hasTransferStarted(task) && TransferHelpers.isColdTransfer(task))
-    await TransferHelpers.takeTaskControl(task);
+  if (TransferHelpers.isColdTransfer(task)) await TransferHelpers.takeTaskControl(task);
+};
+
+/**
+ * @param {import('@twilio/flex-ui').ITask} task
+ */
+const handleTransferredTask = async task => {
+  await takeControlIfTransfer(task);
+  await restoreFormIfTransfer(task);
 };
 
 const getTaskLanguage = ({ helplineLanguage, configuredLanguage }) => ({ task }) =>
@@ -97,12 +102,8 @@ export const afterAcceptTask = setupObject => async payload => {
   const { featureFlags } = setupObject;
   const { task } = payload;
 
-  if (featureFlags.enable_transfers) {
-    await takeControlIfTransfer(task);
-    await restoreFormIfTransfer(task);
-  }
-
-  prepopulateForm(task);
+  if (featureFlags.enable_transfers && TransferHelpers.hasTransferStarted(task)) handleTransferredTask(task);
+  else prepopulateForm(task);
 
   // To enable for all chat based task, change condition to "if (TaskHelper.isChatBasedTask(task))"
   if (task.attributes.channelType === channelTypes.web) {
@@ -173,16 +174,6 @@ export const afterCancelTransfer = payload => {
 export const hangupCall = fromActionFunction(saveEndMillis);
 
 /**
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
- * @returns {ActionFunction}
- */
-export const beforeWrapupTask = setupObject => async payload => {
-  const { featureFlags } = setupObject;
-  const { task } = payload;
-  if (featureFlags.enable_manual_pulling && task.taskChannelUniqueName === 'chat') await adjustChatCapacity('decrease');
-};
-
-/**
  * Helper to determine if the counselor should send a message before leaving the chat
  * @param {string} channel
  */
@@ -215,8 +206,9 @@ const saveInsights = async payload => {
 /**
  * Submits the form to the hrm backend (if it should), and saves the insights. Used before task is completed
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
+ * @returns {ActionFunction}
  */
-export const sendInsightsData = setupObject => async payload => {
+const sendInsightsData = setupObject => async payload => {
   const { featureFlags } = setupObject;
 
   if (!featureFlags.enable_transfers || TransferHelpers.hasTaskControl(payload.task)) {
@@ -224,6 +216,25 @@ export const sendInsightsData = setupObject => async payload => {
       await saveInsights(payload);
     }
   }
+};
+
+/**
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
+ * @returns {ActionFunction}
+ */
+const decreaseChatCapacity = setupObject => async payload => {
+  const { featureFlags } = setupObject;
+  const { task } = payload;
+  if (featureFlags.enable_manual_pulling && task.taskChannelUniqueName === 'chat') await adjustChatCapacity('decrease');
+};
+
+/**
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
+ * @returns {ActionFunction}
+ */
+export const beforeCompleteTask = setupObject => async payload => {
+  await sendInsightsData(setupObject)(payload);
+  await decreaseChatCapacity(setupObject)(payload);
 };
 
 /**

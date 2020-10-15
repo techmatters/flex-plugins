@@ -170,8 +170,7 @@ const setUpActions = setupObject => {
   // bind setupObject to the functions that requires some initializaton
   const transferOverride = ActionFunctions.customTransferTask(setupObject);
   const wrapupOverride = ActionFunctions.wrapupTask(setupObject);
-  const beforeWrapupAction = ActionFunctions.beforeWrapupTask(setupObject);
-  const beforeCompleteAction = ActionFunctions.sendInsightsData(setupObject);
+  const beforeCompleteAction = ActionFunctions.beforeCompleteTask(setupObject);
 
   Flex.Actions.addListener('beforeAcceptTask', ActionFunctions.initializeContactForm);
 
@@ -183,8 +182,6 @@ const setUpActions = setupObject => {
     Flex.Actions.addListener('afterCancelTransfer', ActionFunctions.afterCancelTransfer);
 
   Flex.Actions.replaceAction('HangupCall', ActionFunctions.hangupCall);
-
-  Flex.Actions.addListener('beforeWrapupTask', beforeWrapupAction);
 
   Flex.Actions.replaceAction('WrapupTask', wrapupOverride);
 
@@ -206,7 +203,8 @@ export default class HrmFormPlugin extends FlexPlugin {
    * @param manager { import('@twilio/flex-ui').Manager }
    */
   init(flex, manager) {
-    if (!process.env.NO_MONITORING) setUpMonitoring(this, manager.workerClient);
+    const monitoringEnv = manager.serviceConfiguration.attributes.monitoringEnv || 'staging';
+    if (!process.env.NO_MONITORING) setUpMonitoring(this, manager.workerClient, monitoringEnv);
 
     console.log(`Welcome to ${PLUGIN_NAME} Version ${PLUGIN_VERSION}`);
     this.registerReducers(manager);
