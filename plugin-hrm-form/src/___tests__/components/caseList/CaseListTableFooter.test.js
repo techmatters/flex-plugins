@@ -3,9 +3,9 @@ import renderer from 'react-test-renderer';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { range } from 'lodash';
 
-import HrmTheme from '../../styles/HrmTheme';
-import { PaginationButton } from '../../styles/caseList';
-import Pagination, { getPaginationNumbers } from '../../components/Pagination';
+import HrmTheme from '../../../styles/HrmTheme';
+import { PaginationButton } from '../../../styles/caseList';
+import CaseListTableFooter, { getPaginationNumbers } from '../../../components/caseList/CaseListTableFooter';
 
 const themeConf = {
   colorTheme: HrmTheme,
@@ -45,11 +45,11 @@ test('getPaginationNumbers', async () => {
   });
 });
 
-describe('Pagination', () => {
+describe('CaseListTableFooter', () => {
   test('page 1/20', async () => {
     const component = renderer.create(
       <StorelessThemeProvider themeConf={themeConf}>
-        <Pagination page={0} pagesCount={20} handleChangePage={n => console.log(`pressed${n}`)} />
+        <CaseListTableFooter page={0} pagesCount={20} handleChangePage={n => console.log(`pressed${n}`)} />
       </StorelessThemeProvider>,
     ).root;
 
@@ -60,7 +60,7 @@ describe('Pagination', () => {
   test('page 10/20', async () => {
     const component = renderer.create(
       <StorelessThemeProvider themeConf={themeConf}>
-        <Pagination page={10} pagesCount={20} handleChangePage={n => console.log(`pressed${n}`)} />
+        <CaseListTableFooter page={10} pagesCount={20} handleChangePage={n => console.log(`pressed${n}`)} />
       </StorelessThemeProvider>,
     ).root;
 
@@ -71,7 +71,7 @@ describe('Pagination', () => {
   test('page 20/20', async () => {
     const component = renderer.create(
       <StorelessThemeProvider themeConf={themeConf}>
-        <Pagination page={20} pagesCount={20} handleChangePage={n => console.log(`pressed${n}`)} />
+        <CaseListTableFooter page={20} pagesCount={20} handleChangePage={n => console.log(`pressed${n}`)} />
       </StorelessThemeProvider>,
     ).root;
 

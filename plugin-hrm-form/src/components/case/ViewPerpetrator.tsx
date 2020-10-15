@@ -6,14 +6,13 @@ import { Template, ITask } from '@twilio/flex-ui';
 import { Container, StyledNextStepButton, BottomButtonBar, Box } from '../../styles/HrmStyles';
 import { CaseContainer } from '../../styles/case';
 import { namespace, connectedCaseBase, configurationBase } from '../../states';
-import { CaseState } from '../../states/case/reducer';
 import { CallerSection } from '../common/ContactDetails';
 import ActionHeader from './ActionHeader';
+import { isPerpetratorEntry } from '../../types/types';
 
 const mapStateToProps = (state, ownProps: OwnProps) => {
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
-  const caseState: CaseState = state[namespace][connectedCaseBase];
-  const { temporaryCaseInfo } = caseState.tasks[ownProps.task.taskSid];
+  const { temporaryCaseInfo } = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid];
 
   return { counselorsHash, temporaryCaseInfo };
 };
@@ -26,10 +25,10 @@ type OwnProps = {
 type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 
 const ViewPerpetrator: React.FC<Props> = ({ counselorsHash, temporaryCaseInfo, onClickClose }) => {
-  if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'view-perpetrator') return null;
+  if (!isPerpetratorEntry(temporaryCaseInfo)) return null;
 
-  const counselorName = counselorsHash[temporaryCaseInfo.info.twilioWorkerId] || 'Unknown';
-  const date = new Date(temporaryCaseInfo.info.createdAt).toLocaleDateString(navigator.language);
+  const counselorName = counselorsHash[temporaryCaseInfo.twilioWorkerId] || 'Unknown';
+  const date = new Date(temporaryCaseInfo.createdAt).toLocaleDateString(navigator.language);
 
   return (
     <CaseContainer>
@@ -45,7 +44,7 @@ const ViewPerpetrator: React.FC<Props> = ({ counselorsHash, temporaryCaseInfo, o
             expanded
             hideIcon
             handleExpandClick={() => undefined}
-            values={temporaryCaseInfo.info.perpetrator}
+            values={temporaryCaseInfo.perpetrator}
             sectionTitleTemplate="Case-ViewPerpetratorTitle"
           />
         </Box>

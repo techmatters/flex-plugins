@@ -12,14 +12,11 @@ import Translator from '../components/translator';
 import CaseList from '../components/caseList';
 import SettingsSideLink from '../components/sideLinks/SettingsSideLink';
 import CaseListSideLink from '../components/sideLinks/CaseListSideLink';
-import ManualPullButton from '../components/ManualPullButton';
-import { chatCapacityUpdated } from '../states/configuration/actions';
-// eslint-disable-next-line
+// eslint-disable-next-line no-unused-vars
 import { getConfig } from '../HrmFormPlugin';
-
 /**
  * Add an "invisible" component that tracks the state of the queues, updating the pending tasks in each channel
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
  */
 export const setUpQueuesStatusWriter = setupObject => {
   const { helpline } = setupObject;
@@ -37,22 +34,10 @@ export const setUpQueuesStatusWriter = setupObject => {
   );
 };
 
-// Re-renders UI if there is a new reservation created and no active tasks (avoid a visual bug with QueuesStatus when there are no tasks)
-const setUpRerenderOnReservation = () => {
-  const manager = Flex.Manager.getInstance();
-
-  manager.workerClient.on('reservationCreated', reservation => {
-    const { tasks } = manager.store.getState().flex.worker;
-    if (tasks.size === 1) Flex.Actions.invokeAction('SelectTask', { sid: reservation.sid });
-  });
-};
-
 /**
  * Add a widget at the beginnig of the TaskListContainer, which shows the pending tasks in each channel (consumes from QueuesStatusWriter)
  */
 export const setUpQueuesStatus = () => {
-  setUpRerenderOnReservation();
-
   const voiceColor = { Accepted: Flex.DefaultTaskChannels.Call.colors.main() };
   const webColor = Flex.DefaultTaskChannels.Chat.colors.main;
   const facebookColor = Flex.DefaultTaskChannels.ChatMessenger.colors.main;
@@ -61,7 +46,7 @@ export const setUpQueuesStatus = () => {
 
   Flex.TaskListContainer.Content.add(
     <QueuesStatus
-      key="queue-status-task-list"
+      key="queue-status"
       colors={{
         voiceColor,
         webColor,
@@ -73,25 +58,6 @@ export const setUpQueuesStatus = () => {
     {
       sortOrder: -1,
       align: 'start',
-    },
-  );
-
-  Flex.AgentDesktopView.Content.add(
-    <QueuesStatus
-      key="queue-status-agent-desktop"
-      colors={{
-        voiceColor,
-        webColor,
-        facebookColor,
-        smsColor,
-        whatsappColor,
-      }}
-      paddingRight
-    />,
-    {
-      sortOrder: -1,
-      align: 'start',
-      if: props => !props.tasks || !props.tasks.size,
     },
   );
 };
@@ -158,7 +124,7 @@ export const setUpTransferComponents = () => {
 
 /**
  * Add components used only by developers
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getGoodbyeMsg: (language: string) => Promise<string>; }} setupObject
  */
 export const setUpDeveloperComponents = setupObject => {
   const manager = Flex.Manager.getInstance();
@@ -201,19 +167,14 @@ const setSecondLine = chatChannel => {
   const defaultStrings = Flex.DefaultTaskChannels[channel].templates.TaskListItem.secondLine;
 
   Flex.DefaultTaskChannels[channel].templates.TaskListItem.secondLine = (task, componentType) => {
-    if (isIncomingTransfer(task)) {
+    if (isIncomingTransfer(task) && task.attributes.transferTargetType === 'queue') {
       const { originalCounselorName } = task.attributes.transferMeta;
-      const mode = TransferHelpers.isWarmTransfer(task)
-        ? manager.strings['Transfer-Warm']
-        : manager.strings['Transfer-Cold'];
+      return `${manager.strings[string]} ${originalCounselorName} (${task.queueName})`;
+    }
 
-      const baseMessage = `${mode} ${manager.strings[string]} ${originalCounselorName}`;
-
-      if (task.attributes.transferTargetType === 'queue') return `${baseMessage} (${task.queueName})`;
-
-      if (task.attributes.transferTargetType === 'worker') return `${baseMessage} (direct)`;
-
-      return baseMessage;
+    if (isIncomingTransfer(task) && task.attributes.transferTargetType === 'worker') {
+      const { originalCounselorName } = task.attributes.transferMeta;
+      return `${manager.strings[string]} ${originalCounselorName} (direct)`;
     }
 
     return Flex.TaskChannelHelper.getTemplateForStatus(task, defaultStrings, componentType);
@@ -222,7 +183,6 @@ const setSecondLine = chatChannel => {
 
 export const setUpIncomingTransferMessage = () => {
   const chatChannels = [
-    { channel: 'Call', string: 'Transfer-TaskLineCallReserved' },
     { channel: 'Chat', string: 'Transfer-TaskLineChatReserved' },
     { channel: 'ChatLine', string: 'Transfer-TaskLineChatLineReserved' },
     { channel: 'ChatMessenger', string: 'Transfer-TaskLineChatMessengerReserved' },
@@ -231,30 +191,6 @@ export const setUpIncomingTransferMessage = () => {
   ];
 
   chatChannels.forEach(el => setSecondLine(el));
-};
-
-export const setUpManualPulling = () => {
-  const manager = Flex.Manager.getInstance();
-
-  const [, chatChannel] = Array.from(manager.workerClient.channels).find(c => c[1].taskChannelUniqueName === 'chat');
-
-  manager.store.dispatch(chatCapacityUpdated(chatChannel.capacity));
-
-  chatChannel.on('capacityUpdated', channel => {
-    if (channel.taskChannelUniqueName === 'chat') manager.store.dispatch(chatCapacityUpdated(channel.capacity));
-  });
-
-  Flex.Notifications.registerNotification({
-    id: 'NoTaskAssignableNotification',
-    content: <Flex.Template code="NoTaskAssignableNotification" />,
-    timeout: 5000,
-    type: Flex.NotificationType.warning,
-  });
-
-  Flex.TaskList.Content.add(<ManualPullButton key="manual-pull-button" workerClient={manager.workerClient} />, {
-    sortOrder: Infinity,
-    align: 'start',
-  });
 };
 
 /**

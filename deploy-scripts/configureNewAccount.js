@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-const fs = require('fs').promises;
+const fs = require("fs").promises;
 
 const oldIdDict = {};
 const newIdDict = {};
@@ -19,7 +19,7 @@ async function createMatchingList(orig, copy, prefix, props, baseFn) {
       const newConfig = Object.fromEntries(
         Object.keys(obj)
           .filter((key) => props.includes(key))
-          .map((key) => [key, obj[key]]),
+          .map((key) => [key, obj[key]])
       );
 
       // Might need to add something where IDs are copied
@@ -36,7 +36,7 @@ async function createMatchingList(orig, copy, prefix, props, baseFn) {
 
       oldIdDict[prefix + friendlyName] = obj.sid;
       newIdDict[prefix + friendlyName] = newObj.sid;
-    }),
+    })
   );
 }
 
@@ -48,18 +48,18 @@ async function createMatchingList(orig, copy, prefix, props, baseFn) {
  */
 async function setUpTaskRouter(newAccSid, newAccAuth) {
   // eslint-disable-next-line global-require
-  const newClient = require('twilio')(newAccSid, newAccAuth);
+  const newClient = require("twilio")(newAccSid, newAccAuth);
   let client;
   try {
-    const flowStr = await fs.readFile('staging.json', 'utf8');
+    const flowStr = await fs.readFile("staging.json", "utf8");
     const vals = JSON.parse(flowStr);
     // eslint-disable-next-line global-require
-    client = require('twilio')(vals.AccountSid, vals.AuthToken);
+    client = require("twilio")(vals.AccountSid, vals.AuthToken);
   } catch (err) {
     console.log(err);
     console.log(
       "ERROR: This script requires a file 'staging.json' with the SID " +
-        'and auth token of the account you wish to copy the workspaces of.',
+        "and auth token of the account you wish to copy the workspaces of."
     );
     return;
   }
@@ -72,10 +72,10 @@ async function setUpTaskRouter(newAccSid, newAccAuth) {
       oldIdDict[`WS_${friendlyName}`] = oldWS.sid;
       const newWS = await newClient.taskrouter.workspaces.create({
         friendlyName,
-        template: oldWS.prioritizeQueueOrder === 'FIFO' ? 'FIFO' : 'NONE',
+        template: oldWS.prioritizeQueueOrder === "FIFO" ? "FIFO" : "NONE",
       });
       newIdDict[`WS_${friendlyName}`] = newWS.sid;
-    }),
+    })
   );
 
   // Now create the structure within the workspace
@@ -85,7 +85,9 @@ async function setUpTaskRouter(newAccSid, newAccAuth) {
       wsNames.map(async (wsName) => {
         const [oldTCs, newTCs, oldWAs, newWAs] = await Promise.all([
           client.taskrouter.workspaces(oldIdDict[wsName]).taskChannels.list(),
-          newClient.taskrouter.workspaces(newIdDict[wsName]).taskChannels.list(),
+          newClient.taskrouter
+            .workspaces(newIdDict[wsName])
+            .taskChannels.list(),
           client.taskrouter.workspaces(oldIdDict[wsName]).activities.list(),
           newClient.taskrouter.workspaces(newIdDict[wsName]).activities.list(),
         ]);
@@ -94,55 +96,62 @@ async function setUpTaskRouter(newAccSid, newAccAuth) {
           createMatchingList(
             oldTCs,
             newTCs,
-            'TC_',
-            ['uniqueName', 'channelOptimizedRouting'],
-            newClient.taskrouter.workspaces(newIdDict[wsName]).taskChannels,
+            "TC_",
+            ["uniqueName", "channelOptimizedRouting"],
+            newClient.taskrouter.workspaces(newIdDict[wsName]).taskChannels
           ),
           createMatchingList(
             oldWAs,
             newWAs,
-            'WA_',
-            ['available'],
-            newClient.taskrouter.workspaces(newIdDict[wsName]).activities,
+            "WA_",
+            ["available"],
+            newClient.taskrouter.workspaces(newIdDict[wsName]).activities
           ),
         ]);
-      }),
+      })
     );
   } catch (err) {
     // Rollback changes if script fails partway
     console.log(err);
-    console.log('Workspace set-up failed. Deleting workspaces created.');
+    console.log("Workspace set-up failed. Deleting workspaces created.");
     await Promise.all(
-      wsNames.map(async (wsName) => newClient.taskrouter.workspaces(newIdDict[wsName]).remove()),
+      wsNames.map(async (wsName) =>
+        newClient.taskrouter.workspaces(newIdDict[wsName]).remove()
+      )
     );
   }
 }
 
-const { argv } = require('yargs')
-  .usage('npm run configure -- --sid={SID} --authToken={token} [--delete={workspace SID}]')
-  .alias('s', 'sid')
-  .alias('a', 'authToken')
-  .alias('d', 'delete')
-  .describe('sid', 'SID of the account to set up.')
-  .describe('authToken', 'Authentication token of the account to set up.')
-  .describe('delete', 'Optional. Switches script into delete mode and deletes the given workspace.')
-  .demandOption(['sid', 'authToken']);
+const { argv } = require("yargs")
+  .usage(
+    "npm run configure -- --sid={SID} --authToken={token} [--delete={workspace SID}]"
+  )
+  .alias("s", "sid")
+  .alias("a", "authToken")
+  .alias("d", "delete")
+  .describe("sid", "SID of the account to set up.")
+  .describe("authToken", "Authentication token of the account to set up.")
+  .describe(
+    "delete",
+    "Optional. Switches script into delete mode and deletes the given workspace."
+  )
+  .demandOption(["sid", "authToken"]);
 
 if (argv.delete) {
   // eslint-disable-next-line global-require
-  const client = require('twilio')(argv.sid, argv.authToken);
+  const client = require("twilio")(argv.sid, argv.authToken);
   client.taskrouter
     .workspaces(argv.delete)
     .remove()
     .then(
       // eslint-disable-next-line no-unused-vars
-      (_) => console.log('Workspace deleted.'),
-      (err) => console.log(err),
+      (_) => console.log("Workspace deleted."),
+      (err) => console.log(err)
     );
 } else {
   setUpTaskRouter(argv.sid, argv.authToken).then(
     // eslint-disable-next-line no-unused-vars
-    (_) => console.log('Workspace set-up complete.'),
-    (err) => console.log(err),
+    (_) => console.log("Workspace set-up complete."),
+    (err) => console.log(err)
   );
 }

@@ -7,9 +7,7 @@ const callTypes = {
   hangup: 'Hang up',
   wrongnumber: 'Wrong Number',
   abusive: 'Abusive',
-} as const;
-
-export type CallTypes = typeof callTypes[keyof typeof callTypes];
+};
 
 export const channelTypes = {
   facebook: 'facebook',
@@ -17,9 +15,7 @@ export const channelTypes = {
   voice: 'voice',
   sms: 'sms',
   whatsapp: 'whatsapp',
-} as const;
-
-export type ChannelTypes = typeof channelTypes[keyof typeof channelTypes];
+};
 
 export const transferModes = {
   cold: 'COLD',

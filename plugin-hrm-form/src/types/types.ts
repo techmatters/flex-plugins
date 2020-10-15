@@ -6,7 +6,25 @@ export type CaseStatus = 'open' | 'close';
 
 export type PerpetratorEntry = { perpetrator: CallerFormValues; createdAt: string; twilioWorkerId: string };
 
+export function isPerpetratorEntry(entry: any): entry is PerpetratorEntry {
+  return (
+    typeof entry === 'object' &&
+    typeof entry.createdAt === 'string' &&
+    typeof entry.twilioWorkerId === 'string' &&
+    typeof entry.perpetrator === 'object' // couldn't make typeguard for recursive type
+  );
+}
+
 export type HouseholdEntry = { household: CallerFormValues; createdAt: string; twilioWorkerId: string };
+
+export function isHouseholdEntry(entry: any): entry is HouseholdEntry {
+  return (
+    typeof entry === 'object' &&
+    typeof entry.createdAt === 'string' &&
+    typeof entry.twilioWorkerId === 'string' &&
+    typeof entry.household === 'object' // couldn't make typeguard for recursive type
+  );
+}
 
 export type CaseInfo = {
   summary?: string;
@@ -23,70 +41,4 @@ export type Case = {
   info?: CaseInfo;
   createdAt: string;
   updatedAt: string;
-};
-
-// Information about a single contact, as expected from DB (we might want to reuse this type in backend) - (is this a correct placement for this?)
-export type ContactValues = {
-  childInformation: {
-    name: {
-      firstName: string;
-      lastName: string;
-
-      gender: string;
-      age: string;
-      language: string;
-      nationality: string;
-      ethnicity: string;
-      location: {
-        streetAddress: string;
-        city: string;
-        stateOrCounty: string;
-        postalCode: string;
-        phone1: string;
-        phone2: string;
-      };
-      refugee: boolean;
-      disabledOrSpecialNeeds: boolean;
-      hiv: boolean;
-      school: {
-        name: string;
-        gradeLevel: string;
-      };
-    };
-    caseInformation: {
-      callSummary: string;
-      referredTo: string;
-      status: string;
-      keepConfidential: boolean;
-      okForCaseWorkerToCall: boolean;
-      howDidTheChildHearAboutUs: string;
-      didYouDiscussRightsWithTheChild: boolean;
-      didTheChildFeelWeSolvedTheirProblem: boolean;
-      wouldTheChildRecommendUsToAFriend: boolean;
-    };
-    callerInformation: CallerFormValues;
-  };
-};
-
-// Information about a single contact, as expected from search contacts endpoint (we might want to reuse this type in backend) - (is this a correct placement for this?)
-export type SearchContact = {
-  contactId: string;
-  overview: {
-    dateTime: string;
-    name: string;
-    customerNumber: string;
-    callType: string;
-    categories: {};
-    counselor: string;
-    notes: string;
-    channel: string;
-    conversationDuration: number;
-  };
-  details: ContactValues;
-  counselor: string;
-};
-
-export type SearchContactResult = {
-  count: number;
-  contacts: SearchContact[];
 };

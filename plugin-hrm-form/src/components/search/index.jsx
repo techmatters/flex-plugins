@@ -7,17 +7,17 @@ import DialogContent from '@material-ui/core/DialogContent';
 import { withTaskContext } from '@twilio/flex-ui';
 
 import SearchForm from './SearchForm';
-import SearchResults, { CONTACTS_PER_PAGE } from './SearchResults';
+import SearchResults from './SearchResults';
 import ContactDetails from './ContactDetails';
 import { contactType, searchResultType, searchFormType } from '../../types';
-import { SearchPages } from '../../states/search/types';
 import {
   handleSearchFormChange,
   changeSearchPage,
   viewContactDetails,
   searchContacts,
+  SearchPages,
   handleExpandDetailsSection,
-} from '../../states/search/actions';
+} from '../../states/SearchContact';
 import { namespace, searchContactsBase, configurationBase } from '../../states';
 
 class Search extends Component {
@@ -49,8 +49,6 @@ class Search extends Component {
 
   state = {
     mockedMessage: '',
-    searchParams: {},
-    offset: 0,
   };
 
   closeDialog = () => this.setState({ mockedMessage: '' });
@@ -67,27 +65,8 @@ class Search extends Component {
     );
   }
 
-  handleSearch = () => {
-    const { searchParams, offset } = this.state;
-    this.props.searchContacts(searchParams, this.props.counselorsHash, CONTACTS_PER_PAGE, offset);
-  };
-
-  setSearchParamsAndHandleSearch = searchParams => {
-    this.setState({ searchParams, offset: 0 }, this.handleSearch);
-  };
-
-  setOffsetAndHandleSearch = offset => {
-    this.setState({ offset }, this.handleSearch);
-  };
-
-  toggleNonDataContacts = () => {
-    const { searchParams } = this.state;
-    const { onlyDataContacts } = searchParams;
-    const updatedSearchParams = {
-      ...searchParams,
-      onlyDataContacts: !onlyDataContacts,
-    };
-    this.setState({ searchParams: updatedSearchParams, offset: 0 }, this.handleSearch);
+  handleSearch = async searchParams => {
+    this.props.searchContacts(searchParams, this.props.counselorsHash);
   };
 
   goToForm = () => this.props.changeSearchPage('form');
@@ -101,7 +80,7 @@ class Search extends Component {
           <SearchForm
             values={form}
             handleSearchFormChange={this.props.handleSearchFormChange}
-            handleSearch={this.setSearchParamsAndHandleSearch}
+            handleSearch={this.handleSearch}
           />
         );
       case SearchPages.results:
@@ -109,10 +88,7 @@ class Search extends Component {
           <SearchResults
             currentIsCaller={this.props.currentIsCaller}
             results={searchResult}
-            onlyDataContacts={this.state.searchParams.onlyDataContacts}
             handleSelectSearchResult={this.props.handleSelectSearchResult}
-            handleSearch={this.setOffsetAndHandleSearch}
-            toggleNonDataContacts={this.toggleNonDataContacts}
             handleBack={this.goToForm}
             handleViewDetails={this.props.viewContactDetails}
             handleMockedMessage={this.handleMockedMessage}

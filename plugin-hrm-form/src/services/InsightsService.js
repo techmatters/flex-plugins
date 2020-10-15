@@ -1,7 +1,6 @@
 /* eslint-disable camelcase */
 import { isNonDataCallType } from '../states/ValidationRules';
 import { isNotCategory, isNotSubcategory } from '../states/ContactFormStateFactory';
-import { mapChannelForInsights } from '../utils/mappers';
 
 function getSubcategories(task) {
   if (!task || !task.caseInformation || !task.caseInformation.categories) return [];
@@ -23,16 +22,11 @@ function getSubcategories(task) {
   return result.splice(0, 3);
 }
 
-function buildConversationsObject(taskAttributes, task) {
+function buildConversationsObject(task) {
   const callType = task.callType.value;
   const hasCustomerData = !isNonDataCallType(callType);
 
-  if (!hasCustomerData) {
-    return {
-      conversation_attribute_2: callType,
-      conversation_attribute_6: mapChannelForInsights(taskAttributes.channelType),
-    };
-  }
+  if (!hasCustomerData) return { conversation_attribute_2: callType };
 
   const subcategories = getSubcategories(task);
   const { childInformation } = task;
@@ -42,7 +36,6 @@ function buildConversationsObject(taskAttributes, task) {
     conversation_attribute_2: callType,
     conversation_attribute_3: childInformation.gender.value,
     conversation_attribute_4: childInformation.age.value,
-    conversation_attribute_6: mapChannelForInsights(taskAttributes.channelType),
   };
 }
 
@@ -57,7 +50,7 @@ function mergeAttributes(previousAttributes, { conversations }) {
 }
 
 export async function saveInsightsData(twilioTask, task) {
-  const conversations = buildConversationsObject(twilioTask.attributes, task);
+  const conversations = buildConversationsObject(task);
   const previousAttributes = twilioTask.attributes;
   const newAttributes = mergeAttributes(previousAttributes, { conversations });
 

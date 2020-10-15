@@ -3,17 +3,14 @@ import styled from 'react-emotion';
 import { FontOpenSans } from '../HrmStyles';
 
 export const Container = styled('div')`
-  display: flex;
-  flex-grow: 0;
-  flex-direction: column;
+  width: 100%;
   background-color: #ffffff;
   padding-bottom: 14px;
   border-style: solid;
 `;
 
 export const QueuesContainer = styled('div')`
-  width: 100%;
-  ${props => props.paddingRight && 'padding-right: 30px;'}
+  width: auto;
 `;
 
 export const QueueName = styled(FontOpenSans)`

@@ -34,20 +34,20 @@ const AddNote: React.FC<Props> = ({
   const { strings } = getConfig();
   const { connectedCase, temporaryCaseInfo } = connectedCaseState;
 
-  const handleOnChangeNote = (note: string) => updateTempInfo({ screen: 'add-note', info: note }, task.taskSid);
+  const handleOnChangeNote = (newNote: string) => updateTempInfo(newNote, task.taskSid);
 
   const handleSaveNote = async () => {
     const { info, id } = connectedCase;
-    const newNote = temporaryCaseInfo.info;
+    const newNote = temporaryCaseInfo;
     const notes = info && info.notes ? [...info.notes, newNote] : [newNote];
     const newInfo = info ? { ...info, notes } : { notes };
     const updatedCase = await updateCase(id, { info: newInfo });
     setConnectedCase(updatedCase, task.taskSid);
-    updateTempInfo({ screen: 'add-note', info: '' }, task.taskSid);
+    updateTempInfo('', task.taskSid);
     changeRoute({ route: 'new-case' }, task.taskSid);
   };
 
-  if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-note') return null;
+  if (typeof temporaryCaseInfo !== 'string') return null;
 
   return (
     <CaseActionContainer>
@@ -61,7 +61,7 @@ const AddNote: React.FC<Props> = ({
           aria-labelledby="Case-TypeHere-label"
           placeholder={strings['Case-AddNoteTypeHere']}
           rows={25}
-          value={temporaryCaseInfo.info}
+          value={temporaryCaseInfo}
           onChange={e => handleOnChangeNote(e.target.value)}
         />
       </Box>
@@ -76,7 +76,7 @@ const AddNote: React.FC<Props> = ({
           data-testid="Case-AddNoteScreen-SaveNote"
           roundCorners
           onClick={handleSaveNote}
-          disabled={!temporaryCaseInfo.info}
+          disabled={!temporaryCaseInfo}
         >
           <Template code="BottomBar-SaveNote" />
         </StyledNextStepButton>

@@ -62,7 +62,7 @@ export const childInformationType = PropTypes.shape({
   hiv: fieldType,
 });
 
-const callerInformationType = PropTypes.shape({
+export const callerInformationType = PropTypes.shape({
   name: nameType,
   relationshipToChild: fieldType,
   gender: fieldType,

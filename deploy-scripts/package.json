@@ -6,7 +6,6 @@
     "lint": "eslint --ext js .",
     "lint:fix": "npm run lint -- --fix",
     "copyFlow": "node copyFlow.js",
-    "copyBot": "node copyBot.js",
     "configure": "node configureNewAccount.js"
   },
   "author": "",

@@ -1,8 +1,8 @@
 /* eslint-disable no-nested-ternary */
 import React from 'react';
 import styled from 'react-emotion';
-import { ButtonBase, Input, Select, MenuItem, Tabs, Tab, Checkbox, withStyles, TableRow } from '@material-ui/core';
-import { Button, Icon, getBackgroundWithHoverCSS, TabsProps } from '@twilio/flex-ui';
+import { Input, Select, MenuItem, Tabs, Tab, Checkbox, withStyles } from '@material-ui/core';
+import { Button, getBackgroundWithHoverCSS, TabsProps } from '@twilio/flex-ui';
 
 type BoxProps = {
   width?: string;
@@ -30,21 +30,6 @@ export const Box = styled('div')<BoxProps>`
   ${({ paddingRight }) => paddingRight && `padding-right: ${paddingRight};`}
 `;
 Box.displayName = 'Box';
-
-type FlexProps = {
-  inline?: boolean;
-  flexDirection?: string;
-  alignItems?: string;
-  justifyContent?: string;
-};
-
-export const Flex = styled(Box)<FlexProps>`
-  display: ${({ inline }) => (inline ? 'inline-flex' : 'flex')};
-  ${({ flexDirection }) => flexDirection && `flex-direction: ${flexDirection};`}
-  ${({ alignItems }) => alignItems && `align-items: ${alignItems};`}
-  ${({ justifyContent }) => justifyContent && `justify-content: ${justifyContent};`}
-`;
-Flex.displayName = 'Flex';
 
 type AbsoluteProps = {
   top?: string;
@@ -530,70 +515,3 @@ export const addHover = Component =>
       },
     },
   })(Component);
-
-type PaginationRowProps = {
-  transparent?: boolean;
-};
-
-export const PaginationRow = styled(TableRow)<PaginationRowProps>`
-  height: auto;
-  vertical-align: top;
-  background-color: ${props => (props.transparent ? 'transparent' : props.theme.colors.base2)};
-  margin-top: -5;
-`;
-PaginationRow.displayName = 'PaginationRow';
-
-export const ManualPullIconContainer = styled('div')`
-  display: flex;
-  flex: 0 0 44px;
-  height: 44px;
-  background-color: #ffffff;
-`;
-ManualPullIconContainer.displayName = 'ManualPullIconContainer';
-
-export const ManualPullIcon = styled(Icon)`
-  display: flex;
-  flex: 0 0 auto;
-  margin: auto;
-  color: #000000;
-`;
-ManualPullIcon.displayName = 'ManualPullIcon';
-
-export const ManualPullContent = styled('div')`
-  display: flex;
-  flex: 1 1 auto;
-  overflow: hidden;
-  padding-right: auto;
-  padding-left: 12px;
-`;
-ManualPullContent.displayName = 'ManualPullContent';
-
-export const ManualPullText = styled(FontOpenSans)`
-  color: #0d74d5;
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 600;
-`;
-ManualPullText.displayName = 'ManualPullText';
-
-export const ManualPullButtonBase = withStyles({
-  root: {
-    '&:hover': {
-      backgroundColor: '#ECEDF1',
-    },
-    '&:hover > div': {
-      backgroundColor: '#ECEDF1',
-    },
-  },
-  disabled: {
-    opacity: 0.3,
-    color: '#192B33',
-    '& svg': {
-      color: '#192B33',
-    },
-    '& p': {
-      color: '#192B33',
-    },
-  },
-})(ButtonBase);
-ManualPullButtonBase.displayName = 'ManualPullButtonBase';

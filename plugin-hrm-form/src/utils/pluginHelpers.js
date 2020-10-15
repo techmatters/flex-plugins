@@ -34,11 +34,11 @@ export const initTranslateUI = localizationConfig => async language => {
 };
 
 /**
- * Function that receives a language and a message key and fetches the appropriate message from serverless translations
- * @param {string} messageKey
- * @returns {(language: string) => Promise<string>}
+ * Function that receives a language and fetches the appropiate goodbye message
+ * @param {string} language
+ * @returns {Promise<string>}
  */
-export const getMessage = messageKey => async language => {
+export const getGoodbyeMsg = async language => {
   try {
     if (language && language !== defaultLanguage) {
       const body = { language };
@@ -46,14 +46,14 @@ export const getMessage = messageKey => async language => {
       const messages = await (typeof messagesJSON === 'string'
         ? JSON.parse(messagesJSON)
         : Promise.resolve(messagesJSON));
-      return messages[messageKey] ? messages[messageKey] : defaultMessages[messageKey];
+      return messages.GoodbyeMsg ? messages.GoodbyeMsg : defaultMessages.GoodbyeMsg;
     }
 
-    return defaultMessages[messageKey];
+    return defaultMessages.GoodbyeMsg;
   } catch (err) {
     window.alert(translationErrorMsg);
     console.error(translationErrorMsg, err);
-    return defaultMessages[messageKey];
+    return defaultMessages.GoodbyeMsg;
   }
 };
 
@@ -76,6 +76,6 @@ export const initLocalization = (localizationConfig, initialLanguage) => {
 
   return {
     translateUI,
-    getMessage,
+    getGoodbyeMsg,
   };
 };

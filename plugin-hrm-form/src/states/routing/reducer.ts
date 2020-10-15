@@ -14,10 +14,10 @@ const initialState: RoutingState = {
 };
 
 const newTaskEntry = {
-  route: 'select-call-type' as const,
+  route: 'select-call-type',
 };
 
-export function reduce(state = initialState, action: RoutingActionType | GeneralActionType): RoutingState {
+export function reduce(state = initialState, action: RoutingActionType | GeneralActionType) {
   switch (action.type) {
     case INITIALIZE_CONTACT_STATE: {
       return {

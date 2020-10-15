@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { omit } from 'lodash';
 
-import { queuesStatusUpdate, queuesStatusFailure } from '../../states/queuesStatus/actions';
-import * as h from './helpers';
+import { queuesStatusUpdate, queuesStatusFailure } from '../../states/QueuesStatus';
+import { initializeQueuesStatus, getNewQueuesStatus, isWaiting } from './helpers';
 import { namespace, queuesStatusBase } from '../../states';
 
 export class InnerQueuesStatusWriter extends React.Component {
@@ -49,7 +49,7 @@ export class InnerQueuesStatusWriter extends React.Component {
       // builds the array of queues the counselor cares about (for now will always be one)
       const counselorQueues = helpline && queues.includes(helpline) ? [helpline] : ['Admin'];
 
-      const cleanQueuesStatus = h.initializeQueuesStatus(counselorQueues);
+      const cleanQueuesStatus = initializeQueuesStatus(counselorQueues);
 
       const tasksQuery = await this.props.insightsClient.liveQuery('tr-task', '');
 
@@ -61,8 +61,7 @@ export class InnerQueuesStatusWriter extends React.Component {
       this.updateQueuesState(tasksItems, cleanQueuesStatus);
       this.setState({ tasksQuery, trackedTasks });
 
-      const shouldUpdate = status =>
-        h.isPending(status) || h.isReserved(status) || h.isAssigned(status) || h.isCanceled(status);
+      const shouldUpdate = status => status === 'pending' || status === 'assigned' || status === 'canceled';
 
       tasksQuery.on('itemUpdated', args => {
         console.log('TASK UPDATED', args);
@@ -99,14 +98,14 @@ export class InnerQueuesStatusWriter extends React.Component {
   getQueuesNames = queuesItems => Object.values(queuesItems).reduce((acc, queue) => [...acc, queue.queue_name], []);
 
   updateQueuesState(tasks, prevQueuesStatus) {
-    const queuesStatus = h.getNewQueuesStatus(prevQueuesStatus, tasks);
+    const queuesStatus = getNewQueuesStatus(prevQueuesStatus, tasks);
     this.props.queuesStatusUpdate(queuesStatus);
   }
 
   waitingInCounselorQueues = (tasksItems, counselorQueues) =>
     Object.entries(tasksItems).reduce(
       (acc, [sid, task]) =>
-        h.isWaiting(task.status) && counselorQueues.includes(task.queue_name) ? { ...acc, [sid]: true } : acc,
+        isWaiting(task.status) && counselorQueues.includes(task.queue_name) ? { ...acc, [sid]: true } : acc,
       {},
     );
 

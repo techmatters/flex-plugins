@@ -44,7 +44,6 @@
   "SearchResultsIndex-Back": "Return to search criteria",
   "SearchResultsIndex-Result": " result",
   "SearchResultsIndex-Results": " results",
-  "SearchResultsIndex-NonDataContacts": "Non-Data Contacts",
 
   "SectionEntry-Yes": "Yes",
   "SectionEntry-No": "No",
@@ -58,14 +57,11 @@
   "TaskLineCallTransferWorker": "Transfer from {{task.incomingTransferObject.worker.fullName}} (direct)",
   "TaskLineCallTransferQueue": "Transfer from {{task.incomingTransferObject.worker.fullName}} ({{task.incomingTransferObject.queue.name}})",
 
-  "Transfer-TaskLineCallReserved": "transfer from",
-  "Transfer-TaskLineChatReserved": "transfer from",
-  "Transfer-TaskLineChatLineReserved": "transfer from",
-  "Transfer-TaskLineChatMessengerReserved": "transfer from",
-  "Transfer-TaskLineChatSmsReserved": "transfer from",
-  "Transfer-TaskLineChatWhatsAppReserved": "transfer from",
-  "Transfer-Cold": "Cold",
-  "Transfer-Warm": "Warm",
+  "Transfer-TaskLineChatReserved": "Transfer from",
+  "Transfer-TaskLineChatLineReserved": "Transfer from",
+  "Transfer-TaskLineChatMessengerReserved": "Transfer from",
+  "Transfer-TaskLineChatSmsReserved": "Transfer from",
+  "Transfer-TaskLineChatWhatsAppReserved": "Transfer from",
   "Transfer-FormNotEditable": "Form locked until transfer is completed.",
   "Transfer-ChatWarmNotAllowed": "Warm transfer for chats is currently not supported.",
 
@@ -175,8 +171,5 @@
   "CallerSection-Nationality": "Nationality",
   "CallerSection-Ethnicity": "Ethnicity",
 
-  "ContactDetails-GeneralDetails": "General Details",
-
-  "ManualPullButtonText": "Add Another Task",
-  "NoTaskAssignableNotification": "No task assignable to you at the moment."
+  "ContactDetails-GeneralDetails": "General Details"
 }
