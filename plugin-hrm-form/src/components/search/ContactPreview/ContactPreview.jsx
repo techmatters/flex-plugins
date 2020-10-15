@@ -1,34 +1,41 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { format } from 'date-fns';
 
-import ChildNameAndDate from './ChildNameAndDate';
-import CallSummary from './CallSummary';
-import TagsAndCounselor from './TagsAndCounselor';
-import { contactType } from '../../../types';
 import { ContactWrapper } from '../../../styles/search';
-import { Flex } from '../../../styles/HrmStyles';
-import ConnectContact from './ConnectContact';
+import ChildNameAndActions from './ChildNameAndActions';
+import CallTypeAndCounselor from './CallTypeAndCounselor';
+import CallSummary from './CallSummary';
+import DateAndTags from './DateAndTags';
+import { contactType } from '../../../types';
+import { formatName, formatCategories, mapCallType } from '../../../utils';
+import { isNonDataCallType } from '../../../states/ValidationRules';
 
-const ContactPreview = ({ contact, handleOpenConnectDialog, handleViewDetails }) => {
+const ContactPreview = ({ contact, handleOpenConnectDialog, handleViewDetails, handleMockedMessage }) => {
+  const name = formatName(contact.overview.name).toUpperCase();
+
+  const dateString = `${format(new Date(contact.overview.dateTime), 'MMM d, yyyy h:mm aaaaa')}m`;
+  const callType = mapCallType(contact.overview.callType);
+  const isNonDataContact = isNonDataCallType(contact.overview.callType);
   const { counselor } = contact;
+
   const { callSummary } = contact.details.caseInformation;
 
+  const [category1, category2, category3] = formatCategories(contact.overview.categories);
+
   return (
-    <Flex>
-      <ConnectContact callType={contact.overview.callType} onOpenConnectDialog={handleOpenConnectDialog} />
-      <ContactWrapper key={contact.contactId}>
-        <ChildNameAndDate
-          channel={contact.overview.channel}
-          callType={contact.overview.callType}
-          name={contact.overview.name}
-          number={contact.overview.customerNumber}
-          date={contact.overview.dateTime}
-          onClickFull={handleViewDetails}
-        />
-        <CallSummary callSummary={callSummary} onClickFull={handleViewDetails} />
-        <TagsAndCounselor counselor={counselor} categories={contact.overview.categories} />
-      </ContactWrapper>
-    </Flex>
+    <ContactWrapper key={contact.contactId}>
+      <ChildNameAndActions
+        name={name}
+        isNonDataContact={isNonDataContact}
+        onClickChain={handleOpenConnectDialog}
+        onClickFull={handleViewDetails}
+        onClickMore={handleMockedMessage}
+      />
+      <CallTypeAndCounselor callType={callType} counselor={counselor} />
+      <CallSummary callSummary={callSummary} onClickFull={handleViewDetails} />
+      <DateAndTags dateString={dateString} category1={category1} category2={category2} category3={category3} />
+    </ContactWrapper>
   );
 };
 
@@ -38,6 +45,7 @@ ContactPreview.propTypes = {
   contact: contactType.isRequired,
   handleOpenConnectDialog: PropTypes.func.isRequired,
   handleViewDetails: PropTypes.func.isRequired,
+  handleMockedMessage: PropTypes.func.isRequired,
 };
 
 export default ContactPreview;

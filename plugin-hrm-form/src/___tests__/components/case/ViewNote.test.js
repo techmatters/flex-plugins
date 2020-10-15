@@ -23,9 +23,8 @@ test('displays counselor, date and note', () => {
     'counselor-hash-1': counselor,
   };
 
-  const tempInfo = {
-    screen: 'view-note',
-    info: {
+  const connectedCaseState = {
+    viewNoteInfo: {
       counselor: 'counselor-hash-1',
       date,
       note,
@@ -36,7 +35,7 @@ test('displays counselor, date and note', () => {
     <StorelessThemeProvider themeConf={themeConf}>
       <UnconnectedViewNote
         taskSid="taskSid"
-        tempInfo={tempInfo}
+        connectedCaseState={connectedCaseState}
         changeRoute={jest.fn()}
         counselorsHash={counselorsHash}
       />
@@ -59,9 +58,8 @@ test('click on x button', () => {
     'counselor-hash-1': counselor,
   };
 
-  const tempInfo = {
-    screen: 'view-note',
-    info: {
+  const connectedCaseState = {
+    viewNoteInfo: {
       counselor: 'counselor-hash-1',
       date,
       note,
@@ -72,7 +70,7 @@ test('click on x button', () => {
     <StorelessThemeProvider themeConf={themeConf}>
       <UnconnectedViewNote
         taskSid={taskSid}
-        tempInfo={tempInfo}
+        connectedCaseState={connectedCaseState}
         changeRoute={changeRoute}
         counselorsHash={counselorsHash}
       />
@@ -96,9 +94,8 @@ test('click on close button', () => {
     'counselor-hash-1': counselor,
   };
 
-  const tempInfo = {
-    screen: 'view-note',
-    info: {
+  const connectedCaseState = {
+    viewNoteInfo: {
       counselor: 'counselor-hash-1',
       date,
       note,
@@ -109,7 +106,7 @@ test('click on close button', () => {
     <StorelessThemeProvider themeConf={themeConf}>
       <UnconnectedViewNote
         taskSid={taskSid}
-        tempInfo={tempInfo}
+        connectedCaseState={connectedCaseState}
         changeRoute={changeRoute}
         counselorsHash={counselorsHash}
       />
@@ -131,9 +128,8 @@ test('a11y', async () => {
     'counselor-hash-1': counselor,
   };
 
-  const tempInfo = {
-    screen: 'view-note',
-    info: {
+  const connectedCaseState = {
+    viewNoteInfo: {
       counselor: 'counselor-hash-1',
       date,
       note,
@@ -144,7 +140,7 @@ test('a11y', async () => {
     <StorelessThemeProvider themeConf={themeConf}>
       <UnconnectedViewNote
         taskSid="taskSid"
-        tempInfo={tempInfo}
+        connectedCaseState={connectedCaseState}
         changeRoute={jest.fn()}
         counselorsHash={counselorsHash}
       />

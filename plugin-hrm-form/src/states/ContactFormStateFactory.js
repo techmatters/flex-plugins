@@ -13,12 +13,12 @@ export const FieldType = {
 };
 
 export function isNotCategory(value) {
-  const notCategory = ['error', 'touched', 'type', 'validation'];
+  const notCategory = ['error', 'touched', 'type', 'validation', 'color'];
   return notCategory.includes(value);
 }
 
 export function isNotSubcategory(value) {
-  const notSubcategory = ['type'];
+  const notSubcategory = ['type', 'color'];
   return notSubcategory.includes(value);
 }
 
@@ -184,6 +184,7 @@ const defaultFormDefinition = {
       validation: [ValidationType.REQUIRED],
       'Missing children': {
         type: FieldType.INTERMEDIATE,
+        color: '#BBE3FF',
         'Child abduction': {
           type: FieldType.CHECKBOX,
           value: false,
@@ -203,6 +204,7 @@ const defaultFormDefinition = {
       },
       Violence: {
         type: FieldType.INTERMEDIATE,
+        color: '#F5A623',
         Bullying: {
           type: FieldType.CHECKBOX,
           value: false,
@@ -266,6 +268,7 @@ const defaultFormDefinition = {
       },
       'Mental Health': {
         type: FieldType.INTERMEDIATE,
+        color: '#F8E900',
         'Addictive behaviours': {
           type: FieldType.CHECKBOX,
           value: false,
@@ -309,6 +312,7 @@ const defaultFormDefinition = {
       },
       'Physical Health': {
         type: FieldType.INTERMEDIATE,
+        color: '#E86B6B',
         'Medical or lifestyle information about HIV/AIDS': {
           type: FieldType.CHECKBOX,
           value: false,
@@ -332,6 +336,7 @@ const defaultFormDefinition = {
       },
       Accessibility: {
         type: FieldType.INTERMEDIATE,
+        color: '#8055BA',
         Education: {
           type: FieldType.CHECKBOX,
           value: false,
@@ -367,6 +372,7 @@ const defaultFormDefinition = {
       },
       'Discrimination and Exclusion': {
         type: FieldType.INTERMEDIATE,
+        color: '#B971AF',
         'Ethnicity/nationality': {
           type: FieldType.CHECKBOX,
           value: false,
@@ -394,6 +400,7 @@ const defaultFormDefinition = {
       },
       'Family Relationships': {
         type: FieldType.INTERMEDIATE,
+        color: '#239613',
         'Adoption, fostering, and extended family placement': {
           type: FieldType.CHECKBOX,
           value: false,
@@ -413,6 +420,7 @@ const defaultFormDefinition = {
       },
       'Peer Relationships': {
         type: FieldType.INTERMEDIATE,
+        color: '#9AD703',
         'Friends and Friendships': {
           type: FieldType.CHECKBOX,
           value: false,
@@ -428,6 +436,7 @@ const defaultFormDefinition = {
       },
       School: {
         type: FieldType.INTERMEDIATE,
+        color: '#55AFAF',
         'Academic issues': {
           type: FieldType.CHECKBOX,
           value: false,
@@ -443,6 +452,7 @@ const defaultFormDefinition = {
       },
       Sexuality: {
         type: FieldType.INTERMEDIATE,
+        color: '#506BA5',
         'Sexuality and gender identity': {
           type: FieldType.CHECKBOX,
           value: false,
@@ -458,6 +468,7 @@ const defaultFormDefinition = {
       },
       'Information & Other Non-Counselling contacts': {
         type: FieldType.INTERMEDIATE,
+        color: '#767777',
         'Complaints about the child helpline': {
           type: FieldType.CHECKBOX,
           value: false,
@@ -528,7 +539,7 @@ const recursivelyCreateBlankForm = formDefinition => {
   const initialState = {};
 
   Object.keys(formDefinition)
-    .filter(key => key !== 'type' && key !== 'validation')
+    .filter(key => key !== 'type' && key !== 'validation' && key !== 'color')
     .forEach(key => {
       switch (formDefinition[key].type) {
         case FieldType.CALL_TYPE:
@@ -556,6 +567,7 @@ const recursivelyCreateBlankForm = formDefinition => {
           initialState[key] = {
             ...recursivelyCreateBlankForm(formDefinition[key]),
             type: formDefinition[key].type,
+            ...(formDefinition[key].color && { color: formDefinition[key].color }),
           };
           break;
         case FieldType.TAB:

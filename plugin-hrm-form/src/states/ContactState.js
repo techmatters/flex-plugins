@@ -17,7 +17,7 @@ import {
 } from './ActionTypes';
 import { INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE } from './types';
 import { countSelectedCategories } from './ValidationRules';
-import { copySearchResultIntoTask } from './contacts/helpers';
+import { copySearchResultIntoTask } from './SearchContact';
 import { getConfig } from '../HrmFormPlugin';
 
 /**
@@ -78,12 +78,6 @@ export class Actions {
 
   static prepopulateFormCaller = (gender, age, taskId) => ({ type: PREPOPULATE_FORM_CALLER, gender, age, taskId });
 }
-
-export const handleSelectSearchResult = (searchResult, taskId) => ({
-  type: HANDLE_SELECT_SEARCH_RESULT,
-  searchResult,
-  taskId,
-});
 
 // Will replace the below when we move over to field objects
 export function editNestedField(original, parents, name, change) {

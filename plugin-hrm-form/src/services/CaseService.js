@@ -1,5 +1,4 @@
 import fetchHrmApi from './fetchHrmApi';
-import { getLimitAndOffsetParams } from './PaginationParams';
 
 export async function createCase(caseRecord) {
   const options = {
@@ -13,8 +12,12 @@ export async function createCase(caseRecord) {
 }
 
 export async function getCases(limit, offset) {
-  const queryParams = getLimitAndOffsetParams(limit, offset);
-  const responseJson = await fetchHrmApi(`/cases${queryParams}`);
+  if (limit !== undefined && offset !== undefined) {
+    const responseJson = await fetchHrmApi(`/cases?limit=${limit}&offset=${offset}`);
+    return responseJson;
+  }
+
+  const responseJson = await fetchHrmApi('/cases');
 
   return responseJson;
 }

@@ -6,7 +6,7 @@ import TaskView from './TaskView';
 import { taskType } from '../types';
 import { Absolute } from '../styles/HrmStyles';
 import { populateCounselors } from '../services/ServerlessService';
-import { populateCounselorsState } from '../states/configuration/actions';
+import { populateCounselorsState } from '../states/ConfigurationState';
 
 class CustomCRMContainer extends React.Component {
   static displayName = 'CustomCRMContainer';

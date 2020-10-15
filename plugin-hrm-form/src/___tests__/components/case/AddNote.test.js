@@ -44,7 +44,7 @@ const state = {
     [connectedCaseBase]: {
       tasks: {
         task1: {
-          temporaryCaseInfo: { screen: 'add-note', info: 'Mocked temp value' },
+          temporaryCaseInfo: 'Mocked temp value',
           connectedCase: {
             createdAt: 1593469560208,
             twilioWorkerId: 'worker1',
@@ -130,9 +130,7 @@ test('Test input/add note functionality', async () => {
   const textarea = screen.getByTestId('Case-AddNoteScreen-TextArea');
   fireEvent.change(textarea, { target: { value: note } });
 
-  expect(store.dispatch).toHaveBeenCalledWith(
-    CaseActions.updateTempInfo({ screen: 'add-note', info: note }, ownProps.task.taskSid),
-  );
+  expect(store.dispatch).toHaveBeenCalledWith(CaseActions.updateTempInfo(note, ownProps.task.taskSid));
 
   store.dispatch.mockClear();
   expect(store.dispatch).not.toHaveBeenCalled();

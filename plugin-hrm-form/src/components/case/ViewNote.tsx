@@ -15,11 +15,11 @@ type OwnProps = {
 };
 
 const mapStateToProps = (state, ownProps: OwnProps) => {
-  const caseState: CaseState = state[namespace][connectedCaseBase];
-  const { temporaryCaseInfo } = caseState.tasks[ownProps.taskSid];
+  const caseState: CaseState = state[namespace][connectedCaseBase]; // casting type as inference is not working for the store yet
+  const connectedCaseState = caseState.tasks[ownProps.taskSid];
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
 
-  return { tempInfo: temporaryCaseInfo, counselorsHash };
+  return { connectedCaseState, counselorsHash };
 };
 
 const mapDispatchToProps = {
@@ -28,10 +28,8 @@ const mapDispatchToProps = {
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-const ViewNote: React.FC<Props> = ({ taskSid, tempInfo, changeRoute, counselorsHash }) => {
-  if (!tempInfo || tempInfo.screen !== 'view-note') return null;
-
-  const { counselor, date, note } = tempInfo.info;
+const ViewNote: React.FC<Props> = ({ taskSid, connectedCaseState, changeRoute, counselorsHash }) => {
+  const { counselor, date, note } = connectedCaseState.viewNoteInfo;
   const counselorName = counselorsHash[counselor] || 'Unknown';
 
   const handleClose = () => changeRoute({ route: 'new-case' }, taskSid);

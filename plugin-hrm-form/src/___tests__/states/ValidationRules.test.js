@@ -177,6 +177,7 @@ describe('validateOnBlur', () => {
           touched: true,
           category1: {
             type: FieldType.INTERMEDIATE,
+            color: '#ff0000',
             sub1: {
               type: FieldType.CHECKBOX,
               value: false,
@@ -184,6 +185,7 @@ describe('validateOnBlur', () => {
           },
           category2: {
             type: FieldType.INTERMEDIATE,
+            color: '#00ff00',
             sub1: {
               type: FieldType.CHECKBOX,
               value: false,
@@ -212,6 +214,7 @@ describe('validateOnBlur', () => {
           touched: true,
           category1: {
             type: FieldType.INTERMEDIATE,
+            color: '#ff0000',
             sub1: {
               type: FieldType.CHECKBOX,
               value: false,
@@ -219,6 +222,7 @@ describe('validateOnBlur', () => {
           },
           category2: {
             type: FieldType.INTERMEDIATE,
+            color: '#00ff00',
             sub1: {
               type: FieldType.CHECKBOX,
               value: false,
@@ -251,6 +255,7 @@ describe('validateOnBlur', () => {
           touched: false,
           category1: {
             type: FieldType.INTERMEDIATE,
+            color: '#ff0000',
             sub1: {
               type: FieldType.CHECKBOX,
               value: false,
@@ -258,6 +263,7 @@ describe('validateOnBlur', () => {
           },
           category2: {
             type: FieldType.INTERMEDIATE,
+            color: '#00ff00',
             sub1: {
               type: FieldType.CHECKBOX,
               value: false,
@@ -291,6 +297,7 @@ describe('validateOnBlur', () => {
           error: 'Required 1 category minimum, 3 categories maximum',
           category1: {
             type: FieldType.INTERMEDIATE,
+            color: '#ff0000',
             sub1: {
               type: FieldType.CHECKBOX,
               value: true,
@@ -298,6 +305,7 @@ describe('validateOnBlur', () => {
           },
           category2: {
             type: FieldType.INTERMEDIATE,
+            color: '#00ff00',
             sub1: {
               type: FieldType.CHECKBOX,
               value: false,
@@ -325,6 +333,7 @@ describe('validateOnBlur', () => {
           error: null,
           category1: {
             type: FieldType.INTERMEDIATE,
+            color: '#ff0000',
             sub1: {
               type: FieldType.CHECKBOX,
               value: true,
@@ -332,6 +341,7 @@ describe('validateOnBlur', () => {
           },
           category2: {
             type: FieldType.INTERMEDIATE,
+            color: '#00ff00',
             sub1: {
               type: FieldType.CHECKBOX,
               value: false,
@@ -443,6 +453,7 @@ describe('validateBeforeSubmit', () => {
           touched: false,
           category1: {
             type: FieldType.INTERMEDIATE,
+            color: '#ff0000',
             sub1: {
               type: FieldType.CHECKBOX,
               value: false,
@@ -450,6 +461,7 @@ describe('validateBeforeSubmit', () => {
           },
           category2: {
             type: FieldType.INTERMEDIATE,
+            color: '#00ff00',
             sub1: {
               type: FieldType.CHECKBOX,
               value: false,
@@ -484,6 +496,7 @@ describe('validateBeforeSubmit', () => {
           error: 'Required 1 category minimum, 3 categories maximum',
           category1: {
             type: FieldType.INTERMEDIATE,
+            color: '#ff0000',
             sub1: {
               type: FieldType.CHECKBOX,
               value: false,
@@ -491,6 +504,7 @@ describe('validateBeforeSubmit', () => {
           },
           category2: {
             type: FieldType.INTERMEDIATE,
+            color: '#00ff00',
             sub1: {
               type: FieldType.CHECKBOX,
               value: false,
@@ -510,6 +524,7 @@ describe('moreThanThreeCategoriesSelected', () => {
       validation: [ValidationType.REQUIRED],
       category1: {
         type: FieldType.INTERMEDIATE,
+        color: '#ff0000',
         sub1: {
           type: FieldType.CHECKBOX,
           value: true,
@@ -537,6 +552,7 @@ describe('moreThanThreeCategoriesSelected', () => {
       },
       category2: {
         type: FieldType.INTERMEDIATE,
+        color: '#00ff00',
         sub1: {
           type: FieldType.CHECKBOX,
           value: false,
@@ -564,6 +580,7 @@ describe('moreThanThreeCategoriesSelected', () => {
       },
       category3: {
         type: FieldType.INTERMEDIATE,
+        color: '#0000ff',
         sub1: {
           type: FieldType.CHECKBOX,
           value: false,
@@ -591,6 +608,7 @@ describe('moreThanThreeCategoriesSelected', () => {
       },
       category4: {
         type: FieldType.INTERMEDIATE,
+        color: '#ffff00',
         sub1: {
           type: FieldType.CHECKBOX,
           value: false,
@@ -618,6 +636,7 @@ describe('moreThanThreeCategoriesSelected', () => {
       },
       category5: {
         type: FieldType.INTERMEDIATE,
+        color: '#ff00ff',
         sub1: {
           type: FieldType.CHECKBOX,
           value: false,
@@ -645,6 +664,7 @@ describe('moreThanThreeCategoriesSelected', () => {
       },
       category6: {
         type: FieldType.INTERMEDIATE,
+        color: '#ffffff',
         sub1: {
           type: FieldType.CHECKBOX,
           value: false,
@@ -680,6 +700,7 @@ describe('moreThanThreeCategoriesSelected', () => {
       validation: [ValidationType.REQUIRED],
       category1: {
         type: FieldType.INTERMEDIATE,
+        color: '#ff0000',
         sub1: {
           type: FieldType.CHECKBOX,
           value: false,
@@ -707,6 +728,7 @@ describe('moreThanThreeCategoriesSelected', () => {
       },
       category2: {
         type: FieldType.INTERMEDIATE,
+        color: '#00ff00',
         sub1: {
           type: FieldType.CHECKBOX,
           value: false,
@@ -734,6 +756,7 @@ describe('moreThanThreeCategoriesSelected', () => {
       },
       category3: {
         type: FieldType.INTERMEDIATE,
+        color: '#0000ff',
         sub1: {
           type: FieldType.CHECKBOX,
           value: false,
@@ -761,6 +784,7 @@ describe('moreThanThreeCategoriesSelected', () => {
       },
       category4: {
         type: FieldType.INTERMEDIATE,
+        color: '#ffff00',
         sub1: {
           type: FieldType.CHECKBOX,
           value: false,
@@ -788,6 +812,7 @@ describe('moreThanThreeCategoriesSelected', () => {
       },
       category5: {
         type: FieldType.INTERMEDIATE,
+        color: '#ff00ff',
         sub1: {
           type: FieldType.CHECKBOX,
           value: false,
@@ -815,6 +840,7 @@ describe('moreThanThreeCategoriesSelected', () => {
       },
       category6: {
         type: FieldType.INTERMEDIATE,
+        color: '#ffffff',
         sub1: {
           type: FieldType.CHECKBOX,
           value: false,

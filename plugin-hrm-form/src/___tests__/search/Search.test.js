@@ -10,7 +10,7 @@ import Search from '../../components/search';
 import SearchForm from '../../components/search/SearchForm';
 import SearchResults from '../../components/search/SearchResults';
 import ContactDetails from '../../components/search/ContactDetails';
-import { SearchPages } from '../../states/search/types';
+import { SearchPages } from '../../states/SearchContact';
 import { channelTypes } from '../../states/DomainConstants';
 
 const mockStore = configureMockStore([]);
@@ -40,7 +40,6 @@ function createState(taskId, { currentPage, searchFormValues, currentContact, se
               phoneNumber: '',
               dateFrom: '',
               dateTo: '',
-              onlyDataContacts: false,
             },
             searchResult: searchResult || [],
             detailsExpanded: detailsExpanded || {},
@@ -88,30 +87,26 @@ test('<Search> should display <SearchForm />', () => {
 
 test('<Search> should display <SearchResults />', () => {
   const currentPage = SearchPages.results;
-  const searchResult = {
-    count: 1,
-    contacts: [
-      {
-        contactId: 'Jill-Smith-id',
-        overview: {
-          dateTime: '2020-03-10',
-          name: 'Jill Smith',
-          customerNumber: 'Anonymous',
-          callType: 'Child calling about self',
-          categories: { category1: ['Tag1', 'Tag2'] },
-          counselor: 'counselor-id',
-          notes: 'Jill Smith Notes',
-        },
-        details: {
-          caseInformation: {
-            callSummary: 'Summary',
-          },
-        },
-        counselor: 'Counselor',
+  const searchResult = [
+    {
+      contactId: 'Jill-Smith-id',
+      overview: {
+        dateTime: '2020-03-10',
+        name: 'Jill Smith',
+        customerNumber: 'Anonymous',
+        callType: 'Child calling about self',
+        categories: { category1: ['Tag1', 'Tag2'] },
+        counselor: 'counselor-id',
+        notes: 'Jill Smith Notes',
       },
-    ],
-  };
-
+      details: {
+        caseInformation: {
+          callSummary: 'Summary',
+        },
+      },
+      counselor: 'Counselor',
+    },
+  ];
   const task = { taskSid: 'WT123' };
 
   const initialState = createState(task.taskSid, { currentPage, searchResult, detailsExpanded });

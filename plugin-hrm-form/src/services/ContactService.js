@@ -3,19 +3,27 @@ import { FieldType, recreateBlankForm } from '../states/ContactFormStateFactory'
 import { isNonDataCallType } from '../states/ValidationRules';
 import { channelTypes } from '../states/DomainConstants';
 import { getConversationDuration, fillEndMillis } from '../utils/conversationDuration';
-import { getLimitAndOffsetParams } from './PaginationParams';
-import fetchHrmApi from './fetchHrmApi';
+import { getConfig } from '../HrmFormPlugin';
 
-export async function searchContacts(searchParams, limit, offset) {
-  const queryParams = getLimitAndOffsetParams(limit, offset);
+export async function searchContacts(searchParams) {
+  const { hrmBaseUrl } = getConfig();
 
-  const options = {
-    method: 'POST',
-    body: JSON.stringify(searchParams),
-  };
+  try {
+    const response = await fetch(`${hrmBaseUrl}/contacts/search`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Basic ${btoa(secret)}` },
+      body: JSON.stringify(searchParams),
+    });
 
-  const responseJson = await fetchHrmApi(`/contacts/search${queryParams}`, options);
-  return responseJson;
+    if (!response.ok) {
+      throw response.error();
+    }
+
+    return await response.json();
+  } catch (e) {
+    console.log('Error searching contacts: ', e);
+    return [];
+  }
 }
 
 export function getNumberFromTask(task) {
@@ -35,7 +43,7 @@ export function getNumberFromTask(task) {
 // VisibleForTesting
 export function transformForm(form) {
   const newForm = {};
-  const filterableFields = ['type', 'validation', 'error', 'touched', 'metadata'];
+  const filterableFields = ['type', 'validation', 'error', 'touched', 'metadata', 'color'];
   Object.keys(form)
     .filter(key => !filterableFields.includes(key))
     .forEach(key => {

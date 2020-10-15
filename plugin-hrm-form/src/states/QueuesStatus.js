@@ -1,19 +1,16 @@
-import { QueuesStatusActionType, QueuesStatus, QUEUES_STATUS_UPDATE, QUEUES_STATUS_FAILURE } from './types';
+import { QUEUES_STATUS_UPDATE, QUEUES_STATUS_FAILURE } from './ActionTypes';
 
-export type QueuesStatusState = {
-  queuesStatus: QueuesStatus;
-  error?: string;
-  loading: boolean;
-};
+export const queuesStatusUpdate = queuesStatus => ({ type: QUEUES_STATUS_UPDATE, queuesStatus });
 
-const initialState: QueuesStatusState = {
+export const queuesStatusFailure = error => ({ type: QUEUES_STATUS_FAILURE, error });
+
+const initialState = {
   queuesStatus: null,
   error: 'Not initialized',
   loading: true,
 };
 
-// eslint-disable-next-line import/no-unused-modules
-export function reduce(state = initialState, action: QueuesStatusActionType): QueuesStatusState {
+export function reduce(state = initialState, action) {
   switch (action.type) {
     case QUEUES_STATUS_UPDATE:
       return {

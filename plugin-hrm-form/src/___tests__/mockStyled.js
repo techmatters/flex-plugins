@@ -15,10 +15,8 @@ jest.mock('../styles/HrmStyles', () => ({
   StyledSelect: 'StyledSelect',
   StyledTableCell: 'StyledTableCell',
   Row: 'Row',
-  PaginationRow: 'PaginationRow',
   FontOpenSans: 'FontOpenSans',
   Box: 'Box',
-  Flex: 'Flex',
   StyledIcon: () => 'StyledIcon',
   addHover: () => 'ComponentWithHover',
   HiddenText: 'HiddenText',
@@ -28,7 +26,6 @@ jest.mock('../styles/HrmStyles', () => ({
 jest.mock('../styles/search', () => ({
   ConfirmContainer: 'ConfirmContainer',
   ContactWrapper: 'ContactWrapper',
-  ConnectIcon: 'ConnectIcon',
   ContactButtonsWrapper: 'ContactButtonsWrapper',
   StyledLink: 'StyledLink',
   ContactTag: 'ContactTag',
@@ -40,8 +37,6 @@ jest.mock('../styles/search', () => ({
   CounselorText: 'CounselorText',
   DateText: 'DateText',
   TagText: 'TagText',
-  TagMiddleDot: 'TagMiddleDot',
-  TagsWrapper: 'TagsWrapper',
   ContactDetailsIcon: () => 'ContactDetailsIcon',
   DetailsContainer: 'DetailsContainer',
   SectionTitleContainer: 'SectionTitleContainer',
@@ -59,10 +54,6 @@ jest.mock('../styles/search', () => ({
   ScrollableList: 'ScrollableList',
   CancelButton: 'CancelButton',
   StyledButtonBase: 'StyledButtonBase',
-  SilentText: 'SilentText',
-  StyledFormControlLabel: 'StyledFormControlLabel',
-  StyledSwitch: 'StyledSwitch',
-  SwitchLabel: 'SwitchLabel',
 }));
 
 jest.mock('../styles/callTypeButtons', () => ({
