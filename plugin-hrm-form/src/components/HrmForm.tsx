@@ -1,12 +1,11 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
-import PropTypes from 'prop-types';
 import { withTaskContext, ITask } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 
 import CallTypeButtons from './callTypeButtons';
 import TabbedForms from './tabbedForms';
 import Case from './case';
-import { formType } from '../types';
 import { namespace, routingBase } from '../states';
 import * as RoutingActions from '../states/routing/actions';
 import { RoutingState } from '../states/routing/reducer';
@@ -22,6 +21,7 @@ type OwnProps = {
   handleFocus: any;
   handleSelectSearchResult: any;
   changeTab: any;
+  changeRoute: any;
   handleValidateForm: any;
 };
 
@@ -70,19 +70,6 @@ const HrmForm: React.FC<Props> = props => {
 };
 
 HrmForm.displayName = 'HrmForm';
-HrmForm.propTypes = {
-  form: formType.isRequired,
-  handleBlur: PropTypes.func.isRequired,
-  handleCategoryToggle: PropTypes.func.isRequired,
-  handleChange: PropTypes.func.isRequired,
-  handleCallTypeButtonClick: PropTypes.func.isRequired,
-  handleCompleteTask: PropTypes.func.isRequired,
-  handleFocus: PropTypes.func.isRequired,
-  handleSelectSearchResult: PropTypes.func.isRequired,
-  changeTab: PropTypes.func.isRequired,
-  changeRoute: PropTypes.func.isRequired,
-  handleValidateForm: PropTypes.func.isRequired,
-};
 
 const mapStateToProps = (state, ownProps: OwnProps) => {
   const routingState: RoutingState = state[namespace][routingBase];
