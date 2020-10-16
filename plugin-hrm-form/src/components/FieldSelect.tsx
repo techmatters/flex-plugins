@@ -1,9 +1,9 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import { ErrorText, StyledLabel, StyledMenuItem, StyledSelect, TextField } from '../styles/HrmStyles';
 import RequiredAsterisk from './RequiredAsterisk';
-import { fieldType, counselorType } from '../types';
+import { Counselor, FormFieldSelectType } from './common/forms/types';
 
 /**
  *
@@ -32,10 +32,19 @@ const renderOptions = options =>
     }
   });
 
-/**
- * @type {React.FC<any>}
- */
-const FieldSelect = ({
+type OwnProps = {
+  id: string;
+  label?: string | JSX.Element;
+  placeholder?: string;
+  name: string;
+  field: FormFieldSelectType;
+  options: Array<string | Counselor>;
+  handleBlur: any;
+  handleChange: any;
+  handleFocus: any;
+};
+
+const FieldSelect: React.FC<OwnProps> = ({
   id,
   label,
   placeholder,
@@ -71,7 +80,7 @@ const FieldSelect = ({
         renderValue={renderValue}
         isPlaceholder={isPlaceholder}
       >
-        {renderOptions(options, placeholder)}
+        {renderOptions(options)}
       </StyledSelect>
       {field.error && <ErrorText>{field.error}</ErrorText>}
     </TextField>
@@ -79,17 +88,6 @@ const FieldSelect = ({
 };
 
 FieldSelect.displayName = 'FieldSelect';
-FieldSelect.propTypes = {
-  id: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
-  placeholder: PropTypes.string,
-  name: PropTypes.string.isRequired,
-  field: fieldType.isRequired,
-  options: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, counselorType])).isRequired,
-  handleBlur: PropTypes.func.isRequired,
-  handleChange: PropTypes.func.isRequired,
-  handleFocus: PropTypes.func.isRequired,
-};
 FieldSelect.defaultProps = {
   placeholder: '',
 };

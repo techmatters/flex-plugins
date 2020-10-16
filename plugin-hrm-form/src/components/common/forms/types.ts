@@ -9,6 +9,18 @@ export function isFormFieldType(object: any): object is FormFieldType {
   );
 }
 
+export type Counselor = {
+  label?: string;
+  value?: string;
+};
+
+export type FormFieldSelectType = {
+  value: boolean | string | Counselor;
+  error?: string;
+  validation?: string[];
+  touched?: boolean;
+};
+
 export type FormInformation = {
   [key: string]: FormFieldType | FormInformation;
 };
