@@ -97,15 +97,6 @@ const TabbedForms = props => {
     />,
   );
 
-  /**
-   * this is hokey
-   * we need to be able to mark that the categories field has been touched
-   * the only way to do this that I see is this.  Blech.
-   */
-  if (tab === 2 && !form.caseInformation.categories.touched) {
-    props.handleFocus(taskId, ['caseInformation'], 'categories');
-  }
-
   const tabs = [];
   tabs.push(<StyledTab searchTab key="Search" icon={<SearchIcon />} />);
   if (isCallerType) {
