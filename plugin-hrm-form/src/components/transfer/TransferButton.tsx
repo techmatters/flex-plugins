@@ -7,8 +7,6 @@ import { TransferStyledButton } from '../../styles/HrmStyles';
 type Props = ThemeProps & {};
 
 const TransferButton: React.FC<Props> = ({ theme }) => {
-  if (!theme) return null;
-
   return (
     <TransferStyledButton
       color={theme.colors.base11}
