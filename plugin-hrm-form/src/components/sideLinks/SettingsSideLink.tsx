@@ -1,9 +1,10 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
-import PropTypes from 'prop-types';
-import { Template, SideLink } from '@twilio/flex-ui';
+import { Template, SideLink, SideNavChildrenProps } from '@twilio/flex-ui';
 
-const SettingsSideLink = props => {
-  const { showLabel, activeView, onClick } = props;
+type Props = SideNavChildrenProps & { showLabel: boolean; onClick: () => void };
+
+const SettingsSideLink: React.FC<Props> = ({ showLabel, activeView, onClick }) => {
   return (
     <SideLink
       showLabel={showLabel}
@@ -18,10 +19,5 @@ const SettingsSideLink = props => {
 };
 
 SettingsSideLink.displayName = 'SettingsSideLink';
-SettingsSideLink.propTypes = {
-  showLabel: PropTypes.bool.isRequired,
-  activeView: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,
-};
 
 export default SettingsSideLink;
