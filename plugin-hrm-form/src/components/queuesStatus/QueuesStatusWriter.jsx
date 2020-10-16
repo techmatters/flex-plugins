@@ -65,20 +65,16 @@ export class InnerQueuesStatusWriter extends React.Component {
         h.isPending(status) || h.isReserved(status) || h.isAssigned(status) || h.isCanceled(status);
 
       tasksQuery.on('itemUpdated', args => {
-        console.log('TASK UPDATED', args);
         // eslint-disable-next-line camelcase
         const { status, queue_name } = args.value;
         if (counselorQueues.includes(queue_name) && shouldUpdate(status)) {
-          console.log('TASK UPDATED INNER');
           this.updateQueuesState(tasksQuery.getItems(), cleanQueuesStatus);
           this.setState(prev => ({ trackedTasks: { ...prev.trackedTasks, [args.key]: true } }));
         }
       });
 
       tasksQuery.on('itemRemoved', args => {
-        console.log('TASK REMOVED', args);
         if (this.state.trackedTasks[args.key]) {
-          console.log('TASK REMOVED INNER');
           this.updateQueuesState(tasksQuery.getItems(), cleanQueuesStatus);
           this.setState(prev => ({ trackedTasks: omit(prev.trackedTasks, args.key) }));
         }
