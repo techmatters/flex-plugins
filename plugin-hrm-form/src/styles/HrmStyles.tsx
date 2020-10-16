@@ -169,7 +169,9 @@ type StyledSelectProps = {
   isPlaceholder?: boolean;
 };
 
-export const StyledSelect = styled(Select)<StyledSelectProps>`
+export const StyledSelect = styled(({ isPlaceholder = false, ...rest }: StyledSelectProps) => <Select {...rest} />)<
+  StyledSelectProps
+>`
   flex-grow: 0;
   flex-shrink: 0;
   width: 217px;
@@ -363,8 +365,8 @@ export const CategoryCheckboxField = styled('div')<BaseCheckboxProps>`
 `;
 CategoryCheckboxField.displayName = 'CategoryCheckboxField';
 
-export const StyledCategoryCheckbox = styled(props => (
-  <Checkbox {...props} classes={{ root: 'root', checked: 'checked' }} />
+export const StyledCategoryCheckbox = styled(({ color, ...rest }: BaseCheckboxProps) => (
+  <Checkbox {...rest} classes={{ root: 'root', checked: 'checked' }} />
 ))<BaseCheckboxProps>`
   &&&.root {
     color: ${({ disabled, color, theme }) => (disabled ? `${theme.colors.categoryDisabledColor}33` : color)};
@@ -434,7 +436,9 @@ StyledTabs.displayName = 'StyledTabs';
 
 type StyledTabProps = { searchTab?: boolean };
 
-export const StyledTab = styled(props => <Tab {...props} classes={{ selected: 'selected' }} />)<StyledTabProps>`
+export const StyledTab = styled(({ searchTab = false, ...rest }: StyledTabProps) => (
+  <Tab {...rest} classes={{ selected: 'selected' }} />
+))<StyledTabProps>`
   && {
     min-width: ${({ searchTab }) => (searchTab ? '50px' : '130px')};
     width: ${({ searchTab }) => (searchTab ? '50px' : '130px')};
