@@ -94,7 +94,7 @@ export const formType = PropTypes.shape({
 });
 
 export const localizationType = PropTypes.shape({
-  strings: PropTypes.object.isRequired,
+  manager: PropTypes.object.isRequired,
   isCallTask: PropTypes.func.isRequired,
 });
 
