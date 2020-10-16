@@ -365,8 +365,8 @@ export const CategoryCheckboxField = styled('div')<BaseCheckboxProps>`
 `;
 CategoryCheckboxField.displayName = 'CategoryCheckboxField';
 
-export const StyledCategoryCheckbox = styled(props => (
-  <Checkbox {...props} classes={{ root: 'root', checked: 'checked' }} />
+export const StyledCategoryCheckbox = styled(({ color, ...rest }: BaseCheckboxProps) => (
+  <Checkbox {...rest} classes={{ root: 'root', checked: 'checked' }} />
 ))<BaseCheckboxProps>`
   &&&.root {
     color: ${({ disabled, color, theme }) => (disabled ? `${theme.colors.categoryDisabledColor}33` : color)};
