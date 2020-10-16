@@ -10,7 +10,7 @@ export const counselorType = PropTypes.shape({
 });
 
 export const fieldType = PropTypes.shape({
-  value: PropTypes.oneOfType([PropTypes.string, counselorType]),
+  value: PropTypes.oneOfType([PropTypes.bool, PropTypes.string, counselorType]),
   error: PropTypes.string,
   validation: PropTypes.arrayOf(PropTypes.string),
   touched: PropTypes.bool,
@@ -43,7 +43,7 @@ const categoryType = PropTypes.arrayOf(fieldType);
 
 const categoriesType = PropTypes.shape({
   error: PropTypes.string,
-  validation: PropTypes.string,
+  validation: PropTypes.arrayOf(PropTypes.string),
   touched: PropTypes.bool,
   categories: PropTypes.arrayOf(categoryType),
 });
@@ -94,8 +94,8 @@ export const formType = PropTypes.shape({
 });
 
 export const localizationType = PropTypes.shape({
-  strings: PropTypes.object,
-  isCallTask: PropTypes.func,
+  manager: PropTypes.object.isRequired,
+  isCallTask: PropTypes.func.isRequired,
 });
 
 export const contactType = PropTypes.shape({
