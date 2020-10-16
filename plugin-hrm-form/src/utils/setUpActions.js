@@ -131,8 +131,6 @@ const safeTransfer = async (transferFunction, task) => {
  * @returns {ReplacedActionFunction}
  */
 export const customTransferTask = setupObject => async (payload, original) => {
-  console.log('TRANSFER PAYLOAD', payload);
-
   const { identity, workerSid, counselorName } = setupObject;
 
   // save current form state as sync document (if there is a form)
