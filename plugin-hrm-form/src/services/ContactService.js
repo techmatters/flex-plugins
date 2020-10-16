@@ -104,10 +104,7 @@ export async function saveToHrm(task, form, hrmBaseUrl, workerSid, helpline, sho
     helpline,
     conversationDuration,
   };
-  console.log(`Using base url: ${hrmBaseUrl}`);
 
-  // print the form values to the console
-  console.log(`Sending: ${JSON.stringify(body)}`);
   const response = await fetch(`${hrmBaseUrl}/contacts`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Basic ${btoa(secret)}` },
@@ -116,7 +113,6 @@ export async function saveToHrm(task, form, hrmBaseUrl, workerSid, helpline, sho
 
   if (!response.ok) {
     const error = response.error();
-    console.log(JSON.stringify(error));
     throw error;
   }
 
@@ -133,7 +129,6 @@ export async function connectToCase(hrmBaseUrl, contactId, caseId) {
 
   if (!response.ok) {
     const error = response.error();
-    console.log(JSON.stringify(error));
     throw error;
   }
 
