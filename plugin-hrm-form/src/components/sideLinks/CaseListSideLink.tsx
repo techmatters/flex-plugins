@@ -1,12 +1,12 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
-import PropTypes from 'prop-types';
-import { Template, SideLink } from '@twilio/flex-ui';
+import { Template, SideLink, SideNavChildrenProps } from '@twilio/flex-ui';
 import FolderOpenIcon from '@material-ui/icons/FolderOpen';
 import FolderIcon from '@material-ui/icons/Folder';
 
-const CaseListSideLink = props => {
-  const { showLabel, activeView, onClick } = props;
+type Props = SideNavChildrenProps & { showLabel: boolean; onClick: () => void };
 
+const CaseListSideLink: React.FC<Props> = ({ showLabel, activeView, onClick }) => {
   return (
     <SideLink
       showLabel={showLabel}
@@ -21,10 +21,5 @@ const CaseListSideLink = props => {
 };
 
 CaseListSideLink.displayName = 'CaseListSideLink';
-CaseListSideLink.propTypes = {
-  showLabel: PropTypes.bool.isRequired,
-  activeView: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,
-};
 
 export default CaseListSideLink;
