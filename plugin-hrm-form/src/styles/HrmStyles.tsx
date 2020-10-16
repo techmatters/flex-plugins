@@ -434,7 +434,9 @@ StyledTabs.displayName = 'StyledTabs';
 
 type StyledTabProps = { searchTab?: boolean };
 
-export const StyledTab = styled(props => <Tab {...props} classes={{ selected: 'selected' }} />)<StyledTabProps>`
+export const StyledTab = styled(({ searchTab = false, ...rest }: StyledTabProps) => (
+  <Tab {...rest} classes={{ selected: 'selected' }} />
+))<StyledTabProps>`
   && {
     min-width: ${({ searchTab }) => (searchTab ? '50px' : '130px')};
     width: ${({ searchTab }) => (searchTab ? '50px' : '130px')};
