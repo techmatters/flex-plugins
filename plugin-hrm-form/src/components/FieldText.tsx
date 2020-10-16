@@ -11,9 +11,10 @@ type OwnProps = {
   placeholder?: string;
   field: FormFieldType;
   rows?: number;
-  handleBlur: any;
-  handleChange: any;
-  handleFocus: any;
+  // Someday we should make this consistent with DefaultEventHandlers in /components/common/forms/types.ts
+  handleBlur: React.FocusEventHandler<HTMLDivElement | HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement>;
+  handleChange: React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement>;
+  handleFocus: React.FocusEventHandler<HTMLDivElement | HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement>;
 };
 
 const FieldText: React.FC<OwnProps> = ({
