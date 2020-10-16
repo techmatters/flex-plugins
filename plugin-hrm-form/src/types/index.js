@@ -94,8 +94,8 @@ export const formType = PropTypes.shape({
 });
 
 export const localizationType = PropTypes.shape({
-  strings: PropTypes.object.isRequired,
-  isCallTask: PropTypes.func.isRequired,
+  strings: PropTypes.object,
+  isCallTask: PropTypes.func,
 });
 
 export const contactType = PropTypes.shape({
