@@ -1,10 +1,14 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
-import { Actions, Template } from '@twilio/flex-ui';
-import PropTypes from 'prop-types';
+import { Actions, Template, ThemeProps } from '@twilio/flex-ui';
 
 import { TransferStyledButton } from '../../styles/HrmStyles';
 
-const TransferButton = ({ theme }) => {
+type Props = ThemeProps & {};
+
+const TransferButton: React.FC<Props> = ({ theme }) => {
+  if (!theme) return null;
+
   return (
     <TransferStyledButton
       color={theme.colors.base11}
@@ -17,13 +21,5 @@ const TransferButton = ({ theme }) => {
 };
 
 TransferButton.displayName = 'TransferButton';
-TransferButton.propTypes = {
-  theme: PropTypes.shape({
-    colors: PropTypes.shape({
-      base1: PropTypes.string,
-      base11: PropTypes.string,
-    }),
-  }).isRequired,
-};
 
 export default TransferButton;
