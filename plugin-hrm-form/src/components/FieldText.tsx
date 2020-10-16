@@ -1,14 +1,32 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import { StyledInput, StyledLabel, ErrorText, TextField } from '../styles/HrmStyles';
 import RequiredAsterisk from './RequiredAsterisk';
-import { fieldType } from '../types';
+import { FormFieldType } from './common/forms/types';
 
-/**
- * @type {React.FC<any>}
- */
-const FieldText = ({ id, label, placeholder, field, rows, handleBlur, handleChange, handleFocus, ...rest }) => (
+type OwnProps = {
+  id: string;
+  label?: string | JSX.Element;
+  placeholder?: string;
+  field: FormFieldType;
+  rows?: number;
+  handleBlur: any;
+  handleChange: any;
+  handleFocus: any;
+};
+
+const FieldText: React.FC<OwnProps> = ({
+  id,
+  label,
+  placeholder,
+  field,
+  rows,
+  handleBlur,
+  handleChange,
+  handleFocus,
+  ...rest
+}) => (
   <TextField {...rest}>
     <StyledLabel htmlFor={id}>
       {label}
@@ -31,16 +49,6 @@ const FieldText = ({ id, label, placeholder, field, rows, handleBlur, handleChan
 
 FieldText.displayName = 'FieldText';
 
-FieldText.propTypes = {
-  id: PropTypes.string.isRequired,
-  label: PropTypes.string,
-  placeholder: PropTypes.string,
-  field: fieldType.isRequired,
-  rows: PropTypes.number,
-  handleBlur: PropTypes.func.isRequired,
-  handleChange: PropTypes.func.isRequired,
-  handleFocus: PropTypes.func.isRequired,
-};
 FieldText.defaultProps = {
   label: '',
   placeholder: '',
