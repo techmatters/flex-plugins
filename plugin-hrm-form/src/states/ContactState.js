@@ -16,6 +16,7 @@ import {
   PREPOPULATE_FORM_CALLER,
 } from './ActionTypes';
 import { INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE } from './types';
+import callTypes from './DomainConstants';
 import { countSelectedCategories } from './ValidationRules';
 import { copySearchResultIntoTask } from './contacts/helpers';
 import { getConfig } from '../HrmFormPlugin';
@@ -33,7 +34,6 @@ const findOrRecreate = (tasks, taskId) => {
 
   if (targetedTask === undefined) {
     const recreatedTask = recreateBlankForm();
-    console.log(`Had to recreate state for taskId ${taskId}`);
     return recreatedTask;
   }
 
@@ -47,10 +47,6 @@ const initialState = {
 export class Actions {
   static handleChange = (taskId, parents, name, value) => ({ type: HANDLE_CHANGE, name, taskId, value, parents });
 
-  /*
-   * There has to be a better way to do this rather than a one-off, but MUI does not make it easy
-   * static handleCallTypeButtonClick = (taskId, value, e) => ({type: HANDLE_CALLTYPE_BUTTON_CLICK, taskId: taskId, value: value});
-   */
   static handleCallTypeButtonClick = (taskId, value) => ({
     type: HANDLE_CHANGE,
     name: 'callType',
@@ -85,7 +81,6 @@ export const handleSelectSearchResult = (searchResult, taskId) => ({
   taskId,
 });
 
-// Will replace the below when we move over to field objects
 export function editNestedField(original, parents, name, change) {
   if (parents.length === 0) {
     return {
@@ -138,10 +133,6 @@ export function reduce(state = initialState, action) {
     }
 
     case HANDLE_CHANGE: {
-      console.log(
-        `!!!!!!!!!!!HANDLE CHANGE: action.name = ${action.name}, action.value = ${action.value}, task = ${action.taskId}, parents: ${action.parents}`,
-      );
-
       const { strings } = getConfig();
 
       const currentForm = findOrRecreate(state.tasks, action.taskId);
@@ -172,7 +163,6 @@ export function reduce(state = initialState, action) {
     }
 
     case INITIALIZE_CONTACT_STATE: {
-      console.log(`!!!!!!!!!CREATING NEW ENTRY FOR ${action.taskId}`);
       return {
         ...state,
         tasks: {
@@ -210,7 +200,6 @@ export function reduce(state = initialState, action) {
     }
 
     case REMOVE_CONTACT_STATE: {
-      console.log(`!!!!!!!!!DELETING ENTRY FOR ${action.taskId}`);
       return {
         ...state,
         tasks: omit(state.tasks, action.taskId),
@@ -256,7 +245,7 @@ export function reduce(state = initialState, action) {
             ...currentTask,
             callType: {
               ...currentTask.callType,
-              value: 'Child calling about self',
+              value: callTypes.child,
             },
             childInformation: {
               ...currentTask.childInformation,
@@ -286,7 +275,7 @@ export function reduce(state = initialState, action) {
             ...currentTask,
             callType: {
               ...currentTask.callType,
-              value: 'Someone calling about a child',
+              value: callTypes.caller,
             },
             callerInformation: {
               ...currentTask.callerInformation,
