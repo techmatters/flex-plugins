@@ -17,7 +17,7 @@ class TaskView extends Component {
   static displayName = 'TaskView';
 
   static propTypes = {
-    task: taskType.isRequired,
+    task: taskType,
     thisTask: taskType.isRequired,
     form: formType.isRequired,
     contactFormStateExists: PropTypes.bool.isRequired,
@@ -32,6 +32,10 @@ class TaskView extends Component {
     recreateContactState: PropTypes.func.isRequired,
     changeTab: PropTypes.func.isRequired,
     handleValidateForm: PropTypes.func.isRequired,
+  };
+
+  static defaultProps = {
+    task: null,
   };
 
   // eslint-disable-next-line complexity
