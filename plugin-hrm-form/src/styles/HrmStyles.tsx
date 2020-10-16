@@ -169,7 +169,9 @@ type StyledSelectProps = {
   isPlaceholder?: boolean;
 };
 
-export const StyledSelect = styled(Select)<StyledSelectProps>`
+export const StyledSelect = styled(({ isPlaceholder = false, ...rest }: StyledSelectProps) => <Select {...rest} />)<
+  StyledSelectProps
+>`
   flex-grow: 0;
   flex-shrink: 0;
   width: 217px;
