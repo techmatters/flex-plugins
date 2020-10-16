@@ -137,7 +137,6 @@ class Search extends Component {
 
   render() {
     const { currentPage, currentContact, searchResult, isRequesting, error, form } = this.props;
-    console.log({ isRequesting, error });
 
     return (
       <>
