@@ -1,3 +1,5 @@
+import type { ValidationRules } from 'react-hook-form';
+
 export type FormFieldType = { value: string; error?: string; validation?: string[]; touched?: boolean };
 
 export function isFormFieldType(object: any): object is FormFieldType {
@@ -39,16 +41,21 @@ type InputDefinition = {
   name: string;
   label: string; // todo: this could be a code from the localized strings object
   type: 'input';
-  required?: boolean;
-};
+  // required?: boolean;
+} & ValidationRules;
+
+type NumericInputDefinition = {
+  name: string;
+  label: string; // todo: this could be a code from the localized strings object
+  type: 'numeric input';
+} & ValidationRules;
 
 type SelectDefinition = {
   name: string;
   label: string; // todo: this could be a code from the localized strings object
   type: 'select';
   options: { value: any; label: string }[];
-  required?: boolean;
-};
+} & ValidationRules;
 
-export type FormItemDefinition = InputDefinition | SelectDefinition;
+export type FormItemDefinition = InputDefinition | NumericInputDefinition | SelectDefinition;
 export type FormDefinition = FormItemDefinition[];

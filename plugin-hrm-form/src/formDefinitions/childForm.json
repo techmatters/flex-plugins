@@ -32,5 +32,10 @@
       { "value": "female", "label": "Girl" }, 
       { "value": "unknown", "label": "Unknown" }
     ]
+  },
+  {
+    "name": "phone",
+    "label": "Phone",
+    "type": "numeric input"
   }
 ]
