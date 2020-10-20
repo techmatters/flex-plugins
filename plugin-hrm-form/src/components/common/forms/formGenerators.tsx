@@ -22,7 +22,7 @@ const getInputType = (field: FormItemDefinition) => (onBlur: () => void) => {
             console.log('>>> input rerender');
             return (
               <FormItem>
-                <span>{field.label}</span>
+                <label htmlFor={field.name}>{field.label}</label>
                 <input name={field.name} onBlur={onBlur} ref={register({ required: field.required })} />
                 {field.required && errors[field.name] && <span>This field is required</span>}
               </FormItem>
@@ -35,7 +35,7 @@ const getInputType = (field: FormItemDefinition) => (onBlur: () => void) => {
         <ConnectForm key={`${field.name}-select`}>
           {({ errors, register }) => (
             <FormItem>
-              <span>{field.label}</span>
+              <label htmlFor={field.name}>{field.label}</label>
               <select name={field.name} onBlur={onBlur} ref={register({ required: field.required })}>
                 {field.options.map(o => (
                   <option key={`${field.name}-${o.value}-option`} value={o.value}>
