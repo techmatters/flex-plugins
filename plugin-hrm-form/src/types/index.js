@@ -158,23 +158,6 @@ export const contactType = PropTypes.shape({
   }),
 });
 
-export const searchResultType = PropTypes.shape({
-  contactId: PropTypes.string.isRequired,
-  overview: PropTypes.shape({
-    dateTime: PropTypes.string,
-    name: PropTypes.string,
-    customerNumber: PropTypes.string,
-    callType: PropTypes.string,
-    categories: PropTypes.shape({}),
-    counselor: PropTypes.string,
-    notes: PropTypes.string,
-    channel: PropTypes.string,
-    conversationDuration: PropTypes.number,
-  }).isRequired,
-  details: contactType.isRequired,
-  counselor: PropTypes.string,
-});
-
 export const searchFormType = PropTypes.shape({
   firstName: PropTypes.string,
   lastName: PropTypes.string,
