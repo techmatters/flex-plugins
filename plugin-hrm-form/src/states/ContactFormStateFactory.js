@@ -1,3 +1,5 @@
+import ChildFormDefinition from '../formDefinitions/childForm.json';
+
 export const ValidationType = {
   REQUIRED: 'REQUIRED', // Will not be applied if in the callerInformation tab and callType is not caller.  Will not be applied when callType is standalone.
 };
@@ -22,8 +24,46 @@ export function isNotSubcategory(value) {
   return notSubcategory.includes(value);
 }
 
-// TODO: add tab order?
+/**
+ * @param {string} key
+ */
+const createIntermediate = () => ({
+  type: FieldType.INTERMEDIATE,
+});
 
+/**
+ *
+ * @param {import('../components/common/forms/types').FormItemDefinition} def
+ */
+const createFormItem = (obj, def) => {
+  if (!def.parents.length) {
+    return {
+      ...obj,
+      [def.name]: {
+        type: FieldType.TEXT_INPUT,
+        validation: def.required ? [ValidationType.REQUIRED] : null,
+      },
+    };
+  }
+
+  const [p, ...rest] = def.parents;
+  const newDef = { ...def, parents: rest };
+
+  if (obj[p]) {
+    return {
+      ...obj,
+      [p]: createFormItem(obj[p], newDef),
+    };
+  }
+
+  const intermidiate = createIntermediate();
+  return {
+    ...obj,
+    [p]: createFormItem(intermidiate, newDef),
+  };
+};
+
+// TODO: add tab order?
 const defaultFormDefinition = {
   callType: {
     type: FieldType.CALL_TYPE,
