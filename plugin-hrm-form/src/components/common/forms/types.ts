@@ -30,3 +30,26 @@ export type DefaultEventHandlers = (
   handleFocus: React.FocusEventHandler<HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement>;
   handleChange: React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement>;
 };
+
+/**
+ * Types that may be used for customizable forms
+ */
+
+type InputDefinition = {
+  name: string;
+  label: string; // todo: this could be a code from the localized strings object
+  type: 'input';
+  required?: boolean;
+  parents: string[];
+};
+
+type SelectDefinition = {
+  name: string;
+  label: string; // todo: this could be a code from the localized strings object
+  type: 'select';
+  parents: string[];
+  options: { value: any; label: string }[];
+};
+
+export type FormItemDefinition = InputDefinition | SelectDefinition;
+export type FormDefinition = FormItemDefinition[];

@@ -321,6 +321,18 @@ export const NameFields = styled('div')`
 `;
 NameFields.displayName = 'NameFields';
 
+export const FormRow = styled(NameFields)`
+  margin: 10px 0;
+`;
+FormRow.displayName = 'FormRow';
+
+export const FormItem = styled('div')`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+FormItem.displayName = 'FormItem';
+
 export const ColumnarBlock = styled('div')`
   display: flex;
   flex-direction: column;

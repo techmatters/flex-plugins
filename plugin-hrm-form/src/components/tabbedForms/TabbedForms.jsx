@@ -14,6 +14,7 @@ import IssueCategorizationTab from './IssueCategorizationTab';
 import CaseInformationTab from './CaseInformationTab';
 import BottomBar from './BottomBar';
 import { hasTaskControl } from '../../utils/transfer';
+import ChildForm from '../common/forms/ChildForm';
 
 const TabbedForms = props => {
   const { task, form } = props;
@@ -79,13 +80,13 @@ const TabbedForms = props => {
     );
   }
 
-  body.push(
-    <ChildInformationTab
-      childInformation={form.childInformation}
-      handleCheckboxClick={handleCheckboxClick}
-      defaultEventHandlers={defaultEventHandlers}
-    />,
-  );
+  // eslint-disable-next-line multiline-comment-style
+  // <ChildInformationTab
+  //   childInformation={form.childInformation}
+  //   handleCheckboxClick={handleCheckboxClick}
+  //   defaultEventHandlers={defaultEventHandlers}
+  // />,
+  body.push(<ChildForm defaultEventHandlers={defaultEventHandlers} childInformation={form.childInformation} />);
 
   body.push(<IssueCategorizationTab form={form} taskId={taskId} handleCategoryToggle={handleCategoryToggle} />);
 

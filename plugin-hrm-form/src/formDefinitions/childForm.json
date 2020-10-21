@@ -3,34 +3,27 @@
     "name": "firstName",
     "label": "First Name",
     "type": "input",
+    "parents": ["name"],
     "required": true
   },
   {
     "name": "lastName",
     "label": "Last Name",
+    "parents": ["name"],
     "type": "input"
   },
   {
     "name": "age",
     "label": "Age",
-    "type": "select",
-    "options": [
-      { "value": "", "label": "--Please choose an option--" },
-      { "value": "0-03", "label": "<= 3" }, 
-      { "value": "04-06", "label": "04-06" }, 
-      { "value": "06-09", "label": "06-09" }
-    ],
+    "parents": [],
+    "type": "input",
     "required": true
   },
   {
     "name": "gender",
     "label": "Gender",
-    "type": "select",
-    "options": [
-      { "value": "", "label": "--Please choose an option--" },
-      { "value": "male", "label": "Boy" }, 
-      { "value": "female", "label": "Girl" }, 
-      { "value": "unknown", "label": "Unknown" }
-    ]
+    "parents": [],
+    "type": "input",
+    "required": true
   }
 ]
