@@ -19,7 +19,7 @@ const ChildForm: React.FC<Props> = ({ contactForm, dispatch, task }) => {
   const defaultValues = contactForm.childForm;
   const methods = useForm({ defaultValues, shouldFocusError: false });
 
-  const { getValues } = methods;
+  const { getValues, trigger } = methods;
 
   const childFormDefinition = React.useMemo(() => {
     console.log('>>> useMemo called');
@@ -41,6 +41,9 @@ const ChildForm: React.FC<Props> = ({ contactForm, dispatch, task }) => {
       <form onSubmit={methods.handleSubmit(onSubmit)}>
         {childFormDefinition}
 
+        <button type="button" onClick={() => trigger()}>
+          Validate whenever we want
+        </button>
         <input type="submit" />
       </form>
     </FormProvider>
