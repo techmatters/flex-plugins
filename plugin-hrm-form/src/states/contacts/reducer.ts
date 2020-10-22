@@ -3,6 +3,7 @@ import { omit } from 'lodash';
 import * as t from './types';
 import ChildFormDefinition from '../../formDefinitions/childForm.json';
 import { INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE, GeneralActionType } from '../types';
+import type { FormItemDefinition, FormDefinition } from '../../components/common/forms/types';
 
 type TaskEntry = {
   childForm: { [key: string]: string | boolean };
@@ -14,7 +15,25 @@ export type ContactsState = {
   };
 };
 
-export const initialChildForm = ChildFormDefinition.reduce((acc, f) => ({ ...acc, [f.name]: '' }), {});
+const getInitialValue = (def: FormItemDefinition) => {
+  switch (def.type) {
+    case 'input':
+      return '';
+    case 'numeric input':
+      return '';
+    case 'select':
+      return def.options[0].value;
+    default:
+      return null;
+  }
+};
+
+const createFormItem = <T extends {}>(obj: T, def: FormItemDefinition) => ({
+  ...obj,
+  [def.name]: getInitialValue(def),
+});
+
+export const initialChildForm = (ChildFormDefinition as FormDefinition).reduce(createFormItem, {});
 
 const newTaskEntry: TaskEntry = { childForm: initialChildForm };
 
