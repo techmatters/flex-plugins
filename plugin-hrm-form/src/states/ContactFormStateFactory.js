@@ -24,9 +24,10 @@ export function isNotSubcategory(value) {
   return notSubcategory.includes(value);
 }
 
-/**
- * @param {string} key
- */
+const createTab = () => ({
+  type: FieldType.TAB,
+});
+
 const createIntermediate = () => ({
   type: FieldType.INTERMEDIATE,
 });
@@ -62,6 +63,9 @@ const createFormItem = (obj, def) => {
     [p]: createFormItem(intermidiate, newDef),
   };
 };
+
+// create childInformation inside a tab field type
+const childInformation = ChildFormDefinition.reduce(createFormItem, createTab());
 
 // TODO: add tab order?
 const defaultFormDefinition = {
@@ -133,90 +137,93 @@ const defaultFormDefinition = {
       },
     },
   },
-  childInformation: {
-    type: FieldType.TAB,
-    name: {
-      type: FieldType.INTERMEDIATE,
-      firstName: {
-        type: FieldType.TEXT_INPUT,
-        validation: null,
-      },
-      lastName: {
-        type: FieldType.TEXT_INPUT,
-        validation: null,
-      },
-    },
-    gender: {
-      type: FieldType.SELECT_SINGLE,
-      validation: [ValidationType.REQUIRED],
-    },
-    age: {
-      type: FieldType.SELECT_SINGLE,
-      validation: [ValidationType.REQUIRED],
-    },
-    language: {
-      type: FieldType.SELECT_SINGLE,
-      validation: null,
-    },
-    nationality: {
-      type: FieldType.SELECT_SINGLE,
-      validation: null,
-    },
-    ethnicity: {
-      type: FieldType.SELECT_SINGLE,
-      validation: null,
-    },
-    school: {
-      type: FieldType.INTERMEDIATE,
-      name: {
-        type: FieldType.TEXT_INPUT,
-        validation: null,
-      },
-      gradeLevel: {
-        type: FieldType.TEXT_INPUT,
-        validation: null,
-      },
-    },
-    location: {
-      type: FieldType.INTERMEDIATE,
-      streetAddress: {
-        type: FieldType.TEXT_INPUT,
-        validation: null,
-      },
-      city: {
-        type: FieldType.TEXT_INPUT,
-        validation: null,
-      },
-      stateOrCounty: {
-        type: FieldType.TEXT_INPUT,
-        validation: null,
-      },
-      postalCode: {
-        type: FieldType.TEXT_INPUT,
-        validation: null,
-      },
-      phone1: {
-        type: FieldType.TEXT_INPUT,
-        validation: null,
-      },
-      phone2: {
-        type: FieldType.TEXT_INPUT,
-        validation: null,
-      },
-    },
-    refugee: {
-      type: FieldType.CHECKBOX,
-      value: false,
-    },
-    disabledOrSpecialNeeds: {
-      type: FieldType.CHECKBOX,
-      value: false,
-    },
-    hiv: {
-      type: FieldType.CHECKBOX,
-      value: false,
-    },
-  },
+  childInformation,
+  /*
+   * childInformation: {
+   *   type: FieldType.TAB,
+   *   name: {
+   *     type: FieldType.INTERMEDIATE,
+   *     firstName: {
+   *       type: FieldType.TEXT_INPUT,
+   *       validation: null,
+   *     },
+   *     lastName: {
+   *       type: FieldType.TEXT_INPUT,
+   *       validation: null,
+   *     },
+   *   },
+   *   gender: {
+   *     type: FieldType.SELECT_SINGLE,
+   *     validation: [ValidationType.REQUIRED],
+   *   },
+   *   age: {
+   *     type: FieldType.SELECT_SINGLE,
+   *     validation: [ValidationType.REQUIRED],
+   *   },
+   *   language: {
+   *     type: FieldType.SELECT_SINGLE,
+   *     validation: null,
+   *   },
+   *   nationality: {
+   *     type: FieldType.SELECT_SINGLE,
+   *     validation: null,
+   *   },
+   *   ethnicity: {
+   *     type: FieldType.SELECT_SINGLE,
+   *     validation: null,
+   *   },
+   *   school: {
+   *     type: FieldType.INTERMEDIATE,
+   *     name: {
+   *       type: FieldType.TEXT_INPUT,
+   *       validation: null,
+   *     },
+   *     gradeLevel: {
+   *       type: FieldType.TEXT_INPUT,
+   *       validation: null,
+   *     },
+   *   },
+   *   location: {
+   *     type: FieldType.INTERMEDIATE,
+   *     streetAddress: {
+   *       type: FieldType.TEXT_INPUT,
+   *       validation: null,
+   *     },
+   *     city: {
+   *       type: FieldType.TEXT_INPUT,
+   *       validation: null,
+   *     },
+   *     stateOrCounty: {
+   *       type: FieldType.TEXT_INPUT,
+   *       validation: null,
+   *     },
+   *     postalCode: {
+   *       type: FieldType.TEXT_INPUT,
+   *       validation: null,
+   *     },
+   *     phone1: {
+   *       type: FieldType.TEXT_INPUT,
+   *       validation: null,
+   *     },
+   *     phone2: {
+   *       type: FieldType.TEXT_INPUT,
+   *       validation: null,
+   *     },
+   *   },
+   *   refugee: {
+   *     type: FieldType.CHECKBOX,
+   *     value: false,
+   *   },
+   *   disabledOrSpecialNeeds: {
+   *     type: FieldType.CHECKBOX,
+   *     value: false,
+   *   },
+   *   hiv: {
+   *     type: FieldType.CHECKBOX,
+   *     value: false,
+   *   },
+   * },
+   */
   caseInformation: {
     type: FieldType.TAB,
     categories: {
