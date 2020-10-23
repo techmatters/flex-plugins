@@ -2,19 +2,33 @@ import React from 'react';
 import { get } from 'lodash';
 
 import FieldText from '../../FieldText';
+import FieldSelect from '../../FieldSelect';
 import { FormRow } from '../../../styles/HrmStyles';
 import { FormItemDefinition, FormDefinition } from './types';
+import { getParents } from './helpers';
 
 // eslint-disable-next-line react/display-name
 const getInputType = defaultEventHandlers => field => (def: FormItemDefinition) => {
+  const parents = getParents(def);
   switch (def.type) {
     case 'input':
       return (
         <FieldText
-          id={[...def.parents, def.name].join('')}
+          id={[...parents, def.name].join('')}
           label={def.label}
           field={field}
-          {...defaultEventHandlers(def.parents, def.name)}
+          {...defaultEventHandlers(parents, def.name)}
+        />
+      );
+    case 'select':
+      return (
+        <FieldSelect
+          id={[...parents, def.name].join('')}
+          name={def.name}
+          label={def.label}
+          options={def.options}
+          field={field}
+          {...defaultEventHandlers(parents, def.name)}
         />
       );
     default:
@@ -30,7 +44,9 @@ export const createFormFromDefinition = defaultEventHandlers => form => (definit
   if (definition.length === 1)
     return [
       <FormRow key={`${definition[0].name}-form-row`}>
-        {getInputType(defaultEventHandlers)(get(form, [...definition[0].parents, definition[0].name]))(definition[0])}
+        {getInputType(defaultEventHandlers)(get(form, [...getParents(definition[0]), definition[0].name]))(
+          definition[0],
+        )}
         <div />
       </FormRow>,
     ];
@@ -38,8 +54,8 @@ export const createFormFromDefinition = defaultEventHandlers => form => (definit
   const [x, y, ...rest] = definition;
   const row = (
     <FormRow key={`${x.name}-${y.name}-form-row`}>
-      {getInputType(defaultEventHandlers)(get(form, [...x.parents, x.name]))(x)}
-      {getInputType(defaultEventHandlers)(get(form, [...y.parents, y.name]))(y)}
+      {getInputType(defaultEventHandlers)(get(form, [...getParents(x), x.name]))(x)}
+      {getInputType(defaultEventHandlers)(get(form, [...getParents(y), y.name]))(y)}
     </FormRow>
   );
   return [row, ...createFormFromDefinition(defaultEventHandlers)(form)(rest)];

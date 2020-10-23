@@ -1,4 +1,4 @@
-import { FormValues, isFormFieldType } from './types';
+import { FormValues, isFormFieldType, FormItemDefinition } from './types';
 import { isNotCategory } from '../../../states/ContactFormStateFactory';
 
 export const getFormValues = <T>(formInformation: T): FormValues<T> => {
@@ -13,3 +13,5 @@ export const getFormValues = <T>(formInformation: T): FormValues<T> => {
 
   return values;
 };
+
+export const getParents = (def: FormItemDefinition) => def.parents || [];

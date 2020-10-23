@@ -1,4 +1,5 @@
 import ChildFormDefinition from '../formDefinitions/childForm.json';
+import { getParents } from '../components/common/forms/helpers';
 
 export const ValidationType = {
   REQUIRED: 'REQUIRED', // Will not be applied if in the callerInformation tab and callType is not caller.  Will not be applied when callType is standalone.
@@ -37,7 +38,7 @@ const createIntermediate = () => ({
  * @param {import('../components/common/forms/types').FormItemDefinition} def
  */
 const createFormItem = (obj, def) => {
-  if (!def.parents.length) {
+  if (!getParents(def).length) {
     return {
       ...obj,
       [def.name]: {

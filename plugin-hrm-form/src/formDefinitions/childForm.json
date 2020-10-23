@@ -15,15 +15,55 @@
   {
     "name": "age",
     "label": "Age",
-    "parents": [],
     "type": "input",
     "required": true
   },
   {
     "name": "gender",
     "label": "Gender",
-    "parents": [],
-    "type": "input",
-    "required": true
+    "type": "select",
+    "options": [
+      { "value": "", "label": "--Please choose an option--" },
+      { "value": "Male", "label": "Male" }, 
+      { "value": "Female", "label": "Female" }, 
+      { "value": "Non-Binary", "label": "Non-Binary" },
+      { "value": "Unknown", "label": "Unknown" }
+    ]
+  },
+  {
+    "name": "language",
+    "label": "Language",
+    "type": "select",
+    "options": [
+      { "value": "", "label": "--Please choose an option--" },
+      { "value": "Unknown", "label": "Unknown" },
+      { "value": "Afrikaans", "label": "Afrikaans" },
+      { "value": "English", "label": "English" },
+      { "value": "Ndebele", "label": "Ndebele" },
+      { "value": "Other", "label": "Other" },
+      { "value": "Sepedi", "label": "Sepedi" },
+      { "value": "Sign Language", "label": "Sign Language" },
+      { "value": "Sotho", "label": "Sotho" },
+      { "value": "Swazi", "label": "Swazi" },
+      { "value": "Tshivenda", "label": "Tshivenda" },
+      { "value": "Tsonga", "label": "Tsonga" },
+      { "value": "Tswana", "label": "Tswana" },
+      { "value": "Xhosa", "label": "Xhosa" },
+      { "value": "Zulu", "label": "Zulu" }
+    ]
+  },
+  {
+    "name": "livingSituation",
+    "label": "Living Situation",
+    "type": "select",
+    "options": [
+      { "value": "", "label": "--Please choose an option--" },
+      { "value": "Foster care", "label": "Foster care" }, 
+      { "value": "Group facility", "label": "Group facility" }, 
+      { "value": "On their own", "label": "On their own" },
+      { "value": "With parent(s) or guardian(s)", "label": "With parent(s) or guardian(s)" }, 
+      { "value": "With relatives", "label": "With relatives" }, 
+      { "value": "Unknown", "label": "Unknown" }
+    ]
   }
 ]
