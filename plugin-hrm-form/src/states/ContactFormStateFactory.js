@@ -34,17 +34,43 @@ const createIntermediate = () => ({
 });
 
 /**
- *
+ * @param {import('../components/common/forms/types').FormItemDefinition} def
+ */
+const createFormLeaf = def => {
+  switch (def.type) {
+    case 'input':
+      return {
+        type: FieldType.TEXT_INPUT,
+        value: '',
+        validation: def.required ? [ValidationType.REQUIRED] : null,
+        touched: false,
+      };
+    case 'select':
+      return {
+        type: FieldType.SELECT_SINGLE,
+        value: def.options[0],
+        validation: def.required ? [ValidationType.REQUIRED] : null,
+        touched: false,
+      };
+    default:
+      return {
+        type: FieldType.TEXT_INPUT,
+        value: '',
+        validation: def.required ? [ValidationType.REQUIRED] : null,
+        touched: false,
+      };
+  }
+};
+
+/**
+ * @param {{}} obj
  * @param {import('../components/common/forms/types').FormItemDefinition} def
  */
 const createFormItem = (obj, def) => {
   if (!getParents(def).length) {
     return {
       ...obj,
-      [def.name]: {
-        type: FieldType.TEXT_INPUT,
-        validation: def.required ? [ValidationType.REQUIRED] : null,
-      },
+      [def.name]: createFormLeaf(def),
     };
   }
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Template } from '@twilio/flex-ui';
 
 import { ErrorText, StyledLabel, StyledMenuItem, StyledSelect, TextField } from '../styles/HrmStyles';
 import RequiredAsterisk from './RequiredAsterisk';
@@ -24,7 +25,7 @@ const renderOptions = options =>
       case 'object':
         return (
           <StyledMenuItem key={option.value} value={option}>
-            {option.label}
+            <Template code={option.label} />
           </StyledMenuItem>
         );
       default:
@@ -50,7 +51,9 @@ const FieldSelect = ({
   const isPlaceholder = !(typeof field.value === 'object' ? Boolean(field.value.label) : Boolean(field.value));
 
   const renderValue =
-    typeof field.value === 'object' ? option => option.label || placeholder : option => option || placeholder;
+    typeof field.value === 'object'
+      ? option => <Template code={option.label} /> || placeholder
+      : option => option || placeholder;
 
   return (
     <TextField {...rest}>

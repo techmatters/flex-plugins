@@ -178,5 +178,7 @@
   "ContactDetails-GeneralDetails": "General Details",
 
   "ManualPullButtonText": "Add Another Task",
-  "NoTaskAssignableNotification": "No task assignable to you at the moment."
+  "NoTaskAssignableNotification": "No task assignable to you at the moment.",
+
+  "SelectChoseAnOption": "--Please choose an option--"
 }

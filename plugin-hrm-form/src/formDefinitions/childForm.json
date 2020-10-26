@@ -23,7 +23,7 @@
     "label": "Gender",
     "type": "select",
     "options": [
-      { "value": "", "label": "--Please choose an option--" },
+      { "value": "", "label": "SelectChoseAnOption" },
       { "value": "Male", "label": "Male" }, 
       { "value": "Female", "label": "Female" }, 
       { "value": "Non-Binary", "label": "Non-Binary" },
@@ -35,7 +35,7 @@
     "label": "Language",
     "type": "select",
     "options": [
-      { "value": "", "label": "--Please choose an option--" },
+      { "value": "", "label": "SelectChoseAnOption" },
       { "value": "Unknown", "label": "Unknown" },
       { "value": "Afrikaans", "label": "Afrikaans" },
       { "value": "English", "label": "English" },
@@ -57,7 +57,7 @@
     "label": "Living Situation",
     "type": "select",
     "options": [
-      { "value": "", "label": "--Please choose an option--" },
+      { "value": "", "label": "SelectChoseAnOption" },
       { "value": "Foster care", "label": "Foster care" }, 
       { "value": "Group facility", "label": "Group facility" }, 
       { "value": "On their own", "label": "On their own" },
