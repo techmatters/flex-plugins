@@ -326,13 +326,6 @@ export const FormRow = styled(NameFields)`
 `;
 FormRow.displayName = 'FormRow';
 
-export const FormItem = styled('div')`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-FormItem.displayName = 'FormItem';
-
 export const ColumnarBlock = styled('div')`
   display: flex;
   flex-direction: column;
