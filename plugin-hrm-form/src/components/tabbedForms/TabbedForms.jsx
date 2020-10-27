@@ -1,7 +1,10 @@
+/* eslint-disable multiline-comment-style */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTaskContext, Template } from '@twilio/flex-ui';
 import SearchIcon from '@material-ui/icons/Search';
+import { FormProvider, useForm } from 'react-hook-form';
+import { connect } from 'react-redux';
 
 import { TabbedFormsContainer, TopNav, TransparentButton, StyledTabs, StyledTab } from '../../styles/HrmStyles';
 import callTypes from '../../states/DomainConstants';
@@ -14,9 +17,16 @@ import IssueCategorizationTab from './IssueCategorizationTab';
 import CaseInformationTab from './CaseInformationTab';
 import BottomBar from './BottomBar';
 import { hasTaskControl } from '../../utils/transfer';
-import ChildForm from '../common/forms/ChildForm';
+import CustomChildForm from '../common/forms/CustomChildForm';
+import CustomCallerForm from '../common/forms/CustomCallerForm';
+import CustomCategoriesForm from '../common/forms/CustomCategoriesForm';
+import { namespace, contactsBase } from '../../states';
 
 const TabbedForms = props => {
+  // eslint-disable-next-line react/prop-types
+  const defaultValues = props.contactForm;
+  const methods = useForm({ defaultValues, shouldFocusError: false });
+
   const { task, form } = props;
   const taskId = task.taskSid;
 
@@ -75,19 +85,16 @@ const TabbedForms = props => {
   );
 
   if (isCallerType) {
-    body.push(
-      <CallerInformationTab callerInformation={form.callerInformation} defaultEventHandlers={defaultEventHandlers} />,
-    );
+    body.push(<CustomCallerForm />);
+    // <CallerInformationTab callerInformation={form.callerInformation} defaultEventHandlers={defaultEventHandlers} />,
   }
 
-  body.push(
-    <ChildForm />
-    // <ChildInformationTab
-    //   childInformation={form.childInformation}
-    //   handleCheckboxClick={handleCheckboxClick}
-    //   defaultEventHandlers={defaultEventHandlers}
-    // />,
-  );
+  body.push(<CustomChildForm />);
+  // <ChildInformationTab
+  //   childInformation={form.childInformation}
+  //   handleCheckboxClick={handleCheckboxClick}
+  //   defaultEventHandlers={defaultEventHandlers}
+  // />,
 
   body.push(<IssueCategorizationTab form={form} taskId={taskId} handleCategoryToggle={handleCategoryToggle} />);
 
@@ -117,23 +124,39 @@ const TabbedForms = props => {
   tabs.push(decorateTab('TabbedForms-CategoriesTab', form.caseInformation.categories));
   tabs.push(<StyledTab key="Case Information" label={<Template code="TabbedForms-AddCaseInfoTab" />} />);
 
+  const onSubmit = data => console.log(data);
+
+  console.log(methods.errors, methods.getValues());
   return (
-    <TabbedFormsContainer>
-      <TopNav>
-        <TransparentButton onClick={handleBackButton}>&lt; BACK</TransparentButton>
-      </TopNav>
-      <StyledTabs name="tab" variant="scrollable" scrollButtons="auto" value={tab} onChange={handleTabsChange}>
-        {tabs}
-      </StyledTabs>
-      {body[tab]}
-      <BottomBar
-        tabs={tabs.length}
-        form={form}
-        changeTab={props.changeTab}
-        handleCompleteTask={props.handleCompleteTask}
-        handleValidateForm={props.handleValidateForm}
-      />
-    </TabbedFormsContainer>
+    <FormProvider {...methods}>
+      <form onSubmit={methods.handleSubmit(onSubmit)}>
+        <TabbedFormsContainer>
+          <TopNav>
+            <TransparentButton onClick={handleBackButton}>&lt; BACK</TransparentButton>
+          </TopNav>
+          <StyledTabs name="tab" variant="scrollable" scrollButtons="auto" value={tab} onChange={handleTabsChange}>
+            {tabs}
+          </StyledTabs>
+          {/* {body[tab]} */}
+          {isCallerType && <CustomCallerForm display={isCallerType && tab === 1} />}
+          <CustomChildForm display={isCallerType ? tab === 2 : tab === 1} />
+          <CustomCategoriesForm display={isCallerType ? tab === 3 : tab === 2} />
+
+          <button type="button" onClick={() => methods.trigger()}>
+            Validate whenever we want
+          </button>
+          {tab === tabs.length && <input type="submit" />}
+
+          <BottomBar
+            tabs={tabs.length}
+            form={form}
+            changeTab={props.changeTab}
+            handleCompleteTask={props.handleCompleteTask}
+            handleValidateForm={props.handleValidateForm}
+          />
+        </TabbedFormsContainer>
+      </form>
+    </FormProvider>
   );
 };
 
@@ -153,4 +176,8 @@ TabbedForms.propTypes = {
   handleValidateForm: PropTypes.func.isRequired,
 };
 
-export default withTaskContext(TabbedForms);
+const mapStateToProps = (state, ownProps) => ({
+  contactForm: state[namespace][contactsBase].tasks[ownProps.task.taskSid],
+});
+
+export default withTaskContext(connect(mapStateToProps)(TabbedForms));

@@ -37,25 +37,30 @@ export type DefaultEventHandlers = (
  * Types that may be used for customizable forms
  */
 
-type InputDefinition = {
+type ItemBase = {
   name: string;
-  label: string; // todo: this could be a code from the localized strings object
+  label: string;
+};
+
+type InputDefinition = {
   type: 'input';
   // required?: boolean;
-} & ValidationRules;
+} & ItemBase &
+  ValidationRules;
 
 type NumericInputDefinition = {
-  name: string;
-  label: string; // todo: this could be a code from the localized strings object
   type: 'numeric input';
-} & ValidationRules;
+} & ItemBase &
+  ValidationRules;
 
 type SelectDefinition = {
-  name: string;
-  label: string; // todo: this could be a code from the localized strings object
   type: 'select';
   options: { value: any; label: string }[];
-} & ValidationRules;
+} & ItemBase &
+  ValidationRules;
 
 export type FormItemDefinition = InputDefinition | NumericInputDefinition | SelectDefinition;
 export type FormDefinition = FormItemDefinition[];
+
+export type CategoryEntry = { color: string; subcategories: string[] };
+export type CategoriesDefinition = { [category: string]: CategoryEntry };

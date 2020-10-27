@@ -2,11 +2,23 @@ import { omit } from 'lodash';
 
 import * as t from './types';
 import ChildFormDefinition from '../../formDefinitions/childForm.json';
+import CallerFormDefinition from '../../formDefinitions/callerForm.json';
+import CategoriesFormDefinition from '../../formDefinitions/categories.json';
 import { INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE, GeneralActionType } from '../types';
-import type { FormItemDefinition, FormDefinition } from '../../components/common/forms/types';
+import type { FormItemDefinition, FormDefinition, CategoryEntry } from '../../components/common/forms/types';
 
-type TaskEntry = {
-  childForm: { [key: string]: string | boolean };
+export type TaskEntry = {
+  childInformation: { [key: string]: string | boolean };
+  callerInformation: { [key: string]: string | boolean };
+  categories: { [category: string]: { [subcategory: string]: boolean } };
+  /*
+   * caseInformation: { [key: string]: string | boolean };
+   * metadata: {
+   *   startMillis: Date;
+   *   endMillis: Date;
+   *   recreated: boolean;
+   * };
+   */
 };
 
 export type ContactsState = {
@@ -33,9 +45,20 @@ const createFormItem = <T extends {}>(obj: T, def: FormItemDefinition) => ({
   [def.name]: getInitialValue(def),
 });
 
-export const initialChildForm = (ChildFormDefinition as FormDefinition).reduce(createFormItem, {});
+const createCategory = <T extends {}>(obj: T, [category, { subcategories }]: [string, CategoryEntry]) => ({
+  ...obj,
+  [category]: subcategories.reduce((acc, subcategory) => ({ ...acc, [subcategory]: false }), {}),
+});
 
-const newTaskEntry: TaskEntry = { childForm: initialChildForm };
+const initialChildInformation = (ChildFormDefinition as FormDefinition).reduce(createFormItem, {});
+const initialCallerInformation = (CallerFormDefinition as FormDefinition).reduce(createFormItem, {});
+const initialCategories = Object.entries(CategoriesFormDefinition).reduce(createCategory, {});
+
+const newTaskEntry: TaskEntry = {
+  childInformation: initialChildInformation,
+  callerInformation: initialCallerInformation,
+  categories: initialCategories,
+};
 
 const initialState: ContactsState = { tasks: {} };
 

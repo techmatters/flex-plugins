@@ -1,10 +1,12 @@
 import React from 'react';
-import { useFormContext, ValidationRules } from 'react-hook-form';
+import { useFormContext, ValidationRules, FieldError } from 'react-hook-form';
+import { get } from 'lodash';
+import { Template } from '@twilio/flex-ui';
 
 import { FormItem, FormRow } from '../../../styles/HrmStyles';
 import type { FormItemDefinition, FormDefinition } from './types';
 
-const ConnectForm: React.FC<{ children: <P extends ReturnType<typeof useFormContext>>(args: P) => JSX.Element }> = ({
+export const ConnectForm: React.FC<{ children: <P extends ReturnType<typeof useFormContext>>(args: P) => JSX.Element }> = ({
   children,
 }) => {
   const methods = useFormContext();
@@ -23,20 +25,31 @@ const getRules = (field: FormItemDefinition): ValidationRules => ({
 });
 
 // eslint-disable-next-line react/display-name
-const getInputType = (field: FormItemDefinition) => (onBlur: () => void) => {
-  const rules = getRules(field);
+const renderError = (error: FieldError) =>
+  error.type === 'required' ? (
+    <span>
+      <Template code="RequiredFieldError" />
+    </span>
+  ) : (
+    <span>{error.message}</span>
+  );
 
-  switch (field.type) {
+// eslint-disable-next-line react/display-name
+const getInputType = (def: FormItemDefinition) => (parents: string[]) => (onBlur: () => void) => {
+  const rules = getRules(def);
+  const path = [...parents, def.name].join('.');
+
+  switch (def.type) {
     case 'input':
       return (
-        <ConnectForm key={`${field.name}-input`}>
+        <ConnectForm key={path}>
           {({ errors, register }) => {
-            console.log('>>> input rerender');
+            const error = get(errors, path);
             return (
               <FormItem>
-                <label htmlFor={field.name}>{field.label}</label>
-                <input name={field.name} onBlur={onBlur} ref={register(rules)} />
-                {field.required && errors[field.name] && <span>This field is required</span>}
+                <label htmlFor={path}>{def.label}</label>
+                <input name={path} onBlur={onBlur} ref={register(rules)} />
+                {error && renderError(error)}
               </FormItem>
             );
           }}
@@ -44,21 +57,21 @@ const getInputType = (field: FormItemDefinition) => (onBlur: () => void) => {
       );
     case 'numeric input':
       return (
-        <ConnectForm key={`${field.name}-input`}>
+        <ConnectForm key={path}>
           {({ errors, register }) => {
-            console.log('>>> input rerender');
+            const error = get(errors, path);
             return (
               <FormItem>
-                <label htmlFor={field.name}>{field.label}</label>
+                <label htmlFor={path}>{def.label}</label>
                 <input
-                  name={field.name}
+                  name={path}
                   onBlur={onBlur}
                   ref={register({
                     ...rules,
                     pattern: { value: /^[0-9]+$/g, message: 'This field only accepts numeric input.' },
                   })}
                 />
-                {errors[field.name] && <span>{errors[field.name].message}</span>}
+                {error && renderError(error)}
               </FormItem>
             );
           }}
@@ -66,20 +79,23 @@ const getInputType = (field: FormItemDefinition) => (onBlur: () => void) => {
       );
     case 'select':
       return (
-        <ConnectForm key={`${field.name}-select`}>
-          {({ errors, register }) => (
-            <FormItem>
-              <label htmlFor={field.name}>{field.label}</label>
-              <select name={field.name} onBlur={onBlur} ref={register(rules)}>
-                {field.options.map(o => (
-                  <option key={`${field.name}-${o.value}-option`} value={o.value}>
-                    {o.label}
-                  </option>
-                ))}
-              </select>
-              {field.required && errors[field.name] && <span>This field is required</span>}
-            </FormItem>
-          )}
+        <ConnectForm key={path}>
+          {({ errors, register }) => {
+            const error = get(errors, path);
+            return (
+              <FormItem>
+                <label htmlFor={path}>{def.label}</label>
+                <select name={path} onBlur={onBlur} ref={register(rules)}>
+                  {def.options.map(o => (
+                    <option key={`${path}-${o.value}`} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </select>
+                {error && renderError(error)}
+              </FormItem>
+            );
+          }}
         </ConnectForm>
       );
     default:
@@ -87,7 +103,9 @@ const getInputType = (field: FormItemDefinition) => (onBlur: () => void) => {
   }
 };
 
-export const createFormFromDefinition = (definition: FormDefinition) => (onBlur: () => void): JSX.Element[] => {
+export const createFormFromDefinition = (definition: FormDefinition) => (parents: string[]) => (
+  onBlur: () => void,
+): JSX.Element[] => {
   console.log('>>>> createFormFromDefinition called');
 
   if (!definition.length) return [];
@@ -95,7 +113,7 @@ export const createFormFromDefinition = (definition: FormDefinition) => (onBlur:
   if (definition.length === 1)
     return [
       <FormRow key={`${definition[0].name}-form-row`}>
-        {getInputType(definition[0])(onBlur)}
+        {getInputType(definition[0])(parents)(onBlur)}
         <div />
       </FormRow>,
     ];
@@ -103,9 +121,9 @@ export const createFormFromDefinition = (definition: FormDefinition) => (onBlur:
   const [x, y, ...rest] = definition;
   const row = (
     <FormRow key={`${x.name}-${y.name}-form-row`}>
-      {getInputType(x)(onBlur)}
-      {getInputType(y)(onBlur)}
+      {getInputType(x)(parents)(onBlur)}
+      {getInputType(y)(parents)(onBlur)}
     </FormRow>
   );
-  return [row, ...createFormFromDefinition(rest)(onBlur)];
+  return [row, ...createFormFromDefinition(rest)(parents)(onBlur)];
 };

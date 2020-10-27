@@ -1,0 +1,123 @@
+{
+  "Missing children": {
+    "color": "#BBE3FF",
+    "subcategories": [
+    "Child abduction",
+    "Lost, injured or otherwise missing child",
+    "Runaway",
+    "Unspecified/Other"
+  ]
+  },
+  "Violence": {
+    "color": "#F5A623",
+    "subcategories": [
+    "Bullying",
+    "Child / Early marriage",
+    "Commercial sexual exploitation (offline)",
+    "Economic exploitation",
+    "Female Genital Mutilation (FGM)",
+    "Gender-based harmful traditional practices (other than FGM)",
+    "Harmful or hazardous labour",
+    "Mental / Emotional violence",
+    "Neglect (or negligent treatment)",
+    "Non-Gender-Based harmful traditional practices",
+    "Online sexual abuse",
+    "Online sexual exploitation",
+    "Physical violence",
+    "Sexual violence",
+    "Unspecified/Other"
+  ]
+  },
+  "Mental Health": {
+    "color": "#F8E900",
+    "subcategories": [
+    "Addictive behaviours",
+    "Concerns about the self",
+    "Emotional distress – anger problems",
+    "Emotional distress – fear and anxiety problems",
+    "Emotional distress – mood problems",
+    "Problems with eating behaviour",
+    "Self-harming behaviours",
+    "Substance use",
+    "Suicidal thoughts and suicide attempts",
+    "Unspecified/Other"
+  ]
+  },
+  "Physical Health": {
+    "color": "#E86B6B",
+    "subcategories": [
+    "Medical or lifestyle information about HIV/AIDS",
+    "Medical problems",
+    "Pregnancy and Maternal care",
+    "Sexual and reproductive health",
+    "Unspecified/Other"
+  ]
+  },
+  "Accessibility": {
+    "color": "#8055BA",
+    "subcategories": [
+    "Education",
+    "Essential needs",
+    "General healthcare services",
+    "Legal services and advice",
+    "Mental health services",
+    "Sexual health services",
+    "Socio-economical services",
+    "Unspecified/Other"
+  ]
+  },
+  "Discrimination and Exclusion": {
+    "color": "#B971AF",
+    "subcategories": [
+    "Ethnicity/nationality",
+    "Financial Situation",
+    "Gender identity and expression/sexual identity",
+    "Health",
+    "Philosophical or religious beliefs",
+    "Unspecified/Other"
+  ]
+  },
+  "Family Relationships": {
+    "color": "#239613",
+    "subcategories": [
+    "Adoption, fostering, and extended family placement",
+    "Relationship to parents",
+    "Relationship with sibling(s)",
+    "Unspecified/Other"
+  ]
+  },
+  "Peer Relationships": {
+    "color": "#9AD703",
+    "subcategories": [
+    "Friends and Friendships",
+    "Romantic Relationships",
+    "Unspecified/Other"
+  ]
+  },
+  "School": {
+    "color": "#55AFAF",
+    "subcategories": [
+    "Academic issues",
+    "Teacher and school problems",
+    "Unspecified/Other"
+  ]
+  },
+  "Sexuality": {
+    "color": "#506BA5",
+    "subcategories": [
+    "Sexuality and gender identity",
+    "Sexual behaviours",
+    "Unspecified/Other"
+  ]
+  },
+  "Information & Other Non-Counselling contacts": {
+    "color": "#767777",
+    "subcategories": [
+    "Complaints about the child helpline",
+    "Questions by parents",
+    "Questions about the child helpline",
+    "Questions about other services",
+    "Thank you for your assistance",
+    "Unspecified/Other"
+  ]
+}}
