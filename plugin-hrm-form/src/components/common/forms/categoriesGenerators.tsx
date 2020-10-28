@@ -25,32 +25,42 @@ import type { CategoriesDefinition } from './types';
 import type { TaskEntry } from '../../../states/contacts/reducer';
 import { ConnectForm } from './formGenerators';
 
-export const getCategoriesCount = (categories: TaskEntry['categories']) =>
-  Object.values(categories).reduce(
-    (acc, subcategories) => acc + Object.values(subcategories).reduce((c, selected) => (selected ? c + 1 : c), 0),
-    0,
-  );
+/*
+ * export const getCategoriesCount = (categories: TaskEntry['categories']) =>
+ *   Object.values(categories).reduce(
+ *     (acc, subcategories) => acc + Object.values(subcategories).reduce((c, selected) => (selected ? c + 1 : c), 0),
+ *     0,
+ *   );
+ */
 
 export const createSubcategoryCheckbox = (subcategory: string) => (parents: string[]) => (onToggle: () => void) => {
   const path = [...parents, subcategory].join('.');
 
   return (
     <ConnectForm key={path}>
-      {({ errors, register }) => {
-        const validate = data => {
-          console.log(data);
-          // const selectedCount = getCategoriesCount(categories);
-
-          // if (selectedCount >= 1 && selectedCount <= 3) return null;
-
-          return 'Invalid count of selected categories';
+      {({ errors, register, getValues }) => {
+        const validate = (categories: string[]) => {
+          const message = 'Required 1 category minimum, 3 categories maximum';
+          const valid = categories && categories.length >= 1 && categories.length <= 3;
+          return valid ? true : message;
         };
 
-        // const error = get(errors, path);
+        const { categories } = getValues();
+        const disabled = categories && categories.length >= 3 && !categories.includes(path);
+
         return (
+          // const error = get(errors, path);
           <div>
-            <label htmlFor={path}>{subcategory}</label>
-            <input type="checkbox" name={path} onChange={onToggle} ref={register} />
+            <label htmlFor={`${path}-checkbox`}>{subcategory}</label>
+            <input
+              key={`${path}-checkbox`}
+              type="checkbox"
+              name="categories"
+              value={path}
+              onChange={onToggle}
+              ref={register({ validate })}
+              disabled={disabled}
+            />
             {/* {error && renderError(error)} */}
           </div>
         );

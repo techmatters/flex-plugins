@@ -6,9 +6,9 @@ import { Template } from '@twilio/flex-ui';
 import { FormItem, FormRow } from '../../../styles/HrmStyles';
 import type { FormItemDefinition, FormDefinition } from './types';
 
-export const ConnectForm: React.FC<{ children: <P extends ReturnType<typeof useFormContext>>(args: P) => JSX.Element }> = ({
-  children,
-}) => {
+export const ConnectForm: React.FC<{
+  children: <P extends ReturnType<typeof useFormContext>>(args: P) => JSX.Element;
+}> = ({ children }) => {
   const methods = useFormContext();
 
   return children({ ...methods });
@@ -106,8 +106,6 @@ const getInputType = (def: FormItemDefinition) => (parents: string[]) => (onBlur
 export const createFormFromDefinition = (definition: FormDefinition) => (parents: string[]) => (
   onBlur: () => void,
 ): JSX.Element[] => {
-  console.log('>>>> createFormFromDefinition called');
-
   if (!definition.length) return [];
 
   if (definition.length === 1)

@@ -10,7 +10,8 @@ import type { FormItemDefinition, FormDefinition, CategoryEntry } from '../../co
 export type TaskEntry = {
   childInformation: { [key: string]: string | boolean };
   callerInformation: { [key: string]: string | boolean };
-  categories: { [category: string]: { [subcategory: string]: boolean } };
+  categories: string[];
+  // categories: { [category: string]: { [subcategory: string]: boolean } };
   /*
    * caseInformation: { [key: string]: string | boolean };
    * metadata: {
@@ -57,7 +58,8 @@ const initialCategories = Object.entries(CategoriesFormDefinition).reduce(create
 const newTaskEntry: TaskEntry = {
   childInformation: initialChildInformation,
   callerInformation: initialCallerInformation,
-  categories: initialCategories,
+  categories: [],
+  // categories: initialCategories,
 };
 
 const initialState: ContactsState = { tasks: {} };

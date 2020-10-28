@@ -6,7 +6,7 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { RootState } from '../../../states';
 import { updateForm } from '../../../states/contacts/actions';
-import { createCategoriesFromDefinition, getCategoriesCount } from './categoriesGenerators';
+import { createCategoriesFromDefinition } from './categoriesGenerators';
 import CategoriesDefinition from '../../../formDefinitions/categories.json';
 
 type OwnProps = { task: ITask; display: boolean };
@@ -15,14 +15,11 @@ type OwnProps = { task: ITask; display: boolean };
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const CustomCategoriesForm: React.FC<Props> = ({ dispatch, display, task }) => {
-  const { getValues, setError, clearErrors } = useFormContext();
-
-  React.useEffect(() => {
-    console.log('>>> useEffect called');
-  });
+  const { getValues } = useFormContext();
 
   const categoriesDefinition = React.useMemo(() => {
-    console.log('>>> childFormDefinition useMemo called');
+    console.log('>>> categoriesDefinition useMemo called');
+
     const onToggle = () => {
       const { categories } = getValues();
       dispatch(updateForm(task.taskSid, 'categories', categories));

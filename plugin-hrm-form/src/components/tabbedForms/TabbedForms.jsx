@@ -24,8 +24,7 @@ import { namespace, contactsBase } from '../../states';
 
 const TabbedForms = props => {
   // eslint-disable-next-line react/prop-types
-  const defaultValues = props.contactForm;
-  const methods = useForm({ defaultValues, shouldFocusError: false });
+  const methods = useForm({ defaultValues: props.contactForm, shouldFocusError: false });
 
   const { task, form } = props;
   const taskId = task.taskSid;
@@ -127,6 +126,7 @@ const TabbedForms = props => {
   const onSubmit = data => console.log(data);
 
   console.log(methods.errors, methods.getValues());
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)}>
@@ -145,7 +145,7 @@ const TabbedForms = props => {
           <button type="button" onClick={() => methods.trigger()}>
             Validate whenever we want
           </button>
-          {tab === tabs.length && <input type="submit" />}
+          <input type="submit" />
 
           <BottomBar
             tabs={tabs.length}
