@@ -1,11 +1,9 @@
 /* eslint-disable react/display-name */
-/* eslint-disable import/no-unused-modules */
+/* eslint-disable react/prop-types */
 import React from 'react';
 import GridIcon from '@material-ui/icons/GridOn';
 import ListIcon from '@material-ui/icons/List';
-import { ITask, Template, withTaskContext } from '@twilio/flex-ui';
-import { Controller } from 'react-hook-form';
-import { get } from 'lodash';
+import { Template } from '@twilio/flex-ui';
 
 import Section from '../../Section';
 import {
@@ -15,9 +13,6 @@ import {
   CategoryRequiredText,
   ToggleViewButton,
   CategoriesWrapper,
-  CategoryCheckboxField,
-  StyledCategoryCheckbox,
-  StyledCategoryCheckboxLabel,
   Box,
   SubcategoriesWrapper,
 } from '../../../styles/HrmStyles';
@@ -33,23 +28,18 @@ import { ConnectForm } from './formGenerators';
  *   );
  */
 
+// eslint-disable-next-line import/no-unused-modules
 export const createSubcategoryCheckbox = (subcategory: string) => (parents: string[]) => (onToggle: () => void) => {
   const path = [...parents, subcategory].join('.');
+  console.log('RECREATEDDDDDDDD')
 
   return (
     <ConnectForm key={path}>
-      {({ errors, register, getValues }) => {
-        const validate = (categories: string[]) => {
-          const message = 'Required 1 category minimum, 3 categories maximum';
-          const valid = categories && categories.length >= 1 && categories.length <= 3;
-          return valid ? true : message;
-        };
-
+      {({ register, getValues }) => {
         const { categories } = getValues();
         const disabled = categories && categories.length >= 3 && !categories.includes(path);
 
         return (
-          // const error = get(errors, path);
           <div>
             <label htmlFor={`${path}-checkbox`}>{subcategory}</label>
             <input
@@ -58,10 +48,9 @@ export const createSubcategoryCheckbox = (subcategory: string) => (parents: stri
               name="categories"
               value={path}
               onChange={onToggle}
-              ref={register({ validate })}
+              ref={register({ required: true, minLength: 1, maxLength: 3 })}
               disabled={disabled}
             />
-            {/* {error && renderError(error)} */}
           </div>
         );
       }}
@@ -69,9 +58,39 @@ export const createSubcategoryCheckbox = (subcategory: string) => (parents: stri
   );
 };
 
-export const createCategoriesFromDefinition = (definition: CategoriesDefinition) => (parents: string[]) => (
-  onToggle: () => void,
-) => {
+type Props = {
+  definition: CategoriesDefinition;
+  parents: string[];
+  onToggle: () => void;
+  toggleCategoriesGridView: (gridView: boolean) => void;
+  categoriesMeta: TaskEntry['metadata']['categories'];
+  toggleExpandCategory: (category: string) => void;
+};
+
+const categoriesFromDefinition = ({
+  definition,
+  parents,
+  onToggle,
+  toggleCategoriesGridView,
+  categoriesMeta,
+  toggleExpandCategory,
+}): Props => {
+  const subcategoriesInputs = React.useMemo(
+    () =>
+      Object.entries(definition).reduce(
+        (acc, [category, { subcategories }]) => ({
+          ...acc,
+          [category]: subcategories.map(subcategory => {
+            return createSubcategoryCheckbox(subcategory)([...parents, category])(onToggle);
+          }),
+        }),
+        {},
+      ),
+    [definition, onToggle, parents],
+  );
+
+  const { gridView, expanded } = categoriesMeta;
+
   return (
     <Container>
       <CategoryTitle>
@@ -81,28 +100,23 @@ export const createCategoriesFromDefinition = (definition: CategoriesDefinition)
         <CategoryRequiredText>
           <Template code="Error-CategoryRequired" />
         </CategoryRequiredText>
-        {/* <ToggleViewButton onClick={() => setCategoriesGridView(true, task.taskSid)} active={gridView}>
+        <ToggleViewButton onClick={() => toggleCategoriesGridView(true)} active={gridView}>
           <GridIcon />
         </ToggleViewButton>
-        <ToggleViewButton onClick={() => setCategoriesGridView(false, task.taskSid)} active={!gridView}>
+        <ToggleViewButton onClick={() => toggleCategoriesGridView(false)} active={!gridView}>
           <ListIcon />
-        </ToggleViewButton> */}
+        </ToggleViewButton>
       </CategorySubtitleSection>
       <CategoriesWrapper>
-        {Object.entries(definition).map(([category, { subcategories, color }]) => (
+        {Object.entries(definition).map(([category, { color }]) => (
           <Box marginBottom="6px" key={`IssueCategorization_${category}`}>
             <Section
               sectionTitle={category}
               color={color}
-              expanded={true}
-              // handleExpandClick={() => props.handleExpandCategory(props.category, props.taskId)}
+              expanded={expanded[category]}
+              handleExpandClick={() => toggleExpandCategory(category)}
             >
-              <SubcategoriesWrapper>
-                {subcategories.map(subcategory => {
-                  // const id = `IssueCategorization_${category}_${subcategory}`;
-                  return createSubcategoryCheckbox(subcategory)([...parents, category])(onToggle);
-                })}
-              </SubcategoriesWrapper>
+              <SubcategoriesWrapper>{subcategoriesInputs[category]}</SubcategoriesWrapper>
             </Section>
           </Box>
         ))}
@@ -110,3 +124,5 @@ export const createCategoriesFromDefinition = (definition: CategoriesDefinition)
     </Container>
   );
 };
+
+export default CategoriesFromDefinition;

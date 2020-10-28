@@ -1,4 +1,5 @@
 import { omit } from 'lodash';
+import fp from 'lodash/fp';
 
 import * as t from './types';
 import ChildFormDefinition from '../../formDefinitions/childForm.json';
@@ -11,15 +12,16 @@ export type TaskEntry = {
   childInformation: { [key: string]: string | boolean };
   callerInformation: { [key: string]: string | boolean };
   categories: string[];
-  // categories: { [category: string]: { [subcategory: string]: boolean } };
-  /*
-   * caseInformation: { [key: string]: string | boolean };
-   * metadata: {
-   *   startMillis: Date;
-   *   endMillis: Date;
-   *   recreated: boolean;
-   * };
-   */
+  //  caseInformation: { [key: string]: string | boolean };
+  metadata: {
+    startMillis: number;
+    endMillis: number;
+    recreated: boolean;
+    categories: {
+      gridView: boolean;
+      expanded: { [key: string]: boolean };
+    };
+  };
 };
 
 export type ContactsState = {
@@ -51,14 +53,28 @@ const createCategory = <T extends {}>(obj: T, [category, { subcategories }]: [st
   [category]: subcategories.reduce((acc, subcategory) => ({ ...acc, [subcategory]: false }), {}),
 });
 
-const initialChildInformation = (ChildFormDefinition as FormDefinition).reduce(createFormItem, {});
-const initialCallerInformation = (CallerFormDefinition as FormDefinition).reduce(createFormItem, {});
-const initialCategories = Object.entries(CategoriesFormDefinition).reduce(createCategory, {});
+const createNewTaskEntry = (recreated: boolean): TaskEntry => {
+  const initialChildInformation = (ChildFormDefinition as FormDefinition).reduce(createFormItem, {});
+  const initialCallerInformation = (CallerFormDefinition as FormDefinition).reduce(createFormItem, {});
 
-const newTaskEntry: TaskEntry = {
-  childInformation: initialChildInformation,
-  callerInformation: initialCallerInformation,
-  categories: [],
+  const categories = {
+    gridView: false,
+    expanded: Object.keys(CategoriesFormDefinition).reduce((acc, category) => ({ ...acc, [category]: false }), {}),
+  };
+  const metadata = {
+    startMillis: recreated ? null : new Date().getTime(),
+    endMillis: null,
+    tab: 1,
+    recreated,
+    categories,
+  };
+
+  return {
+    childInformation: initialChildInformation,
+    callerInformation: initialCallerInformation,
+    categories: [],
+    metadata,
+  };
   // categories: initialCategories,
 };
 
@@ -72,7 +88,7 @@ export function reduce(state = initialState, action: t.ContactsActionType | Gene
         ...state,
         tasks: {
           ...state.tasks,
-          [action.taskId]: newTaskEntry,
+          [action.taskId]: createNewTaskEntry(false),
         },
       };
     case RECREATE_CONTACT_STATE:
@@ -82,7 +98,7 @@ export function reduce(state = initialState, action: t.ContactsActionType | Gene
         ...state,
         tasks: {
           ...state.tasks,
-          [action.taskId]: newTaskEntry,
+          [action.taskId]: createNewTaskEntry(true),
         },
       };
     case REMOVE_CONTACT_STATE:
@@ -101,6 +117,69 @@ export function reduce(state = initialState, action: t.ContactsActionType | Gene
           },
         },
       };
+    case t.SAVE_END_MILLIS: {
+      const taskToEnd = state.tasks[action.taskId];
+
+      const { metadata } = taskToEnd;
+      const endedTask = { ...taskToEnd, metadata: { ...metadata, endMillis: new Date().getTime() } };
+
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: endedTask,
+        },
+      };
+    }
+    case t.SET_CATEGORIES_GRID_VIEW: {
+      const currentTask = state.tasks[action.taskId];
+      const { metadata } = currentTask;
+      const { categories } = metadata;
+      const taskWithCategoriesViewToggled = {
+        ...currentTask,
+        metadata: {
+          ...metadata,
+          categories: {
+            ...categories,
+            gridView: action.gridView,
+          },
+        },
+      };
+
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: taskWithCategoriesViewToggled,
+        },
+      };
+    }
+    case t.HANDLE_EXPAND_CATEGORY: {
+      const currentTask = state.tasks[action.taskId];
+      const { metadata } = currentTask;
+      const { categories } = metadata;
+      const taskWithCategoriesExpanded = {
+        ...currentTask,
+        metadata: {
+          ...metadata,
+          categories: {
+            ...categories,
+            expanded: {
+              ...categories.expanded,
+              [action.category]: !categories.expanded[action.category],
+            },
+          },
+        },
+      };
+
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: taskWithCategoriesExpanded,
+        },
+      };
+    }
     default:
       return state;
   }

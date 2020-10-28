@@ -1,22 +1,18 @@
 /* eslint-disable multiline-comment-style */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withTaskContext, Template } from '@twilio/flex-ui';
+import { withTaskContext } from '@twilio/flex-ui';
 import SearchIcon from '@material-ui/icons/Search';
 import { FormProvider, useForm } from 'react-hook-form';
 import { connect } from 'react-redux';
 
-import { TabbedFormsContainer, TopNav, TransparentButton, StyledTabs, StyledTab } from '../../styles/HrmStyles';
+import { TabbedFormsContainer, TopNav, TransparentButton, StyledTabs } from '../../styles/HrmStyles';
 import callTypes from '../../states/DomainConstants';
-import decorateTab from '../decorateTab';
 import { formType, taskType } from '../../types';
 import Search from '../search';
-import CallerInformationTab from './CallerInformationTab';
-import ChildInformationTab from './ChildInformationTab';
-import IssueCategorizationTab from './IssueCategorizationTab';
-import CaseInformationTab from './CaseInformationTab';
 import BottomBar from './BottomBar';
 import { hasTaskControl } from '../../utils/transfer';
+import FormTab from '../common/forms/FormTab';
 import CustomChildForm from '../common/forms/CustomChildForm';
 import CustomCallerForm from '../common/forms/CustomCallerForm';
 import CustomCategoriesForm from '../common/forms/CustomCategoriesForm';
@@ -29,18 +25,6 @@ const TabbedForms = props => {
   const { task, form } = props;
   const taskId = task.taskSid;
 
-  const curriedHandleChange = (parents, name) => e => {
-    if (hasTaskControl(task)) props.handleChange(taskId, parents, name, e.target.value || e.currentTarget.value);
-  };
-
-  const curriedHandleFocus = (parents, name) => () => props.handleFocus(taskId, parents, name);
-
-  const defaultEventHandlers = (parents, name) => ({
-    handleBlur: props.handleBlur,
-    handleChange: curriedHandleChange(parents, name),
-    handleFocus: curriedHandleFocus(parents, name),
-  });
-
   const handleSelectSearchResult = searchResult => {
     props.handleSelectSearchResult(searchResult, taskId);
 
@@ -50,14 +34,6 @@ const TabbedForms = props => {
     const tab = currentIsCaller && selectedIsChild ? 2 : 1;
 
     props.changeTab(tab, taskId);
-  };
-
-  const handleCheckboxClick = (parents, name, value) => {
-    if (hasTaskControl(task)) props.handleChange(taskId, parents, name, value);
-  };
-
-  const handleCategoryToggle = (taskSID, category, subcategory, newValue) => {
-    if (hasTaskControl(task)) props.handleCategoryToggle(taskSID, category, subcategory, newValue);
   };
 
   const handleTabsChange = (event, tab) => {
@@ -74,58 +50,20 @@ const TabbedForms = props => {
   const { tab } = form.metadata;
   const isCallerType = form.callType.value === callTypes.caller;
 
-  const body = [];
-
-  body.push(
-    <Search
-      currentIsCaller={isCallerType}
-      handleSelectSearchResult={searchResult => handleSelectSearchResult(searchResult)}
-    />,
-  );
-
-  if (isCallerType) {
-    body.push(<CustomCallerForm />);
-    // <CallerInformationTab callerInformation={form.callerInformation} defaultEventHandlers={defaultEventHandlers} />,
-  }
-
-  body.push(<CustomChildForm />);
-  // <ChildInformationTab
-  //   childInformation={form.childInformation}
-  //   handleCheckboxClick={handleCheckboxClick}
-  //   defaultEventHandlers={defaultEventHandlers}
-  // />,
-
-  body.push(<IssueCategorizationTab form={form} taskId={taskId} handleCategoryToggle={handleCategoryToggle} />);
-
-  body.push(
-    <CaseInformationTab
-      caseInformation={form.caseInformation}
-      handleCheckboxClick={handleCheckboxClick}
-      defaultEventHandlers={defaultEventHandlers}
-    />,
-  );
-
-  /**
-   * this is hokey
-   * we need to be able to mark that the categories field has been touched
-   * the only way to do this that I see is this.  Blech.
-   */
-  if (tab === 2 && !form.caseInformation.categories.touched) {
-    props.handleFocus(taskId, ['caseInformation'], 'categories');
-  }
-
-  const tabs = [];
-  tabs.push(<StyledTab searchTab key="Search" icon={<SearchIcon />} />);
-  if (isCallerType) {
-    tabs.push(decorateTab('TabbedForms-AddCallerInfoTab', form.callerInformation));
-  }
-  tabs.push(decorateTab('TabbedForms-AddChildInfoTab', form.childInformation));
-  tabs.push(decorateTab('TabbedForms-CategoriesTab', form.caseInformation.categories));
-  tabs.push(<StyledTab key="Case Information" label={<Template code="TabbedForms-AddCaseInfoTab" />} />);
-
   const onSubmit = data => console.log(data);
 
   console.log(methods.errors, methods.getValues());
+  const { errors } = methods;
+
+  const tabs = [
+    <FormTab key="SearchTab" searchTab icon={<SearchIcon />} />,
+    isCallerType ? (
+      <FormTab key="CallerInfoTabTab" label="TabbedForms-AddCallerInfoTab" error={errors.callerInformation} />
+    ) : null,
+    <FormTab key="ChildInfoTabTab" label="TabbedForms-AddChildInfoTab" error={errors.childInformation} />,
+    <FormTab key="CategoriesTab" label="TabbedForms-CategoriesTab" error={errors.categories} />,
+    <FormTab key="CaseInfoTabTab" label="TabbedForms-AddCaseInfoTab" error={errors.caseInformation} />,
+  ].filter(t => t); // filter the ones that might be null
 
   return (
     <FormProvider {...methods}>
@@ -137,7 +75,8 @@ const TabbedForms = props => {
           <StyledTabs name="tab" variant="scrollable" scrollButtons="auto" value={tab} onChange={handleTabsChange}>
             {tabs}
           </StyledTabs>
-          {/* {body[tab]} */}
+          {/* Body */}
+          {tab === 0 && <Search currentIsCaller={isCallerType} handleSelectSearchResult={handleSelectSearchResult} />}
           {isCallerType && <CustomCallerForm display={isCallerType && tab === 1} />}
           <CustomChildForm display={isCallerType ? tab === 2 : tab === 1} />
           <CustomCategoriesForm display={isCallerType ? tab === 3 : tab === 2} />

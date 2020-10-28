@@ -446,7 +446,7 @@ export const StyledTabs = styled((props: TabsProps & { value: any }) => (
 `;
 StyledTabs.displayName = 'StyledTabs';
 
-type StyledTabProps = { searchTab?: boolean };
+export type StyledTabProps = { searchTab?: boolean; label: React.ReactNode } & typeof Tab['defaultProps'];
 
 export const StyledTab = styled(({ searchTab = false, ...rest }: StyledTabProps) => (
   <Tab {...rest} classes={{ selected: 'selected' }} />
