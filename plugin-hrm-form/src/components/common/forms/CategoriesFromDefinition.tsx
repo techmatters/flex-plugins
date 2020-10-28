@@ -1,3 +1,5 @@
+/* eslint-disable react/no-multi-comp */
+/* eslint-disable import/no-unused-modules */
 /* eslint-disable react/display-name */
 /* eslint-disable react/prop-types */
 import React from 'react';
@@ -29,9 +31,8 @@ import { ConnectForm } from './formGenerators';
  */
 
 // eslint-disable-next-line import/no-unused-modules
-export const createSubcategoryCheckbox = (subcategory: string) => (parents: string[]) => (onToggle: () => void) => {
+export const createSubcategoryCheckbox = (subcategory: string, parents: string[], onToggle: () => void) => {
   const path = [...parents, subcategory].join('.');
-  console.log('RECREATEDDDDDDDD')
 
   return (
     <ConnectForm key={path}>
@@ -58,37 +59,32 @@ export const createSubcategoryCheckbox = (subcategory: string) => (parents: stri
   );
 };
 
+export const createSubCategoriesInputs = (definition: CategoriesDefinition, parents: string[], onToggle: () => void) =>
+  Object.entries(definition).reduce<{ [category: string]: ReturnType<typeof createSubcategoryCheckbox>[] }>(
+    (acc, [category, { subcategories }]) => ({
+      ...acc,
+      [category]: subcategories.map(subcategory => {
+        return createSubcategoryCheckbox(subcategory, [...parents, category], onToggle);
+      }),
+    }),
+    {},
+  );
+
 type Props = {
   definition: CategoriesDefinition;
-  parents: string[];
-  onToggle: () => void;
+  subcategoriesInputs: ReturnType<typeof createSubCategoriesInputs>;
   toggleCategoriesGridView: (gridView: boolean) => void;
   categoriesMeta: TaskEntry['metadata']['categories'];
   toggleExpandCategory: (category: string) => void;
 };
 
-const categoriesFromDefinition = ({
+export const CategoriesFromDefinition: React.FC<Props> = ({
+  subcategoriesInputs,
   definition,
-  parents,
-  onToggle,
   toggleCategoriesGridView,
   categoriesMeta,
   toggleExpandCategory,
-}): Props => {
-  const subcategoriesInputs = React.useMemo(
-    () =>
-      Object.entries(definition).reduce(
-        (acc, [category, { subcategories }]) => ({
-          ...acc,
-          [category]: subcategories.map(subcategory => {
-            return createSubcategoryCheckbox(subcategory)([...parents, category])(onToggle);
-          }),
-        }),
-        {},
-      ),
-    [definition, onToggle, parents],
-  );
-
+}) => {
   const { gridView, expanded } = categoriesMeta;
 
   return (
@@ -124,5 +120,3 @@ const categoriesFromDefinition = ({
     </Container>
   );
 };
-
-export default CategoriesFromDefinition;

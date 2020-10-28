@@ -1,5 +1,4 @@
 import { omit } from 'lodash';
-import fp from 'lodash/fp';
 
 import * as t from './types';
 import ChildFormDefinition from '../../formDefinitions/childForm.json';

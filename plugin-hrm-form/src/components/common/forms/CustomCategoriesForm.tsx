@@ -7,7 +7,7 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { RootState, namespace, contactsBase } from '../../../states';
 import * as actions from '../../../states/contacts/actions';
-import CategoriesFromDefinition from './CategoriesFromDefinition';
+import { CategoriesFromDefinition, createSubCategoriesInputs } from './CategoriesFromDefinition';
 import CategoriesDefinition from '../../../formDefinitions/categories.json';
 
 type OwnProps = { task: ITask; display: boolean };
@@ -25,7 +25,7 @@ const CustomCategoriesForm: React.FC<Props> = ({
 }) => {
   const { getValues } = useFormContext();
 
-  const categoriesDefinition = React.useMemo(() => {
+  const subcategoriesInputs = React.useMemo(() => {
     console.log('>>> categoriesDefinition useMemo called');
 
     const onToggle = () => {
@@ -33,28 +33,28 @@ const CustomCategoriesForm: React.FC<Props> = ({
       updateForm(task.taskSid, 'categories', categories);
     };
 
-    const toggleCategoriesGridView = (gridView: boolean) => {
-      setCategoriesGridView(gridView, task.taskSid);
-    };
+    return createSubCategoriesInputs(CategoriesDefinition, ['categories'], onToggle);
+  }, [getValues, task.taskSid, updateForm]);
 
-    const toggleExpandCategory = (category: string) => {
-      handleExpandCategory(category, task.taskSid);
-    };
+  const toggleCategoriesGridView = (gridView: boolean) => {
+    setCategoriesGridView(gridView, task.taskSid);
+  };
 
-    // eslint-disable-next-line react/display-name
-    return categoriesMetadata => (
+  const toggleExpandCategory = (category: string) => {
+    handleExpandCategory(category, task.taskSid);
+  };
+
+  return (
+    <div style={{ display: display ? 'block' : 'none' }}>
       <CategoriesFromDefinition
         definition={CategoriesDefinition}
-        parents={['categories']}
-        onToggle={onToggle}
-        categoriesMeta={categoriesMetadata}
+        subcategoriesInputs={subcategoriesInputs}
+        categoriesMeta={categoriesMeta}
         toggleCategoriesGridView={toggleCategoriesGridView}
         toggleExpandCategory={toggleExpandCategory}
       />
-    );
-  }, [getValues, handleExpandCategory, setCategoriesGridView, task.taskSid, updateForm]);
-
-  return <div style={{ display: display ? 'block' : 'none' }}>{categoriesDefinition}</div>;
+    </div>
+  );
 };
 
 CustomCategoriesForm.displayName = 'CustomCategoriesForm';
