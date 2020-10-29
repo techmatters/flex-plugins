@@ -35,7 +35,7 @@ const renderError = (error: FieldError) =>
   );
 
 // eslint-disable-next-line react/display-name
-const getInputType = (def: FormItemDefinition) => (parents: string[]) => (onBlur: () => void) => {
+const getInputType = (parents: string[], onBlur: () => void) => (def: FormItemDefinition) => {
   const rules = getRules(def);
   const path = [...parents, def.name].join('.');
 
@@ -105,23 +105,25 @@ const getInputType = (def: FormItemDefinition) => (parents: string[]) => (onBlur
 
 export const createFormFromDefinition = (definition: FormDefinition) => (parents: string[]) => (
   onBlur: () => void,
-): JSX.Element[] => {
-  if (!definition.length) return [];
+): JSX.Element[] => definition.map(getInputType(parents, onBlur));
 
-  if (definition.length === 1)
+export const makeFormRows = (formItems: JSX.Element[]) => {
+  const [x, y, ...rest] = formItems;
+  if (!x) return [];
+
+  if (!y)
     return [
-      <FormRow key={`${definition[0].name}-form-row`}>
-        {getInputType(definition[0])(parents)(onBlur)}
+      <FormRow key={`formRow-${x.key}`}>
+        {x}
         <div />
       </FormRow>,
     ];
 
-  const [x, y, ...rest] = definition;
   const row = (
-    <FormRow key={`${x.name}-${y.name}-form-row`}>
-      {getInputType(x)(parents)(onBlur)}
-      {getInputType(y)(parents)(onBlur)}
+    <FormRow key={`formRow-${x.key}-${y.key}`}>
+      {x}
+      {y}
     </FormRow>
   );
-  return [row, ...createFormFromDefinition(rest)(parents)(onBlur)];
+  return [row, ...makeFormRows(rest)];
 };

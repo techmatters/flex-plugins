@@ -59,8 +59,10 @@ export const createSubcategoryCheckbox = (subcategory: string, parents: string[]
   );
 };
 
+type SubcategoriesMap = { [category: string]: ReturnType<typeof createSubcategoryCheckbox>[] };
+
 export const createSubCategoriesInputs = (definition: CategoriesDefinition, parents: string[], onToggle: () => void) =>
-  Object.entries(definition).reduce<{ [category: string]: ReturnType<typeof createSubcategoryCheckbox>[] }>(
+  Object.entries(definition).reduce<SubcategoriesMap>(
     (acc, [category, { subcategories }]) => ({
       ...acc,
       [category]: subcategories.map(subcategory => {

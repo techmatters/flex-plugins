@@ -6,7 +6,7 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { RootState } from '../../../states';
 import { updateForm } from '../../../states/contacts/actions';
-import { createFormFromDefinition } from './formGenerators';
+import { createFormFromDefinition, makeFormRows } from './formGenerators';
 import CallerFormDefinition from '../../../formDefinitions/callerForm.json';
 import { Container } from '../../../styles/HrmStyles';
 import type { FormDefinition } from './types';
@@ -19,7 +19,7 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 const CustomCallerForm: React.FC<Props> = ({ dispatch, task, display }) => {
   const { getValues } = useFormContext();
 
-  const callerFormDefinition = React.useMemo(() => {
+  const formRows = React.useMemo(() => {
     console.log('>>> callerFormDefinition useMemo called');
 
     const onBlur = () => {
@@ -28,12 +28,16 @@ const CustomCallerForm: React.FC<Props> = ({ dispatch, task, display }) => {
     };
 
     // TODO: fix this typecasting
-    return createFormFromDefinition(CallerFormDefinition as FormDefinition)(['callerInformation'])(onBlur);
+    const callerFormDefinition = createFormFromDefinition(CallerFormDefinition as FormDefinition)([
+      'callerInformation',
+    ])(onBlur);
+
+    return makeFormRows(callerFormDefinition);
   }, [dispatch, getValues, task.taskSid]);
 
   return (
     <div style={{ display: display ? 'block' : 'none' }}>
-      <Container>{callerFormDefinition}</Container>
+      <Container>{formRows}</Container>
     </div>
   );
 };

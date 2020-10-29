@@ -6,7 +6,7 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { RootState } from '../../../states';
 import { updateForm } from '../../../states/contacts/actions';
-import { createFormFromDefinition } from './formGenerators';
+import { createFormFromDefinition, makeFormRows } from './formGenerators';
 import ChildFormDefinition from '../../../formDefinitions/childForm.json';
 import { Container } from '../../../styles/HrmStyles';
 import type { FormDefinition } from './types';
@@ -19,7 +19,7 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 const CustomChildForm: React.FC<Props> = ({ dispatch, task, display }) => {
   const { getValues } = useFormContext();
 
-  const childFormDefinition = React.useMemo(() => {
+  const formRows = React.useMemo(() => {
     console.log('>>> childFormDefinition useMemo called');
     const onBlur = () => {
       const { childInformation } = getValues();
@@ -27,12 +27,16 @@ const CustomChildForm: React.FC<Props> = ({ dispatch, task, display }) => {
     };
 
     // TODO: fix this typecasting
-    return createFormFromDefinition(ChildFormDefinition as FormDefinition)(['childInformation'])(onBlur);
+    const childFormDefinition = createFormFromDefinition(ChildFormDefinition as FormDefinition)(['childInformation'])(
+      onBlur,
+    );
+
+    return makeFormRows(childFormDefinition);
   }, [dispatch, getValues, task.taskSid]);
 
   return (
     <div style={{ display: display ? 'block' : 'none' }}>
-      <Container>{childFormDefinition}</Container>
+      <Container>{formRows}</Container>
     </div>
   );
 };
