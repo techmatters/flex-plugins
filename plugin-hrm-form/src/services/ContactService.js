@@ -1,10 +1,13 @@
+import { set } from 'lodash/fp';
+
 import secret from '../private/secret';
-import { FieldType, recreateBlankForm } from '../states/ContactFormStateFactory';
+import { createNewTaskEntry, TaskEntry } from '../states/contacts/reducer';
 import { isNonDataCallType } from '../states/ValidationRules';
 import { channelTypes } from '../states/DomainConstants';
 import { getConversationDuration, fillEndMillis } from '../utils/conversationDuration';
 import { getLimitAndOffsetParams } from './PaginationParams';
 import fetchHrmApi from './fetchHrmApi';
+import CategoriesFormDefinition from '../formDefinitions/categories.json';
 
 export async function searchContacts(searchParams, limit, offset) {
   const queryParams = getLimitAndOffsetParams(limit, offset);
@@ -32,33 +35,38 @@ export function getNumberFromTask(task) {
   return number;
 }
 
-// VisibleForTesting
+// const createCategoriesObject = <T extends {}>(obj: T, [category, { subcategories }]: [string, CategoryEntry]) => ({
+const createCategory = (obj, [category, { subcategories }]) => ({
+  ...obj,
+  [category]: subcategories.reduce((acc, subcategory) => ({ ...acc, [subcategory]: false }), {}),
+});
+
+const createCategoriesObject = () => Object.entries(CategoriesFormDefinition).reduce(createCategory, {});
+
+/**
+ * Transforms the form to be saved as the backend expects it
+ * VisibleForTesting
+ * @param {TaskEntry} form
+ */
+// eslint-disable-next-line import/no-unused-modules
 export function transformForm(form) {
-  const newForm = {};
-  const filterableFields = ['type', 'validation', 'error', 'touched', 'metadata'];
-  Object.keys(form)
-    .filter(key => !filterableFields.includes(key))
-    .forEach(key => {
-      switch (form[key].type) {
-        case FieldType.CALL_TYPE:
-        case FieldType.CHECKBOX:
-        case FieldType.SELECT_SINGLE:
-        case FieldType.TEXT_BOX:
-        case FieldType.TEXT_INPUT:
-          newForm[key] = form[key].value;
-          break;
-        case FieldType.CHECKBOX_FIELD:
-        case FieldType.INTERMEDIATE:
-        case FieldType.TAB:
-          newForm[key] = {
-            ...transformForm(form[key]),
-          };
-          break;
-        default:
-          throw new Error(`Unknown FieldType ${form[key].type} for key ${key} in ${JSON.stringify(form)}`);
-      }
-    });
-  return newForm;
+  const { callType, callerInformation, childInformation, metadata, caseInformation } = form;
+
+  const categoriesObject = createCategoriesObject();
+  const { categories } = form.categories.reduce((acc, path) => set(path, true, acc), { categories: categoriesObject });
+
+  const transformed = {
+    callType,
+    callerInformation,
+    childInformation,
+    metadata,
+    caseInformation: {
+      ...caseInformation,
+      categories,
+    },
+  };
+
+  return transformed;
 }
 
 /**
@@ -76,15 +84,15 @@ export async function saveToHrm(task, form, hrmBaseUrl, workerSid, helpline, sho
   // if we got this far, we assume the form is valid and ready to submit
   const metadata = shouldFillEndMillis ? fillEndMillis(form.metadata) : form.metadata;
   const conversationDuration = getConversationDuration(metadata);
-  const callType = form.callType.value;
+  const { callType } = form;
 
   let rawForm = form;
 
   if (isNonDataCallType(callType)) {
     rawForm = {
-      ...recreateBlankForm(),
+      ...createNewTaskEntry(),
       callType: form.callType,
-      metadata: form.metadata,
+      metadata,
     };
   }
 
@@ -104,6 +112,9 @@ export async function saveToHrm(task, form, hrmBaseUrl, workerSid, helpline, sho
     helpline,
     conversationDuration,
   };
+
+  console.log('FORM TO SEND:', formToSend);
+  return;
 
   const response = await fetch(`${hrmBaseUrl}/contacts`, {
     method: 'POST',

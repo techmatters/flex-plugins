@@ -21,12 +21,12 @@ const CustomCategoriesForm: React.FC<Props> = ({ display, task, categoriesMeta, 
   const subcategoriesInputs = React.useMemo(() => {
     console.log('>>> categoriesDefinition useMemo called');
 
-    const onToggle = () => {
+    const updateCallback = () => {
       const { categories } = getValues();
       dispatch(a.updateForm(task.taskSid, 'categories', categories));
     };
 
-    return createSubCategoriesInputs(CategoriesDefinition, ['categories'], onToggle);
+    return createSubCategoriesInputs(CategoriesDefinition, ['categories'], updateCallback);
   }, [dispatch, getValues, task.taskSid]);
 
   const toggleCategoriesGridView = (gridView: boolean) => {

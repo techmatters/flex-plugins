@@ -21,14 +21,14 @@ const CustomChildForm: React.FC<Props> = ({ dispatch, task, display }) => {
 
   const formRows = React.useMemo(() => {
     console.log('>>> childFormDefinition useMemo called');
-    const onBlur = () => {
+    const updateCallback = () => {
       const { childInformation } = getValues();
       dispatch(updateForm(task.taskSid, 'childInformation', childInformation));
     };
 
     // TODO: fix this typecasting
     const childFormDefinition = createFormFromDefinition(ChildFormDefinition as FormDefinition)(['childInformation'])(
-      onBlur,
+      updateCallback,
     );
 
     return makeFormRows(childFormDefinition);

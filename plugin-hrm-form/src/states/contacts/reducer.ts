@@ -3,17 +3,18 @@ import { omit } from 'lodash';
 import * as t from './types';
 import ChildFormDefinition from '../../formDefinitions/childForm.json';
 import CallerFormDefinition from '../../formDefinitions/callerForm.json';
+import CaseInfoFormDefinition from '../../formDefinitions/caseInfoForm.json';
 import CategoriesFormDefinition from '../../formDefinitions/categories.json';
 import { INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE, GeneralActionType } from '../types';
-import type { FormItemDefinition, FormDefinition, CategoryEntry } from '../../components/common/forms/types';
+import type { FormItemDefinition, FormDefinition } from '../../components/common/forms/types';
 import { CallTypes } from '../DomainConstants';
 
 export type TaskEntry = {
   callType: CallTypes | '';
   childInformation: { [key: string]: string | boolean };
   callerInformation: { [key: string]: string | boolean };
+  caseInformation: { [key: string]: string | boolean };
   categories: string[];
-  //  caseInformation: { [key: string]: string | boolean };
   metadata: {
     startMillis: number;
     endMillis: number;
@@ -49,16 +50,13 @@ const createFormItem = <T extends {}>(obj: T, def: FormItemDefinition) => ({
   [def.name]: getInitialValue(def),
 });
 
-const createCategory = <T extends {}>(obj: T, [category, { subcategories }]: [string, CategoryEntry]) => ({
-  ...obj,
-  [category]: subcategories.reduce((acc, subcategory) => ({ ...acc, [subcategory]: false }), {}),
-});
-
-const createNewTaskEntry = (recreated: boolean): TaskEntry => {
+// eslint-disable-next-line import/no-unused-modules
+export const createNewTaskEntry = (recreated: boolean): TaskEntry => {
   const initialChildInformation = (ChildFormDefinition as FormDefinition).reduce(createFormItem, {});
   const initialCallerInformation = (CallerFormDefinition as FormDefinition).reduce(createFormItem, {});
+  const initialCaseInformation = (CaseInfoFormDefinition as FormDefinition).reduce(createFormItem, {});
 
-  const categories = {
+  const categoriesMeta = {
     gridView: false,
     expanded: Object.keys(CategoriesFormDefinition).reduce((acc, category) => ({ ...acc, [category]: false }), {}),
   };
@@ -67,17 +65,17 @@ const createNewTaskEntry = (recreated: boolean): TaskEntry => {
     endMillis: null,
     tab: 1,
     recreated,
-    categories,
+    categories: categoriesMeta,
   };
 
   return {
     callType: '',
     childInformation: initialChildInformation,
     callerInformation: initialCallerInformation,
+    caseInformation: initialCaseInformation,
     categories: [],
     metadata,
   };
-  // categories: initialCategories,
 };
 
 const initialState: ContactsState = { tasks: {} };

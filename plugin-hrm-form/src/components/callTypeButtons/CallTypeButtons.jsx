@@ -9,20 +9,20 @@ import { Container, Label, DataCallTypeButton, NonDataCallTypeButton } from '../
 import callTypes from '../../states/DomainConstants';
 import { updateCallType } from '../../states/contacts/actions';
 import { isNonDataCallType } from '../../states/ValidationRules';
-import { formType, taskType, localizationType } from '../../types';
+import { namespace, contactsBase } from '../../states';
+import { taskType, localizationType } from '../../types';
 import NonDataCallTypeDialog from './NonDataCallTypeDialog';
 import { hasTaskControl } from '../../utils/transfer';
 import { getConfig } from '../../HrmFormPlugin';
 import { saveToHrm } from '../../services/ContactService';
 import CallTypeIcon from '../common/icons/CallTypeIcon';
 
-const isDialogOpen = form =>
-  Boolean(form && form.callType && form.callType.value && isNonDataCallType(form.callType.value));
+const isDialogOpen = form => Boolean(form && form.callType && form.callType && isNonDataCallType(form.callType));
 
 const clearCallType = props => props.dispatch(updateCallType(props.task.taskSid, ''));
 
 const CallTypeButtons = props => {
-  const { form, task, localization } = props;
+  const { contactForm, task, localization } = props;
   const { isCallTask } = localization;
 
   const handleClick = (taskSid, callType) => {
@@ -45,10 +45,11 @@ const CallTypeButtons = props => {
     const { hrmBaseUrl, workerSid, helpline, strings } = getConfig();
 
     try {
-      await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
-      props.handleCompleteTask(task.taskSid, task);
+      await saveToHrm(task, contactForm, hrmBaseUrl, workerSid, helpline);
+      // props.handleCompleteTask(task.taskSid, task);
     } catch (error) {
-      if (!window.confirm(strings['Error-ContinueWithoutRecording'])) {
+      console.error(error);
+      if (window.confirm(strings['Error-ContinueWithoutRecording'])) {
         props.handleCompleteTask(task.taskSid, task);
       }
     }
@@ -93,7 +94,7 @@ const CallTypeButtons = props => {
         </Box>
       </Container>
       <NonDataCallTypeDialog
-        isOpen={isDialogOpen(form)}
+        isOpen={isDialogOpen(contactForm)}
         isCallTask={isCallTask(task)}
         isInWrapupMode={TaskHelper.isInWrapupMode(task)}
         handleConfirm={handleConfirmNonDataCallType}
@@ -106,11 +107,19 @@ const CallTypeButtons = props => {
 CallTypeButtons.displayName = 'CallTypeButtons';
 CallTypeButtons.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  form: formType.isRequired,
+  contactForm: PropTypes.shape().isRequired,
   task: taskType.isRequired,
   localization: localizationType.isRequired,
   changeRoute: PropTypes.func.isRequired,
   handleCompleteTask: PropTypes.func.isRequired,
 };
 
-export default withLocalization(withTaskContext(connect()(CallTypeButtons)));
+const mapStateToProps = (state, ownProps) => {
+  const contactForm = state[namespace][contactsBase].tasks[ownProps.task.taskSid];
+  return { contactForm };
+};
+
+const connector = connect(mapStateToProps);
+const connected = connector(CallTypeButtons);
+
+export default withLocalization(withTaskContext(connected));

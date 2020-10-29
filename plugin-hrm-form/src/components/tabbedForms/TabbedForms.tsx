@@ -15,6 +15,7 @@ import FormTab from '../common/forms/FormTab';
 import CustomChildForm from '../common/forms/CustomChildForm';
 import CustomCallerForm from '../common/forms/CustomCallerForm';
 import CustomCategoriesForm from '../common/forms/CustomCategoriesForm';
+import CustomCaseInfoForm from '../common/forms/CustomCaseInfoForm';
 import { namespace, contactsBase, routingBase, RootState } from '../../states';
 import { updateCallType } from '../../states/contacts/actions';
 import { changeRoute } from '../../states/routing/actions';
@@ -44,7 +45,6 @@ type OwnProps = {
   handleCompleteTask: any;
   handleSelectSearchResult: any;
   handleValidateForm: any;
-  form: any;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -57,7 +57,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
 
   if (routing.route !== 'tabbed-forms') return null;
 
-  const { task, form } = props;
+  const { task } = props;
   const taskId = task.taskSid;
   const isCallerType = contactForm.callType === callTypes.caller;
 
@@ -109,6 +109,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
           {isCallerType && <CustomCallerForm display={isCallerType && subroute === 'callerInformation'} />}
           <CustomChildForm display={subroute === 'childInformation'} />
           <CustomCategoriesForm display={subroute === 'categories'} />
+          <CustomCaseInfoForm display={subroute === 'caseInformation'} />
 
           <button type="button" onClick={() => methods.trigger()}>
             Validate whenever we want

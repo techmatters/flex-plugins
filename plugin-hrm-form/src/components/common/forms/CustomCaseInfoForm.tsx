@@ -7,7 +7,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { RootState } from '../../../states';
 import { updateForm } from '../../../states/contacts/actions';
 import { createFormFromDefinition, makeFormRows } from './formGenerators';
-import CallerFormDefinition from '../../../formDefinitions/callerForm.json';
+import CaseInfoFormDefinition from '../../../formDefinitions/caseInfoForm.json';
 import { Container } from '../../../styles/HrmStyles';
 import type { FormDefinition } from './types';
 
@@ -16,23 +16,23 @@ type OwnProps = { task: ITask; display: boolean };
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const CustomCallerForm: React.FC<Props> = ({ dispatch, task, display }) => {
+const CustomCaseInfoForm: React.FC<Props> = ({ dispatch, task, display }) => {
   const { getValues } = useFormContext();
 
   const formRows = React.useMemo(() => {
-    console.log('>>> callerFormDefinition useMemo called');
+    console.log('>>> caseInfoFormDefinition useMemo called');
 
     const updateCallback = () => {
-      const { callerInformation } = getValues();
-      dispatch(updateForm(task.taskSid, 'callerInformation', callerInformation));
+      const { caseInformation } = getValues();
+      dispatch(updateForm(task.taskSid, 'caseInformation', caseInformation));
     };
 
     // TODO: fix this typecasting
-    const callerFormDefinition = createFormFromDefinition(CallerFormDefinition as FormDefinition)([
-      'callerInformation',
+    const caseInfoFormDefinition = createFormFromDefinition(CaseInfoFormDefinition as FormDefinition)([
+      'caseInformation',
     ])(updateCallback);
 
-    return makeFormRows(callerFormDefinition);
+    return makeFormRows(caseInfoFormDefinition);
   }, [dispatch, getValues, task.taskSid]);
 
   return (
@@ -42,11 +42,11 @@ const CustomCallerForm: React.FC<Props> = ({ dispatch, task, display }) => {
   );
 };
 
-CustomCallerForm.displayName = 'CustomCallerForm';
+CustomCaseInfoForm.displayName = 'CustomCaseInfoForm';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({});
 
 const connector = connect(mapStateToProps);
-const connected = connector(CustomCallerForm);
+const connected = connector(CustomCaseInfoForm);
 
 export default withTaskContext<Props, typeof connected>(connected);

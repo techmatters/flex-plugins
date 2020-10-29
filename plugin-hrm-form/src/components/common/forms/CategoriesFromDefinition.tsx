@@ -31,7 +31,7 @@ import { ConnectForm } from './formGenerators';
  */
 
 // eslint-disable-next-line import/no-unused-modules
-export const createSubcategoryCheckbox = (subcategory: string, parents: string[], onToggle: () => void) => {
+export const createSubcategoryCheckbox = (subcategory: string, parents: string[], updateCallback: () => void) => {
   const path = [...parents, subcategory].join('.');
 
   return (
@@ -48,7 +48,7 @@ export const createSubcategoryCheckbox = (subcategory: string, parents: string[]
               type="checkbox"
               name="categories"
               value={path}
-              onChange={onToggle}
+              onChange={updateCallback}
               ref={register({ required: true, minLength: 1, maxLength: 3 })}
               disabled={disabled}
             />
@@ -61,12 +61,16 @@ export const createSubcategoryCheckbox = (subcategory: string, parents: string[]
 
 type SubcategoriesMap = { [category: string]: ReturnType<typeof createSubcategoryCheckbox>[] };
 
-export const createSubCategoriesInputs = (definition: CategoriesDefinition, parents: string[], onToggle: () => void) =>
+export const createSubCategoriesInputs = (
+  definition: CategoriesDefinition,
+  parents: string[],
+  updateCallback: () => void,
+) =>
   Object.entries(definition).reduce<SubcategoriesMap>(
     (acc, [category, { subcategories }]) => ({
       ...acc,
       [category]: subcategories.map(subcategory => {
-        return createSubcategoryCheckbox(subcategory, [...parents, category], onToggle);
+        return createSubcategoryCheckbox(subcategory, [...parents, category], updateCallback);
       }),
     }),
     {},

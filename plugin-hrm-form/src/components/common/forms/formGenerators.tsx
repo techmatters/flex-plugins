@@ -35,7 +35,7 @@ const renderError = (error: FieldError) =>
   );
 
 // eslint-disable-next-line react/display-name
-const getInputType = (parents: string[], onBlur: () => void) => (def: FormItemDefinition) => {
+const getInputType = (parents: string[], updateCallback: () => void) => (def: FormItemDefinition) => {
   const rules = getRules(def);
   const path = [...parents, def.name].join('.');
 
@@ -48,7 +48,7 @@ const getInputType = (parents: string[], onBlur: () => void) => (def: FormItemDe
             return (
               <FormItem>
                 <label htmlFor={path}>{def.label}</label>
-                <input name={path} onBlur={onBlur} ref={register(rules)} />
+                <input name={path} onBlur={updateCallback} ref={register(rules)} />
                 {error && renderError(error)}
               </FormItem>
             );
@@ -65,7 +65,7 @@ const getInputType = (parents: string[], onBlur: () => void) => (def: FormItemDe
                 <label htmlFor={path}>{def.label}</label>
                 <input
                   name={path}
-                  onBlur={onBlur}
+                  onBlur={updateCallback}
                   ref={register({
                     ...rules,
                     pattern: { value: /^[0-9]+$/g, message: 'This field only accepts numeric input.' },
@@ -85,7 +85,7 @@ const getInputType = (parents: string[], onBlur: () => void) => (def: FormItemDe
             return (
               <FormItem>
                 <label htmlFor={path}>{def.label}</label>
-                <select name={path} onBlur={onBlur} ref={register(rules)}>
+                <select name={path} onBlur={updateCallback} ref={register(rules)}>
                   {def.options.map(o => (
                     <option key={`${path}-${o.value}`} value={o.value}>
                       {o.label}
@@ -104,8 +104,8 @@ const getInputType = (parents: string[], onBlur: () => void) => (def: FormItemDe
 };
 
 export const createFormFromDefinition = (definition: FormDefinition) => (parents: string[]) => (
-  onBlur: () => void,
-): JSX.Element[] => definition.map(getInputType(parents, onBlur));
+  updateCallback: () => void,
+): JSX.Element[] => definition.map(getInputType(parents, updateCallback));
 
 export const makeFormRows = (formItems: JSX.Element[]) => {
   const [x, y, ...rest] = formItems;

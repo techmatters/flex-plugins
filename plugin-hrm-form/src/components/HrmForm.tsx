@@ -31,7 +31,6 @@ const HrmForm: React.FC<Props> = props => {
     case 'tabbed-forms':
       return (
         <TabbedForms
-          form={props.form}
           handleSelectSearchResult={props.handleSelectSearchResult}
           handleCompleteTask={props.handleCompleteTask}
           handleValidateForm={props.handleValidateForm}
@@ -43,13 +42,7 @@ const HrmForm: React.FC<Props> = props => {
 
     case 'select-call-type':
     default:
-      return (
-        <CallTypeButtons
-          form={props.form}
-          handleCompleteTask={props.handleCompleteTask}
-          changeRoute={props.changeRoute}
-        />
-      );
+      return <CallTypeButtons handleCompleteTask={props.handleCompleteTask} changeRoute={props.changeRoute} />;
   }
 };
 
