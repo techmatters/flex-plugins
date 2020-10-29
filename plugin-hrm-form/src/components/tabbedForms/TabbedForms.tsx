@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable multiline-comment-style */
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -19,7 +20,6 @@ import CustomCategoriesForm from '../common/forms/CustomCategoriesForm';
 import { namespace, contactsBase } from '../../states';
 
 const TabbedForms = props => {
-  // eslint-disable-next-line react/prop-types
   const methods = useForm({ defaultValues: props.contactForm, shouldFocusError: false });
 
   const { task, form } = props;

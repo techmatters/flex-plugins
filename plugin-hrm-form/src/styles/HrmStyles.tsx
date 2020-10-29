@@ -2,7 +2,7 @@
 import React from 'react';
 import styled from 'react-emotion';
 import { ButtonBase, Input, Select, MenuItem, Tabs, Tab, Checkbox, withStyles, TableRow } from '@material-ui/core';
-import { Button, Icon, getBackgroundWithHoverCSS, TabsProps } from '@twilio/flex-ui';
+import { Button, Icon, getBackgroundWithHoverCSS } from '@twilio/flex-ui';
 
 type BoxProps = {
   width?: string;
@@ -436,7 +436,7 @@ export const SubcategoriesWrapper = styled('div')<SubcategoriesWrapperProps>`
 `;
 SubcategoriesWrapper.displayName = 'SubcategoriesWrapper';
 
-export const StyledTabs = styled((props: TabsProps & { value: any }) => (
+export const StyledTabs = styled((props: typeof Tabs['defaultProps'] & { value: any }) => (
   <Tabs {...props} classes={{ indicator: 'indicator' }} />
 ))`
   && .indicator {

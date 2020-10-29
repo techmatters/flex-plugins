@@ -46,5 +46,6 @@ CustomChildForm.displayName = 'CustomChildForm';
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({});
 
 const connector = connect(mapStateToProps);
-// @ts-ignore
-export default withTaskContext(connector(CustomChildForm));
+const connected = connector(CustomChildForm);
+
+export default withTaskContext<Props, typeof connected>(connected);

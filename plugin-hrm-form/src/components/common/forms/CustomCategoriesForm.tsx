@@ -6,7 +6,7 @@ import { ITask, withTaskContext } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { RootState, namespace, contactsBase } from '../../../states';
-import * as actions from '../../../states/contacts/actions';
+import * as a from '../../../states/contacts/actions';
 import { CategoriesFromDefinition, createSubCategoriesInputs } from './CategoriesFromDefinition';
 import CategoriesDefinition from '../../../formDefinitions/categories.json';
 
@@ -15,14 +15,7 @@ type OwnProps = { task: ITask; display: boolean };
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const CustomCategoriesForm: React.FC<Props> = ({
-  display,
-  task,
-  categoriesMeta,
-  updateForm,
-  handleExpandCategory,
-  setCategoriesGridView,
-}) => {
+const CustomCategoriesForm: React.FC<Props> = ({ display, task, categoriesMeta, dispatch }) => {
   const { getValues } = useFormContext();
 
   const subcategoriesInputs = React.useMemo(() => {
@@ -30,18 +23,18 @@ const CustomCategoriesForm: React.FC<Props> = ({
 
     const onToggle = () => {
       const { categories } = getValues();
-      updateForm(task.taskSid, 'categories', categories);
+      dispatch(a.updateForm(task.taskSid, 'categories', categories));
     };
 
     return createSubCategoriesInputs(CategoriesDefinition, ['categories'], onToggle);
-  }, [getValues, task.taskSid, updateForm]);
+  }, [dispatch, getValues, task.taskSid]);
 
   const toggleCategoriesGridView = (gridView: boolean) => {
-    setCategoriesGridView(gridView, task.taskSid);
+    dispatch(a.setCategoriesGridView(gridView, task.taskSid));
   };
 
   const toggleExpandCategory = (category: string) => {
-    handleExpandCategory(category, task.taskSid);
+    dispatch(a.handleExpandCategory(category, task.taskSid));
   };
 
   return (
@@ -63,12 +56,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   categoriesMeta: state[namespace][contactsBase].tasks[ownProps.task.taskSid].metadata.categories,
 });
 
-const mapDispatchToProps = {
-  updateForm: actions.updateForm,
-  handleExpandCategory: actions.handleExpandCategory,
-  setCategoriesGridView: actions.setCategoriesGridView,
-};
+const connector = connect(mapStateToProps);
+const connected = connector(CustomCategoriesForm);
 
-const connector = connect(mapStateToProps, mapDispatchToProps);
-// @ts-ignore
-export default withTaskContext(connector(CustomCategoriesForm));
+export default withTaskContext<Props, typeof connected>(connected);

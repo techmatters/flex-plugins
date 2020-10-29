@@ -47,5 +47,6 @@ CustomCallerForm.displayName = 'CustomCallerForm';
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({});
 
 const connector = connect(mapStateToProps);
-// @ts-ignore
-export default withTaskContext(connector(CustomCallerForm));
+const connected = connector(CustomCallerForm);
+
+export default withTaskContext<Props, typeof connected>(connected);

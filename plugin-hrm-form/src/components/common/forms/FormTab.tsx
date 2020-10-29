@@ -6,8 +6,8 @@ import { Template } from '@twilio/flex-ui';
 import { StyledTab, StyledTabProps } from '../../../styles/HrmStyles';
 
 type Props = {
-  label: string;
-  error: any;
+  label?: string;
+  error?: any;
 } & Omit<StyledTabProps, 'label'>;
 
 const FormTab: React.FC<Props> = ({ label, error, ...rest }) => {
