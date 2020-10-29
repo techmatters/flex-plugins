@@ -11,7 +11,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 
 import { Menu, MenuItem } from '../menu';
 import { formIsValid } from '../../states/ValidationRules';
-import { formType, taskType } from '../../types';
+import { taskType } from '../../types';
 import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
@@ -24,9 +24,9 @@ class BottomBar extends Component {
   static displayName = 'BottomBar';
 
   static propTypes = {
-    tabs: PropTypes.number.isRequired,
-    form: formType.isRequired,
-    changeTab: PropTypes.func.isRequired,
+    showNextButton: PropTypes.bool.isRequired,
+    showSubmitButton: PropTypes.bool.isRequired,
+    nextTab: PropTypes.func.isRequired,
     handleCompleteTask: PropTypes.func.isRequired,
     task: taskType.isRequired,
     changeRoute: PropTypes.func.isRequired,
@@ -79,12 +79,6 @@ class BottomBar extends Component {
     }
   };
 
-  handleNext = () => {
-    const { task, form } = this.props;
-    const { tab } = form.metadata;
-    this.props.changeTab(tab + 1, task.taskSid);
-  };
-
   handleSubmit = async () => {
     const { task } = this.props;
     const { hrmBaseUrl, workerSid, helpline, strings } = getConfig();
@@ -108,14 +102,11 @@ class BottomBar extends Component {
   };
 
   render() {
-    const { tabs, form } = this.props;
+    const { showNextButton, showSubmitButton } = this.props;
     const { isMenuOpen, anchorEl, mockedMessage } = this.state;
 
-    const { tab } = form.metadata;
-    const showNextButton = tab !== 0 && tab < tabs - 1;
-    const showSubmitButton = tab === tabs - 1;
     const showBottomBar = showNextButton || showSubmitButton;
-    const isSubmitButtonDisabled = !formIsValid(form);
+    const isSubmitButtonDisabled = true; // FIX THIS !formIsValid(form);
     const isMockedMessageOpen = Boolean(mockedMessage);
     const { featureFlags } = getConfig();
 
@@ -140,7 +131,7 @@ class BottomBar extends Component {
         </Menu>
         <BottomButtonBar>
           {showNextButton && (
-            <StyledNextStepButton roundCorners={true} onClick={this.handleNext}>
+            <StyledNextStepButton type="button" roundCorners={true} onClick={this.props.nextTab}>
               <Template code="BottomBar-Next" />
             </StyledNextStepButton>
           )}

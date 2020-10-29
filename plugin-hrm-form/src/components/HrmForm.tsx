@@ -6,21 +6,14 @@ import { connect } from 'react-redux';
 import CallTypeButtons from './callTypeButtons';
 import TabbedForms from './tabbedForms';
 import Case from './case';
-import { namespace, routingBase } from '../states';
+import { namespace, RootState, routingBase } from '../states';
 import * as RoutingActions from '../states/routing/actions';
-import { RoutingState } from '../states/routing/reducer';
 
 type OwnProps = {
   task: ITask;
   form: any;
-  handleBlur: any;
-  handleCategoryToggle: any;
-  handleChange: any;
-  handleCallTypeButtonClick: any;
   handleCompleteTask: any;
-  handleFocus: any;
   handleSelectSearchResult: any;
-  changeTab: any;
   changeRoute: any;
   handleValidateForm: any;
 };
@@ -39,14 +32,7 @@ const HrmForm: React.FC<Props> = props => {
       return (
         <TabbedForms
           form={props.form}
-          handleBlur={props.handleBlur}
-          handleCategoryToggle={props.handleCategoryToggle}
-          handleChange={props.handleChange}
-          handleCallTypeButtonClick={props.handleCallTypeButtonClick}
-          handleFocus={props.handleFocus}
           handleSelectSearchResult={props.handleSelectSearchResult}
-          changeTab={props.changeTab}
-          changeRoute={props.changeRoute}
           handleCompleteTask={props.handleCompleteTask}
           handleValidateForm={props.handleValidateForm}
         />
@@ -60,8 +46,6 @@ const HrmForm: React.FC<Props> = props => {
       return (
         <CallTypeButtons
           form={props.form}
-          handleCallTypeButtonClick={props.handleCallTypeButtonClick}
-          changeTab={props.changeTab}
           handleCompleteTask={props.handleCompleteTask}
           changeRoute={props.changeRoute}
         />
@@ -71,8 +55,8 @@ const HrmForm: React.FC<Props> = props => {
 
 HrmForm.displayName = 'HrmForm';
 
-const mapStateToProps = (state, ownProps: OwnProps) => {
-  const routingState: RoutingState = state[namespace][routingBase];
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
+  const routingState = state[namespace][routingBase];
 
   return { routing: routingState.tasks[ownProps.task.taskSid] };
 };

@@ -6,8 +6,10 @@ import CallerFormDefinition from '../../formDefinitions/callerForm.json';
 import CategoriesFormDefinition from '../../formDefinitions/categories.json';
 import { INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE, GeneralActionType } from '../types';
 import type { FormItemDefinition, FormDefinition, CategoryEntry } from '../../components/common/forms/types';
+import { CallTypes } from '../DomainConstants';
 
 export type TaskEntry = {
+  callType: CallTypes | '';
   childInformation: { [key: string]: string | boolean };
   callerInformation: { [key: string]: string | boolean };
   categories: string[];
@@ -69,6 +71,7 @@ const createNewTaskEntry = (recreated: boolean): TaskEntry => {
   };
 
   return {
+    callType: '',
     childInformation: initialChildInformation,
     callerInformation: initialCallerInformation,
     categories: [],

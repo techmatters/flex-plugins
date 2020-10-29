@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTaskContext, TaskHelper, Template } from '@twilio/flex-ui';
+import { connect } from 'react-redux';
 
 import { withLocalization } from '../../contexts/LocalizationContext';
 import { Box, Flex } from '../../styles/HrmStyles';
 import { Container, Label, DataCallTypeButton, NonDataCallTypeButton } from '../../styles/callTypeButtons';
 import callTypes from '../../states/DomainConstants';
+import { updateCallType } from '../../states/contacts/actions';
 import { isNonDataCallType } from '../../states/ValidationRules';
 import { formType, taskType, localizationType } from '../../types';
 import NonDataCallTypeDialog from './NonDataCallTypeDialog';
@@ -17,7 +19,7 @@ import CallTypeIcon from '../common/icons/CallTypeIcon';
 const isDialogOpen = form =>
   Boolean(form && form.callType && form.callType.value && isNonDataCallType(form.callType.value));
 
-const clearCallType = props => props.handleCallTypeButtonClick(props.task.taskSid, '');
+const clearCallType = props => props.dispatch(updateCallType(props.task.taskSid, ''));
 
 const CallTypeButtons = props => {
   const { form, task, localization } = props;
@@ -26,14 +28,15 @@ const CallTypeButtons = props => {
   const handleClick = (taskSid, callType) => {
     if (!hasTaskControl(task)) return;
 
-    props.handleCallTypeButtonClick(taskSid, callType);
+    props.dispatch(updateCallType(taskSid, callType));
   };
 
   const handleClickAndRedirect = (taskSid, callType) => {
     if (!hasTaskControl(task)) return;
 
+    const subroute = callType === callTypes.child ? 'childInformation' : 'callerInformation';
     handleClick(taskSid, callType);
-    props.changeRoute({ route: 'tabbed-forms' }, taskSid);
+    props.changeRoute({ route: 'tabbed-forms', subroute }, taskSid);
   };
 
   const handleConfirmNonDataCallType = async () => {
@@ -102,12 +105,12 @@ const CallTypeButtons = props => {
 
 CallTypeButtons.displayName = 'CallTypeButtons';
 CallTypeButtons.propTypes = {
+  dispatch: PropTypes.func.isRequired,
   form: formType.isRequired,
   task: taskType.isRequired,
-  handleCallTypeButtonClick: PropTypes.func.isRequired,
   localization: localizationType.isRequired,
   changeRoute: PropTypes.func.isRequired,
   handleCompleteTask: PropTypes.func.isRequired,
 };
 
-export default withLocalization(withTaskContext(CallTypeButtons));
+export default withLocalization(withTaskContext(connect()(CallTypeButtons)));

@@ -1,15 +1,13 @@
+/* eslint-disable react/no-multi-comp */
 /* eslint-disable react/prop-types */
-/* eslint-disable multiline-comment-style */
 import React from 'react';
-import PropTypes from 'prop-types';
-import { withTaskContext } from '@twilio/flex-ui';
+import { ITask, withTaskContext } from '@twilio/flex-ui';
 import SearchIcon from '@material-ui/icons/Search';
 import { FormProvider, useForm } from 'react-hook-form';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 
 import { TabbedFormsContainer, TopNav, TransparentButton, StyledTabs } from '../../styles/HrmStyles';
 import callTypes from '../../states/DomainConstants';
-import { formType, taskType } from '../../types';
 import Search from '../search';
 import BottomBar from './BottomBar';
 import { hasTaskControl } from '../../utils/transfer';
@@ -17,53 +15,82 @@ import FormTab from '../common/forms/FormTab';
 import CustomChildForm from '../common/forms/CustomChildForm';
 import CustomCallerForm from '../common/forms/CustomCallerForm';
 import CustomCategoriesForm from '../common/forms/CustomCategoriesForm';
-import { namespace, contactsBase } from '../../states';
+import { namespace, contactsBase, routingBase, RootState } from '../../states';
+import { updateCallType } from '../../states/contacts/actions';
+import { changeRoute } from '../../states/routing/actions';
+import type { TabbedFormSubroutes } from '../../states/routing/types';
 
-const TabbedForms = props => {
-  const methods = useForm({ defaultValues: props.contactForm, shouldFocusError: false });
+// eslint-disable-next-line react/display-name
+const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
+  switch (t) {
+    case 'search':
+      return <FormTab key="SearchTab" searchTab icon={<SearchIcon />} />;
+    case 'callerInformation':
+      return <FormTab key="CallerInfoTabTab" label="TabbedForms-AddCallerInfoTab" error={errors.callerInformation} />;
+    case 'childInformation':
+      return <FormTab key="ChildInfoTabTab" label="TabbedForms-AddChildInfoTab" error={errors.childInformation} />;
+    case 'categories':
+      return <FormTab key="CategoriesTab" label="TabbedForms-CategoriesTab" error={errors.categories} />;
+    case 'caseInformation':
+      return <FormTab key="CaseInfoTabTab" label="TabbedForms-AddCaseInfoTab" error={errors.caseInformation} />;
+    default:
+      return null;
+  }
+};
+
+type OwnProps = {
+  task: ITask;
+
+  handleCompleteTask: any;
+  handleSelectSearchResult: any;
+  handleValidateForm: any;
+  form: any;
+};
+
+// eslint-disable-next-line no-use-before-define
+type Props = OwnProps & ConnectedProps<typeof connector>;
+
+const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props }) => {
+  const methods = useForm({ defaultValues: contactForm, shouldFocusError: false });
+
+  console.log(methods.errors, methods.getValues());
+
+  if (routing.route !== 'tabbed-forms') return null;
 
   const { task, form } = props;
   const taskId = task.taskSid;
+  const isCallerType = contactForm.callType === callTypes.caller;
 
   const handleSelectSearchResult = searchResult => {
     props.handleSelectSearchResult(searchResult, taskId);
 
     // Redirects to the tab where data is being copied to
-    const currentIsCaller = form.callType.value === callTypes.caller;
     const selectedIsChild = searchResult.details.callType === callTypes.child;
-    const tab = currentIsCaller && selectedIsChild ? 2 : 1;
-
-    props.changeTab(tab, taskId);
-  };
-
-  const handleTabsChange = (event, tab) => {
-    props.changeTab(tab, taskId);
+    const subroute: TabbedFormSubroutes = isCallerType && selectedIsChild ? 'childInformation' : 'callerInformation';
+    dispatch(changeRoute({ route: 'tabbed-forms', subroute }, taskId));
   };
 
   const handleBackButton = () => {
     if (!hasTaskControl(task)) return;
 
-    props.handleCallTypeButtonClick(taskId, '');
-    props.changeRoute({ route: 'select-call-type' }, taskId);
+    dispatch(updateCallType(taskId, ''));
+    dispatch(changeRoute({ route: 'select-call-type' }, taskId));
   };
 
-  const { tab } = form.metadata;
-  const isCallerType = form.callType.value === callTypes.caller;
+  const mapTabsToIndex: TabbedFormSubroutes[] = isCallerType
+    ? ['search', 'callerInformation', 'childInformation', 'categories', 'caseInformation']
+    : ['search', 'childInformation', 'categories', 'caseInformation'];
+
+  const tabs = mapTabsToIndex.map(mapTabsComponents(methods.errors));
+
+  const handleTabsChange = (event: any, t: number) => {
+    dispatch(changeRoute({ route: 'tabbed-forms', subroute: mapTabsToIndex[t] }, taskId));
+  };
+
+  const { subroute } = routing;
+  const tabIndex = mapTabsToIndex.findIndex(t => t === subroute);
 
   const onSubmit = data => console.log(data);
-
-  console.log(methods.errors, methods.getValues());
-  const { errors } = methods;
-
-  const tabs = [
-    <FormTab key="SearchTab" searchTab icon={<SearchIcon />} />,
-    isCallerType ? (
-      <FormTab key="CallerInfoTabTab" label="TabbedForms-AddCallerInfoTab" error={errors.callerInformation} />
-    ) : null,
-    <FormTab key="ChildInfoTabTab" label="TabbedForms-AddChildInfoTab" error={errors.childInformation} />,
-    <FormTab key="CategoriesTab" label="TabbedForms-CategoriesTab" error={errors.categories} />,
-    <FormTab key="CaseInfoTabTab" label="TabbedForms-AddCaseInfoTab" error={errors.caseInformation} />,
-  ].filter(t => t); // filter the ones that might be null
 
   return (
     <FormProvider {...methods}>
@@ -72,14 +99,16 @@ const TabbedForms = props => {
           <TopNav>
             <TransparentButton onClick={handleBackButton}>&lt; BACK</TransparentButton>
           </TopNav>
-          <StyledTabs name="tab" variant="scrollable" scrollButtons="auto" value={tab} onChange={handleTabsChange}>
+          <StyledTabs name="tab" variant="scrollable" scrollButtons="auto" value={tabIndex} onChange={handleTabsChange}>
             {tabs}
           </StyledTabs>
           {/* Body */}
-          {tab === 0 && <Search currentIsCaller={isCallerType} handleSelectSearchResult={handleSelectSearchResult} />}
-          {isCallerType && <CustomCallerForm display={isCallerType && tab === 1} />}
-          <CustomChildForm display={isCallerType ? tab === 2 : tab === 1} />
-          <CustomCategoriesForm display={isCallerType ? tab === 3 : tab === 2} />
+          {subroute === 'search' && (
+            <Search currentIsCaller={isCallerType} handleSelectSearchResult={handleSelectSearchResult} />
+          )}
+          {isCallerType && <CustomCallerForm display={isCallerType && subroute === 'callerInformation'} />}
+          <CustomChildForm display={subroute === 'childInformation'} />
+          <CustomCategoriesForm display={subroute === 'categories'} />
 
           <button type="button" onClick={() => methods.trigger()}>
             Validate whenever we want
@@ -87,11 +116,13 @@ const TabbedForms = props => {
           <input type="submit" />
 
           <BottomBar
-            tabs={tabs.length}
-            form={form}
-            changeTab={props.changeTab}
+            nextTab={() =>
+              dispatch(changeRoute({ route: 'tabbed-forms', subroute: mapTabsToIndex[tabIndex + 1] }, taskId))
+            }
             handleCompleteTask={props.handleCompleteTask}
             handleValidateForm={props.handleValidateForm}
+            showNextButton={tabIndex !== 0 && tabIndex < tabs.length - 1}
+            showSubmitButton={tabIndex === tabs.length - 1}
           />
         </TabbedFormsContainer>
       </form>
@@ -100,23 +131,14 @@ const TabbedForms = props => {
 };
 
 TabbedForms.displayName = 'TabbedForms';
-TabbedForms.propTypes = {
-  form: formType.isRequired,
-  task: taskType.isRequired,
-  handleBlur: PropTypes.func.isRequired,
-  handleCategoryToggle: PropTypes.func.isRequired,
-  handleChange: PropTypes.func.isRequired,
-  handleCallTypeButtonClick: PropTypes.func.isRequired,
-  handleCompleteTask: PropTypes.func.isRequired,
-  handleFocus: PropTypes.func.isRequired,
-  handleSelectSearchResult: PropTypes.func.isRequired,
-  changeTab: PropTypes.func.isRequired,
-  changeRoute: PropTypes.func.isRequired,
-  handleValidateForm: PropTypes.func.isRequired,
+
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
+  const routing = state[namespace][routingBase].tasks[ownProps.task.taskSid];
+  const contactForm = state[namespace][contactsBase].tasks[ownProps.task.taskSid];
+  return { routing, contactForm };
 };
 
-const mapStateToProps = (state, ownProps) => ({
-  contactForm: state[namespace][contactsBase].tasks[ownProps.task.taskSid],
-});
+const connector = connect(mapStateToProps);
+const connected = connector(TabbedForms);
 
-export default withTaskContext(connect(mapStateToProps)(TabbedForms));
+export default withTaskContext<Props, typeof connected>(connected);
