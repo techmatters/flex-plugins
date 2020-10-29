@@ -8,7 +8,8 @@
   {
     "name": "lastName",
     "label": "Last Name",
-    "type": "input"
+    "type": "input",
+    "minLength": 10
   },
   {
     "name": "age",
@@ -35,6 +36,28 @@
   },
   {
     "name": "anumber",
+    "label": "A Number",
+    "type": "select",
+    "options": [
+      { "value": "", "label": "--Please choose an option--" },
+      { "value": "Unknown", "label": "Unknown" }, 
+      { "value": "Afrikaans", "label": "Afrikaans" }, 
+      { "value": "English", "label": "English" },
+      { "value": "Ndebele", "label": "Ndebele" }, 
+      { "value": "Other", "label": "Other" }, 
+      { "value": "Sepedi", "label": "Sepedi" },
+      { "value": "Sign Language", "label": "Sign Language" }, 
+      { "value": "Sotho", "label": "Sotho" }, 
+      { "value": "Swazi", "label": "Swazi" },
+      { "value": "Tshivenda", "label": "Tshivenda" }, 
+      { "value": "Tsonga", "label": "Tsonga" }, 
+      { "value": "Tswana", "label": "Tswana" },
+      { "value": "Xhosa", "label": "Xhosa" }, 
+      { "value": "Zulu", "label": "Zulu" }
+    ]
+  },
+  {
+    "name": "language",
     "label": "A Number",
     "type": "select",
     "options": [
