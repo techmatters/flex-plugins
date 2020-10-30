@@ -40,6 +40,10 @@ const getInitialValue = (def: FormItemDefinition) => {
       return '';
     case 'select':
       return def.options[0].value;
+    case 'dependent-select':
+      return def.defaultOption.value;
+    case 'checkbox':
+      return '';
     default:
       return null;
   }

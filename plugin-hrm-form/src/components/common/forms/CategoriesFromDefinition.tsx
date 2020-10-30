@@ -22,15 +22,6 @@ import type { CategoriesDefinition } from './types';
 import type { TaskEntry } from '../../../states/contacts/reducer';
 import { ConnectForm } from './formGenerators';
 
-/*
- * export const getCategoriesCount = (categories: TaskEntry['categories']) =>
- *   Object.values(categories).reduce(
- *     (acc, subcategories) => acc + Object.values(subcategories).reduce((c, selected) => (selected ? c + 1 : c), 0),
- *     0,
- *   );
- */
-
-// eslint-disable-next-line import/no-unused-modules
 export const createSubcategoryCheckbox = (subcategory: string, parents: string[], updateCallback: () => void) => {
   const path = [...parents, subcategory].join('.');
 

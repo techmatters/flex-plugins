@@ -9,19 +9,90 @@
     "name": "lastName",
     "label": "Last Name",
     "type": "input",
-    "minLength": 10
+    "minLength": { "value": 10, "message": "Minimum length is 10" }
   },
   {
-    "name": "age",
-    "label": "Age",
+    "name": "streetAddress",
+    "label": "Address",
+    "type": "input"
+  },
+  {
+    "name": "province",
+    "label": "Location",
     "type": "select",
     "options": [
       { "value": "", "label": "--Please choose an option--" },
-      { "value": "0-03", "label": "<= 3" }, 
-      { "value": "04-06", "label": "04-06" }, 
-      { "value": "06-09", "label": "06-09" }
-    ],
-    "required": true
+      { "value": "Free State", "label": "Free State" }, 
+      { "value": "Gauteng", "label": "Gauteng" }, 
+      { "value": "KwaZulu Natal", "label": "KwaZulu Natal" }, 
+      { "value": "Limpopo", "label": "Limpopo" }
+    ]
+  },
+  {
+    "name": "municipality",
+    "label": "Municipality",
+    "type": "dependent-select",
+    "dependsOn": "province",
+    "defaultOption": { "value": "", "label": "--Please choose an option--" },
+    "options": {
+      "Free State": [
+        { "value": "Fezile Dabi-Metsimaholo Municipality", "label": "Fezile Dabi-Metsimaholo Municipality" }, 
+        { "value": "Fezile Dabi-Moqhaka Municipality", "label": "Fezile Dabi-Moqhaka Municipality" }, 
+        { "value": "Thabo Mofutsanyana-Maluti a-Phofung", "label": "Thabo Mofutsanyana-Maluti a-Phofung" }
+      ],
+      "Gauteng": [
+        { "value": "Johannesburg Metropolitan", "label": "Johannesburg Metropolitan" }, 
+        { "value": "Metsueding - East of Tshwane", "label": "Metsueding - East of Tshwane" }, 
+        { "value": "Sedibeng - South East Gauteng", "label": "Sedibeng - South East Gauteng" }
+      ],
+      "KwaZulu Natal":[
+        { "value": "Amajuba District Municipality", "label": "Amajuba District Municipality" }, 
+        { "value": "Ethekwini District Municipality", "label": "Ethekwini District Municipality" }, 
+        { "value": "iLembe District Municipality", "label": "iLembe District Municipality" }
+      ]
+    }
+  },
+  {
+    "name": "district",
+    "label": "District",
+    "type": "dependent-select",
+    "dependsOn": "municipality",
+    "defaultOption": { "value": "", "label": "--Please choose an option--" },
+    "options": {
+      "Fezile Dabi-Metsimaholo Municipality": [
+        { "value": "Deneysville", "label": "Deneysville" }, 
+        { "value": "Sasolburg", "label": "Sasolburg" }
+      ],
+      "Fezile Dabi-Moqhaka Municipality": [
+        { "value": "Kroonstad", "label": "Kroonstad" }, 
+        { "value": "Viljoenskroon", "label": "Viljoenskroon" }
+      ],
+      "Thabo Mofutsanyana-Maluti a-Phofung": [
+        { "value": "Harrismith", "label": "Harrismith" }, 
+        { "value": "Ladybrand", "label": "Ladybrand" },
+        { "value": "Phuthaditjhaba", "label": "Phuthaditjhaba" }
+      ],
+      "Amajuba District Municipality": [
+        { "value": "Charlestown", "label": "Charlestown" }, 
+        { "value": "Dannhauser", "label": "Dannhauser" },
+        { "value": "Newcastle", "label": "Newcastle" }
+      ],
+      "Ethekwini District Municipality": [
+        { "value": "Bluff", "label": "Bluff" }, 
+        { "value": "Cato Crest", "label": "Cato Crest" },
+        { "value": "Cato Manor", "label": "Cato Manor" }
+      ],
+      "iLembe District Municipality": [
+        { "value": "Dolphin Coast", "label": "Dolphin Coast" }, 
+        { "value": "iLembe", "label": "iLembe" },
+        { "value": "iNdlovu", "label": "iNdlovu" }
+      ]
+    }
+  },
+  {
+    "name": "phone1",
+    "label": "Contact Number",
+    "type": "numeric input"
   },
   {
     "name": "gender",
@@ -29,14 +100,34 @@
     "type": "select",
     "options": [
       { "value": "", "label": "--Please choose an option--" },
-      { "value": "male", "label": "Boy" }, 
-      { "value": "female", "label": "Girl" }, 
-      { "value": "unknown", "label": "Unknown" }
-    ]
+      { "value": "Boy", "label": "Boy" }, 
+      { "value": "Girl", "label": "Girl" }, 
+      { "value": "Non-Binary", "label": "Non-Binary" }, 
+      { "value": "Unknown", "label": "Unknown" }
+    ],
+    "required": true
   },
   {
-    "name": "anumber",
-    "label": "A Number",
+    "name": "age",
+    "label": "Age",
+    "type": "select",
+    "options": [
+      { "value": "", "label": "--Please choose an option--" },
+      { "value": "0-03", "label": "0-03" }, 
+      { "value": "04-06", "label": "04-06" }, 
+      { "value": "07-09", "label": "07-09" },
+      { "value": "10-12", "label": "10-12" }, 
+      { "value": "13-15", "label": "13-15" }, 
+      { "value": "16-17", "label": "16-17" },
+      { "value": "18-25", "label": "18-25" }, 
+      { "value": ">25", "label": ">25" }, 
+      { "value": "Unknown", "label": "Unknown" }
+    ],
+    "required": true
+  },
+  {
+    "name": "language",
+    "label": "Language",
     "type": "select",
     "options": [
       { "value": "", "label": "--Please choose an option--" },
@@ -57,19 +148,109 @@
     ]
   },
   {
-    "name": "language",
-    "label": "A Number",
+    "name": "race",
+    "label": "Race",
     "type": "select",
     "options": [
-      { "value": 0, "label": "--Please choose an option--" },
-      { "value": 1, "label": "1" }, 
-      { "value": 2, "label": "2" }, 
-      { "value": 3, "label": "3" }
+      { "value": "", "label": "--Please choose an option--" },
+      { "value": "Unknown", "label": "Unknown" }, 
+      { "value": "Asian", "label": "Asian" }, 
+      { "value": "Black", "label": "Black" }, 
+      { "value": "Coloured", "label": "Coloured" }, 
+      { "value": "Indian", "label": "Indian" },
+      { "value": "White", "label": "White" }
     ]
   },
   {
-    "name": "phone",
-    "label": "Phone",
-    "type": "numeric input"
+    "name": "schoolName",
+    "label": "School Name",
+    "type": "input"
+  },
+  {
+    "name": "gradeLevel",
+    "label": "Grade Level",
+    "type": "select",
+    "options": [
+      { "value": "", "label": "--Please choose an option--" },
+      { "value": "Unknown", "label": "Unknown" }, 
+      { "value": "Grade 0 (Preschool)", "label": "Grade 0 (Preschool)" }, 
+      { "value": "Grade 1-3 (Junior Primary)", "label": "Grade 1-3 (Junior Primary)" }, 
+      { "value": "Grade 4-7 (Senior Primary)", "label": "Grade 4-7 (Senior Primary)" }, 
+      { "value": "Grade 8-9 (Junior High)", "label": "Grade 8-9 (Junior High)" },
+      { "value": "Grade 10-11 (Senior High)", "label": "Grade 10-11 (Senior High)" },
+      { "value": "Grade 12 (Matric)", "label": "Grade 12 (Matric)" }
+    ]
+  },
+  {
+    "name": "livingSituation",
+    "label": "Living Situation",
+    "type": "select",
+    "options": [
+      { "value": "", "label": "--Please choose an option--" },
+      { "value": "Unknown", "label": "Unknown" }, 
+      { "value": "Foster care", "label": "Foster care" }, 
+      { "value": "Group facility", "label": "Group facility" }, 
+      { "value": "On their own", "label": "On their own" }, 
+      { "value": "With parent(s) or guardian(s)", "label": "With parent(s) or guardian(s)" }, 
+      { "value": "With relatives", "label": "With relatives" }, 
+      { "value": "Street child", "label": "Street child" },
+      { "value": "HIV/AIDS-Child-headed household", "label": "HIV/AIDS-Child-headed household" },
+      { "value": "Family without shelter", "label": "Family without shelter" }
+    ]
+  },
+  {
+    "name": "hivPositive",
+    "label": "Child HIV Positive?",
+    "type": "checkbox"
+  },
+  {
+    "name": "inConflictWithTheLaw",
+    "label": "Child in conflict with the law",
+    "type": "checkbox"
+  },
+  {
+    "name": "inDetention",
+    "label": "Child in detention",
+    "type": "checkbox"
+  },
+  {
+    "name": "memberOfAnEthnic",
+    "label": "Child member of an ethnic / racial minority",
+    "type": "checkbox"
+  },
+  {
+    "name": "memberOfAnEthnic",
+    "label": "Child member of an ethnic / racial minority",
+    "type": "checkbox"
+  },
+  {
+    "name": "livingSituation",
+    "label": "Living Situation",
+    "type": "select",
+    "options": [
+      {"value": "Unknown", "label": "Unknown"},
+      {"value": "Child mentally disabled", "label": "Child mentally disabled"},
+      {"value": "Child physically disabled", "label": "Child physically disabled"},
+      {"value": "Hearing", "label": "Hearing"},
+      {"value": "Learning", "label": "Learning"},
+      {"value": "Multiple disabilities", "label": "Multiple disabilities"},
+      {"value": "Speech", "label": "Speech"},
+      {"value": "Visual", "label": "Visual"}
+    ]
+  },
+  {
+    "name": "LGBTQI+",
+    "label": "LGBTQI+ / SOGIESC child",
+    "type": "checkbox"
+  },
+  {
+    "name": "region",
+    "label": "Region",
+    "type": "select",
+    "options": [
+      {"value": "Unknown", "label": "Unknown"},
+      {"value": "Rural", "label": "Rural"},
+      {"value": "Urban", "label": "Urban"}
+    ]
   }
 ]

@@ -44,7 +44,6 @@ type ItemBase = {
 
 type InputDefinition = {
   type: 'input';
-  // required?: boolean;
 } & ItemBase &
   ValidationRules;
 
@@ -53,13 +52,35 @@ type NumericInputDefinition = {
 } & ItemBase &
   ValidationRules;
 
+export type SelectOption = { value: any; label: string };
+
 type SelectDefinition = {
   type: 'select';
-  options: { value: any; label: string }[];
+  options: SelectOption[];
 } & ItemBase &
   ValidationRules;
 
-export type FormItemDefinition = InputDefinition | NumericInputDefinition | SelectDefinition;
+type DependentOptions = { [dependeeValue: string]: SelectOption[] };
+
+type DependentSelectDefinition = {
+  type: 'dependent-select';
+  dependsOn: ItemBase['name'];
+  defaultOption: SelectOption;
+  options: DependentOptions;
+} & ItemBase &
+  ValidationRules;
+
+type CheckboxDefinition = {
+  type: 'checkbox';
+} & ItemBase &
+  ValidationRules;
+
+export type FormItemDefinition =
+  | InputDefinition
+  | NumericInputDefinition
+  | SelectDefinition
+  | DependentSelectDefinition
+  | CheckboxDefinition;
 export type FormDefinition = FormItemDefinition[];
 
 export type CategoryEntry = { color: string; subcategories: string[] };
