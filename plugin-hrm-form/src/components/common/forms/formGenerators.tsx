@@ -102,8 +102,10 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             React.useEffect(() => setValue(path, def.defaultOption.value), [setValue, dependeeValue]);
 
             const error = get(errors, path);
-            const hasOptions = dependeeValue && def.options[dependeeValue];
-            const required = Boolean(def.required && hasOptions);
+            const hasOptions = Boolean(dependeeValue && def.options[dependeeValue]);
+
+            const validate = (data: any) =>
+              hasOptions && def.required && data === def.defaultOption.value ? 'RequiredFieldError' : null;
 
             const options: SelectOption[] = hasOptions
               ? [def.defaultOption, ...def.options[dependeeValue]]
@@ -112,12 +114,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             return (
               <FormItem>
                 <label htmlFor={path}>{def.label}</label>
-                <select
-                  name={path}
-                  onBlur={updateCallback}
-                  ref={register({ ...rules, required })}
-                  disabled={!hasOptions}
-                >
+                <select name={path} onBlur={updateCallback} ref={register({ validate })} disabled={!hasOptions}>
                   {options.map(o => (
                     <option key={`${path}-${o.value}`} value={o.value}>
                       {o.label}

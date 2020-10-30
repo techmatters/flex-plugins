@@ -26,7 +26,8 @@
       { "value": "Gauteng", "label": "Gauteng" }, 
       { "value": "KwaZulu Natal", "label": "KwaZulu Natal" }, 
       { "value": "Limpopo", "label": "Limpopo" }
-    ]
+    ],
+    "required": true
   },
   {
     "name": "municipality",
@@ -50,7 +51,8 @@
         { "value": "Ethekwini District Municipality", "label": "Ethekwini District Municipality" }, 
         { "value": "iLembe District Municipality", "label": "iLembe District Municipality" }
       ]
-    }
+    },
+    "required": true
   },
   {
     "name": "district",
@@ -87,7 +89,8 @@
         { "value": "iLembe", "label": "iLembe" },
         { "value": "iNdlovu", "label": "iNdlovu" }
       ]
-    }
+    },
+    "required": true
   },
   {
     "name": "phone1",
