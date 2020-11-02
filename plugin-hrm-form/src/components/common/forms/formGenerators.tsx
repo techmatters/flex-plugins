@@ -142,6 +142,21 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
           }}
         </ConnectForm>
       );
+    case 'textarea':
+      return (
+        <ConnectForm key={path}>
+          {({ errors, register }) => {
+            const error = get(errors, path);
+            return (
+              <FormItem>
+                <label htmlFor={path}>{def.label}</label>
+                <textarea name={path} onBlur={updateCallback} ref={register(rules)} rows={10} />
+                {error && renderError(error)}
+              </FormItem>
+            );
+          }}
+        </ConnectForm>
+      );
     default:
       return null;
   }

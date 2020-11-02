@@ -44,6 +44,8 @@ const getInitialValue = (def: FormItemDefinition) => {
       return def.defaultOption.value;
     case 'checkbox':
       return '';
+    case 'textarea':
+      return '';
     default:
       return null;
   }

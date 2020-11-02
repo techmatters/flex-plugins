@@ -2,14 +2,12 @@
   {
     "name": "firstName",
     "label": "First Name",
-    "type": "input",
-    "required": true
+    "type": "input"
   },
   {
     "name": "lastName",
     "label": "Last Name",
-    "type": "input",
-    "minLength": { "value": 10, "message": "Minimum length is 10" }
+    "type": "input"
   },
   {
     "name": "streetAddress",

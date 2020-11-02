@@ -40,7 +40,11 @@ function setUpRollbarLogger(plugin, workerClient, monitoringEnv) {
         helpline: workerClient.attributes.helpline,
       },
     },
-    ignoredMessages: ['Warning: Failed prop type'],
+    ignoredMessages: [
+      'Warning: Failed prop type',
+      // https://github.com/mui-org/material-ui/issues/14860 lastPass noise on textarea
+      'Assertion failed: Input argument is not an HTMLInputElement',
+    ],
     maxItems: 500,
     ignoreDuplicateErrors: true,
   });

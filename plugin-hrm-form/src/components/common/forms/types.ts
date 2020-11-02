@@ -75,12 +75,18 @@ type CheckboxDefinition = {
 } & ItemBase &
   ValidationRules;
 
+type TextareaDefinition = {
+  type: 'textarea';
+} & ItemBase &
+  ValidationRules;
+
 export type FormItemDefinition =
   | InputDefinition
   | NumericInputDefinition
   | SelectDefinition
   | DependentSelectDefinition
-  | CheckboxDefinition;
+  | CheckboxDefinition
+  | TextareaDefinition;
 export type FormDefinition = FormItemDefinition[];
 
 export type CategoryEntry = { color: string; subcategories: string[] };
