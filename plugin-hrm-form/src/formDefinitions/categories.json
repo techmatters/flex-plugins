@@ -1,123 +1,232 @@
 {
-  "Missing children": {
+  "Abuse": {
     "color": "#BBE3FF",
     "subcategories": [
-    "Child abduction",
-    "Lost, injured or otherwise missing child",
-    "Runaway",
-    "Unspecified/Other"
-  ]
+      "Abduction",
+      "Bullying in School",
+      "Bullying out of School",
+      "Cyber Bullying",
+      "Deceased Child",
+      "Emotional abuse",
+      "Exposure to criminal violence",
+      "Exposure to domestic violence",
+      "Exposure to pornography",
+      "Grooming",
+      "Harassment",
+      "Inappropriate sex talk",
+      "Physical abuse",
+      "Rape",
+      "Sexual assault"
+    ]
   },
-  "Violence": {
+  "Alternative care": {
     "color": "#F5A623",
     "subcategories": [
-    "Bullying",
-    "Child / Early marriage",
-    "Commercial sexual exploitation (offline)",
-    "Economic exploitation",
-    "Female Genital Mutilation (FGM)",
-    "Gender-based harmful traditional practices (other than FGM)",
-    "Harmful or hazardous labour",
-    "Mental / Emotional violence",
-    "Neglect (or negligent treatment)",
-    "Non-Gender-Based harmful traditional practices",
-    "Online sexual abuse",
-    "Online sexual exploitation",
-    "Physical violence",
-    "Sexual violence",
-    "Unspecified/Other"
-  ]
+      "Problems - Adoption",
+      "Problems - Foster care",
+      "Problems - Informal Boarding",
+      "Problems - Institutional care"
+   ]
   },
-  "Mental Health": {
+  "Behaviour problems": {
     "color": "#F8E900",
     "subcategories": [
-    "Addictive behaviours",
-    "Concerns about the self",
-    "Emotional distress – anger problems",
-    "Emotional distress – fear and anxiety problems",
-    "Emotional distress – mood problems",
-    "Problems with eating behaviour",
-    "Self-harming behaviours",
-    "Substance use",
-    "Suicidal thoughts and suicide attempts",
-    "Unspecified/Other"
-  ]
+      "Aggressive child",
+      "Child runaway",
+      "Criminal activity",
+      "Discipline problems",
+      "Hyperactivity/Attention deficit",
+      "Uncontrollable child"
+   ]
   },
-  "Physical Health": {
+  "Commercial exploitation": {
     "color": "#E86B6B",
     "subcategories": [
-    "Medical or lifestyle information about HIV/AIDS",
-    "Medical problems",
-    "Pregnancy and Maternal care",
-    "Sexual and reproductive health",
-    "Unspecified/Other"
-  ]
+      "Child begging",
+      "Child prostitution/Commercial sexual exploitation",
+      "Child used for criminal activity",
+      "Child vendors",
+      "Domestic child labour",
+      "Farm child Labour",
+      "General child labour",
+      "Involvement in pornography",
+      "Trafficking"
+   ]
   },
-  "Accessibility": {
+  "Discrimination": {
     "color": "#8055BA",
     "subcategories": [
-    "Education",
-    "Essential needs",
-    "General healthcare services",
-    "Legal services and advice",
-    "Mental health services",
-    "Sexual health services",
-    "Socio-economical services",
-    "Unspecified/Other"
-  ]
+      "Access to school",
+      "Gender",
+      "Language",
+      "Racial",
+      "Religion",
+      "Sexual orientation/identity"
+   ]
   },
-  "Discrimination and Exclusion": {
+  "Family relationships": {
     "color": "#B971AF",
     "subcategories": [
-    "Ethnicity/nationality",
-    "Financial Situation",
-    "Gender identity and expression/sexual identity",
-    "Health",
-    "Philosophical or religious beliefs",
-    "Unspecified/Other"
-  ]
+      "Child missing/lost",
+      "Conflict between parent and child",
+      "Conflict between parents/caretakers",
+      "Death and bereavement",
+      "Deceased Child",
+      "Deceased Parent/Caregiver",
+      "Divorce",
+      "Mental illness - Parent",
+      "Parent/s working away from home",
+      "Problems with siblings",
+      "Separation",
+      "Single parent",
+      "Step family relationships"
+   ]
   },
-  "Family Relationships": {
+  "HIV/AIDS": {
     "color": "#239613",
     "subcategories": [
-    "Adoption, fostering, and extended family placement",
-    "Relationship to parents",
-    "Relationship with sibling(s)",
-    "Unspecified/Other"
-  ]
+      "Bereavement",
+      "Both parents deceased",
+      "Child infected",
+      "Child receiving treatment for HIV/AIDS",
+      "Father deceased",
+      "Father ill",
+      "Information re HIV/AIDS",
+      "Mother deceased",
+      "Mother ill",
+      "Other family member ill",
+      "Pre/post test counselling",
+      "Vulnerable because of HIV/AIDS"
+    ]
   },
-  "Peer Relationships": {
+  "Legal issues": {
     "color": "#9AD703",
     "subcategories": [
-    "Friends and Friendships",
-    "Romantic Relationships",
-    "Unspecified/Other"
-  ]
+      "Access/Contact",
+      "Adoption",
+      "Child witness",
+      "Custody/Care",
+      "Lack of birth document",
+      "Maintenance"
+   ]
   },
-  "School": {
+  "Neglect": {
     "color": "#55AFAF",
     "subcategories": [
-    "Academic issues",
-    "Teacher and school problems",
-    "Unspecified/Other"
-  ]
+      "Child abandonment",
+      "Circumstantial - Child uncared for emotionally",
+      "Circumstantial - Child uncared for physically",
+      "Deliberate - Child uncared for emotionally",
+      "Deliberate - Child uncared for physically"
+    ]
   },
-  "Sexuality": {
+  "Out of school peer relationships": {
     "color": "#506BA5",
     "subcategories": [
-    "Sexuality and gender identity",
-    "Sexual behaviours",
-    "Unspecified/Other"
-  ]
+      "Relationship problems"
+    ]
   },
-  "Information & Other Non-Counselling contacts": {
+  "Physical health": {
     "color": "#767777",
     "subcategories": [
-    "Complaints about the child helpline",
-    "Questions by parents",
-    "Questions about the child helpline",
-    "Questions about other services",
-    "Thank you for your assistance",
-    "Unspecified/Other"
-  ]
-}}
+      "Body image",
+      "COVID-19",
+      "Health information",
+      "Health problems",
+      "In need of medical care"
+    ]
+  },
+  "Poverty": {
+    "color": "#767777",
+    "subcategories": [
+      "Child/ren starving",
+      "Insufficient/No income",
+      "Lack of clothing",
+      "Problems with grants and pensions"
+    ]
+  },
+  "Psychological health": {
+    "color": "#e26e58",
+    "subcategories": [
+      "Anorexia",
+      "Anxiety",
+      "Bereavement - peer",
+      "Bulimia",
+      "Child has difficulty in communicating",
+      "Depression",
+      "Lack of confidence",
+      "Lacks life purpose",
+      "Loneliness",
+      "Mental illness of parent/caregiver/child",
+      "Self harming",
+      "Sleep disorders",
+      "Suicidal feelings",
+      "Suicide attempt",
+      "Suicide of family member",
+      "Suicide of friend",
+      "Unmanageable anger and frustration"
+    ]
+  },
+  "Refugee child": {
+    "color": "#b36ae3",
+    "subcategories": [
+      "Fear of repatriation",
+      "Lack of documents",
+      "Wanting to return home",
+      "Xenophobia"
+    ]
+  },
+  "School problems": {
+    "color": "#8bde63",
+    "subcategories": [
+      "Child not attending school",
+      "Child truanting from school",
+      "Corporal punishment",
+      "Homework",
+      "Lack of money for fees etc",
+      "Learning problems",
+      "Parents refusing for child to attend school",
+      "Performance anxiety",
+      "Problems with educator",
+      "Problems with learners",
+      "Study tips"
+    ]
+  },
+  "Services": {
+    "color": "#fc33e5",
+    "subcategories": [
+      "Abuse to the counsellor",
+      "Complaints about Childline service",
+      "Complaints about other services",
+      "Request for information",
+      "Thanks for the Childline service"
+    ]
+  },
+  "Sexuality": {
+    "color": "#df7419",
+    "subcategories": [
+      "Abortion/Termination of pregnancy",
+      "Contraception",
+      "Information about sex",
+      "Pregnancy",
+      "Saying no to sex",
+      "Sexual identity",
+      "Sexual problem",
+      "Sexualized behaviour",
+      "Sexually exploitive/abusive behaviour",
+      "Sexually transmitted infections"
+    ]
+  },
+  "Substance abuse": {
+    "color": "#e4fbfa",
+    "subcategories": [
+      "Child - alcohol abuse",
+      "Child - other drug abuse",
+      "Drug dealing",
+      "Exposure to alcohol/drug abuse",
+      "Information on alcohol/drugs",
+      "Parent/caretaker - alcohol abuse",
+      "Parent/caretaker - drug abuse"
+    ]
+  }
+}
