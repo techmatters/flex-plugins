@@ -124,6 +124,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
             handleValidateForm={props.handleValidateForm}
             showNextButton={tabIndex !== 0 && tabIndex < tabs.length - 1}
             showSubmitButton={tabIndex === tabs.length - 1}
+            isSubmitButtonDisabled={Object.values(methods.errors).some(Boolean)}
           />
         </TabbedFormsContainer>
       </form>

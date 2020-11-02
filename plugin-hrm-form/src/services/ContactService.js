@@ -1,7 +1,7 @@
 import { set } from 'lodash/fp';
 
 import secret from '../private/secret';
-import { createNewTaskEntry, TaskEntry } from '../states/contacts/reducer';
+import { createNewTaskEntry } from '../states/contacts/reducer';
 import { isNonDataCallType } from '../states/ValidationRules';
 import { channelTypes } from '../states/DomainConstants';
 import { getConversationDuration, fillEndMillis } from '../utils/conversationDuration';
@@ -112,9 +112,6 @@ export async function saveToHrm(task, form, hrmBaseUrl, workerSid, helpline, sho
     helpline,
     conversationDuration,
   };
-
-  console.log('FORM TO SEND:', formToSend);
-  return;
 
   const response = await fetch(`${hrmBaseUrl}/contacts`, {
     method: 'POST',

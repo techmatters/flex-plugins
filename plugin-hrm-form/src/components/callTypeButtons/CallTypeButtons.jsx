@@ -46,7 +46,7 @@ const CallTypeButtons = props => {
 
     try {
       await saveToHrm(task, contactForm, hrmBaseUrl, workerSid, helpline);
-      // props.handleCompleteTask(task.taskSid, task);
+      props.handleCompleteTask(task.taskSid, task);
     } catch (error) {
       console.error(error);
       if (window.confirm(strings['Error-ContinueWithoutRecording'])) {

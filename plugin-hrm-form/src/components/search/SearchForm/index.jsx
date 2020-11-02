@@ -119,7 +119,7 @@ class SearchForm extends Component {
           </Row>
         </Container>
         <BottomButtonBar>
-          <StyledNextStepButton disabled={!isTouched} roundCorners={true} onClick={submitSearch}>
+          <StyledNextStepButton type="button" disabled={!isTouched} roundCorners={true} onClick={submitSearch}>
             Search
           </StyledNextStepButton>
         </BottomButtonBar>

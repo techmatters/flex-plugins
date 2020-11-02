@@ -19,6 +19,7 @@ import { getConfig } from '../../HrmFormPlugin';
 import { createCase } from '../../services/CaseService';
 import { saveToHrm } from '../../services/ContactService';
 import { hasTaskControl } from '../../utils/transfer';
+import { namespace, contactsBase } from '../../states';
 
 class BottomBar extends Component {
   static displayName = 'BottomBar';
@@ -26,12 +27,14 @@ class BottomBar extends Component {
   static propTypes = {
     showNextButton: PropTypes.bool.isRequired,
     showSubmitButton: PropTypes.bool.isRequired,
+    isSubmitButtonDisabled: PropTypes.bool.isRequired,
     nextTab: PropTypes.func.isRequired,
     handleCompleteTask: PropTypes.func.isRequired,
     task: taskType.isRequired,
     changeRoute: PropTypes.func.isRequired,
     handleValidateForm: PropTypes.func.isRequired,
     setConnectedCase: PropTypes.func.isRequired,
+    contactForm: PropTypes.shape({}).isRequired,
   };
 
   state = {
@@ -80,33 +83,26 @@ class BottomBar extends Component {
   };
 
   handleSubmit = async () => {
-    const { task } = this.props;
+    const { task, contactForm } = this.props;
     const { hrmBaseUrl, workerSid, helpline, strings } = getConfig();
 
     if (!hasTaskControl(task)) return;
 
-    const newForm = this.props.handleValidateForm();
-
-    if (formIsValid(newForm)) {
-      try {
-        await saveToHrm(task, newForm, hrmBaseUrl, workerSid, helpline);
+    try {
+      await saveToHrm(task, contactForm, hrmBaseUrl, workerSid, helpline);
+      this.props.handleCompleteTask(task.taskSid, task);
+    } catch (error) {
+      if (!window.confirm(strings['Error-ContinueWithoutRecording'])) {
         this.props.handleCompleteTask(task.taskSid, task);
-      } catch (error) {
-        if (!window.confirm(strings['Error-ContinueWithoutRecording'])) {
-          this.props.handleCompleteTask(task.taskSid, task);
-        }
       }
-    } else {
-      window.alert(strings['Error-Form']);
     }
   };
 
   render() {
-    const { showNextButton, showSubmitButton } = this.props;
+    const { showNextButton, showSubmitButton, isSubmitButtonDisabled } = this.props;
     const { isMenuOpen, anchorEl, mockedMessage } = this.state;
 
     const showBottomBar = showNextButton || showSubmitButton;
-    const isSubmitButtonDisabled = true; // FIX THIS !formIsValid(form);
     const isMockedMessageOpen = Boolean(mockedMessage);
     const { featureFlags } = getConfig();
 
@@ -161,9 +157,13 @@ class BottomBar extends Component {
   }
 }
 
+const mapStateToProps = (state, ownProps) => {
+  const contactForm = state[namespace][contactsBase].tasks[ownProps.task.taskSid];
+  return { contactForm };
+};
 const mapDispatchToProps = dispatch => ({
   changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
   setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
 });
 
-export default withTaskContext(connect(null, mapDispatchToProps)(BottomBar));
+export default withTaskContext(connect(mapStateToProps, mapDispatchToProps)(BottomBar));
