@@ -52,7 +52,7 @@ const Details = ({
 
   const isPhoneContact =
     channel === channelTypes.voice || channel === channelTypes.sms || channel === channelTypes.whatsapp;
-  const [category1, category2, category3] = formatCategories(categories);
+  const formattedCategories = formatCategories(categories);
 
   const {
     GENERAL_DETAILS,
@@ -130,10 +130,13 @@ const Details = ({
           expanded={detailsExpanded[ISSUE_CATEGORIZATION]}
           handleExpandClick={() => handleExpandDetailsSection(ISSUE_CATEGORIZATION)}
         >
-          {Boolean(category1) && <SectionEntry description="Category 1" value={category1} />}
-          {Boolean(category2) && <SectionEntry description="Category 2" value={category2} />}
-          {Boolean(category3) && <SectionEntry description="Category 3" value={category3} />}
-          {!(category1 || category2 || category3) && <SectionEntry description="No category provided" value="" />}
+          {formattedCategories.length ? (
+            formattedCategories.map((c, index) => (
+              <SectionEntry key={`Category ${index + 1}`} description={`Category ${index + 1}`} value={c} />
+            ))
+          ) : (
+            <SectionEntry description="No category provided" value="" />
+          )}
         </Section>
       )}
       {isDataCall && (

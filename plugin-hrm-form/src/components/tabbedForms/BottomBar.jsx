@@ -27,7 +27,6 @@ class BottomBar extends Component {
   static propTypes = {
     showNextButton: PropTypes.bool.isRequired,
     showSubmitButton: PropTypes.bool.isRequired,
-    isSubmitButtonDisabled: PropTypes.bool.isRequired,
     nextTab: PropTypes.func.isRequired,
     handleCompleteTask: PropTypes.func.isRequired,
     task: taskType.isRequired,
@@ -67,19 +66,23 @@ class BottomBar extends Component {
 
     this.setState({ isMenuOpen: false });
 
-    const newForm = this.props.handleValidateForm();
+    window.alert('(Gian) Functionality disabled to test customization.');
 
-    if (formIsValid(newForm)) {
-      try {
-        const caseFromDB = await createCase(caseRecord);
-        this.props.changeRoute({ route: 'new-case' }, taskSid);
-        this.props.setConnectedCase(caseFromDB, taskSid);
-      } catch (error) {
-        window.alert(strings['Error-Backend']);
-      }
-    } else {
-      window.alert(strings['Error-Form']);
-    }
+    // const newForm = this.props.handleValidateForm();
+
+    /*
+     * if (formIsValid(newForm)) {
+     *   try {
+     *     const caseFromDB = await createCase(caseRecord);
+     *     this.props.changeRoute({ route: 'new-case' }, taskSid);
+     *     this.props.setConnectedCase(caseFromDB, taskSid);
+     *   } catch (error) {
+     *     window.alert(strings['Error-Backend']);
+     *   }
+     * } else {
+     *   window.alert(strings['Error-Form']);
+     * }
+     */
   };
 
   handleSubmit = async () => {
@@ -99,7 +102,7 @@ class BottomBar extends Component {
   };
 
   render() {
-    const { showNextButton, showSubmitButton, isSubmitButtonDisabled } = this.props;
+    const { showNextButton, showSubmitButton, handleValidateForm } = this.props;
     const { isMenuOpen, anchorEl, mockedMessage } = this.state;
 
     const showBottomBar = showNextButton || showSubmitButton;
@@ -135,18 +138,13 @@ class BottomBar extends Component {
             <>
               {featureFlags.enable_case_management && (
                 <Box marginRight="15px">
-                  <StyledNextStepButton
-                    roundCorners
-                    secondary
-                    onClick={this.toggleCaseMenu}
-                    disabled={isSubmitButtonDisabled}
-                  >
+                  <StyledNextStepButton roundCorners secondary onClick={this.toggleCaseMenu}>
                     <FolderIcon style={{ fontSize: '16px', marginRight: '10px' }} />
                     <Template code="BottomBar-SaveAndAddToCase" />
                   </StyledNextStepButton>
                 </Box>
               )}
-              <StyledNextStepButton roundCorners={true} onClick={this.handleSubmit} disabled={isSubmitButtonDisabled}>
+              <StyledNextStepButton roundCorners={true} onClick={handleValidateForm(this.handleSubmit)}>
                 <Template code="BottomBar-SaveContact" />
               </StyledNextStepButton>
             </>

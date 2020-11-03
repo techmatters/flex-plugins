@@ -84,17 +84,20 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
   const tabs = mapTabsToIndex.map(mapTabsComponents(methods.errors));
 
   const handleTabsChange = (event: any, t: number) => {
-    dispatch(changeRoute({ route: 'tabbed-forms', subroute: mapTabsToIndex[t] }, taskId));
+    console.log('>>> routing.subroute', routing.subroute)
+    // validate current tab before changing
+    if (routing.subroute !== 'search') methods.trigger(routing.subroute);
+
+    const tab = mapTabsToIndex[t];
+    dispatch(changeRoute({ route: 'tabbed-forms', subroute: tab }, taskId));
   };
 
   const { subroute } = routing;
   const tabIndex = mapTabsToIndex.findIndex(t => t === subroute);
 
-  const onSubmit = data => console.log(data);
-
   return (
     <FormProvider {...methods}>
-      <form style={{ height: '100%' }} onSubmit={methods.handleSubmit(onSubmit)}>
+      <form style={{ height: '100%' }}>
         <TabbedFormsContainer>
           <TopNav>
             <TransparentButton onClick={handleBackButton}>&lt; BACK</TransparentButton>
@@ -121,10 +124,9 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
               dispatch(changeRoute({ route: 'tabbed-forms', subroute: mapTabsToIndex[tabIndex + 1] }, taskId))
             }
             handleCompleteTask={props.handleCompleteTask}
-            handleValidateForm={props.handleValidateForm}
+            handleValidateForm={methods.handleSubmit}
             showNextButton={tabIndex !== 0 && tabIndex < tabs.length - 1}
             showSubmitButton={tabIndex === tabs.length - 1}
-            isSubmitButtonDisabled={Object.values(methods.errors).some(Boolean)}
           />
         </TabbedFormsContainer>
       </form>
