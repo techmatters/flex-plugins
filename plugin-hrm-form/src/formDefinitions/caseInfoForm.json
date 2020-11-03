@@ -1,6 +1,6 @@
 [
   {
-    "name": "comments",
+    "name": "callSummary",
     "label": "Comments",
     "type": "textarea",
     "required": true

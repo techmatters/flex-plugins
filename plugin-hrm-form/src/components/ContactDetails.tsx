@@ -97,13 +97,13 @@ const Details = ({
           sectionTitle={<Template code="TabbedForms-AddCallerInfoTab" />}
           expanded={detailsExpanded[CALLER_INFORMATION]}
           handleExpandClick={() => handleExpandDetailsSection(CALLER_INFORMATION)}
-          buttonDataTestid="ContactDetails-Section-ChildInformation"
+          buttonDataTestid="ContactDetails-Section-CallerInformation"
         >
           {CallerFormDefinition.map(e => (
             <SectionEntry
               key={`CallerInformation-${e.label}`}
               description={<Template code={e.label} />}
-              value={contact.callerInformation[e.name]}
+              value={contact.details.callerInformation[e.name]}
             />
           ))}
         </Section>
@@ -119,7 +119,7 @@ const Details = ({
             <SectionEntry
               key={`ChildInformation-${e.label}`}
               description={<Template code={e.label} />}
-              value={contact.childInformation[e.name]}
+              value={contact.details.childInformation[e.name]}
             />
           ))}
         </Section>
@@ -146,7 +146,7 @@ const Details = ({
             <SectionEntry
               key={`CaseInformation-${e.label}`}
               description={<Template code={e.label} />}
-              value={contact.caseInformation[e.name]}
+              value={contact.details.caseInformation[e.name]}
             />
           ))}
         </Section>

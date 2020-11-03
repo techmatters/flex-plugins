@@ -94,7 +94,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)}>
+      <form style={{ height: '100%' }} onSubmit={methods.handleSubmit(onSubmit)}>
         <TabbedFormsContainer>
           <TopNav>
             <TransparentButton onClick={handleBackButton}>&lt; BACK</TransparentButton>

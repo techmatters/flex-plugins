@@ -220,26 +220,6 @@
     "type": "checkbox"
   },
   {
-    "name": "memberOfAnEthnic",
-    "label": "Child member of an ethnic / racial minority",
-    "type": "checkbox"
-  },
-  {
-    "name": "livingSituation",
-    "label": "Living Situation",
-    "type": "select",
-    "options": [
-      {"value": "Unknown", "label": "Unknown"},
-      {"value": "Child mentally disabled", "label": "Child mentally disabled"},
-      {"value": "Child physically disabled", "label": "Child physically disabled"},
-      {"value": "Hearing", "label": "Hearing"},
-      {"value": "Learning", "label": "Learning"},
-      {"value": "Multiple disabilities", "label": "Multiple disabilities"},
-      {"value": "Speech", "label": "Speech"},
-      {"value": "Visual", "label": "Visual"}
-    ]
-  },
-  {
     "name": "LGBTQI+",
     "label": "LGBTQI+ / SOGIESC child",
     "type": "checkbox"
