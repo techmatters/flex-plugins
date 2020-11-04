@@ -4,7 +4,7 @@ import { useFormContext, ValidationRules, FieldError } from 'react-hook-form';
 import { get, pick } from 'lodash';
 import { Template } from '@twilio/flex-ui';
 
-import { FormItem, FormRow } from '../../../styles/HrmStyles';
+import { Box, FormItem, FormRow, ColumnarBlock, TwoColumnLayout } from '../../../styles/HrmStyles';
 import type { FormItemDefinition, FormDefinition, SelectOption } from './types';
 
 export const ConnectForm: React.FC<{
@@ -166,23 +166,49 @@ export const createFormFromDefinition = (definition: FormDefinition) => (parents
   updateCallback: () => void,
 ): JSX.Element[] => definition.map(getInputType(parents, updateCallback));
 
-export const makeFormRows = (formItems: JSX.Element[]) => {
-  const [x, y, ...rest] = formItems;
-  if (!x) return [];
+/*
+ * export const makeFormRows = (formItems: JSX.Element[]) => {
+ *   const [x, y, ...rest] = formItems;
+ *   if (!x) return [];
+ */
 
-  if (!y)
-    return [
-      <FormRow key={`formRow-${x.key}`}>
-        {x}
-        <div />
-      </FormRow>,
-    ];
+/*
+ *   if (!y)
+ *     return [
+ *       <FormRow key={`formRow-${x.key}`}>
+ *         {x}
+ *         <div />
+ *       </FormRow>,
+ *     ];
+ */
 
-  const row = (
-    <FormRow key={`formRow-${x.key}-${y.key}`}>
-      {x}
-      {y}
-    </FormRow>
+/*
+ *   const row = (
+ *     <FormRow key={`formRow-${x.key}-${y.key}`}>
+ *       {x}
+ *       {y}
+ *     </FormRow>
+ *   );
+ *   return [row, ...makeFormRows(rest)];
+ * };
+ */
+
+// eslint-disable-next-line react/no-multi-comp
+export const makeFormColumns = (formItems: JSX.Element[]) => {
+  const items = formItems.map(i => (
+    <Box key={`${i.key}-wrapping-box`} marginTop="5px" marginBottom="5px">
+      {i}
+    </Box>
+  ));
+
+  const m = Math.ceil(formItems.length / 2);
+
+  const [l, r] = [items.slice(0, m), items.slice(m)];
+
+  return (
+    <TwoColumnLayout>
+      <ColumnarBlock>{l}</ColumnarBlock>
+      <ColumnarBlock>{r}</ColumnarBlock>
+    </TwoColumnLayout>
   );
-  return [row, ...makeFormRows(rest)];
 };

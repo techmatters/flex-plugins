@@ -6,7 +6,7 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { RootState } from '../../../states';
 import { updateForm } from '../../../states/contacts/actions';
-import { createFormFromDefinition, makeFormRows } from './formGenerators';
+import { createFormFromDefinition, makeFormColumns } from './formGenerators';
 import CallerFormDefinition from '../../../formDefinitions/callerForm.json';
 import { Container } from '../../../styles/HrmStyles';
 import type { FormDefinition } from './types';
@@ -32,7 +32,7 @@ const CustomCallerForm: React.FC<Props> = ({ dispatch, task, display }) => {
       'callerInformation',
     ])(updateCallback);
 
-    return makeFormRows(callerFormDefinition);
+    return makeFormColumns(callerFormDefinition);
   }, [dispatch, getValues, task.taskSid]);
 
   return (

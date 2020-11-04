@@ -84,12 +84,6 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
   const tabs = mapTabsToIndex.map(mapTabsComponents(methods.errors));
 
   const handleTabsChange = (event: any, t: number) => {
-    console.log('>>> routing.subroute', routing.subroute);
-    /*
-     * validate current tab before changing
-     * if (routing.subroute !== 'search') methods.trigger(routing.subroute);
-     */
-
     const tab = mapTabsToIndex[t];
     dispatch(changeRoute({ route: 'tabbed-forms', subroute: tab }, taskId));
   };

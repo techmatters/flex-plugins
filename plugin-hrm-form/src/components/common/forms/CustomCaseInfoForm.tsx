@@ -6,7 +6,7 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { RootState } from '../../../states';
 import { updateForm } from '../../../states/contacts/actions';
-import { createFormFromDefinition, makeFormRows } from './formGenerators';
+import { createFormFromDefinition, makeFormColumns } from './formGenerators';
 import CaseInfoFormDefinition from '../../../formDefinitions/caseInfoForm.json';
 import { Container } from '../../../styles/HrmStyles';
 import type { FormDefinition } from './types';
@@ -32,7 +32,7 @@ const CustomCaseInfoForm: React.FC<Props> = ({ dispatch, task, display }) => {
       'caseInformation',
     ])(updateCallback);
 
-    return makeFormRows(caseInfoFormDefinition);
+    return makeFormColumns(caseInfoFormDefinition);
   }, [dispatch, getValues, task.taskSid]);
 
   return (

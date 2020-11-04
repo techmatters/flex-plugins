@@ -6,7 +6,7 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { RootState } from '../../../states';
 import { updateForm } from '../../../states/contacts/actions';
-import { createFormFromDefinition, makeFormRows } from './formGenerators';
+import { createFormFromDefinition, makeFormColumns } from './formGenerators';
 import ChildFormDefinition from '../../../formDefinitions/childForm.json';
 import { Container } from '../../../styles/HrmStyles';
 import type { FormDefinition } from './types';
@@ -31,7 +31,7 @@ const CustomChildForm: React.FC<Props> = ({ dispatch, task, display }) => {
       updateCallback,
     );
 
-    return makeFormRows(childFormDefinition);
+    return makeFormColumns(childFormDefinition);
   }, [dispatch, getValues, task.taskSid]);
 
   return (
