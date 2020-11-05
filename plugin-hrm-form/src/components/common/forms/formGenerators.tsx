@@ -5,7 +5,8 @@ import { get, pick } from 'lodash';
 import { Template } from '@twilio/flex-ui';
 
 import { Box, FormItem, FormRow, ColumnarBlock, TwoColumnLayout } from '../../../styles/HrmStyles';
-import type { FormItemDefinition, FormDefinition, SelectOption } from './types';
+import type { FormItemDefinition, FormDefinition, SelectOption, MixedOrBool } from './types';
+import './mixedCheckbox.css'; // This would be better done with this https://emotion.sh/docs/css-prop#gatsby-focus-wrapper, but it requires emotion 10
 
 export const ConnectForm: React.FC<{
   children: <P extends ReturnType<typeof useFormContext>>(args: P) => JSX.Element;
@@ -42,7 +43,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             return (
               <FormItem>
                 <label htmlFor={path}>{def.label}</label>
-                <input name={path} onBlur={updateCallback} ref={register(rules)} />
+                <input id={path} name={path} onBlur={updateCallback} ref={register(rules)} />
                 {error && renderError(error)}
               </FormItem>
             );
@@ -58,6 +59,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
               <FormItem>
                 <label htmlFor={path}>{def.label}</label>
                 <input
+                  id={path}
                   name={path}
                   onBlur={updateCallback}
                   ref={register({
@@ -79,7 +81,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             return (
               <FormItem>
                 <label htmlFor={path}>{def.label}</label>
-                <select name={path} onBlur={updateCallback} ref={register(rules)}>
+                <select id={path} name={path} onBlur={updateCallback} ref={register(rules)}>
                   {def.options.map(o => (
                     <option key={`${path}-${o.value}`} value={o.value}>
                       {o.label}
@@ -114,7 +116,13 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             return (
               <FormItem>
                 <label htmlFor={path}>{def.label}</label>
-                <select name={path} onBlur={updateCallback} ref={register({ validate })} disabled={!hasOptions}>
+                <select
+                  id={path}
+                  name={path}
+                  onBlur={updateCallback}
+                  ref={register({ validate })}
+                  disabled={!hasOptions}
+                >
                   {options.map(o => (
                     <option key={`${path}-${o.value}`} value={o.value}>
                       {o.label}
@@ -134,8 +142,49 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             const error = get(errors, path);
             return (
               <FormItem>
-                <label htmlFor={path}>{def.label}</label>
-                <input name={path} type="checkbox" onChange={updateCallback} ref={register(rules)} />
+                <label htmlFor={path}>
+                  <input id={path} name={path} type="checkbox" onChange={updateCallback} ref={register(rules)} />
+                  {def.label}
+                </label>
+                {error && renderError(error)}
+              </FormItem>
+            );
+          }}
+        </ConnectForm>
+      );
+    case 'mixed-checkbox':
+      return (
+        <ConnectForm key={path}>
+          {({ errors, register, setValue }) => {
+            React.useEffect(() => {
+              register(path, rules);
+            }, [register]);
+
+            const initialChecked = def.initialChecked === undefined ? 'mixed' : def.initialChecked;
+            const [checked, setChecked] = React.useState<MixedOrBool>(initialChecked);
+
+            React.useEffect(() => {
+              setValue(path, checked);
+            }, [checked, setValue]);
+
+            const error = get(errors, path);
+            return (
+              <FormItem>
+                <label htmlFor={path}>
+                  <input
+                    id={path}
+                    type="checkbox"
+                    aria-checked={checked}
+                    className="mixed-checkbox" // this grabs the styles imported from mixedCheckbox.css
+                    onBlur={updateCallback}
+                    onChange={() => {
+                      if (checked === 'mixed') setChecked(false);
+                      if (checked === false) setChecked(true);
+                      if (checked === true) setChecked('mixed');
+                    }}
+                  />
+                  {def.label}
+                </label>
                 {error && renderError(error)}
               </FormItem>
             );
@@ -150,7 +199,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             return (
               <FormItem>
                 <label htmlFor={path}>{def.label}</label>
-                <textarea name={path} onBlur={updateCallback} ref={register(rules)} rows={10} />
+                <textarea id={path} name={path} onBlur={updateCallback} ref={register(rules)} rows={10} />
                 {error && renderError(error)}
               </FormItem>
             );

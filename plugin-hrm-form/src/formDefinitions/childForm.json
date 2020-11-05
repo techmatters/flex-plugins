@@ -202,7 +202,7 @@
   {
     "name": "hivPositive",
     "label": "Child HIV Positive?",
-    "type": "checkbox"
+    "type": "mixed-checkbox"
   },
   {
     "name": "inConflictWithTheLaw",

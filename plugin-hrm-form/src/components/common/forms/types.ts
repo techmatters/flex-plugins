@@ -75,6 +75,13 @@ type CheckboxDefinition = {
 } & ItemBase &
   ValidationRules;
 
+export type MixedOrBool = boolean | 'mixed';
+type MixedCheckboxDefinition = {
+  type: 'mixed-checkbox';
+  initialChecked?: MixedOrBool;
+} & ItemBase &
+  ValidationRules;
+
 type TextareaDefinition = {
   type: 'textarea';
 } & ItemBase &
@@ -86,6 +93,7 @@ export type FormItemDefinition =
   | SelectDefinition
   | DependentSelectDefinition
   | CheckboxDefinition
+  | MixedCheckboxDefinition
   | TextareaDefinition;
 export type FormDefinition = FormItemDefinition[];
 
