@@ -23,10 +23,15 @@ describe('test action creators', () => {
       taskId,
       page: t.SearchPages.form,
     });
-    expect(actions.changeSearchPage(task.taskSid)('results')).toStrictEqual({
+    expect(actions.changeSearchPage(task.taskSid)('results.contacts')).toStrictEqual({
       type: t.CHANGE_SEARCH_PAGE,
       taskId,
-      page: t.SearchPages.results,
+      page: t.SearchPages.resultsContacts,
+    });
+    expect(actions.changeSearchPage(task.taskSid)('results.cases')).toStrictEqual({
+      type: t.CHANGE_SEARCH_PAGE,
+      taskId,
+      page: t.SearchPages.resultsCases,
     });
   });
 

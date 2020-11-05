@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
-import { withTaskContext } from '@twilio/flex-ui';
+import { ITask, withTaskContext } from '@twilio/flex-ui';
 
 import SearchForm from './SearchForm';
 import SearchResults, { CONTACTS_PER_PAGE } from './SearchResults';
@@ -22,6 +22,7 @@ import {
 import { namespace, searchContactsBase, configurationBase } from '../../states';
 
 type OwnProps = {
+  task: ITask;
   currentIsCaller?: boolean;
   handleSelectSearchResult: (contact: SearchContact) => void;
 };
@@ -64,7 +65,7 @@ const Search: React.FC<Props> = props => {
 
   const goToForm = () => props.changeSearchPage('form');
 
-  const goToResults = () => props.changeSearchPage('results');
+  const goToResults = () => props.changeSearchPage(SearchPages.resultsContacts);
 
   const renderMockDialog = () => {
     const isOpen = Boolean(mockedMessage);
@@ -87,9 +88,11 @@ const Search: React.FC<Props> = props => {
             handleSearch={setSearchParamsAndHandleSearch}
           />
         );
-      case SearchPages.results:
+      case SearchPages.resultsContacts:
+      case SearchPages.resultsCases:
         return (
           <SearchResults
+            task={props.task}
             currentIsCaller={props.currentIsCaller}
             results={searchResult}
             onlyDataContacts={searchParams.onlyDataContacts}
