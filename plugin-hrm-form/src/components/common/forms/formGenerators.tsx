@@ -168,6 +168,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             }, [checked, setValue]);
 
             const error = get(errors, path);
+
             return (
               <FormItem>
                 <label htmlFor={path}>
@@ -214,33 +215,6 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
 export const createFormFromDefinition = (definition: FormDefinition) => (parents: string[]) => (
   updateCallback: () => void,
 ): JSX.Element[] => definition.map(getInputType(parents, updateCallback));
-
-/*
- * export const makeFormRows = (formItems: JSX.Element[]) => {
- *   const [x, y, ...rest] = formItems;
- *   if (!x) return [];
- */
-
-/*
- *   if (!y)
- *     return [
- *       <FormRow key={`formRow-${x.key}`}>
- *         {x}
- *         <div />
- *       </FormRow>,
- *     ];
- */
-
-/*
- *   const row = (
- *     <FormRow key={`formRow-${x.key}-${y.key}`}>
- *       {x}
- *       {y}
- *     </FormRow>
- *   );
- *   return [row, ...makeFormRows(rest)];
- * };
- */
 
 // eslint-disable-next-line react/no-multi-comp
 export const makeFormColumns = (formItems: JSX.Element[]) => {
