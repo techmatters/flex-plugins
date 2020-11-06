@@ -65,7 +65,6 @@ export const issueSyncToken = async (): Promise<string> => {
   return syncToken;
 };
 
-// eslint-disable-next-line import/no-unused-modules
 export const adjustChatCapacity = async (adjustment: 'increase' | 'decrease'): Promise<void> => {
   const { workerSid } = getConfig();
 
@@ -75,6 +74,20 @@ export const adjustChatCapacity = async (adjustment: 'increase' | 'decrease'): P
   };
 
   const response = await fetchProtectedApi('/adjustChatCapacity', body);
+
+  return response;
+};
+
+export const assignMeContactlessTask = async () => {
+  const { workerSid, helpline } = getConfig();
+
+  const body = {
+    targetSid: workerSid,
+    transferTargetType: 'worker',
+    helpline,
+  };
+
+  const response = await fetchProtectedApi('/createContactlessTask', body);
 
   return response;
 };

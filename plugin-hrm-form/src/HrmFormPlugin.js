@@ -149,6 +149,7 @@ const setUpComponents = setupObject => {
   if (featureFlags.enable_case_management) Components.setUpCaseList();
 
   if (featureFlags.enable_manual_pulling) Components.setUpManualPulling();
+  Components.setUpOfflineContact();
 
   if (!Boolean(helpline)) Components.setUpDeveloperComponents(setupObject); // utilities for developers only
 

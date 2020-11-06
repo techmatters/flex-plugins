@@ -13,6 +13,7 @@ import CaseList from '../components/caseList';
 import SettingsSideLink from '../components/sideLinks/SettingsSideLink';
 import CaseListSideLink from '../components/sideLinks/CaseListSideLink';
 import ManualPullButton from '../components/ManualPullButton';
+import OfflineContactButton from '../components/OfflineContactButton';
 import { chatCapacityUpdated } from '../states/configuration/actions';
 // eslint-disable-next-line
 import { getConfig } from '../HrmFormPlugin';
@@ -255,6 +256,28 @@ export const setUpManualPulling = () => {
     sortOrder: Infinity,
     align: 'start',
   });
+};
+
+export const setUpOfflineContact = () => {
+  Flex.TaskList.Content.add(<OfflineContactButton key="offline-contact-button" />, {
+    sortOrder: Infinity,
+    align: 'start',
+  });
+
+  Flex.TaskCanvas.Content.remove('header', {
+    if: props => props.task.channelType === 'default',
+  });
+  Flex.TaskCanvas.Content.remove('tabs', {
+    if: props => props.task.channelType === 'default',
+  });
+
+  /*
+   * Flex.AgentDesktopView.Content.add(<OfflineContactButton key="offline-contact-button" />, {
+   *   sortOrder: Infinity,
+   *   align: 'start',
+   *   if: props => !props.tasks || !props.tasks.size,
+   * });
+   */
 };
 
 /**
