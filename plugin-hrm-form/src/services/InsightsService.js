@@ -43,6 +43,8 @@ function buildConversationsObject(taskAttributes, task) {
     conversation_attribute_3: childInformation.gender.value,
     conversation_attribute_4: childInformation.age.value,
     conversation_attribute_6: mapChannelForInsights(taskAttributes.channelType),
+
+    // date: Date.now(), // overrides task's date and time
   };
 }
 
