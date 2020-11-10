@@ -39,7 +39,6 @@ const ContactlessTaskTab: React.FC<Props> = ({ defaultEventHandlers, contactless
           id="ContactlessTask_Time"
           label="Time of Contact"
           type="time"
-          defaultValue="07:30"
           InputLabelProps={{
             shrink: true,
           }}
