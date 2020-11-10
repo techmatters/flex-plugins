@@ -522,6 +522,21 @@ const defaultFormDefinition = {
       value: false,
     },
   },
+  contactlessTask: {
+    type: FieldType.INTERMEDIATE,
+    channel: {
+      type: FieldType.TEXT_INPUT,
+      validation: null,
+    },
+    date: {
+      type: FieldType.TEXT_INPUT,
+      validation: null,
+    },
+    time: {
+      type: FieldType.TEXT_INPUT,
+      validation: null,
+    },
+  },
 };
 
 const recursivelyCreateBlankForm = formDefinition => {

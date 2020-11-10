@@ -12,6 +12,7 @@ import CallerInformationTab from './CallerInformationTab';
 import ChildInformationTab from './ChildInformationTab';
 import IssueCategorizationTab from './IssueCategorizationTab';
 import CaseInformationTab from './CaseInformationTab';
+import ContactlessTaskTab from './ContactlessTaskTab';
 import BottomBar from './BottomBar';
 import { hasTaskControl } from '../../utils/transfer';
 
@@ -73,6 +74,11 @@ const TabbedForms = props => {
     />,
   );
 
+  if (task.attributes.isContactlessTask)
+    body.push(
+      <ContactlessTaskTab contactlessTask={form.contactlessTask} defaultEventHandlers={defaultEventHandlers} />,
+    );
+
   if (isCallerType) {
     body.push(
       <CallerInformationTab callerInformation={form.callerInformation} defaultEventHandlers={defaultEventHandlers} />,
@@ -99,6 +105,8 @@ const TabbedForms = props => {
 
   const tabs = [];
   tabs.push(<StyledTab searchTab key="Search" icon={<SearchIcon />} />);
+  if (task.attributes.isContactlessTask)
+    tabs.push(<StyledTab key="Contact Information" label={<Template code="TabbedForms-AddContactInfoTab" />} />);
   if (isCallerType) {
     tabs.push(decorateTab('TabbedForms-AddCallerInfoTab', form.callerInformation));
   }

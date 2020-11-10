@@ -196,9 +196,9 @@ export const wrapupTask = setupObject =>
  */
 const saveInsights = async payload => {
   const { taskSid } = payload.task;
-  const task = getStateContactForms(taskSid);
+  const form = getStateContactForms(taskSid);
 
-  await saveInsightsData(payload.task, task);
+  await saveInsightsData(payload.task, form);
 };
 
 /**

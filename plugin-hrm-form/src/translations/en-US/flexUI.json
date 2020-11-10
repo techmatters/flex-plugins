@@ -90,6 +90,7 @@
   "TabbedForms-AddChildInfoTab": "Child Information",
   "TabbedForms-CategoriesTab": "Categories",
   "TabbedForms-AddCaseInfoTab": "Summary",
+  "TabbedForms-AddContactInfoTab": "Contact Infor",
 
   "NotImplemented": "Not implemented yet!",
   "Error-Backend": "Error from backend system.",

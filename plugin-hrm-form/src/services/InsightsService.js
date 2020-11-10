@@ -23,8 +23,8 @@ function getSubcategories(task) {
   return result.splice(0, 3);
 }
 
-function buildConversationsObject(taskAttributes, task) {
-  const callType = task.callType.value;
+function buildConversationsObject(taskAttributes, form) {
+  const callType = form.callType.value;
   const hasCustomerData = !isNonDataCallType(callType);
 
   if (!hasCustomerData) {
@@ -34,8 +34,8 @@ function buildConversationsObject(taskAttributes, task) {
     };
   }
 
-  const subcategories = getSubcategories(task);
-  const { childInformation } = task;
+  const subcategories = getSubcategories(form);
+  const { childInformation } = form;
 
   return {
     conversation_attribute_1: subcategories.join(';'),
@@ -43,8 +43,6 @@ function buildConversationsObject(taskAttributes, task) {
     conversation_attribute_3: childInformation.gender.value,
     conversation_attribute_4: childInformation.age.value,
     conversation_attribute_6: mapChannelForInsights(taskAttributes.channelType),
-
-    // date: Date.now(), // overrides task's date and time
   };
 }
 
@@ -58,10 +56,29 @@ function mergeAttributes(previousAttributes, { conversations }) {
   };
 }
 
-export async function saveInsightsData(twilioTask, task) {
-  const conversations = buildConversationsObject(twilioTask.attributes, task);
-  const previousAttributes = twilioTask.attributes;
-  const newAttributes = mergeAttributes(previousAttributes, { conversations });
+const overrideAttributes = (attributes, form) => {
+  const { date, time } = form.contactlessTask;
 
-  await twilioTask.setAttributes(newAttributes);
+  const originalDate = new Date([date.value, time.value].join(','));
+
+  console.log('>>> originalDate', originalDate, originalDate.getTime());
+  return {
+    ...attributes,
+    conversations: {
+      ...attributes.conversations,
+      communication_channel: form.contactlessTask.channel.value,
+      date: originalDate.getTime(),
+    },
+  };
+};
+
+export async function saveInsightsData(twilioTask, form) {
+  const conversations = buildConversationsObject(twilioTask.attributes, form);
+  const previousAttributes = twilioTask.attributes;
+  const mergedAttributes = mergeAttributes(previousAttributes, { conversations });
+  const finalAttributes = previousAttributes.isContactlessTask
+    ? overrideAttributes(mergedAttributes, form)
+    : mergedAttributes;
+
+  await twilioTask.setAttributes(finalAttributes);
 }
