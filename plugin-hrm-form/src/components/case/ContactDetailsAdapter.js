@@ -28,7 +28,7 @@ const catsReducer = (accumulator, [cat, subcats]) => {
  * @param {{ [category: string]: { [subcategory: string]: boolean } }} categories categories object
  * @returns {{ [category: string]: string[] }} returns an object containing each truthy subcategory under the category name
  */
-const retrieveCategories = categories => {
+export const retrieveCategories = categories => {
   if (!categories) return {};
 
   return Object.entries(categories).reduce(catsReducer, {});

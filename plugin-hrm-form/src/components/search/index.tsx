@@ -63,6 +63,22 @@ const Search: React.FC<Props> = props => {
     }
   };
 
+  const toggleClosedCases = () => {
+    if (typeof searchParams.closedCases !== 'undefined') {
+      const { closedCases } = searchParams;
+      const updatedSearchParams = {
+        ...searchParams,
+        closedCases: !closedCases,
+      };
+
+      /*
+       * ToDo: add a logic to Search CASES
+       * handleSearch(updatedSearchParams, 0);
+       */
+      setSearchParams(updatedSearchParams);
+    }
+  };
+
   const goToForm = () => props.changeSearchPage('form');
 
   const goToResults = () => props.changeSearchPage(SearchPages.resultsContacts);
@@ -96,9 +112,11 @@ const Search: React.FC<Props> = props => {
             currentIsCaller={props.currentIsCaller}
             results={searchResult}
             onlyDataContacts={searchParams.onlyDataContacts}
+            closedCases={searchParams.closedCases}
             handleSelectSearchResult={props.handleSelectSearchResult}
             handleSearch={setOffsetAndHandleSearch}
             toggleNonDataContacts={toggleNonDataContacts}
+            toggleClosedCases={toggleClosedCases}
             handleBack={goToForm}
             handleViewDetails={props.viewContactDetails}
           />

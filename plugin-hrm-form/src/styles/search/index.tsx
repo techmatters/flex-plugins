@@ -5,9 +5,65 @@ import { Tabs, TabsProps } from '@twilio/flex-ui';
 import Folder from '@material-ui/icons/Folder';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import Link from '@material-ui/icons/Link';
+import CropFreeIcon from '@material-ui/icons/CropFree';
+import CallMergeIcon from '@material-ui/icons/CallMerge';
 import { ButtonProps } from '@material-ui/core/Button';
 
 import { Flex, Row, FontOpenSans, BottomButtonBar } from '../HrmStyles';
+
+// CaseViewer Styles
+export const CaseWrapper = styled('div')`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding: 5px 20px 10px 20px;
+  width: 600px;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
+`;
+
+CaseWrapper.displayName = 'CaseWrapper';
+
+export const CaseHeaderContainer = styled('div')`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+`;
+
+CaseHeaderContainer.displayName = 'CaseHeaderContainer';
+
+export const CaseHeaderCaseId = styled('div')`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: solid;
+  border-width: thin;
+  width: 50px;
+  font-weight: 600;
+`;
+
+CaseHeaderCaseId.displayName = 'CaseHeaderCaseId';
+
+export const CaseHeaderChildName = styled('p')`
+  font-weight: 700;
+  width: 150px;
+`;
+
+CaseHeaderChildName.displayName = 'CaseHeaderChildName';
+
+export const CaseSummaryContainer = styled('div')`
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  margin-top: 10px;
+`;
+
+CaseSummaryContainer.displayName = 'CaseSummaryContainer';
 
 export const ConfirmContainer = styled(Paper)`
   display: flex;
@@ -128,13 +184,13 @@ export const StyledTabs = styled((props: TabsProps) => <Tabs {...props} />)`
 `;
 StyledTabs.displayName = 'StyledTabs';
 
-export const StyledSearchTabs = styled('div')`
+export const StyledResultsContainer = styled('div')`
   display: flex;
   align-items: center;
   width: 565px;
   margin-top: 10px;
 `;
-StyledSearchTabs.displayName = 'StyledSearchTabs';
+StyledResultsContainer.displayName = 'StyledResultsContainer';
 
 export const StyledTabLabel = styled('div')`
   display: flex;
@@ -143,10 +199,10 @@ export const StyledTabLabel = styled('div')`
 `;
 StyledTabLabel.displayName = 'StyledTabLabel';
 
-export const StyledSearchText = styled('div')`
+export const StyledResultsText = styled('div')`
   display: flex;
 `;
-StyledSearchText.displayName = 'StyledSearchText';
+StyledResultsText.displayName = 'StyledResultsText';
 
 export const StyledFolderIcon = styled(Folder)`
   font-size: medium !important;
