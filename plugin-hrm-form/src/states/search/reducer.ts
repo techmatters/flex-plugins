@@ -144,7 +144,7 @@ export function reduce(state = initialState, action: t.SearchActionType | Genera
           [action.taskId]: {
             ...task,
             searchResult: action.searchResult,
-            currentPage: t.SearchPages.results,
+            currentPage: t.SearchPages.resultsContacts,
             isRequesting: false,
             error: null,
           },
@@ -159,7 +159,7 @@ export function reduce(state = initialState, action: t.SearchActionType | Genera
           ...state.tasks,
           [action.taskId]: {
             ...task,
-            currentPage: t.SearchPages.results,
+            currentPage: t.SearchPages.resultsContacts,
             isRequesting: false,
             error: action.error,
           },

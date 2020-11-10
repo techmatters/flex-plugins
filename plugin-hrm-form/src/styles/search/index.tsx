@@ -1,10 +1,13 @@
 import React from 'react';
 import styled from 'react-emotion';
 import { ButtonBase, Paper, Button, FormControlLabel, Switch, withStyles } from '@material-ui/core';
+import { Tabs, TabsProps } from '@twilio/flex-ui';
+import Folder from '@material-ui/icons/Folder';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import Link from '@material-ui/icons/Link';
+import { ButtonProps } from '@material-ui/core/Button';
 
-import { Flex, Row, FontOpenSans, Container, BottomButtonBar } from '../HrmStyles';
+import { Flex, Row, FontOpenSans, BottomButtonBar } from '../HrmStyles';
 
 export const ConfirmContainer = styled(Paper)`
   display: flex;
@@ -56,7 +59,9 @@ export const ContactButtonsWrapper = styled('div')`
   align-items: center;
 `;
 
-export const StyledLink = styled(({ onClick, ...rest }) => <Button size="small" onClick={onClick} {...rest} />)`
+export const StyledLink = styled(({ onClick, ...rest }: ButtonProps) => (
+  <Button size="small" onClick={onClick} {...rest} />
+))`
   span {
     text-transform: none;
     color: #1874e1;
@@ -72,7 +77,11 @@ const Tag = styled('div')`
   padding: 5px 15px;
 `;
 
-export const ContactTag = styled(Tag)`
+type ColorProps = {
+  color?: string;
+};
+
+export const ContactTag = styled(Tag)<ColorProps>`
   display: inline-flex;
   align-items: center;
   border-radius: 2px;
@@ -111,6 +120,48 @@ export const PrevNameText = styled(FontOpenSans)`
   line-height: 14px;
   color: #182b33;
 `;
+
+export const StyledTabs = styled((props: TabsProps) => <Tabs {...props} />)`
+  .Twilio-TabHeader-StateIndicator-Active {
+    background-color: black;
+  }
+`;
+StyledTabs.displayName = 'StyledTabs';
+
+export const StyledSearchTabs = styled('div')`
+  display: flex;
+  align-items: center;
+  width: 565px;
+  margin-top: 10px;
+`;
+StyledSearchTabs.displayName = 'StyledSearchTabs';
+
+export const StyledTabLabel = styled('div')`
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+`;
+StyledTabLabel.displayName = 'StyledTabLabel';
+
+export const StyledSearchText = styled('div')`
+  display: flex;
+`;
+StyledSearchText.displayName = 'StyledSearchText';
+
+export const StyledFolderIcon = styled(Folder)`
+  font-size: medium !important;
+  padding-right: 10px;
+`;
+
+StyledFolderIcon.displayName = 'StyledFolderIcon';
+
+export const BoldText = styled('div')`
+  font-weight: bold;
+  color: #000000;
+  font-family: Open Sans;
+  text-align: left;
+`;
+BoldText.displayName = 'BoldText';
 
 export const SummaryText = styled(FontOpenSans)`
   font-size: 13px;
@@ -158,7 +209,7 @@ export const TagText = styled(FontOpenSans)`
   color: #192b33e8;
 `;
 
-export const TagMiddleDot = styled('div')`
+export const TagMiddleDot = styled('div')<ColorProps>`
   display: inline-block;
   width: 4px;
   min-width: 4px;
@@ -181,7 +232,7 @@ export const DetailsContainer = styled('div')`
   padding-right: ${containerPadding}px;
 `;
 
-export const SectionTitleContainer = styled(Row)`
+export const SectionTitleContainer = styled(Row)<ColorProps>`
   background-color: #ecedf1;
   padding: 8px;
   padding-left: 18px;
@@ -240,9 +291,19 @@ export const SectionValueText = styled(BodyText)`
 `;
 
 // SearchResults styles
-export const ResultsHeader = styled(Container)`
+const containerLeftRightMargin = '5px';
+
+export const ResultsHeader = styled('div')`
+  display: flex;
+  padding: 32px 20px 0px 20px;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  background-color: #ffffff;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  margin: 0 ${containerLeftRightMargin};
+  height: 100%;
   min-height: 75px;
-  padding-bottom: 23px;
   justify-content: space-between;
   flex-basis: 0;
   flex-grow: 0;

@@ -26,7 +26,8 @@ export type SearchFormValues = {
 
 export const SearchPages = {
   form: 'form',
-  results: 'results',
+  resultsContacts: 'results.contacts',
+  resultsCases: 'results.cases',
   details: 'details',
 } as const;
 

@@ -63,6 +63,14 @@ jest.mock('../styles/search', () => ({
   StyledFormControlLabel: 'StyledFormControlLabel',
   StyledSwitch: 'StyledSwitch',
   SwitchLabel: 'SwitchLabel',
+  StyledLink: 'StyledLink',
+  StyledTabs: 'StyledTabs',
+  StyledSearchTabs: 'StyledSearchTabs',
+  StyledSearchText: 'StyledSearchText',
+  StyledTabLabel: 'StyledTabLabel',
+  StyledFolderIcon: 'StyledFolderIcon',
+  BoldText: 'BoldText',
+  SearchResults: 'SearchResults',
 }));
 
 jest.mock('../styles/callTypeButtons', () => ({
