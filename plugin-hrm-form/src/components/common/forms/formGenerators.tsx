@@ -4,7 +4,7 @@ import { useFormContext, ValidationRules, FieldError } from 'react-hook-form';
 import { get, pick } from 'lodash';
 import { Template } from '@twilio/flex-ui';
 
-import { Box, FormItem, FormRow, ColumnarBlock, TwoColumnLayout } from '../../../styles/HrmStyles';
+import { Box, FormItem, ColumnarBlock, TwoColumnLayout, FormLabel } from '../../../styles/HrmStyles';
 import type { FormItemDefinition, FormDefinition, SelectOption, MixedOrBool } from './types';
 import './mixedCheckbox.css'; // This would be better done with this https://emotion.sh/docs/css-prop#gatsby-focus-wrapper, but it requires emotion 10
 
@@ -19,17 +19,6 @@ export const ConnectForm: React.FC<{
 const getRules = (field: FormItemDefinition): ValidationRules =>
   pick(field, ['max', 'maxLength', 'min', 'minLength', 'pattern', 'required', 'validate']);
 
-const renderError = (error: FieldError) =>
-  error.type === 'required' ? (
-    <span>
-      <Template code="RequiredFieldError" />
-    </span>
-  ) : (
-    <span>
-      <Template code={error.message} />
-    </span>
-  );
-
 const getInputType = (parents: string[], updateCallback: () => void) => (def: FormItemDefinition) => {
   const rules = getRules(def);
   const path = [...parents, def.name].join('.');
@@ -41,11 +30,18 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
           {({ errors, register }) => {
             const error = get(errors, path);
             return (
-              <FormItem>
-                <label htmlFor={path}>{def.label}</label>
-                <input id={path} name={path} onBlur={updateCallback} ref={register(rules)} />
-                {error && renderError(error)}
-              </FormItem>
+              <FormLabel htmlFor={path}>
+                {def.label}
+                <input
+                  id={path}
+                  name={path}
+                  aria-invalid={Boolean(error)}
+                  aria-describedby={`${path}-error`}
+                  onBlur={updateCallback}
+                  ref={register(rules)}
+                />
+                {error && <Template id={`${path}-error`} code={error.message} />}
+              </FormLabel>
             );
           }}
         </ConnectForm>
@@ -56,19 +52,21 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
           {({ errors, register }) => {
             const error = get(errors, path);
             return (
-              <FormItem>
-                <label htmlFor={path}>{def.label}</label>
+              <FormLabel htmlFor={path}>
+                {def.label}
                 <input
                   id={path}
                   name={path}
+                  aria-invalid={Boolean(error)}
+                  aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
                   ref={register({
                     ...rules,
                     pattern: { value: /^[0-9]+$/g, message: 'This field only accepts numeric input.' },
                   })}
                 />
-                {error && renderError(error)}
-              </FormItem>
+                {error && <Template id={`${path}-error`} code={error.message} />}
+              </FormLabel>
             );
           }}
         </ConnectForm>
@@ -79,17 +77,24 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
           {({ errors, register }) => {
             const error = get(errors, path);
             return (
-              <FormItem>
-                <label htmlFor={path}>{def.label}</label>
-                <select id={path} name={path} onBlur={updateCallback} ref={register(rules)}>
+              <FormLabel htmlFor={path}>
+                {def.label}
+                <select
+                  id={path}
+                  name={path}
+                  aria-invalid={Boolean(error)}
+                  aria-describedby={`${path}-error`}
+                  onBlur={updateCallback}
+                  ref={register(rules)}
+                >
                   {def.options.map(o => (
                     <option key={`${path}-${o.value}`} value={o.value}>
                       {o.label}
                     </option>
                   ))}
                 </select>
-                {error && renderError(error)}
-              </FormItem>
+                {error && <Template id={`${path}-error`} code={error.message} />}
+              </FormLabel>
             );
           }}
         </ConnectForm>
@@ -114,11 +119,13 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
               : [def.defaultOption];
 
             return (
-              <FormItem>
-                <label htmlFor={path}>{def.label}</label>
+              <FormLabel htmlFor={path}>
+                {def.label}
                 <select
                   id={path}
                   name={path}
+                  aria-invalid={Boolean(error)}
+                  aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
                   ref={register({ validate })}
                   disabled={!hasOptions}
@@ -129,8 +136,8 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                     </option>
                   ))}
                 </select>
-                {error && renderError(error)}
-              </FormItem>
+                {error && <Template id={`${path}-error`} code={error.message} />}
+              </FormLabel>
             );
           }}
         </ConnectForm>
@@ -141,13 +148,19 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
           {({ errors, register }) => {
             const error = get(errors, path);
             return (
-              <FormItem>
-                <label htmlFor={path}>
-                  <input id={path} name={path} type="checkbox" onChange={updateCallback} ref={register(rules)} />
-                  {def.label}
-                </label>
-                {error && renderError(error)}
-              </FormItem>
+              <FormLabel htmlFor={path}>
+                {def.label}
+                <input
+                  id={path}
+                  name={path}
+                  aria-invalid={Boolean(error)}
+                  aria-describedby={`${path}-error`}
+                  type="checkbox"
+                  onChange={updateCallback}
+                  ref={register(rules)}
+                />
+                {error && <Template id={`${path}-error`} code={error.message} />}
+              </FormLabel>
             );
           }}
         </ConnectForm>
@@ -170,24 +183,22 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             const error = get(errors, path);
 
             return (
-              <FormItem>
-                <label htmlFor={path}>
-                  <input
-                    id={path}
-                    type="checkbox"
-                    aria-checked={checked}
-                    className="mixed-checkbox" // this grabs the styles imported from mixedCheckbox.css
-                    onBlur={updateCallback}
-                    onChange={() => {
-                      if (checked === 'mixed') setChecked(false);
-                      if (checked === false) setChecked(true);
-                      if (checked === true) setChecked('mixed');
-                    }}
-                  />
-                  {def.label}
-                </label>
-                {error && renderError(error)}
-              </FormItem>
+              <FormLabel htmlFor={path}>
+                {def.label}
+                <input
+                  id={path}
+                  type="checkbox"
+                  aria-checked={checked}
+                  className="mixed-checkbox" // this grabs the styles imported from mixedCheckbox.css
+                  onBlur={updateCallback}
+                  onChange={() => {
+                    if (checked === 'mixed') setChecked(false);
+                    if (checked === false) setChecked(true);
+                    if (checked === true) setChecked('mixed');
+                  }}
+                />
+                {error && <Template id={`${path}-error`} code={error.message} />}
+              </FormLabel>
             );
           }}
         </ConnectForm>
@@ -198,11 +209,19 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
           {({ errors, register }) => {
             const error = get(errors, path);
             return (
-              <FormItem>
-                <label htmlFor={path}>{def.label}</label>
-                <textarea id={path} name={path} onBlur={updateCallback} ref={register(rules)} rows={10} />
-                {error && renderError(error)}
-              </FormItem>
+              <FormLabel htmlFor={path}>
+                {def.label}
+                <textarea
+                  id={path}
+                  name={path}
+                  aria-invalid={Boolean(error)}
+                  aria-describedby={`${path}-error`}
+                  onBlur={updateCallback}
+                  ref={register(rules)}
+                  rows={10}
+                />
+                {error && <Template id={`${path}-error`} code={error.message} />}
+              </FormLabel>
             );
           }}
         </ConnectForm>

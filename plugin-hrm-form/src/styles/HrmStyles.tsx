@@ -329,9 +329,18 @@ FormRow.displayName = 'FormRow';
 export const FormItem = styled('div')`
   display: flex;
   flex-direction: column;
-  align-items: center;
 `;
 FormItem.displayName = 'FormItem';
+
+export const FormLabel = styled('label')`
+  display: flex;
+  flex-direction: column;
+  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 2px;
+  min-height: 18px;
+`;
+StyledLabel.displayName = 'StyledLabel';
 
 export const ColumnarBlock = styled('div')`
   display: flex;
