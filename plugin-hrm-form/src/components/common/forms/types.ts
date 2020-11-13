@@ -48,7 +48,7 @@ type InputDefinition = {
   ValidationRules;
 
 type NumericInputDefinition = {
-  type: 'numeric input';
+  type: 'numeric-input';
 } & ItemBase &
   ValidationRules;
 
@@ -87,6 +87,16 @@ type TextareaDefinition = {
 } & ItemBase &
   ValidationRules;
 
+type DateInputDefinition = {
+  type: 'date-input';
+} & ItemBase &
+  ValidationRules;
+
+type TimeInputDefinition = {
+  type: 'time-input';
+} & ItemBase &
+  ValidationRules;
+
 export type FormItemDefinition =
   | InputDefinition
   | NumericInputDefinition
@@ -94,7 +104,9 @@ export type FormItemDefinition =
   | DependentSelectDefinition
   | CheckboxDefinition
   | MixedCheckboxDefinition
-  | TextareaDefinition;
+  | TextareaDefinition
+  | DateInputDefinition
+  | TimeInputDefinition;
 export type FormDefinition = FormItemDefinition[];
 
 export type CategoryEntry = { color: string; subcategories: string[] };

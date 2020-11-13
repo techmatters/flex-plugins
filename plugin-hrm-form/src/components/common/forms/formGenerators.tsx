@@ -1,11 +1,11 @@
 /* eslint-disable import/no-unused-modules */
 /* eslint-disable react/display-name */
 import React from 'react';
-import { useFormContext, ValidationRules, FieldError } from 'react-hook-form';
+import { useFormContext, ValidationRules } from 'react-hook-form';
 import { get, pick } from 'lodash';
 import { Template } from '@twilio/flex-ui';
 
-import { Box, FormItem, ColumnarBlock, TwoColumnLayout, FormLabel } from '../../../styles/HrmStyles';
+import { Box, ColumnarBlock, TwoColumnLayout, FormLabel, FormError } from '../../../styles/HrmStyles';
 import type { FormItemDefinition, FormDefinition, SelectOption, MixedOrBool } from './types';
 import './mixedCheckbox.css'; // This would be better done with this https://emotion.sh/docs/css-prop#gatsby-focus-wrapper, but it requires emotion 10
 
@@ -41,13 +41,17 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                   onBlur={updateCallback}
                   ref={register(rules)}
                 />
-                {error && <Template id={`${path}-error`} code={error.message} />}
+                {error && (
+                  <FormError>
+                    <Template id={`${path}-error`} code={error.message} />
+                  </FormError>
+                )}
               </FormLabel>
             );
           }}
         </ConnectForm>
       );
-    case 'numeric input':
+    case 'numeric-input':
       return (
         <ConnectForm key={path}>
           {({ errors, register }) => {
@@ -66,7 +70,11 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                     pattern: { value: /^[0-9]+$/g, message: 'This field only accepts numeric input.' },
                   })}
                 />
-                {error && <Template id={`${path}-error`} code={error.message} />}
+                {error && (
+                  <FormError>
+                    <Template id={`${path}-error`} code={error.message} />
+                  </FormError>
+                )}
               </FormLabel>
             );
           }}
@@ -94,7 +102,11 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                     </option>
                   ))}
                 </select>
-                {error && <Template id={`${path}-error`} code={error.message} />}
+                {error && (
+                  <FormError>
+                    <Template id={`${path}-error`} code={error.message} />
+                  </FormError>
+                )}
               </FormLabel>
             );
           }}
@@ -137,7 +149,11 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                     </option>
                   ))}
                 </select>
-                {error && <Template id={`${path}-error`} code={error.message} />}
+                {error && (
+                  <FormError>
+                    <Template id={`${path}-error`} code={error.message} />
+                  </FormError>
+                )}
               </FormLabel>
             );
           }}
@@ -160,7 +176,11 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                   onChange={updateCallback}
                   ref={register(rules)}
                 />
-                {error && <Template id={`${path}-error`} code={error.message} />}
+                {error && (
+                  <FormError>
+                    <Template id={`${path}-error`} code={error.message} />
+                  </FormError>
+                )}
               </FormLabel>
             );
           }}
@@ -198,7 +218,11 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                     if (checked === true) setChecked('mixed');
                   }}
                 />
-                {error && <Template id={`${path}-error`} code={error.message} />}
+                {error && (
+                  <FormError>
+                    <Template id={`${path}-error`} code={error.message} />
+                  </FormError>
+                )}
               </FormLabel>
             );
           }}
@@ -221,7 +245,65 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                   ref={register(rules)}
                   rows={10}
                 />
-                {error && <Template id={`${path}-error`} code={error.message} />}
+                {error && (
+                  <FormError>
+                    <Template id={`${path}-error`} code={error.message} />
+                  </FormError>
+                )}
+              </FormLabel>
+            );
+          }}
+        </ConnectForm>
+      );
+    case 'time-input':
+      return (
+        <ConnectForm key={path}>
+          {({ errors, register }) => {
+            const error = get(errors, path);
+            return (
+              <FormLabel htmlFor={path}>
+                {def.label}
+                <input
+                  type="time"
+                  id={path}
+                  name={path}
+                  aria-invalid={Boolean(error)}
+                  aria-describedby={`${path}-error`}
+                  onBlur={updateCallback}
+                  ref={register(rules)}
+                />
+                {error && (
+                  <FormError>
+                    <Template id={`${path}-error`} code={error.message} />
+                  </FormError>
+                )}
+              </FormLabel>
+            );
+          }}
+        </ConnectForm>
+      );
+    case 'date-input':
+      return (
+        <ConnectForm key={path}>
+          {({ errors, register }) => {
+            const error = get(errors, path);
+            return (
+              <FormLabel htmlFor={path}>
+                {def.label}
+                <input
+                  type="date"
+                  id={path}
+                  name={path}
+                  aria-invalid={Boolean(error)}
+                  aria-describedby={`${path}-error`}
+                  onBlur={updateCallback}
+                  ref={register(rules)}
+                />
+                {error && (
+                  <FormError>
+                    <Template id={`${path}-error`} code={error.message} />
+                  </FormError>
+                )}
               </FormLabel>
             );
           }}

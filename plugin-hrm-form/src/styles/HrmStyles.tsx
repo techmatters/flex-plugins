@@ -602,6 +602,7 @@ export const ManualPullButtonBase = withStyles({
 })(ButtonBase);
 ManualPullButtonBase.displayName = 'ManualPullButtonBase';
 
+// eslint-disable-next-line import/no-unused-modules
 export const FormItem = styled('div')`
   display: flex;
   flex-direction: column;
@@ -616,4 +617,11 @@ export const FormLabel = styled('label')`
   letter-spacing: 2px;
   min-height: 18px;
 `;
-StyledLabel.displayName = 'StyledLabel';
+FormLabel.displayName = 'FormLabel';
+
+export const FormError = styled('span')`
+  text-transform: none;
+  font-size: 11px;
+  color: #ed4337;
+`;
+FormError.displayName = 'FormError';
