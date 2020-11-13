@@ -1,3 +1,6 @@
+import { createFormItem } from '../components/common/forms/formGenerators';
+import { formDefinition as contactlessTaskTabDefinition } from '../components/tabbedForms/ContactlessTaskTab';
+
 export const ValidationType = {
   REQUIRED: 'REQUIRED', // Will not be applied if in the callerInformation tab and callType is not caller.  Will not be applied when callType is standalone.
 };
@@ -522,21 +525,6 @@ const defaultFormDefinition = {
       value: false,
     },
   },
-  contactlessTask: {
-    type: FieldType.INTERMEDIATE,
-    channel: {
-      type: FieldType.TEXT_INPUT,
-      validation: null,
-    },
-    date: {
-      type: FieldType.TEXT_INPUT,
-      validation: null,
-    },
-    time: {
-      type: FieldType.TEXT_INPUT,
-      validation: null,
-    },
-  },
 };
 
 const recursivelyCreateBlankForm = formDefinition => {
@@ -596,7 +584,7 @@ const recursivelyCreateBlankForm = formDefinition => {
       }
     });
 
-  return initialState;
+  return { ...initialState, contactlessTask: contactlessTaskTabDefinition.reduce(createFormItem, {}) };
 };
 
 const createCategoriesMetadata = formDef => {

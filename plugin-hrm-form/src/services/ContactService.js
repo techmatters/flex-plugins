@@ -39,6 +39,12 @@ export function transformForm(form) {
   Object.keys(form)
     .filter(key => !filterableFields.includes(key))
     .forEach(key => {
+      // NOTE: hacky if to avoid transforming the "contactlessTask" part of the form (handled by rhf)
+      if (key === 'contactlessTask') {
+        newForm[key] = form[key];
+        return;
+      }
+
       switch (form[key].type) {
         case FieldType.CALL_TYPE:
         case FieldType.CHECKBOX:

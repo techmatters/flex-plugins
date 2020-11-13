@@ -59,8 +59,8 @@ function mergeAttributes(previousAttributes, { conversations }) {
 const overrideAttributes = (attributes, form) => {
   const { date, time } = form.contactlessTask;
 
-  const [y, m, d] = date.value.split('-').map(s => parseInt(s, 10));
-  const [hh, mm] = time.value.split(':').map(s => parseInt(s, 10));
+  const [y, m, d] = date.split('-').map(s => parseInt(s, 10));
+  const [hh, mm] = time.split(':').map(s => parseInt(s, 10));
 
   const dateUTC = Date.UTC(y, m, d, hh, mm);
 
@@ -69,7 +69,7 @@ const overrideAttributes = (attributes, form) => {
     ...attributes,
     conversations: {
       ...attributes.conversations,
-      communication_channel: form.contactlessTask.channel.value,
+      communication_channel: form.contactlessTask.channel,
       date: dateUTC,
     },
   };

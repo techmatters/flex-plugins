@@ -337,3 +337,37 @@ export const makeFormColumns = (formItems: JSX.Element[]) => {
     </TwoColumnLayout>
   );
 };
+
+/**
+ * Utility functions to create initial state from definition
+ */
+
+export const getInitialValue = (def: FormItemDefinition) => {
+  switch (def.type) {
+    case 'input':
+      return '';
+    case 'numeric-input':
+      return '';
+    case 'select':
+      return def.options[0].value;
+    case 'dependent-select':
+      return def.defaultOption.value;
+    case 'checkbox':
+      return false;
+    case 'mixed-checkbox':
+      return def.initialChecked === undefined ? 'mixed' : def.initialChecked;
+    case 'textarea':
+      return '';
+    case 'date-input':
+      return '';
+    case 'time-input':
+      return '';
+    default:
+      return null;
+  }
+};
+
+export const createFormItem = <T extends {}>(obj: T, def: FormItemDefinition) => ({
+  ...obj,
+  [def.name]: getInitialValue(def),
+});

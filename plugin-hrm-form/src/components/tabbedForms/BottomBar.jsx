@@ -32,6 +32,7 @@ class BottomBar extends Component {
     changeRoute: PropTypes.func.isRequired,
     handleValidateForm: PropTypes.func.isRequired,
     setConnectedCase: PropTypes.func.isRequired,
+    handleSubmitIfValid: PropTypes.func.isRequired,
   };
 
   state = {
@@ -86,8 +87,8 @@ class BottomBar extends Component {
   };
 
   handleSubmit = async () => {
-    const { task } = this.props;
     const { hrmBaseUrl, workerSid, helpline, strings } = getConfig();
+    const { task, trigger } = this.props;
 
     if (!hasTaskControl(task)) return;
 
@@ -108,7 +109,7 @@ class BottomBar extends Component {
   };
 
   render() {
-    const { tabs, form } = this.props;
+    const { tabs, form, handleSubmitIfValid } = this.props;
     const { isMenuOpen, anchorEl, mockedMessage } = this.state;
 
     const { tab } = form.metadata;
@@ -140,7 +141,7 @@ class BottomBar extends Component {
         </Menu>
         <BottomButtonBar>
           {showNextButton && (
-            <StyledNextStepButton roundCorners={true} onClick={this.handleNext}>
+            <StyledNextStepButton type="button" roundCorners={true} onClick={this.handleNext}>
               <Template code="BottomBar-Next" />
             </StyledNextStepButton>
           )}
@@ -149,6 +150,7 @@ class BottomBar extends Component {
               {featureFlags.enable_case_management && (
                 <Box marginRight="15px">
                   <StyledNextStepButton
+                    type="button"
                     roundCorners
                     secondary
                     onClick={this.toggleCaseMenu}
@@ -159,7 +161,7 @@ class BottomBar extends Component {
                   </StyledNextStepButton>
                 </Box>
               )}
-              <StyledNextStepButton roundCorners={true} onClick={this.handleSubmit} disabled={isSubmitButtonDisabled}>
+              <StyledNextStepButton roundCorners={true} onClick={handleSubmitIfValid(this.handleSubmit)} disabled={isSubmitButtonDisabled}>
                 <Template code="BottomBar-SaveContact" />
               </StyledNextStepButton>
             </>

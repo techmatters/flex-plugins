@@ -2,8 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTaskContext, Template } from '@twilio/flex-ui';
 import SearchIcon from '@material-ui/icons/Search';
+import { useForm, FormProvider } from 'react-hook-form';
+import { connect } from 'react-redux';
 
+import { namespace, contactFormsBase } from '../../states';
 import { TabbedFormsContainer, TopNav, TransparentButton, StyledTabs, StyledTab } from '../../styles/HrmStyles';
+import FormTab from '../common/forms/FormTab';
 import callTypes from '../../states/DomainConstants';
 import decorateTab from '../decorateTab';
 import { formType, taskType } from '../../types';
@@ -17,6 +21,13 @@ import BottomBar from './BottomBar';
 import { hasTaskControl } from '../../utils/transfer';
 
 const TabbedForms = props => {
+  const initialValues = { contactlessTask: props.contactForm.contactlessTask };
+  const methods = useForm({
+    defaultValues: initialValues,
+    shouldFocusError: false,
+    shouldUnregister: false,
+  });
+
   const { task, form } = props;
   const taskId = task.taskSid;
 
@@ -74,10 +85,7 @@ const TabbedForms = props => {
     />,
   );
 
-  if (task.attributes.isContactlessTask)
-    body.push(
-      <ContactlessTaskTab contactlessTask={form.contactlessTask} defaultEventHandlers={defaultEventHandlers} />,
-    );
+  if (task.attributes.isContactlessTask) body.push(<div style={{ display: 'none' }} />); // fake it so lenght is accurate
 
   if (isCallerType) {
     body.push(
@@ -106,7 +114,13 @@ const TabbedForms = props => {
   const tabs = [];
   tabs.push(<StyledTab searchTab key="Search" icon={<SearchIcon />} />);
   if (task.attributes.isContactlessTask)
-    tabs.push(<StyledTab key="Contact Information" label={<Template code="TabbedForms-AddContactInfoTab" />} />);
+    tabs.push(
+      <FormTab
+        key="Contact Information"
+        label="TabbedForms-AddContactInfoTab"
+        error={methods.errors.contactlessTask}
+      />,
+    );
   if (isCallerType) {
     tabs.push(decorateTab('TabbedForms-AddCallerInfoTab', form.callerInformation));
   }
@@ -114,23 +128,32 @@ const TabbedForms = props => {
   tabs.push(decorateTab('TabbedForms-CategoriesTab', form.caseInformation.categories));
   tabs.push(<StyledTab key="Case Information" label={<Template code="TabbedForms-AddCaseInfoTab" />} />);
 
+  console.log('>>> errors: ', methods.errors);
+  console.log('>>> getValues: ', methods.getValues());
+
   return (
-    <TabbedFormsContainer>
-      <TopNav>
-        <TransparentButton onClick={handleBackButton}>&lt; BACK</TransparentButton>
-      </TopNav>
-      <StyledTabs name="tab" variant="scrollable" scrollButtons="auto" value={tab} onChange={handleTabsChange}>
-        {tabs}
-      </StyledTabs>
-      {body[tab]}
-      <BottomBar
-        tabs={tabs.length}
-        form={form}
-        changeTab={props.changeTab}
-        handleCompleteTask={props.handleCompleteTask}
-        handleValidateForm={props.handleValidateForm}
-      />
-    </TabbedFormsContainer>
+    <FormProvider {...methods}>
+      <form style={{ height: '100%' }}>
+        <TabbedFormsContainer>
+          <TopNav>
+            <TransparentButton onClick={handleBackButton}>&lt; BACK</TransparentButton>
+          </TopNav>
+          <StyledTabs name="tab" variant="scrollable" scrollButtons="auto" value={tab} onChange={handleTabsChange}>
+            {tabs}
+          </StyledTabs>
+          {task.attributes.isContactlessTask && <ContactlessTaskTab display={tab === 1} />}
+          {body[tab]}
+          <BottomBar
+            tabs={tabs.length}
+            form={form}
+            changeTab={props.changeTab}
+            handleCompleteTask={props.handleCompleteTask}
+            handleValidateForm={props.handleValidateForm}
+            handleSubmitIfValid={methods.handleSubmit} // TODO: this should be used within BottomBar, but that requires a small refactor to make it a functional component
+          />
+        </TabbedFormsContainer>
+      </form>
+    </FormProvider>
   );
 };
 
@@ -148,6 +171,15 @@ TabbedForms.propTypes = {
   changeTab: PropTypes.func.isRequired,
   changeRoute: PropTypes.func.isRequired,
   handleValidateForm: PropTypes.func.isRequired,
+  contactForm: PropTypes.shape({ contactlessTask: PropTypes.shape({}) }).isRequired,
 };
 
-export default withTaskContext(TabbedForms);
+const mapStateToProps = (state, ownProps) => {
+  const contactForm = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
+  return { contactForm };
+};
+
+const connector = connect(mapStateToProps);
+const connected = connector(TabbedForms);
+
+export default withTaskContext(connected);

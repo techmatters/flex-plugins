@@ -90,7 +90,7 @@
   "TabbedForms-AddChildInfoTab": "Child Information",
   "TabbedForms-CategoriesTab": "Categories",
   "TabbedForms-AddCaseInfoTab": "Summary",
-  "TabbedForms-AddContactInfoTab": "Contact Infor",
+  "TabbedForms-AddContactInfoTab": "Contact Info",
 
   "NotImplemented": "Not implemented yet!",
   "Error-Backend": "Error from backend system.",
@@ -180,5 +180,7 @@
 
   "ManualPullButtonText": "Add Another Task",
   "NoTaskAssignableNotification": "No task assignable to you at the moment.",
-  "OfflineContactButtonText": "Offline Contact Record"
+  "OfflineContactButtonText": "Offline Contact Record",
+
+  "RequiredFieldError": "This field is required."
 }
