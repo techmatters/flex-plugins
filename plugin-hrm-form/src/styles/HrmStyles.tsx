@@ -2,7 +2,7 @@
 import React from 'react';
 import styled from 'react-emotion';
 import { ButtonBase, Input, Select, MenuItem, Tabs, Tab, Checkbox, withStyles, TableRow } from '@material-ui/core';
-import { Button, Icon, getBackgroundWithHoverCSS, TabsProps } from '@twilio/flex-ui';
+import { Button, Icon, getBackgroundWithHoverCSS } from '@twilio/flex-ui';
 
 type BoxProps = {
   width?: string;
@@ -424,7 +424,7 @@ export const SubcategoriesWrapper = styled('div')<SubcategoriesWrapperProps>`
 `;
 SubcategoriesWrapper.displayName = 'SubcategoriesWrapper';
 
-export const StyledTabs = styled((props: TabsProps & { value: any }) => (
+export const StyledTabs = styled((props: typeof Tabs['defaultProps'] & { value: any }) => (
   <Tabs {...props} classes={{ indicator: 'indicator' }} />
 ))`
   && .indicator {
@@ -434,7 +434,7 @@ export const StyledTabs = styled((props: TabsProps & { value: any }) => (
 `;
 StyledTabs.displayName = 'StyledTabs';
 
-type StyledTabProps = { searchTab?: boolean };
+export type StyledTabProps = { searchTab?: boolean; label: React.ReactNode } & typeof Tab['defaultProps'];
 
 export const StyledTab = styled(({ searchTab = false, ...rest }: StyledTabProps) => (
   <Tab {...rest} classes={{ selected: 'selected' }} />
@@ -601,3 +601,19 @@ export const ManualPullButtonBase = withStyles({
   },
 })(ButtonBase);
 ManualPullButtonBase.displayName = 'ManualPullButtonBase';
+
+export const FormItem = styled('div')`
+  display: flex;
+  flex-direction: column;
+`;
+FormItem.displayName = 'FormItem';
+
+export const FormLabel = styled('label')`
+  display: flex;
+  flex-direction: column;
+  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 2px;
+  min-height: 18px;
+`;
+StyledLabel.displayName = 'StyledLabel';

@@ -1,0 +1,57 @@
+input[class~=mixed-checkbox][type=checkbox] {
+  display: inline-block;
+  position: relative;
+  padding-left: 1.4em;
+  cursor: default;
+}
+
+input[class~=mixed-checkbox][type=checkbox]::before,
+input[class~=mixed-checkbox][type=checkbox]::after {
+  position: absolute;
+  top: 50%;
+  left: 7px;
+  transform: translate(-50%, -50%);
+  content: '';
+}
+
+input[class~=mixed-checkbox][type=checkbox]::before {
+  width: 14px;
+  height: 14px;
+  border: 1px solid hsl(0, 0%, 66%);
+  border-radius: 0.2em;
+  background-image: linear-gradient(to bottom, hsl(300, 3%, 93%), #fff 30%);
+}
+
+input[class~=mixed-checkbox][type=checkbox]:active::before {
+  background-image: linear-gradient(to bottom, hsl(300, 3%, 73%), hsl(300, 3%, 93%) 30%);
+}
+
+input[class~=mixed-checkbox][type=checkbox][aria-checked="false"]::before {
+  border-color: #D13821;
+  background: #D13821;
+}
+input[class~=mixed-checkbox][type=checkbox][aria-checked="true"]::before {
+  border-color: #5DBA32;
+  background: #5DBA32;
+}
+
+input[class~=mixed-checkbox][type=checkbox][aria-checked="false"]::after {
+  font-family: "Font Awesome 5 Free";
+  content: "\f00d";
+  color: #ffffff;
+}
+
+input[class~=mixed-checkbox][type=checkbox][aria-checked="true"]::after {
+  font-family: "Font Awesome 5 Free";
+  content: "\f00c";
+  color: #ffffff;
+}
+
+/* To disable the outline when focused */
+/* input[class~=mixed-checkbox][type=checkbox]:focus {
+  outline: none;
+} */
+
+/* Other stuff that we can use to style the pseudo elements */
+/* input[class~=mixed-checkbox][type=checkbox][aria-checked="true"]:active::before  */
+/* input[class~=mixed-checkbox][type=checkbox]:focus::before */
