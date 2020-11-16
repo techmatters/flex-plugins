@@ -33,6 +33,11 @@ class BottomBar extends Component {
     handleValidateForm: PropTypes.func.isRequired,
     setConnectedCase: PropTypes.func.isRequired,
     handleSubmitIfValid: PropTypes.func.isRequired,
+    optionalButtons: PropTypes.arrayOf(PropTypes.shape({ onClick: PropTypes.func, label: PropTypes.string })),
+  };
+
+  static defaultProps = {
+    optionalButtons: undefined,
   };
 
   state = {
@@ -88,7 +93,7 @@ class BottomBar extends Component {
 
   handleSubmit = async () => {
     const { hrmBaseUrl, workerSid, helpline, strings } = getConfig();
-    const { task, trigger } = this.props;
+    const { task } = this.props;
 
     if (!hasTaskControl(task)) return;
 
@@ -109,7 +114,7 @@ class BottomBar extends Component {
   };
 
   render() {
-    const { tabs, form, handleSubmitIfValid } = this.props;
+    const { tabs, form, handleSubmitIfValid, optionalButtons } = this.props;
     const { isMenuOpen, anchorEl, mockedMessage } = this.state;
 
     const { tab } = form.metadata;
@@ -140,6 +145,14 @@ class BottomBar extends Component {
           />
         </Menu>
         <BottomButtonBar>
+          {optionalButtons &&
+            optionalButtons.map((i, index) => (
+              <Box key={`optional-button-${index}`} marginRight="15px">
+                <StyledNextStepButton type="button" roundCorners secondary onClick={i.onClick}>
+                  <Template code={i.label} />
+                </StyledNextStepButton>
+              </Box>
+            ))}
           {showNextButton && (
             <StyledNextStepButton type="button" roundCorners={true} onClick={this.handleNext}>
               <Template code="BottomBar-Next" />
@@ -161,7 +174,11 @@ class BottomBar extends Component {
                   </StyledNextStepButton>
                 </Box>
               )}
-              <StyledNextStepButton roundCorners={true} onClick={handleSubmitIfValid(this.handleSubmit)} disabled={isSubmitButtonDisabled}>
+              <StyledNextStepButton
+                roundCorners={true}
+                onClick={handleSubmitIfValid(this.handleSubmit)}
+                disabled={isSubmitButtonDisabled}
+              >
                 <Template code="BottomBar-SaveContact" />
               </StyledNextStepButton>
             </>

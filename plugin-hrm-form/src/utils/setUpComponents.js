@@ -15,6 +15,7 @@ import CaseListSideLink from '../components/sideLinks/CaseListSideLink';
 import ManualPullButton from '../components/ManualPullButton';
 import OfflineContactButton from '../components/OfflineContactButton';
 import { chatCapacityUpdated } from '../states/configuration/actions';
+import { TaskCanvasOverride } from '../styles/HrmStyles';
 // eslint-disable-next-line
 import { getConfig } from '../HrmFormPlugin';
 
@@ -264,10 +265,7 @@ export const setUpOfflineContact = () => {
     align: 'start',
   });
 
-  Flex.TaskCanvas.Content.remove('header', {
-    if: props => props.task.channelType === 'default',
-  });
-  Flex.TaskCanvas.Content.remove('tabs', {
+  Flex.TaskCanvas.Content.replace(<TaskCanvasOverride key="TaskCanvas-empty" />, {
     if: props => props.task.channelType === 'default',
   });
 

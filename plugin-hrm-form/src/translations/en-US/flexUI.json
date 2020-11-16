@@ -182,5 +182,6 @@
   "NoTaskAssignableNotification": "No task assignable to you at the moment.",
   "OfflineContactButtonText": "Offline Contact Record",
 
-  "RequiredFieldError": "This field is required."
+  "RequiredFieldError": "This field is required.",
+  "Cancel New Case": "Cancel New Case"
 }

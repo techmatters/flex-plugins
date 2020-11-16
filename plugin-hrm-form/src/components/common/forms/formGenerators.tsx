@@ -5,9 +5,19 @@ import { useFormContext, ValidationRules } from 'react-hook-form';
 import { get, pick } from 'lodash';
 import { Template } from '@twilio/flex-ui';
 
-import { Box, ColumnarBlock, TwoColumnLayout, FormLabel, FormError } from '../../../styles/HrmStyles';
+import {
+  Box,
+  ColumnarBlock,
+  TwoColumnLayout,
+  FormLabel,
+  FormError,
+  Row,
+  FormInput,
+  FormSelect,
+  FormOption,
+  FormSelectWrapper,
+} from '../../../styles/HrmStyles';
 import type { FormItemDefinition, FormDefinition, SelectOption, MixedOrBool } from './types';
-import './mixedCheckbox.css'; // This would be better done with this https://emotion.sh/docs/css-prop#gatsby-focus-wrapper, but it requires emotion 10
 
 export const ConnectForm: React.FC<{
   children: <P extends ReturnType<typeof useFormContext>>(args: P) => JSX.Element;
@@ -16,6 +26,12 @@ export const ConnectForm: React.FC<{
 
   return children({ ...methods });
 };
+
+const RequiredAsterisk = () => (
+  <span aria-hidden style={{ color: 'red' }}>
+    *
+  </span>
+);
 
 const getRules = (field: FormItemDefinition): ValidationRules =>
   pick(field, ['max', 'maxLength', 'min', 'minLength', 'pattern', 'required', 'validate']);
@@ -32,7 +48,10 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             const error = get(errors, path);
             return (
               <FormLabel htmlFor={path}>
-                {def.label}
+                <Row>
+                  {def.label}
+                  {rules.required && <RequiredAsterisk />}
+                </Row>
                 <input
                   id={path}
                   name={path}
@@ -58,7 +77,10 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             const error = get(errors, path);
             return (
               <FormLabel htmlFor={path}>
-                {def.label}
+                <Row>
+                  {def.label}
+                  {rules.required && <RequiredAsterisk />}
+                </Row>
                 <input
                   id={path}
                   name={path}
@@ -87,21 +109,27 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             const error = get(errors, path);
             return (
               <FormLabel htmlFor={path}>
-                {def.label}
-                <select
-                  id={path}
-                  name={path}
-                  aria-invalid={Boolean(error)}
-                  aria-describedby={`${path}-error`}
-                  onBlur={updateCallback}
-                  ref={register(rules)}
-                >
-                  {def.options.map(o => (
-                    <option key={`${path}-${o.value}`} value={o.value}>
-                      {o.label}
-                    </option>
-                  ))}
-                </select>
+                <Row>
+                  {def.label}
+                  {rules.required && <RequiredAsterisk />}
+                </Row>
+                <FormSelectWrapper>
+                  <FormSelect
+                    id={path}
+                    name={path}
+                    error={Boolean(error)}
+                    aria-invalid={Boolean(error)}
+                    aria-describedby={`${path}-error`}
+                    onBlur={updateCallback}
+                    innerRef={register(rules)}
+                  >
+                    {def.options.map(o => (
+                      <FormOption key={`${path}-${o.value}`} value={o.value}>
+                        {o.label}
+                      </FormOption>
+                    ))}
+                  </FormSelect>
+                </FormSelectWrapper>
                 {error && (
                   <FormError>
                     <Template id={`${path}-error`} code={error.message} />
@@ -133,22 +161,28 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
 
             return (
               <FormLabel htmlFor={path}>
-                {def.label}
-                <select
-                  id={path}
-                  name={path}
-                  aria-invalid={Boolean(error)}
-                  aria-describedby={`${path}-error`}
-                  onBlur={updateCallback}
-                  ref={register({ validate })}
-                  disabled={!hasOptions}
-                >
-                  {options.map(o => (
-                    <option key={`${path}-${o.value}`} value={o.value}>
-                      {o.label}
-                    </option>
-                  ))}
-                </select>
+                <Row>
+                  {def.label}
+                  {rules.required && <RequiredAsterisk />}
+                </Row>
+                <FormSelectWrapper>
+                  <FormSelect
+                    id={path}
+                    name={path}
+                    error={Boolean(error)}
+                    aria-invalid={Boolean(error)}
+                    aria-describedby={`${path}-error`}
+                    onBlur={updateCallback}
+                    innerRef={register({ validate })}
+                    disabled={!hasOptions}
+                  >
+                    {options.map(o => (
+                      <FormOption key={`${path}-${o.value}`} value={o.value}>
+                        {o.label}
+                      </FormOption>
+                    ))}
+                  </FormSelect>
+                </FormSelectWrapper>
                 {error && (
                   <FormError>
                     <Template id={`${path}-error`} code={error.message} />
@@ -166,7 +200,10 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             const error = get(errors, path);
             return (
               <FormLabel htmlFor={path}>
-                {def.label}
+                <Row>
+                  {def.label}
+                  {rules.required && <RequiredAsterisk />}
+                </Row>
                 <input
                   id={path}
                   name={path}
@@ -205,10 +242,15 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
 
             return (
               <FormLabel htmlFor={path}>
-                {def.label}
-                <input
+                <Row>
+                  {def.label}
+                  {rules.required && <RequiredAsterisk />}
+                </Row>
+                <FormInput
                   id={path}
                   type="checkbox"
+                  error={Boolean(error)}
+                  aria-invalid={Boolean(error)}
                   aria-checked={checked}
                   className="mixed-checkbox" // this grabs the styles imported from mixedCheckbox.css
                   onBlur={updateCallback}
@@ -235,7 +277,10 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             const error = get(errors, path);
             return (
               <FormLabel htmlFor={path}>
-                {def.label}
+                <Row>
+                  {def.label}
+                  {rules.required && <RequiredAsterisk />}
+                </Row>
                 <textarea
                   id={path}
                   name={path}
@@ -262,15 +307,19 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             const error = get(errors, path);
             return (
               <FormLabel htmlFor={path}>
-                {def.label}
-                <input
+                <Row>
+                  {def.label}
+                  {rules.required && <RequiredAsterisk />}
+                </Row>
+                <FormInput
                   type="time"
                   id={path}
                   name={path}
+                  error={Boolean(error)}
                   aria-invalid={Boolean(error)}
                   aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
-                  ref={register(rules)}
+                  innerRef={register(rules)}
                 />
                 {error && (
                   <FormError>
@@ -289,15 +338,19 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             const error = get(errors, path);
             return (
               <FormLabel htmlFor={path}>
-                {def.label}
-                <input
+                <Row>
+                  {def.label}
+                  {rules.required && <RequiredAsterisk />}
+                </Row>
+                <FormInput
                   type="date"
                   id={path}
                   name={path}
+                  error={Boolean(error)}
                   aria-invalid={Boolean(error)}
                   aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
-                  ref={register(rules)}
+                  innerRef={register(rules)}
                 />
                 {error && (
                   <FormError>

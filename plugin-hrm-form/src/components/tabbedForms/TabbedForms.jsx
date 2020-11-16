@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withTaskContext, Template } from '@twilio/flex-ui';
+import { withTaskContext, Template, Actions } from '@twilio/flex-ui';
 import SearchIcon from '@material-ui/icons/Search';
 import { useForm, FormProvider } from 'react-hook-form';
 import { connect } from 'react-redux';
@@ -128,6 +128,20 @@ const TabbedForms = props => {
   tabs.push(decorateTab('TabbedForms-CategoriesTab', form.caseInformation.categories));
   tabs.push(<StyledTab key="Case Information" label={<Template code="TabbedForms-AddCaseInfoTab" />} />);
 
+  const optionalButtons =
+    task.attributes.isContactlessTask && tab === 1
+      ? [
+          {
+            label: 'Cancel New Case',
+            onClick: async () => {
+              const { isContactlessTask, ...rest } = task.attributes;
+              await task.setAttributes(rest); // skip insights override
+              Actions.invokeAction('CompleteTask', { task });
+            },
+          },
+        ]
+      : undefined;
+
   console.log('>>> errors: ', methods.errors);
   console.log('>>> getValues: ', methods.getValues());
 
@@ -150,6 +164,7 @@ const TabbedForms = props => {
             handleCompleteTask={props.handleCompleteTask}
             handleValidateForm={props.handleValidateForm}
             handleSubmitIfValid={methods.handleSubmit} // TODO: this should be used within BottomBar, but that requires a small refactor to make it a functional component
+            optionalButtons={optionalButtons}
           />
         </TabbedFormsContainer>
       </form>
