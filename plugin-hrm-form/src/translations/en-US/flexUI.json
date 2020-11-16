@@ -181,7 +181,7 @@
   "ManualPullButtonText": "Add Another Task",
   "NoTaskAssignableNotification": "No task assignable to you at the moment.",
   "OfflineContactButtonText": "Offline Contact Record",
+  "CancelOfflineContact": "Cancel Offline Contact",
 
-  "RequiredFieldError": "This field is required.",
-  "Cancel New Case": "Cancel New Case"
+  "RequiredFieldError": "This field is required."
 }

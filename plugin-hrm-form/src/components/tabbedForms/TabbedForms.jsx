@@ -132,7 +132,7 @@ const TabbedForms = props => {
     task.attributes.isContactlessTask && tab === 1
       ? [
           {
-            label: 'Cancel New Case',
+            label: 'CancelOfflineContact',
             onClick: async () => {
               const { isContactlessTask, ...rest } = task.attributes;
               await task.setAttributes(rest); // skip insights override
