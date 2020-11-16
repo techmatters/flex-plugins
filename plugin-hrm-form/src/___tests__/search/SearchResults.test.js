@@ -1,6 +1,6 @@
 import React from 'react';
-import renderer from 'react-test-renderer';
-import { Template } from '@twilio/flex-ui';
+import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom/extend-expect';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 
@@ -8,11 +8,7 @@ import '../mockStyled';
 
 import { SearchPages } from '../../states/search/types';
 import SearchResults from '../../components/search/SearchResults';
-import ContactPreview from '../../components/search/ContactPreview';
 import { configurationBase, searchContactsBase, connectedCaseBase, contactFormsBase, namespace } from '../../states';
-
-const resultTemp = <Template code="SearchResultsIndex-Result" />;
-const resultsTemp = <Template code="SearchResultsIndex-Results" />;
 
 const mockStore = configureMockStore([]);
 
@@ -69,46 +65,51 @@ const state1 = {
 const store1 = mockStore(state1);
 
 test('<SearchResults> with 0 results', () => {
-  const component = renderer.create(
+  render(
     <Provider store={store1}>
       <SearchResults
         task={task}
         currentIsCaller={false}
-        results={[]}
+        results={{ count: 0, contacts: [], casesCount: 0, cases: [] }}
         handleSelectSearchResult={jest.fn()}
         handleBack={jest.fn()}
         handleViewDetails={jest.fn()}
         handleMockedMessage={jest.fn()}
       />
     </Provider>,
-  ).root;
+  );
 
-  expect(() => component.findByType(ContactPreview)).toThrow();
+  expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('0 cases');
 });
 
 test('<SearchResults> with 1 result', () => {
-  const results = [
-    {
-      contactId: 'Jill-Smith-id',
-      overview: {
-        dateTime: '2020-03-10',
-        name: 'Jill Smith',
-        customerNumber: 'Anonymous',
-        callType: 'Child calling about self',
-        categories: { category1: ['Tag1', 'Tag2'] },
-        counselor: 'counselor-id',
-        notes: 'Jill Smith Notes',
-      },
-      details: {
-        caseInformation: {
-          callSummary: 'Summary',
+  const results = {
+    casesCount: 1,
+    cases: [],
+    count: 1,
+    contacts: [
+      {
+        contactId: 'Jill-Smith-id',
+        overview: {
+          dateTime: '2020-03-10',
+          name: 'Jill Smith',
+          customerNumber: 'Anonymous',
+          callType: 'Child calling about self',
+          categories: { category1: ['Tag1', 'Tag2'] },
+          counselor: 'counselor-id',
+          notes: 'Jill Smith Notes',
         },
+        details: {
+          caseInformation: {
+            callSummary: 'Summary',
+          },
+        },
+        counselor: 'Counselor',
       },
-      counselor: 'Counselor',
-    },
-  ];
+    ],
+  };
 
-  const component = renderer.create(
+  render(
     <Provider store={store1}>
       <SearchResults
         task={task}
@@ -120,52 +121,57 @@ test('<SearchResults> with 1 result', () => {
         handleMockedMessage={jest.fn()}
       />
     </Provider>,
-  ).root;
+  );
 
-  expect(() => component.findAllByType(ContactPreview)).not.toThrow();
+  expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('1 cases');
 });
 
 test('<SearchResults> with multiple results', () => {
-  const results = [
-    {
-      contactId: 'Jill-Smith-id',
-      overview: {
-        dateTime: '2020-03-10',
-        name: 'Jill Smith',
-        customerNumber: 'Anonymous',
-        callType: 'Child calling about self',
-        categories: { category1: ['Tag1', 'Tag2'] },
-        counselor: 'counselor-id',
-        notes: 'Jill Smith Notes',
-      },
-      details: {
-        caseInformation: {
-          callSummary: 'Summary',
+  const results = {
+    casesCount: 2,
+    cases: [],
+    count: 2,
+    contacts: [
+      {
+        contactId: 'Jill-Smith-id',
+        overview: {
+          dateTime: '2020-03-10',
+          name: 'Jill Smith',
+          customerNumber: 'Anonymous',
+          callType: 'Child calling about self',
+          categories: { category1: ['Tag1', 'Tag2'] },
+          counselor: 'counselor-id',
+          notes: 'Jill Smith Notes',
         },
-      },
-      counselor: 'Counselor',
-    },
-    {
-      contactId: 'Sarah-Park-id',
-      overview: {
-        dateTime: '2020-03-20',
-        name: 'Sarah Park',
-        customerNumber: 'Anonymous',
-        callType: 'Child calling about self',
-        categories: { category1: ['Tag3'] },
-        counselor: 'counselor-id',
-        notes: 'Jill Smith Notes',
-      },
-      details: {
-        caseInformation: {
-          callSummary: 'Summary',
+        details: {
+          caseInformation: {
+            callSummary: 'Summary',
+          },
         },
+        counselor: 'Counselor',
       },
-      counselor: 'Counselor',
-    },
-  ];
+      {
+        contactId: 'Sarah-Park-id',
+        overview: {
+          dateTime: '2020-03-20',
+          name: 'Sarah Park',
+          customerNumber: 'Anonymous',
+          callType: 'Child calling about self',
+          categories: { category1: ['Tag3'] },
+          counselor: 'counselor-id',
+          notes: 'Jill Smith Notes',
+        },
+        details: {
+          caseInformation: {
+            callSummary: 'Summary',
+          },
+        },
+        counselor: 'Counselor',
+      },
+    ],
+  };
 
-  const component = renderer.create(
+  render(
     <Provider store={store1}>
       <SearchResults
         task={task}
@@ -177,7 +183,7 @@ test('<SearchResults> with multiple results', () => {
         handleMockedMessage={jest.fn()}
       />
     </Provider>,
-  ).root;
+  );
 
-  expect(() => component.findAllByType(ContactPreview)).not.toThrow();
+  expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('2 cases');
 });

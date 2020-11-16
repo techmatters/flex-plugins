@@ -6,6 +6,7 @@ import { ButtonBase } from '@material-ui/core';
 import { Template, Tab as TwilioTab, ITask } from '@twilio/flex-ui';
 
 import ContactPreview from '../ContactPreview';
+import CasePreview from '../CasePreview';
 import { SearchContactResult, SearchContact } from '../../../types/types';
 import { Row } from '../../../styles/HrmStyles';
 import {
@@ -19,8 +20,8 @@ import {
   SwitchLabel,
   StyledLink,
   StyledTabs,
-  StyledSearchTabs,
-  StyledSearchText,
+  StyledResultsContainer,
+  StyledResultsText,
   StyledTabLabel,
   StyledFolderIcon,
   BoldText,
@@ -32,15 +33,18 @@ import { SearchPages, SearchPagesType } from '../../../states/search/types';
 import { namespace, searchContactsBase } from '../../../states';
 
 export const CONTACTS_PER_PAGE = 20;
+const CASES_PER_PAGE = 5;
 
 type OwnProps = {
   task: ITask;
   currentIsCaller: boolean;
   results: SearchContactResult;
   onlyDataContacts: boolean;
+  closedCases: boolean;
   handleSelectSearchResult: (contact: SearchContact) => void;
   handleSearch: (offset: number) => void;
   toggleNonDataContacts: () => void;
+  toggleClosedCases: () => void;
   handleBack: () => void;
   handleViewDetails: (contact: SearchContact) => void;
   changeSearchPage: (SearchPagesType) => void;
@@ -54,9 +58,11 @@ const SearchResults: React.FC<Props> = ({
   currentIsCaller,
   results,
   onlyDataContacts,
+  closedCases,
   handleSelectSearchResult,
   handleSearch,
   toggleNonDataContacts,
+  toggleClosedCases,
   handleBack,
   handleViewDetails,
   changeSearchPage,
@@ -75,14 +81,27 @@ const SearchResults: React.FC<Props> = ({
     handleSelectSearchResult(currentContact);
   };
 
-  const handleChangePage = newPage => {
+  const handleChangePage = (newPage, limit) => {
     setPage(newPage);
-    handleSearch(CONTACTS_PER_PAGE * newPage);
+    handleSearch(limit * newPage);
+  };
+
+  const handleContactsChangePage = newPage => {
+    handleChangePage(newPage, CONTACTS_PER_PAGE);
+  };
+
+  const handleCasesChangePage = newPage => {
+    handleChangePage(newPage, CASES_PER_PAGE);
   };
 
   const handleToggleNonDataContact = () => {
     setPage(0);
     toggleNonDataContacts();
+  };
+
+  const handleToggleClosedCases = () => {
+    setPage(0);
+    toggleClosedCases();
   };
 
   const handleOpenConnectDialog = contact => e => {
@@ -91,8 +110,9 @@ const SearchResults: React.FC<Props> = ({
     setCurrentContact(contact);
   };
 
-  const { contacts, count } = results;
-  const pagesCount = Math.ceil(count / CONTACTS_PER_PAGE);
+  const { contacts, count, cases, casesCount } = results;
+  const contactsPageCount = Math.ceil(count / CONTACTS_PER_PAGE);
+  const casesPageCount = Math.ceil(casesCount / CASES_PER_PAGE);
 
   const toggleTabs = () => {
     // eslint-disable-next-line no-unused-expressions
@@ -146,15 +166,17 @@ const SearchResults: React.FC<Props> = ({
       />
       <ListContainer>
         <ScrollableList>
-          <StyledSearchTabs>
-            <StyledSearchText>
+          <StyledResultsContainer>
+            <StyledResultsText>
               There are&nbsp;
-              <BoldText>
+              <BoldText data-testid="SearchResultsCount">
                 {/* Intentionally we must show the option different at the one currently selected */}
-                {`${count} ${currentPage === SearchPages.resultsContacts ? 'cases' : 'contacts'}`}
+                {currentPage === SearchPages.resultsContacts
+                  ? `${casesCount ? casesCount : 0} cases`
+                  : `${count ? count : 0} contacts`}
               </BoldText>
               &nbsp;returned in this search.&nbsp;
-            </StyledSearchText>
+            </StyledResultsText>
             <StyledLink onClick={toggleTabs}>
               <Template
                 code={
@@ -165,28 +187,59 @@ const SearchResults: React.FC<Props> = ({
                 }
               />
             </StyledLink>
-          </StyledSearchTabs>
-          <StyledFormControlLabel
-            control={<StyledSwitch checked={!onlyDataContacts} onChange={handleToggleNonDataContact} />}
-            label={
-              <SwitchLabel>
-                <Template code="SearchResultsIndex-NonDataContacts" />
-              </SwitchLabel>
-            }
-            labelPlacement="start"
-          />
-          {contacts &&
-            contacts.length > 0 &&
-            contacts.map(contact => (
-              <ContactPreview
-                key={contact.contactId}
-                contact={contact}
-                handleOpenConnectDialog={handleOpenConnectDialog(contact)}
-                handleViewDetails={() => handleViewDetails(contact)}
+          </StyledResultsContainer>
+          {currentPage === SearchPages.resultsContacts && (
+            <>
+              <StyledFormControlLabel
+                control={<StyledSwitch checked={!onlyDataContacts} onChange={handleToggleNonDataContact} />}
+                label={
+                  <SwitchLabel>
+                    <Template code="SearchResultsIndex-NonDataContacts" />
+                  </SwitchLabel>
+                }
+                labelPlacement="start"
               />
-            ))}
-          {pagesCount > 1 && (
-            <Pagination page={page} pagesCount={pagesCount} handleChangePage={handleChangePage} transparent />
+              {contacts &&
+                contacts.length > 0 &&
+                contacts.map(contact => (
+                  <ContactPreview
+                    key={contact.contactId}
+                    contact={contact}
+                    handleOpenConnectDialog={handleOpenConnectDialog(contact)}
+                    handleViewDetails={() => handleViewDetails(contact)}
+                  />
+                ))}
+              {contactsPageCount > 1 && (
+                <Pagination
+                  page={page}
+                  pagesCount={contactsPageCount}
+                  handleChangePage={handleContactsChangePage}
+                  transparent
+                />
+              )}
+            </>
+          )}
+          {currentPage === SearchPages.resultsCases && (
+            <>
+              <StyledFormControlLabel
+                control={<StyledSwitch checked={!closedCases} onChange={handleToggleClosedCases} />}
+                label={
+                  <SwitchLabel>
+                    <Template code="SearchResultsIndex-ClosedCases" />
+                  </SwitchLabel>
+                }
+                labelPlacement="start"
+              />
+              {cases && cases.length > 0 && cases.map(cas => <CasePreview key={cas.id} currentCase={cas} />)}
+              {casesPageCount > 1 && (
+                <Pagination
+                  page={page}
+                  pagesCount={casesPageCount}
+                  handleChangePage={handleCasesChangePage}
+                  transparent
+                />
+              )}
+            </>
           )}
         </ScrollableList>
       </ListContainer>
