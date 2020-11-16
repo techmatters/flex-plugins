@@ -3,11 +3,11 @@ import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
 import {
-  ManualPullButtonBase,
-  ManualPullIconContainer,
-  ManualPullIcon,
-  ManualPullContent,
-  ManualPullText,
+  AddTaskButtonBase,
+  AddTaskIconContainer,
+  AddTaskIcon,
+  AddTaskContent,
+  AddTaskText,
 } from '../../../styles/HrmStyles';
 
 type Props = {
@@ -18,20 +18,20 @@ type Props = {
 
 const AddTaskButton: React.FC<Props> = ({ onClick, disabled, label }) => {
   return (
-    <ManualPullButtonBase
+    <AddTaskButtonBase
       onClick={onClick}
       className="Twilio-TaskListBaseItem-UpperArea css-xz5ie1"
       disabled={disabled}
     >
-      <ManualPullIconContainer>
-        <ManualPullIcon icon="Add" />
-      </ManualPullIconContainer>
-      <ManualPullContent>
-        <ManualPullText>
+      <AddTaskIconContainer>
+        <AddTaskIcon icon="Add" />
+      </AddTaskIconContainer>
+      <AddTaskContent>
+        <AddTaskText>
           <Template code={label} />
-        </ManualPullText>
-      </ManualPullContent>
-    </ManualPullButtonBase>
+        </AddTaskText>
+      </AddTaskContent>
+    </AddTaskButtonBase>
   );
 };
 

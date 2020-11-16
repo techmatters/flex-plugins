@@ -548,40 +548,40 @@ export const PaginationRow = styled(TableRow)<PaginationRowProps>`
 `;
 PaginationRow.displayName = 'PaginationRow';
 
-export const ManualPullIconContainer = styled('div')`
+export const AddTaskIconContainer = styled('div')`
   display: flex;
   flex: 0 0 44px;
   height: 44px;
   background-color: #ffffff;
 `;
-ManualPullIconContainer.displayName = 'ManualPullIconContainer';
+AddTaskIconContainer.displayName = 'AddTaskIconContainer';
 
-export const ManualPullIcon = styled(Icon)`
+export const AddTaskIcon = styled(Icon)`
   display: flex;
   flex: 0 0 auto;
   margin: auto;
   color: #000000;
 `;
-ManualPullIcon.displayName = 'ManualPullIcon';
+AddTaskIcon.displayName = 'AddTaskIcon';
 
-export const ManualPullContent = styled('div')`
+export const AddTaskContent = styled('div')`
   display: flex;
   flex: 1 1 auto;
   overflow: hidden;
   padding-right: auto;
   padding-left: 12px;
 `;
-ManualPullContent.displayName = 'ManualPullContent';
+AddTaskContent.displayName = 'AddTaskContent';
 
-export const ManualPullText = styled(FontOpenSans)`
+export const AddTaskText = styled(FontOpenSans)`
   color: #0d74d5;
   font-size: 12px;
   line-height: 16px;
   font-weight: 600;
 `;
-ManualPullText.displayName = 'ManualPullText';
+AddTaskText.displayName = 'AddTaskText';
 
-export const ManualPullButtonBase = withStyles({
+export const AddTaskButtonBase = withStyles({
   root: {
     '&:hover': {
       backgroundColor: '#ECEDF1',
@@ -601,7 +601,7 @@ export const ManualPullButtonBase = withStyles({
     },
   },
 })(ButtonBase);
-ManualPullButtonBase.displayName = 'ManualPullButtonBase';
+AddTaskButtonBase.displayName = 'AddTaskButtonBase';
 
 // eslint-disable-next-line import/no-unused-modules
 export const FormItem = styled('div')`
