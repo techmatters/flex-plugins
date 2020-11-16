@@ -62,7 +62,7 @@ const overrideAttributes = (attributes, form) => {
   const [y, m, d] = date.split('-').map(s => parseInt(s, 10));
   const [hh, mm] = time.split(':').map(s => parseInt(s, 10));
 
-  const dateUTC = Date.UTC(y, m, d, hh, mm);
+  const dateUTC = Date.UTC(y, m - 1, d, hh, mm);
 
   console.log(
     '>>> Insights override with dateUTC ',
