@@ -6,34 +6,9 @@ import { useFormContext } from 'react-hook-form';
 
 import { createFormFromDefinition } from '../common/forms/formGenerators';
 import { updateContactLessTask } from '../../states/ContactState';
-import { channelTypes } from '../../states/DomainConstants';
 import { Container, ColumnarBlock, TwoColumnLayout, Box } from '../../styles/HrmStyles';
-import type { FormDefinition } from '../common/forms/types';
 import type { RootState } from '../../states';
-
-const channelOptions = ['', ...Object.values(channelTypes)].map(s => ({ label: s, value: s }));
-
-export const formDefinition: FormDefinition = [
-  {
-    name: 'channel',
-    type: 'select',
-    label: 'Channel',
-    options: channelOptions,
-    required: { value: true, message: 'RequiredFieldError' },
-  },
-  {
-    name: 'date',
-    type: 'date-input',
-    label: 'Date of Contact',
-    required: { value: true, message: 'RequiredFieldError' },
-  },
-  {
-    name: 'time',
-    type: 'time-input',
-    label: 'Time of Contact',
-    required: { value: true, message: 'RequiredFieldError' },
-  },
-];
+import { formDefinition } from './ContactlessTaskTabDefinition';
 
 type OwnProps = {
   task: ITask;
