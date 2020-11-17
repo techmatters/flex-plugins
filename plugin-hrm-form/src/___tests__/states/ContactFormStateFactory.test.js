@@ -228,6 +228,11 @@ test('createBlankForm operates as expected', () => {
         value: false,
       },
     },
+    contactlessTask: {
+      channel: '',
+      date: '',
+      time: '',
+    },
   };
 
   // we omit metadata because we can't know the exact time of form creation (metadata.startMillis)

@@ -584,7 +584,7 @@ const recursivelyCreateBlankForm = formDefinition => {
       }
     });
 
-  return { ...initialState, contactlessTask: contactlessTaskTabDefinition.reduce(createFormItem, {}) };
+  return initialState;
 };
 
 const createCategoriesMetadata = formDef => {
@@ -617,7 +617,9 @@ export const createBlankForm = (formDef = defaultFormDefinition, recreated = fal
     categories: createCategoriesMetadata(formDef),
   };
 
-  const generatedForm = { ...initialState, metadata };
+  const contactlessTask = contactlessTaskTabDefinition.reduce(createFormItem, {});
+
+  const generatedForm = { ...initialState, metadata, contactlessTask };
 
   return generatedForm;
 };
