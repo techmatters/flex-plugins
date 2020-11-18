@@ -36,13 +36,16 @@ function buildConversationsObject(taskAttributes, form) {
 
   const subcategories = getSubcategories(form);
   const { childInformation } = form;
+  const communication_channel = taskAttributes.isContactlessTask
+    ? mapChannelForInsights(form.contactlessTask.channel)
+    : mapChannelForInsights(taskAttributes.channelType);
 
   return {
     conversation_attribute_1: subcategories.join(';'),
     conversation_attribute_2: callType,
     conversation_attribute_3: childInformation.gender.value,
     conversation_attribute_4: childInformation.age.value,
-    conversation_attribute_6: mapChannelForInsights(taskAttributes.channelType),
+    communication_channel,
   };
 }
 
@@ -68,7 +71,6 @@ const overrideAttributes = (attributes, form) => {
     ...attributes,
     conversations: {
       ...attributes.conversations,
-      communication_channel: form.contactlessTask.channel,
       date: dateTime,
     },
   };
