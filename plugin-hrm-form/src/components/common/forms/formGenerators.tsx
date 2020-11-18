@@ -50,7 +50,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
               <FormLabel htmlFor={path}>
                 <Row>
                   <Box marginBottom="8px">
-                    {def.label}
+                    <Template code={`${def.label}`} />
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
@@ -81,7 +81,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
               <FormLabel htmlFor={path}>
                 <Row>
                   <Box marginBottom="8px">
-                    {def.label}
+                    <Template code={`${def.label}`} />
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
@@ -115,7 +115,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
               <FormLabel htmlFor={path}>
                 <Row>
                   <Box marginBottom="8px">
-                    {def.label}
+                    <Template code={`${def.label}`} />
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
@@ -169,7 +169,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
               <FormLabel htmlFor={path}>
                 <Row>
                   <Box marginBottom="8px">
-                    {def.label}
+                    <Template code={`${def.label}`} />
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
@@ -210,7 +210,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
               <FormLabel htmlFor={path}>
                 <Row>
                   <Box marginBottom="8px">
-                    {def.label}
+                    <Template code={`${def.label}`} />
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
@@ -254,7 +254,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
               <FormLabel htmlFor={path}>
                 <Row>
                   <Box marginBottom="8px">
-                    {def.label}
+                    <Template code={`${def.label}`} />
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
@@ -291,7 +291,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
               <FormLabel htmlFor={path}>
                 <Row>
                   <Box marginBottom="8px">
-                    {def.label}
+                    <Template code={`${def.label}`} />
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
@@ -323,7 +323,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
               <FormLabel htmlFor={path}>
                 <Row>
                   <Box marginBottom="8px">
-                    {def.label}
+                    <Template code={`${def.label}`} />
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
@@ -356,7 +356,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
               <FormLabel htmlFor={path}>
                 <Row>
                   <Box marginBottom="8px">
-                    {def.label}
+                    <Template code={`${def.label}`} />
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
