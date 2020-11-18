@@ -62,21 +62,14 @@ const overrideAttributes = (attributes, form) => {
   const [y, m, d] = date.split('-').map(s => parseInt(s, 10));
   const [hh, mm] = time.split(':').map(s => parseInt(s, 10));
 
-  const dateUTC = Date.UTC(y, m - 1, d, hh, mm);
+  const dateTime = new Date(y, m - 1, d, hh, mm).getTime();
 
-  console.log(
-    '>>> Insights override with dateUTC ',
-    dateUTC,
-    new Date(dateUTC),
-    ' and channel ',
-    form.contactlessTask.channel,
-  );
   return {
     ...attributes,
     conversations: {
       ...attributes.conversations,
       communication_channel: form.contactlessTask.channel,
-      date: dateUTC,
+      date: dateTime,
     },
   };
 };
