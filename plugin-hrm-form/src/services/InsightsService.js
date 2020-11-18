@@ -27,18 +27,19 @@ function buildConversationsObject(taskAttributes, form) {
   const callType = form.callType.value;
   const hasCustomerData = !isNonDataCallType(callType);
 
+  const communication_channel = taskAttributes.isContactlessTask
+    ? mapChannelForInsights(form.contactlessTask.channel)
+    : mapChannelForInsights(taskAttributes.channelType);
+
   if (!hasCustomerData) {
     return {
       conversation_attribute_2: callType,
-      conversation_attribute_6: mapChannelForInsights(taskAttributes.channelType),
+      communication_channel,
     };
   }
 
   const subcategories = getSubcategories(form);
   const { childInformation } = form;
-  const communication_channel = taskAttributes.isContactlessTask
-    ? mapChannelForInsights(form.contactlessTask.channel)
-    : mapChannelForInsights(taskAttributes.channelType);
 
   return {
     conversation_attribute_1: subcategories.join(';'),
