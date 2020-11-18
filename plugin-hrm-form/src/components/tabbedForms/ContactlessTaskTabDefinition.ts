@@ -2,10 +2,12 @@ import { channelTypes, otherContactChannels } from '../../states/DomainConstants
 import type { FormDefinition } from '../common/forms/types';
 import { mapChannelForInsights } from '../../utils/mappers';
 
-const channelOptions = ['', ...Object.values(channelTypes), ...Object.values(otherContactChannels)].map(s => ({
-  label: mapChannelForInsights(s),
-  value: s,
-}));
+const channelOptions = [{ value: '', label: '' }].concat(
+  [...Object.values(channelTypes), ...Object.values(otherContactChannels)].map(s => ({
+    label: mapChannelForInsights(s),
+    value: s,
+  })),
+);
 
 export const formDefinition: FormDefinition = [
   {
