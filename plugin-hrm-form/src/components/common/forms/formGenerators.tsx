@@ -49,8 +49,10 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             return (
               <FormLabel htmlFor={path}>
                 <Row>
-                  {def.label}
-                  {rules.required && <RequiredAsterisk />}
+                  <Box marginBottom="8px">
+                    {def.label}
+                    {rules.required && <RequiredAsterisk />}
+                  </Box>
                 </Row>
                 <input
                   id={path}
@@ -78,8 +80,10 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             return (
               <FormLabel htmlFor={path}>
                 <Row>
-                  {def.label}
-                  {rules.required && <RequiredAsterisk />}
+                  <Box marginBottom="8px">
+                    {def.label}
+                    {rules.required && <RequiredAsterisk />}
+                  </Box>
                 </Row>
                 <input
                   id={path}
@@ -110,8 +114,10 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             return (
               <FormLabel htmlFor={path}>
                 <Row>
-                  {def.label}
-                  {rules.required && <RequiredAsterisk />}
+                  <Box marginBottom="8px">
+                    {def.label}
+                    {rules.required && <RequiredAsterisk />}
+                  </Box>
                 </Row>
                 <FormSelectWrapper>
                   <FormSelect
@@ -162,8 +168,10 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             return (
               <FormLabel htmlFor={path}>
                 <Row>
-                  {def.label}
-                  {rules.required && <RequiredAsterisk />}
+                  <Box marginBottom="8px">
+                    {def.label}
+                    {rules.required && <RequiredAsterisk />}
+                  </Box>
                 </Row>
                 <FormSelectWrapper>
                   <FormSelect
@@ -201,8 +209,10 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             return (
               <FormLabel htmlFor={path}>
                 <Row>
-                  {def.label}
-                  {rules.required && <RequiredAsterisk />}
+                  <Box marginBottom="8px">
+                    {def.label}
+                    {rules.required && <RequiredAsterisk />}
+                  </Box>
                 </Row>
                 <input
                   id={path}
@@ -243,8 +253,10 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             return (
               <FormLabel htmlFor={path}>
                 <Row>
-                  {def.label}
-                  {rules.required && <RequiredAsterisk />}
+                  <Box marginBottom="8px">
+                    {def.label}
+                    {rules.required && <RequiredAsterisk />}
+                  </Box>
                 </Row>
                 <FormInput
                   id={path}
@@ -278,8 +290,10 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             return (
               <FormLabel htmlFor={path}>
                 <Row>
-                  {def.label}
-                  {rules.required && <RequiredAsterisk />}
+                  <Box marginBottom="8px">
+                    {def.label}
+                    {rules.required && <RequiredAsterisk />}
+                  </Box>
                 </Row>
                 <textarea
                   id={path}
@@ -308,8 +322,10 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             return (
               <FormLabel htmlFor={path}>
                 <Row>
-                  {def.label}
-                  {rules.required && <RequiredAsterisk />}
+                  <Box marginBottom="8px">
+                    {def.label}
+                    {rules.required && <RequiredAsterisk />}
+                  </Box>
                 </Row>
                 <FormInput
                   type="time"
@@ -339,8 +355,10 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             return (
               <FormLabel htmlFor={path}>
                 <Row>
-                  {def.label}
-                  {rules.required && <RequiredAsterisk />}
+                  <Box marginBottom="8px">
+                    {def.label}
+                    {rules.required && <RequiredAsterisk />}
+                  </Box>
                 </Row>
                 <FormInput
                   type="date"

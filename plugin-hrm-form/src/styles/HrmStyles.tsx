@@ -622,8 +622,10 @@ FormLabel.displayName = 'FormLabel';
 
 export const FormError = styled('span')`
   text-transform: none;
-  font-size: 11px;
-  color: #ed4337;
+  color: ${props => props.theme.colors.errorColor};
+  font-size: 10px;
+  line-height: 1.5;
+  letter-spacing: normal;
 `;
 FormError.displayName = 'FormError';
 
@@ -654,31 +656,25 @@ export const FormInput = styled('input')<FormInputProps>`
   }
 
   /* ---------- Date ---------- */
-  &[type='date'] {}
   &[type='date']::-webkit-clear-button,
   &[type='date']::-webkit-inner-spin-button {
     -webkit-appearance: none;
     display: none;
   }
-  &[type='date']::-webkit-calendar-picker-indicator {
-    height: 22px;
-    width: 22px;
-  }
+  /* &[type='date'] {} */
+  /* &[type='date']::-webkit-calendar-picker-indicator {} */
 
   /* ---------- Time ---------- */
-  &[type='time'] {}
   &[type='time']::-webkit-datetime-edit-fields-wrapper {
     display: flex;
-  }
-  &[type='time']::-webkit-calendar-picker-indicator {
-    height: 22px;
-    width: 22px;
   }
   &[type='time']::-webkit-clear-button,
     -webkit-appearance: none;
     display: none;
   }
   /* Other pseudoelements that can be styled
+   &[type='time'] {}
+   &[type='time']::-webkit-calendar-picker-indicator {}
    &[type='time']::-webkit-datetime-edit-hour-field {}
    &[type='time']::-webkit-datetime-edit-minute-field {}
    &[type='time']::-webkit-datetime-edit-ampm-field {}
