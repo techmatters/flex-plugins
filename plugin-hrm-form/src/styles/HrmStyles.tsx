@@ -443,17 +443,18 @@ export const StyledTab = styled(({ searchTab = false, ...rest }: StyledTabProps)
   && {
     min-width: ${({ searchTab }) => (searchTab ? '50px' : '120px')};
     width: ${({ searchTab }) => (searchTab ? '50px' : '120px')};
+    height: 35px;
     background-color: ${({ searchTab }) => (searchTab ? 'transparent' : '#d1d1d5')};
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
     margin: 0 5px;
     font-size: 12px;
-    font-weight: 600;
     line-height: 14px;
     text-transform: none;
 
     &.selected {
       background-color: #ffffff;
+      font-weight: 600;
     }
   }
 `;
