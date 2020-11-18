@@ -1,7 +1,8 @@
 import { channelTypes } from '../../states/DomainConstants';
 import type { FormDefinition } from '../common/forms/types';
+import { mapChannelForInsights } from '../../utils/mappers';
 
-const channelOptions = ['', ...Object.values(channelTypes)].map(s => ({ label: s, value: s }));
+const channelOptions = ['', ...Object.values(channelTypes)].map(s => ({ label: mapChannelForInsights(s), value: s }));
 
 export const formDefinition: FormDefinition = [
   {
