@@ -70,7 +70,8 @@ test('<SearchResults> with 0 results', () => {
       <SearchResults
         task={task}
         currentIsCaller={false}
-        results={{ count: 0, contacts: [], casesCount: 0, cases: [] }}
+        searchContactsResults={{ count: 0, contacts: [] }}
+        searchCasesResults={{ count: 0, cases: [] }}
         handleSelectSearchResult={jest.fn()}
         handleBack={jest.fn()}
         handleViewDetails={jest.fn()}
@@ -83,9 +84,7 @@ test('<SearchResults> with 0 results', () => {
 });
 
 test('<SearchResults> with 1 result', () => {
-  const results = {
-    casesCount: 1,
-    cases: [],
+  const searchContactsResults = {
     count: 1,
     contacts: [
       {
@@ -109,12 +108,25 @@ test('<SearchResults> with 1 result', () => {
     ],
   };
 
+  const searchCasesResults = {
+    count: 1,
+    cases: [
+      {
+        helpline: '',
+        info: {
+          households: [{ household: { name: { firstName: 'Maria', lastName: 'Silva' } } }],
+        },
+      },
+    ],
+  };
+
   render(
     <Provider store={store1}>
       <SearchResults
         task={task}
         currentIsCaller={false}
-        results={results}
+        searchContactsResults={searchContactsResults}
+        searchCasesResults={searchCasesResults}
         handleSelectSearchResult={jest.fn()}
         handleBack={jest.fn()}
         handleViewDetails={jest.fn()}
@@ -127,9 +139,7 @@ test('<SearchResults> with 1 result', () => {
 });
 
 test('<SearchResults> with multiple results', () => {
-  const results = {
-    casesCount: 2,
-    cases: [],
+  const searchContactsResults = {
     count: 2,
     contacts: [
       {
@@ -171,12 +181,31 @@ test('<SearchResults> with multiple results', () => {
     ],
   };
 
+  const searchCasesResults = {
+    count: 2,
+    cases: [
+      {
+        helpline: '',
+        info: {
+          households: [{ household: { name: { firstName: 'Maria', lastName: 'Silva' } } }],
+        },
+      },
+      {
+        helpline: '',
+        info: {
+          households: [{ household: { name: { firstName: 'John', lastName: 'Doe' } } }],
+        },
+      },
+    ],
+  };
+
   render(
     <Provider store={store1}>
       <SearchResults
         task={task}
         currentIsCaller={false}
-        results={results}
+        searchContactsResults={searchContactsResults}
+        searchCasesResults={searchCasesResults}
         handleSelectSearchResult={jest.fn()}
         handleBack={jest.fn()}
         handleViewDetails={jest.fn()}

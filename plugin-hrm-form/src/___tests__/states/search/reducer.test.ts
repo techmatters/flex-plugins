@@ -132,10 +132,13 @@ describe('search reducer', () => {
   });
 
   test('SEARCH_CONTACTS_SUCCESS action', () => {
-    const searchResult = [
-      { contactId: 'fake contact result 1', overview: {}, details: {}, counselor: '' },
-      { contactId: 'fake contact result 2', overview: {}, details: {}, counselor: '' },
-    ] as t.DetailedSearchContactsResult; // type casting to avoid writing an entire DetailedSearchContactsResult
+    const searchResult = {
+      count: 2,
+      contacts: [
+        { contactId: 'fake contact result 1', overview: {}, details: {}, counselor: '' },
+        { contactId: 'fake contact result 2', overview: {}, details: {}, counselor: '' },
+      ],
+    } as t.DetailedSearchContactsResult; // type casting to avoid writing an entire DetailedSearchContactsResult
     const action: t.SearchActionType = {
       type: t.SEARCH_CONTACTS_SUCCESS,
       searchResult,
@@ -144,7 +147,7 @@ describe('search reducer', () => {
     const result = reduce(state, action);
 
     const { tasks } = result;
-    expect(tasks[task.taskSid].searchResult).toStrictEqual(searchResult);
+    expect(tasks[task.taskSid].searchContactsResult).toStrictEqual(searchResult);
     state = result;
   });
 
