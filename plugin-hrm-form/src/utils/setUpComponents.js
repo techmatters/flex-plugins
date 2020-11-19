@@ -158,7 +158,7 @@ export const setUpAddButtons = setupObject => {
  */
 export const setUpNoTasksUI = setupObject => {
   Flex.AgentDesktopView.Content.add(
-    <Column key="no-task-agent-desktop-section" style={{ backgroundColor: HrmTheme.colors.base2 }}>
+    <Column key="no-task-agent-desktop-section" style={{ backgroundColor: HrmTheme.colors.base2, minWidth: 300 }}>
       {queuesStatusUI()}
       {addButonsUI(setupObject)}
     </Column>,
