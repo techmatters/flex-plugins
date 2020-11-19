@@ -179,10 +179,13 @@
 
   "ContactDetails-GeneralDetails": "General Details",
 
-  "ManualPullButtonText": "Add Another Task",
+  "ManualPullButtonText": "Another Task",
   "NoTaskAssignableNotification": "No task assignable to you at the moment.",
   "OfflineContactButtonText": "Offline Contact Record",
   "CancelOfflineContact": "Cancel Offline Contact",
 
-  "RequiredFieldError": "This field is required."
+  "RequiredFieldError": "This field is required.",
+
+  "OfflineContactFirstLine": "Offline Contact",
+  "OfflineContactSecondLine": "in progress"
 }

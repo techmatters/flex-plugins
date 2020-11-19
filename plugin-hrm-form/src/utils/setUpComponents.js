@@ -2,6 +2,7 @@
 /* eslint-disable react/no-multi-comp */
 import React from 'react';
 import * as Flex from '@twilio/flex-ui';
+import AssignmentInd from '@material-ui/icons/AssignmentInd';
 
 import { TransferButton, AcceptTransferButton, RejectTransferButton } from '../components/transfer';
 import * as TransferHelpers from './transfer';
@@ -128,6 +129,41 @@ const setUpManualPulling = () => {
   });
 };
 
+const setUpOfflineContact = () => {
+  const manager = Flex.Manager.getInstance();
+  const defaultStrings = Flex.DefaultTaskChannels.Default.templates.TaskListItem.secondLine;
+  const defaultColors = Flex.DefaultTaskChannels.Default.colors;
+  const defaultIcons = Flex.DefaultTaskChannels.Default.icons;
+
+  // set icon, color, first and second lines if task isContactlessTask (offline contacts)
+  const getDefaultChannelIcon = task => {
+    if (task.attributes.isContactlessTask) return <AssignmentInd className="Twilio-Icon-Content" />;
+
+    return defaultIcons;
+  };
+  Flex.DefaultTaskChannels.Default.icons = {
+    active: getDefaultChannelIcon,
+    list: getDefaultChannelIcon,
+    main: getDefaultChannelIcon,
+  };
+
+  Flex.DefaultTaskChannels.Default.colors.main = (task, componentType) => {
+    if (task.attributes.isContactlessTask) return '#159AF8';
+
+    return Flex.TaskChannelHelper.getColor(task, defaultColors, componentType);
+  };
+  Flex.DefaultTaskChannels.Default.templates.TaskListItem.firstLine = (task, componentType) => {
+    if (task.attributes.isContactlessTask) return manager.strings.OfflineContactFirstLine;
+
+    return Flex.TaskChannelHelper.getTemplateForStatus(task, defaultStrings, componentType);
+  };
+  Flex.DefaultTaskChannels.Default.templates.TaskListItem.secondLine = (task, componentType) => {
+    if (task.attributes.isContactlessTask) return manager.strings.OfflineContactSecondLine;
+
+    return Flex.TaskChannelHelper.getTemplateForStatus(task, defaultStrings, componentType);
+  };
+};
+
 /**
  * Add buttons to pull / create tasks
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
@@ -135,13 +171,15 @@ const setUpManualPulling = () => {
 export const setUpAddButtons = setupObject => {
   const { featureFlags } = setupObject;
 
-  // setup events for manual pulling
+  // setup for manual pulling
   if (featureFlags.enable_manual_pulling) setUpManualPulling();
+  // setup for offline contact tasks
+  if (featureFlags.enable_offline_contact) setUpOfflineContact();
 
   // add UI
   if (featureFlags.enable_manual_pulling || featureFlags.enable_offline_contact)
     Flex.TaskList.Content.add(addButonsUI(setupObject), {
-      sortOrder: -1,
+      sortOrder: Infinity,
       align: 'start',
     });
 
