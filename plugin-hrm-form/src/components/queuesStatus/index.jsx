@@ -14,18 +14,20 @@ const QueuesStatus = ({ colors, queuesStatusState, paddingRight }) => {
 
   return (
     <Container role="complementary" tabIndex={0}>
-      <HeaderContainer>
-        <Box marginTop="12px" marginRight="5px" marginBottom="12px" marginLeft={TLHPaddingLeft}>
-          <Template code="QueueIndex-ContactsWaiting" />
-        </Box>
-      </HeaderContainer>
-      <QueuesContainer paddingRight={paddingRight}>
-        {error && <ErrorText>{error}</ErrorText>}
-        {queuesStatus &&
-          Object.entries(queuesStatus).map(([qName, qStatus]) => (
-            <QueueCard key={qName} qName={qName} colors={colors} {...qStatus} />
-          ))}
-      </QueuesContainer>
+      <Box paddingBottom="14px">
+        <HeaderContainer>
+          <Box marginTop="12px" marginRight="5px" marginBottom="12px" marginLeft={TLHPaddingLeft}>
+            <Template code="QueueIndex-ContactsWaiting" />
+          </Box>
+        </HeaderContainer>
+        <QueuesContainer paddingRight={paddingRight}>
+          {error && <ErrorText>{error}</ErrorText>}
+          {queuesStatus &&
+            Object.entries(queuesStatus).map(([qName, qStatus]) => (
+              <QueueCard key={qName} qName={qName} colors={colors} {...qStatus} />
+            ))}
+        </QueuesContainer>
+      </Box>
     </Container>
   );
 };

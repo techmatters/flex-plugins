@@ -142,9 +142,6 @@ const TabbedForms = props => {
         ]
       : undefined;
 
-  console.log('>>> errors: ', methods.errors);
-  console.log('>>> getValues: ', methods.getValues());
-
   return (
     <FormProvider {...methods}>
       <form style={{ height: '100%' }}>

@@ -466,6 +466,12 @@ export const Row = styled('div')`
 `;
 Row.displayName = 'Row';
 
+export const Column = styled('div')`
+  display: flex;
+  flex-direction: column;
+`;
+Column.displayName = 'Column';
+
 export const FontOpenSans = styled('p')`
   color: #000000;
   font-family: Open Sans;

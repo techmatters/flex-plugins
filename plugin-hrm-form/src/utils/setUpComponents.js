@@ -1,3 +1,5 @@
+/* eslint-disable react/display-name */
+/* eslint-disable react/no-multi-comp */
 import React from 'react';
 import * as Flex from '@twilio/flex-ui';
 
@@ -15,9 +17,55 @@ import CaseListSideLink from '../components/sideLinks/CaseListSideLink';
 import ManualPullButton from '../components/ManualPullButton';
 import OfflineContactButton from '../components/OfflineContactButton';
 import { chatCapacityUpdated } from '../states/configuration/actions';
-import { TaskCanvasOverride } from '../styles/HrmStyles';
+import { Column, TaskCanvasOverride, Box, HeaderContainer } from '../styles/HrmStyles';
+import HrmTheme from '../styles/HrmTheme';
+import { TLHPaddingLeft } from '../styles/GlobalOverrides';
+import { Container } from '../styles/queuesStatus';
 // eslint-disable-next-line
 import { getConfig } from '../HrmFormPlugin';
+
+const voiceColor = { Accepted: Flex.DefaultTaskChannels.Call.colors.main() };
+const webColor = Flex.DefaultTaskChannels.Chat.colors.main;
+const facebookColor = Flex.DefaultTaskChannels.ChatMessenger.colors.main;
+const smsColor = Flex.DefaultTaskChannels.ChatSms.colors.main;
+const whatsappColor = Flex.DefaultTaskChannels.ChatWhatsApp.colors.main;
+
+/**
+ * Returns de UI for the "Contacts Waiting" section
+ */
+const queuesStatusUI = () => (
+  <QueuesStatus
+    key="queue-status-task-list"
+    colors={{
+      voiceColor,
+      webColor,
+      facebookColor,
+      smsColor,
+      whatsappColor,
+    }}
+  />
+);
+
+/**
+ * Returns de UI for the "Add..." section
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
+ */
+const addButonsUI = setupObject => {
+  const manager = Flex.Manager.getInstance();
+  const { featureFlags } = setupObject;
+
+  return (
+    <Container key="add-buttons-section" backgroundColor={HrmTheme.colors.base2}>
+      <HeaderContainer>
+        <Box marginTop="12px" marginRight="5px" marginBottom="12px" marginLeft={TLHPaddingLeft}>
+          <Flex.Template code="AddButtons-Header" />
+        </Box>
+      </HeaderContainer>
+      {featureFlags.enable_manual_pulling && <ManualPullButton workerClient={manager.workerClient} />}
+      {featureFlags.enable_offline_contact && <OfflineContactButton />}
+    </Container>
+  );
+};
 
 /**
  * Add an "invisible" component that tracks the state of the queues, updating the pending tasks in each channel
@@ -55,41 +103,65 @@ const setUpRerenderOnReservation = () => {
 export const setUpQueuesStatus = () => {
   setUpRerenderOnReservation();
 
-  const voiceColor = { Accepted: Flex.DefaultTaskChannels.Call.colors.main() };
-  const webColor = Flex.DefaultTaskChannels.Chat.colors.main;
-  const facebookColor = Flex.DefaultTaskChannels.ChatMessenger.colors.main;
-  const smsColor = Flex.DefaultTaskChannels.ChatSms.colors.main;
-  const whatsappColor = Flex.DefaultTaskChannels.ChatWhatsApp.colors.main;
+  Flex.TaskListContainer.Content.add(queuesStatusUI(), {
+    sortOrder: -1,
+    align: 'start',
+  });
+};
 
-  Flex.TaskListContainer.Content.add(
-    <QueuesStatus
-      key="queue-status-task-list"
-      colors={{
-        voiceColor,
-        webColor,
-        facebookColor,
-        smsColor,
-        whatsappColor,
-      }}
-    />,
-    {
+const setUpManualPulling = () => {
+  const manager = Flex.Manager.getInstance();
+
+  const [, chatChannel] = Array.from(manager.workerClient.channels).find(c => c[1].taskChannelUniqueName === 'chat');
+
+  manager.store.dispatch(chatCapacityUpdated(chatChannel.capacity));
+
+  chatChannel.on('capacityUpdated', channel => {
+    if (channel.taskChannelUniqueName === 'chat') manager.store.dispatch(chatCapacityUpdated(channel.capacity));
+  });
+
+  Flex.Notifications.registerNotification({
+    id: 'NoTaskAssignableNotification',
+    content: <Flex.Template code="NoTaskAssignableNotification" />,
+    timeout: 5000,
+    type: Flex.NotificationType.warning,
+  });
+};
+
+/**
+ * Add buttons to pull / create tasks
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
+ */
+export const setUpAddButtons = setupObject => {
+  const { featureFlags } = setupObject;
+
+  // setup events for manual pulling
+  if (featureFlags.enable_manual_pulling) setUpManualPulling();
+
+  // add UI
+  if (featureFlags.enable_manual_pulling || featureFlags.enable_offline_contact)
+    Flex.TaskList.Content.add(addButonsUI(setupObject), {
       sortOrder: -1,
       align: 'start',
-    },
-  );
+    });
 
+  // replace UI for task information
+  if (featureFlags.enable_offline_contact)
+    Flex.TaskCanvas.Content.replace(<TaskCanvasOverride key="TaskCanvas-empty" />, {
+      if: props => props.task.channelType === 'default',
+    });
+};
+
+/**
+ * Adds the corresponding UI when there are no active tasks
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
+ */
+export const setUpNoTasksUI = setupObject => {
   Flex.AgentDesktopView.Content.add(
-    <QueuesStatus
-      key="queue-status-agent-desktop"
-      colors={{
-        voiceColor,
-        webColor,
-        facebookColor,
-        smsColor,
-        whatsappColor,
-      }}
-      paddingRight
-    />,
+    <Column key="no-task-agent-desktop-section" style={{ backgroundColor: HrmTheme.colors.base2 }}>
+      {queuesStatusUI()}
+      {addButonsUI(setupObject)}
+    </Column>,
     {
       sortOrder: -1,
       align: 'start',
@@ -233,49 +305,6 @@ export const setUpIncomingTransferMessage = () => {
   ];
 
   chatChannels.forEach(el => setSecondLine(el));
-};
-
-export const setUpManualPulling = () => {
-  const manager = Flex.Manager.getInstance();
-
-  const [, chatChannel] = Array.from(manager.workerClient.channels).find(c => c[1].taskChannelUniqueName === 'chat');
-
-  manager.store.dispatch(chatCapacityUpdated(chatChannel.capacity));
-
-  chatChannel.on('capacityUpdated', channel => {
-    if (channel.taskChannelUniqueName === 'chat') manager.store.dispatch(chatCapacityUpdated(channel.capacity));
-  });
-
-  Flex.Notifications.registerNotification({
-    id: 'NoTaskAssignableNotification',
-    content: <Flex.Template code="NoTaskAssignableNotification" />,
-    timeout: 5000,
-    type: Flex.NotificationType.warning,
-  });
-
-  Flex.TaskList.Content.add(<ManualPullButton key="manual-pull-button" workerClient={manager.workerClient} />, {
-    sortOrder: Infinity,
-    align: 'start',
-  });
-};
-
-export const setUpOfflineContact = () => {
-  Flex.TaskList.Content.add(<OfflineContactButton key="offline-contact-button" />, {
-    sortOrder: Infinity,
-    align: 'start',
-  });
-
-  Flex.TaskCanvas.Content.replace(<TaskCanvasOverride key="TaskCanvas-empty" />, {
-    if: props => props.task.channelType === 'default',
-  });
-
-  /*
-   * Flex.AgentDesktopView.Content.add(<OfflineContactButton key="offline-contact-button" />, {
-   *   sortOrder: Infinity,
-   *   align: 'start',
-   *   if: props => !props.tasks || !props.tasks.size,
-   * });
-   */
 };
 
 /**
