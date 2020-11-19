@@ -64,6 +64,11 @@ describe('transformForm', () => {
           value: 'My summary',
         },
       },
+      contactlessTask: {
+        channel: '',
+        date: '',
+        time: '',
+      },
     };
     const expected = {
       callType: callTypes.caller,
@@ -85,6 +90,11 @@ describe('transformForm', () => {
         },
         status: '',
         callSummary: 'My summary',
+      },
+      contactlessTask: {
+        channel: '',
+        date: '',
+        time: '',
       },
     };
     expect(transformForm(oldForm)).toStrictEqual(expected);
