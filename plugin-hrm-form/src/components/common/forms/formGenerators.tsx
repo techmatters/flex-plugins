@@ -1,3 +1,4 @@
+/* eslint-disable react/no-multi-comp */
 /* eslint-disable import/no-unused-modules */
 /* eslint-disable react/display-name */
 import React from 'react';
@@ -36,6 +37,12 @@ const RequiredAsterisk = () => (
 const getRules = (field: FormItemDefinition): ValidationRules =>
   pick(field, ['max', 'maxLength', 'min', 'minLength', 'pattern', 'required', 'validate']);
 
+/**
+ * Creates a Form with each input conntected to RHF's wrapping Context, based on the definition.
+ * @param {string[]} parents Array of parents. Allows you to easily create nested form fields. https://react-hook-form.com/api#register.
+ * @param {() => void} updateCallback Callback called to update form state. When is the callback called is specified in the input type.
+ * @param {FormItemDefinition} def Definition for a single input.
+ */
 const getInputType = (parents: string[], updateCallback: () => void) => (def: FormItemDefinition) => {
   const rules = getRules(def);
   const path = [...parents, def.name].join('.');
@@ -264,6 +271,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                   error={Boolean(error)}
                   aria-invalid={Boolean(error)}
                   aria-checked={checked}
+                  aria-describedby={`${path}-error`}
                   className="mixed-checkbox" // this grabs the styles imported from mixedCheckbox.css
                   onBlur={updateCallback}
                   onChange={() => {
@@ -385,12 +393,42 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
   }
 };
 
+/**
+ * Utility functions to create initial state from definition
+ * @param {FormItemDefinition} def Definition for a single input of a Form
+ */
+export const getInitialValue = (def: FormItemDefinition) => {
+  switch (def.type) {
+    case 'input':
+    case 'numeric-input':
+    case 'textarea':
+    case 'date-input':
+    case 'time-input':
+      return '';
+    case 'select':
+      return def.options[0].value;
+    case 'dependent-select':
+      return def.defaultOption.value;
+    case 'checkbox':
+      return false;
+    case 'mixed-checkbox':
+      return def.initialChecked === undefined ? 'mixed' : def.initialChecked;
+    default:
+      return null;
+  }
+};
+
+/**
+ * Creates a Form with each input conntected to RHF's wrapping Context, based on the definition.
+ * @param {FormDefinition} definition Form definition (schema).
+ * @param {string[]} parents Array of parents. Allows you to easily create nested form fields. https://react-hook-form.com/api#register.
+ * @param {() => void} updateCallback Callback called to update form state. When is the callback called is specified in the input type (getInputType).
+ */
 export const createFormFromDefinition = (definition: FormDefinition) => (parents: string[]) => (
   updateCallback: () => void,
 ): JSX.Element[] => definition.map(getInputType(parents, updateCallback));
 
-// eslint-disable-next-line react/no-multi-comp
-export const makeFormColumns = (formItems: JSX.Element[]) => {
+export const buildTwoColumnFormLayout = (formItems: JSX.Element[]) => {
   const items = formItems.map(i => (
     <Box key={`${i.key}-wrapping-box`} marginTop="5px" marginBottom="5px">
       {i}
@@ -407,35 +445,6 @@ export const makeFormColumns = (formItems: JSX.Element[]) => {
       <ColumnarBlock>{r}</ColumnarBlock>
     </TwoColumnLayout>
   );
-};
-
-/**
- * Utility functions to create initial state from definition
- */
-
-export const getInitialValue = (def: FormItemDefinition) => {
-  switch (def.type) {
-    case 'input':
-      return '';
-    case 'numeric-input':
-      return '';
-    case 'select':
-      return def.options[0].value;
-    case 'dependent-select':
-      return def.defaultOption.value;
-    case 'checkbox':
-      return false;
-    case 'mixed-checkbox':
-      return def.initialChecked === undefined ? 'mixed' : def.initialChecked;
-    case 'textarea':
-      return '';
-    case 'date-input':
-      return '';
-    case 'time-input':
-      return '';
-    default:
-      return null;
-  }
 };
 
 export const createFormItem = <T extends {}>(obj: T, def: FormItemDefinition) => ({
