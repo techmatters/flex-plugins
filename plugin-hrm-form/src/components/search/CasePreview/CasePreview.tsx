@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 
-import { SearchCase } from '../../../types/types';
+import { Case } from '../../../types/types';
 import CaseHeader from './CaseHeader';
 import CaseSummary from './CaseSummary';
 import CaseTags from './CaseTags';
@@ -9,7 +9,7 @@ import { Flex } from '../../../styles/HrmStyles';
 import { CaseWrapper } from '../../../styles/search';
 
 type OwnProps = {
-  currentCase: SearchCase;
+  currentCase: Case;
 };
 
 type Props = OwnProps;

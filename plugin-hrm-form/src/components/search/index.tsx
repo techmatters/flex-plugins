@@ -8,7 +8,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import { ITask, withTaskContext } from '@twilio/flex-ui';
 
 import SearchForm from './SearchForm';
-import SearchResults, { CONTACTS_PER_PAGE } from './SearchResults';
+import SearchResults, { CONTACTS_PER_PAGE, CASES_PER_PAGE } from './SearchResults';
 import ContactDetails from './ContactDetails';
 import { SearchPages } from '../../states/search/types';
 import { SearchContact } from '../../types/types';
@@ -17,6 +17,7 @@ import {
   changeSearchPage,
   viewContactDetails,
   searchContacts,
+  searchCases,
   handleExpandDetailsSection,
 } from '../../states/search/actions';
 import { namespace, searchContactsBase, configurationBase } from '../../states';
@@ -37,17 +38,26 @@ const Search: React.FC<Props> = props => {
   const closeDialog = () => setMockedMessage('');
   const handleMockedMessage = () => setMockedMessage('Not implemented yet!');
 
-  const handleSearch = (newSearchParams, newOffset) => {
+  const handleSearchContacts = (newSearchParams, newOffset) => {
     props.searchContacts(newSearchParams, props.counselorsHash, CONTACTS_PER_PAGE, newOffset);
   };
 
+  const handleSearchCases = (newSearchParams, newOffset) => {
+    props.searchCases(newSearchParams, props.counselorsHash, CASES_PER_PAGE, newOffset);
+  };
+
   const setSearchParamsAndHandleSearch = newSearchParams => {
-    handleSearch(newSearchParams, 0);
+    handleSearchContacts(newSearchParams, 0);
+    handleSearchCases(newSearchParams, 0);
     setSearchParams(newSearchParams);
   };
 
-  const setOffsetAndHandleSearch = newOffset => {
-    handleSearch(searchParams, newOffset);
+  const setOffsetAndHandleSearchContacts = newOffset => {
+    handleSearchContacts(searchParams, newOffset);
+  };
+
+  const setOffsetAndHandleSearchCases = newOffset => {
+    handleSearchCases(searchParams, newOffset);
   };
 
   const toggleNonDataContacts = () => {
@@ -58,7 +68,7 @@ const Search: React.FC<Props> = props => {
         onlyDataContacts: !onlyDataContacts,
       };
 
-      handleSearch(updatedSearchParams, 0);
+      handleSearchContacts(updatedSearchParams, 0);
       setSearchParams(updatedSearchParams);
     }
   };
@@ -71,10 +81,7 @@ const Search: React.FC<Props> = props => {
         closedCases: !closedCases,
       };
 
-      /*
-       * ToDo: add a logic to Search CASES
-       * handleSearch(updatedSearchParams, 0);
-       */
+      handleSearchCases(updatedSearchParams, 0);
       setSearchParams(updatedSearchParams);
     }
   };
@@ -94,7 +101,7 @@ const Search: React.FC<Props> = props => {
   };
   renderMockDialog.displayName = 'MockDialog';
 
-  const renderSearchPages = (currentPage, currentContact, searchResult, form) => {
+  const renderSearchPages = (currentPage, currentContact, searchContactsResults, searchCasesResults, form) => {
     switch (currentPage) {
       case SearchPages.form:
         return (
@@ -110,11 +117,13 @@ const Search: React.FC<Props> = props => {
           <SearchResults
             task={props.task}
             currentIsCaller={props.currentIsCaller}
-            results={searchResult}
+            searchContactsResults={searchContactsResults}
+            searchCasesResults={searchCasesResults}
             onlyDataContacts={searchParams.onlyDataContacts}
             closedCases={searchParams.closedCases}
             handleSelectSearchResult={props.handleSelectSearchResult}
-            handleSearch={setOffsetAndHandleSearch}
+            handleSearchContacts={setOffsetAndHandleSearchContacts}
+            handleSearchCases={setOffsetAndHandleSearchCases}
             toggleNonDataContacts={toggleNonDataContacts}
             toggleClosedCases={toggleClosedCases}
             handleBack={goToForm}
@@ -139,12 +148,12 @@ const Search: React.FC<Props> = props => {
   };
   renderSearchPages.displayName = 'SearchPage';
 
-  const { currentPage, currentContact, searchResult, form } = props;
+  const { currentPage, currentContact, searchContactsResults, searchCasesResults, form } = props;
 
   return (
     <>
       {renderMockDialog()}
-      {renderSearchPages(currentPage, currentContact, searchResult, form)}
+      {renderSearchPages(currentPage, currentContact, searchContactsResults, searchCasesResults, form)}
     </>
   );
 };
@@ -168,7 +177,8 @@ const mapStateToProps = (state, ownProps) => {
     currentPage: taskSearchState.currentPage,
     currentContact: taskSearchState.currentContact,
     form: taskSearchState.form,
-    searchResult: taskSearchState.searchResult,
+    searchContactsResults: taskSearchState.searchContactsResult,
+    searchCasesResults: taskSearchState.searchCasesResult,
     detailsExpanded: taskSearchState.detailsExpanded,
     counselorsHash: counselors.hash,
   };
@@ -183,6 +193,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     viewContactDetails: bindActionCreators(viewContactDetails(taskId), dispatch),
     handleExpandDetailsSection: bindActionCreators(handleExpandDetailsSection(taskId), dispatch),
     searchContacts: searchContacts(dispatch)(taskId),
+    searchCases: searchCases(dispatch)(taskId),
   };
 };
 

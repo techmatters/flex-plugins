@@ -23,6 +23,7 @@ export type Case = {
   info?: CaseInfo;
   createdAt: string;
   updatedAt: string;
+  connectedContacts: any[]; // TODO: create contact type
 };
 
 // Information about a single contact, as expected from DB (we might want to reuse this type in backend) - (is this a correct placement for this?)
@@ -86,28 +87,12 @@ export type SearchContact = {
   counselor: string;
 };
 
-export type SearchCase = {
-  // Todo: should be 'caseId' instead of 'id'?
-  id: number;
-  createdAt: string;
-  updatedAt: string;
-  status: string;
-  helpline: string;
-  info: {
-    summary?: string;
-    notes?: string[];
-    perpetrators?: PerpetratorEntry[];
-    households?: HouseholdEntry[];
-  };
-  twilioWorkerId: string;
-  // Todo: change to contacts type
-  connectedContacts: Array<any>;
-};
-
 export type SearchContactResult = {
   count: number;
   contacts: SearchContact[];
-  // ToDo: remove this
-  cases: SearchCase[];
-  casesCount: number;
+};
+
+export type SearchCaseResult = {
+  count: number;
+  cases: Case[];
 };

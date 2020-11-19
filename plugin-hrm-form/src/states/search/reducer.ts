@@ -12,7 +12,8 @@ type TaskEntry = {
   detailsExpanded: {
     [key in ContactDetailsSectionsType]: boolean;
   };
-  searchResult: t.DetailedSearchResult;
+  searchContactsResult: t.DetailedSearchContactsResult;
+  searchCasesResult: t.DetailedSearchCasesResult;
   isRequesting: boolean;
   error: any;
 };
@@ -45,7 +46,8 @@ export const newTaskEntry: TaskEntry = {
     [ContactDetailsSections.ISSUE_CATEGORIZATION]: false,
     [ContactDetailsSections.CONTACT_SUMMARY]: false,
   },
-  searchResult: [],
+  searchContactsResult: { count: 0, contacts: [] },
+  searchCasesResult: { count: 0, cases: [] },
   isRequesting: false,
   error: null,
 };
@@ -143,7 +145,7 @@ export function reduce(state = initialState, action: t.SearchActionType | Genera
           ...state.tasks,
           [action.taskId]: {
             ...task,
-            searchResult: action.searchResult,
+            searchContactsResult: action.searchResult,
             currentPage: t.SearchPages.resultsContacts,
             isRequesting: false,
             error: null,
@@ -160,6 +162,48 @@ export function reduce(state = initialState, action: t.SearchActionType | Genera
           [action.taskId]: {
             ...task,
             currentPage: t.SearchPages.resultsContacts,
+            isRequesting: false,
+            error: action.error,
+          },
+        },
+      };
+    }
+    case t.SEARCH_CASES_REQUEST: {
+      const task = state.tasks[action.taskId];
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...task,
+            isRequesting: true,
+          },
+        },
+      };
+    }
+    case t.SEARCH_CASES_SUCCESS: {
+      const task = state.tasks[action.taskId];
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...task,
+            searchCasesResult: action.searchResult,
+            isRequesting: false,
+            error: null,
+          },
+        },
+      };
+    }
+    case t.SEARCH_CASES_FAILURE: {
+      const task = state.tasks[action.taskId];
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...task,
             isRequesting: false,
             error: action.error,
           },
