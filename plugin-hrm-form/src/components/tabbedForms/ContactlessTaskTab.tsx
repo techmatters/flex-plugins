@@ -21,15 +21,17 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 const ContactlessTaskTab: React.FC<Props> = ({ dispatch, display, task }) => {
   const { getValues } = useFormContext();
 
-  const updateCallBack = () => {
-    const { contactlessTask } = getValues();
-    dispatch(updateContactLessTask(contactlessTask, task.taskSid));
-  };
-  const contactlessTaskForm = createFormFromDefinition(formDefinition)(['contactlessTask'])(updateCallBack).map(i => (
-    <Box key={`${i.key}-wrapping-box`} marginTop="5px" marginBottom="5px">
-      {i}
-    </Box>
-  ));
+  const contactlessTaskForm = React.useMemo(() => {
+    const updateCallBack = () => {
+      const { contactlessTask } = getValues();
+      dispatch(updateContactLessTask(contactlessTask, task.taskSid));
+    };
+    return createFormFromDefinition(formDefinition)(['contactlessTask'])(updateCallBack).map(i => (
+      <Box key={`${i.key}-wrapping-box`} marginTop="5px" marginBottom="5px">
+        {i}
+      </Box>
+    ));
+  }, [dispatch, getValues, task.taskSid]);
 
   return (
     <div style={{ height: '100%', display: display ? 'block' : 'none' }}>
