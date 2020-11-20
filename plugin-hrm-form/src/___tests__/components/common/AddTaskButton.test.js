@@ -3,8 +3,6 @@ import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { render, screen } from '@testing-library/react';
 import { mount } from 'enzyme';
 import { StorelessThemeProvider, withTheme } from '@twilio/flex-ui';
-import { Provider } from 'react-redux';
-import configureMockStore from 'redux-mock-store';
 import '@testing-library/jest-dom/extend-expect';
 
 import HrmTheme from '../../../styles/HrmTheme';
@@ -15,9 +13,6 @@ const themeConf = {
 };
 
 expect.extend(toHaveNoViolations);
-
-const mockStore = configureMockStore([]);
-const store = mockStore({});
 
 test('click on button', () => {
   const onClick = jest.fn();
@@ -52,9 +47,7 @@ const Wrapped = withTheme(props => <AddTaskButton disabled={false} label="Testin
 test('a11y', async () => {
   const wrapper = mount(
     <StorelessThemeProvider themeConf={themeConf}>
-      <Provider store={store}>
-        <Wrapped />
-      </Provider>
+      <Wrapped />
     </StorelessThemeProvider>,
   );
 
