@@ -2,6 +2,7 @@
 import { isNonDataCallType } from '../states/ValidationRules';
 import { isNotCategory, isNotSubcategory } from '../states/ContactFormStateFactory';
 import { mapChannelForInsights } from '../utils/mappers';
+import { splitDate, splitTime } from '../utils/helpers';
 
 function getSubcategories(task) {
   if (!task || !task.caseInformation || !task.caseInformation.categories) return [];
@@ -63,8 +64,8 @@ function mergeAttributes(previousAttributes, { conversations }) {
 const overrideAttributes = (attributes, form) => {
   const { date, time } = form.contactlessTask;
 
-  const [y, m, d] = date.split('-').map(s => parseInt(s, 10));
-  const [hh, mm] = time.split(':').map(s => parseInt(s, 10));
+  const [y, m, d] = splitDate(date);
+  const [hh, mm] = splitTime(time);
 
   const dateTime = new Date(y, m - 1, d, hh, mm).getTime();
 
