@@ -1,6 +1,7 @@
 import { channelTypes, otherContactChannels } from '../../states/DomainConstants';
 import type { FormDefinition } from '../common/forms/types';
 import { mapChannelForInsights } from '../../utils/mappers';
+import { splitDate } from '../../utils/helpers';
 
 const channelOptions = [{ value: '', label: '' }].concat(
   [...Object.values(channelTypes), ...Object.values(otherContactChannels)].map(s => ({
@@ -22,6 +23,10 @@ export const formDefinition: FormDefinition = [
     type: 'date-input',
     label: 'Date of Contact',
     required: { value: true, message: 'RequiredFieldError' },
+    validate: date => {
+      const [y, m, d] = splitDate(date);
+      return new Date(y, m - 1, d).getTime() > Date.now() ? 'DateCantBeGreaterThanToday' : null;
+    },
   },
   {
     name: 'time',
