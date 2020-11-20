@@ -186,6 +186,7 @@
 
   "RequiredFieldError": "This field is required.",
   "DateCantBeGreaterThanToday": "Date can't be greater than today.",
+  "TimeCantBeGreaterThanNow": "Time can't be greater than now.",
 
   "OfflineContactFirstLine": "Offline Contact",
   "OfflineContactSecondLine": "in progress"

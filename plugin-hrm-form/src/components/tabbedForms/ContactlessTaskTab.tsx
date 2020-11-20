@@ -9,6 +9,7 @@ import { updateContactLessTask } from '../../states/ContactState';
 import { Container, ColumnarBlock, TwoColumnLayout, Box } from '../../styles/HrmStyles';
 import type { RootState } from '../../states';
 import { formDefinition } from './ContactlessTaskTabDefinition';
+import { splitDate, splitTime } from '../../utils/helpers';
 
 type OwnProps = {
   task: ITask;
@@ -19,7 +20,7 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ContactlessTaskTab: React.FC<Props> = ({ dispatch, display, task }) => {
-  const { getValues } = useFormContext();
+  const { getValues, setError, watch, errors } = useFormContext();
 
   const contactlessTaskForm = React.useMemo(() => {
     const updateCallBack = () => {
@@ -32,6 +33,18 @@ const ContactlessTaskTab: React.FC<Props> = ({ dispatch, display, task }) => {
       </Box>
     ));
   }, [dispatch, getValues, task.taskSid]);
+
+  const date = watch('contactlessTask.date');
+  const time = watch('contactlessTask.time');
+
+  React.useEffect(() => {
+    if (date && time) {
+      const [y, m, d] = splitDate(date);
+      const [mm, hh] = splitTime(time);
+      if (new Date(y, m - 1, d, mm, hh).getTime() > Date.now())
+        setError('contactlessTask.time', { message: 'TimeCantBeGreaterThanNow' });
+    }
+  }, [date, errors, setError, time]);
 
   return (
     <div style={{ height: '100%', display: display ? 'block' : 'none' }}>
