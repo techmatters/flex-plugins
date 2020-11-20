@@ -185,6 +185,7 @@
   "CancelOfflineContact": "Cancel Offline Contact",
 
   "RequiredFieldError": "This field is required.",
+  "DateCantBeGreaterThanToday": "Date can't be greater than today.",
 
   "OfflineContactFirstLine": "Offline Contact",
   "OfflineContactSecondLine": "in progress"
