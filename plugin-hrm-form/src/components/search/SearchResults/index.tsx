@@ -33,7 +33,7 @@ import { SearchPages, SearchPagesType } from '../../../states/search/types';
 import { namespace, searchContactsBase } from '../../../states';
 
 export const CONTACTS_PER_PAGE = 20;
-export const CASES_PER_PAGE = 5;
+export const CASES_PER_PAGE = 20;
 
 type OwnProps = {
   task: ITask;
