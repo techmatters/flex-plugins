@@ -30,29 +30,33 @@ const Timeline = ({ task, form, caseId, changeRoute, updateTempInfo }) => {
   const [timeline, setTimeline] = useState([]);
 
   useEffect(() => {
-    async function updateTimeline() {
+    /**
+     * Gets the activities timeline from current caseId
+     * If the case is just being created, adds the case's description as a new activity.
+     */
+    const getTimeline = async () => {
       const activities = await getActivities(caseId);
-      setTimeline(sortActivities(activities));
-    }
+      let timelineActivities = sortActivities(activities);
 
-    updateTimeline();
-  }, [caseId]);
+      const isCreatingCase = !timelineActivities.some(isConnectedCaseActivity);
 
-  useEffect(() => {
-    const isCreatingCase = !timeline.some(isConnectedCaseActivity);
+      if (isCreatingCase) {
+        const { workerSid } = getConfig();
+        const connectCaseActivity = {
+          date: format(Date.now(), 'yyyy-MM-dd HH:mm:ss'),
+          type: task.channelType,
+          text: form.caseInformation.callSummary.value,
+          twilioWorkerId: workerSid,
+        };
 
-    if (isCreatingCase) {
-      const { workerSid } = getConfig();
-      const connectCaseActivity = {
-        date: format(Date.now(), 'yyyy-MM-dd HH:mm:ss'),
-        type: task.channelType,
-        text: form.caseInformation.callSummary.value,
-        twilioWorkerId: workerSid,
-      };
+        timelineActivities = sortActivities([...timelineActivities, connectCaseActivity]);
+      }
 
-      setTimeline(t => sortActivities([...t, connectCaseActivity]));
-    }
-  }, [form, task, timeline]);
+      setTimeline(timelineActivities);
+    };
+
+    getTimeline();
+  }, [form, task, caseId]);
 
   const handleOnClickView = activity => {
     const { twilioWorkerId } = activity;
@@ -100,19 +104,21 @@ const Timeline = ({ task, form, caseId, changeRoute, updateTempInfo }) => {
           <CaseAddButton templateCode="Case-AddNote" onClick={handleAddNoteClick} />
         </Row>
       </Box>
-      {timeline.map((activity, index) => {
-        const date = new Date(activity.date).toLocaleDateString(navigator.language);
-        return (
-          <TimelineRow key={index}>
-            <TimelineDate>{date}</TimelineDate>
-            <TimelineIcon type={activity.type} />
-            <TimelineText>{activity.text}</TimelineText>
-            <Box marginLeft="auto" marginRight="10px">
-              <ViewButton onClick={() => handleOnClickView(activity)}>View</ViewButton>
-            </Box>
-          </TimelineRow>
-        );
-      })}
+      {timeline &&
+        timeline.length > 0 &&
+        timeline.map((activity, index) => {
+          const date = new Date(activity.date).toLocaleDateString(navigator.language);
+          return (
+            <TimelineRow key={index}>
+              <TimelineDate>{date}</TimelineDate>
+              <TimelineIcon type={activity.type} />
+              <TimelineText>{activity.text}</TimelineText>
+              <Box marginLeft="auto" marginRight="10px">
+                <ViewButton onClick={() => handleOnClickView(activity)}>View</ViewButton>
+              </Box>
+            </TimelineRow>
+          );
+        })}
     </Box>
   );
 };
