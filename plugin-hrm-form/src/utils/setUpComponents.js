@@ -32,7 +32,7 @@ const smsColor = Flex.DefaultTaskChannels.ChatSms.colors.main;
 const whatsappColor = Flex.DefaultTaskChannels.ChatWhatsApp.colors.main;
 
 /**
- * Returns de UI for the "Contacts Waiting" section
+ * Returns the UI for the "Contacts Waiting" section
  */
 const queuesStatusUI = () => (
   <QueuesStatus
@@ -48,10 +48,10 @@ const queuesStatusUI = () => (
 );
 
 /**
- * Returns de UI for the "Add..." section
+ * Returns the UI for the "Add..." section
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
  */
-const addButonsUI = setupObject => {
+const addButtonsUI = setupObject => {
   const manager = Flex.Manager.getInstance();
   const { featureFlags } = setupObject;
 
@@ -162,6 +162,13 @@ const setUpOfflineContact = () => {
 
     return Flex.TaskChannelHelper.getTemplateForStatus(task, defaultStrings, componentType);
   };
+
+  Flex.Notifications.registerNotification({
+    id: 'YouMustBeAvailableToPerformThisOp',
+    content: <Flex.Template code="YouMustBeAvailableToPerformThisOp" />,
+    timeout: 5000,
+    type: Flex.NotificationType.warning,
+  });
 };
 
 /**
@@ -178,7 +185,7 @@ export const setUpAddButtons = setupObject => {
 
   // add UI
   if (featureFlags.enable_manual_pulling || featureFlags.enable_offline_contact)
-    Flex.TaskList.Content.add(addButonsUI(setupObject), {
+    Flex.TaskList.Content.add(addButtonsUI(setupObject), {
       sortOrder: Infinity,
       align: 'start',
     });
@@ -198,7 +205,7 @@ export const setUpNoTasksUI = setupObject => {
   Flex.AgentDesktopView.Content.add(
     <Column key="no-task-agent-desktop-section" style={{ backgroundColor: HrmTheme.colors.base2, minWidth: 300 }}>
       {queuesStatusUI()}
-      {addButonsUI(setupObject)}
+      {addButtonsUI(setupObject)}
     </Column>,
     {
       sortOrder: -1,

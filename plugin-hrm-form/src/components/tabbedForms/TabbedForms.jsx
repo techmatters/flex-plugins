@@ -85,7 +85,7 @@ const TabbedForms = props => {
     />,
   );
 
-  if (task.attributes.isContactlessTask) body.push(<div style={{ display: 'none' }} />); // fake it so lenght is accurate
+  if (task.attributes.isContactlessTask) body.push(<div style={{ display: 'none' }} />); // fake it so length is accurate
 
   if (isCallerType) {
     body.push(

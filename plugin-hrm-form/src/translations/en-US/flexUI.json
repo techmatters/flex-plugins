@@ -183,6 +183,7 @@
   "NoTaskAssignableNotification": "No task assignable to you at the moment.",
   "OfflineContactButtonText": "Offline Contact Record",
   "CancelOfflineContact": "Cancel Offline Contact",
+  "YouMustBeAvailableToPerformThisOp": "You must be available to perform this operation.",
 
   "RequiredFieldError": "This field is required.",
   "DateCantBeGreaterThanToday": "Date can't be greater than today.",
