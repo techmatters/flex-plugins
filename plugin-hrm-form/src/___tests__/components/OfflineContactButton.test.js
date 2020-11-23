@@ -32,7 +32,7 @@ test('click on button', () => {
       WT2: { channelType: 'sms' },
     }),
   );
-  const store = mockStore({ flex: { worker: { tasks } } });
+  const store = mockStore({ flex: { worker: { tasks, activity: { available: true } } } });
 
   render(
     <StorelessThemeProvider themeConf={themeConf}>
@@ -54,13 +54,12 @@ test('button should be disabled (default task exists)', () => {
       WT2: { channelType: 'default' },
     }),
   );
-  const store = mockStore({ flex: { worker: { tasks } } });
-  const onClick = jest.fn();
+  const store = mockStore({ flex: { worker: { tasks, activity: { available: true } } } });
 
   render(
     <StorelessThemeProvider themeConf={themeConf}>
       <Provider store={store}>
-        <OfflineContactButton disabled={true} label="Testing Button" onClick={onClick} />
+        <OfflineContactButton />
       </Provider>
     </StorelessThemeProvider>,
   );
@@ -70,7 +69,29 @@ test('button should be disabled (default task exists)', () => {
   expect(assignMeContactlessTask).not.toHaveBeenCalled();
 });
 
-const Wrapped = withTheme(props => <OfflineContactButton disabled={false} label="Testing Button" {...props} />);
+test('should not create task as worker is not available', () => {
+  const tasks = new Map(
+    Object.entries({
+      WT1: { channelType: 'web' },
+      WT2: { channelType: 'default' },
+    }),
+  );
+  const store = mockStore({ flex: { worker: { tasks, activity: { available: false } } } });
+
+  render(
+    <StorelessThemeProvider themeConf={themeConf}>
+      <Provider store={store}>
+        <OfflineContactButton />
+      </Provider>
+    </StorelessThemeProvider>,
+  );
+
+  screen.getByText('OfflineContactButtonText').click();
+
+  expect(assignMeContactlessTask).not.toHaveBeenCalled();
+});
+
+const Wrapped = withTheme(props => <OfflineContactButton {...props} />);
 
 test('a11y', async () => {
   const tasks = new Map(
@@ -79,7 +100,7 @@ test('a11y', async () => {
       WT2: { channelType: 'sms' },
     }),
   );
-  const store = mockStore({ flex: { worker: { tasks } } });
+  const store = mockStore({ flex: { worker: { tasks, activity: { available: true } } } });
   const wrapper = mount(
     <StorelessThemeProvider themeConf={themeConf}>
       <Provider store={store}>
