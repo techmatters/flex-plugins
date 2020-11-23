@@ -2,7 +2,7 @@ import { omit } from 'lodash';
 
 import * as t from './types';
 import { INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE, GeneralActionType } from '../types';
-import { SearchContact } from '../../types/types';
+import { SearchContact, SearchCaseResult } from '../../types/types';
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../../components/common/ContactDetails';
 
 type TaskEntry = {
@@ -13,7 +13,7 @@ type TaskEntry = {
     [key in ContactDetailsSectionsType]: boolean;
   };
   searchContactsResult: t.DetailedSearchContactsResult;
-  searchCasesResult: t.DetailedSearchCasesResult;
+  searchCasesResult: SearchCaseResult;
   isRequesting: boolean;
   error: any;
 };

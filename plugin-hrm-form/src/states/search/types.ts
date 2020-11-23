@@ -1,4 +1,4 @@
-import { SearchContact, Case } from '../../types/types';
+import { SearchContact, SearchCaseResult } from '../../types/types';
 import { addDetails } from './helpers';
 import { ContactDetailsSectionsType } from '../../components/common/ContactDetails';
 // Action types
@@ -41,11 +41,6 @@ export type DetailedSearchContactsResult = {
   contacts: ReturnType<typeof addDetails>;
 };
 
-export type DetailedSearchCasesResult = {
-  count: number;
-  cases: Case[];
-};
-
 // Supported action object types
 type SearchFormChangeAction = {
   [K in keyof SearchFormValues]: {
@@ -68,7 +63,7 @@ type SearchCasesRequestAction = { type: typeof SEARCH_CASES_REQUEST; taskId: str
 
 type SearchCasesSuccessAction = {
   type: typeof SEARCH_CASES_SUCCESS;
-  searchResult: DetailedSearchCasesResult;
+  searchResult: SearchCaseResult;
   taskId: string;
 };
 
