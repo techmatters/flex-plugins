@@ -3,6 +3,7 @@ import React from 'react';
 import { ITask, withTaskContext } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 import { useFormContext } from 'react-hook-form';
+import { isFuture } from 'date-fns';
 
 import { createFormFromDefinition } from '../common/forms/formGenerators';
 import { updateContactLessTask } from '../../states/ContactState';
@@ -41,7 +42,7 @@ const ContactlessTaskTab: React.FC<Props> = ({ dispatch, display, task }) => {
     if (date && time) {
       const [y, m, d] = splitDate(date);
       const [mm, hh] = splitTime(time);
-      if (new Date(y, m - 1, d, mm, hh).getTime() > Date.now())
+      if (isFuture(new Date(y, m - 1, d, mm, hh)))
         setError('contactlessTask.time', { message: 'TimeCantBeGreaterThanNow' });
     }
   }, [date, errors, setError, time]);
