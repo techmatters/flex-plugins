@@ -5,6 +5,7 @@ import { channelTypes } from '../states/DomainConstants';
 import { getConversationDuration, fillEndMillis } from '../utils/conversationDuration';
 import { getLimitAndOffsetParams } from './PaginationParams';
 import fetchHrmApi from './fetchHrmApi';
+import { getDateTime } from '../utils/helpers';
 
 export async function searchContacts(searchParams, limit, offset) {
   const queryParams = getLimitAndOffsetParams(limit, offset);
@@ -81,8 +82,10 @@ export function transformForm(form) {
 export async function saveToHrm(task, form, hrmBaseUrl, workerSid, helpline, shouldFillEndMillis = true) {
   // if we got this far, we assume the form is valid and ready to submit
   const metadata = shouldFillEndMillis ? fillEndMillis(form.metadata) : form.metadata;
-  const conversationDuration = getConversationDuration(metadata);
+  const conversationDuration = getConversationDuration(task, metadata);
   const callType = form.callType.value;
+  const number = getNumberFromTask(task);
+  const timeOfContact = getDateTime(form.contactlessTask);
 
   let rawForm = form;
 
@@ -106,9 +109,10 @@ export async function saveToHrm(task, form, hrmBaseUrl, workerSid, helpline, sho
     twilioWorkerId: workerSid,
     queueName: task.queueName,
     channel: task.channelType,
-    number: getNumberFromTask(task),
+    number,
     helpline,
     conversationDuration,
+    timeOfContact,
   };
 
   const response = await fetch(`${hrmBaseUrl}/contacts`, {
