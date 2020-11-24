@@ -15,7 +15,9 @@ type TaskEntry = {
   searchContactsResult: t.DetailedSearchContactsResult;
   searchCasesResult: SearchCaseResult;
   isRequesting: boolean;
+  isRequestingCases: boolean;
   error: any;
+  casesError: any;
 };
 
 export type SearchState = {
@@ -49,7 +51,9 @@ export const newTaskEntry: TaskEntry = {
   searchContactsResult: { count: 0, contacts: [] },
   searchCasesResult: { count: 0, cases: [] },
   isRequesting: false,
+  isRequestingCases: false,
   error: null,
+  casesError: null,
 };
 
 export function reduce(state = initialState, action: t.SearchActionType | GeneralActionType): SearchState {
@@ -176,7 +180,7 @@ export function reduce(state = initialState, action: t.SearchActionType | Genera
           ...state.tasks,
           [action.taskId]: {
             ...task,
-            isRequesting: true,
+            isRequestingCases: true,
           },
         },
       };
@@ -190,8 +194,8 @@ export function reduce(state = initialState, action: t.SearchActionType | Genera
           [action.taskId]: {
             ...task,
             searchCasesResult: action.searchResult,
-            isRequesting: false,
-            error: null,
+            isRequestingCases: false,
+            casesError: null,
           },
         },
       };
@@ -204,8 +208,8 @@ export function reduce(state = initialState, action: t.SearchActionType | Genera
           ...state.tasks,
           [action.taskId]: {
             ...task,
-            isRequesting: false,
-            error: action.error,
+            isRequestingCases: false,
+            casesError: action.error,
           },
         },
       };
