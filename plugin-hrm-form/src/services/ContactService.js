@@ -85,7 +85,6 @@ export async function saveToHrm(task, form, hrmBaseUrl, workerSid, helpline, sho
   const conversationDuration = getConversationDuration(task, metadata);
   const callType = form.callType.value;
   const number = getNumberFromTask(task);
-  const timeOfContact = getDateTime(form.contactlessTask);
 
   let rawForm = form;
 
@@ -96,6 +95,9 @@ export async function saveToHrm(task, form, hrmBaseUrl, workerSid, helpline, sho
       metadata: form.metadata,
     };
   }
+
+  // This might change if isNonDataCallType, that's why we use rawForm
+  const timeOfContact = getDateTime(rawForm.contactlessTask);
 
   /*
    * We do a transform from the original and then add things.
