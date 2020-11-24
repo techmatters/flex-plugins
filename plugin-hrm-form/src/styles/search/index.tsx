@@ -5,8 +5,6 @@ import { Tabs, TabsProps } from '@twilio/flex-ui';
 import Folder from '@material-ui/icons/Folder';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import Link from '@material-ui/icons/Link';
-import CropFreeIcon from '@material-ui/icons/CropFree';
-import CallMergeIcon from '@material-ui/icons/CallMerge';
 import { ButtonProps } from '@material-ui/core/Button';
 
 import { Flex, Row, FontOpenSans, BottomButtonBar } from '../HrmStyles';

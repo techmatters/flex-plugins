@@ -41,3 +41,16 @@ export async function updateCase(caseId, body) {
 export async function getActivities(caseId) {
   return fetchHrmApi(`/cases/${caseId}/activities/`);
 }
+
+export async function searchCases(searchParams, limit, offset) {
+  const queryParams = getLimitAndOffsetParams(limit, offset);
+
+  const options = {
+    method: 'POST',
+    body: JSON.stringify(searchParams),
+  };
+
+  const responseJson = await fetchHrmApi(`/cases/search${queryParams}`, options);
+
+  return responseJson;
+}

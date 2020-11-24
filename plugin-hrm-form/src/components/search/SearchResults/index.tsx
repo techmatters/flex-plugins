@@ -7,7 +7,7 @@ import { Template, Tab as TwilioTab, ITask } from '@twilio/flex-ui';
 
 import ContactPreview from '../ContactPreview';
 import CasePreview from '../CasePreview';
-import { SearchContactResult, SearchContact } from '../../../types/types';
+import { SearchContactResult, SearchCaseResult, SearchContact } from '../../../types/types';
 import { Row } from '../../../styles/HrmStyles';
 import {
   BackIcon,
@@ -33,16 +33,18 @@ import { SearchPages, SearchPagesType } from '../../../states/search/types';
 import { namespace, searchContactsBase } from '../../../states';
 
 export const CONTACTS_PER_PAGE = 20;
-const CASES_PER_PAGE = 5;
+export const CASES_PER_PAGE = 20;
 
 type OwnProps = {
   task: ITask;
   currentIsCaller: boolean;
-  results: SearchContactResult;
+  searchContactsResults: SearchContactResult;
+  searchCasesResults: SearchCaseResult;
   onlyDataContacts: boolean;
   closedCases: boolean;
   handleSelectSearchResult: (contact: SearchContact) => void;
-  handleSearch: (offset: number) => void;
+  handleSearchContacts: (offset: number) => void;
+  handleSearchCases: (offset: number) => void;
   toggleNonDataContacts: () => void;
   toggleClosedCases: () => void;
   handleBack: () => void;
@@ -56,11 +58,13 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchT
 
 const SearchResults: React.FC<Props> = ({
   currentIsCaller,
-  results,
+  searchContactsResults,
+  searchCasesResults,
   onlyDataContacts,
   closedCases,
   handleSelectSearchResult,
-  handleSearch,
+  handleSearchContacts,
+  handleSearchCases,
   toggleNonDataContacts,
   toggleClosedCases,
   handleBack,
@@ -70,7 +74,8 @@ const SearchResults: React.FC<Props> = ({
 }) => {
   const [currentContact, setCurrentContact] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [page, setPage] = useState(0);
+  const [contactsPage, setContactsPage] = useState(0);
+  const [casesPage, setCasesPage] = useState(0);
 
   const handleCloseDialog = () => {
     setCurrentContact(null);
@@ -81,26 +86,23 @@ const SearchResults: React.FC<Props> = ({
     handleSelectSearchResult(currentContact);
   };
 
-  const handleChangePage = (newPage, limit) => {
-    setPage(newPage);
-    handleSearch(limit * newPage);
-  };
-
   const handleContactsChangePage = newPage => {
-    handleChangePage(newPage, CONTACTS_PER_PAGE);
+    setContactsPage(newPage);
+    handleSearchContacts(CONTACTS_PER_PAGE * newPage);
   };
 
   const handleCasesChangePage = newPage => {
-    handleChangePage(newPage, CASES_PER_PAGE);
+    setCasesPage(newPage);
+    handleSearchCases(CASES_PER_PAGE * newPage);
   };
 
   const handleToggleNonDataContact = () => {
-    setPage(0);
+    setContactsPage(0);
     toggleNonDataContacts();
   };
 
   const handleToggleClosedCases = () => {
-    setPage(0);
+    setCasesPage(0);
     toggleClosedCases();
   };
 
@@ -110,8 +112,9 @@ const SearchResults: React.FC<Props> = ({
     setCurrentContact(contact);
   };
 
-  const { contacts, count, cases, casesCount } = results;
-  const contactsPageCount = Math.ceil(count / CONTACTS_PER_PAGE);
+  const { count: contactsCount, contacts } = searchContactsResults;
+  const { count: casesCount, cases } = searchCasesResults;
+  const contactsPageCount = Math.ceil(contactsCount / CONTACTS_PER_PAGE);
   const casesPageCount = Math.ceil(casesCount / CASES_PER_PAGE);
 
   const toggleTabs = () => {
@@ -173,11 +176,11 @@ const SearchResults: React.FC<Props> = ({
                 {/* Intentionally we must show the option different at the one currently selected */}
                 {currentPage === SearchPages.resultsContacts
                   ? `${casesCount ? casesCount : 0} cases`
-                  : `${count ? count : 0} contacts`}
+                  : `${contactsCount ? contactsCount : 0} contacts`}
               </BoldText>
               &nbsp;returned in this search.&nbsp;
             </StyledResultsText>
-            <StyledLink onClick={toggleTabs}>
+            <StyledLink onClick={toggleTabs} data-testid="ViewCasesLink">
               <Template
                 code={
                   // Intentionally we must show the option different at the one currently selected
@@ -211,7 +214,7 @@ const SearchResults: React.FC<Props> = ({
                 ))}
               {contactsPageCount > 1 && (
                 <Pagination
-                  page={page}
+                  page={contactsPage}
                   pagesCount={contactsPageCount}
                   handleChangePage={handleContactsChangePage}
                   transparent
@@ -222,7 +225,7 @@ const SearchResults: React.FC<Props> = ({
           {currentPage === SearchPages.resultsCases && (
             <>
               <StyledFormControlLabel
-                control={<StyledSwitch checked={!closedCases} onChange={handleToggleClosedCases} />}
+                control={<StyledSwitch checked={closedCases} onChange={handleToggleClosedCases} />}
                 label={
                   <SwitchLabel>
                     <Template code="SearchResultsIndex-ClosedCases" />
@@ -233,7 +236,7 @@ const SearchResults: React.FC<Props> = ({
               {cases && cases.length > 0 && cases.map(cas => <CasePreview key={cas.id} currentCase={cas} />)}
               {casesPageCount > 1 && (
                 <Pagination
-                  page={page}
+                  page={casesPage}
                   pagesCount={casesPageCount}
                   handleChangePage={handleCasesChangePage}
                   transparent
