@@ -180,7 +180,7 @@ const SearchResults: React.FC<Props> = ({
               </BoldText>
               &nbsp;returned in this search.&nbsp;
             </StyledResultsText>
-            <StyledLink onClick={toggleTabs}>
+            <StyledLink onClick={toggleTabs} data-testid="ViewCasesLink">
               <Template
                 code={
                   // Intentionally we must show the option different at the one currently selected

@@ -71,6 +71,11 @@ jest.mock('../styles/search', () => ({
   StyledFolderIcon: 'StyledFolderIcon',
   BoldText: 'BoldText',
   SearchResults: 'SearchResults',
+  CaseHeaderContainer: 'CaseHeaderContainer',
+  CaseHeaderCaseId: 'CaseHeaderCaseId',
+  CaseHeaderChildName: 'CaseHeaderChildName',
+  CaseSummaryContainer: 'CaseSummaryContainer',
+  CaseWrapper: 'CaseWrapper',
 }));
 
 jest.mock('../styles/callTypeButtons', () => ({

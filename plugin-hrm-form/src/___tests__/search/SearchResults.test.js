@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
@@ -62,28 +62,64 @@ const state1 = {
   },
 };
 
+const stateOnCasesTab = {
+  [namespace]: {
+    ...state1[namespace],
+    [searchContactsBase]: {
+      tasks: {
+        task1: {
+          ...state1[namespace][searchContactsBase].tasks.task1,
+          currentPage: SearchPages.resultsCases,
+        },
+      },
+    },
+  },
+};
+
 const store1 = mockStore(state1);
+const storeOnCasesTab = mockStore(stateOnCasesTab);
 
-test('<SearchResults> with 0 results', () => {
-  render(
-    <Provider store={store1}>
-      <SearchResults
-        task={task}
-        currentIsCaller={false}
-        searchContactsResults={{ count: 0, contacts: [] }}
-        searchCasesResults={{ count: 0, cases: [] }}
-        handleSelectSearchResult={jest.fn()}
-        handleBack={jest.fn()}
-        handleViewDetails={jest.fn()}
-        handleMockedMessage={jest.fn()}
-      />
-    </Provider>,
-  );
+describe('<SearchResults> with 0 results', () => {
+  test('on contacts tab', () => {
+    render(
+      <Provider store={store1}>
+        <SearchResults
+          task={task}
+          currentIsCaller={false}
+          searchContactsResults={{ count: 0, contacts: [] }}
+          searchCasesResults={{ count: 0, cases: [] }}
+          handleSelectSearchResult={jest.fn()}
+          handleBack={jest.fn()}
+          handleViewDetails={jest.fn()}
+          handleMockedMessage={jest.fn()}
+        />
+      </Provider>,
+    );
 
-  expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('0 cases');
+    expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('0 cases');
+  });
+
+  test('on cases tab', () => {
+    render(
+      <Provider store={storeOnCasesTab}>
+        <SearchResults
+          task={task}
+          currentIsCaller={false}
+          searchContactsResults={{ count: 0, contacts: [] }}
+          searchCasesResults={{ count: 0, cases: [] }}
+          handleSelectSearchResult={jest.fn()}
+          handleBack={jest.fn()}
+          handleViewDetails={jest.fn()}
+          handleMockedMessage={jest.fn()}
+        />
+      </Provider>,
+    );
+
+    expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('0 contacts');
+  });
 });
 
-test('<SearchResults> with 1 result', () => {
+describe('<SearchResults> with 1 result', () => {
   const searchContactsResults = {
     count: 1,
     contacts: [
@@ -112,6 +148,8 @@ test('<SearchResults> with 1 result', () => {
     count: 1,
     cases: [
       {
+        createdAt: '2020-11-23T17:38:42.227Z',
+        updatedAt: '2020-11-23T17:38:42.227Z',
         helpline: '',
         info: {
           households: [{ household: { name: { firstName: 'Maria', lastName: 'Silva' } } }],
@@ -120,25 +158,46 @@ test('<SearchResults> with 1 result', () => {
     ],
   };
 
-  render(
-    <Provider store={store1}>
-      <SearchResults
-        task={task}
-        currentIsCaller={false}
-        searchContactsResults={searchContactsResults}
-        searchCasesResults={searchCasesResults}
-        handleSelectSearchResult={jest.fn()}
-        handleBack={jest.fn()}
-        handleViewDetails={jest.fn()}
-        handleMockedMessage={jest.fn()}
-      />
-    </Provider>,
-  );
+  test('on contacts tab', () => {
+    render(
+      <Provider store={store1}>
+        <SearchResults
+          task={task}
+          currentIsCaller={false}
+          searchContactsResults={searchContactsResults}
+          searchCasesResults={searchCasesResults}
+          handleSelectSearchResult={jest.fn()}
+          handleBack={jest.fn()}
+          handleViewDetails={jest.fn()}
+          handleMockedMessage={jest.fn()}
+        />
+      </Provider>,
+    );
 
-  expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('1 cases');
+    expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('1 cases');
+  });
+
+  test('on cases tab', () => {
+    render(
+      <Provider store={storeOnCasesTab}>
+        <SearchResults
+          task={task}
+          currentIsCaller={false}
+          searchContactsResults={searchContactsResults}
+          searchCasesResults={searchCasesResults}
+          handleSelectSearchResult={jest.fn()}
+          handleBack={jest.fn()}
+          handleViewDetails={jest.fn()}
+          handleMockedMessage={jest.fn()}
+        />
+      </Provider>,
+    );
+
+    expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('1 contacts');
+  });
 });
 
-test('<SearchResults> with multiple results', () => {
+describe('<SearchResults> with multiple results', () => {
   const searchContactsResults = {
     count: 2,
     contacts: [
@@ -185,12 +244,16 @@ test('<SearchResults> with multiple results', () => {
     count: 2,
     cases: [
       {
+        createdAt: '2020-11-23T17:38:42.227Z',
+        updatedAt: '2020-11-23T17:38:42.227Z',
         helpline: '',
         info: {
           households: [{ household: { name: { firstName: 'Maria', lastName: 'Silva' } } }],
         },
       },
       {
+        createdAt: '2020-11-23T17:38:42.227Z',
+        updatedAt: '2020-11-23T17:38:42.227Z',
         helpline: '',
         info: {
           households: [{ household: { name: { firstName: 'John', lastName: 'Doe' } } }],
@@ -199,20 +262,41 @@ test('<SearchResults> with multiple results', () => {
     ],
   };
 
-  render(
-    <Provider store={store1}>
-      <SearchResults
-        task={task}
-        currentIsCaller={false}
-        searchContactsResults={searchContactsResults}
-        searchCasesResults={searchCasesResults}
-        handleSelectSearchResult={jest.fn()}
-        handleBack={jest.fn()}
-        handleViewDetails={jest.fn()}
-        handleMockedMessage={jest.fn()}
-      />
-    </Provider>,
-  );
+  test('on contacts tab', () => {
+    render(
+      <Provider store={store1}>
+        <SearchResults
+          task={task}
+          currentIsCaller={false}
+          searchContactsResults={searchContactsResults}
+          searchCasesResults={searchCasesResults}
+          handleSelectSearchResult={jest.fn()}
+          handleBack={jest.fn()}
+          handleViewDetails={jest.fn()}
+          handleMockedMessage={jest.fn()}
+        />
+      </Provider>,
+    );
 
-  expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('2 cases');
+    expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('2 cases');
+  });
+
+  test('on cases tab', () => {
+    render(
+      <Provider store={storeOnCasesTab}>
+        <SearchResults
+          task={task}
+          currentIsCaller={false}
+          searchContactsResults={searchContactsResults}
+          searchCasesResults={searchCasesResults}
+          handleSelectSearchResult={jest.fn()}
+          handleBack={jest.fn()}
+          handleViewDetails={jest.fn()}
+          handleMockedMessage={jest.fn()}
+        />
+      </Provider>,
+    );
+
+    expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('2 contacts');
+  });
 });
