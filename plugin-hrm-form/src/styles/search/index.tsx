@@ -237,6 +237,7 @@ export const CounselorText = styled(SummaryText)`
 
 export const DateText = styled(SummaryText)`
   opacity: 0.46;
+  font-size: 12px;
 `;
 
 export const TagsWrapper = styled(Flex)`

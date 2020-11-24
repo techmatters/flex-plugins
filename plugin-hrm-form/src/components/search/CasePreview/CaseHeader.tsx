@@ -43,10 +43,10 @@ const CaseHeader: React.FC<Props> = ({ caseId, childName, createdAt, updatedAt }
       <CaseHeaderCaseId>#{caseId}</CaseHeaderCaseId>
       <CaseHeaderChildName>{childName ? `${firstName} ${lastName}` : 'No Data'}</CaseHeaderChildName>
       <DateText>
-        <Template code="CaseHeader-Opened" /> {createdAtFormatted}
+        <Template code="CaseHeader-Opened" />: {createdAtFormatted}
       </DateText>
       <DateText>
-        <Template code="CaseHeader-Updated" /> {updatedAtFormatted}
+        <Template code="CaseHeader-Updated" />: {updatedAtFormatted}
       </DateText>
       <Button onClick={handleClick}>
         <DateText>
