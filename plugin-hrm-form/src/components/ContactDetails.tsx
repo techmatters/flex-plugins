@@ -10,7 +10,14 @@ import SectionEntry from './SectionEntry';
 import callTypes, { channelTypes } from '../states/DomainConstants';
 import { isNonDataCallType } from '../states/ValidationRules';
 import { contactType } from '../types';
-import { formatAddress, formatDuration, formatName, formatCategories, mapChannel } from '../utils';
+import {
+  formatAddress,
+  formatDuration,
+  formatName,
+  formatCategories,
+  mapChannel,
+  mapChannelForInsights,
+} from '../utils';
 import { CallerSection, ContactDetailsSections } from './common/ContactDetails';
 import { getConfig } from '../HrmFormPlugin';
 
@@ -44,7 +51,8 @@ const Details = ({
   const isDataCall = !isNonDataCallType(callType);
   const childOrUnknown = formatName(childName);
   const childUpperCased = childOrUnknown.toUpperCase();
-  const formattedChannel = mapChannel(channel);
+  const formattedChannel =
+    channel === 'default' ? mapChannelForInsights(details.contactlessTask.channel) : mapChannel(channel);
   const formattedDate = `${format(new Date(dateTime), 'MMM d, yyyy / h:mm aaaaa')}m`;
   const formattedDuration = formatDuration(conversationDuration);
   const formattedChildAddress = formatAddress(
