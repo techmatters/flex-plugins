@@ -20,7 +20,7 @@ const CaseSummary: React.FC<Props> = ({ summary }) => {
     setReadMore(!readMore);
   };
 
-  const showReadMore = summary.length > CHAR_LIMIT;
+  const showReadMore = summary && summary.length > CHAR_LIMIT;
   const shortSummary =
     summary && summary.length > CHAR_LIMIT ? `${summary.slice(0, CHAR_LIMIT).toString()}...` : summary;
 
