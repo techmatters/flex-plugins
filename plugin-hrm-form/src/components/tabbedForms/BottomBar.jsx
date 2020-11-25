@@ -46,7 +46,7 @@ class BottomBar extends Component {
     mockedMessage: null,
   };
 
-  toggleCaseMenu = e => {
+  toggleCaseMenu = (data, e) => {
     e.persist();
     this.setState(prevState => ({ anchorEl: e.currentTarget || e.target, isMenuOpen: !prevState.isMenuOpen }));
   };
@@ -166,7 +166,7 @@ class BottomBar extends Component {
                     type="button"
                     roundCorners
                     secondary
-                    onClick={this.toggleCaseMenu}
+                    onClick={handleSubmitIfValid(this.toggleCaseMenu)}
                     disabled={isSubmitButtonDisabled}
                   >
                     <FolderIcon style={{ fontSize: '16px', marginRight: '10px' }} />
