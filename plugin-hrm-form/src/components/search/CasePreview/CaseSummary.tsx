@@ -5,6 +5,8 @@ import { Template } from '@twilio/flex-ui';
 
 import { CaseSummaryContainer, StyledLink } from '../../../styles/search';
 
+const CHAR_LIMIT = 80;
+
 type OwnProps = {
   summary?: string;
 };
@@ -18,16 +20,20 @@ const CaseSummary: React.FC<Props> = ({ summary }) => {
     setReadMore(!readMore);
   };
 
-  const shortSummary = summary && summary.length > 80 ? `${summary.slice(0, 80).toString()}...` : summary;
+  const showReadMore = summary && summary.length > CHAR_LIMIT;
+  const shortSummary =
+    summary && summary.length > CHAR_LIMIT ? `${summary.slice(0, CHAR_LIMIT).toString()}...` : summary;
 
   return (
     <CaseSummaryContainer>
       {summary ? (
         <>
           <p>{readMore ? summary : shortSummary}</p>
-          <StyledLink onClick={toggleHideShow}>
-            <Template code={readMore ? 'CaseSummary-ReadLess' : 'CaseSummary-ReadMore'} />
-          </StyledLink>
+          {showReadMore && (
+            <StyledLink onClick={toggleHideShow}>
+              <Template code={readMore ? 'CaseSummary-ReadLess' : 'CaseSummary-ReadMore'} />
+            </StyledLink>
+          )}
         </>
       ) : (
         <Template code="CaseSummary-NoSummaryProvided" />

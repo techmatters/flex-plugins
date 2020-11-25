@@ -153,6 +153,7 @@ describe('<SearchResults> with 1 result', () => {
         helpline: '',
         info: {
           households: [{ household: { name: { firstName: 'Maria', lastName: 'Silva' } } }],
+          summary: 'case summary',
         },
       },
     ],
@@ -249,6 +250,7 @@ describe('<SearchResults> with multiple results', () => {
         helpline: '',
         info: {
           households: [{ household: { name: { firstName: 'Maria', lastName: 'Silva' } } }],
+          summary: 'case 1 summary',
         },
       },
       {
@@ -257,6 +259,7 @@ describe('<SearchResults> with multiple results', () => {
         helpline: '',
         info: {
           households: [{ household: { name: { firstName: 'John', lastName: 'Doe' } } }],
+          summary: 'case 2 summary',
         },
       },
     ],
