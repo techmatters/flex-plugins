@@ -15,6 +15,7 @@ import { CaseState } from '../../states/case/reducer';
 import { DefaultEventHandlers } from '../common/forms/types';
 import { getFormValues } from '../common/forms/helpers';
 import { getConfig } from '../../HrmFormPlugin';
+import { updateCase } from '../../services/CaseService';
 
 type OwnProps = {
   task: ITask;
@@ -30,6 +31,7 @@ const AddPerpetrator: React.FC<Props> = ({
   counselor,
   onClickClose,
   connectedCaseState,
+  setConnectedCase,
   updateTempInfo,
   updateCaseInfo,
   changeRoute,
@@ -47,18 +49,19 @@ const AddPerpetrator: React.FC<Props> = ({
     },
   });
 
-  function savePerpetrator() {
+  const savePerpetrator = async () => {
     if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-perpetrator') return;
 
-    const { info } = connectedCaseState.connectedCase;
+    const { info, id } = connectedCaseState.connectedCase;
     const perpetrator = getFormValues(temporaryCaseInfo.info);
     const createdAt = new Date().toISOString();
     const { workerSid } = getConfig();
     const newPerpetrator = { perpetrator, createdAt, twilioWorkerId: workerSid };
     const perpetrators = info && info.perpetrators ? [...info.perpetrators, newPerpetrator] : [newPerpetrator];
     const newInfo = info ? { ...info, perpetrators } : { perpetrators };
-    updateCaseInfo(newInfo, task.taskSid);
-  }
+    const updatedCase = await updateCase(id, { info: newInfo });
+    setConnectedCase(updatedCase, task.taskSid);
+  };
 
   function savePerpetratorAndStay() {
     savePerpetrator();
@@ -117,6 +120,7 @@ const mapStateToProps = (state, ownProps: OwnProps) => {
 const mapDispatchToProps = {
   updateTempInfo: CaseActions.updateTempInfo,
   updateCaseInfo: CaseActions.updateCaseInfo,
+  setConnectedCase: CaseActions.setConnectedCase,
   changeRoute: RoutingActions.changeRoute,
 };
 
