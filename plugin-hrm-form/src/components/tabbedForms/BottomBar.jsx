@@ -46,7 +46,7 @@ class BottomBar extends Component {
     mockedMessage: null,
   };
 
-  toggleCaseMenu = (data, e) => {
+  toggleCaseMenu = e => {
     e.persist();
     this.setState(prevState => ({ anchorEl: e.currentTarget || e.target, isMenuOpen: !prevState.isMenuOpen }));
   };
@@ -104,13 +104,18 @@ class BottomBar extends Component {
         await saveToHrm(task, newForm, hrmBaseUrl, workerSid, helpline);
         this.props.handleCompleteTask(task.taskSid, task);
       } catch (error) {
-        if (!window.confirm(strings['Error-ContinueWithoutRecording'])) {
+        if (window.confirm(strings['Error-ContinueWithoutRecording'])) {
           this.props.handleCompleteTask(task.taskSid, task);
         }
       }
     } else {
       window.alert(strings['Error-Form']);
     }
+  };
+
+  onError = () => {
+    const { strings } = getConfig();
+    window.alert(strings['Error-Form']);
   };
 
   render() {
@@ -136,7 +141,7 @@ class BottomBar extends Component {
           <MenuItem
             Icon={FolderOpenIcon}
             text={<Template code="BottomBar-OpenNewCase" />}
-            onClick={this.handleOpenNewCase}
+            onClick={handleSubmitIfValid(this.handleOpenNewCase, this.onError)}
           />
           <MenuItem
             Icon={AddIcon}
@@ -166,7 +171,7 @@ class BottomBar extends Component {
                     type="button"
                     roundCorners
                     secondary
-                    onClick={handleSubmitIfValid(this.toggleCaseMenu)}
+                    onClick={this.toggleCaseMenu}
                     disabled={isSubmitButtonDisabled}
                   >
                     <FolderIcon style={{ fontSize: '16px', marginRight: '10px' }} />
@@ -176,7 +181,7 @@ class BottomBar extends Component {
               )}
               <StyledNextStepButton
                 roundCorners={true}
-                onClick={handleSubmitIfValid(this.handleSubmit)}
+                onClick={handleSubmitIfValid(this.handleSubmit, this.onError)}
                 disabled={isSubmitButtonDisabled}
               >
                 <Template code="BottomBar-SaveContact" />
