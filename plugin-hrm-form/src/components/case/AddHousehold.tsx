@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseActionContainer, CaseActionFormContainer } from '../../styles/case';
 import ActionHeader from './ActionHeader';
-import { CallerForm } from '../common/forms';
+import { CallerForm, newCallerFormInformation } from '../common/forms';
 import { editNestedField } from '../../states/ContactState';
 import { namespace, connectedCaseBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
@@ -30,11 +30,11 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchT
 const AddHousehold: React.FC<Props> = ({
   task,
   counselor,
-  onClickAddHousehold,
   onClickClose,
   connectedCaseState,
   setConnectedCase,
   updateTempInfo,
+  changeRoute,
 }) => {
   const { temporaryCaseInfo } = connectedCaseState;
 
@@ -49,7 +49,7 @@ const AddHousehold: React.FC<Props> = ({
     },
   });
 
-  const saveHousehold = async () => {
+  const saveHousehold = async shouldStayInForm => {
     if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-household') return;
 
     const { info, id } = connectedCaseState.connectedCase;
@@ -60,17 +60,19 @@ const AddHousehold: React.FC<Props> = ({
     const households = info && info.households ? [...info.households, newHousehold] : [newHousehold];
     const newInfo = info ? { ...info, households } : { households };
     const updatedCase = await updateCase(id, { info: newInfo });
-    console.log('saveHousehold - updatedCase: ', updatedCase);
     setConnectedCase(updatedCase, task.taskSid);
+    if (shouldStayInForm) {
+      updateTempInfo({ screen: 'add-household', info: newCallerFormInformation }, task.taskSid);
+      changeRoute({ route: 'new-case', subroute: 'add-household' }, task.taskSid);
+    }
   };
 
   function saveHouseholdAndStay() {
-    saveHousehold();
-    onClickAddHousehold();
+    saveHousehold(true);
   }
 
   function saveHouseholdAndLeave() {
-    saveHousehold();
+    saveHousehold(false);
     onClickClose();
   }
 

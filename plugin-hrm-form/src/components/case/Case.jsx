@@ -162,9 +162,9 @@ class Case extends Component {
       case 'add-note':
         return <AddNote {...addScreenProps} />;
       case 'add-household':
-        return <AddHousehold {...addScreenProps} onClickAddHousehold={this.onClickAddHousehold} />;
+        return <AddHousehold {...addScreenProps} />;
       case 'add-perpetrator':
-        return <AddPerpetrator {...addScreenProps} onClickAddPerpetrator={this.onClickAddPerpetrator} />;
+        return <AddPerpetrator {...addScreenProps} />;
       case 'view-contact':
         return <ViewContact task={this.props.task} />;
       case 'view-note':

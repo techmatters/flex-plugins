@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseActionContainer, CaseActionFormContainer } from '../../styles/case';
 import ActionHeader from './ActionHeader';
-import { CallerForm } from '../common/forms';
+import { CallerForm, newCallerFormInformation } from '../common/forms';
 import { editNestedField } from '../../states/ContactState';
 import { namespace, connectedCaseBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
@@ -30,11 +30,11 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchT
 const AddPerpetrator: React.FC<Props> = ({
   task,
   counselor,
-  onClickAddPerpetrator,
   onClickClose,
   connectedCaseState,
   setConnectedCase,
   updateTempInfo,
+  changeRoute,
 }) => {
   const { temporaryCaseInfo } = connectedCaseState;
 
@@ -49,7 +49,7 @@ const AddPerpetrator: React.FC<Props> = ({
     },
   });
 
-  const savePerpetrator = async () => {
+  const savePerpetrator = async shouldStayInForm => {
     if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-perpetrator') return;
 
     const { info, id } = connectedCaseState.connectedCase;
@@ -60,17 +60,19 @@ const AddPerpetrator: React.FC<Props> = ({
     const perpetrators = info && info.perpetrators ? [...info.perpetrators, newPerpetrator] : [newPerpetrator];
     const newInfo = info ? { ...info, perpetrators } : { perpetrators };
     const updatedCase = await updateCase(id, { info: newInfo });
-    console.log('savePerpetrator - updatedCase: ', updatedCase);
     setConnectedCase(updatedCase, task.taskSid);
+    if (shouldStayInForm) {
+      updateTempInfo({ screen: 'add-perpetrator', info: newCallerFormInformation }, task.taskSid);
+      changeRoute({ route: 'new-case', subroute: 'add-perpetrator' }, task.taskSid);
+    }
   };
 
   function savePerpetratorAndStay() {
-    savePerpetrator();
-    onClickAddPerpetrator();
+    savePerpetrator(true);
   }
 
   function savePerpetratorAndLeave() {
-    savePerpetrator();
+    savePerpetrator(false);
     onClickClose();
   }
 

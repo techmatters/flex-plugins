@@ -42,7 +42,6 @@ const AddNote: React.FC<Props> = ({
     const notes = info && info.notes ? [...info.notes, newNote] : [newNote];
     const newInfo = info ? { ...info, notes } : { notes };
     const updatedCase = await updateCase(id, { info: newInfo });
-    console.log('handleSaveNote - updatedCase: ', updatedCase);
     setConnectedCase(updatedCase, task.taskSid);
     updateTempInfo({ screen: 'add-note', info: '' }, task.taskSid);
     changeRoute({ route: 'new-case' }, task.taskSid);
