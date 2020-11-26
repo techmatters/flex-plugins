@@ -25,7 +25,7 @@ import { namespace, searchContactsBase, configurationBase } from '../../states';
 type OwnProps = {
   task: ITask;
   currentIsCaller?: boolean;
-  handleSelectSearchResult: (contact: SearchContact) => void;
+  handleSelectSearchResult?: (contact: SearchContact) => void;
 };
 
 // eslint-disable-next-line no-use-before-define

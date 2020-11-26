@@ -12,7 +12,7 @@ const standaloneTask = {
 const StandaloneSearch: React.FC = () => {
   return (
     <StandaloneSearchContainer>
-      <Search task={standaloneTask} currentIsCaller={false} handleSelectSearchResult={() => null} />
+      <Search task={standaloneTask} />
     </StandaloneSearchContainer>
   );
 };

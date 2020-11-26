@@ -42,7 +42,7 @@ type OwnProps = {
   searchCasesResults: SearchCaseResult;
   onlyDataContacts: boolean;
   closedCases: boolean;
-  handleSelectSearchResult: (contact: SearchContact) => void;
+  handleSelectSearchResult?: (contact: SearchContact) => void;
   handleSearchContacts: (offset: number) => void;
   handleSearchCases: (offset: number) => void;
   toggleNonDataContacts: () => void;
@@ -83,7 +83,9 @@ const SearchResults: React.FC<Props> = ({
   };
 
   const handleConfirmDialog = () => {
-    handleSelectSearchResult(currentContact);
+    if (handleSelectSearchResult) {
+      handleSelectSearchResult(currentContact);
+    }
   };
 
   const handleContactsChangePage = newPage => {
