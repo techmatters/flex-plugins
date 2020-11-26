@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseActionContainer, CaseActionFormContainer } from '../../styles/case';
 import ActionHeader from './ActionHeader';
-import { CallerForm, newCallerFormInformation as newFormEntry } from '../common/forms';
+import { CallerForm } from '../common/forms';
 import { editNestedField } from '../../states/ContactState';
 import { namespace, connectedCaseBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
@@ -35,8 +35,6 @@ const AddHousehold: React.FC<Props> = ({
   connectedCaseState,
   setConnectedCase,
   updateTempInfo,
-  updateCaseInfo,
-  changeRoute,
 }) => {
   const { temporaryCaseInfo } = connectedCaseState;
 
@@ -62,6 +60,7 @@ const AddHousehold: React.FC<Props> = ({
     const households = info && info.households ? [...info.households, newHousehold] : [newHousehold];
     const newInfo = info ? { ...info, households } : { households };
     const updatedCase = await updateCase(id, { info: newInfo });
+    console.log('saveHousehold - updatedCase: ', updatedCase);
     setConnectedCase(updatedCase, task.taskSid);
   };
 

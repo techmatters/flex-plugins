@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseActionContainer, CaseActionFormContainer } from '../../styles/case';
 import ActionHeader from './ActionHeader';
-import { CallerForm, newCallerFormInformation as newFormEntry } from '../common/forms';
+import { CallerForm } from '../common/forms';
 import { editNestedField } from '../../states/ContactState';
 import { namespace, connectedCaseBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
@@ -35,8 +35,6 @@ const AddPerpetrator: React.FC<Props> = ({
   connectedCaseState,
   setConnectedCase,
   updateTempInfo,
-  updateCaseInfo,
-  changeRoute,
 }) => {
   const { temporaryCaseInfo } = connectedCaseState;
 
@@ -62,6 +60,7 @@ const AddPerpetrator: React.FC<Props> = ({
     const perpetrators = info && info.perpetrators ? [...info.perpetrators, newPerpetrator] : [newPerpetrator];
     const newInfo = info ? { ...info, perpetrators } : { perpetrators };
     const updatedCase = await updateCase(id, { info: newInfo });
+    console.log('savePerpetrator - updatedCase: ', updatedCase);
     setConnectedCase(updatedCase, task.taskSid);
   };
 
