@@ -21,6 +21,7 @@ type OwnProps = {
   task: ITask;
   counselor: string;
   onClickClose: () => void;
+  onClickAddPerpetrator: () => void;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -29,6 +30,7 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchT
 const AddPerpetrator: React.FC<Props> = ({
   task,
   counselor,
+  onClickAddPerpetrator,
   onClickClose,
   connectedCaseState,
   setConnectedCase,
@@ -65,7 +67,7 @@ const AddPerpetrator: React.FC<Props> = ({
 
   function savePerpetratorAndStay() {
     savePerpetrator();
-    updateTempInfo({ screen: 'add-perpetrator', info: newFormEntry }, task.taskSid);
+    onClickAddPerpetrator();
   }
 
   function savePerpetratorAndLeave() {

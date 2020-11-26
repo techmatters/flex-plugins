@@ -21,6 +21,7 @@ type OwnProps = {
   task: ITask;
   counselor: string;
   onClickClose: () => void;
+  onClickAddHousehold: () => void;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -29,6 +30,7 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchT
 const AddHousehold: React.FC<Props> = ({
   task,
   counselor,
+  onClickAddHousehold,
   onClickClose,
   connectedCaseState,
   setConnectedCase,
@@ -65,7 +67,7 @@ const AddHousehold: React.FC<Props> = ({
 
   function saveHouseholdAndStay() {
     saveHousehold();
-    updateTempInfo({ screen: 'add-household', info: newFormEntry }, task.taskSid);
+    onClickAddHousehold();
   }
 
   function saveHouseholdAndLeave() {
