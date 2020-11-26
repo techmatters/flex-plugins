@@ -26,10 +26,6 @@ export type SearchState = {
   };
 };
 
-const initialState: SearchState = {
-  tasks: {},
-};
-
 export const newTaskEntry: TaskEntry = {
   currentPage: t.SearchPages.form,
   currentContact: null,
@@ -54,6 +50,14 @@ export const newTaskEntry: TaskEntry = {
   isRequestingCases: false,
   error: null,
   casesError: null,
+};
+
+export const standaloneTaskSid = 'standalone-task-sid';
+
+const initialState: SearchState = {
+  tasks: {
+    [standaloneTaskSid]: newTaskEntry,
+  },
 };
 
 export function reduce(state = initialState, action: t.SearchActionType | GeneralActionType): SearchState {

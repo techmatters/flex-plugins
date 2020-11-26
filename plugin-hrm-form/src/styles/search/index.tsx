@@ -7,7 +7,7 @@ import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import Link from '@material-ui/icons/Link';
 import { ButtonProps } from '@material-ui/core/Button';
 
-import { Flex, Row, FontOpenSans, BottomButtonBar } from '../HrmStyles';
+import { Flex, Row, FontOpenSans, BottomButtonBar, TabbedFormsContainer } from '../HrmStyles';
 
 // CaseViewer Styles
 export const CaseWrapper = styled('div')`
@@ -422,3 +422,18 @@ export const SwitchLabel = styled(SummaryText)`
   margin-right: 5px;
 `;
 SwitchLabel.displayName = 'SwitchLabel';
+
+export const SearchTitle = styled(FontOpenSans)`
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-block;
+  margin-bottom: 20px;
+`;
+SearchTitle.displayName = 'SearchTitle';
+
+export const StandaloneSearchContainer = styled(TabbedFormsContainer)`
+  width: 50%;
+  padding-right: 50%;
+  background-color: ${props => props.theme.colors.base2};
+`;
+StandaloneSearchContainer.displayName = 'StandaloneSearchContainer';

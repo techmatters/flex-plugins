@@ -2,11 +2,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Template } from '@twilio/flex-ui';
 
 import FieldText from '../../FieldText';
 import FieldSelect from '../../FieldSelect';
 import FieldDate from '../../FieldDate';
 import { Container, StyledNextStepButton, Row, BottomButtonBar } from '../../../styles/HrmStyles';
+import { SearchTitle } from '../../../styles/search';
 import { searchFormType } from '../../../types';
 import { getConfig } from '../../../HrmFormPlugin';
 import { namespace, configurationBase } from '../../../states';
@@ -63,6 +65,9 @@ class SearchForm extends Component {
     return (
       <>
         <Container>
+          <SearchTitle>
+            <Template code="SearchContactsAndCases-Title" />
+          </SearchTitle>
           <Row>
             <FieldText
               id="Search_FirstName"
