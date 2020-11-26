@@ -38,6 +38,7 @@
   "QueueCard-Name": "Queue name: ",
 
   "QueueIndex-ContactsWaiting": "Contacts waiting",
+  "AddButtons-Header": "Add...",
 
   "NonDataCallTypeDialog-CloseConfirm": "Are you sure?",
 
@@ -98,10 +99,11 @@
 
   "Categories-Title": "Categorize this contact",
   
-  "TabbedForms-AddCallerInfoTab": "Caller Information",
-  "TabbedForms-AddChildInfoTab": "Child Information",
+  "TabbedForms-AddCallerInfoTab": "Caller Info",
+  "TabbedForms-AddChildInfoTab": "Child Info",
   "TabbedForms-CategoriesTab": "Categories",
   "TabbedForms-AddCaseInfoTab": "Summary",
+  "TabbedForms-AddContactInfoTab": "Contact Info",
 
   "NotImplemented": "Not implemented yet!",
   "Error-Backend": "Error from backend system.",
@@ -189,6 +191,16 @@
 
   "ContactDetails-GeneralDetails": "General Details",
 
-  "ManualPullButtonText": "Add Another Task",
-  "NoTaskAssignableNotification": "No task assignable to you at the moment."
+  "ManualPullButtonText": "Another Task",
+  "NoTaskAssignableNotification": "No task assignable to you at the moment.",
+  "OfflineContactButtonText": "Offline Contact Record",
+  "CancelOfflineContact": "Cancel Offline Contact",
+  "YouMustBeAvailableToPerformThisOp": "You must be available to perform this operation.",
+
+  "RequiredFieldError": "This field is required.",
+  "DateCantBeGreaterThanToday": "Date can't be greater than today.",
+  "TimeCantBeGreaterThanNow": "Time can't be greater than now.",
+
+  "OfflineContactFirstLine": "Offline Contact",
+  "OfflineContactSecondLine": "in progress"
 }

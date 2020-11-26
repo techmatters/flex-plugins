@@ -14,6 +14,7 @@ import {
   HANDLE_EXPAND_CATEGORY,
   PREPOPULATE_FORM_CHILD,
   PREPOPULATE_FORM_CALLER,
+  UPDATE_CONTACTLESS_TASK,
 } from './ActionTypes';
 import { INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE } from './types';
 import callTypes from './DomainConstants';
@@ -78,6 +79,17 @@ export class Actions {
 export const handleSelectSearchResult = (searchResult, taskId) => ({
   type: HANDLE_SELECT_SEARCH_RESULT,
   searchResult,
+  taskId,
+});
+
+/**
+ *
+ * @param {{ channel: string; date: string; time: string;}} contactLessTask
+ * @param {string} taskId
+ */
+export const updateContactLessTask = (contactLessTask, taskId) => ({
+  type: UPDATE_CONTACTLESS_TASK,
+  payload: contactLessTask,
   taskId,
 });
 
@@ -350,6 +362,18 @@ export function reduce(state = initialState, action) {
         tasks: {
           ...state.tasks,
           [action.taskId]: action.form,
+        },
+      };
+    }
+    case UPDATE_CONTACTLESS_TASK: {
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...state.tasks[action.taskId],
+            contactlessTask: action.payload,
+          },
         },
       };
     }

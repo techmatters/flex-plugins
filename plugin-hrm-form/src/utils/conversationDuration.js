@@ -9,11 +9,15 @@ export const fillEndMillis = metadata => ({
  * Metrics will be invalid if:
  * - page was reloaded (form recreated and thus initial information will be lost)
  * - endMillis was not set
- * @param metadata
+ * @param {import('@twilio/flex-ui').ITask} task
+ * @param {{ startMillis: number, endMillis: number, recreated: boolean }} metadata
  */
-export const getConversationDuration = metadata => {
+export const getConversationDuration = (task, metadata) => {
+  if (task.attributes.isContactlessTask) return null;
+
   const { startMillis, endMillis, recreated } = metadata;
   const validMetrics = !recreated && !isNullOrUndefined(endMillis);
+
   if (!validMetrics) return null;
 
   const milisecondsElapsed = endMillis - startMillis;

@@ -6,8 +6,7 @@ export const Container = styled('div')`
   display: flex;
   flex-grow: 0;
   flex-direction: column;
-  background-color: #ffffff;
-  padding-bottom: 14px;
+  background-color: ${props => (props.backgroundColor ? props.backgroundColor : '#ffffff')};
   border-style: solid;
 `;
 

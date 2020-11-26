@@ -35,6 +35,13 @@ const tasks = {
     queue_name: 'Admin',
     attributes: { channelType: channelTypes.facebook },
   },
+  T4: {
+    status: 'pending',
+    date_created: twoMinutesAgo,
+    channel_type: 'default',
+    queue_name: 'Admin',
+    attributes: { channelType: undefined },
+  },
 };
 
 const newTasks = {
@@ -49,6 +56,13 @@ const newTasks = {
     date_created: secondsAgo,
     queue_name: 'Admin',
     attributes: { channelType: channelTypes.sms },
+  },
+  T5: {
+    status: 'pending',
+    date_created: secondsAgo,
+    channel_type: 'default',
+    queue_name: 'Admin',
+    attributes: { channelType: undefined },
   },
 };
 

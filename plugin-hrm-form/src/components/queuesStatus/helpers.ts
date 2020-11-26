@@ -30,7 +30,8 @@ const subscribedToQueue = (queue: string, queues: QueuesStatus) => Boolean(queue
  * If counselor is not subscribed to a queue, acc[queue] will be undefined
  */
 export const addPendingTasks = (acc: QueuesStatus, task: any): QueuesStatus => {
-  if (!isWaiting(task.status) || !subscribedToQueue(task.queue_name, acc)) return acc;
+  if (!isWaiting(task.status) || !subscribedToQueue(task.queue_name, acc) || task.channel_type === 'default')
+    return acc;
 
   const created = task.date_created;
   const isChatBasedTask = task.channel_type !== 'voice';

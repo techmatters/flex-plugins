@@ -1,4 +1,4 @@
-import callTypes, { channelTypes } from '../states/DomainConstants';
+import callTypes, { channelTypes, otherContactChannels } from '../states/DomainConstants';
 
 /**
  * @param {string} str
@@ -19,6 +19,8 @@ export const mapCallType = str => {
  * @param {string} channel
  */
 export const mapChannel = channel => {
+  if (Object.values(otherContactChannels).includes(channel)) return channel;
+
   switch (channel) {
     case channelTypes.facebook:
       return 'Facebook Messenger';
