@@ -65,7 +65,7 @@ class SearchForm extends Component {
     return (
       <>
         <Container>
-          <SearchTitle>
+          <SearchTitle data-testid="Search-Title">
             <Template code="SearchContactsAndCases-Title" />
           </SearchTitle>
           <Row>

@@ -54,7 +54,7 @@ export const newTaskEntry: TaskEntry = {
 
 export const standaloneTaskSid = 'standalone-task-sid';
 
-const initialState: SearchState = {
+export const initialState: SearchState = {
   tasks: {
     [standaloneTaskSid]: newTaskEntry,
   },
