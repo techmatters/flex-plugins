@@ -23,6 +23,7 @@ export type Case = {
   info?: CaseInfo;
   createdAt: string;
   updatedAt: string;
+  connectedContacts: any[]; // TODO: create contact type
 };
 
 // Information about a single contact, as expected from DB (we might want to reuse this type in backend) - (is this a correct placement for this?)
@@ -89,4 +90,9 @@ export type SearchContact = {
 export type SearchContactResult = {
   count: number;
   contacts: SearchContact[];
+};
+
+export type SearchCaseResult = {
+  count: number;
+  cases: Case[];
 };

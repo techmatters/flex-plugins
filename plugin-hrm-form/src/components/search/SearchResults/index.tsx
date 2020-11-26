@@ -1,10 +1,13 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { ButtonBase } from '@material-ui/core';
-import { Template } from '@twilio/flex-ui';
+import { Template, Tab as TwilioTab, ITask } from '@twilio/flex-ui';
 
 import ContactPreview from '../ContactPreview';
-import { SearchContactResult, SearchContact } from '../../../types/types';
+import CasePreview from '../CasePreview';
+import { SearchContactResult, SearchCaseResult, SearchContact } from '../../../types/types';
 import { Row } from '../../../styles/HrmStyles';
 import {
   BackIcon,
@@ -15,36 +18,64 @@ import {
   StyledFormControlLabel,
   StyledSwitch,
   SwitchLabel,
+  StyledLink,
+  StyledTabs,
+  StyledResultsContainer,
+  StyledResultsText,
+  StyledTabLabel,
+  StyledFolderIcon,
+  BoldText,
 } from '../../../styles/search';
 import ConnectDialog from '../ConnectDialog';
 import Pagination from '../../Pagination';
+import * as SearchActions from '../../../states/search/actions';
+import { SearchPages, SearchPagesType } from '../../../states/search/types';
+import { namespace, searchContactsBase } from '../../../states';
 
 export const CONTACTS_PER_PAGE = 20;
+export const CASES_PER_PAGE = 20;
 
-type SearchResultsProps = {
+type OwnProps = {
+  task: ITask;
   currentIsCaller: boolean;
-  results: SearchContactResult;
+  searchContactsResults: SearchContactResult;
+  searchCasesResults: SearchCaseResult;
   onlyDataContacts: boolean;
+  closedCases: boolean;
   handleSelectSearchResult: (contact: SearchContact) => void;
-  handleSearch: (offset: number) => void;
+  handleSearchContacts: (offset: number) => void;
+  handleSearchCases: (offset: number) => void;
   toggleNonDataContacts: () => void;
+  toggleClosedCases: () => void;
   handleBack: () => void;
   handleViewDetails: (contact: SearchContact) => void;
+  changeSearchPage: (SearchPagesType) => void;
+  currentPage: SearchPagesType;
 };
 
-const SearchResults: React.FC<SearchResultsProps> = ({
+// eslint-disable-next-line no-use-before-define
+type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+
+const SearchResults: React.FC<Props> = ({
   currentIsCaller,
-  results,
+  searchContactsResults,
+  searchCasesResults,
   onlyDataContacts,
+  closedCases,
   handleSelectSearchResult,
-  handleSearch,
+  handleSearchContacts,
+  handleSearchCases,
   toggleNonDataContacts,
+  toggleClosedCases,
   handleBack,
   handleViewDetails,
+  changeSearchPage,
+  currentPage,
 }) => {
   const [currentContact, setCurrentContact] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [page, setPage] = useState(0);
+  const [contactsPage, setContactsPage] = useState(0);
+  const [casesPage, setCasesPage] = useState(0);
 
   const handleCloseDialog = () => {
     setCurrentContact(null);
@@ -55,14 +86,24 @@ const SearchResults: React.FC<SearchResultsProps> = ({
     handleSelectSearchResult(currentContact);
   };
 
-  const handleChangePage = newPage => {
-    setPage(newPage);
-    handleSearch(CONTACTS_PER_PAGE * newPage);
+  const handleContactsChangePage = newPage => {
+    setContactsPage(newPage);
+    handleSearchContacts(CONTACTS_PER_PAGE * newPage);
+  };
+
+  const handleCasesChangePage = newPage => {
+    setCasesPage(newPage);
+    handleSearchCases(CASES_PER_PAGE * newPage);
   };
 
   const handleToggleNonDataContact = () => {
-    setPage(0);
+    setContactsPage(0);
     toggleNonDataContacts();
+  };
+
+  const handleToggleClosedCases = () => {
+    setCasesPage(0);
+    toggleClosedCases();
   };
 
   const handleOpenConnectDialog = contact => e => {
@@ -71,8 +112,21 @@ const SearchResults: React.FC<SearchResultsProps> = ({
     setCurrentContact(contact);
   };
 
-  const { contacts, count } = results;
-  const pagesCount = Math.ceil(count / CONTACTS_PER_PAGE);
+  const { count: contactsCount, contacts } = searchContactsResults;
+  const { count: casesCount, cases } = searchCasesResults;
+  const contactsPageCount = Math.ceil(contactsCount / CONTACTS_PER_PAGE);
+  const casesPageCount = Math.ceil(casesCount / CASES_PER_PAGE);
+
+  const toggleTabs = () => {
+    // eslint-disable-next-line no-unused-expressions
+    currentPage === SearchPages.resultsContacts
+      ? changeSearchPage(SearchPages.resultsCases)
+      : changeSearchPage(SearchPages.resultsContacts);
+  };
+
+  const tabSelected = tabName => {
+    changeSearchPage(tabName);
+  };
 
   return (
     <>
@@ -85,15 +139,25 @@ const SearchResults: React.FC<SearchResultsProps> = ({
             </BackText>
           </ButtonBase>
         </Row>
-        <Row style={{ paddingLeft: '24px' }}>
-          <BackText>
-            {count}
-            {count === 1 ? (
-              <Template code="SearchResultsIndex-Result" />
-            ) : (
-              <Template code="SearchResultsIndex-Results" />
-            )}
-          </BackText>
+        <Row style={{ justifyContent: 'center' }}>
+          <div style={{ width: '300px' }}>
+            <StyledTabs selectedTabName={currentPage} onTabSelected={tabSelected}>
+              <TwilioTab label="Contacts" uniqueName={SearchPages.resultsContacts}>
+                {[]}
+              </TwilioTab>
+              <TwilioTab
+                label={
+                  <StyledTabLabel>
+                    <StyledFolderIcon />
+                    Cases
+                  </StyledTabLabel>
+                }
+                uniqueName={SearchPages.resultsCases}
+              >
+                {[]}
+              </TwilioTab>
+            </StyledTabs>
+          </div>
         </Row>
       </ResultsHeader>
       <ConnectDialog
@@ -105,25 +169,80 @@ const SearchResults: React.FC<SearchResultsProps> = ({
       />
       <ListContainer>
         <ScrollableList>
-          <StyledFormControlLabel
-            control={<StyledSwitch checked={!onlyDataContacts} onChange={handleToggleNonDataContact} />}
-            label={
-              <SwitchLabel>
-                <Template code="SearchResultsIndex-NonDataContacts" />
-              </SwitchLabel>
-            }
-            labelPlacement="start"
-          />
-          {contacts.map(contact => (
-            <ContactPreview
-              key={contact.contactId}
-              contact={contact}
-              handleOpenConnectDialog={handleOpenConnectDialog(contact)}
-              handleViewDetails={() => handleViewDetails(contact)}
-            />
-          ))}
-          {pagesCount > 1 && (
-            <Pagination page={page} pagesCount={pagesCount} handleChangePage={handleChangePage} transparent />
+          <StyledResultsContainer>
+            <StyledResultsText>
+              There are&nbsp;
+              <BoldText data-testid="SearchResultsCount">
+                {/* Intentionally we must show the option different at the one currently selected */}
+                {currentPage === SearchPages.resultsContacts
+                  ? `${casesCount ? casesCount : 0} cases`
+                  : `${contactsCount ? contactsCount : 0} contacts`}
+              </BoldText>
+              &nbsp;returned in this search.&nbsp;
+            </StyledResultsText>
+            <StyledLink onClick={toggleTabs} data-testid="ViewCasesLink">
+              <Template
+                code={
+                  // Intentionally we must show the option different at the one currently selected
+                  currentPage === SearchPages.resultsContacts
+                    ? 'SearchResultsIndex-ViewCases'
+                    : 'SearchResultsIndex-ViewContacts'
+                }
+              />
+            </StyledLink>
+          </StyledResultsContainer>
+          {currentPage === SearchPages.resultsContacts && (
+            <>
+              <StyledFormControlLabel
+                control={<StyledSwitch checked={!onlyDataContacts} onChange={handleToggleNonDataContact} />}
+                label={
+                  <SwitchLabel>
+                    <Template code="SearchResultsIndex-NonDataContacts" />
+                  </SwitchLabel>
+                }
+                labelPlacement="start"
+              />
+              {contacts &&
+                contacts.length > 0 &&
+                contacts.map(contact => (
+                  <ContactPreview
+                    key={contact.contactId}
+                    contact={contact}
+                    handleOpenConnectDialog={handleOpenConnectDialog(contact)}
+                    handleViewDetails={() => handleViewDetails(contact)}
+                  />
+                ))}
+              {contactsPageCount > 1 && (
+                <Pagination
+                  page={contactsPage}
+                  pagesCount={contactsPageCount}
+                  handleChangePage={handleContactsChangePage}
+                  transparent
+                />
+              )}
+            </>
+          )}
+          {currentPage === SearchPages.resultsCases && (
+            <>
+              <StyledFormControlLabel
+                control={<StyledSwitch checked={closedCases} onChange={handleToggleClosedCases} />}
+                label={
+                  <SwitchLabel>
+                    <Template code="SearchResultsIndex-ClosedCases" />
+                  </SwitchLabel>
+                }
+                labelPlacement="start"
+              />
+              {cases && cases.length > 0 && cases.map(cas => <CasePreview key={cas.id} currentCase={cas} />)}
+              {casesPageCount > 1 && (
+                <Pagination
+                  page={casesPage}
+                  pagesCount={casesPageCount}
+                  handleChangePage={handleCasesChangePage}
+                  transparent
+                />
+              )}
+            </>
           )}
         </ScrollableList>
       </ListContainer>
@@ -132,4 +251,22 @@ const SearchResults: React.FC<SearchResultsProps> = ({
 };
 SearchResults.displayName = 'SearchResults';
 
-export default SearchResults;
+const mapStateToProps = (state, ownProps) => {
+  const searchContactsState = state[namespace][searchContactsBase];
+  const taskId = ownProps.task.taskSid;
+  const taskSearchState = searchContactsState.tasks[taskId];
+
+  return {
+    currentPage: taskSearchState.currentPage,
+  };
+};
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  const taskId = ownProps.task.taskSid;
+
+  return {
+    changeSearchPage: bindActionCreators(SearchActions.changeSearchPage(taskId), dispatch),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SearchResults);

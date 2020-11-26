@@ -2,7 +2,7 @@ import { omit } from 'lodash';
 
 import * as t from './types';
 import { INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE, GeneralActionType } from '../types';
-import { SearchContact } from '../../types/types';
+import { SearchContact, SearchCaseResult } from '../../types/types';
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../../components/common/ContactDetails';
 
 type TaskEntry = {
@@ -12,9 +12,12 @@ type TaskEntry = {
   detailsExpanded: {
     [key in ContactDetailsSectionsType]: boolean;
   };
-  searchResult: t.DetailedSearchResult;
+  searchContactsResult: t.DetailedSearchContactsResult;
+  searchCasesResult: SearchCaseResult;
   isRequesting: boolean;
+  isRequestingCases: boolean;
   error: any;
+  casesError: any;
 };
 
 export type SearchState = {
@@ -45,9 +48,12 @@ export const newTaskEntry: TaskEntry = {
     [ContactDetailsSections.ISSUE_CATEGORIZATION]: false,
     [ContactDetailsSections.CONTACT_SUMMARY]: false,
   },
-  searchResult: [],
+  searchContactsResult: { count: 0, contacts: [] },
+  searchCasesResult: { count: 0, cases: [] },
   isRequesting: false,
+  isRequestingCases: false,
   error: null,
+  casesError: null,
 };
 
 export function reduce(state = initialState, action: t.SearchActionType | GeneralActionType): SearchState {
@@ -143,8 +149,8 @@ export function reduce(state = initialState, action: t.SearchActionType | Genera
           ...state.tasks,
           [action.taskId]: {
             ...task,
-            searchResult: action.searchResult,
-            currentPage: t.SearchPages.results,
+            searchContactsResult: action.searchResult,
+            currentPage: t.SearchPages.resultsContacts,
             isRequesting: false,
             error: null,
           },
@@ -159,9 +165,51 @@ export function reduce(state = initialState, action: t.SearchActionType | Genera
           ...state.tasks,
           [action.taskId]: {
             ...task,
-            currentPage: t.SearchPages.results,
+            currentPage: t.SearchPages.resultsContacts,
             isRequesting: false,
             error: action.error,
+          },
+        },
+      };
+    }
+    case t.SEARCH_CASES_REQUEST: {
+      const task = state.tasks[action.taskId];
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...task,
+            isRequestingCases: true,
+          },
+        },
+      };
+    }
+    case t.SEARCH_CASES_SUCCESS: {
+      const task = state.tasks[action.taskId];
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...task,
+            searchCasesResult: action.searchResult,
+            isRequestingCases: false,
+            casesError: null,
+          },
+        },
+      };
+    }
+    case t.SEARCH_CASES_FAILURE: {
+      const task = state.tasks[action.taskId];
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...task,
+            isRequestingCases: false,
+            casesError: action.error,
           },
         },
       };

@@ -50,6 +50,7 @@ class SearchForm extends Component {
       counselor: counselor.value, // backend expects only counselor's SID
       helpline,
       onlyDataContacts: false,
+      closedCases: true,
     };
 
     const isTouched = firstName || lastName || (counselor && counselor.value) || phoneNumber || dateFrom || dateTo;

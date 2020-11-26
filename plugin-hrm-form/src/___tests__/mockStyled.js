@@ -93,6 +93,19 @@ jest.mock('../styles/search', () => ({
   StyledFormControlLabel: 'StyledFormControlLabel',
   StyledSwitch: 'StyledSwitch',
   SwitchLabel: 'SwitchLabel',
+  StyledLink: 'StyledLink',
+  StyledTabs: 'StyledTabs',
+  StyledResultsContainer: 'StyledResultsContainer',
+  StyledResultsText: 'StyledResultsText',
+  StyledTabLabel: 'StyledTabLabel',
+  StyledFolderIcon: 'StyledFolderIcon',
+  BoldText: 'BoldText',
+  SearchResults: 'SearchResults',
+  CaseHeaderContainer: 'CaseHeaderContainer',
+  CaseHeaderCaseId: 'CaseHeaderCaseId',
+  CaseHeaderChildName: 'CaseHeaderChildName',
+  CaseSummaryContainer: 'CaseSummaryContainer',
+  CaseWrapper: 'CaseWrapper',
 }));
 
 jest.mock('../styles/callTypeButtons', () => ({

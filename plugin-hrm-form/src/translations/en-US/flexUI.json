@@ -46,6 +46,18 @@
   "SearchResultsIndex-Result": " result",
   "SearchResultsIndex-Results": " results",
   "SearchResultsIndex-NonDataContacts": "Non-Data Contacts",
+  "SearchResultsIndex-ClosedCases": "Closed Cases",
+  "SearchResultsIndex-ViewContacts": "View Contacts",
+  "SearchResultsIndex-ViewCases": "View Cases",
+
+  "CaseHeader-Opened": "Opened",
+  "CaseHeader-Updated": "Updated",
+  "CaseHeader-ViewCase": "View Case",
+  "CaseHeader-MergeContactIntoCase": "Merge Current Contact into Case and Copy Child Information",
+  "CaseHeader-CopyChildInfo": "Copy Child Information into Current Contact",
+  "CaseSummary-ReadMore": "see more",
+  "CaseSummary-ReadLess": "see less",
+  "CaseSummary-NoSummaryProvided": "No Summary provided",
 
   "SectionEntry-Yes": "Yes",
   "SectionEntry-No": "No",

@@ -16,6 +16,7 @@ export async function searchContacts(searchParams, limit, offset) {
   };
 
   const responseJson = await fetchHrmApi(`/contacts/search${queryParams}`, options);
+
   return responseJson;
 }
 
