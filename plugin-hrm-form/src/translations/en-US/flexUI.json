@@ -42,6 +42,8 @@
 
   "NonDataCallTypeDialog-CloseConfirm": "Are you sure?",
 
+  "SearchContactsAndCases-Title": "Search for Contacts and Cases",
+
   "SearchResultsIndex-Back": "Return to search criteria",
   "SearchResultsIndex-Result": " result",
   "SearchResultsIndex-Results": " results",
@@ -49,6 +51,8 @@
   "SearchResultsIndex-ClosedCases": "Closed Cases",
   "SearchResultsIndex-ViewContacts": "View Contacts",
   "SearchResultsIndex-ViewCases": "View Cases",
+
+  "StandaloneSearch-SideNav": "Search",
 
   "CaseHeader-Opened": "Opened",
   "CaseHeader-Updated": "Updated",

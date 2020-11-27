@@ -18,9 +18,13 @@ class ContactDetails extends Component {
     contact: contactType.isRequired,
     detailsExpanded: PropTypes.objectOf(PropTypes.bool).isRequired,
     handleBack: PropTypes.func.isRequired,
-    handleSelectSearchResult: PropTypes.func.isRequired,
+    handleSelectSearchResult: PropTypes.func,
     handleMockedMessage: PropTypes.func.isRequired,
     handleExpandDetailsSection: PropTypes.func.isRequired,
+  };
+
+  static defaultProps = {
+    handleSelectSearchResult: null,
   };
 
   state = {
@@ -32,8 +36,11 @@ class ContactDetails extends Component {
   };
 
   handleConfirmDialog = () => {
-    const { contact } = this.props;
-    this.props.handleSelectSearchResult(contact);
+    if (this.props.handleSelectSearchResult) {
+      const { contact } = this.props;
+
+      this.props.handleSelectSearchResult(contact);
+    }
   };
 
   handleOpenConnectDialog = e => {

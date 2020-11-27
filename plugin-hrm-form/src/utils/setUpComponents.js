@@ -13,8 +13,10 @@ import LocalizationContext from '../contexts/LocalizationContext';
 import { channelTypes } from '../states/DomainConstants';
 import Translator from '../components/translator';
 import CaseList from '../components/caseList';
+import StandaloneSearch from '../components/StandaloneSearch';
 import SettingsSideLink from '../components/sideLinks/SettingsSideLink';
 import CaseListSideLink from '../components/sideLinks/CaseListSideLink';
+import StandaloneSearchSideLink from '../components/sideLinks/StandaloneSearchSideLink';
 import ManualPullButton from '../components/ManualPullButton';
 import OfflineContactButton from '../components/OfflineContactButton';
 import { chatCapacityUpdated } from '../states/configuration/actions';
@@ -366,6 +368,21 @@ export const setUpCaseList = () => {
     <CaseListSideLink
       key="CaseListSideLink"
       onClick={() => Flex.Actions.invokeAction('NavigateToView', { viewName: 'case-list' })}
+    />,
+  );
+};
+
+export const setUpStandaloneSearch = () => {
+  Flex.ViewCollection.Content.add(
+    <Flex.View name="search" key="standalone-search-view">
+      <StandaloneSearch />
+    </Flex.View>,
+  );
+
+  Flex.SideNav.Content.add(
+    <StandaloneSearchSideLink
+      key="StandaloneSearchSideLink"
+      onClick={() => Flex.Actions.invokeAction('NavigateToView', { viewName: 'search' })}
     />,
   );
 };

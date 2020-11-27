@@ -159,6 +159,8 @@ const setUpComponents = setupObject => {
     Components.removeDirectoryButton();
     Components.removeActionsIfTransferring();
   }
+
+  Components.setUpStandaloneSearch();
 };
 
 /**
