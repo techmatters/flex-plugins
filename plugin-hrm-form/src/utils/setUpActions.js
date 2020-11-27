@@ -107,20 +107,17 @@ export const afterAcceptTask = setupObject => async payload => {
 
   // To enable for all chat based task, change condition to "if (TaskHelper.isChatBasedTask(task))"
   if (task.attributes.channelType === channelTypes.web) {
-    const sendWelcomeMessageOrRetry = ms => {
+    const trySendWelcomeMessage = ms => {
       setTimeout(() => {
-        // if this took more than 2100ms (100 + 200 + ... + 600) just let it go. Should we increase this to 5500ms? (if ms >= 1000)? Retry forever makes no sense to me but that's an option too
-        if (ms >= 600) return;
-
         const channelState = StateHelper.getChatChannelStateForTask(task);
-        // if channel is not ready, add 100ms and retry
-        if (channelState.isLoadingChannel) sendWelcomeMessageOrRetry(ms + 100);
+        // if channel is not ready, wait 200ms and retry
+        if (channelState.isLoadingChannel) trySendWelcomeMessage(200);
         else sendWelcomeMessage(setupObject)(payload);
       }, ms);
     };
 
-    // Ignore event payload as we already have everything we want in afterAcceptTask arguments. Start at 0ms as many users are able to send the message after channel promise resolves, with no delay
-    manager.chatClient.once('channelJoined', () => sendWelcomeMessageOrRetry(0));
+    // Ignore event payload as we already have everything we want in afterAcceptTask arguments. Start at 0ms as many users are able to send the message right away
+    manager.chatClient.once('channelJoined', () => trySendWelcomeMessage(0));
   }
 };
 
