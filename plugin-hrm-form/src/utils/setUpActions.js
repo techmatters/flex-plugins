@@ -158,7 +158,6 @@ export const customTransferTask = setupObject => async (payload, original) => {
   if (mode === transferModes.warm) {
     await TransferHelpers.clearTransferMeta(payload.task);
     window.alert(Manager.getInstance().strings['Transfer-ChatWarmNotAllowed']);
-    return Promise.resolve();
   }
 
   const memberToKick = mode === transferModes.cold ? TransferHelpers.getMemberToKick(payload.task, identity) : '';
