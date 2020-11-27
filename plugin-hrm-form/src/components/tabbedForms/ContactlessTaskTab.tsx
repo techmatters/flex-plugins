@@ -8,7 +8,7 @@ import { get } from 'lodash';
 
 import { createFormFromDefinition } from '../common/forms/formGenerators';
 import { updateContactLessTask } from '../../states/ContactState';
-import { Container, ColumnarBlock, TwoColumnLayout, Box, FormError } from '../../styles/HrmStyles';
+import { Container, ColumnarBlock, TwoColumnLayout, Box } from '../../styles/HrmStyles';
 import type { RootState } from '../../states';
 import { formDefinition } from './ContactlessTaskTabDefinition';
 import { splitDate, splitTime } from '../../utils/helpers';
@@ -22,12 +22,12 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ContactlessTaskTab: React.FC<Props> = ({ dispatch, display, task }) => {
-  const { getValues, register, setError, trigger, watch, errors } = useFormContext();
+  const { getValues, register, setError, setValue, watch, errors } = useFormContext();
 
   const contactlessTaskForm = React.useMemo(() => {
     const updateCallBack = () => {
-      const { isFutureAux, ...contactlessTask } = getValues().contactlessTask;
-      dispatch(updateContactLessTask(contactlessTask, task.taskSid));
+      const { isFutureAux, ...rest } = getValues().contactlessTask;
+      dispatch(updateContactLessTask(rest, task.taskSid));
     };
     return createFormFromDefinition(formDefinition)(['contactlessTask'])(updateCallBack).map(i => (
       <Box key={`${i.key}-wrapping-box`} marginTop="5px" marginBottom="5px">
@@ -55,19 +55,17 @@ const ContactlessTaskTab: React.FC<Props> = ({ dispatch, display, task }) => {
     });
   }, [getValues, register, setError]);
 
-  const date = watch('contactlessTask.date');
-  const time = watch('contactlessTask.time');
-
-  // Trigger validation on isFutureAux (triggered by date or time onChange)
-  React.useEffect(() => {
-    trigger('contactlessTask.isFutureAux');
-  }, [date, time, trigger]);
-
   // Replicate error in time if there is error in isFutureAux
   const isFutureError: FieldError = get(errors, 'contactlessTask.isFutureAux');
   React.useEffect(() => {
-    if (isFutureError) setError('contactlessTask.time', { message: isFutureError.message });
+    if (isFutureError) setError('contactlessTask.time', { message: isFutureError.message, type: 'isFutureAux' });
   }, [isFutureError, setError]);
+
+  const time = watch('contactlessTask.time');
+  // Set isFutureAux (triggered by time onChange) so it's revalidated (this makes sense after 1st submission attempt)
+  React.useEffect(() => {
+    setValue('contactlessTask.isFutureAux', time, { shouldValidate: true });
+  }, [setValue, time]);
 
   return (
     <div style={{ height: '100%', display: display ? 'block' : 'none' }}>
