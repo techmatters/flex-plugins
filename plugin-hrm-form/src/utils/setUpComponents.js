@@ -279,7 +279,7 @@ export const setUpCaseList = () => {
 
 export const setUpStandaloneSearch = () => {
   Flex.ViewCollection.Content.add(
-    <Flex.View name="standalone-search" key="standalone-search-view">
+    <Flex.View name="search" key="standalone-search-view">
       <StandaloneSearch />
     </Flex.View>,
   );
@@ -287,7 +287,7 @@ export const setUpStandaloneSearch = () => {
   Flex.SideNav.Content.add(
     <StandaloneSearchSideLink
       key="StandaloneSearchSideLink"
-      onClick={() => Flex.Actions.invokeAction('NavigateToView', { viewName: 'standalone-search' })}
+      onClick={() => Flex.Actions.invokeAction('NavigateToView', { viewName: 'search' })}
     />,
   );
 };
