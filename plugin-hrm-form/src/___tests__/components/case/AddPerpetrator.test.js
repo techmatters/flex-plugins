@@ -15,9 +15,14 @@ import { UPDATE_TEMP_INFO, UPDATE_CASE_INFO } from '../../../states/case/types';
 import AddPerpetrator from '../../../components/case/AddPerpetrator';
 import { newCallerFormInformation } from '../../../components/common/forms';
 import HrmTheme from '../../../styles/HrmTheme';
-import { getFormValues } from '../../../components/common/forms/helpers';
+import { updateCase } from '../../../services/CaseService';
+
+jest.mock('../../../services/CaseService');
+
+const flushPromises = () => new Promise(setImmediate);
 
 expect.extend(toHaveNoViolations);
+
 const mockStore = configureMockStore([]);
 
 const state1 = {
@@ -41,7 +46,7 @@ const state1 = {
     [connectedCaseBase]: {
       tasks: {
         task1: {
-          temporaryCaseInfo: null,
+          temporaryCaseInfo: { screen: 'add-perpetrator', info: newCallerFormInformation },
           connectedCase: {
             createdAt: 1593469560208,
             twilioWorkerId: 'worker1',
@@ -78,6 +83,27 @@ const state2 = {
 const store2 = mockStore(state2);
 store2.dispatch = jest.fn();
 
+const state3 = {
+  [namespace]: {
+    ...state1[namespace],
+    [connectedCaseBase]: {
+      tasks: {
+        task1: {
+          temporaryCaseInfo: null,
+          connectedCase: {
+            createdAt: 1593469560208,
+            twilioWorkerId: 'worker1',
+            status: 'open',
+            info: null,
+          },
+        },
+      },
+    },
+  },
+};
+const store3 = mockStore(state3);
+store3.dispatch = jest.fn();
+
 const themeConf = {
   colorTheme: HrmTheme,
 };
@@ -98,7 +124,7 @@ describe('Test AddPerpetrator', () => {
 
     render(
       <StorelessThemeProvider themeConf={themeConf}>
-        <Provider store={store1}>
+        <Provider store={store3}>
           <AddPerpetrator {...ownProps} />
         </Provider>
       </StorelessThemeProvider>,
@@ -203,7 +229,15 @@ describe('Test AddPerpetrator', () => {
     });
   });
 
-  test('Handle onSave', async () => {
+  test('Handle onSave and leave', async () => {
+    const perpetrator = { firstName: 'Perp', lastName: 'One' };
+
+    const updatedCase = {
+      info: { perpetrators: [perpetrator] },
+    };
+
+    updateCase.mockReturnValueOnce(Promise.resolve(updatedCase));
+
     const onClickClose = jest.fn();
 
     const ownProps = {
@@ -224,27 +258,55 @@ describe('Test AddPerpetrator', () => {
     store2.dispatch.mockClear();
     screen.getByTestId('Case-AddPerpetratorScreen-SavePerpetrator').click();
 
-    expect(store2.dispatch).toHaveBeenCalledTimes(1);
+    await flushPromises();
+
+    expect(store2.dispatch).toHaveBeenCalled();
+    expect(updateCase).toHaveBeenCalled();
     const setConnectedCaseCall1 = store2.dispatch.mock.calls[0][0];
-    expect(setConnectedCaseCall1.type).toBe(UPDATE_CASE_INFO);
+    expect(setConnectedCaseCall1.type).toBe('SET_CONNECTED_CASE');
     expect(setConnectedCaseCall1.taskId).toBe(ownProps.task.taskSid);
-    expect(setConnectedCaseCall1.info.perpetrators[0].perpetrator).toStrictEqual(
-      getFormValues(newCallerFormInformation),
-    );
+    expect(setConnectedCaseCall1.connectedCase).toBe(updatedCase);
+
     expect(onClickClose).toHaveBeenCalled();
+  });
+
+  test('Handle onSave and stay', async () => {
+    const perpetrator = { firstName: 'Perp', lastName: 'One' };
+
+    const updatedCase = {
+      info: { perpetrators: [perpetrator] },
+    };
+
+    updateCase.mockReturnValueOnce(Promise.resolve(updatedCase));
+
+    const onClickClose = jest.fn();
+
+    const ownProps = {
+      counselor: 'Someone',
+      onClickClose,
+      task,
+    };
+
+    render(
+      <StorelessThemeProvider themeConf={themeConf}>
+        <Provider store={store2}>
+          <AddPerpetrator {...ownProps} />
+        </Provider>
+      </StorelessThemeProvider>,
+    );
 
     // Save and stay
     store2.dispatch.mockClear();
-    onClickClose.mockClear();
     screen.getByTestId('Case-AddPerpetratorScreen-SaveAndAddAnotherPerpetrator').click();
 
-    expect(store2.dispatch).toHaveBeenCalledTimes(2);
+    await flushPromises();
+
+    expect(store2.dispatch).toHaveBeenCalled();
+    expect(updateCase).toHaveBeenCalled();
     const setConnectedCaseCall2 = store2.dispatch.mock.calls[0][0];
-    expect(setConnectedCaseCall2.type).toBe(UPDATE_CASE_INFO);
+    expect(setConnectedCaseCall2.type).toBe('SET_CONNECTED_CASE');
     expect(setConnectedCaseCall2.taskId).toBe(ownProps.task.taskSid);
-    expect(setConnectedCaseCall2.info.perpetrators[0].perpetrator).toStrictEqual(
-      getFormValues(newCallerFormInformation),
-    );
+    expect(setConnectedCaseCall2.connectedCase).toBe(updatedCase);
   });
 
   test('a11y', async () => {
