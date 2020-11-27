@@ -107,12 +107,16 @@ export const afterAcceptTask = setupObject => async payload => {
 
   // To enable for all chat based task, change condition to "if (TaskHelper.isChatBasedTask(task))"
   if (task.attributes.channelType === channelTypes.web) {
-    const trySendWelcomeMessage = ms => {
+    const trySendWelcomeMessage = (ms, retries) => {
       setTimeout(() => {
         const channelState = StateHelper.getChatChannelStateForTask(task);
         // if channel is not ready, wait 200ms and retry
-        if (channelState.isLoadingChannel) trySendWelcomeMessage(200);
-        else sendWelcomeMessage(setupObject)(payload);
+        if (channelState.isLoadingChannel) {
+          if (retries < 10) trySendWelcomeMessage(200, retries + 1);
+          else console.error('Failed to send welcome message: max retries reached.');
+        } else {
+          sendWelcomeMessage(setupObject)(payload);
+        }
       }, ms);
     };
 
