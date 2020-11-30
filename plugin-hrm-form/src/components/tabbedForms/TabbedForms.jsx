@@ -26,6 +26,7 @@ const TabbedForms = props => {
     defaultValues: initialValues,
     shouldFocusError: false,
     shouldUnregister: false,
+    mode: 'onChange',
   });
 
   const { task, form } = props;
