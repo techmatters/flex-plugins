@@ -8,6 +8,7 @@ import { Container, Row } from '../../../styles/HrmStyles';
 import { BackText, BackIcon } from '../../../styles/search';
 import { contactType } from '../../../types';
 import GeneralContactDetails from '../../ContactDetails';
+import ContactDetailsLegacy from '../../ContactDetailsLegacy';
 import ConnectDialog from '../ConnectDialog';
 
 class ContactDetails extends Component {
@@ -63,14 +64,28 @@ class ContactDetails extends Component {
             </Row>
           </ButtonBase>
         </Row>
-        <GeneralContactDetails
-          showActionIcons
-          contact={contact}
-          detailsExpanded={detailsExpanded}
-          handleOpenConnectDialog={this.handleOpenConnectDialog}
-          handleMockedMessage={this.props.handleMockedMessage}
-          handleExpandDetailsSection={this.props.handleExpandDetailsSection}
-        />
+        {
+          /* Maybe we should do this distinction inside ContactDetails? */
+          contact.details.definitionVersion ? (
+            <GeneralContactDetails
+              showActionIcons
+              contact={contact}
+              detailsExpanded={detailsExpanded}
+              handleOpenConnectDialog={this.handleOpenConnectDialog}
+              handleMockedMessage={this.props.handleMockedMessage}
+              handleExpandDetailsSection={this.props.handleExpandDetailsSection}
+            />
+          ) : (
+            <ContactDetailsLegacy
+              showActionIcons
+              contact={contact}
+              detailsExpanded={detailsExpanded}
+              handleOpenConnectDialog={this.handleOpenConnectDialog}
+              handleMockedMessage={this.props.handleMockedMessage}
+              handleExpandDetailsSection={this.props.handleExpandDetailsSection}
+            />
+          )
+        }
       </Container>
     );
   }

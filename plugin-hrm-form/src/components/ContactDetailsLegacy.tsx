@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { format } from 'date-fns';
 import { ButtonBase, IconButton } from '@material-ui/core';
 import { MoreHoriz, Link as LinkIcon } from '@material-ui/icons';
-import { Template } from '@twilio/flex-ui';
 
 import { DetailsContainer, NameContainer, DetNameText, ContactDetailsIcon } from '../styles/search';
 import Section from './Section';
@@ -11,13 +10,9 @@ import SectionEntry from './SectionEntry';
 import callTypes, { channelTypes } from '../states/DomainConstants';
 import { isNonDataCallType } from '../states/ValidationRules';
 import { contactType } from '../types';
-import { formatDuration, formatName, formatCategories, mapChannel } from '../utils';
-import { ContactDetailsSections } from './common/ContactDetails';
-// import definitons for now because there's only 1, but this should be better handled depending on the definition version
-import ChildFormDefinition from '../formDefinitions/childForm.json';
-import CallerFormDefinition from '../formDefinitions/callerForm.json';
-import CaseInfoFormDefinition from '../formDefinitions/caseInfoForm.json';
-import { FormDefinition, FormItemDefinition } from './common/forms/types';
+import { formatAddress, formatDuration, formatName, formatCategories, mapChannel } from '../utils';
+import { CallerSection, ContactDetailsSections } from './common/ContactDetails';
+import { getConfig } from '../HrmFormPlugin';
 
 const MoreHorizIcon = ContactDetailsIcon(MoreHoriz);
 
@@ -33,6 +28,17 @@ const Details = ({
   const { overview, details, counselor } = contact;
   const { dateTime, name: childName, customerNumber, callType, channel, conversationDuration, categories } = overview;
   const child = details.childInformation;
+  const {
+    callSummary,
+    referredTo,
+    status,
+    keepConfidential,
+    okForCaseWorkerToCall,
+    howDidTheChildHearAboutUs,
+    didYouDiscussRightsWithTheChild,
+    didTheChildFeelWeSolvedTheirProblem,
+    wouldTheChildRecommendUsToAFriend,
+  } = details.caseInformation;
 
   // Format the obtained information
   const isDataCall = !isNonDataCallType(callType);
@@ -41,10 +47,20 @@ const Details = ({
   const formattedChannel = mapChannel(channel);
   const formattedDate = `${format(new Date(dateTime), 'MMM d, yyyy / h:mm aaaaa')}m`;
   const formattedDuration = formatDuration(conversationDuration);
+  const formattedChildAddress = formatAddress(
+    child.location.streetAddress,
+    child.location.city,
+    child.location.stateOrCounty,
+    child.location.postalCode,
+  );
 
   const isPhoneContact =
     channel === channelTypes.voice || channel === channelTypes.sms || channel === channelTypes.whatsapp;
-  const formattedCategories = formatCategories(categories);
+  const [category1, category2, category3] = formatCategories(categories);
+
+  const isNonDataContact = isNonDataCallType(contact.overview.callType);
+
+  const { strings } = getConfig();
 
   const {
     GENERAL_DETAILS,
@@ -54,9 +70,6 @@ const Details = ({
     CONTACT_SUMMARY,
   } = ContactDetailsSections;
 
-  const deTransform = (e: FormItemDefinition, obj: { [k: string]: any }) =>
-    ['firstName', 'lastName'].includes(e.name) ? obj.name[e.name] : obj[e.name];
-
   return (
     <DetailsContainer data-testid="ContactDetails-Container">
       <NameContainer>
@@ -65,7 +78,7 @@ const Details = ({
           <>
             <IconButton
               onClick={handleOpenConnectDialog}
-              disabled={!isDataCall}
+              disabled={isNonDataContact}
               style={{ paddingTop: 0, paddingBottom: 0 }}
             >
               <LinkIcon style={{ color: '#ffffff' }} />
@@ -77,7 +90,7 @@ const Details = ({
         )}
       </NameContainer>
       <Section
-        sectionTitle={<Template code="ContactDetails-GeneralDetails" />}
+        sectionTitle={strings['ContactDetails-GeneralDetails']}
         expanded={detailsExpanded[GENERAL_DETAILS]}
         handleExpandClick={() => handleExpandDetailsSection(GENERAL_DETAILS)}
       >
@@ -88,65 +101,69 @@ const Details = ({
         <SectionEntry description="Date/Time" value={formattedDate} />
       </Section>
       {callType === callTypes.caller && (
-        <Section
-          sectionTitle={<Template code="TabbedForms-AddCallerInfoTab" />}
+        <CallerSection
           expanded={detailsExpanded[CALLER_INFORMATION]}
           handleExpandClick={() => handleExpandDetailsSection(CALLER_INFORMATION)}
-          buttonDataTestid="ContactDetails-Section-CallerInformation"
-        >
-          {(CallerFormDefinition as FormDefinition).map(e => (
-            <SectionEntry
-              key={`CallerInformation-${e.label}`}
-              description={<Template code={e.label} />}
-              value={deTransform(e, contact.details.callerInformation)}
-            />
-          ))}
-        </Section>
+          sectionTitleTemplate="TabbedForms-AddCallerInfoTab"
+          values={details.callerInformation}
+        />
       )}
       {isDataCall && (
         <Section
-          sectionTitle={<Template code="TabbedForms-AddChildInfoTab" />}
+          sectionTitle={strings['TabbedForms-AddChildInfoTab']}
           expanded={detailsExpanded[CHILD_INFORMATION]}
           handleExpandClick={() => handleExpandDetailsSection(CHILD_INFORMATION)}
           buttonDataTestid="ContactDetails-Section-ChildInformation"
         >
-          {(ChildFormDefinition as FormDefinition).map(e => (
-            <SectionEntry
-              key={`ChildInformation-${e.label}`}
-              description={<Template code={e.label} />}
-              value={deTransform(e, contact.details.childInformation)}
-            />
-          ))}
+          <SectionEntry description="Name" value={childOrUnknown} />
+          <SectionEntry description="Address" value={formattedChildAddress} />
+          <SectionEntry description="Phone #1" value={child.location.phone1} />
+          <SectionEntry description="Phone #2" value={child.location.phone2} />
+          <SectionEntry description="Gender" value={child.gender} />
+          <SectionEntry description="Age Range" value={child.age} />
+          <SectionEntry description="Language" value={child.language} />
+          <SectionEntry description="Nationality" value={child.nationality} />
+          <SectionEntry description="Ethnicity" value={child.ethnicity} />
+          <SectionEntry description="School Name" value={child.school.name} />
+          <SectionEntry description="Grade Level" value={child.school.gradeLevel} />
+          <SectionEntry description="Refugee?" value={child.refugee} />
+          <SectionEntry description="Disabled/Special Needs?" value={child.disabledOrSpecialNeeds} />
+          <SectionEntry description="HIV Positive?" value={child.hiv} />
         </Section>
       )}
       {isDataCall && (
         <Section
-          sectionTitle={<Template code="TabbedForms-CategoriesTab" />}
+          sectionTitle={strings['TabbedForms-CategoriesTab']}
           expanded={detailsExpanded[ISSUE_CATEGORIZATION]}
           handleExpandClick={() => handleExpandDetailsSection(ISSUE_CATEGORIZATION)}
         >
-          {formattedCategories.length ? (
-            formattedCategories.map((c, index) => (
-              <SectionEntry key={`Category ${index + 1}`} description={`Category ${index + 1}`} value={c} />
-            ))
-          ) : (
-            <SectionEntry description="No category provided" value="" />
-          )}
+          {Boolean(category1) && <SectionEntry description="Category 1" value={category1} />}
+          {Boolean(category2) && <SectionEntry description="Category 2" value={category2} />}
+          {Boolean(category3) && <SectionEntry description="Category 3" value={category3} />}
+          {!(category1 || category2 || category3) && <SectionEntry description="No category provided" value="" />}
         </Section>
       )}
       {isDataCall && (
         <Section
-          sectionTitle={<Template code="TabbedForms-AddCaseInfoTab" />}
+          sectionTitle={strings['TabbedForms-AddCaseInfoTab']}
           expanded={detailsExpanded[CONTACT_SUMMARY]}
           handleExpandClick={() => handleExpandDetailsSection(CONTACT_SUMMARY)}
         >
-          {CaseInfoFormDefinition.map(e => (
-            <SectionEntry
-              key={`CaseInformation-${e.label}`}
-              description={<Template code={e.label} />}
-              value={contact.details.caseInformation[e.name]}
-            />
-          ))}
+          <SectionEntry description="Call Summary" value={callSummary} />
+          <SectionEntry description="Status" value={status} />
+          <SectionEntry description="Referred To" value={referredTo} />
+          <SectionEntry description="Keep Confidential?" value={keepConfidential} />
+          <SectionEntry description="OK for the case worker to call?" value={okForCaseWorkerToCall} />
+          <SectionEntry description="How did the child hear about us?" value={howDidTheChildHearAboutUs} />
+          <SectionEntry description="Did you discuss rights with the child?" value={didYouDiscussRightsWithTheChild} />
+          <SectionEntry
+            description="Did the child feel we solved their problem?"
+            value={didTheChildFeelWeSolvedTheirProblem}
+          />
+          <SectionEntry
+            description="Would the child recommend us to a friend?"
+            value={wouldTheChildRecommendUsToAFriend}
+          />
         </Section>
       )}
     </DetailsContainer>

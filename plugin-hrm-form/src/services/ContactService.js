@@ -44,18 +44,30 @@ const createCategory = (obj, [category, { subcategories }]) => ({
 const createCategoriesObject = () => Object.entries(CategoriesFormDefinition).reduce(createCategory, {});
 
 /**
+ * @param {{ firstName: string, lastName: string }} information
+ */
+const groupName = information => {
+  const { firstName, lastName, ...rest } = information;
+  return { ...rest, name: { firstName, lastName } };
+};
+
+/**
  * Transforms the form to be saved as the backend expects it
  * VisibleForTesting
  * @param {TaskEntry} form
  */
 // eslint-disable-next-line import/no-unused-modules
 export function transformForm(form) {
-  const { callType, callerInformation, childInformation, metadata, caseInformation } = form;
+  const { callType, metadata, caseInformation } = form;
+
+  const callerInformation = groupName(form.callerInformation);
+  const childInformation = groupName(form.childInformation);
 
   const categoriesObject = createCategoriesObject();
   const { categories } = form.categories.reduce((acc, path) => set(path, true, acc), { categories: categoriesObject });
 
   const transformed = {
+    definitionVersion: 'v1', // TODO: put this in config (like feature flags). Question: Should this be inside rawForm or be a separate column for each contact?
     callType,
     callerInformation,
     childInformation,
