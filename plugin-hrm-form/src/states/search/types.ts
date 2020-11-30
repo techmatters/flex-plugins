@@ -32,6 +32,7 @@ export const SearchPages = {
   resultsContacts: 'results.contacts',
   resultsCases: 'results.cases',
   details: 'details',
+  case: 'case',
 } as const;
 
 export type SearchPagesType = typeof SearchPages[keyof typeof SearchPages];

@@ -10,6 +10,7 @@ import { ITask, withTaskContext } from '@twilio/flex-ui';
 import SearchForm from './SearchForm';
 import SearchResults, { CONTACTS_PER_PAGE, CASES_PER_PAGE } from './SearchResults';
 import ContactDetails from './ContactDetails';
+import Case from '../case';
 import { SearchPages } from '../../states/search/types';
 import { SearchContact } from '../../types/types';
 import {
@@ -142,6 +143,8 @@ const Search: React.FC<Props> = props => {
             handleExpandDetailsSection={props.handleExpandDetailsSection}
           />
         );
+      case SearchPages.case:
+        return <Case task={props.task as any} handleCompleteTask={() => null} />;
       default:
         return null;
     }

@@ -7,7 +7,7 @@ import { Template, Tab as TwilioTab, ITask } from '@twilio/flex-ui';
 
 import ContactPreview from '../ContactPreview';
 import CasePreview from '../CasePreview';
-import { SearchContactResult, SearchCaseResult, SearchContact } from '../../../types/types';
+import { SearchContactResult, SearchCaseResult, SearchContact, Case } from '../../../types/types';
 import { Row } from '../../../styles/HrmStyles';
 import {
   BackIcon,
@@ -29,6 +29,7 @@ import {
 import ConnectDialog from '../ConnectDialog';
 import Pagination from '../../Pagination';
 import * as SearchActions from '../../../states/search/actions';
+import * as CaseActions from '../../../states/case/actions';
 import { SearchPages, SearchPagesType } from '../../../states/search/types';
 import { namespace, searchContactsBase } from '../../../states';
 
@@ -50,6 +51,7 @@ type OwnProps = {
   handleBack: () => void;
   handleViewDetails: (contact: SearchContact) => void;
   changeSearchPage: (SearchPagesType) => void;
+  setConnectedCase: (currentCase: Case, taskSid: string) => void;
   currentPage: SearchPagesType;
 };
 
@@ -57,6 +59,7 @@ type OwnProps = {
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
 const SearchResults: React.FC<Props> = ({
+  task,
   currentIsCaller,
   searchContactsResults,
   searchCasesResults,
@@ -70,6 +73,7 @@ const SearchResults: React.FC<Props> = ({
   handleBack,
   handleViewDetails,
   changeSearchPage,
+  setConnectedCase,
   currentPage,
 }) => {
   const [currentContact, setCurrentContact] = useState(null);
@@ -112,6 +116,11 @@ const SearchResults: React.FC<Props> = ({
     e.stopPropagation();
     setAnchorEl(e.currentTarget);
     setCurrentContact(contact);
+  };
+
+  const handleClickViewCase = currentCase => () => {
+    setConnectedCase(currentCase, task.taskSid);
+    changeSearchPage(SearchPages.case);
   };
 
   const { count: contactsCount, contacts } = searchContactsResults;
@@ -235,7 +244,11 @@ const SearchResults: React.FC<Props> = ({
                 }
                 labelPlacement="start"
               />
-              {cases && cases.length > 0 && cases.map(cas => <CasePreview key={cas.id} currentCase={cas} />)}
+              {cases &&
+                cases.length > 0 &&
+                cases.map(cas => (
+                  <CasePreview key={cas.id} currentCase={cas} onClickViewCase={handleClickViewCase(cas)} />
+                ))}
               {casesPageCount > 1 && (
                 <Pagination
                   page={casesPage}
@@ -268,6 +281,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
   return {
     changeSearchPage: bindActionCreators(SearchActions.changeSearchPage(taskId), dispatch),
+    setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
   };
 };
 

@@ -21,6 +21,7 @@ import callTypes from './DomainConstants';
 import { countSelectedCategories } from './ValidationRules';
 import { copySearchResultIntoTask } from './contacts/helpers';
 import { getConfig } from '../HrmFormPlugin';
+import { standaloneTaskSid } from './search/reducer';
 
 /**
  * Looks for a particular task in the state object, and returns it if found.
@@ -42,7 +43,9 @@ const findOrRecreate = (tasks, taskId) => {
 };
 
 const initialState = {
-  tasks: {},
+  tasks: {
+    [standaloneTaskSid]: createBlankForm(),
+  },
 };
 
 export class Actions {

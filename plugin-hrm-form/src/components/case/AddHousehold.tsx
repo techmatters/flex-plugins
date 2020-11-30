@@ -21,7 +21,6 @@ type OwnProps = {
   task: ITask;
   counselor: string;
   onClickClose: () => void;
-  onClickAddHousehold: () => void;
 };
 
 // eslint-disable-next-line no-use-before-define
