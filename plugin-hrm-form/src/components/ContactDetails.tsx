@@ -4,7 +4,7 @@ import { format } from 'date-fns';
 import { IconButton } from '@material-ui/core';
 import { Link as LinkIcon } from '@material-ui/icons';
 
-import { DetailsContainer, NameContainer, DetNameText, ContactDetailsIcon } from '../styles/search';
+import { DetailsContainer, NameContainer, DetNameText } from '../styles/search';
 import Section from './Section';
 import SectionEntry from './SectionEntry';
 import callTypes, { channelTypes } from '../states/DomainConstants';

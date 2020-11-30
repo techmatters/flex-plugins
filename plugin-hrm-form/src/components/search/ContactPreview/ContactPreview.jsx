@@ -15,11 +15,9 @@ const ContactPreview = ({ contact, handleOpenConnectDialog, handleViewDetails, s
 
   return (
     <Flex>
-      <ConnectContact
-        showConnectIcon={showConnectIcon}
-        callType={contact.overview.callType}
-        onOpenConnectDialog={handleOpenConnectDialog}
-      />
+      {showConnectIcon && (
+        <ConnectContact callType={contact.overview.callType} onOpenConnectDialog={handleOpenConnectDialog} />
+      )}
       <ContactWrapper key={contact.contactId}>
         <ChildNameAndDate
           channel={contact.overview.channel}

@@ -10,12 +10,11 @@ import { CallTypes } from '../../../states/DomainConstants';
 type OwnProps = {
   callType: CallTypes;
   onOpenConnectDialog: () => void;
-  showConnectIcon: Boolean;
 };
 
 type Props = OwnProps;
 
-const ConnectContact: React.FC<Props> = ({ callType, onOpenConnectDialog, showConnectIcon }) => {
+const ConnectContact: React.FC<Props> = ({ callType, onOpenConnectDialog }) => {
   const isNonDataContact = isNonDataCallType(callType);
 
   if (isNonDataContact) {
@@ -28,7 +27,7 @@ const ConnectContact: React.FC<Props> = ({ callType, onOpenConnectDialog, showCo
         <HiddenText>
           <Template code="ContactPreview-CopyButton" />
         </HiddenText>
-        {showConnectIcon && <ConnectIcon />}
+        <ConnectIcon />
       </StyledButtonBase>
     </Flex>
   );
