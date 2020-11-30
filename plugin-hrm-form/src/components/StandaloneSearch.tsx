@@ -2,7 +2,7 @@
 import React from 'react';
 
 import Search from './search';
-import { standaloneTaskSid } from '../states/search/reducer';
+import { standaloneTaskSid } from '../states/ContactState';
 import { StandaloneSearchContainer } from '../styles/search';
 
 const standaloneTask = {

@@ -2,7 +2,7 @@ import { omit } from 'lodash';
 
 import { AppRoutes, RoutingActionType, CHANGE_ROUTE } from './types';
 import { GeneralActionType, INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE } from '../types';
-import { standaloneTaskSid } from '../search/reducer';
+import { standaloneTaskSid } from '../ContactState';
 
 export type RoutingState = {
   tasks: {
