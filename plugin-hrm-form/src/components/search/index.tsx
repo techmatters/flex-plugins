@@ -156,7 +156,7 @@ const Search: React.FC<Props> = props => {
                 handleBack={goToResultsOnCases}
               />
             </Flex>
-            <Case task={props.task} hideEditButtons={true} handleClose={goToResultsOnCases} />
+            <Case task={props.task} readonly={true} handleClose={goToResultsOnCases} />
           </>
         );
       default:

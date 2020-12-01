@@ -12,12 +12,13 @@ import { getConfig } from '../../HrmFormPlugin';
 
 type OwnProps = {
   task: ITask;
+  readonly?: boolean;
 };
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
-const CaseSummary: React.FC<Props> = ({ task, connectedCaseState, updateCaseInfo }) => {
+const CaseSummary: React.FC<Props> = ({ task, connectedCaseState, updateCaseInfo, readonly }) => {
   const { strings } = getConfig();
   const { connectedCase } = connectedCaseState;
   const summary = connectedCase.info?.summary || '';
@@ -37,9 +38,10 @@ const CaseSummary: React.FC<Props> = ({ task, connectedCaseState, updateCaseInfo
         // rows={5} -> change the height (maybe needed when merging all the changes in Case)
         data-testid="Case-CaseSummary-TextArea"
         aria-labelledby="Case-CaseSummary-label"
-        placeholder={strings['Case-AddCaseSummaryHere']}
+        placeholder={!readonly && strings['Case-AddCaseSummaryHere']}
         value={summary}
         onChange={e => handleOnChange(e.target.value)}
+        readOnly={readonly}
       />
     </>
   );

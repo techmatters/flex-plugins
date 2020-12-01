@@ -35,7 +35,7 @@ import ViewPerpetrator from './ViewPerpetrator';
 
 type OwnProps = {
   task: ITask;
-  hideEditButtons?: boolean;
+  readonly?: boolean;
   handleClose?: () => void;
   handleCompleteTask?: (taskSid: string, task: ITask) => void;
 };
@@ -185,7 +185,7 @@ const Case: React.FC<Props> = props => {
               />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
-              <CaseSummary task={props.task} />
+              <CaseSummary task={props.task} readonly={props.readonly} />
             </Box>
           </Container>
           <Dialog onClose={closeMockedMessage} open={isMockedMessageOpen}>
@@ -205,7 +205,7 @@ const Case: React.FC<Props> = props => {
             />
           </Menu>
           <BottomButtonBar>
-            {!props.hideEditButtons && (
+            {!props.readonly && (
               <>
                 <Box marginRight="15px">
                   <StyledNextStepButton secondary roundCorners onClick={toggleCaseMenu}>
@@ -217,7 +217,7 @@ const Case: React.FC<Props> = props => {
                 </StyledNextStepButton>
               </>
             )}
-            {props.hideEditButtons && (
+            {props.readonly && (
               <StyledNextStepButton roundCorners onClick={props.handleClose}>
                 <Template code="BottomBar-Close" />
               </StyledNextStepButton>
