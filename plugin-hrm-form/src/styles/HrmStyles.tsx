@@ -664,8 +664,10 @@ export const FormInput = styled('input')<FormInputProps>`
     box-shadow: none;
     border: 1px solid rgba(0, 59, 129, 0.37);
   }
+`;
+FormInput.displayName = 'FormInput';
 
-  /* ---------- Date ---------- */
+export const FormDateInput = styled(FormInput)`
   &[type='date']::-webkit-clear-button,
   &[type='date']::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -673,8 +675,10 @@ export const FormInput = styled('input')<FormInputProps>`
   }
   /* &[type='date'] {} */
   /* &[type='date']::-webkit-calendar-picker-indicator {} */
+`;
+FormDateInput.displayName = 'FormDateInput';
 
-  /* ---------- Time ---------- */
+export const FormTimeInput = styled(FormInput)`
   &[type='time']::-webkit-datetime-edit-fields-wrapper {
     display: flex;
   }
@@ -689,8 +693,35 @@ export const FormInput = styled('input')<FormInputProps>`
    &[type='time']::-webkit-datetime-edit-minute-field {}
    &[type='time']::-webkit-datetime-edit-ampm-field {}
   */
+`;
+FormTimeInput.displayName = 'FormTimeInput';
 
-  /* ---------- Mixed Checkbox ---------- */
+export const FormTextArea = styled('textarea')<FormInputProps>`
+  & {
+    display: flex;
+    flex-grow: 0;
+    font-family: Open Sans;
+    font-size: 12px;
+    line-height: 1.33;
+    letter-spacing: normal;
+    box-sizing: border-box; /* Tells the browser to account for any border and padding in the values you specify for an element's width and height. https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing*/
+    width: 217px;
+    border-radius: 4px;
+    background-color: ${props => props.theme.colors.inputBackgroundColor};
+    color: ${props =>
+      props.theme.calculated.lightTheme ? props.theme.colors.darkTextColor : props.theme.colors.lightTextColor};
+    border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
+    boxshadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
+    padding: 0 7px;
+  }
+  &:focus {
+    background-color: ${props => props.theme.colors.inputBackgroundColor};
+    box-shadow: none;
+    border: 1px solid rgba(0, 59, 129, 0.37);
+  }
+`;
+
+export const FormMixedCheckbox = styled('input')<FormInputProps>`
   &[class~='mixed-checkbox'][type='checkbox'] {
     display: inline-block;
     position: relative;
@@ -706,8 +737,8 @@ export const FormInput = styled('input')<FormInputProps>`
     content: '';
   }
   &[class~='mixed-checkbox'][type='checkbox']::before {
-    width: 14px;
-    height: 14px;
+    width: 13px;
+    height: 13px;
     border: 1px solid hsl(0, 0%, 66%);
     border-radius: 0.2em;
     background-image: linear-gradient(to bottom, hsl(300, 3%, 93%), #fff 30%);
@@ -735,13 +766,12 @@ export const FormInput = styled('input')<FormInputProps>`
   }
   /* To disable the outline when focused */
   /* &[class~=mixed-checkbox][type=checkbox]:focus {
-    outline: none;
-  } */
+  outline: none;
+} */
   /* Other stuff that we can use to style the pseudo elements */
   /* &[class~=mixed-checkbox][type=checkbox][aria-checked="true"]:active::before  */
   /* &[class~=mixed-checkbox][type=checkbox]:focus::before */
 `;
-FormInput.displayName = 'FormInput';
 
 export const FormSelectWrapper = styled('div')`
   position: relative;

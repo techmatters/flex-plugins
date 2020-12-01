@@ -14,9 +14,13 @@ import {
   FormError,
   Row,
   FormInput,
+  FormDateInput,
+  FormTimeInput,
+  FormMixedCheckbox,
   FormSelect,
   FormOption,
   FormSelectWrapper,
+  FormTextArea,
 } from '../../../styles/HrmStyles';
 import type { FormItemDefinition, FormDefinition, SelectOption, MixedOrBool } from './types';
 
@@ -61,13 +65,14 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
-                <input
+                <FormInput
                   id={path}
                   name={path}
+                  error={Boolean(error)}
                   aria-invalid={Boolean(error)}
                   aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
-                  ref={register(rules)}
+                  innerRef={register(rules)}
                 />
                 {error && (
                   <FormError>
@@ -92,13 +97,14 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
-                <input
+                <FormInput
                   id={path}
                   name={path}
+                  error={Boolean(error)}
                   aria-invalid={Boolean(error)}
                   aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
-                  ref={register({
+                  innerRef={register({
                     ...rules,
                     pattern: { value: /^[0-9]+$/g, message: 'This field only accepts numeric input.' },
                   })}
@@ -216,20 +222,20 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             return (
               <FormLabel htmlFor={path}>
                 <Row>
-                  <Box marginBottom="8px">
+                  <Box marginBottom="8px" marginTop="8px">
+                    <input
+                      id={path}
+                      name={path}
+                      type="checkbox"
+                      aria-invalid={Boolean(error)}
+                      aria-describedby={`${path}-error`}
+                      onChange={updateCallback}
+                      ref={register(rules)}
+                    />
                     <Template code={`${def.label}`} />
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
-                <input
-                  id={path}
-                  name={path}
-                  aria-invalid={Boolean(error)}
-                  aria-describedby={`${path}-error`}
-                  type="checkbox"
-                  onChange={updateCallback}
-                  ref={register(rules)}
-                />
                 {error && (
                   <FormError>
                     <Template id={`${path}-error`} code={error.message} />
@@ -260,26 +266,26 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             return (
               <FormLabel htmlFor={path}>
                 <Row>
-                  <Box marginBottom="8px">
+                  <Box marginBottom="8px" marginTop="8px">
+                    <FormMixedCheckbox
+                      id={path}
+                      type="checkbox"
+                      className="mixed-checkbox"
+                      error={Boolean(error)}
+                      aria-invalid={Boolean(error)}
+                      aria-checked={checked}
+                      aria-describedby={`${path}-error`}
+                      onBlur={updateCallback}
+                      onChange={() => {
+                        if (checked === 'mixed') setChecked(false);
+                        if (checked === false) setChecked(true);
+                        if (checked === true) setChecked('mixed');
+                      }}
+                    />
                     <Template code={`${def.label}`} />
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
-                <FormInput
-                  id={path}
-                  type="checkbox"
-                  error={Boolean(error)}
-                  aria-invalid={Boolean(error)}
-                  aria-checked={checked}
-                  aria-describedby={`${path}-error`}
-                  className="mixed-checkbox" // this grabs the styles imported from mixedCheckbox.css
-                  onBlur={updateCallback}
-                  onChange={() => {
-                    if (checked === 'mixed') setChecked(false);
-                    if (checked === false) setChecked(true);
-                    if (checked === true) setChecked('mixed');
-                  }}
-                />
                 {error && (
                   <FormError>
                     <Template id={`${path}-error`} code={error.message} />
@@ -303,13 +309,14 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
-                <textarea
+                <FormTextArea
                   id={path}
                   name={path}
+                  error={Boolean(error)}
                   aria-invalid={Boolean(error)}
                   aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
-                  ref={register(rules)}
+                  innerRef={register(rules)}
                   rows={10}
                 />
                 {error && (
@@ -335,7 +342,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
-                <FormInput
+                <FormTimeInput
                   type="time"
                   id={path}
                   name={path}
@@ -368,7 +375,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
-                <FormInput
+                <FormDateInput
                   type="date"
                   id={path}
                   name={path}
