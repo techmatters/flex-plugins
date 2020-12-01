@@ -1,3 +1,5 @@
+import { isFuture } from 'date-fns';
+
 import { channelTypes, otherContactChannels } from '../../states/DomainConstants';
 import type { FormDefinition } from '../common/forms/types';
 import { mapChannelForInsights } from '../../utils/mappers';
@@ -25,7 +27,7 @@ export const formDefinition: FormDefinition = [
     required: { value: true, message: 'RequiredFieldError' },
     validate: date => {
       const [y, m, d] = splitDate(date);
-      return new Date(y, m - 1, d).getTime() > Date.now() ? 'DateCantBeGreaterThanToday' : null;
+      return isFuture(new Date(y, m - 1, d)) ? 'DateCantBeGreaterThanToday' : null;
     },
   },
   {

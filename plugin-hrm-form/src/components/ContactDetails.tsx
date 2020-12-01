@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
-import { ButtonBase, IconButton } from '@material-ui/core';
-import { MoreHoriz, Link as LinkIcon } from '@material-ui/icons';
+import { IconButton } from '@material-ui/core';
+import { Link as LinkIcon } from '@material-ui/icons';
 
-import { DetailsContainer, NameContainer, DetNameText, ContactDetailsIcon } from '../styles/search';
+import { DetailsContainer, NameContainer, DetNameText } from '../styles/search';
 import Section from './Section';
 import SectionEntry from './SectionEntry';
 import callTypes, { channelTypes } from '../states/DomainConstants';
@@ -21,14 +21,11 @@ import {
 import { CallerSection, ContactDetailsSections } from './common/ContactDetails';
 import { getConfig } from '../HrmFormPlugin';
 
-const MoreHorizIcon = ContactDetailsIcon(MoreHoriz);
-
 const Details = ({
   contact,
   detailsExpanded,
   showActionIcons,
   handleOpenConnectDialog,
-  handleMockedMessage,
   handleExpandDetailsSection,
 }) => {
   // Object destructuring on contact
@@ -91,9 +88,6 @@ const Details = ({
             >
               <LinkIcon style={{ color: '#ffffff' }} />
             </IconButton>
-            <ButtonBase style={{ padding: 0 }} onClick={handleMockedMessage}>
-              <MoreHorizIcon style={{ color: '#ffffff' }} />
-            </ButtonBase>
           </>
         )}
       </NameContainer>
@@ -184,13 +178,11 @@ Details.propTypes = {
   contact: contactType.isRequired,
   detailsExpanded: PropTypes.objectOf(PropTypes.bool).isRequired,
   handleOpenConnectDialog: PropTypes.func,
-  handleMockedMessage: PropTypes.func,
   handleExpandDetailsSection: PropTypes.func.isRequired,
   showActionIcons: PropTypes.bool,
 };
 Details.defaultProps = {
   handleOpenConnectDialog: () => null,
-  handleMockedMessage: () => null,
   showActionIcons: false,
 };
 

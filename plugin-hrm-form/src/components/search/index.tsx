@@ -7,6 +7,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import { ITask, withTaskContext, Template } from '@twilio/flex-ui';
 
+import { standaloneTaskSid } from '../../states/ContactState';
 import SearchForm from './SearchForm';
 import SearchResults, { CONTACTS_PER_PAGE, CASES_PER_PAGE } from './SearchResults';
 import ContactDetails from './ContactDetails';
@@ -138,6 +139,7 @@ const Search: React.FC<Props> = props => {
       case SearchPages.details:
         return (
           <ContactDetails
+            showActionIcons={props.showActionIcons}
             currentIsCaller={props.currentIsCaller}
             contact={currentContact}
             detailsExpanded={props.detailsExpanded}
@@ -187,6 +189,7 @@ const mapStateToProps = (state, ownProps) => {
   const taskId = ownProps.task.taskSid;
   const taskSearchState = searchContactsState.tasks[taskId];
   const { counselors } = state[namespace][configurationBase];
+  const isStandaloneSearch = taskId === standaloneTaskSid;
 
   return {
     isRequesting: taskSearchState.isRequesting,
@@ -198,6 +201,7 @@ const mapStateToProps = (state, ownProps) => {
     searchCasesResults: taskSearchState.searchCasesResult,
     detailsExpanded: taskSearchState.detailsExpanded,
     counselorsHash: counselors.hash,
+    showActionIcons: !isStandaloneSearch,
   };
 };
 
