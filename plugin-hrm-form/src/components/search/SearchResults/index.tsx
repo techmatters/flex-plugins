@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { ButtonBase } from '@material-ui/core';
 import { Template, Tab as TwilioTab, ITask } from '@twilio/flex-ui';
 
 import ContactPreview from '../ContactPreview';
@@ -10,8 +9,6 @@ import CasePreview from '../CasePreview';
 import { SearchContactResult, SearchCaseResult, SearchContact, Case } from '../../../types/types';
 import { Row } from '../../../styles/HrmStyles';
 import {
-  BackIcon,
-  BackText,
   ResultsHeader,
   ListContainer,
   ScrollableList,
@@ -28,6 +25,7 @@ import {
 } from '../../../styles/search';
 import ConnectDialog from '../ConnectDialog';
 import Pagination from '../../Pagination';
+import SearchResultsBackButton from './SearchResultsBackButton';
 import * as SearchActions from '../../../states/search/actions';
 import * as CaseActions from '../../../states/case/actions';
 import { SearchPages, SearchPagesType } from '../../../states/search/types';
@@ -142,14 +140,7 @@ const SearchResults: React.FC<Props> = ({
   return (
     <>
       <ResultsHeader>
-        <Row>
-          <ButtonBase onClick={handleBack}>
-            <BackIcon />
-            <BackText>
-              <Template code="SearchResultsIndex-Back" />
-            </BackText>
-          </ButtonBase>
-        </Row>
+        <SearchResultsBackButton text={<Template code="SearchResultsIndex-Back" />} handleBack={handleBack} />
         <Row style={{ justifyContent: 'center' }}>
           <div style={{ width: '300px' }}>
             <StyledTabs selectedTabName={currentPage} onTabSelected={tabSelected}>
