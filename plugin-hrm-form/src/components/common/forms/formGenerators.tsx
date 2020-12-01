@@ -14,9 +14,15 @@ import {
   FormError,
   Row,
   FormInput,
+  FormDateInput,
+  FormTimeInput,
+  FormCheckBoxWrapper,
+  FormCheckbox,
+  FormMixedCheckbox,
   FormSelect,
   FormOption,
   FormSelectWrapper,
+  FormTextArea,
 } from '../../../styles/HrmStyles';
 import type { FormItemDefinition, FormDefinition, SelectOption, MixedOrBool } from './types';
 
@@ -38,7 +44,7 @@ const getRules = (field: FormItemDefinition): ValidationRules =>
   pick(field, ['max', 'maxLength', 'min', 'minLength', 'pattern', 'required', 'validate']);
 
 /**
- * Creates a Form with each input conntected to RHF's wrapping Context, based on the definition.
+ * Creates a Form with each input connected to RHF's wrapping Context, based on the definition.
  * @param {string[]} parents Array of parents. Allows you to easily create nested form fields. https://react-hook-form.com/api#register.
  * @param {() => void} updateCallback Callback called to update form state. When is the callback called is specified in the input type.
  * @param {FormItemDefinition} def Definition for a single input.
@@ -61,13 +67,14 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
-                <input
+                <FormInput
                   id={path}
                   name={path}
+                  error={Boolean(error)}
                   aria-invalid={Boolean(error)}
                   aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
-                  ref={register(rules)}
+                  innerRef={register(rules)}
                 />
                 {error && (
                   <FormError>
@@ -92,13 +99,14 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
-                <input
+                <FormInput
                   id={path}
                   name={path}
+                  error={Boolean(error)}
                   aria-invalid={Boolean(error)}
                   aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
-                  ref={register({
+                  innerRef={register({
                     ...rules,
                     pattern: { value: /^[0-9]+$/g, message: 'This field only accepts numeric input.' },
                   })}
@@ -215,21 +223,19 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             const error = get(errors, path);
             return (
               <FormLabel htmlFor={path}>
-                <Row>
-                  <Box marginBottom="8px">
-                    <Template code={`${def.label}`} />
-                    {rules.required && <RequiredAsterisk />}
-                  </Box>
-                </Row>
-                <input
-                  id={path}
-                  name={path}
-                  aria-invalid={Boolean(error)}
-                  aria-describedby={`${path}-error`}
-                  type="checkbox"
-                  onChange={updateCallback}
-                  ref={register(rules)}
-                />
+                <FormCheckBoxWrapper error={Boolean(error)}>
+                  <FormCheckbox
+                    id={path}
+                    name={path}
+                    type="checkbox"
+                    aria-invalid={Boolean(error)}
+                    aria-describedby={`${path}-error`}
+                    onChange={updateCallback}
+                    innerRef={register(rules)}
+                  />
+                  <Template code={`${def.label}`} />
+                  {rules.required && <RequiredAsterisk />}
+                </FormCheckBoxWrapper>
                 {error && (
                   <FormError>
                     <Template id={`${path}-error`} code={error.message} />
@@ -259,27 +265,24 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
 
             return (
               <FormLabel htmlFor={path}>
-                <Row>
-                  <Box marginBottom="8px">
-                    <Template code={`${def.label}`} />
-                    {rules.required && <RequiredAsterisk />}
-                  </Box>
-                </Row>
-                <FormInput
-                  id={path}
-                  type="checkbox"
-                  error={Boolean(error)}
-                  aria-invalid={Boolean(error)}
-                  aria-checked={checked}
-                  aria-describedby={`${path}-error`}
-                  className="mixed-checkbox" // this grabs the styles imported from mixedCheckbox.css
-                  onBlur={updateCallback}
-                  onChange={() => {
-                    if (checked === 'mixed') setChecked(false);
-                    if (checked === false) setChecked(true);
-                    if (checked === true) setChecked('mixed');
-                  }}
-                />
+                <FormCheckBoxWrapper error={Boolean(error)}>
+                  <FormMixedCheckbox
+                    id={path}
+                    type="checkbox"
+                    className="mixed-checkbox"
+                    aria-invalid={Boolean(error)}
+                    aria-checked={checked}
+                    aria-describedby={`${path}-error`}
+                    onBlur={updateCallback}
+                    onChange={() => {
+                      if (checked === 'mixed') setChecked(true);
+                      if (checked === true) setChecked(false);
+                      if (checked === false) setChecked('mixed');
+                    }}
+                  />
+                  <Template code={`${def.label}`} />
+                  {rules.required && <RequiredAsterisk />}
+                </FormCheckBoxWrapper>
                 {error && (
                   <FormError>
                     <Template id={`${path}-error`} code={error.message} />
@@ -303,13 +306,14 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
-                <textarea
+                <FormTextArea
                   id={path}
                   name={path}
+                  error={Boolean(error)}
                   aria-invalid={Boolean(error)}
                   aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
-                  ref={register(rules)}
+                  innerRef={register(rules)}
                   rows={10}
                 />
                 {error && (
@@ -335,7 +339,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
-                <FormInput
+                <FormTimeInput
                   type="time"
                   id={path}
                   name={path}
@@ -368,7 +372,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
-                <FormInput
+                <FormDateInput
                   type="date"
                   id={path}
                   name={path}
@@ -392,6 +396,16 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
       return null;
   }
 };
+
+/**
+ * Creates a Form with each input connected to RHF's wrapping Context, based on the definition.
+ * @param {FormDefinition} definition Form definition (schema).
+ * @param {string[]} parents Array of parents. Allows you to easily create nested form fields. https://react-hook-form.com/api#register.
+ * @param {() => void} updateCallback Callback called to update form state. When is the callback called is specified in the input type (getInputType).
+ */
+export const createFormFromDefinition = (definition: FormDefinition) => (parents: string[]) => (
+  updateCallback: () => void,
+): JSX.Element[] => definition.map(getInputType(parents, updateCallback));
 
 /**
  * Utility functions to create initial state from definition
@@ -418,26 +432,30 @@ export const getInitialValue = (def: FormItemDefinition) => {
   }
 };
 
-/**
- * Creates a Form with each input conntected to RHF's wrapping Context, based on the definition.
- * @param {FormDefinition} definition Form definition (schema).
- * @param {string[]} parents Array of parents. Allows you to easily create nested form fields. https://react-hook-form.com/api#register.
- * @param {() => void} updateCallback Callback called to update form state. When is the callback called is specified in the input type (getInputType).
- */
-export const createFormFromDefinition = (definition: FormDefinition) => (parents: string[]) => (
-  updateCallback: () => void,
-): JSX.Element[] => definition.map(getInputType(parents, updateCallback));
+export const createFormItem = <T extends {}>(obj: T, def: FormItemDefinition) => ({
+  ...obj,
+  [def.name]: getInitialValue(def),
+});
 
-export const buildTwoColumnFormLayout = (formItems: JSX.Element[]) => {
-  const items = formItems.map(i => (
-    <Box key={`${i.key}-wrapping-box`} marginTop="5px" marginBottom="5px">
+export const disperseInputs = (margin: number) => (formItems: JSX.Element[]) =>
+  formItems.map(i => (
+    <Box key={`${i.key}-wrapping-box`} marginTop={`${margin.toString()}px`} marginBottom={`${margin.toString()}px`}>
       {i}
     </Box>
   ));
 
+export const splitInHalf = (formItems: JSX.Element[]) => {
   const m = Math.ceil(formItems.length / 2);
 
-  const [l, r] = [items.slice(0, m), items.slice(m)];
+  const [l, r] = [formItems.slice(0, m), formItems.slice(m)];
+
+  return [l, r];
+};
+
+export const buildTwoColumnFormLayout = (formItems: JSX.Element[]) => {
+  const items = disperseInputs(5)(formItems);
+
+  const [l, r] = splitInHalf(items);
 
   return (
     <TwoColumnLayout>
@@ -446,8 +464,3 @@ export const buildTwoColumnFormLayout = (formItems: JSX.Element[]) => {
     </TwoColumnLayout>
   );
 };
-
-export const createFormItem = <T extends {}>(obj: T, def: FormItemDefinition) => ({
-  ...obj,
-  [def.name]: getInitialValue(def),
-});
