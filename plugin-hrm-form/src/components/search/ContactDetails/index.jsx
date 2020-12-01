@@ -16,6 +16,7 @@ class ContactDetails extends Component {
   static propTypes = {
     currentIsCaller: PropTypes.bool.isRequired,
     contact: contactType.isRequired,
+    showActionIcons: PropTypes.objectOf(PropTypes.bool).isRequired,
     detailsExpanded: PropTypes.objectOf(PropTypes.bool).isRequired,
     handleBack: PropTypes.func.isRequired,
     handleSelectSearchResult: PropTypes.func,
@@ -49,7 +50,7 @@ class ContactDetails extends Component {
   };
 
   render() {
-    const { contact, detailsExpanded, currentIsCaller } = this.props;
+    const { contact, detailsExpanded, currentIsCaller, showActionIcons } = this.props;
 
     return (
       <Container>
@@ -71,7 +72,7 @@ class ContactDetails extends Component {
           </ButtonBase>
         </Row>
         <GeneralContactDetails
-          showActionIcons
+          showActionIcons={showActionIcons}
           contact={contact}
           detailsExpanded={detailsExpanded}
           handleOpenConnectDialog={this.handleOpenConnectDialog}

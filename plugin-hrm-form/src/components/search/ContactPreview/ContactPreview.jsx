@@ -9,13 +9,15 @@ import { ContactWrapper } from '../../../styles/search';
 import { Flex } from '../../../styles/HrmStyles';
 import ConnectContact from './ConnectContact';
 
-const ContactPreview = ({ contact, handleOpenConnectDialog, handleViewDetails }) => {
+const ContactPreview = ({ contact, handleOpenConnectDialog, handleViewDetails, showConnectIcon }) => {
   const { counselor } = contact;
   const { callSummary } = contact.details.caseInformation;
 
   return (
     <Flex>
-      <ConnectContact callType={contact.overview.callType} onOpenConnectDialog={handleOpenConnectDialog} />
+      {showConnectIcon && (
+        <ConnectContact callType={contact.overview.callType} onOpenConnectDialog={handleOpenConnectDialog} />
+      )}
       <ContactWrapper key={contact.contactId}>
         <ChildNameAndDate
           channel={contact.overview.channel}
@@ -38,6 +40,7 @@ ContactPreview.propTypes = {
   contact: contactType.isRequired,
   handleOpenConnectDialog: PropTypes.func.isRequired,
   handleViewDetails: PropTypes.func.isRequired,
+  showConnectIcon: PropTypes.bool.isRequired,
 };
 
 export default ContactPreview;

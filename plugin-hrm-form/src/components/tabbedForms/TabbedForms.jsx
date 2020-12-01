@@ -145,7 +145,7 @@ const TabbedForms = props => {
 
   return (
     <FormProvider {...methods}>
-      <form style={{ height: '100%' }}>
+      <div role="form" style={{ height: '100%' }}>
         <TabbedFormsContainer>
           <TopNav>
             <TransparentButton onClick={handleBackButton}>&lt; BACK</TransparentButton>
@@ -165,7 +165,7 @@ const TabbedForms = props => {
             optionalButtons={optionalButtons}
           />
         </TabbedFormsContainer>
-      </form>
+      </div>
     </FormProvider>
   );
 };

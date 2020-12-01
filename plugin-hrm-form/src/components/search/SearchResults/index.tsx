@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 import { ButtonBase } from '@material-ui/core';
 import { Template, Tab as TwilioTab, ITask } from '@twilio/flex-ui';
 
+import { standaloneTaskSid } from '../../../states/search/reducer';
 import ContactPreview from '../ContactPreview';
 import CasePreview from '../CasePreview';
 import { SearchContactResult, SearchCaseResult, SearchContact } from '../../../types/types';
@@ -71,6 +72,7 @@ const SearchResults: React.FC<Props> = ({
   handleViewDetails,
   changeSearchPage,
   currentPage,
+  showConnectIcon,
 }) => {
   const [currentContact, setCurrentContact] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -208,6 +210,7 @@ const SearchResults: React.FC<Props> = ({
                 contacts.length > 0 &&
                 contacts.map(contact => (
                   <ContactPreview
+                    showConnectIcon={showConnectIcon}
                     key={contact.contactId}
                     contact={contact}
                     handleOpenConnectDialog={handleOpenConnectDialog(contact)}
@@ -257,9 +260,11 @@ const mapStateToProps = (state, ownProps) => {
   const searchContactsState = state[namespace][searchContactsBase];
   const taskId = ownProps.task.taskSid;
   const taskSearchState = searchContactsState.tasks[taskId];
+  const isStandaloneSearch = taskId === standaloneTaskSid;
 
   return {
     currentPage: taskSearchState.currentPage,
+    showConnectIcon: !isStandaloneSearch,
   };
 };
 
