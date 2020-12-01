@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import { Template, withTaskContext, ITask } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
@@ -34,6 +35,8 @@ import ViewPerpetrator from './ViewPerpetrator';
 
 type OwnProps = {
   task: ITask;
+  hideEditButtons?: boolean;
+  handleClose?: () => void;
   handleCompleteTask?: (taskSid: string, task: ITask) => void;
 };
 
@@ -202,19 +205,28 @@ const Case: React.FC<Props> = props => {
             />
           </Menu>
           <BottomButtonBar>
-            <Box marginRight="15px">
-              <StyledNextStepButton secondary roundCorners onClick={toggleCaseMenu}>
-                <Template code="BottomBar-Cancel" />
+            {!props.hideEditButtons && (
+              <>
+                <Box marginRight="15px">
+                  <StyledNextStepButton secondary roundCorners onClick={toggleCaseMenu}>
+                    <Template code="BottomBar-Cancel" />
+                  </StyledNextStepButton>
+                </Box>
+                <StyledNextStepButton roundCorners onClick={handleSaveAndEnd}>
+                  <Template code="BottomBar-SaveAndEnd" />
+                </StyledNextStepButton>
+              </>
+            )}
+            {props.hideEditButtons && (
+              <StyledNextStepButton roundCorners onClick={props.handleClose}>
+                <Template code="BottomBar-Close" />
               </StyledNextStepButton>
-            </Box>
-            <StyledNextStepButton roundCorners onClick={handleSaveAndEnd}>
-              <Template code="BottomBar-SaveAndEnd" />
-            </StyledNextStepButton>
+            )}
           </BottomButtonBar>
         </CaseContainer>
       );
   }
-}
+};
 
 Case.displayName = 'Case';
 
