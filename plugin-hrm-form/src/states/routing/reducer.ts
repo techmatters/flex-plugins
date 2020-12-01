@@ -14,7 +14,7 @@ const newTaskEntry = {
   route: 'select-call-type' as const,
 };
 
-const initialState: RoutingState = {
+export const initialState: RoutingState = {
   tasks: {
     [standaloneTaskSid]: newTaskEntry,
   },
