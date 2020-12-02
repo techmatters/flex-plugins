@@ -8,7 +8,7 @@ import { get } from 'lodash';
 
 import { createFormFromDefinition, disperseInputs } from '../common/forms/formGenerators';
 import { updateContactLessTask } from '../../states/ContactState';
-import { Container, ColumnarBlock, TwoColumnLayout, Box } from '../../styles/HrmStyles';
+import { Container, ColumnarBlock, TwoColumnLayout } from '../../styles/HrmStyles';
 import type { RootState } from '../../states';
 import { formDefinition } from './ContactlessTaskTabDefinition';
 import { splitDate, splitTime } from '../../utils/helpers';
