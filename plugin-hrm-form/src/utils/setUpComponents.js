@@ -286,10 +286,14 @@ export const removeActionsIfWrapping = () => {
 };
 
 /**
- * Removes the Flex logo from the top left of the MainHeader
+ * Sets logo URL, or if URL is empty, removes the Flex logo from the top left of the MainHeader
  */
-export const removeLogo = () => {
-  Flex.MainHeader.Content.remove('logo');
+export const setLogo = url => {
+  if (url) {
+    Flex.MainHeader.defaultProps.logoUrl = url;
+  } else {
+    Flex.MainHeader.Content.remove('logo');
+  }
 };
 
 /**
