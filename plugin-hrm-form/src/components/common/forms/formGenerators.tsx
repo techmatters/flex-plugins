@@ -275,9 +275,9 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                     aria-describedby={`${path}-error`}
                     onBlur={updateCallback}
                     onChange={() => {
-                      if (checked === 'mixed') setChecked(false);
-                      if (checked === false) setChecked(true);
-                      if (checked === true) setChecked('mixed');
+                      if (checked === 'mixed') setChecked(true);
+                      if (checked === true) setChecked(false);
+                      if (checked === false) setChecked('mixed');
                     }}
                   />
                   <Template code={`${def.label}`} />
