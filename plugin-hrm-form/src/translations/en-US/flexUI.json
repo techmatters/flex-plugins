@@ -20,7 +20,7 @@
   "CallType-abusive": "Abusive",
   "CallType-CloseContact": "Close Contact",
 
-  "CallTypeAndCounselor-Label": "Counselor: ",
+  "CallTypeAndCounselor-Label": "Counsellor: ",
 
   "CallTypeButtons-Categorize": "categorize this contact",
   "CallTypeButtons-Or": "Or was this contact…",
@@ -43,6 +43,12 @@
   "NonDataCallTypeDialog-CloseConfirm": "Are you sure?",
 
   "SearchContactsAndCases-Title": "Search for Contacts and Cases",
+
+  "SearchForm-Name": "Name",
+  "SearchForm-Counselor": "Counsellor",
+  "SearchForm-DateRange": "Date Range",
+  "SearchForm-Phone": "Phone",
+  "SearchForm-Button": "Search",
 
   "SearchResultsIndex-Back": "Return to search criteria",
   "SearchResultsIndex-Result": " result",
@@ -69,7 +75,7 @@
   "SectionEntry-No": "No",
 
   "SharedStateSaveFormError": "The information stored in the form couldn't be saved. Task will be transferred anyway.",
-  "SharedStateLoadFormError": "The information stored in the form by previous counselor couldn't be retrieved. Starting current task with clear contact form.",
+  "SharedStateLoadFormError": "The information stored in the form by previous counsellor couldn't be retrieved. Starting current task with clear contact form.",
 
   "Transfer-TransferButton": "Transfer",
   "Transfer-AcceptTransferButton": "Accept Transfer",
@@ -124,7 +130,7 @@
   "Case-AddHouseholdSection": "Household Information",
   "Case-CaseSummarySection": "Case Summary",
   "Case-CaseDetailsChildName": "Child Name",
-  "Case-CaseDetailsOwner": "Counselor",
+  "Case-CaseDetailsOwner": "Counsellor",
   "Case-CaseDetailsDateOpened": "Date Opened",
   "Case-CaseDetailsStatusLabel": "Status",
   "Case-CaseDetailsStatusOpen": "Open",
@@ -134,7 +140,7 @@
   "Case-AddNoteTypeHere": "Type here to add note...",
   "Case-AddCaseSummaryHere": "Add case summary here...",
   "Case-ActionHeaderAdded": "Added:",
-  "Case-ActionHeaderCounselor": "Counselor:",
+  "Case-ActionHeaderCounselor": "Counsellor:",
   "Case-CloseButton": "Close",
   "Case-ViewButton": "View",
   "Case-PerpetratorName": "Perpetrator Name: ",
@@ -156,7 +162,7 @@
   "CaseList-THCase": "Case #",
   "CaseList-THChildName": "Child's Name",
   "CaseList-THSummary": "Summary",
-  "CaseList-THCounselor": "Counselor",
+  "CaseList-THCounselor": "Counsellor",
   "CaseList-THOpened": "Opened",
   "CaseList-THUpdated": "Updated",
   "CaseList-THCategory": "Category",
@@ -196,6 +202,11 @@
   "CallerSection-Ethnicity": "Ethnicity",
 
   "ContactDetails-GeneralDetails": "General Details",
+  "ContactDetails-GeneralDetails-Channel": "Channel",
+  "ContactDetails-GeneralDetails-PhoneNumber": "Phone Number",
+  "ContactDetails-GeneralDetails-ConversationDuration": "Conversation Duration",
+  "ContactDetails-GeneralDetails-Counselor": "Counsellor",
+  "ContactDetails-GeneralDetails-DateTime": "Date/Time",
 
   "ManualPullButtonText": "Another Task",
   "NoTaskAssignableNotification": "No task assignable to you at the moment.",

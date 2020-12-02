@@ -46,7 +46,7 @@ class SearchForm extends Component {
 
     const counselorsOptions = this.props.counselors.map(e => ({ label: e.fullName, value: e.sid }));
 
-    const { helpline } = getConfig();
+    const { helpline, strings } = getConfig();
     const searchParams = {
       ...this.props.values,
       counselor: counselor.value, // backend expects only counselor's SID
@@ -71,7 +71,7 @@ class SearchForm extends Component {
           <Row>
             <FieldText
               id="Search_FirstName"
-              label="Name"
+              label={strings['SearchForm-Name']}
               placeholder="First"
               field={getField(firstName)}
               {...this.defaultEventHandlers('firstName')}
@@ -91,7 +91,7 @@ class SearchForm extends Component {
             <FieldSelect
               id="Search_Counselor"
               name="counselor"
-              label="Counselor"
+              label={strings['SearchForm-Counselor']}
               placeholder="Name"
               field={getField(counselor)}
               options={[{ label: '', value: '' }, ...counselorsOptions]}
@@ -100,7 +100,7 @@ class SearchForm extends Component {
             />
             <FieldDate
               id="Search_DateFrom"
-              label="Date range"
+              label={strings['SearchForm-DateRange']}
               placeholder="Start Date"
               field={getField(dateFrom)}
               {...this.defaultEventHandlers('dateFrom')}
@@ -117,7 +117,7 @@ class SearchForm extends Component {
           <Row>
             <FieldText
               id="Search_CustomerPhoneNumber"
-              label="Phone"
+              label={strings['SearchForm-Phone']}
               field={getField(phoneNumber)}
               {...this.defaultEventHandlers('phoneNumber')}
               onKeyPress={submitOnEnter}
@@ -126,7 +126,7 @@ class SearchForm extends Component {
         </Container>
         <BottomButtonBar>
           <StyledNextStepButton type="button" disabled={!isTouched} roundCorners={true} onClick={submitSearch}>
-            Search
+            <Template code="SearchForm-Button" />
           </StyledNextStepButton>
         </BottomButtonBar>
       </>
