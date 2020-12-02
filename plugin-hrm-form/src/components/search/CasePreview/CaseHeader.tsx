@@ -48,9 +48,9 @@ const CaseHeader: React.FC<Props> = ({ caseId, childName, createdAt, updatedAt, 
             <Template code="CaseHeader-Voided" />
           ) : (
             <>
-              {firstName ? firstName : <Template code="CaseHeader-FirstNameNotProvided" />}
+              {firstName ? firstName : <Template code="CaseHeader-NoData" />}
               &nbsp;
-              {lastName ? lastName : <Template code="CaseHeader-LastNameNotProvided" />}
+              {lastName ? lastName : <Template code="CaseHeader-NoData" />}
             </>
           )}
         </CaseHeaderChildName>
