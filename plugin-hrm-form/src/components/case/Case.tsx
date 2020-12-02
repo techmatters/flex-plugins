@@ -48,6 +48,7 @@ const Case: React.FC<Props> = props => {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [mockedMessage, setMockedMessage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const { route, subroute } = props.routing;
 
   const toggleCaseMenu = e => {
     e.persist();
@@ -93,30 +94,28 @@ const Case: React.FC<Props> = props => {
 
   const handleClose = () => {
     props.updateTempInfo(null, props.task.taskSid);
-    props.changeRoute({ route: 'new-case' }, props.task.taskSid);
+    props.changeRoute({ route }, props.task.taskSid);
   };
 
   const onClickAddHousehold = () => {
     props.updateTempInfo({ screen: 'add-household', info: newCallerFormInformation }, props.task.taskSid);
-    props.changeRoute({ route: 'new-case', subroute: 'add-household' }, props.task.taskSid);
+    props.changeRoute({ route, subroute: 'add-household' }, props.task.taskSid);
   };
 
   const onClickAddPerpetrator = () => {
     props.updateTempInfo({ screen: 'add-perpetrator', info: newCallerFormInformation }, props.task.taskSid);
-    props.changeRoute({ route: 'new-case', subroute: 'add-perpetrator' }, props.task.taskSid);
+    props.changeRoute({ route, subroute: 'add-perpetrator' }, props.task.taskSid);
   };
 
   const onClickViewHousehold = household => {
     props.updateTempInfo({ screen: 'view-household', info: household }, props.task.taskSid);
-    props.changeRoute({ route: 'new-case', subroute: 'view-household' }, props.task.taskSid);
+    props.changeRoute({ route, subroute: 'view-household' }, props.task.taskSid);
   };
 
   const onClickViewPerpetrator = perpetrator => {
     props.updateTempInfo({ screen: 'view-perpetrator', info: perpetrator }, props.task.taskSid);
-    props.changeRoute({ route: 'new-case', subroute: 'view-perpetrator' }, props.task.taskSid);
+    props.changeRoute({ route, subroute: 'view-perpetrator' }, props.task.taskSid);
   };
-
-  const { subroute } = props.routing;
 
   if (!props.connectedCaseState) return null;
 

@@ -8,7 +8,7 @@ import { CaseActionContainer, CaseActionFormContainer } from '../../styles/case'
 import ActionHeader from './ActionHeader';
 import { CallerForm, newCallerFormInformation } from '../common/forms';
 import { editNestedField } from '../../states/ContactState';
-import { namespace, connectedCaseBase } from '../../states';
+import { namespace, connectedCaseBase, routingBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseState } from '../../states/case/reducer';
@@ -31,6 +31,7 @@ const AddPerpetrator: React.FC<Props> = ({
   counselor,
   onClickClose,
   connectedCaseState,
+  route,
   setConnectedCase,
   updateTempInfo,
   changeRoute,
@@ -62,7 +63,7 @@ const AddPerpetrator: React.FC<Props> = ({
     setConnectedCase(updatedCase, task.taskSid);
     if (shouldStayInForm) {
       updateTempInfo({ screen: 'add-perpetrator', info: newCallerFormInformation }, task.taskSid);
-      changeRoute({ route: 'new-case', subroute: 'add-perpetrator' }, task.taskSid);
+      changeRoute({ route, subroute: 'add-perpetrator' }, task.taskSid);
     }
   };
 
@@ -115,8 +116,9 @@ AddPerpetrator.displayName = 'AddPerpetrator';
 const mapStateToProps = (state, ownProps: OwnProps) => {
   const caseState: CaseState = state[namespace][connectedCaseBase]; // casting type as inference is not working for the store yet
   const connectedCaseState = caseState.tasks[ownProps.task.taskSid];
+  const { route } = state[namespace][routingBase].tasks[ownProps.task.taskSid];
 
-  return { connectedCaseState };
+  return { connectedCaseState, route };
 };
 
 const mapDispatchToProps = {

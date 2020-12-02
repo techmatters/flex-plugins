@@ -7,6 +7,7 @@ import { StandaloneSearchContainer } from '../styles/search';
 
 const standaloneTask = {
   taskSid: standaloneTaskSid,
+  attributes: { isContactlessTask: false },
 };
 
 const StandaloneSearch: React.FC = () => {

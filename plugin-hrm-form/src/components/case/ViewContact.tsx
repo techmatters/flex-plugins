@@ -5,7 +5,7 @@ import { Template, ITask } from '@twilio/flex-ui';
 
 import { Container, StyledNextStepButton, BottomButtonBar } from '../../styles/HrmStyles';
 import { CaseContainer } from '../../styles/case';
-import { namespace, connectedCaseBase, contactFormsBase, configurationBase } from '../../states';
+import { namespace, connectedCaseBase, contactFormsBase, configurationBase, routingBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import ContactDetails from '../ContactDetails';
@@ -18,8 +18,9 @@ const mapStateToProps = (state, ownProps: OwnProps) => {
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
   const caseState: CaseState = state[namespace][connectedCaseBase];
   const { temporaryCaseInfo } = caseState.tasks[ownProps.task.taskSid];
+  const { route } = state[namespace][routingBase].tasks[ownProps.task.taskSid];
 
-  return { form, counselorsHash, tempInfo: temporaryCaseInfo };
+  return { form, counselorsHash, tempInfo: temporaryCaseInfo, route };
 };
 
 const mapDispatchToProps = {
@@ -34,7 +35,7 @@ type OwnProps = {
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, updateTempInfo, changeRoute }) => {
+const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, route, updateTempInfo, changeRoute }) => {
   if (!tempInfo || tempInfo.screen !== 'view-contact') return null;
 
   const { detailsExpanded, contactId, date, counselor } = tempInfo.info;
@@ -44,7 +45,7 @@ const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, up
 
   if (!contact) return null;
 
-  const handleClose = () => changeRoute({ route: 'new-case' }, task.taskSid);
+  const handleClose = () => changeRoute({ route }, task.taskSid);
 
   const handleExpandDetailsSection = section => {
     const updatedDetailsExpanded = {

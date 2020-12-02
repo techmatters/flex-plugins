@@ -29,6 +29,7 @@ import Pagination from '../../Pagination';
 import SearchResultsBackButton from './SearchResultsBackButton';
 import * as SearchActions from '../../../states/search/actions';
 import * as CaseActions from '../../../states/case/actions';
+import * as RoutingActions from '../../../states/routing/actions';
 import { SearchPages, SearchPagesType } from '../../../states/search/types';
 import { namespace, searchContactsBase } from '../../../states';
 
@@ -55,7 +56,7 @@ type OwnProps = {
 };
 
 // eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 const SearchResults: React.FC<Props> = ({
   task,
@@ -73,6 +74,7 @@ const SearchResults: React.FC<Props> = ({
   handleViewDetails,
   changeSearchPage,
   setConnectedCase,
+  changeRoute,
   currentPage,
   showConnectIcon,
 }) => {
@@ -278,6 +280,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     changeSearchPage: bindActionCreators(SearchActions.changeSearchPage(taskId), dispatch),
     setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
+    changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
   };
 };
 

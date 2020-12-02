@@ -43,7 +43,7 @@ export const adaptFormToContactDetails = (task, form, date, counselor) => {
   const categories = retrieveCategories(caseInformation.categories);
   const notes = caseInformation.callSummary;
   const { channelType } = task;
-  const conversationDuration = getConversationDuration(form.metadata);
+  const conversationDuration = getConversationDuration(task, form.metadata);
 
   return {
     overview: {
