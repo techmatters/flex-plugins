@@ -25,11 +25,12 @@ type OwnProps = {
   };
   createdAt: string;
   updatedAt: string;
+  isOrphanedCase: boolean;
 };
 
 type Props = OwnProps;
 
-const CaseHeader: React.FC<Props> = ({ caseId, childName, createdAt, updatedAt }) => {
+const CaseHeader: React.FC<Props> = ({ caseId, childName, createdAt, updatedAt, isOrphanedCase }) => {
   const [mockedMessage, setMockedMessage] = useState(null);
 
   const createdAtFormatted = `${format(new Date(createdAt), 'MMM d, yyyy')}`;
@@ -42,7 +43,17 @@ const CaseHeader: React.FC<Props> = ({ caseId, childName, createdAt, updatedAt }
     <>
       <CaseHeaderContainer>
         <CaseHeaderCaseId>#{caseId}</CaseHeaderCaseId>
-        <CaseHeaderChildName>{childName ? `${firstName} ${lastName}` : 'No Data'}</CaseHeaderChildName>
+        <CaseHeaderChildName>
+          {isOrphanedCase ? (
+            <Template code="CaseHeader-Voided" />
+          ) : (
+            <>
+              {firstName ? firstName : <Template code="CaseHeader-FirstNameNotProvided" />}
+              &nbsp;
+              {lastName ? lastName : <Template code="CaseHeader-LastNameNotProvided" />}
+            </>
+          )}
+        </CaseHeaderChildName>
         <DateText>
           <Template code="CaseHeader-Opened" />: {createdAtFormatted}
         </DateText>
