@@ -59,6 +59,8 @@
   "CaseHeader-ViewCase": "View Case",
   "CaseHeader-MergeContactIntoCase": "Merge Current Contact into Case and Copy Child Information",
   "CaseHeader-CopyChildInfo": "Copy Child Information into Current Contact",
+  "CaseHeader-Voided": "VOIDED",
+  "CaseHeader-NoData": "No Data",
   "CaseSummary-ReadMore": "see more",
   "CaseSummary-ReadLess": "see less",
   "CaseSummary-NoSummaryProvided": "No Summary provided",
