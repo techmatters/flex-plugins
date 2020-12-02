@@ -44,7 +44,7 @@ const getRules = (field: FormItemDefinition): ValidationRules =>
   pick(field, ['max', 'maxLength', 'min', 'minLength', 'pattern', 'required', 'validate']);
 
 /**
- * Creates a Form with each input conntected to RHF's wrapping Context, based on the definition.
+ * Creates a Form with each input connected to RHF's wrapping Context, based on the definition.
  * @param {string[]} parents Array of parents. Allows you to easily create nested form fields. https://react-hook-form.com/api#register.
  * @param {() => void} updateCallback Callback called to update form state. When is the callback called is specified in the input type.
  * @param {FormItemDefinition} def Definition for a single input.
@@ -398,7 +398,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
 };
 
 /**
- * Creates a Form with each input conntected to RHF's wrapping Context, based on the definition.
+ * Creates a Form with each input connected to RHF's wrapping Context, based on the definition.
  * @param {FormDefinition} definition Form definition (schema).
  * @param {string[]} parents Array of parents. Allows you to easily create nested form fields. https://react-hook-form.com/api#register.
  * @param {() => void} updateCallback Callback called to update form state. When is the callback called is specified in the input type (getInputType).
