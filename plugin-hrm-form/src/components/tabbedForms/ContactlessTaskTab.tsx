@@ -6,7 +6,7 @@ import { FieldError, useFormContext } from 'react-hook-form';
 import { isFuture } from 'date-fns';
 import { get } from 'lodash';
 
-import { createFormFromDefinition } from '../common/forms/formGenerators';
+import { createFormFromDefinition, disperseInputs } from '../common/forms/formGenerators';
 import { updateContactLessTask } from '../../states/ContactState';
 import { Container, ColumnarBlock, TwoColumnLayout, Box } from '../../styles/HrmStyles';
 import type { RootState } from '../../states';
@@ -29,11 +29,10 @@ const ContactlessTaskTab: React.FC<Props> = ({ dispatch, display, task }) => {
       const { isFutureAux, ...rest } = getValues().contactlessTask;
       dispatch(updateContactLessTask(rest, task.taskSid));
     };
-    return createFormFromDefinition(formDefinition)(['contactlessTask'])(updateCallBack).map(i => (
-      <Box key={`${i.key}-wrapping-box`} marginTop="5px" marginBottom="5px">
-        {i}
-      </Box>
-    ));
+
+    const tab = createFormFromDefinition(formDefinition)(['contactlessTask'])(updateCallBack);
+
+    return disperseInputs(5)(tab);
   }, [dispatch, getValues, task.taskSid]);
 
   // Add invisible field that errors if date + time are future (triggered by validaiton)

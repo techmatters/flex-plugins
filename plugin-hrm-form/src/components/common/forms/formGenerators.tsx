@@ -398,6 +398,16 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
 };
 
 /**
+ * Creates a Form with each input conntected to RHF's wrapping Context, based on the definition.
+ * @param {FormDefinition} definition Form definition (schema).
+ * @param {string[]} parents Array of parents. Allows you to easily create nested form fields. https://react-hook-form.com/api#register.
+ * @param {() => void} updateCallback Callback called to update form state. When is the callback called is specified in the input type (getInputType).
+ */
+export const createFormFromDefinition = (definition: FormDefinition) => (parents: string[]) => (
+  updateCallback: () => void,
+): JSX.Element[] => definition.map(getInputType(parents, updateCallback));
+
+/**
  * Utility functions to create initial state from definition
  * @param {FormItemDefinition} def Definition for a single input of a Form
  */
@@ -422,26 +432,30 @@ export const getInitialValue = (def: FormItemDefinition) => {
   }
 };
 
-/**
- * Creates a Form with each input conntected to RHF's wrapping Context, based on the definition.
- * @param {FormDefinition} definition Form definition (schema).
- * @param {string[]} parents Array of parents. Allows you to easily create nested form fields. https://react-hook-form.com/api#register.
- * @param {() => void} updateCallback Callback called to update form state. When is the callback called is specified in the input type (getInputType).
- */
-export const createFormFromDefinition = (definition: FormDefinition) => (parents: string[]) => (
-  updateCallback: () => void,
-): JSX.Element[] => definition.map(getInputType(parents, updateCallback));
+export const createFormItem = <T extends {}>(obj: T, def: FormItemDefinition) => ({
+  ...obj,
+  [def.name]: getInitialValue(def),
+});
 
-export const buildTwoColumnFormLayout = (formItems: JSX.Element[]) => {
-  const items = formItems.map(i => (
-    <Box key={`${i.key}-wrapping-box`} marginTop="5px" marginBottom="5px">
+export const disperseInputs = (margin: number) => (formItems: JSX.Element[]) =>
+  formItems.map(i => (
+    <Box key={`${i.key}-wrapping-box`} marginTop={`${margin.toString()}px`} marginBottom={`${margin.toString()}px`}>
       {i}
     </Box>
   ));
 
+export const splitInHalf = (formItems: JSX.Element[]) => {
   const m = Math.ceil(formItems.length / 2);
 
-  const [l, r] = [items.slice(0, m), items.slice(m)];
+  const [l, r] = [formItems.slice(0, m), formItems.slice(m)];
+
+  return [l, r];
+};
+
+export const buildTwoColumnFormLayout = (formItems: JSX.Element[]) => {
+  const items = disperseInputs(5)(formItems);
+
+  const [l, r] = splitInHalf(items);
 
   return (
     <TwoColumnLayout>
@@ -450,8 +464,3 @@ export const buildTwoColumnFormLayout = (formItems: JSX.Element[]) => {
     </TwoColumnLayout>
   );
 };
-
-export const createFormItem = <T extends {}>(obj: T, def: FormItemDefinition) => ({
-  ...obj,
-  [def.name]: getInitialValue(def),
-});
