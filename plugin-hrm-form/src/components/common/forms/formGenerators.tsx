@@ -16,6 +16,8 @@ import {
   FormInput,
   FormDateInput,
   FormTimeInput,
+  FormCheckBoxWrapper,
+  FormCheckbox,
   FormMixedCheckbox,
   FormSelect,
   FormOption,
@@ -221,21 +223,19 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             const error = get(errors, path);
             return (
               <FormLabel htmlFor={path}>
-                <Row>
-                  <Box marginBottom="8px" marginTop="8px">
-                    <input
-                      id={path}
-                      name={path}
-                      type="checkbox"
-                      aria-invalid={Boolean(error)}
-                      aria-describedby={`${path}-error`}
-                      onChange={updateCallback}
-                      ref={register(rules)}
-                    />
-                    <Template code={`${def.label}`} />
-                    {rules.required && <RequiredAsterisk />}
-                  </Box>
-                </Row>
+                <FormCheckBoxWrapper error={Boolean(error)}>
+                  <FormCheckbox
+                    id={path}
+                    name={path}
+                    type="checkbox"
+                    aria-invalid={Boolean(error)}
+                    aria-describedby={`${path}-error`}
+                    onChange={updateCallback}
+                    innerRef={register(rules)}
+                  />
+                  <Template code={`${def.label}`} />
+                  {rules.required && <RequiredAsterisk />}
+                </FormCheckBoxWrapper>
                 {error && (
                   <FormError>
                     <Template id={`${path}-error`} code={error.message} />
@@ -265,27 +265,24 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
 
             return (
               <FormLabel htmlFor={path}>
-                <Row>
-                  <Box marginBottom="8px" marginTop="8px">
-                    <FormMixedCheckbox
-                      id={path}
-                      type="checkbox"
-                      className="mixed-checkbox"
-                      error={Boolean(error)}
-                      aria-invalid={Boolean(error)}
-                      aria-checked={checked}
-                      aria-describedby={`${path}-error`}
-                      onBlur={updateCallback}
-                      onChange={() => {
-                        if (checked === 'mixed') setChecked(false);
-                        if (checked === false) setChecked(true);
-                        if (checked === true) setChecked('mixed');
-                      }}
-                    />
-                    <Template code={`${def.label}`} />
-                    {rules.required && <RequiredAsterisk />}
-                  </Box>
-                </Row>
+                <FormCheckBoxWrapper error={Boolean(error)}>
+                  <FormMixedCheckbox
+                    id={path}
+                    type="checkbox"
+                    className="mixed-checkbox"
+                    aria-invalid={Boolean(error)}
+                    aria-checked={checked}
+                    aria-describedby={`${path}-error`}
+                    onBlur={updateCallback}
+                    onChange={() => {
+                      if (checked === 'mixed') setChecked(false);
+                      if (checked === false) setChecked(true);
+                      if (checked === true) setChecked('mixed');
+                    }}
+                  />
+                  <Template code={`${def.label}`} />
+                  {rules.required && <RequiredAsterisk />}
+                </FormCheckBoxWrapper>
                 {error && (
                   <FormError>
                     <Template id={`${path}-error`} code={error.message} />

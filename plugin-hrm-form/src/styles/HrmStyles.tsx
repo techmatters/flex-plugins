@@ -622,9 +622,8 @@ FormItem.displayName = 'FormItem';
 export const FormLabel = styled('label')`
   display: flex;
   flex-direction: column;
-  text-transform: uppercase;
   font-size: 13px;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   min-height: 18px;
 `;
 FormLabel.displayName = 'FormLabel';
@@ -639,6 +638,7 @@ export const FormError = styled('span')`
 FormError.displayName = 'FormError';
 
 type FormInputProps = { error?: boolean };
+
 export const FormInput = styled('input')<FormInputProps>`
   /* ---------- Input ---------- */
   & {
@@ -721,31 +721,58 @@ export const FormTextArea = styled('textarea')<FormInputProps>`
   }
 `;
 
-export const FormMixedCheckbox = styled('input')<FormInputProps>`
-  &[class~='mixed-checkbox'][type='checkbox'] {
+export const FormCheckBoxWrapper = styled(Row)<FormInputProps>`
+  box-sizing: border-box; /* Tells the browser to account for any border and padding in the values you specify for an element's width and height. https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing*/
+  width: 217px;
+  height: 36px;
+  border-radius: 4px;
+  border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
+  boxshadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
+`;
+FormCheckBoxWrapper.displayName = 'FormCheckBoxWrapper';
+
+const CheckboxBase = styled('input')<FormInputProps>`
+  &[type='checkbox'] {
     display: inline-block;
     position: relative;
     padding-left: 1.4em;
     cursor: default;
+    margin-right: 5px;
   }
-  &[class~='mixed-checkbox'][type='checkbox']::before,
-  &[class~='mixed-checkbox'][type='checkbox']::after {
+  &[type='checkbox']::before,
+  &[type='checkbox']::after {
     position: absolute;
     top: 50%;
     left: 7px;
     transform: translate(-50%, -50%);
     content: '';
   }
-  &[class~='mixed-checkbox'][type='checkbox']::before {
+  &[type='checkbox']::before {
     width: 13px;
     height: 13px;
     border: 1px solid hsl(0, 0%, 66%);
     border-radius: 0.2em;
     background-image: linear-gradient(to bottom, hsl(300, 3%, 93%), #fff 30%);
   }
-  &[class~='mixed-checkbox'][type='checkbox']:active::before {
+  &[type='checkbox']:active::before {
     background-image: linear-gradient(to bottom, hsl(300, 3%, 73%), hsl(300, 3%, 93%) 30%);
   }
+`;
+
+export const FormCheckbox = styled(CheckboxBase)`
+  &[type='checkbox']:checked::before {
+    border-color: #5dba32;
+    background: #5dba32;
+  }
+  &[type='checkbox']:checked::after {
+    font-family: 'Font Awesome 5 Free';
+    content: '\f00c';
+    color: #ffffff;
+  }
+`;
+FormCheckbox.displayName = 'FormCheckbox';
+
+export const FormMixedCheckbox = styled(CheckboxBase)`
   &[class~='mixed-checkbox'][type='checkbox'][aria-checked='false']::before {
     border-color: #d13821;
     background: #d13821;
