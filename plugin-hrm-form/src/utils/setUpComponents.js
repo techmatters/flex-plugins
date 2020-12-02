@@ -429,3 +429,656 @@ export const removeActionsIfTransferring = () => {
     if: props => hasNoControlAndIsWarm(props.task) && props.participant.participantType === 'worker',
   });
 };
+
+// UNDO, this is only for demo
+// eslint-disable-next-line global-require
+const { FormProvider, useForm } = require('react-hook-form');
+
+const { createFormFromDefinition, buildTwoColumnFormLayout } = require('../components/common/forms/formGenerators');
+const { ColumnarBlock } = require('../styles/HrmStyles');
+
+const Form = () => {
+  const methods = useForm();
+
+  const form = React.useMemo(() => {
+    return buildTwoColumnFormLayout(
+      // eslint-disable-next-line no-use-before-define
+      createFormFromDefinition(definition)([])(() => console.log('>>> form data', methods.getValues())),
+    );
+  }, [methods]);
+
+  const anotherForm = React.useMemo(() => {
+    return buildTwoColumnFormLayout(
+      // eslint-disable-next-line no-use-before-define
+      createFormFromDefinition(anotherDefinition)([])(() => console.log('>>> form data', methods.getValues())),
+    );
+  }, [methods]);
+
+  return (
+    <FormProvider {...methods}>
+      <div style={{ height: '100%', overflow: 'scroll' }}>{form}</div>
+      <div style={{ height: '100%', overflow: 'scroll' }}>
+        <ColumnarBlock>{anotherForm}</ColumnarBlock>
+      </div>
+      <button type="button" onClick={() => methods.trigger()}>
+        trigger
+      </button>
+    </FormProvider>
+  );
+};
+
+export const gianTestingStuff = () => {
+  Flex.ViewCollection.Content.add(
+    <Flex.View name="gianTestingStuff" key="gianTestingStuff">
+      <Form />
+    </Flex.View>,
+  );
+
+  Flex.SideNav.Content.add(
+    <SettingsSideLink
+      key="gianTestingStuffSideLink"
+      onClick={() => Flex.Actions.invokeAction('NavigateToView', { viewName: 'gianTestingStuff' })}
+    />,
+    {
+      align: 'end',
+    },
+  );
+};
+
+/**
+ * @type {import('../components/common/forms/types').FormDefinition}
+ */
+const anotherDefinition = [
+  {
+    name: 'input',
+    label: 'An input',
+    type: 'input',
+  },
+  {
+    name: 'numeric-input',
+    label: 'A numeric input',
+    type: 'numeric-input',
+  },
+  {
+    name: 'checkbox',
+    label: 'A checkbox',
+    type: 'checkbox',
+    required: { value: true, message: 'This field is required.' },
+  },
+  {
+    name: 'mixed-checkbox',
+    label: 'A mixed checkbox',
+    type: 'mixed-checkbox',
+  },
+  {
+    name: 'select',
+    label: 'A select',
+    type: 'select',
+    options: [
+      { value: '', label: '--Please choose an option--' },
+      { value: 'One', label: 'One' },
+      { value: 'Two', label: 'Two' },
+    ],
+  },
+  {
+    name: 'dependent-select',
+    label: 'A dependent select',
+    type: 'dependent-select',
+    defaultOption: {
+      value: '',
+      label: '--Please choose an option--',
+    },
+    dependsOn: 'select',
+    options: {
+      One: [
+        { value: '1-a', label: '1-a' },
+        { value: '1-b', label: '1-b' },
+      ],
+      Two: [
+        { value: '2-a', label: '2-a' },
+        { value: '2-b', label: '2-b' },
+      ],
+    },
+  },
+  {
+    name: 'textarea',
+    label: 'A textarea',
+    type: 'textarea',
+  },
+  {
+    name: 'date-input',
+    label: 'A date input',
+    type: 'date-input',
+  },
+  {
+    name: 'time-input',
+    label: 'A time input',
+    type: 'time-input',
+  },
+];
+
+/**
+ * @type {import('../components/common/forms/types').FormDefinition}
+ */
+const definition = [
+  {
+    name: 'firstName',
+    label: 'First Name',
+    type: 'input',
+  },
+  {
+    name: 'lastName',
+    label: 'Last Name',
+    type: 'input',
+  },
+  {
+    name: 'streetAddress',
+    label: 'Address',
+    type: 'input',
+  },
+  {
+    name: 'province',
+    label: 'Location',
+    type: 'select',
+    options: [
+      {
+        value: '',
+        label: '--Please choose an option--',
+      },
+      {
+        value: 'Free State',
+        label: 'Free State',
+      },
+      {
+        value: 'Gauteng',
+        label: 'Gauteng',
+      },
+      {
+        value: 'KwaZulu Natal',
+        label: 'KwaZulu Natal',
+      },
+      {
+        value: 'Limpopo',
+        label: 'Limpopo',
+      },
+    ],
+    required: {
+      value: true,
+      message: 'RequiredFieldError',
+    },
+  },
+  {
+    name: 'municipality',
+    label: 'Municipality',
+    type: 'dependent-select',
+    dependsOn: 'province',
+    defaultOption: {
+      value: '',
+      label: '--Please choose an option--',
+    },
+    options: {
+      'Free State': [
+        {
+          value: 'Fezile Dabi-Metsimaholo Municipality',
+          label: 'Fezile Dabi-Metsimaholo Municipality',
+        },
+        {
+          value: 'Fezile Dabi-Moqhaka Municipality',
+          label: 'Fezile Dabi-Moqhaka Municipality',
+        },
+        {
+          value: 'Thabo Mofutsanyana-Maluti a-Phofung',
+          label: 'Thabo Mofutsanyana-Maluti a-Phofung',
+        },
+      ],
+      Gauteng: [
+        {
+          value: 'Johannesburg Metropolitan',
+          label: 'Johannesburg Metropolitan',
+        },
+        {
+          value: 'Metsueding - East of Tshwane',
+          label: 'Metsueding - East of Tshwane',
+        },
+        {
+          value: 'Sedibeng - South East Gauteng',
+          label: 'Sedibeng - South East Gauteng',
+        },
+      ],
+      'KwaZulu Natal': [
+        {
+          value: 'Amajuba District Municipality',
+          label: 'Amajuba District Municipality',
+        },
+        {
+          value: 'Ethekwini District Municipality',
+          label: 'Ethekwini District Municipality',
+        },
+        {
+          value: 'iLembe District Municipality',
+          label: 'iLembe District Municipality',
+        },
+      ],
+    },
+    required: {
+      value: true,
+      message: 'RequiredFieldError',
+    },
+  },
+  {
+    name: 'district',
+    label: 'District',
+    type: 'dependent-select',
+    dependsOn: 'municipality',
+    defaultOption: {
+      value: '',
+      label: '--Please choose an option--',
+    },
+    options: {
+      'Fezile Dabi-Metsimaholo Municipality': [
+        {
+          value: 'Deneysville',
+          label: 'Deneysville',
+        },
+        {
+          value: 'Sasolburg',
+          label: 'Sasolburg',
+        },
+      ],
+      'Fezile Dabi-Moqhaka Municipality': [
+        {
+          value: 'Kroonstad',
+          label: 'Kroonstad',
+        },
+        {
+          value: 'Viljoenskroon',
+          label: 'Viljoenskroon',
+        },
+      ],
+      'Thabo Mofutsanyana-Maluti a-Phofung': [
+        {
+          value: 'Harrismith',
+          label: 'Harrismith',
+        },
+        {
+          value: 'Ladybrand',
+          label: 'Ladybrand',
+        },
+        {
+          value: 'Phuthaditjhaba',
+          label: 'Phuthaditjhaba',
+        },
+      ],
+      'Amajuba District Municipality': [
+        {
+          value: 'Charlestown',
+          label: 'Charlestown',
+        },
+        {
+          value: 'Dannhauser',
+          label: 'Dannhauser',
+        },
+        {
+          value: 'Newcastle',
+          label: 'Newcastle',
+        },
+      ],
+      'Ethekwini District Municipality': [
+        {
+          value: 'Bluff',
+          label: 'Bluff',
+        },
+        {
+          value: 'Cato Crest',
+          label: 'Cato Crest',
+        },
+        {
+          value: 'Cato Manor',
+          label: 'Cato Manor',
+        },
+      ],
+      'iLembe District Municipality': [
+        {
+          value: 'Dolphin Coast',
+          label: 'Dolphin Coast',
+        },
+        {
+          value: 'iLembe',
+          label: 'iLembe',
+        },
+        {
+          value: 'iNdlovu',
+          label: 'iNdlovu',
+        },
+      ],
+    },
+    required: {
+      value: true,
+      message: 'RequiredFieldError',
+    },
+  },
+  {
+    name: 'phone1',
+    label: 'Contact Number',
+    type: 'numeric-input',
+  },
+  {
+    name: 'gender',
+    label: 'Gender',
+    type: 'select',
+    options: [
+      {
+        value: '',
+        label: '--Please choose an option--',
+      },
+      {
+        value: 'Boy',
+        label: 'Boy',
+      },
+      {
+        value: 'Girl',
+        label: 'Girl',
+      },
+      {
+        value: 'Non-Binary',
+        label: 'Non-Binary',
+      },
+      {
+        value: 'Unknown',
+        label: 'Unknown',
+      },
+    ],
+    required: {
+      value: true,
+      message: 'RequiredFieldError',
+    },
+  },
+  {
+    name: 'age',
+    label: 'Age',
+    type: 'select',
+    options: [
+      {
+        value: '',
+        label: '--Please choose an option--',
+      },
+      {
+        value: '0-03',
+        label: '0-03',
+      },
+      {
+        value: '04-06',
+        label: '04-06',
+      },
+      {
+        value: '07-09',
+        label: '07-09',
+      },
+      {
+        value: '10-12',
+        label: '10-12',
+      },
+      {
+        value: '13-15',
+        label: '13-15',
+      },
+      {
+        value: '16-17',
+        label: '16-17',
+      },
+      {
+        value: '18-25',
+        label: '18-25',
+      },
+      {
+        value: '>25',
+        label: '>25',
+      },
+      {
+        value: 'Unknown',
+        label: 'Unknown',
+      },
+    ],
+    required: {
+      value: true,
+      message: 'RequiredFieldError',
+    },
+  },
+  {
+    name: 'language',
+    label: 'Language',
+    type: 'select',
+    options: [
+      {
+        value: '',
+        label: '--Please choose an option--',
+      },
+      {
+        value: 'Unknown',
+        label: 'Unknown',
+      },
+      {
+        value: 'Afrikaans',
+        label: 'Afrikaans',
+      },
+      {
+        value: 'English',
+        label: 'English',
+      },
+      {
+        value: 'Ndebele',
+        label: 'Ndebele',
+      },
+      {
+        value: 'Other',
+        label: 'Other',
+      },
+      {
+        value: 'Sepedi',
+        label: 'Sepedi',
+      },
+      {
+        value: 'Sign Language',
+        label: 'Sign Language',
+      },
+      {
+        value: 'Sotho',
+        label: 'Sotho',
+      },
+      {
+        value: 'Swazi',
+        label: 'Swazi',
+      },
+      {
+        value: 'Tshivenda',
+        label: 'Tshivenda',
+      },
+      {
+        value: 'Tsonga',
+        label: 'Tsonga',
+      },
+      {
+        value: 'Tswana',
+        label: 'Tswana',
+      },
+      {
+        value: 'Xhosa',
+        label: 'Xhosa',
+      },
+      {
+        value: 'Zulu',
+        label: 'Zulu',
+      },
+    ],
+  },
+  {
+    name: 'race',
+    label: 'Race',
+    type: 'select',
+    options: [
+      {
+        value: '',
+        label: '--Please choose an option--',
+      },
+      {
+        value: 'Unknown',
+        label: 'Unknown',
+      },
+      {
+        value: 'Asian',
+        label: 'Asian',
+      },
+      {
+        value: 'Black',
+        label: 'Black',
+      },
+      {
+        value: 'Coloured',
+        label: 'Coloured',
+      },
+      {
+        value: 'Indian',
+        label: 'Indian',
+      },
+      {
+        value: 'White',
+        label: 'White',
+      },
+    ],
+  },
+  {
+    name: 'schoolName',
+    label: 'School Name',
+    type: 'input',
+  },
+  {
+    name: 'gradeLevel',
+    label: 'Grade Level',
+    type: 'select',
+    options: [
+      {
+        value: '',
+        label: '--Please choose an option--',
+      },
+      {
+        value: 'Unknown',
+        label: 'Unknown',
+      },
+      {
+        value: 'Grade 0 (Preschool)',
+        label: 'Grade 0 (Preschool)',
+      },
+      {
+        value: 'Grade 1-3 (Junior Primary)',
+        label: 'Grade 1-3 (Junior Primary)',
+      },
+      {
+        value: 'Grade 4-7 (Senior Primary)',
+        label: 'Grade 4-7 (Senior Primary)',
+      },
+      {
+        value: 'Grade 8-9 (Junior High)',
+        label: 'Grade 8-9 (Junior High)',
+      },
+      {
+        value: 'Grade 10-11 (Senior High)',
+        label: 'Grade 10-11 (Senior High)',
+      },
+      {
+        value: 'Grade 12 (Matric)',
+        label: 'Grade 12 (Matric)',
+      },
+    ],
+  },
+  {
+    name: 'livingSituation',
+    label: 'Living Situation',
+    type: 'select',
+    options: [
+      {
+        value: '',
+        label: '--Please choose an option--',
+      },
+      {
+        value: 'Unknown',
+        label: 'Unknown',
+      },
+      {
+        value: 'Foster care',
+        label: 'Foster care',
+      },
+      {
+        value: 'Group facility',
+        label: 'Group facility',
+      },
+      {
+        value: 'On their own',
+        label: 'On their own',
+      },
+      {
+        value: 'With parent(s) or guardian(s)',
+        label: 'With parent(s) or guardian(s)',
+      },
+      {
+        value: 'With relatives',
+        label: 'With relatives',
+      },
+      {
+        value: 'Street child',
+        label: 'Street child',
+      },
+      {
+        value: 'HIV/AIDS-Child-headed household',
+        label: 'HIV/AIDS-Child-headed household',
+      },
+      {
+        value: 'Family without shelter',
+        label: 'Family without shelter',
+      },
+    ],
+  },
+  {
+    name: 'hivPositive',
+    label: 'Child HIV Positive?',
+    type: 'mixed-checkbox',
+  },
+  {
+    name: 'inConflictWithTheLaw',
+    label: 'Child in conflict with the law',
+    type: 'checkbox',
+  },
+  {
+    name: 'inDetention',
+    label: 'Child in detention',
+    type: 'checkbox',
+  },
+  {
+    name: 'memberOfAnEthnic',
+    label: 'Child member of an ethnic / racial minority',
+    type: 'checkbox',
+  },
+  {
+    name: 'LGBTQI+',
+    label: 'LGBTQI+ / SOGIESC child',
+    type: 'checkbox',
+  },
+  {
+    name: 'region',
+    label: 'Region',
+    type: 'select',
+    options: [
+      {
+        value: 'Unknown',
+        label: 'Unknown',
+      },
+      {
+        value: 'Rural',
+        label: 'Rural',
+      },
+      {
+        value: 'Urban',
+        label: 'Urban',
+      },
+    ],
+  },
+];

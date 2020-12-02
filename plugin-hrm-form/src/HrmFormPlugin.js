@@ -161,6 +161,8 @@ const setUpComponents = setupObject => {
   }
 
   Components.setUpStandaloneSearch();
+
+Components.gianTestingStuff()
 };
 
 /**
