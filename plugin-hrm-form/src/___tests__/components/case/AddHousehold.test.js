@@ -54,6 +54,14 @@ const state1 = {
         },
       },
     },
+    routing: {
+      route: 'new-case',
+      tasks: {
+        task1: {
+          route: 'new-case',
+        },
+      },
+    },
   },
 };
 const store1 = mockStore(state1);
@@ -76,6 +84,14 @@ const state2 = {
         },
       },
     },
+    routing: {
+      route: 'new-case',
+      tasks: {
+        task1: {
+          route: 'new-case',
+        },
+      },
+    },
   },
 };
 const store2 = mockStore(state2);
@@ -94,6 +110,14 @@ const state3 = {
             status: 'open',
             info: null,
           },
+        },
+      },
+    },
+    routing: {
+      route: 'new-case',
+      tasks: {
+        task1: {
+          route: 'new-case',
         },
       },
     },

@@ -28,6 +28,11 @@ function createState(taskId, { currentPage, searchFormValues, currentContact, se
           hash: {},
         },
       },
+      routing: {
+        tasks: {
+          'standalone-task-sid': 'some-id',
+        },
+      },
       searchContacts: {
         tasks: {
           [taskId]: {

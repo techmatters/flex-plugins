@@ -25,6 +25,11 @@ function createState() {
           hash: {},
         },
       },
+      routing: {
+        tasks: {
+          'standalone-task-sid': 'some-id',
+        },
+      },
       searchContacts: searchInitialState,
     },
   };
