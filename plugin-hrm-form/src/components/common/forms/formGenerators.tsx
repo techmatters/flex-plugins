@@ -432,7 +432,12 @@ export const getInitialValue = (def: FormItemDefinition) => {
   }
 };
 
-export const createFormItem = <T extends {}>(obj: T, def: FormItemDefinition) => ({
+/**
+ * Adds a new property to the given object, with the name of the given form item definition, and initial value will depend on it
+ * @param obj the object to which add a property related to the provided form item definition
+ * @param def the provided form item definition
+ */
+export const createStateItem = <T extends {}>(obj: T, def: FormItemDefinition) => ({
   ...obj,
   [def.name]: getInitialValue(def),
 });

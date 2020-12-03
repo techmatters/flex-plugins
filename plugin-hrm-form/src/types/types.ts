@@ -1,5 +1,5 @@
 /* eslint-disable import/no-unused-modules */
-
+import type { CallTypes } from '../states/DomainConstants';
 import { CallerFormValues } from '../components/common/forms/CallerForm';
 
 export type CaseStatus = 'open' | 'close';
@@ -27,45 +27,17 @@ export type Case = {
 };
 
 // Information about a single contact, as expected from DB (we might want to reuse this type in backend) - (is this a correct placement for this?)
-export type ContactValues = {
-  childInformation: {
-    name: {
-      firstName: string;
-      lastName: string;
-
-      gender: string;
-      age: string;
-      language: string;
-      nationality: string;
-      ethnicity: string;
-      location: {
-        streetAddress: string;
-        city: string;
-        stateOrCounty: string;
-        postalCode: string;
-        phone1: string;
-        phone2: string;
-      };
-      refugee: boolean;
-      disabledOrSpecialNeeds: boolean;
-      hiv: boolean;
-      school: {
-        name: string;
-        gradeLevel: string;
-      };
-    };
-    caseInformation: {
-      callSummary: string;
-      referredTo: string;
-      status: string;
-      keepConfidential: boolean;
-      okForCaseWorkerToCall: boolean;
-      howDidTheChildHearAboutUs: string;
-      didYouDiscussRightsWithTheChild: boolean;
-      didTheChildFeelWeSolvedTheirProblem: boolean;
-      wouldTheChildRecommendUsToAFriend: boolean;
-    };
-    callerInformation: CallerFormValues;
+export type ContactRawJson = {
+  definitionVersion?: number;
+  callType: CallTypes;
+  childInformation: { [key: string]: string | boolean };
+  callerInformation: { [key: string]: string | boolean };
+  caseInformation: { [key: string]: string | boolean } & { categories: {} };
+  contactlessTask: { [key: string]: string | boolean };
+  metadata: {
+    startMillis: number;
+    endMillis: number;
+    recreated: boolean;
   };
 };
 
@@ -83,8 +55,7 @@ export type SearchContact = {
     channel: string;
     conversationDuration: number;
   };
-  details: ContactValues;
-  counselor: string;
+  details: ContactRawJson;
 };
 
 export type SearchContactResult = {
