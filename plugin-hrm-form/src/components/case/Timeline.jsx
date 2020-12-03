@@ -18,6 +18,7 @@ import * as RoutingActions from '../../states/routing/actions';
 import { ContactDetailsSections } from '../common/ContactDetails';
 import { getConfig } from '../../HrmFormPlugin';
 import { channelTypes } from '../../states/DomainConstants';
+import { namespace, routingBase } from '../../states';
 
 const channelsArray = Object.values(channelTypes);
 
@@ -25,7 +26,7 @@ const isConnectedCaseActivity = activity => channelsArray.includes(activity.type
 
 const sortActivities = activities => activities.sort((a, b) => b.date.localeCompare(a.date));
 
-const Timeline = ({ task, form, caseId, changeRoute, updateTempInfo }) => {
+const Timeline = ({ task, form, caseObj, changeRoute, updateTempInfo, route }) => {
   const [mockedMessage, setMockedMessage] = useState(null);
   const [timeline, setTimeline] = useState([]);
 
@@ -35,7 +36,7 @@ const Timeline = ({ task, form, caseId, changeRoute, updateTempInfo }) => {
      * If the case is just being created, adds the case's description as a new activity.
      */
     const getTimeline = async () => {
-      const activities = await getActivities(caseId);
+      const activities = await getActivities(caseObj.id);
       let timelineActivities = sortActivities(activities);
 
       const isCreatingCase = !timelineActivities.some(isConnectedCaseActivity);
@@ -56,7 +57,7 @@ const Timeline = ({ task, form, caseId, changeRoute, updateTempInfo }) => {
     };
 
     getTimeline();
-  }, [form, task, caseId]);
+  }, [form, task, caseObj.id]);
 
   const handleOnClickView = activity => {
     const { twilioWorkerId } = activity;
@@ -68,7 +69,7 @@ const Timeline = ({ task, form, caseId, changeRoute, updateTempInfo }) => {
         date: new Date(activity.date).toLocaleDateString(navigator.language),
       };
       updateTempInfo({ screen: 'view-note', info }, task.taskSid);
-      changeRoute({ route: 'new-case', subroute: 'view-note' }, task.taskSid);
+      changeRoute({ route, subroute: 'view-note' }, task.taskSid);
     } else if (channelsArray.includes(activity.type)) {
       const detailsExpanded = {
         [ContactDetailsSections.GENERAL_DETAILS]: true,
@@ -77,10 +78,10 @@ const Timeline = ({ task, form, caseId, changeRoute, updateTempInfo }) => {
         [ContactDetailsSections.ISSUE_CATEGORIZATION]: false,
         [ContactDetailsSections.CONTACT_SUMMARY]: false,
       };
-      const { contactId } = activity;
-      const tempInfo = { detailsExpanded, contactId, date: activity.date, counselor: twilioWorkerId };
+      const contact = caseObj.connectedContacts.find(c => c.id === activity.contactId);
+      const tempInfo = { detailsExpanded, contact, date: activity.date, counselor: twilioWorkerId };
       updateTempInfo({ screen: 'view-contact', info: tempInfo }, task.taskSid);
-      changeRoute({ route: 'new-case', subroute: 'view-contact' }, task.taskSid);
+      changeRoute({ route, subroute: 'view-contact' }, task.taskSid);
     } else {
       setMockedMessage(<Template code="NotImplemented" />);
     }
@@ -88,7 +89,7 @@ const Timeline = ({ task, form, caseId, changeRoute, updateTempInfo }) => {
 
   const handleAddNoteClick = () => {
     updateTempInfo({ screen: 'add-note', info: '' }, task.taskSid);
-    changeRoute({ route: 'new-case', subroute: 'add-note' }, task.taskSid);
+    changeRoute({ route, subroute: 'add-note' }, task.taskSid);
   };
 
   return (
@@ -127,14 +128,20 @@ Timeline.displayName = 'Timeline';
 Timeline.propTypes = {
   task: taskType.isRequired,
   form: formType.isRequired,
-  caseId: PropTypes.number.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  caseObj: PropTypes.any.isRequired,
   changeRoute: PropTypes.func.isRequired,
   updateTempInfo: PropTypes.func.isRequired,
+  route: PropTypes.oneOf(['tabbed-forms', 'new-case', 'select-call-type']).isRequired,
 };
+
+const mapStateToProps = (state, ownProps) => ({
+  route: state[namespace][routingBase].tasks[ownProps.task.taskSid].route,
+});
 
 const mapDispatchToProps = dispatch => ({
   changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
   updateTempInfo: bindActionCreators(CaseActions.updateTempInfo, dispatch),
 });
 
-export default connect(null, mapDispatchToProps)(Timeline);
+export default connect(mapStateToProps, mapDispatchToProps)(Timeline);

@@ -28,8 +28,6 @@
   "ConnectDialog-Child": "Copy child information from this record to new contact?",
   "ConnectDialog-Caller": "Copy caller information from this record to new contact?",
 
-  "ContactDetailsIndex-Back": "Return to results",
-
   "QueueCard-WaitLabel": "Longest wait time:",
   "QueueCard-None": "none",
   "QueueCard-LessThanMinute": "less than a minute",
@@ -50,7 +48,8 @@
   "SearchForm-Phone": "Phone",
   "SearchForm-Button": "Search",
 
-  "SearchResultsIndex-Back": "Return to search criteria",
+  "SearchResultsIndex-Back": "Return to Search Criteria",
+  "SearchResultsIndex-BackToResults": "Return to Search Results",
   "SearchResultsIndex-Result": " result",
   "SearchResultsIndex-Results": " results",
   "SearchResultsIndex-NonDataContacts": "Non-Data Contacts",
@@ -108,6 +107,7 @@
   "BottomBar-SavePerpetrator": "Save Perpetrator",
   "BottomBar-SaveAndAddAnotherHousehold": "Save and Add Another Member",
   "BottomBar-SaveHousehold": "Save Member",
+  "BottomBar-Close": "Close",
 
   "Categories-Title": "Categorize this contact",
   

@@ -308,9 +308,8 @@ const BoldDetailFont = styled(FontOpenSans)`
 `;
 
 export const BackText = styled(BoldDetailFont)`
-  letter-spacing: 2px;
   margin-left: 15px;
-  text-transform: uppercase;
+  font-weight: 600;
 `;
 
 export const DetNameText = styled(BoldDetailFont)`

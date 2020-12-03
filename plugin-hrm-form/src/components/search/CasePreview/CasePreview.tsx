@@ -10,11 +10,12 @@ import { CaseWrapper } from '../../../styles/search';
 
 type OwnProps = {
   currentCase: Case;
+  onClickViewCase: () => void;
 };
 
 type Props = OwnProps;
 
-const CasePreview: React.FC<Props> = ({ currentCase }) => {
+const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase }) => {
   const { id, createdAt, updatedAt, connectedContacts, info } = currentCase;
 
   const orphanedCase = !connectedContacts || connectedContacts.length === 0;
@@ -31,6 +32,7 @@ const CasePreview: React.FC<Props> = ({ currentCase }) => {
           childName={name}
           createdAt={createdAt}
           updatedAt={updatedAt}
+          onClickViewCase={onClickViewCase}
           isOrphanedCase={orphanedCase}
         />
         <CaseSummary summary={summary} />

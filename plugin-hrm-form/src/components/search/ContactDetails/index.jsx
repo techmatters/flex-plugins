@@ -1,14 +1,13 @@
 /* eslint-disable no-empty-function */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { ButtonBase } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
 
-import { Container, Row } from '../../../styles/HrmStyles';
-import { BackText, BackIcon } from '../../../styles/search';
+import { Container } from '../../../styles/HrmStyles';
 import { contactType } from '../../../types';
 import GeneralContactDetails from '../../ContactDetails';
 import ConnectDialog from '../ConnectDialog';
+import BackToSearchResultsButton from '../SearchResults/SearchResultsBackButton';
 
 class ContactDetails extends Component {
   static displayName = 'ContactDetails';
@@ -50,7 +49,7 @@ class ContactDetails extends Component {
   };
 
   render() {
-    const { contact, detailsExpanded, currentIsCaller, showActionIcons } = this.props;
+    const { contact, detailsExpanded, currentIsCaller, handleBack, showActionIcons } = this.props;
 
     return (
       <Container>
@@ -61,16 +60,10 @@ class ContactDetails extends Component {
           handleConfirm={this.handleConfirmDialog}
           handleClose={this.handleCloseDialog}
         />
-        <Row>
-          <ButtonBase onClick={this.props.handleBack}>
-            <Row>
-              <BackIcon />
-              <BackText>
-                <Template code="ContactDetailsIndex-Back" />
-              </BackText>
-            </Row>
-          </ButtonBase>
-        </Row>
+        <BackToSearchResultsButton
+          text={<Template code="SearchResultsIndex-BackToResults" />}
+          handleBack={handleBack}
+        />
         <GeneralContactDetails
           showActionIcons={showActionIcons}
           contact={contact}

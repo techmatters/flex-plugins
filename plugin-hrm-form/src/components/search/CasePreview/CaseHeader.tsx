@@ -26,11 +26,12 @@ type OwnProps = {
   createdAt: string;
   updatedAt: string;
   isOrphanedCase: boolean;
+  onClickViewCase: () => void;
 };
 
 type Props = OwnProps;
 
-const CaseHeader: React.FC<Props> = ({ caseId, childName, createdAt, updatedAt, isOrphanedCase }) => {
+const CaseHeader: React.FC<Props> = ({ caseId, childName, createdAt, updatedAt, isOrphanedCase, onClickViewCase }) => {
   const [mockedMessage, setMockedMessage] = useState(null);
 
   const createdAtFormatted = `${format(new Date(createdAt), 'MMM d, yyyy')}`;
@@ -60,7 +61,7 @@ const CaseHeader: React.FC<Props> = ({ caseId, childName, createdAt, updatedAt, 
         <DateText>
           <Template code="CaseHeader-Updated" />: {updatedAtFormatted}
         </DateText>
-        <StyledButtonBase onClick={() => setMockedMessage(<Template code="NotImplemented" />)}>
+        <StyledButtonBase onClick={onClickViewCase}>
           <HiddenText>
             <Template code="CaseHeader-ViewCase" />
           </HiddenText>
