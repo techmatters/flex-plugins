@@ -10,7 +10,7 @@ import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import ContactDetails from '../ContactDetails';
 import ActionHeader from './ActionHeader';
-import { adaptFormToContactDetails } from './ContactDetailsAdapter';
+import { adaptFormToContactDetails, adaptContactToDetailsScreen } from './ContactDetailsAdapter';
 import { CaseState } from '../../states/case/reducer';
 
 const mapStateToProps = (state, ownProps: OwnProps) => {
@@ -38,10 +38,15 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchT
 const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, route, updateTempInfo, changeRoute }) => {
   if (!tempInfo || tempInfo.screen !== 'view-contact') return null;
 
-  const { detailsExpanded, contactId, date, counselor } = tempInfo.info;
+  const { detailsExpanded, contact: contactFromInfo, date, counselor } = tempInfo.info;
   const counselorName = counselorsHash[counselor] || 'Unknown';
 
-  const contact = contactId ? null : adaptFormToContactDetails(task, form, date, counselorName);
+  let contact;
+  if (contactFromInfo) {
+    contact = adaptContactToDetailsScreen(contactFromInfo, counselorName);
+  } else {
+    contact = adaptFormToContactDetails(task, form, date, counselorName);
+  }
 
   if (!contact) return null;
 
@@ -52,7 +57,12 @@ const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, ro
       ...detailsExpanded,
       [section]: !detailsExpanded[section],
     };
-    const updatedTempInfo = { detailsExpanded: updatedDetailsExpanded, date, counselor };
+    const updatedTempInfo = {
+      detailsExpanded: updatedDetailsExpanded,
+      contact: contactFromInfo,
+      date,
+      counselor,
+    };
     updateTempInfo({ screen: 'view-contact', info: updatedTempInfo }, task.taskSid);
   };
 

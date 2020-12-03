@@ -167,7 +167,7 @@ const Case: React.FC<Props> = props => {
               <CaseDetails name={name} status={status} counselor={counselor} date={date} />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
-              <Timeline caseId={connectedCase.id} task={task} form={form} />
+              <Timeline caseObj={connectedCase} task={task} form={form} />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
               <Households

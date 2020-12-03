@@ -34,6 +34,34 @@ export const retrieveCategories = categories => {
   return Object.entries(categories).reduce(catsReducer, {});
 };
 
+export const adaptContactToDetailsScreen = (contact, counselorName) => {
+  const dateTime = contact.createdAt;
+  const name = `${contact.rawJson.childInformation.name.firstName} ${contact.rawJson.childInformation.name.lastName}`;
+  const customerNumber = contact.number;
+  const { callType, caseInformation } = contact.rawJson;
+  const categories = retrieveCategories(caseInformation.categories);
+  const notes = caseInformation.callSummary;
+  const channelType = contact.channel;
+  const { conversationDuration } = contact;
+  const counselor = counselorName;
+
+  return {
+    overview: {
+      dateTime,
+      name,
+      customerNumber,
+      callType,
+      categories,
+      counselor,
+      notes,
+      channel: channelType,
+      conversationDuration,
+    },
+    counselor,
+    details: contact.rawJson,
+  };
+};
+
 export const adaptFormToContactDetails = (task, form, date, counselor) => {
   const details = transformForm(form);
   const dateTime = date;

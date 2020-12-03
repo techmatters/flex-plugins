@@ -26,7 +26,7 @@ const isConnectedCaseActivity = activity => channelsArray.includes(activity.type
 
 const sortActivities = activities => activities.sort((a, b) => b.date.localeCompare(a.date));
 
-const Timeline = ({ task, form, caseId, changeRoute, updateTempInfo, route }) => {
+const Timeline = ({ task, form, caseObj, changeRoute, updateTempInfo, route }) => {
   const [mockedMessage, setMockedMessage] = useState(null);
   const [timeline, setTimeline] = useState([]);
 
@@ -36,7 +36,7 @@ const Timeline = ({ task, form, caseId, changeRoute, updateTempInfo, route }) =>
      * If the case is just being created, adds the case's description as a new activity.
      */
     const getTimeline = async () => {
-      const activities = await getActivities(caseId);
+      const activities = await getActivities(caseObj.id);
       let timelineActivities = sortActivities(activities);
 
       const isCreatingCase = !timelineActivities.some(isConnectedCaseActivity);
@@ -57,7 +57,7 @@ const Timeline = ({ task, form, caseId, changeRoute, updateTempInfo, route }) =>
     };
 
     getTimeline();
-  }, [form, task, caseId]);
+  }, [form, task, caseObj.id]);
 
   const handleOnClickView = activity => {
     const { twilioWorkerId } = activity;
@@ -78,8 +78,8 @@ const Timeline = ({ task, form, caseId, changeRoute, updateTempInfo, route }) =>
         [ContactDetailsSections.ISSUE_CATEGORIZATION]: false,
         [ContactDetailsSections.CONTACT_SUMMARY]: false,
       };
-      const { contactId } = activity;
-      const tempInfo = { detailsExpanded, contactId, date: activity.date, counselor: twilioWorkerId };
+      const contact = caseObj.connectedContacts.find(c => c.id === activity.contactId);
+      const tempInfo = { detailsExpanded, contact, date: activity.date, counselor: twilioWorkerId };
       updateTempInfo({ screen: 'view-contact', info: tempInfo }, task.taskSid);
       changeRoute({ route, subroute: 'view-contact' }, task.taskSid);
     } else {
@@ -128,7 +128,8 @@ Timeline.displayName = 'Timeline';
 Timeline.propTypes = {
   task: taskType.isRequired,
   form: formType.isRequired,
-  caseId: PropTypes.number.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  caseObj: PropTypes.any.isRequired,
   changeRoute: PropTypes.func.isRequired,
   updateTempInfo: PropTypes.func.isRequired,
   route: PropTypes.oneOf(['tabbed-forms', 'new-case', 'select-call-type']).isRequired,

@@ -15,7 +15,7 @@ export type ViewNote = {
 };
 
 export type ViewContact = {
-  contactId?: string;
+  contact?: any; // TODO: create Contact type
   detailsExpanded: { [section: string]: boolean };
   date: string;
   counselor: string;
