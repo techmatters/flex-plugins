@@ -18,7 +18,8 @@ type Props = OwnProps;
 const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase }) => {
   const { id, createdAt, updatedAt, connectedContacts, info } = currentCase;
 
-  const firstContact = connectedContacts && connectedContacts.length > 0 && connectedContacts[0];
+  const orphanedCase = !connectedContacts || connectedContacts.length === 0;
+  const firstContact = !orphanedCase && connectedContacts[0];
   const { name } = ((firstContact || {}).rawJson || {}).childInformation || {};
   const { categories, callSummary } = ((firstContact || {}).rawJson || {}).caseInformation || {};
   const summary = info?.summary || callSummary;
@@ -32,6 +33,7 @@ const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase }) => {
           createdAt={createdAt}
           updatedAt={updatedAt}
           onClickViewCase={onClickViewCase}
+          isOrphanedCase={orphanedCase}
         />
         <CaseSummary summary={summary} />
         <CaseTags categories={categories} />
