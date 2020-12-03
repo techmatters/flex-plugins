@@ -2,8 +2,9 @@
 import React from 'react';
 
 import Search from './search';
-import { standaloneTaskSid } from '../states/ContactState';
 import { StandaloneSearchContainer } from '../styles/search';
+
+export const standaloneTaskSid = 'standalone-task-sid';
 
 const standaloneTask = {
   taskSid: standaloneTaskSid,

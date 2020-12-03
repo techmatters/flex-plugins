@@ -4,7 +4,7 @@ import * as t from './types';
 import { INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE, GeneralActionType } from '../types';
 import { SearchContact, SearchCaseResult } from '../../types/types';
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../../components/common/ContactDetails';
-import { standaloneTaskSid } from '../ContactState';
+import { standaloneTaskSid } from '../../components/StandaloneSearch';
 
 type TaskEntry = {
   currentPage: t.SearchPagesType;

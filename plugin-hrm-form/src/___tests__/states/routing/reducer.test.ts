@@ -1,7 +1,7 @@
 import { reduce, initialState } from '../../../states/routing/reducer';
 import * as actions from '../../../states/routing/actions';
 import * as GeneralActions from '../../../states/actions';
-import { standaloneTaskSid } from '../../../states/ContactState';
+import { standaloneTaskSid } from '../../../components/StandaloneSearch';
 
 const task = { taskSid: 'task1' };
 

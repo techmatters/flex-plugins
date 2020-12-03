@@ -21,8 +21,7 @@ import callTypes from './DomainConstants';
 import { countSelectedCategories } from './ValidationRules';
 import { copySearchResultIntoTask } from './contacts/helpers';
 import { getConfig } from '../HrmFormPlugin';
-
-export const standaloneTaskSid = 'standalone-task-sid';
+import { standaloneTaskSid } from '../components/StandaloneSearch';
 
 /**
  * Looks for a particular task in the state object, and returns it if found.

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Template, Tab as TwilioTab, ITask } from '@twilio/flex-ui';
 
-import { standaloneTaskSid } from '../../../states/ContactState';
+import { standaloneTaskSid } from '../../StandaloneSearch';
 import ContactPreview from '../ContactPreview';
 import CasePreview from '../CasePreview';
 import { SearchContactResult, SearchCaseResult, SearchContact, Case } from '../../../types/types';

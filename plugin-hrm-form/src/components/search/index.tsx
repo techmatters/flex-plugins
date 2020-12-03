@@ -7,7 +7,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import { ITask, withTaskContext, Template } from '@twilio/flex-ui';
 
-import { standaloneTaskSid } from '../../states/ContactState';
+import { standaloneTaskSid } from '../StandaloneSearch';
 import SearchForm from './SearchForm';
 import SearchResults, { CONTACTS_PER_PAGE, CASES_PER_PAGE } from './SearchResults';
 import ContactDetails from './ContactDetails';
