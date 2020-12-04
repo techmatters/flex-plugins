@@ -155,6 +155,7 @@ describe('useState mocked', () => {
             twilioWorkerId: 'worker1',
             status: 'open',
             info: null,
+            connectedContacts: [],
           },
           temporaryCaseInfo: '',
         },

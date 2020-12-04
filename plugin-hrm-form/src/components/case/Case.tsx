@@ -43,6 +43,16 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
+const getNameFromContact = contact => {
+  const { firstName, lastName } = contact.rawJson.childInformation.name;
+  return formatName(`${firstName} ${lastName}`);
+};
+
+const getNameFromForm = form => {
+  const { firstName, lastName } = form.childInformation.name;
+  return formatName(`${firstName.value} ${lastName.value}`);
+};
+
 const Case: React.FC<Props> = props => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [isMenuOpen, setMenuOpen] = useState(false);
@@ -131,8 +141,9 @@ const Case: React.FC<Props> = props => {
     );
 
   const isMockedMessageOpen = Boolean(mockedMessage);
-  const { firstName, lastName } = form.childInformation.name;
-  const name = formatName(`${firstName.value} ${lastName.value}`);
+
+  const firstConnectedContact = connectedCase && connectedCase.connectedContacts && connectedCase.connectedContacts[0];
+  const name = firstConnectedContact ? getNameFromContact(firstConnectedContact) : getNameFromForm(form);
   const { createdAt, twilioWorkerId, status, info } = connectedCase;
   const counselor = counselorsHash[twilioWorkerId];
   const date = new Date(createdAt).toLocaleDateString(navigator.language);
