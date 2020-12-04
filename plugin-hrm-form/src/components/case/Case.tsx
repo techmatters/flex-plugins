@@ -142,7 +142,7 @@ const Case: React.FC<Props> = props => {
 
   const isMockedMessageOpen = Boolean(mockedMessage);
 
-  const firstConnectedContact = connectedCase.connectedContacts && connectedCase.connectedContacts[0];
+  const firstConnectedContact = connectedCase && connectedCase.connectedContacts && connectedCase.connectedContacts[0];
   const name = firstConnectedContact ? getNameFromContact(firstConnectedContact) : getNameFromForm(form);
   const { createdAt, twilioWorkerId, status, info } = connectedCase;
   const counselor = counselorsHash[twilioWorkerId];
