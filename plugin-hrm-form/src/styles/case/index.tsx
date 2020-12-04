@@ -218,3 +218,11 @@ export const NoteContainer = styled('div')`
   text-align: justify;
 `;
 NoteContainer.displayName = 'NoteContainer';
+
+export const DetailsHeaderContainer = styled('div')`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+`;
+
+DetailsHeaderContainer.displayName = 'DetailsHeaderContainer';

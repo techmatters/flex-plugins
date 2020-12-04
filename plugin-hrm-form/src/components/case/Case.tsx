@@ -171,11 +171,8 @@ const Case: React.FC<Props> = props => {
       return (
         <CaseContainer>
           <Container>
-            <CaseNumberFont>
-              <Template code="Case-CaseNumber" /> #{connectedCase.id}
-            </CaseNumberFont>
             <Box marginLeft="25px" marginTop="13px">
-              <CaseDetails name={name} status={status} counselor={counselor} date={date} />
+              <CaseDetails caseId={connectedCase.id} name={name} status={status} counselor={counselor} date={date} />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
               <Timeline caseObj={connectedCase} task={task} form={form} />

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { Template } from '@twilio/flex-ui';
 import { Grid } from '@material-ui/core';
 
+import CaseDetailsHeader from './caseDetails/CaseDetailsHeader';
 import {
   DetailsContainer,
   DetailDescription,
@@ -32,12 +33,10 @@ const renderCaseStatus = status => {
   }
 };
 
-const CaseDetails = ({ name, counselor, date, status }) => {
+const CaseDetails = ({ caseId, name, counselor, date, status }) => {
   return (
     <>
-      <CaseSectionFont id="Case-CaseDetailsSection-label">
-        <Template code="Case-CaseDetailsSection" />
-      </CaseSectionFont>
+      <CaseDetailsHeader caseId={caseId} childName={name} />
       <DetailsContainer tabIndex={0} role="grid" aria-labelledby="Case-CaseDetailsSection-label">
         <Grid container spacing={24} justify="center" role="row">
           <Grid item xs role="gridcell" tabIndex={-1}>
@@ -71,6 +70,7 @@ const CaseDetails = ({ name, counselor, date, status }) => {
 
 CaseDetails.displayName = 'CaseDetails';
 CaseDetails.propTypes = {
+  caseId: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   counselor: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
