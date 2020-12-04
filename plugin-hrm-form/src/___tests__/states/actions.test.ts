@@ -14,6 +14,7 @@ describe('test action creators', () => {
   test('initializeContactState', async () => {
     const expected: types.GeneralActionType = {
       type: types.INITIALIZE_CONTACT_STATE,
+      definitions: voidDefinitions,
       taskId: task.taskSid,
     };
 
@@ -23,6 +24,7 @@ describe('test action creators', () => {
   test('recreateContactState', async () => {
     const expected: types.GeneralActionType = {
       type: types.RECREATE_CONTACT_STATE,
+      definitions: voidDefinitions,
       taskId: task.taskSid,
     };
 
