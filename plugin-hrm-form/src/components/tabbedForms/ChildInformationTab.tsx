@@ -6,7 +6,7 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { RootState } from '../../states';
 import { updateForm } from '../../states/contacts/actions';
-import CallerTabDefinition from '../../formDefinitions/tabbedForms/CallerInformationTab.json';
+import ChildTabDefinition from '../../formDefinitions/tabbedForms/ChildInformationTab.json';
 import { ColumnarBlock, Container, TwoColumnLayout } from '../../styles/HrmStyles';
 import { createFormFromDefinition, disperseInputs, splitInHalf } from '../common/forms/formGenerators';
 import type { FormDefinition } from '../common/forms/types';
@@ -16,21 +16,21 @@ type OwnProps = { task: ITask; display: boolean };
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const CallerInformationTab: React.FC<Props> = ({ dispatch, task, display }) => {
+const ChildInformationTab: React.FC<Props> = ({ dispatch, task, display }) => {
   const { getValues } = useFormContext();
 
   const [l, r] = React.useMemo(() => {
     const updateCallback = () => {
-      const { callerInformation } = getValues();
-      dispatch(updateForm(task.taskSid, 'callerInformation', callerInformation));
+      const { childInformation } = getValues();
+      dispatch(updateForm(task.taskSid, 'childInformation', childInformation));
     };
 
     // TODO: fix this typecasting
-    const callerFormDefinition = createFormFromDefinition(CallerTabDefinition as FormDefinition)(['callerInformation'])(
+    const childFormDefinition = createFormFromDefinition(ChildTabDefinition as FormDefinition)(['childInformation'])(
       updateCallback,
     );
 
-    return splitInHalf(disperseInputs(7)(callerFormDefinition));
+    return splitInHalf(disperseInputs(7)(childFormDefinition));
   }, [dispatch, getValues, task.taskSid]);
 
   return (
@@ -45,11 +45,11 @@ const CallerInformationTab: React.FC<Props> = ({ dispatch, task, display }) => {
   );
 };
 
-CallerInformationTab.displayName = 'CallerInformationTab';
+ChildInformationTab.displayName = 'ChildInformationTab';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({});
 
 const connector = connect(mapStateToProps);
-const connected = connector(CallerInformationTab);
+const connected = connector(ChildInformationTab);
 
 export default withTaskContext<Props, typeof connected>(connected);

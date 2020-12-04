@@ -45,7 +45,7 @@ const Timeline = ({ task, form, caseId, changeRoute, updateTempInfo }) => {
         const connectCaseActivity = {
           date: format(Date.now(), 'yyyy-MM-dd HH:mm:ss'),
           type: task.channelType,
-          text: form.caseInformation.callSummary.value,
+          text: form.caseInformation.callSummary,
           twilioWorkerId: workerSid,
         };
 

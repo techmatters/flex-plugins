@@ -82,17 +82,6 @@ export const handleSelectSearchResult = (searchResult, taskId) => ({
   taskId,
 });
 
-/**
- *
- * @param {{ channel: string; date: string; time: string;}} contactLessTask
- * @param {string} taskId
- */
-export const updateContactLessTask = (contactLessTask, taskId) => ({
-  type: UPDATE_CONTACTLESS_TASK,
-  payload: contactLessTask,
-  taskId,
-});
-
 export function editNestedField(original, parents, name, change) {
   if (parents.length === 0) {
     return {

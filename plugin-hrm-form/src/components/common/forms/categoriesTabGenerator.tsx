@@ -17,33 +17,46 @@ import {
   CategoriesWrapper,
   Box,
   SubcategoriesWrapper,
+  CategoryCheckboxField,
+  CategoryCheckbox,
+  CategoryCheckboxLabel,
 } from '../../../styles/HrmStyles';
 import type { CategoriesDefinition } from './types';
 // import type { TaskEntry } from '../../../states/contacts/reducer';
 import { ConnectForm } from './formGenerators';
 
-export const createSubcategoryCheckbox = (subcategory: string, parents: string[], updateCallback: () => void) => {
+export const createSubcategoryCheckbox = (
+  subcategory: string,
+  parents: string[],
+  color: string,
+  updateCallback: () => void,
+) => {
   const path = [...parents, subcategory].join('.');
 
   return (
     <ConnectForm key={path}>
       {({ register, getValues }) => {
         const { categories } = getValues();
-        const disabled = categories && categories.length >= 3 && !categories.includes(path);
+        const checked = categories && categories.includes(path);
+        const disabled = categories && categories.length >= 3 && !checked;
+        const lighterColor = `${color}99`; // Hex with alpha 0.6
 
         return (
-          <div>
-            <label htmlFor={`${path}-checkbox`}>{subcategory}</label>
-            <input
-              key={`${path}-checkbox`}
-              type="checkbox"
-              name="categories"
-              value={path}
-              onChange={updateCallback}
-              ref={register({ required: true, minLength: 1, maxLength: 3 })}
-              disabled={disabled}
-            />
-          </div>
+          <CategoryCheckboxLabel>
+            <CategoryCheckboxField color={lighterColor} selected={checked} disabled={disabled}>
+              <CategoryCheckbox
+                key={`${path}-checkbox`}
+                type="checkbox"
+                name="categories"
+                value={path}
+                onChange={updateCallback}
+                innerRef={register({ required: true, minLength: 1, maxLength: 3 })}
+                disabled={disabled}
+                color={lighterColor}
+              />
+              {subcategory}
+            </CategoryCheckboxField>
+          </CategoryCheckboxLabel>
         );
       }}
     </ConnectForm>
@@ -58,10 +71,10 @@ export const createSubCategoriesInputs = (
   updateCallback: () => void,
 ) =>
   Object.entries(definition).reduce<SubcategoriesMap>(
-    (acc, [category, { subcategories }]) => ({
+    (acc, [category, { subcategories, color }]) => ({
       ...acc,
       [category]: subcategories.map(subcategory => {
-        return createSubcategoryCheckbox(subcategory, [...parents, category], updateCallback);
+        return createSubcategoryCheckbox(subcategory, [...parents, category], color, updateCallback);
       }),
     }),
     {},

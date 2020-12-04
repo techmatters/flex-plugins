@@ -149,7 +149,7 @@ class Case extends Component {
 
     const isMockedMessageOpen = Boolean(mockedMessage);
     const { firstName, lastName } = form.childInformation.name;
-    const name = formatName(`${firstName.value} ${lastName.value}`);
+    const name = formatName(`${firstName} ${lastName}`);
     const { createdAt, twilioWorkerId, status, info } = connectedCase;
     const counselor = counselorsHash[twilioWorkerId];
     const date = new Date(createdAt).toLocaleDateString(navigator.language);
