@@ -14,7 +14,7 @@ import { getConfig } from '../../HrmFormPlugin';
 import { saveToHrm, connectToCase } from '../../services/ContactService';
 import { cancelCase, updateCase } from '../../services/CaseService';
 import { Box, Container, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
-import { CaseContainer, CenteredContainer, CaseNumberFont } from '../../styles/case';
+import { CaseContainer, CenteredContainer } from '../../styles/case';
 import CaseDetails from './CaseDetails';
 import { Menu, MenuItem } from '../menu';
 import { formatName } from '../../utils';

@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'react-emotion';
 import { Button } from '@twilio/flex-ui';
+import { Typography } from '@material-ui/core';
 
 import { FontOpenSans, Row } from '../HrmStyles';
 
@@ -226,3 +227,33 @@ export const DetailsHeaderContainer = styled('div')`
 `;
 
 DetailsHeaderContainer.displayName = 'DetailsHeaderContainer';
+
+export const DetailsHeaderChildName = styled(Typography)`
+  font-weight: 600 !important;
+`;
+
+DetailsHeaderChildName.displayName = 'DetailsHeaderChildName';
+
+export const DetailsHeaderCaseContainer = styled('div')`
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+`;
+
+DetailsHeaderCaseContainer.displayName = 'DetailsHeaderCaseContainer';
+
+DetailsHeaderCaseContainer.displayName = 'DetailsHeaderCaseContainer';
+
+export const DetailsHeaderCaseId = styled(Typography)`
+  font-weight: 600 !important;
+`;
+
+DetailsHeaderCaseId.displayName = 'DetailsHeaderCaseId';
+
+export const DetailsHeaderOfficeName = styled(Typography)`
+  padding-left: 10px;
+  font-size: 0.7rem !important;
+  font-weight: 300 !important;
+`;
+
+DetailsHeaderOfficeName.displayName = 'DetailsHeaderOfficeName';

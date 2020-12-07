@@ -2,24 +2,33 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
-import { Typography } from '@material-ui/core';
 
-import { DetailsHeaderContainer } from '../../../styles/case';
+import {
+  DetailsHeaderContainer,
+  DetailsHeaderChildName,
+  DetailsHeaderCaseContainer,
+  DetailsHeaderCaseId,
+  DetailsHeaderOfficeName,
+} from '../../../styles/case';
 
 type OwnProps = {
-  caseId: string; // ToDo: change this
+  caseId: string;
   childName: string;
+  officeName: string;
   onClickView: () => void;
 };
 
-const CaseDetailsHeader: React.FC<OwnProps> = ({ caseId, childName, onClickView }) => {
+const CaseDetailsHeader: React.FC<OwnProps> = ({ caseId, childName, officeName, onClickView }) => {
   return (
     <DetailsHeaderContainer>
-      <Typography variant="h6">{childName}</Typography>
-      <Typography>
-        <Template code="Case-CaseNumber" />
-        {caseId}
-      </Typography>
+      <DetailsHeaderChildName variant="h6">{childName}</DetailsHeaderChildName>
+      <DetailsHeaderCaseContainer>
+        <DetailsHeaderCaseId id="Case-CaseId-label">
+          <Template code="Case-CaseNumber" />
+          {caseId}
+        </DetailsHeaderCaseId>
+        {officeName && <DetailsHeaderOfficeName>{officeName}</DetailsHeaderOfficeName>}
+      </DetailsHeaderCaseContainer>
     </DetailsHeaderContainer>
   );
 };
