@@ -32,14 +32,6 @@ export const CenteredContainer = styled(CaseContainer)`
 `;
 CenteredContainer.displayName = 'CenteredContainer';
 
-export const CaseNumberFont = styled(FontOpenSans)`
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 14px;
-  color: #0d2a38;
-`;
-CaseNumberFont.displayName = 'CaseNumberFont';
-
 export const CaseSectionFont = styled(FontOpenSans)`
   color: ${({ theme }) => theme.colors.categoryTextColor};
   font-size: 10px;
@@ -239,8 +231,6 @@ export const DetailsHeaderCaseContainer = styled('div')`
   flex-direction: row;
   align-items: baseline;
 `;
-
-DetailsHeaderCaseContainer.displayName = 'DetailsHeaderCaseContainer';
 
 DetailsHeaderCaseContainer.displayName = 'DetailsHeaderCaseContainer';
 
