@@ -3,13 +3,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as Flex from '@twilio/flex-ui';
 import NoteIcon from '@material-ui/icons/NoteAdd';
+import AssignmentInd from '@material-ui/icons/AssignmentInd';
 
 import { TimelineIconContainer } from '../../styles/case';
-import { channelTypes } from '../../states/DomainConstants';
+import { channelTypes, otherContactChannels } from '../../states/DomainConstants';
 
 // eslint-disable-next-line react/display-name
-const getIcon = type => {
-  switch (type) {
+const getIcon = icon => {
+  switch (icon) {
     case channelTypes.whatsapp:
       return <DefaultIcon defaultTaskChannel={Flex.DefaultTaskChannels.ChatWhatsApp} />;
     case channelTypes.facebook:
@@ -21,16 +22,18 @@ const getIcon = type => {
     case channelTypes.voice:
       return <DefaultIcon defaultTaskChannel={Flex.DefaultTaskChannels.Call} />;
     case 'note':
-    default:
       return <NoteIcon style={{ opacity: 0.62, fontSize: '20px' }} />;
+    // defaulting to otherContactChannels.includes(icon). Maybe at some point we need to address this in a different way.
+    default:
+      return <AssignmentInd style={{ opacity: 0.62, fontSize: '20px' }} />;
   }
 };
 
-const TimelineIcon = ({ type }) => <TimelineIconContainer>{getIcon(type)}</TimelineIconContainer>;
+const TimelineIcon = ({ icon }) => <TimelineIconContainer>{getIcon(icon)}</TimelineIconContainer>;
 
 TimelineIcon.displayName = 'TimelineIcon';
 TimelineIcon.propTypes = {
-  type: PropTypes.oneOf([...Object.values(channelTypes), 'note']).isRequired,
+  icon: PropTypes.oneOf([...Object.values(channelTypes), ...Object.values(otherContactChannels), 'note']).isRequired,
 };
 
 const DefaultIcon = ({ defaultTaskChannel }) => (
