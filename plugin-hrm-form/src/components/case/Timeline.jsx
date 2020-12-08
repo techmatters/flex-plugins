@@ -40,15 +40,13 @@ const Timeline = ({ task, form, caseObj, changeRoute, updateTempInfo, route }) =
       const isCreatingCase = !timelineActivities.some(isConnectedCaseActivity);
 
       if (isCreatingCase) {
-        const icon = task.channelType === 'default' ? form.contactlessTask.channel : task.channelType;
-
         const { workerSid } = getConfig();
         const connectCaseActivity = {
           date: format(Date.now(), 'yyyy-MM-dd HH:mm:ss'),
           type: task.channelType,
           text: form.caseInformation.callSummary.value,
           twilioWorkerId: workerSid,
-          icon,
+          channel: task.channelType === 'default' ? form.contactlessTask.channel : task.channelType,
         };
 
         timelineActivities = sortActivities([...timelineActivities, connectCaseActivity]);
@@ -113,7 +111,7 @@ const Timeline = ({ task, form, caseObj, changeRoute, updateTempInfo, route }) =
           return (
             <TimelineRow key={index}>
               <TimelineDate>{date}</TimelineDate>
-              <TimelineIcon icon={activity.icon} />
+              <TimelineIcon type={isConnectedCaseActivity(activity) ? activity.channel : activity.type} />
               <TimelineText>{activity.text}</TimelineText>
               <Box marginLeft="auto" marginRight="10px">
                 <ViewButton onClick={() => handleOnClickView(activity)}>View</ViewButton>
