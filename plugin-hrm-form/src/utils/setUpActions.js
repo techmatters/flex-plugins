@@ -146,11 +146,13 @@ const safeTransfer = async (transferFunction, task) => {
 export const customTransferTask = setupObject => async (payload, original) => {
   const mode = payload.options.mode || DEFAULT_TRANSFER_MODE;
 
-  // Currently (as of 2 Dec 2020) warm text transfers are not supported.
-  // We shortcut the rest of the function to save extra time and unnecessary visual changes.
+  /*
+   * Currently (as of 2 Dec 2020) warm text transfers are not supported.
+   * We shortcut the rest of the function to save extra time and unnecessary visual changes.
+   */
   if (!TaskHelper.isCallTask(payload.task) && mode === transferModes.warm) {
     window.alert(Manager.getInstance().strings['Transfer-ChatWarmNotAllowed']);
-    return; // Not calling original(payload) prevents the additional "Task cannot be transferred" notification
+    return () => undefined; // Not calling original(payload) prevents the additional "Task cannot be transferred" notification
   }
 
   const { identity, workerSid, counselorName } = setupObject;
