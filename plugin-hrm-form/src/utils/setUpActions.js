@@ -144,24 +144,26 @@ const safeTransfer = async (transferFunction, task) => {
  * @returns {import('@twilio/flex-ui').ReplacedActionFunction}
  */
 export const customTransferTask = setupObject => async (payload, original) => {
+  const mode = payload.options.mode || DEFAULT_TRANSFER_MODE;
+
+  // Currently (as of 2 Dec 2020) warm text transfers are not supported.
+  // We shortcut the rest of the function to save extra time and unnecessary visual changes.
+  if (!TaskHelper.isCallTask(payload.task) && mode === transferModes.warm) {
+    window.alert(Manager.getInstance().strings['Transfer-ChatWarmNotAllowed']);
+    return; // Not calling original(payload) prevents the additional "Task cannot be transferred" notification
+  }
+
   const { identity, workerSid, counselorName } = setupObject;
 
   // save current form state as sync document (if there is a form)
   const form = getStateContactForms(payload.task.taskSid);
   const documentName = await saveFormSharedState(form, payload.task);
 
-  const mode = payload.options.mode || DEFAULT_TRANSFER_MODE;
-
   // set metadata for the transfer
   await TransferHelpers.setTransferMeta(payload, documentName, counselorName);
 
   if (TaskHelper.isCallTask(payload.task)) {
     return safeTransfer(() => original(payload), payload.task);
-  }
-
-  if (mode === transferModes.warm) {
-    await TransferHelpers.clearTransferMeta(payload.task);
-    window.alert(Manager.getInstance().strings['Transfer-ChatWarmNotAllowed']);
   }
 
   const memberToKick = mode === transferModes.cold ? TransferHelpers.getMemberToKick(payload.task, identity) : '';
