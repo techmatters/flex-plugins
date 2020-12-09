@@ -12,6 +12,18 @@ import { Actions, handleSelectSearchResult } from '../states/ContactState';
 import { handleBlur, handleCategoryToggle, handleFocus, handleValidateForm } from '../states/ActionCreators';
 import * as GeneralActions from '../states/actions';
 import { hasTaskControl } from '../utils/transfer';
+import callerFormDefinition from '../formDefinitions/tabbedForms/CallerInformationTab.json';
+import caseInfoFormDefinition from '../formDefinitions/tabbedForms/CaseInformationTab.json';
+import childFormDefinition from '../formDefinitions/tabbedForms/ChildInformationTab.json';
+import categoriesFormDefinition from '../formDefinitions/tabbedForms/IssueCategorizationTab.json';
+
+// The tabbed form definitions, used to create new form state.
+const definitions = {
+  callerFormDefinition,
+  caseInfoFormDefinition,
+  categoriesFormDefinition,
+  childFormDefinition,
+};
 
 class TaskView extends Component {
   static displayName = 'TaskView';
@@ -43,7 +55,7 @@ class TaskView extends Component {
     const { contactFormStateExists, routingStateExists, searchStateExists } = this.props;
     if (!contactFormStateExists || !routingStateExists || !searchStateExists) {
       // (Gian) maybe this can be used to recreate the form too?
-      this.props.recreateContactState(this.props.thisTask.taskSid);
+      this.props.recreateContactState(definitions, this.props.thisTask.taskSid);
     }
   }
 
