@@ -93,7 +93,7 @@
   {
     "name": "phone1",
     "label": "Contact Number",
-    "type": "numeric input"
+    "type": "numeric-input"
   },
   {
     "name": "relationshipToChild",
