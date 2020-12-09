@@ -43,10 +43,6 @@ export const CaseSectionFont = styled(FontOpenSans)`
 CaseSectionFont.displayName = 'CaseSectionFont';
 
 export const DetailsContainer = styled(Row)`
-  border-style: solid;
-  border-width: 1px;
-  border-radius: 4px;
-  border-color: #a0a8bd52;
   padding: 15px;
   margin-top: 10px;
 `;

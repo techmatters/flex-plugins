@@ -144,9 +144,10 @@ const Case: React.FC<Props> = props => {
 
   const firstConnectedContact = connectedCase && connectedCase.connectedContacts && connectedCase.connectedContacts[0];
   const name = firstConnectedContact ? getNameFromContact(firstConnectedContact) : getNameFromForm(form);
-  const { createdAt, twilioWorkerId, status, info } = connectedCase;
+  const { createdAt, updatedAt, twilioWorkerId, status, info } = connectedCase;
   const counselor = counselorsHash[twilioWorkerId];
-  const date = new Date(createdAt).toLocaleDateString(navigator.language);
+  const openedDate = new Date(createdAt).toLocaleDateString(navigator.language);
+  const lastUpdatedDate = new Date(updatedAt).toLocaleDateString(navigator.language);
   const households = info && info.households ? info.households : [];
   const perpetrators = info && info.perpetrators ? info.perpetrators : [];
 
@@ -172,7 +173,14 @@ const Case: React.FC<Props> = props => {
         <CaseContainer>
           <Container>
             <Box marginLeft="25px" marginTop="13px">
-              <CaseDetails caseId={connectedCase.id} name={name} status={status} counselor={counselor} date={date} />
+              <CaseDetails
+                caseId={connectedCase.id}
+                name={name}
+                status={status}
+                counselor={counselor}
+                openedDate={openedDate}
+                lastUpdatedDate={lastUpdatedDate}
+              />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
               <Timeline caseObj={connectedCase} task={task} form={form} />

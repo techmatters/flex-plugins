@@ -108,6 +108,7 @@ class SearchForm extends Component {
             />
             <FieldDate
               id="Search_DateTo"
+              label=" "
               placeholder="End Date"
               field={getField(dateTo)}
               {...this.defaultEventHandlers('dateTo')}
