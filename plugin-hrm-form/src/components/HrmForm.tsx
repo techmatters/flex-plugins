@@ -20,7 +20,6 @@ type OwnProps = {
   handleCompleteTask: any;
   handleFocus: any;
   handleSelectSearchResult: any;
-  changeTab: any;
   changeRoute: any;
   handleValidateForm: any;
 };
@@ -38,17 +37,8 @@ const HrmForm: React.FC<Props> = props => {
     case 'tabbed-forms':
       return (
         <TabbedForms
-          form={props.form}
-          handleBlur={props.handleBlur}
-          handleCategoryToggle={props.handleCategoryToggle}
-          handleChange={props.handleChange}
-          handleCallTypeButtonClick={props.handleCallTypeButtonClick}
-          handleFocus={props.handleFocus}
           handleSelectSearchResult={props.handleSelectSearchResult}
-          changeTab={props.changeTab}
-          changeRoute={props.changeRoute}
           handleCompleteTask={props.handleCompleteTask}
-          handleValidateForm={props.handleValidateForm}
         />
       );
 
@@ -57,15 +47,7 @@ const HrmForm: React.FC<Props> = props => {
 
     case 'select-call-type':
     default:
-      return (
-        <CallTypeButtons
-          form={props.form}
-          handleCallTypeButtonClick={props.handleCallTypeButtonClick}
-          changeTab={props.changeTab}
-          handleCompleteTask={props.handleCompleteTask}
-          changeRoute={props.changeRoute}
-        />
-      );
+      return <CallTypeButtons handleCompleteTask={props.handleCompleteTask} />;
   }
 };
 
