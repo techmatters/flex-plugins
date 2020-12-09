@@ -431,7 +431,7 @@ export const StyledTabs = styled((props: typeof Tabs['defaultProps'] & { value: 
   && .indicator {
     background-color: transparent;
   }
-  flex-shrink: 0;
+  flex-shrink: 1;
 `;
 StyledTabs.displayName = 'StyledTabs';
 
@@ -441,6 +441,7 @@ export const StyledTab = styled(({ searchTab = false, ...rest }: StyledTabProps)
   <Tab {...rest} classes={{ selected: 'selected' }} />
 ))<StyledTabProps>`
   && {
+    height: 50px;
     min-width: ${({ searchTab }) => (searchTab ? '50px' : '120px')};
     width: ${({ searchTab }) => (searchTab ? '50px' : '120px')};
     background-color: ${({ searchTab }) => (searchTab ? 'transparent' : '#d1d1d5')};
