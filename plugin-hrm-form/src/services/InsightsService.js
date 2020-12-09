@@ -25,7 +25,7 @@ function getSubcategories(task) {
 }
 
 function buildConversationsObject(taskAttributes, form) {
-  const callType = form.callType.value;
+  const { callType } = form;
   const hasCustomerData = !isNonDataCallType(callType);
 
   const communication_channel = taskAttributes.isContactlessTask
@@ -45,8 +45,8 @@ function buildConversationsObject(taskAttributes, form) {
   return {
     conversation_attribute_1: subcategories.join(';'),
     conversation_attribute_2: callType,
-    conversation_attribute_3: childInformation.gender.value,
-    conversation_attribute_4: childInformation.age.value,
+    conversation_attribute_3: childInformation.gender,
+    conversation_attribute_4: childInformation.age,
     communication_channel,
   };
 }
