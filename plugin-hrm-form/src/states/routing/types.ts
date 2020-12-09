@@ -1,6 +1,14 @@
 // Action types
 export const CHANGE_ROUTE = 'CHANGE_ROUTE';
 
+export type TabbedFormSubroutes =
+  | 'search'
+  | 'contactlessTask'
+  | 'callerInformation'
+  | 'childInformation'
+  | 'categories'
+  | 'caseInformation';
+
 export const NewCaseSubroutes = {
   AddNote: 'add-note',
   AddHousehold: 'add-household',
@@ -14,7 +22,7 @@ export const NewCaseSubroutes = {
 // The different routes we have in our app
 export type AppRoutes =
   // TODO: enum the possible subroutes on each route
-  | { route: 'tabbed-forms' }
+  | { route: 'tabbed-forms'; subroute?: TabbedFormSubroutes }
   | {
       route: 'new-case';
       subroute?: typeof NewCaseSubroutes[keyof typeof NewCaseSubroutes];
