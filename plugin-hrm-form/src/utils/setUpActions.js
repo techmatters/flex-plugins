@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import { Manager, TaskHelper, Actions as FlexActions, ActionFunction, ReplacedActionFunction } from '@twilio/flex-ui';
+import { Manager, TaskHelper, Actions as FlexActions, StateHelper } from '@twilio/flex-ui';
 
 // eslint-disable-next-line no-unused-vars
 import { DEFAULT_TRANSFER_MODE, getConfig } from '../HrmFormPlugin';
@@ -23,7 +23,7 @@ const getStateContactForms = taskSid => {
 
 /**
  * Saves the end time of the conversation (used to save the duration of the conversation)
- * @type {ActionFunction}
+ * @type {import('@twilio/flex-ui').ActionFunction}
  */
 const saveEndMillis = async payload => {
   Manager.getInstance().store.dispatch(Actions.saveEndMillis(payload.task.taskSid));
@@ -32,8 +32,8 @@ const saveEndMillis = async payload => {
 /**
  * A function that calls fun with the payload of the replaced action
  * and continues with the Twilio execution
- * @param {ActionFunction} fun
- * @returns {ReplacedActionFunction}
+ * @param {import('@twilio/flex-ui').ActionFunction} fun
+ * @returns {import('@twilio/flex-ui').ReplacedActionFunction}
  */
 const fromActionFunction = fun => async (payload, original) => {
   await fun(payload);
@@ -78,7 +78,7 @@ const getTaskLanguage = ({ helplineLanguage, configuredLanguage }) => ({ task })
 
 /**
  * @param {string} messageKey
- * @returns {(setupObject: ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }) => ActionFunction}
+ * @returns {(setupObject: ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }) => import('@twilio/flex-ui').ActionFunction}
  */
 const sendMessageOfKey = messageKey => setupObject => async payload => {
   const { getMessage } = setupObject;
@@ -95,7 +95,7 @@ const sendGoodbyeMessage = sendMessageOfKey('GoodbyeMsg');
 
 /**
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
- * @returns {ActionFunction}
+ * @returns {import('@twilio/flex-ui').ActionFunction}
  */
 export const afterAcceptTask = setupObject => async payload => {
   const manager = Manager.getInstance();
@@ -107,8 +107,21 @@ export const afterAcceptTask = setupObject => async payload => {
 
   // To enable for all chat based task, change condition to "if (TaskHelper.isChatBasedTask(task))"
   if (task.attributes.channelType === channelTypes.web) {
-    // Ignore event payload as we already have everything we want in afterAcceptTask arguments
-    manager.chatClient.once('channelJoined', () => setTimeout(() => sendWelcomeMessage(setupObject)(payload), 0));
+    const trySendWelcomeMessage = (ms, retries) => {
+      setTimeout(() => {
+        const channelState = StateHelper.getChatChannelStateForTask(task);
+        // if channel is not ready, wait 200ms and retry
+        if (channelState.isLoadingChannel) {
+          if (retries < 10) trySendWelcomeMessage(200, retries + 1);
+          else console.error('Failed to send welcome message: max retries reached.');
+        } else {
+          sendWelcomeMessage(setupObject)(payload);
+        }
+      }, ms);
+    };
+
+    // Ignore event payload as we already have everything we want in afterAcceptTask arguments. Start at 0ms as many users are able to send the message right away
+    manager.chatClient.once('channelJoined', () => trySendWelcomeMessage(0, 0));
   }
 };
 
@@ -128,10 +141,19 @@ const safeTransfer = async (transferFunction, task) => {
 /**
  * Custom override for TransferTask action. Saves the form to share with another counseler (if possible) and then starts the transfer
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
- * @returns {ReplacedActionFunction}
+ * @returns {import('@twilio/flex-ui').ReplacedActionFunction}
  */
 export const customTransferTask = setupObject => async (payload, original) => {
-  console.log('TRANSFER PAYLOAD', payload);
+  const mode = payload.options.mode || DEFAULT_TRANSFER_MODE;
+
+  /*
+   * Currently (as of 2 Dec 2020) warm text transfers are not supported.
+   * We shortcut the rest of the function to save extra time and unnecessary visual changes.
+   */
+  if (!TaskHelper.isCallTask(payload.task) && mode === transferModes.warm) {
+    window.alert(Manager.getInstance().strings['Transfer-ChatWarmNotAllowed']);
+    return () => undefined; // Not calling original(payload) prevents the additional "Task cannot be transferred" notification
+  }
 
   const { identity, workerSid, counselorName } = setupObject;
 
@@ -139,19 +161,11 @@ export const customTransferTask = setupObject => async (payload, original) => {
   const form = getStateContactForms(payload.task.taskSid);
   const documentName = await saveFormSharedState(form, payload.task);
 
-  const mode = payload.options.mode || DEFAULT_TRANSFER_MODE;
-
   // set metadata for the transfer
   await TransferHelpers.setTransferMeta(payload, documentName, counselorName);
 
   if (TaskHelper.isCallTask(payload.task)) {
     return safeTransfer(() => original(payload), payload.task);
-  }
-
-  if (mode === transferModes.warm) {
-    await TransferHelpers.clearTransferMeta(payload.task);
-    window.alert(Manager.getInstance().strings['Transfer-ChatWarmNotAllowed']);
-    return Promise.resolve();
   }
 
   const memberToKick = mode === transferModes.cold ? TransferHelpers.getMemberToKick(payload.task, identity) : '';
@@ -198,15 +212,15 @@ export const wrapupTask = setupObject =>
  */
 const saveInsights = async payload => {
   const { taskSid } = payload.task;
-  const task = getStateContactForms(taskSid);
+  const form = getStateContactForms(taskSid);
 
-  await saveInsightsData(payload.task, task);
+  await saveInsightsData(payload.task, form);
 };
 
 /**
  * Submits the form to the hrm backend (if it should), and saves the insights. Used before task is completed
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
- * @returns {ActionFunction}
+ * @returns {import('@twilio/flex-ui').ActionFunction}
  */
 const sendInsightsData = setupObject => async payload => {
   const { featureFlags } = setupObject;
@@ -220,7 +234,7 @@ const sendInsightsData = setupObject => async payload => {
 
 /**
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
- * @returns {ActionFunction}
+ * @returns {import('@twilio/flex-ui').ActionFunction}
  */
 const decreaseChatCapacity = setupObject => async payload => {
   const { featureFlags } = setupObject;
@@ -230,7 +244,7 @@ const decreaseChatCapacity = setupObject => async payload => {
 
 /**
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
- * @returns {ActionFunction}
+ * @returns {import('@twilio/flex-ui').ActionFunction}
  */
 export const beforeCompleteTask = setupObject => async payload => {
   await sendInsightsData(setupObject)(payload);

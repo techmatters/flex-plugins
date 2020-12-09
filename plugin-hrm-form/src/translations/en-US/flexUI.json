@@ -20,15 +20,13 @@
   "CallType-abusive": "Abusive",
   "CallType-CloseContact": "Close Contact",
 
-  "CallTypeAndCounselor-Label": "Counselor: ",
+  "CallTypeAndCounselor-Label": "Counsellor: ",
 
   "CallTypeButtons-Categorize": "categorize this contact",
   "CallTypeButtons-Or": "Or was this contact…",
 
   "ConnectDialog-Child": "Copy child information from this record to new contact?",
   "ConnectDialog-Caller": "Copy caller information from this record to new contact?",
-
-  "ContactDetailsIndex-Back": "Return to results",
 
   "QueueCard-WaitLabel": "Longest wait time:",
   "QueueCard-None": "none",
@@ -38,19 +36,45 @@
   "QueueCard-Name": "Queue name: ",
 
   "QueueIndex-ContactsWaiting": "Contacts waiting",
+  "AddButtons-Header": "Add...",
 
   "NonDataCallTypeDialog-CloseConfirm": "Are you sure?",
 
-  "SearchResultsIndex-Back": "Return to search criteria",
+  "SearchContactsAndCases-Title": "Search for Contacts and Cases",
+
+  "SearchForm-Name": "Name",
+  "SearchForm-Counselor": "Counsellor",
+  "SearchForm-DateRange": "Date Range",
+  "SearchForm-Phone": "Phone",
+  "SearchForm-Button": "Search",
+
+  "SearchResultsIndex-Back": "Return to Search Criteria",
+  "SearchResultsIndex-BackToResults": "Return to Search Results",
   "SearchResultsIndex-Result": " result",
   "SearchResultsIndex-Results": " results",
   "SearchResultsIndex-NonDataContacts": "Non-Data Contacts",
+  "SearchResultsIndex-ClosedCases": "Closed Cases",
+  "SearchResultsIndex-ViewContacts": "View Contacts",
+  "SearchResultsIndex-ViewCases": "View Cases",
+
+  "StandaloneSearch-SideNav": "Search",
+
+  "CaseHeader-Opened": "Opened",
+  "CaseHeader-Updated": "Updated",
+  "CaseHeader-ViewCase": "View Case",
+  "CaseHeader-MergeContactIntoCase": "Merge Current Contact into Case and Copy Child Information",
+  "CaseHeader-CopyChildInfo": "Copy Child Information into Current Contact",
+  "CaseHeader-Voided": "VOIDED",
+  "CaseHeader-NoData": "No Data",
+  "CaseSummary-ReadMore": "see more",
+  "CaseSummary-ReadLess": "see less",
+  "CaseSummary-NoSummaryProvided": "No Summary provided",
 
   "SectionEntry-Yes": "Yes",
   "SectionEntry-No": "No",
 
   "SharedStateSaveFormError": "The information stored in the form couldn't be saved. Task will be transferred anyway.",
-  "SharedStateLoadFormError": "The information stored in the form by previous counselor couldn't be retrieved. Starting current task with clear contact form.",
+  "SharedStateLoadFormError": "The information stored in the form by previous counsellor couldn't be retrieved. Starting current task with clear contact form.",
 
   "Transfer-TransferButton": "Transfer",
   "Transfer-AcceptTransferButton": "Accept Transfer",
@@ -83,13 +107,15 @@
   "BottomBar-SavePerpetrator": "Save Perpetrator",
   "BottomBar-SaveAndAddAnotherHousehold": "Save and Add Another Member",
   "BottomBar-SaveHousehold": "Save Member",
+  "BottomBar-Close": "Close",
 
   "Categories-Title": "Categorize this contact",
   
-  "TabbedForms-AddCallerInfoTab": "Caller Information",
-  "TabbedForms-AddChildInfoTab": "Child Information",
+  "TabbedForms-AddCallerInfoTab": "Caller Info",
+  "TabbedForms-AddChildInfoTab": "Child Info",
   "TabbedForms-CategoriesTab": "Categories",
   "TabbedForms-AddCaseInfoTab": "Summary",
+  "TabbedForms-AddContactInfoTab": "Contact Info",
 
   "NotImplemented": "Not implemented yet!",
   "Error-Backend": "Error from backend system.",
@@ -104,7 +130,7 @@
   "Case-AddHouseholdSection": "Household Information",
   "Case-CaseSummarySection": "Case Summary",
   "Case-CaseDetailsChildName": "Child Name",
-  "Case-CaseDetailsOwner": "Counselor",
+  "Case-CaseDetailsOwner": "Counsellor",
   "Case-CaseDetailsDateOpened": "Date Opened",
   "Case-CaseDetailsStatusLabel": "Status",
   "Case-CaseDetailsStatusOpen": "Open",
@@ -114,7 +140,7 @@
   "Case-AddNoteTypeHere": "Type here to add note...",
   "Case-AddCaseSummaryHere": "Add case summary here...",
   "Case-ActionHeaderAdded": "Added:",
-  "Case-ActionHeaderCounselor": "Counselor:",
+  "Case-ActionHeaderCounselor": "Counsellor:",
   "Case-CloseButton": "Close",
   "Case-ViewButton": "View",
   "Case-PerpetratorName": "Perpetrator Name: ",
@@ -136,7 +162,7 @@
   "CaseList-THCase": "Case #",
   "CaseList-THChildName": "Child's Name",
   "CaseList-THSummary": "Summary",
-  "CaseList-THCounselor": "Counselor",
+  "CaseList-THCounselor": "Counsellor",
   "CaseList-THOpened": "Opened",
   "CaseList-THUpdated": "Updated",
   "CaseList-THCategory": "Category",
@@ -176,7 +202,22 @@
   "CallerSection-Ethnicity": "Ethnicity",
 
   "ContactDetails-GeneralDetails": "General Details",
+  "ContactDetails-GeneralDetails-Channel": "Channel",
+  "ContactDetails-GeneralDetails-PhoneNumber": "Phone Number",
+  "ContactDetails-GeneralDetails-ConversationDuration": "Conversation Duration",
+  "ContactDetails-GeneralDetails-Counselor": "Counsellor",
+  "ContactDetails-GeneralDetails-DateTime": "Date/Time",
 
-  "ManualPullButtonText": "Add Another Task",
-  "NoTaskAssignableNotification": "No task assignable to you at the moment."
+  "ManualPullButtonText": "Another Task",
+  "NoTaskAssignableNotification": "No task assignable to you at the moment.",
+  "OfflineContactButtonText": "Offline Contact Record",
+  "CancelOfflineContact": "Cancel Offline Contact",
+  "YouMustBeAvailableToPerformThisOp": "You must be available to perform this operation.",
+
+  "RequiredFieldError": "This field is required.",
+  "DateCantBeGreaterThanToday": "Date can't be greater than today.",
+  "TimeCantBeGreaterThanNow": "Time can't be greater than now.",
+
+  "OfflineContactFirstLine": "Offline Contact",
+  "OfflineContactSecondLine": "in progress"
 }

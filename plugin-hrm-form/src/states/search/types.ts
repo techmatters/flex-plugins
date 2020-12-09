@@ -1,4 +1,4 @@
-import { SearchContact } from '../../types/types';
+import { SearchContact, SearchCaseResult } from '../../types/types';
 import { addDetails } from './helpers';
 import { ContactDetailsSectionsType } from '../../components/common/ContactDetails';
 // Action types
@@ -8,6 +8,9 @@ export const VIEW_CONTACT_DETAILS = 'VIEW_CONTACT_DETAILS';
 export const SEARCH_CONTACTS_REQUEST = 'SEARCH_CONTACTS_REQUEST';
 export const SEARCH_CONTACTS_SUCCESS = 'SEARCH_CONTACTS_SUCCESS';
 export const SEARCH_CONTACTS_FAILURE = 'SEARCH_CONTACTS_FAILURE';
+export const SEARCH_CASES_REQUEST = 'SEARCH_CASES_REQUEST';
+export const SEARCH_CASES_SUCCESS = 'SEARCH_CASES_SUCCESS';
+export const SEARCH_CASES_FAILURE = 'SEARCH_CASES_FAILURE';
 export const HANDLE_EXPAND_DETAILS_SECTION = 'HANDLE_EXPAND_DETAILS_SECTION';
 
 // types and constants used to construct search form
@@ -26,13 +29,18 @@ export type SearchFormValues = {
 
 export const SearchPages = {
   form: 'form',
-  results: 'results',
+  resultsContacts: 'results.contacts',
+  resultsCases: 'results.cases',
   details: 'details',
+  case: 'case',
 } as const;
 
 export type SearchPagesType = typeof SearchPages[keyof typeof SearchPages];
 
-export type DetailedSearchResult = ReturnType<typeof addDetails>;
+export type DetailedSearchContactsResult = {
+  count: number;
+  contacts: ReturnType<typeof addDetails>;
+};
 
 // Supported action object types
 type SearchFormChangeAction = {
@@ -46,11 +54,21 @@ type SearchContactsRequestAction = { type: typeof SEARCH_CONTACTS_REQUEST; taskI
 
 type SearchContactsSuccessAction = {
   type: typeof SEARCH_CONTACTS_SUCCESS;
-  searchResult: DetailedSearchResult;
+  searchResult: DetailedSearchContactsResult;
   taskId: string;
 };
 
 type SearchContactsFailureAction = { type: typeof SEARCH_CONTACTS_FAILURE; error: any; taskId: string };
+
+type SearchCasesRequestAction = { type: typeof SEARCH_CASES_REQUEST; taskId: string };
+
+type SearchCasesSuccessAction = {
+  type: typeof SEARCH_CASES_SUCCESS;
+  searchResult: SearchCaseResult;
+  taskId: string;
+};
+
+type SearchCasesFailureAction = { type: typeof SEARCH_CASES_FAILURE; error: any; taskId: string };
 
 // maybe we can migrate this to be handled by the routing instead later on?
 type SearchChangePageAction = { type: typeof CHANGE_SEARCH_PAGE; page: SearchPagesType; taskId: string };
@@ -68,6 +86,9 @@ export type SearchActionType =
   | SearchContactsRequestAction
   | SearchContactsSuccessAction
   | SearchContactsFailureAction
+  | SearchCasesRequestAction
+  | SearchCasesSuccessAction
+  | SearchCasesFailureAction
   | SearchChangePageAction
   | SearchViewContactAction
   | SearchExpandSectionAction;

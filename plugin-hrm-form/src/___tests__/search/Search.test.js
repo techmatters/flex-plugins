@@ -28,6 +28,11 @@ function createState(taskId, { currentPage, searchFormValues, currentContact, se
           hash: {},
         },
       },
+      routing: {
+        tasks: {
+          'standalone-task-sid': 'some-id',
+        },
+      },
       searchContacts: {
         tasks: {
           [taskId]: {
@@ -40,7 +45,6 @@ function createState(taskId, { currentPage, searchFormValues, currentContact, se
               phoneNumber: '',
               dateFrom: '',
               dateTo: '',
-              onlyDataContacts: false,
             },
             searchResult: searchResult || [],
             detailsExpanded: detailsExpanded || {},
@@ -79,56 +83,10 @@ test('<Search> should display <SearchForm />', () => {
   ).root;
 
   expect(() => component.findByType(SearchForm)).not.toThrow();
-  expect(() => component.findByType(SearchResults)).toThrow();
   expect(() => component.findByType(ContactDetails)).toThrow();
 
   const valuesProps = component.findByType(SearchForm).props.values;
   expect(valuesProps).toEqual(searchFormValues);
-});
-
-test('<Search> should display <SearchResults />', () => {
-  const currentPage = SearchPages.results;
-  const searchResult = {
-    count: 1,
-    contacts: [
-      {
-        contactId: 'Jill-Smith-id',
-        overview: {
-          dateTime: '2020-03-10',
-          name: 'Jill Smith',
-          customerNumber: 'Anonymous',
-          callType: 'Child calling about self',
-          categories: { category1: ['Tag1', 'Tag2'] },
-          counselor: 'counselor-id',
-          notes: 'Jill Smith Notes',
-        },
-        details: {
-          caseInformation: {
-            callSummary: 'Summary',
-          },
-        },
-        counselor: 'Counselor',
-      },
-    ],
-  };
-
-  const task = { taskSid: 'WT123' };
-
-  const initialState = createState(task.taskSid, { currentPage, searchResult, detailsExpanded });
-  const store = mockStore(initialState);
-
-  const component = renderer.create(
-    <Provider store={store}>
-      <Search task={task} handleSelectSearchResult={() => null} handleExpandDetailsSection={() => null} />
-    </Provider>,
-  ).root;
-
-  expect(() => component.findByType(SearchForm)).toThrow();
-  expect(() => component.findByType(SearchResults)).not.toThrow();
-  expect(() => component.findByType(ContactDetails)).toThrow();
-
-  const resultsProps = component.findByType(SearchResults).props.results;
-  expect(resultsProps).toEqual(searchResult);
 });
 
 test('<Search> should display <ContactDetails />', () => {
@@ -218,7 +176,6 @@ test('<Search> should display <ContactDetails />', () => {
   ).root;
 
   expect(() => component.findByType(SearchForm)).toThrow();
-  expect(() => component.findByType(SearchResults)).toThrow();
   expect(() => component.findByType(ContactDetails)).not.toThrow();
 
   const contactProps = component.findByType(ContactDetails).props.contact;

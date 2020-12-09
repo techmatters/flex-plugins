@@ -32,6 +32,12 @@ class BottomBar extends Component {
     changeRoute: PropTypes.func.isRequired,
     handleValidateForm: PropTypes.func.isRequired,
     setConnectedCase: PropTypes.func.isRequired,
+    handleSubmitIfValid: PropTypes.func.isRequired,
+    optionalButtons: PropTypes.arrayOf(PropTypes.shape({ onClick: PropTypes.func, label: PropTypes.string })),
+  };
+
+  static defaultProps = {
+    optionalButtons: undefined,
   };
 
   state = {
@@ -86,8 +92,8 @@ class BottomBar extends Component {
   };
 
   handleSubmit = async () => {
-    const { task } = this.props;
     const { hrmBaseUrl, workerSid, helpline, strings } = getConfig();
+    const { task } = this.props;
 
     if (!hasTaskControl(task)) return;
 
@@ -98,7 +104,7 @@ class BottomBar extends Component {
         await saveToHrm(task, newForm, hrmBaseUrl, workerSid, helpline);
         this.props.handleCompleteTask(task.taskSid, task);
       } catch (error) {
-        if (!window.confirm(strings['Error-ContinueWithoutRecording'])) {
+        if (window.confirm(strings['Error-ContinueWithoutRecording'])) {
           this.props.handleCompleteTask(task.taskSid, task);
         }
       }
@@ -107,8 +113,13 @@ class BottomBar extends Component {
     }
   };
 
+  onError = () => {
+    const { strings } = getConfig();
+    window.alert(strings['Error-Form']);
+  };
+
   render() {
-    const { tabs, form } = this.props;
+    const { tabs, form, handleSubmitIfValid, optionalButtons } = this.props;
     const { isMenuOpen, anchorEl, mockedMessage } = this.state;
 
     const { tab } = form.metadata;
@@ -130,7 +141,7 @@ class BottomBar extends Component {
           <MenuItem
             Icon={FolderOpenIcon}
             text={<Template code="BottomBar-OpenNewCase" />}
-            onClick={this.handleOpenNewCase}
+            onClick={handleSubmitIfValid(this.handleOpenNewCase, this.onError)}
           />
           <MenuItem
             Icon={AddIcon}
@@ -139,8 +150,16 @@ class BottomBar extends Component {
           />
         </Menu>
         <BottomButtonBar>
+          {optionalButtons &&
+            optionalButtons.map((i, index) => (
+              <Box key={`optional-button-${index}`} marginRight="15px">
+                <StyledNextStepButton type="button" roundCorners secondary onClick={i.onClick}>
+                  <Template code={i.label} />
+                </StyledNextStepButton>
+              </Box>
+            ))}
           {showNextButton && (
-            <StyledNextStepButton roundCorners={true} onClick={this.handleNext}>
+            <StyledNextStepButton type="button" roundCorners={true} onClick={this.handleNext}>
               <Template code="BottomBar-Next" />
             </StyledNextStepButton>
           )}
@@ -149,6 +168,7 @@ class BottomBar extends Component {
               {featureFlags.enable_case_management && (
                 <Box marginRight="15px">
                   <StyledNextStepButton
+                    type="button"
                     roundCorners
                     secondary
                     onClick={this.toggleCaseMenu}
@@ -159,7 +179,11 @@ class BottomBar extends Component {
                   </StyledNextStepButton>
                 </Box>
               )}
-              <StyledNextStepButton roundCorners={true} onClick={this.handleSubmit} disabled={isSubmitButtonDisabled}>
+              <StyledNextStepButton
+                roundCorners={true}
+                onClick={handleSubmitIfValid(this.handleSubmit, this.onError)}
+                disabled={isSubmitButtonDisabled}
+              >
                 <Template code="BottomBar-SaveContact" />
               </StyledNextStepButton>
             </>

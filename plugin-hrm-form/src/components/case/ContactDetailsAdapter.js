@@ -28,10 +28,38 @@ const catsReducer = (accumulator, [cat, subcats]) => {
  * @param {{ [category: string]: { [subcategory: string]: boolean } }} categories categories object
  * @returns {{ [category: string]: string[] }} returns an object containing each truthy subcategory under the category name
  */
-const retrieveCategories = categories => {
+export const retrieveCategories = categories => {
   if (!categories) return {};
 
   return Object.entries(categories).reduce(catsReducer, {});
+};
+
+export const adaptContactToDetailsScreen = (contact, counselorName) => {
+  const dateTime = contact.createdAt;
+  const name = `${contact.rawJson.childInformation.name.firstName} ${contact.rawJson.childInformation.name.lastName}`;
+  const customerNumber = contact.number;
+  const { callType, caseInformation } = contact.rawJson;
+  const categories = retrieveCategories(caseInformation.categories);
+  const notes = caseInformation.callSummary;
+  const channelType = contact.channel;
+  const { conversationDuration } = contact;
+  const counselor = counselorName;
+
+  return {
+    overview: {
+      dateTime,
+      name,
+      customerNumber,
+      callType,
+      categories,
+      counselor,
+      notes,
+      channel: channelType,
+      conversationDuration,
+    },
+    counselor,
+    details: contact.rawJson,
+  };
 };
 
 export const adaptFormToContactDetails = (task, form, date, counselor) => {
@@ -43,7 +71,7 @@ export const adaptFormToContactDetails = (task, form, date, counselor) => {
   const categories = retrieveCategories(caseInformation.categories);
   const notes = caseInformation.callSummary;
   const { channelType } = task;
-  const conversationDuration = getConversationDuration(form.metadata);
+  const conversationDuration = getConversationDuration(task, form.metadata);
 
   return {
     overview: {

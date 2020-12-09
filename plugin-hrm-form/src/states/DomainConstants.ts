@@ -19,7 +19,21 @@ export const channelTypes = {
   whatsapp: 'whatsapp',
 } as const;
 
+export const channelsAndDefault = { ...channelTypes, default: 'default' };
+
 export type ChannelTypes = typeof channelTypes[keyof typeof channelTypes];
+
+export const otherContactChannels = {
+  email: 'E-mail',
+  websiteForum: 'Website forum',
+  outreach: 'Outreach',
+  walkIn: 'Walk-in / In person',
+  post: 'Post',
+  bulletinBoard: 'Bulletin Board',
+  other: 'Other',
+} as const;
+
+export type OtherContactChannels = typeof otherContactChannels[keyof typeof otherContactChannels];
 
 export const transferModes = {
   cold: 'COLD',

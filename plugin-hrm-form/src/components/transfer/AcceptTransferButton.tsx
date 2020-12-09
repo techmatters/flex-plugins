@@ -1,20 +1,19 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
-import { TaskHelper, Template } from '@twilio/flex-ui';
-import PropTypes from 'prop-types';
+import { TaskHelper, Template, ITask, ThemeProps } from '@twilio/flex-ui';
 
 import { TransferStyledButton } from '../../styles/HrmStyles';
 import { closeCallOriginal } from '../../utils/transfer';
 
-/**
- * @param {import('@twilio/flex-ui').ITask} task the transferred task
- */
-const handleAcceptTransfer = async task => {
+const handleAcceptTransfer = async (task: ITask) => {
   if (TaskHelper.isChatBasedTask(task)) return; // this case should never happen
 
   await closeCallOriginal(task);
 };
 
-const AcceptTransferButton = ({ theme, task }) => {
+type Props = ThemeProps & { task: ITask };
+
+const AcceptTransferButton: React.FC<Props> = ({ theme, task }) => {
   return (
     <TransferStyledButton
       color={theme.colors.base11}
@@ -28,20 +27,5 @@ const AcceptTransferButton = ({ theme, task }) => {
 };
 
 AcceptTransferButton.displayName = 'AcceptTransferButton';
-AcceptTransferButton.propTypes = {
-  theme: PropTypes.shape({
-    colors: PropTypes.shape({
-      base1: PropTypes.string,
-      base11: PropTypes.string,
-    }),
-  }).isRequired,
-  task: PropTypes.shape({
-    attributes: PropTypes.shape({
-      transferMeta: PropTypes.shape({
-        transferStatus: PropTypes.string,
-      }),
-    }),
-  }).isRequired,
-};
 
 export default AcceptTransferButton;

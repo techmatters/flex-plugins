@@ -26,7 +26,6 @@ export const initTranslateUI = localizationConfig => async language => {
       setNewStrings(translation);
     }
     afterNewStrings(language);
-    console.log('Translation OK');
   } catch (err) {
     window.alert(translationErrorMsg);
     console.error(translationErrorMsg, err);

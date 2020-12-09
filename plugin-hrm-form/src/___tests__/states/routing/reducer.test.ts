@@ -1,7 +1,7 @@
-import { reduce } from '../../../states/routing/reducer';
-import * as types from '../../../states/routing/types';
+import { reduce, initialState } from '../../../states/routing/reducer';
 import * as actions from '../../../states/routing/actions';
 import * as GeneralActions from '../../../states/actions';
+import { standaloneTaskSid } from '../../../components/StandaloneSearch';
 
 const task = { taskSid: 'task1' };
 
@@ -9,7 +9,7 @@ describe('test reducer (specific actions)', () => {
   let state = undefined;
 
   test('should return initial state', async () => {
-    const expected = { tasks: {} };
+    const expected = initialState;
 
     const result = reduce(state, {});
     expect(result).toStrictEqual(expected);
@@ -21,6 +21,7 @@ describe('test reducer (specific actions)', () => {
     const expected = {
       tasks: {
         task1: { route: 'select-call-type' },
+        [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
     };
 
@@ -34,6 +35,7 @@ describe('test reducer (specific actions)', () => {
     const expected = {
       tasks: {
         task1: { route: 'tabbed-forms' },
+        [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
     };
 
@@ -44,7 +46,7 @@ describe('test reducer (specific actions)', () => {
   });
 
   test('should handle REMOVE_CONTACT_STATE', async () => {
-    const expected = { tasks: {} };
+    const expected = initialState;
 
     const result = reduce(state, GeneralActions.removeContactState(task.taskSid));
     expect(result).toStrictEqual(expected);
@@ -56,6 +58,7 @@ describe('test reducer (specific actions)', () => {
     const expected = {
       tasks: {
         task1: { route: 'select-call-type' },
+        [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
     };
 
@@ -69,6 +72,7 @@ describe('test reducer (specific actions)', () => {
     const expected = {
       tasks: {
         task1: { route: 'new-case' },
+        [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
     };
 

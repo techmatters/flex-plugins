@@ -10,7 +10,7 @@ export const counselorType = PropTypes.shape({
 });
 
 export const fieldType = PropTypes.shape({
-  value: PropTypes.oneOfType([PropTypes.string, counselorType]),
+  value: PropTypes.oneOfType([PropTypes.bool, PropTypes.string, counselorType]),
   error: PropTypes.string,
   validation: PropTypes.arrayOf(PropTypes.string),
   touched: PropTypes.bool,
@@ -43,7 +43,7 @@ const categoryType = PropTypes.arrayOf(fieldType);
 
 const categoriesType = PropTypes.shape({
   error: PropTypes.string,
-  validation: PropTypes.string,
+  validation: PropTypes.arrayOf(PropTypes.string),
   touched: PropTypes.bool,
   categories: PropTypes.arrayOf(categoryType),
 });
@@ -94,7 +94,7 @@ export const formType = PropTypes.shape({
 });
 
 export const localizationType = PropTypes.shape({
-  strings: PropTypes.object.isRequired,
+  manager: PropTypes.object.isRequired,
   isCallTask: PropTypes.func.isRequired,
 });
 
@@ -156,23 +156,6 @@ export const contactType = PropTypes.shape({
       streetAddress: PropTypes.string,
     }),
   }),
-});
-
-export const searchResultType = PropTypes.shape({
-  contactId: PropTypes.string.isRequired,
-  overview: PropTypes.shape({
-    dateTime: PropTypes.string,
-    name: PropTypes.string,
-    customerNumber: PropTypes.string,
-    callType: PropTypes.string,
-    categories: PropTypes.shape({}),
-    counselor: PropTypes.string,
-    notes: PropTypes.string,
-    channel: PropTypes.string,
-    conversationDuration: PropTypes.number,
-  }).isRequired,
-  details: contactType.isRequired,
-  counselor: PropTypes.string,
 });
 
 export const searchFormType = PropTypes.shape({

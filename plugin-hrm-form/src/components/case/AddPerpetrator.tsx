@@ -6,15 +6,16 @@ import { connect } from 'react-redux';
 import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseActionContainer, CaseActionFormContainer } from '../../styles/case';
 import ActionHeader from './ActionHeader';
-import { CallerForm, newCallerFormInformation as newFormEntry } from '../common/forms';
+import { CallerForm, newCallerFormInformation } from '../common/forms';
 import { editNestedField } from '../../states/ContactState';
-import { namespace, connectedCaseBase } from '../../states';
+import { namespace, connectedCaseBase, routingBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseState } from '../../states/case/reducer';
 import { DefaultEventHandlers } from '../common/forms/types';
 import { getFormValues } from '../common/forms/helpers';
 import { getConfig } from '../../HrmFormPlugin';
+import { updateCase } from '../../services/CaseService';
 
 type OwnProps = {
   task: ITask;
@@ -30,8 +31,9 @@ const AddPerpetrator: React.FC<Props> = ({
   counselor,
   onClickClose,
   connectedCaseState,
+  route,
+  setConnectedCase,
   updateTempInfo,
-  updateCaseInfo,
   changeRoute,
 }) => {
   const { temporaryCaseInfo } = connectedCaseState;
@@ -47,26 +49,30 @@ const AddPerpetrator: React.FC<Props> = ({
     },
   });
 
-  function savePerpetrator() {
+  const savePerpetrator = async shouldStayInForm => {
     if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-perpetrator') return;
 
-    const { info } = connectedCaseState.connectedCase;
+    const { info, id } = connectedCaseState.connectedCase;
     const perpetrator = getFormValues(temporaryCaseInfo.info);
     const createdAt = new Date().toISOString();
     const { workerSid } = getConfig();
     const newPerpetrator = { perpetrator, createdAt, twilioWorkerId: workerSid };
     const perpetrators = info && info.perpetrators ? [...info.perpetrators, newPerpetrator] : [newPerpetrator];
     const newInfo = info ? { ...info, perpetrators } : { perpetrators };
-    updateCaseInfo(newInfo, task.taskSid);
-  }
+    const updatedCase = await updateCase(id, { info: newInfo });
+    setConnectedCase(updatedCase, task.taskSid);
+    if (shouldStayInForm) {
+      updateTempInfo({ screen: 'add-perpetrator', info: newCallerFormInformation }, task.taskSid);
+      changeRoute({ route, subroute: 'add-perpetrator' }, task.taskSid);
+    }
+  };
 
   function savePerpetratorAndStay() {
-    savePerpetrator();
-    updateTempInfo({ screen: 'add-perpetrator', info: newFormEntry }, task.taskSid);
+    savePerpetrator(true);
   }
 
   function savePerpetratorAndLeave() {
-    savePerpetrator();
+    savePerpetrator(false);
     onClickClose();
   }
 
@@ -110,13 +116,15 @@ AddPerpetrator.displayName = 'AddPerpetrator';
 const mapStateToProps = (state, ownProps: OwnProps) => {
   const caseState: CaseState = state[namespace][connectedCaseBase]; // casting type as inference is not working for the store yet
   const connectedCaseState = caseState.tasks[ownProps.task.taskSid];
+  const { route } = state[namespace][routingBase].tasks[ownProps.task.taskSid];
 
-  return { connectedCaseState };
+  return { connectedCaseState, route };
 };
 
 const mapDispatchToProps = {
   updateTempInfo: CaseActions.updateTempInfo,
   updateCaseInfo: CaseActions.updateCaseInfo,
+  setConnectedCase: CaseActions.setConnectedCase,
   changeRoute: RoutingActions.changeRoute,
 };
 

@@ -5,6 +5,7 @@ import { channelTypes } from '../states/DomainConstants';
 import { getConversationDuration, fillEndMillis } from '../utils/conversationDuration';
 import { getLimitAndOffsetParams } from './PaginationParams';
 import fetchHrmApi from './fetchHrmApi';
+import { getDateTime } from '../utils/helpers';
 
 export async function searchContacts(searchParams, limit, offset) {
   const queryParams = getLimitAndOffsetParams(limit, offset);
@@ -15,6 +16,7 @@ export async function searchContacts(searchParams, limit, offset) {
   };
 
   const responseJson = await fetchHrmApi(`/contacts/search${queryParams}`, options);
+
   return responseJson;
 }
 
@@ -39,6 +41,12 @@ export function transformForm(form) {
   Object.keys(form)
     .filter(key => !filterableFields.includes(key))
     .forEach(key => {
+      // NOTE: hacky if to avoid transforming the "contactlessTask" part of the form (handled by rhf)
+      if (key === 'contactlessTask') {
+        newForm[key] = form[key];
+        return;
+      }
+
       switch (form[key].type) {
         case FieldType.CALL_TYPE:
         case FieldType.CHECKBOX:
@@ -75,8 +83,9 @@ export function transformForm(form) {
 export async function saveToHrm(task, form, hrmBaseUrl, workerSid, helpline, shouldFillEndMillis = true) {
   // if we got this far, we assume the form is valid and ready to submit
   const metadata = shouldFillEndMillis ? fillEndMillis(form.metadata) : form.metadata;
-  const conversationDuration = getConversationDuration(metadata);
+  const conversationDuration = getConversationDuration(task, metadata);
   const callType = form.callType.value;
+  const number = getNumberFromTask(task);
 
   let rawForm = form;
 
@@ -87,6 +96,9 @@ export async function saveToHrm(task, form, hrmBaseUrl, workerSid, helpline, sho
       metadata: form.metadata,
     };
   }
+
+  // This might change if isNonDataCallType, that's why we use rawForm
+  const timeOfContact = getDateTime(rawForm.contactlessTask);
 
   /*
    * We do a transform from the original and then add things.
@@ -100,14 +112,12 @@ export async function saveToHrm(task, form, hrmBaseUrl, workerSid, helpline, sho
     twilioWorkerId: workerSid,
     queueName: task.queueName,
     channel: task.channelType,
-    number: getNumberFromTask(task),
+    number,
     helpline,
     conversationDuration,
+    timeOfContact,
   };
-  console.log(`Using base url: ${hrmBaseUrl}`);
 
-  // print the form values to the console
-  console.log(`Sending: ${JSON.stringify(body)}`);
   const response = await fetch(`${hrmBaseUrl}/contacts`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Basic ${btoa(secret)}` },
@@ -116,7 +126,6 @@ export async function saveToHrm(task, form, hrmBaseUrl, workerSid, helpline, sho
 
   if (!response.ok) {
     const error = response.error();
-    console.log(JSON.stringify(error));
     throw error;
   }
 
@@ -133,7 +142,6 @@ export async function connectToCase(hrmBaseUrl, contactId, caseId) {
 
   if (!response.ok) {
     const error = response.error();
-    console.log(JSON.stringify(error));
     throw error;
   }
 

@@ -9,15 +9,18 @@ import configureMockStore from 'redux-mock-store';
 
 import '../../mockGetConfig';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../../states';
-import * as RoutingActions from '../../../states/routing/actions';
-import * as CaseActions from '../../../states/case/actions';
 import { UPDATE_TEMP_INFO, UPDATE_CASE_INFO } from '../../../states/case/types';
 import AddHousehold from '../../../components/case/AddHousehold';
 import { newCallerFormInformation } from '../../../components/common/forms';
 import HrmTheme from '../../../styles/HrmTheme';
-import { getFormValues } from '../../../components/common/forms/helpers';
+import { updateCase } from '../../../services/CaseService';
+
+jest.mock('../../../services/CaseService');
+
+const flushPromises = () => new Promise(setImmediate);
 
 expect.extend(toHaveNoViolations);
+
 const mockStore = configureMockStore([]);
 
 const state1 = {
@@ -41,13 +44,21 @@ const state1 = {
     [connectedCaseBase]: {
       tasks: {
         task1: {
-          temporaryCaseInfo: null,
+          temporaryCaseInfo: { screen: 'add-household', info: newCallerFormInformation },
           connectedCase: {
             createdAt: 1593469560208,
             twilioWorkerId: 'worker1',
             status: 'open',
             info: null,
           },
+        },
+      },
+    },
+    routing: {
+      route: 'new-case',
+      tasks: {
+        task1: {
+          route: 'new-case',
         },
       },
     },
@@ -73,10 +84,47 @@ const state2 = {
         },
       },
     },
+    routing: {
+      route: 'new-case',
+      tasks: {
+        task1: {
+          route: 'new-case',
+        },
+      },
+    },
   },
 };
 const store2 = mockStore(state2);
 store2.dispatch = jest.fn();
+
+const state3 = {
+  [namespace]: {
+    ...state1[namespace],
+    [connectedCaseBase]: {
+      tasks: {
+        task1: {
+          temporaryCaseInfo: null,
+          connectedCase: {
+            createdAt: 1593469560208,
+            twilioWorkerId: 'worker1',
+            status: 'open',
+            info: null,
+          },
+        },
+      },
+    },
+    routing: {
+      route: 'new-case',
+      tasks: {
+        task1: {
+          route: 'new-case',
+        },
+      },
+    },
+  },
+};
+const store3 = mockStore(state3);
+store3.dispatch = jest.fn();
 
 const themeConf = {
   colorTheme: HrmTheme,
@@ -98,7 +146,7 @@ describe('Test AddHousehold', () => {
 
     render(
       <StorelessThemeProvider themeConf={themeConf}>
-        <Provider store={store1}>
+        <Provider store={store3}>
           <AddHousehold {...ownProps} />
         </Provider>
       </StorelessThemeProvider>,
@@ -203,8 +251,15 @@ describe('Test AddHousehold', () => {
     });
   });
 
-  test('Handle onSave', async () => {
+  test('Handle onSave and leave', async () => {
     const onClickClose = jest.fn();
+    const household = { firstName: 'House', lastName: 'One' };
+
+    const updatedCase = {
+      info: { households: [household] },
+    };
+
+    updateCase.mockReturnValueOnce(Promise.resolve(updatedCase));
 
     const ownProps = {
       counselor: 'Someone',
@@ -224,24 +279,54 @@ describe('Test AddHousehold', () => {
     store2.dispatch.mockClear();
     screen.getByTestId('Case-AddHouseholdScreen-SaveHousehold').click();
 
-    expect(store2.dispatch).toHaveBeenCalledTimes(1);
+    await flushPromises();
+
+    expect(store2.dispatch).toHaveBeenCalled();
+    expect(updateCase).toHaveBeenCalled();
     const setConnectedCaseCall1 = store2.dispatch.mock.calls[0][0];
-    expect(setConnectedCaseCall1.type).toBe(UPDATE_CASE_INFO);
+    expect(setConnectedCaseCall1.type).toBe('SET_CONNECTED_CASE');
     expect(setConnectedCaseCall1.taskId).toBe(ownProps.task.taskSid);
-    expect(setConnectedCaseCall1.info.households[0].household).toStrictEqual(getFormValues(newCallerFormInformation));
+    expect(setConnectedCaseCall1.connectedCase).toBe(updatedCase);
 
     expect(onClickClose).toHaveBeenCalled();
+  });
+
+  test('Handle onSave and stay', async () => {
+    const onClickClose = jest.fn();
+    const household = { firstName: 'House', lastName: 'One' };
+
+    const updatedCase = {
+      info: { households: [household] },
+    };
+
+    updateCase.mockReturnValueOnce(Promise.resolve(updatedCase));
+
+    const ownProps = {
+      counselor: 'Someone',
+      onClickClose,
+      task,
+    };
+
+    render(
+      <StorelessThemeProvider themeConf={themeConf}>
+        <Provider store={store2}>
+          <AddHousehold {...ownProps} />
+        </Provider>
+      </StorelessThemeProvider>,
+    );
 
     // Save and stay
-    onClickClose.mockClear();
     store2.dispatch.mockClear();
     screen.getByTestId('Case-AddHouseholdScreen-SaveAndAddAnotherHousehold').click();
 
-    expect(store2.dispatch).toHaveBeenCalledTimes(2);
+    await flushPromises();
+
+    expect(store2.dispatch).toHaveBeenCalled();
+    expect(updateCase).toHaveBeenCalled();
     const setConnectedCaseCall2 = store2.dispatch.mock.calls[0][0];
-    expect(setConnectedCaseCall2.type).toBe(UPDATE_CASE_INFO);
+    expect(setConnectedCaseCall2.type).toBe('SET_CONNECTED_CASE');
     expect(setConnectedCaseCall2.taskId).toBe(ownProps.task.taskSid);
-    expect(setConnectedCaseCall2.info.households[0].household).toStrictEqual(getFormValues(newCallerFormInformation));
+    expect(setConnectedCaseCall2.connectedCase).toBe(updatedCase);
   });
 
   test('a11y', async () => {

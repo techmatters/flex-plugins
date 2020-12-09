@@ -2,11 +2,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Template } from '@twilio/flex-ui';
 
 import FieldText from '../../FieldText';
 import FieldSelect from '../../FieldSelect';
 import FieldDate from '../../FieldDate';
 import { Container, StyledNextStepButton, Row, BottomButtonBar } from '../../../styles/HrmStyles';
+import { SearchTitle } from '../../../styles/search';
 import { searchFormType } from '../../../types';
 import { getConfig } from '../../../HrmFormPlugin';
 import { namespace, configurationBase } from '../../../states';
@@ -44,12 +46,13 @@ class SearchForm extends Component {
 
     const counselorsOptions = this.props.counselors.map(e => ({ label: e.fullName, value: e.sid }));
 
-    const { helpline } = getConfig();
+    const { helpline, strings } = getConfig();
     const searchParams = {
       ...this.props.values,
       counselor: counselor.value, // backend expects only counselor's SID
       helpline,
       onlyDataContacts: false,
+      closedCases: true,
     };
 
     const isTouched = firstName || lastName || (counselor && counselor.value) || phoneNumber || dateFrom || dateTo;
@@ -62,10 +65,13 @@ class SearchForm extends Component {
     return (
       <>
         <Container>
+          <SearchTitle data-testid="Search-Title">
+            <Template code="SearchContactsAndCases-Title" />
+          </SearchTitle>
           <Row>
             <FieldText
               id="Search_FirstName"
-              label="Name"
+              label={strings['SearchForm-Name']}
               placeholder="First"
               field={getField(firstName)}
               {...this.defaultEventHandlers('firstName')}
@@ -85,7 +91,7 @@ class SearchForm extends Component {
             <FieldSelect
               id="Search_Counselor"
               name="counselor"
-              label="Counselor"
+              label={strings['SearchForm-Counselor']}
               placeholder="Name"
               field={getField(counselor)}
               options={[{ label: '', value: '' }, ...counselorsOptions]}
@@ -94,7 +100,7 @@ class SearchForm extends Component {
             />
             <FieldDate
               id="Search_DateFrom"
-              label="Date range"
+              label={strings['SearchForm-DateRange']}
               placeholder="Start Date"
               field={getField(dateFrom)}
               {...this.defaultEventHandlers('dateFrom')}
@@ -111,7 +117,7 @@ class SearchForm extends Component {
           <Row>
             <FieldText
               id="Search_CustomerPhoneNumber"
-              label="Phone"
+              label={strings['SearchForm-Phone']}
               field={getField(phoneNumber)}
               {...this.defaultEventHandlers('phoneNumber')}
               onKeyPress={submitOnEnter}
@@ -119,8 +125,8 @@ class SearchForm extends Component {
           </Row>
         </Container>
         <BottomButtonBar>
-          <StyledNextStepButton disabled={!isTouched} roundCorners={true} onClick={submitSearch}>
-            Search
+          <StyledNextStepButton type="button" disabled={!isTouched} roundCorners={true} onClick={submitSearch}>
+            <Template code="SearchForm-Button" />
           </StyledNextStepButton>
         </BottomButtonBar>
       </>

@@ -33,7 +33,6 @@ const fetchHrmApi = async (endPoint, options = {}) => {
 
   if (!response.ok) {
     const error = response.error();
-    console.log(JSON.stringify(error));
     throw error;
   }
 

@@ -1,27 +1,31 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
-import { ButtonBase, IconButton } from '@material-ui/core';
-import { MoreHoriz, Link as LinkIcon } from '@material-ui/icons';
+import { IconButton } from '@material-ui/core';
+import { Link as LinkIcon } from '@material-ui/icons';
 
-import { DetailsContainer, NameContainer, DetNameText, ContactDetailsIcon } from '../styles/search';
+import { DetailsContainer, NameContainer, DetNameText } from '../styles/search';
 import Section from './Section';
 import SectionEntry from './SectionEntry';
 import callTypes, { channelTypes } from '../states/DomainConstants';
 import { isNonDataCallType } from '../states/ValidationRules';
 import { contactType } from '../types';
-import { formatAddress, formatDuration, formatName, formatCategories, mapChannel } from '../utils';
+import {
+  formatAddress,
+  formatDuration,
+  formatName,
+  formatCategories,
+  mapChannel,
+  mapChannelForInsights,
+} from '../utils';
 import { CallerSection, ContactDetailsSections } from './common/ContactDetails';
 import { getConfig } from '../HrmFormPlugin';
-
-const MoreHorizIcon = ContactDetailsIcon(MoreHoriz);
 
 const Details = ({
   contact,
   detailsExpanded,
   showActionIcons,
   handleOpenConnectDialog,
-  handleMockedMessage,
   handleExpandDetailsSection,
 }) => {
   // Object destructuring on contact
@@ -44,7 +48,8 @@ const Details = ({
   const isDataCall = !isNonDataCallType(callType);
   const childOrUnknown = formatName(childName);
   const childUpperCased = childOrUnknown.toUpperCase();
-  const formattedChannel = mapChannel(channel);
+  const formattedChannel =
+    channel === 'default' ? mapChannelForInsights(details.contactlessTask.channel) : mapChannel(channel);
   const formattedDate = `${format(new Date(dateTime), 'MMM d, yyyy / h:mm aaaaa')}m`;
   const formattedDuration = formatDuration(conversationDuration);
   const formattedChildAddress = formatAddress(
@@ -83,9 +88,6 @@ const Details = ({
             >
               <LinkIcon style={{ color: '#ffffff' }} />
             </IconButton>
-            <ButtonBase style={{ padding: 0 }} onClick={handleMockedMessage}>
-              <MoreHorizIcon style={{ color: '#ffffff' }} />
-            </ButtonBase>
           </>
         )}
       </NameContainer>
@@ -94,11 +96,17 @@ const Details = ({
         expanded={detailsExpanded[GENERAL_DETAILS]}
         handleExpandClick={() => handleExpandDetailsSection(GENERAL_DETAILS)}
       >
-        <SectionEntry description="Channel" value={formattedChannel} />
-        <SectionEntry description="Phone Number" value={isPhoneContact ? customerNumber : ''} />
-        <SectionEntry description="Conversation Duration" value={formattedDuration} />
-        <SectionEntry description="Counselor" value={counselor} />
-        <SectionEntry description="Date/Time" value={formattedDate} />
+        <SectionEntry description={strings['ContactDetails-GeneralDetails-Channel']} value={formattedChannel} />
+        <SectionEntry
+          description={strings['ContactDetails-GeneralDetails-PhoneNumber']}
+          value={isPhoneContact ? customerNumber : ''}
+        />
+        <SectionEntry
+          description={strings['ContactDetails-GeneralDetails-ConversationDuration']}
+          value={formattedDuration}
+        />
+        <SectionEntry description={strings['ContactDetails-GeneralDetails-Counselor']} value={counselor} />
+        <SectionEntry description={strings['ContactDetails-GeneralDetails-DateTime']} value={formattedDate} />
       </Section>
       {callType === callTypes.caller && (
         <CallerSection
@@ -176,13 +184,11 @@ Details.propTypes = {
   contact: contactType.isRequired,
   detailsExpanded: PropTypes.objectOf(PropTypes.bool).isRequired,
   handleOpenConnectDialog: PropTypes.func,
-  handleMockedMessage: PropTypes.func,
   handleExpandDetailsSection: PropTypes.func.isRequired,
   showActionIcons: PropTypes.bool,
 };
 Details.defaultProps = {
   handleOpenConnectDialog: () => null,
-  handleMockedMessage: () => null,
   showActionIcons: false,
 };
 

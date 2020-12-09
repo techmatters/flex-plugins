@@ -29,7 +29,7 @@ test('saveInsightsData for non-data callType', async () => {
     conversations: {
       content: 'content',
       conversation_attribute_2: 'Abusive',
-      conversation_attribute_6: 'SMS',
+      communication_channel: 'SMS',
     },
   };
 
@@ -103,7 +103,7 @@ test('saveInsightsData for data callType', async () => {
       conversation_attribute_2: 'Child calling about self',
       conversation_attribute_3: 'Boy',
       conversation_attribute_4: '13-15',
-      conversation_attribute_6: 'Call',
+      communication_channel: 'Call',
     },
   };
 

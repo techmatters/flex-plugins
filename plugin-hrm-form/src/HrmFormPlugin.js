@@ -15,7 +15,7 @@ import { changeLanguage } from './states/configuration/actions';
 import { issueSyncToken } from './services/ServerlessService';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
-export const PLUGIN_VERSION = '0.9.0';
+export const PLUGIN_VERSION = '0.10.0';
 
 export const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
@@ -142,6 +142,8 @@ const setUpComponents = setupObject => {
   // setUp (add) dynamic components
   Components.setUpQueuesStatusWriter(setupObject);
   Components.setUpQueuesStatus();
+  Components.setUpAddButtons(setupObject);
+  Components.setUpNoTasksUI(setupObject);
   Components.setUpCustomCRMContainer();
   if (featureFlags.enable_transfers) {
     Components.setUpTransferComponents();
@@ -149,8 +151,6 @@ const setUpComponents = setupObject => {
   }
 
   if (featureFlags.enable_case_management) Components.setUpCaseList();
-
-  if (featureFlags.enable_manual_pulling) Components.setUpManualPulling();
 
   if (!Boolean(helpline)) Components.setUpDeveloperComponents(setupObject); // utilities for developers only
 
@@ -161,6 +161,8 @@ const setUpComponents = setupObject => {
     Components.removeDirectoryButton();
     Components.removeActionsIfTransferring();
   }
+
+  Components.setUpStandaloneSearch();
 };
 
 /**

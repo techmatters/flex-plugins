@@ -2,7 +2,7 @@
 import React from 'react';
 import styled from 'react-emotion';
 import { ButtonBase, Input, Select, MenuItem, Tabs, Tab, Checkbox, withStyles, TableRow } from '@material-ui/core';
-import { Button, Icon, getBackgroundWithHoverCSS, TabsProps } from '@twilio/flex-ui';
+import { Button, Icon, getBackgroundWithHoverCSS } from '@twilio/flex-ui';
 
 type BoxProps = {
   width?: string;
@@ -130,14 +130,6 @@ export const StyledInput = styled(Input)`
     background-color: ${props => props.theme.colors.inputBackgroundColor};
     border: none;
   }
-  input[type='date'] {
-    padding-right: 7px;
-  }
-  input[type='date']::-webkit-clear-button,
-  input[type='date']::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    display: none;
-  }
   input:focus {
     background-color: ${props => props.theme.colors.inputBackgroundColor};
     box-shadow: none;
@@ -146,6 +138,15 @@ export const StyledInput = styled(Input)`
   background-color: ${props => props.theme.colors.base1};
   color: ${props =>
     props.theme.calculated.lightTheme ? props.theme.colors.darkTextColor : props.theme.colors.lightTextColor};
+
+  input[type='date'] {
+    padding-right: 7px;
+  }
+  input[type='date']::-webkit-clear-button,
+  input[type='date']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    display: none;
+  }
 `;
 StyledInput.displayName = 'StyledInput';
 
@@ -169,7 +170,9 @@ type StyledSelectProps = {
   isPlaceholder?: boolean;
 };
 
-export const StyledSelect = styled(Select)<StyledSelectProps>`
+export const StyledSelect = styled(({ isPlaceholder = false, ...rest }: StyledSelectProps) => <Select {...rest} />)<
+  StyledSelectProps
+>`
   flex-grow: 0;
   flex-shrink: 0;
   width: 217px;
@@ -363,8 +366,8 @@ export const CategoryCheckboxField = styled('div')<BaseCheckboxProps>`
 `;
 CategoryCheckboxField.displayName = 'CategoryCheckboxField';
 
-export const StyledCategoryCheckbox = styled(props => (
-  <Checkbox {...props} classes={{ root: 'root', checked: 'checked' }} />
+export const StyledCategoryCheckbox = styled(({ color, ...rest }: BaseCheckboxProps) => (
+  <Checkbox {...rest} classes={{ root: 'root', checked: 'checked' }} />
 ))<BaseCheckboxProps>`
   &&&.root {
     color: ${({ disabled, color, theme }) => (disabled ? `${theme.colors.categoryDisabledColor}33` : color)};
@@ -422,7 +425,7 @@ export const SubcategoriesWrapper = styled('div')<SubcategoriesWrapperProps>`
 `;
 SubcategoriesWrapper.displayName = 'SubcategoriesWrapper';
 
-export const StyledTabs = styled((props: TabsProps & { value: any }) => (
+export const StyledTabs = styled((props: typeof Tabs['defaultProps'] & { value: any }) => (
   <Tabs {...props} classes={{ indicator: 'indicator' }} />
 ))`
   && .indicator {
@@ -432,20 +435,25 @@ export const StyledTabs = styled((props: TabsProps & { value: any }) => (
 `;
 StyledTabs.displayName = 'StyledTabs';
 
-type StyledTabProps = { searchTab?: boolean };
+export type StyledTabProps = { searchTab?: boolean; label: React.ReactNode } & typeof Tab['defaultProps'];
 
-export const StyledTab = styled(props => <Tab {...props} classes={{ selected: 'selected' }} />)<StyledTabProps>`
+export const StyledTab = styled(({ searchTab = false, ...rest }: StyledTabProps) => (
+  <Tab {...rest} classes={{ selected: 'selected' }} />
+))<StyledTabProps>`
   && {
-    min-width: ${({ searchTab }) => (searchTab ? '50px' : '130px')};
-    width: ${({ searchTab }) => (searchTab ? '50px' : '130px')};
+    min-width: ${({ searchTab }) => (searchTab ? '50px' : '120px')};
+    width: ${({ searchTab }) => (searchTab ? '50px' : '120px')};
     background-color: ${({ searchTab }) => (searchTab ? 'transparent' : '#d1d1d5')};
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
     margin: 0 5px;
-    line-height: 18px;
+    font-size: 12px;
+    line-height: 14px;
+    text-transform: none;
 
     &.selected {
       background-color: #ffffff;
+      font-weight: 600;
     }
   }
 `;
@@ -457,6 +465,12 @@ export const Row = styled('div')`
   align-items: center;
 `;
 Row.displayName = 'Row';
+
+export const Column = styled('div')`
+  display: flex;
+  flex-direction: column;
+`;
+Column.displayName = 'Column';
 
 export const FontOpenSans = styled('p')`
   color: #000000;
@@ -543,40 +557,40 @@ export const PaginationRow = styled(TableRow)<PaginationRowProps>`
 `;
 PaginationRow.displayName = 'PaginationRow';
 
-export const ManualPullIconContainer = styled('div')`
+export const AddTaskIconContainer = styled('div')`
   display: flex;
   flex: 0 0 44px;
   height: 44px;
   background-color: #ffffff;
 `;
-ManualPullIconContainer.displayName = 'ManualPullIconContainer';
+AddTaskIconContainer.displayName = 'AddTaskIconContainer';
 
-export const ManualPullIcon = styled(Icon)`
+export const AddTaskIcon = styled(Icon)`
   display: flex;
   flex: 0 0 auto;
   margin: auto;
   color: #000000;
 `;
-ManualPullIcon.displayName = 'ManualPullIcon';
+AddTaskIcon.displayName = 'AddTaskIcon';
 
-export const ManualPullContent = styled('div')`
+export const AddTaskContent = styled('div')`
   display: flex;
   flex: 1 1 auto;
   overflow: hidden;
   padding-right: auto;
   padding-left: 12px;
 `;
-ManualPullContent.displayName = 'ManualPullContent';
+AddTaskContent.displayName = 'AddTaskContent';
 
-export const ManualPullText = styled(FontOpenSans)`
+export const AddTaskText = styled(FontOpenSans)`
   color: #0d74d5;
   font-size: 12px;
   line-height: 16px;
   font-weight: 600;
 `;
-ManualPullText.displayName = 'ManualPullText';
+AddTaskText.displayName = 'AddTaskText';
 
-export const ManualPullButtonBase = withStyles({
+export const AddTaskButtonBase = withStyles({
   root: {
     '&:hover': {
       backgroundColor: '#ECEDF1',
@@ -596,4 +610,205 @@ export const ManualPullButtonBase = withStyles({
     },
   },
 })(ButtonBase);
-ManualPullButtonBase.displayName = 'ManualPullButtonBase';
+AddTaskButtonBase.displayName = 'AddTaskButtonBase';
+
+// eslint-disable-next-line import/no-unused-modules
+export const FormItem = styled('div')`
+  display: flex;
+  flex-direction: column;
+`;
+FormItem.displayName = 'FormItem';
+
+export const FormLabel = styled('label')`
+  display: flex;
+  flex-direction: column;
+  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 2px;
+  min-height: 18px;
+`;
+FormLabel.displayName = 'FormLabel';
+
+export const FormError = styled('span')`
+  text-transform: none;
+  color: ${props => props.theme.colors.errorColor};
+  font-size: 10px;
+  line-height: 1.5;
+  letter-spacing: normal;
+`;
+FormError.displayName = 'FormError';
+
+type FormInputProps = { error?: boolean };
+export const FormInput = styled('input')<FormInputProps>`
+  /* ---------- Input ---------- */
+  & {
+    display: flex;
+    flex-grow: 0;
+    font-family: Open Sans;
+    font-size: 12px;
+    line-height: 1.33;
+    letter-spacing: normal;
+    box-sizing: border-box; /* Tells the browser to account for any border and padding in the values you specify for an element's width and height. https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing*/
+    width: 217px;
+    height: 36px;
+    border-radius: 4px;
+    background-color: ${props => props.theme.colors.inputBackgroundColor};
+    color: ${props =>
+      props.theme.calculated.lightTheme ? props.theme.colors.darkTextColor : props.theme.colors.lightTextColor};
+    border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
+    boxshadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
+    padding: 0 7px;
+  }
+  &:focus {
+    background-color: ${props => props.theme.colors.inputBackgroundColor};
+    box-shadow: none;
+    border: 1px solid rgba(0, 59, 129, 0.37);
+  }
+
+  /* ---------- Date ---------- */
+  &[type='date']::-webkit-clear-button,
+  &[type='date']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    display: none;
+  }
+  /* &[type='date'] {} */
+  /* &[type='date']::-webkit-calendar-picker-indicator {} */
+
+  /* ---------- Time ---------- */
+  &[type='time']::-webkit-datetime-edit-fields-wrapper {
+    display: flex;
+  }
+  &[type='time']::-webkit-clear-button,
+    -webkit-appearance: none;
+    display: none;
+  }
+  /* Other pseudoelements that can be styled
+   &[type='time'] {}
+   &[type='time']::-webkit-calendar-picker-indicator {}
+   &[type='time']::-webkit-datetime-edit-hour-field {}
+   &[type='time']::-webkit-datetime-edit-minute-field {}
+   &[type='time']::-webkit-datetime-edit-ampm-field {}
+  */
+
+  /* ---------- Mixed Checkbox ---------- */
+  &[class~='mixed-checkbox'][type='checkbox'] {
+    display: inline-block;
+    position: relative;
+    padding-left: 1.4em;
+    cursor: default;
+  }
+  &[class~='mixed-checkbox'][type='checkbox']::before,
+  &[class~='mixed-checkbox'][type='checkbox']::after {
+    position: absolute;
+    top: 50%;
+    left: 7px;
+    transform: translate(-50%, -50%);
+    content: '';
+  }
+  &[class~='mixed-checkbox'][type='checkbox']::before {
+    width: 14px;
+    height: 14px;
+    border: 1px solid hsl(0, 0%, 66%);
+    border-radius: 0.2em;
+    background-image: linear-gradient(to bottom, hsl(300, 3%, 93%), #fff 30%);
+  }
+  &[class~='mixed-checkbox'][type='checkbox']:active::before {
+    background-image: linear-gradient(to bottom, hsl(300, 3%, 73%), hsl(300, 3%, 93%) 30%);
+  }
+  &[class~='mixed-checkbox'][type='checkbox'][aria-checked='false']::before {
+    border-color: #d13821;
+    background: #d13821;
+  }
+  &[class~='mixed-checkbox'][type='checkbox'][aria-checked='true']::before {
+    border-color: #5dba32;
+    background: #5dba32;
+  }
+  &[class~='mixed-checkbox'][type='checkbox'][aria-checked='false']::after {
+    font-family: 'Font Awesome 5 Free';
+    content: '\f00d';
+    color: #ffffff;
+  }
+  &[class~='mixed-checkbox'][type='checkbox'][aria-checked='true']::after {
+    font-family: 'Font Awesome 5 Free';
+    content: '\f00c';
+    color: #ffffff;
+  }
+  /* To disable the outline when focused */
+  /* &[class~=mixed-checkbox][type=checkbox]:focus {
+    outline: none;
+  } */
+  /* Other stuff that we can use to style the pseudo elements */
+  /* &[class~=mixed-checkbox][type=checkbox][aria-checked="true"]:active::before  */
+  /* &[class~=mixed-checkbox][type=checkbox]:focus::before */
+`;
+FormInput.displayName = 'FormInput';
+
+export const FormSelectWrapper = styled('div')`
+  position: relative;
+  box-sizing: border-box; /* Tells the browser to account for any border and padding in the values you specify for an element's width and height. https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing*/
+  width: 217px;
+  height: 36px;
+
+  &:after {
+    // font-family: 'Font Awesome 5 Free';
+    // content: '\f0dd';
+    content: '';
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid #666;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    pointer-events: none;
+  }
+`;
+FormSelectWrapper.displayName = 'FormSelectWrapper';
+
+// eslint-disable-next-line import/no-unused-modules
+export const FormSelect = styled('select')<FormInputProps>`
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-family: Open Sans;
+  font-size: 12px;
+  line-height: 1.33;
+  letter-spacing: normal;
+  box-sizing: border-box; /* Tells the browser to account for any border and padding in the values you specify for an element's width and height. https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing*/
+  width: 217px;
+  background-color: ${props => props.theme.colors.inputBackgroundColor};
+  color: ${props =>
+    props.theme.calculated.lightTheme ? props.theme.colors.darkTextColor : props.theme.colors.lightTextColor};
+  height: 36px;
+  line-height: 22px;
+  border-radius: 4px;
+  border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
+  boxshadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
+  padding: 0 7px;
+
+  /* hide the arrow */
+  -webkit-appearance: none;
+  appearance: none;
+`;
+FormSelect.displayName = 'FormSelect';
+
+// eslint-disable-next-line import/no-unused-modules
+export const FormOption = styled('option')`
+  font-family: Open Sans;
+  font-size: 12px;
+  line-height: 1.33;
+  letter-spacing: normal;
+  box-sizing: border-box;
+  height: 32px;
+  display: flex;
+  margin: 0;
+  padding: 0 12px;
+  min-width: 0;
+`;
+FormOption.displayName = 'FormOption';
+
+export const TaskCanvasOverride = styled('div')`
+  width: 100%;
+  height: 100%;
+  background-color: ${props => props.theme.colors.base2};
+`;

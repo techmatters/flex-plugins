@@ -1,18 +1,12 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { Notifications, Template } from '@twilio/flex-ui';
+import { Notifications } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 
 import { configurationBase, namespace, queuesStatusBase, RootState } from '../../states';
 import { isAnyChatPending } from '../queuesStatus/helpers';
-import {
-  ManualPullButtonBase,
-  ManualPullIconContainer,
-  ManualPullIcon,
-  ManualPullContent,
-  ManualPullText,
-} from '../../styles/HrmStyles';
 import { adjustChatCapacity } from '../../services/ServerlessService';
+import AddTaskButton from '../common/AddTaskButton';
 
 type OwnProps = {
   workerClient: import('@twilio/flex-ui').Manager['workerClient'];
@@ -45,22 +39,7 @@ const ManualPullButton: React.FC<Props> = ({ queuesStatusState, chatChannelCapac
   const maxCapacityReached = chatChannelCapacity >= parseInt(maxMessageCapacity, 10);
   const disabled = maxCapacityReached || !isAnyChatPending(queuesStatusState.queuesStatus);
 
-  return (
-    <ManualPullButtonBase
-      onClick={increaseChatCapacity}
-      className="Twilio-TaskListBaseItem-UpperArea css-xz5ie1"
-      disabled={disabled}
-    >
-      <ManualPullIconContainer>
-        <ManualPullIcon icon="Add" />
-      </ManualPullIconContainer>
-      <ManualPullContent>
-        <ManualPullText>
-          <Template code="ManualPullButtonText" />
-        </ManualPullText>
-      </ManualPullContent>
-    </ManualPullButtonBase>
-  );
+  return <AddTaskButton onClick={increaseChatCapacity} disabled={disabled} label="ManualPullButtonText" />;
 };
 
 ManualPullButton.displayName = 'ManualPullButton';

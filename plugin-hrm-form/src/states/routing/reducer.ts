@@ -2,6 +2,7 @@ import { omit } from 'lodash';
 
 import { AppRoutes, RoutingActionType, CHANGE_ROUTE } from './types';
 import { GeneralActionType, INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE } from '../types';
+import { standaloneTaskSid } from '../../components/StandaloneSearch';
 
 export type RoutingState = {
   tasks: {
@@ -9,12 +10,14 @@ export type RoutingState = {
   };
 };
 
-const initialState: RoutingState = {
-  tasks: {},
-};
-
 const newTaskEntry = {
   route: 'select-call-type' as const,
+};
+
+export const initialState: RoutingState = {
+  tasks: {
+    [standaloneTaskSid]: newTaskEntry,
+  },
 };
 
 export function reduce(state = initialState, action: RoutingActionType | GeneralActionType): RoutingState {

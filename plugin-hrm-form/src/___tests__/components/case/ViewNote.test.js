@@ -51,6 +51,7 @@ test('displays counselor, date and note', () => {
 test('click on x button', () => {
   const changeRoute = jest.fn();
   const taskSid = 'task-id';
+  const route = 'new-case';
   const counselor = 'John Doe';
   const date = '8/12/2020';
   const note = 'lorem ipsum';
@@ -74,6 +75,7 @@ test('click on x button', () => {
         taskSid={taskSid}
         tempInfo={tempInfo}
         changeRoute={changeRoute}
+        route={route}
         counselorsHash={counselorsHash}
       />
     </StorelessThemeProvider>,
@@ -88,6 +90,7 @@ test('click on x button', () => {
 test('click on close button', () => {
   const changeRoute = jest.fn();
   const taskSid = 'task-id';
+  const route = 'new-case';
   const counselor = 'John Doe';
   const date = '8/12/2020';
   const note = 'lorem ipsum';
@@ -111,6 +114,7 @@ test('click on close button', () => {
         taskSid={taskSid}
         tempInfo={tempInfo}
         changeRoute={changeRoute}
+        route={route}
         counselorsHash={counselorsHash}
       />
     </StorelessThemeProvider>,
