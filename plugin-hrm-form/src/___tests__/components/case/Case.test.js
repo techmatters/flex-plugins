@@ -206,7 +206,9 @@ describe('useState mocked', () => {
       name: 'first last',
       counselor: 'worker1 name',
       status: 'open',
-      date: '6/29/2020', // the day the createdAt number represents
+      openedDate: '6/29/2020', // the day the createdAt number represents
+      lastUpdatedDate: 'Invalid Date',
+      followUpDate: '',
     });
   });
 

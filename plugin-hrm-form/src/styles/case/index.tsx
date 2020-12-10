@@ -59,9 +59,6 @@ export const DetailDescription = styled(DetailEntryText)`
 `;
 DetailDescription.displayName = 'DetailDescription';
 
-export const DetailValue = DetailEntryText;
-DetailValue.displayName = 'DetailValue';
-
 export const OpenStatusFont = styled(DetailEntryText)`
   color: #2bb826;
   font-size: 13px;
@@ -243,3 +240,16 @@ export const DetailsHeaderOfficeName = styled(Typography)`
 `;
 
 DetailsHeaderOfficeName.displayName = 'DetailsHeaderOfficeName';
+
+export const StyledInputField = styled('input')`
+  width: 150px;
+  height: 36px;
+  color: #000000;
+  background-color: ${props => props.theme.colors.inputBackgroundColor};
+  font-weight: 600;
+  border: none;
+  padding-left: 10px;
+  margin-top: 7px;
+`;
+
+StyledInputField.displayName = 'StyledInputField';
