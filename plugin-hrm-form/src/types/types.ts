@@ -30,8 +30,8 @@ export type Case = {
 export type ContactRawJson = {
   definitionVersion?: number;
   callType: CallTypes;
-  childInformation: { [key: string]: string | boolean };
-  callerInformation: { [key: string]: string | boolean };
+  childInformation: { [key: string]: string | boolean } & { name: { firstName: string; lastName: string } };
+  callerInformation: { [key: string]: string | boolean } & { name: { firstName: string; lastName: string } };
   caseInformation: { [key: string]: string | boolean } & { categories: {} };
   contactlessTask: { [key: string]: string | boolean };
   metadata: {
