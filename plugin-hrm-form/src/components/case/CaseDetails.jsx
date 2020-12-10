@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-max-depth */
+/* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/no-multi-comp */
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -50,21 +52,42 @@ const CaseDetails = ({ caseId, name, counselor, openedDate, lastUpdatedDate, fol
         <Grid container spacing={24} justify="center" role="row">
           <Grid item xs role="gridcell" tabIndex={-1}>
             <DetailDescription>
-              <Template code="Case-CaseDetailsDateOpened" />
+              <label id="CaseDetailsDateOpened">
+                <Template code="Case-CaseDetailsDateOpened" />
+              </label>
             </DetailDescription>
-            <StyledInputField disabled id="Details_DateOpened" value={openedDate} />
+            <StyledInputField
+              disabled
+              id="Details_DateOpened"
+              value={openedDate}
+              aria-labelledby="CaseDetailsDateOpened"
+            />
           </Grid>
           <Grid item xs role="gridcell" tabIndex={-1}>
             <DetailDescription>
-              <Template code="Case-CaseDetailsLastUpdated" />
+              <label id="CaseDetailsLastUpdated">
+                <Template code="Case-CaseDetailsLastUpdated" />
+              </label>
             </DetailDescription>
-            <StyledInputField disabled id="Details_DateLastUpdated" value={lastUpdatedClosedDate} />
+            <StyledInputField
+              disabled
+              id="Details_DateLastUpdated"
+              value={lastUpdatedClosedDate}
+              aria-labelledby="CaseDetailsLastUpdated"
+            />
           </Grid>
           <Grid item xs role="gridcell" tabIndex={-1}>
             <DetailDescription>
-              <Template code="Case-CaseDetailsFollowUpDate" />
+              <label id="CaseDetailsFollowUpDate">
+                <Template code="Case-CaseDetailsFollowUpDate" />
+              </label>
             </DetailDescription>
-            <FieldDate id="Details_DateFollowUp" field={getField(followUpDate)} placeholder="mm/dd/yyyy" />
+            {/* Replace this with proper component in next story */}
+            <StyledInputField
+              id="Details_DateFollowUp"
+              value={followUpDate}
+              aria-labelledby="CaseDetailsFollowUpDate"
+            />
           </Grid>
           <Grid item xs role="gridcell" tabIndex={-1}>
             <div style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
