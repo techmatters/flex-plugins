@@ -7,6 +7,15 @@ import { getLimitAndOffsetParams } from './PaginationParams';
 import fetchHrmApi from './fetchHrmApi';
 import { getDateTime } from '../utils/helpers';
 
+/**
+ * Un-nests the information (caller/child) as it comes from DB, to match the form structure
+ * @param {import('../components/common/forms/types').FormItemDefinition} e
+ * @param {import('../types/types').ContactRawJson['callerInformation'] | import('../types/types').ContactRawJson['childInformation']} obj
+ * @returns {import('../states/contacts/reducer').TaskEntry['callerInformation'] | import('../states/contacts/reducer').TaskEntry['childInformation']}
+ */
+export const unNestInformation = (e, obj) =>
+  ['firstName', 'lastName'].includes(e.name) ? obj.name[e.name] : obj[e.name];
+
 export async function searchContacts(searchParams, limit, offset) {
   const queryParams = getLimitAndOffsetParams(limit, offset);
 

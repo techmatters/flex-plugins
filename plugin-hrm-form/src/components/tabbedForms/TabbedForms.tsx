@@ -6,10 +6,13 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { namespace, contactFormsBase, routingBase, RootState } from '../../states';
-import { updateCallType } from '../../states/contacts/actions';
+import { updateCallType, updateForm } from '../../states/contacts/actions';
+import { unNestInformation } from '../../services/ContactService';
 import { changeRoute } from '../../states/routing/actions';
 import type { TaskEntry } from '../../states/contacts/reducer';
 import type { TabbedFormSubroutes } from '../../states/routing/types';
+import type { SearchContact } from '../../types/types';
+import type { FormDefinition } from '../common/forms/types';
 import { TabbedFormsContainer, TopNav, TransparentButton, StyledTabs } from '../../styles/HrmStyles';
 import FormTab from '../common/forms/FormTab';
 import callTypes from '../../states/DomainConstants';
@@ -21,8 +24,8 @@ import CaseInformationTab from './CaseInformationTab';
 import ContactlessTaskTab from './ContactlessTaskTab';
 import BottomBar from './BottomBar';
 import { hasTaskControl } from '../../utils/transfer';
-
-const isCallerType = (contactForm: TaskEntry) => contactForm.callType === callTypes.caller;
+import ChildTabDefinition from '../../formDefinitions/tabbedForms/ChildInformationTab.json';
+import CallerTabDefinition from '../../formDefinitions/tabbedForms/CallerInformationTab.json';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -45,13 +48,15 @@ const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
 };
 
 const mapTabsToIndex = (task: ITask, contactForm: TaskEntry): TabbedFormSubroutes[] => {
+  const isCallerType = contactForm.callType === callTypes.caller;
+
   if (task.attributes.isContactlessTask) {
-    return isCallerType(contactForm)
+    return isCallerType
       ? ['search', 'contactlessTask', 'callerInformation', 'childInformation', 'categories', 'caseInformation']
       : ['search', 'contactlessTask', 'childInformation', 'categories', 'caseInformation'];
   }
 
-  return isCallerType(contactForm)
+  return isCallerType
     ? ['search', 'callerInformation', 'childInformation', 'categories', 'caseInformation']
     : ['search', 'childInformation', 'categories', 'caseInformation'];
 };
@@ -59,7 +64,6 @@ const mapTabsToIndex = (task: ITask, contactForm: TaskEntry): TabbedFormSubroute
 type OwnProps = {
   task: ITask;
   handleCompleteTask: any;
-  handleSelectSearchResult: any;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -76,19 +80,26 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
 
   const { task } = props;
   const taskId = task.taskSid;
+  const isCallerType = contactForm.callType === callTypes.caller;
 
-  /*
-   * const handleSelectSearchResult = searchResult => {
-   *   props.handleSelectSearchResult(searchResult, taskId);
-   */
-
-  /*
-   *   // Redirects to the tab where data is being copied to
-   *   const selectedIsChild = searchResult.details.callType === callTypes.child;
-   *   const subroute: TabbedFormSubroutes = isCallerType && selectedIsChild ? 'childInformation' : 'callerInformation';
-   *   dispatch(changeRoute({ route: 'tabbed-forms', subroute }, taskId));
-   * };
-   */
+  const onSelectSearchResult = (searchResult: SearchContact) => {
+    const selectedIsCaller = searchResult.details.callType === callTypes.caller;
+    if (isCallerType && selectedIsCaller) {
+      (CallerTabDefinition as FormDefinition).forEach(e => {
+        methods.setValue(`callerInformation.${e.name}`, unNestInformation(e, searchResult.details.callerInformation));
+      });
+      const { callerInformation } = methods.getValues();
+      dispatch(updateForm(task.taskSid, 'callerInformation', callerInformation));
+      dispatch(changeRoute({ route: 'tabbed-forms', subroute: 'callerInformation' }, taskId));
+    } else {
+      (ChildTabDefinition as FormDefinition).forEach(e => {
+        methods.setValue(`childInformation.${e.name}`, unNestInformation(e, searchResult.details.childInformation));
+      });
+      const { childInformation } = methods.getValues();
+      dispatch(updateForm(task.taskSid, 'childInformation', childInformation));
+      dispatch(changeRoute({ route: 'tabbed-forms', subroute: 'childInformation' }, taskId));
+    }
+  };
 
   const handleBackButton = () => {
     if (!hasTaskControl(task)) return;
@@ -135,10 +146,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
           </StyledTabs>
           {/* Body */}
           {subroute === 'search' && (
-            <Search
-              currentIsCaller={isCallerType}
-              handleSelectSearchResult={() => undefined /* handleSelectSearchResult*/}
-            />
+            <Search currentIsCaller={isCallerType} handleSelectSearchResult={onSelectSearchResult} />
           )}
           {task.attributes.isContactlessTask && <ContactlessTaskTab display={subroute === 'contactlessTask'} />}
           {isCallerType && <CallerInformationTab display={subroute === 'callerInformation'} />}
