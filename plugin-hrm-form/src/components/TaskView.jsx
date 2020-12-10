@@ -8,7 +8,7 @@ import HrmForm from './HrmForm';
 import FormNotEditable from './FormNotEditable';
 import { formType, taskType } from '../types';
 import { namespace, contactFormsBase, searchContactsBase, routingBase } from '../states';
-import { Actions, handleSelectSearchResult } from '../states/ContactState';
+import { Actions } from '../states/ContactState';
 import { handleBlur, handleCategoryToggle, handleFocus, handleValidateForm } from '../states/ActionCreators';
 import * as GeneralActions from '../states/actions';
 import { hasTaskControl } from '../utils/transfer';
@@ -40,7 +40,6 @@ class TaskView extends Component {
     handleCallTypeButtonClick: PropTypes.func.isRequired,
     handleCompleteTask: PropTypes.func.isRequired,
     handleFocus: PropTypes.func.isRequired,
-    handleSelectSearchResult: PropTypes.func.isRequired,
     recreateContactState: PropTypes.func.isRequired,
     changeTab: PropTypes.func.isRequired,
     handleValidateForm: PropTypes.func.isRequired,
@@ -80,7 +79,6 @@ class TaskView extends Component {
           handleCallTypeButtonClick={this.props.handleCallTypeButtonClick}
           handleCompleteTask={this.props.handleCompleteTask}
           handleFocus={this.props.handleFocus}
-          handleSelectSearchResult={this.props.handleSelectSearchResult}
           changeTab={this.props.changeTab}
           handleValidateForm={this.props.handleValidateForm(form, task.taskSid)}
         />
@@ -109,7 +107,6 @@ const mapDispatchToProps = dispatch => ({
   handleCallTypeButtonClick: bindActionCreators(Actions.handleCallTypeButtonClick, dispatch),
   handleChange: bindActionCreators(Actions.handleChange, dispatch),
   handleFocus: handleFocus(dispatch),
-  handleSelectSearchResult: bindActionCreators(handleSelectSearchResult, dispatch),
   changeTab: bindActionCreators(Actions.changeTab, dispatch),
   handleValidateForm: handleValidateForm(dispatch),
   recreateContactState: bindActionCreators(GeneralActions.recreateContactState, dispatch),

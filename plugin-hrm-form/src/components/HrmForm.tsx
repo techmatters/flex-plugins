@@ -19,7 +19,6 @@ type OwnProps = {
   handleCallTypeButtonClick: any;
   handleCompleteTask: any;
   handleFocus: any;
-  handleSelectSearchResult: any;
   changeRoute: any;
   handleValidateForm: any;
 };
@@ -35,12 +34,7 @@ const HrmForm: React.FC<Props> = props => {
 
   switch (route) {
     case 'tabbed-forms':
-      return (
-        <TabbedForms
-          handleSelectSearchResult={props.handleSelectSearchResult}
-          handleCompleteTask={props.handleCompleteTask}
-        />
-      );
+      return <TabbedForms handleCompleteTask={props.handleCompleteTask} />;
 
     case 'new-case':
       return <Case handleCompleteTask={props.handleCompleteTask} />;
