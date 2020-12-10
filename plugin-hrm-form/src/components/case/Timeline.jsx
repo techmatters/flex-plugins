@@ -17,12 +17,10 @@ import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { ContactDetailsSections } from '../common/ContactDetails';
 import { getConfig } from '../../HrmFormPlugin';
-import { channelTypes } from '../../states/DomainConstants';
+import { channelsAndDefault } from '../../states/DomainConstants';
 import { namespace, routingBase } from '../../states';
 
-const channelsArray = Object.values(channelTypes);
-
-const isConnectedCaseActivity = activity => channelsArray.includes(activity.type);
+const isConnectedCaseActivity = activity => Boolean(channelsAndDefault[activity.type]);
 
 const sortActivities = activities => activities.sort((a, b) => b.date.localeCompare(a.date));
 
@@ -48,6 +46,7 @@ const Timeline = ({ task, form, caseObj, changeRoute, updateTempInfo, route }) =
           type: task.channelType,
           text: form.caseInformation.callSummary.value,
           twilioWorkerId: workerSid,
+          channel: task.channelType === 'default' ? form.contactlessTask.channel : task.channelType,
         };
 
         timelineActivities = sortActivities([...timelineActivities, connectCaseActivity]);
@@ -70,7 +69,7 @@ const Timeline = ({ task, form, caseObj, changeRoute, updateTempInfo, route }) =
       };
       updateTempInfo({ screen: 'view-note', info }, task.taskSid);
       changeRoute({ route, subroute: 'view-note' }, task.taskSid);
-    } else if (channelsArray.includes(activity.type)) {
+    } else if (isConnectedCaseActivity(activity)) {
       const detailsExpanded = {
         [ContactDetailsSections.GENERAL_DETAILS]: true,
         [ContactDetailsSections.CALLER_INFORMATION]: false,
@@ -112,7 +111,7 @@ const Timeline = ({ task, form, caseObj, changeRoute, updateTempInfo, route }) =
           return (
             <TimelineRow key={index}>
               <TimelineDate>{date}</TimelineDate>
-              <TimelineIcon type={activity.type} />
+              <TimelineIcon type={isConnectedCaseActivity(activity) ? activity.channel : activity.type} />
               <TimelineText>{activity.text}</TimelineText>
               <Box marginLeft="auto" marginRight="10px">
                 <ViewButton onClick={() => handleOnClickView(activity)}>View</ViewButton>
