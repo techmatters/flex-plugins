@@ -14,7 +14,7 @@ import { getConfig } from '../../HrmFormPlugin';
 import { saveToHrm, connectToCase } from '../../services/ContactService';
 import { cancelCase, updateCase } from '../../services/CaseService';
 import { Box, Container, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
-import { CaseContainer, CenteredContainer, CaseNumberFont } from '../../styles/case';
+import { CaseContainer, CenteredContainer } from '../../styles/case';
 import CaseDetails from './CaseDetails';
 import { Menu, MenuItem } from '../menu';
 import { formatName } from '../../utils';
@@ -171,11 +171,8 @@ const Case: React.FC<Props> = props => {
       return (
         <CaseContainer>
           <Container>
-            <CaseNumberFont>
-              <Template code="Case-CaseNumber" /> #{connectedCase.id}
-            </CaseNumberFont>
             <Box marginLeft="25px" marginTop="13px">
-              <CaseDetails name={name} status={status} counselor={counselor} date={date} />
+              <CaseDetails caseId={connectedCase.id} name={name} status={status} counselor={counselor} date={date} />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
               <Timeline caseObj={connectedCase} task={task} form={form} />

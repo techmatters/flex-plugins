@@ -202,6 +202,7 @@ describe('useState mocked', () => {
     expect(component.findAllByType(CaseDetails).length).toBe(1);
     const details = component.findByType(CaseDetails);
     expect(details.props).toStrictEqual({
+      caseId: 123,
       name: 'first last',
       counselor: 'worker1 name',
       status: 'open',
