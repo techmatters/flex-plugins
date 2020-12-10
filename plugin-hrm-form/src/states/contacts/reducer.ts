@@ -11,7 +11,6 @@ import {
 import { createStateItem } from '../../components/common/forms/formGenerators';
 import { formDefinition as contactlessTaskTabDefinition } from '../../components/tabbedForms/ContactlessTaskTabDefinition';
 import callTypes, { CallTypes } from '../DomainConstants';
-import { copySearchResultIntoTask } from './helpers';
 
 export type TaskEntry = {
   callType: CallTypes | '';
@@ -171,18 +170,6 @@ export function reduce(state = initialState, action: t.ContactsActionType | Gene
         tasks: {
           ...state.tasks,
           [action.taskId]: taskWithCategoriesExpanded,
-        },
-      };
-    }
-    case t.HANDLE_SELECT_SEARCH_RESULT: {
-      const currentTask = state.tasks[action.taskId];
-      const task = copySearchResultIntoTask(currentTask, action.searchResult);
-
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: task,
         },
       };
     }

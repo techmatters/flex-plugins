@@ -1,5 +1,4 @@
 import type { TaskEntry } from './reducer';
-import type { SearchContact } from '../../types/types';
 
 // Action types
 export const UPDATE_FORM = 'UPDATE_FORM';
@@ -37,12 +36,6 @@ type HandleExpandCategoryAction = {
   taskId: string;
 };
 
-type HandleSelectSearchResultAction = {
-  type: typeof HANDLE_SELECT_SEARCH_RESULT;
-  searchResult: SearchContact;
-  taskId: string;
-};
-
 type PrePopulateFormChildAction = {
   type: typeof PREPOPULATE_FORM_CHILD;
   gender: string;
@@ -68,7 +61,6 @@ export type ContactsActionType =
   | SaveEndMillisAction
   | SetCategoriesGridViewAction
   | HandleExpandCategoryAction
-  | HandleSelectSearchResultAction
   | PrePopulateFormChildAction
   | PrePopulateFormCallerAction
   | RestoreEntireFormAction;
