@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { Notifications } from '@twilio/flex-ui';
+import { Notifications, TaskHelper } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 
 import type { RootState } from '../../states';
@@ -14,7 +14,7 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const OfflineContactButton: React.FC<Props> = ({ worker }) => {
   const { activity, tasks } = worker;
-  const disabled = Array.from(tasks.values()).some(t => t.channelType === 'default');
+  const disabled = Array.from(tasks.values()).some(t => t.channelType === 'default' || TaskHelper.isCallTask(t));
 
   const onClick = async () => {
     if (!activity || !activity.available) Notifications.showNotification('YouMustBeAvailableToPerformThisOp');
