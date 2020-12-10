@@ -5,7 +5,13 @@ import { Template } from '@twilio/flex-ui';
 import { Grid } from '@material-ui/core';
 
 import CaseDetailsHeader from './caseDetails/CaseDetailsHeader';
-import { DetailsContainer, DetailDescription, OpenStatusFont, DefaultStatusFont } from '../../styles/case';
+import {
+  DetailsContainer,
+  DetailDescription,
+  OpenStatusFont,
+  DefaultStatusFont,
+  StyledInputField,
+} from '../../styles/case';
 import { HiddenText } from '../../styles/HrmStyles';
 import { caseStatuses } from '../../states/DomainConstants';
 import FieldDate from '../FieldDate';
@@ -35,7 +41,7 @@ const renderCaseStatus = status => {
 };
 
 const CaseDetails = ({ caseId, name, counselor, openedDate, lastUpdatedDate, followUpDate, status }) => {
-  const lastUpdatedClosedDate = openedDate === lastUpdatedDate ? '̶' : lastUpdatedDate;
+  const lastUpdatedClosedDate = openedDate === lastUpdatedDate ? ' ̶ ' : lastUpdatedDate;
 
   return (
     <>
@@ -46,13 +52,13 @@ const CaseDetails = ({ caseId, name, counselor, openedDate, lastUpdatedDate, fol
             <DetailDescription>
               <Template code="Case-CaseDetailsDateOpened" />
             </DetailDescription>
-            <FieldDate id="Details_DateOpened" field={getField(openedDate)} placeholder="mm/dd/yyyy" />
+            <StyledInputField disabled id="Details_DateOpened" value={openedDate} />
           </Grid>
           <Grid item xs role="gridcell" tabIndex={-1}>
             <DetailDescription>
               <Template code="Case-CaseDetailsLastUpdated" />
             </DetailDescription>
-            <FieldDate id="Details_DateLastUpdated" field={getField(lastUpdatedClosedDate)} placeholder="mm/dd/yyyy" />
+            <StyledInputField disabled id="Details_DateLastUpdated" value={lastUpdatedClosedDate} />
           </Grid>
           <Grid item xs role="gridcell" tabIndex={-1}>
             <DetailDescription>

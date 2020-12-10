@@ -243,3 +243,15 @@ export const DetailsHeaderOfficeName = styled(Typography)`
 `;
 
 DetailsHeaderOfficeName.displayName = 'DetailsHeaderOfficeName';
+
+export const StyledInputField = styled('input')`
+  width: 150px;
+  height: 36px;
+  color: #000000;
+  background-color: ${props => props.theme.colors.inputBackgroundColor};
+  font-weight: 600;
+  border: none;
+  margin-top: 7px;
+`;
+
+StyledInputField.displayName = 'StyledDateField';
