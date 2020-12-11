@@ -16,9 +16,7 @@ test('saveInsightsData for non-data callType', async () => {
   };
 
   const task = {
-    callType: {
-      value: 'Abusive',
-    },
+    callType: 'Abusive',
   };
 
   await saveInsightsData(twilioTask, task);
@@ -51,42 +49,27 @@ test('saveInsightsData for data callType', async () => {
   };
 
   const task = {
-    callType: {
-      value: 'Child calling about self',
-    },
+    callType: 'Child calling about self',
+
     childInformation: {
-      age: {
-        value: '13-15',
-      },
-      gender: {
-        value: 'Boy',
-      },
+      age: '13-15',
+      gender: 'Boy',
     },
     caseInformation: {
       categories: {
         'Missing children': {
-          'Child abduction': {
-            value: false,
-          },
-          'Unspecified/Other': {
-            value: true,
-          },
+          'Child abduction': false,
+
+          'Unspecified/Other': true,
         },
         Violence: {
-          Bullying: {
-            value: true,
-          },
-          'Unspecified/Other': {
-            value: false,
-          },
+          Bullying: true,
+
+          'Unspecified/Other': false,
         },
         'Mental Health': {
-          'Addictive behaviours': {
-            value: true,
-          },
-          'Unspecified/Other': {
-            value: false,
-          },
+          'Addictive behaviours': true,
+          'Unspecified/Other': false,
         },
       },
     },

@@ -12,7 +12,7 @@ export const initializeContactState = (definitions: DefinitionsObject) => (taskI
   taskId,
 });
 
-export const recreateContactState = (definitions: DefinitionsObject, taskId: string): GeneralActionType => ({
+export const recreateContactState = (definitions: DefinitionsObject) => (taskId: string): GeneralActionType => ({
   type: RECREATE_CONTACT_STATE,
   definitions,
   taskId,

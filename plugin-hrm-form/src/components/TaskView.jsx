@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 import { withTaskContext, TaskHelper } from '@twilio/flex-ui';
 
@@ -33,7 +32,7 @@ class TaskView extends Component {
     routingStateExists: PropTypes.bool.isRequired,
     searchStateExists: PropTypes.bool.isRequired,
     handleCompleteTask: PropTypes.func.isRequired,
-    recreateContactState: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -45,7 +44,7 @@ class TaskView extends Component {
     const { contactFormStateExists, routingStateExists, searchStateExists } = this.props;
     if (!contactFormStateExists || !routingStateExists || !searchStateExists) {
       // (Gian) maybe this can be used to recreate the form too?
-      this.props.recreateContactState(definitions, this.props.thisTask.taskSid);
+      this.props.dispatch(GeneralActions.recreateContactState(definitions)(this.props.thisTask.taskSid));
     }
   }
 
@@ -82,8 +81,4 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-const mapDispatchToProps = dispatch => ({
-  recreateContactState: bindActionCreators(GeneralActions.recreateContactState, dispatch),
-});
-
-export default withTaskContext(connect(mapStateToProps, mapDispatchToProps)(TaskView));
+export default withTaskContext(connect(mapStateToProps, null)(TaskView));
