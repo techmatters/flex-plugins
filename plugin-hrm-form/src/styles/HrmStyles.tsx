@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import React from 'react';
 import styled from 'react-emotion';
-import { ButtonBase, Input, Select, MenuItem, Tabs, Tab, Checkbox, withStyles, TableRow } from '@material-ui/core';
+import { ButtonBase, TextField as TextInput, Select, MenuItem, Tabs, Tab, Checkbox, withStyles, TableRow } from '@material-ui/core';
 import { Button, Icon, getBackgroundWithHoverCSS } from '@twilio/flex-ui';
 
 type BoxProps = {
@@ -117,7 +117,7 @@ export const CategoryRequiredText = styled('p')`
 `;
 CategoryRequiredText.displayName = 'CategoryRequiredText';
 
-export const StyledInput = styled(Input)`
+export const StyledInput = styled(TextInput)`
   display: flex;
   flex-grow: 0;
   font-size: 12px;

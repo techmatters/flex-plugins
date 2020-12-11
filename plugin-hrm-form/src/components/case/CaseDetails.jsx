@@ -1,3 +1,4 @@
+/* eslint-disable no-empty-function */
 /* eslint-disable react/jsx-max-depth */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/no-multi-comp */
@@ -7,6 +8,7 @@ import { Template } from '@twilio/flex-ui';
 import { Grid } from '@material-ui/core';
 
 import CaseDetailsHeader from './caseDetails/CaseDetailsHeader';
+import FieldDate from '../FieldDate';
 import {
   DetailsContainer,
   DetailDescription,
@@ -34,8 +36,30 @@ const renderCaseStatus = status => {
   }
 };
 
-const CaseDetails = ({ caseId, name, counselor, openedDate, lastUpdatedDate, followUpDate, status }) => {
+const CaseDetails = ({
+  caseId,
+  name,
+  counselor,
+  openedDate,
+  lastUpdatedDate,
+  followUpDate,
+  status,
+  handleFieldChange,
+}) => {
   const lastUpdatedClosedDate = openedDate === lastUpdatedDate ? '—' : lastUpdatedDate;
+
+  const getField = value => ({
+    value,
+    error: null,
+    validation: null,
+    touched: false,
+  });
+
+  const defaultEventHandlers = fieldName => ({
+    handleChange: e => handleFieldChange(fieldName, e.target.value),
+    handleBlur: () => {},
+    handleFocus: () => {},
+  });
 
   return (
     <>
@@ -74,11 +98,14 @@ const CaseDetails = ({ caseId, name, counselor, openedDate, lastUpdatedDate, fol
                 <Template code="Case-CaseDetailsFollowUpDate" />
               </label>
             </DetailDescription>
-            {/* Replace this with proper component in next story */}
-            <StyledInputField
+            <FieldDate
               id="Details_DateFollowUp"
-              value={followUpDate}
+              pattern="mm/dd/yyyy"
+              placeholder="mm/dd/yyyy"
+              field={getField(followUpDate)}
+              {...defaultEventHandlers('followUpDate')}
               aria-labelledby="CaseDetailsFollowUpDate"
+              style={{ width: '150px' }}
             />
           </Grid>
           <Grid item xs role="gridcell" tabIndex={-1}>
@@ -101,6 +128,7 @@ CaseDetails.propTypes = {
   status: PropTypes.string.isRequired,
   followUpDate: PropTypes.string,
   lastUpdatedDate: PropTypes.string,
+  handleFieldChange: PropTypes.func.isRequired,
 };
 
 CaseDetails.defaultProps = {
