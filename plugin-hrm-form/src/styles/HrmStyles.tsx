@@ -264,32 +264,6 @@ export const TransparentButton = styled(Button)`
 `;
 TransparentButton.displayName = 'TransparentButton';
 
-export const CheckboxField = styled('div')`
-  display: flex;
-  flex-direction: row;
-  margin: 8px 0;
-`;
-CheckboxField.displayName = 'CheckboxField';
-
-export const StyledCheckboxLabel = styled('label')`
-  text-transform: uppercase;
-  margin-top: auto;
-  margin-bottom: auto;
-  font-size: 12px;
-  letter-spacing: normal;
-`;
-StyledCheckboxLabel.displayName = 'StyledCheckboxLabel';
-
-type StyledCategoryCheckboxLabelProps = { disabled?: boolean };
-
-export const StyledCategoryCheckboxLabel = styled(StyledCheckboxLabel)<StyledCategoryCheckboxLabelProps>`
-  text-transform: none;
-  color: ${({ disabled, theme }) =>
-    disabled ? `${theme.colors.categoryTextColor}33` : theme.colors.categoryTextColor};
-  cursor: ${({ disabled }) => (disabled ? 'initial' : 'pointer')};
-`;
-StyledCategoryCheckboxLabel.displayName = 'StyledCategoryCheckboxLabel';
-
 export const TopNav = styled('div')`
   display: flex;
   flex-direction: row;
@@ -347,6 +321,7 @@ type BaseCheckboxProps = {
 export const CategoryCheckboxField = styled('div')<BaseCheckboxProps>`
   display: flex;
   flex-direction: row;
+  align-items: center;
   margin: 4px 4px 4px 0;
   width: fit-content;
   height: 34px;
@@ -800,6 +775,41 @@ export const FormMixedCheckbox = styled(CheckboxBase)`
   /* &[class~=mixed-checkbox][type=checkbox][aria-checked="true"]:active::before  */
   /* &[class~=mixed-checkbox][type=checkbox]:focus::before */
 `;
+
+type CategoryCheckboxProps = { color: string; disabled: boolean };
+// eslint-disable-next-line import/no-unused-modules
+export const CategoryCheckbox = styled(CheckboxBase)<CategoryCheckboxProps>`
+  color: ${({ disabled, color, theme }) => (disabled ? `${theme.colors.categoryDisabledColor}33` : color)};
+  padding: 8px;
+
+  &[type='checkbox']:checked {
+    color: white;
+  }
+
+  &[type='checkbox']:checked::after {
+    font-family: 'Font Awesome 5 Free';
+    content: '\f00c';
+    color: ${({ color }) => color};
+  }
+
+  svg {
+    font-size: 16px;
+  }
+`;
+CategoryCheckbox.displayName = 'CategoryCheckbox';
+
+type CategoryCheckboxLabelProps = { disabled?: boolean };
+export const CategoryCheckboxLabel = styled('label')<CategoryCheckboxLabelProps>`
+  margin-top: auto;
+  margin-bottom: auto;
+  font-size: 12px;
+  letter-spacing: normal;
+  text-transform: none;
+  color: ${({ disabled, theme }) =>
+    disabled ? `${theme.colors.categoryTextColor}33` : theme.colors.categoryTextColor};
+  cursor: ${({ disabled }) => (disabled ? 'initial' : 'pointer')};
+`;
+CategoryCheckboxLabel.displayName = 'CategoryCheckboxLabel';
 
 export const FormSelectWrapper = styled('div')`
   position: relative;
