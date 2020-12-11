@@ -42,7 +42,7 @@ const categories: CategoriesColor = {
   },
 };
 
-export const getCategoryColor = category =>
+const getCategoryColor = category =>
   categories[category] ? categories[category].color : HrmTheme.colors.defaultCategoryColor;
 
 type ContactCategories = {
