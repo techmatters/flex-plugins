@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-max-depth */
+/* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/no-multi-comp */
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -5,7 +7,13 @@ import { Template } from '@twilio/flex-ui';
 import { Grid } from '@material-ui/core';
 
 import CaseDetailsHeader from './caseDetails/CaseDetailsHeader';
-import { DetailsContainer, DetailDescription, DetailValue, OpenStatusFont, DefaultStatusFont } from '../../styles/case';
+import {
+  DetailsContainer,
+  DetailDescription,
+  OpenStatusFont,
+  DefaultStatusFont,
+  StyledInputField,
+} from '../../styles/case';
 import { HiddenText } from '../../styles/HrmStyles';
 import { caseStatuses } from '../../states/DomainConstants';
 
@@ -26,7 +34,9 @@ const renderCaseStatus = status => {
   }
 };
 
-const CaseDetails = ({ caseId, name, counselor, date, status }) => {
+const CaseDetails = ({ caseId, name, counselor, openedDate, lastUpdatedDate, followUpDate, status }) => {
+  const lastUpdatedClosedDate = openedDate === lastUpdatedDate ? '—' : lastUpdatedDate;
+
   return (
     <>
       <CaseDetailsHeader caseId={caseId} childName={name} />
@@ -34,21 +44,42 @@ const CaseDetails = ({ caseId, name, counselor, date, status }) => {
         <Grid container spacing={24} justify="center" role="row">
           <Grid item xs role="gridcell" tabIndex={-1}>
             <DetailDescription>
-              <Template code="Case-CaseDetailsChildName" />
+              <label id="CaseDetailsDateOpened">
+                <Template code="Case-CaseDetailsDateOpened" />
+              </label>
             </DetailDescription>
-            <DetailValue>{name}</DetailValue>
+            <StyledInputField
+              disabled
+              id="Details_DateOpened"
+              value={openedDate}
+              aria-labelledby="CaseDetailsDateOpened"
+            />
           </Grid>
           <Grid item xs role="gridcell" tabIndex={-1}>
             <DetailDescription>
-              <Template code="Case-CaseDetailsOwner" />
+              <label id="CaseDetailsLastUpdated">
+                <Template code="Case-CaseDetailsLastUpdated" />
+              </label>
             </DetailDescription>
-            <DetailValue>{counselor}</DetailValue>
+            <StyledInputField
+              disabled
+              id="Details_DateLastUpdated"
+              value={lastUpdatedClosedDate}
+              aria-labelledby="CaseDetailsLastUpdated"
+            />
           </Grid>
           <Grid item xs role="gridcell" tabIndex={-1}>
             <DetailDescription>
-              <Template code="Case-CaseDetailsDateOpened" />
+              <label id="CaseDetailsFollowUpDate">
+                <Template code="Case-CaseDetailsFollowUpDate" />
+              </label>
             </DetailDescription>
-            <DetailValue>{date}</DetailValue>
+            {/* Replace this with proper component in next story */}
+            <StyledInputField
+              id="Details_DateFollowUp"
+              value={followUpDate}
+              aria-labelledby="CaseDetailsFollowUpDate"
+            />
           </Grid>
           <Grid item xs role="gridcell" tabIndex={-1}>
             <div style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
@@ -66,8 +97,15 @@ CaseDetails.propTypes = {
   caseId: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   counselor: PropTypes.string.isRequired,
-  date: PropTypes.string.isRequired,
+  openedDate: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
+  followUpDate: PropTypes.string,
+  lastUpdatedDate: PropTypes.string,
+};
+
+CaseDetails.defaultProps = {
+  followUpDate: '',
+  lastUpdatedDate: '',
 };
 
 export default CaseDetails;

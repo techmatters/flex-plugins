@@ -43,10 +43,6 @@ export const CaseSectionFont = styled(FontOpenSans)`
 CaseSectionFont.displayName = 'CaseSectionFont';
 
 export const DetailsContainer = styled(Row)`
-  border-style: solid;
-  border-width: 1px;
-  border-radius: 4px;
-  border-color: #a0a8bd52;
   padding: 15px;
   margin-top: 10px;
 `;
@@ -62,9 +58,6 @@ export const DetailDescription = styled(DetailEntryText)`
   color: #9b9b9b;
 `;
 DetailDescription.displayName = 'DetailDescription';
-
-export const DetailValue = DetailEntryText;
-DetailValue.displayName = 'DetailValue';
 
 export const OpenStatusFont = styled(DetailEntryText)`
   color: #2bb826;
@@ -247,3 +240,16 @@ export const DetailsHeaderOfficeName = styled(Typography)`
 `;
 
 DetailsHeaderOfficeName.displayName = 'DetailsHeaderOfficeName';
+
+export const StyledInputField = styled('input')`
+  width: 150px;
+  height: 36px;
+  color: #000000;
+  background-color: ${props => props.theme.colors.inputBackgroundColor};
+  font-weight: 600;
+  border: none;
+  padding-left: 10px;
+  margin-top: 7px;
+`;
+
+StyledInputField.displayName = 'StyledInputField';

@@ -142,7 +142,6 @@ jest.mock('../styles/case', () => ({
   DetailsHeaderContainer: 'DetailsHeaderContainer',
   CenteredContainer: 'CenteredContainer',
   CaseSectionFont: 'CaseSectionFont',
-  DetailValue: 'DetailValue',
   OpenStatusFont: 'OpenStatusFont',
   ViewButton: 'ViewButton',
   CaseAddButtonFont: 'CaseAddButtonFont',
@@ -168,4 +167,5 @@ jest.mock('../styles/case', () => ({
   DetailsHeaderCaseContainer: 'DetailsHeaderCaseContainer',
   DetailsHeaderCaseId: 'DetailsHeaderCaseId',
   DetailsHeaderOfficeName: 'DetailsHeaderOfficeName',
+  StyledInputField: 'StyledInputField',
 }));
