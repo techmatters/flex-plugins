@@ -6,7 +6,7 @@ import { DEFAULT_TRANSFER_MODE, getConfig } from '../HrmFormPlugin';
 import { saveInsightsData } from '../services/InsightsService';
 import { transferChatStart, adjustChatCapacity } from '../services/ServerlessService';
 import { namespace, contactFormsBase } from '../states';
-import { Actions } from '../states/ContactState';
+import * as Actions from '../states/contacts/actions';
 import * as GeneralActions from '../states/actions';
 import { channelTypes, transferModes } from '../states/DomainConstants';
 import * as TransferHelpers from './transfer';
