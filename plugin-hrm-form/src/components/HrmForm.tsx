@@ -12,15 +12,8 @@ import { RoutingState } from '../states/routing/reducer';
 
 type OwnProps = {
   task: ITask;
-  form: any;
-  handleBlur: any;
-  handleCategoryToggle: any;
-  handleChange: any;
-  handleCallTypeButtonClick: any;
   handleCompleteTask: any;
-  handleFocus: any;
   changeRoute: any;
-  handleValidateForm: any;
 };
 
 // eslint-disable-next-line no-use-before-define
