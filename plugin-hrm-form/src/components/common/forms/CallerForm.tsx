@@ -5,7 +5,7 @@ import { Template } from '@twilio/flex-ui';
 import FieldText from '../../FieldText';
 import FieldSelect from '../../FieldSelect';
 import { ColumnarBlock, Container, NameFields, TwoColumnLayout } from '../../../styles/HrmStyles';
-import { genderOptions, ageOptions } from '../../tabbedForms/SelectOptions';
+import { genderOptions, ageOptions } from '../../SelectOptions';
 import { FormFieldType, FormValues, DefaultEventHandlers } from './types';
 
 export type CallerFormInformation = {

@@ -22,10 +22,10 @@ import { CaseActionContainer } from '../../styles/case';
 import { namespace, connectedCaseBase, routingBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
-import { CaseState } from '../../states/case/reducer';
 import { updateCase } from '../../services/CaseService';
 import { blankReferral } from '../../types/types';
 import { ValidationType } from '../../states/ContactFormStateFactory';
+import { referredToOptions } from '../SelectOptions';
 
 type OwnProps = {
   task: ITask;
@@ -102,13 +102,12 @@ const AddReferral: React.FC<Props> = ({
                   name="referredTo"
                   onChange={e => handleChange('referredTo', e.target.value)}
                 >
-                  <FormOption key="option0" value={null} />
-                  <FormOption key="option1" value="State Agency 1">
-                    State Agency 1
-                  </FormOption>
-                  <FormOption key="option2" value="State Agency 2">
-                    State Agency 2
-                  </FormOption>
+                  <FormOption />
+                  {referredToOptions.map(option => (
+                    <FormOption key={option} value={option}>
+                      {option}
+                    </FormOption>
+                  ))}
                 </FormSelect>
               </FormSelectWrapper>
             </FormLabel>
@@ -149,7 +148,7 @@ const AddReferral: React.FC<Props> = ({
 AddReferral.displayName = 'AddReferral';
 
 const mapStateToProps = (state, ownProps: OwnProps) => {
-  const caseState: CaseState = state[namespace][connectedCaseBase]; // casting type as inference is not working for the store yet
+  const caseState = state[namespace][connectedCaseBase];
   const connectedCaseState = caseState.tasks[ownProps.task.taskSid];
   const { route } = state[namespace][routingBase].tasks[ownProps.task.taskSid];
 
