@@ -23,6 +23,7 @@ import * as RoutingActions from '../../states/routing/actions';
 import { newCallerFormInformation } from '../common/forms';
 import Timeline from './Timeline';
 import AddNote from './AddNote';
+import AddReferral from './AddReferral';
 import Households from './Households';
 import Perpetrators from './Perpetrators';
 import CaseSummary from './CaseSummary';
@@ -156,6 +157,8 @@ const Case: React.FC<Props> = props => {
   switch (subroute) {
     case 'add-note':
       return <AddNote {...addScreenProps} />;
+    case 'add-referral':
+      return <AddReferral {...addScreenProps} />;
     case 'add-household':
       return <AddHousehold {...addScreenProps} />;
     case 'add-perpetrator':

@@ -107,8 +107,8 @@ const Timeline = ({ task, form, caseObj, changeRoute, updateTempInfo, route }) =
             <Template code="Case-TimelineSection" />
           </CaseSectionFont>
           <Box marginLeft="auto">
-            <CaseAddButton templateCode="Case-AddNote" onClick={handleAddNoteClick} />
-            <CaseAddButton templateCode="Case-AddReferral" onClick={handleAddReferralClick} withDivider />
+            <CaseAddButton templateCode="Case-Note" onClick={handleAddNoteClick} />
+            <CaseAddButton templateCode="Case-Referral" onClick={handleAddReferralClick} withDivider />
           </Box>
         </Row>
       </Box>

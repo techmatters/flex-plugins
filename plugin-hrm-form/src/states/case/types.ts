@@ -23,6 +23,7 @@ export type ViewContact = {
 
 export type TemporaryCaseInfo =
   | { screen: typeof NewCaseSubroutes.AddNote; info: string }
+  | { screen: typeof NewCaseSubroutes.AddReferral; info: string }
   | { screen: typeof NewCaseSubroutes.AddHousehold; info: CallerFormInformation }
   | { screen: typeof NewCaseSubroutes.AddPerpetrator; info: CallerFormInformation }
   | { screen: typeof NewCaseSubroutes.ViewContact; info: ViewContact }
