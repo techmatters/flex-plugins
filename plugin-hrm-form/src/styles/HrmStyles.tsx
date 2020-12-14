@@ -1,7 +1,17 @@
 /* eslint-disable no-nested-ternary */
 import React from 'react';
 import styled from 'react-emotion';
-import { ButtonBase, TextField as TextInput, Select, MenuItem, Tabs, Tab, Checkbox, withStyles, TableRow } from '@material-ui/core';
+import {
+  ButtonBase,
+  TextField as TextInput,
+  Select,
+  MenuItem,
+  Tabs,
+  Tab,
+  Checkbox,
+  withStyles,
+  TableRow,
+} from '@material-ui/core';
 import { Button, Icon, getBackgroundWithHoverCSS } from '@twilio/flex-ui';
 
 type BoxProps = {
@@ -117,12 +127,13 @@ export const CategoryRequiredText = styled('p')`
 `;
 CategoryRequiredText.displayName = 'CategoryRequiredText';
 
-export const StyledInput = styled(TextInput)`
+type TextInputProps = {
+  color?: string;
+};
+
+export const StyledInput = styled(TextInput)<TextInputProps>`
   display: flex;
   flex-grow: 0;
-  font-size: 12px;
-  line-height: 1.33;
-  letter-spacing: normal;
   input {
     width: 217px;
     height: 36px;
@@ -137,7 +148,11 @@ export const StyledInput = styled(TextInput)`
   }
   background-color: ${props => props.theme.colors.base1};
   color: ${props =>
-    props.theme.calculated.lightTheme ? props.theme.colors.darkTextColor : props.theme.colors.lightTextColor};
+    props.color
+      ? props.color
+      : props.theme.calculated.lightTheme
+      ? props.theme.colors.darkTextColor
+      : props.theme.colors.lightTextColor};
 
   input[type='date'] {
     padding-right: 7px;

@@ -11,7 +11,7 @@ class FieldDate extends Component {
   static propTypes = {
     id: PropTypes.string.isRequired,
     label: PropTypes.string,
-    pattern: PropTypes.string.isRequired,
+    keepDateFormat: PropTypes.bool,
     placeholder: PropTypes.string,
     field: fieldType.isRequired,
     rows: PropTypes.number,
@@ -24,11 +24,13 @@ class FieldDate extends Component {
     placeholder: '',
     rows: null,
     label: '',
+    keepDateFormat: false,
   };
 
   state = {
     isFocused: false,
-    type: 'text',
+    type: 'date',
+    keepDateFormat: this.props.keepDateFormat,
   };
 
   handleFocus = event => {
@@ -37,16 +39,18 @@ class FieldDate extends Component {
   };
 
   handleBlur = event => {
-    this.setState({ type: 'text', isFocused: false });
-    this.props.handleBlur(event);
+    if (!this.state.keepDateFormat) {
+      this.setState({ type: 'text', isFocused: false });
+      this.props.handleBlur(event);
+    }
   };
 
   handleMouseEnter = () => this.setState({ type: 'date' });
 
-  handleMouseLeave = () => !this.state.isFocused && this.setState({ type: 'text' });
+  handleMouseLeave = () => !this.state.isFocused && !this.state.keepDateFormat && this.setState({ type: 'text' });
 
   render() {
-    const { id, label, pattern, placeholder, field, rows, handleBlur, handleChange, handleFocus, ...rest } = this.props;
+    const { id, label, placeholder, field, rows, handleBlur, handleChange, handleFocus, ...rest } = this.props;
     const { type } = this.state;
 
     return (
@@ -65,12 +69,12 @@ class FieldDate extends Component {
           multiline={Boolean(rows)}
           rows={rows}
           type={type}
-          pattern={pattern}
           onChange={handleChange}
           onFocus={this.handleFocus}
           onBlur={this.handleBlur}
           onMouseEnter={this.handleMouseEnter}
           onMouseLeave={this.handleMouseLeave}
+          color="#CDCDCD"
         />
         {field.error && <ErrorText>{field.error}</ErrorText>}
       </TextField>

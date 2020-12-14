@@ -100,12 +100,12 @@ const CaseDetails = ({
             </DetailDescription>
             <FieldDate
               id="Details_DateFollowUp"
-              pattern="mm/dd/yyyy"
+              keepDateFormat={true}
               placeholder="mm/dd/yyyy"
               field={getField(followUpDate)}
               {...defaultEventHandlers('followUpDate')}
               aria-labelledby="CaseDetailsFollowUpDate"
-              style={{ width: '150px' }}
+              style={{ width: '150px', fontWeight: '600', fontFamily: 'Arial' }}
             />
           </Grid>
           <Grid item xs role="gridcell" tabIndex={-1}>
