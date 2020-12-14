@@ -55,24 +55,8 @@ test('saveInsightsData for data callType', async () => {
       age: '13-15',
       gender: 'Boy',
     },
-    caseInformation: {
-      categories: {
-        'Missing children': {
-          'Child abduction': false,
-
-          'Unspecified/Other': true,
-        },
-        Violence: {
-          Bullying: true,
-
-          'Unspecified/Other': false,
-        },
-        'Mental Health': {
-          'Addictive behaviours': true,
-          'Unspecified/Other': false,
-        },
-      },
-    },
+    caseInformation: {},
+    categories: ['Unspecified/Other - Missing children', 'Bullying', 'Addictive behaviours'],
   };
 
   await saveInsightsData(twilioTask, task);
