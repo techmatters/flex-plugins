@@ -1,17 +1,31 @@
+/* eslint-disable react/jsx-max-depth */
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { connect } from 'react-redux';
 import { Template, ITask } from '@twilio/flex-ui';
 
+import RequiredAsterisk from '../RequiredAsterisk';
 import ActionHeader from './ActionHeader';
-import { getConfig } from '../../HrmFormPlugin';
-import { Box, HiddenText, StyledNextStepButton, BottomButtonBar } from '../../styles/HrmStyles';
-import { CaseActionContainer, CaseActionTextArea } from '../../styles/case';
+import {
+  Flex,
+  Box,
+  Row,
+  StyledNextStepButton,
+  BottomButtonBar,
+  FormLabel,
+  FormInput,
+  FormSelect,
+  FormSelectWrapper,
+  FormOption,
+} from '../../styles/HrmStyles';
+import { CaseActionContainer } from '../../styles/case';
 import { namespace, connectedCaseBase, routingBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseState } from '../../states/case/reducer';
 import { updateCase } from '../../services/CaseService';
+import { blankReferral } from '../../types/types';
+import { ValidationType } from '../../states/ContactFormStateFactory';
 
 type OwnProps = {
   task: ITask;
@@ -32,54 +46,100 @@ const AddReferral: React.FC<Props> = ({
   changeRoute,
   setConnectedCase,
 }) => {
-  const { strings } = getConfig();
   const { connectedCase, temporaryCaseInfo } = connectedCaseState;
 
-  const handleOnChangeNote = (note: string) => updateTempInfo({ screen: 'add-note', info: note }, task.taskSid);
+  if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-referral') return null;
 
-  const handleSaveNote = async () => {
+  const { info: referralFormInfo } = temporaryCaseInfo;
+
+  const handleChange = (field, value) =>
+    updateTempInfo({ screen: 'add-referral', info: { ...referralFormInfo, [field]: value } }, task.taskSid);
+
+  const handleSaveReferral = async () => {
     const { info, id } = connectedCase;
-    const newNote = temporaryCaseInfo.info;
-    const notes = info && info.notes ? [...info.notes, newNote] : [newNote];
-    const newInfo = info ? { ...info, notes } : { notes };
+    const newReferral = referralFormInfo;
+    const referrals = info && info.referrals ? [...info.referrals, newReferral] : [newReferral];
+    const newInfo = info ? { ...info, referrals } : { referrals };
     const updatedCase = await updateCase(id, { info: newInfo });
     setConnectedCase(updatedCase, task.taskSid);
-    updateTempInfo({ screen: 'add-note', info: '' }, task.taskSid);
+    updateTempInfo({ screen: 'add-referral', info: blankReferral }, task.taskSid);
     changeRoute({ route }, task.taskSid);
   };
 
-  if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-referral') return null;
+  const requiredField = {
+    validation: [ValidationType.REQUIRED],
+  };
+
+  const isSaveDisabled = Boolean(!referralFormInfo || !referralFormInfo.date || !referralFormInfo.referredTo);
 
   return (
     <CaseActionContainer>
       <Box height="100%" paddingTop="20px" paddingLeft="30px" paddingRight="10px">
         <ActionHeader titleTemplate="Case-AddReferral" onClickClose={onClickClose} counselor={counselor} />
-        <HiddenText id="Case-TypeHere-label">
-          <Template code="Case-AddNoteTypeHere" />
-        </HiddenText>
-        <CaseActionTextArea
-          data-testid="Case-AddNoteScreen-TextArea"
-          aria-labelledby="Case-TypeHere-label"
-          placeholder={strings['Case-AddNoteTypeHere']}
-          rows={25}
-          value={temporaryCaseInfo.info}
-          onChange={e => handleOnChangeNote(e.target.value)}
-        />
+        <Flex justifyContent="space-between" marginTop="25px">
+          <Flex flexDirection="column">
+            <Box marginBottom="25px">
+              <FormLabel htmlFor="date">
+                <Row>
+                  <Box marginBottom="8px">
+                    <Template code="Case-AddReferralDate" />
+                    <RequiredAsterisk field={requiredField} />
+                  </Box>
+                </Row>
+                <FormInput type="date" id="date" name="date" onChange={e => handleChange('date', e.target.value)} />
+              </FormLabel>
+            </Box>
+            <FormLabel htmlFor="referredTo">
+              <Row>
+                <Box marginBottom="8px">
+                  <Template code="Case-AddReferralReferredTo" />
+                  <RequiredAsterisk field={requiredField} />
+                </Box>
+              </Row>
+              <FormSelectWrapper>
+                <FormSelect
+                  id="referredTo"
+                  name="referredTo"
+                  onChange={e => handleChange('referredTo', e.target.value)}
+                >
+                  <FormOption key="option0" value={null} />
+                  <FormOption key="option1" value="State Agency 1">
+                    State Agency 1
+                  </FormOption>
+                  <FormOption key="option2" value="State Agency 2">
+                    State Agency 2
+                  </FormOption>
+                </FormSelect>
+              </FormSelectWrapper>
+            </FormLabel>
+          </Flex>
+          <Box marginRight="20px">
+            <FormLabel htmlFor="comments">
+              <Row>
+                <Box marginBottom="8px">
+                  <Template code="Case-AddReferralComments" />
+                </Box>
+              </Row>
+              <textarea
+                id="comments"
+                name="comments"
+                onChange={e => handleChange('comments', e.target.value)}
+                rows={30}
+                style={{ width: '289px' }}
+              />
+            </FormLabel>
+          </Box>
+        </Flex>
       </Box>
       <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
       <BottomButtonBar>
         <Box marginRight="15px">
-          <StyledNextStepButton data-testid="Case-CloseButton" secondary roundCorners onClick={onClickClose}>
+          <StyledNextStepButton secondary roundCorners onClick={onClickClose}>
             <Template code="BottomBar-Cancel" />
           </StyledNextStepButton>
         </Box>
-        <StyledNextStepButton
-          data-testid="Case-AddNoteScreen-SaveNote"
-          roundCorners
-          onClick={handleSaveNote}
-          disabled={!temporaryCaseInfo.info}
-        >
-          <Template code="BottomBar-SaveNote" />
+        <StyledNextStepButton roundCorners onClick={handleSaveReferral} disabled={isSaveDisabled}>
+          <Template code="BottomBar-SaveReferral" />
         </StyledNextStepButton>
       </BottomButtonBar>
     </CaseActionContainer>

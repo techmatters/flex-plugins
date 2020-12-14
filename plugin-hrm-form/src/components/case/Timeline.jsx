@@ -19,6 +19,7 @@ import { ContactDetailsSections } from '../common/ContactDetails';
 import { getConfig } from '../../HrmFormPlugin';
 import { channelsAndDefault } from '../../states/DomainConstants';
 import { namespace, routingBase } from '../../states';
+import { blankReferral } from '../../types/types';
 
 const isConnectedCaseActivity = activity => Boolean(channelsAndDefault[activity.type]);
 
@@ -92,7 +93,7 @@ const Timeline = ({ task, form, caseObj, changeRoute, updateTempInfo, route }) =
   };
 
   const handleAddReferralClick = () => {
-    updateTempInfo({ screen: 'add-referral', info: '' }, task.taskSid);
+    updateTempInfo({ screen: 'add-referral', info: blankReferral }, task.taskSid);
     changeRoute({ route, subroute: 'add-referral' }, task.taskSid);
   };
 

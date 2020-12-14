@@ -103,6 +103,7 @@
   "BottomBar-CancelNewCaseAndClose": "Yes, Cancel New Case and Close",
   "BottomBar-SaveAndEnd": "Save and End",
   "BottomBar-SaveNote": "Save Note",
+  "BottomBar-SaveReferral": "Save Referral",
   "BottomBar-SaveAndAddAnotherPerpetrator": "Save and Add Another Perpetrator",
   "BottomBar-SavePerpetrator": "Save Perpetrator",
   "BottomBar-SaveAndAddAnotherHousehold": "Save and Add Another Member",
@@ -160,6 +161,9 @@
   "Case-ViewHouseholdTitle": "Household Member",
   "Case-ViewPerpetrator": "View Perpetrator",
   "Case-ViewPerpetratorTitle": "Perpetrator",
+  "Case-AddReferralDate": "Date",
+  "Case-AddReferralReferredTo": "Referred To...",
+  "Case-AddReferralComments": "Comments",
 
   "SideNavCaseList": "Case List",
   
