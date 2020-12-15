@@ -74,17 +74,20 @@ const Details = ({
         expanded={detailsExpanded[GENERAL_DETAILS]}
         handleExpandClick={() => handleExpandDetailsSection(GENERAL_DETAILS)}
       >
-        <SectionEntry description={strings['ContactDetails-GeneralDetails-Channel']} value={formattedChannel} />
         <SectionEntry
-          description={strings['ContactDetails-GeneralDetails-PhoneNumber']}
+          description={<Template code="ContactDetails-GeneralDetails-Channel" />}
+          value={formattedChannel}
+        />
+        <SectionEntry
+          description={<Template code="ContactDetails-GeneralDetails-PhoneNumber" />}
           value={isPhoneContact ? customerNumber : ''}
         />
         <SectionEntry
-          description={strings['ContactDetails-GeneralDetails-ConversationDuration']}
+          description={<Template code="ContactDetails-GeneralDetails-ConversationDuration" />}
           value={formattedDuration}
         />
-        <SectionEntry description={strings['ContactDetails-GeneralDetails-Counselor']} value={counselor} />
-        <SectionEntry description={strings['ContactDetails-GeneralDetails-DateTime']} value={formattedDate} />
+        <SectionEntry description={<Template code="ContactDetails-GeneralDetails-Counselor" />} value={counselor} />
+        <SectionEntry description={<Template code="ContactDetails-GeneralDetails-DateTime" />} value={formattedDate} />
       </Section>
       {callType === callTypes.caller && (
         <Section
