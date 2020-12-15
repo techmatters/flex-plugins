@@ -30,7 +30,6 @@ const Details = ({
   // Object destructuring on contact
   const { overview, details, counselor } = contact;
   const { dateTime, name: childName, customerNumber, callType, channel, conversationDuration, categories } = overview;
-  const child = details.childInformation;
 
   // Format the obtained information
   const isDataCall = !isNonDataCallType(callType);
