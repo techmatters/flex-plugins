@@ -1,11 +1,17 @@
+import { set } from 'lodash/fp';
+
 import secret from '../private/secret';
-import { FieldType, recreateBlankForm } from '../states/ContactFormStateFactory';
+import { createNewTaskEntry } from '../states/contacts/reducer';
 import { isNonDataCallType } from '../states/ValidationRules';
 import { channelTypes } from '../states/DomainConstants';
 import { getConversationDuration, fillEndMillis } from '../utils/conversationDuration';
 import { getLimitAndOffsetParams } from './PaginationParams';
 import fetchHrmApi from './fetchHrmApi';
 import { getDateTime } from '../utils/helpers';
+import callerFormDefinition from '../formDefinitions/tabbedForms/CallerInformationTab.json';
+import caseInfoFormDefinition from '../formDefinitions/tabbedForms/CaseInformationTab.json';
+import childFormDefinition from '../formDefinitions/tabbedForms/ChildInformationTab.json';
+import categoriesFormDefinition from '../formDefinitions/tabbedForms/IssueCategorizationTab.json';
 
 /**
  * Un-nests the information (caller/child) as it comes from DB, to match the form structure
@@ -15,6 +21,14 @@ import { getDateTime } from '../utils/helpers';
  */
 export const unNestInformation = (e, obj) =>
   ['firstName', 'lastName'].includes(e.name) ? obj.name[e.name] : obj[e.name];
+
+/**
+ * @param {{ firstName: string, lastName: string }} information
+ */
+const nestName = information => {
+  const { firstName, lastName, ...rest } = information;
+  return { ...rest, name: { firstName, lastName } };
+};
 
 export async function searchContacts(searchParams, limit, offset) {
   const queryParams = getLimitAndOffsetParams(limit, offset);
@@ -43,40 +57,51 @@ export function getNumberFromTask(task) {
   return number;
 }
 
-// VisibleForTesting
-export function transformForm(form) {
-  const newForm = {};
-  const filterableFields = ['type', 'validation', 'error', 'touched', 'metadata'];
-  Object.keys(form)
-    .filter(key => !filterableFields.includes(key))
-    .forEach(key => {
-      // NOTE: hacky if to avoid transforming the "contactlessTask" part of the form (handled by rhf)
-      if (key === 'contactlessTask') {
-        newForm[key] = form[key];
-        return;
-      }
+// const createCategoriesObject = <T extends {}>(obj: T, [category, { subcategories }]: [string, CategoryEntry]) => ({
+const createCategory = (obj, [category, { subcategories }]) => ({
+  ...obj,
+  [category]: subcategories.reduce((acc, subcategory) => ({ ...acc, [subcategory]: false }), {}),
+});
 
-      switch (form[key].type) {
-        case FieldType.CALL_TYPE:
-        case FieldType.CHECKBOX:
-        case FieldType.SELECT_SINGLE:
-        case FieldType.TEXT_BOX:
-        case FieldType.TEXT_INPUT:
-          newForm[key] = form[key].value;
-          break;
-        case FieldType.CHECKBOX_FIELD:
-        case FieldType.INTERMEDIATE:
-        case FieldType.TAB:
-          newForm[key] = {
-            ...transformForm(form[key]),
-          };
-          break;
-        default:
-          throw new Error(`Unknown FieldType ${form[key].type} for key ${key} in ${JSON.stringify(form)}`);
-      }
-    });
-  return newForm;
+export const createCategoriesObject = () => Object.entries(categoriesFormDefinition).reduce(createCategory, {});
+
+/**
+ * Transforms the form to be saved as the backend expects it
+ * VisibleForTesting
+ * @param {import('../states/contacts/reducer').TaskEntry} form
+ */
+export function transformForm(form) {
+  const { callType, metadata, caseInformation, contactlessTask } = form;
+
+  const callerInformation = nestName(form.callerInformation);
+  const childInformation = nestName(form.childInformation);
+
+  const categoriesObject = createCategoriesObject();
+  const categories = form.categories.reduce((acc, path) => set(path, true, acc), categoriesObject);
+
+  const transformed = {
+    definitionVersion: 'v1', // TODO: put this in config (like feature flags)
+    callType,
+    callerInformation,
+    childInformation,
+    metadata,
+    caseInformation: {
+      ...caseInformation,
+      categories,
+    },
+    contactlessTask,
+  };
+
+  return transformed;
 }
+
+// The tabbed form definitions, used to create new form state.
+const definitions = {
+  callerFormDefinition,
+  caseInfoFormDefinition,
+  categoriesFormDefinition,
+  childFormDefinition,
+};
 
 /**
  * Function that saves the form to Contacts table.
@@ -93,14 +118,14 @@ export async function saveToHrm(task, form, hrmBaseUrl, workerSid, helpline, sho
   // if we got this far, we assume the form is valid and ready to submit
   const metadata = shouldFillEndMillis ? fillEndMillis(form.metadata) : form.metadata;
   const conversationDuration = getConversationDuration(task, metadata);
-  const callType = form.callType.value;
+  const { callType } = form;
   const number = getNumberFromTask(task);
 
   let rawForm = form;
 
   if (isNonDataCallType(callType)) {
     rawForm = {
-      ...recreateBlankForm(),
+      ...createNewTaskEntry(definitions)(false),
       callType: form.callType,
       metadata: form.metadata,
     };
