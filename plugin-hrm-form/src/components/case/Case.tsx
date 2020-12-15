@@ -49,7 +49,7 @@ const getNameFromContact = contact => {
 };
 
 const getNameFromForm = form => {
-  const { firstName, lastName } = form.childInformation.name;
+  const { firstName, lastName } = form.childInformation;
   return formatName(`${firstName.value} ${lastName.value}`);
 };
 
