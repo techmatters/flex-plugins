@@ -2,17 +2,14 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { ButtonBase } from '@material-ui/core';
 import { Template, Tab as TwilioTab, ITask } from '@twilio/flex-ui';
 
-import { standaloneTaskSid } from '../../../states/search/reducer';
+import { standaloneTaskSid } from '../../StandaloneSearch';
 import ContactPreview from '../ContactPreview';
 import CasePreview from '../CasePreview';
-import { SearchContactResult, SearchCaseResult, SearchContact } from '../../../types/types';
+import { SearchContactResult, SearchCaseResult, SearchContact, Case } from '../../../types/types';
 import { Row } from '../../../styles/HrmStyles';
 import {
-  BackIcon,
-  BackText,
   ResultsHeader,
   ListContainer,
   ScrollableList,
@@ -29,7 +26,10 @@ import {
 } from '../../../styles/search';
 import ConnectDialog from '../ConnectDialog';
 import Pagination from '../../Pagination';
+import SearchResultsBackButton from './SearchResultsBackButton';
 import * as SearchActions from '../../../states/search/actions';
+import * as CaseActions from '../../../states/case/actions';
+import * as RoutingActions from '../../../states/routing/actions';
 import { SearchPages, SearchPagesType } from '../../../states/search/types';
 import { namespace, searchContactsBase } from '../../../states';
 
@@ -51,13 +51,15 @@ type OwnProps = {
   handleBack: () => void;
   handleViewDetails: (contact: SearchContact) => void;
   changeSearchPage: (SearchPagesType) => void;
+  setConnectedCase: (currentCase: Case, taskSid: string) => void;
   currentPage: SearchPagesType;
 };
 
 // eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 const SearchResults: React.FC<Props> = ({
+  task,
   currentIsCaller,
   searchContactsResults,
   searchCasesResults,
@@ -71,6 +73,8 @@ const SearchResults: React.FC<Props> = ({
   handleBack,
   handleViewDetails,
   changeSearchPage,
+  setConnectedCase,
+  changeRoute,
   currentPage,
   showConnectIcon,
 }) => {
@@ -116,6 +120,11 @@ const SearchResults: React.FC<Props> = ({
     setCurrentContact(contact);
   };
 
+  const handleClickViewCase = currentCase => () => {
+    setConnectedCase(currentCase, task.taskSid);
+    changeSearchPage(SearchPages.case);
+  };
+
   const { count: contactsCount, contacts } = searchContactsResults;
   const { count: casesCount, cases } = searchCasesResults;
   const contactsPageCount = Math.ceil(contactsCount / CONTACTS_PER_PAGE);
@@ -135,14 +144,7 @@ const SearchResults: React.FC<Props> = ({
   return (
     <>
       <ResultsHeader>
-        <Row>
-          <ButtonBase onClick={handleBack}>
-            <BackIcon />
-            <BackText>
-              <Template code="SearchResultsIndex-Back" />
-            </BackText>
-          </ButtonBase>
-        </Row>
+        <SearchResultsBackButton text={<Template code="SearchResultsIndex-Back" />} handleBack={handleBack} />
         <Row style={{ justifyContent: 'center' }}>
           <div style={{ width: '300px' }}>
             <StyledTabs selectedTabName={currentPage} onTabSelected={tabSelected}>
@@ -238,7 +240,11 @@ const SearchResults: React.FC<Props> = ({
                 }
                 labelPlacement="start"
               />
-              {cases && cases.length > 0 && cases.map(cas => <CasePreview key={cas.id} currentCase={cas} />)}
+              {cases &&
+                cases.length > 0 &&
+                cases.map(cas => (
+                  <CasePreview key={cas.id} currentCase={cas} onClickViewCase={handleClickViewCase(cas)} />
+                ))}
               {casesPageCount > 1 && (
                 <Pagination
                   page={casesPage}
@@ -273,6 +279,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
   return {
     changeSearchPage: bindActionCreators(SearchActions.changeSearchPage(taskId), dispatch),
+    setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
+    changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
   };
 };
 

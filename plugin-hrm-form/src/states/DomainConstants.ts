@@ -19,6 +19,8 @@ export const channelTypes = {
   whatsapp: 'whatsapp',
 } as const;
 
+export const channelsAndDefault = { ...channelTypes, default: 'default' };
+
 export type ChannelTypes = typeof channelTypes[keyof typeof channelTypes];
 
 export const otherContactChannels = {

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
 import { Container, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
-import { namespace, connectedCaseBase, configurationBase } from '../../states';
+import { namespace, connectedCaseBase, configurationBase, routingBase } from '../../states';
 import { CaseState } from '../../states/case/reducer';
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseContainer, NoteContainer } from '../../styles/case';
@@ -18,8 +18,9 @@ const mapStateToProps = (state, ownProps: OwnProps) => {
   const caseState: CaseState = state[namespace][connectedCaseBase];
   const { temporaryCaseInfo } = caseState.tasks[ownProps.taskSid];
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
+  const { route } = state[namespace][routingBase].tasks[ownProps.taskSid];
 
-  return { tempInfo: temporaryCaseInfo, counselorsHash };
+  return { tempInfo: temporaryCaseInfo, counselorsHash, route };
 };
 
 const mapDispatchToProps = {
@@ -28,13 +29,13 @@ const mapDispatchToProps = {
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-const ViewNote: React.FC<Props> = ({ taskSid, tempInfo, changeRoute, counselorsHash }) => {
+const ViewNote: React.FC<Props> = ({ taskSid, tempInfo, route, changeRoute, counselorsHash }) => {
   if (!tempInfo || tempInfo.screen !== 'view-note') return null;
 
   const { counselor, date, note } = tempInfo.info;
   const counselorName = counselorsHash[counselor] || 'Unknown';
 
-  const handleClose = () => changeRoute({ route: 'new-case' }, taskSid);
+  const handleClose = () => changeRoute({ route }, taskSid);
 
   return (
     <CaseContainer>

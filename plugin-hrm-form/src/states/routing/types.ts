@@ -22,12 +22,18 @@ export const NewCaseSubroutes = {
 // The different routes we have in our app
 export type AppRoutes =
   // TODO: enum the possible subroutes on each route
-  | { route: 'tabbed-forms'; subroute?: TabbedFormSubroutes }
+  | {
+      route: 'tabbed-forms';
+      subroute?: TabbedFormSubroutes | typeof NewCaseSubroutes[keyof typeof NewCaseSubroutes];
+    }
   | {
       route: 'new-case';
       subroute?: typeof NewCaseSubroutes[keyof typeof NewCaseSubroutes];
     }
-  | { route: 'select-call-type' };
+  | {
+      route: 'select-call-type';
+      subroute?: typeof NewCaseSubroutes[keyof typeof NewCaseSubroutes];
+    };
 
 type ChangeRouteAction = {
   type: typeof CHANGE_ROUTE;

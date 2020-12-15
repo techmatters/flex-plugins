@@ -7,7 +7,7 @@ import ActionHeader from './ActionHeader';
 import { getConfig } from '../../HrmFormPlugin';
 import { Box, HiddenText, StyledNextStepButton, BottomButtonBar } from '../../styles/HrmStyles';
 import { CaseActionContainer, CaseActionTextArea } from '../../styles/case';
-import { namespace, connectedCaseBase } from '../../states';
+import { namespace, connectedCaseBase, routingBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseState } from '../../states/case/reducer';
@@ -26,6 +26,7 @@ const AddNote: React.FC<Props> = ({
   task,
   counselor,
   connectedCaseState,
+  route,
   onClickClose,
   updateTempInfo,
   changeRoute,
@@ -44,7 +45,7 @@ const AddNote: React.FC<Props> = ({
     const updatedCase = await updateCase(id, { info: newInfo });
     setConnectedCase(updatedCase, task.taskSid);
     updateTempInfo({ screen: 'add-note', info: '' }, task.taskSid);
-    changeRoute({ route: 'new-case' }, task.taskSid);
+    changeRoute({ route }, task.taskSid);
   };
 
   if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-note') return null;
@@ -90,8 +91,9 @@ AddNote.displayName = 'AddNote';
 const mapStateToProps = (state, ownProps: OwnProps) => {
   const caseState: CaseState = state[namespace][connectedCaseBase]; // casting type as inference is not working for the store yet
   const connectedCaseState = caseState.tasks[ownProps.task.taskSid];
+  const { route } = state[namespace][routingBase].tasks[ownProps.task.taskSid];
 
-  return { connectedCaseState };
+  return { connectedCaseState, route };
 };
 
 const mapDispatchToProps = {

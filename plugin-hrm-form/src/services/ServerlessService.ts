@@ -84,7 +84,7 @@ export const assignMeContactlessTask = async () => {
   const body = {
     targetSid: workerSid,
     transferTargetType: 'worker',
-    helpline,
+    helpline: helpline || '',
   };
 
   const response = await fetchProtectedApi('/createContactlessTask', body);
