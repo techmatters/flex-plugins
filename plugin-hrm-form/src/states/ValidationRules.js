@@ -12,7 +12,7 @@ export function isNonDataCallType(callType) {
   return callType !== callTypes.caller && callType !== callTypes.child;
 }
 
-export function countSelectedCategories(categoryFormSection) {
+function countSelectedCategories(categoryFormSection) {
   let count = 0;
   for (const category of Object.keys(categoryFormSection).filter(key => !isNotCategory(key))) {
     for (const subcategory of Object.keys(categoryFormSection[category]).filter(key => !isNotSubcategory(key))) {
@@ -128,8 +128,4 @@ export function formIsValid(form) {
     }
   }
   return true;
-}
-
-export function moreThanThreeCategoriesSelected(categoryFormSection) {
-  return countSelectedCategories(categoryFormSection) > 3;
 }

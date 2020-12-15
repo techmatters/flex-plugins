@@ -8,6 +8,7 @@ import { RootState, namespace, contactFormsBase } from '../../states';
 import { updateForm, handleExpandCategory, setCategoriesGridView } from '../../states/contacts/actions';
 import IssueCategorizationTabDefinition from '../../formDefinitions/tabbedForms/IssueCategorizationTab.json';
 import { CategoriesFromDefinition, createSubCategoriesInputs } from '../common/forms/categoriesTabGenerator';
+import { TabbedFormTabContainer } from '../../styles/HrmStyles';
 
 type OwnProps = { task: ITask; display: boolean };
 
@@ -35,7 +36,7 @@ const IssueCategorizationTab: React.FC<Props> = ({ dispatch, task, display, cate
   };
 
   return (
-    <div style={{ display: display ? 'block' : 'none' }}>
+    <TabbedFormTabContainer display={display}>
       <CategoriesFromDefinition
         definition={IssueCategorizationTabDefinition}
         subcategoriesInputs={subcategoriesInputs}
@@ -43,7 +44,7 @@ const IssueCategorizationTab: React.FC<Props> = ({ dispatch, task, display, cate
         toggleCategoriesGridView={toggleCategoriesGridView}
         toggleExpandCategory={toggleExpandCategory}
       />
-    </div>
+    </TabbedFormTabContainer>
   );
 };
 

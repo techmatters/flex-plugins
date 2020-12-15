@@ -42,7 +42,6 @@ describe('transformForm', () => {
       callerInformation: { name: { firstName: 'myFirstName', lastName: '' } },
       childInformation: {
         gender: 'Male',
-        refugee: false,
         name: { firstName: 'child', lastName: '' },
       },
       caseInformation: {
@@ -58,7 +57,24 @@ describe('transformForm', () => {
       },
       metadata: {},
     };
-    expect(transformForm(oldForm)).toStrictEqual(expected);
+
+    const transformed = transformForm(oldForm);
+    // expect().toStrictEqual(expected);
+    expect(transformed.definitionVersion).toBe('v1');
+    expect(transformed.callType).toBe(callTypes.caller);
+    expect(transformed.callerInformation.name).toStrictEqual({ firstName: 'myFirstName', lastName: '' });
+    expect(transformed.childInformation.gender).toBe('Male');
+    expect(transformed.childInformation.name).toStrictEqual({ firstName: 'child', lastName: '' });
+    expect(transformed.caseInformation.categories).toStrictEqual(
+      oldForm.categories.reduce((acc, path) => set(path, true, acc), createCategoriesObject()),
+    );
+    expect(transformed.caseInformation.status).toBe('');
+    expect(transformed.caseInformation.callSummary).toBe('My summary');
+    expect(transformed.contactlessTask).toStrictEqual({
+      channel: '',
+      date: '',
+      time: '',
+    });
   });
 });
 

@@ -30,7 +30,6 @@ const Details = ({
   // Object destructuring on contact
   const { overview, details, counselor } = contact;
   const { dateTime, name: childName, customerNumber, callType, channel, conversationDuration, categories } = overview;
-  const child = details.childInformation;
 
   // Format the obtained information
   const isDataCall = !isNonDataCallType(callType);
@@ -74,17 +73,20 @@ const Details = ({
         expanded={detailsExpanded[GENERAL_DETAILS]}
         handleExpandClick={() => handleExpandDetailsSection(GENERAL_DETAILS)}
       >
-        <SectionEntry description={strings['ContactDetails-GeneralDetails-Channel']} value={formattedChannel} />
         <SectionEntry
-          description={strings['ContactDetails-GeneralDetails-PhoneNumber']}
+          description={<Template code="ContactDetails-GeneralDetails-Channel" />}
+          value={formattedChannel}
+        />
+        <SectionEntry
+          description={<Template code="ContactDetails-GeneralDetails-PhoneNumber" />}
           value={isPhoneContact ? customerNumber : ''}
         />
         <SectionEntry
-          description={strings['ContactDetails-GeneralDetails-ConversationDuration']}
+          description={<Template code="ContactDetails-GeneralDetails-ConversationDuration" />}
           value={formattedDuration}
         />
-        <SectionEntry description={strings['ContactDetails-GeneralDetails-Counselor']} value={counselor} />
-        <SectionEntry description={strings['ContactDetails-GeneralDetails-DateTime']} value={formattedDate} />
+        <SectionEntry description={<Template code="ContactDetails-GeneralDetails-Counselor" />} value={counselor} />
+        <SectionEntry description={<Template code="ContactDetails-GeneralDetails-DateTime" />} value={formattedDate} />
       </Section>
       {callType === callTypes.caller && (
         <Section
@@ -98,6 +100,7 @@ const Details = ({
               key={`CallerInformation-${e.label}`}
               description={<Template code={e.label} />}
               value={unNestInformation(e, contact.details.callerInformation)}
+              definition={e}
             />
           ))}
         </Section>
@@ -114,6 +117,7 @@ const Details = ({
               key={`ChildInformation-${e.label}`}
               description={<Template code={e.label} />}
               value={unNestInformation(e, contact.details.childInformation)}
+              definition={e}
             />
           ))}
         </Section>
@@ -147,11 +151,12 @@ const Details = ({
           expanded={detailsExpanded[CONTACT_SUMMARY]}
           handleExpandClick={() => handleExpandDetailsSection(CONTACT_SUMMARY)}
         >
-          {CaseInformationTab.map(e => (
+          {(CaseInformationTab as FormDefinition).map(e => (
             <SectionEntry
               key={`CaseInformation-${e.label}`}
               description={<Template code={e.label} />}
               value={contact.details.caseInformation[e.name]}
+              definition={e}
             />
           ))}
         </Section>

@@ -22,7 +22,6 @@ import {
   CategoryCheckboxLabel,
 } from '../../../styles/HrmStyles';
 import type { CategoriesDefinition } from './types';
-// import type { TaskEntry } from '../../../states/contacts/reducer';
 import { ConnectForm } from './formGenerators';
 
 export const createSubcategoryCheckbox = (
@@ -122,7 +121,7 @@ export const CategoriesFromDefinition: React.FC<Props> = ({
               expanded={expanded[category]}
               handleExpandClick={() => toggleExpandCategory(category)}
             >
-              <SubcategoriesWrapper>{subcategoriesInputs[category]}</SubcategoriesWrapper>
+              <SubcategoriesWrapper gridView={gridView}>{subcategoriesInputs[category]}</SubcategoriesWrapper>
             </Section>
           </Box>
         ))}

@@ -136,7 +136,8 @@ describe('useState mocked', () => {
       tasks: {
         task1: {
           childInformation: {
-            name: { firstName: 'first', lastName: 'last' },
+            firstName: 'first',
+            lastName: 'last',
           },
           metadata: {},
           caseInformation: {

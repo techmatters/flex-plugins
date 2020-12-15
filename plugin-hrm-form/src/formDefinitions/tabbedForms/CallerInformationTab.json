@@ -25,7 +25,7 @@
       { "value": "KwaZulu Natal", "label": "KwaZulu Natal" }, 
       { "value": "Limpopo", "label": "Limpopo" }
     ],
-    "required": true
+    "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
     "name": "municipality",
@@ -50,7 +50,7 @@
         { "value": "iLembe District Municipality", "label": "iLembe District Municipality" }
       ]
     },
-    "required": true
+    "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
     "name": "district",
@@ -88,7 +88,7 @@
         { "value": "iNdlovu", "label": "iNdlovu" }
       ]
     },
-    "required": true
+    "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
     "name": "phone1",
@@ -133,7 +133,7 @@
       { "value": "Teacher", "label": "Teacher" }, 
       { "value": "Uncle", "label": "Uncle"  }
     ],
-    "required": true
+    "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
     "name": "gender",
@@ -146,7 +146,7 @@
       { "value": "Non-Binary", "label": "Non-Binary" }, 
       { "value": "Unknown", "label": "Unknown" }
     ],
-    "required": true
+    "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
     "name": "age",

@@ -26,13 +26,18 @@ export type Case = {
   connectedContacts: any[]; // TODO: create contact type
 };
 
+type NestedInformation = { name: { firstName: string; lastName: string } };
+export type InformationObject = NestedInformation & {
+  [key: string]: string | boolean | NestedInformation[keyof NestedInformation]; // having NestedInformation[keyof NestedInformation] makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
+};
+
 // Information about a single contact, as expected from DB (we might want to reuse this type in backend) - (is this a correct placement for this?)
 export type ContactRawJson = {
-  definitionVersion?: number;
-  callType: CallTypes;
-  childInformation: { [key: string]: string | boolean } & { name: { firstName: string; lastName: string } };
-  callerInformation: { [key: string]: string | boolean } & { name: { firstName: string; lastName: string } };
-  caseInformation: { [key: string]: string | boolean } & { categories: {} };
+  definitionVersion?: string;
+  callType: CallTypes | '';
+  childInformation: InformationObject;
+  callerInformation: InformationObject;
+  caseInformation: { categories: {} } & { [key: string]: string | boolean | {} }; // // having {} makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
   contactlessTask: { [key: string]: string | boolean };
   metadata: {
     startMillis: number;

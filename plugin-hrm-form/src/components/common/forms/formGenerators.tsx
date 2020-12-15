@@ -11,6 +11,7 @@ import {
   ColumnarBlock,
   TwoColumnLayout,
   FormLabel,
+  DependentSelectLabel,
   FormError,
   Row,
   FormInput,
@@ -145,7 +146,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                     innerRef={register(rules)}
                   >
                     {def.options.map(o => (
-                      <FormOption key={`${path}-${o.value}`} value={o.value}>
+                      <FormOption key={`${path}-${o.value}`} value={o.value} isEmptyValue={o.value === ''}>
                         {o.label}
                       </FormOption>
                     ))}
@@ -168,7 +169,10 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             const dependeePath = [...parents, def.dependsOn].join('.');
             const dependeeValue = watch(dependeePath);
 
-            React.useEffect(() => setValue(path, def.defaultOption.value), [setValue, dependeeValue]);
+            React.useEffect(() => setValue(path, def.defaultOption.value, { shouldValidate: true }), [
+              setValue,
+              dependeeValue,
+            ]);
 
             const error = get(errors, path);
             const hasOptions = Boolean(dependeeValue && def.options[dependeeValue]);
@@ -180,12 +184,14 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
               ? [def.defaultOption, ...def.options[dependeeValue]]
               : [def.defaultOption];
 
+            const disabled = !hasOptions;
+
             return (
-              <FormLabel htmlFor={path}>
+              <DependentSelectLabel htmlFor={path} disabled={disabled}>
                 <Row>
                   <Box marginBottom="8px">
                     <Template code={`${def.label}`} />
-                    {rules.required && <RequiredAsterisk />}
+                    {hasOptions && rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
                 <FormSelectWrapper>
@@ -197,10 +203,10 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                     aria-describedby={`${path}-error`}
                     onBlur={updateCallback}
                     innerRef={register({ validate })}
-                    disabled={!hasOptions}
+                    disabled={disabled}
                   >
                     {options.map(o => (
-                      <FormOption key={`${path}-${o.value}`} value={o.value}>
+                      <FormOption key={`${path}-${o.value}`} value={o.value} isEmptyValue={o.value === ''}>
                         {o.label}
                       </FormOption>
                     ))}
@@ -211,7 +217,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                     <Template id={`${path}-error`} code={error.message} />
                   </FormError>
                 )}
-              </FormLabel>
+              </DependentSelectLabel>
             );
           }}
         </ConnectForm>
@@ -224,15 +230,17 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             return (
               <FormLabel htmlFor={path}>
                 <FormCheckBoxWrapper error={Boolean(error)}>
-                  <FormCheckbox
-                    id={path}
-                    name={path}
-                    type="checkbox"
-                    aria-invalid={Boolean(error)}
-                    aria-describedby={`${path}-error`}
-                    onChange={updateCallback}
-                    innerRef={register(rules)}
-                  />
+                  <Box marginRight="5px">
+                    <FormCheckbox
+                      id={path}
+                      name={path}
+                      type="checkbox"
+                      aria-invalid={Boolean(error)}
+                      aria-describedby={`${path}-error`}
+                      onChange={updateCallback}
+                      innerRef={register(rules)}
+                    />
+                  </Box>
                   <Template code={`${def.label}`} />
                   {rules.required && <RequiredAsterisk />}
                 </FormCheckBoxWrapper>
@@ -266,20 +274,22 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             return (
               <FormLabel htmlFor={path}>
                 <FormCheckBoxWrapper error={Boolean(error)}>
-                  <FormMixedCheckbox
-                    id={path}
-                    type="checkbox"
-                    className="mixed-checkbox"
-                    aria-invalid={Boolean(error)}
-                    aria-checked={checked}
-                    aria-describedby={`${path}-error`}
-                    onBlur={updateCallback}
-                    onChange={() => {
-                      if (checked === 'mixed') setChecked(true);
-                      if (checked === true) setChecked(false);
-                      if (checked === false) setChecked('mixed');
-                    }}
-                  />
+                  <Box marginRight="5px">
+                    <FormMixedCheckbox
+                      id={path}
+                      type="checkbox"
+                      className="mixed-checkbox"
+                      aria-invalid={Boolean(error)}
+                      aria-checked={checked}
+                      aria-describedby={`${path}-error`}
+                      onBlur={updateCallback}
+                      onChange={() => {
+                        if (checked === 'mixed') setChecked(true);
+                        if (checked === true) setChecked(false);
+                        if (checked === false) setChecked('mixed');
+                      }}
+                    />
+                  </Box>
                   <Template code={`${def.label}`} />
                   {rules.required && <RequiredAsterisk />}
                 </FormCheckBoxWrapper>

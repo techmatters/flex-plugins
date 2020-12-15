@@ -49,8 +49,8 @@ const getNameFromContact = contact => {
 };
 
 const getNameFromForm = form => {
-  const { firstName, lastName } = form.childInformation.name;
-  return formatName(`${firstName.value} ${lastName.value}`);
+  const { firstName, lastName } = form.childInformation;
+  return formatName(`${firstName} ${lastName}`);
 };
 
 const Case: React.FC<Props> = props => {
@@ -78,7 +78,7 @@ const Case: React.FC<Props> = props => {
     const { connectedCase } = props.connectedCaseState;
     await cancelCase(connectedCase.id);
 
-    props.changeRoute({ route: 'tabbed-forms' }, task.taskSid);
+    props.changeRoute({ route: 'tabbed-forms', subroute: 'caseInformation' }, task.taskSid);
     props.removeConnectedCase(task.taskSid);
   };
 

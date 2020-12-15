@@ -3,7 +3,7 @@
     "name": "callSummary",
     "label": "Comments",
     "type": "textarea",
-    "required": true
+    "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
     "name": "referredTo",
@@ -21,7 +21,7 @@
       { "value": "Direct interventions by Childline", "label": "Direct interventions by Childline" }, 
       { "value": "Other", "label": "Other" }
     ],
-    "required": true
+    "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
     "name": "howDidTheChildHearAboutUs",
