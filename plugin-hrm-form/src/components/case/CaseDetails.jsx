@@ -8,7 +8,6 @@ import { Template } from '@twilio/flex-ui';
 import { Grid } from '@material-ui/core';
 
 import CaseDetailsHeader from './caseDetails/CaseDetailsHeader';
-import FieldDate from '../FieldDate';
 import {
   DetailsContainer,
   DetailDescription,
@@ -48,19 +47,6 @@ const CaseDetails = ({
 }) => {
   const lastUpdatedClosedDate = openedDate === lastUpdatedDate ? '—' : lastUpdatedDate;
 
-  const getField = value => ({
-    value,
-    error: null,
-    validation: null,
-    touched: false,
-  });
-
-  const defaultEventHandlers = fieldName => ({
-    handleChange: e => handleFieldChange(fieldName, e.target.value),
-    handleBlur: () => {},
-    handleFocus: () => {},
-  });
-
   return (
     <>
       <CaseDetailsHeader caseId={caseId} childName={name} />
@@ -98,14 +84,13 @@ const CaseDetails = ({
                 <Template code="Case-CaseDetailsFollowUpDate" />
               </label>
             </DetailDescription>
-            <FieldDate
+            <StyledInputField
+              type="date"
               id="Details_DateFollowUp"
-              keepDateFormat={true}
-              placeholder="mm/dd/yyyy"
-              field={getField(followUpDate)}
-              {...defaultEventHandlers('followUpDate')}
+              name="Details_DateFollowUp"
+              value={followUpDate}
+              onChange={e => handleFieldChange('followUpDate', e.target.value)}
               aria-labelledby="CaseDetailsFollowUpDate"
-              style={{ width: '150px', fontWeight: '600', fontFamily: 'Arial' }}
             />
           </Grid>
           <Grid item xs role="gridcell" tabIndex={-1}>

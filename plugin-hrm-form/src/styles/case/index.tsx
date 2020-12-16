@@ -3,7 +3,7 @@ import styled from 'react-emotion';
 import { Button } from '@twilio/flex-ui';
 import { Typography } from '@material-ui/core';
 
-import { FontOpenSans, Row } from '../HrmStyles';
+import { FontOpenSans, FormInput, Row } from '../HrmStyles';
 
 export const CaseContainer = styled('div')`
   display: flex;
@@ -241,14 +241,13 @@ export const DetailsHeaderOfficeName = styled(Typography)`
 
 DetailsHeaderOfficeName.displayName = 'DetailsHeaderOfficeName';
 
-export const StyledInputField = styled('input')`
-  width: 150px;
+export const StyledInputField = styled(FormInput)`
+  width: 150px !important;
   height: 36px;
   color: #000000;
   background-color: ${props => props.theme.colors.inputBackgroundColor};
   font-weight: 600;
-  border: none;
-  padding-left: 10px;
+  padding-left: 10px !important;
   margin-top: 7px;
 `;
 

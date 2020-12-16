@@ -127,13 +127,12 @@ export const CategoryRequiredText = styled('p')`
 `;
 CategoryRequiredText.displayName = 'CategoryRequiredText';
 
-type TextInputProps = {
-  color?: string;
-};
-
-export const StyledInput = styled(TextInput)<TextInputProps>`
+export const StyledInput = styled(TextInput)`
   display: flex;
   flex-grow: 0;
+  font-size: 12px;
+  line-height: 1.33;
+  letter-spacing: normal;
   input {
     width: 217px;
     height: 36px;
@@ -148,11 +147,7 @@ export const StyledInput = styled(TextInput)<TextInputProps>`
   }
   background-color: ${props => props.theme.colors.base1};
   color: ${props =>
-    props.color
-      ? props.color
-      : props.theme.calculated.lightTheme
-      ? props.theme.colors.darkTextColor
-      : props.theme.colors.lightTextColor};
+    props.theme.calculated.lightTheme ? props.theme.colors.darkTextColor : props.theme.colors.lightTextColor};
 
   input[type='date'] {
     padding-right: 7px;
