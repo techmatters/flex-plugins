@@ -359,7 +359,8 @@ export const StyledTabs = styled((props: typeof Tabs['defaultProps'] & { value: 
   && .indicator {
     background-color: transparent;
   }
-  flex-shrink: 1;
+  flex-shrink: 0;
+  height: 50px;
 `;
 StyledTabs.displayName = 'StyledTabs';
 
@@ -376,6 +377,7 @@ export const StyledTab = styled(({ searchTab = false, ...rest }: StyledTabProps)
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
     margin: 0 5px;
+    padding: 0;
     font-size: 12px;
     line-height: 14px;
     text-transform: none;
