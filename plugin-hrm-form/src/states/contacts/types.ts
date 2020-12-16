@@ -10,8 +10,6 @@ export const PREPOPULATE_FORM_CHILD = 'PREPOPULATE_FORM_CHILD';
 export const PREPOPULATE_FORM_CALLER = 'PREPOPULATE_FORM_CALLER';
 export const RESTORE_ENTIRE_FORM = 'RESTORE_ENTIRE_FORM';
 
-// INCOMPLETE
-
 type UpdateFormAction = {
   type: typeof UPDATE_FORM;
   taskId: string;
