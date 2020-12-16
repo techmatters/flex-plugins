@@ -7,7 +7,7 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { namespace, contactFormsBase, routingBase, RootState } from '../../states';
 import { updateCallType, updateForm } from '../../states/contacts/actions';
-import { unNestInformation } from '../../services/ContactService';
+import { unNestInformation, deTransformValue } from '../../services/ContactService';
 import { changeRoute } from '../../states/routing/actions';
 import type { TaskEntry } from '../../states/contacts/reducer';
 import type { TabbedFormSubroutes } from '../../states/routing/types';
@@ -86,14 +86,18 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
     const selectedIsCaller = searchResult.details.callType === callTypes.caller;
     if (isCallerType && selectedIsCaller) {
       (CallerTabDefinition as FormDefinition).forEach(e => {
-        methods.setValue(`callerInformation.${e.name}`, unNestInformation(e, searchResult.details.callerInformation));
+        const unNested = unNestInformation(e, searchResult.details.callerInformation);
+        const deTransformed = deTransformValue(e)(unNested);
+        methods.setValue(`callerInformation.${e.name}`, deTransformed);
       });
       const { callerInformation } = methods.getValues();
       dispatch(updateForm(task.taskSid, 'callerInformation', callerInformation));
       dispatch(changeRoute({ route: 'tabbed-forms', subroute: 'callerInformation' }, taskId));
     } else {
       (ChildTabDefinition as FormDefinition).forEach(e => {
-        methods.setValue(`childInformation.${e.name}`, unNestInformation(e, searchResult.details.childInformation));
+        const unNested = unNestInformation(e, searchResult.details.childInformation);
+        const deTransformed = deTransformValue(e)(unNested);
+        methods.setValue(`childInformation.${e.name}`, deTransformed);
       });
       const { childInformation } = methods.getValues();
       dispatch(updateForm(task.taskSid, 'childInformation', childInformation));
