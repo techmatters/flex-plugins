@@ -11,29 +11,17 @@ import CaseDetailsHeader from './caseDetails/CaseDetailsHeader';
 import {
   DetailsContainer,
   DetailDescription,
-  OpenStatusFont,
-  DefaultStatusFont,
   StyledInputField,
+  StyledSelectField,
+  StyledSelectWrapper,
 } from '../../styles/case';
-import { HiddenText } from '../../styles/HrmStyles';
-import { caseStatuses } from '../../states/DomainConstants';
+import { FormOption } from '../../styles/HrmStyles';
 
-// eslint-disable-next-line react/display-name
-const renderCaseStatus = status => {
-  switch (status) {
-    case caseStatuses.open:
-      return (
-        <OpenStatusFont>
-          <HiddenText>
-            <Template code="Case-CaseDetailsStatusLabel" />
-          </HiddenText>
-          <Template code="Case-CaseDetailsStatusOpen" />
-        </OpenStatusFont>
-      );
-    default:
-      return <DefaultStatusFont>{status}</DefaultStatusFont>;
-  }
-};
+const statusOptions = [
+  { label: 'N/A', value: 'null' },
+  { label: 'Open', value: 'open' },
+  { label: 'Closed', value: 'closed' },
+];
 
 const CaseDetails = ({
   caseId,
@@ -43,7 +31,7 @@ const CaseDetails = ({
   lastUpdatedDate,
   followUpDate,
   status,
-  handleFollowupDateChange,
+  handleFieldChange,
 }) => {
   const lastUpdatedClosedDate = openedDate === lastUpdatedDate ? '—' : lastUpdatedDate;
 
@@ -89,14 +77,30 @@ const CaseDetails = ({
               id="Details_DateFollowUp"
               name="Details_DateFollowUp"
               value={followUpDate}
-              onChange={e => handleFollowupDateChange('followUpDate', e.target.value)}
+              onChange={e => handleFieldChange('followUpDate', e.target.value)}
               aria-labelledby="CaseDetailsFollowUpDate"
             />
           </Grid>
           <Grid item xs role="gridcell" tabIndex={-1}>
-            <div style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-              {renderCaseStatus(status)}
-            </div>
+            <DetailDescription>
+              <label id="CaseDetailsStatusLabel">
+                <Template code="Case-CaseDetailsStatusLabel" />
+              </label>
+            </DetailDescription>
+            <StyledSelectWrapper>
+              <StyledSelectField
+                id="Details_CaseStatus"
+                name="Details_CaseStatus"
+                aria-labelledby="CaseDetailsStatusLabel"
+                onChange={e => handleFieldChange('status', e.target.value)} // ToDo: replace this, we need to change case status that is not inside 'info'
+              >
+                {statusOptions.map(o => (
+                  <FormOption selected={o.value === status} key={o.value} value={o.value}>
+                    {o.label}
+                  </FormOption>
+                ))}
+              </StyledSelectField>
+            </StyledSelectWrapper>
           </Grid>
         </Grid>
       </DetailsContainer>
@@ -113,7 +117,7 @@ CaseDetails.propTypes = {
   status: PropTypes.string.isRequired,
   followUpDate: PropTypes.string,
   lastUpdatedDate: PropTypes.string,
-  handleFollowupDateChange: PropTypes.func.isRequired,
+  handleFieldChange: PropTypes.func.isRequired,
 };
 
 CaseDetails.defaultProps = {

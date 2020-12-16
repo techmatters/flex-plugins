@@ -128,7 +128,7 @@ const Case: React.FC<Props> = props => {
     props.changeRoute({ route, subroute: 'view-perpetrator' }, props.task.taskSid);
   };
 
-  const onFollowupDateChange = (fieldName, value) => {
+  const onFieldChange = (fieldName, value) => {
     const { connectedCase } = props.connectedCaseState;
     const { info } = connectedCase;
     const newInfo = info ? { ...info, [fieldName]: value } : { [fieldName]: value };
@@ -190,7 +190,7 @@ const Case: React.FC<Props> = props => {
                 openedDate={openedDate}
                 lastUpdatedDate={lastUpdatedDate}
                 followUpDate={followUpDate}
-                handleFollowupDateChange={onFollowupDateChange}
+                handleFieldChange={onFieldChange}
               />
             </Box>
             <Box marginLeft="25px" marginTop="25px">

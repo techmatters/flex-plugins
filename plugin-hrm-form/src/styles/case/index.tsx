@@ -3,7 +3,7 @@ import styled from 'react-emotion';
 import { Button } from '@twilio/flex-ui';
 import { Typography } from '@material-ui/core';
 
-import { FontOpenSans, FormInput, Row } from '../HrmStyles';
+import { FontOpenSans, FormInput, FormSelect, FormSelectWrapper, Row } from '../HrmStyles';
 
 export const CaseContainer = styled('div')`
   display: flex;
@@ -252,3 +252,18 @@ export const StyledInputField = styled(FormInput)`
 `;
 
 StyledInputField.displayName = 'StyledInputField';
+
+export const StyledSelectWrapper = styled(FormSelectWrapper)`
+  width: 150px !important;
+  height: 36px;
+  margin-top: 7px;
+`;
+
+StyledSelectWrapper.displayName = 'StyledSelectWrapper';
+
+export const StyledSelectField = styled(FormSelect)`
+  width: 150px !important;
+  height: 36px;
+`;
+
+StyledSelectField.displayName = 'StyledSelectField';
