@@ -11,7 +11,6 @@ class FieldDate extends Component {
   static propTypes = {
     id: PropTypes.string.isRequired,
     label: PropTypes.string,
-    pattern: PropTypes.string.isRequired,
     placeholder: PropTypes.string,
     field: fieldType.isRequired,
     rows: PropTypes.number,
