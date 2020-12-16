@@ -20,6 +20,15 @@ import type {
   FormItemDefinition,
 } from '../components/common/forms/types';
 import type { InformationObject, ContactRawJson } from '../types/types';
+
+// The tabbed form definitions, used to create new form state.
+const definitions = {
+  callerFormDefinition: callerFormDefinition as FormDefinition,
+  caseInfoFormDefinition: caseInfoFormDefinition as FormDefinition,
+  categoriesFormDefinition: categoriesFormDefinition as CategoriesDefinition,
+  childFormDefinition: childFormDefinition as FormDefinition,
+};
+
 /**
  * Un-nests the information (caller/child) as it comes from DB, to match the form structure
  */
@@ -64,6 +73,23 @@ const createCategory = <T extends {}>(obj: T, [category, { subcategories }]: [st
 
 const createCategoriesObject = () => Object.entries(categoriesFormDefinition).reduce(createCategory, {});
 
+const transformValue = (e: FormItemDefinition) => (value: string | boolean | null) => {
+  if (e.type === 'mixed-checkbox' && value === 'mixed') return null;
+
+  return value;
+};
+
+const transformValues = (def: FormDefinition) => (
+  values: TaskEntry['callerInformation'] | TaskEntry['caseInformation'] | TaskEntry['childInformation'],
+) => def.reduce((acc, e) => ({ ...acc, [e.name]: transformValue(e)(values[e.name]) }), {});
+
+export const deTransformValue = (e: FormItemDefinition) => (value: string | boolean | null) => {
+  // de-transform mixed checkbox null DB value to be "mixed"
+  if (e.type === 'mixed-checkbox' && value === null) return 'mixed';
+
+  return value;
+};
+
 /**
  * Transforms the form to be saved as the backend expects it
  * VisibleForTesting
@@ -71,20 +97,18 @@ const createCategoriesObject = () => Object.entries(categoriesFormDefinition).re
 export function transformForm(form: TaskEntry): ContactRawJson {
   const { callType, metadata, caseInformation, contactlessTask } = form;
 
-  // forces the form to send valid first and last names
-  const safeCallerInformation = {
-    ...form.callerInformation,
-    firstName: typeof form.callerInformation.firstName === 'string' ? form.callerInformation.firstName : '',
-    lastName: typeof form.callerInformation.lastName === 'string' ? form.callerInformation.lastName : '',
-  };
-  const safeChildInformation = {
-    ...form.childInformation,
-    firstName: typeof form.childInformation.firstName === 'string' ? form.childInformation.firstName : '',
-    lastName: typeof form.childInformation.lastName === 'string' ? form.childInformation.lastName : '',
+  // transform the form values before submit (e.g. "mixed" for 3-way checkbox becomes null)
+  const transformedValues: TaskEntry = {
+    ...form,
+    callerInformation: transformValues(definitions.callerFormDefinition)(form.callerInformation),
+    caseInformation: transformValues(definitions.caseInfoFormDefinition)(form.caseInformation),
+    childInformation: transformValues(definitions.childFormDefinition)(form.childInformation),
   };
 
-  const callerInformation = nestName(safeCallerInformation);
-  const childInformation = nestName(safeChildInformation);
+  // @ts-ignore
+  const callerInformation = nestName(transformedValues.callerInformation);
+  // @ts-ignore
+  const childInformation = nestName(transformedValues.childInformation);
 
   const categoriesObject = createCategoriesObject();
   const categories = form.categories.reduce((acc, path) => set(path, true, acc), categoriesObject);
@@ -104,14 +128,6 @@ export function transformForm(form: TaskEntry): ContactRawJson {
 
   return transformed;
 }
-
-// The tabbed form definitions, used to create new form state.
-const definitions = {
-  callerFormDefinition: callerFormDefinition as FormDefinition,
-  caseInfoFormDefinition: caseInfoFormDefinition as FormDefinition,
-  categoriesFormDefinition: categoriesFormDefinition as CategoriesDefinition,
-  childFormDefinition: childFormDefinition as FormDefinition,
-};
 
 /**
  * Function that saves the form to Contacts table.
