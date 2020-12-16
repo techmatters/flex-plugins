@@ -43,7 +43,7 @@ const CaseDetails = ({
   lastUpdatedDate,
   followUpDate,
   status,
-  handleFieldChange,
+  handleFollowupDateChange,
 }) => {
   const lastUpdatedClosedDate = openedDate === lastUpdatedDate ? '—' : lastUpdatedDate;
 
@@ -89,7 +89,7 @@ const CaseDetails = ({
               id="Details_DateFollowUp"
               name="Details_DateFollowUp"
               value={followUpDate}
-              onChange={e => handleFieldChange('followUpDate', e.target.value)}
+              onChange={e => handleFollowupDateChange('followUpDate', e.target.value)}
               aria-labelledby="CaseDetailsFollowUpDate"
             />
           </Grid>
@@ -113,7 +113,7 @@ CaseDetails.propTypes = {
   status: PropTypes.string.isRequired,
   followUpDate: PropTypes.string,
   lastUpdatedDate: PropTypes.string,
-  handleFieldChange: PropTypes.func.isRequired,
+  handleFollowupDateChange: PropTypes.func.isRequired,
 };
 
 CaseDetails.defaultProps = {

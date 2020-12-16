@@ -46,7 +46,7 @@ class FieldDate extends Component {
   handleMouseLeave = () => !this.state.isFocused && this.setState({ type: 'text' });
 
   render() {
-    const { id, label, pattern, placeholder, field, rows, handleBlur, handleChange, handleFocus, ...rest } = this.props;
+    const { id, label, placeholder, field, rows, handleBlur, handleChange, handleFocus, ...rest } = this.props;
     const { type } = this.state;
 
     return (
@@ -65,12 +65,13 @@ class FieldDate extends Component {
           multiline={Boolean(rows)}
           rows={rows}
           type={type}
-          pattern={pattern}
+          pattern="yyyy-mm-dd"
           onChange={handleChange}
           onFocus={this.handleFocus}
           onBlur={this.handleBlur}
           onMouseEnter={this.handleMouseEnter}
           onMouseLeave={this.handleMouseLeave}
+          style={{ width: '110px' }}
         />
         {field.error && <ErrorText>{field.error}</ErrorText>}
       </TextField>

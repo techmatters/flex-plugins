@@ -1,3 +1,4 @@
+/* eslint-disable no-empty-function */
 import React from 'react';
 import { Provider } from 'react-redux';
 import renderer from 'react-test-renderer';
@@ -201,15 +202,15 @@ describe('useState mocked', () => {
 
     expect(component.findAllByType(CaseDetails).length).toBe(1);
     const details = component.findByType(CaseDetails);
-    expect(details.props).toStrictEqual({
-      caseId: 123,
-      name: 'first last',
-      counselor: 'worker1 name',
-      status: 'open',
-      openedDate: '6/29/2020', // the day the createdAt number represents
-      lastUpdatedDate: 'Invalid Date',
-      followUpDate: '',
-    });
+    const { caseId, name, counselor, status, openedDate, lastUpdatedDate, followUpDate } = details.props;
+
+    expect(caseId).toBe(123);
+    expect(name).toBe('first last');
+    expect(counselor).toBe('worker1 name');
+    expect(status).toBe('open');
+    expect(openedDate).toBe('6/29/2020'); // the day the createdAt number represents
+    expect(lastUpdatedDate).toBe('Invalid Date');
+    expect(followUpDate).toBe(null);
   });
 
   function openCancelMenu(wrapper) {

@@ -100,20 +100,18 @@ class SearchForm extends Component {
             <FieldDate
               id="Search_DateFrom"
               label={strings['SearchForm-DateRange']}
-              pattern="yyyy-mm-dd"
               placeholder="Start Date"
               field={getField(dateFrom)}
               {...this.defaultEventHandlers('dateFrom')}
-              style={{ marginRight: '10px', width: '110px' }}
+              style={{ marginRight: '10px' }}
             />
             <FieldDate
               id="Search_DateTo"
               label=" "
-              pattern="yyyy-mm-dd"
               placeholder="End Date"
               field={getField(dateTo)}
               {...this.defaultEventHandlers('dateTo')}
-              style={{ marginRight: '10px', width: '110px' }}
+              style={{ marginRight: '10px' }}
             />
           </Row>
           <Row>
