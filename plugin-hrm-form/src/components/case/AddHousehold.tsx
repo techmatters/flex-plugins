@@ -7,7 +7,7 @@ import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyl
 import { CaseActionContainer, CaseActionFormContainer } from '../../styles/case';
 import ActionHeader from './ActionHeader';
 import { CallerForm, newCallerFormInformation } from '../common/forms';
-import { editNestedField } from '../../states/ContactState';
+import { editNestedField } from './helpers';
 import { namespace, connectedCaseBase, routingBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
