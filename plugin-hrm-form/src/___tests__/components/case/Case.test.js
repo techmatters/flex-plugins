@@ -276,7 +276,7 @@ describe('useState mocked', () => {
       </StorelessThemeProvider>,
     );
 
-    screen.getByText('Case-AddNote').click();
+    screen.getByText('Case-Note').click();
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
         route: 'new-case',
@@ -305,7 +305,7 @@ describe('useState mocked', () => {
       </StorelessThemeProvider>,
     );
 
-    screen.getByText('Case-AddHousehold').click();
+    screen.getByText('Case-Household').click();
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
         route: 'new-case',
@@ -335,7 +335,7 @@ describe('useState mocked', () => {
       </StorelessThemeProvider>,
     );
 
-    screen.getByText('Case-AddPerpetrator').click();
+    screen.getByText('Case-Perpetrator').click();
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
         route: 'new-case',
