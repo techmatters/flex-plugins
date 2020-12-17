@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Template } from '@twilio/flex-ui';
 import { Grid } from '@material-ui/core';
+import CaseTags from 'components/search/CasePreview/CaseTags';
 
 import CaseDetailsHeader from './caseDetails/CaseDetailsHeader';
 import {
@@ -25,6 +26,7 @@ const statusOptions = [
 const CaseDetails = ({
   caseId,
   name,
+  categories,
   counselor,
   openedDate,
   lastUpdatedDate,
@@ -48,7 +50,7 @@ const CaseDetails = ({
     <>
       <CaseDetailsHeader caseId={caseId} childName={name} />
       <DetailsContainer tabIndex={0} role="grid" aria-labelledby="Case-CaseId-label">
-        <Grid container spacing={24} justify="center" role="row">
+        <Grid container spacing={24} justify="start" role="row">
           <Grid item xs role="gridcell" tabIndex={-1}>
             <DetailDescription>
               <label id="CaseDetailsDateOpened">
@@ -112,6 +114,9 @@ const CaseDetails = ({
               </StyledSelectField>
             </StyledSelectWrapper>
           </Grid>
+          <div style={{ paddingLeft: '12px' }}>
+            <CaseTags categories={categories} />
+          </div>
         </Grid>
       </DetailsContainer>
     </>
@@ -122,6 +127,7 @@ CaseDetails.displayName = 'CaseDetails';
 CaseDetails.propTypes = {
   caseId: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
+  categories: PropTypes.array.isRequired,
   counselor: PropTypes.string.isRequired,
   openedDate: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,

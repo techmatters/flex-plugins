@@ -156,6 +156,7 @@ const Case: React.FC<Props> = props => {
 
   const firstConnectedContact = connectedCase && connectedCase.connectedContacts && connectedCase.connectedContacts[0];
   const name = firstConnectedContact ? getNameFromContact(firstConnectedContact) : getNameFromForm(form);
+  const { categories } = ((firstConnectedContact || {}).rawJson || {}).caseInformation || {};
   const { createdAt, updatedAt, twilioWorkerId, status, info } = connectedCase;
   const counselor = counselorsHash[twilioWorkerId];
   const openedDate = new Date(createdAt).toLocaleDateString(navigator.language);
@@ -191,6 +192,7 @@ const Case: React.FC<Props> = props => {
                 name={name}
                 status={status}
                 counselor={counselor}
+                categories={categories}
                 openedDate={openedDate}
                 lastUpdatedDate={lastUpdatedDate}
                 followUpDate={followUpDate}
