@@ -100,6 +100,7 @@ const Details = ({
               key={`CallerInformation-${e.label}`}
               description={<Template code={e.label} />}
               value={unNestInformation(e, contact.details.callerInformation)}
+              definition={e}
             />
           ))}
         </Section>
@@ -116,6 +117,7 @@ const Details = ({
               key={`ChildInformation-${e.label}`}
               description={<Template code={e.label} />}
               value={unNestInformation(e, contact.details.childInformation)}
+              definition={e}
             />
           ))}
         </Section>
@@ -149,11 +151,12 @@ const Details = ({
           expanded={detailsExpanded[CONTACT_SUMMARY]}
           handleExpandClick={() => handleExpandDetailsSection(CONTACT_SUMMARY)}
         >
-          {CaseInformationTab.map(e => (
+          {(CaseInformationTab as FormDefinition).map(e => (
             <SectionEntry
               key={`CaseInformation-${e.label}`}
               description={<Template code={e.label} />}
               value={contact.details.caseInformation[e.name]}
+              definition={e}
             />
           ))}
         </Section>
