@@ -30,7 +30,8 @@ const CaseInformationTab: React.FC<Props> = ({ dispatch, task, display }) => {
       updateCallback,
     );
 
-    return splitInHalf(disperseInputs(7)(caseFormDefinition));
+    const margin = 12;
+    return splitInHalf(disperseInputs(margin)(caseFormDefinition));
   }, [dispatch, getValues, task.taskSid]);
 
   return (

@@ -553,11 +553,17 @@ FormItem.displayName = 'FormItem';
 export const FormLabel = styled('label')`
   display: flex;
   flex-direction: column;
-  font-size: 13px;
-  letter-spacing: 1px;
+  font-size: 14px;
+  letter-spacing: 0;
   min-height: 18px;
+  color: #000000;
 `;
 FormLabel.displayName = 'FormLabel';
+
+export const DependantSelectLabel = styled(FormLabel)<{ disabled: boolean }>`
+  ${({ disabled }) => disabled && `opacity: 0.30;`}
+`;
+DependantSelectLabel.displayName = 'DependantSelectLabel';
 
 export const FormError = styled('span')`
   text-transform: none;
@@ -633,17 +639,18 @@ export const FormTextArea = styled('textarea')<FormInputProps>`
     flex-grow: 0;
     font-family: Open Sans;
     font-size: 12px;
-    line-height: 1.33;
+    line-height: 15px;
     letter-spacing: normal;
     box-sizing: border-box; /* Tells the browser to account for any border and padding in the values you specify for an element's width and height. https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing*/
     width: 217px;
     border-radius: 4px;
-    background-color: ${props => props.theme.colors.inputBackgroundColor};
+    background-color: ${props => props.theme.colors.base2};
     color: ${props =>
       props.theme.calculated.lightTheme ? props.theme.colors.darkTextColor : props.theme.colors.lightTextColor};
     border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
     boxshadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
-    padding: 0 7px;
+    padding: 5px;
+    border-radius: 4px;
   }
   &:focus {
     background-color: ${props => props.theme.colors.inputBackgroundColor};
@@ -653,6 +660,7 @@ export const FormTextArea = styled('textarea')<FormInputProps>`
 `;
 
 export const FormCheckBoxWrapper = styled(Row)<FormInputProps>`
+  align-items: flex-start;
   box-sizing: border-box; /* Tells the browser to account for any border and padding in the values you specify for an element's width and height. https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing*/
   width: 217px;
   height: 36px;
@@ -781,7 +789,7 @@ export const FormSelect = styled('select')<FormInputProps>`
 FormSelect.displayName = 'FormSelect';
 
 // eslint-disable-next-line import/no-unused-modules
-export const FormOption = styled('option')`
+export const FormOption = styled('option')<{ isEmptyValue: boolean }>`
   font-family: Open Sans;
   font-size: 12px;
   line-height: 1.33;
@@ -792,6 +800,7 @@ export const FormOption = styled('option')`
   margin: 0;
   padding: 0 12px;
   min-width: 0;
+  ${({ isEmptyValue }) => isEmptyValue && 'color: #616161'}
 `;
 FormOption.displayName = 'FormOption';
 

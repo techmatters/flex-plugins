@@ -30,7 +30,8 @@ const CallerInformationTab: React.FC<Props> = ({ dispatch, task, display }) => {
       updateCallback,
     );
 
-    return splitInHalf(disperseInputs(7)(callerFormDefinition));
+    const margin = 12;
+    return splitInHalf(disperseInputs(margin)(callerFormDefinition));
   }, [dispatch, getValues, task.taskSid]);
 
   return (

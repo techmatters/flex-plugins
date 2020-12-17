@@ -30,7 +30,8 @@ const ChildInformationTab: React.FC<Props> = ({ dispatch, task, display }) => {
       updateCallback,
     );
 
-    return splitInHalf(disperseInputs(7)(childFormDefinition));
+    const margin = 12;
+    return splitInHalf(disperseInputs(margin)(childFormDefinition));
   }, [dispatch, getValues, task.taskSid]);
 
   return (
