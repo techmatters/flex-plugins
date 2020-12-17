@@ -276,11 +276,41 @@ describe('useState mocked', () => {
       </StorelessThemeProvider>,
     );
 
-    screen.getByText('Case-AddNote').click();
+    screen.getByText('Case-Note').click();
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
         route: 'new-case',
         subroute: 'add-note',
+      },
+      taskId: 'task1',
+      type: 'CHANGE_ROUTE',
+    });
+  });
+
+  test('click Add Referral button', async () => {
+    const ownProps = {
+      task: {
+        taskSid: 'task1',
+      },
+      handleCompleteTask: jest.fn(),
+    };
+
+    const store = mockStore(initialState);
+    store.dispatch = jest.fn();
+
+    render(
+      <StorelessThemeProvider themeConf={themeConf}>
+        <Provider store={store}>
+          <Case {...ownProps} />
+        </Provider>
+      </StorelessThemeProvider>,
+    );
+
+    screen.getByText('Case-Referral').click();
+    expect(store.dispatch).toHaveBeenCalledWith({
+      routing: {
+        route: 'new-case',
+        subroute: 'add-referral',
       },
       taskId: 'task1',
       type: 'CHANGE_ROUTE',
@@ -305,7 +335,7 @@ describe('useState mocked', () => {
       </StorelessThemeProvider>,
     );
 
-    screen.getByText('Case-AddHousehold').click();
+    screen.getByText('Case-Household').click();
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
         route: 'new-case',
@@ -335,7 +365,7 @@ describe('useState mocked', () => {
       </StorelessThemeProvider>,
     );
 
-    screen.getByText('Case-AddPerpetrator').click();
+    screen.getByText('Case-Perpetrator').click();
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
         route: 'new-case',

@@ -3,6 +3,7 @@ export const CHANGE_ROUTE = 'CHANGE_ROUTE';
 
 export const NewCaseSubroutes = {
   AddNote: 'add-note',
+  AddReferral: 'add-referral',
   AddHousehold: 'add-household',
   AddPerpetrator: 'add-perpetrator',
   ViewContact: 'view-contact',

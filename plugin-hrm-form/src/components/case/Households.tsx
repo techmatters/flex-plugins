@@ -22,7 +22,7 @@ const Households: React.FC<OwnProps> = ({ onClickAddHousehold, onClickView, hous
           <CaseSectionFont id="Case-AddHouseholdSection-label">
             <Template code="Case-AddHouseholdSection" />
           </CaseSectionFont>
-          <CaseAddButton templateCode="Case-AddHousehold" onClick={onClickAddHousehold} />
+          <CaseAddButton templateCode="Case-Household" onClick={onClickAddHousehold} />
         </Row>
       </Box>
       {households.length ? (

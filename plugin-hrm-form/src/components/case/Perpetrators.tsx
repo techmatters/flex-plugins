@@ -22,7 +22,7 @@ const Perpetrators: React.FC<OwnProps> = ({ onClickAddPerpetrator, onClickView, 
           <CaseSectionFont id="Case-AddPerpetratorSection-label">
             <Template code="Case-AddPerpetratorSection" />
           </CaseSectionFont>
-          <CaseAddButton templateCode="Case-AddPerpetrator" onClick={onClickAddPerpetrator} />
+          <CaseAddButton templateCode="Case-Perpetrator" onClick={onClickAddPerpetrator} />
         </Row>
       </Box>
       {perpetrators.length ? (
