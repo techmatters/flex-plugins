@@ -71,7 +71,7 @@ const createCategory = <T extends {}>(obj: T, [category, { subcategories }]: [st
   [category]: subcategories.reduce((acc, subcategory) => ({ ...acc, [subcategory]: false }), {}),
 });
 
-const createCategoriesObject = () => Object.entries(categoriesFormDefinition).reduce(createCategory, {});
+export const createCategoriesObject = () => Object.entries(categoriesFormDefinition).reduce(createCategory, {});
 
 const transformValue = (e: FormItemDefinition) => (value: string | boolean | null) => {
   if (e.type === 'mixed-checkbox' && value === 'mixed') return null;
