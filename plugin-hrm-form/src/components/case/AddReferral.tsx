@@ -86,7 +86,13 @@ const AddReferral: React.FC<Props> = ({
                     <RequiredAsterisk field={requiredField} />
                   </Box>
                 </Row>
-                <FormInput type="date" id="date" name="date" onChange={e => handleChange('date', e.target.value)} />
+                <FormInput
+                  data-testid="Case-AddReferralScreen-Date"
+                  type="date"
+                  id="date"
+                  name="date"
+                  onChange={e => handleChange('date', e.target.value)}
+                />
               </FormLabel>
             </Box>
             <FormLabel htmlFor="referredTo">
@@ -98,6 +104,7 @@ const AddReferral: React.FC<Props> = ({
               </Row>
               <FormSelectWrapper>
                 <FormSelect
+                  data-testid="Case-AddReferralScreen-ReferredTo"
                   id="referredTo"
                   name="referredTo"
                   onChange={e => handleChange('referredTo', e.target.value)}
@@ -120,6 +127,7 @@ const AddReferral: React.FC<Props> = ({
                 </Box>
               </Row>
               <textarea
+                data-testid="Case-AddReferralScreen-Comments"
                 id="comments"
                 name="comments"
                 onChange={e => handleChange('comments', e.target.value)}
@@ -133,11 +141,16 @@ const AddReferral: React.FC<Props> = ({
       <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
       <BottomButtonBar>
         <Box marginRight="15px">
-          <StyledNextStepButton secondary roundCorners onClick={onClickClose}>
+          <StyledNextStepButton data-testid="Case-CloseButton" secondary roundCorners onClick={onClickClose}>
             <Template code="BottomBar-Cancel" />
           </StyledNextStepButton>
         </Box>
-        <StyledNextStepButton roundCorners onClick={handleSaveReferral} disabled={isSaveDisabled}>
+        <StyledNextStepButton
+          data-testid="Case-AddReferralScreen-SaveReferral"
+          roundCorners
+          onClick={handleSaveReferral}
+          disabled={isSaveDisabled}
+        >
           <Template code="BottomBar-SaveReferral" />
         </StyledNextStepButton>
       </BottomButtonBar>
