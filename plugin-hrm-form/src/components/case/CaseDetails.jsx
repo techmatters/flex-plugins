@@ -1,3 +1,4 @@
+/* eslint-disable react/forbid-prop-types */
 /* eslint-disable no-empty-function */
 /* eslint-disable react/jsx-max-depth */
 /* eslint-disable jsx-a11y/label-has-associated-control */
@@ -6,8 +7,8 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Template } from '@twilio/flex-ui';
 import { Grid } from '@material-ui/core';
-import CaseTags from 'components/search/CasePreview/CaseTags';
 
+import CaseTags from '../search/CasePreview/CaseTags';
 import CaseDetailsHeader from './caseDetails/CaseDetailsHeader';
 import {
   DetailsContainer,
