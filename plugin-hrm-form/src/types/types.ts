@@ -2,7 +2,7 @@
 
 import { CallerFormValues } from '../components/common/forms/CallerForm';
 
-export type CaseStatus = 'open' | 'close';
+export type CaseStatus = 'open' | 'closed';
 
 export type PerpetratorEntry = { perpetrator: CallerFormValues; createdAt: string; twilioWorkerId: string };
 

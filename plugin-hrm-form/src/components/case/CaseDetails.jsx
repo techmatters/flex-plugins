@@ -2,7 +2,7 @@
 /* eslint-disable react/jsx-max-depth */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/no-multi-comp */
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Template } from '@twilio/flex-ui';
 import { Grid } from '@material-ui/core';
@@ -18,9 +18,8 @@ import {
 import { FormOption } from '../../styles/HrmStyles';
 
 const statusOptions = [
-  { label: 'N/A', value: 'null' },
-  { label: 'Open', value: 'open' },
-  { label: 'Closed', value: 'closed' },
+  { label: 'Open', value: 'open', color: 'green' },
+  { label: 'Closed', value: 'closed', color: 'red' },
 ];
 
 const CaseDetails = ({
@@ -31,9 +30,19 @@ const CaseDetails = ({
   lastUpdatedDate,
   followUpDate,
   status,
-  handleFieldChange,
+  handleInfoChange,
+  handleStatusChange,
 }) => {
   const lastUpdatedClosedDate = openedDate === lastUpdatedDate ? '—' : lastUpdatedDate;
+
+  const initialColor = (statusOptions.find(x => x.value === status) || {}).color || '#000000';
+
+  const [color, setColor] = useState(initialColor);
+
+  const onStatusChange = selectedOption => {
+    setColor(statusOptions.find(x => x.value === selectedOption).color);
+    handleStatusChange(selectedOption);
+  };
 
   return (
     <>
@@ -77,7 +86,7 @@ const CaseDetails = ({
               id="Details_DateFollowUp"
               name="Details_DateFollowUp"
               value={followUpDate}
-              onChange={e => handleFieldChange('followUpDate', e.target.value)}
+              onChange={e => handleInfoChange('followUpDate', e.target.value)}
               aria-labelledby="CaseDetailsFollowUpDate"
             />
           </Grid>
@@ -92,10 +101,11 @@ const CaseDetails = ({
                 id="Details_CaseStatus"
                 name="Details_CaseStatus"
                 aria-labelledby="CaseDetailsStatusLabel"
-                onChange={e => handleFieldChange('status', e.target.value)} // ToDo: replace this, we need to change case status that is not inside 'info'
+                onChange={e => onStatusChange(e.target.value)}
+                color={color}
               >
                 {statusOptions.map(o => (
-                  <FormOption selected={o.value === status} key={o.value} value={o.value}>
+                  <FormOption selected={o.value === status} key={o.value} value={o.value} style={{ color: '#000000' }}>
                     {o.label}
                   </FormOption>
                 ))}
@@ -117,7 +127,8 @@ CaseDetails.propTypes = {
   status: PropTypes.string.isRequired,
   followUpDate: PropTypes.string,
   lastUpdatedDate: PropTypes.string,
-  handleFieldChange: PropTypes.func.isRequired,
+  handleInfoChange: PropTypes.func.isRequired,
+  handleStatusChange: PropTypes.func.isRequired,
 };
 
 CaseDetails.defaultProps = {

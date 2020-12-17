@@ -59,19 +59,6 @@ export const DetailDescription = styled(DetailEntryText)`
 `;
 DetailDescription.displayName = 'DetailDescription';
 
-export const OpenStatusFont = styled(DetailEntryText)`
-  color: #2bb826;
-  font-size: 13px;
-  text-transform: uppercase;
-`;
-OpenStatusFont.displayName = 'OpenStatusFont';
-
-export const DefaultStatusFont = styled(DetailEntryText)`
-  font-size: 13px;
-  text-transform: uppercase;
-`;
-DefaultStatusFont.displayName = 'DefaultStatusFont';
-
 type ViewButtonProps = {
   onClick: () => void;
 };
@@ -261,9 +248,17 @@ export const StyledSelectWrapper = styled(FormSelectWrapper)`
 
 StyledSelectWrapper.displayName = 'StyledSelectWrapper';
 
-export const StyledSelectField = styled(FormSelect)`
+type StyledSelectFieldProps = {
+  color: string;
+};
+
+export const StyledSelectField = styled(({ color, ...rest }: StyledSelectFieldProps) => <FormSelect {...rest} />)<
+  StyledSelectFieldProps
+>`
   width: 150px !important;
   height: 36px;
+  font-weight: 600;
+  color: ${({ color }) => (color ? `${color}` : '#000000')};
 `;
 
 StyledSelectField.displayName = 'StyledSelectField';
