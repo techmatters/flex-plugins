@@ -54,6 +54,7 @@ const getNameFromForm = form => {
   return formatName(`${firstName.value} ${lastName.value}`);
 };
 
+// eslint-disable-next-line complexity
 const Case: React.FC<Props> = props => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [isMenuOpen, setMenuOpen] = useState(false);
@@ -128,6 +129,13 @@ const Case: React.FC<Props> = props => {
     props.changeRoute({ route, subroute: 'view-perpetrator' }, props.task.taskSid);
   };
 
+  const onFollowupDateChange = (fieldName, value) => {
+    const { connectedCase } = props.connectedCaseState;
+    const { info } = connectedCase;
+    const newInfo = info ? { ...info, [fieldName]: value } : { [fieldName]: value };
+    props.updateCaseInfo(newInfo, props.task.taskSid);
+  };
+
   if (!props.connectedCaseState) return null;
 
   const { task, form, counselorsHash } = props;
@@ -149,6 +157,7 @@ const Case: React.FC<Props> = props => {
   const counselor = counselorsHash[twilioWorkerId];
   const openedDate = new Date(createdAt).toLocaleDateString(navigator.language);
   const lastUpdatedDate = new Date(updatedAt).toLocaleDateString(navigator.language);
+  const followUpDate = info && info.followUpDate;
   const households = info && info.households ? info.households : [];
   const perpetrators = info && info.perpetrators ? info.perpetrators : [];
 
@@ -183,6 +192,8 @@ const Case: React.FC<Props> = props => {
                 counselor={counselor}
                 openedDate={openedDate}
                 lastUpdatedDate={lastUpdatedDate}
+                followUpDate={followUpDate}
+                handleFollowupDateChange={onFollowupDateChange}
               />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
@@ -258,6 +269,7 @@ const mapStateToProps = (state, ownProps) => ({
 const mapDispatchToProps = dispatch => ({
   changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
   removeConnectedCase: bindActionCreators(CaseActions.removeConnectedCase, dispatch),
+  updateCaseInfo: bindActionCreators(CaseActions.updateCaseInfo, dispatch),
   updateTempInfo: bindActionCreators(CaseActions.updateTempInfo, dispatch),
 });
 

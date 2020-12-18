@@ -1,3 +1,4 @@
+/* eslint-disable no-empty-function */
 /* eslint-disable react/jsx-max-depth */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/no-multi-comp */
@@ -34,7 +35,16 @@ const renderCaseStatus = status => {
   }
 };
 
-const CaseDetails = ({ caseId, name, counselor, openedDate, lastUpdatedDate, followUpDate, status }) => {
+const CaseDetails = ({
+  caseId,
+  name,
+  counselor,
+  openedDate,
+  lastUpdatedDate,
+  followUpDate,
+  status,
+  handleFollowupDateChange,
+}) => {
   const lastUpdatedClosedDate = openedDate === lastUpdatedDate ? '—' : lastUpdatedDate;
 
   return (
@@ -74,10 +84,12 @@ const CaseDetails = ({ caseId, name, counselor, openedDate, lastUpdatedDate, fol
                 <Template code="Case-CaseDetailsFollowUpDate" />
               </label>
             </DetailDescription>
-            {/* Replace this with proper component in next story */}
             <StyledInputField
+              type="date"
               id="Details_DateFollowUp"
+              name="Details_DateFollowUp"
               value={followUpDate}
+              onChange={e => handleFollowupDateChange('followUpDate', e.target.value)}
               aria-labelledby="CaseDetailsFollowUpDate"
             />
           </Grid>
@@ -101,6 +113,7 @@ CaseDetails.propTypes = {
   status: PropTypes.string.isRequired,
   followUpDate: PropTypes.string,
   lastUpdatedDate: PropTypes.string,
+  handleFollowupDateChange: PropTypes.func.isRequired,
 };
 
 CaseDetails.defaultProps = {
