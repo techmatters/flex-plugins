@@ -807,7 +807,6 @@ FormOption.displayName = 'FormOption';
 type CategoryCheckboxProps = { color: string; disabled: boolean };
 // eslint-disable-next-line import/no-unused-modules
 export const CategoryCheckbox = styled(CheckboxBase)<CategoryCheckboxProps>`
-  color: ${({ disabled, color, theme }) => (disabled ? `${theme.colors.categoryDisabledColor}33` : color)};
   padding: 8px;
 
   &[type='checkbox']:checked {
