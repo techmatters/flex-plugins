@@ -46,7 +46,7 @@ const CaseDetails = ({
   return (
     <>
       <CaseDetailsHeader caseId={caseId} childName={name} />
-      <DetailsContainer tabIndex={0} role="grid" aria-labelledby="Case-CaseId-label">
+      <DetailsContainer tabIndex={0} aria-labelledby="Case-CaseId-label">
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <div style={{ paddingLeft: '20px' }}>
             <DetailDescription>
