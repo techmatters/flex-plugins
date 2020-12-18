@@ -2,38 +2,24 @@
 /* eslint-disable react/jsx-max-depth */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/no-multi-comp */
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Template } from '@twilio/flex-ui';
-import { Grid } from '@material-ui/core';
 
 import CaseDetailsHeader from './caseDetails/CaseDetailsHeader';
 import {
   DetailsContainer,
   DetailDescription,
-  OpenStatusFont,
-  DefaultStatusFont,
   StyledInputField,
+  StyledSelectField,
+  StyledSelectWrapper,
 } from '../../styles/case';
-import { HiddenText } from '../../styles/HrmStyles';
-import { caseStatuses } from '../../states/DomainConstants';
+import { FormOption } from '../../styles/HrmStyles';
 
-// eslint-disable-next-line react/display-name
-const renderCaseStatus = status => {
-  switch (status) {
-    case caseStatuses.open:
-      return (
-        <OpenStatusFont>
-          <HiddenText>
-            <Template code="Case-CaseDetailsStatusLabel" />
-          </HiddenText>
-          <Template code="Case-CaseDetailsStatusOpen" />
-        </OpenStatusFont>
-      );
-    default:
-      return <DefaultStatusFont>{status}</DefaultStatusFont>;
-  }
-};
+const statusOptions = [
+  { label: 'Open', value: 'open', color: 'green' },
+  { label: 'Closed', value: 'closed', color: 'red' },
+];
 
 const CaseDetails = ({
   caseId,
@@ -43,16 +29,26 @@ const CaseDetails = ({
   lastUpdatedDate,
   followUpDate,
   status,
-  handleFollowupDateChange,
+  handleInfoChange,
+  handleStatusChange,
 }) => {
   const lastUpdatedClosedDate = openedDate === lastUpdatedDate ? '—' : lastUpdatedDate;
+
+  const initialColor = (statusOptions.find(x => x.value === status) || {}).color || '#000000';
+
+  const [color, setColor] = useState(initialColor);
+
+  const onStatusChange = selectedOption => {
+    setColor(statusOptions.find(x => x.value === selectedOption).color);
+    handleStatusChange(selectedOption);
+  };
 
   return (
     <>
       <CaseDetailsHeader caseId={caseId} childName={name} />
-      <DetailsContainer tabIndex={0} role="grid" aria-labelledby="Case-CaseId-label">
-        <Grid container spacing={24} justify="center" role="row">
-          <Grid item xs role="gridcell" tabIndex={-1}>
+      <DetailsContainer tabIndex={0} aria-labelledby="Case-CaseId-label">
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ paddingLeft: '20px' }}>
             <DetailDescription>
               <label id="CaseDetailsDateOpened">
                 <Template code="Case-CaseDetailsDateOpened" />
@@ -64,8 +60,8 @@ const CaseDetails = ({
               value={openedDate}
               aria-labelledby="CaseDetailsDateOpened"
             />
-          </Grid>
-          <Grid item xs role="gridcell" tabIndex={-1}>
+          </div>
+          <div style={{ paddingLeft: '20px' }}>
             <DetailDescription>
               <label id="CaseDetailsLastUpdated">
                 <Template code="Case-CaseDetailsLastUpdated" />
@@ -77,8 +73,8 @@ const CaseDetails = ({
               value={lastUpdatedClosedDate}
               aria-labelledby="CaseDetailsLastUpdated"
             />
-          </Grid>
-          <Grid item xs role="gridcell" tabIndex={-1}>
+          </div>
+          <div style={{ paddingLeft: '20px' }}>
             <DetailDescription>
               <label id="CaseDetailsFollowUpDate">
                 <Template code="Case-CaseDetailsFollowUpDate" />
@@ -89,16 +85,34 @@ const CaseDetails = ({
               id="Details_DateFollowUp"
               name="Details_DateFollowUp"
               value={followUpDate}
-              onChange={e => handleFollowupDateChange('followUpDate', e.target.value)}
+              onChange={e => handleInfoChange('followUpDate', e.target.value)}
               aria-labelledby="CaseDetailsFollowUpDate"
             />
-          </Grid>
-          <Grid item xs role="gridcell" tabIndex={-1}>
-            <div style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-              {renderCaseStatus(status)}
-            </div>
-          </Grid>
-        </Grid>
+          </div>
+          <div style={{ paddingLeft: '20px' }}>
+            <DetailDescription>
+              <label id="CaseDetailsStatusLabel">
+                <Template code="Case-CaseDetailsStatusLabel" />
+              </label>
+            </DetailDescription>
+            <StyledSelectWrapper>
+              <StyledSelectField
+                id="Details_CaseStatus"
+                name="Details_CaseStatus"
+                aria-labelledby="CaseDetailsStatusLabel"
+                onChange={e => onStatusChange(e.target.value)}
+                defaultValue={status}
+                color={color}
+              >
+                {statusOptions.map(o => (
+                  <FormOption key={o.value} value={o.value} style={{ color: '#000000' }}>
+                    {o.label}
+                  </FormOption>
+                ))}
+              </StyledSelectField>
+            </StyledSelectWrapper>
+          </div>
+        </div>
       </DetailsContainer>
     </>
   );
@@ -113,7 +127,8 @@ CaseDetails.propTypes = {
   status: PropTypes.string.isRequired,
   followUpDate: PropTypes.string,
   lastUpdatedDate: PropTypes.string,
-  handleFollowupDateChange: PropTypes.func.isRequired,
+  handleInfoChange: PropTypes.func.isRequired,
+  handleStatusChange: PropTypes.func.isRequired,
 };
 
 CaseDetails.defaultProps = {

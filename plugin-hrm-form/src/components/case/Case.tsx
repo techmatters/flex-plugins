@@ -93,7 +93,7 @@ const Case: React.FC<Props> = props => {
 
     try {
       const contact = await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
-      await updateCase(connectedCase.id, { info: connectedCase.info });
+      await updateCase(connectedCase.id, { ...connectedCase });
       await connectToCase(hrmBaseUrl, contact.id, connectedCase.id);
       props.handleCompleteTask(task.taskSid, task);
     } catch (error) {
@@ -129,11 +129,15 @@ const Case: React.FC<Props> = props => {
     props.changeRoute({ route, subroute: 'view-perpetrator' }, props.task.taskSid);
   };
 
-  const onFollowupDateChange = (fieldName, value) => {
+  const onInfoChange = (fieldName, value) => {
     const { connectedCase } = props.connectedCaseState;
     const { info } = connectedCase;
     const newInfo = info ? { ...info, [fieldName]: value } : { [fieldName]: value };
     props.updateCaseInfo(newInfo, props.task.taskSid);
+  };
+
+  const onStatusChange = value => {
+    props.updateCaseStatus(value, props.task.taskSid);
   };
 
   if (!props.connectedCaseState) return null;
@@ -157,7 +161,7 @@ const Case: React.FC<Props> = props => {
   const counselor = counselorsHash[twilioWorkerId];
   const openedDate = new Date(createdAt).toLocaleDateString(navigator.language);
   const lastUpdatedDate = new Date(updatedAt).toLocaleDateString(navigator.language);
-  const followUpDate = info && info.followUpDate;
+  const followUpDate = info && info.followUpDate ? info.followUpDate : '';
   const households = info && info.households ? info.households : [];
   const perpetrators = info && info.perpetrators ? info.perpetrators : [];
 
@@ -193,7 +197,8 @@ const Case: React.FC<Props> = props => {
                 openedDate={openedDate}
                 lastUpdatedDate={lastUpdatedDate}
                 followUpDate={followUpDate}
-                handleFollowupDateChange={onFollowupDateChange}
+                handleInfoChange={onInfoChange}
+                handleStatusChange={onStatusChange}
               />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
@@ -271,6 +276,7 @@ const mapDispatchToProps = dispatch => ({
   removeConnectedCase: bindActionCreators(CaseActions.removeConnectedCase, dispatch),
   updateCaseInfo: bindActionCreators(CaseActions.updateCaseInfo, dispatch),
   updateTempInfo: bindActionCreators(CaseActions.updateTempInfo, dispatch),
+  updateCaseStatus: bindActionCreators(CaseActions.updateCaseStatus, dispatch),
 });
 
 export default withTaskContext(connect(mapStateToProps, mapDispatchToProps)(Case));

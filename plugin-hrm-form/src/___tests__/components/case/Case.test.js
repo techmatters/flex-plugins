@@ -210,7 +210,7 @@ describe('useState mocked', () => {
     expect(status).toBe('open');
     expect(openedDate).toBe('6/29/2020'); // the day the createdAt number represents
     expect(lastUpdatedDate).toBe('Invalid Date');
-    expect(followUpDate).toBe(null);
+    expect(followUpDate).toBe('');
   });
 
   function openCancelMenu(wrapper) {

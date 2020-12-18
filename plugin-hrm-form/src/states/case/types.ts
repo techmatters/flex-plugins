@@ -1,4 +1,4 @@
-import { Case, CaseInfo, HouseholdEntry, PerpetratorEntry, ReferralEntry } from '../../types/types';
+import { Case, CaseStatus, CaseInfo, HouseholdEntry, PerpetratorEntry, ReferralEntry } from '../../types/types';
 import { NewCaseSubroutes } from '../routing/types';
 import { CallerFormInformation } from '../../components/common/forms/CallerForm';
 
@@ -7,6 +7,7 @@ export const SET_CONNECTED_CASE = 'SET_CONNECTED_CASE';
 export const REMOVE_CONNECTED_CASE = 'REMOVE_CONNECTED_CASE';
 export const UPDATE_CASE_INFO = 'UPDATE_CASE_INFO';
 export const UPDATE_TEMP_INFO = 'UPDATE_TEMP_INFO';
+export const UPDATE_CASE_STATUS = 'UPDATE_CASE_STATUS';
 
 export type ViewNote = {
   note: string;
@@ -54,8 +55,15 @@ type TemporaryCaseInfoAction = {
   taskId: string;
 };
 
+type UpdateCasesStatusAction = {
+  type: typeof UPDATE_CASE_STATUS;
+  status: CaseStatus;
+  taskId: string;
+};
+
 export type CaseActionType =
   | SetConnectedCaseAction
   | RemoveConnectedCaseAction
   | UpdateCaseInfoAction
-  | TemporaryCaseInfoAction;
+  | TemporaryCaseInfoAction
+  | UpdateCasesStatusAction;
