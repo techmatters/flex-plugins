@@ -8,7 +8,7 @@ import { get } from 'lodash';
 
 import { createFormFromDefinition, disperseInputs } from '../common/forms/formGenerators';
 import { updateForm } from '../../states/contacts/actions';
-import { Container, ColumnarBlock, TwoColumnLayout } from '../../styles/HrmStyles';
+import { Container, ColumnarBlock, TwoColumnLayout, TabbedFormTabContainer } from '../../styles/HrmStyles';
 import type { RootState } from '../../states';
 import { formDefinition } from './ContactlessTaskTabDefinition';
 import { splitDate, splitTime } from '../../utils/helpers';
@@ -67,14 +67,14 @@ const ContactlessTaskTab: React.FC<Props> = ({ dispatch, display, task }) => {
   }, [setValue, time]);
 
   return (
-    <div style={{ height: '100%', display: display ? 'block' : 'none' }}>
+    <TabbedFormTabContainer display={display}>
       <Container>
         <TwoColumnLayout>
           <ColumnarBlock>{contactlessTaskForm}</ColumnarBlock>
           <ColumnarBlock />
         </TwoColumnLayout>
       </Container>
-    </div>
+    </TabbedFormTabContainer>
   );
 };
 

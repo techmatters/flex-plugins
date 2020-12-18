@@ -4,6 +4,8 @@ import styled from 'react-emotion';
 import { ButtonBase, Input, Select, MenuItem, Tabs, Tab, withStyles, TableRow } from '@material-ui/core';
 import { Button, Icon, getBackgroundWithHoverCSS } from '@twilio/flex-ui';
 
+export const BottomButtonBarHeight = 55;
+
 type BoxProps = {
   width?: string;
   height?: string;
@@ -69,11 +71,11 @@ export const TabbedFormsContainer = styled('div')`
 `;
 TabbedFormsContainer.displayName = 'TabbedFormsContainer';
 
-export const TabbedInputsContainer = styled('div')`
-  height: 100%;
-  overflow-y: auto;
+export const TabbedFormTabContainer = styled('div')<{ display: boolean }>`
+  display: ${({ display }) => (display ? 'block' : 'none')};
+  height: ${({ display }) => (display ? '100%' : '0px')};
 `;
-TabbedInputsContainer.displayName = 'TabbedInputsContainer';
+TabbedFormTabContainer.displayName = 'TabbedFormTabContainer';
 
 const containerLeftRightMargin = '5px';
 export const Container = styled('div')`
@@ -86,6 +88,7 @@ export const Container = styled('div')`
   border-top-right-radius: 4px;
   margin: 0 ${containerLeftRightMargin};
   height: 100%;
+  overflow-y: auto;
 `;
 Container.displayName = 'Container';
 
@@ -279,7 +282,7 @@ export const BottomButtonBar = styled('div')`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  height: 55px;
+  height: ${BottomButtonBarHeight}px;
   flex-shrink: 0;
   padding: 0 20px;
   background-color: #f9fafb;
@@ -314,6 +317,8 @@ export const TwoColumnLayout = styled('div')`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  background-color: inherit;
+  box-sizing: border-box;
 `;
 TwoColumnLayout.displayName = 'TwoColumnLayout';
 
@@ -344,7 +349,8 @@ export const CategoriesWrapper = styled('div')`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-bottom: 20px;
+  box-sizing: border-box;
+  padding-bottom: ${BottomButtonBarHeight}px;
 `;
 CategoriesWrapper.displayName = 'CategoriesWrapper';
 

@@ -15,23 +15,22 @@ import type { SearchContact } from '../../types/types';
 import type { FormDefinition } from '../common/forms/types';
 import {
   TabbedFormsContainer,
-  TabbedInputsContainer,
   TopNav,
   TransparentButton,
   StyledTabs,
+  TabbedFormTabContainer,
 } from '../../styles/HrmStyles';
 import FormTab from '../common/forms/FormTab';
 import callTypes from '../../states/DomainConstants';
 import Search from '../search';
-import CallerInformationTab from './CallerInformationTab';
-import ChildInformationTab from './ChildInformationTab';
 import IssueCategorizationTab from './IssueCategorizationTab';
-import CaseInformationTab from './CaseInformationTab';
+import TabbedFormTab from './TabbedFormTab';
 import ContactlessTaskTab from './ContactlessTaskTab';
 import BottomBar from './BottomBar';
 import { hasTaskControl } from '../../utils/transfer';
-import ChildTabDefinition from '../../formDefinitions/tabbedForms/ChildInformationTab.json';
 import CallerTabDefinition from '../../formDefinitions/tabbedForms/CallerInformationTab.json';
+import CaseTabDefinition from '../../formDefinitions/tabbedForms/CaseInformationTab.json';
+import ChildTabDefinition from '../../formDefinitions/tabbedForms/ChildInformationTab.json';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -148,29 +147,37 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
     <FormProvider {...methods}>
       <div role="form" style={{ height: '100%' }}>
         <TabbedFormsContainer>
-          <TabbedInputsContainer>
-            <TopNav>
-              <TransparentButton onClick={handleBackButton}>&lt; BACK</TransparentButton>
-            </TopNav>
-            <StyledTabs
-              name="tab"
-              variant="scrollable"
-              scrollButtons="auto"
-              value={tabIndex}
-              onChange={handleTabsChange}
-            >
-              {tabs}
-            </StyledTabs>
-            {/* Body */}
-            {subroute === 'search' && (
+          <TopNav>
+            <TransparentButton onClick={handleBackButton}>&lt; BACK</TransparentButton>
+          </TopNav>
+          <StyledTabs name="tab" variant="scrollable" scrollButtons="auto" value={tabIndex} onChange={handleTabsChange}>
+            {tabs}
+          </StyledTabs>
+          <div style={{ height: '100%', overflow: 'hidden' }}>
+            <TabbedFormTabContainer display={subroute === 'search'}>
               <Search currentIsCaller={isCallerType} handleSelectSearchResult={onSelectSearchResult} />
-            )}
+            </TabbedFormTabContainer>
+            {/* Body */}
             {task.attributes.isContactlessTask && <ContactlessTaskTab display={subroute === 'contactlessTask'} />}
-            {isCallerType && <CallerInformationTab display={subroute === 'callerInformation'} />}
-            <ChildInformationTab display={subroute === 'childInformation'} />
+            {isCallerType && (
+              <TabbedFormTab
+                tabPath="callerInformation"
+                definition={CallerTabDefinition as FormDefinition}
+                display={subroute === 'callerInformation'}
+              />
+            )}
+            <TabbedFormTab
+              tabPath="childInformation"
+              definition={ChildTabDefinition as FormDefinition}
+              display={subroute === 'childInformation'}
+            />
             <IssueCategorizationTab display={subroute === 'categories'} />
-            <CaseInformationTab display={subroute === 'caseInformation'} />
-          </TabbedInputsContainer>
+            <TabbedFormTab
+              tabPath="caseInformation"
+              definition={CaseTabDefinition as FormDefinition}
+              display={subroute === 'caseInformation'}
+            />
+          </div>
           <BottomBar
             nextTab={() =>
               dispatch(changeRoute({ route: 'tabbed-forms', subroute: tabsToIndex[tabIndex + 1] }, taskId))

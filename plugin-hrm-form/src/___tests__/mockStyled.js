@@ -8,7 +8,6 @@ jest.mock('../styles/HrmStyles', () => ({
   Flex: 'Flex',
   Absolute: 'Absolute',
   TabbedFormsContainer: 'TabbedFormsContainer',
-  TabbedInputsContainer: 'TabbedInputsContainer',
   Container: 'Container',
   ErrorText: 'ErrorText',
   CategoryTitle: 'CategoryTitle',
