@@ -11,7 +11,7 @@ import {
   ColumnarBlock,
   TwoColumnLayout,
   FormLabel,
-  DependantSelectLabel,
+  DependentSelectLabel,
   FormError,
   Row,
   FormInput,
@@ -187,7 +187,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
             const disabled = !hasOptions;
 
             return (
-              <DependantSelectLabel htmlFor={path} disabled={disabled}>
+              <DependentSelectLabel htmlFor={path} disabled={disabled}>
                 <Row>
                   <Box marginBottom="8px">
                     <Template code={`${def.label}`} />
@@ -217,7 +217,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                     <Template id={`${path}-error`} code={error.message} />
                   </FormError>
                 )}
-              </DependantSelectLabel>
+              </DependentSelectLabel>
             );
           }}
         </ConnectForm>

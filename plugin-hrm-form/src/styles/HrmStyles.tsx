@@ -571,10 +571,10 @@ export const FormLabel = styled('label')`
 `;
 FormLabel.displayName = 'FormLabel';
 
-export const DependantSelectLabel = styled(FormLabel)<{ disabled: boolean }>`
+export const DependentSelectLabel = styled(FormLabel)<{ disabled: boolean }>`
   ${({ disabled }) => disabled && `opacity: 0.30;`}
 `;
-DependantSelectLabel.displayName = 'DependantSelectLabel';
+DependentSelectLabel.displayName = 'DependentSelectLabel';
 
 export const FormError = styled('span')`
   text-transform: none;

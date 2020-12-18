@@ -50,7 +50,7 @@ jest.mock('../styles/HrmStyles', () => ({
   AddTaskButtonBase: 'AddTaskButtonBase',
   FormItem: 'FormItem',
   FormLabel: 'FormLabel',
-  DependantSelectLabel: 'DependantSelectLabel',
+  DependentSelectLabel: 'DependentSelectLabel',
   FormError: 'FormError',
   FormInput: 'FormInput',
   FormDateInput: 'FormDateInput',
