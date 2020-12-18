@@ -29,7 +29,7 @@ const ViewPerpetrator: React.FC<Props> = ({ counselorsHash, temporaryCaseInfo, o
   if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'view-perpetrator') return null;
 
   const counselorName = counselorsHash[temporaryCaseInfo.info.twilioWorkerId] || 'Unknown';
-  const date = new Date(temporaryCaseInfo.info.createdAt).toLocaleDateString(navigator.language);
+  const added = new Date(temporaryCaseInfo.info.createdAt);
 
   return (
     <CaseContainer>
@@ -38,7 +38,7 @@ const ViewPerpetrator: React.FC<Props> = ({ counselorsHash, temporaryCaseInfo, o
           titleTemplate="Case-ViewPerpetrator"
           onClickClose={onClickClose}
           counselor={counselorName}
-          added={date}
+          added={added}
         />
         <Box paddingTop="10px">
           <CallerSection
