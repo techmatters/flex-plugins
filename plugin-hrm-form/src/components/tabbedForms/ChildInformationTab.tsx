@@ -35,7 +35,7 @@ const ChildInformationTab: React.FC<Props> = ({ dispatch, task, display }) => {
   }, [dispatch, getValues, task.taskSid]);
 
   return (
-    <div style={{ display: display ? 'block' : 'none' }}>
+    <div style={{ display: display ? 'block' : 'none', height: '100%' }}>
       <Container>
         <TwoColumnLayout>
           <ColumnarBlock>{l}</ColumnarBlock>

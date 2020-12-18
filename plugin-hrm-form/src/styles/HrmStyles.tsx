@@ -69,6 +69,12 @@ export const TabbedFormsContainer = styled('div')`
 `;
 TabbedFormsContainer.displayName = 'TabbedFormsContainer';
 
+export const TabbedInputsContainer = styled('div')`
+  height: 100%;
+  overflow-y: auto;
+`;
+TabbedInputsContainer.displayName = 'TabbedInputsContainer';
+
 const containerLeftRightMargin = '5px';
 export const Container = styled('div')`
   display: flex;
@@ -80,7 +86,6 @@ export const Container = styled('div')`
   border-top-right-radius: 4px;
   margin: 0 ${containerLeftRightMargin};
   height: 100%;
-  overflow-y: auto;
 `;
 Container.displayName = 'Container';
 
