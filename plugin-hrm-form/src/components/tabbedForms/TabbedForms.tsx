@@ -35,13 +35,13 @@ const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
     case 'contactlessTask':
       return <FormTab key="ContactInformation" label="TabbedForms-AddContactInfoTab" error={errors.contactlessTask} />;
     case 'callerInformation':
-      return <FormTab key="CallerInfoTabTab" label="TabbedForms-AddCallerInfoTab" error={errors.callerInformation} />;
+      return <FormTab key="CallerInfoTab" label="TabbedForms-AddCallerInfoTab" error={errors.callerInformation} />;
     case 'childInformation':
-      return <FormTab key="ChildInfoTabTab" label="TabbedForms-AddChildInfoTab" error={errors.childInformation} />;
+      return <FormTab key="ChildInfoTab" label="TabbedForms-AddChildInfoTab" error={errors.childInformation} />;
     case 'categories':
       return <FormTab key="CategoriesTab" label="TabbedForms-CategoriesTab" error={errors.categories} />;
     case 'caseInformation':
-      return <FormTab key="CaseInfoTabTab" label="TabbedForms-AddCaseInfoTab" error={errors.caseInformation} />;
+      return <FormTab key="CaseInfoTab" label="TabbedForms-AddCaseInfoTab" error={errors.caseInformation} />;
     default:
       return null;
   }
