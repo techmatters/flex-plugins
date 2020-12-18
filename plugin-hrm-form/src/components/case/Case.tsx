@@ -92,7 +92,7 @@ const Case: React.FC<Props> = props => {
 
     try {
       const contact = await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
-      await updateCase(connectedCase.id, { info: connectedCase.info });
+      await updateCase(connectedCase.id, { ...connectedCase });
       await connectToCase(hrmBaseUrl, contact.id, connectedCase.id);
       props.handleCompleteTask(task.taskSid, task);
     } catch (error) {
@@ -160,7 +160,7 @@ const Case: React.FC<Props> = props => {
   const counselor = counselorsHash[twilioWorkerId];
   const openedDate = new Date(createdAt).toLocaleDateString(navigator.language);
   const lastUpdatedDate = new Date(updatedAt).toLocaleDateString(navigator.language);
-  const followUpDate = info && info.followUpDate;
+  const followUpDate = info && info.followUpDate ? info.followUpDate : '';
   const households = info && info.households ? info.households : [];
   const perpetrators = info && info.perpetrators ? info.perpetrators : [];
 

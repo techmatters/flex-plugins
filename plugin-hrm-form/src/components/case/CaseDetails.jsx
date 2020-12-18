@@ -5,7 +5,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Template } from '@twilio/flex-ui';
-import { Grid } from '@material-ui/core';
 
 import CaseDetailsHeader from './caseDetails/CaseDetailsHeader';
 import {
@@ -48,8 +47,8 @@ const CaseDetails = ({
     <>
       <CaseDetailsHeader caseId={caseId} childName={name} />
       <DetailsContainer tabIndex={0} role="grid" aria-labelledby="Case-CaseId-label">
-        <Grid container spacing={24} justify="center" role="row">
-          <Grid item xs role="gridcell" tabIndex={-1}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ paddingLeft: '20px' }}>
             <DetailDescription>
               <label id="CaseDetailsDateOpened">
                 <Template code="Case-CaseDetailsDateOpened" />
@@ -61,8 +60,8 @@ const CaseDetails = ({
               value={openedDate}
               aria-labelledby="CaseDetailsDateOpened"
             />
-          </Grid>
-          <Grid item xs role="gridcell" tabIndex={-1}>
+          </div>
+          <div style={{ paddingLeft: '20px' }}>
             <DetailDescription>
               <label id="CaseDetailsLastUpdated">
                 <Template code="Case-CaseDetailsLastUpdated" />
@@ -74,8 +73,8 @@ const CaseDetails = ({
               value={lastUpdatedClosedDate}
               aria-labelledby="CaseDetailsLastUpdated"
             />
-          </Grid>
-          <Grid item xs role="gridcell" tabIndex={-1}>
+          </div>
+          <div style={{ paddingLeft: '20px' }}>
             <DetailDescription>
               <label id="CaseDetailsFollowUpDate">
                 <Template code="Case-CaseDetailsFollowUpDate" />
@@ -89,8 +88,8 @@ const CaseDetails = ({
               onChange={e => handleInfoChange('followUpDate', e.target.value)}
               aria-labelledby="CaseDetailsFollowUpDate"
             />
-          </Grid>
-          <Grid item xs role="gridcell" tabIndex={-1}>
+          </div>
+          <div style={{ paddingLeft: '20px' }}>
             <DetailDescription>
               <label id="CaseDetailsStatusLabel">
                 <Template code="Case-CaseDetailsStatusLabel" />
@@ -102,17 +101,18 @@ const CaseDetails = ({
                 name="Details_CaseStatus"
                 aria-labelledby="CaseDetailsStatusLabel"
                 onChange={e => onStatusChange(e.target.value)}
+                defaultValue={status}
                 color={color}
               >
                 {statusOptions.map(o => (
-                  <FormOption selected={o.value === status} key={o.value} value={o.value} style={{ color: '#000000' }}>
+                  <FormOption key={o.value} value={o.value} style={{ color: '#000000' }}>
                     {o.label}
                   </FormOption>
                 ))}
               </StyledSelectField>
             </StyledSelectWrapper>
-          </Grid>
-        </Grid>
+          </div>
+        </div>
       </DetailsContainer>
     </>
   );
