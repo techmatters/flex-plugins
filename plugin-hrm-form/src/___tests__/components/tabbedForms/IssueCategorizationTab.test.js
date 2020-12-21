@@ -17,10 +17,6 @@ const expanded = Object.keys(definition).reduce((acc, category) => ({ ...acc, [c
 
 const taskId = 'task-id';
 const mockStore = configureMockStore([]);
-const store = mockStore({
-  [namespace]: { [contactFormsBase]: { tasks: { [taskId]: { metadata: { categories: { expanded } } } } } },
-});
-store.dispatch = jest.fn();
 
 const themeConf = {
   colorTheme: HrmTheme,
@@ -30,6 +26,13 @@ const getGridIcon = wrapper => wrapper.find(ToggleViewButton).at(0);
 const getListIcon = wrapper => wrapper.find(ToggleViewButton).at(1);
 
 test('Click on view subcategories as grid icon', () => {
+  const store = mockStore({
+    [namespace]: {
+      [contactFormsBase]: { tasks: { [taskId]: { metadata: { categories: { expanded, gridView: false } } } } },
+    },
+  });
+  store.dispatch = jest.fn();
+
   const mockMethods = {
     register: jest.fn(),
     unregister: jest.fn(),
@@ -50,7 +53,7 @@ test('Click on view subcategories as grid icon', () => {
     <StorelessThemeProvider themeConf={themeConf}>
       <Provider store={store}>
         <FormProvider {...mockMethods}>
-          <IssueCategorizationTab task={{ taskSid: taskId }} gridView={false} />
+          <IssueCategorizationTab task={{ taskSid: taskId }} />
         </FormProvider>
       </Provider>
     </StorelessThemeProvider>,
@@ -65,6 +68,13 @@ test('Click on view subcategories as grid icon', () => {
 });
 
 test('Click on view subcategories as list icon', () => {
+  const store = mockStore({
+    [namespace]: {
+      [contactFormsBase]: { tasks: { [taskId]: { metadata: { categories: { expanded, gridView: false } } } } },
+    },
+  });
+  store.dispatch = jest.fn();
+
   const mockMethods = {
     register: jest.fn(),
     unregister: jest.fn(),
@@ -85,7 +95,7 @@ test('Click on view subcategories as list icon', () => {
     <StorelessThemeProvider themeConf={themeConf}>
       <Provider store={store}>
         <FormProvider {...mockMethods}>
-          <IssueCategorizationTab task={{ taskSid: taskId }} gridView={false} />
+          <IssueCategorizationTab task={{ taskSid: taskId }} />
         </FormProvider>
       </Provider>
     </StorelessThemeProvider>,

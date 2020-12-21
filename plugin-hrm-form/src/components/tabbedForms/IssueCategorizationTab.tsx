@@ -28,7 +28,7 @@ const IssueCategorizationTab: React.FC<Props> = ({ dispatch, task, display, cate
   }, [dispatch, getValues, task.taskSid]);
 
   const toggleCategoriesGridView = (gridView: boolean) => {
-    dispatch(setCategoriesGridView(!gridView, task.taskSid));
+    dispatch(setCategoriesGridView(gridView, task.taskSid));
   };
 
   const toggleExpandCategory = (category: string) => {
