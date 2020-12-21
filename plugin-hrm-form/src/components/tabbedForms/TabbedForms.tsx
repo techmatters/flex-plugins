@@ -13,13 +13,7 @@ import type { TaskEntry } from '../../states/contacts/reducer';
 import type { TabbedFormSubroutes } from '../../states/routing/types';
 import type { SearchContact } from '../../types/types';
 import type { FormDefinition } from '../common/forms/types';
-import {
-  TabbedFormsContainer,
-  TopNav,
-  TransparentButton,
-  StyledTabs,
-  TabbedFormTabContainer,
-} from '../../styles/HrmStyles';
+import { TabbedFormsContainer, TopNav, TransparentButton, StyledTabs } from '../../styles/HrmStyles';
 import FormTab from '../common/forms/FormTab';
 import callTypes from '../../states/DomainConstants';
 import Search from '../search';
@@ -78,7 +72,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
   const methods = useForm({
     defaultValues: contactForm,
     shouldFocusError: false,
-    mode: 'onChange',
+    mode: 'onBlur',
   });
 
   if (routing.route !== 'tabbed-forms') return null;
@@ -153,31 +147,31 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
           <StyledTabs name="tab" variant="scrollable" scrollButtons="auto" value={tabIndex} onChange={handleTabsChange}>
             {tabs}
           </StyledTabs>
-          <div style={{ height: '100%', overflow: 'hidden' }}>
-            <TabbedFormTabContainer display={subroute === 'search'}>
-              <Search currentIsCaller={isCallerType} handleSelectSearchResult={onSelectSearchResult} />
-            </TabbedFormTabContainer>
-            {/* Body */}
-            {task.attributes.isContactlessTask && <ContactlessTaskTab display={subroute === 'contactlessTask'} />}
-            {isCallerType && (
+          {subroute === 'search' ? (
+            <Search currentIsCaller={isCallerType} handleSelectSearchResult={onSelectSearchResult} />
+          ) : (
+            <div style={{ height: '100%', overflow: 'hidden' }}>
+              {task.attributes.isContactlessTask && <ContactlessTaskTab display={subroute === 'contactlessTask'} />}
+              {isCallerType && (
+                <TabbedFormTab
+                  tabPath="callerInformation"
+                  definition={CallerTabDefinition as FormDefinition}
+                  display={subroute === 'callerInformation'}
+                />
+              )}
               <TabbedFormTab
-                tabPath="callerInformation"
-                definition={CallerTabDefinition as FormDefinition}
-                display={subroute === 'callerInformation'}
+                tabPath="childInformation"
+                definition={ChildTabDefinition as FormDefinition}
+                display={subroute === 'childInformation'}
               />
-            )}
-            <TabbedFormTab
-              tabPath="childInformation"
-              definition={ChildTabDefinition as FormDefinition}
-              display={subroute === 'childInformation'}
-            />
-            <IssueCategorizationTab display={subroute === 'categories'} />
-            <TabbedFormTab
-              tabPath="caseInformation"
-              definition={CaseTabDefinition as FormDefinition}
-              display={subroute === 'caseInformation'}
-            />
-          </div>
+              <IssueCategorizationTab display={subroute === 'categories'} />
+              <TabbedFormTab
+                tabPath="caseInformation"
+                definition={CaseTabDefinition as FormDefinition}
+                display={subroute === 'caseInformation'}
+              />
+            </div>
+          )}
           <BottomBar
             nextTab={() =>
               dispatch(changeRoute({ route: 'tabbed-forms', subroute: tabsToIndex[tabIndex + 1] }, taskId))
