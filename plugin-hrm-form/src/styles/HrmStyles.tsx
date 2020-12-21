@@ -862,7 +862,12 @@ export const CategoryCheckboxField = styled('div')<BaseCheckboxProps>`
   width: fit-content;
   height: 34px;
   box-sizing: border-box;
-  border: ${({ color }) => `1px solid ${color}`};
+  border: ${({ color, disabled, theme }) =>
+    `1px solid ${
+      disabled
+        ? `${theme.colors.categoryDisabledColor}14` // Hex with alpha 0.08
+        : color
+    }`};
   border-radius: 2px;
   padding-right: 15px;
   background-color: ${({ selected, disabled, color, theme }) => {
