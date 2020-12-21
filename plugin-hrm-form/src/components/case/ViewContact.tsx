@@ -42,6 +42,7 @@ const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, ro
   const counselorName = counselorsHash[counselor] || 'Unknown';
 
   let contact;
+
   if (contactFromInfo) {
     contact = adaptContactToDetailsScreen(contactFromInfo, counselorName);
   } else {
@@ -66,17 +67,12 @@ const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, ro
     updateTempInfo({ screen: 'view-contact', info: updatedTempInfo }, task.taskSid);
   };
 
-  const dateString = new Date(date).toLocaleDateString(navigator.language);
+  const added = new Date(date);
 
   return (
     <CaseContainer>
       <Container>
-        <ActionHeader
-          titleTemplate="Case-Contact"
-          onClickClose={handleClose}
-          counselor={counselorName}
-          added={dateString}
-        />
+        <ActionHeader titleTemplate="Case-Contact" onClickClose={handleClose} counselor={counselorName} added={added} />
         <ContactDetails
           contact={contact}
           detailsExpanded={detailsExpanded}

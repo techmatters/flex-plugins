@@ -8,11 +8,24 @@ export type PerpetratorEntry = { perpetrator: CallerFormValues; createdAt: strin
 
 export type HouseholdEntry = { household: CallerFormValues; createdAt: string; twilioWorkerId: string };
 
+export type ReferralEntry = {
+  date: Date;
+  referredTo: string;
+  comments: string;
+};
+
+export const blankReferral = {
+  date: null,
+  referredTo: null,
+  comments: null,
+};
+
 export type CaseInfo = {
   summary?: string;
   notes?: string[];
   perpetrators?: PerpetratorEntry[];
   households?: HouseholdEntry[];
+  referrals?: ReferralEntry[];
 };
 
 export type Case = {

@@ -3,7 +3,7 @@ import styled from 'react-emotion';
 import { Button } from '@twilio/flex-ui';
 import { Typography } from '@material-ui/core';
 
-import { FontOpenSans, FormInput, FormSelect, FormSelectWrapper, Row } from '../HrmStyles';
+import { FontOpenSans, FormInput, FormSelect, FormSelectWrapper, Row, Column } from '../HrmStyles';
 
 export const CaseContainer = styled('div')`
   display: flex;
@@ -42,8 +42,8 @@ export const CaseSectionFont = styled(FontOpenSans)`
 `;
 CaseSectionFont.displayName = 'CaseSectionFont';
 
-export const DetailsContainer = styled(Row)`
-  padding: 15px;
+export const DetailsContainer = styled(Column)`
+  padding-top: 15px;
   margin-top: 10px;
 `;
 DetailsContainer.displayName = 'DetailsContainer';
@@ -229,7 +229,7 @@ export const DetailsHeaderOfficeName = styled(Typography)`
 DetailsHeaderOfficeName.displayName = 'DetailsHeaderOfficeName';
 
 export const StyledInputField = styled(FormInput)`
-  width: 150px !important;
+  width: 130px !important;
   height: 36px;
   color: #000000;
   background-color: ${props => props.theme.colors.inputBackgroundColor};
@@ -241,7 +241,7 @@ export const StyledInputField = styled(FormInput)`
 StyledInputField.displayName = 'StyledInputField';
 
 export const StyledSelectWrapper = styled(FormSelectWrapper)`
-  width: 150px !important;
+  width: 130px !important;
   height: 36px;
   margin-top: 7px;
 `;
@@ -255,7 +255,7 @@ type StyledSelectFieldProps = {
 export const StyledSelectField = styled(({ color, ...rest }: StyledSelectFieldProps) => <FormSelect {...rest} />)<
   StyledSelectFieldProps
 >`
-  width: 150px !important;
+  width: 130px !important;
   height: 36px;
   font-weight: 600;
   color: ${({ color }) => (color ? `${color}` : '#000000')};

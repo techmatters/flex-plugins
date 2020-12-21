@@ -61,3 +61,11 @@ export const formatCategories = categories =>
   Object.entries(categories).flatMap(([cat, subcats]) =>
     subcats.map(subcat => (subcat === 'Unspecified/Other' ? `${subcat} - ${cat}` : subcat)),
   );
+
+export const formatDateTime = date => {
+  const locale = navigator.language;
+  const dateString = date.toLocaleDateString(locale);
+  const timeString = date.toLocaleTimeString(locale, { timeStyle: 'short' }).replace('AM', 'am').replace('PM', 'pm');
+
+  return `${dateString} at ${timeString}`;
+};

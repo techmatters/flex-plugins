@@ -13,7 +13,7 @@ import {
   CheckboxField,
   StyledCheckboxLabel,
 } from '../../styles/HrmStyles';
-import { genderOptions, ageOptions } from './SelectOptions';
+import { genderOptions, ageOptions } from '../SelectOptions';
 
 const ChildInformationTab = ({ childInformation, handleCheckboxClick, defaultEventHandlers }) => (
   <Container>

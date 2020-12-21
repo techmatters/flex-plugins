@@ -1,4 +1,4 @@
-import { Case, CaseInfo, CaseStatus, HouseholdEntry, PerpetratorEntry } from '../../types/types';
+import { Case, CaseStatus, CaseInfo, HouseholdEntry, PerpetratorEntry, ReferralEntry } from '../../types/types';
 import { NewCaseSubroutes } from '../routing/types';
 import { CallerFormInformation } from '../../components/common/forms/CallerForm';
 
@@ -24,6 +24,7 @@ export type ViewContact = {
 
 export type TemporaryCaseInfo =
   | { screen: typeof NewCaseSubroutes.AddNote; info: string }
+  | { screen: typeof NewCaseSubroutes.AddReferral; info: ReferralEntry }
   | { screen: typeof NewCaseSubroutes.AddHousehold; info: CallerFormInformation }
   | { screen: typeof NewCaseSubroutes.AddPerpetrator; info: CallerFormInformation }
   | { screen: typeof NewCaseSubroutes.ViewContact; info: ViewContact }
