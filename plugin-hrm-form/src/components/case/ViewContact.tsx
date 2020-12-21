@@ -42,6 +42,7 @@ const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, ro
   const counselorName = counselorsHash[counselor] || 'Unknown';
 
   let contact;
+
   if (contactFromInfo) {
     contact = adaptContactToDetailsScreen(contactFromInfo, counselorName);
   } else {

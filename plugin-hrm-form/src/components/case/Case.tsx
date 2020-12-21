@@ -11,7 +11,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 
 import { namespace, contactFormsBase, connectedCaseBase, configurationBase, routingBase } from '../../states';
 import { getConfig } from '../../HrmFormPlugin';
-import { saveToHrm, connectToCase } from '../../services/ContactService';
+import { saveToHrm, connectToCase, transformForm } from '../../services/ContactService';
 import { cancelCase, updateCase } from '../../services/CaseService';
 import { Box, Container, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseContainer, CenteredContainer } from '../../styles/case';
@@ -146,6 +146,14 @@ const Case: React.FC<Props> = props => {
 
   const { connectedCase } = props.connectedCaseState;
 
+  const getCategories = firstConnectedContact => {
+    if (firstConnectedContact?.rawJson?.caseInformation) {
+      return firstConnectedContact.rawJson.caseInformation.categories;
+    }
+    const mappedForm = transformForm(form);
+    return mappedForm?.caseInformation?.categories;
+  };
+
   if (loading)
     return (
       <CenteredContainer>
@@ -157,6 +165,7 @@ const Case: React.FC<Props> = props => {
 
   const firstConnectedContact = connectedCase && connectedCase.connectedContacts && connectedCase.connectedContacts[0];
   const name = firstConnectedContact ? getNameFromContact(firstConnectedContact) : getNameFromForm(form);
+  const categories = getCategories(firstConnectedContact);
   const { createdAt, updatedAt, twilioWorkerId, status, info } = connectedCase;
   const counselor = counselorsHash[twilioWorkerId];
   const openedDate = new Date(createdAt).toLocaleDateString(navigator.language);
@@ -194,6 +203,7 @@ const Case: React.FC<Props> = props => {
                 name={name}
                 status={status}
                 counselor={counselor}
+                categories={categories}
                 openedDate={openedDate}
                 lastUpdatedDate={lastUpdatedDate}
                 followUpDate={followUpDate}

@@ -1,3 +1,4 @@
+/* eslint-disable react/forbid-prop-types */
 /* eslint-disable no-empty-function */
 /* eslint-disable react/jsx-max-depth */
 /* eslint-disable jsx-a11y/label-has-associated-control */
@@ -6,6 +7,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Template } from '@twilio/flex-ui';
 
+import CaseTags from '../search/CasePreview/CaseTags';
 import CaseDetailsHeader from './caseDetails/CaseDetailsHeader';
 import {
   DetailsContainer,
@@ -24,6 +26,7 @@ const statusOptions = [
 const CaseDetails = ({
   caseId,
   name,
+  categories,
   counselor,
   openedDate,
   lastUpdatedDate,
@@ -48,7 +51,7 @@ const CaseDetails = ({
       <CaseDetailsHeader caseId={caseId} childName={name} />
       <DetailsContainer tabIndex={0} aria-labelledby="Case-CaseId-label">
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <div style={{ paddingLeft: '20px' }}>
+          <div style={{ paddingRight: '20px' }}>
             <DetailDescription>
               <label id="CaseDetailsDateOpened">
                 <Template code="Case-CaseDetailsDateOpened" />
@@ -61,7 +64,7 @@ const CaseDetails = ({
               aria-labelledby="CaseDetailsDateOpened"
             />
           </div>
-          <div style={{ paddingLeft: '20px' }}>
+          <div style={{ paddingRight: '20px' }}>
             <DetailDescription>
               <label id="CaseDetailsLastUpdated">
                 <Template code="Case-CaseDetailsLastUpdated" />
@@ -74,7 +77,7 @@ const CaseDetails = ({
               aria-labelledby="CaseDetailsLastUpdated"
             />
           </div>
-          <div style={{ paddingLeft: '20px' }}>
+          <div style={{ paddingRight: '20px' }}>
             <DetailDescription>
               <label id="CaseDetailsFollowUpDate">
                 <Template code="Case-CaseDetailsFollowUpDate" />
@@ -89,7 +92,7 @@ const CaseDetails = ({
               aria-labelledby="CaseDetailsFollowUpDate"
             />
           </div>
-          <div style={{ paddingLeft: '20px' }}>
+          <div style={{ paddingRight: '20px' }}>
             <DetailDescription>
               <label id="CaseDetailsStatusLabel">
                 <Template code="Case-CaseDetailsStatusLabel" />
@@ -113,6 +116,9 @@ const CaseDetails = ({
             </StyledSelectWrapper>
           </div>
         </div>
+        <div style={{ paddingTop: '15px' }}>
+          <CaseTags categories={categories} />
+        </div>
       </DetailsContainer>
     </>
   );
@@ -122,6 +128,7 @@ CaseDetails.displayName = 'CaseDetails';
 CaseDetails.propTypes = {
   caseId: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
+  categories: PropTypes.array.isRequired,
   counselor: PropTypes.string.isRequired,
   openedDate: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,

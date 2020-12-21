@@ -137,11 +137,17 @@ describe('useState mocked', () => {
       tasks: {
         task1: {
           childInformation: {
-            name: { firstName: { value: 'first' }, lastName: { value: 'last' } },
+            name: {
+              firstName: { value: 'first', type: 'TEXT_INPUT' },
+              lastName: { value: 'last', type: 'TEXT_INPUT' },
+            },
+            type: 'TEXT_INPUT',
           },
           metadata: {},
           caseInformation: {
-            callSummary: { value: 'contact call summary' },
+            callSummary: { value: 'contact call summary', type: 'TEXT_INPUT' },
+            categories: null,
+            type: 'TEXT_INPUT',
           },
         },
         temporaryCaseInfo: '',

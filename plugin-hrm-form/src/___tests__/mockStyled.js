@@ -166,4 +166,6 @@ jest.mock('../styles/case', () => ({
   DetailsHeaderCaseId: 'DetailsHeaderCaseId',
   DetailsHeaderOfficeName: 'DetailsHeaderOfficeName',
   StyledInputField: 'StyledInputField',
+  StyledSelectWrapper: 'StyledSelectWrapper',
+  StyledSelectField: 'StyledSelectField',
 }));
