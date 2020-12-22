@@ -6,9 +6,10 @@ import { Template } from '@twilio/flex-ui';
 
 import { CaseAddButtonFont } from '../../styles/case';
 
-const CaseAddButton = ({ templateCode, onClick, withDivider }) => {
+const CaseAddButton = ({ status, templateCode, onClick, withDivider }) => {
   return (
     <ButtonBase
+      disabled={status === 'closed'}
       onClick={onClick}
       style={{
         marginLeft: 'auto',
@@ -17,7 +18,7 @@ const CaseAddButton = ({ templateCode, onClick, withDivider }) => {
       }}
     >
       <Add style={{ marginRight: 10 }} />
-      <CaseAddButtonFont style={{ marginRight: 20 }}>
+      <CaseAddButtonFont style={{ marginRight: 20 }} disabled={status === 'closed'}>
         <Template code={templateCode} />
       </CaseAddButtonFont>
     </ButtonBase>
@@ -26,6 +27,7 @@ const CaseAddButton = ({ templateCode, onClick, withDivider }) => {
 
 CaseAddButton.displayName = 'CaseAddButton';
 CaseAddButton.propTypes = {
+  status: PropTypes.string.isRequired,
   templateCode: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
   withDivider: PropTypes.bool,
