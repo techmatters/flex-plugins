@@ -67,4 +67,5 @@ const ViewReferral: React.FC<Props> = ({ taskSid, tempInfo, route, changeRoute, 
 
 ViewReferral.displayName = 'ViewReferral';
 
+export const UnconnectedViewReferral = ViewReferral;
 export default connect(mapStateToProps, mapDispatchToProps)(ViewReferral);
