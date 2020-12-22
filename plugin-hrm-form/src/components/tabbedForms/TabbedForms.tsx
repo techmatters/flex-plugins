@@ -72,7 +72,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
   const methods = useForm({
     defaultValues: contactForm,
     shouldFocusError: false,
-    mode: 'onBlur',
+    mode: 'onChange',
   });
 
   if (routing.route !== 'tabbed-forms') return null;
