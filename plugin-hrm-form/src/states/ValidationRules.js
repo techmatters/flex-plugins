@@ -77,21 +77,21 @@ function validateCaseInformation(original, callType, ignoreTouched) {
 }
 
 function validate(form, ignoreTouched = false) {
-  if (isNonDataCallType(form.callType.value)) {
+  if (isNonDataCallType(form.callType)) {
     return form;
   }
   let newForm = {};
   newForm = {
     ...form,
-    callerInformation: validateCallerInformation(form.callerInformation, form.callType.value, ignoreTouched),
-    childInformation: validateChildInformation(form.childInformation, form.callType.value, ignoreTouched),
-    caseInformation: validateCaseInformation(form.caseInformation, form.callType.value, ignoreTouched),
+    callerInformation: validateCallerInformation(form.callerInformation, form.callType, ignoreTouched),
+    childInformation: validateChildInformation(form.childInformation, form.callType, ignoreTouched),
+    caseInformation: validateCaseInformation(form.caseInformation, form.callType, ignoreTouched),
   };
   return newForm;
 }
 
 export function validateBeforeSubmit(form) {
-  if (isNonDataCallType(form.callType.value)) {
+  if (isNonDataCallType(form.callType)) {
     return form;
   }
 
@@ -114,7 +114,7 @@ export function validateOnBlur(form) {
 // walk a form tree looking for non-null error values
 export function formIsValid(form) {
   if ('callType' in form) {
-    if (isNonDataCallType(form.callType.value)) {
+    if (isNonDataCallType(form.callType)) {
       return true;
     }
   }

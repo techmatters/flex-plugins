@@ -130,7 +130,6 @@ export const TimelineRow = styled('div')`
 TimelineRow.displayName = 'TimelineRow';
 
 export const TimelineDate = styled('div')`
-  font-weight: bold;
   min-width: 65px;
   text-align: center;
 `;
@@ -143,6 +142,13 @@ export const TimelineText = styled('span')`
   flex-grow: 1;
 `;
 TimelineText.displayName = 'TimelineText';
+
+export const TimelineCallTypeIcon = styled('div')`
+  margin-right: 10px;
+  display: flex;
+  flex-direction: row;
+`;
+TimelineCallTypeIcon.displayName = 'TimelineCallTypeIcon';
 
 export const InformationBoldText = styled(TimelineDate)`
   text-align: left;
