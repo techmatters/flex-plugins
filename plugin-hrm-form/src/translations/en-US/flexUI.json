@@ -161,9 +161,9 @@
   "Case-ViewHouseholdTitle": "Household Member",
   "Case-ViewPerpetrator": "View Perpetrator",
   "Case-ViewPerpetratorTitle": "Perpetrator",
-  "Case-AddReferralDate": "Date",
-  "Case-AddReferralReferredTo": "Referred To...",
-  "Case-AddReferralComments": "Comments",
+  "Case-ReferralDate": "Date",
+  "Case-ReferralReferredTo": "Referred To...",
+  "Case-ReferralComments": "Comments",
 
   "SideNavCaseList": "Case List",
   

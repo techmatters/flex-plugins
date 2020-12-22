@@ -33,6 +33,7 @@ import AddPerpetrator from './AddPerpetrator';
 import ViewNote from './ViewNote';
 import ViewHousehold from './ViewHousehold';
 import ViewPerpetrator from './ViewPerpetrator';
+import ViewReferral from './ViewReferral';
 
 type OwnProps = {
   task: ITask;
@@ -193,6 +194,8 @@ const Case: React.FC<Props> = props => {
       return <ViewHousehold task={props.task} onClickClose={handleClose} />;
     case 'view-perpetrator':
       return <ViewPerpetrator task={props.task} onClickClose={handleClose} />;
+    case 'view-referral':
+      return <ViewReferral taskSid={props.task.taskSid} />;
     default:
       return (
         <CaseContainer>

@@ -338,10 +338,15 @@ export const SectionDescriptionText = styled(BodyText)`
   margin-right: 15px;
 `;
 
-export const SectionValueText = styled(BodyText)`
+type SectionValueTextProps = {
+  notBold?: boolean;
+};
+
+export const SectionValueText = styled(BodyText)<SectionValueTextProps>`
   overflow-wrap: anywhere;
   white-space: pre-wrap;
   max-width: 40em;
+  ${props => props.notBold && 'font-weight: 500'};
 `;
 
 // SearchResults styles

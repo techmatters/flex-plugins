@@ -70,6 +70,14 @@ const Timeline = ({ task, form, caseObj, changeRoute, updateTempInfo, route }) =
       };
       updateTempInfo({ screen: 'view-note', info }, task.taskSid);
       changeRoute({ route, subroute: 'view-note' }, task.taskSid);
+    } else if (activity.type === 'referral') {
+      const info = {
+        referral: activity.referral,
+        counselor: twilioWorkerId,
+        date: new Date(activity.date).toLocaleDateString(navigator.language),
+      };
+      updateTempInfo({ screen: 'view-referral', info }, task.taskSid);
+      changeRoute({ route, subroute: 'view-referral' }, task.taskSid);
     } else if (isConnectedCaseActivity(activity)) {
       const detailsExpanded = {
         [ContactDetailsSections.GENERAL_DETAILS]: true,
