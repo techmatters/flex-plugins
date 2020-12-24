@@ -11,6 +11,18 @@ function getSubcategories(form) {
   return categories.splice(0, 3).join(';');
 }
 
+function buildCustomersObject(taskAttributes, form) {
+  const callType = form.callType.value;
+  const hasCustomerData = !isNonDataCallType(callType);
+
+  if (!hasCustomerData) return {};
+
+  const { childInformation } = form;
+  return {
+    gender: childInformation.gender.value,
+  };
+}
+
 function buildConversationsObject(taskAttributes, form) {
   const { callType } = form;
   const hasCustomerData = !isNonDataCallType(callType);
@@ -37,13 +49,17 @@ function buildConversationsObject(taskAttributes, form) {
   };
 }
 
-function mergeAttributes(previousAttributes, { conversations }) {
+function mergeAttributes(previousAttributes, { conversations, customers }) {
   return {
     ...previousAttributes,
     conversations: {
       ...previousAttributes.conversations,
       ...conversations,
     },
+    customers: {
+      ...previousAttributes.customers,
+      ...customers,
+    }
   };
 }
 
@@ -61,8 +77,9 @@ const overrideAttributes = (attributes, form) => {
 
 export async function saveInsightsData(twilioTask, form) {
   const conversations = buildConversationsObject(twilioTask.attributes, form);
+  const customers = buildCustomersObject(twilioTask.attributes, form);
   const previousAttributes = twilioTask.attributes;
-  const mergedAttributes = mergeAttributes(previousAttributes, { conversations });
+  const mergedAttributes = mergeAttributes(previousAttributes, { conversations, customers });
   const finalAttributes = previousAttributes.isContactlessTask
     ? overrideAttributes(mergedAttributes, form)
     : mergedAttributes;
