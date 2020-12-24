@@ -42,7 +42,7 @@ const nestName = (information: { firstName: string; lastName: string }) => {
   return { ...rest, name: { firstName, lastName } };
 };
 
-export const unNestInforationObject = (
+const unNestInforationObject = (
   def: FormDefinition,
   obj: InformationObject,
 ): TaskEntry['childInformation'] | TaskEntry['callerInformation'] =>
@@ -91,7 +91,7 @@ const transformValues = (def: FormDefinition) => (
   values: TaskEntry['callerInformation'] | TaskEntry['caseInformation'] | TaskEntry['childInformation'],
 ) => def.reduce((acc, e) => ({ ...acc, [e.name]: transformValue(e)(values[e.name]) }), {});
 
-export const deTransformValue = (e: FormItemDefinition) => (value: string | boolean | null) => {
+const deTransformValue = (e: FormItemDefinition) => (value: string | boolean | null) => {
   // de-transform mixed checkbox null DB value to be "mixed"
   if (e.type === 'mixed-checkbox' && value === null) return 'mixed';
 

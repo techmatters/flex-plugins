@@ -7,7 +7,7 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { namespace, contactFormsBase, routingBase, RootState } from '../../states';
 import { updateCallType, updateForm } from '../../states/contacts/actions';
-import { searchResultToContactForm, deTransformValue } from '../../services/ContactService';
+import { searchResultToContactForm } from '../../services/ContactService';
 import { changeRoute } from '../../states/routing/actions';
 import type { TaskEntry } from '../../states/contacts/reducer';
 import type { TabbedFormSubroutes } from '../../states/routing/types';
