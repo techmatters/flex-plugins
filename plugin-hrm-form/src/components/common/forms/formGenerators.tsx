@@ -472,12 +472,12 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
 export const createFormFromDefinition = (definition: FormDefinition) => (parents: string[]) => (initialValues: any) => (
   updateCallback: () => void,
 ): JSX.Element[] => {
-  const f = getInputType(parents, updateCallback);
+  const bindGetInputType = getInputType(parents, updateCallback);
 
   return definition.map((e: FormItemDefinition) => {
-    const v = get(initialValues, e.name);
-    const initialValue = v === undefined ? getInitialValue(e) : v;
-    return f(e)(initialValue);
+    const maybeValue = get(initialValues, e.name);
+    const initialValue = maybeValue === undefined ? getInitialValue(e) : maybeValue;
+    return bindGetInputType(e)(initialValue);
   });
 };
 
