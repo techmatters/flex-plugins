@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'react-emotion';
 import { Button } from '@twilio/flex-ui';
+import { Typography } from '@material-ui/core';
 
 import { FontOpenSans, Row } from '../HrmStyles';
 
@@ -31,14 +32,6 @@ export const CenteredContainer = styled(CaseContainer)`
 `;
 CenteredContainer.displayName = 'CenteredContainer';
 
-export const CaseNumberFont = styled(FontOpenSans)`
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 14px;
-  color: #0d2a38;
-`;
-CaseNumberFont.displayName = 'CaseNumberFont';
-
 export const CaseSectionFont = styled(FontOpenSans)`
   color: ${({ theme }) => theme.colors.categoryTextColor};
   font-size: 10px;
@@ -50,10 +43,6 @@ export const CaseSectionFont = styled(FontOpenSans)`
 CaseSectionFont.displayName = 'CaseSectionFont';
 
 export const DetailsContainer = styled(Row)`
-  border-style: solid;
-  border-width: 1px;
-  border-radius: 4px;
-  border-color: #a0a8bd52;
   padding: 15px;
   margin-top: 10px;
 `;
@@ -69,9 +58,6 @@ export const DetailDescription = styled(DetailEntryText)`
   color: #9b9b9b;
 `;
 DetailDescription.displayName = 'DetailDescription';
-
-export const DetailValue = DetailEntryText;
-DetailValue.displayName = 'DetailValue';
 
 export const OpenStatusFont = styled(DetailEntryText)`
   color: #2bb826;
@@ -218,3 +204,52 @@ export const NoteContainer = styled('div')`
   text-align: justify;
 `;
 NoteContainer.displayName = 'NoteContainer';
+
+export const DetailsHeaderContainer = styled('div')`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+`;
+
+DetailsHeaderContainer.displayName = 'DetailsHeaderContainer';
+
+export const DetailsHeaderChildName = styled(Typography)`
+  font-weight: 600 !important;
+`;
+
+DetailsHeaderChildName.displayName = 'DetailsHeaderChildName';
+
+export const DetailsHeaderCaseContainer = styled('div')`
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+`;
+
+DetailsHeaderCaseContainer.displayName = 'DetailsHeaderCaseContainer';
+
+export const DetailsHeaderCaseId = styled(Typography)`
+  font-weight: 600 !important;
+`;
+
+DetailsHeaderCaseId.displayName = 'DetailsHeaderCaseId';
+
+export const DetailsHeaderOfficeName = styled(Typography)`
+  padding-left: 10px;
+  font-size: 0.7rem !important;
+  font-weight: 300 !important;
+`;
+
+DetailsHeaderOfficeName.displayName = 'DetailsHeaderOfficeName';
+
+export const StyledInputField = styled('input')`
+  width: 150px;
+  height: 36px;
+  color: #000000;
+  background-color: ${props => props.theme.colors.inputBackgroundColor};
+  font-weight: 600;
+  border: none;
+  padding-left: 10px;
+  margin-top: 7px;
+`;
+
+StyledInputField.displayName = 'StyledInputField';

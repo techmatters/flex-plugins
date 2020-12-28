@@ -7,7 +7,7 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { namespace, contactFormsBase, routingBase, RootState } from '../../states';
 import { updateCallType, updateForm } from '../../states/contacts/actions';
-import { unNestInformation } from '../../services/ContactService';
+import { unNestInformation, deTransformValue } from '../../services/ContactService';
 import { changeRoute } from '../../states/routing/actions';
 import type { TaskEntry } from '../../states/contacts/reducer';
 import type { TabbedFormSubroutes } from '../../states/routing/types';
@@ -17,15 +17,14 @@ import { TabbedFormsContainer, TopNav, TransparentButton, StyledTabs } from '../
 import FormTab from '../common/forms/FormTab';
 import callTypes from '../../states/DomainConstants';
 import Search from '../search';
-import CallerInformationTab from './CallerInformationTab';
-import ChildInformationTab from './ChildInformationTab';
 import IssueCategorizationTab from './IssueCategorizationTab';
-import CaseInformationTab from './CaseInformationTab';
+import TabbedFormTab from './TabbedFormTab';
 import ContactlessTaskTab from './ContactlessTaskTab';
 import BottomBar from './BottomBar';
 import { hasTaskControl } from '../../utils/transfer';
-import ChildTabDefinition from '../../formDefinitions/tabbedForms/ChildInformationTab.json';
 import CallerTabDefinition from '../../formDefinitions/tabbedForms/CallerInformationTab.json';
+import CaseTabDefinition from '../../formDefinitions/tabbedForms/CaseInformationTab.json';
+import ChildTabDefinition from '../../formDefinitions/tabbedForms/ChildInformationTab.json';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -35,13 +34,13 @@ const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
     case 'contactlessTask':
       return <FormTab key="ContactInformation" label="TabbedForms-AddContactInfoTab" error={errors.contactlessTask} />;
     case 'callerInformation':
-      return <FormTab key="CallerInfoTabTab" label="TabbedForms-AddCallerInfoTab" error={errors.callerInformation} />;
+      return <FormTab key="CallerInfoTab" label="TabbedForms-AddCallerInfoTab" error={errors.callerInformation} />;
     case 'childInformation':
-      return <FormTab key="ChildInfoTabTab" label="TabbedForms-AddChildInfoTab" error={errors.childInformation} />;
+      return <FormTab key="ChildInfoTab" label="TabbedForms-AddChildInfoTab" error={errors.childInformation} />;
     case 'categories':
       return <FormTab key="CategoriesTab" label="TabbedForms-CategoriesTab" error={errors.categories} />;
     case 'caseInformation':
-      return <FormTab key="CaseInfoTabTab" label="TabbedForms-AddCaseInfoTab" error={errors.caseInformation} />;
+      return <FormTab key="CaseInfoTab" label="TabbedForms-AddCaseInfoTab" error={errors.caseInformation} />;
     default:
       return null;
   }
@@ -73,7 +72,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
   const methods = useForm({
     defaultValues: contactForm,
     shouldFocusError: false,
-    mode: 'onChange',
+    mode: 'onBlur',
   });
 
   if (routing.route !== 'tabbed-forms') return null;
@@ -86,14 +85,18 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
     const selectedIsCaller = searchResult.details.callType === callTypes.caller;
     if (isCallerType && selectedIsCaller) {
       (CallerTabDefinition as FormDefinition).forEach(e => {
-        methods.setValue(`callerInformation.${e.name}`, unNestInformation(e, searchResult.details.callerInformation));
+        const unNested = unNestInformation(e, searchResult.details.callerInformation);
+        const deTransformed = deTransformValue(e)(unNested);
+        methods.setValue(`callerInformation.${e.name}`, deTransformed);
       });
       const { callerInformation } = methods.getValues();
       dispatch(updateForm(task.taskSid, 'callerInformation', callerInformation));
       dispatch(changeRoute({ route: 'tabbed-forms', subroute: 'callerInformation' }, taskId));
     } else {
       (ChildTabDefinition as FormDefinition).forEach(e => {
-        methods.setValue(`childInformation.${e.name}`, unNestInformation(e, searchResult.details.childInformation));
+        const unNested = unNestInformation(e, searchResult.details.childInformation);
+        const deTransformed = deTransformValue(e)(unNested);
+        methods.setValue(`childInformation.${e.name}`, deTransformed);
       });
       const { childInformation } = methods.getValues();
       dispatch(updateForm(task.taskSid, 'childInformation', childInformation));
@@ -144,15 +147,31 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
           <StyledTabs name="tab" variant="scrollable" scrollButtons="auto" value={tabIndex} onChange={handleTabsChange}>
             {tabs}
           </StyledTabs>
-          {/* Body */}
-          {subroute === 'search' && (
+          {subroute === 'search' ? (
             <Search currentIsCaller={isCallerType} handleSelectSearchResult={onSelectSearchResult} />
+          ) : (
+            <div style={{ height: '100%', overflow: 'hidden' }}>
+              {task.attributes.isContactlessTask && <ContactlessTaskTab display={subroute === 'contactlessTask'} />}
+              {isCallerType && (
+                <TabbedFormTab
+                  tabPath="callerInformation"
+                  definition={CallerTabDefinition as FormDefinition}
+                  display={subroute === 'callerInformation'}
+                />
+              )}
+              <TabbedFormTab
+                tabPath="childInformation"
+                definition={ChildTabDefinition as FormDefinition}
+                display={subroute === 'childInformation'}
+              />
+              <IssueCategorizationTab display={subroute === 'categories'} />
+              <TabbedFormTab
+                tabPath="caseInformation"
+                definition={CaseTabDefinition as FormDefinition}
+                display={subroute === 'caseInformation'}
+              />
+            </div>
           )}
-          {task.attributes.isContactlessTask && <ContactlessTaskTab display={subroute === 'contactlessTask'} />}
-          {isCallerType && <CallerInformationTab display={subroute === 'callerInformation'} />}
-          <ChildInformationTab display={subroute === 'childInformation'} />
-          <IssueCategorizationTab display={subroute === 'categories'} />
-          <CaseInformationTab display={subroute === 'caseInformation'} />
           <BottomBar
             nextTab={() =>
               dispatch(changeRoute({ route: 'tabbed-forms', subroute: tabsToIndex[tabIndex + 1] }, taskId))

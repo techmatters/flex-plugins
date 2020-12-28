@@ -5,14 +5,16 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
-import { ITask, withTaskContext } from '@twilio/flex-ui';
+import { ITask, withTaskContext, Template } from '@twilio/flex-ui';
 
-import { standaloneTaskSid } from '../../states/search/reducer';
+import { standaloneTaskSid } from '../StandaloneSearch';
 import SearchForm from './SearchForm';
 import SearchResults, { CONTACTS_PER_PAGE, CASES_PER_PAGE } from './SearchResults';
 import ContactDetails from './ContactDetails';
+import Case from '../case';
 import { SearchPages } from '../../states/search/types';
 import { SearchContact } from '../../types/types';
+import SearchResultsBackButton from './SearchResults/SearchResultsBackButton';
 import {
   handleSearchFormChange,
   changeSearchPage,
@@ -21,7 +23,8 @@ import {
   searchCases,
   handleExpandDetailsSection,
 } from '../../states/search/actions';
-import { namespace, searchContactsBase, configurationBase } from '../../states';
+import { namespace, searchContactsBase, configurationBase, routingBase } from '../../states';
+import { Flex } from '../../styles/HrmStyles';
 
 type OwnProps = {
   task: ITask;
@@ -89,7 +92,9 @@ const Search: React.FC<Props> = props => {
 
   const goToForm = () => props.changeSearchPage('form');
 
-  const goToResults = () => props.changeSearchPage(SearchPages.resultsContacts);
+  const goToResultsOnContacts = () => props.changeSearchPage(SearchPages.resultsContacts);
+
+  const goToResultsOnCases = () => props.changeSearchPage(SearchPages.resultsCases);
 
   const renderMockDialog = () => {
     const isOpen = Boolean(mockedMessage);
@@ -102,7 +107,7 @@ const Search: React.FC<Props> = props => {
   };
   renderMockDialog.displayName = 'MockDialog';
 
-  const renderSearchPages = (currentPage, currentContact, searchContactsResults, searchCasesResults, form) => {
+  const renderSearchPages = (currentPage, currentContact, searchContactsResults, searchCasesResults, form, routing) => {
     switch (currentPage) {
       case SearchPages.form:
         return (
@@ -138,11 +143,28 @@ const Search: React.FC<Props> = props => {
             currentIsCaller={props.currentIsCaller}
             contact={currentContact}
             detailsExpanded={props.detailsExpanded}
-            handleBack={goToResults}
+            handleBack={goToResultsOnContacts}
             handleSelectSearchResult={props.handleSelectSearchResult}
             handleMockedMessage={handleMockedMessage}
             handleExpandDetailsSection={props.handleExpandDetailsSection}
           />
+        );
+      case SearchPages.case:
+        const { subroute } = routing;
+        const showBackButton = typeof subroute === 'undefined';
+
+        return (
+          <>
+            {showBackButton && (
+              <Flex marginTop="15px" marginBottom="15px">
+                <SearchResultsBackButton
+                  text={<Template code="SearchResultsIndex-BackToResults" />}
+                  handleBack={goToResultsOnCases}
+                />
+              </Flex>
+            )}
+            <Case task={props.task} readonly={true} handleClose={goToResultsOnCases} />
+          </>
         );
       default:
         return null;
@@ -150,12 +172,12 @@ const Search: React.FC<Props> = props => {
   };
   renderSearchPages.displayName = 'SearchPage';
 
-  const { currentPage, currentContact, searchContactsResults, searchCasesResults, form } = props;
+  const { currentPage, currentContact, searchContactsResults, searchCasesResults, form, routing } = props;
 
   return (
     <>
       {renderMockDialog()}
-      {renderSearchPages(currentPage, currentContact, searchContactsResults, searchCasesResults, form)}
+      {renderSearchPages(currentPage, currentContact, searchContactsResults, searchCasesResults, form, routing)}
     </>
   );
 };
@@ -172,6 +194,7 @@ const mapStateToProps = (state, ownProps) => {
   const taskId = ownProps.task.taskSid;
   const taskSearchState = searchContactsState.tasks[taskId];
   const { counselors } = state[namespace][configurationBase];
+  const routing = state[namespace][routingBase].tasks[taskId];
   const isStandaloneSearch = taskId === standaloneTaskSid;
 
   return {
@@ -185,6 +208,7 @@ const mapStateToProps = (state, ownProps) => {
     detailsExpanded: taskSearchState.detailsExpanded,
     counselorsHash: counselors.hash,
     showActionIcons: !isStandaloneSearch,
+    routing,
   };
 };
 

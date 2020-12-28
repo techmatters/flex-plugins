@@ -1,8 +1,10 @@
 /* eslint-disable no-nested-ternary */
 import React from 'react';
 import styled from 'react-emotion';
-import { ButtonBase, Input, Select, MenuItem, Tabs, Tab, Checkbox, withStyles, TableRow } from '@material-ui/core';
+import { ButtonBase, Input, Select, MenuItem, Tabs, Tab, withStyles, TableRow } from '@material-ui/core';
 import { Button, Icon, getBackgroundWithHoverCSS } from '@twilio/flex-ui';
+
+export const BottomButtonBarHeight = 55;
 
 type BoxProps = {
   width?: string;
@@ -68,6 +70,12 @@ export const TabbedFormsContainer = styled('div')`
   height: 100%;
 `;
 TabbedFormsContainer.displayName = 'TabbedFormsContainer';
+
+export const TabbedFormTabContainer = styled('div')<{ display: boolean }>`
+  display: ${({ display }) => (display ? 'block' : 'none')};
+  height: ${({ display }) => (display ? '100%' : '0px')};
+`;
+TabbedFormTabContainer.displayName = 'TabbedFormTabContainer';
 
 const containerLeftRightMargin = '5px';
 export const Container = styled('div')`
@@ -274,7 +282,7 @@ export const BottomButtonBar = styled('div')`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  height: 55px;
+  height: ${BottomButtonBarHeight}px;
   flex-shrink: 0;
   padding: 0 20px;
   background-color: #f9fafb;
@@ -309,6 +317,8 @@ export const TwoColumnLayout = styled('div')`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  background-color: inherit;
+  box-sizing: border-box;
 `;
 TwoColumnLayout.displayName = 'TwoColumnLayout';
 
@@ -339,7 +349,8 @@ export const CategoriesWrapper = styled('div')`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-bottom: 20px;
+  box-sizing: border-box;
+  padding-bottom: ${BottomButtonBarHeight}px;
 `;
 CategoriesWrapper.displayName = 'CategoriesWrapper';
 
@@ -359,7 +370,8 @@ export const StyledTabs = styled((props: typeof Tabs['defaultProps'] & { value: 
   && .indicator {
     background-color: transparent;
   }
-  flex-shrink: 1;
+  flex-shrink: 0;
+  height: 50px;
 `;
 StyledTabs.displayName = 'StyledTabs';
 
@@ -376,6 +388,7 @@ export const StyledTab = styled(({ searchTab = false, ...rest }: StyledTabProps)
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
     margin: 0 5px;
+    padding: 0;
     font-size: 12px;
     line-height: 14px;
     text-transform: none;
@@ -551,11 +564,17 @@ FormItem.displayName = 'FormItem';
 export const FormLabel = styled('label')`
   display: flex;
   flex-direction: column;
-  font-size: 13px;
-  letter-spacing: 1px;
+  font-size: 14px;
+  letter-spacing: 0;
   min-height: 18px;
+  color: #000000;
 `;
 FormLabel.displayName = 'FormLabel';
+
+export const DependentSelectLabel = styled(FormLabel)<{ disabled: boolean }>`
+  ${({ disabled }) => disabled && `opacity: 0.30;`}
+`;
+DependentSelectLabel.displayName = 'DependentSelectLabel';
 
 export const FormError = styled('span')`
   text-transform: none;
@@ -631,17 +650,18 @@ export const FormTextArea = styled('textarea')<FormInputProps>`
     flex-grow: 0;
     font-family: Open Sans;
     font-size: 12px;
-    line-height: 1.33;
+    line-height: 15px;
     letter-spacing: normal;
     box-sizing: border-box; /* Tells the browser to account for any border and padding in the values you specify for an element's width and height. https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing*/
     width: 217px;
     border-radius: 4px;
-    background-color: ${props => props.theme.colors.inputBackgroundColor};
+    background-color: ${props => props.theme.colors.base2};
     color: ${props =>
       props.theme.calculated.lightTheme ? props.theme.colors.darkTextColor : props.theme.colors.lightTextColor};
     border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
     boxshadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
-    padding: 0 7px;
+    padding: 5px;
+    border-radius: 4px;
   }
   &:focus {
     background-color: ${props => props.theme.colors.inputBackgroundColor};
@@ -651,6 +671,7 @@ export const FormTextArea = styled('textarea')<FormInputProps>`
 `;
 
 export const FormCheckBoxWrapper = styled(Row)<FormInputProps>`
+  align-items: flex-start;
   box-sizing: border-box; /* Tells the browser to account for any border and padding in the values you specify for an element's width and height. https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing*/
   width: 217px;
   height: 36px;
@@ -779,7 +800,7 @@ export const FormSelect = styled('select')<FormInputProps>`
 FormSelect.displayName = 'FormSelect';
 
 // eslint-disable-next-line import/no-unused-modules
-export const FormOption = styled('option')`
+export const FormOption = styled('option')<{ isEmptyValue: boolean }>`
   font-family: Open Sans;
   font-size: 12px;
   line-height: 1.33;
@@ -790,13 +811,13 @@ export const FormOption = styled('option')`
   margin: 0;
   padding: 0 12px;
   min-width: 0;
+  ${({ isEmptyValue }) => isEmptyValue && 'color: #616161'}
 `;
 FormOption.displayName = 'FormOption';
 
 type CategoryCheckboxProps = { color: string; disabled: boolean };
 // eslint-disable-next-line import/no-unused-modules
 export const CategoryCheckbox = styled(CheckboxBase)<CategoryCheckboxProps>`
-  color: ${({ disabled, color, theme }) => (disabled ? `${theme.colors.categoryDisabledColor}33` : color)};
   padding: 8px;
 
   &[type='checkbox']:checked {
@@ -841,10 +862,12 @@ export const CategoryCheckboxField = styled('div')<BaseCheckboxProps>`
   width: fit-content;
   height: 34px;
   box-sizing: border-box;
-  border: ${({ selected, disabled, color }) => {
-    if (disabled || selected) return 'none';
-    return `1px solid ${color}`;
-  }};
+  border: ${({ color, disabled, theme }) =>
+    `1px solid ${
+      disabled
+        ? `${theme.colors.categoryDisabledColor}14` // Hex with alpha 0.08
+        : color
+    }`};
   border-radius: 2px;
   padding-right: 15px;
   background-color: ${({ selected, disabled, color, theme }) => {

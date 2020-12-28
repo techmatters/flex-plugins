@@ -1,0 +1,30 @@
+/* eslint-disable react/prop-types */
+import React from 'react';
+import { ButtonBase } from '@material-ui/core';
+
+import { Row } from '../../../styles/HrmStyles';
+import { BackText, BackIcon } from '../../../styles/search';
+
+type OwnProps = {
+  text: JSX.Element | string;
+  handleBack: () => void;
+};
+
+type Props = OwnProps;
+
+const SearchResultsBackButton: React.FC<Props> = ({ text, handleBack }) => {
+  return (
+    <Row>
+      <ButtonBase onClick={handleBack}>
+        <Row>
+          <BackIcon />
+          <BackText>{text}</BackText>
+        </Row>
+      </ButtonBase>
+    </Row>
+  );
+};
+
+SearchResultsBackButton.displayName = 'SearchResultsBackButton';
+
+export default SearchResultsBackButton;

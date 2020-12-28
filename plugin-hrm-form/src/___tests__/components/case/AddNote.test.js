@@ -54,6 +54,14 @@ const state = {
         },
       },
     },
+    routing: {
+      route: 'new-case',
+      tasks: {
+        task1: {
+          route: 'new-case',
+        },
+      },
+    },
   },
 };
 

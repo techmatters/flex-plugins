@@ -10,14 +10,16 @@ import { CaseWrapper } from '../../../styles/search';
 
 type OwnProps = {
   currentCase: Case;
+  onClickViewCase: () => void;
 };
 
 type Props = OwnProps;
 
-const CasePreview: React.FC<Props> = ({ currentCase }) => {
+const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase }) => {
   const { id, createdAt, updatedAt, connectedContacts, info } = currentCase;
 
-  const firstContact = connectedContacts && connectedContacts.length > 0 && connectedContacts[0];
+  const orphanedCase = !connectedContacts || connectedContacts.length === 0;
+  const firstContact = !orphanedCase && connectedContacts[0];
   const { name } = ((firstContact || {}).rawJson || {}).childInformation || {};
   const { categories, callSummary } = ((firstContact || {}).rawJson || {}).caseInformation || {};
   const summary = info?.summary || callSummary;
@@ -25,7 +27,14 @@ const CasePreview: React.FC<Props> = ({ currentCase }) => {
   return (
     <Flex>
       <CaseWrapper>
-        <CaseHeader caseId={id} childName={name} createdAt={createdAt} updatedAt={updatedAt} />
+        <CaseHeader
+          caseId={id}
+          childName={name}
+          createdAt={createdAt}
+          updatedAt={updatedAt}
+          onClickViewCase={onClickViewCase}
+          isOrphanedCase={orphanedCase}
+        />
         <CaseSummary summary={summary} />
         <CaseTags categories={categories} />
       </CaseWrapper>

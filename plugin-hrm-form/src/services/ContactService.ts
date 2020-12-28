@@ -1,7 +1,8 @@
 import { set } from 'lodash/fp';
+import type { ITask } from '@twilio/flex-ui';
 
 import secret from '../private/secret';
-import { createNewTaskEntry } from '../states/contacts/reducer';
+import { createNewTaskEntry, TaskEntry } from '../states/contacts/reducer';
 import { isNonDataCallType } from '../states/ValidationRules';
 import { channelTypes } from '../states/DomainConstants';
 import { getConversationDuration, fillEndMillis } from '../utils/conversationDuration';
@@ -12,19 +13,29 @@ import callerFormDefinition from '../formDefinitions/tabbedForms/CallerInformati
 import caseInfoFormDefinition from '../formDefinitions/tabbedForms/CaseInformationTab.json';
 import childFormDefinition from '../formDefinitions/tabbedForms/ChildInformationTab.json';
 import categoriesFormDefinition from '../formDefinitions/tabbedForms/IssueCategorizationTab.json';
+import type {
+  CategoriesDefinition,
+  CategoryEntry,
+  FormDefinition,
+  FormItemDefinition,
+} from '../components/common/forms/types';
+import type { InformationObject, ContactRawJson } from '../types/types';
+
+// The tabbed form definitions, used to create new form state.
+const definitions = {
+  callerFormDefinition: callerFormDefinition as FormDefinition,
+  caseInfoFormDefinition: caseInfoFormDefinition as FormDefinition,
+  categoriesFormDefinition: categoriesFormDefinition as CategoriesDefinition,
+  childFormDefinition: childFormDefinition as FormDefinition,
+};
 
 /**
  * Un-nests the information (caller/child) as it comes from DB, to match the form structure
- * @param {import('../components/common/forms/types').FormItemDefinition} e
- * @param {import('../types/types').ContactRawJson['callerInformation'] | import('../types/types').ContactRawJson['childInformation']} obj
  */
-export const unNestInformation = (e, obj) =>
+export const unNestInformation = (e: FormItemDefinition, obj: InformationObject) =>
   ['firstName', 'lastName'].includes(e.name) ? obj.name[e.name] : obj[e.name];
 
-/**
- * @param {{ firstName: string, lastName: string }} information
- */
-const nestName = information => {
+const nestName = (information: { firstName: string; lastName: string }) => {
   const { firstName, lastName, ...rest } = information;
   return { ...rest, name: { firstName, lastName } };
 };
@@ -42,38 +53,62 @@ export async function searchContacts(searchParams, limit, offset) {
   return responseJson;
 }
 
-export function getNumberFromTask(task) {
-  let number;
-
+export function getNumberFromTask(task: ITask) {
   if (task.channelType === channelTypes.facebook) {
-    number = task.defaultFrom.replace('messenger:', '');
+    return task.defaultFrom.replace('messenger:', '');
   } else if (task.channelType === channelTypes.whatsapp) {
-    number = task.defaultFrom.replace('whatsapp:', '');
-  } else {
-    number = task.defaultFrom;
+    return task.defaultFrom.replace('whatsapp:', '');
   }
 
-  return number;
+  return task.defaultFrom;
 }
 
-// const createCategoriesObject = <T extends {}>(obj: T, [category, { subcategories }]: [string, CategoryEntry]) => ({
-const createCategory = (obj, [category, { subcategories }]) => ({
+/**
+ * Adds a category with the corresponding subcategories set to false to the provided object (obj)
+ */
+const createCategory = <T extends {}>(obj: T, [category, { subcategories }]: [string, CategoryEntry]) => ({
   ...obj,
   [category]: subcategories.reduce((acc, subcategory) => ({ ...acc, [subcategory]: false }), {}),
 });
 
 export const createCategoriesObject = () => Object.entries(categoriesFormDefinition).reduce(createCategory, {});
 
+const transformValue = (e: FormItemDefinition) => (value: string | boolean | null) => {
+  if (e.type === 'mixed-checkbox' && value === 'mixed') return null;
+
+  return value;
+};
+
+const transformValues = (def: FormDefinition) => (
+  values: TaskEntry['callerInformation'] | TaskEntry['caseInformation'] | TaskEntry['childInformation'],
+) => def.reduce((acc, e) => ({ ...acc, [e.name]: transformValue(e)(values[e.name]) }), {});
+
+export const deTransformValue = (e: FormItemDefinition) => (value: string | boolean | null) => {
+  // de-transform mixed checkbox null DB value to be "mixed"
+  if (e.type === 'mixed-checkbox' && value === null) return 'mixed';
+
+  return value;
+};
+
 /**
  * Transforms the form to be saved as the backend expects it
  * VisibleForTesting
- * @param {import('../states/contacts/reducer').TaskEntry} form
  */
-export function transformForm(form) {
+export function transformForm(form: TaskEntry): ContactRawJson {
   const { callType, metadata, caseInformation, contactlessTask } = form;
 
-  const callerInformation = nestName(form.callerInformation);
-  const childInformation = nestName(form.childInformation);
+  // transform the form values before submit (e.g. "mixed" for 3-way checkbox becomes null)
+  const transformedValues: TaskEntry = {
+    ...form,
+    callerInformation: transformValues(definitions.callerFormDefinition)(form.callerInformation),
+    caseInformation: transformValues(definitions.caseInfoFormDefinition)(form.caseInformation),
+    childInformation: transformValues(definitions.childFormDefinition)(form.childInformation),
+  };
+
+  // @ts-ignore
+  const callerInformation = nestName(transformedValues.callerInformation);
+  // @ts-ignore
+  const childInformation = nestName(transformedValues.childInformation);
 
   const categoriesObject = createCategoriesObject();
   const categories = form.categories.reduce((acc, path) => set(path, true, acc), categoriesObject);
@@ -93,14 +128,6 @@ export function transformForm(form) {
 
   return transformed;
 }
-
-// The tabbed form definitions, used to create new form state.
-const definitions = {
-  callerFormDefinition,
-  caseInfoFormDefinition,
-  categoriesFormDefinition,
-  childFormDefinition,
-};
 
 /**
  * Function that saves the form to Contacts table.
@@ -158,6 +185,7 @@ export async function saveToHrm(task, form, hrmBaseUrl, workerSid, helpline, sho
   });
 
   if (!response.ok) {
+    // @ts-ignore
     const error = response.error();
     throw error;
   }
@@ -174,6 +202,7 @@ export async function connectToCase(hrmBaseUrl, contactId, caseId) {
   });
 
   if (!response.ok) {
+    // @ts-ignore
     const error = response.error();
     throw error;
   }

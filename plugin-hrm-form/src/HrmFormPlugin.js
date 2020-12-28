@@ -15,7 +15,7 @@ import { changeLanguage } from './states/configuration/actions';
 import { issueSyncToken } from './services/ServerlessService';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
-export const PLUGIN_VERSION = '0.9.0';
+export const PLUGIN_VERSION = '0.10.0';
 
 export const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
@@ -30,6 +30,7 @@ export const getConfig = () => {
 
   const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
   const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
+  const logoUrl = manager.serviceConfiguration.attributes.logo_url;
   const workerSid = manager.workerClient.sid;
   const { helpline, counselorLanguage, helplineLanguage } = manager.workerClient.attributes;
   const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
@@ -42,6 +43,7 @@ export const getConfig = () => {
   return {
     hrmBaseUrl,
     serverlessBaseUrl,
+    logoUrl,
     workerSid,
     helpline,
     currentWorkspace,
@@ -154,7 +156,7 @@ const setUpComponents = setupObject => {
 
   // remove dynamic components
   Components.removeActionsIfWrapping();
-  Components.removeLogo();
+  Components.setLogo(setupObject.logoUrl);
   if (featureFlags.enable_transfers) {
     Components.removeDirectoryButton();
     Components.removeActionsIfTransferring();

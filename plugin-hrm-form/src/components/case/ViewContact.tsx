@@ -5,12 +5,12 @@ import { Template, ITask } from '@twilio/flex-ui';
 
 import { Container, StyledNextStepButton, BottomButtonBar } from '../../styles/HrmStyles';
 import { CaseContainer } from '../../styles/case';
-import { namespace, connectedCaseBase, contactFormsBase, configurationBase } from '../../states';
+import { namespace, connectedCaseBase, contactFormsBase, configurationBase, routingBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import ContactDetails from '../ContactDetails';
 import ActionHeader from './ActionHeader';
-import { adaptFormToContactDetails } from './ContactDetailsAdapter';
+import { adaptFormToContactDetails, adaptContactToDetailsScreen } from './ContactDetailsAdapter';
 import { CaseState } from '../../states/case/reducer';
 
 const mapStateToProps = (state, ownProps: OwnProps) => {
@@ -18,8 +18,9 @@ const mapStateToProps = (state, ownProps: OwnProps) => {
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
   const caseState: CaseState = state[namespace][connectedCaseBase];
   const { temporaryCaseInfo } = caseState.tasks[ownProps.task.taskSid];
+  const { route } = state[namespace][routingBase].tasks[ownProps.task.taskSid];
 
-  return { form, counselorsHash, tempInfo: temporaryCaseInfo };
+  return { form, counselorsHash, tempInfo: temporaryCaseInfo, route };
 };
 
 const mapDispatchToProps = {
@@ -34,24 +35,34 @@ type OwnProps = {
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, updateTempInfo, changeRoute }) => {
+const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, route, updateTempInfo, changeRoute }) => {
   if (!tempInfo || tempInfo.screen !== 'view-contact') return null;
 
-  const { detailsExpanded, contactId, date, counselor } = tempInfo.info;
+  const { detailsExpanded, contact: contactFromInfo, date, counselor } = tempInfo.info;
   const counselorName = counselorsHash[counselor] || 'Unknown';
 
-  const contact = contactId ? null : adaptFormToContactDetails(task, form, date, counselorName);
+  let contact;
+  if (contactFromInfo) {
+    contact = adaptContactToDetailsScreen(contactFromInfo, counselorName);
+  } else {
+    contact = adaptFormToContactDetails(task, form, date, counselorName);
+  }
 
   if (!contact) return null;
 
-  const handleClose = () => changeRoute({ route: 'new-case' }, task.taskSid);
+  const handleClose = () => changeRoute({ route }, task.taskSid);
 
   const handleExpandDetailsSection = section => {
     const updatedDetailsExpanded = {
       ...detailsExpanded,
       [section]: !detailsExpanded[section],
     };
-    const updatedTempInfo = { detailsExpanded: updatedDetailsExpanded, date, counselor };
+    const updatedTempInfo = {
+      detailsExpanded: updatedDetailsExpanded,
+      contact: contactFromInfo,
+      date,
+      counselor,
+    };
     updateTempInfo({ screen: 'view-contact', info: updatedTempInfo }, task.taskSid);
   };
 

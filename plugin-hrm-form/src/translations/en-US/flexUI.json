@@ -20,15 +20,13 @@
   "CallType-abusive": "Abusive",
   "CallType-CloseContact": "Close Contact",
 
-  "CallTypeAndCounselor-Label": "Counselor: ",
+  "CallTypeAndCounselor-Label": "Counsellor: ",
 
   "CallTypeButtons-Categorize": "categorize this contact",
   "CallTypeButtons-Or": "Or was this contact…",
 
   "ConnectDialog-Child": "Copy child information from this record to new contact?",
   "ConnectDialog-Caller": "Copy caller information from this record to new contact?",
-
-  "ContactDetailsIndex-Back": "Return to results",
 
   "QueueCard-WaitLabel": "Longest wait time:",
   "QueueCard-None": "none",
@@ -44,7 +42,14 @@
 
   "SearchContactsAndCases-Title": "Search for Contacts and Cases",
 
-  "SearchResultsIndex-Back": "Return to search criteria",
+  "SearchForm-Name": "Name",
+  "SearchForm-Counselor": "Counsellor",
+  "SearchForm-DateRange": "Date Range",
+  "SearchForm-Phone": "Phone",
+  "SearchForm-Button": "Search",
+
+  "SearchResultsIndex-Back": "Return to Search Criteria",
+  "SearchResultsIndex-BackToResults": "Return to Search Results",
   "SearchResultsIndex-Result": " result",
   "SearchResultsIndex-Results": " results",
   "SearchResultsIndex-NonDataContacts": "Non-Data Contacts",
@@ -59,6 +64,8 @@
   "CaseHeader-ViewCase": "View Case",
   "CaseHeader-MergeContactIntoCase": "Merge Current Contact into Case and Copy Child Information",
   "CaseHeader-CopyChildInfo": "Copy Child Information into Current Contact",
+  "CaseHeader-Voided": "VOIDED",
+  "CaseHeader-NoData": "No Data",
   "CaseSummary-ReadMore": "see more",
   "CaseSummary-ReadLess": "see less",
   "CaseSummary-NoSummaryProvided": "No Summary provided",
@@ -67,7 +74,7 @@
   "SectionEntry-No": "No",
 
   "SharedStateSaveFormError": "The information stored in the form couldn't be saved. Task will be transferred anyway.",
-  "SharedStateLoadFormError": "The information stored in the form by previous counselor couldn't be retrieved. Starting current task with clear contact form.",
+  "SharedStateLoadFormError": "The information stored in the form by previous counsellor couldn't be retrieved. Starting current task with clear contact form.",
 
   "Transfer-TransferButton": "Transfer",
   "Transfer-AcceptTransferButton": "Accept Transfer",
@@ -100,6 +107,7 @@
   "BottomBar-SavePerpetrator": "Save Perpetrator",
   "BottomBar-SaveAndAddAnotherHousehold": "Save and Add Another Member",
   "BottomBar-SaveHousehold": "Save Member",
+  "BottomBar-Close": "Close",
 
   "Categories-Title": "Categorize this contact",
   
@@ -115,15 +123,16 @@
   "Error-Form": "There is a problem with your submission.  Please check the form for errors.",
   "Error-CategoryRequired": "Required 1 category minimum, 3 categories maximum",
 
-  "Case-CaseNumber": "Case",
-  "Case-CaseDetailsSection": "Case Details",
+  "Case-CaseNumber": "Case #",
   "Case-TimelineSection": "Timeline",
   "Case-AddPerpetratorSection": "Perpetrators",
   "Case-AddHouseholdSection": "Household Information",
   "Case-CaseSummarySection": "Case Summary",
   "Case-CaseDetailsChildName": "Child Name",
-  "Case-CaseDetailsOwner": "Counselor",
-  "Case-CaseDetailsDateOpened": "Date Opened",
+  "Case-CaseDetailsOwner": "Counsellor",
+  "Case-CaseDetailsDateOpened": "Opened",
+  "Case-CaseDetailsLastUpdated": "Last Updated / Closed",
+  "Case-CaseDetailsFollowUpDate": "Follow Up Date",
   "Case-CaseDetailsStatusLabel": "Status",
   "Case-CaseDetailsStatusOpen": "Open",
   "Case-AddNote": "Add Note",
@@ -132,7 +141,7 @@
   "Case-AddNoteTypeHere": "Type here to add note...",
   "Case-AddCaseSummaryHere": "Add case summary here...",
   "Case-ActionHeaderAdded": "Added:",
-  "Case-ActionHeaderCounselor": "Counselor:",
+  "Case-ActionHeaderCounselor": "Counsellor:",
   "Case-CloseButton": "Close",
   "Case-ViewButton": "View",
   "Case-PerpetratorName": "Perpetrator Name: ",
@@ -154,7 +163,7 @@
   "CaseList-THCase": "Case #",
   "CaseList-THChildName": "Child's Name",
   "CaseList-THSummary": "Summary",
-  "CaseList-THCounselor": "Counselor",
+  "CaseList-THCounselor": "Counsellor",
   "CaseList-THOpened": "Opened",
   "CaseList-THUpdated": "Updated",
   "CaseList-THCategory": "Category",
@@ -194,6 +203,11 @@
   "CallerSection-Ethnicity": "Ethnicity",
 
   "ContactDetails-GeneralDetails": "General Details",
+  "ContactDetails-GeneralDetails-Channel": "Channel",
+  "ContactDetails-GeneralDetails-PhoneNumber": "Phone Number",
+  "ContactDetails-GeneralDetails-ConversationDuration": "Conversation Duration",
+  "ContactDetails-GeneralDetails-Counselor": "Counsellor",
+  "ContactDetails-GeneralDetails-DateTime": "Date/Time",
 
   "ManualPullButtonText": "Another Task",
   "NoTaskAssignableNotification": "No task assignable to you at the moment.",
@@ -207,5 +221,6 @@
 
   "OfflineContactFirstLine": "Offline Contact",
   "OfflineContactSecondLine": "in progress",
-  "Category": "Category"
+  "Category": "Category",
+  "Unknown": "Unknown"
 }

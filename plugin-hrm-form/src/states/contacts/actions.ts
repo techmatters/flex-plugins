@@ -4,7 +4,11 @@ import { TaskEntry } from './reducer';
 import { CallTypes } from '../DomainConstants';
 
 // Action creators
-export const updateForm = (taskId: string, parent: keyof TaskEntry, payload: any): t.ContactsActionType => ({
+export const updateForm = (
+  taskId: string,
+  parent: keyof TaskEntry,
+  payload: TaskEntry[keyof TaskEntry],
+): t.ContactsActionType => ({
   type: t.UPDATE_FORM,
   taskId,
   parent,

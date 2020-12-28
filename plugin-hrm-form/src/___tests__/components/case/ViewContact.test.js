@@ -26,6 +26,8 @@ const task = {
   defaultFrom: '+12025550425',
 };
 
+const route = 'new-case';
+
 const contact = {
   details: {
     childInformation: {
@@ -136,6 +138,7 @@ test('displays counselor, date and contact details', () => {
         tempInfo={tempInfo}
         updateTempInfo={jest.fn()}
         changeRoute={jest.fn()}
+        route={route}
       />
     </StorelessThemeProvider>,
   );
@@ -159,6 +162,7 @@ test('click on x button', () => {
         tempInfo={tempInfo}
         updateTempInfo={jest.fn()}
         changeRoute={changeRoute}
+        route={route}
       />
     </StorelessThemeProvider>,
   );
@@ -181,6 +185,7 @@ test('click on close button', () => {
         tempInfo={tempInfo}
         updateTempInfo={jest.fn()}
         changeRoute={changeRoute}
+        route={route}
       />
     </StorelessThemeProvider>,
   );
@@ -203,6 +208,7 @@ test('click on expand section', async () => {
         tempInfo={tempInfo}
         updateTempInfo={updateTempInfo}
         changeRoute={jest.fn()}
+        route={route}
       />
     </StorelessThemeProvider>,
   );
@@ -237,6 +243,7 @@ test('a11y', async () => {
         tempInfo={tempInfo}
         updateTempInfo={jest.fn()}
         changeRoute={jest.fn()}
+        route={route}
       />
     </StorelessThemeProvider>,
   );

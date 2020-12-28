@@ -43,7 +43,6 @@ class TaskView extends Component {
   componentDidMount() {
     const { contactFormStateExists, routingStateExists, searchStateExists } = this.props;
     if (!contactFormStateExists || !routingStateExists || !searchStateExists) {
-      // (Gian) maybe this can be used to recreate the form too?
       this.props.dispatch(GeneralActions.recreateContactState(definitions)(this.props.thisTask.taskSid));
     }
   }
