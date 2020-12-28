@@ -7,7 +7,7 @@ import { isFuture } from 'date-fns';
 import { get } from 'lodash';
 
 import { createFormFromDefinition, disperseInputs } from '../common/forms/formGenerators';
-import { updateContactLessTask } from '../../states/ContactState';
+import { updateForm } from '../../states/contacts/actions';
 import { Container, ColumnarBlock, TwoColumnLayout } from '../../styles/HrmStyles';
 import type { RootState } from '../../states';
 import { formDefinition } from './ContactlessTaskTabDefinition';
@@ -27,7 +27,7 @@ const ContactlessTaskTab: React.FC<Props> = ({ dispatch, display, task }) => {
   const contactlessTaskForm = React.useMemo(() => {
     const updateCallBack = () => {
       const { isFutureAux, ...rest } = getValues().contactlessTask;
-      dispatch(updateContactLessTask(rest, task.taskSid));
+      dispatch(updateForm(task.taskSid, 'contactlessTask', rest));
     };
 
     const tab = createFormFromDefinition(formDefinition)(['contactlessTask'])(updateCallBack);

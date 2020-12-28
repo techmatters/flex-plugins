@@ -6,12 +6,16 @@ import { DEFAULT_TRANSFER_MODE, getConfig } from '../HrmFormPlugin';
 import { saveInsightsData } from '../services/InsightsService';
 import { transferChatStart, adjustChatCapacity } from '../services/ServerlessService';
 import { namespace, contactFormsBase } from '../states';
-import { Actions } from '../states/ContactState';
+import * as Actions from '../states/contacts/actions';
 import * as GeneralActions from '../states/actions';
 import { channelTypes, transferModes } from '../states/DomainConstants';
 import * as TransferHelpers from './transfer';
 import { saveFormSharedState, loadFormSharedState } from './sharedState';
 import { prepopulateForm } from './prepopulateForm';
+import callerFormDefinition from '../formDefinitions/tabbedForms/CallerInformationTab.json';
+import caseInfoFormDefinition from '../formDefinitions/tabbedForms/CaseInformationTab.json';
+import childFormDefinition from '../formDefinitions/tabbedForms/ChildInformationTab.json';
+import categoriesFormDefinition from '../formDefinitions/tabbedForms/IssueCategorizationTab.json';
 
 /**
  * Given a taskSid, retrieves the state of the form (stored in redux) for that task
@@ -40,12 +44,20 @@ const fromActionFunction = fun => async (payload, original) => {
   await original(payload);
 };
 
+// The tabbed form definitions, used to create new form state.
+const definitions = {
+  callerFormDefinition,
+  caseInfoFormDefinition,
+  categoriesFormDefinition,
+  childFormDefinition,
+};
+
 /**
  * Initializes an empty form (in redux store) for the task within payload
  * @param {{ task: any }} payload
  */
 export const initializeContactForm = payload => {
-  Manager.getInstance().store.dispatch(GeneralActions.initializeContactState(payload.task.taskSid));
+  Manager.getInstance().store.dispatch(GeneralActions.initializeContactState(definitions)(payload.task.taskSid));
 };
 
 /**

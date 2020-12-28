@@ -2,7 +2,6 @@
 import * as t from './types';
 import { TaskEntry } from './reducer';
 import { CallTypes } from '../DomainConstants';
-import type { SearchContact } from '../../types/types';
 
 // Action creators
 export const updateForm = (taskId: string, parent: keyof TaskEntry, payload: any): t.ContactsActionType => ({
@@ -30,12 +29,6 @@ export const setCategoriesGridView = (gridView: boolean, taskId: string): t.Cont
 export const handleExpandCategory = (category: string, taskId: string) => ({
   type: t.HANDLE_EXPAND_CATEGORY,
   category,
-  taskId,
-});
-
-export const handleSelectSearchResult = (searchResult: SearchContact, taskId: string): t.ContactsActionType => ({
-  type: t.HANDLE_SELECT_SEARCH_RESULT,
-  searchResult,
   taskId,
 });
 

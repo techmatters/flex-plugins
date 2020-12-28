@@ -12,17 +12,8 @@ import { RoutingState } from '../states/routing/reducer';
 
 type OwnProps = {
   task: ITask;
-  form: any;
-  handleBlur: any;
-  handleCategoryToggle: any;
-  handleChange: any;
-  handleCallTypeButtonClick: any;
   handleCompleteTask: any;
-  handleFocus: any;
-  handleSelectSearchResult: any;
-  changeTab: any;
   changeRoute: any;
-  handleValidateForm: any;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -36,36 +27,14 @@ const HrmForm: React.FC<Props> = props => {
 
   switch (route) {
     case 'tabbed-forms':
-      return (
-        <TabbedForms
-          form={props.form}
-          handleBlur={props.handleBlur}
-          handleCategoryToggle={props.handleCategoryToggle}
-          handleChange={props.handleChange}
-          handleCallTypeButtonClick={props.handleCallTypeButtonClick}
-          handleFocus={props.handleFocus}
-          handleSelectSearchResult={props.handleSelectSearchResult}
-          changeTab={props.changeTab}
-          changeRoute={props.changeRoute}
-          handleCompleteTask={props.handleCompleteTask}
-          handleValidateForm={props.handleValidateForm}
-        />
-      );
+      return <TabbedForms handleCompleteTask={props.handleCompleteTask} />;
 
     case 'new-case':
       return <Case handleCompleteTask={props.handleCompleteTask} />;
 
     case 'select-call-type':
     default:
-      return (
-        <CallTypeButtons
-          form={props.form}
-          handleCallTypeButtonClick={props.handleCallTypeButtonClick}
-          changeTab={props.changeTab}
-          handleCompleteTask={props.handleCompleteTask}
-          changeRoute={props.changeRoute}
-        />
-      );
+      return <CallTypeButtons handleCompleteTask={props.handleCompleteTask} />;
   }
 };
 

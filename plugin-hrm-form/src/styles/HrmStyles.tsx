@@ -264,32 +264,6 @@ export const TransparentButton = styled(Button)`
 `;
 TransparentButton.displayName = 'TransparentButton';
 
-export const CheckboxField = styled('div')`
-  display: flex;
-  flex-direction: row;
-  margin: 8px 0;
-`;
-CheckboxField.displayName = 'CheckboxField';
-
-export const StyledCheckboxLabel = styled('label')`
-  text-transform: uppercase;
-  margin-top: auto;
-  margin-bottom: auto;
-  font-size: 12px;
-  letter-spacing: normal;
-`;
-StyledCheckboxLabel.displayName = 'StyledCheckboxLabel';
-
-type StyledCategoryCheckboxLabelProps = { disabled?: boolean };
-
-export const StyledCategoryCheckboxLabel = styled(StyledCheckboxLabel)<StyledCategoryCheckboxLabelProps>`
-  text-transform: none;
-  color: ${({ disabled, theme }) =>
-    disabled ? `${theme.colors.categoryTextColor}33` : theme.colors.categoryTextColor};
-  cursor: ${({ disabled }) => (disabled ? 'initial' : 'pointer')};
-`;
-StyledCategoryCheckboxLabel.displayName = 'StyledCategoryCheckboxLabel';
-
 export const TopNav = styled('div')`
   display: flex;
   flex-direction: row;
@@ -338,52 +312,6 @@ export const TwoColumnLayout = styled('div')`
 `;
 TwoColumnLayout.displayName = 'TwoColumnLayout';
 
-type BaseCheckboxProps = {
-  color: string;
-  selected?: boolean;
-  disabled?: boolean;
-};
-
-export const CategoryCheckboxField = styled('div')<BaseCheckboxProps>`
-  display: flex;
-  flex-direction: row;
-  margin: 4px 4px 4px 0;
-  width: fit-content;
-  height: 34px;
-  box-sizing: border-box;
-  border: ${({ selected, disabled, color }) => {
-    if (disabled || selected) return 'none';
-    return `1px solid ${color}`;
-  }};
-  border-radius: 2px;
-  padding-right: 15px;
-  background-color: ${({ selected, disabled, color, theme }) => {
-    if (disabled) return `${theme.colors.categoryDisabledColor}14`; // Hex with alpha 0.08
-    if (selected) return color;
-    return 'initial';
-  }};
-  cursor: ${({ disabled }) => (disabled ? 'initial' : 'pointer')};
-`;
-CategoryCheckboxField.displayName = 'CategoryCheckboxField';
-
-export const StyledCategoryCheckbox = styled(({ color, ...rest }: BaseCheckboxProps) => (
-  <Checkbox {...rest} classes={{ root: 'root', checked: 'checked' }} />
-))<BaseCheckboxProps>`
-  &&&.root {
-    color: ${({ disabled, color, theme }) => (disabled ? `${theme.colors.categoryDisabledColor}33` : color)};
-    padding: 8px;
-
-    &.checked {
-      color: white;
-    }
-
-    svg {
-      font-size: 16px;
-    }
-  }
-`;
-StyledCategoryCheckbox.displayName = 'StyledCategoryCheckbox';
-
 type ToggleViewButtonProps = { active?: boolean };
 
 export const ToggleViewButton = styled('div')<ToggleViewButtonProps>`
@@ -431,7 +359,7 @@ export const StyledTabs = styled((props: typeof Tabs['defaultProps'] & { value: 
   && .indicator {
     background-color: transparent;
   }
-  flex-shrink: 0;
+  flex-shrink: 1;
 `;
 StyledTabs.displayName = 'StyledTabs';
 
@@ -441,6 +369,7 @@ export const StyledTab = styled(({ searchTab = false, ...rest }: StyledTabProps)
   <Tab {...rest} classes={{ selected: 'selected' }} />
 ))<StyledTabProps>`
   && {
+    height: 50px;
     min-width: ${({ searchTab }) => (searchTab ? '50px' : '120px')};
     width: ${({ searchTab }) => (searchTab ? '50px' : '120px')};
     background-color: ${({ searchTab }) => (searchTab ? 'transparent' : '#d1d1d5')};
@@ -863,6 +792,69 @@ export const FormOption = styled('option')`
   min-width: 0;
 `;
 FormOption.displayName = 'FormOption';
+
+type CategoryCheckboxProps = { color: string; disabled: boolean };
+// eslint-disable-next-line import/no-unused-modules
+export const CategoryCheckbox = styled(CheckboxBase)<CategoryCheckboxProps>`
+  color: ${({ disabled, color, theme }) => (disabled ? `${theme.colors.categoryDisabledColor}33` : color)};
+  padding: 8px;
+
+  &[type='checkbox']:checked {
+    color: white;
+  }
+
+  &[type='checkbox']:checked::after {
+    font-family: 'Font Awesome 5 Free';
+    content: '\f00c';
+    color: ${({ color }) => color};
+  }
+
+  svg {
+    font-size: 16px;
+  }
+`;
+CategoryCheckbox.displayName = 'CategoryCheckbox';
+
+type CategoryCheckboxLabelProps = { disabled?: boolean };
+export const CategoryCheckboxLabel = styled('label')<CategoryCheckboxLabelProps>`
+  margin-top: auto;
+  margin-bottom: auto;
+  font-size: 12px;
+  letter-spacing: normal;
+  text-transform: none;
+  color: ${({ disabled, theme }) =>
+    disabled ? `${theme.colors.categoryTextColor}33` : theme.colors.categoryTextColor};
+  cursor: ${({ disabled }) => (disabled ? 'initial' : 'pointer')};
+`;
+CategoryCheckboxLabel.displayName = 'CategoryCheckboxLabel';
+
+type BaseCheckboxProps = {
+  color: string;
+  selected?: boolean;
+  disabled?: boolean;
+};
+export const CategoryCheckboxField = styled('div')<BaseCheckboxProps>`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 4px 4px 4px 0;
+  width: fit-content;
+  height: 34px;
+  box-sizing: border-box;
+  border: ${({ selected, disabled, color }) => {
+    if (disabled || selected) return 'none';
+    return `1px solid ${color}`;
+  }};
+  border-radius: 2px;
+  padding-right: 15px;
+  background-color: ${({ selected, disabled, color, theme }) => {
+    if (disabled) return `${theme.colors.categoryDisabledColor}14`; // Hex with alpha 0.08
+    if (selected) return color;
+    return 'initial';
+  }};
+  cursor: ${({ disabled }) => (disabled ? 'initial' : 'pointer')};
+`;
+CategoryCheckboxField.displayName = 'CategoryCheckboxField';
 
 export const TaskCanvasOverride = styled('div')`
   width: 100%;
