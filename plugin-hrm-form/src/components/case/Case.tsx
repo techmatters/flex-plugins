@@ -78,7 +78,7 @@ const Case: React.FC<Props> = props => {
     const { connectedCase } = props.connectedCaseState;
     await cancelCase(connectedCase.id);
 
-    props.changeRoute({ route: 'tabbed-forms' }, task.taskSid);
+    props.changeRoute({ route: 'tabbed-forms', subroute: 'caseInformation' }, task.taskSid);
     props.removeConnectedCase(task.taskSid);
   };
 
