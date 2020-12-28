@@ -42,7 +42,7 @@ const nestName = (information: { firstName: string; lastName: string }) => {
   return { ...rest, name: { firstName, lastName } };
 };
 
-const unNestInforationObject = (
+const unNestInformationObject = (
   def: FormDefinition,
   obj: InformationObject,
 ): TaskEntry['childInformation'] | TaskEntry['callerInformation'] =>
@@ -99,7 +99,7 @@ const deTransformValue = (e: FormItemDefinition) => (value: string | boolean | n
 };
 
 export const searchResultToContactForm = (def: FormDefinition, obj: InformationObject) => {
-  const information = unNestInforationObject(def, obj);
+  const information = unNestInformationObject(def, obj);
 
   const deTransformed = def.reduce((acc, e) => ({ ...acc, [e.name]: deTransformValue(e)(information[e.name]) }), {});
 
