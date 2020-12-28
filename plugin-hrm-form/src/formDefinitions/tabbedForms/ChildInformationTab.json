@@ -321,7 +321,7 @@
   },
   {
     "name": "memberOfAnEthnic",
-    "label": "Child member of an ethnic / racial minority",
+    "label": "Child member of an ethnic, racial or religious minority",
     "type": "mixed-checkbox"
   },
   {
@@ -341,7 +341,7 @@
   },
   {
     "name": "childOnTheMove",
-    "label": "Child on the move / in migration",
+    "label": "Child on the move",
     "type": "select",
     "options": [
       { "value": "Unknown", "label": "" },
