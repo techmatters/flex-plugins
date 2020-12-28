@@ -1,93 +1,30 @@
-import { transformForm, saveToHrm } from '../../services/ContactService';
-import { FieldType, ValidationType, recreateBlankForm } from '../../states/ContactFormStateFactory';
+import { set } from 'lodash/fp';
+
+import { transformForm, saveToHrm, createCategoriesObject } from '../../services/ContactService';
+import { FieldType, recreateBlankForm } from '../../states/ContactFormStateFactory';
+import { createNewTaskEntry } from '../../states/contacts/reducer';
 import callTypes, { channelTypes } from '../../states/DomainConstants';
+import callerFormDefinition from '../../formDefinitions/tabbedForms/CallerInformationTab.json';
+import caseInfoFormDefinition from '../../formDefinitions/tabbedForms/CaseInformationTab.json';
+import childFormDefinition from '../../formDefinitions/tabbedForms/ChildInformationTab.json';
+import categoriesFormDefinition from '../../formDefinitions/tabbedForms/IssueCategorizationTab.json';
 
 describe('transformForm', () => {
   test('removes control information and presents values only', () => {
     const oldForm = {
-      callType: {
-        type: FieldType.CALL_TYPE,
-        value: callTypes.caller,
-      },
-      callerInformation: {
-        type: FieldType.TAB,
-        name: {
-          type: FieldType.INTERMEDIATE,
-          firstName: {
-            type: FieldType.TEXT_INPUT,
-            value: 'myFirstName',
-            touched: true,
-            error: null,
-            validation: null,
-          },
-        },
-      },
-      childInformation: {
-        type: FieldType.TAB,
-        gender: {
-          type: FieldType.SELECT_SINGLE,
-          validation: [ValidationType.REQUIRED],
-          touched: true,
-          value: 'Male',
-        },
-        refugee: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-      },
-      caseInformation: {
-        type: FieldType.TAB,
-        categories: {
-          type: FieldType.CHECKBOX_FIELD,
-          validation: [ValidationType.REQUIRED],
-          error: null,
-          category1: {
-            type: FieldType.INTERMEDIATE,
-            sub1: {
-              type: FieldType.CHECKBOX,
-              value: true,
-            },
-            sub2: {
-              type: FieldType.CHECKBOX,
-              value: false,
-            },
-          },
-        },
-        status: {
-          value: '',
-          type: FieldType.SELECT_SINGLE,
-          validation: null,
-        },
-        callSummary: {
-          type: FieldType.TEXT_BOX,
-          validation: null,
-          value: 'My summary',
-        },
-      },
-      contactlessTask: {
-        channel: '',
-        date: '',
-        time: '',
-      },
-    };
-    const expected = {
       callType: callTypes.caller,
       callerInformation: {
-        name: {
-          firstName: 'myFirstName',
-        },
+        firstName: 'myFirstName',
+        lastName: '',
       },
       childInformation: {
+        firstName: 'child',
+        lastName: '',
         gender: 'Male',
         refugee: false,
       },
+      categories: ['Abuse.Abduction'],
       caseInformation: {
-        categories: {
-          category1: {
-            sub1: true,
-            sub2: false,
-          },
-        },
         status: '',
         callSummary: 'My summary',
       },
@@ -96,33 +33,53 @@ describe('transformForm', () => {
         date: '',
         time: '',
       },
+      metadata: {},
+    };
+
+    const expected = {
+      definitionVersion: 'v1',
+      callType: callTypes.caller,
+      callerInformation: { name: { firstName: 'myFirstName', lastName: '' } },
+      childInformation: {
+        gender: 'Male',
+        refugee: false,
+        name: { firstName: 'child', lastName: '' },
+      },
+      caseInformation: {
+        // copy paste from ContactService. This will come from redux later on and we can mockup definitions
+        categories: oldForm.categories.reduce((acc, path) => set(path, true, acc), createCategoriesObject()),
+        status: '',
+        callSummary: 'My summary',
+      },
+      contactlessTask: {
+        channel: '',
+        date: '',
+        time: '',
+      },
+      metadata: {},
     };
     expect(transformForm(oldForm)).toStrictEqual(expected);
   });
 });
 
+// The tabbed form definitions, used to create new form state.
+const definitions = {
+  callerFormDefinition,
+  caseInfoFormDefinition,
+  categoriesFormDefinition,
+  childFormDefinition,
+};
+
 const createForm = ({ callType, childFirstName }, contactlessTaskInfo = undefined) => {
-  const blankForm = recreateBlankForm();
+  const blankForm = createNewTaskEntry(definitions)(false);
   const contactlessTask = contactlessTaskInfo || blankForm.contactlessTask;
 
   return {
     ...blankForm,
-    callType: {
-      type: FieldType.CALL_TYPE,
-      value: callType,
-    },
+    callType,
     childInformation: {
       ...blankForm.childInformation,
-      name: {
-        ...blankForm.childInformation.name,
-        firstName: {
-          type: FieldType.TEXT_INPUT,
-          value: childFirstName,
-          touched: true,
-          error: null,
-          validation: null,
-        },
-      },
+      firstName: childFirstName,
     },
     contactlessTask,
   };
@@ -148,6 +105,7 @@ describe('saveToHrm()', () => {
 
   test('data calltype saves form data', async () => {
     const form = createForm({ callType: callTypes.child, childFirstName: 'Jill' });
+
     const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
 
     await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
