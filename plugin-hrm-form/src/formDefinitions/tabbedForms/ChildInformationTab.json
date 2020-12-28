@@ -2,98 +2,14 @@
   {
     "name": "firstName",
     "label": "First Name",
-    "type": "input"
+    "type": "input",
+    "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
     "name": "lastName",
     "label": "Last Name",
-    "type": "input"
-  },
-  {
-    "name": "streetAddress",
-    "label": "Address",
-    "type": "input"
-  },
-  {
-    "name": "province",
-    "label": "Location",
-    "type": "select",
-    "options": [
-      { "value": "", "label": "" },
-      { "value": "Free State", "label": "Free State" }, 
-      { "value": "Gauteng", "label": "Gauteng" }, 
-      { "value": "KwaZulu Natal", "label": "KwaZulu Natal" }, 
-      { "value": "Limpopo", "label": "Limpopo" }
-    ],
+    "type": "input",
     "required": { "value": true, "message": "RequiredFieldError" }
-  },
-  {
-    "name": "municipality",
-    "label": "Municipality",
-    "type": "dependent-select",
-    "dependsOn": "province",
-    "defaultOption": { "value": "", "label": "" },
-    "options": {
-      "Free State": [
-        { "value": "Fezile Dabi-Metsimaholo Municipality", "label": "Fezile Dabi-Metsimaholo Municipality" }, 
-        { "value": "Fezile Dabi-Moqhaka Municipality", "label": "Fezile Dabi-Moqhaka Municipality" }, 
-        { "value": "Thabo Mofutsanyana-Maluti a-Phofung", "label": "Thabo Mofutsanyana-Maluti a-Phofung" }
-      ],
-      "Gauteng": [
-        { "value": "Johannesburg Metropolitan", "label": "Johannesburg Metropolitan" }, 
-        { "value": "Metsueding - East of Tshwane", "label": "Metsueding - East of Tshwane" }, 
-        { "value": "Sedibeng - South East Gauteng", "label": "Sedibeng - South East Gauteng" }
-      ],
-      "KwaZulu Natal":[
-        { "value": "Amajuba District Municipality", "label": "Amajuba District Municipality" }, 
-        { "value": "Ethekwini District Municipality", "label": "Ethekwini District Municipality" }, 
-        { "value": "iLembe District Municipality", "label": "iLembe District Municipality" }
-      ]
-    },
-    "required": { "value": true, "message": "RequiredFieldError" }
-  },
-  {
-    "name": "district",
-    "label": "District",
-    "type": "dependent-select",
-    "dependsOn": "municipality",
-    "defaultOption": { "value": "", "label": "" },
-    "options": {
-      "Fezile Dabi-Metsimaholo Municipality": [
-        { "value": "Deneysville", "label": "Deneysville" }, 
-        { "value": "Sasolburg", "label": "Sasolburg" }
-      ],
-      "Fezile Dabi-Moqhaka Municipality": [
-        { "value": "Kroonstad", "label": "Kroonstad" }, 
-        { "value": "Viljoenskroon", "label": "Viljoenskroon" }
-      ],
-      "Thabo Mofutsanyana-Maluti a-Phofung": [
-        { "value": "Harrismith", "label": "Harrismith" }, 
-        { "value": "Ladybrand", "label": "Ladybrand" },
-        { "value": "Phuthaditjhaba", "label": "Phuthaditjhaba" }
-      ],
-      "Amajuba District Municipality": [
-        { "value": "Charlestown", "label": "Charlestown" }, 
-        { "value": "Dannhauser", "label": "Dannhauser" },
-        { "value": "Newcastle", "label": "Newcastle" }
-      ],
-      "Ethekwini District Municipality": [
-        { "value": "Bluff", "label": "Bluff" }, 
-        { "value": "Cato Crest", "label": "Cato Crest" },
-        { "value": "Cato Manor", "label": "Cato Manor" }
-      ],
-      "iLembe District Municipality": [
-        { "value": "Dolphin Coast", "label": "Dolphin Coast" }, 
-        { "value": "iLembe", "label": "iLembe" },
-        { "value": "iNdlovu", "label": "iNdlovu" }
-      ]
-    },
-    "required": { "value": true, "message": "RequiredFieldError" }
-  },
-  {
-    "name": "phone1",
-    "label": "Contact Number",
-    "type": "numeric-input"
   },
   {
     "name": "gender",
@@ -101,9 +17,9 @@
     "type": "select",
     "options": [
       { "value": "", "label": "" },
-      { "value": "Boy", "label": "Boy" }, 
-      { "value": "Girl", "label": "Girl" }, 
-      { "value": "Non-Binary", "label": "Non-Binary" }, 
+      { "value": "Boy", "label": "Boy" },
+      { "value": "Girl", "label": "Girl" },
+      { "value": "Non-Binary", "label": "Non-Binary" },
       { "value": "Unknown", "label": "Unknown" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" }
@@ -114,53 +30,223 @@
     "type": "select",
     "options": [
       { "value": "", "label": "" },
-      { "value": "0-03", "label": "0-03" }, 
-      { "value": "04-06", "label": "04-06" }, 
+      { "value": "0-03", "label": "0-03" },
+      { "value": "04-06", "label": "04-06" },
       { "value": "07-09", "label": "07-09" },
-      { "value": "10-12", "label": "10-12" }, 
-      { "value": "13-15", "label": "13-15" }, 
+      { "value": "10-12", "label": "10-12" },
+      { "value": "13-15", "label": "13-15" },
       { "value": "16-17", "label": "16-17" },
-      { "value": "18-25", "label": "18-25" }, 
-      { "value": ">25", "label": ">25" }, 
+      { "value": "18-25", "label": "18-25" },
+      { "value": ">25", "label": ">25" },
       { "value": "Unknown", "label": "Unknown" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" }
+  },
+  {
+    "name": "streetAddress",
+    "label": "Street Address",
+    "type": "input"
+  },
+  {
+    "name": "village",
+    "label": "Village",
+    "type": "input"
+  },
+  {
+    "name": "province",
+    "label": "Province",
+    "type": "select",
+    "options": [
+      { "value": "", "label": "" },
+      { "value": "Central", "label": "Central" },
+      { "value": "Copperbelt", "label": "Copperbelt" },
+      { "value": "Eastern", "label": "Eastern" },
+      { "value": "Luapula", "label": "Luapula" },
+      { "value": "Lusaka", "label": "Lusaka" },
+      { "value": "Muchinga", "label": "Muchinga" },
+      { "value": "Northern", "label": "Northern" },
+      { "value": "North-Western", "label": "North-Western" },
+      { "value": "Southern", "label": "Southern" },
+      { "value": "Western", "label": "Western" }
+    ],
+    "required": { "value": true, "message": "RequiredFieldError" }
+  },
+  {
+    "name": "district",
+    "label": "District",
+    "type": "dependent-select",
+    "dependsOn": "province",
+    "defaultOption": { "value": "", "label": "" },
+    "options": {
+      "Central": [
+        { "value": "Chibombo", "label": "Chibombo" },
+        { "value": "Chisamba", "label": "Chisamba" },
+        { "value": "Chitambo", "label": "Chitambo" },
+        { "value": "Itezhi-Tezhi", "label": "Itezhi-Tezhi" },
+        { "value": "Kabwe", "label": "Kabwe" },
+        { "value": "KapiriMposhi", "label": "KapiriMposhi" },
+        { "value": "Luano", "label": "Luano" },
+        { "value": "Mkushi", "label": "Mkushi" },
+        { "value": "Mumbwa", "label": "Mumbwa" },
+        { "value": "Ngabwe", "label": "Ngabwe" },
+        { "value": "Serenje", "label": "Serenje" },
+        { "value": "Shibuyunji", "label": "Shibuyunji" }
+      ],
+      "Copperbelt": [
+        { "value": "Chililabombwe", "label": "Chililabombwe" },
+        { "value": "Chingola", "label": "Chingola" },
+        { "value": "Kalulushi", "label": "Kalulushi" },
+        { "value": "Kitwe", "label": "Kitwe" },
+        { "value": "Luanshya", "label": "Luanshya" },
+        { "value": "Lufwanyama", "label": "Lufwanyama" },
+        { "value": "Masaiti", "label": "Masaiti" },
+        { "value": "Mpongwe", "label": "Mpongwe" },
+        { "value": "Mufulira", "label": "Mufulira" },
+        { "value": "Ndola", "label": "Ndola" }
+      ],
+      "Eastern": [
+        { "value": "Chadiza", "label": "Chadiza" },
+        { "value": "Chipata", "label": "Chipata" },
+        { "value": "Katete", "label": "Katete" },
+        { "value": "Lundazi", "label": "Lundazi" },
+        { "value": "Mambwe", "label": "Mambwe" },
+        { "value": "Nyimba", "label": "Nyimba" },
+        { "value": "Petauke", "label": "Petauke" },
+        { "value": "Sinda", "label": "Sinda" },
+        { "value": "Vubwi", "label": "Vubwi" }
+      ],
+      "Luapula": [
+        { "value": "Chembe", "label": "Chembe" },
+        { "value": "Chiengi", "label": "Chiengi" },
+        { "value": "Chipili", "label": "Chipili" },
+        { "value": "Kawambwa", "label": "Kawambwa" },
+        { "value": "Lunga", "label": "Lunga" },
+        { "value": "Mansa", "label": "Mansa" },
+        { "value": "Milenge", "label": "Milenge" },
+        { "value": "Mwansabombwe", "label": "Mwansabombwe" },
+        { "value": "Mwense", "label": "Mwense" },
+        { "value": "Nchelenge", "label": "Nchelenge" },
+        { "value": "Samfya", "label": "Samfya" }
+      ],
+      "Lusaka": [
+        { "value": "Chilanga", "label": "Chilanga" },
+        { "value": "Chirundu", "label": "Chirundu" },
+        { "value": "Chongwe", "label": "Chongwe" },
+        { "value": "Kafue", "label": "Kafue" },
+        { "value": "Luangwa", "label": "Luangwa" },
+        { "value": "Lusaka", "label": "Lusaka" },
+        { "value": "Rufunsa", "label": "Rufunsa" }
+      ],
+      "Muchinga": [
+        { "value": "Chama", "label": "Chama" },
+        { "value": "Chilinda", "label": "Chilinda" },
+        { "value": "Chinsali", "label": "Chinsali" },
+        { "value": "Isoka", "label": "Isoka" },
+        { "value": "Kanchibiya", "label": "Kanchibiya" },
+        { "value": "Lavushimanda", "label": "Lavushimanda" },
+        { "value": "Mafinga", "label": "Mafinga" },
+        { "value": "Mpika", "label": "Mpika" },
+        { "value": "Nakonde", "label": "Nakonde" },
+        { "value": "Shiwang'andu", "label": "Shiwang'andu" }
+      ],
+      "Northern": [
+        { "value": "Chilubi", "label": "Chilubi" },
+        { "value": "Kaputa", "label": "Kaputa" },
+        { "value": "Kasama", "label": "Kasama" },
+        { "value": "Lunte", "label": "Lunte" },
+        { "value": "Lupososhi", "label": "Lupososhi" },
+        { "value": "Luwingu", "label": "Luwingu" },
+        { "value": "Mbala", "label": "Mbala" },
+        { "value": "Mporokoso", "label": "Mporokoso" },
+        { "value": "Mpulungu", "label": "Mpulungu" },
+        { "value": "Mungwi", "label": "Mungwi" },
+        { "value": "Nsama", "label": "Nsama" },
+        { "value": "Senga", "label": "Senga" }
+      ],
+      "North-Western": [
+        { "value": "Chavuma", "label": "Chavuma" },
+        { "value": "Ikelenge", "label": "Ikelenge" },
+        { "value": "Kabompo", "label": "Kabompo" },
+        { "value": "Kalumbila", "label": "Kalumbila" },
+        { "value": "Kasempa", "label": "Kasempa" },
+        { "value": "Manyinga", "label": "Manyinga" },
+        { "value": "Mufumbwe", "label": "Mufumbwe" },
+        { "value": "Mushindamo", "label": "Mushindamo" },
+        { "value": "Mwinilunga", "label": "Mwinilunga" },
+        { "value": "Solwezi", "label": "Solwezi" },
+        { "value": "Zambezi", "label": "Zambezi" }
+      ],
+      "Southern": [
+        { "value": "Chikankata", "label": "Chikankata" },
+        { "value": "Choma", "label": "Choma" },
+        { "value": "Gwembe", "label": "Gwembe" },
+        { "value": "Kalomo", "label": "Kalomo" },
+        { "value": "Kazungula", "label": "Kazungula" },
+        { "value": "Livingstone", "label": "Livingstone" },
+        { "value": "Mazabuka", "label": "Mazabuka" },
+        { "value": "Monze", "label": "Monze" },
+        { "value": "Namwala", "label": "Namwala" },
+        { "value": "Pemba", "label": "Pemba" },
+        { "value": "Siavonga", "label": "Siavonga" },
+        { "value": "Sinazongwe", "label": "Sinazongwe" },
+        { "value": "Zimba", "label": "Zimba" }
+      ],
+      "Western": [
+        { "value": "Kalabo", "label": "Kalabo" },
+        { "value": "Kaoma", "label": "Kaoma" },
+        { "value": "Limulunga", "label": "Limulunga" },
+        { "value": "Luampa", "label": "Luampa" },
+        { "value": "Lukulu", "label": "Lukulu" },
+        { "value": "Mitete", "label": "Mitete" },
+        { "value": "Mongu", "label": "Mongu" },
+        { "value": "Mulobezi", "label": "Mulobezi" },
+        { "value": "Mwandi", "label": "Mwandi" },
+        { "value": "Nalolo", "label": "Nalolo" },
+        { "value": "Nkeyema", "label": "Nkeyema" },
+        { "value": "Senanga", "label": "Senanga" },
+        { "value": "Sesheke", "label": "Sesheke" },
+        { "value": "Shangombo", "label": "Shangombo" },
+        { "value": "Sikongo", "label": "Sikongo" },
+        { "value": "Sioma", "label": "Sioma" }
+      ]
+    },
+    "required": { "value": true, "message": "RequiredFieldError" }
+  },
+  {
+    "name": "postalCode",
+    "label": "Postal Code",
+    "type": "input"
+  },
+  {
+    "name": "phone1",
+    "label": "Phone #1",
+    "type": "input",
+    "required": { "value": true, "message": "RequiredFieldError" }
+  },
+  {
+    "name": "phone2",
+    "label": "Phone #2",
+    "type": "input"
   },
   {
     "name": "language",
     "label": "Language",
     "type": "select",
     "options": [
-      { "value": "", "label": "" },
-      { "value": "Unknown", "label": "Unknown" }, 
-      { "value": "Afrikaans", "label": "Afrikaans" }, 
-      { "value": "English", "label": "English" },
-      { "value": "Ndebele", "label": "Ndebele" }, 
-      { "value": "Other", "label": "Other" }, 
-      { "value": "Sepedi", "label": "Sepedi" },
-      { "value": "Sign Language", "label": "Sign Language" }, 
-      { "value": "Sotho", "label": "Sotho" }, 
-      { "value": "Swazi", "label": "Swazi" },
-      { "value": "Tshivenda", "label": "Tshivenda" }, 
-      { "value": "Tsonga", "label": "Tsonga" }, 
-      { "value": "Tswana", "label": "Tswana" },
-      { "value": "Xhosa", "label": "Xhosa" }, 
-      { "value": "Zulu", "label": "Zulu" }
-    ]
+      { "value": "Unknown", "label": "" },
+      { "value": "Bemba", "label": "Bemba" },
+      { "value": "Kaonde", "label": "Kaonde" },
+      { "value": "Lozi", "label": "Lozi" },
+      { "value": "Lunda", "label": "Lunda" },
+      { "value": "Luvale", "label": "Luvale" },
+      { "value": "Nyanja", "label": "Nyanja" },
+      { "value": "Tonga", "label": "Tonga" }
+    ]  
   },
   {
-    "name": "race",
-    "label": "Race",
-    "type": "select",
-    "options": [
-      { "value": "", "label": "" },
-      { "value": "Unknown", "label": "Unknown" }, 
-      { "value": "Asian", "label": "Asian" }, 
-      { "value": "Black", "label": "Black" }, 
-      { "value": "Coloured", "label": "Coloured" }, 
-      { "value": "Indian", "label": "Indian" },
-      { "value": "White", "label": "White" }
-    ]
+    "name": "ethnicity",
+    "label": "Ethnicity",
+    "type": "input"
   },
   {
     "name": "schoolName",
@@ -172,14 +258,11 @@
     "label": "Grade Level",
     "type": "select",
     "options": [
-      { "value": "", "label": "" },
-      { "value": "Unknown", "label": "Unknown" }, 
-      { "value": "Grade 0 (Preschool)", "label": "Grade 0 (Preschool)" }, 
-      { "value": "Grade 1-3 (Junior Primary)", "label": "Grade 1-3 (Junior Primary)" }, 
-      { "value": "Grade 4-7 (Senior Primary)", "label": "Grade 4-7 (Senior Primary)" }, 
-      { "value": "Grade 8-9 (Junior High)", "label": "Grade 8-9 (Junior High)" },
-      { "value": "Grade 10-11 (Senior High)", "label": "Grade 10-11 (Senior High)" },
-      { "value": "Grade 12 (Matric)", "label": "Grade 12 (Matric)" }
+      { "value": "Unknown", "label": "" },
+      { "value": "Grade 1 to 4", "label": "Grade 1 to 4" },
+      { "value": "Grade 5 to 7", "label": "Grade 5 to 7" },
+      { "value": "Grade 8 to 9", "label": "Grade 8 to 9" },
+      { "value": "Grade 10 to 12", "label": "Grade 10 to 12" }
     ]
   },
   {
@@ -187,16 +270,14 @@
     "label": "Living Situation",
     "type": "select",
     "options": [
-      { "value": "", "label": "" },
-      { "value": "Unknown", "label": "Unknown" }, 
-      { "value": "Foster care", "label": "Foster care" }, 
-      { "value": "Group facility", "label": "Group facility" }, 
-      { "value": "On their own", "label": "On their own" }, 
-      { "value": "With parent(s) or guardian(s)", "label": "With parent(s) or guardian(s)" }, 
-      { "value": "With relatives", "label": "With relatives" }, 
-      { "value": "Street child", "label": "Street child" },
-      { "value": "HIV/AIDS-Child-headed household", "label": "HIV/AIDS-Child-headed household" },
-      { "value": "Family without shelter", "label": "Family without shelter" }
+      { "value": "Unknown", "label": "" },
+      { "value": "Alternative care", "label": "Alternative care" },
+      { "value": "Group residential facility", "label": "Group residential facility" },
+      { "value": "Homeless or marginally housed", "label": "Homeless or marginally housed" },
+      { "value": "In detention", "label": "In detention" },
+      { "value": "Living independently", "label": "Living independently" },
+      { "value": "With parent(s)", "label": "With parent(s)" },
+      { "value": "With relatives", "label": "With relatives" }
     ]
   },
   {
@@ -207,31 +288,57 @@
   {
     "name": "inConflictWithTheLaw",
     "label": "Child in conflict with the law",
-    "type": "checkbox"
+    "type": "mixed-checkbox"
   },
   {
-    "name": "inDetention",
-    "label": "Child in detention",
-    "type": "checkbox"
+    "name": "livingInConflictZone",
+    "label": "Child living in conflict zone",
+    "type": "mixed-checkbox"
+  },
+  {
+    "name": "livingInPoverty",
+    "label": "Child living in poverty",
+    "type": "mixed-checkbox"
   },
   {
     "name": "memberOfAnEthnic",
-    "label": "Child member of an ethnic / racial minority",
-    "type": "checkbox"
+    "label": "Child member of an ethnic, racial or religious minority",
+    "type": "mixed-checkbox"
+  },
+  {
+    "name": "childWithDisability",
+    "label": "Child with disability",
+    "type": "mixed-checkbox"
   },
   {
     "name": "LGBTQI+",
     "label": "LGBTQI+ / SOGIESC child",
-    "type": "checkbox"
+    "type": "mixed-checkbox"
+  },
+  {
+    "name": "outOfSchool",
+    "label": "Out-of-school child",
+    "type": "mixed-checkbox"
+  },
+  {
+    "name": "childOnTheMove",
+    "label": "Child on the move",
+    "type": "select",
+    "options": [
+      { "value": "Unknown", "label": "" },
+      { "value": "Involuntary", "label": "Involuntary" },
+      { "value": "Voluntary", "label": "Voluntary" }
+    ]
   },
   {
     "name": "region",
     "label": "Region",
     "type": "select",
     "options": [
-      {"value": "Unknown", "label": "Unknown"},
-      {"value": "Rural", "label": "Rural"},
-      {"value": "Urban", "label": "Urban"}
+      { "value": "Unknown", "label": "" },
+      { "value": "Cities", "label": "Cities" },
+      { "value": "Rural areas", "label": "Rural areas" },
+      { "value": "Town & semi-dense areas", "label": "Town & semi-dense areas" }
     ]
   }
 ]
