@@ -17,12 +17,19 @@ import { createFormFromDefinition, disperseInputs, splitInHalf } from '../common
 import type { FormDefinition } from '../common/forms/types';
 import type { TaskEntry } from '../../states/contacts/reducer';
 
-type OwnProps = { task: ITask; display: boolean; definition: FormDefinition; tabPath: keyof TaskEntry };
+type OwnProps = {
+  task: ITask;
+  display: boolean;
+  definition: FormDefinition;
+  tabPath: keyof TaskEntry;
+  initialValues: TaskEntry['callerInformation'] | TaskEntry['childInformation'] | TaskEntry['caseInformation'];
+};
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const TabbedFormTab: React.FC<Props> = ({ task, display, definition, tabPath, updateForm }) => {
+const TabbedFormTab: React.FC<Props> = ({ task, display, definition, tabPath, initialValues, updateForm }) => {
+  const [initialForm] = React.useState(initialValues); // grab initial values in first render only. This value should never change or will ruin the memoization below
   const { getValues } = useFormContext();
 
   const [l, r] = React.useMemo(() => {
@@ -31,12 +38,11 @@ const TabbedFormTab: React.FC<Props> = ({ task, display, definition, tabPath, up
       updateForm(task.taskSid, tabPath, values);
     };
 
-    // TODO: fix this typecasting
-    const generatedForm = createFormFromDefinition(definition)([tabPath])(updateCallback);
+    const generatedForm = createFormFromDefinition(definition)([tabPath])(initialForm)(updateCallback);
 
     const margin = 12;
     return splitInHalf(disperseInputs(margin)(generatedForm));
-  }, [definition, getValues, tabPath, task.taskSid, updateForm]);
+  }, [definition, getValues, initialForm, tabPath, task.taskSid, updateForm]);
 
   return (
     <TabbedFormTabContainer display={display}>

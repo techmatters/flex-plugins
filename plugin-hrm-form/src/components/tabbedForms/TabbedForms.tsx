@@ -7,7 +7,7 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { namespace, contactFormsBase, routingBase, RootState } from '../../states';
 import { updateCallType, updateForm } from '../../states/contacts/actions';
-import { unNestInformation, deTransformValue } from '../../services/ContactService';
+import { searchResultToContactForm } from '../../services/ContactService';
 import { changeRoute } from '../../states/routing/actions';
 import type { TaskEntry } from '../../states/contacts/reducer';
 import type { TabbedFormSubroutes } from '../../states/routing/types';
@@ -70,9 +70,8 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props }) => {
   const methods = useForm({
-    defaultValues: contactForm,
     shouldFocusError: false,
-    mode: 'onBlur',
+    mode: 'onChange',
   });
 
   if (routing.route !== 'tabbed-forms') return null;
@@ -84,22 +83,20 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
   const onSelectSearchResult = (searchResult: SearchContact) => {
     const selectedIsCaller = searchResult.details.callType === callTypes.caller;
     if (isCallerType && selectedIsCaller) {
-      (CallerTabDefinition as FormDefinition).forEach(e => {
-        const unNested = unNestInformation(e, searchResult.details.callerInformation);
-        const deTransformed = deTransformValue(e)(unNested);
-        methods.setValue(`callerInformation.${e.name}`, deTransformed);
-      });
-      const { callerInformation } = methods.getValues();
-      dispatch(updateForm(task.taskSid, 'callerInformation', callerInformation));
+      const deTransformed = searchResultToContactForm(
+        CallerTabDefinition as FormDefinition,
+        searchResult.details.callerInformation,
+      );
+
+      dispatch(updateForm(task.taskSid, 'callerInformation', deTransformed));
       dispatch(changeRoute({ route: 'tabbed-forms', subroute: 'callerInformation' }, taskId));
     } else {
-      (ChildTabDefinition as FormDefinition).forEach(e => {
-        const unNested = unNestInformation(e, searchResult.details.childInformation);
-        const deTransformed = deTransformValue(e)(unNested);
-        methods.setValue(`childInformation.${e.name}`, deTransformed);
-      });
-      const { childInformation } = methods.getValues();
-      dispatch(updateForm(task.taskSid, 'childInformation', childInformation));
+      const deTransformed = searchResultToContactForm(
+        ChildTabDefinition as FormDefinition,
+        searchResult.details.childInformation,
+      );
+
+      dispatch(updateForm(task.taskSid, 'childInformation', deTransformed));
       dispatch(changeRoute({ route: 'tabbed-forms', subroute: 'childInformation' }, taskId));
     }
   };
@@ -151,23 +148,31 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
             <Search currentIsCaller={isCallerType} handleSelectSearchResult={onSelectSearchResult} />
           ) : (
             <div style={{ height: '100%', overflow: 'hidden' }}>
-              {task.attributes.isContactlessTask && <ContactlessTaskTab display={subroute === 'contactlessTask'} />}
+              {task.attributes.isContactlessTask && (
+                <ContactlessTaskTab
+                  display={subroute === 'contactlessTask'}
+                  initialValues={contactForm.contactlessTask}
+                />
+              )}
               {isCallerType && (
                 <TabbedFormTab
                   tabPath="callerInformation"
                   definition={CallerTabDefinition as FormDefinition}
+                  initialValues={contactForm.callerInformation}
                   display={subroute === 'callerInformation'}
                 />
               )}
               <TabbedFormTab
                 tabPath="childInformation"
                 definition={ChildTabDefinition as FormDefinition}
+                initialValues={contactForm.childInformation}
                 display={subroute === 'childInformation'}
               />
-              <IssueCategorizationTab display={subroute === 'categories'} />
+              <IssueCategorizationTab display={subroute === 'categories'} initialValue={contactForm.categories} />
               <TabbedFormTab
                 tabPath="caseInformation"
                 definition={CaseTabDefinition as FormDefinition}
+                initialValues={contactForm.caseInformation}
                 display={subroute === 'caseInformation'}
               />
             </div>
