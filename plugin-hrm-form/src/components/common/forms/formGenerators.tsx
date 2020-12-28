@@ -27,6 +27,41 @@ import {
 } from '../../../styles/HrmStyles';
 import type { FormItemDefinition, FormDefinition, SelectOption, MixedOrBool } from './types';
 
+/**
+ * Utility functions to create initial state from definition
+ * @param {FormItemDefinition} def Definition for a single input of a Form
+ */
+export const getInitialValue = (def: FormItemDefinition) => {
+  switch (def.type) {
+    case 'input':
+    case 'numeric-input':
+    case 'textarea':
+    case 'date-input':
+    case 'time-input':
+      return '';
+    case 'select':
+      return def.options[0].value;
+    case 'dependent-select':
+      return def.defaultOption.value;
+    case 'checkbox':
+      return false;
+    case 'mixed-checkbox':
+      return def.initialChecked === undefined ? 'mixed' : def.initialChecked;
+    default:
+      return null;
+  }
+};
+
+/**
+ * Adds a new property to the given object, with the name of the given form item definition, and initial value will depend on it
+ * @param obj the object to which add a property related to the provided form item definition
+ * @param def the provided form item definition
+ */
+export const createStateItem = <T extends {}>(obj: T, def: FormItemDefinition) => ({
+  ...obj,
+  [def.name]: getInitialValue(def),
+});
+
 export const ConnectForm: React.FC<{
   children: <P extends ReturnType<typeof useFormContext>>(args: P) => JSX.Element;
 }> = ({ children }) => {
@@ -50,7 +85,9 @@ const getRules = (field: FormItemDefinition): ValidationRules =>
  * @param {() => void} updateCallback Callback called to update form state. When is the callback called is specified in the input type.
  * @param {FormItemDefinition} def Definition for a single input.
  */
-const getInputType = (parents: string[], updateCallback: () => void) => (def: FormItemDefinition) => {
+const getInputType = (parents: string[], updateCallback: () => void) => (def: FormItemDefinition) => (
+  initialValue: any, // TODO: restrict this type
+) => {
   const rules = getRules(def);
   const path = [...parents, def.name].join('.');
 
@@ -76,6 +113,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                   aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
                   innerRef={register(rules)}
+                  defaultValue={initialValue}
                 />
                 {error && (
                   <FormError>
@@ -111,6 +149,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                     ...rules,
                     pattern: { value: /^[0-9]+$/g, message: 'This field only accepts numeric input.' },
                   })}
+                  defaultValue={initialValue}
                 />
                 {error && (
                   <FormError>
@@ -144,6 +183,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                     aria-describedby={`${path}-error`}
                     onBlur={updateCallback}
                     innerRef={register(rules)}
+                    defaultValue={initialValue}
                   >
                     {def.options.map(o => (
                       <FormOption key={`${path}-${o.value}`} value={o.value} isEmptyValue={o.value === ''}>
@@ -166,25 +206,35 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
       return (
         <ConnectForm key={path}>
           {({ errors, register, watch, setValue }) => {
+            const isMounted = React.useRef(false); // mutable value to avoid reseting the state in the first render. This preserves the "intialValue" provided
+            const prevDependeeValue = React.useRef(undefined); // mutable value to store previous dependeeValue
+
             const dependeePath = [...parents, def.dependsOn].join('.');
             const dependeeValue = watch(dependeePath);
 
-            React.useEffect(() => setValue(path, def.defaultOption.value, { shouldValidate: true }), [
-              setValue,
-              dependeeValue,
-            ]);
+            React.useEffect(() => {
+              if (isMounted.current && prevDependeeValue.current && dependeeValue !== prevDependeeValue.current) {
+                setValue(path, def.defaultOption.value, { shouldValidate: true });
+              } else isMounted.current = true;
+
+              prevDependeeValue.current = dependeeValue;
+            }, [setValue, dependeeValue]);
 
             const error = get(errors, path);
             const hasOptions = Boolean(dependeeValue && def.options[dependeeValue]);
+            const shouldInitialize = initialValue && !isMounted.current;
 
             const validate = (data: any) =>
               hasOptions && def.required && data === def.defaultOption.value ? 'RequiredFieldError' : null;
 
+            // eslint-disable-next-line no-nested-ternary
             const options: SelectOption[] = hasOptions
               ? [def.defaultOption, ...def.options[dependeeValue]]
+              : shouldInitialize
+              ? [def.defaultOption, { label: initialValue, value: initialValue }]
               : [def.defaultOption];
 
-            const disabled = !hasOptions;
+            const disabled = !hasOptions && !shouldInitialize;
 
             return (
               <DependentSelectLabel htmlFor={path} disabled={disabled}>
@@ -204,6 +254,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                     onBlur={updateCallback}
                     innerRef={register({ validate })}
                     disabled={disabled}
+                    defaultValue={initialValue}
                   >
                     {options.map(o => (
                       <FormOption key={`${path}-${o.value}`} value={o.value} isEmptyValue={o.value === ''}>
@@ -239,6 +290,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                       aria-describedby={`${path}-error`}
                       onChange={updateCallback}
                       innerRef={register(rules)}
+                      defaultChecked={initialValue}
                     />
                   </Box>
                   <Template code={`${def.label}`} />
@@ -262,7 +314,8 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
               register(path, rules);
             }, [register]);
 
-            const initialChecked = def.initialChecked === undefined ? 'mixed' : def.initialChecked;
+            const initialChecked =
+              initialValue === undefined || typeof initialValue !== 'boolean' ? 'mixed' : initialValue;
             const [checked, setChecked] = React.useState<MixedOrBool>(initialChecked);
 
             React.useEffect(() => {
@@ -325,6 +378,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                   onBlur={updateCallback}
                   innerRef={register(rules)}
                   rows={10}
+                  defaultValue={initialValue}
                 />
                 {error && (
                   <FormError>
@@ -358,6 +412,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                   aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
                   innerRef={register(rules)}
+                  defaultValue={initialValue}
                 />
                 {error && (
                   <FormError>
@@ -391,6 +446,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                   aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
                   innerRef={register(rules)}
+                  defaultValue={initialValue}
                 />
                 {error && (
                   <FormError>
@@ -413,44 +469,17 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
  * @param {string[]} parents Array of parents. Allows you to easily create nested form fields. https://react-hook-form.com/api#register.
  * @param {() => void} updateCallback Callback called to update form state. When is the callback called is specified in the input type (getInputType).
  */
-export const createFormFromDefinition = (definition: FormDefinition) => (parents: string[]) => (
+export const createFormFromDefinition = (definition: FormDefinition) => (parents: string[]) => (initialValues: any) => (
   updateCallback: () => void,
-): JSX.Element[] => definition.map(getInputType(parents, updateCallback));
+): JSX.Element[] => {
+  const bindGetInputType = getInputType(parents, updateCallback);
 
-/**
- * Utility functions to create initial state from definition
- * @param {FormItemDefinition} def Definition for a single input of a Form
- */
-export const getInitialValue = (def: FormItemDefinition) => {
-  switch (def.type) {
-    case 'input':
-    case 'numeric-input':
-    case 'textarea':
-    case 'date-input':
-    case 'time-input':
-      return '';
-    case 'select':
-      return def.options[0].value;
-    case 'dependent-select':
-      return def.defaultOption.value;
-    case 'checkbox':
-      return false;
-    case 'mixed-checkbox':
-      return def.initialChecked === undefined ? 'mixed' : def.initialChecked;
-    default:
-      return null;
-  }
+  return definition.map((e: FormItemDefinition) => {
+    const maybeValue = get(initialValues, e.name);
+    const initialValue = maybeValue === undefined ? getInitialValue(e) : maybeValue;
+    return bindGetInputType(e)(initialValue);
+  });
 };
-
-/**
- * Adds a new property to the given object, with the name of the given form item definition, and initial value will depend on it
- * @param obj the object to which add a property related to the provided form item definition
- * @param def the provided form item definition
- */
-export const createStateItem = <T extends {}>(obj: T, def: FormItemDefinition) => ({
-  ...obj,
-  [def.name]: getInitialValue(def),
-});
 
 export const disperseInputs = (margin: number) => (formItems: JSX.Element[]) =>
   formItems.map(i => (

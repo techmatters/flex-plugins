@@ -10,18 +10,22 @@ import { createFormFromDefinition, disperseInputs } from '../common/forms/formGe
 import { updateForm } from '../../states/contacts/actions';
 import { Container, ColumnarBlock, TwoColumnLayout, TabbedFormTabContainer } from '../../styles/HrmStyles';
 import type { RootState } from '../../states';
+import type { TaskEntry } from '../../states/contacts/reducer';
 import { formDefinition } from './ContactlessTaskTabDefinition';
 import { splitDate, splitTime } from '../../utils/helpers';
 
 type OwnProps = {
   task: ITask;
   display: boolean;
+  initialValues: TaskEntry[keyof TaskEntry];
 };
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const ContactlessTaskTab: React.FC<Props> = ({ dispatch, display, task }) => {
+const ContactlessTaskTab: React.FC<Props> = ({ dispatch, display, task, initialValues }) => {
+  const [initialForm] = React.useState(initialValues); // grab initial values in first render only. This value should never change or will ruin the memoization below
+
   const { getValues, register, setError, setValue, watch, errors } = useFormContext();
 
   const contactlessTaskForm = React.useMemo(() => {
@@ -30,10 +34,10 @@ const ContactlessTaskTab: React.FC<Props> = ({ dispatch, display, task }) => {
       dispatch(updateForm(task.taskSid, 'contactlessTask', rest));
     };
 
-    const tab = createFormFromDefinition(formDefinition)(['contactlessTask'])(updateCallBack);
+    const tab = createFormFromDefinition(formDefinition)(['contactlessTask'])(initialForm)(updateCallBack);
 
     return disperseInputs(5)(tab);
-  }, [dispatch, getValues, task.taskSid]);
+  }, [dispatch, getValues, initialForm, task.taskSid]);
 
   // Add invisible field that errors if date + time are future (triggered by validaiton)
   React.useEffect(() => {

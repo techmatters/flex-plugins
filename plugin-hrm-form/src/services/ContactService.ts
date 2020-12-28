@@ -31,6 +31,8 @@ const definitions = {
 
 /**
  * Un-nests the information (caller/child) as it comes from DB, to match the form structure
+ * @param e the current form definition item
+ * @param obj the object where we want to lookup for above item
  */
 export const unNestInformation = (e: FormItemDefinition, obj: InformationObject) =>
   ['firstName', 'lastName'].includes(e.name) ? obj.name[e.name] : obj[e.name];
@@ -39,6 +41,12 @@ const nestName = (information: { firstName: string; lastName: string }) => {
   const { firstName, lastName, ...rest } = information;
   return { ...rest, name: { firstName, lastName } };
 };
+
+const unNestInformationObject = (
+  def: FormDefinition,
+  obj: InformationObject,
+): TaskEntry['childInformation'] | TaskEntry['callerInformation'] =>
+  def.reduce((acc, e) => ({ ...acc, [e.name]: unNestInformation(e, obj) }), {});
 
 export async function searchContacts(searchParams, limit, offset) {
   const queryParams = getLimitAndOffsetParams(limit, offset);
@@ -83,11 +91,19 @@ const transformValues = (def: FormDefinition) => (
   values: TaskEntry['callerInformation'] | TaskEntry['caseInformation'] | TaskEntry['childInformation'],
 ) => def.reduce((acc, e) => ({ ...acc, [e.name]: transformValue(e)(values[e.name]) }), {});
 
-export const deTransformValue = (e: FormItemDefinition) => (value: string | boolean | null) => {
+const deTransformValue = (e: FormItemDefinition) => (value: string | boolean | null) => {
   // de-transform mixed checkbox null DB value to be "mixed"
   if (e.type === 'mixed-checkbox' && value === null) return 'mixed';
 
   return value;
+};
+
+export const searchResultToContactForm = (def: FormDefinition, obj: InformationObject) => {
+  const information = unNestInformationObject(def, obj);
+
+  const deTransformed = def.reduce((acc, e) => ({ ...acc, [e.name]: deTransformValue(e)(information[e.name]) }), {});
+
+  return deTransformed;
 };
 
 /**

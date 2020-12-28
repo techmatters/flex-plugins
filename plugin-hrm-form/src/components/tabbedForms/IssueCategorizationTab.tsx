@@ -5,34 +5,49 @@ import { ITask, withTaskContext } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { RootState, namespace, contactFormsBase } from '../../states';
-import { updateForm, handleExpandCategory, setCategoriesGridView } from '../../states/contacts/actions';
+import * as actions from '../../states/contacts/actions';
+import type { TaskEntry } from '../../states/contacts/reducer';
 import IssueCategorizationTabDefinition from '../../formDefinitions/tabbedForms/IssueCategorizationTab.json';
 import { CategoriesFromDefinition, createSubCategoriesInputs } from '../common/forms/categoriesTabGenerator';
 import { TabbedFormTabContainer } from '../../styles/HrmStyles';
 
-type OwnProps = { task: ITask; display: boolean };
+type OwnProps = { task: ITask; display: boolean; initialValue: TaskEntry['categories'] };
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const IssueCategorizationTab: React.FC<Props> = ({ dispatch, task, display, categoriesMeta }) => {
-  const { getValues } = useFormContext();
+const IssueCategorizationTab: React.FC<Props> = ({
+  task,
+  display,
+  categoriesMeta,
+  initialValue,
+  updateForm,
+  setCategoriesGridView,
+  handleExpandCategory,
+}) => {
+  const { getValues, setValue } = useFormContext();
+
+  // Couldn't find a way to provide initial values to an field array, as a workaround, intentionally run this only on first render
+  React.useEffect(() => {
+    setValue('categories', initialValue);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const subcategoriesInputs = React.useMemo(() => {
     const updateCallback = () => {
       const { categories } = getValues();
-      dispatch(updateForm(task.taskSid, 'categories', categories));
+      updateForm(task.taskSid, 'categories', categories);
     };
 
     return createSubCategoriesInputs(IssueCategorizationTabDefinition, ['categories'], updateCallback);
-  }, [dispatch, getValues, task.taskSid]);
+  }, [getValues, task.taskSid, updateForm]);
 
   const toggleCategoriesGridView = (gridView: boolean) => {
-    dispatch(setCategoriesGridView(gridView, task.taskSid));
+    setCategoriesGridView(gridView, task.taskSid);
   };
 
   const toggleExpandCategory = (category: string) => {
-    dispatch(handleExpandCategory(category, task.taskSid));
+    handleExpandCategory(category, task.taskSid);
   };
 
   return (
@@ -54,7 +69,13 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   categoriesMeta: state[namespace][contactFormsBase].tasks[ownProps.task.taskSid].metadata.categories,
 });
 
-const connector = connect(mapStateToProps);
+const mapDispatchToProps = {
+  updateForm: actions.updateForm,
+  handleExpandCategory: actions.handleExpandCategory,
+  setCategoriesGridView: actions.setCategoriesGridView,
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
 const connected = connector(IssueCategorizationTab);
 
 export default withTaskContext<Props, typeof connected>(connected);
