@@ -23,7 +23,7 @@ describe('transformForm', () => {
         gender: 'Male',
         refugee: false,
       },
-      categories: ['Abuse.Abduction'],
+      categories: ['categories.Abuse.Abduction'],
       caseInformation: {
         callSummary: 'My summary',
       },
@@ -34,6 +34,10 @@ describe('transformForm', () => {
       },
       metadata: {},
     };
+
+    const expectedCategories = oldForm.categories.reduce((acc, path) => set(path, true, acc), {
+      categories: createCategoriesObject(),
+    }).categories;
 
     const expected = {
       definitionVersion: 'v1',
@@ -45,7 +49,7 @@ describe('transformForm', () => {
       },
       caseInformation: {
         // copy paste from ContactService. This will come from redux later on and we can mockup definitions
-        categories: oldForm.categories.reduce((acc, path) => set(path, true, acc), createCategoriesObject()),
+        categories: expectedCategories,
         callSummary: 'My summary',
       },
       contactlessTask: {
@@ -56,6 +60,8 @@ describe('transformForm', () => {
       metadata: {},
     };
 
+    oldForm.categories.reduce((acc, path) => set(path, true, acc));
+
     const transformed = transformForm(oldForm);
     // expect().toStrictEqual(expected);
     expect(transformed.definitionVersion).toBe('v1');
@@ -63,9 +69,7 @@ describe('transformForm', () => {
     expect(transformed.callerInformation.name).toStrictEqual({ firstName: 'myFirstName', lastName: '' });
     expect(transformed.childInformation.gender).toBe('Male');
     expect(transformed.childInformation.name).toStrictEqual({ firstName: 'child', lastName: '' });
-    expect(transformed.caseInformation.categories).toStrictEqual(
-      oldForm.categories.reduce((acc, path) => set(path, true, acc), createCategoriesObject()),
-    );
+    expect(transformed.caseInformation.categories).toStrictEqual(expected.caseInformation.categories);
     expect(transformed.caseInformation.callSummary).toBe('My summary');
     expect(transformed.contactlessTask).toStrictEqual({
       channel: '',
