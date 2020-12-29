@@ -126,7 +126,7 @@ const CaseDetails = ({
 
 CaseDetails.displayName = 'CaseDetails';
 CaseDetails.propTypes = {
-  caseId: PropTypes.string.isRequired,
+  caseId: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   categories: PropTypes.array.isRequired,
   counselor: PropTypes.string.isRequired,

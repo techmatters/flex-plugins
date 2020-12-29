@@ -26,6 +26,7 @@ export type CaseInfo = {
   perpetrators?: PerpetratorEntry[];
   households?: HouseholdEntry[];
   referrals?: ReferralEntry[];
+  followUpDate?: string;
 };
 
 export type Case = {

@@ -109,9 +109,8 @@ const AddReferral: React.FC<Props> = ({
                   name="referredTo"
                   onChange={e => handleChange('referredTo', e.target.value)}
                 >
-                  <FormOption />
-                  {referredToOptions.map(option => (
-                    <FormOption key={option} value={option}>
+                  {['', ...referredToOptions].map(option => (
+                    <FormOption key={`referredToOption-${option}`} value={option} isEmptyValue={!option}>
                       {option}
                     </FormOption>
                   ))}

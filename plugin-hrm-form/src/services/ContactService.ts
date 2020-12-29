@@ -106,6 +106,13 @@ export const searchResultToContactForm = (def: FormDefinition, obj: InformationO
   return deTransformed;
 };
 
+export function transformCategories(categories: TaskEntry['categories']) {
+  const categoriesObject = createCategoriesObject();
+  const transformedCategories = categories.reduce((acc, path) => set(path, true, acc), categoriesObject);
+
+  return transformedCategories;
+}
+
 /**
  * Transforms the form to be saved as the backend expects it
  * VisibleForTesting
@@ -125,8 +132,7 @@ export function transformForm(form: TaskEntry): ContactRawJson {
   // @ts-ignore
   const childInformation = nestName(transformedValues.childInformation);
 
-  const categoriesObject = createCategoriesObject();
-  const categories = form.categories.reduce((acc, path) => set(path, true, acc), categoriesObject);
+  const categories = transformCategories(form.categories);
 
   const transformed = {
     definitionVersion: 'v1', // TODO: put this in config (like feature flags)
