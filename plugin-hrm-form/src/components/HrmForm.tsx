@@ -30,7 +30,7 @@ const HrmForm: React.FC<Props> = props => {
       return <TabbedForms handleCompleteTask={props.handleCompleteTask} />;
 
     case 'new-case':
-      return <Case handleCompleteTask={props.handleCompleteTask} />;
+      return <Case task={props.task} handleCompleteTask={props.handleCompleteTask} />;
 
     case 'select-call-type':
     default:

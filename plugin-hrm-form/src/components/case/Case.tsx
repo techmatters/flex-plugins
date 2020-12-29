@@ -1,8 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react';
-import { Template, withTaskContext, ITask } from '@twilio/flex-ui';
+import { Template, ITask } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { CircularProgress } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import CancelIcon from '@material-ui/icons/Cancel';
@@ -299,4 +298,4 @@ const mapDispatchToProps = {
 const connector = connect(mapStateToProps, mapDispatchToProps);
 const connected = connector(Case);
 
-export default withTaskContext<Props, typeof connected>(connected);
+export default connected;
