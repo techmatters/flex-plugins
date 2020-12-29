@@ -1,6 +1,7 @@
 import { Case, CaseStatus, CaseInfo, HouseholdEntry, PerpetratorEntry, ReferralEntry } from '../../types/types';
 import { NewCaseSubroutes } from '../routing/types';
 import { CallerFormInformation } from '../../components/common/forms/CallerForm';
+import { channelsAndDefault } from '../DomainConstants';
 
 // Action types
 export const SET_CONNECTED_CASE = 'SET_CONNECTED_CASE';
@@ -67,3 +68,7 @@ export type CaseActionType =
   | UpdateCaseInfoAction
   | TemporaryCaseInfoAction
   | UpdateCasesStatusAction;
+
+export type ActivityType = {
+  type: typeof channelsAndDefault[keyof typeof channelsAndDefault] | 'note' | 'referral';
+};

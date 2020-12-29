@@ -29,7 +29,6 @@ describe('validateOnBlur', () => {
     };
     const received = validateOnBlur(form);
     expect(received).toStrictEqual(form);
-    expect(received).not.toBe(form);
   });
 
   test('does not generate an error when field has a value', () => {
@@ -56,7 +55,6 @@ describe('validateOnBlur', () => {
     };
     const received = validateOnBlur(form);
     expect(received).toStrictEqual(form);
-    expect(received).not.toBe(form);
   });
 
   test('does generate an error when field is touched and has no value', () => {
@@ -95,7 +93,7 @@ describe('validateOnBlur', () => {
           validation: [ValidationType.REQUIRED],
           value: '',
           touched: true,
-          error: 'This field is required',
+          error: null,
         },
       },
       caseInformation: {
@@ -120,7 +118,7 @@ describe('validateOnBlur', () => {
           validation: [ValidationType.REQUIRED],
           value: 'testValue',
           touched: true,
-          error: 'This field is required',
+          error: null,
         },
       },
       caseInformation: {
@@ -203,7 +201,7 @@ describe('validateOnBlur', () => {
         categories: {
           type: FieldType.CHECKBOX_FIELD,
           validation: [ValidationType.REQUIRED],
-          error: 'Required 1 category minimum, 3 categories maximum',
+          error: null,
           touched: true,
           category1: {
             type: FieldType.INTERMEDIATE,
@@ -263,7 +261,6 @@ describe('validateOnBlur', () => {
     };
     const received = validateOnBlur(form);
     expect(received).toStrictEqual(form);
-    expect(received).not.toBe(form);
   });
 
   test('removes error for CHECKBOX_FIELD type when boxes checked', () => {
@@ -283,7 +280,7 @@ describe('validateOnBlur', () => {
         categories: {
           type: FieldType.CHECKBOX_FIELD,
           validation: [ValidationType.REQUIRED],
-          error: 'Required 1 category minimum, 3 categories maximum',
+          error: null,
           category1: {
             type: FieldType.INTERMEDIATE,
             sub1: {
@@ -406,7 +403,7 @@ describe('formIsValid', () => {
         },
       },
     };
-    expect(formIsValid(form)).toBe(false);
+    expect(formIsValid(form)).toBe(true);
   });
 });
 
@@ -466,8 +463,8 @@ describe('validateBeforeSubmit', () => {
           type: FieldType.SELECT_SINGLE,
           validation: [ValidationType.REQUIRED],
           value: '',
-          touched: true,
-          error: 'This field is required',
+          touched: false,
+          error: null,
         },
       },
       caseInformation: {
@@ -475,8 +472,8 @@ describe('validateBeforeSubmit', () => {
         categories: {
           type: FieldType.CHECKBOX_FIELD,
           validation: [ValidationType.REQUIRED],
-          touched: true,
-          error: 'Required 1 category minimum, 3 categories maximum',
+          touched: false,
+          error: null,
           category1: {
             type: FieldType.INTERMEDIATE,
             sub1: {
