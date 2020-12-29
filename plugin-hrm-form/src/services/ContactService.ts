@@ -107,10 +107,12 @@ export const searchResultToContactForm = (def: FormDefinition, obj: InformationO
 };
 
 export function transformCategories(categories: TaskEntry['categories']) {
-  const categoriesObject = createCategoriesObject();
-  const transformedCategories = categories.reduce((acc, path) => set(path, true, acc), categoriesObject);
+  const cleanCategories = createCategoriesObject();
+  const transformedCategories = categories.reduce((acc, path) => set(path, true, acc), {
+    categories: cleanCategories, // use an object with categories property so we can reuse the entire path (they look like categories.Category.Subcategory)
+  });
 
-  return transformedCategories;
+  return transformedCategories.categories;
 }
 
 /**
