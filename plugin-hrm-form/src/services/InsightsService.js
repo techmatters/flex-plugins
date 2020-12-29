@@ -1,31 +1,18 @@
 /* eslint-disable camelcase */
 import { isNonDataCallType } from '../states/ValidationRules';
-import { isNotCategory, isNotSubcategory } from '../states/ContactFormStateFactory';
 import { mapChannelForInsights } from '../utils/mappers';
 import { getDateTime } from '../utils/helpers';
 
-function getSubcategories(task) {
-  if (!task || !task.caseInformation || !task.caseInformation.categories) return [];
+function getSubcategories(form) {
+  if (!form || !form.categories) return [];
 
-  const categories = Object.entries(task.caseInformation.categories).filter(([name]) => !isNotCategory(name));
-  const result = [];
+  const { categories } = form;
 
-  categories.forEach(([categoryKey, subcategories]) => {
-    const subcategoriesKeys = Object.keys(subcategories).filter(subcategory => !isNotSubcategory(subcategory));
-    subcategoriesKeys.forEach(subcategoryKey => {
-      const { value } = subcategories[subcategoryKey];
-      if (value) {
-        const tag = subcategoryKey === 'Unspecified/Other' ? `Unspecified/Other - ${categoryKey}` : subcategoryKey;
-        result.push(tag);
-      }
-    });
-  });
-
-  return result.splice(0, 3);
+  return categories.splice(0, 3).join(';');
 }
 
 function buildConversationsObject(taskAttributes, form) {
-  const callType = form.callType.value;
+  const { callType } = form;
   const hasCustomerData = !isNonDataCallType(callType);
 
   const communication_channel = taskAttributes.isContactlessTask
@@ -39,14 +26,13 @@ function buildConversationsObject(taskAttributes, form) {
     };
   }
 
-  const subcategories = getSubcategories(form);
   const { childInformation } = form;
 
   return {
-    conversation_attribute_1: subcategories.join(';'),
+    conversation_attribute_1: getSubcategories(form),
     conversation_attribute_2: callType,
-    conversation_attribute_3: childInformation.gender.value,
-    conversation_attribute_4: childInformation.age.value,
+    conversation_attribute_3: childInformation.gender,
+    conversation_attribute_4: childInformation.age,
     communication_channel,
   };
 }

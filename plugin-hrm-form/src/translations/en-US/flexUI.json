@@ -228,5 +228,7 @@
   "TimeCantBeGreaterThanNow": "Time can't be greater than now.",
 
   "OfflineContactFirstLine": "Offline Contact",
-  "OfflineContactSecondLine": "in progress"
+  "OfflineContactSecondLine": "in progress",
+  "Category": "Category",
+  "Unknown": "Unknown"
 }

@@ -5,6 +5,12 @@ import * as GeneralActions from '../../../states/actions';
 import { Case } from '../../../types/types';
 
 const task = { taskSid: 'task1' };
+const voidDefinitions = {
+  callerFormDefinition: [],
+  caseInfoFormDefinition: [],
+  categoriesFormDefinition: {},
+  childFormDefinition: [],
+};
 
 describe('test reducer', () => {
   let state = undefined;
@@ -19,7 +25,7 @@ describe('test reducer', () => {
   });
 
   test('should ignore INITIALIZE_CONTACT_STATE', async () => {
-    const result = reduce(state, GeneralActions.initializeContactState(task.taskSid));
+    const result = reduce(state, GeneralActions.initializeContactState(voidDefinitions)(task.taskSid));
     expect(result).toStrictEqual(state);
   });
 

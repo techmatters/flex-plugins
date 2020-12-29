@@ -1,17 +1,23 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react';
-import { Template, withTaskContext, ITask } from '@twilio/flex-ui';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import { Template, ITask } from '@twilio/flex-ui';
+import { connect, ConnectedProps } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import CancelIcon from '@material-ui/icons/Cancel';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 
-import { namespace, contactFormsBase, connectedCaseBase, configurationBase, routingBase } from '../../states';
+import {
+  namespace,
+  contactFormsBase,
+  connectedCaseBase,
+  configurationBase,
+  routingBase,
+  RootState,
+} from '../../states';
 import { getConfig } from '../../HrmFormPlugin';
-import { saveToHrm, connectToCase, transformForm } from '../../services/ContactService';
+import { saveToHrm, connectToCase, transformCategories } from '../../services/ContactService';
 import { cancelCase, updateCase } from '../../services/CaseService';
 import { Box, Container, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseContainer, CenteredContainer } from '../../styles/case';
@@ -42,7 +48,7 @@ type OwnProps = {
 };
 
 // eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const getNameFromContact = contact => {
   const { firstName, lastName } = contact.rawJson.childInformation.name;
@@ -50,8 +56,8 @@ const getNameFromContact = contact => {
 };
 
 const getNameFromForm = form => {
-  const { firstName, lastName } = form.childInformation.name;
-  return formatName(`${firstName.value} ${lastName.value}`);
+  const { firstName, lastName } = form.childInformation;
+  return formatName(`${firstName} ${lastName}`);
 };
 
 // eslint-disable-next-line complexity
@@ -80,7 +86,7 @@ const Case: React.FC<Props> = props => {
     const { connectedCase } = props.connectedCaseState;
     await cancelCase(connectedCase.id);
 
-    props.changeRoute({ route: 'tabbed-forms' }, task.taskSid);
+    props.changeRoute({ route: 'tabbed-forms', subroute: 'caseInformation' }, task.taskSid);
     props.removeConnectedCase(task.taskSid);
   };
 
@@ -150,8 +156,8 @@ const Case: React.FC<Props> = props => {
     if (firstConnectedContact?.rawJson?.caseInformation) {
       return firstConnectedContact.rawJson.caseInformation.categories;
     }
-    const mappedForm = transformForm(form);
-    return mappedForm?.caseInformation?.categories;
+    const transformedCategories = transformCategories(form.categories);
+    return transformedCategories;
   };
 
   if (loading)
@@ -274,19 +280,22 @@ const Case: React.FC<Props> = props => {
 
 Case.displayName = 'Case';
 
-const mapStateToProps = (state, ownProps) => ({
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   form: state[namespace][contactFormsBase].tasks[ownProps.task.taskSid],
   connectedCaseState: state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid],
   counselorsHash: state[namespace][configurationBase].counselors.hash,
   routing: state[namespace][routingBase].tasks[ownProps.task.taskSid],
 });
 
-const mapDispatchToProps = dispatch => ({
-  changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
-  removeConnectedCase: bindActionCreators(CaseActions.removeConnectedCase, dispatch),
-  updateCaseInfo: bindActionCreators(CaseActions.updateCaseInfo, dispatch),
-  updateTempInfo: bindActionCreators(CaseActions.updateTempInfo, dispatch),
-  updateCaseStatus: bindActionCreators(CaseActions.updateCaseStatus, dispatch),
-});
+const mapDispatchToProps = {
+  changeRoute: RoutingActions.changeRoute,
+  removeConnectedCase: CaseActions.removeConnectedCase,
+  updateCaseInfo: CaseActions.updateCaseInfo,
+  updateTempInfo: CaseActions.updateTempInfo,
+  updateCaseStatus: CaseActions.updateCaseStatus,
+};
 
-export default withTaskContext(connect(mapStateToProps, mapDispatchToProps)(Case));
+const connector = connect(mapStateToProps, mapDispatchToProps);
+const connected = connector(Case);
+
+export default connected;
