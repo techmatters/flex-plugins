@@ -53,6 +53,8 @@
   "SearchResultsIndex-Result": " result",
   "SearchResultsIndex-Results": " results",
   "SearchResultsIndex-NonDataContacts": "Non-Data Contacts",
+  "SearchResultsIndex-Contacts": "Contacts",
+  "SearchResultsIndex-Cases": "Cases",
   "SearchResultsIndex-ClosedCases": "Closed Cases",
   "SearchResultsIndex-ViewContacts": "View Contacts",
   "SearchResultsIndex-ViewCases": "View Cases",
