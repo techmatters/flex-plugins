@@ -111,11 +111,10 @@ export const searchResultToContactForm = (def: FormDefinition, obj: InformationO
  * VisibleForTesting
  */
 export function transformForm(form: TaskEntry): ContactRawJson {
-  const { callType, metadata, caseInformation, contactlessTask } = form;
+  const { callType, metadata, contactlessTask } = form;
 
   // transform the form values before submit (e.g. "mixed" for 3-way checkbox becomes null)
-  const transformedValues: TaskEntry = {
-    ...form,
+  const transformedValues = {
     callerInformation: transformValues(definitions.callerFormDefinition)(form.callerInformation),
     caseInformation: transformValues(definitions.caseInfoFormDefinition)(form.caseInformation),
     childInformation: transformValues(definitions.childFormDefinition)(form.childInformation),
@@ -136,7 +135,7 @@ export function transformForm(form: TaskEntry): ContactRawJson {
     childInformation,
     metadata,
     caseInformation: {
-      ...caseInformation,
+      ...transformedValues.caseInformation,
       categories,
     },
     contactlessTask,
