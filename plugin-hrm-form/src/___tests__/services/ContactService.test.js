@@ -25,7 +25,6 @@ describe('transformForm', () => {
       },
       categories: ['Abuse.Abduction'],
       caseInformation: {
-        status: '',
         callSummary: 'My summary',
       },
       contactlessTask: {
@@ -47,7 +46,6 @@ describe('transformForm', () => {
       caseInformation: {
         // copy paste from ContactService. This will come from redux later on and we can mockup definitions
         categories: oldForm.categories.reduce((acc, path) => set(path, true, acc), createCategoriesObject()),
-        status: '',
         callSummary: 'My summary',
       },
       contactlessTask: {
@@ -68,7 +66,6 @@ describe('transformForm', () => {
     expect(transformed.caseInformation.categories).toStrictEqual(
       oldForm.categories.reduce((acc, path) => set(path, true, acc), createCategoriesObject()),
     );
-    expect(transformed.caseInformation.status).toBe('');
     expect(transformed.caseInformation.callSummary).toBe('My summary');
     expect(transformed.contactlessTask).toStrictEqual({
       channel: '',
