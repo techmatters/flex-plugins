@@ -5,7 +5,6 @@ import { IconButton } from '@material-ui/core';
 import { Link as LinkIcon } from '@material-ui/icons';
 import { Template } from '@twilio/flex-ui';
 
-import { Row } from '../styles/HrmStyles';
 import { DetailsContainer, NameContainer, DetNameText } from '../styles/search';
 import Section from './Section';
 import SectionEntry from './SectionEntry';
@@ -133,9 +132,9 @@ const Details = ({
               <SectionEntry
                 key={`Category ${index + 1}`}
                 description={
-                  <Row>
+                  <div style={{ display: 'inline-block' }}>
                     <Template code="Category" /> {index + 1}
-                  </Row>
+                  </div>
                 }
                 value={c}
               />
