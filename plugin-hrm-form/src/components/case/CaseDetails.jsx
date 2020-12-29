@@ -1,48 +1,57 @@
+/* eslint-disable react/forbid-prop-types */
+/* eslint-disable no-empty-function */
 /* eslint-disable react/jsx-max-depth */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/no-multi-comp */
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Template } from '@twilio/flex-ui';
-import { Grid } from '@material-ui/core';
 
+import CaseTags from '../search/CasePreview/CaseTags';
 import CaseDetailsHeader from './caseDetails/CaseDetailsHeader';
 import {
   DetailsContainer,
   DetailDescription,
-  OpenStatusFont,
-  DefaultStatusFont,
   StyledInputField,
+  StyledSelectField,
+  StyledSelectWrapper,
 } from '../../styles/case';
-import { HiddenText } from '../../styles/HrmStyles';
-import { caseStatuses } from '../../states/DomainConstants';
+import { FormOption } from '../../styles/HrmStyles';
 
-// eslint-disable-next-line react/display-name
-const renderCaseStatus = status => {
-  switch (status) {
-    case caseStatuses.open:
-      return (
-        <OpenStatusFont>
-          <HiddenText>
-            <Template code="Case-CaseDetailsStatusLabel" />
-          </HiddenText>
-          <Template code="Case-CaseDetailsStatusOpen" />
-        </OpenStatusFont>
-      );
-    default:
-      return <DefaultStatusFont>{status}</DefaultStatusFont>;
-  }
-};
+const statusOptions = [
+  { label: 'Open', value: 'open', color: 'green' },
+  { label: 'Closed', value: 'closed', color: 'red' },
+];
 
-const CaseDetails = ({ caseId, name, counselor, openedDate, lastUpdatedDate, followUpDate, status }) => {
+const CaseDetails = ({
+  caseId,
+  name,
+  categories,
+  counselor,
+  openedDate,
+  lastUpdatedDate,
+  followUpDate,
+  status,
+  handleInfoChange,
+  handleStatusChange,
+}) => {
   const lastUpdatedClosedDate = openedDate === lastUpdatedDate ? '—' : lastUpdatedDate;
+
+  const initialColor = (statusOptions.find(x => x.value === status) || {}).color || '#000000';
+
+  const [color, setColor] = useState(initialColor);
+
+  const onStatusChange = selectedOption => {
+    setColor(statusOptions.find(x => x.value === selectedOption).color);
+    handleStatusChange(selectedOption);
+  };
 
   return (
     <>
       <CaseDetailsHeader caseId={caseId} childName={name} />
-      <DetailsContainer tabIndex={0} role="grid" aria-labelledby="Case-CaseId-label">
-        <Grid container spacing={24} justify="center" role="row">
-          <Grid item xs role="gridcell" tabIndex={-1}>
+      <DetailsContainer tabIndex={0} aria-labelledby="Case-CaseId-label">
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ paddingRight: '20px' }}>
             <DetailDescription>
               <label id="CaseDetailsDateOpened">
                 <Template code="Case-CaseDetailsDateOpened" />
@@ -54,8 +63,8 @@ const CaseDetails = ({ caseId, name, counselor, openedDate, lastUpdatedDate, fol
               value={openedDate}
               aria-labelledby="CaseDetailsDateOpened"
             />
-          </Grid>
-          <Grid item xs role="gridcell" tabIndex={-1}>
+          </div>
+          <div style={{ paddingRight: '20px' }}>
             <DetailDescription>
               <label id="CaseDetailsLastUpdated">
                 <Template code="Case-CaseDetailsLastUpdated" />
@@ -67,26 +76,49 @@ const CaseDetails = ({ caseId, name, counselor, openedDate, lastUpdatedDate, fol
               value={lastUpdatedClosedDate}
               aria-labelledby="CaseDetailsLastUpdated"
             />
-          </Grid>
-          <Grid item xs role="gridcell" tabIndex={-1}>
+          </div>
+          <div style={{ paddingRight: '20px' }}>
             <DetailDescription>
               <label id="CaseDetailsFollowUpDate">
                 <Template code="Case-CaseDetailsFollowUpDate" />
               </label>
             </DetailDescription>
-            {/* Replace this with proper component in next story */}
             <StyledInputField
+              type="date"
               id="Details_DateFollowUp"
+              name="Details_DateFollowUp"
               value={followUpDate}
+              onChange={e => handleInfoChange('followUpDate', e.target.value)}
               aria-labelledby="CaseDetailsFollowUpDate"
             />
-          </Grid>
-          <Grid item xs role="gridcell" tabIndex={-1}>
-            <div style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-              {renderCaseStatus(status)}
-            </div>
-          </Grid>
-        </Grid>
+          </div>
+          <div style={{ paddingRight: '20px' }}>
+            <DetailDescription>
+              <label id="CaseDetailsStatusLabel">
+                <Template code="Case-CaseDetailsStatusLabel" />
+              </label>
+            </DetailDescription>
+            <StyledSelectWrapper>
+              <StyledSelectField
+                id="Details_CaseStatus"
+                name="Details_CaseStatus"
+                aria-labelledby="CaseDetailsStatusLabel"
+                onChange={e => onStatusChange(e.target.value)}
+                defaultValue={status}
+                color={color}
+              >
+                {statusOptions.map(o => (
+                  <FormOption key={o.value} value={o.value} style={{ color: '#000000' }}>
+                    {o.label}
+                  </FormOption>
+                ))}
+              </StyledSelectField>
+            </StyledSelectWrapper>
+          </div>
+        </div>
+        <div style={{ paddingTop: '15px' }}>
+          <CaseTags categories={categories} />
+        </div>
       </DetailsContainer>
     </>
   );
@@ -96,11 +128,14 @@ CaseDetails.displayName = 'CaseDetails';
 CaseDetails.propTypes = {
   caseId: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
+  categories: PropTypes.array.isRequired,
   counselor: PropTypes.string.isRequired,
   openedDate: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
   followUpDate: PropTypes.string,
   lastUpdatedDate: PropTypes.string,
+  handleInfoChange: PropTypes.func.isRequired,
+  handleStatusChange: PropTypes.func.isRequired,
 };
 
 CaseDetails.defaultProps = {

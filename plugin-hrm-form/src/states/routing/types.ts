@@ -11,6 +11,7 @@ export type TabbedFormSubroutes =
 
 export const NewCaseSubroutes = {
   AddNote: 'add-note',
+  AddReferral: 'add-referral',
   AddHousehold: 'add-household',
   AddPerpetrator: 'add-perpetrator',
   ViewContact: 'view-contact',

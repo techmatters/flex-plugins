@@ -152,11 +152,9 @@ jest.mock('../styles/case', () => ({
   DetailsHeaderContainer: 'DetailsHeaderContainer',
   CenteredContainer: 'CenteredContainer',
   CaseSectionFont: 'CaseSectionFont',
-  OpenStatusFont: 'OpenStatusFont',
   ViewButton: 'ViewButton',
   CaseAddButtonFont: 'CaseAddButtonFont',
   CaseActionTitle: 'CaseActionTitle',
-  DefaultStatusFont: 'DefaultStatusFont',
   CaseActionDetailFont: 'CaseActionDetailFont',
   BaseTextArea: 'BaseTextArea',
   CaseActionTextArea: 'CaseActionTextArea',
@@ -178,4 +176,6 @@ jest.mock('../styles/case', () => ({
   DetailsHeaderCaseId: 'DetailsHeaderCaseId',
   DetailsHeaderOfficeName: 'DetailsHeaderOfficeName',
   StyledInputField: 'StyledInputField',
+  StyledSelectWrapper: 'StyledSelectWrapper',
+  StyledSelectField: 'StyledSelectField',
 }));

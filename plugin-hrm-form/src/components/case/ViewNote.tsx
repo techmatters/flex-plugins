@@ -34,13 +34,14 @@ const ViewNote: React.FC<Props> = ({ taskSid, tempInfo, route, changeRoute, coun
 
   const { counselor, date, note } = tempInfo.info;
   const counselorName = counselorsHash[counselor] || 'Unknown';
+  const added = new Date(date);
 
   const handleClose = () => changeRoute({ route }, taskSid);
 
   return (
     <CaseContainer>
       <Container>
-        <ActionHeader titleTemplate="Case-Note" onClickClose={handleClose} counselor={counselorName} added={date} />
+        <ActionHeader titleTemplate="Case-Note" onClickClose={handleClose} counselor={counselorName} added={added} />
         <NoteContainer data-testid="Case-ViewNoteScreen-Note">{note}</NoteContainer>
       </Container>
       <BottomButtonBar>

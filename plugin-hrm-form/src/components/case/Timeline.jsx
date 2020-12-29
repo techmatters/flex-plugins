@@ -19,6 +19,7 @@ import { ContactDetailsSections } from '../common/ContactDetails';
 import { getConfig } from '../../HrmFormPlugin';
 import { channelsAndDefault } from '../../states/DomainConstants';
 import { namespace, routingBase } from '../../states';
+import { blankReferral } from '../../types/types';
 
 const isConnectedCaseActivity = activity => Boolean(channelsAndDefault[activity.type]);
 
@@ -91,6 +92,11 @@ const Timeline = ({ task, form, caseObj, changeRoute, updateTempInfo, route }) =
     changeRoute({ route, subroute: 'add-note' }, task.taskSid);
   };
 
+  const handleAddReferralClick = () => {
+    updateTempInfo({ screen: 'add-referral', info: blankReferral }, task.taskSid);
+    changeRoute({ route, subroute: 'add-referral' }, task.taskSid);
+  };
+
   return (
     <Box marginTop="25px">
       <Dialog onClose={() => setMockedMessage(null)} open={Boolean(mockedMessage)}>
@@ -101,7 +107,10 @@ const Timeline = ({ task, form, caseObj, changeRoute, updateTempInfo, route }) =
           <CaseSectionFont id="Case-TimelineSection-label">
             <Template code="Case-TimelineSection" />
           </CaseSectionFont>
-          <CaseAddButton templateCode="Case-AddNote" onClick={handleAddNoteClick} />
+          <Box marginLeft="auto">
+            <CaseAddButton templateCode="Case-Note" onClick={handleAddNoteClick} />
+            <CaseAddButton templateCode="Case-Referral" onClick={handleAddReferralClick} withDivider />
+          </Box>
         </Row>
       </Box>
       {timeline &&

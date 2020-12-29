@@ -8,6 +8,7 @@ import {
   REMOVE_CONNECTED_CASE,
   UPDATE_CASE_INFO,
   UPDATE_TEMP_INFO,
+  UPDATE_CASE_STATUS,
 } from './types';
 import { GeneralActionType, REMOVE_CONTACT_STATE } from '../types';
 
@@ -66,6 +67,18 @@ export function reduce(state = initialState, action: CaseActionType | GeneralAct
           [action.taskId]: {
             ...state.tasks[action.taskId],
             temporaryCaseInfo: action.value,
+          },
+        },
+      };
+    case UPDATE_CASE_STATUS:
+      const { connectedCase } = state.tasks[action.taskId];
+      const updatedCase = { ...connectedCase, status: action.status };
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            connectedCase: updatedCase,
           },
         },
       };

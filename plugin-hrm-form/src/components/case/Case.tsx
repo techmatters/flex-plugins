@@ -11,7 +11,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 
 import { namespace, contactFormsBase, connectedCaseBase, configurationBase, routingBase } from '../../states';
 import { getConfig } from '../../HrmFormPlugin';
-import { saveToHrm, connectToCase } from '../../services/ContactService';
+import { saveToHrm, connectToCase, transformForm } from '../../services/ContactService';
 import { cancelCase, updateCase } from '../../services/CaseService';
 import { Box, Container, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseContainer, CenteredContainer } from '../../styles/case';
@@ -23,6 +23,7 @@ import * as RoutingActions from '../../states/routing/actions';
 import { newCallerFormInformation } from '../common/forms';
 import Timeline from './Timeline';
 import AddNote from './AddNote';
+import AddReferral from './AddReferral';
 import Households from './Households';
 import Perpetrators from './Perpetrators';
 import CaseSummary from './CaseSummary';
@@ -53,6 +54,7 @@ const getNameFromForm = form => {
   return formatName(`${firstName} ${lastName}`);
 };
 
+// eslint-disable-next-line complexity
 const Case: React.FC<Props> = props => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [isMenuOpen, setMenuOpen] = useState(false);
@@ -91,7 +93,7 @@ const Case: React.FC<Props> = props => {
 
     try {
       const contact = await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
-      await updateCase(connectedCase.id, { info: connectedCase.info });
+      await updateCase(connectedCase.id, { ...connectedCase });
       await connectToCase(hrmBaseUrl, contact.id, connectedCase.id);
       props.handleCompleteTask(task.taskSid, task);
     } catch (error) {
@@ -127,11 +129,30 @@ const Case: React.FC<Props> = props => {
     props.changeRoute({ route, subroute: 'view-perpetrator' }, props.task.taskSid);
   };
 
+  const onInfoChange = (fieldName, value) => {
+    const { connectedCase } = props.connectedCaseState;
+    const { info } = connectedCase;
+    const newInfo = info ? { ...info, [fieldName]: value } : { [fieldName]: value };
+    props.updateCaseInfo(newInfo, props.task.taskSid);
+  };
+
+  const onStatusChange = value => {
+    props.updateCaseStatus(value, props.task.taskSid);
+  };
+
   if (!props.connectedCaseState) return null;
 
   const { task, form, counselorsHash } = props;
 
   const { connectedCase } = props.connectedCaseState;
+
+  const getCategories = firstConnectedContact => {
+    if (firstConnectedContact?.rawJson?.caseInformation) {
+      return firstConnectedContact.rawJson.caseInformation.categories;
+    }
+    const mappedForm = transformForm(form);
+    return mappedForm?.caseInformation?.categories;
+  };
 
   if (loading)
     return (
@@ -144,10 +165,12 @@ const Case: React.FC<Props> = props => {
 
   const firstConnectedContact = connectedCase && connectedCase.connectedContacts && connectedCase.connectedContacts[0];
   const name = firstConnectedContact ? getNameFromContact(firstConnectedContact) : getNameFromForm(form);
+  const categories = getCategories(firstConnectedContact);
   const { createdAt, updatedAt, twilioWorkerId, status, info } = connectedCase;
   const counselor = counselorsHash[twilioWorkerId];
   const openedDate = new Date(createdAt).toLocaleDateString(navigator.language);
   const lastUpdatedDate = new Date(updatedAt).toLocaleDateString(navigator.language);
+  const followUpDate = info && info.followUpDate ? info.followUpDate : '';
   const households = info && info.households ? info.households : [];
   const perpetrators = info && info.perpetrators ? info.perpetrators : [];
 
@@ -156,6 +179,8 @@ const Case: React.FC<Props> = props => {
   switch (subroute) {
     case 'add-note':
       return <AddNote {...addScreenProps} />;
+    case 'add-referral':
+      return <AddReferral {...addScreenProps} />;
     case 'add-household':
       return <AddHousehold {...addScreenProps} />;
     case 'add-perpetrator':
@@ -178,8 +203,12 @@ const Case: React.FC<Props> = props => {
                 name={name}
                 status={status}
                 counselor={counselor}
+                categories={categories}
                 openedDate={openedDate}
                 lastUpdatedDate={lastUpdatedDate}
+                followUpDate={followUpDate}
+                handleInfoChange={onInfoChange}
+                handleStatusChange={onStatusChange}
               />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
@@ -255,7 +284,9 @@ const mapStateToProps = (state, ownProps) => ({
 const mapDispatchToProps = dispatch => ({
   changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
   removeConnectedCase: bindActionCreators(CaseActions.removeConnectedCase, dispatch),
+  updateCaseInfo: bindActionCreators(CaseActions.updateCaseInfo, dispatch),
   updateTempInfo: bindActionCreators(CaseActions.updateTempInfo, dispatch),
+  updateCaseStatus: bindActionCreators(CaseActions.updateCaseStatus, dispatch),
 });
 
 export default withTaskContext(connect(mapStateToProps, mapDispatchToProps)(Case));

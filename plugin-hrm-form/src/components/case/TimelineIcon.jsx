@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import * as Flex from '@twilio/flex-ui';
 import NoteIcon from '@material-ui/icons/NoteAdd';
 import AssignmentInd from '@material-ui/icons/AssignmentInd';
+import ReplyIcon from '@material-ui/icons/Reply';
 
 import { TimelineIconContainer } from '../../styles/case';
 import { channelTypes, otherContactChannels } from '../../states/DomainConstants';
@@ -23,6 +24,8 @@ const getIcon = type => {
       return <DefaultIcon defaultTaskChannel={Flex.DefaultTaskChannels.Call} />;
     case 'note':
       return <NoteIcon style={{ opacity: 0.62, fontSize: '20px' }} />;
+    case 'referral':
+      return <ReplyIcon style={{ transform: 'scaleX(-1)', fontSize: '20px' }} />;
     // defaulting to otherContactChannels.includes(type). Maybe at some point we need to address this in a different way.
     default:
       return <AssignmentInd style={{ opacity: 0.62, fontSize: '20px' }} />;
