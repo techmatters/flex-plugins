@@ -143,8 +143,8 @@ describe('useState mocked', () => {
           metadata: {},
           caseInformation: {
             callSummary: 'contact call summary',
-            categories: null,
           },
+          categories: [],
         },
         temporaryCaseInfo: '',
       },
