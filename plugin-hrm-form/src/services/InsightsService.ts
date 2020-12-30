@@ -9,15 +9,20 @@ import { ITask } from '@twilio/flex-ui';
 // See https://assets.flex.twilio.com/releases/flex-ui/1.18.0/docs/ITask.html
 type TaskAttributes = any;
 
-function getSubcategories(contactForm: TaskEntry) {
-  if (!contactForm || !contactForm.categories) return [];
+type InsightsAttributes = {
+  conversations?: { [key: string]: string };
+  customers?: { [key: string]: string };
+}
+
+const getSubcategories = (contactForm: TaskEntry) : string => {
+  if (!contactForm || !contactForm.categories) return '';
 
   const { categories } = contactForm;
 
   return categories.splice(0, 3).join(';');
 }
 
-function buildCustomersObject(taskAttributes: TaskAttributes, contactForm: TaskEntry) : TaskAttributes {
+const buildCustomersObject = (taskAttributes: TaskAttributes, contactForm: TaskEntry) : InsightsAttributes => {
   const { callType } = contactForm;
   const hasCustomerData = !isNonDataCallType(callType);
 
@@ -25,11 +30,13 @@ function buildCustomersObject(taskAttributes: TaskAttributes, contactForm: TaskE
 
   const { childInformation } = contactForm;
   return {
-    gender: childInformation.gender,
+    customers: {
+      gender: childInformation.gender.toString(),
+    },
   };
 }
 
-function buildConversationsObject(taskAttributes: TaskAttributes, contactForm: TaskEntry) : TaskAttributes {
+const buildConversationsObject = (taskAttributes: TaskAttributes, contactForm: TaskEntry) : InsightsAttributes => {
   const { callType } = contactForm;
   const hasCustomerData = !isNonDataCallType(callType);
 
@@ -39,56 +46,67 @@ function buildConversationsObject(taskAttributes: TaskAttributes, contactForm: T
 
   if (!hasCustomerData) {
     return {
-      conversation_attribute_2: callType,
-      communication_channel,
+      conversations: {
+        conversation_attribute_2: callType.toString(),
+        communication_channel,
+      }
     };
   }
 
   const { childInformation } = contactForm;
 
   return {
-    conversation_attribute_1: getSubcategories(contactForm),
-    conversation_attribute_2: callType,
-    conversation_attribute_3: childInformation.gender,
-    conversation_attribute_4: childInformation.age,
-    communication_channel,
-  };
-}
-
-function mergeAttributes(previousAttributes: TaskAttributes, { conversations, customers }) : TaskAttributes {
-  return {
-    ...previousAttributes,
     conversations: {
-      ...previousAttributes.conversations,
-      ...conversations,
-    },
-    customers: {
-      ...previousAttributes.customers,
-      ...customers,
+      conversation_attribute_1: getSubcategories(contactForm).toString(),
+      conversation_attribute_2: callType,
+      conversation_attribute_3: childInformation.gender.toString(),
+      conversation_attribute_4: childInformation.age.toString(),
+      communication_channel,
     }
   };
 }
 
-const overrideAttributes = (attributes: TaskAttributes, contactForm: TaskEntry) : TaskAttributes => {
+const mergeAttributes = (previousAttributes: TaskAttributes, newAttributes : InsightsAttributes) : TaskAttributes => {
+  return {
+    ...previousAttributes,
+    conversations: {
+      ...previousAttributes.conversations,
+      ...newAttributes.conversations,
+    },
+    customers: {
+      ...previousAttributes.customers,
+      ...newAttributes.customers,
+    }
+  };
+}
+
+const overrideAttributes = (attributes: TaskAttributes, contactForm: TaskEntry) : InsightsAttributes => {
+  if (!attributes.isContactlessTask) {
+    return { };
+  }
+
   const dateTime = getDateTime(contactForm.contactlessTask);
 
   return {
-    ...attributes,
     conversations: {
-      ...attributes.conversations,
-      date: dateTime,
+      date: dateTime.toString(),
     },
   };
 };
 
+/*
+  We want a set of configurations that we can then apply
+  These configurations take the twilioTask, contactForm and caseForm as inputs
+  And they output an object with conversations and customers
+  In the first step, maybe it's just a set of functions
+  Then later we add the configuration language
+*/
 export async function saveInsightsData(twilioTask: ITask, contactForm: TaskEntry) {
-  const conversations = buildConversationsObject(twilioTask.attributes, contactForm);
-  const customers = buildCustomersObject(twilioTask.attributes, contactForm);
-  const previousAttributes = twilioTask.attributes;
-  const mergedAttributes = mergeAttributes(previousAttributes, { conversations, customers });
-  const finalAttributes = previousAttributes.isContactlessTask
-    ? overrideAttributes(mergedAttributes, contactForm)
-    : mergedAttributes;
+  const conversations : InsightsAttributes = buildConversationsObject(twilioTask.attributes, contactForm);
+  const customers : InsightsAttributes = buildCustomersObject(twilioTask.attributes, contactForm);
+  const contactlessAttributes : InsightsAttributes = overrideAttributes(twilioTask.attributes, contactForm);
+  const previousAttributes : TaskAttributes = twilioTask.attributes;
+  const finalAttributes : TaskAttributes = mergeAttributes(mergeAttributes(mergeAttributes(previousAttributes, conversations), customers), contactlessAttributes);
 
   await twilioTask.setAttributes(finalAttributes);
 }
