@@ -60,7 +60,11 @@ test('saveInsightsData for data callType', async () => {
       gender: 'Boy',
     },
     caseInformation: {},
-    categories: ['Unspecified/Other - Missing children', 'Bullying', 'Addictive behaviours'],
+    categories: [
+      'categories.Missing children.Unspecified/Other',
+      'categories.Violence.Bullying',
+      'categories.Mental Health.Addictive behaviours and substance use',
+    ],
   };
 
   await saveInsightsData(twilioTask, task);
@@ -70,7 +74,7 @@ test('saveInsightsData for data callType', async () => {
     channelType: 'voice',
     conversations: {
       content: 'content',
-      conversation_attribute_1: 'Unspecified/Other - Missing children;Bullying;Addictive behaviours',
+      conversation_attribute_1: 'Unspecified/Other - Missing children;Bullying;Addictive behaviours and substance use',
       conversation_attribute_2: 'Child calling about self',
       conversation_attribute_3: 'Boy',
       conversation_attribute_4: '13-15',
@@ -79,8 +83,10 @@ test('saveInsightsData for data callType', async () => {
     customers: {
       name: 'John Doe',
       gender: 'Boy',
-    }
+    },
   };
 
   expect(twilioTask.setAttributes).toHaveBeenCalledWith(expectedNewAttributes);
 });
+
+// test('Handles overrides for contactless tasks', async () => {});
