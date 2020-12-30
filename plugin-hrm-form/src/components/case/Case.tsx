@@ -32,10 +32,12 @@ import AddNote from './AddNote';
 import AddReferral from './AddReferral';
 import Households from './Households';
 import Perpetrators from './Perpetrators';
+import Incidents from './Incidents';
 import CaseSummary from './CaseSummary';
 import ViewContact from './ViewContact';
 import AddHousehold from './AddHousehold';
 import AddPerpetrator from './AddPerpetrator';
+import AddIncident from './AddIncident';
 import ViewNote from './ViewNote';
 import ViewHousehold from './ViewHousehold';
 import ViewPerpetrator from './ViewPerpetrator';
@@ -125,6 +127,11 @@ const Case: React.FC<Props> = props => {
     props.changeRoute({ route, subroute: 'add-perpetrator' }, props.task.taskSid);
   };
 
+  const onClickAddIncident = () => {
+    props.updateTempInfo({ screen: 'add-incident', info: null }, props.task.taskSid);
+    props.changeRoute({ route, subroute: 'add-incident' }, props.task.taskSid);
+  };
+
   const onClickViewHousehold = household => {
     props.updateTempInfo({ screen: 'view-household', info: household }, props.task.taskSid);
     props.changeRoute({ route, subroute: 'view-household' }, props.task.taskSid);
@@ -179,6 +186,7 @@ const Case: React.FC<Props> = props => {
   const followUpDate = info && info.followUpDate ? info.followUpDate : '';
   const households = info && info.households ? info.households : [];
   const perpetrators = info && info.perpetrators ? info.perpetrators : [];
+  const incidents = info && info.incidents ? info.incidents : [];
 
   const addScreenProps = { task: props.task, counselor, onClickClose: handleClose };
 
@@ -191,6 +199,8 @@ const Case: React.FC<Props> = props => {
       return <AddHousehold {...addScreenProps} />;
     case 'add-perpetrator':
       return <AddPerpetrator {...addScreenProps} />;
+    case 'add-incident':
+      return <AddIncident {...addScreenProps} />;
     case 'view-contact':
       return <ViewContact task={props.task} />;
     case 'view-note':
@@ -233,6 +243,9 @@ const Case: React.FC<Props> = props => {
                 onClickAddPerpetrator={onClickAddPerpetrator}
                 onClickView={onClickViewPerpetrator}
               />
+            </Box>
+            <Box marginLeft="25px" marginTop="25px">
+              <Incidents incidents={incidents} onClickAddIncident={onClickAddIncident} onClickView={() => {}} />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
               <CaseSummary task={props.task} readonly={props.readonly} />
