@@ -18,18 +18,25 @@ type InsightsAttributes = {
   customers?: { [key: string]: string };
 };
 
+/*
+ * Converts an array of categories with a fully-specified path (as stored in Redux)
+ * into an object where the top-level categories are the keys and the values
+ * are an array of subcategories (as returned from our API).
+ * Example:
+ * makeCategoryMap(['categories.Cat1.SubcatA', 'categories.Cat1.SubcatB', 'categories.Cat3.SubcatE'])
+ *  returns:
+ *   {
+ *     "Cat1": ["SubcatA", "SubcatB"],
+ *     "Cat3": ["SubcatE"],
+ *   }
+ */
 const makeCategoryMap = (categories: string[]): { [category: string]: string[] } => {
-  const categoryMap = {};
-  // This should probably be a reduce as in https://github.com/tech-matters/hrm/blob/ae852ed638bb319338968a25a761c525d0503344/controllers/helpers.js#L26
-  categories.forEach(c => {
-    const [, cat, subcat] = c.split('.');
-    if (cat in categoryMap) {
-      categoryMap[cat] = categoryMap[cat].push(subcat);
-    } else {
-      categoryMap[cat] = [subcat];
-    }
-  });
-  return categoryMap;
+  return categories.reduce((acc, fullPathCategory) => {
+    const [, cat, subcat] = fullPathCategory.split('.');
+    acc[cat] = acc[cat] || [];
+    acc[cat].push(subcat);
+    return acc;
+  }, {});
 };
 
 const getSubcategories = (contactForm: TaskEntry): string => {
@@ -99,7 +106,7 @@ const mergeAttributes = (previousAttributes: TaskAttributes, newAttributes: Insi
   };
 };
 
-const overrideAttributes = (attributes: TaskAttributes, contactForm: TaskEntry): InsightsAttributes => {
+const contactlessAttributes = (attributes: TaskAttributes, contactForm: TaskEntry): InsightsAttributes => {
   if (!attributes.isContactlessTask) {
     return {};
   }
@@ -114,20 +121,23 @@ const overrideAttributes = (attributes: TaskAttributes, contactForm: TaskEntry):
 };
 
 /*
- *We want a set of configurations that we can then apply
- *These configurations take the twilioTask, contactForm and caseForm as inputs
- *And they output an object with conversations and customers
- *In the first step, maybe it's just a set of functions
- *Then later we add the configuration language
+ * The idea here is to apply a cascading series of modifications to the attributes for Insights.
+ * We may have a set of core values to add, plus conditional core values (such as if this is a
+ * contactless task), and then may have helpline-specific updates based on configuration.
+ * At present this is just a refactoring of the existing functionality, but next we will
+ * add helpline-specific configuration.
+ * We may add a configuration language similar to our customization JSON files
+ * into the helpline-specific update functions to express them more clearly.
  */
 export async function saveInsightsData(twilioTask: ITask, contactForm: TaskEntry) {
-  const conversations: InsightsAttributes = buildConversationsObject(twilioTask.attributes, contactForm);
-  const customers: InsightsAttributes = buildCustomersObject(twilioTask.attributes, contactForm);
-  const contactlessAttributes: InsightsAttributes = overrideAttributes(twilioTask.attributes, contactForm);
   const previousAttributes: TaskAttributes = twilioTask.attributes;
-  const finalAttributes: TaskAttributes = mergeAttributes(
-    mergeAttributes(mergeAttributes(previousAttributes, conversations), customers),
-    contactlessAttributes,
+  const insightsUpdates: InsightsAttributes[] = [];
+  insightsUpdates.push(buildConversationsObject(twilioTask.attributes, contactForm));
+  insightsUpdates.push(buildCustomersObject(twilioTask.attributes, contactForm));
+  insightsUpdates.push(contactlessAttributes(twilioTask.attributes, contactForm));
+  const finalAttributes: TaskAttributes = insightsUpdates.reduce(
+    (acc, curr) => mergeAttributes(acc, curr),
+    previousAttributes,
   );
 
   await twilioTask.setAttributes(finalAttributes);
