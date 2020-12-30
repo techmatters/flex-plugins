@@ -14,6 +14,7 @@ export const NewCaseSubroutes = {
   AddReferral: 'add-referral',
   AddHousehold: 'add-household',
   AddPerpetrator: 'add-perpetrator',
+  AddIncident: 'add-incident',
   ViewContact: 'view-contact',
   ViewNote: 'view-note',
   ViewHousehold: 'view-household',
