@@ -29,6 +29,7 @@ test('saveInsightsData for non-data callType', async () => {
       conversation_attribute_2: 'Abusive',
       communication_channel: 'SMS',
     },
+    customers: {},
   };
 
   expect(twilioTask.setAttributes).toHaveBeenCalledWith(expectedNewAttributes);
@@ -40,6 +41,9 @@ test('saveInsightsData for data callType', async () => {
     channelType: 'voice',
     conversations: {
       content: 'content',
+    },
+    customers: {
+      name: 'John Doe',
     },
   };
 
@@ -72,6 +76,10 @@ test('saveInsightsData for data callType', async () => {
       conversation_attribute_4: '13-15',
       communication_channel: 'Call',
     },
+    customers: {
+      name: 'John Doe',
+      gender: 'Boy',
+    }
   };
 
   expect(twilioTask.setAttributes).toHaveBeenCalledWith(expectedNewAttributes);
