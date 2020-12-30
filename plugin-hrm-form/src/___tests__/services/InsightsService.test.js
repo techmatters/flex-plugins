@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import { saveInsightsData } from '../../services/InsightsService';
+import { getDateTime } from '../../utils/helpers';
 
 test('saveInsightsData for non-data callType', async () => {
   const previousAttributes = {
@@ -89,4 +90,53 @@ test('saveInsightsData for data callType', async () => {
   expect(twilioTask.setAttributes).toHaveBeenCalledWith(expectedNewAttributes);
 });
 
-// test('Handles overrides for contactless tasks', async () => {});
+test('Handles contactless tasks', async () => {
+  const previousAttributes = {
+    taskSid: 'task-sid',
+    isContactlessTask: true,
+    channelType: 'default',
+  };
+
+  const twilioTask = {
+    attributes: previousAttributes,
+    setAttributes: jest.fn(),
+  };
+
+  const date = '2020-12-30';
+  const time = '14:50';
+  const task = {
+    callType: 'Child calling about self',
+    contactlessTask: {
+      channel: 'sms',
+      date,
+      time,
+    },
+    childInformation: {
+      age: '3',
+      gender: 'Unknown',
+    },
+    caseInformation: {},
+    categories: ['categories.Violence.Unspecified/Other'],
+  };
+
+  await saveInsightsData(twilioTask, task);
+
+  const expectedNewAttributes = {
+    taskSid: 'task-sid',
+    isContactlessTask: true,
+    channelType: 'default',
+    conversations: {
+      conversation_attribute_1: 'Unspecified/Other - Violence',
+      conversation_attribute_2: 'Child calling about self',
+      conversation_attribute_3: 'Unknown',
+      conversation_attribute_4: '3',
+      communication_channel: 'SMS',
+      date: getDateTime({ date, time }).toString(),
+    },
+    customers: {
+      gender: 'Unknown',
+    },
+  };
+
+  expect(twilioTask.setAttributes).toHaveBeenCalledWith(expectedNewAttributes);
+});
