@@ -4,15 +4,21 @@ import { CallerFormValues } from '../components/common/forms/CallerForm';
 
 export type CaseStatus = 'open' | 'closed';
 
-export type PerpetratorEntry = { perpetrator: CallerFormValues; createdAt: string; twilioWorkerId: string };
+type EntryInfo = { createdAt: string; twilioWorkerId: string };
 
-export type HouseholdEntry = { household: CallerFormValues; createdAt: string; twilioWorkerId: string };
+export type PerpetratorEntry = { perpetrator: CallerFormValues } & EntryInfo;
+
+export type HouseholdEntry = { household: CallerFormValues } & EntryInfo;
 
 export type ReferralEntry = {
   date: Date;
   referredTo: string;
   comments: string;
 };
+
+export type Incident = { [key: string]: string | boolean };
+
+export type IncidentEntry = { incident: Incident } & EntryInfo;
 
 export const blankReferral = {
   date: null,
@@ -21,11 +27,13 @@ export const blankReferral = {
 };
 
 export type CaseInfo = {
+  definitionVersion?: string;
   summary?: string;
   notes?: string[];
   perpetrators?: PerpetratorEntry[];
   households?: HouseholdEntry[];
   referrals?: ReferralEntry[];
+  incidents?: IncidentEntry[];
   followUpDate?: string;
 };
 
