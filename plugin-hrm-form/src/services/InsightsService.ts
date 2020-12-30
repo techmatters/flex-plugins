@@ -8,10 +8,10 @@ import { TaskEntry } from '../states/contacts/reducer';
 import { formatCategories } from '../utils/formatters';
 
 /*
- * How do we do this?  Twilio docs just define it as an Object
+ * Object is the best we can do, since it's what Twilio defines it as.
  * See https://assets.flex.twilio.com/releases/flex-ui/1.18.0/docs/ITask.html
  */
-type TaskAttributes = any;
+type TaskAttributes = object;
 
 type InsightsAttributes = {
   conversations?: { [key: string]: string };
