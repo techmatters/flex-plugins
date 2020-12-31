@@ -63,6 +63,7 @@
 
   "CaseHeader-Opened": "Opened",
   "CaseHeader-Updated": "Updated",
+  "CaseHeader-Closed": "Closed",
   "CaseHeader-ViewCase": "View Case",
   "CaseHeader-MergeContactIntoCase": "Merge Current Contact into Case and Copy Child Information",
   "CaseHeader-CopyChildInfo": "Copy Child Information into Current Contact",

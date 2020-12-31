@@ -26,12 +26,21 @@ type OwnProps = {
   createdAt: string;
   updatedAt: string;
   isOrphanedCase: boolean;
+  status: string;
   onClickViewCase: () => void;
 };
 
 type Props = OwnProps;
 
-const CaseHeader: React.FC<Props> = ({ caseId, childName, createdAt, updatedAt, isOrphanedCase, onClickViewCase }) => {
+const CaseHeader: React.FC<Props> = ({
+  caseId,
+  childName,
+  createdAt,
+  updatedAt,
+  isOrphanedCase,
+  status,
+  onClickViewCase,
+}) => {
   const [mockedMessage, setMockedMessage] = useState(null);
 
   const createdAtFormatted = `${format(new Date(createdAt), 'MMM d, yyyy')}`;
@@ -43,7 +52,7 @@ const CaseHeader: React.FC<Props> = ({ caseId, childName, createdAt, updatedAt, 
   return (
     <>
       <CaseHeaderContainer>
-        <CaseHeaderCaseId>#{caseId}</CaseHeaderCaseId>
+        <CaseHeaderCaseId closed={status === 'closed' || isOrphanedCase}>#{caseId}</CaseHeaderCaseId>
         <CaseHeaderChildName>
           {isOrphanedCase ? (
             <Template code="CaseHeader-Voided" />
@@ -59,7 +68,8 @@ const CaseHeader: React.FC<Props> = ({ caseId, childName, createdAt, updatedAt, 
           <Template code="CaseHeader-Opened" />: {createdAtFormatted}
         </DateText>
         <DateText>
-          <Template code="CaseHeader-Updated" />: {updatedAtFormatted}
+          <Template code={status === 'closed' || isOrphanedCase ? 'CaseHeader-Closed' : 'CaseHeader-Updated'} />:{' '}
+          {updatedAtFormatted}
         </DateText>
         <StyledButtonBase onClick={onClickViewCase}>
           <HiddenText>
