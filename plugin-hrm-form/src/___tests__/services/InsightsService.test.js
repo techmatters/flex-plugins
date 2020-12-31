@@ -141,20 +141,20 @@ test('Handles contactless tasks', async () => {
   expect(twilioTask.setAttributes).toHaveBeenCalledWith(expectedNewAttributes);
 });
 
-test('processHelplineConfig works for basic cases', async() => {
+test('processHelplineConfig works for basic cases', async () => {
   const helplineConfig = {
     contactForm: {
       childInformation: [
         {
           name: 'village',
-          insights: [ 'customers', 'city' ],
+          insights: ['customers', 'city'],
         },
         {
           name: 'language',
-          insights: [ 'conversations', 'language' ] 
-        }
-      ]
-    }
+          insights: ['conversations', 'language'],
+        },
+      ],
+    },
   };
 
   const contactForm = {
@@ -174,9 +174,7 @@ test('processHelplineConfig works for basic cases', async() => {
     ],
   };
 
-  const caseForm = {
-
-  };
+  const caseForm = {};
 
   const expected = {
     conversations: {

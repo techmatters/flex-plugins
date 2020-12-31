@@ -78,11 +78,15 @@ const baseUpdates = (taskAttributes: TaskAttributes, contactForm: TaskEntry, cas
     },
     customers: {
       gender: childInformation.gender.toString(),
-    }
+    },
   };
 };
 
-const contactlessTaskUpdates = (attributes: TaskAttributes, contactForm: TaskEntry, caseForm: Case): InsightsAttributes => {
+const contactlessTaskUpdates = (
+  attributes: TaskAttributes,
+  contactForm: TaskEntry,
+  caseForm: Case,
+): InsightsAttributes => {
   if (!attributes.isContactlessTask) {
     return {};
   }
@@ -99,10 +103,10 @@ const contactlessTaskUpdates = (attributes: TaskAttributes, contactForm: TaskEnt
 enum InsightsObject {
   Customers = 'customers',
   Conversations = 'conversations',
-};
+}
 type InsightsFieldSpec = {
-  name: string,
-  insights: [ InsightsObject, string ],
+  name: string;
+  insights: [InsightsObject, string];
 };
 type InsightsSubFormSpec = InsightsFieldSpec[];
 type InsightsFormSpec = { [key: string]: InsightsSubFormSpec };
@@ -111,43 +115,47 @@ type InsightsConfigSpec = {
   caseForm?: InsightsFormSpec;
 };
 
-const zambiaInsightsConfig : InsightsConfigSpec = {
+const zambiaInsightsConfig: InsightsConfigSpec = {
   contactForm: {
     childInformation: [
       {
         name: 'village',
-        insights: [ InsightsObject.Customers, 'city' ],
+        insights: [InsightsObject.Customers, 'city'],
       },
       {
         name: 'language',
-        insights: [ InsightsObject.Conversations, 'language' ] 
-      }
-    ]
-  }
+        insights: [InsightsObject.Conversations, 'language'],
+      },
+    ],
+  },
 };
 
-export const processHelplineConfig = (contactForm: TaskEntry, caseForm: Case, configSpec: InsightsConfigSpec): InsightsAttributes => {
+export const processHelplineConfig = (
+  contactForm: TaskEntry,
+  caseForm: Case,
+  configSpec: InsightsConfigSpec,
+): InsightsAttributes => {
   const insightsAtts: InsightsAttributes = {
     customers: {},
     conversations: {},
   };
   const contactFormSpec: InsightsFormSpec = configSpec.contactForm;
-  Object.keys(contactFormSpec).forEach( subform => {
+  Object.keys(contactFormSpec).forEach(subform => {
     const fields: InsightsFieldSpec[] = contactFormSpec[subform];
     fields.forEach(field => {
-      const [ insightsObject, insightsField ] = field.insights;
+      const [insightsObject, insightsField] = field.insights;
       insightsAtts[insightsObject][insightsField] = contactForm[subform][field.name];
     });
   });
   return insightsAtts;
-}
+};
 
 const zambiaUpdates = (attributes: TaskAttributes, contactForm: TaskEntry, caseForm: Case): InsightsAttributes => {
   const { callType } = contactForm;
-  if(!isNonDataCallType(callType)) return {};
+  if (!isNonDataCallType(callType)) return {};
 
   return {};
-}
+};
 
 const mergeAttributes = (previousAttributes: TaskAttributes, newAttributes: InsightsAttributes): TaskAttributes => {
   return {
