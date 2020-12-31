@@ -5,7 +5,7 @@ import { Manager, TaskHelper, Actions as FlexActions, StateHelper } from '@twili
 import { DEFAULT_TRANSFER_MODE, getConfig } from '../HrmFormPlugin';
 import { saveInsightsData } from '../services/InsightsService';
 import { transferChatStart, adjustChatCapacity } from '../services/ServerlessService';
-import { namespace, contactFormsBase } from '../states';
+import { namespace, contactFormsBase, connectedCaseBase } from '../states';
 import * as Actions from '../states/contacts/actions';
 import * as GeneralActions from '../states/actions';
 import { channelTypes, transferModes } from '../states/DomainConstants';
@@ -23,6 +23,20 @@ import categoriesFormDefinition from '../formDefinitions/tabbedForms/IssueCatego
  */
 const getStateContactForms = taskSid => {
   return Manager.getInstance().store.getState()[namespace][contactFormsBase].tasks[taskSid];
+};
+
+/**
+ * Given a taskSid, retrieves the state of the connected case (stored in redux) for that task
+ * This does not include temporaryCaseInfo
+ * @param {string} taskSid
+ */
+const getStateCaseForms = taskSid => {
+  return (
+    (Manager.getInstance().store.getState()[namespace][connectedCaseBase] &&
+      Manager.getInstance().store.getState()[namespace][connectedCaseBase].tasks[taskSid] &&
+      Manager.getInstance().store.getState()[namespace][connectedCaseBase].tasks[taskSid].connectedCase) ||
+    {}
+  );
 };
 
 /**
@@ -224,9 +238,10 @@ export const wrapupTask = setupObject =>
  */
 const saveInsights = async payload => {
   const { taskSid } = payload.task;
-  const form = getStateContactForms(taskSid);
+  const contactForm = getStateContactForms(taskSid);
+  const caseForm = getStateCaseForms(taskSid);
 
-  await saveInsightsData(payload.task, form);
+  await saveInsightsData(payload.task, contactForm, caseForm);
 };
 
 /**

@@ -5,6 +5,7 @@ import { isNonDataCallType } from '../states/ValidationRules';
 import { mapChannelForInsights } from '../utils/mappers';
 import { getDateTime } from '../utils/helpers';
 import { TaskEntry } from '../states/contacts/reducer';
+import { Case } from '../types/types';
 import { formatCategories } from '../utils/formatters';
 
 /*
@@ -48,7 +49,7 @@ const getSubcategories = (contactForm: TaskEntry): string => {
   return formatCategories(categoryMap).join(';');
 };
 
-const buildCustomersObject = (taskAttributes: TaskAttributes, contactForm: TaskEntry): InsightsAttributes => {
+const buildCustomersObject = (taskAttributes: TaskAttributes, contactForm: TaskEntry, caseForm: Case): InsightsAttributes => {
   const { callType } = contactForm;
   const hasCustomerData = !isNonDataCallType(callType);
 
@@ -62,7 +63,7 @@ const buildCustomersObject = (taskAttributes: TaskAttributes, contactForm: TaskE
   };
 };
 
-const buildConversationsObject = (taskAttributes: TaskAttributes, contactForm: TaskEntry): InsightsAttributes => {
+const buildConversationsObject = (taskAttributes: TaskAttributes, contactForm: TaskEntry, caseForm: Case): InsightsAttributes => {
   const { callType } = contactForm;
   const hasCustomerData = !isNonDataCallType(callType);
 
@@ -92,6 +93,20 @@ const buildConversationsObject = (taskAttributes: TaskAttributes, contactForm: T
   };
 };
 
+const contactlessAttributes = (attributes: TaskAttributes, contactForm: TaskEntry, caseForm: Case): InsightsAttributes => {
+  if (!attributes.isContactlessTask) {
+    return {};
+  }
+
+  const dateTime = getDateTime(contactForm.contactlessTask);
+
+  return {
+    conversations: {
+      date: dateTime.toString(),
+    },
+  };
+};
+
 const mergeAttributes = (previousAttributes: TaskAttributes, newAttributes: InsightsAttributes): TaskAttributes => {
   return {
     ...previousAttributes,
@@ -106,20 +121,6 @@ const mergeAttributes = (previousAttributes: TaskAttributes, newAttributes: Insi
   };
 };
 
-const contactlessAttributes = (attributes: TaskAttributes, contactForm: TaskEntry): InsightsAttributes => {
-  if (!attributes.isContactlessTask) {
-    return {};
-  }
-
-  const dateTime = getDateTime(contactForm.contactlessTask);
-
-  return {
-    conversations: {
-      date: dateTime.toString(),
-    },
-  };
-};
-
 /*
  * The idea here is to apply a cascading series of modifications to the attributes for Insights.
  * We may have a set of core values to add, plus conditional core values (such as if this is a
@@ -129,12 +130,12 @@ const contactlessAttributes = (attributes: TaskAttributes, contactForm: TaskEntr
  * We may add a configuration language similar to our customization JSON files
  * into the helpline-specific update functions to express them more clearly.
  */
-export async function saveInsightsData(twilioTask: ITask, contactForm: TaskEntry) {
+export async function saveInsightsData(twilioTask: ITask, contactForm: TaskEntry, caseForm: Case) {
   const previousAttributes: TaskAttributes = twilioTask.attributes;
   const insightsUpdates: InsightsAttributes[] = [];
-  insightsUpdates.push(buildConversationsObject(twilioTask.attributes, contactForm));
-  insightsUpdates.push(buildCustomersObject(twilioTask.attributes, contactForm));
-  insightsUpdates.push(contactlessAttributes(twilioTask.attributes, contactForm));
+  insightsUpdates.push(buildConversationsObject(twilioTask.attributes, contactForm, caseForm));
+  insightsUpdates.push(buildCustomersObject(twilioTask.attributes, contactForm, caseForm));
+  insightsUpdates.push(contactlessAttributes(twilioTask.attributes, contactForm, caseForm));
   const finalAttributes: TaskAttributes = insightsUpdates.reduce(
     (acc, curr) => mergeAttributes(acc, curr),
     previousAttributes,
