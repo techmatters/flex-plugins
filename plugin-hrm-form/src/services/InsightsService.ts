@@ -49,21 +49,7 @@ const getSubcategories = (contactForm: TaskEntry): string => {
   return formatCategories(categoryMap).join(';');
 };
 
-const buildCustomersObject = (taskAttributes: TaskAttributes, contactForm: TaskEntry, caseForm: Case): InsightsAttributes => {
-  const { callType } = contactForm;
-  const hasCustomerData = !isNonDataCallType(callType);
-
-  if (!hasCustomerData) return {};
-
-  const { childInformation } = contactForm;
-  return {
-    customers: {
-      gender: childInformation.gender.toString(),
-    },
-  };
-};
-
-const buildConversationsObject = (taskAttributes: TaskAttributes, contactForm: TaskEntry, caseForm: Case): InsightsAttributes => {
+const baseUpdates = (taskAttributes: TaskAttributes, contactForm: TaskEntry, caseForm: Case): InsightsAttributes => {
   const { callType } = contactForm;
   const hasCustomerData = !isNonDataCallType(callType);
 
@@ -90,10 +76,13 @@ const buildConversationsObject = (taskAttributes: TaskAttributes, contactForm: T
       conversation_attribute_4: childInformation.age.toString(),
       communication_channel,
     },
+    customers: {
+      gender: childInformation.gender.toString(),
+    }
   };
 };
 
-const contactlessAttributes = (attributes: TaskAttributes, contactForm: TaskEntry, caseForm: Case): InsightsAttributes => {
+const contactlessTaskUpdates = (attributes: TaskAttributes, contactForm: TaskEntry, caseForm: Case): InsightsAttributes => {
   if (!attributes.isContactlessTask) {
     return {};
   }
@@ -133,9 +122,8 @@ const mergeAttributes = (previousAttributes: TaskAttributes, newAttributes: Insi
 export async function saveInsightsData(twilioTask: ITask, contactForm: TaskEntry, caseForm: Case) {
   const previousAttributes: TaskAttributes = twilioTask.attributes;
   const insightsUpdates: InsightsAttributes[] = [];
-  insightsUpdates.push(buildConversationsObject(twilioTask.attributes, contactForm, caseForm));
-  insightsUpdates.push(buildCustomersObject(twilioTask.attributes, contactForm, caseForm));
-  insightsUpdates.push(contactlessAttributes(twilioTask.attributes, contactForm, caseForm));
+  insightsUpdates.push(baseUpdates(twilioTask.attributes, contactForm, caseForm));
+  insightsUpdates.push(contactlessTaskUpdates(twilioTask.attributes, contactForm, caseForm));
   const finalAttributes: TaskAttributes = insightsUpdates.reduce(
     (acc, curr) => mergeAttributes(acc, curr),
     previousAttributes,
