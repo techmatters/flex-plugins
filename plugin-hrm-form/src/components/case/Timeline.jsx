@@ -31,7 +31,7 @@ import { isConnectedCaseActivity } from './caseHelpers';
 
 const sortActivities = activities => activities.sort((a, b) => b.date.localeCompare(a.date));
 
-const Timeline = ({ task, form, caseObj, changeRoute, updateTempInfo, route }) => {
+const Timeline = ({ status, task, form, caseObj, changeRoute, updateTempInfo, route }) => {
   const [mockedMessage, setMockedMessage] = useState(null);
   const [timeline, setTimeline] = useState([]);
 
@@ -120,8 +120,8 @@ const Timeline = ({ task, form, caseObj, changeRoute, updateTempInfo, route }) =
             <Template code="Case-TimelineSection" />
           </CaseSectionFont>
           <Box marginLeft="auto">
-            <CaseAddButton templateCode="Case-Note" onClick={handleAddNoteClick} />
-            <CaseAddButton templateCode="Case-Referral" onClick={handleAddReferralClick} withDivider />
+            <CaseAddButton templateCode="Case-Note" onClick={handleAddNoteClick} status={status} />
+            <CaseAddButton templateCode="Case-Referral" onClick={handleAddReferralClick} status={status} withDivider />
           </Box>
         </Row>
       </Box>
@@ -151,6 +151,7 @@ const Timeline = ({ task, form, caseObj, changeRoute, updateTempInfo, route }) =
 
 Timeline.displayName = 'Timeline';
 Timeline.propTypes = {
+  status: PropTypes.string.isRequired,
   task: taskType.isRequired,
   form: formType.isRequired,
   // eslint-disable-next-line react/forbid-prop-types

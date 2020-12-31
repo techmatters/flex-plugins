@@ -5,17 +5,26 @@ import { Typography } from '@material-ui/core';
 
 import { FontOpenSans, FormInput, FormSelect, FormSelectWrapper, Row, Column } from '../HrmStyles';
 
+export const CaseLayout = styled('div')`
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  height: 100%;
+`;
+CaseLayout.displayName = 'CaseLayout';
+
 export const CaseContainer = styled('div')`
   display: flex;
   flex-direction: column;
+  overflow-y: scroll;
   height: 100%;
 `;
 CaseContainer.displayName = 'CaseContainer';
 
-export const CaseActionContainer = styled(CaseContainer)`
+export const CaseActionLayout = styled(CaseLayout)`
   background-color: #ffffff;
 `;
-CaseActionContainer.displayName = 'CaseActionContainer';
+CaseActionLayout.displayName = 'CaseActionLayout';
 
 export const CaseActionFormContainer = styled('div')`
   height: 100%;
@@ -74,11 +83,17 @@ export const ViewButton = styled<ViewButtonProps>(props => <Button roundCorners=
 `;
 ViewButton.displayName = 'ViewButton';
 
-export const CaseAddButtonFont = styled(FontOpenSans)`
+type CaseAddButtonFontProps = {
+  disabled: boolean;
+};
+
+export const CaseAddButtonFont = styled(({ disabled, ...rest }: CaseAddButtonFontProps) => <FontOpenSans {...rest} />)<
+  CaseAddButtonFontProps
+>`
   font-weight: 600;
   font-size: 12px;
   line-height: 14px;
-  color: #1976d2;
+  color: ${({ disabled }) => (disabled ? `lightgray` : `#1976d2`)};
 `;
 CaseAddButtonFont.displayName = 'CaseAddButtonFont';
 
