@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { saveInsightsData } from '../../services/InsightsService';
+import { processHelplineConfig, saveInsightsData } from '../../services/InsightsService';
 import { getDateTime } from '../../utils/helpers';
 
 test('saveInsightsData for non-data callType', async () => {
@@ -139,4 +139,53 @@ test('Handles contactless tasks', async () => {
   };
 
   expect(twilioTask.setAttributes).toHaveBeenCalledWith(expectedNewAttributes);
+});
+
+test('processHelplineConfig works for basic cases', async() => {
+  const helplineConfig = {
+    contactForm: {
+      childInformation: [
+        {
+          name: 'village',
+          insights: [ 'customers', 'city' ],
+        },
+        {
+          name: 'language',
+          insights: [ 'conversations', 'language' ] 
+        }
+      ]
+    }
+  };
+
+  const contactForm = {
+    callType: 'Child calling about self',
+
+    childInformation: {
+      village: 'Somewhere',
+      language: 'Martian',
+      age: '13-15',
+      gender: 'Boy',
+    },
+    caseInformation: {},
+    categories: [
+      'categories.Missing children.Unspecified/Other',
+      'categories.Violence.Bullying',
+      'categories.Mental Health.Addictive behaviours and substance use',
+    ],
+  };
+
+  const caseForm = {
+
+  };
+
+  const expected = {
+    conversations: {
+      language: 'Martian',
+    },
+    customers: {
+      city: 'Somewhere',
+    },
+  };
+
+  expect(processHelplineConfig(contactForm, caseForm, helplineConfig)).toEqual(expected);
 });
