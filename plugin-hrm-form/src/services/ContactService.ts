@@ -13,6 +13,7 @@ import callerFormDefinition from '../formDefinitions/tabbedForms/CallerInformati
 import caseInfoFormDefinition from '../formDefinitions/tabbedForms/CaseInformationTab.json';
 import childFormDefinition from '../formDefinitions/tabbedForms/ChildInformationTab.json';
 import categoriesFormDefinition from '../formDefinitions/tabbedForms/IssueCategorizationTab.json';
+import { getConfig } from '../HrmFormPlugin';
 import type {
   CategoriesDefinition,
   CategoryEntry,
@@ -135,9 +136,10 @@ export function transformForm(form: TaskEntry): ContactRawJson {
   const childInformation = nestName(transformedValues.childInformation);
 
   const categories = transformCategories(form.categories);
+  const { definitionVersion } = getConfig();
 
   const transformed = {
-    definitionVersion: 'v1', // TODO: put this in config (like feature flags)
+    definitionVersion,
     callType,
     callerInformation,
     childInformation,

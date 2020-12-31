@@ -6,7 +6,8 @@ import type { CaseInfo, IncidentEntry } from '../../types/types';
 import { Box, Row } from '../../styles/HrmStyles';
 import { CaseSectionFont, TimelineRow, PlaceHolderText } from '../../styles/case';
 import CaseAddButton from './CaseAddButton';
-import InformationRow from './InformationRow';
+import TimelineInformationRow from './TimelineInformationRow';
+import IncidentForm from '../../formDefinitions/caseForms/IncidentForm.json';
 
 type OwnProps = {
   onClickAddIncident: () => void;
@@ -28,7 +29,16 @@ const Incidents: React.FC<OwnProps> = ({ onClickAddIncident, onClickView, incide
       {incidents.length ? (
         incidents.map((i, index) => (
           // <InformationRow key={`perpetrator-${index}`} person={p.incident} onClickView={() => onClickView(p)} />
-          <div key={`incident-${index}`}>{Object.entries(i.incident)} </div>
+          <TimelineInformationRow
+            key={`incident-${index}`}
+            onClickView={() => onClickView(i)}
+            values={[
+              // this can later come from a layout definition property, where we specify what items to display for each row, depending if it's incident, hh, or peretrator
+              { label: IncidentForm.find(e => e.name === 'date').label, value: i.incident.date },
+              { label: IncidentForm.find(e => e.name === 'duration').label, value: i.incident.duration },
+              { label: IncidentForm.find(e => e.name === 'location').label, value: i.incident.location },
+            ]}
+          />
         ))
       ) : (
         <TimelineRow>

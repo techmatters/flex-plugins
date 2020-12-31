@@ -16,14 +16,13 @@ import {
 } from '../../styles/HrmStyles';
 import { CaseActionContainer, CaseActionFormContainer } from '../../styles/case';
 import ActionHeader from './ActionHeader';
-import { namespace, connectedCaseBase, routingBase, RootState } from '../../states';
+import { namespace, connectedCaseBase, RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
-import * as RoutingActions from '../../states/routing/actions';
 import { getConfig } from '../../HrmFormPlugin';
 import { updateCase } from '../../services/CaseService';
 import { createFormFromDefinition, disperseInputs, splitInHalf } from '../common/forms/formGenerators';
 import type { FormDefinition } from '../common/forms/types';
-import ChildTabDefinition from '../../formDefinitions/tabbedForms/ChildInformationTab.json';
+import IncidentForm from '../../formDefinitions/caseForms/IncidentForm.json';
 
 type OwnProps = {
   task: ITask;
@@ -39,24 +38,21 @@ const AddIncident: React.FC<Props> = ({
   counselor,
   onClickClose,
   connectedCaseState,
-  route,
   setConnectedCase,
   updateTempInfo,
-  changeRoute,
 }) => {
   const { temporaryCaseInfo } = connectedCaseState;
-  const [initialForm] = React.useState(temporaryCaseInfo.info); // grab initial values in first render only. This value should never change or will ruin the memoization below
+  const init = temporaryCaseInfo && temporaryCaseInfo.screen === 'add-incident' ? temporaryCaseInfo.info : {};
+  const [initialForm] = React.useState(init); // grab initial values in first render only. This value should never change or will ruin the memoization below
   const methods = useForm();
-  console.log(methods.getValues());
+
   const [l, r] = React.useMemo(() => {
     const updateCallBack = () => {
       const incident = methods.getValues();
       updateTempInfo({ screen: 'add-incident', info: incident }, task.taskSid);
     };
 
-    const generatedForm = createFormFromDefinition(ChildTabDefinition as FormDefinition)([])(initialForm)(
-      updateCallBack,
-    );
+    const generatedForm = createFormFromDefinition(IncidentForm as FormDefinition)([])(initialForm)(updateCallBack);
 
     return splitInHalf(disperseInputs(7)(generatedForm));
   }, [initialForm, methods, task.taskSid, updateTempInfo]);
@@ -75,12 +71,15 @@ const AddIncident: React.FC<Props> = ({
     const newInfo = info ? { ...info, incidents } : { incidents };
     const updatedCase = await updateCase(id, { info: newInfo });
     setConnectedCase(updatedCase, task.taskSid);
-    updateTempInfo(null, task.taskSid);
   };
 
-  function saveIncidentAndLeave() {
-    saveIncident();
+  async function saveIncidentAndLeave() {
+    await saveIncident();
     onClickClose();
+  }
+
+  function onError() {
+    window.alert('You must fill in required fields.');
   }
 
   return (
@@ -107,7 +106,7 @@ const AddIncident: React.FC<Props> = ({
           <StyledNextStepButton
             data-testid="Case-AddIncidentScreen-SaveIncident"
             roundCorners
-            onClick={saveIncidentAndLeave}
+            onClick={methods.handleSubmit(saveIncidentAndLeave, onError)}
           >
             <Template code="BottomBar-SaveIncident" />
           </StyledNextStepButton>
@@ -122,16 +121,14 @@ AddIncident.displayName = 'AddIncident';
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const caseState = state[namespace][connectedCaseBase];
   const connectedCaseState = caseState.tasks[ownProps.task.taskSid];
-  const { route } = state[namespace][routingBase].tasks[ownProps.task.taskSid];
 
-  return { connectedCaseState, route };
+  return { connectedCaseState };
 };
 
 const mapDispatchToProps = {
   updateTempInfo: CaseActions.updateTempInfo,
   updateCaseInfo: CaseActions.updateCaseInfo,
   setConnectedCase: CaseActions.setConnectedCase,
-  changeRoute: RoutingActions.changeRoute,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddIncident);
