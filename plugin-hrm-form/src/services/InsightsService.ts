@@ -104,9 +104,13 @@ enum InsightsObject {
   Customers = 'customers',
   Conversations = 'conversations',
 }
+enum FieldType {
+  MixedCheckbox = 'mixed-checkbox',
+}
 type InsightsFieldSpec = {
   name: string;
   insights: [InsightsObject, string];
+  type?: FieldType;
 };
 type InsightsSubFormSpec = InsightsFieldSpec[];
 type InsightsFormSpec = { [key: string]: InsightsSubFormSpec };
@@ -122,12 +126,91 @@ const zambiaInsightsConfig: InsightsConfigSpec = {
         name: 'village',
         insights: [InsightsObject.Customers, 'city'],
       },
+      /*
+       * province/municipality/district TBD
+       * Postal code TBD
+       * phone #1 TBD
+       */
+      {
+        name: 'gender',
+        insights: [InsightsObject.Customers, 'gender'],
+      },
+      {
+        name: 'age',
+        insights: [InsightsObject.Customers, 'year_of_birth'],
+      },
       {
         name: 'language',
         insights: [InsightsObject.Conversations, 'language'],
       },
+      {
+        name: 'ethnicity',
+        insights: [InsightsObject.Customers, 'customer_attribute_2'],
+      },
+      {
+        name: 'gradeLevel',
+        insights: [InsightsObject.Customers, 'acquisition_date'],
+      },
+      {
+        name: 'livingSituation',
+        insights: [InsightsObject.Customers, 'customer_attribute_1'],
+      },
+      {
+        name: 'hivPositive',
+        insights: [InsightsObject.Customers, 'category'],
+        type: FieldType.MixedCheckbox,
+      },
+      {
+        name: 'inConflictWithTheLaw',
+        insights: [InsightsObject.Conversations, 'conversation_measure_1'],
+        type: FieldType.MixedCheckbox,
+      },
+      {
+        name: 'livingInConflictZone',
+        insights: [InsightsObject.Conversations, 'conversation_measure_2'],
+        type: FieldType.MixedCheckbox,
+      },
+      {
+        name: 'livingInPoverty',
+        insights: [InsightsObject.Conversations, 'conversation_measure_3'],
+        type: FieldType.MixedCheckbox,
+      },
+      {
+        name: 'memberOfAnEthnic',
+        insights: [InsightsObject.Conversations, 'conversation_measure_4'],
+        type: FieldType.MixedCheckbox,
+      },
+      {
+        name: 'childOnTheMove',
+        insights: [InsightsObject.Customers, 'email'],
+      },
+      {
+        name: 'childWithDisability',
+        insights: [InsightsObject.Customers, 'customer_attribute_3'],
+        type: FieldType.MixedCheckbox,
+      },
+      {
+        name: 'LGBTQI+',
+        insights: [InsightsObject.Customers, 'conversation_measure_5'],
+      },
+      {
+        name: 'region',
+        insights: [InsightsObject.Customers, 'region'],
+      },
     ],
   },
+};
+
+const convertMixedCheckbox = (v: string): string => {
+  if (v === 'true') {
+    return '1';
+  } else if (v === 'false') {
+    return '0';
+  } else if (v === 'mixed') {
+    return null;
+  }
+  console.error(`Bad mixed checkbox value [${v}], defaulting to null for Insights value`);
+  return null;
 };
 
 export const processHelplineConfig = (
@@ -144,7 +227,11 @@ export const processHelplineConfig = (
     const fields: InsightsFieldSpec[] = contactFormSpec[subform];
     fields.forEach(field => {
       const [insightsObject, insightsField] = field.insights;
-      insightsAtts[insightsObject][insightsField] = contactForm[subform][field.name];
+      let value = contactForm[subform][field.name];
+      if (field.type === FieldType.MixedCheckbox) {
+        value = convertMixedCheckbox(value);
+      }
+      insightsAtts[insightsObject][insightsField] = value;
     });
   });
   return insightsAtts;
@@ -154,7 +241,7 @@ const zambiaUpdates = (attributes: TaskAttributes, contactForm: TaskEntry, caseF
   const { callType } = contactForm;
   if (!isNonDataCallType(callType)) return {};
 
-  return {};
+  return processHelplineConfig(contactForm, caseForm, zambiaInsightsConfig);
 };
 
 const mergeAttributes = (previousAttributes: TaskAttributes, newAttributes: InsightsAttributes): TaskAttributes => {
@@ -171,6 +258,15 @@ const mergeAttributes = (previousAttributes: TaskAttributes, newAttributes: Insi
   };
 };
 
+// how do we type function return values in typescript?
+const getInsightsUpdateFunctionsForConfig = (config: any): any => {
+  const functionArray = [baseUpdates, contactlessTaskUpdates];
+  if (config.useZambiaInsights) {
+    functionArray.push(zambiaUpdates);
+  }
+  return functionArray;
+};
+
 /*
  * The idea here is to apply a cascading series of modifications to the attributes for Insights.
  * We may have a set of core values to add, plus conditional core values (such as if this is a
@@ -179,13 +275,15 @@ const mergeAttributes = (previousAttributes: TaskAttributes, newAttributes: Insi
  * add helpline-specific configuration.
  * We may add a configuration language similar to our customization JSON files
  * into the helpline-specific update functions to express them more clearly.
+ *
+ * Note: config parameter tells where to go to get helpline-specific tests.  It should
+ * eventually match up with getConfig().  Also useful for testing.
  */
-export async function saveInsightsData(twilioTask: ITask, contactForm: TaskEntry, caseForm: Case) {
+export async function saveInsightsData(twilioTask: ITask, contactForm: TaskEntry, caseForm: Case, config = {}) {
   const previousAttributes: TaskAttributes = twilioTask.attributes;
-  const insightsUpdates: InsightsAttributes[] = [];
-  insightsUpdates.push(baseUpdates(twilioTask.attributes, contactForm, caseForm));
-  insightsUpdates.push(contactlessTaskUpdates(twilioTask.attributes, contactForm, caseForm));
-  insightsUpdates.push(zambiaUpdates(twilioTask.attributes, contactForm, caseForm));
+  const insightsUpdates: InsightsAttributes[] = getInsightsUpdateFunctionsForConfig(config).map((f: any) =>
+    f(twilioTask.attributes, contactForm, caseForm),
+  );
   const finalAttributes: TaskAttributes = insightsUpdates.reduce(
     (acc, curr) => mergeAttributes(acc, curr),
     previousAttributes,

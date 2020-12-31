@@ -187,3 +187,45 @@ test('processHelplineConfig works for basic cases', async () => {
 
   expect(processHelplineConfig(contactForm, caseForm, helplineConfig)).toEqual(expected);
 });
+
+test('processHelplineConfig for three-way checkboxes', async () => {
+  const helplineConfig = {
+    contactForm: {
+      childInformation: [
+        {
+          name: 'hivPositive',
+          insights: ['customers', 'category'],
+          type: 'mixed-checkbox',
+        },
+      ],
+    },
+  };
+
+  const contactForm = {
+    callType: 'Child calling about self',
+
+    childInformation: {
+      hivPositive: 'mixed',
+    },
+  };
+
+  const caseForm = {};
+
+  const expected = {
+    conversations: {},
+    customers: {
+      category: null,
+    },
+  };
+
+  // Double-check that this is what's desired!!!!!
+  expect(processHelplineConfig(contactForm, caseForm, helplineConfig)).toEqual(expected);
+
+  contactForm.childInformation.hivPositive = 'true';
+  expected.customers.category = '1';
+  expect(processHelplineConfig(contactForm, caseForm, helplineConfig)).toEqual(expected);
+
+  contactForm.childInformation.hivPositive = 'false';
+  expected.customers.category = '0';
+  expect(processHelplineConfig(contactForm, caseForm, helplineConfig)).toEqual(expected);
+});
