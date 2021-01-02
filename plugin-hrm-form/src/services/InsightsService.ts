@@ -57,29 +57,24 @@ const baseUpdates = (taskAttributes: TaskAttributes, contactForm: TaskEntry, cas
     ? mapChannelForInsights(contactForm.contactlessTask.channel)
     : mapChannelForInsights(taskAttributes.channelType);
 
+  // First add the data we add whether or not there's contact form data
+  const coreAttributes: InsightsAttributes = {
+    conversations: {
+      conversation_attribute_2: callType.toString(),
+      communication_channel,
+    },
+  };
+
   if (!hasCustomerData) {
+    return coreAttributes;
+  } else {
     return {
       conversations: {
-        conversation_attribute_2: callType.toString(),
-        communication_channel,
+        ...coreAttributes.conversations,
+        conversation_attribute_1: getSubcategories(contactForm).toString(),
       },
     };
   }
-
-  const { childInformation } = contactForm;
-
-  return {
-    conversations: {
-      conversation_attribute_1: getSubcategories(contactForm).toString(),
-      conversation_attribute_2: callType.toString(),
-      conversation_attribute_3: childInformation.gender.toString(),
-      conversation_attribute_4: childInformation.age.toString(),
-      communication_channel,
-    },
-    customers: {
-      gender: childInformation.gender.toString(),
-    },
-  };
 };
 
 const contactlessTaskUpdates = (

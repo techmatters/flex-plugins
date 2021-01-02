@@ -77,13 +77,10 @@ test('saveInsightsData for data callType', async () => {
       content: 'content',
       conversation_attribute_1: 'Unspecified/Other - Missing children;Bullying;Addictive behaviours and substance use',
       conversation_attribute_2: 'Child calling about self',
-      conversation_attribute_3: 'Boy',
-      conversation_attribute_4: '13-15',
       communication_channel: 'Call',
     },
     customers: {
       name: 'John Doe',
-      gender: 'Boy',
     },
   };
 
@@ -128,13 +125,10 @@ test('Handles contactless tasks', async () => {
     conversations: {
       conversation_attribute_1: 'Unspecified/Other - Violence',
       conversation_attribute_2: 'Child calling about self',
-      conversation_attribute_3: 'Unknown',
-      conversation_attribute_4: '3',
       communication_channel: 'SMS',
       date: getDateTime({ date, time }),
     },
     customers: {
-      gender: 'Unknown',
     },
   };
 
