@@ -222,6 +222,155 @@ test('processHelplineConfig for three-way checkboxes', async () => {
   expect(processHelplineConfig(contactForm, caseForm, helplineConfig)).toEqual(expected);
 });
 
+test('processHelplineConfig for case data', () => {
+  const helplineConfig = {
+    contactForm: {},
+    caseForm: {
+      topLevel: [
+        {
+          name: 'id',
+          insights: ['conversations', 'case'],
+        },
+      ],
+      perpetrator: [
+        {
+          name: 'relationshipToChild',
+          insights: ['customers', 'organization'],
+        },
+        {
+          name: 'gender',
+          insights: ['conversations', 'followed_by'],
+        },
+        {
+          name: 'age',
+          insights: ['conversations', 'preceded_by'],
+        },
+      ],
+      /*
+       * incident: [
+       *   {
+       *     name: 'durationOfIncident',
+       *     insights: ['conversations', 'in_business_hours'],
+       *   },
+       *   {
+       *     name: 'location',
+       *     insights: ['customers', 'market_segment'],
+       *   },
+       * ],
+       */
+      referral: [
+        {
+          name: 'referredTo',
+          insights: ['customers', 'manager'],
+        },
+      ],
+    },
+  };
+
+  const contactForm = {};
+
+  const caseForm = {
+    id: 102,
+    status: 'open',
+    helpline: '',
+    twilioWorkerId: 'worker',
+    info: {
+      summary: 'case summary',
+      notes: ['my note'],
+      perpetrators: [
+        {
+          perpetrator: {
+            name: {
+              firstName: 'first',
+              lastName: 'last',
+            },
+            relationshipToChild: 'Grandparent',
+            gender: 'Boy',
+            age: '>25',
+            language: 'Bemba',
+            nationality: 'Zambian',
+            ethnicity: 'Bembese',
+            location: {
+              streetAddress: '',
+              city: '',
+              stateOrCounty: '',
+              postalCode: '',
+              phone1: '',
+              phone2: '',
+            },
+          },
+          createdAt: '',
+          twilioWorkerId: '',
+        },
+      ],
+      households: [
+        {
+          household: {
+            name: {
+              firstName: 'first',
+              lastName: 'last',
+            },
+            relationshipToChild: 'Mother',
+            gender: 'Girl',
+            age: '>25',
+            language: 'Bemba',
+            nationality: 'Zambian',
+            ethnicity: 'Bembese',
+            location: {
+              streetAddress: '',
+              city: '',
+              stateOrCounty: '',
+              postalCode: '',
+              phone1: '',
+              phone2: '',
+            },
+          },
+          createdAt: '',
+          twilioWorkerId: '',
+        },
+      ],
+      referrals: [
+        {
+          date: new Date(),
+          referredTo: 'Referral Agency 1',
+          comments: 'A referral',
+        },
+        {
+          date: new Date(),
+          referredTo: 'Referral Agency 2',
+          comments: 'Another referral',
+        },
+      ],
+      incidents: [
+        {
+          durationOfIncident: '2',
+          location: 'At home',
+        },
+      ],
+      followUpDate: '2021-01-30',
+    },
+    createdAt: '',
+    updatdAt: '',
+    connectedContacts: [],
+  };
+
+  const expected = {
+    conversations: {
+      case: '102',
+      followed_by: 'Boy',
+      preceded_by: '>25',
+      // in_business_hours: '2',
+    },
+    customers: {
+      organization: 'Grandparent',
+      // market_segment: 'At home',
+      manager: 'Referral Agency 1',
+    },
+  };
+
+  expect(processHelplineConfig(contactForm, caseForm, helplineConfig)).toEqual(expected);
+});
+
 test('zambiaUpdates handles custom entries', () => {
   const contactForm = {
     callType: 'Child calling about self',

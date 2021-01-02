@@ -115,6 +115,68 @@ const convertMixedCheckbox = (v: string | boolean): number => {
   return null;
 };
 
+type InsightsCaseForm = {
+  topLevel?: { [key: string]: string };
+  perpetrator?: { [key: string]: string };
+  incident?: { [key: string]: string };
+  referral?: { [key: string]: string };
+};
+
+/*
+ * This takes a Case and turns it into a format more like the subforms
+ * for a TaskEntry (contact form) so it can be consumed in the same manner.
+ * As of January 2, 2021, Case has not been moved over to use the
+ * customization framework.  When it is, we will need to change this function.
+ *
+ * TODO: make more generalized.  It makes a lot of assumptions right now.
+ */
+const convertCaseFormForInsights = (caseForm: Case): InsightsCaseForm => {
+  if (!caseForm || Object.keys(caseForm).length === 0) return {};
+  let topLevel: { [key: string]: string } = {};
+  let perpetrator: { [key: string]: string } = undefined;
+  // let incident: { [key: string]: string } = undefined;
+  let referral: { [key: string]: string } = undefined;
+  topLevel = {
+    id: caseForm.id.toString(),
+  };
+  if (caseForm.info && caseForm.info.perpetrators && caseForm.info.perpetrators.length > 0) {
+    const thePerp = caseForm.info.perpetrators[0];
+    const untypedPerp: any = {
+      ...thePerp,
+      ...thePerp.perpetrator,
+      ...thePerp.perpetrator.name,
+      ...thePerp.perpetrator.location,
+    };
+    delete untypedPerp.perpetrator;
+    delete untypedPerp.name;
+    delete untypedPerp.location;
+    perpetrator = {
+      ...untypedPerp,
+    };
+  }
+  /*
+   * if (caseForm.info && caseForm.info.incidents && caseForm.info.incidents.length > 0) {
+   *   incident = {
+   *     ...caseForm.info.incidents[0],
+   *   };
+   * }
+   */
+  if (caseForm.info && caseForm.info.referrals && caseForm.info.referrals.length > 0) {
+    referral = {
+      ...caseForm.info.referrals[0],
+      date: caseForm.info.referrals[0].date.toString(),
+    };
+  }
+  const newCaseForm: InsightsCaseForm = {
+    topLevel,
+    perpetrator,
+    // incident,
+    referral,
+  };
+
+  return newCaseForm;
+};
+
 export const processHelplineConfig = (
   contactForm: TaskEntry,
   caseForm: Case,
@@ -124,18 +186,39 @@ export const processHelplineConfig = (
     customers: {},
     conversations: {},
   };
+
   const contactFormSpec: InsightsFormSpec = configSpec.contactForm;
-  Object.keys(contactFormSpec).forEach(subform => {
-    const fields: InsightsFieldSpec[] = contactFormSpec[subform];
-    fields.forEach(field => {
-      const [insightsObject, insightsField] = field.insights;
-      let value = contactForm[subform][field.name];
-      if (field.type === FieldType.MixedCheckbox) {
-        value = convertMixedCheckbox(value);
-      }
-      insightsAtts[insightsObject][insightsField] = value;
+  if (contactFormSpec) {
+    // make this more DRY
+    Object.keys(contactFormSpec).forEach(subform => {
+      const fields: InsightsFieldSpec[] = contactFormSpec[subform];
+      fields.forEach(field => {
+        const [insightsObject, insightsField] = field.insights;
+        let value = contactForm[subform][field.name];
+        if (field.type === FieldType.MixedCheckbox) {
+          value = convertMixedCheckbox(value);
+        }
+        insightsAtts[insightsObject][insightsField] = value;
+      });
     });
-  });
+  }
+
+  const caseFormSpec: InsightsFormSpec = configSpec.caseForm;
+  if (caseFormSpec) {
+    const convertedCaseForm: InsightsCaseForm = convertCaseFormForInsights(caseForm);
+    Object.keys(caseFormSpec).forEach(subform => {
+      const fields: InsightsFieldSpec[] = caseFormSpec[subform];
+      fields.forEach(field => {
+        const [insightsObject, insightsField] = field.insights;
+        let value = convertedCaseForm[subform][field.name];
+        if (field.type === FieldType.MixedCheckbox) {
+          value = convertMixedCheckbox(value);
+        }
+        insightsAtts[insightsObject][insightsField] = value;
+      });
+    });
+  }
+
   /*
    * console.warn(`processconfig results:`);
    * console.warn(insightsAtts);
