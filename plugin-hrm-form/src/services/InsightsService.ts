@@ -15,8 +15,8 @@ import { formatCategories } from '../utils/formatters';
 type TaskAttributes = any;
 
 type InsightsAttributes = {
-  conversations?: { [key: string]: string };
-  customers?: { [key: string]: string };
+  conversations?: { [key: string]: string | number};
+  customers?: { [key: string]: string | number};
 };
 
 /*
@@ -71,7 +71,7 @@ const baseUpdates = (taskAttributes: TaskAttributes, contactForm: TaskEntry, cas
   return {
     conversations: {
       conversation_attribute_1: getSubcategories(contactForm).toString(),
-      conversation_attribute_2: callType,
+      conversation_attribute_2: callType.toString(),
       conversation_attribute_3: childInformation.gender.toString(),
       conversation_attribute_4: childInformation.age.toString(),
       communication_channel,
@@ -95,7 +95,7 @@ const contactlessTaskUpdates = (
 
   return {
     conversations: {
-      date: dateTime.toString(),
+      date: dateTime,
     },
   };
 };
@@ -191,7 +191,8 @@ const zambiaInsightsConfig: InsightsConfigSpec = {
       },
       {
         name: 'LGBTQI+',
-        insights: [InsightsObject.Customers, 'conversation_measure_5'],
+        insights: [InsightsObject.Conversations, 'conversation_measure_5'],
+        type: FieldType.MixedCheckbox,
       },
       {
         name: 'region',
@@ -201,11 +202,11 @@ const zambiaInsightsConfig: InsightsConfigSpec = {
   },
 };
 
-const convertMixedCheckbox = (v: string): string => {
-  if (v === 'true') {
-    return '1';
-  } else if (v === 'false') {
-    return '0';
+const convertMixedCheckbox = (v: string | boolean): number => {
+  if (v === true) {
+    return 1;
+  } else if (v === false) {
+    return 0;
   } else if (v === 'mixed') {
     return null;
   }
@@ -234,12 +235,14 @@ export const processHelplineConfig = (
       insightsAtts[insightsObject][insightsField] = value;
     });
   });
+  // console.warn(`processconfig results:`);
+  // console.warn(insightsAtts);
   return insightsAtts;
 };
 
 const zambiaUpdates = (attributes: TaskAttributes, contactForm: TaskEntry, caseForm: Case): InsightsAttributes => {
   const { callType } = contactForm;
-  if (!isNonDataCallType(callType)) return {};
+  if (isNonDataCallType(callType)) return {};
 
   return processHelplineConfig(contactForm, caseForm, zambiaInsightsConfig);
 };

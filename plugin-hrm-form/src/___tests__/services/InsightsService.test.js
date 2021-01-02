@@ -131,7 +131,7 @@ test('Handles contactless tasks', async () => {
       conversation_attribute_3: 'Unknown',
       conversation_attribute_4: '3',
       communication_channel: 'SMS',
-      date: getDateTime({ date, time }).toString(),
+      date: getDateTime({ date, time }),
     },
     customers: {
       gender: 'Unknown',
@@ -221,11 +221,11 @@ test('processHelplineConfig for three-way checkboxes', async () => {
   // Double-check that this is what's desired!!!!!
   expect(processHelplineConfig(contactForm, caseForm, helplineConfig)).toEqual(expected);
 
-  contactForm.childInformation.hivPositive = 'true';
-  expected.customers.category = '1';
+  contactForm.childInformation.hivPositive = true;
+  expected.customers.category = 1;
   expect(processHelplineConfig(contactForm, caseForm, helplineConfig)).toEqual(expected);
 
-  contactForm.childInformation.hivPositive = 'false';
-  expected.customers.category = '0';
+  contactForm.childInformation.hivPositive = false;
+  expected.customers.category = 0;
   expect(processHelplineConfig(contactForm, caseForm, helplineConfig)).toEqual(expected);
 });
