@@ -116,6 +116,20 @@ type InsightsConfigSpec = {
 
 const zambiaInsightsConfig: InsightsConfigSpec = {
   contactForm: {
+    callerInformation: [
+      {
+        name: 'relationshipToChild',
+        insights: [InsightsObject.Conversations, 'initiated_by'],
+      },
+      {
+        name: 'gender',
+        insights: [InsightsObject.Conversations, 'conversation_attribute_4'],
+      },
+      {
+        name: 'age',
+        insights: [InsightsObject.Conversations, 'conversation_attribute_3'],
+      },
+    ],
     childInformation: [
       {
         name: 'village',
