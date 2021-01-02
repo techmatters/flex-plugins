@@ -128,8 +128,7 @@ test('Handles contactless tasks', async () => {
       communication_channel: 'SMS',
       date: getDateTime({ date, time }),
     },
-    customers: {
-    },
+    customers: {},
   };
 
   expect(twilioTask.setAttributes).toHaveBeenCalledWith(expectedNewAttributes);

@@ -15,8 +15,8 @@ import { formatCategories } from '../utils/formatters';
 type TaskAttributes = any;
 
 type InsightsAttributes = {
-  conversations?: { [key: string]: string | number};
-  customers?: { [key: string]: string | number};
+  conversations?: { [key: string]: string | number };
+  customers?: { [key: string]: string | number };
 };
 
 /*
@@ -67,14 +67,13 @@ const baseUpdates = (taskAttributes: TaskAttributes, contactForm: TaskEntry, cas
 
   if (!hasCustomerData) {
     return coreAttributes;
-  } else {
-    return {
-      conversations: {
-        ...coreAttributes.conversations,
-        conversation_attribute_1: getSubcategories(contactForm).toString(),
-      },
-    };
   }
+  return {
+    conversations: {
+      ...coreAttributes.conversations,
+      conversation_attribute_1: getSubcategories(contactForm).toString(),
+    },
+  };
 };
 
 const contactlessTaskUpdates = (
@@ -230,8 +229,10 @@ export const processHelplineConfig = (
       insightsAtts[insightsObject][insightsField] = value;
     });
   });
-  // console.warn(`processconfig results:`);
-  // console.warn(insightsAtts);
+  /*
+   * console.warn(`processconfig results:`);
+   * console.warn(insightsAtts);
+   */
   return insightsAtts;
 };
 
