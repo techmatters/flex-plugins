@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { processHelplineConfig, saveInsightsData } from '../../services/InsightsService';
+import { processHelplineConfig, saveInsightsData, zambiaUpdates } from '../../services/InsightsService';
 import { getDateTime } from '../../utils/helpers';
 
 test('saveInsightsData for non-data callType', async () => {
@@ -16,11 +16,11 @@ test('saveInsightsData for non-data callType', async () => {
     setAttributes: jest.fn(),
   };
 
-  const task = {
+  const contactForm = {
     callType: 'Abusive',
   };
 
-  await saveInsightsData(twilioTask, task);
+  await saveInsightsData(twilioTask, contactForm);
 
   const expectedNewAttributes = {
     taskSid: 'task-sid',
@@ -53,7 +53,7 @@ test('saveInsightsData for data callType', async () => {
     setAttributes: jest.fn(),
   };
 
-  const task = {
+  const contactForm = {
     callType: 'Child calling about self',
 
     childInformation: {
@@ -68,7 +68,7 @@ test('saveInsightsData for data callType', async () => {
     ],
   };
 
-  await saveInsightsData(twilioTask, task);
+  await saveInsightsData(twilioTask, contactForm);
 
   const expectedNewAttributes = {
     taskSid: 'task-sid',
@@ -211,7 +211,6 @@ test('processHelplineConfig for three-way checkboxes', async () => {
     },
   };
 
-  // Double-check that this is what's desired!!!!!
   expect(processHelplineConfig(contactForm, caseForm, helplineConfig)).toEqual(expected);
 
   contactForm.childInformation.hivPositive = true;
@@ -222,3 +221,19 @@ test('processHelplineConfig for three-way checkboxes', async () => {
   expected.customers.category = 0;
   expect(processHelplineConfig(contactForm, caseForm, helplineConfig)).toEqual(expected);
 });
+
+test('zambiaUpdates handles custom entries', () => {
+  const contactForm = {
+    callType: 'Child calling about self',
+
+    childInformation: {
+      province: 'Eastern',
+      district: 'Sinda',
+    },
+    caseInformation: {},
+    categories: [],
+  };
+
+  const returnedAttributes = zambiaUpdates({}, contactForm, {});
+  expect(returnedAttributes.customers.area).toEqual('Eastern;Sinda');
+})

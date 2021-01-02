@@ -19,6 +19,7 @@ type InsightsAttributes = {
   customers?: { [key: string]: string | number };
 };
 
+const delimiter = ';'
 /*
  * Converts an array of categories with a fully-specified path (as stored in Redux)
  * into an object where the top-level categories are the keys and the values
@@ -46,7 +47,7 @@ const getSubcategories = (contactForm: TaskEntry): string => {
   const { categories } = contactForm;
 
   const categoryMap = makeCategoryMap(categories);
-  return formatCategories(categoryMap).join(';');
+  return formatCategories(categoryMap).join(delimiter);
 };
 
 const baseUpdates = (taskAttributes: TaskAttributes, contactForm: TaskEntry, caseForm: Case): InsightsAttributes => {
@@ -121,7 +122,7 @@ const zambiaInsightsConfig: InsightsConfigSpec = {
         insights: [InsightsObject.Customers, 'city'],
       },
       /*
-       * province/municipality/district TBD
+       * province/municipality/district handled in function
        * Postal code TBD
        * phone #1 TBD
        */
@@ -236,11 +237,18 @@ export const processHelplineConfig = (
   return insightsAtts;
 };
 
-const zambiaUpdates = (attributes: TaskAttributes, contactForm: TaskEntry, caseForm: Case): InsightsAttributes => {
+// Visible for testing
+export const zambiaUpdates = (attributes: TaskAttributes, contactForm: TaskEntry, caseForm: Case): InsightsAttributes => {
   const { callType } = contactForm;
   if (isNonDataCallType(callType)) return {};
 
-  return processHelplineConfig(contactForm, caseForm, zambiaInsightsConfig);
+  const attsToReturn: InsightsAttributes = processHelplineConfig(contactForm, caseForm, zambiaInsightsConfig);
+
+  // Custom additions
+  // Add province and district into area
+  attsToReturn[InsightsObject.Customers]['area'] = [ contactForm.childInformation.province, contactForm.childInformation.district ].join(delimiter);
+
+  return attsToReturn;
 };
 
 const mergeAttributes = (previousAttributes: TaskAttributes, newAttributes: InsightsAttributes): TaskAttributes => {
