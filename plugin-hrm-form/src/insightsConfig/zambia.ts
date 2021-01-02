@@ -94,5 +94,22 @@ export const zambiaInsightsConfig: InsightsConfigSpec = {
         insights: [InsightsObject.Customers, 'region'],
       },
     ],
+    // Note: the Contact Summary tab is called caseInformation for legacy reasons
+    caseInformation: [
+      {
+        name: 'actionTaken',
+        insights: [InsightsObject.Conversations, 'initiative'],
+      },
+      {
+        name: 'repeatCaller',
+        insights: [InsightsObject.Conversations, 'conversation_attribute_7'],
+        type: FieldType.MixedCheckbox,
+      },
+      /*
+       * How did you know about us => conversation attribute 5 ???
+       * Did we solve problem => convo.productive ???
+       * Would recommend => convo att 6 ???
+       */
+    ],
   },
 };
