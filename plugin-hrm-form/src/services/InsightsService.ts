@@ -7,6 +7,14 @@ import { getDateTime } from '../utils/helpers';
 import { TaskEntry } from '../states/contacts/reducer';
 import { Case } from '../types/types';
 import { formatCategories } from '../utils/formatters';
+import { zambiaInsightsConfig } from '../insightsConfig/zambia';
+import {
+  InsightsObject,
+  FieldType,
+  InsightsFieldSpec,
+  InsightsFormSpec,
+  InsightsConfigSpec,
+} from '../insightsConfig/types';
 
 /*
  * 'Any'' is the best we can do, since we're limited by Twilio here.
@@ -19,7 +27,7 @@ type InsightsAttributes = {
   customers?: { [key: string]: string | number };
 };
 
-const delimiter = ';'
+const delimiter = ';';
 /*
  * Converts an array of categories with a fully-specified path (as stored in Redux)
  * into an object where the top-level categories are the keys and the values
@@ -95,122 +103,6 @@ const contactlessTaskUpdates = (
   };
 };
 
-enum InsightsObject {
-  Customers = 'customers',
-  Conversations = 'conversations',
-}
-enum FieldType {
-  MixedCheckbox = 'mixed-checkbox',
-}
-type InsightsFieldSpec = {
-  name: string;
-  insights: [InsightsObject, string];
-  type?: FieldType;
-};
-type InsightsSubFormSpec = InsightsFieldSpec[];
-type InsightsFormSpec = { [key: string]: InsightsSubFormSpec };
-type InsightsConfigSpec = {
-  contactForm?: InsightsFormSpec;
-  caseForm?: InsightsFormSpec;
-};
-
-const zambiaInsightsConfig: InsightsConfigSpec = {
-  contactForm: {
-    callerInformation: [
-      {
-        name: 'relationshipToChild',
-        insights: [InsightsObject.Conversations, 'initiated_by'],
-      },
-      {
-        name: 'gender',
-        insights: [InsightsObject.Conversations, 'conversation_attribute_4'],
-      },
-      {
-        name: 'age',
-        insights: [InsightsObject.Conversations, 'conversation_attribute_3'],
-      },
-    ],
-    childInformation: [
-      {
-        name: 'village',
-        insights: [InsightsObject.Customers, 'city'],
-      },
-      /*
-       * province/municipality/district handled in function
-       * Postal code TBD
-       * phone #1 TBD
-       */
-      {
-        name: 'gender',
-        insights: [InsightsObject.Customers, 'gender'],
-      },
-      {
-        name: 'age',
-        insights: [InsightsObject.Customers, 'year_of_birth'],
-      },
-      {
-        name: 'language',
-        insights: [InsightsObject.Conversations, 'language'],
-      },
-      {
-        name: 'ethnicity',
-        insights: [InsightsObject.Customers, 'customer_attribute_2'],
-      },
-      {
-        name: 'gradeLevel',
-        insights: [InsightsObject.Customers, 'acquisition_date'],
-      },
-      {
-        name: 'livingSituation',
-        insights: [InsightsObject.Customers, 'customer_attribute_1'],
-      },
-      {
-        name: 'hivPositive',
-        insights: [InsightsObject.Customers, 'category'],
-        type: FieldType.MixedCheckbox,
-      },
-      {
-        name: 'inConflictWithTheLaw',
-        insights: [InsightsObject.Conversations, 'conversation_measure_1'],
-        type: FieldType.MixedCheckbox,
-      },
-      {
-        name: 'livingInConflictZone',
-        insights: [InsightsObject.Conversations, 'conversation_measure_2'],
-        type: FieldType.MixedCheckbox,
-      },
-      {
-        name: 'livingInPoverty',
-        insights: [InsightsObject.Conversations, 'conversation_measure_3'],
-        type: FieldType.MixedCheckbox,
-      },
-      {
-        name: 'memberOfAnEthnic',
-        insights: [InsightsObject.Conversations, 'conversation_measure_4'],
-        type: FieldType.MixedCheckbox,
-      },
-      {
-        name: 'childOnTheMove',
-        insights: [InsightsObject.Customers, 'email'],
-      },
-      {
-        name: 'childWithDisability',
-        insights: [InsightsObject.Customers, 'customer_attribute_3'],
-        type: FieldType.MixedCheckbox,
-      },
-      {
-        name: 'LGBTQI+',
-        insights: [InsightsObject.Conversations, 'conversation_measure_5'],
-        type: FieldType.MixedCheckbox,
-      },
-      {
-        name: 'region',
-        insights: [InsightsObject.Customers, 'region'],
-      },
-    ],
-  },
-};
-
 const convertMixedCheckbox = (v: string | boolean): number => {
   if (v === true) {
     return 1;
@@ -252,15 +144,24 @@ export const processHelplineConfig = (
 };
 
 // Visible for testing
-export const zambiaUpdates = (attributes: TaskAttributes, contactForm: TaskEntry, caseForm: Case): InsightsAttributes => {
+export const zambiaUpdates = (
+  attributes: TaskAttributes,
+  contactForm: TaskEntry,
+  caseForm: Case,
+): InsightsAttributes => {
   const { callType } = contactForm;
   if (isNonDataCallType(callType)) return {};
 
   const attsToReturn: InsightsAttributes = processHelplineConfig(contactForm, caseForm, zambiaInsightsConfig);
 
-  // Custom additions
-  // Add province and district into area
-  attsToReturn[InsightsObject.Customers]['area'] = [ contactForm.childInformation.province, contactForm.childInformation.district ].join(delimiter);
+  /*
+   * Custom additions
+   * Add province and district into area
+   */
+  attsToReturn[InsightsObject.Customers].area = [
+    contactForm.childInformation.province,
+    contactForm.childInformation.district,
+  ].join(delimiter);
 
   return attsToReturn;
 };

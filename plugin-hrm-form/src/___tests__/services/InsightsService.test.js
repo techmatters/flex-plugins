@@ -226,6 +226,7 @@ test('zambiaUpdates handles custom entries', () => {
   const contactForm = {
     callType: 'Child calling about self',
 
+    callerInformation: {},
     childInformation: {
       province: 'Eastern',
       district: 'Sinda',
@@ -236,4 +237,4 @@ test('zambiaUpdates handles custom entries', () => {
 
   const returnedAttributes = zambiaUpdates({}, contactForm, {});
   expect(returnedAttributes.customers.area).toEqual('Eastern;Sinda');
-})
+});
