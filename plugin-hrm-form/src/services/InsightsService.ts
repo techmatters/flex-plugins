@@ -187,37 +187,26 @@ export const processHelplineConfig = (
     conversations: {},
   };
 
-  const contactFormSpec: InsightsFormSpec = configSpec.contactForm;
-  if (contactFormSpec) {
-    // make this more DRY
-    Object.keys(contactFormSpec).forEach(subform => {
-      const fields: InsightsFieldSpec[] = contactFormSpec[subform];
+  const formsToProcess: [InsightsFormSpec, TaskEntry | InsightsCaseForm][] = [];
+  if (configSpec.contactForm) {
+    formsToProcess.push([configSpec.contactForm, contactForm]);
+  }
+  if (configSpec.caseForm) {
+    formsToProcess.push([configSpec.caseForm, convertCaseFormForInsights(caseForm)]);
+  }
+  formsToProcess.forEach(([spec, form]) => {
+    Object.keys(spec).forEach(subform => {
+      const fields: InsightsFieldSpec[] = spec[subform];
       fields.forEach(field => {
         const [insightsObject, insightsField] = field.insights;
-        let value = contactForm[subform][field.name];
+        let value = form[subform][field.name];
         if (field.type === FieldType.MixedCheckbox) {
           value = convertMixedCheckbox(value);
         }
         insightsAtts[insightsObject][insightsField] = value;
       });
     });
-  }
-
-  const caseFormSpec: InsightsFormSpec = configSpec.caseForm;
-  if (caseFormSpec) {
-    const convertedCaseForm: InsightsCaseForm = convertCaseFormForInsights(caseForm);
-    Object.keys(caseFormSpec).forEach(subform => {
-      const fields: InsightsFieldSpec[] = caseFormSpec[subform];
-      fields.forEach(field => {
-        const [insightsObject, insightsField] = field.insights;
-        let value = convertedCaseForm[subform][field.name];
-        if (field.type === FieldType.MixedCheckbox) {
-          value = convertMixedCheckbox(value);
-        }
-        insightsAtts[insightsObject][insightsField] = value;
-      });
-    });
-  }
+  });
 
   /*
    * console.warn(`processconfig results:`);
