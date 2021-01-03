@@ -139,8 +139,10 @@ const convertCaseFormForInsights = (caseForm: Case): InsightsCaseForm => {
     id: caseForm.id.toString(),
   };
   if (caseForm.info && caseForm.info.perpetrators && caseForm.info.perpetrators.length > 0) {
-    // Flatten out the Perpetrator object. This can be changed after this is using the 
-    // customization framework.
+    /*
+     * Flatten out the Perpetrator object. This can be changed after this is using the
+     * customization framework.
+     */
     const thePerp = caseForm.info.perpetrators[0];
     const untypedPerp: any = {
       ...thePerp,
