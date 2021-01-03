@@ -275,13 +275,9 @@ const getInsightsUpdateFunctionsForConfig = (config: any): any => {
  */
 export async function saveInsightsData(twilioTask: ITask, contactForm: TaskEntry, caseForm: Case, config = {}) {
   const previousAttributes: TaskAttributes = twilioTask.attributes;
-  const insightsUpdates: InsightsAttributes[] = getInsightsUpdateFunctionsForConfig(config).map((f: any) =>
-    f(twilioTask.attributes, contactForm, caseForm),
-  );
-  const finalAttributes: TaskAttributes = insightsUpdates.reduce(
-    (acc, curr) => mergeAttributes(acc, curr),
-    previousAttributes,
-  );
+  const finalAttributes: TaskAttributes = getInsightsUpdateFunctionsForConfig(config)
+    .map((f: any) => f(twilioTask.attributes, contactForm, caseForm))
+    .reduce((acc: TaskAttributes, curr: InsightsAttributes) => mergeAttributes(acc, curr), previousAttributes);
 
   await twilioTask.setAttributes(finalAttributes);
 }
