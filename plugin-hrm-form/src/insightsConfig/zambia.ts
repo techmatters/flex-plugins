@@ -22,7 +22,7 @@ export const zambiaInsightsConfig: InsightsConfigSpec = {
         insights: [InsightsObject.Customers, 'city'],
       },
       /*
-       * province/district => customers.area is hard-coded
+       * province;district => customers.area is hard-coded
        * Postal code TBD
        * phone #1 TBD
        */
@@ -110,6 +110,46 @@ export const zambiaInsightsConfig: InsightsConfigSpec = {
        * Did we solve problem => convo.productive ???
        * Would recommend => convo att 6 ???
        */
+    ],
+  },
+  caseForm: {
+    topLevel: [
+      {
+        name: 'id',
+        insights: [InsightsObject.Conversations, 'case'],
+      },
+    ],
+    perpetrator: [
+      {
+        name: 'relationshipToChild',
+        insights: [InsightsObject.Customers, 'organization'],
+      },
+      {
+        name: 'gender',
+        insights: [InsightsObject.Conversations, 'followed_by'],
+      },
+      {
+        name: 'age',
+        insights: [InsightsObject.Conversations, 'preceded_by'],
+      },
+    ],
+    /*
+     * incident: [
+     *   {
+     *     name: 'durationOfIncident',
+     *     insights: [InsightsObject.Conversations, 'in_business_hours'],
+     *   },
+     *   {
+     *     name: 'location',
+     *     insights: [InsightsObject.Customers, 'market_segment'],
+     *   },
+     * ],
+     */
+    referral: [
+      {
+        name: 'referredTo',
+        insights: [InsightsObject.Customers, 'manager'],
+      },
     ],
   },
 };

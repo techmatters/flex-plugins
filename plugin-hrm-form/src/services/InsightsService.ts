@@ -199,7 +199,7 @@ export const processHelplineConfig = (
       const fields: InsightsFieldSpec[] = spec[subform];
       fields.forEach(field => {
         const [insightsObject, insightsField] = field.insights;
-        let value = form[subform][field.name];
+        let value = form[subform] && form[subform][field.name];
         if (field.type === FieldType.MixedCheckbox) {
           value = convertMixedCheckbox(value);
         }
