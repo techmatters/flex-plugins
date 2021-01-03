@@ -261,7 +261,7 @@ test('processHelplineConfig for case data', () => {
       referral: [
         {
           name: 'referredTo',
-          insights: ['customers', 'manager'],
+          insights: ['customers', 'customer_manager'],
         },
       ],
     },
@@ -364,7 +364,7 @@ test('processHelplineConfig for case data', () => {
     customers: {
       organization: 'Grandparent',
       // market_segment: 'At home',
-      manager: 'Referral Agency 1',
+      customer_manager: 'Referral Agency 1',
     },
   };
 

@@ -22,9 +22,10 @@ export const zambiaInsightsConfig: InsightsConfigSpec = {
         insights: [InsightsObject.Customers, 'city'],
       },
       /*
-       * province;district => customers.area is hard-coded
-       * Postal code TBD
-       * phone #1 TBD
+       * province;district => customers.area is hard-coded elsewhere
+       * Undecided per excel file:
+       *  Postal code
+       *  phone #1
        */
       {
         name: 'gender',
@@ -106,9 +107,10 @@ export const zambiaInsightsConfig: InsightsConfigSpec = {
         type: FieldType.MixedCheckbox,
       },
       /*
-       * How did you know about us => conversation attribute 5 ???
-       * Did we solve problem => convo.productive ???
-       * Would recommend => convo att 6 ???
+       * Undecided per excel file:
+       * How did you know about us => conversation attribute 5
+       * Did we solve problem => conversations.productive
+       * Would recommend => conversation attribute 6
        */
     ],
   },
@@ -148,7 +150,7 @@ export const zambiaInsightsConfig: InsightsConfigSpec = {
     referral: [
       {
         name: 'referredTo',
-        insights: [InsightsObject.Customers, 'manager'],
+        insights: [InsightsObject.Customers, 'customer_manager'],
       },
     ],
   },

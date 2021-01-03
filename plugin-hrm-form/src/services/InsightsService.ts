@@ -28,6 +28,7 @@ type InsightsAttributes = {
 };
 
 const delimiter = ';';
+
 /*
  * Converts an array of categories with a fully-specified path (as stored in Redux)
  * into an object where the top-level categories are the keys and the values
@@ -127,8 +128,6 @@ type InsightsCaseForm = {
  * for a TaskEntry (contact form) so it can be consumed in the same manner.
  * As of January 2, 2021, Case has not been moved over to use the
  * customization framework.  When it is, we will need to change this function.
- *
- * TODO: make more generalized.  It makes a lot of assumptions right now.
  */
 const convertCaseFormForInsights = (caseForm: Case): InsightsCaseForm => {
   if (!caseForm || Object.keys(caseForm).length === 0) return {};
@@ -140,6 +139,8 @@ const convertCaseFormForInsights = (caseForm: Case): InsightsCaseForm => {
     id: caseForm.id.toString(),
   };
   if (caseForm.info && caseForm.info.perpetrators && caseForm.info.perpetrators.length > 0) {
+    // Flatten out the Perpetrator object. This can be changed after this is using the 
+    // customization framework.
     const thePerp = caseForm.info.perpetrators[0];
     const untypedPerp: any = {
       ...thePerp,
@@ -208,10 +209,6 @@ export const processHelplineConfig = (
     });
   });
 
-  /*
-   * console.warn(`processconfig results:`);
-   * console.warn(insightsAtts);
-   */
   return insightsAtts;
 };
 
@@ -227,8 +224,8 @@ export const zambiaUpdates = (
   const attsToReturn: InsightsAttributes = processHelplineConfig(contactForm, caseForm, zambiaInsightsConfig);
 
   /*
-   * Custom additions
-   * Add province and district into area
+   * Custom additions:
+   *  Add province and district into area
    */
   attsToReturn[InsightsObject.Customers].area = [
     contactForm.childInformation.province,
@@ -252,7 +249,7 @@ const mergeAttributes = (previousAttributes: TaskAttributes, newAttributes: Insi
   };
 };
 
-// how do we type function return values in typescript?
+// In TS, how do we say that we are returning a function?
 const getInsightsUpdateFunctionsForConfig = (config: any): any => {
   const functionArray = [baseUpdates, contactlessTaskUpdates];
   if (config.useZambiaInsights) {
@@ -265,10 +262,6 @@ const getInsightsUpdateFunctionsForConfig = (config: any): any => {
  * The idea here is to apply a cascading series of modifications to the attributes for Insights.
  * We may have a set of core values to add, plus conditional core values (such as if this is a
  * contactless task), and then may have helpline-specific updates based on configuration.
- * At present this is just a refactoring of the existing functionality, but next we will
- * add helpline-specific configuration.
- * We may add a configuration language similar to our customization JSON files
- * into the helpline-specific update functions to express them more clearly.
  *
  * Note: config parameter tells where to go to get helpline-specific tests.  It should
  * eventually match up with getConfig().  Also useful for testing.
