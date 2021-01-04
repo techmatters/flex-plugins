@@ -18,7 +18,7 @@ import {
   FormSelectWrapper,
   FormOption,
 } from '../../styles/HrmStyles';
-import { CaseActionContainer } from '../../styles/case';
+import { CaseActionLayout } from '../../styles/case';
 import { namespace, connectedCaseBase, routingBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
@@ -73,7 +73,7 @@ const AddReferral: React.FC<Props> = ({
   const isSaveDisabled = Boolean(!referralFormInfo || !referralFormInfo.date || !referralFormInfo.referredTo);
 
   return (
-    <CaseActionContainer>
+    <CaseActionLayout>
       <Box height="100%" paddingTop="20px" paddingLeft="30px" paddingRight="10px">
         <ActionHeader titleTemplate="Case-AddReferral" onClickClose={onClickClose} counselor={counselor} />
         <Flex justifyContent="space-between" marginTop="25px">
@@ -109,9 +109,8 @@ const AddReferral: React.FC<Props> = ({
                   name="referredTo"
                   onChange={e => handleChange('referredTo', e.target.value)}
                 >
-                  <FormOption />
-                  {referredToOptions.map(option => (
-                    <FormOption key={option} value={option}>
+                  {['', ...referredToOptions].map(option => (
+                    <FormOption key={`referredToOption-${option}`} value={option} isEmptyValue={!option}>
                       {option}
                     </FormOption>
                   ))}
@@ -154,7 +153,7 @@ const AddReferral: React.FC<Props> = ({
           <Template code="BottomBar-SaveReferral" />
         </StyledNextStepButton>
       </BottomButtonBar>
-    </CaseActionContainer>
+    </CaseActionLayout>
   );
 };
 

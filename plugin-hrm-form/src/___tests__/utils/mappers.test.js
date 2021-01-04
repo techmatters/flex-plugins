@@ -49,7 +49,7 @@ test('Test contact channel mapper', () => {
 test('mapAge handles values correctly', () => {
   expect(mapAge('Unknown')).toEqual('Unknown');
   expect(mapAge(undefined)).toEqual('Unknown');
-  expect(mapAge('10')).toEqual('10-12');
-  expect(mapAge('57')).toEqual('>25');
-  expect(mapAge('101')).toEqual('Unknown');
+  expect(mapAge('-1')).toEqual('Unknown');
+  expect(mapAge('not number')).toEqual('Unknown');
+  [...Array(26).keys()].map(n => expect(mapAge(`${n}`)).toEqual(`${n}`));
 });

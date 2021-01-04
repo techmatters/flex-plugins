@@ -4,10 +4,10 @@ import { Template, ITask } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 
 import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
-import { CaseActionContainer, CaseActionFormContainer } from '../../styles/case';
+import { CaseActionLayout, CaseActionFormContainer } from '../../styles/case';
 import ActionHeader from './ActionHeader';
 import { CallerForm, newCallerFormInformation } from '../common/forms';
-import { editNestedField } from '../../states/ContactState';
+import { editNestedField } from './helpers';
 import { namespace, connectedCaseBase, routingBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
@@ -61,6 +61,7 @@ const AddPerpetrator: React.FC<Props> = ({
     const newInfo = info ? { ...info, perpetrators } : { perpetrators };
     const updatedCase = await updateCase(id, { info: newInfo });
     setConnectedCase(updatedCase, task.taskSid);
+
     if (shouldStayInForm) {
       updateTempInfo({ screen: 'add-perpetrator', info: newCallerFormInformation }, task.taskSid);
       changeRoute({ route, subroute: 'add-perpetrator' }, task.taskSid);
@@ -77,7 +78,7 @@ const AddPerpetrator: React.FC<Props> = ({
   }
 
   return (
-    <CaseActionContainer>
+    <CaseActionLayout>
       <CaseActionFormContainer>
         <ActionHeader titleTemplate="Case-AddPerpetrator" onClickClose={onClickClose} counselor={counselor} />
         <CallerForm callerInformation={temporaryCaseInfo.info} defaultEventHandlers={defaultEventHandlers} />
@@ -107,7 +108,7 @@ const AddPerpetrator: React.FC<Props> = ({
           <Template code="BottomBar-SavePerpetrator" />
         </StyledNextStepButton>
       </BottomButtonBar>
-    </CaseActionContainer>
+    </CaseActionLayout>
   );
 };
 

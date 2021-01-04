@@ -22,7 +22,10 @@ import {
   StyledResultsText,
   StyledTabLabel,
   StyledFolderIcon,
+  StyledContactResultsHeader,
+  StyledCaseResultsHeader,
   BoldText,
+  StyledCount,
 } from '../../../styles/search';
 import ConnectDialog from '../ConnectDialog';
 import Pagination from '../../Pagination';
@@ -199,15 +202,20 @@ const SearchResults: React.FC<Props> = ({
           </StyledResultsContainer>
           {currentPage === SearchPages.resultsContacts && (
             <>
-              <StyledFormControlLabel
-                control={<StyledSwitch checked={!onlyDataContacts} onChange={handleToggleNonDataContact} />}
-                label={
-                  <SwitchLabel>
-                    <Template code="SearchResultsIndex-NonDataContacts" />
-                  </SwitchLabel>
-                }
-                labelPlacement="start"
-              />
+              <StyledContactResultsHeader>
+                <StyledCount data-testid="ContactsCount">
+                  {contactsCount} <Template code="SearchResultsIndex-Contacts" />
+                </StyledCount>
+                <StyledFormControlLabel
+                  control={<StyledSwitch checked={!onlyDataContacts} onChange={handleToggleNonDataContact} />}
+                  label={
+                    <SwitchLabel>
+                      <Template code="SearchResultsIndex-NonDataContacts" />
+                    </SwitchLabel>
+                  }
+                  labelPlacement="start"
+                />
+              </StyledContactResultsHeader>
               {contacts &&
                 contacts.length > 0 &&
                 contacts.map(contact => (
@@ -231,15 +239,21 @@ const SearchResults: React.FC<Props> = ({
           )}
           {currentPage === SearchPages.resultsCases && (
             <>
-              <StyledFormControlLabel
-                control={<StyledSwitch checked={closedCases} onChange={handleToggleClosedCases} />}
-                label={
-                  <SwitchLabel>
-                    <Template code="SearchResultsIndex-ClosedCases" />
-                  </SwitchLabel>
-                }
-                labelPlacement="start"
-              />
+              <StyledCaseResultsHeader>
+                <StyledCount data-testid="CasesCount">
+                  {casesCount} <Template code="SearchResultsIndex-Cases" />
+                </StyledCount>
+                <StyledFormControlLabel
+                  control={<StyledSwitch checked={closedCases} onChange={handleToggleClosedCases} />}
+                  label={
+                    <SwitchLabel>
+                      <Template code="SearchResultsIndex-ClosedCases" />
+                    </SwitchLabel>
+                  }
+                  labelPlacement="start"
+                />
+              </StyledCaseResultsHeader>
+
               {cases &&
                 cases.length > 0 &&
                 cases.map(cas => (

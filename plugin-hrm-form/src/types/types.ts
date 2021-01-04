@@ -1,5 +1,5 @@
 /* eslint-disable import/no-unused-modules */
-
+import type { CallTypes } from '../states/DomainConstants';
 import { CallerFormValues } from '../components/common/forms/CallerForm';
 
 export type CaseStatus = 'open' | 'closed';
@@ -26,6 +26,7 @@ export type CaseInfo = {
   perpetrators?: PerpetratorEntry[];
   households?: HouseholdEntry[];
   referrals?: ReferralEntry[];
+  followUpDate?: string;
 };
 
 export type Case = {
@@ -39,46 +40,23 @@ export type Case = {
   connectedContacts: any[]; // TODO: create contact type
 };
 
-// Information about a single contact, as expected from DB (we might want to reuse this type in backend) - (is this a correct placement for this?)
-export type ContactValues = {
-  childInformation: {
-    name: {
-      firstName: string;
-      lastName: string;
+type NestedInformation = { name: { firstName: string; lastName: string } };
+export type InformationObject = NestedInformation & {
+  [key: string]: string | boolean | NestedInformation[keyof NestedInformation]; // having NestedInformation[keyof NestedInformation] makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
+};
 
-      gender: string;
-      age: string;
-      language: string;
-      nationality: string;
-      ethnicity: string;
-      location: {
-        streetAddress: string;
-        city: string;
-        stateOrCounty: string;
-        postalCode: string;
-        phone1: string;
-        phone2: string;
-      };
-      refugee: boolean;
-      disabledOrSpecialNeeds: boolean;
-      hiv: boolean;
-      school: {
-        name: string;
-        gradeLevel: string;
-      };
-    };
-    caseInformation: {
-      callSummary: string;
-      referredTo: string;
-      status: string;
-      keepConfidential: boolean;
-      okForCaseWorkerToCall: boolean;
-      howDidTheChildHearAboutUs: string;
-      didYouDiscussRightsWithTheChild: boolean;
-      didTheChildFeelWeSolvedTheirProblem: boolean;
-      wouldTheChildRecommendUsToAFriend: boolean;
-    };
-    callerInformation: CallerFormValues;
+// Information about a single contact, as expected from DB (we might want to reuse this type in backend) - (is this a correct placement for this?)
+export type ContactRawJson = {
+  definitionVersion?: string;
+  callType: CallTypes | '';
+  childInformation: InformationObject;
+  callerInformation: InformationObject;
+  caseInformation: { categories: {} } & { [key: string]: string | boolean | {} }; // // having {} makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
+  contactlessTask: { [key: string]: string | boolean };
+  metadata: {
+    startMillis: number;
+    endMillis: number;
+    recreated: boolean;
   };
 };
 
@@ -96,8 +74,7 @@ export type SearchContact = {
     channel: string;
     conversationDuration: number;
   };
-  details: ContactValues;
-  counselor: string;
+  details: ContactRawJson;
 };
 
 export type SearchContactResult = {

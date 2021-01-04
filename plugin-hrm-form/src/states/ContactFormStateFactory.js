@@ -1,4 +1,4 @@
-import { createFormItem } from '../components/common/forms/formGenerators';
+import { createStateItem } from '../components/common/forms/formGenerators';
 import { formDefinition as contactlessTaskTabDefinition } from '../components/tabbedForms/ContactlessTaskTabDefinition';
 
 export const ValidationType = {
@@ -617,7 +617,7 @@ export const createBlankForm = (formDef = defaultFormDefinition, recreated = fal
     categories: createCategoriesMetadata(formDef),
   };
 
-  const contactlessTask = contactlessTaskTabDefinition.reduce(createFormItem, {});
+  const contactlessTask = contactlessTaskTabDefinition.reduce(createStateItem, {});
 
   const generatedForm = { ...initialState, metadata, contactlessTask };
 

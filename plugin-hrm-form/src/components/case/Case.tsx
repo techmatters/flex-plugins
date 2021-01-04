@@ -1,23 +1,30 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react';
-import { Template, withTaskContext, ITask } from '@twilio/flex-ui';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import { Template, ITask } from '@twilio/flex-ui';
+import { connect, ConnectedProps } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import CancelIcon from '@material-ui/icons/Cancel';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 
-import { namespace, contactFormsBase, connectedCaseBase, configurationBase, routingBase } from '../../states';
+import {
+  namespace,
+  contactFormsBase,
+  connectedCaseBase,
+  configurationBase,
+  routingBase,
+  RootState,
+} from '../../states';
 import { getConfig } from '../../HrmFormPlugin';
-import { saveToHrm, connectToCase, transformForm } from '../../services/ContactService';
+import { saveToHrm, connectToCase, transformCategories } from '../../services/ContactService';
 import { cancelCase, updateCase } from '../../services/CaseService';
-import { Box, Container, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
+import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseContainer, CenteredContainer } from '../../styles/case';
 import CaseDetails from './CaseDetails';
 import { Menu, MenuItem } from '../menu';
 import { formatName } from '../../utils';
+import * as SearchActions from '../../states/search/actions';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { newCallerFormInformation } from '../common/forms';
@@ -37,13 +44,13 @@ import ViewReferral from './ViewReferral';
 
 type OwnProps = {
   task: ITask;
-  readonly?: boolean;
+  isCreating?: boolean;
   handleClose?: () => void;
   handleCompleteTask?: (taskSid: string, task: ITask) => void;
 };
 
 // eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const getNameFromContact = contact => {
   const { firstName, lastName } = contact.rawJson.childInformation.name;
@@ -51,8 +58,8 @@ const getNameFromContact = contact => {
 };
 
 const getNameFromForm = form => {
-  const { firstName, lastName } = form.childInformation.name;
-  return formatName(`${firstName.value} ${lastName.value}`);
+  const { firstName, lastName } = form.childInformation;
+  return formatName(`${firstName} ${lastName}`);
 };
 
 // eslint-disable-next-line complexity
@@ -81,7 +88,7 @@ const Case: React.FC<Props> = props => {
     const { connectedCase } = props.connectedCaseState;
     await cancelCase(connectedCase.id);
 
-    props.changeRoute({ route: 'tabbed-forms' }, task.taskSid);
+    props.changeRoute({ route: 'tabbed-forms', subroute: 'caseInformation' }, task.taskSid);
     props.removeConnectedCase(task.taskSid);
   };
 
@@ -141,6 +148,13 @@ const Case: React.FC<Props> = props => {
     props.updateCaseStatus(value, props.task.taskSid);
   };
 
+  /**
+   * Setting this flag in the first render.
+   */
+  const [isEditing, setIsEditing] = useState(
+    props.connectedCaseState?.connectedCase && props.connectedCaseState?.connectedCase?.status === 'open',
+  );
+
   if (!props.connectedCaseState) return null;
 
   const { task, form, counselorsHash } = props;
@@ -151,8 +165,24 @@ const Case: React.FC<Props> = props => {
     if (firstConnectedContact?.rawJson?.caseInformation) {
       return firstConnectedContact.rawJson.caseInformation.categories;
     }
-    const mappedForm = transformForm(form);
-    return mappedForm?.caseInformation?.categories;
+    const transformedCategories = transformCategories(form.categories);
+    return transformedCategories;
+  };
+
+  const handleUpdate = async () => {
+    setLoading(true);
+    const { strings } = getConfig();
+
+    try {
+      const updatedCase = await updateCase(connectedCase.id, { ...connectedCase });
+      props.updateCases(task.taskSid, updatedCase);
+      setIsEditing(connectedCase.status === 'open');
+    } catch (error) {
+      console.error(error);
+      window.alert(strings['Error-Backend']);
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (loading)
@@ -167,7 +197,7 @@ const Case: React.FC<Props> = props => {
   const firstConnectedContact = connectedCase && connectedCase.connectedContacts && connectedCase.connectedContacts[0];
   const name = firstConnectedContact ? getNameFromContact(firstConnectedContact) : getNameFromForm(form);
   const categories = getCategories(firstConnectedContact);
-  const { createdAt, updatedAt, twilioWorkerId, status, info } = connectedCase;
+  const { createdAt, updatedAt, twilioWorkerId, status, info } = connectedCase || {};
   const counselor = counselorsHash[twilioWorkerId];
   const openedDate = new Date(createdAt).toLocaleDateString(navigator.language);
   const lastUpdatedDate = new Date(updatedAt).toLocaleDateString(navigator.language);
@@ -198,13 +228,14 @@ const Case: React.FC<Props> = props => {
       return <ViewReferral taskSid={props.task.taskSid} />;
     default:
       return (
-        <CaseContainer>
-          <Container>
+        <>
+          <CaseContainer>
             <Box marginLeft="25px" marginTop="13px">
               <CaseDetails
                 caseId={connectedCase.id}
                 name={name}
                 status={status}
+                isEditing={isEditing}
                 counselor={counselor}
                 categories={categories}
                 openedDate={openedDate}
@@ -215,11 +246,12 @@ const Case: React.FC<Props> = props => {
               />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
-              <Timeline caseObj={connectedCase} task={task} form={form} />
+              <Timeline caseObj={connectedCase} task={task} form={form} status={status} />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
               <Households
                 households={households}
+                status={status}
                 onClickAddHousehold={onClickAddHousehold}
                 onClickView={onClickViewHousehold}
               />
@@ -227,32 +259,33 @@ const Case: React.FC<Props> = props => {
             <Box marginLeft="25px" marginTop="25px">
               <Perpetrators
                 perpetrators={perpetrators}
+                status={status}
                 onClickAddPerpetrator={onClickAddPerpetrator}
                 onClickView={onClickViewPerpetrator}
               />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
-              <CaseSummary task={props.task} readonly={props.readonly} />
+              <CaseSummary task={props.task} readonly={props.isCreating || status === 'closed'} />
             </Box>
-          </Container>
-          <Dialog onClose={closeMockedMessage} open={isMockedMessageOpen}>
-            <DialogContent>{mockedMessage}</DialogContent>
-          </Dialog>
-          <Menu anchorEl={anchorEl} open={isMenuOpen} onClickAway={() => setMenuOpen(false)}>
-            <MenuItem
-              Icon={AddIcon}
-              text={<Template code="BottomBar-AddThisContactToExistingCase" />}
-              onClick={handleMockedMessage}
-            />
-            <MenuItem
-              red
-              Icon={CancelIcon}
-              text={<Template code="BottomBar-CancelNewCaseAndClose" />}
-              onClick={handleCancelNewCaseAndClose}
-            />
-          </Menu>
+            <Dialog onClose={closeMockedMessage} open={isMockedMessageOpen}>
+              <DialogContent>{mockedMessage}</DialogContent>
+            </Dialog>
+            <Menu anchorEl={anchorEl} open={isMenuOpen} onClickAway={() => setMenuOpen(false)}>
+              <MenuItem
+                Icon={AddIcon}
+                text={<Template code="BottomBar-AddThisContactToExistingCase" />}
+                onClick={handleMockedMessage}
+              />
+              <MenuItem
+                red
+                Icon={CancelIcon}
+                text={<Template code="BottomBar-CancelNewCaseAndClose" />}
+                onClick={handleCancelNewCaseAndClose}
+              />
+            </Menu>
+          </CaseContainer>
           <BottomButtonBar>
-            {!props.readonly && (
+            {props.isCreating && (
               <>
                 <Box marginRight="15px">
                   <StyledNextStepButton secondary roundCorners onClick={toggleCaseMenu}>
@@ -264,32 +297,45 @@ const Case: React.FC<Props> = props => {
                 </StyledNextStepButton>
               </>
             )}
-            {props.readonly && (
-              <StyledNextStepButton roundCorners onClick={props.handleClose}>
-                <Template code="BottomBar-Close" />
-              </StyledNextStepButton>
+            {!props.isCreating && (
+              <>
+                <Box marginRight="15px">
+                  <StyledNextStepButton roundCorners onClick={props.handleClose}>
+                    <Template code="BottomBar-Close" />
+                  </StyledNextStepButton>
+                </Box>
+                {isEditing && (
+                  <StyledNextStepButton roundCorners onClick={handleUpdate}>
+                    <Template code="BottomBar-Update" />
+                  </StyledNextStepButton>
+                )}
+              </>
             )}
           </BottomButtonBar>
-        </CaseContainer>
+        </>
       );
   }
 };
 
 Case.displayName = 'Case';
 
-const mapStateToProps = (state, ownProps) => ({
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   form: state[namespace][contactFormsBase].tasks[ownProps.task.taskSid],
   connectedCaseState: state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid],
   counselorsHash: state[namespace][configurationBase].counselors.hash,
   routing: state[namespace][routingBase].tasks[ownProps.task.taskSid],
 });
 
-const mapDispatchToProps = dispatch => ({
-  changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
-  removeConnectedCase: bindActionCreators(CaseActions.removeConnectedCase, dispatch),
-  updateCaseInfo: bindActionCreators(CaseActions.updateCaseInfo, dispatch),
-  updateTempInfo: bindActionCreators(CaseActions.updateTempInfo, dispatch),
-  updateCaseStatus: bindActionCreators(CaseActions.updateCaseStatus, dispatch),
-});
+const mapDispatchToProps = {
+  changeRoute: RoutingActions.changeRoute,
+  removeConnectedCase: CaseActions.removeConnectedCase,
+  updateCaseInfo: CaseActions.updateCaseInfo,
+  updateTempInfo: CaseActions.updateTempInfo,
+  updateCaseStatus: CaseActions.updateCaseStatus,
+  updateCases: SearchActions.updateCases,
+};
 
-export default withTaskContext(connect(mapStateToProps, mapDispatchToProps)(Case));
+const connector = connect(mapStateToProps, mapDispatchToProps);
+const connected = connector(Case);
+
+export default connected;

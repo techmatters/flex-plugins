@@ -1,5 +1,5 @@
 import * as Flex from '@twilio/flex-ui';
-import { FlexPlugin } from 'flex-plugin';
+import { FlexPlugin, loadCSS } from 'flex-plugin';
 import SyncClient from 'twilio-sync';
 
 import './styles/GlobalOverrides';
@@ -207,8 +207,10 @@ export default class HrmFormPlugin extends FlexPlugin {
    * @param manager { import('@twilio/flex-ui').Manager }
    */
   init(flex, manager) {
+    loadCSS('https://use.fontawesome.com/releases/v5.15.1/css/solid.css');
+
     const monitoringEnv = manager.serviceConfiguration.attributes.monitoringEnv || 'staging';
-    if (!process.env.NO_MONITORING) setUpMonitoring(this, manager.workerClient, monitoringEnv);
+    if (process.env.NODE_ENV !== 'development') setUpMonitoring(this, manager.workerClient, monitoringEnv);
 
     console.log(`Welcome to ${PLUGIN_NAME} Version ${PLUGIN_VERSION}`);
     this.registerReducers(manager);

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Template, ITask } from '@twilio/flex-ui';
 
 import { Container, StyledNextStepButton, BottomButtonBar, Box } from '../../styles/HrmStyles';
-import { CaseContainer } from '../../styles/case';
+import { CaseLayout } from '../../styles/case';
 import { namespace, connectedCaseBase, configurationBase } from '../../states';
 import { CaseState } from '../../states/case/reducer';
 import { CallerSection } from '../common/ContactDetails';
@@ -32,7 +32,7 @@ const ViewPerpetrator: React.FC<Props> = ({ counselorsHash, temporaryCaseInfo, o
   const added = new Date(temporaryCaseInfo.info.createdAt);
 
   return (
-    <CaseContainer>
+    <CaseLayout>
       <Container>
         <ActionHeader
           titleTemplate="Case-ViewPerpetrator"
@@ -55,7 +55,7 @@ const ViewPerpetrator: React.FC<Props> = ({ counselorsHash, temporaryCaseInfo, o
           <Template code="CloseButton" />
         </StyledNextStepButton>
       </BottomButtonBar>
-    </CaseContainer>
+    </CaseLayout>
   );
 };
 

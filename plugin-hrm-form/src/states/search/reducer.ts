@@ -217,6 +217,25 @@ export function reduce(state = initialState, action: t.SearchActionType | Genera
         },
       };
     }
+    case t.SEARCH_CASES_UPDATE: {
+      const task = state.tasks[action.taskId];
+      const { searchCasesResult } = state.tasks[action.taskId];
+      const updatedCases = searchCasesResult.cases.map(c => (c.id === action.updatedCase.id ? action.updatedCase : c));
+
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...task,
+            searchCasesResult: {
+              ...searchCasesResult,
+              cases: updatedCases,
+            },
+          },
+        },
+      };
+    }
     default:
       return state;
   }

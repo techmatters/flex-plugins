@@ -112,6 +112,7 @@ test('Test input/add note functionality', async () => {
   const note = 'Some note';
   const updatedCase = {
     info: { notes: [note] },
+    status: 'open',
   };
   updateCase.mockReturnValueOnce(Promise.resolve(updatedCase));
   const onClickClose = jest.fn();
@@ -153,7 +154,7 @@ test('Test input/add note functionality', async () => {
   const setConnectedCaseCall = store.dispatch.mock.calls[0][0];
   expect(setConnectedCaseCall.type).toBe('SET_CONNECTED_CASE');
   expect(setConnectedCaseCall.taskId).toBe(ownProps.task.taskSid);
-  expect(setConnectedCaseCall.connectedCase).toBe(updatedCase);
+  expect(setConnectedCaseCall.connectedCase).toStrictEqual(updatedCase);
 
   expect(store.dispatch).toHaveBeenCalledWith(RoutingActions.changeRoute({ route: 'new-case' }, ownProps.task.taskSid));
   store.dispatch.mockClear();

@@ -258,6 +258,7 @@ describe('Test AddPerpetrator', () => {
 
     const updatedCase = {
       info: { perpetrators: [perpetrator] },
+      status: 'open',
     };
 
     updateCase.mockReturnValueOnce(Promise.resolve(updatedCase));
@@ -289,7 +290,7 @@ describe('Test AddPerpetrator', () => {
     const setConnectedCaseCall1 = store2.dispatch.mock.calls[0][0];
     expect(setConnectedCaseCall1.type).toBe('SET_CONNECTED_CASE');
     expect(setConnectedCaseCall1.taskId).toBe(ownProps.task.taskSid);
-    expect(setConnectedCaseCall1.connectedCase).toBe(updatedCase);
+    expect(setConnectedCaseCall1.connectedCase).toStrictEqual(updatedCase);
 
     expect(onClickClose).toHaveBeenCalled();
   });
@@ -299,6 +300,7 @@ describe('Test AddPerpetrator', () => {
 
     const updatedCase = {
       info: { perpetrators: [perpetrator] },
+      status: 'open',
     };
 
     updateCase.mockReturnValueOnce(Promise.resolve(updatedCase));
@@ -330,7 +332,7 @@ describe('Test AddPerpetrator', () => {
     const setConnectedCaseCall2 = store2.dispatch.mock.calls[0][0];
     expect(setConnectedCaseCall2.type).toBe('SET_CONNECTED_CASE');
     expect(setConnectedCaseCall2.taskId).toBe(ownProps.task.taskSid);
-    expect(setConnectedCaseCall2.connectedCase).toBe(updatedCase);
+    expect(setConnectedCaseCall2.connectedCase).toStrictEqual(updatedCase);
   });
 
   test('a11y', async () => {

@@ -3,6 +3,7 @@ import React from 'react';
 import { withTaskContext, ITask } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 
+import { CaseLayout } from '../styles/case';
 import CallTypeButtons from './callTypeButtons';
 import TabbedForms from './tabbedForms';
 import Case from './case';
@@ -12,17 +13,8 @@ import { RoutingState } from '../states/routing/reducer';
 
 type OwnProps = {
   task: ITask;
-  form: any;
-  handleBlur: any;
-  handleCategoryToggle: any;
-  handleChange: any;
-  handleCallTypeButtonClick: any;
   handleCompleteTask: any;
-  handleFocus: any;
-  handleSelectSearchResult: any;
-  changeTab: any;
   changeRoute: any;
-  handleValidateForm: any;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -36,36 +28,18 @@ const HrmForm: React.FC<Props> = props => {
 
   switch (route) {
     case 'tabbed-forms':
-      return (
-        <TabbedForms
-          form={props.form}
-          handleBlur={props.handleBlur}
-          handleCategoryToggle={props.handleCategoryToggle}
-          handleChange={props.handleChange}
-          handleCallTypeButtonClick={props.handleCallTypeButtonClick}
-          handleFocus={props.handleFocus}
-          handleSelectSearchResult={props.handleSelectSearchResult}
-          changeTab={props.changeTab}
-          changeRoute={props.changeRoute}
-          handleCompleteTask={props.handleCompleteTask}
-          handleValidateForm={props.handleValidateForm}
-        />
-      );
+      return <TabbedForms handleCompleteTask={props.handleCompleteTask} />;
 
     case 'new-case':
-      return <Case handleCompleteTask={props.handleCompleteTask} />;
+      return (
+        <CaseLayout>
+          <Case task={props.task} handleCompleteTask={props.handleCompleteTask} isCreating={true} />
+        </CaseLayout>
+      );
 
     case 'select-call-type':
     default:
-      return (
-        <CallTypeButtons
-          form={props.form}
-          handleCallTypeButtonClick={props.handleCallTypeButtonClick}
-          changeTab={props.changeTab}
-          handleCompleteTask={props.handleCompleteTask}
-          changeRoute={props.changeRoute}
-        />
-      );
+      return <CallTypeButtons handleCompleteTask={props.handleCompleteTask} />;
   }
 };
 

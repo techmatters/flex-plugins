@@ -3,7 +3,7 @@ import { Dispatch } from 'redux';
 
 import * as t from './types';
 import { ConfigurationState } from '../configuration/reducer';
-import { SearchContact } from '../../types/types';
+import { Case, SearchContact } from '../../types/types';
 import { searchContacts as searchContactsApiCall } from '../../services/ContactService';
 import { searchCases as searchCasesApiCall } from '../../services/CaseService';
 import { ContactDetailsSectionsType } from '../../components/common/ContactDetails';
@@ -55,6 +55,17 @@ export const searchCases = (dispatch: Dispatch<any>) => (taskId: string) => asyn
     dispatch({ type: t.SEARCH_CASES_FAILURE, error, taskId });
   }
 };
+
+/**
+ * Updates a case in redux
+ * @param taskId TaskId
+ * @param updatedCase Case to update
+ */
+export const updateCases = (taskId: string, updatedCase: Case): t.SearchActionType => ({
+  type: t.SEARCH_CASES_UPDATE,
+  taskId,
+  updatedCase,
+});
 
 export const changeSearchPage = (taskId: string) => (page: t.SearchPagesType): t.SearchActionType => ({
   type: t.CHANGE_SEARCH_PAGE,

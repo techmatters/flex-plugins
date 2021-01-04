@@ -1,11 +1,6 @@
 import '../mockGetConfig';
 
-import {
-  formIsValid,
-  moreThanThreeCategoriesSelected,
-  validateOnBlur,
-  validateBeforeSubmit,
-} from '../../states/ValidationRules';
+import { formIsValid, validateOnBlur, validateBeforeSubmit } from '../../states/ValidationRules';
 import callTypes from '../../states/DomainConstants';
 import { FieldType, ValidationType } from '../../states/ContactFormStateFactory';
 
@@ -34,7 +29,6 @@ describe('validateOnBlur', () => {
     };
     const received = validateOnBlur(form);
     expect(received).toStrictEqual(form);
-    expect(received).not.toBe(form);
   });
 
   test('does not generate an error when field has a value', () => {
@@ -61,7 +55,6 @@ describe('validateOnBlur', () => {
     };
     const received = validateOnBlur(form);
     expect(received).toStrictEqual(form);
-    expect(received).not.toBe(form);
   });
 
   test('does generate an error when field is touched and has no value', () => {
@@ -100,7 +93,7 @@ describe('validateOnBlur', () => {
           validation: [ValidationType.REQUIRED],
           value: '',
           touched: true,
-          error: 'This field is required',
+          error: null,
         },
       },
       caseInformation: {
@@ -125,7 +118,7 @@ describe('validateOnBlur', () => {
           validation: [ValidationType.REQUIRED],
           value: 'testValue',
           touched: true,
-          error: 'This field is required',
+          error: null,
         },
       },
       caseInformation: {
@@ -208,7 +201,7 @@ describe('validateOnBlur', () => {
         categories: {
           type: FieldType.CHECKBOX_FIELD,
           validation: [ValidationType.REQUIRED],
-          error: 'Required 1 category minimum, 3 categories maximum',
+          error: null,
           touched: true,
           category1: {
             type: FieldType.INTERMEDIATE,
@@ -268,7 +261,6 @@ describe('validateOnBlur', () => {
     };
     const received = validateOnBlur(form);
     expect(received).toStrictEqual(form);
-    expect(received).not.toBe(form);
   });
 
   test('removes error for CHECKBOX_FIELD type when boxes checked', () => {
@@ -288,7 +280,7 @@ describe('validateOnBlur', () => {
         categories: {
           type: FieldType.CHECKBOX_FIELD,
           validation: [ValidationType.REQUIRED],
-          error: 'Required 1 category minimum, 3 categories maximum',
+          error: null,
           category1: {
             type: FieldType.INTERMEDIATE,
             sub1: {
@@ -411,7 +403,7 @@ describe('formIsValid', () => {
         },
       },
     };
-    expect(formIsValid(form)).toBe(false);
+    expect(formIsValid(form)).toBe(true);
   });
 });
 
@@ -471,8 +463,8 @@ describe('validateBeforeSubmit', () => {
           type: FieldType.SELECT_SINGLE,
           validation: [ValidationType.REQUIRED],
           value: '',
-          touched: true,
-          error: 'This field is required',
+          touched: false,
+          error: null,
         },
       },
       caseInformation: {
@@ -480,8 +472,8 @@ describe('validateBeforeSubmit', () => {
         categories: {
           type: FieldType.CHECKBOX_FIELD,
           validation: [ValidationType.REQUIRED],
-          touched: true,
-          error: 'Required 1 category minimum, 3 categories maximum',
+          touched: false,
+          error: null,
           category1: {
             type: FieldType.INTERMEDIATE,
             sub1: {
@@ -500,347 +492,5 @@ describe('validateBeforeSubmit', () => {
       },
     };
     expect(validateBeforeSubmit(form)).toStrictEqual(expected);
-  });
-});
-
-describe('moreThanThreeCategoriesSelected', () => {
-  test('returns false when three categories', () => {
-    const categorySubForm = {
-      type: FieldType.CHECKBOX_FIELD,
-      validation: [ValidationType.REQUIRED],
-      category1: {
-        type: FieldType.INTERMEDIATE,
-        sub1: {
-          type: FieldType.CHECKBOX,
-          value: true,
-        },
-        sub2: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub3: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub4: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub5: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub6: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-      },
-      category2: {
-        type: FieldType.INTERMEDIATE,
-        sub1: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub2: {
-          type: FieldType.CHECKBOX,
-          value: true,
-        },
-        sub3: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub4: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub5: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub6: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-      },
-      category3: {
-        type: FieldType.INTERMEDIATE,
-        sub1: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub2: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub3: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub4: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub5: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub6: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-      },
-      category4: {
-        type: FieldType.INTERMEDIATE,
-        sub1: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub2: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub3: {
-          type: FieldType.CHECKBOX,
-          value: true,
-        },
-        sub4: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub5: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub6: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-      },
-      category5: {
-        type: FieldType.INTERMEDIATE,
-        sub1: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub2: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub3: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub4: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub5: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub6: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-      },
-      category6: {
-        type: FieldType.INTERMEDIATE,
-        sub1: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub2: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub3: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub4: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub5: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub6: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-      },
-    };
-    expect(moreThanThreeCategoriesSelected(categorySubForm)).toBe(false);
-  });
-
-  test('returns true when four categories', () => {
-    const categorySubForm = {
-      type: FieldType.CHECKBOX_FIELD,
-      validation: [ValidationType.REQUIRED],
-      category1: {
-        type: FieldType.INTERMEDIATE,
-        sub1: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub2: {
-          type: FieldType.CHECKBOX,
-          value: true,
-        },
-        sub3: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub4: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub5: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub6: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-      },
-      category2: {
-        type: FieldType.INTERMEDIATE,
-        sub1: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub2: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub3: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub4: {
-          type: FieldType.CHECKBOX,
-          value: true,
-        },
-        sub5: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub6: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-      },
-      category3: {
-        type: FieldType.INTERMEDIATE,
-        sub1: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub2: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub3: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub4: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub5: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub6: {
-          type: FieldType.CHECKBOX,
-          value: true,
-        },
-      },
-      category4: {
-        type: FieldType.INTERMEDIATE,
-        sub1: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub2: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub3: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub4: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub5: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub6: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-      },
-      category5: {
-        type: FieldType.INTERMEDIATE,
-        sub1: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub2: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub3: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub4: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub5: {
-          type: FieldType.CHECKBOX,
-          value: true,
-        },
-        sub6: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-      },
-      category6: {
-        type: FieldType.INTERMEDIATE,
-        sub1: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub2: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub3: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub4: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub5: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-        sub6: {
-          type: FieldType.CHECKBOX,
-          value: false,
-        },
-      },
-    };
-    expect(moreThanThreeCategoriesSelected(categorySubForm)).toBe(true);
   });
 });

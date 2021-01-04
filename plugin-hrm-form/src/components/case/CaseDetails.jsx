@@ -32,6 +32,7 @@ const CaseDetails = ({
   lastUpdatedDate,
   followUpDate,
   status,
+  isEditing,
   handleInfoChange,
   handleStatusChange,
 }) => {
@@ -87,6 +88,7 @@ const CaseDetails = ({
               type="date"
               id="Details_DateFollowUp"
               name="Details_DateFollowUp"
+              disabled={status === 'closed'}
               value={followUpDate}
               onChange={e => handleInfoChange('followUpDate', e.target.value)}
               aria-labelledby="CaseDetailsFollowUpDate"
@@ -103,6 +105,7 @@ const CaseDetails = ({
                 id="Details_CaseStatus"
                 name="Details_CaseStatus"
                 aria-labelledby="CaseDetailsStatusLabel"
+                disabled={!isEditing}
                 onChange={e => onStatusChange(e.target.value)}
                 defaultValue={status}
                 color={color}
@@ -126,12 +129,13 @@ const CaseDetails = ({
 
 CaseDetails.displayName = 'CaseDetails';
 CaseDetails.propTypes = {
-  caseId: PropTypes.string.isRequired,
+  caseId: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   categories: PropTypes.array.isRequired,
   counselor: PropTypes.string.isRequired,
   openedDate: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
+  isEditing: PropTypes.bool.isRequired,
   followUpDate: PropTypes.string,
   lastUpdatedDate: PropTypes.string,
   handleInfoChange: PropTypes.func.isRequired,

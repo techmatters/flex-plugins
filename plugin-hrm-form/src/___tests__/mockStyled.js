@@ -50,11 +50,21 @@ jest.mock('../styles/HrmStyles', () => ({
   AddTaskButtonBase: 'AddTaskButtonBase',
   FormItem: 'FormItem',
   FormLabel: 'FormLabel',
+  DependentSelectLabel: 'DependentSelectLabel',
   FormError: 'FormError',
   FormInput: 'FormInput',
+  FormDateInput: 'FormDateInput',
+  FormTimeInput: 'FormTimeInput',
+  FormTextArea: 'FormTextArea',
+  FormCheckBoxWrapper: 'FormCheckBoxWrapper',
+  FormCheckbox: 'FormCheckbox',
+  FormMixedCheckbox: 'FormMixedCheckbox',
   FormSelectWrapper: 'FormSelectWrapper',
   FormSelect: 'FormSelect',
   FormOption: 'FormOption',
+  CategoryCheckbox: 'CategoryCheckbox',
+  CategoryCheckboxLabel: 'CategoryCheckboxLabel',
+  CategoryCheckboxField: 'CategoryCheckboxField',
   TaskCanvasOverride: 'TaskCanvasOverride',
 }));
 
@@ -108,6 +118,9 @@ jest.mock('../styles/search', () => ({
   CaseWrapper: 'CaseWrapper',
   SearchTitle: 'SearchTitle',
   StandaloneSearchContainer: 'StandaloneSearchContainer',
+  StyledCount: 'StyledCount',
+  StyledContactResultsHeader: 'StyledContactResultsHeader',
+  StyledCaseResultsHeader: 'StyledCaseResultsHeader',
 }));
 
 jest.mock('../styles/callTypeButtons', () => ({

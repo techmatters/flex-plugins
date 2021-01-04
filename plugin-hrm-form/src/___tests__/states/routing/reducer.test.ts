@@ -4,6 +4,12 @@ import * as GeneralActions from '../../../states/actions';
 import { standaloneTaskSid } from '../../../components/StandaloneSearch';
 
 const task = { taskSid: 'task1' };
+const voidDefinitions = {
+  callerFormDefinition: [],
+  caseInfoFormDefinition: [],
+  categoriesFormDefinition: {},
+  childFormDefinition: [],
+};
 
 describe('test reducer (specific actions)', () => {
   let state = undefined;
@@ -25,7 +31,7 @@ describe('test reducer (specific actions)', () => {
       },
     };
 
-    const result = reduce(state, GeneralActions.initializeContactState(task.taskSid));
+    const result = reduce(state, GeneralActions.initializeContactState(voidDefinitions)(task.taskSid));
     expect(result).toStrictEqual(expected);
 
     state = result;
@@ -62,7 +68,7 @@ describe('test reducer (specific actions)', () => {
       },
     };
 
-    const result = reduce(state, GeneralActions.recreateContactState(task.taskSid));
+    const result = reduce(state, GeneralActions.recreateContactState(voidDefinitions)(task.taskSid));
     expect(result).toStrictEqual(expected);
 
     state = result;
@@ -80,7 +86,7 @@ describe('test reducer (specific actions)', () => {
 
     state = result1;
 
-    const result2 = reduce(state, GeneralActions.recreateContactState(task.taskSid));
+    const result2 = reduce(state, GeneralActions.recreateContactState(voidDefinitions)(task.taskSid));
     expect(result2).toStrictEqual(expected);
 
     state = result2;
