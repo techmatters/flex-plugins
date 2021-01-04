@@ -12,6 +12,7 @@ jest.mock('../HrmFormPlugin', () => ({
       identity: '',
       token: '',
       counselorName: '',
+      definitionVersion: 'v1',
       strings: {
         'Error-CategoryRequired': 'Required 1 category minimum, 3 categories maximum',
         'ContactDetails-GeneralDetails': 'General Details',
