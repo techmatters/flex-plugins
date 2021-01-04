@@ -272,4 +272,3 @@ export const StyledSelectField = styled(({ color, ...rest }: StyledSelectFieldPr
 `;
 
 StyledSelectField.displayName = 'StyledSelectField';
-
