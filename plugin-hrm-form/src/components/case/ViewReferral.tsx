@@ -8,7 +8,7 @@ import { Container, Box, BottomButtonBar, StyledNextStepButton } from '../../sty
 import { namespace, connectedCaseBase, configurationBase, routingBase, RootState } from '../../states';
 import { CaseState } from '../../states/case/reducer';
 import * as RoutingActions from '../../states/routing/actions';
-import { CaseContainer } from '../../styles/case';
+import { CaseLayout } from '../../styles/case';
 import ActionHeader from './ActionHeader';
 import SectionEntry from '../SectionEntry';
 
@@ -42,7 +42,7 @@ const ViewReferral: React.FC<Props> = ({ taskSid, tempInfo, route, changeRoute, 
   const handleClose = () => changeRoute({ route }, taskSid);
 
   return (
-    <CaseContainer>
+    <CaseLayout>
       <Container>
         <ActionHeader
           titleTemplate="Case-Referral"
@@ -61,7 +61,7 @@ const ViewReferral: React.FC<Props> = ({ taskSid, tempInfo, route, changeRoute, 
           <Template code="CloseButton" />
         </StyledNextStepButton>
       </BottomButtonBar>
-    </CaseContainer>
+    </CaseLayout>
   );
 };
 
