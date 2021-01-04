@@ -5,7 +5,16 @@ import { isNonDataCallType } from '../states/ValidationRules';
 import { mapChannelForInsights } from '../utils/mappers';
 import { getDateTime } from '../utils/helpers';
 import { TaskEntry } from '../states/contacts/reducer';
+import { Case } from '../types/types';
 import { formatCategories } from '../utils/formatters';
+import { zambiaInsightsConfig } from '../insightsConfig/zambia';
+import {
+  InsightsObject,
+  FieldType,
+  InsightsFieldSpec,
+  InsightsFormSpec,
+  InsightsConfigSpec,
+} from '../insightsConfig/types';
 
 /*
  * 'Any'' is the best we can do, since we're limited by Twilio here.
@@ -14,9 +23,11 @@ import { formatCategories } from '../utils/formatters';
 type TaskAttributes = any;
 
 type InsightsAttributes = {
-  conversations?: { [key: string]: string };
-  customers?: { [key: string]: string };
+  conversations?: { [key: string]: string | number };
+  customers?: { [key: string]: string | number };
 };
+
+const delimiter = ';';
 
 /*
  * Converts an array of categories with a fully-specified path (as stored in Redux)
@@ -45,24 +56,10 @@ const getSubcategories = (contactForm: TaskEntry): string => {
   const { categories } = contactForm;
 
   const categoryMap = makeCategoryMap(categories);
-  return formatCategories(categoryMap).join(';');
+  return formatCategories(categoryMap).join(delimiter);
 };
 
-const buildCustomersObject = (taskAttributes: TaskAttributes, contactForm: TaskEntry): InsightsAttributes => {
-  const { callType } = contactForm;
-  const hasCustomerData = !isNonDataCallType(callType);
-
-  if (!hasCustomerData) return {};
-
-  const { childInformation } = contactForm;
-  return {
-    customers: {
-      gender: childInformation.gender.toString(),
-    },
-  };
-};
-
-const buildConversationsObject = (taskAttributes: TaskAttributes, contactForm: TaskEntry): InsightsAttributes => {
+const baseUpdates = (taskAttributes: TaskAttributes, contactForm: TaskEntry, caseForm: Case): InsightsAttributes => {
   const { callType } = contactForm;
   const hasCustomerData = !isNonDataCallType(callType);
 
@@ -70,26 +67,174 @@ const buildConversationsObject = (taskAttributes: TaskAttributes, contactForm: T
     ? mapChannelForInsights(contactForm.contactlessTask.channel)
     : mapChannelForInsights(taskAttributes.channelType);
 
-  if (!hasCustomerData) {
-    return {
-      conversations: {
-        conversation_attribute_2: callType.toString(),
-        communication_channel,
-      },
-    };
-  }
-
-  const { childInformation } = contactForm;
-
-  return {
+  // First add the data we add whether or not there's contact form data
+  const coreAttributes: InsightsAttributes = {
     conversations: {
-      conversation_attribute_1: getSubcategories(contactForm).toString(),
-      conversation_attribute_2: callType,
-      conversation_attribute_3: childInformation.gender.toString(),
-      conversation_attribute_4: childInformation.age.toString(),
+      conversation_attribute_2: callType.toString(),
       communication_channel,
     },
   };
+
+  if (!hasCustomerData) {
+    return coreAttributes;
+  }
+  return {
+    conversations: {
+      ...coreAttributes.conversations,
+      conversation_attribute_1: getSubcategories(contactForm).toString(),
+    },
+  };
+};
+
+const contactlessTaskUpdates = (
+  attributes: TaskAttributes,
+  contactForm: TaskEntry,
+  caseForm: Case,
+): InsightsAttributes => {
+  if (!attributes.isContactlessTask) {
+    return {};
+  }
+
+  const dateTime = getDateTime(contactForm.contactlessTask);
+
+  return {
+    conversations: {
+      date: dateTime,
+    },
+  };
+};
+
+const convertMixedCheckbox = (v: string | boolean): number => {
+  if (v === true) {
+    return 1;
+  } else if (v === false) {
+    return 0;
+  } else if (v === 'mixed') {
+    return null;
+  }
+  console.error(`Bad mixed checkbox value [${v}], defaulting to null for Insights value`);
+  return null;
+};
+
+type InsightsCaseForm = {
+  topLevel?: { [key: string]: string };
+  perpetrator?: { [key: string]: string };
+  incident?: { [key: string]: string };
+  referral?: { [key: string]: string };
+};
+
+/*
+ * This takes a Case and turns it into a format more like the subforms
+ * for a TaskEntry (contact form) so it can be consumed in the same manner.
+ * As of January 2, 2021, Case has not been moved over to use the
+ * customization framework.  When it is, we will need to change this function.
+ */
+const convertCaseFormForInsights = (caseForm: Case): InsightsCaseForm => {
+  if (!caseForm || Object.keys(caseForm).length === 0) return {};
+  let topLevel: { [key: string]: string } = {};
+  let perpetrator: { [key: string]: string } = undefined;
+  // let incident: { [key: string]: string } = undefined;
+  let referral: { [key: string]: string } = undefined;
+  topLevel = {
+    id: caseForm.id.toString(),
+  };
+  if (caseForm.info && caseForm.info.perpetrators && caseForm.info.perpetrators.length > 0) {
+    /*
+     * Flatten out the Perpetrator object. This can be changed after this is using the
+     * customization framework.
+     */
+    const thePerp = caseForm.info.perpetrators[0];
+    const untypedPerp: any = {
+      ...thePerp,
+      ...thePerp.perpetrator,
+      ...thePerp.perpetrator.name,
+      ...thePerp.perpetrator.location,
+    };
+    delete untypedPerp.perpetrator;
+    delete untypedPerp.name;
+    delete untypedPerp.location;
+    perpetrator = {
+      ...untypedPerp,
+    };
+  }
+  /*
+   * if (caseForm.info && caseForm.info.incidents && caseForm.info.incidents.length > 0) {
+   *   incident = {
+   *     ...caseForm.info.incidents[0],
+   *   };
+   * }
+   */
+  if (caseForm.info && caseForm.info.referrals && caseForm.info.referrals.length > 0) {
+    referral = {
+      ...caseForm.info.referrals[0],
+      date: caseForm.info.referrals[0].date.toString(),
+    };
+  }
+  const newCaseForm: InsightsCaseForm = {
+    topLevel,
+    perpetrator,
+    // incident,
+    referral,
+  };
+
+  return newCaseForm;
+};
+
+export const processHelplineConfig = (
+  contactForm: TaskEntry,
+  caseForm: Case,
+  configSpec: InsightsConfigSpec,
+): InsightsAttributes => {
+  const insightsAtts: InsightsAttributes = {
+    customers: {},
+    conversations: {},
+  };
+
+  const formsToProcess: [InsightsFormSpec, TaskEntry | InsightsCaseForm][] = [];
+  if (configSpec.contactForm) {
+    formsToProcess.push([configSpec.contactForm, contactForm]);
+  }
+  if (configSpec.caseForm) {
+    formsToProcess.push([configSpec.caseForm, convertCaseFormForInsights(caseForm)]);
+  }
+  formsToProcess.forEach(([spec, form]) => {
+    Object.keys(spec).forEach(subform => {
+      const fields: InsightsFieldSpec[] = spec[subform];
+      fields.forEach(field => {
+        const [insightsObject, insightsField] = field.insights;
+        let value = form[subform] && form[subform][field.name];
+        if (field.type === FieldType.MixedCheckbox) {
+          value = convertMixedCheckbox(value);
+        }
+        insightsAtts[insightsObject][insightsField] = value;
+      });
+    });
+  });
+
+  return insightsAtts;
+};
+
+// Visible for testing
+export const zambiaUpdates = (
+  attributes: TaskAttributes,
+  contactForm: TaskEntry,
+  caseForm: Case,
+): InsightsAttributes => {
+  const { callType } = contactForm;
+  if (isNonDataCallType(callType)) return {};
+
+  const attsToReturn: InsightsAttributes = processHelplineConfig(contactForm, caseForm, zambiaInsightsConfig);
+
+  /*
+   * Custom additions:
+   *  Add province and district into area
+   */
+  attsToReturn[InsightsObject.Customers].area = [
+    contactForm.childInformation.province,
+    contactForm.childInformation.district,
+  ].join(delimiter);
+
+  return attsToReturn;
 };
 
 const mergeAttributes = (previousAttributes: TaskAttributes, newAttributes: InsightsAttributes): TaskAttributes => {
@@ -106,39 +251,28 @@ const mergeAttributes = (previousAttributes: TaskAttributes, newAttributes: Insi
   };
 };
 
-const contactlessAttributes = (attributes: TaskAttributes, contactForm: TaskEntry): InsightsAttributes => {
-  if (!attributes.isContactlessTask) {
-    return {};
+// In TS, how do we say that we are returning a function?
+const getInsightsUpdateFunctionsForConfig = (config: any): any => {
+  const functionArray = [baseUpdates, contactlessTaskUpdates];
+  if (config.useZambiaInsights) {
+    functionArray.push(zambiaUpdates);
   }
-
-  const dateTime = getDateTime(contactForm.contactlessTask);
-
-  return {
-    conversations: {
-      date: dateTime.toString(),
-    },
-  };
+  return functionArray;
 };
 
 /*
  * The idea here is to apply a cascading series of modifications to the attributes for Insights.
  * We may have a set of core values to add, plus conditional core values (such as if this is a
  * contactless task), and then may have helpline-specific updates based on configuration.
- * At present this is just a refactoring of the existing functionality, but next we will
- * add helpline-specific configuration.
- * We may add a configuration language similar to our customization JSON files
- * into the helpline-specific update functions to express them more clearly.
+ *
+ * Note: config parameter tells where to go to get helpline-specific tests.  It should
+ * eventually match up with getConfig().  Also useful for testing.
  */
-export async function saveInsightsData(twilioTask: ITask, contactForm: TaskEntry) {
+export async function saveInsightsData(twilioTask: ITask, contactForm: TaskEntry, caseForm: Case, config = {}) {
   const previousAttributes: TaskAttributes = twilioTask.attributes;
-  const insightsUpdates: InsightsAttributes[] = [];
-  insightsUpdates.push(buildConversationsObject(twilioTask.attributes, contactForm));
-  insightsUpdates.push(buildCustomersObject(twilioTask.attributes, contactForm));
-  insightsUpdates.push(contactlessAttributes(twilioTask.attributes, contactForm));
-  const finalAttributes: TaskAttributes = insightsUpdates.reduce(
-    (acc, curr) => mergeAttributes(acc, curr),
-    previousAttributes,
-  );
+  const finalAttributes: TaskAttributes = getInsightsUpdateFunctionsForConfig(config)
+    .map((f: any) => f(twilioTask.attributes, contactForm, caseForm))
+    .reduce((acc: TaskAttributes, curr: InsightsAttributes) => mergeAttributes(acc, curr), previousAttributes);
 
   await twilioTask.setAttributes(finalAttributes);
 }
