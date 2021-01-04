@@ -22,16 +22,17 @@ type Props = {
   description: React.ReactNode | string;
   value: string | number | boolean;
   definition?: FormItemDefinition;
+  notBold?: boolean;
 };
 
-const SectionEntry: React.FC<Props> = ({ description, value, definition }) => {
+const SectionEntry: React.FC<Props> = ({ description, value, definition, notBold }) => {
   return (
     <Grid container style={{ marginTop: 8, marginBottom: 8 }}>
       <Grid item xs={6}>
         <SectionDescriptionText>{description}</SectionDescriptionText>
       </Grid>
       <Grid item xs={6}>
-        <SectionValueText>{presentValue(value)(definition)}</SectionValueText>
+        <SectionValueText notBold={notBold}>{presentValue(value)(definition)}</SectionValueText>
       </Grid>
     </Grid>
   );

@@ -9,7 +9,7 @@ export type PerpetratorEntry = { perpetrator: CallerFormValues; createdAt: strin
 export type HouseholdEntry = { household: CallerFormValues; createdAt: string; twilioWorkerId: string };
 
 export type ReferralEntry = {
-  date: Date;
+  date: string;
   referredTo: string;
   comments: string;
 };

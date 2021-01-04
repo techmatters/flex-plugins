@@ -18,6 +18,7 @@ export const NewCaseSubroutes = {
   ViewNote: 'view-note',
   ViewHousehold: 'view-household',
   ViewPerpetrator: 'view-perpetrator',
+  ViewReferral: 'view-referral',
 } as const;
 
 // The different routes we have in our app
