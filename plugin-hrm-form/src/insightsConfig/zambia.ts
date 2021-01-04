@@ -23,10 +23,11 @@ export const zambiaInsightsConfig: InsightsConfigSpec = {
       },
       /*
        * province;district => customers.area is hard-coded elsewhere
-       * Undecided per excel file:
-       *  Postal code
-       *  phone #1
        */
+      {
+        name: 'postalCode',
+        insights: [InsightsObject.Customers, 'zip'],
+      },
       {
         name: 'gender',
         insights: [InsightsObject.Customers, 'gender'],
@@ -98,20 +99,28 @@ export const zambiaInsightsConfig: InsightsConfigSpec = {
     // Note: the Contact Summary tab is called caseInformation for legacy reasons
     caseInformation: [
       {
-        name: 'actionTaken',
-        insights: [InsightsObject.Conversations, 'initiative'],
-      },
-      {
         name: 'repeatCaller',
         insights: [InsightsObject.Conversations, 'conversation_attribute_7'],
         type: FieldType.MixedCheckbox,
       },
-      /*
-       * Undecided per excel file:
-       * How did you know about us => conversation attribute 5
-       * Did we solve problem => conversations.productive
-       * Would recommend => conversation attribute 6
-       */
+      {
+        name: 'actionTaken',
+        insights: [InsightsObject.Conversations, 'initiative'],
+      },
+      {
+        name: 'howDidYouKnowAboutOurLine',
+        insights: [InsightsObject.Conversations, 'conversation_attribute_5'],
+      },
+      {
+        name: 'didTheChildFeelWeSolvedTheirProblem',
+        insights: [InsightsObject.Conversations, 'productive'],
+        type: FieldType.MixedCheckbox,
+      },
+      {
+        name: 'wouldTheChildRecommendUsToAFriend',
+        insights: [InsightsObject.Conversations, 'conversation_attribute_6'],
+        type: FieldType.MixedCheckbox,
+      },
     ],
   },
   caseForm: {
@@ -138,7 +147,7 @@ export const zambiaInsightsConfig: InsightsConfigSpec = {
     /*
      * incident: [
      *   {
-     *     name: 'durationOfIncident',
+     *     name: 'duration',
      *     insights: [InsightsObject.Conversations, 'in_business_hours'],
      *   },
      *   {
