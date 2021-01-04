@@ -2,30 +2,50 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
+import { format } from 'date-fns';
 
-import { TimelineRow, InformationBoldText, TimelineText, ViewButton, RowItemContainer } from '../../styles/case';
+import { TimelineRow, TimelineText, TimelineLabel, ViewButton, RowItemContainer } from '../../styles/case';
 import { Box, HiddenText } from '../../styles/HrmStyles';
+import type { FormDefinition } from '../common/forms/types';
+import type { Incident } from '../../types/types';
+
+type DisplayValue = { name: string; includeLabel: boolean; format?: 'date' };
+
+const formatValue = (displayValue: DisplayValue) => (value: string | boolean) => {
+  if (displayValue.format === 'date' && typeof value === 'string') return format(new Date(value), 'dd/MM/yyyy');
+
+  return value;
+};
 
 type OwnProps = {
-  values: { label: string; value: string | boolean }[];
+  definition: FormDefinition;
+  values: Incident; // expand this type to make this reusable (perpetrators, hh)
+  displayValues: DisplayValue[];
   onClickView: () => void;
 };
 
 const RowItem: React.FC = ({ children }) => <RowItemContainer style={{ flex: 1 }}>{children}</RowItemContainer>;
 RowItem.displayName = 'RowItem';
 
-const TimelineInformationRow: React.FC<OwnProps> = ({ values, onClickView }) => {
+const TimelineInformationRow: React.FC<OwnProps> = ({ definition, values, displayValues, onClickView }) => {
   return (
     <TimelineRow>
-      {values.map((v, index) => (
-        <RowItem key={`item-${v.label}-${index}`}>
-          <HiddenText>
-            <Template code={v.label} />
-          </HiddenText>
-          <TimelineText>{v.value}</TimelineText>
-          {/* <InformationBoldText>{}</InformationBoldText> */}
-        </RowItem>
-      ))}
+      {displayValues.map((v, index) => {
+        const fieldDef = definition.find(e => e.name === v.name);
+        const formattedValue = formatValue(v)(values[fieldDef.name]);
+
+        return (
+          <RowItem key={`item-${fieldDef.label}-${index}`}>
+            <HiddenText>
+              <Template code={fieldDef.label} />
+            </HiddenText>
+            <div style={{ display: 'inline-block' }}>
+              {v.includeLabel && <TimelineLabel>{fieldDef.label}: </TimelineLabel>}
+              <TimelineText>{formattedValue}</TimelineText>
+            </div>
+          </RowItem>
+        );
+      })}
       <RowItem>
         <Box marginLeft="auto" marginRight="10px">
           <ViewButton onClick={onClickView} data-testid="Case-InformationRow-ViewButton">

@@ -8,6 +8,7 @@ import { CaseSectionFont, TimelineRow, PlaceHolderText } from '../../styles/case
 import CaseAddButton from './CaseAddButton';
 import TimelineInformationRow from './TimelineInformationRow';
 import IncidentForm from '../../formDefinitions/caseForms/IncidentForm.json';
+import type { FormDefinition } from '../common/forms/types';
 
 type OwnProps = {
   onClickAddIncident: () => void;
@@ -32,11 +33,23 @@ const Incidents: React.FC<OwnProps> = ({ onClickAddIncident, onClickView, incide
           <TimelineInformationRow
             key={`incident-${index}`}
             onClickView={() => onClickView(i)}
-            values={[
-              // this can later come from a layout definition property, where we specify what items to display for each row, depending if it's incident, hh, or peretrator
-              { label: IncidentForm.find(e => e.name === 'date').label, value: i.incident.date },
-              { label: IncidentForm.find(e => e.name === 'duration').label, value: i.incident.duration },
-              { label: IncidentForm.find(e => e.name === 'location').label, value: i.incident.location },
+            definition={IncidentForm as FormDefinition}
+            values={i.incident}
+            displayValues={[
+              // this can be moved to a layout configuration
+              {
+                name: 'date',
+                includeLabel: false,
+                format: 'date',
+              },
+              {
+                name: 'duration',
+                includeLabel: true,
+              },
+              {
+                name: 'location',
+                includeLabel: true,
+              },
             ]}
           />
         ))

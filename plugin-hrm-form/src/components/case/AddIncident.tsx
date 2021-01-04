@@ -21,6 +21,7 @@ import * as CaseActions from '../../states/case/actions';
 import { getConfig } from '../../HrmFormPlugin';
 import { updateCase } from '../../services/CaseService';
 import { createFormFromDefinition, disperseInputs, splitInHalf } from '../common/forms/formGenerators';
+import { transformValues } from '../../services/ContactService';
 import type { FormDefinition } from '../common/forms/types';
 import IncidentForm from '../../formDefinitions/caseForms/IncidentForm.json';
 
@@ -63,7 +64,7 @@ const AddIncident: React.FC<Props> = ({
     if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-incident') return;
 
     const { info, id } = connectedCaseState.connectedCase;
-    const incident = temporaryCaseInfo.info;
+    const incident = transformValues(IncidentForm as FormDefinition)(temporaryCaseInfo.info);
     const createdAt = new Date().toISOString();
     const { workerSid } = getConfig();
     const newIncident = { incident, createdAt, twilioWorkerId: workerSid };

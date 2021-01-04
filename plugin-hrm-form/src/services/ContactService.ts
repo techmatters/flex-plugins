@@ -88,9 +88,9 @@ const transformValue = (e: FormItemDefinition) => (value: string | boolean | nul
   return value;
 };
 
-const transformValues = (def: FormDefinition) => (
-  values: TaskEntry['callerInformation'] | TaskEntry['caseInformation'] | TaskEntry['childInformation'],
-) => def.reduce((acc, e) => ({ ...acc, [e.name]: transformValue(e)(values[e.name]) }), {});
+// TODO: find a place where this is shared, as it's used also in case forms
+export const transformValues = (def: FormDefinition) => (values: { [key: string]: string | boolean }) =>
+  def.reduce((acc, e) => ({ ...acc, [e.name]: transformValue(e)(values[e.name]) }), {});
 
 const deTransformValue = (e: FormItemDefinition) => (value: string | boolean | null) => {
   // de-transform mixed checkbox null DB value to be "mixed"
