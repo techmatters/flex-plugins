@@ -111,3 +111,12 @@ export type FormDefinition = FormItemDefinition[];
 
 export type CategoryEntry = { color: string; subcategories: string[] };
 export type CategoriesDefinition = { [category: string]: CategoryEntry };
+
+/**
+ * Type that gives extra info on how a single field should be formatted
+ */
+export type LayoutValue = { includeLabel: boolean; format?: 'date' };
+export type LayoutDefinition = {
+  previewFields: ItemBase['name'][];
+  layout: { [name: string]: LayoutValue };
+};
