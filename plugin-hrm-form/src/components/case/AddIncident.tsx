@@ -14,7 +14,7 @@ import {
   Container,
   BottomButtonBarHeight,
 } from '../../styles/HrmStyles';
-import { CaseActionContainer, CaseActionFormContainer } from '../../styles/case';
+import { CaseActionLayout, CaseActionFormContainer } from '../../styles/case';
 import ActionHeader from './ActionHeader';
 import { namespace, connectedCaseBase, RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
@@ -85,7 +85,7 @@ const AddIncident: React.FC<Props> = ({
 
   return (
     <FormProvider {...methods}>
-      <CaseActionContainer>
+      <CaseActionLayout>
         <CaseActionFormContainer>
           <ActionHeader titleTemplate="Case-AddIncident" onClickClose={onClickClose} counselor={counselor} />
           <Container>
@@ -112,7 +112,7 @@ const AddIncident: React.FC<Props> = ({
             <Template code="BottomBar-SaveIncident" />
           </StyledNextStepButton>
         </BottomButtonBar>
-      </CaseActionContainer>
+      </CaseActionLayout>
     </FormProvider>
   );
 };
