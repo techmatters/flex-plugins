@@ -249,7 +249,7 @@ test('processHelplineConfig for case data', () => {
       /*
        * incident: [
        *   {
-       *     name: 'durationOfIncident',
+       *     name: 'duration',
        *     insights: ['conversations', 'in_business_hours'],
        *   },
        *   {
@@ -343,7 +343,7 @@ test('processHelplineConfig for case data', () => {
       ],
       incidents: [
         {
-          durationOfIncident: '2',
+          duration: '2',
           location: 'At home',
         },
       ],
