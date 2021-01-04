@@ -5,7 +5,7 @@ import { Template } from '@twilio/flex-ui';
 import { format, parseISO } from 'date-fns';
 
 import { Container, Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
-import { namespace, connectedCaseBase, configurationBase, routingBase } from '../../states';
+import { namespace, connectedCaseBase, configurationBase, routingBase, RootState } from '../../states';
 import { CaseState } from '../../states/case/reducer';
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseContainer } from '../../styles/case';
@@ -16,7 +16,7 @@ type OwnProps = {
   taskSid: string;
 };
 
-const mapStateToProps = (state, ownProps: OwnProps) => {
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const caseState: CaseState = state[namespace][connectedCaseBase];
   const { temporaryCaseInfo } = caseState.tasks[ownProps.taskSid];
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
