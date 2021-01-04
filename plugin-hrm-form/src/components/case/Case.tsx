@@ -112,9 +112,14 @@ const Case: React.FC<Props> = props => {
     }
   };
 
+  // Redirects to the proper view when the user clicks 'Close' button.
   const handleClose = () => {
     props.updateTempInfo(null, props.task.taskSid);
-    props.changeRoute({ route }, props.task.taskSid);
+    if (route === 'select-call-type') {
+      props.changeRoute({ route: 'select-call-type' }, props.task.taskSid);
+    } else {
+      props.changeRoute({ route: 'tabbed-forms', subroute: 'search' }, props.task.taskSid);
+    }
   };
 
   const onClickAddHousehold = () => {
@@ -217,15 +222,15 @@ const Case: React.FC<Props> = props => {
     case 'add-perpetrator':
       return <AddPerpetrator {...addScreenProps} />;
     case 'view-contact':
-      return <ViewContact task={props.task} />;
+      return <ViewContact {...addScreenProps} />;
     case 'view-note':
-      return <ViewNote taskSid={props.task.taskSid} />;
+      return <ViewNote {...addScreenProps} />;
     case 'view-household':
-      return <ViewHousehold task={props.task} onClickClose={handleClose} />;
+      return <ViewHousehold {...addScreenProps} />;
     case 'view-perpetrator':
-      return <ViewPerpetrator task={props.task} onClickClose={handleClose} />;
+      return <ViewPerpetrator {...addScreenProps} />;
     case 'view-referral':
-      return <ViewReferral taskSid={props.task.taskSid} />;
+      return <ViewReferral {...addScreenProps} />;
     default:
       return (
         <>
