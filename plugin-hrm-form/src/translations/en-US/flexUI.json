@@ -164,6 +164,8 @@
   "Case-Contact": "Contact",
   "Case-ViewHousehold": "View Household Member",
   "Case-ViewHouseholdTitle": "Household Member",
+  "Case-ViewIncident": "View Incident",
+  "Case-ViewIncidentTitle": "Incident",
   "Case-ViewPerpetrator": "View Perpetrator",
   "Case-ViewPerpetratorTitle": "Perpetrator",
   "Case-AddReferralDate": "Date",

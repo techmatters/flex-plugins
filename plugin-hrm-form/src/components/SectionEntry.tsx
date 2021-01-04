@@ -4,7 +4,8 @@ import { Grid } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
 
 import { SectionDescriptionText, SectionValueText } from '../styles/search';
-import type { FormItemDefinition } from './common/forms/types';
+import { formatValue } from './common/forms/helpers';
+import type { FormItemDefinition, LayoutValue } from './common/forms/types';
 
 const presentValue = (value: string | number | boolean) => (definition: FormItemDefinition = null) => {
   if (definition && definition.type === 'mixed-checkbox' && value === null) return <Template code="Unknown" />;
@@ -22,16 +23,19 @@ type Props = {
   description: React.ReactNode | string;
   value: string | number | boolean;
   definition?: FormItemDefinition;
+  layout?: LayoutValue;
 };
 
-const SectionEntry: React.FC<Props> = ({ description, value, definition }) => {
+const SectionEntry: React.FC<Props> = ({ description, value, definition, layout }) => {
+  const formatted = presentValue(formatValue(layout)(value))(definition);
+
   return (
     <Grid container style={{ marginTop: 8, marginBottom: 8 }}>
       <Grid item xs={6}>
         <SectionDescriptionText>{description}</SectionDescriptionText>
       </Grid>
       <Grid item xs={6}>
-        <SectionValueText>{presentValue(value)(definition)}</SectionValueText>
+        <SectionValueText>{formatted}</SectionValueText>
       </Grid>
     </Grid>
   );

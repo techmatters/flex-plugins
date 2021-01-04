@@ -32,7 +32,8 @@ export type TemporaryCaseInfo =
   | { screen: typeof NewCaseSubroutes.ViewContact; info: ViewContact }
   | { screen: typeof NewCaseSubroutes.ViewNote; info: ViewNote }
   | { screen: typeof NewCaseSubroutes.ViewHousehold; info: t.HouseholdEntry }
-  | { screen: typeof NewCaseSubroutes.ViewPerpetrator; info: t.PerpetratorEntry };
+  | { screen: typeof NewCaseSubroutes.ViewPerpetrator; info: t.PerpetratorEntry }
+  | { screen: typeof NewCaseSubroutes.ViewIncident; info: t.IncidentEntry };
 
 type SetConnectedCaseAction = {
   type: typeof SET_CONNECTED_CASE;

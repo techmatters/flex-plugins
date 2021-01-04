@@ -41,6 +41,8 @@ import AddIncident from './AddIncident';
 import ViewNote from './ViewNote';
 import ViewHousehold from './ViewHousehold';
 import ViewPerpetrator from './ViewPerpetrator';
+import ViewIncident from './ViewIncident';
+import type { IncidentEntry } from '../../types/types';
 
 type OwnProps = {
   task: ITask;
@@ -142,6 +144,11 @@ const Case: React.FC<Props> = props => {
     props.changeRoute({ route, subroute: 'view-perpetrator' }, props.task.taskSid);
   };
 
+  const onClickViewIncident = (incident: IncidentEntry) => {
+    props.updateTempInfo({ screen: 'view-incident', info: incident }, props.task.taskSid);
+    props.changeRoute({ route, subroute: 'view-incident' }, props.task.taskSid);
+  };
+
   const onInfoChange = (fieldName, value) => {
     const { connectedCase } = props.connectedCaseState;
     const { info } = connectedCase;
@@ -209,6 +216,8 @@ const Case: React.FC<Props> = props => {
       return <ViewHousehold task={props.task} onClickClose={handleClose} />;
     case 'view-perpetrator':
       return <ViewPerpetrator task={props.task} onClickClose={handleClose} />;
+    case 'view-incident':
+      return <ViewIncident task={props.task} onClickClose={handleClose} />;
     default:
       return (
         <CaseContainer>
@@ -245,7 +254,11 @@ const Case: React.FC<Props> = props => {
               />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
-              <Incidents incidents={incidents} onClickAddIncident={onClickAddIncident} onClickView={() => {}} />
+              <Incidents
+                incidents={incidents}
+                onClickAddIncident={onClickAddIncident}
+                onClickView={onClickViewIncident}
+              />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
               <CaseSummary task={props.task} readonly={props.readonly} />
