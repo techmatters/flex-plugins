@@ -53,6 +53,8 @@
   "SearchResultsIndex-Result": " result",
   "SearchResultsIndex-Results": " results",
   "SearchResultsIndex-NonDataContacts": "Non-Data Contacts",
+  "SearchResultsIndex-Contacts": "Contacts",
+  "SearchResultsIndex-Cases": "Cases",
   "SearchResultsIndex-ClosedCases": "Closed Cases",
   "SearchResultsIndex-ViewContacts": "View Contacts",
   "SearchResultsIndex-ViewCases": "View Cases",
@@ -110,6 +112,7 @@
   "BottomBar-SaveHousehold": "Save Member",
   "BottomBar-SaveIncident": "Save Incident",
   "BottomBar-Close": "Close",
+  "BottomBar-Update": "Update",
 
   "Categories-Title": "Categorize this contact",
   
@@ -168,9 +171,9 @@
   "Case-ViewIncidentTitle": "Incident",
   "Case-ViewPerpetrator": "View Perpetrator",
   "Case-ViewPerpetratorTitle": "Perpetrator",
-  "Case-AddReferralDate": "Date",
-  "Case-AddReferralReferredTo": "Referred To...",
-  "Case-AddReferralComments": "Comments",
+  "Case-ReferralDate": "Date",
+  "Case-ReferralReferredTo": "Referred To...",
+  "Case-ReferralComments": "Comments",
 
   "SideNavCaseList": "Case List",
   

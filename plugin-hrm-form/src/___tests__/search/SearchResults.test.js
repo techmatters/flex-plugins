@@ -97,6 +97,7 @@ describe('<SearchResults> with 0 results', () => {
     );
 
     expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('0 cases');
+    expect(screen.getByTestId('ContactsCount')).toHaveTextContent('0 SearchResultsIndex-Contacts');
   });
 
   test('on cases tab', () => {
@@ -116,6 +117,7 @@ describe('<SearchResults> with 0 results', () => {
     );
 
     expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('0 contacts');
+    expect(screen.getByTestId('CasesCount')).toHaveTextContent('0 SearchResultsIndex-Cases');
   });
 });
 
@@ -176,6 +178,7 @@ describe('<SearchResults> with 1 result', () => {
     );
 
     expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('1 cases');
+    expect(screen.getByTestId('ContactsCount')).toHaveTextContent('1 SearchResultsIndex-Contacts');
   });
 
   test('on cases tab', () => {
@@ -195,6 +198,7 @@ describe('<SearchResults> with 1 result', () => {
     );
 
     expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('1 contacts');
+    expect(screen.getByTestId('CasesCount')).toHaveTextContent('1 SearchResultsIndex-Cases');
   });
 });
 
@@ -282,6 +286,7 @@ describe('<SearchResults> with multiple results', () => {
     );
 
     expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('2 cases');
+    expect(screen.getByTestId('ContactsCount')).toHaveTextContent('2 SearchResultsIndex-Contacts');
   });
 
   test('on cases tab', () => {
@@ -301,5 +306,6 @@ describe('<SearchResults> with multiple results', () => {
     );
 
     expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('2 contacts');
+    expect(screen.getByTestId('CasesCount')).toHaveTextContent('2 SearchResultsIndex-Cases');
   });
 });

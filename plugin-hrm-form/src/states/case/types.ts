@@ -23,6 +23,12 @@ export type ViewContact = {
   counselor: string;
 };
 
+export type ViewReferral = {
+  referral: ReferralEntry;
+  counselor: string;
+  date: string;
+};
+
 export type TemporaryCaseInfo =
   | { screen: typeof NewCaseSubroutes.AddNote; info: string }
   | { screen: typeof NewCaseSubroutes.AddReferral; info: t.ReferralEntry }
@@ -33,7 +39,8 @@ export type TemporaryCaseInfo =
   | { screen: typeof NewCaseSubroutes.ViewNote; info: ViewNote }
   | { screen: typeof NewCaseSubroutes.ViewHousehold; info: t.HouseholdEntry }
   | { screen: typeof NewCaseSubroutes.ViewPerpetrator; info: t.PerpetratorEntry }
-  | { screen: typeof NewCaseSubroutes.ViewIncident; info: t.IncidentEntry };
+  | { screen: typeof NewCaseSubroutes.ViewIncident; info: t.IncidentEntry }
+  | { screen: typeof NewCaseSubroutes.ViewReferral; info: ViewReferral };
 
 type SetConnectedCaseAction = {
   type: typeof SET_CONNECTED_CASE;

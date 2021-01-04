@@ -11,7 +11,7 @@ export type PerpetratorEntry = { perpetrator: CallerFormValues } & EntryInfo;
 export type HouseholdEntry = { household: CallerFormValues } & EntryInfo;
 
 export type ReferralEntry = {
-  date: Date;
+  date: string;
   referredTo: string;
   comments: string;
 };

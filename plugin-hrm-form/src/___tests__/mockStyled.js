@@ -118,6 +118,9 @@ jest.mock('../styles/search', () => ({
   CaseWrapper: 'CaseWrapper',
   SearchTitle: 'SearchTitle',
   StandaloneSearchContainer: 'StandaloneSearchContainer',
+  StyledCount: 'StyledCount',
+  StyledContactResultsHeader: 'StyledContactResultsHeader',
+  StyledCaseResultsHeader: 'StyledCaseResultsHeader',
 }));
 
 jest.mock('../styles/callTypeButtons', () => ({

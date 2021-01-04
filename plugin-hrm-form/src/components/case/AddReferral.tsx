@@ -18,7 +18,7 @@ import {
   FormSelectWrapper,
   FormOption,
 } from '../../styles/HrmStyles';
-import { CaseActionContainer } from '../../styles/case';
+import { CaseActionLayout } from '../../styles/case';
 import { namespace, connectedCaseBase, routingBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
@@ -73,7 +73,7 @@ const AddReferral: React.FC<Props> = ({
   const isSaveDisabled = Boolean(!referralFormInfo || !referralFormInfo.date || !referralFormInfo.referredTo);
 
   return (
-    <CaseActionContainer>
+    <CaseActionLayout>
       <Box height="100%" paddingTop="20px" paddingLeft="30px" paddingRight="10px">
         <ActionHeader titleTemplate="Case-AddReferral" onClickClose={onClickClose} counselor={counselor} />
         <Flex justifyContent="space-between" marginTop="25px">
@@ -82,7 +82,7 @@ const AddReferral: React.FC<Props> = ({
               <FormLabel htmlFor="date">
                 <Row>
                   <Box marginBottom="8px">
-                    <Template code="Case-AddReferralDate" />
+                    <Template code="Case-ReferralDate" />
                     <RequiredAsterisk field={requiredField} />
                   </Box>
                 </Row>
@@ -98,7 +98,7 @@ const AddReferral: React.FC<Props> = ({
             <FormLabel htmlFor="referredTo">
               <Row>
                 <Box marginBottom="8px">
-                  <Template code="Case-AddReferralReferredTo" />
+                  <Template code="Case-ReferralReferredTo" />
                   <RequiredAsterisk field={requiredField} />
                 </Box>
               </Row>
@@ -122,7 +122,7 @@ const AddReferral: React.FC<Props> = ({
             <FormLabel htmlFor="comments">
               <Row>
                 <Box marginBottom="8px">
-                  <Template code="Case-AddReferralComments" />
+                  <Template code="Case-ReferralComments" />
                 </Box>
               </Row>
               <textarea
@@ -153,7 +153,7 @@ const AddReferral: React.FC<Props> = ({
           <Template code="BottomBar-SaveReferral" />
         </StyledNextStepButton>
       </BottomButtonBar>
-    </CaseActionContainer>
+    </CaseActionLayout>
   );
 };
 

@@ -4,7 +4,7 @@ import { Template, ITask } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 
 import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
-import { CaseActionContainer, CaseActionFormContainer } from '../../styles/case';
+import { CaseActionLayout, CaseActionFormContainer } from '../../styles/case';
 import ActionHeader from './ActionHeader';
 import { CallerForm, newCallerFormInformation } from '../common/forms';
 import { editNestedField } from './helpers';
@@ -77,7 +77,7 @@ const AddHousehold: React.FC<Props> = ({
   }
 
   return (
-    <CaseActionContainer>
+    <CaseActionLayout>
       <CaseActionFormContainer>
         <ActionHeader titleTemplate="Case-AddHousehold" onClickClose={onClickClose} counselor={counselor} />
         <CallerForm callerInformation={temporaryCaseInfo.info} defaultEventHandlers={defaultEventHandlers} />
@@ -107,7 +107,7 @@ const AddHousehold: React.FC<Props> = ({
           <Template code="BottomBar-SaveHousehold" />
         </StyledNextStepButton>
       </BottomButtonBar>
-    </CaseActionContainer>
+    </CaseActionLayout>
   );
 };
 

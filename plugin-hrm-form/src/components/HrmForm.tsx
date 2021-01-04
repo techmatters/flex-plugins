@@ -3,6 +3,7 @@ import React from 'react';
 import { withTaskContext, ITask } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 
+import { CaseLayout } from '../styles/case';
 import CallTypeButtons from './callTypeButtons';
 import TabbedForms from './tabbedForms';
 import Case from './case';
@@ -30,7 +31,11 @@ const HrmForm: React.FC<Props> = props => {
       return <TabbedForms handleCompleteTask={props.handleCompleteTask} />;
 
     case 'new-case':
-      return <Case task={props.task} handleCompleteTask={props.handleCompleteTask} />;
+      return (
+        <CaseLayout>
+          <Case task={props.task} handleCompleteTask={props.handleCompleteTask} isCreating={true} />
+        </CaseLayout>
+      );
 
     case 'select-call-type':
     default:

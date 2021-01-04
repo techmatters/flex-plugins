@@ -23,10 +23,11 @@ type Props = {
   description: React.ReactNode | string;
   value: string | number | boolean;
   definition?: FormItemDefinition;
+  notBold?: boolean;
   layout?: LayoutValue;
 };
 
-const SectionEntry: React.FC<Props> = ({ description, value, definition, layout }) => {
+const SectionEntry: React.FC<Props> = ({ description, value, definition, layout, notBold }) => {
   const formatted = presentValue(formatValue(layout)(value))(definition);
 
   return (
@@ -35,7 +36,7 @@ const SectionEntry: React.FC<Props> = ({ description, value, definition, layout 
         <SectionDescriptionText>{description}</SectionDescriptionText>
       </Grid>
       <Grid item xs={6}>
-        <SectionValueText>{formatted}</SectionValueText>
+        <SectionValueText notBold={notBold}>{formatted}</SectionValueText>
       </Grid>
     </Grid>
   );

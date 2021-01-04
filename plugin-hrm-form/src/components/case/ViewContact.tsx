@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Template, ITask } from '@twilio/flex-ui';
 
 import { Container, StyledNextStepButton, BottomButtonBar } from '../../styles/HrmStyles';
-import { CaseContainer } from '../../styles/case';
+import { CaseLayout } from '../../styles/case';
 import { namespace, connectedCaseBase, contactFormsBase, configurationBase, routingBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
@@ -70,7 +70,7 @@ const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, ro
   const added = new Date(date);
 
   return (
-    <CaseContainer>
+    <CaseLayout>
       <Container>
         <ActionHeader titleTemplate="Case-Contact" onClickClose={handleClose} counselor={counselorName} added={added} />
         <ContactDetails
@@ -84,7 +84,7 @@ const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, ro
           <Template code="CloseButton" />
         </StyledNextStepButton>
       </BottomButtonBar>
-    </CaseContainer>
+    </CaseLayout>
   );
 };
 

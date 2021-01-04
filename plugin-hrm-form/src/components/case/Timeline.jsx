@@ -31,7 +31,7 @@ import { isConnectedCaseActivity } from './caseHelpers';
 
 const sortActivities = activities => activities.sort((a, b) => b.date.localeCompare(a.date));
 
-const Timeline = ({ task, form, caseObj, changeRoute, updateTempInfo, route }) => {
+const Timeline = ({ status, task, form, caseObj, changeRoute, updateTempInfo, route }) => {
   const [mockedMessage, setMockedMessage] = useState(null);
   const [timeline, setTimeline] = useState([]);
 
@@ -76,6 +76,14 @@ const Timeline = ({ task, form, caseObj, changeRoute, updateTempInfo, route }) =
       };
       updateTempInfo({ screen: 'view-note', info }, task.taskSid);
       changeRoute({ route, subroute: 'view-note' }, task.taskSid);
+    } else if (activity.type === 'referral') {
+      const info = {
+        referral: activity.referral,
+        counselor: twilioWorkerId,
+        date: new Date(activity.date).toLocaleDateString(navigator.language),
+      };
+      updateTempInfo({ screen: 'view-referral', info }, task.taskSid);
+      changeRoute({ route, subroute: 'view-referral' }, task.taskSid);
     } else if (isConnectedCaseActivity(activity)) {
       const detailsExpanded = {
         [ContactDetailsSections.GENERAL_DETAILS]: true,
@@ -120,8 +128,8 @@ const Timeline = ({ task, form, caseObj, changeRoute, updateTempInfo, route }) =
             <Template code="Case-TimelineSection" />
           </CaseSectionFont>
           <Box marginLeft="auto">
-            <CaseAddButton templateCode="Case-Note" onClick={handleAddNoteClick} />
-            <CaseAddButton templateCode="Case-Referral" onClick={handleAddReferralClick} withDivider />
+            <CaseAddButton templateCode="Case-Note" onClick={handleAddNoteClick} status={status} />
+            <CaseAddButton templateCode="Case-Referral" onClick={handleAddReferralClick} status={status} withDivider />
           </Box>
         </Row>
       </Box>
@@ -151,6 +159,7 @@ const Timeline = ({ task, form, caseObj, changeRoute, updateTempInfo, route }) =
 
 Timeline.displayName = 'Timeline';
 Timeline.propTypes = {
+  status: PropTypes.string.isRequired,
   task: taskType.isRequired,
   form: formType.isRequired,
   // eslint-disable-next-line react/forbid-prop-types

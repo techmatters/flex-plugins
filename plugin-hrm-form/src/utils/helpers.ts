@@ -5,7 +5,8 @@ export const splitDate = (date: string) => date.split('-').map(s => parseInt(s, 
 export const splitTime = (time: string) => time.split(':').map(s => parseInt(s, 10));
 
 /**
- * If the provided object includes valid date and time, returns the correpsonding Date object, returns Date.now otherwise
+ * If the provided object includes valid date and time, returns the corresponding Date object, returns Date.now otherwise
+ * Use of getTime() means this will return the Date based on the browser's locale.
  */
 export const getDateTime = ({ date, time }: { date?: string; time?: string }) => {
   if (date && time) {

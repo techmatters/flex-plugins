@@ -7,7 +7,7 @@ import { Container, BottomButtonBar, StyledNextStepButton } from '../../styles/H
 import { namespace, connectedCaseBase, configurationBase, routingBase } from '../../states';
 import { CaseState } from '../../states/case/reducer';
 import * as RoutingActions from '../../states/routing/actions';
-import { CaseContainer, NoteContainer } from '../../styles/case';
+import { CaseLayout, NoteContainer } from '../../styles/case';
 import ActionHeader from './ActionHeader';
 
 type OwnProps = {
@@ -39,7 +39,7 @@ const ViewNote: React.FC<Props> = ({ taskSid, tempInfo, route, changeRoute, coun
   const handleClose = () => changeRoute({ route }, taskSid);
 
   return (
-    <CaseContainer>
+    <CaseLayout>
       <Container>
         <ActionHeader titleTemplate="Case-Note" onClickClose={handleClose} counselor={counselorName} added={added} />
         <NoteContainer data-testid="Case-ViewNoteScreen-Note">{note}</NoteContainer>
@@ -49,7 +49,7 @@ const ViewNote: React.FC<Props> = ({ taskSid, tempInfo, route, changeRoute, coun
           <Template code="CloseButton" />
         </StyledNextStepButton>
       </BottomButtonBar>
-    </CaseContainer>
+    </CaseLayout>
   );
 };
 
