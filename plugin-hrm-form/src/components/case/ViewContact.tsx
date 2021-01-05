@@ -31,11 +31,12 @@ const mapDispatchToProps = {
 
 type OwnProps = {
   task: ITask;
+  onClickClose: () => void;
 };
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, route, updateTempInfo, changeRoute }) => {
+const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, onClickClose, updateTempInfo }) => {
   if (!tempInfo || tempInfo.screen !== 'view-contact') return null;
 
   const { detailsExpanded, contact: contactFromInfo, date, counselor } = tempInfo.info;
@@ -50,8 +51,6 @@ const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, ro
   }
 
   if (!contact) return null;
-
-  const handleClose = () => changeRoute({ route }, task.taskSid);
 
   const handleExpandDetailsSection = section => {
     const updatedDetailsExpanded = {
@@ -72,7 +71,12 @@ const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, ro
   return (
     <CaseLayout>
       <Container>
-        <ActionHeader titleTemplate="Case-Contact" onClickClose={handleClose} counselor={counselorName} added={added} />
+        <ActionHeader
+          titleTemplate="Case-Contact"
+          onClickClose={onClickClose}
+          counselor={counselorName}
+          added={added}
+        />
         <ContactDetails
           contact={contact}
           detailsExpanded={detailsExpanded}
@@ -80,7 +84,7 @@ const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, ro
         />
       </Container>
       <BottomButtonBar>
-        <StyledNextStepButton roundCorners onClick={handleClose} data-testid="Case-ViewContactScreen-CloseButton">
+        <StyledNextStepButton roundCorners onClick={onClickClose} data-testid="Case-ViewContactScreen-CloseButton">
           <Template code="CloseButton" />
         </StyledNextStepButton>
       </BottomButtonBar>

@@ -63,7 +63,7 @@ const AddReferral: React.FC<Props> = ({
     const updatedCase = await updateCase(id, { info: newInfo });
     setConnectedCase(updatedCase, task.taskSid);
     updateTempInfo({ screen: 'add-referral', info: blankReferral }, task.taskSid);
-    changeRoute({ route }, task.taskSid);
+    onClickClose();
   };
 
   const requiredField = {
