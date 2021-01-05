@@ -15,7 +15,9 @@ const getCategoryLabel = (category, subcategory) =>
   subcategory === 'Unspecified/Other' ? `${subcategory} - ${category}` : subcategory;
 
 export const getContactTags = (contactCategories: ContactCategories) =>
-  Object.entries(contactCategories).map(([category, [subcategory]]) => ({
-    label: getCategoryLabel(category, subcategory),
-    color: getCategoryColor(category),
-  }));
+  Object.entries(contactCategories).flatMap(([category, subcategories]) =>
+    subcategories.map(subcategory => ({
+      label: getCategoryLabel(category, subcategory),
+      color: getCategoryColor(category),
+    })),
+  );
