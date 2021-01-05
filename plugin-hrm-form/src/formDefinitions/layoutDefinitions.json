@@ -12,6 +12,7 @@
       "location":  {
         "includeLabel": true
       }
-    }
+    },
+    "splitFormAt": 3
   }
 }

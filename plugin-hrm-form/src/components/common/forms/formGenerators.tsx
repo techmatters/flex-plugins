@@ -496,6 +496,8 @@ export const splitInHalf = (formItems: JSX.Element[]) => {
   return [l, r];
 };
 
+export const splitAt = (n: number) => (formItems: JSX.Element[]) => [formItems.slice(0, n), formItems.slice(n)];
+
 export const buildTwoColumnFormLayout = (formItems: JSX.Element[]) => {
   const items = disperseInputs(5)(formItems);
 

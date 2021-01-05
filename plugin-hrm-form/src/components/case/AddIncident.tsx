@@ -20,10 +20,11 @@ import { namespace, connectedCaseBase, RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import { getConfig } from '../../HrmFormPlugin';
 import { updateCase } from '../../services/CaseService';
-import { createFormFromDefinition, disperseInputs, splitInHalf } from '../common/forms/formGenerators';
+import { createFormFromDefinition, disperseInputs, splitInHalf, splitAt } from '../common/forms/formGenerators';
 import { transformValues } from '../../services/ContactService';
 import type { FormDefinition } from '../common/forms/types';
 import IncidentForm from '../../formDefinitions/caseForms/IncidentForm.json';
+import layoutDefinitions from '../../formDefinitions/layoutDefinitions.json';
 
 type OwnProps = {
   task: ITask;
@@ -54,6 +55,9 @@ const AddIncident: React.FC<Props> = ({
     };
 
     const generatedForm = createFormFromDefinition(IncidentForm as FormDefinition)([])(initialForm)(updateCallBack);
+
+    if (layoutDefinitions.incidents.splitFormAt)
+      return splitAt(layoutDefinitions.incidents.splitFormAt)(disperseInputs(7)(generatedForm));
 
     return splitInHalf(disperseInputs(7)(generatedForm));
   }, [initialForm, methods, task.taskSid, updateTempInfo]);

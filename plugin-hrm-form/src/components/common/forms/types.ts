@@ -117,6 +117,7 @@ export type CategoriesDefinition = { [category: string]: CategoryEntry };
  */
 export type LayoutValue = { includeLabel: boolean; format?: 'date' };
 export type LayoutDefinition = {
-  previewFields: ItemBase['name'][];
-  layout: { [name: string]: LayoutValue };
+  previewFields?: ItemBase['name'][];
+  layout?: { [name: string]: LayoutValue };
+  splitFormAt?: number;
 };
