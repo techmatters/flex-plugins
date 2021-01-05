@@ -2,7 +2,7 @@
   {
     "name": "date",
     "type": "date-input",
-    "label": "Date of Contact",
+    "label": "Date of Incident",
     "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
@@ -46,11 +46,6 @@
     "name": "abuseReportedElsewhere",
     "label": "Has abuse been reported elsewhere?",
     "type": "mixed-checkbox"
-  },
-  {
-    "name": "abuseReportedWhere",
-    "label": "Where else has incident been reported?",
-    "type": "input" 
   }
 ]
 

@@ -288,6 +288,7 @@ const Case: React.FC<Props> = props => {
                 incidents={incidents}
                 onClickAddIncident={onClickAddIncident}
                 onClickView={onClickViewIncident}
+                status={status}
               />
             </Box>
             <Box marginLeft="25px" marginTop="25px">

@@ -623,9 +623,3 @@ export const createBlankForm = (formDef = defaultFormDefinition, recreated = fal
 
   return generatedForm;
 };
-
-const recreateBlankForm = () => {
-  const recreatedForm = createBlankForm(defaultFormDefinition, true);
-
-  return recreatedForm;
-};

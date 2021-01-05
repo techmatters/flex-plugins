@@ -24,7 +24,7 @@ export type ViewContact = {
 };
 
 export type ViewReferral = {
-  referral: ReferralEntry;
+  referral: t.ReferralEntry;
   counselor: string;
   date: string;
 };

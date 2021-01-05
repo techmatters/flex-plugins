@@ -2,7 +2,7 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
-import type { CaseInfo, IncidentEntry } from '../../types/types';
+import type { CaseInfo, IncidentEntry, CaseStatus } from '../../types/types';
 import { Box, Row } from '../../styles/HrmStyles';
 import { CaseSectionFont, TimelineRow, PlaceHolderText } from '../../styles/case';
 import CaseAddButton from './CaseAddButton';
@@ -15,9 +15,10 @@ type OwnProps = {
   onClickAddIncident: () => void;
   onClickView: (incident: IncidentEntry) => void;
   incidents: CaseInfo['incidents'];
+  status: CaseStatus;
 };
 
-const Incidents: React.FC<OwnProps> = ({ onClickAddIncident, onClickView, incidents }) => {
+const Incidents: React.FC<OwnProps> = ({ onClickAddIncident, onClickView, incidents, status }) => {
   return (
     <>
       <Box marginBottom="10px">
@@ -25,7 +26,7 @@ const Incidents: React.FC<OwnProps> = ({ onClickAddIncident, onClickView, incide
           <CaseSectionFont id="Case-AddIncidentSection-label">
             <Template code="Case-AddIncidentSection" />
           </CaseSectionFont>
-          <CaseAddButton templateCode="Case-Incident" onClick={onClickAddIncident} />
+          <CaseAddButton templateCode="Case-Incident" onClick={onClickAddIncident} status={status} />
         </Row>
       </Box>
       {incidents.length ? (
