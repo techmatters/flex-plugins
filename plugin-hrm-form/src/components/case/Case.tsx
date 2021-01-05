@@ -114,9 +114,12 @@ const Case: React.FC<Props> = props => {
 
   // Redirects to the proper view when the user clicks 'Close' button.
   const handleClose = () => {
+    debugger;
     props.updateTempInfo(null, props.task.taskSid);
     if (route === 'select-call-type') {
       props.changeRoute({ route: 'select-call-type' }, props.task.taskSid);
+    } else if (route === 'new-case') {
+      props.changeRoute({ route: 'new-case' }, props.task.taskSid);
     } else {
       props.changeRoute({ route: 'tabbed-forms', subroute: 'search' }, props.task.taskSid);
     }
