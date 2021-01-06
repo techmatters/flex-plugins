@@ -45,7 +45,7 @@ const AddNote: React.FC<Props> = ({
     const updatedCase = await updateCase(id, { info: newInfo });
     setConnectedCase(updatedCase, task.taskSid);
     updateTempInfo({ screen: 'add-note', info: '' }, task.taskSid);
-    changeRoute({ route }, task.taskSid);
+    onClickClose();
   };
 
   if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-note') return null;

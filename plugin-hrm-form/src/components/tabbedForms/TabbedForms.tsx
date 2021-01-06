@@ -1,3 +1,4 @@
+/* eslint-disable no-duplicate-imports */
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Actions, ITask, withTaskContext } from '@twilio/flex-ui';
@@ -5,12 +6,15 @@ import SearchIcon from '@material-ui/icons/Search';
 import { useForm, FormProvider } from 'react-hook-form';
 import { connect, ConnectedProps } from 'react-redux';
 
+import { CaseLayout } from '../../styles/case';
+import Case from '../case';
 import { namespace, contactFormsBase, routingBase, RootState } from '../../states';
 import { updateCallType, updateForm } from '../../states/contacts/actions';
 import { searchResultToContactForm } from '../../services/ContactService';
 import { changeRoute } from '../../states/routing/actions';
 import type { TaskEntry } from '../../states/contacts/reducer';
 import type { TabbedFormSubroutes } from '../../states/routing/types';
+import { NewCaseSubroutes } from '../../states/routing/types';
 import type { SearchContact } from '../../types/types';
 import type { FormDefinition } from '../common/forms/types';
 import { TabbedFormsContainer, TopNav, TransparentButton, StyledTabs } from '../../styles/HrmStyles';
@@ -118,7 +122,17 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
   };
 
   const { subroute } = routing;
-  const tabIndex = tabsToIndex.findIndex(t => t === subroute);
+  let tabIndex = tabsToIndex.findIndex(t => t === subroute);
+
+  // If the subroute is any from 'new case' we should focus on 'Search' tab and display the entire Case inside TabbedForms.
+  if (Object.values(NewCaseSubroutes).some(r => r === subroute)) {
+    tabIndex = tabsToIndex.findIndex(t => t === 'search');
+    return (
+      <CaseLayout>
+        <Case task={task} isCreating={false} />
+      </CaseLayout>
+    );
+  }
 
   const optionalButtons =
     task.attributes.isContactlessTask && subroute === 'contactlessTask'

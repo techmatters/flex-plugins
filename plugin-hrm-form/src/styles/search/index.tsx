@@ -35,11 +35,16 @@ export const CaseHeaderContainer = styled('div')`
 
 CaseHeaderContainer.displayName = 'CaseHeaderContainer';
 
-export const CaseHeaderCaseId = styled('div')`
+type CaseIdProps = {
+  closed: boolean;
+};
+
+export const CaseHeaderCaseId = styled('div')<CaseIdProps>`
   display: flex;
   align-items: center;
   justify-content: center;
-  border: solid;
+  border: ${props => (props.closed ? 'none' : 'solid')};
+  color: ${props => (props.closed ? 'lightgray' : 'black')};
   border-width: thin;
   width: 50px;
   font-weight: 600;

@@ -16,7 +16,7 @@ type OwnProps = {
 type Props = OwnProps;
 
 const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase }) => {
-  const { id, createdAt, updatedAt, connectedContacts, info } = currentCase;
+  const { id, createdAt, updatedAt, connectedContacts, status, info } = currentCase;
 
   const orphanedCase = !connectedContacts || connectedContacts.length === 0;
   const firstContact = !orphanedCase && connectedContacts[0];
@@ -34,6 +34,7 @@ const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase }) => {
           updatedAt={updatedAt}
           onClickViewCase={onClickViewCase}
           isOrphanedCase={orphanedCase}
+          status={status}
         />
         <CaseSummary summary={summary} />
         <CaseTags categories={categories} />

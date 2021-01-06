@@ -18,6 +18,7 @@ export const CaseContainer = styled('div')`
   flex-direction: column;
   overflow-y: scroll;
   height: 100%;
+  background-color: #ffffff;
 `;
 CaseContainer.displayName = 'CaseContainer';
 

@@ -45,7 +45,7 @@ describe('ViewReferral screen', () => {
         <UnconnectedViewReferral
           taskSid={taskSid}
           tempInfo={tempInfo}
-          changeRoute={jest.fn()}
+          onClickClose={jest.fn()}
           route={route}
           counselorsHash={counselorsHash}
         />
@@ -60,14 +60,14 @@ describe('ViewReferral screen', () => {
   });
 
   test('click on x button', () => {
-    const changeRoute = jest.fn();
+    const onClickClose = jest.fn();
 
     render(
       <StorelessThemeProvider themeConf={themeConf}>
         <UnconnectedViewReferral
           taskSid={taskSid}
           tempInfo={tempInfo}
-          changeRoute={changeRoute}
+          onClickClose={onClickClose}
           route={route}
           counselorsHash={counselorsHash}
         />
@@ -77,18 +77,18 @@ describe('ViewReferral screen', () => {
     expect(screen.getByTestId('Case-CloseCross')).toBeInTheDocument();
     screen.getByTestId('Case-CloseCross').click();
 
-    expect(changeRoute).toHaveBeenCalledWith({ route: 'new-case' }, taskSid);
+    expect(onClickClose).toHaveBeenCalled();
   });
 
   test('click on close button', () => {
-    const changeRoute = jest.fn();
+    const onClickClose = jest.fn();
 
     render(
       <StorelessThemeProvider themeConf={themeConf}>
         <UnconnectedViewReferral
           taskSid={taskSid}
           tempInfo={tempInfo}
-          changeRoute={changeRoute}
+          onClickClose={onClickClose}
           route={route}
           counselorsHash={counselorsHash}
         />
@@ -98,7 +98,7 @@ describe('ViewReferral screen', () => {
     expect(screen.getByTestId('Case-ViewNoteScreen-CloseButton')).toBeInTheDocument();
     screen.getByTestId('Case-ViewNoteScreen-CloseButton').click();
 
-    expect(changeRoute).toHaveBeenCalledWith({ route: 'new-case' }, taskSid);
+    expect(onClickClose).toHaveBeenCalled();
   });
 
   test('a11y', async () => {
@@ -107,7 +107,7 @@ describe('ViewReferral screen', () => {
         <UnconnectedViewReferral
           taskSid="taskSid"
           tempInfo={tempInfo}
-          changeRoute={jest.fn()}
+          onClickClose={jest.fn()}
           counselorsHash={counselorsHash}
         />
       </StorelessThemeProvider>,
