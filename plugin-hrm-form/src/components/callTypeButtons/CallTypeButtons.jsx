@@ -47,6 +47,14 @@ const CallTypeButtons = props => {
     props.dispatch(changeRoute({ route: 'tabbed-forms', subroute }, taskSid));
   };
 
+  const handleNonDataClick = (taskSid, callType) => {
+    if (task.attributes.isContactlessTask) {
+      handleClickAndRedirect(taskSid, callType);
+    } else {
+      handleClick(taskSid, callType);
+    }
+  };
+
   const handleConfirmNonDataCallType = async () => {
     if (!hasTaskControl(task)) return;
 
@@ -92,7 +100,7 @@ const CallTypeButtons = props => {
             .map((callType, i) => (
               <NonDataCallTypeButton
                 key={callType}
-                onClick={() => handleClick(task.taskSid, callTypes[callType])}
+                onClick={() => handleNonDataClick(task.taskSid, callTypes[callType])}
                 marginRight={i % 2 === 0}
               >
                 <Template code={`CallType-${callType}`} />

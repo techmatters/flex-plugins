@@ -26,6 +26,7 @@ import TabbedFormTab from './TabbedFormTab';
 import ContactlessTaskTab from './ContactlessTaskTab';
 import BottomBar from './BottomBar';
 import { hasTaskControl } from '../../utils/transfer';
+import { isNonDataCallType } from '../../states/ValidationRules';
 import CallerTabDefinition from '../../formDefinitions/tabbedForms/CallerInformationTab.json';
 import CaseTabDefinition from '../../formDefinitions/tabbedForms/CaseInformationTab.json';
 import ChildTabDefinition from '../../formDefinitions/tabbedForms/ChildInformationTab.json';
@@ -55,6 +56,8 @@ const mapTabsToIndex = (task: ITask, contactForm: TaskEntry): TabbedFormSubroute
   const isCallerType = contactForm.callType === callTypes.caller;
 
   if (task.attributes.isContactlessTask) {
+    if (isNonDataCallType(contactForm.callType)) return ['contactlessTask'];
+
     return isCallerType
       ? ['search', 'contactlessTask', 'callerInformation', 'childInformation', 'categories', 'caseInformation']
       : ['search', 'contactlessTask', 'childInformation', 'categories', 'caseInformation'];
@@ -149,6 +152,8 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
         ]
       : undefined;
 
+  const isDataCallType = !isNonDataCallType(contactForm.callType);
+
   return (
     <FormProvider {...methods}>
       <div role="form" style={{ height: '100%' }}>
@@ -178,21 +183,25 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
                   display={subroute === 'callerInformation'}
                 />
               )}
-              <TabbedFormTab
-                tabPath="childInformation"
-                definition={ChildTabDefinition as FormDefinition}
-                layoutDefinition={LayoutDefinitions.contact.childInformation}
-                initialValues={contactForm.childInformation}
-                display={subroute === 'childInformation'}
-              />
-              <IssueCategorizationTab display={subroute === 'categories'} initialValue={contactForm.categories} />
-              <TabbedFormTab
-                tabPath="caseInformation"
-                definition={CaseTabDefinition as FormDefinition}
-                layoutDefinition={LayoutDefinitions.contact.caseInformation}
-                initialValues={contactForm.caseInformation}
-                display={subroute === 'caseInformation'}
-              />
+              {isDataCallType && (
+                <>
+                  <TabbedFormTab
+                    tabPath="childInformation"
+                    definition={ChildTabDefinition as FormDefinition}
+                    layoutDefinition={LayoutDefinitions.contact.childInformation}
+                    initialValues={contactForm.childInformation}
+                    display={subroute === 'childInformation'}
+                  />
+                  <IssueCategorizationTab display={subroute === 'categories'} initialValue={contactForm.categories} />
+                  <TabbedFormTab
+                    tabPath="caseInformation"
+                    definition={CaseTabDefinition as FormDefinition}
+                    layoutDefinition={LayoutDefinitions.contact.caseInformation}
+                    initialValues={contactForm.caseInformation}
+                    display={subroute === 'caseInformation'}
+                  />
+                </>
+              )}
             </div>
           )}
           <BottomBar
