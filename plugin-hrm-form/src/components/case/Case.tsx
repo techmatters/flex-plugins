@@ -33,14 +33,18 @@ import AddNote from './AddNote';
 import AddReferral from './AddReferral';
 import Households from './Households';
 import Perpetrators from './Perpetrators';
+import Incidents from './Incidents';
 import CaseSummary from './CaseSummary';
 import ViewContact from './ViewContact';
 import AddHousehold from './AddHousehold';
 import AddPerpetrator from './AddPerpetrator';
+import AddIncident from './AddIncident';
 import ViewNote from './ViewNote';
 import ViewHousehold from './ViewHousehold';
 import ViewPerpetrator from './ViewPerpetrator';
+import ViewIncident from './ViewIncident';
 import ViewReferral from './ViewReferral';
+import type { IncidentEntry } from '../../types/types';
 
 type OwnProps = {
   task: ITask;
@@ -53,13 +57,19 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const getNameFromContact = contact => {
-  const { firstName, lastName } = contact.rawJson.childInformation.name;
-  return formatName(`${firstName} ${lastName}`);
+  if (contact?.rawJson?.childInformation?.name) {
+    const { firstName, lastName } = contact.rawJson.childInformation.name;
+    return formatName(`${firstName} ${lastName}`);
+  }
+  return 'Unknown';
 };
 
 const getNameFromForm = form => {
-  const { firstName, lastName } = form.childInformation;
-  return formatName(`${firstName} ${lastName}`);
+  if (form?.childInformation) {
+    const { firstName, lastName } = form.childInformation;
+    return formatName(`${firstName} ${lastName}`);
+  }
+  return 'Unknown';
 };
 
 // eslint-disable-next-line complexity
@@ -134,6 +144,11 @@ const Case: React.FC<Props> = props => {
     props.changeRoute({ route, subroute: 'add-perpetrator' }, props.task.taskSid);
   };
 
+  const onClickAddIncident = () => {
+    props.updateTempInfo({ screen: 'add-incident', info: null }, props.task.taskSid);
+    props.changeRoute({ route, subroute: 'add-incident' }, props.task.taskSid);
+  };
+
   const onClickViewHousehold = household => {
     props.updateTempInfo({ screen: 'view-household', info: household }, props.task.taskSid);
     props.changeRoute({ route, subroute: 'view-household' }, props.task.taskSid);
@@ -142,6 +157,11 @@ const Case: React.FC<Props> = props => {
   const onClickViewPerpetrator = perpetrator => {
     props.updateTempInfo({ screen: 'view-perpetrator', info: perpetrator }, props.task.taskSid);
     props.changeRoute({ route, subroute: 'view-perpetrator' }, props.task.taskSid);
+  };
+
+  const onClickViewIncident = (incident: IncidentEntry) => {
+    props.updateTempInfo({ screen: 'view-incident', info: incident }, props.task.taskSid);
+    props.changeRoute({ route, subroute: 'view-incident' }, props.task.taskSid);
   };
 
   const onInfoChange = (fieldName, value) => {
@@ -166,14 +186,17 @@ const Case: React.FC<Props> = props => {
 
   const { task, form, counselorsHash } = props;
 
-  const { connectedCase } = props.connectedCaseState;
+  const { connectedCase, caseHasBeenEdited } = props.connectedCaseState;
 
   const getCategories = firstConnectedContact => {
     if (firstConnectedContact?.rawJson?.caseInformation) {
       return firstConnectedContact.rawJson.caseInformation.categories;
     }
-    const transformedCategories = transformCategories(form.categories);
-    return transformedCategories;
+    if (form?.categories) {
+      const transformedCategories = transformCategories(form.categories);
+      return transformedCategories;
+    }
+    return null;
   };
 
   const handleUpdate = async () => {
@@ -211,6 +234,7 @@ const Case: React.FC<Props> = props => {
   const followUpDate = info && info.followUpDate ? info.followUpDate : '';
   const households = info && info.households ? info.households : [];
   const perpetrators = info && info.perpetrators ? info.perpetrators : [];
+  const incidents = info && info.incidents ? info.incidents : [];
 
   const addScreenProps = { task: props.task, counselor, onClickClose: handleClose };
 
@@ -223,6 +247,8 @@ const Case: React.FC<Props> = props => {
       return <AddHousehold {...addScreenProps} />;
     case 'add-perpetrator':
       return <AddPerpetrator {...addScreenProps} />;
+    case 'add-incident':
+      return <AddIncident {...addScreenProps} />;
     case 'view-contact':
       return <ViewContact {...addScreenProps} />;
     case 'view-note':
@@ -231,6 +257,8 @@ const Case: React.FC<Props> = props => {
       return <ViewHousehold {...addScreenProps} />;
     case 'view-perpetrator':
       return <ViewPerpetrator {...addScreenProps} />;
+    case 'view-incident':
+      return <ViewIncident {...addScreenProps} />;
     case 'view-referral':
       return <ViewReferral {...addScreenProps} />;
     default:
@@ -272,7 +300,15 @@ const Case: React.FC<Props> = props => {
               />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
-              <CaseSummary task={props.task} readonly={props.isCreating || status === 'closed'} />
+              <Incidents
+                incidents={incidents}
+                onClickAddIncident={onClickAddIncident}
+                onClickView={onClickViewIncident}
+                status={status}
+              />
+            </Box>
+            <Box marginLeft="25px" marginTop="25px">
+              <CaseSummary task={props.task} readonly={status === 'closed'} />
             </Box>
             <Dialog onClose={closeMockedMessage} open={isMockedMessageOpen}>
               <DialogContent>{mockedMessage}</DialogContent>
@@ -307,12 +343,12 @@ const Case: React.FC<Props> = props => {
             {!props.isCreating && (
               <>
                 <Box marginRight="15px">
-                  <StyledNextStepButton roundCorners onClick={props.handleClose}>
+                  <StyledNextStepButton secondary roundCorners onClick={props.handleClose}>
                     <Template code="BottomBar-Close" />
                   </StyledNextStepButton>
                 </Box>
                 {isEditing && (
-                  <StyledNextStepButton roundCorners onClick={handleUpdate}>
+                  <StyledNextStepButton disabled={!caseHasBeenEdited} roundCorners onClick={handleUpdate}>
                     <Template code="BottomBar-Update" />
                   </StyledNextStepButton>
                 )}

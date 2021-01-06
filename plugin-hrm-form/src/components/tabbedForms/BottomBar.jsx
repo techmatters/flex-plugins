@@ -62,10 +62,13 @@ class BottomBar extends Component {
 
     if (!hasTaskControl(task)) return;
 
+    const { definitionVersion } = getConfig();
+
     const caseRecord = {
       helpline,
       status: 'open',
       twilioWorkerId: workerSid,
+      info: { definitionVersion }, // would be better to have this in CaseService (as ContactsService does for contacts)?
     };
 
     this.setState({ isMenuOpen: false });
@@ -73,7 +76,7 @@ class BottomBar extends Component {
     try {
       const caseFromDB = await createCase(caseRecord);
       this.props.changeRoute({ route: 'new-case' }, taskSid);
-      this.props.setConnectedCase(caseFromDB, taskSid);
+      this.props.setConnectedCase(caseFromDB, taskSid, false);
     } catch (error) {
       window.alert(strings['Error-Backend']);
     }

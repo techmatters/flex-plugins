@@ -14,15 +14,17 @@ describe('test action creators', () => {
       info: null,
       createdAt: '2020-07-31T20:39:37.408Z',
       updatedAt: '2020-07-31T20:39:37.408Z',
+      connectedContacts: null,
     };
 
     const expectedAction: types.CaseActionType = {
       type: types.SET_CONNECTED_CASE,
       connectedCase,
       taskId: task.taskSid,
+      caseHasBeenEdited: false,
     };
 
-    expect(actions.setConnectedCase(connectedCase, task.taskSid)).toStrictEqual(expectedAction);
+    expect(actions.setConnectedCase(connectedCase, task.taskSid, false)).toStrictEqual(expectedAction);
   });
 
   test('removeConnectedCase', async () => {

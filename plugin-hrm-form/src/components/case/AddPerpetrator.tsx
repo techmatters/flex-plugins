@@ -60,7 +60,7 @@ const AddPerpetrator: React.FC<Props> = ({
     const perpetrators = info && info.perpetrators ? [...info.perpetrators, newPerpetrator] : [newPerpetrator];
     const newInfo = info ? { ...info, perpetrators } : { perpetrators };
     const updatedCase = await updateCase(id, { info: newInfo });
-    setConnectedCase(updatedCase, task.taskSid);
+    setConnectedCase(updatedCase, task.taskSid, true);
 
     if (shouldStayInForm) {
       updateTempInfo({ screen: 'add-perpetrator', info: newCallerFormInformation }, task.taskSid);

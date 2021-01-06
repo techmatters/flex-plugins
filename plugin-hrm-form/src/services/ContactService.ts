@@ -13,6 +13,7 @@ import callerFormDefinition from '../formDefinitions/tabbedForms/CallerInformati
 import caseInfoFormDefinition from '../formDefinitions/tabbedForms/CaseInformationTab.json';
 import childFormDefinition from '../formDefinitions/tabbedForms/ChildInformationTab.json';
 import categoriesFormDefinition from '../formDefinitions/tabbedForms/IssueCategorizationTab.json';
+import { getConfig } from '../HrmFormPlugin';
 import type {
   CategoriesDefinition,
   CategoryEntry,
@@ -87,9 +88,9 @@ const transformValue = (e: FormItemDefinition) => (value: string | boolean | nul
   return value;
 };
 
-const transformValues = (def: FormDefinition) => (
-  values: TaskEntry['callerInformation'] | TaskEntry['caseInformation'] | TaskEntry['childInformation'],
-) => def.reduce((acc, e) => ({ ...acc, [e.name]: transformValue(e)(values[e.name]) }), {});
+// TODO: find a place where this is shared, as it's used also in case forms
+export const transformValues = (def: FormDefinition) => (values: { [key: string]: string | boolean }) =>
+  def.reduce((acc, e) => ({ ...acc, [e.name]: transformValue(e)(values[e.name]) }), {});
 
 const deTransformValue = (e: FormItemDefinition) => (value: string | boolean | null) => {
   // de-transform mixed checkbox null DB value to be "mixed"
@@ -135,9 +136,10 @@ export function transformForm(form: TaskEntry): ContactRawJson {
   const childInformation = nestName(transformedValues.childInformation);
 
   const categories = transformCategories(form.categories);
+  const { definitionVersion } = getConfig();
 
   const transformed = {
-    definitionVersion: 'v1', // TODO: put this in config (like feature flags)
+    definitionVersion,
     callType,
     callerInformation,
     childInformation,

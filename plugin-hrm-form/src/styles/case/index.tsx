@@ -159,6 +159,11 @@ export const TimelineText = styled('span')`
 `;
 TimelineText.displayName = 'TimelineText';
 
+export const TimelineLabel = styled(TimelineText)`
+  color: #9b9b9b;
+`;
+TimelineLabel.displayName = 'TimelineLabel';
+
 export const TimelineCallTypeIcon = styled('div')`
   margin-right: 10px;
   display: flex;
@@ -235,6 +240,13 @@ export const DetailsHeaderCaseContainer = styled('div')`
 `;
 
 DetailsHeaderCaseContainer.displayName = 'DetailsHeaderCaseContainer';
+
+export const DetailsHeaderCounselor = styled('div')`
+  font-style: italic;
+  margin-top: 5px;
+`;
+
+DetailsHeaderCounselor.displayName = 'DetailsHeaderCounselor';
 
 export const DetailsHeaderCaseId = styled(Typography)`
   font-weight: 600 !important;

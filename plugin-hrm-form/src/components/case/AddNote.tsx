@@ -43,7 +43,7 @@ const AddNote: React.FC<Props> = ({
     const notes = info && info.notes ? [...info.notes, newNote] : [newNote];
     const newInfo = info ? { ...info, notes } : { notes };
     const updatedCase = await updateCase(id, { info: newInfo });
-    setConnectedCase(updatedCase, task.taskSid);
+    setConnectedCase(updatedCase, task.taskSid, true);
     updateTempInfo({ screen: 'add-note', info: '' }, task.taskSid);
     onClickClose();
   };
