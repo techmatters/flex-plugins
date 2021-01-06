@@ -151,6 +151,8 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
         ]
       : undefined;
 
+  const isDataCallType = !isNonDataCallType(contactForm.callType);
+
   return (
     <FormProvider {...methods}>
       <div role="form" style={{ height: '100%' }}>
@@ -179,19 +181,23 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
                   display={subroute === 'callerInformation'}
                 />
               )}
-              <TabbedFormTab
-                tabPath="childInformation"
-                definition={ChildTabDefinition as FormDefinition}
-                initialValues={contactForm.childInformation}
-                display={subroute === 'childInformation'}
-              />
-              <IssueCategorizationTab display={subroute === 'categories'} initialValue={contactForm.categories} />
-              <TabbedFormTab
-                tabPath="caseInformation"
-                definition={CaseTabDefinition as FormDefinition}
-                initialValues={contactForm.caseInformation}
-                display={subroute === 'caseInformation'}
-              />
+              {isDataCallType && (
+                <>
+                  <TabbedFormTab
+                    tabPath="childInformation"
+                    definition={ChildTabDefinition as FormDefinition}
+                    initialValues={contactForm.childInformation}
+                    display={subroute === 'childInformation'}
+                  />
+                  <IssueCategorizationTab display={subroute === 'categories'} initialValue={contactForm.categories} />
+                  <TabbedFormTab
+                    tabPath="caseInformation"
+                    definition={CaseTabDefinition as FormDefinition}
+                    initialValues={contactForm.caseInformation}
+                    display={subroute === 'caseInformation'}
+                  />
+                </>
+              )}
             </div>
           )}
           <BottomBar
