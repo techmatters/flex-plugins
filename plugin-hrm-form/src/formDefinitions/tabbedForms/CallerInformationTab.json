@@ -219,7 +219,8 @@
       { "value": "Unknown", "label": "" },
       { "value": "Boy", "label": "Boy" },
       { "value": "Girl", "label": "Girl" },
-      { "value": "Non-Binary", "label": "Non-Binary" }
+      { "value": "Non-Binary", "label": "Non-Binary" },
+      { "value": "Unknown", "label": "Unknown" }
     ]
   },
   {
@@ -254,7 +255,8 @@
       { "value": "23", "label": "23" },
       { "value": "24", "label": "24" },
       { "value": "25", "label": "25" },
-      { "value": ">25", "label": ">25" }
+      { "value": ">25", "label": ">25" },
+      { "value": "Unknown", "label": "Unknown" }
     ]
   },
   {
