@@ -49,7 +49,7 @@ const CaseDetails = ({
 
   return (
     <>
-      <CaseDetailsHeader caseId={caseId} childName={name} />
+      <CaseDetailsHeader caseId={caseId} childName={name} counselor={counselor} />
       <DetailsContainer tabIndex={0} aria-labelledby="Case-CaseId-label">
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <div style={{ paddingRight: '20px' }}>

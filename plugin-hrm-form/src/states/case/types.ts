@@ -44,6 +44,7 @@ type SetConnectedCaseAction = {
   type: typeof SET_CONNECTED_CASE;
   connectedCase: Case;
   taskId: string;
+  caseHasBeenEdited: Boolean;
 };
 
 type RemoveConnectedCaseAction = {

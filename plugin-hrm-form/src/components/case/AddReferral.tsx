@@ -61,7 +61,7 @@ const AddReferral: React.FC<Props> = ({
     const referrals = info && info.referrals ? [...info.referrals, newReferral] : [newReferral];
     const newInfo = info ? { ...info, referrals } : { referrals };
     const updatedCase = await updateCase(id, { info: newInfo });
-    setConnectedCase(updatedCase, task.taskSid);
+    setConnectedCase(updatedCase, task.taskSid, true);
     updateTempInfo({ screen: 'add-referral', info: blankReferral }, task.taskSid);
     onClickClose();
   };

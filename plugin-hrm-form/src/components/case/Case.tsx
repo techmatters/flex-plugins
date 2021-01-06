@@ -53,13 +53,19 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const getNameFromContact = contact => {
-  const { firstName, lastName } = contact.rawJson.childInformation.name;
-  return formatName(`${firstName} ${lastName}`);
+  if (contact?.rawJson?.childInformation?.name) {
+    const { firstName, lastName } = contact.rawJson.childInformation.name;
+    return formatName(`${firstName} ${lastName}`);
+  }
+  return 'Unknown';
 };
 
 const getNameFromForm = form => {
-  const { firstName, lastName } = form.childInformation;
-  return formatName(`${firstName} ${lastName}`);
+  if (form?.childInformation) {
+    const { firstName, lastName } = form.childInformation;
+    return formatName(`${firstName} ${lastName}`);
+  }
+  return 'Unknown';
 };
 
 // eslint-disable-next-line complexity
@@ -166,14 +172,17 @@ const Case: React.FC<Props> = props => {
 
   const { task, form, counselorsHash } = props;
 
-  const { connectedCase } = props.connectedCaseState;
+  const { connectedCase, caseHasBeenEdited } = props.connectedCaseState;
 
   const getCategories = firstConnectedContact => {
     if (firstConnectedContact?.rawJson?.caseInformation) {
       return firstConnectedContact.rawJson.caseInformation.categories;
     }
-    const transformedCategories = transformCategories(form.categories);
-    return transformedCategories;
+    if (form?.categories) {
+      const transformedCategories = transformCategories(form.categories);
+      return transformedCategories;
+    }
+    return null;
   };
 
   const handleUpdate = async () => {
@@ -272,7 +281,7 @@ const Case: React.FC<Props> = props => {
               />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
-              <CaseSummary task={props.task} readonly={props.isCreating || status === 'closed'} />
+              <CaseSummary task={props.task} readonly={status === 'closed'} />
             </Box>
             <Dialog onClose={closeMockedMessage} open={isMockedMessageOpen}>
               <DialogContent>{mockedMessage}</DialogContent>
@@ -307,12 +316,12 @@ const Case: React.FC<Props> = props => {
             {!props.isCreating && (
               <>
                 <Box marginRight="15px">
-                  <StyledNextStepButton roundCorners onClick={props.handleClose}>
+                  <StyledNextStepButton secondary roundCorners onClick={props.handleClose}>
                     <Template code="BottomBar-Close" />
                   </StyledNextStepButton>
                 </Box>
                 {isEditing && (
-                  <StyledNextStepButton roundCorners onClick={handleUpdate}>
+                  <StyledNextStepButton disabled={!caseHasBeenEdited} roundCorners onClick={handleUpdate}>
                     <Template code="BottomBar-Update" />
                   </StyledNextStepButton>
                 )}
