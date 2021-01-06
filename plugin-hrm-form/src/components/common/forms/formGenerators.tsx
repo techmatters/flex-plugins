@@ -44,7 +44,7 @@ export const getInitialValue = (def: FormItemDefinition) => {
     case 'dependent-select':
       return def.defaultOption.value;
     case 'checkbox':
-      return def.initialChecked ? def.initialChecked : false;
+      return Boolean(def.initialChecked);
     case 'mixed-checkbox':
       return def.initialChecked === undefined ? 'mixed' : def.initialChecked;
     default:
