@@ -46,6 +46,11 @@
     "name": "abuseReportedElsewhere",
     "label": "Has abuse been reported elsewhere?",
     "type": "mixed-checkbox"
+  },
+  {
+    "name": "whereElseBeenReported",
+    "label": "Where else the incident has been reported?",
+    "type": "input"
   }
 ]
 
