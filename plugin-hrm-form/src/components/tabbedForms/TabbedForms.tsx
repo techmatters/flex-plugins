@@ -29,6 +29,7 @@ import { hasTaskControl } from '../../utils/transfer';
 import CallerTabDefinition from '../../formDefinitions/tabbedForms/CallerInformationTab.json';
 import CaseTabDefinition from '../../formDefinitions/tabbedForms/CaseInformationTab.json';
 import ChildTabDefinition from '../../formDefinitions/tabbedForms/ChildInformationTab.json';
+import LayoutDefinitions from '../../formDefinitions/LayoutDefinitions.json';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -186,6 +187,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
               <TabbedFormTab
                 tabPath="caseInformation"
                 definition={CaseTabDefinition as FormDefinition}
+                layoutDefinition={LayoutDefinitions.contact.caseInformation}
                 initialValues={contactForm.caseInformation}
                 display={subroute === 'caseInformation'}
               />

@@ -24,7 +24,7 @@ import { createFormFromDefinition, disperseInputs, splitInHalf, splitAt } from '
 import { transformValues } from '../../services/ContactService';
 import type { FormDefinition } from '../common/forms/types';
 import IncidentForm from '../../formDefinitions/caseForms/IncidentForm.json';
-import layoutDefinitions from '../../formDefinitions/layoutDefinitions.json';
+import LayoutDefinitions from '../../formDefinitions/LayoutDefinitions.json';
 
 type OwnProps = {
   task: ITask;
@@ -56,8 +56,8 @@ const AddIncident: React.FC<Props> = ({
 
     const generatedForm = createFormFromDefinition(IncidentForm as FormDefinition)([])(initialForm)(updateCallBack);
 
-    if (layoutDefinitions.incidents.splitFormAt)
-      return splitAt(layoutDefinitions.incidents.splitFormAt)(disperseInputs(7)(generatedForm));
+    if (LayoutDefinitions.case.incidents.splitFormAt)
+      return splitAt(LayoutDefinitions.case.incidents.splitFormAt)(disperseInputs(7)(generatedForm));
 
     return splitInHalf(disperseInputs(7)(generatedForm));
   }, [initialForm, methods, task.taskSid, updateTempInfo]);

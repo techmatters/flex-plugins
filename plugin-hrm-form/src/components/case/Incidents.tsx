@@ -8,7 +8,7 @@ import { CaseSectionFont, TimelineRow, PlaceHolderText } from '../../styles/case
 import CaseAddButton from './CaseAddButton';
 import TimelineInformationRow from './TimelineInformationRow';
 import IncidentForm from '../../formDefinitions/caseForms/IncidentForm.json';
-import layoutDefinitions from '../../formDefinitions/layoutDefinitions.json';
+import LayoutDefinitions from '../../formDefinitions/LayoutDefinitions.json';
 import type { FormDefinition, LayoutDefinition } from '../common/forms/types';
 
 type OwnProps = {
@@ -36,7 +36,7 @@ const Incidents: React.FC<OwnProps> = ({ onClickAddIncident, onClickView, incide
             onClickView={() => onClickView(i)}
             definition={IncidentForm as FormDefinition}
             values={i.incident}
-            layoutDefinition={layoutDefinitions.incidents as LayoutDefinition}
+            layoutDefinition={LayoutDefinitions.case.incidents as LayoutDefinition}
           />
         ))
       ) : (

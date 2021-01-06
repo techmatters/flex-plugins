@@ -1,0 +1,25 @@
+{
+  "contact": {
+    "caseInformation": {
+      "splitFormAt": 4
+    }
+  },
+  "case": {
+    "incidents": {
+      "previewFields": ["date", "duration", "location"],
+      "layout": {
+        "date":  {
+            "includeLabel": false,
+            "format": "date"
+          },
+        "duration":  {
+            "includeLabel": true
+          },
+        "location":  {
+          "includeLabel": true
+        }
+      },
+      "splitFormAt": 3
+    }
+  }
+}
