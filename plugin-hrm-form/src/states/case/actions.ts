@@ -10,10 +10,11 @@ import {
 } from './types';
 
 // Action creators
-export const setConnectedCase = (connectedCase: Case, taskId: string): CaseActionType => ({
+export const setConnectedCase = (connectedCase: Case, taskId: string, caseHasBeenEdited: Boolean): CaseActionType => ({
   type: SET_CONNECTED_CASE,
   connectedCase,
   taskId,
+  caseHasBeenEdited,
 });
 
 export const removeConnectedCase = (taskId: string): CaseActionType => ({

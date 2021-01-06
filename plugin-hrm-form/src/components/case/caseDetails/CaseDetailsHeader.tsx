@@ -9,16 +9,18 @@ import {
   DetailsHeaderCaseContainer,
   DetailsHeaderCaseId,
   DetailsHeaderOfficeName,
+  DetailsHeaderCounselor,
 } from '../../../styles/case';
 
 type OwnProps = {
   caseId: string;
   childName: string;
   officeName: string;
+  counselor: string;
   onClickView: () => void;
 };
 
-const CaseDetailsHeader: React.FC<OwnProps> = ({ caseId, childName, officeName, onClickView }) => {
+const CaseDetailsHeader: React.FC<OwnProps> = ({ caseId, childName, officeName, counselor, onClickView }) => {
   return (
     <DetailsHeaderContainer>
       <DetailsHeaderChildName variant="h6">{childName}</DetailsHeaderChildName>
@@ -29,6 +31,9 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({ caseId, childName, officeName, 
         </DetailsHeaderCaseId>
         {officeName && <DetailsHeaderOfficeName>{officeName}</DetailsHeaderOfficeName>}
       </DetailsHeaderCaseContainer>
+      <DetailsHeaderCounselor>
+        <Template code="Case-Counsellor" />: {counselor}
+      </DetailsHeaderCounselor>
     </DetailsHeaderContainer>
   );
 };

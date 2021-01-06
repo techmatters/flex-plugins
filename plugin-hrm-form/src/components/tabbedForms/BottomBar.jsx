@@ -73,7 +73,7 @@ class BottomBar extends Component {
     try {
       const caseFromDB = await createCase(caseRecord);
       this.props.changeRoute({ route: 'new-case' }, taskSid);
-      this.props.setConnectedCase(caseFromDB, taskSid);
+      this.props.setConnectedCase(caseFromDB, taskSid, false);
     } catch (error) {
       window.alert(strings['Error-Backend']);
     }

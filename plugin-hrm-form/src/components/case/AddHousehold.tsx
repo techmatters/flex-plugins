@@ -60,7 +60,7 @@ const AddHousehold: React.FC<Props> = ({
     const households = info && info.households ? [...info.households, newHousehold] : [newHousehold];
     const newInfo = info ? { ...info, households } : { households };
     const updatedCase = await updateCase(id, { info: newInfo });
-    setConnectedCase(updatedCase, task.taskSid);
+    setConnectedCase(updatedCase, task.taskSid, true);
     if (shouldStayInForm) {
       updateTempInfo({ screen: 'add-household', info: newCallerFormInformation }, task.taskSid);
       changeRoute({ route, subroute: 'add-household' }, task.taskSid);
