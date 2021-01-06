@@ -162,6 +162,7 @@ TimelineText.displayName = 'TimelineText';
 export const TimelineLabel = styled(TimelineText)`
   color: #9b9b9b;
 `;
+TimelineLabel.displayName = 'TimelineLabel';
 
 export const TimelineCallTypeIcon = styled('div')`
   margin-right: 10px;

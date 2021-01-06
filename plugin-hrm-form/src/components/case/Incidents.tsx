@@ -31,7 +31,6 @@ const Incidents: React.FC<OwnProps> = ({ onClickAddIncident, onClickView, incide
       </Box>
       {incidents.length ? (
         incidents.map((i, index) => (
-          // <InformationRow key={`perpetrator-${index}`} person={p.incident} onClickView={() => onClickView(p)} />
           <TimelineInformationRow
             key={`incident-${index}`}
             onClickView={() => onClickView(i)}
