@@ -173,6 +173,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
                 <TabbedFormTab
                   tabPath="callerInformation"
                   definition={CallerTabDefinition as FormDefinition}
+                  layoutDefinition={LayoutDefinitions.contact.callerInformation}
                   initialValues={contactForm.callerInformation}
                   display={subroute === 'callerInformation'}
                 />
@@ -180,6 +181,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
               <TabbedFormTab
                 tabPath="childInformation"
                 definition={ChildTabDefinition as FormDefinition}
+                layoutDefinition={LayoutDefinitions.contact.childInformation}
                 initialValues={contactForm.childInformation}
                 display={subroute === 'childInformation'}
               />
