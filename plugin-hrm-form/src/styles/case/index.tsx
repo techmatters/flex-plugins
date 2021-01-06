@@ -241,6 +241,13 @@ export const DetailsHeaderCaseContainer = styled('div')`
 
 DetailsHeaderCaseContainer.displayName = 'DetailsHeaderCaseContainer';
 
+export const DetailsHeaderCounselor = styled('div')`
+  font-style: italic;
+  margin-top: 5px;
+`;
+
+DetailsHeaderCounselor.displayName = 'DetailsHeaderCounselor';
+
 export const DetailsHeaderCaseId = styled(Typography)`
   font-weight: 600 !important;
 `;
