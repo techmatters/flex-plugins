@@ -179,6 +179,7 @@ export async function saveToHrm(task, form, hrmBaseUrl, workerSid, helpline, sho
       ...createNewTaskEntry(definitions)(false),
       callType: form.callType,
       metadata: form.metadata,
+      ...(task.attributes.isContactlessTask && { contactlessTask: form.contactlessTask }),
     };
   }
 
