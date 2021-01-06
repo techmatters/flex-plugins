@@ -75,7 +75,7 @@ const AddIncident: React.FC<Props> = ({
     const incidents = info && info.incidents ? [...info.incidents, newIncident] : [newIncident];
     const newInfo = info ? { ...info, incidents } : { incidents };
     const updatedCase = await updateCase(id, { info: newInfo });
-    setConnectedCase(updatedCase, task.taskSid);
+    setConnectedCase(updatedCase, task.taskSid, true);
   };
 
   async function saveIncidentAndLeave() {
