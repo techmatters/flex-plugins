@@ -33,14 +33,18 @@ import AddNote from './AddNote';
 import AddReferral from './AddReferral';
 import Households from './Households';
 import Perpetrators from './Perpetrators';
+import Incidents from './Incidents';
 import CaseSummary from './CaseSummary';
 import ViewContact from './ViewContact';
 import AddHousehold from './AddHousehold';
 import AddPerpetrator from './AddPerpetrator';
+import AddIncident from './AddIncident';
 import ViewNote from './ViewNote';
 import ViewHousehold from './ViewHousehold';
 import ViewPerpetrator from './ViewPerpetrator';
+import ViewIncident from './ViewIncident';
 import ViewReferral from './ViewReferral';
+import type { IncidentEntry } from '../../types/types';
 
 type OwnProps = {
   task: ITask;
@@ -140,6 +144,11 @@ const Case: React.FC<Props> = props => {
     props.changeRoute({ route, subroute: 'add-perpetrator' }, props.task.taskSid);
   };
 
+  const onClickAddIncident = () => {
+    props.updateTempInfo({ screen: 'add-incident', info: null }, props.task.taskSid);
+    props.changeRoute({ route, subroute: 'add-incident' }, props.task.taskSid);
+  };
+
   const onClickViewHousehold = household => {
     props.updateTempInfo({ screen: 'view-household', info: household }, props.task.taskSid);
     props.changeRoute({ route, subroute: 'view-household' }, props.task.taskSid);
@@ -148,6 +157,11 @@ const Case: React.FC<Props> = props => {
   const onClickViewPerpetrator = perpetrator => {
     props.updateTempInfo({ screen: 'view-perpetrator', info: perpetrator }, props.task.taskSid);
     props.changeRoute({ route, subroute: 'view-perpetrator' }, props.task.taskSid);
+  };
+
+  const onClickViewIncident = (incident: IncidentEntry) => {
+    props.updateTempInfo({ screen: 'view-incident', info: incident }, props.task.taskSid);
+    props.changeRoute({ route, subroute: 'view-incident' }, props.task.taskSid);
   };
 
   const onInfoChange = (fieldName, value) => {
@@ -220,6 +234,7 @@ const Case: React.FC<Props> = props => {
   const followUpDate = info && info.followUpDate ? info.followUpDate : '';
   const households = info && info.households ? info.households : [];
   const perpetrators = info && info.perpetrators ? info.perpetrators : [];
+  const incidents = info && info.incidents ? info.incidents : [];
 
   const addScreenProps = { task: props.task, counselor, onClickClose: handleClose };
 
@@ -232,6 +247,8 @@ const Case: React.FC<Props> = props => {
       return <AddHousehold {...addScreenProps} />;
     case 'add-perpetrator':
       return <AddPerpetrator {...addScreenProps} />;
+    case 'add-incident':
+      return <AddIncident {...addScreenProps} />;
     case 'view-contact':
       return <ViewContact {...addScreenProps} />;
     case 'view-note':
@@ -240,6 +257,8 @@ const Case: React.FC<Props> = props => {
       return <ViewHousehold {...addScreenProps} />;
     case 'view-perpetrator':
       return <ViewPerpetrator {...addScreenProps} />;
+    case 'view-incident':
+      return <ViewIncident {...addScreenProps} />;
     case 'view-referral':
       return <ViewReferral {...addScreenProps} />;
     default:
@@ -278,6 +297,14 @@ const Case: React.FC<Props> = props => {
                 status={status}
                 onClickAddPerpetrator={onClickAddPerpetrator}
                 onClickView={onClickViewPerpetrator}
+              />
+            </Box>
+            <Box marginLeft="25px" marginTop="25px">
+              <Incidents
+                incidents={incidents}
+                onClickAddIncident={onClickAddIncident}
+                onClickView={onClickViewIncident}
+                status={status}
               />
             </Box>
             <Box marginLeft="25px" marginTop="25px">

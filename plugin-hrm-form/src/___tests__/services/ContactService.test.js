@@ -1,7 +1,8 @@
 import { set } from 'lodash/fp';
 
+import '../mockGetConfig';
+
 import { transformForm, saveToHrm, createCategoriesObject } from '../../services/ContactService';
-import { FieldType, recreateBlankForm } from '../../states/ContactFormStateFactory';
 import { createNewTaskEntry } from '../../states/contacts/reducer';
 import callTypes, { channelTypes } from '../../states/DomainConstants';
 import callerFormDefinition from '../../formDefinitions/tabbedForms/CallerInformationTab.json';

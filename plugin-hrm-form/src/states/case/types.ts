@@ -1,4 +1,4 @@
-import { Case, CaseStatus, CaseInfo, HouseholdEntry, PerpetratorEntry, ReferralEntry } from '../../types/types';
+import type * as t from '../../types/types';
 import { NewCaseSubroutes } from '../routing/types';
 import { CallerFormInformation } from '../../components/common/forms/CallerForm';
 import { channelsAndDefault } from '../DomainConstants';
@@ -24,25 +24,27 @@ export type ViewContact = {
 };
 
 export type ViewReferral = {
-  referral: ReferralEntry;
+  referral: t.ReferralEntry;
   counselor: string;
   date: string;
 };
 
 export type TemporaryCaseInfo =
   | { screen: typeof NewCaseSubroutes.AddNote; info: string }
-  | { screen: typeof NewCaseSubroutes.AddReferral; info: ReferralEntry }
+  | { screen: typeof NewCaseSubroutes.AddReferral; info: t.ReferralEntry }
   | { screen: typeof NewCaseSubroutes.AddHousehold; info: CallerFormInformation }
   | { screen: typeof NewCaseSubroutes.AddPerpetrator; info: CallerFormInformation }
+  | { screen: typeof NewCaseSubroutes.AddIncident; info: t.Incident }
   | { screen: typeof NewCaseSubroutes.ViewContact; info: ViewContact }
   | { screen: typeof NewCaseSubroutes.ViewNote; info: ViewNote }
-  | { screen: typeof NewCaseSubroutes.ViewHousehold; info: HouseholdEntry }
-  | { screen: typeof NewCaseSubroutes.ViewPerpetrator; info: PerpetratorEntry }
+  | { screen: typeof NewCaseSubroutes.ViewHousehold; info: t.HouseholdEntry }
+  | { screen: typeof NewCaseSubroutes.ViewPerpetrator; info: t.PerpetratorEntry }
+  | { screen: typeof NewCaseSubroutes.ViewIncident; info: t.IncidentEntry }
   | { screen: typeof NewCaseSubroutes.ViewReferral; info: ViewReferral };
 
 type SetConnectedCaseAction = {
   type: typeof SET_CONNECTED_CASE;
-  connectedCase: Case;
+  connectedCase: t.Case;
   taskId: string;
   caseHasBeenEdited: Boolean;
 };
@@ -54,7 +56,7 @@ type RemoveConnectedCaseAction = {
 
 type UpdateCaseInfoAction = {
   type: typeof UPDATE_CASE_INFO;
-  info: CaseInfo;
+  info: t.CaseInfo;
   taskId: string;
 };
 
@@ -66,7 +68,7 @@ type TemporaryCaseInfoAction = {
 
 type UpdateCasesStatusAction = {
   type: typeof UPDATE_CASE_STATUS;
-  status: CaseStatus;
+  status: t.CaseStatus;
   taskId: string;
 };
 
