@@ -31,6 +31,15 @@ import { isConnectedCaseActivity } from './caseHelpers';
 
 const sortActivities = activities => activities.sort((a, b) => b.date.localeCompare(a.date));
 
+const getDateFromNotSavedContact = (task, form) => {
+  if (!task.attributes.isContactlessTask) {
+    return Date.now();
+  }
+
+  const { date: dateString, time } = form.contactlessTask;
+  return new Date(`${dateString}T${time}:00`);
+};
+
 const Timeline = ({ status, task, form, caseObj, changeRoute, updateTempInfo, route }) => {
   const [mockedMessage, setMockedMessage] = useState(null);
   const [timeline, setTimeline] = useState([]);
@@ -47,9 +56,10 @@ const Timeline = ({ status, task, form, caseObj, changeRoute, updateTempInfo, ro
       const isCreatingCase = !timelineActivities.some(isConnectedCaseActivity);
 
       if (isCreatingCase) {
+        const date = getDateFromNotSavedContact(task, form);
         const { workerSid } = getConfig();
         const connectCaseActivity = {
-          date: format(Date.now(), 'yyyy-MM-dd HH:mm:ss'),
+          date: format(date, 'yyyy-MM-dd HH:mm:ss'),
           type: task.channelType,
           text: form.caseInformation.callSummary,
           twilioWorkerId: workerSid,
