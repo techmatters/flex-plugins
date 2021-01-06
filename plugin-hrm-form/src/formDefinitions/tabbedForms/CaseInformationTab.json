@@ -47,7 +47,8 @@
   {
     "name": "keepConfidential",
     "label": "Keep confidential?",
-    "type": "checkbox"
+    "type": "checkbox",
+    "initialChecked": true
   },
   {
     "name": "okForCaseWorkerToCall",

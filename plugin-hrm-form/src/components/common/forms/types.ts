@@ -72,6 +72,7 @@ type DependentSelectDefinition = {
 
 type CheckboxDefinition = {
   type: 'checkbox';
+  initialChecked?: boolean;
 } & ItemBase &
   ValidationRules;
 
