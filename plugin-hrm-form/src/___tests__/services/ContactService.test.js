@@ -180,11 +180,9 @@ describe('saveToHrm() (isContactlessTask)', () => {
     mockedFetch.mockClear();
   });
 
-  test('non-data calltype do not save form data (nor it does captures contactlessTask info)', async () => {
-    const form = createForm(
-      { callType: callTypes.hangup, childFirstName: 'Jill' },
-      { channel: '', date: '2020-11-24', time: '12:00' },
-    );
+  test('non-data calltype do not save form data (but captures contactlessTask info)', async () => {
+    const contactlessTask = { channel: 'web', date: '2020-11-24', time: '12:00' };
+    const form = createForm({ callType: callTypes.hangup, childFirstName: 'Jill' }, contactlessTask);
     const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
 
     await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
@@ -192,7 +190,8 @@ describe('saveToHrm() (isContactlessTask)', () => {
     const formFromPOST = getFormFromPOST(mockedFetch);
     expect(formFromPOST.callType).toEqual(callTypes.hangup);
     expect(formFromPOST.childInformation.name.firstName).toEqual('');
-    expect(getTimeOfContactFromPOST(mockedFetch)).not.toEqual(new Date(2020, 10, 24, 12, 0).getTime());
+    expect(formFromPOST.contactlessTask).toStrictEqual(contactlessTask);
+    expect(getTimeOfContactFromPOST(mockedFetch)).toEqual(new Date(2020, 10, 24, 12, 0).getTime());
 
     mockedFetch.mockClear();
   });
