@@ -27,7 +27,6 @@ import { formatName } from '../../utils';
 import * as SearchActions from '../../states/search/actions';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
-import { newCallerFormInformation } from '../common/forms';
 import Timeline from './Timeline';
 import AddNote from './AddNote';
 import AddReferral from './AddReferral';
@@ -44,7 +43,7 @@ import ViewHousehold from './ViewHousehold';
 import ViewPerpetrator from './ViewPerpetrator';
 import ViewIncident from './ViewIncident';
 import ViewReferral from './ViewReferral';
-import type { IncidentEntry } from '../../types/types';
+import type { HouseholdEntry, PerpetratorEntry, IncidentEntry } from '../../types/types';
 
 type OwnProps = {
   task: ITask;
@@ -135,12 +134,12 @@ const Case: React.FC<Props> = props => {
   };
 
   const onClickAddHousehold = () => {
-    props.updateTempInfo({ screen: 'add-household', info: newCallerFormInformation }, props.task.taskSid);
+    props.updateTempInfo({ screen: 'add-household', info: null }, props.task.taskSid);
     props.changeRoute({ route, subroute: 'add-household' }, props.task.taskSid);
   };
 
   const onClickAddPerpetrator = () => {
-    props.updateTempInfo({ screen: 'add-perpetrator', info: newCallerFormInformation }, props.task.taskSid);
+    props.updateTempInfo({ screen: 'add-perpetrator', info: null }, props.task.taskSid);
     props.changeRoute({ route, subroute: 'add-perpetrator' }, props.task.taskSid);
   };
 
@@ -149,12 +148,12 @@ const Case: React.FC<Props> = props => {
     props.changeRoute({ route, subroute: 'add-incident' }, props.task.taskSid);
   };
 
-  const onClickViewHousehold = household => {
+  const onClickViewHousehold = (household: HouseholdEntry) => {
     props.updateTempInfo({ screen: 'view-household', info: household }, props.task.taskSid);
     props.changeRoute({ route, subroute: 'view-household' }, props.task.taskSid);
   };
 
-  const onClickViewPerpetrator = perpetrator => {
+  const onClickViewPerpetrator = (perpetrator: PerpetratorEntry) => {
     props.updateTempInfo({ screen: 'view-perpetrator', info: perpetrator }, props.task.taskSid);
     props.changeRoute({ route, subroute: 'view-perpetrator' }, props.task.taskSid);
   };

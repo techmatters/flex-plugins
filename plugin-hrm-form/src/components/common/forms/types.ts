@@ -2,15 +2,6 @@ import type { ValidationRules } from 'react-hook-form';
 
 export type FormFieldType = { value: string; error?: string; validation?: string[]; touched?: boolean };
 
-export function isFormFieldType(object: any): object is FormFieldType {
-  return (
-    typeof object.value === 'string' &&
-    (!object.touched || typeof object.touched === 'boolean') &&
-    (!object.error || typeof object.error === 'string') &&
-    (!object.validation || object.validation instanceof Array)
-  );
-}
-
 export type FormInformation = {
   [key: string]: FormFieldType | FormInformation;
 };

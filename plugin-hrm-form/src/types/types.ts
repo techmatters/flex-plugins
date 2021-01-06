@@ -1,20 +1,23 @@
 /* eslint-disable import/no-unused-modules */
 import type { CallTypes } from '../states/DomainConstants';
-import { CallerFormValues } from '../components/common/forms/CallerForm';
 
 export type CaseStatus = 'open' | 'closed';
 
 type EntryInfo = { createdAt: string; twilioWorkerId: string };
-
-export type PerpetratorEntry = { perpetrator: CallerFormValues } & EntryInfo;
-
-export type HouseholdEntry = { household: CallerFormValues } & EntryInfo;
 
 export type ReferralEntry = {
   date: string;
   referredTo: string;
   comments: string;
 };
+
+export type Household = { [key: string]: string | boolean };
+
+export type HouseholdEntry = { household: Household } & EntryInfo;
+
+export type Perpetrator = { [key: string]: string | boolean };
+
+export type PerpetratorEntry = { perpetrator: Perpetrator } & EntryInfo;
 
 export type Incident = { [key: string]: string | boolean };
 

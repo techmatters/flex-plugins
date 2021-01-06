@@ -10,6 +10,12 @@
     }
   },
   "case": {
+    "households": {
+      "splitFormAt": 7
+    },
+    "perpetrators": {
+      "splitFormAt": 7
+    },
     "incidents": {
       "previewFields": ["date", "duration", "location"],
       "layout": {

@@ -3,13 +3,13 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
-import { CallerFormValues } from '../common/forms/CallerForm';
+import { Household, Perpetrator } from '../../types/types';
 import { TimelineRow, InformationBoldText, TimelineText, ViewButton, RowItemContainer } from '../../styles/case';
 import { Box, HiddenText } from '../../styles/HrmStyles';
 import { formatName } from '../../utils';
 
 type OwnProps = {
-  person: CallerFormValues;
+  person: Household | Perpetrator;
   onClickView: () => void;
 };
 
@@ -25,7 +25,7 @@ const InformationRow: React.FC<OwnProps> = ({ person, onClickView }) => {
         <HiddenText>
           <Template code="Case-PerpetratorName" />
         </HiddenText>
-        <InformationBoldText>{formatName(`${person.name.firstName} ${person.name.lastName}`)}</InformationBoldText>
+        <InformationBoldText>{formatName(`${person.firstName} ${person.lastName}`)}</InformationBoldText>
       </RowItem>
       <RowItem>
         <HiddenText>
