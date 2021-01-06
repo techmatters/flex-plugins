@@ -19,6 +19,8 @@ import { createCase } from '../../services/CaseService';
 import { saveToHrm } from '../../services/ContactService';
 import { hasTaskControl } from '../../utils/transfer';
 import { namespace, contactFormsBase } from '../../states';
+import { isNonDataCallType } from '../../states/ValidationRules';
+import callTypes from '../../states/DomainConstants';
 
 class BottomBar extends Component {
   static displayName = 'BottomBar';
@@ -33,7 +35,7 @@ class BottomBar extends Component {
     task: taskType.isRequired,
     changeRoute: PropTypes.func.isRequired,
     setConnectedCase: PropTypes.func.isRequired,
-    contactForm: PropTypes.shape({}).isRequired,
+    contactForm: PropTypes.shape({ callType: PropTypes.oneOf(Object.keys(callTypes)) }).isRequired,
   };
 
   static defaultProps = {
@@ -101,7 +103,7 @@ class BottomBar extends Component {
   };
 
   render() {
-    const { showNextButton, showSubmitButton, handleSubmitIfValid, optionalButtons } = this.props;
+    const { showNextButton, showSubmitButton, handleSubmitIfValid, optionalButtons, contactForm } = this.props;
     const { isMenuOpen, anchorEl, mockedMessage } = this.state;
 
     const showBottomBar = showNextButton || showSubmitButton;
@@ -145,7 +147,7 @@ class BottomBar extends Component {
           )}
           {showSubmitButton && (
             <>
-              {featureFlags.enable_case_management && (
+              {featureFlags.enable_case_management && !isNonDataCallType(contactForm.callType) && (
                 <Box marginRight="15px">
                   <StyledNextStepButton type="button" roundCorners secondary onClick={this.toggleCaseMenu}>
                     <FolderIcon style={{ fontSize: '16px', marginRight: '10px' }} />

@@ -29,6 +29,7 @@ import { hasTaskControl } from '../../utils/transfer';
 import CallerTabDefinition from '../../formDefinitions/tabbedForms/CallerInformationTab.json';
 import CaseTabDefinition from '../../formDefinitions/tabbedForms/CaseInformationTab.json';
 import ChildTabDefinition from '../../formDefinitions/tabbedForms/ChildInformationTab.json';
+import { isNonDataCallType } from '../../states/ValidationRules';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -54,6 +55,8 @@ const mapTabsToIndex = (task: ITask, contactForm: TaskEntry): TabbedFormSubroute
   const isCallerType = contactForm.callType === callTypes.caller;
 
   if (task.attributes.isContactlessTask) {
+    if (isNonDataCallType(contactForm.callType)) return ['contactlessTask'];
+
     return isCallerType
       ? ['search', 'contactlessTask', 'callerInformation', 'childInformation', 'categories', 'caseInformation']
       : ['search', 'contactlessTask', 'childInformation', 'categories', 'caseInformation'];
