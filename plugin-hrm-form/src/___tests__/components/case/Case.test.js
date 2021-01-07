@@ -72,6 +72,16 @@ const themeConf = {
   colorTheme: HrmTheme,
 };
 
+const ownProps = {
+  task: {
+    taskSid: 'task1',
+    attributes: {
+      isContactlessTask: false,
+    },
+  },
+  handleCompleteTask: jest.fn(),
+};
+
 describe('useState mocked', () => {
   const setState = jest.fn();
   const useStateMock = initState => [initState, setState];
@@ -83,13 +93,6 @@ describe('useState mocked', () => {
   });
 
   test('Case (should return null)', async () => {
-    const ownProps = {
-      task: {
-        taskSid: 'task1',
-      },
-      handleCompleteTask: jest.fn(),
-    };
-
     const initialState = createState({
       [contactFormsBase]: {
         tasks: {
@@ -185,13 +188,6 @@ describe('useState mocked', () => {
   });
 
   test('Case (should render)', async () => {
-    const ownProps = {
-      task: {
-        taskSid: 'task1',
-      },
-      handleCompleteTask: jest.fn(),
-    };
-
     const store = mockStore(initialState);
 
     const component = renderer.create(
@@ -261,13 +257,6 @@ describe('useState mocked', () => {
    */
 
   test('click Add Note button', async () => {
-    const ownProps = {
-      task: {
-        taskSid: 'task1',
-      },
-      handleCompleteTask: jest.fn(),
-    };
-
     const store = mockStore(initialState);
     store.dispatch = jest.fn();
 
@@ -291,13 +280,6 @@ describe('useState mocked', () => {
   });
 
   test('click Add Referral button', async () => {
-    const ownProps = {
-      task: {
-        taskSid: 'task1',
-      },
-      handleCompleteTask: jest.fn(),
-    };
-
     const store = mockStore(initialState);
     store.dispatch = jest.fn();
 
@@ -321,12 +303,6 @@ describe('useState mocked', () => {
   });
 
   test('click Add Household Information button', async () => {
-    const ownProps = {
-      task: {
-        taskSid: 'task1',
-      },
-      handleCompleteTask: jest.fn(),
-    };
     const store = mockStore(initialState);
     store.dispatch = jest.fn();
 
@@ -350,13 +326,6 @@ describe('useState mocked', () => {
   });
 
   test('click Add Perpetrator button', async () => {
-    const ownProps = {
-      task: {
-        taskSid: 'task1',
-      },
-      handleCompleteTask: jest.fn(),
-    };
-
     const store = mockStore(initialState);
     store.dispatch = jest.fn();
 
@@ -380,13 +349,6 @@ describe('useState mocked', () => {
   });
 
   test('click View Household button', async () => {
-    const ownProps = {
-      task: {
-        taskSid: 'task1',
-      },
-      handleCompleteTask: jest.fn(),
-    };
-
     const stateWithHousehold = addInfoToCase({ households: [householdEntry] });
     const store = mockStore(stateWithHousehold);
     store.dispatch = jest.fn();
@@ -417,13 +379,6 @@ describe('useState mocked', () => {
   });
 
   test('click View Perpetrator button', async () => {
-    const ownProps = {
-      task: {
-        taskSid: 'task1',
-      },
-      handleCompleteTask: jest.fn(),
-    };
-
     const stateWithPerpetrators = addInfoToCase({ perpetrators: [perpetratorEntry] });
     const store = mockStore(stateWithPerpetrators);
     store.dispatch = jest.fn();
@@ -454,13 +409,6 @@ describe('useState mocked', () => {
   });
 
   test('edit case summary', async () => {
-    const ownProps = {
-      task: {
-        taskSid: 'task1',
-      },
-      handleCompleteTask: jest.fn(),
-    };
-
     const store = mockStore(initialState);
     store.dispatch = jest.fn();
 
@@ -483,14 +431,6 @@ describe('useState mocked', () => {
 
   test('a11y', async () => {
     getActivities.mockReturnValueOnce(Promise.resolve([]));
-
-    const ownProps = {
-      task: {
-        taskSid: 'task1',
-      },
-      handleCompleteTask: jest.fn(),
-    };
-
     const store = mockStore(initialState);
 
     const wrapper = mount(
