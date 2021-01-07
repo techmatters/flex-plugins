@@ -10,7 +10,7 @@ import { namespace, connectedCaseBase, configurationBase, RootState } from '../.
 import ActionHeader from './ActionHeader';
 import SectionEntry from '../SectionEntry';
 import IncidentForm from '../../formDefinitions/caseForms/IncidentForm.json';
-import layoutDefinitions from '../../formDefinitions/layoutDefinitions.json';
+import LayoutDefinitions from '../../formDefinitions/LayoutDefinitions.json';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
@@ -52,7 +52,7 @@ const ViewIncident: React.FC<Props> = ({ counselorsHash, temporaryCaseInfo, onCl
                 description={<Template code={e.label} />}
                 value={incident[e.name]}
                 definition={e}
-                layout={layoutDefinitions.incidents.layout[e.name]}
+                layout={LayoutDefinitions.case.incidents.layout[e.name]}
               />
             ))}
           </>

@@ -13,14 +13,15 @@ import {
   Box,
   BottomButtonBarHeight,
 } from '../../styles/HrmStyles';
-import { createFormFromDefinition, disperseInputs, splitInHalf } from '../common/forms/formGenerators';
-import type { FormDefinition } from '../common/forms/types';
+import { createFormFromDefinition, disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
+import type { FormDefinition, LayoutDefinition } from '../common/forms/types';
 import type { TaskEntry } from '../../states/contacts/reducer';
 
 type OwnProps = {
   task: ITask;
   display: boolean;
   definition: FormDefinition;
+  layoutDefinition?: LayoutDefinition;
   tabPath: keyof TaskEntry;
   initialValues: TaskEntry['callerInformation'] | TaskEntry['childInformation'] | TaskEntry['caseInformation'];
 };
@@ -28,7 +29,15 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const TabbedFormTab: React.FC<Props> = ({ task, display, definition, tabPath, initialValues, updateForm }) => {
+const TabbedFormTab: React.FC<Props> = ({
+  task,
+  display,
+  definition,
+  layoutDefinition,
+  tabPath,
+  initialValues,
+  updateForm,
+}) => {
   const [initialForm] = React.useState(initialValues); // grab initial values in first render only. This value should never change or will ruin the memoization below
   const { getValues } = useFormContext();
 
@@ -41,8 +50,12 @@ const TabbedFormTab: React.FC<Props> = ({ task, display, definition, tabPath, in
     const generatedForm = createFormFromDefinition(definition)([tabPath])(initialForm)(updateCallback);
 
     const margin = 12;
+
+    if (layoutDefinition && layoutDefinition.splitFormAt)
+      return splitAt(layoutDefinition.splitFormAt)(disperseInputs(7)(generatedForm));
+
     return splitInHalf(disperseInputs(margin)(generatedForm));
-  }, [definition, getValues, initialForm, tabPath, task.taskSid, updateForm]);
+  }, [definition, getValues, initialForm, layoutDefinition, tabPath, task.taskSid, updateForm]);
 
   return (
     <TabbedFormTabContainer display={display}>

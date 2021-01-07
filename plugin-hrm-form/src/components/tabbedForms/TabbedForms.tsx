@@ -26,10 +26,11 @@ import TabbedFormTab from './TabbedFormTab';
 import ContactlessTaskTab from './ContactlessTaskTab';
 import BottomBar from './BottomBar';
 import { hasTaskControl } from '../../utils/transfer';
+import { isNonDataCallType } from '../../states/ValidationRules';
 import CallerTabDefinition from '../../formDefinitions/tabbedForms/CallerInformationTab.json';
 import CaseTabDefinition from '../../formDefinitions/tabbedForms/CaseInformationTab.json';
 import ChildTabDefinition from '../../formDefinitions/tabbedForms/ChildInformationTab.json';
-import { isNonDataCallType } from '../../states/ValidationRules';
+import LayoutDefinitions from '../../formDefinitions/LayoutDefinitions.json';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -177,6 +178,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
                 <TabbedFormTab
                   tabPath="callerInformation"
                   definition={CallerTabDefinition as FormDefinition}
+                  layoutDefinition={LayoutDefinitions.contact.callerInformation}
                   initialValues={contactForm.callerInformation}
                   display={subroute === 'callerInformation'}
                 />
@@ -186,6 +188,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
                   <TabbedFormTab
                     tabPath="childInformation"
                     definition={ChildTabDefinition as FormDefinition}
+                    layoutDefinition={LayoutDefinitions.contact.childInformation}
                     initialValues={contactForm.childInformation}
                     display={subroute === 'childInformation'}
                   />
@@ -193,6 +196,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
                   <TabbedFormTab
                     tabPath="caseInformation"
                     definition={CaseTabDefinition as FormDefinition}
+                    layoutDefinition={LayoutDefinitions.contact.caseInformation}
                     initialValues={contactForm.caseInformation}
                     display={subroute === 'caseInformation'}
                   />

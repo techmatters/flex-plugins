@@ -281,7 +281,8 @@
       { "value": "Grade 1 to 4", "label": "Grade 1 to 4" },
       { "value": "Grade 5 to 7", "label": "Grade 5 to 7" },
       { "value": "Grade 8 to 9", "label": "Grade 8 to 9" },
-      { "value": "Grade 10 to 12", "label": "Grade 10 to 12" }
+      { "value": "Grade 10 to 12", "label": "Grade 10 to 12" },
+      { "value": "Out of school", "label": "Out of school" }
     ]
   },
   {
