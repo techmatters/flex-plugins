@@ -32,12 +32,12 @@ import { isConnectedCaseActivity } from './caseHelpers';
 const sortActivities = activities => activities.sort((a, b) => b.date.localeCompare(a.date));
 
 const getDateFromNotSavedContact = (task, form) => {
-  if (!task.attributes.isContactlessTask) {
-    return Date.now();
+  if (task.attributes.isContactlessTask) {
+    const { date: dateString, time } = form.contactlessTask;
+    return new Date(`${dateString}T${time}:00`);
   }
 
-  const { date: dateString, time } = form.contactlessTask;
-  return new Date(`${dateString}T${time}:00`);
+  return Date.now();
 };
 
 const Timeline = ({ status, task, form, caseObj, changeRoute, updateTempInfo, route }) => {
