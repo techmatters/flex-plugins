@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
 import PropTypes from 'prop-types';
 import Dialog from '@material-ui/core/Dialog';
@@ -82,7 +82,7 @@ const Timeline = ({ status, task, form, caseObj, changeRoute, updateTempInfo, ro
       const info = {
         note: activity.text,
         counselor: twilioWorkerId,
-        date: new Date(activity.date).toLocaleDateString(navigator.language),
+        date: parseISO(activity.date).toLocaleDateString(navigator.language),
       };
       updateTempInfo({ screen: 'view-note', info }, task.taskSid);
       changeRoute({ route, subroute: 'view-note' }, task.taskSid);
@@ -90,7 +90,7 @@ const Timeline = ({ status, task, form, caseObj, changeRoute, updateTempInfo, ro
       const info = {
         referral: activity.referral,
         counselor: twilioWorkerId,
-        date: new Date(activity.date).toLocaleDateString(navigator.language),
+        date: parseISO(activity.createdAt).toLocaleDateString(navigator.language),
       };
       updateTempInfo({ screen: 'view-referral', info }, task.taskSid);
       changeRoute({ route, subroute: 'view-referral' }, task.taskSid);
@@ -103,7 +103,7 @@ const Timeline = ({ status, task, form, caseObj, changeRoute, updateTempInfo, ro
         [ContactDetailsSections.CONTACT_SUMMARY]: false,
       };
       const contact = caseObj.connectedContacts.find(c => c.id === activity.contactId);
-      const tempInfo = { detailsExpanded, contact, date: activity.date, counselor: twilioWorkerId };
+      const tempInfo = { detailsExpanded, contact, date: activity.createdAt, counselor: twilioWorkerId };
       updateTempInfo({ screen: 'view-contact', info: tempInfo }, task.taskSid);
       changeRoute({ route, subroute: 'view-contact' }, task.taskSid);
     } else {
@@ -146,7 +146,7 @@ const Timeline = ({ status, task, form, caseObj, changeRoute, updateTempInfo, ro
       {timeline &&
         timeline.length > 0 &&
         timeline.map((activity, index) => {
-          const date = new Date(activity.date).toLocaleDateString(navigator.language);
+          const date = parseISO(activity.date).toLocaleDateString(navigator.language);
           return (
             <TimelineRow key={index}>
               <TimelineDate>{date}</TimelineDate>
