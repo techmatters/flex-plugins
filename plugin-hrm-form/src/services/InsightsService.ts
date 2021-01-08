@@ -119,7 +119,7 @@ const convertMixedCheckbox = (v: string | boolean): number => {
 type InsightsCaseForm = {
   topLevel?: { [key: string]: string };
   perpetrator?: { [key: string]: string };
-  incident?: { [key: string]: string };
+  incident?: { [key: string]: string | boolean };
   referral?: { [key: string]: string };
 };
 
@@ -133,12 +133,12 @@ const convertCaseFormForInsights = (caseForm: Case): InsightsCaseForm => {
   if (!caseForm || Object.keys(caseForm).length === 0) return {};
   let topLevel: { [key: string]: string } = {};
   let perpetrator: { [key: string]: string } = undefined;
-  // let incident: { [key: string]: string } = undefined;
+  let incident: { [key: string]: string | boolean } = undefined;
   let referral: { [key: string]: string } = undefined;
   topLevel = {
     id: caseForm.id.toString(),
   };
-  if (caseForm.info && caseForm.info.perpetrators && caseForm.info.perpetrators.length > 0) {
+  if (caseForm.info?.perpetrators && caseForm.info.perpetrators.length > 0) {
     /*
      * Flatten out the Perpetrator object. This can be changed after this is using the
      * customization framework.
@@ -157,14 +157,18 @@ const convertCaseFormForInsights = (caseForm: Case): InsightsCaseForm => {
       ...untypedPerp,
     };
   }
-  /*
-   * if (caseForm.info && caseForm.info.incidents && caseForm.info.incidents.length > 0) {
-   *   incident = {
-   *     ...caseForm.info.incidents[0],
-   *   };
-   * }
-   */
-  if (caseForm.info && caseForm.info.referrals && caseForm.info.referrals.length > 0) {
+  if (caseForm.info?.incidents && caseForm.info.incidents.length > 0) {
+    const theIncident = caseForm.info.incidents[0];
+    const untypedIncident: any = {
+      ...theIncident,
+      ...theIncident.incident,
+    };
+    delete theIncident.incident;
+    incident = {
+      ...untypedIncident,
+    };
+  }
+  if (caseForm.info?.referrals && caseForm.info.referrals.length > 0) {
     referral = {
       ...caseForm.info.referrals[0],
       date: caseForm.info.referrals[0].date.toString(),
@@ -173,7 +177,7 @@ const convertCaseFormForInsights = (caseForm: Case): InsightsCaseForm => {
   const newCaseForm: InsightsCaseForm = {
     topLevel,
     perpetrator,
-    // incident,
+    incident,
     referral,
   };
 

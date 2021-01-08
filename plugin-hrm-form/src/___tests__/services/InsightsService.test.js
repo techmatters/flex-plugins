@@ -246,18 +246,16 @@ test('processHelplineConfig for case data', () => {
           insights: ['conversations', 'preceded_by'],
         },
       ],
-      /*
-       * incident: [
-       *   {
-       *     name: 'duration',
-       *     insights: ['conversations', 'in_business_hours'],
-       *   },
-       *   {
-       *     name: 'location',
-       *     insights: ['customers', 'market_segment'],
-       *   },
-       * ],
-       */
+      incident: [
+        {
+          name: 'duration',
+          insights: ['conversations', 'in_business_hours'],
+        },
+        {
+          name: 'location',
+          insights: ['customers', 'market_segment'],
+        },
+      ],
       referral: [
         {
           name: 'referredTo',
@@ -359,11 +357,11 @@ test('processHelplineConfig for case data', () => {
       case: '102',
       followed_by: 'Boy',
       preceded_by: '>25',
-      // in_business_hours: '2',
+      in_business_hours: '2',
     },
     customers: {
       organization: 'Grandparent',
-      // market_segment: 'At home',
+      market_segment: 'At home',
       customer_manager: 'Referral Agency 1',
     },
   };
