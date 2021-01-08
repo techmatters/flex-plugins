@@ -122,7 +122,8 @@ const tempInfo = {
       section: true,
     },
     counselor: 'john-doe-hash',
-    date: '8/12/2020',
+    createdAt: '8/12/2020',
+    timeOfContact: '8/12/2020',
   },
 };
 
