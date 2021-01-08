@@ -369,6 +369,48 @@ test('processHelplineConfig for case data', () => {
   expect(processHelplineConfig(contactForm, caseForm, helplineConfig)).toEqual(expected);
 });
 
+test('processHelplineConfig does not add caller fields for child call types', async () => {
+  const helplineConfig = {
+    contactForm: {
+      callerInformation: [
+        {
+          name: 'gender',
+          insights: ['conversations', 'conversation_attribute_4'],
+        },
+      ],
+      childInformation: [
+        {
+          name: 'language',
+          insights: ['conversations', 'language'],
+        },
+      ],
+    },
+  };
+
+  const contactForm = {
+    callType: 'Child calling about self',
+
+    callerInformation: {
+      gender: 'Boy',
+    },
+    childInformation: {
+      language: 'English',
+    },
+  };
+
+  const caseForm = {};
+
+  const expected = {
+    conversations: {
+      language: 'English',
+    },
+    customers: {
+    },
+  };
+
+  expect(processHelplineConfig(contactForm, caseForm, helplineConfig)).toEqual(expected);
+});
+
 test('zambiaUpdates handles custom entries', () => {
   const contactForm = {
     callType: 'Child calling about self',

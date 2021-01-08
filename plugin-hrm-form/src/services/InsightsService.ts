@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import { ITask } from '@twilio/flex-ui';
+import cloneDeep from 'lodash/cloneDeep';
 
 import { isNonDataCallType } from '../states/ValidationRules';
 import { mapChannelForInsights } from '../utils/mappers';
@@ -7,6 +8,7 @@ import { getDateTime } from '../utils/helpers';
 import { TaskEntry } from '../states/contacts/reducer';
 import { Case } from '../types/types';
 import { formatCategories } from '../utils/formatters';
+import callTypes from '../states/DomainConstants';
 import { zambiaInsightsConfig } from '../insightsConfig/zambia';
 import {
   InsightsObject,
@@ -17,7 +19,7 @@ import {
 } from '../insightsConfig/types';
 
 /*
- * 'Any'' is the best we can do, since we're limited by Twilio here.
+ * 'Any' is the best we can do, since we're limited by Twilio here.
  * See https://assets.flex.twilio.com/releases/flex-ui/1.18.0/docs/ITask.html
  */
 type TaskAttributes = any;
@@ -196,7 +198,13 @@ export const processHelplineConfig = (
 
   const formsToProcess: [InsightsFormSpec, TaskEntry | InsightsCaseForm][] = [];
   if (configSpec.contactForm) {
-    formsToProcess.push([configSpec.contactForm, contactForm]);
+    // Clone the whole object to avoid modifying the real spec. May not be needed.
+    const contactSpec = cloneDeep(configSpec.contactForm);
+    if (contactForm.callType !== callTypes.caller) {
+      // If this isn't a caller type, don't save the caller form data
+      contactSpec.callerInformation = [];
+    }
+    formsToProcess.push([contactSpec, contactForm]);
   }
   if (configSpec.caseForm) {
     formsToProcess.push([configSpec.caseForm, convertCaseFormForInsights(caseForm)]);
