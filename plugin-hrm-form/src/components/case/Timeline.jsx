@@ -90,7 +90,7 @@ const Timeline = ({ status, task, form, caseObj, changeRoute, updateTempInfo, ro
       const info = {
         referral: activity.referral,
         counselor: twilioWorkerId,
-        date: parseISO(activity.added).toLocaleDateString(navigator.language),
+        date: parseISO(activity.createdAt).toLocaleDateString(navigator.language),
       };
       updateTempInfo({ screen: 'view-referral', info }, task.taskSid);
       changeRoute({ route, subroute: 'view-referral' }, task.taskSid);
@@ -103,7 +103,7 @@ const Timeline = ({ status, task, form, caseObj, changeRoute, updateTempInfo, ro
         [ContactDetailsSections.CONTACT_SUMMARY]: false,
       };
       const contact = caseObj.connectedContacts.find(c => c.id === activity.contactId);
-      const tempInfo = { detailsExpanded, contact, date: activity.date, counselor: twilioWorkerId };
+      const tempInfo = { detailsExpanded, contact, date: activity.createdAt, counselor: twilioWorkerId };
       updateTempInfo({ screen: 'view-contact', info: tempInfo }, task.taskSid);
       changeRoute({ route, subroute: 'view-contact' }, task.taskSid);
     } else {
