@@ -15,10 +15,10 @@
       "Child/Early/Forced marriage",
       "Child labour",
       "Commercial sexual exploitation (offline)",
-      "​Female Genital Mutilation (FGM)",
-      "​Gender-based harmful traditional practices (other than FGM)",
+      "Female Genital Mutilation (FGM)",
+      "Gender-based harmful traditional practices (other than FGM)",
       "Harmful traditional practices other than child marriage and FGM",
-      "​Mental/Emotional violence",
+      "Mental/Emotional violence",
       "Neglect (or negligent treatment)",
       "Online sexual abuse",
       "Online sexual exploitation",
@@ -30,15 +30,15 @@
   "Mental Health": {
     "color": "#F8E900",
     "subcategories": [
-      "Addictive behaviours​ and substance use",
+      "Addictive behaviours and substance use",
       "Behavioural problems",
-      "Concerns about the self​",
-      "Emotional distress – anger problems​",
-      "Emotional distress – fear and anxiety problems​",
-      "Emotional distress – mood problems​",
+      "Concerns about the self",
+      "Emotional distress – anger problems",
+      "Emotional distress – fear and anxiety problems",
+      "Emotional distress – mood problems",
       "Neurodevelopmental concerns",
-      "Problems with eating behaviour​",
-      "Self-harm​ing behaviour",
+      "Problems with eating behaviour",
+      "Self-harming behaviour",
       "Suicidal thoughts and suicide attempts",
       "Traumatic distress",
       "Unspecified/Other"
@@ -59,13 +59,13 @@
   "Accessibility": {
     "color": "#8055BA",
     "subcategories": [
-      "Education ",
+      "Education",
       "Essential needs",
       "General healthcare services",
       "Legal services and advice",
-      "Mental health services  ",
-      "Sexual health services ",
-      "Socio-economical services ",
+      "Mental health services",
+      "Sexual health services",
+      "Socio-economical services",
       "Unspecified/Other"
     ]
   },
@@ -73,11 +73,11 @@
     "color": "#B971AF",
     "subcategories": [
       "Ethnicity/nationality",
-      "Financial situation ",
+      "Financial situation",
       "Gender",
       "Gender identity or expression and sexual identity",
       "Health",
-      "Philosophical or religious beliefs ",
+      "Philosophical or religious beliefs",
       "Unspecified/Other"
     ]
   },
@@ -87,7 +87,7 @@
       "Adoption, fostering, and extended family placement",
       "Relationship to caregiver",
       "Family health and wellbeing",
-      "Relationship with sibling(s) ",
+      "Relationship with sibling(s)",
       "Unspecified/Other"
     ]
   },
@@ -95,7 +95,7 @@
     "color": "#9AD703",
     "subcategories": [
       "Friends and friendships",
-      "Partner relationships ",
+      "Partner relationships",
       "Classmates/colleagues relationships",
       "Unspecified/Other"
     ]
@@ -103,7 +103,7 @@
   "Education and Occupation": {
     "color": "#55AFAF",
     "subcategories": [
-      "Academic issues ",
+      "Academic issues",
       "Teacher and school problems",
       "Problems at work",
       "Unspecified/Other"
@@ -112,22 +112,22 @@
   "Sexuality": {
     "color": "#506BA5",
     "subcategories": [
-      "Sexuality and gender identity  ",
-      "Sexual behaviours ",
+      "Sexuality and gender identity",
+      "Sexual behaviours",
       "Unspecified/Other"
     ]
   },
   "Non-Counselling contacts": {
     "color": "#767777",
     "subcategories": [
-      "Abusive/Testing contacts  ",
+      "Abusive/Testing contacts",
       "Complaints about the child helpline",
       "Missed contacts",
       "Questions by parents",
-      "Questions about the child helpline​",
-      "Questions about other services​",
+      "Questions about the child helpline",
+      "Questions about other services",
       "Silent contacts",
-      "“Thank you for your assistance”",
+      "\"Thank you for your assistance\"",
       "Unspecified/Other"
     ]
   }

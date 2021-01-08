@@ -336,11 +336,6 @@
     "type": "mixed-checkbox"
   },
   {
-    "name": "outOfSchool",
-    "label": "Out-of-school child",
-    "type": "mixed-checkbox"
-  },
-  {
     "name": "childOnTheMove",
     "label": "Child on the move",
     "type": "select",
