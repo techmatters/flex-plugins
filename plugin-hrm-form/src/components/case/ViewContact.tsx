@@ -39,7 +39,7 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchT
 const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, onClickClose, updateTempInfo }) => {
   if (!tempInfo || tempInfo.screen !== 'view-contact') return null;
 
-  const { detailsExpanded, contact: contactFromInfo, date, counselor } = tempInfo.info;
+  const { detailsExpanded, contact: contactFromInfo, createdAt, timeOfContact, counselor } = tempInfo.info;
   const counselorName = counselorsHash[counselor] || 'Unknown';
 
   let contact;
@@ -47,7 +47,7 @@ const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, on
   if (contactFromInfo) {
     contact = adaptContactToDetailsScreen(contactFromInfo, counselorName);
   } else {
-    contact = adaptFormToContactDetails(task, form, date, counselorName);
+    contact = adaptFormToContactDetails(task, form, timeOfContact, counselorName);
   }
 
   if (!contact) return null;
@@ -60,13 +60,14 @@ const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, on
     const updatedTempInfo = {
       detailsExpanded: updatedDetailsExpanded,
       contact: contactFromInfo,
-      date,
+      createdAt,
+      timeOfContact,
       counselor,
     };
     updateTempInfo({ screen: 'view-contact', info: updatedTempInfo }, task.taskSid);
   };
 
-  const added = new Date(date);
+  const added = new Date(createdAt);
 
   return (
     <CaseLayout>
