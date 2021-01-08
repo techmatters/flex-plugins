@@ -60,6 +60,7 @@ const Timeline = ({ status, task, form, caseObj, changeRoute, updateTempInfo, ro
         const { workerSid } = getConfig();
         const connectCaseActivity = {
           date: format(date, 'yyyy-MM-dd HH:mm:ss'),
+          createdAt: new Date().toISOString(),
           type: task.channelType,
           text: form.caseInformation.callSummary,
           twilioWorkerId: workerSid,
@@ -82,7 +83,7 @@ const Timeline = ({ status, task, form, caseObj, changeRoute, updateTempInfo, ro
       const info = {
         note: activity.text,
         counselor: twilioWorkerId,
-        date: parseISO(activity.date).toISOString(navigator.language),
+        date: parseISO(activity.date).toISOString(),
       };
       updateTempInfo({ screen: 'view-note', info }, task.taskSid);
       changeRoute({ route, subroute: 'view-note' }, task.taskSid);
@@ -90,7 +91,7 @@ const Timeline = ({ status, task, form, caseObj, changeRoute, updateTempInfo, ro
       const info = {
         referral: activity.referral,
         counselor: twilioWorkerId,
-        date: parseISO(activity.createdAt).toISOString(navigator.language),
+        date: parseISO(activity.createdAt).toISOString(),
       };
       updateTempInfo({ screen: 'view-referral', info }, task.taskSid);
       changeRoute({ route, subroute: 'view-referral' }, task.taskSid);
@@ -103,7 +104,13 @@ const Timeline = ({ status, task, form, caseObj, changeRoute, updateTempInfo, ro
         [ContactDetailsSections.CONTACT_SUMMARY]: false,
       };
       const contact = caseObj.connectedContacts.find(c => c.id === activity.contactId);
-      const tempInfo = { detailsExpanded, contact, date: activity.createdAt, counselor: twilioWorkerId };
+      const tempInfo = {
+        detailsExpanded,
+        contact,
+        createdAt: activity.createdAt,
+        timeOfContact: activity.date,
+        counselor: twilioWorkerId,
+      };
       updateTempInfo({ screen: 'view-contact', info: tempInfo }, task.taskSid);
       changeRoute({ route, subroute: 'view-contact' }, task.taskSid);
     } else {

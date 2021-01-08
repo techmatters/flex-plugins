@@ -19,7 +19,8 @@ export type ViewNote = {
 export type ViewContact = {
   contact?: any; // TODO: create Contact type
   detailsExpanded: { [section: string]: boolean };
-  date: string;
+  createdAt: string;
+  timeOfContact: string;
   counselor: string;
 };
 
