@@ -82,7 +82,7 @@ const Timeline = ({ status, task, form, caseObj, changeRoute, updateTempInfo, ro
       const info = {
         note: activity.text,
         counselor: twilioWorkerId,
-        date: parseISO(activity.date).toLocaleDateString(navigator.language),
+        date: parseISO(activity.date).toISOString(navigator.language),
       };
       updateTempInfo({ screen: 'view-note', info }, task.taskSid);
       changeRoute({ route, subroute: 'view-note' }, task.taskSid);
@@ -90,7 +90,7 @@ const Timeline = ({ status, task, form, caseObj, changeRoute, updateTempInfo, ro
       const info = {
         referral: activity.referral,
         counselor: twilioWorkerId,
-        date: parseISO(activity.createdAt).toLocaleDateString(navigator.language),
+        date: parseISO(activity.createdAt).toISOString(navigator.language),
       };
       updateTempInfo({ screen: 'view-referral', info }, task.taskSid);
       changeRoute({ route, subroute: 'view-referral' }, task.taskSid);
