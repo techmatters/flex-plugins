@@ -163,7 +163,7 @@ const convertCaseFormForInsights = (caseForm: Case): InsightsCaseForm => {
       ...theIncident,
       ...theIncident.incident,
     };
-    delete theIncident.incident;
+    delete untypedIncident.incident;
     incident = {
       ...untypedIncident,
     };
