@@ -25,7 +25,7 @@ const mockStore = configureMockStore([]);
 
 const reduxReferral = {
   date: new Date(),
-  referredTo: 'State Agency 1',
+  referredTo: 'OSC',
   comments: 'Some Comment',
 };
 
@@ -153,11 +153,11 @@ test('Test inputs functionality', async () => {
    */
 
   const referredToInput = screen.getByTestId('Case-AddReferralScreen-ReferredTo');
-  fireEvent.change(referredToInput, { target: { value: 'State Agency 2' } });
+  fireEvent.change(referredToInput, { target: { value: 'DREAMS' } });
 
   expect(store.dispatch).toHaveBeenLastCalledWith(
     CaseActions.updateTempInfo(
-      { screen: 'add-referral', info: { ...reduxReferral, referredTo: 'State Agency 2' } },
+      { screen: 'add-referral', info: { ...reduxReferral, referredTo: 'DREAMS' } },
       ownProps.task.taskSid,
     ),
   );
