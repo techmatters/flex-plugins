@@ -73,6 +73,11 @@ const baseUpdates = (taskAttributes: TaskAttributes, contactForm: TaskEntry, cas
   const coreAttributes: InsightsAttributes = {
     conversations: {
       conversation_attribute_2: callType.toString(),
+      // By default, Twilio populates attribute 5 with the Task ID, but we
+      // overwrite it for data contacts so we want it null for non-data contacts.
+      // We'll set it to null in case this is a non-data contact,
+      // and then let other updates overwrite again later for data contacts.
+      conversation_attribute_5: null,
       communication_channel,
     },
   };
