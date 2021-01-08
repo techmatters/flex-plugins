@@ -144,18 +144,16 @@ export const zambiaInsightsConfig: InsightsConfigSpec = {
         insights: [InsightsObject.Conversations, 'preceded_by'],
       },
     ],
-    /*
-     * incident: [
-     *   {
-     *     name: 'duration',
-     *     insights: [InsightsObject.Conversations, 'in_business_hours'],
-     *   },
-     *   {
-     *     name: 'location',
-     *     insights: [InsightsObject.Customers, 'market_segment'],
-     *   },
-     * ],
-     */
+    incident: [
+      {
+        name: 'duration',
+        insights: [InsightsObject.Conversations, 'in_business_hours'],
+      },
+      {
+        name: 'location',
+        insights: [InsightsObject.Customers, 'market_segment'],
+      },
+    ],
     referral: [
       {
         name: 'referredTo',
