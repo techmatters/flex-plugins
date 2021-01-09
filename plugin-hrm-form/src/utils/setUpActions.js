@@ -252,9 +252,11 @@ const saveInsights = async payload => {
 const sendInsightsData = setupObject => async payload => {
   const { featureFlags } = setupObject;
 
-  if (!featureFlags.enable_transfers || TransferHelpers.hasTaskControl(payload.task)) {
-    if (featureFlags.enable_save_insights) {
-      await saveInsights(payload);
+  if (!payload.task?.attributes?.skipInsights) {
+    if (!featureFlags.enable_transfers || TransferHelpers.hasTaskControl(payload.task)) {
+      if (featureFlags.enable_save_insights) {
+        await saveInsights(payload);
+      }
     }
   }
 };

@@ -407,8 +407,7 @@ test('processHelplineConfig does not add caller fields for child call types', as
     conversations: {
       language: 'English',
     },
-    customers: {
-    },
+    customers: {},
   };
 
   expect(processHelplineConfig(contactForm, caseForm, helplineConfig)).toEqual(expected);
