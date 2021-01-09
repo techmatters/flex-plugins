@@ -28,6 +28,7 @@ test('saveInsightsData for non-data callType', async () => {
     conversations: {
       content: 'content',
       conversation_attribute_2: 'Abusive',
+      conversation_attribute_5: null,
       communication_channel: 'SMS',
     },
     customers: {},
@@ -77,6 +78,7 @@ test('saveInsightsData for data callType', async () => {
       content: 'content',
       conversation_attribute_1: 'Unspecified/Other - Missing children;Bullying;Addictive behaviours and substance use',
       conversation_attribute_2: 'Child calling about self',
+      conversation_attribute_5: null,
       communication_channel: 'Call',
     },
     customers: {
@@ -125,6 +127,7 @@ test('Handles contactless tasks', async () => {
     conversations: {
       conversation_attribute_1: 'Unspecified/Other - Violence',
       conversation_attribute_2: 'Child calling about self',
+      conversation_attribute_5: null,
       communication_channel: 'SMS',
       date: getDateTime({ date, time }),
     },
@@ -364,6 +367,47 @@ test('processHelplineConfig for case data', () => {
       market_segment: 'At home',
       customer_manager: 'Referral Agency 1',
     },
+  };
+
+  expect(processHelplineConfig(contactForm, caseForm, helplineConfig)).toEqual(expected);
+});
+
+test('processHelplineConfig does not add caller fields for child call types', async () => {
+  const helplineConfig = {
+    contactForm: {
+      callerInformation: [
+        {
+          name: 'gender',
+          insights: ['conversations', 'conversation_attribute_4'],
+        },
+      ],
+      childInformation: [
+        {
+          name: 'language',
+          insights: ['conversations', 'language'],
+        },
+      ],
+    },
+  };
+
+  const contactForm = {
+    callType: 'Child calling about self',
+
+    callerInformation: {
+      gender: 'Boy',
+    },
+    childInformation: {
+      language: 'English',
+    },
+  };
+
+  const caseForm = {};
+
+  const expected = {
+    conversations: {
+      language: 'English',
+    },
+    customers: {},
   };
 
   expect(processHelplineConfig(contactForm, caseForm, helplineConfig)).toEqual(expected);

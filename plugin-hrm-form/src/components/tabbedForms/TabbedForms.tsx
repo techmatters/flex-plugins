@@ -144,8 +144,20 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
           {
             label: 'CancelOfflineContact',
             onClick: async () => {
-              const { isContactlessTask, ...rest } = task.attributes;
-              await task.setAttributes(rest); // skip insights override
+              const { attributes } = task;
+              /*
+               * Don't record insights for this task,
+               * but null out the Task ID so the Insights record is clean.
+               */
+              const newAttributes = {
+                ...attributes,
+                skipInsights: true,
+                conversations: {
+                  /* eslint-disable-next-line camelcase */
+                  conversation_attribute_5: null,
+                },
+              };
+              await task.setAttributes(newAttributes);
               Actions.invokeAction('CompleteTask', { task });
             },
           },
