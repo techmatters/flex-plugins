@@ -1,6 +1,5 @@
 import type * as t from '../../types/types';
 import { NewCaseSubroutes } from '../routing/types';
-import { CallerFormInformation } from '../../components/common/forms/CallerForm';
 import { channelsAndDefault } from '../DomainConstants';
 
 // Action types
@@ -33,8 +32,8 @@ export type ViewReferral = {
 export type TemporaryCaseInfo =
   | { screen: typeof NewCaseSubroutes.AddNote; info: string }
   | { screen: typeof NewCaseSubroutes.AddReferral; info: t.ReferralEntry }
-  | { screen: typeof NewCaseSubroutes.AddHousehold; info: CallerFormInformation }
-  | { screen: typeof NewCaseSubroutes.AddPerpetrator; info: CallerFormInformation }
+  | { screen: typeof NewCaseSubroutes.AddHousehold; info: t.Household }
+  | { screen: typeof NewCaseSubroutes.AddPerpetrator; info: t.Perpetrator }
   | { screen: typeof NewCaseSubroutes.AddIncident; info: t.Incident }
   | { screen: typeof NewCaseSubroutes.ViewContact; info: ViewContact }
   | { screen: typeof NewCaseSubroutes.ViewNote; info: ViewNote }

@@ -7,8 +7,10 @@ import { Container, StyledNextStepButton, BottomButtonBar, Box } from '../../sty
 import { CaseLayout } from '../../styles/case';
 import { namespace, connectedCaseBase, configurationBase } from '../../states';
 import { CaseState } from '../../states/case/reducer';
-import { CallerSection } from '../common/ContactDetails';
+import SectionEntry from '../SectionEntry';
 import ActionHeader from './ActionHeader';
+import type { FormDefinition } from '../common/forms/types';
+import PerpetratorForm from '../../formDefinitions/caseForms/PerpetratorForm.json';
 
 const mapStateToProps = (state, ownProps: OwnProps) => {
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
@@ -31,6 +33,8 @@ const ViewPerpetrator: React.FC<Props> = ({ counselorsHash, temporaryCaseInfo, o
   const counselorName = counselorsHash[temporaryCaseInfo.info.twilioWorkerId] || 'Unknown';
   const added = new Date(temporaryCaseInfo.info.createdAt);
 
+  const { perpetrator } = temporaryCaseInfo.info;
+
   return (
     <CaseLayout>
       <Container>
@@ -41,13 +45,16 @@ const ViewPerpetrator: React.FC<Props> = ({ counselorsHash, temporaryCaseInfo, o
           added={added}
         />
         <Box paddingTop="10px">
-          <CallerSection
-            expanded
-            hideIcon
-            handleExpandClick={() => undefined}
-            values={temporaryCaseInfo.info.perpetrator}
-            sectionTitleTemplate="Case-ViewPerpetratorTitle"
-          />
+          <>
+            {(PerpetratorForm as FormDefinition).map(e => (
+              <SectionEntry
+                key={`entry-${e.label}`}
+                description={<Template code={e.label} />}
+                value={perpetrator[e.name]}
+                definition={e}
+              />
+            ))}
+          </>
         </Box>
       </Container>
       <BottomButtonBar>

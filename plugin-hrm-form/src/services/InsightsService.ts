@@ -156,8 +156,6 @@ const convertCaseFormForInsights = (caseForm: Case): InsightsCaseForm => {
     const untypedPerp: any = {
       ...thePerp,
       ...thePerp.perpetrator,
-      ...thePerp.perpetrator.name,
-      ...thePerp.perpetrator.location,
     };
     delete untypedPerp.perpetrator;
     delete untypedPerp.name;

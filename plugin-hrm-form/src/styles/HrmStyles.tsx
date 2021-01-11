@@ -292,18 +292,6 @@ export const BottomButtonBar = styled('div')`
 `;
 BottomButtonBar.displayName = 'BottomButtonBar';
 
-export const NameFields = styled('div')`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  > div {
-    flex-grow: 1;
-    flex-basis: 0;
-    margin: 0 10px;
-  }
-`;
-NameFields.displayName = 'NameFields';
-
 export const ColumnarBlock = styled('div')`
   display: flex;
   flex-direction: column;
