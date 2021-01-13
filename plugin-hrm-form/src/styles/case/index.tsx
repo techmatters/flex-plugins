@@ -219,14 +219,6 @@ export const NoteContainer = styled('div')`
 `;
 NoteContainer.displayName = 'NoteContainer';
 
-export const DetailsHeaderContainer = styled('div')`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-`;
-
-DetailsHeaderContainer.displayName = 'DetailsHeaderContainer';
-
 export const DetailsHeaderChildName = styled(Typography)`
   font-weight: 600 !important;
 `;

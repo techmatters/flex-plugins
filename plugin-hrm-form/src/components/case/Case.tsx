@@ -174,6 +174,14 @@ const Case: React.FC<Props> = props => {
     props.updateCaseStatus(value, props.task.taskSid);
   };
 
+  const onClickChildIsAtRisk = () => {
+    const { connectedCase } = props.connectedCaseState;
+    const { info } = connectedCase;
+    const childIsAtRisk = !Boolean(info.childIsAtRisk);
+    const newInfo = info ? { ...info, childIsAtRisk } : { childIsAtRisk };
+    props.updateCaseInfo(newInfo, props.task.taskSid);
+  };
+
   /**
    * Setting this flag in the first render.
    */
@@ -234,6 +242,7 @@ const Case: React.FC<Props> = props => {
   const households = info && info.households ? info.households : [];
   const perpetrators = info && info.perpetrators ? info.perpetrators : [];
   const incidents = info && info.incidents ? info.incidents : [];
+  const childIsAtRisk = info && info.childIsAtRisk;
 
   const addScreenProps = { task: props.task, counselor, onClickClose: handleClose };
 
@@ -275,8 +284,10 @@ const Case: React.FC<Props> = props => {
                 openedDate={openedDate}
                 lastUpdatedDate={lastUpdatedDate}
                 followUpDate={followUpDate}
+                childIsAtRisk={childIsAtRisk}
                 handleInfoChange={onInfoChange}
                 handleStatusChange={onStatusChange}
+                handleClickChildIsAtRisk={onClickChildIsAtRisk}
               />
             </Box>
             <Box marginLeft="25px" marginTop="25px">

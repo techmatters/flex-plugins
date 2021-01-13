@@ -38,6 +38,7 @@ export type CaseInfo = {
   referrals?: ReferralEntry[];
   incidents?: IncidentEntry[];
   followUpDate?: string;
+  childIsAtRisk?: boolean;
 };
 
 export type Case = {
