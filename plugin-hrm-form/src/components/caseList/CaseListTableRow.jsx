@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { ButtonBase } from '@material-ui/core';
 import { Fullscreen } from '@material-ui/icons';
 import { connect } from 'react-redux';
@@ -46,7 +46,12 @@ const CaseListTableRow = ({ caseItem, counselorsHash, openMockedMessage }) => {
   const shortSummary = getShortSummary(summary, CHAR_LIMIT, 'case');
   const counselor = formatName(counselorsHash[caseItem.twilioWorkerId]);
   const opened = `${format(new Date(caseItem.createdAt), 'MMM d, yyyy')}`;
-  const updated = `${format(new Date(caseItem.updatedAt), 'MMM d, yyyy')}`;
+  const beenUpdated = caseItem.createdAt !== caseItem.updatedAt;
+  const updated = beenUpdated ? `${format(new Date(caseItem.updatedAt), 'MMM d, yyyy')}` : '—';
+  const followUpDate =
+    caseItem.info && caseItem.info.followUpDate
+      ? `${format(parseISO(caseItem.info.followUpDate), 'MMM d, yyyy')}`
+      : '—';
   const categories = formatCategories(caseItem.categories);
   const isOpenCase = caseItem.status === caseStatuses.open;
 
@@ -71,6 +76,9 @@ const CaseListTableRow = ({ caseItem, counselorsHash, openMockedMessage }) => {
       </CLTableCell>
       <CLTableCell>
         <CLTableBodyFont isOpenCase={isOpenCase}>{updated}</CLTableBodyFont>
+      </CLTableCell>
+      <CLTableCell>
+        <CLTableBodyFont isOpenCase={isOpenCase}>{followUpDate}</CLTableBodyFont>
       </CLTableCell>
       <CLTableCell>
         <div style={{ display: 'inline-block', flexDirection: 'column' }}>

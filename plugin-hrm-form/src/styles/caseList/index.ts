@@ -51,6 +51,7 @@ export const CLTableCell = withStyles(theme => ({
   root: {
     borderBottom: 0,
     textTransform: 'none',
+    overflow: 'hidden',
   },
   body: {
     verticalAlign: 'top',
@@ -72,7 +73,6 @@ export const CLNamesCell = withStyles({
     display: '-webkit-box',
     WebkitLineClamp: 4,
     WebkitBoxOrient: 'vertical',
-    overflow: 'hidden',
   },
 })(CLTableCell);
 CLNamesCell.displayName = 'CLNamesCell';

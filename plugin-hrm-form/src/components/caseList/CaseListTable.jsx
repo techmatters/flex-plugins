@@ -12,7 +12,7 @@ import Pagination from '../Pagination';
 import { CASES_PER_PAGE } from './CaseList';
 
 /**
- * This component is splitted to make it easier to read, but is basically a 8 columns Table (7 for data, 1 for the "expand" button)
+ * This component is splitted to make it easier to read, but is basically a 9 columns Table (8 for data, 1 for the "expand" button)
  */
 const CaseListTable = ({ caseList, caseCount, page, handleChangePage, openMockedMessage }) => {
   const pagesCount = Math.ceil(caseCount / CASES_PER_PAGE);
