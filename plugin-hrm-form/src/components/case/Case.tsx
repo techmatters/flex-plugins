@@ -8,6 +8,7 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 
+import { StandaloneITask } from '../StandaloneSearch';
 import {
   namespace,
   contactFormsBase,
@@ -45,8 +46,12 @@ import ViewIncident from './ViewIncident';
 import ViewReferral from './ViewReferral';
 import type { HouseholdEntry, PerpetratorEntry, IncidentEntry } from '../../types/types';
 
+const isStandaloneITask = (task): task is StandaloneITask => {
+  return task.taskSid === 'standalone-task-sid';
+};
+
 type OwnProps = {
-  task: ITask;
+  task: ITask | StandaloneITask;
   isCreating?: boolean;
   handleClose?: () => void;
   handleCompleteTask?: (taskSid: string, task: ITask) => void;
@@ -107,6 +112,9 @@ const Case: React.FC<Props> = props => {
     const { task, form } = props;
     const { connectedCase } = props.connectedCaseState;
     const { hrmBaseUrl, workerSid, helpline, strings } = getConfig();
+
+    // Validating that task isn't a StandaloneITask.
+    if (isStandaloneITask(task)) return;
 
     try {
       const contact = await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);

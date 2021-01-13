@@ -11,6 +11,7 @@ import SectionEntry from '../SectionEntry';
 import ActionHeader from './ActionHeader';
 import type { FormDefinition } from '../common/forms/types';
 import HouseHoldForm from '../../formDefinitions/caseForms/HouseholdForm.json';
+import { StandaloneITask } from '../StandaloneSearch';
 
 const mapStateToProps = (state, ownProps: OwnProps) => {
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
@@ -21,7 +22,7 @@ const mapStateToProps = (state, ownProps: OwnProps) => {
 };
 
 type OwnProps = {
-  task: ITask;
+  task: ITask | StandaloneITask;
   onClickClose: () => void;
 };
 

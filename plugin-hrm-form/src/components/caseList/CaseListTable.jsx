@@ -14,7 +14,7 @@ import { CASES_PER_PAGE } from './CaseList';
 /**
  * This component is splitted to make it easier to read, but is basically a 8 columns Table (7 for data, 1 for the "expand" button)
  */
-const CaseListTable = ({ caseList, caseCount, page, handleChangePage, openMockedMessage }) => {
+const CaseListTable = ({ caseList, caseCount, page, handleChangePage, handleClickViewCase }) => {
   const pagesCount = Math.ceil(caseCount / CASES_PER_PAGE);
 
   return (
@@ -32,7 +32,7 @@ const CaseListTable = ({ caseList, caseCount, page, handleChangePage, openMocked
               <CaseListTableRow
                 caseItem={caseItem}
                 key={`CaseListItem-${caseItem.id}`}
-                openMockedMessage={openMockedMessage}
+                handleClickViewCase={handleClickViewCase}
               />
             ))}
           </TableBody>
@@ -49,7 +49,7 @@ CaseListTable.propTypes = {
   caseCount: PropTypes.number.isRequired,
   page: PropTypes.number.isRequired,
   handleChangePage: PropTypes.func.isRequired,
-  openMockedMessage: PropTypes.func.isRequired,
+  handleClickViewCase: PropTypes.func.isRequired,
 };
 
 export default CaseListTable;

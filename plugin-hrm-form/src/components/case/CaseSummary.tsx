@@ -9,9 +9,10 @@ import { namespace, connectedCaseBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import { CaseState } from '../../states/case/reducer';
 import { getConfig } from '../../HrmFormPlugin';
+import { StandaloneITask } from '../StandaloneSearch';
 
 type OwnProps = {
-  task: ITask;
+  task: ITask | StandaloneITask;
   readonly?: boolean;
 };
 

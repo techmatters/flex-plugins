@@ -1,10 +1,18 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
+import PropTypes from 'prop-types';
+import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import { CircularProgress, Dialog, DialogContent } from '@material-ui/core';
 
+import Case from '../case';
+import { Case as CaseType } from '../../types/types';
 import CaseListTable from './CaseListTable';
 import { CaseListContainer, CenteredContainer, SomethingWentWrongText } from '../../styles/caseList';
 import { getCases } from '../../services/CaseService';
+import { CaseLayout } from '../../styles/case';
+import * as CaseActions from '../../states/case/actions';
+import { StandaloneSearchContainer } from '../../styles/search';
+import { StandaloneITask } from '../StandaloneSearch';
 
 export const CASES_PER_PAGE = 5;
 
@@ -43,7 +51,20 @@ function reducer(state, action) {
   }
 }
 
-const CaseList = () => {
+const standaloneTask: StandaloneITask = {
+  taskSid: 'standalone-task-sid',
+  attributes: { isContactlessTask: false },
+};
+
+type OwnProps = {
+  setConnectedCase: (currentCase: CaseType, taskSid: string, caseHasBeenEdited: Boolean) => void;
+};
+
+// eslint-disable-next-line no-use-before-define
+type Props = OwnProps & ConnectedProps<typeof connector>;
+
+const CaseList: React.FC<Props> = ({ setConnectedCase }) => {
+  const [displayCase, setDisplayCase] = useState(false);
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const fetchCaseList = async page => {
@@ -65,7 +86,15 @@ const CaseList = () => {
     await fetchCaseList(page);
   };
 
-  const openMockedMessage = () => dispatch({ type: 'openMockedMessage' });
+  const handleClickViewCase = currentCase => () => {
+    debugger;
+    setConnectedCase(currentCase, standaloneTask.taskSid, false);
+    setDisplayCase(true);
+  };
+
+  const closeCaseView = () => {
+    setDisplayCase(false);
+  };
 
   const closeMockedMessage = () => dispatch({ type: 'closeMockedMessage' });
 
@@ -85,6 +114,16 @@ const CaseList = () => {
       </CenteredContainer>
     );
 
+  if (displayCase) {
+    return (
+      <StandaloneSearchContainer>
+        <CaseLayout>
+          <Case task={standaloneTask} isCreating={false} handleClose={closeCaseView} />
+        </CaseLayout>
+      </StandaloneSearchContainer>
+    );
+  }
+
   return (
     <>
       <Dialog onClose={closeMockedMessage} open={state.mockedMessage !== null}>
@@ -96,7 +135,7 @@ const CaseList = () => {
           caseCount={state.caseCount}
           page={state.page}
           handleChangePage={handleChangePage}
-          openMockedMessage={openMockedMessage}
+          handleClickViewCase={handleClickViewCase}
         />
       </CaseListContainer>
     </>
@@ -105,4 +144,15 @@ const CaseList = () => {
 
 CaseList.displayName = 'CaseList';
 
-export default CaseList;
+CaseList.propTypes = {
+  setConnectedCase: PropTypes.func.isRequired,
+};
+
+const mapDispatchToProps = {
+  setConnectedCase: CaseActions.setConnectedCase,
+};
+
+const connector = connect(null, mapDispatchToProps);
+const connected = connector(CaseList);
+
+export default connected;

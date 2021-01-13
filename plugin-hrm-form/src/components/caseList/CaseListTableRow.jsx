@@ -40,7 +40,7 @@ const renderTag = tag => (
 );
 
 // eslint-disable-next-line react/no-multi-comp
-const CaseListTableRow = ({ caseItem, counselorsHash, openMockedMessage }) => {
+const CaseListTableRow = ({ caseItem, counselorsHash, handleClickViewCase }) => {
   const name = formatName(caseItem.childName);
   const summary = caseItem.info && caseItem.info.summary;
   const shortSummary = getShortSummary(summary, CHAR_LIMIT, 'case');
@@ -81,7 +81,7 @@ const CaseListTableRow = ({ caseItem, counselorsHash, openMockedMessage }) => {
         </div>
       </CLTableCell>
       <CLActionCell>
-        <ButtonBase onClick={() => openMockedMessage()}>
+        <ButtonBase onClick={handleClickViewCase(caseItem)}>
           <HiddenText>
             <Template code="CaseList-ExpandButton" />
             {caseItem.id}
@@ -107,7 +107,7 @@ CaseListTableRow.propTypes = {
     categories: PropTypes.arrayOf(PropTypes.string),
   }).isRequired,
   counselorsHash: PropTypes.shape({}).isRequired,
-  openMockedMessage: PropTypes.func.isRequired,
+  handleClickViewCase: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
