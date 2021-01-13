@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { format, parseISO } from 'date-fns';
 import { ButtonBase } from '@material-ui/core';
 import { Fullscreen } from '@material-ui/icons';
-import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
 import {
@@ -20,7 +19,6 @@ import {
 } from '../../styles/caseList';
 import { HiddenText, StyledIcon, addHover } from '../../styles/HrmStyles';
 import { formatName, formatCategories, getShortSummary } from '../../utils';
-import { namespace, configurationBase } from '../../states';
 import { caseStatuses } from '../../states/DomainConstants';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
 
@@ -118,8 +116,4 @@ CaseListTableRow.propTypes = {
   openMockedMessage: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = state => ({
-  counselorsHash: state[namespace][configurationBase].counselors.hash,
-});
-
-export default connect(mapStateToProps)(CaseListTableRow);
+export default CaseListTableRow;
