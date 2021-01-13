@@ -429,6 +429,27 @@ describe('useState mocked', () => {
     expect(updateCaseCall.info.summary).toBe('Some summary');
   });
 
+  test('click child is at risk checkbox', async () => {
+    const store = mockStore(initialState);
+    store.dispatch = jest.fn();
+
+    render(
+      <StorelessThemeProvider themeConf={themeConf}>
+        <Provider store={store}>
+          <Case {...ownProps} />
+        </Provider>
+      </StorelessThemeProvider>,
+    );
+
+    const checkbox = screen.getByTestId('Case-ChildIsAtRisk-Checkbox');
+    fireEvent.click(checkbox);
+
+    const updateCaseCall = store.dispatch.mock.calls[0][0];
+    expect(updateCaseCall.type).toBe('UPDATE_CASE_INFO');
+    expect(updateCaseCall.taskId).toBe(ownProps.task.taskSid);
+    expect(updateCaseCall.info.childIsAtRisk).toBe(true);
+  });
+
   test('a11y', async () => {
     getActivities.mockReturnValueOnce(Promise.resolve([]));
     const store = mockStore(initialState);

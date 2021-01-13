@@ -177,7 +177,7 @@ const Case: React.FC<Props> = props => {
   const onClickChildIsAtRisk = () => {
     const { connectedCase } = props.connectedCaseState;
     const { info } = connectedCase;
-    const childIsAtRisk = !Boolean(info.childIsAtRisk);
+    const childIsAtRisk = !Boolean(info && info.childIsAtRisk);
     const newInfo = info ? { ...info, childIsAtRisk } : { childIsAtRisk };
     props.updateCaseInfo(newInfo, props.task.taskSid);
   };

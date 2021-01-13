@@ -10,7 +10,7 @@ import {
   DetailsHeaderOfficeName,
   DetailsHeaderCounselor,
 } from '../../../styles/case';
-import { Flex, FormCheckbox, FormLabel, FormCheckBoxWrapper } from '../../../styles/HrmStyles';
+import { Flex, Box, FormCheckbox, FormLabel, FormCheckBoxWrapper } from '../../../styles/HrmStyles';
 
 type OwnProps = {
   caseId: string;
@@ -46,13 +46,16 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
       </Flex>
       <FormLabel htmlFor="childIsAtRisk" style={{ marginLeft: 'auto', marginTop: 'auto', textTransform: 'uppercase' }}>
         <FormCheckBoxWrapper style={{ height: 'auto' }}>
-          <FormCheckbox
-            id="childIsAtRisk"
-            name="childIsAtRisk"
-            type="checkbox"
-            onChange={handleClickChildIsAtRisk}
-            defaultChecked={Boolean(childIsAtRisk)}
-          />
+          <Box marginRight="5px">
+            <FormCheckbox
+              id="childIsAtRisk"
+              data-testid="Case-ChildIsAtRisk-Checkbox"
+              name="childIsAtRisk"
+              type="checkbox"
+              onChange={handleClickChildIsAtRisk}
+              defaultChecked={Boolean(childIsAtRisk)}
+            />
+          </Box>
           <Template code="Case-ChildIsAtRisk" />
         </FormCheckBoxWrapper>
       </FormLabel>
