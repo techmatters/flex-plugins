@@ -39,11 +39,6 @@ const CaseListTableHead = () => (
       </CLTableCell>
       <CLTableCell>
         <CLTableHeaderFont>
-          <Template code="CaseList-THFollowUp" />
-        </CLTableHeaderFont>
-      </CLTableCell>
-      <CLTableCell>
-        <CLTableHeaderFont>
           <Template code="CaseList-THCategory" />
         </CLTableHeaderFont>
       </CLTableCell>

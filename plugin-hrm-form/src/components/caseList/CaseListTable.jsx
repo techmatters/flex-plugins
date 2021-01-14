@@ -2,9 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { TableBody } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
-import { connect } from 'react-redux';
 
-import { namespace, configurationBase } from '../../states';
 import { TableContainer, CLTable } from '../../styles/caseList';
 import { Box, HeaderContainer } from '../../styles/HrmStyles';
 import { TLHPaddingLeft } from '../../styles/GlobalOverrides';
@@ -14,9 +12,9 @@ import Pagination from '../Pagination';
 import { CASES_PER_PAGE } from './CaseList';
 
 /**
- * This component is splitted to make it easier to read, but is basically a 9 columns Table (8 for data, 1 for the "expand" button)
+ * This component is splitted to make it easier to read, but is basically a 8 columns Table (7 for data, 1 for the "expand" button)
  */
-const CaseListTable = ({ caseList, caseCount, page, handleChangePage, openMockedMessage, counselorsHash }) => {
+const CaseListTable = ({ caseList, caseCount, page, handleChangePage, openMockedMessage }) => {
   const pagesCount = Math.ceil(caseCount / CASES_PER_PAGE);
 
   return (
@@ -35,7 +33,6 @@ const CaseListTable = ({ caseList, caseCount, page, handleChangePage, openMocked
                 caseItem={caseItem}
                 key={`CaseListItem-${caseItem.id}`}
                 openMockedMessage={openMockedMessage}
-                counselorsHash={counselorsHash}
               />
             ))}
           </TableBody>
@@ -53,11 +50,6 @@ CaseListTable.propTypes = {
   page: PropTypes.number.isRequired,
   handleChangePage: PropTypes.func.isRequired,
   openMockedMessage: PropTypes.func.isRequired,
-  counselorsHash: PropTypes.shape({}).isRequired,
 };
 
-const mapStateToProps = state => ({
-  counselorsHash: state[namespace][configurationBase].counselors.hash,
-});
-
-export default connect(mapStateToProps)(CaseListTable);
+export default CaseListTable;
