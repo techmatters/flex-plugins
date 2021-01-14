@@ -107,7 +107,10 @@ CaseListTableRow.propTypes = {
     createdAt: PropTypes.string,
     updatedAt: PropTypes.string,
     status: PropTypes.string,
-    info: PropTypes.string,
+    info: PropTypes.shape({
+      summary: PropTypes.string,
+      followUpDate: PropTypes.string,
+    }),
     childName: PropTypes.string,
     callSummary: PropTypes.string,
     categories: PropTypes.arrayOf(PropTypes.string),
