@@ -1,6 +1,8 @@
+import React from 'react';
 import HrmTheme from '../styles/HrmTheme';
 import IssueCategorizationTabDefinition from '../formDefinitions/tabbedForms/IssueCategorizationTab.json';
 import type { CategoriesDefinition } from '../components/common/forms/types';
+import { ContactTag, TagText, TagMiddleDot } from '../styles/search';
 
 const categories = IssueCategorizationTabDefinition as CategoriesDefinition;
 
@@ -21,3 +23,10 @@ export const getContactTags = (contactCategories: ContactCategories) =>
       color: getCategoryColor(category),
     })),
   );
+
+export const renderTag = (tag: string, color: string) => (
+  <ContactTag color={color}>
+    <TagMiddleDot color={color} />
+    <TagText color={color}>{tag}</TagText>
+  </ContactTag>
+);
