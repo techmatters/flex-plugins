@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useReducer } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import PropTypes from 'prop-types';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
-import { CircularProgress, Dialog, DialogContent } from '@material-ui/core';
+import { CircularProgress } from '@material-ui/core';
 
 import Case from '../case';
 import { Case as CaseType } from '../../types/types';
@@ -16,22 +16,28 @@ import { StandaloneITask } from '../StandaloneSearch';
 
 export const CASES_PER_PAGE = 5;
 
-const mockedMessage = <Template code="NotImplemented" />;
-
 const initialState = {
   loading: true,
+  showCaseDetails: false,
   error: null,
   caseList: [],
   caseCount: 0,
   page: 0,
-  mockedMessage: null,
 };
+
+type CaseListActions = 
+  { type: 'fetchStarted' } |
+  { type: 'fetchSuccess', payload: { page: number, caseList: CaseType[], caseCount: number } } |
+  { type: 'fetchError', payload: { error: any } }  |
+  { type: 'fetchUpdate', payload: { caseList: CaseType[] } } |
+  { type: 'showCaseDetails' } |
+  { type: 'hideCaseDetails' };
 
 /**
  * @param {initialState} state
  * @param {{ type: string; payload?: Partial<initialState>}} action
  */
-function reducer(state, action) {
+function reducer(state, action: CaseListActions) {
   switch (action.type) {
     case 'fetchStarted':
       return { ...state, loading: true };
@@ -42,10 +48,16 @@ function reducer(state, action) {
     case 'fetchError': {
       return { ...state, loading: false, error: action.payload.error };
     }
-    case 'openMockedMessage':
-      return { ...state, mockedMessage };
-    case 'closeMockedMessage':
-      return { ...state, mockedMessage: null };
+    case 'fetchUpdate': {
+      const { caseList } = action.payload;
+      return { ...state, caseList };
+    }
+    case 'showCaseDetails': {
+      return { ...state, showCaseDetails: true };
+    }
+    case 'hideCaseDetails': {
+      return { ...state, showCaseDetails: false }
+    }    
     default:
       return state;
   }
@@ -64,7 +76,7 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const CaseList: React.FC<Props> = ({ setConnectedCase }) => {
-  const [displayCase, setDisplayCase] = useState(false);
+  // const [showCaseDetails, setDisplayCase] = useState(false);
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const fetchCaseList = async page => {
@@ -87,16 +99,18 @@ const CaseList: React.FC<Props> = ({ setConnectedCase }) => {
   };
 
   const handleClickViewCase = currentCase => () => {
-    debugger;
     setConnectedCase(currentCase, standaloneTask.taskSid, false);
-    setDisplayCase(true);
+    dispatch({ type: 'showCaseDetails' });
   };
 
   const closeCaseView = () => {
-    setDisplayCase(false);
+    dispatch({ type: 'hideCaseDetails' });
   };
 
-  const closeMockedMessage = () => dispatch({ type: 'closeMockedMessage' });
+  const handleUpdatedCase = (updatedCase: CaseType) => {
+    const caseList = state.caseList.map(c => c.id === updatedCase.id ? { ...c, ...updatedCase } : { ...c });
+    dispatch({ type: 'fetchUpdate', payload: { caseList } });
+  }
 
   if (state.error)
     return (
@@ -114,11 +128,11 @@ const CaseList: React.FC<Props> = ({ setConnectedCase }) => {
       </CenteredContainer>
     );
 
-  if (displayCase) {
+  if (state.showCaseDetails) {
     return (
       <StandaloneSearchContainer>
         <CaseLayout>
-          <Case task={standaloneTask} isCreating={false} handleClose={closeCaseView} />
+          <Case task={standaloneTask} isCreating={false} handleClose={closeCaseView} updateAllCasesView={handleUpdatedCase} />
         </CaseLayout>
       </StandaloneSearchContainer>
     );
@@ -126,9 +140,6 @@ const CaseList: React.FC<Props> = ({ setConnectedCase }) => {
 
   return (
     <>
-      <Dialog onClose={closeMockedMessage} open={state.mockedMessage !== null}>
-        <DialogContent>{state.mockedMessage}</DialogContent>
-      </Dialog>
       <CaseListContainer>
         <CaseListTable
           caseList={state.caseList}

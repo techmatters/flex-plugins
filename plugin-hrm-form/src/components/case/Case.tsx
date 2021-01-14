@@ -44,7 +44,7 @@ import ViewHousehold from './ViewHousehold';
 import ViewPerpetrator from './ViewPerpetrator';
 import ViewIncident from './ViewIncident';
 import ViewReferral from './ViewReferral';
-import type { HouseholdEntry, PerpetratorEntry, IncidentEntry } from '../../types/types';
+import type { HouseholdEntry, PerpetratorEntry, IncidentEntry, Case as CaseType } from '../../types/types';
 
 const isStandaloneITask = (task): task is StandaloneITask => {
   return task.taskSid === 'standalone-task-sid';
@@ -55,6 +55,7 @@ type OwnProps = {
   isCreating?: boolean;
   handleClose?: () => void;
   handleCompleteTask?: (taskSid: string, task: ITask) => void;
+  updateAllCasesView?: (updatedCase: CaseType) => void;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -213,6 +214,10 @@ const Case: React.FC<Props> = props => {
     try {
       const updatedCase = await updateCase(connectedCase.id, { ...connectedCase });
       props.updateCases(task.taskSid, updatedCase);
+      // IF case has been edited from All Cases view, we should update that view
+      if (props.updateAllCasesView) {
+        props.updateAllCasesView(updatedCase);
+      }
       setIsEditing(connectedCase.status === 'open');
     } catch (error) {
       console.error(error);
