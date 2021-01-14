@@ -227,7 +227,9 @@ const Case: React.FC<Props> = props => {
   const name = firstConnectedContact ? getNameFromContact(firstConnectedContact) : getNameFromForm(form);
   const categories = getCategories(firstConnectedContact);
   const { createdAt, updatedAt, twilioWorkerId, status, info } = connectedCase || {};
-  const counselor = counselorsHash[twilioWorkerId];
+  const { workerSid } = getConfig(); // -- Gets the current counselor that is using the application.
+  const caseCounselor = counselorsHash[twilioWorkerId];
+  const currentCounselor = counselorsHash[workerSid];
   const openedDate = new Date(createdAt).toLocaleDateString(navigator.language);
   const lastUpdatedDate = new Date(updatedAt).toLocaleDateString(navigator.language);
   const followUpDate = info && info.followUpDate ? info.followUpDate : '';
@@ -235,7 +237,7 @@ const Case: React.FC<Props> = props => {
   const perpetrators = info && info.perpetrators ? info.perpetrators : [];
   const incidents = info && info.incidents ? info.incidents : [];
 
-  const addScreenProps = { task: props.task, counselor, onClickClose: handleClose };
+  const addScreenProps = { task: props.task, counselor: currentCounselor, onClickClose: handleClose };
 
   switch (subroute) {
     case 'add-note':
@@ -270,7 +272,7 @@ const Case: React.FC<Props> = props => {
                 name={name}
                 status={status}
                 isEditing={isEditing}
-                counselor={counselor}
+                counselor={caseCounselor}
                 categories={categories}
                 openedDate={openedDate}
                 lastUpdatedDate={lastUpdatedDate}
