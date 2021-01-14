@@ -79,7 +79,7 @@ CLNamesCell.displayName = 'CLNamesCell';
 
 export const CLSummaryCell = withStyles({
   body: {
-    paddingRight: 30,
+    paddingRight: 20,
   },
 })(CLTableCell);
 CLSummaryCell.displayName = 'CLSummaryCell';
