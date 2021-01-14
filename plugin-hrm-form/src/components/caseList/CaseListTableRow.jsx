@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { ButtonBase } from '@material-ui/core';
 import { Fullscreen } from '@material-ui/icons';
-import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
 import {
@@ -20,7 +19,6 @@ import {
 } from '../../styles/caseList';
 import { HiddenText, StyledIcon, addHover } from '../../styles/HrmStyles';
 import { formatName, formatCategories, getShortSummary } from '../../utils';
-import { namespace, configurationBase } from '../../states';
 import { caseStatuses } from '../../states/DomainConstants';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
 
@@ -46,7 +44,12 @@ const CaseListTableRow = ({ caseItem, counselorsHash, openMockedMessage }) => {
   const shortSummary = getShortSummary(summary, CHAR_LIMIT, 'case');
   const counselor = formatName(counselorsHash[caseItem.twilioWorkerId]);
   const opened = `${format(new Date(caseItem.createdAt), 'MMM d, yyyy')}`;
-  const updated = `${format(new Date(caseItem.updatedAt), 'MMM d, yyyy')}`;
+  const beenUpdated = caseItem.createdAt !== caseItem.updatedAt;
+  const updated = beenUpdated ? `${format(new Date(caseItem.updatedAt), 'MMM d, yyyy')}` : '—';
+  const followUpDate =
+    caseItem.info && caseItem.info.followUpDate
+      ? `${format(parseISO(caseItem.info.followUpDate), 'MMM d, yyyy')}`
+      : '—';
   const categories = formatCategories(caseItem.categories);
   const isOpenCase = caseItem.status === caseStatuses.open;
 
@@ -71,6 +74,9 @@ const CaseListTableRow = ({ caseItem, counselorsHash, openMockedMessage }) => {
       </CLTableCell>
       <CLTableCell>
         <CLTableBodyFont isOpenCase={isOpenCase}>{updated}</CLTableBodyFont>
+      </CLTableCell>
+      <CLTableCell>
+        <CLTableBodyFont isOpenCase={isOpenCase}>{followUpDate}</CLTableBodyFont>
       </CLTableCell>
       <CLTableCell>
         <div style={{ display: 'inline-block', flexDirection: 'column' }}>
@@ -101,7 +107,10 @@ CaseListTableRow.propTypes = {
     createdAt: PropTypes.string,
     updatedAt: PropTypes.string,
     status: PropTypes.string,
-    info: PropTypes.string,
+    info: PropTypes.shape({
+      summary: PropTypes.string,
+      followUpDate: PropTypes.string,
+    }),
     childName: PropTypes.string,
     callSummary: PropTypes.string,
     categories: PropTypes.arrayOf(PropTypes.string),
@@ -110,8 +119,4 @@ CaseListTableRow.propTypes = {
   openMockedMessage: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = state => ({
-  counselorsHash: state[namespace][configurationBase].counselors.hash,
-});
-
-export default connect(mapStateToProps)(CaseListTableRow);
+export default CaseListTableRow;
