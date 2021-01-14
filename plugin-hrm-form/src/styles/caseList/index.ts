@@ -125,24 +125,6 @@ export const CLCaseNumberContainer = styled('div')<CLCaseNumberContainerProps>`
 `;
 CLCaseNumberContainer.displayName = 'CLCaseNumberContainer';
 
-export const CategoryTag = styled('div')`
-  display: inline-block;
-  white-space: nowrap;
-  border-radius: 6px;
-  padding: 0px 13px;
-  margin: 3px 0;
-  background-color: #a0a8bd66;
-  text-transform: uppercase;
-`;
-CategoryTag.displayName = 'CategoryTag';
-
-export const CategoryFont = styled(FontOpenSans)`
-  font-size: 11px;
-  letter-spacing: 0.1px;
-  line-height: 14px;
-`;
-CategoryFont.displayName = 'CategoryFont';
-
 type PaginationButtonProps = {
   highlight?: Boolean;
 };

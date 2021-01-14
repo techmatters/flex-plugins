@@ -1,4 +1,5 @@
 import React from 'react';
+
 import HrmTheme from '../styles/HrmTheme';
 import IssueCategorizationTabDefinition from '../formDefinitions/tabbedForms/IssueCategorizationTab.json';
 import type { CategoriesDefinition } from '../components/common/forms/types';
@@ -24,6 +25,7 @@ export const getContactTags = (contactCategories: ContactCategories) =>
     })),
   );
 
+// eslint-disable-next-line react/display-name
 export const renderTag = (tag: string, color: string) => (
   <ContactTag color={color}>
     <TagMiddleDot color={color} />
