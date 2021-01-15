@@ -1,22 +1,18 @@
-import React, { useEffect, useReducer } from "react";
-import PropTypes from "prop-types";
-import { connect, ConnectedProps } from "react-redux";
-import { Template } from "@twilio/flex-ui";
-import { CircularProgress } from "@material-ui/core";
+import React, { useEffect, useReducer } from 'react';
+import PropTypes from 'prop-types';
+import { connect, ConnectedProps } from 'react-redux';
+import { Template } from '@twilio/flex-ui';
+import { CircularProgress } from '@material-ui/core';
 
-import Case from "../case";
-import { Case as CaseType } from "../../types/types";
-import CaseListTable from "./CaseListTable";
-import {
-  CaseListContainer,
-  CenteredContainer,
-  SomethingWentWrongText,
-} from "../../styles/caseList";
-import { getCases } from "../../services/CaseService";
-import { CaseLayout } from "../../styles/case";
-import * as CaseActions from "../../states/case/actions";
-import { StandaloneSearchContainer } from "../../styles/search";
-import { StandaloneITask } from "../StandaloneSearch";
+import Case from '../case';
+import { Case as CaseType } from '../../types/types';
+import CaseListTable from './CaseListTable';
+import { CaseListContainer, CenteredContainer, SomethingWentWrongText } from '../../styles/caseList';
+import { getCases } from '../../services/CaseService';
+import { CaseLayout } from '../../styles/case';
+import * as CaseActions from '../../states/case/actions';
+import { StandaloneSearchContainer } from '../../styles/search';
+import { StandaloneITask } from '../StandaloneSearch';
 
 export const CASES_PER_PAGE = 5;
 
@@ -30,15 +26,15 @@ const initialState = {
 };
 
 type CaseListActions =
-  | { type: "fetchStarted" }
+  | { type: 'fetchStarted' }
   | {
-      type: "fetchSuccess";
+      type: 'fetchSuccess';
       payload: { page: number; caseList: CaseType[]; caseCount: number };
     }
-  | { type: "fetchError"; payload: { error: any } }
-  | { type: "fetchUpdate"; payload: { caseList: CaseType[] } }
-  | { type: "showCaseDetails" }
-  | { type: "hideCaseDetails" };
+  | { type: 'fetchError'; payload: { error: any } }
+  | { type: 'fetchUpdate'; payload: { caseList: CaseType[] } }
+  | { type: 'showCaseDetails' }
+  | { type: 'hideCaseDetails' };
 
 /**
  * @param {initialState} state
@@ -46,23 +42,23 @@ type CaseListActions =
  */
 function reducer(state, action: CaseListActions) {
   switch (action.type) {
-    case "fetchStarted":
+    case 'fetchStarted':
       return { ...state, loading: true };
-    case "fetchSuccess": {
+    case 'fetchSuccess': {
       const { page, caseList, caseCount } = action.payload;
       return { ...state, page, caseList, caseCount, loading: false };
     }
-    case "fetchError": {
+    case 'fetchError': {
       return { ...state, loading: false, error: action.payload.error };
     }
-    case "fetchUpdate": {
+    case 'fetchUpdate': {
       const { caseList } = action.payload;
       return { ...state, caseList };
     }
-    case "showCaseDetails": {
+    case 'showCaseDetails': {
       return { ...state, showCaseDetails: true };
     }
-    case "hideCaseDetails": {
+    case 'hideCaseDetails': {
       return { ...state, showCaseDetails: false };
     }
     default:
@@ -71,16 +67,12 @@ function reducer(state, action: CaseListActions) {
 }
 
 const standaloneTask: StandaloneITask = {
-  taskSid: "standalone-task-sid",
+  taskSid: 'standalone-task-sid',
   attributes: { isContactlessTask: false },
 };
 
 type OwnProps = {
-  setConnectedCase: (
-    currentCase: CaseType,
-    taskSid: string,
-    caseHasBeenEdited: Boolean
-  ) => void;
+  setConnectedCase: (currentCase: CaseType, taskSid: string, caseHasBeenEdited: Boolean) => void;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -92,18 +84,15 @@ const CaseList: React.FC<Props> = ({ setConnectedCase }) => {
 
   const fetchCaseList = async page => {
     try {
-      dispatch({ type: "fetchStarted" });
-      const { cases, count } = await getCases(
-        CASES_PER_PAGE,
-        CASES_PER_PAGE * page
-      );
+      dispatch({ type: 'fetchStarted' });
+      const { cases, count } = await getCases(CASES_PER_PAGE, CASES_PER_PAGE * page);
       dispatch({
-        type: "fetchSuccess",
+        type: 'fetchSuccess',
         payload: { page, caseList: cases, caseCount: count },
       });
     } catch (error) {
       console.error(error);
-      dispatch({ type: "fetchError", payload: { error } });
+      dispatch({ type: 'fetchError', payload: { error } });
     }
   };
 
@@ -117,18 +106,16 @@ const CaseList: React.FC<Props> = ({ setConnectedCase }) => {
 
   const handleClickViewCase = currentCase => () => {
     setConnectedCase(currentCase, standaloneTask.taskSid, false);
-    dispatch({ type: "showCaseDetails" });
+    dispatch({ type: 'showCaseDetails' });
   };
 
   const closeCaseView = () => {
-    dispatch({ type: "hideCaseDetails" });
+    dispatch({ type: 'hideCaseDetails' });
   };
 
   const handleUpdatedCase = (updatedCase: CaseType) => {
-    const caseList = state.caseList.map(c =>
-      c.id === updatedCase.id ? { ...c, ...updatedCase } : { ...c }
-    );
-    dispatch({ type: "fetchUpdate", payload: { caseList } });
+    const caseList = state.caseList.map(c => (c.id === updatedCase.id ? { ...c, ...updatedCase } : { ...c }));
+    dispatch({ type: 'fetchUpdate', payload: { caseList } });
   };
 
   if (state.error)
@@ -177,7 +164,7 @@ const CaseList: React.FC<Props> = ({ setConnectedCase }) => {
   );
 };
 
-CaseList.displayName = "CaseList";
+CaseList.displayName = 'CaseList';
 
 CaseList.propTypes = {
   setConnectedCase: PropTypes.func.isRequired,
