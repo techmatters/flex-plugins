@@ -1,7 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTaskContext, TaskHelper, Template } from '@twilio/flex-ui';
+import { connect } from 'react-redux';
 
+import { namespace, contactFormsBase } from '../../states';
+import { updateCallType } from '../../states/contacts/actions';
+import { changeRoute } from '../../states/routing/actions';
 import { withLocalization } from '../../contexts/LocalizationContext';
 import { Box, Flex } from '../../styles/HrmStyles';
 import { Container, Label, DataCallTypeButton, NonDataCallTypeButton } from '../../styles/callTypeButtons';
@@ -14,26 +18,41 @@ import { getConfig } from '../../HrmFormPlugin';
 import { saveToHrm } from '../../services/ContactService';
 import CallTypeIcon from '../common/icons/CallTypeIcon';
 
-const isDialogOpen = form =>
-  Boolean(form && form.callType && form.callType.value && isNonDataCallType(form.callType.value));
+const isDialogOpen = contactForm =>
+  Boolean(contactForm && contactForm.callType && contactForm.callType && isNonDataCallType(contactForm.callType));
 
-const clearCallType = props => props.handleCallTypeButtonClick(props.task.taskSid, '');
+const clearCallType = props => props.dispatch(updateCallType(props.task.taskSid, ''));
 
 const CallTypeButtons = props => {
-  const { form, task, localization } = props;
+  const { contactForm, task, localization } = props;
   const { isCallTask } = localization;
 
   const handleClick = (taskSid, callType) => {
     if (!hasTaskControl(task)) return;
 
-    props.handleCallTypeButtonClick(taskSid, callType);
+    props.dispatch(updateCallType(taskSid, callType));
   };
 
   const handleClickAndRedirect = (taskSid, callType) => {
     if (!hasTaskControl(task)) return;
 
+    // eslint-disable-next-line no-nested-ternary
+    const subroute = task.attributes.isContactlessTask
+      ? 'contactlessTask'
+      : callType === callTypes.caller
+      ? 'callerInformation'
+      : 'childInformation';
+
     handleClick(taskSid, callType);
-    props.changeRoute({ route: 'tabbed-forms' }, taskSid);
+    props.dispatch(changeRoute({ route: 'tabbed-forms', subroute }, taskSid));
+  };
+
+  const handleNonDataClick = (taskSid, callType) => {
+    if (task.attributes.isContactlessTask) {
+      handleClickAndRedirect(taskSid, callType);
+    } else {
+      handleClick(taskSid, callType);
+    }
   };
 
   const handleConfirmNonDataCallType = async () => {
@@ -42,7 +61,7 @@ const CallTypeButtons = props => {
     const { hrmBaseUrl, workerSid, helpline, strings } = getConfig();
 
     try {
-      await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
+      await saveToHrm(task, contactForm, hrmBaseUrl, workerSid, helpline);
       props.handleCompleteTask(task.taskSid, task);
     } catch (error) {
       if (!window.confirm(strings['Error-ContinueWithoutRecording'])) {
@@ -81,7 +100,7 @@ const CallTypeButtons = props => {
             .map((callType, i) => (
               <NonDataCallTypeButton
                 key={callType}
-                onClick={() => handleClick(task.taskSid, callTypes[callType])}
+                onClick={() => handleNonDataClick(task.taskSid, callTypes[callType])}
                 marginRight={i % 2 === 0}
               >
                 <Template code={`CallType-${callType}`} />
@@ -90,7 +109,7 @@ const CallTypeButtons = props => {
         </Box>
       </Container>
       <NonDataCallTypeDialog
-        isOpen={isDialogOpen(form)}
+        isOpen={isDialogOpen(contactForm)}
         isCallTask={isCallTask(task)}
         isInWrapupMode={TaskHelper.isInWrapupMode(task)}
         handleConfirm={handleConfirmNonDataCallType}
@@ -102,12 +121,19 @@ const CallTypeButtons = props => {
 
 CallTypeButtons.displayName = 'CallTypeButtons';
 CallTypeButtons.propTypes = {
-  form: formType.isRequired,
+  contactForm: formType.isRequired,
   task: taskType.isRequired,
-  handleCallTypeButtonClick: PropTypes.func.isRequired,
   localization: localizationType.isRequired,
-  changeRoute: PropTypes.func.isRequired,
   handleCompleteTask: PropTypes.func.isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
-export default withLocalization(withTaskContext(CallTypeButtons));
+const mapStateToProps = (state, ownProps) => {
+  const contactForm = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
+  return { contactForm };
+};
+
+const connector = connect(mapStateToProps);
+const connected = connector(CallTypeButtons);
+
+export default withLocalization(withTaskContext(connected));

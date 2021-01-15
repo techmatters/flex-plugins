@@ -1,21 +1,38 @@
+/* eslint-disable react/jsx-max-depth */
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Template, ITask } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
+import { useForm, FormProvider } from 'react-hook-form';
 
-import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
-import { CaseActionContainer, CaseActionFormContainer } from '../../styles/case';
+import {
+  Box,
+  BottomButtonBar,
+  BottomButtonBarHeight,
+  Container,
+  TwoColumnLayout,
+  ColumnarBlock,
+  StyledNextStepButton,
+} from '../../styles/HrmStyles';
+import { CaseActionLayout, CaseActionFormContainer } from '../../styles/case';
 import ActionHeader from './ActionHeader';
-import { CallerForm, newCallerFormInformation } from '../common/forms';
-import { editNestedField } from '../../states/ContactState';
 import { namespace, connectedCaseBase, routingBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseState } from '../../states/case/reducer';
-import { DefaultEventHandlers } from '../common/forms/types';
-import { getFormValues } from '../common/forms/helpers';
+import type { FormDefinition } from '../common/forms/types';
+import { transformValues } from '../../services/ContactService';
 import { getConfig } from '../../HrmFormPlugin';
 import { updateCase } from '../../services/CaseService';
+import HouseholdForm from '../../formDefinitions/caseForms/HouseholdForm.json';
+import {
+  createFormFromDefinition,
+  createStateItem,
+  disperseInputs,
+  splitInHalf,
+  splitAt,
+} from '../common/forms/formGenerators';
+import LayoutDefinitions from '../../formDefinitions/LayoutDefinitions.json';
 
 type OwnProps = {
   task: ITask;
@@ -38,76 +55,98 @@ const AddHousehold: React.FC<Props> = ({
 }) => {
   const { temporaryCaseInfo } = connectedCaseState;
 
-  if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-household') return null;
+  const init = temporaryCaseInfo && temporaryCaseInfo.screen === 'add-household' ? temporaryCaseInfo.info : {};
+  const [initialForm] = React.useState(init); // grab initial values in first render only. This value should never change or will ruin the memoization below
+  const methods = useForm();
 
-  const defaultEventHandlers: DefaultEventHandlers = (parents, name) => ({
-    handleBlur: () => undefined,
-    handleFocus: () => undefined,
-    handleChange: event => {
-      const newForm = editNestedField(temporaryCaseInfo.info, parents, name, { value: event.target.value });
-      updateTempInfo({ screen: 'add-household', info: newForm }, task.taskSid);
-    },
-  });
+  const [l, r] = React.useMemo(() => {
+    const updateCallBack = () => {
+      const household = methods.getValues();
+      updateTempInfo({ screen: 'add-household', info: household }, task.taskSid);
+    };
+
+    const generatedForm = createFormFromDefinition(HouseholdForm as FormDefinition)([])(initialForm)(updateCallBack);
+
+    if (LayoutDefinitions.case.households.splitFormAt)
+      return splitAt(LayoutDefinitions.case.households.splitFormAt)(disperseInputs(7)(generatedForm));
+
+    return splitInHalf(disperseInputs(7)(generatedForm));
+  }, [initialForm, methods, task.taskSid, updateTempInfo]);
 
   const saveHousehold = async shouldStayInForm => {
     if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-household') return;
 
     const { info, id } = connectedCaseState.connectedCase;
-    const household = getFormValues(temporaryCaseInfo.info);
+    const household = transformValues(HouseholdForm as FormDefinition)(temporaryCaseInfo.info);
     const createdAt = new Date().toISOString();
     const { workerSid } = getConfig();
     const newHousehold = { household, createdAt, twilioWorkerId: workerSid };
     const households = info && info.households ? [...info.households, newHousehold] : [newHousehold];
     const newInfo = info ? { ...info, households } : { households };
     const updatedCase = await updateCase(id, { info: newInfo });
-    setConnectedCase(updatedCase, task.taskSid);
+    setConnectedCase(updatedCase, task.taskSid, true);
     if (shouldStayInForm) {
-      updateTempInfo({ screen: 'add-household', info: newCallerFormInformation }, task.taskSid);
+      const blankForm = (HouseholdForm as FormDefinition).reduce(createStateItem, {});
+      methods.reset(blankForm); // Resets the form.
+      updateTempInfo({ screen: 'add-household', info: {} }, task.taskSid);
       changeRoute({ route, subroute: 'add-household' }, task.taskSid);
     }
   };
 
-  function saveHouseholdAndStay() {
-    saveHousehold(true);
+  async function saveHouseholdAndStay() {
+    await saveHousehold(true);
   }
 
-  function saveHouseholdAndLeave() {
-    saveHousehold(false);
+  async function saveHouseholdAndLeave() {
+    await saveHousehold(false);
     onClickClose();
   }
 
+  function onError() {
+    window.alert('You must fill in required fields.');
+  }
+
   return (
-    <CaseActionContainer>
-      <CaseActionFormContainer>
-        <ActionHeader titleTemplate="Case-AddHousehold" onClickClose={onClickClose} counselor={counselor} />
-        <CallerForm callerInformation={temporaryCaseInfo.info} defaultEventHandlers={defaultEventHandlers} />
-      </CaseActionFormContainer>
-      <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
-      <BottomButtonBar>
-        <Box marginRight="15px">
-          <StyledNextStepButton data-testid="Case-CloseButton" secondary roundCorners onClick={onClickClose}>
-            <Template code="BottomBar-Cancel" />
-          </StyledNextStepButton>
-        </Box>
-        <Box marginRight="15px">
+    <FormProvider {...methods}>
+      <CaseActionLayout>
+        <CaseActionFormContainer>
+          <ActionHeader titleTemplate="Case-AddHousehold" onClickClose={onClickClose} counselor={counselor} />
+          <Container>
+            <Box paddingBottom={`${BottomButtonBarHeight}px`}>
+              <TwoColumnLayout>
+                <ColumnarBlock>{l}</ColumnarBlock>
+                <ColumnarBlock>{r}</ColumnarBlock>
+              </TwoColumnLayout>
+            </Box>
+          </Container>{' '}
+        </CaseActionFormContainer>
+        <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
+        <BottomButtonBar>
+          <Box marginRight="15px">
+            <StyledNextStepButton data-testid="Case-CloseButton" secondary roundCorners onClick={onClickClose}>
+              <Template code="BottomBar-Cancel" />
+            </StyledNextStepButton>
+          </Box>
+          <Box marginRight="15px">
+            <StyledNextStepButton
+              data-testid="Case-AddHouseholdScreen-SaveAndAddAnotherHousehold"
+              secondary
+              roundCorners
+              onClick={methods.handleSubmit(saveHouseholdAndStay, onError)}
+            >
+              <Template code="BottomBar-SaveAndAddAnotherHousehold" />
+            </StyledNextStepButton>
+          </Box>
           <StyledNextStepButton
-            data-testid="Case-AddHouseholdScreen-SaveAndAddAnotherHousehold"
-            secondary
+            data-testid="Case-AddHouseholdScreen-SaveHousehold"
             roundCorners
-            onClick={saveHouseholdAndStay}
+            onClick={methods.handleSubmit(saveHouseholdAndLeave, onError)}
           >
-            <Template code="BottomBar-SaveAndAddAnotherHousehold" />
+            <Template code="BottomBar-SaveHousehold" />
           </StyledNextStepButton>
-        </Box>
-        <StyledNextStepButton
-          data-testid="Case-AddHouseholdScreen-SaveHousehold"
-          roundCorners
-          onClick={saveHouseholdAndLeave}
-        >
-          <Template code="BottomBar-SaveHousehold" />
-        </StyledNextStepButton>
-      </BottomButtonBar>
-    </CaseActionContainer>
+        </BottomButtonBar>
+      </CaseActionLayout>
+    </FormProvider>
   );
 };
 

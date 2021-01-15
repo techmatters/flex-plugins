@@ -1,5 +1,5 @@
 import * as Flex from '@twilio/flex-ui';
-import { FlexPlugin } from 'flex-plugin';
+import { FlexPlugin, loadCSS } from 'flex-plugin';
 import SyncClient from 'twilio-sync';
 
 import './styles/GlobalOverrides';
@@ -28,7 +28,7 @@ let sharedStateClient;
 export const getConfig = () => {
   const manager = Flex.Manager.getInstance();
 
-  const hrmBaseUrl = manager.serviceConfiguration.attributes.hrm_base_url;
+  const hrmBaseUrl = `${manager.serviceConfiguration.attributes.hrm_base_url}/${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${manager.workerClient.accountSid}`;
   const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
   const logoUrl = manager.serviceConfiguration.attributes.logo_url;
   const workerSid = manager.workerClient.sid;
@@ -39,6 +39,7 @@ export const getConfig = () => {
   const { configuredLanguage } = manager.serviceConfiguration.attributes;
   const featureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
   const { strings } = manager;
+  const definitionVersion = 'v1'; // will be moved to service configuration later on
 
   return {
     hrmBaseUrl,
@@ -56,6 +57,7 @@ export const getConfig = () => {
     featureFlags,
     sharedStateClient,
     strings,
+    definitionVersion,
   };
 };
 
@@ -207,8 +209,10 @@ export default class HrmFormPlugin extends FlexPlugin {
    * @param manager { import('@twilio/flex-ui').Manager }
    */
   init(flex, manager) {
+    loadCSS('https://use.fontawesome.com/releases/v5.15.1/css/solid.css');
+
     const monitoringEnv = manager.serviceConfiguration.attributes.monitoringEnv || 'staging';
-    if (!process.env.NO_MONITORING) setUpMonitoring(this, manager.workerClient, monitoringEnv);
+    if (process.env.NODE_ENV !== 'development') setUpMonitoring(this, manager.workerClient, monitoringEnv);
 
     console.log(`Welcome to ${PLUGIN_NAME} Version ${PLUGIN_VERSION}`);
     this.registerReducers(manager);

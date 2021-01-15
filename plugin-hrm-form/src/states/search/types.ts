@@ -1,4 +1,4 @@
-import { SearchContact, SearchCaseResult } from '../../types/types';
+import { SearchContact, SearchCaseResult, Case } from '../../types/types';
 import { addDetails } from './helpers';
 import { ContactDetailsSectionsType } from '../../components/common/ContactDetails';
 // Action types
@@ -11,6 +11,7 @@ export const SEARCH_CONTACTS_FAILURE = 'SEARCH_CONTACTS_FAILURE';
 export const SEARCH_CASES_REQUEST = 'SEARCH_CASES_REQUEST';
 export const SEARCH_CASES_SUCCESS = 'SEARCH_CASES_SUCCESS';
 export const SEARCH_CASES_FAILURE = 'SEARCH_CASES_FAILURE';
+export const SEARCH_CASES_UPDATE = 'SEARCH_CASES_UPDATE';
 export const HANDLE_EXPAND_DETAILS_SECTION = 'HANDLE_EXPAND_DETAILS_SECTION';
 
 // types and constants used to construct search form
@@ -81,6 +82,12 @@ type SearchExpandSectionAction = {
   taskId: string;
 };
 
+type SearchCasesUpdateAction = {
+  type: typeof SEARCH_CASES_UPDATE;
+  taskId: string;
+  updatedCase: Case;
+};
+
 export type SearchActionType =
   | SearchFormChangeAction
   | SearchContactsRequestAction
@@ -91,4 +98,5 @@ export type SearchActionType =
   | SearchCasesFailureAction
   | SearchChangePageAction
   | SearchViewContactAction
-  | SearchExpandSectionAction;
+  | SearchExpandSectionAction
+  | SearchCasesUpdateAction;

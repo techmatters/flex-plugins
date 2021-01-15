@@ -1,14 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
 import PropTypes from 'prop-types';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 
+import CallTypeIcon from '../common/icons/CallTypeIcon';
 import TimelineIcon from './TimelineIcon';
-import { CaseSectionFont, ViewButton, TimelineRow, TimelineDate, TimelineText } from '../../styles/case';
+import {
+  CaseSectionFont,
+  ViewButton,
+  TimelineRow,
+  TimelineDate,
+  TimelineText,
+  TimelineCallTypeIcon,
+} from '../../styles/case';
 import { Box, Row } from '../../styles/HrmStyles';
 import { taskType, formType } from '../../types';
 import CaseAddButton from './CaseAddButton';
@@ -17,14 +25,22 @@ import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { ContactDetailsSections } from '../common/ContactDetails';
 import { getConfig } from '../../HrmFormPlugin';
-import { channelsAndDefault } from '../../states/DomainConstants';
 import { namespace, routingBase } from '../../states';
-
-const isConnectedCaseActivity = activity => Boolean(channelsAndDefault[activity.type]);
+import { blankReferral } from '../../types/types';
+import { isConnectedCaseActivity } from './caseHelpers';
 
 const sortActivities = activities => activities.sort((a, b) => b.date.localeCompare(a.date));
 
-const Timeline = ({ task, form, caseObj, changeRoute, updateTempInfo, route }) => {
+const getDateFromNotSavedContact = (task, form) => {
+  if (task.attributes.isContactlessTask) {
+    const { date: dateString, time } = form.contactlessTask;
+    return new Date(`${dateString}T${time}:00`);
+  }
+
+  return Date.now();
+};
+
+const Timeline = ({ status, task, form, caseObj, changeRoute, updateTempInfo, route }) => {
   const [mockedMessage, setMockedMessage] = useState(null);
   const [timeline, setTimeline] = useState([]);
 
@@ -40,11 +56,13 @@ const Timeline = ({ task, form, caseObj, changeRoute, updateTempInfo, route }) =
       const isCreatingCase = !timelineActivities.some(isConnectedCaseActivity);
 
       if (isCreatingCase) {
+        const date = getDateFromNotSavedContact(task, form);
         const { workerSid } = getConfig();
         const connectCaseActivity = {
-          date: format(Date.now(), 'yyyy-MM-dd HH:mm:ss'),
+          date: format(date, 'yyyy-MM-dd HH:mm:ss'),
+          createdAt: new Date().toISOString(),
           type: task.channelType,
-          text: form.caseInformation.callSummary.value,
+          text: form.caseInformation.callSummary,
           twilioWorkerId: workerSid,
           channel: task.channelType === 'default' ? form.contactlessTask.channel : task.channelType,
         };
@@ -65,10 +83,18 @@ const Timeline = ({ task, form, caseObj, changeRoute, updateTempInfo, route }) =
       const info = {
         note: activity.text,
         counselor: twilioWorkerId,
-        date: new Date(activity.date).toLocaleDateString(navigator.language),
+        date: parseISO(activity.date).toISOString(),
       };
       updateTempInfo({ screen: 'view-note', info }, task.taskSid);
       changeRoute({ route, subroute: 'view-note' }, task.taskSid);
+    } else if (activity.type === 'referral') {
+      const info = {
+        referral: activity.referral,
+        counselor: twilioWorkerId,
+        date: parseISO(activity.createdAt).toISOString(),
+      };
+      updateTempInfo({ screen: 'view-referral', info }, task.taskSid);
+      changeRoute({ route, subroute: 'view-referral' }, task.taskSid);
     } else if (isConnectedCaseActivity(activity)) {
       const detailsExpanded = {
         [ContactDetailsSections.GENERAL_DETAILS]: true,
@@ -78,7 +104,13 @@ const Timeline = ({ task, form, caseObj, changeRoute, updateTempInfo, route }) =
         [ContactDetailsSections.CONTACT_SUMMARY]: false,
       };
       const contact = caseObj.connectedContacts.find(c => c.id === activity.contactId);
-      const tempInfo = { detailsExpanded, contact, date: activity.date, counselor: twilioWorkerId };
+      const tempInfo = {
+        detailsExpanded,
+        contact,
+        createdAt: activity.createdAt,
+        timeOfContact: activity.date,
+        counselor: twilioWorkerId,
+      };
       updateTempInfo({ screen: 'view-contact', info: tempInfo }, task.taskSid);
       changeRoute({ route, subroute: 'view-contact' }, task.taskSid);
     } else {
@@ -91,6 +123,17 @@ const Timeline = ({ task, form, caseObj, changeRoute, updateTempInfo, route }) =
     changeRoute({ route, subroute: 'add-note' }, task.taskSid);
   };
 
+  const handleAddReferralClick = () => {
+    updateTempInfo({ screen: 'add-referral', info: blankReferral }, task.taskSid);
+    changeRoute({ route, subroute: 'add-referral' }, task.taskSid);
+  };
+
+  /*
+   * If case has not been created yet, we should return value from the form.
+   * Else If case was already created we should return rawJson value.
+   */
+  const callType = form?.callType || caseObj.connectedContacts[0]?.rawJson?.callType;
+
   return (
     <Box marginTop="25px">
       <Dialog onClose={() => setMockedMessage(null)} open={Boolean(mockedMessage)}>
@@ -101,17 +144,25 @@ const Timeline = ({ task, form, caseObj, changeRoute, updateTempInfo, route }) =
           <CaseSectionFont id="Case-TimelineSection-label">
             <Template code="Case-TimelineSection" />
           </CaseSectionFont>
-          <CaseAddButton templateCode="Case-AddNote" onClick={handleAddNoteClick} />
+          <Box marginLeft="auto">
+            <CaseAddButton templateCode="Case-Note" onClick={handleAddNoteClick} status={status} />
+            <CaseAddButton templateCode="Case-Referral" onClick={handleAddReferralClick} status={status} withDivider />
+          </Box>
         </Row>
       </Box>
       {timeline &&
         timeline.length > 0 &&
         timeline.map((activity, index) => {
-          const date = new Date(activity.date).toLocaleDateString(navigator.language);
+          const date = parseISO(activity.date).toLocaleDateString(navigator.language);
           return (
             <TimelineRow key={index}>
               <TimelineDate>{date}</TimelineDate>
               <TimelineIcon type={isConnectedCaseActivity(activity) ? activity.channel : activity.type} />
+              {isConnectedCaseActivity(activity) && (
+                <TimelineCallTypeIcon>
+                  <CallTypeIcon callType={callType} fontSize="18px" />
+                </TimelineCallTypeIcon>
+              )}
               <TimelineText>{activity.text}</TimelineText>
               <Box marginLeft="auto" marginRight="10px">
                 <ViewButton onClick={() => handleOnClickView(activity)}>View</ViewButton>
@@ -125,6 +176,7 @@ const Timeline = ({ task, form, caseObj, changeRoute, updateTempInfo, route }) =
 
 Timeline.displayName = 'Timeline';
 Timeline.propTypes = {
+  status: PropTypes.string.isRequired,
   task: taskType.isRequired,
   form: formType.isRequired,
   // eslint-disable-next-line react/forbid-prop-types

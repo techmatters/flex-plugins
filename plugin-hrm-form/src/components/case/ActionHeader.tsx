@@ -6,17 +6,20 @@ import { Close } from '@material-ui/icons';
 
 import { Row, HiddenText } from '../../styles/HrmStyles';
 import { CaseActionTitle, CaseActionDetailFont } from '../../styles/case';
+import { formatDateTime } from '../../utils/formatters';
 
 type OwnProps = {
   titleTemplate: string;
   onClickClose: () => void;
-  added?: string;
+  added?: Date;
   counselor: string;
 };
 
 type Props = OwnProps;
 
 const ActionHeader: React.FC<Props> = ({ titleTemplate, onClickClose, added, counselor }) => {
+  const dateString = formatDateTime(added || new Date());
+
   return (
     <>
       <Row style={{ width: '100%' }}>
@@ -32,7 +35,7 @@ const ActionHeader: React.FC<Props> = ({ titleTemplate, onClickClose, added, cou
       </Row>
       <Row style={{ width: '100%' }}>
         <CaseActionDetailFont style={{ marginRight: 20 }} data-testid="Case-ActionHeaderAdded">
-          <Template code="Case-ActionHeaderAdded" /> {added || new Date().toLocaleDateString(navigator.language)}
+          <Template code="Case-ActionHeaderAdded" /> {dateString}
         </CaseActionDetailFont>
         <CaseActionDetailFont style={{ marginRight: 20 }} data-testid="Case-ActionHeaderCounselor">
           <Template code="Case-ActionHeaderCounselor" /> {counselor}

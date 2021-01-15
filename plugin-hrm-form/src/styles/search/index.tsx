@@ -35,11 +35,16 @@ export const CaseHeaderContainer = styled('div')`
 
 CaseHeaderContainer.displayName = 'CaseHeaderContainer';
 
-export const CaseHeaderCaseId = styled('div')`
+type CaseIdProps = {
+  closed: boolean;
+};
+
+export const CaseHeaderCaseId = styled('div')<CaseIdProps>`
   display: flex;
   align-items: center;
   justify-content: center;
-  border: solid;
+  border: ${props => (props.closed ? 'none' : 'solid')};
+  color: ${props => (props.closed ? 'lightgray' : 'black')};
   border-width: thin;
   width: 50px;
   font-weight: 600;
@@ -338,10 +343,15 @@ export const SectionDescriptionText = styled(BodyText)`
   margin-right: 15px;
 `;
 
-export const SectionValueText = styled(BodyText)`
+type SectionValueTextProps = {
+  notBold?: boolean;
+};
+
+export const SectionValueText = styled(BodyText)<SectionValueTextProps>`
   overflow-wrap: anywhere;
   white-space: pre-wrap;
   max-width: 40em;
+  ${props => props.notBold && 'font-weight: 500'};
 `;
 
 // SearchResults styles
@@ -388,9 +398,35 @@ export const StyledButtonBase = withStyles({
 })(ButtonBase);
 
 export const StyledFormControlLabel = styled(FormControlLabel)`
-  width: 565px;
+  margin-left: 0px !important;
+  margin-right: 0px !important;
 `;
 StyledFormControlLabel.displayName = 'StyledFormControlLabel';
+
+export const StyledCount = styled('p')`
+  font-weight: 600;
+`;
+StyledCount.displayName = 'StyledCount';
+
+export const StyledContactResultsHeader = styled('div')`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 550px;
+`;
+
+StyledContactResultsHeader.displayName = 'StyledContactResultsHeader';
+
+export const StyledCaseResultsHeader = styled('div')`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 600px;
+`;
+
+StyledCaseResultsHeader.displayName = 'StyledCaseResultsHeader';
 
 export const StyledSwitch = withStyles({
   icon: {

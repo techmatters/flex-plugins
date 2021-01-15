@@ -2,15 +2,6 @@ import type { ValidationRules } from 'react-hook-form';
 
 export type FormFieldType = { value: string; error?: string; validation?: string[]; touched?: boolean };
 
-export function isFormFieldType(object: any): object is FormFieldType {
-  return (
-    typeof object.value === 'string' &&
-    (!object.touched || typeof object.touched === 'boolean') &&
-    (!object.error || typeof object.error === 'string') &&
-    (!object.validation || object.validation instanceof Array)
-  );
-}
-
 export type FormInformation = {
   [key: string]: FormFieldType | FormInformation;
 };
@@ -72,6 +63,7 @@ type DependentSelectDefinition = {
 
 type CheckboxDefinition = {
   type: 'checkbox';
+  initialChecked?: boolean;
 } & ItemBase &
   ValidationRules;
 
@@ -111,3 +103,13 @@ export type FormDefinition = FormItemDefinition[];
 
 export type CategoryEntry = { color: string; subcategories: string[] };
 export type CategoriesDefinition = { [category: string]: CategoryEntry };
+
+/**
+ * Type that gives extra info on how a single field should be formatted
+ */
+export type LayoutValue = { includeLabel: boolean; format?: 'date' };
+export type LayoutDefinition = {
+  previewFields?: ItemBase['name'][];
+  layout?: { [name: string]: LayoutValue };
+  splitFormAt?: number;
+};

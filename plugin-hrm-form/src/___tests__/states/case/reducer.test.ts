@@ -5,6 +5,12 @@ import * as GeneralActions from '../../../states/actions';
 import { Case } from '../../../types/types';
 
 const task = { taskSid: 'task1' };
+const voidDefinitions = {
+  callerFormDefinition: [],
+  caseInfoFormDefinition: [],
+  categoriesFormDefinition: {},
+  childFormDefinition: [],
+};
 
 describe('test reducer', () => {
   let state = undefined;
@@ -19,7 +25,7 @@ describe('test reducer', () => {
   });
 
   test('should ignore INITIALIZE_CONTACT_STATE', async () => {
-    const result = reduce(state, GeneralActions.initializeContactState(task.taskSid));
+    const result = reduce(state, GeneralActions.initializeContactState(voidDefinitions)(task.taskSid));
     expect(result).toStrictEqual(state);
   });
 
@@ -32,17 +38,19 @@ describe('test reducer', () => {
       info: null,
       createdAt: '2020-07-31T20:39:37.408Z',
       updatedAt: '2020-07-31T20:39:37.408Z',
+      connectedContacts: null,
     };
 
     const expectedAction: types.CaseActionType = {
       type: types.SET_CONNECTED_CASE,
       connectedCase,
       taskId: task.taskSid,
+      caseHasBeenEdited: false,
     };
 
-    const expected = { tasks: { task1: { connectedCase, temporaryCaseInfo: null } } };
+    const expected = { tasks: { task1: { connectedCase, temporaryCaseInfo: null, caseHasBeenEdited: false } } };
 
-    const result = reduce(state, actions.setConnectedCase(connectedCase, task.taskSid));
+    const result = reduce(state, actions.setConnectedCase(connectedCase, task.taskSid, false));
     expect(result).toStrictEqual(expected);
 
     state = result;
@@ -70,7 +78,9 @@ describe('test reducer', () => {
     const info = { summary: 'Some summary', notes: ['Some note'] };
 
     const { connectedCase, temporaryCaseInfo } = state.tasks.task1;
-    const expected = { tasks: { task1: { connectedCase: { ...connectedCase, info }, temporaryCaseInfo } } };
+    const expected = {
+      tasks: { task1: { connectedCase: { ...connectedCase, info }, temporaryCaseInfo, caseHasBeenEdited: true } },
+    };
 
     const result = reduce(state, actions.updateCaseInfo(info, task.taskSid));
     expect(result).toStrictEqual(expected);
@@ -79,12 +89,12 @@ describe('test reducer', () => {
   });
 
   test('should handle UPDATE_TEMP_INFO', async () => {
-    const string = 'Some random string here';
+    const randomTemp = { screen: 'add-note', info: '' };
 
     const { connectedCase } = state.tasks.task1;
-    const expected = { tasks: { task1: { connectedCase, temporaryCaseInfo: string } } };
+    const expected = { tasks: { task1: { connectedCase, temporaryCaseInfo: randomTemp, caseHasBeenEdited: true } } };
 
-    const result = reduce(state, actions.updateTempInfo(string, task.taskSid));
+    const result = reduce(state, actions.updateTempInfo({ screen: 'add-note', info: '' }, task.taskSid));
     expect(result).toStrictEqual(expected);
 
     state = result;

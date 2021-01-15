@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Template, ITask } from '@twilio/flex-ui';
 
 import { Container, StyledNextStepButton, BottomButtonBar } from '../../styles/HrmStyles';
-import { CaseContainer } from '../../styles/case';
+import { CaseLayout } from '../../styles/case';
 import { namespace, connectedCaseBase, contactFormsBase, configurationBase, routingBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
@@ -31,26 +31,26 @@ const mapDispatchToProps = {
 
 type OwnProps = {
   task: ITask;
+  onClickClose: () => void;
 };
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, route, updateTempInfo, changeRoute }) => {
+const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, onClickClose, updateTempInfo }) => {
   if (!tempInfo || tempInfo.screen !== 'view-contact') return null;
 
-  const { detailsExpanded, contact: contactFromInfo, date, counselor } = tempInfo.info;
+  const { detailsExpanded, contact: contactFromInfo, createdAt, timeOfContact, counselor } = tempInfo.info;
   const counselorName = counselorsHash[counselor] || 'Unknown';
 
   let contact;
+
   if (contactFromInfo) {
     contact = adaptContactToDetailsScreen(contactFromInfo, counselorName);
   } else {
-    contact = adaptFormToContactDetails(task, form, date, counselorName);
+    contact = adaptFormToContactDetails(task, form, timeOfContact, counselorName);
   }
 
   if (!contact) return null;
-
-  const handleClose = () => changeRoute({ route }, task.taskSid);
 
   const handleExpandDetailsSection = section => {
     const updatedDetailsExpanded = {
@@ -60,22 +60,23 @@ const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, ro
     const updatedTempInfo = {
       detailsExpanded: updatedDetailsExpanded,
       contact: contactFromInfo,
-      date,
+      createdAt,
+      timeOfContact,
       counselor,
     };
     updateTempInfo({ screen: 'view-contact', info: updatedTempInfo }, task.taskSid);
   };
 
-  const dateString = new Date(date).toLocaleDateString(navigator.language);
+  const added = new Date(createdAt);
 
   return (
-    <CaseContainer>
+    <CaseLayout>
       <Container>
         <ActionHeader
           titleTemplate="Case-Contact"
-          onClickClose={handleClose}
+          onClickClose={onClickClose}
           counselor={counselorName}
-          added={dateString}
+          added={added}
         />
         <ContactDetails
           contact={contact}
@@ -84,11 +85,11 @@ const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, ro
         />
       </Container>
       <BottomButtonBar>
-        <StyledNextStepButton roundCorners onClick={handleClose} data-testid="Case-ViewContactScreen-CloseButton">
+        <StyledNextStepButton roundCorners onClick={onClickClose} data-testid="Case-ViewContactScreen-CloseButton">
           <Template code="CloseButton" />
         </StyledNextStepButton>
       </BottomButtonBar>
-    </CaseContainer>
+    </CaseLayout>
   );
 };
 

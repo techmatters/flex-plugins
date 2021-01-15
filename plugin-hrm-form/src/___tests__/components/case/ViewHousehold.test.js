@@ -10,32 +10,26 @@ import configureMockStore from 'redux-mock-store';
 import '../../mockGetConfig';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../../states';
 import ViewHousehold from '../../../components/case/ViewHousehold';
-import { CallerFormValues } from '../../../components/common/forms';
 import HrmTheme from '../../../styles/HrmTheme';
 
 expect.extend(toHaveNoViolations);
 const mockStore = configureMockStore([]);
 
-/** @type {CallerFormValues} */
 const household = {
-  name: {
-    firstName: 'first',
-    lastName: 'last',
-  },
-  location: {
-    streetAddress: 'street',
-    city: 'city',
-    stateOrCounty: 'state',
-    postalCode: 'code',
-    phone1: 'phone1',
-    phone2: 'phone2',
-  },
-  age: 'age',
-  ethnicity: 'ethnicity',
-  gender: 'gender',
-  language: 'language',
-  nationality: 'nationality',
-  relationshipToChild: 'relationshipToChild',
+  age: '>25',
+  gender: 'Unknown',
+  phone1: '111222333',
+  phone2: '44455566',
+  village: 'some village',
+  district: 'some district',
+  language: 'Unknown',
+  lastName: 'LastName',
+  province: 'some province',
+  ethnicity: 'some ethnicity',
+  firstName: 'FirstName',
+  postalCode: '1111',
+  streetAddress: '123 Fake st',
+  relationshipToChild: 'Friend',
 };
 
 const householdEntry = { household, createdAt: '2020-06-29T22:26:00.208Z', twilioWorkerId: 'worker1' };

@@ -35,7 +35,7 @@ export const retrieveCategories = categories => {
 };
 
 export const adaptContactToDetailsScreen = (contact, counselorName) => {
-  const dateTime = contact.createdAt;
+  const dateTime = contact.timeOfContact;
   const name = `${contact.rawJson.childInformation.name.firstName} ${contact.rawJson.childInformation.name.lastName}`;
   const customerNumber = contact.number;
   const { callType, caseInformation } = contact.rawJson;

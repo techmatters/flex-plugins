@@ -6,7 +6,7 @@ import { Template, ITask } from '@twilio/flex-ui';
 import ActionHeader from './ActionHeader';
 import { getConfig } from '../../HrmFormPlugin';
 import { Box, HiddenText, StyledNextStepButton, BottomButtonBar } from '../../styles/HrmStyles';
-import { CaseActionContainer, CaseActionTextArea } from '../../styles/case';
+import { CaseActionLayout, CaseActionTextArea } from '../../styles/case';
 import { namespace, connectedCaseBase, routingBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
@@ -43,15 +43,15 @@ const AddNote: React.FC<Props> = ({
     const notes = info && info.notes ? [...info.notes, newNote] : [newNote];
     const newInfo = info ? { ...info, notes } : { notes };
     const updatedCase = await updateCase(id, { info: newInfo });
-    setConnectedCase(updatedCase, task.taskSid);
+    setConnectedCase(updatedCase, task.taskSid, true);
     updateTempInfo({ screen: 'add-note', info: '' }, task.taskSid);
-    changeRoute({ route }, task.taskSid);
+    onClickClose();
   };
 
   if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-note') return null;
 
   return (
-    <CaseActionContainer>
+    <CaseActionLayout>
       <Box height="100%" paddingTop="20px" paddingLeft="30px" paddingRight="10px">
         <ActionHeader titleTemplate="Case-AddNote" onClickClose={onClickClose} counselor={counselor} />
         <HiddenText id="Case-TypeHere-label">
@@ -82,7 +82,7 @@ const AddNote: React.FC<Props> = ({
           <Template code="BottomBar-SaveNote" />
         </StyledNextStepButton>
       </BottomButtonBar>
-    </CaseActionContainer>
+    </CaseActionLayout>
   );
 };
 

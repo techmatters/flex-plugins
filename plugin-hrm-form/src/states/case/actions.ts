@@ -1,4 +1,4 @@
-import { Case, CaseInfo } from '../../types/types';
+import { Case, CaseInfo, CaseStatus } from '../../types/types';
 import {
   CaseActionType,
   TemporaryCaseInfo,
@@ -6,13 +6,15 @@ import {
   REMOVE_CONNECTED_CASE,
   UPDATE_CASE_INFO,
   UPDATE_TEMP_INFO,
+  UPDATE_CASE_STATUS,
 } from './types';
 
 // Action creators
-export const setConnectedCase = (connectedCase: Case, taskId: string): CaseActionType => ({
+export const setConnectedCase = (connectedCase: Case, taskId: string, caseHasBeenEdited: Boolean): CaseActionType => ({
   type: SET_CONNECTED_CASE,
   connectedCase,
   taskId,
+  caseHasBeenEdited,
 });
 
 export const removeConnectedCase = (taskId: string): CaseActionType => ({
@@ -29,5 +31,16 @@ export const updateCaseInfo = (info: CaseInfo, taskId: string): CaseActionType =
 export const updateTempInfo = (value: TemporaryCaseInfo, taskId: string): CaseActionType => ({
   type: UPDATE_TEMP_INFO,
   value,
+  taskId,
+});
+
+/**
+ * Redux: Updates status for a provided case.
+ * @param status CaseStatus (open, close, etc.)
+ * @param taskId Twilio Task Id
+ */
+export const updateCaseStatus = (status: CaseStatus, taskId: string): CaseActionType => ({
+  type: UPDATE_CASE_STATUS,
+  status,
   taskId,
 });

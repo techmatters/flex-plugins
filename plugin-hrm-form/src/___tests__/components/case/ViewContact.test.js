@@ -122,7 +122,8 @@ const tempInfo = {
       section: true,
     },
     counselor: 'john-doe-hash',
-    date: '8/12/2020',
+    createdAt: '8/12/2020',
+    timeOfContact: '8/12/2020',
   },
 };
 
@@ -137,7 +138,7 @@ test('displays counselor, date and contact details', () => {
         counselorsHash={counselorsHash}
         tempInfo={tempInfo}
         updateTempInfo={jest.fn()}
-        changeRoute={jest.fn()}
+        onClickClose={jest.fn()}
         route={route}
       />
     </StorelessThemeProvider>,
@@ -150,7 +151,7 @@ test('displays counselor, date and contact details', () => {
 });
 
 test('click on x button', () => {
-  const changeRoute = jest.fn();
+  const onClickClose = jest.fn();
   adaptFormToContactDetails.mockReturnValueOnce(contact);
 
   render(
@@ -161,7 +162,7 @@ test('click on x button', () => {
         counselorsHash={counselorsHash}
         tempInfo={tempInfo}
         updateTempInfo={jest.fn()}
-        changeRoute={changeRoute}
+        onClickClose={onClickClose}
         route={route}
       />
     </StorelessThemeProvider>,
@@ -169,11 +170,11 @@ test('click on x button', () => {
 
   screen.getByTestId('Case-CloseCross').click();
 
-  expect(changeRoute).toHaveBeenCalledWith({ route: 'new-case' }, task.taskSid);
+  expect(onClickClose).toHaveBeenCalled();
 });
 
 test('click on close button', () => {
-  const changeRoute = jest.fn();
+  const onClickClose = jest.fn();
   adaptFormToContactDetails.mockReturnValueOnce(contact);
 
   render(
@@ -184,7 +185,7 @@ test('click on close button', () => {
         counselorsHash={counselorsHash}
         tempInfo={tempInfo}
         updateTempInfo={jest.fn()}
-        changeRoute={changeRoute}
+        onClickClose={onClickClose}
         route={route}
       />
     </StorelessThemeProvider>,
@@ -192,7 +193,7 @@ test('click on close button', () => {
 
   screen.getByTestId('Case-ViewContactScreen-CloseButton').click();
 
-  expect(changeRoute).toHaveBeenCalledWith({ route: 'new-case' }, task.taskSid);
+  expect(onClickClose).toHaveBeenCalled();
 });
 
 test('click on expand section', async () => {
@@ -207,7 +208,7 @@ test('click on expand section', async () => {
         counselorsHash={counselorsHash}
         tempInfo={tempInfo}
         updateTempInfo={updateTempInfo}
-        changeRoute={jest.fn()}
+        onClickClose={jest.fn()}
         route={route}
       />
     </StorelessThemeProvider>,
@@ -242,7 +243,7 @@ test('a11y', async () => {
         counselorsHash={counselorsHash}
         tempInfo={tempInfo}
         updateTempInfo={jest.fn()}
-        changeRoute={jest.fn()}
+        onClickClose={jest.fn()}
         route={route}
       />
     </StorelessThemeProvider>,

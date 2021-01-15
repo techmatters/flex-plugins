@@ -1,3 +1,4 @@
+/* eslint-disable no-empty-function */
 import React from 'react';
 import { Provider } from 'react-redux';
 import renderer from 'react-test-renderer';
@@ -71,6 +72,16 @@ const themeConf = {
   colorTheme: HrmTheme,
 };
 
+const ownProps = {
+  task: {
+    taskSid: 'task1',
+    attributes: {
+      isContactlessTask: false,
+    },
+  },
+  handleCompleteTask: jest.fn(),
+};
+
 describe('useState mocked', () => {
   const setState = jest.fn();
   const useStateMock = initState => [initState, setState];
@@ -82,19 +93,12 @@ describe('useState mocked', () => {
   });
 
   test('Case (should return null)', async () => {
-    const ownProps = {
-      task: {
-        taskSid: 'task1',
-      },
-      handleCompleteTask: jest.fn(),
-    };
-
     const initialState = createState({
       [contactFormsBase]: {
         tasks: {
           task1: {
             childInformation: {
-              name: { firstName: { value: 'first' }, lastName: { value: 'last' } },
+              name: { firstName: 'first', lastName: 'last' },
             },
             metadata: {},
           },
@@ -136,12 +140,14 @@ describe('useState mocked', () => {
       tasks: {
         task1: {
           childInformation: {
-            name: { firstName: { value: 'first' }, lastName: { value: 'last' } },
+            firstName: 'first',
+            lastName: 'last',
           },
           metadata: {},
           caseInformation: {
-            callSummary: { value: 'contact call summary' },
+            callSummary: 'contact call summary',
           },
+          categories: [],
         },
         temporaryCaseInfo: '',
       },
@@ -182,13 +188,6 @@ describe('useState mocked', () => {
   });
 
   test('Case (should render)', async () => {
-    const ownProps = {
-      task: {
-        taskSid: 'task1',
-      },
-      handleCompleteTask: jest.fn(),
-    };
-
     const store = mockStore(initialState);
 
     const component = renderer.create(
@@ -201,12 +200,15 @@ describe('useState mocked', () => {
 
     expect(component.findAllByType(CaseDetails).length).toBe(1);
     const details = component.findByType(CaseDetails);
-    expect(details.props).toStrictEqual({
-      name: 'first last',
-      counselor: 'worker1 name',
-      status: 'open',
-      date: '6/29/2020', // the day the createdAt number represents
-    });
+    const { caseId, name, counselor, status, openedDate, lastUpdatedDate, followUpDate } = details.props;
+
+    expect(caseId).toBe(123);
+    expect(name).toBe('first last');
+    expect(counselor).toBe('worker1 name');
+    expect(status).toBe('open');
+    expect(openedDate).toBe('6/29/2020'); // the day the createdAt number represents
+    expect(lastUpdatedDate).toBe('Invalid Date');
+    expect(followUpDate).toBe('');
   });
 
   function openCancelMenu(wrapper) {
@@ -255,13 +257,6 @@ describe('useState mocked', () => {
    */
 
   test('click Add Note button', async () => {
-    const ownProps = {
-      task: {
-        taskSid: 'task1',
-      },
-      handleCompleteTask: jest.fn(),
-    };
-
     const store = mockStore(initialState);
     store.dispatch = jest.fn();
 
@@ -273,7 +268,7 @@ describe('useState mocked', () => {
       </StorelessThemeProvider>,
     );
 
-    screen.getByText('Case-AddNote').click();
+    screen.getByText('Case-Note').click();
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
         route: 'new-case',
@@ -284,13 +279,7 @@ describe('useState mocked', () => {
     });
   });
 
-  test('click Add Household Information button', async () => {
-    const ownProps = {
-      task: {
-        taskSid: 'task1',
-      },
-      handleCompleteTask: jest.fn(),
-    };
+  test('click Add Referral button', async () => {
     const store = mockStore(initialState);
     store.dispatch = jest.fn();
 
@@ -302,7 +291,30 @@ describe('useState mocked', () => {
       </StorelessThemeProvider>,
     );
 
-    screen.getByText('Case-AddHousehold').click();
+    screen.getByText('Case-Referral').click();
+    expect(store.dispatch).toHaveBeenCalledWith({
+      routing: {
+        route: 'new-case',
+        subroute: 'add-referral',
+      },
+      taskId: 'task1',
+      type: 'CHANGE_ROUTE',
+    });
+  });
+
+  test('click Add Household Information button', async () => {
+    const store = mockStore(initialState);
+    store.dispatch = jest.fn();
+
+    render(
+      <StorelessThemeProvider themeConf={themeConf}>
+        <Provider store={store}>
+          <Case {...ownProps} />
+        </Provider>
+      </StorelessThemeProvider>,
+    );
+
+    screen.getByText('Case-Household').click();
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
         route: 'new-case',
@@ -314,13 +326,6 @@ describe('useState mocked', () => {
   });
 
   test('click Add Perpetrator button', async () => {
-    const ownProps = {
-      task: {
-        taskSid: 'task1',
-      },
-      handleCompleteTask: jest.fn(),
-    };
-
     const store = mockStore(initialState);
     store.dispatch = jest.fn();
 
@@ -332,7 +337,7 @@ describe('useState mocked', () => {
       </StorelessThemeProvider>,
     );
 
-    screen.getByText('Case-AddPerpetrator').click();
+    screen.getByText('Case-Perpetrator').click();
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
         route: 'new-case',
@@ -344,13 +349,6 @@ describe('useState mocked', () => {
   });
 
   test('click View Household button', async () => {
-    const ownProps = {
-      task: {
-        taskSid: 'task1',
-      },
-      handleCompleteTask: jest.fn(),
-    };
-
     const stateWithHousehold = addInfoToCase({ households: [householdEntry] });
     const store = mockStore(stateWithHousehold);
     store.dispatch = jest.fn();
@@ -381,13 +379,6 @@ describe('useState mocked', () => {
   });
 
   test('click View Perpetrator button', async () => {
-    const ownProps = {
-      task: {
-        taskSid: 'task1',
-      },
-      handleCompleteTask: jest.fn(),
-    };
-
     const stateWithPerpetrators = addInfoToCase({ perpetrators: [perpetratorEntry] });
     const store = mockStore(stateWithPerpetrators);
     store.dispatch = jest.fn();
@@ -418,13 +409,6 @@ describe('useState mocked', () => {
   });
 
   test('edit case summary', async () => {
-    const ownProps = {
-      task: {
-        taskSid: 'task1',
-      },
-      handleCompleteTask: jest.fn(),
-    };
-
     const store = mockStore(initialState);
     store.dispatch = jest.fn();
 
@@ -447,14 +431,6 @@ describe('useState mocked', () => {
 
   test('a11y', async () => {
     getActivities.mockReturnValueOnce(Promise.resolve([]));
-
-    const ownProps = {
-      task: {
-        taskSid: 'task1',
-      },
-      handleCompleteTask: jest.fn(),
-    };
-
     const store = mockStore(initialState);
 
     const wrapper = mount(

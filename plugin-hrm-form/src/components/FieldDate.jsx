@@ -50,10 +50,12 @@ class FieldDate extends Component {
 
     return (
       <TextField {...rest}>
-        <StyledLabel htmlFor={id}>
-          {label}
-          <RequiredAsterisk field={field} />
-        </StyledLabel>
+        {label && (
+          <StyledLabel htmlFor={id}>
+            {label}
+            <RequiredAsterisk field={field} />
+          </StyledLabel>
+        )}
         <StyledInput
           id={id}
           placeholder={placeholder}

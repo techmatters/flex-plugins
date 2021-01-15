@@ -37,7 +37,7 @@ test('displays counselor, date and note', () => {
       <UnconnectedViewNote
         taskSid="taskSid"
         tempInfo={tempInfo}
-        changeRoute={jest.fn()}
+        onClickClose={jest.fn()}
         counselorsHash={counselorsHash}
       />
     </StorelessThemeProvider>,
@@ -49,7 +49,7 @@ test('displays counselor, date and note', () => {
 });
 
 test('click on x button', () => {
-  const changeRoute = jest.fn();
+  const onClickClose = jest.fn();
   const taskSid = 'task-id';
   const route = 'new-case';
   const counselor = 'John Doe';
@@ -74,7 +74,7 @@ test('click on x button', () => {
       <UnconnectedViewNote
         taskSid={taskSid}
         tempInfo={tempInfo}
-        changeRoute={changeRoute}
+        onClickClose={onClickClose}
         route={route}
         counselorsHash={counselorsHash}
       />
@@ -84,11 +84,11 @@ test('click on x button', () => {
   expect(screen.getByTestId('Case-CloseCross')).toBeInTheDocument();
   screen.getByTestId('Case-CloseCross').click();
 
-  expect(changeRoute).toHaveBeenCalledWith({ route: 'new-case' }, taskSid);
+  expect(onClickClose).toHaveBeenCalled();
 });
 
 test('click on close button', () => {
-  const changeRoute = jest.fn();
+  const onClickClose = jest.fn();
   const taskSid = 'task-id';
   const route = 'new-case';
   const counselor = 'John Doe';
@@ -113,7 +113,7 @@ test('click on close button', () => {
       <UnconnectedViewNote
         taskSid={taskSid}
         tempInfo={tempInfo}
-        changeRoute={changeRoute}
+        onClickClose={onClickClose}
         route={route}
         counselorsHash={counselorsHash}
       />
@@ -123,7 +123,7 @@ test('click on close button', () => {
   expect(screen.getByTestId('Case-ViewNoteScreen-CloseButton')).toBeInTheDocument();
   screen.getByTestId('Case-ViewNoteScreen-CloseButton').click();
 
-  expect(changeRoute).toHaveBeenCalledWith({ route: 'new-case' }, taskSid);
+  expect(onClickClose).toHaveBeenCalled();
 });
 
 test('a11y', async () => {
@@ -149,7 +149,7 @@ test('a11y', async () => {
       <UnconnectedViewNote
         taskSid="taskSid"
         tempInfo={tempInfo}
-        changeRoute={jest.fn()}
+        onClickClose={jest.fn()}
         counselorsHash={counselorsHash}
       />
     </StorelessThemeProvider>,

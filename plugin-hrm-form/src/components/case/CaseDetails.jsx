@@ -1,69 +1,127 @@
+/* eslint-disable react/forbid-prop-types */
+/* eslint-disable no-empty-function */
+/* eslint-disable react/jsx-max-depth */
+/* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/no-multi-comp */
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Template } from '@twilio/flex-ui';
-import { Grid } from '@material-ui/core';
 
+import CaseTags from '../search/CasePreview/CaseTags';
+import CaseDetailsHeader from './caseDetails/CaseDetailsHeader';
 import {
   DetailsContainer,
   DetailDescription,
-  DetailValue,
-  OpenStatusFont,
-  DefaultStatusFont,
-  CaseSectionFont,
+  StyledInputField,
+  StyledSelectField,
+  StyledSelectWrapper,
 } from '../../styles/case';
-import { HiddenText } from '../../styles/HrmStyles';
-import { caseStatuses } from '../../states/DomainConstants';
+import { FormOption } from '../../styles/HrmStyles';
 
-// eslint-disable-next-line react/display-name
-const renderCaseStatus = status => {
-  switch (status) {
-    case caseStatuses.open:
-      return (
-        <OpenStatusFont>
-          <HiddenText>
-            <Template code="Case-CaseDetailsStatusLabel" />
-          </HiddenText>
-          <Template code="Case-CaseDetailsStatusOpen" />
-        </OpenStatusFont>
-      );
-    default:
-      return <DefaultStatusFont>{status}</DefaultStatusFont>;
-  }
-};
+const statusOptions = [
+  { label: 'Open', value: 'open', color: 'green' },
+  { label: 'Closed', value: 'closed', color: 'red' },
+];
 
-const CaseDetails = ({ name, counselor, date, status }) => {
+const CaseDetails = ({
+  caseId,
+  name,
+  categories,
+  counselor,
+  openedDate,
+  lastUpdatedDate,
+  followUpDate,
+  status,
+  isEditing,
+  handleInfoChange,
+  handleStatusChange,
+}) => {
+  const lastUpdatedClosedDate = openedDate === lastUpdatedDate ? '—' : lastUpdatedDate;
+
+  const initialColor = (statusOptions.find(x => x.value === status) || {}).color || '#000000';
+
+  const [color, setColor] = useState(initialColor);
+
+  const onStatusChange = selectedOption => {
+    setColor(statusOptions.find(x => x.value === selectedOption).color);
+    handleStatusChange(selectedOption);
+  };
+
   return (
     <>
-      <CaseSectionFont id="Case-CaseDetailsSection-label">
-        <Template code="Case-CaseDetailsSection" />
-      </CaseSectionFont>
-      <DetailsContainer tabIndex={0} role="grid" aria-labelledby="Case-CaseDetailsSection-label">
-        <Grid container spacing={24} justify="center" role="row">
-          <Grid item xs role="gridcell" tabIndex={-1}>
+      <CaseDetailsHeader caseId={caseId} childName={name} counselor={counselor} />
+      <DetailsContainer tabIndex={0} aria-labelledby="Case-CaseId-label">
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ paddingRight: '20px' }}>
             <DetailDescription>
-              <Template code="Case-CaseDetailsChildName" />
+              <label id="CaseDetailsDateOpened">
+                <Template code="Case-CaseDetailsDateOpened" />
+              </label>
             </DetailDescription>
-            <DetailValue>{name}</DetailValue>
-          </Grid>
-          <Grid item xs role="gridcell" tabIndex={-1}>
+            <StyledInputField
+              disabled
+              id="Details_DateOpened"
+              value={openedDate}
+              aria-labelledby="CaseDetailsDateOpened"
+            />
+          </div>
+          <div style={{ paddingRight: '20px' }}>
             <DetailDescription>
-              <Template code="Case-CaseDetailsOwner" />
+              <label id="CaseDetailsLastUpdated">
+                <Template code="Case-CaseDetailsLastUpdated" />
+              </label>
             </DetailDescription>
-            <DetailValue>{counselor}</DetailValue>
-          </Grid>
-          <Grid item xs role="gridcell" tabIndex={-1}>
+            <StyledInputField
+              disabled
+              id="Details_DateLastUpdated"
+              value={lastUpdatedClosedDate}
+              aria-labelledby="CaseDetailsLastUpdated"
+            />
+          </div>
+          <div style={{ paddingRight: '20px' }}>
             <DetailDescription>
-              <Template code="Case-CaseDetailsDateOpened" />
+              <label id="CaseDetailsFollowUpDate">
+                <Template code="Case-CaseDetailsFollowUpDate" />
+              </label>
             </DetailDescription>
-            <DetailValue>{date}</DetailValue>
-          </Grid>
-          <Grid item xs role="gridcell" tabIndex={-1}>
-            <div style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-              {renderCaseStatus(status)}
-            </div>
-          </Grid>
-        </Grid>
+            <StyledInputField
+              type="date"
+              id="Details_DateFollowUp"
+              name="Details_DateFollowUp"
+              disabled={status === 'closed'}
+              value={followUpDate}
+              onChange={e => handleInfoChange('followUpDate', e.target.value)}
+              aria-labelledby="CaseDetailsFollowUpDate"
+            />
+          </div>
+          <div style={{ paddingRight: '20px' }}>
+            <DetailDescription>
+              <label id="CaseDetailsStatusLabel">
+                <Template code="Case-CaseDetailsStatusLabel" />
+              </label>
+            </DetailDescription>
+            <StyledSelectWrapper>
+              <StyledSelectField
+                id="Details_CaseStatus"
+                name="Details_CaseStatus"
+                aria-labelledby="CaseDetailsStatusLabel"
+                disabled={!isEditing}
+                onChange={e => onStatusChange(e.target.value)}
+                defaultValue={status}
+                color={color}
+              >
+                {statusOptions.map(o => (
+                  <FormOption key={o.value} value={o.value} style={{ color: '#000000' }}>
+                    {o.label}
+                  </FormOption>
+                ))}
+              </StyledSelectField>
+            </StyledSelectWrapper>
+          </div>
+        </div>
+        <div style={{ paddingTop: '15px' }}>
+          <CaseTags categories={categories} />
+        </div>
       </DetailsContainer>
     </>
   );
@@ -71,10 +129,22 @@ const CaseDetails = ({ name, counselor, date, status }) => {
 
 CaseDetails.displayName = 'CaseDetails';
 CaseDetails.propTypes = {
+  caseId: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
+  categories: PropTypes.array.isRequired,
   counselor: PropTypes.string.isRequired,
-  date: PropTypes.string.isRequired,
+  openedDate: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
+  isEditing: PropTypes.bool.isRequired,
+  followUpDate: PropTypes.string,
+  lastUpdatedDate: PropTypes.string,
+  handleInfoChange: PropTypes.func.isRequired,
+  handleStatusChange: PropTypes.func.isRequired,
+};
+
+CaseDetails.defaultProps = {
+  followUpDate: '',
+  lastUpdatedDate: '',
 };
 
 export default CaseDetails;

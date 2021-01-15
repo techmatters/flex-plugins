@@ -1,7 +1,7 @@
 import type { FlexState } from '@twilio/flex-ui';
 import { combineReducers } from 'redux';
 
-import { reduce as ContactStateReducer } from './ContactState';
+import { reduce as ContactStateReducer } from './contacts/reducer';
 import { reduce as SearchFormReducer } from './search/reducer';
 import { reduce as ConnectedCaseReducer } from './case/reducer';
 import { reduce as QueuesStatusReducer } from './queuesStatus/reducer';

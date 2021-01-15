@@ -8,12 +8,13 @@ import {
   REMOVE_CONNECTED_CASE,
   UPDATE_CASE_INFO,
   UPDATE_TEMP_INFO,
+  UPDATE_CASE_STATUS,
 } from './types';
 import { GeneralActionType, REMOVE_CONTACT_STATE } from '../types';
 
 export type CaseState = {
   tasks: {
-    [taskId: string]: { connectedCase: Case; temporaryCaseInfo?: TemporaryCaseInfo };
+    [taskId: string]: { connectedCase: Case; temporaryCaseInfo?: TemporaryCaseInfo; caseHasBeenEdited: Boolean };
   };
 };
 
@@ -31,6 +32,7 @@ export function reduce(state = initialState, action: CaseActionType | GeneralAct
           [action.taskId]: {
             connectedCase: action.connectedCase,
             temporaryCaseInfo: null,
+            caseHasBeenEdited: action.caseHasBeenEdited,
           },
         },
       };
@@ -54,6 +56,7 @@ export function reduce(state = initialState, action: CaseActionType | GeneralAct
           [action.taskId]: {
             connectedCase: updatedCase,
             temporaryCaseInfo: null,
+            caseHasBeenEdited: true,
           },
         },
       };
@@ -66,6 +69,19 @@ export function reduce(state = initialState, action: CaseActionType | GeneralAct
           [action.taskId]: {
             ...state.tasks[action.taskId],
             temporaryCaseInfo: action.value,
+          },
+        },
+      };
+    case UPDATE_CASE_STATUS:
+      const { connectedCase } = state.tasks[action.taskId];
+      const updatedCase = { ...connectedCase, status: action.status };
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            connectedCase: updatedCase,
+            caseHasBeenEdited: true,
           },
         },
       };

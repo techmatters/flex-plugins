@@ -1,15 +1,14 @@
-import { FormValues, isFormFieldType } from './types';
-import { isNotCategory } from '../../../states/ContactFormStateFactory';
+import { LayoutValue } from './types';
+import { splitDate } from '../../../utils/helpers';
 
-export const getFormValues = <T>(formInformation: T): FormValues<T> => {
-  const values = Object.keys(formInformation).reduce((accum, key) => {
-    // do not iterate over metadata
-    if (isNotCategory(key)) return accum;
-
-    if (isFormFieldType(formInformation[key])) return { ...accum, [key]: formInformation[key].value };
-
-    return { ...accum, [key]: getFormValues(formInformation[key]) };
-  }, {} as FormValues<T>);
-
-  return values;
+/**
+ * Given a displayValue spec for a certain form field and a value (current state of such field),
+ * formats the value accordingly. E.g. from a date string, creates a date object without the locale timezone offset difference
+ */
+export const formatValue = (displayValue: LayoutValue) => (value: string | number | boolean) => {
+  if (displayValue && displayValue.format === 'date' && typeof value === 'string') {
+    const [y, m, d] = splitDate(value);
+    return new Date(y, m - 1, d).toLocaleDateString(navigator.language);
+  }
+  return value;
 };

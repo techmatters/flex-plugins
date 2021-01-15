@@ -1,5 +1,3 @@
-export { default as CallerSection } from './CallerSection';
-
 export const ContactDetailsSections = {
   GENERAL_DETAILS: 'General details',
   CALLER_INFORMATION: 'Caller information',
