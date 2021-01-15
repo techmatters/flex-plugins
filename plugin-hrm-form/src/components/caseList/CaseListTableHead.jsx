@@ -17,7 +17,7 @@ const CaseListTableHead = () => (
           <Template code="CaseList-THChildName" />
         </CLTableHeaderFont>
       </CLTableCell>
-      <CLTableCell style={{ width: '35%' }}>
+      <CLTableCell style={{ width: '30%' }}>
         <CLTableHeaderFont>
           <Template code="CaseList-THSummary" />
         </CLTableHeaderFont>

@@ -14,28 +14,15 @@ import {
   CLActionCell,
   CLTableBodyFont,
   CLCaseNumberContainer,
-  CategoryTag,
-  CategoryFont,
 } from '../../styles/caseList';
-import { HiddenText, StyledIcon, addHover } from '../../styles/HrmStyles';
-import { formatName, formatCategories, getShortSummary } from '../../utils';
+import { Box, HiddenText, StyledIcon, addHover } from '../../styles/HrmStyles';
+import { formatName, getShortSummary } from '../../utils';
+import { getContactTags, renderTag } from '../../utils/categories';
 import { caseStatuses } from '../../states/DomainConstants';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
 
 const CHAR_LIMIT = 200;
 const FullscreenIcon = addHover(StyledIcon(Fullscreen));
-
-/**
- * @param {string} tag
- */
-// eslint-disable-next-line react/display-name
-const renderTag = tag => (
-  <div style={{ width: '100%' }}>
-    <CategoryTag>
-      <CategoryFont>{tag}</CategoryFont>
-    </CategoryTag>
-  </div>
-);
 
 // eslint-disable-next-line react/no-multi-comp
 const CaseListTableRow = ({ caseItem, counselorsHash, openMockedMessage }) => {
@@ -50,7 +37,7 @@ const CaseListTableRow = ({ caseItem, counselorsHash, openMockedMessage }) => {
     caseItem.info && caseItem.info.followUpDate
       ? `${format(parseISO(caseItem.info.followUpDate), 'MMM d, yyyy')}`
       : '—';
-  const categories = formatCategories(caseItem.categories);
+  const categories = getContactTags(caseItem.categories);
   const isOpenCase = caseItem.status === caseStatuses.open;
 
   return (
@@ -82,7 +69,9 @@ const CaseListTableRow = ({ caseItem, counselorsHash, openMockedMessage }) => {
         <div style={{ display: 'inline-block', flexDirection: 'column' }}>
           {categories &&
             categories.map(category => (
-              <CategoryWithTooltip renderTag={renderTag} category={category} key={`category-tag-${category}`} />
+              <Box key={`category-tag-${category}`} marginBottom="5px">
+                <CategoryWithTooltip renderTag={renderTag} category={category.label} color={category.color} />
+              </Box>
             ))}
         </div>
       </CLTableCell>
