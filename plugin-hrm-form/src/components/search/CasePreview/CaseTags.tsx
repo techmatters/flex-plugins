@@ -2,18 +2,10 @@
 import React from 'react';
 
 import { Flex } from '../../../styles/HrmStyles';
-import { ContactTag, TagText, TagMiddleDot, TagsWrapper } from '../../../styles/search';
+import { TagsWrapper } from '../../../styles/search';
 import CategoryWithTooltip from '../../common/CategoryWithTooltip';
 import { retrieveCategories } from '../../case/ContactDetailsAdapter';
-import { getContactTags } from '../../../utils/categories';
-
-// eslint-disable-next-line react/display-name
-const renderTag = (tag, color) => (
-  <ContactTag color={color}>
-    <TagMiddleDot color={color} />
-    <TagText color={color}>{tag}</TagText>
-  </ContactTag>
-);
+import { getContactTags, renderTag } from '../../../utils/categories';
 
 type OwnProps = {
   categories?: {
