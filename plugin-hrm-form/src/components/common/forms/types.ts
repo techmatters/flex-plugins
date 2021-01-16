@@ -2,12 +2,12 @@ import type { ValidationRules } from 'react-hook-form';
 
 export type FormFieldType = { value: string; error?: string; validation?: string[]; touched?: boolean };
 
-export type FormInformation = {
+type FormInformation = {
   [key: string]: FormFieldType | FormInformation;
 };
 
 // Given a type T that defines a form (where each leaf is of type FormFieldType), infers the structure, with each leaf as the type of FormFieldType['value']
-export type FormValues<T> = {
+type FormValues<T> = {
   [P in keyof T]: T[P] extends FormFieldType
     ? FormFieldType['value']
     : T[P] extends FormInformation
@@ -15,7 +15,7 @@ export type FormValues<T> = {
     : never;
 };
 
-export type DefaultEventHandlers = (
+type DefaultEventHandlers = (
   parents: string[],
   name: string,
 ) => {
@@ -101,7 +101,7 @@ export type FormItemDefinition =
   | TimeInputDefinition;
 export type FormDefinition = FormItemDefinition[];
 
-export type CategoryEntry = { color: string; subcategories: string[] };
+type CategoryEntry = { color: string; subcategories: string[] };
 export type CategoriesDefinition = { [category: string]: CategoryEntry };
 
 /**

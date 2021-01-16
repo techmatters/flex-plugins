@@ -21,7 +21,7 @@ type TaskEntry = {
   casesError: any;
 };
 
-export type SearchState = {
+type SearchState = {
   tasks: {
     [taskId: string]: TaskEntry;
   };
