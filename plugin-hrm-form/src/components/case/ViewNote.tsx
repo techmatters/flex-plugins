@@ -9,9 +9,10 @@ import { CaseState } from '../../states/case/reducer';
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseLayout, NoteContainer } from '../../styles/case';
 import ActionHeader from './ActionHeader';
+import { StandaloneITask } from '../StandaloneSearch';
 
 type OwnProps = {
-  task: ITask;
+  task: ITask | StandaloneITask;
   onClickClose: () => void;
 };
 
