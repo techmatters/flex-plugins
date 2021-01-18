@@ -379,6 +379,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                   innerRef={register(rules)}
                   rows={10}
                   defaultValue={initialValue}
+                  placeholder={def?.placeholder}
                 />
                 {error && (
                   <FormError>

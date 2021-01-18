@@ -1,0 +1,8 @@
+[
+  {
+    "name": "note",
+    "label": "Note",
+    "type": "textarea",
+    "placeholder": "Type here to add note..."
+  }
+]

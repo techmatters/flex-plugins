@@ -76,6 +76,7 @@ type MixedCheckboxDefinition = {
 
 type TextareaDefinition = {
   type: 'textarea';
+  placeholder: string;
 } & ItemBase &
   ValidationRules;
 

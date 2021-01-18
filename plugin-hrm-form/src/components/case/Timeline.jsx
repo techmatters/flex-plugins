@@ -50,6 +50,7 @@ const Timeline = ({ status, task, form, caseObj, changeRoute, updateTempInfo, ro
      * If the case is just being created, adds the case's description as a new activity.
      */
     const getTimeline = async () => {
+      debugger;
       const activities = await getActivities(caseObj.id);
       let timelineActivities = sortActivities(activities);
 
@@ -119,7 +120,7 @@ const Timeline = ({ status, task, form, caseObj, changeRoute, updateTempInfo, ro
   };
 
   const handleAddNoteClick = () => {
-    updateTempInfo({ screen: 'add-note', info: '' }, task.taskSid);
+    updateTempInfo({ screen: 'add-note', info: null }, task.taskSid);
     changeRoute({ route, subroute: 'add-note' }, task.taskSid);
   };
 
@@ -163,7 +164,7 @@ const Timeline = ({ status, task, form, caseObj, changeRoute, updateTempInfo, ro
                   <CallTypeIcon callType={callType} fontSize="18px" />
                 </TimelineCallTypeIcon>
               )}
-              <TimelineText>{activity.text}</TimelineText>
+              <TimelineText>{activity?.text}</TimelineText>
               <Box marginLeft="auto" marginRight="10px">
                 <ViewButton onClick={() => handleOnClickView(activity)}>View</ViewButton>
               </Box>

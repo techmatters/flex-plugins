@@ -3,12 +3,15 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { ITask, Template } from '@twilio/flex-ui';
 
-import { Container, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
+import type { FormDefinition } from '../common/forms/types';
+import { Box, Container, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import { namespace, connectedCaseBase, configurationBase, routingBase } from '../../states';
 import { CaseState } from '../../states/case/reducer';
 import * as RoutingActions from '../../states/routing/actions';
-import { CaseLayout, NoteContainer } from '../../styles/case';
+import { CaseLayout } from '../../styles/case';
 import ActionHeader from './ActionHeader';
+import SectionEntry from '../SectionEntry';
+import NoteForm from '../../formDefinitions/caseForms/NoteForm.json';
 
 type OwnProps = {
   task: ITask;
@@ -41,7 +44,18 @@ const ViewNote: React.FC<Props> = ({ tempInfo, onClickClose, counselorsHash }) =
     <CaseLayout>
       <Container>
         <ActionHeader titleTemplate="Case-Note" onClickClose={onClickClose} counselor={counselorName} added={added} />
-        <NoteContainer data-testid="Case-ViewNoteScreen-Note">{note}</NoteContainer>
+        <Box paddingTop="10px">
+          <>
+            {(NoteForm as FormDefinition).map(e => (
+              <SectionEntry
+                key={`entry-${e.label}`}
+                description={<Template code={e.label} />}
+                value={note}
+                definition={e}
+              />
+            ))}
+          </>
+        </Box>
       </Container>
       <BottomButtonBar>
         <StyledNextStepButton roundCorners onClick={onClickClose} data-testid="Case-ViewNoteScreen-CloseButton">
