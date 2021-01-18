@@ -202,7 +202,9 @@ export async function saveToHrm(task, form, hrmBaseUrl, workerSid, helpline, sho
     helpline,
     conversationDuration,
     timeOfContact,
+    taskId: task.taskSid,
   };
+
 
   const response = await fetch(`${hrmBaseUrl}/contacts`, {
     method: 'POST',
