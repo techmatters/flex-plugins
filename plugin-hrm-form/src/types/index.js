@@ -94,6 +94,7 @@ export const formType = PropTypes.shape({
 });
 
 export const localizationType = PropTypes.shape({
+  /* eslint-disable-next-line react/forbid-prop-types */
   manager: PropTypes.object.isRequired,
   isCallTask: PropTypes.func.isRequired,
 });

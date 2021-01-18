@@ -88,9 +88,9 @@ type CaseAddButtonFontProps = {
   disabled: boolean;
 };
 
-export const CaseAddButtonFont = styled(({ disabled, ...rest }: CaseAddButtonFontProps) => <FontOpenSans {...rest} />)<
-  CaseAddButtonFontProps
->`
+export const CaseAddButtonFont = styled(({ disabled, ...rest }: CaseAddButtonFontProps) => (
+  <FontOpenSans {...rest} />
+))<CaseAddButtonFontProps>`
   font-weight: 600;
   font-size: 12px;
   line-height: 14px;
@@ -286,9 +286,9 @@ type StyledSelectFieldProps = {
   color: string;
 };
 
-export const StyledSelectField = styled(({ color, ...rest }: StyledSelectFieldProps) => <FormSelect {...rest} />)<
-  StyledSelectFieldProps
->`
+export const StyledSelectField = styled(({ color, ...rest }: StyledSelectFieldProps) => (
+  <FormSelect {...rest} />
+))<StyledSelectFieldProps>`
   width: 130px !important;
   height: 36px;
   font-weight: 600;

@@ -1,5 +1,6 @@
 /* eslint-disable no-duplicate-imports */
 /* eslint-disable react/prop-types */
+/* eslint-disable react/no-multi-comp */
 import React from 'react';
 import { Actions, ITask, withTaskContext } from '@twilio/flex-ui';
 import SearchIcon from '@material-ui/icons/Search';
