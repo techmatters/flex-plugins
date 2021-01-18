@@ -71,15 +71,12 @@ const standaloneTask: StandaloneITask = {
   attributes: { isContactlessTask: false },
 };
 
-type OwnProps = {
-  setConnectedCase: (currentCase: CaseType, taskSid: string, caseHasBeenEdited: Boolean) => void;
-};
+type OwnProps = {};
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const CaseList: React.FC<Props> = ({ setConnectedCase }) => {
-  // const [showCaseDetails, setDisplayCase] = useState(false);
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const fetchCaseList = async page => {
