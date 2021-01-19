@@ -38,10 +38,8 @@ const AddNote: React.FC<Props> = ({
   task,
   counselor,
   connectedCaseState,
-  route,
   onClickClose,
   updateTempInfo,
-  changeRoute,
   setConnectedCase,
 }) => {
   const { connectedCase, temporaryCaseInfo } = connectedCaseState;

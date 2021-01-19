@@ -2,56 +2,34 @@
   {
     "name": "date",
     "type": "date-input",
-    "label": "Date of Incident",
+    "label": "Date",
     "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
-    "name": "duration",
-    "label": "Duration",
+    "name": "referredTo",
+    "label": "Referred To",
     "type": "select",
     "options": [
       { "value": "", "label": "" },
-      { "value": "Ongoing", "label": "Ongoing" },
-      { "value": "Once Off", "label": "Once Off" },
-      { "value": "Other", "label": "Other" }
+      { "value": "OSC", "label": "OSC" },
+      { "value": "DREAMS", "label": "DREAMS" },
+      { "value": "Clinic", "label": "Clinic" },
+      { "value": "Hospital", "label": "Hospital" },
+      { "value": "Social Welfare", "label": "Social Welfare" },
+      { "value": "National Prosecutions Authority", "label": "National Prosecutions Authority" },
+      { "value": "Police (CPU)", "label": "Police (CPU)" },
+      { "value": "Police (VSU)", "label": "Police (VSU)" },
+      { "value": "Chief/Head man", "label": "Chief/Head man" },
+      { "value": "Head teacher", "label": "Head teacher" },
+      { "value": "Religious leader", "label": "Religious leader" },
+      { "value": "Other (specify)", "label": "Other (specify)" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
-    "name": "location",
-    "label": "Location",
-    "type": "select",
-    "options": [
-      { "value": "", "label": "" },
-      { "value": "Unknown", "label": "Unknown" },
-      { "value": "School", "label": "School" },
-      { "value": "Home", "label": "Home" },
-      { "value": "Institution", "label": "Institution" },
-      { "value": "Online", "label": "Online" },
-      { "value": "Public place", "label": "Public place" },
-      { "value": "Other", "label": "Other" }
-    ],
-    "required": { "value": true, "message": "RequiredFieldError" }
-  },
-  {
-    "name": "isCaregiverAware",
-    "label": "Is caregiver aware?",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "incidentWitnessed",
-    "label": "Was the incident witnessed by anyone?",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "abuseReportedElsewhere",
-    "label": "Has abuse been reported elsewhere?",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "whereElseBeenReported",
-    "label": "Where else the incident has been reported?",
-    "type": "input"
+    "name": "comments",
+    "label": "Comments",
+    "type": "textarea"
   }
 ]
 
