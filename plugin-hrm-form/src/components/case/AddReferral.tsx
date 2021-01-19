@@ -26,9 +26,10 @@ import { updateCase } from '../../services/CaseService';
 import { blankReferral } from '../../types/types';
 import { ValidationType } from '../../states/ContactFormStateFactory';
 import { referredToOptions } from '../SelectOptions';
+import { StandaloneITask } from '../StandaloneSearch';
 
 type OwnProps = {
-  task: ITask;
+  task: ITask | StandaloneITask;
   counselor: string;
   onClickClose: () => void;
 };

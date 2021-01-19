@@ -33,9 +33,10 @@ import {
   splitAt,
 } from '../common/forms/formGenerators';
 import LayoutDefinitions from '../../formDefinitions/LayoutDefinitions.json';
+import { StandaloneITask } from '../StandaloneSearch';
 
 type OwnProps = {
-  task: ITask;
+  task: ITask | StandaloneITask;
   counselor: string;
   onClickClose: () => void;
 };
