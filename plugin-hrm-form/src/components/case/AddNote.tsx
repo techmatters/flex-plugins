@@ -48,7 +48,6 @@ const AddNote: React.FC<Props> = ({
   const methods = useForm();
 
   const handleSaveNote = async () => {
-    debugger;
     if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-note') return;
 
     const { info, id } = connectedCase;
@@ -68,11 +67,6 @@ const AddNote: React.FC<Props> = ({
     };
 
     const generatedForm = createFormFromDefinition(NoteForm as FormDefinition)([])(initialForm)(updateCallBack);
-
-    /*
-     * if (LayoutDefinitions.case.notes.splitFormAt)
-     *   return splitAt(LayoutDefinitions.case.notes.splitFormAt)(disperseInputs(7)(generatedForm));
-     */
 
     return splitInHalf(disperseInputs(7)(generatedForm));
   }, [initialForm, methods, task.taskSid, updateTempInfo]);

@@ -50,7 +50,6 @@ const Timeline = ({ status, task, form, caseObj, changeRoute, updateTempInfo, ro
      * If the case is just being created, adds the case's description as a new activity.
      */
     const getTimeline = async () => {
-      debugger;
       const activities = await getActivities(caseObj.id);
       let timelineActivities = sortActivities(activities);
 

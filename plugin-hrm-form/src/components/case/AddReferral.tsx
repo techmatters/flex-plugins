@@ -61,7 +61,6 @@ const AddReferral: React.FC<Props> = ({
   if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-referral') return null;
 
   const handleSaveReferral = async () => {
-    debugger;
     if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-referral') return;
 
     const { info, id } = connectedCase;
