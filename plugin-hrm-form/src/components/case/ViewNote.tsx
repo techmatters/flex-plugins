@@ -12,9 +12,10 @@ import { CaseLayout } from '../../styles/case';
 import ActionHeader from './ActionHeader';
 import SectionEntry from '../SectionEntry';
 import NoteForm from '../../formDefinitions/caseForms/NoteForm.json';
+import { StandaloneITask } from '../StandaloneSearch';
 
 type OwnProps = {
-  task: ITask;
+  task: ITask | StandaloneITask;
   onClickClose: () => void;
 };
 

@@ -24,9 +24,10 @@ import { createFormFromDefinition, disperseInputs, splitInHalf } from '../common
 import { transformValues } from '../../services/ContactService';
 import type { FormDefinition } from '../common/forms/types';
 import NoteForm from '../../formDefinitions/caseForms/NoteForm.json';
+import { StandaloneITask } from '../StandaloneSearch';
 
 type OwnProps = {
-  task: ITask;
+  task: ITask | StandaloneITask;
   counselor: string;
   onClickClose: () => void;
 };

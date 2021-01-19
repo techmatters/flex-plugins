@@ -11,6 +11,7 @@ import ActionHeader from './ActionHeader';
 import SectionEntry from '../SectionEntry';
 import IncidentForm from '../../formDefinitions/caseForms/IncidentForm.json';
 import LayoutDefinitions from '../../formDefinitions/LayoutDefinitions.json';
+import { StandaloneITask } from '../StandaloneSearch';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
@@ -21,7 +22,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
 };
 
 type OwnProps = {
-  task: ITask;
+  task: ITask | StandaloneITask;
   onClickClose: () => void;
 };
 
