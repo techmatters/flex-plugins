@@ -27,11 +27,11 @@ export type IncidentEntry = { incident: Incident } & EntryInfo;
 
 export type Note = { [key: string]: string | boolean };
 
-export type NoteEntry = { note: string; counselor: string; date: string } & EntryInfo;
+export type NoteEntry = { note: string; counselor: string; date: string };
 
 export type Referral = { [key: string]: string | boolean };
 
-export type ReferralEntry = any;
+export type ReferralEntry = { [key: string]: string | boolean };
 
 export const blankReferral = {
   date: null,

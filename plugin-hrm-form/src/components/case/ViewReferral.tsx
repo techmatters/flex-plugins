@@ -38,8 +38,8 @@ const ViewReferral: React.FC<Props> = ({ onClickClose, tempInfo, counselorsHash 
   if (!tempInfo || tempInfo.screen !== 'view-referral') return null;
 
   const { counselor, date, referral } = tempInfo.info;
-  const counselorName = counselorsHash[counselor] || 'Unknown';
-  const added = new Date(date);
+  const counselorName = counselorsHash[counselor.toString()] || 'Unknown';
+  const added = new Date(date.toString());
 
   return (
     <CaseLayout>

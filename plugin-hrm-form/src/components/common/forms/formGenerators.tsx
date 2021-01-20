@@ -377,7 +377,8 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                   aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
                   innerRef={register(rules)}
-                  rows={10}
+                  rows={def?.rows ? def.rows : 10}
+                  width={def?.width ? def.width : 217}
                   defaultValue={initialValue}
                   placeholder={def?.placeholder}
                 />

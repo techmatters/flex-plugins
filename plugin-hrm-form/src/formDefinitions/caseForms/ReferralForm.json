@@ -29,7 +29,9 @@
   {
     "name": "comments",
     "label": "Comments",
-    "type": "textarea"
+    "type": "textarea",
+    "rows": 35,
+    "width": 300
   }
 ]
 

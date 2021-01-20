@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-max-depth */
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { connect } from 'react-redux';
@@ -14,7 +15,7 @@ import {
   TwoColumnLayout,
   Container,
 } from '../../styles/HrmStyles';
-import { CaseActionFormContainer } from '../../styles/case';
+import { CaseActionFormContainer, CaseActionLayout } from '../../styles/case';
 import { namespace, connectedCaseBase, routingBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
@@ -76,27 +77,29 @@ const AddNote: React.FC<Props> = ({
 
   return (
     <FormProvider {...methods}>
-      <CaseActionFormContainer>
-        <ActionHeader titleTemplate="Case-AddNote" onClickClose={onClickClose} counselor={counselor} />
-        <Container>
-          <Box paddingBottom={`${BottomButtonBarHeight}px`}>
-            <TwoColumnLayout>
-              <ColumnarBlock>{l}</ColumnarBlock>
-              <ColumnarBlock>{r}</ColumnarBlock>
-            </TwoColumnLayout>
+      <CaseActionLayout>
+        <CaseActionFormContainer>
+          <ActionHeader titleTemplate="Case-AddNote" onClickClose={onClickClose} counselor={counselor} />
+          <Container>
+            <Box paddingBottom={`${BottomButtonBarHeight}px`}>
+              <TwoColumnLayout>
+                <ColumnarBlock>{l}</ColumnarBlock>
+                <ColumnarBlock>{r}</ColumnarBlock>
+              </TwoColumnLayout>
+            </Box>
+          </Container>{' '}
+        </CaseActionFormContainer>
+        <BottomButtonBar>
+          <Box marginRight="15px">
+            <StyledNextStepButton data-testid="Case-CloseButton" secondary roundCorners onClick={onClickClose}>
+              <Template code="BottomBar-Cancel" />
+            </StyledNextStepButton>
           </Box>
-        </Container>{' '}
-      </CaseActionFormContainer>
-      <BottomButtonBar>
-        <Box marginRight="15px">
-          <StyledNextStepButton data-testid="Case-CloseButton" secondary roundCorners onClick={onClickClose}>
-            <Template code="BottomBar-Cancel" />
+          <StyledNextStepButton data-testid="Case-AddNoteScreen-SaveNote" roundCorners onClick={handleSaveNote}>
+            <Template code="BottomBar-SaveNote" />
           </StyledNextStepButton>
-        </Box>
-        <StyledNextStepButton data-testid="Case-AddNoteScreen-SaveNote" roundCorners onClick={handleSaveNote}>
-          <Template code="BottomBar-SaveNote" />
-        </StyledNextStepButton>
-      </BottomButtonBar>
+        </BottomButtonBar>
+      </CaseActionLayout>
     </FormProvider>
   );
 };
