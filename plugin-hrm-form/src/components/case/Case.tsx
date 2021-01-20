@@ -121,6 +121,7 @@ const Case: React.FC<Props> = props => {
       const contact = await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
       await updateCase(connectedCase.id, { ...connectedCase });
       await connectToCase(hrmBaseUrl, contact.id, connectedCase.id);
+      props.markCaseAsUpdated(task.taskSid);
       props.handleCompleteTask(task.taskSid, task);
     } catch (error) {
       console.error(error);
@@ -213,6 +214,7 @@ const Case: React.FC<Props> = props => {
 
     try {
       const updatedCase = await updateCase(connectedCase.id, { ...connectedCase });
+      props.markCaseAsUpdated(task.taskSid);
       props.updateCases(task.taskSid, updatedCase);
       // IF case has been edited from All Cases view, we should update that view
       if (props.updateAllCasesView) {
@@ -389,6 +391,7 @@ const mapDispatchToProps = {
   updateCaseInfo: CaseActions.updateCaseInfo,
   updateTempInfo: CaseActions.updateTempInfo,
   updateCaseStatus: CaseActions.updateCaseStatus,
+  markCaseAsUpdated: CaseActions.markCaseAsUpdated,
   updateCases: SearchActions.updateCases,
 };
 
