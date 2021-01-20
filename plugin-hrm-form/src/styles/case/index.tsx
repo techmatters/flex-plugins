@@ -266,10 +266,18 @@ export const StyledInputField = styled(FormInput)`
 
 StyledInputField.displayName = 'StyledInputField';
 
-export const StyledSelectWrapper = styled(FormSelectWrapper)`
+type FormSelectWrapperProps = {
+  disabled?: boolean;
+};
+
+export const StyledSelectWrapper = styled(FormSelectWrapper)<FormSelectWrapperProps>`
   width: 130px !important;
   height: 36px;
   margin-top: 7px;
+
+  &::after {
+    display: ${({ disabled }) => (disabled ? 'none' : 'initial')};
+  }
 `;
 
 StyledSelectWrapper.displayName = 'StyledSelectWrapper';
