@@ -13,6 +13,7 @@ import ActionHeader from './ActionHeader';
 import SectionEntry from '../SectionEntry';
 import NoteForm from '../../formDefinitions/caseForms/NoteForm.json';
 import { StandaloneITask } from '../StandaloneSearch';
+import { formatName } from '../../utils';
 
 type OwnProps = {
   task: ITask | StandaloneITask;
@@ -38,7 +39,7 @@ const ViewNote: React.FC<Props> = ({ tempInfo, onClickClose, counselorsHash }) =
   if (!tempInfo || tempInfo.screen !== 'view-note') return null;
 
   const { counselor, date, note } = tempInfo.info;
-  const counselorName = counselorsHash[counselor] || 'Unknown';
+  const counselorName = formatName(counselorsHash[counselor]);
   const added = new Date(date);
 
   return (

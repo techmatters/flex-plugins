@@ -30,7 +30,7 @@
     "name": "comments",
     "label": "Comments",
     "type": "textarea",
-    "rows": 35,
+    "rows": 25,
     "width": 300
   }
 ]

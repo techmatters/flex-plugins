@@ -13,6 +13,7 @@ import ActionHeader from './ActionHeader';
 import SectionEntry from '../SectionEntry';
 import ReferralForm from '../../formDefinitions/caseForms/ReferralForm.json';
 import { StandaloneITask } from '../StandaloneSearch';
+import { formatName } from '../../utils';
 
 type OwnProps = {
   task: ITask | StandaloneITask;
@@ -38,7 +39,7 @@ const ViewReferral: React.FC<Props> = ({ onClickClose, tempInfo, counselorsHash 
   if (!tempInfo || tempInfo.screen !== 'view-referral') return null;
 
   const { counselor, date, referral } = tempInfo.info;
-  const counselorName = counselorsHash[counselor.toString()] || 'Unknown';
+  const counselorName = formatName(counselorsHash[counselor.toString()]);
   const added = new Date(date.toString());
 
   return (
