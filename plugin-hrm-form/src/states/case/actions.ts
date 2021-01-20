@@ -7,6 +7,7 @@ import {
   UPDATE_CASE_INFO,
   UPDATE_TEMP_INFO,
   UPDATE_CASE_STATUS,
+  MARK_CASE_AS_UPDATED,
 } from './types';
 
 // Action creators
@@ -42,5 +43,10 @@ export const updateTempInfo = (value: TemporaryCaseInfo, taskId: string): CaseAc
 export const updateCaseStatus = (status: CaseStatus, taskId: string): CaseActionType => ({
   type: UPDATE_CASE_STATUS,
   status,
+  taskId,
+});
+
+export const markCaseAsUpdated = (taskId: string): CaseActionType => ({
+  type: MARK_CASE_AS_UPDATED,
   taskId,
 });

@@ -1,5 +1,4 @@
 import { reduce } from '../../../states/case/reducer';
-import * as types from '../../../states/case/types';
 import * as actions from '../../../states/case/actions';
 import * as GeneralActions from '../../../states/actions';
 import { Case } from '../../../types/types';
@@ -39,13 +38,6 @@ describe('test reducer', () => {
       createdAt: '2020-07-31T20:39:37.408Z',
       updatedAt: '2020-07-31T20:39:37.408Z',
       connectedContacts: null,
-    };
-
-    const expectedAction: types.CaseActionType = {
-      type: types.SET_CONNECTED_CASE,
-      connectedCase,
-      taskId: task.taskSid,
-      caseHasBeenEdited: false,
     };
 
     const expected = { tasks: { task1: { connectedCase, temporaryCaseInfo: null, caseHasBeenEdited: false } } };
@@ -95,6 +87,15 @@ describe('test reducer', () => {
     const expected = { tasks: { task1: { connectedCase, temporaryCaseInfo: randomTemp, caseHasBeenEdited: true } } };
 
     const result = reduce(state, actions.updateTempInfo({ screen: 'add-note', info: '' }, task.taskSid));
+    expect(result).toStrictEqual(expected);
+
+    state = result;
+  });
+
+  test('should handle MARK_CASE_AS_UPDATED', async () => {
+    const expected = { tasks: { task1: { ...state.tasks.task1, caseHasBeenEdited: false } } };
+
+    const result = reduce(state, actions.markCaseAsUpdated(task.taskSid));
     expect(result).toStrictEqual(expected);
 
     state = result;

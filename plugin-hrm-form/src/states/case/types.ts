@@ -8,6 +8,7 @@ export const REMOVE_CONNECTED_CASE = 'REMOVE_CONNECTED_CASE';
 export const UPDATE_CASE_INFO = 'UPDATE_CASE_INFO';
 export const UPDATE_TEMP_INFO = 'UPDATE_TEMP_INFO';
 export const UPDATE_CASE_STATUS = 'UPDATE_CASE_STATUS';
+export const MARK_CASE_AS_UPDATED = 'MARK_CASE_AS_UPDATED';
 
 export type ViewNote = {
   note: string;
@@ -72,12 +73,18 @@ type UpdateCasesStatusAction = {
   taskId: string;
 };
 
+type MarkCaseAsUpdated = {
+  type: typeof MARK_CASE_AS_UPDATED;
+  taskId: string;
+};
+
 export type CaseActionType =
   | SetConnectedCaseAction
   | RemoveConnectedCaseAction
   | UpdateCaseInfoAction
   | TemporaryCaseInfoAction
-  | UpdateCasesStatusAction;
+  | UpdateCasesStatusAction
+  | MarkCaseAsUpdated;
 
 export type ActivityType = {
   type: typeof channelsAndDefault[keyof typeof channelsAndDefault] | 'note' | 'referral';

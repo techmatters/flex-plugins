@@ -57,4 +57,13 @@ describe('test action creators', () => {
 
     expect(actions.updateTempInfo(value, task.taskSid)).toStrictEqual(expectedAction);
   });
+
+  test('markCaseAsUpdated', async () => {
+    const expectedAction: types.CaseActionType = {
+      type: types.MARK_CASE_AS_UPDATED,
+      taskId: task.taskSid,
+    };
+
+    expect(actions.markCaseAsUpdated(task.taskSid)).toStrictEqual(expectedAction);
+  });
 });
