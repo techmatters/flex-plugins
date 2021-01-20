@@ -1,17 +1,30 @@
+/* eslint-disable react/jsx-max-depth */
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { connect } from 'react-redux';
 import { Template, ITask } from '@twilio/flex-ui';
+import { useForm, FormProvider } from 'react-hook-form';
 
 import ActionHeader from './ActionHeader';
-import { getConfig } from '../../HrmFormPlugin';
-import { Box, HiddenText, StyledNextStepButton, BottomButtonBar } from '../../styles/HrmStyles';
-import { CaseActionLayout, CaseActionTextArea } from '../../styles/case';
+import {
+  Box,
+  StyledNextStepButton,
+  BottomButtonBar,
+  BottomButtonBarHeight,
+  ColumnarBlock,
+  TwoColumnLayout,
+  Container,
+} from '../../styles/HrmStyles';
+import { CaseActionFormContainer, CaseActionLayout } from '../../styles/case';
 import { namespace, connectedCaseBase, routingBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseState } from '../../states/case/reducer';
 import { updateCase } from '../../services/CaseService';
+import { createFormFromDefinition, disperseInputs, splitInHalf } from '../common/forms/formGenerators';
+import { transformValues } from '../../services/ContactService';
+import type { FormDefinition } from '../common/forms/types';
+import NoteForm from '../../formDefinitions/caseForms/NoteForm.json';
 import { StandaloneITask } from '../StandaloneSearch';
 
 type OwnProps = {
@@ -27,63 +40,67 @@ const AddNote: React.FC<Props> = ({
   task,
   counselor,
   connectedCaseState,
-  route,
   onClickClose,
   updateTempInfo,
-  changeRoute,
   setConnectedCase,
 }) => {
-  const { strings } = getConfig();
   const { connectedCase, temporaryCaseInfo } = connectedCaseState;
-
-  const handleOnChangeNote = (note: string) => updateTempInfo({ screen: 'add-note', info: note }, task.taskSid);
+  const init = temporaryCaseInfo && temporaryCaseInfo.screen === 'add-note' ? temporaryCaseInfo.info : {};
+  const [initialForm] = React.useState(init); // grab initial values in first render only. This value should never change or will ruin the memoization below
+  const methods = useForm();
 
   const handleSaveNote = async () => {
+    if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-note') return;
+
     const { info, id } = connectedCase;
-    const newNote = temporaryCaseInfo.info;
-    const notes = info && info.notes ? [...info.notes, newNote] : [newNote];
+    const note = Object.values(transformValues(NoteForm as FormDefinition)(temporaryCaseInfo.info));
+    const notes = info && info.notes ? [...info.notes, ...note] : [...note];
     const newInfo = info ? { ...info, notes } : { notes };
     const updatedCase = await updateCase(id, { info: newInfo });
     setConnectedCase(updatedCase, task.taskSid, true);
-    updateTempInfo({ screen: 'add-note', info: '' }, task.taskSid);
+    updateTempInfo({ screen: 'add-note', info: null }, task.taskSid);
     onClickClose();
   };
+
+  const [l, r] = React.useMemo(() => {
+    const updateCallBack = () => {
+      const note = methods.getValues();
+      updateTempInfo({ screen: 'add-note', info: note }, task.taskSid);
+    };
+
+    const generatedForm = createFormFromDefinition(NoteForm as FormDefinition)([])(initialForm)(updateCallBack);
+
+    return splitInHalf(disperseInputs(7)(generatedForm));
+  }, [initialForm, methods, task.taskSid, updateTempInfo]);
 
   if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-note') return null;
 
   return (
-    <CaseActionLayout>
-      <Box height="100%" paddingTop="20px" paddingLeft="30px" paddingRight="10px">
-        <ActionHeader titleTemplate="Case-AddNote" onClickClose={onClickClose} counselor={counselor} />
-        <HiddenText id="Case-TypeHere-label">
-          <Template code="Case-AddNoteTypeHere" />
-        </HiddenText>
-        <CaseActionTextArea
-          data-testid="Case-AddNoteScreen-TextArea"
-          aria-labelledby="Case-TypeHere-label"
-          placeholder={strings['Case-AddNoteTypeHere']}
-          rows={25}
-          value={temporaryCaseInfo.info}
-          onChange={e => handleOnChangeNote(e.target.value)}
-        />
-      </Box>
-      <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
-      <BottomButtonBar>
-        <Box marginRight="15px">
-          <StyledNextStepButton data-testid="Case-CloseButton" secondary roundCorners onClick={onClickClose}>
-            <Template code="BottomBar-Cancel" />
+    <FormProvider {...methods}>
+      <CaseActionLayout>
+        <CaseActionFormContainer>
+          <ActionHeader titleTemplate="Case-AddNote" onClickClose={onClickClose} counselor={counselor} />
+          <Container>
+            <Box paddingBottom={`${BottomButtonBarHeight}px`}>
+              <TwoColumnLayout>
+                <ColumnarBlock>{l}</ColumnarBlock>
+                <ColumnarBlock>{r}</ColumnarBlock>
+              </TwoColumnLayout>
+            </Box>
+          </Container>{' '}
+        </CaseActionFormContainer>
+        <BottomButtonBar>
+          <Box marginRight="15px">
+            <StyledNextStepButton data-testid="Case-CloseButton" secondary roundCorners onClick={onClickClose}>
+              <Template code="BottomBar-Cancel" />
+            </StyledNextStepButton>
+          </Box>
+          <StyledNextStepButton data-testid="Case-AddNoteScreen-SaveNote" roundCorners onClick={handleSaveNote}>
+            <Template code="BottomBar-SaveNote" />
           </StyledNextStepButton>
-        </Box>
-        <StyledNextStepButton
-          data-testid="Case-AddNoteScreen-SaveNote"
-          roundCorners
-          onClick={handleSaveNote}
-          disabled={!temporaryCaseInfo.info}
-        >
-          <Template code="BottomBar-SaveNote" />
-        </StyledNextStepButton>
-      </BottomButtonBar>
-    </CaseActionLayout>
+        </BottomButtonBar>
+      </CaseActionLayout>
+    </FormProvider>
   );
 };
 

@@ -2,8 +2,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { ITask, Template } from '@twilio/flex-ui';
-import { format, parseISO } from 'date-fns';
 
+import type { FormDefinition } from '../common/forms/types';
 import { Container, Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import { namespace, connectedCaseBase, configurationBase, routingBase, RootState } from '../../states';
 import { CaseState } from '../../states/case/reducer';
@@ -11,7 +11,9 @@ import * as RoutingActions from '../../states/routing/actions';
 import { CaseLayout } from '../../styles/case';
 import ActionHeader from './ActionHeader';
 import SectionEntry from '../SectionEntry';
+import ReferralForm from '../../formDefinitions/caseForms/ReferralForm.json';
 import { StandaloneITask } from '../StandaloneSearch';
+import { formatName } from '../../utils';
 
 type OwnProps = {
   task: ITask | StandaloneITask;
@@ -37,9 +39,8 @@ const ViewReferral: React.FC<Props> = ({ onClickClose, tempInfo, counselorsHash 
   if (!tempInfo || tempInfo.screen !== 'view-referral') return null;
 
   const { counselor, date, referral } = tempInfo.info;
-  const counselorName = counselorsHash[counselor] || 'Unknown';
-  const added = new Date(date);
-  const referralDate = `${format(parseISO(referral.date), 'MMM d, yyyy')}`;
+  const counselorName = formatName(counselorsHash[counselor.toString()]);
+  const added = new Date(date.toString());
 
   return (
     <CaseLayout>
@@ -50,10 +51,17 @@ const ViewReferral: React.FC<Props> = ({ onClickClose, tempInfo, counselorsHash 
           counselor={counselorName}
           added={added}
         />
-        <Box marginTop="10px">
-          <SectionEntry description={<Template code="Case-ReferralDate" />} value={referralDate} />
-          <SectionEntry description={<Template code="Case-ReferralReferredTo" />} value={referral.referredTo} />
-          <SectionEntry notBold description={<Template code="Case-ReferralComments" />} value={referral.comments} />
+        <Box paddingTop="10px">
+          <>
+            {(ReferralForm as FormDefinition).map(e => (
+              <SectionEntry
+                key={`entry-${e.label}`}
+                description={<Template code={e.label} />}
+                value={referral[e.name]}
+                definition={e}
+              />
+            ))}
+          </>
         </Box>
       </Container>
       <BottomButtonBar>

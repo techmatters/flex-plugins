@@ -31,6 +31,9 @@
         }
       },
       "splitFormAt": 3
+    },
+    "referrals": {
+      "splitFormAt": 2
     }
   }
 }

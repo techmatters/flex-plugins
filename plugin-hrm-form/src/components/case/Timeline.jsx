@@ -119,7 +119,7 @@ const Timeline = ({ status, task, form, caseObj, changeRoute, updateTempInfo, ro
   };
 
   const handleAddNoteClick = () => {
-    updateTempInfo({ screen: 'add-note', info: '' }, task.taskSid);
+    updateTempInfo({ screen: 'add-note', info: null }, task.taskSid);
     changeRoute({ route, subroute: 'add-note' }, task.taskSid);
   };
 
@@ -163,7 +163,7 @@ const Timeline = ({ status, task, form, caseObj, changeRoute, updateTempInfo, ro
                   <CallTypeIcon callType={callType} fontSize="18px" />
                 </TimelineCallTypeIcon>
               )}
-              <TimelineText>{activity.text}</TimelineText>
+              <TimelineText>{activity?.text}</TimelineText>
               <Box marginLeft="auto" marginRight="10px">
                 <ViewButton onClick={() => handleOnClickView(activity)}>View</ViewButton>
               </Box>

@@ -54,9 +54,8 @@ describe('ViewReferral screen', () => {
 
     expect(screen.getByTestId('Case-ActionHeaderCounselor')).toHaveTextContent(counselor);
     expect(screen.getByTestId('Case-ActionHeaderAdded')).toHaveTextContent(date);
-    expect(() => screen.getByText('Dec 22, 2020')).not.toThrow();
+    expect(() => screen.getByText('2020-12-22')).not.toThrow();
     expect(() => screen.getByText(referral.referredTo)).not.toThrow();
-    expect(() => screen.getByText(referral.comments)).not.toThrow();
   });
 
   test('click on x button', () => {

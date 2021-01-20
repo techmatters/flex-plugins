@@ -31,17 +31,17 @@ export type ViewReferral = {
 };
 
 export type TemporaryCaseInfo =
-  | { screen: typeof NewCaseSubroutes.AddNote; info: string }
-  | { screen: typeof NewCaseSubroutes.AddReferral; info: t.ReferralEntry }
+  | { screen: typeof NewCaseSubroutes.AddNote; info: t.Note }
+  | { screen: typeof NewCaseSubroutes.AddReferral; info: t.Referral }
   | { screen: typeof NewCaseSubroutes.AddHousehold; info: t.Household }
   | { screen: typeof NewCaseSubroutes.AddPerpetrator; info: t.Perpetrator }
   | { screen: typeof NewCaseSubroutes.AddIncident; info: t.Incident }
   | { screen: typeof NewCaseSubroutes.ViewContact; info: ViewContact }
-  | { screen: typeof NewCaseSubroutes.ViewNote; info: ViewNote }
+  | { screen: typeof NewCaseSubroutes.ViewNote; info: t.NoteEntry }
   | { screen: typeof NewCaseSubroutes.ViewHousehold; info: t.HouseholdEntry }
   | { screen: typeof NewCaseSubroutes.ViewPerpetrator; info: t.PerpetratorEntry }
   | { screen: typeof NewCaseSubroutes.ViewIncident; info: t.IncidentEntry }
-  | { screen: typeof NewCaseSubroutes.ViewReferral; info: ViewReferral };
+  | { screen: typeof NewCaseSubroutes.ViewReferral; info: t.ReferralEntry };
 
 type SetConnectedCaseAction = {
   type: typeof SET_CONNECTED_CASE;

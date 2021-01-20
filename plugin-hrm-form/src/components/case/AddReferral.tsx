@@ -3,29 +3,27 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Template, ITask } from '@twilio/flex-ui';
+import { useForm, FormProvider } from 'react-hook-form';
 
-import RequiredAsterisk from '../RequiredAsterisk';
 import ActionHeader from './ActionHeader';
 import {
-  Flex,
   Box,
-  Row,
   StyledNextStepButton,
   BottomButtonBar,
-  FormLabel,
-  FormInput,
-  FormSelect,
-  FormSelectWrapper,
-  FormOption,
+  BottomButtonBarHeight,
+  TwoColumnLayout,
+  ColumnarBlock,
+  Container,
 } from '../../styles/HrmStyles';
-import { CaseActionLayout } from '../../styles/case';
+import { CaseActionLayout, CaseActionFormContainer } from '../../styles/case';
 import { namespace, connectedCaseBase, routingBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { updateCase } from '../../services/CaseService';
-import { blankReferral } from '../../types/types';
-import { ValidationType } from '../../states/ContactFormStateFactory';
-import { referredToOptions } from '../SelectOptions';
+import { createFormFromDefinition, disperseInputs, splitInHalf } from '../common/forms/formGenerators';
+import { transformValues } from '../../services/ContactService';
+import type { FormDefinition } from '../common/forms/types';
+import ReferralForm from '../../formDefinitions/caseForms/ReferralForm.json';
 import { StandaloneITask } from '../StandaloneSearch';
 
 type OwnProps = {
@@ -41,120 +39,76 @@ const AddReferral: React.FC<Props> = ({
   task,
   counselor,
   connectedCaseState,
-  route,
   onClickClose,
   updateTempInfo,
-  changeRoute,
   setConnectedCase,
 }) => {
   const { connectedCase, temporaryCaseInfo } = connectedCaseState;
+  const init = temporaryCaseInfo && temporaryCaseInfo.screen === 'add-referral' ? temporaryCaseInfo.info : {};
+  const [initialForm] = React.useState(init); // grab initial values in first render only. This value should never change or will ruin the memoization below
+  const methods = useForm();
+
+  const [l, r] = React.useMemo(() => {
+    const updateCallBack = () => {
+      const referral = methods.getValues();
+      updateTempInfo({ screen: 'add-referral', info: referral }, task.taskSid);
+    };
+
+    const generatedForm = createFormFromDefinition(ReferralForm as FormDefinition)([])(initialForm)(updateCallBack);
+
+    return splitInHalf(disperseInputs(7)(generatedForm));
+  }, [initialForm, methods, task.taskSid, updateTempInfo]);
 
   if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-referral') return null;
 
-  const { info: referralFormInfo } = temporaryCaseInfo;
-
-  const handleChange = (field, value) =>
-    updateTempInfo({ screen: 'add-referral', info: { ...referralFormInfo, [field]: value } }, task.taskSid);
-
   const handleSaveReferral = async () => {
+    if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-referral') return;
+
     const { info, id } = connectedCase;
-    const newReferral = referralFormInfo;
-    const referrals = info && info.referrals ? [...info.referrals, newReferral] : [newReferral];
+    const referral = transformValues(ReferralForm as FormDefinition)(temporaryCaseInfo.info);
+    const referrals = info && info.referrals ? [...info.referrals, referral] : [referral];
     const newInfo = info ? { ...info, referrals } : { referrals };
     const updatedCase = await updateCase(id, { info: newInfo });
     setConnectedCase(updatedCase, task.taskSid, true);
-    updateTempInfo({ screen: 'add-referral', info: blankReferral }, task.taskSid);
+    updateTempInfo({ screen: 'add-referral', info: null }, task.taskSid);
     onClickClose();
   };
 
-  const requiredField = {
-    validation: [ValidationType.REQUIRED],
-  };
-
-  const isSaveDisabled = Boolean(!referralFormInfo || !referralFormInfo.date || !referralFormInfo.referredTo);
+  function onError() {
+    window.alert('You must fill in required fields.');
+  }
 
   return (
-    <CaseActionLayout>
-      <Box height="100%" paddingTop="20px" paddingLeft="30px" paddingRight="10px">
-        <ActionHeader titleTemplate="Case-AddReferral" onClickClose={onClickClose} counselor={counselor} />
-        <Flex justifyContent="space-between" marginTop="25px">
-          <Flex flexDirection="column">
-            <Box marginBottom="25px">
-              <FormLabel htmlFor="date">
-                <Row>
-                  <Box marginBottom="8px">
-                    <Template code="Case-ReferralDate" />
-                    <RequiredAsterisk field={requiredField} />
-                  </Box>
-                </Row>
-                <FormInput
-                  data-testid="Case-AddReferralScreen-Date"
-                  type="date"
-                  id="date"
-                  name="date"
-                  onChange={e => handleChange('date', e.target.value)}
-                />
-              </FormLabel>
+    <FormProvider {...methods}>
+      <CaseActionLayout>
+        <CaseActionFormContainer>
+          <ActionHeader titleTemplate="Case-AddReferral" onClickClose={onClickClose} counselor={counselor} />
+          <Container>
+            <Box paddingBottom={`${BottomButtonBarHeight}px`}>
+              <TwoColumnLayout>
+                <ColumnarBlock>{l}</ColumnarBlock>
+                <ColumnarBlock>{r}</ColumnarBlock>
+              </TwoColumnLayout>
             </Box>
-            <FormLabel htmlFor="referredTo">
-              <Row>
-                <Box marginBottom="8px">
-                  <Template code="Case-ReferralReferredTo" />
-                  <RequiredAsterisk field={requiredField} />
-                </Box>
-              </Row>
-              <FormSelectWrapper>
-                <FormSelect
-                  data-testid="Case-AddReferralScreen-ReferredTo"
-                  id="referredTo"
-                  name="referredTo"
-                  onChange={e => handleChange('referredTo', e.target.value)}
-                >
-                  {['', ...referredToOptions].map(option => (
-                    <FormOption key={`referredToOption-${option}`} value={option} isEmptyValue={!option}>
-                      {option}
-                    </FormOption>
-                  ))}
-                </FormSelect>
-              </FormSelectWrapper>
-            </FormLabel>
-          </Flex>
-          <Box marginRight="20px">
-            <FormLabel htmlFor="comments">
-              <Row>
-                <Box marginBottom="8px">
-                  <Template code="Case-ReferralComments" />
-                </Box>
-              </Row>
-              <textarea
-                data-testid="Case-AddReferralScreen-Comments"
-                id="comments"
-                name="comments"
-                onChange={e => handleChange('comments', e.target.value)}
-                rows={30}
-                style={{ width: '289px' }}
-              />
-            </FormLabel>
+          </Container>
+        </CaseActionFormContainer>
+        <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
+        <BottomButtonBar>
+          <Box marginRight="15px">
+            <StyledNextStepButton data-testid="Case-CloseButton" secondary roundCorners onClick={onClickClose}>
+              <Template code="BottomBar-Cancel" />
+            </StyledNextStepButton>
           </Box>
-        </Flex>
-      </Box>
-      <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
-      <BottomButtonBar>
-        <Box marginRight="15px">
-          <StyledNextStepButton data-testid="Case-CloseButton" secondary roundCorners onClick={onClickClose}>
-            <Template code="BottomBar-Cancel" />
+          <StyledNextStepButton
+            data-testid="Case-AddReferralScreen-SaveReferral"
+            roundCorners
+            onClick={methods.handleSubmit(handleSaveReferral, onError)}
+          >
+            <Template code="BottomBar-SaveReferral" />
           </StyledNextStepButton>
-        </Box>
-        <StyledNextStepButton
-          data-testid="Case-AddReferralScreen-SaveReferral"
-          roundCorners
-          onClick={handleSaveReferral}
-          disabled={isSaveDisabled}
-        >
-          <Template code="BottomBar-SaveReferral" />
-        </StyledNextStepButton>
-      </BottomButtonBar>
-    </CaseActionLayout>
+        </BottomButtonBar>
+      </CaseActionLayout>
+    </FormProvider>
   );
 };
 
