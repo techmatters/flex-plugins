@@ -108,7 +108,7 @@ const CaseDetails = ({
                 <Template code="Case-CaseDetailsStatusLabel" />
               </label>
             </DetailDescription>
-            <StyledSelectWrapper>
+            <StyledSelectWrapper disabled={!isEditing}>
               <StyledSelectField
                 id="Details_CaseStatus"
                 name="Details_CaseStatus"

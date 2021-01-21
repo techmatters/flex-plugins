@@ -5,11 +5,15 @@ import { Add } from '@material-ui/icons';
 import { Template } from '@twilio/flex-ui';
 
 import { CaseAddButtonFont } from '../../styles/case';
+import HrmTheme from '../../styles/HrmTheme';
 
 const CaseAddButton = ({ status, templateCode, onClick, withDivider }) => {
+  const disabled = status === 'closed';
+  const color = disabled ? HrmTheme.colors.disabledColor : 'initial';
+
   return (
     <ButtonBase
-      disabled={status === 'closed'}
+      disabled={disabled}
       onClick={onClick}
       style={{
         marginLeft: 'auto',
@@ -17,8 +21,8 @@ const CaseAddButton = ({ status, templateCode, onClick, withDivider }) => {
         borderLeft: withDivider ? '1px solid rgba(25, 43, 51, 0.3)' : 'none',
       }}
     >
-      <Add style={{ marginRight: 10 }} />
-      <CaseAddButtonFont style={{ marginRight: 20 }} disabled={status === 'closed'}>
+      <Add style={{ marginRight: 10, color }} />
+      <CaseAddButtonFont style={{ marginRight: 20 }} disabled={disabled}>
         <Template code={templateCode} />
       </CaseAddButtonFont>
     </ButtonBase>
