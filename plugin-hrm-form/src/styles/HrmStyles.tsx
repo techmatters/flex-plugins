@@ -71,7 +71,13 @@ export const TabbedFormsContainer = styled('div')`
 `;
 TabbedFormsContainer.displayName = 'TabbedFormsContainer';
 
-export const TabbedFormTabContainer = styled('div')<{ display: boolean }>`
+type TabbedFormTabContainerProps = {
+  display: boolean;
+};
+
+export const TabbedFormTabContainer = styled(({ display, ...rest }: TabbedFormTabContainerProps) => <Box {...rest} />)<
+  TabbedFormTabContainerProps
+>`
   display: ${({ display }) => (display ? 'block' : 'none')};
   height: ${({ display }) => (display ? '100%' : '0px')};
 `;
