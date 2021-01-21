@@ -109,9 +109,9 @@ const Case: React.FC<Props> = props => {
           date: format(date, 'yyyy-MM-dd HH:mm:ss'),
           createdAt: new Date().toISOString(),
           type: task.channelType,
-          text: form.caseInformation.callSummary,
+          text: form.caseInformation.callSummary.toString(),
           twilioWorkerId: workerSid,
-          channel: task.channelType === 'default' ? form.contactlessTask.channel : task.channelType,
+          channel: task.channelType === 'default' ? form.contactlessTask.channel.toString() : task.channelType,
         };
 
         timelineActivities = sortActivities([...timelineActivities, connectCaseActivity]);

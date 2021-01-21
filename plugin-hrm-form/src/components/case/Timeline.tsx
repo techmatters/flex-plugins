@@ -1,9 +1,9 @@
+/* eslint-disable react/prop-types */
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { parseISO } from 'date-fns';
-import { Template } from '@twilio/flex-ui';
-import PropTypes from 'prop-types';
+import { Template, ITask } from '@twilio/flex-ui';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 
@@ -18,16 +18,29 @@ import {
   TimelineCallTypeIcon,
 } from '../../styles/case';
 import { Box, Row } from '../../styles/HrmStyles';
-import { taskType, formType } from '../../types';
 import CaseAddButton from './CaseAddButton';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { ContactDetailsSections } from '../common/ContactDetails';
 import { namespace, routingBase } from '../../states';
-import { blankReferral } from '../../types/types';
+import { blankReferral, Case as CaseType } from '../../types/types';
 import { isConnectedCaseActivity } from './caseHelpers';
+import { TaskEntry } from '../../states/contacts/reducer';
+import { Activity } from '../../states/case/types';
 
-const Timeline = ({ status, task, form, caseObj, changeRoute, updateTempInfo, route, timeline }) => {
+type OwnProps = {
+  timeline: Activity[];
+  status: string;
+  task: ITask;
+  form: TaskEntry;
+  caseObj: CaseType;
+};
+
+// eslint-disable-next-line no-use-before-define
+type Props = OwnProps & ConnectedProps<typeof connector>;
+
+const Timeline: React.FC<Props> = props => {
+  const { status, task, form, caseObj, changeRoute, updateTempInfo, route, timeline } = props;
   const [mockedMessage, setMockedMessage] = useState(null);
 
   const handleOnClickView = activity => {
@@ -129,18 +142,6 @@ const Timeline = ({ status, task, form, caseObj, changeRoute, updateTempInfo, ro
 };
 
 Timeline.displayName = 'Timeline';
-Timeline.propTypes = {
-  status: PropTypes.string.isRequired,
-  task: taskType.isRequired,
-  form: formType.isRequired,
-  // eslint-disable-next-line react/forbid-prop-types
-  caseObj: PropTypes.any.isRequired,
-  changeRoute: PropTypes.func.isRequired,
-  updateTempInfo: PropTypes.func.isRequired,
-  route: PropTypes.oneOf(['tabbed-forms', 'new-case', 'select-call-type']).isRequired,
-  // eslint-disable-next-line react/forbid-prop-types
-  timeline: PropTypes.array.isRequired,
-};
 
 const mapStateToProps = (state, ownProps) => ({
   route: state[namespace][routingBase].tasks[ownProps.task.taskSid].route,
@@ -151,4 +152,7 @@ const mapDispatchToProps = dispatch => ({
   updateTempInfo: bindActionCreators(CaseActions.updateTempInfo, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Timeline);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+const connected = connector(Timeline);
+
+export default connected;
