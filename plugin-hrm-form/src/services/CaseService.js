@@ -38,8 +38,10 @@ export async function updateCase(caseId, body) {
   return responseJson;
 }
 
-export async function getActivities(caseId) {
-  return fetchHrmApi(`/cases/${caseId}/activities/`);
+export async function getActivities(caseId, setLoading) {
+  const result = await fetchHrmApi(`/cases/${caseId}/activities/`);
+  setLoading(false);
+  return result;
 }
 
 export async function searchCases(searchParams, limit, offset) {

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { format, parseISO } from 'date-fns';
+import { parseISO } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
 import PropTypes from 'prop-types';
 import Dialog from '@material-ui/core/Dialog';
@@ -20,61 +20,15 @@ import {
 import { Box, Row } from '../../styles/HrmStyles';
 import { taskType, formType } from '../../types';
 import CaseAddButton from './CaseAddButton';
-import { getActivities } from '../../services/CaseService';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { ContactDetailsSections } from '../common/ContactDetails';
-import { getConfig } from '../../HrmFormPlugin';
 import { namespace, routingBase } from '../../states';
 import { blankReferral } from '../../types/types';
 import { isConnectedCaseActivity } from './caseHelpers';
 
-const sortActivities = activities => activities.sort((a, b) => b.date.localeCompare(a.date));
-
-const getDateFromNotSavedContact = (task, form) => {
-  if (task.attributes.isContactlessTask) {
-    const { date: dateString, time } = form.contactlessTask;
-    return new Date(`${dateString}T${time}:00`);
-  }
-
-  return Date.now();
-};
-
-const Timeline = ({ status, task, form, caseObj, changeRoute, updateTempInfo, route }) => {
+const Timeline = ({ status, task, form, caseObj, changeRoute, updateTempInfo, route, timeline }) => {
   const [mockedMessage, setMockedMessage] = useState(null);
-  const [timeline, setTimeline] = useState([]);
-
-  useEffect(() => {
-    /**
-     * Gets the activities timeline from current caseId
-     * If the case is just being created, adds the case's description as a new activity.
-     */
-    const getTimeline = async () => {
-      const activities = await getActivities(caseObj.id);
-      let timelineActivities = sortActivities(activities);
-
-      const isCreatingCase = !timelineActivities.some(isConnectedCaseActivity);
-
-      if (isCreatingCase) {
-        const date = getDateFromNotSavedContact(task, form);
-        const { workerSid } = getConfig();
-        const connectCaseActivity = {
-          date: format(date, 'yyyy-MM-dd HH:mm:ss'),
-          createdAt: new Date().toISOString(),
-          type: task.channelType,
-          text: form.caseInformation.callSummary,
-          twilioWorkerId: workerSid,
-          channel: task.channelType === 'default' ? form.contactlessTask.channel : task.channelType,
-        };
-
-        timelineActivities = sortActivities([...timelineActivities, connectCaseActivity]);
-      }
-
-      setTimeline(timelineActivities);
-    };
-
-    getTimeline();
-  }, [form, task, caseObj.id]);
 
   const handleOnClickView = activity => {
     const { twilioWorkerId } = activity;
@@ -184,6 +138,8 @@ Timeline.propTypes = {
   changeRoute: PropTypes.func.isRequired,
   updateTempInfo: PropTypes.func.isRequired,
   route: PropTypes.oneOf(['tabbed-forms', 'new-case', 'select-call-type']).isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  timeline: PropTypes.array.isRequired,
 };
 
 const mapStateToProps = (state, ownProps) => ({
