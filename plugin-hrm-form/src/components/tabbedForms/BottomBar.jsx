@@ -35,7 +35,7 @@ class BottomBar extends Component {
     task: taskType.isRequired,
     changeRoute: PropTypes.func.isRequired,
     setConnectedCase: PropTypes.func.isRequired,
-    contactForm: PropTypes.shape({ callType: PropTypes.oneOf(Object.keys(callTypes)) }).isRequired,
+    contactForm: PropTypes.shape({ callType: PropTypes.oneOf(Object.values(callTypes)) }).isRequired,
   };
 
   static defaultProps = {
