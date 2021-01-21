@@ -11,6 +11,7 @@ import {
   DetailsHeaderCounselor,
 } from '../../../styles/case';
 import { Flex, Box, FormCheckbox, FormLabel, FormCheckBoxWrapper } from '../../../styles/HrmStyles';
+import { CaseStatus } from '../../../types/types';
 
 type OwnProps = {
   caseId: string;
@@ -18,6 +19,7 @@ type OwnProps = {
   officeName: string;
   counselor: string;
   childIsAtRisk: boolean;
+  status: CaseStatus;
   handleClickChildIsAtRisk: () => void;
 };
 
@@ -27,6 +29,7 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
   officeName,
   counselor,
   childIsAtRisk,
+  status,
   handleClickChildIsAtRisk,
 }) => {
   return (
@@ -54,6 +57,7 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
               type="checkbox"
               onChange={handleClickChildIsAtRisk}
               defaultChecked={Boolean(childIsAtRisk)}
+              disabled={status === 'closed'}
             />
           </Box>
           <Template code="Case-ChildIsAtRisk" />
