@@ -7,8 +7,9 @@ import { saveInsightsData } from '../services/InsightsService';
 import { transferChatStart, adjustChatCapacity } from '../services/ServerlessService';
 import { namespace, contactFormsBase, connectedCaseBase } from '../states';
 import * as Actions from '../states/contacts/actions';
+import { changeRoute } from '../states/routing/actions';
 import * as GeneralActions from '../states/actions';
-import { channelTypes, transferModes } from '../states/DomainConstants';
+import { callTypes, channelTypes, transferModes } from '../states/DomainConstants';
 import * as TransferHelpers from './transfer';
 import { saveFormSharedState, loadFormSharedState } from './sharedState';
 import { prepopulateForm } from './prepopulateForm';
@@ -80,7 +81,19 @@ export const initializeContactForm = payload => {
  */
 const restoreFormIfTransfer = async task => {
   const form = await loadFormSharedState(task);
-  if (form) Manager.getInstance().store.dispatch(Actions.restoreEntireForm(form, task.taskSid));
+  if (form) {
+    Manager.getInstance().store.dispatch(Actions.restoreEntireForm(form, task.taskSid));
+
+    if (form.callType === callTypes.child) {
+      Manager.getInstance().store.dispatch(
+        changeRoute({ route: 'tabbed-forms', subroute: 'childInformation' }, task.taskSid),
+      );
+    } else if (form.callType === callTypes.caller) {
+      Manager.getInstance().store.dispatch(
+        changeRoute({ route: 'tabbed-forms', subroute: 'callerInformation' }, task.taskSid),
+      );
+    }
+  }
 };
 
 /**
@@ -131,7 +144,7 @@ export const afterAcceptTask = setupObject => async payload => {
   if (featureFlags.enable_transfers && TransferHelpers.hasTransferStarted(task)) handleTransferredTask(task);
   else prepopulateForm(task);
 
-  if (TaskHelper.isChatBasedTask(task)) {
+  if (TaskHelper.isChatBasedTask(task) && !TransferHelpers.hasTransferStarted(task)) {
     const trySendWelcomeMessage = (ms, retries) => {
       setTimeout(() => {
         const channelState = StateHelper.getChatChannelStateForTask(task);
