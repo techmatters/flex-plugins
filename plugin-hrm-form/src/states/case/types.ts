@@ -1,6 +1,5 @@
 import type * as t from '../../types/types';
 import { NewCaseSubroutes } from '../routing/types';
-import { channelsAndDefault } from '../DomainConstants';
 
 // Action types
 export const SET_CONNECTED_CASE = 'SET_CONNECTED_CASE';
@@ -86,6 +85,34 @@ export type CaseActionType =
   | UpdateCasesStatusAction
   | MarkCaseAsUpdated;
 
-export type ActivityType = {
-  type: typeof channelsAndDefault[keyof typeof channelsAndDefault] | 'note' | 'referral';
+export type Activity = NoteActivity | ReferralActivity | ConnectedCaseActivity;
+
+type NoteActivity = {
+  date: string;
+  type: string;
+  text: string;
+  twilioWorkedId: string;
+};
+
+type ReferralActivity = {
+  date: string;
+  createdAt: string;
+  type: string;
+  text: string;
+  referral: {
+    date: string;
+    comments: string;
+    referredTo: string;
+  };
+  twilioWorkedId: string;
+};
+
+export type ConnectedCaseActivity = {
+  contactId?: number;
+  date: string;
+  createdAt: string;
+  type: string;
+  text: string;
+  twilioWorkerId: string;
+  channel: string;
 };
