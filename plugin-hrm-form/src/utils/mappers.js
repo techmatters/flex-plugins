@@ -65,10 +65,8 @@ export const mapAge = age => {
 };
 
 export const mapGender = gender => {
-  if (gender === undefined) {
-    gender = 'Unknown';
-  } else {
-    gender = gender.charAt(0).toUpperCase() + gender.slice(1).toLowerCase();
+  if (!gender) {
+    return 'Unknown';
   }
 
   return gender;
