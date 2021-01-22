@@ -1,4 +1,4 @@
-export const callTypes = {
+const callTypes = {
   child: 'Child calling about self',
   caller: 'Someone calling about a child',
   silent: 'Silent',

@@ -9,7 +9,7 @@ import { namespace, contactFormsBase, connectedCaseBase } from '../states';
 import * as Actions from '../states/contacts/actions';
 import { changeRoute } from '../states/routing/actions';
 import * as GeneralActions from '../states/actions';
-import { callTypes, channelTypes, transferModes } from '../states/DomainConstants';
+import callTypes, { channelTypes, transferModes } from '../states/DomainConstants';
 import * as TransferHelpers from './transfer';
 import { saveFormSharedState, loadFormSharedState } from './sharedState';
 import { prepopulateForm } from './prepopulateForm';
