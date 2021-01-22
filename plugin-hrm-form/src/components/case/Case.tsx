@@ -84,44 +84,49 @@ const Case: React.FC<Props> = props => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [mockedMessage, setMockedMessage] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [timeline, setTimeline] = useState([]);
   const { route, subroute } = props.routing;
 
+  // ToDO: move out this function to a high-order component.
   useEffect(() => {
     /**
      * Gets the activities timeline from current caseId
      * If the case is just being created, adds the case's description as a new activity.
      */
     const getTimeline = async () => {
-      const { task, form, connectedCaseState } = props;
+      if (!props.connectedCaseState?.connectedCase) return;
 
-      const activities = await getActivities(connectedCaseState.connectedCase.id, setLoading);
+      setLoading(true);
+      const activities = await getActivities(props.connectedCaseState.connectedCase.id);
+      setLoading(false);
       let timelineActivities = sortActivities(activities);
 
       const isCreatingCase = !timelineActivities.some(isConnectedCaseActivity);
 
       if (isCreatingCase) {
-        if (isStandaloneITask(task)) return;
-        const date = getDateFromNotSavedContact(task, form);
+        if (isStandaloneITask(props.task)) return;
+        const date = getDateFromNotSavedContact(props.task, props.form);
         const { workerSid } = getConfig();
         const connectCaseActivity = {
           date: format(date, 'yyyy-MM-dd HH:mm:ss'),
           createdAt: new Date().toISOString(),
-          type: task.channelType,
-          text: form.caseInformation.callSummary.toString(),
+          type: props.task.channelType,
+          text: props.form.caseInformation.callSummary.toString(),
           twilioWorkerId: workerSid,
-          channel: task.channelType === 'default' ? form.contactlessTask.channel.toString() : task.channelType,
+          channel:
+            props.task.channelType === 'default'
+              ? props.form.contactlessTask.channel.toString()
+              : props.task.channelType,
         };
 
         timelineActivities = sortActivities([...timelineActivities, connectCaseActivity]);
       }
-      console.log(JSON.stringify(timelineActivities));
       setTimeline(timelineActivities);
     };
 
     getTimeline();
-  }, [props, setLoading]);
+  }, [props.task, props.form, props.connectedCaseState, setLoading]);
 
   const toggleCaseMenu = e => {
     e.persist();
@@ -171,6 +176,7 @@ const Case: React.FC<Props> = props => {
 
   // Redirects to the proper view when the user clicks 'Close' button.
   const handleClose = () => {
+    debugger;
     props.updateTempInfo(null, props.task.taskSid);
     if (route === 'select-call-type') {
       props.changeRoute({ route: 'select-call-type' }, props.task.taskSid);
@@ -275,13 +281,6 @@ const Case: React.FC<Props> = props => {
     }
   };
 
-  if (loading)
-    return (
-      <CenteredContainer>
-        <CircularProgress size={50} />
-      </CenteredContainer>
-    );
-
   const isMockedMessageOpen = Boolean(mockedMessage);
 
   const firstConnectedContact = connectedCase && connectedCase.connectedContacts && connectedCase.connectedContacts[0];
@@ -301,6 +300,7 @@ const Case: React.FC<Props> = props => {
 
   const addScreenProps = { task: props.task, counselor: currentCounselor, onClickClose: handleClose };
 
+  debugger;
   switch (subroute) {
     case 'add-note':
       return <AddNote {...addScreenProps} />;
@@ -325,7 +325,11 @@ const Case: React.FC<Props> = props => {
     case 'view-referral':
       return <ViewReferral {...addScreenProps} />;
     default:
-      return (
+      return loading ? (
+        <CenteredContainer>
+          <CircularProgress size={50} />
+        </CenteredContainer>
+      ) : (
         <>
           <CaseContainer>
             <Box marginLeft="25px" marginTop="13px">
@@ -346,7 +350,7 @@ const Case: React.FC<Props> = props => {
               />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
-              <Timeline timeline={timeline} caseObj={connectedCase} task={task} form={form} status={status} />
+              <Timeline timelineActivities={timeline} caseObj={connectedCase} task={task} form={form} status={status} />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
               <Households

@@ -29,7 +29,7 @@ import { TaskEntry } from '../../states/contacts/reducer';
 import { Activity } from '../../states/case/types';
 
 type OwnProps = {
-  timeline: Activity[];
+  timelineActivities: Activity[];
   status: string;
   task: ITask;
   form: TaskEntry;
@@ -40,7 +40,7 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const Timeline: React.FC<Props> = props => {
-  const { status, task, form, caseObj, changeRoute, updateTempInfo, route, timeline } = props;
+  const { status, task, form, caseObj, changeRoute, updateTempInfo, route, timelineActivities } = props;
   const [mockedMessage, setMockedMessage] = useState(null);
 
   const handleOnClickView = activity => {
@@ -117,9 +117,9 @@ const Timeline: React.FC<Props> = props => {
           </Box>
         </Row>
       </Box>
-      {timeline &&
-        timeline.length > 0 &&
-        timeline.map((activity, index) => {
+      {timelineActivities &&
+        timelineActivities.length > 0 &&
+        timelineActivities.map((activity, index) => {
           const date = parseISO(activity.date).toLocaleDateString(navigator.language);
           return (
             <TimelineRow key={index}>
