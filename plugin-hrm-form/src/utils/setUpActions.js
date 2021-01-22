@@ -131,8 +131,7 @@ export const afterAcceptTask = setupObject => async payload => {
   if (featureFlags.enable_transfers && TransferHelpers.hasTransferStarted(task)) handleTransferredTask(task);
   else prepopulateForm(task);
 
-  // To enable for all chat based task, change condition to "if (TaskHelper.isChatBasedTask(task))"
-  if (task.attributes.channelType === channelTypes.web) {
+  if (TaskHelper.isChatBasedTask(task)) {
     const trySendWelcomeMessage = (ms, retries) => {
       setTimeout(() => {
         const channelState = StateHelper.getChatChannelStateForTask(task);
