@@ -56,6 +56,7 @@ const CaseDetails = ({
         childName={name}
         counselor={counselor}
         childIsAtRisk={childIsAtRisk}
+        status={status}
         handleClickChildIsAtRisk={handleClickChildIsAtRisk}
       />
       <DetailsContainer tabIndex={0} aria-labelledby="Case-CaseId-label">
