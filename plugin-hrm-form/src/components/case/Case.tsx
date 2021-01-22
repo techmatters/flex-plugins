@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Template, ITask } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
@@ -7,7 +7,6 @@ import AddIcon from '@material-ui/icons/Add';
 import CancelIcon from '@material-ui/icons/Cancel';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
-import { format } from 'date-fns';
 
 import { StandaloneITask } from '../StandaloneSearch';
 import {
@@ -20,8 +19,7 @@ import {
 } from '../../states';
 import { getConfig } from '../../HrmFormPlugin';
 import { saveToHrm, connectToCase, transformCategories } from '../../services/ContactService';
-import { cancelCase, updateCase, getActivities } from '../../services/CaseService';
-import { isConnectedCaseActivity, getDateFromNotSavedContact, sortActivities } from './caseHelpers';
+import { cancelCase, updateCase } from '../../services/CaseService';
 import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseContainer, CenteredContainer } from '../../styles/case';
 import CaseDetails from './CaseDetails';
@@ -85,48 +83,7 @@ const Case: React.FC<Props> = props => {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [mockedMessage, setMockedMessage] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [timeline, setTimeline] = useState([]);
   const { route, subroute } = props.routing;
-
-  // ToDO: move out this function to a high-order component.
-  useEffect(() => {
-    /**
-     * Gets the activities timeline from current caseId
-     * If the case is just being created, adds the case's description as a new activity.
-     */
-    const getTimeline = async () => {
-      if (!props.connectedCaseState?.connectedCase) return;
-
-      setLoading(true);
-      const activities = await getActivities(props.connectedCaseState.connectedCase.id);
-      setLoading(false);
-      let timelineActivities = sortActivities(activities);
-
-      const isCreatingCase = !timelineActivities.some(isConnectedCaseActivity);
-
-      if (isCreatingCase) {
-        if (isStandaloneITask(props.task)) return;
-        const date = getDateFromNotSavedContact(props.task, props.form);
-        const { workerSid } = getConfig();
-        const connectCaseActivity = {
-          date: format(date, 'yyyy-MM-dd HH:mm:ss'),
-          createdAt: new Date().toISOString(),
-          type: props.task.channelType,
-          text: props.form.caseInformation.callSummary.toString(),
-          twilioWorkerId: workerSid,
-          channel:
-            props.task.channelType === 'default'
-              ? props.form.contactlessTask.channel.toString()
-              : props.task.channelType,
-        };
-
-        timelineActivities = sortActivities([...timelineActivities, connectCaseActivity]);
-      }
-      setTimeline(timelineActivities);
-    };
-
-    getTimeline();
-  }, [props.task, props.form, props.connectedCaseState, setLoading]);
 
   const toggleCaseMenu = e => {
     e.persist();
@@ -280,6 +237,13 @@ const Case: React.FC<Props> = props => {
     }
   };
 
+  if (loading)
+    return (
+      <CenteredContainer>
+        <CircularProgress size={50} />
+      </CenteredContainer>
+    );
+
   const isMockedMessageOpen = Boolean(mockedMessage);
 
   const firstConnectedContact = connectedCase && connectedCase.connectedContacts && connectedCase.connectedContacts[0];
@@ -323,11 +287,7 @@ const Case: React.FC<Props> = props => {
     case 'view-referral':
       return <ViewReferral {...addScreenProps} />;
     default:
-      return loading ? (
-        <CenteredContainer>
-          <CircularProgress size={50} />
-        </CenteredContainer>
-      ) : (
+      return (
         <>
           <CaseContainer>
             <Box marginLeft="25px" marginTop="13px">
@@ -348,7 +308,7 @@ const Case: React.FC<Props> = props => {
               />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
-              <Timeline timelineActivities={timeline} caseObj={connectedCase} task={task} form={form} status={status} />
+              <Timeline caseObj={connectedCase} task={task} form={form} status={status} />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
               <Households
