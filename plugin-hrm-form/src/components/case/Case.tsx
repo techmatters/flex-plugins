@@ -95,10 +95,10 @@ const Case: React.FC<Props> = props => {
      * If the case is just being created, adds the case's description as a new activity.
      */
     const getTimeline = async () => {
-      if (!props.connectedCaseState?.connectedCase) return;
+      if (!props.connectedCaseId) return;
 
       setLoading(true);
-      const activities = await getActivities(props.connectedCaseState.connectedCase.id);
+      const activities = await getActivities(props.connectedCaseId);
       setLoading(false);
       let timelineActivities = sortActivities(activities);
 
@@ -126,7 +126,14 @@ const Case: React.FC<Props> = props => {
     };
 
     getTimeline();
-  }, [props.task, props.form, props.connectedCaseState, setLoading]);
+  }, [
+    props.task,
+    props.form,
+    props.connectedCaseId,
+    props.connectedCaseNotes,
+    props.connectedCaseReferrals,
+    setLoading,
+  ]);
 
   const toggleCaseMenu = e => {
     e.persist();
@@ -432,6 +439,10 @@ Case.displayName = 'Case';
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   form: state[namespace][contactFormsBase].tasks[ownProps.task.taskSid],
   connectedCaseState: state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid],
+  connectedCaseId: state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid]?.connectedCase?.id,
+  connectedCaseNotes: state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid]?.connectedCase?.info?.notes,
+  connectedCaseReferrals:
+    state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid]?.connectedCase?.info?.referrals,
   counselorsHash: state[namespace][configurationBase].counselors.hash,
   routing: state[namespace][routingBase].tasks[ownProps.task.taskSid],
 });
