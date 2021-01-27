@@ -1,7 +1,6 @@
 import { set } from 'lodash/fp';
 import type { ITask } from '@twilio/flex-ui';
 
-import secret from '../private/secret';
 import { createNewTaskEntry, TaskEntry } from '../states/contacts/reducer';
 import { isNonDataCallType } from '../states/ValidationRules';
 import { channelTypes } from '../states/DomainConstants';
@@ -202,36 +201,28 @@ export async function saveToHrm(task, form, hrmBaseUrl, workerSid, helpline, sho
     helpline,
     conversationDuration,
     timeOfContact,
+    taskId: task.taskSid,
   };
 
-  const response = await fetch(`${hrmBaseUrl}/contacts`, {
+  const options = {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', Authorization: `Basic ${btoa(secret)}` },
     body: JSON.stringify(body),
-  });
+  };
 
-  if (!response.ok) {
-    // @ts-ignore
-    const error = response.error();
-    throw error;
-  }
+  const responseJson = await fetchHrmApi(`/contacts`, options);
 
-  return response.json();
+  return responseJson;
 }
 
 export async function connectToCase(hrmBaseUrl, contactId, caseId) {
   const body = { caseId };
-  const response = await fetch(`${hrmBaseUrl}/contacts/${contactId}/connectToCase`, {
+
+  const options = {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json', Authorization: `Basic ${btoa(secret)}` },
     body: JSON.stringify(body),
-  });
+  };
 
-  if (!response.ok) {
-    // @ts-ignore
-    const error = response.error();
-    throw error;
-  }
+  const responseJson = await fetchHrmApi(`/contacts/${contactId}/connectToCase`, options);
 
-  return response.json();
+  return responseJson;
 }

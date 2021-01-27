@@ -33,8 +33,10 @@ const CaseDetails = ({
   followUpDate,
   status,
   isEditing,
+  childIsAtRisk,
   handleInfoChange,
   handleStatusChange,
+  handleClickChildIsAtRisk,
 }) => {
   const lastUpdatedClosedDate = openedDate === lastUpdatedDate ? '—' : lastUpdatedDate;
 
@@ -49,7 +51,14 @@ const CaseDetails = ({
 
   return (
     <>
-      <CaseDetailsHeader caseId={caseId} childName={name} counselor={counselor} />
+      <CaseDetailsHeader
+        caseId={caseId}
+        childName={name}
+        counselor={counselor}
+        childIsAtRisk={childIsAtRisk}
+        status={status}
+        handleClickChildIsAtRisk={handleClickChildIsAtRisk}
+      />
       <DetailsContainer tabIndex={0} aria-labelledby="Case-CaseId-label">
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <div style={{ paddingRight: '20px' }}>
@@ -100,7 +109,7 @@ const CaseDetails = ({
                 <Template code="Case-CaseDetailsStatusLabel" />
               </label>
             </DetailDescription>
-            <StyledSelectWrapper>
+            <StyledSelectWrapper disabled={!isEditing}>
               <StyledSelectField
                 id="Details_CaseStatus"
                 name="Details_CaseStatus"
@@ -138,8 +147,10 @@ CaseDetails.propTypes = {
   isEditing: PropTypes.bool.isRequired,
   followUpDate: PropTypes.string,
   lastUpdatedDate: PropTypes.string,
+  childIsAtRisk: PropTypes.bool.isRequired,
   handleInfoChange: PropTypes.func.isRequired,
   handleStatusChange: PropTypes.func.isRequired,
+  handleClickChildIsAtRisk: PropTypes.func.isRequired,
 };
 
 CaseDetails.defaultProps = {

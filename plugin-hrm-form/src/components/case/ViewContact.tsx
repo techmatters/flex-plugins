@@ -12,6 +12,7 @@ import ContactDetails from '../ContactDetails';
 import ActionHeader from './ActionHeader';
 import { adaptFormToContactDetails, adaptContactToDetailsScreen } from './ContactDetailsAdapter';
 import { CaseState } from '../../states/case/reducer';
+import { StandaloneITask } from '../StandaloneSearch';
 
 const mapStateToProps = (state, ownProps: OwnProps) => {
   const form = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
@@ -30,7 +31,7 @@ const mapDispatchToProps = {
 };
 
 type OwnProps = {
-  task: ITask;
+  task: ITask | StandaloneITask;
   onClickClose: () => void;
 };
 

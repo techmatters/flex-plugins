@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Template, ITask } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
@@ -7,7 +7,9 @@ import AddIcon from '@material-ui/icons/Add';
 import CancelIcon from '@material-ui/icons/Cancel';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
+import { format } from 'date-fns';
 
+import { StandaloneITask } from '../StandaloneSearch';
 import {
   namespace,
   contactFormsBase,
@@ -18,7 +20,8 @@ import {
 } from '../../states';
 import { getConfig } from '../../HrmFormPlugin';
 import { saveToHrm, connectToCase, transformCategories } from '../../services/ContactService';
-import { cancelCase, updateCase } from '../../services/CaseService';
+import { cancelCase, updateCase, getActivities } from '../../services/CaseService';
+import { isConnectedCaseActivity, getDateFromNotSavedContact, sortActivities } from './caseHelpers';
 import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseContainer, CenteredContainer } from '../../styles/case';
 import CaseDetails from './CaseDetails';
@@ -43,13 +46,18 @@ import ViewHousehold from './ViewHousehold';
 import ViewPerpetrator from './ViewPerpetrator';
 import ViewIncident from './ViewIncident';
 import ViewReferral from './ViewReferral';
-import type { HouseholdEntry, PerpetratorEntry, IncidentEntry } from '../../types/types';
+import type { HouseholdEntry, PerpetratorEntry, IncidentEntry, Case as CaseType } from '../../types/types';
+
+const isStandaloneITask = (task): task is StandaloneITask => {
+  return task.taskSid === 'standalone-task-sid';
+};
 
 type OwnProps = {
-  task: ITask;
+  task: ITask | StandaloneITask;
   isCreating?: boolean;
   handleClose?: () => void;
   handleCompleteTask?: (taskSid: string, task: ITask) => void;
+  updateAllCasesView?: (updatedCase: CaseType) => void;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -77,7 +85,55 @@ const Case: React.FC<Props> = props => {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [mockedMessage, setMockedMessage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [timeline, setTimeline] = useState([]);
   const { route, subroute } = props.routing;
+
+  // ToDO: move out this function to a high-order component.
+  useEffect(() => {
+    /**
+     * Gets the activities timeline from current caseId
+     * If the case is just being created, adds the case's description as a new activity.
+     */
+    const getTimeline = async () => {
+      if (!props.connectedCaseId) return;
+
+      setLoading(true);
+      const activities = await getActivities(props.connectedCaseId);
+      setLoading(false);
+      let timelineActivities = sortActivities(activities);
+
+      const isCreatingCase = !timelineActivities.some(isConnectedCaseActivity);
+
+      if (isCreatingCase) {
+        if (isStandaloneITask(props.task)) return;
+        const date = getDateFromNotSavedContact(props.task, props.form);
+        const { workerSid } = getConfig();
+        const connectCaseActivity = {
+          date: format(date, 'yyyy-MM-dd HH:mm:ss'),
+          createdAt: new Date().toISOString(),
+          type: props.task.channelType,
+          text: props.form.caseInformation.callSummary.toString(),
+          twilioWorkerId: workerSid,
+          channel:
+            props.task.channelType === 'default'
+              ? props.form.contactlessTask.channel.toString()
+              : props.task.channelType,
+        };
+
+        timelineActivities = sortActivities([...timelineActivities, connectCaseActivity]);
+      }
+      setTimeline(timelineActivities);
+    };
+
+    getTimeline();
+  }, [
+    props.task,
+    props.form,
+    props.connectedCaseId,
+    props.connectedCaseNotes,
+    props.connectedCaseReferrals,
+    setLoading,
+  ]);
 
   const toggleCaseMenu = e => {
     e.persist();
@@ -108,10 +164,14 @@ const Case: React.FC<Props> = props => {
     const { connectedCase } = props.connectedCaseState;
     const { hrmBaseUrl, workerSid, helpline, strings } = getConfig();
 
+    // Validating that task isn't a StandaloneITask.
+    if (isStandaloneITask(task)) return;
+
     try {
       const contact = await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
       await updateCase(connectedCase.id, { ...connectedCase });
       await connectToCase(hrmBaseUrl, contact.id, connectedCase.id);
+      props.markCaseAsUpdated(task.taskSid);
       props.handleCompleteTask(task.taskSid, task);
     } catch (error) {
       console.error(error);
@@ -174,6 +234,14 @@ const Case: React.FC<Props> = props => {
     props.updateCaseStatus(value, props.task.taskSid);
   };
 
+  const onClickChildIsAtRisk = () => {
+    const { connectedCase } = props.connectedCaseState;
+    const { info } = connectedCase;
+    const childIsAtRisk = !Boolean(info && info.childIsAtRisk);
+    const newInfo = info ? { ...info, childIsAtRisk } : { childIsAtRisk };
+    props.updateCaseInfo(newInfo, props.task.taskSid);
+  };
+
   /**
    * Setting this flag in the first render.
    */
@@ -204,7 +272,12 @@ const Case: React.FC<Props> = props => {
 
     try {
       const updatedCase = await updateCase(connectedCase.id, { ...connectedCase });
+      props.markCaseAsUpdated(task.taskSid);
       props.updateCases(task.taskSid, updatedCase);
+      // IF case has been edited from All Cases view, we should update that view
+      if (props.updateAllCasesView) {
+        props.updateAllCasesView(updatedCase);
+      }
       setIsEditing(connectedCase.status === 'open');
     } catch (error) {
       console.error(error);
@@ -213,13 +286,6 @@ const Case: React.FC<Props> = props => {
       setLoading(false);
     }
   };
-
-  if (loading)
-    return (
-      <CenteredContainer>
-        <CircularProgress size={50} />
-      </CenteredContainer>
-    );
 
   const isMockedMessageOpen = Boolean(mockedMessage);
 
@@ -236,6 +302,7 @@ const Case: React.FC<Props> = props => {
   const households = info && info.households ? info.households : [];
   const perpetrators = info && info.perpetrators ? info.perpetrators : [];
   const incidents = info && info.incidents ? info.incidents : [];
+  const childIsAtRisk = info && info.childIsAtRisk;
 
   const addScreenProps = { task: props.task, counselor: currentCounselor, onClickClose: handleClose };
 
@@ -263,7 +330,11 @@ const Case: React.FC<Props> = props => {
     case 'view-referral':
       return <ViewReferral {...addScreenProps} />;
     default:
-      return (
+      return loading ? (
+        <CenteredContainer>
+          <CircularProgress size={50} />
+        </CenteredContainer>
+      ) : (
         <>
           <CaseContainer>
             <Box marginLeft="25px" marginTop="13px">
@@ -277,12 +348,14 @@ const Case: React.FC<Props> = props => {
                 openedDate={openedDate}
                 lastUpdatedDate={lastUpdatedDate}
                 followUpDate={followUpDate}
+                childIsAtRisk={childIsAtRisk}
                 handleInfoChange={onInfoChange}
                 handleStatusChange={onStatusChange}
+                handleClickChildIsAtRisk={onClickChildIsAtRisk}
               />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
-              <Timeline caseObj={connectedCase} task={task} form={form} status={status} />
+              <Timeline timelineActivities={timeline} caseObj={connectedCase} task={task} form={form} status={status} />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
               <Households
@@ -366,6 +439,10 @@ Case.displayName = 'Case';
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   form: state[namespace][contactFormsBase].tasks[ownProps.task.taskSid],
   connectedCaseState: state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid],
+  connectedCaseId: state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid]?.connectedCase?.id,
+  connectedCaseNotes: state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid]?.connectedCase?.info?.notes,
+  connectedCaseReferrals:
+    state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid]?.connectedCase?.info?.referrals,
   counselorsHash: state[namespace][configurationBase].counselors.hash,
   routing: state[namespace][routingBase].tasks[ownProps.task.taskSid],
 });
@@ -376,6 +453,7 @@ const mapDispatchToProps = {
   updateCaseInfo: CaseActions.updateCaseInfo,
   updateTempInfo: CaseActions.updateTempInfo,
   updateCaseStatus: CaseActions.updateCaseStatus,
+  markCaseAsUpdated: CaseActions.markCaseAsUpdated,
   updateCases: SearchActions.updateCases,
 };
 

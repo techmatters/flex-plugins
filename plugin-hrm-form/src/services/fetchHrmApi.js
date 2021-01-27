@@ -1,4 +1,3 @@
-import secret from '../private/secret';
 import { getConfig } from '../HrmFormPlugin';
 
 /**
@@ -9,14 +8,15 @@ import { getConfig } from '../HrmFormPlugin';
  * @returns {Promise<any>} the api response (if not error)
  */
 const fetchHrmApi = async (endPoint, options = {}) => {
-  const { hrmBaseUrl } = getConfig();
+  const { hrmBaseUrl, token } = getConfig();
+
   const url = `${hrmBaseUrl}${endPoint}`;
 
   const defaultOptions = {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Basic ${btoa(secret)}`,
+      Authorization: `Bearer ${token}`,
     },
   };
 

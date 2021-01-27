@@ -5,11 +5,13 @@ export type CaseStatus = 'open' | 'closed';
 
 type EntryInfo = { createdAt: string; twilioWorkerId: string };
 
-export type ReferralEntry = {
-  date: string;
-  referredTo: string;
-  comments: string;
-};
+/*
+ * export type ReferralEntry = {
+ *   date: string;
+ *   referredTo: string;
+ *   comments: string;
+ * };
+ */
 
 export type Household = { [key: string]: string | boolean };
 
@@ -23,6 +25,14 @@ export type Incident = { [key: string]: string | boolean };
 
 export type IncidentEntry = { incident: Incident } & EntryInfo;
 
+export type Note = { [key: string]: string | boolean };
+
+export type NoteEntry = { note: string; counselor: string; date: string };
+
+export type Referral = { [key: string]: string | boolean };
+
+export type ReferralEntry = { [key: string]: string | boolean };
+
 export const blankReferral = {
   date: null,
   referredTo: null,
@@ -32,12 +42,13 @@ export const blankReferral = {
 export type CaseInfo = {
   definitionVersion?: string;
   summary?: string;
-  notes?: string[];
+  notes?: NoteEntry[];
   perpetrators?: PerpetratorEntry[];
   households?: HouseholdEntry[];
   referrals?: ReferralEntry[];
   incidents?: IncidentEntry[];
   followUpDate?: string;
+  childIsAtRisk?: boolean;
 };
 
 export type Case = {

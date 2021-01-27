@@ -51,6 +51,7 @@ export const CLTableCell = withStyles(theme => ({
   root: {
     borderBottom: 0,
     textTransform: 'none',
+    overflow: 'hidden',
   },
   body: {
     verticalAlign: 'top',
@@ -72,14 +73,13 @@ export const CLNamesCell = withStyles({
     display: '-webkit-box',
     WebkitLineClamp: 4,
     WebkitBoxOrient: 'vertical',
-    overflow: 'hidden',
   },
 })(CLTableCell);
 CLNamesCell.displayName = 'CLNamesCell';
 
 export const CLSummaryCell = withStyles({
   body: {
-    paddingRight: 30,
+    paddingRight: 20,
   },
 })(CLTableCell);
 CLSummaryCell.displayName = 'CLSummaryCell';
@@ -124,24 +124,6 @@ export const CLCaseNumberContainer = styled('div')<CLCaseNumberContainerProps>`
   border-radius: 2px;
 `;
 CLCaseNumberContainer.displayName = 'CLCaseNumberContainer';
-
-export const CategoryTag = styled('div')`
-  display: inline-block;
-  white-space: nowrap;
-  border-radius: 6px;
-  padding: 0px 13px;
-  margin: 3px 0;
-  background-color: #a0a8bd66;
-  text-transform: uppercase;
-`;
-CategoryTag.displayName = 'CategoryTag';
-
-export const CategoryFont = styled(FontOpenSans)`
-  font-size: 11px;
-  letter-spacing: 0.1px;
-  line-height: 14px;
-`;
-CategoryFont.displayName = 'CategoryFont';
 
 type PaginationButtonProps = {
   highlight?: Boolean;

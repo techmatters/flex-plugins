@@ -176,6 +176,7 @@
   "Case-ReferralReferredTo": "Referred To...",
   "Case-ReferralComments": "Comments",
   "Case-Counsellor": "Counsellor",
+  "Case-ChildIsAtRisk": "Child is at Risk",
 
   "SideNavCaseList": "Case List",
   
@@ -186,6 +187,7 @@
   "CaseList-THCounselor": "Counsellor",
   "CaseList-THOpened": "Opened",
   "CaseList-THUpdated": "Updated",
+  "CaseList-THFollowUp": "Follow Up",
   "CaseList-THCategory": "Category",
   "CaseList-ExpandButton": "Open case details",
   "CaseList-PrevPage": "Previous page",

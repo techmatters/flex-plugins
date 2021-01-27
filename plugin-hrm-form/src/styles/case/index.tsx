@@ -129,12 +129,6 @@ const BaseTextArea = styled('textarea')`
   }
 `;
 
-export const CaseActionTextArea = styled(BaseTextArea)`
-  width: 65%;
-  margin-top: 10px;
-`;
-CaseActionTextArea.displayName = 'CaseActionTextArea';
-
 export const TimelineRow = styled('div')`
   display: flex;
   align-items: center;
@@ -208,25 +202,6 @@ export const RowItemContainer = styled(Row)`
 `;
 RowItemContainer.displayName = 'RowItemContainer';
 
-export const NoteContainer = styled('div')`
-  white-space: break-spaces;
-  font-family: 'Open Sans', sans-serif;
-  line-height: 30px;
-  font-size: 17px;
-  width: 85%;
-  margin: 10px auto 0px;
-  text-align: justify;
-`;
-NoteContainer.displayName = 'NoteContainer';
-
-export const DetailsHeaderContainer = styled('div')`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-`;
-
-DetailsHeaderContainer.displayName = 'DetailsHeaderContainer';
-
 export const DetailsHeaderChildName = styled(Typography)`
   font-weight: 600 !important;
 `;
@@ -274,10 +249,18 @@ export const StyledInputField = styled(FormInput)`
 
 StyledInputField.displayName = 'StyledInputField';
 
-export const StyledSelectWrapper = styled(FormSelectWrapper)`
+type FormSelectWrapperProps = {
+  disabled?: boolean;
+};
+
+export const StyledSelectWrapper = styled(FormSelectWrapper)<FormSelectWrapperProps>`
   width: 130px !important;
   height: 36px;
   margin-top: 7px;
+
+  &::after {
+    display: ${({ disabled }) => (disabled ? 'none' : 'initial')};
+  }
 `;
 
 StyledSelectWrapper.displayName = 'StyledSelectWrapper';

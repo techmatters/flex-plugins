@@ -186,7 +186,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                     defaultValue={initialValue}
                   >
                     {def.options.map(o => (
-                      <FormOption key={`${path}-${o.value}`} value={o.value} isEmptyValue={o.value === ''}>
+                      <FormOption key={`${path}-${o.label}`} value={o.value} isEmptyValue={o.value === ''}>
                         {o.label}
                       </FormOption>
                     ))}
@@ -377,8 +377,10 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                   aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
                   innerRef={register(rules)}
-                  rows={10}
+                  rows={def.rows ? def.rows : 10}
+                  width={def.width}
                   defaultValue={initialValue}
+                  placeholder={def?.placeholder}
                 />
                 {error && (
                   <FormError>

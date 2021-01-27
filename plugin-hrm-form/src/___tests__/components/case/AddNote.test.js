@@ -108,57 +108,6 @@ test('Test close functionality', async () => {
   expect(onClickClose).toHaveBeenCalled();
 });
 
-test('Test input/add note functionality', async () => {
-  const note = 'Some note';
-  const updatedCase = {
-    info: { notes: [note] },
-    status: 'open',
-  };
-  updateCase.mockReturnValueOnce(Promise.resolve(updatedCase));
-  const onClickClose = jest.fn();
-
-  const ownProps = {
-    counselor: 'Someone',
-    onClickClose,
-    task: {
-      taskSid: 'task1',
-    },
-  };
-
-  render(
-    <StorelessThemeProvider themeConf={themeConf}>
-      <Provider store={store}>
-        <AddNote {...ownProps} />
-      </Provider>
-    </StorelessThemeProvider>,
-  );
-
-  store.dispatch.mockClear();
-  expect(store.dispatch).not.toHaveBeenCalled();
-
-  const textarea = screen.getByTestId('Case-AddNoteScreen-TextArea');
-  fireEvent.change(textarea, { target: { value: note } });
-
-  expect(store.dispatch).toHaveBeenCalledWith(
-    CaseActions.updateTempInfo({ screen: 'add-note', info: note }, ownProps.task.taskSid),
-  );
-
-  store.dispatch.mockClear();
-  expect(store.dispatch).not.toHaveBeenCalled();
-
-  screen.getByTestId('Case-AddNoteScreen-SaveNote').click();
-  await flushPromises();
-
-  expect(store.dispatch).toHaveBeenCalledTimes(2);
-  expect(updateCase).toHaveBeenCalled();
-  const setConnectedCaseCall = store.dispatch.mock.calls[0][0];
-  expect(setConnectedCaseCall.type).toBe('SET_CONNECTED_CASE');
-  expect(setConnectedCaseCall.taskId).toBe(ownProps.task.taskSid);
-  expect(setConnectedCaseCall.connectedCase).toStrictEqual(updatedCase);
-
-  store.dispatch.mockClear();
-});
-
 test('a11y', async () => {
   const onClickClose = jest.fn();
 

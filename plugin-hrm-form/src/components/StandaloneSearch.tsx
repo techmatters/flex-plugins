@@ -6,8 +6,15 @@ import { StandaloneSearchContainer } from '../styles/search';
 
 export const standaloneTaskSid = 'standalone-task-sid';
 
-const standaloneTask = {
-  taskSid: standaloneTaskSid,
+export type StandaloneITask = {
+  taskSid: 'standalone-task-sid';
+  attributes: {
+    isContactlessTask: boolean;
+  };
+};
+
+const standaloneTask: StandaloneITask = {
+  taskSid: 'standalone-task-sid',
   attributes: { isContactlessTask: false },
 };
 

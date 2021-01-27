@@ -4,37 +4,66 @@ import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
 import {
-  DetailsHeaderContainer,
   DetailsHeaderChildName,
   DetailsHeaderCaseContainer,
   DetailsHeaderCaseId,
   DetailsHeaderOfficeName,
   DetailsHeaderCounselor,
 } from '../../../styles/case';
+import { Flex, Box, FormCheckbox, FormLabel, FormCheckBoxWrapper } from '../../../styles/HrmStyles';
+import { CaseStatus } from '../../../types/types';
 
 type OwnProps = {
   caseId: string;
   childName: string;
   officeName: string;
   counselor: string;
-  onClickView: () => void;
+  childIsAtRisk: boolean;
+  status: CaseStatus;
+  handleClickChildIsAtRisk: () => void;
 };
 
-const CaseDetailsHeader: React.FC<OwnProps> = ({ caseId, childName, officeName, counselor, onClickView }) => {
+const CaseDetailsHeader: React.FC<OwnProps> = ({
+  caseId,
+  childName,
+  officeName,
+  counselor,
+  childIsAtRisk,
+  status,
+  handleClickChildIsAtRisk,
+}) => {
   return (
-    <DetailsHeaderContainer>
-      <DetailsHeaderChildName variant="h6">{childName}</DetailsHeaderChildName>
-      <DetailsHeaderCaseContainer>
-        <DetailsHeaderCaseId id="Case-CaseId-label">
-          <Template code="Case-CaseNumber" />
-          {caseId}
-        </DetailsHeaderCaseId>
-        {officeName && <DetailsHeaderOfficeName>{officeName}</DetailsHeaderOfficeName>}
-      </DetailsHeaderCaseContainer>
-      <DetailsHeaderCounselor>
-        <Template code="Case-Counsellor" />: {counselor}
-      </DetailsHeaderCounselor>
-    </DetailsHeaderContainer>
+    <Flex>
+      <Flex flexDirection="column">
+        <DetailsHeaderChildName variant="h6">{childName}</DetailsHeaderChildName>
+        <DetailsHeaderCaseContainer>
+          <DetailsHeaderCaseId id="Case-CaseId-label">
+            <Template code="Case-CaseNumber" />
+            {caseId}
+          </DetailsHeaderCaseId>
+          {officeName && <DetailsHeaderOfficeName>{officeName}</DetailsHeaderOfficeName>}
+        </DetailsHeaderCaseContainer>
+        <DetailsHeaderCounselor>
+          <Template code="Case-Counsellor" />: {counselor}
+        </DetailsHeaderCounselor>
+      </Flex>
+      <FormLabel htmlFor="childIsAtRisk" style={{ marginLeft: 'auto', marginTop: 'auto', textTransform: 'uppercase' }}>
+        <FormCheckBoxWrapper style={{ height: 'auto' }}>
+          <Box marginRight="5px">
+            <FormCheckbox
+              id="childIsAtRisk"
+              data-testid="Case-ChildIsAtRisk-Checkbox"
+              name="childIsAtRisk"
+              type="checkbox"
+              onChange={handleClickChildIsAtRisk}
+              defaultChecked={Boolean(childIsAtRisk)}
+              disabled={status === 'closed'}
+            />
+          </Box>
+          <Template code="Case-ChildIsAtRisk" />
+        </FormCheckBoxWrapper>
+      </FormLabel>
+    </Flex>
   );
 };
 

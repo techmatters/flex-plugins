@@ -1,6 +1,5 @@
 import type * as t from '../../types/types';
 import { NewCaseSubroutes } from '../routing/types';
-import { channelsAndDefault } from '../DomainConstants';
 
 // Action types
 export const SET_CONNECTED_CASE = 'SET_CONNECTED_CASE';
@@ -8,6 +7,7 @@ export const REMOVE_CONNECTED_CASE = 'REMOVE_CONNECTED_CASE';
 export const UPDATE_CASE_INFO = 'UPDATE_CASE_INFO';
 export const UPDATE_TEMP_INFO = 'UPDATE_TEMP_INFO';
 export const UPDATE_CASE_STATUS = 'UPDATE_CASE_STATUS';
+export const MARK_CASE_AS_UPDATED = 'MARK_CASE_AS_UPDATED';
 
 export type ViewNote = {
   note: string;
@@ -30,17 +30,17 @@ export type ViewReferral = {
 };
 
 export type TemporaryCaseInfo =
-  | { screen: typeof NewCaseSubroutes.AddNote; info: string }
-  | { screen: typeof NewCaseSubroutes.AddReferral; info: t.ReferralEntry }
+  | { screen: typeof NewCaseSubroutes.AddNote; info: t.Note }
+  | { screen: typeof NewCaseSubroutes.AddReferral; info: t.Referral }
   | { screen: typeof NewCaseSubroutes.AddHousehold; info: t.Household }
   | { screen: typeof NewCaseSubroutes.AddPerpetrator; info: t.Perpetrator }
   | { screen: typeof NewCaseSubroutes.AddIncident; info: t.Incident }
   | { screen: typeof NewCaseSubroutes.ViewContact; info: ViewContact }
-  | { screen: typeof NewCaseSubroutes.ViewNote; info: ViewNote }
+  | { screen: typeof NewCaseSubroutes.ViewNote; info: t.NoteEntry }
   | { screen: typeof NewCaseSubroutes.ViewHousehold; info: t.HouseholdEntry }
   | { screen: typeof NewCaseSubroutes.ViewPerpetrator; info: t.PerpetratorEntry }
   | { screen: typeof NewCaseSubroutes.ViewIncident; info: t.IncidentEntry }
-  | { screen: typeof NewCaseSubroutes.ViewReferral; info: ViewReferral };
+  | { screen: typeof NewCaseSubroutes.ViewReferral; info: t.ReferralEntry };
 
 type SetConnectedCaseAction = {
   type: typeof SET_CONNECTED_CASE;
@@ -72,13 +72,47 @@ type UpdateCasesStatusAction = {
   taskId: string;
 };
 
+type MarkCaseAsUpdated = {
+  type: typeof MARK_CASE_AS_UPDATED;
+  taskId: string;
+};
+
 export type CaseActionType =
   | SetConnectedCaseAction
   | RemoveConnectedCaseAction
   | UpdateCaseInfoAction
   | TemporaryCaseInfoAction
-  | UpdateCasesStatusAction;
+  | UpdateCasesStatusAction
+  | MarkCaseAsUpdated;
 
-export type ActivityType = {
-  type: typeof channelsAndDefault[keyof typeof channelsAndDefault] | 'note' | 'referral';
+export type Activity = NoteActivity | ReferralActivity | ConnectedCaseActivity;
+
+type NoteActivity = {
+  date: string;
+  type: string;
+  text: string;
+  twilioWorkedId: string;
+};
+
+type ReferralActivity = {
+  date: string;
+  createdAt: string;
+  type: string;
+  text: string;
+  referral: {
+    date: string;
+    comments: string;
+    referredTo: string;
+  };
+  twilioWorkedId: string;
+};
+
+export type ConnectedCaseActivity = {
+  contactId?: number;
+  date: string;
+  createdAt: string;
+  type: string;
+  text: string;
+  twilioWorkerId: string;
+  channel: string;
 };

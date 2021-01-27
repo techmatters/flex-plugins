@@ -12,6 +12,7 @@ const colors = {
   defaultCategoryColor: '#9b9b9b',
   categoryTextColor: '#192b33',
   categoryDisabledColor: '#a0a8bd',
+  selectedItemBorderColor: '#56a6f6',
 };
 
 const overrides = {
@@ -48,6 +49,7 @@ const overrides = {
       },
       SelectedContainer: {
         background: colors.base1,
+        border: `2px solid ${colors.selectedItemBorderColor}`,
       },
     },
   },
