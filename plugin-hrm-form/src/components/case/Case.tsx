@@ -47,6 +47,7 @@ import ViewPerpetrator from './ViewPerpetrator';
 import ViewIncident from './ViewIncident';
 import ViewReferral from './ViewReferral';
 import type { HouseholdEntry, PerpetratorEntry, IncidentEntry, Case as CaseType } from '../../types/types';
+import CasePrintView from './CasePrintView';
 
 const isStandaloneITask = (task): task is StandaloneITask => {
   return task.taskSid === 'standalone-task-sid';
@@ -287,6 +288,10 @@ const Case: React.FC<Props> = props => {
     }
   };
 
+  const onPrintCase = () => {
+    props.changeRoute({ route, subroute: 'case-print-view' }, task.taskSid);
+  };
+
   const isMockedMessageOpen = Boolean(mockedMessage);
 
   const firstConnectedContact = connectedCase && connectedCase.connectedContacts && connectedCase.connectedContacts[0];
@@ -329,6 +334,8 @@ const Case: React.FC<Props> = props => {
       return <ViewIncident {...addScreenProps} />;
     case 'view-referral':
       return <ViewReferral {...addScreenProps} />;
+    case 'case-print-view':
+      return <CasePrintView />;
     default:
       return loading ? (
         <CenteredContainer>
@@ -349,6 +356,7 @@ const Case: React.FC<Props> = props => {
                 lastUpdatedDate={lastUpdatedDate}
                 followUpDate={followUpDate}
                 childIsAtRisk={childIsAtRisk}
+                handlePrintCase={onPrintCase}
                 handleInfoChange={onInfoChange}
                 handleStatusChange={onStatusChange}
                 handleClickChildIsAtRisk={onClickChildIsAtRisk}

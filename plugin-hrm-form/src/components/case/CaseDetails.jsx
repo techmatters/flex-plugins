@@ -34,6 +34,7 @@ const CaseDetails = ({
   status,
   isEditing,
   childIsAtRisk,
+  handlePrintCase,
   handleInfoChange,
   handleStatusChange,
   handleClickChildIsAtRisk,
@@ -57,6 +58,7 @@ const CaseDetails = ({
         counselor={counselor}
         childIsAtRisk={childIsAtRisk}
         status={status}
+        handlePrintCase={handlePrintCase}
         handleClickChildIsAtRisk={handleClickChildIsAtRisk}
       />
       <DetailsContainer tabIndex={0} aria-labelledby="Case-CaseId-label">
@@ -148,6 +150,7 @@ CaseDetails.propTypes = {
   followUpDate: PropTypes.string,
   lastUpdatedDate: PropTypes.string,
   childIsAtRisk: PropTypes.bool.isRequired,
+  handlePrintCase: PropTypes.func.isRequired,
   handleInfoChange: PropTypes.func.isRequired,
   handleStatusChange: PropTypes.func.isRequired,
   handleClickChildIsAtRisk: PropTypes.func.isRequired,
