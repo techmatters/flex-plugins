@@ -64,10 +64,16 @@ export const mapAge = age => {
   return 'Unknown';
 };
 
-export const mapGender = gender => {
-  if (!gender) {
+/**
+ *
+ * @param {string[]} genderOptions
+ */
+export const mapGender = genderOptions => gender => {
+  const validOption = genderOptions.find(e => e.toLowerCase() === gender.toLowerCase());
+
+  if (!validOption) {
     return 'Unknown';
   }
 
-  return gender;
+  return validOption;
 };
