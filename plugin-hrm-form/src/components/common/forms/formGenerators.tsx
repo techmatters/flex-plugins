@@ -2,7 +2,7 @@
 /* eslint-disable import/no-unused-modules */
 /* eslint-disable react/display-name */
 import React from 'react';
-import { useFormContext, ValidationRules } from 'react-hook-form';
+import { useFormContext, RegisterOptions } from 'react-hook-form';
 import { get, pick } from 'lodash';
 import { Template } from '@twilio/flex-ui';
 
@@ -76,7 +76,7 @@ const RequiredAsterisk = () => (
   </span>
 );
 
-const getRules = (field: FormItemDefinition): ValidationRules =>
+const getRules = (field: FormItemDefinition): RegisterOptions =>
   pick(field, ['max', 'maxLength', 'min', 'minLength', 'pattern', 'required', 'validate']);
 
 /**
