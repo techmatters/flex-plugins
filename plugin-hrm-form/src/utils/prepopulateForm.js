@@ -6,7 +6,18 @@ import { prepopulateFormCaller, prepopulateFormChild } from '../states/contacts/
 import ChildInformationTab from '../formDefinitions/tabbedForms/ChildInformationTab.json';
 import CallerInformationTab from '../formDefinitions/tabbedForms/CallerInformationTab.json';
 
-const getGenderOptions = definition => definition.find(e => e.name === 'gender').options.map(e => e.value) || [];
+/**
+ * Given a form definition, grabs the "gender" named input and return the options values, or empty array.
+ * @param {import('../components/common/forms/types').FormDefinition} definition
+ */
+const getGenderOptions = definition => {
+  const genderInputDef = definition.find(e => e.name === 'gender');
+
+  if (genderInputDef.type === 'select') return genderInputDef.options.map(e => e.value) || [];
+
+  console.error('getGenderOptions called with non select input type.');
+  return [];
+};
 
 export const prepopulateForm = task => {
   // If this task came from the pre-survey
