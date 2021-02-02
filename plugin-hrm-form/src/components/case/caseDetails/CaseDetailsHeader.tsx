@@ -13,7 +13,6 @@ import {
 } from '../../../styles/case';
 import { Flex, Box, FormCheckbox, FormLabel, FormCheckBoxWrapper } from '../../../styles/HrmStyles';
 import { CaseStatus } from '../../../types/types';
-import CasePrintView from '../CasePrintView';
 
 type OwnProps = {
   caseId: string;

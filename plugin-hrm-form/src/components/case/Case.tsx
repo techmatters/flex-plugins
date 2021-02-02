@@ -47,7 +47,7 @@ import ViewPerpetrator from './ViewPerpetrator';
 import ViewIncident from './ViewIncident';
 import ViewReferral from './ViewReferral';
 import type { HouseholdEntry, PerpetratorEntry, IncidentEntry, Case as CaseType } from '../../types/types';
-import CasePrintView from './CasePrintView';
+import CasePrintView from './casePrint/CasePrintView';
 
 const isStandaloneITask = (task): task is StandaloneITask => {
   return task.taskSid === 'standalone-task-sid';
@@ -309,6 +309,22 @@ const Case: React.FC<Props> = props => {
   const incidents = info && info.incidents ? info.incidents : [];
   const childIsAtRisk = info && info.childIsAtRisk;
 
+  const caseDetails = {
+    id: connectedCase.id,
+    name,
+    categories,
+    status,
+    caseCounselor,
+    currentCounselor,
+    openedDate,
+    lastUpdatedDate,
+    followUpDate,
+    households,
+    perpetrators,
+    incidents,
+    childIsAtRisk,
+  };
+
   const addScreenProps = { task: props.task, counselor: currentCounselor, onClickClose: handleClose };
 
   switch (subroute) {
@@ -335,7 +351,7 @@ const Case: React.FC<Props> = props => {
     case 'view-referral':
       return <ViewReferral {...addScreenProps} />;
     case 'case-print-view':
-      return <CasePrintView />;
+      return <CasePrintView caseDetails={caseDetails} {...addScreenProps} />;
     default:
       return loading ? (
         <CenteredContainer>
