@@ -4,7 +4,7 @@ import { Manager, TaskHelper, Actions as FlexActions, StateHelper } from '@twili
 // eslint-disable-next-line no-unused-vars
 import { DEFAULT_TRANSFER_MODE, getConfig } from '../HrmFormPlugin';
 import { saveInsightsData } from '../services/InsightsService';
-import { transferChatStart, adjustChatCapacity } from '../services/ServerlessService';
+import { transferChatStart, adjustChatCapacity, sendSystemMessage } from '../services/ServerlessService';
 import { namespace, contactFormsBase, connectedCaseBase } from '../states';
 import * as Actions from '../states/contacts/actions';
 import { changeRoute } from '../states/routing/actions';
@@ -129,8 +129,19 @@ const sendMessageOfKey = messageKey => setupObject => async payload => {
   });
 };
 
+/**
+ * @param {string} messageKey
+ * @returns {(setupObject: ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }) => import('@twilio/flex-ui').ActionFunction}
+ */
+const sendSystemMessageOfKey = messageKey => setupObject => async payload => {
+  const { getMessage } = setupObject;
+  const taskLanguage = getTaskLanguage(setupObject)(payload);
+  const message = await getMessage(messageKey)(taskLanguage);
+  await sendSystemMessage({ taskSid: payload.task.taskSid, message, from: 'Bot' });
+};
+
 const sendWelcomeMessage = sendMessageOfKey('WelcomeMsg');
-const sendGoodbyeMessage = sendMessageOfKey('GoodbyeMsg');
+const sendGoodbyeMessage = sendSystemMessageOfKey('GoodbyeMsg');
 
 /**
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
