@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { Notifications } from '@twilio/flex-ui';
+import { ITask, Notifications } from '@twilio/flex-ui';
 
 import fetchProtectedApi from './fetchProtectedApi';
 import { getConfig } from '../HrmFormPlugin';
@@ -88,6 +88,15 @@ export const assignMeContactlessTask = async () => {
   };
 
   const response = await fetchProtectedApi('/createContactlessTask', body);
+
+  return response;
+};
+
+/**
+ * Sends a new message to the channel bounded to the provided taskSid. Optionally you can change the "from" value (defaul is "system").
+ */
+export const sendSystemMessage = async (body: { taskSid: ITask['taskSid']; message: string; from?: string }) => {
+  const response = await fetchProtectedApi('/sendSystemMessage', body);
 
   return response;
 };
