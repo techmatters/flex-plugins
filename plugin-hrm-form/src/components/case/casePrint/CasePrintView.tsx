@@ -2,7 +2,7 @@
 /* eslint-disable react/jsx-max-depth */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Page, Text, View, Document, PDFViewer, Font, Image } from '@react-pdf/renderer';
+import { Page, Text, View, Document, PDFViewer, Image } from '@react-pdf/renderer';
 import { Template } from '@twilio/flex-ui';
 import { ButtonBase } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
@@ -18,11 +18,6 @@ type OwnProps = {
   caseDetails: any; // ToDO: create a type here
 };
 type Props = OwnProps;
-
-Font.register({
-  family: 'Open Sans',
-  src: 'http://fonts.gstatic.com/s/opensans/v18/mem8YaGs126MiZpBA-UFVZ0ef8pkAg.ttf',
-});
 
 const callerInfoSection = {
   sectionName: 'Caller Information',
@@ -78,6 +73,9 @@ const perpetratorSection = {
     { label: 'Field Three', value: '......' },
     { label: 'Field Four', value: '...............' },
     { label: 'Field Five', value: '....................' },
+    { label: 'Field Six', value: '....................' },
+    { label: 'Field Seven', value: '....................' },
+    { label: 'Field Eight', value: '....................' },
   ],
 };
 
@@ -112,39 +110,44 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails }) => {
       <PDFViewer style={{ height: '100%' }}>
         <Document>
           <Page size="A4" style={styles.page}>
-            <View style={styles.caseHeader}>
-              <View style={styles.nameContainer}>
-                <Text style={styles.childName}>{caseDetails.name}</Text>
-                <Text>Case#: {caseDetails.id}</Text>
+            <View fixed>
+              <View style={styles.caseHeader}>
+                <View style={styles.flexColumn}>
+                  <Text style={styles.childName}>{caseDetails.name}</Text>
+                  <View style={styles.flexRow}>
+                    <Text style={styles.caseId}>Case#: {caseDetails.id}</Text>
+                    {caseDetails.officeName && <Text style={styles.officeName}>({caseDetails.officeName})</Text>}
+                  </View>
+                </View>
+                <Image src={source} />
               </View>
-              <Image style={styles.logo} src={source} />
             </View>
-            <View>
+            <View style={styles.caseBody}>
               <Text style={styles.caseDetailsLabel}>Case Details</Text>
               <View style={styles.caseDetailsSection}>
-                <View style={styles.caseDetailsItem}>
+                <View style={styles.flexColumn}>
                   <Text>Case Status</Text>
-                  <Text style={{ marginTop: 5 }}>OPEN</Text>
+                  <Text style={{ marginTop: 5, fontWeight: 600 }}>OPEN</Text>
                 </View>
-                <View style={styles.caseDetailsItem}>
+                <View style={styles.flexColumn}>
                   <Text>Opened</Text>
-                  <Text style={{ marginTop: 5 }}>11/10/2020</Text>
+                  <Text style={{ marginTop: 5, fontWeight: 600 }}>11/10/2020</Text>
                 </View>
                 <View>
                   <Text>CHILD IS AT RISK</Text>
                 </View>
               </View>
+              <CasePrintSection {...callerInfoSection} />
+              <CasePrintSection {...childInfoSection} />
+              <CasePrintSection {...incidentSection} />
+              <CasePrintSection {...householdSection} />
+              <CasePrintSection {...perpetratorSection} />
+              <CasePrintSection {...referralsSection} />
+              <CasePrintSection {...notesSection} />
+              <CasePrintSummary summary={summary} />
             </View>
-            <CasePrintSection {...callerInfoSection} />
-            <CasePrintSection {...childInfoSection} />
-            <CasePrintSection {...incidentSection} />
-            <CasePrintSection {...householdSection} />
-            <CasePrintSection {...perpetratorSection} />
-            <CasePrintSection {...referralsSection} />
-            <CasePrintSection {...notesSection} />
-            <CasePrintSummary summary={summary} />
             <Text
-              style={styles.pageNumber}
+              style={styles.footer}
               render={({ pageNumber, totalPages }) => `Page ${pageNumber} / ${totalPages}`}
               fixed
             />

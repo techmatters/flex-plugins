@@ -323,6 +323,7 @@ const Case: React.FC<Props> = props => {
     perpetrators,
     incidents,
     childIsAtRisk,
+    officeName: 'Gautang', // ToDo: add the office here.
   };
 
   const addScreenProps = { task: props.task, counselor: currentCounselor, onClickClose: handleClose };
