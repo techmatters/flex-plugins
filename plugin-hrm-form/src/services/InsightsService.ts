@@ -66,7 +66,11 @@ const baseUpdates = (taskAttributes: TaskAttributes, contactForm: TaskEntry, cas
   const hasCustomerData = !isNonDataCallType(callType);
 
   const communication_channel = taskAttributes.isContactlessTask
-    ? mapChannelForInsights(contactForm.contactlessTask.channel)
+    ? mapChannelForInsights(
+        typeof contactForm.contactlessTask.channel === 'string'
+          ? contactForm.contactlessTask.channel
+          : contactForm.contactlessTask.channel.toString(),
+      )
     : mapChannelForInsights(taskAttributes.channelType);
 
   // First add the data we add whether or not there's contact form data
