@@ -1,6 +1,7 @@
 import { isFuture } from 'date-fns';
 
 import { channelTypes, otherContactChannels } from '../../states/DomainConstants';
+import { CounselorsList } from '../../states/configuration/types';
 import type { FormDefinition } from '../common/forms/types';
 import { mapChannelForInsights } from '../../utils/mappers';
 import { splitDate } from '../../utils/helpers';
@@ -12,28 +13,42 @@ const channelOptions = [{ value: '', label: '' }].concat(
   })),
 );
 
-export const formDefinition: FormDefinition = [
-  {
-    name: 'channel',
-    type: 'select',
-    label: 'Channel',
-    options: channelOptions,
-    required: { value: true, message: 'RequiredFieldError' },
-  },
-  {
-    name: 'date',
-    type: 'date-input',
-    label: 'Date of Contact',
-    required: { value: true, message: 'RequiredFieldError' },
-    validate: date => {
-      const [y, m, d] = splitDate(date);
-      return isFuture(new Date(y, m - 1, d)) ? 'DateCantBeGreaterThanToday' : null;
+export const createFormDefinition = (counselorsList: CounselorsList): FormDefinition => {
+  const counsellorOptions = [
+    { label: '', value: '' },
+    ...counselorsList.map(c => ({ label: c.fullName, value: c.sid })),
+  ];
+
+  return [
+    {
+      name: 'channel',
+      type: 'select',
+      label: 'Channel',
+      options: channelOptions,
+      required: { value: true, message: 'RequiredFieldError' },
     },
-  },
-  {
-    name: 'time',
-    type: 'time-input',
-    label: 'Time of Contact',
-    required: { value: true, message: 'RequiredFieldError' },
-  },
-];
+    {
+      name: 'createdOnBehalfOf',
+      type: 'select',
+      label: 'Counsellor',
+      options: counsellorOptions,
+      required: { value: true, message: 'RequiredFieldError' },
+    },
+    {
+      name: 'date',
+      type: 'date-input',
+      label: 'Date of Contact',
+      required: { value: true, message: 'RequiredFieldError' },
+      validate: date => {
+        const [y, m, d] = splitDate(date);
+        return isFuture(new Date(y, m - 1, d)) ? 'DateCantBeGreaterThanToday' : null;
+      },
+    },
+    {
+      name: 'time',
+      type: 'time-input',
+      label: 'Time of Contact',
+      required: { value: true, message: 'RequiredFieldError' },
+    },
+  ];
+};

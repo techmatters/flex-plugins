@@ -9,9 +9,9 @@ import { get } from 'lodash';
 import { createFormFromDefinition, disperseInputs } from '../common/forms/formGenerators';
 import { updateForm } from '../../states/contacts/actions';
 import { Container, ColumnarBlock, TwoColumnLayout, TabbedFormTabContainer } from '../../styles/HrmStyles';
-import type { RootState } from '../../states';
+import { configurationBase, namespace, RootState } from '../../states';
 import type { TaskEntry } from '../../states/contacts/reducer';
-import { formDefinition } from './ContactlessTaskTabDefinition';
+import { createFormDefinition } from './ContactlessTaskTabDefinition';
 import { splitDate, splitTime } from '../../utils/helpers';
 
 type OwnProps = {
@@ -23,7 +23,7 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const ContactlessTaskTab: React.FC<Props> = ({ dispatch, display, task, initialValues }) => {
+const ContactlessTaskTab: React.FC<Props> = ({ dispatch, display, task, initialValues, counselorsList }) => {
   const [initialForm] = React.useState(initialValues); // grab initial values in first render only. This value should never change or will ruin the memoization below
 
   const { getValues, register, setError, setValue, watch, errors } = useFormContext();
@@ -34,10 +34,11 @@ const ContactlessTaskTab: React.FC<Props> = ({ dispatch, display, task, initialV
       dispatch(updateForm(task.taskSid, 'contactlessTask', rest));
     };
 
+    const formDefinition = createFormDefinition(counselorsList);
     const tab = createFormFromDefinition(formDefinition)(['contactlessTask'])(initialForm)(updateCallBack);
 
     return disperseInputs(5)(tab);
-  }, [dispatch, getValues, initialForm, task.taskSid]);
+  }, [dispatch, getValues, initialForm, task.taskSid, counselorsList]);
 
   // Add invisible field that errors if date + time are future (triggered by validaiton)
   React.useEffect(() => {
@@ -84,7 +85,9 @@ const ContactlessTaskTab: React.FC<Props> = ({ dispatch, display, task, initialV
 
 ContactlessTaskTab.displayName = 'ContactlessTaskTab';
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({});
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
+  counselorsList: state[namespace][configurationBase].counselors.list,
+});
 
 const connector = connect(mapStateToProps);
 const connected = connector(ContactlessTaskTab);
