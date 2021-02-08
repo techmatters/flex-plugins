@@ -6,14 +6,13 @@
     "lint": "eslint --ext js .",
     "lint:fix": "npm run lint -- --fix",
     "copyFlow": "node copyFlow.js",
-    "copyBot": "node copyBot.js",
     "configure": "node configureNewAccount.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "prompt-confirm": "^2.0.4",
-    "twilio": "^3.48.0",
+    "twilio": "^3.55.1",
     "yargs": "^15.4.1"
   },
   "devDependencies": {
