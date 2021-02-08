@@ -1,0 +1,66 @@
+[
+  {
+    "name": "callSummary",
+    "label": "Comments",
+    "type": "textarea",
+    "required": true
+  },
+  {
+    "name": "referredTo",
+    "label": "Referred to",
+    "type": "select",
+    "options": [
+      { "value": "", "label": "" },
+      { "value": "Recommendations", "label": "Recommendations" }, 
+      { "value": "Referrals to school counsellors", "label": "Referrals to school counsellors" }, 
+      { "value": "DSD", "label": "DSD" }, 
+      { "value": "Referrals to child protection agencies", "label": "Referrals to child protection agencies" }, 
+      { "value": "Referrals to law enforcement agencies", "label": "Referrals to law enforcement agencies" }, 
+      { "value": "Referrals to healthcare professionals", "label": "Referrals to healthcare professionals" }, 
+      { "value": "Referrals to other organisations", "label": "Referrals to other organisations" }, 
+      { "value": "Direct interventions by Childline", "label": "Direct interventions by Childline" }, 
+      { "value": "Other", "label": "Other" }
+    ],
+    "required": true
+  },
+  {
+    "name": "howDidTheChildHearAboutUs",
+    "label": "How did the child hear about us?",
+    "type": "select",
+    "options": [
+      { "value": "", "label": "" },
+      { "value": "Unknown", "label": "Unknown" }, 
+      { "value": "Awareness Campaign", "label": "Awareness Campaign" }, 
+      { "value": "Billboard", "label": "Billboard" }, 
+      { "value": "Pamphlet", "label": "Pamphlet" }, 
+      { "value": "Radio", "label": "Radio" }, 
+      { "value": "TV Advert", "label": "TV Advert" }, 
+      { "value": "Word of Mouth", "label": "Word of Mouth" }
+    ]
+  },
+  {
+    "name": "keepConfidential",
+    "label": "Keep confidential?",
+    "type": "checkbox"
+  },
+  {
+    "name": "okForCaseWorkerToCall",
+    "label": "Ok for case worker to call?",
+    "type": "checkbox"
+  },
+  {
+    "name": "didYouDiscussRightsWithTheChild",
+    "label": "Did you discuss rights with the child?",
+    "type": "checkbox"
+  },
+  {
+    "name": "didTheChildFeelWeSolvedTheirProblem",
+    "label": "Did the child feel we solved their problem?",
+    "type": "checkbox"
+  },
+  {
+    "name": "wouldTheChildRecommendUsToAFriend",
+    "label": "Would the child recommend us to a friend?",
+    "type": "checkbox"
+  }
+]
