@@ -10,7 +10,7 @@
     "build": "flex-plugin build",
     "predeploy": "npm run build",
     "deploy": "flex-plugin deploy",
-    "test": "jest --env=jest-environment-jsdom-sixteen",
+    "test": "UNBUNDLED_REACT=true twilio flex:plugins:test",
     "list": "flex-plugin list",
     "clear": "flex-plugin clear",
     "remove": "flex-plugin remove",
