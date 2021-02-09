@@ -3,7 +3,7 @@ import { FlexPlugin, loadCSS } from 'flex-plugin';
 import SyncClient from 'twilio-sync';
 
 import './styles/GlobalOverrides';
-import reducers, { namespace } from './states';
+import reducers, { namespace, configurationBase } from './states';
 import HrmTheme from './styles/HrmTheme';
 import { transferModes } from './states/DomainConstants';
 import { initLocalization } from './utils/pluginHelpers';
@@ -59,6 +59,18 @@ export const getConfig = () => {
     strings,
     definitionVersion,
   };
+};
+
+/**
+ * Helper to expose the forms definitions without the need of calling Manager
+ * @returns {{currentDefinitionVersion: import('./states/configuration/reducer').ConfigurationState['currentDefinitionVersion'], formsVersions: import('./states/configuration/reducer').ConfigurationState['formsVersions']}}
+ */
+export const getFormsVersions = () => {
+  const { currentDefinitionVersion, formsVersions } = Flex.Manager.getInstance().store.getState()[namespace][
+    configurationBase
+  ];
+
+  return { currentDefinitionVersion, formsVersions };
 };
 
 const setUpSharedStateClient = () => {
@@ -172,6 +184,9 @@ const setUpComponents = setupObject => {
  */
 const setUpActions = setupObject => {
   const { featureFlags } = setupObject;
+
+  // Is this the correct place for this call?
+  ActionFunctions.loadCurrentFormsVersion();
 
   // bind setupObject to the functions that requires some initializaton
   const transferOverride = ActionFunctions.customTransferTask(setupObject);
