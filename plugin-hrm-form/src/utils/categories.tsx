@@ -1,14 +1,15 @@
 import React from 'react';
 
 import HrmTheme from '../styles/HrmTheme';
-import IssueCategorizationTabDefinition from '../formDefinitions/tabbedForms/IssueCategorizationTab.json';
-import type { CategoriesDefinition } from '../components/common/forms/types';
 import { ContactTag, TagText, TagMiddleDot } from '../styles/search';
+import { getFormsVersions } from '../HrmFormPlugin';
 
-const categories = IssueCategorizationTabDefinition as CategoriesDefinition;
+// TODO: support different versions here, as for example deleting a category will break this
+const getCategoryColor = (category: string) => {
+  const categories = getFormsVersions().currentDefinitionVersion.tabbedForms.IssueCategorizationTab;
 
-const getCategoryColor = category =>
-  categories[category] ? categories[category].color : HrmTheme.colors.defaultCategoryColor;
+  return categories[category] ? categories[category].color : HrmTheme.colors.defaultCategoryColor;
+};
 
 type ContactCategories = {
   [category: string]: string[];
