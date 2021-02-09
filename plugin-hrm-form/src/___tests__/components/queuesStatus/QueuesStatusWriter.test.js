@@ -74,10 +74,11 @@ const afterDeleteQueuesStatus = getNewQueuesStatus(clearQueuesStatus, { T3: task
 describe('QueuesStatusWriter should subscribe to Admin queue only', () => {
   const events = {};
 
-  const innerTasks = {};
-  innerTasks.T1 = tasks.T1;
-  innerTasks.T2 = tasks.T2;
-  innerTasks.T3 = tasks.T3;
+  const innerTasks = {
+    T1: tasks.T1,
+    T2: tasks.T2,
+    T3: tasks.T3,
+  };
 
   const queuesQuery = { getItems: () => queues, close: jest.fn() };
   const tasksQuery = {
@@ -171,10 +172,11 @@ describe('QueuesStatusWriter should subscribe to Admin queue only', () => {
 describe('QueuesStatusWriter should subscribe to Q1 queue only', () => {
   const events = {};
 
-  const innerTasks = {};
-  innerTasks.T1 = tasks.T1;
-  innerTasks.T2 = tasks.T2;
-  innerTasks.T3 = tasks.T3;
+  const innerTasks = {
+    T1: tasks.T1,
+    T2: tasks.T2,
+    T3: tasks.T3,
+  };
 
   const queuesQuery = { getItems: () => queues, close: jest.fn() };
   const tasksQuery = {
@@ -189,6 +191,7 @@ describe('QueuesStatusWriter should subscribe to Q1 queue only', () => {
 
   const ownProps = {
     insightsClient: {
+      // eslint-disable-next-line sonarjs/no-identical-functions
       liveQuery: jest.fn((query, _) => {
         if (query === 'tr-queue') {
           return Promise.resolve(queuesQuery);

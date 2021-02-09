@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unused-modules */
 import type { RegisterOptions } from 'react-hook-form';
 
 export type FormFieldType = { value: string; error?: string; validation?: string[]; touched?: boolean };

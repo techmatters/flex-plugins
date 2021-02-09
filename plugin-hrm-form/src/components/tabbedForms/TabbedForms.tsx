@@ -76,6 +76,7 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
+// eslint-disable-next-line react/no-multi-comp
 const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props }) => {
   const methods = useForm({
     shouldFocusError: false,

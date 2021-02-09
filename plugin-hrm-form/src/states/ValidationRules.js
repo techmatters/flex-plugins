@@ -1,3 +1,5 @@
+/* eslint-disable sonarjs/no-identical-functions */
+/* eslint-disable sonarjs/no-collapsible-if */
 import cloneDeep from 'lodash/cloneDeep';
 
 import callTypes from './DomainConstants';

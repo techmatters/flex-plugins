@@ -561,6 +561,7 @@ const recursivelyCreateBlankForm = formDefinition => {
             type: formDefinition[key].type,
           };
           break;
+        // eslint-disable-next-line sonarjs/no-duplicated-branches
         case FieldType.TAB:
           initialState[key] = {
             ...recursivelyCreateBlankForm(formDefinition[key]),

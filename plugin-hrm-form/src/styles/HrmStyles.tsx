@@ -75,9 +75,9 @@ type TabbedFormTabContainerProps = {
   display: boolean;
 };
 
-export const TabbedFormTabContainer = styled(({ display, ...rest }: TabbedFormTabContainerProps) => <Box {...rest} />)<
-  TabbedFormTabContainerProps
->`
+export const TabbedFormTabContainer = styled(({ display, ...rest }: TabbedFormTabContainerProps) => (
+  <Box {...rest} />
+))<TabbedFormTabContainerProps>`
   display: ${({ display }) => (display ? 'block' : 'none')};
   height: ${({ display }) => (display ? '100%' : '0px')};
 `;
@@ -184,9 +184,9 @@ type StyledSelectProps = {
   isPlaceholder?: boolean;
 };
 
-export const StyledSelect = styled(({ isPlaceholder = false, ...rest }: StyledSelectProps) => <Select {...rest} />)<
-  StyledSelectProps
->`
+export const StyledSelect = styled(({ isPlaceholder = false, ...rest }: StyledSelectProps) => (
+  <Select {...rest} />
+))<StyledSelectProps>`
   flex-grow: 0;
   flex-shrink: 0;
   width: 217px;

@@ -264,7 +264,9 @@ const saveInsights = async payload => {
 const sendInsightsData = setupObject => async payload => {
   const { featureFlags } = setupObject;
 
+  // eslint-disable-next-line sonarjs/no-collapsible-if
   if (!payload.task?.attributes?.skipInsights) {
+    // eslint-disable-next-line sonarjs/no-collapsible-if
     if (!featureFlags.enable_transfers || TransferHelpers.hasTaskControl(payload.task)) {
       if (featureFlags.enable_save_insights) {
         await saveInsights(payload);
