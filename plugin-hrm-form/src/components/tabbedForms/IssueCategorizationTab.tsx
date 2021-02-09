@@ -7,7 +7,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { RootState, namespace, contactFormsBase } from '../../states';
 import * as actions from '../../states/contacts/actions';
 import type { TaskEntry } from '../../states/contacts/reducer';
-import IssueCategorizationTabDefinition from '../../formDefinitions/tabbedForms/IssueCategorizationTab.json';
+import { IssueCategorizationTab as IssueCategorizationTabDefinition } from '../../formDefinitions/ZA';
 import { CategoriesFromDefinition, createSubCategoriesInputs } from '../common/forms/categoriesTabGenerator';
 import { TabbedFormTabContainer } from '../../styles/HrmStyles';
 

@@ -3,8 +3,7 @@ import { ITask, Manager } from '@twilio/flex-ui';
 import { mapAge, mapGender } from './mappers';
 import * as RoutingActions from '../states/routing/actions';
 import { prepopulateFormCaller, prepopulateFormChild } from '../states/contacts/actions';
-import ChildInformationTab from '../formDefinitions/tabbedForms/ChildInformationTab.json';
-import CallerInformationTab from '../formDefinitions/tabbedForms/CallerInformationTab.json';
+import { CallerInformationTab, ChildInformationTab } from '../formDefinitions/ZA';
 import type { FormDefinition } from '../components/common/forms/types';
 
 /**

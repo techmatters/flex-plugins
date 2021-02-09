@@ -5,10 +5,12 @@ import '../mockGetConfig';
 import { transformForm, saveToHrm, createCategoriesObject } from '../../services/ContactService';
 import { createNewTaskEntry } from '../../states/contacts/reducer';
 import callTypes, { channelTypes } from '../../states/DomainConstants';
-import callerFormDefinition from '../../formDefinitions/tabbedForms/CallerInformationTab.json';
-import caseInfoFormDefinition from '../../formDefinitions/tabbedForms/CaseInformationTab.json';
-import childFormDefinition from '../../formDefinitions/tabbedForms/ChildInformationTab.json';
-import categoriesFormDefinition from '../../formDefinitions/tabbedForms/IssueCategorizationTab.json';
+import {
+  CallerInformationTab as callerFormDefinition,
+  CaseInformationTab as caseInfoFormDefinition,
+  ChildInformationTab as childFormDefinition,
+  IssueCategorizationTab as categoriesFormDefinition,
+} from '../../formDefinitions/ZA';
 
 describe('transformForm', () => {
   test('removes control information and presents values only', () => {

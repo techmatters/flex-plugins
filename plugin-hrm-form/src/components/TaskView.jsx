@@ -9,10 +9,12 @@ import { taskType } from '../types';
 import { namespace, contactFormsBase, searchContactsBase, routingBase } from '../states';
 import * as GeneralActions from '../states/actions';
 import { hasTaskControl } from '../utils/transfer';
-import callerFormDefinition from '../formDefinitions/tabbedForms/CallerInformationTab.json';
-import caseInfoFormDefinition from '../formDefinitions/tabbedForms/CaseInformationTab.json';
-import childFormDefinition from '../formDefinitions/tabbedForms/ChildInformationTab.json';
-import categoriesFormDefinition from '../formDefinitions/tabbedForms/IssueCategorizationTab.json';
+import {
+  CallerInformationTab as callerFormDefinition,
+  ChildInformationTab as childFormDefinition,
+  CaseInformationTab as caseInfoFormDefinition,
+  IssueCategorizationTab as categoriesFormDefinition,
+} from '../formDefinitions/ZA';
 
 // The tabbed form definitions, used to create new form state.
 const definitions = {

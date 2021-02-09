@@ -11,7 +11,7 @@ import * as RoutingActions from '../../states/routing/actions';
 import { CaseLayout } from '../../styles/case';
 import ActionHeader from './ActionHeader';
 import SectionEntry from '../SectionEntry';
-import NoteForm from '../../formDefinitions/caseForms/NoteForm.json';
+import { NoteForm } from '../../formDefinitions/ZA';
 import { StandaloneITask } from '../StandaloneSearch';
 import { formatName } from '../../utils';
 

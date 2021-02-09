@@ -10,7 +10,7 @@ import { ToggleViewButton } from '../../../styles/HrmStyles';
 import HrmTheme from '../../../styles/HrmTheme';
 import { namespace, contactFormsBase } from '../../../states';
 import { setCategoriesGridView } from '../../../states/contacts/actions';
-import definition from '../../../formDefinitions/tabbedForms/IssueCategorizationTab.json';
+import { IssueCategorizationTab as definition } from '../../../formDefinitions/ZA';
 
 // Copy paste from state/contacts initial state
 const expanded = Object.keys(definition).reduce((acc, category) => ({ ...acc, [category]: false }), {});

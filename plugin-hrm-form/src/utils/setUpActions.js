@@ -13,10 +13,12 @@ import callTypes, { transferModes } from '../states/DomainConstants';
 import * as TransferHelpers from './transfer';
 import { saveFormSharedState, loadFormSharedState } from './sharedState';
 import { prepopulateForm } from './prepopulateForm';
-import callerFormDefinition from '../formDefinitions/tabbedForms/CallerInformationTab.json';
-import caseInfoFormDefinition from '../formDefinitions/tabbedForms/CaseInformationTab.json';
-import childFormDefinition from '../formDefinitions/tabbedForms/ChildInformationTab.json';
-import categoriesFormDefinition from '../formDefinitions/tabbedForms/IssueCategorizationTab.json';
+import {
+  CallerInformationTab as callerFormDefinition,
+  ChildInformationTab as childFormDefinition,
+  CaseInformationTab as caseInfoFormDefinition,
+  IssueCategorizationTab as categoriesFormDefinition,
+} from '../formDefinitions/ZA';
 
 /**
  * Given a taskSid, retrieves the state of the form (stored in redux) for that task

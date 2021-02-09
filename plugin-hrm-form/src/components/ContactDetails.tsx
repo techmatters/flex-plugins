@@ -15,9 +15,7 @@ import { formatDuration, formatName, formatCategories, mapChannel, mapChannelFor
 import { ContactDetailsSections } from './common/ContactDetails';
 import { unNestInformation } from '../services/ContactService';
 import type { FormDefinition } from './common/forms/types';
-import CallerInformationTab from '../formDefinitions/tabbedForms/CallerInformationTab.json';
-import CaseInformationTab from '../formDefinitions/tabbedForms/CaseInformationTab.json';
-import ChildInformationTab from '../formDefinitions/tabbedForms/ChildInformationTab.json';
+import { CallerInformationTab, ChildInformationTab, CaseInformationTab } from '../formDefinitions/ZA';
 
 const Details = ({
   contact,

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import HrmTheme from '../styles/HrmTheme';
-import IssueCategorizationTabDefinition from '../formDefinitions/tabbedForms/IssueCategorizationTab.json';
+import { IssueCategorizationTab as IssueCategorizationTabDefinition } from '../formDefinitions/ZA';
 import type { CategoriesDefinition } from '../components/common/forms/types';
 import { ContactTag, TagText, TagMiddleDot } from '../styles/search';
 

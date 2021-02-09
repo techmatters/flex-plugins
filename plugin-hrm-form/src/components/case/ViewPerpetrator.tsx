@@ -10,7 +10,7 @@ import { CaseState } from '../../states/case/reducer';
 import SectionEntry from '../SectionEntry';
 import ActionHeader from './ActionHeader';
 import type { FormDefinition } from '../common/forms/types';
-import PerpetratorForm from '../../formDefinitions/caseForms/PerpetratorForm.json';
+import { PerpetratorForm } from '../../formDefinitions/ZA';
 import { StandaloneITask } from '../StandaloneSearch';
 
 const mapStateToProps = (state, ownProps: OwnProps) => {

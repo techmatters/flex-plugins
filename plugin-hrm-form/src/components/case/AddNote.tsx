@@ -24,7 +24,7 @@ import { updateCase } from '../../services/CaseService';
 import { createFormFromDefinition, disperseInputs, splitInHalf } from '../common/forms/formGenerators';
 import { transformValues } from '../../services/ContactService';
 import type { FormDefinition } from '../common/forms/types';
-import NoteForm from '../../formDefinitions/caseForms/NoteForm.json';
+import { NoteForm } from '../../formDefinitions/ZA';
 import { StandaloneITask } from '../StandaloneSearch';
 
 type OwnProps = {

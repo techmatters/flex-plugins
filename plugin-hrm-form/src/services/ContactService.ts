@@ -8,10 +8,12 @@ import { getConversationDuration, fillEndMillis } from '../utils/conversationDur
 import { getLimitAndOffsetParams } from './PaginationParams';
 import fetchHrmApi from './fetchHrmApi';
 import { getDateTime } from '../utils/helpers';
-import callerFormDefinition from '../formDefinitions/tabbedForms/CallerInformationTab.json';
-import caseInfoFormDefinition from '../formDefinitions/tabbedForms/CaseInformationTab.json';
-import childFormDefinition from '../formDefinitions/tabbedForms/ChildInformationTab.json';
-import categoriesFormDefinition from '../formDefinitions/tabbedForms/IssueCategorizationTab.json';
+import {
+  CallerInformationTab as callerFormDefinition,
+  ChildInformationTab as childFormDefinition,
+  CaseInformationTab as caseInfoFormDefinition,
+  IssueCategorizationTab as categoriesFormDefinition,
+} from '../formDefinitions/ZA';
 import { getConfig } from '../HrmFormPlugin';
 import type {
   CategoriesDefinition,

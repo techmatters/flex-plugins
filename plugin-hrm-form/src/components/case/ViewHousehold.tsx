@@ -10,7 +10,7 @@ import { CaseState } from '../../states/case/reducer';
 import SectionEntry from '../SectionEntry';
 import ActionHeader from './ActionHeader';
 import type { FormDefinition } from '../common/forms/types';
-import HouseHoldForm from '../../formDefinitions/caseForms/HouseholdForm.json';
+import { HouseholdForm, LayoutDefinitions } from '../../formDefinitions/ZA';
 import { StandaloneITask } from '../StandaloneSearch';
 
 const mapStateToProps = (state, ownProps: OwnProps) => {
@@ -47,7 +47,7 @@ const ViewHousehold: React.FC<Props> = ({ counselorsHash, temporaryCaseInfo, onC
         />
         <Box paddingTop="10px">
           <>
-            {(HouseHoldForm as FormDefinition).map(e => (
+            {(HouseholdForm as FormDefinition).map(e => (
               <SectionEntry
                 key={`entry-${e.label}`}
                 description={<Template code={e.label} />}

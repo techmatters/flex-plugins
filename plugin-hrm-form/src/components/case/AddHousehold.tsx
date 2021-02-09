@@ -24,7 +24,7 @@ import type { FormDefinition } from '../common/forms/types';
 import { transformValues } from '../../services/ContactService';
 import { getConfig } from '../../HrmFormPlugin';
 import { updateCase } from '../../services/CaseService';
-import HouseholdForm from '../../formDefinitions/caseForms/HouseholdForm.json';
+import { HouseholdForm, LayoutDefinitions } from '../../formDefinitions/ZA';
 import {
   createFormFromDefinition,
   createStateItem,
@@ -32,7 +32,6 @@ import {
   splitInHalf,
   splitAt,
 } from '../common/forms/formGenerators';
-import LayoutDefinitions from '../../formDefinitions/LayoutDefinitions.json';
 import { StandaloneITask } from '../StandaloneSearch';
 
 type OwnProps = {

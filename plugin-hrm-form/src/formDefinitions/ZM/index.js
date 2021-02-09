@@ -10,7 +10,7 @@ import ChildInformationTab from './tabbedForms/ChildInformationTab.json';
 import IssueCategorizationTab from './tabbedForms/IssueCategorizationTab.json';
 import LayoutDefinitions from './LayoutDefinitions.json';
 
-export {
+export const {
   HouseholdForm,
   IncidentForm,
   NoteForm,

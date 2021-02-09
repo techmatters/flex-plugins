@@ -11,7 +11,7 @@ import * as RoutingActions from '../../states/routing/actions';
 import { CaseLayout } from '../../styles/case';
 import ActionHeader from './ActionHeader';
 import SectionEntry from '../SectionEntry';
-import ReferralForm from '../../formDefinitions/caseForms/ReferralForm.json';
+import { ReferralForm } from '../../formDefinitions/ZA';
 import { StandaloneITask } from '../StandaloneSearch';
 import { formatName } from '../../utils';
 

@@ -23,7 +23,7 @@ import { updateCase } from '../../services/CaseService';
 import { createFormFromDefinition, disperseInputs, splitInHalf } from '../common/forms/formGenerators';
 import { transformValues } from '../../services/ContactService';
 import type { FormDefinition } from '../common/forms/types';
-import ReferralForm from '../../formDefinitions/caseForms/ReferralForm.json';
+import { ReferralForm } from '../../formDefinitions/ZA';
 import { StandaloneITask } from '../StandaloneSearch';
 
 type OwnProps = {

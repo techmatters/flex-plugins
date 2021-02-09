@@ -23,8 +23,7 @@ import { updateCase } from '../../services/CaseService';
 import { createFormFromDefinition, disperseInputs, splitInHalf, splitAt } from '../common/forms/formGenerators';
 import { transformValues } from '../../services/ContactService';
 import type { FormDefinition } from '../common/forms/types';
-import IncidentForm from '../../formDefinitions/caseForms/IncidentForm.json';
-import LayoutDefinitions from '../../formDefinitions/LayoutDefinitions.json';
+import { IncidentForm, LayoutDefinitions } from '../../formDefinitions/ZA';
 import { StandaloneITask } from '../StandaloneSearch';
 
 type OwnProps = {

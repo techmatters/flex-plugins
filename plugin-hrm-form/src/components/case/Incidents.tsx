@@ -7,8 +7,7 @@ import { Box, Row } from '../../styles/HrmStyles';
 import { CaseSectionFont, TimelineRow, PlaceHolderText } from '../../styles/case';
 import CaseAddButton from './CaseAddButton';
 import TimelineInformationRow from './TimelineInformationRow';
-import IncidentForm from '../../formDefinitions/caseForms/IncidentForm.json';
-import LayoutDefinitions from '../../formDefinitions/LayoutDefinitions.json';
+import { IncidentForm, LayoutDefinitions } from '../../formDefinitions/ZA';
 import type { FormDefinition, LayoutDefinition } from '../common/forms/types';
 
 type OwnProps = {

@@ -27,10 +27,12 @@ import ContactlessTaskTab from './ContactlessTaskTab';
 import BottomBar from './BottomBar';
 import { hasTaskControl } from '../../utils/transfer';
 import { isNonDataCallType } from '../../states/ValidationRules';
-import CallerTabDefinition from '../../formDefinitions/tabbedForms/CallerInformationTab.json';
-import CaseTabDefinition from '../../formDefinitions/tabbedForms/CaseInformationTab.json';
-import ChildTabDefinition from '../../formDefinitions/tabbedForms/ChildInformationTab.json';
-import LayoutDefinitions from '../../formDefinitions/LayoutDefinitions.json';
+import {
+  CallerInformationTab as CallerTabDefinition,
+  ChildInformationTab as ChildTabDefinition,
+  CaseInformationTab as CaseTabDefinition,
+  LayoutDefinitions,
+} from '../../formDefinitions/ZA';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {

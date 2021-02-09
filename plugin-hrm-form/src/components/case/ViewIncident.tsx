@@ -9,8 +9,7 @@ import { CaseContainer } from '../../styles/case';
 import { namespace, connectedCaseBase, configurationBase, RootState } from '../../states';
 import ActionHeader from './ActionHeader';
 import SectionEntry from '../SectionEntry';
-import IncidentForm from '../../formDefinitions/caseForms/IncidentForm.json';
-import LayoutDefinitions from '../../formDefinitions/LayoutDefinitions.json';
+import { IncidentForm, LayoutDefinitions } from '../../formDefinitions/ZA';
 import { StandaloneITask } from '../StandaloneSearch';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
