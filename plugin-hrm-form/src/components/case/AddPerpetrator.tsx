@@ -16,15 +16,13 @@ import {
 } from '../../styles/HrmStyles';
 import { CaseActionLayout, CaseActionFormContainer } from '../../styles/case';
 import ActionHeader from './ActionHeader';
-import { namespace, connectedCaseBase, routingBase } from '../../states';
+import { namespace, connectedCaseBase, routingBase, RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseState } from '../../states/case/reducer';
-import type { FormDefinition } from '../common/forms/types';
 import { transformValues } from '../../services/ContactService';
 import { getConfig } from '../../HrmFormPlugin';
 import { updateCase } from '../../services/CaseService';
-import PerpetratorForm from '../../formDefinitions/caseForms/PerpetratorForm.json';
 import {
   createFormFromDefinition,
   createStateItem,
@@ -32,12 +30,13 @@ import {
   splitInHalf,
   splitAt,
 } from '../common/forms/formGenerators';
-import LayoutDefinitions from '../../formDefinitions/LayoutDefinitions.json';
+import type { FormsVersion } from '../common/forms/types';
 import { StandaloneITask } from '../StandaloneSearch';
 
 type OwnProps = {
   task: ITask | StandaloneITask;
   counselor: string;
+  formsVersion: FormsVersion;
   onClickClose: () => void;
 };
 
@@ -50,11 +49,14 @@ const AddPerpetrator: React.FC<Props> = ({
   onClickClose,
   connectedCaseState,
   route,
+  formsVersion,
   setConnectedCase,
   updateTempInfo,
   changeRoute,
 }) => {
   const { temporaryCaseInfo } = connectedCaseState;
+  const { PerpetratorForm } = formsVersion.caseForms;
+  const { layoutVersion } = formsVersion;
 
   const init = temporaryCaseInfo && temporaryCaseInfo.screen === 'add-perpetrator' ? temporaryCaseInfo.info : {};
   const [initialForm] = React.useState(init); // grab initial values in first render only. This value should never change or will ruin the memoization below
@@ -66,19 +68,26 @@ const AddPerpetrator: React.FC<Props> = ({
       updateTempInfo({ screen: 'add-perpetrator', info: perpetrator }, task.taskSid);
     };
 
-    const generatedForm = createFormFromDefinition(PerpetratorForm as FormDefinition)([])(initialForm)(updateCallBack);
+    const generatedForm = createFormFromDefinition(PerpetratorForm)([])(initialForm)(updateCallBack);
 
-    if (LayoutDefinitions.case.perpetrators.splitFormAt)
-      return splitAt(LayoutDefinitions.case.perpetrators.splitFormAt)(disperseInputs(7)(generatedForm));
+    if (layoutVersion.case.perpetrators.splitFormAt)
+      return splitAt(layoutVersion.case.perpetrators.splitFormAt)(disperseInputs(7)(generatedForm));
 
     return splitInHalf(disperseInputs(7)(generatedForm));
-  }, [initialForm, methods, task.taskSid, updateTempInfo]);
+  }, [
+    PerpetratorForm,
+    initialForm,
+    layoutVersion.case.perpetrators.splitFormAt,
+    methods,
+    task.taskSid,
+    updateTempInfo,
+  ]);
 
   const savePerpetrator = async shouldStayInForm => {
     if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-perpetrator') return;
 
     const { info, id } = connectedCaseState.connectedCase;
-    const perpetrator = transformValues(PerpetratorForm as FormDefinition)(temporaryCaseInfo.info);
+    const perpetrator = transformValues(PerpetratorForm)(temporaryCaseInfo.info);
     const createdAt = new Date().toISOString();
     const { workerSid } = getConfig();
     const newPerpetrator = { perpetrator, createdAt, twilioWorkerId: workerSid };
@@ -88,7 +97,7 @@ const AddPerpetrator: React.FC<Props> = ({
     setConnectedCase(updatedCase, task.taskSid, true);
 
     if (shouldStayInForm) {
-      const blankForm = (PerpetratorForm as FormDefinition).reduce(createStateItem, {});
+      const blankForm = PerpetratorForm.reduce(createStateItem, {});
       methods.reset(blankForm); // Resets the form.
       updateTempInfo({ screen: 'add-perpetrator', info: null }, task.taskSid);
       changeRoute({ route, subroute: 'add-perpetrator' }, task.taskSid);
@@ -154,7 +163,7 @@ const AddPerpetrator: React.FC<Props> = ({
 
 AddPerpetrator.displayName = 'AddPerpetrator';
 
-const mapStateToProps = (state, ownProps: OwnProps) => {
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const caseState: CaseState = state[namespace][connectedCaseBase]; // casting type as inference is not working for the store yet
   const connectedCaseState = caseState.tasks[ownProps.task.taskSid];
   const { route } = state[namespace][routingBase].tasks[ownProps.task.taskSid];

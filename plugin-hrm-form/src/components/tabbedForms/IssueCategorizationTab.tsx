@@ -4,10 +4,9 @@ import { useFormContext } from 'react-hook-form';
 import { ITask, withTaskContext } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { RootState, namespace, contactFormsBase } from '../../states';
+import { RootState, namespace, contactFormsBase, configurationBase } from '../../states';
 import * as actions from '../../states/contacts/actions';
 import type { TaskEntry } from '../../states/contacts/reducer';
-import IssueCategorizationTabDefinition from '../../formDefinitions/tabbedForms/IssueCategorizationTab.json';
 import { CategoriesFromDefinition, createSubCategoriesInputs } from '../common/forms/categoriesTabGenerator';
 import { TabbedFormTabContainer } from '../../styles/HrmStyles';
 
@@ -21,11 +20,13 @@ const IssueCategorizationTab: React.FC<Props> = ({
   display,
   categoriesMeta,
   initialValue,
+  currentDefinitionVersion,
   updateForm,
   setCategoriesGridView,
   handleExpandCategory,
 }) => {
   const { getValues, setValue } = useFormContext();
+  const IssueCategorizationTabDefinition = currentDefinitionVersion.tabbedForms.IssueCategorizationTab;
 
   // Couldn't find a way to provide initial values to an field array, as a workaround, intentionally run this only on first render
   React.useEffect(() => {
@@ -40,7 +41,7 @@ const IssueCategorizationTab: React.FC<Props> = ({
     };
 
     return createSubCategoriesInputs(IssueCategorizationTabDefinition, ['categories'], updateCallback);
-  }, [getValues, task.taskSid, updateForm]);
+  }, [IssueCategorizationTabDefinition, getValues, task.taskSid, updateForm]);
 
   const toggleCategoriesGridView = (gridView: boolean) => {
     setCategoriesGridView(gridView, task.taskSid);
@@ -67,6 +68,7 @@ IssueCategorizationTab.displayName = 'IssueCategorizationTab';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   categoriesMeta: state[namespace][contactFormsBase].tasks[ownProps.task.taskSid].metadata.categories,
+  currentDefinitionVersion: state[namespace][configurationBase].currentDefinitionVersion,
 });
 
 const mapDispatchToProps = {

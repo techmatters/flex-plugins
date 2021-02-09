@@ -16,19 +16,19 @@ import {
   Container,
 } from '../../styles/HrmStyles';
 import { CaseActionLayout, CaseActionFormContainer } from '../../styles/case';
-import { namespace, connectedCaseBase, routingBase } from '../../states';
+import { namespace, connectedCaseBase, routingBase, RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { updateCase } from '../../services/CaseService';
 import { createFormFromDefinition, disperseInputs, splitInHalf } from '../common/forms/formGenerators';
+import type { FormsVersion } from '../common/forms/types';
 import { transformValues } from '../../services/ContactService';
-import type { FormDefinition } from '../common/forms/types';
-import ReferralForm from '../../formDefinitions/caseForms/ReferralForm.json';
 import { StandaloneITask } from '../StandaloneSearch';
 
 type OwnProps = {
   task: ITask | StandaloneITask;
   counselor: string;
+  formsVersion: FormsVersion;
   onClickClose: () => void;
 };
 
@@ -39,11 +39,14 @@ const AddReferral: React.FC<Props> = ({
   task,
   counselor,
   connectedCaseState,
+  formsVersion,
   onClickClose,
   updateTempInfo,
   setConnectedCase,
 }) => {
   const { connectedCase, temporaryCaseInfo } = connectedCaseState;
+  const { ReferralForm } = formsVersion.caseForms;
+
   const init = temporaryCaseInfo && temporaryCaseInfo.screen === 'add-referral' ? temporaryCaseInfo.info : {};
   const [initialForm] = React.useState(init); // grab initial values in first render only. This value should never change or will ruin the memoization below
   const methods = useForm();
@@ -54,10 +57,10 @@ const AddReferral: React.FC<Props> = ({
       updateTempInfo({ screen: 'add-referral', info: referral }, task.taskSid);
     };
 
-    const generatedForm = createFormFromDefinition(ReferralForm as FormDefinition)([])(initialForm)(updateCallBack);
+    const generatedForm = createFormFromDefinition(ReferralForm)([])(initialForm)(updateCallBack);
 
     return splitInHalf(disperseInputs(7)(generatedForm));
-  }, [initialForm, methods, task.taskSid, updateTempInfo]);
+  }, [ReferralForm, initialForm, methods, task.taskSid, updateTempInfo]);
 
   if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-referral') return null;
 
@@ -65,7 +68,7 @@ const AddReferral: React.FC<Props> = ({
     if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-referral') return;
 
     const { info, id } = connectedCase;
-    const referral = transformValues(ReferralForm as FormDefinition)(temporaryCaseInfo.info);
+    const referral = transformValues(ReferralForm)(temporaryCaseInfo.info);
     const referrals = info && info.referrals ? [...info.referrals, referral] : [referral];
     const newInfo = info ? { ...info, referrals } : { referrals };
     const updatedCase = await updateCase(id, { info: newInfo });
@@ -114,7 +117,7 @@ const AddReferral: React.FC<Props> = ({
 
 AddReferral.displayName = 'AddReferral';
 
-const mapStateToProps = (state, ownProps: OwnProps) => {
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const caseState = state[namespace][connectedCaseBase];
   const connectedCaseState = caseState.tasks[ownProps.task.taskSid];
   const { route } = state[namespace][routingBase].tasks[ownProps.task.taskSid];

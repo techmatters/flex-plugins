@@ -21,6 +21,7 @@ import {
 import { getConfig } from '../../HrmFormPlugin';
 import { saveToHrm, connectToCase, transformCategories } from '../../services/ContactService';
 import { cancelCase, updateCase, getActivities } from '../../services/CaseService';
+import { getFormsVersion } from '../../services/ServerlessService';
 import { isConnectedCaseActivity, getDateFromNotSavedContact, sortActivities } from './caseHelpers';
 import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseContainer, CenteredContainer } from '../../styles/case';
@@ -30,6 +31,7 @@ import { formatName } from '../../utils';
 import * as SearchActions from '../../states/search/actions';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
+import * as ConfigActions from '../../states/configuration/actions';
 import Timeline from './Timeline';
 import AddNote from './AddNote';
 import AddReferral from './AddReferral';
@@ -88,7 +90,6 @@ const Case: React.FC<Props> = props => {
   const [timeline, setTimeline] = useState([]);
   const { route, subroute } = props.routing;
 
-  // ToDO: move out this function to a high-order component.
   useEffect(() => {
     /**
      * Gets the activities timeline from current caseId
@@ -134,6 +135,23 @@ const Case: React.FC<Props> = props => {
     props.connectedCaseReferrals,
     setLoading,
   ]);
+
+  const version = props.connectedCaseState?.connectedCase.info.definitionVersion;
+  const { updateFormsVersion, formsVersions } = props;
+
+  /**
+   * Check if the definitionVersion for this case exists in redux, and look for it if not.
+   */
+  useEffect(() => {
+    const fetchFormsVersions = async (v: string) => {
+      const formsVersion = await getFormsVersion(version);
+      updateFormsVersion(version, formsVersion);
+    };
+
+    if (version && !formsVersions[version]) {
+      fetchFormsVersions(version);
+    }
+  }, [formsVersions, updateFormsVersion, version]);
 
   const toggleCaseMenu = e => {
     e.persist();
@@ -304,7 +322,9 @@ const Case: React.FC<Props> = props => {
   const incidents = info && info.incidents ? info.incidents : [];
   const childIsAtRisk = info && info.childIsAtRisk;
 
-  const addScreenProps = { task: props.task, counselor: currentCounselor, onClickClose: handleClose };
+  const formsVersion = props.formsVersions[version];
+
+  const addScreenProps = { task: props.task, counselor: currentCounselor, onClickClose: handleClose, formsVersion };
 
   switch (subroute) {
     case 'add-note':
@@ -330,7 +350,7 @@ const Case: React.FC<Props> = props => {
     case 'view-referral':
       return <ViewReferral {...addScreenProps} />;
     default:
-      return loading ? (
+      return loading || !formsVersion ? (
         <CenteredContainer>
           <CircularProgress size={50} />
         </CenteredContainer>
@@ -379,6 +399,7 @@ const Case: React.FC<Props> = props => {
                 onClickAddIncident={onClickAddIncident}
                 onClickView={onClickViewIncident}
                 status={status}
+                formsVersion={formsVersion}
               />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
@@ -445,6 +466,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
     state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid]?.connectedCase?.info?.referrals,
   counselorsHash: state[namespace][configurationBase].counselors.hash,
   routing: state[namespace][routingBase].tasks[ownProps.task.taskSid],
+  formsVersions: state[namespace][configurationBase].formsVersions,
 });
 
 const mapDispatchToProps = {
@@ -455,6 +477,7 @@ const mapDispatchToProps = {
   updateCaseStatus: CaseActions.updateCaseStatus,
   markCaseAsUpdated: CaseActions.markCaseAsUpdated,
   updateCases: SearchActions.updateCases,
+  updateFormsVersion: ConfigActions.updateFormsVersion,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

@@ -1,9 +1,11 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
-import { IconButton } from '@material-ui/core';
+import { CircularProgress, IconButton } from '@material-ui/core';
 import { Link as LinkIcon } from '@material-ui/icons';
 import { Template } from '@twilio/flex-ui';
+import { connect } from 'react-redux';
 
 import { DetailsContainer, NameContainer, DetNameText } from '../styles/search';
 import Section from './Section';
@@ -14,18 +16,46 @@ import { contactType } from '../types';
 import { formatDuration, formatName, formatCategories, mapChannel, mapChannelForInsights } from '../utils';
 import { ContactDetailsSections } from './common/ContactDetails';
 import { unNestInformation } from '../services/ContactService';
-import type { FormDefinition } from './common/forms/types';
-import CallerInformationTab from '../formDefinitions/tabbedForms/CallerInformationTab.json';
-import CaseInformationTab from '../formDefinitions/tabbedForms/CaseInformationTab.json';
-import ChildInformationTab from '../formDefinitions/tabbedForms/ChildInformationTab.json';
+import { namespace, configurationBase, RootState } from '../states';
+import * as ConfigActions from '../states/configuration/actions';
+import { getFormsVersion } from '../services/ServerlessService';
 
-const Details = ({
+// TODO: complete this type
+type OwnProps = {
+  contact: any;
+  detailsExpanded: any;
+  showActionIcons?: any;
+  handleOpenConnectDialog?: any;
+  handleExpandDetailsSection: any;
+};
+// eslint-disable-next-line no-use-before-define
+type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+
+const Details: React.FC<Props> = ({
   contact,
   detailsExpanded,
   showActionIcons,
   handleOpenConnectDialog,
   handleExpandDetailsSection,
+  formsVersions,
+  updateFormsVersion,
 }) => {
+  const version = contact.details.definitionVersion;
+
+  /**
+   * Check if the definitionVersion for this case exists in redux, and look for it if not.
+   */
+  React.useEffect(() => {
+    const fetchFormsVersions = async (v: string) => {
+      const formsVersion = await getFormsVersion(version);
+      updateFormsVersion(version, formsVersion);
+    };
+
+    if (!formsVersions[version]) {
+      fetchFormsVersions(version);
+    }
+  }, [formsVersions, updateFormsVersion, version]);
+
   // Object destructuring on contact
   const { overview, details, counselor } = contact;
   const { dateTime, name: childName, customerNumber, callType, channel, conversationDuration, categories } = overview;
@@ -50,6 +80,15 @@ const Details = ({
     ISSUE_CATEGORIZATION,
     CONTACT_SUMMARY,
   } = ContactDetailsSections;
+
+  const formsVersion = formsVersions[version];
+
+  if (!formsVersion)
+    return (
+      <DetailsContainer>
+        <CircularProgress size={50} />
+      </DetailsContainer>
+    );
 
   return (
     <DetailsContainer data-testid="ContactDetails-Container">
@@ -94,7 +133,7 @@ const Details = ({
           handleExpandClick={() => handleExpandDetailsSection(CALLER_INFORMATION)}
           buttonDataTestid="ContactDetails-Section-CallerInformation"
         >
-          {(CallerInformationTab as FormDefinition).map(e => (
+          {formsVersion.tabbedForms.CallerInformationTab.map(e => (
             <SectionEntry
               key={`CallerInformation-${e.label}`}
               description={<Template code={e.label} />}
@@ -111,7 +150,7 @@ const Details = ({
           handleExpandClick={() => handleExpandDetailsSection(CHILD_INFORMATION)}
           buttonDataTestid="ContactDetails-Section-ChildInformation"
         >
-          {(ChildInformationTab as FormDefinition).map(e => (
+          {formsVersion.tabbedForms.ChildInformationTab.map(e => (
             <SectionEntry
               key={`ChildInformation-${e.label}`}
               description={<Template code={e.label} />}
@@ -150,7 +189,7 @@ const Details = ({
           expanded={detailsExpanded[CONTACT_SUMMARY]}
           handleExpandClick={() => handleExpandDetailsSection(CONTACT_SUMMARY)}
         >
-          {(CaseInformationTab as FormDefinition).map(e => (
+          {formsVersion.tabbedForms.CaseInformationTab.map(e => (
             <SectionEntry
               key={`CaseInformation-${e.label}`}
               description={<Template code={e.label} />}
@@ -178,4 +217,12 @@ Details.defaultProps = {
   showActionIcons: false,
 };
 
-export default Details;
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
+  formsVersions: state[namespace][configurationBase].formsVersions,
+});
+
+const mapDispatchToProps = {
+  updateFormsVersion: ConfigActions.updateFormsVersion,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Details);

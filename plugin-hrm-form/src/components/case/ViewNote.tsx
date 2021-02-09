@@ -3,24 +3,24 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { ITask, Template } from '@twilio/flex-ui';
 
-import type { FormDefinition } from '../common/forms/types';
+import type { FormsVersion } from '../common/forms/types';
 import { Box, Container, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
-import { namespace, connectedCaseBase, configurationBase, routingBase } from '../../states';
+import { namespace, connectedCaseBase, configurationBase, routingBase, RootState } from '../../states';
 import { CaseState } from '../../states/case/reducer';
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseLayout } from '../../styles/case';
 import ActionHeader from './ActionHeader';
 import SectionEntry from '../SectionEntry';
-import NoteForm from '../../formDefinitions/caseForms/NoteForm.json';
 import { StandaloneITask } from '../StandaloneSearch';
 import { formatName } from '../../utils';
 
 type OwnProps = {
   task: ITask | StandaloneITask;
+  formsVersion: FormsVersion;
   onClickClose: () => void;
 };
 
-const mapStateToProps = (state, ownProps: OwnProps) => {
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const caseState: CaseState = state[namespace][connectedCaseBase];
   const { temporaryCaseInfo } = caseState.tasks[ownProps.task.taskSid];
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
@@ -35,7 +35,7 @@ const mapDispatchToProps = {
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-const ViewNote: React.FC<Props> = ({ tempInfo, onClickClose, counselorsHash }) => {
+const ViewNote: React.FC<Props> = ({ tempInfo, onClickClose, counselorsHash, formsVersion }) => {
   if (!tempInfo || tempInfo.screen !== 'view-note') return null;
 
   const { counselor, date, note } = tempInfo.info;
@@ -48,7 +48,7 @@ const ViewNote: React.FC<Props> = ({ tempInfo, onClickClose, counselorsHash }) =
         <ActionHeader titleTemplate="Case-Note" onClickClose={onClickClose} counselor={counselorName} added={added} />
         <Box paddingTop="10px">
           <>
-            {(NoteForm as FormDefinition).map(e => (
+            {formsVersion.caseForms.NoteForm.map(e => (
               <SectionEntry
                 key={`entry-${e.label}`}
                 description={<Template code={e.label} />}
