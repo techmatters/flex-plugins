@@ -201,7 +201,11 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, currentD
                     initialValues={contactForm.childInformation}
                     display={subroute === 'childInformation'}
                   />
-                  <IssueCategorizationTab display={subroute === 'categories'} initialValue={contactForm.categories} />
+                  <IssueCategorizationTab
+                    display={subroute === 'categories'}
+                    initialValue={contactForm.categories}
+                    definition={currentDefinitionVersion.tabbedForms.IssueCategorizationTab}
+                  />
                   <TabbedFormTab
                     tabPath="caseInformation"
                     definition={currentDefinitionVersion.tabbedForms.CaseInformationTab}
