@@ -18,6 +18,8 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - name: Install the Twilio CLI and plugins
+      run: npm install twilio-cli -g && twilio plugins:install @twilio-labs/plugin-flex@beta
     - name: Create Temp Files
       run: |
         touch ./public/appConfig.js
@@ -31,7 +33,7 @@ jobs:
       run: npm run lint --if-present
       working-directory: ./plugin-hrm-form
     - name: Run Tests
-      run: npm test
+      run: TWILIO_ACCOUNT_SID=${{secrets.TL_STAGING_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{secrets.TL_STAGING_AUTH_TOKEN}} npm test
       working-directory: ./plugin-hrm-form
       env:
         CI: true
