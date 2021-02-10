@@ -12,6 +12,7 @@ import { configurationBase, connectedCaseBase, contactFormsBase, namespace } fro
 import AddPerpetrator from '../../../components/case/AddPerpetrator';
 import HrmTheme from '../../../styles/HrmTheme';
 import { updateCase } from '../../../services/CaseService';
+import mockV1 from '../../../formDefinitions/v1';
 
 jest.mock('../../../services/CaseService');
 
@@ -140,6 +141,7 @@ describe('Test AddPerpetrator', () => {
       counselor: 'Someone',
       onClickClose,
       task,
+      formsVersion: mockV1,
     };
 
     render(
@@ -173,6 +175,7 @@ describe('Test AddPerpetrator', () => {
       counselor: 'Someone',
       onClickClose,
       task,
+      formsVersion: mockV1,
     };
 
     const wrapper = mount(

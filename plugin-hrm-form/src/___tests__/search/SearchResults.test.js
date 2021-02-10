@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 
 import '../mockStyled';
+import '../mockGetConfig';
 
 import { SearchPages } from '../../states/search/types';
 import SearchResults from '../../components/search/SearchResults';

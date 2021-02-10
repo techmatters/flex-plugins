@@ -12,6 +12,7 @@ import SearchResults from '../../components/search/SearchResults';
 import ContactDetails from '../../components/search/ContactDetails';
 import { SearchPages } from '../../states/search/types';
 import { channelTypes } from '../../states/DomainConstants';
+import mockV1 from '../../formDefinitions/v1';
 
 const mockStore = configureMockStore([]);
 
@@ -27,6 +28,8 @@ function createState(taskId, { currentPage, searchFormValues, currentContact, se
           list: [],
           hash: {},
         },
+        formsVersions: { v1: mockV1 },
+        currentDefinitionVersion: mockV1,
       },
       routing: {
         tasks: {
@@ -93,6 +96,7 @@ test('<Search> should display <ContactDetails />', () => {
   const currentPage = SearchPages.details;
   const currentContact = {
     details: {
+      definitionVersion: 'v1',
       childInformation: {
         name: {
           firstName: 'Jill',

@@ -15,6 +15,7 @@ import CaseDetails from '../../../components/case/CaseDetails';
 import { namespace, configurationBase, contactFormsBase, connectedCaseBase, routingBase } from '../../../states';
 import { UPDATE_TEMP_INFO } from '../../../states/case/types';
 import { cancelCase, getActivities } from '../../../services/CaseService';
+import mockV1 from '../../../formDefinitions/v1';
 
 jest.mock('react', () => ({
   ...jest.requireActual('react'),
@@ -113,6 +114,8 @@ describe('useState mocked', () => {
           list: [],
           hash: { worker1: 'worker1 name' },
         },
+        formsVersions: { v1: mockV1 },
+        currentDefinitionVersion: mockV1,
       },
     });
     const store = mockStore(initialState);
@@ -135,6 +138,8 @@ describe('useState mocked', () => {
         list: [],
         hash: { worker1: 'worker1 name' },
       },
+      formsVersions: { v1: mockV1 },
+      currentDefinitionVersion: mockV1,
     },
     [contactFormsBase]: {
       tasks: {
@@ -160,7 +165,7 @@ describe('useState mocked', () => {
             createdAt: 1593469560208,
             twilioWorkerId: 'worker1',
             status: 'open',
-            info: null,
+            info: { definitionVersion: 'v1' },
             connectedContacts: [],
           },
           temporaryCaseInfo: '',
@@ -179,7 +184,7 @@ describe('useState mocked', () => {
             ...initialState[namespace][connectedCaseBase].tasks.task1,
             connectedCase: {
               ...initialState[namespace][connectedCaseBase].tasks.task1.connectedCase,
-              info,
+              info: { ...info, definitionVersion: 'v1' },
             },
           },
         },

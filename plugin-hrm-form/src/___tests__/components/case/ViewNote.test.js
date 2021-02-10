@@ -5,8 +5,10 @@ import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
 
+import '../../mockGetConfig';
 import { UnconnectedViewNote } from '../../../components/case/ViewNote';
 import HrmTheme from '../../../styles/HrmTheme';
+import mockV1 from '../../../formDefinitions/v1';
 
 expect.extend(toHaveNoViolations);
 
@@ -39,6 +41,7 @@ test('displays counselor, date and note', () => {
         tempInfo={tempInfo}
         onClickClose={jest.fn()}
         counselorsHash={counselorsHash}
+        formsVersion={mockV1}
       />
     </StorelessThemeProvider>,
   );
@@ -76,6 +79,7 @@ test('click on x button', () => {
         onClickClose={onClickClose}
         route={route}
         counselorsHash={counselorsHash}
+        formsVersion={mockV1}
       />
     </StorelessThemeProvider>,
   );
@@ -115,6 +119,7 @@ test('click on close button', () => {
         onClickClose={onClickClose}
         route={route}
         counselorsHash={counselorsHash}
+        formsVersion={mockV1}
       />
     </StorelessThemeProvider>,
   );
@@ -150,6 +155,7 @@ test('a11y', async () => {
         tempInfo={tempInfo}
         onClickClose={jest.fn()}
         counselorsHash={counselorsHash}
+        formsVersion={mockV1}
       />
     </StorelessThemeProvider>,
   );

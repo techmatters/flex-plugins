@@ -7,6 +7,7 @@ import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 
+import '../../mockGetConfig';
 import HrmTheme from '../../../styles/HrmTheme';
 import CaseList from '../../../components/caseList';
 import { namespace, configurationBase } from '../../../states';

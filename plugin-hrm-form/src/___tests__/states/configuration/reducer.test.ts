@@ -13,6 +13,8 @@ describe('test reducer', () => {
       workerInfo: {
         chatChannelCapacity: 0,
       },
+      currentDefinitionVersion: undefined,
+      formsVersions: {},
     };
 
     const result = reduce(state, {});

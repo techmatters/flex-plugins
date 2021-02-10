@@ -1,5 +1,7 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
+import { Provider } from 'react-redux';
+import configureMockStore from 'redux-mock-store';
 
 import '../mockStyled';
 import '../mockGetConfig';
@@ -7,9 +9,13 @@ import '../mockGetConfig';
 import ContactDetails from '../../components/search/ContactDetails';
 import Section from '../../components/Section';
 import callTypes, { channelTypes } from '../../states/DomainConstants';
+import mockV1 from '../../formDefinitions/v1';
+
+const mockStore = configureMockStore([]);
 
 const contactOfType = type => ({
   details: {
+    definitionVersion: 'v1',
     childInformation: {
       name: {
         firstName: 'Jill',
@@ -91,19 +97,31 @@ const detailsExpanded = {
   'General details': true,
 };
 
+const initialState = {
+  'plugin-hrm-form': {
+    configuration: {
+      formsVersions: { v1: mockV1 },
+      currentDefinitionVersion: mockV1,
+    },
+  },
+};
+
 test(`<ContactDetails> with contact of type ${callTypes.child}`, () => {
   const contact = contactOfType(callTypes.child);
+  const store = mockStore(initialState);
 
   const component = renderer.create(
-    <ContactDetails
-      contact={contact}
-      currentIsCaller={false}
-      handleBack={handleBack}
-      handleMockedMessage={handleMockedMessage}
-      handleSelectSearchResult={handleSelectSearchResult}
-      detailsExpanded={detailsExpanded}
-      handleExpandDetailsSection={handleExpandDetailsSection}
-    />,
+    <Provider store={store}>
+      <ContactDetails
+        contact={contact}
+        currentIsCaller={false}
+        handleBack={handleBack}
+        handleMockedMessage={handleMockedMessage}
+        handleSelectSearchResult={handleSelectSearchResult}
+        detailsExpanded={detailsExpanded}
+        handleExpandDetailsSection={handleExpandDetailsSection}
+      />
+    </Provider>,
   ).root;
 
   const sections = component.findAllByType(Section);
@@ -113,17 +131,20 @@ test(`<ContactDetails> with contact of type ${callTypes.child}`, () => {
 
 test(`<ContactDetails> with contact of type ${callTypes.caller}`, () => {
   const contact = contactOfType(callTypes.caller);
+  const store = mockStore(initialState);
 
   const component = renderer.create(
-    <ContactDetails
-      contact={contact}
-      currentIsCaller={true}
-      handleBack={handleBack}
-      handleMockedMessage={handleMockedMessage}
-      handleSelectSearchResult={handleSelectSearchResult}
-      detailsExpanded={detailsExpanded}
-      handleExpandDetailsSection={handleExpandDetailsSection}
-    />,
+    <Provider store={store}>
+      <ContactDetails
+        contact={contact}
+        currentIsCaller={true}
+        handleBack={handleBack}
+        handleMockedMessage={handleMockedMessage}
+        handleSelectSearchResult={handleSelectSearchResult}
+        detailsExpanded={detailsExpanded}
+        handleExpandDetailsSection={handleExpandDetailsSection}
+      />
+    </Provider>,
   ).root;
   const sections = component.findAllByType(Section);
   const sectionsCount = sections.length;
@@ -132,17 +153,20 @@ test(`<ContactDetails> with contact of type ${callTypes.caller}`, () => {
 
 test(`<ContactDetails> with a non data (standalone) contact`, () => {
   const contact = contactOfType('anything else');
+  const store = mockStore(initialState);
 
   const component = renderer.create(
-    <ContactDetails
-      contact={contact}
-      currentIsCaller={false}
-      handleBack={handleBack}
-      handleMockedMessage={handleMockedMessage}
-      handleSelectSearchResult={handleSelectSearchResult}
-      detailsExpanded={detailsExpanded}
-      handleExpandDetailsSection={handleExpandDetailsSection}
-    />,
+    <Provider store={store}>
+      <ContactDetails
+        contact={contact}
+        currentIsCaller={false}
+        handleBack={handleBack}
+        handleMockedMessage={handleMockedMessage}
+        handleSelectSearchResult={handleSelectSearchResult}
+        detailsExpanded={detailsExpanded}
+        handleExpandDetailsSection={handleExpandDetailsSection}
+      />
+    </Provider>,
   ).root;
   const sections = component.findAllByType(Section);
   const sectionsCount = sections.length;

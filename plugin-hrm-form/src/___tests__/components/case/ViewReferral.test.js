@@ -5,8 +5,10 @@ import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
 
+import '../../mockGetConfig';
 import { UnconnectedViewReferral } from '../../../components/case/ViewReferral';
 import HrmTheme from '../../../styles/HrmTheme';
+import mockV1 from '../../../formDefinitions/v1';
 
 expect.extend(toHaveNoViolations);
 
@@ -48,6 +50,7 @@ describe('ViewReferral screen', () => {
           onClickClose={jest.fn()}
           route={route}
           counselorsHash={counselorsHash}
+          formsVersion={mockV1}
         />
       </StorelessThemeProvider>,
     );
@@ -69,6 +72,7 @@ describe('ViewReferral screen', () => {
           onClickClose={onClickClose}
           route={route}
           counselorsHash={counselorsHash}
+          formsVersion={mockV1}
         />
       </StorelessThemeProvider>,
     );
@@ -90,6 +94,7 @@ describe('ViewReferral screen', () => {
           onClickClose={onClickClose}
           route={route}
           counselorsHash={counselorsHash}
+          formsVersion={mockV1}
         />
       </StorelessThemeProvider>,
     );
@@ -108,6 +113,7 @@ describe('ViewReferral screen', () => {
           tempInfo={tempInfo}
           onClickClose={jest.fn()}
           counselorsHash={counselorsHash}
+          formsVersion={mockV1}
         />
       </StorelessThemeProvider>,
     );

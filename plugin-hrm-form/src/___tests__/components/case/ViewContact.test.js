@@ -4,6 +4,8 @@ import '@testing-library/jest-dom/extend-expect';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
+import { Provider } from 'react-redux';
+import configureMockStore from 'redux-mock-store';
 
 import '../../mockGetConfig';
 
@@ -11,10 +13,13 @@ import { UnconnectedViewContact } from '../../../components/case/ViewContact';
 import HrmTheme from '../../../styles/HrmTheme';
 import { ContactDetailsSections } from '../../../components/common/ContactDetails';
 import { adaptFormToContactDetails } from '../../../components/case/ContactDetailsAdapter';
+import mockV1 from '../../../formDefinitions/v1';
 
 expect.extend(toHaveNoViolations);
 
 jest.mock('../../../components/case/ContactDetailsAdapter', () => ({ adaptFormToContactDetails: jest.fn() }));
+
+const mockStore = configureMockStore([]);
 
 const themeConf = {
   colorTheme: HrmTheme,
@@ -30,6 +35,7 @@ const route = 'new-case';
 
 const contact = {
   details: {
+    definitionVersion: 'v1',
     childInformation: {
       name: {
         firstName: 'Jill',
@@ -127,21 +133,37 @@ const tempInfo = {
   },
 };
 
+const initialState = {
+  'plugin-hrm-form': {
+    configuration: {
+      counselors: {
+        list: [],
+        hash: {},
+      },
+      formsVersions: { v1: mockV1 },
+      currentDefinitionVersion: mockV1,
+    },
+  },
+};
+
 test('displays counselor, date and contact details', () => {
   adaptFormToContactDetails.mockReturnValueOnce(contact);
+  const store = mockStore(initialState);
 
   render(
-    <StorelessThemeProvider themeConf={themeConf}>
-      <UnconnectedViewContact
-        task={task}
-        form={{}}
-        counselorsHash={counselorsHash}
-        tempInfo={tempInfo}
-        updateTempInfo={jest.fn()}
-        onClickClose={jest.fn()}
-        route={route}
-      />
-    </StorelessThemeProvider>,
+    <Provider store={store}>
+      <StorelessThemeProvider themeConf={themeConf}>
+        <UnconnectedViewContact
+          task={task}
+          form={{}}
+          counselorsHash={counselorsHash}
+          tempInfo={tempInfo}
+          updateTempInfo={jest.fn()}
+          onClickClose={jest.fn()}
+          route={route}
+        />
+      </StorelessThemeProvider>
+    </Provider>,
   );
 
   expect(screen.getByTestId('Case-ActionHeaderCounselor')).toHaveTextContent('John Doe');
@@ -153,19 +175,22 @@ test('displays counselor, date and contact details', () => {
 test('click on x button', () => {
   const onClickClose = jest.fn();
   adaptFormToContactDetails.mockReturnValueOnce(contact);
+  const store = mockStore(initialState);
 
   render(
-    <StorelessThemeProvider themeConf={themeConf}>
-      <UnconnectedViewContact
-        task={task}
-        form={{}}
-        counselorsHash={counselorsHash}
-        tempInfo={tempInfo}
-        updateTempInfo={jest.fn()}
-        onClickClose={onClickClose}
-        route={route}
-      />
-    </StorelessThemeProvider>,
+    <Provider store={store}>
+      <StorelessThemeProvider themeConf={themeConf}>
+        <UnconnectedViewContact
+          task={task}
+          form={{}}
+          counselorsHash={counselorsHash}
+          tempInfo={tempInfo}
+          updateTempInfo={jest.fn()}
+          onClickClose={onClickClose}
+          route={route}
+        />
+      </StorelessThemeProvider>
+    </Provider>,
   );
 
   screen.getByTestId('Case-CloseCross').click();
@@ -176,19 +201,22 @@ test('click on x button', () => {
 test('click on close button', () => {
   const onClickClose = jest.fn();
   adaptFormToContactDetails.mockReturnValueOnce(contact);
+  const store = mockStore(initialState);
 
   render(
-    <StorelessThemeProvider themeConf={themeConf}>
-      <UnconnectedViewContact
-        task={task}
-        form={{}}
-        counselorsHash={counselorsHash}
-        tempInfo={tempInfo}
-        updateTempInfo={jest.fn()}
-        onClickClose={onClickClose}
-        route={route}
-      />
-    </StorelessThemeProvider>,
+    <Provider store={store}>
+      <StorelessThemeProvider themeConf={themeConf}>
+        <UnconnectedViewContact
+          task={task}
+          form={{}}
+          counselorsHash={counselorsHash}
+          tempInfo={tempInfo}
+          updateTempInfo={jest.fn()}
+          onClickClose={onClickClose}
+          route={route}
+        />
+      </StorelessThemeProvider>
+    </Provider>,
   );
 
   screen.getByTestId('Case-ViewContactScreen-CloseButton').click();
@@ -199,19 +227,22 @@ test('click on close button', () => {
 test('click on expand section', async () => {
   const updateTempInfo = jest.fn();
   adaptFormToContactDetails.mockReturnValueOnce(contact);
+  const store = mockStore(initialState);
 
   render(
-    <StorelessThemeProvider themeConf={themeConf}>
-      <UnconnectedViewContact
-        task={task}
-        form={{}}
-        counselorsHash={counselorsHash}
-        tempInfo={tempInfo}
-        updateTempInfo={updateTempInfo}
-        onClickClose={jest.fn()}
-        route={route}
-      />
-    </StorelessThemeProvider>,
+    <Provider store={store}>
+      <StorelessThemeProvider themeConf={themeConf}>
+        <UnconnectedViewContact
+          task={task}
+          form={{}}
+          counselorsHash={counselorsHash}
+          tempInfo={tempInfo}
+          updateTempInfo={updateTempInfo}
+          onClickClose={jest.fn()}
+          route={route}
+        />
+      </StorelessThemeProvider>
+    </Provider>,
   );
 
   const updatedTempInfo = {
@@ -234,19 +265,22 @@ test('click on expand section', async () => {
 
 test('a11y', async () => {
   adaptFormToContactDetails.mockReturnValueOnce(contact);
+  const store = mockStore(initialState);
 
   const wrapper = mount(
-    <StorelessThemeProvider themeConf={themeConf}>
-      <UnconnectedViewContact
-        task={task}
-        form={{}}
-        counselorsHash={counselorsHash}
-        tempInfo={tempInfo}
-        updateTempInfo={jest.fn()}
-        onClickClose={jest.fn()}
-        route={route}
-      />
-    </StorelessThemeProvider>,
+    <Provider store={store}>
+      <StorelessThemeProvider themeConf={themeConf}>
+        <UnconnectedViewContact
+          task={task}
+          form={{}}
+          counselorsHash={counselorsHash}
+          tempInfo={tempInfo}
+          updateTempInfo={jest.fn()}
+          onClickClose={jest.fn()}
+          route={route}
+        />
+      </StorelessThemeProvider>
+    </Provider>,
   );
 
   const rules = {

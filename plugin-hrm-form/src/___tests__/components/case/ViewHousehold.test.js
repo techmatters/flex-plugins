@@ -11,6 +11,7 @@ import '../../mockGetConfig';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../../states';
 import ViewHousehold from '../../../components/case/ViewHousehold';
 import HrmTheme from '../../../styles/HrmTheme';
+import mockV1 from '../../../formDefinitions/v1';
 
 expect.extend(toHaveNoViolations);
 const mockStore = configureMockStore([]);
@@ -85,6 +86,7 @@ describe('Test ViewHousehold', () => {
     const ownProps = {
       onClickClose,
       task,
+      formsVersion: mockV1,
     };
 
     render(
@@ -117,6 +119,7 @@ describe('Test ViewHousehold', () => {
     const ownProps = {
       onClickClose,
       task,
+      formsVersion: mockV1,
     };
 
     const wrapper = mount(

@@ -14,6 +14,7 @@ import { configurationBase, connectedCaseBase, contactFormsBase, namespace } fro
 import * as RoutingActions from '../../../states/routing/actions';
 import * as CaseActions from '../../../states/case/actions';
 import { updateCase } from '../../../services/CaseService';
+import mockV1 from '../../../formDefinitions/v1';
 
 jest.mock('../../../services/CaseService');
 
@@ -90,6 +91,7 @@ test('Test close functionality', async () => {
     task: {
       taskSid: 'task1',
     },
+    formsVersion: mockV1,
   };
 
   render(
@@ -126,6 +128,7 @@ test('a11y', async () => {
     task: {
       taskSid: 'task1',
     },
+    formsVersion: mockV1,
   };
 
   const wrapper = mount(

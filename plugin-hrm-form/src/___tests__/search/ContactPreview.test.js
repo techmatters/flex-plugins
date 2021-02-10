@@ -3,6 +3,7 @@ import renderer from 'react-test-renderer';
 import { format } from 'date-fns';
 
 import '../mockStyled';
+import '../mockGetConfig';
 
 import ContactPreview from '../../components/search/ContactPreview';
 import ChildNameAndDate from '../../components/search/ContactPreview/ChildNameAndDate';
