@@ -1,3 +1,5 @@
+/* eslint-disable complexity */
+/* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react';
 import { Template, ITask } from '@twilio/flex-ui';
@@ -79,7 +81,6 @@ const getNameFromForm = form => {
   return 'Unknown';
 };
 
-// eslint-disable-next-line complexity
 const Case: React.FC<Props> = props => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [isMenuOpen, setMenuOpen] = useState(false);
@@ -260,8 +261,7 @@ const Case: React.FC<Props> = props => {
       return firstConnectedContact.rawJson.caseInformation.categories;
     }
     if (form?.categories) {
-      const transformedCategories = transformCategories(form.categories);
-      return transformedCategories;
+      return transformCategories(form.categories);
     }
     return null;
   };

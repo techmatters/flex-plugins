@@ -136,6 +136,7 @@ const sendGoodbyeMessage = sendMessageOfKey('GoodbyeMsg');
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
  * @returns {import('@twilio/flex-ui').ActionFunction}
  */
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const afterAcceptTask = setupObject => async payload => {
   const manager = Manager.getInstance();
   const { featureFlags } = setupObject;

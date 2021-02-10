@@ -4,6 +4,7 @@ import { mapAge, mapGender } from './mappers';
 import * as RoutingActions from '../states/routing/actions';
 import { prepopulateFormCaller, prepopulateFormChild } from '../states/contacts/actions';
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const prepopulateForm = task => {
   // If this task came from the pre-survey
   if (task.attributes.memory) {

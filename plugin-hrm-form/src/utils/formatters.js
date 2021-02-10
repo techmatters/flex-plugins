@@ -13,6 +13,7 @@ export const formatName = name => (name && name.trim() !== '' ? name : 'Unknown'
  */
 export const formatAddress = (street, city, state, postalCode) => {
   const commaSeparated = [street, city, state].filter(s => s.trim()).join(', ');
+  // eslint-disable-next-line sonarjs/prefer-immediate-return
   const withPostalCode = [commaSeparated, postalCode].filter(s => s.trim()).join(' ');
   return withPostalCode;
 };

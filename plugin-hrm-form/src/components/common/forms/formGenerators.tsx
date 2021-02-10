@@ -85,6 +85,7 @@ const getRules = (field: FormItemDefinition): RegisterOptions =>
  * @param {() => void} updateCallback Callback called to update form state. When is the callback called is specified in the input type.
  * @param {FormItemDefinition} def Definition for a single input.
  */
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const getInputType = (parents: string[], updateCallback: () => void) => (def: FormItemDefinition) => (
   initialValue: any, // TODO: restrict this type
 ) => {

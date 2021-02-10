@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/prefer-immediate-return */
 import fetchHrmApi from './fetchHrmApi';
 import { getLimitAndOffsetParams } from './PaginationParams';
 
