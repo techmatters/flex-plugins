@@ -19,6 +19,7 @@ const getGenderOptions = (definition: FormDefinition) => {
   return [];
 };
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const prepopulateForm = (task: ITask) => {
   // If this task came from the pre-survey
   if (task.attributes.memory) {
