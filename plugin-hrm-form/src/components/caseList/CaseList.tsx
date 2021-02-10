@@ -16,7 +16,16 @@ import { StandaloneITask } from '../StandaloneSearch';
 
 export const CASES_PER_PAGE = 5;
 
-const initialState = {
+type State = {
+  loading: boolean;
+  showCaseDetails: boolean;
+  error: any;
+  caseList: CaseType[];
+  caseCount: number;
+  page: number;
+};
+
+const initialState: State = {
   loading: true,
   showCaseDetails: false,
   error: null,
@@ -36,11 +45,7 @@ type CaseListActions =
   | { type: 'showCaseDetails' }
   | { type: 'hideCaseDetails' };
 
-/**
- * @param {initialState} state
- * @param {{ type: string; payload?: Partial<initialState>}} action
- */
-function reducer(state, action: CaseListActions) {
+function reducer(state: State, action: CaseListActions) {
   switch (action.type) {
     case 'fetchStarted':
       return { ...state, loading: true };
