@@ -4,12 +4,12 @@ import { Manager, TaskHelper, Actions as FlexActions, StateHelper } from '@twili
 // eslint-disable-next-line no-unused-vars
 import { DEFAULT_TRANSFER_MODE, getConfig } from '../HrmFormPlugin';
 import { saveInsightsData } from '../services/InsightsService';
-import { transferChatStart, adjustChatCapacity } from '../services/ServerlessService';
+import { transferChatStart, adjustChatCapacity, sendSystemMessage } from '../services/ServerlessService';
 import { namespace, contactFormsBase, connectedCaseBase } from '../states';
 import * as Actions from '../states/contacts/actions';
 import { changeRoute } from '../states/routing/actions';
 import * as GeneralActions from '../states/actions';
-import callTypes, { channelTypes, transferModes } from '../states/DomainConstants';
+import callTypes, { transferModes } from '../states/DomainConstants';
 import * as TransferHelpers from './transfer';
 import { saveFormSharedState, loadFormSharedState } from './sharedState';
 import { prepopulateForm } from './prepopulateForm';
@@ -129,8 +129,19 @@ const sendMessageOfKey = messageKey => setupObject => async payload => {
   });
 };
 
+/**
+ * @param {string} messageKey
+ * @returns {(setupObject: ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }) => import('@twilio/flex-ui').ActionFunction}
+ */
+const sendSystemMessageOfKey = messageKey => setupObject => async payload => {
+  const { getMessage } = setupObject;
+  const taskLanguage = getTaskLanguage(setupObject)(payload);
+  const message = await getMessage(messageKey)(taskLanguage);
+  await sendSystemMessage({ taskSid: payload.task.taskSid, message, from: 'Bot' });
+};
+
 const sendWelcomeMessage = sendMessageOfKey('WelcomeMsg');
-const sendGoodbyeMessage = sendMessageOfKey('GoodbyeMsg');
+const sendGoodbyeMessage = sendSystemMessageOfKey('GoodbyeMsg');
 
 /**
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
@@ -227,19 +238,12 @@ export const afterCancelTransfer = payload => {
 export const hangupCall = fromActionFunction(saveEndMillis);
 
 /**
- * Helper to determine if the counselor should send a message before leaving the chat
- * @param {string} channel
- */
-const shouldSayGoodbye = channel =>
-  channel === channelTypes.facebook || channel === channelTypes.sms || channel === channelTypes.whatsapp;
-
-/**
  * Override for WrapupTask action. Sends a message before leaving (if it should) and saves the end time of the conversation
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
  */
 export const wrapupTask = setupObject =>
   fromActionFunction(async payload => {
-    if (shouldSayGoodbye(payload.task.channelType)) {
+    if (TaskHelper.isChatBasedTask(payload.task)) {
       await sendGoodbyeMessage(setupObject)(payload);
     }
     await saveEndMillis(payload);
