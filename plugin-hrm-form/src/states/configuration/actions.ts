@@ -14,12 +14,12 @@ export const chatCapacityUpdated = (capacity: number): t.ConfigurationActionType
   capacity,
 });
 
-export const populateCurrentDefinitionVersion = (definitions: FormsVersion) => ({
+export const populateCurrentDefinitionVersion = (definitions: FormsVersion): t.ConfigurationActionType => ({
   type: t.POPULATE_CURRENT_DEFINITION_VERSION,
   definitions,
 });
 
-export const updateFormsVersion = (version: string, definitions: FormsVersion) => ({
+export const updateFormsVersion = (version: string, definitions: FormsVersion): t.ConfigurationActionType => ({
   type: t.UPDATE_FORMS_VERSION,
   version,
   definitions,
