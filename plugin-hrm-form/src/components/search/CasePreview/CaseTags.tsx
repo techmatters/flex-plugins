@@ -13,13 +13,14 @@ type OwnProps = {
       [subcategory: string]: boolean;
     };
   };
+  definitionVersion: string;
 };
 
 type Props = OwnProps;
 
 // eslint-disable-next-line react/no-multi-comp
-const CaseTags: React.FC<Props> = ({ categories }) => {
-  const [category1, category2, category3] = getContactTags(retrieveCategories(categories));
+const CaseTags: React.FC<Props> = ({ categories, definitionVersion }) => {
+  const [category1, category2, category3] = getContactTags(definitionVersion, retrieveCategories(categories));
 
   return (
     <Flex justifyContent="space-between" height="23px" marginTop="10px">

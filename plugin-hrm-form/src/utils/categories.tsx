@@ -3,10 +3,11 @@ import React from 'react';
 import HrmTheme from '../styles/HrmTheme';
 import { ContactTag, TagText, TagMiddleDot } from '../styles/search';
 import { getFormsVersions } from '../HrmFormPlugin';
+import { ContactRawJson } from '../types/types';
 
 // TODO: support different versions here, as for example deleting a category will break this
-const getCategoryColor = (category: string) => {
-  const categories = getFormsVersions().currentDefinitionVersion.tabbedForms.IssueCategorizationTab;
+const getCategoryColor = (definitionVersion: ContactRawJson['definitionVersion'], category: string) => {
+  const categories = getFormsVersions().formsVersions[definitionVersion].tabbedForms.IssueCategorizationTab;
 
   return categories[category] ? categories[category].color : HrmTheme.colors.defaultCategoryColor;
 };
@@ -18,11 +19,14 @@ type ContactCategories = {
 const getCategoryLabel = (category, subcategory) =>
   subcategory === 'Unspecified/Other' ? `${subcategory} - ${category}` : subcategory;
 
-export const getContactTags = (contactCategories: ContactCategories) =>
+export const getContactTags = (
+  definitionVersion: ContactRawJson['definitionVersion'],
+  contactCategories: ContactCategories,
+) =>
   Object.entries(contactCategories).flatMap(([category, subcategories]) =>
     subcategories.map(subcategory => ({
       label: getCategoryLabel(category, subcategory),
-      color: getCategoryColor(category),
+      color: getCategoryColor(definitionVersion, category),
     })),
   );
 

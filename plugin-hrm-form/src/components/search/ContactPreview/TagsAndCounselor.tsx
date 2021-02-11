@@ -18,13 +18,14 @@ const renderTag = (tag, color) => (
 type OwnProps = {
   counselor: string;
   categories: { [category: string]: string[] };
+  definitionVersion: string;
 };
 
 type Props = OwnProps;
 
 // eslint-disable-next-line react/no-multi-comp
-const TagsAndCounselor: React.FC<Props> = ({ counselor, categories }) => {
-  const [category1, category2, category3] = getContactTags(categories);
+const TagsAndCounselor: React.FC<Props> = ({ counselor, categories, definitionVersion }) => {
+  const [category1, category2, category3] = getContactTags(definitionVersion, categories);
 
   return (
     <Flex justifyContent="space-between" height="23px" marginTop="10px">

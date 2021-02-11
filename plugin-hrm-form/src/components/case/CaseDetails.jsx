@@ -37,6 +37,7 @@ const CaseDetails = ({
   handleInfoChange,
   handleStatusChange,
   handleClickChildIsAtRisk,
+  definitionVersion,
 }) => {
   const lastUpdatedClosedDate = openedDate === lastUpdatedDate ? '—' : lastUpdatedDate;
 
@@ -129,7 +130,7 @@ const CaseDetails = ({
           </div>
         </div>
         <div style={{ paddingTop: '15px' }}>
-          <CaseTags categories={categories} />
+          <CaseTags definitionVersion={definitionVersion} categories={categories} />
         </div>
       </DetailsContainer>
     </>
@@ -151,6 +152,7 @@ CaseDetails.propTypes = {
   handleInfoChange: PropTypes.func.isRequired,
   handleStatusChange: PropTypes.func.isRequired,
   handleClickChildIsAtRisk: PropTypes.func.isRequired,
+  definitionVersion: PropTypes.string.isRequired,
 };
 
 CaseDetails.defaultProps = {

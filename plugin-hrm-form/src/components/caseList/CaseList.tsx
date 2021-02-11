@@ -49,6 +49,7 @@ function reducer(state: State, action: CaseListActions) {
   switch (action.type) {
     case 'fetchStarted':
       return { ...state, loading: true };
+    // TODO: after this succeeds, we should check if there is a case such that it's definitionVersion is not loaded in the state, then load it and dispatch it to global state, only then set loading to false
     case 'fetchSuccess': {
       const { page, caseList, caseCount } = action.payload;
       return { ...state, page, caseList, caseCount, loading: false };

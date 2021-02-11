@@ -28,7 +28,11 @@ const ContactPreview = ({ contact, handleOpenConnectDialog, handleViewDetails, s
           onClickFull={handleViewDetails}
         />
         <CallSummary callSummary={callSummary} onClickFull={handleViewDetails} />
-        <TagsAndCounselor counselor={counselor} categories={contact.overview.categories} />
+        <TagsAndCounselor
+          counselor={counselor}
+          categories={contact.overview.categories}
+          definitionVersion={contact.details.definitionVersion}
+        />
       </ContactWrapper>
     </Flex>
   );
