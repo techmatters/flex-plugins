@@ -2,6 +2,7 @@ import { reduce } from '../../../states/configuration/reducer';
 import * as types from '../../../states/configuration/types';
 import * as actions from '../../../states/configuration/actions';
 import { defaultLanguage } from '../../../utils/pluginHelpers';
+import mockV1 from '../../../formDefinitions/v1';
 
 describe('test reducer', () => {
   let state = undefined;
@@ -54,6 +55,24 @@ describe('test reducer', () => {
     const expected = { ...state, workerInfo: { chatChannelCapacity } };
 
     const result = reduce(state, actions.chatCapacityUpdated(chatChannelCapacity));
+    expect(result).toStrictEqual(expected);
+
+    state = result;
+  });
+
+  test('should handle POPULATE_CURRENT_DEFINITION_VERSION', async () => {
+    const expected = { ...state, currentDefinitionVersion: mockV1 };
+
+    const result = reduce(state, actions.populateCurrentDefinitionVersion(mockV1));
+    expect(result).toStrictEqual(expected);
+
+    state = result;
+  });
+
+  test('should handle UPDATE_FORMS_VERSION', async () => {
+    const expected = { ...state, formsVersions: { v1: mockV1 } };
+
+    const result = reduce(state, actions.updateFormsVersion('v1', mockV1));
     expect(result).toStrictEqual(expected);
 
     state = result;
