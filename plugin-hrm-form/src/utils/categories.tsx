@@ -5,7 +5,6 @@ import { ContactTag, TagText, TagMiddleDot } from '../styles/search';
 import { getFormsVersions } from '../HrmFormPlugin';
 import { ContactRawJson } from '../types/types';
 
-// TODO: support different versions here, as for example deleting a category will break this
 const getCategoryColor = (definitionVersion: ContactRawJson['definitionVersion'], category: string) => {
   const categories = getFormsVersions().formsVersions[definitionVersion].tabbedForms.IssueCategorizationTab;
 
