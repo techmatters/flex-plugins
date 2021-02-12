@@ -39,9 +39,9 @@ describe('test action creators', () => {
     });
   });
 
-  test('updateFormsVersion', async () => {
-    expect(actions.updateFormsVersion('v1', mockV1)).toStrictEqual({
-      type: types.UPDATE_FORMS_VERSION,
+  test('updateDefinitionVersion', async () => {
+    expect(actions.updateDefinitionVersion('v1', mockV1)).toStrictEqual({
+      type: types.UPDATE_DEFINITION_VERSION,
       version: 'v1',
       definitions: mockV1,
     });

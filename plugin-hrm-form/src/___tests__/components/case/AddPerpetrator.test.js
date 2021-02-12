@@ -141,7 +141,7 @@ describe('Test AddPerpetrator', () => {
       counselor: 'Someone',
       onClickClose,
       task,
-      formsVersion: mockV1,
+      definitionVersion: mockV1,
     };
 
     render(
@@ -175,7 +175,7 @@ describe('Test AddPerpetrator', () => {
       counselor: 'Someone',
       onClickClose,
       task,
-      formsVersion: mockV1,
+      definitionVersion: mockV1,
     };
 
     const wrapper = mount(

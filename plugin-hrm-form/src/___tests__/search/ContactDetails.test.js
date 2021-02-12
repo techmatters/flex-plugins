@@ -100,7 +100,7 @@ const detailsExpanded = {
 const initialState = {
   'plugin-hrm-form': {
     configuration: {
-      formsVersions: { v1: mockV1 },
+      definitionVersions: { v1: mockV1 },
       currentDefinitionVersion: mockV1,
     },
   },

@@ -41,7 +41,7 @@ test('displays counselor, date and note', () => {
         tempInfo={tempInfo}
         onClickClose={jest.fn()}
         counselorsHash={counselorsHash}
-        formsVersion={mockV1}
+        definitionVersion={mockV1}
       />
     </StorelessThemeProvider>,
   );
@@ -79,7 +79,7 @@ test('click on x button', () => {
         onClickClose={onClickClose}
         route={route}
         counselorsHash={counselorsHash}
-        formsVersion={mockV1}
+        definitionVersion={mockV1}
       />
     </StorelessThemeProvider>,
   );
@@ -119,7 +119,7 @@ test('click on close button', () => {
         onClickClose={onClickClose}
         route={route}
         counselorsHash={counselorsHash}
-        formsVersion={mockV1}
+        definitionVersion={mockV1}
       />
     </StorelessThemeProvider>,
   );
@@ -155,7 +155,7 @@ test('a11y', async () => {
         tempInfo={tempInfo}
         onClickClose={jest.fn()}
         counselorsHash={counselorsHash}
-        formsVersion={mockV1}
+        definitionVersion={mockV1}
       />
     </StorelessThemeProvider>,
   );

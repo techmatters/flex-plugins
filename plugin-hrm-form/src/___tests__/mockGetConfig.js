@@ -25,7 +25,8 @@ jest.mock('../HrmFormPlugin', () => ({
       },
     };
   },
-  getFormsVersions: jest.fn(() => ({
+  getDefinitionVersions: jest.fn(() => ({
     currentDefinitionVersion: mockV1,
+    definitionVersions: { v1: mockV1 },
   })),
 }));

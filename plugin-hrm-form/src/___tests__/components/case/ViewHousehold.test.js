@@ -86,7 +86,7 @@ describe('Test ViewHousehold', () => {
     const ownProps = {
       onClickClose,
       task,
-      formsVersion: mockV1,
+      definitionVersion: mockV1,
     };
 
     render(
@@ -119,7 +119,7 @@ describe('Test ViewHousehold', () => {
     const ownProps = {
       onClickClose,
       task,
-      formsVersion: mockV1,
+      definitionVersion: mockV1,
     };
 
     const wrapper = mount(

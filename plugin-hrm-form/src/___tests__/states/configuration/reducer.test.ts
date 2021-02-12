@@ -15,7 +15,7 @@ describe('test reducer', () => {
         chatChannelCapacity: 0,
       },
       currentDefinitionVersion: undefined,
-      formsVersions: {},
+      definitionVersions: {},
     };
 
     const result = reduce(state, {});
@@ -69,10 +69,10 @@ describe('test reducer', () => {
     state = result;
   });
 
-  test('should handle UPDATE_FORMS_VERSION', async () => {
-    const expected = { ...state, formsVersions: { v1: mockV1 } };
+  test('should handle UPDATE_DEFINITION_VERSION', async () => {
+    const expected = { ...state, definitionVersions: { v1: mockV1 } };
 
-    const result = reduce(state, actions.updateFormsVersion('v1', mockV1));
+    const result = reduce(state, actions.updateDefinitionVersion('v1', mockV1));
     expect(result).toStrictEqual(expected);
 
     state = result;

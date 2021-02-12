@@ -28,6 +28,7 @@ test('<ContactPreview> should mount', () => {
       categories: { category1: ['Tag1', 'Tag2'] },
     },
     details: {
+      definitionVersion: 'v1',
       childInformation: {
         name: {
           firstName: 'Name',

@@ -114,7 +114,7 @@ describe('useState mocked', () => {
           list: [],
           hash: { worker1: 'worker1 name' },
         },
-        formsVersions: { v1: mockV1 },
+        definitionVersions: { v1: mockV1 },
         currentDefinitionVersion: mockV1,
       },
     });
@@ -138,7 +138,7 @@ describe('useState mocked', () => {
         list: [],
         hash: { worker1: 'worker1 name' },
       },
-      formsVersions: { v1: mockV1 },
+      definitionVersions: { v1: mockV1 },
       currentDefinitionVersion: mockV1,
     },
     [contactFormsBase]: {

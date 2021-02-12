@@ -91,7 +91,7 @@ test('Test close functionality', async () => {
     task: {
       taskSid: 'task1',
     },
-    formsVersion: mockV1,
+    definitionVersion: mockV1,
   };
 
   render(
@@ -128,7 +128,7 @@ test('a11y', async () => {
     task: {
       taskSid: 'task1',
     },
-    formsVersion: mockV1,
+    definitionVersion: mockV1,
   };
 
   const wrapper = mount(

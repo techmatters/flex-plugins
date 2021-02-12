@@ -50,7 +50,7 @@ describe('ViewReferral screen', () => {
           onClickClose={jest.fn()}
           route={route}
           counselorsHash={counselorsHash}
-          formsVersion={mockV1}
+          definitionVersion={mockV1}
         />
       </StorelessThemeProvider>,
     );
@@ -72,7 +72,7 @@ describe('ViewReferral screen', () => {
           onClickClose={onClickClose}
           route={route}
           counselorsHash={counselorsHash}
-          formsVersion={mockV1}
+          definitionVersion={mockV1}
         />
       </StorelessThemeProvider>,
     );
@@ -94,7 +94,7 @@ describe('ViewReferral screen', () => {
           onClickClose={onClickClose}
           route={route}
           counselorsHash={counselorsHash}
-          formsVersion={mockV1}
+          definitionVersion={mockV1}
         />
       </StorelessThemeProvider>,
     );
@@ -113,7 +113,7 @@ describe('ViewReferral screen', () => {
           tempInfo={tempInfo}
           onClickClose={jest.fn()}
           counselorsHash={counselorsHash}
-          formsVersion={mockV1}
+          definitionVersion={mockV1}
         />
       </StorelessThemeProvider>,
     );

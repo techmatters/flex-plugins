@@ -140,7 +140,7 @@ const initialState = {
         list: [],
         hash: {},
       },
-      formsVersions: { v1: mockV1 },
+      definitionVersions: { v1: mockV1 },
       currentDefinitionVersion: mockV1,
     },
   },

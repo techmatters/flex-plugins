@@ -28,7 +28,7 @@ function createState(taskId, { currentPage, searchFormValues, currentContact, se
           list: [],
           hash: {},
         },
-        formsVersions: { v1: mockV1 },
+        definitionVersions: { v1: mockV1 },
         currentDefinitionVersion: mockV1,
       },
       routing: {
