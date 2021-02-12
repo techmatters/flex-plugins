@@ -107,3 +107,11 @@ export const sendSystemMessage = async (body: { taskSid: ITask['taskSid']; messa
  * Later on this will be fetched in async way.
  */
 export const getDefinitionVersion = async (version: string) => definitionVersions[version];
+
+export const getMissingDefinitionVersions = async (missingDefinitionVersions: string[]) =>
+  Promise.all(
+    missingDefinitionVersions.map(async version => {
+      const definition = await getDefinitionVersion(version);
+      return { version, definition };
+    }),
+  );

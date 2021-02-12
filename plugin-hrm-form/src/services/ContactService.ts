@@ -15,7 +15,7 @@ import type {
   FormDefinition,
   FormItemDefinition,
 } from '../components/common/forms/types';
-import type { InformationObject, ContactRawJson } from '../types/types';
+import type { InformationObject, ContactRawJson, SearchContactResult } from '../types/types';
 
 /**
  * Un-nests the information (caller/child) as it comes from DB, to match the form structure
@@ -36,7 +36,7 @@ const unNestInformationObject = (
 ): TaskEntry['childInformation'] | TaskEntry['callerInformation'] =>
   def.reduce((acc, e) => ({ ...acc, [e.name]: unNestInformation(e, obj) }), {});
 
-export async function searchContacts(searchParams, limit, offset) {
+export async function searchContacts(searchParams, limit, offset): Promise<SearchContactResult> {
   const queryParams = getLimitAndOffsetParams(limit, offset);
 
   const options = {

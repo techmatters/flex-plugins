@@ -42,6 +42,9 @@ export async function getActivities(caseId) {
   return fetchHrmApi(`/cases/${caseId}/activities/`);
 }
 
+/**
+ * @returns {Promise<import('../types/types').SearchCaseResult>}
+ */
 export async function searchCases(searchParams, limit, offset) {
   const queryParams = getLimitAndOffsetParams(limit, offset);
 
