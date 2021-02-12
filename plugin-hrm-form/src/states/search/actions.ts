@@ -3,7 +3,6 @@ import { Dispatch } from 'redux';
 
 import * as t from './types';
 import { ConfigurationState } from '../configuration/reducer';
-import { updateDefinitionVersion } from '../configuration/actions';
 import { Case, SearchContact } from '../../types/types';
 import { searchContacts as searchContactsApiCall } from '../../services/ContactService';
 import { searchCases as searchCasesApiCall } from '../../services/CaseService';
@@ -11,6 +10,7 @@ import { ContactDetailsSectionsType } from '../../components/common/ContactDetai
 import { addDetails } from './helpers';
 import { getDefinitionVersions } from '../../HrmFormPlugin';
 import { getMissingDefinitionVersions } from '../../services/ServerlessService';
+import { updateDefinitionVersion } from '../configuration/actions';
 
 // Action creators
 export const handleSearchFormChange = (taskId: string) => <K extends keyof t.SearchFormValues>(
