@@ -39,7 +39,7 @@ export const getConfig = () => {
   const { configuredLanguage } = manager.serviceConfiguration.attributes;
   const featureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
   const { strings } = manager;
-  const definitionVersion = 'v1'; // will be moved to service configuration later on
+  const definitionVersion = 'za-v1'; // will be moved to service configuration later on
 
   return {
     hrmBaseUrl,
