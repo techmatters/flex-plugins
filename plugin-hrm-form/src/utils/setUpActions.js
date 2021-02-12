@@ -8,11 +8,11 @@ import {
   transferChatStart,
   adjustChatCapacity,
   sendSystemMessage,
-  getFormsVersion,
+  getDefinitionVersion,
 } from '../services/ServerlessService';
 import { namespace, contactFormsBase, connectedCaseBase, configurationBase } from '../states';
 import * as Actions from '../states/contacts/actions';
-import { populateCurrentDefinitionVersion, updateFormsVersion } from '../states/configuration/actions';
+import { populateCurrentDefinitionVersion, updateDefinitionVersion } from '../states/configuration/actions';
 import { changeRoute } from '../states/routing/actions';
 import * as GeneralActions from '../states/actions';
 import callTypes, { transferModes } from '../states/DomainConstants';
@@ -24,13 +24,13 @@ import { prepopulateForm } from './prepopulateForm';
  *
  * @param {string} version
  */
-export const loadCurrentFormsVersion = async () => {
+export const loadCurrentDefinitionVersion = async () => {
   const { definitionVersion } = getConfig();
-  const definitions = await getFormsVersion(definitionVersion);
+  const definitions = await getDefinitionVersion(definitionVersion);
   // populate current version
   Manager.getInstance().store.dispatch(populateCurrentDefinitionVersion(definitions));
   // already populate this to be consumed for data display components
-  Manager.getInstance().store.dispatch(updateFormsVersion(definitionVersion, definitions));
+  Manager.getInstance().store.dispatch(updateDefinitionVersion(definitionVersion, definitions));
 };
 
 /**

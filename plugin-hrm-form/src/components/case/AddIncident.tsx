@@ -21,14 +21,14 @@ import * as CaseActions from '../../states/case/actions';
 import { getConfig } from '../../HrmFormPlugin';
 import { updateCase } from '../../services/CaseService';
 import { createFormFromDefinition, disperseInputs, splitInHalf, splitAt } from '../common/forms/formGenerators';
-import type { FormsVersion } from '../common/forms/types';
+import type { DefinitionVersion } from '../common/forms/types';
 import { transformValues } from '../../services/ContactService';
 import { StandaloneITask } from '../StandaloneSearch';
 
 type OwnProps = {
   task: ITask | StandaloneITask;
   counselor: string;
-  formsVersion: FormsVersion;
+  definitionVersion: DefinitionVersion;
   onClickClose: () => void;
 };
 
@@ -40,13 +40,13 @@ const AddIncident: React.FC<Props> = ({
   counselor,
   onClickClose,
   connectedCaseState,
-  formsVersion,
+  definitionVersion,
   setConnectedCase,
   updateTempInfo,
 }) => {
   const { temporaryCaseInfo } = connectedCaseState;
-  const { IncidentForm } = formsVersion.caseForms;
-  const { layoutVersion } = formsVersion;
+  const { IncidentForm } = definitionVersion.caseForms;
+  const { layoutVersion } = definitionVersion;
 
   const init = temporaryCaseInfo && temporaryCaseInfo.screen === 'add-incident' ? temporaryCaseInfo.info : {};
   const [initialForm] = React.useState(init); // grab initial values in first render only. This value should never change or will ruin the memoization below

@@ -8,9 +8,9 @@ import CallerInformationTab from './tabbedForms/CallerInformationTab.json';
 import CaseInformationTab from './tabbedForms/CaseInformationTab.json';
 import ChildInformationTab from './tabbedForms/ChildInformationTab.json';
 import IssueCategorizationTab from './tabbedForms/IssueCategorizationTab.json';
-import type { FormsVersion, LayoutVersion, FormDefinition } from '../../components/common/forms/types';
+import type { DefinitionVersion, LayoutVersion, FormDefinition } from '../../components/common/forms/types';
 
-const version: FormsVersion = {
+const version: DefinitionVersion = {
   caseForms: {
     HouseholdForm: HouseholdForm as FormDefinition,
     IncidentForm: IncidentForm as FormDefinition,

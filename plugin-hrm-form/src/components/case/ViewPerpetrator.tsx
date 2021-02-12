@@ -9,7 +9,7 @@ import { namespace, connectedCaseBase, configurationBase, RootState } from '../.
 import { CaseState } from '../../states/case/reducer';
 import SectionEntry from '../SectionEntry';
 import ActionHeader from './ActionHeader';
-import type { FormsVersion } from '../common/forms/types';
+import type { DefinitionVersion } from '../common/forms/types';
 import { StandaloneITask } from '../StandaloneSearch';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
@@ -22,13 +22,13 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
 
 type OwnProps = {
   task: ITask | StandaloneITask;
-  formsVersion: FormsVersion;
+  definitionVersion: DefinitionVersion;
   onClickClose: () => void;
 };
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 
-const ViewPerpetrator: React.FC<Props> = ({ counselorsHash, temporaryCaseInfo, onClickClose, formsVersion }) => {
+const ViewPerpetrator: React.FC<Props> = ({ counselorsHash, temporaryCaseInfo, onClickClose, definitionVersion }) => {
   if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'view-perpetrator') return null;
 
   const counselorName = counselorsHash[temporaryCaseInfo.info.twilioWorkerId] || 'Unknown';
@@ -47,7 +47,7 @@ const ViewPerpetrator: React.FC<Props> = ({ counselorsHash, temporaryCaseInfo, o
         />
         <Box paddingTop="10px">
           <>
-            {formsVersion.caseForms.PerpetratorForm.map(e => (
+            {definitionVersion.caseForms.PerpetratorForm.map(e => (
               <SectionEntry
                 key={`entry-${e.label}`}
                 description={<Template code={e.label} />}

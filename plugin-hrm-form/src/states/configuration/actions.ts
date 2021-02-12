@@ -1,5 +1,5 @@
 import * as t from './types';
-import type { FormsVersion } from '../../components/common/forms/types';
+import type { DefinitionVersion } from '../../components/common/forms/types';
 
 // Action creators
 export const changeLanguage = (language: string): t.ConfigurationActionType => ({ type: t.CHANGE_LANGUAGE, language });
@@ -14,13 +14,16 @@ export const chatCapacityUpdated = (capacity: number): t.ConfigurationActionType
   capacity,
 });
 
-export const populateCurrentDefinitionVersion = (definitions: FormsVersion): t.ConfigurationActionType => ({
+export const populateCurrentDefinitionVersion = (definitions: DefinitionVersion): t.ConfigurationActionType => ({
   type: t.POPULATE_CURRENT_DEFINITION_VERSION,
   definitions,
 });
 
-export const updateFormsVersion = (version: string, definitions: FormsVersion): t.ConfigurationActionType => ({
-  type: t.UPDATE_FORMS_VERSION,
+export const updateDefinitionVersion = (
+  version: string,
+  definitions: DefinitionVersion,
+): t.ConfigurationActionType => ({
+  type: t.UPDATE_DEFINITION_VERSION,
   version,
   definitions,
 });

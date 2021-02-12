@@ -21,7 +21,7 @@ import {
 import { getConfig } from '../../HrmFormPlugin';
 import { saveToHrm, connectToCase, transformCategories } from '../../services/ContactService';
 import { cancelCase, updateCase, getActivities } from '../../services/CaseService';
-import { getFormsVersion } from '../../services/ServerlessService';
+import { getDefinitionVersion } from '../../services/ServerlessService';
 import { isConnectedCaseActivity, getDateFromNotSavedContact, sortActivities } from './caseHelpers';
 import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseContainer, CenteredContainer } from '../../styles/case';
@@ -137,21 +137,21 @@ const Case: React.FC<Props> = props => {
   ]);
 
   const version = props.connectedCaseState?.connectedCase.info.definitionVersion;
-  const { updateFormsVersion, formsVersions } = props;
+  const { updateDefinitionVersion, definitionVersions } = props;
 
   /**
    * Check if the definitionVersion for this case exists in redux, and look for it if not.
    */
   useEffect(() => {
-    const fetchFormsVersions = async (v: string) => {
-      const formsVersion = await getFormsVersion(version);
-      updateFormsVersion(version, formsVersion);
+    const fetchDefinitionVersions = async (v: string) => {
+      const definitionVersion = await getDefinitionVersion(version);
+      updateDefinitionVersion(version, definitionVersion);
     };
 
-    if (version && !formsVersions[version]) {
-      fetchFormsVersions(version);
+    if (version && !definitionVersions[version]) {
+      fetchDefinitionVersions(version);
     }
-  }, [formsVersions, updateFormsVersion, version]);
+  }, [definitionVersions, updateDefinitionVersion, version]);
 
   const toggleCaseMenu = e => {
     e.persist();
@@ -322,9 +322,14 @@ const Case: React.FC<Props> = props => {
   const incidents = info && info.incidents ? info.incidents : [];
   const childIsAtRisk = info && info.childIsAtRisk;
 
-  const formsVersion = props.formsVersions[version];
+  const definitionVersion = props.definitionVersions[version];
 
-  const addScreenProps = { task: props.task, counselor: currentCounselor, onClickClose: handleClose, formsVersion };
+  const addScreenProps = {
+    task: props.task,
+    counselor: currentCounselor,
+    onClickClose: handleClose,
+    definitionVersion,
+  };
 
   switch (subroute) {
     case 'add-note':
@@ -350,7 +355,7 @@ const Case: React.FC<Props> = props => {
     case 'view-referral':
       return <ViewReferral {...addScreenProps} />;
     default:
-      return loading || !formsVersion ? (
+      return loading || !definitionVersion ? (
         <CenteredContainer>
           <CircularProgress size={50} />
         </CenteredContainer>
@@ -400,7 +405,7 @@ const Case: React.FC<Props> = props => {
                 onClickAddIncident={onClickAddIncident}
                 onClickView={onClickViewIncident}
                 status={status}
-                formsVersion={formsVersion}
+                definitionVersion={definitionVersion}
               />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
@@ -467,7 +472,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
     state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid]?.connectedCase?.info?.referrals,
   counselorsHash: state[namespace][configurationBase].counselors.hash,
   routing: state[namespace][routingBase].tasks[ownProps.task.taskSid],
-  formsVersions: state[namespace][configurationBase].formsVersions,
+  definitionVersions: state[namespace][configurationBase].definitionVersions,
 });
 
 const mapDispatchToProps = {
@@ -478,7 +483,7 @@ const mapDispatchToProps = {
   updateCaseStatus: CaseActions.updateCaseStatus,
   markCaseAsUpdated: CaseActions.markCaseAsUpdated,
   updateCases: SearchActions.updateCases,
-  updateFormsVersion: ConfigActions.updateFormsVersion,
+  updateDefinitionVersion: ConfigActions.updateDefinitionVersion,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

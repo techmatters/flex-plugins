@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { ITask, Template } from '@twilio/flex-ui';
 
-import type { FormsVersion } from '../common/forms/types';
+import type { DefinitionVersion } from '../common/forms/types';
 import { Box, Container, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import { namespace, connectedCaseBase, configurationBase, routingBase, RootState } from '../../states';
 import { CaseState } from '../../states/case/reducer';
@@ -16,7 +16,7 @@ import { formatName } from '../../utils';
 
 type OwnProps = {
   task: ITask | StandaloneITask;
-  formsVersion: FormsVersion;
+  definitionVersion: DefinitionVersion;
   onClickClose: () => void;
 };
 
@@ -35,7 +35,7 @@ const mapDispatchToProps = {
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-const ViewNote: React.FC<Props> = ({ tempInfo, onClickClose, counselorsHash, formsVersion }) => {
+const ViewNote: React.FC<Props> = ({ tempInfo, onClickClose, counselorsHash, definitionVersion }) => {
   if (!tempInfo || tempInfo.screen !== 'view-note') return null;
 
   const { counselor, date, note } = tempInfo.info;
@@ -48,7 +48,7 @@ const ViewNote: React.FC<Props> = ({ tempInfo, onClickClose, counselorsHash, for
         <ActionHeader titleTemplate="Case-Note" onClickClose={onClickClose} counselor={counselorName} added={added} />
         <Box paddingTop="10px">
           <>
-            {formsVersion.caseForms.NoteForm.map(e => (
+            {definitionVersion.caseForms.NoteForm.map(e => (
               <SectionEntry
                 key={`entry-${e.label}`}
                 description={<Template code={e.label} />}

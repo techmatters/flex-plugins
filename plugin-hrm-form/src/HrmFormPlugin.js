@@ -63,14 +63,14 @@ export const getConfig = () => {
 
 /**
  * Helper to expose the forms definitions without the need of calling Manager
- * @returns {{currentDefinitionVersion: import('./states/configuration/reducer').ConfigurationState['currentDefinitionVersion'], formsVersions: import('./states/configuration/reducer').ConfigurationState['formsVersions']}}
+ * @returns {{currentDefinitionVersion: import('./states/configuration/reducer').ConfigurationState['currentDefinitionVersion'], definitionVersions: import('./states/configuration/reducer').ConfigurationState['definitionVersions']}}
  */
-export const getFormsVersions = () => {
-  const { currentDefinitionVersion, formsVersions } = Flex.Manager.getInstance().store.getState()[namespace][
+export const getDefinitionVersions = () => {
+  const { currentDefinitionVersion, definitionVersions } = Flex.Manager.getInstance().store.getState()[namespace][
     configurationBase
   ];
 
-  return { currentDefinitionVersion, formsVersions };
+  return { currentDefinitionVersion, definitionVersions };
 };
 
 const setUpSharedStateClient = () => {
@@ -186,7 +186,7 @@ const setUpActions = setupObject => {
   const { featureFlags } = setupObject;
 
   // Is this the correct place for this call?
-  ActionFunctions.loadCurrentFormsVersion();
+  ActionFunctions.loadCurrentDefinitionVersion();
 
   // bind setupObject to the functions that requires some initializaton
   const transferOverride = ActionFunctions.customTransferTask(setupObject);

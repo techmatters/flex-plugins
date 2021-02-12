@@ -8,7 +8,7 @@ import { getConversationDuration, fillEndMillis } from '../utils/conversationDur
 import { getLimitAndOffsetParams } from './PaginationParams';
 import fetchHrmApi from './fetchHrmApi';
 import { getDateTime } from '../utils/helpers';
-import { getConfig, getFormsVersions } from '../HrmFormPlugin';
+import { getConfig, getDefinitionVersions } from '../HrmFormPlugin';
 import type {
   CategoriesDefinition,
   CategoryEntry,
@@ -96,7 +96,7 @@ export const searchResultToContactForm = (def: FormDefinition, obj: InformationO
 };
 
 export function transformCategories(categories: TaskEntry['categories']) {
-  const { IssueCategorizationTab } = getFormsVersions().currentDefinitionVersion.tabbedForms;
+  const { IssueCategorizationTab } = getDefinitionVersions().currentDefinitionVersion.tabbedForms;
   const cleanCategories = createCategoriesObject(IssueCategorizationTab);
   const transformedCategories = categories.reduce((acc, path) => set(path, true, acc), {
     categories: cleanCategories, // use an object with categories property so we can reuse the entire path (they look like categories.Category.Subcategory)
@@ -115,7 +115,7 @@ export function transformForm(form: TaskEntry): ContactRawJson {
     CallerInformationTab,
     CaseInformationTab,
     ChildInformationTab,
-  } = getFormsVersions().currentDefinitionVersion.tabbedForms;
+  } = getDefinitionVersions().currentDefinitionVersion.tabbedForms;
   // transform the form values before submit (e.g. "mixed" for 3-way checkbox becomes null)
   const transformedValues = {
     callerInformation: transformValues(CallerInformationTab)(form.callerInformation),
@@ -166,7 +166,7 @@ export async function saveToHrm(task, form, hrmBaseUrl, workerSid, helpline, sho
   const number = getNumberFromTask(task);
 
   let rawForm = form;
-  const { tabbedForms } = getFormsVersions().currentDefinitionVersion;
+  const { tabbedForms } = getDefinitionVersions().currentDefinitionVersion;
 
   if (isNonDataCallType(callType)) {
     rawForm = {

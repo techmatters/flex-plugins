@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { ITask, Template } from '@twilio/flex-ui';
 
-import type { FormsVersion } from '../common/forms/types';
+import type { DefinitionVersion } from '../common/forms/types';
 import { Container, Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import { namespace, connectedCaseBase, configurationBase, routingBase, RootState } from '../../states';
 import * as RoutingActions from '../../states/routing/actions';
@@ -15,7 +15,7 @@ import { formatName } from '../../utils';
 
 type OwnProps = {
   task: ITask | StandaloneITask;
-  formsVersion: FormsVersion;
+  definitionVersion: DefinitionVersion;
   onClickClose: () => void;
 };
 
@@ -34,7 +34,7 @@ const mapDispatchToProps = {
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-const ViewReferral: React.FC<Props> = ({ onClickClose, tempInfo, counselorsHash, formsVersion }) => {
+const ViewReferral: React.FC<Props> = ({ onClickClose, tempInfo, counselorsHash, definitionVersion }) => {
   if (!tempInfo || tempInfo.screen !== 'view-referral') return null;
 
   const { counselor, date, referral } = tempInfo.info;
@@ -52,7 +52,7 @@ const ViewReferral: React.FC<Props> = ({ onClickClose, tempInfo, counselorsHash,
         />
         <Box paddingTop="10px">
           <>
-            {formsVersion.caseForms.ReferralForm.map(e => (
+            {definitionVersion.caseForms.ReferralForm.map(e => (
               <SectionEntry
                 key={`entry-${e.label}`}
                 description={<Template code={e.label} />}

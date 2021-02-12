@@ -4,7 +4,7 @@ import { mapAge, mapGender } from './mappers';
 import * as RoutingActions from '../states/routing/actions';
 import { prepopulateFormCaller, prepopulateFormChild } from '../states/contacts/actions';
 import type { FormDefinition } from '../components/common/forms/types';
-import { getFormsVersions } from '../HrmFormPlugin';
+import { getDefinitionVersions } from '../HrmFormPlugin';
 
 /**
  * Given a form definition, grabs the "gender" named input and return the options values, or empty array.
@@ -19,7 +19,7 @@ const getGenderOptions = (definition: FormDefinition) => {
 };
 
 export const prepopulateForm = (task: ITask) => {
-  const { CallerInformationTab, ChildInformationTab } = getFormsVersions().currentDefinitionVersion.tabbedForms;
+  const { CallerInformationTab, ChildInformationTab } = getDefinitionVersions().currentDefinitionVersion.tabbedForms;
 
   // If this task came from the pre-survey
   if (task.attributes.memory) {

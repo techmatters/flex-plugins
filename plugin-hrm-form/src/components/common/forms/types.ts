@@ -134,7 +134,7 @@ export type LayoutVersion = {
 /**
  * Type that defines a complete version for all the customizable forms used across the app
  */
-export type FormsVersion = {
+export type DefinitionVersion = {
   caseForms: {
     HouseholdForm: FormDefinition;
     IncidentForm: FormDefinition;

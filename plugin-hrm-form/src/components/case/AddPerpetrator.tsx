@@ -30,13 +30,13 @@ import {
   splitInHalf,
   splitAt,
 } from '../common/forms/formGenerators';
-import type { FormsVersion } from '../common/forms/types';
+import type { DefinitionVersion } from '../common/forms/types';
 import { StandaloneITask } from '../StandaloneSearch';
 
 type OwnProps = {
   task: ITask | StandaloneITask;
   counselor: string;
-  formsVersion: FormsVersion;
+  definitionVersion: DefinitionVersion;
   onClickClose: () => void;
 };
 
@@ -49,14 +49,14 @@ const AddPerpetrator: React.FC<Props> = ({
   onClickClose,
   connectedCaseState,
   route,
-  formsVersion,
+  definitionVersion,
   setConnectedCase,
   updateTempInfo,
   changeRoute,
 }) => {
   const { temporaryCaseInfo } = connectedCaseState;
-  const { PerpetratorForm } = formsVersion.caseForms;
-  const { layoutVersion } = formsVersion;
+  const { PerpetratorForm } = definitionVersion.caseForms;
+  const { layoutVersion } = definitionVersion;
 
   const init = temporaryCaseInfo && temporaryCaseInfo.screen === 'add-perpetrator' ? temporaryCaseInfo.info : {};
   const [initialForm] = React.useState(init); // grab initial values in first render only. This value should never change or will ruin the memoization below

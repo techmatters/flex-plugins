@@ -7,17 +7,17 @@ import { Box, Row } from '../../styles/HrmStyles';
 import { CaseSectionFont, TimelineRow, PlaceHolderText } from '../../styles/case';
 import CaseAddButton from './CaseAddButton';
 import TimelineInformationRow from './TimelineInformationRow';
-import type { FormsVersion } from '../common/forms/types';
+import type { DefinitionVersion } from '../common/forms/types';
 
 type OwnProps = {
   onClickAddIncident: () => void;
   onClickView: (incident: IncidentEntry) => void;
   incidents: CaseInfo['incidents'];
   status: CaseStatus;
-  formsVersion: FormsVersion;
+  definitionVersion: DefinitionVersion;
 };
 
-const Incidents: React.FC<OwnProps> = ({ onClickAddIncident, onClickView, incidents, status, formsVersion }) => {
+const Incidents: React.FC<OwnProps> = ({ onClickAddIncident, onClickView, incidents, status, definitionVersion }) => {
   return (
     <>
       <Box marginBottom="10px">
@@ -33,9 +33,9 @@ const Incidents: React.FC<OwnProps> = ({ onClickAddIncident, onClickView, incide
           <TimelineInformationRow
             key={`incident-${index}`}
             onClickView={() => onClickView(i)}
-            definition={formsVersion.caseForms.IncidentForm}
+            definition={definitionVersion.caseForms.IncidentForm}
             values={i.incident}
-            layoutDefinition={formsVersion.layoutVersion.case.incidents}
+            layoutDefinition={definitionVersion.layoutVersion.case.incidents}
           />
         ))
       ) : (

@@ -2,11 +2,11 @@ import React from 'react';
 
 import HrmTheme from '../styles/HrmTheme';
 import { ContactTag, TagText, TagMiddleDot } from '../styles/search';
-import { getFormsVersions } from '../HrmFormPlugin';
+import { getDefinitionVersions } from '../HrmFormPlugin';
 import { ContactRawJson } from '../types/types';
 
 const getCategoryColor = (definitionVersion: ContactRawJson['definitionVersion'], category: string) => {
-  const categories = getFormsVersions().formsVersions[definitionVersion].tabbedForms.IssueCategorizationTab;
+  const categories = getDefinitionVersions().definitionVersions[definitionVersion].tabbedForms.IssueCategorizationTab;
 
   return categories[category] ? categories[category].color : HrmTheme.colors.defaultCategoryColor;
 };

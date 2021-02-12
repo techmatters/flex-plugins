@@ -18,7 +18,7 @@ import { ContactDetailsSections } from './common/ContactDetails';
 import { unNestInformation } from '../services/ContactService';
 import { namespace, configurationBase, RootState } from '../states';
 import * as ConfigActions from '../states/configuration/actions';
-import { getFormsVersion } from '../services/ServerlessService';
+import { getDefinitionVersion } from '../services/ServerlessService';
 
 // TODO: complete this type
 type OwnProps = {
@@ -37,8 +37,8 @@ const Details: React.FC<Props> = ({
   showActionIcons,
   handleOpenConnectDialog,
   handleExpandDetailsSection,
-  formsVersions,
-  updateFormsVersion,
+  definitionVersions,
+  updateDefinitionVersion,
 }) => {
   const version = contact.details.definitionVersion;
 
@@ -46,15 +46,15 @@ const Details: React.FC<Props> = ({
    * Check if the definitionVersion for this case exists in redux, and look for it if not.
    */
   React.useEffect(() => {
-    const fetchFormsVersions = async (v: string) => {
-      const formsVersion = await getFormsVersion(version);
-      updateFormsVersion(version, formsVersion);
+    const fetchDefinitionVersions = async (v: string) => {
+      const definitionVersion = await getDefinitionVersion(version);
+      updateDefinitionVersion(version, definitionVersion);
     };
 
-    if (!formsVersions[version]) {
-      fetchFormsVersions(version);
+    if (!definitionVersions[version]) {
+      fetchDefinitionVersions(version);
     }
-  }, [formsVersions, updateFormsVersion, version]);
+  }, [definitionVersions, updateDefinitionVersion, version]);
 
   // Object destructuring on contact
   const { overview, details, counselor } = contact;
@@ -81,9 +81,9 @@ const Details: React.FC<Props> = ({
     CONTACT_SUMMARY,
   } = ContactDetailsSections;
 
-  const formsVersion = formsVersions[version];
+  const definitionVersion = definitionVersions[version];
 
-  if (!formsVersion)
+  if (!definitionVersion)
     return (
       <DetailsContainer>
         <CircularProgress size={50} />
@@ -133,7 +133,7 @@ const Details: React.FC<Props> = ({
           handleExpandClick={() => handleExpandDetailsSection(CALLER_INFORMATION)}
           buttonDataTestid="ContactDetails-Section-CallerInformation"
         >
-          {formsVersion.tabbedForms.CallerInformationTab.map(e => (
+          {definitionVersion.tabbedForms.CallerInformationTab.map(e => (
             <SectionEntry
               key={`CallerInformation-${e.label}`}
               description={<Template code={e.label} />}
@@ -150,7 +150,7 @@ const Details: React.FC<Props> = ({
           handleExpandClick={() => handleExpandDetailsSection(CHILD_INFORMATION)}
           buttonDataTestid="ContactDetails-Section-ChildInformation"
         >
-          {formsVersion.tabbedForms.ChildInformationTab.map(e => (
+          {definitionVersion.tabbedForms.ChildInformationTab.map(e => (
             <SectionEntry
               key={`ChildInformation-${e.label}`}
               description={<Template code={e.label} />}
@@ -189,7 +189,7 @@ const Details: React.FC<Props> = ({
           expanded={detailsExpanded[CONTACT_SUMMARY]}
           handleExpandClick={() => handleExpandDetailsSection(CONTACT_SUMMARY)}
         >
-          {formsVersion.tabbedForms.CaseInformationTab.map(e => (
+          {definitionVersion.tabbedForms.CaseInformationTab.map(e => (
             <SectionEntry
               key={`CaseInformation-${e.label}`}
               description={<Template code={e.label} />}
@@ -218,11 +218,11 @@ Details.defaultProps = {
 };
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
-  formsVersions: state[namespace][configurationBase].formsVersions,
+  definitionVersions: state[namespace][configurationBase].definitionVersions,
 });
 
 const mapDispatchToProps = {
-  updateFormsVersion: ConfigActions.updateFormsVersion,
+  updateDefinitionVersion: ConfigActions.updateDefinitionVersion,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Details);

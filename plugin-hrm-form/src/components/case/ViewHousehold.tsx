@@ -9,7 +9,7 @@ import { namespace, connectedCaseBase, configurationBase, RootState } from '../.
 import { CaseState } from '../../states/case/reducer';
 import SectionEntry from '../SectionEntry';
 import ActionHeader from './ActionHeader';
-import type { FormsVersion } from '../common/forms/types';
+import type { DefinitionVersion } from '../common/forms/types';
 import { StandaloneITask } from '../StandaloneSearch';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
@@ -22,13 +22,13 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
 
 type OwnProps = {
   task: ITask | StandaloneITask;
-  formsVersion: FormsVersion;
+  definitionVersion: DefinitionVersion;
   onClickClose: () => void;
 };
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 
-const ViewHousehold: React.FC<Props> = ({ counselorsHash, temporaryCaseInfo, onClickClose, formsVersion }) => {
+const ViewHousehold: React.FC<Props> = ({ counselorsHash, temporaryCaseInfo, onClickClose, definitionVersion }) => {
   if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'view-household') return null;
 
   const counselorName = counselorsHash[temporaryCaseInfo.info.twilioWorkerId] || 'Unknown';
@@ -47,7 +47,7 @@ const ViewHousehold: React.FC<Props> = ({ counselorsHash, temporaryCaseInfo, onC
         />
         <Box paddingTop="10px">
           <>
-            {formsVersion.caseForms.HouseholdForm.map(e => (
+            {definitionVersion.caseForms.HouseholdForm.map(e => (
               <SectionEntry
                 key={`entry-${e.label}`}
                 description={<Template code={e.label} />}

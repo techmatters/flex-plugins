@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Template, ITask } from '@twilio/flex-ui';
 
-import type { FormsVersion } from '../common/forms/types';
+import type { DefinitionVersion } from '../common/forms/types';
 import { Container, StyledNextStepButton, BottomButtonBar, Box } from '../../styles/HrmStyles';
 import { CaseContainer } from '../../styles/case';
 import { namespace, connectedCaseBase, configurationBase, RootState } from '../../states';
@@ -21,13 +21,13 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
 
 type OwnProps = {
   task: ITask | StandaloneITask;
-  formsVersion: FormsVersion;
+  definitionVersion: DefinitionVersion;
   onClickClose: () => void;
 };
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 
-const ViewIncident: React.FC<Props> = ({ counselorsHash, temporaryCaseInfo, onClickClose, formsVersion }) => {
+const ViewIncident: React.FC<Props> = ({ counselorsHash, temporaryCaseInfo, onClickClose, definitionVersion }) => {
   if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'view-incident') return null;
 
   const counselorName = counselorsHash[temporaryCaseInfo.info.twilioWorkerId] || 'Unknown';
@@ -46,13 +46,13 @@ const ViewIncident: React.FC<Props> = ({ counselorsHash, temporaryCaseInfo, onCl
         />
         <Box paddingTop="10px">
           <>
-            {formsVersion.caseForms.IncidentForm.map(e => (
+            {definitionVersion.caseForms.IncidentForm.map(e => (
               <SectionEntry
                 key={`entry-${e.label}`}
                 description={<Template code={e.label} />}
                 value={incident[e.name]}
                 definition={e}
-                layout={formsVersion.layoutVersion.case.incidents.layout[e.name]}
+                layout={definitionVersion.layoutVersion.case.incidents.layout[e.name]}
               />
             ))}
           </>
