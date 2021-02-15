@@ -69,7 +69,7 @@ const CaseListTableRow = ({ caseItem, counselorsHash, handleClickViewCase }) => 
         <div style={{ display: 'inline-block', flexDirection: 'column' }}>
           {categories &&
             categories.map(category => (
-              <Box key={`category-tag-${category}`} marginBottom="5px">
+              <Box key={`category-tag-${category.label}`} marginBottom="5px">
                 <CategoryWithTooltip renderTag={renderTag} category={category.label} color={category.color} />
               </Box>
             ))}
