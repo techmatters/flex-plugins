@@ -27,8 +27,7 @@ jobs:
         working-directory: ./plugin-hrm-form
       - name: Replace Twilio account SID in appConfig.js
         uses: cschleiden/replace-tokens@v1
-          with:
-            files: ./public/appConfig.js
+          files: ./public/appConfig.js
           env:
             TWILIO_ACCOUNT_SID: ${{ secrets.TL_STAGING_ACCOUNT_SID }}
         working-directory: ./plugin-hrm-form
