@@ -3,25 +3,24 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { ITask, Template } from '@twilio/flex-ui';
 
-import type { FormDefinition } from '../common/forms/types';
+import type { DefinitionVersion } from '../common/forms/types';
 import { Container, Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import { namespace, connectedCaseBase, configurationBase, routingBase, RootState } from '../../states';
-import { CaseState } from '../../states/case/reducer';
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseLayout } from '../../styles/case';
 import ActionHeader from './ActionHeader';
 import SectionEntry from '../SectionEntry';
-import ReferralForm from '../../formDefinitions/caseForms/ReferralForm.json';
 import { StandaloneITask } from '../StandaloneSearch';
 import { formatName } from '../../utils';
 
 type OwnProps = {
   task: ITask | StandaloneITask;
+  definitionVersion: DefinitionVersion;
   onClickClose: () => void;
 };
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
-  const caseState: CaseState = state[namespace][connectedCaseBase];
+  const caseState = state[namespace][connectedCaseBase];
   const { temporaryCaseInfo } = caseState.tasks[ownProps.task.taskSid];
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
   const { route } = state[namespace][routingBase].tasks[ownProps.task.taskSid];
@@ -35,7 +34,7 @@ const mapDispatchToProps = {
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-const ViewReferral: React.FC<Props> = ({ onClickClose, tempInfo, counselorsHash }) => {
+const ViewReferral: React.FC<Props> = ({ onClickClose, tempInfo, counselorsHash, definitionVersion }) => {
   if (!tempInfo || tempInfo.screen !== 'view-referral') return null;
 
   const { counselor, date, referral } = tempInfo.info;
@@ -53,7 +52,7 @@ const ViewReferral: React.FC<Props> = ({ onClickClose, tempInfo, counselorsHash 
         />
         <Box paddingTop="10px">
           <>
-            {(ReferralForm as FormDefinition).map(e => (
+            {definitionVersion.caseForms.ReferralForm.map(e => (
               <SectionEntry
                 key={`entry-${e.label}`}
                 description={<Template code={e.label} />}

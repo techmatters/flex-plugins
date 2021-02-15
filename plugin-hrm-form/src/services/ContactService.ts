@@ -8,11 +8,7 @@ import { getConversationDuration, fillEndMillis } from '../utils/conversationDur
 import { getLimitAndOffsetParams } from './PaginationParams';
 import fetchHrmApi from './fetchHrmApi';
 import { getDateTime } from '../utils/helpers';
-import callerFormDefinition from '../formDefinitions/tabbedForms/CallerInformationTab.json';
-import caseInfoFormDefinition from '../formDefinitions/tabbedForms/CaseInformationTab.json';
-import childFormDefinition from '../formDefinitions/tabbedForms/ChildInformationTab.json';
-import categoriesFormDefinition from '../formDefinitions/tabbedForms/IssueCategorizationTab.json';
-import { getConfig } from '../HrmFormPlugin';
+import { getConfig, getDefinitionVersions } from '../HrmFormPlugin';
 import type {
   CategoriesDefinition,
   CategoryEntry,
@@ -20,14 +16,6 @@ import type {
   FormItemDefinition,
 } from '../components/common/forms/types';
 import type { InformationObject, ContactRawJson } from '../types/types';
-
-// The tabbed form definitions, used to create new form state.
-const definitions = {
-  callerFormDefinition: callerFormDefinition as FormDefinition,
-  caseInfoFormDefinition: caseInfoFormDefinition as FormDefinition,
-  categoriesFormDefinition: categoriesFormDefinition as CategoriesDefinition,
-  childFormDefinition: childFormDefinition as FormDefinition,
-};
 
 /**
  * Un-nests the information (caller/child) as it comes from DB, to match the form structure
@@ -79,7 +67,8 @@ const createCategory = <T extends {}>(obj: T, [category, { subcategories }]: [st
   [category]: subcategories.reduce((acc, subcategory) => ({ ...acc, [subcategory]: false }), {}),
 });
 
-export const createCategoriesObject = () => Object.entries(categoriesFormDefinition).reduce(createCategory, {});
+export const createCategoriesObject = (categoriesFormDefinition: CategoriesDefinition) =>
+  Object.entries(categoriesFormDefinition).reduce(createCategory, {});
 
 const transformValue = (e: FormItemDefinition) => (value: string | boolean | null) => {
   if (e.type === 'mixed-checkbox' && value === 'mixed') return null;
@@ -107,7 +96,8 @@ export const searchResultToContactForm = (def: FormDefinition, obj: InformationO
 };
 
 export function transformCategories(categories: TaskEntry['categories']) {
-  const cleanCategories = createCategoriesObject();
+  const { IssueCategorizationTab } = getDefinitionVersions().currentDefinitionVersion.tabbedForms;
+  const cleanCategories = createCategoriesObject(IssueCategorizationTab);
   const transformedCategories = categories.reduce((acc, path) => set(path, true, acc), {
     categories: cleanCategories, // use an object with categories property so we can reuse the entire path (they look like categories.Category.Subcategory)
   });
@@ -121,12 +111,16 @@ export function transformCategories(categories: TaskEntry['categories']) {
  */
 export function transformForm(form: TaskEntry): ContactRawJson {
   const { callType, metadata, contactlessTask } = form;
-
+  const {
+    CallerInformationTab,
+    CaseInformationTab,
+    ChildInformationTab,
+  } = getDefinitionVersions().currentDefinitionVersion.tabbedForms;
   // transform the form values before submit (e.g. "mixed" for 3-way checkbox becomes null)
   const transformedValues = {
-    callerInformation: transformValues(definitions.callerFormDefinition)(form.callerInformation),
-    caseInformation: transformValues(definitions.caseInfoFormDefinition)(form.caseInformation),
-    childInformation: transformValues(definitions.childFormDefinition)(form.childInformation),
+    callerInformation: transformValues(CallerInformationTab)(form.callerInformation),
+    caseInformation: transformValues(CaseInformationTab)(form.caseInformation),
+    childInformation: transformValues(ChildInformationTab)(form.childInformation),
   };
 
   // @ts-ignore
@@ -172,10 +166,11 @@ export async function saveToHrm(task, form, hrmBaseUrl, workerSid, helpline, sho
   const number = getNumberFromTask(task);
 
   let rawForm = form;
+  const { tabbedForms } = getDefinitionVersions().currentDefinitionVersion;
 
   if (isNonDataCallType(callType)) {
     rawForm = {
-      ...createNewTaskEntry(definitions)(false),
+      ...createNewTaskEntry(tabbedForms)(false),
       callType: form.callType,
       metadata: form.metadata,
       ...(task.attributes.isContactlessTask && { contactlessTask: form.contactlessTask }),

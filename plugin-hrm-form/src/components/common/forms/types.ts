@@ -116,3 +116,38 @@ export type LayoutDefinition = {
   layout?: { [name: string]: LayoutValue };
   splitFormAt?: number;
 };
+
+export type LayoutVersion = {
+  contact: {
+    callerInformation: LayoutDefinition;
+    childInformation: LayoutDefinition;
+    caseInformation: LayoutDefinition;
+  };
+  case: {
+    households: LayoutDefinition;
+    perpetrators: LayoutDefinition;
+    incidents: LayoutDefinition;
+    referrals: LayoutDefinition;
+  };
+};
+
+/**
+ * Type that defines a complete version for all the customizable forms used across the app
+ */
+export type DefinitionVersion = {
+  caseForms: {
+    HouseholdForm: FormDefinition;
+    IncidentForm: FormDefinition;
+    NoteForm: FormDefinition;
+    PerpetratorForm: FormDefinition;
+    ReferralForm: FormDefinition;
+  };
+  // TODO: change this property to contactForms to be consistent (though that may create confusion with the component name)
+  tabbedForms: {
+    CallerInformationTab: FormDefinition;
+    CaseInformationTab: FormDefinition;
+    ChildInformationTab: FormDefinition;
+    IssueCategorizationTab: CategoriesDefinition;
+  };
+  layoutVersion: LayoutVersion;
+};

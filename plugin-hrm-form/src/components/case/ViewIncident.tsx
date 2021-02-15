@@ -3,14 +3,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Template, ITask } from '@twilio/flex-ui';
 
-import type { FormDefinition } from '../common/forms/types';
+import type { DefinitionVersion } from '../common/forms/types';
 import { Container, StyledNextStepButton, BottomButtonBar, Box } from '../../styles/HrmStyles';
 import { CaseContainer } from '../../styles/case';
 import { namespace, connectedCaseBase, configurationBase, RootState } from '../../states';
 import ActionHeader from './ActionHeader';
 import SectionEntry from '../SectionEntry';
-import IncidentForm from '../../formDefinitions/caseForms/IncidentForm.json';
-import LayoutDefinitions from '../../formDefinitions/LayoutDefinitions.json';
 import { StandaloneITask } from '../StandaloneSearch';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
@@ -23,12 +21,13 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
 
 type OwnProps = {
   task: ITask | StandaloneITask;
+  definitionVersion: DefinitionVersion;
   onClickClose: () => void;
 };
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 
-const ViewIncident: React.FC<Props> = ({ counselorsHash, temporaryCaseInfo, onClickClose }) => {
+const ViewIncident: React.FC<Props> = ({ counselorsHash, temporaryCaseInfo, onClickClose, definitionVersion }) => {
   if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'view-incident') return null;
 
   const counselorName = counselorsHash[temporaryCaseInfo.info.twilioWorkerId] || 'Unknown';
@@ -47,13 +46,13 @@ const ViewIncident: React.FC<Props> = ({ counselorsHash, temporaryCaseInfo, onCl
         />
         <Box paddingTop="10px">
           <>
-            {(IncidentForm as FormDefinition).map(e => (
+            {definitionVersion.caseForms.IncidentForm.map(e => (
               <SectionEntry
                 key={`entry-${e.label}`}
                 description={<Template code={e.label} />}
                 value={incident[e.name]}
                 definition={e}
-                layout={LayoutDefinitions.case.incidents.layout[e.name]}
+                layout={definitionVersion.layoutVersion.case.incidents.layout[e.name]}
               />
             ))}
           </>

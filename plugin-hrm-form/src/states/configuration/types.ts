@@ -1,7 +1,11 @@
+import type { DefinitionVersion } from '../../components/common/forms/types';
+
 // Action types
 export const CHANGE_LANGUAGE = 'CHANGE_LANGUAGE';
 export const POPULATE_COUNSELORS = 'POPULATE_COUNSELORS';
 export const CHAT_CAPACITY_UPDATED = 'CHAT_CAPACITY_UPDATED';
+export const POPULATE_CURRENT_DEFINITION_VERSION = 'POPULATE_CURRENT_DEFINITION_VERSION';
+export const UPDATE_DEFINITION_VERSION = 'UPDATE_DEFINITION_VERSION';
 
 export type CounselorsList = {
   sid: string;
@@ -23,4 +27,20 @@ type ChatCapacityUpdatedAction = {
   capacity: number;
 };
 
-export type ConfigurationActionType = ChangeLanguageAction | PopulateCounselorsAction | ChatCapacityUpdatedAction;
+type PopulateCurrentDefinitionVersion = {
+  type: typeof POPULATE_CURRENT_DEFINITION_VERSION;
+  definitions: DefinitionVersion;
+};
+
+type UpdateDefinitionVersion = {
+  type: typeof UPDATE_DEFINITION_VERSION;
+  version: string;
+  definitions: DefinitionVersion;
+};
+
+export type ConfigurationActionType =
+  | ChangeLanguageAction
+  | PopulateCounselorsAction
+  | ChatCapacityUpdatedAction
+  | PopulateCurrentDefinitionVersion
+  | UpdateDefinitionVersion;

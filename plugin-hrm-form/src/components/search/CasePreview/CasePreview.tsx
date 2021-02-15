@@ -37,7 +37,7 @@ const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase }) => {
           status={status}
         />
         <CaseSummary summary={summary} />
-        <CaseTags categories={categories} />
+        <CaseTags definitionVersion={info.definitionVersion} categories={categories} />
       </CaseWrapper>
     </Flex>
   );
