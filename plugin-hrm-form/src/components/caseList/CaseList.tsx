@@ -11,8 +11,11 @@ import { CaseListContainer, CenteredContainer, SomethingWentWrongText } from '..
 import { getCases } from '../../services/CaseService';
 import { CaseLayout } from '../../styles/case';
 import * as CaseActions from '../../states/case/actions';
+import * as ConfigActions from '../../states/configuration/actions';
 import { StandaloneSearchContainer } from '../../styles/search';
 import { StandaloneITask } from '../StandaloneSearch';
+import { RootState, namespace, configurationBase } from '../../states';
+import { getMissingDefinitionVersions } from '../../services/ServerlessService';
 
 export const CASES_PER_PAGE = 5;
 
@@ -82,13 +85,27 @@ type OwnProps = {};
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const CaseList: React.FC<Props> = ({ setConnectedCase }) => {
+const CaseList: React.FC<Props> = ({ setConnectedCase, definitionVersions, updateDefinitionVersion }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const fetchCaseList = async page => {
+  const fetchCaseList = async (page: number) => {
     try {
       dispatch({ type: 'fetchStarted' });
       const { cases, count } = await getCases(CASES_PER_PAGE, CASES_PER_PAGE * page);
+
+      // Look for not loaded definitionVersions
+      const missingDefinitionVersions = Object.keys(
+        cases.reduce(
+          (accum, c) =>
+            definitionVersions[c.info.definitionVersion] ? accum : { ...accum, [c.info.definitionVersion]: true },
+          {},
+        ),
+      );
+
+      // Batch all the missing ones to global state (if any)
+      const definitions = await getMissingDefinitionVersions(missingDefinitionVersions);
+      definitions.forEach(d => updateDefinitionVersion(d.version, d.definition));
+
       dispatch({
         type: 'fetchSuccess',
         payload: { page, caseList: cases, caseCount: count },
@@ -101,6 +118,7 @@ const CaseList: React.FC<Props> = ({ setConnectedCase }) => {
 
   useEffect(() => {
     fetchCaseList(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleChangePage = async page => {
@@ -170,14 +188,21 @@ const CaseList: React.FC<Props> = ({ setConnectedCase }) => {
 CaseList.displayName = 'CaseList';
 
 CaseList.propTypes = {
+  definitionVersions: PropTypes.shape({}).isRequired,
   setConnectedCase: PropTypes.func.isRequired,
+  updateDefinitionVersion: PropTypes.func.isRequired,
 };
+
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
+  definitionVersions: state[namespace][configurationBase].definitionVersions,
+});
 
 const mapDispatchToProps = {
   setConnectedCase: CaseActions.setConnectedCase,
+  updateDefinitionVersion: ConfigActions.updateDefinitionVersion,
 };
 
-const connector = connect(null, mapDispatchToProps);
+const connector = connect(mapStateToProps, mapDispatchToProps);
 const connected = connector(CaseList);
 
 export default connected;
