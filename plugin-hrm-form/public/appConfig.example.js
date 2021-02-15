@@ -1,5 +1,5 @@
 // your account sid
-var accountSid = '#{TWILIO_ACCOUNT_SID}#';
+var accountSid = '__TWILIO_ACCOUNT_SID__';
 
 // set to /plugins.json for local dev
 // set to /plugins.local.build.json for testing your build
