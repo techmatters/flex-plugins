@@ -15,7 +15,7 @@ import * as ConfigActions from '../../states/configuration/actions';
 import { StandaloneSearchContainer } from '../../styles/search';
 import { StandaloneITask } from '../StandaloneSearch';
 import { RootState, namespace, configurationBase } from '../../states';
-import { getMissingDefinitionVersions } from '../../services/ServerlessService';
+import { getCasesMissingVersions } from '../../utils/definitionVersions';
 
 export const CASES_PER_PAGE = 5;
 
@@ -93,17 +93,7 @@ const CaseList: React.FC<Props> = ({ setConnectedCase, definitionVersions, updat
       dispatch({ type: 'fetchStarted' });
       const { cases, count } = await getCases(CASES_PER_PAGE, CASES_PER_PAGE * page);
 
-      // Look for not loaded definitionVersions
-      const missingDefinitionVersions = Object.keys(
-        cases.reduce(
-          (accum, c) =>
-            definitionVersions[c.info.definitionVersion] ? accum : { ...accum, [c.info.definitionVersion]: true },
-          {},
-        ),
-      );
-
-      // Batch all the missing ones to global state (if any)
-      const definitions = await getMissingDefinitionVersions(missingDefinitionVersions);
+      const definitions = await getCasesMissingVersions(cases);
       definitions.forEach(d => updateDefinitionVersion(d.version, d.definition));
 
       dispatch({

@@ -8,9 +8,8 @@ import { searchContacts as searchContactsApiCall } from '../../services/ContactS
 import { searchCases as searchCasesApiCall } from '../../services/CaseService';
 import { ContactDetailsSectionsType } from '../../components/common/ContactDetails';
 import { addDetails } from './helpers';
-import { getDefinitionVersions } from '../../HrmFormPlugin';
-import { getMissingDefinitionVersions } from '../../services/ServerlessService';
 import { updateDefinitionVersion } from '../configuration/actions';
+import { getContactsMissingVersions, getCasesMissingVersions } from '../../utils/definitionVersions';
 
 // Action creators
 export const handleSearchFormChange = (taskId: string) => <K extends keyof t.SearchFormValues>(
@@ -38,18 +37,7 @@ export const searchContacts = (dispatch: Dispatch<any>) => (taskId: string) => a
     const contactsWithCounselorName = addDetails(counselorsHash, searchResultRaw.contacts);
     const searchResult = { ...searchResultRaw, contacts: contactsWithCounselorName };
 
-    // Look for not loaded definitionVersions
-    const { definitionVersions } = getDefinitionVersions();
-    const missingDefinitionVersions = Object.keys(
-      searchResultRaw.contacts.reduce(
-        (accum, c) =>
-          definitionVersions[c.details.definitionVersion] ? accum : { ...accum, [c.details.definitionVersion]: true },
-        {},
-      ),
-    );
-
-    // Batch all the missing ones to global state (if any)
-    const definitions = await getMissingDefinitionVersions(missingDefinitionVersions);
+    const definitions = await getContactsMissingVersions(searchResultRaw.contacts);
     definitions.forEach(d => dispatch(updateDefinitionVersion(d.version, d.definition)));
 
     dispatch({ type: t.SEARCH_CONTACTS_SUCCESS, searchResult, taskId });
@@ -68,18 +56,7 @@ export const searchCases = (dispatch: Dispatch<any>) => (taskId: string) => asyn
     dispatch({ type: t.SEARCH_CASES_REQUEST, taskId });
     const searchResult = await searchCasesApiCall(searchParams, limit, offset);
 
-    // Look for not loaded definitionVersions
-    const { definitionVersions } = getDefinitionVersions();
-    const missingDefinitionVersions = Object.keys(
-      searchResult.cases.reduce(
-        (accum, c) =>
-          definitionVersions[c.info.definitionVersion] ? accum : { ...accum, [c.info.definitionVersion]: true },
-        {},
-      ),
-    );
-
-    // Batch all the missing ones to global state (if any)
-    const definitions = await getMissingDefinitionVersions(missingDefinitionVersions);
+    const definitions = await getCasesMissingVersions(searchResult.cases);
     definitions.forEach(d => dispatch(updateDefinitionVersion(d.version, d.definition)));
 
     dispatch({ type: t.SEARCH_CASES_SUCCESS, searchResult, taskId });
