@@ -26,11 +26,11 @@ jobs:
         run: cp ./public/appConfig.example.js ./public/appConfig.js
         working-directory: ./plugin-hrm-form
       - name: Replace Twilio account SID in appConfig.js
-        uses: cschleiden/replace-tokens@v1
+        uses: falnyr/replace-env-vars-action@master
+        env:
+          TWILIO_ACCOUNT_SID: ${{ secrets.TL_STAGING_ACCOUNT_SID }}
         with:
-          files: './plugin-hrm-form/public/appConfig.js'
-          env:
-            TWILIO_ACCOUNT_SID: ${{ secrets.TL_STAGING_ACCOUNT_SID }}
+          filename: ./plugin-hrm-form/public/appConfig.js
       - name: Create secret.js
         run: |
           mkdir ./src/private
