@@ -268,7 +268,7 @@ const saveInsights = async payload => {
   const contactForm = getStateContactForms(taskSid);
   const caseForm = getStateCaseForms(taskSid);
 
-  await saveInsightsData(payload.task, contactForm, caseForm, {}); // TODO: build new insight configs for ZA
+  await saveInsightsData(payload.task, contactForm, caseForm, { useZambiaInsights: true }); // TODO: build new insight configs for ZA
 };
 
 /**
