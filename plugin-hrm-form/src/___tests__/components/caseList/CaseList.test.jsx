@@ -67,6 +67,8 @@ test('Should render', async () => {
         list: [],
         hash: { worker1: 'worker1 name' },
       },
+      definitionVersions: { v1: mockV1 },
+      currentDefinitionVersion: mockV1,
     },
   });
   const store = mockStore(initialState);
