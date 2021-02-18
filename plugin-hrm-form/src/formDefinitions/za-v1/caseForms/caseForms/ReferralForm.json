@@ -13,7 +13,7 @@
   },
   {
     "name": "comments",
-    "label": "Comments",
+    "label": "Notes",
     "type": "textarea",
     "rows": 25,
     "width": 300
