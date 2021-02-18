@@ -17,8 +17,10 @@ import * as RoutingActions from '../../states/routing/actions';
 import { getConfig } from '../../HrmFormPlugin';
 import { createCase } from '../../services/CaseService';
 import { saveToHrm } from '../../services/ContactService';
+import { assignOfflineContact } from '../../services/ServerlessService';
+import { buildInsightsData } from '../../services/InsightsService';
 import { hasTaskControl } from '../../utils/transfer';
-import { namespace, contactFormsBase } from '../../states';
+import { namespace, contactFormsBase, connectedCaseBase } from '../../states';
 import { isNonDataCallType } from '../../states/ValidationRules';
 import callTypes from '../../states/DomainConstants';
 
@@ -85,13 +87,23 @@ class BottomBar extends Component {
   };
 
   handleSubmit = async () => {
-    const { task, contactForm } = this.props;
+    // eslint-disable-next-line react/prop-types
+    const { task, contactForm, caseForm } = this.props;
     const { hrmBaseUrl, workerSid, helpline, strings } = getConfig();
 
     if (!hasTaskControl(task)) return;
 
     try {
-      await saveToHrm(task, contactForm, hrmBaseUrl, workerSid, helpline);
+      if (task.attributes.isContactlessTask) {
+        const targetSid = 'WK76971332a884bf79ec378f98879d23c2';
+        const initialAttributes = { helpline, channelType: 'default', isContactlessTask: true, isInMyBehalf: true };
+        const finalAttributes = buildInsightsData(initialAttributes, contactForm, caseForm, {});
+        await saveToHrm(task, contactForm, hrmBaseUrl, workerSid, helpline);
+        const newTask = await assignOfflineContact(targetSid, finalAttributes);
+      } else {
+        await saveToHrm(task, contactForm, hrmBaseUrl, workerSid, helpline);
+      }
+
       this.props.handleCompleteTask(task.taskSid, task);
     } catch (error) {
       if (window.confirm(strings['Error-ContinueWithoutRecording'])) {
@@ -169,9 +181,14 @@ class BottomBar extends Component {
   }
 }
 
+/**
+ * @param {import('../../states').RootState} state
+ */
 const mapStateToProps = (state, ownProps) => {
   const contactForm = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
-  return { contactForm };
+  const caseState = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid];
+  const caseForm = (caseState && caseState.connectedCase) || {};
+  return { contactForm, caseForm };
 };
 
 const mapDispatchToProps = dispatch => ({
