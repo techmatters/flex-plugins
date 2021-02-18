@@ -116,3 +116,14 @@ export const getDefinitionVersionsList = async (missingDefinitionVersions: strin
       return { version, definition };
     }),
   );
+
+export const assignOfflineContact = async (targetSid: string, finalTaskAttributes: ITask['attributes']) => {
+
+  const body = {
+    targetSid,
+    finalTaskAttributes: JSON.stringify(finalTaskAttributes),
+  };
+
+  const response = await fetchProtectedApi('/assignOfflineContact', body);
+  return response;
+};

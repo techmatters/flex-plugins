@@ -289,11 +289,20 @@ const getInsightsUpdateFunctionsForConfig = (config: any): any => {
  * Note: config parameter tells where to go to get helpline-specific tests.  It should
  * eventually match up with getConfig().  Also useful for testing.
  */
-export async function saveInsightsData(twilioTask: ITask, contactForm: TaskEntry, caseForm: Case, config = {}) {
-  const previousAttributes: TaskAttributes = twilioTask.attributes;
+export const buildInsightsData = (
+  previousAttributes: ITask['attributes'],
+  contactForm: TaskEntry,
+  caseForm: Case,
+  config = {},
+) => {
   const finalAttributes: TaskAttributes = getInsightsUpdateFunctionsForConfig(config)
-    .map((f: any) => f(twilioTask.attributes, contactForm, caseForm))
+    .map((f: any) => f(previousAttributes, contactForm, caseForm))
     .reduce((acc: TaskAttributes, curr: InsightsAttributes) => mergeAttributes(acc, curr), previousAttributes);
 
+  return finalAttributes;
+};
+
+export async function saveInsightsData(twilioTask: ITask, contactForm: TaskEntry, caseForm: Case, config = {}) {
+  const finalAttributes = buildInsightsData(twilioTask.attributes, contactForm, caseForm, config);
   await twilioTask.setAttributes(finalAttributes);
 }

@@ -135,28 +135,30 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, currentD
     );
   }
 
+  async function cancelOfflineContact() {
+    const { attributes } = task;
+    /*
+     * Don't record insights for this task,
+     * but null out the Task ID so the Insights record is clean.
+     */
+    const newAttributes = {
+      ...attributes,
+      skipInsights: true,
+      conversations: {
+        /* eslint-disable-next-line camelcase */
+        conversation_attribute_5: null,
+      },
+    };
+    await task.setAttributes(newAttributes);
+    Actions.invokeAction('CompleteTask', { task });
+  }
+
   const optionalButtons =
     task.attributes.isContactlessTask && subroute === 'contactlessTask'
       ? [
           {
             label: 'CancelOfflineContact',
-            onClick: async () => {
-              const { attributes } = task;
-              /*
-               * Don't record insights for this task,
-               * but null out the Task ID so the Insights record is clean.
-               */
-              const newAttributes = {
-                ...attributes,
-                skipInsights: true,
-                conversations: {
-                  /* eslint-disable-next-line camelcase */
-                  conversation_attribute_5: null,
-                },
-              };
-              await task.setAttributes(newAttributes);
-              Actions.invokeAction('CompleteTask', { task });
-            },
+            onClick: cancelOfflineContact,
           },
         ]
       : undefined;
@@ -221,7 +223,8 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, currentD
             nextTab={() =>
               dispatch(changeRoute({ route: 'tabbed-forms', subroute: tabsToIndex[tabIndex + 1] }, taskId))
             }
-            handleCompleteTask={props.handleCompleteTask}
+            // TODO: move this two functions to a separate file to centralize "handle task completions"
+            handleCompleteTask={task.attributes.isContactlessTask ? cancelOfflineContact : props.handleCompleteTask}
             showNextButton={tabIndex !== 0 && tabIndex < tabs.length - 1}
             showSubmitButton={tabIndex === tabs.length - 1}
             handleSubmitIfValid={methods.handleSubmit} // TODO: this should be used within BottomBar, but that requires a small refactor to make it a functional component
