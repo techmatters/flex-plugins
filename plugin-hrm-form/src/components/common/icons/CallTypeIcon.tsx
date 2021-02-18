@@ -8,7 +8,7 @@ import { SilentText } from '../../../styles/search';
 
 type OwnProps = {
   callType: CallTypes;
-  fontSize: string;
+  fontSize?: string;
 };
 
 type Props = OwnProps;
