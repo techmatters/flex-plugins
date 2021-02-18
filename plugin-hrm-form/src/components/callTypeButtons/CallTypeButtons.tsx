@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { withTaskContext, TaskHelper, Template } from '@twilio/flex-ui';
+import { withTaskContext, TaskHelper, Template, ITask } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { namespace, contactFormsBase, configurationBase, RootState } from '../../states';
@@ -24,9 +24,9 @@ const isDialogOpen = contactForm =>
 const clearCallType = props => props.dispatch(updateCallType(props.task.taskSid, ''));
 
 type OwnProps = {
-  task: any;
-  localization: any;
-  handleCompleteTask: any;
+  task: ITask;
+  localization: { manager: { status: any }; isCallTask: (task: ITask) => boolean };
+  handleCompleteTask: (taskId: string, task: ITask) => void;
   currentDefinitionVersion: DefinitionVersion;
 };
 
