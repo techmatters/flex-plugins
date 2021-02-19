@@ -12,7 +12,7 @@ import CallTypeButtons from '../../components/callTypeButtons';
 import { DataCallTypeButton, NonDataCallTypeButton, ConfirmButton, CancelButton } from '../../styles/callTypeButtons';
 import LocalizationContext from '../../contexts/LocalizationContext';
 import callTypes from '../../states/DomainConstants';
-import { namespace, contactFormsBase } from '../../states';
+import { namespace, contactFormsBase, configurationBase } from '../../states';
 import { changeRoute } from '../../states/routing/actions';
 import { updateCallType } from '../../states/contacts/actions';
 
@@ -53,6 +53,60 @@ test('<CallTypeButtons> inital render (no dialog)', () => {
           },
         },
       },
+      [configurationBase]: {
+        currentDefinitionVersion: {
+          callTypeButtons: [
+            {
+              name: 'child',
+              label: 'Child calling about self',
+              type: 'button',
+              category: 'data',
+            },
+            {
+              name: 'caller',
+              label: 'Someone calling about a child',
+              type: 'button',
+              category: 'data',
+            },
+            {
+              name: 'silent',
+              label: 'Silent',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'blank',
+              label: 'Blank',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'joke',
+              label: 'Joke',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'hangup',
+              label: 'Hang up',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'wrongnumber',
+              label: 'Wrong Number',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'abusive',
+              label: 'Abusive',
+              type: 'button',
+              category: 'non-data',
+            },
+          ],
+        },
+      },
     },
   };
   const store = mockStore(initialState);
@@ -74,14 +128,158 @@ test('<CallTypeButtons> inital render (no dialog)', () => {
 
 const getConfirmButtonText = component => component.findByType(ConfirmButton).props.children;
 
+test('<CallTypeButtons> renders dialog with all buttons', () => {
+  const initialState = {
+    [namespace]: {
+      [contactFormsBase]: {
+        tasks: {
+          [task.taskSid]: {
+            callType: 'child',
+          },
+        },
+      },
+      [configurationBase]: {
+        currentDefinitionVersion: {
+          callTypeButtons: [
+            {
+              name: 'child',
+              label: 'Child calling about self',
+              type: 'button',
+              category: 'data',
+            },
+            {
+              name: 'caller',
+              label: 'Someone calling about a child',
+              type: 'button',
+              category: 'data',
+            },
+            {
+              name: 'silent',
+              label: 'Silent',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'blank',
+              label: 'Blank',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'joke',
+              label: 'Joke',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'hangup',
+              label: 'Hang up',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'wrongnumber',
+              label: 'Wrong Number',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'abusive',
+              label: 'Abusive',
+              type: 'button',
+              category: 'non-data',
+            },
+          ],
+        },
+      },
+    },
+  };
+  const store = mockStore(initialState);
+
+  const isCallTask = () => false;
+
+  const component = renderer.create(
+    <LocalizationContext.Provider value={{ strings, isCallTask }}>
+      <Provider store={store}>
+        <CallTypeButtons task={task} handleCompleteTask={jest.fn()} dispatch={jest.fn()} />
+      </Provider>
+    </LocalizationContext.Provider>,
+  ).root;
+
+  const callTypeButtonsDefinitions =
+    initialState[namespace][configurationBase].currentDefinitionVersion.callTypeButtons;
+
+  const dataCallTypeButtonsRendered = component.findAllByType(DataCallTypeButton);
+  const nonDataCallTypeButtonsRendered = component.findAllByType(NonDataCallTypeButton);
+
+  expect(dataCallTypeButtonsRendered.length).toBe(callTypeButtonsDefinitions.filter(x => x.category === 'data').length);
+  expect(nonDataCallTypeButtonsRendered.length).toBe(
+    callTypeButtonsDefinitions.filter(x => x.category === 'non-data').length,
+  );
+});
+
 test('<CallTypeButtons> renders dialog with END CHAT button', () => {
   const initialState = {
     [namespace]: {
       [contactFormsBase]: {
         tasks: {
           [task.taskSid]: {
-            callType: callTypes.child,
+            callType: 'child',
           },
+        },
+      },
+      [configurationBase]: {
+        currentDefinitionVersion: {
+          callTypeButtons: [
+            {
+              name: 'child',
+              label: 'Child calling about self',
+              type: 'button',
+              category: 'data',
+            },
+            {
+              name: 'caller',
+              label: 'Someone calling about a child',
+              type: 'button',
+              category: 'data',
+            },
+            {
+              name: 'silent',
+              label: 'Silent',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'blank',
+              label: 'Blank',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'joke',
+              label: 'Joke',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'hangup',
+              label: 'Hang up',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'wrongnumber',
+              label: 'Wrong Number',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'abusive',
+              label: 'Abusive',
+              type: 'button',
+              category: 'non-data',
+            },
+          ],
         },
       },
     },
@@ -110,8 +308,62 @@ test('<CallTypeButtons> renders dialog with HANG UP button', () => {
       [contactFormsBase]: {
         tasks: {
           [task.taskSid]: {
-            callType: callTypes.child,
+            callType: 'child',
           },
+        },
+      },
+      [configurationBase]: {
+        currentDefinitionVersion: {
+          callTypeButtons: [
+            {
+              name: 'child',
+              label: 'Child calling about self',
+              type: 'button',
+              category: 'data',
+            },
+            {
+              name: 'caller',
+              label: 'Someone calling about a child',
+              type: 'button',
+              category: 'data',
+            },
+            {
+              name: 'silent',
+              label: 'Silent',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'blank',
+              label: 'Blank',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'joke',
+              label: 'Joke',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'hangup',
+              label: 'Hang up',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'wrongnumber',
+              label: 'Wrong Number',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'abusive',
+              label: 'Abusive',
+              type: 'button',
+              category: 'non-data',
+            },
+          ],
         },
       },
     },
@@ -134,14 +386,68 @@ test('<CallTypeButtons> renders dialog with HANG UP button', () => {
   expect(confirmButtonText.type).toStrictEqual(withEndCall.type);
 });
 
-test('<CallTypeButtons> click on CallType button', () => {
+test('<CallTypeButtons> click on Data (Child) button', () => {
   const initialState = {
     [namespace]: {
       [contactFormsBase]: {
         tasks: {
           [task.taskSid]: {
-            callType: callTypes.child,
+            callType: 'child',
           },
+        },
+      },
+      [configurationBase]: {
+        currentDefinitionVersion: {
+          callTypeButtons: [
+            {
+              name: 'child',
+              label: 'Child calling about self',
+              type: 'button',
+              category: 'data',
+            },
+            {
+              name: 'caller',
+              label: 'Someone calling about a child',
+              type: 'button',
+              category: 'data',
+            },
+            {
+              name: 'silent',
+              label: 'Silent',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'blank',
+              label: 'Blank',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'joke',
+              label: 'Joke',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'hangup',
+              label: 'Hang up',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'wrongnumber',
+              label: 'Wrong Number',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'abusive',
+              label: 'Abusive',
+              type: 'button',
+              category: 'non-data',
+            },
+          ],
         },
       },
     },
@@ -168,14 +474,153 @@ test('<CallTypeButtons> click on CallType button', () => {
   );
 });
 
+test('<CallTypeButtons> click on NonData (Joke) button', () => {
+  const initialState = {
+    [namespace]: {
+      [contactFormsBase]: {
+        tasks: {
+          [task.taskSid]: {
+            callType: 'child',
+          },
+        },
+      },
+      [configurationBase]: {
+        currentDefinitionVersion: {
+          callTypeButtons: [
+            {
+              name: 'child',
+              label: 'Child calling about self',
+              type: 'button',
+              category: 'data',
+            },
+            {
+              name: 'caller',
+              label: 'Someone calling about a child',
+              type: 'button',
+              category: 'data',
+            },
+            {
+              name: 'silent',
+              label: 'Silent',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'blank',
+              label: 'Blank',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'joke',
+              label: 'Joke',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'hangup',
+              label: 'Hang up',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'wrongnumber',
+              label: 'Wrong Number',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'abusive',
+              label: 'Abusive',
+              type: 'button',
+              category: 'non-data',
+            },
+          ],
+        },
+      },
+    },
+  };
+  const store = mockStore(initialState);
+  store.dispatch = jest.fn();
+
+  const isCallTask = () => false;
+
+  render(
+    <LocalizationContext.Provider value={{ strings, isCallTask }}>
+      <Provider store={store}>
+        <CallTypeButtons task={task} handleCompleteTask={jest.fn()} />
+      </Provider>
+    </LocalizationContext.Provider>,
+  );
+
+  expect(screen.getByText('CallType-joke')).toBeInTheDocument();
+  screen.getByText('CallType-joke').click();
+
+  expect(store.dispatch).toHaveBeenCalledWith(updateCallType(task.taskSid, callTypes.joke));
+});
+
 test('<CallTypeButtons> click on END CHAT button', async () => {
   const initialState = {
     [namespace]: {
       [contactFormsBase]: {
         tasks: {
           [task.taskSid]: {
-            callType: callTypes.blank,
+            callType: 'blank',
           },
+        },
+      },
+      [configurationBase]: {
+        currentDefinitionVersion: {
+          callTypeButtons: [
+            {
+              name: 'child',
+              label: 'Child calling about self',
+              type: 'button',
+              category: 'data',
+            },
+            {
+              name: 'caller',
+              label: 'Someone calling about a child',
+              type: 'button',
+              category: 'data',
+            },
+            {
+              name: 'silent',
+              label: 'Silent',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'blank',
+              label: 'Blank',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'joke',
+              label: 'Joke',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'hangup',
+              label: 'Hang up',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'wrongnumber',
+              label: 'Wrong Number',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'abusive',
+              label: 'Abusive',
+              type: 'button',
+              category: 'non-data',
+            },
+          ],
         },
       },
     },
@@ -209,6 +654,60 @@ test('<CallTypeButtons> click on CANCEL button', () => {
           [task.taskSid]: {
             callType: '',
           },
+        },
+      },
+      [configurationBase]: {
+        currentDefinitionVersion: {
+          callTypeButtons: [
+            {
+              name: 'child',
+              label: 'Child calling about self',
+              type: 'button',
+              category: 'data',
+            },
+            {
+              name: 'caller',
+              label: 'Someone calling about a child',
+              type: 'button',
+              category: 'data',
+            },
+            {
+              name: 'silent',
+              label: 'Silent',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'blank',
+              label: 'Blank',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'joke',
+              label: 'Joke',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'hangup',
+              label: 'Hang up',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'wrongnumber',
+              label: 'Wrong Number',
+              type: 'button',
+              category: 'non-data',
+            },
+            {
+              name: 'abusive',
+              label: 'Abusive',
+              type: 'button',
+              category: 'non-data',
+            },
+          ],
         },
       },
     },
