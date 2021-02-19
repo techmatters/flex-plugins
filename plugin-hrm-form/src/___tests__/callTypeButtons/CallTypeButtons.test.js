@@ -12,17 +12,24 @@ import CallTypeButtons from '../../components/callTypeButtons';
 import { DataCallTypeButton, NonDataCallTypeButton, ConfirmButton, CancelButton } from '../../styles/callTypeButtons';
 import LocalizationContext from '../../contexts/LocalizationContext';
 import callTypes from '../../states/DomainConstants';
-import { namespace, contactFormsBase } from '../../states';
+import { namespace, contactFormsBase, connectedCaseBase } from '../../states';
 import { changeRoute } from '../../states/routing/actions';
 import { updateCallType } from '../../states/contacts/actions';
+import { completeTask, submitContactForm } from '../../services/formSumbissionHelpers';
 
 jest.mock('../../services/ContactService', () => ({
   saveToHrm: jest.fn(),
 }));
 
+jest.mock('../../services/formSumbissionHelpers', () => ({
+  completeTask: jest.fn(),
+  submitContactForm: jest.fn(),
+}));
+
 const mockStore = configureMockStore([]);
 
 const task = {
+  sid: 'reservation-task-sid',
   taskSid: 'task-sid',
   attributes: {},
 };
@@ -53,6 +60,7 @@ test('<CallTypeButtons> inital render (no dialog)', () => {
           },
         },
       },
+      [connectedCaseBase]: { tasks: {} },
     },
   };
   const store = mockStore(initialState);
@@ -62,7 +70,7 @@ test('<CallTypeButtons> inital render (no dialog)', () => {
   const component = renderer.create(
     <LocalizationContext.Provider value={{ strings, isCallTask }}>
       <Provider store={store}>
-        <CallTypeButtons task={task} handleCompleteTask={jest.fn()} dispatch={jest.fn()} />
+        <CallTypeButtons task={task} dispatch={jest.fn()} />
       </Provider>
     </LocalizationContext.Provider>,
   ).root;
@@ -84,6 +92,7 @@ test('<CallTypeButtons> renders dialog with END CHAT button', () => {
           },
         },
       },
+      [connectedCaseBase]: { tasks: {} },
     },
   };
   const store = mockStore(initialState);
@@ -93,7 +102,7 @@ test('<CallTypeButtons> renders dialog with END CHAT button', () => {
   const component = renderer.create(
     <LocalizationContext.Provider value={{ strings, isCallTask }}>
       <Provider store={store}>
-        <CallTypeButtons task={task} handleCompleteTask={jest.fn()} dispatch={jest.fn()} />
+        <CallTypeButtons task={task} dispatch={jest.fn()} />
       </Provider>
     </LocalizationContext.Provider>,
   ).root;
@@ -114,6 +123,7 @@ test('<CallTypeButtons> renders dialog with HANG UP button', () => {
           },
         },
       },
+      [connectedCaseBase]: { tasks: {} },
     },
   };
   const store = mockStore(initialState);
@@ -123,7 +133,7 @@ test('<CallTypeButtons> renders dialog with HANG UP button', () => {
   const component = renderer.create(
     <LocalizationContext.Provider value={{ strings, isCallTask }}>
       <Provider store={store}>
-        <CallTypeButtons task={task} handleCompleteTask={jest.fn()} dispatch={jest.fn()} />
+        <CallTypeButtons task={task} dispatch={jest.fn()} />
       </Provider>
     </LocalizationContext.Provider>,
   ).root;
@@ -144,6 +154,7 @@ test('<CallTypeButtons> click on CallType button', () => {
           },
         },
       },
+      [connectedCaseBase]: { tasks: {} },
     },
   };
   const store = mockStore(initialState);
@@ -154,7 +165,7 @@ test('<CallTypeButtons> click on CallType button', () => {
   render(
     <LocalizationContext.Provider value={{ strings, isCallTask }}>
       <Provider store={store}>
-        <CallTypeButtons task={task} handleCompleteTask={jest.fn()} />
+        <CallTypeButtons task={task} />
       </Provider>
     </LocalizationContext.Provider>,
   );
@@ -178,6 +189,7 @@ test('<CallTypeButtons> click on END CHAT button', async () => {
           },
         },
       },
+      [connectedCaseBase]: { tasks: {} },
     },
   };
   const store = mockStore(initialState);
@@ -185,12 +197,10 @@ test('<CallTypeButtons> click on END CHAT button', async () => {
 
   const isCallTask = () => false;
 
-  const handleCompleteTask = jest.fn();
-
   render(
     <LocalizationContext.Provider value={{ strings, isCallTask }}>
       <Provider store={store}>
-        <CallTypeButtons task={task} handleCompleteTask={jest.fn()} />
+        <CallTypeButtons task={task} />
       </Provider>
     </LocalizationContext.Provider>,
   );
@@ -198,7 +208,8 @@ test('<CallTypeButtons> click on END CHAT button', async () => {
   expect(screen.getByText('TaskHeaderEndChat')).toBeInTheDocument();
   screen.getByText('TaskHeaderEndChat').click();
 
-  waitFor(() => expect(handleCompleteTask).toHaveBeenCalledWith(task.taskSid, task));
+  waitFor(() => expect(submitContactForm).toHaveBeenCalled());
+  waitFor(() => expect(completeTask).toHaveBeenCalledWith(task));
 });
 
 test('<CallTypeButtons> click on CANCEL button', () => {
@@ -211,6 +222,7 @@ test('<CallTypeButtons> click on CANCEL button', () => {
           },
         },
       },
+      [connectedCaseBase]: { tasks: {} },
     },
   };
   const store = mockStore(initialState);
@@ -218,12 +230,10 @@ test('<CallTypeButtons> click on CANCEL button', () => {
 
   const isCallTask = () => false;
 
-  const handleCompleteTask = jest.fn();
-
   render(
     <LocalizationContext.Provider value={{ strings, isCallTask }}>
       <Provider store={store}>
-        <CallTypeButtons task={task} handleCompleteTask={jest.fn()} />
+        <CallTypeButtons task={task} />
       </Provider>
     </LocalizationContext.Provider>,
   );
@@ -231,5 +241,6 @@ test('<CallTypeButtons> click on CANCEL button', () => {
   expect(screen.getByText('CancelButton')).toBeInTheDocument();
   screen.getByText('CancelButton').click();
 
-  waitFor(() => expect(handleCompleteTask).not.toHaveBeenCalledWith(task.taskSid, task));
+  waitFor(() => expect(completeTask).not.toHaveBeenCalled());
+  waitFor(() => expect(submitContactForm).not.toHaveBeenCalled());
 });

@@ -16,9 +16,7 @@ import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { getConfig } from '../../HrmFormPlugin';
 import { createCase } from '../../services/CaseService';
-import { saveToHrm } from '../../services/ContactService';
-import { assignOfflineContact } from '../../services/ServerlessService';
-import { buildInsightsData } from '../../services/InsightsService';
+import { submitContactForm, completeTask } from '../../services/formSumbissionHelpers';
 import { hasTaskControl } from '../../utils/transfer';
 import { namespace, contactFormsBase, connectedCaseBase } from '../../states';
 import { isNonDataCallType } from '../../states/ValidationRules';
@@ -33,7 +31,6 @@ class BottomBar extends Component {
     showNextButton: PropTypes.bool.isRequired,
     showSubmitButton: PropTypes.bool.isRequired,
     nextTab: PropTypes.func.isRequired,
-    handleCompleteTask: PropTypes.func.isRequired,
     task: taskType.isRequired,
     changeRoute: PropTypes.func.isRequired,
     setConnectedCase: PropTypes.func.isRequired,
@@ -89,25 +86,16 @@ class BottomBar extends Component {
   handleSubmit = async () => {
     // eslint-disable-next-line react/prop-types
     const { task, contactForm, caseForm } = this.props;
-    const { hrmBaseUrl, workerSid, helpline, strings } = getConfig();
 
     if (!hasTaskControl(task)) return;
 
     try {
-      if (task.attributes.isContactlessTask) {
-        const targetSid = 'WK76971332a884bf79ec378f98879d23c2';
-        const initialAttributes = { helpline, channelType: 'default', isContactlessTask: true, isInMyBehalf: true };
-        const finalAttributes = buildInsightsData(initialAttributes, contactForm, caseForm, {});
-        await saveToHrm(task, contactForm, hrmBaseUrl, workerSid, helpline);
-        const newTask = await assignOfflineContact(targetSid, finalAttributes);
-      } else {
-        await saveToHrm(task, contactForm, hrmBaseUrl, workerSid, helpline);
-      }
-
-      this.props.handleCompleteTask(task.taskSid, task);
+      await submitContactForm(task, contactForm, caseForm);
+      await completeTask(task);
     } catch (error) {
+      const { strings } = getConfig();
       if (window.confirm(strings['Error-ContinueWithoutRecording'])) {
-        this.props.handleCompleteTask(task.taskSid, task);
+        await completeTask(task);
       }
     }
   };

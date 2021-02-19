@@ -10,7 +10,6 @@ import QueuesStatusWriter from '../components/queuesStatus/QueuesStatusWriter';
 import QueuesStatus from '../components/queuesStatus';
 import CustomCRMContainer from '../components/CustomCRMContainer';
 import LocalizationContext from '../contexts/LocalizationContext';
-import { channelTypes } from '../states/DomainConstants';
 import Translator from '../components/translator';
 import CaseList from '../components/caseList';
 import StandaloneSearch from '../components/StandaloneSearch';
@@ -218,23 +217,6 @@ export const setUpNoTasksUI = setupObject => {
 };
 
 /**
- * Function used to manually complete a task (making sure it transitions to wrapping state first).
- * @param {string} sid
- * @param {import('@twilio/flex-ui').ITask} task
- */
-const onCompleteTask = async (sid, task) => {
-  if (task.status !== 'wrapping') {
-    if (task.channelType === channelTypes.voice) {
-      await Flex.Actions.invokeAction('HangupCall', { sid, task });
-    } else {
-      await Flex.Actions.invokeAction('WrapupTask', { sid, task });
-    }
-  }
-
-  Flex.Actions.invokeAction('CompleteTask', { sid, task });
-};
-
-/**
  * Add the custom CRM to the agent panel
  */
 export const setUpCustomCRMContainer = () => {
@@ -247,7 +229,7 @@ export const setUpCustomCRMContainer = () => {
       value={{ manager, isCallTask: Flex.TaskHelper.isCallTask }}
       key="custom-crm-container"
     >
-      <CustomCRMContainer handleCompleteTask={onCompleteTask} />
+      <CustomCRMContainer />
     </LocalizationContext.Provider>,
     options,
   );

@@ -118,7 +118,6 @@ export const getDefinitionVersionsList = async (missingDefinitionVersions: strin
   );
 
 export const assignOfflineContact = async (targetSid: string, finalTaskAttributes: ITask['attributes']) => {
-
   const body = {
     targetSid,
     finalTaskAttributes: JSON.stringify(finalTaskAttributes),

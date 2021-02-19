@@ -19,7 +19,6 @@ class TaskView extends Component {
     contactFormStateExists: PropTypes.bool.isRequired,
     routingStateExists: PropTypes.bool.isRequired,
     searchStateExists: PropTypes.bool.isRequired,
-    handleCompleteTask: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     currentDefinitionVersion: PropTypes.shape({ tabbedForms: PropTypes.shape({}) }).isRequired,
   };
@@ -51,7 +50,7 @@ class TaskView extends Component {
     return (
       <div style={{ height: '100%' }}>
         {!hasTaskControl(thisTask) && <FormNotEditable />}
-        <HrmForm handleCompleteTask={this.props.handleCompleteTask} />
+        <HrmForm />
       </div>
     );
   }

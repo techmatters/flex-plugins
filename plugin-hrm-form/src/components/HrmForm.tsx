@@ -7,13 +7,11 @@ import { CaseLayout } from '../styles/case';
 import CallTypeButtons from './callTypeButtons';
 import TabbedForms from './tabbedForms';
 import Case from './case';
-import { namespace, routingBase } from '../states';
+import { namespace, RootState, routingBase } from '../states';
 import * as RoutingActions from '../states/routing/actions';
-import { RoutingState } from '../states/routing/reducer';
 
 type OwnProps = {
   task: ITask;
-  handleCompleteTask: any;
   changeRoute: any;
 };
 
@@ -28,25 +26,25 @@ const HrmForm: React.FC<Props> = props => {
 
   switch (route) {
     case 'tabbed-forms':
-      return <TabbedForms handleCompleteTask={props.handleCompleteTask} />;
+      return <TabbedForms />;
 
     case 'new-case':
       return (
         <CaseLayout>
-          <Case task={props.task} handleCompleteTask={props.handleCompleteTask} isCreating={true} />
+          <Case task={props.task} isCreating={true} />
         </CaseLayout>
       );
 
     case 'select-call-type':
     default:
-      return <CallTypeButtons handleCompleteTask={props.handleCompleteTask} />;
+      return <CallTypeButtons />;
   }
 };
 
 HrmForm.displayName = 'HrmForm';
 
-const mapStateToProps = (state, ownProps: OwnProps) => {
-  const routingState: RoutingState = state[namespace][routingBase];
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
+  const routingState = state[namespace][routingBase];
 
   return { routing: routingState.tasks[ownProps.task.taskSid] };
 };

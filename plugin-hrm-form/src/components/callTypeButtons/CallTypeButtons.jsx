@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTaskContext, TaskHelper, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 
-import { namespace, contactFormsBase } from '../../states';
+import { namespace, contactFormsBase, connectedCaseBase } from '../../states';
 import { updateCallType } from '../../states/contacts/actions';
 import { changeRoute } from '../../states/routing/actions';
 import { withLocalization } from '../../contexts/LocalizationContext';
@@ -15,7 +15,7 @@ import { formType, taskType, localizationType } from '../../types';
 import NonDataCallTypeDialog from './NonDataCallTypeDialog';
 import { hasTaskControl } from '../../utils/transfer';
 import { getConfig } from '../../HrmFormPlugin';
-import { saveToHrm } from '../../services/ContactService';
+import { submitContactForm, completeTask } from '../../services/formSumbissionHelpers';
 import CallTypeIcon from '../common/icons/CallTypeIcon';
 
 const isDialogOpen = contactForm =>
@@ -24,7 +24,7 @@ const isDialogOpen = contactForm =>
 const clearCallType = props => props.dispatch(updateCallType(props.task.taskSid, ''));
 
 const CallTypeButtons = props => {
-  const { contactForm, task, localization } = props;
+  const { contactForm, caseForm, task, localization } = props;
   const { isCallTask } = localization;
 
   const handleClick = (taskSid, callType) => {
@@ -58,14 +58,13 @@ const CallTypeButtons = props => {
   const handleConfirmNonDataCallType = async () => {
     if (!hasTaskControl(task)) return;
 
-    const { hrmBaseUrl, workerSid, helpline, strings } = getConfig();
-
     try {
-      await saveToHrm(task, contactForm, hrmBaseUrl, workerSid, helpline);
-      props.handleCompleteTask(task.taskSid, task);
+      await submitContactForm(task, contactForm, caseForm);
+      await completeTask(task);
     } catch (error) {
+      const { strings } = getConfig();
       if (!window.confirm(strings['Error-ContinueWithoutRecording'])) {
-        props.handleCompleteTask(task.taskSid, task);
+        await completeTask(task);
       }
     }
   };
@@ -122,15 +121,17 @@ const CallTypeButtons = props => {
 CallTypeButtons.displayName = 'CallTypeButtons';
 CallTypeButtons.propTypes = {
   contactForm: formType.isRequired,
+  caseForm: PropTypes.shape({}).isRequired,
   task: taskType.isRequired,
   localization: localizationType.isRequired,
-  handleCompleteTask: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state, ownProps) => {
   const contactForm = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
-  return { contactForm };
+  const caseState = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid];
+  const caseForm = (caseState && caseState.connectedCase) || {};
+  return { contactForm, caseForm };
 };
 
 const connector = connect(mapStateToProps);

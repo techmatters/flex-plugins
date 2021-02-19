@@ -1,7 +1,7 @@
 /* eslint-disable no-duplicate-imports */
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { Actions, ITask, withTaskContext } from '@twilio/flex-ui';
+import { ITask, withTaskContext } from '@twilio/flex-ui';
 import SearchIcon from '@material-ui/icons/Search';
 import { useForm, FormProvider } from 'react-hook-form';
 import { connect, ConnectedProps } from 'react-redux';
@@ -11,6 +11,7 @@ import Case from '../case';
 import { namespace, contactFormsBase, routingBase, RootState, configurationBase } from '../../states';
 import { updateCallType, updateForm } from '../../states/contacts/actions';
 import { searchResultToContactForm } from '../../services/ContactService';
+import { completeContactlessTask } from '../../services/formSumbissionHelpers';
 import { changeRoute } from '../../states/routing/actions';
 import type { TaskEntry } from '../../states/contacts/reducer';
 import type { TabbedFormSubroutes } from '../../states/routing/types';
@@ -65,7 +66,6 @@ const mapTabsToIndex = (task: ITask, contactForm: TaskEntry): TabbedFormSubroute
 
 type OwnProps = {
   task: ITask;
-  handleCompleteTask: any;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -135,30 +135,12 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, currentD
     );
   }
 
-  async function cancelOfflineContact() {
-    const { attributes } = task;
-    /*
-     * Don't record insights for this task,
-     * but null out the Task ID so the Insights record is clean.
-     */
-    const newAttributes = {
-      ...attributes,
-      skipInsights: true,
-      conversations: {
-        /* eslint-disable-next-line camelcase */
-        conversation_attribute_5: null,
-      },
-    };
-    await task.setAttributes(newAttributes);
-    Actions.invokeAction('CompleteTask', { task });
-  }
-
   const optionalButtons =
     task.attributes.isContactlessTask && subroute === 'contactlessTask'
       ? [
           {
             label: 'CancelOfflineContact',
-            onClick: cancelOfflineContact,
+            onClick: () => completeContactlessTask(task),
           },
         ]
       : undefined;
@@ -224,7 +206,6 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, currentD
               dispatch(changeRoute({ route: 'tabbed-forms', subroute: tabsToIndex[tabIndex + 1] }, taskId))
             }
             // TODO: move this two functions to a separate file to centralize "handle task completions"
-            handleCompleteTask={task.attributes.isContactlessTask ? cancelOfflineContact : props.handleCompleteTask}
             showNextButton={tabIndex !== 0 && tabIndex < tabs.length - 1}
             showSubmitButton={tabIndex === tabs.length - 1}
             handleSubmitIfValid={methods.handleSubmit} // TODO: this should be used within BottomBar, but that requires a small refactor to make it a functional component
