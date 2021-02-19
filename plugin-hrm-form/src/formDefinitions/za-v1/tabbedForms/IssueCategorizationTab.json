@@ -47,7 +47,7 @@
       "Child used for criminal activity",
       "Child vendors",
       "Domestic child labour",
-      "Farm child Labour",
+      "Farm child labour",
       "General child labour",
       "Involvement in pornography",
       "Trafficking"
@@ -137,7 +137,7 @@
     ]
   },
   "Poverty": {
-    "color": "#767777",
+    "color": "#e26e58",
     "subcategories": [
       "Child/ren starving",
       "Insufficient/No income",
@@ -146,12 +146,12 @@
     ]
   },
   "Psychological health": {
-    "color": "#e26e58",
+    "color": "#b36ae3",
     "subcategories": [
       "Anorexia",
       "Anxiety",
       "Bereavement - peer",
-      "Bulimia",
+      "Bullimia",
       "Child has difficulty in communicating",
       "Depression",
       "Lack of confidence",
@@ -168,7 +168,7 @@
     ]
   },
   "Refugee child": {
-    "color": "#b36ae3",
+    "color": "#8bde63",
     "subcategories": [
       "Fear of repatriation",
       "Lack of documents",
@@ -177,7 +177,7 @@
     ]
   },
   "School problems": {
-    "color": "#8bde63",
+    "color": "#fc33e5",
     "subcategories": [
       "Child not attending school",
       "Child truanting from school",
@@ -193,7 +193,7 @@
     ]
   },
   "Services": {
-    "color": "#fc33e5",
+    "color": "#df7419",
     "subcategories": [
       "Abuse to the counsellor",
       "Complaints about Childline service",
@@ -203,7 +203,7 @@
     ]
   },
   "Sexuality": {
-    "color": "#df7419",
+    "color": "#e4fbfa",
     "subcategories": [
       "Abortion/Termination of pregnancy",
       "Contraception",
@@ -218,7 +218,7 @@
     ]
   },
   "Substance abuse": {
-    "color": "#e4fbfa",
+    "color": "#d0021b",
     "subcategories": [
       "Child - alcohol abuse",
       "Child - other drug abuse",
@@ -227,6 +227,26 @@
       "Information on alcohol/drugs",
       "Parent/caretaker - alcohol abuse",
       "Parent/caretaker - drug abuse"
+    ]
+  },
+  "Harassment": {
+    "color": "#50e3c2",
+    "subcategories": [
+      "Sexual",
+      "Stalking",
+      "Verbal",
+      "Other"
+    ]
+  },  
+  "Test": {
+    "color": "#8b572a",
+    "subcategories": [
+      "Playful child",
+      "Abusive child",
+      "Hoax",
+      "Office call",
+      "Distressed child",
+      "Exploring the Service"
     ]
   }
 }

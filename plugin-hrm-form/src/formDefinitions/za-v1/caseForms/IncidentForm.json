@@ -14,8 +14,7 @@
       { "value": "Ongoing", "label": "Ongoing" },
       { "value": "Once Off", "label": "Once Off" },
       { "value": "Other", "label": "Other" }
-    ],
-    "required": { "value": true, "message": "RequiredFieldError" }
+    ]
   },
   {
     "name": "location",
@@ -23,7 +22,6 @@
     "type": "select",
     "options": [
       { "value": "", "label": "" },
-      { "value": "Unknown", "label": "Unknown" },
       { "value": "Child's Home ", "label": "Child's Home " },
       { "value": "Child's Neighbourhood", "label": "Child's Neighbourhood" },
       { "value": "Children's Institution", "label": "Children's Institution" },
@@ -34,7 +32,8 @@
       { "value": "Prison ", "label": "Prison " },
       { "value": "Public Space ", "label": "Public Space " },
       { "value": "Religious Institution ", "label": "Religious Institution " },
-      { "value": "School", "label": "School" }
+      { "value": "School", "label": "School" },
+      { "value": "Unknown", "label": "Unknown" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" }
   },

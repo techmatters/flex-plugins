@@ -6,22 +6,15 @@
     "required": true
   },
   {
-    "name": "referredTo",
-    "label": "Referred to",
+    "name": "recommendation",
+    "label": "Recommendation",
     "type": "select",
     "options": [
       { "value": "", "label": "" },
-      { "value": "Recommendations", "label": "Recommendations" }, 
-      { "value": "Referrals to school counsellors", "label": "Referrals to school counsellors" }, 
-      { "value": "DSD", "label": "DSD" }, 
-      { "value": "Referrals to child protection agencies", "label": "Referrals to child protection agencies" }, 
-      { "value": "Referrals to law enforcement agencies", "label": "Referrals to law enforcement agencies" }, 
+      { "value": "Recommendations to school counsellors", "label": "Recommendations to school counsellors" }, 
       { "value": "Referrals to healthcare professionals", "label": "Referrals to healthcare professionals" }, 
-      { "value": "Referrals to other organisations", "label": "Referrals to other organisations" }, 
-      { "value": "Direct interventions by Childline", "label": "Direct interventions by Childline" }, 
-      { "value": "Other", "label": "Other" }
-    ],
-    "required": true
+      { "value": "Referrals to other organisations", "label": "Referrals to other organisations" }
+    ]
   },
   {
     "name": "howDidTheChildHearAboutUs",
@@ -29,7 +22,6 @@
     "type": "select",
     "options": [
       { "value": "", "label": "" },
-      { "value": "Unknown", "label": "Unknown" }, 
       { "value": "Awareness Campaign", "label": "Awareness Campaign" }, 
       { "value": "Billboard", "label": "Billboard" }, 
       { "value": "Pamphlet", "label": "Pamphlet" }, 
@@ -46,21 +38,21 @@
   {
     "name": "okForCaseWorkerToCall",
     "label": "Ok for case worker to call?",
-    "type": "checkbox"
+    "type": "mixed-checkbox"
   },
   {
     "name": "didYouDiscussRightsWithTheChild",
     "label": "Did you discuss rights with the child?",
-    "type": "checkbox"
+    "type": "mixed-checkbox"
   },
   {
     "name": "didTheChildFeelWeSolvedTheirProblem",
     "label": "Did the child feel we solved their problem?",
-    "type": "checkbox"
+    "type": "mixed-checkbox"
   },
   {
     "name": "wouldTheChildRecommendUsToAFriend",
     "label": "Would the child recommend us to a friend?",
-    "type": "checkbox"
+    "type": "mixed-checkbox"
   }
 ]
