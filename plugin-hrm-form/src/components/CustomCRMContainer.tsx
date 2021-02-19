@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import type { ITask } from '@twilio/flex-ui';
 
 import TaskView from './TaskView';
 import { Absolute } from '../styles/HrmStyles';

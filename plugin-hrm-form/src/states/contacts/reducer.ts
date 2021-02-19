@@ -9,7 +9,7 @@ import {
   ContactFormDefinition,
 } from '../types';
 import { createStateItem } from '../../components/common/forms/formGenerators';
-import { formDefinition as contactlessTaskTabDefinition } from '../../components/tabbedForms/ContactlessTaskTabDefinition';
+import { createFormDefinition as createContactlessTaskTabDefinition } from '../../components/tabbedForms/ContactlessTaskTabDefinition';
 import callTypes, { CallTypes } from '../DomainConstants';
 
 export type TaskEntry = {
@@ -58,7 +58,8 @@ export const createNewTaskEntry = (definitions: ContactFormDefinition) => (recre
     categories: categoriesMeta,
   };
 
-  const contactlessTask = contactlessTaskTabDefinition.reduce(createStateItem, {});
+  const initialContactlessTaskTabDefinition = createContactlessTaskTabDefinition([]);
+  const contactlessTask = initialContactlessTaskTabDefinition.reduce(createStateItem, {});
 
   return {
     callType: '',

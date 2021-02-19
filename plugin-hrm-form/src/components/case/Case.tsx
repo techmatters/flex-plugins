@@ -180,7 +180,7 @@ const Case: React.FC<Props> = props => {
 
     const { task, form } = props;
     const { connectedCase } = props.connectedCaseState;
-    const { hrmBaseUrl, strings } = getConfig();
+    const { strings } = getConfig();
 
     // Validating that task isn't a StandaloneITask.
     if (isStandaloneITask(task)) return;
