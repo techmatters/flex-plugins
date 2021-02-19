@@ -210,7 +210,7 @@ export async function saveToHrm(task, form, hrmBaseUrl, workerSid, helpline, sho
   return responseJson;
 }
 
-export async function connectToCase(hrmBaseUrl, contactId, caseId) {
+export async function connectToCase(contactId, caseId) {
   const body = { caseId };
 
   const options = {

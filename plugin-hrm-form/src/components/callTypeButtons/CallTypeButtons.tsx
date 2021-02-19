@@ -4,7 +4,7 @@ import React from 'react';
 import { withTaskContext, TaskHelper, Template, ITask } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { namespace, contactFormsBase, configurationBase, RootState } from '../../states';
+import { namespace, contactFormsBase, configurationBase, connectedCaseBase, RootState } from '../../states';
 import { updateCallType } from '../../states/contacts/actions';
 import { changeRoute } from '../../states/routing/actions';
 import { withLocalization } from '../../contexts/LocalizationContext';
@@ -15,7 +15,7 @@ import { isNonDataCallType } from '../../states/ValidationRules';
 import NonDataCallTypeDialog from './NonDataCallTypeDialog';
 import { hasTaskControl } from '../../utils/transfer';
 import { getConfig } from '../../HrmFormPlugin';
-import { saveToHrm } from '../../services/ContactService';
+import { submitContactForm, completeTask } from '../../services/formSumbissionHelpers';
 import CallTypeIcon from '../common/icons/CallTypeIcon';
 import { DefinitionVersion } from '../common/forms/types';
 
@@ -35,7 +35,7 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const CallTypeButtons: React.FC<Props> = props => {
-  const { contactForm, task, localization, currentDefinitionVersion } = props;
+  const { contactForm, task, localization, currentDefinitionVersion, caseForm } = props;
   const { isCallTask } = localization;
 
   // Todo: need to handle this error scenario in a better way. Currently is showing a blank screen if there aren't definitions.
@@ -73,14 +73,13 @@ const CallTypeButtons: React.FC<Props> = props => {
   const handleConfirmNonDataCallType = async () => {
     if (!hasTaskControl(task)) return;
 
-    const { hrmBaseUrl, workerSid, helpline, strings } = getConfig();
-
     try {
-      await saveToHrm(task, contactForm, hrmBaseUrl, workerSid, helpline);
-      props.handleCompleteTask(task.taskSid, task);
+      await submitContactForm(task, contactForm, caseForm);
+      await completeTask(task);
     } catch (error) {
+      const { strings } = getConfig();
       if (!window.confirm(strings['Error-ContinueWithoutRecording'])) {
-        props.handleCompleteTask(task.taskSid, task);
+        await completeTask(task);
       }
     }
   };
@@ -141,8 +140,11 @@ CallTypeButtons.displayName = 'CallTypeButtons';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const contactForm = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
+  const caseState = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid];
+  const caseForm = (caseState && caseState.connectedCase) || {};
   const { currentDefinitionVersion } = state[namespace][configurationBase];
-  return { contactForm, currentDefinitionVersion };
+
+  return { contactForm, caseForm, currentDefinitionVersion };
 };
 
 const connector = connect(mapStateToProps);

@@ -21,8 +21,9 @@ import {
   RootState,
 } from '../../states';
 import { getConfig } from '../../HrmFormPlugin';
-import { saveToHrm, connectToCase, transformCategories } from '../../services/ContactService';
+import { connectToCase, transformCategories } from '../../services/ContactService';
 import { cancelCase, updateCase, getActivities } from '../../services/CaseService';
+import { submitContactForm, completeTask } from '../../services/formSumbissionHelpers';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { isConnectedCaseActivity, getDateFromNotSavedContact, sortActivities } from './caseHelpers';
 import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
@@ -62,7 +63,6 @@ type OwnProps = {
   task: ITask | StandaloneITask;
   isCreating?: boolean;
   handleClose?: () => void;
-  handleCompleteTask?: (taskSid: string, task: ITask) => void;
   updateAllCasesView?: (updatedCase: CaseType) => void;
 };
 
@@ -202,17 +202,17 @@ const Case: React.FC<Props> = props => {
 
     const { task, form } = props;
     const { connectedCase } = props.connectedCaseState;
-    const { hrmBaseUrl, workerSid, helpline, strings } = getConfig();
+    const { hrmBaseUrl, strings } = getConfig();
 
     // Validating that task isn't a StandaloneITask.
     if (isStandaloneITask(task)) return;
 
     try {
-      const contact = await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
+      const contact = await submitContactForm(task, form, connectedCase);
       await updateCase(connectedCase.id, { ...connectedCase });
-      await connectToCase(hrmBaseUrl, contact.id, connectedCase.id);
+      await connectToCase(contact.id, connectedCase.id);
       props.markCaseAsUpdated(task.taskSid);
-      props.handleCompleteTask(task.taskSid, task);
+      await completeTask(task);
     } catch (error) {
       console.error(error);
       window.alert(strings['Error-Backend']);

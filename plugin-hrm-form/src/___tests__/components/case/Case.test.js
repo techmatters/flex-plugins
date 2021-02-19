@@ -80,7 +80,6 @@ const ownProps = {
       isContactlessTask: false,
     },
   },
-  handleCompleteTask: jest.fn(),
 };
 
 describe('useState mocked', () => {
@@ -241,7 +240,6 @@ describe('useState mocked', () => {
    *    task: {
    *      taskSid: 'task1',
    *    },
-   *    handleCompleteTask: jest.fn(),
    *  };
    *
    *  const store = mockStore(initialState);
