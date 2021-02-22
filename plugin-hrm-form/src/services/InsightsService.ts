@@ -185,6 +185,7 @@ const convertCaseFormForInsights = (caseForm: Case): InsightsCaseForm => {
       date: caseForm.info.referrals[0].date.toString(),
     };
   }
+  // eslint-disable-next-line sonarjs/prefer-immediate-return
   const newCaseForm: InsightsCaseForm = {
     topLevel,
     perpetrator,

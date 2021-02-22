@@ -2,7 +2,7 @@
 /* eslint-disable import/no-unused-modules */
 /* eslint-disable react/display-name */
 import React from 'react';
-import { useFormContext, ValidationRules } from 'react-hook-form';
+import { useFormContext, RegisterOptions } from 'react-hook-form';
 import { get, pick } from 'lodash';
 import { Template } from '@twilio/flex-ui';
 
@@ -76,7 +76,7 @@ const RequiredAsterisk = () => (
   </span>
 );
 
-const getRules = (field: FormItemDefinition): ValidationRules =>
+const getRules = (field: FormItemDefinition): RegisterOptions =>
   pick(field, ['max', 'maxLength', 'min', 'minLength', 'pattern', 'required', 'validate']);
 
 /**
@@ -85,6 +85,7 @@ const getRules = (field: FormItemDefinition): ValidationRules =>
  * @param {() => void} updateCallback Callback called to update form state. When is the callback called is specified in the input type.
  * @param {FormItemDefinition} def Definition for a single input.
  */
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const getInputType = (parents: string[], updateCallback: () => void) => (def: FormItemDefinition) => (
   initialValue: any, // TODO: restrict this type
 ) => {

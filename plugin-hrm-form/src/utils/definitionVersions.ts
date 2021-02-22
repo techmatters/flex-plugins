@@ -9,6 +9,7 @@ const getMissingDefinitionVersions = async (versions: string[]) => {
     versions.reduce((accum, v) => (definitionVersions[v] ? accum : { ...accum, [v]: true }), {}),
   );
 
+  // eslint-disable-next-line sonarjs/prefer-immediate-return
   const definitions = await getDefinitionVersionsList(missingDefinitionVersions);
   return definitions;
 };

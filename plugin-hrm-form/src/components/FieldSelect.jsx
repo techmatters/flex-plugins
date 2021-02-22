@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-extra-arguments */
 import React from 'react';
 import PropTypes from 'prop-types';
 

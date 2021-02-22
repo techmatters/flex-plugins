@@ -1,3 +1,5 @@
+/* eslint-disable react/no-multi-comp */
+/* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable no-duplicate-imports */
 /* eslint-disable react/prop-types */
 import React from 'react';

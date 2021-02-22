@@ -1,6 +1,6 @@
 import { QueuesStatusActionType, QueuesStatus, QUEUES_STATUS_UPDATE, QUEUES_STATUS_FAILURE } from './types';
 
-export type QueuesStatusState = {
+type QueuesStatusState = {
   queuesStatus: QueuesStatus;
   error?: string;
   loading: boolean;

@@ -18,6 +18,7 @@ const getGenderOptions = (definition: FormDefinition) => {
   return [];
 };
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const prepopulateForm = (task: ITask) => {
   const { CallerInformationTab, ChildInformationTab } = getDefinitionVersions().currentDefinitionVersion.tabbedForms;
 

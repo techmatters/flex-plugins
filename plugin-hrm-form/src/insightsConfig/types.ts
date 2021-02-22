@@ -10,7 +10,7 @@ export type InsightsFieldSpec = {
   insights: [InsightsObject, string];
   type?: FieldType;
 };
-export type InsightsSubFormSpec = InsightsFieldSpec[];
+type InsightsSubFormSpec = InsightsFieldSpec[];
 export type InsightsFormSpec = { [key: string]: InsightsSubFormSpec };
 export type InsightsConfigSpec = {
   contactForm?: InsightsFormSpec;
