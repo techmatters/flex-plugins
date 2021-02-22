@@ -33,7 +33,7 @@ jobs:
       run: npm run lint --if-present
       working-directory: ./plugin-hrm-form
     - name: Run Tests
-      run: TWILIO_ACCOUNT_SID=${{secrets.TL_STAGING_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{secrets.TL_STAGING_AUTH_TOKEN}} npm test
+      run: TWILIO_ACCOUNT_SID=${{secrets.AS_DEV_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{secrets.AS_DEV_AUTH_TOKEN}} npm test
       working-directory: ./plugin-hrm-form
       env:
         CI: true
