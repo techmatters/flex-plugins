@@ -1,7 +1,6 @@
-/* eslint-disable react/forbid-prop-types */
+/* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-max-depth */
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Page, Text, View, Document, PDFViewer, Image } from '@react-pdf/renderer';
 import { Template } from '@twilio/flex-ui';
 import { ButtonBase } from '@material-ui/core';
@@ -12,10 +11,12 @@ import CasePrintSummary from './CasePrintSummary';
 import styles from './CasePrintStyles';
 import { CasePrintViewContainer, HiddenText } from '../../../styles/HrmStyles';
 import source from '../../../resources/ZA_childline_logo.jpg';
+import CasePrintDetails from './CasePrintDetails';
+import type { CaseDetails } from '../../../states/case/types';
 
 type OwnProps = {
   onClickClose: () => void;
-  caseDetails: any; // ToDO: create a type here
+  caseDetails: CaseDetails;
 };
 type Props = OwnProps;
 
@@ -123,20 +124,13 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails }) => {
               </View>
             </View>
             <View style={styles.caseBody}>
-              <Text style={styles.caseDetailsLabel}>Case Details</Text>
-              <View style={styles.caseDetailsSection}>
-                <View style={styles.flexColumn}>
-                  <Text>Case Status</Text>
-                  <Text style={{ marginTop: 5, fontWeight: 600 }}>OPEN</Text>
-                </View>
-                <View style={styles.flexColumn}>
-                  <Text>Opened</Text>
-                  <Text style={{ marginTop: 5, fontWeight: 600 }}>11/10/2020</Text>
-                </View>
-                <View>
-                  <Text>CHILD IS AT RISK</Text>
-                </View>
-              </View>
+              <CasePrintDetails
+                status={caseDetails.status}
+                openedAt={caseDetails.openedDate}
+                childAtRisk={caseDetails.childIsAtRisk}
+                counselor={caseDetails.currentCounselor}
+                caseManager={{ name: 'Bhavna Lutchman', phone: '031 201 2059', email: 'research@childlinesa.org.za' }}
+              />
               <CasePrintSection {...callerInfoSection} />
               <CasePrintSection {...childInfoSection} />
               <CasePrintSection {...incidentSection} />
@@ -156,11 +150,6 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails }) => {
       </PDFViewer>
     </CasePrintViewContainer>
   );
-};
-
-CasePrintView.propTypes = {
-  onClickClose: PropTypes.func.isRequired,
-  caseDetails: PropTypes.object.isRequired,
 };
 
 CasePrintView.displayName = 'CasePrintView';

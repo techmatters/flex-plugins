@@ -2,7 +2,7 @@ import { StyleSheet, Font } from '@react-pdf/renderer';
 
 /*
  * Unfortunately we have to import each font that we want to use (even with the style and weight variations)
- * MOre info: https://react-pdf.org/fonts
+ * More info: https://react-pdf.org/fonts
  */
 Font.register({
   family: 'Open Sans',
@@ -11,6 +11,14 @@ Font.register({
     { src: 'https://fonts.gstatic.com/s/opensans/v18/mem6YaGs126MiZpBA-UFUK0ZdchGAK6b.ttf', fontStyle: 'italic' },
     { src: 'https://fonts.gstatic.com/s/opensans/v18/mem5YaGs126MiZpBA-UNirkOUuhsKKSTjw.ttf', fontWeight: 600 },
   ],
+});
+
+/*
+ * Some UI elements (such as: checkboxes) needs to be replaced by Emojis
+ */
+Font.registerEmojiSource({
+  format: 'png',
+  url: 'https://twemoji.maxcdn.com/2/72x72/',
 });
 
 const styles = StyleSheet.create({
@@ -32,6 +40,10 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 20,
   },
+  caseDetailsContainer: {
+    marginLeft: 5,
+    marginRight: 5,
+  },
   caseDetailsLabel: {
     marginBottom: 10,
     textTransform: 'uppercase',
@@ -45,8 +57,22 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     fontSize: 12,
     backgroundColor: 'lightgray',
+    paddingLeft: 10,
+    paddingRight: 10,
     paddingTop: 10,
     paddingBottom: 10,
+  },
+  caseCounsellorSection: {
+    display: 'flex',
+    flexDirection: 'column',
+    marginLeft: 30,
+    marginRight: 30,
+    marginTop: 10,
+    fontSize: 12,
+  },
+  caseDetailsBoldText: {
+    marginTop: 5,
+    fontWeight: 600,
   },
   flexColumn: {
     display: 'flex',
