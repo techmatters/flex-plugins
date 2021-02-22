@@ -47,19 +47,11 @@ jobs:
       - name: Install dependencies for the flex-plugins
         run: UNBUNDLED_REACT=true npm install
         working-directory: ./plugin-hrm-form
-      # Deploy the plugin       
-      - name: Run deploy command
+
+      # Install the Twilio CLI and the flex plugin, then deploy the plugin
+      - name: Install twilio cli and run deploy command
         env:
          TWILIO_ACCOUNT_SID: ${{ secrets.AS_DEV_ACCOUNT_SID }}
          TWILIO_AUTH_TOKEN: ${{ secrets.AS_DEV_AUTH_TOKEN }}
-         CI: true
-        run: npm run deploy
+        run: npm install twilio-cli -g && twilio plugins:install @twilio-labs/plugin-flex@beta && twilio flex:plugins:deploy
         working-directory: ./plugin-hrm-form
-
-# For newer versions of the Flex plugins, replace the "Deploy the plugin" step with the following step:
-#      # Install the Twilio CLI and the flex plugin, then deploy the plugin
-#      - name: Install twilio cli and run deploy command
-#        env:
-#         TWILIO_ACCOUNT_SID: ${{ secrets.AS_DEV_ACCOUNT_SID }}
-#         TWILIO_AUTH_TOKEN: ${{ secrets.AS_DEV_AUTH_TOKEN }}
-#        run: npm install twilio-cli -g && twilio plugins:install @twilio-labs/plugin-flex@beta && twilio flex:plugins:deploy
