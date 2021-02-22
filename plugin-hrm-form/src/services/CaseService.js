@@ -13,6 +13,9 @@ export async function createCase(caseRecord) {
   return responseJson;
 }
 
+/**
+ * @returns {Promise<import('../types/types').SearchCaseResult>}
+ */
 export async function getCases(limit, offset) {
   const queryParams = getLimitAndOffsetParams(limit, offset);
   const responseJson = await fetchHrmApi(`/cases${queryParams}`);
@@ -43,6 +46,9 @@ export async function getActivities(caseId) {
   return fetchHrmApi(`/cases/${caseId}/activities/`);
 }
 
+/**
+ * @returns {Promise<import('../types/types').SearchCaseResult>}
+ */
 export async function searchCases(searchParams, limit, offset) {
   const queryParams = getLimitAndOffsetParams(limit, offset);
 

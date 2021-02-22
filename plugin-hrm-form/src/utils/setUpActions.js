@@ -4,19 +4,34 @@ import { Manager, TaskHelper, Actions as FlexActions, StateHelper } from '@twili
 // eslint-disable-next-line no-unused-vars
 import { DEFAULT_TRANSFER_MODE, getConfig } from '../HrmFormPlugin';
 import { saveInsightsData } from '../services/InsightsService';
-import { transferChatStart, adjustChatCapacity, sendSystemMessage } from '../services/ServerlessService';
-import { namespace, contactFormsBase, connectedCaseBase } from '../states';
+import {
+  transferChatStart,
+  adjustChatCapacity,
+  sendSystemMessage,
+  getDefinitionVersion,
+} from '../services/ServerlessService';
+import { namespace, contactFormsBase, connectedCaseBase, configurationBase } from '../states';
 import * as Actions from '../states/contacts/actions';
+import { populateCurrentDefinitionVersion, updateDefinitionVersion } from '../states/configuration/actions';
 import { changeRoute } from '../states/routing/actions';
 import * as GeneralActions from '../states/actions';
 import callTypes, { transferModes } from '../states/DomainConstants';
 import * as TransferHelpers from './transfer';
 import { saveFormSharedState, loadFormSharedState } from './sharedState';
 import { prepopulateForm } from './prepopulateForm';
-import callerFormDefinition from '../formDefinitions/tabbedForms/CallerInformationTab.json';
-import caseInfoFormDefinition from '../formDefinitions/tabbedForms/CaseInformationTab.json';
-import childFormDefinition from '../formDefinitions/tabbedForms/ChildInformationTab.json';
-import categoriesFormDefinition from '../formDefinitions/tabbedForms/IssueCategorizationTab.json';
+
+/**
+ *
+ * @param {string} version
+ */
+export const loadCurrentDefinitionVersion = async () => {
+  const { definitionVersion } = getConfig();
+  const definitions = await getDefinitionVersion(definitionVersion);
+  // populate current version
+  Manager.getInstance().store.dispatch(populateCurrentDefinitionVersion(definitions));
+  // already populate this to be consumed for data display components
+  Manager.getInstance().store.dispatch(updateDefinitionVersion(definitionVersion, definitions));
+};
 
 /**
  * Given a taskSid, retrieves the state of the form (stored in redux) for that task
@@ -59,20 +74,16 @@ const fromActionFunction = fun => async (payload, original) => {
   await original(payload);
 };
 
-// The tabbed form definitions, used to create new form state.
-const definitions = {
-  callerFormDefinition,
-  caseInfoFormDefinition,
-  categoriesFormDefinition,
-  childFormDefinition,
-};
-
 /**
  * Initializes an empty form (in redux store) for the task within payload
  * @param {{ task: any }} payload
  */
 export const initializeContactForm = payload => {
-  Manager.getInstance().store.dispatch(GeneralActions.initializeContactState(definitions)(payload.task.taskSid));
+  const { currentDefinitionVersion } = Manager.getInstance().store.getState()[namespace][configurationBase];
+
+  Manager.getInstance().store.dispatch(
+    GeneralActions.initializeContactState(currentDefinitionVersion.tabbedForms)(payload.task.taskSid),
+  );
 };
 
 /**
@@ -258,7 +269,7 @@ const saveInsights = async payload => {
   const contactForm = getStateContactForms(taskSid);
   const caseForm = getStateCaseForms(taskSid);
 
-  await saveInsightsData(payload.task, contactForm, caseForm, { useZambiaInsights: true });
+  await saveInsightsData(payload.task, contactForm, caseForm, { useZambiaInsights: true }); // TODO: build new insight configs for ZA
 };
 
 /**

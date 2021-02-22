@@ -1,0 +1,65 @@
+# This is a basic workflow to publish a Twilio Flex-plugins with Github Actions
+
+name: Aselo Development release
+
+# Controls when the action will run.
+on:
+  workflow_dispatch
+  
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      # Create temporal files for the release
+      - name: Create appConfig.js
+        run: cp ./public/appConfig.example.js ./public/appConfig.js
+        working-directory: ./plugin-hrm-form
+      - name: Replace Twilio account SID in appConfig.js
+        uses: falnyr/replace-env-vars-action@master
+        env:
+          TWILIO_ACCOUNT_SID: ${{ secrets.AS_DEV_ACCOUNT_SID }}
+        with:
+          filename: ./plugin-hrm-form/public/appConfig.js
+      - name: Create secret.js
+        run: |
+          mkdir ./src/private
+          touch ./src/private/secret.js
+        working-directory: ./plugin-hrm-form
+      - name: Fill secret.js
+        run: |
+          cat <<EOT >> ./src/private/secret.js
+          export const rollbarAccessToken = '${{ secrets.ROLLBAR_ACCESS_TOKEN }}';
+          export const datadogAccessToken = '${{ secrets.DATADOG_ACCESS_TOKEN }}';
+          EOT
+        working-directory: ./plugin-hrm-form
+      # Runs a single command using the runners shell  
+      - name: Install dependencies for the flex-plugins
+        run: UNBUNDLED_REACT=true npm install
+        working-directory: ./plugin-hrm-form
+      # Deploy the plugin       
+      - name: Run deploy command
+        env:
+         TWILIO_ACCOUNT_SID: ${{ secrets.AS_DEV_ACCOUNT_SID }}
+         TWILIO_AUTH_TOKEN: ${{ secrets.AS_DEV_AUTH_TOKEN }}
+         CI: true
+        run: npm run deploy
+        working-directory: ./plugin-hrm-form
+
+# For newer versions of the Flex plugins, replace the "Deploy the plugin" step with the following step:
+#      # Install the Twilio CLI and the flex plugin, then deploy the plugin
+#      - name: Install twilio cli and run deploy command
+#        env:
+#         TWILIO_ACCOUNT_SID: ${{ secrets.AS_DEV_ACCOUNT_SID }}
+#         TWILIO_AUTH_TOKEN: ${{ secrets.AS_DEV_AUTH_TOKEN }}
+#        run: npm install twilio-cli -g && twilio plugins:install @twilio-labs/plugin-flex@beta && twilio flex:plugins:deploy

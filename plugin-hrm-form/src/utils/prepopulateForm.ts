@@ -3,9 +3,8 @@ import { ITask, Manager } from '@twilio/flex-ui';
 import { mapAge, mapGender } from './mappers';
 import * as RoutingActions from '../states/routing/actions';
 import { prepopulateFormCaller, prepopulateFormChild } from '../states/contacts/actions';
-import ChildInformationTab from '../formDefinitions/tabbedForms/ChildInformationTab.json';
-import CallerInformationTab from '../formDefinitions/tabbedForms/CallerInformationTab.json';
 import type { FormDefinition } from '../components/common/forms/types';
+import { getDefinitionVersions } from '../HrmFormPlugin';
 
 /**
  * Given a form definition, grabs the "gender" named input and return the options values, or empty array.
@@ -21,6 +20,8 @@ const getGenderOptions = (definition: FormDefinition) => {
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export const prepopulateForm = (task: ITask) => {
+  const { CallerInformationTab, ChildInformationTab } = getDefinitionVersions().currentDefinitionVersion.tabbedForms;
+
   // If this task came from the pre-survey
   if (task.attributes.memory) {
     const { answers } = task.attributes.memory.twilio.collected_data.collect_survey;
@@ -32,14 +33,13 @@ export const prepopulateForm = (task: ITask) => {
 
     if (answers.about_self.answer === 'Yes') {
       // future work: const ChildInformationTab = Manager.getInstance().store.getState() ... to grab the form definition when it's part of the global state (instead of bundled with the code)
-      const genderOptions = getGenderOptions(ChildInformationTab as FormDefinition);
+      const genderOptions = getGenderOptions(ChildInformationTab);
       const gender =
         !answers.gender || answers.gender.error ? 'Unknown' : mapGender(genderOptions)(answers.gender.answer);
 
       Manager.getInstance().store.dispatch(prepopulateFormChild(gender, age, task.taskSid));
     } else if (answers.about_self.answer === 'No') {
-      // future work: const CallerInformationTab = Manager.getInstance().store.getState() ... to grab the form definition when it's part of the global state (instead of bundled with the code)
-      const genderOptions = getGenderOptions(CallerInformationTab as FormDefinition);
+      const genderOptions = getGenderOptions(CallerInformationTab);
       const gender =
         !answers.gender || answers.gender.error ? 'Unknown' : mapGender(genderOptions)(answers.gender.answer);
 

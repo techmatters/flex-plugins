@@ -8,7 +8,7 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { CaseLayout } from '../../styles/case';
 import Case from '../case';
-import { namespace, contactFormsBase, routingBase, RootState } from '../../states';
+import { namespace, contactFormsBase, routingBase, RootState, configurationBase } from '../../states';
 import { updateCallType, updateForm } from '../../states/contacts/actions';
 import { searchResultToContactForm } from '../../services/ContactService';
 import { changeRoute } from '../../states/routing/actions';
@@ -16,7 +16,6 @@ import type { TaskEntry } from '../../states/contacts/reducer';
 import type { TabbedFormSubroutes } from '../../states/routing/types';
 import { NewCaseSubroutes } from '../../states/routing/types';
 import type { SearchContact } from '../../types/types';
-import type { FormDefinition } from '../common/forms/types';
 import { TabbedFormsContainer, TopNav, TransparentButton, StyledTabs } from '../../styles/HrmStyles';
 import FormTab from '../common/forms/FormTab';
 import callTypes from '../../states/DomainConstants';
@@ -27,10 +26,6 @@ import ContactlessTaskTab from './ContactlessTaskTab';
 import BottomBar from './BottomBar';
 import { hasTaskControl } from '../../utils/transfer';
 import { isNonDataCallType } from '../../states/ValidationRules';
-import CallerTabDefinition from '../../formDefinitions/tabbedForms/CallerInformationTab.json';
-import CaseTabDefinition from '../../formDefinitions/tabbedForms/CaseInformationTab.json';
-import ChildTabDefinition from '../../formDefinitions/tabbedForms/ChildInformationTab.json';
-import LayoutDefinitions from '../../formDefinitions/LayoutDefinitions.json';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -76,14 +71,15 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-// eslint-disable-next-line react/no-multi-comp
-const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props }) => {
+const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, currentDefinitionVersion, ...props }) => {
   const methods = useForm({
     shouldFocusError: false,
     mode: 'onChange',
   });
 
   if (routing.route !== 'tabbed-forms') return null;
+
+  if (!currentDefinitionVersion) return null;
 
   const { task } = props;
   const taskId = task.taskSid;
@@ -93,7 +89,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
     const selectedIsCaller = searchResult.details.callType === callTypes.caller;
     if (isCallerType && selectedIsCaller) {
       const deTransformed = searchResultToContactForm(
-        CallerTabDefinition as FormDefinition,
+        currentDefinitionVersion.tabbedForms.CallerInformationTab,
         searchResult.details.callerInformation,
       );
 
@@ -101,7 +97,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
       dispatch(changeRoute({ route: 'tabbed-forms', subroute: 'callerInformation' }, taskId));
     } else {
       const deTransformed = searchResultToContactForm(
-        ChildTabDefinition as FormDefinition,
+        currentDefinitionVersion.tabbedForms.ChildInformationTab,
         searchResult.details.childInformation,
       );
 
@@ -190,8 +186,8 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
               {isCallerType && (
                 <TabbedFormTab
                   tabPath="callerInformation"
-                  definition={CallerTabDefinition as FormDefinition}
-                  layoutDefinition={LayoutDefinitions.contact.callerInformation}
+                  definition={currentDefinitionVersion.tabbedForms.CallerInformationTab}
+                  layoutDefinition={currentDefinitionVersion.layoutVersion.contact.callerInformation}
                   initialValues={contactForm.callerInformation}
                   display={subroute === 'callerInformation'}
                 />
@@ -200,16 +196,20 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, ...props
                 <>
                   <TabbedFormTab
                     tabPath="childInformation"
-                    definition={ChildTabDefinition as FormDefinition}
-                    layoutDefinition={LayoutDefinitions.contact.childInformation}
+                    definition={currentDefinitionVersion.tabbedForms.ChildInformationTab}
+                    layoutDefinition={currentDefinitionVersion.layoutVersion.contact.childInformation}
                     initialValues={contactForm.childInformation}
                     display={subroute === 'childInformation'}
                   />
-                  <IssueCategorizationTab display={subroute === 'categories'} initialValue={contactForm.categories} />
+                  <IssueCategorizationTab
+                    display={subroute === 'categories'}
+                    initialValue={contactForm.categories}
+                    definition={currentDefinitionVersion.tabbedForms.IssueCategorizationTab}
+                  />
                   <TabbedFormTab
                     tabPath="caseInformation"
-                    definition={CaseTabDefinition as FormDefinition}
-                    layoutDefinition={LayoutDefinitions.contact.caseInformation}
+                    definition={currentDefinitionVersion.tabbedForms.CaseInformationTab}
+                    layoutDefinition={currentDefinitionVersion.layoutVersion.contact.caseInformation}
                     initialValues={contactForm.caseInformation}
                     display={subroute === 'caseInformation'}
                   />
@@ -238,7 +238,8 @@ TabbedForms.displayName = 'TabbedForms';
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const routing = state[namespace][routingBase].tasks[ownProps.task.taskSid];
   const contactForm = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
-  return { routing, contactForm };
+  const { currentDefinitionVersion } = state[namespace][configurationBase];
+  return { routing, contactForm, currentDefinitionVersion };
 };
 
 const connector = connect(mapStateToProps);

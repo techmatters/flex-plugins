@@ -1,0 +1,58 @@
+[
+  {
+    "name": "callSummary",
+    "label": "Comments",
+    "type": "textarea",
+    "required": true
+  },
+  {
+    "name": "recommendation",
+    "label": "Recommendation",
+    "type": "select",
+    "options": [
+      { "value": "", "label": "" },
+      { "value": "Recommendations to school counsellors", "label": "Recommendations to school counsellors" }, 
+      { "value": "Referrals to healthcare professionals", "label": "Referrals to healthcare professionals" }, 
+      { "value": "Referrals to other organisations", "label": "Referrals to other organisations" }
+    ]
+  },
+  {
+    "name": "howDidTheChildHearAboutUs",
+    "label": "How did the child hear about us?",
+    "type": "select",
+    "options": [
+      { "value": "", "label": "" },
+      { "value": "Awareness Campaign", "label": "Awareness Campaign" }, 
+      { "value": "Billboard", "label": "Billboard" }, 
+      { "value": "Pamphlet", "label": "Pamphlet" }, 
+      { "value": "Radio", "label": "Radio" }, 
+      { "value": "TV Advert", "label": "TV Advert" }, 
+      { "value": "Word of Mouth", "label": "Word of Mouth" }
+    ]
+  },
+  {
+    "name": "keepConfidential",
+    "label": "Keep confidential?",
+    "type": "checkbox"
+  },
+  {
+    "name": "okForCaseWorkerToCall",
+    "label": "Ok for case worker to call?",
+    "type": "mixed-checkbox"
+  },
+  {
+    "name": "didYouDiscussRightsWithTheChild",
+    "label": "Did you discuss rights with the child?",
+    "type": "mixed-checkbox"
+  },
+  {
+    "name": "didTheChildFeelWeSolvedTheirProblem",
+    "label": "Did the child feel we solved their problem?",
+    "type": "mixed-checkbox"
+  },
+  {
+    "name": "wouldTheChildRecommendUsToAFriend",
+    "label": "Would the child recommend us to a friend?",
+    "type": "mixed-checkbox"
+  }
+]

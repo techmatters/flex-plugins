@@ -6,21 +6,9 @@ import { withTaskContext, TaskHelper } from '@twilio/flex-ui';
 import HrmForm from './HrmForm';
 import FormNotEditable from './FormNotEditable';
 import { taskType } from '../types';
-import { namespace, contactFormsBase, searchContactsBase, routingBase } from '../states';
+import { namespace, contactFormsBase, searchContactsBase, routingBase, configurationBase } from '../states';
 import * as GeneralActions from '../states/actions';
 import { hasTaskControl } from '../utils/transfer';
-import callerFormDefinition from '../formDefinitions/tabbedForms/CallerInformationTab.json';
-import caseInfoFormDefinition from '../formDefinitions/tabbedForms/CaseInformationTab.json';
-import childFormDefinition from '../formDefinitions/tabbedForms/ChildInformationTab.json';
-import categoriesFormDefinition from '../formDefinitions/tabbedForms/IssueCategorizationTab.json';
-
-// The tabbed form definitions, used to create new form state.
-const definitions = {
-  callerFormDefinition,
-  caseInfoFormDefinition,
-  categoriesFormDefinition,
-  childFormDefinition,
-};
 
 class TaskView extends Component {
   static displayName = 'TaskView';
@@ -33,6 +21,7 @@ class TaskView extends Component {
     searchStateExists: PropTypes.bool.isRequired,
     handleCompleteTask: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
+    currentDefinitionVersion: PropTypes.shape({ tabbedForms: PropTypes.shape({}) }).isRequired,
   };
 
   static defaultProps = {
@@ -41,9 +30,11 @@ class TaskView extends Component {
 
   // eslint-disable-next-line complexity
   componentDidMount() {
-    const { contactFormStateExists, routingStateExists, searchStateExists } = this.props;
+    const { contactFormStateExists, routingStateExists, searchStateExists, currentDefinitionVersion } = this.props;
     if (!contactFormStateExists || !routingStateExists || !searchStateExists) {
-      this.props.dispatch(GeneralActions.recreateContactState(definitions)(this.props.thisTask.taskSid));
+      this.props.dispatch(
+        GeneralActions.recreateContactState(currentDefinitionVersion.tabbedForms)(this.props.thisTask.taskSid),
+      );
     }
   }
 
@@ -66,17 +57,22 @@ class TaskView extends Component {
   }
 }
 
+/**
+ * @param {import('../states').RootState} state
+ */
 const mapStateToProps = (state, ownProps) => {
   // Check if the entry for this task exists in each reducer
   const contactFormStateExists = Boolean(state[namespace][contactFormsBase].tasks[ownProps.thisTask.taskSid]);
   const routingStateExists = Boolean(state[namespace][routingBase].tasks[ownProps.thisTask.taskSid]);
   const searchStateExists = Boolean(state[namespace][searchContactsBase].tasks[ownProps.thisTask.taskSid]);
+  const { currentDefinitionVersion } = state[namespace][configurationBase];
 
   // This should already have been created when beforeAcceptTask is fired
   return {
     contactFormStateExists,
     routingStateExists,
     searchStateExists,
+    currentDefinitionVersion,
   };
 };
 

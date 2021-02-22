@@ -5,10 +5,7 @@ import '../mockGetConfig';
 import { transformForm, saveToHrm, createCategoriesObject } from '../../services/ContactService';
 import { createNewTaskEntry } from '../../states/contacts/reducer';
 import callTypes, { channelTypes } from '../../states/DomainConstants';
-import callerFormDefinition from '../../formDefinitions/tabbedForms/CallerInformationTab.json';
-import caseInfoFormDefinition from '../../formDefinitions/tabbedForms/CaseInformationTab.json';
-import childFormDefinition from '../../formDefinitions/tabbedForms/ChildInformationTab.json';
-import categoriesFormDefinition from '../../formDefinitions/tabbedForms/IssueCategorizationTab.json';
+import mockV1 from '../../formDefinitions/v1';
 
 describe('transformForm', () => {
   test('removes control information and presents values only', () => {
@@ -37,7 +34,7 @@ describe('transformForm', () => {
     };
 
     const expectedCategories = oldForm.categories.reduce((acc, path) => set(path, true, acc), {
-      categories: createCategoriesObject(),
+      categories: createCategoriesObject(mockV1.tabbedForms.IssueCategorizationTab),
     }).categories;
 
     const expected = {
@@ -81,12 +78,7 @@ describe('transformForm', () => {
 });
 
 // The tabbed form definitions, used to create new form state.
-const definitions = {
-  callerFormDefinition,
-  caseInfoFormDefinition,
-  categoriesFormDefinition,
-  childFormDefinition,
-};
+const definitions = mockV1.tabbedForms;
 
 const createForm = ({ callType, childFirstName }, contactlessTaskInfo = undefined) => {
   const blankForm = createNewTaskEntry(definitions)(false);

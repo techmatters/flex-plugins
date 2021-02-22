@@ -7,11 +7,16 @@ import { connect, ConnectedProps } from 'react-redux';
 import { RootState, namespace, contactFormsBase } from '../../states';
 import * as actions from '../../states/contacts/actions';
 import type { TaskEntry } from '../../states/contacts/reducer';
-import IssueCategorizationTabDefinition from '../../formDefinitions/tabbedForms/IssueCategorizationTab.json';
 import { CategoriesFromDefinition, createSubCategoriesInputs } from '../common/forms/categoriesTabGenerator';
 import { TabbedFormTabContainer } from '../../styles/HrmStyles';
+import type { CategoriesDefinition } from '../common/forms/types';
 
-type OwnProps = { task: ITask; display: boolean; initialValue: TaskEntry['categories'] };
+type OwnProps = {
+  task: ITask;
+  display: boolean;
+  initialValue: TaskEntry['categories'];
+  definition: CategoriesDefinition;
+};
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
@@ -21,11 +26,13 @@ const IssueCategorizationTab: React.FC<Props> = ({
   display,
   categoriesMeta,
   initialValue,
+  definition,
   updateForm,
   setCategoriesGridView,
   handleExpandCategory,
 }) => {
   const { getValues, setValue } = useFormContext();
+  const IssueCategorizationTabDefinition = definition;
 
   // Couldn't find a way to provide initial values to an field array, as a workaround, intentionally run this only on first render
   React.useEffect(() => {
@@ -40,7 +47,7 @@ const IssueCategorizationTab: React.FC<Props> = ({
     };
 
     return createSubCategoriesInputs(IssueCategorizationTabDefinition, ['categories'], updateCallback);
-  }, [getValues, task.taskSid, updateForm]);
+  }, [IssueCategorizationTabDefinition, getValues, task.taskSid, updateForm]);
 
   const toggleCategoriesGridView = (gridView: boolean) => {
     setCategoriesGridView(gridView, task.taskSid);

@@ -4,6 +4,8 @@ import { ITask, Notifications } from '@twilio/flex-ui';
 
 import fetchProtectedApi from './fetchProtectedApi';
 import { getConfig } from '../HrmFormPlugin';
+import definitionVersions from '../formDefinitions';
+import type { DefinitionVersion } from '../components/common/forms/types';
 
 type PopulateCounselorsReturn = { sid: string; fullName: string }[];
 
@@ -101,3 +103,17 @@ export const sendSystemMessage = async (body: { taskSid: ITask['taskSid']; messa
 
   return response;
 };
+
+/**
+ * Function that mimics the fetching of a version definition for all the forms used within the app.
+ * Later on this will be fetched in async way.
+ */
+export const getDefinitionVersion = async (version: string): Promise<DefinitionVersion> => definitionVersions[version];
+
+export const getDefinitionVersionsList = async (missingDefinitionVersions: string[]) =>
+  Promise.all(
+    missingDefinitionVersions.map(async version => {
+      const definition = await getDefinitionVersion(version);
+      return { version, definition };
+    }),
+  );
