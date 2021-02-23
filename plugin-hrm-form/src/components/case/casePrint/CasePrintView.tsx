@@ -126,8 +126,10 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails }) => {
             <View style={styles.caseBody}>
               <CasePrintDetails
                 status={caseDetails.status}
-                openedAt={caseDetails.openedDate}
-                childAtRisk={caseDetails.childIsAtRisk}
+                openedDate={caseDetails.openedDate}
+                lastUpdatedDate={caseDetails.lastUpdatedDate}
+                followUpDate={caseDetails.followUpDate}
+                childIsAtRisk={caseDetails.childIsAtRisk}
                 counselor={caseDetails.currentCounselor}
                 caseManager={{ name: 'Bhavna Lutchman', phone: '031 201 2059', email: 'research@childlinesa.org.za' }}
               />

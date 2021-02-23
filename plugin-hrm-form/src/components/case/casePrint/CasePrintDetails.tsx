@@ -7,8 +7,10 @@ import styles from './CasePrintStyles';
 
 type OwnProps = {
   status: string;
-  openedAt: string;
-  childAtRisk: boolean;
+  openedDate: string;
+  lastUpdatedDate: string;
+  followUpDate: string;
+  childIsAtRisk: boolean;
   counselor: string;
   caseManager: {
     name: string;
@@ -19,7 +21,15 @@ type OwnProps = {
 
 type Props = OwnProps;
 
-const CasePrintDetails: React.FC<Props> = ({ status, openedAt, childAtRisk, counselor, caseManager }) => {
+const CasePrintDetails: React.FC<Props> = ({
+  status,
+  openedDate,
+  lastUpdatedDate,
+  followUpDate,
+  childIsAtRisk,
+  counselor,
+  caseManager,
+}) => {
   return (
     <View style={styles.caseDetailsContainer}>
       <Text style={styles.caseDetailsLabel}>Case Details</Text>
@@ -30,9 +40,17 @@ const CasePrintDetails: React.FC<Props> = ({ status, openedAt, childAtRisk, coun
         </View>
         <View style={styles.flexColumn}>
           <Text>Opened</Text>
-          <Text style={styles.caseDetailsBoldText}>{openedAt}</Text>
+          <Text style={styles.caseDetailsBoldText}>{openedDate}</Text>
         </View>
-        <View>{childAtRisk ? <Text>✔️ CHILD IS AT RISK</Text> : <Text>❌ CHILD IS AT RISK</Text>}</View>
+        <View style={styles.flexColumn}>
+          <Text>Last Updated/Closed</Text>
+          <Text style={styles.caseDetailsBoldText}>{lastUpdatedDate}</Text>
+        </View>
+        <View style={styles.flexColumn}>
+          <Text>Follow Up Date</Text>
+          <Text style={styles.caseDetailsBoldText}>{followUpDate}</Text>
+        </View>
+        <View>{childIsAtRisk ? <Text>✔️ CHILD IS AT RISK</Text> : <Text>❌ CHILD IS AT RISK</Text>}</View>
       </View>
       <View style={styles.caseCounsellorSection}>
         <View style={styles.flexColumn}>
