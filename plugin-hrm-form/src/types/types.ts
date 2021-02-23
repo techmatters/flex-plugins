@@ -1,4 +1,5 @@
-/* eslint-disable import/no-unused-modules */
+import { ITask } from '@twilio/flex-ui';
+
 import type { CallTypes } from '../states/DomainConstants';
 
 export type CaseStatus = 'open' | 'closed';
@@ -108,3 +109,20 @@ export type SearchCaseResult = {
   count: number;
   cases: Case[];
 };
+
+/**
+ * Custom tasks
+ */
+export type OfflineContactTask = {
+  taskSid: 'offline-contact-task-sid';
+  attributes: {
+    isContactlessTask: true;
+  };
+  channelType: 'default';
+};
+
+export type CustomITask = ITask | OfflineContactTask;
+
+export function isOfflineContactTask(task: CustomITask): task is OfflineContactTask {
+  return task.taskSid === 'offline-contact-task-sid';
+}

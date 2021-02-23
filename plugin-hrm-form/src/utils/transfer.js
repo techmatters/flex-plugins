@@ -60,7 +60,7 @@ export const shouldShowTransferControls = task =>
  * - transfer was not initiated
  * - this is the original reservation and a transfer was initiated and then rejected
  * - this is not the original reservation and a transfer was initiated and then accepted
- * @param {ITask} task
+ * @param {import('../types/types').CustomITask} task
  */
 export const hasTaskControl = task =>
   !hasTransferStarted(task) || task.attributes.transferMeta.sidWithTaskControl === task.sid;

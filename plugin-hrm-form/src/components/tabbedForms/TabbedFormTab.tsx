@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import { ITask, withTaskContext } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 
 import * as actions from '../../states/contacts/actions';
@@ -16,9 +15,10 @@ import {
 import { createFormFromDefinition, disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
 import type { FormDefinition, LayoutDefinition } from '../common/forms/types';
 import type { TaskEntry } from '../../states/contacts/reducer';
+import type { CustomITask } from '../../types/types';
 
 type OwnProps = {
-  task: ITask;
+  task: CustomITask;
   display: boolean;
   definition: FormDefinition;
   layoutDefinition?: LayoutDefinition;
@@ -80,4 +80,4 @@ const mapDispatchToProps = {
 const connector = connect(null, mapDispatchToProps);
 const connected = connector(TabbedFormTab);
 
-export default withTaskContext<Props, typeof connected>(connected);
+export default connected;

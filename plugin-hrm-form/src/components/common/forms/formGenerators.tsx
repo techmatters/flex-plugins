@@ -186,7 +186,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                     defaultValue={initialValue}
                   >
                     {def.options.map(o => (
-                      <FormOption key={`${path}-${o.label}`} value={o.value} isEmptyValue={o.value === ''}>
+                      <FormOption key={`${path}-${o.label}-${o.value}`} value={o.value} isEmptyValue={o.value === ''}>
                         {o.label}
                       </FormOption>
                     ))}
@@ -257,7 +257,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                     defaultValue={initialValue}
                   >
                     {options.map(o => (
-                      <FormOption key={`${path}-${o.value}`} value={o.value} isEmptyValue={o.value === ''}>
+                      <FormOption key={`${path}-${o.label}-${o.value}`} value={o.value} isEmptyValue={o.value === ''}>
                         {o.label}
                       </FormOption>
                     ))}

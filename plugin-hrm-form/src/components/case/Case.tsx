@@ -49,14 +49,14 @@ import ViewHousehold from './ViewHousehold';
 import ViewPerpetrator from './ViewPerpetrator';
 import ViewIncident from './ViewIncident';
 import ViewReferral from './ViewReferral';
-import type { HouseholdEntry, PerpetratorEntry, IncidentEntry, Case as CaseType } from '../../types/types';
+import type { HouseholdEntry, PerpetratorEntry, IncidentEntry, Case as CaseType, CustomITask } from '../../types/types';
 
 const isStandaloneITask = (task): task is StandaloneITask => {
   return task.taskSid === 'standalone-task-sid';
 };
 
 type OwnProps = {
-  task: ITask | StandaloneITask;
+  task: CustomITask | StandaloneITask;
   isCreating?: boolean;
   handleClose?: () => void;
   updateAllCasesView?: (updatedCase: CaseType) => void;

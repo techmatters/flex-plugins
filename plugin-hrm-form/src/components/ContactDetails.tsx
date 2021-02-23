@@ -20,7 +20,6 @@ import { namespace, configurationBase, RootState } from '../states';
 import * as ConfigActions from '../states/configuration/actions';
 import { getDefinitionVersion } from '../services/ServerlessService';
 
-// TODO: complete this type
 type OwnProps = {
   contact: any;
   detailsExpanded: any;

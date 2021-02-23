@@ -1,19 +1,29 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
+import { ITask, withTaskContext } from '@twilio/flex-ui';
 
 import TaskView from './TaskView';
 import { Absolute } from '../styles/HrmStyles';
 import { populateCounselors } from '../services/ServerlessService';
 import { populateCounselorsState } from '../states/configuration/actions';
-import type { RootState } from '../states';
+import { RootState, namespace, routingBase } from '../states';
+import { OfflineContactTask } from '../types/types';
 
-type OwnProps = {};
+const offlineContactTask: OfflineContactTask = {
+  taskSid: 'offline-contact-task-sid',
+  channelType: 'default',
+  attributes: { isContactlessTask: true },
+};
+
+type OwnProps = {
+  task: ITask;
+};
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const CustomCRMContainer: React.FC<Props> = ({ tasks, dispatch }) => {
+const CustomCRMContainer: React.FC<Props> = ({ selectedTaskSid, addOfflineContact, task, dispatch }) => {
   useEffect(() => {
     const fetchPopulateCounselors = async () => {
       try {
@@ -28,11 +38,13 @@ const CustomCRMContainer: React.FC<Props> = ({ tasks, dispatch }) => {
     fetchPopulateCounselors();
   }, [dispatch]);
 
+  const renderITask = selectedTaskSid && task;
+  const renderOfflineContactTask = !selectedTaskSid && addOfflineContact;
+
   return (
     <Absolute top="0" bottom="0" left="0" right="0">
-      {Array.from(tasks.values()).map(item => (
-        <TaskView thisTask={item} key={`controller-${item.taskSid}`} />
-      ))}
+      {renderITask && <TaskView task={task} key={`controller-${selectedTaskSid}`} />}
+      {renderOfflineContactTask && <TaskView task={offlineContactTask} key={`controller-${selectedTaskSid}`} />}
     </Absolute>
   );
 };
@@ -40,10 +52,14 @@ const CustomCRMContainer: React.FC<Props> = ({ tasks, dispatch }) => {
 CustomCRMContainer.displayName = 'CustomCRMContainer';
 
 const mapStateToProps = (state: RootState) => {
+  const { selectedTaskSid } = state.flex.view;
+  const { addOfflineContact } = state[namespace][routingBase];
+
   return {
-    tasks: state.flex.worker.tasks,
+    selectedTaskSid,
+    addOfflineContact,
   };
 };
 
 const connector = connect(mapStateToProps);
-export default connector(CustomCRMContainer);
+export default withTaskContext<Props, typeof CustomCRMContainer>(connector(CustomCRMContainer));

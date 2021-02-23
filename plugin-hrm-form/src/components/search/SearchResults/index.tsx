@@ -2,12 +2,12 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Template, Tab as TwilioTab, ITask } from '@twilio/flex-ui';
+import { Template, Tab as TwilioTab } from '@twilio/flex-ui';
 
 import { standaloneTaskSid } from '../../StandaloneSearch';
 import ContactPreview from '../ContactPreview';
 import CasePreview from '../CasePreview';
-import { SearchContactResult, SearchCaseResult, SearchContact, Case } from '../../../types/types';
+import { SearchContactResult, SearchCaseResult, SearchContact, Case, CustomITask } from '../../../types/types';
 import { Row } from '../../../styles/HrmStyles';
 import {
   ResultsHeader,
@@ -40,7 +40,7 @@ export const CONTACTS_PER_PAGE = 20;
 export const CASES_PER_PAGE = 20;
 
 type OwnProps = {
-  task: ITask;
+  task: CustomITask;
   currentIsCaller: boolean;
   searchContactsResults: SearchContactResult;
   searchCasesResults: SearchCaseResult;
@@ -170,6 +170,7 @@ const SearchResults: React.FC<Props> = ({
         </Row>
       </ResultsHeader>
       <ConnectDialog
+        task={task}
         anchorEl={anchorEl}
         currentIsCaller={currentIsCaller}
         contact={currentContact}

@@ -1,5 +1,6 @@
 // Action types
 export const CHANGE_ROUTE = 'CHANGE_ROUTE';
+export const ADD_OFFLINE_CONTACT = 'ADD_OFFLINE_CONTACT';
 
 export type TabbedFormSubroutes =
   | 'search'
@@ -45,4 +46,8 @@ type ChangeRouteAction = {
   taskId: string;
 };
 
-export type RoutingActionType = ChangeRouteAction;
+type AddOfflineContactAction = {
+  type: typeof ADD_OFFLINE_CONTACT;
+};
+
+export type RoutingActionType = ChangeRouteAction | AddOfflineContactAction;

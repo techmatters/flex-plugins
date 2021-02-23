@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { withTaskContext, ITask } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 
 import { CaseLayout } from '../styles/case';
@@ -8,36 +7,35 @@ import CallTypeButtons from './callTypeButtons';
 import TabbedForms from './tabbedForms';
 import Case from './case';
 import { namespace, RootState, routingBase } from '../states';
-import * as RoutingActions from '../states/routing/actions';
+import type { CustomITask } from '../types/types';
 
 type OwnProps = {
-  task: ITask;
-  changeRoute: any;
+  task: CustomITask;
 };
 
 // eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 
-const HrmForm: React.FC<Props> = props => {
+const HrmForm: React.FC<Props> = ({ routing, task }) => {
   // eslint-disable-next-line react/prop-types
-  if (!props.routing) return null;
+  if (!routing) return null;
   // eslint-disable-next-line react/prop-types
-  const { route } = props.routing;
+  const { route } = routing;
 
   switch (route) {
     case 'tabbed-forms':
-      return <TabbedForms />;
+      return <TabbedForms task={task} />;
 
     case 'new-case':
       return (
         <CaseLayout>
-          <Case task={props.task} isCreating={true} />
+          <Case task={task} isCreating={true} />
         </CaseLayout>
       );
 
     case 'select-call-type':
     default:
-      return <CallTypeButtons />;
+      return <CallTypeButtons task={task} />;
   }
 };
 
@@ -49,9 +47,4 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   return { routing: routingState.tasks[ownProps.task.taskSid] };
 };
 
-const mapDispatchToProps = {
-  changeRoute: RoutingActions.changeRoute,
-};
-
-// @ts-ignore
-export default withTaskContext(connect(mapStateToProps, mapDispatchToProps)(HrmForm));
+export default connect(mapStateToProps, null)(HrmForm);

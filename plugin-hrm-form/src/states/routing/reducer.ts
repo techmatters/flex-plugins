@@ -1,6 +1,6 @@
 import { omit } from 'lodash';
 
-import { AppRoutes, RoutingActionType, CHANGE_ROUTE } from './types';
+import { AppRoutes, RoutingActionType, CHANGE_ROUTE, ADD_OFFLINE_CONTACT } from './types';
 import { GeneralActionType, INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE } from '../types';
 import { standaloneTaskSid } from '../../components/StandaloneSearch';
 
@@ -8,6 +8,7 @@ export type RoutingState = {
   tasks: {
     [taskId: string]: AppRoutes;
   };
+  addOfflineContact: boolean;
 };
 
 const newTaskEntry = {
@@ -18,6 +19,7 @@ export const initialState: RoutingState = {
   tasks: {
     [standaloneTaskSid]: newTaskEntry,
   },
+  addOfflineContact: false,
 };
 
 export function reduce(state = initialState, action: RoutingActionType | GeneralActionType): RoutingState {
@@ -56,6 +58,11 @@ export function reduce(state = initialState, action: RoutingActionType | General
         },
       };
     }
+    case ADD_OFFLINE_CONTACT:
+      return {
+        ...state,
+        addOfflineContact: true,
+      };
     default:
       return state;
   }

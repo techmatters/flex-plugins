@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withTaskContext, TaskHelper, Template } from '@twilio/flex-ui';
-import { connect } from 'react-redux';
+import { TaskHelper, Template } from '@twilio/flex-ui';
+import { connect, ConnectedProps } from 'react-redux';
 
-import { namespace, contactFormsBase, connectedCaseBase } from '../../states';
+import { RootState, namespace, contactFormsBase, connectedCaseBase } from '../../states';
 import { updateCallType } from '../../states/contacts/actions';
 import { changeRoute } from '../../states/routing/actions';
 import { withLocalization } from '../../contexts/LocalizationContext';
@@ -17,12 +17,16 @@ import { hasTaskControl } from '../../utils/transfer';
 import { getConfig } from '../../HrmFormPlugin';
 import { submitContactForm, completeTask } from '../../services/formSumbissionHelpers';
 import CallTypeIcon from '../common/icons/CallTypeIcon';
+import { CustomITask, isOfflineContactTask } from '../../types/types';
 
 const isDialogOpen = contactForm =>
   Boolean(contactForm && contactForm.callType && contactForm.callType && isNonDataCallType(contactForm.callType));
 
 const clearCallType = props => props.dispatch(updateCallType(props.task.taskSid, ''));
 
+/**
+ * @type {React.FC<{ task: CustomITask } & ConnectedProps<typeof connector>>}
+ */
 const CallTypeButtons = props => {
   const { contactForm, caseForm, task, localization } = props;
   const { isCallTask } = localization;
@@ -37,7 +41,7 @@ const CallTypeButtons = props => {
     if (!hasTaskControl(task)) return;
 
     // eslint-disable-next-line no-nested-ternary
-    const subroute = task.attributes.isContactlessTask
+    const subroute = isOfflineContactTask(task)
       ? 'contactlessTask'
       : callType === callTypes.caller
       ? 'callerInformation'
@@ -48,7 +52,7 @@ const CallTypeButtons = props => {
   };
 
   const handleNonDataClick = (taskSid, callType) => {
-    if (task.attributes.isContactlessTask) {
+    if (isOfflineContactTask(task)) {
       handleClickAndRedirect(taskSid, callType);
     } else {
       handleClick(taskSid, callType);
@@ -127,6 +131,9 @@ CallTypeButtons.propTypes = {
   dispatch: PropTypes.func.isRequired,
 };
 
+/**
+ * @param {RootState} state
+ */
 const mapStateToProps = (state, ownProps) => {
   const contactForm = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
   const caseState = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid];
@@ -137,4 +144,4 @@ const mapStateToProps = (state, ownProps) => {
 const connector = connect(mapStateToProps);
 const connected = connector(CallTypeButtons);
 
-export default withLocalization(withTaskContext(connected));
+export default withLocalization(connected);

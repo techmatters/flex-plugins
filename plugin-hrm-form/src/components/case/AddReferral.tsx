@@ -2,7 +2,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { connect } from 'react-redux';
-import { Template, ITask } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 import { useForm, FormProvider } from 'react-hook-form';
 
 import ActionHeader from './ActionHeader';
@@ -24,9 +24,10 @@ import { createFormFromDefinition, disperseInputs, splitInHalf } from '../common
 import type { DefinitionVersion } from '../common/forms/types';
 import { transformValues } from '../../services/ContactService';
 import { StandaloneITask } from '../StandaloneSearch';
+import type { CustomITask } from '../../types/types';
 
 type OwnProps = {
-  task: ITask | StandaloneITask;
+  task: CustomITask | StandaloneITask;
   counselor: string;
   definitionVersion: DefinitionVersion;
   onClickClose: () => void;

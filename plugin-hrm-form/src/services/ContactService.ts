@@ -15,7 +15,7 @@ import type {
   FormDefinition,
   FormItemDefinition,
 } from '../components/common/forms/types';
-import type { InformationObject, ContactRawJson, SearchContactResult } from '../types/types';
+import { InformationObject, ContactRawJson, SearchContactResult, isOfflineContactTask } from '../types/types';
 
 /**
  * Un-nests the information (caller/child) as it comes from DB, to match the form structure
@@ -173,7 +173,7 @@ export async function saveToHrm(task, form, workerSid, helpline, shouldFillEndMi
       ...createNewTaskEntry(tabbedForms)(false),
       callType: form.callType,
       metadata: form.metadata,
-      ...(task.attributes.isContactlessTask && { contactlessTask: form.contactlessTask }),
+      ...(isOfflineContactTask(task) && { contactlessTask: form.contactlessTask }),
     };
   }
 
