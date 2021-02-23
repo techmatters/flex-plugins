@@ -86,14 +86,14 @@ const caseInformationType = PropTypes.shape({
   wouldTheChildRecommendUsToAFriend: fieldType,
 });
 
-export const formType = PropTypes.shape({
+const formType = PropTypes.shape({
   callType: callTypeType,
   callerInformation: callerInformationType,
   childInformation: childInformationType,
   caseInformation: caseInformationType,
 });
 
-export const localizationType = PropTypes.shape({
+const localizationType = PropTypes.shape({
   // eslint-disable-next-line react/forbid-prop-types
   manager: PropTypes.object.isRequired,
   isCallTask: PropTypes.func.isRequired,

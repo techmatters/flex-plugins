@@ -8,7 +8,13 @@ import CallerInformationTab from './tabbedForms/CallerInformationTab.json';
 import CaseInformationTab from './tabbedForms/CaseInformationTab.json';
 import ChildInformationTab from './tabbedForms/ChildInformationTab.json';
 import IssueCategorizationTab from './tabbedForms/IssueCategorizationTab.json';
-import type { DefinitionVersion, LayoutVersion, FormDefinition } from '../../components/common/forms/types';
+import CallTypeButtons from './CallTypeButtons.json';
+import type {
+  DefinitionVersion,
+  LayoutVersion,
+  FormDefinition,
+  CallTypeButtonsDefinitions,
+} from '../../components/common/forms/types';
 
 const version: DefinitionVersion = {
   caseForms: {
@@ -24,6 +30,7 @@ const version: DefinitionVersion = {
     ChildInformationTab: ChildInformationTab as FormDefinition,
     IssueCategorizationTab,
   },
+  callTypeButtons: CallTypeButtons as CallTypeButtonsDefinitions,
   layoutVersion: LayoutDefinitions as LayoutVersion,
 };
 

@@ -1,6 +1,8 @@
 /* eslint-disable import/no-unused-modules */
 import type { RegisterOptions } from 'react-hook-form';
 
+import { CallTypes } from '../../../states/DomainConstants';
+
 export type FormFieldType = { value: string; error?: string; validation?: string[]; touched?: boolean };
 
 export type FormInformation = {
@@ -108,6 +110,15 @@ export type FormDefinition = FormItemDefinition[];
 export type CategoryEntry = { color: string; subcategories: string[] };
 export type CategoriesDefinition = { [category: string]: CategoryEntry };
 
+type CallTypeButtonsEntry = {
+  type: 'button';
+  name: string;
+  label: CallTypes;
+  category: 'data' | 'non-data';
+};
+
+export type CallTypeButtonsDefinitions = CallTypeButtonsEntry[];
+
 /**
  * Type that gives extra info on how a single field should be formatted
  */
@@ -150,5 +161,6 @@ export type DefinitionVersion = {
     ChildInformationTab: FormDefinition;
     IssueCategorizationTab: CategoriesDefinition;
   };
+  callTypeButtons: CallTypeButtonsDefinitions;
   layoutVersion: LayoutVersion;
 };

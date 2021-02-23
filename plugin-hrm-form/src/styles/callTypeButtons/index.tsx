@@ -41,7 +41,11 @@ export const DataCallTypeButton = styled(Button)`
 
 DataCallTypeButton.displayName = 'DataCallTypeButton';
 
-export const NonDataCallTypeButton = styled(Button)`
+type NonDataCallTypeButtonProps = {
+  marginRight: boolean;
+};
+
+export const NonDataCallTypeButton = styled(Button)<NonDataCallTypeButtonProps>`
   width: 140px;
   height: 44px;
   margin-bottom: 10px;
@@ -62,7 +66,11 @@ export const NonDataCallTypeButton = styled(Button)`
   }
 `;
 
-export const CloseTaskDialog = styled(props => <Dialog {...props} classes={{ paper: 'paper' }} />)`
+type OwnCloseTaskDialogProps = {
+  classes: any;
+};
+
+export const CloseTaskDialog = styled(Dialog)<OwnCloseTaskDialogProps>`
   && .paper {
     width: 350px;
   }
@@ -81,7 +89,11 @@ export const CloseTaskDialogText = styled('p')`
   margin-bottom: 36px;
 `;
 
-export const ConfirmButton = styled(Button)`
+type ConfirmButtonProps = {
+  disabled: boolean;
+};
+
+export const ConfirmButton = styled(Button)<ConfirmButtonProps>`
   text-transform: uppercase;
   color: ${props => props.theme.colors.declineTextColor};
   ${p => getBackgroundWithHoverCSS(p.theme.colors.declineColor, true, false, p.disabled)};
