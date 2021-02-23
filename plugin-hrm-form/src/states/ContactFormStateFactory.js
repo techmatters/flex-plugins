@@ -561,6 +561,7 @@ const recursivelyCreateBlankForm = formDefinition => {
             type: formDefinition[key].type,
           };
           break;
+        // eslint-disable-next-line sonarjs/no-duplicated-branches
         case FieldType.TAB:
           initialState[key] = {
             ...recursivelyCreateBlankForm(formDefinition[key]),
@@ -619,6 +620,7 @@ export const createBlankForm = (formDef = defaultFormDefinition, recreated = fal
 
   const contactlessTask = contactlessTaskTabDefinition.reduce(createStateItem, {});
 
+  // eslint-disable-next-line sonarjs/prefer-immediate-return
   const generatedForm = { ...initialState, metadata, contactlessTask };
 
   return generatedForm;

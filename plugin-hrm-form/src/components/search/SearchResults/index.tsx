@@ -80,6 +80,7 @@ const SearchResults: React.FC<Props> = ({
   changeRoute,
   currentPage,
   showConnectIcon,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [currentContact, setCurrentContact] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);

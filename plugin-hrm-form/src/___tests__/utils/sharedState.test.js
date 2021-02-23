@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-identical-functions */
 /* eslint-disable global-require */
 /* eslint-disable camelcase */
 import { transferStatuses } from '../../states/DomainConstants';

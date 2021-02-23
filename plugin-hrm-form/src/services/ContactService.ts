@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/prefer-immediate-return */
 import { set } from 'lodash/fp';
 import type { ITask } from '@twilio/flex-ui';
 

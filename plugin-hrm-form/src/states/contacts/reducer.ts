@@ -30,7 +30,7 @@ export type TaskEntry = {
   };
 };
 
-export type ContactsState = {
+type ContactsState = {
   tasks: {
     [taskId: string]: TaskEntry;
   };

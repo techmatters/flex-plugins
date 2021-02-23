@@ -1,4 +1,5 @@
-import type { ValidationRules } from 'react-hook-form';
+/* eslint-disable import/no-unused-modules */
+import type { RegisterOptions } from 'react-hook-form';
 
 import { CallTypes } from '../../../states/DomainConstants';
 
@@ -38,12 +39,12 @@ type ItemBase = {
 type InputDefinition = {
   type: 'input';
 } & ItemBase &
-  ValidationRules;
+  RegisterOptions;
 
 type NumericInputDefinition = {
   type: 'numeric-input';
 } & ItemBase &
-  ValidationRules;
+  RegisterOptions;
 
 export type SelectOption = { value: any; label: string };
 
@@ -51,7 +52,7 @@ type SelectDefinition = {
   type: 'select';
   options: SelectOption[];
 } & ItemBase &
-  ValidationRules;
+  RegisterOptions;
 
 type DependentOptions = { [dependeeValue: string]: SelectOption[] };
 
@@ -61,20 +62,20 @@ type DependentSelectDefinition = {
   defaultOption: SelectOption;
   options: DependentOptions;
 } & ItemBase &
-  ValidationRules;
+  RegisterOptions;
 
 type CheckboxDefinition = {
   type: 'checkbox';
   initialChecked?: boolean;
 } & ItemBase &
-  ValidationRules;
+  RegisterOptions;
 
 export type MixedOrBool = boolean | 'mixed';
 type MixedCheckboxDefinition = {
   type: 'mixed-checkbox';
   initialChecked?: MixedOrBool;
 } & ItemBase &
-  ValidationRules;
+  RegisterOptions;
 
 type TextareaDefinition = {
   type: 'textarea';
@@ -82,17 +83,17 @@ type TextareaDefinition = {
   rows?: number;
   width?: number;
 } & ItemBase &
-  ValidationRules;
+  RegisterOptions;
 
 type DateInputDefinition = {
   type: 'date-input';
 } & ItemBase &
-  ValidationRules;
+  RegisterOptions;
 
 type TimeInputDefinition = {
   type: 'time-input';
 } & ItemBase &
-  ValidationRules;
+  RegisterOptions;
 
 export type FormItemDefinition =
   | InputDefinition

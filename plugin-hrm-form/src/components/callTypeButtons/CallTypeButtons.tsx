@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { withTaskContext, TaskHelper, Template, ITask } from '@twilio/flex-ui';
