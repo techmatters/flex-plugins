@@ -10,6 +10,7 @@ import { Case } from '../types/types';
 import { formatCategories } from '../utils/formatters';
 import callTypes from '../states/DomainConstants';
 import { zambiaInsightsConfig } from '../insightsConfig/zambia';
+import { southAfricaV1InsightsConfig } from '../insightsConfig/za-v1';
 import {
   InsightsObject,
   FieldType,
@@ -259,6 +260,29 @@ export const zambiaUpdates = (
   return attsToReturn;
 };
 
+export const southAfricaUpdates = (
+  attributes: TaskAttributes,
+  contactForm: TaskEntry,
+  caseForm: Case,
+): InsightsAttributes => {
+  const { callType } = contactForm;
+  if (isNonDataCallType(callType)) return {};
+
+  const attsToReturn: InsightsAttributes = processHelplineConfig(contactForm, caseForm, southAfricaV1InsightsConfig);
+
+  /*
+   * Custom additions:
+   *  Add province, municipality district into area
+   */
+  attsToReturn[InsightsObject.Customers].area = [
+    contactForm.childInformation.province,
+    contactForm.childInformation.municipality,
+    contactForm.childInformation.district,
+  ].join(delimiter);
+
+  return attsToReturn;
+};
+
 const mergeAttributes = (previousAttributes: TaskAttributes, newAttributes: InsightsAttributes): TaskAttributes => {
   return {
     ...previousAttributes,
@@ -278,6 +302,9 @@ const getInsightsUpdateFunctionsForConfig = (config: any): any => {
   const functionArray = [baseUpdates, contactlessTaskUpdates];
   if (config.useZambiaInsights) {
     functionArray.push(zambiaUpdates);
+  }
+  if (config.useSouthAfricaInsights) {
+    functionArray.push(southAfricaUpdates);
   }
   return functionArray;
 };
