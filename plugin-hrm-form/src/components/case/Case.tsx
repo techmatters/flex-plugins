@@ -51,6 +51,7 @@ import ViewPerpetrator from './ViewPerpetrator';
 import ViewIncident from './ViewIncident';
 import ViewReferral from './ViewReferral';
 import type { HouseholdEntry, PerpetratorEntry, IncidentEntry, Case as CaseType } from '../../types/types';
+import CasePrintView from './casePrint/CasePrintView';
 
 const isStandaloneITask = (task): task is StandaloneITask => {
   return task.taskSid === 'standalone-task-sid';
@@ -305,6 +306,10 @@ const Case: React.FC<Props> = props => {
     }
   };
 
+  const onPrintCase = () => {
+    props.changeRoute({ route, subroute: 'case-print-view' }, task.taskSid);
+  };
+
   const isMockedMessageOpen = Boolean(mockedMessage);
 
   const firstConnectedContact = connectedCase && connectedCase.connectedContacts && connectedCase.connectedContacts[0];
@@ -331,6 +336,23 @@ const Case: React.FC<Props> = props => {
     definitionVersion,
   };
 
+  const caseDetails = {
+    id: connectedCase.id,
+    name,
+    categories,
+    status,
+    caseCounselor,
+    currentCounselor,
+    openedDate,
+    lastUpdatedDate,
+    followUpDate,
+    households,
+    perpetrators,
+    incidents,
+    childIsAtRisk,
+    officeName: 'Gautang', // ToDo: add the office here.
+  };
+
   switch (subroute) {
     case 'add-note':
       return <AddNote {...addScreenProps} />;
@@ -354,6 +376,8 @@ const Case: React.FC<Props> = props => {
       return <ViewIncident {...addScreenProps} />;
     case 'view-referral':
       return <ViewReferral {...addScreenProps} />;
+    case 'case-print-view':
+      return <CasePrintView caseDetails={caseDetails} {...addScreenProps} />;
     default:
       return loading || !definitionVersion ? (
         <CenteredContainer>
@@ -374,6 +398,7 @@ const Case: React.FC<Props> = props => {
                 lastUpdatedDate={lastUpdatedDate}
                 followUpDate={followUpDate}
                 childIsAtRisk={childIsAtRisk}
+                handlePrintCase={onPrintCase}
                 handleInfoChange={onInfoChange}
                 handleStatusChange={onStatusChange}
                 handleClickChildIsAtRisk={onClickChildIsAtRisk}

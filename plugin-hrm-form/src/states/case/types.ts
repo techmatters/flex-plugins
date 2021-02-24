@@ -116,3 +116,20 @@ export type ConnectedCaseActivity = {
   twilioWorkerId: string;
   channel: string;
 };
+
+export type CaseDetails = {
+  id: number;
+  name: string;
+  categories: any; // ToDo: Change this.
+  status: string;
+  caseCounselor: string;
+  currentCounselor: string;
+  openedDate: string;
+  lastUpdatedDate: string;
+  followUpDate: string;
+  households: t.HouseholdEntry[];
+  perpetrators: t.PerpetratorEntry[];
+  incidents: t.IncidentEntry[];
+  childIsAtRisk: boolean;
+  officeName: string;
+};
