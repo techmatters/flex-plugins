@@ -48,9 +48,15 @@ const CasePrintDetails: React.FC<Props> = ({
         </View>
         <View style={styles.flexColumn}>
           <Text>Follow Up Date</Text>
-          <Text style={styles.caseDetailsBoldText}>{followUpDate}</Text>
+          <Text style={styles.caseDetailsBoldText}>{followUpDate ? followUpDate : '-'}</Text>
         </View>
-        <View>{childIsAtRisk ? <Text>✔️ CHILD IS AT RISK</Text> : <Text>❌ CHILD IS AT RISK</Text>}</View>
+        <View style={styles.flexColumn}>
+          <Text></Text>
+          <View style={{...styles.flexRow, justifyContent: 'space-between'}}>
+            {childIsAtRisk ? <Text>☑️</Text> : <Text>⏹️</Text>}
+            <Text> Child is at risk</Text>
+          </View>
+        </View>        
       </View>
       <View style={styles.caseCounsellorSection}>
         <View style={styles.flexColumn}>

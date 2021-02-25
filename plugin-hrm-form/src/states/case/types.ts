@@ -117,9 +117,14 @@ export type ConnectedCaseActivity = {
   channel: string;
 };
 
+export type CaseDetailsName = {
+  firstName: string;
+  lastName: string;
+};
+
 export type CaseDetails = {
   id: number;
-  name: string;
+  name: CaseDetailsName;
   categories: any; // ToDo: Change this.
   status: string;
   caseCounselor: string;

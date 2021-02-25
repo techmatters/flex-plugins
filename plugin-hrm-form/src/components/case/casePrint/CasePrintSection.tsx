@@ -26,8 +26,8 @@ const CasePrintSection: React.FC<Props> = ({ sectionName, fieldValues }) => {
         {fieldValues.map((field, i) => {
           return (
             <View key={i} style={i % 2 === 0 ? styles.sectionItemRowOdd : styles.sectionItemRowEven}>
-              <Text style={styles.sectionItemRowText}>{field.label}: </Text>
-              <Text style={styles.sectionItemRowText}>{field.value}</Text>
+              <Text style={styles.sectionItemFirstColumn}>{field.label}</Text>
+              <Text style={styles.sectionItemSecondColumn}>{field.value}</Text>
             </View>
           );
         })}

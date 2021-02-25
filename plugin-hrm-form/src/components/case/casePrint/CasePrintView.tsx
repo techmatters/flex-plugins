@@ -10,9 +10,10 @@ import CasePrintSection from './CasePrintSection';
 import CasePrintSummary from './CasePrintSummary';
 import styles from './CasePrintStyles';
 import { CasePrintViewContainer, HiddenText } from '../../../styles/HrmStyles';
-import source from '../../../resources/ZA_childline_logo.jpg';
+// import source from '../../../resources/ZA_childline_logo.jpg';
 import CasePrintDetails from './CasePrintDetails';
 import type { CaseDetails } from '../../../states/case/types';
+import CasePrintMultiSection from './CasePrintMultiSection';
 
 type OwnProps = {
   onClickClose: () => void;
@@ -20,86 +21,159 @@ type OwnProps = {
 };
 type Props = OwnProps;
 
-const callerInfoSection = {
-  sectionName: 'Caller Information',
-  fieldValues: [
-    { label: 'Field One', value: 'Yes' },
-    { label: 'Field Two', value: 'No' },
-    { label: 'Field Three', value: 'Yes' },
-    { label: 'Field Four', value: 'Yes' },
-    { label: 'Field Five', value: 'No' },
-  ],
-};
-
-const childInfoSection = {
-  sectionName: 'Child Information',
-  fieldValues: [
-    { label: 'First Name', value: 'Child' },
-    { label: 'Last Name', value: 'Child' },
-    { label: 'Field One', value: 'Yes' },
-    { label: 'Field Two', value: 'No' },
-    { label: 'Field Three', value: 'Yes' },
-  ],
-};
-
-const incidentSection = {
-  sectionName: 'Incidents',
-  fieldValues: [
-    { label: 'Field One', value: 'XXXXX' },
-    { label: 'Field Two', value: 'YYYYY' },
-    { label: 'Field Three', value: '......' },
-    { label: 'Field Four', value: '...............' },
-    { label: 'Field Five', value: '....................' },
-    { label: 'Field Six', value: 'AAAAA' },
-    { label: 'Field Seven', value: 'BBBBB' },
-  ],
-};
-
-const householdSection = {
-  sectionName: 'Household Members',
-  fieldValues: [
-    { label: 'Field One', value: 'Yes' },
-    { label: 'Field Two', value: 'No' },
-    { label: 'Field Three', value: '......' },
-    { label: 'Field Four', value: '...............' },
-    { label: 'Field Five', value: '....................' },
-  ],
-};
-
-const perpetratorSection = {
-  sectionName: 'Perpetrators',
-  fieldValues: [
-    { label: 'Field One', value: 'Yes' },
-    { label: 'Field Two', value: 'No' },
-    { label: 'Field Three', value: '......' },
-    { label: 'Field Four', value: '...............' },
-    { label: 'Field Five', value: '....................' },
-    { label: 'Field Six', value: '....................' },
-    { label: 'Field Seven', value: '....................' },
-    { label: 'Field Eight', value: '....................' },
-  ],
-};
-
-const referralsSection = {
-  sectionName: 'Referrals',
-  fieldValues: [
-    { label: 'Field One', value: 'Yes' },
-    { label: 'Field Two', value: 'No' },
-  ],
-};
-
-const notesSection = {
-  sectionName: 'Notes',
-  fieldValues: [
-    { label: 'Field One', value: 'Yes' },
-    { label: 'Field Two', value: 'No' },
-  ],
-};
-
-const summary =
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam convallis magna a suscipit scelerisque. Vestibulum molestie mi ipsum, eu elementum augue malesuada at. Phasellus ac nibh in nibh ullamcorper luctus. Fusce tristique dui nulla. In lacinia sem a mi congue, eget tincidunt risus euismod. Aliquam euismod metus eu augue ultrices, non sagittis tellus aliquam. Phasellus non lacus et augue convallis lacinia et ac nisl. Nulla interdum lectus eget nulla pulvinar pretium. Aenean laoreet enim vitae diam tristique, dapibus suscipit ligula placerat. Maecenas pellentesque egestas metus sit amet ornare. Proin vel dui nulla. Nam fringilla venenatis justo in porta.';
-
 const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails }) => {
+  const callerInfoSection = {
+    sectionName: 'Caller Information',
+    fieldValues: [
+      { label: 'First Name', value: 'Ross' },
+      { label: 'Last Name', value: 'Keller' },
+      { label: 'Address', value: '------' },
+      { label: 'Province', value: '------' },
+      { label: 'Municipality', value: '------' },
+      { label: 'District', value: '------' },
+      { label: 'Contact Number', value: '031 201 1111' },
+      { label: 'Relationship to Child', value: 'Teacher' },
+      { label: 'Gender', value: 'Boy' },
+      { label: 'Age', value: '12' },
+      { label: 'Language', value: 'English' },
+      { label: 'Race', value: 'Indian' },
+    ],
+  };
+
+  const childInfoSection = {
+    sectionName: 'Child Information',
+    fieldValues: [
+      { label: 'First Name', value: caseDetails.name.firstName },
+      { label: 'Last Name', value: caseDetails.name.lastName },
+      { label: 'Address', value: '------' },
+      { label: 'Province', value: '------' },
+      { label: 'Municipality', value: '------' },
+      { label: 'District', value: '------' },
+      { label: 'Contact Number', value: '------' },
+      { label: 'Gender', value: 'Boy' },
+      { label: 'Age', value: '12' },
+      { label: 'Language', value: 'English' },
+      { label: 'Race', value: 'Indian' },
+      { label: 'School Name', value: '------' },
+      { label: 'School Address', value: '------' },
+      { label: 'Educator', value: '------' },
+      { label: 'Grade Level', value: '8' },
+      { label: 'Living Situation', value: 'Unknown' },
+      { label: 'Region', value: '------' },
+      { label: 'Child HIV Positive', value: '------' },
+      { label: 'Child in conflict with the law', value: '------' },
+      { label: 'Child in detention', value: '------' },
+      { label: 'Child member of an ethnic or racial minority', value: 'No' },
+      { label: 'Child on the move or in migration', value: '------' },
+      { label: 'Child with disability', value: 'Yes' },
+      { label: 'LGBTQI+ / SOEGIS Child', value: 'Unknown' },
+    ],
+  };
+
+  const contactSection = {
+    sectionName: 'Contact',
+    fieldValues: [
+      {
+        label: 'Contact Summary',
+        value:
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam convallis magna a suscipit scelerisque. Vestibulum molestie mi ipsum, eu elementum augue malesuada at.',
+      },
+      { label: 'Channel', value: 'SMS' },
+      { label: 'Phone Number', value: '+12066127815' },
+      { label: 'Converstion Duration', value: '21m 30s' },
+      { label: 'Counsellor', value: 'Jana Kleitsch' },
+      { label: 'Date/Time', value: 'Feb 3 2021, 10:30 pm' },
+      { label: 'Repeat Caller?', value: 'Unknown' },
+      { label: 'Referred To', value: 'Unknown' },
+      { label: 'How did the child hear about us?', value: 'Unknown' },
+      { label: 'Keep confidential?', value: 'Yes' },
+      { label: 'OK for case worker to call?', value: 'Unknown' },
+      { label: 'Did you discuss right with the child?', value: 'Unknown' },
+      { label: 'Did the child feel we solved their problem?', value: 'Unknown' },
+      { label: 'Would the child recommend us to a friend?', value: 'Unknown' },
+    ],
+  };
+
+  const incidentSection = {
+    sectionName: 'Incidents',
+    fieldValues: [
+      { label: 'Field One', value: 'XXXXX' },
+      { label: 'Field Two', value: 'YYYYY' },
+      { label: 'Field Three', value: '......' },
+      { label: 'Field Four', value: '...............' },
+      { label: 'Field Five', value: '....................' },
+      { label: 'Field Six', value: 'AAAAA' },
+      { label: 'Field Seven', value: 'BBBBB' },
+    ],
+  };
+
+  const householdMultiSection = {
+    sectionName: 'Household Members',
+    sectionValues: [
+      {
+        key: 1,
+        fieldValues: [
+          { label: 'Field One', value: 'Yes' },
+          { label: 'Field Two', value: 'No' },
+          { label: 'Field Three', value: '......' },
+          { label: 'Field Four', value: '...............' },
+          { label: 'Field Five', value: '....................' },
+        ],
+      },
+      {
+        key: 2,
+        fieldValues: [
+          { label: 'AAA', value: 'Yes' },
+          { label: 'BBB', value: 'No' },
+          { label: 'CCC', value: '......' },
+        ],
+      },
+    ],
+  };
+
+  const perpetratorMultiSection = {
+    sectionName: 'Perpetrator',
+    sectionValues: [
+      {
+        key: 1,
+        fieldValues: [
+          { label: 'Field One', value: 'Yes' },
+          { label: 'Field Two', value: 'No' },
+          { label: 'Field Three', value: '......' },
+          { label: 'Field Four', value: '...............' },
+          { label: 'Field Five', value: '....................' },
+        ],
+      },
+      {
+        key: 2,
+        fieldValues: [
+          { label: 'AAA', value: 'Yes' },
+          { label: 'BBB', value: 'No' },
+          { label: 'CCC', value: '......' },
+        ],
+      },
+    ],
+  };
+
+  const referralsSection = {
+    sectionName: 'Referrals',
+    fieldValues: [
+      { label: 'Field One', value: 'Yes' },
+      { label: 'Field Two', value: 'No' },
+    ],
+  };
+
+  const notesSection = {
+    sectionName: 'Notes',
+    fieldValues: [
+      { label: 'Field One', value: 'Yes' },
+      { label: 'Field Two', value: 'No' },
+    ],
+  };
+
+  const summary =
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam convallis magna a suscipit scelerisque. Vestibulum molestie mi ipsum, eu elementum augue malesuada at. Phasellus ac nibh in nibh ullamcorper luctus. Fusce tristique dui nulla. In lacinia sem a mi congue, eget tincidunt risus euismod. Aliquam euismod metus eu augue ultrices, non sagittis tellus aliquam. Phasellus non lacus et augue convallis lacinia et ac nisl. Nulla interdum lectus eget nulla pulvinar pretium. Aenean laoreet enim vitae diam tristique, dapibus suscipit ligula placerat. Maecenas pellentesque egestas metus sit amet ornare. Proin vel dui nulla. Nam fringilla venenatis justo in porta.';
+
   return (
     <CasePrintViewContainer>
       <ButtonBase onClick={onClickClose} style={{ marginLeft: 'auto' }} data-testid="CasePrint-CloseCross">
@@ -114,13 +188,13 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails }) => {
             <View fixed>
               <View style={styles.caseHeader}>
                 <View style={styles.flexColumn}>
-                  <Text style={styles.childName}>{caseDetails.name}</Text>
+                  <Text style={styles.childName}>{`${caseDetails.name.firstName} ${caseDetails.name.lastName}`}</Text>
                   <View style={styles.flexRow}>
                     <Text style={styles.caseId}>Case#: {caseDetails.id}</Text>
                     {caseDetails.officeName && <Text style={styles.officeName}>({caseDetails.officeName})</Text>}
                   </View>
                 </View>
-                <Image src={source} />
+                {/* <Image src={source} /> */}
               </View>
             </View>
             <View style={styles.caseBody}>
@@ -135,9 +209,10 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails }) => {
               />
               <CasePrintSection {...callerInfoSection} />
               <CasePrintSection {...childInfoSection} />
+              <CasePrintSection {...contactSection} />
+              <CasePrintMultiSection {...householdMultiSection} />
+              <CasePrintMultiSection {...perpetratorMultiSection} />
               <CasePrintSection {...incidentSection} />
-              <CasePrintSection {...householdSection} />
-              <CasePrintSection {...perpetratorSection} />
               <CasePrintSection {...referralsSection} />
               <CasePrintSection {...notesSection} />
               <CasePrintSummary summary={summary} />

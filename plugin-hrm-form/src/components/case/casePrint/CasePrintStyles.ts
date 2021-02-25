@@ -135,9 +135,12 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     backgroundColor: '#f5f5f5',
   },
-  sectionItemRowText: {
-    flexGrow: 0,
-    maxWidth: '50%',
+  sectionItemFirstColumn: {
+    width: '50%'
+  },
+  sectionItemSecondColumn: {
+    width: '50%',
+    fontWeight: 600,
   },
   caseSummaryText: {
     fontFamily: 'Open Sans',
