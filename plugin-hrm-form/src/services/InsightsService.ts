@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import { ITask } from '@twilio/flex-ui';
-import cloneDeep from 'lodash/cloneDeep';
+import { get, cloneDeep } from 'lodash';
 
 import { isNonDataCallType } from '../states/ValidationRules';
 import { mapChannelForInsights } from '../utils/mappers';
@@ -17,6 +17,8 @@ import {
   InsightsFieldSpec,
   InsightsFormSpec,
   InsightsConfigSpec,
+  InsightsCustomUpdate,
+  InsightsCustomUpdates,
 } from '../insightsConfig/types';
 
 /*
@@ -62,7 +64,17 @@ const getSubcategories = (contactForm: TaskEntry): string => {
   return formatCategories(categoryMap).join(delimiter);
 };
 
-const baseUpdates = (taskAttributes: TaskAttributes, contactForm: TaskEntry, caseForm: Case): InsightsAttributes => {
+type InsightsUpdateFunction = (
+  attributes: TaskAttributes,
+  contactForm: TaskEntry,
+  caseForm: Case,
+) => InsightsAttributes;
+
+const baseUpdates: InsightsUpdateFunction = (
+  taskAttributes: TaskAttributes,
+  contactForm: TaskEntry,
+  caseForm: Case,
+): InsightsAttributes => {
   const { callType } = contactForm;
   const hasCustomerData = !isNonDataCallType(callType);
 
@@ -100,7 +112,7 @@ const baseUpdates = (taskAttributes: TaskAttributes, contactForm: TaskEntry, cas
   };
 };
 
-const contactlessTaskUpdates = (
+const contactlessTaskUpdates: InsightsUpdateFunction = (
   attributes: TaskAttributes,
   contactForm: TaskEntry,
   caseForm: Case,
@@ -260,11 +272,7 @@ export const zambiaUpdates = (
   return attsToReturn;
 };
 
-export const southAfricaUpdates = (
-  attributes: TaskAttributes,
-  contactForm: TaskEntry,
-  caseForm: Case,
-): InsightsAttributes => {
+const southAfricaUpdates = (attributes: TaskAttributes, contactForm: TaskEntry, caseForm: Case): InsightsAttributes => {
   const { callType } = contactForm;
   if (isNonDataCallType(callType)) return {};
 
@@ -283,6 +291,43 @@ export const southAfricaUpdates = (
   return attsToReturn;
 };
 
+const applyCustomUpdate = (dataSource: { contactForm: TaskEntry; caseForm: Case }) => (
+  attributes: InsightsAttributes,
+  customUpdate: InsightsCustomUpdate,
+) => {
+  // concatenate the values, taken from dataSource using paths (e.g. 'contactForm.childInformation.province')
+  const value = customUpdate.paths
+    .map(path => get(dataSource, path))
+    .filter(Boolean)
+    .join(delimiter);
+
+  // if (!value) return attributes; // Do we want this case to leave insights unaffected?
+
+  return {
+    ...attributes,
+    [customUpdate.insightObject]: {
+      ...attributes[customUpdate.insightObject],
+      [customUpdate.attributeName]: value,
+    },
+  };
+};
+
+const bindApplyCustomUpdates = (customConfigObject: {
+  customUpdates: InsightsCustomUpdates;
+  configSpec: InsightsConfigSpec;
+}) => (attributes: TaskAttributes, contactForm: TaskEntry, caseForm: Case): InsightsAttributes => {
+  const dataSource = { caseForm, contactForm };
+  const { callType } = contactForm;
+  if (isNonDataCallType(callType)) return {};
+
+  // TODO: maybe move this to use the same InsightsConfigSpec approach?
+  const processedAtts: InsightsAttributes = processHelplineConfig(contactForm, caseForm, customConfigObject.configSpec);
+
+  const customUpdatesFun = applyCustomUpdate(dataSource);
+
+  return customConfigObject.customUpdates.reduce(customUpdatesFun, processedAtts);
+};
+
 const mergeAttributes = (previousAttributes: TaskAttributes, newAttributes: InsightsAttributes): TaskAttributes => {
   return {
     ...previousAttributes,
@@ -298,14 +343,18 @@ const mergeAttributes = (previousAttributes: TaskAttributes, newAttributes: Insi
 };
 
 // In TS, how do we say that we are returning a function?
-const getInsightsUpdateFunctionsForConfig = (config: any): any => {
+const getInsightsUpdateFunctionsForConfig = (config: any): InsightsUpdateFunction[] => {
   const functionArray = [baseUpdates, contactlessTaskUpdates];
+
   if (config.useZambiaInsights) {
     functionArray.push(zambiaUpdates);
   }
   if (config.useSouthAfricaInsights) {
     functionArray.push(southAfricaUpdates);
   }
+
+  // const applyCustomUpdates = bindApplyCustomUpdates([])
+
   return functionArray;
 };
 
@@ -322,6 +371,37 @@ export async function saveInsightsData(twilioTask: ITask, contactForm: TaskEntry
   const finalAttributes: TaskAttributes = getInsightsUpdateFunctionsForConfig(config)
     .map((f: any) => f(twilioTask.attributes, contactForm, caseForm))
     .reduce((acc: TaskAttributes, curr: InsightsAttributes) => mergeAttributes(acc, curr), previousAttributes);
+
+  const functions = getInsightsUpdateFunctionsForConfig(config).map((f: any) =>
+    f(twilioTask.attributes, contactForm, caseForm),
+  );
+  functions.pop();
+  const blabla = [
+    ...functions,
+    bindApplyCustomUpdates({
+      configSpec: southAfricaV1InsightsConfig,
+      customUpdates: [
+        {
+          attributeName: 'area',
+          insightObject: InsightsObject.Customers,
+          paths: [
+            'contactForm.childInformation.province',
+            'contactForm.childInformation.municipality',
+            'contactForm.childInformation.district',
+          ],
+        },
+      ],
+    })(twilioTask.attributes, contactForm, caseForm),
+  ].reduce((acc: TaskAttributes, curr: InsightsAttributes) => mergeAttributes(acc, curr), previousAttributes);
+  console.log(
+    '>>>>>>>>>>>>>',
+    'bindApplyCustomUpdates: ',
+    blabla,
+    'finalAttributes: ',
+    finalAttributes,
+    'Are equals: ',
+    JSON.stringify(blabla) === JSON.stringify(finalAttributes),
+  );
 
   await twilioTask.setAttributes(finalAttributes);
 }
