@@ -63,13 +63,14 @@
       { "value": "Eastern Cape", "label": "Eastern Cape" },
       { "value": "Free State", "label": "Free State" },
       { "value": "Gauteng", "label": "Gauteng" },
-      { "value": "Kwazulu Natal", "label": "Kwazulu Natal" },
+      { "value": "KwaZulu Natal", "label": "KwaZulu Natal" },
       { "value": "Limpopo", "label": "Limpopo" },
       { "value": "Mpumalanga", "label": "Mpumalanga" },
       { "value": "North West", "label": "North West" },
       { "value": "Northern Cape", "label": "Northern Cape" },
       { "value": "Western Cape", "label": "Western Cape" }
-    ]
+    ],
+    "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
     "name": "municipality",
@@ -99,7 +100,6 @@
         { "value": "Lejweleputswa-Tokologo Municipality", "label": "Lejweleputswa-Tokologo Municipality" },
         { "value": "Lejweleputswa-Tswelopele Municipality", "label": "Lejweleputswa-Tswelopele Municipality" },
         { "value": "Motheo-Mangaung Municipality", "label": "Motheo-Mangaung Municipality" },
-        { "value": "Thabo Mo Municipality", "label": "Thabo Mo Municipality" },
         { "value": "Thabo Mofutsanyana-Dihlabeng Municipality", "label": "Thabo Mofutsanyana-Dihlabeng Municipality" },
         { "value": "Thabo Mofutsanyana-Maluti a-Phofung Municipality", "label": "Thabo Mofutsanyana-Maluti a-Phofung Municipality" },
         { "value": "Thabo Mofutsanyana-Mantsopa Municipality", "label": "Thabo Mofutsanyana-Mantsopa Municipality" },
@@ -144,7 +144,7 @@
       ],
       "North West": [
         { "value": "Bojanala Platinum", "label": "Bojanala Platinum" },
-        { "value": "Dr. Ruth Segomotsi Mompati", "label": "Dr Ruth Segomotsi Mompati" },
+        { "value": "Dr. Ruth Segomotsi Mompati", "label": "Dr. Ruth Segomotsi Mompati" },
         { "value": "Dr. Kenneth Kaunda", "label": "Dr. Kenneth Kaunda" },
         { "value": "Ngaka ModiriMolema", "label": "Ngaka ModiriMolema" }
       ],
@@ -159,7 +159,8 @@
         { "value": "Overberg", "label": "Overberg" },
         { "value": "West Coast", "label": "West Coast" }
       ]
-    }
+    },
+    "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
     "name": "district",
@@ -182,7 +183,7 @@
         { "value": "Potsdam", "label": "Potsdam" },
         { "value": "Zwelitsha", "label": "Zwelitsha" }
       ],     
-      "Nelson Mandela Metro Metro Municipality": [
+      "Nelson Mandela Metro Municipality": [
         { "value": "Bethelsdorp", "label": "Bethelsdorp" },
         { "value": "Bloemendal", "label": "Bloemendal" },
         { "value": "Blue Horizon Bay", "label": "Blue Horizon Bay" },
@@ -393,7 +394,7 @@
         { "value": "Fouriesburg", "label": "Fouriesburg" },
         { "value": "Golden Gate Highlands Nat Park", "label": "Golden Gate Highlands Nat Park" },
         { "value": "Paul Roux", "label": "Paul Roux" },
-        { "value": "Rosendal", "label": "Rosendal" }       
+        { "value": "Rosendal", "label": "Rosendal" }        
       ],       
       "Thabo Mofutsanyana-Maluti a-Phofung Municipality": [
         { "value": "Harrismith", "label": "Harrismith" },
@@ -954,7 +955,7 @@
         { "value": "Moses Kotane", "label": "Moses Kotane" },
         { "value": "Rustenburg", "label": "Rustenburg" }
       ],  
-      "Dr Ruth Segomotsi Mompati": [
+      "Dr. Ruth Segomotsi Mompati": [
         { "value": "Greater Taung", "label": "Greater Taung" },
         { "value": "Kagisano", "label": "Kagisano" },
         { "value": "Lekwa-Teemane", "label": "Lekwa-Teemane" },
@@ -1182,7 +1183,7 @@
         { "value": "Laingsberg", "label": "Laingsberg" },
         { "value": "Prince Albert", "label": "Prince Albert" }
       ]    
-    }  
+    }   
   },
   {
     "name": "gender",
