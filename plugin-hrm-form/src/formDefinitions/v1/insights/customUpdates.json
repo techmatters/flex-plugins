@@ -1,0 +1,10 @@
+[
+  {
+    "attributeName": "area",
+    "insightObject": "customers",
+    "paths": [
+      "contactForm.childInformation.province",
+      "contactForm.childInformation.district"
+    ]
+  }
+]

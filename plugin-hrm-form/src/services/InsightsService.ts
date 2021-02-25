@@ -20,6 +20,8 @@ import {
   InsightsCustomUpdate,
   InsightsCustomUpdates,
 } from '../insightsConfig/types';
+import { getDefinitionVersions } from '../HrmFormPlugin';
+import type { DefinitionVersion } from '../components/common/forms/types';
 
 /*
  * 'Any' is the best we can do, since we're limited by Twilio here.
@@ -249,47 +251,55 @@ export const processHelplineConfig = (
   return insightsAtts;
 };
 
-// Visible for testing
-export const zambiaUpdates = (
-  attributes: TaskAttributes,
-  contactForm: TaskEntry,
-  caseForm: Case,
-): InsightsAttributes => {
-  const { callType } = contactForm;
-  if (isNonDataCallType(callType)) return {};
+/*
+ * Visible for testing
+ * export const zambiaUpdates = (
+ *   attributes: TaskAttributes,
+ *   contactForm: TaskEntry,
+ *   caseForm: Case,
+ * ): InsightsAttributes => {
+ *   const { callType } = contactForm;
+ *   if (isNonDataCallType(callType)) return {};
+ */
 
-  const attsToReturn: InsightsAttributes = processHelplineConfig(contactForm, caseForm, zambiaInsightsConfig);
+//   const attsToReturn: InsightsAttributes = processHelplineConfig(contactForm, caseForm, zambiaInsightsConfig);
 
-  /*
-   * Custom additions:
-   *  Add province and district into area
-   */
-  attsToReturn[InsightsObject.Customers].area = [
-    contactForm.childInformation.province,
-    contactForm.childInformation.district,
-  ].join(delimiter);
+//   /*
+//    * Custom additions:
+//    *  Add province and district into area
+//    */
+//   attsToReturn[InsightsObject.Customers].area = [
+//     contactForm.childInformation.province,
+//     contactForm.childInformation.district,
+//   ].join(delimiter);
 
-  return attsToReturn;
-};
+/*
+ *   return attsToReturn;
+ * };
+ */
 
-const southAfricaUpdates = (attributes: TaskAttributes, contactForm: TaskEntry, caseForm: Case): InsightsAttributes => {
-  const { callType } = contactForm;
-  if (isNonDataCallType(callType)) return {};
+/*
+ * export const southAfricaUpdates = (attributes: TaskAttributes, contactForm: TaskEntry, caseForm: Case): InsightsAttributes => {
+ *   const { callType } = contactForm;
+ *   if (isNonDataCallType(callType)) return {};
+ */
 
-  const attsToReturn: InsightsAttributes = processHelplineConfig(contactForm, caseForm, southAfricaV1InsightsConfig);
+//   const attsToReturn: InsightsAttributes = processHelplineConfig(contactForm, caseForm, southAfricaV1InsightsConfig);
 
-  /*
-   * Custom additions:
-   *  Add province, municipality district into area
-   */
-  attsToReturn[InsightsObject.Customers].area = [
-    contactForm.childInformation.province,
-    contactForm.childInformation.municipality,
-    contactForm.childInformation.district,
-  ].join(delimiter);
+//   /*
+//    * Custom additions:
+//    *  Add province, municipality district into area
+//    */
+//   attsToReturn[InsightsObject.Customers].area = [
+//     contactForm.childInformation.province,
+//     contactForm.childInformation.municipality,
+//     contactForm.childInformation.district,
+//   ].join(delimiter);
 
-  return attsToReturn;
-};
+/*
+ *   return attsToReturn;
+ * };
+ */
 
 const applyCustomUpdate = (dataSource: { contactForm: TaskEntry; caseForm: Case }) => (
   attributes: InsightsAttributes,
@@ -343,19 +353,12 @@ const mergeAttributes = (previousAttributes: TaskAttributes, newAttributes: Insi
 };
 
 // In TS, how do we say that we are returning a function?
-const getInsightsUpdateFunctionsForConfig = (config: any): InsightsUpdateFunction[] => {
-  const functionArray = [baseUpdates, contactlessTaskUpdates];
+const getInsightsUpdateFunctionsForConfig = (
+  customInsights: DefinitionVersion['insights'],
+): InsightsUpdateFunction[] => {
+  const applyCustomUpdates = bindApplyCustomUpdates(customInsights);
 
-  if (config.useZambiaInsights) {
-    functionArray.push(zambiaUpdates);
-  }
-  if (config.useSouthAfricaInsights) {
-    functionArray.push(southAfricaUpdates);
-  }
-
-  // const applyCustomUpdates = bindApplyCustomUpdates([])
-
-  return functionArray;
+  return [baseUpdates, contactlessTaskUpdates, applyCustomUpdates];
 };
 
 /*
@@ -366,42 +369,13 @@ const getInsightsUpdateFunctionsForConfig = (config: any): InsightsUpdateFunctio
  * Note: config parameter tells where to go to get helpline-specific tests.  It should
  * eventually match up with getConfig().  Also useful for testing.
  */
-export async function saveInsightsData(twilioTask: ITask, contactForm: TaskEntry, caseForm: Case, config = {}) {
+export async function saveInsightsData(twilioTask: ITask, contactForm: TaskEntry, caseForm: Case) {
+  const { currentDefinitionVersion } = getDefinitionVersions();
+
   const previousAttributes: TaskAttributes = twilioTask.attributes;
-  const finalAttributes: TaskAttributes = getInsightsUpdateFunctionsForConfig(config)
+  const finalAttributes: TaskAttributes = getInsightsUpdateFunctionsForConfig(currentDefinitionVersion.insights)
     .map((f: any) => f(twilioTask.attributes, contactForm, caseForm))
     .reduce((acc: TaskAttributes, curr: InsightsAttributes) => mergeAttributes(acc, curr), previousAttributes);
-
-  const functions = getInsightsUpdateFunctionsForConfig(config).map((f: any) =>
-    f(twilioTask.attributes, contactForm, caseForm),
-  );
-  functions.pop();
-  const blabla = [
-    ...functions,
-    bindApplyCustomUpdates({
-      configSpec: southAfricaV1InsightsConfig,
-      customUpdates: [
-        {
-          attributeName: 'area',
-          insightObject: InsightsObject.Customers,
-          paths: [
-            'contactForm.childInformation.province',
-            'contactForm.childInformation.municipality',
-            'contactForm.childInformation.district',
-          ],
-        },
-      ],
-    })(twilioTask.attributes, contactForm, caseForm),
-  ].reduce((acc: TaskAttributes, curr: InsightsAttributes) => mergeAttributes(acc, curr), previousAttributes);
-  console.log(
-    '>>>>>>>>>>>>>',
-    'bindApplyCustomUpdates: ',
-    blabla,
-    'finalAttributes: ',
-    finalAttributes,
-    'Are equals: ',
-    JSON.stringify(blabla) === JSON.stringify(finalAttributes),
-  );
-
+console.log('>>>>>>>> finalAttributes: ', finalAttributes)
   await twilioTask.setAttributes(finalAttributes);
 }
