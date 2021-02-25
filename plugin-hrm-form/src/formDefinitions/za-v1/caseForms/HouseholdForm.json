@@ -74,8 +74,7 @@
       { "value": "North West", "label": "North West" },
       { "value": "Northern Cape", "label": "Northern Cape" },
       { "value": "Western Cape", "label": "Western Cape" }
-    ],
-    "required": { "value": true, "message": "RequiredFieldError" }
+    ]
   },
   {
     "name": "municipality",
@@ -164,8 +163,7 @@
         { "value": "Overberg", "label": "Overberg" },
         { "value": "West Coast", "label": "West Coast" }
       ]
-    },
-    "required": { "value": true, "message": "RequiredFieldError" }
+    }
   },
   {
     "name": "district",
