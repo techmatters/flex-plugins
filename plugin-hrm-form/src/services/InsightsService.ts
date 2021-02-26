@@ -251,7 +251,7 @@ export const processHelplineConfig = (
 const applyCustomUpdate = (dataSource: { contactForm: TaskEntry; caseForm: Case }) => (
   attributes: InsightsAttributes,
   customUpdate: InsightsCustomUpdate,
-) => {
+): InsightsAttributes => {
   // concatenate the values, taken from dataSource using paths (e.g. 'contactForm.childInformation.province')
   const value = customUpdate.paths
     .map(path => get(dataSource, path))
