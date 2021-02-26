@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   sectionItemFirstColumn: {
-    width: '50%'
+    width: '50%',
   },
   sectionItemSecondColumn: {
     width: '50%',
@@ -145,6 +145,12 @@ const styles = StyleSheet.create({
   caseSummaryText: {
     fontFamily: 'Open Sans',
     fontSize: 12,
+  },
+  noteSummaryText: {
+    marginLeft: 10,
+    marginRight: 10,
+    marginTop: 10,
+    marginBottom: 10,
   },
   footer: {
     position: 'absolute',

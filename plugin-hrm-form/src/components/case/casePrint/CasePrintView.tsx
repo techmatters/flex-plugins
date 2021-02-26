@@ -14,6 +14,7 @@ import { CasePrintViewContainer, HiddenText } from '../../../styles/HrmStyles';
 import CasePrintDetails from './CasePrintDetails';
 import type { CaseDetails } from '../../../states/case/types';
 import CasePrintMultiSection from './CasePrintMultiSection';
+import CasePrintNotes from './CasePrintNotes';
 
 type OwnProps = {
   onClickClose: () => void;
@@ -97,13 +98,11 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails }) => {
   const incidentSection = {
     sectionName: 'Incidents',
     fieldValues: [
-      { label: 'Field One', value: 'XXXXX' },
-      { label: 'Field Two', value: 'YYYYY' },
-      { label: 'Field Three', value: '......' },
-      { label: 'Field Four', value: '...............' },
-      { label: 'Field Five', value: '....................' },
-      { label: 'Field Six', value: 'AAAAA' },
-      { label: 'Field Seven', value: 'BBBBB' },
+      { label: 'Date', value: '11/03/2020' },
+      { label: 'Duration', value: 'Ongoing' },
+      { label: 'Location', value: 'Home' },
+      { label: 'Is caregiver aware?', value: 'No' },
+      { label: 'Was this incident witnessed by anyone', value: 'No' },
     ],
   };
 
@@ -113,19 +112,33 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails }) => {
       {
         key: 1,
         fieldValues: [
-          { label: 'Field One', value: 'Yes' },
-          { label: 'Field Two', value: 'No' },
-          { label: 'Field Three', value: '......' },
-          { label: 'Field Four', value: '...............' },
-          { label: 'Field Five', value: '....................' },
+          { label: 'First Name', value: 'John' },
+          { label: 'Last Name', value: 'McKinley' },
+          { label: 'Address', value: '------' },
+          { label: 'Province', value: '------' },
+          { label: 'Municipality', value: '------' },
+          { label: 'District', value: '------' },
+          { label: 'Contact Number', value: '031 201 1111' },
+          { label: 'Relationship to Child', value: 'Parent' },
+          { label: 'Gender', value: 'Boy' },
+          { label: 'Age', value: '>25' },
+          { label: 'Language', value: 'English' },
         ],
       },
       {
         key: 2,
         fieldValues: [
-          { label: 'AAA', value: 'Yes' },
-          { label: 'BBB', value: 'No' },
-          { label: 'CCC', value: '......' },
+          { label: 'First Name', value: 'Janice' },
+          { label: 'Last Name', value: 'McKinley' },
+          { label: 'Address', value: '------' },
+          { label: 'Province', value: '------' },
+          { label: 'Municipality', value: '------' },
+          { label: 'District', value: '------' },
+          { label: 'Contact Number', value: '031 201 1111' },
+          { label: 'Relationship to Child', value: 'Parent' },
+          { label: 'Gender', value: 'Girl' },
+          { label: 'Age', value: '>25' },
+          { label: 'Language', value: 'English' },
         ],
       },
     ],
@@ -137,19 +150,33 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails }) => {
       {
         key: 1,
         fieldValues: [
-          { label: 'Field One', value: 'Yes' },
-          { label: 'Field Two', value: 'No' },
-          { label: 'Field Three', value: '......' },
-          { label: 'Field Four', value: '...............' },
-          { label: 'Field Five', value: '....................' },
+          { label: 'First Name', value: 'Janice' },
+          { label: 'Last Name', value: 'McKinley' },
+          { label: 'Address', value: '------' },
+          { label: 'Province', value: '------' },
+          { label: 'Municipality', value: '------' },
+          { label: 'District', value: '------' },
+          { label: 'Contact Number', value: '031 201 1111' },
+          { label: 'Relationship to Child', value: 'Neighbor' },
+          { label: 'Gender', value: 'Girl' },
+          { label: 'Age', value: '>25' },
+          { label: 'Language', value: 'English' },
         ],
       },
       {
         key: 2,
         fieldValues: [
-          { label: 'AAA', value: 'Yes' },
-          { label: 'BBB', value: 'No' },
-          { label: 'CCC', value: '......' },
+          { label: 'First Name', value: 'Unknown' },
+          { label: 'Last Name', value: 'Unknown' },
+          { label: 'Address', value: '------' },
+          { label: 'Province', value: '------' },
+          { label: 'Municipality', value: '------' },
+          { label: 'District', value: '------' },
+          { label: 'Contact Number', value: '031 201 1111' },
+          { label: 'Relationship to Child', value: 'Neighbor' },
+          { label: 'Gender', value: 'Girl' },
+          { label: 'Age', value: '>25' },
+          { label: 'Language', value: 'English' },
         ],
       },
     ],
@@ -158,16 +185,27 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails }) => {
   const referralsSection = {
     sectionName: 'Referrals',
     fieldValues: [
-      { label: 'Field One', value: 'Yes' },
-      { label: 'Field Two', value: 'No' },
+      { label: 'Added by', value: 'John Doe' },
+      { label: 'Date', value: '1/3/2021' },
+      { label: 'Recommendation', value: 'State Agency 1' },
+      { label: 'Comments', value: 'Lorem ipsum dolor sit amet' },
     ],
   };
 
   const notesSection = {
-    sectionName: 'Notes',
-    fieldValues: [
-      { label: 'Field One', value: 'Yes' },
-      { label: 'Field Two', value: 'No' },
+    notes: [
+      {
+        counselor: 'Some Counselor',
+        date: '11/03/2020',
+        note:
+          'Sed tincidunt odio eget nisi semper euismod. Vestibulum commodo vulputate sem, vel finibus augue. Proin ultricies faucibus urna, cursus consequat augue volutpat at. Mauris in tellus neque. Sed finibus rhoncus odio bibendum pellentesque. Etiam quam ex, ultrices nec efficitur eu, semper ut nulla. Maecenas libero arcu, molestie et finibus quis, efficitur ut turpis. Fusce iaculis mollis rutrum.',
+      },
+      {
+        counselor: 'Some Counselor',
+        date: '15/03/2020',
+        note:
+          'Proin arcu felis, rhoncus eget pretium id, porta sit amet elit. Quisque sed sem convallis mi vehicula tristique. Cras laoreet cursus odio, vitae vestibulum odio blandit lacinia.',
+      },
     ],
   };
 
@@ -214,7 +252,7 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails }) => {
               <CasePrintMultiSection {...perpetratorMultiSection} />
               <CasePrintSection {...incidentSection} />
               <CasePrintSection {...referralsSection} />
-              <CasePrintSection {...notesSection} />
+              <CasePrintNotes {...notesSection} />
               <CasePrintSummary summary={summary} />
             </View>
             <Text
