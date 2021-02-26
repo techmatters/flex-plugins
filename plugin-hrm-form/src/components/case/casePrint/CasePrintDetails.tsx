@@ -3,7 +3,7 @@
 import React from 'react';
 import { Text, View } from '@react-pdf/renderer';
 
-import styles from './CasePrintStyles';
+import styles from './styles';
 
 type OwnProps = {
   status: string;

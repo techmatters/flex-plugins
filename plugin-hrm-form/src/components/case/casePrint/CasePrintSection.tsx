@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Text, View } from '@react-pdf/renderer';
 
-import styles from './CasePrintStyles';
+import styles from './styles';
 
 type SectionField = {
   label: string;

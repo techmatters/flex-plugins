@@ -2,7 +2,7 @@
 import React from 'react';
 import { View, Text, Image } from '@react-pdf/renderer';
 
-import styles from './CasePrintStyles';
+import styles from './styles';
 
 type OwnProps = {
   id: number;
@@ -17,7 +17,7 @@ type Props = OwnProps;
 const CasePrintHeader: React.FC<Props> = ({ firstName, lastName, id, officeName, logoSource }) => {
   return (
     <View fixed>
-      <View style={styles.caseHeader}>
+      <View style={styles.headerContainer}>
         <View style={styles.flexColumn}>
           <Text style={styles.childName}>{`${firstName} ${lastName}`}</Text>
           <View style={styles.flexRow}>
