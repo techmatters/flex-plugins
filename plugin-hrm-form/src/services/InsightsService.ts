@@ -9,10 +9,7 @@ import { TaskEntry } from '../states/contacts/reducer';
 import { Case } from '../types/types';
 import { formatCategories } from '../utils/formatters';
 import callTypes from '../states/DomainConstants';
-import { zambiaInsightsConfig } from '../insightsConfig/zambia';
-import { southAfricaV1InsightsConfig } from '../insightsConfig/za-v1';
 import {
-  InsightsObject,
   FieldType,
   InsightsFieldSpec,
   InsightsFormSpec,
@@ -72,7 +69,7 @@ type InsightsUpdateFunction = (
   caseForm: Case,
 ) => InsightsAttributes;
 
-const baseUpdates: InsightsUpdateFunction = (
+export const baseUpdates: InsightsUpdateFunction = (
   taskAttributes: TaskAttributes,
   contactForm: TaskEntry,
   caseForm: Case,
@@ -114,7 +111,7 @@ const baseUpdates: InsightsUpdateFunction = (
   };
 };
 
-const contactlessTaskUpdates: InsightsUpdateFunction = (
+export const contactlessTaskUpdates: InsightsUpdateFunction = (
   attributes: TaskAttributes,
   contactForm: TaskEntry,
   caseForm: Case,
@@ -251,56 +248,6 @@ export const processHelplineConfig = (
   return insightsAtts;
 };
 
-/*
- * Visible for testing
- * export const zambiaUpdates = (
- *   attributes: TaskAttributes,
- *   contactForm: TaskEntry,
- *   caseForm: Case,
- * ): InsightsAttributes => {
- *   const { callType } = contactForm;
- *   if (isNonDataCallType(callType)) return {};
- */
-
-//   const attsToReturn: InsightsAttributes = processHelplineConfig(contactForm, caseForm, zambiaInsightsConfig);
-
-//   /*
-//    * Custom additions:
-//    *  Add province and district into area
-//    */
-//   attsToReturn[InsightsObject.Customers].area = [
-//     contactForm.childInformation.province,
-//     contactForm.childInformation.district,
-//   ].join(delimiter);
-
-/*
- *   return attsToReturn;
- * };
- */
-
-/*
- * export const southAfricaUpdates = (attributes: TaskAttributes, contactForm: TaskEntry, caseForm: Case): InsightsAttributes => {
- *   const { callType } = contactForm;
- *   if (isNonDataCallType(callType)) return {};
- */
-
-//   const attsToReturn: InsightsAttributes = processHelplineConfig(contactForm, caseForm, southAfricaV1InsightsConfig);
-
-//   /*
-//    * Custom additions:
-//    *  Add province, municipality district into area
-//    */
-//   attsToReturn[InsightsObject.Customers].area = [
-//     contactForm.childInformation.province,
-//     contactForm.childInformation.municipality,
-//     contactForm.childInformation.district,
-//   ].join(delimiter);
-
-/*
- *   return attsToReturn;
- * };
- */
-
 const applyCustomUpdate = (dataSource: { contactForm: TaskEntry; caseForm: Case }) => (
   attributes: InsightsAttributes,
   customUpdate: InsightsCustomUpdate,
@@ -338,7 +285,10 @@ const bindApplyCustomUpdates = (customConfigObject: {
   return customConfigObject.customUpdates.reduce(customUpdatesFun, processedAtts);
 };
 
-const mergeAttributes = (previousAttributes: TaskAttributes, newAttributes: InsightsAttributes): TaskAttributes => {
+export const mergeAttributes = (
+  previousAttributes: TaskAttributes,
+  newAttributes: InsightsAttributes,
+): TaskAttributes => {
   return {
     ...previousAttributes,
     conversations: {
@@ -376,6 +326,5 @@ export async function saveInsightsData(twilioTask: ITask, contactForm: TaskEntry
   const finalAttributes: TaskAttributes = getInsightsUpdateFunctionsForConfig(currentDefinitionVersion.insights)
     .map((f: any) => f(twilioTask.attributes, contactForm, caseForm))
     .reduce((acc: TaskAttributes, curr: InsightsAttributes) => mergeAttributes(acc, curr), previousAttributes);
-console.log('>>>>>>>> finalAttributes: ', finalAttributes)
   await twilioTask.setAttributes(finalAttributes);
 }

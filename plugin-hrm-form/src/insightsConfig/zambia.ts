@@ -1,6 +1,7 @@
 import { FieldType, InsightsConfigSpec, InsightsObject } from './types';
 
-export const zambiaInsightsConfig: InsightsConfigSpec = {
+// Should we remove this file? This information is now part of definition version
+const zambiaInsightsConfig: InsightsConfigSpec = {
   contactForm: {
     callerInformation: [
       {

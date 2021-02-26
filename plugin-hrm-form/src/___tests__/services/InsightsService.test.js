@@ -1,6 +1,33 @@
 /* eslint-disable camelcase */
-import { processHelplineConfig, saveInsightsData, zambiaUpdates } from '../../services/InsightsService';
+import '../mockGetConfig'; // This causes the definition version to be "v1" (i.e. Zambia v1), hence that's what we gonna use to match the tests
+import {
+  baseUpdates,
+  contactlessTaskUpdates,
+  processHelplineConfig,
+  saveInsightsData,
+  mergeAttributes,
+} from '../../services/InsightsService';
 import { getDateTime } from '../../utils/helpers';
+import v1 from '../../formDefinitions/v1';
+
+/*
+ * This helper matches the way attributes were updated previous the changes Gian introduced in https://github.com/tech-matters/flex-plugins/pull/364/commits/9d09afec0db49716ef0b7518aaa5f7bc6159db64
+ * Used to test that the attributes matches with what we expected before
+ */
+const zambiaUpdates = (attributes, contactForm, caseForm) => {
+  const attsToReturn = processHelplineConfig(contactForm, caseForm, v1.insights.configSpec);
+
+  attsToReturn.customers.area = [contactForm.childInformation.province, contactForm.childInformation.district]
+    .filter(Boolean)
+    .join(';');
+
+  return attsToReturn;
+};
+
+const expectWithV1Zambia = (attributes, contactForm, caseForm) =>
+  [baseUpdates, contactlessTaskUpdates, zambiaUpdates]
+    .map(f => f(attributes, contactForm, caseForm))
+    .reduce((acc, curr) => mergeAttributes(acc, curr), { ...attributes });
 
 test('saveInsightsData for non-data callType', async () => {
   const previousAttributes = {
@@ -69,22 +96,30 @@ test('saveInsightsData for data callType', async () => {
     ],
   };
 
-  await saveInsightsData(twilioTask, contactForm);
-
-  const expectedNewAttributes = {
-    taskSid: 'task-sid',
-    channelType: 'voice',
-    conversations: {
-      content: 'content',
-      conversation_attribute_1: 'Unspecified/Other - Missing children;Bullying;Addictive behaviours and substance use',
-      conversation_attribute_2: 'Child calling about self',
-      conversation_attribute_5: null,
-      communication_channel: 'Call',
-    },
-    customers: {
-      name: 'John Doe',
-    },
+  const caseForm = {
+    id: 123,
   };
+
+  const expectedNewAttributes = expectWithV1Zambia(twilioTask.attributes, contactForm, caseForm);
+
+  await saveInsightsData(twilioTask, contactForm, caseForm);
+
+  /*
+   * const expectedNewAttributes = {
+   *   taskSid: 'task-sid',
+   *   channelType: 'voice',
+   *   conversations: {
+   *     content: 'content',
+   *     conversation_attribute_1: 'Unspecified/Other - Missing children;Bullying;Addictive behaviours and substance use',
+   *     conversation_attribute_2: 'Child calling about self',
+   *     conversation_attribute_5: null,
+   *     communication_channel: 'Call',
+   *   },
+   *   customers: {
+   *     name: 'John Doe',
+   *   },
+   * };
+   */
 
   expect(twilioTask.setAttributes).toHaveBeenCalledWith(expectedNewAttributes);
 });
@@ -118,21 +153,29 @@ test('Handles contactless tasks', async () => {
     categories: ['categories.Violence.Unspecified/Other'],
   };
 
-  await saveInsightsData(twilioTask, task);
-
-  const expectedNewAttributes = {
-    taskSid: 'task-sid',
-    isContactlessTask: true,
-    channelType: 'default',
-    conversations: {
-      conversation_attribute_1: 'Unspecified/Other - Violence',
-      conversation_attribute_2: 'Child calling about self',
-      conversation_attribute_5: null,
-      communication_channel: 'SMS',
-      date: getDateTime({ date, time }),
-    },
-    customers: {},
+  const caseForm = {
+    id: 123,
   };
+
+  const expectedNewAttributes = expectWithV1Zambia(twilioTask.attributes, task, caseForm);
+
+  await saveInsightsData(twilioTask, task, caseForm);
+
+  /*
+   * const expectedNewAttributes = {
+   *   taskSid: 'task-sid',
+   *   isContactlessTask: true,
+   *   channelType: 'default',
+   *   conversations: {
+   *     conversation_attribute_1: 'Unspecified/Other - Violence',
+   *     conversation_attribute_2: 'Child calling about self',
+   *     conversation_attribute_5: null,
+   *     communication_channel: 'SMS',
+   *     date: getDateTime({ date, time }),
+   *   },
+   *   customers: {},
+   * };
+   */
 
   expect(twilioTask.setAttributes).toHaveBeenCalledWith(expectedNewAttributes);
 });
