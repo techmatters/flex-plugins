@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     paddingTop: 20,
-    paddingBottom: 20,
+    paddingBottom: 50,
     paddingLeft: 20,
     paddingRight: 20,
   },
@@ -34,6 +34,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingBottom: 20,
   },
   caseBody: {
     fontFamily: 'Open Sans',
@@ -94,8 +95,7 @@ const styles = StyleSheet.create({
   },
   officeName: {
     fontFamily: 'Open Sans',
-    fontSize: 12,
-    fontStyle: 'italic',
+    fontSize: 10,
     marginLeft: 5,
   },
   sectionHeader: {
@@ -154,13 +154,14 @@ const styles = StyleSheet.create({
   },
   footer: {
     position: 'absolute',
+    fontFamily: 'Open Sans',
     fontSize: 12,
+    fontWeight: 600,
     marginTop: 10,
     bottom: 30,
     left: 0,
     right: 0,
     textAlign: 'center',
-    color: 'grey',
   },
 });
 

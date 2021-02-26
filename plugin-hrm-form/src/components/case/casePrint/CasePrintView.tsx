@@ -15,6 +15,8 @@ import CasePrintDetails from './CasePrintDetails';
 import type { CaseDetails } from '../../../states/case/types';
 import CasePrintMultiSection from './CasePrintMultiSection';
 import CasePrintNotes from './CasePrintNotes';
+import CasePrintHeader from './CasePrintHeader';
+import CasePrintFooter from './CasePrintFooter';
 
 type OwnProps = {
   onClickClose: () => void;
@@ -223,18 +225,12 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails }) => {
       <PDFViewer style={{ height: '100%' }}>
         <Document>
           <Page size="A4" style={styles.page}>
-            <View fixed>
-              <View style={styles.caseHeader}>
-                <View style={styles.flexColumn}>
-                  <Text style={styles.childName}>{`${caseDetails.name.firstName} ${caseDetails.name.lastName}`}</Text>
-                  <View style={styles.flexRow}>
-                    <Text style={styles.caseId}>Case#: {caseDetails.id}</Text>
-                    {caseDetails.officeName && <Text style={styles.officeName}>({caseDetails.officeName})</Text>}
-                  </View>
-                </View>
-                {/* <Image src={source} /> */}
-              </View>
-            </View>
+            <CasePrintHeader
+              id={caseDetails.id}
+              firstName={caseDetails.name.firstName}
+              lastName={caseDetails.name.lastName}
+              officeName="Gautang"
+            />
             <View style={styles.caseBody}>
               <CasePrintDetails
                 status={caseDetails.status}
@@ -255,11 +251,7 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails }) => {
               <CasePrintNotes {...notesSection} />
               <CasePrintSummary summary={summary} />
             </View>
-            <Text
-              style={styles.footer}
-              render={({ pageNumber, totalPages }) => `Page ${pageNumber} / ${totalPages}`}
-              fixed
-            />
+            <CasePrintFooter />
           </Page>
         </Document>
       </PDFViewer>
