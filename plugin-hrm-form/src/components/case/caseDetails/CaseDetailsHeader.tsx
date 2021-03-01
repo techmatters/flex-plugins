@@ -41,7 +41,7 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
       <Flex flexDirection="column">
         <Flex flexDirection="row">
           <DetailsHeaderChildName variant="h6">{childName}</DetailsHeaderChildName>
-          <Button onClick={handlePrintCase}>
+          <Button onClick={handlePrintCase} aria-label="Print">
             <PrintIcon />
           </Button>
         </Flex>

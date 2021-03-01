@@ -56,7 +56,7 @@ const CasePrintDetails: React.FC<Props> = ({
         <View style={styles.flexColumn}>
           <Text />
           <View style={{ ...styles.flexRow, justifyContent: 'space-between' }}>
-            {childIsAtRisk ? <Text>☑️</Text> : <Text>⏹️</Text>}
+            {childIsAtRisk ? <Text>☑️ </Text> : <Text>❌ </Text>}
             <Text> {strings['Case-ChildIsAtRisk']}</Text>
           </View>
         </View>
