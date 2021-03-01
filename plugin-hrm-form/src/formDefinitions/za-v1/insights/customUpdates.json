@@ -1,7 +1,7 @@
 [
   {
     "attributeName": "area",
-    "insightObject": "customers",
+    "insightsObject": "customers",
     "paths": [
       "contactForm.childInformation.province",
       "contactForm.childInformation.municipality",
