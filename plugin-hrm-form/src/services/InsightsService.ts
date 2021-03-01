@@ -248,41 +248,34 @@ export const processHelplineConfig = (
   return insightsAtts;
 };
 
-const applyCustomUpdate = (dataSource: { contactForm: TaskEntry; caseForm: Case }) => (
-  attributes: InsightsAttributes,
-  customUpdate: InsightsCustomUpdate,
-): InsightsAttributes => {
-  // concatenate the values, taken from dataSource using paths (e.g. 'contactForm.childInformation.province')
-  const value = customUpdate.paths
-    .map(path => get(dataSource, path))
-    .filter(Boolean)
-    .join(delimiter);
+const applyCustomUpdate = (customUpdate: InsightsCustomUpdate): InsightsUpdateFunction => {
+  return (attributes, contactForm, caseForm) => {
+    if (isNonDataCallType(contactForm.callType)) return {};
 
-  // if (!value) return attributes; // Do we want this case to leave insights unaffected?
+    const dataSource = { contactForm, caseForm };
+    // concatenate the values, taken from dataSource using paths (e.g. 'contactForm.childInformation.province')
+    const value = customUpdate.paths.map(path => get(dataSource, path, '')).join(delimiter);
 
-  return {
-    ...attributes,
-    [customUpdate.insightObject]: {
-      ...attributes[customUpdate.insightObject],
-      [customUpdate.attributeName]: value,
-    },
+    return {
+      [customUpdate.insightsObject]: {
+        [customUpdate.attributeName]: value,
+      },
+    };
   };
 };
 
 const bindApplyCustomUpdates = (customConfigObject: {
   customUpdates: InsightsCustomUpdates;
   configSpec: InsightsConfigSpec;
-}) => (attributes: TaskAttributes, contactForm: TaskEntry, caseForm: Case): InsightsAttributes => {
-  const dataSource = { caseForm, contactForm };
-  const { callType } = contactForm;
-  if (isNonDataCallType(callType)) return {};
+}): InsightsUpdateFunction[] => {
+  const getProcessedAtts: InsightsUpdateFunction = (attributes, contactForm, caseForm) =>
+    isNonDataCallType(contactForm.callType)
+      ? {}
+      : processHelplineConfig(contactForm, caseForm, customConfigObject.configSpec);
 
-  // TODO: maybe move this to use the same InsightsConfigSpec approach?
-  const processedAtts: InsightsAttributes = processHelplineConfig(contactForm, caseForm, customConfigObject.configSpec);
+  const customUpdatesFuns = customConfigObject.customUpdates.map(applyCustomUpdate);
 
-  const customUpdatesFun = applyCustomUpdate(dataSource);
-
-  return customConfigObject.customUpdates.reduce(customUpdatesFun, processedAtts);
+  return [getProcessedAtts, ...customUpdatesFuns];
 };
 
 export const mergeAttributes = (
@@ -308,7 +301,7 @@ const getInsightsUpdateFunctionsForConfig = (
 ): InsightsUpdateFunction[] => {
   const applyCustomUpdates = bindApplyCustomUpdates(customInsights);
 
-  return [baseUpdates, contactlessTaskUpdates, applyCustomUpdates];
+  return [baseUpdates, contactlessTaskUpdates, ...applyCustomUpdates];
 };
 
 /*

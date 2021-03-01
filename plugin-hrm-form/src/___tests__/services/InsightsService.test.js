@@ -17,9 +17,9 @@ import v1 from '../../formDefinitions/v1';
 const zambiaUpdates = (attributes, contactForm, caseForm) => {
   const attsToReturn = processHelplineConfig(contactForm, caseForm, v1.insights.configSpec);
 
-  attsToReturn.customers.area = [contactForm.childInformation.province, contactForm.childInformation.district]
-    .filter(Boolean)
-    .join(';');
+  attsToReturn.customers.area = [contactForm.childInformation.province, contactForm.childInformation.district].join(
+    ';',
+  );
 
   return attsToReturn;
 };
