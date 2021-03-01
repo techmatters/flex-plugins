@@ -1,4 +1,4 @@
-export enum InsightsObject {
+enum InsightsObject {
   Customers = 'customers',
   Conversations = 'conversations',
 }
