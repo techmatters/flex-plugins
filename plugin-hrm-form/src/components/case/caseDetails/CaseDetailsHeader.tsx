@@ -3,6 +3,7 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { Button } from '@material-ui/core';
+import { Print as PrintIcon } from '@material-ui/icons';
 
 import {
   DetailsHeaderChildName,
@@ -40,7 +41,9 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
       <Flex flexDirection="column">
         <Flex flexDirection="row">
           <DetailsHeaderChildName variant="h6">{childName}</DetailsHeaderChildName>
-          <Button onClick={handlePrintCase}>Print Case</Button>
+          <Button onClick={handlePrintCase}>
+            <PrintIcon />
+          </Button>
         </Flex>
         <DetailsHeaderCaseContainer>
           <DetailsHeaderCaseId id="Case-CaseId-label">

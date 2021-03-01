@@ -6,11 +6,11 @@ import { Template } from '@twilio/flex-ui';
 import { ButtonBase } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 
+import { getConfig } from '../../../HrmFormPlugin';
 import CasePrintSection from './CasePrintSection';
 import CasePrintSummary from './CasePrintSummary';
 import styles from './styles';
 import { CasePrintViewContainer, HiddenText } from '../../../styles/HrmStyles';
-// import source from '../../../resources/ZA_childline_logo.jpg';
 import CasePrintDetails from './CasePrintDetails';
 import type { CaseDetails } from '../../../states/case/types';
 import CasePrintMultiSection from './CasePrintMultiSection';
@@ -38,6 +38,8 @@ type OwnProps = {
 type Props = OwnProps;
 
 const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails }) => {
+  const { helplineLogoSource } = getConfig();
+
   return (
     <CasePrintViewContainer>
       <ButtonBase onClick={onClickClose} style={{ marginLeft: 'auto' }} data-testid="CasePrint-CloseCross">
@@ -54,6 +56,7 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails }) => {
               firstName={caseDetails.name.firstName}
               lastName={caseDetails.name.lastName}
               officeName={officeName}
+              logoSource={helplineLogoSource}
             />
             <View>
               <CasePrintDetails
