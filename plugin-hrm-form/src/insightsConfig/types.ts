@@ -18,7 +18,7 @@ export type InsightsConfigSpec = {
 };
 
 export type InsightsCustomUpdate = {
-  insightObject: InsightsObject; // In which attributes object this goes
+  insightsObject: InsightsObject; // In which attributes object this goes
   attributeName: string; // Which name the property receives in above object
   paths: string[]; // Array of paths to grab and concatenate to drop in above property
 };
