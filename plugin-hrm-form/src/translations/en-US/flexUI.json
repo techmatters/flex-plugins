@@ -177,6 +177,10 @@
   "Case-ReferralComments": "Comments",
   "Case-Counsellor": "Counsellor",
   "Case-ChildIsAtRisk": "Child is at Risk",
+  "Case-CaseDetails": "Case Details",
+  "Case-CaseStatus": "Case Status",
+  "Case-CaseManager": "Case Manager",
+  "Case-Notes": "Notes",
 
   "SideNavCaseList": "Case List",
   
@@ -246,3 +250,4 @@
   "Category": "Category",
   "Unknown": "Unknown"
 }
+

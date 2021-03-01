@@ -2,6 +2,7 @@
 import React from 'react';
 import { View, Text, Image } from '@react-pdf/renderer';
 
+import { getConfig } from '../../../HrmFormPlugin';
 import styles from './styles';
 
 type OwnProps = {
@@ -15,13 +16,15 @@ type OwnProps = {
 type Props = OwnProps;
 
 const CasePrintHeader: React.FC<Props> = ({ firstName, lastName, id, officeName, logoSource }) => {
+  const { strings } = getConfig();
+
   return (
     <View fixed>
       <View style={styles.headerContainer}>
         <View style={styles.flexColumn}>
           <Text style={styles.childName}>{`${firstName} ${lastName}`}</Text>
           <View style={styles.flexRow}>
-            <Text style={styles.caseId}>Case#: {id}</Text>
+            <Text style={styles.caseId}>{`${strings['Case-CaseNumber']}: ${id}`}</Text>
             {officeName && <Text style={styles.officeName}>({officeName})</Text>}
           </View>
         </View>

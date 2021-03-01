@@ -2,6 +2,7 @@
 import React from 'react';
 import { View, Text } from '@react-pdf/renderer';
 
+import { getConfig } from '../../../HrmFormPlugin';
 import styles from './styles';
 
 type Note = {
@@ -17,10 +18,12 @@ type OwnProps = {
 type Props = OwnProps;
 
 const CasePrintNotes: React.FC<Props> = ({ notes }) => {
+  const { strings } = getConfig();
+
   return (
     <View>
       <View style={styles.sectionHeader}>
-        <Text style={styles.whiteText}>Notes</Text>
+        <Text style={styles.whiteText}>{strings['Case-Notes']}</Text>
       </View>
       {notes.map((note, i) => {
         return (

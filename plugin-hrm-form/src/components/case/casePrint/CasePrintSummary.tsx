@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Text, View } from '@react-pdf/renderer';
 
+import { getConfig } from '../../../HrmFormPlugin';
 import styles from './styles';
 
 type OwnProps = {
@@ -11,10 +12,12 @@ type OwnProps = {
 type Props = OwnProps;
 
 const CasePrintSummary: React.FC<Props> = ({ summary }) => {
+  const { strings } = getConfig();
+
   return (
     <View>
       <View style={styles.sectionHeader}>
-        <Text style={styles.whiteText}>Case Summary</Text>
+        <Text style={styles.whiteText}>{strings['Case-CaseSummarySection']}</Text>
       </View>
       <View style={styles.sectionBody}>
         <Text style={styles.caseSummaryText}>{summary}</Text>

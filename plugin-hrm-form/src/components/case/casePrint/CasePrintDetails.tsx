@@ -3,6 +3,7 @@
 import React from 'react';
 import { Text, View } from '@react-pdf/renderer';
 
+import { getConfig } from '../../../HrmFormPlugin';
 import styles from './styles';
 
 type OwnProps = {
@@ -30,41 +31,43 @@ const CasePrintDetails: React.FC<Props> = ({
   counselor,
   caseManager,
 }) => {
+  const { strings } = getConfig();
+
   return (
     <View style={styles.caseDetailsContainer}>
-      <Text style={styles.caseDetailsLabel}>Case Details</Text>
+      <Text style={styles.caseDetailsLabel}>{strings['Case-CaseDetails']}</Text>
       <View style={styles.caseDetailsSection}>
         <View style={styles.flexColumn}>
-          <Text>Case Status</Text>
+          <Text>{strings['Case-CaseStatus']}</Text>
           <Text style={styles.caseDetailsBoldText}>{status.toUpperCase()}</Text>
         </View>
         <View style={styles.flexColumn}>
-          <Text>Opened</Text>
+          <Text>{strings['Case-CaseDetailsDateOpened']}</Text>
           <Text style={styles.caseDetailsBoldText}>{openedDate}</Text>
         </View>
         <View style={styles.flexColumn}>
-          <Text>Last Updated/Closed</Text>
+          <Text>{strings['Case-CaseDetailsLastUpdated']}</Text>
           <Text style={styles.caseDetailsBoldText}>{lastUpdatedDate}</Text>
         </View>
         <View style={styles.flexColumn}>
-          <Text>Follow Up Date</Text>
+          <Text>{strings['Case-CaseDetailsFollowUpDate']}</Text>
           <Text style={styles.caseDetailsBoldText}>{followUpDate ? followUpDate : '-'}</Text>
         </View>
         <View style={styles.flexColumn}>
           <Text />
           <View style={{ ...styles.flexRow, justifyContent: 'space-between' }}>
             {childIsAtRisk ? <Text>☑️</Text> : <Text>⏹️</Text>}
-            <Text> Child is at risk</Text>
+            <Text> {strings['Case-ChildIsAtRisk']}</Text>
           </View>
         </View>
       </View>
       <View style={styles.caseCounsellorSection}>
         <View style={styles.flexColumn}>
-          <Text>Counsellor</Text>
+          <Text>{strings['Case-Counsellor']}</Text>
           <Text style={styles.caseDetailsBoldText}>{counselor}</Text>
         </View>
         <View style={{ marginTop: 15, ...styles.flexColumn }}>
-          <Text>Case Manager</Text>
+          <Text>{strings['Case-CaseManager']}</Text>
           <Text style={styles.caseDetailsBoldText}>{caseManager.name}</Text>
           <Text style={styles.caseDetailsBoldText}>{caseManager.phone}</Text>
           <Text style={styles.caseDetailsBoldText}>{caseManager.email}</Text>
