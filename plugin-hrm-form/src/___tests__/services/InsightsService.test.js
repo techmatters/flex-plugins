@@ -15,7 +15,7 @@ import v1 from '../../formDefinitions/v1';
  * Used to test that the attributes matches with what we expected before
  */
 const zambiaUpdates = (attributes, contactForm, caseForm) => {
-  const attsToReturn = processHelplineConfig(contactForm, caseForm, v1.insights.configSpec);
+  const attsToReturn = processHelplineConfig(contactForm, caseForm, v1.insights.oneToOneConfigSpec);
 
   attsToReturn.customers.area = [contactForm.childInformation.province, contactForm.childInformation.district].join(
     ';',

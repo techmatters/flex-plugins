@@ -2,7 +2,7 @@
 import type { RegisterOptions } from 'react-hook-form';
 
 import { CallTypes } from '../../../states/DomainConstants';
-import { InsightsConfigSpec, InsightsCustomUpdates } from '../../../insightsConfig/types';
+import { OneToOneConfigSpec, OneToManyConfigSpecs } from '../../../insightsConfig/types';
 
 export type FormFieldType = { value: string; error?: string; validation?: string[]; touched?: boolean };
 
@@ -165,7 +165,7 @@ export type DefinitionVersion = {
   callTypeButtons: CallTypeButtonsDefinitions;
   layoutVersion: LayoutVersion;
   insights: {
-    configSpec: InsightsConfigSpec;
-    customUpdates: InsightsCustomUpdates;
+    oneToOneConfigSpec: OneToOneConfigSpec;
+    oneToManyConfigSpecs: OneToManyConfigSpecs;
   };
 };

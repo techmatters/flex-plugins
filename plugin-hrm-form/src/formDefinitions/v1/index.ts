@@ -9,15 +9,15 @@ import CaseInformationTab from './tabbedForms/CaseInformationTab.json';
 import ChildInformationTab from './tabbedForms/ChildInformationTab.json';
 import IssueCategorizationTab from './tabbedForms/IssueCategorizationTab.json';
 import CallTypeButtons from './CallTypeButtons.json';
-import configSpec from './insights/configSpec.json';
-import customUpdates from './insights/customUpdates.json';
+import oneToOneConfigSpec from './insights/oneToOneConfigSpec.json';
+import oneToManyConfigSpecs from './insights/oneToManyConfigSpecs.json';
 import type {
   DefinitionVersion,
   LayoutVersion,
   FormDefinition,
   CallTypeButtonsDefinitions,
 } from '../../components/common/forms/types';
-import { InsightsConfigSpec, InsightsCustomUpdates } from '../../insightsConfig/types';
+import { OneToOneConfigSpec, OneToManyConfigSpecs } from '../../insightsConfig/types';
 
 const version: DefinitionVersion = {
   caseForms: {
@@ -36,8 +36,8 @@ const version: DefinitionVersion = {
   callTypeButtons: CallTypeButtons as CallTypeButtonsDefinitions,
   layoutVersion: LayoutDefinitions as LayoutVersion,
   insights: {
-    configSpec: (configSpec as unknown) as InsightsConfigSpec,
-    customUpdates: customUpdates as InsightsCustomUpdates,
+    oneToOneConfigSpec: (oneToOneConfigSpec as unknown) as OneToOneConfigSpec,
+    oneToManyConfigSpecs: oneToManyConfigSpecs as OneToManyConfigSpecs,
   },
 };
 

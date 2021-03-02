@@ -13,9 +13,9 @@ import {
   FieldType,
   InsightsFieldSpec,
   InsightsFormSpec,
-  InsightsConfigSpec,
-  InsightsCustomUpdate,
-  InsightsCustomUpdates,
+  OneToOneConfigSpec,
+  OneToManyConfigSpec,
+  OneToManyConfigSpecs,
 } from '../insightsConfig/types';
 import { getDefinitionVersions } from '../HrmFormPlugin';
 import type { DefinitionVersion } from '../components/common/forms/types';
@@ -211,7 +211,7 @@ const convertCaseFormForInsights = (caseForm: Case): InsightsCaseForm => {
 export const processHelplineConfig = (
   contactForm: TaskEntry,
   caseForm: Case,
-  configSpec: InsightsConfigSpec,
+  oneToOneConfigSpec: OneToOneConfigSpec,
 ): InsightsAttributes => {
   const insightsAtts: InsightsAttributes = {
     customers: {},
@@ -219,17 +219,17 @@ export const processHelplineConfig = (
   };
 
   const formsToProcess: [InsightsFormSpec, TaskEntry | InsightsCaseForm][] = [];
-  if (configSpec.contactForm) {
+  if (oneToOneConfigSpec.contactForm) {
     // Clone the whole object to avoid modifying the real spec. May not be needed.
-    const contactSpec = cloneDeep(configSpec.contactForm);
+    const contactSpec = cloneDeep(oneToOneConfigSpec.contactForm);
     if (contactForm.callType !== callTypes.caller) {
       // If this isn't a caller type, don't save the caller form data
       contactSpec.callerInformation = [];
     }
     formsToProcess.push([contactSpec, contactForm]);
   }
-  if (configSpec.caseForm) {
-    formsToProcess.push([configSpec.caseForm, convertCaseFormForInsights(caseForm)]);
+  if (oneToOneConfigSpec.caseForm) {
+    formsToProcess.push([oneToOneConfigSpec.caseForm, convertCaseFormForInsights(caseForm)]);
   }
   formsToProcess.forEach(([spec, form]) => {
     Object.keys(spec).forEach(subform => {
@@ -248,7 +248,7 @@ export const processHelplineConfig = (
   return insightsAtts;
 };
 
-const applyCustomUpdate = (customUpdate: InsightsCustomUpdate): InsightsUpdateFunction => {
+const applyCustomUpdate = (customUpdate: OneToManyConfigSpec): InsightsUpdateFunction => {
   return (attributes, contactForm, caseForm) => {
     if (isNonDataCallType(contactForm.callType)) return {};
 
@@ -265,15 +265,15 @@ const applyCustomUpdate = (customUpdate: InsightsCustomUpdate): InsightsUpdateFu
 };
 
 const bindApplyCustomUpdates = (customConfigObject: {
-  customUpdates: InsightsCustomUpdates;
-  configSpec: InsightsConfigSpec;
+  oneToManyConfigSpecs: OneToManyConfigSpecs;
+  oneToOneConfigSpec: OneToOneConfigSpec;
 }): InsightsUpdateFunction[] => {
   const getProcessedAtts: InsightsUpdateFunction = (attributes, contactForm, caseForm) =>
     isNonDataCallType(contactForm.callType)
       ? {}
-      : processHelplineConfig(contactForm, caseForm, customConfigObject.configSpec);
+      : processHelplineConfig(contactForm, caseForm, customConfigObject.oneToOneConfigSpec);
 
-  const customUpdatesFuns = customConfigObject.customUpdates.map(applyCustomUpdate);
+  const customUpdatesFuns = customConfigObject.oneToManyConfigSpecs.map(applyCustomUpdate);
 
   return [getProcessedAtts, ...customUpdatesFuns];
 };
