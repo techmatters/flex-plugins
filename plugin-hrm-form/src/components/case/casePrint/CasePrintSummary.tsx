@@ -1,5 +1,5 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Text, View } from '@react-pdf/renderer';
 
 import { getConfig } from '../../../HrmFormPlugin';
@@ -27,9 +27,5 @@ const CasePrintSummary: React.FC<Props> = ({ summary }) => {
 };
 
 CasePrintSummary.displayName = 'CasePrintSummary';
-
-CasePrintSummary.propTypes = {
-  summary: PropTypes.string.isRequired,
-};
 
 export default CasePrintSummary;

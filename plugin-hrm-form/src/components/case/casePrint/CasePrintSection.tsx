@@ -1,5 +1,5 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Text, View } from '@react-pdf/renderer';
 
 import styles from './styles';
@@ -37,11 +37,5 @@ const CasePrintSection: React.FC<Props> = ({ sectionName, fieldValues }) => {
 };
 
 CasePrintSection.displayName = 'CasePrintSection';
-
-CasePrintSection.propTypes = {
-  sectionName: PropTypes.string.isRequired,
-  // eslint-disable-next-line react/forbid-prop-types
-  fieldValues: PropTypes.array.isRequired, // ToDo: put a better typing here
-};
 
 export default CasePrintSection;

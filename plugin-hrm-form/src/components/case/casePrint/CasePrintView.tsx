@@ -65,7 +65,7 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails }) => {
                 lastUpdatedDate={caseDetails.lastUpdatedDate}
                 followUpDate={caseDetails.followUpDate}
                 childIsAtRisk={caseDetails.childIsAtRisk}
-                counselor={caseDetails.currentCounselor}
+                counselor={caseDetails.caseCounselor}
                 caseManager={caseManager}
               />
               <CasePrintSection {...callerInfoSection} />
