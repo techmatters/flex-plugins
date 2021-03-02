@@ -32,6 +32,11 @@ const detailsStyles: ReactPDF.Styles = {
     marginTop: 10,
     fontSize: 12,
   },
+  caseDetailsSubSection: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
   caseDetailsBoldText: {
     marginTop: 5,
     fontWeight: 600,
