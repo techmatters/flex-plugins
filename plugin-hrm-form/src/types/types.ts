@@ -113,8 +113,9 @@ export type SearchCaseResult = {
 /**
  * Custom tasks
  */
+export const offlineContactTaskSid = 'offline-contact-task-sid';
 export type OfflineContactTask = {
-  taskSid: 'offline-contact-task-sid';
+  taskSid: typeof offlineContactTaskSid;
   attributes: {
     isContactlessTask: true;
   };
@@ -124,5 +125,5 @@ export type OfflineContactTask = {
 export type CustomITask = ITask | OfflineContactTask;
 
 export function isOfflineContactTask(task: CustomITask): task is OfflineContactTask {
-  return task.taskSid === 'offline-contact-task-sid';
+  return task.taskSid === offlineContactTaskSid;
 }

@@ -1,8 +1,9 @@
 import { omit } from 'lodash';
 
-import { AppRoutes, RoutingActionType, CHANGE_ROUTE, ADD_OFFLINE_CONTACT } from './types';
+import { AppRoutes, RoutingActionType, CHANGE_ROUTE } from './types';
 import { GeneralActionType, INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE } from '../types';
 import { standaloneTaskSid } from '../../components/StandaloneSearch';
+import { offlineContactTaskSid } from '../../types/types';
 
 export type RoutingState = {
   tasks: {
@@ -31,6 +32,7 @@ export function reduce(state = initialState, action: RoutingActionType | General
           ...state.tasks,
           [action.taskId]: newTaskEntry,
         },
+        addOfflineContact: action.taskId === offlineContactTaskSid ? true : state.addOfflineContact,
       };
     }
     case RECREATE_CONTACT_STATE: {
@@ -42,12 +44,14 @@ export function reduce(state = initialState, action: RoutingActionType | General
           ...state.tasks,
           [action.taskId]: newTaskEntry,
         },
+        addOfflineContact: action.taskId === offlineContactTaskSid ? true : state.addOfflineContact,
       };
     }
     case REMOVE_CONTACT_STATE:
       return {
         ...state,
         tasks: omit(state.tasks, action.taskId),
+        addOfflineContact: action.taskId === offlineContactTaskSid ? false : state.addOfflineContact,
       };
     case CHANGE_ROUTE: {
       return {
@@ -58,11 +62,6 @@ export function reduce(state = initialState, action: RoutingActionType | General
         },
       };
     }
-    case ADD_OFFLINE_CONTACT:
-      return {
-        ...state,
-        addOfflineContact: true,
-      };
     default:
       return state;
   }

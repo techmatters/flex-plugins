@@ -1,3 +1,4 @@
+/* eslint-disable react/no-multi-comp */
 /* eslint-disable no-duplicate-imports */
 /* eslint-disable react/prop-types */
 import React from 'react';
@@ -10,7 +11,7 @@ import Case from '../case';
 import { namespace, contactFormsBase, routingBase, RootState, configurationBase } from '../../states';
 import { updateCallType, updateForm } from '../../states/contacts/actions';
 import { searchResultToContactForm } from '../../services/ContactService';
-import { completeContactlessTask } from '../../services/formSumbissionHelpers';
+import { removeOfflineContact } from '../../services/formSumbissionHelpers';
 import { changeRoute } from '../../states/routing/actions';
 import type { TaskEntry } from '../../states/contacts/reducer';
 import type { TabbedFormSubroutes } from '../../states/routing/types';
@@ -139,7 +140,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, currentD
       ? [
           {
             label: 'CancelOfflineContact',
-            onClick: () => completeContactlessTask(task),
+            onClick: () => removeOfflineContact(),
           },
         ]
       : undefined;

@@ -156,9 +156,10 @@ export function transformForm(form: TaskEntry): ContactRawJson {
  * @param hrmBaseUrl
  * @param workerSid
  * @param helpline
+ * @param uniqueIdentifier
  * @param shouldFillEndMillis
  */
-export async function saveToHrm(task, form, workerSid, helpline, shouldFillEndMillis = true) {
+export async function saveToHrm(task, form, workerSid, helpline, uniqueIdentifier, shouldFillEndMillis = true) {
   // if we got this far, we assume the form is valid and ready to submit
   const metadata = shouldFillEndMillis ? fillEndMillis(form.metadata) : form.metadata;
   const conversationDuration = getConversationDuration(task, metadata);
@@ -196,7 +197,7 @@ export async function saveToHrm(task, form, workerSid, helpline, shouldFillEndMi
     helpline,
     conversationDuration,
     timeOfContact,
-    taskId: task.taskSid,
+    taskId: uniqueIdentifier,
   };
 
   const options = {

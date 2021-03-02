@@ -1,13 +1,14 @@
 /* eslint-disable import/no-unused-modules */
-import { Actions, ITask } from '@twilio/flex-ui';
+import { Actions, ITask, Manager } from '@twilio/flex-ui';
 
 import { getConfig } from '../HrmFormPlugin';
 import { TaskEntry as Contact } from '../states/contacts/reducer';
-import { Case, CustomITask, isOfflineContactTask } from '../types/types';
+import { Case, CustomITask, isOfflineContactTask, offlineContactTaskSid } from '../types/types';
 import { channelTypes } from '../states/DomainConstants';
 import { buildInsightsData } from './InsightsService';
 import { saveToHrm } from './ContactService';
 import { assignOfflineContact } from './ServerlessService';
+import { removeContactState } from '../states/actions';
 
 /**
  * Function used to manually complete a task (making sure it transitions to wrapping state first).
@@ -26,26 +27,16 @@ export const completeContactTask = async (task: ITask) => {
   await Actions.invokeAction('CompleteTask', { sid, task });
 };
 
+export const removeOfflineContact = () => {
+  Manager.getInstance().store.dispatch(removeContactState(offlineContactTaskSid));
+};
+
 export const completeContactlessTask = async (task: CustomITask) => {
-  // const { attributes } = task;
-  /*
-   * Don't record insights for this task,
-   * but null out the Task ID so the Insights record is clean.
-   */
-  // const newAttributes = {
-  //   ...attributes,
-  //   skipInsights: true,
-  //   conversations: {
-  //     /* eslint-disable-next-line camelcase */
-  //     conversation_attribute_5: null,
-  //   },
-  // };
-  // await task.setAttributes(newAttributes);
-  // await Actions.invokeAction('CompleteTask', { task });
+  removeOfflineContact();
 };
 
 export const completeTask = (task: CustomITask) =>
-  isOfflineContactTask(task) ? completeContactlessTask(task) : completeContactTask(task);
+  isOfflineContactTask(task) ? removeOfflineContact() : completeContactTask(task);
 
 export const submitContactForm = async (task: CustomITask, contactForm: Contact, caseForm: Case) => {
   const { workerSid, helpline } = getConfig();
@@ -54,10 +45,13 @@ export const submitContactForm = async (task: CustomITask, contactForm: Contact,
     const targetSid = contactForm.contactlessTask.createdOnBehalfOf as string;
     const initialAttributes = { helpline, channelType: 'default', isContactlessTask: true, isInMyBehalf: true };
     const finalAttributes = buildInsightsData(initialAttributes, contactForm, caseForm, {});
-    await assignOfflineContact(targetSid, finalAttributes);
-    return {}; // do not save yet
+    const inBehalfTask = await assignOfflineContact(targetSid, finalAttributes);
+    const contact = await saveToHrm(task, contactForm, workerSid, helpline, inBehalfTask.sid);
+
+  console.log('>>>>>>', inBehalfTask, contact);
+    return contact;
   }
 
-  const contact = await saveToHrm(task, contactForm, workerSid, helpline);
+  const contact = await saveToHrm(task, contactForm, workerSid, helpline, task.taskSid);
   return contact;
 };
