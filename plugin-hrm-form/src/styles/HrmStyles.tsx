@@ -424,6 +424,13 @@ export const HiddenText = styled('span')`
 `;
 HiddenText.displayName = 'HiddenText';
 
+export const CasePrintViewContainer = styled('div')`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+`;
+CasePrintViewContainer.displayName = 'CasePrintViewContainer';
+
 type TransferStyledButtonProps = {
   background?: string;
   color?: string;

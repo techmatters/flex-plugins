@@ -50,7 +50,9 @@ import ViewHousehold from './ViewHousehold';
 import ViewPerpetrator from './ViewPerpetrator';
 import ViewIncident from './ViewIncident';
 import ViewReferral from './ViewReferral';
+import type { CaseDetailsName } from '../../states/case/types';
 import type { HouseholdEntry, PerpetratorEntry, IncidentEntry, Case as CaseType } from '../../types/types';
+import CasePrintView from './casePrint/CasePrintView';
 
 const isStandaloneITask = (task): task is StandaloneITask => {
   return task.taskSid === 'standalone-task-sid';
@@ -67,20 +69,39 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const getNameFromContact = contact => {
+const getFirstNameAndLastNameFromContact = (contact): CaseDetailsName => {
   if (contact?.rawJson?.childInformation?.name) {
     const { firstName, lastName } = contact.rawJson.childInformation.name;
-    return formatName(`${firstName} ${lastName}`);
+    return {
+      firstName,
+      lastName,
+    };
   }
-  return 'Unknown';
+  return {
+    firstName: 'Unknown',
+    lastName: 'Unknown',
+  };
 };
 
-const getNameFromForm = form => {
+const getFirstNameAndLastNameFromForm = (form): CaseDetailsName => {
   if (form?.childInformation) {
     const { firstName, lastName } = form.childInformation;
-    return formatName(`${firstName} ${lastName}`);
+    return {
+      firstName,
+      lastName,
+    };
   }
-  return 'Unknown';
+  return {
+    firstName: 'Unknown',
+    lastName: 'Unknown',
+  };
+};
+
+const splitFullName = (name: CaseDetailsName) => {
+  if (name.firstName === 'Unknown' && name.lastName === 'Unknown') {
+    return 'Unknown';
+  }
+  return `${name.firstName} ${name.lastName}`;
 };
 
 const Case: React.FC<Props> = props => {
@@ -305,10 +326,18 @@ const Case: React.FC<Props> = props => {
     }
   };
 
+  const onPrintCase = () => {
+    props.changeRoute({ route, subroute: 'case-print-view' }, task.taskSid);
+  };
+
   const isMockedMessageOpen = Boolean(mockedMessage);
 
   const firstConnectedContact = connectedCase && connectedCase.connectedContacts && connectedCase.connectedContacts[0];
-  const name = firstConnectedContact ? getNameFromContact(firstConnectedContact) : getNameFromForm(form);
+  const name = firstConnectedContact
+    ? getFirstNameAndLastNameFromContact(firstConnectedContact)
+    : getFirstNameAndLastNameFromForm(form);
+
+  const fullName = splitFullName(name);
   const categories = getCategories(firstConnectedContact);
   const { createdAt, updatedAt, twilioWorkerId, status, info } = connectedCase || {};
   const { workerSid } = getConfig(); // -- Gets the current counselor that is using the application.
@@ -329,6 +358,23 @@ const Case: React.FC<Props> = props => {
     counselor: currentCounselor,
     onClickClose: handleClose,
     definitionVersion,
+  };
+
+  const caseDetails = {
+    id: connectedCase.id,
+    name,
+    categories,
+    status,
+    caseCounselor,
+    currentCounselor,
+    openedDate,
+    lastUpdatedDate,
+    followUpDate,
+    households,
+    perpetrators,
+    incidents,
+    childIsAtRisk,
+    officeName: 'Gautang', // ToDo: add the office here.
   };
 
   switch (subroute) {
@@ -354,6 +400,8 @@ const Case: React.FC<Props> = props => {
       return <ViewIncident {...addScreenProps} />;
     case 'view-referral':
       return <ViewReferral {...addScreenProps} />;
+    case 'case-print-view':
+      return <CasePrintView caseDetails={caseDetails} {...addScreenProps} />;
     default:
       return loading || !definitionVersion ? (
         <CenteredContainer>
@@ -365,7 +413,7 @@ const Case: React.FC<Props> = props => {
             <Box marginLeft="25px" marginTop="13px">
               <CaseDetails
                 caseId={connectedCase.id}
-                name={name}
+                name={fullName}
                 status={status}
                 isEditing={isEditing}
                 counselor={caseCounselor}
@@ -374,6 +422,7 @@ const Case: React.FC<Props> = props => {
                 lastUpdatedDate={lastUpdatedDate}
                 followUpDate={followUpDate}
                 childIsAtRisk={childIsAtRisk}
+                handlePrintCase={onPrintCase}
                 handleInfoChange={onInfoChange}
                 handleStatusChange={onStatusChange}
                 handleClickChildIsAtRisk={onClickChildIsAtRisk}

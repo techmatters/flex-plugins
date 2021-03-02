@@ -2,6 +2,8 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
+import { Button } from '@material-ui/core';
+import { Print as PrintIcon } from '@material-ui/icons';
 
 import {
   DetailsHeaderChildName,
@@ -20,6 +22,7 @@ type OwnProps = {
   counselor: string;
   childIsAtRisk: boolean;
   status: CaseStatus;
+  handlePrintCase: () => void;
   handleClickChildIsAtRisk: () => void;
 };
 
@@ -30,12 +33,18 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
   counselor,
   childIsAtRisk,
   status,
+  handlePrintCase,
   handleClickChildIsAtRisk,
 }) => {
   return (
     <Flex>
       <Flex flexDirection="column">
-        <DetailsHeaderChildName variant="h6">{childName}</DetailsHeaderChildName>
+        <Flex flexDirection="row">
+          <DetailsHeaderChildName variant="h6">{childName}</DetailsHeaderChildName>
+          <Button onClick={handlePrintCase} aria-label="Print">
+            <PrintIcon />
+          </Button>
+        </Flex>
         <DetailsHeaderCaseContainer>
           <DetailsHeaderCaseId id="Case-CaseId-label">
             <Template code="Case-CaseNumber" />
