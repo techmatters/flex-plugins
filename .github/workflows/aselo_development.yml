@@ -4,7 +4,11 @@ name: Aselo Development release
 
 # Controls when the action will run.
 on:
-  workflow_dispatch
+  workflow_dispatch:
+    inputs:
+      changelog:
+        description: Release Changelog - Add a comment about the changes to be included in this release.
+        required: true
   
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -53,7 +57,7 @@ jobs:
          TWILIO_ACCOUNT_SID: ${{ secrets.AS_DEV_ACCOUNT_SID }}
          TWILIO_AUTH_TOKEN: ${{ secrets.AS_DEV_AUTH_TOKEN }}
          SKIP_PREFLIGHT_CHECK: true
-        run: npm install twilio-cli -g && twilio plugins:install @twilio-labs/plugin-flex@beta && twilio flex:plugins:deploy --changelog ${{ github.sha }}
+        run: npm install twilio-cli -g && twilio plugins:install @twilio-labs/plugin-flex@beta && twilio flex:plugins:deploy --changelog "${{ github.event.inputs.changelog }}"
         working-directory: ./plugin-hrm-form
       # Release flex plugin
       - name: Run release command

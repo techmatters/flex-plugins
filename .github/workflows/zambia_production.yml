@@ -4,7 +4,11 @@ name: Zambia Production release
 
 # Controls when the action will run.
 on:
-  workflow_dispatch
+  workflow_dispatch:
+    inputs:
+      changelog:
+        description: Release Changelog - Add a comment about the changes to be included in this release.
+        required: true
   
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -28,7 +32,7 @@ jobs:
       - name: Replace Twilio account SID in appConfig.js
         uses: falnyr/replace-env-vars-action@master
         env:
-          TWILIO_ACCOUNT_SID: ${{ secrets.ZA_PROD_ACCOUNT_SID }}
+          TWILIO_ACCOUNT_SID: ${{ secrets.ZM_PROD_ACCOUNT_SID }}
         with:
           filename: ./plugin-hrm-form/public/appConfig.js
       - name: Create secret.js
@@ -50,15 +54,15 @@ jobs:
       # Install the Twilio CLI and the flex plugin, then deploy the plugin
       - name: Install twilio cli and run deploy command
         env:
-         TWILIO_ACCOUNT_SID: ${{ secrets.ZA_PROD_ACCOUNT_SID }}
-         TWILIO_AUTH_TOKEN: ${{ secrets.ZA_PROD_AUTH_TOKEN }}
+         TWILIO_ACCOUNT_SID: ${{ secrets.ZM_PROD_ACCOUNT_SID }}
+         TWILIO_AUTH_TOKEN: ${{ secrets.ZM_PROD_AUTH_TOKEN }}
          SKIP_PREFLIGHT_CHECK: true
-        run: npm install twilio-cli -g && twilio plugins:install @twilio-labs/plugin-flex@beta && twilio flex:plugins:deploy --changelog ${{ github.sha }}
+        run: npm install twilio-cli -g && twilio plugins:install @twilio-labs/plugin-flex@beta && twilio flex:plugins:deploy --changelog "${{ github.event.inputs.changelog }}
         working-directory: ./plugin-hrm-form
       # Release flex plugin
       - name: Run release command
         env:
-         TWILIO_ACCOUNT_SID: ${{ secrets.ZA_PROD_ACCOUNT_SID }}
-         TWILIO_AUTH_TOKEN: ${{ secrets.ZA_PROD_AUTH_TOKEN }}
+         TWILIO_ACCOUNT_SID: ${{ secrets.ZM_PROD_ACCOUNT_SID }}
+         TWILIO_AUTH_TOKEN: ${{ secrets.ZM_PROD_AUTH_TOKEN }}
         run: twilio flex:plugins:release --plugin plugin-hrm-form@latest
         working-directory: ./plugin-hrm-form

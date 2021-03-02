@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'react-emotion';
-import Dialog from '@material-ui/core/Dialog';
+import Dialog, { DialogProps } from '@material-ui/core/Dialog';
 import ClearIcon from '@material-ui/icons/Clear';
 import { IconButton } from '@material-ui/core';
 import { Button, getBackgroundWithHoverCSS } from '@twilio/flex-ui';
@@ -66,11 +66,7 @@ export const NonDataCallTypeButton = styled(Button)<NonDataCallTypeButtonProps>`
   }
 `;
 
-type OwnCloseTaskDialogProps = {
-  classes: any;
-};
-
-export const CloseTaskDialog = styled(Dialog)<OwnCloseTaskDialogProps>`
+export const CloseTaskDialog = styled<DialogProps>(props => <Dialog {...props} classes={{ paper: 'paper' }} />)`
   && .paper {
     width: 350px;
   }
