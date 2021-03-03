@@ -24,18 +24,18 @@ const detailsStyles: ReactPDF.Styles = {
     paddingTop: 10,
     paddingBottom: 10,
   },
-  caseCounsellorSection: {
+  caseDetailsSubSection: {
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'row',
     marginLeft: 30,
     marginRight: 30,
     marginTop: 10,
     fontSize: 12,
   },
-  caseDetailsSubSection: {
+  caseCounsellorSection: {
     display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: 'column',
+    width: '50%',
   },
   caseDetailsBoldText: {
     marginTop: 5,

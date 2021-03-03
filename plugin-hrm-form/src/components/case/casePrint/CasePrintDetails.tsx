@@ -6,6 +6,7 @@ import { Text, View } from '@react-pdf/renderer';
 import { getConfig } from '../../../HrmFormPlugin';
 import styles from './styles';
 import CasePrintCategories from './CasePrintCategories';
+import { DefinitionVersion } from '../../common/forms/types';
 
 type OwnProps = {
   status: string;
@@ -19,6 +20,8 @@ type OwnProps = {
     phone: string;
     email: string;
   };
+  categories: any; // ToDO: improve this
+  definitionVersion: string;
 };
 
 type Props = OwnProps;
@@ -31,6 +34,8 @@ const CasePrintDetails: React.FC<Props> = ({
   childIsAtRisk,
   counselor,
   caseManager,
+  categories,
+  definitionVersion,
 }) => {
   const { strings } = getConfig();
 
@@ -62,7 +67,7 @@ const CasePrintDetails: React.FC<Props> = ({
           </View>
         </View>
       </View>
-      <View style={styles.flexRow}>
+      <View style={styles.caseDetailsSubSection}>
         <View style={styles.caseCounsellorSection}>
           <View style={styles.flexColumn}>
             <Text>{strings['Case-Counsellor']}</Text>
@@ -75,7 +80,9 @@ const CasePrintDetails: React.FC<Props> = ({
             <Text style={styles.caseDetailsBoldText}>{caseManager.email}</Text>
           </View>
         </View>
-        <CasePrintCategories />
+        <View>
+          <CasePrintCategories categories={categories} definitionVersion={definitionVersion} />
+        </View>
       </View>
     </View>
   );

@@ -67,6 +67,8 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails }) => {
                 childIsAtRisk={caseDetails.childIsAtRisk}
                 counselor={caseDetails.caseCounselor}
                 caseManager={caseManager}
+                categories={caseDetails.categories}
+                definitionVersion={caseDetails.definitionVersion}
               />
               <CasePrintSection {...callerInfoSection} />
               <CasePrintSection {...childInfoSection} />

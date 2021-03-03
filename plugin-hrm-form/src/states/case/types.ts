@@ -137,4 +137,5 @@ export type CaseDetails = {
   incidents: t.IncidentEntry[];
   childIsAtRisk: boolean;
   officeName: string;
+  definitionVersion?: string;
 };

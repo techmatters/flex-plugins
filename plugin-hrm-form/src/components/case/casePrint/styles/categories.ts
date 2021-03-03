@@ -1,11 +1,16 @@
 import ReactPDF from '@react-pdf/renderer';
 
 const categoriesStyles: ReactPDF.Styles = {
-  categoriesContainer: {
-    fontFamily: 'Open Sans',
-    fontSize: 11,
-    backgroundColor: 'blue',
-    width: '400px',
+  categoryView: {
+    marginBottom: '20px',
+  },
+  categoryText: {
+    paddingTop: '5px',
+    paddingBottom: '5px',
+    paddingLeft: '5px',
+    paddingRight: '5px',
+    fontSize: 10,
+    fontWeight: 600,
   },
 };
 
