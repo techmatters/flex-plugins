@@ -304,6 +304,16 @@ const getInsightsUpdateFunctionsForConfig = (
   return [baseUpdates, contactlessTaskUpdates, ...applyCustomUpdates];
 };
 
+const downloadLog = (jsonData, filename) => {
+  const fileData = JSON.stringify(jsonData);
+  const blob = new Blob([fileData], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.download = `${filename}.json`;
+  link.href = url;
+  link.click();
+};
+
 /*
  * The idea here is to apply a cascading series of modifications to the attributes for Insights.
  * We may have a set of core values to add, plus conditional core values (such as if this is a
@@ -319,5 +329,12 @@ export async function saveInsightsData(twilioTask: ITask, contactForm: TaskEntry
   const finalAttributes: TaskAttributes = getInsightsUpdateFunctionsForConfig(currentDefinitionVersion.insights)
     .map((f: any) => f(twilioTask.attributes, contactForm, caseForm))
     .reduce((acc: TaskAttributes, curr: InsightsAttributes) => mergeAttributes(acc, curr), previousAttributes);
+
+  const jsonData = { insightsAttributes: finalAttributes, contactForm, caseForm };
+  const d = new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' });
+  const filename = `${d} ${contactForm.childInformation.firstName} ${contactForm.childInformation.lastName}`;
+
+  downloadLog(jsonData, filename);
+
   await twilioTask.setAttributes(finalAttributes);
 }
