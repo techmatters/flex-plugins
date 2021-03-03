@@ -10,13 +10,15 @@ type OwnProps = {
   firstName: string;
   lastName: string;
   officeName?: string;
-  logoSource?: string;
+  imgSource?: string;
 };
 
 type Props = OwnProps;
 
-const CasePrintHeader: React.FC<Props> = ({ firstName, lastName, id, officeName, logoSource }) => {
+const CasePrintHeader: React.FC<Props> = ({ firstName, lastName, id, officeName, imgSource }) => {
   const { strings } = getConfig();
+
+  const logoSource = `${imgSource}/helpline-logo.png`;
 
   return (
     <View fixed>
@@ -28,7 +30,7 @@ const CasePrintHeader: React.FC<Props> = ({ firstName, lastName, id, officeName,
             {officeName && <Text style={styles.officeName}>({officeName})</Text>}
           </View>
         </View>
-        {logoSource && <Image src={logoSource} />}
+        {imgSource && <Image src={logoSource} />}
       </View>
     </View>
   );

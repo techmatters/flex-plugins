@@ -38,7 +38,7 @@ type OwnProps = {
 type Props = OwnProps;
 
 const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails }) => {
-  const { helplineLogoSource } = getConfig();
+  const { pdfImagesSource } = getConfig();
 
   return (
     <CasePrintViewContainer>
@@ -56,7 +56,7 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails }) => {
               firstName={caseDetails.name.firstName}
               lastName={caseDetails.name.lastName}
               officeName={officeName}
-              logoSource={helplineLogoSource}
+              imgSource={pdfImagesSource}
             />
             <View>
               <CasePrintDetails
@@ -67,6 +67,7 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails }) => {
                 childIsAtRisk={caseDetails.childIsAtRisk}
                 counselor={caseDetails.caseCounselor}
                 caseManager={caseManager}
+                imgSource={pdfImagesSource}
               />
               <CasePrintSection {...callerInfoSection} />
               <CasePrintSection {...childInfoSection} />

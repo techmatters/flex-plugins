@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { Text, View } from '@react-pdf/renderer';
+import { Text, View, Image } from '@react-pdf/renderer';
 
 import { getConfig } from '../../../HrmFormPlugin';
 import styles from './styles';
@@ -18,6 +18,7 @@ type OwnProps = {
     phone: string;
     email: string;
   };
+  imgSource: string;
 };
 
 type Props = OwnProps;
@@ -30,8 +31,12 @@ const CasePrintDetails: React.FC<Props> = ({
   childIsAtRisk,
   counselor,
   caseManager,
+  imgSource,
 }) => {
   const { strings } = getConfig();
+
+  const checkBoxOn = `${imgSource}/chk_1.png`;
+  const checkBoxOff = `${imgSource}/chk_0.png`;
 
   return (
     <View style={styles.caseDetailsContainer}>
@@ -56,7 +61,7 @@ const CasePrintDetails: React.FC<Props> = ({
         <View style={styles.flexColumn}>
           <Text />
           <View style={{ ...styles.flexRow, justifyContent: 'space-between' }}>
-            {childIsAtRisk ? <Text>☑️ </Text> : <Text>❌ </Text>}
+            <Image style={styles.imgCheckbox} src={childIsAtRisk ? checkBoxOn : checkBoxOff} />
             <Text> {strings['Case-ChildIsAtRisk']}</Text>
           </View>
         </View>
