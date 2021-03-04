@@ -4,21 +4,20 @@ import { View, Text, Image } from '@react-pdf/renderer';
 
 import { getConfig } from '../../../HrmFormPlugin';
 import styles from './styles';
+import { contactSection } from './mockedData';
 
 type OwnProps = {
   id: number;
   firstName: string;
   lastName: string;
   officeName?: string;
-  imgSource?: string;
+  logoBlob?: string;
 };
 
 type Props = OwnProps;
 
-const CasePrintHeader: React.FC<Props> = ({ firstName, lastName, id, officeName, imgSource }) => {
+const CasePrintHeader: React.FC<Props> = ({ firstName, lastName, id, officeName, logoBlob }) => {
   const { strings } = getConfig();
-
-  const logoSource = `${imgSource}/helpline-logo.png`;
 
   return (
     <View fixed>
@@ -30,7 +29,7 @@ const CasePrintHeader: React.FC<Props> = ({ firstName, lastName, id, officeName,
             {officeName && <Text style={styles.officeName}>({officeName})</Text>}
           </View>
         </View>
-        {imgSource && <Image src={logoSource} />}
+        {logoBlob && <Image src={logoBlob} />}
       </View>
     </View>
   );

@@ -18,7 +18,8 @@ type OwnProps = {
     phone: string;
     email: string;
   };
-  imgSource: string;
+  chkOnBlob?: string;
+  chkOffBlob?: string;
 };
 
 type Props = OwnProps;
@@ -31,12 +32,10 @@ const CasePrintDetails: React.FC<Props> = ({
   childIsAtRisk,
   counselor,
   caseManager,
-  imgSource,
+  chkOnBlob,
+  chkOffBlob,
 }) => {
   const { strings } = getConfig();
-
-  const checkBoxOn = `${imgSource}/chk_1.png`;
-  const checkBoxOff = `${imgSource}/chk_0.png`;
 
   return (
     <View style={styles.caseDetailsContainer}>
@@ -61,7 +60,7 @@ const CasePrintDetails: React.FC<Props> = ({
         <View style={styles.flexColumn}>
           <Text />
           <View style={{ ...styles.flexRow, justifyContent: 'space-between' }}>
-            <Image style={styles.imgCheckbox} src={childIsAtRisk ? checkBoxOn : checkBoxOff} />
+            <Image style={styles.imgCheckbox} src={childIsAtRisk ? chkOnBlob : chkOffBlob} />
             <Text> {strings['Case-ChildIsAtRisk']}</Text>
           </View>
         </View>

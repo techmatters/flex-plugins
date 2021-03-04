@@ -255,7 +255,7 @@ export const DetailsHeaderPrintContainer = styled('div')`
 DetailsHeaderPrintContainer.displayName = 'DetailsHeaderPrintContainer';
 
 export const StyledPrintButton = styled(IconButton)`
-  color: gray;
+  color: #a7a7a7;
 `;
 
 StyledPrintButton.displayName = 'StyledPrintButton';

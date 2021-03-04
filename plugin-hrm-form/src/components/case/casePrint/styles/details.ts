@@ -37,9 +37,8 @@ const detailsStyles: ReactPDF.Styles = {
     fontWeight: 600,
   },
   imgCheckbox: {
-    width: 'auto',
+    width: '20px',
     height: '20px',
-    maxWidth: '20px',
     marginRight: '5px',
   },
 };
