@@ -36,6 +36,11 @@ const detailsStyles: ReactPDF.Styles = {
     marginTop: 5,
     fontWeight: 600,
   },
+  imgCheckbox: {
+    width: '20px',
+    height: '20px',
+    marginRight: '5px',
+  },
 };
 
 export default detailsStyles;

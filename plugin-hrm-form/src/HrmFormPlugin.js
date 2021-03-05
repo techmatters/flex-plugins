@@ -40,7 +40,7 @@ export const getConfig = () => {
   const featureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
   const { definitionVersion } = manager.serviceConfiguration.attributes;
   const { strings } = manager;
-  const helplineLogoSource = 'https://tl-public-chat-za-staging.s3.amazonaws.com/za-logo.png'; // will be moved to service configuration later on
+  const pdfImagesSource = 'https://tl-public-chat-za-staging.s3.amazonaws.com'; // will be moved to service configuration later on
 
   return {
     hrmBaseUrl,
@@ -59,7 +59,7 @@ export const getConfig = () => {
     sharedStateClient,
     strings,
     definitionVersion,
-    helplineLogoSource,
+    pdfImagesSource,
   };
 };
 

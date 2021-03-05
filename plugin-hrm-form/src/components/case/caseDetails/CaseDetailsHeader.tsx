@@ -11,6 +11,9 @@ import {
   DetailsHeaderCaseId,
   DetailsHeaderOfficeName,
   DetailsHeaderCounselor,
+  DetailsHeaderContainer,
+  DetailsHeaderPrintContainer,
+  StyledPrintButton,
 } from '../../../styles/case';
 import { Flex, Box, FormCheckbox, FormLabel, FormCheckBoxWrapper } from '../../../styles/HrmStyles';
 import { CaseStatus } from '../../../types/types';
@@ -37,14 +40,9 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
   handleClickChildIsAtRisk,
 }) => {
   return (
-    <Flex>
+    <DetailsHeaderContainer>
       <Flex flexDirection="column">
-        <Flex flexDirection="row">
-          <DetailsHeaderChildName variant="h6">{childName}</DetailsHeaderChildName>
-          <Button onClick={handlePrintCase} aria-label="Print">
-            <PrintIcon />
-          </Button>
-        </Flex>
+        <DetailsHeaderChildName variant="h6">{childName}</DetailsHeaderChildName>
         <DetailsHeaderCaseContainer>
           <DetailsHeaderCaseId id="Case-CaseId-label">
             <Template code="Case-CaseNumber" />
@@ -56,23 +54,29 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
           <Template code="Case-Counsellor" />: {counselor}
         </DetailsHeaderCounselor>
       </Flex>
-      <FormLabel htmlFor="childIsAtRisk" style={{ marginLeft: 'auto', marginTop: 'auto', textTransform: 'uppercase' }}>
-        <FormCheckBoxWrapper style={{ height: 'auto' }}>
-          <Box marginRight="5px">
-            <FormCheckbox
-              id="childIsAtRisk"
-              data-testid="Case-ChildIsAtRisk-Checkbox"
-              name="childIsAtRisk"
-              type="checkbox"
-              onChange={handleClickChildIsAtRisk}
-              defaultChecked={Boolean(childIsAtRisk)}
-              disabled={status === 'closed'}
-            />
-          </Box>
-          <Template code="Case-ChildIsAtRisk" />
-        </FormCheckBoxWrapper>
-      </FormLabel>
-    </Flex>
+      <DetailsHeaderPrintContainer>
+        <StyledPrintButton onClick={handlePrintCase} aria-label="Print" icon={<PrintIcon />} />
+        <FormLabel
+          htmlFor="childIsAtRisk"
+          style={{ marginLeft: 'auto', marginTop: 'auto', textTransform: 'uppercase' }}
+        >
+          <FormCheckBoxWrapper style={{ height: 'auto' }}>
+            <Box marginRight="5px">
+              <FormCheckbox
+                id="childIsAtRisk"
+                data-testid="Case-ChildIsAtRisk-Checkbox"
+                name="childIsAtRisk"
+                type="checkbox"
+                onChange={handleClickChildIsAtRisk}
+                defaultChecked={Boolean(childIsAtRisk)}
+                disabled={status === 'closed'}
+              />
+            </Box>
+            <Template code="Case-ChildIsAtRisk" />
+          </FormCheckBoxWrapper>
+        </FormLabel>
+      </DetailsHeaderPrintContainer>
+    </DetailsHeaderContainer>
   );
 };
 

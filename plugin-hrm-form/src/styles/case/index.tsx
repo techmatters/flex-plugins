@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'react-emotion';
-import { Button } from '@twilio/flex-ui';
+import { Button, IconButton } from '@twilio/flex-ui';
 import { Typography } from '@material-ui/core';
 
 import { FontOpenSans, FormInput, FormSelect, FormSelectWrapper, Row, Column } from '../HrmStyles';
@@ -202,6 +202,14 @@ export const RowItemContainer = styled(Row)`
 `;
 RowItemContainer.displayName = 'RowItemContainer';
 
+export const DetailsHeaderContainer = styled('div')`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+`;
+DetailsHeaderContainer.displayName = 'DetailsHeaderContainer';
+
 export const DetailsHeaderChildName = styled(Typography)`
   font-weight: 600 !important;
 `;
@@ -236,6 +244,21 @@ export const DetailsHeaderOfficeName = styled(Typography)`
 `;
 
 DetailsHeaderOfficeName.displayName = 'DetailsHeaderOfficeName';
+
+export const DetailsHeaderPrintContainer = styled('div')`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 74px;
+`;
+
+DetailsHeaderPrintContainer.displayName = 'DetailsHeaderPrintContainer';
+
+export const StyledPrintButton = styled(IconButton)`
+  color: #a7a7a7;
+`;
+
+StyledPrintButton.displayName = 'StyledPrintButton';
 
 export const StyledInputField = styled(FormInput)`
   width: 130px !important;

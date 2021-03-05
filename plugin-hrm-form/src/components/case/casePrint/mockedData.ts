@@ -13,6 +13,9 @@ export const callerInfoSection = {
     { label: 'Age', value: '12' },
     { label: 'Language', value: 'English' },
     { label: 'Race', value: 'Indian' },
+    // These two fields will be placed here if the Caller Section exists, if not they'll be in Child Info section.
+    { label: 'Keep confidential?', value: 'Yes' },
+    { label: 'OK for case worker to call?', value: 'Unknown' },
   ],
 };
 
@@ -62,8 +65,6 @@ export const contactSection = {
     { label: 'Repeat Caller?', value: 'Unknown' },
     { label: 'Referred To', value: 'Unknown' },
     { label: 'How did the child hear about us?', value: 'Unknown' },
-    { label: 'Keep confidential?', value: 'Yes' },
-    { label: 'OK for case worker to call?', value: 'Unknown' },
     { label: 'Did you discuss right with the child?', value: 'Unknown' },
     { label: 'Did the child feel we solved their problem?', value: 'Unknown' },
     { label: 'Would the child recommend us to a friend?', value: 'Unknown' },
