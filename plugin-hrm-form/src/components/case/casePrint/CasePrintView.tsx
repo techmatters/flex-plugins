@@ -10,7 +10,7 @@ import { getConfig } from '../../../HrmFormPlugin';
 import CasePrintSection from './CasePrintSection';
 import CasePrintSummary from './CasePrintSummary';
 import styles from './styles';
-import { CasePrintViewContainer, HiddenText } from '../../../styles/HrmStyles';
+import { CasePrintViewContainer, CasePrintViewSpinner, HiddenText } from '../../../styles/HrmStyles';
 import CasePrintDetails from './CasePrintDetails';
 import type { CaseDetails } from '../../../states/case/types';
 import CasePrintMultiSection from './CasePrintMultiSection';
@@ -77,7 +77,7 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails }) => {
     async function loadImagesInMemory(imgSources: ImageSource[]) {
       const getImageBlob = async (imgSrc: ImageSource) => {
         const blob = await getImageAsString(imgSrc.url);
-        imgSrc.setStateCallback(blob);
+        imgSrc.setStateCallback(blob.toString());
       };
 
       // Awaits until all promises are resolved (all images were loaded)
@@ -97,7 +97,9 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails }) => {
         <Close />
       </ButtonBase>
       {loading ? (
-        <CircularProgress size={50} />
+        <CasePrintViewSpinner>
+          <CircularProgress size={50} />
+        </CasePrintViewSpinner>
       ) : (
         <PDFViewer style={{ height: '100%' }}>
           <Document>

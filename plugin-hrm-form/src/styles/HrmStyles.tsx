@@ -431,6 +431,14 @@ export const CasePrintViewContainer = styled('div')`
 `;
 CasePrintViewContainer.displayName = 'CasePrintViewContainer';
 
+export const CasePrintViewSpinner = styled('div')`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+`;
+CasePrintViewSpinner.displayName = 'CasePrintViewSpinner';
+
 type TransferStyledButtonProps = {
   background?: string;
   color?: string;
