@@ -27,7 +27,7 @@ const CaseTags: React.FC<Props> = ({ categories, definitionVersion, printPDF }) 
 
   if (printPDF) {
     return (
-      <View style={styles.flexColumn}>
+      <View style={styles.categoryContainer}>
         {category1 && (
           <View style={styles.categoryView}>
             <Text style={{ ...styles.categoryText, backgroundColor: category1.color }}>• {category1.label}</Text>

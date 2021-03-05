@@ -1,12 +1,18 @@
 import ReactPDF from '@react-pdf/renderer';
 
 const categoriesStyles: ReactPDF.Styles = {
+  categoryContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+  },
   categoryView: {
-    marginBottom: '20px',
+    marginBottom: '10px',
+    borderRadius: '2px',
   },
   categoryText: {
-    paddingTop: '5px',
-    paddingBottom: '5px',
+    paddingTop: '2px',
+    paddingBottom: '2px',
     paddingLeft: '5px',
     paddingRight: '5px',
     fontSize: 10,
