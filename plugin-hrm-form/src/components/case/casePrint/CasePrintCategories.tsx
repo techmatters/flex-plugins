@@ -7,7 +7,11 @@ import styles from './styles';
 import CaseTags from '../../search/CasePreview/CaseTags';
 
 type OwnProps = {
-  categories: any; // ToDO: improve this
+  categories?: {
+    [category: string]: {
+      [subcategory: string]: boolean;
+    };
+  };
   definitionVersion: string;
 };
 

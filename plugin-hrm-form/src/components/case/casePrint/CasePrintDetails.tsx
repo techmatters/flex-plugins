@@ -6,7 +6,6 @@ import { Text, View, Image } from '@react-pdf/renderer';
 import { getConfig } from '../../../HrmFormPlugin';
 import styles from './styles';
 import CasePrintCategories from './CasePrintCategories';
-import { DefinitionVersion } from '../../common/forms/types';
 
 type OwnProps = {
   status: string;
@@ -20,7 +19,11 @@ type OwnProps = {
     phone: string;
     email: string;
   };
-  categories: any; // ToDO: improve this
+  categories?: {
+    [category: string]: {
+      [subcategory: string]: boolean;
+    };
+  };
   definitionVersion: string;
   chkOnBlob?: string;
   chkOffBlob?: string;
