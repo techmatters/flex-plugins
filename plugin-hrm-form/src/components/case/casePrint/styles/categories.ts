@@ -8,7 +8,7 @@ const categoriesStyles: ReactPDF.Styles = {
   },
   categoryView: {
     marginBottom: '10px',
-    borderRadius: '2px',
+    opacity: 0.15,
   },
   categoryText: {
     paddingTop: '2px',
@@ -17,6 +17,8 @@ const categoriesStyles: ReactPDF.Styles = {
     paddingRight: '5px',
     fontSize: 10,
     fontWeight: 600,
+    color: '#000000',
+    opacity: 1.0,
   },
 };
 

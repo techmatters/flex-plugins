@@ -4,7 +4,7 @@ import { Text, View } from '@react-pdf/renderer';
 
 import { getConfig } from '../../../HrmFormPlugin';
 import styles from './styles';
-import CaseTags from '../../search/CasePreview/CaseTags';
+import CaseTags from '../CaseTags';
 
 type OwnProps = {
   categories?: {
@@ -20,7 +20,6 @@ type Props = OwnProps;
 const CasePrintCategories: React.FC<Props> = ({ categories, definitionVersion }) => {
   const { strings } = getConfig();
 
-  console.log({ categories });
   return (
     <View style={styles.flexColumn}>
       <Text style={{ marginBottom: '10px' }}>{strings['TabbedForms-CategoriesTab']}</Text>
