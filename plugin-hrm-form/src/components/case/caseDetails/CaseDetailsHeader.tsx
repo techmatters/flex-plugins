@@ -12,10 +12,12 @@ import {
   DetailsHeaderOfficeName,
   DetailsHeaderCounselor,
   DetailsHeaderContainer,
-  DetailsHeaderPrintContainer,
+  DetailsHeaderTextContainer,
+  DetailsHeaderChildAtRiskContainer,
+  ChildIsAtRiskWrapper,
   StyledPrintButton,
 } from '../../../styles/case';
-import { Flex, Box, FormCheckbox, FormLabel, FormCheckBoxWrapper } from '../../../styles/HrmStyles';
+import { Box, FormCheckbox, FormLabel } from '../../../styles/HrmStyles';
 import { CaseStatus } from '../../../types/types';
 
 type OwnProps = {
@@ -41,7 +43,7 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
 }) => {
   return (
     <DetailsHeaderContainer>
-      <Flex flexDirection="column">
+      <DetailsHeaderTextContainer>
         <DetailsHeaderChildName variant="h6">{childName}</DetailsHeaderChildName>
         <DetailsHeaderCaseContainer>
           <DetailsHeaderCaseId id="Case-CaseId-label">
@@ -53,14 +55,13 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
         <DetailsHeaderCounselor>
           <Template code="Case-Counsellor" />: {counselor}
         </DetailsHeaderCounselor>
-      </Flex>
-      <DetailsHeaderPrintContainer>
-        <StyledPrintButton onClick={handlePrintCase} aria-label="Print" icon={<PrintIcon />} />
+      </DetailsHeaderTextContainer>
+      <DetailsHeaderChildAtRiskContainer>
         <FormLabel
           htmlFor="childIsAtRisk"
           style={{ marginLeft: 'auto', marginTop: 'auto', textTransform: 'uppercase' }}
         >
-          <FormCheckBoxWrapper style={{ height: 'auto' }}>
+          <ChildIsAtRiskWrapper style={{ height: 'auto' }}>
             <Box marginRight="5px">
               <FormCheckbox
                 id="childIsAtRisk"
@@ -73,9 +74,12 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
               />
             </Box>
             <Template code="Case-ChildIsAtRisk" />
-          </FormCheckBoxWrapper>
+          </ChildIsAtRiskWrapper>
         </FormLabel>
-      </DetailsHeaderPrintContainer>
+      </DetailsHeaderChildAtRiskContainer>
+      <div>
+        <StyledPrintButton onClick={handlePrintCase} aria-label="Print" icon={<PrintIcon />} />
+      </div>
     </DetailsHeaderContainer>
   );
 };

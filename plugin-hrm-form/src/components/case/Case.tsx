@@ -375,6 +375,7 @@ const Case: React.FC<Props> = props => {
     incidents,
     childIsAtRisk,
     officeName: 'Gautang', // ToDo: add the office here.
+    definitionVersion: version,
   };
 
   switch (subroute) {

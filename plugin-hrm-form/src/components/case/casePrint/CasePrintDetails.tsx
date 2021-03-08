@@ -5,6 +5,7 @@ import { Text, View, Image } from '@react-pdf/renderer';
 
 import { getConfig } from '../../../HrmFormPlugin';
 import styles from './styles';
+import CasePrintCategories from './CasePrintCategories';
 
 type OwnProps = {
   status: string;
@@ -18,6 +19,12 @@ type OwnProps = {
     phone: string;
     email: string;
   };
+  categories?: {
+    [category: string]: {
+      [subcategory: string]: boolean;
+    };
+  };
+  definitionVersion: string;
   chkOnBlob?: string;
   chkOffBlob?: string;
 };
@@ -32,6 +39,8 @@ const CasePrintDetails: React.FC<Props> = ({
   childIsAtRisk,
   counselor,
   caseManager,
+  categories,
+  definitionVersion,
   chkOnBlob,
   chkOffBlob,
 }) => {
@@ -65,16 +74,21 @@ const CasePrintDetails: React.FC<Props> = ({
           </View>
         </View>
       </View>
-      <View style={styles.caseCounsellorSection}>
-        <View style={styles.flexColumn}>
-          <Text>{strings['Case-Counsellor']}</Text>
-          <Text style={styles.caseDetailsBoldText}>{counselor}</Text>
+      <View style={styles.caseDetailsSubSection}>
+        <View style={styles.caseCounsellorSection}>
+          <View style={styles.flexColumn}>
+            <Text>{strings['Case-Counsellor']}</Text>
+            <Text style={styles.caseDetailsBoldText}>{counselor}</Text>
+          </View>
+          <View style={{ marginTop: 15, ...styles.flexColumn }}>
+            <Text>{strings['Case-CaseManager']}</Text>
+            <Text style={styles.caseDetailsBoldText}>{caseManager.name}</Text>
+            <Text style={styles.caseDetailsBoldText}>{caseManager.phone}</Text>
+            <Text style={styles.caseDetailsBoldText}>{caseManager.email}</Text>
+          </View>
         </View>
-        <View style={{ marginTop: 15, ...styles.flexColumn }}>
-          <Text>{strings['Case-CaseManager']}</Text>
-          <Text style={styles.caseDetailsBoldText}>{caseManager.name}</Text>
-          <Text style={styles.caseDetailsBoldText}>{caseManager.phone}</Text>
-          <Text style={styles.caseDetailsBoldText}>{caseManager.email}</Text>
+        <View>
+          <CasePrintCategories categories={categories} definitionVersion={definitionVersion} />
         </View>
       </View>
     </View>

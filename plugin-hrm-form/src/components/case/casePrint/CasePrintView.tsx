@@ -119,6 +119,8 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails }) => {
                   followUpDate={caseDetails.followUpDate}
                   childIsAtRisk={caseDetails.childIsAtRisk}
                   counselor={caseDetails.caseCounselor}
+                  categories={caseDetails.categories}
+                  definitionVersion={caseDetails.definitionVersion}
                   caseManager={caseManager}
                   chkOnBlob={chkOnBlob}
                   chkOffBlob={chkOffBlob}

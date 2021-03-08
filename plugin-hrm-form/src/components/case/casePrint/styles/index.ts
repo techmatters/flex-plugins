@@ -6,6 +6,7 @@ import detailsStyles from './details';
 import sectionStyles from './section';
 import notesStyles from './notes';
 import summaryStyles from './summary';
+import categoriesStyles from './categories';
 
 /*
  * Unfortunately we have to import each font that we want to use (even with the style and weight variations)
@@ -36,6 +37,7 @@ const styles = StyleSheet.create({
   ...sectionStyles,
   ...notesStyles,
   ...summaryStyles,
+  ...categoriesStyles,
   page: {
     display: 'flex',
     flexDirection: 'column',

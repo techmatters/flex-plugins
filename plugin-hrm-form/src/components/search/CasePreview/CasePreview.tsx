@@ -4,7 +4,7 @@ import React from 'react';
 import { Case } from '../../../types/types';
 import CaseHeader from './CaseHeader';
 import CaseSummary from './CaseSummary';
-import CaseTags from './CaseTags';
+import CaseTags from '../../case/CaseTags';
 import { Flex } from '../../../styles/HrmStyles';
 import { CaseWrapper } from '../../../styles/search';
 
