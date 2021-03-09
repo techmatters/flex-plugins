@@ -57,6 +57,7 @@ export const submitContactForm = async (task: ITask, contactForm: Contact, caseF
     await assignOfflineContact(targetSid, finalAttributes);
   }
 
+  // eslint-disable-next-line sonarjs/prefer-immediate-return
   const contact = await saveToHrm(task, contactForm, workerSid, helpline);
   return contact;
 };

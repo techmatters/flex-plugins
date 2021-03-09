@@ -4,7 +4,7 @@ import { AppRoutes, RoutingActionType, CHANGE_ROUTE } from './types';
 import { GeneralActionType, INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE } from '../types';
 import { standaloneTaskSid } from '../../components/StandaloneSearch';
 
-export type RoutingState = {
+type RoutingState = {
   tasks: {
     [taskId: string]: AppRoutes;
   };

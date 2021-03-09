@@ -318,6 +318,7 @@ export const buildInsightsData = (
   caseForm: Case,
   config = {},
 ) => {
+  // eslint-disable-next-line sonarjs/prefer-immediate-return
   const finalAttributes: TaskAttributes = getInsightsUpdateFunctionsForConfig(config)
     .map((f: any) => f(previousAttributes, contactForm, caseForm))
     .reduce((acc: TaskAttributes, curr: InsightsAttributes) => mergeAttributes(acc, curr), previousAttributes);
