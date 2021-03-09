@@ -43,6 +43,7 @@ export const blankReferral = {
 
 export type CaseInfo = {
   definitionVersion?: string;
+  offlineContactCreator?: string;
   summary?: string;
   notes?: NoteEntry[];
   perpetrators?: PerpetratorEntry[];

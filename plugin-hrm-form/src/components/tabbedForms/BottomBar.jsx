@@ -57,25 +57,16 @@ class BottomBar extends Component {
   closeMockedMessage = () => this.setState({ mockedMessage: null });
 
   handleOpenNewCase = async () => {
-    const { task } = this.props;
+    const { task, contactForm } = this.props;
     const { taskSid } = task;
-    const { workerSid, helpline, strings } = getConfig();
+    const { strings } = getConfig();
 
     if (!hasTaskControl(task)) return;
-
-    const { definitionVersion } = getConfig();
-
-    const caseRecord = {
-      helpline,
-      status: 'open',
-      twilioWorkerId: workerSid,
-      info: { definitionVersion }, // would be better to have this in CaseService (as ContactsService does for contacts)?
-    };
 
     this.setState({ isMenuOpen: false });
 
     try {
-      const caseFromDB = await createCase(caseRecord);
+      const caseFromDB = await createCase(task, contactForm);
       this.props.changeRoute({ route: 'new-case' }, taskSid);
       this.props.setConnectedCase(caseFromDB, taskSid, false);
     } catch (error) {
