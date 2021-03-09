@@ -9,7 +9,7 @@ type RoutingState = {
   tasks: {
     [taskId: string]: AppRoutes;
   };
-  addOfflineContact: boolean;
+  isAddingOfflineContact: boolean;
 };
 
 const newTaskEntry = {
@@ -20,7 +20,7 @@ export const initialState: RoutingState = {
   tasks: {
     [standaloneTaskSid]: newTaskEntry,
   },
-  addOfflineContact: false,
+  isAddingOfflineContact: false,
 };
 
 export function reduce(state = initialState, action: RoutingActionType | GeneralActionType): RoutingState {
@@ -32,7 +32,7 @@ export function reduce(state = initialState, action: RoutingActionType | General
           ...state.tasks,
           [action.taskId]: newTaskEntry,
         },
-        addOfflineContact: action.taskId === offlineContactTaskSid ? true : state.addOfflineContact,
+        isAddingOfflineContact: action.taskId === offlineContactTaskSid ? true : state.isAddingOfflineContact,
       };
     }
     case RECREATE_CONTACT_STATE: {
@@ -44,14 +44,14 @@ export function reduce(state = initialState, action: RoutingActionType | General
           ...state.tasks,
           [action.taskId]: newTaskEntry,
         },
-        addOfflineContact: action.taskId === offlineContactTaskSid ? true : state.addOfflineContact,
+        isAddingOfflineContact: action.taskId === offlineContactTaskSid ? true : state.isAddingOfflineContact,
       };
     }
     case REMOVE_CONTACT_STATE:
       return {
         ...state,
         tasks: omit(state.tasks, action.taskId),
-        addOfflineContact: action.taskId === offlineContactTaskSid ? false : state.addOfflineContact,
+        isAddingOfflineContact: action.taskId === offlineContactTaskSid ? false : state.isAddingOfflineContact,
       };
     case CHANGE_ROUTE: {
       return {
