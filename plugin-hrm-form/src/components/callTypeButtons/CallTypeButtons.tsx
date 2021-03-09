@@ -140,7 +140,7 @@ CallTypeButtons.displayName = 'CallTypeButtons';
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const contactForm = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
   const caseState = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid];
-  const caseForm = (caseState && caseState.connectedCase) || {};
+  const caseForm = caseState && caseState.connectedCase;
   const { currentDefinitionVersion } = state[namespace][configurationBase];
 
   return { contactForm, caseForm, currentDefinitionVersion };
