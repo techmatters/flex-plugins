@@ -1,13 +1,14 @@
 /* eslint-disable import/no-unused-modules */
-import { Actions, ITask } from '@twilio/flex-ui';
+import { Actions, ITask, Manager } from '@twilio/flex-ui';
 
 import { getConfig } from '../HrmFormPlugin';
 import { TaskEntry as Contact } from '../states/contacts/reducer';
-import { Case } from '../types/types';
+import { Case, CustomITask, isOfflineContactTask, offlineContactTaskSid } from '../types/types';
 import { channelTypes } from '../states/DomainConstants';
 import { buildInsightsData } from './InsightsService';
 import { saveToHrm } from './ContactService';
 import { assignOfflineContact } from './ServerlessService';
+import { removeContactState } from '../states/actions';
 
 /**
  * Function used to manually complete a task (making sure it transitions to wrapping state first).
@@ -26,38 +27,27 @@ export const completeContactTask = async (task: ITask) => {
   await Actions.invokeAction('CompleteTask', { sid, task });
 };
 
-export const completeContactlessTask = async (task: ITask) => {
-  const { attributes } = task;
-  /*
-   * Don't record insights for this task,
-   * but null out the Task ID so the Insights record is clean.
-   */
-  const newAttributes = {
-    ...attributes,
-    skipInsights: true,
-    conversations: {
-      /* eslint-disable-next-line camelcase */
-      conversation_attribute_5: null,
-    },
-  };
-  await task.setAttributes(newAttributes);
-  await Actions.invokeAction('CompleteTask', { task });
+export const removeOfflineContact = () => {
+  Manager.getInstance().store.dispatch(removeContactState(offlineContactTaskSid));
 };
 
-export const completeTask = (task: ITask) =>
-  task.attributes.isContactlessTask ? completeContactlessTask(task) : completeContactTask(task);
+export const completeContactlessTask = async (task: CustomITask) => {
+  removeOfflineContact();
+};
 
-export const submitContactForm = async (task: ITask, contactForm: Contact, caseForm: Case) => {
+export const completeTask = (task: CustomITask) =>
+  isOfflineContactTask(task) ? removeOfflineContact() : completeContactTask(task);
+
+export const submitContactForm = async (task: CustomITask, contactForm: Contact, caseForm: Case) => {
   const { workerSid, helpline } = getConfig();
 
-  if (task.attributes.isContactlessTask) {
+  if (isOfflineContactTask(task)) {
     const targetSid = contactForm.contactlessTask.createdOnBehalfOf as string;
     const initialAttributes = { helpline, channelType: 'default', isContactlessTask: true, isInMyBehalf: true };
     const finalAttributes = buildInsightsData(initialAttributes, contactForm, caseForm, {});
-    await assignOfflineContact(targetSid, finalAttributes);
+    const inBehalfTask = await assignOfflineContact(targetSid, finalAttributes);
+    return saveToHrm(task, contactForm, workerSid, helpline, inBehalfTask.sid);
   }
 
-  // eslint-disable-next-line sonarjs/prefer-immediate-return
-  const contact = await saveToHrm(task, contactForm, workerSid, helpline);
-  return contact;
+  return saveToHrm(task, contactForm, workerSid, helpline, task.taskSid);
 };

@@ -16,7 +16,7 @@ import type {
   FormDefinition,
   FormItemDefinition,
 } from '../components/common/forms/types';
-import type { InformationObject, ContactRawJson, SearchContactResult } from '../types/types';
+import { InformationObject, ContactRawJson, SearchContactResult, isOfflineContactTask } from '../types/types';
 
 /**
  * Un-nests the information (caller/child) as it comes from DB, to match the form structure
@@ -154,12 +154,12 @@ export function transformForm(form: TaskEntry): ContactRawJson {
  *
  * @param  task
  * @param form
- * @param hrmBaseUrl
  * @param workerSid
  * @param helpline
+ * @param uniqueIdentifier
  * @param shouldFillEndMillis
  */
-export async function saveToHrm(task, form, workerSid, helpline, shouldFillEndMillis = true) {
+export async function saveToHrm(task, form, workerSid, helpline, uniqueIdentifier, shouldFillEndMillis = true) {
   // if we got this far, we assume the form is valid and ready to submit
   const metadata = shouldFillEndMillis ? fillEndMillis(form.metadata) : form.metadata;
   const conversationDuration = getConversationDuration(task, metadata);
@@ -174,9 +174,20 @@ export async function saveToHrm(task, form, workerSid, helpline, shouldFillEndMi
       ...createNewTaskEntry(tabbedForms)(false),
       callType: form.callType,
       metadata: form.metadata,
-      ...(task.attributes.isContactlessTask && { contactlessTask: form.contactlessTask }),
+      ...(isOfflineContactTask(task) && { contactlessTask: form.contactlessTask }),
     };
   }
+
+  // If isOfflineContactTask, send the target Sid as twilioWorkerId value and store workerSid (issuer) in rawForm
+  const twilioWorkerId = isOfflineContactTask(task) ? form.contactlessTask.createdOnBehalfOf : workerSid;
+  if (isOfflineContactTask(task))
+    rawForm = {
+      ...rawForm,
+      contactlessTask: {
+        ...rawForm.contactlessTask,
+        offlineContactCreator: workerSid,
+      },
+    };
 
   // This might change if isNonDataCallType, that's why we use rawForm
   const timeOfContact = getDateTime(rawForm.contactlessTask);
@@ -190,14 +201,14 @@ export async function saveToHrm(task, form, workerSid, helpline, shouldFillEndMi
 
   const body = {
     form: formToSend,
-    twilioWorkerId: workerSid,
+    twilioWorkerId,
     queueName: task.queueName,
     channel: task.channelType,
     number,
     helpline,
     conversationDuration,
     timeOfContact,
-    taskId: task.taskSid,
+    taskId: uniqueIdentifier,
   };
 
   const options = {
