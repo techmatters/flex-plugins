@@ -79,6 +79,12 @@ const RequiredAsterisk = () => (
 const getRules = (field: FormItemDefinition): RegisterOptions =>
   pick(field, ['max', 'maxLength', 'min', 'minLength', 'pattern', 'required', 'validate']);
 
+const bindCreateSelectOptions = (path: string) => (o: SelectOption) => (
+  <FormOption key={`${path}-${o.label}-${o.value}`} value={o.value} isEmptyValue={o.value === ''}>
+    {o.label}
+  </FormOption>
+);
+
 /**
  * Creates a Form with each input connected to RHF's wrapping Context, based on the definition.
  * @param {string[]} parents Array of parents. Allows you to easily create nested form fields. https://react-hook-form.com/api#register.
@@ -167,6 +173,8 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
         <ConnectForm key={path}>
           {({ errors, register }) => {
             const error = get(errors, path);
+            const createSelectOptions = bindCreateSelectOptions(path);
+
             return (
               <FormLabel htmlFor={path}>
                 <Row>
@@ -186,11 +194,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                     innerRef={register(rules)}
                     defaultValue={initialValue}
                   >
-                    {def.options.map(o => (
-                      <FormOption key={`${path}-${o.label}`} value={o.value} isEmptyValue={o.value === ''}>
-                        {o.label}
-                      </FormOption>
-                    ))}
+                    {def.options.map(createSelectOptions)}
                   </FormSelect>
                 </FormSelectWrapper>
                 {error && (
@@ -237,6 +241,8 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
 
             const disabled = !hasOptions && !shouldInitialize;
 
+            const createSelectOptions = bindCreateSelectOptions(path);
+
             return (
               <DependentSelectLabel htmlFor={path} disabled={disabled}>
                 <Row>
@@ -257,11 +263,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                     disabled={disabled}
                     defaultValue={initialValue}
                   >
-                    {options.map(o => (
-                      <FormOption key={`${path}-${o.value}`} value={o.value} isEmptyValue={o.value === ''}>
-                        {o.label}
-                      </FormOption>
-                    ))}
+                    {options.map(createSelectOptions)}
                   </FormSelect>
                 </FormSelectWrapper>
                 {error && (
