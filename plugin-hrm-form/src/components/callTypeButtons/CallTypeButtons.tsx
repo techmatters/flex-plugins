@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { withTaskContext, TaskHelper, Template, ITask } from '@twilio/flex-ui';
+import { ITask, TaskHelper, Template } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { namespace, contactFormsBase, configurationBase, connectedCaseBase, RootState } from '../../states';
@@ -18,6 +18,7 @@ import { getConfig } from '../../HrmFormPlugin';
 import { submitContactForm, completeTask } from '../../services/formSubmissionHelpers';
 import CallTypeIcon from '../common/icons/CallTypeIcon';
 import { DefinitionVersion } from '../common/forms/types';
+import { CustomITask, isOfflineContactTask } from '../../types/types';
 
 const isDialogOpen = contactForm =>
   Boolean(contactForm && contactForm.callType && contactForm.callType && isNonDataCallType(contactForm.callType));
@@ -25,10 +26,8 @@ const isDialogOpen = contactForm =>
 const clearCallType = props => props.dispatch(updateCallType(props.task.taskSid, ''));
 
 type OwnProps = {
-  task: ITask;
+  task: CustomITask;
   localization: { manager: { status: any }; isCallTask: (task: ITask) => boolean };
-  handleCompleteTask: (taskId: string, task: ITask) => void;
-  currentDefinitionVersion: DefinitionVersion;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -52,7 +51,7 @@ const CallTypeButtons: React.FC<Props> = props => {
     if (!hasTaskControl(task)) return;
 
     // eslint-disable-next-line no-nested-ternary
-    const subroute = task.attributes.isContactlessTask
+    const subroute = isOfflineContactTask(task)
       ? 'contactlessTask'
       : callType === callTypes.caller
       ? 'callerInformation'
@@ -63,7 +62,7 @@ const CallTypeButtons: React.FC<Props> = props => {
   };
 
   const handleNonDataClick = (taskSid: string, callType: CallTypes) => {
-    if (task.attributes.isContactlessTask) {
+    if (isOfflineContactTask(task)) {
       handleClickAndRedirect(taskSid, callType);
     } else {
       handleClick(taskSid, callType);
@@ -127,8 +126,8 @@ const CallTypeButtons: React.FC<Props> = props => {
       </Container>
       <NonDataCallTypeDialog
         isOpen={isDialogOpen(contactForm)}
-        isCallTask={isCallTask(task)}
-        isInWrapupMode={TaskHelper.isInWrapupMode(task)}
+        isCallTask={!isOfflineContactTask(task) && isCallTask(task)}
+        isInWrapupMode={!isOfflineContactTask(task) && TaskHelper.isInWrapupMode(task)}
         handleConfirm={handleConfirmNonDataCallType}
         handleCancel={() => clearCallType(props)}
       />
@@ -150,4 +149,4 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
 const connector = connect(mapStateToProps);
 const connected = connector(CallTypeButtons);
 
-export default withLocalization(withTaskContext<Props, typeof connected>(connected));
+export default withLocalization(connected);

@@ -1,10 +1,12 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { Notifications, TaskHelper } from '@twilio/flex-ui';
+import { Actions } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 
-import type { RootState } from '../../states';
-import { assignMeContactlessTask } from '../../services/ServerlessService';
+import { configurationBase, namespace, RootState, routingBase } from '../../states';
+import type { ContactFormDefinition } from '../../states/types';
+import * as GeneralActions from '../../states/actions';
+import { offlineContactTaskSid } from '../../types/types';
 import AddTaskButton from '../common/AddTaskButton';
 
 type OwnProps = {};
@@ -12,14 +14,18 @@ type OwnProps = {};
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const OfflineContactButton: React.FC<Props> = ({ worker }) => {
-  const { activity, tasks } = worker;
-  const disabled = Array.from(tasks.values()).some(t => t.channelType === 'default' || TaskHelper.isCallTask(t));
-
+const OfflineContactButton: React.FC<Props> = ({
+  selectedTaskSid,
+  isAddingOfflineContact,
+  currentDefinitionVersion,
+  recreateContactState,
+}) => {
   const onClick = async () => {
-    if (!activity || !activity.available) Notifications.showNotification('YouMustBeAvailableToPerformThisOp');
-    else await assignMeContactlessTask();
+    await Actions.invokeAction('SelectTask', { task: undefined });
+    recreateContactState(currentDefinitionVersion.tabbedForms)(offlineContactTaskSid);
   };
+
+  const disabled = !selectedTaskSid && isAddingOfflineContact;
 
   return <AddTaskButton onClick={onClick} disabled={disabled} label="OfflineContactButtonText" />;
 };
@@ -27,10 +33,21 @@ const OfflineContactButton: React.FC<Props> = ({ worker }) => {
 OfflineContactButton.displayName = 'OfflineContactButton';
 
 const mapStateToProps = (state: RootState) => {
+  const { currentDefinitionVersion } = state[namespace][configurationBase];
+  const { isAddingOfflineContact } = state[namespace][routingBase];
+  const { selectedTaskSid } = state.flex.view;
+
   return {
-    worker: state.flex.worker,
+    selectedTaskSid,
+    isAddingOfflineContact,
+    currentDefinitionVersion,
   };
 };
 
-const connector = connect(mapStateToProps);
+const mapDispatchToProps = dispatch => ({
+  recreateContactState: (definitions: ContactFormDefinition) => (taskId: string) =>
+    dispatch(GeneralActions.recreateContactState(definitions)(taskId)),
+});
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
 export default connector(OfflineContactButton);
