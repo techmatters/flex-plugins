@@ -15,13 +15,13 @@ import callTypes from '../../states/DomainConstants';
 import { namespace, contactFormsBase, connectedCaseBase, configurationBase } from '../../states';
 import { changeRoute } from '../../states/routing/actions';
 import { updateCallType } from '../../states/contacts/actions';
-import { completeTask, submitContactForm } from '../../services/formSumbissionHelpers';
+import { completeTask, submitContactForm } from '../../services/formSubmissionHelpers';
 
 jest.mock('../../services/ContactService', () => ({
   saveToHrm: jest.fn(),
 }));
 
-jest.mock('../../services/formSumbissionHelpers', () => ({
+jest.mock('../../services/formSubmissionHelpers', () => ({
   completeTask: jest.fn(),
   submitContactForm: jest.fn(),
 }));

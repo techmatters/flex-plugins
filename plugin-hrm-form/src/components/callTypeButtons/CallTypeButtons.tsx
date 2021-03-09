@@ -15,7 +15,7 @@ import { isNonDataCallType } from '../../states/ValidationRules';
 import NonDataCallTypeDialog from './NonDataCallTypeDialog';
 import { hasTaskControl } from '../../utils/transfer';
 import { getConfig } from '../../HrmFormPlugin';
-import { submitContactForm, completeTask } from '../../services/formSumbissionHelpers';
+import { submitContactForm, completeTask } from '../../services/formSubmissionHelpers';
 import CallTypeIcon from '../common/icons/CallTypeIcon';
 import { DefinitionVersion } from '../common/forms/types';
 

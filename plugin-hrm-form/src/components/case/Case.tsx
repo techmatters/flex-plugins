@@ -23,7 +23,7 @@ import {
 import { getConfig } from '../../HrmFormPlugin';
 import { connectToCase, transformCategories } from '../../services/ContactService';
 import { cancelCase, updateCase, getActivities } from '../../services/CaseService';
-import { submitContactForm, completeTask } from '../../services/formSumbissionHelpers';
+import { submitContactForm, completeTask } from '../../services/formSubmissionHelpers';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { isConnectedCaseActivity, getDateFromNotSavedContact, sortActivities } from './caseHelpers';
 import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
