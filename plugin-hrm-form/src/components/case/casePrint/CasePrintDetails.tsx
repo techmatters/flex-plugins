@@ -24,7 +24,7 @@ type OwnProps = {
       [subcategory: string]: boolean;
     };
   };
-  definitionVersion: string;
+  version: string;
   chkOnBlob?: string;
   chkOffBlob?: string;
 };
@@ -40,7 +40,7 @@ const CasePrintDetails: React.FC<Props> = ({
   counselor,
   caseManager,
   categories,
-  definitionVersion,
+  version,
   chkOnBlob,
   chkOffBlob,
 }) => {
@@ -88,7 +88,7 @@ const CasePrintDetails: React.FC<Props> = ({
           </View>
         </View>
         <View>
-          <CasePrintCategories categories={categories} definitionVersion={definitionVersion} />
+          <CasePrintCategories categories={categories} version={version} />
         </View>
       </View>
     </View>

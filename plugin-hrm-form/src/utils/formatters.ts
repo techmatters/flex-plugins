@@ -1,4 +1,5 @@
 import { truncate } from 'lodash';
+import { format } from 'date-fns';
 
 /**
  * @param {string} name
@@ -59,7 +60,7 @@ export const getShortSummary = (summary, charLimit, chooseMessage = 'call') => {
  */
 export const formatCategories = categories =>
   // maybe we should define domain constants for the categories/subcategories in case we change them?
-  Object.entries(categories).flatMap(([cat, subcats]) =>
+  Object.entries(categories).flatMap(([cat, subcats]: [string, any]) =>
     subcats.map(subcat => (subcat === 'Unspecified/Other' ? `${subcat} - ${cat}` : subcat)),
   );
 
@@ -69,4 +70,28 @@ export const formatDateTime = date => {
   const timeString = date.toLocaleTimeString(locale, { timeStyle: 'short' }).replace('AM', 'am').replace('PM', 'pm');
 
   return `${dateString} at ${timeString}`;
+};
+
+/**
+ * Formats Date Time (string) into a friendly readable format
+ * @param dateTime 
+ */
+export const formatDateTimeString = (dateTime: string): string => {
+  return `${format(new Date(dateTime), 'MMM d, yyyy / h:mm aaaaa')}m`;
+}
+
+/**
+ * Formats a input value to string
+ * @param value input value to format
+ */
+export const formatInputValue = (value: string): string => {
+  return value ? value : '-';
+};
+
+/**
+ * Formats a checkbox value to a Yes/No string
+ * @param value checkbox value to format
+ */
+export const formatCheckboxValue = (value: boolean): 'Yes' | 'No' => {
+  return value ? 'Yes' : 'No';
 };

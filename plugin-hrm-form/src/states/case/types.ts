@@ -125,7 +125,11 @@ export type CaseDetailsName = {
 export type CaseDetails = {
   id: number;
   name: CaseDetailsName;
-  categories: any; // ToDo: Change this.
+  categories?: {
+    [category: string]: {
+      [subcategory: string]: boolean;
+    };
+  };
   status: string;
   caseCounselor: string;
   currentCounselor: string;
@@ -137,5 +141,6 @@ export type CaseDetails = {
   incidents: t.IncidentEntry[];
   childIsAtRisk: boolean;
   officeName: string;
-  definitionVersion?: string;
+  version?: string;
+  contact: any; // ToDo: change this
 };

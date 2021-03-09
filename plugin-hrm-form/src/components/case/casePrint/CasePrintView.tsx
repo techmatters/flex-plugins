@@ -17,6 +17,7 @@ import CasePrintMultiSection from './CasePrintMultiSection';
 import CasePrintNotes from './CasePrintNotes';
 import CasePrintHeader from './CasePrintHeader';
 import CasePrintFooter from './CasePrintFooter';
+import CasePrintContact from './CasePrintContact';
 import {
   callerInfoSection,
   childInfoSection,
@@ -31,15 +32,18 @@ import {
   officeName,
 } from './mockedData';
 import { getImageAsString, ImageSource } from './helpers';
+import { DefinitionVersion } from '../../common/forms/types';
+import callTypes from '../../../states/DomainConstants';
 
 type OwnProps = {
   onClickClose: () => void;
   caseDetails: CaseDetails;
+  definitionVersion: DefinitionVersion;
 };
 type Props = OwnProps;
 
-const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails }) => {
-  const { pdfImagesSource } = getConfig();
+const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionVersion }) => {
+  const { pdfImagesSource, strings } = getConfig();
 
   const logoSource = `${pdfImagesSource}/helpline-logo.png`;
   const chkOnSource = `${pdfImagesSource}/chk_1.png`;
@@ -120,18 +124,51 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails }) => {
                   childIsAtRisk={caseDetails.childIsAtRisk}
                   counselor={caseDetails.caseCounselor}
                   categories={caseDetails.categories}
-                  definitionVersion={caseDetails.definitionVersion}
+                  version={caseDetails.version}
                   caseManager={caseManager}
                   chkOnBlob={chkOnBlob}
                   chkOffBlob={chkOffBlob}
                 />
-                <CasePrintSection {...callerInfoSection} />
-                <CasePrintSection {...childInfoSection} />
-                <CasePrintSection {...contactSection} />
-                <CasePrintMultiSection {...householdMultiSection} />
-                <CasePrintMultiSection {...perpetratorMultiSection} />
-                <CasePrintSection {...incidentSection} />
-                <CasePrintSection {...referralsSection} />
+                {caseDetails.contact.rawJson.callType === callTypes.caller && (
+                  <CasePrintSection
+                    sectionName={strings['SectionName-CallerInformation']}
+                    definitions={definitionVersion.tabbedForms.CallerInformationTab}
+                    values={caseDetails.contact.rawJson.callerInformation}
+                    unNestInfo={true}
+                  />
+                )}
+                <CasePrintSection
+                  sectionName={strings['SectionName-ChildInformation']}
+                  definitions={definitionVersion.tabbedForms.ChildInformationTab}
+                  values={caseDetails.contact.rawJson.childInformation}
+                  unNestInfo={true}
+                />
+                <CasePrintContact
+                  sectionName={strings['SectionName-Contact']}
+                  contact={caseDetails.contact}
+                  counselor={caseDetails.caseCounselor}
+                />
+                <CasePrintMultiSection
+                  sectionName={strings['SectionName-HouseholdMembers']}
+                  sectionKey="household"
+                  definitions={definitionVersion.caseForms.HouseholdForm}
+                  values={caseDetails.households}
+                />
+                <CasePrintMultiSection
+                  sectionName={strings['SectionName-Perpetrator']}
+                  sectionKey="perpetrator"
+                  definitions={definitionVersion.caseForms.PerpetratorForm}
+                  values={caseDetails.perpetrators}
+                />
+                <CasePrintMultiSection
+                  sectionName={strings['SectionName-Incidents']}
+                  definitions={definitionVersion.caseForms.IncidentForm}
+                  sectionKey="incident"
+                  values={caseDetails.incidents}
+                />
+                {/*
+                <CasePrintSection {...incidentSection}
+                <CasePrintSection {...referralsSection} /> */}
                 <CasePrintNotes {...notesSection} />
                 <CasePrintSummary summary={summary} />
               </View>

@@ -12,19 +12,18 @@ type OwnProps = {
       [subcategory: string]: boolean;
     };
   };
-  definitionVersion: string;
+  version: string;
 };
 
 type Props = OwnProps;
 
-const CasePrintCategories: React.FC<Props> = ({ categories, definitionVersion }) => {
+const CasePrintCategories: React.FC<Props> = ({ categories, version }) => {
   const { strings } = getConfig();
 
-  console.log({ categories });
   return (
     <View style={styles.flexColumn}>
       <Text style={{ marginBottom: '10px' }}>{strings['TabbedForms-CategoriesTab']}</Text>
-      <CaseTags printPDF={true} categories={categories} definitionVersion={definitionVersion} />
+      <CaseTags printPDF={true} categories={categories} definitionVersion={version} />
     </View>
   );
 };
