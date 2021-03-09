@@ -2,7 +2,6 @@
 /* eslint-disable react/no-multi-comp */
 import React from 'react';
 import * as Flex from '@twilio/flex-ui';
-import AssignmentInd from '@material-ui/icons/AssignmentInd';
 
 import { TransferButton, AcceptTransferButton, RejectTransferButton } from '../components/transfer';
 import * as TransferHelpers from './transfer';
@@ -19,6 +18,7 @@ import StandaloneSearchSideLink from '../components/sideLinks/StandaloneSearchSi
 import ManualPullButton from '../components/ManualPullButton';
 import OfflineContactButton from '../components/OfflineContactButton';
 import { chatCapacityUpdated } from '../states/configuration/actions';
+import { namespace, routingBase } from '../states';
 import { Column, TaskCanvasOverride, Box, HeaderContainer } from '../styles/HrmStyles';
 import HrmTheme from '../styles/HrmTheme';
 import { TLHPaddingLeft } from '../styles/GlobalOverrides';
@@ -132,43 +132,12 @@ const setUpManualPulling = () => {
 
 const setUpOfflineContact = () => {
   const manager = Flex.Manager.getInstance();
-  const defaultStrings = Flex.DefaultTaskChannels.Default.templates.TaskListItem.secondLine;
-  const defaultColors = Flex.DefaultTaskChannels.Default.colors;
-  const defaultIcons = Flex.DefaultTaskChannels.Default.icons;
-
-  // set icon, color, first and second lines if task isContactlessTask (offline contacts)
-  const getDefaultChannelIcon = task => {
-    if (task.attributes.isContactlessTask) return <AssignmentInd className="Twilio-Icon-Content" />;
-
-    return defaultIcons;
-  };
-  Flex.DefaultTaskChannels.Default.icons = {
-    active: getDefaultChannelIcon,
-    list: getDefaultChannelIcon,
-    main: getDefaultChannelIcon,
-  };
-
-  Flex.DefaultTaskChannels.Default.colors.main = (task, componentType) => {
-    if (task.attributes.isContactlessTask) return '#159AF8';
-
-    return Flex.TaskChannelHelper.getColor(task, defaultColors, componentType);
-  };
-  Flex.DefaultTaskChannels.Default.templates.TaskListItem.firstLine = (task, componentType) => {
-    if (task.attributes.isContactlessTask) return manager.strings.OfflineContactFirstLine;
-
-    return Flex.TaskChannelHelper.getTemplateForStatus(task, defaultStrings, componentType);
-  };
-  Flex.DefaultTaskChannels.Default.templates.TaskListItem.secondLine = (task, componentType) => {
-    if (task.attributes.isContactlessTask) return manager.strings.OfflineContactSecondLine;
-
-    return Flex.TaskChannelHelper.getTemplateForStatus(task, defaultStrings, componentType);
-  };
-
-  Flex.Notifications.registerNotification({
-    id: 'YouMustBeAvailableToPerformThisOp',
-    content: <Flex.Template code="YouMustBeAvailableToPerformThisOp" />,
-    timeout: 5000,
-    type: Flex.NotificationType.warning,
+  // This is causing some bad scenarios, cause AgentDesktopView.Panel1 not re-rendering. Possible solutions: a) force a "change view" b) allways remove the no tasks view c) replace it with our own view that is connected to the store and conditionally appears when appropiate
+  Flex.AgentDesktopView.Panel1.Content.remove('no-tasks', {
+    if: props =>
+      props.route.location.pathname === '/agent-desktop/' &&
+      !props.selectedTaskSid &&
+      manager.store.getState()[namespace][routingBase].isAddingOfflineContact, // while this is inefficient because of calling getState several times in a short period of time (re-renders), the impact is minimized by the short-circuit evaluation of the AND operator
   });
 };
 
