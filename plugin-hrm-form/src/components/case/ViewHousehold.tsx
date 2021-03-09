@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { connect } from 'react-redux';
-import { Template, ITask } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 
 import { Container, StyledNextStepButton, BottomButtonBar, Box } from '../../styles/HrmStyles';
 import { CaseLayout } from '../../styles/case';
@@ -11,6 +11,7 @@ import SectionEntry from '../SectionEntry';
 import ActionHeader from './ActionHeader';
 import type { DefinitionVersion } from '../common/forms/types';
 import { StandaloneITask } from '../StandaloneSearch';
+import type { CustomITask } from '../../types/types';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
@@ -21,7 +22,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
 };
 
 type OwnProps = {
-  task: ITask | StandaloneITask;
+  task: CustomITask | StandaloneITask;
   definitionVersion: DefinitionVersion;
   onClickClose: () => void;
 };

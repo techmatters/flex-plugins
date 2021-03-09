@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-max-depth */
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { Template, ITask } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { useForm, FormProvider } from 'react-hook-form';
 
@@ -24,9 +24,10 @@ import { createFormFromDefinition, disperseInputs, splitInHalf, splitAt } from '
 import type { DefinitionVersion } from '../common/forms/types';
 import { transformValues } from '../../services/ContactService';
 import { StandaloneITask } from '../StandaloneSearch';
+import type { CustomITask } from '../../types/types';
 
 type OwnProps = {
-  task: ITask | StandaloneITask;
+  task: CustomITask | StandaloneITask;
   counselor: string;
   definitionVersion: DefinitionVersion;
   onClickClose: () => void;

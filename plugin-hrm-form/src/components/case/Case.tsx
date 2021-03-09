@@ -30,7 +30,6 @@ import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyl
 import { CaseContainer, CenteredContainer } from '../../styles/case';
 import CaseDetails from './CaseDetails';
 import { Menu, MenuItem } from '../menu';
-import { formatName } from '../../utils';
 import * as SearchActions from '../../states/search/actions';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
@@ -52,7 +51,7 @@ import ViewPerpetrator from './ViewPerpetrator';
 import ViewIncident from './ViewIncident';
 import ViewReferral from './ViewReferral';
 import type { CaseDetailsName } from '../../states/case/types';
-import type { HouseholdEntry, PerpetratorEntry, IncidentEntry, Case as CaseType } from '../../types/types';
+import type { HouseholdEntry, PerpetratorEntry, IncidentEntry, Case as CaseType, CustomITask } from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
 
 const isStandaloneITask = (task): task is StandaloneITask => {
@@ -60,7 +59,7 @@ const isStandaloneITask = (task): task is StandaloneITask => {
 };
 
 type OwnProps = {
-  task: ITask | StandaloneITask;
+  task: CustomITask | StandaloneITask;
   isCreating?: boolean;
   handleClose?: () => void;
   updateAllCasesView?: (updatedCase: CaseType) => void;
