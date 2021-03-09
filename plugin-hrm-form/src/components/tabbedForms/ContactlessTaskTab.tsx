@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { ITask, withTaskContext } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 import { FieldError, useFormContext } from 'react-hook-form';
 import { isFuture } from 'date-fns';
@@ -13,9 +12,10 @@ import { configurationBase, namespace, RootState } from '../../states';
 import type { TaskEntry } from '../../states/contacts/reducer';
 import { createFormDefinition } from './ContactlessTaskTabDefinition';
 import { splitDate, splitTime } from '../../utils/helpers';
+import type { OfflineContactTask } from '../../types/types';
 
 type OwnProps = {
-  task: ITask;
+  task: OfflineContactTask;
   display: boolean;
   initialValues: TaskEntry[keyof TaskEntry];
 };
@@ -93,4 +93,4 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
 const connector = connect(mapStateToProps);
 const connected = connector(ContactlessTaskTab);
 
-export default withTaskContext<Props, typeof connected>(connected);
+export default connected;

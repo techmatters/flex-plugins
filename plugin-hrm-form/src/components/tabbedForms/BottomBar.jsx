@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
-import { withTaskContext, Template } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 import FolderOpenIcon from '@material-ui/icons/FolderOpen';
 import FolderIcon from '@material-ui/icons/Folder';
 import AddIcon from '@material-ui/icons/Add';
@@ -184,4 +184,4 @@ const mapDispatchToProps = dispatch => ({
   setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
 });
 
-export default withTaskContext(connect(mapStateToProps, mapDispatchToProps)(BottomBar));
+export default connect(mapStateToProps, mapDispatchToProps)(BottomBar);
