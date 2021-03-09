@@ -1,78 +1,68 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import { withTaskContext, TaskHelper } from '@twilio/flex-ui';
+/* eslint-disable react/prop-types */
+import React from 'react';
+import { connect, ConnectedProps } from 'react-redux';
+import { TaskHelper } from '@twilio/flex-ui';
 
 import HrmForm from './HrmForm';
 import FormNotEditable from './FormNotEditable';
-import { taskType } from '../types';
-import { namespace, contactFormsBase, searchContactsBase, routingBase, configurationBase } from '../states';
+import { RootState, namespace, contactFormsBase, searchContactsBase, routingBase, configurationBase } from '../states';
 import * as GeneralActions from '../states/actions';
 import { hasTaskControl } from '../utils/transfer';
+import type { ContactFormDefinition } from '../states/types';
+import { CustomITask, isOfflineContactTask } from '../types/types';
 
-class TaskView extends Component {
-  static displayName = 'TaskView';
+type OwnProps = {
+  task: CustomITask;
+};
 
-  static propTypes = {
-    task: taskType,
-    thisTask: taskType.isRequired,
-    contactFormStateExists: PropTypes.bool.isRequired,
-    routingStateExists: PropTypes.bool.isRequired,
-    searchStateExists: PropTypes.bool.isRequired,
-    dispatch: PropTypes.func.isRequired,
-    currentDefinitionVersion: PropTypes.shape({ tabbedForms: PropTypes.shape({}) }).isRequired,
-  };
+// eslint-disable-next-line no-use-before-define
+type Props = OwnProps & ConnectedProps<typeof connector>;
 
-  static defaultProps = {
-    task: null,
-  };
-
-  // eslint-disable-next-line complexity
-  componentDidMount() {
-    const { contactFormStateExists, routingStateExists, searchStateExists, currentDefinitionVersion } = this.props;
-    if (!contactFormStateExists || !routingStateExists || !searchStateExists) {
-      this.props.dispatch(
-        GeneralActions.recreateContactState(currentDefinitionVersion.tabbedForms)(this.props.thisTask.taskSid),
-      );
+const TaskView: React.FC<Props> = props => {
+  const { shouldRecreateState, currentDefinitionVersion, task, recreateContactState } = props;
+  React.useEffect(() => {
+    if (shouldRecreateState) {
+      recreateContactState(currentDefinitionVersion.tabbedForms)(task.taskSid);
     }
+  }, [currentDefinitionVersion.tabbedForms, recreateContactState, shouldRecreateState, task.taskSid]);
+
+  // If this task is not the active task, or if the task is not accepted yet, hide it
+  const show = task && !shouldRecreateState && (isOfflineContactTask(task) || !TaskHelper.isPending(task));
+
+  if (!show) {
+    return null;
   }
 
-  render() {
-    const { task, thisTask } = this.props;
+  return (
+    <div style={{ height: '100%' }}>
+      {!hasTaskControl(task) && <FormNotEditable />}
+      <HrmForm task={task} />
+    </div>
+  );
+};
 
-    // If this task is not the active task, or if the task is not accepted yet, hide it
-    const show = task && task.taskSid === thisTask.taskSid && !TaskHelper.isPending(task);
+TaskView.displayName = 'TaskView';
 
-    if (!show) {
-      return null;
-    }
-
-    return (
-      <div style={{ height: '100%' }}>
-        {!hasTaskControl(thisTask) && <FormNotEditable />}
-        <HrmForm />
-      </div>
-    );
-  }
-}
-
-/**
- * @param {import('../states').RootState} state
- */
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
+  const { task } = ownProps;
   // Check if the entry for this task exists in each reducer
-  const contactFormStateExists = Boolean(state[namespace][contactFormsBase].tasks[ownProps.thisTask.taskSid]);
-  const routingStateExists = Boolean(state[namespace][routingBase].tasks[ownProps.thisTask.taskSid]);
-  const searchStateExists = Boolean(state[namespace][searchContactsBase].tasks[ownProps.thisTask.taskSid]);
+  const contactFormStateExists = Boolean(task && state[namespace][contactFormsBase].tasks[task.taskSid]);
+  const routingStateExists = Boolean(task && state[namespace][routingBase].tasks[task.taskSid]);
+  const searchStateExists = Boolean(task && state[namespace][searchContactsBase].tasks[task.taskSid]);
+
+  const shouldRecreateState = !contactFormStateExists || !routingStateExists || !searchStateExists;
   const { currentDefinitionVersion } = state[namespace][configurationBase];
 
-  // This should already have been created when beforeAcceptTask is fired
   return {
-    contactFormStateExists,
-    routingStateExists,
-    searchStateExists,
+    shouldRecreateState,
     currentDefinitionVersion,
   };
 };
 
-export default withTaskContext(connect(mapStateToProps, null)(TaskView));
+const mapDispatchToProps = dispatch => ({
+  recreateContactState: (definitions: ContactFormDefinition) => (taskId: string) =>
+    dispatch(GeneralActions.recreateContactState(definitions)(taskId)),
+});
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+export default connector(TaskView);

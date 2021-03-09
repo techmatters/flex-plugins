@@ -9,35 +9,33 @@ import TabbedForms from './tabbedForms';
 import Case from './case';
 import { namespace, RootState, routingBase } from '../states';
 import * as RoutingActions from '../states/routing/actions';
+import type { CustomITask } from '../types/types';
 
 type OwnProps = {
-  task: ITask;
-  changeRoute: any;
+  task: CustomITask;
 };
 
 // eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 
-const HrmForm: React.FC<Props> = props => {
-  // eslint-disable-next-line react/prop-types
-  if (!props.routing) return null;
-  // eslint-disable-next-line react/prop-types
-  const { route } = props.routing;
+const HrmForm: React.FC<Props> = ({ routing, task }) => {
+  if (!routing) return null;
+  const { route } = routing;
 
   switch (route) {
     case 'tabbed-forms':
-      return <TabbedForms />;
+      return <TabbedForms task={task} />;
 
     case 'new-case':
       return (
         <CaseLayout>
-          <Case task={props.task} isCreating={true} />
+          <Case task={task} isCreating={true} />
         </CaseLayout>
       );
 
     case 'select-call-type':
     default:
-      return <CallTypeButtons />;
+      return <CallTypeButtons task={task} />;
   }
 };
 
@@ -53,5 +51,4 @@ const mapDispatchToProps = {
   changeRoute: RoutingActions.changeRoute,
 };
 
-// @ts-ignore
-export default withTaskContext(connect(mapStateToProps, mapDispatchToProps)(HrmForm));
+export default connect(mapStateToProps, null)(HrmForm);
