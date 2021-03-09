@@ -13,6 +13,7 @@ class ContactDetails extends Component {
   static displayName = 'ContactDetails';
 
   static propTypes = {
+    task: PropTypes.shape({}).isRequired,
     currentIsCaller: PropTypes.bool.isRequired,
     contact: contactType.isRequired,
     showActionIcons: PropTypes.objectOf(PropTypes.bool).isRequired,
@@ -49,11 +50,12 @@ class ContactDetails extends Component {
   };
 
   render() {
-    const { contact, detailsExpanded, currentIsCaller, handleBack, showActionIcons } = this.props;
+    const { contact, detailsExpanded, currentIsCaller, handleBack, showActionIcons, task } = this.props;
 
     return (
       <Container>
         <ConnectDialog
+          task={task}
           anchorEl={this.state.anchorEl}
           currentIsCaller={currentIsCaller}
           contact={contact}
