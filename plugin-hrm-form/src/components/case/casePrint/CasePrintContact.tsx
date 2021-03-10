@@ -1,4 +1,7 @@
 /* eslint-disable react/prop-types */
+/*
+ * This component was in the original mockup designs, we're removing it per ZA request, but could be useful for other helplines.
+ */
 import React from 'react';
 import { Text, View } from '@react-pdf/renderer';
 
@@ -105,4 +108,5 @@ const CasePrintContact: React.FC<Props> = ({ sectionName, contact, counselor }) 
 
 CasePrintContact.displayName = 'CasePrintContact';
 
+// eslint-disable-next-line import/no-unused-modules
 export default CasePrintContact;

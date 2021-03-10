@@ -17,17 +17,19 @@ type Props = OwnProps;
 const CasePrintMultiSection: React.FC<Props> = ({ sectionName, sectionKey, values, definitions }) => {
   return (
     <View>
-      {values.map((value, i: number) => {
-        const customSectionName = `${sectionName} ${i + 1} of ${values.length}`;
-        return (
-          <CasePrintSection
-            key={value.key}
-            sectionName={customSectionName}
-            values={sectionKey === 'referral' ? value : value[sectionKey]}
-            definitions={definitions}
-          />
-        );
-      })}
+      {values &&
+        values.length > 0 &&
+        values.map((value, i: number) => {
+          const customSectionName = `${sectionName} ${i + 1} of ${values.length}`;
+          return (
+            <CasePrintSection
+              key={value.key}
+              sectionName={customSectionName}
+              values={sectionKey === 'referral' ? value : value[sectionKey]}
+              definitions={definitions}
+            />
+          );
+        })}
     </View>
   );
 };

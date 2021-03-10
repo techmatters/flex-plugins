@@ -355,7 +355,7 @@ const Case: React.FC<Props> = props => {
   const childIsAtRisk = info && info.childIsAtRisk;
   const referrals = props.connectedCaseReferrals;
   const notes = timeline.filter(x => x.type === 'note');
-  const summary = info && info.summary ? info.summary : '';
+  const summary = info?.summary || firstConnectedContact?.rawJson?.caseInformation?.callSummary;
   const definitionVersion = props.definitionVersions[version];
 
   const addScreenProps = {
@@ -438,6 +438,7 @@ const Case: React.FC<Props> = props => {
                 handleStatusChange={onStatusChange}
                 handleClickChildIsAtRisk={onClickChildIsAtRisk}
                 definitionVersion={connectedCase.info.definitionVersion}
+                isOrphanedCase={!firstConnectedContact}
               />
             </Box>
             <Box marginLeft="25px" marginTop="25px">

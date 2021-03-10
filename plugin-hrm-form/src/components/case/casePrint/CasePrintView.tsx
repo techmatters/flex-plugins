@@ -2,7 +2,7 @@
 /* eslint-disable react/jsx-max-depth */
 import React, { useState, useEffect } from 'react';
 import { Page, Document, View, PDFViewer } from '@react-pdf/renderer';
-import { Template } from '@twilio/flex-ui';
+import { Template, Strings } from '@twilio/flex-ui';
 import { ButtonBase, CircularProgress } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 
@@ -17,22 +17,10 @@ import CasePrintMultiSection from './CasePrintMultiSection';
 import CasePrintNotes from './CasePrintNotes';
 import CasePrintHeader from './CasePrintHeader';
 import CasePrintFooter from './CasePrintFooter';
-import CasePrintContact from './CasePrintContact';
-import {
-  callerInfoSection,
-  childInfoSection,
-  contactSection,
-  householdMultiSection,
-  perpetratorMultiSection,
-  incidentSection,
-  referralsSection,
-  notesSection,
-  summary,
-  caseManager,
-  officeName,
-} from './mockedData';
+// import CasePrintContact from './CasePrintContact'; // Removed by ZA request, could be useful for other helplines.
+import { caseManager, officeName } from './mockedData';
 import { getImageAsString, ImageSource } from './helpers';
-import { DefinitionVersion } from '../../common/forms/types';
+import { DefinitionVersion, FormDefinition } from '../../common/forms/types';
 import callTypes from '../../../states/DomainConstants';
 
 type OwnProps = {
@@ -42,6 +30,28 @@ type OwnProps = {
   counselorsHash: { [sid: string]: string };
 };
 type Props = OwnProps;
+
+const extraFieldDefinitions = (strings: Strings<string>): FormDefinition => {
+  return [
+    {
+      name: 'keepConfidential',
+      label: strings['ContactDetails-GeneralDetails-KeepConfidential'],
+      type: 'checkbox',
+    },
+    {
+      name: 'okForCaseWorkerToCall',
+      label: strings['ContactDetails-GeneralDetails-OKToCall'],
+      type: 'checkbox',
+    },
+  ];
+};
+
+const addExtraValues = (caseInformation: any) => {
+  return {
+    keepConfidential: Boolean(caseInformation?.keepConfidential),
+    okForCaseWorkerToCall: Boolean(caseInformation?.okForCaseWorkerToCall),
+  };
+};
 
 const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionVersion, counselorsHash }) => {
   const { pdfImagesSource, strings } = getConfig();
@@ -130,25 +140,47 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
                   chkOnBlob={chkOnBlob}
                   chkOffBlob={chkOffBlob}
                 />
-                {caseDetails.contact.rawJson.callType === callTypes.caller && (
+                {caseDetails.contact?.rawJson?.callType === callTypes.caller ? (
+                  <View>
+                    <CasePrintSection
+                      sectionName={strings['SectionName-CallerInformation']}
+                      definitions={[
+                        ...extraFieldDefinitions(strings),
+                        ...definitionVersion.tabbedForms.CallerInformationTab,
+                      ]}
+                      values={{
+                        ...addExtraValues(caseDetails.contact?.rawJson?.caseInformation),
+                        ...caseDetails.contact?.rawJson?.callerInformation,
+                      }}
+                      unNestInfo={true}
+                    />
+                    <CasePrintSection
+                      sectionName={strings['SectionName-ChildInformation']}
+                      definitions={definitionVersion.tabbedForms.ChildInformationTab}
+                      values={caseDetails.contact?.rawJson?.childInformation}
+                      unNestInfo={true}
+                    />
+                  </View>
+                ) : (
                   <CasePrintSection
-                    sectionName={strings['SectionName-CallerInformation']}
-                    definitions={definitionVersion.tabbedForms.CallerInformationTab}
-                    values={caseDetails.contact.rawJson.callerInformation}
+                    sectionName={strings['SectionName-ChildInformation']}
+                    definitions={[
+                      ...extraFieldDefinitions(strings),
+                      ...definitionVersion.tabbedForms.ChildInformationTab,
+                    ]}
+                    values={{
+                      ...addExtraValues(caseDetails.contact?.rawJson?.caseInformation),
+                      ...caseDetails.contact?.rawJson?.childInformation,
+                    }}
                     unNestInfo={true}
                   />
                 )}
-                <CasePrintSection
-                  sectionName={strings['SectionName-ChildInformation']}
-                  definitions={definitionVersion.tabbedForms.ChildInformationTab}
-                  values={caseDetails.contact.rawJson.childInformation}
-                  unNestInfo={true}
-                />
+                {/* // Removed by ZA request, could be useful for other helplines.
                 <CasePrintContact
                   sectionName={strings['SectionName-Contact']}
                   contact={caseDetails.contact}
                   counselor={caseDetails.caseCounselor}
-                />
+                /> */}
                 <CasePrintMultiSection
                   sectionName={strings['SectionName-HouseholdMembers']}
                   sectionKey="household"

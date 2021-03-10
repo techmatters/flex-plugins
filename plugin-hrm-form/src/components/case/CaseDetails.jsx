@@ -39,6 +39,7 @@ const CaseDetails = ({
   handleStatusChange,
   handleClickChildIsAtRisk,
   definitionVersion,
+  isOrphanedCase,
 }) => {
   const lastUpdatedClosedDate = openedDate === lastUpdatedDate ? '—' : lastUpdatedDate;
 
@@ -61,6 +62,7 @@ const CaseDetails = ({
         status={status}
         handlePrintCase={handlePrintCase}
         handleClickChildIsAtRisk={handleClickChildIsAtRisk}
+        isOrphanedCase={isOrphanedCase}
       />
       <DetailsContainer tabIndex={0} aria-labelledby="Case-CaseId-label">
         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -156,11 +158,13 @@ CaseDetails.propTypes = {
   handleStatusChange: PropTypes.func.isRequired,
   handleClickChildIsAtRisk: PropTypes.func.isRequired,
   definitionVersion: PropTypes.string.isRequired,
+  isOrphanedCase: PropTypes.bool,
 };
 
 CaseDetails.defaultProps = {
   followUpDate: '',
   lastUpdatedDate: '',
+  isOrphanedCase: false,
 };
 
 export default CaseDetails;
