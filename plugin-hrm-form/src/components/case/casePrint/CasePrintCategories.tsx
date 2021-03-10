@@ -4,7 +4,7 @@ import { Text, View } from '@react-pdf/renderer';
 
 import { getConfig } from '../../../HrmFormPlugin';
 import styles from './styles';
-import CaseTags from '../../search/CasePreview/CaseTags';
+import CaseTags from '../CaseTags';
 
 type OwnProps = {
   categories?: {

@@ -2,12 +2,12 @@
 import React from 'react';
 import { View, Text } from '@react-pdf/renderer';
 
-import { Flex } from '../../../styles/HrmStyles';
-import { TagsWrapper } from '../../../styles/search';
-import CategoryWithTooltip from '../../common/CategoryWithTooltip';
-import { retrieveCategories } from '../../case/ContactDetailsAdapter';
-import { getContactTags, renderTag } from '../../../utils/categories';
-import styles from '../../case/casePrint/styles';
+import { Flex } from '../../styles/HrmStyles';
+import { TagsWrapper } from '../../styles/search';
+import CategoryWithTooltip from '../common/CategoryWithTooltip';
+import { retrieveCategories } from './ContactDetailsAdapter';
+import { getContactTags, renderTag } from '../../utils/categories';
+import styles from './casePrint/styles';
 
 type OwnProps = {
   categories?: {
@@ -29,18 +29,18 @@ const CaseTags: React.FC<Props> = ({ categories, definitionVersion, printPDF }) 
     return (
       <View style={styles.categoryContainer}>
         {category1 && (
-          <View style={styles.categoryView}>
-            <Text style={{ ...styles.categoryText, backgroundColor: category1.color }}>• {category1.label}</Text>
+          <View style={{ ...styles.categoryView, backgroundColor: category1.color }}>
+            <Text style={styles.categoryText}>• {category1.label}</Text>
           </View>
         )}
         {category2 && (
-          <View style={styles.categoryView}>
-            <Text style={{ ...styles.categoryText, backgroundColor: category2.color }}>• {category2.label}</Text>
+          <View style={{ ...styles.categoryView, backgroundColor: category2.color }}>
+            <Text style={styles.categoryText}>• {category2.label}</Text>
           </View>
         )}
         {category3 && (
-          <View style={styles.categoryView}>
-            <Text style={{ ...styles.categoryText, backgroundColor: category3.color }}>• {category3.label}</Text>
+          <View style={{ ...styles.categoryView, backgroundColor: category3.color }}>
+            <Text style={styles.categoryText}>• {category3.label}</Text>
           </View>
         )}
       </View>

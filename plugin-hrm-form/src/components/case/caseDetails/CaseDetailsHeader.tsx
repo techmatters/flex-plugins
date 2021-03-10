@@ -17,7 +17,7 @@ import {
   ChildIsAtRiskWrapper,
   StyledPrintButton,
 } from '../../../styles/case';
-import { Flex, Box, FormCheckbox, FormLabel, FormCheckBoxWrapper } from '../../../styles/HrmStyles';
+import { Box, FormCheckbox, FormLabel } from '../../../styles/HrmStyles';
 import { CaseStatus } from '../../../types/types';
 
 type OwnProps = {
