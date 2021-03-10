@@ -74,11 +74,11 @@ export const formatDateTime = date => {
 
 /**
  * Formats Date Time (string) into a friendly readable format
- * @param dateTime 
+ * @param dateTime
  */
-export const formatDateTimeString = (dateTime: string): string => {
+export const formatStringToDateAndTime = (dateTime: string): string => {
   return `${format(new Date(dateTime), 'MMM d, yyyy / h:mm aaaaa')}m`;
-}
+};
 
 /**
  * Formats a input value to string

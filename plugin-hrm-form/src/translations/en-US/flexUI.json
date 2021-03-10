@@ -249,8 +249,8 @@
   "SectionName-Contact": "Contact",
   "SectionName-HouseholdMembers": "Household Members",
   "SectionName-Perpetrator": "Perpetrator",
-  "SectionName-Incidents": "Incidents",
-  "SectionName-Referrals": "Referrals",
+  "SectionName-Incident": "Incident",
+  "SectionName-Referral": "Referral",
   "SectionName-Notes": "Notes",
   "SectionName-CaseSummary": "Case Summary",
 

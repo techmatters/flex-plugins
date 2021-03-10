@@ -3,21 +3,18 @@ import React from 'react';
 import { View, Text } from '@react-pdf/renderer';
 
 import { getConfig } from '../../../HrmFormPlugin';
+import { NoteActivity } from '../../../states/case/types';
+import { formatName, formatStringToDateAndTime } from '../../../utils';
 import styles from './styles';
 
-type Note = {
-  counselor: string;
-  date: string;
-  note: string;
-};
-
 type OwnProps = {
-  notes: Note[];
+  notes: NoteActivity[];
+  counselorsHash: { [sid: string]: string };
 };
 
 type Props = OwnProps;
 
-const CasePrintNotes: React.FC<Props> = ({ notes }) => {
+const CasePrintNotes: React.FC<Props> = ({ notes, counselorsHash }) => {
   const { strings } = getConfig();
 
   return (
@@ -29,11 +26,11 @@ const CasePrintNotes: React.FC<Props> = ({ notes }) => {
         return (
           <View key={i} style={{ ...styles.sectionBody, ...styles.caseSummaryText }}>
             <View style={{ ...styles.flexRow, justifyContent: 'space-between' }}>
-              <Text style={{ fontWeight: 600 }}>{note.counselor}</Text>
-              <Text style={{ fontStyle: 'italic' }}>{note.date}</Text>
+              <Text style={{ fontWeight: 600 }}>{formatName(counselorsHash[note.twilioWorkerId])}</Text>
+              <Text style={{ fontStyle: 'italic' }}>{formatStringToDateAndTime(note.date)}</Text>
             </View>
             <View>
-              <Text style={styles.noteSummaryText}>{note.note}</Text>
+              <Text style={styles.noteSummaryText}>{note.text}</Text>
             </View>
           </View>
         );

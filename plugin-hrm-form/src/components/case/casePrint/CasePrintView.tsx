@@ -39,10 +39,11 @@ type OwnProps = {
   onClickClose: () => void;
   caseDetails: CaseDetails;
   definitionVersion: DefinitionVersion;
+  counselorsHash: { [sid: string]: string };
 };
 type Props = OwnProps;
 
-const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionVersion }) => {
+const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionVersion, counselorsHash }) => {
   const { pdfImagesSource, strings } = getConfig();
 
   const logoSource = `${pdfImagesSource}/helpline-logo.png`;
@@ -161,16 +162,19 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
                   values={caseDetails.perpetrators}
                 />
                 <CasePrintMultiSection
-                  sectionName={strings['SectionName-Incidents']}
+                  sectionName={strings['SectionName-Incident']}
                   definitions={definitionVersion.caseForms.IncidentForm}
                   sectionKey="incident"
                   values={caseDetails.incidents}
                 />
-                {/*
-                <CasePrintSection {...incidentSection}
-                <CasePrintSection {...referralsSection} /> */}
-                <CasePrintNotes {...notesSection} />
-                <CasePrintSummary summary={summary} />
+                <CasePrintMultiSection
+                  sectionName={strings['SectionName-Referral']}
+                  definitions={definitionVersion.caseForms.ReferralForm}
+                  sectionKey="referral"
+                  values={caseDetails.referrals}
+                />
+                <CasePrintNotes notes={caseDetails.notes} counselorsHash={counselorsHash} />
+                <CasePrintSummary summary={caseDetails.summary} />
               </View>
               <CasePrintFooter />
             </Page>

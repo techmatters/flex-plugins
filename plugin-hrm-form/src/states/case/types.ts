@@ -87,11 +87,11 @@ export type CaseActionType =
 
 export type Activity = NoteActivity | ReferralActivity | ConnectedCaseActivity;
 
-type NoteActivity = {
+export type NoteActivity = {
   date: string;
   type: string;
   text: string;
-  twilioWorkedId: string;
+  twilioWorkerId: string;
 };
 
 type ReferralActivity = {
@@ -104,7 +104,7 @@ type ReferralActivity = {
     comments: string;
     referredTo: string;
   };
-  twilioWorkedId: string;
+  twilioWorkerId: string;
 };
 
 export type ConnectedCaseActivity = {
@@ -139,6 +139,9 @@ export type CaseDetails = {
   households: t.HouseholdEntry[];
   perpetrators: t.PerpetratorEntry[];
   incidents: t.IncidentEntry[];
+  referrals: t.ReferralEntry[];
+  notes: NoteActivity[];
+  summary: string;
   childIsAtRisk: boolean;
   officeName: string;
   version?: string;

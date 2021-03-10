@@ -5,7 +5,7 @@ import { Text, View } from '@react-pdf/renderer';
 import styles from './styles';
 import { getConfig } from '../../../HrmFormPlugin';
 import { mapChannel, mapChannelForInsights } from '../../../utils';
-import { formatInputValue, formatCheckboxValue, formatDateTimeString } from '../../../utils/formatters';
+import { formatInputValue, formatCheckboxValue, formatStringToDateAndTime } from '../../../utils/formatters';
 
 type OwnProps = {
   sectionName: string;
@@ -51,7 +51,7 @@ const CasePrintContact: React.FC<Props> = ({ sectionName, contact, counselor }) 
         </View>
         <View style={styles.sectionItemRowEven}>
           <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-DateTime']}</Text>
-          <Text style={styles.sectionItemSecondColumn}>{formatDateTimeString(timeOfContact)}</Text>
+          <Text style={styles.sectionItemSecondColumn}>{formatStringToDateAndTime(timeOfContact)}</Text>
         </View>
         <View style={styles.sectionItemRowOdd}>
           <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-RepeatCaller']}</Text>

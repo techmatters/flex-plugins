@@ -7,7 +7,7 @@ import { FormDefinition } from '../../common/forms/types';
 
 type OwnProps = {
   sectionName: string;
-  sectionKey: 'household' | 'perpetrator' | 'incident';
+  sectionKey: 'household' | 'perpetrator' | 'incident' | 'referral';
   values: any; // ToDO: imptove this type
   definitions: FormDefinition;
 };
@@ -23,7 +23,7 @@ const CasePrintMultiSection: React.FC<Props> = ({ sectionName, sectionKey, value
           <CasePrintSection
             key={value.key}
             sectionName={customSectionName}
-            values={value[sectionKey]}
+            values={sectionKey === 'referral' ? value : value[sectionKey]}
             definitions={definitions}
           />
         );
