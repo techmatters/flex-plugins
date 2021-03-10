@@ -19,10 +19,12 @@ const OfflineContactButton: React.FC<Props> = ({
   isAddingOfflineContact,
   currentDefinitionVersion,
   recreateContactState,
+  activeView,
 }) => {
   const onClick = async () => {
-    await Actions.invokeAction('SelectTask', { task: undefined });
     recreateContactState(currentDefinitionVersion.tabbedForms)(offlineContactTaskSid);
+    await Actions.invokeAction('SelectTask', { task: undefined });
+    Actions.invokeAction('NavigateToView', { viewName: activeView }); // force a re-render
   };
 
   const disabled = !selectedTaskSid && isAddingOfflineContact;
@@ -35,12 +37,13 @@ OfflineContactButton.displayName = 'OfflineContactButton';
 const mapStateToProps = (state: RootState) => {
   const { currentDefinitionVersion } = state[namespace][configurationBase];
   const { isAddingOfflineContact } = state[namespace][routingBase];
-  const { selectedTaskSid } = state.flex.view;
+  const { selectedTaskSid, activeView } = state.flex.view;
 
   return {
     selectedTaskSid,
     isAddingOfflineContact,
     currentDefinitionVersion,
+    activeView,
   };
 };
 
