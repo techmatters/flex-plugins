@@ -200,6 +200,7 @@ test('<CallTypeButtons> renders dialog with all buttons', () => {
           ],
         },
       },
+      [connectedCaseBase]: { tasks: {} },
     },
   };
   const store = mockStore(initialState);
@@ -549,6 +550,7 @@ test('<CallTypeButtons> click on NonData (Joke) button', () => {
           ],
         },
       },
+      [connectedCaseBase]: { tasks: {} },
     },
   };
   const store = mockStore(initialState);

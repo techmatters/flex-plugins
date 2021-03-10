@@ -12,7 +12,7 @@ type RoutingState = {
   isAddingOfflineContact: boolean;
 };
 
-const newTaskEntry = {
+export const newTaskEntry = {
   route: 'select-call-type' as const,
 };
 

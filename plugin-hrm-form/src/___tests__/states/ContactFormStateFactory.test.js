@@ -232,6 +232,7 @@ test('createBlankForm operates as expected', () => {
       channel: '',
       date: '',
       time: '',
+      createdOnBehalfOf: '',
     },
   };
 
