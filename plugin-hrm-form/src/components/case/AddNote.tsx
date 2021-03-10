@@ -60,6 +60,7 @@ const AddNote: React.FC<Props> = ({
     const note = Object.values(transformValues(NoteForm)(temporaryCaseInfo.info));
     const notes = info && info.notes ? [...info.notes, ...note] : [...note];
     const newInfo = info ? { ...info, notes } : { notes };
+    // @ts-ignore TODO: fix this (bug in backend involved, see createAddNoteActivity in hrm)
     const updatedCase = await updateCase(id, { info: newInfo });
     setConnectedCase(updatedCase, task.taskSid, true);
     updateTempInfo({ screen: 'add-note', info: null }, task.taskSid);

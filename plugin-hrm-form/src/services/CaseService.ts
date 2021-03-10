@@ -19,7 +19,7 @@ export async function createCase(task: CustomITask, contactForm: ContactForm) {
         helpline,
         status: 'open',
         twilioWorkerId: workerSid,
-        info: { definitionVersion, offlineContactCreator: null },
+        info: { definitionVersion },
       };
 
   const options = {
@@ -47,7 +47,7 @@ export async function cancelCase(caseId: Case['id']) {
   await fetchHrmApi(`/cases/${caseId}`, options);
 }
 
-export async function updateCase(caseId: Case['id'], body: Case) {
+export async function updateCase(caseId: Case['id'], body: Partial<Case>) {
   const options = {
     method: 'PUT',
     body: JSON.stringify(body),
