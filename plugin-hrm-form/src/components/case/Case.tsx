@@ -355,7 +355,7 @@ const Case: React.FC<Props> = props => {
   const childIsAtRisk = info && info.childIsAtRisk;
   const referrals = props.connectedCaseReferrals;
   const notes = timeline.filter(x => x.type === 'note');
-  const summary = info?.summary || firstConnectedContact?.rawJson?.caseInformation?.callSummary;
+  const summary = info?.summary;
   const definitionVersion = props.definitionVersions[version];
 
   const addScreenProps = {

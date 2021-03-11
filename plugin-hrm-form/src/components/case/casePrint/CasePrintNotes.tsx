@@ -17,6 +17,8 @@ type Props = OwnProps;
 const CasePrintNotes: React.FC<Props> = ({ notes, counselorsHash }) => {
   const { strings } = getConfig();
 
+  if (!notes || notes.length === 0) return null;
+
   return (
     <View>
       <View style={styles.sectionHeader}>

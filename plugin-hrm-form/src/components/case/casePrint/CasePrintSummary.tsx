@@ -6,7 +6,7 @@ import { getConfig } from '../../../HrmFormPlugin';
 import styles from './styles';
 
 type OwnProps = {
-  summary: string;
+  summary?: string;
 };
 
 type Props = OwnProps;
@@ -20,7 +20,7 @@ const CasePrintSummary: React.FC<Props> = ({ summary }) => {
         <Text style={styles.whiteText}>{strings['Case-CaseSummarySection']}</Text>
       </View>
       <View style={styles.sectionBody}>
-        <Text style={styles.caseSummaryText}>{summary}</Text>
+        <Text style={styles.caseSummaryText}>{summary ? summary : 'No case summary'}</Text>
       </View>
     </View>
   );
