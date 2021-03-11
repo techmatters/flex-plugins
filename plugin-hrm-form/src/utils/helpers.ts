@@ -39,4 +39,3 @@ export const getLocaleDateTime = (timestamp: string): string => {
 
   return 'Invalid Date';
 };
-
