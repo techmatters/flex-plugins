@@ -37,5 +37,6 @@ export const getLocaleDateTime = (timestamp: string): string => {
     return new Date(dateTime).toLocaleDateString(navigator.language);
   }
 
-  return '';
+  return 'Invalid Date';
 };
+
