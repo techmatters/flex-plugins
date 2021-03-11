@@ -26,6 +26,7 @@ import ContactlessTaskTab from './ContactlessTaskTab';
 import BottomBar from './BottomBar';
 import { hasTaskControl } from '../../utils/transfer';
 import { isNonDataCallType } from '../../states/ValidationRules';
+import { reRenderAgentDesktop } from '../../HrmFormPlugin';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -139,7 +140,10 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, currentD
       ? [
           {
             label: 'CancelOfflineContact',
-            onClick: () => removeOfflineContact(),
+            onClick: async () => {
+              removeOfflineContact();
+              await reRenderAgentDesktop();
+            },
           },
         ]
       : undefined;

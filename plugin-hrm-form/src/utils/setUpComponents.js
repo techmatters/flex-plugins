@@ -132,7 +132,10 @@ const setUpManualPulling = () => {
 
 const setUpOfflineContact = () => {
   const manager = Flex.Manager.getInstance();
-  // This is causing some bad scenarios, cause AgentDesktopView.Panel1 not re-rendering. Possible solutions: a) force a "change view" b) allways remove the no tasks view c) replace it with our own view that is connected to the store and conditionally appears when appropiate
+
+  Flex.ViewCollection.Content.add(<Flex.View name="empty-view" key="empty-view" />);
+
+  // This is causing some bad scenarios, cause AgentDesktopView.Panel1 not re-rendering. Current solution: a) force a "change view". Other options: b) allways remove the no tasks view c) replace it with our own view that is connected to the store and conditionally appears when appropiate
   Flex.AgentDesktopView.Panel1.Content.remove('no-tasks', {
     if: props =>
       props.route.location.pathname === '/agent-desktop/' &&

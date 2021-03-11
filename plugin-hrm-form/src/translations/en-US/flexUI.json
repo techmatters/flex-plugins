@@ -238,6 +238,7 @@
   "ManualPullButtonText": "Another Task",
   "NoTaskAssignableNotification": "No task assignable to you at the moment.",
   "OfflineContactButtonText": "Offline Contact Record",
+  "ResumeContactButtonText": "Resume Offline Contact",
   "CancelOfflineContact": "Cancel Offline Contact",
   "YouMustBeAvailableToPerformThisOp": "You must be available to perform this operation.",
 

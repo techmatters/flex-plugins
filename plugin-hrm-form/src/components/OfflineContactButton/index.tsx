@@ -8,6 +8,7 @@ import type { ContactFormDefinition } from '../../states/types';
 import * as GeneralActions from '../../states/actions';
 import { offlineContactTaskSid } from '../../types/types';
 import AddTaskButton from '../common/AddTaskButton';
+import { reRenderAgentDesktop } from '../../HrmFormPlugin';
 
 type OwnProps = {};
 
@@ -19,17 +20,22 @@ const OfflineContactButton: React.FC<Props> = ({
   isAddingOfflineContact,
   currentDefinitionVersion,
   recreateContactState,
-  activeView,
 }) => {
   const onClick = async () => {
     recreateContactState(currentDefinitionVersion.tabbedForms)(offlineContactTaskSid);
     await Actions.invokeAction('SelectTask', { task: undefined });
-    Actions.invokeAction('NavigateToView', { viewName: activeView }); // force a re-render
+    await reRenderAgentDesktop();
   };
 
   const disabled = !selectedTaskSid && isAddingOfflineContact;
 
-  return <AddTaskButton onClick={onClick} disabled={disabled} label="OfflineContactButtonText" />;
+  return (
+    <AddTaskButton
+      onClick={onClick}
+      disabled={disabled}
+      label={isAddingOfflineContact ? 'ResumeContactButtonText' : 'OfflineContactButtonText'}
+    />
+  );
 };
 
 OfflineContactButton.displayName = 'OfflineContactButton';
@@ -37,13 +43,12 @@ OfflineContactButton.displayName = 'OfflineContactButton';
 const mapStateToProps = (state: RootState) => {
   const { currentDefinitionVersion } = state[namespace][configurationBase];
   const { isAddingOfflineContact } = state[namespace][routingBase];
-  const { selectedTaskSid, activeView } = state.flex.view;
+  const { selectedTaskSid } = state.flex.view;
 
   return {
     selectedTaskSid,
     isAddingOfflineContact,
     currentDefinitionVersion,
-    activeView,
   };
 };
 
