@@ -29,9 +29,13 @@ export const getDateTime = ({ date, time }: { date?: string; time?: string }) =>
  * @param timestamp Timestamp to convert, may include time or not.
  */
 export const getLocaleDateTime = (timestamp: string): string => {
-  const [date, time] = timestamp.split('T');
+  if (timestamp) {
+    const [date, time] = timestamp.split('T');
 
-  const dateTime = getDateTime({ date, time });
+    const dateTime = getDateTime({ date, time });
 
-  return new Date(dateTime).toLocaleDateString(navigator.language);
+    return new Date(dateTime).toLocaleDateString(navigator.language);
+  }
+
+  return '';
 };
