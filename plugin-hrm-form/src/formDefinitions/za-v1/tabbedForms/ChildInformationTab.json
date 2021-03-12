@@ -1312,8 +1312,8 @@
     "label": "Child on the move or in migration",
     "type": "select",
     "options": [
-      { "value": "Voluntary" },
-      { "value": "Involuntary" }
+      { "value": "Voluntary", "label": "Voluntary" },
+      { "value": "Involuntary", "label": "Involuntary" }
     ]
   },
   {
@@ -1341,9 +1341,10 @@
     "label": "Region",
     "type": "select",
     "options": [
-      { "value": "", "label": "" },
-      { "value": "Rural", "label": "Rural" },
-      { "value": "Urban", "label": "Urban" }
+      { "value": "Unknown", "label": "" },
+      { "value": "Cities", "label": "Cities" },
+      { "value": "Rural areas", "label": "Rural areas" },
+      { "value": "Town & semi-dense areas", "label": "Town & semi-dense areas" }
     ]
   }
 ]
