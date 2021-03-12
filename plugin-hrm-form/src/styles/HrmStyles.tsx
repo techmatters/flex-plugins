@@ -2,6 +2,8 @@
 import React from 'react';
 import styled from 'react-emotion';
 import { ButtonBase, Input, Select, MenuItem, Tabs, Tab, withStyles, TableRow } from '@material-ui/core';
+import type { ButtonBaseProps } from '@material-ui/core/ButtonBase';
+import AssignmentInd from '@material-ui/icons/AssignmentInd';
 import { Button, Icon, getBackgroundWithHoverCSS } from '@twilio/flex-ui';
 
 export const BottomButtonBarHeight = 55;
@@ -508,6 +510,27 @@ export const PaginationRow = styled(TableRow)<PaginationRowProps>`
 `;
 PaginationRow.displayName = 'PaginationRow';
 
+const TaskButtonBase = withStyles({
+  root: {
+    '&:hover': {
+      backgroundColor: '#ECEDF1',
+    },
+    '&:hover > div': {
+      backgroundColor: '#ECEDF1',
+    },
+  },
+  disabled: {
+    opacity: 0.3,
+    color: '#192B33',
+    '& svg': {
+      color: '#192B33',
+    },
+    '& p': {
+      color: '#192B33',
+    },
+  },
+})(ButtonBase);
+
 export const AddTaskIconContainer = styled('div')`
   display: flex;
   flex: 0 0 44px;
@@ -541,27 +564,24 @@ export const AddTaskText = styled(FontOpenSans)`
 `;
 AddTaskText.displayName = 'AddTaskText';
 
-export const AddTaskButtonBase = withStyles({
-  root: {
-    '&:hover': {
-      backgroundColor: '#ECEDF1',
-    },
-    '&:hover > div': {
-      backgroundColor: '#ECEDF1',
-    },
-  },
-  disabled: {
-    opacity: 0.3,
-    color: '#192B33',
-    '& svg': {
-      color: '#192B33',
-    },
-    '& p': {
-      color: '#192B33',
-    },
-  },
-})(ButtonBase);
+export const AddTaskButtonBase = styled(TaskButtonBase)``;
 AddTaskButtonBase.displayName = 'AddTaskButtonBase';
+
+export const OfflineContactTaskIcon = withStyles({
+  root: {
+    display: 'flex',
+    flex: '0 0 auto',
+    margin: 'auto',
+    color: '#159AF8',
+  },
+})(AssignmentInd);
+OfflineContactTaskIcon.displayName = 'OfflineContactTaskIcon';
+
+// eslint-disable-next-line react/prop-types
+export const OfflineContactTaskButton: React.FC<{ selected: boolean } & ButtonBaseProps> = ({ selected, ...props }) => (
+  <TaskButtonBase style={{ border: selected ? '2px solid rgb(86, 166, 246)' : 'none' }} {...props} />
+);
+OfflineContactTaskButton.displayName = 'OfflineContactTaskButton';
 
 // eslint-disable-next-line import/no-unused-modules
 export const FormItem = styled('div')`
