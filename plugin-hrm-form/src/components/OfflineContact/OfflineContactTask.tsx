@@ -1,11 +1,9 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { Actions, Icon } from '@twilio/flex-ui';
-import { connect, ConnectedComponent, ConnectedProps } from 'react-redux';
+import { Actions } from '@twilio/flex-ui';
+import { connect, ConnectedProps } from 'react-redux';
 
-import { configurationBase, namespace, RootState, routingBase } from '../../states';
-import type { ContactFormDefinition } from '../../states/types';
-import * as GeneralActions from '../../states/actions';
+import { namespace, RootState, routingBase } from '../../states';
 import {
   AddTaskContent,
   AddTaskIconContainer,
@@ -18,9 +16,7 @@ type OwnProps = { selectedTaskSid: string };
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const OfflineContactTask: React.FC<Props> = ({ isAddingOfflineContact, selectedTaskSid, ...props }) => {
-  console.log('>>>>>>>>', props);
-
+const OfflineContactTask: React.FC<Props> = ({ isAddingOfflineContact, selectedTaskSid }) => {
   if (!isAddingOfflineContact) return null;
 
   const onClick = async () => {

@@ -1,7 +1,7 @@
 /* eslint-disable import/no-unused-modules */
 import { Actions, ITask, Manager } from '@twilio/flex-ui';
 
-import { getConfig } from '../HrmFormPlugin';
+import { getConfig, reRenderAgentDesktop } from '../HrmFormPlugin';
 import { TaskEntry as Contact } from '../states/contacts/reducer';
 import { Case, CustomITask, isOfflineContactTask, offlineContactTaskSid } from '../types/types';
 import { channelTypes } from '../states/DomainConstants';
@@ -33,6 +33,7 @@ export const removeOfflineContact = () => {
 
 export const completeContactlessTask = async (task: CustomITask) => {
   removeOfflineContact();
+  await reRenderAgentDesktop();
 };
 
 export const completeTask = (task: CustomITask) =>
