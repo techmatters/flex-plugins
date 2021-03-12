@@ -567,12 +567,20 @@ AddTaskText.displayName = 'AddTaskText';
 export const AddTaskButtonBase = styled(TaskButtonBase)``;
 AddTaskButtonBase.displayName = 'AddTaskButtonBase';
 
+export const OfflineContactTaskIconContainer = styled('div')`
+  display: flex;
+  flex: 0 0 44px;
+  height: 44px;
+  background-color: #159af8;
+`;
+OfflineContactTaskIconContainer.displayName = 'OfflineContactTaskIconContainer';
+
 export const OfflineContactTaskIcon = withStyles({
   root: {
     display: 'flex',
     flex: '0 0 auto',
     margin: 'auto',
-    color: '#159AF8',
+    color: '#ffffff',
   },
 })(AssignmentInd);
 OfflineContactTaskIcon.displayName = 'OfflineContactTaskIcon';

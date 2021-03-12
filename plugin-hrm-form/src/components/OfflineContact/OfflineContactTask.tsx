@@ -6,7 +6,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { namespace, RootState, routingBase } from '../../states';
 import {
   AddTaskContent,
-  AddTaskIconContainer,
+  OfflineContactTaskIconContainer,
   OfflineContactTaskIcon,
   OfflineContactTaskButton,
 } from '../../styles/HrmStyles';
@@ -27,9 +27,9 @@ const OfflineContactTask: React.FC<Props> = ({ isAddingOfflineContact, selectedT
 
   return (
     <OfflineContactTaskButton onClick={onClick} selected={selected}>
-      <AddTaskIconContainer>
+      <OfflineContactTaskIconContainer>
         <OfflineContactTaskIcon />
-      </AddTaskIconContainer>
+      </OfflineContactTaskIconContainer>
       <AddTaskContent>Offline Contact</AddTaskContent>
     </OfflineContactTaskButton>
   );
