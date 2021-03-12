@@ -29,18 +29,16 @@ export const getConfig = () => {
   const manager = Flex.Manager.getInstance();
 
   const hrmBaseUrl = `${manager.serviceConfiguration.attributes.hrm_base_url}/${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${manager.workerClient.accountSid}`;
-  const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
+  const serverlessBaseUrl = 'https://serverless-9971-dev.twil.io';
   const logoUrl = manager.serviceConfiguration.attributes.logo_url;
   const workerSid = manager.workerClient.sid;
   const { helpline, counselorLanguage, helplineLanguage } = manager.workerClient.attributes;
   const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
   const { identity, token } = manager.user;
   const counselorName = manager.workerClient.attributes.full_name;
-  const { configuredLanguage } = manager.serviceConfiguration.attributes;
+  const { configuredLanguage, definitionVersion, pdfImagesSource } = manager.serviceConfiguration.attributes;
   const featureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
-  const { definitionVersion } = manager.serviceConfiguration.attributes;
   const { strings } = manager;
-  const pdfImagesSource = 'https://tl-public-chat-za-staging.s3.amazonaws.com'; // will be moved to service configuration later on
 
   return {
     hrmBaseUrl,
