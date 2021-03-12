@@ -1,14 +1,17 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { Actions } from '@twilio/flex-ui';
+import { Actions, Template } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { namespace, RootState, routingBase } from '../../states';
+import { TLHPaddingLeft } from '../../styles/GlobalOverrides';
 import {
   AddTaskContent,
   OfflineContactTaskIconContainer,
   OfflineContactTaskIcon,
   OfflineContactTaskButton,
+  Box,
+  HeaderContainer,
 } from '../../styles/HrmStyles';
 
 type OwnProps = { selectedTaskSid: string };
@@ -26,12 +29,19 @@ const OfflineContactTask: React.FC<Props> = ({ isAddingOfflineContact, selectedT
   const selected = !selectedTaskSid && isAddingOfflineContact;
 
   return (
-    <OfflineContactTaskButton onClick={onClick} selected={selected}>
-      <OfflineContactTaskIconContainer>
-        <OfflineContactTaskIcon />
-      </OfflineContactTaskIconContainer>
-      <AddTaskContent>Offline Contact</AddTaskContent>
-    </OfflineContactTaskButton>
+    <>
+      <HeaderContainer>
+        <Box marginTop="12px" marginRight="5px" marginBottom="12px" marginLeft={TLHPaddingLeft}>
+          <Template code="OfflineContacts-Header" />
+        </Box>
+      </HeaderContainer>
+      <OfflineContactTaskButton onClick={onClick} selected={selected}>
+        <OfflineContactTaskIconContainer>
+          <OfflineContactTaskIcon />
+        </OfflineContactTaskIconContainer>
+        <AddTaskContent>Offline Contact</AddTaskContent>
+      </OfflineContactTaskButton>
+    </>
   );
 };
 
