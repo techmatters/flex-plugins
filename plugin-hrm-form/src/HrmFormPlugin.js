@@ -29,7 +29,7 @@ export const getConfig = () => {
   const manager = Flex.Manager.getInstance();
 
   const hrmBaseUrl = `${manager.serviceConfiguration.attributes.hrm_base_url}/${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${manager.workerClient.accountSid}`;
-  const serverlessBaseUrl = 'https://serverless-9971-dev.twil.io';
+  const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
   const logoUrl = manager.serviceConfiguration.attributes.logo_url;
   const workerSid = manager.workerClient.sid;
   const { helpline, counselorLanguage, helplineLanguage } = manager.workerClient.attributes;
