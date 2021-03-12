@@ -36,11 +36,9 @@ export const getConfig = () => {
   const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
   const { identity, token } = manager.user;
   const counselorName = manager.workerClient.attributes.full_name;
-  const { configuredLanguage } = manager.serviceConfiguration.attributes;
+  const { configuredLanguage, definitionVersion, pdfImagesSource } = manager.serviceConfiguration.attributes;
   const featureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
-  const { definitionVersion } = manager.serviceConfiguration.attributes;
   const { strings } = manager;
-  const pdfImagesSource = 'https://tl-public-chat-za-staging.s3.amazonaws.com'; // will be moved to service configuration later on
 
   return {
     hrmBaseUrl,
