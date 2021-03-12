@@ -202,6 +202,7 @@ export async function saveToHrm(task, form, workerSid, helpline, uniqueIdentifie
   const body = {
     form: formToSend,
     twilioWorkerId,
+    createdBy: workerSid,
     queueName: task.queueName,
     channel: task.channelType,
     number,
