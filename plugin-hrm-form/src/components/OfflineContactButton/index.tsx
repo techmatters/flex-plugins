@@ -29,13 +29,7 @@ const OfflineContactButton: React.FC<Props> = ({
 
   const disabled = !selectedTaskSid && isAddingOfflineContact;
 
-  return (
-    <AddTaskButton
-      onClick={onClick}
-      disabled={disabled}
-      label={isAddingOfflineContact ? 'ResumeContactButtonText' : 'OfflineContactButtonText'}
-    />
-  );
+  return <AddTaskButton onClick={onClick} disabled={disabled} label="OfflineContactButtonText" />;
 };
 
 OfflineContactButton.displayName = 'OfflineContactButton';
