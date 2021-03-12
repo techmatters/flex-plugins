@@ -15,8 +15,7 @@ type OwnProps = {};
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const OfflineContactButton: React.FC<Props> = ({
-  selectedTaskSid,
+const AddOfflineContactButton: React.FC<Props> = ({
   isAddingOfflineContact,
   currentDefinitionVersion,
   recreateContactState,
@@ -27,26 +26,16 @@ const OfflineContactButton: React.FC<Props> = ({
     await reRenderAgentDesktop();
   };
 
-  const disabled = !selectedTaskSid && isAddingOfflineContact;
-
-  return (
-    <AddTaskButton
-      onClick={onClick}
-      disabled={disabled}
-      label={isAddingOfflineContact ? 'ResumeContactButtonText' : 'OfflineContactButtonText'}
-    />
-  );
+  return <AddTaskButton onClick={onClick} disabled={isAddingOfflineContact} label="OfflineContactButtonText" />;
 };
 
-OfflineContactButton.displayName = 'OfflineContactButton';
+AddOfflineContactButton.displayName = 'AddOfflineContactButton';
 
 const mapStateToProps = (state: RootState) => {
   const { currentDefinitionVersion } = state[namespace][configurationBase];
   const { isAddingOfflineContact } = state[namespace][routingBase];
-  const { selectedTaskSid } = state.flex.view;
 
   return {
-    selectedTaskSid,
     isAddingOfflineContact,
     currentDefinitionVersion,
   };
@@ -58,4 +47,4 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
-export default connector(OfflineContactButton);
+export default connector(AddOfflineContactButton);
