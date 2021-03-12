@@ -1312,6 +1312,7 @@
     "label": "Child on the move or in migration",
     "type": "select",
     "options": [
+      { "value": "Unknown", "label": "" },
       { "value": "Voluntary", "label": "Voluntary" },
       { "value": "Involuntary", "label": "Involuntary" }
     ]
