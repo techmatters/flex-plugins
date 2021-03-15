@@ -585,6 +585,30 @@ export const OfflineContactTaskIcon = withStyles({
 })(AssignmentInd);
 OfflineContactTaskIcon.displayName = 'OfflineContactTaskIcon';
 
+export const OfflineContactTaskContent = styled('div')`
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  overflow: hidden;
+  padding-right: auto;
+  padding-left: 12px;
+`;
+OfflineContactTaskContent.displayName = 'OfflineContactTaskContent';
+
+export const OfflineContactTaskFirstLine = styled(FontOpenSans)`
+  font-size: 12px;
+  font-weight: 700;
+  color: rgb(34, 34, 34);
+`;
+OfflineContactTaskFirstLine.displayName = 'OfflineContactTaskFirstLine';
+
+export const OfflineContactTaskSecondLine = styled(FontOpenSans)`
+  font-size: 10px;
+  font-weight: 400;
+  color: rgb(34, 34, 34);
+`;
+OfflineContactTaskSecondLine.displayName = 'OfflineContactTaskSecondLine';
+
 // eslint-disable-next-line react/prop-types
 export const OfflineContactTaskButton: React.FC<{ selected: boolean } & ButtonBaseProps> = ({ selected, ...props }) => (
   <TaskButtonBase style={{ border: selected ? '2px solid rgb(86, 166, 246)' : 'none' }} {...props} />

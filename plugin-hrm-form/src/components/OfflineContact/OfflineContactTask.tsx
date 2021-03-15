@@ -3,10 +3,13 @@ import React from 'react';
 import { Actions, Template } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { namespace, RootState, routingBase } from '../../states';
+import { namespace, RootState, routingBase, contactFormsBase } from '../../states';
+import { offlineContactTaskSid } from '../../types/types';
 import { TLHPaddingLeft } from '../../styles/GlobalOverrides';
 import {
-  AddTaskContent,
+  OfflineContactTaskContent,
+  OfflineContactTaskFirstLine,
+  OfflineContactTaskSecondLine,
   OfflineContactTaskIconContainer,
   OfflineContactTaskIcon,
   OfflineContactTaskButton,
@@ -19,7 +22,7 @@ type OwnProps = { selectedTaskSid: string };
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const OfflineContactTask: React.FC<Props> = ({ isAddingOfflineContact, selectedTaskSid }) => {
+const OfflineContactTask: React.FC<Props> = ({ isAddingOfflineContact, selectedTaskSid, offlineContactTask }) => {
   if (!isAddingOfflineContact) return null;
 
   const onClick = async () => {
@@ -27,6 +30,10 @@ const OfflineContactTask: React.FC<Props> = ({ isAddingOfflineContact, selectedT
   };
 
   const selected = !selectedTaskSid && isAddingOfflineContact;
+  const name =
+    offlineContactTask &&
+    `${offlineContactTask.childInformation.firstName} ${offlineContactTask.childInformation.lastName}`;
+  const formattedName = name && name.trim() !== '' ? name : <Template code="Annonymous" />;
 
   return (
     <>
@@ -39,7 +46,10 @@ const OfflineContactTask: React.FC<Props> = ({ isAddingOfflineContact, selectedT
         <OfflineContactTaskIconContainer>
           <OfflineContactTaskIcon />
         </OfflineContactTaskIconContainer>
-        <AddTaskContent>Offline Contact</AddTaskContent>
+        <OfflineContactTaskContent>
+          <OfflineContactTaskFirstLine>{formattedName}</OfflineContactTaskFirstLine>
+          <OfflineContactTaskSecondLine>In Progress</OfflineContactTaskSecondLine>
+        </OfflineContactTaskContent>
       </OfflineContactTaskButton>
     </>
   );
@@ -49,6 +59,7 @@ OfflineContactTask.displayName = 'OfflineContactTask';
 
 const mapStateToProps = (state: RootState) => ({
   isAddingOfflineContact: state[namespace][routingBase].isAddingOfflineContact,
+  offlineContactTask: state[namespace][contactFormsBase].tasks[offlineContactTaskSid],
 });
 
 const mapDispatchToProps = {};
