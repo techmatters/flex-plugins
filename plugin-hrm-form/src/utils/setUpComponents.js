@@ -130,6 +130,9 @@ const setUpManualPulling = () => {
   });
 };
 
+const isIncomingOfflineContact = task =>
+  task.channelType === 'default' && task.attributes && task.attributes.transferTargetType === 'worker';
+
 const setUpOfflineContact = () => {
   const manager = Flex.Manager.getInstance();
 
@@ -138,6 +141,10 @@ const setUpOfflineContact = () => {
   Flex.TaskList.Content.add(<OfflineContactTask key="offline-contact-task" />, {
     sortOrder: 100,
     align: 'start',
+  });
+
+  Flex.TaskListItem.Content.replace(<div key="Empty-Replacement-For-IncomingOfflineContact" />, {
+    if: props => isIncomingOfflineContact(props.task),
   });
 
   // This is causing some bad scenarios, cause AgentDesktopView.Panel1 not re-rendering. Current solution: a) force a "change view". Other options: b) allways remove the no tasks view c) replace it with our own view that is connected to the store and conditionally appears when appropiate
