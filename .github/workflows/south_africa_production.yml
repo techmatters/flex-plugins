@@ -25,6 +25,29 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '12.x'
+      # Setup credentials to access AWS for parameters
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+      # Get AWS parameters
+      - name: Set Datadog Application ID
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "PROD_DATADOG_ZA_APP_ID"
+          env_variable_name: "PROD_DATADOG_ZA_APP_ID"
+      - name: Set Datadog Client Access token
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "PROD_DATADOG_ZA_ACCESS_TOKEN"
+          env_variable_name: "PROD_DATADOG_ZA_ACCESS_TOKEN"
+      - name: Set Rollbar Client Access token
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "ROLLBAR_ACCESS_TOKEN"
+          env_variable_name: "ROLLBAR_ACCESS_TOKEN"           
       # Create temporal files for the release
       - name: Create appConfig.js
         run: cp ./public/appConfig.example.js ./public/appConfig.js
@@ -43,8 +66,9 @@ jobs:
       - name: Fill secret.js
         run: |
           cat <<EOT >> ./src/private/secret.js
-          export const rollbarAccessToken = '${{ secrets.ROLLBAR_ACCESS_TOKEN }}';
-          export const datadogAccessToken = '${{ secrets.DATADOG_ACCESS_TOKEN }}';
+          export const rollbarAccessToken = '$ROLLBAR_ACCESS_TOKEN';
+          export const datadogAccessToken = '$PROD_DATADOG_ZA_ACCESS_TOKEN';
+          export const datadogApplicationID = '$PROD_DATADOG_ZA_APP_ID';
           EOT
         working-directory: ./plugin-hrm-form
       # Runs a single command using the runners shell  
