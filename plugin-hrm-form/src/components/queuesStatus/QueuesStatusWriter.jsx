@@ -7,6 +7,7 @@ import { omit } from 'lodash';
 import { queuesStatusUpdate, queuesStatusFailure } from '../../states/queuesStatus/actions';
 import * as h from './helpers';
 import { namespace, queuesStatusBase } from '../../states';
+import { listWorkerQueues } from '../../services/ServerlessService';
 
 export class InnerQueuesStatusWriter extends React.Component {
   static displayName = 'QueuesStatusWriter';
@@ -15,7 +16,7 @@ export class InnerQueuesStatusWriter extends React.Component {
     insightsClient: PropTypes.shape({
       liveQuery: PropTypes.func,
     }).isRequired,
-    helpline: PropTypes.string,
+    workerSid: PropTypes.string.isRequired,
     queuesStatusState: PropTypes.shape({
       queuesStatus: PropTypes.shape({}),
       error: PropTypes.string,
@@ -23,10 +24,6 @@ export class InnerQueuesStatusWriter extends React.Component {
     }).isRequired,
     queuesStatusUpdate: PropTypes.func.isRequired,
     queuesStatusFailure: PropTypes.func.isRequired,
-  };
-
-  static defaultProps = {
-    helpline: undefined,
   };
 
   constructor(props) {
@@ -40,14 +37,15 @@ export class InnerQueuesStatusWriter extends React.Component {
   };
 
   async componentDidMount() {
-    const { helpline } = this.props;
+    const { workerSid } = this.props;
     try {
       const q = await this.props.insightsClient.liveQuery('tr-queue', '');
       const queues = this.getQueuesNames(q.getItems());
       q.close();
 
       // builds the array of queues the counselor cares about (for now will always be one)
-      const counselorQueues = helpline && queues.includes(helpline) ? [helpline] : ['Admin'];
+      const { workerQueues } = await listWorkerQueues({ workerSid });
+      const counselorQueues = workerQueues.map(e => e.friendlyName).filter(s => s !== 'Everyone');
 
       const cleanQueuesStatus = h.initializeQueuesStatus(counselorQueues);
 

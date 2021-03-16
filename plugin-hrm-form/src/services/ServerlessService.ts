@@ -105,6 +105,17 @@ export const sendSystemMessage = async (body: { taskSid: ITask['taskSid']; messa
 };
 
 /**
+ * Returns the task queues list for a given worker.
+ */
+export const listWorkerQueues = async (body: {
+  workerSid: string;
+}): Promise<{ workerQueues: { friendlyName: string }[] }> => {
+  const response = await fetchProtectedApi('/listWorkerQueues', body);
+
+  return response;
+};
+
+/**
  * Function that mimics the fetching of a version definition for all the forms used within the app.
  * Later on this will be fetched in async way.
  */
