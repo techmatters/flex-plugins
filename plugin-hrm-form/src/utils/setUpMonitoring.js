@@ -3,11 +3,11 @@ import Rollbar from 'rollbar';
 import { datadogRum } from '@datadog/browser-rum';
 
 import { PLUGIN_VERSION } from '../HrmFormPlugin';
-import { rollbarAccessToken, datadogAccessToken } from '../private/secret';
+import { rollbarAccessToken, datadogAccessToken, datadogApplicationID } from '../private/secret';
 
 function setUpDatadogRum(workerClient, monitoringEnv) {
   datadogRum.init({
-    applicationId: 'a9a65b9e-69a4-438e-ae45-4c47e52fb0fa',
+    applicationId: datadogApplicationID,
     clientToken: datadogAccessToken,
     site: 'datadoghq.com',
     env: monitoringEnv,
