@@ -14,7 +14,8 @@ type OwnProps = {
   followUpDate: string;
   childIsAtRisk: boolean;
   counselor: string;
-  caseManager: {
+  caseManager?: {
+    office: string;
     name: string;
     phone: string;
     email: string;
@@ -82,9 +83,9 @@ const CasePrintDetails: React.FC<Props> = ({
           </View>
           <View style={{ marginTop: 15, ...styles.flexColumn }}>
             <Text>{strings['Case-CaseManager']}</Text>
-            <Text style={styles.caseDetailsBoldText}>{caseManager.name}</Text>
-            <Text style={styles.caseDetailsBoldText}>{caseManager.phone}</Text>
-            <Text style={styles.caseDetailsBoldText}>{caseManager.email}</Text>
+            <Text style={styles.caseDetailsBoldText}>{caseManager?.name}</Text>
+            <Text style={styles.caseDetailsBoldText}>{caseManager?.phone}</Text>
+            <Text style={styles.caseDetailsBoldText}>{caseManager?.email}</Text>
           </View>
         </View>
         <View>

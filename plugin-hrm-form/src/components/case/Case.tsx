@@ -357,6 +357,7 @@ const Case: React.FC<Props> = props => {
   const notes = timeline.filter(x => x.type === 'note');
   const summary = info?.summary;
   const definitionVersion = props.definitionVersions[version];
+  const office = connectedCase.helpline; // Office name is being stored in the helpline
 
   const addScreenProps = {
     task: props.task,
@@ -383,7 +384,7 @@ const Case: React.FC<Props> = props => {
     notes,
     summary,
     childIsAtRisk,
-    officeName: 'Gautang', // ToDo: add the office here.
+    office,
     version,
     contact: firstConnectedContact,
   };
@@ -433,6 +434,7 @@ const Case: React.FC<Props> = props => {
                 lastUpdatedDate={lastUpdatedDate}
                 followUpDate={followUpDate}
                 childIsAtRisk={childIsAtRisk}
+                office={office}
                 handlePrintCase={onPrintCase}
                 handleInfoChange={onInfoChange}
                 handleStatusChange={onStatusChange}

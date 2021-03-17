@@ -143,7 +143,7 @@ export type CaseDetails = {
   notes: NoteActivity[];
   summary: string;
   childIsAtRisk: boolean;
-  officeName: string;
+  office?: string;
   version?: string;
   contact: any; // ToDo: change this
 };
