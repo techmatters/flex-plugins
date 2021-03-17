@@ -1,6 +1,9 @@
 import { truncate } from 'lodash';
 import { format } from 'date-fns';
 
+import { getConfig } from '../HrmFormPlugin';
+import { FormItemDefinition } from '../components/common/forms/types';
+
 /**
  * @param {string} name
  */
@@ -81,17 +84,20 @@ export const formatStringToDateAndTime = (dateTime: string): string => {
 };
 
 /**
- * Formats a input value to string
- * @param value input value to format
+ * Formats a form value into a readable string.
+ * @param value Value to format
  */
-export const formatInputValue = (value: string): string => {
-  return value ? value : '-';
-};
+export const presentValue = (value: string | number | boolean) => (definition: FormItemDefinition = null) => {
+  const { strings } = getConfig();
 
-/**
- * Formats a checkbox value to a Yes/No string
- * @param value checkbox value to format
- */
-export const formatCheckboxValue = (value: boolean): 'Yes' | 'No' => {
-  return value ? 'Yes' : 'No';
+  // eslint-disable-next-line dot-notation
+  if (definition && definition.type === 'mixed-checkbox' && value === null) return strings['Unknown'];
+  if (typeof value === 'string' && value.trim()) return value;
+  if (typeof value === 'number') return value.toString();
+  if (typeof value === 'boolean') {
+    if (value) return strings['SectionEntry-Yes'];
+    return strings['SectionEntry-No'];
+  }
+
+  return '-';
 };

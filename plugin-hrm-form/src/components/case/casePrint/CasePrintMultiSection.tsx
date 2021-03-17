@@ -4,11 +4,12 @@ import { View } from '@react-pdf/renderer';
 
 import CasePrintSection from './CasePrintSection';
 import { FormDefinition } from '../../common/forms/types';
+import { HouseholdEntry, PerpetratorEntry, IncidentEntry, ReferralEntry } from '../../../types/types';
 
 type OwnProps = {
   sectionName: string;
   sectionKey: 'household' | 'perpetrator' | 'incident' | 'referral';
-  values: any; // ToDO: imptove this type
+  values: (HouseholdEntry | PerpetratorEntry | IncidentEntry | ReferralEntry)[];
   definitions: FormDefinition;
 };
 
@@ -23,7 +24,7 @@ const CasePrintMultiSection: React.FC<Props> = ({ sectionName, sectionKey, value
           const customSectionName = `${sectionName} ${i + 1} of ${values.length}`;
           return (
             <CasePrintSection
-              key={value.key}
+              key={`${sectionName}_${i}`}
               sectionName={customSectionName}
               values={sectionKey === 'referral' ? value : value[sectionKey]}
               definitions={definitions}

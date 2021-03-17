@@ -5,7 +5,7 @@ import { Text, View } from '@react-pdf/renderer';
 import styles from './styles';
 import { FormDefinition } from '../../common/forms/types';
 import { unNestInformation } from '../../../services/ContactService';
-import { formatCheckboxValue, formatInputValue } from '../../../utils';
+import { presentValue } from '../../../utils';
 
 type OwnProps = {
   sectionName: string;
@@ -28,9 +28,7 @@ const CasePrintSection: React.FC<Props> = ({ sectionName, values, definitions, u
             <View key={i} style={i % 2 === 0 ? styles.sectionItemRowOdd : styles.sectionItemRowEven}>
               <Text style={styles.sectionItemFirstColumn}>{def.label}</Text>
               <Text style={styles.sectionItemSecondColumn}>
-                {def.type === 'checkbox'
-                  ? formatCheckboxValue(values[def.name])
-                  : formatInputValue(unNestInfo ? unNestInformation(def, values) : values[def.name])}
+                {presentValue(unNestInfo ? unNestInformation(def, values) : values[def.name])(def)}
               </Text>
             </View>
           );

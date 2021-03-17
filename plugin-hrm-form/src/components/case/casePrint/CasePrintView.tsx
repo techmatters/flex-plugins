@@ -22,6 +22,7 @@ import { caseManager, officeName } from './mockedData';
 import { getImageAsString, ImageSource } from './helpers';
 import { DefinitionVersion, FormDefinition } from '../../common/forms/types';
 import callTypes from '../../../states/DomainConstants';
+import { ContactRawJson } from '../../../types/types';
 
 type OwnProps = {
   onClickClose: () => void;
@@ -46,7 +47,7 @@ const extraFieldDefinitions = (strings: Strings<string>): FormDefinition => {
   ];
 };
 
-const addExtraValues = (caseInformation: any) => {
+const addExtraValues = (caseInformation: ContactRawJson['caseInformation']) => {
   return {
     keepConfidential: Boolean(caseInformation?.keepConfidential),
     okForCaseWorkerToCall: Boolean(caseInformation?.okForCaseWorkerToCall),
@@ -182,7 +183,7 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
                   counselor={caseDetails.caseCounselor}
                 /> */}
                 <CasePrintMultiSection
-                  sectionName={strings['SectionName-HouseholdMembers']}
+                  sectionName={strings['SectionName-HouseholdMember']}
                   sectionKey="household"
                   definitions={definitionVersion.caseForms.HouseholdForm}
                   values={caseDetails.households}

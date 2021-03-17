@@ -8,7 +8,7 @@ import { Text, View } from '@react-pdf/renderer';
 import styles from './styles';
 import { getConfig } from '../../../HrmFormPlugin';
 import { mapChannel, mapChannelForInsights } from '../../../utils';
-import { formatInputValue, formatCheckboxValue, formatStringToDateAndTime } from '../../../utils/formatters';
+import { presentValue, formatStringToDateAndTime } from '../../../utils/formatters';
 
 type OwnProps = {
   sectionName: string;
@@ -34,7 +34,7 @@ const CasePrintContact: React.FC<Props> = ({ sectionName, contact, counselor }) 
       <View style={styles.sectionBody}>
         <View style={styles.sectionItemRowOdd}>
           <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-ContactSummary']}</Text>
-          <Text style={styles.sectionItemSecondColumn}>{formatInputValue(rawJson.caseInformation?.callSummary)}</Text>
+          <Text style={styles.sectionItemSecondColumn}>{presentValue(rawJson.caseInformation?.callSummary)}</Text>
         </View>
         <View style={styles.sectionItemRowEven}>
           <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-Channel']}</Text>
@@ -42,15 +42,15 @@ const CasePrintContact: React.FC<Props> = ({ sectionName, contact, counselor }) 
         </View>
         <View style={styles.sectionItemRowOdd}>
           <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-PhoneNumber']}</Text>
-          <Text style={styles.sectionItemSecondColumn}>{formatInputValue(number)}</Text>
+          <Text style={styles.sectionItemSecondColumn}>{presentValue(number)}</Text>
         </View>
         <View style={styles.sectionItemRowEven}>
           <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-Conversation']}</Text>
-          <Text style={styles.sectionItemSecondColumn}>{formatInputValue(conversationDuration)}</Text>
+          <Text style={styles.sectionItemSecondColumn}>{presentValue(conversationDuration)}</Text>
         </View>
         <View style={styles.sectionItemRowOdd}>
           <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-Counselor']}</Text>
-          <Text style={styles.sectionItemSecondColumn}>{formatInputValue(counselor)}</Text>
+          <Text style={styles.sectionItemSecondColumn}>{presentValue(counselor)}</Text>
         </View>
         <View style={styles.sectionItemRowEven}>
           <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-DateTime']}</Text>
@@ -58,47 +58,44 @@ const CasePrintContact: React.FC<Props> = ({ sectionName, contact, counselor }) 
         </View>
         <View style={styles.sectionItemRowOdd}>
           <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-RepeatCaller']}</Text>
-          <Text style={styles.sectionItemSecondColumn}>{formatInputValue(rawJson.caseInformation?.repeatCaller)} </Text>
+          <Text style={styles.sectionItemSecondColumn}>{presentValue(rawJson.caseInformation?.repeatCaller)} </Text>
         </View>
         <View style={styles.sectionItemRowEven}>
           <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-ReferredTo']}</Text>
-          <Text style={styles.sectionItemSecondColumn}>{formatInputValue(rawJson.caseInformation?.referredTo)}</Text>
+          <Text style={styles.sectionItemSecondColumn}>{presentValue(rawJson.caseInformation?.referredTo)}</Text>
         </View>
         <View style={styles.sectionItemRowOdd}>
           <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-ChildHearAboutUs']}</Text>
           <Text style={styles.sectionItemSecondColumn}>
-            {formatInputValue(rawJson.caseInfomation?.howDidTheChildHearAboutUs)}
+            {presentValue(rawJson.caseInfomation?.howDidTheChildHearAboutUs)}
           </Text>
         </View>
         <View style={styles.sectionItemRowEven}>
           <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-KeepConfidential']}</Text>
-          <Text style={styles.sectionItemSecondColumn}>
-            {' '}
-            {formatCheckboxValue(rawJson.caseInfomation?.keepConfidential)}
-          </Text>
+          <Text style={styles.sectionItemSecondColumn}> {presentValue(rawJson.caseInfomation?.keepConfidential)}</Text>
         </View>
         <View style={styles.sectionItemRowOdd}>
           <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-OKToCall']}</Text>
           <Text style={styles.sectionItemSecondColumn}>
-            {formatCheckboxValue(rawJson.caseInfomation?.okForCaseWorkerToCall)}
+            {presentValue(rawJson.caseInfomation?.okForCaseWorkerToCall)}
           </Text>
         </View>
         <View style={styles.sectionItemRowEven}>
           <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-DiscussRights']}</Text>
           <Text style={styles.sectionItemSecondColumn}>
-            {formatCheckboxValue(rawJson.caseInfomation?.didYouDiscussRightsWithTheChild)}
+            {presentValue(rawJson.caseInfomation?.didYouDiscussRightsWithTheChild)}
           </Text>
         </View>
         <View style={styles.sectionItemRowOdd}>
           <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-SolvedProblem']}</Text>
           <Text style={styles.sectionItemSecondColumn}>
-            {formatCheckboxValue(rawJson.caseInfomation?.didTheChildFeelWeSolvedTheirProblem)}
+            {presentValue(rawJson.caseInfomation?.didTheChildFeelWeSolvedTheirProblem)}
           </Text>
         </View>
         <View style={styles.sectionItemRowEven}>
           <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-WouldRecommend']}</Text>
           <Text style={styles.sectionItemSecondColumn}>
-            {formatCheckboxValue(rawJson.caseInfomation?.wouldTheChildRecommendUsToAFriend)}
+            {presentValue(rawJson.caseInfomation?.wouldTheChildRecommendUsToAFriend)}
           </Text>
         </View>
       </View>

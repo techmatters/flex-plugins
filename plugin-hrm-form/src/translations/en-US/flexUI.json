@@ -247,7 +247,7 @@
   "SectionName-CallerInformation": "Caller Information",
   "SectionName-ChildInformation": "Child Information",
   "SectionName-Contact": "Contact",
-  "SectionName-HouseholdMembers": "Household Members",
+  "SectionName-HouseholdMember": "Household Member",
   "SectionName-Perpetrator": "Perpetrator",
   "SectionName-Incident": "Incident",
   "SectionName-Referral": "Referral",
@@ -264,6 +264,7 @@
   "RequiredFieldError": "This field is required.",
   "DateCantBeGreaterThanToday": "Date can't be greater than today.",
   "TimeCantBeGreaterThanNow": "Time can't be greater than now.",
+  "NoCaseSummary": "No case summary",
 
   "OfflineContactFirstLine": "Offline Contact",
   "OfflineContactSecondLine": "in progress",
