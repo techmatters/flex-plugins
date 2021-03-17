@@ -29,7 +29,7 @@ import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyl
 import { CaseContainer, CenteredContainer } from '../../styles/case';
 import CaseDetails from './CaseDetails';
 import { Menu, MenuItem } from '../menu';
-import { formatName } from '../../utils';
+import { getLocaleDateTime } from '../../utils/helpers';
 import * as SearchActions from '../../states/search/actions';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
@@ -343,19 +343,25 @@ const Case: React.FC<Props> = props => {
   const { workerSid } = getConfig(); // -- Gets the current counselor that is using the application.
   const caseCounselor = counselorsHash[twilioWorkerId];
   const currentCounselor = counselorsHash[workerSid];
-  const openedDate = new Date(createdAt).toLocaleDateString(navigator.language);
-  const lastUpdatedDate = new Date(updatedAt).toLocaleDateString(navigator.language);
+  const openedDate = getLocaleDateTime(createdAt);
+  const lastUpdatedDate = getLocaleDateTime(updatedAt);
+  // -- Date cannot be converted here since the date dropdown uses the yyyy-MM-dd format.
   const followUpDate = info && info.followUpDate ? info.followUpDate : '';
+  // -- Converting followUpDate to match the same format as the rest of the dates
+  const followUpPrintedDate = info && info.followUpDate ? getLocaleDateTime(info.followUpDate) : '';
   const households = info && info.households ? info.households : [];
   const perpetrators = info && info.perpetrators ? info.perpetrators : [];
   const incidents = info && info.incidents ? info.incidents : [];
   const childIsAtRisk = info && info.childIsAtRisk;
-
+  const referrals = props.connectedCaseReferrals;
+  const notes = timeline.filter(x => x.type === 'note');
+  const summary = info?.summary;
   const definitionVersion = props.definitionVersions[version];
 
   const addScreenProps = {
     task: props.task,
     counselor: currentCounselor,
+    counselorsHash,
     onClickClose: handleClose,
     definitionVersion,
   };
@@ -369,13 +375,17 @@ const Case: React.FC<Props> = props => {
     currentCounselor,
     openedDate,
     lastUpdatedDate,
-    followUpDate,
+    followUpDate: followUpPrintedDate,
     households,
     perpetrators,
     incidents,
+    referrals,
+    notes,
+    summary,
     childIsAtRisk,
     officeName: 'Gautang', // ToDo: add the office here.
-    definitionVersion: version,
+    version,
+    contact: firstConnectedContact,
   };
 
   switch (subroute) {
@@ -428,6 +438,7 @@ const Case: React.FC<Props> = props => {
                 handleStatusChange={onStatusChange}
                 handleClickChildIsAtRisk={onClickChildIsAtRisk}
                 definitionVersion={connectedCase.info.definitionVersion}
+                isOrphanedCase={!firstConnectedContact}
               />
             </Box>
             <Box marginLeft="25px" marginTop="25px">

@@ -29,6 +29,7 @@ type OwnProps = {
   status: CaseStatus;
   handlePrintCase: () => void;
   handleClickChildIsAtRisk: () => void;
+  isOrphanedCase: boolean;
 };
 
 const CaseDetailsHeader: React.FC<OwnProps> = ({
@@ -40,6 +41,7 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
   status,
   handlePrintCase,
   handleClickChildIsAtRisk,
+  isOrphanedCase,
 }) => {
   return (
     <DetailsHeaderContainer>
@@ -77,9 +79,11 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
           </ChildIsAtRiskWrapper>
         </FormLabel>
       </DetailsHeaderChildAtRiskContainer>
-      <div>
-        <StyledPrintButton onClick={handlePrintCase} aria-label="Print" icon={<PrintIcon />} />
-      </div>
+      {!isOrphanedCase && (
+        <div>
+          <StyledPrintButton onClick={handlePrintCase} aria-label="Print" icon={<PrintIcon />} />
+        </div>
+      )}
     </DetailsHeaderContainer>
   );
 };

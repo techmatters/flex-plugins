@@ -4,7 +4,6 @@ import { View, Text, Image } from '@react-pdf/renderer';
 
 import { getConfig } from '../../../HrmFormPlugin';
 import styles from './styles';
-import { contactSection } from './mockedData';
 
 type OwnProps = {
   id: number;
