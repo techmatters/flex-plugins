@@ -13,14 +13,12 @@ export async function createCase(task: CustomITask, contactForm: ContactForm) {
         helpline,
         status: 'open',
         twilioWorkerId: contactForm.contactlessTask.createdOnBehalfOf,
-        createdBy: workerSid,
         info: { definitionVersion, offlineContactCreator: workerSid },
       }
     : {
         helpline,
         status: 'open',
         twilioWorkerId: workerSid,
-        createdBy: workerSid,
         info: { definitionVersion },
       };
 
