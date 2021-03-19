@@ -81,20 +81,6 @@ export const adjustChatCapacity = async (adjustment: 'increase' | 'decrease'): P
   return response;
 };
 
-export const assignMeContactlessTask = async () => {
-  const { workerSid, helpline } = getConfig();
-
-  const body = {
-    targetSid: workerSid,
-    transferTargetType: 'worker',
-    helpline: helpline || '',
-  };
-
-  const response = await fetchProtectedApi('/createContactlessTask', body);
-
-  return response;
-};
-
 /**
  * Sends a new message to the channel bounded to the provided taskSid. Optionally you can change the "from" value (defaul is "system").
  */
@@ -117,3 +103,13 @@ export const getDefinitionVersionsList = async (missingDefinitionVersions: strin
       return { version, definition };
     }),
   );
+
+export const assignOfflineContact = async (targetSid: string, finalTaskAttributes: ITask['attributes']) => {
+  const body = {
+    targetSid,
+    finalTaskAttributes: JSON.stringify(finalTaskAttributes),
+  };
+
+  const response = await fetchProtectedApi('/assignOfflineContact', body);
+  return response;
+};

@@ -312,12 +312,18 @@ const getInsightsUpdateFunctionsForConfig = (
  * Note: config parameter tells where to go to get helpline-specific tests.  It should
  * eventually match up with getConfig().  Also useful for testing.
  */
-export async function saveInsightsData(twilioTask: ITask, contactForm: TaskEntry, caseForm: Case) {
+export const buildInsightsData = (previousAttributes: ITask['attributes'], contactForm: TaskEntry, caseForm: Case) => {
   const { currentDefinitionVersion } = getDefinitionVersions();
 
-  const previousAttributes: TaskAttributes = twilioTask.attributes;
+  // eslint-disable-next-line sonarjs/prefer-immediate-return
   const finalAttributes: TaskAttributes = getInsightsUpdateFunctionsForConfig(currentDefinitionVersion.insights)
-    .map((f: any) => f(twilioTask.attributes, contactForm, caseForm))
+    .map((f: any) => f(previousAttributes, contactForm, caseForm))
     .reduce((acc: TaskAttributes, curr: InsightsAttributes) => mergeAttributes(acc, curr), previousAttributes);
+
+  return finalAttributes;
+};
+
+export async function saveInsightsData(twilioTask: ITask, contactForm: TaskEntry, caseForm: Case) {
+  const finalAttributes = buildInsightsData(twilioTask.attributes, contactForm, caseForm);
   await twilioTask.setAttributes(finalAttributes);
 }

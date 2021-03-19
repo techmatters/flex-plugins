@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import CheckIcon from '@material-ui/icons/Check';
 import { Button, Popover } from '@material-ui/core';
-import { withTaskContext, Template } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 
 import { Row } from '../../styles/HrmStyles';
 import { ConfirmContainer, ConfirmText, CancelButton } from '../../styles/search';
@@ -86,4 +86,4 @@ ConnectDialog.defaultProps = {
   task: {},
 };
 
-export default withTaskContext(ConnectDialog);
+export default ConnectDialog;

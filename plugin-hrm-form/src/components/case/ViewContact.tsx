@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { connect } from 'react-redux';
-import { Template, ITask } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 
 import { Container, StyledNextStepButton, BottomButtonBar } from '../../styles/HrmStyles';
 import { CaseLayout } from '../../styles/case';
@@ -13,6 +13,7 @@ import ActionHeader from './ActionHeader';
 import { adaptFormToContactDetails, adaptContactToDetailsScreen } from './ContactDetailsAdapter';
 import { CaseState } from '../../states/case/reducer';
 import { StandaloneITask } from '../StandaloneSearch';
+import type { CustomITask } from '../../types/types';
 
 const mapStateToProps = (state, ownProps: OwnProps) => {
   const form = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
@@ -31,7 +32,7 @@ const mapDispatchToProps = {
 };
 
 type OwnProps = {
-  task: ITask | StandaloneITask;
+  task: CustomITask | StandaloneITask;
   onClickClose: () => void;
 };
 

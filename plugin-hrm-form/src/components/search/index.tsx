@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
-import { ITask, withTaskContext, Template } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 
 import { standaloneTaskSid } from '../StandaloneSearch';
 import SearchForm from './SearchForm';
@@ -13,7 +13,7 @@ import SearchResults, { CONTACTS_PER_PAGE, CASES_PER_PAGE } from './SearchResult
 import ContactDetails from './ContactDetails';
 import Case from '../case';
 import { SearchPages } from '../../states/search/types';
-import { SearchContact } from '../../types/types';
+import { CustomITask, SearchContact } from '../../types/types';
 import SearchResultsBackButton from './SearchResults/SearchResultsBackButton';
 import {
   handleSearchFormChange,
@@ -23,11 +23,11 @@ import {
   searchCases,
   handleExpandDetailsSection,
 } from '../../states/search/actions';
-import { namespace, searchContactsBase, configurationBase, routingBase } from '../../states';
+import { namespace, searchContactsBase, configurationBase, routingBase, RootState } from '../../states';
 import { Flex } from '../../styles/HrmStyles';
 
 type OwnProps = {
-  task: ITask;
+  task: CustomITask;
   currentIsCaller?: boolean;
   handleSelectSearchResult?: (contact: SearchContact) => void;
 };
@@ -139,6 +139,7 @@ const Search: React.FC<Props> = props => {
       case SearchPages.details:
         return (
           <ContactDetails
+            task={props.task}
             showActionIcons={props.showActionIcons}
             currentIsCaller={props.currentIsCaller}
             contact={currentContact}
@@ -189,7 +190,7 @@ Search.defaultProps = {
   error: null,
 };
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const searchContactsState = state[namespace][searchContactsBase];
   const taskId = ownProps.task.taskSid;
   const taskSearchState = searchContactsState.tasks[taskId];
@@ -225,4 +226,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default withTaskContext(connect(mapStateToProps, mapDispatchToProps)(Search));
+export default connect(mapStateToProps, mapDispatchToProps)(Search);

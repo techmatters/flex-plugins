@@ -1,9 +1,7 @@
 /* eslint-disable react/no-multi-comp */
 /* eslint-disable sonarjs/cognitive-complexity */
-/* eslint-disable no-duplicate-imports */
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { Actions, ITask, withTaskContext } from '@twilio/flex-ui';
 import SearchIcon from '@material-ui/icons/Search';
 import { useForm, FormProvider } from 'react-hook-form';
 import { connect, ConnectedProps } from 'react-redux';
@@ -13,11 +11,11 @@ import Case from '../case';
 import { namespace, contactFormsBase, routingBase, RootState, configurationBase } from '../../states';
 import { updateCallType, updateForm } from '../../states/contacts/actions';
 import { searchResultToContactForm } from '../../services/ContactService';
+import { removeOfflineContact } from '../../services/formSubmissionHelpers';
 import { changeRoute } from '../../states/routing/actions';
 import type { TaskEntry } from '../../states/contacts/reducer';
-import type { TabbedFormSubroutes } from '../../states/routing/types';
-import { NewCaseSubroutes } from '../../states/routing/types';
-import type { SearchContact } from '../../types/types';
+import { TabbedFormSubroutes, NewCaseSubroutes } from '../../states/routing/types';
+import { CustomITask, isOfflineContactTask, SearchContact } from '../../types/types';
 import { TabbedFormsContainer, TopNav, TransparentButton, StyledTabs } from '../../styles/HrmStyles';
 import FormTab from '../common/forms/FormTab';
 import callTypes from '../../states/DomainConstants';
@@ -28,6 +26,7 @@ import ContactlessTaskTab from './ContactlessTaskTab';
 import BottomBar from './BottomBar';
 import { hasTaskControl } from '../../utils/transfer';
 import { isNonDataCallType } from '../../states/ValidationRules';
+import { reRenderAgentDesktop } from '../../HrmFormPlugin';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -49,10 +48,10 @@ const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
   }
 };
 
-const mapTabsToIndex = (task: ITask, contactForm: TaskEntry): TabbedFormSubroutes[] => {
+const mapTabsToIndex = (task: CustomITask, contactForm: TaskEntry): TabbedFormSubroutes[] => {
   const isCallerType = contactForm.callType === callTypes.caller;
 
-  if (task.attributes.isContactlessTask) {
+  if (isOfflineContactTask(task)) {
     if (isNonDataCallType(contactForm.callType)) return ['contactlessTask'];
 
     return isCallerType
@@ -66,8 +65,7 @@ const mapTabsToIndex = (task: ITask, contactForm: TaskEntry): TabbedFormSubroute
 };
 
 type OwnProps = {
-  task: ITask;
-  handleCompleteTask: any;
+  task: CustomITask;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -138,26 +136,13 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, currentD
   }
 
   const optionalButtons =
-    task.attributes.isContactlessTask && subroute === 'contactlessTask'
+    isOfflineContactTask(task) && subroute === 'contactlessTask'
       ? [
           {
             label: 'CancelOfflineContact',
             onClick: async () => {
-              const { attributes } = task;
-              /*
-               * Don't record insights for this task,
-               * but null out the Task ID so the Insights record is clean.
-               */
-              const newAttributes = {
-                ...attributes,
-                skipInsights: true,
-                conversations: {
-                  /* eslint-disable-next-line camelcase */
-                  conversation_attribute_5: null,
-                },
-              };
-              await task.setAttributes(newAttributes);
-              Actions.invokeAction('CompleteTask', { task });
+              removeOfflineContact();
+              await reRenderAgentDesktop();
             },
           },
         ]
@@ -176,17 +161,19 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, currentD
             {tabs}
           </StyledTabs>
           {subroute === 'search' ? (
-            <Search currentIsCaller={isCallerType} handleSelectSearchResult={onSelectSearchResult} />
+            <Search task={task} currentIsCaller={isCallerType} handleSelectSearchResult={onSelectSearchResult} />
           ) : (
             <div style={{ height: '100%', overflow: 'hidden' }}>
-              {task.attributes.isContactlessTask && (
+              {isOfflineContactTask(task) && (
                 <ContactlessTaskTab
+                  task={task}
                   display={subroute === 'contactlessTask'}
                   initialValues={contactForm.contactlessTask}
                 />
               )}
               {isCallerType && (
                 <TabbedFormTab
+                  task={task}
                   tabPath="callerInformation"
                   definition={currentDefinitionVersion.tabbedForms.CallerInformationTab}
                   layoutDefinition={currentDefinitionVersion.layoutVersion.contact.callerInformation}
@@ -197,6 +184,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, currentD
               {isDataCallType && (
                 <>
                   <TabbedFormTab
+                    task={task}
                     tabPath="childInformation"
                     definition={currentDefinitionVersion.tabbedForms.ChildInformationTab}
                     layoutDefinition={currentDefinitionVersion.layoutVersion.contact.childInformation}
@@ -204,11 +192,13 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, currentD
                     display={subroute === 'childInformation'}
                   />
                   <IssueCategorizationTab
+                    task={task}
                     display={subroute === 'categories'}
                     initialValue={contactForm.categories}
                     definition={currentDefinitionVersion.tabbedForms.IssueCategorizationTab}
                   />
                   <TabbedFormTab
+                    task={task}
                     tabPath="caseInformation"
                     definition={currentDefinitionVersion.tabbedForms.CaseInformationTab}
                     layoutDefinition={currentDefinitionVersion.layoutVersion.contact.caseInformation}
@@ -220,10 +210,11 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, currentD
             </div>
           )}
           <BottomBar
+            task={task}
             nextTab={() =>
               dispatch(changeRoute({ route: 'tabbed-forms', subroute: tabsToIndex[tabIndex + 1] }, taskId))
             }
-            handleCompleteTask={props.handleCompleteTask}
+            // TODO: move this two functions to a separate file to centralize "handle task completions"
             showNextButton={tabIndex !== 0 && tabIndex < tabs.length - 1}
             showSubmitButton={tabIndex === tabs.length - 1}
             handleSubmitIfValid={methods.handleSubmit} // TODO: this should be used within BottomBar, but that requires a small refactor to make it a functional component
@@ -247,4 +238,4 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
 const connector = connect(mapStateToProps);
 const connected = connector(TabbedForms);
 
-export default withTaskContext<Props, typeof connected>(connected);
+export default connected;

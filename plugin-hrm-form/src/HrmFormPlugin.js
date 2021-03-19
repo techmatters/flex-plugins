@@ -73,6 +73,11 @@ export const getDefinitionVersions = () => {
   return { currentDefinitionVersion, definitionVersions };
 };
 
+export const reRenderAgentDesktop = async () => {
+  await Flex.Actions.invokeAction('NavigateToView', { viewName: 'empty-view' });
+  await Flex.Actions.invokeAction('NavigateToView', { viewName: 'agent-desktop' });
+};
+
 const setUpSharedStateClient = () => {
   const updateSharedStateToken = async () => {
     try {
