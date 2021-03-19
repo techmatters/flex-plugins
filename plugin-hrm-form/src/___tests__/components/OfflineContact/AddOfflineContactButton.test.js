@@ -7,12 +7,16 @@ import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import '@testing-library/jest-dom/extend-expect';
 
-import HrmTheme from '../../styles/HrmTheme';
-import OfflineContactButton from '../../components/OfflineContactButton';
-import { namespace, routingBase, configurationBase } from '../../states';
-import v1 from '../../formDefinitions/v1';
+import HrmTheme from '../../../styles/HrmTheme';
+import { AddOfflineContactButton } from '../../../components/OfflineContact';
+import { namespace, routingBase, configurationBase } from '../../../states';
+import { reRenderAgentDesktop } from '../../../HrmFormPlugin';
+import v1 from '../../../formDefinitions/v1';
 
-jest.mock('../../services/ServerlessService');
+jest.mock('../../../services/ServerlessService');
+jest.mock('../../../HrmFormPlugin.js', () => ({
+  reRenderAgentDesktop: jest.fn(),
+}));
 jest.mock('@twilio/flex-ui', () => ({
   ...jest.requireActual('@twilio/flex-ui'),
   Actions: {
@@ -22,6 +26,7 @@ jest.mock('@twilio/flex-ui', () => ({
 
 beforeEach(() => {
   Actions.invokeAction.mockClear();
+  reRenderAgentDesktop.mockClear();
 });
 
 const themeConf = {
@@ -34,7 +39,7 @@ const mockStore = configureMockStore([]);
 test('click on button', async () => {
   const store = mockStore({
     flex: {
-      view: { selectedTaskSid: '123', activeView: 'some-view' },
+      view: { selectedTaskSid: '123' },
     },
     [namespace]: {
       [configurationBase]: {
@@ -51,7 +56,7 @@ test('click on button', async () => {
   render(
     <StorelessThemeProvider themeConf={themeConf}>
       <Provider store={store}>
-        <OfflineContactButton recreateContactState={recreateContactState} />
+        <AddOfflineContactButton recreateContactState={recreateContactState} />
       </Provider>
     </StorelessThemeProvider>,
   );
@@ -60,7 +65,8 @@ test('click on button', async () => {
 
   await Promise.resolve();
 
-  expect(Actions.invokeAction).toHaveBeenCalledTimes(2);
+  expect(Actions.invokeAction).toHaveBeenCalledTimes(1);
+  expect(reRenderAgentDesktop).toHaveBeenCalledTimes(1);
   /*
    * This is failing and couldn't fix it yet
    * expect(recreateContactState).toHaveBeenCalled();
@@ -70,7 +76,7 @@ test('click on button', async () => {
 test('button should be disabled (default task exists)', () => {
   const store = mockStore({
     flex: {
-      view: { selectedTaskSid: undefined, activeView: 'some-view' },
+      view: { selectedTaskSid: undefined },
     },
     [namespace]: {
       [configurationBase]: {
@@ -87,7 +93,7 @@ test('button should be disabled (default task exists)', () => {
   render(
     <StorelessThemeProvider themeConf={themeConf}>
       <Provider store={store}>
-        <OfflineContactButton recreateContactState={recreateContactState} />
+        <AddOfflineContactButton recreateContactState={recreateContactState} />
       </Provider>
     </StorelessThemeProvider>,
   );
@@ -95,10 +101,11 @@ test('button should be disabled (default task exists)', () => {
   screen.getByText('OfflineContactButtonText').click();
 
   expect(Actions.invokeAction).not.toHaveBeenCalled();
+  expect(reRenderAgentDesktop).not.toHaveBeenCalled();
   expect(recreateContactState).not.toHaveBeenCalled();
 });
 
-const Wrapped = withTheme(props => <OfflineContactButton {...props} />);
+const Wrapped = withTheme(props => <AddOfflineContactButton {...props} />);
 
 test('a11y', async () => {
   const store = mockStore({

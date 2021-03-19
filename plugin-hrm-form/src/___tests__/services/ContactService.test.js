@@ -181,7 +181,7 @@ describe('saveToHrm() (isContactlessTask)', () => {
 
     await saveToHrm({ ...task, taskSid: offlineContactTaskSid }, form, workerSid, helpline, uniqueIdentifier);
 
-    const expected = { ...contactlessTask, offlineContactCreator: workerSid };
+    const expected = { ...contactlessTask };
 
     const formFromPOST = getFormFromPOST(mockedFetch);
     expect(formFromPOST.callType).toEqual(callTypes.hangup);

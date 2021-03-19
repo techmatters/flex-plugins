@@ -16,7 +16,7 @@ import SettingsSideLink from '../components/sideLinks/SettingsSideLink';
 import CaseListSideLink from '../components/sideLinks/CaseListSideLink';
 import StandaloneSearchSideLink from '../components/sideLinks/StandaloneSearchSideLink';
 import ManualPullButton from '../components/ManualPullButton';
-import OfflineContactButton from '../components/OfflineContactButton';
+import { AddOfflineContactButton, OfflineContactTask } from '../components/OfflineContact';
 import { chatCapacityUpdated } from '../states/configuration/actions';
 import { namespace, routingBase } from '../states';
 import { Column, TaskCanvasOverride, Box, HeaderContainer } from '../styles/HrmStyles';
@@ -64,7 +64,7 @@ const addButtonsUI = setupObject => {
         </Box>
       </HeaderContainer>
       {featureFlags.enable_manual_pulling && <ManualPullButton workerClient={manager.workerClient} />}
-      {featureFlags.enable_offline_contact && <OfflineContactButton />}
+      {featureFlags.enable_offline_contact && <AddOfflineContactButton />}
     </Container>
   );
 };
@@ -130,10 +130,22 @@ const setUpManualPulling = () => {
   });
 };
 
+const isIncomingOfflineContact = task =>
+  task.channelType === 'default' && task.attributes && task.attributes.transferTargetType === 'worker';
+
 const setUpOfflineContact = () => {
   const manager = Flex.Manager.getInstance();
 
   Flex.ViewCollection.Content.add(<Flex.View name="empty-view" key="empty-view" />);
+
+  Flex.TaskList.Content.add(<OfflineContactTask key="offline-contact-task" />, {
+    sortOrder: 100,
+    align: 'start',
+  });
+
+  Flex.TaskListItem.Content.replace(<div key="Empty-Replacement-For-IncomingOfflineContact" />, {
+    if: props => isIncomingOfflineContact(props.task),
+  });
 
   // This is causing some bad scenarios, cause AgentDesktopView.Panel1 not re-rendering. Current solution: a) force a "change view". Other options: b) allways remove the no tasks view c) replace it with our own view that is connected to the store and conditionally appears when appropiate
   Flex.AgentDesktopView.Panel1.Content.remove('no-tasks', {
@@ -178,6 +190,7 @@ export const setUpNoTasksUI = setupObject => {
   Flex.AgentDesktopView.Content.add(
     <Column key="no-task-agent-desktop-section" style={{ backgroundColor: HrmTheme.colors.base2, minWidth: 300 }}>
       {queuesStatusUI()}
+      {<OfflineContactTask key="offline-contact-task" />}
       {addButtonsUI(setupObject)}
     </Column>,
     {

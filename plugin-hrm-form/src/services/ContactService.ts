@@ -180,14 +180,6 @@ export async function saveToHrm(task, form, workerSid, helpline, uniqueIdentifie
 
   // If isOfflineContactTask, send the target Sid as twilioWorkerId value and store workerSid (issuer) in rawForm
   const twilioWorkerId = isOfflineContactTask(task) ? form.contactlessTask.createdOnBehalfOf : workerSid;
-  if (isOfflineContactTask(task))
-    rawForm = {
-      ...rawForm,
-      contactlessTask: {
-        ...rawForm.contactlessTask,
-        offlineContactCreator: workerSid,
-      },
-    };
 
   // This might change if isNonDataCallType, that's why we use rawForm
   const timeOfContact = getDateTime(rawForm.contactlessTask);
