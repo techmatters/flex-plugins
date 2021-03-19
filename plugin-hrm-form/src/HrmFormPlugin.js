@@ -28,7 +28,7 @@ let sharedStateClient;
 export const getConfig = () => {
   const manager = Flex.Manager.getInstance();
 
-  const hrmBaseUrl = `${manager.serviceConfiguration.attributes.hrm_base_url}/${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${manager.workerClient.accountSid}`;
+  const hrmBaseUrl = `http://localhost:8080/${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${manager.workerClient.accountSid}`;
   const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
   const logoUrl = manager.serviceConfiguration.attributes.logo_url;
   const workerSid = manager.workerClient.sid;
@@ -39,6 +39,7 @@ export const getConfig = () => {
   const { configuredLanguage, definitionVersion, pdfImagesSource } = manager.serviceConfiguration.attributes;
   const featureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
   const { strings } = manager;
+  const multipleOfficeSupport = true; // ToDo: Move this to service configuration
 
   return {
     hrmBaseUrl,
@@ -58,6 +59,7 @@ export const getConfig = () => {
     strings,
     definitionVersion,
     pdfImagesSource,
+    multipleOfficeSupport,
   };
 };
 

@@ -2,9 +2,9 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
-import { Button } from '@material-ui/core';
 import { Print as PrintIcon } from '@material-ui/icons';
 
+import { getConfig } from '../../../HrmFormPlugin';
 import {
   DetailsHeaderChildName,
   DetailsHeaderCaseContainer,
@@ -43,6 +43,7 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
   handleClickChildIsAtRisk,
   isOrphanedCase,
 }) => {
+  const { multipleOfficeSupport } = getConfig();
   return (
     <DetailsHeaderContainer>
       <DetailsHeaderTextContainer>
@@ -52,7 +53,7 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
             <Template code="Case-CaseNumber" />
             {caseId}
           </DetailsHeaderCaseId>
-          {office && <DetailsHeaderOfficeName>({office})</DetailsHeaderOfficeName>}
+          {multipleOfficeSupport && office && <DetailsHeaderOfficeName>({office})</DetailsHeaderOfficeName>}
         </DetailsHeaderCaseContainer>
         <DetailsHeaderCounselor>
           <Template code="Case-Counsellor" />: {counselor}

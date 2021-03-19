@@ -1,5 +1,6 @@
 import { ITask } from '@twilio/flex-ui';
 
+import { OfficeDefinitions } from '../common/forms/types';
 import { TaskEntry } from '../../states/contacts/reducer';
 import { Activity, ConnectedCaseActivity } from '../../states/case/types';
 import { channelsAndDefault } from '../../states/DomainConstants';
@@ -30,4 +31,15 @@ export const getDateFromNotSavedContact = (task: ITask, form: TaskEntry) => {
   }
 
   return Date.now();
+};
+
+/**
+ * Gets Office Data (Name, Case Manager, etc.)
+ * @param officeName Office name to filter
+ * @param officeInformation Office Information Collection
+ */
+export const getOfficeData = (officeName?: string, officeInformation?: OfficeDefinitions) => {
+  if (officeName && officeInformation) return officeInformation.find(x => x.name === officeName);
+
+  return undefined;
 };

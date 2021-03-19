@@ -15,7 +15,6 @@ type OwnProps = {
   childIsAtRisk: boolean;
   counselor: string;
   caseManager?: {
-    office: string;
     name: string;
     phone: string;
     email: string;

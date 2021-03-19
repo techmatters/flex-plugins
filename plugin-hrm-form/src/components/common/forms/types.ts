@@ -120,6 +120,17 @@ type CallTypeButtonsEntry = {
 
 export type CallTypeButtonsDefinitions = CallTypeButtonsEntry[];
 
+export type OfficeEntry = {
+  name: string;
+  manager?: {
+    name: string;
+    phone: string;
+    email: string;
+  };
+};
+
+export type OfficeDefinitions = OfficeEntry[];
+
 /**
  * Type that gives extra info on how a single field should be formatted
  */
@@ -164,6 +175,7 @@ export type DefinitionVersion = {
   };
   callTypeButtons: CallTypeButtonsDefinitions;
   layoutVersion: LayoutVersion;
+  officeInformation?: OfficeDefinitions;
   insights: {
     oneToOneConfigSpec: OneToOneConfigSpec;
     oneToManyConfigSpecs: OneToManyConfigSpecs;

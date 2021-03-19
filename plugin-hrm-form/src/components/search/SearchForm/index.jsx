@@ -1,6 +1,6 @@
 /* eslint-disable no-empty-function */
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { string } from 'prop-types';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
@@ -32,30 +32,54 @@ class SearchForm extends Component {
         sid: PropTypes.string,
       }),
     ).isRequired,
+    officeInformation: PropTypes.arrayOf(
+      PropTypes.shape({
+        name: PropTypes.string,
+        manager: PropTypes.shape({
+          name: string,
+          phone: string,
+          email: string,
+        }),
+      }),
+    ).isRequired,
     values: searchFormType.isRequired,
   };
 
   defaultEventHandlers = fieldName => ({
-    handleChange: e => this.props.handleSearchFormChange(fieldName, e.target.value),
+    handleChange: e => {
+      this.props.handleSearchFormChange(fieldName, e.target.value);
+    },
     handleBlur: () => {},
     handleFocus: () => {},
   });
 
   render() {
-    const { firstName, lastName, counselor, phoneNumber, dateFrom, dateTo } = this.props.values;
+    const { firstName, lastName, counselor, helpline, phoneNumber, dateFrom, dateTo } = this.props.values;
 
     const counselorsOptions = this.props.counselors.map(e => ({ label: e.fullName, value: e.sid }));
 
-    const { helpline, strings } = getConfig();
+    const officeOptions = this.props.officeInformation
+      ? this.props.officeInformation.map(x => ({ label: x.name, value: x.name }))
+      : [{ label: '', value: '' }];
+
+    const { helpline: userHelpline, strings, multipleOfficeSupport } = getConfig();
     const searchParams = {
       ...this.props.values,
       counselor: counselor.value, // backend expects only counselor's SID
-      helpline,
+      // If the user already has a helpline attribute we will hide the dropdown and send the userHelpline to the API
+      helpline: multipleOfficeSupport && helpline && helpline?.value ? helpline.value : userHelpline,
       onlyDataContacts: false,
       closedCases: true,
     };
 
-    const isTouched = firstName || lastName || (counselor && counselor.value) || phoneNumber || dateFrom || dateTo;
+    const isTouched =
+      firstName ||
+      lastName ||
+      (counselor && counselor.value) ||
+      phoneNumber ||
+      dateFrom ||
+      dateTo ||
+      (helpline && helpline.value);
 
     const submitSearch = () => this.props.handleSearch(searchParams);
     const submitOnEnter = event => {
@@ -122,7 +146,20 @@ class SearchForm extends Component {
               field={getField(phoneNumber)}
               {...this.defaultEventHandlers('phoneNumber')}
               onKeyPress={submitOnEnter}
+              style={{ marginRight: 25 }}
             />
+            {/* If the user has their helpline attribute set, we don't need to show the Office search criteria. */}
+            {multipleOfficeSupport && !userHelpline && (
+              <FieldSelect
+                id="Search_Office"
+                name="office"
+                label={strings['SearchForm-Office']}
+                placeholder="--"
+                field={getField(helpline)}
+                options={[{ label: '', value: '' }, ...officeOptions]}
+                {...this.defaultEventHandlers('helpline')}
+              />
+            )}
           </Row>
         </Container>
         <BottomButtonBar>
@@ -137,6 +174,7 @@ class SearchForm extends Component {
 
 const mapStateToProps = state => ({
   counselors: state[namespace][configurationBase].counselors.list,
+  officeInformation: state[namespace][configurationBase].currentDefinitionVersion?.officeInformation,
 });
 
 export default connect(mapStateToProps)(SearchForm);

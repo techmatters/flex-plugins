@@ -16,7 +16,7 @@ type OwnProps = {
 type Props = OwnProps;
 
 const CasePrintHeader: React.FC<Props> = ({ firstName, lastName, id, officeName, logoBlob }) => {
-  const { strings } = getConfig();
+  const { strings, multipleOfficeSupport } = getConfig();
 
   return (
     <View fixed>
@@ -25,7 +25,7 @@ const CasePrintHeader: React.FC<Props> = ({ firstName, lastName, id, officeName,
           <Text style={styles.childName}>{`${firstName} ${lastName}`}</Text>
           <View style={styles.flexRow}>
             <Text style={styles.caseId}>{`${strings['Case-CaseNumber']}: ${id}`}</Text>
-            {officeName && <Text style={styles.officeName}>({officeName})</Text>}
+            {multipleOfficeSupport && officeName && <Text style={styles.officeName}>({officeName})</Text>}
           </View>
         </View>
         {logoBlob && <Image src={logoBlob} />}
