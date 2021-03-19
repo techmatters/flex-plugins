@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Template } from '@twilio/flex-ui';
 
-import CaseTags from '../search/CasePreview/CaseTags';
+import CaseTags from './CaseTags';
 import CaseDetailsHeader from './caseDetails/CaseDetailsHeader';
 import {
   DetailsContainer,
@@ -33,12 +33,14 @@ const CaseDetails = ({
   followUpDate,
   status,
   isEditing,
+  office,
   childIsAtRisk,
   handlePrintCase,
   handleInfoChange,
   handleStatusChange,
   handleClickChildIsAtRisk,
   definitionVersion,
+  isOrphanedCase,
 }) => {
   const lastUpdatedClosedDate = openedDate === lastUpdatedDate ? '—' : lastUpdatedDate;
 
@@ -58,9 +60,11 @@ const CaseDetails = ({
         childName={name}
         counselor={counselor}
         childIsAtRisk={childIsAtRisk}
+        office={office}
         status={status}
         handlePrintCase={handlePrintCase}
         handleClickChildIsAtRisk={handleClickChildIsAtRisk}
+        isOrphanedCase={isOrphanedCase}
       />
       <DetailsContainer tabIndex={0} aria-labelledby="Case-CaseId-label">
         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -147,6 +151,7 @@ CaseDetails.propTypes = {
   counselor: PropTypes.string.isRequired,
   openedDate: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
+  office: PropTypes.string,
   isEditing: PropTypes.bool.isRequired,
   followUpDate: PropTypes.string,
   lastUpdatedDate: PropTypes.string,
@@ -156,11 +161,14 @@ CaseDetails.propTypes = {
   handleStatusChange: PropTypes.func.isRequired,
   handleClickChildIsAtRisk: PropTypes.func.isRequired,
   definitionVersion: PropTypes.string.isRequired,
+  isOrphanedCase: PropTypes.bool,
 };
 
 CaseDetails.defaultProps = {
+  office: '',
   followUpDate: '',
   lastUpdatedDate: '',
+  isOrphanedCase: false,
 };
 
 export default CaseDetails;

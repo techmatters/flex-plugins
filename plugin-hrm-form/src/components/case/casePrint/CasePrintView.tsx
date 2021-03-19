@@ -2,7 +2,7 @@
 /* eslint-disable react/jsx-max-depth */
 import React, { useState, useEffect } from 'react';
 import { Page, Document, View, PDFViewer } from '@react-pdf/renderer';
-import { Template } from '@twilio/flex-ui';
+import { Template, Strings } from '@twilio/flex-ui';
 import { ButtonBase, CircularProgress } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 
@@ -17,29 +17,48 @@ import CasePrintMultiSection from './CasePrintMultiSection';
 import CasePrintNotes from './CasePrintNotes';
 import CasePrintHeader from './CasePrintHeader';
 import CasePrintFooter from './CasePrintFooter';
-import {
-  callerInfoSection,
-  childInfoSection,
-  contactSection,
-  householdMultiSection,
-  perpetratorMultiSection,
-  incidentSection,
-  referralsSection,
-  notesSection,
-  summary,
-  caseManager,
-  officeName,
-} from './mockedData';
+// import CasePrintContact from './CasePrintContact'; // Removed by ZA request, could be useful for other helplines.
+import { caseManagers } from './mockedData';
 import { getImageAsString, ImageSource } from './helpers';
+import { DefinitionVersion, FormDefinition } from '../../common/forms/types';
+import callTypes from '../../../states/DomainConstants';
+import { ContactRawJson } from '../../../types/types';
 
 type OwnProps = {
   onClickClose: () => void;
   caseDetails: CaseDetails;
+  definitionVersion: DefinitionVersion;
+  counselorsHash: { [sid: string]: string };
 };
 type Props = OwnProps;
 
-const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails }) => {
-  const { pdfImagesSource } = getConfig();
+const extraFieldDefinitions = (strings: Strings<string>): FormDefinition => {
+  return [
+    {
+      name: 'keepConfidential',
+      label: strings['ContactDetails-GeneralDetails-KeepConfidential'],
+      type: 'checkbox',
+    },
+    {
+      name: 'okForCaseWorkerToCall',
+      label: strings['ContactDetails-GeneralDetails-OKToCall'],
+      type: 'checkbox',
+    },
+  ];
+};
+
+const addExtraValues = (caseInformation: ContactRawJson['caseInformation']) => {
+  return {
+    keepConfidential: Boolean(caseInformation?.keepConfidential),
+    okForCaseWorkerToCall: Boolean(caseInformation?.okForCaseWorkerToCall),
+  };
+};
+
+const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionVersion, counselorsHash }) => {
+  const { pdfImagesSource, strings } = getConfig();
+
+  // ToDo: replace this mocked list with another source in the future.
+  const caseManager = caseDetails.office ? caseManagers.find(m => m.office === caseDetails.office) : null;
 
   const logoSource = `${pdfImagesSource}/helpline-logo.png`;
   const chkOnSource = `${pdfImagesSource}/chk_1.png`;
@@ -108,7 +127,7 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails }) => {
                 id={caseDetails.id}
                 firstName={caseDetails.name.firstName}
                 lastName={caseDetails.name.lastName}
-                officeName={officeName}
+                officeName={caseDetails.office}
                 logoBlob={logoBlob}
               />
               <View>
@@ -119,19 +138,79 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails }) => {
                   followUpDate={caseDetails.followUpDate}
                   childIsAtRisk={caseDetails.childIsAtRisk}
                   counselor={caseDetails.caseCounselor}
+                  categories={caseDetails.categories}
+                  version={caseDetails.version}
                   caseManager={caseManager}
                   chkOnBlob={chkOnBlob}
                   chkOffBlob={chkOffBlob}
                 />
-                <CasePrintSection {...callerInfoSection} />
-                <CasePrintSection {...childInfoSection} />
-                <CasePrintSection {...contactSection} />
-                <CasePrintMultiSection {...householdMultiSection} />
-                <CasePrintMultiSection {...perpetratorMultiSection} />
-                <CasePrintSection {...incidentSection} />
-                <CasePrintSection {...referralsSection} />
-                <CasePrintNotes {...notesSection} />
-                <CasePrintSummary summary={summary} />
+                {caseDetails.contact?.rawJson?.callType === callTypes.caller ? (
+                  <View>
+                    <CasePrintSection
+                      sectionName={strings['SectionName-CallerInformation']}
+                      definitions={[
+                        ...extraFieldDefinitions(strings),
+                        ...definitionVersion.tabbedForms.CallerInformationTab,
+                      ]}
+                      values={{
+                        ...addExtraValues(caseDetails.contact?.rawJson?.caseInformation),
+                        ...caseDetails.contact?.rawJson?.callerInformation,
+                      }}
+                      unNestInfo={true}
+                    />
+                    <CasePrintSection
+                      sectionName={strings['SectionName-ChildInformation']}
+                      definitions={definitionVersion.tabbedForms.ChildInformationTab}
+                      values={caseDetails.contact?.rawJson?.childInformation}
+                      unNestInfo={true}
+                    />
+                  </View>
+                ) : (
+                  <CasePrintSection
+                    sectionName={strings['SectionName-ChildInformation']}
+                    definitions={[
+                      ...extraFieldDefinitions(strings),
+                      ...definitionVersion.tabbedForms.ChildInformationTab,
+                    ]}
+                    values={{
+                      ...addExtraValues(caseDetails.contact?.rawJson?.caseInformation),
+                      ...caseDetails.contact?.rawJson?.childInformation,
+                    }}
+                    unNestInfo={true}
+                  />
+                )}
+                {/* // Removed by ZA request, could be useful for other helplines.
+                <CasePrintContact
+                  sectionName={strings['SectionName-Contact']}
+                  contact={caseDetails.contact}
+                  counselor={caseDetails.caseCounselor}
+                /> */}
+                <CasePrintMultiSection
+                  sectionName={strings['SectionName-HouseholdMember']}
+                  sectionKey="household"
+                  definitions={definitionVersion.caseForms.HouseholdForm}
+                  values={caseDetails.households}
+                />
+                <CasePrintMultiSection
+                  sectionName={strings['SectionName-Perpetrator']}
+                  sectionKey="perpetrator"
+                  definitions={definitionVersion.caseForms.PerpetratorForm}
+                  values={caseDetails.perpetrators}
+                />
+                <CasePrintMultiSection
+                  sectionName={strings['SectionName-Incident']}
+                  definitions={definitionVersion.caseForms.IncidentForm}
+                  sectionKey="incident"
+                  values={caseDetails.incidents}
+                />
+                <CasePrintMultiSection
+                  sectionName={strings['SectionName-Referral']}
+                  definitions={definitionVersion.caseForms.ReferralForm}
+                  sectionKey="referral"
+                  values={caseDetails.referrals}
+                />
+                <CasePrintNotes notes={caseDetails.notes} counselorsHash={counselorsHash} />
+                <CasePrintSummary summary={caseDetails.summary} />
               </View>
               <CasePrintFooter />
             </Page>

@@ -3,31 +3,34 @@ import React from 'react';
 import { View } from '@react-pdf/renderer';
 
 import CasePrintSection from './CasePrintSection';
-
-type Section = {
-  key: number;
-  fieldValues: SectionField[];
-};
-
-type SectionField = {
-  label: string;
-  value?: string;
-};
+import { FormDefinition } from '../../common/forms/types';
+import { HouseholdEntry, PerpetratorEntry, IncidentEntry, ReferralEntry } from '../../../types/types';
 
 type OwnProps = {
   sectionName: string;
-  sectionValues: Section[];
+  sectionKey: 'household' | 'perpetrator' | 'incident' | 'referral';
+  values: (HouseholdEntry | PerpetratorEntry | IncidentEntry | ReferralEntry)[];
+  definitions: FormDefinition;
 };
 
 type Props = OwnProps;
 
-const CasePrintMultiSection: React.FC<Props> = ({ sectionName, sectionValues }) => {
+const CasePrintMultiSection: React.FC<Props> = ({ sectionName, sectionKey, values, definitions }) => {
   return (
     <View>
-      {sectionValues.map(value => {
-        const customSectionName = `${sectionName} ${value.key} of ${sectionValues.length}`;
-        return <CasePrintSection key={value.key} sectionName={customSectionName} fieldValues={value.fieldValues} />;
-      })}
+      {values &&
+        values.length > 0 &&
+        values.map((value, i: number) => {
+          const customSectionName = `${sectionName} ${i + 1} of ${values.length}`;
+          return (
+            <CasePrintSection
+              key={`${sectionName}_${i}`}
+              sectionName={customSectionName}
+              values={sectionKey === 'referral' ? value : value[sectionKey]}
+              definitions={definitions}
+            />
+          );
+        })}
     </View>
   );
 };

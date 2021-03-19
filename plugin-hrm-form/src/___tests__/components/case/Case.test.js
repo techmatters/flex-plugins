@@ -161,7 +161,7 @@ describe('useState mocked', () => {
         task1: {
           connectedCase: {
             id: 123,
-            createdAt: 1593469560208,
+            createdAt: '2020-06-29T22:26:00.208Z',
             twilioWorkerId: 'worker1',
             status: 'open',
             info: { definitionVersion: 'v1' },
