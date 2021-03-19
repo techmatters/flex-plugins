@@ -33,19 +33,40 @@ export class InnerQueuesStatusWriter extends React.Component {
 
   state = {
     tasksQuery: null,
+    workerQuery: null,
     trackedTasks: null,
   };
 
   async componentDidMount() {
+    try {
+      await this.subscribeToQueuesUpdates();
+      const workerQuery = await this.props.insightsClient.liveQuery(
+        'tr-worker',
+        `data.worker_sid == "${this.props.workerSid}"`,
+      );
+      this.setState({ workerQuery });
+
+      workerQuery.on('itemUpdated', async _args => {
+        await this.subscribeToQueuesUpdates();
+      });
+    } catch (err) {
+      handleSubscribeError(err);
+    }
+  }
+
+  componentWillUnmount() {
+    const { tasksQuery, workerQuery } = this.state;
+    // unsubscribe
+    if (tasksQuery) tasksQuery.close();
+    if (workerQuery) workerQuery.close();
+  }
+
+  async subscribeToQueuesUpdates() {
     const { workerSid } = this.props;
     try {
-      const q = await this.props.insightsClient.liveQuery('tr-queue', '');
-      const queues = this.getQueuesNames(q.getItems());
-      q.close();
-
-      // builds the array of queues the counselor cares about (for now will always be one)
+      // fetch the array of queues the counselor matches (excluding "Everyone")
       const { workerQueues } = await listWorkerQueues({ workerSid });
-      const counselorQueues = workerQueues.map(e => e.friendlyName).filter(s => s !== 'Everyone');
+      const counselorQueues = workerQueues.map(q => q.friendlyName).filter(q => q !== 'Everyone');
 
       const cleanQueuesStatus = h.initializeQueuesStatus(counselorQueues);
 
@@ -78,19 +99,15 @@ export class InnerQueuesStatusWriter extends React.Component {
         }
       });
     } catch (err) {
-      const error = "Error, couldn't subscribe to live updates";
-      this.props.queuesStatusFailure(error);
-      console.error(error, err);
+      handleSubscribeError(err);
     }
   }
 
-  componentWillUnmount() {
-    const { tasksQuery } = this.state;
-    // unsubscribe
-    if (tasksQuery) tasksQuery.close();
+  handleSubscribeError(err) {
+    const error = "Error, couldn't subscribe to live updates";
+    this.props.queuesStatusFailure(error);
+    console.error(error, err);
   }
-
-  getQueuesNames = queuesItems => Object.values(queuesItems).reduce((acc, queue) => [...acc, queue.queue_name], []);
 
   updateQueuesState(tasks, prevQueuesStatus) {
     const queuesStatus = h.getNewQueuesStatus(prevQueuesStatus, tasks);
