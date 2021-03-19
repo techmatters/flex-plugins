@@ -33,6 +33,7 @@ const CaseDetails = ({
   followUpDate,
   status,
   isEditing,
+  office,
   childIsAtRisk,
   handlePrintCase,
   handleInfoChange,
@@ -59,6 +60,7 @@ const CaseDetails = ({
         childName={name}
         counselor={counselor}
         childIsAtRisk={childIsAtRisk}
+        office={office}
         status={status}
         handlePrintCase={handlePrintCase}
         handleClickChildIsAtRisk={handleClickChildIsAtRisk}
@@ -149,6 +151,7 @@ CaseDetails.propTypes = {
   counselor: PropTypes.string.isRequired,
   openedDate: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
+  office: PropTypes.string,
   isEditing: PropTypes.bool.isRequired,
   followUpDate: PropTypes.string,
   lastUpdatedDate: PropTypes.string,
@@ -162,6 +165,7 @@ CaseDetails.propTypes = {
 };
 
 CaseDetails.defaultProps = {
+  office: '',
   followUpDate: '',
   lastUpdatedDate: '',
   isOrphanedCase: false,

@@ -23,7 +23,7 @@ import { CaseStatus } from '../../../types/types';
 type OwnProps = {
   caseId: string;
   childName: string;
-  officeName: string;
+  office: string;
   counselor: string;
   childIsAtRisk: boolean;
   status: CaseStatus;
@@ -35,7 +35,7 @@ type OwnProps = {
 const CaseDetailsHeader: React.FC<OwnProps> = ({
   caseId,
   childName,
-  officeName,
+  office,
   counselor,
   childIsAtRisk,
   status,
@@ -52,7 +52,7 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
             <Template code="Case-CaseNumber" />
             {caseId}
           </DetailsHeaderCaseId>
-          {officeName && <DetailsHeaderOfficeName>{officeName}</DetailsHeaderOfficeName>}
+          {office && <DetailsHeaderOfficeName>({office})</DetailsHeaderOfficeName>}
         </DetailsHeaderCaseContainer>
         <DetailsHeaderCounselor>
           <Template code="Case-Counsellor" />: {counselor}
