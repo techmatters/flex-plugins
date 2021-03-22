@@ -52,6 +52,7 @@ export type SelectOption = { value: any; label: string };
 type SelectDefinition = {
   type: 'select';
   options: SelectOption[];
+  defaultOption?: SelectOption['value'];
 } & ItemBase &
   RegisterOptions;
 
