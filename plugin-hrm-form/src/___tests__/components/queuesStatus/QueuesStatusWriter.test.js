@@ -15,7 +15,7 @@ jest.mock('../../../services/ServerlessService', () => ({
   },
 }));
 
-// console.log = jest.fn();
+console.log = jest.fn();
 console.error = jest.fn();
 
 const queues = { Q1: { queue_name: 'Q1' }, Admin: { queue_name: 'Admin' } };
