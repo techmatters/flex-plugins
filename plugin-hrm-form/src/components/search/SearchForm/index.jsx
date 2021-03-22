@@ -60,7 +60,7 @@ class SearchForm extends Component {
 
     const officeOptions = this.props.officeInformation
       ? this.props.officeInformation.map(x => ({ label: x.name, value: x.name }))
-      : [{ label: '', value: '' }];
+      : [];
 
     const { helpline: userHelpline, strings, multipleOfficeSupport } = getConfig();
     const searchParams = {
@@ -149,7 +149,7 @@ class SearchForm extends Component {
               style={{ marginRight: 25 }}
             />
             {/* If the user has their helpline attribute set, we don't need to show the Office search criteria. */}
-            {multipleOfficeSupport && !userHelpline && (
+            {multipleOfficeSupport && !userHelpline && officeOptions.length > 0 && (
               <FieldSelect
                 id="Search_Office"
                 name="office"
