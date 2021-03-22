@@ -40,6 +40,7 @@ export class InnerQueuesStatusWriter extends React.Component {
   async componentDidMount() {
     try {
       await this.subscribeToQueuesUpdates();
+
       const workerQuery = await this.props.insightsClient.liveQuery(
         'tr-worker',
         `data.worker_sid == "${this.props.workerSid}"`,
@@ -50,7 +51,7 @@ export class InnerQueuesStatusWriter extends React.Component {
         await this.subscribeToQueuesUpdates();
       });
     } catch (err) {
-      handleSubscribeError(err);
+      this.handleSubscribeError(err);
     }
   }
 
@@ -99,7 +100,7 @@ export class InnerQueuesStatusWriter extends React.Component {
         }
       });
     } catch (err) {
-      handleSubscribeError(err);
+      this.handleSubscribeError(err);
     }
   }
 

@@ -6,7 +6,16 @@ import { InnerQueuesStatusWriter as QueuesStatusWriter } from '../../../componen
 import { channelTypes } from '../../../states/DomainConstants';
 import { newQueueEntry, initializeQueuesStatus, getNewQueuesStatus } from '../../../components/queuesStatus/helpers';
 
-console.log = jest.fn();
+jest.mock('../../../services/ServerlessService', () => ({
+  listWorkerQueues: async ({ workerSid }) => {
+    if (workerSid === 'worker-admin')
+      return { workerQueues: [{ friendlyName: 'Admin' }, { friendlyName: 'Everyone' }] };
+    if (workerSid === 'worker-Q1') return { workerQueues: [{ friendlyName: 'Q1' }, { friendlyName: 'Everyone' }] };
+    throw new Error('No matching worker');
+  },
+}));
+
+// console.log = jest.fn();
 console.error = jest.fn();
 
 const queues = { Q1: { queue_name: 'Q1' }, Admin: { queue_name: 'Admin' } };
@@ -80,7 +89,10 @@ describe('QueuesStatusWriter should subscribe to Admin queue only', () => {
     T3: tasks.T3,
   };
 
-  const queuesQuery = { getItems: () => queues, close: jest.fn() };
+  const workerQuery = {
+    on: jest.fn(),
+    close: jest.fn(),
+  };
   const tasksQuery = {
     getItems: () => innerTasks,
     on: jest.fn((event, cb) => {
@@ -94,8 +106,8 @@ describe('QueuesStatusWriter should subscribe to Admin queue only', () => {
   const ownProps = {
     insightsClient: {
       liveQuery: jest.fn((query, _) => {
-        if (query === 'tr-queue') {
-          return Promise.resolve(queuesQuery);
+        if (query === 'tr-worker') {
+          return Promise.resolve(workerQuery);
         }
         if (query === 'tr-task') {
           return Promise.resolve(tasksQuery);
@@ -104,6 +116,7 @@ describe('QueuesStatusWriter should subscribe to Admin queue only', () => {
         return undefined;
       }),
     },
+    workerSid: 'worker-admin',
   };
 
   const queuesStatusState = {
@@ -119,7 +132,8 @@ describe('QueuesStatusWriter should subscribe to Admin queue only', () => {
   test('Test mount', async () => {
     mounted = mount(<QueuesStatusWriter {...ownProps} {...reduxProps} />);
 
-    await Promise.resolve(); // resolves queuesQuery
+    await Promise.resolve(); // resolves listWorkerQueues
+    await Promise.resolve(); // resolves worker
     await Promise.resolve(); // resolves tasksQuery
 
     expect(ownProps.insightsClient.liveQuery).toHaveBeenCalledTimes(2);
@@ -178,7 +192,10 @@ describe('QueuesStatusWriter should subscribe to Q1 queue only', () => {
     T3: tasks.T3,
   };
 
-  const queuesQuery = { getItems: () => queues, close: jest.fn() };
+  const workerQuery = {
+    on: jest.fn(),
+    close: jest.fn(),
+  };
   const tasksQuery = {
     getItems: () => innerTasks,
     on: jest.fn((event, cb) => {
@@ -193,8 +210,8 @@ describe('QueuesStatusWriter should subscribe to Q1 queue only', () => {
     insightsClient: {
       // eslint-disable-next-line sonarjs/no-identical-functions
       liveQuery: jest.fn((query, _) => {
-        if (query === 'tr-queue') {
-          return Promise.resolve(queuesQuery);
+        if (query === 'tr-worker') {
+          return Promise.resolve(workerQuery);
         }
         if (query === 'tr-task') {
           return Promise.resolve(tasksQuery);
@@ -203,7 +220,7 @@ describe('QueuesStatusWriter should subscribe to Q1 queue only', () => {
         return undefined;
       }),
     },
-    helpline: 'Q1',
+    workerSid: 'worker-Q1',
   };
 
   const queuesStatusState = {
@@ -219,8 +236,9 @@ describe('QueuesStatusWriter should subscribe to Q1 queue only', () => {
   test('Test mount', async () => {
     mounted = mount(<QueuesStatusWriter {...ownProps} {...reduxProps} />);
 
-    await Promise.resolve(); // resolves queuesQuery
-    await Promise.resolve(); // resolves tasksQuery    .then(() => undefined)
+    await Promise.resolve(); // resolves listWorkerQueues
+    await Promise.resolve(); // resolves worker
+    await Promise.resolve(); // resolves tasksQuery
 
     expect(ownProps.insightsClient.liveQuery).toHaveBeenCalledTimes(2);
     expect(spy).toHaveBeenCalledWith(tasksQuery.getItems(), { Q1: newQueueEntry });
@@ -270,12 +288,17 @@ describe('QueuesStatusWriter should subscribe to Q1 queue only', () => {
 });
 
 describe('QueuesStatusWriter should fail trying to subscribe', () => {
-  test('Test fail on queuesQuery', async () => {
+  test('Test fail on tasksQuery', async () => {
+    const workerQuery = {
+      on: jest.fn(),
+      close: jest.fn(),
+    };
+
     const ownProps = {
       insightsClient: {
         liveQuery: jest.fn((query, _) => {
-          if (query === 'tr-queue') {
-            return Promise.reject(new Error('Some error'));
+          if (query === 'tr-worker') {
+            return Promise.resolve(workerQuery);
           }
           if (query === 'tr-task') {
             return Promise.reject(new Error('Some error'));
@@ -297,7 +320,9 @@ describe('QueuesStatusWriter should fail trying to subscribe', () => {
 
     const mounted = mount(<QueuesStatusWriter {...ownProps} {...reduxProps} />);
 
-    await Promise.resolve(); // resolves queuesQuery
+    await Promise.resolve(); // resolves listWorkerQueues
+    await Promise.resolve(); // resolves worker
+    await Promise.resolve(); // resolves tasksQuery
 
     expect(ownProps.insightsClient.liveQuery).toHaveBeenCalledTimes(1);
     expect(queuesStatusFailure).toHaveBeenCalledWith("Error, couldn't subscribe to live updates");
@@ -305,14 +330,12 @@ describe('QueuesStatusWriter should fail trying to subscribe', () => {
     expect(mounted.state('tasksQuery')).toBeNull();
   });
 
-  test('Test fail on tasksQuery', async () => {
-    const queuesQuery = { getItems: () => queues, close: jest.fn() };
-
+  test('Test fail on workersQuery', async () => {
     const ownProps = {
       insightsClient: {
         liveQuery: jest.fn((query, _) => {
-          if (query === 'tr-queue') {
-            return Promise.resolve(queuesQuery);
+          if (query === 'tr-worker') {
+            return Promise.reject(new Error('Some error'));
           }
           if (query === 'tr-task') {
             return Promise.reject(new Error('Some error'));
@@ -321,6 +344,7 @@ describe('QueuesStatusWriter should fail trying to subscribe', () => {
           return undefined;
         }),
       },
+      workerSid: 'worker-admin',
     };
 
     const queuesStatusState = {
@@ -334,8 +358,9 @@ describe('QueuesStatusWriter should fail trying to subscribe', () => {
 
     const mounted = mount(<QueuesStatusWriter {...ownProps} {...reduxProps} />);
 
-    await Promise.resolve(); // resolves queuesQuery
-    await Promise.resolve(); // resolves tasksQuery
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
 
     expect(ownProps.insightsClient.liveQuery).toHaveBeenCalledTimes(2);
     expect(queuesStatusFailure).toHaveBeenCalledWith("Error, couldn't subscribe to live updates");
