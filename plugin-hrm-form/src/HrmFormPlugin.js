@@ -36,10 +36,14 @@ export const getConfig = () => {
   const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
   const { identity, token } = manager.user;
   const counselorName = manager.workerClient.attributes.full_name;
-  const { configuredLanguage, definitionVersion, pdfImagesSource } = manager.serviceConfiguration.attributes;
+  const {
+    configuredLanguage,
+    definitionVersion,
+    pdfImagesSource,
+    multipleOfficeSupport,
+  } = manager.serviceConfiguration.attributes;
   const featureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
   const { strings } = manager;
-  const multipleOfficeSupport = true; // ToDo: Move this to service configuration
 
   return {
     hrmBaseUrl,

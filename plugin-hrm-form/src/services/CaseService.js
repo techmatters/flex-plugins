@@ -16,8 +16,8 @@ export async function createCase(caseRecord) {
 /**
  * @returns {Promise<import('../types/types').SearchCaseResult>}
  */
-export async function getCases(limit, offset) {
-  const queryParams = getLimitAndOffsetParams(limit, offset);
+export async function getCases(limit, offset, helpline) {
+  const queryParams = getLimitAndOffsetParams(limit, offset, helpline);
   const responseJson = await fetchHrmApi(`/cases${queryParams}`);
 
   return responseJson;

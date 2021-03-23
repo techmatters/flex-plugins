@@ -41,7 +41,7 @@ class SearchForm extends Component {
           email: string,
         }),
       }),
-    ).isRequired,
+    ),
     values: searchFormType.isRequired,
   };
 
@@ -67,7 +67,7 @@ class SearchForm extends Component {
       ...this.props.values,
       counselor: counselor.value, // backend expects only counselor's SID
       // If the user already has a helpline attribute we will hide the dropdown and send the userHelpline to the API
-      helpline: multipleOfficeSupport && helpline && helpline?.value ? helpline.value : userHelpline,
+      helpline: multipleOfficeSupport && helpline?.value ? helpline.value : userHelpline,
       onlyDataContacts: false,
       closedCases: true,
     };
@@ -171,6 +171,11 @@ class SearchForm extends Component {
     );
   }
 }
+
+// eslint-disable-next-line react/static-property-placement
+SearchForm.defaultProps = {
+  officeInformation: null,
+};
 
 const mapStateToProps = state => ({
   counselors: state[namespace][configurationBase].counselors.list,

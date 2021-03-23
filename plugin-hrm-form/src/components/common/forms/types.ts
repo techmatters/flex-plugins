@@ -120,6 +120,13 @@ type CallTypeButtonsEntry = {
 
 export type CallTypeButtonsDefinitions = CallTypeButtonsEntry[];
 
+/*
+ * ToDo: improve this type by removing name property and using officeName as a key:
+ * {
+ *   office1: { ... },
+ *   office2: { ... },
+ * }
+ */
 export type OfficeEntry = {
   name: string;
   manager?: {
@@ -129,6 +136,7 @@ export type OfficeEntry = {
   };
 };
 
+// ToDo: also this type can be defined as: OfficeDefinitions = { [officename: string]: OfficeEntry };
 export type OfficeDefinitions = OfficeEntry[];
 
 /**
