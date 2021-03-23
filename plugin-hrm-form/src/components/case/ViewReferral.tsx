@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { connect } from 'react-redux';
-import { ITask, Template } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 
 import type { DefinitionVersion } from '../common/forms/types';
 import { Container, Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
@@ -12,9 +12,10 @@ import ActionHeader from './ActionHeader';
 import SectionEntry from '../SectionEntry';
 import { StandaloneITask } from '../StandaloneSearch';
 import { formatName } from '../../utils';
+import type { CustomITask } from '../../types/types';
 
 type OwnProps = {
-  task: ITask | StandaloneITask;
+  task: CustomITask | StandaloneITask;
   definitionVersion: DefinitionVersion;
   onClickClose: () => void;
 };

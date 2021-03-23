@@ -1,5 +1,7 @@
 import { omit } from 'lodash';
 
+import '../mockGetConfig';
+
 import {
   FieldType,
   createBlankForm,
@@ -232,6 +234,7 @@ test('createBlankForm operates as expected', () => {
       channel: '',
       date: '',
       time: '',
+      createdOnBehalfOf: '',
     },
   };
 

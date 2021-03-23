@@ -4,6 +4,7 @@ import { OfficeDefinitions } from '../common/forms/types';
 import { TaskEntry } from '../../states/contacts/reducer';
 import { Activity, ConnectedCaseActivity } from '../../states/case/types';
 import { channelsAndDefault } from '../../states/DomainConstants';
+import { CustomITask, isOfflineContactTask } from '../../types/types';
 
 /**
  * Returns true if the activity provided is a connected case activity (included in channelsAndDefault const object)
@@ -24,8 +25,8 @@ export const sortActivities = (activities: Activity[]): Activity[] =>
  * @param task Twilio Task Sid
  * @param form Entry Form
  */
-export const getDateFromNotSavedContact = (task: ITask, form: TaskEntry) => {
-  if (task.attributes.isContactlessTask) {
+export const getDateFromNotSavedContact = (task: CustomITask, form: TaskEntry) => {
+  if (isOfflineContactTask(task)) {
     const { date: dateString, time } = form.contactlessTask;
     return new Date(`${dateString}T${time}:00`);
   }

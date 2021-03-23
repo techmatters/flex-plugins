@@ -2,7 +2,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { connect } from 'react-redux';
-import { Template, ITask } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 import { useForm, FormProvider } from 'react-hook-form';
 
 import ActionHeader from './ActionHeader';
@@ -25,9 +25,10 @@ import { createFormFromDefinition, disperseInputs, splitInHalf } from '../common
 import type { DefinitionVersion } from '../common/forms/types';
 import { transformValues } from '../../services/ContactService';
 import { StandaloneITask } from '../StandaloneSearch';
+import type { CustomITask } from '../../types/types';
 
 type OwnProps = {
-  task: ITask | StandaloneITask;
+  task: CustomITask | StandaloneITask;
   counselor: string;
   definitionVersion: DefinitionVersion;
   onClickClose: () => void;
@@ -59,6 +60,7 @@ const AddNote: React.FC<Props> = ({
     const note = Object.values(transformValues(NoteForm)(temporaryCaseInfo.info));
     const notes = info && info.notes ? [...info.notes, ...note] : [...note];
     const newInfo = info ? { ...info, notes } : { notes };
+    // @ts-ignore TODO: fix this (bug in backend involved, see createAddNoteActivity in hrm)
     const updatedCase = await updateCase(id, { info: newInfo });
     setConnectedCase(updatedCase, task.taskSid, true);
     updateTempInfo({ screen: 'add-note', info: null }, task.taskSid);

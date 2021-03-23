@@ -34,10 +34,14 @@ export function reduce(state = initialState, action: t.ConfigurationActionType):
         language: action.language,
       };
     case t.POPULATE_COUNSELORS: {
-      const counselorsHash = createCounselorsHash(action.counselorsList);
+      const sortedList = action.counselorsList.sort((c1, c2) => c1.fullName.localeCompare(c2.fullName));
+      const counselorsHash = createCounselorsHash(sortedList);
       return {
         ...state,
-        counselors: { list: action.counselorsList, hash: counselorsHash },
+        counselors: {
+          list: sortedList,
+          hash: counselorsHash,
+        },
       };
     }
     case t.CHAT_CAPACITY_UPDATED: {
