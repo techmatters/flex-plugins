@@ -5,6 +5,7 @@ import type { FormDefinition } from '../common/forms/types';
 import { mapChannelForInsights } from '../../utils/mappers';
 import { splitDate } from '../../utils/helpers';
 import type { CounselorsList } from '../../states/configuration/types';
+import { getConfig } from '../../HrmFormPlugin';
 
 const channelOptions = [{ value: '', label: '' }].concat(
   [...Object.values(channelTypes), ...Object.values(otherContactChannels)].map(s => ({
@@ -14,6 +15,7 @@ const channelOptions = [{ value: '', label: '' }].concat(
 );
 
 export const createFormDefinition = (counselorsList: CounselorsList): FormDefinition => {
+  const { workerSid } = getConfig();
   const counsellorOptions = [
     { label: '', value: '' },
     ...counselorsList.map(c => ({ label: c.fullName, value: c.sid })),
@@ -32,6 +34,7 @@ export const createFormDefinition = (counselorsList: CounselorsList): FormDefini
       type: 'select',
       label: 'Counsellor',
       options: counsellorOptions,
+      defaultOption: workerSid,
       required: { value: true, message: 'RequiredFieldError' },
     },
     {

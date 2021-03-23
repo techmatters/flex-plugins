@@ -40,7 +40,7 @@ export const getInitialValue = (def: FormItemDefinition) => {
     case 'time-input':
       return '';
     case 'select':
-      return def.options[0].value;
+      return def.defaultOption ? def.defaultOption : def.options[0].value;
     case 'dependent-select':
       return def.defaultOption.value;
     case 'checkbox':

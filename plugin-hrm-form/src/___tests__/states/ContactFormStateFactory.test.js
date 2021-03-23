@@ -1,5 +1,7 @@
 import { omit } from 'lodash';
 
+import '../mockGetConfig';
+
 import {
   FieldType,
   createBlankForm,
