@@ -74,13 +74,13 @@ const addButtonsUI = setupObject => {
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
  */
 export const setUpQueuesStatusWriter = setupObject => {
-  const { helpline } = setupObject;
+  const { helpline, workerSid } = setupObject;
 
   Flex.MainContainer.Content.add(
     <QueuesStatusWriter
       insightsClient={Flex.Manager.getInstance().insightsClient}
       key="queue-status-writer"
-      helpline={helpline}
+      workerSid={workerSid}
     />,
     {
       sortOrder: -1,
