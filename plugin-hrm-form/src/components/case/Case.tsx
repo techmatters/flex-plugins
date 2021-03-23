@@ -25,7 +25,7 @@ import { connectToCase, transformCategories } from '../../services/ContactServic
 import { cancelCase, updateCase, getActivities } from '../../services/CaseService';
 import { submitContactForm, completeTask } from '../../services/formSubmissionHelpers';
 import { getDefinitionVersion } from '../../services/ServerlessService';
-import { isConnectedCaseActivity, getDateFromNotSavedContact, sortActivities } from './caseHelpers';
+import { isConnectedCaseActivity, getDateFromNotSavedContact, sortActivities, getOfficeData } from './caseHelpers';
 import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseContainer, CenteredContainer } from '../../styles/case';
 import CaseDetails from './CaseDetails';
@@ -357,7 +357,7 @@ const Case: React.FC<Props> = props => {
   const notes = timeline.filter(x => x.type === 'note');
   const summary = info?.summary;
   const definitionVersion = props.definitionVersions[version];
-  const office = connectedCase.helpline; // Office name is being stored in the helpline
+  const office = getOfficeData(connectedCase.helpline, definitionVersion.officeInformation); // Office name is being stored in the helpline
 
   const addScreenProps = {
     task: props.task,
@@ -434,7 +434,7 @@ const Case: React.FC<Props> = props => {
                 lastUpdatedDate={lastUpdatedDate}
                 followUpDate={followUpDate}
                 childIsAtRisk={childIsAtRisk}
-                office={office}
+                office={office?.name}
                 handlePrintCase={onPrintCase}
                 handleInfoChange={onInfoChange}
                 handleStatusChange={onStatusChange}

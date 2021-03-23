@@ -4,6 +4,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
 
+import { getConfig } from '../../HrmFormPlugin';
 import Case from '../case';
 import { Case as CaseType } from '../../types/types';
 import CaseListTable from './CaseListTable';
@@ -86,12 +87,14 @@ type OwnProps = {};
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const CaseList: React.FC<Props> = ({ setConnectedCase, definitionVersions, updateDefinitionVersion }) => {
+  const { helpline } = getConfig();
+
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const fetchCaseList = async (page: number) => {
     try {
       dispatch({ type: 'fetchStarted' });
-      const { cases, count } = await getCases(CASES_PER_PAGE, CASES_PER_PAGE * page);
+      const { cases, count } = await getCases(CASES_PER_PAGE, CASES_PER_PAGE * page, helpline);
 
       const definitions = await getCasesMissingVersions(cases);
       definitions.forEach(d => updateDefinitionVersion(d.version, d.definition));

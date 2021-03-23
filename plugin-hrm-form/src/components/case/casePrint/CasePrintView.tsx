@@ -18,7 +18,6 @@ import CasePrintNotes from './CasePrintNotes';
 import CasePrintHeader from './CasePrintHeader';
 import CasePrintFooter from './CasePrintFooter';
 // import CasePrintContact from './CasePrintContact'; // Removed by ZA request, could be useful for other helplines.
-import { caseManagers } from './mockedData';
 import { getImageAsString, ImageSource } from './helpers';
 import { DefinitionVersion, FormDefinition } from '../../common/forms/types';
 import callTypes from '../../../states/DomainConstants';
@@ -56,9 +55,6 @@ const addExtraValues = (caseInformation: ContactRawJson['caseInformation']) => {
 
 const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionVersion, counselorsHash }) => {
   const { pdfImagesSource, strings } = getConfig();
-
-  // ToDo: replace this mocked list with another source in the future.
-  const caseManager = caseDetails.office ? caseManagers.find(m => m.office === caseDetails.office) : null;
 
   const logoSource = `${pdfImagesSource}/helpline-logo.png`;
   const chkOnSource = `${pdfImagesSource}/chk_1.png`;
@@ -127,7 +123,7 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
                 id={caseDetails.id}
                 firstName={caseDetails.name.firstName}
                 lastName={caseDetails.name.lastName}
-                officeName={caseDetails.office}
+                officeName={caseDetails.office?.name}
                 logoBlob={logoBlob}
               />
               <View>
@@ -140,7 +136,7 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
                   counselor={caseDetails.caseCounselor}
                   categories={caseDetails.categories}
                   version={caseDetails.version}
-                  caseManager={caseManager}
+                  caseManager={caseDetails.office?.manager}
                   chkOnBlob={chkOnBlob}
                   chkOffBlob={chkOffBlob}
                 />

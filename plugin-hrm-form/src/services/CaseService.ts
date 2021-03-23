@@ -32,8 +32,8 @@ export async function createCase(task: CustomITask, contactForm: ContactForm) {
   return responseJson;
 }
 
-export async function getCases(limit: number, offset: number): Promise<SearchCaseResult> {
-  const queryParams = getLimitAndOffsetParams(limit, offset);
+export async function getCases(limit: number, offset: number, helpline?: string): Promise<SearchCaseResult> {
+  const queryParams = getLimitAndOffsetParams(limit, offset, helpline);
   const responseJson = await fetchHrmApi(`/cases${queryParams}`);
 
   return responseJson;

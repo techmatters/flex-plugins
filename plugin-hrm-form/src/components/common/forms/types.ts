@@ -121,6 +121,25 @@ type CallTypeButtonsEntry = {
 
 export type CallTypeButtonsDefinitions = CallTypeButtonsEntry[];
 
+/*
+ * ToDo: improve this type by removing name property and using officeName as a key:
+ * {
+ *   office1: { ... },
+ *   office2: { ... },
+ * }
+ */
+export type OfficeEntry = {
+  name: string;
+  manager?: {
+    name: string;
+    phone: string;
+    email: string;
+  };
+};
+
+// ToDo: also this type can be defined as: OfficeDefinitions = { [officename: string]: OfficeEntry };
+export type OfficeDefinitions = OfficeEntry[];
+
 /**
  * Type that gives extra info on how a single field should be formatted
  */
@@ -165,6 +184,7 @@ export type DefinitionVersion = {
   };
   callTypeButtons: CallTypeButtonsDefinitions;
   layoutVersion: LayoutVersion;
+  officeInformation?: OfficeDefinitions;
   insights: {
     oneToOneConfigSpec: OneToOneConfigSpec;
     oneToManyConfigSpecs: OneToManyConfigSpecs;
