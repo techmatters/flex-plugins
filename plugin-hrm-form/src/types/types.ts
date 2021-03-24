@@ -124,8 +124,14 @@ export type OfflineContactTask = {
   channelType: 'default';
 };
 
-export type CustomITask = ITask | OfflineContactTask;
+export type InMyBehalfITask = ITask & { attributes: { isContactlessTask: true; isInMyBehalf: true } };
+
+export type CustomITask = ITask | OfflineContactTask | InMyBehalfITask;
 
 export function isOfflineContactTask(task: CustomITask): task is OfflineContactTask {
   return task.taskSid === offlineContactTaskSid;
+}
+
+export function isInMyBehalfITask(task: CustomITask): task is InMyBehalfITask {
+  return task.attributes && task.attributes.isContactlessTask && task.attributes.isInMyBehalf;
 }

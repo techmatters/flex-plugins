@@ -142,7 +142,6 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, currentD
             label: 'CancelOfflineContact',
             onClick: async () => {
               removeOfflineContact();
-              await reRenderAgentDesktop();
             },
           },
         ]
