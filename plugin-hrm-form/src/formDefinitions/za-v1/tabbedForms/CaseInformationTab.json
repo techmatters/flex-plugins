@@ -1,7 +1,7 @@
 [
   {
     "name": "callSummary",
-    "label": "Contact Summary",
+    "label": "Contact Summary2",
     "type": "textarea",
     "required": { "value": true, "message": "RequiredFieldError" }
   },
