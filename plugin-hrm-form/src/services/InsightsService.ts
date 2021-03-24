@@ -249,10 +249,10 @@ export const processHelplineConfig = (
 };
 
 const applyCustomUpdate = (customUpdate: OneToManyConfigSpec): InsightsUpdateFunction => {
-  return (attributes, contactForm, caseForm) => {
+  return (taskAttributes, contactForm, caseForm) => {
     if (isNonDataCallType(contactForm.callType)) return {};
 
-    const dataSource = { contactForm, caseForm };
+    const dataSource = { contactForm, caseForm, taskAttributes };
     // concatenate the values, taken from dataSource using paths (e.g. 'contactForm.childInformation.province')
     const value = customUpdate.paths.map(path => get(dataSource, path, '')).join(delimiter);
 
