@@ -33,7 +33,6 @@ export const removeOfflineContact = () => {
 
 export const completeContactlessTask = async (task: CustomITask) => {
   removeOfflineContact();
-  await reRenderAgentDesktop();
 };
 
 export const completeTask = (task: CustomITask) =>

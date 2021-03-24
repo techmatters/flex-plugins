@@ -25,6 +25,7 @@ import { TLHPaddingLeft } from '../styles/GlobalOverrides';
 import { Container } from '../styles/queuesStatus';
 // eslint-disable-next-line
 import { getConfig } from '../HrmFormPlugin';
+import { isInMyBehalfITask } from '../types/types';
 
 const voiceColor = { Accepted: Flex.DefaultTaskChannels.Call.colors.main() };
 const webColor = Flex.DefaultTaskChannels.Chat.colors.main;
@@ -74,7 +75,7 @@ const addButtonsUI = setupObject => {
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
  */
 export const setUpQueuesStatusWriter = setupObject => {
-  const { helpline, workerSid } = setupObject;
+  const { workerSid } = setupObject;
 
   Flex.MainContainer.Content.add(
     <QueuesStatusWriter
@@ -95,7 +96,8 @@ const setUpRerenderOnReservation = () => {
 
   manager.workerClient.on('reservationCreated', reservation => {
     const { tasks } = manager.store.getState().flex.worker;
-    if (tasks.size === 1) Flex.Actions.invokeAction('SelectTask', { sid: reservation.sid });
+    if (tasks.size === 1 && !isInMyBehalfITask(reservation.task))
+      Flex.Actions.invokeAction('SelectTask', { sid: reservation.sid });
   });
 };
 
