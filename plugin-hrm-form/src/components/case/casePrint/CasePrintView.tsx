@@ -41,7 +41,7 @@ const extraFieldDefinitions = (strings: Strings<string>): FormDefinition => {
     {
       name: 'okForCaseWorkerToCall',
       label: strings['ContactDetails-GeneralDetails-OKToCall'],
-      type: 'checkbox',
+      type: 'mixed-checkbox',
     },
   ];
 };
@@ -49,7 +49,7 @@ const extraFieldDefinitions = (strings: Strings<string>): FormDefinition => {
 const addExtraValues = (caseInformation: ContactRawJson['caseInformation']) => {
   return {
     keepConfidential: Boolean(caseInformation?.keepConfidential),
-    okForCaseWorkerToCall: Boolean(caseInformation?.okForCaseWorkerToCall),
+    okForCaseWorkerToCall: caseInformation?.okForCaseWorkerToCall,
   };
 };
 
