@@ -155,25 +155,22 @@ describe('Test with connected sharedState', () => {
 describe('Test throwing errors', () => {
   const error = jest.fn();
   console.error = error;
-  beforeEach(() => {
-    error.mockReset();
-  });
 
   test('saveFormSharedState', async () => {
     const { saveFormSharedState } = require('../../utils/sharedState');
 
-    expect(error).not.toBeCalled();
     const documentName = await saveFormSharedState(form, task);
     expect(documentName).toBeNull();
-    expect(error).toBeCalled();
+    expect(console.error).toBeCalled();
+    error.mockReset();
   });
 
   test('loadFormSharedState', async () => {
     const { loadFormSharedState } = require('../../utils/sharedState');
 
-    expect(error).not.toBeCalled();
     const loadedForm = await loadFormSharedState(task);
     expect(loadedForm).toBeNull();
-    expect(error).toBeCalled();
+    expect(console.error).toBeCalled();
+    error.mockReset();
   });
 });
