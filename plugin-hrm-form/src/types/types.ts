@@ -120,6 +120,7 @@ export type OfflineContactTask = {
   taskSid: typeof offlineContactTaskSid;
   attributes: {
     isContactlessTask: true;
+    isInMyBehalf?: boolean;
   };
   channelType: 'default';
 };
