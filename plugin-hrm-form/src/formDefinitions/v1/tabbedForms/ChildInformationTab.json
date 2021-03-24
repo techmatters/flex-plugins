@@ -1,7 +1,7 @@
 [
   {
     "name": "firstName",
-    "label": "First Name",
+    "label": "First Name2",
     "type": "input",
     "required": { "value": true, "message": "RequiredFieldError" }
   },
