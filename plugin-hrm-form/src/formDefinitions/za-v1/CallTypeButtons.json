@@ -18,18 +18,6 @@
         "category": "non-data"
     },
     {
-        "name": "blank",
-        "label": "Blank",
-        "type": "button",
-        "category": "non-data"
-    },
-    {
-        "name": "joke",
-        "label": "Joke",
-        "type": "button",
-        "category": "non-data"
-    },
-    {
         "name": "hangup",
         "label": "Hang up",
         "type": "button",
