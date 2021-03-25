@@ -286,14 +286,14 @@ const Case: React.FC<Props> = props => {
    * Setting this flag in the first render.
    */
   const [isEditing, setIsEditing] = useState(
-    props.connectedCaseState?.connectedCase && props.connectedCaseState?.connectedCase?.status === 'open',
+    props.connectedCaseState?.connectedCase && props.connectedCaseState?.connectedCase?.status !== 'closed',
   );
 
   if (!props.connectedCaseState) return null;
 
   const { task, form, counselorsHash } = props;
 
-  const { connectedCase, caseHasBeenEdited } = props.connectedCaseState;
+  const { connectedCase, caseHasBeenEdited, prevStatus } = props.connectedCaseState;
 
   const getCategories = firstConnectedContact => {
     if (firstConnectedContact?.rawJson?.caseInformation) {
@@ -317,7 +317,7 @@ const Case: React.FC<Props> = props => {
       if (props.updateAllCasesView) {
         props.updateAllCasesView(updatedCase);
       }
-      setIsEditing(connectedCase.status === 'open');
+      setIsEditing(connectedCase.status !== 'closed');
     } catch (error) {
       console.error(error);
       window.alert(strings['Error-Backend']);
@@ -428,6 +428,7 @@ const Case: React.FC<Props> = props => {
                 name={fullName}
                 status={status}
                 isEditing={isEditing}
+                prevStatus={prevStatus}
                 counselor={caseCounselor}
                 categories={categories}
                 openedDate={openedDate}
@@ -512,7 +513,7 @@ const Case: React.FC<Props> = props => {
                     <Template code="BottomBar-Close" />
                   </StyledNextStepButton>
                 </Box>
-                {isEditing && (
+                {(isEditing || caseHasBeenEdited) && (
                   <StyledNextStepButton disabled={!caseHasBeenEdited} roundCorners onClick={handleUpdate}>
                     <Template code="BottomBar-Update" />
                   </StyledNextStepButton>

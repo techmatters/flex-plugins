@@ -4,7 +4,7 @@
 /* eslint-disable react/jsx-max-depth */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/no-multi-comp */
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Template } from '@twilio/flex-ui';
 
@@ -28,6 +28,7 @@ const CaseDetails = ({
   lastUpdatedDate,
   followUpDate,
   status,
+  prevStatus,
   isEditing,
   office,
   childIsAtRisk,
@@ -39,22 +40,21 @@ const CaseDetails = ({
   definitionVersionName,
   isOrphanedCase,
 }) => {
-  const currentStatus = definitionVersion.caseStatus[status];
-
   const statusOptions = React.useMemo(() => {
-    const possibleTransitions = currentStatus.transitions.reduce(
-      (acc, curr) => [...acc, definitionVersion.caseStatus[curr]],
+    const statusTransitions = [prevStatus, ...definitionVersion.caseStatus[prevStatus].transitions];
+    return statusTransitions.reduce(
+      (acc, curr) => [...acc, { value: curr, label: definitionVersion.caseStatus[curr].label }],
       [],
     );
-    return [currentStatus, possibleTransitions];
-  }, [currentStatus, definitionVersion]);
+  }, [definitionVersion.caseStatus, prevStatus]);
 
   const onStatusChange = selectedOption => {
     handleStatusChange(selectedOption);
   };
 
-  const color = currentStatus.color || '#000000';
+  const color = definitionVersion.caseStatus[status].color || '#000000';
   const lastUpdatedClosedDate = openedDate === lastUpdatedDate ? '—' : lastUpdatedDate;
+  const statusCanTransition = statusOptions.length !== 1;
   return (
     <>
       <CaseDetailsHeader
@@ -118,12 +118,12 @@ const CaseDetails = ({
                 <Template code="Case-CaseDetailsStatusLabel" />
               </label>
             </DetailDescription>
-            <StyledSelectWrapper disabled={!isEditing}>
+            <StyledSelectWrapper disabled={!statusCanTransition}>
               <StyledSelectField
                 id="Details_CaseStatus"
                 name="Details_CaseStatus"
                 aria-labelledby="CaseDetailsStatusLabel"
-                disabled={!isEditing}
+                disabled={!statusCanTransition}
                 onChange={e => onStatusChange(e.target.value)}
                 defaultValue={status}
                 color={color}
@@ -153,6 +153,7 @@ CaseDetails.propTypes = {
   counselor: PropTypes.string.isRequired,
   openedDate: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
+  prevStatus: PropTypes.string.isRequired,
   office: PropTypes.string,
   isEditing: PropTypes.bool.isRequired,
   followUpDate: PropTypes.string,
