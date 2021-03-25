@@ -12,6 +12,7 @@ import CallTypeButtons from './CallTypeButtons.json';
 import OfficeInformation from './OfficeInformation.json';
 import oneToOneConfigSpec from './insights/oneToOneConfigSpec.json';
 import oneToManyConfigSpecs from './insights/oneToManyConfigSpecs.json';
+import CaseStatus from './CaseStatus.json';
 import type {
   DefinitionVersion,
   LayoutVersion,
@@ -19,7 +20,7 @@ import type {
   CallTypeButtonsDefinitions,
   OfficeDefinitions,
 } from '../../components/common/forms/types';
-import { OneToOneConfigSpec, OneToManyConfigSpecs } from '../../insightsConfig/types';
+import type { OneToOneConfigSpec, OneToManyConfigSpecs } from '../../insightsConfig/types';
 
 const version: DefinitionVersion = {
   caseForms: {
@@ -42,6 +43,7 @@ const version: DefinitionVersion = {
     oneToOneConfigSpec: (oneToOneConfigSpec as unknown) as OneToOneConfigSpec,
     oneToManyConfigSpecs: oneToManyConfigSpecs as OneToManyConfigSpecs,
   },
+  caseStatus: (CaseStatus as unknown) as DefinitionVersion['caseStatus'],
 };
 
 export default version;

@@ -164,6 +164,13 @@ export type LayoutVersion = {
   };
 };
 
+type StatusInfo = {
+  value: string;
+  label: string;
+  color: string;
+  transitions: [string];
+};
+
 /**
  * Type that defines a complete version for all the customizable forms used across the app
  */
@@ -188,5 +195,8 @@ export type DefinitionVersion = {
   insights: {
     oneToOneConfigSpec: OneToOneConfigSpec;
     oneToManyConfigSpecs: OneToManyConfigSpecs;
+  };
+  caseStatus: {
+    [status: string]: StatusInfo;
   };
 };

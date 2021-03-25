@@ -11,6 +11,7 @@ import IssueCategorizationTab from './tabbedForms/IssueCategorizationTab.json';
 import CallTypeButtons from './CallTypeButtons.json';
 import oneToOneConfigSpec from './insights/oneToOneConfigSpec.json';
 import oneToManyConfigSpecs from './insights/oneToManyConfigSpecs.json';
+import CaseStatus from './CaseStatus.json';
 import type {
   DefinitionVersion,
   LayoutVersion,
@@ -39,6 +40,7 @@ const version: DefinitionVersion = {
     oneToOneConfigSpec: (oneToOneConfigSpec as unknown) as OneToOneConfigSpec,
     oneToManyConfigSpecs: oneToManyConfigSpecs as OneToManyConfigSpecs,
   },
+  caseStatus: (CaseStatus as unknown) as DefinitionVersion['caseStatus'],
 };
 
 export default version;
