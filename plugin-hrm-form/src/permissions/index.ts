@@ -13,6 +13,8 @@ export const PermissionActions = {
   ADD_PERPETRATOR: 'addPerpetrator',
   ADD_INCIDENT: 'addIncident',
   EDIT_CASE_SUMMARY: 'editCaseSummary',
+  EDIT_CHILD_IS_AT_RISK: 'editChildIsAtRisk',
+  EDIT_FOLLOW_UP_DATE: 'editFollowUpDate',
 };
 
 type PermissionActionsKeys = keyof typeof PermissionActions;
@@ -21,7 +23,9 @@ type Version = 'v1' | 'za-v1';
 type Rule = (isSupervisor: boolean, isCreator: boolean, isCaseOpen: boolean) => boolean;
 type Rules = {
   canEditCaseSummary: Rule;
+  canEditChildIsAtRisk: Rule;
   canEditGenericField: Rule;
+  canEditFollowUpDate: Rule;
 };
 
 const rulesMap: { [version in Version]: Rules } = {
@@ -43,6 +47,10 @@ export const getPermissionsForCase = (caseObj: t.Case) => {
         return true;
       case PermissionActions.EDIT_CASE_SUMMARY:
         return rules.canEditCaseSummary(isSupervisor, isCreator, isCaseOpen);
+      case PermissionActions.EDIT_CHILD_IS_AT_RISK:
+        return rules.canEditChildIsAtRisk(isSupervisor, isCreator, isCaseOpen);
+      case PermissionActions.EDIT_FOLLOW_UP_DATE:
+        return rules.canEditFollowUpDate(isSupervisor, isCreator, isCaseOpen);
       default:
         return rules.canEditGenericField(isSupervisor, isCreator, isCaseOpen);
     }

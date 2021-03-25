@@ -65,10 +65,10 @@ const CaseDetails = ({
         counselor={counselor}
         childIsAtRisk={childIsAtRisk}
         office={office}
-        status={status}
         handlePrintCase={handlePrintCase}
         handleClickChildIsAtRisk={handleClickChildIsAtRisk}
         isOrphanedCase={isOrphanedCase}
+        can={can}
       />
       <DetailsContainer tabIndex={0} aria-labelledby="Case-CaseId-label">
         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -108,7 +108,7 @@ const CaseDetails = ({
               type="date"
               id="Details_DateFollowUp"
               name="Details_DateFollowUp"
-              disabled={status === 'closed'}
+              disabled={!can(PermissionActions.EDIT_FOLLOW_UP_DATE)}
               value={followUpDate}
               onChange={e => handleInfoChange('followUpDate', e.target.value)}
               aria-labelledby="CaseDetailsFollowUpDate"

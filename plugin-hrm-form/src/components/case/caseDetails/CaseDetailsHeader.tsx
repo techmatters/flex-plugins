@@ -18,7 +18,7 @@ import {
   StyledPrintButton,
 } from '../../../styles/case';
 import { Box, FormCheckbox, FormLabel } from '../../../styles/HrmStyles';
-import { CaseStatus } from '../../../types/types';
+import { PermissionActions, PermissionActionType } from '../../../permissions';
 
 type OwnProps = {
   caseId: string;
@@ -26,10 +26,10 @@ type OwnProps = {
   office: string;
   counselor: string;
   childIsAtRisk: boolean;
-  status: CaseStatus;
   handlePrintCase: () => void;
   handleClickChildIsAtRisk: () => void;
   isOrphanedCase: boolean;
+  can: (action: PermissionActionType) => boolean;
 };
 
 const CaseDetailsHeader: React.FC<OwnProps> = ({
@@ -38,10 +38,10 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
   office,
   counselor,
   childIsAtRisk,
-  status,
   handlePrintCase,
   handleClickChildIsAtRisk,
   isOrphanedCase,
+  can,
 }) => {
   const { multipleOfficeSupport } = getConfig();
   return (
@@ -73,7 +73,7 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
                 type="checkbox"
                 onChange={handleClickChildIsAtRisk}
                 defaultChecked={Boolean(childIsAtRisk)}
-                disabled={status === 'closed'}
+                disabled={!can(PermissionActions.EDIT_CHILD_IS_AT_RISK)}
               />
             </Box>
             <Template code="Case-ChildIsAtRisk" />
