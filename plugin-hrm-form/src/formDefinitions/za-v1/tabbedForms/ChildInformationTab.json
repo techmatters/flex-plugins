@@ -1198,7 +1198,7 @@
     "label": "Language",
     "type": "select",
     "options": [
-      { "value": "", "label": "" },
+      { "value": "Unknown", "label": "" },
       { "value": "Afrikaans", "label": "Afrikaans" },
       { "value": "English", "label": "English" },
       { "value": "Ndebele", "label": "Ndebele" },
@@ -1219,7 +1219,7 @@
     "label": "Race",
     "type": "select",
     "options": [
-      { "value": "", "label": "" },
+      { "value": "Unknown", "label": "" },
       { "value": "Asian", "label": "Asian" },
       { "value": "Black", "label": "Black" },
       { "value": "Coloured", "label": "Coloured" },
@@ -1247,7 +1247,7 @@
     "label": "Grade Level",
     "type": "select",
     "options": [
-      { "value": "", "label": "" },
+      { "value": "Unknown", "label": "" },
       { "value": "Grade 0 (Preschool)", "label": "Grade 0 (Preschool)" },
       { "value": "Grade 1 to 3 (Junior Primary)", "label": "Grade 1 to 3 (Junior Primary)" },
       { "value": "Grade 4 to 7 (Senior Primary)", "label": "Grade 4 to 7 (Senior Primary)" },
@@ -1262,7 +1262,7 @@
     "label": "Living Situation",
     "type": "select",
     "options": [
-      { "value": "", "label": "" },
+      { "value": "Unknown", "label": "" },
       { "value": "Foster care", "label": "Foster care" },
       { "value": "Gropu facility", "label": "Group facility" },
       { "value": "On their own", "label": "On their own" },
@@ -1314,7 +1314,7 @@
     "label": "Child with disability",
     "type": "select",
     "options": [
-      { "value": "", "label": "" },
+      { "value": "Unknown", "label": "" },
       { "value": "Child mentally disabled", "label": "Child mentally disabled" },
       { "value": "Child physically disabled", "label": "Child physically disabled" },
       { "value": "Hearing", "label": "Hearing" },
