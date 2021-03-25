@@ -54,6 +54,7 @@ import ViewReferral from './ViewReferral';
 import type { CaseDetailsName } from '../../states/case/types';
 import type { HouseholdEntry, PerpetratorEntry, IncidentEntry, Case as CaseType, CustomITask } from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
+import { getPermissionsForCase, PermissionActions } from '../../permissions';
 
 const isStandaloneITask = (task): task is StandaloneITask => {
   return task.taskSid === 'standalone-task-sid';
@@ -389,14 +390,7 @@ const Case: React.FC<Props> = props => {
     contact: firstConnectedContact,
   };
 
-  const canEditFields = workerSid === twilioWorkerId && status === 'open';
-  let canEditCaseSummary = false;
-
-  if (version === 'v1') {
-    canEditCaseSummary = isSupervisor || canEditFields;
-  } else if (version === 'za-v1') {
-    canEditCaseSummary = isSupervisor;
-  }
+  const { can } = getPermissionsForCase(connectedCase);
 
   switch (subroute) {
     case 'add-note':
@@ -436,7 +430,7 @@ const Case: React.FC<Props> = props => {
                 caseId={connectedCase.id}
                 name={fullName}
                 status={status}
-                canEditFields={canEditFields}
+                can={can}
                 isEditing={isEditing}
                 counselor={caseCounselor}
                 categories={categories}
@@ -454,18 +448,12 @@ const Case: React.FC<Props> = props => {
               />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
-              <Timeline
-                timelineActivities={timeline}
-                caseObj={connectedCase}
-                task={task}
-                form={form}
-                canEditFields={canEditFields}
-              />
+              <Timeline timelineActivities={timeline} caseObj={connectedCase} task={task} form={form} can={can} />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
               <Households
                 households={households}
-                canEditFields={canEditFields}
+                can={can}
                 onClickAddHousehold={onClickAddHousehold}
                 onClickView={onClickViewHousehold}
               />
@@ -473,7 +461,7 @@ const Case: React.FC<Props> = props => {
             <Box marginLeft="25px" marginTop="25px">
               <Perpetrators
                 perpetrators={perpetrators}
-                canEditFields={canEditFields}
+                can={can}
                 onClickAddPerpetrator={onClickAddPerpetrator}
                 onClickView={onClickViewPerpetrator}
               />
@@ -483,12 +471,12 @@ const Case: React.FC<Props> = props => {
                 incidents={incidents}
                 onClickAddIncident={onClickAddIncident}
                 onClickView={onClickViewIncident}
-                canEditFields={canEditFields}
+                can={can}
                 definitionVersion={definitionVersion}
               />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
-              <CaseSummary task={props.task} readonly={!canEditCaseSummary} />
+              <CaseSummary task={props.task} readonly={!can(PermissionActions.EDIT_CASE_SUMMARY)} />
             </Box>
             <Dialog onClose={closeMockedMessage} open={isMockedMessageOpen}>
               <DialogContent>{mockedMessage}</DialogContent>

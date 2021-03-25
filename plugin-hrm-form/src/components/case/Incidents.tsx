@@ -8,22 +8,17 @@ import { CaseSectionFont, TimelineRow, PlaceHolderText } from '../../styles/case
 import CaseAddButton from './CaseAddButton';
 import TimelineInformationRow from './TimelineInformationRow';
 import type { DefinitionVersion } from '../common/forms/types';
+import { PermissionActions, PermissionActionType } from '../../permissions';
 
 type OwnProps = {
   onClickAddIncident: () => void;
   onClickView: (incident: IncidentEntry) => void;
   incidents: CaseInfo['incidents'];
-  canEditFields: boolean;
+  can: (action: PermissionActionType) => boolean;
   definitionVersion: DefinitionVersion;
 };
 
-const Incidents: React.FC<OwnProps> = ({
-  onClickAddIncident,
-  onClickView,
-  incidents,
-  canEditFields,
-  definitionVersion,
-}) => {
+const Incidents: React.FC<OwnProps> = ({ onClickAddIncident, onClickView, incidents, can, definitionVersion }) => {
   return (
     <>
       <Box marginBottom="10px">
@@ -31,7 +26,11 @@ const Incidents: React.FC<OwnProps> = ({
           <CaseSectionFont id="Case-AddIncidentSection-label">
             <Template code="Case-AddIncidentSection" />
           </CaseSectionFont>
-          <CaseAddButton templateCode="Case-Incident" onClick={onClickAddIncident} canEditFields={canEditFields} />
+          <CaseAddButton
+            templateCode="Case-Incident"
+            onClick={onClickAddIncident}
+            disabled={!can(PermissionActions.ADD_INCIDENT)}
+          />
         </Row>
       </Box>
       {incidents.length ? (

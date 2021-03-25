@@ -17,6 +17,7 @@ import {
   StyledSelectWrapper,
 } from '../../styles/case';
 import { FormOption } from '../../styles/HrmStyles';
+import { PermissionActions } from '../../permissions';
 
 const statusOptions = [
   { label: 'Open', value: 'open', color: 'green' },
@@ -32,7 +33,7 @@ const CaseDetails = ({
   lastUpdatedDate,
   followUpDate,
   status,
-  canEditFields,
+  can,
   isEditing,
   office,
   childIsAtRisk,
@@ -54,7 +55,7 @@ const CaseDetails = ({
     handleStatusChange(selectedOption);
   };
 
-  const changeStatusDisabled = !isEditing || !canEditFields;
+  const changeStatusDisabled = !isEditing || !can(PermissionActions.CLOSE_CASE);
 
   return (
     <>
@@ -154,7 +155,7 @@ CaseDetails.propTypes = {
   counselor: PropTypes.string.isRequired,
   openedDate: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
-  canEditFields: PropTypes.bool.isRequired,
+  can: PropTypes.func.isRequired,
   office: PropTypes.string,
   isEditing: PropTypes.bool.isRequired,
   followUpDate: PropTypes.string,
