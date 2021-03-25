@@ -4,7 +4,6 @@ import * as v1Rules from './v1';
 import * as zaV1Rules from './za-v1';
 
 export const PermissionActions = {
-  OTHER: 'other',
   CLOSE_CASE: 'closeCase',
   REOPEN_CASE: 'reopenCase',
   ADD_NOTE: 'addNote',
@@ -43,8 +42,6 @@ export const getPermissionsForCase = (caseObj: t.Case) => {
 
   const can = (action: PermissionActionType): boolean => {
     switch (action) {
-      case PermissionActions.OTHER:
-        return true;
       case PermissionActions.EDIT_CASE_SUMMARY:
         return rules.canEditCaseSummary(isSupervisor, isCreator, isCaseOpen);
       case PermissionActions.EDIT_CHILD_IS_AT_RISK:
