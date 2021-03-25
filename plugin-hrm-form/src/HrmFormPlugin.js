@@ -36,6 +36,7 @@ export const getConfig = () => {
   const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
   const { identity, token } = manager.user;
   const counselorName = manager.workerClient.attributes.full_name;
+  const isSupervisor = manager.workerClient.attributes.roles.includes('supervisor');
   const {
     configuredLanguage,
     definitionVersion,
@@ -58,6 +59,7 @@ export const getConfig = () => {
     identity,
     token,
     counselorName,
+    isSupervisor,
     featureFlags,
     sharedStateClient,
     strings,

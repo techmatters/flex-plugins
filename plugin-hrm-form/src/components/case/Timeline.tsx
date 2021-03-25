@@ -30,7 +30,7 @@ import { Activity } from '../../states/case/types';
 
 type OwnProps = {
   timelineActivities: Activity[];
-  status: string;
+  canEditFields: boolean;
   task: ITask;
   form: TaskEntry;
   caseObj: CaseType;
@@ -40,7 +40,7 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const Timeline: React.FC<Props> = props => {
-  const { status, task, form, caseObj, changeRoute, updateTempInfo, route, timelineActivities } = props;
+  const { canEditFields, task, form, caseObj, changeRoute, updateTempInfo, route, timelineActivities } = props;
   const [mockedMessage, setMockedMessage] = useState(null);
 
   const handleOnClickView = activity => {
@@ -112,8 +112,13 @@ const Timeline: React.FC<Props> = props => {
             <Template code="Case-TimelineSection" />
           </CaseSectionFont>
           <Box marginLeft="auto">
-            <CaseAddButton templateCode="Case-Note" onClick={handleAddNoteClick} status={status} />
-            <CaseAddButton templateCode="Case-Referral" onClick={handleAddReferralClick} status={status} withDivider />
+            <CaseAddButton templateCode="Case-Note" onClick={handleAddNoteClick} canEditFields={canEditFields} />
+            <CaseAddButton
+              templateCode="Case-Referral"
+              onClick={handleAddReferralClick}
+              canEditFields={canEditFields}
+              withDivider
+            />
           </Box>
         </Row>
       </Box>

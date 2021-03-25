@@ -13,11 +13,17 @@ type OwnProps = {
   onClickAddIncident: () => void;
   onClickView: (incident: IncidentEntry) => void;
   incidents: CaseInfo['incidents'];
-  status: CaseStatus;
+  canEditFields: boolean;
   definitionVersion: DefinitionVersion;
 };
 
-const Incidents: React.FC<OwnProps> = ({ onClickAddIncident, onClickView, incidents, status, definitionVersion }) => {
+const Incidents: React.FC<OwnProps> = ({
+  onClickAddIncident,
+  onClickView,
+  incidents,
+  canEditFields,
+  definitionVersion,
+}) => {
   return (
     <>
       <Box marginBottom="10px">
@@ -25,7 +31,7 @@ const Incidents: React.FC<OwnProps> = ({ onClickAddIncident, onClickView, incide
           <CaseSectionFont id="Case-AddIncidentSection-label">
             <Template code="Case-AddIncidentSection" />
           </CaseSectionFont>
-          <CaseAddButton templateCode="Case-Incident" onClick={onClickAddIncident} status={status} />
+          <CaseAddButton templateCode="Case-Incident" onClick={onClickAddIncident} canEditFields={canEditFields} />
         </Row>
       </Box>
       {incidents.length ? (

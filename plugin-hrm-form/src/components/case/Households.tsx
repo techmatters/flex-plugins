@@ -12,10 +12,10 @@ type OwnProps = {
   onClickAddHousehold: () => void;
   onClickView: (household: HouseholdEntry) => void;
   households: CaseInfo['households'];
-  status: string;
+  canEditFields: boolean;
 };
 
-const Households: React.FC<OwnProps> = ({ onClickAddHousehold, onClickView, households, status }) => {
+const Households: React.FC<OwnProps> = ({ onClickAddHousehold, onClickView, households, canEditFields }) => {
   return (
     <>
       <Box marginBottom="10px">
@@ -23,7 +23,7 @@ const Households: React.FC<OwnProps> = ({ onClickAddHousehold, onClickView, hous
           <CaseSectionFont id="Case-AddHouseholdSection-label">
             <Template code="Case-AddHouseholdSection" />
           </CaseSectionFont>
-          <CaseAddButton templateCode="Case-Household" onClick={onClickAddHousehold} status={status} />
+          <CaseAddButton templateCode="Case-Household" onClick={onClickAddHousehold} canEditFields={canEditFields} />
         </Row>
       </Box>
       {households.length ? (

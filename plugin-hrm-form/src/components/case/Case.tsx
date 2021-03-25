@@ -340,7 +340,7 @@ const Case: React.FC<Props> = props => {
   const fullName = splitFullName(name);
   const categories = getCategories(firstConnectedContact);
   const { createdAt, updatedAt, twilioWorkerId, status, info } = connectedCase || {};
-  const { workerSid } = getConfig(); // -- Gets the current counselor that is using the application.
+  const { workerSid, isSupervisor } = getConfig(); // -- Gets the current counselor that is using the application.
   const caseCounselor = counselorsHash[twilioWorkerId];
   const currentCounselor = counselorsHash[workerSid];
   const openedDate = getLocaleDateTime(createdAt);
@@ -389,6 +389,15 @@ const Case: React.FC<Props> = props => {
     contact: firstConnectedContact,
   };
 
+  const canEditFields = workerSid === twilioWorkerId && status === 'open';
+  let canEditCaseSummary = false;
+
+  if (version === 'v1') {
+    canEditCaseSummary = isSupervisor || canEditFields;
+  } else if (version === 'za-v1') {
+    canEditCaseSummary = isSupervisor;
+  }
+
   switch (subroute) {
     case 'add-note':
       return <AddNote {...addScreenProps} />;
@@ -427,6 +436,7 @@ const Case: React.FC<Props> = props => {
                 caseId={connectedCase.id}
                 name={fullName}
                 status={status}
+                canEditFields={canEditFields}
                 isEditing={isEditing}
                 counselor={caseCounselor}
                 categories={categories}
@@ -444,12 +454,18 @@ const Case: React.FC<Props> = props => {
               />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
-              <Timeline timelineActivities={timeline} caseObj={connectedCase} task={task} form={form} status={status} />
+              <Timeline
+                timelineActivities={timeline}
+                caseObj={connectedCase}
+                task={task}
+                form={form}
+                canEditFields={canEditFields}
+              />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
               <Households
                 households={households}
-                status={status}
+                canEditFields={canEditFields}
                 onClickAddHousehold={onClickAddHousehold}
                 onClickView={onClickViewHousehold}
               />
@@ -457,7 +473,7 @@ const Case: React.FC<Props> = props => {
             <Box marginLeft="25px" marginTop="25px">
               <Perpetrators
                 perpetrators={perpetrators}
-                status={status}
+                canEditFields={canEditFields}
                 onClickAddPerpetrator={onClickAddPerpetrator}
                 onClickView={onClickViewPerpetrator}
               />
@@ -467,12 +483,12 @@ const Case: React.FC<Props> = props => {
                 incidents={incidents}
                 onClickAddIncident={onClickAddIncident}
                 onClickView={onClickViewIncident}
-                status={status}
+                canEditFields={canEditFields}
                 definitionVersion={definitionVersion}
               />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
-              <CaseSummary task={props.task} readonly={status === 'closed'} />
+              <CaseSummary task={props.task} readonly={!canEditCaseSummary} />
             </Box>
             <Dialog onClose={closeMockedMessage} open={isMockedMessageOpen}>
               <DialogContent>{mockedMessage}</DialogContent>

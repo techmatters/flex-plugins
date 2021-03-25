@@ -12,10 +12,10 @@ type OwnProps = {
   onClickAddPerpetrator: () => void;
   onClickView: (perpetrator: PerpetratorEntry) => void;
   perpetrators: CaseInfo['perpetrators'];
-  status: string;
+  canEditFields: boolean;
 };
 
-const Perpetrators: React.FC<OwnProps> = ({ onClickAddPerpetrator, onClickView, perpetrators, status }) => {
+const Perpetrators: React.FC<OwnProps> = ({ onClickAddPerpetrator, onClickView, perpetrators, canEditFields }) => {
   return (
     <>
       <Box marginBottom="10px">
@@ -23,7 +23,11 @@ const Perpetrators: React.FC<OwnProps> = ({ onClickAddPerpetrator, onClickView, 
           <CaseSectionFont id="Case-AddPerpetratorSection-label">
             <Template code="Case-AddPerpetratorSection" />
           </CaseSectionFont>
-          <CaseAddButton templateCode="Case-Perpetrator" onClick={onClickAddPerpetrator} status={status} />
+          <CaseAddButton
+            templateCode="Case-Perpetrator"
+            onClick={onClickAddPerpetrator}
+            canEditFields={canEditFields}
+          />
         </Row>
       </Box>
       {perpetrators.length ? (

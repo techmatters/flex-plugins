@@ -32,6 +32,7 @@ const CaseDetails = ({
   lastUpdatedDate,
   followUpDate,
   status,
+  canEditFields,
   isEditing,
   office,
   childIsAtRisk,
@@ -52,6 +53,8 @@ const CaseDetails = ({
     setColor(statusOptions.find(x => x.value === selectedOption).color);
     handleStatusChange(selectedOption);
   };
+
+  const changeStatusDisabled = !isEditing || !canEditFields;
 
   return (
     <>
@@ -116,12 +119,12 @@ const CaseDetails = ({
                 <Template code="Case-CaseDetailsStatusLabel" />
               </label>
             </DetailDescription>
-            <StyledSelectWrapper disabled={!isEditing}>
+            <StyledSelectWrapper disabled={changeStatusDisabled}>
               <StyledSelectField
                 id="Details_CaseStatus"
                 name="Details_CaseStatus"
                 aria-labelledby="CaseDetailsStatusLabel"
-                disabled={!isEditing}
+                disabled={changeStatusDisabled}
                 onChange={e => onStatusChange(e.target.value)}
                 defaultValue={status}
                 color={color}
@@ -151,6 +154,7 @@ CaseDetails.propTypes = {
   counselor: PropTypes.string.isRequired,
   openedDate: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
+  canEditFields: PropTypes.bool.isRequired,
   office: PropTypes.string,
   isEditing: PropTypes.bool.isRequired,
   followUpDate: PropTypes.string,
