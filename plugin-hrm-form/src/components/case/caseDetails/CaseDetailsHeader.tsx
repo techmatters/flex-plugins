@@ -18,7 +18,6 @@ import {
   StyledPrintButton,
 } from '../../../styles/case';
 import { Box, FormCheckbox, FormLabel } from '../../../styles/HrmStyles';
-import { CaseStatus } from '../../../types/types';
 
 type OwnProps = {
   caseId: string;
@@ -26,7 +25,7 @@ type OwnProps = {
   office: string;
   counselor: string;
   childIsAtRisk: boolean;
-  status: CaseStatus;
+  status: string;
   handlePrintCase: () => void;
   handleClickChildIsAtRisk: () => void;
   isOrphanedCase: boolean;

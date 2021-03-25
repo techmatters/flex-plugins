@@ -1,4 +1,4 @@
-import { Case, CaseInfo, CaseStatus } from '../../types/types';
+import { Case, CaseInfo } from '../../types/types';
 import {
   CaseActionType,
   TemporaryCaseInfo,
@@ -37,10 +37,10 @@ export const updateTempInfo = (value: TemporaryCaseInfo, taskId: string): CaseAc
 
 /**
  * Redux: Updates status for a provided case.
- * @param status CaseStatus (open, close, etc.)
+ * @param status string (open, close, etc.)
  * @param taskId Twilio Task Id
  */
-export const updateCaseStatus = (status: CaseStatus, taskId: string): CaseActionType => ({
+export const updateCaseStatus = (status: string, taskId: string): CaseActionType => ({
   type: UPDATE_CASE_STATUS,
   status,
   taskId,

@@ -2,7 +2,7 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
-import type { CaseInfo, IncidentEntry, CaseStatus } from '../../types/types';
+import type { CaseInfo, IncidentEntry } from '../../types/types';
 import { Box, Row } from '../../styles/HrmStyles';
 import { CaseSectionFont, TimelineRow, PlaceHolderText } from '../../styles/case';
 import CaseAddButton from './CaseAddButton';
@@ -13,7 +13,7 @@ type OwnProps = {
   onClickAddIncident: () => void;
   onClickView: (incident: IncidentEntry) => void;
   incidents: CaseInfo['incidents'];
-  status: CaseStatus;
+  status: string;
   definitionVersion: DefinitionVersion;
 };
 
