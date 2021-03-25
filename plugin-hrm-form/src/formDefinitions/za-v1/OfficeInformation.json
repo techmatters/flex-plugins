@@ -8,18 +8,10 @@
     }
   },
   {
-    "name": "Gauteng",
-    "manager": {
-      "name": "Bhavna Lutchman",
-      "phone": "031 201 2059",
-      "email": "research@childlinesa.org.za"
-    }
-  },
-  {
     "name": "Western Cape",
     "manager": {
       "name": "Nicole Paulsen",
-      "phone": "21 762 8198",
+      "phone": "021 762 8198",
       "email": "info@childlinewc.org"
     }
   }
