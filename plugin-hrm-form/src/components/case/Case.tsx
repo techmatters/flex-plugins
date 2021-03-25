@@ -439,7 +439,8 @@ const Case: React.FC<Props> = props => {
                 handleInfoChange={onInfoChange}
                 handleStatusChange={onStatusChange}
                 handleClickChildIsAtRisk={onClickChildIsAtRisk}
-                definitionVersion={connectedCase.info.definitionVersion}
+                definitionVersion={definitionVersion}
+                definitionVersionName={connectedCase.info.definitionVersion}
                 isOrphanedCase={!firstConnectedContact}
               />
             </Box>

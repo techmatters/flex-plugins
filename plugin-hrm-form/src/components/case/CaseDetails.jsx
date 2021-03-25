@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react/forbid-prop-types */
 /* eslint-disable no-empty-function */
 /* eslint-disable react/jsx-max-depth */
@@ -18,11 +19,6 @@ import {
 } from '../../styles/case';
 import { FormOption } from '../../styles/HrmStyles';
 
-const statusOptions = [
-  { label: 'Open', value: 'open', color: 'green' },
-  { label: 'Closed', value: 'closed', color: 'red' },
-];
-
 const CaseDetails = ({
   caseId,
   name,
@@ -40,19 +36,25 @@ const CaseDetails = ({
   handleStatusChange,
   handleClickChildIsAtRisk,
   definitionVersion,
+  definitionVersionName,
   isOrphanedCase,
 }) => {
-  const lastUpdatedClosedDate = openedDate === lastUpdatedDate ? '—' : lastUpdatedDate;
+  const currentStatus = definitionVersion.caseStatus[status];
 
-  const initialColor = (statusOptions.find(x => x.value === status) || {}).color || '#000000';
-
-  const [color, setColor] = useState(initialColor);
+  const statusOptions = React.useMemo(() => {
+    const possibleTransitions = currentStatus.transitions.reduce(
+      (acc, curr) => [...acc, definitionVersion.caseStatus[curr]],
+      [],
+    );
+    return [currentStatus, possibleTransitions];
+  }, [currentStatus, definitionVersion]);
 
   const onStatusChange = selectedOption => {
-    setColor(statusOptions.find(x => x.value === selectedOption).color);
     handleStatusChange(selectedOption);
   };
 
+  const color = currentStatus.color || '#000000';
+  const lastUpdatedClosedDate = openedDate === lastUpdatedDate ? '—' : lastUpdatedDate;
   return (
     <>
       <CaseDetailsHeader
@@ -136,7 +138,7 @@ const CaseDetails = ({
           </div>
         </div>
         <div style={{ paddingTop: '15px' }}>
-          <CaseTags definitionVersion={definitionVersion} categories={categories} />
+          <CaseTags definitionVersion={definitionVersionName} categories={categories} />
         </div>
       </DetailsContainer>
     </>
@@ -160,7 +162,8 @@ CaseDetails.propTypes = {
   handleInfoChange: PropTypes.func.isRequired,
   handleStatusChange: PropTypes.func.isRequired,
   handleClickChildIsAtRisk: PropTypes.func.isRequired,
-  definitionVersion: PropTypes.string.isRequired,
+  definitionVersion: PropTypes.shape({}).isRequired,
+  definitionVersionName: PropTypes.string.isRequired,
   isOrphanedCase: PropTypes.bool,
 };
 
