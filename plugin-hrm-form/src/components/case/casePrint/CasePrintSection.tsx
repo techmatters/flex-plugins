@@ -27,7 +27,7 @@ const CasePrintSection: React.FC<Props> = ({ sectionName, values, definitions, u
           return (
             <View key={i} style={i % 2 === 0 ? styles.sectionItemRowOdd : styles.sectionItemRowEven}>
               <View style={styles.sectionItemFirstColumn}>
-                <Text style={{ width: '95%' }}>{def.label}</Text>
+                <Text style={{ marginRight: '10px' }}>{def.label}</Text>
               </View>
               <View style={styles.sectionItemSecondColumn}>
                 <Text>{presentValue(unNestInfo ? unNestInformation(def, values) : values[def.name])(def)}</Text>
