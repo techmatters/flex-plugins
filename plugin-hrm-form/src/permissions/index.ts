@@ -23,6 +23,7 @@ type Rule = (isSupervisor: boolean, isCreator: boolean, isCaseOpen: boolean) => 
 type Rules = {
   canEditCaseSummary: Rule;
   canEditGenericField: Rule;
+  canReopenCase: Rule;
 };
 
 const rulesMap: { [version in Version]: Rules } = {
@@ -43,7 +44,7 @@ export const getPermissionsForCase = (caseObj: t.Case) => {
       case PermissionActions.EDIT_CASE_SUMMARY:
         return rules.canEditCaseSummary(isSupervisor, isCreator, isCaseOpen);
       case PermissionActions.REOPEN_CASE:
-        return false;
+        return rules.canReopenCase(isSupervisor, isCreator, isCaseOpen);
       default:
         return rules.canEditGenericField(isSupervisor, isCreator, isCaseOpen);
     }

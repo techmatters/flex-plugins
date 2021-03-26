@@ -34,7 +34,6 @@ const CaseDetails = ({
   followUpDate,
   status,
   can,
-  isEditing,
   office,
   childIsAtRisk,
   handlePrintCase,
@@ -55,7 +54,9 @@ const CaseDetails = ({
     handleStatusChange(selectedOption);
   };
 
-  const changeStatusDisabled = !isEditing || !can(PermissionActions.CLOSE_CASE);
+  const canChangeStatus =
+    (status === 'open' && can(PermissionActions.CLOSE_CASE)) ||
+    (status === 'closed' && can(PermissionActions.REOPEN_CASE));
 
   return (
     <>
@@ -120,12 +121,12 @@ const CaseDetails = ({
                 <Template code="Case-CaseDetailsStatusLabel" />
               </label>
             </DetailDescription>
-            <StyledSelectWrapper disabled={changeStatusDisabled}>
+            <StyledSelectWrapper disabled={!canChangeStatus}>
               <StyledSelectField
                 id="Details_CaseStatus"
                 name="Details_CaseStatus"
                 aria-labelledby="CaseDetailsStatusLabel"
-                disabled={changeStatusDisabled}
+                disabled={!canChangeStatus}
                 onChange={e => onStatusChange(e.target.value)}
                 defaultValue={status}
                 color={color}
@@ -157,7 +158,6 @@ CaseDetails.propTypes = {
   status: PropTypes.string.isRequired,
   can: PropTypes.func.isRequired,
   office: PropTypes.string,
-  isEditing: PropTypes.bool.isRequired,
   followUpDate: PropTypes.string,
   lastUpdatedDate: PropTypes.string,
   childIsAtRisk: PropTypes.bool.isRequired,

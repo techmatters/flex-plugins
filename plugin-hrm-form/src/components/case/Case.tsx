@@ -431,7 +431,6 @@ const Case: React.FC<Props> = props => {
                 name={fullName}
                 status={status}
                 can={can}
-                isEditing={isEditing}
                 counselor={caseCounselor}
                 categories={categories}
                 openedDate={openedDate}
