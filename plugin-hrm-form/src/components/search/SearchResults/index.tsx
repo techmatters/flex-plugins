@@ -34,7 +34,7 @@ import * as SearchActions from '../../../states/search/actions';
 import * as CaseActions from '../../../states/case/actions';
 import * as RoutingActions from '../../../states/routing/actions';
 import { SearchPages, SearchPagesType } from '../../../states/search/types';
-import { namespace, searchContactsBase } from '../../../states';
+import { namespace, searchContactsBase, configurationBase } from '../../../states';
 
 export const CONTACTS_PER_PAGE = 20;
 export const CASES_PER_PAGE = 20;
@@ -80,6 +80,7 @@ const SearchResults: React.FC<Props> = ({
   changeRoute,
   currentPage,
   showConnectIcon,
+  counselorsHash,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [currentContact, setCurrentContact] = useState(null);
@@ -259,7 +260,12 @@ const SearchResults: React.FC<Props> = ({
               {cases &&
                 cases.length > 0 &&
                 cases.map(cas => (
-                  <CasePreview key={cas.id} currentCase={cas} onClickViewCase={handleClickViewCase(cas)} />
+                  <CasePreview
+                    key={cas.id}
+                    currentCase={cas}
+                    counselorsHash={counselorsHash}
+                    onClickViewCase={handleClickViewCase(cas)}
+                  />
                 ))}
               {casesPageCount > 1 && (
                 <Pagination
@@ -283,10 +289,12 @@ const mapStateToProps = (state, ownProps) => {
   const taskId = ownProps.task.taskSid;
   const taskSearchState = searchContactsState.tasks[taskId];
   const isStandaloneSearch = taskId === standaloneTaskSid;
+  const { counselors } = state[namespace][configurationBase];
 
   return {
     currentPage: taskSearchState.currentPage,
     showConnectIcon: !isStandaloneSearch,
+    counselorsHash: counselors.hash,
   };
 };
 

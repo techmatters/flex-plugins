@@ -84,6 +84,8 @@ jest.mock('../styles/search', () => ({
   SummaryText: 'SummaryText',
   ShortSummaryText: 'ShortSummaryText',
   CounselorText: 'CounselorText',
+  CaseFooter: 'CaseFooter',
+  CaseFooterText: 'CaseFooterText',
   DateText: 'DateText',
   TagsWrapper: 'TagsWrapper',
   TagText: 'TagText',

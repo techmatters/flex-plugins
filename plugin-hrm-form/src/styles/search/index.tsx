@@ -236,6 +236,23 @@ export const ShortSummaryText = styled(SummaryText)`
   overflow: hidden;
 `;
 
+export const CaseFooter = styled('div')`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+CaseFooter.displayName = 'CaseFooter';
+
+export const CaseFooterText = styled('div')`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
+
+CaseFooterText.displayName = 'CaseFooterText';
+
 export const CounselorText = styled(SummaryText)`
   opacity: 0.46;
 `;
