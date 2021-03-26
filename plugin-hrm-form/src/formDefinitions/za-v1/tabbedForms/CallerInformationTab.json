@@ -82,6 +82,7 @@
     "defaultOption": { "value": "", "label": "" },
     "options": {
       "Eastern Cape": [
+        { "value": "Unknown", "label": "Unknown" },
         { "value": "Buffalo City Metro Municipality", "label": "Buffalo City Metro Municipality" },
         { "value": "Nelson Mandela Metro Municipality", "label": "Nelson Mandela Metro Municipality" },
         { "value": "Alfred Nzo District", "label": "Alfred Nzo District" },
@@ -92,6 +93,7 @@
         { "value": "Sarah Baartman District", "label": "Sarah Baartman District" }
       ],
       "Free State": [
+        { "value": "Unknown", "label": "Unknown" },
         { "value": "Fezile Dabi-Mafube Municipality", "label": "Fezile Dabi-Mafube Municipality" },
         { "value": "Fezile Dabi-Metsimaholo Municipality", "label": "Fezile Dabi-Metsimaholo Municipality" },
         { "value": "Fezile Dabi-Moqhaka Municipality", "label": "Fezile Dabi-Moqhaka Municipality" },
@@ -113,12 +115,14 @@
         { "value": "Xhariep-Mohokare Municipality", "label": "Xhariep-Mohokare Municipality" }
       ],
       "Gauteng": [
+        { "value": "Unknown", "label": "Unknown" },
         { "value": "City of Tswane", "label": "Tswane" },
         { "value": "Ekurhuleni", "label": "Ekurhuleni" },
         { "value": "Sedibeng - South East Gauteng", "label": "Sedibeng - South East Gauteng" },
         { "value": "Westrand", "label": "Westrand" }
       ],
       "KwaZulu Natal": [
+        { "value": "Unknown", "label": "Unknown" },
         { "value": "Amajuba District Municipality", "label": "Amajuba District" },
         { "value": "Ethekwini District Municipality", "label": "Ethekwini District" },
         { "value": "iLembe District Municipality", "label": "iLembe District" },
@@ -132,6 +136,7 @@
         { "value": "Zululand District Municipality", "label": "Zululand District" }
       ],
       "Limpopo": [
+        { "value": "Unknown", "label": "Unknown" },
         { "value": "Capricorn", "label": "Capricorn" },
         { "value": "Mopane", "label": "Mopane" },
         { "value": "Mopani", "label": "Mopani" },
@@ -140,17 +145,20 @@
         { "value": "Waterberg", "label": "Waterberg" }
       ],
       "Mpumalanga": [
+        { "value": "Unknown", "label": "Unknown" },
         { "value": "Ehlanzeni District Municipality", "label": "Ehlanzeni District" },
         { "value": "Gert Sibande District Municipality", "label": "Gert Sibande District" },
         { "value": "Nkangala District Municipality", "label": "Nkangala District" }
       ],
       "North West": [
+        { "value": "Unknown", "label": "Unknown" },
         { "value": "Bojanala Platinum", "label": "Bojanala Platinum" },
         { "value": "Dr. Ruth Segomotsi Mompati", "label": "Dr. Ruth Segomotsi Mompati" },
         { "value": "Dr. Kenneth Kaunda", "label": "Dr. Kenneth Kaunda" },
         { "value": "Ngaka ModiriMolema", "label": "Ngaka ModiriMolema" }
       ],
       "Northern Cape": [
+        { "value": "Unknown", "label": "Unknown" },
         { "value": "Francis Baard District", "label": "Francis Baard District" },
         { "value": "John Taolo Gaetsewe District Municipality", "label": "John Taolo Gaetsewe District Municipality" },
         { "value": "Namakwa District Municipality", "label": "Namakwa District Municipality" },
@@ -158,6 +166,7 @@
         { "value": "ZF Mgcawu District Municipality", "label": "ZF Mgcawu District Municipality" }
       ],
       "Western Cape": [
+        { "value": "Unknown", "label": "Unknown" },
         { "value": "Cape Winelands", "label": "Cape Winelands" },
         { "value": "Central Karoo", "label": "Central Karoo" },
         { "value": "City of Cape Town", "label": "City of Cape Town" },
