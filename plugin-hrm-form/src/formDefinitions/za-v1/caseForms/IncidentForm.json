@@ -2,12 +2,12 @@
   {
     "name": "date",
     "type": "date-input",
-    "label": "Date of Incident",
+    "label": "Date",
     "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
     "name": "duration",
-    "label": "Duration of Incident",
+    "label": "Duration",
     "type": "select",
     "options": [
       { "value": "", "label": "" },
@@ -18,7 +18,7 @@
   },
   {
     "name": "location",
-    "label": "Place of Incident",
+    "label": "Place",
     "type": "select",
     "options": [
       { "value": "", "label": "" },
