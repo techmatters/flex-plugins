@@ -22,6 +22,12 @@ jest.mock('react', () => ({
   useState: jest.fn(),
 }));
 jest.mock('../../../services/CaseService', () => ({ getActivities: jest.fn(() => []), cancelCase: jest.fn() }));
+jest.mock('../../../permissions', () => ({
+  getPermissionsForCase: jest.fn(() => ({
+    can: () => true,
+  })),
+  PermissionActions: {},
+}));
 
 /**
  * Fix issue with Popper.js:
