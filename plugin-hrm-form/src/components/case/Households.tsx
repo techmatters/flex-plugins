@@ -7,15 +7,16 @@ import { Box, Row } from '../../styles/HrmStyles';
 import { CaseSectionFont, TimelineRow, PlaceHolderText } from '../../styles/case';
 import CaseAddButton from './CaseAddButton';
 import InformationRow from './InformationRow';
+import { PermissionActions, PermissionActionType } from '../../permissions';
 
 type OwnProps = {
   onClickAddHousehold: () => void;
   onClickView: (household: HouseholdEntry) => void;
   households: CaseInfo['households'];
-  status: string;
+  can: (action: PermissionActionType) => boolean;
 };
 
-const Households: React.FC<OwnProps> = ({ onClickAddHousehold, onClickView, households, status }) => {
+const Households: React.FC<OwnProps> = ({ onClickAddHousehold, onClickView, households, can }) => {
   return (
     <>
       <Box marginBottom="10px">
@@ -23,7 +24,11 @@ const Households: React.FC<OwnProps> = ({ onClickAddHousehold, onClickView, hous
           <CaseSectionFont id="Case-AddHouseholdSection-label">
             <Template code="Case-AddHouseholdSection" />
           </CaseSectionFont>
-          <CaseAddButton templateCode="Case-Household" onClick={onClickAddHousehold} status={status} />
+          <CaseAddButton
+            templateCode="Case-Household"
+            onClick={onClickAddHousehold}
+            disabled={!can(PermissionActions.ADD_HOUSEHOLD)}
+          />
         </Row>
       </Box>
       {households.length ? (

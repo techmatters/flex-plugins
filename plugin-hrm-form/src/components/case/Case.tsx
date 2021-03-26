@@ -54,6 +54,7 @@ import ViewReferral from './ViewReferral';
 import type { CaseDetailsName } from '../../states/case/types';
 import type { HouseholdEntry, PerpetratorEntry, IncidentEntry, Case as CaseType, CustomITask } from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
+import { getPermissionsForCase, PermissionActions } from '../../permissions';
 
 const isStandaloneITask = (task): task is StandaloneITask => {
   return task.taskSid === 'standalone-task-sid';
@@ -282,13 +283,6 @@ const Case: React.FC<Props> = props => {
     props.updateCaseInfo(newInfo, props.task.taskSid);
   };
 
-  /**
-   * Setting this flag in the first render.
-   */
-  const [isEditing, setIsEditing] = useState(
-    props.connectedCaseState?.connectedCase && props.connectedCaseState?.connectedCase?.status === 'open',
-  );
-
   if (!props.connectedCaseState) return null;
 
   const { task, form, counselorsHash } = props;
@@ -317,7 +311,6 @@ const Case: React.FC<Props> = props => {
       if (props.updateAllCasesView) {
         props.updateAllCasesView(updatedCase);
       }
-      setIsEditing(connectedCase.status === 'open');
     } catch (error) {
       console.error(error);
       window.alert(strings['Error-Backend']);
@@ -340,7 +333,7 @@ const Case: React.FC<Props> = props => {
   const fullName = splitFullName(name);
   const categories = getCategories(firstConnectedContact);
   const { createdAt, updatedAt, twilioWorkerId, status, info } = connectedCase || {};
-  const { workerSid } = getConfig(); // -- Gets the current counselor that is using the application.
+  const { workerSid, isSupervisor } = getConfig(); // -- Gets the current counselor that is using the application.
   const caseCounselor = counselorsHash[twilioWorkerId];
   const currentCounselor = counselorsHash[workerSid];
   const openedDate = getLocaleDateTime(createdAt);
@@ -389,6 +382,8 @@ const Case: React.FC<Props> = props => {
     contact: firstConnectedContact,
   };
 
+  const { can } = getPermissionsForCase(connectedCase);
+
   switch (subroute) {
     case 'add-note':
       return <AddNote {...addScreenProps} />;
@@ -427,7 +422,7 @@ const Case: React.FC<Props> = props => {
                 caseId={connectedCase.id}
                 name={fullName}
                 status={status}
-                isEditing={isEditing}
+                can={can}
                 counselor={caseCounselor}
                 categories={categories}
                 openedDate={openedDate}
@@ -444,12 +439,12 @@ const Case: React.FC<Props> = props => {
               />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
-              <Timeline timelineActivities={timeline} caseObj={connectedCase} task={task} form={form} status={status} />
+              <Timeline timelineActivities={timeline} caseObj={connectedCase} task={task} form={form} can={can} />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
               <Households
                 households={households}
-                status={status}
+                can={can}
                 onClickAddHousehold={onClickAddHousehold}
                 onClickView={onClickViewHousehold}
               />
@@ -457,7 +452,7 @@ const Case: React.FC<Props> = props => {
             <Box marginLeft="25px" marginTop="25px">
               <Perpetrators
                 perpetrators={perpetrators}
-                status={status}
+                can={can}
                 onClickAddPerpetrator={onClickAddPerpetrator}
                 onClickView={onClickViewPerpetrator}
               />
@@ -467,12 +462,12 @@ const Case: React.FC<Props> = props => {
                 incidents={incidents}
                 onClickAddIncident={onClickAddIncident}
                 onClickView={onClickViewIncident}
-                status={status}
+                can={can}
                 definitionVersion={definitionVersion}
               />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
-              <CaseSummary task={props.task} readonly={status === 'closed'} />
+              <CaseSummary task={props.task} readonly={!can(PermissionActions.EDIT_CASE_SUMMARY)} />
             </Box>
             <Dialog onClose={closeMockedMessage} open={isMockedMessageOpen}>
               <DialogContent>{mockedMessage}</DialogContent>
@@ -511,11 +506,9 @@ const Case: React.FC<Props> = props => {
                     <Template code="BottomBar-Close" />
                   </StyledNextStepButton>
                 </Box>
-                {isEditing && (
-                  <StyledNextStepButton disabled={!caseHasBeenEdited} roundCorners onClick={handleUpdate}>
-                    <Template code="BottomBar-Update" />
-                  </StyledNextStepButton>
-                )}
+                <StyledNextStepButton disabled={!caseHasBeenEdited} roundCorners onClick={handleUpdate}>
+                  <Template code="BottomBar-Update" />
+                </StyledNextStepButton>
               </>
             )}
           </BottomButtonBar>

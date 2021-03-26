@@ -27,10 +27,11 @@ import { blankReferral, Case as CaseType } from '../../types/types';
 import { isConnectedCaseActivity } from './caseHelpers';
 import { TaskEntry } from '../../states/contacts/reducer';
 import { Activity } from '../../states/case/types';
+import { PermissionActions, PermissionActionType } from '../../permissions';
 
 type OwnProps = {
   timelineActivities: Activity[];
-  status: string;
+  can: (action: PermissionActionType) => boolean;
   task: ITask;
   form: TaskEntry;
   caseObj: CaseType;
@@ -40,7 +41,7 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const Timeline: React.FC<Props> = props => {
-  const { status, task, form, caseObj, changeRoute, updateTempInfo, route, timelineActivities } = props;
+  const { can, task, form, caseObj, changeRoute, updateTempInfo, route, timelineActivities } = props;
   const [mockedMessage, setMockedMessage] = useState(null);
 
   const handleOnClickView = activity => {
@@ -112,8 +113,17 @@ const Timeline: React.FC<Props> = props => {
             <Template code="Case-TimelineSection" />
           </CaseSectionFont>
           <Box marginLeft="auto">
-            <CaseAddButton templateCode="Case-Note" onClick={handleAddNoteClick} status={status} />
-            <CaseAddButton templateCode="Case-Referral" onClick={handleAddReferralClick} status={status} withDivider />
+            <CaseAddButton
+              templateCode="Case-Note"
+              onClick={handleAddNoteClick}
+              disabled={!can(PermissionActions.ADD_NOTE)}
+            />
+            <CaseAddButton
+              templateCode="Case-Referral"
+              onClick={handleAddReferralClick}
+              disabled={!can(PermissionActions.ADD_REFERRAL)}
+              withDivider
+            />
           </Box>
         </Row>
       </Box>
