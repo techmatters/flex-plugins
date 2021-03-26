@@ -22,9 +22,7 @@ type Version = 'v1' | 'za-v1';
 type Rule = (isSupervisor: boolean, isCreator: boolean, isCaseOpen: boolean) => boolean;
 type Rules = {
   canEditCaseSummary: Rule;
-  canEditChildIsAtRisk: Rule;
   canEditGenericField: Rule;
-  canEditFollowUpDate: Rule;
 };
 
 const rulesMap: { [version in Version]: Rules } = {
@@ -44,10 +42,8 @@ export const getPermissionsForCase = (caseObj: t.Case) => {
     switch (action) {
       case PermissionActions.EDIT_CASE_SUMMARY:
         return rules.canEditCaseSummary(isSupervisor, isCreator, isCaseOpen);
-      case PermissionActions.EDIT_CHILD_IS_AT_RISK:
-        return rules.canEditChildIsAtRisk(isSupervisor, isCreator, isCaseOpen);
-      case PermissionActions.EDIT_FOLLOW_UP_DATE:
-        return rules.canEditFollowUpDate(isSupervisor, isCreator, isCaseOpen);
+      case PermissionActions.REOPEN_CASE:
+        return false;
       default:
         return rules.canEditGenericField(isSupervisor, isCreator, isCaseOpen);
     }

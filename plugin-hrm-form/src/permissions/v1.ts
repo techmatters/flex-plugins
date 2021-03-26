@@ -1,9 +1,5 @@
 export const canEditCaseSummary = (isSupervisor: boolean, isCreator: boolean, isCaseOpen: boolean) => isSupervisor;
 
-export const canEditChildIsAtRisk = (isSupervisor: boolean, isCreator: boolean, isCaseOpen: boolean) => isCaseOpen;
-
-export const canEditFollowUpDate = (isSupervisor: boolean, isCreator: boolean, isCaseOpen: boolean) => isCaseOpen;
-
 /**
  * For now, all the other actions are the same, and can use the below permission.
  */
