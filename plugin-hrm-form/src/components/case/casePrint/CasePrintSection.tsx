@@ -26,10 +26,12 @@ const CasePrintSection: React.FC<Props> = ({ sectionName, values, definitions, u
         {definitions.map((def, i) => {
           return (
             <View key={i} style={i % 2 === 0 ? styles.sectionItemRowOdd : styles.sectionItemRowEven}>
-              <Text style={styles.sectionItemFirstColumn}>{def.label}</Text>
-              <Text style={styles.sectionItemSecondColumn}>
-                {presentValue(unNestInfo ? unNestInformation(def, values) : values[def.name])(def)}
-              </Text>
+              <View style={styles.sectionItemFirstColumn}>
+                <Text style={{ marginRight: '10px' }}>{def.label}</Text>
+              </View>
+              <View style={styles.sectionItemSecondColumn}>
+                <Text>{presentValue(unNestInfo ? unNestInformation(def, values) : values[def.name])(def)}</Text>
+              </View>
             </View>
           );
         })}
