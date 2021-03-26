@@ -283,13 +283,6 @@ const Case: React.FC<Props> = props => {
     props.updateCaseInfo(newInfo, props.task.taskSid);
   };
 
-  /**
-   * Setting this flag in the first render.
-   */
-  const [isEditing, setIsEditing] = useState(
-    props.connectedCaseState?.connectedCase && props.connectedCaseState?.connectedCase?.status === 'open',
-  );
-
   if (!props.connectedCaseState) return null;
 
   const { task, form, counselorsHash } = props;
@@ -318,7 +311,6 @@ const Case: React.FC<Props> = props => {
       if (props.updateAllCasesView) {
         props.updateAllCasesView(updatedCase);
       }
-      setIsEditing(connectedCase.status === 'open');
     } catch (error) {
       console.error(error);
       window.alert(strings['Error-Backend']);
@@ -514,11 +506,9 @@ const Case: React.FC<Props> = props => {
                     <Template code="BottomBar-Close" />
                   </StyledNextStepButton>
                 </Box>
-                {isEditing && (
-                  <StyledNextStepButton disabled={!caseHasBeenEdited} roundCorners onClick={handleUpdate}>
-                    <Template code="BottomBar-Update" />
-                  </StyledNextStepButton>
-                )}
+                <StyledNextStepButton disabled={!caseHasBeenEdited} roundCorners onClick={handleUpdate}>
+                  <Template code="BottomBar-Update" />
+                </StyledNextStepButton>
               </>
             )}
           </BottomButtonBar>
