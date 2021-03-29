@@ -168,6 +168,7 @@ describe('useState mocked', () => {
             connectedContacts: [],
           },
           temporaryCaseInfo: '',
+          prevStatus: 'open',
         },
       },
     },
