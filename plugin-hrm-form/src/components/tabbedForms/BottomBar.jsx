@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 import { Template } from '@twilio/flex-ui';
 import FolderOpenIcon from '@material-ui/icons/FolderOpen';
+import { CircularProgress } from '@material-ui/core';
 import FolderIcon from '@material-ui/icons/Folder';
 import AddIcon from '@material-ui/icons/Add';
 import Dialog from '@material-ui/core/Dialog';
@@ -45,6 +46,7 @@ class BottomBar extends Component {
     anchorEl: null,
     isMenuOpen: false,
     mockedMessage: null,
+    isSubmitting: false,
   };
 
   toggleCaseMenu = e => {
@@ -75,6 +77,10 @@ class BottomBar extends Component {
   };
 
   handleSubmit = async () => {
+    if (this.state.isSubmitting) return;
+
+    this.setState({ isSubmitting: true });
+
     // eslint-disable-next-line react/prop-types
     const { task, contactForm, caseForm } = this.props;
 
@@ -88,6 +94,8 @@ class BottomBar extends Component {
       if (window.confirm(strings['Error-ContinueWithoutRecording'])) {
         await completeTask(task);
       }
+    } finally {
+      this.setState({ isSubmitting: false });
     }
   };
 
@@ -98,7 +106,7 @@ class BottomBar extends Component {
 
   render() {
     const { showNextButton, showSubmitButton, handleSubmitIfValid, optionalButtons, contactForm } = this.props;
-    const { isMenuOpen, anchorEl, mockedMessage } = this.state;
+    const { isMenuOpen, anchorEl, mockedMessage, isSubmitting } = this.state;
 
     const showBottomBar = showNextButton || showSubmitButton;
     const isMockedMessageOpen = Boolean(mockedMessage);
@@ -128,7 +136,7 @@ class BottomBar extends Component {
           {optionalButtons &&
             optionalButtons.map((i, index) => (
               <Box key={`optional-button-${index}`} marginRight="15px">
-                <StyledNextStepButton type="button" roundCorners secondary onClick={i.onClick}>
+                <StyledNextStepButton type="button" roundCorners secondary onClick={i.onClick} disabled={isSubmitting}>
                   <Template code={i.label} />
                 </StyledNextStepButton>
               </Box>
@@ -143,14 +151,24 @@ class BottomBar extends Component {
             <>
               {featureFlags.enable_case_management && !isNonDataCallType(contactForm.callType) && (
                 <Box marginRight="15px">
-                  <StyledNextStepButton type="button" roundCorners secondary onClick={this.toggleCaseMenu}>
+                  <StyledNextStepButton
+                    type="button"
+                    roundCorners
+                    secondary
+                    onClick={this.toggleCaseMenu}
+                    disabled={isSubmitting}
+                  >
                     <FolderIcon style={{ fontSize: '16px', marginRight: '10px' }} />
                     <Template code="BottomBar-SaveAndAddToCase" />
                   </StyledNextStepButton>
                 </Box>
               )}
-              <StyledNextStepButton roundCorners={true} onClick={handleSubmitIfValid(this.handleSubmit, this.onError)}>
-                <Template code="BottomBar-SaveContact" />
+              <StyledNextStepButton
+                roundCorners={true}
+                onClick={handleSubmitIfValid(this.handleSubmit, this.onError)}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? <CircularProgress size={12} /> : <Template code="BottomBar-SaveContact" />}
               </StyledNextStepButton>
             </>
           )}
