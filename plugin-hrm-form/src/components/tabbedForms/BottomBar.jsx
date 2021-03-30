@@ -77,14 +77,12 @@ class BottomBar extends Component {
   };
 
   handleSubmit = async () => {
-    if (this.state.isSubmitting) return;
-
-    this.setState({ isSubmitting: true });
-
     // eslint-disable-next-line react/prop-types
     const { task, contactForm, caseForm } = this.props;
 
-    if (!hasTaskControl(task)) return;
+    if (this.state.isSubmitting || !hasTaskControl(task)) return;
+
+    this.setState({ isSubmitting: true });
 
     try {
       await submitContactForm(task, contactForm, caseForm);
