@@ -1,3 +1,4 @@
+import React from 'react';
 import * as Flex from '@twilio/flex-ui';
 import { FlexPlugin, loadCSS } from 'flex-plugin';
 import SyncClient from 'twilio-sync';
@@ -13,6 +14,7 @@ import setUpMonitoring from './utils/setUpMonitoring';
 import * as TransferHelpers from './utils/transfer';
 import { changeLanguage } from './states/configuration/actions';
 import { issueSyncToken } from './services/ServerlessService';
+import CannedResponses from './components/CannedResponses';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 export const PLUGIN_VERSION = '0.10.0';
@@ -190,6 +192,7 @@ const setUpComponents = setupObject => {
   }
 
   Components.setUpStandaloneSearch();
+  Components.setupCannedResponses();
 };
 
 /**

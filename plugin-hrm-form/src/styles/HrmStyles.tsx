@@ -945,3 +945,16 @@ export const TaskCanvasOverride = styled('div')`
   height: 100%;
   background-color: ${props => props.theme.colors.base2};
 `;
+
+export const CannedResponsesContainer = styled('div')`
+  .form {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .input-label {
+    padding-left: 5px;
+  }
+`;
+
+CannedResponsesContainer.displayName = 'CannedResponsesContainer';

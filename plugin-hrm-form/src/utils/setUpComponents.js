@@ -5,6 +5,7 @@ import * as Flex from '@twilio/flex-ui';
 
 import { TransferButton, AcceptTransferButton, RejectTransferButton } from '../components/transfer';
 import * as TransferHelpers from './transfer';
+import CannedResponses from '../components/CannedResponses';
 import QueuesStatusWriter from '../components/queuesStatus/QueuesStatusWriter';
 import QueuesStatus from '../components/queuesStatus';
 import CustomCRMContainer from '../components/CustomCRMContainer';
@@ -401,4 +402,11 @@ export const removeActionsIfTransferring = () => {
   Flex.ParticipantCanvas.Content.remove('actions', {
     if: props => hasNoControlAndIsWarm(props.task) && props.participant.participantType === 'worker',
   });
+};
+
+/**
+ * Canned respònses
+ */
+export const setupCannedResponses = () => {
+  Flex.MessageInput.Content.add(<CannedResponses key="canned-responses" />);
 };

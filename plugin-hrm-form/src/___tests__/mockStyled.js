@@ -67,6 +67,7 @@ jest.mock('../styles/HrmStyles', () => ({
   CategoryCheckboxField: 'CategoryCheckboxField',
   TaskCanvasOverride: 'TaskCanvasOverride',
   PopoverText: 'PopoverText',
+  CannedResponsesContainer: 'CannedResponsesContainer',
 }));
 
 jest.mock('../styles/search', () => ({
