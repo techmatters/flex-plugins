@@ -194,7 +194,7 @@
     "dependsOn": "municipality",
     "defaultOption": { "value": "", "label": "" },
     "options": {
-           "Buffalo City Metro Municipality": [
+      "Buffalo City Metro Municipality": [
         { "value": "Unknown", "label": "Unknown" },
         { "value": "Beacon Bay", "label": "Beacon Bay" },
         { "value": "Berlin", "label": "Berlin" },
