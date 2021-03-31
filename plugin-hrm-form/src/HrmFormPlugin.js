@@ -1,4 +1,3 @@
-import React from 'react';
 import * as Flex from '@twilio/flex-ui';
 import { FlexPlugin, loadCSS } from 'flex-plugin';
 import SyncClient from 'twilio-sync';
