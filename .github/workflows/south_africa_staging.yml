@@ -4,7 +4,11 @@ name: South Africa Staging release
 
 # Controls when the action will run.
 on:
-  workflow_dispatch
+  workflow_dispatch:
+    inputs:
+      changelog:
+        description: Release Changelog - Add a comment about the changes to be included in this release.
+        required: true
   
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -21,6 +25,29 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '12.x'
+      # Setup credentials to access AWS for parameters
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+      # Get AWS parameters
+      - name: Set Datadog Application ID
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "STG_DATADOG_ZA_APP_ID"
+          env_variable_name: "STG_DATADOG_ZA_APP_ID"
+      - name: Set Datadog Client Access token
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "STG_DATADOG_ZA_ACCESS_TOKEN"
+          env_variable_name: "STG_DATADOG_ZA_ACCESS_TOKEN"
+      - name: Set Rollbar Client Access token
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "ROLLBAR_ACCESS_TOKEN"
+          env_variable_name: "ROLLBAR_ACCESS_TOKEN"           
       # Create temporal files for the release
       - name: Create appConfig.js
         run: cp ./public/appConfig.example.js ./public/appConfig.js
@@ -28,7 +55,7 @@ jobs:
       - name: Replace Twilio account SID in appConfig.js
         uses: falnyr/replace-env-vars-action@master
         env:
-          TWILIO_ACCOUNT_SID: ${{ secrets.SA_STG_ACCOUNT_SID }}
+          TWILIO_ACCOUNT_SID: ${{ secrets.ZA_STG_ACCOUNT_SID }}
         with:
           filename: ./plugin-hrm-form/public/appConfig.js
       - name: Create secret.js
@@ -39,27 +66,27 @@ jobs:
       - name: Fill secret.js
         run: |
           cat <<EOT >> ./src/private/secret.js
-          export const rollbarAccessToken = '${{ secrets.ROLLBAR_ACCESS_TOKEN }}';
-          export const datadogAccessToken = '${{ secrets.DATADOG_ACCESS_TOKEN }}';
+          export const rollbarAccessToken = '$ROLLBAR_ACCESS_TOKEN';
+          export const datadogAccessToken = '$STG_DATADOG_ZA_ACCESS_TOKEN';
+          export const datadogApplicationID = '$STG_DATADOG_ZA_APP_ID';
           EOT
         working-directory: ./plugin-hrm-form
       # Runs a single command using the runners shell  
       - name: Install dependencies for the flex-plugins
         run: UNBUNDLED_REACT=true npm install
         working-directory: ./plugin-hrm-form
-      # Deploy the plugin       
-      - name: Run deploy command
+      # Install the Twilio CLI and the flex plugin, then deploy the plugin
+      - name: Install twilio cli and run deploy command
         env:
-         TWILIO_ACCOUNT_SID: ${{ secrets.SA_STG_ACCOUNT_SID }}
-         TWILIO_AUTH_TOKEN: ${{ secrets.SA_STG_AUTH_TOKEN }}
-         CI: true
-        run: npm run deploy
+         TWILIO_ACCOUNT_SID: ${{ secrets.ZA_STG_ACCOUNT_SID }}
+         TWILIO_AUTH_TOKEN: ${{ secrets.ZA_STG_AUTH_TOKEN }}
+         UNBUNDLED_REACT: true
+        run: npm install twilio-cli -g && twilio plugins:install @twilio-labs/plugin-flex@beta && twilio flex:plugins:deploy --changelog "${{ github.event.inputs.changelog }}(commit ${{ github.sha }})"
         working-directory: ./plugin-hrm-form
-
-# For newer versions of the Flex plugins, replace the "Deploy the plugin" step with the following step:
-#      # Install the Twilio CLI and the flex plugin, then deploy the plugin
-#      - name: Install twilio cli and run deploy command
-#        env:
-#         TWILIO_ACCOUNT_SID: ${{ secrets.SA_STG_ACCOUNT_SID }}
-#         TWILIO_AUTH_TOKEN: ${{ secrets.SA_STG_AUTH_TOKEN }}
-#        run: npm install twilio-cli -g && twilio plugins:install @twilio-labs/plugin-flex@beta && twilio flex:plugins:deploy
+       # Release flex plugin
+      - name: Run release command
+        env:
+         TWILIO_ACCOUNT_SID: ${{ secrets.ZA_STG_ACCOUNT_SID }}
+         TWILIO_AUTH_TOKEN: ${{ secrets.ZA_STG_AUTH_TOKEN }}
+        run: twilio flex:plugins:release --plugin plugin-hrm-form@latest
+        working-directory: ./plugin-hrm-form

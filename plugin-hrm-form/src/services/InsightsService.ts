@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import { ITask } from '@twilio/flex-ui';
-import cloneDeep from 'lodash/cloneDeep';
+import { get, cloneDeep } from 'lodash';
 
 import { isNonDataCallType } from '../states/ValidationRules';
 import { mapChannelForInsights } from '../utils/mappers';
@@ -9,14 +9,16 @@ import { TaskEntry } from '../states/contacts/reducer';
 import { Case } from '../types/types';
 import { formatCategories } from '../utils/formatters';
 import callTypes from '../states/DomainConstants';
-import { zambiaInsightsConfig } from '../insightsConfig/zambia';
 import {
-  InsightsObject,
   FieldType,
   InsightsFieldSpec,
   InsightsFormSpec,
-  InsightsConfigSpec,
+  OneToOneConfigSpec,
+  OneToManyConfigSpec,
+  OneToManyConfigSpecs,
 } from '../insightsConfig/types';
+import { getDefinitionVersions } from '../HrmFormPlugin';
+import type { DefinitionVersion } from '../components/common/forms/types';
 
 /*
  * 'Any' is the best we can do, since we're limited by Twilio here.
@@ -61,12 +63,26 @@ const getSubcategories = (contactForm: TaskEntry): string => {
   return formatCategories(categoryMap).join(delimiter);
 };
 
-const baseUpdates = (taskAttributes: TaskAttributes, contactForm: TaskEntry, caseForm: Case): InsightsAttributes => {
+type InsightsUpdateFunction = (
+  attributes: TaskAttributes,
+  contactForm: TaskEntry,
+  caseForm: Case,
+) => InsightsAttributes;
+
+export const baseUpdates: InsightsUpdateFunction = (
+  taskAttributes: TaskAttributes,
+  contactForm: TaskEntry,
+  caseForm: Case,
+): InsightsAttributes => {
   const { callType } = contactForm;
   const hasCustomerData = !isNonDataCallType(callType);
 
   const communication_channel = taskAttributes.isContactlessTask
-    ? mapChannelForInsights(contactForm.contactlessTask.channel)
+    ? mapChannelForInsights(
+        typeof contactForm.contactlessTask.channel === 'string'
+          ? contactForm.contactlessTask.channel
+          : contactForm.contactlessTask.channel.toString(),
+      )
     : mapChannelForInsights(taskAttributes.channelType);
 
   // First add the data we add whether or not there's contact form data
@@ -95,7 +111,7 @@ const baseUpdates = (taskAttributes: TaskAttributes, contactForm: TaskEntry, cas
   };
 };
 
-const contactlessTaskUpdates = (
+export const contactlessTaskUpdates: InsightsUpdateFunction = (
   attributes: TaskAttributes,
   contactForm: TaskEntry,
   caseForm: Case,
@@ -181,6 +197,7 @@ const convertCaseFormForInsights = (caseForm: Case): InsightsCaseForm => {
       date: caseForm.info.referrals[0].date.toString(),
     };
   }
+  // eslint-disable-next-line sonarjs/prefer-immediate-return
   const newCaseForm: InsightsCaseForm = {
     topLevel,
     perpetrator,
@@ -194,7 +211,7 @@ const convertCaseFormForInsights = (caseForm: Case): InsightsCaseForm => {
 export const processHelplineConfig = (
   contactForm: TaskEntry,
   caseForm: Case,
-  configSpec: InsightsConfigSpec,
+  oneToOneConfigSpec: OneToOneConfigSpec,
 ): InsightsAttributes => {
   const insightsAtts: InsightsAttributes = {
     customers: {},
@@ -202,17 +219,17 @@ export const processHelplineConfig = (
   };
 
   const formsToProcess: [InsightsFormSpec, TaskEntry | InsightsCaseForm][] = [];
-  if (configSpec.contactForm) {
+  if (oneToOneConfigSpec.contactForm) {
     // Clone the whole object to avoid modifying the real spec. May not be needed.
-    const contactSpec = cloneDeep(configSpec.contactForm);
+    const contactSpec = cloneDeep(oneToOneConfigSpec.contactForm);
     if (contactForm.callType !== callTypes.caller) {
       // If this isn't a caller type, don't save the caller form data
       contactSpec.callerInformation = [];
     }
     formsToProcess.push([contactSpec, contactForm]);
   }
-  if (configSpec.caseForm) {
-    formsToProcess.push([configSpec.caseForm, convertCaseFormForInsights(caseForm)]);
+  if (oneToOneConfigSpec.caseForm) {
+    formsToProcess.push([oneToOneConfigSpec.caseForm, convertCaseFormForInsights(caseForm)]);
   }
   formsToProcess.forEach(([spec, form]) => {
     Object.keys(spec).forEach(subform => {
@@ -231,30 +248,40 @@ export const processHelplineConfig = (
   return insightsAtts;
 };
 
-// Visible for testing
-export const zambiaUpdates = (
-  attributes: TaskAttributes,
-  contactForm: TaskEntry,
-  caseForm: Case,
-): InsightsAttributes => {
-  const { callType } = contactForm;
-  if (isNonDataCallType(callType)) return {};
+const applyCustomUpdate = (customUpdate: OneToManyConfigSpec): InsightsUpdateFunction => {
+  return (taskAttributes, contactForm, caseForm) => {
+    if (isNonDataCallType(contactForm.callType)) return {};
 
-  const attsToReturn: InsightsAttributes = processHelplineConfig(contactForm, caseForm, zambiaInsightsConfig);
+    const dataSource = { taskAttributes, contactForm, caseForm };
+    // concatenate the values, taken from dataSource using paths (e.g. 'contactForm.childInformation.province')
+    const value = customUpdate.paths.map(path => get(dataSource, path, '')).join(delimiter);
 
-  /*
-   * Custom additions:
-   *  Add province and district into area
-   */
-  attsToReturn[InsightsObject.Customers].area = [
-    contactForm.childInformation.province,
-    contactForm.childInformation.district,
-  ].join(delimiter);
-
-  return attsToReturn;
+    return {
+      [customUpdate.insightsObject]: {
+        [customUpdate.attributeName]: value,
+      },
+    };
+  };
 };
 
-const mergeAttributes = (previousAttributes: TaskAttributes, newAttributes: InsightsAttributes): TaskAttributes => {
+const bindApplyCustomUpdates = (customConfigObject: {
+  oneToManyConfigSpecs: OneToManyConfigSpecs;
+  oneToOneConfigSpec: OneToOneConfigSpec;
+}): InsightsUpdateFunction[] => {
+  const getProcessedAtts: InsightsUpdateFunction = (attributes, contactForm, caseForm) =>
+    isNonDataCallType(contactForm.callType)
+      ? {}
+      : processHelplineConfig(contactForm, caseForm, customConfigObject.oneToOneConfigSpec);
+
+  const customUpdatesFuns = customConfigObject.oneToManyConfigSpecs.map(applyCustomUpdate);
+
+  return [getProcessedAtts, ...customUpdatesFuns];
+};
+
+export const mergeAttributes = (
+  previousAttributes: TaskAttributes,
+  newAttributes: InsightsAttributes,
+): TaskAttributes => {
   return {
     ...previousAttributes,
     conversations: {
@@ -268,13 +295,12 @@ const mergeAttributes = (previousAttributes: TaskAttributes, newAttributes: Insi
   };
 };
 
-// In TS, how do we say that we are returning a function?
-const getInsightsUpdateFunctionsForConfig = (config: any): any => {
-  const functionArray = [baseUpdates, contactlessTaskUpdates];
-  if (config.useZambiaInsights) {
-    functionArray.push(zambiaUpdates);
-  }
-  return functionArray;
+const getInsightsUpdateFunctionsForConfig = (
+  customInsights: DefinitionVersion['insights'],
+): InsightsUpdateFunction[] => {
+  const applyCustomUpdates = bindApplyCustomUpdates(customInsights);
+
+  return [baseUpdates, contactlessTaskUpdates, ...applyCustomUpdates];
 };
 
 /*
@@ -285,11 +311,18 @@ const getInsightsUpdateFunctionsForConfig = (config: any): any => {
  * Note: config parameter tells where to go to get helpline-specific tests.  It should
  * eventually match up with getConfig().  Also useful for testing.
  */
-export async function saveInsightsData(twilioTask: ITask, contactForm: TaskEntry, caseForm: Case, config = {}) {
-  const previousAttributes: TaskAttributes = twilioTask.attributes;
-  const finalAttributes: TaskAttributes = getInsightsUpdateFunctionsForConfig(config)
-    .map((f: any) => f(twilioTask.attributes, contactForm, caseForm))
+export const buildInsightsData = (previousAttributes: ITask['attributes'], contactForm: TaskEntry, caseForm: Case) => {
+  const { currentDefinitionVersion } = getDefinitionVersions();
+
+  // eslint-disable-next-line sonarjs/prefer-immediate-return
+  const finalAttributes: TaskAttributes = getInsightsUpdateFunctionsForConfig(currentDefinitionVersion.insights)
+    .map((f: any) => f(previousAttributes, contactForm, caseForm))
     .reduce((acc: TaskAttributes, curr: InsightsAttributes) => mergeAttributes(acc, curr), previousAttributes);
 
+  return finalAttributes;
+};
+
+export async function saveInsightsData(twilioTask: ITask, contactForm: TaskEntry, caseForm: Case) {
+  const finalAttributes = buildInsightsData(twilioTask.attributes, contactForm, caseForm);
   await twilioTask.setAttributes(finalAttributes);
 }

@@ -1,19 +1,19 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { connect } from 'react-redux';
-import { Template, ITask } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 
 import { Container, StyledNextStepButton, BottomButtonBar, Box } from '../../styles/HrmStyles';
 import { CaseLayout } from '../../styles/case';
-import { namespace, connectedCaseBase, configurationBase } from '../../states';
+import { namespace, connectedCaseBase, configurationBase, RootState } from '../../states';
 import { CaseState } from '../../states/case/reducer';
 import SectionEntry from '../SectionEntry';
 import ActionHeader from './ActionHeader';
-import type { FormDefinition } from '../common/forms/types';
-import PerpetratorForm from '../../formDefinitions/caseForms/PerpetratorForm.json';
+import type { DefinitionVersion } from '../common/forms/types';
 import { StandaloneITask } from '../StandaloneSearch';
+import type { CustomITask } from '../../types/types';
 
-const mapStateToProps = (state, ownProps: OwnProps) => {
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
   const caseState: CaseState = state[namespace][connectedCaseBase];
   const { temporaryCaseInfo } = caseState.tasks[ownProps.task.taskSid];
@@ -22,13 +22,14 @@ const mapStateToProps = (state, ownProps: OwnProps) => {
 };
 
 type OwnProps = {
-  task: ITask | StandaloneITask;
+  task: CustomITask | StandaloneITask;
+  definitionVersion: DefinitionVersion;
   onClickClose: () => void;
 };
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 
-const ViewPerpetrator: React.FC<Props> = ({ counselorsHash, temporaryCaseInfo, onClickClose }) => {
+const ViewPerpetrator: React.FC<Props> = ({ counselorsHash, temporaryCaseInfo, onClickClose, definitionVersion }) => {
   if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'view-perpetrator') return null;
 
   const counselorName = counselorsHash[temporaryCaseInfo.info.twilioWorkerId] || 'Unknown';
@@ -47,7 +48,7 @@ const ViewPerpetrator: React.FC<Props> = ({ counselorsHash, temporaryCaseInfo, o
         />
         <Box paddingTop="10px">
           <>
-            {(PerpetratorForm as FormDefinition).map(e => (
+            {definitionVersion.caseForms.PerpetratorForm.map(e => (
               <SectionEntry
                 key={`entry-${e.label}`}
                 description={<Template code={e.label} />}

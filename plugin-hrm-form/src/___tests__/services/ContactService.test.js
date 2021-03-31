@@ -5,10 +5,8 @@ import '../mockGetConfig';
 import { transformForm, saveToHrm, createCategoriesObject } from '../../services/ContactService';
 import { createNewTaskEntry } from '../../states/contacts/reducer';
 import callTypes, { channelTypes } from '../../states/DomainConstants';
-import callerFormDefinition from '../../formDefinitions/tabbedForms/CallerInformationTab.json';
-import caseInfoFormDefinition from '../../formDefinitions/tabbedForms/CaseInformationTab.json';
-import childFormDefinition from '../../formDefinitions/tabbedForms/ChildInformationTab.json';
-import categoriesFormDefinition from '../../formDefinitions/tabbedForms/IssueCategorizationTab.json';
+import mockV1 from '../../formDefinitions/v1';
+import { offlineContactTaskSid } from '../../types/types';
 
 describe('transformForm', () => {
   test('removes control information and presents values only', () => {
@@ -37,7 +35,7 @@ describe('transformForm', () => {
     };
 
     const expectedCategories = oldForm.categories.reduce((acc, path) => set(path, true, acc), {
-      categories: createCategoriesObject(),
+      categories: createCategoriesObject(mockV1.tabbedForms.IssueCategorizationTab),
     }).categories;
 
     const expected = {
@@ -81,12 +79,7 @@ describe('transformForm', () => {
 });
 
 // The tabbed form definitions, used to create new form state.
-const definitions = {
-  callerFormDefinition,
-  caseInfoFormDefinition,
-  categoriesFormDefinition,
-  childFormDefinition,
-};
+const definitions = mockV1.tabbedForms;
 
 const createForm = ({ callType, childFirstName }, contactlessTaskInfo = undefined) => {
   const blankForm = createNewTaskEntry(definitions)(false);
@@ -113,9 +106,9 @@ describe('saveToHrm()', () => {
     defaultFrom: 'Anonymous',
     attributes: { isContactlessTask: false },
   };
-  const hrmBaseUrl = 'hrmBaseUrl';
   const workerSid = 'worker-sid';
   const helpline = 'helpline';
+  const uniqueIdentifier = 'uniqueIdentifier';
   const fetchSuccess = Promise.resolve({
     ok: true,
     json: () => Promise.resolve(),
@@ -126,7 +119,7 @@ describe('saveToHrm()', () => {
 
     const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
 
-    await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
+    await saveToHrm(task, form, workerSid, helpline, uniqueIdentifier);
 
     const formFromPOST = getFormFromPOST(mockedFetch);
     expect(formFromPOST.callType).toEqual(callTypes.child);
@@ -139,7 +132,7 @@ describe('saveToHrm()', () => {
     const form = createForm({ callType: callTypes.hangup, childFirstName: 'Jill' });
     const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
 
-    await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
+    await saveToHrm(task, form, workerSid, helpline, uniqueIdentifier);
 
     const formFromPOST = getFormFromPOST(mockedFetch);
     expect(formFromPOST.callType).toEqual(callTypes.hangup);
@@ -156,9 +149,9 @@ describe('saveToHrm() (isContactlessTask)', () => {
     defaultFrom: 'Anonymous',
     attributes: { isContactlessTask: true },
   };
-  const hrmBaseUrl = 'hrmBaseUrl';
   const workerSid = 'worker-sid';
   const helpline = 'helpline';
+  const uniqueIdentifier = 'uniqueIdentifier';
   const fetchSuccess = Promise.resolve({
     ok: true,
     json: () => Promise.resolve(),
@@ -171,7 +164,7 @@ describe('saveToHrm() (isContactlessTask)', () => {
     );
     const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
 
-    await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
+    await saveToHrm(task, form, workerSid, helpline, uniqueIdentifier);
 
     const formFromPOST = getFormFromPOST(mockedFetch);
     expect(formFromPOST.callType).toEqual(callTypes.child);
@@ -182,16 +175,18 @@ describe('saveToHrm() (isContactlessTask)', () => {
   });
 
   test('non-data calltype do not save form data (but captures contactlessTask info)', async () => {
-    const contactlessTask = { channel: 'web', date: '2020-11-24', time: '12:00' };
+    const contactlessTask = { channel: 'web', date: '2020-11-24', time: '12:00', createdOnBehalfOf: 'someone else' };
     const form = createForm({ callType: callTypes.hangup, childFirstName: 'Jill' }, contactlessTask);
     const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
 
-    await saveToHrm(task, form, hrmBaseUrl, workerSid, helpline);
+    await saveToHrm({ ...task, taskSid: offlineContactTaskSid }, form, workerSid, helpline, uniqueIdentifier);
+
+    const expected = { ...contactlessTask };
 
     const formFromPOST = getFormFromPOST(mockedFetch);
     expect(formFromPOST.callType).toEqual(callTypes.hangup);
     expect(formFromPOST.childInformation.name.firstName).toEqual('');
-    expect(formFromPOST.contactlessTask).toStrictEqual(contactlessTask);
+    expect(formFromPOST.contactlessTask).toStrictEqual(expected);
     expect(getTimeOfContactFromPOST(mockedFetch)).toEqual(new Date(2020, 10, 24, 12, 0).getTime());
 
     mockedFetch.mockClear();

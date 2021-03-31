@@ -1,0 +1,16 @@
+[
+  {
+    "attributeName": "area",
+    "insightsObject": "customers",
+    "paths": [
+      "contactForm.childInformation.province",
+      "contactForm.childInformation.municipality",
+      "contactForm.childInformation.district"
+    ]
+  },
+  {
+    "attributeName": "conversation_attribute_8",
+    "insightsObject": "conversations",
+    "paths": ["taskAttributes.helpline"]
+  }
+]

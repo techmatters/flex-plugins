@@ -6,18 +6,7 @@ import { Template } from '@twilio/flex-ui';
 import { SectionDescriptionText, SectionValueText } from '../styles/search';
 import { formatValue } from './common/forms/helpers';
 import type { FormItemDefinition, LayoutValue } from './common/forms/types';
-
-const presentValue = (value: string | number | boolean) => (definition: FormItemDefinition = null) => {
-  if (definition && definition.type === 'mixed-checkbox' && value === null) return <Template code="Unknown" />;
-  if (typeof value === 'string' && value.trim()) return value;
-  if (typeof value === 'number') return value.toString();
-  if (typeof value === 'boolean') {
-    if (value) return <Template code="SectionEntry-Yes" />;
-    return <Template code="SectionEntry-No" />;
-  }
-
-  return '-';
-};
+import { presentValue } from '../utils/formatters';
 
 type Props = {
   description: React.ReactNode | string;

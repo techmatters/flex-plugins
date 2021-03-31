@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-max-depth */
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { Template, ITask } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { useForm, FormProvider } from 'react-hook-form';
 
@@ -21,15 +21,15 @@ import * as CaseActions from '../../states/case/actions';
 import { getConfig } from '../../HrmFormPlugin';
 import { updateCase } from '../../services/CaseService';
 import { createFormFromDefinition, disperseInputs, splitInHalf, splitAt } from '../common/forms/formGenerators';
+import type { DefinitionVersion } from '../common/forms/types';
 import { transformValues } from '../../services/ContactService';
-import type { FormDefinition } from '../common/forms/types';
-import IncidentForm from '../../formDefinitions/caseForms/IncidentForm.json';
-import LayoutDefinitions from '../../formDefinitions/LayoutDefinitions.json';
 import { StandaloneITask } from '../StandaloneSearch';
+import type { CustomITask } from '../../types/types';
 
 type OwnProps = {
-  task: ITask | StandaloneITask;
+  task: CustomITask | StandaloneITask;
   counselor: string;
+  definitionVersion: DefinitionVersion;
   onClickClose: () => void;
 };
 
@@ -41,10 +41,14 @@ const AddIncident: React.FC<Props> = ({
   counselor,
   onClickClose,
   connectedCaseState,
+  definitionVersion,
   setConnectedCase,
   updateTempInfo,
 }) => {
   const { temporaryCaseInfo } = connectedCaseState;
+  const { IncidentForm } = definitionVersion.caseForms;
+  const { layoutVersion } = definitionVersion;
+
   const init = temporaryCaseInfo && temporaryCaseInfo.screen === 'add-incident' ? temporaryCaseInfo.info : {};
   const [initialForm] = React.useState(init); // grab initial values in first render only. This value should never change or will ruin the memoization below
   const methods = useForm();
@@ -55,13 +59,13 @@ const AddIncident: React.FC<Props> = ({
       updateTempInfo({ screen: 'add-incident', info: incident }, task.taskSid);
     };
 
-    const generatedForm = createFormFromDefinition(IncidentForm as FormDefinition)([])(initialForm)(updateCallBack);
+    const generatedForm = createFormFromDefinition(IncidentForm)([])(initialForm)(updateCallBack);
 
-    if (LayoutDefinitions.case.incidents.splitFormAt)
-      return splitAt(LayoutDefinitions.case.incidents.splitFormAt)(disperseInputs(7)(generatedForm));
+    if (layoutVersion.case.incidents.splitFormAt)
+      return splitAt(layoutVersion.case.incidents.splitFormAt)(disperseInputs(7)(generatedForm));
 
     return splitInHalf(disperseInputs(7)(generatedForm));
-  }, [initialForm, methods, task.taskSid, updateTempInfo]);
+  }, [IncidentForm, initialForm, layoutVersion.case.incidents.splitFormAt, methods, task.taskSid, updateTempInfo]);
 
   if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-incident') return null;
 
@@ -69,7 +73,7 @@ const AddIncident: React.FC<Props> = ({
     if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-incident') return;
 
     const { info, id } = connectedCaseState.connectedCase;
-    const incident = transformValues(IncidentForm as FormDefinition)(temporaryCaseInfo.info);
+    const incident = transformValues(IncidentForm)(temporaryCaseInfo.info);
     const createdAt = new Date().toISOString();
     const { workerSid } = getConfig();
     const newIncident = { incident, createdAt, twilioWorkerId: workerSid };

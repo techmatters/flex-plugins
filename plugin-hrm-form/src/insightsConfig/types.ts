@@ -1,4 +1,4 @@
-export enum InsightsObject {
+enum InsightsObject {
   Customers = 'customers',
   Conversations = 'conversations',
 }
@@ -10,9 +10,18 @@ export type InsightsFieldSpec = {
   insights: [InsightsObject, string];
   type?: FieldType;
 };
-export type InsightsSubFormSpec = InsightsFieldSpec[];
+type InsightsSubFormSpec = InsightsFieldSpec[];
 export type InsightsFormSpec = { [key: string]: InsightsSubFormSpec };
-export type InsightsConfigSpec = {
+// Each of this ConfigSpec maps one form field to one insights attribute
+export type OneToOneConfigSpec = {
   contactForm?: InsightsFormSpec;
   caseForm?: InsightsFormSpec;
 };
+
+// Each of this ConfigSpec maps (possibly) many form field to one insights attribute
+export type OneToManyConfigSpec = {
+  insightsObject: InsightsObject; // In which attributes object this goes
+  attributeName: string; // Which name the property receives in above object
+  paths: string[]; // Array of paths to grab and concatenate to drop in above property
+};
+export type OneToManyConfigSpecs = OneToManyConfigSpec[];

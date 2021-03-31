@@ -42,6 +42,7 @@ export function reduce(state = initialState, action: CaseActionType | GeneralAct
         ...state,
         tasks: omit(state.tasks, action.taskId),
       };
+    // eslint-disable-next-line sonarjs/no-duplicated-branches
     case REMOVE_CONTACT_STATE:
       return {
         ...state,

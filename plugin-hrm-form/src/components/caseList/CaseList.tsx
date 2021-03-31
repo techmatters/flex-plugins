@@ -4,6 +4,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
 
+import { getConfig } from '../../HrmFormPlugin';
 import Case from '../case';
 import { Case as CaseType } from '../../types/types';
 import CaseListTable from './CaseListTable';
@@ -11,12 +12,24 @@ import { CaseListContainer, CenteredContainer, SomethingWentWrongText } from '..
 import { getCases } from '../../services/CaseService';
 import { CaseLayout } from '../../styles/case';
 import * as CaseActions from '../../states/case/actions';
+import * as ConfigActions from '../../states/configuration/actions';
 import { StandaloneSearchContainer } from '../../styles/search';
 import { StandaloneITask } from '../StandaloneSearch';
+import { RootState, namespace, configurationBase } from '../../states';
+import { getCasesMissingVersions } from '../../utils/definitionVersions';
 
 export const CASES_PER_PAGE = 5;
 
-const initialState = {
+type State = {
+  loading: boolean;
+  showCaseDetails: boolean;
+  error: any;
+  caseList: CaseType[];
+  caseCount: number;
+  page: number;
+};
+
+const initialState: State = {
   loading: true,
   showCaseDetails: false,
   error: null,
@@ -36,14 +49,11 @@ type CaseListActions =
   | { type: 'showCaseDetails' }
   | { type: 'hideCaseDetails' };
 
-/**
- * @param {initialState} state
- * @param {{ type: string; payload?: Partial<initialState>}} action
- */
-function reducer(state, action: CaseListActions) {
+function reducer(state: State, action: CaseListActions) {
   switch (action.type) {
     case 'fetchStarted':
       return { ...state, loading: true };
+    // TODO: after this succeeds, we should check if there is a case such that it's definitionVersion is not loaded in the state, then load it and dispatch it to global state, only then set loading to false
     case 'fetchSuccess': {
       const { page, caseList, caseCount } = action.payload;
       return { ...state, page, caseList, caseCount, loading: false };
@@ -76,13 +86,19 @@ type OwnProps = {};
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const CaseList: React.FC<Props> = ({ setConnectedCase }) => {
+const CaseList: React.FC<Props> = ({ setConnectedCase, definitionVersions, updateDefinitionVersion }) => {
+  const { helpline } = getConfig();
+
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const fetchCaseList = async page => {
+  const fetchCaseList = async (page: number) => {
     try {
       dispatch({ type: 'fetchStarted' });
-      const { cases, count } = await getCases(CASES_PER_PAGE, CASES_PER_PAGE * page);
+      const { cases, count } = await getCases(CASES_PER_PAGE, CASES_PER_PAGE * page, helpline);
+
+      const definitions = await getCasesMissingVersions(cases);
+      definitions.forEach(d => updateDefinitionVersion(d.version, d.definition));
+
       dispatch({
         type: 'fetchSuccess',
         payload: { page, caseList: cases, caseCount: count },
@@ -95,6 +111,7 @@ const CaseList: React.FC<Props> = ({ setConnectedCase }) => {
 
   useEffect(() => {
     fetchCaseList(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleChangePage = async page => {
@@ -164,14 +181,21 @@ const CaseList: React.FC<Props> = ({ setConnectedCase }) => {
 CaseList.displayName = 'CaseList';
 
 CaseList.propTypes = {
+  definitionVersions: PropTypes.shape({}).isRequired,
   setConnectedCase: PropTypes.func.isRequired,
+  updateDefinitionVersion: PropTypes.func.isRequired,
 };
+
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
+  definitionVersions: state[namespace][configurationBase].definitionVersions,
+});
 
 const mapDispatchToProps = {
   setConnectedCase: CaseActions.setConnectedCase,
+  updateDefinitionVersion: ConfigActions.updateDefinitionVersion,
 };
 
-const connector = connect(null, mapDispatchToProps);
+const connector = connect(mapStateToProps, mapDispatchToProps);
 const connected = connector(CaseList);
 
 export default connected;

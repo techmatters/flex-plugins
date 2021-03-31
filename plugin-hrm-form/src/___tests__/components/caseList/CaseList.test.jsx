@@ -7,10 +7,12 @@ import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 
+import '../../mockGetConfig';
 import HrmTheme from '../../../styles/HrmTheme';
 import CaseList from '../../../components/caseList';
 import { namespace, configurationBase } from '../../../states';
 import { getCases } from '../../../services/CaseService';
+import mockV1 from '../../../formDefinitions/v1';
 
 // console.log = () => null;
 console.error = () => null;
@@ -22,7 +24,7 @@ const mockedCaseList = [
     createdAt: '2020-07-07T17:38:42.227Z',
     updatedAt: '2020-07-07T19:20:33.339Z',
     status: 'open',
-    info: '',
+    info: { definitionVersion: 'v1' },
     childName: 'Michael Smith',
     callSummary: 'Summary',
     categories: { category1: ['cat1'] },
@@ -33,7 +35,7 @@ const mockedCaseList = [
     createdAt: '2020-07-07T17:38:42.227Z',
     updatedAt: '2020-07-07T19:20:33.339Z',
     status: 'closed',
-    info: '',
+    info: { definitionVersion: 'v1' },
     childName: 'Sonya Michels',
     callSummary: 'Summary',
     categories: { category1: ['cat2'] },
@@ -65,6 +67,8 @@ test('Should render', async () => {
         list: [],
         hash: { worker1: 'worker1 name' },
       },
+      definitionVersions: { v1: mockV1 },
+      currentDefinitionVersion: mockV1,
     },
   });
   const store = mockStore(initialState);
@@ -107,6 +111,8 @@ test('Should not render (error)', async () => {
         list: [],
         hash: { worker1: 'worker1 name' },
       },
+      definitionVersions: { v1: mockV1 },
+      currentDefinitionVersion: mockV1,
     },
   });
   const store = mockStore(initialState);
@@ -139,6 +145,8 @@ test('a11y', async () => {
         list: [],
         hash: { worker1: 'worker1 name' },
       },
+      definitionVersions: { v1: mockV1 },
+      currentDefinitionVersion: mockV1,
     },
   });
   const store = mockStore(initialState);

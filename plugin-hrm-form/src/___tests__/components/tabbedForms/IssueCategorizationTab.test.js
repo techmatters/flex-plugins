@@ -10,7 +10,7 @@ import { ToggleViewButton } from '../../../styles/HrmStyles';
 import HrmTheme from '../../../styles/HrmTheme';
 import { namespace, contactFormsBase } from '../../../states';
 import { setCategoriesGridView } from '../../../states/contacts/actions';
-import definition from '../../../formDefinitions/tabbedForms/IssueCategorizationTab.json';
+import definition from '../../../formDefinitions/v1/tabbedForms/IssueCategorizationTab.json';
 
 // Copy paste from state/contacts initial state
 const expanded = Object.keys(definition).reduce((acc, category) => ({ ...acc, [category]: false }), {});
@@ -53,7 +53,7 @@ test('Click on view subcategories as grid icon', () => {
     <StorelessThemeProvider themeConf={themeConf}>
       <Provider store={store}>
         <FormProvider {...mockMethods}>
-          <IssueCategorizationTab task={{ taskSid: taskId }} />
+          <IssueCategorizationTab task={{ taskSid: taskId }} definition={definition} />
         </FormProvider>
       </Provider>
     </StorelessThemeProvider>,
@@ -95,7 +95,7 @@ test('Click on view subcategories as list icon', () => {
     <StorelessThemeProvider themeConf={themeConf}>
       <Provider store={store}>
         <FormProvider {...mockMethods}>
-          <IssueCategorizationTab task={{ taskSid: taskId }} />
+          <IssueCategorizationTab task={{ taskSid: taskId }} definition={definition} />
         </FormProvider>
       </Provider>
     </StorelessThemeProvider>,

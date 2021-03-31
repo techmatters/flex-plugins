@@ -1,3 +1,5 @@
+/* eslint-disable sonarjs/no-identical-functions */
+/* eslint-disable sonarjs/no-collapsible-if */
 import cloneDeep from 'lodash/cloneDeep';
 
 import callTypes from './DomainConstants';
@@ -30,6 +32,7 @@ function handleCallerOrChildInformationKeys(formToModify, ignoreTouched) {
 
   Object.keys(formToModify)
     .filter(key => key !== 'type' && key !== 'validation' && key !== 'error')
+    // eslint-disable-next-line sonarjs/cognitive-complexity
     .forEach(key => {
       if (formToModify[key].type === FieldType.INTERMEDIATE) {
         handleCallerOrChildInformationKeys(formToModify[key], ignoreTouched);

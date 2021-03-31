@@ -21,6 +21,7 @@ export const NewCaseSubroutes = {
   ViewPerpetrator: 'view-perpetrator',
   ViewIncident: 'view-incident',
   ViewReferral: 'view-referral',
+  CasePrintView: 'case-print-view',
 } as const;
 
 // The different routes we have in our app

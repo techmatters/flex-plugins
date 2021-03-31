@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'react-emotion';
-import Dialog from '@material-ui/core/Dialog';
+import Dialog, { DialogProps } from '@material-ui/core/Dialog';
 import ClearIcon from '@material-ui/icons/Clear';
 import { IconButton } from '@material-ui/core';
 import { Button, getBackgroundWithHoverCSS } from '@twilio/flex-ui';
@@ -41,7 +41,11 @@ export const DataCallTypeButton = styled(Button)`
 
 DataCallTypeButton.displayName = 'DataCallTypeButton';
 
-export const NonDataCallTypeButton = styled(Button)`
+type NonDataCallTypeButtonProps = {
+  marginRight: boolean;
+};
+
+export const NonDataCallTypeButton = styled(Button)<NonDataCallTypeButtonProps>`
   width: 140px;
   height: 44px;
   margin-bottom: 10px;
@@ -62,7 +66,7 @@ export const NonDataCallTypeButton = styled(Button)`
   }
 `;
 
-export const CloseTaskDialog = styled(props => <Dialog {...props} classes={{ paper: 'paper' }} />)`
+export const CloseTaskDialog = styled<DialogProps>(props => <Dialog {...props} classes={{ paper: 'paper' }} />)`
   && .paper {
     width: 350px;
   }
@@ -81,7 +85,11 @@ export const CloseTaskDialogText = styled('p')`
   margin-bottom: 36px;
 `;
 
-export const ConfirmButton = styled(Button)`
+type ConfirmButtonProps = {
+  disabled: boolean;
+};
+
+export const ConfirmButton = styled(Button)<ConfirmButtonProps>`
   text-transform: uppercase;
   color: ${props => props.theme.colors.declineTextColor};
   ${p => getBackgroundWithHoverCSS(p.theme.colors.declineColor, true, false, p.disabled)};

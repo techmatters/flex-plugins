@@ -7,6 +7,7 @@ import { omit } from 'lodash';
 import { queuesStatusUpdate, queuesStatusFailure } from '../../states/queuesStatus/actions';
 import * as h from './helpers';
 import { namespace, queuesStatusBase } from '../../states';
+import { listWorkerQueues } from '../../services/ServerlessService';
 
 export class InnerQueuesStatusWriter extends React.Component {
   static displayName = 'QueuesStatusWriter';
@@ -15,7 +16,7 @@ export class InnerQueuesStatusWriter extends React.Component {
     insightsClient: PropTypes.shape({
       liveQuery: PropTypes.func,
     }).isRequired,
-    helpline: PropTypes.string,
+    workerSid: PropTypes.string.isRequired,
     queuesStatusState: PropTypes.shape({
       queuesStatus: PropTypes.shape({}),
       error: PropTypes.string,
@@ -25,10 +26,6 @@ export class InnerQueuesStatusWriter extends React.Component {
     queuesStatusFailure: PropTypes.func.isRequired,
   };
 
-  static defaultProps = {
-    helpline: undefined,
-  };
-
   constructor(props) {
     super(props);
     this.updateQueuesState = this.updateQueuesState.bind(this);
@@ -36,18 +33,41 @@ export class InnerQueuesStatusWriter extends React.Component {
 
   state = {
     tasksQuery: null,
+    workerQuery: null,
     trackedTasks: null,
   };
 
   async componentDidMount() {
-    const { helpline } = this.props;
     try {
-      const q = await this.props.insightsClient.liveQuery('tr-queue', '');
-      const queues = this.getQueuesNames(q.getItems());
-      q.close();
+      await this.subscribeToQueuesUpdates();
 
-      // builds the array of queues the counselor cares about (for now will always be one)
-      const counselorQueues = helpline && queues.includes(helpline) ? [helpline] : ['Admin'];
+      const workerQuery = await this.props.insightsClient.liveQuery(
+        'tr-worker',
+        `data.worker_sid == "${this.props.workerSid}"`,
+      );
+      this.setState({ workerQuery });
+
+      workerQuery.on('itemUpdated', async _args => {
+        await this.subscribeToQueuesUpdates();
+      });
+    } catch (err) {
+      this.handleSubscribeError(err);
+    }
+  }
+
+  componentWillUnmount() {
+    const { tasksQuery, workerQuery } = this.state;
+    // unsubscribe
+    if (tasksQuery) tasksQuery.close();
+    if (workerQuery) workerQuery.close();
+  }
+
+  async subscribeToQueuesUpdates() {
+    const { workerSid } = this.props;
+    try {
+      // fetch the array of queues the counselor matches (excluding "Everyone")
+      const { workerQueues } = await listWorkerQueues({ workerSid });
+      const counselorQueues = workerQueues.map(q => q.friendlyName).filter(q => q !== 'Everyone');
 
       const cleanQueuesStatus = h.initializeQueuesStatus(counselorQueues);
 
@@ -80,19 +100,15 @@ export class InnerQueuesStatusWriter extends React.Component {
         }
       });
     } catch (err) {
-      const error = "Error, couldn't subscribe to live updates";
-      this.props.queuesStatusFailure(error);
-      console.error(error, err);
+      this.handleSubscribeError(err);
     }
   }
 
-  componentWillUnmount() {
-    const { tasksQuery } = this.state;
-    // unsubscribe
-    if (tasksQuery) tasksQuery.close();
+  handleSubscribeError(err) {
+    const error = "Error, couldn't subscribe to live updates";
+    this.props.queuesStatusFailure(error);
+    console.error(error, err);
   }
-
-  getQueuesNames = queuesItems => Object.values(queuesItems).reduce((acc, queue) => [...acc, queue.queue_name], []);
 
   updateQueuesState(tasks, prevQueuesStatus) {
     const queuesStatus = h.getNewQueuesStatus(prevQueuesStatus, tasks);

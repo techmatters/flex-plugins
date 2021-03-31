@@ -1,4 +1,8 @@
-import type { ValidationRules } from 'react-hook-form';
+/* eslint-disable import/no-unused-modules */
+import type { RegisterOptions } from 'react-hook-form';
+
+import { CallTypes } from '../../../states/DomainConstants';
+import { OneToOneConfigSpec, OneToManyConfigSpecs } from '../../../insightsConfig/types';
 
 export type FormFieldType = { value: string; error?: string; validation?: string[]; touched?: boolean };
 
@@ -36,20 +40,21 @@ type ItemBase = {
 type InputDefinition = {
   type: 'input';
 } & ItemBase &
-  ValidationRules;
+  RegisterOptions;
 
 type NumericInputDefinition = {
   type: 'numeric-input';
 } & ItemBase &
-  ValidationRules;
+  RegisterOptions;
 
 export type SelectOption = { value: any; label: string };
 
 type SelectDefinition = {
   type: 'select';
   options: SelectOption[];
+  defaultOption?: SelectOption['value'];
 } & ItemBase &
-  ValidationRules;
+  RegisterOptions;
 
 type DependentOptions = { [dependeeValue: string]: SelectOption[] };
 
@@ -59,20 +64,20 @@ type DependentSelectDefinition = {
   defaultOption: SelectOption;
   options: DependentOptions;
 } & ItemBase &
-  ValidationRules;
+  RegisterOptions;
 
 type CheckboxDefinition = {
   type: 'checkbox';
   initialChecked?: boolean;
 } & ItemBase &
-  ValidationRules;
+  RegisterOptions;
 
 export type MixedOrBool = boolean | 'mixed';
 type MixedCheckboxDefinition = {
   type: 'mixed-checkbox';
   initialChecked?: MixedOrBool;
 } & ItemBase &
-  ValidationRules;
+  RegisterOptions;
 
 type TextareaDefinition = {
   type: 'textarea';
@@ -80,17 +85,17 @@ type TextareaDefinition = {
   rows?: number;
   width?: number;
 } & ItemBase &
-  ValidationRules;
+  RegisterOptions;
 
 type DateInputDefinition = {
   type: 'date-input';
 } & ItemBase &
-  ValidationRules;
+  RegisterOptions;
 
 type TimeInputDefinition = {
   type: 'time-input';
 } & ItemBase &
-  ValidationRules;
+  RegisterOptions;
 
 export type FormItemDefinition =
   | InputDefinition
@@ -107,6 +112,34 @@ export type FormDefinition = FormItemDefinition[];
 export type CategoryEntry = { color: string; subcategories: string[] };
 export type CategoriesDefinition = { [category: string]: CategoryEntry };
 
+type CallTypeButtonsEntry = {
+  type: 'button';
+  name: string;
+  label: CallTypes;
+  category: 'data' | 'non-data';
+};
+
+export type CallTypeButtonsDefinitions = CallTypeButtonsEntry[];
+
+/*
+ * ToDo: improve this type by removing name property and using officeName as a key:
+ * {
+ *   office1: { ... },
+ *   office2: { ... },
+ * }
+ */
+export type OfficeEntry = {
+  name: string;
+  manager?: {
+    name: string;
+    phone: string;
+    email: string;
+  };
+};
+
+// ToDo: also this type can be defined as: OfficeDefinitions = { [officename: string]: OfficeEntry };
+export type OfficeDefinitions = OfficeEntry[];
+
 /**
  * Type that gives extra info on how a single field should be formatted
  */
@@ -115,4 +148,45 @@ export type LayoutDefinition = {
   previewFields?: ItemBase['name'][];
   layout?: { [name: string]: LayoutValue };
   splitFormAt?: number;
+};
+
+export type LayoutVersion = {
+  contact: {
+    callerInformation: LayoutDefinition;
+    childInformation: LayoutDefinition;
+    caseInformation: LayoutDefinition;
+  };
+  case: {
+    households: LayoutDefinition;
+    perpetrators: LayoutDefinition;
+    incidents: LayoutDefinition;
+    referrals: LayoutDefinition;
+  };
+};
+
+/**
+ * Type that defines a complete version for all the customizable forms used across the app
+ */
+export type DefinitionVersion = {
+  caseForms: {
+    HouseholdForm: FormDefinition;
+    IncidentForm: FormDefinition;
+    NoteForm: FormDefinition;
+    PerpetratorForm: FormDefinition;
+    ReferralForm: FormDefinition;
+  };
+  // TODO: change this property to contactForms to be consistent (though that may create confusion with the component name)
+  tabbedForms: {
+    CallerInformationTab: FormDefinition;
+    CaseInformationTab: FormDefinition;
+    ChildInformationTab: FormDefinition;
+    IssueCategorizationTab: CategoriesDefinition;
+  };
+  callTypeButtons: CallTypeButtonsDefinitions;
+  layoutVersion: LayoutVersion;
+  officeInformation?: OfficeDefinitions;
+  insights: {
+    oneToOneConfigSpec: OneToOneConfigSpec;
+    oneToManyConfigSpecs: OneToManyConfigSpecs;
+  };
 };

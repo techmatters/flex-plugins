@@ -37,6 +37,7 @@
 
   "QueueIndex-ContactsWaiting": "Contacts waiting",
   "AddButtons-Header": "Add...",
+  "OfflineContacts-Header": "Offline Contacts",
 
   "NonDataCallTypeDialog-CloseConfirm": "Are you sure?",
 
@@ -46,6 +47,7 @@
   "SearchForm-Counselor": "Counsellor",
   "SearchForm-DateRange": "Date Range",
   "SearchForm-Phone": "Phone",
+  "SearchForm-Office": "Office",
   "SearchForm-Button": "Search",
 
   "SearchResultsIndex-Back": "Return to Search Criteria",
@@ -177,6 +179,10 @@
   "Case-ReferralComments": "Comments",
   "Case-Counsellor": "Counsellor",
   "Case-ChildIsAtRisk": "Child is at Risk",
+  "Case-CaseDetails": "Case Details",
+  "Case-CaseStatus": "Case Status",
+  "Case-CaseManager": "Case Manager",
+  "Case-Notes": "Notes",
 
   "SideNavCaseList": "Case List",
   
@@ -227,22 +233,46 @@
   "ContactDetails-GeneralDetails": "General Details",
   "ContactDetails-GeneralDetails-Channel": "Channel",
   "ContactDetails-GeneralDetails-PhoneNumber": "Phone Number",
-  "ContactDetails-GeneralDetails-ConversationDuration": "Conversation Duration",
+  "ContactDetails-GeneralDetails-Conversation": "Conversation Duration",
   "ContactDetails-GeneralDetails-Counselor": "Counsellor",
   "ContactDetails-GeneralDetails-DateTime": "Date/Time",
+  "ContactDetails-GeneralDetails-ContactSummary": "Contact Summary",
+  "ContactDetails-GeneralDetails-RepeatCaller": "Repeat Caller?",
+  "ContactDetails-GeneralDetails-ReferredTo": "Referred To",
+  "ContactDetails-GeneralDetails-ChildHearAboutUs": "How did the child hear about us?",
+  "ContactDetails-GeneralDetails-KeepConfidential": "Keep Confidential?",
+  "ContactDetails-GeneralDetails-OKToCall": "May social worker call/SMS?",
+  "ContactDetails-GeneralDetails-DiscussRights": "Did you discuss rights with the child?",
+  "ContactDetails-GeneralDetails-SolvedProblem": "Did the child feel we solved their problem?",
+  "ContactDetails-GeneralDetails-WouldRecommend": "Would the child recommend us to a friend?",
+
+  "SectionName-CallerInformation": "Caller Information",
+  "SectionName-ChildInformation": "Child Information",
+  "SectionName-Contact": "Contact",
+  "SectionName-HouseholdMember": "Household Member",
+  "SectionName-Perpetrator": "Perpetrator",
+  "SectionName-Incident": "Incident",
+  "SectionName-Referral": "Referral",
+  "SectionName-Notes": "Notes",
+  "SectionName-CaseSummary": "Case Summary",
+
 
   "ManualPullButtonText": "Another Task",
   "NoTaskAssignableNotification": "No task assignable to you at the moment.",
   "OfflineContactButtonText": "Offline Contact Record",
+  "ResumeContactButtonText": "Resume Offline Contact",
   "CancelOfflineContact": "Cancel Offline Contact",
   "YouMustBeAvailableToPerformThisOp": "You must be available to perform this operation.",
 
   "RequiredFieldError": "This field is required.",
   "DateCantBeGreaterThanToday": "Date can't be greater than today.",
   "TimeCantBeGreaterThanNow": "Time can't be greater than now.",
+  "NoCaseSummary": "No case summary",
 
   "OfflineContactFirstLine": "Offline Contact",
   "OfflineContactSecondLine": "in progress",
   "Category": "Category",
-  "Unknown": "Unknown"
+  "Unknown": "Unknown",
+  "Anonymous": "Anonymous"
 }
+

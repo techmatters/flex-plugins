@@ -3,6 +3,7 @@ import renderer from 'react-test-renderer';
 import { format } from 'date-fns';
 
 import '../mockStyled';
+import '../mockGetConfig';
 
 import ContactPreview from '../../components/search/ContactPreview';
 import ChildNameAndDate from '../../components/search/ContactPreview/ChildNameAndDate';
@@ -27,6 +28,7 @@ test('<ContactPreview> should mount', () => {
       categories: { category1: ['Tag1', 'Tag2'] },
     },
     details: {
+      definitionVersion: 'v1',
       childInformation: {
         name: {
           firstName: 'Name',

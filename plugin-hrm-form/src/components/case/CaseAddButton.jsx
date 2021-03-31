@@ -7,8 +7,7 @@ import { Template } from '@twilio/flex-ui';
 import { CaseAddButtonFont } from '../../styles/case';
 import HrmTheme from '../../styles/HrmTheme';
 
-const CaseAddButton = ({ status, templateCode, onClick, withDivider }) => {
-  const disabled = status === 'closed';
+const CaseAddButton = ({ disabled, templateCode, onClick, withDivider }) => {
   const color = disabled ? HrmTheme.colors.disabledColor : 'initial';
 
   return (
@@ -31,7 +30,7 @@ const CaseAddButton = ({ status, templateCode, onClick, withDivider }) => {
 
 CaseAddButton.displayName = 'CaseAddButton';
 CaseAddButton.propTypes = {
-  status: PropTypes.string.isRequired,
+  disabled: PropTypes.bool.isRequired,
   templateCode: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
   withDivider: PropTypes.bool,

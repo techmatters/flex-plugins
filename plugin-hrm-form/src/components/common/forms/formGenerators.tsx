@@ -2,7 +2,7 @@
 /* eslint-disable import/no-unused-modules */
 /* eslint-disable react/display-name */
 import React from 'react';
-import { useFormContext, ValidationRules } from 'react-hook-form';
+import { useFormContext, RegisterOptions } from 'react-hook-form';
 import { get, pick } from 'lodash';
 import { Template } from '@twilio/flex-ui';
 
@@ -40,7 +40,7 @@ export const getInitialValue = (def: FormItemDefinition) => {
     case 'time-input':
       return '';
     case 'select':
-      return def.options[0].value;
+      return def.defaultOption ? def.defaultOption : def.options[0].value;
     case 'dependent-select':
       return def.defaultOption.value;
     case 'checkbox':
@@ -76,8 +76,14 @@ const RequiredAsterisk = () => (
   </span>
 );
 
-const getRules = (field: FormItemDefinition): ValidationRules =>
+const getRules = (field: FormItemDefinition): RegisterOptions =>
   pick(field, ['max', 'maxLength', 'min', 'minLength', 'pattern', 'required', 'validate']);
+
+const bindCreateSelectOptions = (path: string) => (o: SelectOption) => (
+  <FormOption key={`${path}-${o.label}-${o.value}`} value={o.value} isEmptyValue={o.value === ''}>
+    {o.label}
+  </FormOption>
+);
 
 /**
  * Creates a Form with each input connected to RHF's wrapping Context, based on the definition.
@@ -85,6 +91,7 @@ const getRules = (field: FormItemDefinition): ValidationRules =>
  * @param {() => void} updateCallback Callback called to update form state. When is the callback called is specified in the input type.
  * @param {FormItemDefinition} def Definition for a single input.
  */
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const getInputType = (parents: string[], updateCallback: () => void) => (def: FormItemDefinition) => (
   initialValue: any, // TODO: restrict this type
 ) => {
@@ -166,6 +173,8 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
         <ConnectForm key={path}>
           {({ errors, register }) => {
             const error = get(errors, path);
+            const createSelectOptions = bindCreateSelectOptions(path);
+
             return (
               <FormLabel htmlFor={path}>
                 <Row>
@@ -185,11 +194,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                     innerRef={register(rules)}
                     defaultValue={initialValue}
                   >
-                    {def.options.map(o => (
-                      <FormOption key={`${path}-${o.label}`} value={o.value} isEmptyValue={o.value === ''}>
-                        {o.label}
-                      </FormOption>
-                    ))}
+                    {def.options.map(createSelectOptions)}
                   </FormSelect>
                 </FormSelectWrapper>
                 {error && (
@@ -236,6 +241,8 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
 
             const disabled = !hasOptions && !shouldInitialize;
 
+            const createSelectOptions = bindCreateSelectOptions(path);
+
             return (
               <DependentSelectLabel htmlFor={path} disabled={disabled}>
                 <Row>
@@ -256,11 +263,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                     disabled={disabled}
                     defaultValue={initialValue}
                   >
-                    {options.map(o => (
-                      <FormOption key={`${path}-${o.value}`} value={o.value} isEmptyValue={o.value === ''}>
-                        {o.label}
-                      </FormOption>
-                    ))}
+                    {options.map(createSelectOptions)}
                   </FormSelect>
                 </FormSelectWrapper>
                 {error && (

@@ -3,7 +3,7 @@ import { FlexPlugin, loadCSS } from 'flex-plugin';
 import SyncClient from 'twilio-sync';
 
 import './styles/GlobalOverrides';
-import reducers, { namespace } from './states';
+import reducers, { namespace, configurationBase } from './states';
 import HrmTheme from './styles/HrmTheme';
 import { transferModes } from './states/DomainConstants';
 import { initLocalization } from './utils/pluginHelpers';
@@ -36,10 +36,15 @@ export const getConfig = () => {
   const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
   const { identity, token } = manager.user;
   const counselorName = manager.workerClient.attributes.full_name;
-  const { configuredLanguage } = manager.serviceConfiguration.attributes;
+  const isSupervisor = manager.workerClient.attributes.roles.includes('supervisor');
+  const {
+    configuredLanguage,
+    definitionVersion,
+    pdfImagesSource,
+    multipleOfficeSupport,
+  } = manager.serviceConfiguration.attributes;
   const featureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
   const { strings } = manager;
-  const definitionVersion = 'v1'; // will be moved to service configuration later on
 
   return {
     hrmBaseUrl,
@@ -54,11 +59,31 @@ export const getConfig = () => {
     identity,
     token,
     counselorName,
+    isSupervisor,
     featureFlags,
     sharedStateClient,
     strings,
     definitionVersion,
+    pdfImagesSource,
+    multipleOfficeSupport,
   };
+};
+
+/**
+ * Helper to expose the forms definitions without the need of calling Manager
+ * @returns {{currentDefinitionVersion: import('./states/configuration/reducer').ConfigurationState['currentDefinitionVersion'], definitionVersions: import('./states/configuration/reducer').ConfigurationState['definitionVersions']}}
+ */
+export const getDefinitionVersions = () => {
+  const { currentDefinitionVersion, definitionVersions } = Flex.Manager.getInstance().store.getState()[namespace][
+    configurationBase
+  ];
+
+  return { currentDefinitionVersion, definitionVersions };
+};
+
+export const reRenderAgentDesktop = async () => {
+  await Flex.Actions.invokeAction('NavigateToView', { viewName: 'empty-view' });
+  await Flex.Actions.invokeAction('NavigateToView', { viewName: 'agent-desktop' });
 };
 
 const setUpSharedStateClient = () => {
@@ -172,6 +197,9 @@ const setUpComponents = setupObject => {
  */
 const setUpActions = setupObject => {
   const { featureFlags } = setupObject;
+
+  // Is this the correct place for this call?
+  ActionFunctions.loadCurrentDefinitionVersion();
 
   // bind setupObject to the functions that requires some initializaton
   const transferOverride = ActionFunctions.customTransferTask(setupObject);

@@ -52,10 +52,8 @@ export const addPendingTasks = (acc: QueuesStatus, task: any): QueuesStatus => {
 };
 
 export const getNewQueuesStatus = (cleanQueuesStatus: QueuesStatus, tasks: any[]): QueuesStatus => {
-  const newQueuesStatus = Object.values(tasks).reduce<QueuesStatus>(addPendingTasks, cleanQueuesStatus);
-
-  return newQueuesStatus;
+  return Object.values(tasks).reduce<QueuesStatus>(addPendingTasks, cleanQueuesStatus);
 };
 
 export const isAnyChatPending = (queuesStatus: QueuesStatus): boolean =>
-  queuesStatus && Object.values(queuesStatus).reduce((acc, e) => e.isChatPending || acc, false);
+  queuesStatus && Object.values(queuesStatus).reduce<boolean>((acc, e) => e.isChatPending || acc, false);

@@ -1,17 +1,10 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 
+import './mockStyled';
+
 import FieldText from '../components/FieldText';
 import { ValidationType } from '../states/ContactFormStateFactory';
-
-jest.mock('../styles/HrmStyles', () => {
-  return {
-    StyledInput: 'StyledInput',
-    StyledLabel: 'StyledLabel',
-    ErrorText: 'ErrorText',
-    TextField: 'TextField',
-  };
-});
 
 // TODO: Improve assertion for all tests below
 test('render basic FieldText', () => {

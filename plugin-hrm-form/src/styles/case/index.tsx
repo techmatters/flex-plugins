@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'react-emotion';
-import { Button } from '@twilio/flex-ui';
+import { Button, IconButton } from '@twilio/flex-ui';
 import { Typography } from '@material-ui/core';
 
 import { FontOpenSans, FormInput, FormSelect, FormSelectWrapper, Row, Column } from '../HrmStyles';
@@ -88,9 +88,9 @@ type CaseAddButtonFontProps = {
   disabled: boolean;
 };
 
-export const CaseAddButtonFont = styled(({ disabled, ...rest }: CaseAddButtonFontProps) => <FontOpenSans {...rest} />)<
-  CaseAddButtonFontProps
->`
+export const CaseAddButtonFont = styled(({ disabled, ...rest }: CaseAddButtonFontProps) => (
+  <FontOpenSans {...rest} />
+))<CaseAddButtonFontProps>`
   font-weight: 600;
   font-size: 12px;
   line-height: 14px;
@@ -202,6 +202,31 @@ export const RowItemContainer = styled(Row)`
 `;
 RowItemContainer.displayName = 'RowItemContainer';
 
+export const DetailsHeaderContainer = styled('div')`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-right: 10px;
+`;
+DetailsHeaderContainer.displayName = 'DetailsHeaderContainer';
+
+export const DetailsHeaderTextContainer = styled('div')`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 70%;
+`;
+
+DetailsHeaderTextContainer.displayName = 'DetailsHeaderTextContainer';
+
+export const DetailsHeaderChildAtRiskContainer = styled('div')`
+  width: 136px;
+  align-self: flex-end;
+`;
+
+DetailsHeaderChildAtRiskContainer.displayName = 'DetailsHeaderChildAtRiskContainer';
+
 export const DetailsHeaderChildName = styled(Typography)`
   font-weight: 600 !important;
 `;
@@ -237,6 +262,21 @@ export const DetailsHeaderOfficeName = styled(Typography)`
 
 DetailsHeaderOfficeName.displayName = 'DetailsHeaderOfficeName';
 
+export const StyledPrintButton = styled(IconButton)`
+  color: #a7a7a7;
+`;
+
+StyledPrintButton.displayName = 'StyledPrintButton';
+
+export const ChildIsAtRiskWrapper = styled(Row)`
+  align-items: flex-start;
+  box-sizing: border-box;
+  border-radius: 4px;
+  border: 'none';
+  boxshadow: 'none';
+`;
+ChildIsAtRiskWrapper.displayName = 'ChildIsAtRiskWrapper';
+
 export const StyledInputField = styled(FormInput)`
   width: 130px !important;
   height: 36px;
@@ -269,9 +309,9 @@ type StyledSelectFieldProps = {
   color: string;
 };
 
-export const StyledSelectField = styled(({ color, ...rest }: StyledSelectFieldProps) => <FormSelect {...rest} />)<
-  StyledSelectFieldProps
->`
+export const StyledSelectField = styled(({ color, ...rest }: StyledSelectFieldProps) => (
+  <FormSelect {...rest} />
+))<StyledSelectFieldProps>`
   width: 130px !important;
   height: 36px;
   font-weight: 600;

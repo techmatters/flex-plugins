@@ -7,15 +7,16 @@ import { Box, Row } from '../../styles/HrmStyles';
 import { CaseSectionFont, TimelineRow, PlaceHolderText } from '../../styles/case';
 import CaseAddButton from './CaseAddButton';
 import InformationRow from './InformationRow';
+import { PermissionActions, PermissionActionType } from '../../permissions';
 
 type OwnProps = {
   onClickAddPerpetrator: () => void;
   onClickView: (perpetrator: PerpetratorEntry) => void;
   perpetrators: CaseInfo['perpetrators'];
-  status: string;
+  can: (action: PermissionActionType) => boolean;
 };
 
-const Perpetrators: React.FC<OwnProps> = ({ onClickAddPerpetrator, onClickView, perpetrators, status }) => {
+const Perpetrators: React.FC<OwnProps> = ({ onClickAddPerpetrator, onClickView, perpetrators, can }) => {
   return (
     <>
       <Box marginBottom="10px">
@@ -23,7 +24,11 @@ const Perpetrators: React.FC<OwnProps> = ({ onClickAddPerpetrator, onClickView, 
           <CaseSectionFont id="Case-AddPerpetratorSection-label">
             <Template code="Case-AddPerpetratorSection" />
           </CaseSectionFont>
-          <CaseAddButton templateCode="Case-Perpetrator" onClick={onClickAddPerpetrator} status={status} />
+          <CaseAddButton
+            templateCode="Case-Perpetrator"
+            onClick={onClickAddPerpetrator}
+            disabled={!can(PermissionActions.ADD_PERPETRATOR)}
+          />
         </Row>
       </Box>
       {perpetrators.length ? (

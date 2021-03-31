@@ -1,4 +1,5 @@
 import type * as t from '../../types/types';
+import { OfficeEntry } from '../../components/common/forms/types';
 import { NewCaseSubroutes } from '../routing/types';
 
 // Action types
@@ -87,11 +88,11 @@ export type CaseActionType =
 
 export type Activity = NoteActivity | ReferralActivity | ConnectedCaseActivity;
 
-type NoteActivity = {
+export type NoteActivity = {
   date: string;
   type: string;
   text: string;
-  twilioWorkedId: string;
+  twilioWorkerId: string;
 };
 
 type ReferralActivity = {
@@ -104,7 +105,7 @@ type ReferralActivity = {
     comments: string;
     referredTo: string;
   };
-  twilioWorkedId: string;
+  twilioWorkerId: string;
 };
 
 export type ConnectedCaseActivity = {
@@ -115,4 +116,35 @@ export type ConnectedCaseActivity = {
   text: string;
   twilioWorkerId: string;
   channel: string;
+};
+
+export type CaseDetailsName = {
+  firstName: string;
+  lastName: string;
+};
+
+export type CaseDetails = {
+  id: number;
+  name: CaseDetailsName;
+  categories?: {
+    [category: string]: {
+      [subcategory: string]: boolean;
+    };
+  };
+  status: string;
+  caseCounselor: string;
+  currentCounselor: string;
+  openedDate: string;
+  lastUpdatedDate: string;
+  followUpDate: string;
+  households: t.HouseholdEntry[];
+  perpetrators: t.PerpetratorEntry[];
+  incidents: t.IncidentEntry[];
+  referrals: t.ReferralEntry[];
+  notes: NoteActivity[];
+  summary: string;
+  childIsAtRisk: boolean;
+  office?: OfficeEntry;
+  version?: string;
+  contact: any; // ToDo: change this
 };

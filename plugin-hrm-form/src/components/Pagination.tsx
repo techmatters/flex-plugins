@@ -16,6 +16,7 @@ export const getPaginationNumbers = (page, pageCount) => {
   return [0, 1, -1, ...range(page - 3, page + 3 + 1), -1, pageCount - 2, pageCount - 1];
 };
 
+// eslint-disable-next-line react/display-name
 const renderPaginationButton = (page, handleChangePage) => n => {
   if (n === -1)
     return (

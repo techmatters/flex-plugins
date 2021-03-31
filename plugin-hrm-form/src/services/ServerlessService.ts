@@ -1,8 +1,11 @@
+/* eslint-disable sonarjs/prefer-immediate-return */
 /* eslint-disable camelcase */
-import { Notifications } from '@twilio/flex-ui';
+import { ITask, Notifications } from '@twilio/flex-ui';
 
 import fetchProtectedApi from './fetchProtectedApi';
 import { getConfig } from '../HrmFormPlugin';
+import definitionVersions from '../formDefinitions';
+import type { DefinitionVersion } from '../components/common/forms/types';
 
 type PopulateCounselorsReturn = { sid: string; fullName: string }[];
 
@@ -78,16 +81,46 @@ export const adjustChatCapacity = async (adjustment: 'increase' | 'decrease'): P
   return response;
 };
 
-export const assignMeContactlessTask = async () => {
-  const { workerSid, helpline } = getConfig();
+/**
+ * Sends a new message to the channel bounded to the provided taskSid. Optionally you can change the "from" value (defaul is "system").
+ */
+export const sendSystemMessage = async (body: { taskSid: ITask['taskSid']; message: string; from?: string }) => {
+  const response = await fetchProtectedApi('/sendSystemMessage', body);
 
+  return response;
+};
+
+/**
+ * Returns the task queues list for a given worker.
+ */
+export const listWorkerQueues = async (body: {
+  workerSid: string;
+}): Promise<{ workerQueues: { friendlyName: string }[] }> => {
+  const response = await fetchProtectedApi('/listWorkerQueues', body);
+
+  return response;
+};
+
+/**
+ * Function that mimics the fetching of a version definition for all the forms used within the app.
+ * Later on this will be fetched in async way.
+ */
+export const getDefinitionVersion = async (version: string): Promise<DefinitionVersion> => definitionVersions[version];
+
+export const getDefinitionVersionsList = async (missingDefinitionVersions: string[]) =>
+  Promise.all(
+    missingDefinitionVersions.map(async version => {
+      const definition = await getDefinitionVersion(version);
+      return { version, definition };
+    }),
+  );
+
+export const assignOfflineContact = async (targetSid: string, finalTaskAttributes: ITask['attributes']) => {
   const body = {
-    targetSid: workerSid,
-    transferTargetType: 'worker',
-    helpline: helpline || '',
+    targetSid,
+    finalTaskAttributes: JSON.stringify(finalTaskAttributes),
   };
 
-  const response = await fetchProtectedApi('/createContactlessTask', body);
-
+  const response = await fetchProtectedApi('/assignOfflineContact', body);
   return response;
 };

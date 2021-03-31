@@ -2,68 +2,90 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
+import { Print as PrintIcon } from '@material-ui/icons';
 
+import { getConfig } from '../../../HrmFormPlugin';
 import {
   DetailsHeaderChildName,
   DetailsHeaderCaseContainer,
   DetailsHeaderCaseId,
   DetailsHeaderOfficeName,
   DetailsHeaderCounselor,
+  DetailsHeaderContainer,
+  DetailsHeaderTextContainer,
+  DetailsHeaderChildAtRiskContainer,
+  ChildIsAtRiskWrapper,
+  StyledPrintButton,
 } from '../../../styles/case';
-import { Flex, Box, FormCheckbox, FormLabel, FormCheckBoxWrapper } from '../../../styles/HrmStyles';
-import { CaseStatus } from '../../../types/types';
+import { Box, FormCheckbox, FormLabel } from '../../../styles/HrmStyles';
+import { PermissionActions, PermissionActionType } from '../../../permissions';
 
 type OwnProps = {
   caseId: string;
   childName: string;
-  officeName: string;
+  office: string;
   counselor: string;
   childIsAtRisk: boolean;
-  status: CaseStatus;
+  handlePrintCase: () => void;
   handleClickChildIsAtRisk: () => void;
+  isOrphanedCase: boolean;
+  can: (action: PermissionActionType) => boolean;
 };
 
 const CaseDetailsHeader: React.FC<OwnProps> = ({
   caseId,
   childName,
-  officeName,
+  office,
   counselor,
   childIsAtRisk,
-  status,
+  handlePrintCase,
   handleClickChildIsAtRisk,
+  isOrphanedCase,
+  can,
 }) => {
+  const { multipleOfficeSupport } = getConfig();
   return (
-    <Flex>
-      <Flex flexDirection="column">
+    <DetailsHeaderContainer>
+      <DetailsHeaderTextContainer>
         <DetailsHeaderChildName variant="h6">{childName}</DetailsHeaderChildName>
         <DetailsHeaderCaseContainer>
           <DetailsHeaderCaseId id="Case-CaseId-label">
             <Template code="Case-CaseNumber" />
             {caseId}
           </DetailsHeaderCaseId>
-          {officeName && <DetailsHeaderOfficeName>{officeName}</DetailsHeaderOfficeName>}
+          {multipleOfficeSupport && office && <DetailsHeaderOfficeName>({office})</DetailsHeaderOfficeName>}
         </DetailsHeaderCaseContainer>
         <DetailsHeaderCounselor>
           <Template code="Case-Counsellor" />: {counselor}
         </DetailsHeaderCounselor>
-      </Flex>
-      <FormLabel htmlFor="childIsAtRisk" style={{ marginLeft: 'auto', marginTop: 'auto', textTransform: 'uppercase' }}>
-        <FormCheckBoxWrapper style={{ height: 'auto' }}>
-          <Box marginRight="5px">
-            <FormCheckbox
-              id="childIsAtRisk"
-              data-testid="Case-ChildIsAtRisk-Checkbox"
-              name="childIsAtRisk"
-              type="checkbox"
-              onChange={handleClickChildIsAtRisk}
-              defaultChecked={Boolean(childIsAtRisk)}
-              disabled={status === 'closed'}
-            />
-          </Box>
-          <Template code="Case-ChildIsAtRisk" />
-        </FormCheckBoxWrapper>
-      </FormLabel>
-    </Flex>
+      </DetailsHeaderTextContainer>
+      <DetailsHeaderChildAtRiskContainer>
+        <FormLabel
+          htmlFor="childIsAtRisk"
+          style={{ marginLeft: 'auto', marginTop: 'auto', textTransform: 'uppercase' }}
+        >
+          <ChildIsAtRiskWrapper style={{ height: 'auto' }}>
+            <Box marginRight="5px">
+              <FormCheckbox
+                id="childIsAtRisk"
+                data-testid="Case-ChildIsAtRisk-Checkbox"
+                name="childIsAtRisk"
+                type="checkbox"
+                onChange={handleClickChildIsAtRisk}
+                defaultChecked={Boolean(childIsAtRisk)}
+                disabled={!can(PermissionActions.EDIT_CHILD_IS_AT_RISK)}
+              />
+            </Box>
+            <Template code="Case-ChildIsAtRisk" />
+          </ChildIsAtRiskWrapper>
+        </FormLabel>
+      </DetailsHeaderChildAtRiskContainer>
+      {!isOrphanedCase && (
+        <div>
+          <StyledPrintButton onClick={handlePrintCase} aria-label="Print" icon={<PrintIcon />} />
+        </div>
+      )}
+    </DetailsHeaderContainer>
   );
 };
 

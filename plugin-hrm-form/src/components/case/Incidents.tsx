@@ -7,18 +7,18 @@ import { Box, Row } from '../../styles/HrmStyles';
 import { CaseSectionFont, TimelineRow, PlaceHolderText } from '../../styles/case';
 import CaseAddButton from './CaseAddButton';
 import TimelineInformationRow from './TimelineInformationRow';
-import IncidentForm from '../../formDefinitions/caseForms/IncidentForm.json';
-import LayoutDefinitions from '../../formDefinitions/LayoutDefinitions.json';
-import type { FormDefinition, LayoutDefinition } from '../common/forms/types';
+import type { DefinitionVersion } from '../common/forms/types';
+import { PermissionActions, PermissionActionType } from '../../permissions';
 
 type OwnProps = {
   onClickAddIncident: () => void;
   onClickView: (incident: IncidentEntry) => void;
   incidents: CaseInfo['incidents'];
-  status: CaseStatus;
+  can: (action: PermissionActionType) => boolean;
+  definitionVersion: DefinitionVersion;
 };
 
-const Incidents: React.FC<OwnProps> = ({ onClickAddIncident, onClickView, incidents, status }) => {
+const Incidents: React.FC<OwnProps> = ({ onClickAddIncident, onClickView, incidents, can, definitionVersion }) => {
   return (
     <>
       <Box marginBottom="10px">
@@ -26,7 +26,11 @@ const Incidents: React.FC<OwnProps> = ({ onClickAddIncident, onClickView, incide
           <CaseSectionFont id="Case-AddIncidentSection-label">
             <Template code="Case-AddIncidentSection" />
           </CaseSectionFont>
-          <CaseAddButton templateCode="Case-Incident" onClick={onClickAddIncident} status={status} />
+          <CaseAddButton
+            templateCode="Case-Incident"
+            onClick={onClickAddIncident}
+            disabled={!can(PermissionActions.ADD_INCIDENT)}
+          />
         </Row>
       </Box>
       {incidents.length ? (
@@ -34,9 +38,9 @@ const Incidents: React.FC<OwnProps> = ({ onClickAddIncident, onClickView, incide
           <TimelineInformationRow
             key={`incident-${index}`}
             onClickView={() => onClickView(i)}
-            definition={IncidentForm as FormDefinition}
+            definition={definitionVersion.caseForms.IncidentForm}
             values={i.incident}
-            layoutDefinition={LayoutDefinitions.case.incidents as LayoutDefinition}
+            layoutDefinition={definitionVersion.layoutVersion.case.incidents}
           />
         ))
       ) : (

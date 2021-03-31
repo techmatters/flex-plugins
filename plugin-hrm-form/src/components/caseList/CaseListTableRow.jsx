@@ -37,7 +37,7 @@ const CaseListTableRow = ({ caseItem, counselorsHash, handleClickViewCase }) => 
     caseItem.info && caseItem.info.followUpDate
       ? `${format(parseISO(caseItem.info.followUpDate), 'MMM d, yyyy')}`
       : '—';
-  const categories = getContactTags(caseItem.categories);
+  const categories = getContactTags(caseItem.info.definitionVersion, caseItem.categories);
   const isOpenCase = caseItem.status === caseStatuses.open;
 
   return (
@@ -69,7 +69,7 @@ const CaseListTableRow = ({ caseItem, counselorsHash, handleClickViewCase }) => 
         <div style={{ display: 'inline-block', flexDirection: 'column' }}>
           {categories &&
             categories.map(category => (
-              <Box key={`category-tag-${category}`} marginBottom="5px">
+              <Box key={`category-tag-${category.label}`} marginBottom="5px">
                 <CategoryWithTooltip renderTag={renderTag} category={category.label} color={category.color} />
               </Box>
             ))}
@@ -97,6 +97,7 @@ CaseListTableRow.propTypes = {
     updatedAt: PropTypes.string,
     status: PropTypes.string,
     info: PropTypes.shape({
+      definitionVersion: PropTypes.string,
       summary: PropTypes.string,
       followUpDate: PropTypes.string,
     }),

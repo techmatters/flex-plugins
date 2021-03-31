@@ -5,10 +5,12 @@ import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 
 import '../mockStyled';
+import '../mockGetConfig';
 
 import { SearchPages } from '../../states/search/types';
 import SearchResults from '../../components/search/SearchResults';
 import { configurationBase, searchContactsBase, connectedCaseBase, contactFormsBase, namespace } from '../../states';
+import mockV1 from '../../formDefinitions/v1';
 
 const mockStore = configureMockStore([]);
 
@@ -21,6 +23,8 @@ const state1 = {
         list: [],
         hash: { worker1: 'worker1 name' },
       },
+      definitionVersions: { v1: mockV1 },
+      currentDefinitionVersion: mockV1,
     },
     [contactFormsBase]: {
       tasks: {
@@ -137,6 +141,7 @@ describe('<SearchResults> with 1 result', () => {
           notes: 'Jill Smith Notes',
         },
         details: {
+          definitionVersion: 'v1',
           caseInformation: {
             callSummary: 'Summary',
           },
@@ -218,6 +223,7 @@ describe('<SearchResults> with multiple results', () => {
           notes: 'Jill Smith Notes',
         },
         details: {
+          definitionVersion: 'v1',
           caseInformation: {
             callSummary: 'Summary',
           },
@@ -236,6 +242,7 @@ describe('<SearchResults> with multiple results', () => {
           notes: 'Jill Smith Notes',
         },
         details: {
+          definitionVersion: 'v1',
           caseInformation: {
             callSummary: 'Summary',
           },

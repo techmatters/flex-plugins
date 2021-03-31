@@ -1,10 +1,6 @@
 import callTypes, { channelTypes, otherContactChannels } from '../states/DomainConstants';
 
-/**
- * @param {string} str
- * @return {string}
- */
-export const mapCallType = str => {
+export const mapCallType = (str: string) => {
   switch (str) {
     case callTypes.child:
       return 'SELF';
@@ -15,11 +11,10 @@ export const mapCallType = str => {
   }
 };
 
-/**
- * @param {string} channel
- */
-export const mapChannel = channel => {
-  if (Object.values(otherContactChannels).includes(channel)) return channel;
+const isOtherContactChannel = (channel: string) => (Object.values(otherContactChannels) as string[]).includes(channel); // Needed typecast here. For details see https://github.com/microsoft/TypeScript/issues/26255
+
+export const mapChannel = (channel: string) => {
+  if (isOtherContactChannel(channel)) return channel;
 
   switch (channel) {
     case channelTypes.facebook:
@@ -38,7 +33,7 @@ export const mapChannel = channel => {
 };
 
 // Flex Insights reporting uses slightly different channel names than other uses
-export const mapChannelForInsights = channel => {
+export const mapChannelForInsights = (channel: string) => {
   switch (channel) {
     case channelTypes.facebook:
       return 'Facebook';
@@ -51,11 +46,7 @@ export const mapChannelForInsights = channel => {
   }
 };
 
-/**
- * @param {string} age
- * @returns {string}
- */
-export const mapAge = age => {
+export const mapAge = (age: string) => {
   const ageInt = parseInt(age, 10);
 
   if (ageInt >= 0 && ageInt <= 25) return age;
@@ -64,10 +55,12 @@ export const mapAge = age => {
   return 'Unknown';
 };
 
-export const mapGender = gender => {
-  if (!gender) {
+export const mapGender = (genderOptions: string[]) => (gender: string) => {
+  const validOption = genderOptions.find(e => e.toLowerCase() === gender.toLowerCase());
+
+  if (!validOption) {
     return 'Unknown';
   }
 
-  return gender;
+  return validOption;
 };

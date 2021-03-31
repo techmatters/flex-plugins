@@ -1,3 +1,5 @@
+import '../../mockGetConfig';
+
 import * as t from '../../../states/search/types';
 import * as actions from '../../../states/search/actions';
 import { ContactDetailsSections } from '../../../components/common/ContactDetails';
@@ -66,7 +68,13 @@ describe('test action creators', () => {
   });
 
   test('searchContacts (succes)', async () => {
-    const contact = { contactId: 'fake contact', overview: {}, details: {}, counselor: '', tags: [] };
+    const contact = {
+      contactId: 'fake contact',
+      overview: {},
+      details: { definitionVersion: 'v1' },
+      counselor: '',
+      tags: [],
+    };
 
     const searchResult = {
       count: 1,
@@ -102,6 +110,7 @@ describe('test action creators', () => {
       updatedAt: '2020-11-23T17:38:42.227Z',
       helpline: '',
       info: {
+        definitionVersion: 'v1',
         households: [{ household: { name: { firstName: 'Maria', lastName: 'Silva' } } }],
       },
     };

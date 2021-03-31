@@ -1,5 +1,6 @@
 import * as types from '../../../states/configuration/types';
 import * as actions from '../../../states/configuration/actions';
+import mockV1 from '../../../formDefinitions/v1';
 
 describe('test action creators', () => {
   test('changeLanguage', async () => {
@@ -28,6 +29,21 @@ describe('test action creators', () => {
     expect(actions.chatCapacityUpdated(2)).toStrictEqual({
       type: types.CHAT_CAPACITY_UPDATED,
       capacity: 2,
+    });
+  });
+
+  test('populateCurrentDefinitionVersion', async () => {
+    expect(actions.populateCurrentDefinitionVersion(mockV1)).toStrictEqual({
+      type: types.POPULATE_CURRENT_DEFINITION_VERSION,
+      definitions: mockV1,
+    });
+  });
+
+  test('updateDefinitionVersion', async () => {
+    expect(actions.updateDefinitionVersion('v1', mockV1)).toStrictEqual({
+      type: types.UPDATE_DEFINITION_VERSION,
+      version: 'v1',
+      definitions: mockV1,
     });
   });
 });

@@ -1,7 +1,8 @@
-import { reduce, initialState } from '../../../states/routing/reducer';
+import { reduce, initialState, newTaskEntry } from '../../../states/routing/reducer';
 import * as actions from '../../../states/routing/actions';
 import * as GeneralActions from '../../../states/actions';
 import { standaloneTaskSid } from '../../../components/StandaloneSearch';
+import { offlineContactTaskSid } from '../../../types/types';
 
 const task = { taskSid: 'task1' };
 const voidDefinitions = {
@@ -29,6 +30,7 @@ describe('test reducer (specific actions)', () => {
         task1: { route: 'select-call-type' },
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
+      isAddingOfflineContact: false,
     };
 
     const result = reduce(state, GeneralActions.initializeContactState(voidDefinitions)(task.taskSid));
@@ -43,6 +45,7 @@ describe('test reducer (specific actions)', () => {
         task1: { route: 'tabbed-forms' },
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
+      isAddingOfflineContact: false,
     };
 
     const result = reduce(state, actions.changeRoute({ route: 'tabbed-forms' }, task.taskSid));
@@ -66,6 +69,7 @@ describe('test reducer (specific actions)', () => {
         task1: { route: 'select-call-type' },
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
+      isAddingOfflineContact: false,
     };
 
     const result = reduce(state, GeneralActions.recreateContactState(voidDefinitions)(task.taskSid));
@@ -80,6 +84,7 @@ describe('test reducer (specific actions)', () => {
         task1: { route: 'new-case' },
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
+      isAddingOfflineContact: false,
     };
 
     const result1 = reduce(state, actions.changeRoute({ route: 'new-case' }, task.taskSid));
@@ -90,5 +95,36 @@ describe('test reducer (specific actions)', () => {
     expect(result2).toStrictEqual(expected);
 
     state = result2;
+  });
+
+  test('should handle RECREATE_CONTACT_STATE and change isAddingOfflineContact to true', async () => {
+    const expected = {
+      tasks: {
+        task1: { route: 'new-case' },
+        [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
+        [offlineContactTaskSid]: newTaskEntry,
+      },
+      isAddingOfflineContact: true,
+    };
+
+    const result = reduce(state, GeneralActions.recreateContactState(voidDefinitions)(offlineContactTaskSid));
+    expect(result).toStrictEqual(expected);
+
+    state = result;
+  });
+
+  test('should handle REMOVE_CONTACT_STATE', async () => {
+    const expected = {
+      tasks: {
+        task1: { route: 'new-case' },
+        [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
+      },
+      isAddingOfflineContact: false,
+    };
+
+    const result = reduce(state, GeneralActions.removeContactState(offlineContactTaskSid));
+    expect(result).toStrictEqual(expected);
+
+    state = result;
   });
 });

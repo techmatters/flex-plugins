@@ -6,6 +6,7 @@ import CropFreeIcon from '@material-ui/icons/CropFree';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 
+import { getConfig } from '../../../HrmFormPlugin';
 import {
   CaseHeaderContainer,
   CaseHeaderCaseId,
@@ -41,6 +42,7 @@ const CaseHeader: React.FC<Props> = ({
   status,
   onClickViewCase,
 }) => {
+  const { strings } = getConfig();
   const [mockedMessage, setMockedMessage] = useState(null);
 
   const createdAtFormatted = `${format(new Date(createdAt), 'MMM d, yyyy')}`;
@@ -54,15 +56,7 @@ const CaseHeader: React.FC<Props> = ({
       <CaseHeaderContainer>
         <CaseHeaderCaseId closed={status === 'closed' || isOrphanedCase}>#{caseId}</CaseHeaderCaseId>
         <CaseHeaderChildName>
-          {isOrphanedCase ? (
-            <Template code="CaseHeader-Voided" />
-          ) : (
-            <>
-              {firstName ? firstName : <Template code="CaseHeader-NoData" />}
-              &nbsp;
-              {lastName ? lastName : <Template code="CaseHeader-NoData" />}
-            </>
-          )}
+          {isOrphanedCase ? strings['CaseHeader-Voided'] : `${firstName} ${lastName}`}
         </CaseHeaderChildName>
         <DateText>
           <Template code="CaseHeader-Opened" />: {createdAtFormatted}

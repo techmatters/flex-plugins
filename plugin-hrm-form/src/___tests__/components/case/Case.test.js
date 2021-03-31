@@ -15,12 +15,19 @@ import CaseDetails from '../../../components/case/CaseDetails';
 import { namespace, configurationBase, contactFormsBase, connectedCaseBase, routingBase } from '../../../states';
 import { UPDATE_TEMP_INFO } from '../../../states/case/types';
 import { cancelCase, getActivities } from '../../../services/CaseService';
+import mockV1 from '../../../formDefinitions/v1';
 
 jest.mock('react', () => ({
   ...jest.requireActual('react'),
   useState: jest.fn(),
 }));
 jest.mock('../../../services/CaseService', () => ({ getActivities: jest.fn(() => []), cancelCase: jest.fn() }));
+jest.mock('../../../permissions', () => ({
+  getPermissionsForCase: jest.fn(() => ({
+    can: () => true,
+  })),
+  PermissionActions: {},
+}));
 
 /**
  * Fix issue with Popper.js:
@@ -79,7 +86,6 @@ const ownProps = {
       isContactlessTask: false,
     },
   },
-  handleCompleteTask: jest.fn(),
 };
 
 describe('useState mocked', () => {
@@ -113,6 +119,8 @@ describe('useState mocked', () => {
           list: [],
           hash: { worker1: 'worker1 name' },
         },
+        definitionVersions: { v1: mockV1 },
+        currentDefinitionVersion: mockV1,
       },
     });
     const store = mockStore(initialState);
@@ -135,6 +143,8 @@ describe('useState mocked', () => {
         list: [],
         hash: { worker1: 'worker1 name' },
       },
+      definitionVersions: { v1: mockV1 },
+      currentDefinitionVersion: mockV1,
     },
     [contactFormsBase]: {
       tasks: {
@@ -157,10 +167,10 @@ describe('useState mocked', () => {
         task1: {
           connectedCase: {
             id: 123,
-            createdAt: 1593469560208,
+            createdAt: '2020-06-29T22:26:00.208Z',
             twilioWorkerId: 'worker1',
             status: 'open',
-            info: null,
+            info: { definitionVersion: 'v1' },
             connectedContacts: [],
           },
           temporaryCaseInfo: '',
@@ -179,7 +189,7 @@ describe('useState mocked', () => {
             ...initialState[namespace][connectedCaseBase].tasks.task1,
             connectedCase: {
               ...initialState[namespace][connectedCaseBase].tasks.task1.connectedCase,
-              info,
+              info: { ...info, definitionVersion: 'v1' },
             },
           },
         },
@@ -236,7 +246,6 @@ describe('useState mocked', () => {
    *    task: {
    *      taskSid: 'task1',
    *    },
-   *    handleCompleteTask: jest.fn(),
    *  };
    *
    *  const store = mockStore(initialState);

@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-max-depth */
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { Template, ITask } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { useForm, FormProvider } from 'react-hook-form';
 
@@ -16,15 +16,13 @@ import {
 } from '../../styles/HrmStyles';
 import { CaseActionLayout, CaseActionFormContainer } from '../../styles/case';
 import ActionHeader from './ActionHeader';
-import { namespace, connectedCaseBase, routingBase } from '../../states';
+import { namespace, connectedCaseBase, routingBase, RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseState } from '../../states/case/reducer';
-import type { FormDefinition } from '../common/forms/types';
 import { transformValues } from '../../services/ContactService';
 import { getConfig } from '../../HrmFormPlugin';
 import { updateCase } from '../../services/CaseService';
-import HouseholdForm from '../../formDefinitions/caseForms/HouseholdForm.json';
 import {
   createFormFromDefinition,
   createStateItem,
@@ -32,12 +30,14 @@ import {
   splitInHalf,
   splitAt,
 } from '../common/forms/formGenerators';
-import LayoutDefinitions from '../../formDefinitions/LayoutDefinitions.json';
+import type { DefinitionVersion } from '../common/forms/types';
 import { StandaloneITask } from '../StandaloneSearch';
+import type { CustomITask } from '../../types/types';
 
 type OwnProps = {
-  task: ITask | StandaloneITask;
+  task: CustomITask | StandaloneITask;
   counselor: string;
+  definitionVersion: DefinitionVersion;
   onClickClose: () => void;
 };
 
@@ -50,11 +50,14 @@ const AddHousehold: React.FC<Props> = ({
   onClickClose,
   connectedCaseState,
   route,
+  definitionVersion,
   setConnectedCase,
   updateTempInfo,
   changeRoute,
 }) => {
   const { temporaryCaseInfo } = connectedCaseState;
+  const { HouseholdForm } = definitionVersion.caseForms;
+  const { layoutVersion } = definitionVersion;
 
   const init = temporaryCaseInfo && temporaryCaseInfo.screen === 'add-household' ? temporaryCaseInfo.info : {};
   const [initialForm] = React.useState(init); // grab initial values in first render only. This value should never change or will ruin the memoization below
@@ -66,19 +69,19 @@ const AddHousehold: React.FC<Props> = ({
       updateTempInfo({ screen: 'add-household', info: household }, task.taskSid);
     };
 
-    const generatedForm = createFormFromDefinition(HouseholdForm as FormDefinition)([])(initialForm)(updateCallBack);
+    const generatedForm = createFormFromDefinition(HouseholdForm)([])(initialForm)(updateCallBack);
 
-    if (LayoutDefinitions.case.households.splitFormAt)
-      return splitAt(LayoutDefinitions.case.households.splitFormAt)(disperseInputs(7)(generatedForm));
+    if (layoutVersion.case.households.splitFormAt)
+      return splitAt(layoutVersion.case.households.splitFormAt)(disperseInputs(7)(generatedForm));
 
     return splitInHalf(disperseInputs(7)(generatedForm));
-  }, [initialForm, methods, task.taskSid, updateTempInfo]);
+  }, [HouseholdForm, initialForm, layoutVersion.case.households.splitFormAt, methods, task.taskSid, updateTempInfo]);
 
   const saveHousehold = async shouldStayInForm => {
     if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-household') return;
 
     const { info, id } = connectedCaseState.connectedCase;
-    const household = transformValues(HouseholdForm as FormDefinition)(temporaryCaseInfo.info);
+    const household = transformValues(HouseholdForm)(temporaryCaseInfo.info);
     const createdAt = new Date().toISOString();
     const { workerSid } = getConfig();
     const newHousehold = { household, createdAt, twilioWorkerId: workerSid };
@@ -87,7 +90,7 @@ const AddHousehold: React.FC<Props> = ({
     const updatedCase = await updateCase(id, { info: newInfo });
     setConnectedCase(updatedCase, task.taskSid, true);
     if (shouldStayInForm) {
-      const blankForm = (HouseholdForm as FormDefinition).reduce(createStateItem, {});
+      const blankForm = HouseholdForm.reduce(createStateItem, {});
       methods.reset(blankForm); // Resets the form.
       updateTempInfo({ screen: 'add-household', info: {} }, task.taskSid);
       changeRoute({ route, subroute: 'add-household' }, task.taskSid);
@@ -153,7 +156,7 @@ const AddHousehold: React.FC<Props> = ({
 
 AddHousehold.displayName = 'AddHousehold';
 
-const mapStateToProps = (state, ownProps: OwnProps) => {
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const caseState: CaseState = state[namespace][connectedCaseBase]; // casting type as inference is not working for the store yet
   const connectedCaseState = caseState.tasks[ownProps.task.taskSid];
   const { route } = state[namespace][routingBase].tasks[ownProps.task.taskSid];

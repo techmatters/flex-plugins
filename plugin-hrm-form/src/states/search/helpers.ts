@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/prefer-immediate-return */
 import { ConfigurationState } from '../configuration/reducer';
 import { SearchContact } from '../../types/types';
 

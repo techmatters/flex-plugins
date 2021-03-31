@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
-import { withTaskContext, Template } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 import FolderOpenIcon from '@material-ui/icons/FolderOpen';
+import { CircularProgress } from '@material-ui/core';
 import FolderIcon from '@material-ui/icons/Folder';
 import AddIcon from '@material-ui/icons/Add';
 import Dialog from '@material-ui/core/Dialog';
@@ -16,9 +17,9 @@ import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { getConfig } from '../../HrmFormPlugin';
 import { createCase } from '../../services/CaseService';
-import { saveToHrm } from '../../services/ContactService';
+import { submitContactForm, completeTask } from '../../services/formSubmissionHelpers';
 import { hasTaskControl } from '../../utils/transfer';
-import { namespace, contactFormsBase } from '../../states';
+import { namespace, contactFormsBase, connectedCaseBase } from '../../states';
 import { isNonDataCallType } from '../../states/ValidationRules';
 import callTypes from '../../states/DomainConstants';
 
@@ -31,7 +32,6 @@ class BottomBar extends Component {
     showNextButton: PropTypes.bool.isRequired,
     showSubmitButton: PropTypes.bool.isRequired,
     nextTab: PropTypes.func.isRequired,
-    handleCompleteTask: PropTypes.func.isRequired,
     task: taskType.isRequired,
     changeRoute: PropTypes.func.isRequired,
     setConnectedCase: PropTypes.func.isRequired,
@@ -46,6 +46,7 @@ class BottomBar extends Component {
     anchorEl: null,
     isMenuOpen: false,
     mockedMessage: null,
+    isSubmitting: false,
   };
 
   toggleCaseMenu = e => {
@@ -58,25 +59,16 @@ class BottomBar extends Component {
   closeMockedMessage = () => this.setState({ mockedMessage: null });
 
   handleOpenNewCase = async () => {
-    const { task } = this.props;
+    const { task, contactForm } = this.props;
     const { taskSid } = task;
-    const { workerSid, helpline, strings } = getConfig();
+    const { strings } = getConfig();
 
     if (!hasTaskControl(task)) return;
-
-    const { definitionVersion } = getConfig();
-
-    const caseRecord = {
-      helpline,
-      status: 'open',
-      twilioWorkerId: workerSid,
-      info: { definitionVersion }, // would be better to have this in CaseService (as ContactsService does for contacts)?
-    };
 
     this.setState({ isMenuOpen: false });
 
     try {
-      const caseFromDB = await createCase(caseRecord);
+      const caseFromDB = await createCase(task, contactForm);
       this.props.changeRoute({ route: 'new-case' }, taskSid);
       this.props.setConnectedCase(caseFromDB, taskSid, false);
     } catch (error) {
@@ -85,18 +77,23 @@ class BottomBar extends Component {
   };
 
   handleSubmit = async () => {
-    const { task, contactForm } = this.props;
-    const { hrmBaseUrl, workerSid, helpline, strings } = getConfig();
+    // eslint-disable-next-line react/prop-types
+    const { task, contactForm, caseForm } = this.props;
 
-    if (!hasTaskControl(task)) return;
+    if (this.state.isSubmitting || !hasTaskControl(task)) return;
+
+    this.setState({ isSubmitting: true });
 
     try {
-      await saveToHrm(task, contactForm, hrmBaseUrl, workerSid, helpline);
-      this.props.handleCompleteTask(task.taskSid, task);
+      await submitContactForm(task, contactForm, caseForm);
+      await completeTask(task);
     } catch (error) {
+      const { strings } = getConfig();
       if (window.confirm(strings['Error-ContinueWithoutRecording'])) {
-        this.props.handleCompleteTask(task.taskSid, task);
+        await completeTask(task);
       }
+    } finally {
+      this.setState({ isSubmitting: false });
     }
   };
 
@@ -107,7 +104,7 @@ class BottomBar extends Component {
 
   render() {
     const { showNextButton, showSubmitButton, handleSubmitIfValid, optionalButtons, contactForm } = this.props;
-    const { isMenuOpen, anchorEl, mockedMessage } = this.state;
+    const { isMenuOpen, anchorEl, mockedMessage, isSubmitting } = this.state;
 
     const showBottomBar = showNextButton || showSubmitButton;
     const isMockedMessageOpen = Boolean(mockedMessage);
@@ -137,7 +134,7 @@ class BottomBar extends Component {
           {optionalButtons &&
             optionalButtons.map((i, index) => (
               <Box key={`optional-button-${index}`} marginRight="15px">
-                <StyledNextStepButton type="button" roundCorners secondary onClick={i.onClick}>
+                <StyledNextStepButton type="button" roundCorners secondary onClick={i.onClick} disabled={isSubmitting}>
                   <Template code={i.label} />
                 </StyledNextStepButton>
               </Box>
@@ -152,14 +149,24 @@ class BottomBar extends Component {
             <>
               {featureFlags.enable_case_management && !isNonDataCallType(contactForm.callType) && (
                 <Box marginRight="15px">
-                  <StyledNextStepButton type="button" roundCorners secondary onClick={this.toggleCaseMenu}>
+                  <StyledNextStepButton
+                    type="button"
+                    roundCorners
+                    secondary
+                    onClick={this.toggleCaseMenu}
+                    disabled={isSubmitting}
+                  >
                     <FolderIcon style={{ fontSize: '16px', marginRight: '10px' }} />
                     <Template code="BottomBar-SaveAndAddToCase" />
                   </StyledNextStepButton>
                 </Box>
               )}
-              <StyledNextStepButton roundCorners={true} onClick={handleSubmitIfValid(this.handleSubmit, this.onError)}>
-                <Template code="BottomBar-SaveContact" />
+              <StyledNextStepButton
+                roundCorners={true}
+                onClick={handleSubmitIfValid(this.handleSubmit, this.onError)}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? <CircularProgress size={12} /> : <Template code="BottomBar-SaveContact" />}
               </StyledNextStepButton>
             </>
           )}
@@ -169,9 +176,14 @@ class BottomBar extends Component {
   }
 }
 
+/**
+ * @param {import('../../states').RootState} state
+ */
 const mapStateToProps = (state, ownProps) => {
   const contactForm = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
-  return { contactForm };
+  const caseState = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid];
+  const caseForm = (caseState && caseState.connectedCase) || {};
+  return { contactForm, caseForm };
 };
 
 const mapDispatchToProps = dispatch => ({
@@ -179,4 +191,4 @@ const mapDispatchToProps = dispatch => ({
   setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
 });
 
-export default withTaskContext(connect(mapStateToProps, mapDispatchToProps)(BottomBar));
+export default connect(mapStateToProps, mapDispatchToProps)(BottomBar);

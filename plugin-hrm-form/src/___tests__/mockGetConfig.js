@@ -1,3 +1,5 @@
+import mockV1 from '../formDefinitions/v1';
+
 jest.mock('../HrmFormPlugin', () => ({
   getConfig: () => {
     return {
@@ -23,4 +25,8 @@ jest.mock('../HrmFormPlugin', () => ({
       },
     };
   },
+  getDefinitionVersions: jest.fn(() => ({
+    currentDefinitionVersion: mockV1,
+    definitionVersions: { v1: mockV1 },
+  })),
 }));

@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Template } from '@twilio/flex-ui';
 
-import CaseTags from '../search/CasePreview/CaseTags';
+import CaseTags from './CaseTags';
 import CaseDetailsHeader from './caseDetails/CaseDetailsHeader';
 import {
   DetailsContainer,
@@ -17,6 +17,7 @@ import {
   StyledSelectWrapper,
 } from '../../styles/case';
 import { FormOption } from '../../styles/HrmStyles';
+import { PermissionActions } from '../../permissions';
 
 const statusOptions = [
   { label: 'Open', value: 'open', color: 'green' },
@@ -32,11 +33,15 @@ const CaseDetails = ({
   lastUpdatedDate,
   followUpDate,
   status,
-  isEditing,
+  can,
+  office,
   childIsAtRisk,
+  handlePrintCase,
   handleInfoChange,
   handleStatusChange,
   handleClickChildIsAtRisk,
+  definitionVersion,
+  isOrphanedCase,
 }) => {
   const lastUpdatedClosedDate = openedDate === lastUpdatedDate ? '—' : lastUpdatedDate;
 
@@ -49,6 +54,10 @@ const CaseDetails = ({
     handleStatusChange(selectedOption);
   };
 
+  const canChangeStatus =
+    (status === 'open' && can(PermissionActions.CLOSE_CASE)) ||
+    (status === 'closed' && can(PermissionActions.REOPEN_CASE));
+
   return (
     <>
       <CaseDetailsHeader
@@ -56,8 +65,11 @@ const CaseDetails = ({
         childName={name}
         counselor={counselor}
         childIsAtRisk={childIsAtRisk}
-        status={status}
+        office={office}
+        handlePrintCase={handlePrintCase}
         handleClickChildIsAtRisk={handleClickChildIsAtRisk}
+        isOrphanedCase={isOrphanedCase}
+        can={can}
       />
       <DetailsContainer tabIndex={0} aria-labelledby="Case-CaseId-label">
         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -97,7 +109,7 @@ const CaseDetails = ({
               type="date"
               id="Details_DateFollowUp"
               name="Details_DateFollowUp"
-              disabled={status === 'closed'}
+              disabled={!can(PermissionActions.EDIT_FOLLOW_UP_DATE)}
               value={followUpDate}
               onChange={e => handleInfoChange('followUpDate', e.target.value)}
               aria-labelledby="CaseDetailsFollowUpDate"
@@ -109,12 +121,12 @@ const CaseDetails = ({
                 <Template code="Case-CaseDetailsStatusLabel" />
               </label>
             </DetailDescription>
-            <StyledSelectWrapper disabled={!isEditing}>
+            <StyledSelectWrapper disabled={!canChangeStatus}>
               <StyledSelectField
                 id="Details_CaseStatus"
                 name="Details_CaseStatus"
                 aria-labelledby="CaseDetailsStatusLabel"
-                disabled={!isEditing}
+                disabled={!canChangeStatus}
                 onChange={e => onStatusChange(e.target.value)}
                 defaultValue={status}
                 color={color}
@@ -129,7 +141,7 @@ const CaseDetails = ({
           </div>
         </div>
         <div style={{ paddingTop: '15px' }}>
-          <CaseTags categories={categories} />
+          <CaseTags definitionVersion={definitionVersion} categories={categories} />
         </div>
       </DetailsContainer>
     </>
@@ -144,18 +156,24 @@ CaseDetails.propTypes = {
   counselor: PropTypes.string.isRequired,
   openedDate: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
-  isEditing: PropTypes.bool.isRequired,
+  can: PropTypes.func.isRequired,
+  office: PropTypes.string,
   followUpDate: PropTypes.string,
   lastUpdatedDate: PropTypes.string,
   childIsAtRisk: PropTypes.bool.isRequired,
+  handlePrintCase: PropTypes.func.isRequired,
   handleInfoChange: PropTypes.func.isRequired,
   handleStatusChange: PropTypes.func.isRequired,
   handleClickChildIsAtRisk: PropTypes.func.isRequired,
+  definitionVersion: PropTypes.string.isRequired,
+  isOrphanedCase: PropTypes.bool,
 };
 
 CaseDetails.defaultProps = {
+  office: '',
   followUpDate: '',
   lastUpdatedDate: '',
+  isOrphanedCase: false,
 };
 
 export default CaseDetails;

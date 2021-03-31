@@ -66,6 +66,7 @@ jest.mock('../styles/HrmStyles', () => ({
   CategoryCheckboxLabel: 'CategoryCheckboxLabel',
   CategoryCheckboxField: 'CategoryCheckboxField',
   TaskCanvasOverride: 'TaskCanvasOverride',
+  PopoverText: 'PopoverText',
 }));
 
 jest.mock('../styles/search', () => ({
@@ -83,6 +84,8 @@ jest.mock('../styles/search', () => ({
   SummaryText: 'SummaryText',
   ShortSummaryText: 'ShortSummaryText',
   CounselorText: 'CounselorText',
+  CaseFooter: 'CaseFooter',
+  CaseFooterText: 'CaseFooterText',
   DateText: 'DateText',
   TagsWrapper: 'TagsWrapper',
   TagText: 'TagText',

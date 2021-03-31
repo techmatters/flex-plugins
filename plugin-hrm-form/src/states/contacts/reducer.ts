@@ -6,10 +6,10 @@ import {
   RECREATE_CONTACT_STATE,
   REMOVE_CONTACT_STATE,
   GeneralActionType,
-  DefinitionsObject,
+  ContactFormDefinition,
 } from '../types';
 import { createStateItem } from '../../components/common/forms/formGenerators';
-import { formDefinition as contactlessTaskTabDefinition } from '../../components/tabbedForms/ContactlessTaskTabDefinition';
+import { createFormDefinition as createContactlessTaskTabDefinition } from '../../components/tabbedForms/ContactlessTaskTabDefinition';
 import callTypes, { CallTypes } from '../DomainConstants';
 
 export type TaskEntry = {
@@ -30,21 +30,21 @@ export type TaskEntry = {
   };
 };
 
-export type ContactsState = {
+type ContactsState = {
   tasks: {
     [taskId: string]: TaskEntry;
   };
 };
 
 // eslint-disable-next-line import/no-unused-modules
-export const createNewTaskEntry = (definitions: DefinitionsObject) => (recreated: boolean): TaskEntry => {
-  const initialChildInformation = definitions.childFormDefinition.reduce(createStateItem, {});
-  const initialCallerInformation = definitions.callerFormDefinition.reduce(createStateItem, {});
-  const initialCaseInformation = definitions.caseInfoFormDefinition.reduce(createStateItem, {});
+export const createNewTaskEntry = (definitions: ContactFormDefinition) => (recreated: boolean): TaskEntry => {
+  const initialChildInformation = definitions.ChildInformationTab.reduce(createStateItem, {});
+  const initialCallerInformation = definitions.CallerInformationTab.reduce(createStateItem, {});
+  const initialCaseInformation = definitions.CaseInformationTab.reduce(createStateItem, {});
 
   const categoriesMeta = {
     gridView: false,
-    expanded: Object.keys(definitions.categoriesFormDefinition).reduce(
+    expanded: Object.keys(definitions.IssueCategorizationTab).reduce(
       (acc, category) => ({ ...acc, [category]: false }),
       {},
     ),
@@ -58,7 +58,8 @@ export const createNewTaskEntry = (definitions: DefinitionsObject) => (recreated
     categories: categoriesMeta,
   };
 
-  const contactlessTask = contactlessTaskTabDefinition.reduce(createStateItem, {});
+  const initialContactlessTaskTabDefinition = createContactlessTaskTabDefinition([]);
+  const contactlessTask = initialContactlessTaskTabDefinition.reduce(createStateItem, {});
 
   return {
     callType: '',

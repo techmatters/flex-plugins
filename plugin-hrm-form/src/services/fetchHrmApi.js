@@ -32,6 +32,7 @@ const fetchHrmApi = async (endPoint, options = {}) => {
   const response = await fetch(url, finalOptions);
 
   if (!response.ok) {
+    // eslint-disable-next-line sonarjs/prefer-immediate-return
     const error = response.error();
     throw error;
   }

@@ -1,5 +1,5 @@
 import { createStateItem } from '../components/common/forms/formGenerators';
-import { formDefinition as contactlessTaskTabDefinition } from '../components/tabbedForms/ContactlessTaskTabDefinition';
+import { createFormDefinition as createContactlessTaskTabDefinition } from '../components/tabbedForms/ContactlessTaskTabDefinition';
 
 export const ValidationType = {
   REQUIRED: 'REQUIRED', // Will not be applied if in the callerInformation tab and callType is not caller.  Will not be applied when callType is standalone.
@@ -561,6 +561,7 @@ const recursivelyCreateBlankForm = formDefinition => {
             type: formDefinition[key].type,
           };
           break;
+        // eslint-disable-next-line sonarjs/no-duplicated-branches
         case FieldType.TAB:
           initialState[key] = {
             ...recursivelyCreateBlankForm(formDefinition[key]),
@@ -617,8 +618,10 @@ export const createBlankForm = (formDef = defaultFormDefinition, recreated = fal
     categories: createCategoriesMetadata(formDef),
   };
 
-  const contactlessTask = contactlessTaskTabDefinition.reduce(createStateItem, {});
+  const initialContactlessTaskTabDefinition = createContactlessTaskTabDefinition([]);
+  const contactlessTask = initialContactlessTaskTabDefinition.reduce(createStateItem, {});
 
+  // eslint-disable-next-line sonarjs/prefer-immediate-return
   const generatedForm = { ...initialState, metadata, contactlessTask };
 
   return generatedForm;
