@@ -1339,7 +1339,7 @@
     "options": [
       { "value": "Unknown", "label": "" },
       { "value": "Foster care", "label": "Foster care" },
-      { "value": "Gropu facility", "label": "Group facility" },
+      { "value": "Group facility", "label": "Group facility" },
       { "value": "On their own", "label": "On their own" },
       { "value": "With parent(s) or guardian(s)", "label": "With parent(s) or guardian(s)" },
       { "value": "With relatives", "label": "With relatives" },
