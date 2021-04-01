@@ -53,6 +53,17 @@
       "Trafficking"
    ]
   },
+  "COVID19": {
+    "color": "#4A90E2",
+    "subcategories": [
+      "Child Orphaned by COVID",
+      "Child Vulnerable due to COVID",
+      "Insufficient/No income due to COVID",
+      "Mental Health",
+      "General Medical Information",
+      "School Related Challenges due to COVID"
+   ]
+  },
   "Discrimination": {
     "color": "#8055BA",
     "subcategories": [
@@ -130,7 +141,6 @@
     "color": "#767777",
     "subcategories": [
       "Body image",
-      "COVID-19",
       "Health information",
       "Health problems",
       "In need of medical care"
