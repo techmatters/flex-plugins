@@ -13,6 +13,7 @@ import setUpMonitoring from './utils/setUpMonitoring';
 import * as TransferHelpers from './utils/transfer';
 import { changeLanguage } from './states/configuration/actions';
 import { issueSyncToken } from './services/ServerlessService';
+import CannedResponses from './components/CannedResponses';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 export const PLUGIN_VERSION = '0.10.0';
@@ -190,6 +191,8 @@ const setUpComponents = setupObject => {
   }
 
   Components.setUpStandaloneSearch();
+
+  if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
 };
 
 /**

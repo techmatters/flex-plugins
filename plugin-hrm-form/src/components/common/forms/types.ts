@@ -140,6 +140,11 @@ export type OfficeEntry = {
 // ToDo: also this type can be defined as: OfficeDefinitions = { [officename: string]: OfficeEntry };
 export type OfficeDefinitions = OfficeEntry[];
 
+export type CannedResponsesDefinitions = {
+  label: string;
+  text: string;
+}[];
+
 /**
  * Type that gives extra info on how a single field should be formatted
  */
@@ -185,6 +190,7 @@ export type DefinitionVersion = {
   callTypeButtons: CallTypeButtonsDefinitions;
   layoutVersion: LayoutVersion;
   officeInformation?: OfficeDefinitions;
+  cannedResponses?: CannedResponsesDefinitions;
   insights: {
     oneToOneConfigSpec: OneToOneConfigSpec;
     oneToManyConfigSpecs: OneToManyConfigSpecs;
