@@ -191,7 +191,8 @@ const setUpComponents = setupObject => {
   }
 
   Components.setUpStandaloneSearch();
-  Components.setupCannedResponses();
+
+  if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
 };
 
 /**

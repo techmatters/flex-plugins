@@ -646,7 +646,7 @@ export const FormError = styled('span')`
 `;
 FormError.displayName = 'FormError';
 
-type FormInputProps = { error?: boolean; width?: number };
+type FormInputProps = { error?: boolean; width?: number; fullWidth?: boolean };
 
 export const FormInput = styled('input')<FormInputProps>`
   /* ---------- Input ---------- */
