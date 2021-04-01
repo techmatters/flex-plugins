@@ -2,9 +2,18 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Actions, Template, withTheme } from '@twilio/flex-ui';
-import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
+import {} from '@material-ui/core';
 
-import { CannedResponsesContainer } from '../styles/HrmStyles';
+import {
+  Box,
+  CannedResponsesContainer,
+  FormLabel,
+  FormSelect,
+  FormSelectWrapper,
+  FormError,
+  FormOption,
+  Row,
+} from '../styles/HrmStyles';
 import { RootState, namespace, configurationBase } from '../states';
 
 type OwnProps = {
@@ -29,20 +38,20 @@ const CannedResponses: React.FC<Props> = props => {
 
   return (
     <CannedResponsesContainer>
-      <FormControl className="form">
-        <InputLabel className="input-label" htmlFor="canned_response">
-          <Template code="CannedResponses" />
-        </InputLabel>
-        <Select value="" onChange={handleChange} name="canned_response">
+      <FormSelectWrapper fullWidth={true}>
+        <FormSelect id="canned_response" name="canned_response" onChange={handleChange} value="" fullWidth={true}>
+          <FormOption disabled selected isEmptyValue={true} value="">
+            Canned Responses
+          </FormOption>
           {cannedResponses.map(r => {
             return (
-              <MenuItem key={r.label} value={r.text}>
+              <FormOption key={r.label} value={r.text} isEmptyValue={r.text === ''}>
                 {r.label}
-              </MenuItem>
+              </FormOption>
             );
           })}
-        </Select>
-      </FormControl>
+        </FormSelect>
+      </FormSelectWrapper>
     </CannedResponsesContainer>
   );
 };
