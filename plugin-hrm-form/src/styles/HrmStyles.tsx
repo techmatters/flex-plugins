@@ -646,7 +646,7 @@ export const FormError = styled('span')`
 `;
 FormError.displayName = 'FormError';
 
-type FormInputProps = { error?: boolean; width?: number; fullWidth?: boolean };
+type FormInputProps = { error?: boolean; width?: number };
 
 export const FormInput = styled('input')<FormInputProps>`
   /* ---------- Input ---------- */
@@ -658,7 +658,7 @@ export const FormInput = styled('input')<FormInputProps>`
     line-height: 1.33;
     letter-spacing: normal;
     box-sizing: border-box; /* Tells the browser to account for any border and padding in the values you specify for an element's width and height. https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing*/
-    width: '217px'
+    width: 217px;
     height: 36px;
     border-radius: 4px;
     background-color: ${props => props.theme.colors.inputBackgroundColor};
