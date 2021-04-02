@@ -56,7 +56,7 @@ export function getNumberFromTask(task: ITask) {
   } else if (task.channelType === channelTypes.whatsapp) {
     return task.defaultFrom.replace('whatsapp:', '');
   } else if (task.channelType === channelTypes.web) {
-    return task.attributes.ip;
+    return task.attributes.ip || task.defaultFrom;
   }
 
   return task.defaultFrom;
