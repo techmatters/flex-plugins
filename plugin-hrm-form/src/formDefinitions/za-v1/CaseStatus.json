@@ -15,6 +15,6 @@
     "value": "closed", 
     "label": "Closed", 
     "color": "red", 
-    "transitions": ["reOpened"] 
+    "transitions": ["open"] 
   }
 } 

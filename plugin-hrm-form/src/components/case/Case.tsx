@@ -176,6 +176,21 @@ const Case: React.FC<Props> = props => {
     }
   }, [definitionVersions, updateDefinitionVersion, version]);
 
+  // Memoize can function so is not re-created on every render of case view, but only when relevan case info changes
+  const { can } = React.useMemo(
+    () =>
+      getPermissionsForCase(
+        props.connectedCaseState.connectedCase.info.definitionVersion || 'za-v1',
+        props.connectedCaseState.connectedCase.twilioWorkerId,
+        props.connectedCaseState.connectedCase.status, // should this be prevStatus instead?
+      ),
+    [
+      props.connectedCaseState.connectedCase.info.definitionVersion,
+      props.connectedCaseState.connectedCase.status,
+      props.connectedCaseState.connectedCase.twilioWorkerId,
+    ],
+  );
+
   const toggleCaseMenu = e => {
     e.persist();
     setAnchorEl(e.currentTarget || e.target);
@@ -287,7 +302,7 @@ const Case: React.FC<Props> = props => {
 
   const { task, form, counselorsHash } = props;
 
-  const { connectedCase, caseHasBeenEdited } = props.connectedCaseState;
+  const { connectedCase, caseHasBeenEdited, prevStatus } = props.connectedCaseState;
 
   const getCategories = firstConnectedContact => {
     if (firstConnectedContact?.rawJson?.caseInformation) {
@@ -382,7 +397,7 @@ const Case: React.FC<Props> = props => {
     contact: firstConnectedContact,
   };
 
-  const { can } = getPermissionsForCase(connectedCase);
+  // const { can } = getPermissionsForCase(connectedCase);
 
   switch (subroute) {
     case 'add-note':
@@ -422,6 +437,7 @@ const Case: React.FC<Props> = props => {
                 caseId={connectedCase.id}
                 name={fullName}
                 status={status}
+                prevStatus={prevStatus}
                 can={can}
                 counselor={caseCounselor}
                 categories={categories}
@@ -434,7 +450,8 @@ const Case: React.FC<Props> = props => {
                 handleInfoChange={onInfoChange}
                 handleStatusChange={onStatusChange}
                 handleClickChildIsAtRisk={onClickChildIsAtRisk}
-                definitionVersion={connectedCase.info.definitionVersion}
+                definitionVersion={definitionVersion}
+                definitionVersionName={connectedCase.info.definitionVersion}
                 isOrphanedCase={!firstConnectedContact}
               />
             </Box>

@@ -31,12 +31,14 @@ const rulesMap: { [version in Version]: Rules } = {
   'za-v1': zaV1Rules,
 };
 
-export const getPermissionsForCase = (caseObj: t.Case) => {
+export const getPermissionsForCase = (
+  version: t.Case['info']['definitionVersion'],
+  twilioWorkerId: t.Case['twilioWorkerId'],
+  status: t.Case['status'],
+) => {
   const { workerSid, isSupervisor } = getConfig();
-  const version = (caseObj.info.definitionVersion || 'za-v1') as Version;
-  const { twilioWorkerId } = caseObj;
   const isCreator = workerSid === twilioWorkerId;
-  const isCaseOpen = caseObj.status === 'open';
+  const isCaseOpen = status === 'open';
   const rules = rulesMap[version];
 
   const can = (action: PermissionActionType): boolean => {
