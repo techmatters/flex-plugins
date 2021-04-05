@@ -98,6 +98,7 @@ const createForm = ({ callType, childFirstName }, contactlessTaskInfo = undefine
 
 const getFormFromPOST = mockedFetch => JSON.parse(mockedFetch.mock.calls[0][1].body).form;
 const getTimeOfContactFromPOST = mockedFetch => JSON.parse(mockedFetch.mock.calls[0][1].body).timeOfContact;
+const getNumberFromPOST = mockedFetch => JSON.parse(mockedFetch.mock.calls[0][1].body).number;
 
 describe('saveToHrm()', () => {
   const task = {
@@ -188,6 +189,51 @@ describe('saveToHrm() (isContactlessTask)', () => {
     expect(formFromPOST.childInformation.name.firstName).toEqual('');
     expect(formFromPOST.contactlessTask).toStrictEqual(expected);
     expect(getTimeOfContactFromPOST(mockedFetch)).toEqual(new Date(2020, 10, 24, 12, 0).getTime());
+
+    mockedFetch.mockClear();
+  });
+
+  test('save IP from web calltype', async () => {
+    const ip = 'ip-address';
+    const webTaskWithIP = {
+      queueName: 'queueName',
+      channelType: channelTypes.web,
+      defaultFrom: 'Anonymous',
+      attributes: {
+        isContactlessTask: false,
+        ip,
+      },
+    };
+    const form = createForm({ callType: callTypes.child, childFirstName: 'Jill' });
+
+    const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
+
+    await saveToHrm(webTaskWithIP, form, workerSid, helpline, uniqueIdentifier);
+
+    const numberFromPOST = getNumberFromPOST(mockedFetch);
+    expect(numberFromPOST).toEqual(ip);
+
+    mockedFetch.mockClear();
+  });
+
+  test('save defaultFrom when IP is null from web calltype', async () => {
+    const defaultFrom = 'Anonymous';
+    const webTaskWithoutIP = {
+      queueName: 'queueName',
+      channelType: channelTypes.web,
+      defaultFrom,
+      attributes: {
+        isContactlessTask: false,
+      },
+    };
+    const form = createForm({ callType: callTypes.child, childFirstName: 'Jill' });
+
+    const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
+
+    await saveToHrm(webTaskWithoutIP, form, workerSid, helpline, uniqueIdentifier);
+
+    const numberFromPOST = getNumberFromPOST(mockedFetch);
+    expect(numberFromPOST).toEqual(defaultFrom);
 
     mockedFetch.mockClear();
   });
