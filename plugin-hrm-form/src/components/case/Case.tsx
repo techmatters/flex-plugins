@@ -227,7 +227,7 @@ const Case: React.FC<Props> = props => {
       const contact = await submitContactForm(task, form, connectedCase);
       await updateCase(connectedCase.id, { ...connectedCase });
       await connectToCase(contact.id, connectedCase.id);
-      props.markCaseAsUpdated(task.taskSid);
+      props.markCaseAsUpdated(task.taskSid); // (Gian): is this necessary?
       await completeTask(task);
     } catch (error) {
       console.error(error);
@@ -320,7 +320,7 @@ const Case: React.FC<Props> = props => {
 
     try {
       const updatedCase = await updateCase(connectedCase.id, { ...connectedCase });
-      props.markCaseAsUpdated(task.taskSid);
+      props.setConnectedCase(updatedCase, task.taskSid, true);
       props.updateCases(task.taskSid, updatedCase);
       // IF case has been edited from All Cases view, we should update that view
       if (props.updateAllCasesView) {
@@ -552,6 +552,7 @@ const mapDispatchToProps = {
   updateCaseInfo: CaseActions.updateCaseInfo,
   updateTempInfo: CaseActions.updateTempInfo,
   updateCaseStatus: CaseActions.updateCaseStatus,
+  setConnectedCase: CaseActions.setConnectedCase,
   markCaseAsUpdated: CaseActions.markCaseAsUpdated,
   updateCases: SearchActions.updateCases,
   updateDefinitionVersion: ConfigActions.updateDefinitionVersion,
