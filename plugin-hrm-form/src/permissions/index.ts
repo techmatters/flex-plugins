@@ -36,6 +36,8 @@ export const getPermissionsForCase = (
   twilioWorkerId: t.Case['twilioWorkerId'],
   status: t.Case['status'],
 ) => {
+  if (!version || !twilioWorkerId || !status) return { can: undefined };
+
   const { workerSid, isSupervisor } = getConfig();
   const isCreator = workerSid === twilioWorkerId;
   const isCaseOpen = status === 'open';

@@ -60,7 +60,12 @@ const CaseDetails = ({
       const disabled = !enableBasedOnPermissions(o);
 
       return (
-        <FormOption key={o.value} value={o.value} style={{ color: '#000000' }} disabled={disabled}>
+        <FormOption
+          key={o.value}
+          value={o.value}
+          style={{ color: disabled ? '#000000' : definitionVersion.caseStatus[o.value].color }}
+          disabled={disabled}
+        >
           {o.label}
         </FormOption>
       );

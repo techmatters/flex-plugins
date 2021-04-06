@@ -176,18 +176,18 @@ const Case: React.FC<Props> = props => {
     }
   }, [definitionVersions, updateDefinitionVersion, version]);
 
-  // Memoize can function so is not re-created on every render of case view, but only when relevan case info changes
+  // Memoize can function so is not re-created on every render of Case, but only when relevant case info changes
   const { can } = React.useMemo(
     () =>
       getPermissionsForCase(
-        props.connectedCaseState.connectedCase.info.definitionVersion || 'za-v1',
-        props.connectedCaseState.connectedCase.twilioWorkerId,
-        props.connectedCaseState.connectedCase.status, // should this be prevStatus instead?
+        props.connectedCaseState?.connectedCase.info.definitionVersion || 'za-v1',
+        props.connectedCaseState?.connectedCase.twilioWorkerId,
+        props.connectedCaseState?.connectedCase.status, // should this be prevStatus instead?
       ),
     [
-      props.connectedCaseState.connectedCase.info.definitionVersion,
-      props.connectedCaseState.connectedCase.status,
-      props.connectedCaseState.connectedCase.twilioWorkerId,
+      props.connectedCaseState?.connectedCase.info.definitionVersion,
+      props.connectedCaseState?.connectedCase.status,
+      props.connectedCaseState?.connectedCase.twilioWorkerId,
     ],
   );
 
@@ -396,8 +396,6 @@ const Case: React.FC<Props> = props => {
     version,
     contact: firstConnectedContact,
   };
-
-  // const { can } = getPermissionsForCase(connectedCase);
 
   switch (subroute) {
     case 'add-note':
