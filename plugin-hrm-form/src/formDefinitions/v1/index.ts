@@ -40,7 +40,7 @@ const version: DefinitionVersion = {
     oneToOneConfigSpec: (oneToOneConfigSpec as unknown) as OneToOneConfigSpec,
     oneToManyConfigSpecs: oneToManyConfigSpecs as OneToManyConfigSpecs,
   },
-  caseStatus: (CaseStatus as unknown) as DefinitionVersion['caseStatus'],
+  caseStatus: CaseStatus as DefinitionVersion['caseStatus'],
 };
 
 export default version;

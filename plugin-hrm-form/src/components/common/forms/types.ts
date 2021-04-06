@@ -173,7 +173,7 @@ type StatusInfo = {
   value: string;
   label: string;
   color: string; // color that represents this status in the UI
-  transitions: [string]; // possible statuses this one can transition to (further update may be to include who can make such a transition for a more granular control)
+  transitions: string[]; // possible statuses this one can transition to (further update may be to include who can make such a transition for a more granular control)
 };
 
 /**
