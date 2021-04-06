@@ -182,3 +182,8 @@ jest.mock('../styles/case', () => ({
   StyledSelectWrapper: 'StyledSelectWrapper',
   StyledSelectField: 'StyledSelectField',
 }));
+
+jest.mock('../styles/previousContactsBanner', () => ({
+  YellowBanner: 'YellowBanner',
+  Bold: 'Bold',
+}));
