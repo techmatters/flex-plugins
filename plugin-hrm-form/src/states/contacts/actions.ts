@@ -36,17 +36,33 @@ export const handleExpandCategory = (category: string, taskId: string) => ({
   taskId,
 });
 
-export const prepopulateFormChild = (gender: string, age: string, taskId: string): t.ContactsActionType => ({
+export const prepopulateFormChild = (
+  firstName: string,
+  gender: string,
+  age: string,
+  language: string,
+  taskId: string,
+): t.ContactsActionType => ({
   type: t.PREPOPULATE_FORM_CHILD,
+  firstName,
   gender,
   age,
+  language,
   taskId,
 });
 
-export const prepopulateFormCaller = (gender: string, age: string, taskId: string): t.ContactsActionType => ({
+export const prepopulateFormCaller = (
+  firstName: string,
+  gender: string,
+  age: string,
+  language: string,
+  taskId: string,
+): t.ContactsActionType => ({
   type: t.PREPOPULATE_FORM_CALLER,
+  firstName,
   gender,
   age,
+  language,
   taskId,
 });
 
