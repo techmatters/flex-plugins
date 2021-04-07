@@ -29,6 +29,7 @@ export const searchContacts = (dispatch: Dispatch<any>) => (taskId: string) => a
   counselorsHash: ConfigurationState['counselors']['hash'],
   limit: number,
   offset: number,
+  dispatchedFromPreviousContacts?: boolean,
 ) => {
   try {
     dispatch({ type: t.SEARCH_CONTACTS_REQUEST, taskId });
@@ -40,7 +41,7 @@ export const searchContacts = (dispatch: Dispatch<any>) => (taskId: string) => a
     const definitions = await getContactsMissingVersions(searchResultRaw.contacts);
     definitions.forEach(d => dispatch(updateDefinitionVersion(d.version, d.definition)));
 
-    dispatch({ type: t.SEARCH_CONTACTS_SUCCESS, searchResult, taskId });
+    dispatch({ type: t.SEARCH_CONTACTS_SUCCESS, searchResult, taskId, dispatchedFromPreviousContacts });
   } catch (error) {
     dispatch({ type: t.SEARCH_CONTACTS_FAILURE, error, taskId });
   }
@@ -51,6 +52,7 @@ export const searchCases = (dispatch: Dispatch<any>) => (taskId: string) => asyn
   counselorsHash: ConfigurationState['counselors']['hash'],
   limit: number,
   offset: number,
+  dispatchedFromPreviousContacts?: boolean,
 ) => {
   try {
     dispatch({ type: t.SEARCH_CASES_REQUEST, taskId });
@@ -59,7 +61,7 @@ export const searchCases = (dispatch: Dispatch<any>) => (taskId: string) => asyn
     const definitions = await getCasesMissingVersions(searchResult.cases);
     definitions.forEach(d => dispatch(updateDefinitionVersion(d.version, d.definition)));
 
-    dispatch({ type: t.SEARCH_CASES_SUCCESS, searchResult, taskId });
+    dispatch({ type: t.SEARCH_CASES_SUCCESS, searchResult, taskId, dispatchedFromPreviousContacts });
   } catch (error) {
     dispatch({ type: t.SEARCH_CASES_FAILURE, error, taskId });
   }

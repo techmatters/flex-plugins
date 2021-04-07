@@ -6,6 +6,11 @@ import { SearchContact, SearchCaseResult } from '../../types/types';
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../../components/common/ContactDetails';
 import { standaloneTaskSid } from '../../components/StandaloneSearch';
 
+type PreviousContacts = {
+  contactsCount?: number;
+  casesCount?: number;
+};
+
 type TaskEntry = {
   currentPage: t.SearchPagesType;
   currentContact: SearchContact;
@@ -15,6 +20,7 @@ type TaskEntry = {
   };
   searchContactsResult: t.DetailedSearchContactsResult;
   searchCasesResult: SearchCaseResult;
+  previousContacts?: PreviousContacts;
   isRequesting: boolean;
   isRequestingCases: boolean;
   error: any;
@@ -47,6 +53,7 @@ export const newTaskEntry: TaskEntry = {
   },
   searchContactsResult: { count: 0, contacts: [] },
   searchCasesResult: { count: 0, cases: [] },
+  previousContacts: undefined,
   isRequesting: false,
   isRequestingCases: false,
   error: null,
@@ -57,6 +64,24 @@ export const initialState: SearchState = {
   tasks: {
     [standaloneTaskSid]: newTaskEntry,
   },
+};
+
+const getPreviousContacts = (
+  action: t.SearchContactsSuccessAction | t.SearchCasesSuccessAction,
+  originalPreviousContacts: PreviousContacts,
+): PreviousContacts => {
+  const { type, searchResult, dispatchedFromPreviousContacts } = action;
+  const previousContacts = { ...originalPreviousContacts };
+
+  if (!dispatchedFromPreviousContacts) return originalPreviousContacts;
+
+  if (type === t.SEARCH_CONTACTS_SUCCESS) {
+    previousContacts.contactsCount = searchResult.count;
+  } else if (type === t.SEARCH_CASES_SUCCESS) {
+    previousContacts.casesCount = searchResult.count;
+  }
+
+  return previousContacts;
 };
 
 export function reduce(state = initialState, action: t.SearchActionType | GeneralActionType): SearchState {
@@ -146,6 +171,7 @@ export function reduce(state = initialState, action: t.SearchActionType | Genera
     }
     case t.SEARCH_CONTACTS_SUCCESS: {
       const task = state.tasks[action.taskId];
+      const previousContacts = getPreviousContacts(action, task.previousContacts);
       return {
         ...state,
         tasks: {
@@ -153,6 +179,7 @@ export function reduce(state = initialState, action: t.SearchActionType | Genera
           [action.taskId]: {
             ...task,
             searchContactsResult: action.searchResult,
+            previousContacts,
             currentPage: t.SearchPages.resultsContacts,
             isRequesting: false,
             error: null,
@@ -190,6 +217,7 @@ export function reduce(state = initialState, action: t.SearchActionType | Genera
     }
     case t.SEARCH_CASES_SUCCESS: {
       const task = state.tasks[action.taskId];
+      const previousContacts = getPreviousContacts(action, task.previousContacts);
       return {
         ...state,
         tasks: {
@@ -197,6 +225,7 @@ export function reduce(state = initialState, action: t.SearchActionType | Genera
           [action.taskId]: {
             ...task,
             searchCasesResult: action.searchResult,
+            previousContacts,
             isRequestingCases: false,
             casesError: null,
           },

@@ -32,26 +32,29 @@ const PreviousContactsBanner: React.FC<Props> = ({
   counselorsHash,
   searchContactsResults,
   searchCasesResults,
+  previousContacts,
   searchContacts,
   searchCases,
 }) => {
   useEffect(() => {
-    if (task && task.attributes && !task.attributes.isContactlessTask) {
+    if (task && task.attributes && !task.attributes.isContactlessTask && previousContacts === undefined) {
       const contactNumber = getNumberFromTask(task as ITask);
       const isTraceableNumber = ![null, undefined, 'Anonymous'].includes(contactNumber);
 
       if (isTraceableNumber) {
         const searchParams = { contactNumber };
-        searchContacts(searchParams, counselorsHash, CONTACTS_PER_PAGE, 0);
-        searchCases(searchParams, counselorsHash, CASES_PER_PAGE, 0);
+        searchContacts(searchParams, counselorsHash, CONTACTS_PER_PAGE, 0, true);
+        searchCases(searchParams, counselorsHash, CASES_PER_PAGE, 0, true);
       }
     }
-  }, [task, counselorsHash, searchContacts, searchCases]);
+  }, [task, counselorsHash, searchContacts, searchCases, previousContacts]);
 
-  const { count: contactsCount } = searchContactsResults;
-  const { count: casesCount } = searchCasesResults;
+  const shouldDisplayBanner =
+    previousContacts && (previousContacts.contactsCount > 0 || previousContacts.casesCount > 0);
 
-  if (contactsCount === 0 && casesCount === 0) return null;
+  if (!shouldDisplayBanner) return null;
+
+  const { contactsCount, casesCount } = previousContacts;
 
   return (
     <YellowBanner>
@@ -77,6 +80,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
     error: taskSearchState.error,
     searchContactsResults: taskSearchState.searchContactsResult,
     searchCasesResults: taskSearchState.searchCasesResult,
+    previousContacts: taskSearchState.previousContacts,
     counselorsHash: counselors.hash,
   };
 };

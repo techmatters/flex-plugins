@@ -53,20 +53,22 @@ type SearchFormChangeAction = {
 
 type SearchContactsRequestAction = { type: typeof SEARCH_CONTACTS_REQUEST; taskId: string };
 
-type SearchContactsSuccessAction = {
+export type SearchContactsSuccessAction = {
   type: typeof SEARCH_CONTACTS_SUCCESS;
   searchResult: DetailedSearchContactsResult;
   taskId: string;
+  dispatchedFromPreviousContacts?: boolean;
 };
 
 type SearchContactsFailureAction = { type: typeof SEARCH_CONTACTS_FAILURE; error: any; taskId: string };
 
 type SearchCasesRequestAction = { type: typeof SEARCH_CASES_REQUEST; taskId: string };
 
-type SearchCasesSuccessAction = {
+export type SearchCasesSuccessAction = {
   type: typeof SEARCH_CASES_SUCCESS;
   searchResult: SearchCaseResult;
   taskId: string;
+  dispatchedFromPreviousContacts?: boolean;
 };
 
 type SearchCasesFailureAction = { type: typeof SEARCH_CASES_FAILURE; error: any; taskId: string };
