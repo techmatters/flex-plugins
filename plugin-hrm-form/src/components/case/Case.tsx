@@ -182,12 +182,12 @@ const Case: React.FC<Props> = props => {
       getPermissionsForCase(
         props.connectedCaseState?.connectedCase.info.definitionVersion || 'za-v1',
         props.connectedCaseState?.connectedCase.twilioWorkerId,
-        props.connectedCaseState?.connectedCase.status, // should this be prevStatus instead?
+        props.connectedCaseState?.prevStatus,
       ),
     [
       props.connectedCaseState?.connectedCase.info.definitionVersion,
-      props.connectedCaseState?.connectedCase.status,
       props.connectedCaseState?.connectedCase.twilioWorkerId,
+      props.connectedCaseState?.prevStatus,
     ],
   );
 
@@ -227,7 +227,7 @@ const Case: React.FC<Props> = props => {
       const contact = await submitContactForm(task, form, connectedCase);
       await updateCase(connectedCase.id, { ...connectedCase });
       await connectToCase(contact.id, connectedCase.id);
-      props.markCaseAsUpdated(task.taskSid); // (Gian): is this necessary?
+      props.markCaseAsUpdated(task.taskSid);
       await completeTask(task);
     } catch (error) {
       console.error(error);
@@ -320,7 +320,7 @@ const Case: React.FC<Props> = props => {
 
     try {
       const updatedCase = await updateCase(connectedCase.id, { ...connectedCase });
-      props.setConnectedCase(updatedCase, task.taskSid, true);
+      props.setConnectedCase(updatedCase, task.taskSid, false);
       props.updateCases(task.taskSid, updatedCase);
       // IF case has been edited from All Cases view, we should update that view
       if (props.updateAllCasesView) {
