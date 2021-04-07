@@ -1,5 +1,6 @@
 import { ITask, Manager } from '@twilio/flex-ui';
 import { capitalize } from 'lodash';
+
 import { mapAge, mapGender } from './mappers';
 import * as RoutingActions from '../states/routing/actions';
 import { prepopulateFormCaller, prepopulateFormChild } from '../states/contacts/actions';
