@@ -30,8 +30,6 @@ const localizedSource: { [channelType in ChannelTypes]: string } = {
 const PreviousContactsBanner: React.FC<Props> = ({
   task,
   counselorsHash,
-  searchContactsResults,
-  searchCasesResults,
   previousContacts,
   searchContacts,
   searchCases,
@@ -78,8 +76,6 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   return {
     isRequesting: taskSearchState.isRequesting,
     error: taskSearchState.error,
-    searchContactsResults: taskSearchState.searchContactsResult,
-    searchCasesResults: taskSearchState.searchCasesResult,
     previousContacts: taskSearchState.previousContacts,
     counselorsHash: counselors.hash,
   };
