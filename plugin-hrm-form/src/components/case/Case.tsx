@@ -176,6 +176,21 @@ const Case: React.FC<Props> = props => {
     }
   }, [definitionVersions, updateDefinitionVersion, version]);
 
+  // Memoize can function so is not re-created on every render of Case, but only when relevant case info changes
+  const { can } = React.useMemo(
+    () =>
+      getPermissionsForCase(
+        props.connectedCaseState?.connectedCase.info.definitionVersion || 'za-v1',
+        props.connectedCaseState?.connectedCase.twilioWorkerId,
+        props.connectedCaseState?.prevStatus,
+      ),
+    [
+      props.connectedCaseState?.connectedCase.info.definitionVersion,
+      props.connectedCaseState?.connectedCase.twilioWorkerId,
+      props.connectedCaseState?.prevStatus,
+    ],
+  );
+
   const toggleCaseMenu = e => {
     e.persist();
     setAnchorEl(e.currentTarget || e.target);
@@ -287,7 +302,7 @@ const Case: React.FC<Props> = props => {
 
   const { task, form, counselorsHash } = props;
 
-  const { connectedCase, caseHasBeenEdited } = props.connectedCaseState;
+  const { connectedCase, caseHasBeenEdited, prevStatus } = props.connectedCaseState;
 
   const getCategories = firstConnectedContact => {
     if (firstConnectedContact?.rawJson?.caseInformation) {
@@ -305,7 +320,7 @@ const Case: React.FC<Props> = props => {
 
     try {
       const updatedCase = await updateCase(connectedCase.id, { ...connectedCase });
-      props.markCaseAsUpdated(task.taskSid);
+      props.setConnectedCase(updatedCase, task.taskSid, false);
       props.updateCases(task.taskSid, updatedCase);
       // IF case has been edited from All Cases view, we should update that view
       if (props.updateAllCasesView) {
@@ -382,8 +397,6 @@ const Case: React.FC<Props> = props => {
     contact: firstConnectedContact,
   };
 
-  const { can } = getPermissionsForCase(connectedCase);
-
   switch (subroute) {
     case 'add-note':
       return <AddNote {...addScreenProps} />;
@@ -422,6 +435,7 @@ const Case: React.FC<Props> = props => {
                 caseId={connectedCase.id}
                 name={fullName}
                 status={status}
+                prevStatus={prevStatus}
                 can={can}
                 counselor={caseCounselor}
                 categories={categories}
@@ -434,7 +448,8 @@ const Case: React.FC<Props> = props => {
                 handleInfoChange={onInfoChange}
                 handleStatusChange={onStatusChange}
                 handleClickChildIsAtRisk={onClickChildIsAtRisk}
-                definitionVersion={connectedCase.info.definitionVersion}
+                definitionVersion={definitionVersion}
+                definitionVersionName={connectedCase.info.definitionVersion}
                 isOrphanedCase={!firstConnectedContact}
               />
             </Box>
@@ -537,6 +552,7 @@ const mapDispatchToProps = {
   updateCaseInfo: CaseActions.updateCaseInfo,
   updateTempInfo: CaseActions.updateTempInfo,
   updateCaseStatus: CaseActions.updateCaseStatus,
+  setConnectedCase: CaseActions.setConnectedCase,
   markCaseAsUpdated: CaseActions.markCaseAsUpdated,
   updateCases: SearchActions.updateCases,
   updateDefinitionVersion: ConfigActions.updateDefinitionVersion,

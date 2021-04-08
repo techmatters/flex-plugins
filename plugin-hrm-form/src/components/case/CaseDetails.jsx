@@ -3,7 +3,8 @@
 /* eslint-disable react/jsx-max-depth */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/no-multi-comp */
-import React, { useState } from 'react';
+/* eslint-disable react/prop-types */
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Template } from '@twilio/flex-ui';
 
@@ -19,11 +20,6 @@ import {
 import { FormOption } from '../../styles/HrmStyles';
 import { PermissionActions } from '../../permissions';
 
-const statusOptions = [
-  { label: 'Open', value: 'open', color: 'green' },
-  { label: 'Closed', value: 'closed', color: 'red' },
-];
-
 const CaseDetails = ({
   caseId,
   name,
@@ -33,6 +29,7 @@ const CaseDetails = ({
   lastUpdatedDate,
   followUpDate,
   status,
+  prevStatus,
   can,
   office,
   childIsAtRisk,
@@ -41,22 +38,50 @@ const CaseDetails = ({
   handleStatusChange,
   handleClickChildIsAtRisk,
   definitionVersion,
+  definitionVersionName,
   isOrphanedCase,
 }) => {
-  const lastUpdatedClosedDate = openedDate === lastUpdatedDate ? '—' : lastUpdatedDate;
+  const statusOptions = React.useMemo(() => {
+    const statusTransitions = [prevStatus, ...definitionVersion.caseStatus[prevStatus].transitions];
 
-  const initialColor = (statusOptions.find(x => x.value === status) || {}).color || '#000000';
+    const optionsArray = statusTransitions.reduce(
+      (acc, curr) => [...acc, { value: curr, label: definitionVersion.caseStatus[curr].label }],
+      [],
+    );
 
-  const [color, setColor] = useState(initialColor);
+    const enableBasedOnPermissions = o => {
+      if (o.value === 'closed' && prevStatus !== 'closed') return can(PermissionActions.CLOSE_CASE);
+      if (o.value !== 'closed' && prevStatus === 'closed') return can(PermissionActions.REOPEN_CASE);
+
+      return true;
+    };
+
+    const renderStatusOptions = o => {
+      const disabled = !enableBasedOnPermissions(o);
+
+      return (
+        <FormOption
+          key={o.value}
+          value={o.value}
+          style={{ color: disabled ? '#000000' : definitionVersion.caseStatus[o.value].color }}
+          disabled={disabled}
+        >
+          {o.label}
+        </FormOption>
+      );
+    };
+
+    return optionsArray.map(renderStatusOptions);
+  }, [can, definitionVersion.caseStatus, prevStatus]);
 
   const onStatusChange = selectedOption => {
-    setColor(statusOptions.find(x => x.value === selectedOption).color);
     handleStatusChange(selectedOption);
   };
 
-  const canChangeStatus =
-    (status === 'open' && can(PermissionActions.CLOSE_CASE)) ||
-    (status === 'closed' && can(PermissionActions.REOPEN_CASE));
+  const canTransition = statusOptions.length !== 1;
+
+  const color = definitionVersion.caseStatus[status].color || '#000000';
+  const lastUpdatedClosedDate = openedDate === lastUpdatedDate ? '—' : lastUpdatedDate;
 
   return (
     <>
@@ -121,27 +146,23 @@ const CaseDetails = ({
                 <Template code="Case-CaseDetailsStatusLabel" />
               </label>
             </DetailDescription>
-            <StyledSelectWrapper disabled={!canChangeStatus}>
+            <StyledSelectWrapper disabled={!canTransition}>
               <StyledSelectField
                 id="Details_CaseStatus"
                 name="Details_CaseStatus"
                 aria-labelledby="CaseDetailsStatusLabel"
-                disabled={!canChangeStatus}
+                disabled={!canTransition}
                 onChange={e => onStatusChange(e.target.value)}
                 defaultValue={status}
                 color={color}
               >
-                {statusOptions.map(o => (
-                  <FormOption key={o.value} value={o.value} style={{ color: '#000000' }}>
-                    {o.label}
-                  </FormOption>
-                ))}
+                {statusOptions}
               </StyledSelectField>
             </StyledSelectWrapper>
           </div>
         </div>
         <div style={{ paddingTop: '15px' }}>
-          <CaseTags definitionVersion={definitionVersion} categories={categories} />
+          <CaseTags definitionVersion={definitionVersionName} categories={categories} />
         </div>
       </DetailsContainer>
     </>
@@ -156,6 +177,7 @@ CaseDetails.propTypes = {
   counselor: PropTypes.string.isRequired,
   openedDate: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
+  prevStatus: PropTypes.string.isRequired,
   can: PropTypes.func.isRequired,
   office: PropTypes.string,
   followUpDate: PropTypes.string,
@@ -165,7 +187,8 @@ CaseDetails.propTypes = {
   handleInfoChange: PropTypes.func.isRequired,
   handleStatusChange: PropTypes.func.isRequired,
   handleClickChildIsAtRisk: PropTypes.func.isRequired,
-  definitionVersion: PropTypes.string.isRequired,
+  definitionVersion: PropTypes.shape({}).isRequired,
+  definitionVersionName: PropTypes.string.isRequired,
   isOrphanedCase: PropTypes.bool,
 };
 

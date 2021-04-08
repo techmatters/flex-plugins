@@ -863,8 +863,9 @@ export const FormSelect = styled('select')<FormInputProps>`
 `;
 FormSelect.displayName = 'FormSelect';
 
-// eslint-disable-next-line import/no-unused-modules
-export const FormOption = styled('option')<{ isEmptyValue: boolean }>`
+type FormOptionProps = { isEmptyValue?: boolean; disabled?: boolean };
+
+export const FormOption = styled('option')<FormOptionProps>`
   font-family: Open Sans;
   font-size: 12px;
   line-height: 1.33;
@@ -876,6 +877,7 @@ export const FormOption = styled('option')<{ isEmptyValue: boolean }>`
   padding: 0 12px;
   min-width: 0;
   ${({ isEmptyValue }) => isEmptyValue && 'color: #616161'}
+  ${props => props.disabled && `background-color: ${props.theme.colors.disabledColor};`}
 `;
 FormOption.displayName = 'FormOption';
 

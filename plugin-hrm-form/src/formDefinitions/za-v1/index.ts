@@ -21,7 +21,8 @@ import type {
   OfficeDefinitions,
   CannedResponsesDefinitions,
 } from '../../components/common/forms/types';
-import { OneToOneConfigSpec, OneToManyConfigSpecs } from '../../insightsConfig/types';
+import type { OneToOneConfigSpec, OneToManyConfigSpecs } from '../../insightsConfig/types';
+import CaseStatus from './CaseStatus.json';
 
 const version: DefinitionVersion = {
   caseForms: {
@@ -45,6 +46,7 @@ const version: DefinitionVersion = {
     oneToOneConfigSpec: (oneToOneConfigSpec as unknown) as OneToOneConfigSpec,
     oneToManyConfigSpecs: oneToManyConfigSpecs as OneToManyConfigSpecs,
   },
+  caseStatus: CaseStatus as DefinitionVersion['caseStatus'],
 };
 
 export default version;
