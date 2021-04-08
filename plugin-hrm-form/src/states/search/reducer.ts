@@ -172,6 +172,7 @@ export function reduce(state = initialState, action: t.SearchActionType | Genera
     case t.SEARCH_CONTACTS_SUCCESS: {
       const task = state.tasks[action.taskId];
       const previousContacts = getPreviousContacts(action, task.previousContacts);
+      const currentPage = action.dispatchedFromPreviousContacts ? task.currentPage : t.SearchPages.resultsContacts;
       return {
         ...state,
         tasks: {
@@ -180,7 +181,7 @@ export function reduce(state = initialState, action: t.SearchActionType | Genera
             ...task,
             searchContactsResult: action.searchResult,
             previousContacts,
-            currentPage: t.SearchPages.resultsContacts,
+            currentPage,
             isRequesting: false,
             error: null,
           },
@@ -189,13 +190,14 @@ export function reduce(state = initialState, action: t.SearchActionType | Genera
     }
     case t.SEARCH_CONTACTS_FAILURE: {
       const task = state.tasks[action.taskId];
+      const currentPage = action.dispatchedFromPreviousContacts ? task.currentPage : t.SearchPages.resultsContacts;
       return {
         ...state,
         tasks: {
           ...state.tasks,
           [action.taskId]: {
             ...task,
-            currentPage: t.SearchPages.resultsContacts,
+            currentPage,
             isRequesting: false,
             error: action.error,
           },

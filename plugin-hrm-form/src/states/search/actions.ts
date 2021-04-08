@@ -43,7 +43,7 @@ export const searchContacts = (dispatch: Dispatch<any>) => (taskId: string) => a
 
     dispatch({ type: t.SEARCH_CONTACTS_SUCCESS, searchResult, taskId, dispatchedFromPreviousContacts });
   } catch (error) {
-    dispatch({ type: t.SEARCH_CONTACTS_FAILURE, error, taskId });
+    dispatch({ type: t.SEARCH_CONTACTS_FAILURE, error, taskId, dispatchedFromPreviousContacts });
   }
 };
 

@@ -60,7 +60,12 @@ export type SearchContactsSuccessAction = {
   dispatchedFromPreviousContacts?: boolean;
 };
 
-type SearchContactsFailureAction = { type: typeof SEARCH_CONTACTS_FAILURE; error: any; taskId: string };
+type SearchContactsFailureAction = {
+  type: typeof SEARCH_CONTACTS_FAILURE;
+  error: any;
+  taskId: string;
+  dispatchedFromPreviousContacts?: boolean;
+};
 
 type SearchCasesRequestAction = { type: typeof SEARCH_CASES_REQUEST; taskId: string };
 
@@ -71,7 +76,7 @@ export type SearchCasesSuccessAction = {
   dispatchedFromPreviousContacts?: boolean;
 };
 
-type SearchCasesFailureAction = { type: typeof SEARCH_CASES_FAILURE; error: any; taskId: string };
+type SearchCasesFailureAction = { type: typeof SEARCH_CASES_FAILURE; error: any; taskId: string; };
 
 // maybe we can migrate this to be handled by the routing instead later on?
 type SearchChangePageAction = { type: typeof CHANGE_SEARCH_PAGE; page: SearchPagesType; taskId: string };
