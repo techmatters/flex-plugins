@@ -55,7 +55,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
   const { contactsCount, casesCount } = previousContacts;
 
   return (
-    <YellowBanner>
+    <YellowBanner data-testid="PreviousContacts-Container">
       {/* eslint-disable-next-line prettier/prettier */}
       <pre><Template code="PreviousContacts-ThereAre" /> <Bold>{contactsCount} <Template code="PreviousContacts-PreviousContacts" /></Bold> and <Bold>{casesCount} <Template code="PreviousContacts-Cases" /></Bold> <Template code="PreviousContacts-FromThis" /> <Template code={localizedSource[task.channelType]} />.</pre>
       <StyledLink onClick={() => null}>
@@ -74,8 +74,6 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const { counselors } = state[namespace][configurationBase];
 
   return {
-    isRequesting: taskSearchState.isRequesting,
-    error: taskSearchState.error,
     previousContacts: taskSearchState.previousContacts,
     counselorsHash: counselors.hash,
   };
@@ -90,4 +88,5 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
+export const UnconnectedPreviousContactsBanner = PreviousContactsBanner;
 export default connect(mapStateToProps, mapDispatchToProps)(PreviousContactsBanner);
