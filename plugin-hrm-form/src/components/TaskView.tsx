@@ -11,6 +11,7 @@ import { hasTaskControl } from '../utils/transfer';
 import type { ContactFormDefinition } from '../states/types';
 import { CustomITask, isOfflineContactTask, isInMyBehalfITask } from '../types/types';
 import { reRenderAgentDesktop } from '../HrmFormPlugin';
+import PreviousContactsBanner from './PreviousContactsBanner';
 
 type OwnProps = {
   task: CustomITask;
@@ -46,6 +47,7 @@ const TaskView: React.FC<Props> = props => {
 
   return (
     <div style={{ height: '100%' }}>
+      <PreviousContactsBanner task={task} />
       {!hasTaskControl(task) && <FormNotEditable />}
       <HrmForm task={task} />
     </div>
