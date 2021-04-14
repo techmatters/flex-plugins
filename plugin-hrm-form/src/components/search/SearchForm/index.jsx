@@ -57,7 +57,7 @@ class SearchForm extends Component {
     values: searchFormType.isRequired,
     task: taskType.isRequired,
     // eslint-disable-next-line react/forbid-prop-types
-    previousContacts: PropTypes.any,
+    previousContacts: PropTypes.any, // TODO: Transform this file into Typescript
   };
 
   static defaultProps = {
@@ -72,7 +72,16 @@ class SearchForm extends Component {
     handleFocus: () => {},
   });
 
-  // eslint-disable-next-line sonarjs/cognitive-complexity
+  get showPreviousContactsCheckbox() {
+    const { previousContacts } = this.props;
+
+    return (
+      typeof previousContacts !== 'undefined' &&
+      previousContacts &&
+      (previousContacts.contactsCount > 0 || previousContacts.casesCount > 0)
+    );
+  }
+
   render() {
     const {
       firstName,
@@ -116,12 +125,7 @@ class SearchForm extends Component {
       if (event.key === 'Enter') submitSearch();
     };
 
-    const { previousContacts, task } = this.props;
-
-    const showPreviousContactsCheckbox =
-      typeof previousContacts !== 'undefined' &&
-      previousContacts &&
-      (previousContacts.contactsCount > 0 || previousContacts.casesCount > 0);
+    const { task } = this.props;
 
     const contactNumberFromTask = getNumberFromTask(task);
 
@@ -207,7 +211,7 @@ class SearchForm extends Component {
               />
             )}
           </Row>
-          {showPreviousContactsCheckbox && (
+          {this.showPreviousContactsCheckbox && (
             <Row>
               <Box marginTop="20px">
                 <FormLabel htmlFor="Search_PreviousContacts">
@@ -216,7 +220,7 @@ class SearchForm extends Component {
                       <FormCheckbox
                         id="Search_PreviousContacts"
                         type="checkbox"
-                        defaultChecked={true}
+                        defaultChecked={contactNumber}
                         onChange={handleChangePreviousContactsCheckbox}
                         blue
                       />
