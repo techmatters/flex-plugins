@@ -43,6 +43,7 @@ export const newTaskEntry: TaskEntry = {
     phoneNumber: '',
     dateFrom: '',
     dateTo: '',
+    contactNumber: '',
   },
   detailsExpanded: {
     [ContactDetailsSections.GENERAL_DETAILS]: true,

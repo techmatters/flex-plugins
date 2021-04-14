@@ -68,6 +68,7 @@ jest.mock('../styles/HrmStyles', () => ({
   TaskCanvasOverride: 'TaskCanvasOverride',
   PopoverText: 'PopoverText',
   CannedResponsesContainer: 'CannedResponsesContainer',
+  Bold: 'Bold',
 }));
 
 jest.mock('../styles/search', () => ({
@@ -125,6 +126,7 @@ jest.mock('../styles/search', () => ({
   StyledCount: 'StyledCount',
   StyledContactResultsHeader: 'StyledContactResultsHeader',
   StyledCaseResultsHeader: 'StyledCaseResultsHeader',
+  CheckboxLabel: 'CheckboxLabel',
 }));
 
 jest.mock('../styles/callTypeButtons', () => ({
@@ -185,5 +187,4 @@ jest.mock('../styles/case', () => ({
 
 jest.mock('../styles/previousContactsBanner', () => ({
   YellowBanner: 'YellowBanner',
-  Bold: 'Bold',
 }));

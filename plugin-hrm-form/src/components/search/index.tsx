@@ -112,6 +112,7 @@ const Search: React.FC<Props> = props => {
       case SearchPages.form:
         return (
           <SearchForm
+            task={props.task}
             values={form}
             handleSearchFormChange={props.handleSearchFormChange}
             handleSearch={setSearchParamsAndHandleSearch}

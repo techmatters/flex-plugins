@@ -7,11 +7,21 @@ import { Template } from '@twilio/flex-ui';
 import FieldText from '../../FieldText';
 import FieldSelect from '../../FieldSelect';
 import FieldDate from '../../FieldDate';
-import { Container, StyledNextStepButton, Row, BottomButtonBar } from '../../../styles/HrmStyles';
-import { SearchTitle } from '../../../styles/search';
-import { searchFormType } from '../../../types';
+import {
+  Container,
+  StyledNextStepButton,
+  Row,
+  BottomButtonBar,
+  Flex,
+  FormCheckbox,
+  Bold,
+} from '../../../styles/HrmStyles';
+import { SearchTitle, CheckboxLabel } from '../../../styles/search';
+import { searchFormType, taskType } from '../../../types';
 import { getConfig } from '../../../HrmFormPlugin';
-import { namespace, configurationBase } from '../../../states';
+import { namespace, configurationBase, searchContactsBase } from '../../../states';
+import { getNumberFromTask } from '../../../services/ContactService';
+import { localizedSource } from '../../PreviousContactsBanner';
 
 const getField = value => ({
   value,
@@ -43,6 +53,13 @@ class SearchForm extends Component {
       }),
     ),
     values: searchFormType.isRequired,
+    task: taskType.isRequired,
+    // eslint-disable-next-line react/forbid-prop-types
+    previousContacts: PropTypes.any,
+  };
+
+  static defaultProps = {
+    previousContacts: null,
   };
 
   defaultEventHandlers = fieldName => ({
@@ -53,8 +70,18 @@ class SearchForm extends Component {
     handleFocus: () => {},
   });
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   render() {
-    const { firstName, lastName, counselor, helpline, phoneNumber, dateFrom, dateTo } = this.props.values;
+    const {
+      firstName,
+      lastName,
+      counselor,
+      helpline,
+      phoneNumber,
+      dateFrom,
+      dateTo,
+      contactNumber,
+    } = this.props.values;
 
     const counselorsOptions = this.props.counselors.map(e => ({ label: e.fullName, value: e.sid }));
 
@@ -79,12 +106,29 @@ class SearchForm extends Component {
       phoneNumber ||
       dateFrom ||
       dateTo ||
-      (helpline && helpline.value);
+      (helpline && helpline.value) ||
+      contactNumber;
 
     const submitSearch = () => this.props.handleSearch(searchParams);
     const submitOnEnter = event => {
       if (event.key === 'Enter') submitSearch();
     };
+
+    const { previousContacts, task } = this.props;
+
+    const showPreviousContactsCheckbox =
+      typeof previousContacts !== 'undefined' &&
+      previousContacts &&
+      (previousContacts.contactsCount > 0 || previousContacts.casesCount > 0);
+
+    const contactNumberFromTask = getNumberFromTask(task);
+
+    const handleChangePreviousContactsCheckbox = () => {
+      const value = contactNumber === '' ? contactNumberFromTask : '';
+      this.props.handleSearchFormChange('contactNumber', value);
+    };
+
+    const source = localizedSource[task.channelType];
 
     return (
       <>
@@ -161,6 +205,22 @@ class SearchForm extends Component {
               />
             )}
           </Row>
+          {showPreviousContactsCheckbox && (
+            <Row>
+              <Flex alignItems="baseline" width="217px" marginTop="20px">
+                <FormCheckbox
+                  id="Search_PreviousContacts"
+                  type="checkbox"
+                  defaultChecked={true}
+                  onChange={handleChangePreviousContactsCheckbox}
+                />
+                <CheckboxLabel>
+                  <Template code="PreviousContacts-OnlyShowRecordsFrom" /> <Template code={source} />{' '}
+                  <Bold>{contactNumberFromTask}</Bold>
+                </CheckboxLabel>
+              </Flex>
+            </Row>
+          )}
         </Container>
         <BottomButtonBar>
           <StyledNextStepButton type="button" disabled={!isTouched} roundCorners={true} onClick={submitSearch}>
@@ -177,9 +237,10 @@ SearchForm.defaultProps = {
   officeInformation: null,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state, ownProps) => ({
   counselors: state[namespace][configurationBase].counselors.list,
   officeInformation: state[namespace][configurationBase].currentDefinitionVersion?.officeInformation,
+  previousContacts: state[namespace][searchContactsBase].tasks[ownProps.task.taskSid]?.previousContacts,
 });
 
 export default connect(mapStateToProps)(SearchForm);

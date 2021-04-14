@@ -965,3 +965,9 @@ export const CannedResponsesContainer = styled('div')`
 `;
 
 CannedResponsesContainer.displayName = 'CannedResponsesContainer';
+
+export const Bold = styled('span')`
+  font-weight: 700;
+`;
+
+Bold.displayName = 'Bold';
