@@ -756,14 +756,10 @@ const CheckboxBase = styled('input')<FormInputProps>`
   }
 `;
 
-type FormCheckboxProps = {
-  blue?: boolean;
-};
-
-export const FormCheckbox = styled(CheckboxBase)<FormCheckboxProps>`
+export const FormCheckbox = styled(CheckboxBase)`
   &[type='checkbox']:checked::before {
-    border-color: ${props => (props.blue ? '#1976D2' : '#5dba32')};
-    background: ${props => (props.blue ? '#1976D2' : '#5dba32')};
+    border-color: #1976d2;
+    background: #1976d2;
   }
   &[type='checkbox']:checked::after {
     font-family: 'Font Awesome 5 Free';
@@ -779,8 +775,8 @@ export const FormMixedCheckbox = styled(CheckboxBase)`
     background: #d13821;
   }
   &[class~='mixed-checkbox'][type='checkbox'][aria-checked='true']::before {
-    border-color: #5dba32;
-    background: #5dba32;
+    border-color: #1976d2;
+    background: #1976d2;
   }
   &[class~='mixed-checkbox'][type='checkbox'][aria-checked='false']::after {
     font-family: 'Font Awesome 5 Free';

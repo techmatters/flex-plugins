@@ -222,7 +222,6 @@ class SearchForm extends Component {
                         type="checkbox"
                         defaultChecked={contactNumber}
                         onChange={handleChangePreviousContactsCheckbox}
-                        blue
                       />
                     </Box>
                     <span>
