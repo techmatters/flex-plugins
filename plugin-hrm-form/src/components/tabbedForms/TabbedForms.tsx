@@ -48,6 +48,8 @@ const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
   }
 };
 
+const isEmptyCallType = callType => [null, undefined, ''].includes(callType);
+
 const mapTabsToIndex = (task: CustomITask, contactForm: TaskEntry): TabbedFormSubroutes[] => {
   const isCallerType = contactForm.callType === callTypes.caller;
 
@@ -59,7 +61,7 @@ const mapTabsToIndex = (task: CustomITask, contactForm: TaskEntry): TabbedFormSu
       : ['search', 'contactlessTask', 'childInformation', 'categories', 'caseInformation'];
   }
 
-  if ([null, undefined, ''].includes(contactForm.callType)) return ['search'];
+  if (isEmptyCallType(contactForm.callType)) return ['search'];
 
   return isCallerType
     ? ['search', 'callerInformation', 'childInformation', 'categories', 'caseInformation']
@@ -150,6 +152,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, currentD
       : undefined;
 
   const isDataCallType = !isNonDataCallType(contactForm.callType);
+  const showSubmitButton = !isEmptyCallType(contactForm.callType) && tabIndex === tabs.length - 1;
 
   return (
     <FormProvider {...methods}>
@@ -217,7 +220,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, currentD
             }
             // TODO: move this two functions to a separate file to centralize "handle task completions"
             showNextButton={tabIndex !== 0 && tabIndex < tabs.length - 1}
-            showSubmitButton={tabIndex === tabs.length - 1}
+            showSubmitButton={showSubmitButton}
             handleSubmitIfValid={methods.handleSubmit} // TODO: this should be used within BottomBar, but that requires a small refactor to make it a functional component
             optionalButtons={optionalButtons}
           />

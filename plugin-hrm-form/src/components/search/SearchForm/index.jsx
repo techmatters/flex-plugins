@@ -12,11 +12,13 @@ import {
   StyledNextStepButton,
   Row,
   BottomButtonBar,
-  Flex,
+  Box,
+  FormLabel,
+  FormCheckBoxWrapper,
   FormCheckbox,
   Bold,
 } from '../../../styles/HrmStyles';
-import { SearchTitle, CheckboxLabel } from '../../../styles/search';
+import { SearchTitle } from '../../../styles/search';
 import { searchFormType, taskType } from '../../../types';
 import { getConfig } from '../../../HrmFormPlugin';
 import { namespace, configurationBase, searchContactsBase } from '../../../states';
@@ -207,18 +209,24 @@ class SearchForm extends Component {
           </Row>
           {showPreviousContactsCheckbox && (
             <Row>
-              <Flex alignItems="baseline" width="217px" marginTop="20px">
-                <FormCheckbox
-                  id="Search_PreviousContacts"
-                  type="checkbox"
-                  defaultChecked={true}
-                  onChange={handleChangePreviousContactsCheckbox}
-                />
-                <CheckboxLabel>
-                  <Template code="PreviousContacts-OnlyShowRecordsFrom" /> <Template code={source} />{' '}
-                  <Bold>{contactNumberFromTask}</Bold>
-                </CheckboxLabel>
-              </Flex>
+              <Box marginTop="20px">
+                <FormLabel htmlFor="Search_PreviousContacts">
+                  <FormCheckBoxWrapper>
+                    <Box marginRight="5px">
+                      <FormCheckbox
+                        id="Search_PreviousContacts"
+                        type="checkbox"
+                        defaultChecked={true}
+                        onChange={handleChangePreviousContactsCheckbox}
+                      />
+                    </Box>
+                    <span>
+                      <Template code="PreviousContacts-OnlyShowRecordsFrom" /> <Template code={source} />{' '}
+                      <Bold>{contactNumberFromTask}</Bold>
+                    </span>
+                  </FormCheckBoxWrapper>
+                </FormLabel>
+              </Box>
             </Row>
           )}
         </Container>

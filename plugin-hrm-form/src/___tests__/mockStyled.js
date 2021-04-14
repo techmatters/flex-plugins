@@ -126,7 +126,6 @@ jest.mock('../styles/search', () => ({
   StyledCount: 'StyledCount',
   StyledContactResultsHeader: 'StyledContactResultsHeader',
   StyledCaseResultsHeader: 'StyledCaseResultsHeader',
-  CheckboxLabel: 'CheckboxLabel',
 }));
 
 jest.mock('../styles/callTypeButtons', () => ({

@@ -489,9 +489,3 @@ export const StandaloneSearchContainer = styled(TabbedFormsContainer)`
   background-color: ${props => props.theme.colors.base2};
 `;
 StandaloneSearchContainer.displayName = 'StandaloneSearchContainer';
-
-export const CheckboxLabel = styled('span')`
-  margin-left: 5px;
-  font-size: 13px;
-`;
-CheckboxLabel.displayName = 'CheckboxLabel';
