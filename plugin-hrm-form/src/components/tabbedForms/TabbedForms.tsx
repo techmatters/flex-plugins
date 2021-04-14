@@ -59,6 +59,8 @@ const mapTabsToIndex = (task: CustomITask, contactForm: TaskEntry): TabbedFormSu
       : ['search', 'contactlessTask', 'childInformation', 'categories', 'caseInformation'];
   }
 
+  if ([null, undefined, ''].includes(contactForm.callType)) return ['search'];
+
   return isCallerType
     ? ['search', 'callerInformation', 'childInformation', 'categories', 'caseInformation']
     : ['search', 'childInformation', 'categories', 'caseInformation'];
