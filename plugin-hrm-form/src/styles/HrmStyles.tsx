@@ -272,18 +272,6 @@ export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
 `;
 StyledNextStepButton.displayName = 'StyledNextStepButton';
 
-type TransparentButton = {
-  textTransform?: string;
-};
-
-export const TransparentButton = styled(Button)<TransparentButton>`
-  color: black;
-  text-transform: ${props => props.textTransform || 'uppercase'};
-  font-size: 12px;
-  letter-spacing: 2px;
-`;
-TransparentButton.displayName = 'TransparentButton';
-
 export const BottomButtonBar = styled('div')`
   display: flex;
   align-items: center;
@@ -768,10 +756,14 @@ const CheckboxBase = styled('input')<FormInputProps>`
   }
 `;
 
-export const FormCheckbox = styled(CheckboxBase)`
+type FormCheckboxProps = {
+  blue?: boolean;
+};
+
+export const FormCheckbox = styled(CheckboxBase)<FormCheckboxProps>`
   &[type='checkbox']:checked::before {
-    border-color: #5dba32;
-    background: #5dba32;
+    border-color: ${props => (props.blue ? '#1976D2' : '#5dba32')};
+    background: ${props => (props.blue ? '#1976D2' : '#5dba32')};
   }
   &[type='checkbox']:checked::after {
     font-family: 'Font Awesome 5 Free';

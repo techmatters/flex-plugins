@@ -19,7 +19,6 @@ jest.mock('../styles/HrmStyles', () => ({
   StyledSelect: 'StyledSelect',
   StyledMenuItem: 'StyledMenuItem',
   StyledNextStepButton: 'StyledNextStepButton',
-  TransparentButton: 'TransparentButton',
   CheckboxField: 'CheckboxField',
   StyledCheckboxLabel: 'StyledCheckboxLabel',
   StyledCategoryCheckboxLabel: 'StyledCategoryCheckboxLabel',
