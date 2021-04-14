@@ -9,6 +9,7 @@ import {
   searchContacts as searchContactsAction,
   searchCases as searchCasesAction,
   handleSearchFormChange as handleSearchFormChangeAction,
+  changeSearchPage as changeSearchPageAction,
 } from '../states/search/actions';
 import { namespace, searchContactsBase, configurationBase, RootState } from '../states';
 import { getNumberFromTask } from '../services/ContactService';
@@ -18,6 +19,7 @@ import { Bold } from '../styles/HrmStyles';
 import { StyledLink } from '../styles/search';
 import { ChannelTypes, channelTypes } from '../states/DomainConstants';
 import { changeRoute as changeRouteAction } from '../states/routing/actions';
+import { SearchPages } from '../states/search/types';
 
 type OwnProps = {
   task: CustomITask;
@@ -42,6 +44,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
   searchCases,
   changeRoute,
   handleSearchFormChange,
+  changeSearchPage,
 }) => {
   useEffect(() => {
     if (task && task.attributes && !task.attributes.isContactlessTask && previousContacts === undefined) {
@@ -66,8 +69,9 @@ const PreviousContactsBanner: React.FC<Props> = ({
     const searchParams = { contactNumber };
     searchContacts(searchParams, counselorsHash, CONTACTS_PER_PAGE, 0);
     searchCases(searchParams, counselorsHash, CASES_PER_PAGE, 0);
-    changeRoute({ route: 'tabbed-forms', subroute: 'search' });
+    changeSearchPage(SearchPages.resultsContacts);
     handleSearchFormChange('contactNumber', contactNumber);
+    changeRoute({ route: 'tabbed-forms', subroute: 'search' });
   };
 
   const { contactsCount, casesCount } = previousContacts;
@@ -105,6 +109,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     searchCases: searchCasesAction(dispatch)(taskId),
     changeRoute: routing => dispatch(changeRouteAction(routing, taskId)),
     handleSearchFormChange: bindActionCreators(handleSearchFormChangeAction(taskId), dispatch),
+    changeSearchPage: bindActionCreators(changeSearchPageAction(taskId), dispatch),
   };
 };
 
