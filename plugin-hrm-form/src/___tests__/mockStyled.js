@@ -23,7 +23,6 @@ jest.mock('../styles/HrmStyles', () => ({
   CheckboxField: 'CheckboxField',
   StyledCheckboxLabel: 'StyledCheckboxLabel',
   StyledCategoryCheckboxLabel: 'StyledCategoryCheckboxLabel',
-  TopNav: 'TopNav',
   BottomButtonBar: 'BottomButtonBar',
   NameFields: 'NameFields',
   ColumnarBlock: 'ColumnarBlock',

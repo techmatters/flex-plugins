@@ -272,19 +272,17 @@ export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
 `;
 StyledNextStepButton.displayName = 'StyledNextStepButton';
 
-export const TransparentButton = styled(Button)`
+type TransparentButton = {
+  textTransform?: string;
+};
+
+export const TransparentButton = styled(Button)<TransparentButton>`
   color: black;
-  text-transform: uppercase;
+  text-transform: ${props => props.textTransform || 'uppercase'};
   font-size: 12px;
   letter-spacing: 2px;
 `;
 TransparentButton.displayName = 'TransparentButton';
-
-export const TopNav = styled('div')`
-  display: flex;
-  flex-direction: row;
-`;
-TopNav.displayName = 'TopNav';
 
 export const BottomButtonBar = styled('div')`
   display: flex;

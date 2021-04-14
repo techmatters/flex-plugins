@@ -16,7 +16,7 @@ import { changeRoute } from '../../states/routing/actions';
 import type { TaskEntry } from '../../states/contacts/reducer';
 import { TabbedFormSubroutes, NewCaseSubroutes } from '../../states/routing/types';
 import { CustomITask, isOfflineContactTask, SearchContact } from '../../types/types';
-import { TabbedFormsContainer, TopNav, TransparentButton, StyledTabs } from '../../styles/HrmStyles';
+import { TabbedFormsContainer, Box, StyledTabs } from '../../styles/HrmStyles';
 import FormTab from '../common/forms/FormTab';
 import callTypes from '../../states/DomainConstants';
 import Search from '../search';
@@ -26,7 +26,8 @@ import ContactlessTaskTab from './ContactlessTaskTab';
 import BottomBar from './BottomBar';
 import { hasTaskControl } from '../../utils/transfer';
 import { isNonDataCallType } from '../../states/ValidationRules';
-import { reRenderAgentDesktop } from '../../HrmFormPlugin';
+import { getConfig } from '../../HrmFormPlugin';
+import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -153,14 +154,15 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, currentD
 
   const isDataCallType = !isNonDataCallType(contactForm.callType);
   const showSubmitButton = !isEmptyCallType(contactForm.callType) && tabIndex === tabs.length - 1;
+  const { strings } = getConfig();
 
   return (
     <FormProvider {...methods}>
       <div role="form" style={{ height: '100%' }}>
         <TabbedFormsContainer>
-          <TopNav>
-            <TransparentButton onClick={handleBackButton}>&lt; BACK</TransparentButton>
-          </TopNav>
+          <Box marginTop="10px" marginBottom="10px">
+            <SearchResultsBackButton handleBack={handleBackButton} text={strings['TabbedForms-BackButton']} />
+          </Box>
           <StyledTabs name="tab" variant="scrollable" scrollButtons="auto" value={tabIndex} onChange={handleTabsChange}>
             {tabs}
           </StyledTabs>
