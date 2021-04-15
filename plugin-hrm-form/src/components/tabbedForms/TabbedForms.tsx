@@ -5,6 +5,7 @@ import React from 'react';
 import SearchIcon from '@material-ui/icons/Search';
 import { useForm, FormProvider } from 'react-hook-form';
 import { connect, ConnectedProps } from 'react-redux';
+import { Template } from '@twilio/flex-ui';
 
 import { CaseLayout } from '../../styles/case';
 import Case from '../case';
@@ -26,7 +27,6 @@ import ContactlessTaskTab from './ContactlessTaskTab';
 import BottomBar from './BottomBar';
 import { hasTaskControl } from '../../utils/transfer';
 import { isNonDataCallType } from '../../states/ValidationRules';
-import { getConfig } from '../../HrmFormPlugin';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
 
 // eslint-disable-next-line react/display-name
@@ -154,14 +154,13 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, currentD
 
   const isDataCallType = !isNonDataCallType(contactForm.callType);
   const showSubmitButton = !isEmptyCallType(contactForm.callType) && tabIndex === tabs.length - 1;
-  const { strings } = getConfig();
 
   return (
     <FormProvider {...methods}>
       <div role="form" style={{ height: '100%' }}>
         <TabbedFormsContainer>
           <Box marginTop="10px" marginBottom="10px">
-            <SearchResultsBackButton handleBack={handleBackButton} text={strings['TabbedForms-BackButton']} />
+            <SearchResultsBackButton handleBack={handleBackButton} text={<Template code="TabbedForms-BackButton" />} />
           </Box>
           <StyledTabs name="tab" variant="scrollable" scrollButtons="auto" value={tabIndex} onChange={handleTabsChange}>
             {tabs}

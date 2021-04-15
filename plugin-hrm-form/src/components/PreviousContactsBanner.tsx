@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { ITask, Template } from '@twilio/flex-ui';
 
-import { CustomITask } from '../types/types';
+import { CustomITask, isOfflineContactTask, isInMyBehalfITask } from '../types/types';
 import {
   searchContacts as searchContactsAction,
   searchCases as searchCasesAction,
@@ -65,7 +65,8 @@ const PreviousContactsBanner: React.FC<Props> = ({
   if (!shouldDisplayBanner) return null;
 
   const handleClickViewRecords = () => {
-    const contactNumber = getNumberFromTask(task as ITask);
+    if (isOfflineContactTask(task) || isInMyBehalfITask(task)) return;
+    const contactNumber = getNumberFromTask(task);
     const searchParams = { contactNumber };
     searchContacts(searchParams, counselorsHash, CONTACTS_PER_PAGE, 0);
     searchCases(searchParams, counselorsHash, CASES_PER_PAGE, 0);
