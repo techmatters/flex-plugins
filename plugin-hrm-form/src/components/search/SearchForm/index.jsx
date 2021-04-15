@@ -215,7 +215,7 @@ class SearchForm extends Component {
             <Row>
               <Box marginTop="20px">
                 <FormLabel htmlFor="Search_PreviousContacts">
-                  <FormCheckBoxWrapper>
+                  <FormCheckBoxWrapper data-testid="Search-PreviousContactsCheckbox">
                     <Box marginRight="5px">
                       <FormCheckbox
                         id="Search_PreviousContacts"
