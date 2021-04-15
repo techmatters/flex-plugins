@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 
 export const taskType = PropTypes.shape({
   taskSid: PropTypes.string,
+  number: PropTypes.string,
 });
 
 export const counselorType = PropTypes.shape({
@@ -166,4 +167,5 @@ export const searchFormType = PropTypes.shape({
   phoneNumber: PropTypes.string,
   dateFrom: PropTypes.string,
   dateTo: PropTypes.string,
+  contactNumber: PropTypes.string,
 });

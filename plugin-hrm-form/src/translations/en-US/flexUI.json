@@ -124,6 +124,7 @@
   "TabbedForms-CategoriesTab": "Categories",
   "TabbedForms-AddCaseInfoTab": "Summary",
   "TabbedForms-AddContactInfoTab": "Contact Info",
+  "TabbedForms-BackButton": "Categorize Contact Type",
 
   "NotImplemented": "Not implemented yet!",
   "Error-Backend": "Error from backend system.",
@@ -284,6 +285,7 @@
   "PreviousContacts-PhoneNumber": "phone number",
   "PreviousContacts-WhatsappNumber": "whatsapp number",
   "PreviousContacts-FacebookUser": "facebook user",
-  "PreviousContacts-ViewRecords": "View Records"
+  "PreviousContacts-ViewRecords": "View Records",
+  "PreviousContacts-OnlyShowRecordsFrom": "Only show records from"
 }
 

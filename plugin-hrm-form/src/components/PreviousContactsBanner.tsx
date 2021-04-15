@@ -1,16 +1,25 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { ITask, Template } from '@twilio/flex-ui';
 
-import { CustomITask } from '../types/types';
-import { searchContacts as searchContactsAction, searchCases as searchCasesAction } from '../states/search/actions';
+import { CustomITask, isOfflineContactTask, isInMyBehalfITask } from '../types/types';
+import {
+  searchContacts as searchContactsAction,
+  searchCases as searchCasesAction,
+  handleSearchFormChange as handleSearchFormChangeAction,
+  changeSearchPage as changeSearchPageAction,
+} from '../states/search/actions';
 import { namespace, searchContactsBase, configurationBase, RootState } from '../states';
 import { getNumberFromTask } from '../services/ContactService';
 import { CONTACTS_PER_PAGE, CASES_PER_PAGE } from './search/SearchResults';
-import { YellowBanner, Bold } from '../styles/previousContactsBanner';
+import { YellowBanner } from '../styles/previousContactsBanner';
+import { Bold } from '../styles/HrmStyles';
 import { StyledLink } from '../styles/search';
 import { ChannelTypes, channelTypes } from '../states/DomainConstants';
+import { changeRoute as changeRouteAction } from '../states/routing/actions';
+import { SearchPages } from '../states/search/types';
 
 type OwnProps = {
   task: CustomITask;
@@ -19,7 +28,7 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
-const localizedSource: { [channelType in ChannelTypes]: string } = {
+export const localizedSource: { [channelType in ChannelTypes]: string } = {
   [channelTypes.web]: 'PreviousContacts-IPAddress',
   [channelTypes.voice]: 'PreviousContacts-PhoneNumber',
   [channelTypes.sms]: 'PreviousContacts-PhoneNumber',
@@ -33,6 +42,9 @@ const PreviousContactsBanner: React.FC<Props> = ({
   previousContacts,
   searchContacts,
   searchCases,
+  changeRoute,
+  handleSearchFormChange,
+  changeSearchPage,
 }) => {
   useEffect(() => {
     if (task && task.attributes && !task.attributes.isContactlessTask && previousContacts === undefined) {
@@ -52,13 +64,24 @@ const PreviousContactsBanner: React.FC<Props> = ({
 
   if (!shouldDisplayBanner) return null;
 
+  const handleClickViewRecords = () => {
+    if (isOfflineContactTask(task) || isInMyBehalfITask(task)) return;
+    const contactNumber = getNumberFromTask(task);
+    const searchParams = { contactNumber };
+    searchContacts(searchParams, counselorsHash, CONTACTS_PER_PAGE, 0);
+    searchCases(searchParams, counselorsHash, CASES_PER_PAGE, 0);
+    changeSearchPage(SearchPages.resultsContacts);
+    handleSearchFormChange('contactNumber', contactNumber);
+    changeRoute({ route: 'tabbed-forms', subroute: 'search' });
+  };
+
   const { contactsCount, casesCount } = previousContacts;
 
   return (
     <YellowBanner data-testid="PreviousContacts-Container">
       {/* eslint-disable-next-line prettier/prettier */}
       <pre><Template code="PreviousContacts-ThereAre" /> <Bold>{contactsCount} <Template code="PreviousContacts-PreviousContacts" /></Bold> and <Bold>{casesCount} <Template code="PreviousContacts-Cases" /></Bold> <Template code="PreviousContacts-FromThis" /> <Template code={localizedSource[task.channelType]} />.</pre>
-      <StyledLink onClick={() => null}>
+      <StyledLink data-testid="PreviousContacts-ViewRecords" onClick={handleClickViewRecords}>
         <Template code="PreviousContacts-ViewRecords" />
       </StyledLink>
     </YellowBanner>
@@ -85,6 +108,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     searchContacts: searchContactsAction(dispatch)(taskId),
     searchCases: searchCasesAction(dispatch)(taskId),
+    changeRoute: routing => dispatch(changeRouteAction(routing, taskId)),
+    handleSearchFormChange: bindActionCreators(handleSearchFormChangeAction(taskId), dispatch),
+    changeSearchPage: bindActionCreators(changeSearchPageAction(taskId), dispatch),
   };
 };
 

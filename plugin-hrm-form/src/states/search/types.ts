@@ -22,6 +22,7 @@ export const newSearchFormEntry = {
   phoneNumber: '',
   dateFrom: '',
   dateTo: '',
+  contactNumber: '',
 };
 
 export type SearchFormValues = {

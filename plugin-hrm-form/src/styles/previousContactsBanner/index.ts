@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'react-emotion';
 
 export const YellowBanner = styled('div')`
@@ -11,9 +10,3 @@ export const YellowBanner = styled('div')`
 `;
 
 YellowBanner.displayName = 'YellowBanner';
-
-export const Bold = styled('span')`
-  font-weight: 700;
-`;
-
-Bold.displayName = 'Bold';

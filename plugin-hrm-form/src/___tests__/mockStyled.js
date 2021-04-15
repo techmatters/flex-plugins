@@ -19,11 +19,9 @@ jest.mock('../styles/HrmStyles', () => ({
   StyledSelect: 'StyledSelect',
   StyledMenuItem: 'StyledMenuItem',
   StyledNextStepButton: 'StyledNextStepButton',
-  TransparentButton: 'TransparentButton',
   CheckboxField: 'CheckboxField',
   StyledCheckboxLabel: 'StyledCheckboxLabel',
   StyledCategoryCheckboxLabel: 'StyledCategoryCheckboxLabel',
-  TopNav: 'TopNav',
   BottomButtonBar: 'BottomButtonBar',
   NameFields: 'NameFields',
   ColumnarBlock: 'ColumnarBlock',
@@ -68,6 +66,7 @@ jest.mock('../styles/HrmStyles', () => ({
   TaskCanvasOverride: 'TaskCanvasOverride',
   PopoverText: 'PopoverText',
   CannedResponsesContainer: 'CannedResponsesContainer',
+  Bold: 'Bold',
 }));
 
 jest.mock('../styles/search', () => ({
@@ -185,5 +184,4 @@ jest.mock('../styles/case', () => ({
 
 jest.mock('../styles/previousContactsBanner', () => ({
   YellowBanner: 'YellowBanner',
-  Bold: 'Bold',
 }));
