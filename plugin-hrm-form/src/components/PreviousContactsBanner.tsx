@@ -59,8 +59,9 @@ const PreviousContactsBanner: React.FC<Props> = ({
     }
   }, [task, counselorsHash, searchContacts, searchCases, previousContacts]);
 
-  const shouldDisplayBanner =
-    previousContacts && (previousContacts.contactsCount > 0 || previousContacts.casesCount > 0);
+  const contactsCount = previousContacts?.contacts?.count || 0;
+  const casesCount = previousContacts?.cases?.count || 0;
+  const shouldDisplayBanner = previousContacts && (contactsCount > 0 || casesCount > 0);
 
   if (!shouldDisplayBanner) return null;
 
@@ -74,8 +75,6 @@ const PreviousContactsBanner: React.FC<Props> = ({
     handleSearchFormChange('contactNumber', contactNumber);
     changeRoute({ route: 'tabbed-forms', subroute: 'search' });
   };
-
-  const { contactsCount, casesCount } = previousContacts;
 
   return (
     <YellowBanner data-testid="PreviousContacts-Container">

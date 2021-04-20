@@ -7,8 +7,8 @@ import { ContactDetailsSections, ContactDetailsSectionsType } from '../../compon
 import { standaloneTaskSid } from '../../components/StandaloneSearch';
 
 type PreviousContacts = {
-  contactsCount?: number;
-  casesCount?: number;
+  contacts?: t.DetailedSearchContactsResult;
+  cases?: SearchCaseResult;
 };
 
 type TaskEntry = {
@@ -65,24 +65,6 @@ export const initialState: SearchState = {
   tasks: {
     [standaloneTaskSid]: newTaskEntry,
   },
-};
-
-const getPreviousContacts = (
-  action: t.SearchContactsSuccessAction | t.SearchCasesSuccessAction,
-  originalPreviousContacts: PreviousContacts,
-): PreviousContacts => {
-  const { type, searchResult, dispatchedFromPreviousContacts } = action;
-  const previousContacts = { ...originalPreviousContacts };
-
-  if (!dispatchedFromPreviousContacts) return originalPreviousContacts;
-
-  if (type === t.SEARCH_CONTACTS_SUCCESS) {
-    previousContacts.contactsCount = searchResult.count;
-  } else if (type === t.SEARCH_CASES_SUCCESS) {
-    previousContacts.casesCount = searchResult.count;
-  }
-
-  return previousContacts;
 };
 
 export function reduce(state = initialState, action: t.SearchActionType | GeneralActionType): SearchState {
@@ -172,7 +154,7 @@ export function reduce(state = initialState, action: t.SearchActionType | Genera
     }
     case t.SEARCH_CONTACTS_SUCCESS: {
       const task = state.tasks[action.taskId];
-      const previousContacts = getPreviousContacts(action, task.previousContacts);
+      const previousContacts = { ...task.previousContacts, contacts: action.searchResult };
       const currentPage = action.dispatchedFromPreviousContacts ? task.currentPage : t.SearchPages.resultsContacts;
       return {
         ...state,
@@ -220,7 +202,7 @@ export function reduce(state = initialState, action: t.SearchActionType | Genera
     }
     case t.SEARCH_CASES_SUCCESS: {
       const task = state.tasks[action.taskId];
-      const previousContacts = getPreviousContacts(action, task.previousContacts);
+      const previousContacts = { ...task.previousContacts, cases: action.searchResult };
       return {
         ...state,
         tasks: {
