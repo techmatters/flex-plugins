@@ -67,6 +67,7 @@ export const initialState: SearchState = {
   },
 };
 
+// eslint-disable-next-line complexity
 export function reduce(state = initialState, action: t.SearchActionType | GeneralActionType): SearchState {
   switch (action.type) {
     case INITIALIZE_CONTACT_STATE:
@@ -154,7 +155,9 @@ export function reduce(state = initialState, action: t.SearchActionType | Genera
     }
     case t.SEARCH_CONTACTS_SUCCESS: {
       const task = state.tasks[action.taskId];
-      const previousContacts = { ...task.previousContacts, contacts: action.searchResult };
+      const previousContacts = action.dispatchedFromPreviousContacts
+        ? { ...task.previousContacts, contacts: action.searchResult }
+        : task.previousContacts;
       const currentPage = action.dispatchedFromPreviousContacts ? task.currentPage : t.SearchPages.resultsContacts;
       return {
         ...state,
@@ -202,7 +205,9 @@ export function reduce(state = initialState, action: t.SearchActionType | Genera
     }
     case t.SEARCH_CASES_SUCCESS: {
       const task = state.tasks[action.taskId];
-      const previousContacts = { ...task.previousContacts, cases: action.searchResult };
+      const previousContacts = action.dispatchedFromPreviousContacts
+        ? { ...task.previousContacts, cases: action.searchResult }
+        : task.previousContacts;
       return {
         ...state,
         tasks: {
@@ -267,6 +272,25 @@ export function reduce(state = initialState, action: t.SearchActionType | Genera
       return {
         ...state,
         tasks,
+      };
+    }
+    case t.VIEW_PREVIOUS_CONTACTS: {
+      const task = state.tasks[action.taskId];
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...task,
+            searchContactsResult: task.previousContacts.contacts,
+            searchCasesResult: task.previousContacts.cases,
+            currentPage: t.SearchPages.resultsContacts,
+            form: {
+              ...task.form,
+              contactNumber: action.contactNumber,
+            },
+          },
+        },
       };
     }
     default:
