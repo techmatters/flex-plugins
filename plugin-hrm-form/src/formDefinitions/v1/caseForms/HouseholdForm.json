@@ -17,14 +17,14 @@
     "label": "Relationship to child",
     "options": [
       { "value": "", "label": "" },
+      { "value": "Caregiver", "label": "Caregiver" },
       { "value": "Friend", "label": "Friend" },
       { "value": "Grandparent", "label": "Grandparent" },
       { "value": "Neighbour", "label": "Neighbour" },
       { "value": "Parent", "label": "Parent" },
+      { "value": "Partner", "label": "Partner" },
       { "value": "Person in a position of responsibility", "label": "Person in a position of responsibility" },
       { "value": "Sibling", "label": "Sibling(s)" },
-      { "value": "Caregiver", "label": "Caregiver" },
-      { "value": "Partner", "label": "Partner" },
       { "value": "Stranger", "label": "Stranger" },
       { "value": "Other", "label": "Other" }
     ],
