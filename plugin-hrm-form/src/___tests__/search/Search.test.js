@@ -115,8 +115,8 @@ test('<Search> should display <SearchForm /> with previous contacts checkbox', (
   };
 
   const previousContacts = {
-    contactsCount: 3,
-    casesCount: 1,
+    contacts: { count: 3, contacts: [] },
+    casesCount: { count: 1, cases: [] },
   };
 
   const initialState = createState(task.taskSid, { currentPage, searchFormValues, detailsExpanded, previousContacts });
