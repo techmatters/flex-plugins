@@ -69,7 +69,7 @@ type TemporaryCaseInfoAction = {
 
 type UpdateCasesStatusAction = {
   type: typeof UPDATE_CASE_STATUS;
-  status: t.CaseStatus;
+  status: string;
   taskId: string;
 };
 

@@ -124,6 +124,7 @@
   "TabbedForms-CategoriesTab": "Categories",
   "TabbedForms-AddCaseInfoTab": "Summary",
   "TabbedForms-AddContactInfoTab": "Contact Info",
+  "TabbedForms-BackButton": "Categorize Contact Type",
 
   "NotImplemented": "Not implemented yet!",
   "Error-Backend": "Error from backend system.",
@@ -274,6 +275,17 @@
   "OfflineContactSecondLine": "in progress",
   "Category": "Category",
   "Unknown": "Unknown",
-  "Anonymous": "Anonymous"
+  "Anonymous": "Anonymous",
+
+  "PreviousContacts-ThereAre": "There are",
+  "PreviousContacts-PreviousContacts": "previous contacts",
+  "PreviousContacts-Cases": "cases",
+  "PreviousContacts-FromThis": "from this",
+  "PreviousContacts-IPAddress": "IP address",
+  "PreviousContacts-PhoneNumber": "phone number",
+  "PreviousContacts-WhatsappNumber": "Whatsapp number",
+  "PreviousContacts-FacebookUser": "Facebook user",
+  "PreviousContacts-ViewRecords": "View Records",
+  "PreviousContacts-OnlyShowRecordsFrom": "Only show records from"
 }
 

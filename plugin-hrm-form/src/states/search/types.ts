@@ -13,6 +13,7 @@ export const SEARCH_CASES_SUCCESS = 'SEARCH_CASES_SUCCESS';
 export const SEARCH_CASES_FAILURE = 'SEARCH_CASES_FAILURE';
 export const SEARCH_CASES_UPDATE = 'SEARCH_CASES_UPDATE';
 export const HANDLE_EXPAND_DETAILS_SECTION = 'HANDLE_EXPAND_DETAILS_SECTION';
+export const VIEW_PREVIOUS_CONTACTS = 'VIEW_PREVIOUS_CONTACTS';
 
 // types and constants used to construct search form
 export const newSearchFormEntry = {
@@ -22,6 +23,7 @@ export const newSearchFormEntry = {
   phoneNumber: '',
   dateFrom: '',
   dateTo: '',
+  contactNumber: '',
 };
 
 export type SearchFormValues = {
@@ -53,20 +55,27 @@ type SearchFormChangeAction = {
 
 type SearchContactsRequestAction = { type: typeof SEARCH_CONTACTS_REQUEST; taskId: string };
 
-type SearchContactsSuccessAction = {
+export type SearchContactsSuccessAction = {
   type: typeof SEARCH_CONTACTS_SUCCESS;
   searchResult: DetailedSearchContactsResult;
   taskId: string;
+  dispatchedFromPreviousContacts?: boolean;
 };
 
-type SearchContactsFailureAction = { type: typeof SEARCH_CONTACTS_FAILURE; error: any; taskId: string };
+type SearchContactsFailureAction = {
+  type: typeof SEARCH_CONTACTS_FAILURE;
+  error: any;
+  taskId: string;
+  dispatchedFromPreviousContacts?: boolean;
+};
 
 type SearchCasesRequestAction = { type: typeof SEARCH_CASES_REQUEST; taskId: string };
 
-type SearchCasesSuccessAction = {
+export type SearchCasesSuccessAction = {
   type: typeof SEARCH_CASES_SUCCESS;
   searchResult: SearchCaseResult;
   taskId: string;
+  dispatchedFromPreviousContacts?: boolean;
 };
 
 type SearchCasesFailureAction = { type: typeof SEARCH_CASES_FAILURE; error: any; taskId: string };
@@ -88,6 +97,12 @@ type SearchCasesUpdateAction = {
   updatedCase: Case;
 };
 
+type ViewPreviousContactsAction = {
+  type: typeof VIEW_PREVIOUS_CONTACTS;
+  taskId: string;
+  contactNumber: string;
+};
+
 export type SearchActionType =
   | SearchFormChangeAction
   | SearchContactsRequestAction
@@ -99,4 +114,5 @@ export type SearchActionType =
   | SearchChangePageAction
   | SearchViewContactAction
   | SearchExpandSectionAction
-  | SearchCasesUpdateAction;
+  | SearchCasesUpdateAction
+  | ViewPreviousContactsAction;

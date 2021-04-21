@@ -176,7 +176,7 @@ export function reduce(state = initialState, action: t.ContactsActionType | Gene
     }
     case t.PREPOPULATE_FORM_CHILD: {
       const currentTask = state.tasks[action.taskId];
-      const { gender, age } = action;
+      const { firstName, gender, age, language } = action;
 
       return {
         ...state,
@@ -187,8 +187,10 @@ export function reduce(state = initialState, action: t.ContactsActionType | Gene
             callType: callTypes.child,
             childInformation: {
               ...currentTask.childInformation,
+              firstName,
               gender,
               age,
+              language,
             },
           },
         },
@@ -196,7 +198,7 @@ export function reduce(state = initialState, action: t.ContactsActionType | Gene
     }
     case t.PREPOPULATE_FORM_CALLER: {
       const currentTask = state.tasks[action.taskId];
-      const { gender, age } = action;
+      const { firstName, gender, age, language } = action;
 
       return {
         ...state,
@@ -207,8 +209,10 @@ export function reduce(state = initialState, action: t.ContactsActionType | Gene
             callType: callTypes.caller,
             callerInformation: {
               ...currentTask.callerInformation,
+              firstName,
               gender,
               age,
+              language,
             },
           },
         },

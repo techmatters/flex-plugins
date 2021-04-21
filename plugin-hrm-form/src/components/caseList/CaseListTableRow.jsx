@@ -38,7 +38,7 @@ const CaseListTableRow = ({ caseItem, counselorsHash, handleClickViewCase }) => 
       ? `${format(parseISO(caseItem.info.followUpDate), 'MMM d, yyyy')}`
       : '—';
   const categories = getContactTags(caseItem.info.definitionVersion, caseItem.categories);
-  const isOpenCase = caseItem.status === caseStatuses.open;
+  const isOpenCase = caseItem.status !== caseStatuses.closed;
 
   return (
     <CLTableRow data-testid="CaseList-TableRow">

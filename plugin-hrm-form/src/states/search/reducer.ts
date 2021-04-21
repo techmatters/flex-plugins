@@ -6,6 +6,11 @@ import { SearchContact, SearchCaseResult } from '../../types/types';
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../../components/common/ContactDetails';
 import { standaloneTaskSid } from '../../components/StandaloneSearch';
 
+type PreviousContacts = {
+  contacts?: t.DetailedSearchContactsResult;
+  cases?: SearchCaseResult;
+};
+
 type TaskEntry = {
   currentPage: t.SearchPagesType;
   currentContact: SearchContact;
@@ -15,6 +20,7 @@ type TaskEntry = {
   };
   searchContactsResult: t.DetailedSearchContactsResult;
   searchCasesResult: SearchCaseResult;
+  previousContacts?: PreviousContacts;
   isRequesting: boolean;
   isRequestingCases: boolean;
   error: any;
@@ -37,6 +43,7 @@ export const newTaskEntry: TaskEntry = {
     phoneNumber: '',
     dateFrom: '',
     dateTo: '',
+    contactNumber: '',
   },
   detailsExpanded: {
     [ContactDetailsSections.GENERAL_DETAILS]: true,
@@ -47,6 +54,7 @@ export const newTaskEntry: TaskEntry = {
   },
   searchContactsResult: { count: 0, contacts: [] },
   searchCasesResult: { count: 0, cases: [] },
+  previousContacts: undefined,
   isRequesting: false,
   isRequestingCases: false,
   error: null,
@@ -59,6 +67,7 @@ export const initialState: SearchState = {
   },
 };
 
+// eslint-disable-next-line complexity
 export function reduce(state = initialState, action: t.SearchActionType | GeneralActionType): SearchState {
   switch (action.type) {
     case INITIALIZE_CONTACT_STATE:
@@ -146,6 +155,10 @@ export function reduce(state = initialState, action: t.SearchActionType | Genera
     }
     case t.SEARCH_CONTACTS_SUCCESS: {
       const task = state.tasks[action.taskId];
+      const previousContacts = action.dispatchedFromPreviousContacts
+        ? { ...task.previousContacts, contacts: action.searchResult }
+        : task.previousContacts;
+      const currentPage = action.dispatchedFromPreviousContacts ? task.currentPage : t.SearchPages.resultsContacts;
       return {
         ...state,
         tasks: {
@@ -153,7 +166,8 @@ export function reduce(state = initialState, action: t.SearchActionType | Genera
           [action.taskId]: {
             ...task,
             searchContactsResult: action.searchResult,
-            currentPage: t.SearchPages.resultsContacts,
+            previousContacts,
+            currentPage,
             isRequesting: false,
             error: null,
           },
@@ -162,13 +176,14 @@ export function reduce(state = initialState, action: t.SearchActionType | Genera
     }
     case t.SEARCH_CONTACTS_FAILURE: {
       const task = state.tasks[action.taskId];
+      const currentPage = action.dispatchedFromPreviousContacts ? task.currentPage : t.SearchPages.resultsContacts;
       return {
         ...state,
         tasks: {
           ...state.tasks,
           [action.taskId]: {
             ...task,
-            currentPage: t.SearchPages.resultsContacts,
+            currentPage,
             isRequesting: false,
             error: action.error,
           },
@@ -190,6 +205,9 @@ export function reduce(state = initialState, action: t.SearchActionType | Genera
     }
     case t.SEARCH_CASES_SUCCESS: {
       const task = state.tasks[action.taskId];
+      const previousContacts = action.dispatchedFromPreviousContacts
+        ? { ...task.previousContacts, cases: action.searchResult }
+        : task.previousContacts;
       return {
         ...state,
         tasks: {
@@ -197,6 +215,7 @@ export function reduce(state = initialState, action: t.SearchActionType | Genera
           [action.taskId]: {
             ...task,
             searchCasesResult: action.searchResult,
+            previousContacts,
             isRequestingCases: false,
             casesError: null,
           },
@@ -253,6 +272,25 @@ export function reduce(state = initialState, action: t.SearchActionType | Genera
       return {
         ...state,
         tasks,
+      };
+    }
+    case t.VIEW_PREVIOUS_CONTACTS: {
+      const task = state.tasks[action.taskId];
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...task,
+            searchContactsResult: task.previousContacts.contacts,
+            searchCasesResult: task.previousContacts.cases,
+            currentPage: t.SearchPages.resultsContacts,
+            form: {
+              ...task.form,
+              contactNumber: action.contactNumber,
+            },
+          },
+        },
       };
     }
     default:
