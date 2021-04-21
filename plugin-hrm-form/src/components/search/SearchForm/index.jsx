@@ -77,6 +77,7 @@ class SearchForm extends Component {
     const contactsCount = previousContacts?.contacts?.count || 0;
     const casesCount = previousContacts?.cases?.count || 0;
 
+    // TODO: simplify next line
     return typeof previousContacts !== 'undefined' && previousContacts && (contactsCount > 0 || casesCount > 0);
   }
 
