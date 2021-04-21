@@ -272,6 +272,8 @@ const saveInsights = async payload => {
   await saveInsightsData(payload.task, contactForm, caseForm);
 };
 
+// Adding a new comment
+
 /**
  * Submits the form to the hrm backend (if it should), and saves the insights. Used before task is completed
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
