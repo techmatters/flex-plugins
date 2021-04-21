@@ -1,10 +1,11 @@
 /* eslint-disable import/no-unused-modules */
 import { Dispatch } from 'redux';
+import { ITask } from '@twilio/flex-ui';
 
 import * as t from './types';
 import { ConfigurationState } from '../configuration/reducer';
 import { Case, SearchContact } from '../../types/types';
-import { searchContacts as searchContactsApiCall } from '../../services/ContactService';
+import { searchContacts as searchContactsApiCall, getNumberFromTask } from '../../services/ContactService';
 import { searchCases as searchCasesApiCall } from '../../services/CaseService';
 import { ContactDetailsSectionsType } from '../../components/common/ContactDetails';
 import { addDetails } from './helpers';
@@ -65,6 +66,13 @@ export const searchCases = (dispatch: Dispatch<any>) => (taskId: string) => asyn
   } catch (error) {
     dispatch({ type: t.SEARCH_CASES_FAILURE, error, taskId });
   }
+};
+
+export const viewPreviousContacts = (dispatch: Dispatch<any>) => (task: ITask) => () => {
+  const contactNumber = getNumberFromTask(task);
+  const taskId = task.taskSid;
+
+  dispatch({ type: t.VIEW_PREVIOUS_CONTACTS, taskId, contactNumber });
 };
 
 /**
