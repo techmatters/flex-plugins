@@ -45,7 +45,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
   useEffect(() => {
     if (task && !isOfflineContactTask(task) && !isInMyBehalfITask(task) && previousContacts === undefined) {
       const contactNumber = getNumberFromTask(task);
-      const isTraceableNumber = ![null, undefined, 'Anonymous'].includes(contactNumber);
+      const isTraceableNumber = ![null, undefined, '', 'Anonymous'].includes(contactNumber);
 
       if (isTraceableNumber) {
         const searchParams = { contactNumber };
@@ -57,7 +57,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
 
   const contactsCount = previousContacts?.contacts?.count || 0;
   const casesCount = previousContacts?.cases?.count || 0;
-  const shouldDisplayBanner = previousContacts && (contactsCount > 0 || casesCount > 0);
+  const shouldDisplayBanner = contactsCount > 0 || casesCount > 0;
 
   if (!shouldDisplayBanner) return null;
 
