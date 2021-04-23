@@ -39,6 +39,7 @@ const Details: React.FC<Props> = ({
   handleExpandDetailsSection,
   definitionVersions,
   updateDefinitionVersion,
+  counselorsHash,
 }) => {
   const version = contact.details.definitionVersion;
 
@@ -58,7 +59,16 @@ const Details: React.FC<Props> = ({
 
   // Object destructuring on contact
   const { overview, details, counselor } = contact;
-  const { dateTime, name: childName, customerNumber, callType, channel, conversationDuration, categories } = overview;
+  const {
+    dateTime,
+    name: childName,
+    customerNumber,
+    callType,
+    channel,
+    conversationDuration,
+    categories,
+    addedBy,
+  } = overview;
 
   // Format the obtained information
   const isDataCall = !isNonDataCallType(callType);
@@ -125,6 +135,12 @@ const Details: React.FC<Props> = ({
         />
         <SectionEntry description={<Template code="ContactDetails-GeneralDetails-Counselor" />} value={counselor} />
         <SectionEntry description={<Template code="ContactDetails-GeneralDetails-DateTime" />} value={formattedDate} />
+        {addedBy && (
+          <SectionEntry
+            description={<Template code="ContactDetails-GeneralDetails-AddedBy" />}
+            value={counselorsHash[addedBy]}
+          />
+        )}
       </Section>
       {callType === callTypes.caller && (
         <Section
@@ -219,6 +235,7 @@ Details.defaultProps = {
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   definitionVersions: state[namespace][configurationBase].definitionVersions,
+  counselorsHash: state[namespace][configurationBase].counselors.hash,
 });
 
 const mapDispatchToProps = {
