@@ -57,7 +57,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
 
   const contactsCount = previousContacts?.contacts?.count || 0;
   const casesCount = previousContacts?.cases?.count || 0;
-  const shouldDisplayBanner = previousContacts && (contactsCount > 0 || casesCount > 0);
+  const shouldDisplayBanner = contactsCount > 0 || casesCount > 0;
 
   if (!shouldDisplayBanner) return null;
 
