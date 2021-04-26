@@ -86,6 +86,7 @@ const contactOfType = type => ({
     conversationDuration: 10,
   },
   counselor: 'Counselor',
+  createdBy: 'HASH1',
   tags: ['Tag1', 'Tag2'],
 });
 
@@ -102,6 +103,7 @@ const initialState = {
     configuration: {
       definitionVersions: { v1: mockV1 },
       currentDefinitionVersion: mockV1,
+      counselors: [{ HASH1: 'CreatorOfTheCase' }],
     },
   },
 };
