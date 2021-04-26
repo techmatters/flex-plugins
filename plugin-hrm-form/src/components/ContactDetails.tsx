@@ -93,6 +93,13 @@ const Details: React.FC<Props> = ({
 
   const definitionVersion = definitionVersions[version];
 
+  console.log('Counselor >>> ', counselor);
+  console.log('CreatedBy >>> ', createdBy);
+
+  const addedBy = counselorsHash[createdBy];
+
+  console.log('AddedBy >>> ', addedBy);
+
   if (!definitionVersion)
     return (
       <DetailsContainer>
@@ -135,11 +142,8 @@ const Details: React.FC<Props> = ({
         />
         <SectionEntry description={<Template code="ContactDetails-GeneralDetails-Counselor" />} value={counselor} />
         <SectionEntry description={<Template code="ContactDetails-GeneralDetails-DateTime" />} value={formattedDate} />
-        {createdBy && (
-          <SectionEntry
-            description={<Template code="ContactDetails-GeneralDetails-AddedBy" />}
-            value={counselorsHash[createdBy]}
-          />
+        {addedBy && addedBy !== counselor && (
+          <SectionEntry description={<Template code="ContactDetails-GeneralDetails-AddedBy" />} value={addedBy} />
         )}
       </Section>
       {callType === callTypes.caller && (
