@@ -86,7 +86,7 @@ const contactOfType = type => ({
     conversationDuration: 10,
   },
   counselor: 'Counselor',
-  addedBy: 'HASH1',
+  createdBy: 'HASH1',
   tags: ['Tag1', 'Tag2'],
 });
 

@@ -67,7 +67,7 @@ const Details: React.FC<Props> = ({
     channel,
     conversationDuration,
     categories,
-    addedBy,
+    createdBy,
   } = overview;
 
   // Format the obtained information
@@ -135,10 +135,10 @@ const Details: React.FC<Props> = ({
         />
         <SectionEntry description={<Template code="ContactDetails-GeneralDetails-Counselor" />} value={counselor} />
         <SectionEntry description={<Template code="ContactDetails-GeneralDetails-DateTime" />} value={formattedDate} />
-        {addedBy && (
+        {createdBy && (
           <SectionEntry
             description={<Template code="ContactDetails-GeneralDetails-AddedBy" />}
-            value={counselorsHash[addedBy]}
+            value={counselorsHash[createdBy]}
           />
         )}
       </Section>
