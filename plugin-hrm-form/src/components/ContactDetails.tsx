@@ -92,13 +92,7 @@ const Details: React.FC<Props> = ({
   } = ContactDetailsSections;
 
   const definitionVersion = definitionVersions[version];
-
-  console.log('Counselor >>> ', counselor);
-  console.log('CreatedBy >>> ', createdBy);
-
   const addedBy = counselorsHash[createdBy];
-
-  console.log('AddedBy >>> ', addedBy);
 
   if (!definitionVersion)
     return (
