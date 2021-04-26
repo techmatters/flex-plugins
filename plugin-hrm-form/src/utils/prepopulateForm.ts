@@ -1,5 +1,5 @@
 import { ITask, Manager } from '@twilio/flex-ui';
-import { capitalize, first } from 'lodash';
+import { capitalize } from 'lodash';
 
 import { mapAge, mapGender } from './mappers';
 import * as RoutingActions from '../states/routing/actions';
