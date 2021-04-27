@@ -92,6 +92,7 @@ const Details: React.FC<Props> = ({
   } = ContactDetailsSections;
 
   const definitionVersion = definitionVersions[version];
+  const addedBy = counselorsHash[createdBy];
 
   if (!definitionVersion)
     return (
@@ -135,11 +136,8 @@ const Details: React.FC<Props> = ({
         />
         <SectionEntry description={<Template code="ContactDetails-GeneralDetails-Counselor" />} value={counselor} />
         <SectionEntry description={<Template code="ContactDetails-GeneralDetails-DateTime" />} value={formattedDate} />
-        {createdBy && (
-          <SectionEntry
-            description={<Template code="ContactDetails-GeneralDetails-AddedBy" />}
-            value={counselorsHash[createdBy]}
-          />
+        {addedBy && addedBy !== counselor && (
+          <SectionEntry description={<Template code="ContactDetails-GeneralDetails-AddedBy" />} value={addedBy} />
         )}
       </Section>
       {callType === callTypes.caller && (

@@ -103,7 +103,7 @@ const initialState = {
     configuration: {
       definitionVersions: { v1: mockV1 },
       currentDefinitionVersion: mockV1,
-      counselors: [{ HASH1: 'CreatorOfTheCase' }],
+      counselors: { hash: { HASH1: 'CreatorOfTheCase' } },
     },
   },
 };
