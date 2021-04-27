@@ -82,7 +82,7 @@
         "type": "mixed-checkbox"
       },
       {
-        "name": "LGBTQI",
+        "name": "LGBTQI+",
         "insights": ["conversations", "conversation_measure_5"],
         "type": "mixed-checkbox"
       },
