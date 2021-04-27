@@ -40,6 +40,7 @@ const CaseDetails = ({
   definitionVersion,
   definitionVersionName,
   isOrphanedCase,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const statusOptions = React.useMemo(() => {
     const statusTransitions = [prevStatus, ...definitionVersion.caseStatus[prevStatus].transitions];
@@ -50,28 +51,24 @@ const CaseDetails = ({
     );
 
     const enableBasedOnPermissions = o => {
+      if (o.value === prevStatus) return true;
       if (o.value === 'closed' && prevStatus !== 'closed') return can(PermissionActions.CLOSE_CASE);
       if (o.value !== 'closed' && prevStatus === 'closed') return can(PermissionActions.REOPEN_CASE);
 
-      return true;
+      return can(PermissionActions.CASE_STATUS_TRANSITION);
     };
 
     const renderStatusOptions = o => {
       const disabled = !enableBasedOnPermissions(o);
 
-      return (
-        <FormOption
-          key={o.value}
-          value={o.value}
-          style={{ color: disabled ? '#000000' : definitionVersion.caseStatus[o.value].color }}
-          disabled={disabled}
-        >
+      return disabled ? null : (
+        <FormOption key={o.value} value={o.value} style={{ color: definitionVersion.caseStatus[o.value].color }}>
           {o.label}
         </FormOption>
       );
     };
 
-    return optionsArray.map(renderStatusOptions);
+    return optionsArray.map(renderStatusOptions).filter(Boolean);
   }, [can, definitionVersion.caseStatus, prevStatus]);
 
   const onStatusChange = selectedOption => {
