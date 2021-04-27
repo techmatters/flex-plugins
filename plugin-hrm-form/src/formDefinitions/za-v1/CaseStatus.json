@@ -8,7 +8,7 @@
   "inProgress": { 
     "value": "inProgress", 
     "label": "In Progress", 
-    "color": "grey", 
+    "color": "green", 
     "transitions": ["closed"] 
   },
   "closed": { 
