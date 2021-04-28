@@ -180,15 +180,10 @@ const Case: React.FC<Props> = props => {
   const { can } = React.useMemo(
     () =>
       getPermissionsForCase(
-        props.connectedCaseState?.connectedCase.info.definitionVersion || 'za-v1',
         props.connectedCaseState?.connectedCase.twilioWorkerId,
         props.connectedCaseState?.prevStatus,
       ),
-    [
-      props.connectedCaseState?.connectedCase.info.definitionVersion,
-      props.connectedCaseState?.connectedCase.twilioWorkerId,
-      props.connectedCaseState?.prevStatus,
-    ],
+    [props.connectedCaseState?.connectedCase.twilioWorkerId, props.connectedCaseState?.prevStatus],
   );
 
   const toggleCaseMenu = e => {

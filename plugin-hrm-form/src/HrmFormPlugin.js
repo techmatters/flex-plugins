@@ -43,6 +43,7 @@ export const getConfig = () => {
     definitionVersion,
     pdfImagesSource,
     multipleOfficeSupport,
+    permissionConfig,
   } = manager.serviceConfiguration.attributes;
   const featureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
   const { strings } = manager;
@@ -67,6 +68,7 @@ export const getConfig = () => {
     definitionVersion,
     pdfImagesSource,
     multipleOfficeSupport,
+    permissionConfig,
   };
 };
 
