@@ -6,6 +6,7 @@ import * as zaV1Rules from './za-v1';
 export const PermissionActions = {
   CLOSE_CASE: 'closeCase',
   REOPEN_CASE: 'reopenCase',
+  CASE_STATUS_TRANSITION: 'caseStatusTransition',
   ADD_NOTE: 'addNote',
   ADD_REFERRAL: 'addReferral',
   ADD_HOUSEHOLD: 'addHousehold',
@@ -40,7 +41,7 @@ export const getPermissionsForCase = (
 
   const { workerSid, isSupervisor } = getConfig();
   const isCreator = workerSid === twilioWorkerId;
-  const isCaseOpen = status === 'open';
+  const isCaseOpen = status !== 'closed';
   const rules = rulesMap[version];
 
   const can = (action: PermissionActionType): boolean => {
