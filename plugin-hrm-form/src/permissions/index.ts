@@ -39,7 +39,13 @@ export const getPermissionsForCase = (twilioWorkerId: t.Case['twilioWorkerId'], 
 
   const isCreator = workerSid === twilioWorkerId;
   const isCaseOpen = status === 'open';
-  const rules = rulesMap[permissionConfig] || fallbackRules;
+
+  let rules = rulesMap[permissionConfig];
+
+  if (!rules) {
+    console.error(`Cannot find rules for ${permissionConfig}. Using fallback rules.`);
+    rules = fallbackRules;
+  }
 
   const can = (action: PermissionActionType): boolean => {
     switch (action) {
