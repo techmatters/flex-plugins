@@ -6,6 +6,7 @@ import * as zaRules from './za';
 export const PermissionActions = {
   CLOSE_CASE: 'closeCase',
   REOPEN_CASE: 'reopenCase',
+  CASE_STATUS_TRANSITION: 'caseStatusTransition',
   ADD_NOTE: 'addNote',
   ADD_REFERRAL: 'addReferral',
   ADD_HOUSEHOLD: 'addHousehold',
@@ -38,8 +39,7 @@ export const getPermissionsForCase = (twilioWorkerId: t.Case['twilioWorkerId'], 
   if (!permissionConfig || !twilioWorkerId || !status) return { can: undefined };
 
   const isCreator = workerSid === twilioWorkerId;
-  const isCaseOpen = status === 'open';
-
+  const isCaseOpen = status !== 'closed';
   let rules = rulesMap[permissionConfig];
 
   if (!rules) {
