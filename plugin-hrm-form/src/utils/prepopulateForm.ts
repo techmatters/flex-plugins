@@ -27,7 +27,6 @@ export const prepopulateForm = (task: ITask) => {
     const { answers } = task.attributes.memory.twilio.collected_data.collect_survey;
     const { language } = task.attributes;
 
-    console.log('>>>>> ', { language });
     const { firstName } = task.attributes;
 
     // If can't know if call is child or caller, do nothing here
