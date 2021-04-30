@@ -25,13 +25,15 @@ export const prepopulateForm = (task: ITask) => {
   // If this task came from the pre-survey
   if (task.attributes.memory) {
     const { answers } = task.attributes.memory.twilio.collected_data.collect_survey;
+    const { language } = task.attributes;
+
+    console.log('>>>>> ', { language });
     const { firstName } = task.attributes;
 
     // If can't know if call is child or caller, do nothing here
     if (!answers.about_self || !['Yes', 'No'].includes(answers.about_self.answer)) return;
 
     const age = !answers.age || answers.age.error ? 'Unknown' : mapAge(answers.age.answer);
-    const language = answers.language ? capitalize(answers.language.answer) : 'English';
 
     if (answers.about_self.answer === 'Yes') {
       // future work: const ChildInformationTab = Manager.getInstance().store.getState() ... to grab the form definition when it's part of the global state (instead of bundled with the code)
@@ -39,13 +41,17 @@ export const prepopulateForm = (task: ITask) => {
       const gender =
         !answers.gender || answers.gender.error ? 'Unknown' : mapGender(genderOptions)(answers.gender.answer);
 
-      Manager.getInstance().store.dispatch(prepopulateFormChild(firstName, gender, age, language, task.taskSid));
+      Manager.getInstance().store.dispatch(
+        prepopulateFormChild(firstName, gender, age, capitalize(language), task.taskSid),
+      );
     } else if (answers.about_self.answer === 'No') {
       const genderOptions = getGenderOptions(CallerInformationTab);
       const gender =
         !answers.gender || answers.gender.error ? 'Unknown' : mapGender(genderOptions)(answers.gender.answer);
 
-      Manager.getInstance().store.dispatch(prepopulateFormCaller(firstName, gender, age, language, task.taskSid));
+      Manager.getInstance().store.dispatch(
+        prepopulateFormCaller(firstName, gender, age, capitalize(language), task.taskSid),
+      );
     } else return;
 
     // Open tabbed form to first tab
