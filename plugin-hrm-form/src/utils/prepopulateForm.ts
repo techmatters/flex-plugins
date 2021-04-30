@@ -25,9 +25,7 @@ export const prepopulateForm = (task: ITask) => {
   // If this task came from the pre-survey
   if (task.attributes.memory) {
     const { answers } = task.attributes.memory.twilio.collected_data.collect_survey;
-    const { language } = task.attributes;
-
-    const { firstName } = task.attributes;
+    const { firstName, language } = task.attributes;
 
     // If can't know if call is child or caller, do nothing here
     if (!answers.about_self || !['Yes', 'No'].includes(answers.about_self.answer)) return;
