@@ -1,16 +1,17 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { Actions, Template, ThemeProps } from '@twilio/flex-ui';
+import { Actions, Template } from '@twilio/flex-ui';
 
 import { TransferStyledButton } from '../../styles/HrmStyles';
+import HhrTheme from '../../styles/HrmTheme';
 
-type Props = ThemeProps & {};
+type Props = typeof HhrTheme;
 
 const TransferButton: React.FC<Props> = ({ theme }) => {
   return (
     <TransferStyledButton
-      color={theme.colors.base11}
-      background={theme.colors.base1}
+      color={theme.colors.secondaryButtonTextColor}
+      background={theme.colors.secondaryButtonColor}
       onClick={() => Actions.invokeAction('ShowDirectory')}
     >
       <Template code="Transfer-TransferButton" />

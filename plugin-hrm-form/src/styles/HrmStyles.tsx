@@ -235,11 +235,12 @@ type StyledNextStepButtonProps = {
 export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
   display: flex;
   align-items: center;
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: normal;
   color: ${props =>
     props.secondary ? props.theme.colors.secondaryButtonTextColor : props.theme.colors.buttonTextColor};
-  border: ${({ secondary }) => (secondary ? '1px solid' : 'none')};
+  border: none;
+  border-radius: 4px;
   margin: 0;
   padding: 7px 23px;
   background-color: ${props =>
@@ -444,9 +445,8 @@ export const TransferStyledButton = styled('button')<TransferStyledButtonProps>`
   height: ${props => (props.taller ? 35 : 28)}px;
   font-size: 13px;
   outline: none;
-  border-width: 1px;
-  border-color: ${props => (props.color ? props.color : '#000')};
-  border-radius: 14px;
+  border-radius: 4px;
+  border: none;
   align-self: center;
   &:hover {
     cursor: pointer;
