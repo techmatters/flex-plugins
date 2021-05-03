@@ -282,8 +282,7 @@ export const BottomButtonBar = styled('div')`
   padding: 0 20px;
   background-color: #f9fafb;
   z-index: 1;
-  border-top: 1px solid #c6cad9;
-  box-shadow: 0 -2px 2px -7px #192b331a;
+  box-shadow: 0 -2px 2px 0 rgba(0, 0, 0, 0.1);
 `;
 BottomButtonBar.displayName = 'BottomButtonBar';
 
