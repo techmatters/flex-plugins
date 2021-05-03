@@ -13,6 +13,7 @@ import setUpMonitoring from './utils/setUpMonitoring';
 import * as TransferHelpers from './utils/transfer';
 import { changeLanguage } from './states/configuration/actions';
 import { issueSyncToken } from './services/ServerlessService';
+import CannedResponses from './components/CannedResponses';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 export const PLUGIN_VERSION = '0.10.0';
@@ -42,6 +43,7 @@ export const getConfig = () => {
     definitionVersion,
     pdfImagesSource,
     multipleOfficeSupport,
+    permissionConfig,
   } = manager.serviceConfiguration.attributes;
   const featureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
   const { strings } = manager;
@@ -66,6 +68,7 @@ export const getConfig = () => {
     definitionVersion,
     pdfImagesSource,
     multipleOfficeSupport,
+    permissionConfig,
   };
 };
 
@@ -190,6 +193,8 @@ const setUpComponents = setupObject => {
   }
 
   Components.setUpStandaloneSearch();
+
+  if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
 };
 
 /**

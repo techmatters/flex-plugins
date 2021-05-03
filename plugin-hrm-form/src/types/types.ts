@@ -3,8 +3,6 @@ import { ITask } from '@twilio/flex-ui';
 
 import type { CallTypes } from '../states/DomainConstants';
 
-export type CaseStatus = 'open' | 'closed';
-
 type EntryInfo = { createdAt: string; twilioWorkerId: string };
 
 /*
@@ -56,7 +54,7 @@ export type CaseInfo = {
 
 export type Case = {
   id: number;
-  status: CaseStatus;
+  status: string;
   helpline: string;
   twilioWorkerId: string;
   info?: CaseInfo;

@@ -36,15 +36,19 @@ type HandleExpandCategoryAction = {
 
 type PrePopulateFormChildAction = {
   type: typeof PREPOPULATE_FORM_CHILD;
+  firstName: string;
   gender: string;
   age: string;
+  language: string;
   taskId: string;
 };
 
 type PrePopulateFormCallerAction = {
   type: typeof PREPOPULATE_FORM_CALLER;
+  firstName: string;
   gender: string;
   age: string;
+  language: string;
   taskId: string;
 };
 

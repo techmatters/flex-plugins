@@ -140,6 +140,11 @@ export type OfficeEntry = {
 // ToDo: also this type can be defined as: OfficeDefinitions = { [officename: string]: OfficeEntry };
 export type OfficeDefinitions = OfficeEntry[];
 
+export type CannedResponsesDefinitions = {
+  label: string;
+  text: string;
+}[];
+
 /**
  * Type that gives extra info on how a single field should be formatted
  */
@@ -164,6 +169,13 @@ export type LayoutVersion = {
   };
 };
 
+type StatusInfo = {
+  value: string;
+  label: string;
+  color: string; // color that represents this status in the UI
+  transitions: string[]; // possible statuses this one can transition to (further update may be to include who can make such a transition for a more granular control)
+};
+
 /**
  * Type that defines a complete version for all the customizable forms used across the app
  */
@@ -185,8 +197,12 @@ export type DefinitionVersion = {
   callTypeButtons: CallTypeButtonsDefinitions;
   layoutVersion: LayoutVersion;
   officeInformation?: OfficeDefinitions;
+  cannedResponses?: CannedResponsesDefinitions;
   insights: {
     oneToOneConfigSpec: OneToOneConfigSpec;
     oneToManyConfigSpecs: OneToManyConfigSpecs;
+  };
+  caseStatus: {
+    [status: string]: StatusInfo;
   };
 };

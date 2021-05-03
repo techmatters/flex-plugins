@@ -20,7 +20,10 @@ jest.mock('../../services/ServerlessService', () => ({
   populateCounselors: async () => [],
 }));
 
-function createState(taskId, { currentPage, searchFormValues, currentContact, searchResult, detailsExpanded }) {
+function createState(
+  taskId,
+  { currentPage, searchFormValues, currentContact, searchResult, detailsExpanded, previousContacts },
+) {
   return {
     'plugin-hrm-form': {
       configuration: {
@@ -50,6 +53,7 @@ function createState(taskId, { currentPage, searchFormValues, currentContact, se
               dateTo: '',
             },
             searchResult: searchResult || [],
+            previousContacts,
             detailsExpanded: detailsExpanded || {},
             isRequesting: false,
             error: null,
@@ -86,6 +90,46 @@ test('<Search> should display <SearchForm />', () => {
   ).root;
 
   expect(() => component.findByType(SearchForm)).not.toThrow();
+  expect(() => component.findByType(ContactDetails)).toThrow();
+
+  const valuesProps = component.findByType(SearchForm).props.values;
+  expect(valuesProps).toEqual(searchFormValues);
+});
+
+test('<Search> should display <SearchForm /> with previous contacts checkbox', () => {
+  const currentPage = SearchPages.form;
+  const searchFormValues = {
+    firstName: 'Jill',
+    lastName: 'Smith',
+    counselor: { label: 'Counselor Name', value: 'counselor-id' },
+    phoneNumber: 'Anonymous',
+    dateFrom: '2020-03-10',
+    dateTo: '2020-03-15',
+  };
+  const task = {
+    taskSid: 'WT123',
+    attributes: {
+      isContactlessTask: false,
+      ip: 'user-ip',
+    },
+  };
+
+  const previousContacts = {
+    contacts: { count: 3, contacts: [] },
+    casesCount: { count: 1, cases: [] },
+  };
+
+  const initialState = createState(task.taskSid, { currentPage, searchFormValues, detailsExpanded, previousContacts });
+  const store = mockStore(initialState);
+
+  const component = renderer.create(
+    <Provider store={store}>
+      <Search task={task} handleSelectSearchResult={() => null} handleExpandDetailsSection={() => null} />
+    </Provider>,
+  ).root;
+
+  expect(() => component.findByType(SearchForm)).not.toThrow();
+  expect(() => component.findByProps({ 'data-testid': 'Search-PreviousContactsCheckbox' })).not.toThrow();
   expect(() => component.findByType(ContactDetails)).toThrow();
 
   const valuesProps = component.findByType(SearchForm).props.values;

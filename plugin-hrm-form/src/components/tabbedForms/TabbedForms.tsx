@@ -5,6 +5,7 @@ import React from 'react';
 import SearchIcon from '@material-ui/icons/Search';
 import { useForm, FormProvider } from 'react-hook-form';
 import { connect, ConnectedProps } from 'react-redux';
+import { Template } from '@twilio/flex-ui';
 
 import { CaseLayout } from '../../styles/case';
 import Case from '../case';
@@ -16,7 +17,7 @@ import { changeRoute } from '../../states/routing/actions';
 import type { TaskEntry } from '../../states/contacts/reducer';
 import { TabbedFormSubroutes, NewCaseSubroutes } from '../../states/routing/types';
 import { CustomITask, isOfflineContactTask, SearchContact } from '../../types/types';
-import { TabbedFormsContainer, TopNav, TransparentButton, StyledTabs } from '../../styles/HrmStyles';
+import { TabbedFormsContainer, Box, StyledTabs } from '../../styles/HrmStyles';
 import FormTab from '../common/forms/FormTab';
 import callTypes from '../../states/DomainConstants';
 import Search from '../search';
@@ -26,7 +27,7 @@ import ContactlessTaskTab from './ContactlessTaskTab';
 import BottomBar from './BottomBar';
 import { hasTaskControl } from '../../utils/transfer';
 import { isNonDataCallType } from '../../states/ValidationRules';
-import { reRenderAgentDesktop } from '../../HrmFormPlugin';
+import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -48,6 +49,8 @@ const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
   }
 };
 
+const isEmptyCallType = callType => [null, undefined, ''].includes(callType);
+
 const mapTabsToIndex = (task: CustomITask, contactForm: TaskEntry): TabbedFormSubroutes[] => {
   const isCallerType = contactForm.callType === callTypes.caller;
 
@@ -58,6 +61,8 @@ const mapTabsToIndex = (task: CustomITask, contactForm: TaskEntry): TabbedFormSu
       ? ['search', 'contactlessTask', 'callerInformation', 'childInformation', 'categories', 'caseInformation']
       : ['search', 'contactlessTask', 'childInformation', 'categories', 'caseInformation'];
   }
+
+  if (isEmptyCallType(contactForm.callType)) return ['search'];
 
   return isCallerType
     ? ['search', 'callerInformation', 'childInformation', 'categories', 'caseInformation']
@@ -148,14 +153,15 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, currentD
       : undefined;
 
   const isDataCallType = !isNonDataCallType(contactForm.callType);
+  const showSubmitButton = !isEmptyCallType(contactForm.callType) && tabIndex === tabs.length - 1;
 
   return (
     <FormProvider {...methods}>
-      <div role="form" style={{ height: '100%' }}>
+      <div role="form" style={{ height: '100%', overflow: 'scroll' }}>
         <TabbedFormsContainer>
-          <TopNav>
-            <TransparentButton onClick={handleBackButton}>&lt; BACK</TransparentButton>
-          </TopNav>
+          <Box marginTop="10px" marginBottom="10px">
+            <SearchResultsBackButton handleBack={handleBackButton} text={<Template code="TabbedForms-BackButton" />} />
+          </Box>
           <StyledTabs name="tab" variant="scrollable" scrollButtons="auto" value={tabIndex} onChange={handleTabsChange}>
             {tabs}
           </StyledTabs>
@@ -215,7 +221,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, currentD
             }
             // TODO: move this two functions to a separate file to centralize "handle task completions"
             showNextButton={tabIndex !== 0 && tabIndex < tabs.length - 1}
-            showSubmitButton={tabIndex === tabs.length - 1}
+            showSubmitButton={showSubmitButton}
             handleSubmitIfValid={methods.handleSubmit} // TODO: this should be used within BottomBar, but that requires a small refactor to make it a functional component
             optionalButtons={optionalButtons}
           />

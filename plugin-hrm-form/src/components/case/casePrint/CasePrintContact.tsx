@@ -45,7 +45,9 @@ const CasePrintContact: React.FC<Props> = ({ sectionName, contact, counselor }) 
           <Text style={styles.sectionItemSecondColumn}>{presentValue(number)}</Text>
         </View>
         <View style={styles.sectionItemRowEven}>
-          <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-Conversation']}</Text>
+          <Text style={styles.sectionItemFirstColumn}>
+            {strings['ContactDetails-GeneralDetails-ConversationDuration']}
+          </Text>
           <Text style={styles.sectionItemSecondColumn}>{presentValue(conversationDuration)}</Text>
         </View>
         <View style={styles.sectionItemRowOdd}>

@@ -272,20 +272,6 @@ export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
 `;
 StyledNextStepButton.displayName = 'StyledNextStepButton';
 
-export const TransparentButton = styled(Button)`
-  color: black;
-  text-transform: uppercase;
-  font-size: 12px;
-  letter-spacing: 2px;
-`;
-TransparentButton.displayName = 'TransparentButton';
-
-export const TopNav = styled('div')`
-  display: flex;
-  flex-direction: row;
-`;
-TopNav.displayName = 'TopNav';
-
 export const BottomButtonBar = styled('div')`
   display: flex;
   align-items: center;
@@ -646,7 +632,7 @@ export const FormError = styled('span')`
 `;
 FormError.displayName = 'FormError';
 
-type FormInputProps = { error?: boolean; width?: number };
+type FormInputProps = { error?: boolean; width?: number; fullWidth?: boolean };
 
 export const FormInput = styled('input')<FormInputProps>`
   /* ---------- Input ---------- */
@@ -772,8 +758,8 @@ const CheckboxBase = styled('input')<FormInputProps>`
 
 export const FormCheckbox = styled(CheckboxBase)`
   &[type='checkbox']:checked::before {
-    border-color: #5dba32;
-    background: #5dba32;
+    border-color: #1976d2;
+    background: #1976d2;
   }
   &[type='checkbox']:checked::after {
     font-family: 'Font Awesome 5 Free';
@@ -789,8 +775,8 @@ export const FormMixedCheckbox = styled(CheckboxBase)`
     background: #d13821;
   }
   &[class~='mixed-checkbox'][type='checkbox'][aria-checked='true']::before {
-    border-color: #5dba32;
-    background: #5dba32;
+    border-color: #1976d2;
+    background: #1976d2;
   }
   &[class~='mixed-checkbox'][type='checkbox'][aria-checked='false']::after {
     font-family: 'Font Awesome 5 Free';
@@ -810,11 +796,14 @@ export const FormMixedCheckbox = styled(CheckboxBase)`
   /* &[class~=mixed-checkbox][type=checkbox][aria-checked="true"]:active::before  */
   /* &[class~=mixed-checkbox][type=checkbox]:focus::before */
 `;
+type FormSelectProps = {
+  fullWidth?: boolean;
+};
 
-export const FormSelectWrapper = styled('div')`
+export const FormSelectWrapper = styled('div')<FormSelectProps>`
   position: relative;
   box-sizing: border-box; /* Tells the browser to account for any border and padding in the values you specify for an element's width and height. https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing*/
-  width: 217px;
+  ${props => (props.fullWidth ? 'width: 100%' : 'width: 217px')};
   height: 36px;
 
   &:after {
@@ -843,7 +832,7 @@ export const FormSelect = styled('select')<FormInputProps>`
   line-height: 1.33;
   letter-spacing: normal;
   box-sizing: border-box; /* Tells the browser to account for any border and padding in the values you specify for an element's width and height. https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing*/
-  width: 217px;
+  ${props => (props.fullWidth ? 'width: 100%' : 'width: 217px')};
   background-color: ${props => props.theme.colors.inputBackgroundColor};
   color: ${props =>
     props.theme.calculated.lightTheme ? props.theme.colors.darkTextColor : props.theme.colors.lightTextColor};
@@ -860,8 +849,9 @@ export const FormSelect = styled('select')<FormInputProps>`
 `;
 FormSelect.displayName = 'FormSelect';
 
-// eslint-disable-next-line import/no-unused-modules
-export const FormOption = styled('option')<{ isEmptyValue: boolean }>`
+type FormOptionProps = { isEmptyValue?: boolean; disabled?: boolean };
+
+export const FormOption = styled('option')<FormOptionProps>`
   font-family: Open Sans;
   font-size: 12px;
   line-height: 1.33;
@@ -873,6 +863,7 @@ export const FormOption = styled('option')<{ isEmptyValue: boolean }>`
   padding: 0 12px;
   min-width: 0;
   ${({ isEmptyValue }) => isEmptyValue && 'color: #616161'}
+  ${props => props.disabled && `background-color: ${props.theme.colors.disabledColor};`}
 `;
 FormOption.displayName = 'FormOption';
 
@@ -945,3 +936,24 @@ export const TaskCanvasOverride = styled('div')`
   height: 100%;
   background-color: ${props => props.theme.colors.base2};
 `;
+
+export const CannedResponsesContainer = styled('div')`
+  margin-bottom: 15px;
+
+  .form {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .input-label {
+    padding-left: 5px;
+  }
+`;
+
+CannedResponsesContainer.displayName = 'CannedResponsesContainer';
+
+export const Bold = styled('span')`
+  font-weight: 700;
+`;
+
+Bold.displayName = 'Bold';
