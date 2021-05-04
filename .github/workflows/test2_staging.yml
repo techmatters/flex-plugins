@@ -1,6 +1,6 @@
 # This is a basic workflow to publish a Twilio Flex-plugins with Github Actions
 
-name: Test 4 Staging release
+name: Test2 Staging release
 
 # Controls when the action will run.
 on:
