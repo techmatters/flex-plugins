@@ -141,7 +141,6 @@ TimelineRow.displayName = 'TimelineRow';
 
 export const TimelineDate = styled('div')`
   min-width: 65px;
-  text-align: center;
 `;
 TimelineDate.displayName = 'TimelineDate';
 
