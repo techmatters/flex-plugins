@@ -150,6 +150,7 @@ export const TimelineText = styled('span')`
   text-overflow: ellipsis;
   white-space: nowrap;
   flex-grow: 1;
+  margin-right: 10px;
 `;
 TimelineText.displayName = 'TimelineText';
 
