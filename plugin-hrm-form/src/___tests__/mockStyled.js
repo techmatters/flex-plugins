@@ -33,6 +33,7 @@ jest.mock('../styles/HrmStyles', () => ({
   SubcategoriesWrapper: 'SubcategoriesWrapper',
   StyledTabs: 'StyledTabs',
   StyledTab: 'StyledTab',
+  StyledSearchTab: 'StyledSearchTab',
   Row: 'Row',
   FontOpenSans: 'FontOpenSans',
   HiddenText: 'HiddenText',

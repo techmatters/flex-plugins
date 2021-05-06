@@ -3,14 +3,19 @@ import React from 'react';
 import ErrorIcon from '@material-ui/icons/Error';
 import { Template } from '@twilio/flex-ui';
 
-import { StyledTab, StyledTabProps } from '../../../styles/HrmStyles';
+import { StyledTab, StyledSearchTab, StyledTabProps } from '../../../styles/HrmStyles';
 
 type Props = {
   label?: string;
   error?: any;
+  searchTab?: boolean;
 } & Omit<StyledTabProps, 'label'>;
 
-const FormTab: React.FC<Props> = ({ label, error, ...rest }) => {
+const FormTab: React.FC<Props> = ({ label, error, searchTab, ...rest }) => {
+  if (searchTab) {
+    return <StyledSearchTab {...rest} />;
+  }
+
   return (
     <StyledTab
       {...rest}
@@ -18,7 +23,7 @@ const FormTab: React.FC<Props> = ({ label, error, ...rest }) => {
       label={
         <>
           {error && (
-            <div style={{ verticalAlign: 'middle', marginRight: 2 }}>
+            <div style={{ height: 10 }}>
               <ErrorIcon fontSize="inherit" style={{ color: 'red' }} />
             </div>
           )}
