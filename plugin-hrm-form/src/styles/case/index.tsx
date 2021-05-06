@@ -285,6 +285,10 @@ export const StyledInputField = styled(FormInput)`
   font-weight: 600;
   padding-left: 10px !important;
   margin-top: 7px;
+
+  ::-webkit-calendar-picker-indicator {
+    margin-left: 0;
+  }
 `;
 
 StyledInputField.displayName = 'StyledInputField';
