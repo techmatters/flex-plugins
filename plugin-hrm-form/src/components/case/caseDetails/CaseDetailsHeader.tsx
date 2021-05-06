@@ -60,10 +60,7 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
         </DetailsHeaderCounselor>
       </DetailsHeaderTextContainer>
       <DetailsHeaderChildAtRiskContainer>
-        <FormLabel
-          htmlFor="childIsAtRisk"
-          style={{ marginLeft: 'auto', marginTop: 'auto', textTransform: 'uppercase' }}
-        >
+        <FormLabel htmlFor="childIsAtRisk" style={{ marginLeft: 'auto', marginTop: 'auto' }}>
           <ChildIsAtRiskWrapper style={{ height: 'auto' }}>
             <Box marginRight="5px">
               <FormCheckbox
