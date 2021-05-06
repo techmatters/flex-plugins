@@ -118,16 +118,20 @@ export const ContactButtonsWrapper = styled('div')`
   align-items: center;
 `;
 
-export const StyledLink = styled(({ onClick, ...rest }: ButtonProps) => (
+type StyledLinkProps = ButtonProps & { underline?: boolean };
+
+export const StyledLink = styled(({ onClick, ...rest }: StyledLinkProps) => (
   <Button size="small" onClick={onClick} {...rest} />
-))`
+))<StyledLinkProps>`
   span {
     text-transform: none;
     color: #1874e1;
   }
 
   &&:hover {
-    background-color: ${props => props.theme.colors.hyperlinkHoverBackgroundColor};
+    text-decoration: ${props => (props.underline ? 'underline' : 'none')};
+    text-decoration-color: ${props => (props.underline ? '#1874e1' : 'transparent')};
+    background-color: ${props => (props.underline ? 'transparent' : props.theme.colors.hyperlinkHoverBackgroundColor)};
   }
 `;
 
