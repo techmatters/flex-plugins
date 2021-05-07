@@ -171,6 +171,7 @@ jest.mock('../styles/case', () => ({
   TimelineIconContainer: 'TimelineIconContainer',
   CaseSummaryTextArea: 'CaseSummaryTextArea',
   RowItemContainer: 'RowItemContainer',
+  NoteContainer: 'NoteContainer',
   DetailsContainer: 'DetailsContainer',
   DetailEntryText: 'DetailEntryText',
   DetailDescription: 'DetailDescription',
