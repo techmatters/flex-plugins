@@ -10,7 +10,7 @@
     "label": "Duration",
     "type": "select",
     "options": [
-      { "value": "", "label": "" },
+      { "value": "Unknown", "label": "" },
       { "value": "Ongoing", "label": "Ongoing" },
       { "value": "Once Off", "label": "Once Off" },
       { "value": "Other", "label": "Other" }
@@ -22,7 +22,7 @@
     "label": "Location",
     "type": "select",
     "options": [
-      { "value": "", "label": "" },
+      { "value": "Unknown", "label": "" },
       { "value": "Unknown", "label": "Unknown" },
       { "value": "School", "label": "School" },
       { "value": "Home", "label": "Home" },
