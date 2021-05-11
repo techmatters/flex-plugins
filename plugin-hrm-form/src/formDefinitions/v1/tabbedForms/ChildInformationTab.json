@@ -86,7 +86,8 @@
       { "value": "Northern", "label": "Northern" },
       { "value": "North-Western", "label": "North-Western" },
       { "value": "Southern", "label": "Southern" },
-      { "value": "Western", "label": "Western" }
+      { "value": "Western", "label": "Western" },
+      { "value": "Unknown", "label": "Unknown" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" }
   },
@@ -109,7 +110,8 @@
         { "value": "Mumbwa", "label": "Mumbwa" },
         { "value": "Ngabwe", "label": "Ngabwe" },
         { "value": "Serenje", "label": "Serenje" },
-        { "value": "Shibuyunji", "label": "Shibuyunji" }
+        { "value": "Shibuyunji", "label": "Shibuyunji" },
+        { "value": "Unknown", "label": "Unknown" }
       ],
       "Copperbelt": [
         { "value": "Chililabombwe", "label": "Chililabombwe" },
@@ -121,7 +123,8 @@
         { "value": "Masaiti", "label": "Masaiti" },
         { "value": "Mpongwe", "label": "Mpongwe" },
         { "value": "Mufulira", "label": "Mufulira" },
-        { "value": "Ndola", "label": "Ndola" }
+        { "value": "Ndola", "label": "Ndola" },
+        { "value": "Unknown", "label": "Unknown" }
       ],
       "Eastern": [
         { "value": "Chadiza", "label": "Chadiza" },
@@ -132,7 +135,8 @@
         { "value": "Nyimba", "label": "Nyimba" },
         { "value": "Petauke", "label": "Petauke" },
         { "value": "Sinda", "label": "Sinda" },
-        { "value": "Vubwi", "label": "Vubwi" }
+        { "value": "Vubwi", "label": "Vubwi" },
+        { "value": "Unknown", "label": "Unknown" }
       ],
       "Luapula": [
         { "value": "Chembe", "label": "Chembe" },
@@ -145,7 +149,8 @@
         { "value": "Mwansabombwe", "label": "Mwansabombwe" },
         { "value": "Mwense", "label": "Mwense" },
         { "value": "Nchelenge", "label": "Nchelenge" },
-        { "value": "Samfya", "label": "Samfya" }
+        { "value": "Samfya", "label": "Samfya" },
+        { "value": "Unknown", "label": "Unknown" }
       ],
       "Lusaka": [
         { "value": "Chilanga", "label": "Chilanga" },
@@ -154,7 +159,8 @@
         { "value": "Kafue", "label": "Kafue" },
         { "value": "Luangwa", "label": "Luangwa" },
         { "value": "Lusaka", "label": "Lusaka" },
-        { "value": "Rufunsa", "label": "Rufunsa" }
+        { "value": "Rufunsa", "label": "Rufunsa" },
+        { "value": "Unknown", "label": "Unknown" }
       ],
       "Muchinga": [
         { "value": "Chama", "label": "Chama" },
@@ -166,7 +172,8 @@
         { "value": "Mafinga", "label": "Mafinga" },
         { "value": "Mpika", "label": "Mpika" },
         { "value": "Nakonde", "label": "Nakonde" },
-        { "value": "Shiwang'andu", "label": "Shiwang'andu" }
+        { "value": "Shiwang'andu", "label": "Shiwang'andu" },
+        { "value": "Unknown", "label": "Unknown" }
       ],
       "Northern": [
         { "value": "Chilubi", "label": "Chilubi" },
@@ -180,7 +187,8 @@
         { "value": "Mpulungu", "label": "Mpulungu" },
         { "value": "Mungwi", "label": "Mungwi" },
         { "value": "Nsama", "label": "Nsama" },
-        { "value": "Senga", "label": "Senga" }
+        { "value": "Senga", "label": "Senga" },
+        { "value": "Unknown", "label": "Unknown" }
       ],
       "North-Western": [
         { "value": "Chavuma", "label": "Chavuma" },
@@ -193,7 +201,8 @@
         { "value": "Mushindamo", "label": "Mushindamo" },
         { "value": "Mwinilunga", "label": "Mwinilunga" },
         { "value": "Solwezi", "label": "Solwezi" },
-        { "value": "Zambezi", "label": "Zambezi" }
+        { "value": "Zambezi", "label": "Zambezi" },
+        { "value": "Unknown", "label": "Unknown" }
       ],
       "Southern": [
         { "value": "Chikankata", "label": "Chikankata" },
@@ -208,7 +217,8 @@
         { "value": "Pemba", "label": "Pemba" },
         { "value": "Siavonga", "label": "Siavonga" },
         { "value": "Sinazongwe", "label": "Sinazongwe" },
-        { "value": "Zimba", "label": "Zimba" }
+        { "value": "Zimba", "label": "Zimba" },
+        { "value": "Unknown", "label": "Unknown" }
       ],
       "Western": [
         { "value": "Kalabo", "label": "Kalabo" },
@@ -226,7 +236,8 @@
         { "value": "Sesheke", "label": "Sesheke" },
         { "value": "Shangombo", "label": "Shangombo" },
         { "value": "Sikongo", "label": "Sikongo" },
-        { "value": "Sioma", "label": "Sioma" }
+        { "value": "Sioma", "label": "Sioma" },
+        { "value": "Unknown", "label": "Unknown" }
       ]
     },
     "required": { "value": true, "message": "RequiredFieldError" }
