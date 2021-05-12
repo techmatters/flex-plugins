@@ -45,7 +45,8 @@
       { "value": "Step Parent", "label": "Step Parent" },
       { "value": "Stranger", "label": "Stranger" },
       { "value": "Teacher", "label": "Teacher" },
-      { "value": "Uncle", "label": "Uncle" }
+      { "value": "Uncle", "label": "Uncle" },
+      { "value": "Unknown", "label": "Unknown" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" }
   },
@@ -81,7 +82,7 @@
     "label": "Municipality",
     "type": "dependent-select",
     "dependsOn": "province",
-    "defaultOption": { "value": "", "label": "" },
+    "defaultOption": { "value": "Unknown", "label": "" },
     "options": {
       "Eastern Cape": [
         { "value": "Buffalo City Metro Municipality", "label": "Buffalo City Metro Municipality" },
@@ -91,8 +92,7 @@
         { "value": "Chris Hani District Municipality", "label": "Chris Hani District Municipality" },
         { "value": "Joe Gqabi District", "label": "Joe Gqabi District" },
         { "value": "OR Tambo District", "label": "OR Tambo District" },
-        { "value": "Sarah Baartman District", "label": "Sarah Baartman District" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Sarah Baartman District", "label": "Sarah Baartman District" }
       ],
       "Free State": [
         { "value": "Fezile Dabi-Mafube Municipality", "label": "Fezile Dabi-Mafube Municipality" },
@@ -113,15 +113,13 @@
         { "value": "Thabo Mofutsanyana-Setsoto Municipality", "label": "Thabo Mofutsanyana-Setsoto Municipality" },
         { "value": "Xhariep-Kopanong Municipality", "label": "Xhariep-Kopanong Municipality" },
         { "value": "Xhariep-Letsemeng Municipality", "label": "Xhariep-Letsemeng Municipality" },
-        { "value": "Xhariep-Mohokare Municipality", "label": "Xhariep-Mohokare Municipality" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Xhariep-Mohokare Municipality", "label": "Xhariep-Mohokare Municipality" }
       ],
       "Gauteng": [
         { "value": "City of Tswane", "label": "Tswane" },
         { "value": "Ekurhuleni", "label": "Ekurhuleni" },
         { "value": "Sedibeng - South East Gauteng", "label": "Sedibeng - South East Gauteng" },
-        { "value": "Westrand", "label": "Westrand" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Westrand", "label": "Westrand" }
       ],
       "KwaZulu Natal": [
         { "value": "Amajuba District Municipality", "label": "Amajuba District" },
@@ -134,8 +132,7 @@
         { "value": "Umzinyathi District Municipality", "label": "Umzinyathi District" },
         { "value": "Uthukela District Municipality", "label": "Uthukela District" },
         { "value": "Uthungulu District Municipality", "label": "Uthungulu District" },
-        { "value": "Zululand District Municipality", "label": "Zululand District" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Zululand District Municipality", "label": "Zululand District" }
       ],
       "Limpopo": [
         { "value": "Capricorn", "label": "Capricorn" },
@@ -143,29 +140,25 @@
         { "value": "Mopani", "label": "Mopani" },
         { "value": "Sekhukhune", "label": "Sekhukhune" },
         { "value": "Vhembe", "label": "Vhembe" },
-        { "value": "Waterberg", "label": "Waterberg" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Waterberg", "label": "Waterberg" }
       ],
       "Mpumalanga": [
         { "value": "Ehlanzeni District Municipality", "label": "Ehlanzeni District" },
         { "value": "Gert Sibande District Municipality", "label": "Gert Sibande District" },
-        { "value": "Nkangala District Municipality", "label": "Nkangala District" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Nkangala District Municipality", "label": "Nkangala District" }
       ],
       "North West": [
         { "value": "Bojanala Platinum", "label": "Bojanala Platinum" },
         { "value": "Dr. Ruth Segomotsi Mompati", "label": "Dr. Ruth Segomotsi Mompati" },
         { "value": "Dr. Kenneth Kaunda", "label": "Dr. Kenneth Kaunda" },
-        { "value": "Ngaka ModiriMolema", "label": "Ngaka ModiriMolema" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Ngaka ModiriMolema", "label": "Ngaka ModiriMolema" }
       ],
       "Northern Cape": [
         { "value": "Francis Baard District", "label": "Francis Baard District" },
         { "value": "John Taolo Gaetsewe District Municipality", "label": "John Taolo Gaetsewe District Municipality" },
         { "value": "Namakwa District Municipality", "label": "Namakwa District Municipality" },
         { "value": "Pixley Ka Seme District Municipality", "label": "Pixley Ka Seme District Municipality" },
-        { "value": "ZF Mgcawu District Municipality", "label": "ZF Mgcawu District Municipality" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "ZF Mgcawu District Municipality", "label": "ZF Mgcawu District Municipality" }
       ],
       "Western Cape": [
         { "value": "Cape Winelands", "label": "Cape Winelands" },
@@ -173,8 +166,7 @@
         { "value": "City of Cape Town", "label": "City of Cape Town" },
         { "value": "Garden Route", "label": "Garden Route" },
         { "value": "Overberg", "label": "Overberg" },
-        { "value": "West Coast", "label": "West Coast" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "West Coast", "label": "West Coast" }
       ]
     }
   },
@@ -183,7 +175,7 @@
     "label": "District",
     "type": "dependent-select",
     "dependsOn": "municipality",
-    "defaultOption": { "value": "", "label": "" },
+    "defaultOption": { "value": "Unknown", "label": "" },
     "options": {
       "Buffalo City Metro Municipality": [
         { "value": "Beacon Bay", "label": "Beacon Bay" },
@@ -197,8 +189,7 @@
         { "value": "Mdantsane", "label": "Mdantsane" },
         { "value": "Phakamisa", "label": "Phakamisa" },
         { "value": "Potsdam", "label": "Potsdam" },
-        { "value": "Zwelitsha", "label": "Zwelitsha" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Zwelitsha", "label": "Zwelitsha" }
       ],     
       "Nelson Mandela Metro Municipality": [
         { "value": "Bethelsdorp", "label": "Bethelsdorp" },
@@ -211,8 +202,7 @@
         { "value": "Port Elizabeth/Gqeberha", "label": "Port Elizabeth/Gqeberha" },
         { "value": "Summerstrand", "label": "Summerstrand" },
         { "value": "Swartkops", "label": "Swartkops" },
-        { "value": "Uitenhage", "label": "Uitenhage" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Uitenhage", "label": "Uitenhage" }
       ],
       "Alfred Nzo District": [
         { "value": "Cedarville", "label": "Cedarville" },
@@ -220,8 +210,7 @@
         { "value": "Bizana", "label": "Bizana" },
         { "value": "Ntabankulu", "label": "Ntabankulu" },
         { "value": "eMaxesibeni (Mount Ayliff)", "label": "eMaxesibeni (Mount Ayliff)" },
-        { "value": "KwaBhaca (Mount Frere)", "label": "KwaBhaca (Mount Frere)" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "KwaBhaca (Mount Frere)", "label": "KwaBhaca (Mount Frere)" }
       ],   
       "Amathole District Municipality": [
         { "value": "Cathcart", "label": "Cathcart" },
@@ -246,8 +235,7 @@
         { "value": "Fort Beaufort", "label": "Fort Beaufort" },
         { "value": "Hogsback,", "label": "Hogsback," },
         { "value": "Middeldrift", "label": "Middeldrift" },
-        { "value": "Seymor", "label": "Seymor" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Seymor", "label": "Seymor" }
       ],
       "Chris Hani District Municipality": [
         { "value": "Cacadu (Lady Frere)", "label": "Cacadu (Lady Frere)" },
@@ -267,8 +255,7 @@
         { "value": "Sterkstroom", "label": "Sterkstroom" },
         { "value": "Tarkastad", "label": "Tarkastad" },
         { "value": "Tsomo", "label": "Tsomo" },
-        { "value": "Whittlesea", "label": "Whittlesea" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Whittlesea", "label": "Whittlesea" }
       ], 
       "Joe Gqabi District": [
         { "value": "Aliwal North", "label": "Aliwal North" },
@@ -285,8 +272,7 @@
         { "value": "Sterkspruit", "label": "Sterkspruit" },
         { "value": "Steynsburg", "label": "Steynsburg" },
         { "value": "Ugie", "label": "Ugie" },
-        { "value": "Venterstad", "label": "Venterstad" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Venterstad", "label": "Venterstad" }
       ],   
       "OR Tambo District": [
         { "value": "Flagstaff", "label": "Flagstaff" },
@@ -297,8 +283,7 @@
         { "value": "Ngqeleni", "label": "Ngqeleni" },
         { "value": "Port St Johns", "label": "Port St Johns" },
         { "value": "Qumbu", "label": "Qumbu" },
-        { "value": "Tsolo", "label": "Tsolo" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Tsolo", "label": "Tsolo" }
       ],      
       "Sarah Baartman District": [
         { "value": "Adendorp", "label": "Adendorp" },
@@ -346,46 +331,40 @@
         { "value": "Thornhill", "label": "Thornhill" },
         { "value": "Waterford", "label": "Waterford" },
         { "value": "Willowmore", "label": "Willowmore" },
-        { "value": "Woodlands", "label": "Woodlands" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Woodlands", "label": "Woodlands" }
       ],  
       "Fezile Dabi-Mafube Municipality": [
         { "value": "Villiers", "label": "Villiers" },
         { "value": "Cornelia", "label": "Cornelia" },
         { "value": "Frankfort", "label": "Frankfort" },
-        { "value": "Tweeling", "label": "Tweeling" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Tweeling", "label": "Tweeling" }
       ],
       "Fezile Dabi-Metsimaholo Municipality": [
         { "value": "Deneysville", "label": "Deneysville" },
         { "value": "Sasolburg", "label": "Sasolburg" },
         { "value": "Oranjeville", "label": "Oranjeville" },
-        { "value": "Kragbron", "label": "Kragbron" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Kragbron", "label": "Kragbron" }
       ],  
       "Fezile Dabi-Moqhaka Municipality": [
         { "value": "Kroonstad", "label": "Kroonstad" },
         { "value": "Viljoenskroon", "label": "Viljoenskroon" },
         { "value": "Renovaal", "label": "Renovaal" },
         { "value": "Steynsrus", "label": "Steynsrus" },
-        { "value": "Vierfontein", "label": "Vierfontein" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Vierfontein", "label": "Vierfontein" }
       ], 
       "Fezile Dabi-Ngwathe Municipality": [
         { "value": "Edenville", "label": "Edenville" },
         { "value": "Heilbron", "label": "Heilbron" },
         { "value": "Koppies", "label": "Koppies" },
         { "value": "Parys", "label": "Parys" },
-        { "value": "Vredeford", "label": "Vredeford" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Vredeford", "label": "Vredeford" }
       ],     
       "Lejweleputswa-Masilonyana Municipality": [
         { "value": "Brandfort", "label": "Brandfort" },
         { "value": "Windburg", "label": "Windburg" },
         { "value": "Soutpan", "label": "Soutpan" },
         { "value": "Theunissen", "label": "Theunissen" },
-        { "value": "Verkeerdevlei", "label": "Verkeerdevlei" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Verkeerdevlei", "label": "Verkeerdevlei" }
       ],       
       "Lejweleputswa-Matjhabeng Municipality": [
         { "value": "Hennenman", "label": "Hennenman" },
@@ -393,24 +372,20 @@
         { "value": "Welkom-Thabong", "label": "Welkom-Thabong" },
         { "value": "Allanridge", "label": "Allanridge" },
         { "value": "Virginia", "label": "Virginia" },
-        { "value": "Ventersburg", "label": "Ventersburg" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Ventersburg", "label": "Ventersburg" }
       ],  
       "Lejweleputswa-Nala Municipality": [
         { "value": "Wesselsbron", "label": "Wesselsbron" },
-        { "value": "Bothaville", "label": "Bothaville" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Bothaville", "label": "Bothaville" }
       ],  
       "Lejweleputswa-Tokologo Municipality": [
         { "value": "Dealesville", "label": "Dealesville" },
         { "value": "Hertzogville", "label": "Hertzogville" },
-        { "value": "Boshof", "label": "Boshof" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Boshof", "label": "Boshof" }
       ],    
       "Lejweleputswa-Tswelopele Municipality": [
         { "value": "Hoopstad", "label": "Hoopstad" },
-        { "value": "Bultfontein", "label": "Bultfontein" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Bultfontein", "label": "Bultfontein" }
       ],   
       "Motheo-Mangaung Municipality": [
         { "value": "Botshabelo", "label": "Botshabelo" },
@@ -419,8 +394,7 @@
         { "value": "Mangaung", "label": "Mangaung" },
         { "value": "Dewetsdorp", "label": "Dewetsdorp" },
         { "value": "Wepener", "label": "Wepener" },
-        { "value": "Van Stadensrus", "label": "Van Stadensrus" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Van Stadensrus", "label": "Van Stadensrus" }
       ],  
       "Thabo Mofutsanyana-Dihlabeng Municipality": [
         { "value": "Bethlehem", "label": "Bethlehem" },
@@ -428,43 +402,37 @@
         { "value": "Fouriesburg", "label": "Fouriesburg" },
         { "value": "Golden Gate Highlands Nat Park", "label": "Golden Gate Highlands Nat Park" },
         { "value": "Paul Roux", "label": "Paul Roux" },
-        { "value": "Rosendal", "label": "Rosendal" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Rosendal", "label": "Rosendal" }
       ],       
       "Thabo Mofutsanyana-Maluti a-Phofung Municipality": [
         { "value": "Harrismith", "label": "Harrismith" },
         { "value": "Kestell", "label": "Kestell" },
         { "value": "Phuthaditjhaba", "label": "Phuthaditjhaba" },
-        { "value": "Tshiame", "label": "Tshiame" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Tshiame", "label": "Tshiame" }
       ],   
       "Thabo Mofutsanyana-Mantsopa Municipality": [
         { "value": "Ladybrand", "label": "Ladybrand" },
         { "value": "Exelsior", "label": "Exelsior" },
         { "value": "Hobhouse", "label": "Hobhouse" },
         { "value": "Thaba Patchoa", "label": "Thaba Patchoa" },
-        { "value": "Tweespruit", "label": "Tweespruit" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Tweespruit", "label": "Tweespruit" }
       ],   
       "Thabo Mofutsanyana-Nketoana Municipality": [
         { "value": "Lindley", "label": "Lindley" },
         { "value": "Arlington", "label": "Arlington" },
         { "value": "Petrus Steyn", "label": "Petrus Steyn" },
-        { "value": "Reitz", "label": "Reitz" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Reitz", "label": "Reitz" }
       ], 
       "Thabo Mofutsanyana-Phumelela Municipality": [
         { "value": "Memel", "label": "Memel" },
         { "value": "Vrede", "label": "Vrede" },
-        { "value": "Warden", "label": "Warden" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Warden", "label": "Warden" }
       ],   
       "Thabo Mofutsanyana-Setsoto Municipality": [
         { "value": "Ficksburg", "label": "Ficksburg" },
         { "value": "Senekal", "label": "Senekal" },
         { "value": "Clocolan", "label": "Clocolan" },
-        { "value": "Marquard", "label": "Marquard" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Marquard", "label": "Marquard" }
       ], 
       "Xhariep-Kopanong Municipality": [
         { "value": "Reddersburg", "label": "Reddersburg" },
@@ -476,22 +444,19 @@
         { "value": "Griep dam", "label": "Griep dam" },
         { "value": "Fauresmith", "label": "Fauresmith" },
         { "value": "Edenburg", "label": "Edenburg" },
-        { "value": "Bethulie", "label": "Bethulie" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Bethulie", "label": "Bethulie" }
       ],
       "Xhariep-Letsemeng Municipality": [
         { "value": "Jacobsdal", "label": "Jacobsdal" },
         { "value": "Luckhoff", "label": "Luckhoff" },
         { "value": "Petrusburg", "label": "Petrusburg" },
         { "value": "Koffiefontein", "label": "Koffiefontein" },
-        { "value": "Oppermansgronde", "label": "Oppermansgronde" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Oppermansgronde", "label": "Oppermansgronde" }
       ],
       "Xhariep-Mohokare Municipality": [
         { "value": "Rouxville", "label": "Rouxville" },
         { "value": "Smithfield", "label": "Smithfield" },
-        { "value": "Zastron", "label": "Zastron" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Zastron", "label": "Zastron" }
       ],
       "Ekurhuleni": [
         { "value": "Alberton", "label": "Alberton" },
@@ -551,8 +516,7 @@
         { "value": "Tshepisong", "label": "Tshepisong" },
         { "value": "Vlakfontein", "label": "Vlakfontein" },
         { "value": "Zakariyya Park", "label": "Zakariyya Park" },
-        { "value": "Zevenfontein", "label": "Zevenfontein" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Zevenfontein", "label": "Zevenfontein" }
       ],  
       "City of Tswane": [
         { "value": "Akasia", "label": "Akasia" },
@@ -578,8 +542,7 @@
         { "value": "Soshanguve", "label": "Soshanguve" },
         { "value": "Temba", "label": "Temba" },
         { "value": "Winterveld", "label": "Winterveld" },
-        { "value": "Zithobeni", "label": "Zithobeni" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Zithobeni", "label": "Zithobeni" }
       ],
       "Sedibeng - South East Gauteng": [
         { "value": "Arcon Park", "label": "Arcon Park" },
@@ -607,8 +570,7 @@
         { "value": "Three Rivers", "label": "Three Rivers" },
         { "value": "Unitas Park", "label": "Unitas Park" },
         { "value": "Vereeniging", "label": "Vereeniging" },
-        { "value": "Vanderbijlpark", "label": "Vanderbijlpark" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Vanderbijlpark", "label": "Vanderbijlpark" }
       ],
       "Westrand": [
         { "value": "Bekkersdal", "label": "Bekkersdal" },
@@ -680,16 +642,14 @@
         { "value": "Wheatlands AH", "label": "Wheatlands AH" },
         { "value": "Wilbotsdal AH", "label": "Wilbotsdal AH" },
         { "value": "Zenzele", "label": "Zenzele" },
-        { "value": "Westonaria", "label": "Westonaria" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Westonaria", "label": "Westonaria" }
       ],   
       "Amajuba District Municipality": [   
         { "value": "Charlestown", "label": "Charlestown" },
         { "value": "Dannhauser", "label": "Dannhauser" },
         { "value": "Newcastle", "label": "Newcastle" },
         { "value": "uMzinyathi", "label": "uMzinyathi" },
-        { "value": "Utrecht", "label": "Utrecht" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Utrecht", "label": "Utrecht" }
       ],
       "Ethekwini District Municipality": [
         { "value": "Bluff", "label": "Bluff" },
@@ -728,8 +688,7 @@
         { "value": "Umbumbulu", "label": "Umbumbulu" },
         { "value": "Umlazi", "label": "Umlazi" },
         { "value": "Wentworth", "label": "Wentworth" },
-        { "value": "Westville", "label": "Westville" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Westville", "label": "Westville" }
       ],
       "iLembe District Municipality": [
         { "value": "Dolphin Coast", "label": "Dolphin Coast" },
@@ -745,8 +704,7 @@
         { "value": "Stanger", "label": "Stanger" },
         { "value": "Tugela Mouth", "label": "Tugela Mouth" },
         { "value": "Umbumbulu", "label": "Umbumbulu" },
-        { "value": "Uthungulu", "label": "Uthungulu" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Uthungulu", "label": "Uthungulu" }
       ],     
       "Sisonke District Municipality": [
         { "value": "Bulwer", "label": "Bulwer" },
@@ -757,8 +715,7 @@
         { "value": "Kokstad", "label": "Kokstad" },
         { "value": "Stuartsville", "label": "Stuartsville" },
         { "value": "Ugu", "label": "Ugu" },
-        { "value": "Underberg", "label": "Underberg" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Underberg", "label": "Underberg" }
       ],    
       "Ugu District Municipality": [
         { "value": "Harding", "label": "Harding" },
@@ -770,8 +727,7 @@
         { "value": "Port View", "label": "Port View" },
         { "value": "Scottburgh/Umzinto North", "label": "Scottburgh/Umzinto North" },
         { "value": "Ugu", "label": "Ugu" },
-        { "value": "Umtamvuna/Port Edward", "label": "Umtamvuna/Port Edward" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Umtamvuna/Port Edward", "label": "Umtamvuna/Port Edward" }
       ],  
       "uMgungundlovu District Municipality": [
         { "value": "Dalton", "label": "Dalton" },
@@ -786,15 +742,13 @@
         { "value": "Mooi River", "label": "Mooi River" },
         { "value": "Pietermaritzburg-Msunduzi", "label": "Pietermaritzburg-Msunduzi" },
         { "value": "Richmond", "label": "Richmond" },
-        { "value": "Wartburg", "label": "Wartburg" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Wartburg", "label": "Wartburg" }
       ], 
       "Umkhanyakude District Municipality": [
         { "value": "Hluhluwe", "label": "Hluhluwe" },
         { "value": "Inyala/Mtubatuba", "label": "Inyala/Mtubatuba" },
         { "value": "Mkuze", "label": "Mkuze" },
-        { "value": "Somkele", "label": "Somkele" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Somkele", "label": "Somkele" }
       ],     
       "Umzinyathi District Municipality": [
         { "value": "Dundee", "label": "Dundee" },
@@ -803,8 +757,7 @@
         { "value": "iNdlovu", "label": "iNdlovu" },
         { "value": "Nqutu", "label": "Nqutu" },
         { "value": "Pomeroy", "label": "Pomeroy" },
-        { "value": "uMzinyathi", "label": "uMzinyathi" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "uMzinyathi", "label": "uMzinyathi" }
       ],     
       "Uthukela District Municipality": [
         { "value": "Bergville", "label": "Bergville" },
@@ -813,8 +766,7 @@
         { "value": "Spioenkop", "label": "Spioenkop" },
         { "value": "Umzinyathi", "label": "Umzinyathi" },
         { "value": "Uthukela", "label": "Uthukela" },
-        { "value": "Weenen", "label": "Weenen" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Weenen", "label": "Weenen" }
       ],   
       "Uthungulu District Municipality": [
         { "value": "Empangeni/Ngwelezane", "label": "Empangeni/Ngwelezane" },
@@ -824,15 +776,13 @@
         { "value": "Mtunzini", "label": "Mtunzini" },
         { "value": "Nkandla", "label": "Nkandla" },
         { "value": "Richards Bay", "label": "Richards Bay" },
-        { "value": "Zululand", "label": "Zululand" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Zululand", "label": "Zululand" }
       ],   
       "Zululand District Municipality": [
         { "value": "AbaQulusi", "label": "AbaQulusi" },
         { "value": "Nongoma", "label": "Nongoma" },
         { "value": "Ulundi", "label": "Ulundi" },
-        { "value": "uPhongolo", "label": "uPhongolo" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "uPhongolo", "label": "uPhongolo" }
       ],   
       "Capricorn": [
         { "value": "Alldays", "label": "Alldays" },
@@ -840,8 +790,7 @@
         { "value": "Morebeng (Soekmekaar)", "label": "Morebeng (Soekmekaar)" },
         { "value": "Polokwane", "label": "Polokwane" },
         { "value": "Senwabarwana (Bochum)", "label": "Senwabarwana (Bochum)" },
-        { "value": "Zebediela", "label": "Zebediela" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Zebediela", "label": "Zebediela" }
       ], 
       "Mopani": [
         { "value": "Giyani", "label": "Giyani" },
@@ -850,8 +799,7 @@
         { "value": "Hoedspruit", "label": "Hoedspruit" },
         { "value": "Leydsdorp", "label": "Leydsdorp" },
         { "value": "Modjadjiskloof", "label": "Modjadjiskloof" },
-        { "value": "Tzaneen", "label": "Tzaneen" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Tzaneen", "label": "Tzaneen" }
       ],
       "Sekhukhune": [
         { "value": "Burgersfort", "label": "Burgersfort" },
@@ -860,15 +808,13 @@
         { "value": "Ohrigstad", "label": "Ohrigstad" },
         { "value": "Roossenekal", "label": "Roossenekal" },
         { "value": "Schuinsdraai Nature Reserve", "label": "Schuinsdraai Nature Reserve" },
-        { "value": "Steelpoort", "label": "Steelpoort" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Steelpoort", "label": "Steelpoort" }
       ],     
       "Vhembe": [
         { "value": "Makhado", "label": "Makhado" },
         { "value": "Malamulele", "label": "Malamulele" },
         { "value": "Musina", "label": "Musina" },
-        { "value": "Thohoyandou", "label": "Thohoyandou" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Thohoyandou", "label": "Thohoyandou" }
       ],   
       "Waterberg": [
         { "value": "Amandelbult Mine Town", "label": "Amandelbult Mine Town" },
@@ -879,16 +825,14 @@
         { "value": "Mookgophong", "label": "Mookgophong" },
         { "value": "Pienaarsrivier", "label": "Pienaarsrivier" },
         { "value": "Thabazimbi", "label": "Thabazimbi" },
-        { "value": "Vaalwater", "label": "Vaalwater" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Vaalwater", "label": "Vaalwater" }
       ],     
       "Ehlanzeni District Municipality": [
         { "value": "Bushbuckridge", "label": "Bushbuckridge" },
         { "value": "Mbombela", "label": "Mbombela" },
         { "value": "Nkomazi", "label": "Nkomazi" },
         { "value": "Graskop/Sabie", "label": "Graskop/Sabie" },
-        { "value": "Barberton", "label": "Barberton" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Barberton", "label": "Barberton" }
       ],    
       "Gert Sibande District Municipality": [
         { "value": "Badplaas", "label": "Badplaas" },
@@ -897,8 +841,7 @@
         { "value": "Volksrust", "label": "Volksrust" },
         { "value": "Balfour", "label": "Balfour" },
         { "value": "Piet Retief", "label": "Piet Retief" },
-        { "value": "Ermelo", "label": "Ermelo" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Ermelo", "label": "Ermelo" }
       ],  
       "Nkangala District Municipality": [
         { "value": "Witbank", "label": "Witbank" },
@@ -906,37 +849,32 @@
         { "value": "Js Moroka", "label": "Js Moroka" },
         { "value": "Belfast", "label": "Belfast" },
         { "value": "Middleburg", "label": "Middleburg" },
-        { "value": "Kwamhlanga", "label": "Kwamhlanga" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Kwamhlanga", "label": "Kwamhlanga" }
       ],    
       "Bojanala Platinum": [
         { "value": "Kgetlengrivier", "label": "Kgetlengrivier" },
         { "value": "Madibeng", "label": "Madibeng" },
         { "value": "Moses Kotane", "label": "Moses Kotane" },
-        { "value": "Rustenburg", "label": "Rustenburg" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Rustenburg", "label": "Rustenburg" }
       ],  
       "Dr. Ruth Segomotsi Mompati": [
         { "value": "Greater Taung", "label": "Greater Taung" },
         { "value": "Kagisano", "label": "Kagisano" },
         { "value": "Lekwa-Teemane", "label": "Lekwa-Teemane" },
-        { "value": "Naledi-Mamusa", "label": "Naledi-Mamusa" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Naledi-Mamusa", "label": "Naledi-Mamusa" }
       ],  
       "Dr. Kenneth Kaunda": [
         { "value": "Maquassi", "label": "Maquassi" },
         { "value": "Matlosana", "label": "Matlosana" },
         { "value": "Tlokwe", "label": "Tlokwe" },
-        { "value": "Ventersdorp", "label": "Ventersdorp" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Ventersdorp", "label": "Ventersdorp" }
       ], 
       "Ngaka ModiriMolema": [
         { "value": "Ditsobotla", "label": "Ditsobotla" },
         { "value": "Mafikeng", "label": "Mafikeng" },
         { "value": "Ramotshere", "label": "Ramotshere" },
         { "value": "Ratlou", "label": "Ratlou" },
-        { "value": "Tswaing", "label": "Tswaing" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Tswaing", "label": "Tswaing" }
       ],
       "Francis Baard District Municipality": [
         { "value": "Delportshoop", "label": "Delportshoop" },
@@ -946,8 +884,7 @@
         { "value": "Pampierstat", "label": "Pampierstat" },
         { "value": "Ritchie", "label": "Ritchie" },
         { "value": "Warrenton", "label": "Warrenton" },
-        { "value": "Windsorton", "label": "Windsorton" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Windsorton", "label": "Windsorton" }
       ], 
       "John Taolo Gaetsewe District Municipality": [
         { "value": "Bankhara-Bodulong", "label": "Bankhara-Bodulong" },
@@ -958,8 +895,7 @@
         { "value": "Mothibistad", "label": "Mothibistad" },
         { "value": "Olifantshoek", "label": "Olifantshoek" },
         { "value": "Santoy", "label": "Santoy" },
-        { "value": "Van Zylsrus", "label": "Van Zylsrus" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Van Zylsrus", "label": "Van Zylsrus" }
       ],   
       "Namakwa District Municipality": [
         { "value": "Aggeneys", "label": "Aggeneys" },
@@ -993,8 +929,7 @@
         { "value": "Springbok", "label": "Springbok" },
         { "value": "Steinkop", "label": "Steinkop" },
         { "value": "Sutherland", "label": "Sutherland" },
-        { "value": "Williston", "label": "Williston" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Williston", "label": "Williston" }
       ], 
       "Pixley Ka Seme District Municipality": [
         { "value": "Britstown", "label": "Britstown" },
@@ -1021,8 +956,7 @@
         { "value": "Van der Kloof", "label": "Van der Kloof" },
         { "value": "Vanwyksvlei", "label": "Vanwyksvlei" },
         { "value": "Victoria West", "label": "Victoria West" },
-        { "value": "Vosburg", "label": "Vosburg" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Vosburg", "label": "Vosburg" }
       ], 
       "ZF Mgcawu District Municipality": [
         { "value": "Beeshoek", "label": "Beeshoek" },
@@ -1036,8 +970,7 @@
         { "value": "Mier", "label": "Mier" },
         { "value": "Postmasburg", "label": "Postmasburg" },
         { "value": "Rietfontein", "label": "Rietfontein" },
-        { "value": "Upington", "label": "Upington" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Upington", "label": "Upington" }
       ],  
       "City of Cape Town": [
         { "value": "Athlone", "label": "Athlone" },
@@ -1183,8 +1116,7 @@
         { "value": "Ysterplaat", "label": "Ysterplaat" },
         { "value": "Zeekovlei", "label": "Zeekovlei" },
         { "value": "Zonnebloem", "label": "Zonnebloem" },
-        { "value": "Zevenwacht", "label": "Zevenwacht" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Zevenwacht", "label": "Zevenwacht" }
       ],
       "Cape Winelands": [
         { "value": "Boberg", "label": "Boberg" },
@@ -1201,8 +1133,7 @@
         { "value": "Stellenbosch", "label": "Stellenbosch" },
         { "value": "Witzenberg", "label": "Witzenberg" },
         { "value": "Worcester", "label": "Worcester" },
-        { "value": "Wellington", "label": "Wellington" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Wellington", "label": "Wellington" }
       ],  
       "Overberg": [
         { "value": "Cape Agulhas", "label": "Cape Agulhas" },
@@ -1216,8 +1147,7 @@
         { "value": "Riviersonderend", "label": "Riviersonderend" },
         { "value": "Swellendam", "label": "Swellendam" },
         { "value": "Theewaterskloof", "label": "Theewaterskloof" },
-        { "value": "Viliersdorp", "label": "Viliersdorp" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Viliersdorp", "label": "Viliersdorp" }
       ],
       "West Coast": [
         { "value": "Berg River", "label": "Berg River" },
@@ -1229,8 +1159,7 @@
         { "value": "Saldanah Bay", "label": "Saldanah Bay" },
         { "value": "St Helena Bay", "label": "St Helena Bay" },
         { "value": "Swartland", "label": "Swartland" },
-        { "value": "Vredenburg", "label": "Vredenburg" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Vredenburg", "label": "Vredenburg" }
       ], 
       "Garden Route": [
         { "value": "Bitou", "label": "Bitou" },
@@ -1242,14 +1171,12 @@
         { "value": "Knysna", "label": "Knysna" },
         { "value": "Ladismith", "label": "Ladismith" },
         { "value": "Mossel Bay", "label": "Mossel Bay" },
-        { "value": "Oudtshoorn", "label": "Oudtshoorn" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Oudtshoorn", "label": "Oudtshoorn" }
       ], 
       "Central Karoo": [
         { "value": "Beaufort West", "label": "Beaufort West" },
         { "value": "Laingsberg", "label": "Laingsberg" },
-        { "value": "Prince Albert", "label": "Prince Albert" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "Prince Albert", "label": "Prince Albert" }
       ]    
     }   
   },
