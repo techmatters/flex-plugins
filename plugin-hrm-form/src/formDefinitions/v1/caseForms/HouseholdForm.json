@@ -23,7 +23,8 @@
       { "value": "Parent", "label": "Parent" },
       { "value": "Person in a position of responsibility", "label": "Person in a position of responsibility" },
       { "value": "Sibling", "label": "Sibling" },
-      { "value": "Other", "label": "Other" }
+      { "value": "Other", "label": "Other" },
+      { "value": "Unknown", "label": "Unknown" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" }
   },
