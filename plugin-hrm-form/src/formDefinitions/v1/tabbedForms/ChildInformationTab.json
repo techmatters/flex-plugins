@@ -338,11 +338,6 @@
     "label": "LGBTQI+ / SOGIESC child",
     "type": "mixed-checkbox"
   },
-    {
-    "name": "Other Vulnerable group",
-    "label": "Other Vulnerable group",
-    "type": "mixed-checkbox"
-  },
   {
     "name": "childOnTheMove",
     "label": "Child on the move",
