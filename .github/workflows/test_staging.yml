@@ -6,27 +6,31 @@ name: Test Staging release
 on:
   workflow_dispatch:
     inputs:
-      changelog:
-        description: Release Changelog - Add a comment about the changes to be included in this release.
-        required: true
-      helpline:
-        description: 'Helpline'     
-        required: true
-        default: 'Test'
       enviroment:
         description: 'Enviroment'
         required: true
-        default: 'Staging'
+        default: 'staging'
+      sure:
+        description: 'Are you sure to deploy to Enviroment?'
+        required: true
+        default: ''
   
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
   build:
+    if: ${{ github.event.inputs.sure == 'yes' }}
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      - name: New Branch
+        uses: peterjgrainger/action-create-branch@v2.0.1
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+            branch: 'rollback_test_${{github.event.inputs.enviroment}}_${{github.sha}}'
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       - name: Use Node.js
@@ -100,6 +104,9 @@ jobs:
         working-directory: ./plugin-hrm-form
       - name: Set COMMIT_MESSAGE
         run: echo "COMMIT_MESSAGE=${{ github.event.head_commit.message }}" | tr '\n' ' ' >> $GITHUB_ENV
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
       - name: Slack Notification on SUCCESS
         if: success()
         uses: tokorom/action-slack-incoming-webhook@main
@@ -125,6 +132,10 @@ jobs:
                   {
                     "title": "GitHub Actions SHA",
                     "value": "${{ github.sha }}"
+                  },
+                  {
+                    "title": "Deploy Date",
+                    "value": "${{ steps.date.outputs.date }}"
                   }
                 ]
               }
