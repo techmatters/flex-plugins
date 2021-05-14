@@ -24,7 +24,7 @@
       { "value": "Parent", "label": "Parent" },
       { "value": "Partner", "label": "Partner" },
       { "value": "Person in a position of responsibility", "label": "Person in a position of responsibility" },
-      { "value": "Sibling", "label": "Sibling(s)" },
+      { "value": "Sibling", "label": "Sibling" },
       { "value": "Stranger", "label": "Stranger" },
       { "value": "Other", "label": "Other" }
     ],
