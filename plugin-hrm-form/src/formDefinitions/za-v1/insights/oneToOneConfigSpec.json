@@ -36,7 +36,7 @@
         "insights": ["conversations", "language"]
       },
       {
-        "name": "ethnicity",
+        "name": "race",
         "insights": ["customers", "customer_attribute_2"]
       },
       {
@@ -81,7 +81,7 @@
         "insights": ["customers", "customer_attribute_3"]
       },
       {
-        "name": "LGBTQI",
+        "name": "LGBTQI+",
         "insights": ["conversations", "conversation_measure_5"],
         "type": "mixed-checkbox"
       },

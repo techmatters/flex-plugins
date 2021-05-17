@@ -45,7 +45,8 @@
       { "value": "Step Parent", "label": "Step Parent" },
       { "value": "Stranger", "label": "Stranger" },
       { "value": "Teacher", "label": "Teacher" },
-      { "value": "Uncle", "label": "Uncle" }
+      { "value": "Uncle", "label": "Uncle" },
+      { "value": "Unknown", "label": "Unknown" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" }
   },
@@ -64,7 +65,7 @@
     "label": "Province",
     "type": "select",
     "options": [
-      { "value": "", "label": "" },
+      { "value": "Unknown", "label": "" },
       { "value": "Eastern Cape", "label": "Eastern Cape" },
       { "value": "Free State", "label": "Free State" },
       { "value": "Gauteng", "label": "Gauteng" },
@@ -81,7 +82,7 @@
     "label": "Municipality",
     "type": "dependent-select",
     "dependsOn": "province",
-    "defaultOption": { "value": "", "label": "" },
+    "defaultOption": { "value": "Unknown", "label": "" },
     "options": {
       "Eastern Cape": [
         { "value": "Buffalo City Metro Municipality", "label": "Buffalo City Metro Municipality" },
@@ -174,7 +175,7 @@
     "label": "District",
     "type": "dependent-select",
     "dependsOn": "municipality",
-    "defaultOption": { "value": "", "label": "" },
+    "defaultOption": { "value": "Unknown", "label": "" },
     "options": {
       "Buffalo City Metro Municipality": [
         { "value": "Beacon Bay", "label": "Beacon Bay" },
@@ -384,7 +385,7 @@
       ],    
       "Lejweleputswa-Tswelopele Municipality": [
         { "value": "Hoopstad", "label": "Hoopstad" },
-        { "value": "Bultfontein", "label": "Bultfontein" }        
+        { "value": "Bultfontein", "label": "Bultfontein" }
       ],   
       "Motheo-Mangaung Municipality": [
         { "value": "Botshabelo", "label": "Botshabelo" },
@@ -401,7 +402,7 @@
         { "value": "Fouriesburg", "label": "Fouriesburg" },
         { "value": "Golden Gate Highlands Nat Park", "label": "Golden Gate Highlands Nat Park" },
         { "value": "Paul Roux", "label": "Paul Roux" },
-        { "value": "Rosendal", "label": "Rosendal" }        
+        { "value": "Rosendal", "label": "Rosendal" }
       ],       
       "Thabo Mofutsanyana-Maluti a-Phofung Municipality": [
         { "value": "Harrismith", "label": "Harrismith" },
@@ -1202,7 +1203,7 @@
     "label": "Age",
     "type": "select",
     "options": [
-      { "value": "", "label": "" },
+      { "value": "Unknown", "label": "" },
       { "value": "0", "label": "0" },
       { "value": "1", "label": "1" },
       { "value": "2", "label": "2" },
@@ -1237,7 +1238,7 @@
     "label": "Language",
     "type": "select",
     "options": [
-      { "value": "", "label": "" },
+      { "value": "Unknown", "label": "" },
       { "value": "Afrikaans", "label": "Afrikaans" },
       { "value": "English", "label": "English" },
       { "value": "Ndebele", "label": "Ndebele" },
@@ -1258,7 +1259,7 @@
     "label": "Race",
     "type": "select",
     "options": [
-      { "value": "", "label": "" },
+      { "value": "Unknown", "label": "" },
       { "value": "Asian", "label": "Asian" },
       { "value": "Black", "label": "Black" },
       { "value": "Coloured", "label": "Coloured" },

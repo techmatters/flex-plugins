@@ -26,6 +26,7 @@ const counselor = 'counselor';
 const counselorsHash = {
   'counselor-hash-1': counselor,
 };
+
 test('PreviousContacts initial search', () => {
   const searchContacts = jest.fn();
   const searchCases = jest.fn();
@@ -38,8 +39,7 @@ test('PreviousContacts initial search', () => {
       searchContacts={searchContacts}
       searchCases={searchCases}
       changeRoute={jest.fn()}
-      handleSearchFormChange={jest.fn()}
-      changeSearchPage={jest.fn()}
+      viewPreviousContacts={jest.fn()}
     />,
   );
 
@@ -52,8 +52,8 @@ test('Dont repeat initial search calls on PreviousContacts', () => {
   const searchCases = jest.fn();
 
   const previousContacts = {
-    contactsCount: 3,
-    casesCount: 1,
+    contacts: { count: 3, contacts: [] },
+    casesCount: { count: 1, cases: [] },
   };
 
   render(
@@ -64,8 +64,7 @@ test('Dont repeat initial search calls on PreviousContacts', () => {
       searchContacts={searchContacts}
       searchCases={searchCases}
       changeRoute={jest.fn()}
-      handleSearchFormChange={jest.fn()}
-      changeSearchPage={jest.fn()}
+      viewPreviousContacts={jest.fn()}
     />,
   );
 
@@ -75,8 +74,8 @@ test('Dont repeat initial search calls on PreviousContacts', () => {
 
 test('Dont render PreviousContacts when there are no previous contacts', () => {
   const previousContacts = {
-    contactsCount: 0,
-    casesCount: 0,
+    contacts: { count: 0, contacts: [] },
+    casesCount: { count: 0, cases: [] },
   };
 
   render(
@@ -87,8 +86,7 @@ test('Dont render PreviousContacts when there are no previous contacts', () => {
       searchContacts={jest.fn()}
       searchCases={jest.fn()}
       changeRoute={jest.fn()}
-      handleSearchFormChange={jest.fn()}
-      changeSearchPage={jest.fn()}
+      viewPreviousContacts={jest.fn()}
     />,
   );
 
@@ -97,8 +95,8 @@ test('Dont render PreviousContacts when there are no previous contacts', () => {
 
 test('Render PreviousContacts when there are previous contacts', () => {
   const previousContacts = {
-    contactsCount: 3,
-    casesCount: 1,
+    contacts: { count: 3, contacts: [] },
+    casesCount: { count: 1, cases: [] },
   };
 
   render(
@@ -109,8 +107,7 @@ test('Render PreviousContacts when there are previous contacts', () => {
       searchContacts={jest.fn()}
       searchCases={jest.fn()}
       changeRoute={jest.fn()}
-      handleSearchFormChange={jest.fn()}
-      changeSearchPage={jest.fn()}
+      viewPreviousContacts={jest.fn()}
     />,
   );
 
@@ -119,15 +116,14 @@ test('Render PreviousContacts when there are previous contacts', () => {
 
 test('Click View Records should redirect user to search results', () => {
   const previousContacts = {
-    contactsCount: 3,
-    casesCount: 1,
+    contacts: { count: 3, contacts: [] },
+    casesCount: { count: 1, cases: [] },
   };
 
   const searchContacts = jest.fn();
   const searchCases = jest.fn();
   const changeRoute = jest.fn();
-  const handleSearchFormChange = jest.fn();
-  const changeSearchPage = jest.fn();
+  const viewPreviousContacts = jest.fn();
 
   render(
     <UnconnectedPreviousContactsBanner
@@ -137,27 +133,22 @@ test('Click View Records should redirect user to search results', () => {
       searchContacts={searchContacts}
       searchCases={searchCases}
       changeRoute={changeRoute}
-      handleSearchFormChange={handleSearchFormChange}
-      changeSearchPage={changeSearchPage}
+      viewPreviousContacts={viewPreviousContacts}
     />,
   );
 
-  expect(searchContacts).not.toHaveBeenCalled();
-  expect(searchCases).not.toHaveBeenCalled();
-
   screen.getByTestId('PreviousContacts-ViewRecords').click();
 
-  expect(searchContacts).toHaveBeenCalled();
-  expect(searchCases).toHaveBeenCalled();
-  expect(handleSearchFormChange).toHaveBeenCalledWith('contactNumber', ip);
-  expect(changeSearchPage).toHaveBeenCalledWith(SearchPages.resultsContacts);
+  expect(searchContacts).not.toHaveBeenCalled();
+  expect(searchCases).not.toHaveBeenCalled();
+  expect(viewPreviousContacts).toHaveBeenCalled();
   expect(changeRoute).toHaveBeenCalledWith({ route: 'tabbed-forms', subroute: 'search' });
 });
 
 test('a11y', async () => {
   const previousContacts = {
-    contactsCount: 3,
-    casesCount: 1,
+    contacts: { count: 3, contacts: [] },
+    casesCount: { count: 1, cases: [] },
   };
 
   const wrapper = mount(
@@ -168,8 +159,7 @@ test('a11y', async () => {
       searchContacts={jest.fn()}
       searchCases={jest.fn()}
       changeRoute={jest.fn()}
-      handleSearchFormChange={jest.fn()}
-      changeSearchPage={jest.fn()}
+      viewPreviousContacts={jest.fn()}
     />,
   );
 

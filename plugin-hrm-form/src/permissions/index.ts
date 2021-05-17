@@ -1,11 +1,12 @@
 import { getConfig } from '../HrmFormPlugin';
 import type * as t from '../types/types';
-import * as v1Rules from './v1';
-import * as zaV1Rules from './za-v1';
+import * as zmRules from './zm';
+import * as zaRules from './za';
 
 export const PermissionActions = {
   CLOSE_CASE: 'closeCase',
   REOPEN_CASE: 'reopenCase',
+  CASE_STATUS_TRANSITION: 'caseStatusTransition',
   ADD_NOTE: 'addNote',
   ADD_REFERRAL: 'addReferral',
   ADD_HOUSEHOLD: 'addHousehold',
@@ -18,7 +19,7 @@ export const PermissionActions = {
 
 type PermissionActionsKeys = keyof typeof PermissionActions;
 export type PermissionActionType = typeof PermissionActions[PermissionActionsKeys];
-type Version = 'v1' | 'za-v1';
+type PermissionConfig = 'zm' | 'za';
 type Rule = (isSupervisor: boolean, isCreator: boolean, isCaseOpen: boolean) => boolean;
 type Rules = {
   canEditCaseSummary: Rule;
@@ -26,22 +27,25 @@ type Rules = {
   canReopenCase: Rule;
 };
 
-const rulesMap: { [version in Version]: Rules } = {
-  v1: v1Rules,
-  'za-v1': zaV1Rules,
+const rulesMap: { [permissionConfig in PermissionConfig]: Rules } = {
+  zm: zmRules,
+  za: zaRules,
 };
 
-export const getPermissionsForCase = (
-  version: t.Case['info']['definitionVersion'],
-  twilioWorkerId: t.Case['twilioWorkerId'],
-  status: t.Case['status'],
-) => {
-  if (!version || !twilioWorkerId || !status) return { can: undefined };
+const fallbackRules = zaRules;
 
-  const { workerSid, isSupervisor } = getConfig();
+export const getPermissionsForCase = (twilioWorkerId: t.Case['twilioWorkerId'], status: t.Case['status']) => {
+  const { workerSid, isSupervisor, permissionConfig } = getConfig();
+  if (!permissionConfig || !twilioWorkerId || !status) return { can: undefined };
+
   const isCreator = workerSid === twilioWorkerId;
-  const isCaseOpen = status === 'open';
-  const rules = rulesMap[version];
+  const isCaseOpen = status !== 'closed';
+  let rules = rulesMap[permissionConfig];
+
+  if (!rules) {
+    console.error(`Cannot find rules for ${permissionConfig}. Using fallback rules.`);
+    rules = fallbackRules;
+  }
 
   const can = (action: PermissionActionType): boolean => {
     switch (action) {

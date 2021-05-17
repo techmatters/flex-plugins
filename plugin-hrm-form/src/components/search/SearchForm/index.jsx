@@ -74,12 +74,10 @@ class SearchForm extends Component {
 
   get showPreviousContactsCheckbox() {
     const { previousContacts } = this.props;
+    const contactsCount = previousContacts?.contacts?.count || 0;
+    const casesCount = previousContacts?.cases?.count || 0;
 
-    return (
-      typeof previousContacts !== 'undefined' &&
-      previousContacts &&
-      (previousContacts.contactsCount > 0 || previousContacts.casesCount > 0)
-    );
+    return contactsCount > 0 || casesCount > 0;
   }
 
   render() {

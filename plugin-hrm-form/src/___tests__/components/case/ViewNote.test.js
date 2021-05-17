@@ -48,6 +48,7 @@ test('displays counselor, date and note', () => {
 
   expect(screen.getByTestId('Case-ActionHeaderCounselor')).toHaveTextContent(counselor);
   expect(screen.getByTestId('Case-ActionHeaderAdded')).toHaveTextContent(date);
+  expect(screen.getByTestId('Case-ViewNoteScreen-Note')).toHaveTextContent(note);
 });
 
 test('click on x button', () => {

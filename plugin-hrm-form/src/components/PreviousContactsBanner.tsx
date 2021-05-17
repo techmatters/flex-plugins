@@ -1,15 +1,13 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { ITask, Template } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 
-import { CustomITask, isOfflineContactTask, isInMyBehalfITask } from '../types/types';
+import { CustomITask, isTwilioTask } from '../types/types';
 import {
+  viewPreviousContacts as viewPreviousContactsAction,
   searchContacts as searchContactsAction,
   searchCases as searchCasesAction,
-  handleSearchFormChange as handleSearchFormChangeAction,
-  changeSearchPage as changeSearchPageAction,
 } from '../states/search/actions';
 import { namespace, searchContactsBase, configurationBase, RootState } from '../states';
 import { getNumberFromTask } from '../services/ContactService';
@@ -19,7 +17,6 @@ import { Bold } from '../styles/HrmStyles';
 import { StyledLink } from '../styles/search';
 import { ChannelTypes, channelTypes } from '../states/DomainConstants';
 import { changeRoute as changeRouteAction } from '../states/routing/actions';
-import { SearchPages } from '../states/search/types';
 
 type OwnProps = {
   task: CustomITask;
@@ -40,16 +37,15 @@ const PreviousContactsBanner: React.FC<Props> = ({
   task,
   counselorsHash,
   previousContacts,
+  viewPreviousContacts,
   searchContacts,
   searchCases,
   changeRoute,
-  handleSearchFormChange,
-  changeSearchPage,
 }) => {
   useEffect(() => {
-    if (task && task.attributes && !task.attributes.isContactlessTask && previousContacts === undefined) {
-      const contactNumber = getNumberFromTask(task as ITask);
-      const isTraceableNumber = ![null, undefined, 'Anonymous'].includes(contactNumber);
+    if (isTwilioTask(task) && previousContacts === undefined) {
+      const contactNumber = getNumberFromTask(task);
+      const isTraceableNumber = ![null, undefined, '', 'Anonymous'].includes(contactNumber);
 
       if (isTraceableNumber) {
         const searchParams = { contactNumber };
@@ -59,29 +55,24 @@ const PreviousContactsBanner: React.FC<Props> = ({
     }
   }, [task, counselorsHash, searchContacts, searchCases, previousContacts]);
 
-  const shouldDisplayBanner =
-    previousContacts && (previousContacts.contactsCount > 0 || previousContacts.casesCount > 0);
+  const contactsCount = previousContacts?.contacts?.count || 0;
+  const casesCount = previousContacts?.cases?.count || 0;
+  const shouldDisplayBanner = contactsCount > 0 || casesCount > 0;
 
   if (!shouldDisplayBanner) return null;
 
   const handleClickViewRecords = () => {
-    if (isOfflineContactTask(task) || isInMyBehalfITask(task)) return;
-    const contactNumber = getNumberFromTask(task);
-    const searchParams = { contactNumber };
-    searchContacts(searchParams, counselorsHash, CONTACTS_PER_PAGE, 0);
-    searchCases(searchParams, counselorsHash, CASES_PER_PAGE, 0);
-    changeSearchPage(SearchPages.resultsContacts);
-    handleSearchFormChange('contactNumber', contactNumber);
+    viewPreviousContacts();
     changeRoute({ route: 'tabbed-forms', subroute: 'search' });
   };
 
-  const { contactsCount, casesCount } = previousContacts;
+  const contactNumber = isTwilioTask(task) ? getNumberFromTask(task) : '';
 
   return (
     <YellowBanner data-testid="PreviousContacts-Container">
       {/* eslint-disable-next-line prettier/prettier */}
-      <pre><Template code="PreviousContacts-ThereAre" /> <Bold>{contactsCount} <Template code="PreviousContacts-PreviousContacts" /></Bold> and <Bold>{casesCount} <Template code="PreviousContacts-Cases" /></Bold> <Template code="PreviousContacts-FromThis" /> <Template code={localizedSource[task.channelType]} />.</pre>
-      <StyledLink data-testid="PreviousContacts-ViewRecords" onClick={handleClickViewRecords}>
+      <pre><Template code="PreviousContacts-ThereAre" /> <Bold>{contactsCount} <Template code="PreviousContacts-PreviousContacts" /></Bold> and <Bold>{casesCount} <Template code="PreviousContacts-Cases" /></Bold> <Template code="PreviousContacts-From" /> <Template code={localizedSource[task.channelType]} /> <Bold>{contactNumber}</Bold>.</pre>
+      <StyledLink underline data-testid="PreviousContacts-ViewRecords" onClick={handleClickViewRecords}>
         <Template code="PreviousContacts-ViewRecords" />
       </StyledLink>
     </YellowBanner>
@@ -103,14 +94,14 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const taskId = ownProps.task.taskSid;
+  const { task } = ownProps;
+  const taskId = task.taskSid;
 
   return {
+    viewPreviousContacts: viewPreviousContactsAction(dispatch)(task),
     searchContacts: searchContactsAction(dispatch)(taskId),
     searchCases: searchCasesAction(dispatch)(taskId),
     changeRoute: routing => dispatch(changeRouteAction(routing, taskId)),
-    handleSearchFormChange: bindActionCreators(handleSearchFormChangeAction(taskId), dispatch),
-    changeSearchPage: bindActionCreators(changeSearchPageAction(taskId), dispatch),
   };
 };
 

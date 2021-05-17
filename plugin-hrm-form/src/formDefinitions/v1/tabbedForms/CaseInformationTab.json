@@ -15,7 +15,7 @@
     "label": "Action Taken",
     "type": "select",
     "options": [
-      { "value": "", "label": "" },
+      { "value": "Unknown", "label": "" },
       { "value": "Direct interventions by the child helpline", "label": "Direct interventions by the child helpline" },
       { "value": "Recommendations of resources", "label": "Recommendations of resources" },
       { "value": "Referrals to child protection agencies", "label": "Referrals to child protection agencies" },

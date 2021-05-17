@@ -33,7 +33,7 @@ import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackBu
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
   switch (t) {
     case 'search':
-      return <FormTab key="SearchTab" searchTab icon={<SearchIcon />} />;
+      return <FormTab key="SearchTab" searchTab icon={<SearchIcon style={{ fontSize: '20px' }} />} />;
     case 'contactlessTask':
       return <FormTab key="ContactInformation" label="TabbedForms-AddContactInfoTab" error={errors.contactlessTask} />;
     case 'callerInformation':
@@ -157,7 +157,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, currentD
 
   return (
     <FormProvider {...methods}>
-      <div role="form" style={{ height: '100%' }}>
+      <div role="form" style={{ height: '100%', overflow: 'scroll' }}>
         <TabbedFormsContainer>
           <Box marginTop="10px" marginBottom="10px">
             <SearchResultsBackButton handleBack={handleBackButton} text={<Template code="TabbedForms-BackButton" />} />

@@ -10,8 +10,9 @@ import * as GeneralActions from '../states/actions';
 import { hasTaskControl } from '../utils/transfer';
 import type { ContactFormDefinition } from '../states/types';
 import { CustomITask, isOfflineContactTask, isInMyBehalfITask } from '../types/types';
-import { reRenderAgentDesktop } from '../HrmFormPlugin';
+import { reRenderAgentDesktop, getConfig } from '../HrmFormPlugin';
 import PreviousContactsBanner from './PreviousContactsBanner';
+import { Flex } from '../styles/HrmStyles';
 
 type OwnProps = {
   task: CustomITask;
@@ -45,12 +46,14 @@ const TaskView: React.FC<Props> = props => {
 
   if (!show) return null;
 
+  const { featureFlags } = getConfig();
+
   return (
-    <div style={{ height: '100%' }}>
-      <PreviousContactsBanner task={task} />
+    <Flex flexDirection="column" height="100%">
+      {featureFlags.enable_previous_contacts && <PreviousContactsBanner task={task} />}
       {!hasTaskControl(task) && <FormNotEditable />}
       <HrmForm task={task} />
-    </div>
+    </Flex>
   );
 };
 

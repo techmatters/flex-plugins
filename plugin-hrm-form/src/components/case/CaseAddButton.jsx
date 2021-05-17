@@ -20,7 +20,7 @@ const CaseAddButton = ({ disabled, templateCode, onClick, withDivider }) => {
         borderLeft: withDivider ? '1px solid rgba(25, 43, 51, 0.3)' : 'none',
       }}
     >
-      <Add style={{ marginRight: 10, color }} />
+      <Add style={{ marginRight: 10, fontSize: 16, color }} />
       <CaseAddButtonFont style={{ marginRight: 20 }} disabled={disabled}>
         <Template code={templateCode} />
       </CaseAddButtonFont>

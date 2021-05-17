@@ -27,7 +27,7 @@ jobs:
         touch ./src/private/secret.js
       working-directory: ./plugin-hrm-form
     - name: Install Packages
-      run: UNBUNDLED_REACT=true npm install
+      run: UNBUNDLED_REACT=true npm ci
       working-directory: ./plugin-hrm-form
     - name: Run Lint
       run: npm run lint --if-present
