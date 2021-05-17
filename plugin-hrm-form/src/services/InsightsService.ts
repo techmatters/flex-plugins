@@ -75,8 +75,6 @@ export const baseUpdates: InsightsUpdateFunction = (
   caseForm: Case,
 ): InsightsAttributes => {
   const { callType } = contactForm;
-  const hasCustomerData = !isNonDataCallType(callType);
-
   const communication_channel = taskAttributes.isContactlessTask
     ? mapChannelForInsights(
         typeof contactForm.contactlessTask.channel === 'string'
@@ -97,12 +95,20 @@ export const baseUpdates: InsightsUpdateFunction = (
        */
       conversation_attribute_5: null,
       communication_channel,
+      /**
+       * Fields that should always be populated, whether it is a data contact or not.
+       */
+      conversation_attribute_3: contactForm.childInformation.age.toString(),
+      conversation_attribute_4: contactForm.childInformation.gender.toString(),
+      conversation_attribute_8: taskAttributes.helpline,
+      language: contactForm.childInformation.language.toString(),
     },
   };
 
-  if (!hasCustomerData) {
+  if (isNonDataCallType(callType)) {
     return coreAttributes;
   }
+
   return {
     conversations: {
       ...coreAttributes.conversations,
