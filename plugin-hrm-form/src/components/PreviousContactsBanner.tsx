@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
-import { CustomITask, isOfflineContactTask, isInMyBehalfITask } from '../types/types';
+import { CustomITask, isITask } from '../types/types';
 import {
   viewPreviousContacts as viewPreviousContactsAction,
   searchContacts as searchContactsAction,
@@ -43,7 +43,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
   changeRoute,
 }) => {
   useEffect(() => {
-    if (task && !isOfflineContactTask(task) && !isInMyBehalfITask(task) && previousContacts === undefined) {
+    if (isITask(task) && previousContacts === undefined) {
       const contactNumber = getNumberFromTask(task);
       const isTraceableNumber = ![null, undefined, '', 'Anonymous'].includes(contactNumber);
 
@@ -66,10 +66,12 @@ const PreviousContactsBanner: React.FC<Props> = ({
     changeRoute({ route: 'tabbed-forms', subroute: 'search' });
   };
 
+  const contactNumber = isITask(task) ? getNumberFromTask(task) : '';
+
   return (
     <YellowBanner data-testid="PreviousContacts-Container">
       {/* eslint-disable-next-line prettier/prettier */}
-      <pre><Template code="PreviousContacts-ThereAre" /> <Bold>{contactsCount} <Template code="PreviousContacts-PreviousContacts" /></Bold> and <Bold>{casesCount} <Template code="PreviousContacts-Cases" /></Bold> <Template code="PreviousContacts-FromThis" /> <Template code={localizedSource[task.channelType]} />.</pre>
+      <pre><Template code="PreviousContacts-ThereAre" /> <Bold>{contactsCount} <Template code="PreviousContacts-PreviousContacts" /></Bold> and <Bold>{casesCount} <Template code="PreviousContacts-Cases" /></Bold> <Template code="PreviousContacts-From" /> <Template code={localizedSource[task.channelType]} /> <Bold>{contactNumber}</Bold>.</pre>
       <StyledLink underline data-testid="PreviousContacts-ViewRecords" onClick={handleClickViewRecords}>
         <Template code="PreviousContacts-ViewRecords" />
       </StyledLink>
