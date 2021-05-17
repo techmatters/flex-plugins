@@ -53,7 +53,7 @@
       "Male circumcision",
       "Pregnancy and maternal care",
       "Sexual and reproductive health",
-      "Weight problems",
+      "Nutrition",
       "Unspecified/Other"
     ]
   },
@@ -76,7 +76,7 @@
       "Ethnicity/nationality",
       "Financial situation",
       "Gender",
-      "Gender identity or expression and sexual identity",
+      "Gender identity or expression and sexual orientation",
       "Health",
       "Philosophical or religious beliefs",
       "Unspecified/Other"
@@ -113,7 +113,7 @@
   "Sexuality": {
     "color": "#506BA5",
     "subcategories": [
-      "Sexuality and gender identity",
+      "Sexual orientation and gender identity",
       "Sexual behaviours",
       "Unspecified/Other"
     ]
