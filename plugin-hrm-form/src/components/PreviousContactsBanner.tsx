@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
-import { CustomITask, isITask } from '../types/types';
+import { CustomITask, isTwilioTask } from '../types/types';
 import {
   viewPreviousContacts as viewPreviousContactsAction,
   searchContacts as searchContactsAction,
@@ -43,7 +43,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
   changeRoute,
 }) => {
   useEffect(() => {
-    if (isITask(task) && previousContacts === undefined) {
+    if (isTwilioTask(task) && previousContacts === undefined) {
       const contactNumber = getNumberFromTask(task);
       const isTraceableNumber = ![null, undefined, '', 'Anonymous'].includes(contactNumber);
 
@@ -66,7 +66,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
     changeRoute({ route: 'tabbed-forms', subroute: 'search' });
   };
 
-  const contactNumber = isITask(task) ? getNumberFromTask(task) : '';
+  const contactNumber = isTwilioTask(task) ? getNumberFromTask(task) : '';
 
   return (
     <YellowBanner data-testid="PreviousContacts-Container">
