@@ -98,10 +98,14 @@ export const baseUpdates: InsightsUpdateFunction = (
       /**
        * Fields that should always be populated, whether it is a data contact or not.
        */
-      conversation_attribute_3: contactForm.childInformation.age.toString(),
-      conversation_attribute_4: contactForm.childInformation.gender.toString(),
+      conversation_attribute_3: contactForm.callerInformation.age.toString(),
+      conversation_attribute_4: contactForm.callerInformation.gender.toString(),
       conversation_attribute_8: taskAttributes.helpline,
       language: contactForm.childInformation.language.toString(),
+    },
+    customers: {
+      year_of_birth: contactForm.childInformation.age.toString(),
+      gender: contactForm.childInformation.gender.toString(),
     },
   };
 
@@ -110,6 +114,7 @@ export const baseUpdates: InsightsUpdateFunction = (
   }
 
   return {
+    ...coreAttributes,
     conversations: {
       ...coreAttributes.conversations,
       conversation_attribute_1: getSubcategories(contactForm).toString(),
