@@ -69,6 +69,58 @@ type InsightsUpdateFunction = (
   caseForm: Case,
 ) => InsightsAttributes;
 
+const sanitizeInsightsValue = (value: string | boolean) => {
+  if (typeof value === 'string' && value) return value;
+
+  if (typeof value === 'boolean') return value.toString();
+
+  return null;
+};
+
+const COMMUNICATION_CHANNEL = 'communication_channel';
+const SUBCATEGORIES = 'conversation_attribute_1';
+const CALLTYPE = 'conversation_attribute_2';
+const CALLER_AGE = 'conversation_attribute_3';
+const CALLER_GENDER = 'conversation_attribute_4';
+const HELPLINE = 'conversation_attribute_8';
+const LANGUAGE = 'language';
+const CHILD_AGE = 'year_of_birth';
+const CHILD_GENDER = 'gender';
+
+/**
+ * This are the core attributes that should be present for all kind of contacts, returned by baseUpdates function
+ */
+type CoreAttributes = {
+  conversations: {
+    conversation_attribute_5: null; // This field is cleared for later use
+    [COMMUNICATION_CHANNEL]: string;
+    [SUBCATEGORIES]?: string;
+    [CALLTYPE]: string;
+    [CALLER_AGE]: string;
+    [CALLER_GENDER]: string;
+    [HELPLINE]: string;
+    [LANGUAGE]: string;
+  };
+  customers: {
+    [CHILD_AGE]: string;
+    [CHILD_GENDER]: string;
+  };
+};
+
+/**
+ * Updates that will be performed for every helpline, using a bunch of fixed Insights fields. The fields that should not be added to the custom mapping are:
+ * Conversations object:
+ *  - communication_channel
+ *  - conversation_attribute_1
+ *  - conversation_attribute_2
+ *  - conversation_attribute_3
+ *  - conversation_attribute_4
+ *  - conversation_attribute_8
+ *  - language
+ * Customers object:
+ *  - year_of_birth
+ *  - gender
+ */
 export const baseUpdates: InsightsUpdateFunction = (
   taskAttributes: TaskAttributes,
   contactForm: TaskEntry,
@@ -84,9 +136,8 @@ export const baseUpdates: InsightsUpdateFunction = (
     : mapChannelForInsights(taskAttributes.channelType);
 
   // First add the data we add whether or not there's contact form data
-  const coreAttributes: InsightsAttributes = {
+  const coreAttributes: CoreAttributes = {
     conversations: {
-      conversation_attribute_2: callType.toString(),
       /*
        * By default, Twilio populates attribute 5 with the Task ID, but we
        * overwrite it for data contacts so we want it null for non-data contacts.
@@ -94,18 +145,19 @@ export const baseUpdates: InsightsUpdateFunction = (
        * and then let other updates overwrite again later for data contacts.
        */
       conversation_attribute_5: null,
-      communication_channel,
       /**
        * Fields that should always be populated, whether it is a data contact or not.
        */
-      conversation_attribute_3: contactForm.callerInformation.age.toString(),
-      conversation_attribute_4: contactForm.callerInformation.gender.toString(),
-      conversation_attribute_8: taskAttributes.helpline,
-      language: contactForm.childInformation.language.toString(),
+      [COMMUNICATION_CHANNEL]: communication_channel,
+      [CALLTYPE]: sanitizeInsightsValue(callType),
+      [CALLER_AGE]: sanitizeInsightsValue(contactForm.callerInformation.age),
+      [CALLER_GENDER]: sanitizeInsightsValue(contactForm.callerInformation.gender),
+      [HELPLINE]: sanitizeInsightsValue(taskAttributes.helpline),
+      [LANGUAGE]: sanitizeInsightsValue(contactForm.childInformation.language),
     },
     customers: {
-      year_of_birth: contactForm.childInformation.age.toString(),
-      gender: contactForm.childInformation.gender.toString(),
+      [CHILD_AGE]: sanitizeInsightsValue(contactForm.childInformation.age),
+      [CHILD_GENDER]: sanitizeInsightsValue(contactForm.childInformation.gender),
     },
   };
 
@@ -117,7 +169,7 @@ export const baseUpdates: InsightsUpdateFunction = (
     ...coreAttributes,
     conversations: {
       ...coreAttributes.conversations,
-      conversation_attribute_1: getSubcategories(contactForm).toString(),
+      [SUBCATEGORIES]: getSubcategories(contactForm),
     },
   };
 };

@@ -80,6 +80,57 @@ test('saveInsightsData for non-data callType', async () => {
   expect(twilioTask.setAttributes).toHaveBeenCalledWith(expectedNewAttributes);
 });
 
+test('saveInsightsData for non-data callType (test that fields are sanitized)', async () => {
+  const previousAttributes = {
+    taskSid: 'task-sid',
+    channelType: 'sms',
+    conversations: {
+      content: 'content',
+    },
+    helpline: 'helpline',
+  };
+
+  const twilioTask = {
+    attributes: previousAttributes,
+    setAttributes: jest.fn(),
+  };
+
+  const contactForm = {
+    callType: 'Abusive',
+    callerInformation: {
+      age: '',
+      gender: '',
+    },
+    childInformation: {
+      age: '',
+      gender: '',
+      language: '',
+    },
+  };
+
+  await saveInsightsData(twilioTask, contactForm);
+
+  const expectedNewAttributes = {
+    ...previousAttributes,
+    conversations: {
+      content: 'content',
+      conversation_attribute_2: 'Abusive',
+      conversation_attribute_5: null,
+      communication_channel: 'SMS',
+      conversation_attribute_3: null,
+      conversation_attribute_4: null,
+      conversation_attribute_8: previousAttributes.helpline,
+      language: null,
+    },
+    customers: {
+      year_of_birth: null,
+      gender: null,
+    },
+  };
+
+  expect(twilioTask.setAttributes).toHaveBeenCalledWith(expectedNewAttributes);
+});
+
 test('saveInsightsData for data callType', async () => {
   const previousAttributes = {
     taskSid: 'task-sid',
