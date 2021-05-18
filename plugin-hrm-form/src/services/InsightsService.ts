@@ -88,7 +88,8 @@ const CHILD_AGE = 'year_of_birth';
 const CHILD_GENDER = 'gender';
 
 /**
- * This are the core attributes that should be present for all kind of contacts, returned by baseUpdates function
+ * This are the core attributes that should be present for all kind of contacts, returned by baseUpdates function.
+ * Note this is a specialization of the InsightsAttributes type
  */
 type CoreAttributes = {
   conversations: {
@@ -125,7 +126,7 @@ export const baseUpdates: InsightsUpdateFunction = (
   taskAttributes: TaskAttributes,
   contactForm: TaskEntry,
   caseForm: Case,
-): InsightsAttributes => {
+): CoreAttributes => {
   const { callType } = contactForm;
   const communication_channel = taskAttributes.isContactlessTask
     ? mapChannelForInsights(
