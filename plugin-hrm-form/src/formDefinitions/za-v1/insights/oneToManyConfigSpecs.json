@@ -7,10 +7,5 @@
       "contactForm.childInformation.municipality",
       "contactForm.childInformation.district"
     ]
-  },
-  {
-    "attributeName": "conversation_attribute_8",
-    "insightsObject": "conversations",
-    "paths": ["taskAttributes.helpline"]
   }
 ]
