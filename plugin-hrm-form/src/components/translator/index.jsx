@@ -48,6 +48,7 @@ class Translator extends React.PureComponent {
         >
           <MenuItem value="en-US">English</MenuItem>
           <MenuItem value="es">Español</MenuItem>
+          <MenuItem value="garbled">Garbled</MenuItem>
         </Select>
         {this.state.loading && <CircularProgress style={{ position: 'absolute', flex: 1 }} />}
       </FormControl>
