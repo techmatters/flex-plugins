@@ -68,6 +68,7 @@ jest.mock('../styles/HrmStyles', () => ({
   PopoverText: 'PopoverText',
   CannedResponsesContainer: 'CannedResponsesContainer',
   Bold: 'Bold',
+  StyledBackButton: 'StyledBackButton',
 }));
 
 jest.mock('../styles/search', () => ({
@@ -94,6 +95,8 @@ jest.mock('../styles/search', () => ({
   ContactDetailsIcon: () => 'ContactDetailsIcon',
   DetailsContainer: 'DetailsContainer',
   SectionTitleContainer: 'SectionTitleContainer',
+  SectionTitleButton: 'SectionTitleButton',
+  SectionCollapse: 'SectionCollapse',
   NameContainer: 'NameContainer',
   BackText: 'BackText',
   DetNameText: 'DetNameText',
