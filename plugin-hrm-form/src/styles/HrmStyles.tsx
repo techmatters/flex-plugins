@@ -307,7 +307,7 @@ TwoColumnLayout.displayName = 'TwoColumnLayout';
 
 type ToggleViewButtonProps = { active?: boolean };
 
-export const ToggleViewButton = styled('div')<ToggleViewButtonProps>`
+export const ToggleViewButton = styled('button')<ToggleViewButtonProps>`
   display: inline-flex;
   width: 37px;
   height: 37px;

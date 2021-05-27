@@ -105,10 +105,10 @@ export const CategoriesFromDefinition: React.FC<Props> = ({
         <CategoryRequiredText>
           <Template code="Error-CategoryRequired" />
         </CategoryRequiredText>
-        <ToggleViewButton tabIndex={0} onClick={() => toggleCategoriesGridView(true)} active={gridView}>
+        <ToggleViewButton onClick={() => toggleCategoriesGridView(true)} active={gridView}>
           <GridIcon />
         </ToggleViewButton>
-        <ToggleViewButton tabIndex={0} onClick={() => toggleCategoriesGridView(false)} active={!gridView}>
+        <ToggleViewButton onClick={() => toggleCategoriesGridView(false)} active={!gridView}>
           <ListIcon />
         </ToggleViewButton>
       </CategorySubtitleSection>
