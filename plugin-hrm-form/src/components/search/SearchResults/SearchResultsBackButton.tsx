@@ -1,8 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { ButtonBase } from '@material-ui/core';
 
-import { Row } from '../../../styles/HrmStyles';
+import { Row, StyledBackButton } from '../../../styles/HrmStyles';
 import { BackText, BackIcon } from '../../../styles/search';
 
 type OwnProps = {
@@ -15,12 +14,12 @@ type Props = OwnProps;
 const SearchResultsBackButton: React.FC<Props> = ({ text, handleBack }) => {
   return (
     <Row>
-      <ButtonBase onClick={handleBack}>
+      <StyledBackButton onClick={handleBack}>
         <Row>
           <BackIcon />
           <BackText>{text}</BackText>
         </Row>
-      </ButtonBase>
+      </StyledBackButton>
     </Row>
   );
 };

@@ -263,8 +263,9 @@ export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
     )};
 
   &&:focus {
-    background-color: rgba(255, 255, 255, 0.2);
-    background-blend-mode: color;
+    outline-color: #4d90fe;
+    outline-style: auto;
+    outline-width: initial;
   }
 
   &&:active {
@@ -306,7 +307,7 @@ TwoColumnLayout.displayName = 'TwoColumnLayout';
 
 type ToggleViewButtonProps = { active?: boolean };
 
-export const ToggleViewButton = styled('div')<ToggleViewButtonProps>`
+export const ToggleViewButton = styled('button')<ToggleViewButtonProps>`
   display: inline-flex;
   width: 37px;
   height: 37px;
@@ -320,6 +321,10 @@ export const ToggleViewButton = styled('div')<ToggleViewButtonProps>`
   color: ${({ active }) => (active ? '#000000cc' : 'initial')};
   background-color: ${({ active }) => (active ? 'initial' : '#a0a8bdcc')};
   opacity: ${({ active }) => (active ? 'initial' : '20%')};
+
+  &:focus {
+    outline: auto;
+  }
 
   > svg {
     font-size: 18px;
@@ -377,6 +382,9 @@ export const StyledTab = withStyles({
     '&:hover': {
       backgroundColor: '#c9c9c9',
     },
+    '&:focus': {
+      outline: 'auto',
+    },
   },
   selected: {
     backgroundColor: '#ffffff',
@@ -390,6 +398,9 @@ export const StyledSearchTab = withStyles({
     minWidth: 40,
     width: 40,
     backgroundColor: 'transparent',
+    '&:focus': {
+      outline: 'auto',
+    },
   },
   selected: {
     backgroundColor: '#ffffff',
@@ -975,3 +986,11 @@ export const Bold = styled('span')`
 `;
 
 Bold.displayName = 'Bold';
+
+export const StyledBackButton = styled(ButtonBase)`
+  &:focus {
+    outline: auto;
+  }
+`;
+
+StyledBackButton.displayName = 'StyledBackButton';

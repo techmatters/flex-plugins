@@ -30,7 +30,7 @@ export const StyledMenuItem = styled(props => <MenuItem {...props} classes={{ ro
     padding-bottom: 5px;
   }
   &&:focus {
-    background-color: rgba(0, 0, 0, 0.2);
+    outline: auto;
   }
 `;
 

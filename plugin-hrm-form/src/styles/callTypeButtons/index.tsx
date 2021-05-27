@@ -37,6 +37,10 @@ export const DataCallTypeButton = styled(Button)`
   &:hover {
     background-color: #7fa3cb;
   }
+
+  &:focus {
+    outline: auto;
+  }
 `;
 
 DataCallTypeButton.displayName = 'DataCallTypeButton';
@@ -63,6 +67,10 @@ export const NonDataCallTypeButton = styled(Button)<NonDataCallTypeButtonProps>`
 
   &:hover {
     background-color: #b1b6c0;
+  }
+
+  &:focus {
+    outline: auto;
   }
 `;
 
@@ -95,7 +103,9 @@ export const ConfirmButton = styled(Button)<ConfirmButtonProps>`
   ${p => getBackgroundWithHoverCSS(p.theme.colors.declineColor, true, false, p.disabled)};
 
   &:focus {
-    box-shadow: rgba(0, 0, 0, 0.2) 0px 3px 3px 0px;
+    outline-color: #4d90fe;
+    outline-style: auto;
+    outline-width: initial;
   }
 `;
 
@@ -103,9 +113,13 @@ export const CancelButton = styled(Button)`
   text-transform: uppercase;
   margin-left: 30px;
 
-  &:focus {
+  &:hover {
     background-color: rgba(0, 0, 0, 0.2);
     background-blend-mode: color;
+  }
+
+  &:focus {
+    outline: auto;
   }
 `;
 
@@ -118,7 +132,11 @@ export const CloseButton = styled(props => (
     color: ${props => props.theme.colors.defaultButtonColor};
   }
 
-  &:focus {
+  &:hover {
     background-color: rgba(0, 0, 0, 0.08);
+  }
+
+  &:focus {
+    outline: auto;
   }
 `;
