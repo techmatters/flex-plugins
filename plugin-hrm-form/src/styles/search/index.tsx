@@ -335,11 +335,13 @@ export const SectionTitleButton = styled(ButtonBase)`
 SectionTitleButton.displayName = 'SectionTitleButton';
 
 type CollapseProps = {
-  in: boolean;
+  expanded: boolean;
 };
 
-export const SectionCollapse = styled(Collapse)<CollapseProps>`
-  visibility: ${props => (props.in ? 'visible' : 'collapse')};
+export const SectionCollapse = styled(({ expanded, ...rest }: CollapseProps) => (
+  <Collapse in={expanded} {...rest} />
+))<CollapseProps>`
+  visibility: ${props => (props.expanded ? 'visible' : 'collapse')};
 `;
 SectionCollapse.displayName = 'SectionCollapse';
 

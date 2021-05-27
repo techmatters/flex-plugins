@@ -21,7 +21,7 @@ const Section = ({ color, sectionTitle, expanded, hideIcon, children, handleExpa
         {!hideIcon && (expanded ? <ArrowUpIcon /> : <ArrowDownIcon />)}
       </SectionTitleButton>
     </SectionTitleContainer>
-    <SectionCollapse in={expanded} timeout="auto">
+    <SectionCollapse expanded={expanded} timeout="auto">
       {children}
     </SectionCollapse>
   </>
