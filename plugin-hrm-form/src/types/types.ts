@@ -133,3 +133,7 @@ export function isOfflineContactTask(task: CustomITask): task is OfflineContactT
 export function isInMyBehalfITask(task: CustomITask): task is InMyBehalfITask {
   return task.attributes && task.attributes.isContactlessTask && (task.attributes as any).isInMyBehalf;
 }
+
+export function isTwilioTask(task: CustomITask): task is ITask {
+  return task && !isOfflineContactTask(task) && !isInMyBehalfITask(task);
+}

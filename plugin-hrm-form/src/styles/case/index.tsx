@@ -141,7 +141,6 @@ TimelineRow.displayName = 'TimelineRow';
 
 export const TimelineDate = styled('div')`
   min-width: 65px;
-  text-align: center;
 `;
 TimelineDate.displayName = 'TimelineDate';
 
@@ -150,6 +149,7 @@ export const TimelineText = styled('span')`
   text-overflow: ellipsis;
   white-space: nowrap;
   flex-grow: 1;
+  margin-right: 10px;
 `;
 TimelineText.displayName = 'TimelineText';
 
@@ -201,6 +201,17 @@ export const RowItemContainer = styled(Row)`
   overflow: hidden;
 `;
 RowItemContainer.displayName = 'RowItemContainer';
+
+export const NoteContainer = styled('div')`
+  white-space: break-spaces;
+  font-family: 'Open Sans', sans-serif;
+  line-height: 30px;
+  font-size: 17px;
+  width: 85%;
+  margin: 10px auto 0px;
+  text-align: justify;
+`;
+NoteContainer.displayName = 'NoteContainer';
 
 export const DetailsHeaderContainer = styled('div')`
   display: flex;
@@ -285,6 +296,10 @@ export const StyledInputField = styled(FormInput)`
   font-weight: 600;
   padding-left: 10px !important;
   margin-top: 7px;
+
+  ::-webkit-calendar-picker-indicator {
+    margin-left: 0;
+  }
 `;
 
 StyledInputField.displayName = 'StyledInputField';

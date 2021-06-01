@@ -36,6 +36,7 @@ test('saveInsightsData for non-data callType', async () => {
     conversations: {
       content: 'content',
     },
+    helpline: 'helpline',
   };
 
   const twilioTask = {
@@ -45,20 +46,86 @@ test('saveInsightsData for non-data callType', async () => {
 
   const contactForm = {
     callType: 'Abusive',
+    callerInformation: {
+      age: '26',
+      gender: 'Girl',
+    },
+    childInformation: {
+      age: '18',
+      gender: 'Boy',
+      language: 'language',
+    },
   };
 
   await saveInsightsData(twilioTask, contactForm);
 
   const expectedNewAttributes = {
-    taskSid: 'task-sid',
-    channelType: 'sms',
+    ...previousAttributes,
     conversations: {
       content: 'content',
       conversation_attribute_2: 'Abusive',
       conversation_attribute_5: null,
       communication_channel: 'SMS',
+      conversation_attribute_3: contactForm.callerInformation.age,
+      conversation_attribute_4: contactForm.callerInformation.gender,
+      conversation_attribute_8: previousAttributes.helpline,
+      language: contactForm.childInformation.language,
     },
-    customers: {},
+    customers: {
+      year_of_birth: contactForm.childInformation.age,
+      gender: contactForm.childInformation.gender,
+    },
+  };
+
+  expect(twilioTask.setAttributes).toHaveBeenCalledWith(expectedNewAttributes);
+});
+
+test('saveInsightsData for non-data callType (test that fields are sanitized)', async () => {
+  const previousAttributes = {
+    taskSid: 'task-sid',
+    channelType: 'sms',
+    conversations: {
+      content: 'content',
+    },
+    helpline: 'helpline',
+  };
+
+  const twilioTask = {
+    attributes: previousAttributes,
+    setAttributes: jest.fn(),
+  };
+
+  const contactForm = {
+    callType: 'Abusive',
+    callerInformation: {
+      age: '',
+      gender: '',
+    },
+    childInformation: {
+      age: '',
+      gender: '',
+      language: '',
+    },
+  };
+
+  await saveInsightsData(twilioTask, contactForm);
+
+  const expectedNewAttributes = {
+    ...previousAttributes,
+    conversations: {
+      content: 'content',
+      conversation_attribute_2: 'Abusive',
+      conversation_attribute_5: null,
+      communication_channel: 'SMS',
+      conversation_attribute_3: null,
+      conversation_attribute_4: null,
+      conversation_attribute_8: previousAttributes.helpline,
+      language: null,
+    },
+    customers: {
+      year_of_birth: null,
+      gender: null,
+    },
   };
 
   expect(twilioTask.setAttributes).toHaveBeenCalledWith(expectedNewAttributes);
@@ -87,6 +154,11 @@ test('saveInsightsData for data callType', async () => {
     childInformation: {
       age: '13-15',
       gender: 'Boy',
+      language: 'language',
+    },
+    callerInformation: {
+      age: '26',
+      gender: 'Girl',
     },
     caseInformation: {},
     categories: [
@@ -148,6 +220,11 @@ test('Handles contactless tasks', async () => {
     childInformation: {
       age: '3',
       gender: 'Unknown',
+      language: 'language',
+    },
+    callerInformation: {
+      age: '26',
+      gender: 'Girl',
     },
     caseInformation: {},
     categories: ['categories.Violence.Unspecified/Other'],

@@ -33,7 +33,7 @@ import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackBu
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
   switch (t) {
     case 'search':
-      return <FormTab key="SearchTab" searchTab icon={<SearchIcon />} />;
+      return <FormTab key="SearchTab" searchTab icon={<SearchIcon style={{ fontSize: '20px' }} />} />;
     case 'contactlessTask':
       return <FormTab key="ContactInformation" label="TabbedForms-AddContactInfoTab" error={errors.contactlessTask} />;
     case 'callerInformation':

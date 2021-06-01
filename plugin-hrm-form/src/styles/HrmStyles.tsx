@@ -235,11 +235,12 @@ type StyledNextStepButtonProps = {
 export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
   display: flex;
   align-items: center;
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: normal;
   color: ${props =>
     props.secondary ? props.theme.colors.secondaryButtonTextColor : props.theme.colors.buttonTextColor};
-  border: ${({ secondary }) => (secondary ? '1px solid' : 'none')};
+  border: none;
+  border-radius: 4px;
   margin: 0;
   padding: 7px 23px;
   background-color: ${props =>
@@ -281,8 +282,7 @@ export const BottomButtonBar = styled('div')`
   padding: 0 20px;
   background-color: #f9fafb;
   z-index: 1;
-  border-top: 1px solid #c6cad9;
-  box-shadow: 0 -2px 2px -7px #192b331a;
+  box-shadow: 0 -2px 2px 0 rgba(0, 0, 0, 0.1);
 `;
 BottomButtonBar.displayName = 'BottomButtonBar';
 
@@ -346,42 +346,61 @@ export const SubcategoriesWrapper = styled('div')<SubcategoriesWrapperProps>`
 `;
 SubcategoriesWrapper.displayName = 'SubcategoriesWrapper';
 
-export const StyledTabs = styled((props: typeof Tabs['defaultProps'] & { value: any }) => (
-  <Tabs {...props} classes={{ indicator: 'indicator' }} />
-))`
-  && .indicator {
-    background-color: transparent;
-  }
-  flex-shrink: 0;
-  height: 50px;
-`;
+export const StyledTabs = withStyles({
+  root: {
+    minHeight: 35,
+    height: 35,
+    flexShrink: 0,
+  },
+  indicator: {
+    backgroundColor: 'transparent',
+  },
+})(Tabs);
 StyledTabs.displayName = 'StyledTabs';
 
 export type StyledTabProps = { searchTab?: boolean; label: React.ReactNode } & typeof Tab['defaultProps'];
 
-export const StyledTab = styled(({ searchTab = false, ...rest }: StyledTabProps) => (
-  <Tab {...rest} classes={{ selected: 'selected' }} />
-))<StyledTabProps>`
-  && {
-    height: 50px;
-    min-width: ${({ searchTab }) => (searchTab ? '50px' : '120px')};
-    width: ${({ searchTab }) => (searchTab ? '50px' : '120px')};
-    background-color: ${({ searchTab }) => (searchTab ? 'transparent' : '#d1d1d5')};
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
-    margin: 0 5px;
-    padding: 0;
-    font-size: 12px;
-    line-height: 14px;
-    text-transform: none;
-
-    &.selected {
-      background-color: #ffffff;
-      font-weight: 600;
-    }
-  }
-`;
+export const StyledTab = withStyles({
+  root: {
+    height: 35,
+    minHeight: 35,
+    minWidth: 120,
+    width: 120,
+    backgroundColor: '#ecedf1',
+    borderTopLeftRadius: 4,
+    borderTopRightRadius: 4,
+    margin: '0 5px 0 0',
+    padding: 0,
+    fontSize: 12,
+    lineHeight: 14,
+    textTransform: 'none',
+    '&:hover': {
+      backgroundColor: '#c9c9c9',
+    },
+  },
+  selected: {
+    backgroundColor: '#ffffff',
+    fontWeight: 600,
+  },
+})(Tab);
 StyledTab.displayName = 'StyledTab';
+
+export const StyledSearchTab = withStyles({
+  root: {
+    minWidth: 40,
+    width: 40,
+    backgroundColor: 'transparent',
+  },
+  selected: {
+    backgroundColor: '#ffffff',
+  },
+  labelIcon: {
+    '& > span > span': {
+      padding: 0,
+    },
+  },
+})(StyledTab);
+StyledSearchTab.displayName = 'StyledSearchTab';
 
 export const Row = styled('div')`
   display: flex;
@@ -444,9 +463,8 @@ export const TransferStyledButton = styled('button')<TransferStyledButtonProps>`
   height: ${props => (props.taller ? 35 : 28)}px;
   font-size: 13px;
   outline: none;
-  border-width: 1px;
-  border-color: ${props => (props.color ? props.color : '#000')};
-  border-radius: 14px;
+  border-radius: 4px;
+  border: none;
   align-self: center;
   &:hover {
     cursor: pointer;

@@ -10,7 +10,7 @@
     "label": "Duration",
     "type": "select",
     "options": [
-      { "value": "", "label": "" },
+      { "value": "Unknown", "label": "" },
       { "value": "Ongoing", "label": "Ongoing" },
       { "value": "Once Off", "label": "Once Off" },
       { "value": "Other", "label": "Other" }
@@ -32,7 +32,8 @@
       { "value": "Prison", "label": "Prison" },
       { "value": "Public Space", "label": "Public Space" },
       { "value": "Religious Institution", "label": "Religious Institution" },
-      { "value": "School", "label": "School" }
+      { "value": "School", "label": "School" },
+      { "value": "Unknown", "label": "Unknown" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" }
   },
