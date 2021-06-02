@@ -9,6 +9,7 @@ import CaseInformationTab from './tabbedForms/CaseInformationTab.json';
 import ChildInformationTab from './tabbedForms/ChildInformationTab.json';
 import IssueCategorizationTab from './tabbedForms/IssueCategorizationTab.json';
 import CallTypeButtons from './CallTypeButtons.json';
+import CannedResponses from './CannedResponses.json';
 import oneToOneConfigSpec from './insights/oneToOneConfigSpec.json';
 import oneToManyConfigSpecs from './insights/oneToManyConfigSpecs.json';
 import type {
@@ -16,6 +17,7 @@ import type {
   LayoutVersion,
   FormDefinition,
   CallTypeButtonsDefinitions,
+  CannedResponsesDefinitions,
 } from '../../components/common/forms/types';
 import type { OneToOneConfigSpec, OneToManyConfigSpecs } from '../../insightsConfig/types';
 import CaseStatus from './CaseStatus.json';
@@ -36,6 +38,7 @@ const version: DefinitionVersion = {
   },
   callTypeButtons: CallTypeButtons as CallTypeButtonsDefinitions,
   layoutVersion: LayoutDefinitions as LayoutVersion,
+  cannedResponses: CannedResponses as CannedResponsesDefinitions,
   insights: {
     oneToOneConfigSpec: (oneToOneConfigSpec as unknown) as OneToOneConfigSpec,
     oneToManyConfigSpecs: oneToManyConfigSpecs as OneToManyConfigSpecs,
