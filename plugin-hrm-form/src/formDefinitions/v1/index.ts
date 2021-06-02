@@ -17,6 +17,7 @@ import type {
   LayoutVersion,
   FormDefinition,
   CallTypeButtonsDefinitions,
+  CannedResponsesDefinitions,
 } from '../../components/common/forms/types';
 import type { OneToOneConfigSpec, OneToManyConfigSpecs } from '../../insightsConfig/types';
 import CaseStatus from './CaseStatus.json';
