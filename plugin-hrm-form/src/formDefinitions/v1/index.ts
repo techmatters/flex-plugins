@@ -36,6 +36,7 @@ const version: DefinitionVersion = {
   },
   callTypeButtons: CallTypeButtons as CallTypeButtonsDefinitions,
   layoutVersion: LayoutDefinitions as LayoutVersion,
+  cannedResponses: CannedResponses as CannedResponsesDefinitions,
   insights: {
     oneToOneConfigSpec: (oneToOneConfigSpec as unknown) as OneToOneConfigSpec,
     oneToManyConfigSpecs: oneToManyConfigSpecs as OneToManyConfigSpecs,
