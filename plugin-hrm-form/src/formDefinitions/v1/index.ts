@@ -9,6 +9,7 @@ import CaseInformationTab from './tabbedForms/CaseInformationTab.json';
 import ChildInformationTab from './tabbedForms/ChildInformationTab.json';
 import IssueCategorizationTab from './tabbedForms/IssueCategorizationTab.json';
 import CallTypeButtons from './CallTypeButtons.json';
+import CannedResponses from './CannedResponses.json';
 import oneToOneConfigSpec from './insights/oneToOneConfigSpec.json';
 import oneToManyConfigSpecs from './insights/oneToManyConfigSpecs.json';
 import type {
