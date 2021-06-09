@@ -41,7 +41,16 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const Timeline: React.FC<Props> = props => {
-  const { can, task, form, caseObj, changeRoute, updateTempInfo, route, timelineActivities } = props;
+  const {
+    can,
+    task,
+    form,
+    caseObj,
+    changeRoute,
+    updateTempInfo,
+    route,
+    timelineActivities,
+  } = props;
   const [mockedMessage, setMockedMessage] = useState(null);
 
   const handleOnClickView = activity => {
@@ -71,7 +80,9 @@ const Timeline: React.FC<Props> = props => {
         [ContactDetailsSections.ISSUE_CATEGORIZATION]: false,
         [ContactDetailsSections.CONTACT_SUMMARY]: false,
       };
-      const contact = caseObj.connectedContacts.find(c => c.id === activity.contactId);
+      const contact = caseObj.connectedContacts.find(
+        c => c.id === activity.contactId
+      );
       const tempInfo = {
         detailsExpanded,
         contact,
@@ -92,7 +103,10 @@ const Timeline: React.FC<Props> = props => {
   };
 
   const handleAddReferralClick = () => {
-    updateTempInfo({ screen: 'add-referral', info: blankReferral }, task.taskSid);
+    updateTempInfo(
+      { screen: 'add-referral', info: blankReferral },
+      task.taskSid
+    );
     changeRoute({ route, subroute: 'add-referral' }, task.taskSid);
   };
 
@@ -100,11 +114,15 @@ const Timeline: React.FC<Props> = props => {
    * If case has not been created yet, we should return value from the form.
    * Else If case was already created we should return rawJson value.
    */
-  const callType = form?.callType || caseObj.connectedContacts[0]?.rawJson?.callType;
+  const callType =
+    form?.callType || caseObj.connectedContacts[0]?.rawJson?.callType;
 
   return (
     <Box marginTop="25px">
-      <Dialog onClose={() => setMockedMessage(null)} open={Boolean(mockedMessage)}>
+      <Dialog
+        onClose={() => setMockedMessage(null)}
+        open={Boolean(mockedMessage)}
+      >
         <DialogContent>{mockedMessage}</DialogContent>
       </Dialog>
       <Box marginBottom="10px">
@@ -130,11 +148,19 @@ const Timeline: React.FC<Props> = props => {
       {timelineActivities &&
         timelineActivities.length > 0 &&
         timelineActivities.map((activity, index) => {
-          const date = parseISO(activity.date).toLocaleDateString(navigator.language);
+          const date = parseISO(activity.date).toLocaleDateString(
+            navigator.language
+          );
           return (
             <TimelineRow key={index}>
               <TimelineDate>{date}</TimelineDate>
-              <TimelineIcon type={isConnectedCaseActivity(activity) ? activity.channel : activity.type} />
+              <TimelineIcon
+                type={
+                  isConnectedCaseActivity(activity)
+                    ? activity.channel
+                    : activity.type
+                }
+              />
               {isConnectedCaseActivity(activity) && (
                 <TimelineCallTypeIcon>
                   <CallTypeIcon callType={callType} fontSize="18px" />
@@ -142,7 +168,9 @@ const Timeline: React.FC<Props> = props => {
               )}
               <TimelineText>{activity?.text}</TimelineText>
               <Box marginLeft="auto" marginRight="10px">
-                <ViewButton onClick={() => handleOnClickView(activity)}>View</ViewButton>
+                <ViewButton onClick={() => handleOnClickView(activity)}>
+                  <Template code="Case-ViewButton" />
+                </ViewButton>
               </Box>
             </TimelineRow>
           );

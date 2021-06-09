@@ -5,13 +5,24 @@ import { Button, Popover } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
 
 import { Row } from '../../styles/HrmStyles';
-import { ConfirmContainer, ConfirmText, CancelButton } from '../../styles/search';
+import {
+  ConfirmContainer,
+  ConfirmText,
+  CancelButton,
+} from '../../styles/search';
 import TabPressWrapper from '../TabPressWrapper';
 import callTypes from '../../states/DomainConstants';
 import { contactType } from '../../types';
 import { hasTaskControl } from '../../utils/transfer';
 
-const ConnectDialog = ({ anchorEl, currentIsCaller, contact, handleConfirm, handleClose, task }) => {
+const ConnectDialog = ({
+  anchorEl,
+  currentIsCaller,
+  contact,
+  handleConfirm,
+  handleClose,
+  task,
+}) => {
   const isOpen = Boolean(anchorEl);
   const id = isOpen ? 'simple-popover' : undefined;
 
@@ -49,8 +60,13 @@ const ConnectDialog = ({ anchorEl, currentIsCaller, contact, handleConfirm, hand
         <ConfirmContainer>
           <ConfirmText>{getText()}</ConfirmText>
           <Row>
-            <CancelButton tabIndex={2} variant="text" size="medium" onClick={handleClose}>
-              cancel
+            <CancelButton
+              tabIndex={2}
+              variant="text"
+              size="medium"
+              onClick={handleClose}
+            >
+              <Template code="CaseHeader-Cancel" />
             </CancelButton>
             <Button
               autoFocus
@@ -62,7 +78,7 @@ const ConnectDialog = ({ anchorEl, currentIsCaller, contact, handleConfirm, hand
               disabled={!hasTaskControl(task)}
             >
               <CheckIcon />
-              yes, copy
+              <Template code="CaseHeader-Copy" />
             </Button>
           </Row>
         </ConfirmContainer>

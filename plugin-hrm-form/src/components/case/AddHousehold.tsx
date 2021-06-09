@@ -16,7 +16,12 @@ import {
 } from '../../styles/HrmStyles';
 import { CaseActionLayout, CaseActionFormContainer } from '../../styles/case';
 import ActionHeader from './ActionHeader';
-import { namespace, connectedCaseBase, routingBase, RootState } from '../../states';
+import {
+  namespace,
+  connectedCaseBase,
+  routingBase,
+  RootState,
+} from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseState } from '../../states/case/reducer';
@@ -42,7 +47,9 @@ type OwnProps = {
 };
 
 // eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+type Props = OwnProps &
+  ReturnType<typeof mapStateToProps> &
+  typeof mapDispatchToProps;
 
 const AddHousehold: React.FC<Props> = ({
   task,
@@ -59,33 +66,54 @@ const AddHousehold: React.FC<Props> = ({
   const { HouseholdForm } = definitionVersion.caseForms;
   const { layoutVersion } = definitionVersion;
 
-  const init = temporaryCaseInfo && temporaryCaseInfo.screen === 'add-household' ? temporaryCaseInfo.info : {};
+  const init =
+    temporaryCaseInfo && temporaryCaseInfo.screen === 'add-household'
+      ? temporaryCaseInfo.info
+      : {};
   const [initialForm] = React.useState(init); // grab initial values in first render only. This value should never change or will ruin the memoization below
   const methods = useForm();
 
   const [l, r] = React.useMemo(() => {
     const updateCallBack = () => {
       const household = methods.getValues();
-      updateTempInfo({ screen: 'add-household', info: household }, task.taskSid);
+      updateTempInfo(
+        { screen: 'add-household', info: household },
+        task.taskSid
+      );
     };
 
-    const generatedForm = createFormFromDefinition(HouseholdForm)([])(initialForm)(updateCallBack);
+    const generatedForm = createFormFromDefinition(HouseholdForm)([])(
+      initialForm
+    )(updateCallBack);
 
     if (layoutVersion.case.households.splitFormAt)
-      return splitAt(layoutVersion.case.households.splitFormAt)(disperseInputs(7)(generatedForm));
+      return splitAt(layoutVersion.case.households.splitFormAt)(
+        disperseInputs(7)(generatedForm)
+      );
 
     return splitInHalf(disperseInputs(7)(generatedForm));
-  }, [HouseholdForm, initialForm, layoutVersion.case.households.splitFormAt, methods, task.taskSid, updateTempInfo]);
+  }, [
+    HouseholdForm,
+    initialForm,
+    layoutVersion.case.households.splitFormAt,
+    methods,
+    task.taskSid,
+    updateTempInfo,
+  ]);
 
   const saveHousehold = async shouldStayInForm => {
-    if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-household') return;
+    if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-household')
+      return;
 
     const { info, id } = connectedCaseState.connectedCase;
     const household = transformValues(HouseholdForm)(temporaryCaseInfo.info);
     const createdAt = new Date().toISOString();
     const { workerSid } = getConfig();
     const newHousehold = { household, createdAt, twilioWorkerId: workerSid };
-    const households = info && info.households ? [...info.households, newHousehold] : [newHousehold];
+    const households =
+      info && info.households
+        ? [...info.households, newHousehold]
+        : [newHousehold];
     const newInfo = info ? { ...info, households } : { households };
     const updatedCase = await updateCase(id, { info: newInfo });
     setConnectedCase(updatedCase, task.taskSid, true);
@@ -105,16 +133,19 @@ const AddHousehold: React.FC<Props> = ({
     await saveHousehold(false);
     onClickClose();
   }
-
+  const strings = getConfig().strings;
   function onError() {
-    window.alert('You must fill in required fields.');
+    window.alert(strings['Error-Form']);
   }
-
   return (
     <FormProvider {...methods}>
       <CaseActionLayout>
         <CaseActionFormContainer>
-          <ActionHeader titleTemplate="Case-AddHousehold" onClickClose={onClickClose} counselor={counselor} />
+          <ActionHeader
+            titleTemplate="Case-AddHousehold"
+            onClickClose={onClickClose}
+            counselor={counselor}
+          />
           <Container>
             <Box paddingBottom={`${BottomButtonBarHeight}px`}>
               <TwoColumnLayout>
@@ -127,7 +158,12 @@ const AddHousehold: React.FC<Props> = ({
         <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
         <BottomButtonBar>
           <Box marginRight="15px">
-            <StyledNextStepButton data-testid="Case-CloseButton" secondary roundCorners onClick={onClickClose}>
+            <StyledNextStepButton
+              data-testid="Case-CloseButton"
+              secondary
+              roundCorners
+              onClick={onClickClose}
+            >
               <Template code="BottomBar-Cancel" />
             </StyledNextStepButton>
           </Box>

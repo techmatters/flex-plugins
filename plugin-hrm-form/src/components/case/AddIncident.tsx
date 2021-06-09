@@ -20,7 +20,12 @@ import { namespace, connectedCaseBase, RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import { getConfig } from '../../HrmFormPlugin';
 import { updateCase } from '../../services/CaseService';
-import { createFormFromDefinition, disperseInputs, splitInHalf, splitAt } from '../common/forms/formGenerators';
+import {
+  createFormFromDefinition,
+  disperseInputs,
+  splitInHalf,
+  splitAt,
+} from '../common/forms/formGenerators';
 import type { DefinitionVersion } from '../common/forms/types';
 import { transformValues } from '../../services/ContactService';
 import { StandaloneITask } from '../StandaloneSearch';
@@ -34,7 +39,9 @@ type OwnProps = {
 };
 
 // eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+type Props = OwnProps &
+  ReturnType<typeof mapStateToProps> &
+  typeof mapDispatchToProps;
 
 const AddIncident: React.FC<Props> = ({
   task,
@@ -49,7 +56,10 @@ const AddIncident: React.FC<Props> = ({
   const { IncidentForm } = definitionVersion.caseForms;
   const { layoutVersion } = definitionVersion;
 
-  const init = temporaryCaseInfo && temporaryCaseInfo.screen === 'add-incident' ? temporaryCaseInfo.info : {};
+  const init =
+    temporaryCaseInfo && temporaryCaseInfo.screen === 'add-incident'
+      ? temporaryCaseInfo.info
+      : {};
   const [initialForm] = React.useState(init); // grab initial values in first render only. This value should never change or will ruin the memoization below
   const methods = useForm();
 
@@ -59,25 +69,39 @@ const AddIncident: React.FC<Props> = ({
       updateTempInfo({ screen: 'add-incident', info: incident }, task.taskSid);
     };
 
-    const generatedForm = createFormFromDefinition(IncidentForm)([])(initialForm)(updateCallBack);
+    const generatedForm = createFormFromDefinition(IncidentForm)([])(
+      initialForm
+    )(updateCallBack);
 
     if (layoutVersion.case.incidents.splitFormAt)
-      return splitAt(layoutVersion.case.incidents.splitFormAt)(disperseInputs(7)(generatedForm));
+      return splitAt(layoutVersion.case.incidents.splitFormAt)(
+        disperseInputs(7)(generatedForm)
+      );
 
     return splitInHalf(disperseInputs(7)(generatedForm));
-  }, [IncidentForm, initialForm, layoutVersion.case.incidents.splitFormAt, methods, task.taskSid, updateTempInfo]);
+  }, [
+    IncidentForm,
+    initialForm,
+    layoutVersion.case.incidents.splitFormAt,
+    methods,
+    task.taskSid,
+    updateTempInfo,
+  ]);
 
-  if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-incident') return null;
+  if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-incident')
+    return null;
 
   const saveIncident = async () => {
-    if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-incident') return;
+    if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-incident')
+      return;
 
     const { info, id } = connectedCaseState.connectedCase;
     const incident = transformValues(IncidentForm)(temporaryCaseInfo.info);
     const createdAt = new Date().toISOString();
     const { workerSid } = getConfig();
     const newIncident = { incident, createdAt, twilioWorkerId: workerSid };
-    const incidents = info && info.incidents ? [...info.incidents, newIncident] : [newIncident];
+    const incidents =
+      info && info.incidents ? [...info.incidents, newIncident] : [newIncident];
     const newInfo = info ? { ...info, incidents } : { incidents };
     const updatedCase = await updateCase(id, { info: newInfo });
     setConnectedCase(updatedCase, task.taskSid, true);
@@ -88,15 +112,20 @@ const AddIncident: React.FC<Props> = ({
     onClickClose();
   }
 
+  const strings = getConfig().strings;
   function onError() {
-    window.alert('You must fill in required fields.');
+    window.alert(strings['Error-Form']);
   }
 
   return (
     <FormProvider {...methods}>
       <CaseActionLayout>
         <CaseActionFormContainer>
-          <ActionHeader titleTemplate="Case-AddIncident" onClickClose={onClickClose} counselor={counselor} />
+          <ActionHeader
+            titleTemplate="Case-AddIncident"
+            onClickClose={onClickClose}
+            counselor={counselor}
+          />
           <Container>
             <Box paddingBottom={`${BottomButtonBarHeight}px`}>
               <TwoColumnLayout>
@@ -109,7 +138,12 @@ const AddIncident: React.FC<Props> = ({
         <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
         <BottomButtonBar>
           <Box marginRight="15px">
-            <StyledNextStepButton data-testid="Case-CloseButton" secondary roundCorners onClick={onClickClose}>
+            <StyledNextStepButton
+              data-testid="Case-CloseButton"
+              secondary
+              roundCorners
+              onClick={onClickClose}
+            >
               <Template code="BottomBar-Cancel" />
             </StyledNextStepButton>
           </Box>

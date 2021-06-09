@@ -18,10 +18,14 @@ const CasePrintSummary: React.FC<Props> = ({ summary }) => {
   return (
     <View>
       <View style={styles.sectionHeader}>
-        <Text style={styles.whiteText}>{strings['Case-CaseSummarySection']}</Text>
+        <Text style={styles.whiteText}>
+          {strings['Case-CaseSummarySection']}
+        </Text>
       </View>
       <View style={styles.sectionBody}>
-        <Text style={styles.caseSummaryText}>{summary ? summary : strings['NoCaseSummary']}</Text>
+        <Text style={styles.caseSummaryText}>
+          {summary ? summary : strings['NoCaseSummary']}
+        </Text>
       </View>
     </View>
   );
