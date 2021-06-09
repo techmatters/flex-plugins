@@ -287,6 +287,8 @@
   "PreviousContacts-Returned": "returned in this search.",
   "PreviousContacts-PreviousContacts": "previous contacts",
   "PreviousContacts-PreviousContact": "previous contact",
+  "PreviousContacts-Contact": "contact",
+  "PreviousContacts-Contacts": "contacts",
   "PreviousContacts-Case": "case",
   "PreviousContacts-Cases": "cases",
   "PreviousContacts-From": "from",
@@ -295,7 +297,6 @@
   "PreviousContacts-WhatsappNumber": "Whatsapp number",
   "PreviousContacts-FacebookUser": "Facebook user",
   "PreviousContacts-ViewRecords": "View Records",
-  "PreviousContacts-OnlyShowRecordsFrom": "Only show records from",
+  "PreviousContacts-OnlyShowRecordsFrom": "Only show records from"
 
-  "Case Details": ">> Case Details"
 }

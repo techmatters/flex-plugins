@@ -212,8 +212,8 @@ const SearchResults: React.FC<Props> = ({
                 {currentPage === SearchPages.resultsContacts
                   ? `${contactsCount} ${
                       contactsCount == 1
-                        ? strings['PreviousContacts-PreviousContact']
-                        : strings['PreviousContacts-PreviousContacts']
+                        ? strings['PreviousContacts-Contact']
+                        : strings['PreviousContacts-Contacts']
                     }`
                   : `${casesCount} ${
                       casesCount == 1
