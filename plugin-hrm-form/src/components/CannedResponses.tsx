@@ -1,7 +1,8 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { Actions, Template, withTheme } from '@twilio/flex-ui';
+import { Actions, withTheme } from '@twilio/flex-ui';
+
 import { getConfig } from '../HrmFormPlugin';
 import {} from '@material-ui/core';
 
@@ -27,7 +28,7 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 // eslint-disable-next-line react/display-name
 const CannedResponses: React.FC<Props> = props => {
   const { channelSid, cannedResponses } = props;
-  const strings = getConfig().strings;
+  const { strings } = getConfig();
   const handleChange = event => {
     Actions.invokeAction('SetInputText', {
       channelSid,
@@ -40,24 +41,14 @@ const CannedResponses: React.FC<Props> = props => {
   return (
     <CannedResponsesContainer>
       <FormSelectWrapper fullWidth={true}>
-        <FormSelect
-          id="canned_response"
-          name="canned_response"
-          onChange={handleChange}
-          value=""
-          fullWidth={true}
-        >
+        <FormSelect id="canned_response" name="canned_response" onChange={handleChange} value="" fullWidth={true}>
           <FormOption disabled selected isEmptyValue={true} value="">
             {strings['CannedResponses']}
           </FormOption>
           {cannedResponses.map(r => {
             return (
-              <FormOption
-                key={r.label}
-                value={r.text}
-                isEmptyValue={r.text === ''}
-              >
-                {/*make translations for every label*/}
+              <FormOption key={r.label} value={r.text} isEmptyValue={r.text === ''}>
+                {/* make translations for every label*/}
                 {strings[r.label] ? strings[r.label] : r.label}
               </FormOption>
             );
@@ -71,9 +62,7 @@ const CannedResponses: React.FC<Props> = props => {
 const mapStateToProps = (state: RootState) => {
   return {
     state,
-    cannedResponses:
-      state[namespace][configurationBase].currentDefinitionVersion
-        ?.cannedResponses,
+    cannedResponses: state[namespace][configurationBase].currentDefinitionVersion?.cannedResponses,
   };
 };
 

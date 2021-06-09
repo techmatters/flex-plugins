@@ -21,11 +21,7 @@ import {
 import { SearchTitle } from '../../../styles/search';
 import { searchFormType, taskType } from '../../../types';
 import { getConfig } from '../../../HrmFormPlugin';
-import {
-  namespace,
-  configurationBase,
-  searchContactsBase,
-} from '../../../states';
+import { namespace, configurationBase, searchContactsBase } from '../../../states';
 import { getNumberFromTask } from '../../../services/ContactService';
 import { localizedSource } from '../../PreviousContactsBanner';
 
@@ -46,7 +42,7 @@ class SearchForm extends Component {
       PropTypes.shape({
         fullName: PropTypes.string,
         sid: PropTypes.string,
-      })
+      }),
     ).isRequired,
     officeInformation: PropTypes.arrayOf(
       PropTypes.shape({
@@ -56,7 +52,7 @@ class SearchForm extends Component {
           phone: string,
           email: string,
         }),
-      })
+      }),
     ),
     values: searchFormType.isRequired,
     task: taskType.isRequired,
@@ -108,19 +104,12 @@ class SearchForm extends Component {
         }))
       : [];
 
-    const {
-      helpline: userHelpline,
-      strings,
-      multipleOfficeSupport,
-    } = getConfig();
+    const { helpline: userHelpline, strings, multipleOfficeSupport } = getConfig();
     const searchParams = {
       ...this.props.values,
       counselor: counselor.value, // backend expects only counselor's SID
       // If the user already has a helpline attribute we will hide the dropdown and send the userHelpline to the API
-      helpline:
-        multipleOfficeSupport && helpline?.value
-          ? helpline.value
-          : userHelpline,
+      helpline: multipleOfficeSupport && helpline?.value ? helpline.value : userHelpline,
       onlyDataContacts: false,
       closedCases: true,
     };
@@ -214,19 +203,17 @@ class SearchForm extends Component {
               style={{ marginRight: 25 }}
             />
             {/* If the user has their helpline attribute set, we don't need to show the Office search criteria. */}
-            {multipleOfficeSupport &&
-              !userHelpline &&
-              officeOptions.length > 0 && (
-                <FieldSelect
-                  id="Search_Office"
-                  name="office"
-                  label={strings['SearchForm-Office']}
-                  placeholder="--"
-                  field={getField(helpline)}
-                  options={[{ label: '', value: '' }, ...officeOptions]}
-                  {...this.defaultEventHandlers('helpline')}
-                />
-              )}
+            {multipleOfficeSupport && !userHelpline && officeOptions.length > 0 && (
+              <FieldSelect
+                id="Search_Office"
+                name="office"
+                label={strings['SearchForm-Office']}
+                placeholder="--"
+                field={getField(helpline)}
+                options={[{ label: '', value: '' }, ...officeOptions]}
+                {...this.defaultEventHandlers('helpline')}
+              />
+            )}
           </Row>
           {this.showPreviousContactsCheckbox && (
             <Row>
@@ -242,8 +229,7 @@ class SearchForm extends Component {
                       />
                     </Box>
                     <span>
-                      <Template code="PreviousContacts-OnlyShowRecordsFrom" />{' '}
-                      <Template code={source} />{' '}
+                      <Template code="PreviousContacts-OnlyShowRecordsFrom" /> <Template code={source} />{' '}
                       <Bold>{contactNumberFromTask}</Bold>
                     </span>
                   </FormCheckBoxWrapper>
@@ -253,12 +239,7 @@ class SearchForm extends Component {
           )}
         </Container>
         <BottomButtonBar>
-          <StyledNextStepButton
-            type="button"
-            disabled={!isTouched}
-            roundCorners={true}
-            onClick={submitSearch}
-          >
+          <StyledNextStepButton type="button" disabled={!isTouched} roundCorners={true} onClick={submitSearch}>
             <Template code="SearchForm-Button" />
           </StyledNextStepButton>
         </BottomButtonBar>
@@ -274,12 +255,8 @@ SearchForm.defaultProps = {
 
 const mapStateToProps = (state, ownProps) => ({
   counselors: state[namespace][configurationBase].counselors.list,
-  officeInformation:
-    state[namespace][configurationBase].currentDefinitionVersion
-      ?.officeInformation,
-  previousContacts:
-    state[namespace][searchContactsBase].tasks[ownProps.task.taskSid]
-      ?.previousContacts,
+  officeInformation: state[namespace][configurationBase].currentDefinitionVersion?.officeInformation,
+  previousContacts: state[namespace][searchContactsBase].tasks[ownProps.task.taskSid]?.previousContacts,
 });
 
 export default connect(mapStateToProps)(SearchForm);

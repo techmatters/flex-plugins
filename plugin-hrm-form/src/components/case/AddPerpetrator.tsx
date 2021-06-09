@@ -16,12 +16,7 @@ import {
 } from '../../styles/HrmStyles';
 import { CaseActionLayout, CaseActionFormContainer } from '../../styles/case';
 import ActionHeader from './ActionHeader';
-import {
-  namespace,
-  connectedCaseBase,
-  routingBase,
-  RootState,
-} from '../../states';
+import { namespace, connectedCaseBase, routingBase, RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseState } from '../../states/case/reducer';
@@ -47,9 +42,7 @@ type OwnProps = {
 };
 
 // eslint-disable-next-line no-use-before-define
-type Props = OwnProps &
-  ReturnType<typeof mapStateToProps> &
-  typeof mapDispatchToProps;
+type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
 const AddPerpetrator: React.FC<Props> = ({
   task,
@@ -66,30 +59,20 @@ const AddPerpetrator: React.FC<Props> = ({
   const { PerpetratorForm } = definitionVersion.caseForms;
   const { layoutVersion } = definitionVersion;
 
-  const init =
-    temporaryCaseInfo && temporaryCaseInfo.screen === 'add-perpetrator'
-      ? temporaryCaseInfo.info
-      : {};
+  const init = temporaryCaseInfo && temporaryCaseInfo.screen === 'add-perpetrator' ? temporaryCaseInfo.info : {};
   const [initialForm] = React.useState(init); // grab initial values in first render only. This value should never change or will ruin the memoization below
   const methods = useForm();
 
   const [l, r] = React.useMemo(() => {
     const updateCallBack = () => {
       const perpetrator = methods.getValues();
-      updateTempInfo(
-        { screen: 'add-perpetrator', info: perpetrator },
-        task.taskSid
-      );
+      updateTempInfo({ screen: 'add-perpetrator', info: perpetrator }, task.taskSid);
     };
 
-    const generatedForm = createFormFromDefinition(PerpetratorForm)([])(
-      initialForm
-    )(updateCallBack);
+    const generatedForm = createFormFromDefinition(PerpetratorForm)([])(initialForm)(updateCallBack);
 
     if (layoutVersion.case.perpetrators.splitFormAt)
-      return splitAt(layoutVersion.case.perpetrators.splitFormAt)(
-        disperseInputs(7)(generatedForm)
-      );
+      return splitAt(layoutVersion.case.perpetrators.splitFormAt)(disperseInputs(7)(generatedForm));
 
     return splitInHalf(disperseInputs(7)(generatedForm));
   }, [
@@ -102,13 +85,10 @@ const AddPerpetrator: React.FC<Props> = ({
   ]);
 
   const savePerpetrator = async shouldStayInForm => {
-    if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-perpetrator')
-      return;
+    if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-perpetrator') return;
 
     const { info, id } = connectedCaseState.connectedCase;
-    const perpetrator = transformValues(PerpetratorForm)(
-      temporaryCaseInfo.info
-    );
+    const perpetrator = transformValues(PerpetratorForm)(temporaryCaseInfo.info);
     const createdAt = new Date().toISOString();
     const { workerSid } = getConfig();
     const newPerpetrator = {
@@ -116,10 +96,7 @@ const AddPerpetrator: React.FC<Props> = ({
       createdAt,
       twilioWorkerId: workerSid,
     };
-    const perpetrators =
-      info && info.perpetrators
-        ? [...info.perpetrators, newPerpetrator]
-        : [newPerpetrator];
+    const perpetrators = info && info.perpetrators ? [...info.perpetrators, newPerpetrator] : [newPerpetrator];
     const newInfo = info ? { ...info, perpetrators } : { perpetrators };
     const updatedCase = await updateCase(id, { info: newInfo });
     setConnectedCase(updatedCase, task.taskSid, true);
@@ -141,7 +118,7 @@ const AddPerpetrator: React.FC<Props> = ({
     onClickClose();
   }
 
-  const strings = getConfig().strings;
+  const { strings } = getConfig();
   function onError() {
     window.alert(strings['Error-Form']);
   }
@@ -150,11 +127,7 @@ const AddPerpetrator: React.FC<Props> = ({
     <FormProvider {...methods}>
       <CaseActionLayout>
         <CaseActionFormContainer>
-          <ActionHeader
-            titleTemplate="Case-AddPerpetrator"
-            onClickClose={onClickClose}
-            counselor={counselor}
-          />
+          <ActionHeader titleTemplate="Case-AddPerpetrator" onClickClose={onClickClose} counselor={counselor} />
           <Container>
             <Box paddingBottom={`${BottomButtonBarHeight}px`}>
               <TwoColumnLayout>
@@ -167,12 +140,7 @@ const AddPerpetrator: React.FC<Props> = ({
         <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
         <BottomButtonBar>
           <Box marginRight="15px">
-            <StyledNextStepButton
-              data-testid="Case-CloseButton"
-              secondary
-              roundCorners
-              onClick={onClickClose}
-            >
+            <StyledNextStepButton data-testid="Case-CloseButton" secondary roundCorners onClick={onClickClose}>
               <Template code="BottomBar-Cancel" />
             </StyledNextStepButton>
           </Box>

@@ -3,17 +3,12 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Template, Tab as TwilioTab } from '@twilio/flex-ui';
+
 import { getConfig } from '../../../HrmFormPlugin';
 import { standaloneTaskSid } from '../../StandaloneSearch';
 import ContactPreview from '../ContactPreview';
 import CasePreview from '../CasePreview';
-import {
-  SearchContactResult,
-  SearchCaseResult,
-  SearchContact,
-  Case,
-  CustomITask,
-} from '../../../types/types';
+import { SearchContactResult, SearchCaseResult, SearchContact, Case, CustomITask } from '../../../types/types';
 import { Row } from '../../../styles/HrmStyles';
 import {
   ResultsHeader,
@@ -40,11 +35,7 @@ import * as SearchActions from '../../../states/search/actions';
 import * as CaseActions from '../../../states/case/actions';
 import * as RoutingActions from '../../../states/routing/actions';
 import { SearchPages, SearchPagesType } from '../../../states/search/types';
-import {
-  namespace,
-  searchContactsBase,
-  configurationBase,
-} from '../../../states';
+import { namespace, searchContactsBase, configurationBase } from '../../../states';
 
 export const CONTACTS_PER_PAGE = 20;
 export const CASES_PER_PAGE = 20;
@@ -69,9 +60,7 @@ type OwnProps = {
 };
 
 // eslint-disable-next-line no-use-before-define
-type Props = OwnProps &
-  ReturnType<typeof mapStateToProps> &
-  ReturnType<typeof mapDispatchToProps>;
+type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 const SearchResults: React.FC<Props> = ({
   task,
@@ -146,7 +135,7 @@ const SearchResults: React.FC<Props> = ({
   const { count: casesCount, cases } = searchCasesResults;
   const contactsPageCount = Math.ceil(contactsCount / CONTACTS_PER_PAGE);
   const casesPageCount = Math.ceil(casesCount / CASES_PER_PAGE);
-  const strings = getConfig().strings;
+  const { strings } = getConfig();
 
   const toggleTabs = () => {
     // eslint-disable-next-line no-unused-expressions
@@ -162,20 +151,11 @@ const SearchResults: React.FC<Props> = ({
   return (
     <>
       <ResultsHeader>
-        <SearchResultsBackButton
-          text={<Template code="SearchResultsIndex-Back" />}
-          handleBack={handleBack}
-        />
+        <SearchResultsBackButton text={<Template code="SearchResultsIndex-Back" />} handleBack={handleBack} />
         <Row style={{ justifyContent: 'center' }}>
           <div style={{ width: '300px' }}>
-            <StyledTabs
-              selectedTabName={currentPage}
-              onTabSelected={tabSelected}
-            >
-              <TwilioTab
-                label="Contacts"
-                uniqueName={SearchPages.resultsContacts}
-              >
+            <StyledTabs selectedTabName={currentPage} onTabSelected={tabSelected}>
+              <TwilioTab label="Contacts" uniqueName={SearchPages.resultsContacts}>
                 {[]}
               </TwilioTab>
               <TwilioTab
@@ -211,14 +191,10 @@ const SearchResults: React.FC<Props> = ({
                 {/* Intentionally we must show the option different at the one currently selected */}
                 {currentPage === SearchPages.resultsContacts
                   ? `${contactsCount} ${
-                      contactsCount == 1
-                        ? strings['PreviousContacts-Contact']
-                        : strings['PreviousContacts-Contacts']
+                      contactsCount === 1 ? strings['PreviousContacts-Contact'] : strings['PreviousContacts-Contacts']
                     }`
                   : `${casesCount} ${
-                      casesCount == 1
-                        ? strings['PreviousContacts-Case']
-                        : strings['PreviousContacts-Cases']
+                      casesCount === 1 ? strings['PreviousContacts-Case'] : strings['PreviousContacts-Cases']
                     }`}
               </BoldText>
               &nbsp;
@@ -240,16 +216,10 @@ const SearchResults: React.FC<Props> = ({
             <>
               <StyledContactResultsHeader>
                 <StyledCount data-testid="ContactsCount">
-                  {contactsCount}{' '}
-                  <Template code="SearchResultsIndex-Contacts" />
+                  {contactsCount} <Template code="SearchResultsIndex-Contacts" />
                 </StyledCount>
                 <StyledFormControlLabel
-                  control={
-                    <StyledSwitch
-                      checked={!onlyDataContacts}
-                      onChange={handleToggleNonDataContact}
-                    />
-                  }
+                  control={<StyledSwitch checked={!onlyDataContacts} onChange={handleToggleNonDataContact} />}
                   label={
                     <SwitchLabel>
                       <Template code="SearchResultsIndex-NonDataContacts" />
@@ -286,12 +256,7 @@ const SearchResults: React.FC<Props> = ({
                   {casesCount} <Template code="SearchResultsIndex-Cases" />
                 </StyledCount>
                 <StyledFormControlLabel
-                  control={
-                    <StyledSwitch
-                      checked={closedCases}
-                      onChange={handleToggleClosedCases}
-                    />
-                  }
+                  control={<StyledSwitch checked={closedCases} onChange={handleToggleClosedCases} />}
                   label={
                     <SwitchLabel>
                       <Template code="SearchResultsIndex-ClosedCases" />
@@ -346,14 +311,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   const taskId = ownProps.task.taskSid;
 
   return {
-    changeSearchPage: bindActionCreators(
-      SearchActions.changeSearchPage(taskId),
-      dispatch
-    ),
-    setConnectedCase: bindActionCreators(
-      CaseActions.setConnectedCase,
-      dispatch
-    ),
+    changeSearchPage: bindActionCreators(SearchActions.changeSearchPage(taskId), dispatch),
+    setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
     changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
   };
 };

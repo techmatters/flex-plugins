@@ -5,24 +5,13 @@ import { Button, Popover } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
 
 import { Row } from '../../styles/HrmStyles';
-import {
-  ConfirmContainer,
-  ConfirmText,
-  CancelButton,
-} from '../../styles/search';
+import { ConfirmContainer, ConfirmText, CancelButton } from '../../styles/search';
 import TabPressWrapper from '../TabPressWrapper';
 import callTypes from '../../states/DomainConstants';
 import { contactType } from '../../types';
 import { hasTaskControl } from '../../utils/transfer';
 
-const ConnectDialog = ({
-  anchorEl,
-  currentIsCaller,
-  contact,
-  handleConfirm,
-  handleClose,
-  task,
-}) => {
+const ConnectDialog = ({ anchorEl, currentIsCaller, contact, handleConfirm, handleClose, task }) => {
   const isOpen = Boolean(anchorEl);
   const id = isOpen ? 'simple-popover' : undefined;
 
@@ -60,12 +49,7 @@ const ConnectDialog = ({
         <ConfirmContainer>
           <ConfirmText>{getText()}</ConfirmText>
           <Row>
-            <CancelButton
-              tabIndex={2}
-              variant="text"
-              size="medium"
-              onClick={handleClose}
-            >
+            <CancelButton tabIndex={2} variant="text" size="medium" onClick={handleClose}>
               <Template code="CaseHeader-Cancel" />
             </CancelButton>
             <Button

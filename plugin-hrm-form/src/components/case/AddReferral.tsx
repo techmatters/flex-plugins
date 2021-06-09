@@ -16,20 +16,11 @@ import {
   Container,
 } from '../../styles/HrmStyles';
 import { CaseActionLayout, CaseActionFormContainer } from '../../styles/case';
-import {
-  namespace,
-  connectedCaseBase,
-  routingBase,
-  RootState,
-} from '../../states';
+import { namespace, connectedCaseBase, routingBase, RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { updateCase } from '../../services/CaseService';
-import {
-  createFormFromDefinition,
-  disperseInputs,
-  splitInHalf,
-} from '../common/forms/formGenerators';
+import { createFormFromDefinition, disperseInputs, splitInHalf } from '../common/forms/formGenerators';
 import type { DefinitionVersion } from '../common/forms/types';
 import { transformValues } from '../../services/ContactService';
 import { StandaloneITask } from '../StandaloneSearch';
@@ -44,9 +35,7 @@ type OwnProps = {
 };
 
 // eslint-disable-next-line no-use-before-define
-type Props = OwnProps &
-  ReturnType<typeof mapStateToProps> &
-  typeof mapDispatchToProps;
+type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
 const AddReferral: React.FC<Props> = ({
   task,
@@ -60,10 +49,7 @@ const AddReferral: React.FC<Props> = ({
   const { connectedCase, temporaryCaseInfo } = connectedCaseState;
   const { ReferralForm } = definitionVersion.caseForms;
 
-  const init =
-    temporaryCaseInfo && temporaryCaseInfo.screen === 'add-referral'
-      ? temporaryCaseInfo.info
-      : {};
+  const init = temporaryCaseInfo && temporaryCaseInfo.screen === 'add-referral' ? temporaryCaseInfo.info : {};
   const [initialForm] = React.useState(init); // grab initial values in first render only. This value should never change or will ruin the memoization below
   const methods = useForm();
 
@@ -73,24 +59,19 @@ const AddReferral: React.FC<Props> = ({
       updateTempInfo({ screen: 'add-referral', info: referral }, task.taskSid);
     };
 
-    const generatedForm = createFormFromDefinition(ReferralForm)([])(
-      initialForm
-    )(updateCallBack);
+    const generatedForm = createFormFromDefinition(ReferralForm)([])(initialForm)(updateCallBack);
 
     return splitInHalf(disperseInputs(7)(generatedForm));
   }, [ReferralForm, initialForm, methods, task.taskSid, updateTempInfo]);
 
-  if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-referral')
-    return null;
+  if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-referral') return null;
 
   const handleSaveReferral = async () => {
-    if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-referral')
-      return;
+    if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-referral') return;
 
     const { info, id } = connectedCase;
     const referral = transformValues(ReferralForm)(temporaryCaseInfo.info);
-    const referrals =
-      info && info.referrals ? [...info.referrals, referral] : [referral];
+    const referrals = info && info.referrals ? [...info.referrals, referral] : [referral];
     const newInfo = info ? { ...info, referrals } : { referrals };
     const updatedCase = await updateCase(id, { info: newInfo });
     setConnectedCase(updatedCase, task.taskSid, true);
@@ -98,7 +79,7 @@ const AddReferral: React.FC<Props> = ({
     onClickClose();
   };
 
-  const strings = getConfig().strings;
+  const { strings } = getConfig();
   function onError() {
     window.alert(strings['Error-Form']);
   }
@@ -107,11 +88,7 @@ const AddReferral: React.FC<Props> = ({
     <FormProvider {...methods}>
       <CaseActionLayout>
         <CaseActionFormContainer>
-          <ActionHeader
-            titleTemplate="Case-AddReferral"
-            onClickClose={onClickClose}
-            counselor={counselor}
-          />
+          <ActionHeader titleTemplate="Case-AddReferral" onClickClose={onClickClose} counselor={counselor} />
           <Container>
             <Box paddingBottom={`${BottomButtonBarHeight}px`}>
               <TwoColumnLayout>
@@ -124,12 +101,7 @@ const AddReferral: React.FC<Props> = ({
         <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
         <BottomButtonBar>
           <Box marginRight="15px">
-            <StyledNextStepButton
-              data-testid="Case-CloseButton"
-              secondary
-              roundCorners
-              onClick={onClickClose}
-            >
+            <StyledNextStepButton data-testid="Case-CloseButton" secondary roundCorners onClick={onClickClose}>
               <Template code="BottomBar-Cancel" />
             </StyledNextStepButton>
           </Box>
