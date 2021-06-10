@@ -100,7 +100,7 @@ describe('<SearchResults> with 0 results', () => {
       </Provider>,
     );
 
-    expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('0 PreviousResultsContacts-Contacts');
+    expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('0 PreviousContacts-Contacts');
     expect(screen.getByTestId('ContactsCount')).toHaveTextContent('0 SearchResultsIndex-Contacts');
   });
 
@@ -120,7 +120,7 @@ describe('<SearchResults> with 0 results', () => {
       </Provider>,
     );
 
-    expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('0 PreviousResultsContacts-Cases');
+    expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('0 PreviousContacts-Cases');
     expect(screen.getByTestId('CasesCount')).toHaveTextContent('0 SearchResultsIndex-Cases');
   });
 });
