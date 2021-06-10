@@ -189,13 +189,25 @@ const SearchResults: React.FC<Props> = ({
               &nbsp;
               <BoldText data-testid="SearchResultsCount">
                 {/* Intentionally we must show the option different at the one currently selected */}
-                {currentPage === SearchPages.resultsContacts
-                  ? `${contactsCount} ${
-                      contactsCount === 1 ? strings['PreviousContacts-Contact'] : strings['PreviousContacts-Contacts']
-                    }`
-                  : `${casesCount} ${
-                      casesCount === 1 ? strings['PreviousContacts-Case'] : strings['PreviousContacts-Cases']
-                    }`}
+                {currentPage === SearchPages.resultsContacts ? (
+                  <>
+                    {contactsCount}{' '}
+                    {contactsCount === 1 ? (
+                      <Template code="PreviousContacts-Contact" />
+                    ) : (
+                      <Template code="PreviousContacts-Contacts" />
+                    )}
+                  </>
+                ) : (
+                  <>
+                    {casesCount}{' '}
+                    {casesCount === 1 ? (
+                      <Template code="PreviousContacts-Case" />
+                    ) : (
+                      <Template code="PreviousContacts-Cases" />
+                    )}
+                  </>
+                )}
               </BoldText>
               &nbsp;
               <Template code="PreviousContacts-Returned" />
