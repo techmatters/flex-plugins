@@ -41,7 +41,7 @@ const CaseSummary: React.FC<Props> = ({ task, connectedCaseState, updateCaseInfo
         data-testid="Case-CaseSummary-TextArea"
         aria-labelledby="Case-CaseSummary-label"
         // Add Case summary doesn't show up as default value
-        placeholder={readonly ? strings['NoCaseSummary'] : strings['Case-AddCaseSummaryHere']}
+        placeholder={readonly ? strings.NoCaseSummary : strings['Case-AddCaseSummaryHere']}
         value={summary}
         onChange={e => handleOnChange(e.target.value)}
         readOnly={readonly}

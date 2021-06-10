@@ -6,16 +6,7 @@ import { Actions, withTheme } from '@twilio/flex-ui';
 import { getConfig } from '../HrmFormPlugin';
 import {} from '@material-ui/core';
 
-import {
-  Box,
-  CannedResponsesContainer,
-  FormLabel,
-  FormSelect,
-  FormSelectWrapper,
-  FormError,
-  FormOption,
-  Row,
-} from '../styles/HrmStyles';
+import { CannedResponsesContainer, FormSelect, FormSelectWrapper, FormOption } from '../styles/HrmStyles';
 import { RootState, namespace, configurationBase } from '../states';
 
 type OwnProps = {
@@ -43,13 +34,12 @@ const CannedResponses: React.FC<Props> = props => {
       <FormSelectWrapper fullWidth={true}>
         <FormSelect id="canned_response" name="canned_response" onChange={handleChange} value="" fullWidth={true}>
           <FormOption disabled selected isEmptyValue={true} value="">
-            {strings['CannedResponses']}
+            {strings.CannedResponses}
           </FormOption>
           {cannedResponses.map(r => {
             return (
               <FormOption key={r.label} value={r.text} isEmptyValue={r.text === ''}>
-                {/* make translations for every label*/}
-                {strings[r.label] ? strings[r.label] : r.label}
+                {r.label}
               </FormOption>
             );
           })}

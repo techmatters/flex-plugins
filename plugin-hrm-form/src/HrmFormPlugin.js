@@ -46,6 +46,9 @@ export const getConfig = () => {
     permissionConfig,
   } = manager.serviceConfiguration.attributes;
   const featureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
+  /**
+   *  @type {{ strings: { [key: string]: string } }}
+   */
   const { strings } = manager;
 
   return {
