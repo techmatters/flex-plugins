@@ -16,7 +16,7 @@ import type {
   FormDefinition,
   FormItemDefinition,
 } from '../components/common/forms/types';
-import { InformationObject, ContactRawJson, SearchContactResult, isOfflineContactTask } from '../types/types';
+import { InformationObject, ContactRawJson, SearchContactResult, isOfflineContactTask, CustomITask } from '../types/types';
 
 /**
  * Un-nests the information (caller/child) as it comes from DB, to match the form structure
@@ -193,13 +193,15 @@ export async function saveToHrm(task, form, workerSid, helpline, uniqueIdentifie
    */
   const formToSend = transformForm(rawForm);
 
+  const helplineToSend = (isOfflineContactTask(task) && form.contactlessTask.helpline) || helpline;
+
   const body = {
     form: formToSend,
     twilioWorkerId,
     queueName: task.queueName,
     channel: task.channelType,
     number,
-    helpline,
+    helpline: helplineToSend,
     conversationDuration,
     timeOfContact,
     taskId: uniqueIdentifier,

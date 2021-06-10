@@ -189,6 +189,7 @@ export type DefinitionVersion = {
   };
   // TODO: change this property to contactForms to be consistent (though that may create confusion with the component name)
   tabbedForms: {
+    ContactlessTaskTab?: FormDefinition;
     CallerInformationTab: FormDefinition;
     CaseInformationTab: FormDefinition;
     ChildInformationTab: FormDefinition;

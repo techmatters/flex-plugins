@@ -173,6 +173,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, currentD
                 <ContactlessTaskTab
                   task={task}
                   display={subroute === 'contactlessTask'}
+                  definition={currentDefinitionVersion.tabbedForms.ContactlessTaskTab}
                   initialValues={contactForm.contactlessTask}
                 />
               )}
