@@ -16,7 +16,7 @@ import type {
   FormDefinition,
   FormItemDefinition,
 } from '../components/common/forms/types';
-import { InformationObject, ContactRawJson, SearchContactResult, isOfflineContactTask, CustomITask } from '../types/types';
+import { InformationObject, ContactRawJson, SearchContactResult, isOfflineContactTask } from '../types/types';
 
 /**
  * Un-nests the information (caller/child) as it comes from DB, to match the form structure
