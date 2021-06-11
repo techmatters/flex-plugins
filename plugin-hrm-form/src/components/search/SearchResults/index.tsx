@@ -187,7 +187,7 @@ const SearchResults: React.FC<Props> = ({
               &nbsp;
               <BoldText data-testid="SearchResultsCount">
                 {/* Intentionally we must show the option different at the one currently selected */}
-                {currentPage === SearchPages.resultsContacts ?  (
+                {currentPage === SearchPages.resultsContacts ? (
                   <>
                     {casesCount}{' '}
                     {casesCount === 1 ? (
@@ -196,7 +196,7 @@ const SearchResults: React.FC<Props> = ({
                       <Template code="PreviousContacts-Cases" />
                     )}
                   </>
-                ):(
+                ) : (
                   <>
                     {contactsCount}{' '}
                     {contactsCount === 1 ? (
