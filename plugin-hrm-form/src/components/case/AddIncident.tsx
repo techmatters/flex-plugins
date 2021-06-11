@@ -88,8 +88,9 @@ const AddIncident: React.FC<Props> = ({
     onClickClose();
   }
 
+  const { strings } = getConfig();
   function onError() {
-    window.alert('You must fill in required fields.');
+    window.alert(strings['Error-Form']);
   }
 
   return (
