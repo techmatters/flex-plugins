@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Template, Tab as TwilioTab } from '@twilio/flex-ui';
 
-import { getConfig } from '../../../HrmFormPlugin';
 import { standaloneTaskSid } from '../../StandaloneSearch';
 import ContactPreview from '../ContactPreview';
 import CasePreview from '../CasePreview';
@@ -135,7 +134,6 @@ const SearchResults: React.FC<Props> = ({
   const { count: casesCount, cases } = searchCasesResults;
   const contactsPageCount = Math.ceil(contactsCount / CONTACTS_PER_PAGE);
   const casesPageCount = Math.ceil(casesCount / CASES_PER_PAGE);
-  const { strings } = getConfig();
 
   const toggleTabs = () => {
     // eslint-disable-next-line no-unused-expressions
@@ -189,22 +187,22 @@ const SearchResults: React.FC<Props> = ({
               &nbsp;
               <BoldText data-testid="SearchResultsCount">
                 {/* Intentionally we must show the option different at the one currently selected */}
-                {currentPage === SearchPages.resultsContacts ? (
-                  <>
-                    {contactsCount}{' '}
-                    {contactsCount === 1 ? (
-                      <Template code="PreviousContacts-Contact" />
-                    ) : (
-                      <Template code="PreviousContacts-Contacts" />
-                    )}
-                  </>
-                ) : (
+                {currentPage === SearchPages.resultsContacts ?  (
                   <>
                     {casesCount}{' '}
                     {casesCount === 1 ? (
                       <Template code="PreviousContacts-Case" />
                     ) : (
                       <Template code="PreviousContacts-Cases" />
+                    )}
+                  </>
+                ):(
+                  <>
+                    {contactsCount}{' '}
+                    {contactsCount === 1 ? (
+                      <Template code="PreviousContacts-Contact" />
+                    ) : (
+                      <Template code="PreviousContacts-Contacts" />
                     )}
                   </>
                 )}

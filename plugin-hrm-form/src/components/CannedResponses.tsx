@@ -4,7 +4,6 @@ import { connect, ConnectedProps } from 'react-redux';
 import { Actions, withTheme } from '@twilio/flex-ui';
 
 import { getConfig } from '../HrmFormPlugin';
-import {} from '@material-ui/core';
 import { CannedResponsesContainer, FormSelect, FormSelectWrapper, FormOption } from '../styles/HrmStyles';
 import { RootState, namespace, configurationBase } from '../states';
 
