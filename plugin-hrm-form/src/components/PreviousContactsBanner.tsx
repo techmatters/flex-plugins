@@ -71,7 +71,44 @@ const PreviousContactsBanner: React.FC<Props> = ({
   return (
     <YellowBanner data-testid="PreviousContacts-Container">
       {/* eslint-disable-next-line prettier/prettier */}
-      <pre><Template code="PreviousContacts-ThereAre" /> <Bold>{contactsCount} <Template code="PreviousContacts-PreviousContacts" /></Bold> and <Bold>{casesCount} <Template code="PreviousContacts-Cases" /></Bold> <Template code="PreviousContacts-From" /> <Template code={localizedSource[task.channelType]} /> <Bold>{contactNumber}</Bold>.</pre>
+      <pre>
+        <Template code="PreviousContacts-ThereAre" />
+        &nbsp;
+        {contactsCount === 1 ? (
+          <>
+            <Bold>
+              {contactsCount} <Template code="PreviousContacts-PreviousContact" />
+            </Bold>
+          </>
+        ) : (
+          <>
+            <Bold>
+              {contactsCount} <Template code="PreviousContacts-PreviousContacts" />
+            </Bold>
+          </>
+        )}
+        &nbsp;and&nbsp;
+        {casesCount === 1 ? (
+          <>
+            <Bold>
+              {casesCount} <Template code="PreviousContacts-Case" />
+            </Bold>
+          </>
+        ) : (
+          <>
+            <Bold>
+              {casesCount} <Template code="PreviousContacts-Cases" />
+            </Bold>
+          </>
+        )}
+        &nbsp;
+        <Template code="PreviousContacts-From" />
+        &nbsp;
+        <Template code={localizedSource[task.channelType]} />
+        &nbsp;
+        <Bold>{contactNumber}</Bold>.
+      </pre>
+
       <StyledLink underline data-testid="PreviousContacts-ViewRecords" onClick={handleClickViewRecords}>
         <Template code="PreviousContacts-ViewRecords" />
       </StyledLink>
