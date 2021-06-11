@@ -33,7 +33,7 @@ const webColor = Flex.DefaultTaskChannels.Chat.colors.main;
 const facebookColor = Flex.DefaultTaskChannels.ChatMessenger.colors.main;
 const smsColor = Flex.DefaultTaskChannels.ChatSms.colors.main;
 const whatsappColor = Flex.DefaultTaskChannels.ChatWhatsApp.colors.main;
-const twitterColor = '#1BA1F2';
+const twitterColor = '#1DA1F2';
 
 /**
  * Returns the UI for the "Contacts Waiting" section
