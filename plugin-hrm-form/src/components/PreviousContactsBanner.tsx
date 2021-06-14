@@ -75,31 +75,28 @@ const PreviousContactsBanner: React.FC<Props> = ({
         <Template code="PreviousContacts-ThereAre" />
         &nbsp;
         {contactsCount === 1 ? (
-          <>
             <Bold>
               {contactsCount} <Template code="PreviousContacts-PreviousContact" />
             </Bold>
-          </>
         ) : (
-          <>
+          
             <Bold>
               {contactsCount} <Template code="PreviousContacts-PreviousContacts" />
             </Bold>
-          </>
         )}
         &nbsp;and&nbsp;
         {casesCount === 1 ? (
-          <>
+          
             <Bold>
               {casesCount} <Template code="PreviousContacts-Case" />
             </Bold>
-          </>
+          
         ) : (
-          <>
+          
             <Bold>
               {casesCount} <Template code="PreviousContacts-Cases" />
             </Bold>
-          </>
+          
         )}
         &nbsp;
         <Template code="PreviousContacts-From" />

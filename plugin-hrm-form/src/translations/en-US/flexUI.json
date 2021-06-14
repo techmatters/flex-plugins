@@ -280,7 +280,9 @@
 
   "PreviousContacts-ThereAre": "There are",
   "PreviousContacts-PreviousContacts": "previous contacts",
+  "PreviousContacts-PreviousContact": "previous contact",
   "PreviousContacts-Cases": "cases",
+  "PreviousContacts-Case": "case",
   "PreviousContacts-From": "from",
   "PreviousContacts-IPAddress": "IP address",
   "PreviousContacts-PhoneNumber": "phone number",
