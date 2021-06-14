@@ -3,8 +3,8 @@
     "name": "helpline",
     "label": "Helpline",
     "type": "select",
+    "defaultOption": "ChildLine",
     "options": [
-      { "value": "Unknown", "label": "" },
       { "value": "ChildLine", "label": "ChildLine" },
       { "value": "LifeLine", "label": "LifeLine" }
     ],
