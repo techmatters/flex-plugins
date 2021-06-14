@@ -1,7 +1,9 @@
+import React from 'react';
+import PropTypes from 'prop-types';
 
-export const twitterIcon = (props) => {
+const TwitterIcon = ({width, height, color}) => {
     return (
-      <svg width="24px" height="24px" viewBox="0 0 248 204" fill="white" version="1.1">
+      <svg width={width} height={height} viewBox="0 0 248 204" fill= {color} version="1.1">
         <path id="white_background" d="M221.95,51.29c0.15,2.17,0.15,4.34,0.15,6.53c0,66.73-50.8,143.69-143.69,143.69v-0.04
 		C50.97,201.51,24.1,193.65,1,178.83c3.99,0.48,8,0.72,12.02,0.73c22.74,0.02,44.83-7.61,62.72-21.66
 		c-21.61-0.41-40.56-14.5-47.18-35.07c7.57,1.46,15.37,1.16,22.8-0.87C27.8,117.2,10.85,96.5,10.85,72.46c0-0.22,0-0.43,0-0.64
@@ -10,6 +12,11 @@ export const twitterIcon = (props) => {
 		c-3.77,11.69-11.66,21.62-22.2,27.93c10.01-1.18,19.79-3.86,29-7.95C240.37,35.29,231.83,44.14,221.95,51.29z"/>
       </svg>
     );
-  }
+  };
 
-export default twitterIcon
+TwitterIcon.propTypes = {
+  width: PropTypes.string.isRequired,
+  height: PropTypes.string.isRequired,
+  color: PropTypes.string.isRequired
+};
+export default TwitterIcon;

@@ -24,7 +24,7 @@ import { Column, TaskCanvasOverride, Box, HeaderContainer } from '../styles/HrmS
 import HrmTheme from '../styles/HrmTheme';
 import { TLHPaddingLeft } from '../styles/GlobalOverrides';
 import { Container } from '../styles/queuesStatus';
-import {twitterIcon} from './socialMedia'
+import TwitterIcon from '../components/TwitterIcon'
 // eslint-disable-next-line
 import { getConfig } from '../HrmFormPlugin';
 import { isInMyBehalfITask } from '../types/types';
@@ -415,7 +415,7 @@ export const setupCannedResponses = () => {
 };
 
 export const setupTwitterChatChannel = () => {
-  const icon = <twitterIcon/>// This is just an example and should be changed to use the Twitter icon
+  const icon = <TwitterIcon width="24px" height = "24px" color="white"/>// This is just an example and should be changed to use the Twitter icon
 
   const TwitterChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel(
     'twitter',
