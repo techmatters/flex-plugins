@@ -13,17 +13,26 @@ import type { TaskEntry } from '../../states/contacts/reducer';
 import { createFormDefinition } from './ContactlessTaskTabDefinition';
 import { splitDate, splitTime } from '../../utils/helpers';
 import type { OfflineContactTask } from '../../types/types';
+import type { FormDefinition } from '../common/forms/types';
 
 type OwnProps = {
   task: OfflineContactTask;
   display: boolean;
+  definition?: FormDefinition;
   initialValues: TaskEntry[keyof TaskEntry];
 };
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const ContactlessTaskTab: React.FC<Props> = ({ dispatch, display, task, initialValues, counselorsList }) => {
+const ContactlessTaskTab: React.FC<Props> = ({
+  dispatch,
+  display,
+  task,
+  definition,
+  initialValues,
+  counselorsList,
+}) => {
   const [initialForm] = React.useState(initialValues); // grab initial values in first render only. This value should never change or will ruin the memoization below
 
   const { getValues, register, setError, setValue, watch, errors } = useFormContext();
@@ -34,12 +43,14 @@ const ContactlessTaskTab: React.FC<Props> = ({ dispatch, display, task, initialV
       dispatch(updateForm(task.taskSid, 'contactlessTask', rest));
     };
 
-    const formDefinition = createFormDefinition(counselorsList);
+    const formDefinition = definition
+      ? [...createFormDefinition(counselorsList), ...definition]
+      : createFormDefinition(counselorsList);
 
     const tab = createFormFromDefinition(formDefinition)(['contactlessTask'])(initialForm)(updateCallBack);
 
     return disperseInputs(5)(tab);
-  }, [counselorsList, dispatch, getValues, initialForm, task.taskSid]);
+  }, [counselorsList, dispatch, getValues, definition, initialForm, task.taskSid]);
 
   // Add invisible field that errors if date + time are future (triggered by validaiton)
   React.useEffect(() => {
