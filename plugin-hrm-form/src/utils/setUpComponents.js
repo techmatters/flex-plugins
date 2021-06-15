@@ -420,8 +420,12 @@ export const setupTwitterChatChannel = () => {
     'twitter',
     task => task.channelType === 'twitter',
   );
+  
+  const manager = Flex.Manager.getInstance();
+
 
   // modify TwitterChatChannel here
+  manager.strings.TaskHeaderLine = "@{{task.attributes.twitterUserHandle}}"
 
   TwitterChatChannel.colors.main = {
     Accepted: twitterColor,
