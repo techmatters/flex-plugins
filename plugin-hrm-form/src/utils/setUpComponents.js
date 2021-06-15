@@ -24,7 +24,7 @@ import { Column, TaskCanvasOverride, Box, HeaderContainer } from '../styles/HrmS
 import HrmTheme from '../styles/HrmTheme';
 import { TLHPaddingLeft } from '../styles/GlobalOverrides';
 import { Container } from '../styles/queuesStatus';
-import TwitterIcon from '../components/TwitterIcon'
+import TwitterIcon from '../components/TwitterIcon';
 // eslint-disable-next-line
 import { getConfig } from '../HrmFormPlugin';
 import { isInMyBehalfITask } from '../types/types';
@@ -35,7 +35,6 @@ const facebookColor = Flex.DefaultTaskChannels.ChatMessenger.colors.main;
 const smsColor = Flex.DefaultTaskChannels.ChatSms.colors.main;
 const whatsappColor = Flex.DefaultTaskChannels.ChatWhatsApp.colors.main;
 const twitterColor = '#1DA1F2';
-
 
 /**
  * Returns the UI for the "Contacts Waiting" section
@@ -415,7 +414,7 @@ export const setupCannedResponses = () => {
 };
 
 export const setupTwitterChatChannel = () => {
-  const icon = <TwitterIcon width="24px" height = "24px" color="white"/>// This is just an example and should be changed to use the Twitter icon
+  const icon = <TwitterIcon width="24px" height="24px" color="white" />; // This is just an example and should be changed to use the Twitter icon
 
   const TwitterChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel(
     'twitter',
