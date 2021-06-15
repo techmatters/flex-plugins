@@ -31,6 +31,8 @@ export const localizedSource: { [channelType in ChannelTypes]: string } = {
   [channelTypes.sms]: 'PreviousContacts-PhoneNumber',
   [channelTypes.whatsapp]: 'PreviousContacts-WhatsappNumber',
   [channelTypes.facebook]: 'PreviousContacts-FacebookUser',
+  [channelTypes.twitter]: 'PreviousContacts-TwitterUser',
+  
 };
 
 const PreviousContactsBanner: React.FC<Props> = ({
@@ -67,11 +69,11 @@ const PreviousContactsBanner: React.FC<Props> = ({
   };
 
   const contactNumber = isTwilioTask(task) ? getNumberFromTask(task) : '';
-
+  const display = task.channelType===channelTypes.twitter? "@"+task.attributes.twitterUserHandle : contactNumber;
   return (
     <YellowBanner data-testid="PreviousContacts-Container">
       {/* eslint-disable-next-line prettier/prettier */}
-      <pre><Template code="PreviousContacts-ThereAre" /> <Bold>{contactsCount} <Template code="PreviousContacts-PreviousContacts" /></Bold> and <Bold>{casesCount} <Template code="PreviousContacts-Cases" /></Bold> <Template code="PreviousContacts-From" /> <Template code={localizedSource[task.channelType]} /> <Bold>{contactNumber}</Bold>.</pre>
+      <pre><Template code="PreviousContacts-ThereAre" /> <Bold>{contactsCount} <Template code="PreviousContacts-PreviousContacts" /></Bold> and <Bold>{casesCount} <Template code="PreviousContacts-Cases" /></Bold> <Template code="PreviousContacts-From" /> <Template code={localizedSource[task.channelType]} /> <Bold>{display}</Bold>.</pre>
       <StyledLink underline data-testid="PreviousContacts-ViewRecords" onClick={handleClickViewRecords}>
         <Template code="PreviousContacts-ViewRecords" />
       </StyledLink>

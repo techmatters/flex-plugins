@@ -17,6 +17,7 @@ export const channelTypes = {
   voice: 'voice',
   sms: 'sms',
   whatsapp: 'whatsapp',
+  twitter: 'twitter',
 } as const;
 
 export const channelsAndDefault = {
@@ -27,7 +28,6 @@ export const channelsAndDefault = {
 export type ChannelTypes = typeof channelTypes[keyof typeof channelTypes];
 
 export const otherContactChannels = {
-  Twitter: 'Twitter',
   'Bulletin board': 'Bulletin board',
   'E-mail': 'E-mail',
   'Mobile app': 'Mobile app',
