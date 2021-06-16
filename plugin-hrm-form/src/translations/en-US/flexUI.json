@@ -1,4 +1,6 @@
 {
+  "TaskHeaderLineTwitter": "@{{task.attributes.twitterUserHandle}}",
+
   "ChatWelcomeText": "Conversation started",
   "TaskHeaderEndCall": "Hang Up",
   "TaskHeaderEndChat": "End Chat",

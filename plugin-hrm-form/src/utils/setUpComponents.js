@@ -424,29 +424,28 @@ export const setupTwitterChatChannel = () => {
   const manager = Flex.Manager.getInstance();
 
   // modify TwitterChatChannel here
-  manager.strings.TaskHeaderLine = '@{{task.attributes.twitterUserHandle}}';
   TwitterChatChannel.templates = {
     IncomingTaskCanvas: {
-      firstLine: 'TaskHeaderLine',
+      firstLine: 'TaskHeaderLineTwitter',
     },
     CallCanvas: {
-      firstLine: 'TaskHeaderLine',
+      firstLine: 'TaskHeaderLineTwitter',
     },
     TaskListItem: {
-      firstLine: 'TaskHeaderLine',
+      firstLine: 'TaskHeaderLineTwitter',
     },
     TaskCard: {
-      firstLine: 'TaskHeaderLine',
+      firstLine: 'TaskHeaderLineTwitter',
     },
     TaskCanvasHeader: {
-      firstLine: 'TaskHeaderLine',
+      firstLine: 'TaskHeaderLineTwitter',
     },
     Supervisor: {
       TaskCanvasHeader: {
-        title: 'TaskHeaderLine',
+        title: 'TaskHeaderLineTwitter',
       },
       TaskOverviewCanvas: {
-        firstLine: 'TaskHeaderLine',
+        firstLine: 'TaskHeaderLineTwitter',
       },
     },
   };
