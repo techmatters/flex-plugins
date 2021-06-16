@@ -421,34 +421,14 @@ export const setupTwitterChatChannel = () => {
     task => task.channelType === 'twitter',
   );
 
-  const manager = Flex.Manager.getInstance();
-
   // modify TwitterChatChannel here
-  TwitterChatChannel.templates = {
-    IncomingTaskCanvas: {
-      firstLine: 'TaskHeaderLineTwitter',
-    },
-    CallCanvas: {
-      firstLine: 'TaskHeaderLineTwitter',
-    },
-    TaskListItem: {
-      firstLine: 'TaskHeaderLineTwitter',
-    },
-    TaskCard: {
-      firstLine: 'TaskHeaderLineTwitter',
-    },
-    TaskCanvasHeader: {
-      firstLine: 'TaskHeaderLineTwitter',
-    },
-    Supervisor: {
-      TaskCanvasHeader: {
-        title: 'TaskHeaderLineTwitter',
-      },
-      TaskOverviewCanvas: {
-        firstLine: 'TaskHeaderLineTwitter',
-      },
-    },
-  };
+  TwitterChatChannel.templates.IncomingTaskCanvas.firstLine = 'TaskHeaderLineTwitter';
+  TwitterChatChannel.templates.CallCanvas.firstLine = 'TaskHeaderLineTwitter';
+  TwitterChatChannel.templates.TaskListItem.firstLine = 'TaskHeaderLineTwitter';
+  TwitterChatChannel.templates.TaskCard.firstLine = 'TaskHeaderLineTwitter';
+  TwitterChatChannel.templates.TaskCanvasHeader.title = 'TaskHeaderLineTwitter';
+  TwitterChatChannel.templates.Supervisor.TaskCanvasHeader.title = 'TaskHeaderLineTwitter';
+  TwitterChatChannel.templates.Supervisor.TaskOverviewCanvas.title = 'TaskHeaderLineTwitter';
 
   TwitterChatChannel.colors.main = {
     Accepted: twitterColor,
