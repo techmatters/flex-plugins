@@ -425,7 +425,31 @@ export const setupTwitterChatChannel = () => {
 
   // modify TwitterChatChannel here
   manager.strings.TaskHeaderLine = '@{{task.attributes.twitterUserHandle}}';
-  TwitterChatChannel.templates.TaskCard.firstLine = "TaskHeaderLine"
+  TwitterChatChannel.templates = {
+    IncomingTaskCanvas: {
+      firstLine: 'TaskHeaderLine',
+    },
+    CallCanvas: {
+      firstLine: 'TaskHeaderLine',
+    },
+    TaskListItem: {
+      firstLine: 'TaskHeaderLine',
+    },
+    TaskCard: {
+      firstLine: 'TaskHeaderLine',
+    },
+    TaskCanvasHeader: {
+      firstLine: 'TaskHeaderLine',
+    },
+    Supervisor: {
+      TaskCanvasHeader: {
+        title: 'TaskHeaderLine',
+      },
+      TaskOverviewCanvas: {
+        firstLine: 'TaskHeaderLine',
+      },
+    },
+  };
 
   TwitterChatChannel.colors.main = {
     Accepted: twitterColor,
