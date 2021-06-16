@@ -127,7 +127,8 @@ class SearchForm extends Component {
     const { task } = this.props;
 
     const contactNumberFromTask = getNumberFromTask(task);
-    const checkBoxName =  task.channelType === channelTypes.twitter ? `@${task.attributes.twitterUserHandle}`: contactNumberFromTask
+    const checkBoxName =
+      task.channelType === channelTypes.twitter ? `@${task.attributes.twitterUserHandle}` : contactNumberFromTask;
 
     const handleChangePreviousContactsCheckbox = () => {
       const value = contactNumber === '' ? contactNumberFromTask : '';
