@@ -32,7 +32,6 @@ export const localizedSource: { [channelType in ChannelTypes]: string } = {
   [channelTypes.whatsapp]: 'PreviousContacts-WhatsappNumber',
   [channelTypes.facebook]: 'PreviousContacts-FacebookUser',
   [channelTypes.twitter]: 'PreviousContacts-TwitterUser',
-  
 };
 
 const PreviousContactsBanner: React.FC<Props> = ({
@@ -69,7 +68,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
   };
 
   const contactNumber = isTwilioTask(task) ? getNumberFromTask(task) : '';
-  const display = task.channelType===channelTypes.twitter? "@"+task.attributes.twitterUserHandle : contactNumber;
+  const display = task.channelType === channelTypes.twitter ? `@${task.attributes.twitterUserHandle}` : contactNumber;
   return (
     <YellowBanner data-testid="PreviousContacts-Container">
       {/* eslint-disable-next-line prettier/prettier */}
