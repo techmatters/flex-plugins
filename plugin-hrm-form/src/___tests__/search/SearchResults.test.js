@@ -100,7 +100,7 @@ describe('<SearchResults> with 0 results', () => {
       </Provider>,
     );
 
-    expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('0 cases');
+    expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('0 PreviousContacts-Cases');
     expect(screen.getByTestId('ContactsCount')).toHaveTextContent('0 SearchResultsIndex-Contacts');
   });
 
@@ -120,7 +120,7 @@ describe('<SearchResults> with 0 results', () => {
       </Provider>,
     );
 
-    expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('0 contacts');
+    expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('0 PreviousContacts-Contacts');
     expect(screen.getByTestId('CasesCount')).toHaveTextContent('0 SearchResultsIndex-Cases');
   });
 });
@@ -182,7 +182,7 @@ describe('<SearchResults> with 1 result', () => {
       </Provider>,
     );
 
-    expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('1 cases');
+    expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('1 PreviousContacts-Case');
     expect(screen.getByTestId('ContactsCount')).toHaveTextContent('1 SearchResultsIndex-Contacts');
   });
 
@@ -202,7 +202,7 @@ describe('<SearchResults> with 1 result', () => {
       </Provider>,
     );
 
-    expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('1 contacts');
+    expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('1 PreviousContacts-Contact');
     expect(screen.getByTestId('CasesCount')).toHaveTextContent('1 SearchResultsIndex-Cases');
   });
 });
@@ -292,7 +292,7 @@ describe('<SearchResults> with multiple results', () => {
       </Provider>,
     );
 
-    expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('2 cases');
+    expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('2 PreviousContacts-Cases');
     expect(screen.getByTestId('ContactsCount')).toHaveTextContent('2 SearchResultsIndex-Contacts');
   });
 
@@ -312,7 +312,7 @@ describe('<SearchResults> with multiple results', () => {
       </Provider>,
     );
 
-    expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('2 contacts');
+    expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('2 PreviousContacts-Contacts');
     expect(screen.getByTestId('CasesCount')).toHaveTextContent('2 SearchResultsIndex-Cases');
   });
 });

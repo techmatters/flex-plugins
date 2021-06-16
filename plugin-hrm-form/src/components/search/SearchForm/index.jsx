@@ -92,10 +92,16 @@ class SearchForm extends Component {
       contactNumber,
     } = this.props.values;
 
-    const counselorsOptions = this.props.counselors.map(e => ({ label: e.fullName, value: e.sid }));
+    const counselorsOptions = this.props.counselors.map(e => ({
+      label: e.fullName,
+      value: e.sid,
+    }));
 
     const officeOptions = this.props.officeInformation
-      ? this.props.officeInformation.map(x => ({ label: x.name, value: x.name }))
+      ? this.props.officeInformation.map(x => ({
+          label: x.name,
+          value: x.name,
+        }))
       : [];
 
     const { helpline: userHelpline, strings, multipleOfficeSupport } = getConfig();
@@ -144,7 +150,7 @@ class SearchForm extends Component {
             <FieldText
               id="Search_FirstName"
               label={strings['SearchForm-Name']}
-              placeholder="First"
+              placeholder={strings['SearchForm-First']}
               field={getField(firstName)}
               {...this.defaultEventHandlers('firstName')}
               style={{ marginRight: 25 }}
@@ -152,7 +158,7 @@ class SearchForm extends Component {
             />
             <FieldText
               id="Search_LastName"
-              placeholder="Last"
+              placeholder={strings['SearchForm-Last']}
               field={getField(lastName)}
               {...this.defaultEventHandlers('lastName')}
               onKeyPress={submitOnEnter}
@@ -164,7 +170,7 @@ class SearchForm extends Component {
               id="Search_Counselor"
               name="counselor"
               label={strings['SearchForm-Counselor']}
-              placeholder="Name"
+              placeholder={strings['SearchForm-Name']}
               field={getField(counselor)}
               options={[{ label: '', value: '' }, ...counselorsOptions]}
               {...this.defaultEventHandlers('counselor')}
@@ -173,7 +179,7 @@ class SearchForm extends Component {
             <FieldDate
               id="Search_DateFrom"
               label={strings['SearchForm-DateRange']}
-              placeholder="Start Date"
+              placeholder={strings['SearchForm-Start']}
               field={getField(dateFrom)}
               {...this.defaultEventHandlers('dateFrom')}
               style={{ marginRight: '10px' }}
@@ -181,7 +187,7 @@ class SearchForm extends Component {
             <FieldDate
               id="Search_DateTo"
               label=" "
-              placeholder="End Date"
+              placeholder={strings['SearchForm-End']}
               field={getField(dateTo)}
               {...this.defaultEventHandlers('dateTo')}
               style={{ marginRight: '10px' }}

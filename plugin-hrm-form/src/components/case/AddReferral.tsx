@@ -25,6 +25,7 @@ import type { DefinitionVersion } from '../common/forms/types';
 import { transformValues } from '../../services/ContactService';
 import { StandaloneITask } from '../StandaloneSearch';
 import type { CustomITask } from '../../types/types';
+import { getConfig } from '../../HrmFormPlugin';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;
@@ -78,8 +79,9 @@ const AddReferral: React.FC<Props> = ({
     onClickClose();
   };
 
+  const { strings } = getConfig();
   function onError() {
-    window.alert('You must fill in required fields.');
+    window.alert(strings['Error-Form']);
   }
 
   return (

@@ -31,7 +31,7 @@ type OwnProps = {
 };
 type Props = OwnProps;
 
-const extraFieldDefinitions = (strings: Strings<string>): FormDefinition => {
+const extraFieldDefinitions = (strings: ReturnType<typeof getConfig>['strings']): FormDefinition => {
   return [
     {
       name: 'keepConfidential',
