@@ -425,6 +425,7 @@ export const setupTwitterChatChannel = () => {
 
   // modify TwitterChatChannel here
   manager.strings.TaskHeaderLine = '@{{task.attributes.twitterUserHandle}}';
+  TwitterChatChannel.templates.TaskCard.firstLine = "TaskHeaderLine"
 
   TwitterChatChannel.colors.main = {
     Accepted: twitterColor,
