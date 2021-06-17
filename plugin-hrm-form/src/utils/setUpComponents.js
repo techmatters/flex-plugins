@@ -48,6 +48,7 @@ const queuesStatusUI = () => (
       facebookColor,
       smsColor,
       whatsappColor,
+      twitterColor,
     }}
   />
 );

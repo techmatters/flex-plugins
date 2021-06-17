@@ -11,7 +11,6 @@ import { TLHPaddingLeft } from '../../styles/GlobalOverrides';
 
 const QueuesStatus = ({ colors, queuesStatusState, paddingRight }) => {
   const { queuesStatus, error } = queuesStatusState;
-
   return (
     <Container role="complementary" tabIndex={0}>
       <Box paddingBottom="14px">
@@ -41,6 +40,7 @@ QueuesStatus.propTypes = {
     facebookColor: PropTypes.shape({ Accepted: PropTypes.string }),
     smsColor: PropTypes.shape({ Accepted: PropTypes.string }),
     whatsappColor: PropTypes.shape({ Accepted: PropTypes.string }),
+    twitterColor: PropTypes.string,
   }).isRequired,
   queuesStatusState: PropTypes.shape({
     queuesStatus: PropTypes.shape({

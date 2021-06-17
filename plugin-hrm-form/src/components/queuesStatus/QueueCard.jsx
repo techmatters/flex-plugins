@@ -23,6 +23,7 @@ class QueuesCard extends React.PureComponent {
     voice: PropTypes.number.isRequired,
     web: PropTypes.number.isRequired,
     whatsapp: PropTypes.number.isRequired,
+    twitter: PropTypes.number.isRequired,
     longestWaitingDate: PropTypes.string,
     colors: PropTypes.shape({
       voiceColor: PropTypes.shape({ Accepted: PropTypes.string }),
@@ -30,6 +31,7 @@ class QueuesCard extends React.PureComponent {
       facebookColor: PropTypes.shape({ Accepted: PropTypes.string }),
       smsColor: PropTypes.shape({ Accepted: PropTypes.string }),
       whatsappColor: PropTypes.shape({ Accepted: PropTypes.string }),
+      twitterColor: PropTypes.string,
     }).isRequired,
   };
 
@@ -94,9 +96,8 @@ class QueuesCard extends React.PureComponent {
   };
 
   render() {
-    const { qName, colors, facebook, sms, voice, web, whatsapp } = this.props;
-    const { voiceColor, smsColor, facebookColor, whatsappColor, webColor } = colors;
-
+    const { qName, colors, facebook, sms, voice, web, whatsapp, twitter } = this.props;
+    const { voiceColor, smsColor, facebookColor, whatsappColor, webColor, twitterColor } = colors;
     return (
       <>
         <Box paddingLeft="10px" paddingTop="10px">
@@ -112,6 +113,7 @@ class QueuesCard extends React.PureComponent {
               {this.renderChannel('FB', facebookColor.Accepted, facebook, true, 'Facebook')}
               {this.renderChannel('WA', whatsappColor.Accepted, whatsapp, true, 'Whatsapp')}
               {this.renderChannel('Chat', webColor.Accepted, web, true)}
+              {this.renderChannel('Twtr', twitterColor, twitter, true)}
             </Row>
           </Box>
           <Row>
