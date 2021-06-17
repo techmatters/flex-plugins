@@ -17,6 +17,7 @@ import { Bold } from '../styles/HrmStyles';
 import { StyledLink } from '../styles/search';
 import { ChannelTypes, channelTypes } from '../states/DomainConstants';
 import { changeRoute as changeRouteAction } from '../states/routing/actions';
+import {formatNumberFromTask} from '../../src/utils/formatters'
 
 type OwnProps = {
   task: CustomITask;
@@ -68,8 +69,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
   };
 
   const contactNumber = isTwilioTask(task) ? getNumberFromTask(task) : '';
-  const contactIdentifier =
-    task.channelType === channelTypes.twitter ? `@${task.attributes.twitterUserHandle}` : contactNumber;
+  const contactIdentifier = formatNumberFromTask(task, contactNumber)
   return (
     <YellowBanner data-testid="PreviousContacts-Container">
       {/* eslint-disable-next-line prettier/prettier */}

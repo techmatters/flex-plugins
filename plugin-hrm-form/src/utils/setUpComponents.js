@@ -24,7 +24,7 @@ import { Column, TaskCanvasOverride, Box, HeaderContainer } from '../styles/HrmS
 import HrmTheme from '../styles/HrmTheme';
 import { TLHPaddingLeft } from '../styles/GlobalOverrides';
 import { Container } from '../styles/queuesStatus';
-import TwitterIcon from '../components/TwitterIcon';
+import TwitterIcon from '../components/common/icons/TwitterIcon';
 // eslint-disable-next-line
 import { getConfig } from '../HrmFormPlugin';
 import { isInMyBehalfITask } from '../types/types';

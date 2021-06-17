@@ -1,8 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+type Props = {
+  width: string,
+  height: string,
+  color: string
+}
+
 // eslint-disable-next-line react/display-name
-const TwitterIcon = ({ width, height, color }) => {
+const TwitterIcon: React.FC<Props> = ({ width, height, color }) => {
   return (
     <svg width={width} height={height} viewBox="0 0 248 204" fill={color} version="1.1">
       <path
