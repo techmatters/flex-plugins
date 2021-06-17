@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 type Props = {
-  width: string,
-  height: string,
-  color: string
-}
+  width: string;
+  height: string;
+  color: string;
+};
 
 // eslint-disable-next-line react/display-name
 const TwitterIcon: React.FC<Props> = ({ width, height, color }) => {

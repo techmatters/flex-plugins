@@ -25,7 +25,7 @@ import { namespace, configurationBase, searchContactsBase } from '../../../state
 import { getNumberFromTask } from '../../../services/ContactService';
 import { localizedSource } from '../../PreviousContactsBanner';
 import { channelTypes } from '../../../states/DomainConstants';
-import {formatNumberFromTask} from '../../../utils/formatters'
+import { formatNumberFromTask } from '../../../utils/formatters';
 
 const getField = value => ({
   value,
@@ -128,7 +128,7 @@ class SearchForm extends Component {
     const { task } = this.props;
 
     const contactNumberFromTask = getNumberFromTask(task);
-    const checkBoxName = formatNumberFromTask(task, contactNumberFromTask)
+    const checkBoxName = formatNumberFromTask(task, contactNumberFromTask);
 
     const handleChangePreviousContactsCheckbox = () => {
       const value = contactNumber === '' ? contactNumberFromTask : '';
