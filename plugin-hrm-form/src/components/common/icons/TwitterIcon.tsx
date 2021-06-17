@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 type Props = {
   width: string;
   height: string;
-  color: string;
+  color?: string;
 };
 /* eslint-disable react/prop-types */
 const TwitterIcon: React.FC<Props> = ({ width, height, color }) => {
@@ -25,4 +25,7 @@ const TwitterIcon: React.FC<Props> = ({ width, height, color }) => {
 };
 
 TwitterIcon.displayName = 'TwitterIcon';
+TwitterIcon.defaultProps = {
+  color: '#1DA1F2',
+};
 export default TwitterIcon;
