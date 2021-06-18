@@ -98,11 +98,7 @@ class QueuesCard extends React.PureComponent {
   render() {
     const { qName, colors, facebook, sms, voice, web, whatsapp, twitter } = this.props;
     const { voiceColor, smsColor, facebookColor, whatsappColor, webColor, twitterColor } = colors;
-    console.log(typeof smsColor);
-    console.log(typeof whatsappColor);
-    console.log(typeof facebookColor);
-    console.log(typeof smsColor);
-    console.log(typeof voiceColor);
+
     return (
       <>
         <Box paddingLeft="10px" paddingTop="10px">
