@@ -17,6 +17,7 @@ import { Bold } from '../styles/HrmStyles';
 import { StyledLink } from '../styles/search';
 import { ChannelTypes, channelTypes } from '../states/DomainConstants';
 import { changeRoute as changeRouteAction } from '../states/routing/actions';
+import { formatNumberFromTask } from '../utils/formatters';
 
 type OwnProps = {
   task: CustomITask;
@@ -31,6 +32,7 @@ export const localizedSource: { [channelType in ChannelTypes]: string } = {
   [channelTypes.sms]: 'PreviousContacts-PhoneNumber',
   [channelTypes.whatsapp]: 'PreviousContacts-WhatsappNumber',
   [channelTypes.facebook]: 'PreviousContacts-FacebookUser',
+  [channelTypes.twitter]: 'PreviousContacts-TwitterUser',
 };
 
 const PreviousContactsBanner: React.FC<Props> = ({
@@ -66,8 +68,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
     changeRoute({ route: 'tabbed-forms', subroute: 'search' });
   };
 
-  const contactNumber = isTwilioTask(task) ? getNumberFromTask(task) : '';
-
+  const contactIdentifier = formatNumberFromTask(task);
   return (
     <YellowBanner data-testid="PreviousContacts-Container">
       {/* eslint-disable-next-line prettier/prettier */}
@@ -98,7 +99,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
         &nbsp;
         <Template code={localizedSource[task.channelType]} />
         &nbsp;
-        <Bold>{contactNumber}</Bold>.
+        <Bold>{contactIdentifier}</Bold>.
       </pre>
 
       <StyledLink underline data-testid="PreviousContacts-ViewRecords" onClick={handleClickViewRecords}>

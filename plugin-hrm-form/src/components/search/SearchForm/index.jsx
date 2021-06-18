@@ -24,6 +24,8 @@ import { getConfig } from '../../../HrmFormPlugin';
 import { namespace, configurationBase, searchContactsBase } from '../../../states';
 import { getNumberFromTask } from '../../../services/ContactService';
 import { localizedSource } from '../../PreviousContactsBanner';
+import { channelTypes } from '../../../states/DomainConstants';
+import { formatNumberFromTask } from '../../../utils/formatters';
 
 const getField = value => ({
   value,
@@ -132,6 +134,7 @@ class SearchForm extends Component {
     const { task } = this.props;
 
     const contactNumberFromTask = getNumberFromTask(task);
+    const checkBoxName = formatNumberFromTask(task);
 
     const handleChangePreviousContactsCheckbox = () => {
       const value = contactNumber === '' ? contactNumberFromTask : '';
@@ -230,7 +233,7 @@ class SearchForm extends Component {
                     </Box>
                     <span>
                       <Template code="PreviousContacts-OnlyShowRecordsFrom" /> <Template code={source} />{' '}
-                      <Bold>{contactNumberFromTask}</Bold>
+                      <Bold>{checkBoxName}</Bold>
                     </span>
                   </FormCheckBoxWrapper>
                 </FormLabel>
