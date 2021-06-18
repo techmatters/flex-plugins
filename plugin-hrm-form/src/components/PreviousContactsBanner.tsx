@@ -68,8 +68,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
     changeRoute({ route: 'tabbed-forms', subroute: 'search' });
   };
 
-  const contactNumber = isTwilioTask(task) ? getNumberFromTask(task) : '';
-  const contactIdentifier = formatNumberFromTask(task, contactNumber);
+  const contactIdentifier = formatNumberFromTask(task);
   return (
     <YellowBanner data-testid="PreviousContacts-Container">
       {/* eslint-disable-next-line prettier/prettier */}
