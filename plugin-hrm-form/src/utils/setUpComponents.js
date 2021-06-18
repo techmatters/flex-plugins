@@ -43,11 +43,12 @@ const queuesStatusUI = () => (
   <QueuesStatus
     key="queue-status-task-list"
     colors={{
-      voiceColor,
-      webColor,
-      facebookColor,
-      smsColor,
-      whatsappColor,
+      voiceColor: voiceColor.Accepted,
+      webColor: webColor.Accepted,
+      facebookColor: facebookColor.Accepted,
+      smsColor: smsColor.Accepted,
+      whatsappColor: whatsappColor.Accepted,
+      twitterColor,
     }}
   />
 );
