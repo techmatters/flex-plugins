@@ -105,11 +105,10 @@ const AddHousehold: React.FC<Props> = ({
     await saveHousehold(false);
     onClickClose();
   }
-
+  const { strings } = getConfig();
   function onError() {
-    window.alert('You must fill in required fields.');
+    window.alert(strings['Error-Form']);
   }
-
   return (
     <FormProvider {...methods}>
       <CaseActionLayout>

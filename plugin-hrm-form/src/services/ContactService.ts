@@ -157,11 +157,11 @@ export function transformForm(form: TaskEntry): ContactRawJson {
  * @param  task
  * @param form
  * @param workerSid
- * @param helpline
+ * @param workerHelpline
  * @param uniqueIdentifier
  * @param shouldFillEndMillis
  */
-export async function saveToHrm(task, form, workerSid, helpline, uniqueIdentifier, shouldFillEndMillis = true) {
+export async function saveToHrm(task, form, workerSid, workerHelpline, uniqueIdentifier, shouldFillEndMillis = true) {
   // if we got this far, we assume the form is valid and ready to submit
   const metadata = shouldFillEndMillis ? fillEndMillis(form.metadata) : form.metadata;
   const conversationDuration = getConversationDuration(task, metadata);
@@ -193,13 +193,15 @@ export async function saveToHrm(task, form, workerSid, helpline, uniqueIdentifie
    */
   const formToSend = transformForm(rawForm);
 
+  const helplineToSend = (isOfflineContactTask(task) && form.contactlessTask?.helpline) || workerHelpline;
+
   const body = {
     form: formToSend,
     twilioWorkerId,
     queueName: task.queueName,
     channel: task.channelType,
     number,
-    helpline,
+    helpline: helplineToSend,
     conversationDuration,
     timeOfContact,
     taskId: uniqueIdentifier,
