@@ -4,7 +4,7 @@ import { format } from 'date-fns';
 import { getConfig } from '../HrmFormPlugin';
 import { FormItemDefinition } from '../components/common/forms/types';
 import { channelTypes } from '../states/DomainConstants';
-import { CustomITask } from '../types/types';
+import { getNumberFromTask } from '../services/ContactService';
 
 /**
  * @param {string} name
@@ -106,9 +106,9 @@ export const presentValue = (value: string | number | boolean) => (definition: F
 
 /**
  *
- * @param task
+ * @param {ITask | CustomITask} task
  * @param contactNumberFromTask
  */
 
-export const formatNumberFromTask = (task: CustomITask, contactNumberFromTask: string) =>
-  task.channelType === channelTypes.twitter ? `@${task.attributes.twitterUserHandle}` : contactNumberFromTask;
+export const formatNumberFromTask = task =>
+  task.channelType === channelTypes.twitter ? `@${task.attributes.twitterUserHandle}` : getNumberFromTask(task);

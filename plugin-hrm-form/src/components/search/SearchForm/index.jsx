@@ -128,7 +128,7 @@ class SearchForm extends Component {
     const { task } = this.props;
 
     const contactNumberFromTask = getNumberFromTask(task);
-    const checkBoxName = formatNumberFromTask(task, contactNumberFromTask);
+    const checkBoxName = formatNumberFromTask(task);
 
     const handleChangePreviousContactsCheckbox = () => {
       const value = contactNumber === '' ? contactNumberFromTask : '';

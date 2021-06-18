@@ -1,13 +1,13 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import PropTypes from 'prop-types';
 
 type Props = {
   width: string;
   height: string;
-  color: string;
+  color?: string;
 };
-
-// eslint-disable-next-line react/display-name
+/* eslint-disable react/prop-types */
 const TwitterIcon: React.FC<Props> = ({ width, height, color }) => {
   return (
     <svg width={width} height={height} viewBox="0 0 248 204" fill={color} version="1.1">
@@ -24,9 +24,8 @@ const TwitterIcon: React.FC<Props> = ({ width, height, color }) => {
   );
 };
 
-TwitterIcon.propTypes = {
-  width: PropTypes.string.isRequired,
-  height: PropTypes.string.isRequired,
-  color: PropTypes.string.isRequired,
+TwitterIcon.displayName = 'TwitterIcon';
+TwitterIcon.defaultProps = {
+  color: '#1DA1F2',
 };
 export default TwitterIcon;
