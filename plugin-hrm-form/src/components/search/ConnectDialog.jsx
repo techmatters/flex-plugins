@@ -50,7 +50,7 @@ const ConnectDialog = ({ anchorEl, currentIsCaller, contact, handleConfirm, hand
           <ConfirmText>{getText()}</ConfirmText>
           <Row>
             <CancelButton tabIndex={2} variant="text" size="medium" onClick={handleClose}>
-              cancel
+              <Template code="CaseHeader-Cancel" />
             </CancelButton>
             <Button
               autoFocus
@@ -62,7 +62,7 @@ const ConnectDialog = ({ anchorEl, currentIsCaller, contact, handleConfirm, hand
               disabled={!hasTaskControl(task)}
             >
               <CheckIcon />
-              yes, copy
+              <Template code="CaseHeader-Copy" />
             </Button>
           </Row>
         </ConfirmContainer>

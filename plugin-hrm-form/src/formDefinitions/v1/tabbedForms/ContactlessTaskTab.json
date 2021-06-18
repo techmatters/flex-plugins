@@ -1,0 +1,13 @@
+[
+  {
+    "name": "helpline",
+    "label": "Helpline",
+    "type": "select",
+    "defaultOption": "ChildLine",
+    "options": [
+      { "value": "ChildLine", "label": "ChildLine" },
+      { "value": "LifeLine", "label": "LifeLine" }
+    ],
+    "required": { "value": true, "message": "RequiredFieldError" }
+  }
+]

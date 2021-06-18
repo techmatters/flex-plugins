@@ -48,7 +48,9 @@ const OfflineContactTask: React.FC<Props> = ({ isAddingOfflineContact, selectedT
         </OfflineContactTaskIconContainer>
         <OfflineContactTaskContent>
           <OfflineContactTaskFirstLine>{formattedName}</OfflineContactTaskFirstLine>
-          <OfflineContactTaskSecondLine>In Progress</OfflineContactTaskSecondLine>
+          <OfflineContactTaskSecondLine>
+            <Template code="OfflineContactSecondLine" />
+          </OfflineContactTaskSecondLine>
         </OfflineContactTaskContent>
       </OfflineContactTaskButton>
     </>

@@ -183,14 +183,33 @@ const SearchResults: React.FC<Props> = ({
         <ScrollableList>
           <StyledResultsContainer>
             <StyledResultsText>
-              There are&nbsp;
+              <Template code="PreviousContacts-ThereAre" />
+              &nbsp;
               <BoldText data-testid="SearchResultsCount">
                 {/* Intentionally we must show the option different at the one currently selected */}
-                {currentPage === SearchPages.resultsContacts
-                  ? `${casesCount ? casesCount : 0} cases`
-                  : `${contactsCount ? contactsCount : 0} contacts`}
+                {currentPage === SearchPages.resultsContacts ? (
+                  <>
+                    {casesCount}{' '}
+                    {casesCount === 1 ? (
+                      <Template code="PreviousContacts-Case" />
+                    ) : (
+                      <Template code="PreviousContacts-Cases" />
+                    )}
+                  </>
+                ) : (
+                  <>
+                    {contactsCount}{' '}
+                    {contactsCount === 1 ? (
+                      <Template code="PreviousContacts-Contact" />
+                    ) : (
+                      <Template code="PreviousContacts-Contacts" />
+                    )}
+                  </>
+                )}
               </BoldText>
-              &nbsp;returned in this search.&nbsp;
+              &nbsp;
+              <Template code="PreviousContacts-Returned" />
+              &nbsp;
             </StyledResultsText>
             <StyledLink onClick={toggleTabs} data-testid="ViewCasesLink">
               <Template

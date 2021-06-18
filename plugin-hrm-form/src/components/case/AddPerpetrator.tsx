@@ -91,7 +91,11 @@ const AddPerpetrator: React.FC<Props> = ({
     const perpetrator = transformValues(PerpetratorForm)(temporaryCaseInfo.info);
     const createdAt = new Date().toISOString();
     const { workerSid } = getConfig();
-    const newPerpetrator = { perpetrator, createdAt, twilioWorkerId: workerSid };
+    const newPerpetrator = {
+      perpetrator,
+      createdAt,
+      twilioWorkerId: workerSid,
+    };
     const perpetrators = info && info.perpetrators ? [...info.perpetrators, newPerpetrator] : [newPerpetrator];
     const newInfo = info ? { ...info, perpetrators } : { perpetrators };
     const updatedCase = await updateCase(id, { info: newInfo });
@@ -114,8 +118,9 @@ const AddPerpetrator: React.FC<Props> = ({
     onClickClose();
   }
 
+  const { strings } = getConfig();
   function onError() {
-    window.alert('You must fill in required fields.');
+    window.alert(strings['Error-Form']);
   }
 
   return (

@@ -142,7 +142,9 @@ const Timeline: React.FC<Props> = props => {
               )}
               <TimelineText>{activity?.text}</TimelineText>
               <Box marginLeft="auto" marginRight="10px">
-                <ViewButton onClick={() => handleOnClickView(activity)}>View</ViewButton>
+                <ViewButton onClick={() => handleOnClickView(activity)}>
+                  <Template code="Case-ViewButton" />
+                </ViewButton>
               </Box>
             </TimelineRow>
           );

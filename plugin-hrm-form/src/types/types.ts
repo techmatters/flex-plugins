@@ -130,6 +130,9 @@ export function isOfflineContactTask(task: CustomITask): task is OfflineContactT
   return task.taskSid === offlineContactTaskSid;
 }
 
+/**
+ * Checks if the task is issued by someone else to avoid showing certain things in the UI. This is done by checking isInMyBehalf task attribute (attached while creating offline contacts)
+ */
 export function isInMyBehalfITask(task: CustomITask): task is InMyBehalfITask {
   return task.attributes && task.attributes.isContactlessTask && (task.attributes as any).isInMyBehalf;
 }
