@@ -35,11 +35,11 @@ QueuesStatus.displayName = 'QueuesStatus';
 
 QueuesStatus.propTypes = {
   colors: PropTypes.shape({
-    voiceColor: PropTypes.shape({ Accepted: PropTypes.string }),
-    webColor: PropTypes.shape({ Accepted: PropTypes.string }),
-    facebookColor: PropTypes.shape({ Accepted: PropTypes.string }),
-    smsColor: PropTypes.shape({ Accepted: PropTypes.string }),
-    whatsappColor: PropTypes.shape({ Accepted: PropTypes.string }),
+    voiceColor: PropTypes.string,
+    webColor: PropTypes.string,
+    facebookColor: PropTypes.string,
+    smsColor: PropTypes.string,
+    whatsappColor: PropTypes.string,
     twitterColor: PropTypes.string,
   }).isRequired,
   queuesStatusState: PropTypes.shape({
