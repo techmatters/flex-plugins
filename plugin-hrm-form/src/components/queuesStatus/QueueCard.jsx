@@ -98,7 +98,7 @@ class QueuesCard extends React.PureComponent {
   render() {
     const { qName, colors, facebook, sms, voice, web, whatsapp, twitter } = this.props;
     const { voiceColor, smsColor, facebookColor, whatsappColor, webColor, twitterColor } = colors;
-    console.log(typeof smsColor)
+    console.log(typeof smsColor);
     console.log(typeof whatsappColor);
     console.log(typeof facebookColor);
     console.log(typeof smsColor);
@@ -113,11 +113,11 @@ class QueuesCard extends React.PureComponent {
           <QueueName>{qName}</QueueName>
           <Box marginTop="7px" marginBottom="14px">
             <Row>
-              {this.renderChannel('Calls', voiceColor.Accepted, voice, false)}
-              {this.renderChannel('SMS', smsColor.Accepted, sms, true)}
-              {this.renderChannel('FB', facebookColor.Accepted, facebook, true, 'Facebook')}
-              {this.renderChannel('WA', whatsappColor.Accepted, whatsapp, true, 'Whatsapp')}
-              {this.renderChannel('Chat', webColor.Accepted, web, true)}
+              {this.renderChannel('Calls', voiceColor, voice, false)}
+              {this.renderChannel('SMS', smsColor, sms, true)}
+              {this.renderChannel('FB', facebookColor, facebook, true, 'Facebook')}
+              {this.renderChannel('WA', whatsappColor, whatsapp, true, 'Whatsapp')}
+              {this.renderChannel('Chat', webColor, web, true)}
               {this.renderChannel('Twtr', twitterColor, twitter, true)}
             </Row>
           </Box>
