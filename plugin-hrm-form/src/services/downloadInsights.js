@@ -1,0 +1,161 @@
+/**
+ * Script for downloading Insight reports
+ *
+ * TODO:
+ * - Get login credentials and make sure SST and TT work
+ * - Figure out where script will be used, then figure out way to move from node to TS,
+ */
+
+
+/**
+ * Retrieves Super Secured Token -- which lasts for two weeks
+ */
+const fetch = require('node-fetch');
+
+
+const fetchSST = async (baseUrl, username, password) => {
+  const options = {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      postUserLogin: {
+        login: username,
+        password: password,
+        remember: 0,
+        verify_level: 2,
+      },
+    }),
+  };
+  const url = `${baseUrl}/gdc/account/login`;
+  const response = await fetch(url, options);
+
+  const responseJson = await response.json();
+  if (!response.ok) {
+    throw new Error(responseJson.message);
+  }
+  return responseJson;
+};
+
+/**
+ * Retrieves Temporary Token, which is valid for 10 minutes.
+ */
+
+const getTT = async (baseUrl,superSecureToken) => {
+  const options = {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'X-GDC-AuthSST': superSecureToken.token,
+    },
+  };
+  const url = `${baseUrl}/gdc/account/token`;
+  const response = await fetch(url, options);
+  const responseJson = await response.json();
+  if (!response.ok) {
+    throw new Error(responseJson.message);
+  }
+  return responseJson;
+};
+
+/*
+ * Gets raw report
+ */
+const rawReport = async (baseUrl, tempToken)=> {
+  const workspaceId = '1234';
+  const objectId = '5678';
+  const options = {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Cookie: `GDCAuthTT=${tempToken}`,
+    },
+    body: JSON.stringify({
+      report_req: {
+        report: `/gdc/md/${workspaceId}/obj/${objectId}`,
+      },
+    }),
+  };
+  const url = `${baseUrl}/gdc/app/projects/${workspaceId}/execute/raw`;
+  const response = fetch(url, options);
+  const responseJson = await response.json();
+  if (!response.ok) {
+    throw new Error(responseJson.message);
+  }
+  return responseJson;
+};
+
+/**
+ * Downloads report
+ */
+
+const downloadReport = async (baseUrl, URI, tempToken) => {
+  const options = {
+    headers: {
+      Cookie: `GDCAuthTT=${tempToken}`,
+    },
+  };
+  const url = `${baseUrl}${URI}`;
+  const response = fetch(url, options);
+  const responseJson = await response.json();
+  if (!response.ok) {
+    throw new Error(responseJson.message);
+  }
+  return responseJson;
+};
+
+const logOut = async (baseUrl, sst, tempToken) => {
+  const { state } = sst;
+
+  const options = {
+    method: 'DELETE',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'X-GDC-AuthSST': sst.token,
+      Cookie: `GDCAuthTT=${tempToken}`,
+    },
+  };
+  const url = `${baseUrl}${state}`;
+  const response = fetch(url, options);
+  const responseJson = await response.json();
+  if (!response.ok) {
+    throw new Error(responseJson.message);
+  }
+  return responseJson;
+};
+
+/**
+ *
+ * main
+ */
+
+const main = async () => {
+  try {
+    const username = process.argv[2]
+    const password = process.argv[3]
+    const baseUrl = 'https://analytics.ytica.com';
+
+    const sst = await fetchSST(baseUrl, username, password);
+    const superSecureToken = sst.token;
+    const tt = await getTT(baseUrl, superSecureToken);
+    const tempToken = tt.token;
+
+    const rawReportObject = await rawReport(baseUrl, tempToken);
+    const URI = rawReportObject.uri;
+    const report = await downloadReport(baseUrl, URI, tempToken);
+
+    await logOut(baseUrl, sst, temptoken);
+
+    return report;
+  } catch (error) {
+    console.error(error);
+    return error;
+    // handle your error in here the way you want, for example wait for 10 seconds, try again, unsuscribe, or whatever retry/cleanup your logic needs
+  }
+};
+main();
+
