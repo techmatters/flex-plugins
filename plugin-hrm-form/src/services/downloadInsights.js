@@ -3,6 +3,8 @@
  *
  * TODO:
  * - Figure out where script will be used, then figure out way to move from node to TS,
+ * - Modify so user can provide workspace id and object id
+ * - More robust error handling
  */
 
 
