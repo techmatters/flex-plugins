@@ -2,7 +2,6 @@
  * Script for downloading Insight reports
  *
  * TODO:
- * - Get login credentials and make sure SST and TT work
  * - Figure out where script will be used, then figure out way to move from node to TS,
  */
 
@@ -17,7 +16,7 @@ const fetchSST = async (baseUrl, username, password) => {
   const options = {
     method: 'POST',
     headers: {
-      Accept: 'application/json',
+      'Accept': 'application/json',
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
@@ -46,9 +45,9 @@ const fetchSST = async (baseUrl, username, password) => {
 const getTT = async (baseUrl,superSecureToken) => {
   const options = {
     headers: {
-      Accept: 'application/json',
+      'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'X-GDC-AuthSST': superSecureToken.token,
+      'X-GDC-AuthSST': superSecureToken,
     },
   };
   const url = `${baseUrl}/gdc/account/token`;
@@ -64,8 +63,8 @@ const getTT = async (baseUrl,superSecureToken) => {
  * Gets raw report
  */
 const rawReport = async (baseUrl, tempToken)=> {
-  const workspaceId = '1234';
-  const objectId = '5678';
+  const workspaceId = 'fkg14xmswsy78us3gotb67cucw2e8s58';
+  const objectId = '1414482';
   const options = {
     method: 'POST',
     headers: {
@@ -80,7 +79,7 @@ const rawReport = async (baseUrl, tempToken)=> {
     }),
   };
   const url = `${baseUrl}/gdc/app/projects/${workspaceId}/execute/raw`;
-  const response = fetch(url, options);
+  const response = await fetch(url, options);
   const responseJson = await response.json();
   if (!response.ok) {
     throw new Error(responseJson.message);
@@ -98,9 +97,9 @@ const downloadReport = async (baseUrl, URI, tempToken) => {
       Cookie: `GDCAuthTT=${tempToken}`,
     },
   };
-  const url = `${baseUrl}${URI}`;
-  const response = fetch(url, options);
-  const responseJson = await response.json();
+  const url = `${baseUrl}/${URI}`;
+  const response = await fetch(url, options);
+  const responseJson = await response.text();
   if (!response.ok) {
     throw new Error(responseJson.message);
   }
@@ -108,24 +107,22 @@ const downloadReport = async (baseUrl, URI, tempToken) => {
 };
 
 const logOut = async (baseUrl, sst, tempToken) => {
-  const { state } = sst;
-
+  const state  = sst.userLogin.state;
   const options = {
     method: 'DELETE',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      'X-GDC-AuthSST': sst.token,
+      'X-GDC-AuthSST': sst.userLogin.token,
       Cookie: `GDCAuthTT=${tempToken}`,
     },
   };
-  const url = `${baseUrl}${state}`;
-  const response = fetch(url, options);
-  const responseJson = await response.json();
+  const url = `${baseUrl}${state}`
+  const response = await fetch(url, options);
   if (!response.ok) {
-    throw new Error(responseJson.message);
+    throw new Error("Can't log out");
   }
-  return responseJson;
+  return response;
 };
 
 /**
@@ -140,16 +137,15 @@ const main = async () => {
     const baseUrl = 'https://analytics.ytica.com';
 
     const sst = await fetchSST(baseUrl, username, password);
-    const superSecureToken = sst.token;
+    const superSecureToken = sst.userLogin.token;
     const tt = await getTT(baseUrl, superSecureToken);
-    const tempToken = tt.token;
+    const tempToken = tt.userToken.token;
 
     const rawReportObject = await rawReport(baseUrl, tempToken);
     const URI = rawReportObject.uri;
     const report = await downloadReport(baseUrl, URI, tempToken);
-
-    await logOut(baseUrl, sst, temptoken);
-
+    await logOut(baseUrl, sst, tempToken);
+    console.log(report)
     return report;
   } catch (error) {
     console.error(error);
