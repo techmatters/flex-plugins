@@ -64,9 +64,9 @@ const getTT = async (baseUrl,superSecureToken) => {
 /*
  * Gets raw report
  */
-const rawReport = async (baseUrl, tempToken)=> {
-  const workspaceId = 'fkg14xmswsy78us3gotb67cucw2e8s58';
-  const objectId = '1414482';
+const rawReport = async (baseUrl, tempToken, workspaceId, objectId)=> {
+  //const workspaceId = 'fkg14xmswsy78us3gotb67cucw2e8s58';
+  //const objectId = '1414482';
   const options = {
     method: 'POST',
     headers: {
@@ -136,6 +136,8 @@ const main = async () => {
   try {
     const username = process.argv[2]
     const password = process.argv[3]
+    const workerId = process.argv[4]
+    const objectId = process.argv[5]
     const baseUrl = 'https://analytics.ytica.com';
 
     const sst = await fetchSST(baseUrl, username, password);
@@ -143,7 +145,7 @@ const main = async () => {
     const tt = await getTT(baseUrl, superSecureToken);
     const tempToken = tt.userToken.token;
 
-    const rawReportObject = await rawReport(baseUrl, tempToken);
+    const rawReportObject = await rawReport(baseUrl, tempToken, workerId, objectId);
     const URI = rawReportObject.uri;
     const report = await downloadReport(baseUrl, URI, tempToken);
     await logOut(baseUrl, sst, tempToken);
