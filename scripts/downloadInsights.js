@@ -185,7 +185,6 @@ const main = async () => {
   } catch (error) {
     console.error(error);
     return error;
-    // handle your error in here the way you want, for example wait for 10 seconds, try again, unsuscribe, or whatever retry/cleanup your logic needs
   }
 };
 main();
