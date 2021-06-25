@@ -4,6 +4,18 @@
  */
 
 const fetch = require('node-fetch');
+const { argv } = require('yargs')
+  .usage(
+    'node downloadInsights.js --username {username} --password {password} --workspaceID  {workspace ID} --objectID {object ID}',
+  )
+  .alias('u', 'username')
+  .alias('p', 'password')
+  .alias('w', 'workspaceID')
+  .alias('o', 'objectID')
+  .describe('u', 'Your Twilio Insights username.')
+  .describe('p', 'Your Twilio Insights password.')
+  .describe('w', 'The workspace ID of the Flex Insights Workspace you are working with.')
+  .describe('o', 'The ID of the report that you are trying to download.');
 
 /**
  * Function that retrieves SuperSecure Token (SST). Returns an "userLogin" object with the user's
@@ -161,12 +173,8 @@ const logOut = async (baseUrl, sst, tempToken) => {
  * @returns {Promise<any>} the data from the requested report
  */
 
-const main = async () => {
+const main = async (username, password, workspaceId, objectId) => {
   try {
-    const username = process.argv[2];
-    const password = process.argv[3];
-    const workerId = process.argv[4];
-    const objectId = process.argv[5];
     const baseUrl = 'https://analytics.ytica.com';
 
     const sst = await fetchSST(baseUrl, username, password);
@@ -174,7 +182,7 @@ const main = async () => {
     const tt = await getTT(baseUrl, superSecureToken);
     const tempToken = tt.userToken.token;
 
-    const rawReportObject = await rawReport(baseUrl, tempToken, workerId, objectId);
+    const rawReportObject = await rawReport(baseUrl, tempToken, workspaceId, objectId);
     const report = await downloadReport(baseUrl, rawReportObject.uri, tempToken);
 
     await logOut(baseUrl, sst, tempToken);
@@ -185,4 +193,4 @@ const main = async () => {
     return error;
   }
 };
-main();
+main(argv.username, argv.password, argv.workspaceID, argv.objectID);
