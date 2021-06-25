@@ -1,5 +1,5 @@
 /**
- * Script for downloading Insight Reports. To use, naviagate to plugin-hrm-form/src/services/downloadInsights.js, and
+ * Script for downloading Insight Reports. To use, navigate to scripts/downloadInsights.js, and
  * run node downloadInsights.js {username} {password} {workspace ID} {object ID}.
  */
 
@@ -36,7 +36,7 @@ const fetchSST = async (baseUrl, username, password) => {
   const responseJson = await response.json();
 
   if (!response.ok) {
-    throw new Error(responseJson.message);
+    throw new Error(`${response.status} - ${responseJson.message}`);
   }
   return responseJson;
 };
@@ -63,7 +63,7 @@ const getTT = async (baseUrl, superSecureToken) => {
   const responseJson = await response.json();
 
   if (!response.ok) {
-    throw new Error(responseJson.message);
+    throw new Error(`${response.status} - ${response.statusText}`);
   }
   return responseJson;
 };
@@ -97,7 +97,7 @@ const rawReport = async (baseUrl, tempToken, workspaceId, objectId) => {
   const responseJson = await response.json();
 
   if (!response.ok) {
-    throw new Error(responseJson.message);
+    throw new Error(`${response.status} - ${response.statusText}`);
   }
   return responseJson;
 };
@@ -120,12 +120,12 @@ const downloadReport = async (baseUrl, URI, tempToken) => {
 
   const url = `${baseUrl}/${URI}`;
   const response = await fetch(url, options);
-  const responseJson = await response.text();
+  const reportCSV = await response.text();
 
   if (!response.ok) {
-    throw new Error(responseJson.message);
+    throw new Error(`${response.status} - ${response.statusText}`);
   }
-  return responseJson;
+  return reportCSV;
 };
 
 /**
@@ -150,9 +150,8 @@ const logOut = async (baseUrl, sst, tempToken) => {
 
   const url = `${baseUrl}${state}`;
   const response = await fetch(url, options);
-
   if (!response.ok) {
-    throw new Error("Can't log out");
+    throw new Error(`${response.status} - ${response.statusText}`);
   }
   return response;
 };
@@ -176,8 +175,7 @@ const main = async () => {
     const tempToken = tt.userToken.token;
 
     const rawReportObject = await rawReport(baseUrl, tempToken, workerId, objectId);
-    const URI = rawReportObject.uri;
-    const report = await downloadReport(baseUrl, URI, tempToken);
+    const report = await downloadReport(baseUrl, rawReportObject.uri, tempToken);
 
     await logOut(baseUrl, sst, tempToken);
     console.log(report);
