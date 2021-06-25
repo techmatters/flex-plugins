@@ -186,45 +186,42 @@ const SearchResults: React.FC<Props> = ({
         <ScrollableList>
           <StyledResultsContainer>
             <StyledResultsText>
-              <BoldText data-testid="SearchResultsCount">
-                {/* Intentionally we must show the option different at the one currently selected */}
-                {currentPage === SearchPages.resultsContacts ? (
-                  <>
-                    {casesCount === 1 ? (
-                      <>
-                        <Template code="PreviousContacts-ThereIs" />
-                        &nbsp;
-                        {casesCount} <Template code="PreviousContacts-Case" />
-                      </>
-                    ) : (
-                      <>
-                        <Template code="PreviousContacts-ThereAre" />
-                        &nbsp;
-                        {casesCount} <Template code="PreviousContacts-Cases" />
-                      </>
-                    )}
-                  </>
-                ) : (
-                  <>
-                    {contactsCount === 1 ? (
-                      <>
-                        <Template code="PreviousContacts-ThereIs" />
-                        &nbsp;
-                        {contactsCount} <Template code="PreviousContacts-Contact" />
-                      </>
-                    ) : (
-                      <>
-                        <Template code="PreviousContacts-ThereAre" />
-                        &nbsp;
-                        {contactsCount} <Template code="PreviousContacts-Contacts" />
-                      </>
-                    )}
-                  </>
-                )}
-              </BoldText>
+              {/* Intentionally we must show the option different at the one currently selected */}
+              {currentPage === SearchPages.resultsContacts ? (
+                <>
+                  {casesCount === 1 ? (
+                    <>
+                      <Template code="PreviousContacts-ThereIs" />
+                      &nbsp;<BoldText data-testid="SearchResultsCount">{casesCount}</BoldText>&nbsp;
+                      <Template code="PreviousContacts-Case" />
+                    </>
+                  ) : (
+                    <>
+                      <Template code="PreviousContacts-ThereAre" />
+                      &nbsp;<BoldText data-testid="SearchResultsCount">{casesCount}</BoldText>&nbsp;
+                      <Template code="PreviousContacts-Cases" />
+                    </>
+                  )}
+                </>
+              ) : (
+                <>
+                  {contactsCount === 1 ? (
+                    <>
+                      <Template code="PreviousContacts-ThereIs" />
+                      &nbsp;<BoldText data-testid="SearchResultsCount">{contactsCount}</BoldText>&nbsp;
+                      <Template code="PreviousContacts-Contact" />
+                    </>
+                  ) : (
+                    <>
+                      <Template code="PreviousContacts-ThereAre" />
+                      &nbsp; <BoldText data-testid="SearchResultsCount">{contactsCount}</BoldText>&nbsp;
+                      <Template code="PreviousContacts-Contacts" />
+                    </>
+                  )}
+                </>
+              )}
               &nbsp;
               <Template code="PreviousContacts-Returned" />
-              &nbsp;
             </StyledResultsText>
             <StyledLink onClick={toggleTabs} data-testid="ViewCasesLink">
               <Template
@@ -241,7 +238,7 @@ const SearchResults: React.FC<Props> = ({
             <>
               <StyledContactResultsHeader>
                 <StyledCount data-testid="ContactsCount">
-                  {contactsCount}{' '}
+                  {contactsCount}&nbsp;
                   {contactsCount === 1 ? (
                     <Template code="PreviousContacts-Contact" />
                   ) : (
@@ -283,12 +280,12 @@ const SearchResults: React.FC<Props> = ({
             <>
               <StyledCaseResultsHeader>
                 <StyledCount data-testid="CasesCount">
-                  {casesCount}{' '}
+                  {casesCount}&nbsp;
                   {casesCount === 1 ? (
                     <Template code="PreviousContacts-Case" />
                   ) : (
                     <Template code="SearchResultsIndex-Cases" />
-                  )}{' '}
+                  )}&nbsp;
                 </StyledCount>
                 <StyledFormControlLabel
                   control={<StyledSwitch checked={closedCases} onChange={handleToggleClosedCases} />}
