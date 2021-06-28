@@ -153,14 +153,17 @@ const SearchResults: React.FC<Props> = ({
         <Row style={{ justifyContent: 'center' }}>
           <div style={{ width: '300px' }}>
             <StyledTabs selectedTabName={currentPage} onTabSelected={tabSelected}>
-              <TwilioTab label="Contacts" uniqueName={SearchPages.resultsContacts}>
+              <TwilioTab
+                label={<Template code="SearchResultsIndex-Contacts" />}
+                uniqueName={SearchPages.resultsContacts}
+              >
                 {[]}
               </TwilioTab>
               <TwilioTab
                 label={
                   <StyledTabLabel>
                     <StyledFolderIcon />
-                    Cases
+                    <Template code="SearchResultsIndex-Cases" />
                   </StyledTabLabel>
                 }
                 uniqueName={SearchPages.resultsCases}
@@ -183,26 +186,38 @@ const SearchResults: React.FC<Props> = ({
         <ScrollableList>
           <StyledResultsContainer>
             <StyledResultsText>
-              <Template code="PreviousContacts-ThereAre" />
-              &nbsp;
               <BoldText data-testid="SearchResultsCount">
                 {/* Intentionally we must show the option different at the one currently selected */}
                 {currentPage === SearchPages.resultsContacts ? (
                   <>
-                    {casesCount}{' '}
                     {casesCount === 1 ? (
-                      <Template code="PreviousContacts-Case" />
+                      <>
+                        <Template code="PreviousContacts-ThereIs" />
+                        &nbsp;
+                        {casesCount} <Template code="PreviousContacts-Case" />
+                      </>
                     ) : (
-                      <Template code="PreviousContacts-Cases" />
+                      <>
+                        <Template code="PreviousContacts-ThereAre" />
+                        &nbsp;
+                        {casesCount} <Template code="PreviousContacts-Cases" />
+                      </>
                     )}
                   </>
                 ) : (
                   <>
-                    {contactsCount}{' '}
                     {contactsCount === 1 ? (
-                      <Template code="PreviousContacts-Contact" />
+                      <>
+                        <Template code="PreviousContacts-ThereIs" />
+                        &nbsp;
+                        {contactsCount} <Template code="PreviousContacts-Contact" />
+                      </>
                     ) : (
-                      <Template code="PreviousContacts-Contacts" />
+                      <>
+                        <Template code="PreviousContacts-ThereAre" />
+                        &nbsp;
+                        {contactsCount} <Template code="PreviousContacts-Contacts" />
+                      </>
                     )}
                   </>
                 )}
@@ -226,7 +241,12 @@ const SearchResults: React.FC<Props> = ({
             <>
               <StyledContactResultsHeader>
                 <StyledCount data-testid="ContactsCount">
-                  {contactsCount} <Template code="SearchResultsIndex-Contacts" />
+                  {contactsCount}{' '}
+                  {contactsCount === 1 ? (
+                    <Template code="PreviousContacts-Contact" />
+                  ) : (
+                    <Template code="SearchResultsIndex-Contacts" />
+                  )}
                 </StyledCount>
                 <StyledFormControlLabel
                   control={<StyledSwitch checked={!onlyDataContacts} onChange={handleToggleNonDataContact} />}
@@ -263,7 +283,12 @@ const SearchResults: React.FC<Props> = ({
             <>
               <StyledCaseResultsHeader>
                 <StyledCount data-testid="CasesCount">
-                  {casesCount} <Template code="SearchResultsIndex-Cases" />
+                  {casesCount}{' '}
+                  {casesCount === 1 ? (
+                    <Template code="PreviousContacts-Case" />
+                  ) : (
+                    <Template code="SearchResultsIndex-Cases" />
+                  )}{' '}
                 </StyledCount>
                 <StyledFormControlLabel
                   control={<StyledSwitch checked={closedCases} onChange={handleToggleClosedCases} />}

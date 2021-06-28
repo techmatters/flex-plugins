@@ -183,7 +183,7 @@ describe('<SearchResults> with 1 result', () => {
     );
 
     expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('1 PreviousContacts-Case');
-    expect(screen.getByTestId('ContactsCount')).toHaveTextContent('1 SearchResultsIndex-Contacts');
+    expect(screen.getByTestId('ContactsCount')).toHaveTextContent('1 PreviousContacts-Contact');
   });
 
   test('on cases tab', () => {
@@ -203,7 +203,7 @@ describe('<SearchResults> with 1 result', () => {
     );
 
     expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('1 PreviousContacts-Contact');
-    expect(screen.getByTestId('CasesCount')).toHaveTextContent('1 SearchResultsIndex-Cases');
+    expect(screen.getByTestId('CasesCount')).toHaveTextContent('1 PreviousContacts-Case');
   });
 });
 
