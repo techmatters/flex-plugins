@@ -285,8 +285,7 @@ const SearchResults: React.FC<Props> = ({
                     <Template code="PreviousContacts-Case" />
                   ) : (
                     <Template code="SearchResultsIndex-Cases" />
-                  )}
-                  &nbsp;
+                  )}&nbsp;
                 </StyledCount>
                 <StyledFormControlLabel
                   control={<StyledSwitch checked={closedCases} onChange={handleToggleClosedCases} />}
