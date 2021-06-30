@@ -144,7 +144,7 @@ const downloadReport = async (baseUrl, URI, tempToken) => {
  * Logs user out and invalidates user's SST. Returns nothing if successful.
  *
  * @param {string} baseUrl url from which to fetch the sst
- * @param {string} sst user's SuperSecure token object
+ * @param {object} sst user's SuperSecure token object
  * @param {string} tempToken user's temporary token
  * @returns {Promise<any>} the api response (if not error)
  */
