@@ -1,5 +1,3 @@
-import { string } from 'prop-types';
-
 import callTypes, { channelTypes, otherContactChannels } from '../states/DomainConstants';
 
 export const mapCallType = (str: string) => {
