@@ -43,7 +43,8 @@ export const submitContactForm = async (task: CustomITask, contactForm: Contact,
 
   if (isOfflineContactTask(task)) {
     const targetSid = contactForm.contactlessTask.createdOnBehalfOf as string;
-    const finalAttributes = buildInsightsData({}, contactForm, caseForm);
+    const initialAttributes = { channelType: 'default', isContactlessTask: true };
+    const finalAttributes = buildInsightsData(initialAttributes, contactForm, caseForm);
     const inBehalfTask = await assignOfflineContact(targetSid, finalAttributes);
     return saveToHrm(task, contactForm, workerSid, helpline, inBehalfTask.sid);
   }
