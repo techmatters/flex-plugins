@@ -127,8 +127,7 @@ export const baseUpdates: InsightsUpdateFunction = (
   contactForm: TaskEntry,
   caseForm: Case,
 ): CoreAttributes => {
-  console.log("task attributes:")
-  console.log(taskAttributes)
+
   const { callType } = contactForm;
   const communication_channel = taskAttributes.isContactlessTask
     ? mapChannelForInsights(
