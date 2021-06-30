@@ -1,3 +1,4 @@
+import { string } from 'prop-types';
 import callTypes, { channelTypes, otherContactChannels } from '../states/DomainConstants';
 
 export const mapCallType = (str: string) => {
@@ -14,8 +15,10 @@ export const mapCallType = (str: string) => {
 const isOtherContactChannel = (channel: string) => (Object.values(otherContactChannels) as string[]).includes(channel); // Needed typecast here. For details see https://github.com/microsoft/TypeScript/issues/26255
 
 export const mapChannel = (channel: string) => {
-  if (isOtherContactChannel(channel)) return channel;
-
+  console.log(`mapChannel: ${channel}`)
+  if (isOtherContactChannel(channel)) {
+    return channel;
+  }
   switch (channel) {
     case channelTypes.facebook:
       return 'Facebook Messenger';

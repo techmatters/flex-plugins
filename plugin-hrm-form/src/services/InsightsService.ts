@@ -127,6 +127,8 @@ export const baseUpdates: InsightsUpdateFunction = (
   contactForm: TaskEntry,
   caseForm: Case,
 ): CoreAttributes => {
+  console.log("task attributes:")
+  console.log(taskAttributes)
   const { callType } = contactForm;
   const communication_channel = taskAttributes.isContactlessTask
     ? mapChannelForInsights(
@@ -137,6 +139,10 @@ export const baseUpdates: InsightsUpdateFunction = (
     : mapChannelForInsights(taskAttributes.channelType);
 
   // First add the data we add whether or not there's contact form data
+  console.log(`isContactless: ${taskAttributes.isContactlessTask}`)
+  console.log(taskAttributes.channelType)
+  console.log(`communication_channel=${communication_channel}`)
+  console.log(`channel type:${contactForm.contactlessTask.channel}`)
   const coreAttributes: CoreAttributes = {
     conversations: {
       /*
