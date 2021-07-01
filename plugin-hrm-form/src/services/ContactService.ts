@@ -204,9 +204,10 @@ export async function saveToHrm(task, form, workerSid, workerHelpline, uniqueIde
   let channelSid;
   let serviceSid;
 
+  // TODO: from where should we get these values when it's a twitter task?
   if (isTwilioTask(task) && TaskHelper.isChatBasedTask(task)) {
-    channelSid = task.attributes.channelSid;
-    serviceSid = task.attributes.memory.twilio.chat.ServiceSid;
+    ({ channelSid } = task.attributes);
+    ({ serviceSid } = getConfig());
   }
 
   const body = {
