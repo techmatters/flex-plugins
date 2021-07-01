@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/prefer-immediate-return */
 import { set } from 'lodash/fp';
-import type { ITask } from '@twilio/flex-ui';
+import { ITask, TaskHelper } from '@twilio/flex-ui';
 
 import { createNewTaskEntry, TaskEntry } from '../states/contacts/reducer';
 import { isNonDataCallType } from '../states/ValidationRules';
@@ -16,7 +16,13 @@ import type {
   FormDefinition,
   FormItemDefinition,
 } from '../components/common/forms/types';
-import { InformationObject, ContactRawJson, SearchContactResult, isOfflineContactTask } from '../types/types';
+import {
+  InformationObject,
+  ContactRawJson,
+  SearchContactResult,
+  isOfflineContactTask,
+  isTwilioTask,
+} from '../types/types';
 
 /**
  * Un-nests the information (caller/child) as it comes from DB, to match the form structure
@@ -195,6 +201,14 @@ export async function saveToHrm(task, form, workerSid, workerHelpline, uniqueIde
 
   const helplineToSend = (isOfflineContactTask(task) && form.contactlessTask?.helpline) || workerHelpline;
 
+  let channelSid;
+  let serviceSid;
+
+  if (isTwilioTask(task) && TaskHelper.isChatBasedTask(task)) {
+    ({ channelSid } = task.attributes);
+    serviceSid = getConfig().chatServiceSid;
+  }
+
   const body = {
     form: formToSend,
     twilioWorkerId,
@@ -205,6 +219,8 @@ export async function saveToHrm(task, form, workerSid, workerHelpline, uniqueIde
     conversationDuration,
     timeOfContact,
     taskId: uniqueIdentifier,
+    channelSid,
+    serviceSid,
   };
 
   const options = {
