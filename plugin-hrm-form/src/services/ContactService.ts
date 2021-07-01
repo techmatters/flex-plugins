@@ -206,7 +206,7 @@ export async function saveToHrm(task, form, workerSid, workerHelpline, uniqueIde
 
   if (isTwilioTask(task) && TaskHelper.isChatBasedTask(task)) {
     ({ channelSid } = task.attributes);
-    ({ serviceSid } = getConfig());
+    serviceSid = getConfig().chatServiceSid;
   }
 
   const body = {

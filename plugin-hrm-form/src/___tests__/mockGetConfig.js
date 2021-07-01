@@ -5,6 +5,7 @@ jest.mock('../HrmFormPlugin', () => ({
     return {
       hrmBaseUrl: '',
       serverlessBaseUrl: '',
+      serviceSid: '',
       workerSid: '',
       helpline: '',
       currentWorkspace: '',

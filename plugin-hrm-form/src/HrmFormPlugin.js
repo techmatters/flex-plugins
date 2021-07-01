@@ -32,7 +32,7 @@ export const getConfig = () => {
   const hrmBaseUrl = `${manager.serviceConfiguration.attributes.hrm_base_url}/${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${manager.workerClient.accountSid}`;
   const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
   const logoUrl = manager.serviceConfiguration.attributes.logo_url;
-  const serviceSid = manager.serviceConfiguration.chat_service_instance_sid;
+  const chatServiceSid = manager.serviceConfiguration.chat_service_instance_sid;
   const workerSid = manager.workerClient.sid;
   const { helpline, counselorLanguage, helplineLanguage } = manager.workerClient.attributes;
   const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
@@ -56,7 +56,7 @@ export const getConfig = () => {
     hrmBaseUrl,
     serverlessBaseUrl,
     logoUrl,
-    serviceSid,
+    chatServiceSid,
     workerSid,
     helpline,
     currentWorkspace,
