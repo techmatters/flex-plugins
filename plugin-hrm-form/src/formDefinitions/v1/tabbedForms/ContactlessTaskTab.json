@@ -3,7 +3,7 @@
     "name": "helpline",
     "label": "Helpline",
     "type": "select",
-    "defaultOption": "ChildLine",
+    "defaultOption": "ChildLine Zambia (ZM)",
     "options": [
       { "value": "ChildLine Zambia (ZM)", "label": "ChildLine" }
     ],
