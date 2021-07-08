@@ -37,6 +37,7 @@ test('saveInsightsData for non-data callType', async () => {
       content: 'content',
     },
     helpline: 'helpline',
+    helplineToSave: 'helpline',
   };
 
   const twilioTask = {
@@ -88,6 +89,7 @@ test('saveInsightsData for non-data callType (test that fields are sanitized)', 
       content: 'content',
     },
     helpline: 'helpline',
+    helplineToSave: 'helpline',
   };
 
   const twilioTask = {
