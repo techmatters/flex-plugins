@@ -153,7 +153,7 @@ export const baseUpdates: InsightsUpdateFunction = (
       [CALLTYPE]: sanitizeInsightsValue(callType),
       [CALLER_AGE]: sanitizeInsightsValue(contactForm.callerInformation.age),
       [CALLER_GENDER]: sanitizeInsightsValue(contactForm.callerInformation.gender),
-      [HELPLINE]: sanitizeInsightsValue(taskAttributes.helpline),
+      [HELPLINE]: sanitizeInsightsValue(taskAttributes.helplineToSave),
       [LANGUAGE]: sanitizeInsightsValue(contactForm.childInformation.language),
     },
     customers: {
