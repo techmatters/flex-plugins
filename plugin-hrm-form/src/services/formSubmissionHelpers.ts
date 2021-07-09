@@ -41,9 +41,9 @@ export const completeTask = (task: CustomITask) =>
 /**
  * Helper used to be the source of truth for the helpline value being passed to HRM and Insights
  */
-export const getHelplineToSave = async (task: CustomITask, contactForm: Contact, caseForm: Case) => {
+export const getHelplineToSave = async (task: CustomITask, contactForm: Contact): Promise<string> => {
   if (isOfflineContactTask(task)) {
-    if (contactForm.contactlessTask.helpline) return contactForm.contactlessTask.helpline;
+    if (contactForm.contactlessTask.helpline) return contactForm.contactlessTask.helpline as string;
 
     const targetWorkerSid = contactForm.contactlessTask.createdOnBehalfOf as string;
     const targetWorkerAttributes = await getWorkerAttributes(targetWorkerSid);
@@ -57,16 +57,17 @@ export const getHelplineToSave = async (task: CustomITask, contactForm: Contact,
 export const submitContactForm = async (task: CustomITask, contactForm: Contact, caseForm: Case) => {
   const { workerSid } = getConfig();
 
-  const helplineToSave = await getHelplineToSave(task, contactForm, caseForm);
-  // Add helplineToSave so it's grabbed when saving to Insights (either in buildInsightsData for offline contacts or sendInsightsData for live contacts)
-  /* const updatedTask = */ await task.setAttributes({ ...task.attributes, helplineToSave });
+  const helplineToSave = await getHelplineToSave(task, contactForm);
+  const submissionContext = { helplineToSave };
 
   if (isOfflineContactTask(task)) {
     const targetWorkerSid = contactForm.contactlessTask.createdOnBehalfOf as string;
-    const finalAttributes = buildInsightsData(task.attributes, contactForm, caseForm);
+    const finalAttributes = buildInsightsData(task, contactForm, caseForm, submissionContext);
     const inBehalfTask = await assignOfflineContact(targetWorkerSid, finalAttributes);
-    return saveToHrm(task, contactForm, workerSid, inBehalfTask.sid);
+    return saveToHrm(task, contactForm, submissionContext, workerSid, inBehalfTask.sid);
   }
 
-  return saveToHrm(task, contactForm, workerSid, task.taskSid);
+  const finalAttributes = buildInsightsData(task, contactForm, caseForm, submissionContext);
+  await task.setAttributes(finalAttributes);
+  return saveToHrm(task, contactForm, submissionContext, workerSid, task.taskSid);
 };
