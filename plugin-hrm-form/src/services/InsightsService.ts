@@ -1,12 +1,11 @@
 /* eslint-disable camelcase */
-import { ITask } from '@twilio/flex-ui';
 import { get, cloneDeep } from 'lodash';
 
 import { isNonDataCallType } from '../states/ValidationRules';
 import { mapChannelForInsights } from '../utils/mappers';
 import { getDateTime } from '../utils/helpers';
 import { TaskEntry } from '../states/contacts/reducer';
-import { Case } from '../types/types';
+import { Case, CustomITask, SubmissionContext } from '../types/types';
 import { formatCategories } from '../utils/formatters';
 import callTypes from '../states/DomainConstants';
 import {
@@ -18,6 +17,7 @@ import {
   OneToManyConfigSpecs,
 } from '../insightsConfig/types';
 import { getDefinitionVersions } from '../HrmFormPlugin';
+import { shouldSendInsightsData } from '../utils/setUpActions';
 import type { DefinitionVersion } from '../components/common/forms/types';
 
 /*
@@ -67,6 +67,7 @@ type InsightsUpdateFunction = (
   attributes: TaskAttributes,
   contactForm: TaskEntry,
   caseForm: Case,
+  submissionContext: SubmissionContext,
 ) => InsightsAttributes;
 
 const sanitizeInsightsValue = (value: string | boolean) => {
@@ -126,6 +127,7 @@ export const baseUpdates: InsightsUpdateFunction = (
   taskAttributes: TaskAttributes,
   contactForm: TaskEntry,
   caseForm: Case,
+  submissionContext: SubmissionContext,
 ): CoreAttributes => {
   const { callType } = contactForm;
   const communication_channel = taskAttributes.isContactlessTask
@@ -153,7 +155,7 @@ export const baseUpdates: InsightsUpdateFunction = (
       [CALLTYPE]: sanitizeInsightsValue(callType),
       [CALLER_AGE]: sanitizeInsightsValue(contactForm.callerInformation.age),
       [CALLER_GENDER]: sanitizeInsightsValue(contactForm.callerInformation.gender),
-      [HELPLINE]: sanitizeInsightsValue(taskAttributes.helplineToSave),
+      [HELPLINE]: sanitizeInsightsValue(submissionContext.helplineToSave),
       [LANGUAGE]: sanitizeInsightsValue(contactForm.childInformation.language),
     },
     customers: {
@@ -179,6 +181,7 @@ export const contactlessTaskUpdates: InsightsUpdateFunction = (
   attributes: TaskAttributes,
   contactForm: TaskEntry,
   caseForm: Case,
+  submissionContext: SubmissionContext,
 ): InsightsAttributes => {
   if (!attributes.isContactlessTask) {
     return {};
@@ -313,7 +316,7 @@ export const processHelplineConfig = (
 };
 
 const applyCustomUpdate = (customUpdate: OneToManyConfigSpec): InsightsUpdateFunction => {
-  return (taskAttributes, contactForm, caseForm) => {
+  return (taskAttributes, contactForm, caseForm, submissionContext) => {
     if (isNonDataCallType(contactForm.callType)) return {};
 
     const dataSource = { taskAttributes, contactForm, caseForm };
@@ -332,7 +335,7 @@ const bindApplyCustomUpdates = (customConfigObject: {
   oneToManyConfigSpecs: OneToManyConfigSpecs;
   oneToOneConfigSpec: OneToOneConfigSpec;
 }): InsightsUpdateFunction[] => {
-  const getProcessedAtts: InsightsUpdateFunction = (attributes, contactForm, caseForm) =>
+  const getProcessedAtts: InsightsUpdateFunction = (attributes, contactForm, caseForm, submissionContext) =>
     isNonDataCallType(contactForm.callType)
       ? {}
       : processHelplineConfig(contactForm, caseForm, customConfigObject.oneToOneConfigSpec);
@@ -375,18 +378,22 @@ const getInsightsUpdateFunctionsForConfig = (
  * Note: config parameter tells where to go to get helpline-specific tests.  It should
  * eventually match up with getConfig().  Also useful for testing.
  */
-export const buildInsightsData = (previousAttributes: ITask['attributes'], contactForm: TaskEntry, caseForm: Case) => {
+export const buildInsightsData = (
+  task: CustomITask,
+  contactForm: TaskEntry,
+  caseForm: Case,
+  submissionContext: SubmissionContext,
+) => {
+  const previousAttributes = task.attributes;
+
+  if (!shouldSendInsightsData(task)) return previousAttributes;
+
   const { currentDefinitionVersion } = getDefinitionVersions();
 
   // eslint-disable-next-line sonarjs/prefer-immediate-return
   const finalAttributes: TaskAttributes = getInsightsUpdateFunctionsForConfig(currentDefinitionVersion.insights)
-    .map((f: any) => f(previousAttributes, contactForm, caseForm))
+    .map(f => f(previousAttributes, contactForm, caseForm, submissionContext))
     .reduce((acc: TaskAttributes, curr: InsightsAttributes) => mergeAttributes(acc, curr), previousAttributes);
 
   return finalAttributes;
 };
-
-export async function saveInsightsData(twilioTask: ITask, contactForm: TaskEntry, caseForm: Case) {
-  const finalAttributes = buildInsightsData(twilioTask.attributes, contactForm, caseForm);
-  await twilioTask.setAttributes(finalAttributes);
-}
