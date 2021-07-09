@@ -3,7 +3,6 @@ import { Manager, TaskHelper, Actions as FlexActions, StateHelper } from '@twili
 
 // eslint-disable-next-line no-unused-vars
 import { DEFAULT_TRANSFER_MODE, getConfig } from '../HrmFormPlugin';
-import { saveInsightsData } from '../services/InsightsService';
 import {
   transferChatStart,
   adjustChatCapacity,
@@ -21,7 +20,6 @@ import { saveFormSharedState, loadFormSharedState } from './sharedState';
 import { prepopulateForm } from './prepopulateForm';
 
 /**
- *
  * @param {string} version
  */
 export const loadCurrentDefinitionVersion = async () => {
@@ -53,6 +51,16 @@ const getStateCaseForms = taskSid => {
       Manager.getInstance().store.getState()[namespace][connectedCaseBase].tasks[taskSid].connectedCase) ||
     {}
   );
+};
+
+/**
+ * @param {import('../types/types').CustomITask} task
+ */
+export const shouldSendInsightsData = task => {
+  const { featureFlags } = getConfig();
+  const hasTaskControl = !featureFlags.enable_transfers || TransferHelpers.hasTaskControl(task);
+
+  return hasTaskControl && featureFlags.enable_save_insights && !task.attributes?.skipInsights;
 };
 
 /**
@@ -261,37 +269,6 @@ export const wrapupTask = setupObject =>
   });
 
 /**
- * Saves custom attributes of the task (for Flex Insights)
- * @param {{ task: any }} payload
- */
-const saveInsights = async payload => {
-  const { taskSid } = payload.task;
-  const contactForm = getStateContactForms(taskSid);
-  const caseForm = getStateCaseForms(taskSid);
-
-  await saveInsightsData(payload.task, contactForm, caseForm);
-};
-
-/**
- * Submits the form to the hrm backend (if it should), and saves the insights. Used before task is completed
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
- * @returns {import('@twilio/flex-ui').ActionFunction}
- */
-const sendInsightsData = setupObject => async payload => {
-  const { featureFlags } = setupObject;
-
-  // eslint-disable-next-line sonarjs/no-collapsible-if
-  if (!payload.task?.attributes?.skipInsights) {
-    // eslint-disable-next-line sonarjs/no-collapsible-if
-    if (!featureFlags.enable_transfers || TransferHelpers.hasTaskControl(payload.task)) {
-      if (featureFlags.enable_save_insights) {
-        await saveInsights(payload);
-      }
-    }
-  }
-};
-
-/**
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
  * @returns {import('@twilio/flex-ui').ActionFunction}
  */
@@ -306,7 +283,6 @@ const decreaseChatCapacity = setupObject => async payload => {
  * @returns {import('@twilio/flex-ui').ActionFunction}
  */
 export const beforeCompleteTask = setupObject => async payload => {
-  await sendInsightsData(setupObject)(payload); // Having this behavior in here makes very opaque to the live task workflow what's saved into Insights. Should we move it?
   await decreaseChatCapacity(setupObject)(payload);
 };
 
