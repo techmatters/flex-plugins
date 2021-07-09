@@ -118,8 +118,11 @@ export type OfflineContactTask = {
   taskSid: typeof offlineContactTaskSid;
   attributes: {
     isContactlessTask: true;
+    channelType: 'default';
+    helplineToSave?: string;
   };
   channelType: 'default';
+  setAttributes: (attributes: {}) => Promise<OfflineContactTask>;
 };
 
 export type InMyBehalfITask = ITask & { attributes: { isContactlessTask: true; isInMyBehalf: true } };
