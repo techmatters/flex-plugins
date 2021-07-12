@@ -127,3 +127,13 @@ export const assignOfflineContact = async (targetSid: string, finalTaskAttribute
   const response = await fetchProtectedApi('/assignOfflineContact', body);
   return response;
 };
+
+/**
+ * Gets the attributes of the target worker
+ */
+export const getWorkerAttributes = async (workerSid: string) => {
+  const body = { workerSid };
+
+  const response = await fetchProtectedApi('/getWorkerAttributes', body);
+  return response;
+};

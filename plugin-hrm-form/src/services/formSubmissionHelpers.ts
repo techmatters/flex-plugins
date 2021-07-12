@@ -1,13 +1,13 @@
 /* eslint-disable import/no-unused-modules */
 import { Actions, ITask, Manager } from '@twilio/flex-ui';
 
-import { getConfig, reRenderAgentDesktop } from '../HrmFormPlugin';
+import { getConfig } from '../HrmFormPlugin';
 import { TaskEntry as Contact } from '../states/contacts/reducer';
 import { Case, CustomITask, isOfflineContactTask, offlineContactTaskSid } from '../types/types';
 import { channelTypes } from '../states/DomainConstants';
 import { buildInsightsData } from './InsightsService';
 import { saveToHrm } from './ContactService';
-import { assignOfflineContact } from './ServerlessService';
+import { assignOfflineContact, getWorkerAttributes } from './ServerlessService';
 import { removeContactState } from '../states/actions';
 
 /**
@@ -38,16 +38,35 @@ export const completeContactlessTask = async (task: CustomITask) => {
 export const completeTask = (task: CustomITask) =>
   isOfflineContactTask(task) ? removeOfflineContact() : completeContactTask(task);
 
-export const submitContactForm = async (task: CustomITask, contactForm: Contact, caseForm: Case) => {
-  const { workerSid, helpline } = getConfig();
-
+/**
+ * Helper used to be the source of truth for the helpline value being passed to HRM and Insights
+ */
+export const getHelplineToSave = async (task: CustomITask, contactForm: Contact, caseForm: Case) => {
   if (isOfflineContactTask(task)) {
-    const targetSid = contactForm.contactlessTask.createdOnBehalfOf as string;
-    const initialAttributes = { channelType: 'default', isContactlessTask: true };
-    const finalAttributes = buildInsightsData(initialAttributes, contactForm, caseForm);
-    const inBehalfTask = await assignOfflineContact(targetSid, finalAttributes);
-    return saveToHrm(task, contactForm, workerSid, helpline, inBehalfTask.sid);
+    if (contactForm.contactlessTask.helpline) return contactForm.contactlessTask.helpline;
+
+    const targetWorkerSid = contactForm.contactlessTask.createdOnBehalfOf as string;
+    const targetWorkerAttributes = await getWorkerAttributes(targetWorkerSid);
+    return targetWorkerAttributes.helpline;
   }
 
-  return saveToHrm(task, contactForm, workerSid, helpline, task.taskSid);
+  const { helpline: thisWorkerHelpline } = getConfig();
+  return thisWorkerHelpline || task.attributes.helpline || '';
+};
+
+export const submitContactForm = async (task: CustomITask, contactForm: Contact, caseForm: Case) => {
+  const { workerSid } = getConfig();
+
+  const helplineToSave = await getHelplineToSave(task, contactForm, caseForm);
+  // Add helplineToSave so it's grabbed when saving to Insights (either in buildInsightsData for offline contacts or sendInsightsData for live contacts)
+  /* const updatedTask = */ await task.setAttributes({ ...task.attributes, helplineToSave });
+
+  if (isOfflineContactTask(task)) {
+    const targetWorkerSid = contactForm.contactlessTask.createdOnBehalfOf as string;
+    const finalAttributes = buildInsightsData(task.attributes, contactForm, caseForm);
+    const inBehalfTask = await assignOfflineContact(targetWorkerSid, finalAttributes);
+    return saveToHrm(task, contactForm, workerSid, inBehalfTask.sid);
+  }
+
+  return saveToHrm(task, contactForm, workerSid, task.taskSid);
 };

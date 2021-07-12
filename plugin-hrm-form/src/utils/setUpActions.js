@@ -306,7 +306,7 @@ const decreaseChatCapacity = setupObject => async payload => {
  * @returns {import('@twilio/flex-ui').ActionFunction}
  */
 export const beforeCompleteTask = setupObject => async payload => {
-  await sendInsightsData(setupObject)(payload);
+  await sendInsightsData(setupObject)(payload); // Having this behavior in here makes very opaque to the live task workflow what's saved into Insights. Should we move it?
   await decreaseChatCapacity(setupObject)(payload);
 };
 

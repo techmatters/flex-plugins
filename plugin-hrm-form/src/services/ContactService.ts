@@ -160,14 +160,14 @@ export function transformForm(helpline: string, form: TaskEntry): ContactRawJson
  * Function that saves the form to Contacts table.
  * If you don't intend to complete the twilio task, set shouldFillEndMillis=false
  *
- * @param  task
+ * @param task
  * @param form
  * @param workerSid
- * @param workerHelpline
  * @param uniqueIdentifier
  * @param shouldFillEndMillis
  */
-export async function saveToHrm(task, form, workerSid, workerHelpline, uniqueIdentifier, shouldFillEndMillis = true) {
+// eslint-disable-next-line import/no-unused-modules
+export async function saveToHrm(task, form, workerSid, uniqueIdentifier, shouldFillEndMillis = true) {
   // if we got this far, we assume the form is valid and ready to submit
   const metadata = shouldFillEndMillis ? fillEndMillis(form.metadata) : form.metadata;
   const conversationDuration = getConversationDuration(task, metadata);
@@ -192,14 +192,13 @@ export async function saveToHrm(task, form, workerSid, workerHelpline, uniqueIde
   // This might change if isNonDataCallType, that's why we use rawForm
   const timeOfContact = getDateTime(rawForm.contactlessTask);
 
-  const helplineToSend = (isOfflineContactTask(task) && form.contactlessTask?.helpline) || workerHelpline;
-
+  const { helplineToSave: helpline } = task.attributes;
   /*
    * We do a transform from the original and then add things.
    * Not sure if we should drop that all into one function or not.
    * Probably.  It would just require passing the task.
    */
-  const formToSend = transformForm(helplineToSend, rawForm);
+  const formToSend = transformForm(helpline, rawForm);
 
   let channelSid;
   let serviceSid;
@@ -215,7 +214,7 @@ export async function saveToHrm(task, form, workerSid, workerHelpline, uniqueIde
     queueName: task.queueName,
     channel: task.channelType,
     number,
-    helpline: helplineToSend,
+    helpline,
     conversationDuration,
     timeOfContact,
     taskId: uniqueIdentifier,
