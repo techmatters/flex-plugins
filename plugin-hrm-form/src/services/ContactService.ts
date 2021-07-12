@@ -104,9 +104,9 @@ export const searchResultToContactForm = (def: FormDefinition, obj: InformationO
   return deTransformed;
 };
 
-export function transformCategories(categories: TaskEntry['categories']) {
+export function transformCategories(helpline, categories: TaskEntry['categories']) {
   const { IssueCategorizationTab } = getDefinitionVersions().currentDefinitionVersion.tabbedForms;
-  const cleanCategories = createCategoriesObject(IssueCategorizationTab);
+  const cleanCategories = createCategoriesObject(IssueCategorizationTab(helpline));
   const transformedCategories = categories.reduce((acc, path) => set(path, true, acc), {
     categories: cleanCategories, // use an object with categories property so we can reuse the entire path (they look like categories.Category.Subcategory)
   });
@@ -118,7 +118,7 @@ export function transformCategories(categories: TaskEntry['categories']) {
  * Transforms the form to be saved as the backend expects it
  * VisibleForTesting
  */
-export function transformForm(form: TaskEntry): ContactRawJson {
+export function transformForm(helpline: string, form: TaskEntry): ContactRawJson {
   const { callType, metadata, contactlessTask } = form;
   const {
     CallerInformationTab,
@@ -137,7 +137,7 @@ export function transformForm(form: TaskEntry): ContactRawJson {
   // @ts-ignore
   const childInformation = nestName(transformedValues.childInformation);
 
-  const categories = transformCategories(form.categories);
+  const categories = transformCategories(helpline, form.categories);
   const { definitionVersion } = getConfig();
 
   const transformed = {
@@ -192,14 +192,14 @@ export async function saveToHrm(task, form, workerSid, workerHelpline, uniqueIde
   // This might change if isNonDataCallType, that's why we use rawForm
   const timeOfContact = getDateTime(rawForm.contactlessTask);
 
+  const helplineToSend = (isOfflineContactTask(task) && form.contactlessTask?.helpline) || workerHelpline;
+
   /*
    * We do a transform from the original and then add things.
    * Not sure if we should drop that all into one function or not.
    * Probably.  It would just require passing the task.
    */
-  const formToSend = transformForm(rawForm);
-
-  const helplineToSend = (isOfflineContactTask(task) && form.contactlessTask?.helpline) || workerHelpline;
+  const formToSend = transformForm(helplineToSend, rawForm);
 
   let channelSid;
   let serviceSid;
