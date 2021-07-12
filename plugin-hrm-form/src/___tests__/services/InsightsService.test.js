@@ -4,8 +4,8 @@ import {
   baseUpdates,
   contactlessTaskUpdates,
   processHelplineConfig,
-  saveInsightsData,
   mergeAttributes,
+  buildInsightsData,
 } from '../../services/InsightsService';
 import { getDateTime } from '../../utils/helpers';
 import v1 from '../../formDefinitions/v1';
@@ -24,12 +24,12 @@ const zambiaUpdates = (attributes, contactForm, caseForm) => {
   return attsToReturn;
 };
 
-const expectWithV1Zambia = (attributes, contactForm, caseForm) =>
+const expectWithV1Zambia = (attributes, contactForm, caseForm, submissionContext) =>
   [baseUpdates, contactlessTaskUpdates, zambiaUpdates]
-    .map(f => f(attributes, contactForm, caseForm))
+    .map(f => f(attributes, contactForm, caseForm, submissionContext))
     .reduce((acc, curr) => mergeAttributes(acc, curr), { ...attributes });
 
-test('saveInsightsData for non-data callType', async () => {
+test('Insights Data for non-data callType', async () => {
   const previousAttributes = {
     taskSid: 'task-sid',
     channelType: 'sms',
@@ -37,7 +37,6 @@ test('saveInsightsData for non-data callType', async () => {
       content: 'content',
     },
     helpline: 'helpline',
-    helplineToSave: 'helpline',
   };
 
   const twilioTask = {
@@ -58,7 +57,7 @@ test('saveInsightsData for non-data callType', async () => {
     },
   };
 
-  await saveInsightsData(twilioTask, contactForm);
+  const result = buildInsightsData(twilioTask, contactForm, {}, { helplineToSave: previousAttributes.helpline });
 
   const expectedNewAttributes = {
     ...previousAttributes,
@@ -78,10 +77,10 @@ test('saveInsightsData for non-data callType', async () => {
     },
   };
 
-  expect(twilioTask.setAttributes).toHaveBeenCalledWith(expectedNewAttributes);
+  expect(result).toEqual(expectedNewAttributes);
 });
 
-test('saveInsightsData for non-data callType (test that fields are sanitized)', async () => {
+test('Insights Data for non-data callType (test that fields are sanitized)', async () => {
   const previousAttributes = {
     taskSid: 'task-sid',
     channelType: 'sms',
@@ -110,7 +109,7 @@ test('saveInsightsData for non-data callType (test that fields are sanitized)', 
     },
   };
 
-  await saveInsightsData(twilioTask, contactForm);
+  const result = buildInsightsData(twilioTask, contactForm, {}, { helplineToSave: previousAttributes.helpline });
 
   const expectedNewAttributes = {
     ...previousAttributes,
@@ -130,10 +129,10 @@ test('saveInsightsData for non-data callType (test that fields are sanitized)', 
     },
   };
 
-  expect(twilioTask.setAttributes).toHaveBeenCalledWith(expectedNewAttributes);
+  expect(result).toEqual(expectedNewAttributes);
 });
 
-test('saveInsightsData for data callType', async () => {
+test('Insights Data for data callType', async () => {
   const previousAttributes = {
     taskSid: 'task-sid',
     channelType: 'voice',
@@ -174,9 +173,11 @@ test('saveInsightsData for data callType', async () => {
     id: 123,
   };
 
-  const expectedNewAttributes = expectWithV1Zambia(twilioTask.attributes, contactForm, caseForm);
+  const submissionContext = { helplineToSave: previousAttributes.helpline };
 
-  await saveInsightsData(twilioTask, contactForm, caseForm);
+  const expectedNewAttributes = expectWithV1Zambia(twilioTask.attributes, contactForm, caseForm, submissionContext);
+
+  const result = buildInsightsData(twilioTask, contactForm, caseForm, submissionContext);
 
   /*
    * const expectedNewAttributes = {
@@ -195,7 +196,7 @@ test('saveInsightsData for data callType', async () => {
    * };
    */
 
-  expect(twilioTask.setAttributes).toHaveBeenCalledWith(expectedNewAttributes);
+  expect(result).toEqual(expectedNewAttributes);
 });
 
 test('Handles contactless tasks', async () => {
@@ -212,7 +213,7 @@ test('Handles contactless tasks', async () => {
 
   const date = '2020-12-30';
   const time = '14:50';
-  const task = {
+  const contactForm = {
     callType: 'Child calling about self',
     contactlessTask: {
       channel: 'sms',
@@ -236,9 +237,11 @@ test('Handles contactless tasks', async () => {
     id: 123,
   };
 
-  const expectedNewAttributes = expectWithV1Zambia(twilioTask.attributes, task, caseForm);
+  const submissionContext = { helplineToSave: previousAttributes.helpline };
 
-  await saveInsightsData(twilioTask, task, caseForm);
+  const expectedNewAttributes = expectWithV1Zambia(twilioTask.attributes, contactForm, caseForm, submissionContext);
+
+  const result = buildInsightsData(twilioTask, contactForm, caseForm, submissionContext);
 
   /*
    * const expectedNewAttributes = {
@@ -256,7 +259,7 @@ test('Handles contactless tasks', async () => {
    * };
    */
 
-  expect(twilioTask.setAttributes).toHaveBeenCalledWith(expectedNewAttributes);
+  expect(result).toEqual(expectedNewAttributes);
 });
 
 test('processHelplineConfig works for basic cases', async () => {
