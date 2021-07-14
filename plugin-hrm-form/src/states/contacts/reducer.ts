@@ -58,7 +58,9 @@ export const createNewTaskEntry = (definitions: ContactFormDefinition) => (recre
     categories: categoriesMeta,
   };
 
-  const initialContactlessTaskTabDefinition = createContactlessTaskTabDefinition([]);
+  const initialContactlessTaskTabDefinition = definitions.ContactlessTaskTab
+    ? [createContactlessTaskTabDefinition([]), ...definitions.ContactlessTaskTab]
+    : createContactlessTaskTabDefinition([]);
   const contactlessTask = initialContactlessTaskTabDefinition.reduce(createStateItem, {});
 
   return {

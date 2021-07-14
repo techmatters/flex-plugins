@@ -5,7 +5,8 @@
     "type": "select",
     "defaultOption": "ChildLine Zambia (ZM)",
     "options": [
-      { "value": "ChildLine Zambia (ZM)", "label": "ChildLine" }
+      { "value": "ChildLine Zambia (ZM)", "label": "ChildLine" },
+      { "value": "LifeLine Zambia (ZM)", "label": "LifeLine" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" }
   }

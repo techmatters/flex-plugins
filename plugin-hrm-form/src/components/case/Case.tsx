@@ -23,7 +23,7 @@ import {
 import { getConfig } from '../../HrmFormPlugin';
 import { connectToCase, transformCategories } from '../../services/ContactService';
 import { cancelCase, updateCase, getActivities } from '../../services/CaseService';
-import { submitContactForm, completeTask } from '../../services/formSubmissionHelpers';
+import { submitContactForm, completeTask, getHelplineToSave } from '../../services/formSubmissionHelpers';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { isConnectedCaseActivity, getDateFromNotSavedContact, sortActivities, getOfficeData } from './caseHelpers';
 import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
@@ -52,11 +52,18 @@ import ViewPerpetrator from './ViewPerpetrator';
 import ViewIncident from './ViewIncident';
 import ViewReferral from './ViewReferral';
 import type { CaseDetailsName } from '../../states/case/types';
-import type { HouseholdEntry, PerpetratorEntry, IncidentEntry, Case as CaseType, CustomITask } from '../../types/types';
+import {
+  HouseholdEntry,
+  PerpetratorEntry,
+  IncidentEntry,
+  Case as CaseType,
+  CustomITask,
+  isOfflineContactTask,
+} from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
 import { getPermissionsForCase, PermissionActions } from '../../permissions';
 
-const isStandaloneITask = (task): task is StandaloneITask => {
+export const isStandaloneITask = (task): task is StandaloneITask => {
   return task.taskSid === 'standalone-task-sid';
 };
 
@@ -111,6 +118,7 @@ const Case: React.FC<Props> = props => {
   const [mockedMessage, setMockedMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [timeline, setTimeline] = useState([]);
+  const [helpline, setHelpline] = useState(null);
   const { route, subroute } = props.routing;
 
   useEffect(() => {
@@ -175,6 +183,17 @@ const Case: React.FC<Props> = props => {
       fetchDefinitionVersions(version);
     }
   }, [definitionVersions, updateDefinitionVersion, version]);
+
+  useEffect(() => {
+    const fetchHelpline = async () => {
+      if (!isStandaloneITask(props.task)) {
+        const helplineToSave = await getHelplineToSave(props.task, props.form);
+        setHelpline(helplineToSave);
+      }
+    };
+
+    fetchHelpline();
+  }, [props.task, props.form]);
 
   // Memoize can function so is not re-created on every render of Case, but only when relevant case info changes
   const { can } = React.useMemo(
@@ -303,8 +322,8 @@ const Case: React.FC<Props> = props => {
     if (firstConnectedContact?.rawJson?.caseInformation) {
       return firstConnectedContact.rawJson.caseInformation.categories;
     }
-    if (form?.categories) {
-      return transformCategories(form.categories);
+    if (form?.categories && helpline) {
+      return transformCategories(helpline, form.categories);
     }
     return null;
   };

@@ -36,7 +36,7 @@ const version: DefinitionVersion = {
     CallerInformationTab: CallerInformationTab as FormDefinition,
     CaseInformationTab: CaseInformationTab as FormDefinition,
     ChildInformationTab: ChildInformationTab as FormDefinition,
-    IssueCategorizationTab,
+    IssueCategorizationTab: helpline => IssueCategorizationTab,
   },
   callTypeButtons: CallTypeButtons as CallTypeButtonsDefinitions,
   layoutVersion: LayoutDefinitions as LayoutVersion,

@@ -23,6 +23,8 @@ import type {
 import type { OneToOneConfigSpec, OneToManyConfigSpecs } from '../../insightsConfig/types';
 import CaseStatus from './CaseStatus.json';
 
+const fallbackHelpline = 'ChildLine Zambia (ZM)';
+
 const version: DefinitionVersion = {
   caseForms: {
     HouseholdForm: HouseholdForm as FormDefinition,
@@ -36,7 +38,7 @@ const version: DefinitionVersion = {
     CallerInformationTab: CallerInformationTab as FormDefinition,
     CaseInformationTab: CaseInformationTab as FormDefinition,
     ChildInformationTab: ChildInformationTab as FormDefinition,
-    IssueCategorizationTab,
+    IssueCategorizationTab: helpline => IssueCategorizationTab[helpline] || IssueCategorizationTab[fallbackHelpline],
   },
   callTypeButtons: CallTypeButtons as CallTypeButtonsDefinitions,
   layoutVersion: LayoutDefinitions as LayoutVersion,

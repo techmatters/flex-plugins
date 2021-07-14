@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
@@ -14,6 +14,8 @@ import { adaptFormToContactDetails, adaptContactToDetailsScreen } from './Contac
 import { CaseState } from '../../states/case/reducer';
 import { StandaloneITask } from '../StandaloneSearch';
 import type { CustomITask } from '../../types/types';
+import { getHelplineToSave } from '../../services/formSubmissionHelpers';
+import { isStandaloneITask } from './Case';
 
 const mapStateToProps = (state, ownProps: OwnProps) => {
   const form = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
@@ -39,6 +41,18 @@ type OwnProps = {
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
 const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, onClickClose, updateTempInfo }) => {
+  const [helpline, setHelpline] = useState(null);
+
+  useEffect(() => {
+    const fetchHelpline = async () => {
+      if (!isStandaloneITask(task)) {
+        const helplineToSave = await getHelplineToSave(task, form);
+        setHelpline(helplineToSave);
+      }
+    };
+
+    fetchHelpline();
+  }, [task, form]);
   if (!tempInfo || tempInfo.screen !== 'view-contact') return null;
 
   const { detailsExpanded, contact: contactFromInfo, createdAt, timeOfContact, counselor } = tempInfo.info;
@@ -48,8 +62,8 @@ const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, on
 
   if (contactFromInfo) {
     contact = adaptContactToDetailsScreen(contactFromInfo, counselorName);
-  } else {
-    contact = adaptFormToContactDetails(task, form, timeOfContact, counselorName);
+  } else if (helpline) {
+    contact = adaptFormToContactDetails(task, helpline, form, timeOfContact, counselorName);
   }
 
   if (!contact) return null;

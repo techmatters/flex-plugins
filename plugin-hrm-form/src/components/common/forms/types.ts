@@ -193,7 +193,7 @@ export type DefinitionVersion = {
     CallerInformationTab: FormDefinition;
     CaseInformationTab: FormDefinition;
     ChildInformationTab: FormDefinition;
-    IssueCategorizationTab: CategoriesDefinition;
+    IssueCategorizationTab: (helpline: string) => CategoriesDefinition;
   };
   callTypeButtons: CallTypeButtonsDefinitions;
   layoutVersion: LayoutVersion;

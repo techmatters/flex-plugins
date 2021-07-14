@@ -166,7 +166,6 @@ export function transformForm(helpline: string, form: TaskEntry): ContactRawJson
  * @param uniqueIdentifier
  * @param shouldFillEndMillis
  */
-// eslint-disable-next-line import/no-unused-modules
 export async function saveToHrm(task, form, workerSid, uniqueIdentifier, shouldFillEndMillis = true) {
   // if we got this far, we assume the form is valid and ready to submit
   const metadata = shouldFillEndMillis ? fillEndMillis(form.metadata) : form.metadata;

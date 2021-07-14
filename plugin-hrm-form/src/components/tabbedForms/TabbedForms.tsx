@@ -1,7 +1,7 @@
 /* eslint-disable react/no-multi-comp */
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import SearchIcon from '@material-ui/icons/Search';
 import { useForm, FormProvider } from 'react-hook-form';
 import { connect, ConnectedProps } from 'react-redux';
@@ -12,7 +12,7 @@ import Case from '../case';
 import { namespace, contactFormsBase, routingBase, RootState, configurationBase } from '../../states';
 import { updateCallType, updateForm } from '../../states/contacts/actions';
 import { searchResultToContactForm } from '../../services/ContactService';
-import { removeOfflineContact } from '../../services/formSubmissionHelpers';
+import { removeOfflineContact, getHelplineToSave } from '../../services/formSubmissionHelpers';
 import { changeRoute } from '../../states/routing/actions';
 import type { TaskEntry } from '../../states/contacts/reducer';
 import { TabbedFormSubroutes, NewCaseSubroutes } from '../../states/routing/types';
@@ -28,6 +28,7 @@ import BottomBar from './BottomBar';
 import { hasTaskControl } from '../../utils/transfer';
 import { isNonDataCallType } from '../../states/ValidationRules';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
+import { isStandaloneITask } from '../case/Case';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -76,7 +77,19 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, currentDefinitionVersion, ...props }) => {
+const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, currentDefinitionVersion }) => {
+  const [helpline, setHelpline] = useState(null);
+
+  useEffect(() => {
+    const fetchHelpline = async () => {
+      if (!isStandaloneITask(task)) {
+        const helplineToSave = await getHelplineToSave(task, contactForm);
+        setHelpline(helplineToSave);
+      }
+    };
+
+    fetchHelpline();
+  }, [task, contactForm]);
   const methods = useForm({
     shouldFocusError: false,
     mode: 'onChange',
@@ -86,7 +99,6 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, currentD
 
   if (!currentDefinitionVersion) return null;
 
-  const { task } = props;
   const taskId = task.taskSid;
   const isCallerType = contactForm.callType === callTypes.caller;
 
@@ -119,6 +131,11 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, currentD
   };
 
   const tabsToIndex = mapTabsToIndex(task, contactForm);
+
+  if (helpline === null || helpline === undefined) {
+    const categoriesIndex = tabsToIndex.indexOf('categories');
+    tabsToIndex.splice(categoriesIndex, 1); // Remove categories
+  }
 
   const tabs = tabsToIndex.map(mapTabsComponents(methods.errors));
 
@@ -197,12 +214,14 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, currentD
                     initialValues={contactForm.childInformation}
                     display={subroute === 'childInformation'}
                   />
-                  <IssueCategorizationTab
-                    task={task}
-                    display={subroute === 'categories'}
-                    initialValue={contactForm.categories}
-                    definition={currentDefinitionVersion.tabbedForms.IssueCategorizationTab}
-                  />
+                  {helpline && (
+                    <IssueCategorizationTab
+                      task={task}
+                      display={subroute === 'categories'}
+                      initialValue={contactForm.categories}
+                      definition={currentDefinitionVersion.tabbedForms.IssueCategorizationTab(helpline)}
+                    />
+                  )}
                   <TabbedFormTab
                     task={task}
                     tabPath="caseInformation"

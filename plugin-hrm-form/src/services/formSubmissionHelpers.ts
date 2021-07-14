@@ -41,7 +41,7 @@ export const completeTask = (task: CustomITask) =>
 /**
  * Helper used to be the source of truth for the helpline value being passed to HRM and Insights
  */
-export const getHelplineToSave = async (task: CustomITask, contactForm: Contact, caseForm: Case) => {
+export const getHelplineToSave = async (task: CustomITask, contactForm: Contact) => {
   if (isOfflineContactTask(task)) {
     if (contactForm.contactlessTask.helpline) return contactForm.contactlessTask.helpline;
 
@@ -57,7 +57,7 @@ export const getHelplineToSave = async (task: CustomITask, contactForm: Contact,
 export const submitContactForm = async (task: CustomITask, contactForm: Contact, caseForm: Case) => {
   const { workerSid } = getConfig();
 
-  const helplineToSave = await getHelplineToSave(task, contactForm, caseForm);
+  const helplineToSave = await getHelplineToSave(task, contactForm);
   // Add helplineToSave so it's grabbed when saving to Insights (either in buildInsightsData for offline contacts or sendInsightsData for live contacts)
   /* const updatedTask = */ await task.setAttributes({ ...task.attributes, helplineToSave });
 
