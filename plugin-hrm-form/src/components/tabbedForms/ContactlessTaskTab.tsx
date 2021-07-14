@@ -48,6 +48,7 @@ const ContactlessTaskTab: React.FC<Props> = ({
       : createFormDefinition(counselorsList);
 
     const tab = createFormFromDefinition(formDefinition)(['contactlessTask'])(initialForm)(updateCallBack);
+
     return disperseInputs(5)(tab);
   }, [counselorsList, dispatch, getValues, definition, initialForm, task.taskSid]);
 
