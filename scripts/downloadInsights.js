@@ -1,9 +1,10 @@
 /**
  * Script for downloading Insight Reports. To use, navigate to scripts/downloadInsights.js, and
- * run node downloadInsights.js {username} {password} {workspace ID} {object ID}.
+ * run node downloadInsights.js --username {username} --password {password} -- workspaceID {workspace ID} --objectID {object ID}.
  */
 
 const fetch = require('node-fetch');
+const fs = require('fs');
 const { argv } = require('yargs')
   .usage(
     'node downloadInsights.js --username {username} --password {password} --workspaceID  {workspace ID} --objectID {object ID}',
@@ -169,24 +170,24 @@ const logOut = async (baseUrl, sst, tempToken) => {
 };
 
 /**
- * Function that processes user's inputs and completes entire download process.
+ * Function that processes user's inputs and completes entire download process, writing a
+ * CSV file.
  * @returns {Promise<any>} the data from the requested report
  */
 
 const main = async (username, password, workspaceId, objectId) => {
   try {
     const baseUrl = 'https://analytics.ytica.com';
-
     const sst = await fetchSST(baseUrl, username, password);
     const superSecureToken = sst.userLogin.token;
     const tt = await getTT(baseUrl, superSecureToken);
     const tempToken = tt.userToken.token;
-
     const rawReportObject = await rawReport(baseUrl, tempToken, workspaceId, objectId);
     const report = await downloadReport(baseUrl, rawReportObject.uri, tempToken);
-
+    fs.writeFile(`${objectId}_report.csv`, report, (err) => {
+      if (err) throw err;
+    });
     await logOut(baseUrl, sst, tempToken);
-    console.log(report);
     return report;
   } catch (error) {
     console.error(error);
