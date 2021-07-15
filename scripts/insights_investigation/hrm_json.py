@@ -1,18 +1,35 @@
 #!/usr/bin/python
 import pandas as pd
-
+import sys
+import subprocess
 '''
 This script takes in two dataframes: one from the HRM and one from Insights and strips them
 down to basic info: date, queue, channel, taskID. The script returns a dataframe with records that 
 don't match between the two dataframes, organized by TaskID.
 '''
-"""
-Reads in hrm and prints differences between HRM and Insights (based on date, queue, and taskId)
-"""
+
+'''
+Generates the Insights report for comparison
+'''
 def main():
+    username = sys.argv[1]
+    password = sys.argv[2]
+    workspaceId = sys.argv[3]
+
+    subprocess.call("./insights.sh %s %s % s < reportIds.txt" % (username, password, workspaceId), shell=True)
+    f = open('reportIds.txt', 'r')
+    report = f.readline()
+    hrm_file="test_dataframes/_Contacts__202107081442.csv"
+    insights_file = f'{report.strip()}_report.csv'
+    comparison(hrm_file, insights_file)
+
+'''
+Reads in hrm and prints differences between HRM and Insights (based on date, queue, and taskId)
+'''
+def comparison(hrm_file, insights_file):
     #reads in hrm and insights dataframe, 
-    df_hrm = pd.read_csv("test_dataframes/_Contacts__202107121258.csv")
-    df_insights = pd.read_csv("test_dataframes/Basic Audit_small.csv")
+    df_hrm = pd.read_csv(hrm_file)
+    df_insights = pd.read_csv(insights_file)
     basic_hrm, basic_insights = basic_format(df_hrm, df_insights)
     diff_records = missing_records(basic_insights, basic_hrm)
 
