@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, act, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
@@ -18,6 +18,9 @@ import mockV1 from '../../../formDefinitions/v1';
 expect.extend(toHaveNoViolations);
 
 jest.mock('../../../components/case/ContactDetailsAdapter', () => ({ adaptFormToContactDetails: jest.fn() }));
+jest.mock('../../../services/formSubmissionHelpers', () => ({ getHelplineToSave: () => 'helpline' }));
+
+const runAllPromises = () => new Promise(setImmediate);
 
 const mockStore = configureMockStore([]);
 
@@ -146,7 +149,7 @@ const initialState = {
   },
 };
 
-test('displays counselor, date and contact details', () => {
+test('displays counselor, date and contact details', async () => {
   adaptFormToContactDetails.mockReturnValueOnce(contact);
   const store = mockStore(initialState);
 
@@ -166,13 +169,15 @@ test('displays counselor, date and contact details', () => {
     </Provider>,
   );
 
+  await waitFor(() => expect(screen.getByTestId('Case-ActionHeaderCounselor')).toBeInTheDocument());
+
   expect(screen.getByTestId('Case-ActionHeaderCounselor')).toHaveTextContent('John Doe');
   expect(screen.getByTestId('Case-ActionHeaderAdded')).toHaveTextContent('8/12/2020');
   expect(screen.getByTestId('ContactDetails-Container')).toBeInTheDocument();
   expect(screen.getByText('Jill Smith'.toUpperCase())).toBeInTheDocument();
 });
 
-test('click on x button', () => {
+test('click on x button', async () => {
   const onClickClose = jest.fn();
   adaptFormToContactDetails.mockReturnValueOnce(contact);
   const store = mockStore(initialState);
@@ -192,13 +197,15 @@ test('click on x button', () => {
       </StorelessThemeProvider>
     </Provider>,
   );
+
+  await waitFor(() => expect(screen.getByTestId('Case-CloseCross')).toBeInTheDocument());
 
   screen.getByTestId('Case-CloseCross').click();
 
   expect(onClickClose).toHaveBeenCalled();
 });
 
-test('click on close button', () => {
+test('click on close button', async () => {
   const onClickClose = jest.fn();
   adaptFormToContactDetails.mockReturnValueOnce(contact);
   const store = mockStore(initialState);
@@ -218,6 +225,8 @@ test('click on close button', () => {
       </StorelessThemeProvider>
     </Provider>,
   );
+
+  await waitFor(() => expect(screen.getByTestId('Case-ViewContactScreen-CloseButton')).toBeInTheDocument());
 
   screen.getByTestId('Case-ViewContactScreen-CloseButton').click();
 
@@ -258,6 +267,8 @@ test('click on expand section', async () => {
     },
   };
 
+  await waitFor(() => expect(screen.getByTestId('ContactDetails-Section-ChildInformation')).toBeInTheDocument());
+
   screen.getByTestId('ContactDetails-Section-ChildInformation').click();
 
   expect(updateTempInfo).toHaveBeenCalledWith(updatedTempInfo, task.taskSid);
@@ -282,6 +293,8 @@ test('a11y', async () => {
       </StorelessThemeProvider>
     </Provider>,
   );
+
+  await runAllPromises();
 
   const rules = {
     region: { enabled: false },

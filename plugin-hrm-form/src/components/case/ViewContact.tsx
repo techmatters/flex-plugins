@@ -62,7 +62,7 @@ const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, on
 
   if (contactFromInfo) {
     contact = adaptContactToDetailsScreen(contactFromInfo, counselorName);
-  } else if (helpline) {
+  } else if (helpline !== null && helpline !== undefined) {
     contact = adaptFormToContactDetails(task, helpline, form, timeOfContact, counselorName);
   }
 
