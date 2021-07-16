@@ -110,7 +110,6 @@ describe('saveToHrm()', () => {
     attributes: { isContactlessTask: false },
   };
   const workerSid = 'worker-sid';
-  const helpline = 'helpline';
   const uniqueIdentifier = 'uniqueIdentifier';
   const fetchSuccess = Promise.resolve({
     ok: true,
@@ -153,7 +152,6 @@ describe('saveToHrm() (isContactlessTask)', () => {
     attributes: { isContactlessTask: true },
   };
   const workerSid = 'worker-sid';
-  const helpline = 'helpline';
   const uniqueIdentifier = 'uniqueIdentifier';
   const fetchSuccess = Promise.resolve({
     ok: true,
