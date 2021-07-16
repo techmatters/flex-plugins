@@ -131,12 +131,6 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, cu
   };
 
   const tabsToIndex = mapTabsToIndex(task, contactForm);
-
-  if (helpline === null || helpline === undefined) {
-    const categoriesIndex = tabsToIndex.indexOf('categories');
-    tabsToIndex.splice(categoriesIndex, 1); // Remove categories
-  }
-
   const tabs = tabsToIndex.map(mapTabsComponents(methods.errors));
 
   const handleTabsChange = (_event: any, t: number) => {
@@ -214,14 +208,12 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, cu
                     initialValues={contactForm.childInformation}
                     display={subroute === 'childInformation'}
                   />
-                  {helpline && (
-                    <IssueCategorizationTab
-                      task={task}
-                      display={subroute === 'categories'}
-                      initialValue={contactForm.categories}
-                      definition={currentDefinitionVersion.tabbedForms.IssueCategorizationTab(helpline)}
-                    />
-                  )}
+                  <IssueCategorizationTab
+                    task={task}
+                    display={subroute === 'categories'}
+                    initialValue={contactForm.categories}
+                    definition={currentDefinitionVersion.tabbedForms.IssueCategorizationTab(helpline)}
+                  />
                   <TabbedFormTab
                     task={task}
                     tabPath="caseInformation"
