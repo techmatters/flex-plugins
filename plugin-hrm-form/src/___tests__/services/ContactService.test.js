@@ -8,6 +8,8 @@ import callTypes, { channelTypes } from '../../states/DomainConstants';
 import mockV1 from '../../formDefinitions/v1';
 import { offlineContactTaskSid } from '../../types/types';
 
+const helpline = 'ChildLine Zambia (ZM)';
+
 describe('transformForm', () => {
   test('removes control information and presents values only', () => {
     const oldForm = {
@@ -35,7 +37,7 @@ describe('transformForm', () => {
     };
 
     const expectedCategories = oldForm.categories.reduce((acc, path) => set(path, true, acc), {
-      categories: createCategoriesObject(mockV1.tabbedForms.IssueCategorizationTab),
+      categories: createCategoriesObject(mockV1.tabbedForms.IssueCategorizationTab(helpline)),
     }).categories;
 
     const expected = {
@@ -61,7 +63,7 @@ describe('transformForm', () => {
 
     oldForm.categories.reduce((acc, path) => set(path, true, acc));
 
-    const transformed = transformForm(oldForm);
+    const transformed = transformForm(helpline, oldForm);
     // expect().toStrictEqual(expected);
     expect(transformed.definitionVersion).toBe('v1');
     expect(transformed.callType).toBe(callTypes.caller);
