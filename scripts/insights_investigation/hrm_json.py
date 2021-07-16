@@ -19,7 +19,7 @@ def main():
     subprocess.call("./insights.sh %s %s % s < reportIds.txt" % (username, password, workspaceId), shell=True)
     f = open('reportIds.txt', 'r')
     report = f.readline()
-    hrm_file="test_dataframes/_Contacts__202107081442.csv"
+    hrm_file="test_dataframes/_Contacts__202107121258.csv"
     insights_file = f'{report.strip()}_report.csv'
     comparison(hrm_file, insights_file)
 
@@ -31,13 +31,14 @@ def comparison(hrm_file, insights_file):
     df_hrm = pd.read_csv(hrm_file)
     df_insights = pd.read_csv(insights_file)
     basic_hrm, basic_insights = basic_format(df_hrm, df_insights)
-    diff_records = missing_records(basic_insights, basic_hrm)
+    diff_records = unaligned_records(basic_insights, basic_hrm)
+    miss_records = missing_records(basic_insights, basic_hrm)
 
     #outputs difference between HRM and Insights in CSV
     pd.set_option('display.width', 150)
     pd.set_option("display.max_rows", None, "display.max_columns", None)
     diff_records.to_csv('diff_records.csv')
-
+    miss_records.to_csv("missing_records.csv")
 
 '''
 This function takes in the HRM dataframe, the Insights dataframe, and returns a stripped version of both.
@@ -71,12 +72,20 @@ def basic_format(df_hrm, df_insights):
 This function takes in the stripped insights and hrm dataframes. It returns a dataframe with tasks that differ
 between the dataframes, organized by taskId. The dataframe also contains the original values of the HRM and Inights dataframes.
 '''
-def missing_records(basic_insights, basic_hrm):
+def unaligned_records(basic_insights, basic_hrm):
     basic_insights = basic_insights.set_index('Segment')
     basic_hrm= basic_hrm.set_index('Segment')
     diff_df = pd.merge(basic_hrm, basic_insights, left_index=True, right_index=True)
     diff_df = diff_df.loc[(diff_df['Date_x'] != diff_df['Date_y']) | (diff_df['Communication Channel_x'] != diff_df['Communication Channel_y']) | (diff_df['Queue_x'] != diff_df['Queue_y'])]
     return diff_df
-    
+
+def missing_records(basic_insights, basic_hrm):
+    basic_insights['origin'] = 'Insights'
+    basic_hrm['origin'] = 'hrm'
+    diff_df = pd.concat([basic_insights, basic_hrm], axis=0)
+    diff_df=diff_df.drop_duplicates(['Segment'], keep='first')
+    diff_df.set_index('Segment')
+
+    return diff_df
 
 main()
