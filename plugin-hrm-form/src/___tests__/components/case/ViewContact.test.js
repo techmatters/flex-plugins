@@ -277,34 +277,36 @@ test('click on expand section', async () => {
 /**
  * Commenting this a11y test, because it keeps timing out
  */
-// test('a11y', async () => {
-//   adaptFormToContactDetails.mockReturnValueOnce(contact);
-//   const store = mockStore(initialState);
-
-//   const wrapper = mount(
-//     <Provider store={store}>
-//       <StorelessThemeProvider themeConf={themeConf}>
-//         <UnconnectedViewContact
-//           task={task}
-//           form={{}}
-//           counselorsHash={counselorsHash}
-//           tempInfo={tempInfo}
-//           updateTempInfo={jest.fn()}
-//           onClickClose={jest.fn()}
-//           route={route}
-//         />
-//       </StorelessThemeProvider>
-//     </Provider>,
-//   );
-
-//   await flushPromises();
-//   wrapper.update();
-
-//   const rules = {
-//     region: { enabled: false },
-//   };
-
-//   const axe = configureAxe({ rules });
-//   const results = await axe(wrapper.getDOMNode());
-//   expect(results).toHaveNoViolations();
-// });
+/*
+ * test('a11y', async () => {
+ *   adaptFormToContactDetails.mockReturnValueOnce(contact);
+ *   const store = mockStore(initialState);
+ *
+ *   const wrapper = mount(
+ *     <Provider store={store}>
+ *       <StorelessThemeProvider themeConf={themeConf}>
+ *         <UnconnectedViewContact
+ *           task={task}
+ *           form={{}}
+ *           counselorsHash={counselorsHash}
+ *           tempInfo={tempInfo}
+ *           updateTempInfo={jest.fn()}
+ *           onClickClose={jest.fn()}
+ *           route={route}
+ *         />
+ *       </StorelessThemeProvider>
+ *     </Provider>,
+ *   );
+ *
+ *   await flushPromises();
+ *   wrapper.update();
+ *
+ *   const rules = {
+ *     region: { enabled: false },
+ *   };
+ *
+ *   const axe = configureAxe({ rules });
+ *   const results = await axe(wrapper.getDOMNode());
+ *   expect(results).toHaveNoViolations();
+ * });
+ */
