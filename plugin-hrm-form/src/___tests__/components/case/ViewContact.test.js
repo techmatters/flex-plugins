@@ -295,6 +295,7 @@ test('a11y', async () => {
   );
 
   await runAllPromises();
+  wrapper.update();
 
   const rules = {
     region: { enabled: false },
