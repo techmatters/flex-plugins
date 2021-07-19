@@ -81,7 +81,7 @@ jobs:
          TWILIO_ACCOUNT_SID: ${{ secrets.ZA_PROD_ACCOUNT_SID }}
          TWILIO_AUTH_TOKEN: ${{ secrets.ZA_PROD_AUTH_TOKEN }}
          UNBUNDLED_REACT: true
-        run: npm install twilio-cli -g && twilio plugins:install @twilio-labs/plugin-flex@beta && twilio flex:plugins:deploy --changelog "${{ github.event.inputs.changelog }} (commit ${{ github.sha }})"
+        run: npm install twilio-cli -g && twilio plugins:install @twilio-labs/plugin-flex && twilio flex:plugins:deploy --changelog "${{ github.event.inputs.changelog }} (commit ${{ github.sha }})"
         working-directory: ./plugin-hrm-form
       # Release flex plugin
       - name: Run release command
