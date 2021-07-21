@@ -14,10 +14,6 @@ const offlineContactTask: OfflineContactTask = {
   taskSid: 'offline-contact-task-sid',
   channelType: 'default',
   attributes: { isContactlessTask: true, channelType: 'default' },
-  setAttributes: async newAttributes => {
-    offlineContactTask.attributes = { ...offlineContactTask.attributes, ...newAttributes };
-    return offlineContactTask;
-  },
 };
 
 type OwnProps = {

@@ -122,7 +122,6 @@ export type OfflineContactTask = {
     helplineToSave?: string;
   };
   channelType: 'default';
-  setAttributes: (attributes: {}) => Promise<OfflineContactTask>;
 };
 
 export type InMyBehalfITask = ITask & { attributes: { isContactlessTask: true; isInMyBehalf: true } };
@@ -143,3 +142,9 @@ export function isInMyBehalfITask(task: CustomITask): task is InMyBehalfITask {
 export function isTwilioTask(task: CustomITask): task is ITask {
   return task && !isOfflineContactTask(task) && !isInMyBehalfITask(task);
 }
+/**
+ * This type is used within the context of a form submission, to share values between HRM & Insights
+ */
+export type ExtraParameters = {
+  helplineToSave: string;
+};
