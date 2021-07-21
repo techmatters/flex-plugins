@@ -1,4 +1,15 @@
 /* eslint-disable no-console */
+/**
+ * Script used to setup Twilio resources and save Parameter Store secrets (step 2 of setup new helpline guide).
+ * To run this script, you must have a .env file with the following variables:
+ *  AWS_ACCESS_KEY_ID=<AWS script-user access key>
+ *  AWS_SECRET_ACCESS_KEY=<AWS script-user access secret>
+ *  TWILIO_ACCOUNT_SID=<Target Twilio account sid>
+ *  TWILIO_AUTH_TOKEN=<Target Twilio account auth token>
+ *  HELPLINE=<Helpline's friendly name (e.g. South Africa Helpline)>
+ *  SHORT_HELPLINE=<Short code for this helpline (e.g. ZA)>
+ *  ENVIRONMENT=<Target environment, one of Development, Staging or Production>
+ */
 import twilio from 'twilio';
 import { saveSSMParameter } from './helpers/ssm';
 import { logError, logSuccess, logWarning } from './helpers/log';
