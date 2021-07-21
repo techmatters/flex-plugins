@@ -6,7 +6,9 @@
     "lint": "eslint --ext js .",
     "lint:fix": "npm run lint -- --fix",
     "copyFlow": "node copyFlow.js",
-    "configure": "node configureNewAccount.js"
+    "configure": "node configureNewAccount.js",
+    "compile": "npx tsc",
+    "createTwilioResources": "npm run compile && node dist/createTwilioResources.js"
   },
   "author": "",
   "license": "ISC",
