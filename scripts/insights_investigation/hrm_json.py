@@ -15,14 +15,12 @@ def main():
     username = sys.argv[1]
     password = sys.argv[2]
     workspaceId = sys.argv[3]
-    reports = []
     subprocess.call("./insights.sh %s %s % s < reportIds.txt" % (username, password, workspaceId), shell=True)
     f = open('reportIds.txt', 'r')
-    for line in f:
-        name = f'{line.strip()}_report.csv'
-        reports.append(name)
+    report = f.readline()
     hrm_file="test_dataframes/_Contacts__202107121258.csv"
-    comparison(hrm_file, reports[0])
+    insights_file = f'{report.strip()}_report.csv'
+    comparison(hrm_file, insights_file)
 
 
 
