@@ -24,9 +24,9 @@ const zambiaUpdates = (attributes, contactForm, caseForm) => {
   return attsToReturn;
 };
 
-const expectWithV1Zambia = (attributes, contactForm, caseForm, submissionContext) =>
+const expectWithV1Zambia = (attributes, contactForm, caseForm, extraParameters) =>
   [baseUpdates, contactlessTaskUpdates, zambiaUpdates]
-    .map(f => f(attributes, contactForm, caseForm, submissionContext))
+    .map(f => f(attributes, contactForm, caseForm, extraParameters))
     .reduce((acc, curr) => mergeAttributes(acc, curr), { ...attributes });
 
 test('Insights Data for non-data callType', async () => {
@@ -173,11 +173,11 @@ test('Insights Data for data callType', async () => {
     id: 123,
   };
 
-  const submissionContext = { helplineToSave: previousAttributes.helpline };
+  const extraParameters = { helplineToSave: previousAttributes.helpline };
 
-  const expectedNewAttributes = expectWithV1Zambia(twilioTask.attributes, contactForm, caseForm, submissionContext);
+  const expectedNewAttributes = expectWithV1Zambia(twilioTask.attributes, contactForm, caseForm, extraParameters);
 
-  const result = buildInsightsData(twilioTask, contactForm, caseForm, submissionContext);
+  const result = buildInsightsData(twilioTask, contactForm, caseForm, extraParameters);
 
   /*
    * const expectedNewAttributes = {
@@ -237,11 +237,11 @@ test('Handles contactless tasks', async () => {
     id: 123,
   };
 
-  const submissionContext = { helplineToSave: previousAttributes.helpline };
+  const extraParameters = { helplineToSave: previousAttributes.helpline };
 
-  const expectedNewAttributes = expectWithV1Zambia(twilioTask.attributes, contactForm, caseForm, submissionContext);
+  const expectedNewAttributes = expectWithV1Zambia(twilioTask.attributes, contactForm, caseForm, extraParameters);
 
-  const result = buildInsightsData(twilioTask, contactForm, caseForm, submissionContext);
+  const result = buildInsightsData(twilioTask, contactForm, caseForm, extraParameters);
 
   /*
    * const expectedNewAttributes = {

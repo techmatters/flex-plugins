@@ -5,7 +5,7 @@ import { isNonDataCallType } from '../states/ValidationRules';
 import { mapChannelForInsights } from '../utils/mappers';
 import { getDateTime } from '../utils/helpers';
 import { TaskEntry } from '../states/contacts/reducer';
-import { Case, CustomITask, SubmissionContext } from '../types/types';
+import { Case, CustomITask, ExtraParameters } from '../types/types';
 import { formatCategories } from '../utils/formatters';
 import callTypes from '../states/DomainConstants';
 import {
@@ -67,7 +67,7 @@ type InsightsUpdateFunction = (
   attributes: TaskAttributes,
   contactForm: TaskEntry,
   caseForm: Case,
-  submissionContext: SubmissionContext,
+  extraParameters: ExtraParameters,
 ) => InsightsAttributes;
 
 const sanitizeInsightsValue = (value: string | boolean) => {
@@ -127,7 +127,7 @@ export const baseUpdates: InsightsUpdateFunction = (
   taskAttributes: TaskAttributes,
   contactForm: TaskEntry,
   caseForm: Case,
-  submissionContext: SubmissionContext,
+  extraParameters: ExtraParameters,
 ): CoreAttributes => {
   const { callType } = contactForm;
   const communication_channel = taskAttributes.isContactlessTask
@@ -155,7 +155,7 @@ export const baseUpdates: InsightsUpdateFunction = (
       [CALLTYPE]: sanitizeInsightsValue(callType),
       [CALLER_AGE]: sanitizeInsightsValue(contactForm.callerInformation.age),
       [CALLER_GENDER]: sanitizeInsightsValue(contactForm.callerInformation.gender),
-      [HELPLINE]: sanitizeInsightsValue(submissionContext.helplineToSave),
+      [HELPLINE]: sanitizeInsightsValue(extraParameters.helplineToSave),
       [LANGUAGE]: sanitizeInsightsValue(contactForm.childInformation.language),
     },
     customers: {
@@ -181,7 +181,7 @@ export const contactlessTaskUpdates: InsightsUpdateFunction = (
   attributes: TaskAttributes,
   contactForm: TaskEntry,
   caseForm: Case,
-  submissionContext: SubmissionContext,
+  extraParameters: ExtraParameters,
 ): InsightsAttributes => {
   if (!attributes.isContactlessTask) {
     return {};
@@ -316,7 +316,7 @@ export const processHelplineConfig = (
 };
 
 const applyCustomUpdate = (customUpdate: OneToManyConfigSpec): InsightsUpdateFunction => {
-  return (taskAttributes, contactForm, caseForm, submissionContext) => {
+  return (taskAttributes, contactForm, caseForm, extraParameters) => {
     if (isNonDataCallType(contactForm.callType)) return {};
 
     const dataSource = { taskAttributes, contactForm, caseForm };
@@ -335,7 +335,7 @@ const bindApplyCustomUpdates = (customConfigObject: {
   oneToManyConfigSpecs: OneToManyConfigSpecs;
   oneToOneConfigSpec: OneToOneConfigSpec;
 }): InsightsUpdateFunction[] => {
-  const getProcessedAtts: InsightsUpdateFunction = (attributes, contactForm, caseForm, submissionContext) =>
+  const getProcessedAtts: InsightsUpdateFunction = (attributes, contactForm, caseForm, extraParameters) =>
     isNonDataCallType(contactForm.callType)
       ? {}
       : processHelplineConfig(contactForm, caseForm, customConfigObject.oneToOneConfigSpec);
@@ -382,7 +382,7 @@ export const buildInsightsData = (
   task: CustomITask,
   contactForm: TaskEntry,
   caseForm: Case,
-  submissionContext: SubmissionContext,
+  extraParameters: ExtraParameters,
 ) => {
   const previousAttributes = task.attributes;
 
@@ -392,7 +392,7 @@ export const buildInsightsData = (
 
   // eslint-disable-next-line sonarjs/prefer-immediate-return
   const finalAttributes: TaskAttributes = getInsightsUpdateFunctionsForConfig(currentDefinitionVersion.insights)
-    .map(f => f(previousAttributes, contactForm, caseForm, submissionContext))
+    .map(f => f(previousAttributes, contactForm, caseForm, extraParameters))
     .reduce((acc: TaskAttributes, curr: InsightsAttributes) => mergeAttributes(acc, curr), previousAttributes);
 
   return finalAttributes;

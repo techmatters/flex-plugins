@@ -142,7 +142,9 @@ export function isInMyBehalfITask(task: CustomITask): task is InMyBehalfITask {
 export function isTwilioTask(task: CustomITask): task is ITask {
   return task && !isOfflineContactTask(task) && !isInMyBehalfITask(task);
 }
-
-export type SubmissionContext = {
+/**
+ * This type is used within the context of a form submission, to share values between HRM & Insights
+ */
+export type ExtraParameters = {
   helplineToSave: string;
 };

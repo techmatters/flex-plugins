@@ -22,7 +22,7 @@ import {
   SearchContactResult,
   isOfflineContactTask,
   isTwilioTask,
-  SubmissionContext,
+  ExtraParameters,
 } from '../types/types';
 
 /**
@@ -164,7 +164,7 @@ export function transformForm(form: TaskEntry): ContactRawJson {
 export async function saveToHrm(
   task,
   form,
-  submissionContext: SubmissionContext,
+  extraParameters: ExtraParameters,
   workerSid: string,
   uniqueIdentifier: string,
   shouldFillEndMillis = true,
@@ -214,7 +214,7 @@ export async function saveToHrm(
     queueName: task.queueName,
     channel: task.channelType,
     number,
-    helpline: submissionContext.helplineToSave,
+    helpline: extraParameters.helplineToSave,
     conversationDuration,
     timeOfContact,
     taskId: uniqueIdentifier,
