@@ -318,8 +318,10 @@ async function main() {
       }
     }, Promise.resolve(initialState));
 
-    logSuccess('Process completed succesfully, the final state object is: ');
-    console.log(finalState);
+    const { apiKeySecret, ...output } = finalState;
+
+    logSuccess('Process completed succesfully, the output is: ');
+    console.log(output);
   } catch (err) {
     logError(err);
 
