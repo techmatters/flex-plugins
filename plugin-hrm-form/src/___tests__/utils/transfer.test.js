@@ -7,8 +7,6 @@ import * as TransferHelpers from '../../utils/transfer';
 import { transferModes, transferStatuses } from '../../states/DomainConstants';
 import { createTask } from '../helpers';
 
-Actions.invokeAction = jest.fn();
-
 const members = new Map();
 members.set('some_40identity', { source: { sid: 'member1' } });
 const channel1 = { members };
@@ -286,20 +284,22 @@ describe('Kick, close and helpers', () => {
 
   test('closeCallOriginal', async () => {
     const expected1 = { sid: 'reservation2', targetSid: 'some@identity' };
+    const spy = jest.spyOn(Actions, 'invokeAction').mockImplementation(() => {});
 
     await TransferHelpers.closeCallOriginal(task);
 
     expect(task.attributes.transferMeta.transferStatus).toBe(transferStatuses.accepted);
-    expect(Actions.invokeAction).toBeCalledWith('KickParticipant', expected1);
+    expect(spy).toBeCalledWith('KickParticipant', expected1);
   });
 
   test('closeCallSelf', async () => {
     const expected1 = { sid: 'reservation2' };
+    const spy = jest.spyOn(Actions, 'invokeAction').mockImplementation(() => {});
 
     await TransferHelpers.closeCallSelf(task);
 
     expect(task.attributes.transferMeta.transferStatus).toBe(transferStatuses.rejected);
-    expect(Actions.invokeAction).toBeCalledWith('HangupCall', expected1);
+    expect(spy).toBeCalledWith('KickParticipant', expected1);
   });
 
   test('setTransferAccepted', async () => {
