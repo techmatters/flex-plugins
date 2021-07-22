@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
-import { StateHelper, Actions } from '@twilio/flex-ui';
+// import { StateHelper, Actions } from '@twilio/flex-ui';
+import * as Flex from '@twilio/flex-ui';
 import { omit } from 'lodash';
 
 import '../mockGetConfig';
@@ -10,8 +11,15 @@ import { createTask } from '../helpers';
 const members = new Map();
 members.set('some_40identity', { source: { sid: 'member1' } });
 const channel1 = { members };
-const channels = { channel1 };
-StateHelper.getChatChannelStateForTask = task => channels[task.taskChannelSid];
+const mockChannels = { channel1 };
+
+jest.mock('@twilio/flex-ui', () => ({
+  ...jest.requireActual('@twilio/flex-ui'),
+  Actions: { invokeAction: jest.fn() },
+  StateHelper: { getChatChannelStateForTask: task => mockChannels[task.taskChannelSid] },
+}));
+
+// StateHelper.getChatChannelStateForTask = task => channels[task.taskChannelSid];
 
 describe('Transfer mode, status and conditionals helpers', () => {
   test('hasTransferStarted', async () => {
@@ -284,24 +292,26 @@ describe('Kick, close and helpers', () => {
 
   test('closeCallOriginal', async () => {
     const expected1 = { sid: 'reservation2', targetSid: 'some@identity' };
-    // eslint-disable-next-line no-empty-function
-    const spy = jest.spyOn(Actions, 'invokeAction').mockImplementation(() => {});
+    // const spy = jest.spyOn(Flex.Actions, 'invokeAction');
+    Flex.Actions.invokeAction.mockClear();
+    expect(Flex.Actions.invokeAction).not.toHaveBeenCalled();
 
     await TransferHelpers.closeCallOriginal(task);
 
     expect(task.attributes.transferMeta.transferStatus).toBe(transferStatuses.accepted);
-    expect(spy).toBeCalledWith('KickParticipant', expected1);
+    expect(Flex.Actions.invokeAction).toHaveBeenCalledWith('KickParticipant', expected1);
   });
 
   test('closeCallSelf', async () => {
     const expected1 = { sid: 'reservation2' };
-    // eslint-disable-next-line no-empty-function
-    const spy = jest.spyOn(Actions, 'invokeAction').mockImplementation(() => {});
+    // const spy = jest.spyOn(Flex.Actions, 'invokeAction');
+    Flex.Actions.invokeAction.mockClear();
+    expect(Flex.Actions.invokeAction).not.toHaveBeenCalled();
 
     await TransferHelpers.closeCallSelf(task);
 
     expect(task.attributes.transferMeta.transferStatus).toBe(transferStatuses.rejected);
-    expect(spy).toBeCalledWith('KickParticipant', expected1);
+    expect(Flex.Actions.invokeAction).toHaveBeenCalledWith('HangupCall', expected1);
   });
 
   test('setTransferAccepted', async () => {
