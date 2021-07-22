@@ -284,6 +284,7 @@ describe('Kick, close and helpers', () => {
 
   test('closeCallOriginal', async () => {
     const expected1 = { sid: 'reservation2', targetSid: 'some@identity' };
+    // eslint-disable-next-line no-empty-function
     const spy = jest.spyOn(Actions, 'invokeAction').mockImplementation(() => {});
 
     await TransferHelpers.closeCallOriginal(task);
@@ -294,6 +295,7 @@ describe('Kick, close and helpers', () => {
 
   test('closeCallSelf', async () => {
     const expected1 = { sid: 'reservation2' };
+    // eslint-disable-next-line no-empty-function
     const spy = jest.spyOn(Actions, 'invokeAction').mockImplementation(() => {});
 
     await TransferHelpers.closeCallSelf(task);
