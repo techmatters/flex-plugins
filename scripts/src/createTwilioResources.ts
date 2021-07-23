@@ -147,7 +147,7 @@ const createWorkflow = async (state: State): Promise<State> => {
         filters: [
           {
             filter_friendly_name: `${state.helpline}`,
-            expression: `helpline==${state.helpline}`,
+            expression: `helpline=='${state.helpline}'`,
             targets: [
               {
                 expression:
