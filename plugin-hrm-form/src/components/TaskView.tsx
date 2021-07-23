@@ -25,6 +25,7 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const TaskView: React.FC<Props> = props => {
   const {
     shouldRecreateState,
