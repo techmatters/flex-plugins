@@ -2,17 +2,21 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { TaskHelper } from '@twilio/flex-ui';
+import { bindActionCreators } from 'redux';
 
 import HrmForm from './HrmForm';
 import FormNotEditable from './FormNotEditable';
 import { RootState, namespace, contactFormsBase, searchContactsBase, routingBase, configurationBase } from '../states';
 import * as GeneralActions from '../states/actions';
+import { updateHelpline as updateHelplineAction } from '../states/contacts/actions';
 import { hasTaskControl } from '../utils/transfer';
-import type { ContactFormDefinition } from '../states/types';
+import type { DefinitionVersion } from '../states/types';
 import { CustomITask, isOfflineContactTask, isInMyBehalfITask } from '../types/types';
 import { reRenderAgentDesktop, getConfig } from '../HrmFormPlugin';
 import PreviousContactsBanner from './PreviousContactsBanner';
 import { Flex } from '../styles/HrmStyles';
+import { isStandaloneITask } from './case/Case';
+import { getHelplineToSave } from '../services/formSubmissionHelpers';
 
 type OwnProps = {
   task: CustomITask;
@@ -22,13 +26,20 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const TaskView: React.FC<Props> = props => {
-  const { shouldRecreateState, currentDefinitionVersion, task, recreateContactState } = props;
+  const {
+    shouldRecreateState,
+    currentDefinitionVersion,
+    task,
+    contactForm,
+    updateHelpline,
+    recreateContactState,
+  } = props;
 
   React.useEffect(() => {
     if (shouldRecreateState) {
-      recreateContactState(currentDefinitionVersion.tabbedForms)(task.taskSid);
+      recreateContactState(currentDefinitionVersion)(task.taskSid);
     }
-  }, [currentDefinitionVersion.tabbedForms, recreateContactState, shouldRecreateState, task.taskSid]);
+  }, [currentDefinitionVersion, recreateContactState, shouldRecreateState, task.taskSid]);
 
   // Force a re-render on unmount (temporary fix NoTaskView issue with Offline Contacts)
   React.useEffect(() => {
@@ -36,6 +47,19 @@ const TaskView: React.FC<Props> = props => {
       if (isOfflineContactTask(task)) reRenderAgentDesktop();
     };
   }, [task]);
+
+  const contactlessTask = contactForm && contactForm.contactlessTask;
+
+  React.useEffect(() => {
+    const fetchHelpline = async () => {
+      if (task && contactlessTask && !isStandaloneITask(task)) {
+        const helplineToSave = await getHelplineToSave(task, contactlessTask || {});
+        updateHelpline(task.taskSid, helplineToSave);
+      }
+    };
+
+    fetchHelpline();
+  }, [task, contactlessTask, updateHelpline]);
 
   // If this task is not the active task, or if the task is not accepted yet, hide it
   const show =
@@ -62,7 +86,8 @@ TaskView.displayName = 'TaskView';
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const { task } = ownProps;
   // Check if the entry for this task exists in each reducer
-  const contactFormStateExists = Boolean(task && state[namespace][contactFormsBase].tasks[task.taskSid]);
+  const contactForm = task && state[namespace][contactFormsBase]?.tasks[task.taskSid];
+  const contactFormStateExists = Boolean(contactForm);
   const routingStateExists = Boolean(task && state[namespace][routingBase].tasks[task.taskSid]);
   const searchStateExists = Boolean(task && state[namespace][searchContactsBase].tasks[task.taskSid]);
 
@@ -70,14 +95,16 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const { currentDefinitionVersion } = state[namespace][configurationBase];
 
   return {
+    contactForm,
     shouldRecreateState,
     currentDefinitionVersion,
   };
 };
 
 const mapDispatchToProps = dispatch => ({
-  recreateContactState: (definitions: ContactFormDefinition) => (taskId: string) =>
+  recreateContactState: (definitions: DefinitionVersion) => (taskId: string) =>
     dispatch(GeneralActions.recreateContactState(definitions)(taskId)),
+  updateHelpline: bindActionCreators(updateHelplineAction, dispatch),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

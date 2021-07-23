@@ -1,0 +1,24 @@
+{
+  "label": "Helpline",
+  "helplines": [
+    {
+      "label": "ChildLine",
+      "value": "ChildLine Zambia (ZM)",
+      "default": true,
+      "manager": {
+        "name": "John Doe",
+        "phone": "031 201 2059",
+        "email": "johndow@childline.org.zm"
+      }
+    },
+    {
+      "label": "LifeLine",
+      "value": "LifeLine Zambia (ZM)",
+      "manager": {
+        "name": "Joe Smith",
+        "phone": "041 401 4049",
+        "email": "joesmith@childline.org.zm"
+      }
+    }
+  ]
+}

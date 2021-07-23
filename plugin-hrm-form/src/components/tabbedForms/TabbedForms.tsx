@@ -1,7 +1,7 @@
 /* eslint-disable react/no-multi-comp */
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import SearchIcon from '@material-ui/icons/Search';
 import { useForm, FormProvider } from 'react-hook-form';
 import { connect, ConnectedProps } from 'react-redux';
@@ -12,7 +12,7 @@ import Case from '../case';
 import { namespace, contactFormsBase, routingBase, RootState, configurationBase } from '../../states';
 import { updateCallType, updateForm } from '../../states/contacts/actions';
 import { searchResultToContactForm } from '../../services/ContactService';
-import { removeOfflineContact, getHelplineToSave } from '../../services/formSubmissionHelpers';
+import { removeOfflineContact } from '../../services/formSubmissionHelpers';
 import { changeRoute } from '../../states/routing/actions';
 import type { TaskEntry } from '../../states/contacts/reducer';
 import { TabbedFormSubroutes, NewCaseSubroutes } from '../../states/routing/types';
@@ -78,18 +78,6 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, currentDefinitionVersion }) => {
-  const [helpline, setHelpline] = useState(null);
-
-  useEffect(() => {
-    const fetchHelpline = async () => {
-      if (!isStandaloneITask(task)) {
-        const helplineToSave = await getHelplineToSave(task, contactForm);
-        setHelpline(helplineToSave);
-      }
-    };
-
-    fetchHelpline();
-  }, [task, contactForm]);
   const methods = useForm({
     shouldFocusError: false,
     mode: 'onChange',
@@ -165,6 +153,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, cu
 
   const isDataCallType = !isNonDataCallType(contactForm.callType);
   const showSubmitButton = !isEmptyCallType(contactForm.callType) && tabIndex === tabs.length - 1;
+  const { helpline } = contactForm;
 
   return (
     <FormProvider {...methods}>
@@ -184,7 +173,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, cu
                 <ContactlessTaskTab
                   task={task}
                   display={subroute === 'contactlessTask'}
-                  definition={currentDefinitionVersion.tabbedForms.ContactlessTaskTab}
+                  definition={currentDefinitionVersion.helplineInformation}
                   initialValues={contactForm.contactlessTask}
                 />
               )}

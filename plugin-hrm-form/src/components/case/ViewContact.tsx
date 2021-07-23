@@ -46,7 +46,7 @@ const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, on
   useEffect(() => {
     const fetchHelpline = async () => {
       if (!isStandaloneITask(task)) {
-        const helplineToSave = await getHelplineToSave(task, form);
+        const helplineToSave = await getHelplineToSave(task, form.contactlessTask);
         setHelpline(helplineToSave);
       }
     };

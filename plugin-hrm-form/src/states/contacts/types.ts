@@ -9,6 +9,7 @@ export const HANDLE_SELECT_SEARCH_RESULT = 'HANDLE_SELECT_SEARCH_RESULT';
 export const PREPOPULATE_FORM_CHILD = 'PREPOPULATE_FORM_CHILD';
 export const PREPOPULATE_FORM_CALLER = 'PREPOPULATE_FORM_CALLER';
 export const RESTORE_ENTIRE_FORM = 'RESTORE_ENTIRE_FORM';
+export const UPDATE_HELPLINE = 'UPDATE_HELPLINE';
 
 type UpdateFormAction = {
   type: typeof UPDATE_FORM;
@@ -58,6 +59,12 @@ type RestoreEntireFormAction = {
   taskId: string;
 };
 
+type UpdateHelpline = {
+  type: typeof UPDATE_HELPLINE;
+  helpline: string;
+  taskId: string;
+};
+
 export type ContactsActionType =
   | UpdateFormAction
   | SaveEndMillisAction
@@ -65,4 +72,5 @@ export type ContactsActionType =
   | HandleExpandCategoryAction
   | PrePopulateFormChildAction
   | PrePopulateFormCallerAction
-  | RestoreEntireFormAction;
+  | RestoreEntireFormAction
+  | UpdateHelpline;

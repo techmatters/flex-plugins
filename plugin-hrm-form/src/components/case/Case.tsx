@@ -25,7 +25,7 @@ import { connectToCase, transformCategories } from '../../services/ContactServic
 import { cancelCase, updateCase, getActivities } from '../../services/CaseService';
 import { submitContactForm, completeTask, getHelplineToSave } from '../../services/formSubmissionHelpers';
 import { getDefinitionVersion } from '../../services/ServerlessService';
-import { isConnectedCaseActivity, getDateFromNotSavedContact, sortActivities, getOfficeData } from './caseHelpers';
+import { isConnectedCaseActivity, getDateFromNotSavedContact, sortActivities, getHelplineData } from './caseHelpers';
 import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseContainer, CenteredContainer } from '../../styles/case';
 import CaseDetails from './CaseDetails';
@@ -64,7 +64,7 @@ import CasePrintView from './casePrint/CasePrintView';
 import { getPermissionsForCase, PermissionActions } from '../../permissions';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
-  return task.taskSid === 'standalone-task-sid';
+  return task && task.taskSid === 'standalone-task-sid';
 };
 
 type OwnProps = {
@@ -187,7 +187,7 @@ const Case: React.FC<Props> = props => {
   useEffect(() => {
     const fetchHelpline = async () => {
       if (!isStandaloneITask(props.task)) {
-        const helplineToSave = await getHelplineToSave(props.task, props.form);
+        const helplineToSave = await getHelplineToSave(props.task, props.form.contactlessTask);
         setHelpline(helplineToSave);
       }
     };
@@ -379,7 +379,7 @@ const Case: React.FC<Props> = props => {
   const notes = timeline.filter(x => x.type === 'note');
   const summary = info?.summary;
   const definitionVersion = props.definitionVersions[version];
-  const office = getOfficeData(connectedCase.helpline, definitionVersion.officeInformation); // Office name is being stored in the helpline
+  const office = getHelplineData(connectedCase.helpline, definitionVersion.helplineInformation);
 
   const addScreenProps = {
     task: props.task,
@@ -457,7 +457,7 @@ const Case: React.FC<Props> = props => {
                 lastUpdatedDate={lastUpdatedDate}
                 followUpDate={followUpDate}
                 childIsAtRisk={childIsAtRisk}
-                office={office?.name}
+                office={office?.label}
                 handlePrintCase={onPrintCase}
                 handleInfoChange={onInfoChange}
                 handleStatusChange={onStatusChange}

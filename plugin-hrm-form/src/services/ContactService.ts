@@ -23,6 +23,7 @@ import {
   isOfflineContactTask,
   isTwilioTask,
 } from '../types/types';
+import { getHelplineToSave } from './formSubmissionHelpers';
 
 /**
  * Un-nests the information (caller/child) as it comes from DB, to match the form structure
@@ -174,11 +175,11 @@ export async function saveToHrm(task, form, workerSid, uniqueIdentifier, shouldF
   const number = getNumberFromTask(task);
 
   let rawForm = form;
-  const { tabbedForms } = getDefinitionVersions().currentDefinitionVersion;
+  const { currentDefinitionVersion } = getDefinitionVersions();
 
   if (isNonDataCallType(callType)) {
     rawForm = {
-      ...createNewTaskEntry(tabbedForms)(false),
+      ...createNewTaskEntry(currentDefinitionVersion)(false),
       callType: form.callType,
       metadata: form.metadata,
       ...(isOfflineContactTask(task) && { contactlessTask: form.contactlessTask }),
@@ -191,7 +192,7 @@ export async function saveToHrm(task, form, workerSid, uniqueIdentifier, shouldF
   // This might change if isNonDataCallType, that's why we use rawForm
   const timeOfContact = getDateTime(rawForm.contactlessTask);
 
-  const { helplineToSave: helpline } = task.attributes;
+  const helpline = await getHelplineToSave(task, form.contactlessTask);
   /*
    * We do a transform from the original and then add things.
    * Not sure if we should drop that all into one function or not.
