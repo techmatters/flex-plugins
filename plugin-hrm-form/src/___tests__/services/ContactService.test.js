@@ -10,6 +10,12 @@ import { offlineContactTaskSid } from '../../types/types';
 
 const helpline = 'ChildLine Zambia (ZM)';
 
+jest.mock('../../services/formSubmissionHelpers', () => ({
+  getHelplineToSave: () => ({
+    helpline: Promise.resolve(helpline),
+  }),
+}));
+
 describe('transformForm', () => {
   test('removes control information and presents values only', () => {
     const oldForm = {
@@ -81,7 +87,7 @@ describe('transformForm', () => {
 });
 
 // The tabbed form definitions, used to create new form state.
-const definitions = mockV1.tabbedForms;
+const definitions = mockV1;
 
 const createForm = ({ callType, childFirstName }, contactlessTaskInfo = undefined) => {
   const blankForm = createNewTaskEntry(definitions)(false);
@@ -121,7 +127,7 @@ describe('saveToHrm()', () => {
 
     const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
 
-    await saveToHrm(task, form, workerSid, helpline, uniqueIdentifier);
+    await saveToHrm(task, form, workerSid, uniqueIdentifier);
 
     const formFromPOST = getFormFromPOST(mockedFetch);
     expect(formFromPOST.callType).toEqual(callTypes.child);
@@ -134,7 +140,7 @@ describe('saveToHrm()', () => {
     const form = createForm({ callType: callTypes.hangup, childFirstName: 'Jill' });
     const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
 
-    await saveToHrm(task, form, workerSid, helpline, uniqueIdentifier);
+    await saveToHrm(task, form, workerSid, uniqueIdentifier);
 
     const formFromPOST = getFormFromPOST(mockedFetch);
     expect(formFromPOST.callType).toEqual(callTypes.hangup);
@@ -165,7 +171,7 @@ describe('saveToHrm() (isContactlessTask)', () => {
     );
     const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
 
-    await saveToHrm(task, form, workerSid, helpline, uniqueIdentifier);
+    await saveToHrm(task, form, workerSid, uniqueIdentifier);
 
     const formFromPOST = getFormFromPOST(mockedFetch);
     expect(formFromPOST.callType).toEqual(callTypes.child);
@@ -180,7 +186,7 @@ describe('saveToHrm() (isContactlessTask)', () => {
     const form = createForm({ callType: callTypes.hangup, childFirstName: 'Jill' }, contactlessTask);
     const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
 
-    await saveToHrm({ ...task, taskSid: offlineContactTaskSid }, form, workerSid, helpline, uniqueIdentifier);
+    await saveToHrm({ ...task, taskSid: offlineContactTaskSid }, form, workerSid, uniqueIdentifier);
 
     const expected = { ...contactlessTask };
 
@@ -208,7 +214,7 @@ describe('saveToHrm() (isContactlessTask)', () => {
 
     const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
 
-    await saveToHrm(webTaskWithIP, form, workerSid, helpline, uniqueIdentifier);
+    await saveToHrm(webTaskWithIP, form, workerSid, uniqueIdentifier);
 
     const numberFromPOST = getNumberFromPOST(mockedFetch);
     expect(numberFromPOST).toEqual(ip);
@@ -230,7 +236,7 @@ describe('saveToHrm() (isContactlessTask)', () => {
 
     const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
 
-    await saveToHrm(webTaskWithoutIP, form, workerSid, helpline, uniqueIdentifier);
+    await saveToHrm(webTaskWithoutIP, form, workerSid, uniqueIdentifier);
 
     const numberFromPOST = getNumberFromPOST(mockedFetch);
     expect(numberFromPOST).toEqual(defaultFrom);
