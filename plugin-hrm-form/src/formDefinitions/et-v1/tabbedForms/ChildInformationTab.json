@@ -13,7 +13,7 @@
   },
   {
     "name": "gender",
-    "label": "Gender",
+    "label": "Sex",
     "type": "select",
     "options": [
       { "value": "", "label": "" },
@@ -62,6 +62,11 @@
       { "value": "Other", "label": "Other" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" }
+  },
+    {
+    "name": "city",
+    "label": "City",
+    "type": "input"
   },
   {
     "name": "region",
@@ -135,6 +140,17 @@
     ]
   },
   {
+    "name": "familyMembers",
+    "label": "Family Members Alive",
+    "type": "select",
+    "options": [
+      { "value": "Unknown", "label": "" },
+      { "value": "Mother", "label": "Mother" },
+      { "value": "Father", "label": "Father" },
+      { "value": "Both", "label": "Both" }
+    ]
+  },
+  {
     "name": "hivPositive",
     "label": "Child HIV Positive?",
     "type": "mixed-checkbox"
@@ -175,8 +191,8 @@
     ]
   },
   {
-    "name": "region",
-    "label": "Region",
+    "name": "location",
+    "label": "Location",
     "type": "select",
     "options": [
       { "value": "Unknown", "label": "" },
