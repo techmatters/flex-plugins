@@ -9,7 +9,7 @@ import {
   DefinitionVersion,
 } from '../types';
 import { createStateItem } from '../../components/common/forms/formGenerators';
-import { createFormDefinition as createContactlessTaskTabDefinition } from '../../components/tabbedForms/ContactlessTaskTabDefinition';
+import { createContactlessTaskTabDefinition } from '../../components/tabbedForms/ContactlessTaskTabDefinition';
 import callTypes, { CallTypes } from '../DomainConstants';
 
 export type TaskEntry = {

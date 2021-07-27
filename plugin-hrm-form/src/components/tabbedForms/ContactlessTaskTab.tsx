@@ -10,7 +10,7 @@ import { updateForm } from '../../states/contacts/actions';
 import { Container, ColumnarBlock, TwoColumnLayout, TabbedFormTabContainer } from '../../styles/HrmStyles';
 import { configurationBase, namespace, RootState } from '../../states';
 import type { TaskEntry } from '../../states/contacts/reducer';
-import { createFormDefinition } from './ContactlessTaskTabDefinition';
+import { createContactlessTaskTabDefinition } from './ContactlessTaskTabDefinition';
 import { splitDate, splitTime } from '../../utils/helpers';
 import type { OfflineContactTask } from '../../types/types';
 import type { HelplineDefinitions } from '../common/forms/types';
@@ -43,7 +43,7 @@ const ContactlessTaskTab: React.FC<Props> = ({
       dispatch(updateForm(task.taskSid, 'contactlessTask', rest));
     };
 
-    const formDefinition = createFormDefinition(counselorsList, definition);
+    const formDefinition = createContactlessTaskTabDefinition(counselorsList, definition);
 
     const tab = createFormFromDefinition(formDefinition)(['contactlessTask'])(initialForm)(updateCallBack);
 

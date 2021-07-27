@@ -1,6 +1,3 @@
-import { createStateItem } from '../components/common/forms/formGenerators';
-import { createFormDefinition as createContactlessTaskTabDefinition } from '../components/tabbedForms/ContactlessTaskTabDefinition';
-
 export const ValidationType = {
   REQUIRED: 'REQUIRED', // Will not be applied if in the callerInformation tab and callType is not caller.  Will not be applied when callType is standalone.
 };

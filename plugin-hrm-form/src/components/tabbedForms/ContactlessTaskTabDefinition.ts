@@ -14,7 +14,7 @@ const channelOptions = [{ value: '', label: '' }].concat(
   })),
 );
 
-export const createFormDefinition = (
+export const createContactlessTaskTabDefinition = (
   counselorsList: CounselorsList,
   helplineDefinitions: HelplineDefinitions,
 ): FormDefinition => {
