@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import mockV1 from '../formDefinitions/v1';
 
 jest.mock('../HrmFormPlugin', () => ({
@@ -24,6 +25,10 @@ jest.mock('../HrmFormPlugin', () => ({
         'TabbedForms-AddChildInfoTab': 'Child Information',
         'TabbedForms-CategoriesTab': 'Categories',
         'TabbedForms-AddCaseInfoTab': 'Summary',
+      },
+      featureFlags: {
+        enable_transfers: true,
+        enable_save_insights: true,
       },
     };
   },
