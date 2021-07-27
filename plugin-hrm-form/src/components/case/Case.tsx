@@ -11,7 +11,6 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import { format } from 'date-fns';
 
-import { StandaloneITask } from '../StandaloneSearch';
 import {
   namespace,
   contactFormsBase,
@@ -59,7 +58,7 @@ import {
   IncidentEntry,
   Case as CaseType,
   CustomITask,
-  isOfflineContactTask,
+  StandaloneITask,
 } from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
 import { getPermissionsForCase, PermissionActions } from '../../permissions';

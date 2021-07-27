@@ -6,7 +6,7 @@ import { CircularProgress } from '@material-ui/core';
 
 import { getConfig } from '../../HrmFormPlugin';
 import Case from '../case';
-import { Case as CaseType } from '../../types/types';
+import { Case as CaseType, StandaloneITask } from '../../types/types';
 import CaseListTable from './CaseListTable';
 import { CaseListContainer, CenteredContainer, SomethingWentWrongText } from '../../styles/caseList';
 import { getCases } from '../../services/CaseService';
@@ -14,7 +14,6 @@ import { CaseLayout } from '../../styles/case';
 import * as CaseActions from '../../states/case/actions';
 import * as ConfigActions from '../../states/configuration/actions';
 import { StandaloneSearchContainer } from '../../styles/search';
-import { StandaloneITask } from '../StandaloneSearch';
 import { RootState, namespace, configurationBase } from '../../states';
 import { getCasesMissingVersions } from '../../utils/definitionVersions';
 

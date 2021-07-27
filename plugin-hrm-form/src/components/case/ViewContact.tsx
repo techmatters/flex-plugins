@@ -12,8 +12,7 @@ import ContactDetails from '../ContactDetails';
 import ActionHeader from './ActionHeader';
 import { adaptFormToContactDetails, adaptContactToDetailsScreen } from './ContactDetailsAdapter';
 import { CaseState } from '../../states/case/reducer';
-import { StandaloneITask } from '../StandaloneSearch';
-import type { CustomITask } from '../../types/types';
+import type { CustomITask, StandaloneITask } from '../../types/types';
 import { getHelplineToSave } from '../../services/HelplineService';
 import { isStandaloneITask } from './Case';
 

@@ -7,8 +7,9 @@ import configureMockStore from 'redux-mock-store';
 import './mockStyled';
 import './mockGetConfig';
 
-import StandaloneSearch, { standaloneTaskSid } from '../components/StandaloneSearch';
+import StandaloneSearch from '../components/StandaloneSearch';
 import { initialState as searchInitialState } from '../states/search/reducer';
+import { standaloneTaskSid } from '../types/types';
 
 const mockStore = configureMockStore([]);
 

@@ -4,10 +4,16 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Template, Tab as TwilioTab } from '@twilio/flex-ui';
 
-import { standaloneTaskSid } from '../../StandaloneSearch';
 import ContactPreview from '../ContactPreview';
 import CasePreview from '../CasePreview';
-import { SearchContactResult, SearchCaseResult, SearchContact, Case, CustomITask } from '../../../types/types';
+import {
+  SearchContactResult,
+  SearchCaseResult,
+  SearchContact,
+  Case,
+  CustomITask,
+  standaloneTaskSid,
+} from '../../../types/types';
 import { Row } from '../../../styles/HrmStyles';
 import {
   ResultsHeader,
