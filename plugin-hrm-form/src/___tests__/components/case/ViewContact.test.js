@@ -18,9 +18,6 @@ import mockV1 from '../../../formDefinitions/v1';
 expect.extend(toHaveNoViolations);
 
 jest.mock('../../../components/case/ContactDetailsAdapter', () => ({ adaptFormToContactDetails: jest.fn() }));
-jest.mock('../../../services/HelplineService', () => ({ getHelplineToSave: () => Promise.resolve('helpline') }));
-
-const flushPromises = () => new Promise(setImmediate);
 
 const mockStore = configureMockStore([]);
 
@@ -149,6 +146,10 @@ const initialState = {
   },
 };
 
+const form = {
+  helpline: 'helpline',
+};
+
 test('displays counselor, date and contact details', async () => {
   adaptFormToContactDetails.mockReturnValueOnce(contact);
   const store = mockStore(initialState);
@@ -158,7 +159,7 @@ test('displays counselor, date and contact details', async () => {
       <StorelessThemeProvider themeConf={themeConf}>
         <UnconnectedViewContact
           task={task}
-          form={{}}
+          form={form}
           counselorsHash={counselorsHash}
           tempInfo={tempInfo}
           updateTempInfo={jest.fn()}
@@ -187,7 +188,7 @@ test('click on x button', async () => {
       <StorelessThemeProvider themeConf={themeConf}>
         <UnconnectedViewContact
           task={task}
-          form={{}}
+          form={form}
           counselorsHash={counselorsHash}
           tempInfo={tempInfo}
           updateTempInfo={jest.fn()}
@@ -215,7 +216,7 @@ test('click on close button', async () => {
       <StorelessThemeProvider themeConf={themeConf}>
         <UnconnectedViewContact
           task={task}
-          form={{}}
+          form={form}
           counselorsHash={counselorsHash}
           tempInfo={tempInfo}
           updateTempInfo={jest.fn()}
@@ -243,7 +244,7 @@ test('click on expand section', async () => {
       <StorelessThemeProvider themeConf={themeConf}>
         <UnconnectedViewContact
           task={task}
-          form={{}}
+          form={form}
           counselorsHash={counselorsHash}
           tempInfo={tempInfo}
           updateTempInfo={updateTempInfo}
@@ -274,39 +275,30 @@ test('click on expand section', async () => {
   expect(updateTempInfo).toHaveBeenCalledWith(updatedTempInfo, task.taskSid);
 });
 
-/**
- * Commenting this a11y test, because it keeps timing out
- */
-/*
- * test('a11y', async () => {
- *   adaptFormToContactDetails.mockReturnValueOnce(contact);
- *   const store = mockStore(initialState);
- *
- *   const wrapper = mount(
- *     <Provider store={store}>
- *       <StorelessThemeProvider themeConf={themeConf}>
- *         <UnconnectedViewContact
- *           task={task}
- *           form={{}}
- *           counselorsHash={counselorsHash}
- *           tempInfo={tempInfo}
- *           updateTempInfo={jest.fn()}
- *           onClickClose={jest.fn()}
- *           route={route}
- *         />
- *       </StorelessThemeProvider>
- *     </Provider>,
- *   );
- *
- *   await flushPromises();
- *   wrapper.update();
- *
- *   const rules = {
- *     region: { enabled: false },
- *   };
- *
- *   const axe = configureAxe({ rules });
- *   const results = await axe(wrapper.getDOMNode());
- *   expect(results).toHaveNoViolations();
- * });
- */
+test('a11y', async () => {
+  adaptFormToContactDetails.mockReturnValueOnce(contact);
+  const store = mockStore(initialState);
+  const wrapper = mount(
+    <Provider store={store}>
+      <StorelessThemeProvider themeConf={themeConf}>
+        <UnconnectedViewContact
+          task={task}
+          form={form}
+          counselorsHash={counselorsHash}
+          tempInfo={tempInfo}
+          updateTempInfo={jest.fn()}
+          onClickClose={jest.fn()}
+          route={route}
+        />
+      </StorelessThemeProvider>
+    </Provider>,
+  );
+
+  const rules = {
+    region: { enabled: false },
+  };
+
+  const axe = configureAxe({ rules });
+  const results = await axe(wrapper.getDOMNode());
+  expect(results).toHaveNoViolations();
+});
