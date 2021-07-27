@@ -18,7 +18,7 @@ import mockV1 from '../../../formDefinitions/v1';
 expect.extend(toHaveNoViolations);
 
 jest.mock('../../../components/case/ContactDetailsAdapter', () => ({ adaptFormToContactDetails: jest.fn() }));
-jest.mock('../../../services/formSubmissionHelpers', () => ({ getHelplineToSave: () => Promise.resolve('helpline') }));
+jest.mock('../../../services/HelplineService', () => ({ getHelplineToSave: () => Promise.resolve('helpline') }));
 
 const flushPromises = () => new Promise(setImmediate);
 

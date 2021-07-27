@@ -16,7 +16,7 @@ import { reRenderAgentDesktop, getConfig } from '../HrmFormPlugin';
 import PreviousContactsBanner from './PreviousContactsBanner';
 import { Flex } from '../styles/HrmStyles';
 import { isStandaloneITask } from './case/Case';
-import { getHelplineToSave } from '../services/formSubmissionHelpers';
+import { getHelplineToSave } from '../services/HelplineService';
 
 type OwnProps = {
   task: CustomITask;

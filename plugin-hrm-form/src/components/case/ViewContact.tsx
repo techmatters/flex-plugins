@@ -14,7 +14,7 @@ import { adaptFormToContactDetails, adaptContactToDetailsScreen } from './Contac
 import { CaseState } from '../../states/case/reducer';
 import { StandaloneITask } from '../StandaloneSearch';
 import type { CustomITask } from '../../types/types';
-import { getHelplineToSave } from '../../services/formSubmissionHelpers';
+import { getHelplineToSave } from '../../services/HelplineService';
 import { isStandaloneITask } from './Case';
 
 const mapStateToProps = (state, ownProps: OwnProps) => {

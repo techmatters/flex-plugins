@@ -23,7 +23,7 @@ import {
   isOfflineContactTask,
   isTwilioTask,
 } from '../types/types';
-import { getHelplineToSave } from './formSubmissionHelpers';
+import { getHelplineToSave } from './HelplineService';
 
 /**
  * Un-nests the information (caller/child) as it comes from DB, to match the form structure
