@@ -28,6 +28,7 @@ import BottomBar from './BottomBar';
 import { hasTaskControl } from '../../utils/transfer';
 import { isNonDataCallType } from '../../states/ValidationRules';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
+import { isStandaloneITask } from '../case/Case';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -76,7 +77,7 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, currentDefinitionVersion, ...props }) => {
+const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, currentDefinitionVersion }) => {
   const methods = useForm({
     shouldFocusError: false,
     mode: 'onChange',
@@ -86,7 +87,6 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, currentD
 
   if (!currentDefinitionVersion) return null;
 
-  const { task } = props;
   const taskId = task.taskSid;
   const isCallerType = contactForm.callType === callTypes.caller;
 
@@ -119,7 +119,6 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, currentD
   };
 
   const tabsToIndex = mapTabsToIndex(task, contactForm);
-
   const tabs = tabsToIndex.map(mapTabsComponents(methods.errors));
 
   const handleTabsChange = (_event: any, t: number) => {
@@ -154,6 +153,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, currentD
 
   const isDataCallType = !isNonDataCallType(contactForm.callType);
   const showSubmitButton = !isEmptyCallType(contactForm.callType) && tabIndex === tabs.length - 1;
+  const { helpline } = contactForm;
 
   return (
     <FormProvider {...methods}>
@@ -173,7 +173,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, currentD
                 <ContactlessTaskTab
                   task={task}
                   display={subroute === 'contactlessTask'}
-                  definition={currentDefinitionVersion.tabbedForms.ContactlessTaskTab}
+                  definition={currentDefinitionVersion.helplineInformation}
                   initialValues={contactForm.contactlessTask}
                 />
               )}
@@ -201,7 +201,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, contactForm, currentD
                     task={task}
                     display={subroute === 'categories'}
                     initialValue={contactForm.categories}
-                    definition={currentDefinitionVersion.tabbedForms.IssueCategorizationTab}
+                    definition={currentDefinitionVersion.tabbedForms.IssueCategorizationTab(helpline)}
                   />
                   <TabbedFormTab
                     task={task}

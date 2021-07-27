@@ -10,7 +10,10 @@ import { ToggleViewButton } from '../../../styles/HrmStyles';
 import HrmTheme from '../../../styles/HrmTheme';
 import { namespace, contactFormsBase } from '../../../states';
 import { setCategoriesGridView } from '../../../states/contacts/actions';
-import definition from '../../../formDefinitions/v1/tabbedForms/IssueCategorizationTab.json';
+import mockV1 from '../../../formDefinitions/v1';
+
+const helpline = 'ChildLine Zambia (ZM)';
+const definition = mockV1.tabbedForms.IssueCategorizationTab(helpline);
 
 // Copy paste from state/contacts initial state
 const expanded = Object.keys(definition).reduce((acc, category) => ({ ...acc, [category]: false }), {});

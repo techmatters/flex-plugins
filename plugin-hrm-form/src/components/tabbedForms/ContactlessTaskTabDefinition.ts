@@ -1,7 +1,7 @@
 import { isFuture } from 'date-fns';
 
 import { channelTypes, otherContactChannels } from '../../states/DomainConstants';
-import type { FormDefinition } from '../common/forms/types';
+import type { FormDefinition, HelplineDefinitions } from '../common/forms/types';
 import { mapChannelForInsights } from '../../utils/mappers';
 import { splitDate } from '../../utils/helpers';
 import type { CounselorsList } from '../../states/configuration/types';
@@ -14,12 +14,22 @@ const channelOptions = [{ value: '', label: '' }].concat(
   })),
 );
 
-export const createFormDefinition = (counselorsList: CounselorsList): FormDefinition => {
+export const createContactlessTaskTabDefinition = (
+  counselorsList: CounselorsList,
+  helplineDefinitions: HelplineDefinitions,
+): FormDefinition => {
   const { workerSid } = getConfig();
   const counsellorOptions = [
     { label: '', value: '' },
     ...counselorsList.map(c => ({ label: c.fullName, value: c.sid })),
   ];
+
+  const helplineLabel = helplineDefinitions.label;
+  const mapHelplineEntriesToOptions = ({ value, label }) => ({ value, label });
+  const helplineOptions = helplineDefinitions.helplines.map(mapHelplineEntriesToOptions);
+  const defaultHelplineOption = (
+    helplineDefinitions.helplines.find(helpline => helpline.default) || helplineDefinitions.helplines[0]
+  ).value;
 
   return [
     {
@@ -51,6 +61,14 @@ export const createFormDefinition = (counselorsList: CounselorsList): FormDefini
       name: 'time',
       type: 'time-input',
       label: 'Time of Contact',
+      required: { value: true, message: 'RequiredFieldError' },
+    },
+    {
+      name: 'helpline',
+      label: helplineLabel,
+      type: 'select',
+      defaultOption: defaultHelplineOption,
+      options: helplineOptions,
       required: { value: true, message: 'RequiredFieldError' },
     },
   ];

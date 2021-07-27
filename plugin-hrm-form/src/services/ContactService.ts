@@ -105,9 +105,9 @@ export const searchResultToContactForm = (def: FormDefinition, obj: InformationO
   return deTransformed;
 };
 
-export function transformCategories(categories: TaskEntry['categories']) {
+export function transformCategories(helpline, categories: TaskEntry['categories']) {
   const { IssueCategorizationTab } = getDefinitionVersions().currentDefinitionVersion.tabbedForms;
-  const cleanCategories = createCategoriesObject(IssueCategorizationTab);
+  const cleanCategories = createCategoriesObject(IssueCategorizationTab(helpline));
   const transformedCategories = categories.reduce((acc, path) => set(path, true, acc), {
     categories: cleanCategories, // use an object with categories property so we can reuse the entire path (they look like categories.Category.Subcategory)
   });
@@ -138,7 +138,7 @@ export function transformForm(form: TaskEntry): ContactRawJson {
   // @ts-ignore
   const childInformation = nestName(transformedValues.childInformation);
 
-  const categories = transformCategories(form.categories);
+  const categories = transformCategories(form.helpline, form.categories);
   const { definitionVersion } = getConfig();
 
   const transformed = {
@@ -176,11 +176,11 @@ export async function saveToHrm(
   const number = getNumberFromTask(task);
 
   let rawForm = form;
-  const { tabbedForms } = getDefinitionVersions().currentDefinitionVersion;
+  const { currentDefinitionVersion } = getDefinitionVersions();
 
   if (isNonDataCallType(callType)) {
     rawForm = {
-      ...createNewTaskEntry(tabbedForms)(false),
+      ...createNewTaskEntry(currentDefinitionVersion)(false),
       callType: form.callType,
       metadata: form.metadata,
       ...(isOfflineContactTask(task) && { contactlessTask: form.contactlessTask }),
@@ -193,6 +193,7 @@ export async function saveToHrm(
   // This might change if isNonDataCallType, that's why we use rawForm
   const timeOfContact = getDateTime(rawForm.contactlessTask);
 
+  const helpline = extraParameters.helplineToSave;
   /*
    * We do a transform from the original and then add things.
    * Not sure if we should drop that all into one function or not.
@@ -214,7 +215,7 @@ export async function saveToHrm(
     queueName: task.queueName,
     channel: task.channelType,
     number,
-    helpline: extraParameters.helplineToSave,
+    helpline,
     conversationDuration,
     timeOfContact,
     taskId: uniqueIdentifier,

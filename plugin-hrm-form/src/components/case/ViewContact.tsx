@@ -12,8 +12,7 @@ import ContactDetails from '../ContactDetails';
 import ActionHeader from './ActionHeader';
 import { adaptFormToContactDetails, adaptContactToDetailsScreen } from './ContactDetailsAdapter';
 import { CaseState } from '../../states/case/reducer';
-import { StandaloneITask } from '../StandaloneSearch';
-import type { CustomITask } from '../../types/types';
+import type { CustomITask, StandaloneITask } from '../../types/types';
 
 const mapStateToProps = (state, ownProps: OwnProps) => {
   const form = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
@@ -48,7 +47,7 @@ const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, on
 
   if (contactFromInfo) {
     contact = adaptContactToDetailsScreen(contactFromInfo, counselorName);
-  } else {
+  } else if (form && form.helpline !== null && form.helpline !== undefined) {
     contact = adaptFormToContactDetails(task, form, timeOfContact, counselorName);
   }
 

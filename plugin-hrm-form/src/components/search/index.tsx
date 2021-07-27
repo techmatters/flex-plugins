@@ -7,13 +7,12 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import { Template } from '@twilio/flex-ui';
 
-import { standaloneTaskSid } from '../StandaloneSearch';
 import SearchForm from './SearchForm';
 import SearchResults, { CONTACTS_PER_PAGE, CASES_PER_PAGE } from './SearchResults';
 import ContactDetails from './ContactDetails';
 import Case from '../case';
 import { SearchPages } from '../../states/search/types';
-import { CustomITask, SearchContact } from '../../types/types';
+import { CustomITask, SearchContact, standaloneTaskSid } from '../../types/types';
 import SearchResultsBackButton from './SearchResults/SearchResultsBackButton';
 import {
   handleSearchFormChange,

@@ -7,7 +7,8 @@ import { Case, CustomITask, isOfflineContactTask, offlineContactTaskSid } from '
 import { channelTypes } from '../states/DomainConstants';
 import { buildInsightsData } from './InsightsService';
 import { saveToHrm } from './ContactService';
-import { assignOfflineContact, getWorkerAttributes } from './ServerlessService';
+import { assignOfflineContact } from './ServerlessService';
+import { getHelplineToSave } from './HelplineService';
 import { removeContactState } from '../states/actions';
 
 /**
@@ -38,26 +39,10 @@ export const completeContactlessTask = async (task: CustomITask) => {
 export const completeTask = (task: CustomITask) =>
   isOfflineContactTask(task) ? removeOfflineContact() : completeContactTask(task);
 
-/**
- * Helper used to be the source of truth for the helpline value being passed to HRM and Insights
- */
-export const getHelplineToSave = async (task: CustomITask, contactForm: Contact): Promise<string> => {
-  if (isOfflineContactTask(task)) {
-    if (contactForm.contactlessTask.helpline) return contactForm.contactlessTask.helpline as string;
-
-    const targetWorkerSid = contactForm.contactlessTask.createdOnBehalfOf as string;
-    const targetWorkerAttributes = await getWorkerAttributes(targetWorkerSid);
-    return targetWorkerAttributes.helpline;
-  }
-
-  const { helpline: thisWorkerHelpline } = getConfig();
-  return thisWorkerHelpline || task.attributes.helpline || '';
-};
-
 export const submitContactForm = async (task: CustomITask, contactForm: Contact, caseForm: Case) => {
   const { workerSid } = getConfig();
 
-  const helplineToSave = await getHelplineToSave(task, contactForm);
+  const helplineToSave = await getHelplineToSave(task, contactForm.contactlessTask);
   const extraParameters = { helplineToSave };
 
   if (isOfflineContactTask(task)) {

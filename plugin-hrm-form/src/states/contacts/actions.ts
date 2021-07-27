@@ -71,3 +71,9 @@ export const restoreEntireForm = (form: TaskEntry, taskId: string): t.ContactsAc
   form,
   taskId,
 });
+
+export const updateHelpline = (taskId: string, helpline: string): t.ContactsActionType => ({
+  type: t.UPDATE_HELPLINE,
+  helpline,
+  taskId,
+});

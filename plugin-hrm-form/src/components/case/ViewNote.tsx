@@ -10,9 +10,8 @@ import { CaseState } from '../../states/case/reducer';
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseLayout, NoteContainer } from '../../styles/case';
 import ActionHeader from './ActionHeader';
-import { StandaloneITask } from '../StandaloneSearch';
 import { formatName } from '../../utils';
-import type { CustomITask } from '../../types/types';
+import type { CustomITask, StandaloneITask } from '../../types/types';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;
