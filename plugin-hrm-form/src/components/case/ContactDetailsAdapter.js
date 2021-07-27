@@ -62,8 +62,8 @@ export const adaptContactToDetailsScreen = (contact, counselorName) => {
   };
 };
 
-export const adaptFormToContactDetails = (task, helpline, form, date, counselor) => {
-  const details = transformForm(helpline, form);
+export const adaptFormToContactDetails = (task, form, date, counselor) => {
+  const details = transformForm(form);
   const dateTime = date;
   const name = `${details.childInformation.name.firstName} ${details.childInformation.name.lastName}`;
   const customerNumber = getNumberFromTask(task);

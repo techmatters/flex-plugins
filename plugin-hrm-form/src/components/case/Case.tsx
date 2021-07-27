@@ -2,7 +2,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react';
-import { Template, ITask } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
@@ -23,7 +23,6 @@ import { getConfig } from '../../HrmFormPlugin';
 import { connectToCase, transformCategories } from '../../services/ContactService';
 import { cancelCase, updateCase, getActivities } from '../../services/CaseService';
 import { submitContactForm, completeTask } from '../../services/formSubmissionHelpers';
-import { getHelplineToSave } from '../../services/HelplineService';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { isConnectedCaseActivity, getDateFromNotSavedContact, sortActivities, getHelplineData } from './caseHelpers';
 import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
@@ -118,7 +117,6 @@ const Case: React.FC<Props> = props => {
   const [mockedMessage, setMockedMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [timeline, setTimeline] = useState([]);
-  const [helpline, setHelpline] = useState(null);
   const { route, subroute } = props.routing;
 
   useEffect(() => {
@@ -183,17 +181,6 @@ const Case: React.FC<Props> = props => {
       fetchDefinitionVersions(version);
     }
   }, [definitionVersions, updateDefinitionVersion, version]);
-
-  useEffect(() => {
-    const fetchHelpline = async () => {
-      if (!isStandaloneITask(props.task)) {
-        const helplineToSave = await getHelplineToSave(props.task, props.form.contactlessTask);
-        setHelpline(helplineToSave);
-      }
-    };
-
-    fetchHelpline();
-  }, [props.task, props.form]);
 
   // Memoize can function so is not re-created on every render of Case, but only when relevant case info changes
   const { can } = React.useMemo(
@@ -322,8 +309,8 @@ const Case: React.FC<Props> = props => {
     if (firstConnectedContact?.rawJson?.caseInformation) {
       return firstConnectedContact.rawJson.caseInformation.categories;
     }
-    if (form?.categories && helpline) {
-      return transformCategories(helpline, form.categories);
+    if (form?.categories && form?.helpline) {
+      return transformCategories(form.helpline, form.categories);
     }
     return null;
   };

@@ -24,7 +24,6 @@ import {
   isTwilioTask,
   ExtraParameters,
 } from '../types/types';
-import { getHelplineToSave } from './HelplineService';
 
 /**
  * Un-nests the information (caller/child) as it comes from DB, to match the form structure
@@ -120,7 +119,7 @@ export function transformCategories(helpline, categories: TaskEntry['categories'
  * Transforms the form to be saved as the backend expects it
  * VisibleForTesting
  */
-export function transformForm(helpline: string, form: TaskEntry): ContactRawJson {
+export function transformForm(form: TaskEntry): ContactRawJson {
   const { callType, metadata, contactlessTask } = form;
   const {
     CallerInformationTab,
@@ -139,7 +138,7 @@ export function transformForm(helpline: string, form: TaskEntry): ContactRawJson
   // @ts-ignore
   const childInformation = nestName(transformedValues.childInformation);
 
-  const categories = transformCategories(helpline, form.categories);
+  const categories = transformCategories(form.helpline, form.categories);
   const { definitionVersion } = getConfig();
 
   const transformed = {
@@ -200,7 +199,7 @@ export async function saveToHrm(
    * Not sure if we should drop that all into one function or not.
    * Probably.  It would just require passing the task.
    */
-  const formToSend = transformForm(helpline, rawForm);
+  const formToSend = transformForm(rawForm);
 
   let channelSid;
   let serviceSid;

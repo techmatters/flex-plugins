@@ -19,6 +19,7 @@ jest.mock('../../services/formSubmissionHelpers', () => ({
 describe('transformForm', () => {
   test('removes control information and presents values only', () => {
     const oldForm = {
+      helpline,
       callType: callTypes.caller,
       callerInformation: {
         firstName: 'myFirstName',
@@ -69,7 +70,7 @@ describe('transformForm', () => {
 
     oldForm.categories.reduce((acc, path) => set(path, true, acc));
 
-    const transformed = transformForm(helpline, oldForm);
+    const transformed = transformForm(oldForm);
     // expect().toStrictEqual(expected);
     expect(transformed.definitionVersion).toBe('v1');
     expect(transformed.callType).toBe(callTypes.caller);
