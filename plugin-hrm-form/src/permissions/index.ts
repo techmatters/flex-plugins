@@ -2,6 +2,7 @@ import { getConfig } from '../HrmFormPlugin';
 import type * as t from '../types/types';
 import * as zmRules from './zm';
 import * as zaRules from './za';
+import * as etRules from './et';
 
 export const PermissionActions = {
   CLOSE_CASE: 'closeCase',
@@ -30,6 +31,7 @@ type Rules = {
 const rulesMap: { [permissionConfig in PermissionConfig]: Rules } = {
   zm: zmRules,
   za: zaRules,
+  et: etRules,
 };
 
 const fallbackRules = zaRules;
