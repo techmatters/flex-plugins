@@ -1,2 +1,9 @@
 [
+  {
+    "attributeName": "area",
+    "insightsObject": "customers",
+    "paths": [
+      "contactForm.childInformation.region"
+    ]
+  }
 ]
