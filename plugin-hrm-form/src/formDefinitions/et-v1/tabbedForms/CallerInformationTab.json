@@ -49,6 +49,7 @@
       { "value": "Harari", "label": "Harari" },
       { "value": "Unknown", "label": "Unknown" }
     ],
+    "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
     "name": "phone1",
