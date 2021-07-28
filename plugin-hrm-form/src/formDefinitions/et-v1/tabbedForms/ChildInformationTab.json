@@ -63,7 +63,7 @@
     ],
     "required": { "value": true, "message": "RequiredFieldError" }
   },
-    {
+  {
     "name": "city",
     "label": "City",
     "type": "input"
