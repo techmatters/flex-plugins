@@ -4,7 +4,12 @@
     {
       "label": "ChildLine",
       "value": "ChildLine Zambia (ZM)",
-      "default": true
+      "default": true,
+      "manager": {
+        "name": "Beenzu Mweetwa",
+        "phone": "+260 97 798 3966",
+        "email": "bflochibeka@gmail.com"
+      }
     }
   ]
 }
