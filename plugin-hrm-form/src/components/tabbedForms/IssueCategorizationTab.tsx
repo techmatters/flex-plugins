@@ -46,6 +46,7 @@ const IssueCategorizationTab: React.FC<Props> = ({
       updateForm(task.taskSid, 'categories', categories);
     };
 
+    if (IssueCategorizationTabDefinition === null || IssueCategorizationTabDefinition === undefined) return {};
     return createSubCategoriesInputs(IssueCategorizationTabDefinition, ['categories'], updateCallback);
   }, [IssueCategorizationTabDefinition, getValues, task.taskSid, updateForm]);
 

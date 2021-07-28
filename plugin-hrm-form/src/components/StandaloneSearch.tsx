@@ -3,18 +3,10 @@ import React from 'react';
 
 import Search from './search';
 import { StandaloneSearchContainer } from '../styles/search';
-
-export const standaloneTaskSid = 'standalone-task-sid';
-
-export type StandaloneITask = {
-  taskSid: 'standalone-task-sid';
-  attributes: {
-    isContactlessTask: boolean;
-  };
-};
+import { StandaloneITask, standaloneTaskSid } from '../types/types';
 
 const standaloneTask: StandaloneITask = {
-  taskSid: 'standalone-task-sid',
+  taskSid: standaloneTaskSid,
   attributes: { isContactlessTask: false },
 };
 

@@ -6,13 +6,14 @@ import {
   RECREATE_CONTACT_STATE,
   REMOVE_CONTACT_STATE,
   GeneralActionType,
-  ContactFormDefinition,
+  DefinitionVersion,
 } from '../types';
 import { createStateItem } from '../../components/common/forms/formGenerators';
-import { createFormDefinition as createContactlessTaskTabDefinition } from '../../components/tabbedForms/ContactlessTaskTabDefinition';
+import { createContactlessTaskTabDefinition } from '../../components/tabbedForms/ContactlessTaskTabDefinition';
 import callTypes, { CallTypes } from '../DomainConstants';
 
 export type TaskEntry = {
+  helpline: string;
   callType: CallTypes | '';
   childInformation: { [key: string]: string | boolean };
   callerInformation: { [key: string]: string | boolean };
@@ -37,14 +38,18 @@ type ContactsState = {
 };
 
 // eslint-disable-next-line import/no-unused-modules
-export const createNewTaskEntry = (definitions: ContactFormDefinition) => (recreated: boolean): TaskEntry => {
-  const initialChildInformation = definitions.ChildInformationTab.reduce(createStateItem, {});
-  const initialCallerInformation = definitions.CallerInformationTab.reduce(createStateItem, {});
-  const initialCaseInformation = definitions.CaseInformationTab.reduce(createStateItem, {});
+export const createNewTaskEntry = (definitions: DefinitionVersion) => (recreated: boolean): TaskEntry => {
+  const initialChildInformation = definitions.tabbedForms.ChildInformationTab.reduce(createStateItem, {});
+  const initialCallerInformation = definitions.tabbedForms.CallerInformationTab.reduce(createStateItem, {});
+  const initialCaseInformation = definitions.tabbedForms.CaseInformationTab.reduce(createStateItem, {});
+
+  const { helplines } = definitions.helplineInformation;
+  const defaultHelpline = helplines.find(helpline => helpline.default).value || helplines[0].value;
+  if (defaultHelpline === null || defaultHelpline === undefined) throw new Error('No helpline definition was found');
 
   const categoriesMeta = {
     gridView: false,
-    expanded: Object.keys(definitions.IssueCategorizationTab).reduce(
+    expanded: Object.keys(definitions.tabbedForms.IssueCategorizationTab(defaultHelpline)).reduce(
       (acc, category) => ({ ...acc, [category]: false }),
       {},
     ),
@@ -58,10 +63,11 @@ export const createNewTaskEntry = (definitions: ContactFormDefinition) => (recre
     categories: categoriesMeta,
   };
 
-  const initialContactlessTaskTabDefinition = createContactlessTaskTabDefinition([]);
+  const initialContactlessTaskTabDefinition = createContactlessTaskTabDefinition([], definitions.helplineInformation);
   const contactlessTask = initialContactlessTaskTabDefinition.reduce(createStateItem, {});
 
   return {
+    helpline: defaultHelpline,
     callType: '',
     childInformation: initialChildInformation,
     callerInformation: initialCallerInformation,
@@ -224,6 +230,18 @@ export function reduce(state = initialState, action: t.ContactsActionType | Gene
         tasks: {
           ...state.tasks,
           [action.taskId]: action.form,
+        },
+      };
+    }
+    case t.UPDATE_HELPLINE: {
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...state.tasks[action.taskId],
+            helpline: action.helpline,
+          },
         },
       };
     }

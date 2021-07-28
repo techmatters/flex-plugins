@@ -31,8 +31,7 @@ import {
   splitAt,
 } from '../common/forms/formGenerators';
 import type { DefinitionVersion } from '../common/forms/types';
-import { StandaloneITask } from '../StandaloneSearch';
-import type { CustomITask } from '../../types/types';
+import type { CustomITask, StandaloneITask } from '../../types/types';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;

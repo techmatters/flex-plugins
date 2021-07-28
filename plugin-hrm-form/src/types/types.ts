@@ -124,6 +124,15 @@ export type OfflineContactTask = {
   channelType: 'default';
 };
 
+export const standaloneTaskSid = 'standalone-task-sid';
+
+export type StandaloneITask = {
+  taskSid: typeof standaloneTaskSid;
+  attributes: {
+    isContactlessTask: boolean;
+  };
+};
+
 export type InMyBehalfITask = ITask & { attributes: { isContactlessTask: true; isInMyBehalf: true } };
 
 export type CustomITask = ITask | OfflineContactTask | InMyBehalfITask;
@@ -142,6 +151,11 @@ export function isInMyBehalfITask(task: CustomITask): task is InMyBehalfITask {
 export function isTwilioTask(task: CustomITask): task is ITask {
   return task && !isOfflineContactTask(task) && !isInMyBehalfITask(task);
 }
+
+export const isStandaloneITask = (task): task is StandaloneITask => {
+  return task && task.taskSid === standaloneTaskSid;
+};
+
 /**
  * This type is used within the context of a form submission, to share values between HRM & Insights
  */

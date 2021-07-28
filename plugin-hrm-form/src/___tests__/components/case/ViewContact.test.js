@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, act, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
@@ -146,7 +146,11 @@ const initialState = {
   },
 };
 
-test('displays counselor, date and contact details', () => {
+const form = {
+  helpline: 'helpline',
+};
+
+test('displays counselor, date and contact details', async () => {
   adaptFormToContactDetails.mockReturnValueOnce(contact);
   const store = mockStore(initialState);
 
@@ -155,7 +159,7 @@ test('displays counselor, date and contact details', () => {
       <StorelessThemeProvider themeConf={themeConf}>
         <UnconnectedViewContact
           task={task}
-          form={{}}
+          form={form}
           counselorsHash={counselorsHash}
           tempInfo={tempInfo}
           updateTempInfo={jest.fn()}
@@ -166,13 +170,15 @@ test('displays counselor, date and contact details', () => {
     </Provider>,
   );
 
+  await waitFor(() => expect(screen.getByTestId('Case-ActionHeaderCounselor')).toBeInTheDocument());
+
   expect(screen.getByTestId('Case-ActionHeaderCounselor')).toHaveTextContent('John Doe');
   expect(screen.getByTestId('Case-ActionHeaderAdded')).toHaveTextContent('8/12/2020');
   expect(screen.getByTestId('ContactDetails-Container')).toBeInTheDocument();
   expect(screen.getByText('Jill Smith'.toUpperCase())).toBeInTheDocument();
 });
 
-test('click on x button', () => {
+test('click on x button', async () => {
   const onClickClose = jest.fn();
   adaptFormToContactDetails.mockReturnValueOnce(contact);
   const store = mockStore(initialState);
@@ -182,7 +188,7 @@ test('click on x button', () => {
       <StorelessThemeProvider themeConf={themeConf}>
         <UnconnectedViewContact
           task={task}
-          form={{}}
+          form={form}
           counselorsHash={counselorsHash}
           tempInfo={tempInfo}
           updateTempInfo={jest.fn()}
@@ -192,13 +198,15 @@ test('click on x button', () => {
       </StorelessThemeProvider>
     </Provider>,
   );
+
+  await waitFor(() => expect(screen.getByTestId('Case-CloseCross')).toBeInTheDocument());
 
   screen.getByTestId('Case-CloseCross').click();
 
   expect(onClickClose).toHaveBeenCalled();
 });
 
-test('click on close button', () => {
+test('click on close button', async () => {
   const onClickClose = jest.fn();
   adaptFormToContactDetails.mockReturnValueOnce(contact);
   const store = mockStore(initialState);
@@ -208,7 +216,7 @@ test('click on close button', () => {
       <StorelessThemeProvider themeConf={themeConf}>
         <UnconnectedViewContact
           task={task}
-          form={{}}
+          form={form}
           counselorsHash={counselorsHash}
           tempInfo={tempInfo}
           updateTempInfo={jest.fn()}
@@ -218,6 +226,8 @@ test('click on close button', () => {
       </StorelessThemeProvider>
     </Provider>,
   );
+
+  await waitFor(() => expect(screen.getByTestId('Case-ViewContactScreen-CloseButton')).toBeInTheDocument());
 
   screen.getByTestId('Case-ViewContactScreen-CloseButton').click();
 
@@ -234,7 +244,7 @@ test('click on expand section', async () => {
       <StorelessThemeProvider themeConf={themeConf}>
         <UnconnectedViewContact
           task={task}
-          form={{}}
+          form={form}
           counselorsHash={counselorsHash}
           tempInfo={tempInfo}
           updateTempInfo={updateTempInfo}
@@ -258,6 +268,8 @@ test('click on expand section', async () => {
     },
   };
 
+  await waitFor(() => expect(screen.getByTestId('ContactDetails-Section-ChildInformation')).toBeInTheDocument());
+
   screen.getByTestId('ContactDetails-Section-ChildInformation').click();
 
   expect(updateTempInfo).toHaveBeenCalledWith(updatedTempInfo, task.taskSid);
@@ -266,13 +278,12 @@ test('click on expand section', async () => {
 test('a11y', async () => {
   adaptFormToContactDetails.mockReturnValueOnce(contact);
   const store = mockStore(initialState);
-
   const wrapper = mount(
     <Provider store={store}>
       <StorelessThemeProvider themeConf={themeConf}>
         <UnconnectedViewContact
           task={task}
-          form={{}}
+          form={form}
           counselorsHash={counselorsHash}
           tempInfo={tempInfo}
           updateTempInfo={jest.fn()}
@@ -287,10 +298,7 @@ test('a11y', async () => {
     region: { enabled: false },
   };
 
-  console.log(wrapper);
-
   const axe = configureAxe({ rules });
   const results = await axe(wrapper.getDOMNode());
-
   expect(results).toHaveNoViolations();
 });

@@ -121,15 +121,10 @@ type CallTypeButtonsEntry = {
 
 export type CallTypeButtonsDefinitions = CallTypeButtonsEntry[];
 
-/*
- * ToDo: improve this type by removing name property and using officeName as a key:
- * {
- *   office1: { ... },
- *   office2: { ... },
- * }
- */
-export type OfficeEntry = {
-  name: string;
+export type HelplineEntry = {
+  label: string;
+  value: string;
+  default?: boolean;
   manager?: {
     name: string;
     phone: string;
@@ -137,8 +132,10 @@ export type OfficeEntry = {
   };
 };
 
-// ToDo: also this type can be defined as: OfficeDefinitions = { [officename: string]: OfficeEntry };
-export type OfficeDefinitions = OfficeEntry[];
+export type HelplineDefinitions = {
+  label: string;
+  helplines: HelplineEntry[];
+};
 
 export type CannedResponsesDefinitions = {
   label: string;
@@ -189,15 +186,14 @@ export type DefinitionVersion = {
   };
   // TODO: change this property to contactForms to be consistent (though that may create confusion with the component name)
   tabbedForms: {
-    ContactlessTaskTab?: FormDefinition;
     CallerInformationTab: FormDefinition;
     CaseInformationTab: FormDefinition;
     ChildInformationTab: FormDefinition;
-    IssueCategorizationTab: CategoriesDefinition;
+    IssueCategorizationTab: (helpline: string) => CategoriesDefinition;
   };
   callTypeButtons: CallTypeButtonsDefinitions;
   layoutVersion: LayoutVersion;
-  officeInformation?: OfficeDefinitions;
+  helplineInformation: HelplineDefinitions;
   cannedResponses?: CannedResponsesDefinitions;
   insights: {
     oneToOneConfigSpec: OneToOneConfigSpec;
