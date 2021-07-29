@@ -2,8 +2,8 @@
   "label": "Helpline",
   "helplines": [
     {
-      "label": "Adama ChildLine",
-      "value": "ChildLine Ethiopia (ET)",
+      "label": "Adama Child Helpline",
+      "value": "Adama Child Helpline",
       "default": true,
       "manager": {
         "name": "Tamirat Abebe",
