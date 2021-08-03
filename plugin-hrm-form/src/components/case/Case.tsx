@@ -2,7 +2,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react';
-import { Template, ITask } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
@@ -11,7 +11,6 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import { format } from 'date-fns';
 
-import { StandaloneITask } from '../StandaloneSearch';
 import {
   namespace,
   contactFormsBase,
@@ -25,7 +24,7 @@ import { connectToCase, transformCategories } from '../../services/ContactServic
 import { cancelCase, updateCase, getActivities } from '../../services/CaseService';
 import { submitContactForm, completeTask } from '../../services/formSubmissionHelpers';
 import { getDefinitionVersion } from '../../services/ServerlessService';
-import { isConnectedCaseActivity, getDateFromNotSavedContact, sortActivities, getOfficeData } from './caseHelpers';
+import { isConnectedCaseActivity, getDateFromNotSavedContact, sortActivities, getHelplineData } from './caseHelpers';
 import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseContainer, CenteredContainer } from '../../styles/case';
 import CaseDetails from './CaseDetails';
@@ -52,12 +51,19 @@ import ViewPerpetrator from './ViewPerpetrator';
 import ViewIncident from './ViewIncident';
 import ViewReferral from './ViewReferral';
 import type { CaseDetailsName } from '../../states/case/types';
-import type { HouseholdEntry, PerpetratorEntry, IncidentEntry, Case as CaseType, CustomITask } from '../../types/types';
+import {
+  HouseholdEntry,
+  PerpetratorEntry,
+  IncidentEntry,
+  Case as CaseType,
+  CustomITask,
+  StandaloneITask,
+} from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
 import { getPermissionsForCase, PermissionActions } from '../../permissions';
 
-const isStandaloneITask = (task): task is StandaloneITask => {
-  return task.taskSid === 'standalone-task-sid';
+export const isStandaloneITask = (task): task is StandaloneITask => {
+  return task && task.taskSid === 'standalone-task-sid';
 };
 
 type OwnProps = {
@@ -303,8 +309,8 @@ const Case: React.FC<Props> = props => {
     if (firstConnectedContact?.rawJson?.caseInformation) {
       return firstConnectedContact.rawJson.caseInformation.categories;
     }
-    if (form?.categories) {
-      return transformCategories(form.categories);
+    if (form?.categories && form?.helpline) {
+      return transformCategories(form.helpline, form.categories);
     }
     return null;
   };
@@ -360,7 +366,7 @@ const Case: React.FC<Props> = props => {
   const notes = timeline.filter(x => x.type === 'note');
   const summary = info?.summary;
   const definitionVersion = props.definitionVersions[version];
-  const office = getOfficeData(connectedCase.helpline, definitionVersion.officeInformation); // Office name is being stored in the helpline
+  const office = getHelplineData(connectedCase.helpline, definitionVersion.helplineInformation);
 
   const addScreenProps = {
     task: props.task,
@@ -438,7 +444,7 @@ const Case: React.FC<Props> = props => {
                 lastUpdatedDate={lastUpdatedDate}
                 followUpDate={followUpDate}
                 childIsAtRisk={childIsAtRisk}
-                office={office?.name}
+                office={office?.label}
                 handlePrintCase={onPrintCase}
                 handleInfoChange={onInfoChange}
                 handleStatusChange={onStatusChange}

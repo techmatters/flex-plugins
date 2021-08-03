@@ -32,6 +32,7 @@ export const getConfig = () => {
   const hrmBaseUrl = `${manager.serviceConfiguration.attributes.hrm_base_url}/${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${manager.workerClient.accountSid}`;
   const serverlessBaseUrl = manager.serviceConfiguration.attributes.serverless_base_url;
   const logoUrl = manager.serviceConfiguration.attributes.logo_url;
+  const chatServiceSid = manager.serviceConfiguration.chat_service_instance_sid;
   const workerSid = manager.workerClient.sid;
   const { helpline, counselorLanguage, helplineLanguage } = manager.workerClient.attributes;
   const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
@@ -46,12 +47,16 @@ export const getConfig = () => {
     permissionConfig,
   } = manager.serviceConfiguration.attributes;
   const featureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
+  /**
+   *  @type {{ strings: { [key: string]: string } }}
+   */
   const { strings } = manager;
 
   return {
     hrmBaseUrl,
     serverlessBaseUrl,
     logoUrl,
+    chatServiceSid,
     workerSid,
     helpline,
     currentWorkspace,
@@ -175,6 +180,7 @@ const setUpComponents = setupObject => {
   Components.setUpAddButtons(setupObject);
   Components.setUpNoTasksUI(setupObject);
   Components.setUpCustomCRMContainer();
+  Components.setupTwitterChatChannel();
   if (featureFlags.enable_transfers) {
     Components.setUpTransferComponents();
     Components.setUpIncomingTransferMessage();

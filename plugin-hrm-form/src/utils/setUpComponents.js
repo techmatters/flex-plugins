@@ -24,6 +24,7 @@ import { Column, TaskCanvasOverride, Box, HeaderContainer } from '../styles/HrmS
 import HrmTheme from '../styles/HrmTheme';
 import { TLHPaddingLeft } from '../styles/GlobalOverrides';
 import { Container } from '../styles/queuesStatus';
+import TwitterIcon from '../components/common/icons/TwitterIcon';
 // eslint-disable-next-line
 import { getConfig } from '../HrmFormPlugin';
 import { isInMyBehalfITask } from '../types/types';
@@ -33,6 +34,7 @@ const webColor = Flex.DefaultTaskChannels.Chat.colors.main;
 const facebookColor = Flex.DefaultTaskChannels.ChatMessenger.colors.main;
 const smsColor = Flex.DefaultTaskChannels.ChatSms.colors.main;
 const whatsappColor = Flex.DefaultTaskChannels.ChatWhatsApp.colors.main;
+const twitterColor = '#1DA1F2';
 
 /**
  * Returns the UI for the "Contacts Waiting" section
@@ -41,11 +43,12 @@ const queuesStatusUI = () => (
   <QueuesStatus
     key="queue-status-task-list"
     colors={{
-      voiceColor,
-      webColor,
-      facebookColor,
-      smsColor,
-      whatsappColor,
+      voiceColor: voiceColor.Accepted,
+      webColor: webColor.Accepted,
+      facebookColor: facebookColor.Accepted,
+      smsColor: smsColor.Accepted,
+      whatsappColor: whatsappColor.Accepted,
+      twitterColor,
     }}
   />
 );
@@ -409,4 +412,40 @@ export const removeActionsIfTransferring = () => {
  */
 export const setupCannedResponses = () => {
   Flex.MessageInput.Content.add(<CannedResponses key="canned-responses" />);
+};
+
+export const setupTwitterChatChannel = () => {
+  const icon = <TwitterIcon width="24px" height="24px" color="white" />; // This is just an example and should be changed to use the Twitter icon
+
+  const TwitterChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel(
+    'twitter',
+    task => task.channelType === 'twitter',
+  );
+
+  // modify TwitterChatChannel here
+  TwitterChatChannel.templates.IncomingTaskCanvas.firstLine = 'TaskHeaderLineTwitter';
+  TwitterChatChannel.templates.CallCanvas.firstLine = 'TaskHeaderLineTwitter';
+  TwitterChatChannel.templates.TaskListItem.firstLine = 'TaskHeaderLineTwitter';
+  TwitterChatChannel.templates.TaskCard.firstLine = 'TaskHeaderLineTwitter';
+  TwitterChatChannel.templates.TaskCanvasHeader.title = 'TaskHeaderLineTwitter';
+  TwitterChatChannel.templates.Supervisor.TaskCanvasHeader.title = 'TaskHeaderLineTwitter';
+  TwitterChatChannel.templates.Supervisor.TaskOverviewCanvas.title = 'TaskHeaderLineTwitter';
+
+  TwitterChatChannel.colors.main = {
+    Accepted: twitterColor,
+    Assigned: twitterColor,
+    Pending: twitterColor,
+    Reserved: twitterColor,
+    Wrapping: Flex.DefaultTaskChannels.Chat.colors.main.Wrapping,
+    Completed: Flex.DefaultTaskChannels.Chat.colors.main.Completed,
+    Canceled: Flex.DefaultTaskChannels.Chat.colors.main.Canceled,
+  };
+
+  TwitterChatChannel.icons = {
+    active: icon,
+    list: icon,
+    main: icon,
+  };
+
+  Flex.TaskChannels.register(TwitterChatChannel);
 };

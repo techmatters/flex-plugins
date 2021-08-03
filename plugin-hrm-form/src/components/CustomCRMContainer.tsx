@@ -13,7 +13,7 @@ import { OfflineContactTask } from '../types/types';
 const offlineContactTask: OfflineContactTask = {
   taskSid: 'offline-contact-task-sid',
   channelType: 'default',
-  attributes: { isContactlessTask: true },
+  attributes: { isContactlessTask: true, channelType: 'default' },
 };
 
 type OwnProps = {

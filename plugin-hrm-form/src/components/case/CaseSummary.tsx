@@ -9,8 +9,7 @@ import { namespace, connectedCaseBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import { CaseState } from '../../states/case/reducer';
 import { getConfig } from '../../HrmFormPlugin';
-import { StandaloneITask } from '../StandaloneSearch';
-import type { CustomITask } from '../../types/types';
+import type { CustomITask, StandaloneITask } from '../../types/types';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;
@@ -40,7 +39,8 @@ const CaseSummary: React.FC<Props> = ({ task, connectedCaseState, updateCaseInfo
         // rows={5} -> change the height (maybe needed when merging all the changes in Case)
         data-testid="Case-CaseSummary-TextArea"
         aria-labelledby="Case-CaseSummary-label"
-        placeholder={!readonly && strings['Case-AddCaseSummaryHere']}
+        // Add Case summary doesn't show up as default value
+        placeholder={readonly ? strings.NoCaseSummary : strings['Case-AddCaseSummaryHere']}
         value={summary}
         onChange={e => handleOnChange(e.target.value)}
         readOnly={readonly}

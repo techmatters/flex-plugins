@@ -2,6 +2,7 @@ import { getConfig } from '../HrmFormPlugin';
 import type * as t from '../types/types';
 import * as zmRules from './zm';
 import * as zaRules from './za';
+import * as etRules from './et';
 
 export const PermissionActions = {
   CLOSE_CASE: 'closeCase',
@@ -19,7 +20,7 @@ export const PermissionActions = {
 
 type PermissionActionsKeys = keyof typeof PermissionActions;
 export type PermissionActionType = typeof PermissionActions[PermissionActionsKeys];
-type PermissionConfig = 'zm' | 'za';
+type PermissionConfig = 'zm' | 'za' | 'et';
 type Rule = (isSupervisor: boolean, isCreator: boolean, isCaseOpen: boolean) => boolean;
 type Rules = {
   canEditCaseSummary: Rule;
@@ -30,6 +31,7 @@ type Rules = {
 const rulesMap: { [permissionConfig in PermissionConfig]: Rules } = {
   zm: zmRules,
   za: zaRules,
+  et: etRules,
 };
 
 const fallbackRules = zaRules;

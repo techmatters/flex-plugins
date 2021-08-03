@@ -10,8 +10,7 @@ import { CaseState } from '../../states/case/reducer';
 import SectionEntry from '../SectionEntry';
 import ActionHeader from './ActionHeader';
 import type { DefinitionVersion } from '../common/forms/types';
-import { StandaloneITask } from '../StandaloneSearch';
-import type { CustomITask } from '../../types/types';
+import type { CustomITask, StandaloneITask } from '../../types/types';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const counselorsHash = state[namespace][configurationBase].counselors.hash;

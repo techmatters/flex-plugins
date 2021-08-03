@@ -118,8 +118,19 @@ export type OfflineContactTask = {
   taskSid: typeof offlineContactTaskSid;
   attributes: {
     isContactlessTask: true;
+    channelType: 'default';
+    helplineToSave?: string;
   };
   channelType: 'default';
+};
+
+export const standaloneTaskSid = 'standalone-task-sid';
+
+export type StandaloneITask = {
+  taskSid: typeof standaloneTaskSid;
+  attributes: {
+    isContactlessTask: boolean;
+  };
 };
 
 export type InMyBehalfITask = ITask & { attributes: { isContactlessTask: true; isInMyBehalf: true } };
@@ -130,6 +141,9 @@ export function isOfflineContactTask(task: CustomITask): task is OfflineContactT
   return task.taskSid === offlineContactTaskSid;
 }
 
+/**
+ * Checks if the task is issued by someone else to avoid showing certain things in the UI. This is done by checking isInMyBehalf task attribute (attached while creating offline contacts)
+ */
 export function isInMyBehalfITask(task: CustomITask): task is InMyBehalfITask {
   return task.attributes && task.attributes.isContactlessTask && (task.attributes as any).isInMyBehalf;
 }
@@ -137,3 +151,14 @@ export function isInMyBehalfITask(task: CustomITask): task is InMyBehalfITask {
 export function isTwilioTask(task: CustomITask): task is ITask {
   return task && !isOfflineContactTask(task) && !isInMyBehalfITask(task);
 }
+
+export const isStandaloneITask = (task): task is StandaloneITask => {
+  return task && task.taskSid === standaloneTaskSid;
+};
+
+/**
+ * This type is used within the context of a form submission, to share values between HRM & Insights
+ */
+export type ExtraParameters = {
+  helplineToSave: string;
+};

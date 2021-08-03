@@ -8,6 +8,7 @@ import ReplyIcon from '@material-ui/icons/Reply';
 
 import { TimelineIconContainer } from '../../styles/case';
 import { channelTypes, otherContactChannels } from '../../states/DomainConstants';
+import TwitterIcon from '../common/icons/TwitterIcon';
 
 // eslint-disable-next-line react/display-name
 const getIcon = type => {
@@ -22,6 +23,8 @@ const getIcon = type => {
       return <DefaultIcon defaultTaskChannel={Flex.DefaultTaskChannels.ChatSms} />;
     case channelTypes.voice:
       return <DefaultIcon defaultTaskChannel={Flex.DefaultTaskChannels.Call} />;
+    case channelTypes.twitter:
+      return <TwitterIcon width="24px" height="24px" />;
     case 'note':
       return <NoteIcon style={{ opacity: 0.62, fontSize: '20px' }} />;
     case 'referral':

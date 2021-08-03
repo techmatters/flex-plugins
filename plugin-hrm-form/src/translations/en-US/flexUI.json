@@ -1,4 +1,6 @@
 {
+  "TaskHeaderLineTwitter": "@{{task.attributes.twitterUserHandle}}",
+
   "ChatWelcomeText": "Conversation started",
   "TaskHeaderEndCall": "Hang Up",
   "TaskHeaderEndChat": "End Chat",
@@ -44,8 +46,12 @@
   "SearchContactsAndCases-Title": "Search for Contacts and Cases",
 
   "SearchForm-Name": "Name",
+  "SearchForm-First": "First",
+  "SearchForm-Last": "Last",
   "SearchForm-Counselor": "Counsellor",
   "SearchForm-DateRange": "Date Range",
+  "SearchForm-Start": "Start Date",
+  "SearchForm-End": "End Date",
   "SearchForm-Phone": "Phone",
   "SearchForm-Office": "Office",
   "SearchForm-Button": "Search",
@@ -69,6 +75,8 @@
   "CaseHeader-ViewCase": "View Case",
   "CaseHeader-MergeContactIntoCase": "Merge Current Contact into Case and Copy Child Information",
   "CaseHeader-CopyChildInfo": "Copy Child Information into Current Contact",
+  "CaseHeader-Copy": "Yes, copy",
+  "CaseHeader-Cancel": "Cancel",
   "CaseHeader-Voided": "VOIDED",
   "CaseHeader-NoData": "No Data",
   "CaseSummary-ReadMore": "see more",
@@ -118,7 +126,7 @@
   "BottomBar-Update": "Update",
 
   "Categories-Title": "Categorize this contact",
-  
+
   "TabbedForms-AddCallerInfoTab": "Caller Info",
   "TabbedForms-AddChildInfoTab": "Child Info",
   "TabbedForms-CategoriesTab": "Categories",
@@ -186,7 +194,7 @@
   "Case-Notes": "Notes",
 
   "SideNavCaseList": "Case List",
-  
+
   "CaseList-AllCases": "All Cases",
   "CaseList-THCase": "Case #",
   "CaseList-THChildName": "Child's Name",
@@ -258,7 +266,6 @@
   "SectionName-Notes": "Notes",
   "SectionName-CaseSummary": "Case Summary",
 
-
   "ManualPullButtonText": "Another Task",
   "NoTaskAssignableNotification": "No task assignable to you at the moment.",
   "OfflineContactButtonText": "Offline Contact Record",
@@ -271,22 +278,29 @@
   "TimeCantBeGreaterThanNow": "Time can't be greater than now.",
   "NoCaseSummary": "No case summary",
   "CannedResponses": "Canned Responses",
-  
+
   "OfflineContactFirstLine": "Offline Contact",
-  "OfflineContactSecondLine": "in progress",
+  "OfflineContactSecondLine": "In progress",
   "Category": "Category",
   "Unknown": "Unknown",
   "Anonymous": "Anonymous",
 
   "PreviousContacts-ThereAre": "There are",
+  "PreviousContacts-ThereIs": "There is",
+  "PreviousContacts-Returned": "returned in this search.",
   "PreviousContacts-PreviousContacts": "previous contacts",
+  "PreviousContacts-PreviousContact": "previous contact",
+  "PreviousContacts-Contact": "contact",
+  "PreviousContacts-Contacts": "contacts",
+  "PreviousContacts-Case": "case",
   "PreviousContacts-Cases": "cases",
   "PreviousContacts-From": "from",
   "PreviousContacts-IPAddress": "IP address",
   "PreviousContacts-PhoneNumber": "phone number",
   "PreviousContacts-WhatsappNumber": "Whatsapp number",
   "PreviousContacts-FacebookUser": "Facebook user",
+  "PreviousContacts-TwitterUser": "Twitter user",
   "PreviousContacts-ViewRecords": "View Records",
   "PreviousContacts-OnlyShowRecordsFrom": "Only show records from"
-}
 
+}

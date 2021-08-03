@@ -21,9 +21,10 @@ import {
 import { SearchTitle } from '../../../styles/search';
 import { searchFormType, taskType } from '../../../types';
 import { getConfig } from '../../../HrmFormPlugin';
-import { namespace, configurationBase, searchContactsBase } from '../../../states';
+import { namespace, configurationBase, searchContactsBase, contactFormsBase } from '../../../states';
 import { getNumberFromTask } from '../../../services/ContactService';
 import { localizedSource } from '../../PreviousContactsBanner';
+import { formatNumberFromTask } from '../../../utils/formatters';
 
 const getField = value => ({
   value,
@@ -44,16 +45,20 @@ class SearchForm extends Component {
         sid: PropTypes.string,
       }),
     ).isRequired,
-    officeInformation: PropTypes.arrayOf(
-      PropTypes.shape({
-        name: PropTypes.string,
-        manager: PropTypes.shape({
-          name: string,
-          phone: string,
-          email: string,
+    helpline: string,
+    helplineInformation: PropTypes.shape({
+      label: string,
+      helplines: PropTypes.arrayOf(
+        PropTypes.shape({
+          name: PropTypes.string,
+          manager: PropTypes.shape({
+            name: string,
+            phone: string,
+            email: string,
+          }),
         }),
-      }),
-    ),
+      ),
+    }),
     values: searchFormType.isRequired,
     task: taskType.isRequired,
     // eslint-disable-next-line react/forbid-prop-types
@@ -92,11 +97,18 @@ class SearchForm extends Component {
       contactNumber,
     } = this.props.values;
 
-    const counselorsOptions = this.props.counselors.map(e => ({ label: e.fullName, value: e.sid }));
+    const counselorsOptions = this.props.counselors.map(e => ({
+      label: e.fullName,
+      value: e.sid,
+    }));
 
-    const officeOptions = this.props.officeInformation
-      ? this.props.officeInformation.map(x => ({ label: x.name, value: x.name }))
-      : [];
+    const helplineOptions =
+      this.props.helplineInformation && this.props.helplineInformation.helplines
+        ? this.props.helplineInformation.helplines.map(h => ({
+            label: h.label,
+            value: h.value,
+          }))
+        : [];
 
     const { helpline: userHelpline, strings, multipleOfficeSupport } = getConfig();
     const searchParams = {
@@ -126,6 +138,7 @@ class SearchForm extends Component {
     const { task } = this.props;
 
     const contactNumberFromTask = getNumberFromTask(task);
+    const checkBoxName = formatNumberFromTask(task);
 
     const handleChangePreviousContactsCheckbox = () => {
       const value = contactNumber === '' ? contactNumberFromTask : '';
@@ -144,7 +157,7 @@ class SearchForm extends Component {
             <FieldText
               id="Search_FirstName"
               label={strings['SearchForm-Name']}
-              placeholder="First"
+              placeholder={strings['SearchForm-First']}
               field={getField(firstName)}
               {...this.defaultEventHandlers('firstName')}
               style={{ marginRight: 25 }}
@@ -152,7 +165,7 @@ class SearchForm extends Component {
             />
             <FieldText
               id="Search_LastName"
-              placeholder="Last"
+              placeholder={strings['SearchForm-Last']}
               field={getField(lastName)}
               {...this.defaultEventHandlers('lastName')}
               onKeyPress={submitOnEnter}
@@ -164,7 +177,7 @@ class SearchForm extends Component {
               id="Search_Counselor"
               name="counselor"
               label={strings['SearchForm-Counselor']}
-              placeholder="Name"
+              placeholder={strings['SearchForm-Name']}
               field={getField(counselor)}
               options={[{ label: '', value: '' }, ...counselorsOptions]}
               {...this.defaultEventHandlers('counselor')}
@@ -173,7 +186,7 @@ class SearchForm extends Component {
             <FieldDate
               id="Search_DateFrom"
               label={strings['SearchForm-DateRange']}
-              placeholder="Start Date"
+              placeholder={strings['SearchForm-Start']}
               field={getField(dateFrom)}
               {...this.defaultEventHandlers('dateFrom')}
               style={{ marginRight: '10px' }}
@@ -181,7 +194,7 @@ class SearchForm extends Component {
             <FieldDate
               id="Search_DateTo"
               label=" "
-              placeholder="End Date"
+              placeholder={strings['SearchForm-End']}
               field={getField(dateTo)}
               {...this.defaultEventHandlers('dateTo')}
               style={{ marginRight: '10px' }}
@@ -197,14 +210,14 @@ class SearchForm extends Component {
               style={{ marginRight: 25 }}
             />
             {/* If the user has their helpline attribute set, we don't need to show the Office search criteria. */}
-            {multipleOfficeSupport && !userHelpline && officeOptions.length > 0 && (
+            {multipleOfficeSupport && !userHelpline && helplineOptions.length > 0 && (
               <FieldSelect
                 id="Search_Office"
                 name="office"
-                label={strings['SearchForm-Office']}
+                label={this.props.helplineInformation.label}
                 placeholder="--"
                 field={getField(helpline)}
-                options={[{ label: '', value: '' }, ...officeOptions]}
+                options={[{ label: '', value: '' }, ...helplineOptions]}
                 {...this.defaultEventHandlers('helpline')}
               />
             )}
@@ -224,7 +237,7 @@ class SearchForm extends Component {
                     </Box>
                     <span>
                       <Template code="PreviousContacts-OnlyShowRecordsFrom" /> <Template code={source} />{' '}
-                      <Bold>{contactNumberFromTask}</Bold>
+                      <Bold>{checkBoxName}</Bold>
                     </span>
                   </FormCheckBoxWrapper>
                 </FormLabel>
@@ -244,12 +257,14 @@ class SearchForm extends Component {
 
 // eslint-disable-next-line react/static-property-placement
 SearchForm.defaultProps = {
-  officeInformation: null,
+  helplineInformation: null,
+  helpline: null,
 };
 
 const mapStateToProps = (state, ownProps) => ({
+  helpline: state[namespace][contactFormsBase].tasks[ownProps.task.taskSid]?.helpline,
   counselors: state[namespace][configurationBase].counselors.list,
-  officeInformation: state[namespace][configurationBase].currentDefinitionVersion?.officeInformation,
+  helplineInformation: state[namespace][configurationBase].currentDefinitionVersion?.helplineInformation,
   previousContacts: state[namespace][searchContactsBase].tasks[ownProps.task.taskSid]?.previousContacts,
 });
 

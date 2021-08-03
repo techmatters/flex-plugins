@@ -31,7 +31,7 @@ type OwnProps = {
 };
 type Props = OwnProps;
 
-const extraFieldDefinitions = (strings: Strings<string>): FormDefinition => {
+const extraFieldDefinitions = (strings: ReturnType<typeof getConfig>['strings']): FormDefinition => {
   return [
     {
       name: 'keepConfidential',
@@ -123,7 +123,7 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
                 id={caseDetails.id}
                 firstName={caseDetails.name.firstName}
                 lastName={caseDetails.name.lastName}
-                officeName={caseDetails.office?.name}
+                officeName={caseDetails.office?.label}
                 logoBlob={logoBlob}
               />
               <View>

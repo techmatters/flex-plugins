@@ -60,6 +60,13 @@ function createState(
           },
         },
       },
+      activeContacts: {
+        tasks: {
+          [taskId]: {
+            helpline: 'helpline',
+          },
+        },
+      },
     },
   };
 }

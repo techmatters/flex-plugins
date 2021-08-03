@@ -1,19 +1,10 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { Actions, Template, withTheme } from '@twilio/flex-ui';
-import {} from '@material-ui/core';
+import { Actions, withTheme } from '@twilio/flex-ui';
 
-import {
-  Box,
-  CannedResponsesContainer,
-  FormLabel,
-  FormSelect,
-  FormSelectWrapper,
-  FormError,
-  FormOption,
-  Row,
-} from '../styles/HrmStyles';
+import { getConfig } from '../HrmFormPlugin';
+import { CannedResponsesContainer, FormSelect, FormSelectWrapper, FormOption } from '../styles/HrmStyles';
 import { RootState, namespace, configurationBase } from '../states';
 
 type OwnProps = {
@@ -26,7 +17,7 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 // eslint-disable-next-line react/display-name
 const CannedResponses: React.FC<Props> = props => {
   const { channelSid, cannedResponses } = props;
-
+  const { strings } = getConfig();
   const handleChange = event => {
     Actions.invokeAction('SetInputText', {
       channelSid,
@@ -41,7 +32,7 @@ const CannedResponses: React.FC<Props> = props => {
       <FormSelectWrapper fullWidth={true}>
         <FormSelect id="canned_response" name="canned_response" onChange={handleChange} value="" fullWidth={true}>
           <FormOption disabled selected isEmptyValue={true} value="">
-            Canned Responses
+            {strings.CannedResponses}
           </FormOption>
           {cannedResponses.map(r => {
             return (

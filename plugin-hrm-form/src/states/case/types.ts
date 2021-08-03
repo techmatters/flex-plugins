@@ -1,5 +1,5 @@
 import type * as t from '../../types/types';
-import { OfficeEntry } from '../../components/common/forms/types';
+import { HelplineEntry } from '../../components/common/forms/types';
 import { NewCaseSubroutes } from '../routing/types';
 
 // Action types
@@ -144,7 +144,7 @@ export type CaseDetails = {
   notes: NoteActivity[];
   summary: string;
   childIsAtRisk: boolean;
-  office?: OfficeEntry;
+  office?: HelplineEntry;
   version?: string;
   contact: any; // ToDo: change this
 };

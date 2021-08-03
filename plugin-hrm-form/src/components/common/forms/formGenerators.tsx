@@ -383,7 +383,6 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                   rows={def.rows ? def.rows : 10}
                   width={def.width}
                   defaultValue={initialValue}
-                  placeholder={def?.placeholder}
                 />
                 {error && (
                   <FormError>

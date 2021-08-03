@@ -17,6 +17,7 @@ import { Bold } from '../styles/HrmStyles';
 import { StyledLink } from '../styles/search';
 import { ChannelTypes, channelTypes } from '../states/DomainConstants';
 import { changeRoute as changeRouteAction } from '../states/routing/actions';
+import { formatNumberFromTask } from '../utils/formatters';
 
 type OwnProps = {
   task: CustomITask;
@@ -31,6 +32,7 @@ export const localizedSource: { [channelType in ChannelTypes]: string } = {
   [channelTypes.sms]: 'PreviousContacts-PhoneNumber',
   [channelTypes.whatsapp]: 'PreviousContacts-WhatsappNumber',
   [channelTypes.facebook]: 'PreviousContacts-FacebookUser',
+  [channelTypes.twitter]: 'PreviousContacts-TwitterUser',
 };
 
 const PreviousContactsBanner: React.FC<Props> = ({
@@ -66,12 +68,40 @@ const PreviousContactsBanner: React.FC<Props> = ({
     changeRoute({ route: 'tabbed-forms', subroute: 'search' });
   };
 
-  const contactNumber = isTwilioTask(task) ? getNumberFromTask(task) : '';
-
+  const contactIdentifier = formatNumberFromTask(task);
   return (
     <YellowBanner data-testid="PreviousContacts-Container">
       {/* eslint-disable-next-line prettier/prettier */}
-      <pre><Template code="PreviousContacts-ThereAre" /> <Bold>{contactsCount} <Template code="PreviousContacts-PreviousContacts" /></Bold> and <Bold>{casesCount} <Template code="PreviousContacts-Cases" /></Bold> <Template code="PreviousContacts-From" /> <Template code={localizedSource[task.channelType]} /> <Bold>{contactNumber}</Bold>.</pre>
+      <pre>
+        <Template code="PreviousContacts-ThereAre" />
+        &nbsp;
+        {contactsCount === 1 ? (
+          <Bold>
+            {contactsCount} <Template code="PreviousContacts-PreviousContact" />
+          </Bold>
+        ) : (
+          <Bold>
+            {contactsCount} <Template code="PreviousContacts-PreviousContacts" />
+          </Bold>
+        )}
+        &nbsp;and&nbsp;
+        {casesCount === 1 ? (
+          <Bold>
+            {casesCount} <Template code="PreviousContacts-Case" />
+          </Bold>
+        ) : (
+          <Bold>
+            {casesCount} <Template code="PreviousContacts-Cases" />
+          </Bold>
+        )}
+        &nbsp;
+        <Template code="PreviousContacts-From" />
+        &nbsp;
+        <Template code={localizedSource[task.channelType]} />
+        &nbsp;
+        <Bold>{contactIdentifier}</Bold>.
+      </pre>
+
       <StyledLink underline data-testid="PreviousContacts-ViewRecords" onClick={handleClickViewRecords}>
         <Template code="PreviousContacts-ViewRecords" />
       </StyledLink>

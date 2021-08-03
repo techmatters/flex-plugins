@@ -31,8 +31,7 @@ import {
   splitAt,
 } from '../common/forms/formGenerators';
 import type { DefinitionVersion } from '../common/forms/types';
-import { StandaloneITask } from '../StandaloneSearch';
-import type { CustomITask } from '../../types/types';
+import type { CustomITask, StandaloneITask } from '../../types/types';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;
@@ -91,7 +90,11 @@ const AddPerpetrator: React.FC<Props> = ({
     const perpetrator = transformValues(PerpetratorForm)(temporaryCaseInfo.info);
     const createdAt = new Date().toISOString();
     const { workerSid } = getConfig();
-    const newPerpetrator = { perpetrator, createdAt, twilioWorkerId: workerSid };
+    const newPerpetrator = {
+      perpetrator,
+      createdAt,
+      twilioWorkerId: workerSid,
+    };
     const perpetrators = info && info.perpetrators ? [...info.perpetrators, newPerpetrator] : [newPerpetrator];
     const newInfo = info ? { ...info, perpetrators } : { perpetrators };
     const updatedCase = await updateCase(id, { info: newInfo });
@@ -114,8 +117,9 @@ const AddPerpetrator: React.FC<Props> = ({
     onClickClose();
   }
 
+  const { strings } = getConfig();
   function onError() {
-    window.alert('You must fill in required fields.');
+    window.alert(strings['Error-Form']);
   }
 
   return (

@@ -31,8 +31,7 @@ import {
   splitAt,
 } from '../common/forms/formGenerators';
 import type { DefinitionVersion } from '../common/forms/types';
-import { StandaloneITask } from '../StandaloneSearch';
-import type { CustomITask } from '../../types/types';
+import type { CustomITask, StandaloneITask } from '../../types/types';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;
@@ -105,11 +104,10 @@ const AddHousehold: React.FC<Props> = ({
     await saveHousehold(false);
     onClickClose();
   }
-
+  const { strings } = getConfig();
   function onError() {
-    window.alert('You must fill in required fields.');
+    window.alert(strings['Error-Form']);
   }
-
   return (
     <FormProvider {...methods}>
       <CaseActionLayout>

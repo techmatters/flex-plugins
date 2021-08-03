@@ -9,8 +9,7 @@ import { CaseContainer } from '../../styles/case';
 import { namespace, connectedCaseBase, configurationBase, RootState } from '../../states';
 import ActionHeader from './ActionHeader';
 import SectionEntry from '../SectionEntry';
-import { StandaloneITask } from '../StandaloneSearch';
-import type { CustomITask } from '../../types/types';
+import type { CustomITask, StandaloneITask } from '../../types/types';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const counselorsHash = state[namespace][configurationBase].counselors.hash;

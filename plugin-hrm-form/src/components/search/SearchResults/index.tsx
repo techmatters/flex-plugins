@@ -4,10 +4,16 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Template, Tab as TwilioTab } from '@twilio/flex-ui';
 
-import { standaloneTaskSid } from '../../StandaloneSearch';
 import ContactPreview from '../ContactPreview';
 import CasePreview from '../CasePreview';
-import { SearchContactResult, SearchCaseResult, SearchContact, Case, CustomITask } from '../../../types/types';
+import {
+  SearchContactResult,
+  SearchCaseResult,
+  SearchContact,
+  Case,
+  CustomITask,
+  standaloneTaskSid,
+} from '../../../types/types';
 import { Row } from '../../../styles/HrmStyles';
 import {
   ResultsHeader,
@@ -153,14 +159,17 @@ const SearchResults: React.FC<Props> = ({
         <Row style={{ justifyContent: 'center' }}>
           <div style={{ width: '300px' }}>
             <StyledTabs selectedTabName={currentPage} onTabSelected={tabSelected}>
-              <TwilioTab label="Contacts" uniqueName={SearchPages.resultsContacts}>
+              <TwilioTab
+                label={<Template code="SearchResultsIndex-Contacts" />}
+                uniqueName={SearchPages.resultsContacts}
+              >
                 {[]}
               </TwilioTab>
               <TwilioTab
                 label={
                   <StyledTabLabel>
                     <StyledFolderIcon />
-                    Cases
+                    <Template code="SearchResultsIndex-Cases" />
                   </StyledTabLabel>
                 }
                 uniqueName={SearchPages.resultsCases}
@@ -183,14 +192,45 @@ const SearchResults: React.FC<Props> = ({
         <ScrollableList>
           <StyledResultsContainer>
             <StyledResultsText>
-              There are&nbsp;
               <BoldText data-testid="SearchResultsCount">
                 {/* Intentionally we must show the option different at the one currently selected */}
-                {currentPage === SearchPages.resultsContacts
-                  ? `${casesCount ? casesCount : 0} cases`
-                  : `${contactsCount ? contactsCount : 0} contacts`}
+                {currentPage === SearchPages.resultsContacts ? (
+                  <>
+                    {casesCount === 1 ? (
+                      <>
+                        <Template code="PreviousContacts-ThereIs" />
+                        &nbsp;
+                        {casesCount} <Template code="PreviousContacts-Case" />
+                      </>
+                    ) : (
+                      <>
+                        <Template code="PreviousContacts-ThereAre" />
+                        &nbsp;
+                        {casesCount} <Template code="PreviousContacts-Cases" />
+                      </>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    {contactsCount === 1 ? (
+                      <>
+                        <Template code="PreviousContacts-ThereIs" />
+                        &nbsp;
+                        {contactsCount} <Template code="PreviousContacts-Contact" />
+                      </>
+                    ) : (
+                      <>
+                        <Template code="PreviousContacts-ThereAre" />
+                        &nbsp;
+                        {contactsCount} <Template code="PreviousContacts-Contacts" />
+                      </>
+                    )}
+                  </>
+                )}
               </BoldText>
-              &nbsp;returned in this search.&nbsp;
+              &nbsp;
+              <Template code="PreviousContacts-Returned" />
+              &nbsp;
             </StyledResultsText>
             <StyledLink onClick={toggleTabs} data-testid="ViewCasesLink">
               <Template
@@ -207,7 +247,12 @@ const SearchResults: React.FC<Props> = ({
             <>
               <StyledContactResultsHeader>
                 <StyledCount data-testid="ContactsCount">
-                  {contactsCount} <Template code="SearchResultsIndex-Contacts" />
+                  {contactsCount}{' '}
+                  {contactsCount === 1 ? (
+                    <Template code="PreviousContacts-Contact" />
+                  ) : (
+                    <Template code="SearchResultsIndex-Contacts" />
+                  )}
                 </StyledCount>
                 <StyledFormControlLabel
                   control={<StyledSwitch checked={!onlyDataContacts} onChange={handleToggleNonDataContact} />}
@@ -244,7 +289,12 @@ const SearchResults: React.FC<Props> = ({
             <>
               <StyledCaseResultsHeader>
                 <StyledCount data-testid="CasesCount">
-                  {casesCount} <Template code="SearchResultsIndex-Cases" />
+                  {casesCount}{' '}
+                  {casesCount === 1 ? (
+                    <Template code="PreviousContacts-Case" />
+                  ) : (
+                    <Template code="SearchResultsIndex-Cases" />
+                  )}{' '}
                 </StyledCount>
                 <StyledFormControlLabel
                   control={<StyledSwitch checked={closedCases} onChange={handleToggleClosedCases} />}

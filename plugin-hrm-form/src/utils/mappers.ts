@@ -14,8 +14,9 @@ export const mapCallType = (str: string) => {
 const isOtherContactChannel = (channel: string) => (Object.values(otherContactChannels) as string[]).includes(channel); // Needed typecast here. For details see https://github.com/microsoft/TypeScript/issues/26255
 
 export const mapChannel = (channel: string) => {
-  if (isOtherContactChannel(channel)) return channel;
-
+  if (isOtherContactChannel(channel)) {
+    return channel;
+  }
   switch (channel) {
     case channelTypes.facebook:
       return 'Facebook Messenger';
@@ -27,6 +28,8 @@ export const mapChannel = (channel: string) => {
       return 'SMS';
     case channelTypes.whatsapp:
       return 'WhatsApp';
+    case channelTypes.twitter:
+      return 'Twitter';
     default:
       return 'Undefined';
   }

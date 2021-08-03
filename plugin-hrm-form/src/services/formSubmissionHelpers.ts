@@ -1,13 +1,14 @@
 /* eslint-disable import/no-unused-modules */
 import { Actions, ITask, Manager } from '@twilio/flex-ui';
 
-import { getConfig, reRenderAgentDesktop } from '../HrmFormPlugin';
+import { getConfig } from '../HrmFormPlugin';
 import { TaskEntry as Contact } from '../states/contacts/reducer';
 import { Case, CustomITask, isOfflineContactTask, offlineContactTaskSid } from '../types/types';
 import { channelTypes } from '../states/DomainConstants';
 import { buildInsightsData } from './InsightsService';
 import { saveToHrm } from './ContactService';
 import { assignOfflineContact } from './ServerlessService';
+import { getHelplineToSave } from './HelplineService';
 import { removeContactState } from '../states/actions';
 
 /**
@@ -39,15 +40,19 @@ export const completeTask = (task: CustomITask) =>
   isOfflineContactTask(task) ? removeOfflineContact() : completeContactTask(task);
 
 export const submitContactForm = async (task: CustomITask, contactForm: Contact, caseForm: Case) => {
-  const { workerSid, helpline } = getConfig();
+  const { workerSid } = getConfig();
+
+  const helplineToSave = await getHelplineToSave(task, contactForm.contactlessTask);
+  const extraParameters = { helplineToSave };
 
   if (isOfflineContactTask(task)) {
-    const targetSid = contactForm.contactlessTask.createdOnBehalfOf as string;
-    const initialAttributes = { helpline, channelType: 'default', isContactlessTask: true, isInMyBehalf: true };
-    const finalAttributes = buildInsightsData(initialAttributes, contactForm, caseForm);
-    const inBehalfTask = await assignOfflineContact(targetSid, finalAttributes);
-    return saveToHrm(task, contactForm, workerSid, helpline, inBehalfTask.sid);
+    const targetWorkerSid = contactForm.contactlessTask.createdOnBehalfOf as string;
+    const finalAttributes = buildInsightsData(task, contactForm, caseForm, extraParameters);
+    const inBehalfTask = await assignOfflineContact(targetWorkerSid, finalAttributes);
+    return saveToHrm(task, contactForm, extraParameters, workerSid, inBehalfTask.sid);
   }
 
-  return saveToHrm(task, contactForm, workerSid, helpline, task.taskSid);
+  const finalAttributes = buildInsightsData(task, contactForm, caseForm, extraParameters);
+  await task.setAttributes(finalAttributes);
+  return saveToHrm(task, contactForm, extraParameters, workerSid, task.taskSid);
 };

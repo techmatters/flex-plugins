@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/prefer-immediate-return */
 import { set } from 'lodash/fp';
-import type { ITask } from '@twilio/flex-ui';
+import { ITask, TaskHelper } from '@twilio/flex-ui';
 
 import { createNewTaskEntry, TaskEntry } from '../states/contacts/reducer';
 import { isNonDataCallType } from '../states/ValidationRules';
@@ -16,7 +16,14 @@ import type {
   FormDefinition,
   FormItemDefinition,
 } from '../components/common/forms/types';
-import { InformationObject, ContactRawJson, SearchContactResult, isOfflineContactTask } from '../types/types';
+import {
+  InformationObject,
+  ContactRawJson,
+  SearchContactResult,
+  isOfflineContactTask,
+  isTwilioTask,
+  ExtraParameters,
+} from '../types/types';
 
 /**
  * Un-nests the information (caller/child) as it comes from DB, to match the form structure
@@ -98,9 +105,9 @@ export const searchResultToContactForm = (def: FormDefinition, obj: InformationO
   return deTransformed;
 };
 
-export function transformCategories(categories: TaskEntry['categories']) {
+export function transformCategories(helpline, categories: TaskEntry['categories']) {
   const { IssueCategorizationTab } = getDefinitionVersions().currentDefinitionVersion.tabbedForms;
-  const cleanCategories = createCategoriesObject(IssueCategorizationTab);
+  const cleanCategories = createCategoriesObject(IssueCategorizationTab(helpline));
   const transformedCategories = categories.reduce((acc, path) => set(path, true, acc), {
     categories: cleanCategories, // use an object with categories property so we can reuse the entire path (they look like categories.Category.Subcategory)
   });
@@ -131,7 +138,7 @@ export function transformForm(form: TaskEntry): ContactRawJson {
   // @ts-ignore
   const childInformation = nestName(transformedValues.childInformation);
 
-  const categories = transformCategories(form.categories);
+  const categories = transformCategories(form.helpline, form.categories);
   const { definitionVersion } = getConfig();
 
   const transformed = {
@@ -153,15 +160,15 @@ export function transformForm(form: TaskEntry): ContactRawJson {
 /**
  * Function that saves the form to Contacts table.
  * If you don't intend to complete the twilio task, set shouldFillEndMillis=false
- *
- * @param  task
- * @param form
- * @param workerSid
- * @param helpline
- * @param uniqueIdentifier
- * @param shouldFillEndMillis
  */
-export async function saveToHrm(task, form, workerSid, helpline, uniqueIdentifier, shouldFillEndMillis = true) {
+export async function saveToHrm(
+  task,
+  form,
+  extraParameters: ExtraParameters,
+  workerSid: string,
+  uniqueIdentifier: string,
+  shouldFillEndMillis = true,
+) {
   // if we got this far, we assume the form is valid and ready to submit
   const metadata = shouldFillEndMillis ? fillEndMillis(form.metadata) : form.metadata;
   const conversationDuration = getConversationDuration(task, metadata);
@@ -169,11 +176,11 @@ export async function saveToHrm(task, form, workerSid, helpline, uniqueIdentifie
   const number = getNumberFromTask(task);
 
   let rawForm = form;
-  const { tabbedForms } = getDefinitionVersions().currentDefinitionVersion;
+  const { currentDefinitionVersion } = getDefinitionVersions();
 
   if (isNonDataCallType(callType)) {
     rawForm = {
-      ...createNewTaskEntry(tabbedForms)(false),
+      ...createNewTaskEntry(currentDefinitionVersion)(false),
       callType: form.callType,
       metadata: form.metadata,
       ...(isOfflineContactTask(task) && { contactlessTask: form.contactlessTask }),
@@ -186,12 +193,21 @@ export async function saveToHrm(task, form, workerSid, helpline, uniqueIdentifie
   // This might change if isNonDataCallType, that's why we use rawForm
   const timeOfContact = getDateTime(rawForm.contactlessTask);
 
+  const helpline = extraParameters.helplineToSave;
   /*
    * We do a transform from the original and then add things.
    * Not sure if we should drop that all into one function or not.
    * Probably.  It would just require passing the task.
    */
   const formToSend = transformForm(rawForm);
+
+  let channelSid;
+  let serviceSid;
+
+  if (isTwilioTask(task) && TaskHelper.isChatBasedTask(task)) {
+    ({ channelSid } = task.attributes);
+    serviceSid = getConfig().chatServiceSid;
+  }
 
   const body = {
     form: formToSend,
@@ -203,6 +219,8 @@ export async function saveToHrm(task, form, workerSid, helpline, uniqueIdentifie
     conversationDuration,
     timeOfContact,
     taskId: uniqueIdentifier,
+    channelSid,
+    serviceSid,
   };
 
   const options = {

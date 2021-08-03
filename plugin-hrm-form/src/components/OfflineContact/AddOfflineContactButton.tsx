@@ -4,7 +4,7 @@ import { Actions } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { configurationBase, namespace, RootState, routingBase } from '../../states';
-import type { ContactFormDefinition } from '../../states/types';
+import type { DefinitionVersion } from '../../states/types';
 import * as GeneralActions from '../../states/actions';
 import { offlineContactTaskSid } from '../../types/types';
 import AddTaskButton from '../common/AddTaskButton';
@@ -21,7 +21,7 @@ const AddOfflineContactButton: React.FC<Props> = ({
   recreateContactState,
 }) => {
   const onClick = async () => {
-    recreateContactState(currentDefinitionVersion.tabbedForms)(offlineContactTaskSid);
+    recreateContactState(currentDefinitionVersion)(offlineContactTaskSid);
     await Actions.invokeAction('SelectTask', { task: undefined });
     await reRenderAgentDesktop();
   };
@@ -31,7 +31,7 @@ const AddOfflineContactButton: React.FC<Props> = ({
 
 AddOfflineContactButton.displayName = 'AddOfflineContactButton';
 
-const mapStateToProps = (state: RootState) => {
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const { currentDefinitionVersion } = state[namespace][configurationBase];
   const { isAddingOfflineContact } = state[namespace][routingBase];
 
@@ -42,7 +42,7 @@ const mapStateToProps = (state: RootState) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  recreateContactState: (definitions: ContactFormDefinition) => (taskId: string) =>
+  recreateContactState: (definitions: DefinitionVersion) => (taskId: string) =>
     dispatch(GeneralActions.recreateContactState(definitions)(taskId)),
 });
 
