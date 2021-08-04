@@ -1,4 +1,7 @@
-*.json
+source.json
+destination.json
 !package.json
 !package-lock.json
 node_modules/
+dist/
+.env

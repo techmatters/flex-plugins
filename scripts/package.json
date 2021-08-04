@@ -6,26 +6,35 @@
     "lint": "eslint --ext js .",
     "lint:fix": "npm run lint -- --fix",
     "copyFlow": "node copyFlow.js",
-    "configure": "node configureNewAccount.js"
+    "configure": "node configureNewAccount.js",
+    "compile": "npx tsc",
+    "createTwilioResources": "npm run compile && node dist/createTwilioResources.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.947.0",
+    "dotenv": "^10.0.0",
     "node-fetch": "^2.6.1",
     "prompt-confirm": "^2.0.4",
-    "twilio": "^3.55.1",
+    "twilio": "^3.66.0",
     "yargs": "^15.4.1"
   },
   "devDependencies": {
+    "@tsconfig/node14": "^1.0.1",
+    "@types/node": "^16.3.2",
+    "@typescript-eslint/eslint-plugin": "^4.28.3",
+    "@typescript-eslint/parser": "^4.28.3",
     "eslint": "^7.4.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-config-airbnb-typescript": "^12.3.1",
     "eslint-config-prettier": "^6.11.0",
-    "eslint-import-resolver-webpack": "^0.12.2",
+    "eslint-import-resolver-typescript": "^2.4.0",
     "eslint-plugin-import": "^2.22.0",
-    "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-prettier": "^3.1.4",
-    "eslint-plugin-react": "^7.20.3",
-    "prettier": "^2.0.5"
+    "prettier": "^2.3.2",
+    "ts-node": "^10.1.0",
+    "typescript": "^4.3.5"
   }
 }
