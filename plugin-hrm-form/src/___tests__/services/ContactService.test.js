@@ -223,7 +223,7 @@ describe('saveToHrm() (isContactlessTask)', () => {
     mockedFetch.mockClear();
   });
 
-  test('save defaultFrom when IP is null from web calltype', async () => {
+  test('save empty string when IP is null from web calltype', async () => {
     const defaultFrom = 'Anonymous';
     const webTaskWithoutIP = {
       queueName: 'queueName',
@@ -240,7 +240,7 @@ describe('saveToHrm() (isContactlessTask)', () => {
     await saveToHrm(webTaskWithoutIP, form, workerSid, uniqueIdentifier);
 
     const numberFromPOST = getNumberFromPOST(mockedFetch);
-    expect(numberFromPOST).toEqual(defaultFrom);
+    expect(numberFromPOST).toEqual('');
 
     mockedFetch.mockClear();
   });
