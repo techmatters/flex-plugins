@@ -3,6 +3,8 @@
 import React from 'react';
 import * as Flex from '@twilio/flex-ui';
 
+import KeyboardShortcut from '../components/KeyboardShortcut/KeyboardShortcut.Container';
+import KeyboardShortcutManager from '../components/KeyboardShortcut/KeyboardShortcutManager';
 import { TransferButton, AcceptTransferButton, RejectTransferButton } from '../components/transfer';
 import * as TransferHelpers from './transfer';
 import CannedResponses from '../components/CannedResponses';
@@ -28,6 +30,7 @@ import TwitterIcon from '../components/common/icons/TwitterIcon';
 // eslint-disable-next-line
 import { getConfig } from '../HrmFormPlugin';
 import { isInMyBehalfITask } from '../types/types';
+import { openGuideModal } from '../states/shortcuts/actions';
 
 const voiceColor = { Accepted: Flex.DefaultTaskChannels.Call.colors.main() };
 const webColor = Flex.DefaultTaskChannels.Chat.colors.main;
@@ -35,6 +38,28 @@ const facebookColor = Flex.DefaultTaskChannels.ChatMessenger.colors.main;
 const smsColor = Flex.DefaultTaskChannels.ChatSms.colors.main;
 const whatsappColor = Flex.DefaultTaskChannels.ChatWhatsApp.colors.main;
 const twitterColor = '#1DA1F2';
+
+export const setUpShortcuts = () => {
+  const { shortcutManager } = getConfig();
+
+  shortcutManager.addShortcut(['g'], shortcutManager.toggleGuide.bind(shortcutManager));
+  shortcutManager.addShortcut(['Meta', 's'], shortcutManager.openStandaloneSearch.bind(shortcutManager));
+  shortcutManager.addShortcut(['s'], shortcutManager.toggleSidebar.bind(shortcutManager));
+  shortcutManager.addShortcut(['o'], shortcutManager.toggleAvailability.bind(shortcutManager));
+
+  Flex.RootContainer.Content.add(<KeyboardShortcut shortcuts={shortcutManager.shortcuts} key="keyboard-shortcut" />);
+  Flex.MainHeader.Content.add(
+    <Flex.IconButton
+      onClick={() => manager.store.dispatch(openGuideModal())}
+      icon="Info"
+      key="keyboard-shortcut-guide-button"
+    />,
+    {
+      sortOrder: -1,
+      align: 'end',
+    },
+  );
+};
 
 /**
  * Returns the UI for the "Contacts Waiting" section

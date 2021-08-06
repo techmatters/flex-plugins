@@ -13,7 +13,7 @@ import setUpMonitoring from './utils/setUpMonitoring';
 import * as TransferHelpers from './utils/transfer';
 import { changeLanguage } from './states/configuration/actions';
 import { issueSyncToken } from './services/ServerlessService';
-import CannedResponses from './components/CannedResponses';
+import KeyboardShortcutManager from './components/KeyboardShortcut/KeyboardShortcutManager';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 export const PLUGIN_VERSION = '0.10.0';
@@ -25,6 +25,8 @@ export const DEFAULT_TRANSFER_MODE = transferModes.cold;
  * @type {SyncClient}
  */
 let sharedStateClient;
+
+let shortcutManager;
 
 export const getConfig = () => {
   const manager = Flex.Manager.getInstance();
@@ -74,6 +76,7 @@ export const getConfig = () => {
     pdfImagesSource,
     multipleOfficeSupport,
     permissionConfig,
+    shortcutManager,
   };
 };
 
@@ -175,6 +178,7 @@ const setUpComponents = setupObject => {
   const { helpline, featureFlags } = setupObject;
 
   // setUp (add) dynamic components
+  Components.setUpShortcuts();
   Components.setUpQueuesStatusWriter(setupObject);
   Components.setUpQueuesStatus();
   Components.setUpAddButtons(setupObject);
@@ -255,9 +259,9 @@ export default class HrmFormPlugin extends FlexPlugin {
 
     console.log(`Welcome to ${PLUGIN_NAME} Version ${PLUGIN_VERSION}`);
     this.registerReducers(manager);
+    shortcutManager = new KeyboardShortcutManager(manager);
 
     const config = getConfig();
-
     /*
      * localization setup (translates the UI if necessary)
      * WARNING: the way this is done right now is "hacky". More info in initLocalization declaration

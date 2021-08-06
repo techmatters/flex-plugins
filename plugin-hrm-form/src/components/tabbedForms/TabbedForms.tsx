@@ -28,7 +28,7 @@ import BottomBar from './BottomBar';
 import { hasTaskControl } from '../../utils/transfer';
 import { isNonDataCallType } from '../../states/ValidationRules';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
-import { isStandaloneITask } from '../case/Case';
+import { getConfig } from '../../HrmFormPlugin';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -125,6 +125,10 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, cu
     const tab = tabsToIndex[t];
     dispatch(changeRoute({ route: 'tabbed-forms', subroute: tab }, taskId));
   };
+
+  const { shortcutManager } = getConfig();
+  // TODO: Usar o Control+1, ao invés de só o 1
+  tabsToIndex.forEach((_, index) => shortcutManager.addShortcut([String(index)], () => handleTabsChange(null, index)));
 
   const { subroute } = routing;
   let tabIndex = tabsToIndex.findIndex(t => t === subroute);
