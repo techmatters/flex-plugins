@@ -231,6 +231,7 @@ describe('saveToHrm() (isContactlessTask)', () => {
       defaultFrom,
       attributes: {
         isContactlessTask: false,
+        ip: '', // Studio makes it empty string
       },
     };
     const form = createForm({ callType: callTypes.child, childFirstName: 'Jill' });
