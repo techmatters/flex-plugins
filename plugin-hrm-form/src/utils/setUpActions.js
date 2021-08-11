@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import { Manager, TaskHelper, Actions as FlexActions, StateHelper } from '@twilio/flex-ui';
+import { Manager, TaskHelper, Actions as FlexActions, StateHelper, ChatOrchestrator } from '@twilio/flex-ui';
 
 // eslint-disable-next-line no-unused-vars
 import { DEFAULT_TRANSFER_MODE, getConfig } from '../HrmFormPlugin';
@@ -8,6 +8,7 @@ import {
   adjustChatCapacity,
   sendSystemMessage,
   getDefinitionVersion,
+  postSurveyInit,
 } from '../services/ServerlessService';
 import { namespace, contactFormsBase, connectedCaseBase, configurationBase } from '../states';
 import * as Actions from '../states/contacts/actions';
@@ -290,7 +291,53 @@ export const beforeCompleteTask = setupObject => async payload => {
  * Removes the form state from the redux store. Used after a task is completed
  * @param {{ task: any }} payload
  */
-export const removeContactForm = payload => {
+const removeContactForm = payload => {
   const manager = Manager.getInstance();
   manager.store.dispatch(GeneralActions.removeContactState(payload.task.taskSid));
+};
+
+/**
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
+ */
+export const setUpPostSurvey = setupObject => {
+  const { featureFlags } = setupObject;
+  if (featureFlags.enable_post_survey) {
+    const excludeDeactivateChatChannel = event => {
+      ChatOrchestrator.setOrchestrations(
+        event,
+        ChatOrchestrator.getOrchestrations(event).filter(e => e !== 'DeactivateChatChannel'),
+      );
+    };
+
+    excludeDeactivateChatChannel('wrapup');
+    excludeDeactivateChatChannel('completed');
+  }
+};
+
+/**
+ * @type {import('@twilio/flex-ui').ActionFunction}
+ */
+const triggerPostSurvey = async payload => {
+  const { task } = payload;
+
+  // if (featureFlags.enable_post_survey) {
+  if (TaskHelper.isChatBasedTask(task)) {
+    const channelSid = TaskHelper.getTaskChatChannelSid(task);
+    await postSurveyInit({ channelSid });
+  }
+  // }
+};
+
+/**
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
+ * @returns {import('@twilio/flex-ui').ActionFunction}
+ */
+export const afterCompleteTask = setupObject => async payload => {
+  const { featureFlags } = setupObject;
+
+  if (featureFlags.enable_post_survey) {
+    await triggerPostSurvey(payload);
+  }
+
+  removeContactForm(payload);
 };

@@ -13,7 +13,6 @@ import setUpMonitoring from './utils/setUpMonitoring';
 import * as TransferHelpers from './utils/transfer';
 import { changeLanguage } from './states/configuration/actions';
 import { issueSyncToken } from './services/ServerlessService';
-import CannedResponses from './components/CannedResponses';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 export const PLUGIN_VERSION = '0.10.0';
@@ -67,7 +66,7 @@ export const getConfig = () => {
     token,
     counselorName,
     isSupervisor,
-    featureFlags,
+    featureFlags: { ...featureFlags, enable_post_survey: true },
     sharedStateClient,
     strings,
     definitionVersion,
@@ -212,10 +211,13 @@ const setUpActions = setupObject => {
   // Is this the correct place for this call?
   ActionFunctions.loadCurrentDefinitionVersion();
 
+  ActionFunctions.setUpPostSurvey(setupObject);
+
   // bind setupObject to the functions that requires some initializaton
   const transferOverride = ActionFunctions.customTransferTask(setupObject);
   const wrapupOverride = ActionFunctions.wrapupTask(setupObject);
   const beforeCompleteAction = ActionFunctions.beforeCompleteTask(setupObject);
+  const afterCompleteAction = ActionFunctions.afterCompleteTask(setupObject);
 
   Flex.Actions.addListener('beforeAcceptTask', ActionFunctions.initializeContactForm);
 
@@ -232,7 +234,7 @@ const setUpActions = setupObject => {
 
   Flex.Actions.addListener('beforeCompleteTask', beforeCompleteAction);
 
-  Flex.Actions.addListener('afterCompleteTask', ActionFunctions.removeContactForm);
+  Flex.Actions.addListener('afterCompleteTask', afterCompleteAction);
 };
 
 export default class HrmFormPlugin extends FlexPlugin {
