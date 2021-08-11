@@ -20,6 +20,7 @@ type ReduxProps = {
 
 type Props = OwnProps & ReduxProps;
 
+// TODO: Make this a pure function component
 class KeyboardShortcut extends Component<Props> {
   static displayName = 'KeyboardShortcut';
 
@@ -41,12 +42,25 @@ class KeyboardShortcut extends Component<Props> {
   }
 
   keyboardEventListener = (e: KeyboardEvent) => {
+    /**
+     * Here we use event.pressedKey to determine the key the user has typed.
+     * If our shortcuts contains Shift or Alt, this pressed key value will be secondary
+     * or terciary value of that key. Example: 3, #, £. I'm not sure if those secondary
+     * and terciary values are consistent between different keyboards.
+     *
+     * One alternative to investigate is to use event.keyCode instead, that keeps the
+     * same value, regardless if we're pressing Shift or Alt with it.
+     */
     const { key: pressedKey, type: eventType, repeat } = e;
     const { tagName } = e.target as Element;
-    console.log({ pressedKey });
+    console.log({ e, pressedKey });
 
     const { shortcutManager } = getConfig();
 
+    /**
+     * Shortcuts should not be single key. When we change them to be like 'Control + Command + Letter',
+     * we can remove the bellow condition.
+     */
     // Check user is not inputting text
     if (['INPUT', 'TEXTAREA', 'SELECT'].includes(tagName)) {
       return;
@@ -64,6 +78,19 @@ class KeyboardShortcut extends Component<Props> {
       }
     }
 
+    /**
+     * This part has an issue.
+     * How it should work?
+     * After a keydown event is detected, the related key is marked as TRUE on redux.
+     * After the key is released, the keyup event for this key should go into this if condition, and thus,
+     * this key will become FALSE on redux.
+     *
+     * What's the issue?
+     * Sometimes the keyup event is not detected. For single key shortcuts, it looks like this issue never arises.
+     * But for multiple keys short, such as 'Control + Command + M', if the action triggers things like an alert or a dialog,
+     * the keyup event for the letter 'M' is not detected, and the 'M' key remains TRUE on redux, making the app behave wrong.
+     * For some reason, the Control and Command keyup events seem to be always detected, but not the keyup events for letters.
+     */
     if (this.props.pressedKeys[pressedKey] !== undefined) {
       const updatedPressedKeys = { ...this.props.pressedKeys, [pressedKey]: eventType === 'keydown' };
       this.props.updatePressedKeys(updatedPressedKeys);

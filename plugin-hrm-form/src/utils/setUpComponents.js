@@ -42,9 +42,10 @@ const twitterColor = '#1DA1F2';
 export const setUpShortcuts = () => {
   const { shortcutManager } = getConfig();
 
-  shortcutManager.addShortcut(['g'], shortcutManager.toggleGuide.bind(shortcutManager));
-  shortcutManager.addShortcut(['Meta', 's'], shortcutManager.openStandaloneSearch.bind(shortcutManager));
-  shortcutManager.addShortcut(['s'], shortcutManager.toggleSidebar.bind(shortcutManager));
+  shortcutManager.addShortcut(['/'], shortcutManager.toggleGuide.bind(shortcutManager));
+  shortcutManager.addShortcut(['s'], shortcutManager.openStandaloneSearch.bind(shortcutManager));
+  shortcutManager.addShortcut(['a'], shortcutManager.openAgentDesktop.bind(shortcutManager));
+  shortcutManager.addShortcut(['m'], shortcutManager.toggleSidebar.bind(shortcutManager));
   shortcutManager.addShortcut(['o'], shortcutManager.toggleAvailability.bind(shortcutManager));
 
   Flex.RootContainer.Content.add(<KeyboardShortcut shortcuts={shortcutManager.shortcuts} key="keyboard-shortcut" />);

@@ -16,10 +16,10 @@ export function reduce(state = initialState, action: t.ShortcutActionType): Shor
       const updatedPressedKeys = {
         ...state.pressedKeys,
         ...action.pressedKeys,
-        }
+      };
       return {
-      ...state,
-      pressedKeys: updatedPressedKeys,
+        ...state,
+        pressedKeys: updatedPressedKeys,
       };
     case t.OPEN_GUIDE_MODAL:
       return {
@@ -34,4 +34,4 @@ export function reduce(state = initialState, action: t.ShortcutActionType): Shor
     default:
       return state;
   }
-};
+}

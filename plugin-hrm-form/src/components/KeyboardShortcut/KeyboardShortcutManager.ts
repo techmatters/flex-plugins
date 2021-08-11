@@ -8,6 +8,13 @@ export interface KeyBoardShortcutRule {
   action: () => void;
 }
 
+/**
+ * Suggestion: we should make the methods of this class to be arrow functions,
+ * so that we don't need to bind the instance to use the correct 'this' value.
+ *
+ * Right now, we're using these methods like this: shortcutManager.toggleGuide.bind(shortcutManager).
+ * Notice the '.bind(shortcutManager)'. We can avoid that if we make these methods arrow functions.
+ */
 class KeyboardShortcutManager {
   private manager: Flex.Manager;
 
@@ -46,6 +53,10 @@ class KeyboardShortcutManager {
 
   public openStandaloneSearch() {
     Flex.Actions.invokeAction('NavigateToView', { viewName: 'search' });
+  }
+
+  public openAgentDesktop() {
+    Flex.Actions.invokeAction('NavigateToView', { viewName: 'agent-desktop' });
   }
 }
 

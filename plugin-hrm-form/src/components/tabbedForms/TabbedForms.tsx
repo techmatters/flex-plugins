@@ -127,7 +127,6 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, cu
   };
 
   const { shortcutManager } = getConfig();
-  // TODO: Usar o Control+1, ao invés de só o 1
   tabsToIndex.forEach((_, index) => shortcutManager.addShortcut([String(index)], () => handleTabsChange(null, index)));
 
   const { subroute } = routing;
