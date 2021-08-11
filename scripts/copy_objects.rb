@@ -5,7 +5,7 @@ require "json"
 require_relative('lib/core/metadata')
 
 # ORIGINAL CODE GOT FROM HERE: https://github.com/guiper-twilio/flex-insights-utils
-# MODIFIED to turn ABORT statements into Print statements, to allow imperfect copying,
+# MODIFIED to turn ABORT statements into console warnings to allow imperfect copying
 # and provide more readable console output.
 #
 # Simple example
@@ -56,8 +56,7 @@ def get_elements_from_object(main_obj, obj_string, all_objects, client)
 
     title = find_element_value(element, element_link,  client)
     if title == "ERROR_NOT_FOUND_GDC_FLEX"
-      print "ERR: #{main_obj['category']} #{main_obj['uri']} contains an element which doesn't exist in source workplace data.\n   Missing: #{element}"
-      puts ""
+      puts "ERR: #{main_obj['category']} (ID: #{main_obj['obj_id']}, title: #{main_obj['title']}) contains broken element.\n   Missing: #{element}\n"
     else
       element_to_map <<  { 'category'=> "element", 'uri'=> element, 'attribute'=> obj['identifier'], 'value'=> title}
     end
@@ -67,8 +66,13 @@ end
 
 def get_objects_from_object_v2( obj, opts, objs_created)
 
+  puts "Working on #{obj['category']} (ID: #{obj['obj_id']}, Title: #{obj['title']})"
+
   case obj['category']
   when "projectDashboard"
+
+    puts "" 
+
     all_objects = get_object_dependencies(obj['obj_id'], opts[:client], opts[:project],  "metric,report,reportDefinition,fact,attribute,attributeDisplayForm", 1 , false )
     all_objects.concat( get_elements_from_object(obj, obj['content'].to_s, all_objects, opts[:client] ))
 
@@ -85,18 +89,12 @@ def get_objects_from_object_v2( obj, opts, objs_created)
 
     final_obj = copy_obj_to_target_workspace(obj, all_objects, {client: opts[:client], target_project: opts[:project_target],  })
 
-
-
+    puts ""
 
   when "report"
 
-    puts ""
-    print "Working on report: #{obj['title']}"
-    puts ""
-
     all_report_definitions = get_object_dependencies(obj['obj_id'], opts[:client], opts[:project], "reportDefinition", 1 , true )
     report_definition = all_report_definitions.sort_by { |obj| -obj['obj_id'].to_i }[0]
-
 
     objs_created << get_objects_from_object_v2( report_definition, opts, objs_created)
 
@@ -110,6 +108,7 @@ def get_objects_from_object_v2( obj, opts, objs_created)
 
     final_obj = copy_obj_to_target_workspace(obj, [report_definition ], {client: opts[:client], target_project: opts[:project_target],  })
 
+    puts ""
 
   when "reportDefinition"
 
@@ -158,7 +157,6 @@ def get_objects_from_object_v2( obj, opts, objs_created)
 
     final_obj = copy_obj_to_target_workspace(obj, all_objects, {client: opts[:client], target_project: opts[:project_target],  })
 
-
   end
 
   return obj
@@ -181,8 +179,7 @@ def copy_obj_to_target_workspace(single_obj, all_objects,
     begin
     element_mapping << {'source_element'=> element['uri'], 'target_element'=> attribute.find_value_uri(element['value'])}
     rescue GoodData::AttributeElementNotFound
-      print "ERR: Element value \"#{element['value']}\" on attribute #{element['attribute']} doesn't exist in target workspace: #{opts[:target_project].uri}"
-      puts ""
+      puts "ERR: Element \"#{element['value']}\" for #{element['attribute']}, on #{single_obj['category']} (ID: #{single_obj['obj_id']}, title: #{single_obj['title']}) not in target workspace."
     end
   end
 
@@ -205,9 +202,8 @@ def copy_obj_to_target_workspace(single_obj, all_objects,
       raise( Exception )
     end
     target_json_string.gsub!(uri, new_uri)
-    rescue 
-      print "ERR: can't map element w/ URI: #{uri}"
-      puts ""
+    rescue
+      puts "ERR: can't map element: #{uri}"
     end
   end
 
@@ -215,8 +211,7 @@ def copy_obj_to_target_workspace(single_obj, all_objects,
 
   uri = save_object_ensuring_identifier( target_json, single_obj['identifier'],  opts[:client], opts[:target_project] )
 
-  puts ""
-  puts "#{single_obj['category']} with identifier #{single_obj['identifier']} + title #{single_obj['title']} been created/replaced with final uri: #{uri}"
+  puts "#{single_obj['category']} (ID: #{single_obj['obj_id']}, title: #{single_obj['title']}) created/replaced at: #{uri}"
 
 end
 
@@ -273,9 +268,9 @@ data['target_workspaces'].each do |target_workspace|
   data['dashboards_to_copy'].each do |dashboard|
     obj = get_single_object_with_uri( "/gdc/md/#{data['source_workspace']}/obj/#{dashboard}", client)
     if obj['category'] == 'projectDashboard'
-      puts "Working on the dashboard #{dashboard}"
-      objs_created << get_objects_from_object_v2( obj, { client: client, project: project_source, project_target: project_target}, objs_created)
       puts ""
+      puts "Working on dashboard #{dashboard} for target workspace: #{target_workspace}"
+      objs_created << get_objects_from_object_v2( obj, { client: client, project: project_source, project_target: project_target}, objs_created)
     else
       raise "Provided obj_id (#{obj_id}) is not a dashboard. Object is a #{obj['category']}."
     end
@@ -283,10 +278,9 @@ data['target_workspaces'].each do |target_workspace|
 
   data['reports_to_copy'].each do |report|
     obj = get_single_object_with_uri( "/gdc/md/#{data['source_workspace']}/obj/#{report}", client)
-    if obj  ['category'] == 'report'
-      puts "Working on the report #{report}"
+    if obj['category'] == 'report'
+      puts "Working on report #{report} for target workspace: #{target_workspace}"
       objs_created << get_objects_from_object_v2( obj, { client: client, project: project_source, project_target: project_target}, objs_created)
-      puts ""
     else
       raise "Provided obj_id (#{obj_id}) is not a report. Object is a #{obj['category']}."
     end
