@@ -155,10 +155,3 @@ export function isTwilioTask(task: CustomITask): task is ITask {
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === standaloneTaskSid;
 };
-
-/**
- * This type is used within the context of a form submission, to share values between HRM & Insights
- */
-export type ExtraParameters = {
-  helplineToSave: string;
-};

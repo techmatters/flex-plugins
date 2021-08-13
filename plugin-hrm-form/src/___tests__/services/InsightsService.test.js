@@ -24,9 +24,9 @@ const zambiaUpdates = (attributes, contactForm, caseForm) => {
   return attsToReturn;
 };
 
-const expectWithV1Zambia = (attributes, contactForm, caseForm, extraParameters) =>
+const expectWithV1Zambia = (attributes, contactForm, caseForm) =>
   [baseUpdates, contactlessTaskUpdates, zambiaUpdates]
-    .map(f => f(attributes, contactForm, caseForm, extraParameters))
+    .map(f => f(attributes, contactForm, caseForm))
     .reduce((acc, curr) => mergeAttributes(acc, curr), { ...attributes });
 
 test('Insights Data for non-data callType', async () => {
@@ -45,6 +45,7 @@ test('Insights Data for non-data callType', async () => {
   };
 
   const contactForm = {
+    helpline: previousAttributes.helpline,
     callType: 'Abusive',
     callerInformation: {
       age: '26',
@@ -57,7 +58,7 @@ test('Insights Data for non-data callType', async () => {
     },
   };
 
-  const result = buildInsightsData(twilioTask, contactForm, {}, { helplineToSave: previousAttributes.helpline });
+  const result = buildInsightsData(twilioTask, contactForm, {});
 
   const expectedNewAttributes = {
     ...previousAttributes,
@@ -97,6 +98,7 @@ test('Insights Data for non-data callType (test that fields are sanitized)', asy
   };
 
   const contactForm = {
+    helpline: previousAttributes.helpline,
     callType: 'Abusive',
     callerInformation: {
       age: '',
@@ -109,7 +111,7 @@ test('Insights Data for non-data callType (test that fields are sanitized)', asy
     },
   };
 
-  const result = buildInsightsData(twilioTask, contactForm, {}, { helplineToSave: previousAttributes.helpline });
+  const result = buildInsightsData(twilioTask, contactForm, {});
 
   const expectedNewAttributes = {
     ...previousAttributes,
@@ -150,8 +152,8 @@ test('Insights Data for data callType', async () => {
   };
 
   const contactForm = {
+    helpline: previousAttributes.helpline,
     callType: 'Child calling about self',
-
     childInformation: {
       age: '13-15',
       gender: 'Boy',
@@ -173,11 +175,9 @@ test('Insights Data for data callType', async () => {
     id: 123,
   };
 
-  const extraParameters = { helplineToSave: previousAttributes.helpline };
+  const expectedNewAttributes = expectWithV1Zambia(twilioTask.attributes, contactForm, caseForm);
 
-  const expectedNewAttributes = expectWithV1Zambia(twilioTask.attributes, contactForm, caseForm, extraParameters);
-
-  const result = buildInsightsData(twilioTask, contactForm, caseForm, extraParameters);
+  const result = buildInsightsData(twilioTask, contactForm, caseForm);
 
   /*
    * const expectedNewAttributes = {
@@ -214,6 +214,7 @@ test('Handles contactless tasks', async () => {
   const date = '2020-12-30';
   const time = '14:50';
   const contactForm = {
+    helpline: previousAttributes.helpline,
     callType: 'Child calling about self',
     contactlessTask: {
       channel: 'sms',
@@ -237,11 +238,9 @@ test('Handles contactless tasks', async () => {
     id: 123,
   };
 
-  const extraParameters = { helplineToSave: previousAttributes.helpline };
+  const expectedNewAttributes = expectWithV1Zambia(twilioTask.attributes, contactForm, caseForm);
 
-  const expectedNewAttributes = expectWithV1Zambia(twilioTask.attributes, contactForm, caseForm, extraParameters);
-
-  const result = buildInsightsData(twilioTask, contactForm, caseForm, extraParameters);
+  const result = buildInsightsData(twilioTask, contactForm, caseForm);
 
   /*
    * const expectedNewAttributes = {
