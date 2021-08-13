@@ -49,10 +49,10 @@ export const submitContactForm = async (task: CustomITask, contactForm: Contact,
     const targetWorkerSid = contactForm.contactlessTask.createdOnBehalfOf as string;
     const finalAttributes = buildInsightsData(task, contactForm, caseForm, extraParameters);
     const inBehalfTask = await assignOfflineContact(targetWorkerSid, finalAttributes);
-    return saveToHrm(task, contactForm, extraParameters, workerSid, inBehalfTask.sid);
+    return saveToHrm(task, contactForm, workerSid, inBehalfTask.sid);
   }
 
   const finalAttributes = buildInsightsData(task, contactForm, caseForm, extraParameters);
   await task.setAttributes(finalAttributes);
-  return saveToHrm(task, contactForm, extraParameters, workerSid, task.taskSid);
+  return saveToHrm(task, contactForm, workerSid, task.taskSid);
 };
