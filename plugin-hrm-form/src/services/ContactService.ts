@@ -22,7 +22,6 @@ import {
   SearchContactResult,
   isOfflineContactTask,
   isTwilioTask,
-  ExtraParameters,
 } from '../types/types';
 
 /**
