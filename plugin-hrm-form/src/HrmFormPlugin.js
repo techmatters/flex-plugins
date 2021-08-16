@@ -66,7 +66,7 @@ export const getConfig = () => {
     token,
     counselorName,
     isSupervisor,
-    featureFlags: { ...featureFlags, enable_post_survey: true },
+    featureFlags,
     sharedStateClient,
     strings,
     definitionVersion,
