@@ -1,5 +1,4 @@
 /* eslint-disable camelcase */
-// import { StateHelper, Actions } from '@twilio/flex-ui';
 import * as Flex from '@twilio/flex-ui';
 import { omit } from 'lodash';
 
@@ -18,8 +17,6 @@ jest.mock('@twilio/flex-ui', () => ({
   Actions: { invokeAction: jest.fn() },
   StateHelper: { getChatChannelStateForTask: task => mockChannels[task.taskChannelSid] },
 }));
-
-// StateHelper.getChatChannelStateForTask = task => channels[task.taskChannelSid];
 
 describe('Transfer mode, status and conditionals helpers', () => {
   test('hasTransferStarted', async () => {
@@ -292,7 +289,6 @@ describe('Kick, close and helpers', () => {
 
   test('closeCallOriginal', async () => {
     const expected1 = { sid: 'reservation2', targetSid: 'some@identity' };
-    // const spy = jest.spyOn(Flex.Actions, 'invokeAction');
     Flex.Actions.invokeAction.mockClear();
     expect(Flex.Actions.invokeAction).not.toHaveBeenCalled();
 
@@ -304,7 +300,6 @@ describe('Kick, close and helpers', () => {
 
   test('closeCallSelf', async () => {
     const expected1 = { sid: 'reservation2' };
-    // const spy = jest.spyOn(Flex.Actions, 'invokeAction');
     Flex.Actions.invokeAction.mockClear();
     expect(Flex.Actions.invokeAction).not.toHaveBeenCalled();
 
