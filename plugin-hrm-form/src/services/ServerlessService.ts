@@ -138,11 +138,7 @@ export const getWorkerAttributes = async (workerSid: string) => {
   return response;
 };
 
-export const postSurveyInit = async ({ channelSid }: { channelSid: string }): Promise<any> => {
-  const body = {
-    channelSid,
-  };
-
+export const postSurveyInit = async (body: { channelSid: string; taskSid: string }): Promise<any> => {
   const response = await fetchProtectedApi('/postSurveyInit', body);
 
   return response;
