@@ -10,6 +10,16 @@
         "phone": "+260 97 798 3966",
         "email": "bflochibeka@gmail.com"
       }
+    },
+    {
+      "label": "LifeLine",
+      "value": "LifeLine Zambia (ZM)",
+      "default": false,
+      "manager": {
+        "name": "Ernest Chibesa Chilufya",
+        "phone": "+260 97 995 4048",
+        "email": "chibesaernest@gmail.com"
+      }
     }
   ]
 }
