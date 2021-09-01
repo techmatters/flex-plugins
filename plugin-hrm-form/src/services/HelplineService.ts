@@ -16,5 +16,5 @@ export const getHelplineToSave = async (task: CustomITask, contactlessTask: Cont
   }
 
   const { helpline: thisWorkerHelpline } = getConfig();
-  return thisWorkerHelpline || task.attributes.helpline || '';
+  return task.attributes.helpline || thisWorkerHelpline || '';
 };
