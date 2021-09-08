@@ -33,6 +33,12 @@ type DynamicState = {
   apiKeySid?: string;
   apiKeySecret?: string;
   chatServiceSid?: string;
+  flexProxyServiceSid?: string;
+  surveyTaskQueueSid?: string;
+  surveyWorkflowSid?: string;
+  surveyTaskChannelSid?: string;
+  systemApiKeySid?: string;
+  systemApiKeySecret?: string;
 };
 
 type State = ConstantState & DynamicState;
@@ -43,44 +49,52 @@ type State = ConstantState & DynamicState;
 type GetSSMStringFunction = (state: State) => string;
 type GetSSMStringFunctions = { [k in keyof Required<DynamicState>]: GetSSMStringFunction };
 
+const getSSMName = (key: string) => (state: State) =>
+  `${state.shortEnvironment}_TWILIO_${state.shortHelpline}_${key}`;
+
+const getSSMDescription = (description: string) => (state: State) =>
+  `${state.environment} - ${state.helpline} ${description}`;
+
+const throwWithKey = (key: string) => () => {
+  throw new Error(`getSSMStringFunction not defined for key ${key}.`);
+};
+
 /**
  * Returns the proper name that whould be used in AWS Parameter Store for each resource
  */
-const getSSMName: GetSSMStringFunctions = {
-  workspaceSid: (state: State) =>
-    `${state.shortEnvironment}_TWILIO_${state.shortHelpline}_WORKSPACE_SID`,
-  workflowSid: (state: State) =>
-    `${state.shortEnvironment}_TWILIO_${state.shortHelpline}_CHAT_WORKFLOW_SID`,
-  syncServiceSid: (state: State) =>
-    `${state.shortEnvironment}_TWILIO_${state.shortHelpline}_SYNC_SID`,
-  apiKeySid: (state: State) => `${state.shortEnvironment}_TWILIO_${state.shortHelpline}_API_KEY`,
-  apiKeySecret: (state: State) => `${state.shortEnvironment}_TWILIO_${state.shortHelpline}_SECRET`,
-  chatServiceSid: (state: State) =>
-    `${state.shortEnvironment}_TWILIO_${state.shortHelpline}_CHAT_SERVICE_SID`,
-  taskQueueSid: () => {
-    throw new Error('getSSMName not defined for key taskQueueSid.');
-  },
+const getSSMNameFunction: GetSSMStringFunctions = {
+  workspaceSid: getSSMName('WORKSPACE_SID'),
+  workflowSid: getSSMName('CHAT_WORKFLOW_SID'),
+  syncServiceSid: getSSMName('SYNC_SID'),
+  apiKeySid: getSSMName('API_KEY'),
+  apiKeySecret: getSSMName('SECRET'),
+  chatServiceSid: getSSMName('CHAT_SERVICE_SID'),
+  flexProxyServiceSid: getSSMName('FLEX_PROXY_SERVICE_SID'),
+  surveyWorkflowSid: getSSMName('SURVEY_WORKFLOW_SID'),
+  systemApiKeySecret: getSSMName('SYSTEM_SECRET'),
+  taskQueueSid: throwWithKey('taskQueueSid'),
+  surveyTaskChannelSid: throwWithKey('surveyTaskChannelSid'),
+  systemApiKeySid: throwWithKey('systemApiKeySid'),
+  surveyTaskQueueSid: throwWithKey('surveyTaskQueueSid'),
 };
 
 /**
  * Returns the proper description that whould be used in AWS Parameter Store for each resource
  */
-const getSSMDescription: GetSSMStringFunctions = {
-  workspaceSid: (state: State) =>
-    `${state.environment} - ${state.helpline} Twilio account - Workspace SID`,
-  workflowSid: (state: State) =>
-    `${state.environment} - ${state.helpline} Twilio account - Chat transfer workflow SID`,
-  syncServiceSid: (state: State) =>
-    `${state.environment} - ${state.helpline} Twilio account - Sync service SID`,
-  apiKeySid: (state: State) =>
-    `${state.environment} - ${state.helpline} Twilio account - Sync API key`,
-  apiKeySecret: (state: State) =>
-    `${state.environment} - ${state.helpline} Twilio account - Sync API secret`,
-  chatServiceSid: (state: State) =>
-    `${state.environment} - ${state.helpline} Twilio account - Chat service SID`,
-  taskQueueSid: () => {
-    throw new Error('getSSMDescription not defined for key taskQueueSid.');
-  },
+const getSSMDescriptionFunction: GetSSMStringFunctions = {
+  workspaceSid: getSSMDescription('Twilio account - Workspace SID'),
+  workflowSid: getSSMDescription('Twilio account - Chat transfer workflow SID'),
+  syncServiceSid: getSSMDescription('Twilio account - Sync service SID'),
+  apiKeySid: getSSMDescription('Twilio account - Sync API key'),
+  apiKeySecret: getSSMDescription('Twilio account - Sync API secret'),
+  chatServiceSid: getSSMDescription('Twilio account - Chat service SID'),
+  flexProxyServiceSid: getSSMDescription('Twilio account - Flex Proxy servivice SID'),
+  surveyWorkflowSid: getSSMDescription('Twilio account - Survey Workflow SID'),
+  systemApiKeySecret: getSSMDescription('Twilio account - System secret to perform backend calls'),
+  taskQueueSid: throwWithKey('taskQueueSid'),
+  surveyTaskChannelSid: throwWithKey('surveyTaskChannelSid'),
+  systemApiKeySid: throwWithKey('systemApiKeySid'),
+  surveyTaskQueueSid: throwWithKey('surveyTaskQueueSid'),
 };
 
 const getSSMTags = (state: State): AWS.SSM.TagList => [
@@ -92,8 +106,8 @@ const saveStateKeyToSSM = (key: keyof DynamicState) => async (state: State) => {
   const value = state[key];
   if (!value) throw new Error(`${key} key missing in state while trying to save SSM parameter.`);
 
-  const name = getSSMName[key](state);
-  const description = getSSMDescription[key](state);
+  const name = getSSMNameFunction[key](state);
+  const description = getSSMDescriptionFunction[key](state);
   const tags = getSSMTags(state);
 
   await saveSSMParameter(name, value, description, tags);
@@ -108,6 +122,9 @@ const saveSyncServiceToSSM = saveStateKeyToSSM('syncServiceSid');
 const saveAPIKeyToSSM = saveStateKeyToSSM('apiKeySid');
 const saveAPISecretToSSM = saveStateKeyToSSM('apiKeySecret');
 const saveChatServiceToSSM = saveStateKeyToSSM('chatServiceSid');
+const saveFlexProxyToSSM = saveStateKeyToSSM('flexProxyServiceSid');
+const saveSurveyWorkflowToSSM = saveStateKeyToSSM('surveyWorkflowSid');
+const saveSystemSecretToSSM = saveStateKeyToSSM('systemApiKeySecret');
 
 /**
  * Twilio resources related functions
@@ -122,6 +139,16 @@ const fetchFlexWorkspace = async (state: State): Promise<State> => {
     );
 
   return { ...state, workspaceSid: workspace?.sid };
+};
+
+const fetchFlexProxyService = async (state: State): Promise<State> => {
+  const ps = await client.proxy.services.list();
+  const proxy = ps.find((e) => e.uniqueName === 'Flex Proxy Service');
+
+  if (!proxy)
+    throw new Error(`Flex Proxy Service not found in account ${process.env.TWILIO_ACCOUNT_SID}`);
+
+  return { ...state, flexProxyServiceSid: proxy.sid };
 };
 
 const createTaskQueue = async (state: State): Promise<State> => {
@@ -181,6 +208,13 @@ const createAPIKey = async (state: State): Promise<State> => {
   return { ...state, apiKeySid: key.sid, apiKeySecret: key.secret };
 };
 
+const createSystemAPIKey = async (state: State): Promise<State> => {
+  const key = await client.newKeys.create({ friendlyName: 'system-user-key' });
+
+  logSuccess(`Twilio resource: Succesfully created system API key ${key.sid}`);
+  return { ...state, systemApiKeySid: key.sid, systemApiKeySecret: key.secret };
+};
+
 const fetchChatService = async (state: State): Promise<State> => {
   const ss = await client.chat.services.list();
   const service = ss.find((e) => e.friendlyName === 'Flex Chat Service');
@@ -191,6 +225,59 @@ const fetchChatService = async (state: State): Promise<State> => {
   return { ...state, chatServiceSid: service.sid };
 };
 
+const createSurveyTaskQueue = async (state: State): Promise<State> => {
+  if (!state.workspaceSid) throw new Error('state.workspaceSid missing at createSurveyTaskQueue');
+
+  const q = await client.taskrouter.workspaces(state.workspaceSid).taskQueues.create({
+    friendlyName: 'Survey',
+    targetWorkers: '1==0',
+  });
+
+  logSuccess(`Twilio resource: Succesfully created survey task queue ${q.sid}`);
+  return { ...state, surveyTaskQueueSid: q.sid };
+};
+
+const createSurveyWorkflow = async (state: State): Promise<State> => {
+  if (!state.workspaceSid) throw new Error('state.workspaceSid missing at createSurveyWorkflow');
+  if (!state.surveyTaskQueueSid)
+    throw new Error('state.surveyTaskQueueSid missing at createSurveyWorkflow');
+
+  const workflow = await client.taskrouter.workspaces(state.workspaceSid).workflows.create({
+    friendlyName: 'Survey',
+    configuration: JSON.stringify({
+      task_routing: {
+        filters: [
+          {
+            filter_friendly_name: 'Survey Filter',
+            expression: 'isSurveyTask==true',
+            targets: [
+              {
+                expression: '1==1',
+                queue: `${state.surveyTaskQueueSid}`,
+              },
+            ],
+          },
+        ],
+      },
+    }),
+  });
+
+  logSuccess(`Twilio resource: Succesfully created survey workflow ${workflow.sid}`);
+  return { ...state, surveyWorkflowSid: workflow.sid };
+};
+
+const createSurveyTaskChannel = async (state: State): Promise<State> => {
+  if (!state.workspaceSid) throw new Error('state.workspaceSid missing at createSurveyTaskChannel');
+
+  const taskChannel = await client.taskrouter.workspaces(state.workspaceSid).taskChannels.create({
+    uniqueName: 'survey',
+    friendlyName: 'Survey',
+  });
+
+  logSuccess(`Twilio resource: Succesfully created survey task channel ${taskChannel.sid}`);
+  return { ...state, surveyTaskChannelSid: taskChannel.sid };
+};
+
 /**
  * Cleanup functions
  */
@@ -199,6 +286,16 @@ const removeAPIKey = async (state: State): Promise<State> => {
   if (apiKeySid) {
     await client.keys.get(apiKeySid).remove();
     logWarning(`Twilio resource: Succesfully removed API key ${apiKeySid}`);
+  }
+
+  return rest;
+};
+
+const removeSystemAPIKey = async (state: State): Promise<State> => {
+  const { systemApiKeySid, systemApiKeySecret, ...rest } = state;
+  if (systemApiKeySid) {
+    await client.keys.get(systemApiKeySid).remove();
+    logWarning(`Twilio resource: Succesfully removed system API key ${systemApiKeySid}`);
   }
 
   return rest;
@@ -244,30 +341,83 @@ const removeTaskQueue = async (state: State): Promise<State> => {
   return rest;
 };
 
-const cleanupPartialResources = async (state: State): Promise<void> => {
-  await [removeAPIKey, removeSyncService, removeWorkflow, removeTaskQueue].reduce(
-    async (accumPromise, func) => {
-      let partialState = state;
+const removeSurveyTaskChannel = async (state: State): Promise<State> => {
+  const { surveyTaskChannelSid, ...rest } = state;
+  if (!state.workspaceSid)
+    throw new Error(
+      'Flex Task Assignment Workspace not found while trying to remove the survey task channel.',
+    );
 
-      try {
-        const accum = await accumPromise;
-        const newState = await func(accum);
-        partialState = newState;
-        return newState;
-      } catch (err) {
-        logError(
-          "Couldn't complete the cleanup process after something went wrong. Manually clean the following resources:",
-        );
-        if (partialState.apiKeySid) console.log('apiKeySid: ', partialState.apiKeySid);
-        if (partialState.syncServiceSid)
-          console.log('syncServiceSid: ', partialState.syncServiceSid);
-        if (partialState.workflowSid) console.log('workflowSid: ', partialState.workflowSid);
-        if (partialState.taskQueueSid) console.log('taskQueueSid: ', partialState.taskQueueSid);
-        return Promise.reject(err); // Stop the promise chain rejecting all subsequent ones
-      }
-    },
-    Promise.resolve(state),
-  );
+  if (surveyTaskChannelSid) {
+    await client.taskrouter
+      .workspaces(state.workspaceSid)
+      .taskChannels(surveyTaskChannelSid)
+      .remove();
+    logSuccess(`Twilio resource: Succesfully removed survey task channel ${surveyTaskChannelSid}`);
+  }
+
+  return rest;
+};
+
+const removeSurveyWorkflow = async (state: State): Promise<State> => {
+  const { surveyWorkflowSid, ...rest } = state;
+  if (!state.workspaceSid)
+    throw new Error(
+      'Flex Task Assignment Workspace not found while trying to remove the survey workflow.',
+    );
+
+  if (surveyWorkflowSid) {
+    await client.taskrouter.workspaces(state.workspaceSid).workflows(surveyWorkflowSid).remove();
+    logWarning(`Twilio resource: Succesfully removed survey workflow ${surveyWorkflowSid}`);
+  }
+
+  return rest;
+};
+
+const removeSurveyTaskQueue = async (state: State): Promise<State> => {
+  const { surveyTaskQueueSid, ...rest } = state;
+  if (!state.workspaceSid)
+    throw new Error(
+      'Flex Task Assignment Workspace not found while trying to remove the survey task queue.',
+    );
+
+  if (surveyTaskQueueSid) {
+    await client.taskrouter.workspaces(state.workspaceSid).taskQueues(surveyTaskQueueSid).remove();
+    logWarning(`Twilio resource: Succesfully removed survey task queue ${surveyTaskQueueSid}`);
+  }
+
+  return rest;
+};
+
+const cleanupPartialResources = async (state: State): Promise<void> => {
+  let partialState = state;
+
+  await [
+    removeAPIKey,
+    removeSystemAPIKey,
+    removeSyncService,
+    removeWorkflow,
+    removeTaskQueue,
+    removeSurveyTaskChannel,
+    removeSurveyWorkflow,
+    removeSurveyTaskQueue,
+  ].reduce(async (accumPromise, func) => {
+    try {
+      const accum = await accumPromise;
+      const newState = await func(accum);
+      partialState = newState;
+      return newState;
+    } catch (err) {
+      logError(
+        "Couldn't complete the cleanup process after something went wrong. Manually clean the following resources:",
+      );
+      if (partialState.apiKeySid) console.log('apiKeySid: ', partialState.apiKeySid);
+      if (partialState.syncServiceSid) console.log('syncServiceSid: ', partialState.syncServiceSid);
+      if (partialState.workflowSid) console.log('workflowSid: ', partialState.workflowSid);
+      if (partialState.taskQueueSid) console.log('taskQueueSid: ', partialState.taskQueueSid);
+      return Promise.reject(err); // Stop the promise chain rejecting all subsequent ones
+    }
+  }, Promise.resolve(state));
 };
 
 /**
@@ -307,10 +457,15 @@ async function main() {
     // finalState will have a valid state only if all promises are resolved succesfully
     const finalState = await [
       fetchFlexWorkspace,
+      fetchFlexProxyService,
       createTaskQueue,
       createWorkflow,
       createSyncService,
       createAPIKey,
+      createSystemAPIKey,
+      createSurveyTaskQueue,
+      createSurveyWorkflow,
+      createSurveyTaskChannel,
       fetchChatService,
       saveWorkspaceToSSM,
       saveWorkflowToSSM,
@@ -318,6 +473,9 @@ async function main() {
       saveAPIKeyToSSM,
       saveAPISecretToSSM,
       saveChatServiceToSSM,
+      saveFlexProxyToSSM,
+      saveSurveyWorkflowToSSM,
+      saveSystemSecretToSSM,
     ].reduce(async (accumPromise, func) => {
       try {
         const accum = await accumPromise;
@@ -329,7 +487,7 @@ async function main() {
       }
     }, Promise.resolve(initialState));
 
-    const { apiKeySecret, ...output } = finalState;
+    const { apiKeySecret, systemApiKeySecret, ...output } = finalState;
 
     logSuccess('Process completed succesfully, the output is: ');
     console.log(output);
