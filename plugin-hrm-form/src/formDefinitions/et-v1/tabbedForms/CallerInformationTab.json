@@ -64,10 +64,11 @@
     "label": "Sex",
     "type": "select",
     "options": [
-      { "value": "Unknown", "label": "" },
+      { "value": "", "label": "" },
       { "value": "Male", "label": "Male" },
       { "value": "Female", "label": "Female" },
-      { "value": "Non-Binary", "label": "Non-Binary" }
+      { "value": "Non-Binary", "label": "Non-Binary" },
+      { "value": "Unknown", "label": "Unknown" },
     ],
     "required": { "value": true, "message": "RequiredFieldError" }
   },
