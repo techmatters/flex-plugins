@@ -252,7 +252,6 @@ const createSurveyWorkflow = async (state: State): Promise<State> => {
             expression: 'isSurveyTask==true',
             targets: [
               {
-                expression: '1==1',
                 queue: `${state.surveyTaskQueueSid}`,
               },
             ],
