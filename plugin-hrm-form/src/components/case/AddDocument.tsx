@@ -67,9 +67,6 @@ const AddDocument: React.FC<Props> = ({
   const [l, r] = React.useMemo(() => {
     const updateCallBack = () => {
       const document = methods.getValues();
-      const document2 = methods.getValues('fileName');
-      const document3 = methods.getValues(['comments', 'fileName', 'fileName-key']);
-      console.log({ document, document2, document3 });
       updateTempInfo({ screen: 'add-document', info: document }, task.taskSid);
     };
 
@@ -178,7 +175,7 @@ const AddDocument: React.FC<Props> = ({
 AddDocument.displayName = 'AddDocument';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
-  const caseState: CaseState = state[namespace][connectedCaseBase]; // casting type as inference is not working for the store yet
+  const caseState: CaseState = state[namespace][connectedCaseBase];
   const connectedCaseState = caseState.tasks[ownProps.task.taskSid];
   const { route } = state[namespace][routingBase].tasks[ownProps.task.taskSid];
 

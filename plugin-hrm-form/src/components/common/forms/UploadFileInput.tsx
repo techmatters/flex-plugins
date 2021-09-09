@@ -37,8 +37,6 @@ const UploadFileInput = ({
   const fileUploadRef = useRef<HTMLButtonElement>();
 
   const fileName = watch(path);
-  // console.log({ fileName, path }); // Need console.log()???
-
   const error = get(errors, path);
   const showUploadButton = !Boolean(fileName);
 
