@@ -473,11 +473,12 @@ const getInputType = (
     case 'file-upload':
       return (
         <ConnectForm key={path}>
-          {({ errors, register, setValue }) => (
+          {({ errors, register, setValue, watch }) => (
             <UploadFileInput
               errors={errors}
               register={register}
               setValue={setValue}
+              watch={watch}
               rules={rules}
               path={path}
               label={def.label}

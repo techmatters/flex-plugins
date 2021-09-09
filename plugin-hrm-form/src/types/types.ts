@@ -33,6 +33,10 @@ export type Referral = { [key: string]: string | boolean };
 
 export type ReferralEntry = { [key: string]: string | boolean };
 
+export type Document = { [key: string]: string | boolean };
+
+export type DocumentEntry = { document: Document } & EntryInfo;
+
 export const blankReferral = {
   date: null,
   referredTo: null,
@@ -48,6 +52,7 @@ export type CaseInfo = {
   households?: HouseholdEntry[];
   referrals?: ReferralEntry[];
   incidents?: IncidentEntry[];
+  documents?: DocumentEntry[];
   followUpDate?: string;
   childIsAtRisk?: boolean;
 };

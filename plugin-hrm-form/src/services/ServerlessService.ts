@@ -137,3 +137,40 @@ export const getWorkerAttributes = async (workerSid: string) => {
   const response = await fetchProtectedApi('/getWorkerAttributes', body);
   return response;
 };
+
+const toBase64 = file =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve((reader.result as string).split(',')[1]);
+    reader.onerror = error => reject(error);
+  });
+
+/**
+ * Uploads a file to the corresponding S3 bucket
+ * Current Limitation: 500kb files
+ */
+export const uploadFile = async (file: File) => {
+  const fileBase64 = await toBase64(file);
+  const body = { fileBase64, fileName: file.name };
+  const response = await fetchProtectedApi('/uploadFile', body);
+  return response;
+};
+
+/**
+ * Deletes a file from the corresponding S3 bucket
+ */
+export const deleteFile = async (fileName: string) => {
+  const body = { fileName };
+  const response = await fetchProtectedApi('/deleteFile', body);
+  return response;
+};
+
+/**
+ * Gets a file download url from the corresponding S3 bucket
+ */
+export const getFileDownloadUrl = async (fileNameAtAws: string, fileName: string) => {
+  const body = { fileNameAtAws, fileName };
+  const response = await fetchProtectedApi('/getFileDownloadUrl', body);
+  return response;
+};

@@ -3,6 +3,7 @@ import React, { useState, useRef } from 'react';
 import { get } from 'lodash';
 import { Template } from '@twilio/flex-ui';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
+import { CircularProgress } from '@material-ui/core';
 
 import {
   Box,
@@ -15,11 +16,13 @@ import {
 } from '../../../styles/HrmStyles';
 import { StyledLink } from '../../../styles/search';
 import UploadIcon from '../icons/UploadIcon';
+import { formatFileNameAtAws } from '../../../utils';
 
 const UploadFileInput = ({
   errors,
   register,
   setValue,
+  watch,
   rules,
   path,
   label,
@@ -30,47 +33,39 @@ const UploadFileInput = ({
   RequiredAsterisk,
   initialValue,
 }) => {
-  const [key, setKey] = useState('');
-  const [localFileName, setLocalFileName] = useState('');
-
+  const [isLoading, setLoading] = useState(false);
   const fileUploadRef = useRef<HTMLButtonElement>();
 
+  const fileName = watch(path);
+  // console.log({ fileName, path }); // Need console.log()???
+
   const error = get(errors, path);
-  const showUploadButton = !Boolean(key);
+  const showUploadButton = !Boolean(fileName);
 
   const handleChange = async event => {
     try {
-      const file = event.target.files[0];
+      setLoading(true);
       const fileNameAtAws = await onFileChange(event);
-
-      // Local file name
-      setValue(path, file.name);
-      setLocalFileName(file.name);
-
-      // Key (file name at AWS)
-      setValue(`${path}-key`, fileNameAtAws);
-      setKey(fileNameAtAws);
+      setLoading(false);
+      setValue(path, fileNameAtAws);
 
       updateCallback();
     } catch (err) {
+      setLoading(false);
       console.log({ err });
     }
   };
 
   const handleDelete = async () => {
     try {
-      await onDeleteFile(key);
-
-      // Clear RHF values
+      setLoading(true);
+      await onDeleteFile(fileName);
+      setLoading(false);
       setValue(path, '');
-      setValue(`${path}-key`, '');
-
-      // Clear state
-      setKey('');
-      setLocalFileName('');
 
       updateCallback();
     } catch (err) {
+      setLoading(false);
       console.log({ err });
     }
   };
@@ -92,9 +87,14 @@ const UploadFileInput = ({
       </Row>
       {showUploadButton && (
         <>
-          <StyledNextStepButton onClick={() => fileUploadRef.current.click()}>
-            <UploadIcon style={{ fontSize: '20px', marginRight: 5 }} />
-            {label}
+          <StyledNextStepButton disabled={isLoading} onClick={() => fileUploadRef.current.click()}>
+            {isLoading && (
+              <Box marginRight="10px">
+                <CircularProgress color="inherit" size={20} />
+              </Box>
+            )}
+            {!isLoading && <UploadIcon style={{ fontSize: '20px', marginRight: 5 }} />}
+            <Template code="UploadFile-ButtonText" />
           </StyledNextStepButton>
           <FormInput
             id="file-input"
@@ -108,18 +108,24 @@ const UploadFileInput = ({
             style={{ visibility: 'hidden', height: 0 }}
           />
           <input id={path} name={path} type="hidden" ref={register(rules)} />
-          <input id={`${path}-key`} name={`${path}-key`} type="hidden" ref={register(rules)} />
         </>
       )}
       {!showUploadButton && (
         <>
           <UploadFileFileName>
             <AttachFileIcon style={{ fontSize: '20px', marginRight: 5 }} />
-            {localFileName}
+            {formatFileNameAtAws(fileName)}
           </UploadFileFileName>
-          <StyledLink underline data-testid="PreviousContacts-ViewRecords" onClick={handleDelete}>
-            <Box marginLeft="20px">Delete</Box>
-          </StyledLink>
+          {isLoading && (
+            <Box marginLeft="25px" marginTop="10px">
+              <CircularProgress color="inherit" size={20} />
+            </Box>
+          )}
+          {!isLoading && (
+            <StyledLink underline onClick={handleDelete}>
+              <Box marginLeft="20px">Delete</Box>
+            </StyledLink>
+          )}
         </>
       )}
       {error && (

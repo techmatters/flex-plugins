@@ -14,6 +14,7 @@ export const PermissionActions = {
   ADD_HOUSEHOLD: 'addHousehold',
   ADD_PERPETRATOR: 'addPerpetrator',
   ADD_INCIDENT: 'addIncident',
+  ADD_DOCUMENT: 'addDocument',
   EDIT_CASE_SUMMARY: 'editCaseSummary',
   EDIT_CHILD_IS_AT_RISK: 'editChildIsAtRisk',
   EDIT_FOLLOW_UP_DATE: 'editFollowUpDate',

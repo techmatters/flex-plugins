@@ -68,6 +68,8 @@ jest.mock('../styles/HrmStyles', () => ({
   PopoverText: 'PopoverText',
   CannedResponsesContainer: 'CannedResponsesContainer',
   Bold: 'Bold',
+  UploadFileLabel: 'UploadFileLabel',
+  UploadFileFileName: 'UploadFileFileName',
 }));
 
 jest.mock('../styles/search', () => ({
@@ -182,6 +184,7 @@ jest.mock('../styles/case', () => ({
   StyledInputField: 'StyledInputField',
   StyledSelectWrapper: 'StyledSelectWrapper',
   StyledSelectField: 'StyledSelectField',
+  TimelineFileName: 'TimelineFileName',
 }));
 
 jest.mock('../styles/previousContactsBanner', () => ({

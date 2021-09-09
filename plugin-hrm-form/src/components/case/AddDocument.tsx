@@ -154,20 +154,20 @@ const AddDocument: React.FC<Props> = ({
           </Box>
           <Box marginRight="15px">
             <StyledNextStepButton
-              data-testid="Case-AddHouseholdScreen-SaveAndAddAnotherHousehold"
+              data-testid="Case-AddDocumentScreen-SaveAndAddAnotherDocument"
               secondary
               roundCorners
               onClick={methods.handleSubmit(saveDocumentAndStay, onError)}
             >
-              <Template code="BottomBar-SaveAndAddAnotherHousehold" />
+              <Template code="BottomBar-SaveAndAddAnotherDocument" />
             </StyledNextStepButton>
           </Box>
           <StyledNextStepButton
-            data-testid="Case-AddHouseholdScreen-SaveHousehold"
+            data-testid="Case-AddDocumentScreen-SaveDocument"
             roundCorners
             onClick={methods.handleSubmit(saveDocumentAndLeave, onError)}
           >
-            <Template code="BottomBar-SaveHousehold" />
+            <Template code="BottomBar-SaveDocument" />
           </StyledNextStepButton>
         </BottomButtonBar>
       </CaseActionLayout>
