@@ -37,8 +37,8 @@ type DynamicState = {
   surveyTaskQueueSid?: string;
   surveyWorkflowSid?: string;
   surveyTaskChannelSid?: string;
-  systemApiKeySid?: string;
-  systemApiKeySecret?: string;
+  hrmStaticApiKeySid?: string;
+  hrmStaticApiKeySecret?: string;
 };
 
 type State = ConstantState & DynamicState;
@@ -71,10 +71,10 @@ const getSSMNameFunction: GetSSMStringFunctions = {
   chatServiceSid: getSSMName('CHAT_SERVICE_SID'),
   flexProxyServiceSid: getSSMName('FLEX_PROXY_SERVICE_SID'),
   surveyWorkflowSid: getSSMName('SURVEY_WORKFLOW_SID'),
-  systemApiKeySecret: getSSMName('SYSTEM_SECRET'),
+  hrmStaticApiKeySecret: getSSMName('HRM_STATIC_KEY'),
   taskQueueSid: throwWithKey('taskQueueSid'),
   surveyTaskChannelSid: throwWithKey('surveyTaskChannelSid'),
-  systemApiKeySid: throwWithKey('systemApiKeySid'),
+  hrmStaticApiKeySid: throwWithKey('hrmStaticApiKeySid'),
   surveyTaskQueueSid: throwWithKey('surveyTaskQueueSid'),
 };
 
@@ -90,10 +90,12 @@ const getSSMDescriptionFunction: GetSSMStringFunctions = {
   chatServiceSid: getSSMDescription('Twilio account - Chat service SID'),
   flexProxyServiceSid: getSSMDescription('Twilio account - Flex Proxy servivice SID'),
   surveyWorkflowSid: getSSMDescription('Twilio account - Survey Workflow SID'),
-  systemApiKeySecret: getSSMDescription('Twilio account - System secret to perform backend calls'),
+  hrmStaticApiKeySecret: getSSMDescription(
+    'Twilio account - HRM static secret to perform backend calls',
+  ),
   taskQueueSid: throwWithKey('taskQueueSid'),
   surveyTaskChannelSid: throwWithKey('surveyTaskChannelSid'),
-  systemApiKeySid: throwWithKey('systemApiKeySid'),
+  hrmStaticApiKeySid: throwWithKey('hrmStaticApiKeySid'),
   surveyTaskQueueSid: throwWithKey('surveyTaskQueueSid'),
 };
 
@@ -124,7 +126,7 @@ const saveAPISecretToSSM = saveStateKeyToSSM('apiKeySecret');
 const saveChatServiceToSSM = saveStateKeyToSSM('chatServiceSid');
 const saveFlexProxyToSSM = saveStateKeyToSSM('flexProxyServiceSid');
 const saveSurveyWorkflowToSSM = saveStateKeyToSSM('surveyWorkflowSid');
-const saveSystemSecretToSSM = saveStateKeyToSSM('systemApiKeySecret');
+const saveHrmStaticKeyToSSM = saveStateKeyToSSM('hrmStaticApiKeySecret');
 
 /**
  * Twilio resources related functions
@@ -208,11 +210,11 @@ const createAPIKey = async (state: State): Promise<State> => {
   return { ...state, apiKeySid: key.sid, apiKeySecret: key.secret };
 };
 
-const createSystemAPIKey = async (state: State): Promise<State> => {
-  const key = await client.newKeys.create({ friendlyName: 'system-user-key' });
+const createHrmStaticAPIKey = async (state: State): Promise<State> => {
+  const key = await client.newKeys.create({ friendlyName: 'hrm-static-key' });
 
-  logSuccess(`Twilio resource: Succesfully created system API key ${key.sid}`);
-  return { ...state, systemApiKeySid: key.sid, systemApiKeySecret: key.secret };
+  logSuccess(`Twilio resource: Succesfully created HRM static API key ${key.sid}`);
+  return { ...state, hrmStaticApiKeySid: key.sid, hrmStaticApiKeySecret: key.secret };
 };
 
 const fetchChatService = async (state: State): Promise<State> => {
@@ -290,11 +292,11 @@ const removeAPIKey = async (state: State): Promise<State> => {
   return rest;
 };
 
-const removeSystemAPIKey = async (state: State): Promise<State> => {
-  const { systemApiKeySid, systemApiKeySecret, ...rest } = state;
-  if (systemApiKeySid) {
-    await client.keys.get(systemApiKeySid).remove();
-    logWarning(`Twilio resource: Succesfully removed system API key ${systemApiKeySid}`);
+const removeHrmStaticAPIKey = async (state: State): Promise<State> => {
+  const { hrmStaticApiKeySid, hrmStaticApiKeySecret, ...rest } = state;
+  if (hrmStaticApiKeySid) {
+    await client.keys.get(hrmStaticApiKeySid).remove();
+    logWarning(`Twilio resource: Succesfully removed HRM static API key ${hrmStaticApiKeySid}`);
   }
 
   return rest;
@@ -393,7 +395,7 @@ const cleanupPartialResources = async (state: State): Promise<void> => {
 
   await [
     removeAPIKey,
-    removeSystemAPIKey,
+    removeHrmStaticAPIKey,
     removeSyncService,
     removeWorkflow,
     removeTaskQueue,
@@ -461,7 +463,7 @@ async function main() {
       createWorkflow,
       createSyncService,
       createAPIKey,
-      createSystemAPIKey,
+      createHrmStaticAPIKey,
       createSurveyTaskQueue,
       createSurveyWorkflow,
       createSurveyTaskChannel,
@@ -474,7 +476,7 @@ async function main() {
       saveChatServiceToSSM,
       saveFlexProxyToSSM,
       saveSurveyWorkflowToSSM,
-      saveSystemSecretToSSM,
+      saveHrmStaticKeyToSSM,
     ].reduce(async (accumPromise, func) => {
       try {
         const accum = await accumPromise;
@@ -486,12 +488,12 @@ async function main() {
       }
     }, Promise.resolve(initialState));
 
-    const { apiKeySecret, systemApiKeySecret, ...output } = finalState;
+    const { apiKeySecret, hrmStaticApiKeySecret, ...output } = finalState;
 
     logSuccess('Process completed succesfully, the output is: ');
     console.log(output);
   } catch (err) {
-    logError(err);
+    logError(err as any);
 
     await cleanupPartialResources(partialState);
   }
