@@ -7,5 +7,5 @@ export default {
   v1, // Zambia V1
   'za-v1': zaV1, // South Africa v1
   'et-v1': etV1, // Ethiopia v1
-  'mw-v1': mwV1 // Malawi v1
+  'mw-v1': mwV1, // Malawi v1
 };
