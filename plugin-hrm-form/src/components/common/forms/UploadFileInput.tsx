@@ -97,6 +97,7 @@ const UploadFileInput = ({
           <FormInput
             id="file-input"
             type="file"
+            accept=".png,.jpg,.jpeg,.pdf,.doc,.docx,"
             error={Boolean(error)}
             aria-invalid={Boolean(error)}
             aria-describedby={`${path}-error`}

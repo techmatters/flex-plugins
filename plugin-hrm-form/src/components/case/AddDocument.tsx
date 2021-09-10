@@ -35,6 +35,8 @@ import {
 import type { DefinitionVersion } from '../common/forms/types';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
 type OwnProps = {
   task: CustomITask | StandaloneITask;
   counselor: string;
@@ -97,9 +99,16 @@ const AddDocument: React.FC<Props> = ({
      */
     const onFileChange = async event => {
       const file = event.target.files[0];
+
+      if (file.size > MAX_FILE_SIZE) {
+        alert('File exceeds max size.');
+        return '';
+      }
+
       const mimeType = file.type;
       const response = await getFileUploadUrl(file.name, mimeType);
       await uploadDocument(file, response.uploadUrl, mimeType);
+
       return response.fileNameAtAws;
     };
 
