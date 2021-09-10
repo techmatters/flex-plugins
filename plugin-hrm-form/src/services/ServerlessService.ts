@@ -147,17 +147,6 @@ const toBase64 = file =>
   });
 
 /**
- * Uploads a file to the corresponding S3 bucket
- * Current Limitation: 500kb files
- */
-export const uploadFile = async (file: File) => {
-  const fileBase64 = await toBase64(file);
-  const body = { fileBase64, fileName: file.name };
-  const response = await fetchProtectedApi('/uploadFile', body);
-  return response;
-};
-
-/**
  * Deletes a file from the corresponding S3 bucket
  */
 export const deleteFile = async (fileName: string) => {
@@ -172,5 +161,14 @@ export const deleteFile = async (fileName: string) => {
 export const getFileDownloadUrl = async (fileNameAtAws: string, fileName: string) => {
   const body = { fileNameAtAws, fileName };
   const response = await fetchProtectedApi('/getFileDownloadUrl', body);
+  return response;
+};
+
+/**
+ * Gets a file upload url to the corresponding S3 bucket
+ */
+export const getFileUploadUrl = async (fileName: string, mimeType: string) => {
+  const body = { fileName, mimeType };
+  const response = await fetchProtectedApi('/getFileUploadUrl', body);
   return response;
 };

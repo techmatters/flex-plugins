@@ -24,7 +24,7 @@ import { CaseState } from '../../states/case/reducer';
 import { transformValues } from '../../services/ContactService';
 import { getConfig } from '../../HrmFormPlugin';
 import { updateCase } from '../../services/CaseService';
-import { uploadFile, deleteFile } from '../../services/ServerlessService';
+import { deleteFile, getFileUploadUrl } from '../../services/ServerlessService';
 import {
   createFormFromDefinition,
   createStateItem,
@@ -71,12 +71,36 @@ const AddDocument: React.FC<Props> = ({
     };
 
     /**
-     * Function that uploads a file and returns the file name at AWS
+     * This function calls an HTTP PUT to upload the document
+     * @param file Document
+     * @param preSignedUrl URL
+     * @param mimeType MIME Type
+     */
+    const uploadDocument = async (file: File, preSignedUrl: string, mimeType: string) => {
+      const headers = new Headers();
+      headers.append('Content-Type', mimeType);
+
+      const options = {
+        method: 'PUT',
+        body: file,
+        headers,
+      };
+      await fetch(preSignedUrl, options);
+    };
+
+    /**
+     * This function uploads the file in two steps:
+     * 1) Generates a preSingedUrl for uploading the document
+     * 2) Calls the generated preSignedUrl
+     *
+     * It returns the file name at AWS
      */
     const onFileChange = async event => {
       const file = event.target.files[0];
-      const response = await uploadFile(file);
-      return response.fileNameAtAWS;
+      const mimeType = file.type;
+      const response = await getFileUploadUrl(file.name, mimeType);
+      await uploadDocument(file, response.uploadUrl, mimeType);
+      return response.fileNameAtAws;
     };
 
     const onDeleteFile = async (fileName: string) => {
