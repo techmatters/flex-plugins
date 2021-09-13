@@ -138,14 +138,6 @@ export const getWorkerAttributes = async (workerSid: string) => {
   return response;
 };
 
-const toBase64 = file =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve((reader.result as string).split(',')[1]);
-    reader.onerror = error => reject(error);
-  });
-
 /**
  * Deletes a file from the corresponding S3 bucket
  */
