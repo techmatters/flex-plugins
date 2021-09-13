@@ -33,6 +33,9 @@
     },
     "referrals": {
       "splitFormAt": 2
+    },
+    "documents": {
+      "splitFormAt": 1
     }
   }
 }
