@@ -4,6 +4,7 @@ import IncidentForm from './caseForms/IncidentForm.json';
 import NoteForm from './caseForms/NoteForm.json';
 import PerpetratorForm from './caseForms/PerpetratorForm.json';
 import ReferralForm from './caseForms/ReferralForm.json';
+import DocumentForm from './caseForms/DocumentForm.json';
 import CallerInformationTab from './tabbedForms/CallerInformationTab.json';
 import CaseInformationTab from './tabbedForms/CaseInformationTab.json';
 import ChildInformationTab from './tabbedForms/ChildInformationTab.json';
@@ -34,6 +35,7 @@ const version: DefinitionVersion = {
     NoteForm: NoteForm as FormDefinition,
     PerpetratorForm: PerpetratorForm as FormDefinition,
     ReferralForm: ReferralForm as FormDefinition,
+    DocumentForm: DocumentForm as FormDefinition,
   },
   tabbedForms: {
     CallerInformationTab: CallerInformationTab as FormDefinition,

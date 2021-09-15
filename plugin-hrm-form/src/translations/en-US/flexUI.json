@@ -122,6 +122,8 @@
   "BottomBar-SaveAndAddAnotherHousehold": "Save and Add Another Member",
   "BottomBar-SaveHousehold": "Save Member",
   "BottomBar-SaveIncident": "Save Incident",
+  "BottomBar-SaveAndAddAnotherDocument": "Save and Upload Another Document",
+  "BottomBar-SaveDocument": "Save Document",
   "BottomBar-Close": "Close",
   "BottomBar-Update": "Update",
 
@@ -145,6 +147,7 @@
   "Case-AddPerpetratorSection": "Perpetrators",
   "Case-AddIncidentSection": "Incidents",
   "Case-AddHouseholdSection": "Household Information",
+  "Case-AddDocumentSection": "Documents",
   "Case-CaseSummarySection": "Case Summary",
   "Case-CaseDetailsChildName": "Child Name",
   "Case-CaseDetailsOwner": "Counsellor",
@@ -157,11 +160,13 @@
   "Case-Household": "Household Member",
   "Case-Perpetrator": "Perpetrator",
   "Case-Incident": "Incident",
+  "Case-Document": "Document",
   "Case-AddNote": "Add Note",
   "Case-AddReferral": "Add Referral",
   "Case-AddHousehold": "Add Household Member",
   "Case-AddPerpetrator": "Add Perpetrator",
   "Case-AddIncident": "Add Incident",
+  "Case-AddDocument": "Add Document",
   "Case-AddNoteTypeHere": "Type here to add note...",
   "Case-AddCaseSummaryHere": "Add case summary here...",
   "Case-ActionHeaderAdded": "Added:",
@@ -176,6 +181,10 @@
   "Case-NoIncidents": "No Incidents Listed",
   "Case-Note": "Note",
   "Case-NoHouseholds": "No Household Members Listed",
+  "Case-NoDocuments": "No Documents Listed",
+  "Case-DocumentDate": "Date",
+  "Case-DocumentFileName": "File Name",
+  "Case-DocumentComments": "Comments",
   "Case-Contact": "Contact",
   "Case-ViewHousehold": "View Household Member",
   "Case-ViewHouseholdTitle": "Household Member",
@@ -183,6 +192,7 @@
   "Case-ViewIncidentTitle": "Incident",
   "Case-ViewPerpetrator": "View Perpetrator",
   "Case-ViewPerpetratorTitle": "Perpetrator",
+  "Case-ViewDocument": "View Document",
   "Case-ReferralDate": "Date",
   "Case-ReferralReferredTo": "Referred To...",
   "Case-ReferralComments": "Comments",
@@ -301,6 +311,9 @@
   "PreviousContacts-FacebookUser": "Facebook user",
   "PreviousContacts-TwitterUser": "Twitter user",
   "PreviousContacts-ViewRecords": "View Records",
-  "PreviousContacts-OnlyShowRecordsFrom": "Only show records from"
+  "PreviousContacts-OnlyShowRecordsFrom": "Only show records from",
+
+  "UploadFile-ButtonText": "Upload File",
+  "DownloadFile-ButtonText": "Download File"
 
 }

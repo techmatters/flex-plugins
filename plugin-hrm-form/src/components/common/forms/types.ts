@@ -97,6 +97,13 @@ type TimeInputDefinition = {
 } & ItemBase &
   RegisterOptions;
 
+type FileUploadDefinition = {
+  type: 'file-upload';
+  description: string;
+  onChange: () => void;
+} & ItemBase &
+  RegisterOptions;
+
 export type FormItemDefinition =
   | InputDefinition
   | NumericInputDefinition
@@ -106,7 +113,8 @@ export type FormItemDefinition =
   | MixedCheckboxDefinition
   | TextareaDefinition
   | DateInputDefinition
-  | TimeInputDefinition;
+  | TimeInputDefinition
+  | FileUploadDefinition;
 export type FormDefinition = FormItemDefinition[];
 
 export type CategoryEntry = { color: string; subcategories: string[] };
@@ -163,6 +171,7 @@ export type LayoutVersion = {
     perpetrators: LayoutDefinition;
     incidents: LayoutDefinition;
     referrals: LayoutDefinition;
+    documents: LayoutDefinition;
   };
 };
 
@@ -183,6 +192,7 @@ export type DefinitionVersion = {
     NoteForm: FormDefinition;
     PerpetratorForm: FormDefinition;
     ReferralForm: FormDefinition;
+    DocumentForm: FormDefinition;
   };
   // TODO: change this property to contactForms to be consistent (though that may create confusion with the component name)
   tabbedForms: {

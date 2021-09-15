@@ -137,3 +137,30 @@ export const getWorkerAttributes = async (workerSid: string) => {
   const response = await fetchProtectedApi('/getWorkerAttributes', body);
   return response;
 };
+
+/**
+ * Deletes a file from the corresponding S3 bucket
+ */
+export const deleteFile = async (fileName: string) => {
+  const body = { fileName };
+  const response = await fetchProtectedApi('/deleteFile', body);
+  return response;
+};
+
+/**
+ * Gets a file download url from the corresponding S3 bucket
+ */
+export const getFileDownloadUrl = async (fileNameAtAws: string, fileName: string) => {
+  const body = { fileNameAtAws, fileName };
+  const response = await fetchProtectedApi('/getFileDownloadUrl', body);
+  return response;
+};
+
+/**
+ * Gets a file upload url to the corresponding S3 bucket
+ */
+export const getFileUploadUrl = async (fileName: string, mimeType: string) => {
+  const body = { fileName, mimeType };
+  const response = await fetchProtectedApi('/getFileUploadUrl', body);
+  return response;
+};

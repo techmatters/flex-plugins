@@ -636,6 +636,24 @@ export const FormLabel = styled('label')`
 `;
 FormLabel.displayName = 'FormLabel';
 
+export const UploadFileLabel = styled(Flex)`
+  font-size: 14px;
+  letter-spacing: 0;
+  min-height: 18px;
+  color: #000000;
+`;
+UploadFileLabel.displayName = 'UploadFileLabel';
+
+export const UploadFileFileName = styled(Flex)`
+  align-items: center;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0;
+  min-height: 18px;
+  color: #000000;
+`;
+UploadFileFileName.displayName = 'UploadFileFileName';
+
 export const DependentSelectLabel = styled(FormLabel)<{ disabled: boolean }>`
   ${({ disabled }) => disabled && `opacity: 0.30;`}
 `;

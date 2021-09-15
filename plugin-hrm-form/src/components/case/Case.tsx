@@ -40,21 +40,25 @@ import AddReferral from './AddReferral';
 import Households from './Households';
 import Perpetrators from './Perpetrators';
 import Incidents from './Incidents';
+import Documents from './Documents';
 import CaseSummary from './CaseSummary';
 import ViewContact from './ViewContact';
 import AddHousehold from './AddHousehold';
 import AddPerpetrator from './AddPerpetrator';
 import AddIncident from './AddIncident';
+import AddDocument from './AddDocument';
 import ViewNote from './ViewNote';
 import ViewHousehold from './ViewHousehold';
 import ViewPerpetrator from './ViewPerpetrator';
 import ViewIncident from './ViewIncident';
 import ViewReferral from './ViewReferral';
+import ViewDocument from './ViewDocument';
 import type { CaseDetailsName } from '../../states/case/types';
 import {
   HouseholdEntry,
   PerpetratorEntry,
   IncidentEntry,
+  DocumentEntry,
   Case as CaseType,
   CustomITask,
   StandaloneITask,
@@ -265,6 +269,11 @@ const Case: React.FC<Props> = props => {
     props.changeRoute({ route, subroute: 'add-incident' }, props.task.taskSid);
   };
 
+  const onClickAddDocument = () => {
+    props.updateTempInfo({ screen: 'add-document', info: null }, props.task.taskSid);
+    props.changeRoute({ route, subroute: 'add-document' }, props.task.taskSid);
+  };
+
   const onClickViewHousehold = (household: HouseholdEntry) => {
     props.updateTempInfo({ screen: 'view-household', info: household }, props.task.taskSid);
     props.changeRoute({ route, subroute: 'view-household' }, props.task.taskSid);
@@ -278,6 +287,11 @@ const Case: React.FC<Props> = props => {
   const onClickViewIncident = (incident: IncidentEntry) => {
     props.updateTempInfo({ screen: 'view-incident', info: incident }, props.task.taskSid);
     props.changeRoute({ route, subroute: 'view-incident' }, props.task.taskSid);
+  };
+
+  const onClickViewDocument = (document: DocumentEntry) => {
+    props.updateTempInfo({ screen: 'view-document', info: document }, props.task.taskSid);
+    props.changeRoute({ route, subroute: 'view-document' }, props.task.taskSid);
   };
 
   const onInfoChange = (fieldName, value) => {
@@ -361,6 +375,7 @@ const Case: React.FC<Props> = props => {
   const households = info && info.households ? info.households : [];
   const perpetrators = info && info.perpetrators ? info.perpetrators : [];
   const incidents = info && info.incidents ? info.incidents : [];
+  const documents = info && info.documents ? info.documents : [];
   const childIsAtRisk = info && info.childIsAtRisk;
   const referrals = props.connectedCaseReferrals;
   const notes = timeline.filter(x => x.type === 'note');
@@ -390,6 +405,7 @@ const Case: React.FC<Props> = props => {
     perpetrators,
     incidents,
     referrals,
+    documents,
     notes,
     summary,
     childIsAtRisk,
@@ -409,6 +425,8 @@ const Case: React.FC<Props> = props => {
       return <AddPerpetrator {...addScreenProps} />;
     case 'add-incident':
       return <AddIncident {...addScreenProps} />;
+    case 'add-document':
+      return <AddDocument {...addScreenProps} />;
     case 'view-contact':
       return <ViewContact {...addScreenProps} />;
     case 'view-note':
@@ -421,6 +439,8 @@ const Case: React.FC<Props> = props => {
       return <ViewIncident {...addScreenProps} />;
     case 'view-referral':
       return <ViewReferral {...addScreenProps} />;
+    case 'view-document':
+      return <ViewDocument {...addScreenProps} />;
     case 'case-print-view':
       return <CasePrintView caseDetails={caseDetails} {...addScreenProps} />;
     default:
@@ -480,6 +500,14 @@ const Case: React.FC<Props> = props => {
                 onClickView={onClickViewIncident}
                 can={can}
                 definitionVersion={definitionVersion}
+              />
+            </Box>
+            <Box marginLeft="25px" marginTop="25px">
+              <Documents
+                documents={documents}
+                can={can}
+                onClickAddDocument={onClickAddDocument}
+                onClickView={onClickViewDocument}
               />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
