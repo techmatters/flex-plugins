@@ -117,10 +117,14 @@ const AddDocument: React.FC<Props> = ({
       await deleteFile(fileName);
     };
 
-    const generatedForm = createFormFromDefinition(DocumentForm)([])(initialForm)(
-      updateCallBack,
+    const fileUploadCustomHandlers = {
       onFileChange,
       onDeleteFile,
+    };
+
+    const generatedForm = createFormFromDefinition(DocumentForm)([])(initialForm)(
+      updateCallBack,
+      fileUploadCustomHandlers,
     );
 
     if (layoutVersion.case.documents.splitFormAt)

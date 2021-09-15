@@ -95,12 +95,9 @@ const bindCreateSelectOptions = (path: string) => (o: SelectOption) => (
  * @param {() => void} updateCallback Callback called to update form state. When is the callback called is specified in the input type.
  * @param {FormItemDefinition} def Definition for a single input.
  */
-const getInputType = (
-  parents: string[],
-  updateCallback: () => void,
-  onFileChange?: (event: any) => Promise<string>,
-  onDeleteFile?: (fileName: string) => Promise<void>,
-) => (def: FormItemDefinition) => (
+const getInputType = (parents: string[], updateCallback: () => void, customHandlers?: CustomHandlers) => (
+  def: FormItemDefinition,
+) => (
   initialValue: any, // TODO: restrict this type
 ) => {
   const rules = getRules(def);
@@ -484,8 +481,8 @@ const getInputType = (
               path={path}
               label={def.label}
               description={def.description}
-              onFileChange={onFileChange}
-              onDeleteFile={onDeleteFile}
+              onFileChange={customHandlers.onFileChange}
+              onDeleteFile={customHandlers.onDeleteFile}
               updateCallback={updateCallback}
               RequiredAsterisk={RequiredAsterisk}
               initialValue={initialValue}
@@ -498,6 +495,13 @@ const getInputType = (
   }
 };
 
+type FileUploadCustomHandlers = {
+  onFileChange: (event: any) => Promise<string>;
+  onDeleteFile: (fileName: string) => Promise<void>;
+};
+
+export type CustomHandlers = FileUploadCustomHandlers;
+
 /**
  * Creates a Form with each input connected to RHF's wrapping Context, based on the definition.
  * @param {FormDefinition} definition Form definition (schema).
@@ -506,10 +510,9 @@ const getInputType = (
  */
 export const createFormFromDefinition = (definition: FormDefinition) => (parents: string[]) => (initialValues: any) => (
   updateCallback: () => void,
-  onFileChange?: (event: any) => Promise<string>,
-  onDeleteFile?: (fileName: string) => Promise<void>,
+  customHandlers?: CustomHandlers,
 ): JSX.Element[] => {
-  const bindGetInputType = getInputType(parents, updateCallback, onFileChange, onDeleteFile);
+  const bindGetInputType = getInputType(parents, updateCallback, customHandlers);
 
   return definition.map((e: FormItemDefinition) => {
     const maybeValue = get(initialValues, e.name);
