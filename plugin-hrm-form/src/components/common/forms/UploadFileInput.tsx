@@ -20,6 +20,7 @@ import { formatFileNameAtAws } from '../../../utils';
 
 const UploadFileInput = ({
   errors,
+  clearErrors,
   register,
   setValue,
   watch,
@@ -46,6 +47,7 @@ const UploadFileInput = ({
       const fileNameAtAws = await onFileChange(event);
       setLoading(false);
       setValue(path, fileNameAtAws);
+      clearErrors(path); // Error was not being cleared (maybe because we're using a hidden field?)
 
       updateCallback();
     } catch (err) {
@@ -59,7 +61,7 @@ const UploadFileInput = ({
       setLoading(true);
       await onDeleteFile(fileName);
       setLoading(false);
-      setValue(path, '');
+      setValue(path, null);
 
       updateCallback();
     } catch (err) {
