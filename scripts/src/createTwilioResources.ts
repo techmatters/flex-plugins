@@ -354,7 +354,7 @@ const removeSurveyTaskChannel = async (state: State): Promise<State> => {
       .workspaces(state.workspaceSid)
       .taskChannels(surveyTaskChannelSid)
       .remove();
-    logSuccess(`Twilio resource: Succesfully removed survey task channel ${surveyTaskChannelSid}`);
+    logWarning(`Twilio resource: Succesfully removed survey task channel ${surveyTaskChannelSid}`);
   }
 
   return rest;
