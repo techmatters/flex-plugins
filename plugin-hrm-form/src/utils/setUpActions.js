@@ -323,7 +323,8 @@ const triggerPostSurvey = async payload => {
   // if (featureFlags.enable_post_survey) {
   if (TaskHelper.isChatBasedTask(task)) {
     const channelSid = TaskHelper.getTaskChatChannelSid(task);
-    await postSurveyInit({ channelSid });
+
+    await postSurveyInit({ channelSid, taskSid: task.taskSid });
   }
   // }
 };
