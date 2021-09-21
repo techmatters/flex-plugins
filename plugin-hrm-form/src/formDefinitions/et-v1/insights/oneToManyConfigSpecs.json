@@ -3,7 +3,7 @@
     "attributeName": "area",
     "insightsObject": "customers",
     "paths": [
-      "contactForm.childInformation.region"
+      "contactForm.childInformation.district"
     ]
   }
 ]
