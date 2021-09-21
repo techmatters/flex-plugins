@@ -42,17 +42,14 @@ export const completeTask = (task: CustomITask) =>
 export const submitContactForm = async (task: CustomITask, contactForm: Contact, caseForm: Case) => {
   const { workerSid } = getConfig();
 
-  const helplineToSave = await getHelplineToSave(task, contactForm.contactlessTask);
-  const extraParameters = { helplineToSave };
-
   if (isOfflineContactTask(task)) {
     const targetWorkerSid = contactForm.contactlessTask.createdOnBehalfOf as string;
-    const finalAttributes = buildInsightsData(task, contactForm, caseForm, extraParameters);
+    const finalAttributes = buildInsightsData(task, contactForm, caseForm);
     const inBehalfTask = await assignOfflineContact(targetWorkerSid, finalAttributes);
-    return saveToHrm(task, contactForm, extraParameters, workerSid, inBehalfTask.sid);
+    return saveToHrm(task, contactForm, workerSid, inBehalfTask.sid);
   }
 
-  const finalAttributes = buildInsightsData(task, contactForm, caseForm, extraParameters);
+  const finalAttributes = buildInsightsData(task, contactForm, caseForm);
   await task.setAttributes(finalAttributes);
-  return saveToHrm(task, contactForm, extraParameters, workerSid, task.taskSid);
+  return saveToHrm(task, contactForm, workerSid, task.taskSid);
 };

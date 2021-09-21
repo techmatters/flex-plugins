@@ -3,6 +3,7 @@ import type * as t from '../types/types';
 import * as zmRules from './zm';
 import * as zaRules from './za';
 import * as etRules from './et';
+import * as mwRules from './mw';
 
 export const PermissionActions = {
   CLOSE_CASE: 'closeCase',
@@ -13,6 +14,7 @@ export const PermissionActions = {
   ADD_HOUSEHOLD: 'addHousehold',
   ADD_PERPETRATOR: 'addPerpetrator',
   ADD_INCIDENT: 'addIncident',
+  ADD_DOCUMENT: 'addDocument',
   EDIT_CASE_SUMMARY: 'editCaseSummary',
   EDIT_CHILD_IS_AT_RISK: 'editChildIsAtRisk',
   EDIT_FOLLOW_UP_DATE: 'editFollowUpDate',
@@ -20,7 +22,7 @@ export const PermissionActions = {
 
 type PermissionActionsKeys = keyof typeof PermissionActions;
 export type PermissionActionType = typeof PermissionActions[PermissionActionsKeys];
-type PermissionConfig = 'zm' | 'za' | 'et';
+type PermissionConfig = 'zm' | 'za' | 'et' | 'mw';
 type Rule = (isSupervisor: boolean, isCreator: boolean, isCaseOpen: boolean) => boolean;
 type Rules = {
   canEditCaseSummary: Rule;
@@ -32,6 +34,7 @@ const rulesMap: { [permissionConfig in PermissionConfig]: Rules } = {
   zm: zmRules,
   za: zaRules,
   et: etRules,
+  mw: mwRules,
 };
 
 const fallbackRules = zaRules;

@@ -22,7 +22,6 @@ import {
   SearchContactResult,
   isOfflineContactTask,
   isTwilioTask,
-  ExtraParameters,
 } from '../types/types';
 
 /**
@@ -63,7 +62,7 @@ export function getNumberFromTask(task: ITask) {
   } else if (task.channelType === channelTypes.whatsapp) {
     return task.defaultFrom.replace('whatsapp:', '');
   } else if (task.channelType === channelTypes.web) {
-    return task.attributes.ip || task.defaultFrom;
+    return task.attributes.ip;
   }
 
   return task.defaultFrom;
@@ -161,14 +160,7 @@ export function transformForm(form: TaskEntry): ContactRawJson {
  * Function that saves the form to Contacts table.
  * If you don't intend to complete the twilio task, set shouldFillEndMillis=false
  */
-export async function saveToHrm(
-  task,
-  form,
-  extraParameters: ExtraParameters,
-  workerSid: string,
-  uniqueIdentifier: string,
-  shouldFillEndMillis = true,
-) {
+export async function saveToHrm(task, form, workerSid: string, uniqueIdentifier: string, shouldFillEndMillis = true) {
   // if we got this far, we assume the form is valid and ready to submit
   const metadata = shouldFillEndMillis ? fillEndMillis(form.metadata) : form.metadata;
   const conversationDuration = getConversationDuration(task, metadata);
@@ -193,7 +185,7 @@ export async function saveToHrm(
   // This might change if isNonDataCallType, that's why we use rawForm
   const timeOfContact = getDateTime(rawForm.contactlessTask);
 
-  const helpline = extraParameters.helplineToSave;
+  const { helpline } = form;
   /*
    * We do a transform from the original and then add things.
    * Not sure if we should drop that all into one function or not.

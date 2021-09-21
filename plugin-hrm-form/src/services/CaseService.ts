@@ -6,7 +6,8 @@ import { Case, SearchCaseResult, isOfflineContactTask, CustomITask } from '../ty
 import type { TaskEntry as ContactForm } from '../states/contacts/reducer';
 
 export async function createCase(task: CustomITask, contactForm: ContactForm) {
-  const { workerSid, helpline, definitionVersion } = getConfig();
+  const { workerSid, definitionVersion } = getConfig();
+  const { helpline } = contactForm;
 
   const caseRecord = isOfflineContactTask(task)
     ? {

@@ -1,3 +1,4 @@
+import React from 'react';
 import { truncate } from 'lodash';
 import { format } from 'date-fns';
 
@@ -112,3 +113,11 @@ export const presentValue = (value: string | number | boolean) => (definition: F
 
 export const formatNumberFromTask = task =>
   task.channelType === channelTypes.twitter ? `@${task.attributes.twitterUserHandle}` : getNumberFromTask(task);
+
+/**
+ * Removes the prefixed milliseconds from the fileName saved at AWS and returns only the original fileName
+ * @param fileNameAtAws File Name of the resource at AWS
+ * @returns Original file name
+ */
+export const formatFileNameAtAws = fileNameAtAws =>
+  fileNameAtAws ? fileNameAtAws.substring(fileNameAtAws.indexOf('-') + 1) : '';
