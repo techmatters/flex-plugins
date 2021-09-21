@@ -18,7 +18,7 @@ require('dotenv').config();
 
 const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
-type ConstantState = {
+export type ConstantState = {
   helpline: string;
   shortHelpline: string;
   environment: string;
