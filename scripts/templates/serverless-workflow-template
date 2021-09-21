@@ -1,0 +1,85 @@
+# This is a basic workflow to publish a Twilio function with Github Actions
+
+name: <HELPLINE> <ENVIRONMENT> release
+
+# Controls when the action will run.
+on:
+  workflow_dispatch
+  
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      # Setup credentials to access AWS for parameters
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+      # Get AWS parameters to setup environment variables for Serveless function
+      - name: Set Twilio Sync API key
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "<SHORT_ENVIRONMENT>_TWILIO_<SHORT_HELPLINE>_API_KEY"
+          env_variable_name: "SYNC_SERVICE_API_KEY"
+      - name: Set Twilio Chat service ID
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "<SHORT_ENVIRONMENT>_TWILIO_<SHORT_HELPLINE>_CHAT_SERVICE_SID"
+          env_variable_name: "CHAT_SERVICE_SID"
+      - name: Set Twilio Chat transfer workflow ID
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "<SHORT_ENVIRONMENT>_TWILIO_<SHORT_HELPLINE>_CHAT_WORKFLOW_SID"
+          env_variable_name: "TWILIO_CHAT_TRANSFER_WORKFLOW_SID"
+      - name: Set Twilio Sync API secret
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "<SHORT_ENVIRONMENT>_TWILIO_<SHORT_HELPLINE>_SECRET"
+          env_variable_name: "SYNC_SERVICE_API_SECRET"
+      - name: Set Twilio Sync service ID
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "<SHORT_ENVIRONMENT>_TWILIO_<SHORT_HELPLINE>_SYNC_SID"
+          env_variable_name: "SYNC_SERVICE_SID"
+      - name: Set Twilio Workspace ID
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "<SHORT_ENVIRONMENT>_TWILIO_<SHORT_HELPLINE>_WORKSPACE_SID"
+          env_variable_name: "TWILIO_WORKSPACE_SID"
+      - name: Set operating information file key
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "<SHORT_ENVIRONMENT>_TWILIO_<SHORT_HELPLINE>_OPERATING_INFO_KEY"
+          env_variable_name: "OPERATING_INFO_KEY"
+      # Call main-action to compile and deploy
+      - name: Executing main-action
+        uses: ./.github/actions/deploy-beta
+        with:
+          account-sid: ${{ secrets.<SHORT_HELPLINE>_<SHORT_ENVIRONMENT>_ACCOUNT_SID }}
+          auth-token: ${{ secrets.<SHORT_HELPLINE>_<SHORT_ENVIRONMENT>_AUTH_TOKEN }}
+          workspace-sid: $TWILIO_WORKSPACE_SID
+          transfer-workflow-sid: $TWILIO_CHAT_TRANSFER_WORKFLOW_SID
+          sync-service-api-key: $SYNC_SERVICE_API_KEY
+          sync-service-api-secret: $SYNC_SERVICE_API_SECRET
+          sync-service-sid: $SYNC_SERVICE_SID
+          chat-service-sid: $CHAT_SERVICE_SID
+          operating-info-key: $OPERATING_INFO_KEY
+      # Call health check action to chec the service is working
+      - name: Health Check
+        uses: ./.github/actions/healthCheck
+        with:
+          account-sid: ${{ secrets.<SHORT_HELPLINE>_<SHORT_ENVIRONMENT>_ACCOUNT_SID }}
+          auth-token: ${{ secrets.<SHORT_HELPLINE>_<SHORT_ENVIRONMENT>_AUTH_TOKEN }}
