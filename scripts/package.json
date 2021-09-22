@@ -8,7 +8,7 @@
     "copyFlow": "node copyFlow.js",
     "configure": "node configureNewAccount.js",
     "compile": "npx tsc",
-    "runSetup": "npm run compile && node dist/index.js"
+    "setupNewAccount": "npm run compile && node dist/setupNewAccount/index.js"
   },
   "author": "",
   "license": "ISC",
