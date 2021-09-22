@@ -34,8 +34,8 @@
     "type": "input"
   },
   {
-    "name": "district",
-    "label": "District",
+    "name": "region",
+    "label": "Region",
     "type": "select",
     "options": [
       { "value": "", "label": "" },
