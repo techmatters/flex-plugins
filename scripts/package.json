@@ -8,7 +8,7 @@
     "copyFlow": "node copyFlow.js",
     "configure": "node configureNewAccount.js",
     "compile": "npx tsc",
-    "createTwilioResources": "npm run compile && node dist/createTwilioResources.js"
+    "runSetup": "npm run compile && node dist/index.js"
   },
   "author": "",
   "license": "ISC",
@@ -16,6 +16,7 @@
     "aws-sdk": "^2.947.0",
     "dotenv": "^10.0.0",
     "node-fetch": "^2.6.4",
+    "prompt": "^1.2.0",
     "prompt-confirm": "^2.0.4",
     "twilio": "^3.66.0",
     "yargs": "^15.4.1"
@@ -24,6 +25,7 @@
     "@tsconfig/node14": "^1.0.1",
     "@types/node": "^16.3.2",
     "@types/node-fetch": "^2.5.12",
+    "@types/prompt": "^1.1.1",
     "@typescript-eslint/eslint-plugin": "^4.28.3",
     "@typescript-eslint/parser": "^4.28.3",
     "eslint": "^7.4.0",
