@@ -11,8 +11,8 @@
  *  ENVIRONMENT=<Target environment, one of Development, Staging or Production>
  */
 import twilio from 'twilio';
-import { saveSSMParameter } from './helpers/ssm';
-import { logError, logSuccess, logWarning } from './helpers/log';
+import { saveSSMParameter } from '../helpers/ssm';
+import { logError, logSuccess, logWarning } from '../helpers/log';
 import { ScriptsInput } from './types';
 
 const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);

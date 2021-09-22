@@ -2,7 +2,7 @@ import prompt from 'prompt';
 import { ScriptsInput, environments, shortEnvironments } from './types';
 import { createTwilioResources } from './createTwilioResources';
 import { setupTwilioServerless } from './setupTwilioServerless';
-import { logSuccess, logError } from './helpers/log';
+import { logSuccess, logError } from '../helpers/log';
 
 require('dotenv').config();
 

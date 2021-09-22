@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from 'fs';
 import fetch from 'node-fetch';
 import { inspect } from 'util';
-import { logError, logSuccess } from './helpers/log';
+import { logError, logSuccess } from '../helpers/log';
 import type { ScriptsInput } from './types';
 // import { Octokit } from '@octokit/core';
 
