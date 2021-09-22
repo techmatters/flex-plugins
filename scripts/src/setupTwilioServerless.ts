@@ -1,6 +1,8 @@
 import { readFileSync, writeFileSync } from 'fs';
 import fetch from 'node-fetch';
-import type { ConstantState } from './createTwilioResources';
+import { inspect } from 'util';
+import { logError, logSuccess } from './helpers/log';
+import type { ScriptsInput } from './types';
 // import { Octokit } from '@octokit/core';
 
 const workflowTemplatePath = 'templates/serverless-workflow-template';
@@ -8,30 +10,34 @@ const workflowTemplatePath = 'templates/serverless-workflow-template';
 const replaceAll = (search: string, replacement: string) => (target: string) =>
   target.split(search).join(replacement);
 
-const replacementFunctions = (state: ConstantState) => [
-  replaceAll('<HELPLINE>', state.helpline),
-  replaceAll('<SHORT_HELPLINE>', state.shortHelpline),
-  replaceAll('<ENVIRONMENT>', state.environment),
-  replaceAll('<SHORT_ENVIRONMENT>', state.shortEnvironment),
+const replacementFunctions = (input: ScriptsInput) => [
+  replaceAll('<HELPLINE>', input.helpline),
+  replaceAll('<SHORT_HELPLINE>', input.shortHelpline),
+  replaceAll('<ENVIRONMENT>', input.environment),
+  replaceAll('<SHORT_ENVIRONMENT>', input.shortEnvironment),
 ];
 
-const replacePlaceholders = (state: ConstantState) => (target: string) =>
-  replacementFunctions(state).reduce((accum, f) => f(accum), target);
+const replacePlaceholders = (input: ScriptsInput) => (target: string) =>
+  replacementFunctions(input).reduce((accum, f) => f(accum), target);
 
-const generateWorkflowContent = (state: ConstantState) => {
+const generateWorkflowContent = (input: ScriptsInput) => {
   const template = readFileSync(workflowTemplatePath).toString();
-  const content = replacePlaceholders(state)(template);
+  const content = replacePlaceholders(input)(template);
 
   return content;
 };
 
-const aseloDevConfig = {
-  environment: 'Development',
-  shortEnvironment: 'DEV',
-  helpline: 'Aselo',
-  shortHelpline: 'AS',
-};
+/**
+ * Check that the template is in sync with Aselo Development deployment workflow
+ */
 const checkWorkflowInSync = async () => {
+  const aseloDevConfig = {
+    environment: 'Development',
+    shortEnvironment: 'DEV',
+    helpline: 'Aselo',
+    shortHelpline: 'ASs',
+  };
+
   const response = await fetch(
     'https://raw.githubusercontent.com/techmatters/serverless/master/.github/workflows/aselo_development.yml',
   );
@@ -39,22 +45,28 @@ const checkWorkflowInSync = async () => {
 
   const generated = generateWorkflowContent(aseloDevConfig);
 
-  // const generatedContent = generateWorkflowContent();
-
-  console.log('Workflow tempalte is up to date?: ', expected === generated);
-
   if (expected !== generated)
     throw new Error(
       'The generated workflow file differs from the one being used by Aselo Development.',
     );
 };
 
-export const setupTwilioServerless = async (state: ConstantState) => {
-  await checkWorkflowInSync();
+export const setupTwilioServerless = async (input: ScriptsInput) => {
+  try {
+    await checkWorkflowInSync();
 
-  const content = generateWorkflowContent(state);
-  const fileName = 'new-workflow.yml';
-  writeFileSync(fileName, content);
+    const fileName = 'new-workflow.yml'; // eventually this will be part of the input
+
+    const content = generateWorkflowContent(input);
+    writeFileSync(fileName, content);
+
+    logSuccess(`New Serverless deploy workflow generated at ${fileName}!`);
+
+    return fileName;
+  } catch (err) {
+    logError(`Error generating new workflow with input ${inspect(input)}: ${err}`);
+
+    // Propagate the error
+    throw err;
+  }
 };
-
-setupTwilioServerless(aseloDevConfig);
