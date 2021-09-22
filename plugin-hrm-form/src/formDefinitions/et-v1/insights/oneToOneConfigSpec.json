@@ -54,7 +54,7 @@
         "type": "mixed-checkbox"
       },
       {
-        "name": "district",
+        "name": "region",
         "insights": ["customers", "district"]
       }
     ],
