@@ -9,14 +9,14 @@ require('dotenv').config();
 const promptSchema = [
   {
     name: 'createTwilioResources',
-    description: 'Run createTwilioResources script?',
+    description: 'Run createTwilioResources script? (y/n)',
     required: true,
     pattern: /Y|N/gi,
     message: 'Type Y (yes) or N (no)',
   },
   {
     name: 'setupTwilioServerless',
-    description: 'Run setupTwilioServerless script?',
+    description: 'Run setupTwilioServerless script? (y/n)',
     required: true,
     pattern: /Y|N/gi,
     message: 'Type Y (yes) or N (no)',

@@ -35,7 +35,7 @@ const checkWorkflowInSync = async () => {
     environment: 'Development',
     shortEnvironment: 'DEV',
     helpline: 'Aselo',
-    shortHelpline: 'ASs',
+    shortHelpline: 'AS',
   };
 
   const response = await fetch(
