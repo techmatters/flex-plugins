@@ -53,7 +53,7 @@ async function main() {
     if (promptResult.createTwilioResources === 'y') {
       logSuccess('Running createTwilioResources script..');
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      // const twilioResources = await createTwilioResources(input);
+      const twilioResources = await createTwilioResources(input);
     }
 
     if (promptResult.setupTwilioServerless === 'y') {
