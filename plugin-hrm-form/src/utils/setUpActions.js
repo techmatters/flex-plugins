@@ -91,7 +91,7 @@ export const initializeContactForm = payload => {
   const { currentDefinitionVersion } = Manager.getInstance().store.getState()[namespace][configurationBase];
 
   Manager.getInstance().store.dispatch(
-    GeneralActions.initializeContactState(currentDefinitionVersion.tabbedForms)(payload.task.taskSid),
+    GeneralActions.initializeContactState(currentDefinitionVersion)(payload.task.taskSid),
   );
 };
 
