@@ -363,7 +363,7 @@ const Case: React.FC<Props> = props => {
   const fullName = splitFullName(name);
   const categories = getCategories(firstConnectedContact);
   const { createdAt, updatedAt, twilioWorkerId, status, info } = connectedCase || {};
-  const { workerSid, isSupervisor } = getConfig(); // -- Gets the current counselor that is using the application.
+  const { workerSid, featureFlags } = getConfig();
   const caseCounselor = counselorsHash[twilioWorkerId];
   const currentCounselor = counselorsHash[workerSid];
   const openedDate = getLocaleDateTime(createdAt);
@@ -502,14 +502,16 @@ const Case: React.FC<Props> = props => {
                 definitionVersion={definitionVersion}
               />
             </Box>
-            <Box marginLeft="25px" marginTop="25px">
-              <Documents
-                documents={documents}
-                can={can}
-                onClickAddDocument={onClickAddDocument}
-                onClickView={onClickViewDocument}
-              />
-            </Box>
+            {featureFlags.enable_upload_documents && (
+              <Box marginLeft="25px" marginTop="25px">
+                <Documents
+                  documents={documents}
+                  can={can}
+                  onClickAddDocument={onClickAddDocument}
+                  onClickView={onClickViewDocument}
+                />
+              </Box>
+            )}
             <Box marginLeft="25px" marginTop="25px">
               <CaseSummary task={props.task} readonly={!can(PermissionActions.EDIT_CASE_SUMMARY)} />
             </Box>
