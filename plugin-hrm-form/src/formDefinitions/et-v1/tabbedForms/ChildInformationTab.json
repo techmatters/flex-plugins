@@ -69,8 +69,8 @@
     "type": "input"
   },
   {
-    "name": "district",
-    "label": "District",
+    "name": "region",
+    "label": "Region",
     "type": "select",
     "options": [
       { "value": "", "label": "" },
@@ -92,8 +92,7 @@
   {
     "name": "phone1",
     "label": "Phone #1",
-    "type": "input",
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "type": "input"
   },
   {
     "name": "language",
@@ -194,8 +193,8 @@
     ]
   },
   {
-    "name": "region",
-    "label": "Region",
+    "name": "area",
+    "label": "Area",
     "type": "select",
     "options": [
       { "value": "Unknown", "label": "" },

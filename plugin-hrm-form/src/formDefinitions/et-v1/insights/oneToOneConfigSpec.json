@@ -54,7 +54,7 @@
         "type": "mixed-checkbox"
       },
       {
-        "name": "district",
+        "name": "region",
         "insights": ["customers", "district"]
       }
     ],
@@ -111,7 +111,7 @@
         "insights": ["conversations", "in_business_hours"]
       },
       {
-        "name": "region",
+        "name": "location",
         "insights": ["customers", "market_segment"]
       }
     ],
