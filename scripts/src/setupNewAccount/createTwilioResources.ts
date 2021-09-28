@@ -11,20 +11,12 @@
  *  ENVIRONMENT=<Target environment, one of Development, Staging or Production>
  */
 import twilio from 'twilio';
-import { saveSSMParameter } from './helpers/ssm';
-import { createS3Bucket } from './helpers/s3';
-import { logError, logSuccess, logWarning } from './helpers/log';
-
-require('dotenv').config();
+import { saveSSMParameter } from '../helpers/ssm';
+import { createS3Bucket } from '../helpers/s3';
+import { logError, logSuccess, logWarning } from '../helpers/log';
+import { ScriptsInput } from './types';
 
 const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-
-type ConstantState = {
-  helpline: string;
-  shortHelpline: string;
-  environment: string;
-  shortEnvironment: string;
-};
 
 type DynamicState = {
   workspaceSid?: string;
@@ -45,7 +37,7 @@ type DynamicState = {
   operatingInfoKey?: string;
 };
 
-type State = ConstantState & DynamicState;
+type State = ScriptsInput & DynamicState;
 
 /**
  * SSM (AWS Parameter Store) related functions
@@ -116,7 +108,9 @@ const getSSMTags = (state: State): AWS.SSM.TagList => [
 
 const saveStateKeyToSSM = (key: keyof DynamicState) => async (state: State) => {
   const value = state[key];
-  if (value === null || value === undefined) throw new Error(`${key} key missing in state while trying to save SSM parameter.`);
+  if (value === null || value === undefined) {
+    throw new Error(`${key} key missing in state while trying to save SSM parameter.`);
+  }
 
   const name = getSSMNameFunction[key](state);
   const description = getSSMDescriptionFunction[key](state);
@@ -144,7 +138,7 @@ const saveOperatingInfoKeyToSSM = saveStateKeyToSSM('operatingInfoKey');
 /**
  * Twilio resources related functions
  */
-const fetchFlexWorkspace = async (state: State): Promise<State> => {
+const fetchFlexWorkspace = async (state: State) => {
   const ws = await client.taskrouter.workspaces.list();
   const workspace = ws.find((e) => e.friendlyName === 'Flex Task Assignment');
 
@@ -156,7 +150,7 @@ const fetchFlexWorkspace = async (state: State): Promise<State> => {
   return { ...state, workspaceSid: workspace?.sid };
 };
 
-const fetchFlexProxyService = async (state: State): Promise<State> => {
+const fetchFlexProxyService = async (state: State) => {
   const ps = await client.proxy.services.list();
   const proxy = ps.find((e) => e.uniqueName === 'Flex Proxy Service');
 
@@ -166,7 +160,7 @@ const fetchFlexProxyService = async (state: State): Promise<State> => {
   return { ...state, flexProxyServiceSid: proxy.sid };
 };
 
-const createTaskQueue = async (state: State): Promise<State> => {
+const createTaskQueue = async (state: State) => {
   if (!state.workspaceSid) throw new Error('state.workspaceSid missing at createTaskQueue');
 
   const q = await client.taskrouter.workspaces(state.workspaceSid).taskQueues.create({
@@ -178,7 +172,7 @@ const createTaskQueue = async (state: State): Promise<State> => {
   return { ...state, taskQueueSid: q.sid };
 };
 
-const createWorkflow = async (state: State): Promise<State> => {
+const createWorkflow = async (state: State) => {
   if (!state.workspaceSid) throw new Error('state.workspaceSid missing at createWorkflow');
   if (!state.taskQueueSid) throw new Error('state.taskQueueSid missing at createWorkflow');
 
@@ -207,7 +201,7 @@ const createWorkflow = async (state: State): Promise<State> => {
   return { ...state, workflowSid: workflow.sid };
 };
 
-const createSyncService = async (state: State): Promise<State> => {
+const createSyncService = async (state: State) => {
   const service = await client.sync.services.create({
     friendlyName: 'Shared State Service ',
   });
@@ -216,21 +210,21 @@ const createSyncService = async (state: State): Promise<State> => {
   return { ...state, syncServiceSid: service.sid };
 };
 
-const createAPIKey = async (state: State): Promise<State> => {
+const createAPIKey = async (state: State) => {
   const key = await client.newKeys.create({ friendlyName: 'Shared State Service' });
 
   logSuccess(`Twilio resource: Succesfully created API key ${key.sid}`);
   return { ...state, apiKeySid: key.sid, apiKeySecret: key.secret };
 };
 
-const createHrmStaticAPIKey = async (state: State): Promise<State> => {
+const createHrmStaticAPIKey = async (state: State) => {
   const key = await client.newKeys.create({ friendlyName: 'hrm-static-key' });
 
   logSuccess(`Twilio resource: Succesfully created HRM static API key ${key.sid}`);
   return { ...state, hrmStaticApiKeySid: key.sid, hrmStaticApiKeySecret: key.secret };
 };
 
-const fetchChatService = async (state: State): Promise<State> => {
+const fetchChatService = async (state: State) => {
   const ss = await client.chat.services.list();
   const service = ss.find((e) => e.friendlyName === 'Flex Chat Service');
 
@@ -240,7 +234,7 @@ const fetchChatService = async (state: State): Promise<State> => {
   return { ...state, chatServiceSid: service.sid };
 };
 
-const createSurveyTaskQueue = async (state: State): Promise<State> => {
+const createSurveyTaskQueue = async (state: State) => {
   if (!state.workspaceSid) throw new Error('state.workspaceSid missing at createSurveyTaskQueue');
 
   const q = await client.taskrouter.workspaces(state.workspaceSid).taskQueues.create({
@@ -252,7 +246,7 @@ const createSurveyTaskQueue = async (state: State): Promise<State> => {
   return { ...state, surveyTaskQueueSid: q.sid };
 };
 
-const createSurveyWorkflow = async (state: State): Promise<State> => {
+const createSurveyWorkflow = async (state: State) => {
   if (!state.workspaceSid) throw new Error('state.workspaceSid missing at createSurveyWorkflow');
   if (!state.surveyTaskQueueSid)
     throw new Error('state.surveyTaskQueueSid missing at createSurveyWorkflow');
@@ -280,7 +274,7 @@ const createSurveyWorkflow = async (state: State): Promise<State> => {
   return { ...state, surveyWorkflowSid: workflow.sid };
 };
 
-const createSurveyTaskChannel = async (state: State): Promise<State> => {
+const createSurveyTaskChannel = async (state: State) => {
   if (!state.workspaceSid) throw new Error('state.workspaceSid missing at createSurveyTaskChannel');
 
   const taskChannel = await client.taskrouter.workspaces(state.workspaceSid).taskChannels.create({
@@ -292,7 +286,8 @@ const createSurveyTaskChannel = async (state: State): Promise<State> => {
   return { ...state, surveyTaskChannelSid: taskChannel.sid };
 };
 
-const getDocsBucketName = (): string => `tl-aselo-docs-${process.env.SHORT_HELPLINE?.toLowerCase()}-${process.env.ENVIRONMENT?.toLowerCase()}`;
+export const getDocsBucketName = (): string =>
+  `tl-aselo-docs-${process.env.SHORT_HELPLINE?.toLowerCase()}-${process.env.ENVIRONMENT?.toLowerCase()}`;
 
 const createDocsBucket = async (state: State): Promise<State> => {
   const bucketName = getDocsBucketName();
@@ -305,7 +300,7 @@ const createDocsBucket = async (state: State): Promise<State> => {
 /**
  * Cleanup functions
  */
-const removeAPIKey = async (state: State): Promise<State> => {
+const removeAPIKey = async (state: State) => {
   const { apiKeySid, apiKeySecret, ...rest } = state;
   if (apiKeySid) {
     await client.keys.get(apiKeySid).remove();
@@ -315,7 +310,7 @@ const removeAPIKey = async (state: State): Promise<State> => {
   return rest;
 };
 
-const removeHrmStaticAPIKey = async (state: State): Promise<State> => {
+const removeHrmStaticAPIKey = async (state: State) => {
   const { hrmStaticApiKeySid, hrmStaticApiKeySecret, ...rest } = state;
   if (hrmStaticApiKeySid) {
     await client.keys.get(hrmStaticApiKeySid).remove();
@@ -325,7 +320,7 @@ const removeHrmStaticAPIKey = async (state: State): Promise<State> => {
   return rest;
 };
 
-const removeSyncService = async (state: State): Promise<State> => {
+const removeSyncService = async (state: State) => {
   const { syncServiceSid, ...rest } = state;
   if (syncServiceSid) {
     await client.sync.services(syncServiceSid).remove();
@@ -335,7 +330,7 @@ const removeSyncService = async (state: State): Promise<State> => {
   return rest;
 };
 
-const removeWorkflow = async (state: State): Promise<State> => {
+const removeWorkflow = async (state: State) => {
   const { workflowSid, ...rest } = state;
   if (!state.workspaceSid)
     throw new Error(
@@ -350,7 +345,7 @@ const removeWorkflow = async (state: State): Promise<State> => {
   return rest;
 };
 
-const removeTaskQueue = async (state: State): Promise<State> => {
+const removeTaskQueue = async (state: State) => {
   const { taskQueueSid, ...rest } = state;
   if (!state.workspaceSid)
     throw new Error(
@@ -365,7 +360,7 @@ const removeTaskQueue = async (state: State): Promise<State> => {
   return rest;
 };
 
-const removeSurveyTaskChannel = async (state: State): Promise<State> => {
+const removeSurveyTaskChannel = async (state: State) => {
   const { surveyTaskChannelSid, ...rest } = state;
   if (!state.workspaceSid)
     throw new Error(
@@ -383,7 +378,7 @@ const removeSurveyTaskChannel = async (state: State): Promise<State> => {
   return rest;
 };
 
-const removeSurveyWorkflow = async (state: State): Promise<State> => {
+const removeSurveyWorkflow = async (state: State) => {
   const { surveyWorkflowSid, ...rest } = state;
   if (!state.workspaceSid)
     throw new Error(
@@ -398,7 +393,7 @@ const removeSurveyWorkflow = async (state: State): Promise<State> => {
   return rest;
 };
 
-const removeSurveyTaskQueue = async (state: State): Promise<State> => {
+const removeSurveyTaskQueue = async (state: State) => {
   const { surveyTaskQueueSid, ...rest } = state;
   if (!state.workspaceSid)
     throw new Error(
@@ -413,7 +408,7 @@ const removeSurveyTaskQueue = async (state: State): Promise<State> => {
   return rest;
 };
 
-const cleanupPartialResources = async (state: State): Promise<void> => {
+const cleanupPartialResources = async (state: State & DynamicState): Promise<void> => {
   let partialState = state;
 
   await [
@@ -445,88 +440,74 @@ const cleanupPartialResources = async (state: State): Promise<void> => {
 };
 
 /**
- * Naming convenyion we use for the envionments.
+ * Sequence of functions to fetch/create Twilio resources and save the required AWS Parameter Store values.
  */
-const environments = ['Development', 'Staging', 'Production'];
-const shortEnvironments = { Development: 'DEV', Staging: 'STG', Production: 'PROD' } as {
-  [env: string]: string;
-};
+const createResourcesFunctions = [
+  // fetchFlexWorkspace,
+  // fetchFlexProxyService,
+  // createTaskQueue,
+  // createWorkflow,
+  // createSyncService,
+  // createAPIKey,
+  // createHrmStaticAPIKey,
+  // createSurveyTaskQueue,
+  // createSurveyWorkflow,
+  // createSurveyTaskChannel,
+  // createDocsBucket,
+  // fetchChatService,
+  // saveWorkspaceToSSM,
+  // saveWorkflowToSSM,
+  // saveSyncServiceToSSM,
+  // saveAPIKeyToSSM,
+  // saveAPISecretToSSM,
+  // saveChatServiceToSSM,
+  // saveFlexProxyToSSM,
+  // saveSurveyWorkflowToSSM,
+  // saveHrmStaticKeyToSSM,
+  // saveDocsBucketToSSM,
+  savePostSurveyBotChatUrlToSSM,
+  // saveOperatingInfoKeyToSSM,
+];
 
-async function main() {
-  if (!process.env.AWS_ACCESS_KEY_ID) throw new Error('AWS_ACCESS_KEY_ID missing, check env vars.');
-  if (!process.env.AWS_SECRET_ACCESS_KEY)
-    throw new Error('AWS_SECRET_ACCESS_KEY missing, check env vars.');
-  if (!process.env.TWILIO_ACCOUNT_SID)
-    throw new Error('TWILIO_ACCOUNT_SID missing, check env vars.');
-  if (!process.env.TWILIO_AUTH_TOKEN) throw new Error('TWILIO_AUTH_TOKEN missing, check env vars.');
-  if (!process.env.HELPLINE) throw new Error('HELPLINE missing, check env vars.');
-  if (!process.env.SHORT_HELPLINE) throw new Error('SHORT_HELPLINE missing, check env vars.');
-  if (!process.env.ENVIRONMENT) throw new Error('ENVIRONMENT missing, check env vars.');
-  if (!environments.includes(process.env.ENVIRONMENT))
-    throw new Error(
-      `Invalid ENVIRONMENT provided, it must be one of ${environments}, check env vars.`,
-    );
-
-  const initialState: State = {
-    helpline: process.env.HELPLINE,
-    shortHelpline: process.env.SHORT_HELPLINE,
-    environment: process.env.ENVIRONMENT,
-    shortEnvironment: shortEnvironments[process.env.ENVIRONMENT],
+export const createTwilioResources = async (input: ScriptsInput) => {
+  const initialState: State & DynamicState = {
+    ...input,
     docsBucket: getDocsBucketName(),
     postSurveyBotChatUrl: '""',
     operatingInfoKey: 'aselo-dev',
   };
-
   // partialState will be used to cleanup inconsistent state of partially created resources, in case any step goes wrong
   let partialState = initialState;
 
   try {
     // finalState will have a valid state only if all promises are resolved succesfully
-    const finalState = await [
-      fetchFlexWorkspace,
-      fetchFlexProxyService,
-      createTaskQueue,
-      createWorkflow,
-      createSyncService,
-      createAPIKey,
-      createHrmStaticAPIKey,
-      createSurveyTaskQueue,
-      createSurveyWorkflow,
-      createSurveyTaskChannel,
-      createDocsBucket,
-      fetchChatService,
-      saveWorkspaceToSSM,
-      saveWorkflowToSSM,
-      saveSyncServiceToSSM,
-      saveAPIKeyToSSM,
-      saveAPISecretToSSM,
-      saveChatServiceToSSM,
-      saveFlexProxyToSSM,
-      saveSurveyWorkflowToSSM,
-      saveHrmStaticKeyToSSM,
-      saveDocsBucketToSSM,
-      savePostSurveyBotChatUrlToSSM,
-      saveOperatingInfoKeyToSSM,
-    ].reduce(async (accumPromise, func) => {
-      try {
-        const accum = await accumPromise;
-        const newState = await func(accum);
-        partialState = newState;
-        return newState;
-      } catch (err) {
-        return Promise.reject(err); // Stop the promise chain rejecting all subsequent ones
-      }
-    }, Promise.resolve(initialState));
+    const finalState = await createResourcesFunctions.reduce<Promise<State>>(
+      async (accumPromise, func) => {
+        try {
+          const accum = await accumPromise;
+          const newState = await func(accum);
+          partialState = newState;
+          return newState;
+        } catch (err) {
+          return Promise.reject(err); // Stop the promise chain rejecting all subsequent ones
+        }
+      },
+      Promise.resolve(initialState),
+    );
 
+    // Exclude secrets from the final output
     const { apiKeySecret, hrmStaticApiKeySecret, ...output } = finalState;
 
     logSuccess('Process completed succesfully, the output is: ');
     console.log(output);
+
+    return output;
   } catch (err) {
-    logError(err as any);
+    logError(err);
 
-    await cleanupPartialResources(partialState);
+    // await cleanupPartialResources(partialState);
+
+    // Propagate the error
+    throw err;
   }
-}
-
-main();
+};

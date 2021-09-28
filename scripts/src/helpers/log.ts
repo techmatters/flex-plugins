@@ -1,12 +1,10 @@
 /* eslint-disable no-console */
-export const logSuccess = (s: string) => {
-  console.log('\x1b[32m', s);
+const log = (colorString: string) => (s: unknown) => {
+  if (typeof s === 'string') console.log(colorString, s);
+  else if ((s as any).toString) console.log(colorString, (s as any).toString());
+  else console.log(colorString, s);
 };
 
-export const logError = (s: string) => {
-  console.log('\x1b[31m', s);
-};
-
-export const logWarning = (s: string) => {
-  console.log('\x1b[33m', s);
-};
+export const logSuccess = log('\x1b[32m');
+export const logError = log('\x1b[31m');
+export const logWarning = log('\x1b[33m');
