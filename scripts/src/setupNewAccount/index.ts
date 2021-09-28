@@ -62,7 +62,7 @@ async function main() {
       const twilioServerless = await setupTwilioServerless(input);
     }
 
-    logSuccess('Setup script completed succesfully!');
+    logSuccess('Setup script completed successfully!');
   });
 }
 

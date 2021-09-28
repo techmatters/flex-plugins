@@ -414,7 +414,7 @@ const cleanupPartialResources = async (state: State): Promise<void> => {
 };
 
 /**
- * Secuence of functions to fetch/create Twilio resources and save the required AWS Parameter Store values.
+ * Sequence of functions to fetch/create Twilio resources and save the required AWS Parameter Store values.
  */
 const createResourcesFunctions = [
   fetchFlexWorkspace,
