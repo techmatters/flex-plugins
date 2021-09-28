@@ -12,6 +12,7 @@
  */
 import twilio from 'twilio';
 import { saveSSMParameter } from './helpers/ssm';
+import { createS3Bucket } from './helpers/s3';
 import { logError, logSuccess, logWarning } from './helpers/log';
 
 require('dotenv').config();
@@ -39,6 +40,9 @@ type DynamicState = {
   surveyTaskChannelSid?: string;
   hrmStaticApiKeySid?: string;
   hrmStaticApiKeySecret?: string;
+  docsBucket?: string;
+  postSurveyBotChatUrl?: string;
+  operatingInfoKey?: string;
 };
 
 type State = ConstantState & DynamicState;
@@ -72,6 +76,9 @@ const getSSMNameFunction: GetSSMStringFunctions = {
   flexProxyServiceSid: getSSMName('FLEX_PROXY_SERVICE_SID'),
   surveyWorkflowSid: getSSMName('SURVEY_WORKFLOW_SID'),
   hrmStaticApiKeySecret: getSSMName('HRM_STATIC_KEY'),
+  docsBucket: getSSMName('S3_BUCKET_DOCS'),
+  postSurveyBotChatUrl: getSSMName('POST_SURVEY_BOT_CHAT_URL'),
+  operatingInfoKey: getSSMName('OPERATING_INFO_KEY'),
   taskQueueSid: throwWithKey('taskQueueSid'),
   surveyTaskChannelSid: throwWithKey('surveyTaskChannelSid'),
   hrmStaticApiKeySid: throwWithKey('hrmStaticApiKeySid'),
@@ -93,6 +100,9 @@ const getSSMDescriptionFunction: GetSSMStringFunctions = {
   hrmStaticApiKeySecret: getSSMDescription(
     'Twilio account - HRM static secret to perform backend calls',
   ),
+  docsBucket: getSSMDescription('Twilio account - S3 Bucket for storing documents'),
+  postSurveyBotChatUrl: getSSMDescription('Twilio account - Post Survey bot chat url'),
+  operatingInfoKey: getSSMDescription('Twilio account - Operating Key info'),
   taskQueueSid: throwWithKey('taskQueueSid'),
   surveyTaskChannelSid: throwWithKey('surveyTaskChannelSid'),
   hrmStaticApiKeySid: throwWithKey('hrmStaticApiKeySid'),
@@ -106,7 +116,7 @@ const getSSMTags = (state: State): AWS.SSM.TagList => [
 
 const saveStateKeyToSSM = (key: keyof DynamicState) => async (state: State) => {
   const value = state[key];
-  if (!value) throw new Error(`${key} key missing in state while trying to save SSM parameter.`);
+  if (value === null || value === undefined) throw new Error(`${key} key missing in state while trying to save SSM parameter.`);
 
   const name = getSSMNameFunction[key](state);
   const description = getSSMDescriptionFunction[key](state);
@@ -127,6 +137,9 @@ const saveChatServiceToSSM = saveStateKeyToSSM('chatServiceSid');
 const saveFlexProxyToSSM = saveStateKeyToSSM('flexProxyServiceSid');
 const saveSurveyWorkflowToSSM = saveStateKeyToSSM('surveyWorkflowSid');
 const saveHrmStaticKeyToSSM = saveStateKeyToSSM('hrmStaticApiKeySecret');
+const saveDocsBucketToSSM = saveStateKeyToSSM('docsBucket');
+const savePostSurveyBotChatUrlToSSM = saveStateKeyToSSM('postSurveyBotChatUrl');
+const saveOperatingInfoKeyToSSM = saveStateKeyToSSM('operatingInfoKey');
 
 /**
  * Twilio resources related functions
@@ -277,6 +290,16 @@ const createSurveyTaskChannel = async (state: State): Promise<State> => {
 
   logSuccess(`Twilio resource: Succesfully created survey task channel ${taskChannel.sid}`);
   return { ...state, surveyTaskChannelSid: taskChannel.sid };
+};
+
+const getDocsBucketName = (): string => `tl-aselo-docs-${process.env.SHORT_HELPLINE?.toLowerCase()}-${process.env.ENVIRONMENT?.toLowerCase()}`;
+
+const createDocsBucket = async (state: State): Promise<State> => {
+  const bucketName = getDocsBucketName();
+  await createS3Bucket(bucketName);
+
+  logSuccess(`AWS S3 Bucket: Succesfully created ${bucketName}`);
+  return state;
 };
 
 /**
@@ -449,6 +472,9 @@ async function main() {
     shortHelpline: process.env.SHORT_HELPLINE,
     environment: process.env.ENVIRONMENT,
     shortEnvironment: shortEnvironments[process.env.ENVIRONMENT],
+    docsBucket: getDocsBucketName(),
+    postSurveyBotChatUrl: '""',
+    operatingInfoKey: 'aselo-dev',
   };
 
   // partialState will be used to cleanup inconsistent state of partially created resources, in case any step goes wrong
@@ -467,6 +493,7 @@ async function main() {
       createSurveyTaskQueue,
       createSurveyWorkflow,
       createSurveyTaskChannel,
+      createDocsBucket,
       fetchChatService,
       saveWorkspaceToSSM,
       saveWorkflowToSSM,
@@ -477,6 +504,9 @@ async function main() {
       saveFlexProxyToSSM,
       saveSurveyWorkflowToSSM,
       saveHrmStaticKeyToSSM,
+      saveDocsBucketToSSM,
+      savePostSurveyBotChatUrlToSSM,
+      saveOperatingInfoKeyToSSM,
     ].reduce(async (accumPromise, func) => {
       try {
         const accum = await accumPromise;
