@@ -443,30 +443,30 @@ const cleanupPartialResources = async (state: State & DynamicState): Promise<voi
  * Sequence of functions to fetch/create Twilio resources and save the required AWS Parameter Store values.
  */
 const createResourcesFunctions = [
-  // fetchFlexWorkspace,
-  // fetchFlexProxyService,
-  // createTaskQueue,
-  // createWorkflow,
-  // createSyncService,
-  // createAPIKey,
-  // createHrmStaticAPIKey,
-  // createSurveyTaskQueue,
-  // createSurveyWorkflow,
-  // createSurveyTaskChannel,
-  // createDocsBucket,
-  // fetchChatService,
-  // saveWorkspaceToSSM,
-  // saveWorkflowToSSM,
-  // saveSyncServiceToSSM,
-  // saveAPIKeyToSSM,
-  // saveAPISecretToSSM,
-  // saveChatServiceToSSM,
-  // saveFlexProxyToSSM,
-  // saveSurveyWorkflowToSSM,
-  // saveHrmStaticKeyToSSM,
-  // saveDocsBucketToSSM,
+  fetchFlexWorkspace,
+  fetchFlexProxyService,
+  createTaskQueue,
+  createWorkflow,
+  createSyncService,
+  createAPIKey,
+  createHrmStaticAPIKey,
+  createSurveyTaskQueue,
+  createSurveyWorkflow,
+  createSurveyTaskChannel,
+  createDocsBucket,
+  fetchChatService,
+  saveWorkspaceToSSM,
+  saveWorkflowToSSM,
+  saveSyncServiceToSSM,
+  saveAPIKeyToSSM,
+  saveAPISecretToSSM,
+  saveChatServiceToSSM,
+  saveFlexProxyToSSM,
+  saveSurveyWorkflowToSSM,
+  saveHrmStaticKeyToSSM,
+  saveDocsBucketToSSM,
   savePostSurveyBotChatUrlToSSM,
-  // saveOperatingInfoKeyToSSM,
+  saveOperatingInfoKeyToSSM,
 ];
 
 export const createTwilioResources = async (input: ScriptsInput) => {
@@ -505,7 +505,7 @@ export const createTwilioResources = async (input: ScriptsInput) => {
   } catch (err) {
     logError(err);
 
-    // await cleanupPartialResources(partialState);
+    await cleanupPartialResources(partialState);
 
     // Propagate the error
     throw err;
