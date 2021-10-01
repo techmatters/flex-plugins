@@ -12,6 +12,7 @@
  */
 import twilio from 'twilio';
 import { saveSSMParameter } from '../helpers/ssm';
+import { createS3Bucket } from '../helpers/s3';
 import { logError, logSuccess, logWarning } from '../helpers/log';
 import { ScriptsInput } from './types';
 
@@ -31,6 +32,9 @@ type DynamicState = {
   surveyTaskChannelSid?: string;
   hrmStaticApiKeySid?: string;
   hrmStaticApiKeySecret?: string;
+  docsBucket?: string;
+  postSurveyBotChatUrl?: string;
+  operatingInfoKey?: string;
 };
 
 type State = ScriptsInput & DynamicState;
@@ -64,6 +68,9 @@ const getSSMNameFunction: GetSSMStringFunctions = {
   flexProxyServiceSid: getSSMName('FLEX_PROXY_SERVICE_SID'),
   surveyWorkflowSid: getSSMName('SURVEY_WORKFLOW_SID'),
   hrmStaticApiKeySecret: getSSMName('HRM_STATIC_KEY'),
+  docsBucket: getSSMName('S3_BUCKET_DOCS'),
+  postSurveyBotChatUrl: getSSMName('POST_SURVEY_BOT_CHAT_URL'),
+  operatingInfoKey: getSSMName('OPERATING_INFO_KEY'),
   taskQueueSid: throwWithKey('taskQueueSid'),
   surveyTaskChannelSid: throwWithKey('surveyTaskChannelSid'),
   hrmStaticApiKeySid: throwWithKey('hrmStaticApiKeySid'),
@@ -85,6 +92,9 @@ const getSSMDescriptionFunction: GetSSMStringFunctions = {
   hrmStaticApiKeySecret: getSSMDescription(
     'Twilio account - HRM static secret to perform backend calls',
   ),
+  docsBucket: getSSMDescription('Twilio account - S3 Bucket for storing documents'),
+  postSurveyBotChatUrl: getSSMDescription('Twilio account - Post Survey bot chat url'),
+  operatingInfoKey: getSSMDescription('Twilio account - Operating Key info'),
   taskQueueSid: throwWithKey('taskQueueSid'),
   surveyTaskChannelSid: throwWithKey('surveyTaskChannelSid'),
   hrmStaticApiKeySid: throwWithKey('hrmStaticApiKeySid'),
@@ -119,6 +129,9 @@ const saveChatServiceToSSM = saveStateKeyToSSM('chatServiceSid');
 const saveFlexProxyToSSM = saveStateKeyToSSM('flexProxyServiceSid');
 const saveSurveyWorkflowToSSM = saveStateKeyToSSM('surveyWorkflowSid');
 const saveHrmStaticKeyToSSM = saveStateKeyToSSM('hrmStaticApiKeySecret');
+const saveDocsBucketToSSM = saveStateKeyToSSM('docsBucket');
+const savePostSurveyBotChatUrlToSSM = saveStateKeyToSSM('postSurveyBotChatUrl');
+const saveOperatingInfoKeyToSSM = saveStateKeyToSSM('operatingInfoKey');
 
 /**
  * Twilio resources related functions
@@ -269,6 +282,17 @@ const createSurveyTaskChannel = async (state: State) => {
 
   logSuccess(`Twilio resource: Succesfully created survey task channel ${taskChannel.sid}`);
   return { ...state, surveyTaskChannelSid: taskChannel.sid };
+};
+
+export const getDocsBucketName = (shortHelpline: string, environment: string): string =>
+  `tl-aselo-docs-${shortHelpline.toLowerCase()}-${environment.toLowerCase()}`;
+
+const createDocsBucket = async (state: State): Promise<State> => {
+  const bucketName = getDocsBucketName(state.shortHelpline, state.environment);
+  await createS3Bucket(bucketName);
+
+  logSuccess(`AWS S3 Bucket: Succesfully created ${bucketName}`);
+  return { ...state, docsBucket: bucketName };
 };
 
 /**
@@ -427,6 +451,7 @@ const createResourcesFunctions = [
   createSurveyTaskQueue,
   createSurveyWorkflow,
   createSurveyTaskChannel,
+  createDocsBucket,
   fetchChatService,
   saveWorkspaceToSSM,
   saveWorkflowToSSM,
@@ -437,10 +462,18 @@ const createResourcesFunctions = [
   saveFlexProxyToSSM,
   saveSurveyWorkflowToSSM,
   saveHrmStaticKeyToSSM,
+  saveDocsBucketToSSM,
+  savePostSurveyBotChatUrlToSSM,
+  saveOperatingInfoKeyToSSM,
 ];
 
 export const createTwilioResources = async (input: ScriptsInput) => {
-  const initialState = { ...input };
+  const initialState: State = {
+    ...input,
+    // Placeholder variables. Maybe move them somewhere else, Gian?
+    postSurveyBotChatUrl: '""',
+    operatingInfoKey: 'aselo-dev',
+  };
   // partialState will be used to cleanup inconsistent state of partially created resources, in case any step goes wrong
   let partialState = initialState;
 
