@@ -36,7 +36,7 @@
         { "value": "aLittle", "label": "pouco" },
         { "value": "medium", "label": "médio" },
         { "value": "aLot", "label": "muito" },
-        [ "value": "n/a",  "label": "N/A" }
+        { "value": "n/a",  "label": "N/A" }
       ],
         "required": { "value": true, "message": "RequiredFieldError" }
     },
