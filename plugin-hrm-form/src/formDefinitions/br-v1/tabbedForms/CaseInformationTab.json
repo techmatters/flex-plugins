@@ -6,68 +6,53 @@
       "required": { "value": true, "message": "RequiredFieldError" }
     },
     {
-      "name": "repeatCaller",
-      "label": "Repeat Caller?",
-      "type": "mixed-checkbox"
-    },
-    {
       "name": "actionTaken",
-      "label": "Action Taken",
+      "label": "Providências tomadas",
       "type": "select",
       "options": [
         { "value": "Unknown", "label": "" },
-        { "value": "Direct interventions by the child helpline", "label": "Direct interventions by the child helpline" },
-        { "value": "Recommendations of resources", "label": "Recommendations of resources" },
-        { "value": "Referrals to child protection agencies", "label": "Referrals to child protection agencies" },
-        { "value": "Referrals to general healthcare professionals", "label": "Referrals to general healthcare services" },
-        { "value": "Referrals to law enforcement agencies", "label": "Referrals to law enforcement agencies" },
-        { "value": "Referrals to mental health services", "label": "Referrals to mental health services" },
-        { "value": "Referrals to other organisations", "label": "Referrals to other organisations" },
-        { "value": "Referrals to school counsellors", "label": "Referrals to school counsellors" },
-        { "value": "Reports to Child Sexual Abuse Material", "label": "Reports to Child Sexual Abuse Material" },
-        { "value": "Other", "label": "Other" }
-      ]
+        { "value": "Recommendations", "label": "Recomendações" },
+        { "value": "Referrals to school counsellors", "label": "Encaminhamento para orientação/coordenação Escola" },
+        { "value": "Referrals to child protection agencies", "label": "Encaminhamento para Conselhos Tutelares" },
+        { "value": "Referrals to law enforcement agencies", "label": "Encaminhamento para Ministério Público Estadual " },
+        { "value": "Referrals to federal public ministry", "label": "Encaminhamento para Ministério Público Federal " }, 
+        { "value": "Referrals to trusted partner/flagger", "label": "Encaminhamento para plataformas como trusted partner/trusted flagger" },
+        { "value": "Referrals to NCII Pilot", "label": "Encaminhamento para Piloto do Facebook" },
+        { "value": "Referrals to SaferNet Hotline", "label": "Encaminhamento para CND da SaferNet" },
+        { "value": "Indication of nearest police station", "label":  "Indicação de delegacia civil mais próxima" },
+        { "value": "Indication of specialized police station", "label":  "Indicação de delegacias especializadas" }, 
+        { "value": "Referrals to other organisations", "label": "Encaminhamento para outras organizações" },
+        { "value": "Referrals to Mental Health Services", "label": "Indicação de Serviços de Saúde Mental ou assistência " },
+        { "value": "Other", "label": "Outros" }
+      ],
+        "required": { "value": true, "message": "RequiredFieldError" }
     },
     {
-      "name": "howDidYouKnowAboutOurLine",
-      "label": "How did you know about our line/number",
+      "name": "hasConversationEvolved",
+      "label": "Houve uma evolução da conversa?",
       "type": "select",
       "options": [
-        { "value": "Unknown", "label": "" },
-        { "value": "Radio", "label": "Radio" },
-        { "value": "Television", "label": "Television" },
-        { "value": "School", "label": "School" },
-        { "value": "Community", "label": "Community" },
-        { "value": "Friend", "label": "Friend" },
-        { "value": "Social media", "label": "Social media" },
-        { "value": "Partners", "label": "Partners" },
-        { "value": "Others", "label": "Others" }
-      ]
-    },
-    {
-      "name": "keepConfidential",
-      "label": "Keep confidential?",
-      "type": "checkbox",
-      "initialChecked": true
+        { "value": "no", "label": "Não" },
+        { "value": "aLittle", "label": "pouco" },
+        { "value": "medium", "label": "médio" },
+        { "value": "aLot", "label": "muito" },
+        [ "value": "n/a",  "label": "N/A" }
+      ],
+        "required": { "value": true, "message": "RequiredFieldError" }
     },
     {
       "name": "okForCaseWorkerToCall",
-      "label": "Ok for case worker to call?",
+      "label": "Ok para alguém da equipe contatar?",
       "type": "mixed-checkbox"
     },
     {
       "name": "didYouDiscussRightsWithTheChild",
-      "label": "Did you discuss rights with the child?",
+      "label": "Você discutiu sobre direitos com a criança ou adolescente?",
       "type": "mixed-checkbox"
     },
     {
       "name": "didTheChildFeelWeSolvedTheirProblem",
-      "label": "Did the child feel we solved their problem?",
-      "type": "mixed-checkbox"
-    },
-    {
-      "name": "wouldTheChildRecommendUsToAFriend",
-      "label": "Would the child recommend us to a friend?",
+      "label": "A criança ou adolescente sentiu que o problema foi resolvido?",
       "type": "mixed-checkbox"
     }
   ]
