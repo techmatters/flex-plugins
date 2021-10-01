@@ -15,10 +15,10 @@
     "type": "select",
     "options": [
       { "value": "", "label": "" },
-      { "value": "Boy", "label": "Menino/Garoto/Homem" },
-      { "value": "Girl", "label": "Menina/Garota/Mulher" },
-      { "value": "Non-Binary", "label": "Não-binário" },
-      { "value": "Unknown", "label": "Desconhecido" }
+      { "value": "Menino/Garoto/Homem", "label": "Menino/Garoto/Homem" },
+      { "value": "Menina/Garota/Mulher", "label": "Menina/Garota/Mulher" },
+      { "value": "Não-binário", "label": "Não-binário" },
+      { "value": "Desconhecido", "label": "Desconhecido" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" }
   },
@@ -55,7 +55,7 @@
       { "value": "24", "label": "24" },
       { "value": "25", "label": "25" },
       { "value": ">25", "label": ">25" },
-      { "value": "Unknown", "label": "Desconhecido" }
+      { "value": "Desconhecido", "label": "Desconhecido" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" }
   },
@@ -65,18 +65,18 @@
       "type": "select",
       "options": [
         { "value": "Unknown", "label": "" },
-        { "value": "Caregiver", "label": "Cuidador(a)" },
+        { "value": "Cuidador(a)", "label": "Cuidador(a)" },
         { "value": "Friend", "label": "Friend" },
         { "value": "Grandparent", "label": "Grandparent" },
         { "value": "Neighbour", "label": "Neighbour" },
         { "value": "Parent", "label": "Parent" },
-        { "value": "Other adult known to the child", "label": "Outro adulto não relacionado" },     
-        { "value": "Partner", "label": "Companheiro(a)" },
-        { "value": "Person in a position of responsibility", "label": "Responsável" },
-        { "value": "Sibling", "label": "Irmã(o)" },
-        { "value": "Stranger", "label": "Estranho" },
-        { "value": "Other", "label": "Outros" },
-        { "value": "n/a", "label": "N/A" }
+        { "value": "Outro adulto não relacionado", "label": "Outro adulto não relacionado" },     
+        { "value": "Companheiro(a)", "label": "Companheiro(a)" },
+        { "value": "Responsável", "label": "Responsável" },
+        { "value": "Irmã(o)", "label": "Irmã(o)" },
+        { "value": "Estranho", "label": "Estranho" },
+        { "value": "Outros", "label": "Outros" },
+        { "value": "N/A", "label": "N/A" }
       ],
     "required": { "value": true, "message": "RequiredFieldError" }
   },    
