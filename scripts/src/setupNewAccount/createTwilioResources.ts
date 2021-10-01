@@ -108,9 +108,7 @@ const getSSMTags = (state: State): AWS.SSM.TagList => [
 
 const saveStateKeyToSSM = (key: keyof DynamicState) => async (state: State) => {
   const value = state[key];
-  if (value === null || value === undefined) {
-    throw new Error(`${key} key missing in state while trying to save SSM parameter.`);
-  }
+  if (!value) throw new Error(`${key} key missing in state while trying to save SSM parameter.`);
 
   const name = getSSMNameFunction[key](state);
   const description = getSSMDescriptionFunction[key](state);
@@ -286,15 +284,15 @@ const createSurveyTaskChannel = async (state: State) => {
   return { ...state, surveyTaskChannelSid: taskChannel.sid };
 };
 
-export const getDocsBucketName = (): string =>
-  `tl-aselo-docs-${process.env.SHORT_HELPLINE?.toLowerCase()}-${process.env.ENVIRONMENT?.toLowerCase()}`;
+export const getDocsBucketName = (shortHelpline: string, environment: string): string =>
+  `tl-aselo-docs-${shortHelpline.toLowerCase()}-${environment.toLowerCase()}`;
 
 const createDocsBucket = async (state: State): Promise<State> => {
-  const bucketName = getDocsBucketName();
+  const bucketName = getDocsBucketName(state.shortHelpline, state.environment);
   await createS3Bucket(bucketName);
 
   logSuccess(`AWS S3 Bucket: Succesfully created ${bucketName}`);
-  return state;
+  return { ...state, docsBucket: bucketName };
 };
 
 /**
@@ -408,7 +406,7 @@ const removeSurveyTaskQueue = async (state: State) => {
   return rest;
 };
 
-const cleanupPartialResources = async (state: State & DynamicState): Promise<void> => {
+const cleanupPartialResources = async (state: State): Promise<void> => {
   let partialState = state;
 
   await [
@@ -470,9 +468,9 @@ const createResourcesFunctions = [
 ];
 
 export const createTwilioResources = async (input: ScriptsInput) => {
-  const initialState: State & DynamicState = {
+  const initialState: State = {
     ...input,
-    docsBucket: getDocsBucketName(),
+    // Placeholder variables. Maybe move them somewhere else, Gian?
     postSurveyBotChatUrl: '""',
     operatingInfoKey: 'aselo-dev',
   };
