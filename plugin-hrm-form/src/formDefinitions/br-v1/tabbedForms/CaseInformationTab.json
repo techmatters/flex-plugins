@@ -11,7 +11,7 @@
       "type": "select",
       "options": [
         { "value": "Unknown", "label": "" },
-        { "value": "Recommendations", "label": "Recomendações" },
+        { "value": "Recomendações", "label": "Recomendações" },
         { "value": "Encaminhamento para orientação/coordenação Escola", "label": "Encaminhamento para orientação/coordenação Escola" },
         { "value": "Encaminhamento para Conselhos Tutelares", "label": "Encaminhamento para Conselhos Tutelares" },
         { "value": "Encaminhamento para Ministério Público Estadual", "label": "Encaminhamento para Ministério Público Estadual" },
