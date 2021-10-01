@@ -1,7 +1,7 @@
 [
   {
     "name": "note",
-    "label": "Note",
+    "label": "notas",
     "type": "textarea",
     "placeholder": "Type here to add note...",
     "rows": 20,
