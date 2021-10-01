@@ -2,7 +2,7 @@
   {
     "name": "date",
     "type": "date-input",
-    "label": "Date of Incident",
+    "label": "Data do incidente",
     "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
@@ -11,46 +11,50 @@
     "type": "select",
     "options": [
       { "value": "", "label": "" },
-      { "value": "Ongoing", "label": "Ongoing" },
-      { "value": "Once Off", "label": "Once Off" },
-      { "value": "Other", "label": "Other" }
+      { "value": "Em andamento", "label": "Em andamento" },
+      { "value": "Uma vez", "label": "Uma vez" },
+      { "value": "Outros", "label": "Outros" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
     "name": "location",
-    "label": "Location",
+    "label": "Ambiente",
     "type": "select",
     "options": [
       { "value": "", "label": "" },
-      { "value": "Unknown", "label": "Unknown" },
-      { "value": "School", "label": "School" },
-      { "value": "Home", "label": "Home" },
-      { "value": "Institution", "label": "Institution" },
-      { "value": "Online", "label": "Online" },
-      { "value": "Public place", "label": "Public place" },
-      { "value": "Other", "label": "Other" }
+      { "value": "Desconhecido", "label": "Desconhecido" },
+      { "value": "Aplicativos de mensagens", "label": "Aplicativos de mensagens" },
+      { "value": "Casa (própria)", "label": "Casa (própria)" },
+      { "value": "Casa (terceiros)", "label": "Casa (terceiros)" },
+      { "value": "Escola/Instituição de Ensino", "label": "Escola/Instituição de Ensino" },
+      { "value": "Redes Sociais", "label": "Redes Sociais" },
+      { "value": "Email", "label": "Email" },
+      { "value": "Sites de jogos", "label": "Sites de jogos" },
+      { "value": "Rua/Espaços Públicos", "label": "Rua/Espaços Públicos" },
+      { "value": "Outros", "label": "Outros" },
+      { "value": "N/A", "label": "N/A" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
     "name": "isCaregiverAware",
-    "label": "Is caregiver aware?",
+    "label": "Responsável/cuidador esrá ciente?",
     "type": "mixed-checkbox"
   },
   {
     "name": "incidentWitnessed",
-    "label": "Was the incident witnessed by anyone?",
+    "label": "O incidente foi testemunhado por alguém?",
     "type": "mixed-checkbox"
   },
   {
     "name": "abuseReportedElsewhere",
-    "label": "Has abuse been reported elsewhere?",
+    "label": "O abuso foi reportado em algum lugar?",
     "type": "mixed-checkbox"
   },
   {
     "name": "whereElseBeenReported",
-    "label": "Where else the incident has been reported?",
+    "label": "Onde mais o abuso foi reportado?",
     "type": "input"
   }
 ]
