@@ -1,6 +1,6 @@
 {
   "Safernet": {
-    "Violence": {
+    "Violência": {
       "color": "#F5A623",
       "subcategories": [
         "Bullying",
@@ -23,7 +23,7 @@
         "Unspecified/Other"
       ]
     },
-    "Mental Health": {
+    "Saúde mental": {
       "color": "#F8E900",
       "subcategories": [
         "Uso excessivo/exagerado",
@@ -33,7 +33,7 @@
         "Inespecífico/Outros"
       ]
     },
-    "Non-Counselling contacts": {
+    "Outras informação e contatos não relacionados com orientação": {
       "color": "#767777",
       "subcategories": [
         "Imprensa",
