@@ -12,18 +12,18 @@
       "options": [
         { "value": "Unknown", "label": "" },
         { "value": "Recommendations", "label": "Recomendações" },
-        { "value": "Referrals to school counsellors", "label": "Encaminhamento para orientação/coordenação Escola" },
-        { "value": "Referrals to child protection agencies", "label": "Encaminhamento para Conselhos Tutelares" },
-        { "value": "Referrals to law enforcement agencies", "label": "Encaminhamento para Ministério Público Estadual " },
-        { "value": "Referrals to federal public ministry", "label": "Encaminhamento para Ministério Público Federal " }, 
-        { "value": "Referrals to trusted partner/flagger", "label": "Encaminhamento para plataformas como trusted partner/trusted flagger" },
-        { "value": "Referrals to NCII Pilot", "label": "Encaminhamento para Piloto do Facebook" },
-        { "value": "Referrals to SaferNet Hotline", "label": "Encaminhamento para CND da SaferNet" },
-        { "value": "Indication of nearest police station", "label":  "Indicação de delegacia civil mais próxima" },
-        { "value": "Indication of specialized police station", "label":  "Indicação de delegacias especializadas" }, 
-        { "value": "Referrals to other organisations", "label": "Encaminhamento para outras organizações" },
-        { "value": "Referrals to Mental Health Services", "label": "Indicação de Serviços de Saúde Mental ou assistência " },
-        { "value": "Other", "label": "Outros" }
+        { "value": "Encaminhamento para orientação/coordenação Escola", "label": "Encaminhamento para orientação/coordenação Escola" },
+        { "value": "Encaminhamento para Conselhos Tutelares", "label": "Encaminhamento para Conselhos Tutelares" },
+        { "value": "Encaminhamento para Ministério Público Estadual", "label": "Encaminhamento para Ministério Público Estadual" },
+        { "value": "Encaminhamento para Ministério Público Federal", "label": "Encaminhamento para Ministério Público Federal" }, 
+        { "value": "Encaminhamento para plataformas como trusted partner/trusted flagger", "label": "Encaminhamento para plataformas como trusted partner/trusted flagger" },
+        { "value": "Encaminhamento para Piloto do Facebook", "label": "Encaminhamento para Piloto do Facebook" },
+        { "value": "Encaminhamento para CND da SaferNet", "label": "Encaminhamento para CND da SaferNet" },
+        { "value": "Indicação de delegacia civil mais próxima", "label":  "Indicação de delegacia civil mais próxima" },
+        { "value": "Indicação de delegacias especializadas", "label":  "Indicação de delegacias especializadas" }, 
+        { "value": "Encaminhamento para outras organizações", "label": "Encaminhamento para outras organizações" },
+        { "value": "Indicação de Serviços de Saúde Mental ou assistência", "label": "Indicação de Serviços de Saúde Mental ou assistência" },
+        { "value": "Outros", "label": "Outros" }
       ],
         "required": { "value": true, "message": "RequiredFieldError" }
     },
@@ -32,11 +32,11 @@
       "label": "Houve uma evolução da conversa?",
       "type": "select",
       "options": [
-        { "value": "no", "label": "Não" },
-        { "value": "aLittle", "label": "pouco" },
-        { "value": "medium", "label": "médio" },
-        { "value": "aLot", "label": "muito" },
-        { "value": "n/a",  "label": "N/A" }
+        { "value": "Não", "label": "Não" },
+        { "value": "Pouco", "label": "Pouco" },
+        { "value": "Médio", "label": "Médio" },
+        { "value": "Muito", "label": "Muito" },
+        { "value": "N/A",  "label": "N/A" }
       ],
         "required": { "value": true, "message": "RequiredFieldError" }
     },
