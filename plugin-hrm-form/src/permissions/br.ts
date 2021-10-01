@@ -1,4 +1,5 @@
-export const canEditCaseSummary = (isSupervisor: boolean, isCreator: boolean, isCaseOpen: boolean) => isSupervisor || (isCreator && isCaseOpen);
+export const canEditCaseSummary = (isSupervisor: boolean, isCreator: boolean, isCaseOpen: boolean) => 
+  isSupervisor || (isCreator && isCaseOpen);
 
 export const canReopenCase = (isSupervisor: boolean, isCreator: boolean, isCaseOpen: boolean) => isSupervisor;
 
