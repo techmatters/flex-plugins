@@ -64,12 +64,12 @@
       "label": "Relacionamento com a criança",
       "type": "select",
       "options": [
-        { "value": "Unknown", "label": "" },
+        { "value": "", "label": "" },
         { "value": "Cuidador(a)", "label": "Cuidador(a)" },
-        { "value": "Friend", "label": "Friend" },
-        { "value": "Grandparent", "label": "Grandparent" },
-        { "value": "Neighbour", "label": "Neighbour" },
-        { "value": "Parent", "label": "Parent" },
+        { "value": "Par/amigo(a)", "label": "Par/amigo(a)" },
+        { "value": "Avô(ó)", "label": "Avô(ó)" },
+        { "value": "Vizinho(a)", "label": "Vizinho(a)" },
+        { "value": "Pai/mãe", "label": "Pai/mãe" },
         { "value": "Outro adulto não relacionado", "label": "Outro adulto não relacionado" },     
         { "value": "Companheiro(a)", "label": "Companheiro(a)" },
         { "value": "Responsável", "label": "Responsável" },
@@ -87,7 +87,7 @@
   },
   {
     "name": "city",
-    "label": "CIdade",
+    "label": "Cidade",
     "type": "input"
   },
   {

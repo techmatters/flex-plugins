@@ -2,13 +2,13 @@
   {
     "name": "fileName",
     "type": "file-upload",
-    "label": "Document",
-    "description": "Accepted file formats: Word, PDFs, or JPGs.\nFile size not to exceed 5MB",
+    "label": "Documento",
+    "description": "Formatos de arquivos aceitos: Word, PDFs, or JPGs.\nArquivo não deve exceder 5MB",
     "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
     "name": "comments",
-    "label": "Comments",
+    "label": "Comentários",
     "type": "textarea",
     "placeholder": "",
     "rows": 20,

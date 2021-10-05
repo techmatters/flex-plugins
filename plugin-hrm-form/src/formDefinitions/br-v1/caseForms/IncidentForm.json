@@ -7,7 +7,7 @@
   },
   {
     "name": "duration",
-    "label": "Duration",
+    "label": "Duração",
     "type": "select",
     "options": [
       { "value": "", "label": "" },

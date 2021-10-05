@@ -3,7 +3,7 @@
     "name": "note",
     "label": "Notas",
     "type": "textarea",
-    "placeholder": "Type here to add note...",
+    "placeholder": "Escreva aqui suas notas...",
     "rows": 20,
     "width": 500
   }

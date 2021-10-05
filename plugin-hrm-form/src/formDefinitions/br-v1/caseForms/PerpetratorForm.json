@@ -52,14 +52,14 @@
   {
     "name": "relationshipToChild",
     "type": "select",
-    "label": "Relationship to child",
+    "label": "Relacionamento com a criança",
     "options": [
       { "value": "", "label": "" },
       { "value": "Cuidador(a)", "label": "Cuidador(a)" },
       { "value": "Par/amigo(a)", "label": "Par/amigo(a)" },
-      { "value": "Grandparent", "label": "Grandparent" },
-      { "value": "Neighbour", "label": "Neighbour" },
-      { "value": "Parent", "label": "Parent" },
+      { "value": "Avô(ó)", "label": "Avô(ó)" },
+      { "value": "Vizinho(a)", "label": "Vizinho(a)" },
+      { "value": "Pai/mãe", "label": "Pai/mãe" },
       { "value": "Companheiro(a)", "label": "Companheiro(a)" },
       { "value": "Responsável", "label": "Responsável" },
       { "value": "Irmã(o)", "label": "Irmã(o)" },

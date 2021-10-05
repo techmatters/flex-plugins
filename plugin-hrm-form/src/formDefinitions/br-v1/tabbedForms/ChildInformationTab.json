@@ -82,7 +82,7 @@
   },
   {
     "name": "city",
-    "label": "CIdade",
+    "label": "Cidade",
     "type": "input"
   },
   {
