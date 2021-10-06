@@ -7,8 +7,10 @@ const callTypes = {
   hangup: 'Hang up',
   wrongnumber: 'Wrong Number',
   abusive: 'Abusive',
+  test: 'test',
 } as const;
 
+export type CallTypeKeys = keyof typeof callTypes;
 export type CallTypes = typeof callTypes[keyof typeof callTypes];
 
 export const channelTypes = {
