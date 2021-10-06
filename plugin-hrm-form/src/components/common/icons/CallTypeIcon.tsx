@@ -7,7 +7,7 @@ import { Flex } from '../../../styles/HrmStyles';
 import { SilentText } from '../../../styles/search';
 
 type OwnProps = {
-  callType: CallTypes;
+  callType: CallTypes; // Refactor to use callType.name instead the label
   fontSize?: string;
 };
 

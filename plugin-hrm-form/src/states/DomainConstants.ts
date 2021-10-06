@@ -9,6 +9,7 @@ const callTypes = {
   abusive: 'Abusive',
 } as const;
 
+export type CallTypeKeys = keyof typeof callTypes;
 export type CallTypes = typeof callTypes[keyof typeof callTypes];
 
 export const channelTypes = {

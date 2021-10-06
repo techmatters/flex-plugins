@@ -10,14 +10,13 @@ import { changeRoute } from '../../states/routing/actions';
 import { withLocalization } from '../../contexts/LocalizationContext';
 import { Box, Flex } from '../../styles/HrmStyles';
 import { Container, Label, DataCallTypeButton, NonDataCallTypeButton } from '../../styles/callTypeButtons';
-import callTypes, { CallTypes } from '../../states/DomainConstants';
+import callTypes, { CallTypeKeys } from '../../states/DomainConstants';
 import { isNonDataCallType } from '../../states/ValidationRules';
 import NonDataCallTypeDialog from './NonDataCallTypeDialog';
 import { hasTaskControl } from '../../utils/transfer';
 import { getConfig } from '../../HrmFormPlugin';
 import { submitContactForm, completeTask } from '../../services/formSubmissionHelpers';
 import CallTypeIcon from '../common/icons/CallTypeIcon';
-import { DefinitionVersion } from '../common/forms/types';
 import { CustomITask, isOfflineContactTask } from '../../types/types';
 
 const isDialogOpen = contactForm =>
@@ -41,31 +40,31 @@ const CallTypeButtons: React.FC<Props> = props => {
   if (!currentDefinitionVersion) return null;
   const { callTypeButtons } = currentDefinitionVersion;
 
-  const handleClick = (taskSid: string, callType: CallTypes) => {
+  const handleClick = (taskSid: string, callTypekey: CallTypeKeys) => {
     if (!hasTaskControl(task)) return;
-
-    props.dispatch(updateCallType(taskSid, callType));
+    // TODO: We currently need the call type name in English. I think we should actually save callType.name (instead of label) on the DB, and use it in here.
+    props.dispatch(updateCallType(taskSid, callTypes[callTypekey]));
   };
 
-  const handleClickAndRedirect = (taskSid: string, callType: CallTypes) => {
+  const handleClickAndRedirect = (taskSid: string, callTypekey: CallTypeKeys) => {
     if (!hasTaskControl(task)) return;
 
     // eslint-disable-next-line no-nested-ternary
     const subroute = isOfflineContactTask(task)
       ? 'contactlessTask'
-      : callType === callTypes.caller
+      : callTypekey === 'caller'
       ? 'callerInformation'
       : 'childInformation';
 
-    handleClick(taskSid, callType);
+    handleClick(taskSid, callTypekey);
     props.dispatch(changeRoute({ route: 'tabbed-forms', subroute }, taskSid));
   };
 
-  const handleNonDataClick = (taskSid: string, callType: CallTypes) => {
+  const handleNonDataClick = (taskSid: string, callTypekey: CallTypeKeys) => {
     if (isOfflineContactTask(task)) {
-      handleClickAndRedirect(taskSid, callType);
+      handleClickAndRedirect(taskSid, callTypekey);
     } else {
-      handleClick(taskSid, callType);
+      handleClick(taskSid, callTypekey);
     }
   };
 
@@ -95,13 +94,14 @@ const CallTypeButtons: React.FC<Props> = props => {
             .map(callType => {
               return (
                 <DataCallTypeButton
-                  onClick={() => handleClickAndRedirect(task.taskSid, callType.label)}
+                  onClick={() => handleClickAndRedirect(task.taskSid, callType.name)}
                   key={callType.name}
                 >
                   <Flex width="50px" marginRight="5px">
-                    <CallTypeIcon callType={callType.label} />
+                    {/* TODO: We currently need the call type name in English. I think we should actually save callType.name (instead of label) on the DB, and use it in here.  */}
+                    <CallTypeIcon callType={callTypes[callType.name]} />
                   </Flex>
-                  <Template code={`CallType-${callType.name}`} />
+                  {callType.label}
                 </DataCallTypeButton>
               );
             })}
@@ -116,10 +116,10 @@ const CallTypeButtons: React.FC<Props> = props => {
             .map((callType, i) => (
               <NonDataCallTypeButton
                 key={callType.name}
-                onClick={() => handleNonDataClick(task.taskSid, callType.label)}
+                onClick={() => handleNonDataClick(task.taskSid, callType.name)}
                 marginRight={i % 2 === 0}
               >
-                <Template code={`CallType-${callType.name}`} />
+                {callType.label}
               </NonDataCallTypeButton>
             ))}
         </Box>

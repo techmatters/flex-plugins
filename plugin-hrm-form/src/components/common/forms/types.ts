@@ -1,7 +1,7 @@
 /* eslint-disable import/no-unused-modules */
 import type { RegisterOptions } from 'react-hook-form';
 
-import { CallTypes } from '../../../states/DomainConstants';
+import { CallTypeKeys } from '../../../states/DomainConstants';
 import { OneToOneConfigSpec, OneToManyConfigSpecs } from '../../../insightsConfig/types';
 
 export type FormFieldType = { value: string; error?: string; validation?: string[]; touched?: boolean };
@@ -122,8 +122,8 @@ export type CategoriesDefinition = { [category: string]: CategoryEntry };
 
 type CallTypeButtonsEntry = {
   type: 'button';
-  name: string;
-  label: CallTypes;
+  name: CallTypeKeys;
+  label: string;
   category: 'data' | 'non-data';
 };
 
