@@ -13,7 +13,7 @@
   },
   {
     "label": "Busy Queue",
-    "text": "Hi there, we are currently experiencing high chat volumes. A counsellor will be with you as soon as they are done with their current chat. If you cannot access a counsellor, please call our 24 hour Crisisline on 116 or do come back at a later stage. Our chatrooms are open 11am-1pm and 2-6pm"
+    "text": "Hi there, we are currently experiencing high chat volumes. A counsellor will be with you as soon as they are done with their current chat. If you cannot access a counsellor, please call our 24 hour Helpline on 116 or do come back at a later stage. Our chatrooms are open 11am-1pm and 2-6pm"
   },
   {
     "label": "Case Details",
@@ -69,23 +69,23 @@
   },
   {
     "label": "Silent",
-    "text": "Unfortunately, due to no response, we have to make way for the next user in our queue now, when you are ready to chat to us you are welcome to come back. We are here Mon-Fri, 11am-1pm & 2-6pm, if u would like to chat to us out of these times, you may call our 24 hour Tollfree Crisisline number on 116. We are free from all networks."
+    "text": "Unfortunately, due to no response, we have to make way for the next user in our queue now, when you are ready to chat to us you are welcome to come back. We are here Mon-Fri, 11am-1pm & 2-6pm, if u would like to chat to us out of these times, you may call our 24 hour Tollfree Helpline number on 116. We are free from all networks."
   },
   {
-    "label": "Statutory Services",
-    "text": "ok, so for us to help this child, a social worker would have to go out to their home and check if they are ok. Unfortunately, here at Childline we do not carry out any statutory services like social workers doing home visits and removals, as we are only a counselling service & would have to refer this case to another service like Child Welfare or DSD. Please also bear in mind that due to Lockdown as declared by the President, services like DSD & Child Welfares are under severe strain & may not be able to come out to you as timeously as we would like. Also, due to regulations, some of them are returning to work in a staggered manner or their offices may be closed. If you feel that a child is in immediate danger, please do call the Police on 10111 or the Family Violence, Child Protection and Sexual Offences (FCS) Helpline on 08 00 150 150 for a faster response. If you would still like to report this to a social worker, please may I have the area the child is in to provide you with a service closer to the child?"
+    "label": "Statutory",
+    "text": "ok, so for us to help this child, a social worker would have to go out to their home and check if they are ok. Unfortunately, here at Childline we do not carry out any statutory services like social workers doing home visits and removals, as we are only a counselling service & would have to refer this case to another service like Child Welfare or DSD. Please also bear in mind that due to Lockdown as declared by the President, services like DSD & Child Welfares are under severe strain & may not be able to come out to you as timeously as we would like. If you feel that a child is in immediate danger, please do call the Police on 10111 for a faster response. If you would still like to report this to a social worker, please may I have the area and province the child is in to provide you with a service closer to the child?"
   },
   {
     "label": "Suicide Pact",
     "text": "Can we make a pact that you will not hurt yourself in any way and if you feel like the emotions are too much for you to cope with, you will remember to come speak to us here first or a friend that you trust?"
   },
   {
-    "label": "Thanks for contacting us",
-    "text": "Thank you for contacting us... remember, we are here Mon-Fri, 11am-1pm & 2-6pm, if you would like to chat to us out of these times, you may call our 24 hour Tollfree Crisisline number on 116. We are free from all networks."
+    "label": "Thank you for contacting us",
+    "text": "Thank you for contacting us... remember, we are here Mon-Fri, 11am-1pm & 2-6pm, if you would like to chat to us out of these times, you may call our 24 hour Tollfree Helpline number on 116. We are free from all networks."
   },
   {
     "label": "Typing Bar",
-    "text": "If you are having trouble finding the typing bar, it is at the bottom of this page, just above the \"Send\" button"
+    "text": "If you are having trouble finding the typing bar, it is at the bottom of this page, just next to the "Send" button"
   },
   {
     "label": "Vacancies",
