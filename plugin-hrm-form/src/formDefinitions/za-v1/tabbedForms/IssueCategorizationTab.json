@@ -15,6 +15,8 @@
         "Grooming",
         "Harassment",
         "Inappropriate sex talk",
+        "Online Sexual Abuse",
+        "Online Sexual Exploitation",
         "Physical abuse",
         "Rape",
         "Sexual assault"
@@ -76,7 +78,7 @@
         "Sexual orientation/identity"
      ]
     },
-    "Family relationships": {
+    "Family/Intimate relationships": {
       "color": "#B971AF",
       "subcategories": [
         "Child missing/lost",
@@ -89,9 +91,11 @@
         "Mental illness - Parent",
         "Parent/s working away from home",
         "Problems with siblings",
+        "Relationship problems",
         "Separation",
         "Single parent",
         "Step family relationships"
+        
      ]
     },
     "HIV/AIDS": {
@@ -130,12 +134,6 @@
         "Circumstantial - Child uncared for physically",
         "Deliberate - Child uncared for emotionally",
         "Deliberate - Child uncared for physically"
-      ]
-    },
-    "Out of school peer relationships": {
-      "color": "#506BA5",
-      "subcategories": [
-        "Relationship problems"
       ]
     },
     "Physical health": {
@@ -278,6 +276,8 @@
         "Harassment",
         "Inappropriate sex talk",
         "Physical abuse",
+        "Online Sexual Abuse",
+        "Online Sexual Exploitation",
         "Rape",
         "Sexual assault"
       ]
@@ -338,7 +338,7 @@
         "Sexual orientation/identity"
      ]
     },
-    "Family relationships": {
+    "Family/Intimate relationships": {
       "color": "#B971AF",
       "subcategories": [
         "Child missing/lost",
@@ -351,6 +351,7 @@
         "Mental illness - Parent",
         "Parent/s working away from home",
         "Problems with siblings",
+        "Relationship Problems",
         "Separation",
         "Single parent",
         "Step family relationships"
@@ -392,12 +393,6 @@
         "Circumstantial - Child uncared for physically",
         "Deliberate - Child uncared for emotionally",
         "Deliberate - Child uncared for physically"
-      ]
-    },
-    "Out of school peer relationships": {
-      "color": "#506BA5",
-      "subcategories": [
-        "Relationship problems"
       ]
     },
     "Physical health": {
