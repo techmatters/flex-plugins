@@ -7,6 +7,7 @@
     "allowSyntheticDefaultImports": true,
     "allowJs": true,
     "checkJs": true,
+    "resolveJsonModule": true,
     "moduleResolution": "node",
     "outDir": "./dist",
     "rootDir": "./src"

@@ -1,11 +1,8 @@
-import { readFileSync, writeFileSync } from 'fs';
 import fetch from 'node-fetch';
+import { readFileSync, writeFileSync } from 'fs';
 import { inspect } from 'util';
-import { logError, logSuccess } from '../helpers/log';
+import { logSuccess, logError } from '../helpers/log';
 import type { ScriptsInput } from './types';
-// import { Octokit } from '@octokit/core';
-
-const workflowTemplatePath = 'templates/serverless-workflow-template';
 
 const replaceAll = (search: string, replacement: string) => (target: string) =>
   target.split(search).join(replacement);
@@ -20,17 +17,20 @@ const replacementFunctions = (input: ScriptsInput) => [
 const replacePlaceholders = (input: ScriptsInput) => (target: string) =>
   replacementFunctions(input).reduce((accum, f) => f(accum), target);
 
-const generateWorkflowContent = (input: ScriptsInput) => {
+const generateWorkflowContent = (input: ScriptsInput, workflowTemplatePath: string) => {
   const template = readFileSync(workflowTemplatePath).toString();
   const content = replacePlaceholders(input)(template);
 
   return content;
 };
 
-/**
- * Check that the template is in sync with Aselo Development deployment workflow
- */
-const checkWorkflowInSync = async () => {
+type WorkflowConfig = {
+  fileName: string;
+  workflowTemplatePath: string;
+  remoteUrl: string;
+};
+
+export const checkWorkflowInSync = async (remoteUrl: string, templatePath: string) => {
   const aseloDevConfig = {
     environment: 'Development',
     shortEnvironment: 'DEV',
@@ -38,12 +38,10 @@ const checkWorkflowInSync = async () => {
     shortHelpline: 'AS',
   };
 
-  const response = await fetch(
-    'https://raw.githubusercontent.com/techmatters/serverless/master/.github/workflows/aselo_development.yml',
-  );
+  const response = await fetch(remoteUrl);
   const expected = await response.text();
 
-  const generated = generateWorkflowContent(aseloDevConfig);
+  const generated = generateWorkflowContent(aseloDevConfig, templatePath);
 
   if (expected !== generated)
     throw new Error(
@@ -51,16 +49,21 @@ const checkWorkflowInSync = async () => {
     );
 };
 
-export const setupTwilioServerless = async (input: ScriptsInput) => {
+/**
+ * Generates a workflow deployment file given a workflow configuration.
+ *
+ * @param input scripts input
+ * @param config workflow configuration
+ * @returns file name of the generated file
+ */
+export const generateWorkflow = async (input: ScriptsInput, config: WorkflowConfig) => {
   try {
-    await checkWorkflowInSync();
+    const { fileName, workflowTemplatePath, remoteUrl } = config;
+    await checkWorkflowInSync(remoteUrl, workflowTemplatePath);
 
-    const fileName = 'new-workflow.yml'; // eventually this will be part of the input
-
-    const content = generateWorkflowContent(input);
+    const content = generateWorkflowContent(input, workflowTemplatePath);
     writeFileSync(fileName, content);
-
-    logSuccess(`New Serverless deploy workflow generated at ${fileName}!`);
+    logSuccess(`New deploy workflow generated at ${fileName}!`);
 
     return fileName;
   } catch (err) {

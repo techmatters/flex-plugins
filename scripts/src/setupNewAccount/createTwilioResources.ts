@@ -9,6 +9,8 @@
  *  HELPLINE=<Helpline's friendly name (e.g. South Africa Helpline)>
  *  SHORT_HELPLINE=<Short code for this helpline (e.g. ZA)>
  *  ENVIRONMENT=<Target environment, one of Development, Staging or Production>
+ *  DATADOG_APP_ID=<Datadog Application Id>
+ *  DATADOG_ACCESS_TOKEN=<Datadog Access Token>
  */
 import twilio from 'twilio';
 import { saveSSMParameter } from '../helpers/ssm';
@@ -35,6 +37,8 @@ type DynamicState = {
   docsBucket?: string;
   postSurveyBotChatUrl?: string;
   operatingInfoKey?: string;
+  dataDogAppId?: string;
+  dataDogAccessToken?: string;
 };
 
 type State = ScriptsInput & DynamicState;
@@ -47,6 +51,9 @@ type GetSSMStringFunctions = { [k in keyof Required<DynamicState>]: GetSSMString
 
 const getSSMName = (key: string) => (state: State) =>
   `${state.shortEnvironment}_TWILIO_${state.shortHelpline}_${key}`;
+
+const getSSMNameForDataDogKey = (key: string) => (state: State) =>
+  `${state.shortEnvironment}_DATADOG_${state.shortHelpline}_${key}`;
 
 const getSSMDescription = (description: string) => (state: State) =>
   `${state.environment} - ${state.helpline} ${description}`;
@@ -71,6 +78,8 @@ const getSSMNameFunction: GetSSMStringFunctions = {
   docsBucket: getSSMName('S3_BUCKET_DOCS'),
   postSurveyBotChatUrl: getSSMName('POST_SURVEY_BOT_CHAT_URL'),
   operatingInfoKey: getSSMName('OPERATING_INFO_KEY'),
+  dataDogAppId: getSSMNameForDataDogKey('APP_ID'),
+  dataDogAccessToken: getSSMNameForDataDogKey('ACCESS_TOKEN'),
   taskQueueSid: throwWithKey('taskQueueSid'),
   surveyTaskChannelSid: throwWithKey('surveyTaskChannelSid'),
   hrmStaticApiKeySid: throwWithKey('hrmStaticApiKeySid'),
@@ -95,6 +104,8 @@ const getSSMDescriptionFunction: GetSSMStringFunctions = {
   docsBucket: getSSMDescription('Twilio account - S3 Bucket for storing documents'),
   postSurveyBotChatUrl: getSSMDescription('Twilio account - Post Survey bot chat url'),
   operatingInfoKey: getSSMDescription('Twilio account - Operating Key info'),
+  dataDogAppId: getSSMDescription('Datadog - Application ID'),
+  dataDogAccessToken: getSSMDescription('Datadog - Access Token'),
   taskQueueSid: throwWithKey('taskQueueSid'),
   surveyTaskChannelSid: throwWithKey('surveyTaskChannelSid'),
   hrmStaticApiKeySid: throwWithKey('hrmStaticApiKeySid'),
@@ -132,6 +143,8 @@ const saveHrmStaticKeyToSSM = saveStateKeyToSSM('hrmStaticApiKeySecret');
 const saveDocsBucketToSSM = saveStateKeyToSSM('docsBucket');
 const savePostSurveyBotChatUrlToSSM = saveStateKeyToSSM('postSurveyBotChatUrl');
 const saveOperatingInfoKeyToSSM = saveStateKeyToSSM('operatingInfoKey');
+const saveDataDogAppIdToSSM = saveStateKeyToSSM('dataDogAppId');
+const saveDataDogAccessTokenToSSM = saveStateKeyToSSM('dataDogAccessToken');
 
 /**
  * Twilio resources related functions
@@ -465,6 +478,8 @@ const createResourcesFunctions = [
   saveDocsBucketToSSM,
   savePostSurveyBotChatUrlToSSM,
   saveOperatingInfoKeyToSSM,
+  saveDataDogAppIdToSSM,
+  saveDataDogAccessTokenToSSM,
 ];
 
 export const createTwilioResources = async (input: ScriptsInput) => {
@@ -473,6 +488,8 @@ export const createTwilioResources = async (input: ScriptsInput) => {
     // Placeholder variables. Maybe move them somewhere else, Gian?
     postSurveyBotChatUrl: '""',
     operatingInfoKey: 'aselo-dev',
+    dataDogAppId: process.env.DATADOG_APP_ID as string,
+    dataDogAccessToken: process.env.DATADOG_ACCESS_TOKEN as string,
   };
   // partialState will be used to cleanup inconsistent state of partially created resources, in case any step goes wrong
   let partialState = initialState;
