@@ -18,7 +18,24 @@ import { StyledLink } from '../../../styles/search';
 import UploadIcon from '../icons/UploadIcon';
 import { formatFileNameAtAws } from '../../../utils';
 
-const UploadFileInput = ({
+type UploadFileInputProps = {
+  label: string | JSX.Element;
+  errors: any;
+  clearErrors: any;
+  register: any;
+  setValue: any;
+  watch: any;
+  rules: any;
+  path: any;
+  description: any;
+  onFileChange: any;
+  onDeleteFile: any;
+  updateCallback: any;
+  RequiredAsterisk: any;
+  initialValue: any;
+};
+
+const UploadFileInput: React.FC<UploadFileInputProps> = ({
   errors,
   clearErrors,
   register,
@@ -75,7 +92,7 @@ const UploadFileInput = ({
       <Row>
         <Box marginBottom="8px">
           <UploadFileLabel>
-            <Template code={`${label}`} />
+            {typeof label === 'string' ? <Template code={`${label}`} /> : label}
             {rules.required && <RequiredAsterisk />}
           </UploadFileLabel>
         </Box>
