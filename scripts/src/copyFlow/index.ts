@@ -153,14 +153,14 @@ async function main() {
   );
 
   const destinationInput = await generateDestinationInput(
-    process.env.TWILIO_ACCOUNT_SID_SOURCE,
-    process.env.TWILIO_AUTH_TOKEN_SOURCE,
+    process.env.TWILIO_ACCOUNT_SID_DESTINATION,
+    process.env.TWILIO_AUTH_TOKEN_DESTINATION,
   );
 
   await copyAndPostFlow(sourceInput, destinationInput);
 
   logSuccess(
-    `Flow ${process.env.FLOW_TO_COPY} succesfully copied from account ${process.env.TWILIO_ACCOUNT_SID_SOURCE} to ${process.env.TWILIO_ACCOUNT_SID_SOURCE}. Publish and test!`,
+    `Flow ${process.env.FLOW_TO_COPY} succesfully copied from account ${process.env.TWILIO_ACCOUNT_SID_SOURCE} to ${process.env.TWILIO_AUTH_TOKEN_DESTINATION}. Publish and test!`,
   );
 }
 
