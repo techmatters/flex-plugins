@@ -1,0 +1,5 @@
+{
+  "workflowTemplatePath": "templates/flex-plugins-workflow-template",
+  "fileName": "new-flex-plugins-workflow.yml",
+  "remoteUrl": "https://raw.githubusercontent.com/techmatters/flex-plugins/master/.github/workflows/aselo_development.yml"
+}

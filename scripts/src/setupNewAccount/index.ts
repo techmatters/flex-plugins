@@ -1,8 +1,10 @@
 import prompt from 'prompt';
 import { ScriptsInput, environments, shortEnvironments } from './types';
 import { createTwilioResources } from './createTwilioResources';
-import { setupTwilioServerless } from './setupTwilioServerless';
 import { logSuccess, logError } from '../helpers/log';
+import { generateWorkflow } from './workflowGenerator';
+import flexPluginsConfig from '../workflows/flex-plugins.json';
+import serverlessConfig from '../workflows/serverless.json';
 
 require('dotenv').config();
 
@@ -15,8 +17,15 @@ const promptSchema = [
     message: 'Type Y (yes) or N (no)',
   },
   {
-    name: 'setupTwilioServerless',
-    description: 'Run setupTwilioServerless script? (y/n)',
+    name: 'generateServerlessDeploymentFile',
+    description: 'Generate serverless deployment file? (y/n)',
+    required: true,
+    pattern: /y|n/g,
+    message: 'Type Y (yes) or N (no)',
+  },
+  {
+    name: 'generateFlexPluginsDeploymentFile',
+    description: 'Generate flex-plugins deployment file? (y/n)',
     required: true,
     pattern: /y|n/g,
     message: 'Type Y (yes) or N (no)',
@@ -34,6 +43,9 @@ async function main() {
   if (!process.env.HELPLINE) throw new Error('HELPLINE missing, check env vars.');
   if (!process.env.SHORT_HELPLINE) throw new Error('SHORT_HELPLINE missing, check env vars.');
   if (!process.env.ENVIRONMENT) throw new Error('ENVIRONMENT missing, check env vars.');
+  if (!process.env.DATADOG_APP_ID) throw new Error('DATADOG_APP_ID missing, check env vars.');
+  if (!process.env.DATADOG_ACCESS_TOKEN)
+    throw new Error('DATADOG_ACCESS_TOKEN missing, check env vars.');
   if (!environments.includes(process.env.ENVIRONMENT))
     throw new Error(
       `Invalid ENVIRONMENT provided, it must be one of ${environments}, check env vars.`,
@@ -56,10 +68,16 @@ async function main() {
       const twilioResources = await createTwilioResources(input);
     }
 
-    if (promptResult.setupTwilioServerless === 'y') {
-      logSuccess('Running setupTwilioServerless script..');
+    if (promptResult.generateServerlessDeploymentFile === 'y') {
+      logSuccess('Generating serverless deployment file...');
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const twilioServerless = await setupTwilioServerless(input);
+      await generateWorkflow(input, serverlessConfig);
+    }
+
+    if (promptResult.generateFlexPluginsDeploymentFile === 'y') {
+      logSuccess('Generating flex-plugins deployment file...');
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      await generateWorkflow(input, flexPluginsConfig);
     }
 
     logSuccess('Setup script completed successfully!');

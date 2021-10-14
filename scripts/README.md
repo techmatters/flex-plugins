@@ -23,6 +23,8 @@ To run this script we need to provide the following environment
 | HELPLINE               | Helpline's friendly name (e.g. South Africa Helpline) |
 | SHORT_HELPLINE         | Short code for this helpline (e.g. ZA) |
 | ENVIRONMENT            | Target environment, one of Development, Staging or Production |
+| DATADOG_APP_ID         | Datadog Application Id |
+| DATADOG_ACCESS_TOKEN   | Datadog Access Token |
 
 ### createTwilioResources
 This script performs the steps described in the section 2 of the [Twilio account setup guide](https://benetech.app.box.com/file/772893818136).
@@ -50,6 +52,8 @@ As of 2021/09/28, this script:
   - \<ENVIRONMENT\>\_TWILIO\_\<SHORT\_HELPLINE\>\_S3\_BUCKET\_DOCS
   - \<ENVIRONMENT\>\_TWILIO\_\<SHORT\_HELPLINE\>\_POST\_SURVEY\_BOT\_CHAT\_URL
   - \<ENVIRONMENT\>\_TWILIO\_\<SHORT\_HELPLINE\>\_OPERATING\_INFO\_KEY
+  - \<ENVIRONMENT\>\DATADOG\_\<SHORT\_HELPLINE\>\APP\_ID
+  - \<ENVIRONMENT\>\DATADOG\_\<SHORT\_HELPLINE\>\ACCESS\_TOKEN
 
 ### setupTwilioServerless
 This scripts automates the step 3 of the [Twilio account setup guide](https://benetech.app.box.com/file/772893818136).
