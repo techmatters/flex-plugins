@@ -35,6 +35,8 @@ type DynamicState = {
   docsBucket?: string;
   postSurveyBotChatUrl?: string;
   operatingInfoKey?: string;
+  preSurveyBotSid?: string;
+  postSurveyBotSid?: string;
 };
 
 type State = ScriptsInput & DynamicState;
@@ -75,6 +77,8 @@ const getSSMNameFunction: GetSSMStringFunctions = {
   surveyTaskChannelSid: throwWithKey('surveyTaskChannelSid'),
   hrmStaticApiKeySid: throwWithKey('hrmStaticApiKeySid'),
   surveyTaskQueueSid: throwWithKey('surveyTaskQueueSid'),
+  preSurveyBotSid: throwWithKey('preSurveyBotSid'),
+  postSurveyBotSid: throwWithKey('postSurveyBotSid'),
 };
 
 /**
@@ -99,6 +103,8 @@ const getSSMDescriptionFunction: GetSSMStringFunctions = {
   surveyTaskChannelSid: throwWithKey('surveyTaskChannelSid'),
   hrmStaticApiKeySid: throwWithKey('hrmStaticApiKeySid'),
   surveyTaskQueueSid: throwWithKey('surveyTaskQueueSid'),
+  preSurveyBotSid: throwWithKey('preSurveyBotSid'),
+  postSurveyBotSid: throwWithKey('postSurveyBotSid'),
 };
 
 const getSSMTags = (state: State): AWS.SSM.TagList => [
@@ -284,6 +290,28 @@ const createSurveyTaskChannel = async (state: State) => {
   return { ...state, surveyTaskChannelSid: taskChannel.sid };
 };
 
+const createPreSurveyBot = async (state: State): Promise<State> => {
+  const preSurveyBot = await client.autopilot.assistants.create({
+    uniqueName: 'demo_chatbot',
+    friendlyName: 'A bot that collects a pre-survey',
+  });
+
+  logSuccess(`Twilio resource: Succesfully created pre survey chatbot ${preSurveyBot.sid}`);
+  return { ...state, preSurveyBotSid: preSurveyBot.sid }
+}
+
+const createPostSurveyBot = async (state: State): Promise<State> => {
+  const postSurveyBot = await client.autopilot.assistants.create({
+    uniqueName: 'post_survey_bot',
+    friendlyName: 'A bot that collects a post-survey',
+  });
+
+  const postSurveyBotChatUrl = `https://channels.autopilot.twilio.com/v1/${process.env.TWILIO_ACCOUNT_SID}/${postSurveyBot.sid}/twilio-chat`
+
+  logSuccess(`Twilio resource: Succesfully created post survey chatbot ${postSurveyBot.sid}`);
+  return { ...state, postSurveyBotSid: postSurveyBot.sid, postSurveyBotChatUrl }
+}
+
 export const getDocsBucketName = (shortHelpline: string, environment: string): string =>
   `tl-aselo-docs-${shortHelpline.toLowerCase()}-${environment.toLowerCase()}`;
 
@@ -406,6 +434,29 @@ const removeSurveyTaskQueue = async (state: State) => {
   return rest;
 };
 
+const removePreSurveyBot = async (state: State) => {
+  const { preSurveyBotSid, ...rest } = state;
+
+  if (preSurveyBotSid) {
+    await client.autopilot.assistants('demo_chatbot').remove()
+    logWarning(`Twilio resource: Succesfully removed pre survey chatbot ${preSurveyBotSid}`);
+  }
+
+  return rest;
+}
+
+const removePostSurveyBot = async (state: State) => {
+  const { postSurveyBotSid, ...rest } = state;
+
+  if (postSurveyBotSid) {
+    await client.autopilot.assistants('post_survey_bot').remove()
+    logWarning(`Twilio resource: Succesfully removed post survey chatbot ${postSurveyBotSid}`);
+  }
+
+  return rest;
+}
+
+
 const cleanupPartialResources = async (state: State): Promise<void> => {
   let partialState = state;
 
@@ -418,6 +469,8 @@ const cleanupPartialResources = async (state: State): Promise<void> => {
     removeSurveyTaskChannel,
     removeSurveyWorkflow,
     removeSurveyTaskQueue,
+    removePreSurveyBot,
+    removePostSurveyBot
   ].reduce(async (accumPromise, func) => {
     try {
       const accum = await accumPromise;
@@ -451,6 +504,8 @@ const createResourcesFunctions = [
   createSurveyTaskQueue,
   createSurveyWorkflow,
   createSurveyTaskChannel,
+  createPreSurveyBot,
+  createPostSurveyBot,
   createDocsBucket,
   fetchChatService,
   saveWorkspaceToSSM,
@@ -471,7 +526,6 @@ export const createTwilioResources = async (input: ScriptsInput) => {
   const initialState: State = {
     ...input,
     // Placeholder variables. Maybe move them somewhere else, Gian?
-    postSurveyBotChatUrl: '""',
     operatingInfoKey: 'aselo-dev',
   };
   // partialState will be used to cleanup inconsistent state of partially created resources, in case any step goes wrong
