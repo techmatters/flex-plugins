@@ -119,7 +119,7 @@ export const formatNumberFromTask = task => {
     return getNumberFromTask(task).replace(/[0-9]/g, 'x');
   }
   return getNumberFromTask(task);
-}
+};
 
 /**
  * Removes the prefixed milliseconds from the fileName saved at AWS and returns only the original fileName
