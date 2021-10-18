@@ -1,7 +1,7 @@
 [
     {
-      "name": "firstName",
-      "label": "First Name",
+      "name": "Name",
+      "label": "Name",
       "type": "input"
     },
     {
