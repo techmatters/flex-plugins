@@ -2,14 +2,7 @@
     {
       "name": "firstName",
       "label": "First Name",
-      "type": "input",
-      "required": { "value": true, "message": "RequiredFieldError" }
-    },
-    {
-      "name": "lastName",
-      "label": "Last Name",
-      "type": "input",
-      "required": { "value": true, "message": "RequiredFieldError" }
+      "type": "input"
     },
     {
       "name": "relationshipToChild",
@@ -17,100 +10,54 @@
       "type": "select",
       "options": [
         { "value": "Unknown", "label": "" },
-        { "value": "Caregiver", "label": "Caregiver" },
-        { "value": "Friend", "label": "Friend" },
-        { "value": "Grandparent", "label": "Grandparent" },
-        { "value": "Neighbour", "label": "Neighbour" },
+        { "value": "Relative/Guardian", "label": "Relative/Guardian" },
+        { "value": "Other adult known to child", "label": "Other adult known to child" },
         { "value": "Parent", "label": "Parent" },
-        { "value": "Partner", "label": "Partner" },
-        { "value": "Person in a position of responsibility", "label": "Person in a position of responsibility" },
+        { "value": "Peer", "label": "Peer" },
+        { "value": "Adult in a position of responsibility", "label": "Adult in a position of responsibility" },
         { "value": "Sibling", "label": "Sibling" },
         { "value": "Stranger", "label": "Stranger" },
         { "value": "Other", "label": "Other" }
-      ]
-    },
-    {
-      "name": "streetAddress",
-      "label": "Street Address",
-      "type": "input"
-    },
-    {
-      "name": "village",
-      "label": "Village",
-      "type": "input"
-    },
-    {
-      "name": "province",
-      "label": "Province",
-      "type": "select",
-      "options": [
-        { "value": "", "label": "" },
-        { "value": "Central", "label": "Central" },
-        { "value": "Copperbelt", "label": "Copperbelt" },
-        { "value": "Eastern", "label": "Eastern" },
-        { "value": "Luapula", "label": "Luapula" },
-        { "value": "Lusaka", "label": "Lusaka" },
-        { "value": "Muchinga", "label": "Muchinga" },
-        { "value": "Northern", "label": "Northern" },
-        { "value": "North-Western", "label": "North-Western" },
-        { "value": "Southern", "label": "Southern" },
-        { "value": "Western", "label": "Western" },
-        { "value": "Unknown", "label": "Unknown" }
       ],
-      "required": { "value": true, "message": "RequiredFieldError" }
+        "required": { "value": true, "message": "RequiredFieldError" }
     },
     {
-      "name": "district",
-      "label": "District",
-      "type": "dependent-select",
-      "dependsOn": "province",
-      "defaultOption": { "value": "", "label": "" },
-      "options": {
-        "Central": [
-          { "value": "Chibombo", "label": "Chibombo" },
-          { "value": "Chisamba", "label": "Chisamba" },
-          { "value": "Chitambo", "label": "Chitambo" },
-          { "value": "Itezhi-Tezhi", "label": "Itezhi-Tezhi" },
-          { "value": "Kabwe", "label": "Kabwe" },
-          { "value": "KapiriMposhi", "label": "KapiriMposhi" },
-          { "value": "Luano", "label": "Luano" },
-          { "value": "Mkushi", "label": "Mkushi" },
-          { "value": "Mumbwa", "label": "Mumbwa" },
-          { "value": "Ngabwe", "label": "Ngabwe" },
-          { "value": "Serenje", "label": "Serenje" },
-          { "value": "Shibuyunji", "label": "Shibuyunji" },
-          { "value": "Unknown", "label": "Unknown" }
-        ],
-        "Copperbelt": [
-          { "value": "Chililabombwe", "label": "Chililabombwe" },
-          { "value": "Chingola", "label": "Chingola" },
-          { "value": "Kalulushi", "label": "Kalulushi" },
-          { "value": "Kitwe", "label": "Kitwe" },
-          { "value": "Luanshya", "label": "Luanshya" },
-          { "value": "Lufwanyama", "label": "Lufwanyama" },
-          { "value": "Masaiti", "label": "Masaiti" },
-          { "value": "Mpongwe", "label": "Mpongwe" },
-          { "value": "Mufulira", "label": "Mufulira" },
-          { "value": "Ndola", "label": "Ndola" },
-          { "value": "Unknown", "label": "Unknown" }
-        ]
-      },
-      "required": { "value": true, "message": "RequiredFieldError" }
-    },
-    {
-      "name": "postalCode",
-      "label": "Postal Code",
+      "name": "city",
+      "label": "City/Town/Village",
       "type": "input"
+    },
+    {
+      "name": "state",
+      "label": "State/Union Territory",
+      "type": "input"
+    },
+    {
+      "name": "pinCode",
+      "label": "Pin Code",
+      "type": "input"
+    },
+    {
+    "name": "updateWanted",
+    "label": "Does caller want to be updated on developments?",
+    "type": "mixed-checkbox"
+    },
+    "name": "contactPermission",
+    "label": "If needed, may we contact them for further information?",
+    "type": "mixed-checkbox"
     },
     {
       "name": "phone1",
       "label": "Phone #1",
-      "type": "input",
-      "required": { "value": true, "message": "RequiredFieldError" }
+      "type": "input"
     },
     {
       "name": "phone2",
       "label": "Phone #2",
+      "type": "input"
+    },
+    {
+      "name": "email",
+      "label": "Email",
       "type": "input"
     },
     {
@@ -119,8 +66,8 @@
       "type": "select",
       "options": [
         { "value": "Unknown", "label": "" },
-        { "value": "Boy", "label": "Boy" },
-        { "value": "Girl", "label": "Girl" },
+        { "value": "male", "label": "Male" },
+        { "value": "female", "label": "Female" },
         { "value": "Non-Binary", "label": "Non-Binary" }
       ]
     },
@@ -162,18 +109,8 @@
       ]
     },
     {
-      "name": "language",
-      "label": "Language",
-      "type": "select",
-      "options": [
-        { "value": "Unknown", "label": "" },
-        { "value": "Bemba", "label": "Bemba" },
-        { "value": "Tonga", "label": "Tonga" }
-      ]  
-    },
-    {
-      "name": "ethnicity",
-      "label": "Ethnicity",
+      "name": "nationality",
+      "label": "Nationality",
       "type": "input"
     }
   ]
