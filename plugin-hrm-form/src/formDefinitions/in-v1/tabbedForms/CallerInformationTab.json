@@ -37,13 +37,14 @@
       "type": "input"
     },
     {
-    "name": "updateWanted",
-    "label": "Does caller want to be updated on developments?",
-    "type": "mixed-checkbox"
+      "name": "updateWanted",
+      "label": "Does caller want to be updated on developments?",
+      "type": "mixed-checkbox"
     },
-    "name": "contactPermission",
-    "label": "If needed, may we contact them for further information?",
-    "type": "mixed-checkbox"
+    {
+      "name": "contactPermission",
+      "label": "If needed, may we contact them for further information?",
+      "type": "mixed-checkbox"
     },
     {
       "name": "phone1",
