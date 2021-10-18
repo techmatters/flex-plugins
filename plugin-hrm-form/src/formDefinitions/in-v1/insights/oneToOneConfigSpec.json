@@ -8,11 +8,11 @@
     ],
     "childInformation": [
       {
-        "name": "village",
+        "name": "city",
         "insights": ["customers", "city"]
       },
       {
-        "name": "postalCode",
+        "name": "pinCode",
         "insights": ["customers", "zip"]
       },
       {
@@ -28,22 +28,12 @@
         "insights": ["customers", "customer_attribute_1"]
       },
       {
-        "name": "hivPositive",
-        "insights": ["customers", "category"],
-        "type": "mixed-checkbox"
-      },
-      {
         "name": "inConflictWithTheLaw",
         "insights": ["conversations", "conversation_measure_1"],
         "type": "mixed-checkbox"
       },
       {
-        "name": "livingInConflictZone",
-        "insights": ["conversations", "conversation_measure_2"],
-        "type": "mixed-checkbox"
-      },
-      {
-        "name": "livingInPoverty",
+        "name": "imminentDanger",
         "insights": ["conversations", "conversation_measure_3"],
         "type": "mixed-checkbox"
       },
@@ -88,11 +78,6 @@
       {
         "name": "didTheChildFeelWeSolvedTheirProblem",
         "insights": ["conversations", "productive"],
-        "type": "mixed-checkbox"
-      },
-      {
-        "name": "wouldTheChildRecommendUsToAFriend",
-        "insights": ["conversations", "conversation_attribute_6"],
         "type": "mixed-checkbox"
       }
     ]
