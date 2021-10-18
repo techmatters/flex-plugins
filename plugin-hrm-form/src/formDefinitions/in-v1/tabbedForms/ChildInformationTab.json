@@ -97,6 +97,25 @@
     "type": "input"
   },
   {
+    "name": "canContact",
+    "label": "Can the child be contacted for further information?",
+    "type": "checkbox",
+    "required": { "value": true, "message": "RequiredFieldError" }
+  },
+  {
+    "name": "preferredMethod",
+    "label": "Preferred Method of Contact",
+    "type": "select",
+    "options": [
+      { "value": "Unknown", "label": "" },
+      { "value": "Phone Call", "label": "Phone Call" },
+      { "value": "Email", "label": "Email" },
+      { "value": "Whatsapp Message", "label": "Whatsapp Message" },
+      { "value": "Whatsapp Call", "label": "Whatsapp Call" },
+      { "value": "Other", "label": "Other" },
+    ]  
+  },
+  {
     "name": "language",
     "label": "Language",
     "type": "select",
@@ -104,6 +123,42 @@
       { "value": "Unknown", "label": "" },
       { "value": "Hindi", "label": "Hindi" }
     ]  
+  },
+  {
+    "name": "dateBirth",
+    "label": "Date of Birth",
+    "type": "date",
+    "required": { "value": true, "message": "RequiredFieldError" }
+  },
+  {
+    "name": "validID",
+    "label": "Valid ID available?",
+    "type": "checkbox",
+    "required": { "value": true, "message": "RequiredFieldError" }
+  },
+  {
+    "name": "idType",
+    "label": "Kind of ID available",
+    "type": "select",
+    "options": [
+      { "value": "Unknown", "label": "" },
+      { "value": "Birth certificate", "label": "Birth certificate" },
+      { "value": "School leaving certificate", "label": "School leaving certificate" },
+      { "value": "Aadhar card", "label": "Aadhar card" },
+      { "value": "Passport", "label": "Passport" },
+      { "value": "Tribal identity card", "label": "Tribal identity card" },
+      { "value": "Unique disability ID", "label": "Unique disability ID" },
+      { "value": "Family certificate", "label": "Family certificate" },
+      { "value": "Ration card", "label": "Ration card" },
+      { "value": "School ID", "label": "School ID" },
+      { "value": "Junior college ID", "label": "Junior college ID" },
+      { "value": "Other", "label": "Other" }
+    ]  
+  },
+  {
+    "name": "idNumber",
+    "label": "ID Number",
+    "type": "input"
   },
   {
     "name": "schoolName",
