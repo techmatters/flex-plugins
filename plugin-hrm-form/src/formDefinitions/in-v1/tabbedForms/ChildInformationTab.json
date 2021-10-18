@@ -67,7 +67,7 @@
     "type": "input"
   },
   {
-    "name": "village",
+    "name": "city",
     "label": "City/Town/Village",
     "type": "input"
   },
