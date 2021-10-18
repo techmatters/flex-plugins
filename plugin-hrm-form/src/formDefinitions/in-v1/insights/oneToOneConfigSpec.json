@@ -16,10 +16,6 @@
         "insights": ["customers", "zip"]
       },
       {
-        "name": "ethnicity",
-        "insights": ["customers", "customer_attribute_2"]
-      },
-      {
         "name": "gradeLevel",
         "insights": ["customers", "acquisition_date"]
       },
