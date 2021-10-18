@@ -112,7 +112,7 @@
       { "value": "Email", "label": "Email" },
       { "value": "Whatsapp Message", "label": "Whatsapp Message" },
       { "value": "Whatsapp Call", "label": "Whatsapp Call" },
-      { "value": "Other", "label": "Other" },
+      { "value": "Other", "label": "Other" }
     ]  
   },
   {
@@ -127,7 +127,7 @@
   {
     "name": "dateBirth",
     "label": "Date of Birth",
-    "type": "date",
+    "type": "date-input",
     "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
