@@ -5,6 +5,12 @@
     "color": "green", 
     "transitions": ["closed"] 
   },
+  "passive": { 
+    "value": "passive", 
+    "label": "Passive", 
+    "color": "orange", 
+    "transitions": ["closed", "open"] 
+  },
   "closed": { 
     "value": "closed", 
     "label": "Closed", 
