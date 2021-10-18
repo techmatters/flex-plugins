@@ -17,20 +17,18 @@
     "options": [
       { "value": "Unknown", "label": "" },
       { "value": "Direct interventions by the child helpline", "label": "Direct interventions by the child helpline" },
-      { "value": "Recommendations of resources", "label": "Recommendations of resources" },
+      { "value": "Recommendations", "label": "Recommendations" },
       { "value": "Referrals to child protection agencies", "label": "Referrals to child protection agencies" },
       { "value": "Referrals to general healthcare professionals", "label": "Referrals to general healthcare services" },
       { "value": "Referrals to law enforcement agencies", "label": "Referrals to law enforcement agencies" },
-      { "value": "Referrals to mental health services", "label": "Referrals to mental health services" },
       { "value": "Referrals to other organisations", "label": "Referrals to other organisations" },
-      { "value": "Referrals to school counsellors", "label": "Referrals to school counsellors" },
-      { "value": "Reports to Child Sexual Abuse Material", "label": "Reports to Child Sexual Abuse Material" },
+      { "value": "Referrals to Grievance Officers", "label": "Referrals to Grievance Officers" },
       { "value": "Other", "label": "Other" }
     ]
   },
   {
     "name": "howDidYouKnowAboutOurLine",
-    "label": "How did you know about our line/number",
+    "label": "How did you hear about our line/number",
     "type": "select",
     "options": [
       { "value": "Unknown", "label": "" },
@@ -63,11 +61,6 @@
   {
     "name": "didTheChildFeelWeSolvedTheirProblem",
     "label": "Did the child feel we solved their problem?",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "wouldTheChildRecommendUsToAFriend",
-    "label": "Would the child recommend us to a friend?",
     "type": "mixed-checkbox"
   }
 ]
