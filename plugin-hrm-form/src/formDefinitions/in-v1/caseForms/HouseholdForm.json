@@ -27,8 +27,8 @@
       ]
     },
     {
-      "name": "streetAddress",
-      "label": "Street Address",
+      "name": "Address",
+      "label": "Address",
       "type": "input"
     },
     {
