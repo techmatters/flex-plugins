@@ -1,0 +1,15 @@
+{
+  "label": "Helpline",
+  "helplines": [
+    {
+      "label": "Trustline",
+      "value": "Aarambh Trustline (IN)",
+      "default": true,
+      "manager": {
+        "name": "Siddarth Pillai",
+        "phone": "+2000000000",
+        "email": "siddharth@aarambhindia.org"
+      }
+    }
+  ]
+}
