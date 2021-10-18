@@ -43,7 +43,8 @@
     {
       "name": "imminentDanger",
       "label": "Is there imminent physical danger to the child?",
-      "type": "mixed-checkbox"
+      "type": "mixed-checkbox",
+      "required": { "value": true, "message": "RequiredFieldError" }
     },
     {
       "name": "supportingEvidence",
