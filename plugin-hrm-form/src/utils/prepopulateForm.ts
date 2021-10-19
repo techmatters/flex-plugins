@@ -8,16 +8,33 @@ import type { FormDefinition } from '../components/common/forms/types';
 import { getDefinitionVersions } from '../HrmFormPlugin';
 
 /**
- * Given a form definition, grabs the "gender" named input and return the options values, or empty array.
+ * Given a key and a form definition, grabs the input with name that equals the key and return the options values, or empty array.
  */
-const getGenderOptions = (definition: FormDefinition) => {
-  const genderInputDef = definition.find(e => e.name === 'gender');
+const getSelectOptions = (key: string) => (definition: FormDefinition) => {
+  const inputDef = definition.find(e => e.name === key);
 
-  if (genderInputDef.type === 'select') return genderInputDef.options.map(e => e.value) || [];
+  if (inputDef.type === 'select') return inputDef.options.map(e => e.value) || [];
 
-  console.error('getGenderOptions called with non select input type.');
+  console.error(`getSelectOptions called with key ${key} but is a non-select input type.`);
   return [];
 };
+
+const getAgeOptions = getSelectOptions('age');
+
+/**
+ * Given a form definition, grabs the "gender" named input and return the options values, or empty array.
+ */
+const getGenderOptions = getSelectOptions('gender');
+
+type PrePopulateAnswers = 'age' | 'gender';
+const getAnswerOrUnknown = (answers: any, key: PrePopulateAnswers, mapperFunction?: (answer: string) => string) => {
+  if (!answers[key] || answers[key].error) return 'Unknown';
+
+  if (mapperFunction) return mapperFunction(answers[key].answer);
+
+  return answers[key].answer;
+};
+
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export const prepopulateForm = (task: ITask) => {
   const { CallerInformationTab, ChildInformationTab } = getDefinitionVersions().currentDefinitionVersion.tabbedForms;
@@ -30,21 +47,22 @@ export const prepopulateForm = (task: ITask) => {
     // If can't know if call is child or caller, do nothing here
     if (!answers.about_self || !['Yes', 'No'].includes(answers.about_self.answer)) return;
 
-    const age = !answers.age || answers.age.error ? 'Unknown' : mapAge(answers.age.answer);
-
     if (answers.about_self.answer === 'Yes') {
-      // future work: const ChildInformationTab = Manager.getInstance().store.getState() ... to grab the form definition when it's part of the global state (instead of bundled with the code)
+      const ageOptions = getAgeOptions(ChildInformationTab);
       const genderOptions = getGenderOptions(ChildInformationTab);
-      const gender =
-        !answers.gender || answers.gender.error ? 'Unknown' : mapGender(genderOptions)(answers.gender.answer);
+
+      const age = getAnswerOrUnknown(answers, 'age', mapAge(ageOptions));
+      const gender = getAnswerOrUnknown(answers, 'gender', mapGender(genderOptions));
 
       Manager.getInstance().store.dispatch(
         prepopulateFormChild(firstName, gender, age, capitalize(language), task.taskSid),
       );
     } else if (answers.about_self.answer === 'No') {
+      const ageOptions = getAgeOptions(CallerInformationTab);
       const genderOptions = getGenderOptions(CallerInformationTab);
-      const gender =
-        !answers.gender || answers.gender.error ? 'Unknown' : mapGender(genderOptions)(answers.gender.answer);
+
+      const age = getAnswerOrUnknown(answers, 'age', mapAge(ageOptions));
+      const gender = getAnswerOrUnknown(answers, 'gender', mapGender(genderOptions));
 
       Manager.getInstance().store.dispatch(
         prepopulateFormCaller(firstName, gender, age, capitalize(language), task.taskSid),
