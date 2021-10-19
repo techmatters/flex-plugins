@@ -57,8 +57,13 @@ export const mapAge = (ageOptions: string[]) => (age: string) => {
   if (maxAge) {
     const maxAgeInt = parseInt(maxAge.replace('>', ''), 10);
 
-    if (ageInt >= 0 && ageInt <= maxAgeInt) return age;
+    if (ageInt >= 0 && ageInt <= maxAgeInt) {
+      return ageOptions.find(o => parseInt(o, 10) === ageInt);
+    }
+
     if (ageInt > maxAgeInt) return maxAge;
+  } else {
+    console.error('Pre populate form error: no maxAge option provided.')
   }
 
   return 'Unknown';
