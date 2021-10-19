@@ -53,10 +53,13 @@ export const mapAge = (ageOptions: string[]) => (age: string) => {
   const ageInt = parseInt(age, 10);
 
   const maxAge = ageOptions.find(e => e.includes('>'));
-  const maxAgeInt = parseInt(maxAge.replace('>', ''), 10);
 
-  if (ageInt >= 0 && ageInt <= maxAgeInt) return age;
-  if (ageInt > maxAgeInt) return maxAge;
+  if (maxAge) {
+    const maxAgeInt = parseInt(maxAge.replace('>', ''), 10);
+
+    if (ageInt >= 0 && ageInt <= maxAgeInt) return age;
+    if (ageInt > maxAgeInt) return maxAge;
+  }
 
   return 'Unknown';
 };
