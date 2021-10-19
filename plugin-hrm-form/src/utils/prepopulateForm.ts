@@ -26,6 +26,15 @@ const getAgeOptions = getSelectOptions('age');
  */
 const getGenderOptions = getSelectOptions('gender');
 
+type PrePopulateAnswers = 'age' | 'gender';
+const getAnswerOrUnknown = (answers: any, key: PrePopulateAnswers, mapperFunction?: (answer: string) => string) => {
+  if (!answers[key] || answers[key].error) return 'Unknown';
+
+  if (mapperFunction) return mapperFunction(answers[key].answer);
+
+  return answers[key].answer;
+};
+
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export const prepopulateForm = (task: ITask) => {
   const { CallerInformationTab, ChildInformationTab } = getDefinitionVersions().currentDefinitionVersion.tabbedForms;
@@ -40,22 +49,20 @@ export const prepopulateForm = (task: ITask) => {
 
     if (answers.about_self.answer === 'Yes') {
       const ageOptions = getAgeOptions(ChildInformationTab);
-      const age = !answers.age || answers.age.error ? 'Unknown' : mapAge(ageOptions)(answers.age.answer);
-
       const genderOptions = getGenderOptions(ChildInformationTab);
-      const gender =
-        !answers.gender || answers.gender.error ? 'Unknown' : mapGender(genderOptions)(answers.gender.answer);
+
+      const age = getAnswerOrUnknown(answers, 'age', mapAge(ageOptions));
+      const gender = getAnswerOrUnknown(answers, 'gender', mapGender(genderOptions));
 
       Manager.getInstance().store.dispatch(
         prepopulateFormChild(firstName, gender, age, capitalize(language), task.taskSid),
       );
     } else if (answers.about_self.answer === 'No') {
       const ageOptions = getAgeOptions(CallerInformationTab);
-      const age = !answers.age || answers.age.error ? 'Unknown' : mapAge(ageOptions)(answers.age.answer);
-
       const genderOptions = getGenderOptions(CallerInformationTab);
-      const gender =
-        !answers.gender || answers.gender.error ? 'Unknown' : mapGender(genderOptions)(answers.gender.answer);
+
+      const age = getAnswerOrUnknown(answers, 'age', mapAge(ageOptions));
+      const gender = getAnswerOrUnknown(answers, 'gender', mapGender(genderOptions));
 
       Manager.getInstance().store.dispatch(
         prepopulateFormCaller(firstName, gender, age, capitalize(language), task.taskSid),
