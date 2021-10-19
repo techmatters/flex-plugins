@@ -40,6 +40,7 @@ export const prepopulateFormChild = (
   firstName: string,
   gender: string,
   age: string,
+  ethnicity: string,
   language: string,
   taskId: string,
 ): t.ContactsActionType => ({
@@ -47,6 +48,7 @@ export const prepopulateFormChild = (
   firstName,
   gender,
   age,
+  ethnicity,
   language,
   taskId,
 });
@@ -55,6 +57,7 @@ export const prepopulateFormCaller = (
   firstName: string,
   gender: string,
   age: string,
+  ethnicity: string,
   language: string,
   taskId: string,
 ): t.ContactsActionType => ({
@@ -62,6 +65,7 @@ export const prepopulateFormCaller = (
   firstName,
   gender,
   age,
+  ethnicity,
   language,
   taskId,
 });

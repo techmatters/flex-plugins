@@ -40,6 +40,7 @@ type PrePopulateFormChildAction = {
   firstName: string;
   gender: string;
   age: string;
+  ethnicity: string;
   language: string;
   taskId: string;
 };
@@ -49,6 +50,7 @@ type PrePopulateFormCallerAction = {
   firstName: string;
   gender: string;
   age: string;
+  ethnicity: string;
   language: string;
   taskId: string;
 };
