@@ -9,7 +9,7 @@ import { getDefinitionVersions } from '../HrmFormPlugin';
 
 /**
  * Get the available options from a select type
- * 
+ *
  * @param definition FormDefinition to use. e.g.: ChildInformationTab or CallerInformationTab
  * @param name property name. e.g.: age, gender, ethnicity
  * @returns the available options
@@ -17,7 +17,7 @@ import { getDefinitionVersions } from '../HrmFormPlugin';
 const getSelectOptions = (definition: FormDefinition, name: string) => {
   const inputDef = definition.find(e => e.name === name);
 
-  if(!inputDef) {
+  if (!inputDef) {
     console.error(`${name} does not exist in the current definition`);
     return [];
   } else if (inputDef.type !== 'select') {
@@ -32,7 +32,7 @@ type MapFn = (options: string[]) => (value: string) => string;
 
 /**
  * Get the value to be prepopulated from the available options.
- * 
+ *
  * @param answers the chatbot answers
  * @param definition FormDefinition to use. e.g.: ChildInformationTab or CallerInformationTab
  * @param name property name. e.g.: age, gender, ethnicity
@@ -47,15 +47,12 @@ const getSelectValue = (answers: any, definition: FormDefinition, name: string, 
   }
 
   const fallbackOption = options.includes('Unknown') ? 'Unknown' : options[options.length - 1];
-  const value =
-    !answers[name] || answers[name].error ? fallbackOption : map(options)(answers[name].answer);
-
-  return value;
+  return !answers[name] || answers[name].error ? fallbackOption : map(options)(answers[name].answer);
 };
 
 /**
  * Get the age value to be prepopulated.
- * 
+ *
  * @param answers the chatbot answers
  * @param definition FormDefinition to use. e.g.: ChildInformationTab or CallerInformationTab
  * @returns the age value to be prepopulated
@@ -78,14 +75,14 @@ export const prepopulateForm = (task: ITask) => {
 
     const isAboutSelf = answers.about_self.answer === 'Yes';
     const definitionForm = isAboutSelf ? ChildInformationTab : CallerInformationTab;
-    const prepopulateForm = isAboutSelf ? prepopulateFormChild : prepopulateFormCaller;
+    const prepopulateFormAction = isAboutSelf ? prepopulateFormChild : prepopulateFormCaller;
 
     const age = getAgeValue(answers, definitionForm);
     const gender = getSelectValue(answers, definitionForm, 'gender');
     const ethnicity = getSelectValue(answers, definitionForm, 'ethnicity');
 
     Manager.getInstance().store.dispatch(
-      prepopulateForm(firstName, gender, age, ethnicity, capitalize(language), task.taskSid),
+      prepopulateFormAction(firstName, gender, age, ethnicity, capitalize(language), task.taskSid),
     );
 
     // Open tabbed form to first tab
