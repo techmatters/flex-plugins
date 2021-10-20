@@ -1,6 +1,6 @@
 [
     {
-      "name": "Name",
+      "name": "firstName",
       "label": "Name",
       "type": "input"
     },
