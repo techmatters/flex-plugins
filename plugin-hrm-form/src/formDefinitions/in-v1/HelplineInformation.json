@@ -2,8 +2,8 @@
   "label": "Helpline",
   "helplines": [
     {
-      "label": "Trustline",
-      "value": "Aarambh Trustline (IN)",
+      "label": "Aarambh",
+      "value": "Aarambh",
       "default": true,
       "manager": {
         "name": "Siddarth Pillai",
