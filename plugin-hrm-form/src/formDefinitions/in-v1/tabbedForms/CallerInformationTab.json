@@ -1,7 +1,12 @@
 [
     {
       "name": "firstName",
-      "label": "Name",
+      "label": "First Name",
+      "type": "input"
+    },
+    {
+      "name": "lastName",
+      "label": "Last Name",
       "type": "input"
     },
     {
