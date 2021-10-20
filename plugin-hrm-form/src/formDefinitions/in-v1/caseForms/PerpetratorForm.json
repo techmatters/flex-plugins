@@ -1,8 +1,13 @@
 [
     {
-      "name": "Name",
+      "name": "firstName",
       "type": "input",
-      "label": "Name"
+      "label": "First Name"
+    },
+    {
+      "name": "lastName",
+      "type": "input",
+      "label": "Last Name"
     },
     {
       "name": "relationshipToChild",
@@ -22,7 +27,7 @@
       ]
     },
     {
-      "name": "Address",
+      "name": "address",
       "label": "Address",
       "type": "input"
     },
