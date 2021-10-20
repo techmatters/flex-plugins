@@ -27,7 +27,7 @@
       ]
     },
     {
-      "name": "Address",
+      "name": "address",
       "label": "Address",
       "type": "input"
     },
