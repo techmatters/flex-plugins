@@ -49,7 +49,9 @@ const getAnswerOrUnknown = (
   if (answers[key].answer === unknown) return unknown;
 
   const options = getSelectOptions(key)(definition);
-  return mapperFunction(options)(answers[key].answer);
+  const result = mapperFunction(options)(answers[key].answer);
+
+  return result === 'Unknown' ? unknown : result;
 };
 
 export const prepopulateForm = (task: ITask) => {
