@@ -47,7 +47,7 @@ type NumericInputDefinition = {
 } & ItemBase &
   RegisterOptions;
 
-export type SelectOption = { value: any; label: string };
+export type SelectOption = { value: any; label: string; unknown?: boolean };
 
 type SelectDefinition = {
   type: 'select';

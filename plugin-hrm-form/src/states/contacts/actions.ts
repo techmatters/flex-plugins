@@ -1,7 +1,7 @@
 /* eslint-disable import/no-unused-modules */
 import * as t from './types';
 import { TaskEntry } from './reducer';
-import { CallTypes } from '../DomainConstants';
+import { CallTypes, DataCallTypes } from '../DomainConstants';
 
 // Action creators
 export const updateForm = (
@@ -36,33 +36,14 @@ export const handleExpandCategory = (category: string, taskId: string) => ({
   taskId,
 });
 
-export const prepopulateFormChild = (
-  firstName: string,
-  gender: string,
-  age: string,
-  language: string,
+export const prepopulateForm = (
+  callType: DataCallTypes,
+  values: { [property: string]: string },
   taskId: string,
 ): t.ContactsActionType => ({
-  type: t.PREPOPULATE_FORM_CHILD,
-  firstName,
-  gender,
-  age,
-  language,
-  taskId,
-});
-
-export const prepopulateFormCaller = (
-  firstName: string,
-  gender: string,
-  age: string,
-  language: string,
-  taskId: string,
-): t.ContactsActionType => ({
-  type: t.PREPOPULATE_FORM_CALLER,
-  firstName,
-  gender,
-  age,
-  language,
+  type: t.PREPOPULATE_FORM,
+  callType,
+  values,
   taskId,
 });
 

@@ -12,6 +12,7 @@ const callTypes = {
 
 export type CallTypeKeys = keyof typeof callTypes;
 export type CallTypes = typeof callTypes[keyof typeof callTypes];
+export type DataCallTypes = typeof callTypes['child' | 'caller'];
 
 export const channelTypes = {
   facebook: 'facebook',
