@@ -1,5 +1,5 @@
 {
-  "Trustline Aarambh (IN)": {
+  "Aarambh": {
     "Intimate Content Shared without Consent": {
       "color": "#BBE3FF",
       "subcategories": [
@@ -15,8 +15,19 @@
         "Unspecified/Other"
       ]
     },
-    "Cyberbullying": {
+    "Sexual Offenses": {
       "color": "#F5A623",
+      "subcategories": [
+        "Penetrative Sexual Assualt",
+        "Aggravated Penetrative Sexual Assualt", 
+        "Sexual Assualt",
+        "Aggravated Sexual Assault", 
+        "Sexual Harrasmment",
+        "Unspecified/Other"
+      ]
+    },
+    "Cyberbullying": {
+      "color": "#F8E900",
       "subcategories": [
         "Threats of Onground Consequences/Violence",
         "Threats of Online Consequences/Violence",
@@ -33,7 +44,7 @@
       ]
     },
     "Mental Health": {
-      "color": "#F8E900",
+      "color": "#E86B6B",
       "subcategories": [
         "Addictive behaviours and substance use",
         "Behavioural problems",
