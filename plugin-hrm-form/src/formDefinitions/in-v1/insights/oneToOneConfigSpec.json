@@ -12,7 +12,7 @@
         "insights": ["customers", "city"]
       },
       {
-        "name": "pinCode",
+        "name": "postalCode",
         "insights": ["customers", "zip"]
       },
       {
