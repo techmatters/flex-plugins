@@ -47,7 +47,7 @@
       "type": "input"
     },
     {
-      "name": "pinCode",
+      "name": "postalCode",
       "label": "Pin Code",
       "type": "input"
     },    
