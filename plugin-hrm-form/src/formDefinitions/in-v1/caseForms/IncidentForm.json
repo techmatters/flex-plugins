@@ -39,6 +39,18 @@
       "name": "otherPlatform",
       "label": "If Other, please specify platform",
       "type": "input"
+    },     
+    {
+      "name": "firNo",
+      "label": "FIR NO",
+      "type": "input",
+      "required": { "value": true, "message": "RequiredFieldError" }
+    },
+    {
+      "name": "sectionsBooked",
+      "label": "Sections under which offence is booked",
+      "type": "input",
+      "required": { "value": true, "message": "RequiredFieldError" }
     },
     {
       "name": "imminentDanger",
@@ -79,6 +91,66 @@
     {
       "name": "whereElseBeenReported",
       "label": "Where else the incident has been reported?",
+      "type": "input"
+    },
+    {
+      "name": "medicalExamDate",
+      "label": "Date of Medical Examination",
+      "type": "date-input"
+    },
+    {
+      "name": "hospitalName",
+      "label": "Hospital Name",
+      "type": "input"
+    },
+    {
+      "name": "medicalExamReport",
+      "label": "Medical examination report available?",
+      "type": "checkbox"
+    },
+    {
+      "name": "cwcOrder",
+      "label": "CWC Orders",
+      "type": "input"
+    },
+    {
+      "name": "sirDate",
+      "label": "SIR Date",
+      "type": "date-input"
+    },
+    {
+      "name": "sirSubmitDate",
+      "label": "SIR Submission Date",
+      "type": "date-input"
+    },
+    {
+      "name": "courtJurisdisction",
+      "label": "Court Jurisdiction",
+      "type": "input"
+    },
+    {
+      "name": "crpcStmntDate",
+      "label": "164 CrPC Statement Date",
+      "type": "date-input"
+    },
+    {
+      "name": "chargeshtDate",
+      "label": "Chargesheet Submission Date",
+      "type": "date-input"
+    },
+    {
+      "name": "legalStatus",
+      "label": "Current Legal Status",
+      "type": "input"
+    },
+    {
+      "name": "compStatus",
+      "label": "Compensation Status",
+      "type": "input"
+    },
+    {
+      "name": "judgement",
+      "label": "Judgement",
       "type": "input"
     }
   ]
