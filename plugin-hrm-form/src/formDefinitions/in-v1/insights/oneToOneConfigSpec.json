@@ -16,6 +16,14 @@
         "insights": ["customers", "zip"]
       },
       {
+        "name": "district",
+        "insights": ["customers", "customer_attribute_6"]
+      },
+      {
+        "name": "state",
+        "insights": ["customers", "conversation_attribute_2"]
+      },
+      {
         "name": "gradeLevel",
         "insights": ["customers", "acquisition_date"]
       },
