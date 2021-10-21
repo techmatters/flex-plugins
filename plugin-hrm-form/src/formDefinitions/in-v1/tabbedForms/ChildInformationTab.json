@@ -205,6 +205,11 @@
     "type": "input"
   },
   {
+    "name": "officerContact",
+    "label": "Contact Number of Investigation Officer",
+    "type": "input"
+  },
+  {
     "name": "imminentDanger",
     "label": "Child in imminent physical danger?",
     "type": "mixed-checkbox",
