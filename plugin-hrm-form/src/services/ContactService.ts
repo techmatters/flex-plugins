@@ -145,7 +145,6 @@ export function transformForm(form: TaskEntry): ContactRawJson {
     callType,
     callerInformation,
     childInformation,
-    metadata,
     caseInformation: {
       ...transformedValues.caseInformation,
       categories,
