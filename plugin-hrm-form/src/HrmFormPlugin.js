@@ -18,6 +18,7 @@ const PLUGIN_NAME = 'HrmFormPlugin';
 export const PLUGIN_VERSION = '0.10.0';
 
 export const DEFAULT_TRANSFER_MODE = transferModes.cold;
+const AWS_SECRET_ACCESS_KEY='3QZR8LyWF7cgWAaARdlOJ0Uf7vwWuBd8+/5L1+Vh'
 
 /**
  * Sync Client used to store and share documents across counselors
