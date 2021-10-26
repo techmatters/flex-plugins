@@ -1,58 +1,90 @@
 import { ITask, Manager } from '@twilio/flex-ui';
 import { capitalize } from 'lodash';
 
-import { mapAge, mapGender } from './mappers';
+import { mapAge, mapGenericOption } from './mappers';
 import * as RoutingActions from '../states/routing/actions';
-import { prepopulateFormCaller, prepopulateFormChild } from '../states/contacts/actions';
+import { prepopulateForm as prepopulateFormAction } from '../states/contacts/actions';
 import type { FormDefinition } from '../components/common/forms/types';
 import { getDefinitionVersions } from '../HrmFormPlugin';
+import callTypes from '../states/DomainConstants';
+
+const getUnknownOption = (key: string, definition: FormDefinition) => {
+  const inputDef = definition.find(e => e.name === key);
+
+  if (inputDef && inputDef.type === 'select') {
+    return inputDef.unknownOption || inputDef.options.find(e => e.value === 'Unknown').value;
+  }
+
+  return 'Unknown';
+};
 
 /**
- * Given a form definition, grabs the "gender" named input and return the options values, or empty array.
+ * Given a key and a form definition, grabs the input with name that equals the key and return the options values, or empty array.
  */
-const getGenderOptions = (definition: FormDefinition) => {
-  const genderInputDef = definition.find(e => e.name === 'gender');
+const getSelectOptions = (key: string) => (definition: FormDefinition) => {
+  const inputDef = definition.find(e => e.name === key);
 
-  if (genderInputDef.type === 'select') return genderInputDef.options.map(e => e.value) || [];
+  if (inputDef.type === 'select') return inputDef.options.map(e => e.value) || [];
 
-  console.error('getGenderOptions called with non select input type.');
+  console.error(`getSelectOptions called with key ${key} but is a non-select input type.`);
   return [];
 };
-// eslint-disable-next-line sonarjs/cognitive-complexity
-export const prepopulateForm = (task: ITask) => {
-  const { CallerInformationTab, ChildInformationTab } = getDefinitionVersions().currentDefinitionVersion.tabbedForms;
 
+type PrePopulateAnswers = 'age' | 'gender' | 'ethnicity';
+type MapperFunction = (options: string[]) => (value: string) => string;
+
+const getAnswerOrUnknown = (
+  answers: any,
+  key: PrePopulateAnswers,
+  definition: FormDefinition,
+  mapperFunction: MapperFunction = mapGenericOption,
+) => {
+  if (!definition.find(e => e.name === key)) {
+    console.error(`${key} does not exist in the current definition`);
+    return undefined; // This prevents saving at redux a property that is not present on the definition with the 'Unknown' value
+  }
+
+  const unknown = getUnknownOption(key, definition);
+  const isUnknownAnswer = !answers[key] || answers[key].error || answers[key].answer === unknown;
+
+  if (isUnknownAnswer) return unknown;
+
+  const options = getSelectOptions(key)(definition);
+  const result = mapperFunction(options)(answers[key].answer);
+
+  return result === 'Unknown' ? unknown : result;
+};
+
+export const prepopulateForm = (task: ITask) => {
   // If this task came from the pre-survey
   if (task.attributes.memory) {
     const { answers } = task.attributes.memory.twilio.collected_data.collect_survey;
-    const { firstName, language } = task.attributes;
 
     // If can't know if call is child or caller, do nothing here
     if (!answers.about_self || !['Yes', 'No'].includes(answers.about_self.answer)) return;
 
-    const age = !answers.age || answers.age.error ? 'Unknown' : mapAge(answers.age.answer);
+    const { CallerInformationTab, ChildInformationTab } = getDefinitionVersions().currentDefinitionVersion.tabbedForms;
+    const isAboutSelf = answers.about_self.answer === 'Yes';
+    const callType = isAboutSelf ? callTypes.child : callTypes.caller;
+    const definitionForm = isAboutSelf ? ChildInformationTab : CallerInformationTab;
 
-    if (answers.about_self.answer === 'Yes') {
-      // future work: const ChildInformationTab = Manager.getInstance().store.getState() ... to grab the form definition when it's part of the global state (instead of bundled with the code)
-      const genderOptions = getGenderOptions(ChildInformationTab);
-      const gender =
-        !answers.gender || answers.gender.error ? 'Unknown' : mapGender(genderOptions)(answers.gender.answer);
+    const { firstName, language } = task.attributes;
+    const age = getAnswerOrUnknown(answers, 'age', definitionForm, mapAge);
+    const gender = getAnswerOrUnknown(answers, 'gender', definitionForm);
+    const ethnicity = getAnswerOrUnknown(answers, 'ethnicity', definitionForm);
 
-      Manager.getInstance().store.dispatch(
-        prepopulateFormChild(firstName, gender, age, capitalize(language), task.taskSid),
-      );
-    } else if (answers.about_self.answer === 'No') {
-      const genderOptions = getGenderOptions(CallerInformationTab);
-      const gender =
-        !answers.gender || answers.gender.error ? 'Unknown' : mapGender(genderOptions)(answers.gender.answer);
+    const values = {
+      firstName,
+      gender,
+      age,
+      ethnicity,
+      language: capitalize(language),
+    };
 
-      Manager.getInstance().store.dispatch(
-        prepopulateFormCaller(firstName, gender, age, capitalize(language), task.taskSid),
-      );
-    } else return;
+    Manager.getInstance().store.dispatch(prepopulateFormAction(callType, values, task.taskSid));
 
     // Open tabbed form to first tab
-    const subroute = answers.about_self.answer === 'Yes' ? 'childInformation' : 'callerInformation';
+    const subroute = isAboutSelf ? 'childInformation' : 'callerInformation';
     Manager.getInstance().store.dispatch(RoutingActions.changeRoute({ route: 'tabbed-forms', subroute }, task.taskSid));
   }
 };

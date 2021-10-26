@@ -37,17 +37,22 @@ jobs:
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
           ssm_parameter: "DEV_DATADOG_AS_APP_ID"
-          env_variable_name: "DEV_DATADOG_AS_APP_ID"
+          env_variable_name: "DATADOG_APP_ID"
       - name: Set Datadog Client Access token
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
           ssm_parameter: "DEV_DATADOG_AS_ACCESS_TOKEN"
-          env_variable_name: "DEV_DATADOG_AS_ACCESS_TOKEN"
+          env_variable_name: "DATADOG_ACCESS_TOKEN"
       - name: Set Rollbar Client Access token
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
           ssm_parameter: "ROLLBAR_ACCESS_TOKEN"
           env_variable_name: "ROLLBAR_ACCESS_TOKEN" 
+      - name: Set Fullstory org id
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "FULLSTORY_ID"
+          env_variable_name: "FULLSTORY_ID"
       # Create temporal files for the release
       - name: Create appConfig.js
         run: cp ./public/appConfig.example.js ./public/appConfig.js
@@ -67,8 +72,9 @@ jobs:
         run: |
           cat <<EOT >> ./src/private/secret.js
           export const rollbarAccessToken = '$ROLLBAR_ACCESS_TOKEN';
-          export const datadogAccessToken = '$DEV_DATADOG_AS_ACCESS_TOKEN';
-          export const datadogApplicationID = '$DEV_DATADOG_AS_APP_ID';
+          export const datadogAccessToken = '$DATADOG_ACCESS_TOKEN';
+          export const datadogApplicationID = '$DATADOG_APP_ID';
+          export const fullStoryId = '$FULLSTORY_ID';
           EOT
         working-directory: ./plugin-hrm-form
       # Runs a single command using the runners shell  

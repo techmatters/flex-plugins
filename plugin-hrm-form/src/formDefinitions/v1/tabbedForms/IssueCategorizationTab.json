@@ -183,16 +183,15 @@
       ]
     },
     "Education and Occupation": {
-      "color": "#E86B6B",
+      "color": "#8055BA",
       "subcategories": [
         "Problems at learning institution",
         "Problems at work",
-        "Social Cash Transfer",
         "Unspecified/Other"
       ]
     },
-    "SWL": {
-      "color": "#E86B6B",
+    "Supporting Women's Livelihood (SWL)": {
+      "color": "#B971AF",
       "subcategories": [
         "Inclusion",
         "Exclusion",
@@ -204,8 +203,8 @@
         "Unspecified/Other"
       ]
     },
-    "KGS": {
-      "color": "#E86B6B",
+    "Keeping Girls in School (KGS)": {
+      "color": "#239613",
       "subcategories": [
         "Inclusion",
         "Exclusion",
@@ -216,8 +215,8 @@
         "Unspecified/Other"
       ]
     },
-    "SCT": {
-      "color": "#E86B6B",
+    "Social Cash Transfer (SCT)": {
+      "color": "#9AD703",
       "subcategories": [
         "Inclusion",
         "Exclusion",

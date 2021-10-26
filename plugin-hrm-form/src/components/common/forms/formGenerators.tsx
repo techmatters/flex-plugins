@@ -103,6 +103,8 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
   const rules = getRules(def);
   const path = [...parents, def.name].join('.');
 
+  const labelTextComponent = <Template code={`${def.label}`} className=".fullstory-unmask" />;
+
   switch (def.type) {
     case 'input':
       return (
@@ -113,7 +115,7 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
               <FormLabel htmlFor={path}>
                 <Row>
                   <Box marginBottom="8px">
-                    <Template code={`${def.label}`} />
+                    {labelTextComponent}
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
@@ -146,7 +148,7 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
               <FormLabel htmlFor={path}>
                 <Row>
                   <Box marginBottom="8px">
-                    <Template code={`${def.label}`} />
+                    {labelTextComponent}
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
@@ -184,7 +186,7 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
               <FormLabel htmlFor={path}>
                 <Row>
                   <Box marginBottom="8px">
-                    <Template code={`${def.label}`} />
+                    {labelTextComponent}
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
@@ -252,7 +254,7 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
               <DependentSelectLabel htmlFor={path} disabled={disabled}>
                 <Row>
                   <Box marginBottom="8px">
-                    <Template code={`${def.label}`} />
+                    {labelTextComponent}
                     {hasOptions && rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
@@ -301,7 +303,7 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
                       defaultChecked={initialValue}
                     />
                   </Box>
-                  <Template code={`${def.label}`} />
+                  {labelTextComponent}
                   {rules.required && <RequiredAsterisk />}
                 </FormCheckBoxWrapper>
                 {error && (
@@ -351,7 +353,7 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
                       }}
                     />
                   </Box>
-                  <Template code={`${def.label}`} />
+                  {labelTextComponent}
                   {rules.required && <RequiredAsterisk />}
                 </FormCheckBoxWrapper>
                 {error && (
@@ -373,7 +375,7 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
               <FormLabel htmlFor={path}>
                 <Row>
                   <Box marginBottom="8px">
-                    <Template code={`${def.label}`} />
+                    {labelTextComponent}
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
@@ -408,7 +410,7 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
               <FormLabel htmlFor={path}>
                 <Row>
                   <Box marginBottom="8px">
-                    <Template code={`${def.label}`} />
+                    {labelTextComponent}
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
@@ -442,7 +444,7 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
               <FormLabel htmlFor={path}>
                 <Row>
                   <Box marginBottom="8px">
-                    <Template code={`${def.label}`} />
+                    {labelTextComponent}
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
@@ -479,7 +481,7 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
               watch={watch}
               rules={rules}
               path={path}
-              label={def.label}
+              label={labelTextComponent}
               description={def.description}
               onFileChange={customHandlers.onFileChange}
               onDeleteFile={customHandlers.onDeleteFile}

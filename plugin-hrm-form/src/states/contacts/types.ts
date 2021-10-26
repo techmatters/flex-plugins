@@ -1,4 +1,5 @@
 import type { TaskEntry } from './reducer';
+import { DataCallTypes } from '../DomainConstants';
 
 // Action types
 export const UPDATE_FORM = 'UPDATE_FORM';
@@ -6,8 +7,7 @@ export const SAVE_END_MILLIS = 'SAVE_END_MILLIS';
 export const SET_CATEGORIES_GRID_VIEW = 'SET_CATEGORIES_GRID_VIEW';
 export const HANDLE_EXPAND_CATEGORY = 'HANDLE_EXPAND_CATEGORY';
 export const HANDLE_SELECT_SEARCH_RESULT = 'HANDLE_SELECT_SEARCH_RESULT';
-export const PREPOPULATE_FORM_CHILD = 'PREPOPULATE_FORM_CHILD';
-export const PREPOPULATE_FORM_CALLER = 'PREPOPULATE_FORM_CALLER';
+export const PREPOPULATE_FORM = 'PREPOPULATE_FORM';
 export const RESTORE_ENTIRE_FORM = 'RESTORE_ENTIRE_FORM';
 export const UPDATE_HELPLINE = 'UPDATE_HELPLINE';
 
@@ -35,21 +35,10 @@ type HandleExpandCategoryAction = {
   taskId: string;
 };
 
-type PrePopulateFormChildAction = {
-  type: typeof PREPOPULATE_FORM_CHILD;
-  firstName: string;
-  gender: string;
-  age: string;
-  language: string;
-  taskId: string;
-};
-
-type PrePopulateFormCallerAction = {
-  type: typeof PREPOPULATE_FORM_CALLER;
-  firstName: string;
-  gender: string;
-  age: string;
-  language: string;
+type PrePopulateFormAction = {
+  type: typeof PREPOPULATE_FORM;
+  callType: DataCallTypes;
+  values: { [property: string]: string };
   taskId: string;
 };
 
@@ -70,7 +59,6 @@ export type ContactsActionType =
   | SaveEndMillisAction
   | SetCategoriesGridViewAction
   | HandleExpandCategoryAction
-  | PrePopulateFormChildAction
-  | PrePopulateFormCallerAction
+  | PrePopulateFormAction
   | RestoreEntireFormAction
   | UpdateHelpline;
