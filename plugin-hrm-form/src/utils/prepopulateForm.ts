@@ -1,11 +1,22 @@
 import { ITask, Manager } from '@twilio/flex-ui';
 import { capitalize } from 'lodash';
 
-import { mapAge, mapGender } from './mappers';
+import { mapAge, mapGenericOption } from './mappers';
 import * as RoutingActions from '../states/routing/actions';
-import { prepopulateFormCaller, prepopulateFormChild } from '../states/contacts/actions';
+import { prepopulateForm as prepopulateFormAction } from '../states/contacts/actions';
 import type { FormDefinition } from '../components/common/forms/types';
 import { getDefinitionVersions } from '../HrmFormPlugin';
+import callTypes from '../states/DomainConstants';
+
+const getUnknownOption = (key: string, definition: FormDefinition) => {
+  const inputDef = definition.find(e => e.name === key);
+
+  if (inputDef && inputDef.type === 'select') {
+    return inputDef.unknownOption || inputDef.options.find(e => e.value === 'Unknown').value;
+  }
+
+  return 'Unknown';
+};
 
 /**
  * Given a key and a form definition, grabs the input with name that equals the key and return the options values, or empty array.
@@ -19,58 +30,61 @@ const getSelectOptions = (key: string) => (definition: FormDefinition) => {
   return [];
 };
 
-const getAgeOptions = getSelectOptions('age');
+type PrePopulateAnswers = 'age' | 'gender' | 'ethnicity';
+type MapperFunction = (options: string[]) => (value: string) => string;
 
-/**
- * Given a form definition, grabs the "gender" named input and return the options values, or empty array.
- */
-const getGenderOptions = getSelectOptions('gender');
+const getAnswerOrUnknown = (
+  answers: any,
+  key: PrePopulateAnswers,
+  definition: FormDefinition,
+  mapperFunction: MapperFunction = mapGenericOption,
+) => {
+  if (!definition.find(e => e.name === key)) {
+    console.error(`${key} does not exist in the current definition`);
+    return undefined; // This prevents saving at redux a property that is not present on the definition with the 'Unknown' value
+  }
 
-type PrePopulateAnswers = 'age' | 'gender';
-const getAnswerOrUnknown = (answers: any, key: PrePopulateAnswers, mapperFunction?: (answer: string) => string) => {
-  if (!answers[key] || answers[key].error) return 'Unknown';
+  const unknown = getUnknownOption(key, definition);
+  const isUnknownAnswer = !answers[key] || answers[key].error || answers[key].answer === unknown;
 
-  if (mapperFunction) return mapperFunction(answers[key].answer);
+  if (isUnknownAnswer) return unknown;
 
-  return answers[key].answer;
+  const options = getSelectOptions(key)(definition);
+  const result = mapperFunction(options)(answers[key].answer);
+
+  return result === 'Unknown' ? unknown : result;
 };
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 export const prepopulateForm = (task: ITask) => {
-  const { CallerInformationTab, ChildInformationTab } = getDefinitionVersions().currentDefinitionVersion.tabbedForms;
-
   // If this task came from the pre-survey
   if (task.attributes.memory) {
     const { answers } = task.attributes.memory.twilio.collected_data.collect_survey;
-    const { firstName, language } = task.attributes;
 
     // If can't know if call is child or caller, do nothing here
     if (!answers.about_self || !['Yes', 'No'].includes(answers.about_self.answer)) return;
 
-    if (answers.about_self.answer === 'Yes') {
-      const ageOptions = getAgeOptions(ChildInformationTab);
-      const genderOptions = getGenderOptions(ChildInformationTab);
+    const { CallerInformationTab, ChildInformationTab } = getDefinitionVersions().currentDefinitionVersion.tabbedForms;
+    const isAboutSelf = answers.about_self.answer === 'Yes';
+    const callType = isAboutSelf ? callTypes.child : callTypes.caller;
+    const definitionForm = isAboutSelf ? ChildInformationTab : CallerInformationTab;
 
-      const age = getAnswerOrUnknown(answers, 'age', mapAge(ageOptions));
-      const gender = getAnswerOrUnknown(answers, 'gender', mapGender(genderOptions));
+    const { firstName, language } = task.attributes;
+    const age = getAnswerOrUnknown(answers, 'age', definitionForm, mapAge);
+    const gender = getAnswerOrUnknown(answers, 'gender', definitionForm);
+    const ethnicity = getAnswerOrUnknown(answers, 'ethnicity', definitionForm);
 
-      Manager.getInstance().store.dispatch(
-        prepopulateFormChild(firstName, gender, age, capitalize(language), task.taskSid),
-      );
-    } else if (answers.about_self.answer === 'No') {
-      const ageOptions = getAgeOptions(CallerInformationTab);
-      const genderOptions = getGenderOptions(CallerInformationTab);
+    const values = {
+      firstName,
+      gender,
+      age,
+      ethnicity,
+      language: capitalize(language),
+    };
 
-      const age = getAnswerOrUnknown(answers, 'age', mapAge(ageOptions));
-      const gender = getAnswerOrUnknown(answers, 'gender', mapGender(genderOptions));
-
-      Manager.getInstance().store.dispatch(
-        prepopulateFormCaller(firstName, gender, age, capitalize(language), task.taskSid),
-      );
-    } else return;
+    Manager.getInstance().store.dispatch(prepopulateFormAction(callType, values, task.taskSid));
 
     // Open tabbed form to first tab
-    const subroute = answers.about_self.answer === 'Yes' ? 'childInformation' : 'callerInformation';
+    const subroute = isAboutSelf ? 'childInformation' : 'callerInformation';
     Manager.getInstance().store.dispatch(RoutingActions.changeRoute({ route: 'tabbed-forms', subroute }, task.taskSid));
   }
 };

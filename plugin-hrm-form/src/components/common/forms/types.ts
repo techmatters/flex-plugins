@@ -53,6 +53,7 @@ type SelectDefinition = {
   type: 'select';
   options: SelectOption[];
   defaultOption?: SelectOption['value'];
+  unknownOption?: SelectOption['value'];
 } & ItemBase &
   RegisterOptions;
 

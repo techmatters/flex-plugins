@@ -13,6 +13,7 @@
     "name": "gender",
     "label": "Gênero",
     "type": "select",
+    "unknownOption": "Desconhecido",
     "options": [
       { "value": "", "label": "" },
       { "value": "Menino/Garoto/Homem", "label": "Menino/Garoto/Homem" },
@@ -26,6 +27,7 @@
     "name": "age",
     "label": "Idade",
     "type": "select",
+    "unknownOption": "Desconhecido",
     "options": [
       { "value": "", "label": "" },
       { "value": "00", "label": "0" },

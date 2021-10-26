@@ -13,6 +13,7 @@
     "name": "gender",
     "label": "Gênero",
     "type": "select",
+    "unknownOption": "Desconhecido",
     "options": [
       { "value": "", "label": "" },
       { "value": "Menino/Garoto/Homem", "label": "Menino/Garoto/Homem" },
@@ -26,6 +27,7 @@
     "name": "age",
     "label": "Idade",
     "type": "select",
+    "unknownOption": "Desconhecido",
     "options": [
       { "value": "", "label": "" },
       { "value": "Por nascer", "label": "Por nascer" },
@@ -64,6 +66,7 @@
     "name": "ethnicity",
     "label": "Raça/Cor",
     "type": "select",
+    "unknownOption": "Desconhecido",
     "options": [
       { "value": "", "label": "" },
       { "value": "Branca", "label": "Branca" },

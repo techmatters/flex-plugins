@@ -180,9 +180,10 @@ export function reduce(state = initialState, action: t.ContactsActionType | Gene
         },
       };
     }
-    case t.PREPOPULATE_FORM_CHILD: {
+    case t.PREPOPULATE_FORM: {
       const currentTask = state.tasks[action.taskId];
-      const { firstName, gender, age, language } = action;
+      const { callType, values } = action;
+      const formName = callType === callTypes.child ? 'childInformation' : 'callerInformation';
 
       return {
         ...state,
@@ -190,35 +191,10 @@ export function reduce(state = initialState, action: t.ContactsActionType | Gene
           ...state.tasks,
           [action.taskId]: {
             ...currentTask,
-            callType: callTypes.child,
-            childInformation: {
-              ...currentTask.childInformation,
-              firstName,
-              gender,
-              age,
-              language,
-            },
-          },
-        },
-      };
-    }
-    case t.PREPOPULATE_FORM_CALLER: {
-      const currentTask = state.tasks[action.taskId];
-      const { firstName, gender, age, language } = action;
-
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: {
-            ...currentTask,
-            callType: callTypes.caller,
-            callerInformation: {
-              ...currentTask.callerInformation,
-              firstName,
-              gender,
-              age,
-              language,
+            callType,
+            [formName]: {
+              ...currentTask[formName],
+              ...values,
             },
           },
         },
