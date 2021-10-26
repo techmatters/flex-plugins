@@ -8,7 +8,7 @@
     ],
     "childInformation": [
       {
-        "name": "state",
+        "name": "city",
         "insights": ["customers", "city"]
       },
       {
