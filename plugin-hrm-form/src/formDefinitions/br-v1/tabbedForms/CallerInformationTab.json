@@ -13,12 +13,13 @@
     "name": "gender",
     "label": "Gênero",
     "type": "select",
+    "unknownOption": "Desconhecido",
     "options": [
       { "value": "", "label": "" },
       { "value": "Menino/Garoto/Homem", "label": "Menino/Garoto/Homem" },
       { "value": "Menina/Garota/Mulher", "label": "Menina/Garota/Mulher" },
       { "value": "Não-binário", "label": "Não-binário" },
-      { "value": "Desconhecido", "label": "Desconhecido", "unknown": true }
+      { "value": "Desconhecido", "label": "Desconhecido" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" }
   },
@@ -26,6 +27,7 @@
     "name": "age",
     "label": "Idade",
     "type": "select",
+    "unknownOption": "Desconhecido",
     "options": [
       { "value": "", "label": "" },
       { "value": "00", "label": "0" },
@@ -55,7 +57,7 @@
       { "value": "24", "label": "24" },
       { "value": "25", "label": "25" },
       { "value": ">25", "label": ">25" },
-      { "value": "Desconhecido", "label": "Desconhecido", "unknown": true }
+      { "value": "Desconhecido", "label": "Desconhecido" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" }
   },

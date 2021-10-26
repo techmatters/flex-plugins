@@ -12,7 +12,7 @@ const getUnknownOption = (key: string, definition: FormDefinition) => {
   const inputDef = definition.find(e => e.name === key);
 
   if (inputDef && inputDef.type === 'select') {
-    return inputDef.options.find(e => e.unknown || e.value === 'Unknown').value;
+    return inputDef.unknownOption || inputDef.options.find(e => e.value === 'Unknown').value;
   }
 
   return 'Unknown';

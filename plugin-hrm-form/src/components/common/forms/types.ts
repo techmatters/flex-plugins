@@ -47,12 +47,13 @@ type NumericInputDefinition = {
 } & ItemBase &
   RegisterOptions;
 
-export type SelectOption = { value: any; label: string; unknown?: boolean };
+export type SelectOption = { value: any; label: string };
 
 type SelectDefinition = {
   type: 'select';
   options: SelectOption[];
   defaultOption?: SelectOption['value'];
+  unknownOption?: SelectOption['value'];
 } & ItemBase &
   RegisterOptions;
 
