@@ -302,7 +302,7 @@
     "options": [
       { "value": "Unknown", "label": "" },
       { "value": "Bemba", "label": "Bemba" },
-      { "value": "English", "label": "English" },
+      { "value": "en-US", "label": "English" },
       { "value": "Kaonde", "label": "Kaonde" },
       { "value": "Lozi", "label": "Lozi" },
       { "value": "Lunda", "label": "Lunda" },
