@@ -133,7 +133,7 @@
   },
   "LifeLine Zambia (ZM)": {
     "Physical and Sexual Health": {
-      "color": "#F5A623",
+      "color": "#BBE3FF",
       "subcategories": [
         "COVID-19",
         "Condom Use",
@@ -147,7 +147,7 @@
       ]
     },
     "Mental Health": {
-      "color": "#F8E900",
+      "color": "#F5A623",
       "subcategories": [
         "Emotional distress – anger problems",
         "Emotional distress – fear and anxiety problems",
