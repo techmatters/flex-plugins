@@ -45,8 +45,9 @@ const getAnswerOrUnknown = (
   }
 
   const unknown = getUnknownOption(key, definition);
-  if (!answers[key] || answers[key].error) return unknown;
-  if (answers[key].answer === unknown) return unknown;
+  const isUnknownAnswer = !answers[key] || answers[key].error || answers[key].answer === unknown;
+
+  if (isUnknownAnswer) return unknown;
 
   const options = getSelectOptions(key)(definition);
   const result = mapperFunction(options)(answers[key].answer);
