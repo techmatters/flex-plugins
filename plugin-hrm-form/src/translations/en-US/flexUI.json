@@ -285,6 +285,7 @@
 
   "RequiredFieldError": "This field is required.",
   "DateCantBeGreaterThanToday": "Date can't be greater than today.",
+  "DateCantBeLesserThanEpoch": "Date can't be lesser than 00:00:00 UTC on 1 January 1970.",
   "TimeCantBeGreaterThanNow": "Time can't be greater than now.",
   "NoCaseSummary": "No case summary",
   "CannedResponses": "Canned Responses",
