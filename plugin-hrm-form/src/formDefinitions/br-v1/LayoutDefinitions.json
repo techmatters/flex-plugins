@@ -3,7 +3,7 @@
     "callerInformation": {
     },
     "childInformation": {
-      "splitFormAt": 12
+      "splitFormAt": 5
     },
     "caseInformation": {
       "splitFormAt": 4
@@ -11,10 +11,10 @@
   },
   "case": {
     "households": {
-      "splitFormAt": 7
+      "splitFormAt": 2
     },
     "perpetrators": {
-      "splitFormAt": 7
+      "splitFormAt": 2
     },
     "incidents": {
       "previewFields": ["date", "duration", "location"],
@@ -30,7 +30,7 @@
           "includeLabel": true
         }
       },
-      "splitFormAt": 3
+      "splitFormAt": 2
     },
     "referrals": {
       "splitFormAt": 2

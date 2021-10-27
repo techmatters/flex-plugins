@@ -2,8 +2,8 @@
     "label": "Helpline",
     "helplines": [
       {
-        "label": "Safernet",
-        "value": "Safernet",
+        "label": "SaferNet",
+        "value": "SaferNet",
         "default": true,
         "manager": {
           "name": "Juliana Cunha",
