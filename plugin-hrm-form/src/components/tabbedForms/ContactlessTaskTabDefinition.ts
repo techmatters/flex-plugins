@@ -54,7 +54,15 @@ export const createContactlessTaskTabDefinition = (
       required: { value: true, message: 'RequiredFieldError' },
       validate: date => {
         const [y, m, d] = splitDate(date);
-        return isFuture(new Date(y, m - 1, d)) ? 'DateCantBeGreaterThanToday' : null;
+        const inputDate = new Date(y, m - 1, d);
+
+        // Date is lesser than Unix epoch (00:00:00 UTC on 1 January 1970)
+        if (inputDate.getTime() < 0) return 'DateCantBeLesserThanEpoch';
+
+        // Date is greater than "today"
+        if (isFuture(inputDate)) return 'DateCantBeGreaterThanToday';
+
+        return null;
       },
     },
     {
