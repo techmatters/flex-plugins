@@ -42,7 +42,15 @@ const ManualPullButton: React.FC<Props> = ({ queuesStatusState, chatChannelCapac
 
   const { maxMessageCapacity } = worker.attributes;
   const maxCapacityReached = chatChannelCapacity >= parseInt(maxMessageCapacity, 10);
-  const disabled = maxCapacityReached || !isAnyChatPending(queuesStatusState.queuesStatus) || isWaitingNewTask;
+  const { isAvailable } = worker.worker;
+  const noTasks = worker.tasks.size === 0;
+
+  const disabled =
+    !isAvailable ||
+    noTasks ||
+    maxCapacityReached ||
+    !isAnyChatPending(queuesStatusState.queuesStatus) ||
+    isWaitingNewTask;
 
   return (
     <AddTaskButton
