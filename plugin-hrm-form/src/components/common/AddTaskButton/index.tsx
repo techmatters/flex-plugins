@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
+import { CircularProgress } from '@material-ui/core';
 
 import {
   AddTaskButtonBase,
@@ -14,9 +15,10 @@ type Props = {
   onClick: (() => void) | (() => Promise<void>);
   disabled: boolean;
   label: string;
+  isLoading?: boolean;
 };
 
-const AddTaskButton: React.FC<Props> = ({ onClick, disabled, label }) => {
+const AddTaskButton: React.FC<Props> = ({ onClick, disabled, label, isLoading }) => {
   return (
     <AddTaskButtonBase
       onClick={onClick}
@@ -31,6 +33,7 @@ const AddTaskButton: React.FC<Props> = ({ onClick, disabled, label }) => {
         <AddTaskText>
           <Template code={label} />
         </AddTaskText>
+        {isLoading && <CircularProgress size={12} />}
       </AddTaskContent>
     </AddTaskButtonBase>
   );

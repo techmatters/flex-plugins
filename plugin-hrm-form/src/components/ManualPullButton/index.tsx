@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useState } from 'react';
 import { Notifications } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 
@@ -16,15 +16,20 @@ type OwnProps = {
 type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 
 const ManualPullButton: React.FC<Props> = ({ queuesStatusState, chatChannelCapacity, worker, workerClient }) => {
+  const [isWaitingNewTask, setWaitingNewTask] = useState(false);
+
   // Increase chat capacity, if no reservation is created within 5 seconds, capacity is decreased and shows a notification.
   const increaseChatCapacity = async () => {
+    setWaitingNewTask(true);
     let alertTimeout = null;
 
     const cancelTimeout = () => {
+      setWaitingNewTask(false);
       clearTimeout(alertTimeout);
     };
 
     alertTimeout = setTimeout(async () => {
+      setWaitingNewTask(false);
       workerClient.removeListener('reservationCreated', cancelTimeout);
       Notifications.showNotification('NoTaskAssignableNotification');
       await adjustChatCapacity('decrease');
@@ -37,9 +42,24 @@ const ManualPullButton: React.FC<Props> = ({ queuesStatusState, chatChannelCapac
 
   const { maxMessageCapacity } = worker.attributes;
   const maxCapacityReached = chatChannelCapacity >= parseInt(maxMessageCapacity, 10);
-  const disabled = maxCapacityReached || !isAnyChatPending(queuesStatusState.queuesStatus);
+  const { isAvailable } = worker.worker;
+  const noTasks = worker.tasks.size === 0;
 
-  return <AddTaskButton onClick={increaseChatCapacity} disabled={disabled} label="ManualPullButtonText" />;
+  const disabled =
+    !isAvailable ||
+    noTasks ||
+    maxCapacityReached ||
+    !isAnyChatPending(queuesStatusState.queuesStatus) ||
+    isWaitingNewTask;
+
+  return (
+    <AddTaskButton
+      onClick={increaseChatCapacity}
+      disabled={disabled}
+      isLoading={isWaitingNewTask}
+      label="ManualPullButtonText"
+    />
+  );
 };
 
 ManualPullButton.displayName = 'ManualPullButton';

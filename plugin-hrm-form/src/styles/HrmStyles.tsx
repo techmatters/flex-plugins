@@ -565,6 +565,7 @@ export const AddTaskText = styled(FontOpenSans)`
   font-size: 12px;
   line-height: 16px;
   font-weight: 600;
+  margin-right: 5px;
 `;
 AddTaskText.displayName = 'AddTaskText';
 
