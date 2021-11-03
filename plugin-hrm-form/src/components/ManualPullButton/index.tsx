@@ -54,6 +54,7 @@ const ManualPullButton: React.FC<Props> = ({ queuesStatusState, chatChannelCapac
 
   return (
     <AddTaskButton
+      id="ManualPullButton"
       onClick={increaseChatCapacity}
       disabled={disabled}
       isLoading={isWaitingNewTask}

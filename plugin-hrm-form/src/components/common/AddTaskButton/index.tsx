@@ -16,11 +16,13 @@ type Props = {
   disabled: boolean;
   label: string;
   isLoading?: boolean;
+  id?: string;
 };
 
-const AddTaskButton: React.FC<Props> = ({ onClick, disabled, label, isLoading }) => {
+const AddTaskButton: React.FC<Props> = ({ onClick, disabled, label, isLoading, id }) => {
   return (
     <AddTaskButtonBase
+      id={id}
       onClick={onClick}
       className="Twilio-TaskListBaseItem-UpperArea css-xz5ie1"
       disabled={disabled}
