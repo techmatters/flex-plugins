@@ -12,7 +12,7 @@ import { TLHPaddingLeft } from '../../styles/GlobalOverrides';
 const QueuesStatus = ({ colors, queuesStatusState, paddingRight }) => {
   const { queuesStatus, error } = queuesStatusState;
   return (
-    <Container role="complementary" tabIndex={0}>
+    <Container role="complementary" tabIndex={0} className=".fullstory-unmask">
       <Box paddingBottom="14px">
         <HeaderContainer>
           <Box marginTop="12px" marginRight="5px" marginBottom="12px" marginLeft={TLHPaddingLeft}>

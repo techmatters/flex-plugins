@@ -22,6 +22,7 @@ export const Label = styled('p')`
 
 export const DataCallTypeButton = styled(Button)`
   display: flex;
+  white-space: normal;
   align-items: center;
   width: 300px;
   height: 44px;
@@ -50,6 +51,7 @@ type NonDataCallTypeButtonProps = {
 };
 
 export const NonDataCallTypeButton = styled(Button)<NonDataCallTypeButtonProps>`
+  white-space: normal;
   width: 140px;
   height: 44px;
   margin-bottom: 10px;

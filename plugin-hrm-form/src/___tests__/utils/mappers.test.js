@@ -47,9 +47,12 @@ test('Test contact channel mapper', () => {
 });
 
 test('mapAge handles values correctly', () => {
-  expect(mapAge('Unknown')).toEqual('Unknown');
-  expect(mapAge(undefined)).toEqual('Unknown');
-  expect(mapAge('-1')).toEqual('Unknown');
-  expect(mapAge('not number')).toEqual('Unknown');
-  [...Array(26).keys()].map(n => expect(mapAge(`${n}`)).toEqual(`${n}`));
+  const ageOptions = [...Array(26).keys(), '>25'].map(n => n.toString());
+
+  expect(mapAge(ageOptions)('Unknown')).toEqual('Unknown');
+  expect(mapAge(ageOptions)(undefined)).toEqual('Unknown');
+  expect(mapAge(ageOptions)('-1')).toEqual('Unknown');
+  expect(mapAge(ageOptions)('not number')).toEqual('Unknown');
+  [...Array(26).keys()].forEach(n => expect(mapAge(ageOptions)(`${n}`)).toEqual(`${n}`));
+  expect(mapAge(ageOptions)('29')).toEqual('>25');
 });

@@ -69,6 +69,8 @@ jest.mock('../styles/HrmStyles', () => ({
   CannedResponsesContainer: 'CannedResponsesContainer',
   Bold: 'Bold',
   StyledBackButton: 'StyledBackButton',
+  UploadFileLabel: 'UploadFileLabel',
+  UploadFileFileName: 'UploadFileFileName',
 }));
 
 jest.mock('../styles/search', () => ({
@@ -159,6 +161,8 @@ jest.mock('../styles/case', () => ({
   CaseContainer: 'CaseContainer',
   CaseActionContainer: 'CaseActionContainer',
   CaseActionFormContainer: 'CaseActionFormContainer',
+  CaseAddButton: 'CaseAddButton',
+  CaseActionCloseButton: 'CaseActionCloseButton',
   CenteredContainer: 'CenteredContainer',
   CaseSectionFont: 'CaseSectionFont',
   ViewButton: 'ViewButton',
@@ -185,6 +189,7 @@ jest.mock('../styles/case', () => ({
   StyledInputField: 'StyledInputField',
   StyledSelectWrapper: 'StyledSelectWrapper',
   StyledSelectField: 'StyledSelectField',
+  TimelineFileName: 'TimelineFileName',
 }));
 
 jest.mock('../styles/previousContactsBanner', () => ({

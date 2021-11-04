@@ -576,6 +576,7 @@ export const AddTaskText = styled(FontOpenSans)`
   font-size: 12px;
   line-height: 16px;
   font-weight: 600;
+  margin-right: 5px;
 `;
 AddTaskText.displayName = 'AddTaskText';
 
@@ -646,6 +647,24 @@ export const FormLabel = styled('label')`
   color: #000000;
 `;
 FormLabel.displayName = 'FormLabel';
+
+export const UploadFileLabel = styled(Flex)`
+  font-size: 14px;
+  letter-spacing: 0;
+  min-height: 18px;
+  color: #000000;
+`;
+UploadFileLabel.displayName = 'UploadFileLabel';
+
+export const UploadFileFileName = styled(Flex)`
+  align-items: center;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0;
+  min-height: 18px;
+  color: #000000;
+`;
+UploadFileFileName.displayName = 'UploadFileFileName';
 
 export const DependentSelectLabel = styled(FormLabel)<{ disabled: boolean }>`
   ${({ disabled }) => disabled && `opacity: 0.30;`}

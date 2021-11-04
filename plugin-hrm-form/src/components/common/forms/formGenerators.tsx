@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/no-multi-comp */
 /* eslint-disable import/no-unused-modules */
 /* eslint-disable react/display-name */
@@ -26,6 +27,8 @@ import {
   FormTextArea,
 } from '../../../styles/HrmStyles';
 import type { FormItemDefinition, FormDefinition, SelectOption, MixedOrBool } from './types';
+import UploadIcon from '../icons/UploadIcon';
+import UploadFileInput from './UploadFileInput';
 
 /**
  * Utility functions to create initial state from definition
@@ -38,6 +41,7 @@ export const getInitialValue = (def: FormItemDefinition) => {
     case 'textarea':
     case 'date-input':
     case 'time-input':
+    case 'file-upload':
       return '';
     case 'select':
       return def.defaultOption ? def.defaultOption : def.options[0].value;
@@ -91,12 +95,15 @@ const bindCreateSelectOptions = (path: string) => (o: SelectOption) => (
  * @param {() => void} updateCallback Callback called to update form state. When is the callback called is specified in the input type.
  * @param {FormItemDefinition} def Definition for a single input.
  */
-// eslint-disable-next-line sonarjs/cognitive-complexity
-const getInputType = (parents: string[], updateCallback: () => void) => (def: FormItemDefinition) => (
+const getInputType = (parents: string[], updateCallback: () => void, customHandlers?: CustomHandlers) => (
+  def: FormItemDefinition,
+) => (
   initialValue: any, // TODO: restrict this type
 ) => {
   const rules = getRules(def);
   const path = [...parents, def.name].join('.');
+
+  const labelTextComponent = <Template code={`${def.label}`} className=".fullstory-unmask" />;
 
   switch (def.type) {
     case 'input':
@@ -108,7 +115,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
               <FormLabel htmlFor={path}>
                 <Row>
                   <Box marginBottom="8px">
-                    <Template code={`${def.label}`} />
+                    {labelTextComponent}
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
@@ -141,7 +148,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
               <FormLabel htmlFor={path}>
                 <Row>
                   <Box marginBottom="8px">
-                    <Template code={`${def.label}`} />
+                    {labelTextComponent}
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
@@ -179,7 +186,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
               <FormLabel htmlFor={path}>
                 <Row>
                   <Box marginBottom="8px">
-                    <Template code={`${def.label}`} />
+                    {labelTextComponent}
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
@@ -247,7 +254,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
               <DependentSelectLabel htmlFor={path} disabled={disabled}>
                 <Row>
                   <Box marginBottom="8px">
-                    <Template code={`${def.label}`} />
+                    {labelTextComponent}
                     {hasOptions && rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
@@ -296,7 +303,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                       defaultChecked={initialValue}
                     />
                   </Box>
-                  <Template code={`${def.label}`} />
+                  {labelTextComponent}
                   {rules.required && <RequiredAsterisk />}
                 </FormCheckBoxWrapper>
                 {error && (
@@ -346,7 +353,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
                       }}
                     />
                   </Box>
-                  <Template code={`${def.label}`} />
+                  {labelTextComponent}
                   {rules.required && <RequiredAsterisk />}
                 </FormCheckBoxWrapper>
                 {error && (
@@ -368,7 +375,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
               <FormLabel htmlFor={path}>
                 <Row>
                   <Box marginBottom="8px">
-                    <Template code={`${def.label}`} />
+                    {labelTextComponent}
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
@@ -403,7 +410,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
               <FormLabel htmlFor={path}>
                 <Row>
                   <Box marginBottom="8px">
-                    <Template code={`${def.label}`} />
+                    {labelTextComponent}
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
@@ -437,7 +444,7 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
               <FormLabel htmlFor={path}>
                 <Row>
                   <Box marginBottom="8px">
-                    <Template code={`${def.label}`} />
+                    {labelTextComponent}
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
@@ -462,10 +469,40 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
           }}
         </ConnectForm>
       );
+    case 'file-upload':
+      return (
+        <ConnectForm key={path}>
+          {({ errors, clearErrors, register, setValue, watch }) => (
+            <UploadFileInput
+              errors={errors}
+              clearErrors={clearErrors}
+              register={register}
+              setValue={setValue}
+              watch={watch}
+              rules={rules}
+              path={path}
+              label={labelTextComponent}
+              description={def.description}
+              onFileChange={customHandlers.onFileChange}
+              onDeleteFile={customHandlers.onDeleteFile}
+              updateCallback={updateCallback}
+              RequiredAsterisk={RequiredAsterisk}
+              initialValue={initialValue}
+            />
+          )}
+        </ConnectForm>
+      );
     default:
       return null;
   }
 };
+
+type FileUploadCustomHandlers = {
+  onFileChange: (event: any) => Promise<string>;
+  onDeleteFile: (fileName: string) => Promise<void>;
+};
+
+export type CustomHandlers = FileUploadCustomHandlers;
 
 /**
  * Creates a Form with each input connected to RHF's wrapping Context, based on the definition.
@@ -475,8 +512,9 @@ const getInputType = (parents: string[], updateCallback: () => void) => (def: Fo
  */
 export const createFormFromDefinition = (definition: FormDefinition) => (parents: string[]) => (initialValues: any) => (
   updateCallback: () => void,
+  customHandlers?: CustomHandlers,
 ): JSX.Element[] => {
-  const bindGetInputType = getInputType(parents, updateCallback);
+  const bindGetInputType = getInputType(parents, updateCallback, customHandlers);
 
   return definition.map((e: FormItemDefinition) => {
     const maybeValue = get(initialValues, e.name);

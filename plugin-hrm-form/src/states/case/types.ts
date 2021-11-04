@@ -36,12 +36,14 @@ export type TemporaryCaseInfo =
   | { screen: typeof NewCaseSubroutes.AddHousehold; info: t.Household }
   | { screen: typeof NewCaseSubroutes.AddPerpetrator; info: t.Perpetrator }
   | { screen: typeof NewCaseSubroutes.AddIncident; info: t.Incident }
+  | { screen: typeof NewCaseSubroutes.AddDocument; info: t.Document }
   | { screen: typeof NewCaseSubroutes.ViewContact; info: ViewContact }
   | { screen: typeof NewCaseSubroutes.ViewNote; info: t.NoteEntry }
   | { screen: typeof NewCaseSubroutes.ViewHousehold; info: t.HouseholdEntry }
   | { screen: typeof NewCaseSubroutes.ViewPerpetrator; info: t.PerpetratorEntry }
   | { screen: typeof NewCaseSubroutes.ViewIncident; info: t.IncidentEntry }
-  | { screen: typeof NewCaseSubroutes.ViewReferral; info: t.ReferralEntry };
+  | { screen: typeof NewCaseSubroutes.ViewReferral; info: t.ReferralEntry }
+  | { screen: typeof NewCaseSubroutes.ViewDocument; info: t.DocumentEntry };
 
 type SetConnectedCaseAction = {
   type: typeof SET_CONNECTED_CASE;

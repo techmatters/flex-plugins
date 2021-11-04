@@ -1,0 +1,157 @@
+[
+    {
+      "name": "date",
+      "type": "date-input",
+      "label": "Date of Incident",
+      "required": { "value": true, "message": "RequiredFieldError" }
+    },
+    {
+      "name": "duration",
+      "label": "Duration",
+      "type": "select",
+      "options": [
+        { "value": "", "label": "" },
+        { "value": "Ongoing", "label": "Ongoing" },
+        { "value": "Once Off", "label": "Once Off" },
+        { "value": "Other", "label": "Other" }
+      ],
+      "required": { "value": true, "message": "RequiredFieldError" }
+    },
+    {
+      "name": "location",
+      "label": "Location",
+      "type": "select",
+      "options": [
+        { "value": "", "label": "" },
+        { "value": "Unknown", "label": "Unknown" },
+        { "value": "Offline", "label": "Offline" },
+        { "value": "Website", "label": "Website" },
+        { "value": "Whatsapp", "label": "Whatsapp" },
+        { "value": "Facebook", "label": "Facebook" },
+        { "value": "Instagram", "label": "Instagram" },
+        { "value": "Snapchat", "label": "Snapchat" },
+        { "value": "Discord", "label": "Discord" },
+        { "value": "Other", "label": "Other" }
+      ],
+      "required": { "value": true, "message": "RequiredFieldError" }
+    },
+    {
+      "name": "otherPlatform",
+      "label": "If Other, please specify platform",
+      "type": "input"
+    },     
+    {
+      "name": "firNo",
+      "label": "FIR NO",
+      "type": "input",
+      "required": { "value": true, "message": "RequiredFieldError" }
+    },
+    {
+      "name": "sectionsBooked",
+      "label": "Sections under which offence is booked",
+      "type": "input",
+      "required": { "value": true, "message": "RequiredFieldError" }
+    },
+    {
+      "name": "imminentDanger",
+      "label": "Is there imminent physical danger to the child?",
+      "type": "mixed-checkbox",
+      "required": { "value": true, "message": "RequiredFieldError" }
+    },
+    {
+      "name": "supportingEvidence",
+      "label": "Do you have any supporting evidence?",
+      "type": "checkbox"
+    },
+    {
+      "name": "url",
+      "label": "URL",
+      "type": "input"
+    },
+    {
+      "name": "accountName",
+      "label": "Account Name",
+      "type": "input"
+    },
+    {
+      "name": "isCaregiverAware",
+      "label": "Is caregiver aware?",
+      "type": "mixed-checkbox"
+    },
+    {
+      "name": "incidentWitnessed",
+      "label": "Was the incident witnessed by anyone?",
+      "type": "mixed-checkbox"
+    },
+    {
+      "name": "abuseReportedElsewhere",
+      "label": "Has abuse been reported elsewhere?",
+      "type": "mixed-checkbox"
+    },
+    {
+      "name": "whereElseBeenReported",
+      "label": "Where else the incident has been reported?",
+      "type": "input"
+    },
+    {
+      "name": "medicalExamDate",
+      "label": "Date of Medical Examination",
+      "type": "date-input"
+    },
+    {
+      "name": "hospitalName",
+      "label": "Hospital Name",
+      "type": "input"
+    },
+    {
+      "name": "medicalExamReport",
+      "label": "Medical examination report available?",
+      "type": "checkbox"
+    },
+    {
+      "name": "cwcOrder",
+      "label": "CWC Orders",
+      "type": "input"
+    },
+    {
+      "name": "sirDate",
+      "label": "SIR Date",
+      "type": "date-input"
+    },
+    {
+      "name": "sirSubmitDate",
+      "label": "SIR Submission Date",
+      "type": "date-input"
+    },
+    {
+      "name": "courtJurisdisction",
+      "label": "Court Jurisdiction",
+      "type": "input"
+    },
+    {
+      "name": "crpcStmntDate",
+      "label": "164 CrPC Statement Date",
+      "type": "date-input"
+    },
+    {
+      "name": "chargeshtDate",
+      "label": "Chargesheet Submission Date",
+      "type": "date-input"
+    },
+    {
+      "name": "legalStatus",
+      "label": "Current Legal Status",
+      "type": "input"
+    },
+    {
+      "name": "compStatus",
+      "label": "Compensation Status",
+      "type": "input"
+    },
+    {
+      "name": "judgement",
+      "label": "Judgement",
+      "type": "input"
+    }
+  ]
+  

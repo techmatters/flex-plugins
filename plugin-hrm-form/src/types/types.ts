@@ -33,6 +33,10 @@ export type Referral = { [key: string]: string | boolean };
 
 export type ReferralEntry = { [key: string]: string | boolean };
 
+export type Document = { [key: string]: string | boolean };
+
+export type DocumentEntry = { document: Document } & EntryInfo;
+
 export const blankReferral = {
   date: null,
   referredTo: null,
@@ -48,6 +52,7 @@ export type CaseInfo = {
   households?: HouseholdEntry[];
   referrals?: ReferralEntry[];
   incidents?: IncidentEntry[];
+  documents?: DocumentEntry[];
   followUpDate?: string;
   childIsAtRisk?: boolean;
 };
@@ -76,11 +81,6 @@ export type ContactRawJson = {
   callerInformation: InformationObject;
   caseInformation: { categories: {} } & { [key: string]: string | boolean | {} }; // // having {} makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
   contactlessTask: { [key: string]: string | boolean };
-  metadata: {
-    startMillis: number;
-    endMillis: number;
-    recreated: boolean;
-  };
 };
 
 // Information about a single contact, as expected from search contacts endpoint (we might want to reuse this type in backend) - (is this a correct placement for this?)
@@ -154,11 +154,4 @@ export function isTwilioTask(task: CustomITask): task is ITask {
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === standaloneTaskSid;
-};
-
-/**
- * This type is used within the context of a form submission, to share values between HRM & Insights
- */
-export type ExtraParameters = {
-  helplineToSave: string;
 };

@@ -55,7 +55,7 @@
       },
       {
         "name": "region",
-        "insights": ["customers", "region"]
+        "insights": ["customers", "district"]
       }
     ],
     "caseInformation": [

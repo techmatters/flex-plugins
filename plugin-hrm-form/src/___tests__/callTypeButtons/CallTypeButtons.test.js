@@ -477,8 +477,8 @@ test('<CallTypeButtons> click on Data (Child) button', () => {
     </LocalizationContext.Provider>,
   );
 
-  expect(screen.getByText('CallType-child')).toBeInTheDocument();
-  screen.getByText('CallType-child').click();
+  expect(screen.getByText('Child calling about self')).toBeInTheDocument();
+  screen.getByText('Child calling about self').click();
 
   expect(store.dispatch).toHaveBeenCalledWith(updateCallType(task.taskSid, callTypes.child));
   expect(store.dispatch).toHaveBeenCalledWith(
@@ -566,8 +566,8 @@ test('<CallTypeButtons> click on NonData (Joke) button', () => {
     </LocalizationContext.Provider>,
   );
 
-  expect(screen.getByText('CallType-joke')).toBeInTheDocument();
-  screen.getByText('CallType-joke').click();
+  expect(screen.getByText('Joke')).toBeInTheDocument();
+  screen.getByText('Joke').click();
 
   expect(store.dispatch).toHaveBeenCalledWith(updateCallType(task.taskSid, callTypes.joke));
 });

@@ -80,6 +80,7 @@
       { "value": "North West", "label": "North West" },
       { "value": "Northern Cape", "label": "Northern Cape" },
       { "value": "Western Cape", "label": "Western Cape" },
+      { "value": "International", "label": "International" },
       { "value": "Unknown", "label": "Unknown" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" }

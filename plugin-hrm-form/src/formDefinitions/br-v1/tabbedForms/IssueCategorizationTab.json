@@ -1,0 +1,47 @@
+{
+  "SaferNet": {
+    "Violência": {
+      "color": "#F5A623",
+      "subcategories": [
+        "Bullying",
+        "Ciberbullying/Ofensa",
+        "Cyberstalking",
+        "Compartilhamento não consensual de imagens íntimas",
+        "Abuso sexual infantil online",
+        "Exploração sexual infantil online",
+        "Sextorsão",
+        "Aliciamento sexual infantil online",
+        "Fraudes/Golpes/Phishing",
+        "Problemas com compras online",
+        "Problemas com dados pessoais",
+        "Encontros Virtuais",
+        "Discurso de ódio",
+        "Conteúdo ilegal/danoso",
+        "Outras formas de violência online",
+        "Mediação Parental/literacia digital",
+        "Orientações gerais",
+        "Unspecified/Other"
+      ]
+    },
+    "Saúde mental": {
+      "color": "#F8E900",
+      "subcategories": [
+        "Uso excessivo/exagerado",
+        "Automutilação",
+        "Suicídio",
+        "Transtornos Alimentares",
+        "Inespecífico/Outros"
+      ]
+    },
+    "Outras informação e contatos não relacionados com orientação": {
+      "color": "#767777",
+      "subcategories": [
+        "Imprensa",
+        "Interrupção/Queda",
+        "Feedback",
+        "Solicitação De Material/Palestras",
+        "Outras informação e contatos não relacionados com orientação"
+      ]
+    }
+  }
+}

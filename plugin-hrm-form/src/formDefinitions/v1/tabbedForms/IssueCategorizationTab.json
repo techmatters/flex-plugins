@@ -132,35 +132,26 @@
     }
   },
   "LifeLine Zambia (ZM)": {
-    "Custom LifeLine Category 1": {
-      "color": "#F5A623",
+    "Physical and Sexual Health": {
+      "color": "#BBE3FF",
       "subcategories": [
-        "Bullying",
-        "Child/Early/Forced marriage",
-        "Child labour",
-        "Commercial sexual exploitation (offline)",
-        "Female Genital Mutilation (FGM)",
-        "Gender-based harmful traditional practices (other than FGM)",
-        "Harmful traditional practices other than child marriage and FGM",
-        "Mental/Emotional violence",
-        "Neglect (or negligent treatment)",
-        "Online sexual abuse",
-        "Online sexual exploitation",
-        "Physical violence",
-        "Sexual violence",
+        "COVID-19",
+        "Condom Use",
+        "Medical or lifestyle information about HIV/AIDS",
+        "Male Circumcision",
+        "Pregnancy and maternal care",
+        "Sexual and reproductive health",
+        "Sexually Transmitted Diseases",
+        "Nutrition",
         "Unspecified/Other"
       ]
     },
-    "Custom LifeLine Category 2": {
-      "color": "#F8E900",
+    "Mental Health": {
+      "color": "#F5A623",
       "subcategories": [
-        "Addictive behaviours and substance use",
-        "Behavioural problems",
-        "Concerns about the self",
         "Emotional distress – anger problems",
         "Emotional distress – fear and anxiety problems",
         "Emotional distress – mood problems",
-        "Neurodevelopmental concerns",
         "Problems with eating behaviour",
         "Self-harming behaviour",
         "Suicidal thoughts and suicide attempts",
@@ -168,16 +159,71 @@
         "Unspecified/Other"
       ]
     },
-    "Custom LifeLine Category 3": {
+    "Abuse": {
+      "color": "#F8E900",
+      "subcategories": [
+        "Addictive behaviours and substance use",
+        "Cyber Bullying",
+        "Gender Based Violence (GBV)",
+        "Mental/Emotional violence",
+        "Economic abuse",
+        "Online sexual abuse",
+        "Online sexual exploitation",
+        "Physical violence",
+        "Sexual violence",
+        "Unspecified/Other"
+      ]
+    },
+    "Relationships": {
       "color": "#E86B6B",
       "subcategories": [
-        "COVID-19",
-        "General medical or lifestyle concerns",
-        "Medical or lifestyle information about HIV/AIDS",
-        "Male circumcision",
-        "Pregnancy and maternal care",
-        "Sexual and reproductive health",
-        "Nutrition",
+        "Family Relationships",
+        "Marital Issues",
+        "Unspecified/Other"
+      ]
+    },
+    "Education and Occupation": {
+      "color": "#8055BA",
+      "subcategories": [
+        "Problems at learning institution",
+        "Problems at work",
+        "Unspecified/Other"
+      ]
+    },
+    "Supporting Women's Livelihood (SWL)": {
+      "color": "#B971AF",
+      "subcategories": [
+        "Inclusion",
+        "Exclusion",
+        "Service Standard",
+        "Payment",
+        "Serious Complaints",
+        "Training and Mentorship",
+        "Fraud and Corruption",
+        "Unspecified/Other"
+      ]
+    },
+    "Keeping Girls in School (KGS)": {
+      "color": "#239613",
+      "subcategories": [
+        "Inclusion",
+        "Exclusion",
+        "Service Standard",
+        "Payment",
+        "Serious Complaints",
+        "Fraud and Corruption",
+        "Unspecified/Other"
+      ]
+    },
+    "Social Cash Transfer (SCT)": {
+      "color": "#9AD703",
+      "subcategories": [
+        "Inclusion",
+        "Exclusion",
+        "Service Standard",
+        "Payment",
+        "Serious Complaints",
+        "Exit",
         "Unspecified/Other"
       ]
     }
