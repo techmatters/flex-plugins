@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'react-emotion';
 import { Button, IconButton } from '@twilio/flex-ui';
-import { Typography } from '@material-ui/core';
+import { Typography, ButtonBase } from '@material-ui/core';
 
 import { FontOpenSans, FormInput, FormSelect, FormSelectWrapper, Row, Column } from '../HrmStyles';
 
@@ -81,8 +81,29 @@ export const ViewButton = styled<ViewButtonProps>(props => <Button roundCorners=
   letter-spacing: normal;
   font-size: 12px;
   box-shadow: none;
+
+  :focus {
+    outline: auto;
+  }
 `;
 ViewButton.displayName = 'ViewButton';
+
+type CaseAddButtonProps = {
+  withDivider: boolean;
+};
+
+export const CaseAddButton = styled(ButtonBase)<CaseAddButtonProps>`
+  && {
+    margin-left: auto;
+    padding-left: ${props => (props.withDivider ? '12px' : '0px')};
+    border-left: ${props => (props.withDivider ? '1px solid rgba(25, 43, 51, 0.3)' : 'none')};
+  }
+
+  :focus {
+    outline: auto;
+  }
+`;
+CaseAddButton.displayName = 'CaseAddButton';
 
 type CaseAddButtonFontProps = {
   disabled: boolean;
@@ -105,6 +126,17 @@ export const CaseActionTitle = styled(FontOpenSans)`
   color: #22333b;
 `;
 CaseActionTitle.displayName = 'CaseActionTitle';
+
+export const CaseActionCloseButton = styled(ButtonBase)`
+  && {
+    margin-left: auto;
+  }
+
+  :focus {
+    outline: auto;
+  }
+`;
+CaseActionCloseButton.displayName = 'CaseActionCloseButton';
 
 export const CaseActionDetailFont = styled(FontOpenSans)`
   font-style: italic;
@@ -281,6 +313,10 @@ DetailsHeaderOfficeName.displayName = 'DetailsHeaderOfficeName';
 
 export const StyledPrintButton = styled(IconButton)`
   color: #a7a7a7;
+
+  :focus {
+    outline: auto;
+  }
 `;
 
 StyledPrintButton.displayName = 'StyledPrintButton';
