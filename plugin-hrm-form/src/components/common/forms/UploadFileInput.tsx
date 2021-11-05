@@ -33,6 +33,7 @@ type UploadFileInputProps = {
   updateCallback: any;
   RequiredAsterisk: any;
   initialValue: any;
+  autoFocus?: boolean;
 };
 
 const UploadFileInput: React.FC<UploadFileInputProps> = ({
@@ -50,6 +51,7 @@ const UploadFileInput: React.FC<UploadFileInputProps> = ({
   updateCallback,
   RequiredAsterisk,
   initialValue,
+  autoFocus,
 }) => {
   const [isLoading, setLoading] = useState(false);
   const fileUploadRef = useRef<HTMLButtonElement>();
@@ -104,7 +106,11 @@ const UploadFileInput: React.FC<UploadFileInputProps> = ({
       </Row>
       {showUploadButton && (
         <>
-          <StyledNextStepButton disabled={isLoading} onClick={() => fileUploadRef.current.click()}>
+          <StyledNextStepButton
+            autoFocus={autoFocus}
+            disabled={isLoading}
+            onClick={() => fileUploadRef.current.click()}
+          >
             {isLoading && (
               <Box marginRight="10px">
                 <CircularProgress color="inherit" size={20} />

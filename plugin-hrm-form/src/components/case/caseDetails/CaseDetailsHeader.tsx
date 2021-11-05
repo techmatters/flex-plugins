@@ -31,6 +31,7 @@ type OwnProps = {
   handleClickChildIsAtRisk: () => void;
   isOrphanedCase: boolean;
   can: (action: PermissionActionType) => boolean;
+  autoFocus: boolean;
 };
 
 const CaseDetailsHeader: React.FC<OwnProps> = ({
@@ -43,8 +44,12 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
   handleClickChildIsAtRisk,
   isOrphanedCase,
   can,
+  autoFocus,
 }) => {
   const { multipleOfficeSupport } = getConfig();
+  const canEditChildAtRisk = can(PermissionActions.EDIT_CHILD_IS_AT_RISK);
+  const shouldAutoFocusChildAtRisk = autoFocus && canEditChildAtRisk;
+
   return (
     <DetailsHeaderContainer>
       <DetailsHeaderTextContainer>
@@ -75,7 +80,8 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
                   type="checkbox"
                   onChange={handleClickChildIsAtRisk}
                   defaultChecked={Boolean(childIsAtRisk)}
-                  disabled={!can(PermissionActions.EDIT_CHILD_IS_AT_RISK)}
+                  disabled={!canEditChildAtRisk}
+                  autoFocus={shouldAutoFocusChildAtRisk}
                 />
               </Box>
               <Template code="Case-ChildIsAtRisk" />

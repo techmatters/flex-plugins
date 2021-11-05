@@ -16,6 +16,7 @@ type OwnProps = {
   display: boolean;
   initialValue: TaskEntry['categories'];
   definition: CategoriesDefinition;
+  autoFocus: boolean;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -27,6 +28,7 @@ const IssueCategorizationTab: React.FC<Props> = ({
   categoriesMeta,
   initialValue,
   definition,
+  autoFocus,
   updateForm,
   setCategoriesGridView,
   handleExpandCategory,
@@ -58,6 +60,8 @@ const IssueCategorizationTab: React.FC<Props> = ({
     handleExpandCategory(category, task.taskSid);
   };
 
+  if (!display) return null;
+
   return (
     <TabbedFormTabContainer display={display}>
       <CategoriesFromDefinition
@@ -66,6 +70,7 @@ const IssueCategorizationTab: React.FC<Props> = ({
         categoriesMeta={categoriesMeta}
         toggleCategoriesGridView={toggleCategoriesGridView}
         toggleExpandCategory={toggleExpandCategory}
+        autoFocus={autoFocus}
       />
     </TabbedFormTabContainer>
   );

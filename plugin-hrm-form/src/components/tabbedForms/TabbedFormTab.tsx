@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { connect, ConnectedProps } from 'react-redux';
 
@@ -24,6 +24,7 @@ type OwnProps = {
   layoutDefinition?: LayoutDefinition;
   tabPath: keyof TaskEntry;
   initialValues: TaskEntry['callerInformation'] | TaskEntry['childInformation'] | TaskEntry['caseInformation'];
+  autoFocus: boolean;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -36,6 +37,7 @@ const TabbedFormTab: React.FC<Props> = ({
   layoutDefinition,
   tabPath,
   initialValues,
+  autoFocus,
   updateForm,
 }) => {
   const [initialForm] = React.useState(initialValues); // grab initial values in first render only. This value should never change or will ruin the memoization below
@@ -47,7 +49,7 @@ const TabbedFormTab: React.FC<Props> = ({
       updateForm(task.taskSid, tabPath, values);
     };
 
-    const generatedForm = createFormFromDefinition(definition)([tabPath])(initialForm)(updateCallback);
+    const generatedForm = createFormFromDefinition(definition, autoFocus)([tabPath])(initialForm)(updateCallback);
 
     const margin = 12;
 
@@ -55,7 +57,9 @@ const TabbedFormTab: React.FC<Props> = ({
       return splitAt(layoutDefinition.splitFormAt)(disperseInputs(7)(generatedForm));
 
     return splitInHalf(disperseInputs(margin)(generatedForm));
-  }, [definition, getValues, initialForm, layoutDefinition, tabPath, task.taskSid, updateForm]);
+  }, [definition, getValues, initialForm, autoFocus, layoutDefinition, tabPath, task.taskSid, updateForm]);
+
+  if (!display) return null;
 
   return (
     <TabbedFormTabContainer display={display}>

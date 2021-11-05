@@ -20,6 +20,7 @@ type OwnProps = {
   display: boolean;
   definition: HelplineDefinitions;
   initialValues: TaskEntry[keyof TaskEntry];
+  autoFocus: boolean;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -32,6 +33,7 @@ const ContactlessTaskTab: React.FC<Props> = ({
   definition,
   initialValues,
   counselorsList,
+  autoFocus,
 }) => {
   const [initialForm] = React.useState(initialValues); // grab initial values in first render only. This value should never change or will ruin the memoization below
 
@@ -80,6 +82,8 @@ const ContactlessTaskTab: React.FC<Props> = ({
   React.useEffect(() => {
     setValue('contactlessTask.isFutureAux', time, { shouldValidate: true });
   }, [setValue, time]);
+
+  if (!display) return null;
 
   return (
     <TabbedFormTabContainer display={display}>

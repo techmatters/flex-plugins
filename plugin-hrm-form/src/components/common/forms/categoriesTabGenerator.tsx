@@ -85,6 +85,7 @@ type Props = {
   toggleCategoriesGridView: (gridView: boolean) => void;
   categoriesMeta: any; // TaskEntry['metadata']['categories'];
   toggleExpandCategory: (category: string) => void;
+  autoFocus: boolean;
 };
 
 export const CategoriesFromDefinition: React.FC<Props> = ({
@@ -93,6 +94,7 @@ export const CategoriesFromDefinition: React.FC<Props> = ({
   toggleCategoriesGridView,
   categoriesMeta,
   toggleExpandCategory,
+  autoFocus,
 }) => {
   const { gridView, expanded } = categoriesMeta;
 
@@ -113,13 +115,14 @@ export const CategoriesFromDefinition: React.FC<Props> = ({
         </ToggleViewButton>
       </CategorySubtitleSection>
       <CategoriesWrapper>
-        {Object.entries(definition).map(([category, { color }]) => (
+        {Object.entries(definition).map(([category, { color }], index) => (
           <Box marginBottom="6px" key={`IssueCategorization_${category}`}>
             <Section
               sectionTitle={category}
               color={color}
               expanded={expanded[category]}
               handleExpandClick={() => toggleExpandCategory(category)}
+              autoFocus={autoFocus && index === 0}
             >
               <SubcategoriesWrapper gridView={gridView}>{subcategoriesInputs[category]}</SubcategoriesWrapper>
             </Section>

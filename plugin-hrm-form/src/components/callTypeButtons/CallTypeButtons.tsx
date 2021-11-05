@@ -57,7 +57,7 @@ const CallTypeButtons: React.FC<Props> = props => {
       : 'childInformation';
 
     handleClick(taskSid, callTypekey);
-    props.dispatch(changeRoute({ route: 'tabbed-forms', subroute }, taskSid));
+    props.dispatch(changeRoute({ route: 'tabbed-forms', subroute, autoFocus: true }, taskSid));
   };
 
   const handleNonDataClick = (taskSid: string, callTypekey: CallTypeKeys) => {
@@ -91,11 +91,12 @@ const CallTypeButtons: React.FC<Props> = props => {
           </Label>
           {callTypeButtons
             .filter(entry => entry.category === 'data')
-            .map(callType => {
+            .map((callType, index) => {
               return (
                 <DataCallTypeButton
                   onClick={() => handleClickAndRedirect(task.taskSid, callType.name)}
                   key={callType.name}
+                  autoFocus={index === 0}
                 >
                   <Flex width="50px" marginRight="5px">
                     {/* TODO: We currently need the call type name in English. I think we should actually save callType.name (instead of label) on the DB, and use it in here.  */}

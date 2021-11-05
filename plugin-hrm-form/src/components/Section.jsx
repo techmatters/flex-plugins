@@ -13,10 +13,19 @@ import {
 const ArrowDownIcon = ContactDetailsIcon(ArrowDropDownTwoTone);
 const ArrowUpIcon = ContactDetailsIcon(ArrowDropUpTwoTone);
 
-const Section = ({ color, sectionTitle, expanded, hideIcon, children, handleExpandClick, buttonDataTestid }) => (
+const Section = ({
+  color,
+  sectionTitle,
+  expanded,
+  hideIcon,
+  children,
+  handleExpandClick,
+  buttonDataTestid,
+  autoFocus,
+}) => (
   <>
     <SectionTitleContainer color={color}>
-      <SectionTitleButton onClick={handleExpandClick} data-testid={buttonDataTestid}>
+      <SectionTitleButton autoFocus={autoFocus} onClick={handleExpandClick} data-testid={buttonDataTestid}>
         <SectionTitleText>{sectionTitle}</SectionTitleText>
         {!hideIcon && (expanded ? <ArrowUpIcon /> : <ArrowDownIcon />)}
       </SectionTitleButton>
@@ -36,12 +45,14 @@ Section.propTypes = {
   hideIcon: PropTypes.bool,
   handleExpandClick: PropTypes.func.isRequired,
   buttonDataTestid: PropTypes.string,
+  autoFocus: PropTypes.bool,
 };
 Section.defaultProps = {
   expanded: false,
   hideIcon: false,
   color: null,
   buttonDataTestid: null,
+  autoFocus: false,
 };
 
 export default Section;

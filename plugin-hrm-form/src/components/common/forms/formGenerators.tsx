@@ -99,6 +99,7 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
   def: FormItemDefinition,
 ) => (
   initialValue: any, // TODO: restrict this type
+  autoFocus: boolean,
 ) => {
   const rules = getRules(def);
   const path = [...parents, def.name].join('.');
@@ -128,6 +129,7 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
                   onBlur={updateCallback}
                   innerRef={register(rules)}
                   defaultValue={initialValue}
+                  autoFocus={autoFocus}
                 />
                 {error && (
                   <FormError>
@@ -164,6 +166,7 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
                     pattern: { value: /^[0-9]+$/g, message: 'This field only accepts numeric input.' },
                   })}
                   defaultValue={initialValue}
+                  autoFocus={autoFocus}
                 />
                 {error && (
                   <FormError>
@@ -200,6 +203,7 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
                     onBlur={updateCallback}
                     innerRef={register(rules)}
                     defaultValue={initialValue}
+                    autoFocus={autoFocus}
                   >
                     {def.options.map(createSelectOptions)}
                   </FormSelect>
@@ -269,6 +273,7 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
                     innerRef={register({ validate })}
                     disabled={disabled}
                     defaultValue={initialValue}
+                    autoFocus={autoFocus}
                   >
                     {options.map(createSelectOptions)}
                   </FormSelect>
@@ -301,6 +306,7 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
                       onChange={updateCallback}
                       innerRef={register(rules)}
                       defaultChecked={initialValue}
+                      autoFocus={autoFocus}
                     />
                   </Box>
                   {labelTextComponent}
@@ -351,6 +357,7 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
                         if (checked === true) setChecked(false);
                         if (checked === false) setChecked('mixed');
                       }}
+                      autoFocus={autoFocus}
                     />
                   </Box>
                   {labelTextComponent}
@@ -390,6 +397,7 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
                   rows={def.rows ? def.rows : 10}
                   width={def.width}
                   defaultValue={initialValue}
+                  autoFocus={autoFocus}
                 />
                 {error && (
                   <FormError>
@@ -424,6 +432,7 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
                   onBlur={updateCallback}
                   innerRef={register(rules)}
                   defaultValue={initialValue}
+                  autoFocus={autoFocus}
                 />
                 {error && (
                   <FormError>
@@ -458,6 +467,7 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
                   onBlur={updateCallback}
                   innerRef={register(rules)}
                   defaultValue={initialValue}
+                  autoFocus={autoFocus}
                 />
                 {error && (
                   <FormError>
@@ -488,6 +498,7 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
               updateCallback={updateCallback}
               RequiredAsterisk={RequiredAsterisk}
               initialValue={initialValue}
+              autoFocus={autoFocus}
             />
           )}
         </ConnectForm>
@@ -510,16 +521,16 @@ export type CustomHandlers = FileUploadCustomHandlers;
  * @param {string[]} parents Array of parents. Allows you to easily create nested form fields. https://react-hook-form.com/api#register.
  * @param {() => void} updateCallback Callback called to update form state. When is the callback called is specified in the input type (getInputType).
  */
-export const createFormFromDefinition = (definition: FormDefinition) => (parents: string[]) => (initialValues: any) => (
-  updateCallback: () => void,
-  customHandlers?: CustomHandlers,
-): JSX.Element[] => {
+export const createFormFromDefinition = (definition: FormDefinition, autoFocus?: boolean) => (parents: string[]) => (
+  initialValues: any,
+) => (updateCallback: () => void, customHandlers?: CustomHandlers): JSX.Element[] => {
   const bindGetInputType = getInputType(parents, updateCallback, customHandlers);
 
-  return definition.map((e: FormItemDefinition) => {
+  return definition.map((e: FormItemDefinition, index: number) => {
+    const shouldAutoFocusFirstInput = index === 0 && autoFocus;
     const maybeValue = get(initialValues, e.name);
     const initialValue = maybeValue === undefined ? getInitialValue(e) : maybeValue;
-    return bindGetInputType(e)(initialValue);
+    return bindGetInputType(e)(initialValue, shouldAutoFocusFirstInput);
   });
 };
 

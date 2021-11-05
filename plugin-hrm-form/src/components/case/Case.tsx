@@ -214,7 +214,7 @@ const Case: React.FC<Props> = props => {
     const { connectedCase } = props.connectedCaseState;
     await cancelCase(connectedCase.id);
 
-    props.changeRoute({ route: 'tabbed-forms', subroute: 'caseInformation' }, task.taskSid);
+    props.changeRoute({ route: 'tabbed-forms', subroute: 'caseInformation', autoFocus: true }, task.taskSid);
     props.removeConnectedCase(task.taskSid);
   };
 
@@ -414,6 +414,10 @@ const Case: React.FC<Props> = props => {
     contact: firstConnectedContact,
   };
 
+  if (route !== 'new-case') return null;
+
+  const { autoFocus } = props.routing as { autoFocus?: boolean }; // TODO: why TS couldn't resolve the type correctly? It should, since we're returning null when route isn't 'new-case'
+
   switch (subroute) {
     case 'add-note':
       return <AddNote {...addScreenProps} />;
@@ -472,6 +476,7 @@ const Case: React.FC<Props> = props => {
                 definitionVersion={definitionVersion}
                 definitionVersionName={connectedCase.info.definitionVersion}
                 isOrphanedCase={!firstConnectedContact}
+                autoFocus={autoFocus}
               />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
