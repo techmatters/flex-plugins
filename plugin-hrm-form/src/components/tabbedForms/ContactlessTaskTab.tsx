@@ -47,10 +47,10 @@ const ContactlessTaskTab: React.FC<Props> = ({
 
     const formDefinition = createContactlessTaskTabDefinition(counselorsList, definition);
 
-    const tab = createFormFromDefinition(formDefinition)(['contactlessTask'])(initialForm)(updateCallBack);
+    const tab = createFormFromDefinition(formDefinition, autoFocus)(['contactlessTask'])(initialForm)(updateCallBack);
 
     return disperseInputs(5)(tab);
-  }, [counselorsList, dispatch, getValues, definition, initialForm, task.taskSid]);
+  }, [counselorsList, dispatch, getValues, definition, initialForm, autoFocus, task.taskSid]);
 
   // Add invisible field that errors if date + time are future (triggered by validaiton)
   React.useEffect(() => {
