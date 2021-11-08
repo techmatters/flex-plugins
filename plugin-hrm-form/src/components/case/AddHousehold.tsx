@@ -68,7 +68,7 @@ const AddHousehold: React.FC<Props> = ({
       updateTempInfo({ screen: 'add-household', info: household }, task.taskSid);
     };
 
-    const generatedForm = createFormFromDefinition(HouseholdForm)([])(initialForm)(updateCallBack);
+    const generatedForm = createFormFromDefinition(HouseholdForm, true)([])(initialForm)(updateCallBack);
 
     if (layoutVersion.case.households.splitFormAt)
       return splitAt(layoutVersion.case.households.splitFormAt)(disperseInputs(7)(generatedForm));

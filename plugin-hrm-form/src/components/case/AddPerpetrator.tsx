@@ -68,7 +68,7 @@ const AddPerpetrator: React.FC<Props> = ({
       updateTempInfo({ screen: 'add-perpetrator', info: perpetrator }, task.taskSid);
     };
 
-    const generatedForm = createFormFromDefinition(PerpetratorForm)([])(initialForm)(updateCallBack);
+    const generatedForm = createFormFromDefinition(PerpetratorForm, true)([])(initialForm)(updateCallBack);
 
     if (layoutVersion.case.perpetrators.splitFormAt)
       return splitAt(layoutVersion.case.perpetrators.splitFormAt)(disperseInputs(7)(generatedForm));

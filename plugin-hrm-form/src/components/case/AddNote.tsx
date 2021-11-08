@@ -72,7 +72,7 @@ const AddNote: React.FC<Props> = ({
       updateTempInfo({ screen: 'add-note', info: note }, task.taskSid);
     };
 
-    const generatedForm = createFormFromDefinition(NoteForm)([])(initialForm)(updateCallBack);
+    const generatedForm = createFormFromDefinition(NoteForm, true)([])(initialForm)(updateCallBack);
 
     return splitInHalf(disperseInputs(7)(generatedForm));
   }, [NoteForm, initialForm, methods, task.taskSid, updateTempInfo]);

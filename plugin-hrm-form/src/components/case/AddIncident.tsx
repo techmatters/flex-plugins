@@ -58,7 +58,7 @@ const AddIncident: React.FC<Props> = ({
       updateTempInfo({ screen: 'add-incident', info: incident }, task.taskSid);
     };
 
-    const generatedForm = createFormFromDefinition(IncidentForm)([])(initialForm)(updateCallBack);
+    const generatedForm = createFormFromDefinition(IncidentForm, true)([])(initialForm)(updateCallBack);
 
     if (layoutVersion.case.incidents.splitFormAt)
       return splitAt(layoutVersion.case.incidents.splitFormAt)(disperseInputs(7)(generatedForm));

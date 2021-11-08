@@ -122,7 +122,7 @@ const AddDocument: React.FC<Props> = ({
       onDeleteFile,
     };
 
-    const generatedForm = createFormFromDefinition(DocumentForm)([])(initialForm)(
+    const generatedForm = createFormFromDefinition(DocumentForm, true)([])(initialForm)(
       updateCallBack,
       fileUploadCustomHandlers,
     );

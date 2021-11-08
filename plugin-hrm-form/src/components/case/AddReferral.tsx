@@ -58,7 +58,7 @@ const AddReferral: React.FC<Props> = ({
       updateTempInfo({ screen: 'add-referral', info: referral }, task.taskSid);
     };
 
-    const generatedForm = createFormFromDefinition(ReferralForm)([])(initialForm)(updateCallBack);
+    const generatedForm = createFormFromDefinition(ReferralForm, true)([])(initialForm)(updateCallBack);
 
     return splitInHalf(disperseInputs(7)(generatedForm));
   }, [ReferralForm, initialForm, methods, task.taskSid, updateTempInfo]);
