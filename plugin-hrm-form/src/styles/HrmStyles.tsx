@@ -816,6 +816,11 @@ export const FormCheckbox = styled(CheckboxBase)`
     content: '\f00c';
     color: #ffffff;
   }
+
+  &[type='checkbox']:focus:not(:focus-visible) {
+    outline: rgb(0, 95, 204) 2px solid;
+    outline-offset: 2px;
+  }
 `;
 FormCheckbox.displayName = 'FormCheckbox';
 

@@ -40,7 +40,6 @@ const CaseDetails = ({
   definitionVersion,
   definitionVersionName,
   isOrphanedCase,
-  autoFocus,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const statusOptions = React.useMemo(() => {
@@ -93,7 +92,6 @@ const CaseDetails = ({
         handleClickChildIsAtRisk={handleClickChildIsAtRisk}
         isOrphanedCase={isOrphanedCase}
         can={can}
-        autoFocus={autoFocus}
       />
       <DetailsContainer aria-labelledby="Case-CaseId-label">
         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -189,7 +187,6 @@ CaseDetails.propTypes = {
   definitionVersion: PropTypes.shape({}).isRequired,
   definitionVersionName: PropTypes.string.isRequired,
   isOrphanedCase: PropTypes.bool,
-  autoFocus: PropTypes.bool,
 };
 
 CaseDetails.defaultProps = {
@@ -197,7 +194,6 @@ CaseDetails.defaultProps = {
   followUpDate: '',
   lastUpdatedDate: '',
   isOrphanedCase: false,
-  autoFocus: false,
 };
 
 export default CaseDetails;
