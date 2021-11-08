@@ -49,28 +49,35 @@ const TaskView: React.FC<Props> = props => {
     };
   }, [task]);
 
+  const contactInitialized = Boolean(contactForm);
   const helpline = contactForm?.helpline;
   const contactlessTask = contactForm?.contactlessTask;
-  const firstRunHelplineEffect = React.useRef(true);
 
   // Set contactForm.helpline for all contacts on the first run. React to helpline changes for offline contacts only
   React.useEffect(() => {
     const setHelpline = async () => {
+      console.log('>>>>> 1) setHelpline called');
       if (task && !isStandaloneITask(task)) {
+        console.log('>>>>> 2) conditions met, checking helpline to save');
         const helplineToSave = await getHelplineToSave(task, contactlessTask || {});
+        console.log('>> helpline is: ', helpline);
+        console.log('>> helplineToSave is: ', helplineToSave);
+        console.log('>> contactlessTask.helpline is: ', contactlessTask?.helpline);
         if (helpline !== helplineToSave) {
+          console.log('>>>>> 3) Updating helpline!!');
           updateHelpline(task.taskSid, helplineToSave);
         }
       }
     };
 
-    // Only run setHelpline if is the first time this effect is called or if contactlessTask.helpline has changed
+    // Only run setHelpline if a) contactForm.helpline is not set or b) if the task is an offline contact and contactlessTask.helpline has changed
     const helplineChanged = contactlessTask?.helpline && helpline !== contactlessTask.helpline;
-    if (firstRunHelplineEffect.current || helplineChanged) {
-      firstRunHelplineEffect.current = false;
+    const shouldSetHelpline = contactInitialized && (!helpline || (isOfflineContactTask(task) && helplineChanged));
+
+    if (shouldSetHelpline) {
       setHelpline();
     }
-  }, [contactlessTask, helpline, task, updateHelpline]);
+  }, [contactlessTask, contactInitialized, helpline, task, updateHelpline]);
 
   // If this task is not the active task, or if the task is not accepted yet, hide it
   const show =
