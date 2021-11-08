@@ -39,8 +39,11 @@ const getAnswerOrUnknown = (
   definition: FormDefinition,
   mapperFunction: MapperFunction = mapGenericOption,
 ) => {
+  // This keys must be set with 'Unknown' value even if there's no answer
+  const isRequiredKey = key === 'age' || key === 'gender';
+
   // This prevents setting redux state with the 'Unknown' value for a property that is not asked by the pre-survey
-  if (!answers[key]) return null;
+  if (!isRequiredKey && !answers[key]) return null;
 
   // This prevents setting redux state with the 'Unknown' value for a property that is not present on the definition
   if (!definition.find(e => e.name === key)) {
