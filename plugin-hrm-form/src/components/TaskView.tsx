@@ -56,15 +56,9 @@ const TaskView: React.FC<Props> = props => {
   // Set contactForm.helpline for all contacts on the first run. React to helpline changes for offline contacts only
   React.useEffect(() => {
     const setHelpline = async () => {
-      console.log('>>>>> 1) setHelpline called');
       if (task && !isStandaloneITask(task)) {
-        console.log('>>>>> 2) conditions met, checking helpline to save');
         const helplineToSave = await getHelplineToSave(task, contactlessTask || {});
-        console.log('>> helpline is: ', helpline);
-        console.log('>> helplineToSave is: ', helplineToSave);
-        console.log('>> contactlessTask.helpline is: ', contactlessTask?.helpline);
         if (helpline !== helplineToSave) {
-          console.log('>>>>> 3) Updating helpline!!');
           updateHelpline(task.taskSid, helplineToSave);
         }
       }
