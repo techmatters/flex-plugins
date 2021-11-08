@@ -69,7 +69,7 @@ export const createNewTaskEntry = (definitions: DefinitionVersion) => (recreated
   const contactlessTask = initialContactlessTaskTabDefinition.reduce(createStateItem, {});
 
   return {
-    helpline: defaultHelpline,
+    helpline: '',
     callType: '',
     childInformation: initialChildInformation,
     callerInformation: initialCallerInformation,
