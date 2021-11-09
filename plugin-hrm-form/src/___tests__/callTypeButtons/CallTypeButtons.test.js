@@ -482,7 +482,7 @@ test('<CallTypeButtons> click on Data (Child) button', () => {
 
   expect(store.dispatch).toHaveBeenCalledWith(updateCallType(task.taskSid, callTypes.child));
   expect(store.dispatch).toHaveBeenCalledWith(
-    changeRoute({ route: 'tabbed-forms', subroute: 'childInformation' }, task.taskSid),
+    changeRoute({ route: 'tabbed-forms', subroute: 'childInformation', autoFocus: true }, task.taskSid),
   );
 });
 
