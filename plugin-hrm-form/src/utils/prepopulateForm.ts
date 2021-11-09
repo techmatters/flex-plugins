@@ -85,6 +85,8 @@ export const prepopulateForm = (task: ITask) => {
 
     // Open tabbed form to first tab
     const subroute = isAboutSelf ? 'childInformation' : 'callerInformation';
-    Manager.getInstance().store.dispatch(RoutingActions.changeRoute({ route: 'tabbed-forms', subroute }, task.taskSid));
+    Manager.getInstance().store.dispatch(
+      RoutingActions.changeRoute({ route: 'tabbed-forms', subroute, autoFocus: true }, task.taskSid),
+    );
   }
 };
