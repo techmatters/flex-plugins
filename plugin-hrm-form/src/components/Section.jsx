@@ -21,11 +21,19 @@ const Section = ({
   children,
   handleExpandClick,
   buttonDataTestid,
-  autoFocus,
+  htmlElRef,
 }) => (
   <>
     <SectionTitleContainer color={color}>
-      <SectionTitleButton autoFocus={autoFocus} onClick={handleExpandClick} data-testid={buttonDataTestid}>
+      <SectionTitleButton
+        buttonRef={buttonRef => {
+          if (htmlElRef) {
+            htmlElRef.current = buttonRef;
+          }
+        }}
+        onClick={handleExpandClick}
+        data-testid={buttonDataTestid}
+      >
         <SectionTitleText>{sectionTitle}</SectionTitleText>
         {!hideIcon && (expanded ? <ArrowUpIcon /> : <ArrowDownIcon />)}
       </SectionTitleButton>
@@ -45,14 +53,15 @@ Section.propTypes = {
   hideIcon: PropTypes.bool,
   handleExpandClick: PropTypes.func.isRequired,
   buttonDataTestid: PropTypes.string,
-  autoFocus: PropTypes.bool,
+  // eslint-disable-next-line react/forbid-prop-types
+  htmlElRef: PropTypes.any,
 };
 Section.defaultProps = {
   expanded: false,
   hideIcon: false,
   color: null,
   buttonDataTestid: null,
-  autoFocus: false,
+  htmlElRef: null,
 };
 
 export default Section;

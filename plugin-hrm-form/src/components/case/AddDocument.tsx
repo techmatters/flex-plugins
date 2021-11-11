@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/jsx-max-depth */
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { useForm, FormProvider } from 'react-hook-form';
@@ -59,6 +59,19 @@ const AddDocument: React.FC<Props> = ({
   updateTempInfo,
   changeRoute,
 }) => {
+  const firstElementRef = useRef(null);
+
+  useEffect(() => {
+    const setFocus = () => {
+      console.log({ firstElementRef });
+      if (firstElementRef.current && firstElementRef.current.focus) {
+        firstElementRef.current.focus();
+      }
+    };
+
+    setFocus();
+  }, []);
+
   const { temporaryCaseInfo } = connectedCaseState;
   const { DocumentForm } = definitionVersion.caseForms;
   const { layoutVersion } = definitionVersion;
@@ -122,7 +135,7 @@ const AddDocument: React.FC<Props> = ({
       onDeleteFile,
     };
 
-    const generatedForm = createFormFromDefinition(DocumentForm, true)([])(initialForm)(
+    const generatedForm = createFormFromDefinition(DocumentForm)([])(initialForm, firstElementRef)(
       updateCallBack,
       fileUploadCustomHandlers,
     );
@@ -131,7 +144,15 @@ const AddDocument: React.FC<Props> = ({
       return splitAt(layoutVersion.case.documents.splitFormAt)(disperseInputs(7)(generatedForm));
 
     return splitInHalf(disperseInputs(7)(generatedForm));
-  }, [DocumentForm, initialForm, layoutVersion.case.documents.splitFormAt, methods, task.taskSid, updateTempInfo]);
+  }, [
+    DocumentForm,
+    initialForm,
+    firstElementRef,
+    layoutVersion.case.documents.splitFormAt,
+    methods,
+    task.taskSid,
+    updateTempInfo,
+  ]);
 
   const saveDocument = async shouldStayInForm => {
     if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-document') return;

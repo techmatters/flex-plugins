@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { connect, ConnectedProps } from 'react-redux';
 
@@ -40,6 +40,20 @@ const TabbedFormTab: React.FC<Props> = ({
   autoFocus,
   updateForm,
 }) => {
+  const firstElementRef = useRef(null);
+
+  useEffect(() => {
+    const setFocus = () => {
+      if (firstElementRef.current && firstElementRef.current.focus) {
+        firstElementRef.current.focus();
+      }
+    };
+
+    if (display && autoFocus) {
+      setFocus();
+    }
+  }, [display, autoFocus]);
+
   const [initialForm] = React.useState(initialValues); // grab initial values in first render only. This value should never change or will ruin the memoization below
   const { getValues } = useFormContext();
 
@@ -49,7 +63,7 @@ const TabbedFormTab: React.FC<Props> = ({
       updateForm(task.taskSid, tabPath, values);
     };
 
-    const generatedForm = createFormFromDefinition(definition, autoFocus)([tabPath])(initialForm)(updateCallback);
+    const generatedForm = createFormFromDefinition(definition)([tabPath])(initialForm, firstElementRef)(updateCallback);
 
     const margin = 12;
 
@@ -57,9 +71,7 @@ const TabbedFormTab: React.FC<Props> = ({
       return splitAt(layoutDefinition.splitFormAt)(disperseInputs(7)(generatedForm));
 
     return splitInHalf(disperseInputs(margin)(generatedForm));
-  }, [definition, getValues, initialForm, autoFocus, layoutDefinition, tabPath, task.taskSid, updateForm]);
-
-  if (!display) return null;
+  }, [definition, getValues, initialForm, firstElementRef, layoutDefinition, tabPath, task.taskSid, updateForm]);
 
   return (
     <TabbedFormTabContainer display={display}>

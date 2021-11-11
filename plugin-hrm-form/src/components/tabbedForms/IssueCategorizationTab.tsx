@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { connect, ConnectedProps } from 'react-redux';
 
@@ -33,6 +33,20 @@ const IssueCategorizationTab: React.FC<Props> = ({
   setCategoriesGridView,
   handleExpandCategory,
 }) => {
+  const firstElementRef = useRef(null);
+
+  useEffect(() => {
+    const setFocus = () => {
+      if (firstElementRef.current && firstElementRef.current.focus) {
+        firstElementRef.current.focus();
+      }
+    };
+
+    if (display && autoFocus) {
+      setFocus();
+    }
+  }, [display, autoFocus]);
+
   const { getValues, setValue } = useFormContext();
   const IssueCategorizationTabDefinition = definition;
 
@@ -60,8 +74,6 @@ const IssueCategorizationTab: React.FC<Props> = ({
     handleExpandCategory(category, task.taskSid);
   };
 
-  if (!display) return null;
-
   return (
     <TabbedFormTabContainer display={display}>
       <CategoriesFromDefinition
@@ -70,7 +82,7 @@ const IssueCategorizationTab: React.FC<Props> = ({
         categoriesMeta={categoriesMeta}
         toggleCategoriesGridView={toggleCategoriesGridView}
         toggleExpandCategory={toggleExpandCategory}
-        autoFocus={autoFocus}
+        firstElementRef={firstElementRef}
       />
     </TabbedFormTabContainer>
   );

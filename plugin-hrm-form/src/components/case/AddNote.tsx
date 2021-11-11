@@ -1,6 +1,7 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/jsx-max-depth */
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import { useForm, FormProvider } from 'react-hook-form';
@@ -45,6 +46,18 @@ const AddNote: React.FC<Props> = ({
   updateTempInfo,
   setConnectedCase,
 }) => {
+  const firstElementRef = useRef(null);
+
+  useEffect(() => {
+    const setFocus = () => {
+      if (firstElementRef.current && firstElementRef.current.focus) {
+        firstElementRef.current.focus();
+      }
+    };
+
+    setFocus();
+  }, []);
+
   const { connectedCase, temporaryCaseInfo } = connectedCaseState;
   const { NoteForm } = definitionVersion.caseForms;
 
@@ -72,10 +85,10 @@ const AddNote: React.FC<Props> = ({
       updateTempInfo({ screen: 'add-note', info: note }, task.taskSid);
     };
 
-    const generatedForm = createFormFromDefinition(NoteForm, true)([])(initialForm)(updateCallBack);
+    const generatedForm = createFormFromDefinition(NoteForm)([])(initialForm, firstElementRef)(updateCallBack);
 
     return splitInHalf(disperseInputs(7)(generatedForm));
-  }, [NoteForm, initialForm, methods, task.taskSid, updateTempInfo]);
+  }, [NoteForm, initialForm, firstElementRef, methods, task.taskSid, updateTempInfo]);
 
   if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-note') return null;
 

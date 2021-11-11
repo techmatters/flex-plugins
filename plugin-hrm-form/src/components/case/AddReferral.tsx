@@ -1,6 +1,7 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/jsx-max-depth */
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import { useForm, FormProvider } from 'react-hook-form';
@@ -45,6 +46,18 @@ const AddReferral: React.FC<Props> = ({
   updateTempInfo,
   setConnectedCase,
 }) => {
+  const firstElementRef = useRef(null);
+
+  useEffect(() => {
+    const setFocus = () => {
+      if (firstElementRef.current && firstElementRef.current.focus) {
+        firstElementRef.current.focus();
+      }
+    };
+
+    setFocus();
+  }, []);
+
   const { connectedCase, temporaryCaseInfo } = connectedCaseState;
   const { ReferralForm } = definitionVersion.caseForms;
 
@@ -58,10 +71,10 @@ const AddReferral: React.FC<Props> = ({
       updateTempInfo({ screen: 'add-referral', info: referral }, task.taskSid);
     };
 
-    const generatedForm = createFormFromDefinition(ReferralForm, true)([])(initialForm)(updateCallBack);
+    const generatedForm = createFormFromDefinition(ReferralForm)([])(initialForm, firstElementRef)(updateCallBack);
 
     return splitInHalf(disperseInputs(7)(generatedForm));
-  }, [ReferralForm, initialForm, methods, task.taskSid, updateTempInfo]);
+  }, [ReferralForm, initialForm, firstElementRef, methods, task.taskSid, updateTempInfo]);
 
   if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-referral') return null;
 

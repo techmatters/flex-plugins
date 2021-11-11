@@ -1,5 +1,6 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { FieldError, useFormContext } from 'react-hook-form';
 import { isFuture } from 'date-fns';
@@ -35,6 +36,20 @@ const ContactlessTaskTab: React.FC<Props> = ({
   counselorsList,
   autoFocus,
 }) => {
+  const firstElementRef = useRef(null);
+
+  useEffect(() => {
+    const setFocus = () => {
+      if (firstElementRef.current && firstElementRef.current.focus) {
+        firstElementRef.current.focus();
+      }
+    };
+
+    if (display && autoFocus) {
+      setFocus();
+    }
+  }, [display, autoFocus]);
+
   const [initialForm] = React.useState(initialValues); // grab initial values in first render only. This value should never change or will ruin the memoization below
 
   const { getValues, register, setError, setValue, watch, errors } = useFormContext();
@@ -47,10 +62,12 @@ const ContactlessTaskTab: React.FC<Props> = ({
 
     const formDefinition = createContactlessTaskTabDefinition(counselorsList, definition);
 
-    const tab = createFormFromDefinition(formDefinition, autoFocus)(['contactlessTask'])(initialForm)(updateCallBack);
+    const tab = createFormFromDefinition(formDefinition)(['contactlessTask'])(initialForm, firstElementRef)(
+      updateCallBack,
+    );
 
     return disperseInputs(5)(tab);
-  }, [counselorsList, dispatch, getValues, definition, initialForm, autoFocus, task.taskSid]);
+  }, [counselorsList, dispatch, getValues, definition, initialForm, firstElementRef, task.taskSid]);
 
   // Add invisible field that errors if date + time are future (triggered by validaiton)
   React.useEffect(() => {

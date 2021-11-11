@@ -1,6 +1,7 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/jsx-max-depth */
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { useForm, FormProvider } from 'react-hook-form';
@@ -54,6 +55,18 @@ const AddHousehold: React.FC<Props> = ({
   updateTempInfo,
   changeRoute,
 }) => {
+  const firstElementRef = useRef(null);
+
+  useEffect(() => {
+    const setFocus = () => {
+      if (firstElementRef.current && firstElementRef.current.focus) {
+        firstElementRef.current.focus();
+      }
+    };
+
+    setFocus();
+  }, []);
+
   const { temporaryCaseInfo } = connectedCaseState;
   const { HouseholdForm } = definitionVersion.caseForms;
   const { layoutVersion } = definitionVersion;
@@ -68,13 +81,21 @@ const AddHousehold: React.FC<Props> = ({
       updateTempInfo({ screen: 'add-household', info: household }, task.taskSid);
     };
 
-    const generatedForm = createFormFromDefinition(HouseholdForm, true)([])(initialForm)(updateCallBack);
+    const generatedForm = createFormFromDefinition(HouseholdForm)([])(initialForm, firstElementRef)(updateCallBack);
 
     if (layoutVersion.case.households.splitFormAt)
       return splitAt(layoutVersion.case.households.splitFormAt)(disperseInputs(7)(generatedForm));
 
     return splitInHalf(disperseInputs(7)(generatedForm));
-  }, [HouseholdForm, initialForm, layoutVersion.case.households.splitFormAt, methods, task.taskSid, updateTempInfo]);
+  }, [
+    HouseholdForm,
+    initialForm,
+    firstElementRef,
+    layoutVersion.case.households.splitFormAt,
+    methods,
+    task.taskSid,
+    updateTempInfo,
+  ]);
 
   const saveHousehold = async shouldStayInForm => {
     if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-household') return;

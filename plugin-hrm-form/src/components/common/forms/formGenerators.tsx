@@ -1,8 +1,9 @@
+/* eslint-disable sonarjs/no-identical-functions */
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/no-multi-comp */
 /* eslint-disable import/no-unused-modules */
 /* eslint-disable react/display-name */
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useFormContext, RegisterOptions } from 'react-hook-form';
 import { get, pick } from 'lodash';
 import { Template } from '@twilio/flex-ui';
@@ -26,7 +27,7 @@ import {
   FormSelectWrapper,
   FormTextArea,
 } from '../../../styles/HrmStyles';
-import type { FormItemDefinition, FormDefinition, SelectOption, MixedOrBool } from './types';
+import type { FormItemDefinition, FormDefinition, SelectOption, MixedOrBool, HTMLElementRef } from './types';
 import UploadIcon from '../icons/UploadIcon';
 import UploadFileInput from './UploadFileInput';
 
@@ -99,7 +100,7 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
   def: FormItemDefinition,
 ) => (
   initialValue: any, // TODO: restrict this type
-  autoFocus: boolean,
+  htmlElRef?: HTMLElementRef,
 ) => {
   const rules = getRules(def);
   const path = [...parents, def.name].join('.');
@@ -127,9 +128,14 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
                   aria-invalid={Boolean(error)}
                   aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
-                  innerRef={register(rules)}
+                  innerRef={innerRef => {
+                    if (htmlElRef) {
+                      htmlElRef.current = innerRef;
+                    }
+
+                    register(rules)(innerRef);
+                  }}
                   defaultValue={initialValue}
-                  autoFocus={autoFocus}
                 />
                 {error && (
                   <FormError>
@@ -161,12 +167,17 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
                   aria-invalid={Boolean(error)}
                   aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
-                  innerRef={register({
-                    ...rules,
-                    pattern: { value: /^[0-9]+$/g, message: 'This field only accepts numeric input.' },
-                  })}
+                  innerRef={innerRef => {
+                    if (htmlElRef) {
+                      htmlElRef.current = innerRef;
+                    }
+
+                    register({
+                      ...rules,
+                      pattern: { value: /^[0-9]+$/g, message: 'This field only accepts numeric input.' },
+                    })(innerRef);
+                  }}
                   defaultValue={initialValue}
-                  autoFocus={autoFocus}
                 />
                 {error && (
                   <FormError>
@@ -201,9 +212,14 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
                     aria-invalid={Boolean(error)}
                     aria-describedby={`${path}-error`}
                     onBlur={updateCallback}
-                    innerRef={register(rules)}
+                    innerRef={innerRef => {
+                      if (htmlElRef) {
+                        htmlElRef.current = innerRef;
+                      }
+
+                      register(rules)(innerRef);
+                    }}
                     defaultValue={initialValue}
-                    autoFocus={autoFocus}
                   >
                     {def.options.map(createSelectOptions)}
                   </FormSelect>
@@ -270,10 +286,15 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
                     aria-invalid={Boolean(error)}
                     aria-describedby={`${path}-error`}
                     onBlur={updateCallback}
-                    innerRef={register({ validate })}
+                    innerRef={innerRef => {
+                      if (htmlElRef) {
+                        htmlElRef.current = innerRef;
+                      }
+
+                      register({ validate })(innerRef);
+                    }}
                     disabled={disabled}
                     defaultValue={initialValue}
-                    autoFocus={autoFocus}
                   >
                     {options.map(createSelectOptions)}
                   </FormSelect>
@@ -304,9 +325,14 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
                       aria-invalid={Boolean(error)}
                       aria-describedby={`${path}-error`}
                       onChange={updateCallback}
-                      innerRef={register(rules)}
+                      innerRef={innerRef => {
+                        if (htmlElRef) {
+                          htmlElRef.current = innerRef;
+                        }
+
+                        register(rules)(innerRef);
+                      }}
                       defaultChecked={initialValue}
-                      autoFocus={autoFocus}
                     />
                   </Box>
                   {labelTextComponent}
@@ -357,7 +383,11 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
                         if (checked === true) setChecked(false);
                         if (checked === false) setChecked('mixed');
                       }}
-                      autoFocus={autoFocus}
+                      innerRef={innerRef => {
+                        if (htmlElRef) {
+                          htmlElRef.current = innerRef;
+                        }
+                      }}
                     />
                   </Box>
                   {labelTextComponent}
@@ -393,11 +423,16 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
                   aria-invalid={Boolean(error)}
                   aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
-                  innerRef={register(rules)}
+                  innerRef={innerRef => {
+                    if (htmlElRef) {
+                      htmlElRef.current = innerRef;
+                    }
+
+                    register(rules)(innerRef);
+                  }}
                   rows={def.rows ? def.rows : 10}
                   width={def.width}
                   defaultValue={initialValue}
-                  autoFocus={autoFocus}
                 />
                 {error && (
                   <FormError>
@@ -430,9 +465,14 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
                   aria-invalid={Boolean(error)}
                   aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
-                  innerRef={register(rules)}
+                  innerRef={innerRef => {
+                    if (htmlElRef) {
+                      htmlElRef.current = innerRef;
+                    }
+
+                    register(rules)(innerRef);
+                  }}
                   defaultValue={initialValue}
-                  autoFocus={autoFocus}
                 />
                 {error && (
                   <FormError>
@@ -465,9 +505,14 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
                   aria-invalid={Boolean(error)}
                   aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
-                  innerRef={register(rules)}
+                  innerRef={innerRef => {
+                    if (htmlElRef) {
+                      htmlElRef.current = innerRef;
+                    }
+
+                    register(rules)(innerRef);
+                  }}
                   defaultValue={initialValue}
-                  autoFocus={autoFocus}
                 />
                 {error && (
                   <FormError>
@@ -498,7 +543,7 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
               updateCallback={updateCallback}
               RequiredAsterisk={RequiredAsterisk}
               initialValue={initialValue}
-              autoFocus={autoFocus}
+              htmlElRef={htmlElRef}
             />
           )}
         </ConnectForm>
@@ -521,16 +566,17 @@ export type CustomHandlers = FileUploadCustomHandlers;
  * @param {string[]} parents Array of parents. Allows you to easily create nested form fields. https://react-hook-form.com/api#register.
  * @param {() => void} updateCallback Callback called to update form state. When is the callback called is specified in the input type (getInputType).
  */
-export const createFormFromDefinition = (definition: FormDefinition, autoFocus?: boolean) => (parents: string[]) => (
+export const createFormFromDefinition = (definition: FormDefinition) => (parents: string[]) => (
   initialValues: any,
+  firstElementRef?: HTMLElementRef,
 ) => (updateCallback: () => void, customHandlers?: CustomHandlers): JSX.Element[] => {
   const bindGetInputType = getInputType(parents, updateCallback, customHandlers);
 
   return definition.map((e: FormItemDefinition, index: number) => {
-    const shouldAutoFocusFirstInput = index === 0 && autoFocus;
+    const elementRef = index === 0 ? firstElementRef : null;
     const maybeValue = get(initialValues, e.name);
     const initialValue = maybeValue === undefined ? getInitialValue(e) : maybeValue;
-    return bindGetInputType(e)(initialValue, shouldAutoFocusFirstInput);
+    return bindGetInputType(e)(initialValue, elementRef);
   });
 };
 

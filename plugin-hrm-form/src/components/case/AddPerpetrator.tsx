@@ -1,6 +1,7 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/jsx-max-depth */
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { useForm, FormProvider } from 'react-hook-form';
@@ -54,6 +55,18 @@ const AddPerpetrator: React.FC<Props> = ({
   updateTempInfo,
   changeRoute,
 }) => {
+  const firstElementRef = useRef(null);
+
+  useEffect(() => {
+    const setFocus = () => {
+      if (firstElementRef.current && firstElementRef.current.focus) {
+        firstElementRef.current.focus();
+      }
+    };
+
+    setFocus();
+  }, []);
+
   const { temporaryCaseInfo } = connectedCaseState;
   const { PerpetratorForm } = definitionVersion.caseForms;
   const { layoutVersion } = definitionVersion;
@@ -68,7 +81,7 @@ const AddPerpetrator: React.FC<Props> = ({
       updateTempInfo({ screen: 'add-perpetrator', info: perpetrator }, task.taskSid);
     };
 
-    const generatedForm = createFormFromDefinition(PerpetratorForm, true)([])(initialForm)(updateCallBack);
+    const generatedForm = createFormFromDefinition(PerpetratorForm)([])(initialForm, firstElementRef)(updateCallBack);
 
     if (layoutVersion.case.perpetrators.splitFormAt)
       return splitAt(layoutVersion.case.perpetrators.splitFormAt)(disperseInputs(7)(generatedForm));
