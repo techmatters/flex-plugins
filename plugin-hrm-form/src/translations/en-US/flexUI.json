@@ -135,6 +135,7 @@
   "TabbedForms-AddCaseInfoTab": "Summary",
   "TabbedForms-AddContactInfoTab": "Contact Info",
   "TabbedForms-BackButton": "Categorize Contact Type",
+  "TabbedForms-CSAMReportButton": "File CSAM Report",
 
   "NotImplemented": "Not implemented yet!",
   "Error-Backend": "Error from backend system.",

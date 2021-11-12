@@ -994,3 +994,10 @@ export const Bold = styled('span')`
 `;
 
 Bold.displayName = 'Bold';
+
+export const CSAMReportButtonText = styled(FontOpenSans)`
+  font-size: 12px;
+  color: ${props => props.theme.colors.hyperlinkColor};
+  font-weight: 600;
+`;
+CSAMReportButtonText.displayName = 'CSAMReportButtonText';

@@ -17,7 +17,7 @@ import { changeRoute } from '../../states/routing/actions';
 import type { TaskEntry } from '../../states/contacts/reducer';
 import { TabbedFormSubroutes, NewCaseSubroutes } from '../../states/routing/types';
 import { CustomITask, isOfflineContactTask, SearchContact } from '../../types/types';
-import { TabbedFormsContainer, Box, StyledTabs } from '../../styles/HrmStyles';
+import { TabbedFormsContainer, Box, StyledTabs, Row } from '../../styles/HrmStyles';
 import FormTab from '../common/forms/FormTab';
 import callTypes from '../../states/DomainConstants';
 import Search from '../search';
@@ -28,7 +28,7 @@ import BottomBar from './BottomBar';
 import { hasTaskControl } from '../../utils/transfer';
 import { isNonDataCallType } from '../../states/ValidationRules';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
-import { isStandaloneITask } from '../case/Case';
+import CSAMReportButton from './CSAMReportButton';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -155,13 +155,25 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, cu
   const showSubmitButton = !isEmptyCallType(contactForm.callType) && tabIndex === tabs.length - 1;
   const { helpline } = contactForm;
 
+  // eslint-disable-next-line react/display-name
+  const HeaderControlButtons = () => (
+    <Box marginTop="10px" marginBottom="10px" paddingLeft="20px">
+      <Row>
+        <SearchResultsBackButton handleBack={handleBackButton} text={<Template code="TabbedForms-BackButton" />} />
+        <Box marginLeft="auto">
+          <CSAMReportButton handleClick={() => console.log('>>>> PRESSED')} />
+        </Box>
+      </Row>
+    </Box>
+  );
+
   return (
     <FormProvider {...methods}>
       <div role="form" style={{ height: '100%', overflow: 'scroll' }}>
         <TabbedFormsContainer>
-          <Box marginTop="10px" marginBottom="10px">
-            <SearchResultsBackButton handleBack={handleBackButton} text={<Template code="TabbedForms-BackButton" />} />
-          </Box>
+          {/* Buttons at the top of the form */}
+          <HeaderControlButtons />
+
           <StyledTabs name="tab" variant="scrollable" scrollButtons="auto" value={tabIndex} onChange={handleTabsChange}>
             {tabs}
           </StyledTabs>
