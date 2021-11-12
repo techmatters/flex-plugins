@@ -80,6 +80,7 @@ const AddPerpetrator: React.FC<Props> = ({
   }, [
     PerpetratorForm,
     initialForm,
+    firstElementRef,
     layoutVersion.case.perpetrators.splitFormAt,
     methods,
     task.taskSid,
