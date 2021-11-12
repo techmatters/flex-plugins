@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { connect, ConnectedProps } from 'react-redux';
 
@@ -16,6 +16,7 @@ import { createFormFromDefinition, disperseInputs, splitAt, splitInHalf } from '
 import type { FormDefinition, LayoutDefinition } from '../common/forms/types';
 import type { TaskEntry } from '../../states/contacts/reducer';
 import type { CustomITask } from '../../types/types';
+import useFocus from '../../utils/useFocus';
 
 type OwnProps = {
   task: CustomITask;
@@ -40,19 +41,8 @@ const TabbedFormTab: React.FC<Props> = ({
   autoFocus,
   updateForm,
 }) => {
-  const firstElementRef = useRef(null);
-
-  useEffect(() => {
-    const setFocus = () => {
-      if (firstElementRef.current && firstElementRef.current.focus) {
-        firstElementRef.current.focus();
-      }
-    };
-
-    if (display && autoFocus) {
-      setFocus();
-    }
-  }, [display, autoFocus]);
+  const shouldFocusFirstElement = display && autoFocus;
+  const firstElementRef = useFocus(shouldFocusFirstElement);
 
   const [initialForm] = React.useState(initialValues); // grab initial values in first render only. This value should never change or will ruin the memoization below
   const { getValues } = useFormContext();

@@ -1,7 +1,6 @@
-/* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/jsx-max-depth */
 /* eslint-disable react/prop-types */
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { useForm, FormProvider } from 'react-hook-form';
@@ -35,6 +34,7 @@ import {
 } from '../common/forms/formGenerators';
 import type { DefinitionVersion } from '../common/forms/types';
 import type { CustomITask, StandaloneITask } from '../../types/types';
+import useFocus from '../../utils/useFocus';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
@@ -59,18 +59,7 @@ const AddDocument: React.FC<Props> = ({
   updateTempInfo,
   changeRoute,
 }) => {
-  const firstElementRef = useRef(null);
-
-  useEffect(() => {
-    const setFocus = () => {
-      console.log({ firstElementRef });
-      if (firstElementRef.current && firstElementRef.current.focus) {
-        firstElementRef.current.focus();
-      }
-    };
-
-    setFocus();
-  }, []);
+  const firstElementRef = useFocus();
 
   const { temporaryCaseInfo } = connectedCaseState;
   const { DocumentForm } = definitionVersion.caseForms;

@@ -1,6 +1,5 @@
-/* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/prop-types */
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { FieldError, useFormContext } from 'react-hook-form';
 import { isFuture } from 'date-fns';
@@ -15,6 +14,7 @@ import { createContactlessTaskTabDefinition } from './ContactlessTaskTabDefiniti
 import { splitDate, splitTime } from '../../utils/helpers';
 import type { OfflineContactTask } from '../../types/types';
 import type { HelplineDefinitions } from '../common/forms/types';
+import useFocus from '../../utils/useFocus';
 
 type OwnProps = {
   task: OfflineContactTask;
@@ -36,19 +36,8 @@ const ContactlessTaskTab: React.FC<Props> = ({
   counselorsList,
   autoFocus,
 }) => {
-  const firstElementRef = useRef(null);
-
-  useEffect(() => {
-    const setFocus = () => {
-      if (firstElementRef.current && firstElementRef.current.focus) {
-        firstElementRef.current.focus();
-      }
-    };
-
-    if (display && autoFocus) {
-      setFocus();
-    }
-  }, [display, autoFocus]);
+  const shouldFocusFirstElement = display && autoFocus;
+  const firstElementRef = useFocus(shouldFocusFirstElement);
 
   const [initialForm] = React.useState(initialValues); // grab initial values in first render only. This value should never change or will ruin the memoization below
 

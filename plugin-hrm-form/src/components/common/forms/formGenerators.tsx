@@ -568,7 +568,7 @@ export type CustomHandlers = FileUploadCustomHandlers;
  */
 export const createFormFromDefinition = (definition: FormDefinition) => (parents: string[]) => (
   initialValues: any,
-  firstElementRef?: HTMLElementRef,
+  firstElementRef: HTMLElementRef,
 ) => (updateCallback: () => void, customHandlers?: CustomHandlers): JSX.Element[] => {
   const bindGetInputType = getInputType(parents, updateCallback, customHandlers);
 

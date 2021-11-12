@@ -1,7 +1,6 @@
-/* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/jsx-max-depth */
 /* eslint-disable react/prop-types */
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import { useForm, FormProvider } from 'react-hook-form';
@@ -26,6 +25,7 @@ import { createFormFromDefinition, disperseInputs, splitInHalf } from '../common
 import type { DefinitionVersion } from '../common/forms/types';
 import { transformValues } from '../../services/ContactService';
 import type { CustomITask, StandaloneITask } from '../../types/types';
+import useFocus from '../../utils/useFocus';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;
@@ -46,17 +46,7 @@ const AddNote: React.FC<Props> = ({
   updateTempInfo,
   setConnectedCase,
 }) => {
-  const firstElementRef = useRef(null);
-
-  useEffect(() => {
-    const setFocus = () => {
-      if (firstElementRef.current && firstElementRef.current.focus) {
-        firstElementRef.current.focus();
-      }
-    };
-
-    setFocus();
-  }, []);
+  const firstElementRef = useFocus();
 
   const { connectedCase, temporaryCaseInfo } = connectedCaseState;
   const { NoteForm } = definitionVersion.caseForms;
