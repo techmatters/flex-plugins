@@ -37,6 +37,7 @@ const HrmForm: React.FC<Props> = ({ routing, task, changeRoute }) => {
       return (
         <CSAMReportForm
           onClickClose={() => changeRoute({ route: 'tabbed-forms', subroute: 'caseInformation' }, task.taskSid)}
+          taskSid={task.taskSid}
         />
       );
 

@@ -2,71 +2,65 @@
 import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { Template } from '@twilio/flex-ui';
+import { connect, ConnectedProps } from 'react-redux';
 
 import ActionHeader from '../case/ActionHeader';
-import { BottomButtonBar, Box, Row, StyledNextStepButton } from '../../styles/HrmStyles';
+import { BottomButtonBar, Box, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CSAMReportContainer, CSAMReportLayout, BoldDescriptionText, RegularText } from '../../styles/CSAMReportForm';
 import { FormItemDefinition } from '../common/forms/types';
 import { getInputType, getInitialValue } from '../common/forms/formGenerators';
+import { definitionObject, keys } from './CSAMReportFormDefinition';
+import * as t from '../../states/csam-report/actions';
+import type { CustomITask } from '../../types/types';
+import { RootState, csamReportBase, namespace } from '../../states';
 
 type OwnProps = {
   onClickClose: () => void;
+  taskSid: CustomITask['taskSid'];
 };
 
-type Props = OwnProps;
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
+  init: state[namespace][csamReportBase].tasks[ownProps.taskSid],
+});
 
-const CSAMReportForm: React.FC<Props> = ({ onClickClose }) => {
+const mapDispatchToProps = {
+  updateFormAction: t.updateFormAction,
+};
+
+// eslint-disable-next-line no-use-before-define
+type Props = OwnProps & ConnectedProps<typeof connector>;
+
+const CSAMReportForm: React.FC<Props> = ({ onClickClose, updateFormAction, taskSid, init }) => {
+  const [initialForm] = React.useState(init); // grab initial values in first render only. This value should never change or will ruin the memoization below
+  console.log('>>>>>> init', init);
+  console.log('>>>>>> initialForm', initialForm);
   const methods = useForm();
 
-  const onUpdateInput = () => console.log(methods.getValues());
   const handleSubmitReport = async () => console.log(await methods.trigger());
-  const generateInput = (e: FormItemDefinition) => getInputType([], onUpdateInput)(e)(getInitialValue(e));
 
-  const webAddressInput = generateInput({
-    name: 'webAddress',
-    label: 'Web address',
-    type: 'input',
-    required: { value: true, message: 'RequiredFieldError' },
-    maxLength: 1000,
-  });
+  const formElements = React.useMemo(() => {
+    const onUpdateInput = () => {
+      const values = methods.getValues(Object.values(keys));
+      updateFormAction(values, taskSid);
+    };
 
-  const descriptionTextArea = generateInput({
-    name: 'description',
-    label: 'Description (500 characters)',
-    type: 'textarea',
-    maxLength: 500,
-  });
+    const generateInput = (e: FormItemDefinition) => {
+      const initialValue = initialForm[e.name] === undefined ? getInitialValue(e) : initialForm[e.name];
+      return getInputType([], onUpdateInput)(e)(initialValue);
+    };
 
-  const anonCheckbox = generateInput({
-    name: 'anonymous',
-    label: 'File anonymously',
-    type: 'checkbox',
-    initialChecked: true,
-  });
+    return Object.entries(definitionObject).reduce<{ [k in keyof typeof definitionObject]: JSX.Element }>(
+      (accum, [k, e]) => ({
+        ...accum,
+        [k]: generateInput(e),
+      }),
+      null,
+    );
+  }, [initialForm, methods, taskSid, updateFormAction]);
 
-  const firstNameInput = generateInput({
-    name: 'firstName',
-    label: "Reporter's First Name",
-    type: 'input',
-    maxLength: 50,
-  });
-
-  const lastNameInput = generateInput({
-    name: 'lastName',
-    label: "Reporter's Last Name",
-    type: 'input',
-    maxLength: 50,
-  });
-
-  const emailInput = generateInput({
-    name: 'email',
-    label: 'Email Address',
-    type: 'email',
-    required: { value: true, message: 'RequiredFieldError' },
-    maxLength: 100,
-  });
-
-  const anonymous = methods.watch('anonymous');
+  const anonymousWatch = methods.watch('anonymous');
+  const renderContactDetails =
+    anonymousWatch === false || (anonymousWatch === undefined && initialForm.anonymous === false);
 
   return (
     <FormProvider {...methods}>
@@ -84,8 +78,8 @@ const CSAMReportForm: React.FC<Props> = ({ onClickClose }) => {
             <Template code="CSAMReportForm-WebsiteDetailsDescription" />
           </RegularText>
           <Box padding="15px 15px 15px 20px">
-            {webAddressInput}
-            {descriptionTextArea}
+            {formElements.webAddress}
+            {formElements.description}
           </Box>
 
           {/** Contact details */}
@@ -97,18 +91,18 @@ const CSAMReportForm: React.FC<Props> = ({ onClickClose }) => {
           <RegularText>
             <Template code="CSAMReportForm-ContactDetailsDescription" />
           </RegularText>
-          <Box padding="15px 15px 15px 20px">{anonCheckbox}</Box>
+          <Box padding="15px 15px 15px 20px">{formElements.anonymous}</Box>
 
           {/** Conditional part of the form only shown if contact is not anon */}
-          {anonymous === false && (
+          {renderContactDetails && (
             <Box marginTop="20px" marginBottom="5px">
               <RegularText>
                 <Template code="CSAMReportForm-ContactDetailsInfo" />
               </RegularText>
               <Box padding="15px 15px 15px 20px">
-                {firstNameInput}
-                {lastNameInput}
-                {emailInput}
+                {formElements.firstName}
+                {formElements.lastName}
+                {formElements.email}
               </Box>
             </Box>
           )}
@@ -131,4 +125,7 @@ const CSAMReportForm: React.FC<Props> = ({ onClickClose }) => {
 
 CSAMReportForm.displayName = 'CSAMReportForm';
 
-export default CSAMReportForm;
+const connector = connect(mapStateToProps, mapDispatchToProps);
+const connected = connector(CSAMReportForm);
+
+export default connected;
