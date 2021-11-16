@@ -47,6 +47,11 @@ type NumericInputDefinition = {
 } & ItemBase &
   RegisterOptions;
 
+type EmailInputDefinition = {
+  type: 'email';
+} & ItemBase &
+  RegisterOptions;
+
 export type SelectOption = { value: any; label: string };
 
 type SelectDefinition = {
@@ -108,6 +113,7 @@ type FileUploadDefinition = {
 export type FormItemDefinition =
   | InputDefinition
   | NumericInputDefinition
+  | EmailInputDefinition
   | SelectDefinition
   | DependentSelectDefinition
   | CheckboxDefinition
