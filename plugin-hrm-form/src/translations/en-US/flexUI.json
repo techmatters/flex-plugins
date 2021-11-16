@@ -316,6 +316,16 @@
   "PreviousContacts-OnlyShowRecordsFrom": "Only show records from",
 
   "UploadFile-ButtonText": "Upload File",
-  "DownloadFile-ButtonText": "Download File"
+  "DownloadFile-ButtonText": "Download File",
+  
+  "CSAMReportForm-Header": "File a Report: Child Sexual Abuse Material",
+  "CSAMReportForm-WebsiteDetails": "Website details",
+  "CSAMReportForm-WebsiteDetailsDescription": "Please provide details where the material was discovered.<br>To report more than one website do a separate report.",
+  "CSAMReportForm-ContactDetails": "Contact details",
+  "CSAMReportForm-ContactDetailsDescription": "Reports can be filed anonymously or with contact details if the caller would like to follow up or be available to provide further details to IWF.",
+  "CSAMReportForm-LearnMore": "Learn more",
+  "CSAMReportForm-ContactDetailsInfo": "Contact details will be recorded on the IWF database for 3 months, and then will then be deleted in accordance with the UK Data Protection Act",
 
+  "SpecifyIfAnonymousOrNot": "Specify if this report is either anonymous or not",
+  "BottomBar-SendReport": "Send Report"
 }

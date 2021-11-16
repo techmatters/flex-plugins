@@ -11,10 +11,12 @@ export const BottomButtonBarHeight = 55;
 type BoxProps = {
   width?: string;
   height?: string;
+  margin?: string;
   marginTop?: string;
   marginBottom?: string;
   marginLeft?: string;
   marginRight?: string;
+  padding?: string;
   paddingTop?: string;
   paddingBottom?: string;
   paddingLeft?: string;
@@ -24,10 +26,12 @@ type BoxProps = {
 export const Box = styled('div')<BoxProps>`
   ${({ width }) => width && `width: ${width};`}
   ${({ height }) => height && `height: ${height};`}
+  ${({ margin }) => margin && `margin: ${margin}`}
   ${({ marginTop }) => marginTop && `margin-top: ${marginTop};`}
   ${({ marginBottom }) => marginBottom && `margin-bottom: ${marginBottom};`}
   ${({ marginLeft }) => marginLeft && `margin-left: ${marginLeft};`}
   ${({ marginRight }) => marginRight && `margin-right: ${marginRight};`}
+  ${({ padding }) => padding && `padding: ${padding}`}
   ${({ paddingTop }) => paddingTop && `padding-top: ${paddingTop};`}
   ${({ paddingBottom }) => paddingBottom && `padding-bottom: ${paddingBottom};`}
   ${({ paddingLeft }) => paddingLeft && `padding-left: ${paddingLeft};`}
