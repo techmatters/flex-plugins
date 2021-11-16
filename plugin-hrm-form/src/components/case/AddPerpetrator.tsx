@@ -32,12 +32,14 @@ import {
 } from '../common/forms/formGenerators';
 import type { DefinitionVersion } from '../common/forms/types';
 import type { CustomITask, StandaloneITask } from '../../types/types';
+import type { AppRoutesWithCase } from '../../states/routing/types';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;
   counselor: string;
   definitionVersion: DefinitionVersion;
   onClickClose: () => void;
+  route: AppRoutesWithCase['route'];
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -171,9 +173,8 @@ AddPerpetrator.displayName = 'AddPerpetrator';
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const caseState: CaseState = state[namespace][connectedCaseBase]; // casting type as inference is not working for the store yet
   const connectedCaseState = caseState.tasks[ownProps.task.taskSid];
-  const { route } = state[namespace][routingBase].tasks[ownProps.task.taskSid];
 
-  return { connectedCaseState, route };
+  return { connectedCaseState };
 };
 
 const mapDispatchToProps = {

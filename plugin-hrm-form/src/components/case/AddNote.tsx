@@ -113,15 +113,13 @@ AddNote.displayName = 'AddNote';
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const caseState: CaseState = state[namespace][connectedCaseBase]; // casting type as inference is not working for the store yet
   const connectedCaseState = caseState.tasks[ownProps.task.taskSid];
-  const { route } = state[namespace][routingBase].tasks[ownProps.task.taskSid];
 
-  return { connectedCaseState, route };
+  return { connectedCaseState };
 };
 
 const mapDispatchToProps = {
   updateTempInfo: CaseActions.updateTempInfo,
   setConnectedCase: CaseActions.setConnectedCase,
-  changeRoute: RoutingActions.changeRoute,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddNote);
