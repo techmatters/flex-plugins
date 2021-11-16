@@ -161,7 +161,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, cu
       <Row>
         <SearchResultsBackButton handleBack={handleBackButton} text={<Template code="TabbedForms-BackButton" />} />
         <Box marginLeft="auto">
-          <CSAMReportButton handleClick={() => console.log('>>>> PRESSED')} />
+          <CSAMReportButton handleClick={() => dispatch(changeRoute({ route: 'csam-report-form' }, taskId))} />
         </Box>
       </Row>
     </Box>

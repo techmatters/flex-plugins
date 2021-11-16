@@ -1,12 +1,12 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { withTaskContext, ITask } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 
 import { CaseLayout } from '../styles/case';
 import CallTypeButtons from './callTypeButtons';
 import TabbedForms from './tabbedForms';
 import Case from './case';
+import CSAMReportForm from './CSAMReportForm/CSAMReportForm';
 import { namespace, RootState, routingBase } from '../states';
 import * as RoutingActions from '../states/routing/actions';
 import type { CustomITask } from '../types/types';
@@ -16,9 +16,9 @@ type OwnProps = {
 };
 
 // eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ReturnType<typeof mapStateToProps>;
+type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-const HrmForm: React.FC<Props> = ({ routing, task }) => {
+const HrmForm: React.FC<Props> = ({ routing, task, changeRoute }) => {
   if (!routing) return null;
   const { route } = routing;
 
@@ -31,6 +31,13 @@ const HrmForm: React.FC<Props> = ({ routing, task }) => {
         <CaseLayout>
           <Case task={task} isCreating={true} />
         </CaseLayout>
+      );
+
+    case 'csam-report-form':
+      return (
+        <CSAMReportForm
+          onClickClose={() => changeRoute({ route: 'tabbed-forms', subroute: 'caseInformation' }, task.taskSid)}
+        />
       );
 
     case 'select-call-type':
@@ -51,4 +58,4 @@ const mapDispatchToProps = {
   changeRoute: RoutingActions.changeRoute,
 };
 
-export default connect(mapStateToProps, null)(HrmForm);
+export default connect(mapStateToProps, mapDispatchToProps)(HrmForm);
