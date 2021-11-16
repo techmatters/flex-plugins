@@ -6,7 +6,7 @@ import { TaskEntry as Contact } from '../states/contacts/reducer';
 import { Case, CustomITask, isOfflineContactTask, offlineContactTaskSid } from '../types/types';
 import { channelTypes } from '../states/DomainConstants';
 import { buildInsightsData } from './InsightsService';
-import { saveToHrm } from './ContactService';
+import { saveContact } from './ContactService';
 import { assignOfflineContact } from './ServerlessService';
 import { getHelplineToSave } from './HelplineService';
 import { removeContactState } from '../states/actions';
@@ -46,10 +46,10 @@ export const submitContactForm = async (task: CustomITask, contactForm: Contact,
     const targetWorkerSid = contactForm.contactlessTask.createdOnBehalfOf as string;
     const finalAttributes = buildInsightsData(task, contactForm, caseForm);
     const inBehalfTask = await assignOfflineContact(targetWorkerSid, finalAttributes);
-    return saveToHrm(task, contactForm, workerSid, inBehalfTask.sid);
+    return saveContact(task, contactForm, workerSid, inBehalfTask.sid);
   }
 
   const finalAttributes = buildInsightsData(task, contactForm, caseForm);
   await task.setAttributes(finalAttributes);
-  return saveToHrm(task, contactForm, workerSid, task.taskSid);
+  return saveContact(task, contactForm, workerSid, task.taskSid);
 };

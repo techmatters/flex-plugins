@@ -18,7 +18,7 @@ import { updateCallType } from '../../states/contacts/actions';
 import { completeTask, submitContactForm } from '../../services/formSubmissionHelpers';
 
 jest.mock('../../services/ContactService', () => ({
-  saveToHrm: jest.fn(),
+  saveContact: jest.fn(),
 }));
 
 jest.mock('../../services/formSubmissionHelpers', () => ({
@@ -43,7 +43,7 @@ const withEndCall = <Template code="TaskHeaderEndCall" />;
 const withEndChat = <Template code="TaskHeaderEndChat" />;
 
 jest.mock('../../services/ContactService', () => ({
-  saveToHrm: () => Promise.resolve(),
+  saveContact: () => Promise.resolve(),
 }));
 
 afterEach(() => {
