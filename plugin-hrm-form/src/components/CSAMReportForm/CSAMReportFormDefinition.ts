@@ -1,4 +1,5 @@
 import type { FormItemDefinition } from '../common/forms/types';
+import { getInitialValue } from '../common/forms/formGenerators';
 
 export const keys = {
   webAddress: 'webAddress',
@@ -53,3 +54,12 @@ export const definitionObject: CSAMFormDefinitionObject = {
     maxLength: 100,
   },
 };
+
+export const initialValues = {
+  webAddress: getInitialValue(definitionObject.webAddress),
+  description: getInitialValue(definitionObject.description),
+  anonymous: getInitialValue(definitionObject.anonymous),
+  firstName: getInitialValue(definitionObject.firstName),
+  lastName: getInitialValue(definitionObject.lastName),
+  email: getInitialValue(definitionObject.email),
+} as const;

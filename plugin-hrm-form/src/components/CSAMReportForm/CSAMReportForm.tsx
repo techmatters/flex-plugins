@@ -8,8 +8,8 @@ import ActionHeader from '../case/ActionHeader';
 import { BottomButtonBar, Box, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CSAMReportContainer, CSAMReportLayout, BoldDescriptionText, RegularText } from '../../styles/CSAMReportForm';
 import { FormItemDefinition } from '../common/forms/types';
-import { getInputType, getInitialValue } from '../common/forms/formGenerators';
-import { definitionObject, keys } from './CSAMReportFormDefinition';
+import { getInputType } from '../common/forms/formGenerators';
+import { definitionObject, keys, initialValues } from './CSAMReportFormDefinition';
 import * as t from '../../states/csam-report/actions';
 import type { CustomITask } from '../../types/types';
 import { RootState, csamReportBase, namespace } from '../../states';
@@ -32,8 +32,6 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const CSAMReportForm: React.FC<Props> = ({ onClickClose, updateFormAction, taskSid, init }) => {
   const [initialForm] = React.useState(init); // grab initial values in first render only. This value should never change or will ruin the memoization below
-  console.log('>>>>>> init', init);
-  console.log('>>>>>> initialForm', initialForm);
   const methods = useForm();
 
   const handleSubmitReport = async () => console.log(await methods.trigger());
@@ -45,7 +43,8 @@ const CSAMReportForm: React.FC<Props> = ({ onClickClose, updateFormAction, taskS
     };
 
     const generateInput = (e: FormItemDefinition) => {
-      const initialValue = initialForm[e.name] === undefined ? getInitialValue(e) : initialForm[e.name];
+      const initialValue = initialForm[e.name] === undefined ? initialValues[e.name] : initialForm[e.name];
+
       return getInputType([], onUpdateInput)(e)(initialValue);
     };
 
