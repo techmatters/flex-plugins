@@ -12,7 +12,9 @@ import { getInputType } from '../common/forms/formGenerators';
 import { definitionObject, keys, initialValues } from './CSAMReportFormDefinition';
 import * as t from '../../states/csam-report/actions';
 import type { CustomITask } from '../../types/types';
+import { getConfig } from '../../HrmFormPlugin';
 import { RootState, csamReportBase, namespace } from '../../states';
+import { reportToIWF } from '../../services/ServerlessService';
 
 type OwnProps = {
   onClickClose: () => void;
@@ -34,7 +36,14 @@ const CSAMReportForm: React.FC<Props> = ({ onClickClose, updateFormAction, taskS
   const [initialForm] = React.useState(init); // grab initial values in first render only. This value should never change or will ruin the memoization below
   const methods = useForm();
 
-  const handleSubmitReport = async () => console.log(await methods.trigger());
+  const onValid = async form => {
+    const report = await reportToIWF(form);
+    console.log('>>>>>, report result: ', report);
+  };
+
+  const onInvalid = () => {
+    window.alert(getConfig().strings['Error-Form']);
+  };
 
   const formElements = React.useMemo(() => {
     const onUpdateInput = () => {
@@ -113,7 +122,11 @@ const CSAMReportForm: React.FC<Props> = ({ onClickClose, updateFormAction, taskS
               <Template code="BottomBar-Cancel" />
             </StyledNextStepButton>
           </Box>
-          <StyledNextStepButton data-testid="Case-AddNoteScreen-SaveNote" roundCorners onClick={handleSubmitReport}>
+          <StyledNextStepButton
+            data-testid="Case-AddNoteScreen-SaveNote"
+            roundCorners
+            onClick={methods.handleSubmit(onValid, onInvalid)}
+          >
             <Template code="BottomBar-SendReport" />
           </StyledNextStepButton>
         </BottomButtonBar>
