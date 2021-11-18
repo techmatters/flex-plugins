@@ -39,13 +39,20 @@ const getAnswerOrUnknown = (
   definition: FormDefinition,
   mapperFunction: MapperFunction = mapGenericOption,
 ) => {
+  // This keys must be set with 'Unknown' value even if there's no answer
+  const isRequiredKey = key === 'age' || key === 'gender';
+
+  // This prevents setting redux state with the 'Unknown' value for a property that is not asked by the pre-survey
+  if (!isRequiredKey && !answers[key]) return null;
+
+  // This prevents setting redux state with the 'Unknown' value for a property that is not present on the definition
   if (!definition.find(e => e.name === key)) {
     console.error(`${key} does not exist in the current definition`);
-    return undefined; // This prevents saving at redux a property that is not present on the definition with the 'Unknown' value
+    return null;
   }
 
   const unknown = getUnknownOption(key, definition);
-  const isUnknownAnswer = !answers[key] || answers[key].error || answers[key].answer === unknown;
+  const isUnknownAnswer = answers[key].error || answers[key].answer === unknown;
 
   if (isUnknownAnswer) return unknown;
 
@@ -74,11 +81,11 @@ export const prepopulateForm = (task: ITask) => {
     const ethnicity = getAnswerOrUnknown(answers, 'ethnicity', definitionForm);
 
     const values = {
-      firstName,
-      gender,
-      age,
-      ethnicity,
-      language: capitalize(language),
+      ...(firstName && { firstName }),
+      ...(gender && { gender }),
+      ...(age && { age }),
+      ...(ethnicity && { ethnicity }),
+      ...(language && { language: capitalize(language) }),
     };
 
     Manager.getInstance().store.dispatch(prepopulateFormAction(callType, values, task.taskSid));
