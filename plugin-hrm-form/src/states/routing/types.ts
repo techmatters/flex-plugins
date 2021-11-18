@@ -42,9 +42,12 @@ export type AppRoutesWithCase =
       subroute?: typeof NewCaseSubroutes[keyof typeof NewCaseSubroutes];
     };
 
-type OtherRoutes = {
-  route: 'csam-report-form';
+export type CSAMReportRoute = {
+  route: 'csam-report';
+  subroute: 'form' | 'loading' | 'status';
 };
+
+type OtherRoutes = CSAMReportRoute;
 
 // The different routes we have in our app
 export type AppRoutes = AppRoutesWithCase | OtherRoutes;

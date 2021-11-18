@@ -4,13 +4,25 @@ import * as t from './types';
 import { GeneralActionType, INITIALIZE_CONTACT_STATE, RECREATE_CONTACT_STATE, REMOVE_CONTACT_STATE } from '../types';
 import { initialValues } from '../../components/CSAMReportForm/CSAMReportFormDefinition';
 
+type TaskEntry = {
+  form: t.CSAMReportForm;
+  reportStatus: t.CSAMReportStatus;
+};
+
 type CSAMReportState = {
   tasks: {
-    [taskId: string]: t.CSAMReportForm;
+    [taskId: string]: TaskEntry;
   };
 };
 
-const newTaskEntry: t.CSAMReportForm = { ...initialValues };
+const newTaskEntry: TaskEntry = {
+  form: { ...initialValues },
+  reportStatus: {
+    responseCode: '',
+    responseData: '',
+    responseDescription: '',
+  },
+};
 
 const initialState: CSAMReportState = {
   tasks: {},
@@ -48,7 +60,30 @@ export function reduce(state = initialState, action: t.CSAMReportActionType | Ge
         ...state,
         tasks: {
           ...state.tasks,
-          [action.taskId]: action.form,
+          [action.taskId]: {
+            ...state.tasks[action.taskId],
+            form: action.form,
+          },
+        },
+      };
+    case t.UPDATE_STATUS:
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...state.tasks[action.taskId],
+            reportStatus: action.reportStatus,
+          },
+        },
+      };
+    // eslint-disable-next-line sonarjs/no-duplicated-branches
+    case t.CLEAR_CSAM_REPORT:
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: newTaskEntry,
         },
       };
     default:
