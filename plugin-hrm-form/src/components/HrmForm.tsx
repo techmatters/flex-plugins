@@ -6,9 +6,8 @@ import { CaseLayout } from '../styles/case';
 import CallTypeButtons from './callTypeButtons';
 import TabbedForms from './tabbedForms';
 import Case from './case';
-import CSAMReportForm from './CSAMReportForm/CSAMReportForm';
+import CSAMReport from './CSAMReportForm/CSAMReport';
 import { namespace, RootState, routingBase } from '../states';
-import * as RoutingActions from '../states/routing/actions';
 import type { CustomITask } from '../types/types';
 
 type OwnProps = {
@@ -16,9 +15,9 @@ type OwnProps = {
 };
 
 // eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 
-const HrmForm: React.FC<Props> = ({ routing, task, changeRoute }) => {
+const HrmForm: React.FC<Props> = ({ routing, task }) => {
   if (!routing) return null;
   const { route } = routing;
 
@@ -33,13 +32,8 @@ const HrmForm: React.FC<Props> = ({ routing, task, changeRoute }) => {
         </CaseLayout>
       );
 
-    case 'csam-report-form':
-      return (
-        <CSAMReportForm
-          onClickClose={() => changeRoute({ route: 'tabbed-forms', subroute: 'caseInformation' }, task.taskSid)}
-          taskSid={task.taskSid}
-        />
-      );
+    case 'csam-report':
+      return <CSAMReport taskSid={task.taskSid} />;
 
     case 'select-call-type':
     default:
@@ -55,8 +49,4 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   return { routing: routingState.tasks[ownProps.task.taskSid] };
 };
 
-const mapDispatchToProps = {
-  changeRoute: RoutingActions.changeRoute,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(HrmForm);
+export default connect(mapStateToProps, null)(HrmForm);
