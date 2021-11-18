@@ -89,8 +89,6 @@ const ContactlessTaskTab: React.FC<Props> = ({
     setValue('contactlessTask.isFutureAux', time, { shouldValidate: true });
   }, [setValue, time]);
 
-  if (!display) return null;
-
   return (
     <TabbedFormTabContainer display={display}>
       <Container>
