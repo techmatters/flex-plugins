@@ -325,7 +325,13 @@
   "CSAMReportForm-ContactDetailsDescription": "Reports can be filed anonymously or with contact details if the caller would like to follow up or be available to provide further details to IWF.",
   "CSAMReportForm-LearnMore": "Learn more",
   "CSAMReportForm-ContactDetailsInfo": "Contact details will be recorded on the IWF database for 3 months, and then will then be deleted in accordance with the UK Data Protection Act",
+  "CSAMReportForm-ReportSent": "CSAM Report Sent!",
+  "CSAMReportForm-CopyCode": "Copy confirmation code for sharing",
 
   "SpecifyIfAnonymousOrNot": "Specify if this report is either anonymous or not",
-  "BottomBar-SendReport": "Send Report"
+  "BottomBar-SendReport": "Send Report",
+  "BottomBar-SendAnotherReport": "Send Another Report",
+  "BottomBar-CloseView": "Close View",
+  "CopyCode": "Copy Code",
+  "Copied": "Copied!"
 }
