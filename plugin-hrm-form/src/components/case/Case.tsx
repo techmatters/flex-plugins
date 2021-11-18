@@ -241,7 +241,7 @@ const Case: React.FC<Props> = props => {
     }
   };
 
-  if (props.routing.route === 'csam-report-form') return null;
+  if (props.routing.route === 'csam-report') return null;
 
   const { route, subroute } = props.routing;
 
