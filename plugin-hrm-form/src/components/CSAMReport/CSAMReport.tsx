@@ -14,7 +14,8 @@ import type { CustomITask } from '../../types/types';
 import { getConfig } from '../../HrmFormPlugin';
 import * as actions from '../../states/csam-report/actions';
 import * as routingActions from '../../states/routing/actions';
-import { RootState, csamReportBase, namespace, routingBase } from '../../states';
+import * as contactsActions from '../../states/contacts/actions';
+import { RootState, csamReportBase, namespace, routingBase, configurationBase } from '../../states';
 import { reportToIWF } from '../../services/ServerlessService';
 
 type OwnProps = {
@@ -24,6 +25,7 @@ type OwnProps = {
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   csamReportState: state[namespace][csamReportBase].tasks[ownProps.taskSid],
   routing: state[namespace][routingBase].tasks[ownProps.taskSid],
+  counselorsHash: state[namespace][configurationBase].counselors.hash,
 });
 
 const mapDispatchToProps = {
@@ -31,6 +33,7 @@ const mapDispatchToProps = {
   updateStatusAction: actions.updateStatusAction,
   clearCSAMReportAction: actions.clearCSAMReportAction,
   changeRoute: routingActions.changeRoute,
+  addCSAMReportEntry: contactsActions.addCSAMReportEntry,
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -41,12 +44,19 @@ const CSAMReportForm: React.FC<Props> = ({
   updateStatusAction,
   clearCSAMReportAction,
   changeRoute,
+  addCSAMReportEntry,
   taskSid,
   csamReportState,
   routing,
+  counselorsHash,
 }) => {
   const [initialForm] = React.useState(csamReportState.form); // grab initial values in first render only. This value should never change or will ruin the memoization below
   const methods = useForm();
+
+  const currentCounselor = React.useMemo(() => {
+    const { workerSid } = getConfig();
+    return counselorsHash[workerSid];
+  }, [counselorsHash]);
 
   const formElements = React.useMemo(() => {
     const onUpdateInput = () => {
@@ -79,7 +89,19 @@ const CSAMReportForm: React.FC<Props> = ({
         try {
           changeRoute({ route: 'csam-report', subroute: 'loading' }, taskSid);
           const report = await reportToIWF(form);
+
+          /*
+           * Here the report should be saved in the DB
+           * The below value will be the result of the new report being stored in the backend, but it's mocked for now to show something in the UI
+           */
+          const csamReportEntry = {
+            reportId: report['IWFReportService1.0'].responseData,
+            createdAt: new Date().toISOString(), // Should we use this or the createdAt from DB? (not implemented yet)
+            twilioWorkerId: getConfig().workerSid,
+          };
+
           updateStatusAction(report['IWFReportService1.0'], taskSid);
+          addCSAMReportEntry(csamReportEntry, taskSid);
           changeRoute({ route: 'csam-report', subroute: 'status' }, taskSid);
         } catch {
           window.alert(getConfig().strings['Error-Backend']);
@@ -102,6 +124,7 @@ const CSAMReportForm: React.FC<Props> = ({
           <CSAMReportFormScreen
             formElements={formElements}
             renderContactDetails={renderContactDetails}
+            counselor={currentCounselor}
             onClickClose={onClickClose}
             onSendReport={onSendReport}
           />

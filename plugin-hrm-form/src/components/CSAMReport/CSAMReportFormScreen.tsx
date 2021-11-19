@@ -10,14 +10,21 @@ import { definitionObject } from './CSAMReportFormDefinition';
 type Props = {
   formElements: { [k in keyof typeof definitionObject]: JSX.Element };
   renderContactDetails: boolean;
+  counselor: string;
   onClickClose: () => void;
   onSendReport: () => void;
 };
 
-const CSAMReportFormScreen: React.FC<Props> = ({ formElements, renderContactDetails, onClickClose, onSendReport }) => (
+const CSAMReportFormScreen: React.FC<Props> = ({
+  formElements,
+  renderContactDetails,
+  counselor,
+  onClickClose,
+  onSendReport,
+}) => (
   <CSAMReportContainer>
     <CSAMReportLayout>
-      <ActionHeader titleTemplate="CSAMReportForm-Header" onClickClose={onClickClose} counselor="someone" />
+      <ActionHeader titleTemplate="CSAMReportForm-Header" onClickClose={onClickClose} counselor={counselor} />
 
       {/** Website details */}
       <Box marginTop="20px" marginBottom="5px">

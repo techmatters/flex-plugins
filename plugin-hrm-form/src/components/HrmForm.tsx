@@ -6,7 +6,7 @@ import { CaseLayout } from '../styles/case';
 import CallTypeButtons from './callTypeButtons';
 import TabbedForms from './tabbedForms';
 import Case from './case';
-import CSAMReport from './CSAMReportForm/CSAMReport';
+import CSAMReport from './CSAMReport/CSAMReport';
 import { namespace, RootState, routingBase } from '../states';
 import type { CustomITask } from '../types/types';
 
