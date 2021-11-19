@@ -10,12 +10,14 @@ import { CategoriesFromDefinition, createSubCategoriesInputs } from '../common/f
 import { TabbedFormTabContainer } from '../../styles/HrmStyles';
 import type { CategoriesDefinition } from '../common/forms/types';
 import type { CustomITask } from '../../types/types';
+import useFocus from '../../utils/useFocus';
 
 type OwnProps = {
   task: CustomITask;
   display: boolean;
   initialValue: TaskEntry['categories'];
   definition: CategoriesDefinition;
+  autoFocus: boolean;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -27,10 +29,14 @@ const IssueCategorizationTab: React.FC<Props> = ({
   categoriesMeta,
   initialValue,
   definition,
+  autoFocus,
   updateForm,
   setCategoriesGridView,
   handleExpandCategory,
 }) => {
+  const shouldFocusFirstElement = display && autoFocus;
+  const firstElementRef = useFocus(shouldFocusFirstElement);
+
   const { getValues, setValue } = useFormContext();
   const IssueCategorizationTabDefinition = definition;
 
@@ -66,6 +72,7 @@ const IssueCategorizationTab: React.FC<Props> = ({
         categoriesMeta={categoriesMeta}
         toggleCategoriesGridView={toggleCategoriesGridView}
         toggleExpandCategory={toggleExpandCategory}
+        firstElementRef={firstElementRef}
       />
     </TabbedFormTabContainer>
   );

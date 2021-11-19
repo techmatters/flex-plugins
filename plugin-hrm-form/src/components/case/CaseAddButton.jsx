@@ -1,30 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ButtonBase } from '@material-ui/core';
 import { Add } from '@material-ui/icons';
 import { Template } from '@twilio/flex-ui';
 
-import { CaseAddButtonFont } from '../../styles/case';
+import { CaseAddButtonFont, CaseAddButton as CaseAddButtonStyled } from '../../styles/case';
 import HrmTheme from '../../styles/HrmTheme';
 
 const CaseAddButton = ({ disabled, templateCode, onClick, withDivider }) => {
   const color = disabled ? HrmTheme.colors.disabledColor : 'initial';
 
   return (
-    <ButtonBase
-      disabled={disabled}
-      onClick={onClick}
-      style={{
-        marginLeft: 'auto',
-        paddingLeft: withDivider ? '12px' : '0px',
-        borderLeft: withDivider ? '1px solid rgba(25, 43, 51, 0.3)' : 'none',
-      }}
-    >
-      <Add style={{ marginRight: 10, fontSize: 16, color }} />
+    <CaseAddButtonStyled disabled={disabled} onClick={onClick}>
+      <Add style={{ marginRight: 10, fontSize: 16, height: 17, color }} />
       <CaseAddButtonFont style={{ marginRight: 20 }} disabled={disabled}>
         <Template code={templateCode} />
       </CaseAddButtonFont>
-    </ButtonBase>
+    </CaseAddButtonStyled>
   );
 };
 

@@ -18,8 +18,8 @@ const Menu = ({ open, anchorEl, children, onClickAway }) => (
   <StyledPopper open={open} anchorEl={anchorEl}>
     <StyledPaper>
       <ClickAwayListener onClickAway={preventWhenClickingAnchorEl(onClickAway, anchorEl)}>
-        <RootRef rootRef={rootRef => rootRef && rootRef.focus()}>
-          <StyledMenuList tabIndex={0}>{children}</StyledMenuList>
+        <RootRef rootRef={rootRef => open && rootRef?.firstChild?.focus()}>
+          <StyledMenuList>{children}</StyledMenuList>
         </RootRef>
       </ClickAwayListener>
     </StyledPaper>

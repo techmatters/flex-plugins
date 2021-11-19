@@ -21,7 +21,7 @@ import {
   CategoryCheckbox,
   CategoryCheckboxLabel,
 } from '../../../styles/HrmStyles';
-import type { CategoriesDefinition } from './types';
+import type { CategoriesDefinition, HTMLElementRef } from './types';
 import { ConnectForm } from './formGenerators';
 
 export const createSubcategoryCheckbox = (
@@ -85,6 +85,7 @@ type Props = {
   toggleCategoriesGridView: (gridView: boolean) => void;
   categoriesMeta: any; // TaskEntry['metadata']['categories'];
   toggleExpandCategory: (category: string) => void;
+  firstElementRef?: HTMLElementRef;
 };
 
 export const CategoriesFromDefinition: React.FC<Props> = ({
@@ -93,6 +94,7 @@ export const CategoriesFromDefinition: React.FC<Props> = ({
   toggleCategoriesGridView,
   categoriesMeta,
   toggleExpandCategory,
+  firstElementRef,
 }) => {
   const { gridView, expanded } = categoriesMeta;
 
@@ -113,13 +115,14 @@ export const CategoriesFromDefinition: React.FC<Props> = ({
         </ToggleViewButton>
       </CategorySubtitleSection>
       <CategoriesWrapper>
-        {Object.entries(definition).map(([category, { color }]) => (
+        {Object.entries(definition).map(([category, { color }], index) => (
           <Box marginBottom="6px" key={`IssueCategorization_${category}`}>
             <Section
               sectionTitle={category}
               color={color}
               expanded={expanded[category]}
               handleExpandClick={() => toggleExpandCategory(category)}
+              htmlElRef={index === 0 ? firstElementRef : null}
             >
               <SubcategoriesWrapper gridView={gridView}>{subcategoriesInputs[category]}</SubcategoriesWrapper>
             </Section>

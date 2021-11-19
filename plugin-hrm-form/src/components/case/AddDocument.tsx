@@ -35,6 +35,7 @@ import {
 } from '../common/forms/formGenerators';
 import type { DefinitionVersion } from '../common/forms/types';
 import type { CustomITask, StandaloneITask } from '../../types/types';
+import useFocus from '../../utils/useFocus';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
@@ -59,6 +60,8 @@ const AddDocument: React.FC<Props> = ({
   updateTempInfo,
   changeRoute,
 }) => {
+  const firstElementRef = useFocus();
+
   const { temporaryCaseInfo } = connectedCaseState;
   const { DocumentForm } = definitionVersion.caseForms;
   const { layoutVersion } = definitionVersion;
@@ -122,7 +125,7 @@ const AddDocument: React.FC<Props> = ({
       onDeleteFile,
     };
 
-    const generatedForm = createFormFromDefinition(DocumentForm)([])(initialForm)(
+    const generatedForm = createFormFromDefinition(DocumentForm)([])(initialForm, firstElementRef)(
       updateCallBack,
       fileUploadCustomHandlers,
     );
@@ -131,7 +134,15 @@ const AddDocument: React.FC<Props> = ({
       return splitAt(layoutVersion.case.documents.splitFormAt)(disperseInputs(7)(generatedForm));
 
     return splitInHalf(disperseInputs(7)(generatedForm));
-  }, [DocumentForm, initialForm, layoutVersion.case.documents.splitFormAt, methods, task.taskSid, updateTempInfo]);
+  }, [
+    DocumentForm,
+    initialForm,
+    firstElementRef,
+    layoutVersion.case.documents.splitFormAt,
+    methods,
+    task.taskSid,
+    updateTempInfo,
+  ]);
 
   const saveDocument = async shouldStayInForm => {
     if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-document') return;

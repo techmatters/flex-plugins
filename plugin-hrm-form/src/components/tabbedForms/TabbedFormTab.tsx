@@ -16,6 +16,7 @@ import { createFormFromDefinition, disperseInputs, splitAt, splitInHalf } from '
 import type { FormDefinition, LayoutDefinition } from '../common/forms/types';
 import type { TaskEntry } from '../../states/contacts/reducer';
 import type { CustomITask } from '../../types/types';
+import useFocus from '../../utils/useFocus';
 
 type OwnProps = {
   task: CustomITask;
@@ -24,6 +25,7 @@ type OwnProps = {
   layoutDefinition?: LayoutDefinition;
   tabPath: keyof TaskEntry;
   initialValues: TaskEntry['callerInformation'] | TaskEntry['childInformation'] | TaskEntry['caseInformation'];
+  autoFocus: boolean;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -36,8 +38,12 @@ const TabbedFormTab: React.FC<Props> = ({
   layoutDefinition,
   tabPath,
   initialValues,
+  autoFocus,
   updateForm,
 }) => {
+  const shouldFocusFirstElement = display && autoFocus;
+  const firstElementRef = useFocus(shouldFocusFirstElement);
+
   const [initialForm] = React.useState(initialValues); // grab initial values in first render only. This value should never change or will ruin the memoization below
   const { getValues } = useFormContext();
 
@@ -47,7 +53,7 @@ const TabbedFormTab: React.FC<Props> = ({
       updateForm(task.taskSid, tabPath, values);
     };
 
-    const generatedForm = createFormFromDefinition(definition)([tabPath])(initialForm)(updateCallback);
+    const generatedForm = createFormFromDefinition(definition)([tabPath])(initialForm, firstElementRef)(updateCallback);
 
     const margin = 12;
 
@@ -55,7 +61,7 @@ const TabbedFormTab: React.FC<Props> = ({
       return splitAt(layoutDefinition.splitFormAt)(disperseInputs(7)(generatedForm));
 
     return splitInHalf(disperseInputs(margin)(generatedForm));
-  }, [definition, getValues, initialForm, layoutDefinition, tabPath, task.taskSid, updateForm]);
+  }, [definition, getValues, initialForm, firstElementRef, layoutDefinition, tabPath, task.taskSid, updateForm]);
 
   return (
     <TabbedFormTabContainer display={display}>

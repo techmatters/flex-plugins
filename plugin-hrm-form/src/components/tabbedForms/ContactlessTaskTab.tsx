@@ -14,12 +14,14 @@ import { createContactlessTaskTabDefinition } from './ContactlessTaskTabDefiniti
 import { splitDate, splitTime } from '../../utils/helpers';
 import type { OfflineContactTask } from '../../types/types';
 import type { HelplineDefinitions } from '../common/forms/types';
+import useFocus from '../../utils/useFocus';
 
 type OwnProps = {
   task: OfflineContactTask;
   display: boolean;
   definition: HelplineDefinitions;
   initialValues: TaskEntry[keyof TaskEntry];
+  autoFocus: boolean;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -32,7 +34,11 @@ const ContactlessTaskTab: React.FC<Props> = ({
   definition,
   initialValues,
   counselorsList,
+  autoFocus,
 }) => {
+  const shouldFocusFirstElement = display && autoFocus;
+  const firstElementRef = useFocus(shouldFocusFirstElement);
+
   const [initialForm] = React.useState(initialValues); // grab initial values in first render only. This value should never change or will ruin the memoization below
 
   const { getValues, register, setError, setValue, watch, errors } = useFormContext();
@@ -45,10 +51,12 @@ const ContactlessTaskTab: React.FC<Props> = ({
 
     const formDefinition = createContactlessTaskTabDefinition(counselorsList, definition);
 
-    const tab = createFormFromDefinition(formDefinition)(['contactlessTask'])(initialForm)(updateCallBack);
+    const tab = createFormFromDefinition(formDefinition)(['contactlessTask'])(initialForm, firstElementRef)(
+      updateCallBack,
+    );
 
     return disperseInputs(5)(tab);
-  }, [counselorsList, dispatch, getValues, definition, initialForm, task.taskSid]);
+  }, [counselorsList, dispatch, getValues, definition, initialForm, firstElementRef, task.taskSid]);
 
   // Add invisible field that errors if date + time are future (triggered by validaiton)
   React.useEffect(() => {

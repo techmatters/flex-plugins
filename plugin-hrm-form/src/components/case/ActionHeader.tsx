@@ -1,11 +1,10 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
-import { ButtonBase } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 
 import { Row, HiddenText } from '../../styles/HrmStyles';
-import { CaseActionTitle, CaseActionDetailFont } from '../../styles/case';
+import { CaseActionTitle, CaseActionDetailFont, CaseActionCloseButton } from '../../styles/case';
 import { formatDateTime } from '../../utils/formatters';
 
 type OwnProps = {
@@ -26,12 +25,12 @@ const ActionHeader: React.FC<Props> = ({ titleTemplate, onClickClose, added, cou
         <CaseActionTitle style={{ marginTop: 'auto' }}>
           <Template code={titleTemplate} />
         </CaseActionTitle>
-        <ButtonBase onClick={onClickClose} style={{ marginLeft: 'auto' }} data-testid="Case-CloseCross">
+        <CaseActionCloseButton onClick={onClickClose} data-testid="Case-CloseCross">
           <HiddenText>
             <Template code="Case-CloseButton" />
           </HiddenText>
           <Close />
-        </ButtonBase>
+        </CaseActionCloseButton>
       </Row>
       <Row style={{ width: '100%' }}>
         <CaseActionDetailFont style={{ marginRight: 20 }} data-testid="Case-ActionHeaderAdded">

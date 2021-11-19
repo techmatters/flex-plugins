@@ -123,10 +123,10 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, cu
 
   const handleTabsChange = (_event: any, t: number) => {
     const tab = tabsToIndex[t];
-    dispatch(changeRoute({ route: 'tabbed-forms', subroute: tab }, taskId));
+    dispatch(changeRoute({ route: 'tabbed-forms', subroute: tab, autoFocus: false }, taskId));
   };
 
-  const { subroute } = routing;
+  const { subroute, autoFocus } = routing;
   let tabIndex = tabsToIndex.findIndex(t => t === subroute);
 
   // If the subroute is any from 'new case' we should focus on 'Search' tab and display the entire Case inside TabbedForms.
@@ -175,6 +175,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, cu
                   display={subroute === 'contactlessTask'}
                   definition={currentDefinitionVersion.helplineInformation}
                   initialValues={contactForm.contactlessTask}
+                  autoFocus={autoFocus}
                 />
               )}
               {isCallerType && (
@@ -185,6 +186,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, cu
                   layoutDefinition={currentDefinitionVersion.layoutVersion.contact.callerInformation}
                   initialValues={contactForm.callerInformation}
                   display={subroute === 'callerInformation'}
+                  autoFocus={autoFocus}
                 />
               )}
               {isDataCallType && (
@@ -196,12 +198,14 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, cu
                     layoutDefinition={currentDefinitionVersion.layoutVersion.contact.childInformation}
                     initialValues={contactForm.childInformation}
                     display={subroute === 'childInformation'}
+                    autoFocus={autoFocus}
                   />
                   <IssueCategorizationTab
                     task={task}
                     display={subroute === 'categories'}
                     initialValue={contactForm.categories}
                     definition={currentDefinitionVersion.tabbedForms.IssueCategorizationTab(helpline)}
+                    autoFocus={autoFocus}
                   />
                   <TabbedFormTab
                     task={task}
@@ -210,6 +214,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, cu
                     layoutDefinition={currentDefinitionVersion.layoutVersion.contact.caseInformation}
                     initialValues={contactForm.caseInformation}
                     display={subroute === 'caseInformation'}
+                    autoFocus={autoFocus}
                   />
                 </>
               )}
@@ -218,7 +223,9 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, cu
           <BottomBar
             task={task}
             nextTab={() =>
-              dispatch(changeRoute({ route: 'tabbed-forms', subroute: tabsToIndex[tabIndex + 1] }, taskId))
+              dispatch(
+                changeRoute({ route: 'tabbed-forms', subroute: tabsToIndex[tabIndex + 1], autoFocus: true }, taskId),
+              )
             }
             // TODO: move this two functions to a separate file to centralize "handle task completions"
             showNextButton={tabIndex !== 0 && tabIndex < tabs.length - 1}
