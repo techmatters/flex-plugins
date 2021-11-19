@@ -11,6 +11,7 @@ import {
 import { createStateItem } from '../../components/common/forms/formGenerators';
 import { createContactlessTaskTabDefinition } from '../../components/tabbedForms/ContactlessTaskTabDefinition';
 import callTypes, { CallTypes } from '../DomainConstants';
+import type { CSAMReportEntry } from '../../types/types';
 
 export type TaskEntry = {
   helpline: string;
@@ -20,6 +21,7 @@ export type TaskEntry = {
   caseInformation: { [key: string]: string | boolean };
   contactlessTask: { [key: string]: string | boolean };
   categories: string[];
+  csamReports: CSAMReportEntry[];
   metadata: {
     startMillis: number;
     endMillis: number;
@@ -74,6 +76,7 @@ export const createNewTaskEntry = (definitions: DefinitionVersion) => (recreated
     caseInformation: initialCaseInformation,
     contactlessTask,
     categories: [],
+    csamReports: [],
     metadata,
   };
 };
@@ -217,6 +220,18 @@ export function reduce(state = initialState, action: t.ContactsActionType | Gene
           [action.taskId]: {
             ...state.tasks[action.taskId],
             helpline: action.helpline,
+          },
+        },
+      };
+    }
+    case t.ADD_CSAM_REPORT_ENTRY: {
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...state.tasks[action.taskId],
+            csamReports: [...state.tasks[action.taskId].csamReports, action.csamReportEntry],
           },
         },
       };

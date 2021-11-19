@@ -37,6 +37,8 @@ export type Document = { [key: string]: string | boolean };
 
 export type DocumentEntry = { document: Document } & EntryInfo;
 
+export type CSAMReportEntry = { reportId: string } & EntryInfo;
+
 export const blankReferral = {
   date: null,
   referredTo: null,
