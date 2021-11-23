@@ -17,6 +17,7 @@ import * as routingActions from '../../states/routing/actions';
 import * as contactsActions from '../../states/contacts/actions';
 import { RootState, csamReportBase, namespace, routingBase, configurationBase } from '../../states';
 import { reportToIWF } from '../../services/ServerlessService';
+import { createCSAMReport } from '../../services/CSAMReportService';
 
 type OwnProps = {
   taskSid: CustomITask['taskSid'];
@@ -90,18 +91,14 @@ const CSAMReportForm: React.FC<Props> = ({
           changeRoute({ route: 'csam-report', subroute: 'loading' }, taskSid);
           const report = await reportToIWF(form);
 
-          /*
-           * Here the report should be saved in the DB
-           * The below value will be the result of the new report being stored in the backend, but it's mocked for now to show something in the UI
-           */
-          const csamReportEntry = {
-            reportId: report['IWFReportService1.0'].responseData,
-            createdAt: new Date().toISOString(), // Should we use this or the createdAt from DB? (not implemented yet)
+          const storedReport = await createCSAMReport({
+            csamReportId: report['IWFReportService1.0'].responseData,
             twilioWorkerId: getConfig().workerSid,
-          };
+          });
 
           updateStatusAction(report['IWFReportService1.0'], taskSid);
-          addCSAMReportEntry(csamReportEntry, taskSid);
+          addCSAMReportEntry(storedReport, taskSid);
+          clearCSAMReportAction(taskSid);
           changeRoute({ route: 'csam-report', subroute: 'status' }, taskSid);
         } catch {
           window.alert(getConfig().strings['Error-Backend']);
@@ -144,7 +141,6 @@ const CSAMReportForm: React.FC<Props> = ({
     }
     case 'status': {
       const onSendAnotherReport = () => {
-        clearCSAMReportAction(taskSid);
         changeRoute({ route: 'csam-report', subroute: 'form' }, taskSid);
       };
 

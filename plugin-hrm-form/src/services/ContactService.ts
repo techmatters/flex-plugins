@@ -184,7 +184,7 @@ export async function saveToHrm(task, form, workerSid: string, uniqueIdentifier:
   // This might change if isNonDataCallType, that's why we use rawForm
   const timeOfContact = getDateTime(rawForm.contactlessTask);
 
-  const { helpline } = form;
+  const { helpline, csamReports } = form;
   /*
    * We do a transform from the original and then add things.
    * Not sure if we should drop that all into one function or not.
@@ -212,6 +212,7 @@ export async function saveToHrm(task, form, workerSid: string, uniqueIdentifier:
     taskId: uniqueIdentifier,
     channelSid,
     serviceSid,
+    csamReports,
   };
 
   const options = {
