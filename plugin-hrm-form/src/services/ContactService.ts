@@ -239,9 +239,13 @@ export const saveContact = async (
   shouldFillEndMillis = true,
 ) => {
   const response = await saveContactToHrm(task, form, workerSid, uniqueIdentifier, shouldFillEndMillis);
-  await saveContactToExternalBackend(task, response.requestPayload);
 
-  return response.responseJson;
+  // TODO: add catch clause to handle saving to Sync Doc
+  try {
+    await saveContactToExternalBackend(task, response.requestPayload);
+  } finally {
+    return response.responseJson;
+  }
 };
 
 export async function connectToCase(contactId, caseId) {

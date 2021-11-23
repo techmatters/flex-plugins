@@ -7,6 +7,8 @@ const saveContact = async (task: ITask, payload: any) => {
   if (!channelSid) return;
 
   const postSurveyUrl = await saveContactToSaferNet(payload);
+
+  // TODO: Pre-pend something like 'Please answer the following survey: '
   await FlexActions.invokeAction('SendMessage', {
     body: postSurveyUrl,
     channelSid,
