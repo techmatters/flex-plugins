@@ -19,5 +19,5 @@ export const createCSAMReport = async ({ csamReportId, twilioWorkerId, contactId
     body: JSON.stringify(body),
   };
 
-  return await fetchHrmApi('/csamReports', options);
+  return fetchHrmApi('/csamReports', options);
 };
