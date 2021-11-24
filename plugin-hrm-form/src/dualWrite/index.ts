@@ -15,7 +15,7 @@ const saveContactByDefinitionVersion: SaveContactByDefinitionVersion = {
 
 export const saveContactToExternalBackend = async (task: ITask, payload: any) => {
   const { featureFlags, definitionVersion } = getConfig();
-  if (!featureFlags.dualWrite) return;
+  if (!featureFlags.enable_dual_write) return;
 
   const saveContact = saveContactByDefinitionVersion[definitionVersion];
   if (saveContact) {
