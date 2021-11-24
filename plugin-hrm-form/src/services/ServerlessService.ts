@@ -169,3 +169,9 @@ export const getFileUploadUrl = async (fileName: string, mimeType: string) => {
   const response = await fetchProtectedApi('/getFileUploadUrl', body);
   return response;
 };
+
+export const saveContactToSaferNet = async (payload: any): Promise<string> => {
+  const body = { payload: JSON.stringify(payload) };
+  const postSurveyUrl = await fetchProtectedApi('/saveContactToSaferNet', body);
+  return postSurveyUrl;
+};
