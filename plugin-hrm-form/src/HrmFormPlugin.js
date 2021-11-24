@@ -15,7 +15,6 @@ import { changeLanguage } from './states/configuration/actions';
 import { issueSyncToken } from './services/ServerlessService';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
-export const PLUGIN_VERSION = '0.10.0';
 
 export const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
@@ -255,7 +254,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     if (process.env.NODE_ENV !== 'development')
       setUpMonitoring(this, manager.workerClient, manager.serviceConfiguration);
 
-    console.log(`Welcome to ${PLUGIN_NAME} Version ${PLUGIN_VERSION}`);
+    console.log(`Welcome to ${PLUGIN_NAME}`);
     this.registerReducers(manager);
 
     const config = getConfig();
