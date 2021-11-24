@@ -37,7 +37,7 @@ type ContactsState = {
   };
 };
 
-const emptyCategories = [];
+export const emptyCategories = [];
 
 // eslint-disable-next-line import/no-unused-modules
 export const createNewTaskEntry = (definitions: DefinitionVersion) => (recreated: boolean): TaskEntry => {
