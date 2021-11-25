@@ -14,7 +14,7 @@ import { updateCallType, updateForm } from '../../states/contacts/actions';
 import { searchResultToContactForm } from '../../services/ContactService';
 import { removeOfflineContact } from '../../services/formSubmissionHelpers';
 import { changeRoute } from '../../states/routing/actions';
-import type { TaskEntry } from '../../states/contacts/reducer';
+import { TaskEntry, emptyCategories } from '../../states/contacts/reducer';
 import { TabbedFormSubroutes, NewCaseSubroutes } from '../../states/routing/types';
 import { CustomITask, isOfflineContactTask, SearchContact } from '../../types/types';
 import { TabbedFormsContainer, Box, StyledTabs } from '../../styles/HrmStyles';
@@ -82,6 +82,16 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, cu
     shouldFocusError: false,
     mode: 'onChange',
   });
+
+  const { setValue } = methods;
+  const { helpline } = contactForm;
+
+  /**
+   * Clear some parts of the form state when helpline changes.
+   */
+  React.useEffect(() => {
+    setValue('categories', emptyCategories);
+  }, [helpline, setValue]);
 
   if (routing.route !== 'tabbed-forms') return null;
 
@@ -153,7 +163,6 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, cu
 
   const isDataCallType = !isNonDataCallType(contactForm.callType);
   const showSubmitButton = !isEmptyCallType(contactForm.callType) && tabIndex === tabs.length - 1;
-  const { helpline } = contactForm;
 
   return (
     <FormProvider {...methods}>
