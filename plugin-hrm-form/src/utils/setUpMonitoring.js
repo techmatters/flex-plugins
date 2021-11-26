@@ -2,7 +2,6 @@ import * as Flex from '@twilio/flex-ui';
 import Rollbar from 'rollbar';
 import { datadogRum } from '@datadog/browser-rum';
 
-import { PLUGIN_VERSION } from '../HrmFormPlugin';
 import { rollbarAccessToken, datadogAccessToken, datadogApplicationID, fullStoryId } from '../private/secret';
 
 function setUpDatadogRum(workerClient, monitoringEnv) {
@@ -11,7 +10,6 @@ function setUpDatadogRum(workerClient, monitoringEnv) {
     clientToken: datadogAccessToken,
     site: 'datadoghq.com',
     env: monitoringEnv,
-    version: PLUGIN_VERSION,
     sampleRate: 100,
     trackInteractions: true,
     // service: 'my-web-application',
