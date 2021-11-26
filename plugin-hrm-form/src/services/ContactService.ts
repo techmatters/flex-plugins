@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/prefer-immediate-return */
 import { set } from 'lodash/fp';
-import { ITask, TaskHelper } from '@twilio/flex-ui';
+import { ITask, TaskHelper, Actions as FlexActions } from '@twilio/flex-ui';
 
 import { createNewTaskEntry, TaskEntry } from '../states/contacts/reducer';
 import { isNonDataCallType } from '../states/ValidationRules';
@@ -23,6 +23,7 @@ import {
   isOfflineContactTask,
   isTwilioTask,
 } from '../types/types';
+import { saveContactToExternalBackend } from '../dualWrite';
 
 /**
  * Un-nests the information (caller/child) as it comes from DB, to match the form structure
@@ -159,7 +160,13 @@ export function transformForm(form: TaskEntry): ContactRawJson {
  * Function that saves the form to Contacts table.
  * If you don't intend to complete the twilio task, set shouldFillEndMillis=false
  */
-export async function saveToHrm(task, form, workerSid: string, uniqueIdentifier: string, shouldFillEndMillis = true) {
+const saveContactToHrm = async (
+  task,
+  form,
+  workerSid: string,
+  uniqueIdentifier: string,
+  shouldFillEndMillis = true,
+) => {
   // if we got this far, we assume the form is valid and ready to submit
   const metadata = shouldFillEndMillis ? fillEndMillis(form.metadata) : form.metadata;
   const conversationDuration = getConversationDuration(task, metadata);
@@ -222,8 +229,25 @@ export async function saveToHrm(task, form, workerSid: string, uniqueIdentifier:
 
   const responseJson = await fetchHrmApi(`/contacts`, options);
 
-  return responseJson;
-}
+  return { responseJson, requestPayload: body };
+};
+
+export const saveContact = async (
+  task,
+  form,
+  workerSid: string,
+  uniqueIdentifier: string,
+  shouldFillEndMillis = true,
+) => {
+  const response = await saveContactToHrm(task, form, workerSid, uniqueIdentifier, shouldFillEndMillis);
+
+  // TODO: add catch clause to handle saving to Sync Doc
+  try {
+    await saveContactToExternalBackend(task, response.requestPayload);
+  } finally {
+    return response.responseJson;
+  }
+};
 
 export async function connectToCase(contactId, caseId) {
   const body = { caseId };

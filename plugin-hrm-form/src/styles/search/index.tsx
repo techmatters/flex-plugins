@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'react-emotion';
-import { ButtonBase, Paper, Button, FormControlLabel, Switch, withStyles } from '@material-ui/core';
+import { ButtonBase, Paper, Button, FormControlLabel, Switch, Collapse, withStyles } from '@material-ui/core';
 import { Tabs, TabsProps } from '@twilio/flex-ui';
 import Folder from '@material-ui/icons/Folder';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
@@ -132,6 +132,10 @@ export const StyledLink = styled(({ onClick, ...rest }: StyledLinkProps) => (
     text-decoration: ${props => (props.underline ? 'underline' : 'none')};
     text-decoration-color: ${props => (props.underline ? '#1874e1' : 'transparent')};
     background-color: ${props => (props.underline ? 'transparent' : props.theme.colors.hyperlinkHoverBackgroundColor)};
+  }
+
+  &&:focus {
+    outline: auto;
   }
 `;
 
@@ -319,6 +323,27 @@ export const SectionTitleContainer = styled(Row)<ColorProps>`
   padding-left: 18px;
   border-left: ${({ color }) => (color ? `6px solid ${color}` : 'none')};
 `;
+SectionTitleContainer.displayName = 'SectionTitleContainer';
+
+export const SectionTitleButton = styled(ButtonBase)`
+  width: 100%;
+  padding: 0;
+  &:focus {
+    outline: auto;
+  }
+`;
+SectionTitleButton.displayName = 'SectionTitleButton';
+
+type CollapseProps = {
+  expanded: boolean;
+};
+
+export const SectionCollapse = styled(({ expanded, ...rest }: CollapseProps) => (
+  <Collapse in={expanded} {...rest} />
+))<CollapseProps>`
+  visibility: ${props => (props.expanded ? 'visible' : 'collapse')};
+`;
+SectionCollapse.displayName = 'SectionCollapse';
 
 export const NameContainer = styled(SectionTitleContainer)`
   background-color: #000000;

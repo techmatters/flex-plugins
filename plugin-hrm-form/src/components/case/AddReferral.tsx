@@ -25,6 +25,7 @@ import type { DefinitionVersion } from '../common/forms/types';
 import { transformValues } from '../../services/ContactService';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 import { getConfig } from '../../HrmFormPlugin';
+import useFocus from '../../utils/useFocus';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;
@@ -45,6 +46,8 @@ const AddReferral: React.FC<Props> = ({
   updateTempInfo,
   setConnectedCase,
 }) => {
+  const firstElementRef = useFocus();
+
   const { connectedCase, temporaryCaseInfo } = connectedCaseState;
   const { ReferralForm } = definitionVersion.caseForms;
 
@@ -58,10 +61,10 @@ const AddReferral: React.FC<Props> = ({
       updateTempInfo({ screen: 'add-referral', info: referral }, task.taskSid);
     };
 
-    const generatedForm = createFormFromDefinition(ReferralForm)([])(initialForm)(updateCallBack);
+    const generatedForm = createFormFromDefinition(ReferralForm)([])(initialForm, firstElementRef)(updateCallBack);
 
     return splitInHalf(disperseInputs(7)(generatedForm));
-  }, [ReferralForm, initialForm, methods, task.taskSid, updateTempInfo]);
+  }, [ReferralForm, initialForm, firstElementRef, methods, task.taskSid, updateTempInfo]);
 
   if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-referral') return null;
 

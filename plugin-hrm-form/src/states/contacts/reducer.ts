@@ -39,6 +39,8 @@ type ContactsState = {
   };
 };
 
+export const emptyCategories = [];
+
 // eslint-disable-next-line import/no-unused-modules
 export const createNewTaskEntry = (definitions: DefinitionVersion) => (recreated: boolean): TaskEntry => {
   const initialChildInformation = definitions.tabbedForms.ChildInformationTab.reduce(createStateItem, {});
@@ -69,13 +71,13 @@ export const createNewTaskEntry = (definitions: DefinitionVersion) => (recreated
   const contactlessTask = initialContactlessTaskTabDefinition.reduce(createStateItem, {});
 
   return {
-    helpline: defaultHelpline,
+    helpline: '',
     callType: '',
     childInformation: initialChildInformation,
     callerInformation: initialCallerInformation,
     caseInformation: initialCaseInformation,
     contactlessTask,
-    categories: [],
+    categories: emptyCategories,
     csamReports: [],
     metadata,
   };
@@ -220,6 +222,7 @@ export function reduce(state = initialState, action: t.ContactsActionType | Gene
           [action.taskId]: {
             ...state.tasks[action.taskId],
             helpline: action.helpline,
+            categories: emptyCategories,
           },
         },
       };

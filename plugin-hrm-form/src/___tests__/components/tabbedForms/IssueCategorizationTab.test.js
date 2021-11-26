@@ -56,7 +56,7 @@ test('Click on view subcategories as grid icon', () => {
     <StorelessThemeProvider themeConf={themeConf}>
       <Provider store={store}>
         <FormProvider {...mockMethods}>
-          <IssueCategorizationTab task={{ taskSid: taskId }} definition={definition} />
+          <IssueCategorizationTab task={{ taskSid: taskId }} definition={definition} display={true} />
         </FormProvider>
       </Provider>
     </StorelessThemeProvider>,
@@ -98,7 +98,7 @@ test('Click on view subcategories as list icon', () => {
     <StorelessThemeProvider themeConf={themeConf}>
       <Provider store={store}>
         <FormProvider {...mockMethods}>
-          <IssueCategorizationTab task={{ taskSid: taskId }} definition={definition} />
+          <IssueCategorizationTab task={{ taskSid: taskId }} definition={definition} display={true} />
         </FormProvider>
       </Provider>
     </StorelessThemeProvider>,

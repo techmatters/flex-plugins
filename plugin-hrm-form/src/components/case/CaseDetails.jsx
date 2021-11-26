@@ -93,7 +93,7 @@ const CaseDetails = ({
         isOrphanedCase={isOrphanedCase}
         can={can}
       />
-      <DetailsContainer tabIndex={0} aria-labelledby="Case-CaseId-label">
+      <DetailsContainer aria-labelledby="Case-CaseId-label">
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <div style={{ paddingRight: '20px' }}>
             <DetailDescription>

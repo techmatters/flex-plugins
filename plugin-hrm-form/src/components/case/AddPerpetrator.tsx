@@ -33,6 +33,7 @@ import {
 import type { DefinitionVersion } from '../common/forms/types';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 import type { AppRoutesWithCase } from '../../states/routing/types';
+import useFocus from '../../utils/useFocus';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;
@@ -56,6 +57,8 @@ const AddPerpetrator: React.FC<Props> = ({
   updateTempInfo,
   changeRoute,
 }) => {
+  const firstElementRef = useFocus();
+
   const { temporaryCaseInfo } = connectedCaseState;
   const { PerpetratorForm } = definitionVersion.caseForms;
   const { layoutVersion } = definitionVersion;
@@ -70,7 +73,7 @@ const AddPerpetrator: React.FC<Props> = ({
       updateTempInfo({ screen: 'add-perpetrator', info: perpetrator }, task.taskSid);
     };
 
-    const generatedForm = createFormFromDefinition(PerpetratorForm)([])(initialForm)(updateCallBack);
+    const generatedForm = createFormFromDefinition(PerpetratorForm)([])(initialForm, firstElementRef)(updateCallBack);
 
     if (layoutVersion.case.perpetrators.splitFormAt)
       return splitAt(layoutVersion.case.perpetrators.splitFormAt)(disperseInputs(7)(generatedForm));
@@ -79,6 +82,7 @@ const AddPerpetrator: React.FC<Props> = ({
   }, [
     PerpetratorForm,
     initialForm,
+    firstElementRef,
     layoutVersion.case.perpetrators.splitFormAt,
     methods,
     task.taskSid,

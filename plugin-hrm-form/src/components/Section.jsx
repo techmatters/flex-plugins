@@ -1,24 +1,46 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ButtonBase, Collapse } from '@material-ui/core';
 import { ArrowDropDownTwoTone, ArrowDropUpTwoTone } from '@material-ui/icons';
 
-import { SectionTitleContainer, SectionTitleText, ContactDetailsIcon } from '../styles/search';
+import {
+  SectionTitleContainer,
+  SectionTitleButton,
+  SectionTitleText,
+  SectionCollapse,
+  ContactDetailsIcon,
+} from '../styles/search';
 
 const ArrowDownIcon = ContactDetailsIcon(ArrowDropDownTwoTone);
 const ArrowUpIcon = ContactDetailsIcon(ArrowDropUpTwoTone);
 
-const Section = ({ color, sectionTitle, expanded, hideIcon, children, handleExpandClick, buttonDataTestid }) => (
+const Section = ({
+  color,
+  sectionTitle,
+  expanded,
+  hideIcon,
+  children,
+  handleExpandClick,
+  buttonDataTestid,
+  htmlElRef,
+}) => (
   <>
     <SectionTitleContainer color={color}>
-      <ButtonBase style={{ width: '100%', padding: 0 }} onClick={handleExpandClick} data-testid={buttonDataTestid}>
+      <SectionTitleButton
+        buttonRef={buttonRef => {
+          if (htmlElRef) {
+            htmlElRef.current = buttonRef;
+          }
+        }}
+        onClick={handleExpandClick}
+        data-testid={buttonDataTestid}
+      >
         <SectionTitleText>{sectionTitle}</SectionTitleText>
         {!hideIcon && (expanded ? <ArrowUpIcon /> : <ArrowDownIcon />)}
-      </ButtonBase>
+      </SectionTitleButton>
     </SectionTitleContainer>
-    <Collapse in={expanded} timeout="auto">
+    <SectionCollapse expanded={expanded} timeout="auto">
       {children}
-    </Collapse>
+    </SectionCollapse>
   </>
 );
 
@@ -31,12 +53,15 @@ Section.propTypes = {
   hideIcon: PropTypes.bool,
   handleExpandClick: PropTypes.func.isRequired,
   buttonDataTestid: PropTypes.string,
+  // eslint-disable-next-line react/forbid-prop-types
+  htmlElRef: PropTypes.any,
 };
 Section.defaultProps = {
   expanded: false,
   hideIcon: false,
   color: null,
   buttonDataTestid: null,
+  htmlElRef: null,
 };
 
 export default Section;

@@ -187,3 +187,9 @@ export const reportToIWF = async (form: CSAMReportForm) => {
   const response = await fetchProtectedApi('/reportToIWF', body);
   return response;
 };
+
+export const saveContactToSaferNet = async (payload: any): Promise<string> => {
+  const body = { payload: JSON.stringify(payload) };
+  const postSurveyUrl = await fetchProtectedApi('/saveContactToSaferNet', body);
+  return postSurveyUrl;
+};

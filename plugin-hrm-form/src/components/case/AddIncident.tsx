@@ -24,6 +24,7 @@ import { createFormFromDefinition, disperseInputs, splitInHalf, splitAt } from '
 import type { DefinitionVersion } from '../common/forms/types';
 import { transformValues } from '../../services/ContactService';
 import type { CustomITask, StandaloneITask } from '../../types/types';
+import useFocus from '../../utils/useFocus';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;
@@ -44,6 +45,8 @@ const AddIncident: React.FC<Props> = ({
   setConnectedCase,
   updateTempInfo,
 }) => {
+  const firstElementRef = useFocus();
+
   const { temporaryCaseInfo } = connectedCaseState;
   const { IncidentForm } = definitionVersion.caseForms;
   const { layoutVersion } = definitionVersion;
@@ -58,13 +61,21 @@ const AddIncident: React.FC<Props> = ({
       updateTempInfo({ screen: 'add-incident', info: incident }, task.taskSid);
     };
 
-    const generatedForm = createFormFromDefinition(IncidentForm)([])(initialForm)(updateCallBack);
+    const generatedForm = createFormFromDefinition(IncidentForm)([])(initialForm, firstElementRef)(updateCallBack);
 
     if (layoutVersion.case.incidents.splitFormAt)
       return splitAt(layoutVersion.case.incidents.splitFormAt)(disperseInputs(7)(generatedForm));
 
     return splitInHalf(disperseInputs(7)(generatedForm));
-  }, [IncidentForm, initialForm, layoutVersion.case.incidents.splitFormAt, methods, task.taskSid, updateTempInfo]);
+  }, [
+    IncidentForm,
+    initialForm,
+    firstElementRef,
+    layoutVersion.case.incidents.splitFormAt,
+    methods,
+    task.taskSid,
+    updateTempInfo,
+  ]);
 
   if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-incident') return null;
 

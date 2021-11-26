@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, ReactDOM } from 'react';
 import { get } from 'lodash';
 import { Template } from '@twilio/flex-ui';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
@@ -17,6 +17,7 @@ import {
 import { StyledLink } from '../../../styles/search';
 import UploadIcon from '../icons/UploadIcon';
 import { formatFileNameAtAws } from '../../../utils';
+import type { HTMLElementRef } from './types';
 
 type UploadFileInputProps = {
   label: string | JSX.Element;
@@ -33,6 +34,7 @@ type UploadFileInputProps = {
   updateCallback: any;
   RequiredAsterisk: any;
   initialValue: any;
+  htmlElRef?: HTMLElementRef;
 };
 
 const UploadFileInput: React.FC<UploadFileInputProps> = ({
@@ -50,6 +52,7 @@ const UploadFileInput: React.FC<UploadFileInputProps> = ({
   updateCallback,
   RequiredAsterisk,
   initialValue,
+  htmlElRef,
 }) => {
   const [isLoading, setLoading] = useState(false);
   const fileUploadRef = useRef<HTMLButtonElement>();
@@ -104,7 +107,18 @@ const UploadFileInput: React.FC<UploadFileInputProps> = ({
       </Row>
       {showUploadButton && (
         <>
-          <StyledNextStepButton disabled={isLoading} onClick={() => fileUploadRef.current.click()}>
+          <StyledNextStepButton
+            id="upload-button-styled"
+            disabled={isLoading}
+            onClick={() => fileUploadRef.current.click()}
+            innerRef={() => {
+              if (htmlElRef) {
+                // Couldn't get HTML element from innerRef. As a workaround, we getting the element by its id
+                const htmlButton = document.getElementById('upload-button-styled');
+                htmlElRef.current = htmlButton;
+              }
+            }}
+          >
             {isLoading && (
               <Box marginRight="10px">
                 <CircularProgress color="inherit" size={20} />

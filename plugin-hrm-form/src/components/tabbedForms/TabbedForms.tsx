@@ -14,7 +14,7 @@ import { updateCallType, updateForm } from '../../states/contacts/actions';
 import { searchResultToContactForm } from '../../services/ContactService';
 import { removeOfflineContact } from '../../services/formSubmissionHelpers';
 import { changeRoute } from '../../states/routing/actions';
-import type { TaskEntry } from '../../states/contacts/reducer';
+import { TaskEntry, emptyCategories } from '../../states/contacts/reducer';
 import { TabbedFormSubroutes, NewCaseSubroutes } from '../../states/routing/types';
 import { CustomITask, isOfflineContactTask, SearchContact } from '../../types/types';
 import { TabbedFormsContainer, Box, StyledTabs, Row } from '../../styles/HrmStyles';
@@ -83,6 +83,16 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, cu
     mode: 'onChange',
   });
 
+  const { setValue } = methods;
+  const { helpline } = contactForm;
+
+  /**
+   * Clear some parts of the form state when helpline changes.
+   */
+  React.useEffect(() => {
+    setValue('categories', emptyCategories);
+  }, [helpline, setValue]);
+
   if (routing.route !== 'tabbed-forms') return null;
 
   if (!currentDefinitionVersion) return null;
@@ -123,10 +133,10 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, cu
 
   const handleTabsChange = (_event: any, t: number) => {
     const tab = tabsToIndex[t];
-    dispatch(changeRoute({ route: 'tabbed-forms', subroute: tab }, taskId));
+    dispatch(changeRoute({ route: 'tabbed-forms', subroute: tab, autoFocus: false }, taskId));
   };
 
-  const { subroute } = routing;
+  const { subroute, autoFocus } = routing;
   let tabIndex = tabsToIndex.findIndex(t => t === subroute);
 
   // If the subroute is any from 'new case' we should focus on 'Search' tab and display the entire Case inside TabbedForms.
@@ -153,7 +163,6 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, cu
 
   const isDataCallType = !isNonDataCallType(contactForm.callType);
   const showSubmitButton = !isEmptyCallType(contactForm.callType) && tabIndex === tabs.length - 1;
-  const { helpline } = contactForm;
 
   // eslint-disable-next-line react/display-name
   const HeaderControlButtons = () => (
@@ -189,6 +198,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, cu
                   display={subroute === 'contactlessTask'}
                   definition={currentDefinitionVersion.helplineInformation}
                   initialValues={contactForm.contactlessTask}
+                  autoFocus={autoFocus}
                 />
               )}
               {isCallerType && (
@@ -199,6 +209,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, cu
                   layoutDefinition={currentDefinitionVersion.layoutVersion.contact.callerInformation}
                   initialValues={contactForm.callerInformation}
                   display={subroute === 'callerInformation'}
+                  autoFocus={autoFocus}
                 />
               )}
               {isDataCallType && (
@@ -210,12 +221,14 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, cu
                     layoutDefinition={currentDefinitionVersion.layoutVersion.contact.childInformation}
                     initialValues={contactForm.childInformation}
                     display={subroute === 'childInformation'}
+                    autoFocus={autoFocus}
                   />
                   <IssueCategorizationTab
                     task={task}
                     display={subroute === 'categories'}
                     initialValue={contactForm.categories}
                     definition={currentDefinitionVersion.tabbedForms.IssueCategorizationTab(helpline)}
+                    autoFocus={autoFocus}
                   />
                   <TabbedFormTab
                     task={task}
@@ -224,6 +237,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, cu
                     layoutDefinition={currentDefinitionVersion.layoutVersion.contact.caseInformation}
                     initialValues={contactForm.caseInformation}
                     display={subroute === 'caseInformation'}
+                    autoFocus={autoFocus}
                   />
                 </>
               )}
@@ -232,7 +246,9 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, cu
           <BottomBar
             task={task}
             nextTab={() =>
-              dispatch(changeRoute({ route: 'tabbed-forms', subroute: tabsToIndex[tabIndex + 1] }, taskId))
+              dispatch(
+                changeRoute({ route: 'tabbed-forms', subroute: tabsToIndex[tabIndex + 1], autoFocus: true }, taskId),
+              )
             }
             // TODO: move this two functions to a separate file to centralize "handle task completions"
             showNextButton={tabIndex !== 0 && tabIndex < tabs.length - 1}

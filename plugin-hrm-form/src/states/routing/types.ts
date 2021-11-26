@@ -32,10 +32,12 @@ export type AppRoutesWithCase =
   | {
       route: 'tabbed-forms';
       subroute?: TabbedFormSubroutes | typeof NewCaseSubroutes[keyof typeof NewCaseSubroutes];
+      autoFocus?: boolean;
     }
   | {
       route: 'new-case';
       subroute?: typeof NewCaseSubroutes[keyof typeof NewCaseSubroutes];
+      autoFocus?: boolean;
     }
   | {
       route: 'select-call-type';

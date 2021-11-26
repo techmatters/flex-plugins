@@ -18,7 +18,7 @@ import { updateCallType } from '../../states/contacts/actions';
 import { completeTask, submitContactForm } from '../../services/formSubmissionHelpers';
 
 jest.mock('../../services/ContactService', () => ({
-  saveToHrm: jest.fn(),
+  saveContact: jest.fn(),
 }));
 
 jest.mock('../../services/formSubmissionHelpers', () => ({
@@ -43,7 +43,7 @@ const withEndCall = <Template code="TaskHeaderEndCall" />;
 const withEndChat = <Template code="TaskHeaderEndChat" />;
 
 jest.mock('../../services/ContactService', () => ({
-  saveToHrm: () => Promise.resolve(),
+  saveContact: () => Promise.resolve(),
 }));
 
 afterEach(() => {
@@ -482,7 +482,7 @@ test('<CallTypeButtons> click on Data (Child) button', () => {
 
   expect(store.dispatch).toHaveBeenCalledWith(updateCallType(task.taskSid, callTypes.child));
   expect(store.dispatch).toHaveBeenCalledWith(
-    changeRoute({ route: 'tabbed-forms', subroute: 'childInformation' }, task.taskSid),
+    changeRoute({ route: 'tabbed-forms', subroute: 'childInformation', autoFocus: true }, task.taskSid),
   );
 });
 

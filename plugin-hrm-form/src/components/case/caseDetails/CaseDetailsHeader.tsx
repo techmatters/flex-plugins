@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-max-depth */
 /* eslint-disable react/no-multi-comp */
 /* eslint-disable react/prop-types */
 import React from 'react';
@@ -17,7 +18,7 @@ import {
   ChildIsAtRiskWrapper,
   StyledPrintButton,
 } from '../../../styles/case';
-import { Box, FormCheckbox, FormLabel } from '../../../styles/HrmStyles';
+import { Flex, Box, FormCheckbox, FormLabel } from '../../../styles/HrmStyles';
 import { PermissionActions, PermissionActionType } from '../../../permissions';
 
 type OwnProps = {
@@ -44,6 +45,8 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
   can,
 }) => {
   const { multipleOfficeSupport } = getConfig();
+  const canEditChildAtRisk = can(PermissionActions.EDIT_CHILD_IS_AT_RISK);
+
   return (
     <DetailsHeaderContainer>
       <DetailsHeaderTextContainer>
@@ -59,29 +62,30 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
           <Template code="Case-Counsellor" />: {counselor}
         </DetailsHeaderCounselor>
       </DetailsHeaderTextContainer>
-      <DetailsHeaderChildAtRiskContainer>
-        <FormLabel htmlFor="childIsAtRisk" style={{ marginLeft: 'auto', marginTop: 'auto' }}>
-          <ChildIsAtRiskWrapper style={{ height: 'auto' }}>
-            <Box marginRight="5px">
-              <FormCheckbox
-                id="childIsAtRisk"
-                data-testid="Case-ChildIsAtRisk-Checkbox"
-                name="childIsAtRisk"
-                type="checkbox"
-                onChange={handleClickChildIsAtRisk}
-                defaultChecked={Boolean(childIsAtRisk)}
-                disabled={!can(PermissionActions.EDIT_CHILD_IS_AT_RISK)}
-              />
-            </Box>
-            <Template code="Case-ChildIsAtRisk" />
-          </ChildIsAtRiskWrapper>
-        </FormLabel>
-      </DetailsHeaderChildAtRiskContainer>
-      {!isOrphanedCase && (
-        <div>
-          <StyledPrintButton onClick={handlePrintCase} aria-label="Print" icon={<PrintIcon />} />
-        </div>
-      )}
+      <Flex flexDirection="column" height="75px">
+        <Box alignSelf="flex-end">
+          {!isOrphanedCase && <StyledPrintButton onClick={handlePrintCase} aria-label="Print" icon={<PrintIcon />} />}
+        </Box>
+        <DetailsHeaderChildAtRiskContainer style={{ marginTop: 'auto', marginRight: 'auto' }}>
+          <FormLabel htmlFor="childIsAtRisk">
+            <ChildIsAtRiskWrapper style={{ height: 'auto' }}>
+              <Box marginRight="5px">
+                <FormCheckbox
+                  id="childIsAtRisk"
+                  data-testid="Case-ChildIsAtRisk-Checkbox"
+                  name="childIsAtRisk"
+                  type="checkbox"
+                  onChange={handleClickChildIsAtRisk}
+                  defaultChecked={Boolean(childIsAtRisk)}
+                  disabled={!canEditChildAtRisk}
+                  autoFocus={canEditChildAtRisk}
+                />
+              </Box>
+              <Template code="Case-ChildIsAtRisk" />
+            </ChildIsAtRiskWrapper>
+          </FormLabel>
+        </DetailsHeaderChildAtRiskContainer>
+      </Flex>
     </DetailsHeaderContainer>
   );
 };
