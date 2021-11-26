@@ -100,6 +100,7 @@ export type SearchContact = {
     conversationDuration: number;
   };
   details: ContactRawJson;
+  csamReports: CSAMReportEntry[];
 };
 
 export type SearchContactResult = {
