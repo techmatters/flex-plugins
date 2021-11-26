@@ -72,12 +72,20 @@ const mapTabsToIndex = (task: CustomITask, contactForm: TaskEntry): TabbedFormSu
 
 type OwnProps = {
   task: CustomITask;
+  csamReportEnabled: boolean;
 };
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, currentDefinitionVersion }) => {
+const TabbedForms: React.FC<Props> = ({
+  dispatch,
+  routing,
+  task,
+  contactForm,
+  currentDefinitionVersion,
+  csamReportEnabled,
+}) => {
   const methods = useForm({
     shouldFocusError: false,
     mode: 'onChange',
@@ -169,11 +177,13 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, cu
     <Box marginTop="10px" marginBottom="10px" paddingLeft="20px">
       <Row>
         <SearchResultsBackButton handleBack={handleBackButton} text={<Template code="TabbedForms-BackButton" />} />
-        <Box marginLeft="auto">
-          <CSAMReportButton
-            handleClick={() => dispatch(changeRoute({ route: 'csam-report', subroute: 'form' }, taskId))}
-          />
-        </Box>
+        {csamReportEnabled && (
+          <Box marginLeft="auto">
+            <CSAMReportButton
+              handleClick={() => dispatch(changeRoute({ route: 'csam-report', subroute: 'form' }, taskId))}
+            />
+          </Box>
+        )}
       </Row>
     </Box>
   );

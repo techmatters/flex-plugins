@@ -12,18 +12,19 @@ import type { CustomITask } from '../types/types';
 
 type OwnProps = {
   task: CustomITask;
+  featureFlags: { [flag: string]: boolean };
 };
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 
-const HrmForm: React.FC<Props> = ({ routing, task }) => {
+const HrmForm: React.FC<Props> = ({ routing, task, featureFlags }) => {
   if (!routing) return null;
   const { route } = routing;
 
   switch (route) {
     case 'tabbed-forms':
-      return <TabbedForms task={task} />;
+      return <TabbedForms task={task} csamReportEnabled={featureFlags.enable_csam_report} />;
 
     case 'new-case':
       return (
