@@ -16,7 +16,7 @@ const CSAMAttachments: React.FC<Props> = ({ csamReports }) => {
     <Box marginTop="10px">
       <Column>
         {csamReports.map(r => {
-          const formattedCreatedAt = format(new Date(r.createdAt), 'yyyy-MM-dd HH:mm');
+          const formattedCreatedAt = format(new Date(r.createdAt), 'yyyy MM dd h:mm aaaaa');
 
           return (
             <Row key={r.csamReportId}>
@@ -27,7 +27,7 @@ const CSAMAttachments: React.FC<Props> = ({ csamReports }) => {
               <CSAMAttachmentText>
                 <Template code="CSAMReportForm-Attachment" />
                 <br />
-                {`${formattedCreatedAt} #${r.csamReportId}`}
+                {`${formattedCreatedAt}m #${r.csamReportId}`}
               </CSAMAttachmentText>
             </Row>
           );
