@@ -1,5 +1,7 @@
 import React from 'react';
 import styled from 'react-emotion';
+import { withStyles } from '@material-ui/core';
+import AttachFile from '@material-ui/icons/AttachFile';
 
 import { FontOpenSans, StyledNextStepButton } from '../HrmStyles';
 
@@ -69,3 +71,29 @@ export const ButtonText = styled(FontOpenSans)`
   font-weight: 700;
   line-height: 24px;
 `;
+
+export const CSAMAttachmentText = styled(FontOpenSans)`
+  font-style: italic;
+  font-size: 13px;
+  color: ${props => props.theme.colors.defaultButtonColor};
+`;
+CSAMAttachmentText.displayName = 'CSAMAttachmentText';
+
+/*
+ * export const CSAMAttachmentIcon = styled(AttachFile)`
+ *   width: 14px;
+ *   height: 14px;
+ *   color: #080808;
+ * `;
+ * CSAMAttachmentIcon.displayName = 'CSAMAttachmentIcon';
+ */
+
+export const CSAMAttachmentIcon = withStyles({
+  root: {
+    width: 14,
+    height: 14,
+    color: '#080808',
+    opacity: 0.5,
+  },
+})(AttachFile);
+CSAMAttachmentIcon.displayName = 'CSAMAttachmentIcon';

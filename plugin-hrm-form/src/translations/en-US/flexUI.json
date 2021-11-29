@@ -327,6 +327,7 @@
   "CSAMReportForm-ContactDetailsInfo": "Contact details will be recorded on the IWF database for 3 months, and then will then be deleted in accordance with the UK Data Protection Act",
   "CSAMReportForm-ReportSent": "CSAM Report Sent!",
   "CSAMReportForm-CopyCode": "Copy confirmation code for sharing",
+  "CSAMReportForm-Attachment": "CSAM Report has been filled",
 
   "SpecifyIfAnonymousOrNot": "Specify if this report is either anonymous or not",
   "BottomBar-SendReport": "Send Report",

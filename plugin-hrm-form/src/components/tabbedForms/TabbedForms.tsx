@@ -29,6 +29,7 @@ import { hasTaskControl } from '../../utils/transfer';
 import { isNonDataCallType } from '../../states/ValidationRules';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
 import CSAMReportButton from './CSAMReportButton';
+import CSAMAttachments from './CSAMAttachments';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -90,6 +91,10 @@ const TabbedForms: React.FC<Props> = ({
     shouldFocusError: false,
     mode: 'onChange',
   });
+
+  const csamAttachments = React.useMemo(() => <CSAMAttachments csamReports={contactForm.csamReports} />, [
+    contactForm.csamReports,
+  ]);
 
   const { setValue } = methods;
   const { helpline } = contactForm;
@@ -248,6 +253,7 @@ const TabbedForms: React.FC<Props> = ({
                     initialValues={contactForm.caseInformation}
                     display={subroute === 'caseInformation'}
                     autoFocus={autoFocus}
+                    extraChildrenRight={csamAttachments}
                   />
                 </>
               )}
