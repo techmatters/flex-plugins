@@ -82,7 +82,10 @@ const CSAMReportForm: React.FC<Props> = ({
 
   if (routing.route !== 'csam-report') return null;
 
-  const onClickClose = () => changeRoute({ route: 'tabbed-forms', subroute: 'caseInformation' }, taskSid);
+  const onClickClose = () => {
+    clearCSAMReportAction(taskSid);
+    changeRoute({ route: 'tabbed-forms', subroute: 'caseInformation' }, taskSid);
+  };
 
   switch (routing.subroute) {
     case 'form': {
@@ -98,7 +101,6 @@ const CSAMReportForm: React.FC<Props> = ({
 
           updateStatusAction(report['IWFReportService1.0'], taskSid);
           addCSAMReportEntry(storedReport, taskSid);
-          clearCSAMReportAction(taskSid);
           changeRoute({ route: 'csam-report', subroute: 'status' }, taskSid);
         } catch {
           window.alert(getConfig().strings['Error-Backend']);
@@ -141,6 +143,7 @@ const CSAMReportForm: React.FC<Props> = ({
     }
     case 'status': {
       const onSendAnotherReport = () => {
+        clearCSAMReportAction(taskSid);
         changeRoute({ route: 'csam-report', subroute: 'form' }, taskSid);
       };
 
