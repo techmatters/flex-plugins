@@ -58,7 +58,7 @@ const Details: React.FC<Props> = ({
   }, [definitionVersions, updateDefinitionVersion, version]);
 
   // Object destructuring on contact
-  const { overview, details, counselor } = contact;
+  const { overview, details, counselor, csamReports } = contact;
   const {
     dateTime,
     name: childName,
@@ -93,6 +93,12 @@ const Details: React.FC<Props> = ({
 
   const definitionVersion = definitionVersions[version];
   const addedBy = counselorsHash[createdBy];
+
+  const csamReportsAttached =
+    csamReports &&
+    csamReports
+      .map(r => `CSAM on ${format(new Date(r.createdAt), 'yyyy MM dd h:mm aaaaa')}m\n#${r.csamReportId}`)
+      .join('\n\n');
 
   if (!definitionVersion)
     return (
@@ -211,6 +217,13 @@ const Details: React.FC<Props> = ({
               definition={e}
             />
           ))}
+          {csamReportsAttached && (
+            <SectionEntry
+              key="CaseInformation-AttachedCSAMReports"
+              description={<Template code="CSAMReportForm-ReportsSubmitted" />}
+              value={csamReportsAttached}
+            />
+          )}
         </Section>
       )}
     </DetailsContainer>
