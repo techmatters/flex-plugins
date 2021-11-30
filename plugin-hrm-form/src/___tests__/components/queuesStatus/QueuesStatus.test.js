@@ -12,6 +12,8 @@ import QueueCard from '../../../components/queuesStatus/QueueCard';
 import { WaitTimeValue } from '../../../styles/queuesStatus';
 import { ErrorText } from '../../../styles/HrmStyles';
 
+jest.mock('../../../components/CSAMReport/CSAMReportFormDefinition');
+
 expect.extend(toHaveNoViolations);
 const mockStore = configureMockStore([]);
 
