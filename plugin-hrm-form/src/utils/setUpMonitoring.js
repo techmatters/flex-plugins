@@ -41,6 +41,7 @@ function setUpRollbarLogger(plugin, workerClient, monitoringEnv) {
     ignoredMessages: ['Warning: Failed prop type'],
     maxItems: 500,
     ignoreDuplicateErrors: true,
+    scrubTelemetryInputs: true,
   });
 
   const myLogManager = new Flex.Log.LogManager({
