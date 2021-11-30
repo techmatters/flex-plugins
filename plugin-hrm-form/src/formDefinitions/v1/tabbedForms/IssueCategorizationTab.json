@@ -21,8 +21,9 @@
         "Harmful traditional practices other than child marriage and FGM",
         "Mental/Emotional violence",
         "Neglect (or negligent treatment)",
-        "Online sexual abuse",
-        "Online sexual exploitation",
+        "Online sexual abuse (OSA)",
+        "Online sexual exploitation (OSE)",
+        "Information seeking about OSE/OSA",
         "Physical violence",
         "Sexual violence",
         "Unspecified/Other"
@@ -224,6 +225,17 @@
         "Payment",
         "Serious Complaints",
         "Exit",
+        "Unspecified/Other"
+      ]
+    },
+    "Non-Counselling contacts": {
+      "color": "#767777",
+      "subcategories": [
+        "Complaints about the child helpline",
+        "Questions by parents",
+        "Questions about the child helpline",
+        "Questions about other services",
+        "\"Thank you for your assistance\"",
         "Unspecified/Other"
       ]
     }
