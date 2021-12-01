@@ -18,6 +18,7 @@ import * as contactsActions from '../../states/contacts/actions';
 import { RootState, csamReportBase, namespace, routingBase, configurationBase } from '../../states';
 import { reportToIWF } from '../../services/ServerlessService';
 import { createCSAMReport } from '../../services/CSAMReportService';
+import useFocus from '../../utils/useFocus';
 
 type OwnProps = {
   taskSid: CustomITask['taskSid'];
@@ -53,6 +54,7 @@ const CSAMReportForm: React.FC<Props> = ({
 }) => {
   const [initialForm] = React.useState(csamReportState.form); // grab initial values in first render only. This value should never change or will ruin the memoization below
   const methods = useForm();
+  const firstElementRef = useFocus();
 
   const currentCounselor = React.useMemo(() => {
     const { workerSid } = getConfig();
@@ -65,20 +67,22 @@ const CSAMReportForm: React.FC<Props> = ({
       updateFormAction(values, taskSid);
     };
 
-    const generateInput = (e: FormItemDefinition) => {
+    const generateInput = (e: FormItemDefinition, index: number) => {
       const initialValue = initialForm[e.name] === undefined ? initialValues[e.name] : initialForm[e.name];
+
+      if (index === 0) return getInputType([], onUpdateInput)(e)(initialValue, firstElementRef);
 
       return getInputType([], onUpdateInput)(e)(initialValue);
     };
 
     return Object.entries(definitionObject).reduce<{ [k in keyof typeof definitionObject]: JSX.Element }>(
-      (accum, [k, e]) => ({
+      (accum, [k, e], index) => ({
         ...accum,
-        [k]: generateInput(e),
+        [k]: generateInput(e, index),
       }),
       null,
     );
-  }, [initialForm, methods, taskSid, updateFormAction]);
+  }, [firstElementRef, initialForm, methods, taskSid, updateFormAction]);
 
   if (routing.route !== 'csam-report') return null;
 
