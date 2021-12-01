@@ -68,11 +68,10 @@ export const getMessage = messageKey => async language => {
 export const initLocalization = async (localizationConfig, initialLanguage) => {
   const translateUI = initTranslateUI(localizationConfig);
 
+  const { setNewStrings } = localizationConfig;
+  setNewStrings(defaultTranslation);
+
   if (initialLanguage && initialLanguage !== defaultLanguage) await translateUI(initialLanguage);
-  else {
-    const { setNewStrings } = localizationConfig;
-    setNewStrings(defaultTranslation);
-  }
 
   return {
     translateUI,
