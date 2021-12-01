@@ -372,7 +372,6 @@ export const StyledTab = withStyles({
     height: 35,
     minHeight: 35,
     minWidth: 120,
-    width: 120,
     backgroundColor: '#ecedf1',
     borderTopLeftRadius: 4,
     borderTopRightRadius: 4,
