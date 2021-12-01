@@ -1,6 +1,7 @@
 import { ITask } from '@twilio/flex-ui';
 
 import { getConfig } from '../HrmFormPlugin';
+import { savePendingContactToSharedState } from '../utils/sharedState';
 import saveContactToSaferNet from './br';
 
 type DualWriteFn = (task: ITask, payload: any) => Promise<void>;
@@ -19,6 +20,10 @@ export const saveContactToExternalBackend = async (task: ITask, payload: any) =>
 
   const saveContact = saveContactByDefinitionVersion[definitionVersion];
   if (saveContact) {
-    await saveContact(task, payload);
+    try {
+      await saveContact(task, payload);
+    } catch (err) {
+      savePendingContactToSharedState(task, payload, err);
+    }
   }
 };

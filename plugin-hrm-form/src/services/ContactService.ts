@@ -240,7 +240,6 @@ export const saveContact = async (
 ) => {
   const response = await saveContactToHrm(task, form, workerSid, uniqueIdentifier, shouldFillEndMillis);
 
-  // TODO: add catch clause to handle saving to Sync Doc
   try {
     await saveContactToExternalBackend(task, response.requestPayload);
   } finally {
