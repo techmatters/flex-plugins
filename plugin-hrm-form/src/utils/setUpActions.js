@@ -132,8 +132,8 @@ const handleTransferredTask = async task => {
   await restoreFormIfTransfer(task);
 };
 
-const getTaskLanguage = ({ helplineLanguage, configuredLanguage }) => ({ task }) =>
-  task.attributes.language || helplineLanguage || configuredLanguage;
+const getTaskLanguage = ({ counselorLanguage, helplineLanguage }) => ({ task }) =>
+  task.attributes.language || counselorLanguage || helplineLanguage;
 
 /**
  * @param {string} messageKey
