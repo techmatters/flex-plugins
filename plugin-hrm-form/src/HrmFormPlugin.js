@@ -247,7 +247,7 @@ export default class HrmFormPlugin extends FlexPlugin {
    * @param flex { typeof import('@twilio/flex-ui') }
    * @param manager { import('@twilio/flex-ui').Manager }
    */
-  init(flex, manager) {
+  async init(flex, manager) {
     loadCSS('https://use.fontawesome.com/releases/v5.15.1/css/solid.css');
 
     if (process.env.NODE_ENV !== 'development')
@@ -262,7 +262,7 @@ export default class HrmFormPlugin extends FlexPlugin {
      * localization setup (translates the UI if necessary)
      * WARNING: the way this is done right now is "hacky". More info in initLocalization declaration
      */
-    const { translateUI, getMessage } = setUpLocalization(config);
+    const { translateUI, getMessage } = await setUpLocalization(config);
 
     const setupObject = { ...config, translateUI, getMessage };
 

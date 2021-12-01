@@ -65,13 +65,14 @@ export const getMessage = messageKey => async language => {
  * @param {{ twilioStrings: any; setNewStrings: (newStrings: any) => void; afterNewStrings: (language: string) => void; }} localizationConfig
  * @param {string} initialLanguage
  */
-export const initLocalization = (localizationConfig, initialLanguage) => {
+export const initLocalization = async (localizationConfig, initialLanguage) => {
   const translateUI = initTranslateUI(localizationConfig);
 
-  const { setNewStrings } = localizationConfig;
-
-  setNewStrings(defaultTranslation);
-  if (initialLanguage && initialLanguage !== defaultLanguage) translateUI(initialLanguage);
+  if (initialLanguage && initialLanguage !== defaultLanguage) await translateUI(initialLanguage);
+  else {
+    const { setNewStrings } = localizationConfig;
+    setNewStrings(defaultTranslation);
+  }
 
   return {
     translateUI,
