@@ -96,6 +96,8 @@ const TabbedForms: React.FC<Props> = ({
     contactForm.csamReports,
   ]);
 
+  const isMounted = React.useRef(false); // mutable value to avoid reseting the state in the first render.
+
   const { setValue } = methods;
   const { helpline } = contactForm;
 
@@ -103,7 +105,8 @@ const TabbedForms: React.FC<Props> = ({
    * Clear some parts of the form state when helpline changes.
    */
   React.useEffect(() => {
-    setValue('categories', emptyCategories);
+    if (isMounted.current) setValue('categories', emptyCategories);
+    else isMounted.current = true;
   }, [helpline, setValue]);
 
   if (routing.route !== 'tabbed-forms') return null;
