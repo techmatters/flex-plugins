@@ -124,6 +124,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                 </Row>
                 <FormInput
                   id={path}
+                  data-testid={path}
                   name={path}
                   error={Boolean(error)}
                   aria-invalid={Boolean(error)}
@@ -163,6 +164,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                 </Row>
                 <FormInput
                   id={path}
+                  data-testid={path}
                   name={path}
                   error={Boolean(error)}
                   aria-invalid={Boolean(error)}
@@ -205,6 +207,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                 </Row>
                 <FormInput
                   id={path}
+                  data-testid={path}
                   name={path}
                   error={Boolean(error)}
                   aria-invalid={Boolean(error)}
@@ -245,6 +248,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                 <FormSelectWrapper>
                   <FormSelect
                     id={path}
+                    data-testid={path}
                     name={path}
                     error={Boolean(error)}
                     aria-invalid={Boolean(error)}
@@ -319,6 +323,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                 <FormSelectWrapper>
                   <FormSelect
                     id={path}
+                    data-testid={path}
                     name={path}
                     error={Boolean(error)}
                     aria-invalid={Boolean(error)}
@@ -358,6 +363,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                   <Box marginRight="5px">
                     <FormCheckbox
                       id={path}
+                      data-testid={path}
                       name={path}
                       type="checkbox"
                       aria-invalid={Boolean(error)}
@@ -410,6 +416,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                   <Box marginRight="5px">
                     <FormMixedCheckbox
                       id={path}
+                      data-testid={path}
                       type="checkbox"
                       className="mixed-checkbox"
                       aria-invalid={Boolean(error)}
@@ -456,6 +463,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                 </Row>
                 <FormTextArea
                   id={path}
+                  data-testid={path}
                   name={path}
                   error={Boolean(error)}
                   aria-invalid={Boolean(error)}
@@ -498,6 +506,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                 <FormTimeInput
                   type="time"
                   id={path}
+                  data-testid={path}
                   name={path}
                   error={Boolean(error)}
                   aria-invalid={Boolean(error)}
@@ -538,6 +547,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                 <FormDateInput
                   type="date"
                   id={path}
+                  data-testid={path}
                   name={path}
                   error={Boolean(error)}
                   aria-invalid={Boolean(error)}
