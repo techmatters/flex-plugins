@@ -41,7 +41,8 @@ const mapDispatchToProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const CSAMReportForm: React.FC<Props> = ({
+// exported for test purposes
+export const CSAMReportScreen: React.FC<Props> = ({
   updateFormAction,
   updateStatusAction,
   clearCSAMReportAction,
@@ -97,7 +98,6 @@ const CSAMReportForm: React.FC<Props> = ({
         try {
           changeRoute({ route: 'csam-report', subroute: 'loading' }, taskSid);
           const report = await reportToIWF(form);
-
           const storedReport = await createCSAMReport({
             csamReportId: report['IWFReportService1.0'].responseData,
             twilioWorkerId: getConfig().workerSid,
@@ -106,7 +106,8 @@ const CSAMReportForm: React.FC<Props> = ({
           updateStatusAction(report['IWFReportService1.0'], taskSid);
           addCSAMReportEntry(storedReport, taskSid);
           changeRoute({ route: 'csam-report', subroute: 'status' }, taskSid);
-        } catch {
+        } catch (err) {
+          console.error(err);
           window.alert(getConfig().strings['Error-Backend']);
           changeRoute({ route: 'csam-report', subroute: 'form' }, taskSid);
         }
@@ -136,7 +137,7 @@ const CSAMReportForm: React.FC<Props> = ({
     }
     case 'loading': {
       return (
-        <CSAMReportContainer>
+        <CSAMReportContainer data-testid="CSAMReport-Loading">
           <CSAMReportLayout>
             <CenterContent>
               <CircularProgress />
@@ -167,9 +168,9 @@ const CSAMReportForm: React.FC<Props> = ({
   }
 };
 
-CSAMReportForm.displayName = 'CSAMReportForm';
+CSAMReportScreen.displayName = 'CSAMReportScreen';
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
-const connected = connector(CSAMReportForm);
+const connected = connector(CSAMReportScreen);
 
 export default connected;

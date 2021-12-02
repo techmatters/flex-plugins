@@ -22,7 +22,7 @@ const CSAMReportFormScreen: React.FC<Props> = ({
   onClickClose,
   onSendReport,
 }) => (
-  <CSAMReportContainer>
+  <CSAMReportContainer data-testid="CSAMReport-FormScreen">
     <CSAMReportLayout>
       <ActionHeader titleTemplate="CSAMReportForm-Header" onClickClose={onClickClose} counselor={counselor} />
 
@@ -72,7 +72,7 @@ const CSAMReportFormScreen: React.FC<Props> = ({
           <Template code="BottomBar-Cancel" />
         </StyledNextStepButton>
       </Box>
-      <StyledNextStepButton roundCorners onClick={onSendReport}>
+      <StyledNextStepButton roundCorners onClick={onSendReport} data-testid="CSAMReport-SubmitButton">
         <Template code="BottomBar-SendReport" />
       </StyledNextStepButton>
     </BottomButtonBar>

@@ -40,7 +40,7 @@ const CSAMReportStatusScreen: React.FC<Props> = ({ reportStatus, onClickClose, o
 
   return (
     // how should we handle possible IWF API error here? Show a screen, an alert & go back to form?
-    <CSAMReportContainer>
+    <CSAMReportContainer data-testid="CSAMReport-StatusScreen">
       <CSAMReportLayout>
         <ButtonBase onClick={onClickClose} style={{ marginLeft: 'auto' }} data-testid="Case-CloseCross">
           <HiddenText>
@@ -67,7 +67,7 @@ const CSAMReportStatusScreen: React.FC<Props> = ({ reportStatus, onClickClose, o
               <Box marginRight="5%">
                 <ReportCodeText>#{reportStatus.responseData}</ReportCodeText>
               </Box>
-              <CopyCodeButton secondary roundCorners onClick={onCopyCode}>
+              <CopyCodeButton secondary roundCorners onClick={onCopyCode} data-testid="CSAMReport-CopyCodeButton">
                 <Box marginRight="5px">
                   <CopyCodeButtonIcon width="20px" height="20px" />
                 </Box>
