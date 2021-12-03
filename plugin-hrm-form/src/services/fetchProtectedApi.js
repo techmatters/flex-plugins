@@ -28,7 +28,8 @@ const fetchProtectedApi = async (endPoint, body = {}) => {
   const responseJson = await response.json();
 
   if (!response.ok) {
-    throw new Error(responseJson.message);
+    const option = responseJson.stack ? { cause: responseJson.stack } : null;
+    throw new Error(responseJson.message, option);
   }
 
   return responseJson;
