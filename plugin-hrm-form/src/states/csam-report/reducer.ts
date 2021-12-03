@@ -15,7 +15,7 @@ type CSAMReportState = {
   };
 };
 
-const newTaskEntry: TaskEntry = {
+export const newTaskEntry: TaskEntry = {
   form: { ...initialValues },
   reportStatus: {
     responseCode: '',
@@ -24,7 +24,7 @@ const newTaskEntry: TaskEntry = {
   },
 };
 
-const initialState: CSAMReportState = {
+export const initialState: CSAMReportState = {
   tasks: {},
 };
 

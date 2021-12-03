@@ -14,7 +14,7 @@ export const updateStatusAction = (reportStatus: t.CSAMReportStatus, taskId: str
   taskId,
 });
 
-export const clearCSAMReportAction = (taskId: string) => ({
+export const clearCSAMReportAction = (taskId: string): t.CSAMReportActionType => ({
   type: t.CLEAR_CSAM_REPORT,
   taskId,
 });
