@@ -4,7 +4,7 @@ import { Template } from '@twilio/flex-ui';
 import { format } from 'date-fns';
 
 import { Box, Column, Row } from '../../styles/HrmStyles';
-import { CSAMAttachmentText, CSAMAttachmentIcon } from '../../styles/CSAMReportForm';
+import { CSAMAttachmentText, CSAMAttachmentIcon } from '../../styles/CSAMReport';
 import type { CSAMReportEntry } from '../../types/types';
 
 type Props = {

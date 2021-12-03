@@ -6,7 +6,7 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import CSAMReportStatusScreen from './CSAMReportStatusScreen';
 import CSAMReportFormScreen from './CSAMReportFormScreen';
-import { CSAMReportContainer, CSAMReportLayout, CenterContent } from '../../styles/CSAMReportForm';
+import { CSAMReportContainer, CSAMReportLayout, CenterContent } from '../../styles/CSAMReport';
 import { FormItemDefinition } from '../common/forms/types';
 import { getInputType } from '../common/forms/formGenerators';
 import { definitionObject, keys, initialValues } from './CSAMReportFormDefinition';

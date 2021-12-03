@@ -18,7 +18,7 @@ import {
   ReportCodeText,
   ButtonText,
   CopyCodeButton,
-} from '../../styles/CSAMReportForm';
+} from '../../styles/CSAMReport';
 import type { CSAMReportStatus } from '../../states/csam-report/types';
 
 type Props = {

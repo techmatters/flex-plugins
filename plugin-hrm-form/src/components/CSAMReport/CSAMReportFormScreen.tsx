@@ -4,7 +4,7 @@ import { Template } from '@twilio/flex-ui';
 
 import ActionHeader from '../case/ActionHeader';
 import { BottomButtonBar, Box, StyledNextStepButton } from '../../styles/HrmStyles';
-import { CSAMReportContainer, CSAMReportLayout, BoldDescriptionText, RegularText } from '../../styles/CSAMReportForm';
+import { CSAMReportContainer, CSAMReportLayout, BoldDescriptionText, RegularText } from '../../styles/CSAMReport';
 import { definitionObject } from './CSAMReportFormDefinition';
 
 type Props = {
