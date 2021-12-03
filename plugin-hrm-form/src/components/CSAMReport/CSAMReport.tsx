@@ -69,20 +69,23 @@ export const CSAMReportScreen: React.FC<Props> = ({
     };
 
     const generateInput = (e: FormItemDefinition, index: number) => {
+      const generatedInput = getInputType([], onUpdateInput)(e);
       const initialValue = initialForm[e.name] === undefined ? initialValues[e.name] : initialForm[e.name];
 
-      if (index === 0) return getInputType([], onUpdateInput)(e)(initialValue, firstElementRef);
-
-      return getInputType([], onUpdateInput)(e)(initialValue);
+      return index === 0 ? generatedInput(initialValue, firstElementRef) : generatedInput(initialValue);
     };
 
-    return Object.entries(definitionObject).reduce<{ [k in keyof typeof definitionObject]: JSX.Element }>(
-      (accum, [k, e], index) => ({
-        ...accum,
-        [k]: generateInput(e, index),
-      }),
-      null,
-    );
+    // Function used to generate the inputs with a reduce
+    const reducerFunc = (
+      accum: { [k in keyof typeof definitionObject]: JSX.Element },
+      [k, e]: [string, FormItemDefinition],
+      index: number,
+    ) => ({
+      ...accum,
+      [k]: generateInput(e, index),
+    });
+
+    return Object.entries(definitionObject).reduce(reducerFunc, null);
   }, [firstElementRef, initialForm, methods, taskSid, updateFormAction]);
 
   if (routing.route !== 'csam-report') return null;
