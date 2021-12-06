@@ -28,10 +28,10 @@ const AddOfflineContactButton: React.FC<Props> = ({
 
   return (
     <AddTaskButton
-      data-fs-id="Task-AddOfflineContact-Button"
       onClick={onClick}
       disabled={isAddingOfflineContact}
       label="OfflineContactButtonText"
+      data-fs-id="Task-AddOfflineContact-Button"
     />
   );
 };

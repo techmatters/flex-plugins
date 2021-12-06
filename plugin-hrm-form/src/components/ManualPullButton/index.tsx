@@ -59,6 +59,7 @@ const ManualPullButton: React.FC<Props> = ({ queuesStatusState, chatChannelCapac
       disabled={disabled}
       isLoading={isWaitingNewTask}
       label="ManualPullButtonText"
+      data-fs-id="Task-AnotherTask-Button"
     />
   );
 };
