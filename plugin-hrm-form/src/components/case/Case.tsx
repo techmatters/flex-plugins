@@ -540,7 +540,7 @@ const Case: React.FC<Props> = props => {
                     <Template code="BottomBar-Cancel" />
                   </StyledNextStepButton>
                 </Box>
-                <StyledNextStepButton roundCorners onClick={handleSaveAndEnd}>
+                <StyledNextStepButton roundCorners onClick={handleSaveAndEnd} data-fs-id="Case-SaveAndEnd-Button">
                   <Template code="BottomBar-SaveAndEnd" />
                 </StyledNextStepButton>
               </>

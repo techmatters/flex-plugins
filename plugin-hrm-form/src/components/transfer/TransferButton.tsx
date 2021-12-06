@@ -13,6 +13,7 @@ const TransferButton: React.FC<Props> = ({ theme }) => {
       color={theme.colors.secondaryButtonTextColor}
       background={theme.colors.secondaryButtonColor}
       onClick={() => Actions.invokeAction('ShowDirectory')}
+      data-fs-id="Task-Transfer-Button"
     >
       <Template code="Transfer-TransferButton" />
     </TransferStyledButton>

@@ -26,7 +26,7 @@ const AddOfflineContactButton: React.FC<Props> = ({
     await reRenderAgentDesktop();
   };
 
-  return <AddTaskButton onClick={onClick} disabled={isAddingOfflineContact} label="OfflineContactButtonText" />;
+  return <AddTaskButton data-fs-id="Task-AddOfflineContact-Button" onClick={onClick} disabled={isAddingOfflineContact} label="OfflineContactButtonText" />;
 };
 
 AddOfflineContactButton.displayName = 'AddOfflineContactButton';

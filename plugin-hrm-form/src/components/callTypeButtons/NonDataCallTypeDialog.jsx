@@ -28,7 +28,7 @@ const NonDataCallTypeDialog = ({ isOpen, isCallTask, isInWrapupMode, handleConfi
         </CloseTaskDialogText>
         <Box marginBottom="32px">
           <Row>
-            <ConfirmButton autoFocus tabIndex={1} onClick={handleConfirm}>
+            <ConfirmButton data-fs-id="Task-EndCallOrChat-Button" autoFocus tabIndex={1} onClick={handleConfirm}>
               {/* eslint-disable react/jsx-max-depth,no-nested-ternary */}
               <Template
                 code={isInWrapupMode ? 'CallType-CloseContact' : isCallTask ? 'TaskHeaderEndCall' : 'TaskHeaderEndChat'}

@@ -122,11 +122,13 @@ class BottomBar extends Component {
             Icon={FolderOpenIcon}
             text={<Template code="BottomBar-OpenNewCase" />}
             onClick={handleSubmitIfValid(this.handleOpenNewCase, this.onError)}
+            data-fs-id="Contact-OpenNewCase-Button"
           />
           <MenuItem
             Icon={AddIcon}
             text={<Template code="BottomBar-AddToExistingCase" />}
             onClick={this.handleMockedMessage}
+            data-fs-id="Contact-AddToExistingCase-Button"
           />
         </Menu>
 
@@ -155,6 +157,7 @@ class BottomBar extends Component {
                     secondary
                     onClick={this.toggleCaseMenu}
                     disabled={isSubmitting}
+                    data-fs-id="ContactForm-SaveAndAddToCase"
                   >
                     <FolderIcon style={{ fontSize: '16px', marginRight: '10px' }} />
                     <Template code="BottomBar-SaveAndAddToCase" />
@@ -165,6 +168,7 @@ class BottomBar extends Component {
                 roundCorners={true}
                 onClick={handleSubmitIfValid(this.handleSubmit, this.onError)}
                 disabled={isSubmitting}
+                data-fs-id="Contact-SaveContact-Button"
               >
                 {isSubmitting ? <CircularProgress size={12} /> : <Template code="BottomBar-SaveContact" />}
               </StyledNextStepButton>
