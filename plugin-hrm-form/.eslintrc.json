@@ -17,7 +17,6 @@
     "no-alert": "off",
     "import/no-extraneous-dependencies": "off",
     "jsx-a11y/tabindex-no-positive": "off",
-    "sonarjs/no-duplicate-string": "off",
-    "prettier/prettier": ["error", {"endOfLine": "auto"}]
+    "sonarjs/no-duplicate-string": "off"
   }
 }
