@@ -4,7 +4,7 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
-import { useForm, FormProvider } from 'react-hook-form';
+import { useForm, FormProvider, SubmitErrorHandler, FieldValues } from 'react-hook-form';
 import { v4 as uuidV4 } from 'uuid';
 
 import {
@@ -36,6 +36,7 @@ import {
 import type { DefinitionVersion } from '../common/forms/types';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 import useFocus from '../../utils/useFocus';
+import { recordFormValidationError, recordingErrorHandler } from '../../fullStory';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
@@ -174,9 +175,11 @@ const AddDocument: React.FC<Props> = ({
     onClickClose();
   }
   const { strings } = getConfig();
-  function onError() {
+
+  const onError: SubmitErrorHandler<FieldValues> = recordingErrorHandler('Case: Add Document', () => {
     window.alert(strings['Error-Form']);
-  }
+  });
+
   return (
     <FormProvider {...methods}>
       <CaseActionLayout>

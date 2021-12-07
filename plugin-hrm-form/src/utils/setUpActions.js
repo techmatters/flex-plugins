@@ -19,6 +19,7 @@ import callTypes, { transferModes } from '../states/DomainConstants';
 import * as TransferHelpers from './transfer';
 import { saveFormSharedState, loadFormSharedState } from './sharedState';
 import { prepopulateForm } from './prepopulateForm';
+import { recordEvent } from '../fullStory';
 
 /**
  * @param {string} version
@@ -221,6 +222,7 @@ export const customTransferTask = setupObject => async (payload, original) => {
    * We shortcut the rest of the function to save extra time and unnecessary visual changes.
    */
   if (!TaskHelper.isCallTask(payload.task) && mode === transferModes.warm) {
+    recordEvent('Transfer Warm Chat Blocked', {});
     window.alert(Manager.getInstance().strings['Transfer-ChatWarmNotAllowed']);
     return () => undefined; // Not calling original(payload) prevents the additional "Task cannot be transferred" notification
   }
