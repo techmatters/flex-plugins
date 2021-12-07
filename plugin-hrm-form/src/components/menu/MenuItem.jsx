@@ -5,8 +5,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 
 import { StyledMenuItem, StyledListItemText, NoIcon } from '../../styles/menu';
 
-const MenuItem = ({ Icon, text, red, onClick, theme }) => (
-  <StyledMenuItem tabIndex={0} onClick={onClick}>
+const MenuItem = ({ Icon, text, red, onClick, theme, ...rest }) => (
+  <StyledMenuItem tabIndex={0} onClick={onClick} {...rest}>
     <ListItemIcon>
       {Icon ? <Icon nativeColor={red ? theme.colors.declineColor : theme.colors.defaultButtonColor} /> : <NoIcon />}
     </ListItemIcon>
