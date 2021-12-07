@@ -6,6 +6,19 @@ export const defaultLanguage = 'en-US';
 const defaultTranslation = require(`../translations/${defaultLanguage}/flexUI.json`);
 const defaultMessages = require(`../translations/${defaultLanguage}/messages.json`);
 
+const ptBRTranslation = require(`../translations/pt-BR/flexUI.json`);
+const ptBRMessages = require(`../translations/pt-BR/messages.json`);
+
+const bundledTranslations = {
+  [defaultLanguage]: defaultTranslation,
+  'pt-BR': ptBRTranslation,
+};
+
+const bundledMessages = {
+  [defaultLanguage]: defaultMessages,
+  'pt-BR': ptBRMessages,
+};
+
 const translationErrorMsg = 'Could not translate, using default';
 
 /**
@@ -15,8 +28,9 @@ const translationErrorMsg = 'Could not translate, using default';
 export const initTranslateUI = localizationConfig => async language => {
   const { twilioStrings, setNewStrings, afterNewStrings } = localizationConfig;
   try {
-    if (language === defaultLanguage) {
-      setNewStrings({ ...twilioStrings, ...defaultTranslation });
+    if (language in bundledTranslations) {
+      const translation = bundledTranslations[language];
+      setNewStrings({ ...twilioStrings, ...translation });
     } else {
       const body = { language };
       const translationJSON = await getTranslation(body);
@@ -39,16 +53,17 @@ export const initTranslateUI = localizationConfig => async language => {
  */
 export const getMessage = messageKey => async language => {
   try {
-    if (language && language !== defaultLanguage) {
-      const body = { language };
-      const messagesJSON = await getMessages(body);
-      const messages = await (typeof messagesJSON === 'string'
-        ? JSON.parse(messagesJSON)
-        : Promise.resolve(messagesJSON));
-      return messages[messageKey] ? messages[messageKey] : defaultMessages[messageKey];
-    }
+    if (!language) return defaultMessages[messageKey];
 
-    return defaultMessages[messageKey];
+    if (language in bundledMessages) return bundledMessages[language][messageKey] || defaultMessages[messageKey];
+
+    // If no translation for this language, try to fetch it
+    const body = { language };
+    const messagesJSON = await getMessages(body);
+    const messages = await (typeof messagesJSON === 'string'
+      ? JSON.parse(messagesJSON)
+      : Promise.resolve(messagesJSON));
+    return messages[messageKey] ? messages[messageKey] : defaultMessages[messageKey];
   } catch (err) {
     window.alert(translationErrorMsg);
     console.error(translationErrorMsg, err);
