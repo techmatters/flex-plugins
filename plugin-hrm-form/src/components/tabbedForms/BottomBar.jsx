@@ -157,7 +157,7 @@ class BottomBar extends Component {
                     secondary
                     onClick={this.toggleCaseMenu}
                     disabled={isSubmitting}
-                    data-fs-id="ContactForm-SaveAndAddToCase"
+                    data-fs-id="Contact-SaveAndAddToCase-Button"
                   >
                     <FolderIcon style={{ fontSize: '16px', marginRight: '10px' }} />
                     <Template code="BottomBar-SaveAndAddToCase" />

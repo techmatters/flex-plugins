@@ -19,7 +19,7 @@ type Props = {
   id?: string;
 };
 
-const AddTaskButton: React.FC<Props> = ({ onClick, disabled, label, isLoading, id }) => {
+const AddTaskButton: React.FC<Props> = ({ onClick, disabled, label, isLoading, id, ...rest }) => {
   return (
     <AddTaskButtonBase
       id={id}
@@ -27,6 +27,7 @@ const AddTaskButton: React.FC<Props> = ({ onClick, disabled, label, isLoading, i
       className="Twilio-TaskListBaseItem-UpperArea css-xz5ie1"
       disabled={disabled}
       data-testid="AddTaskButton"
+      {...rest}
     >
       <AddTaskIconContainer>
         <AddTaskIcon icon="Add" />
