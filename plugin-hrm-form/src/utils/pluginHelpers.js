@@ -63,7 +63,7 @@ export const getMessage = messageKey => async language => {
     const messages = await (typeof messagesJSON === 'string'
       ? JSON.parse(messagesJSON)
       : Promise.resolve(messagesJSON));
-    return messages[messageKey] ? messages[messageKey] : defaultMessages[messageKey];
+    return messages[messageKey] || defaultMessages[messageKey];
   } catch (err) {
     window.alert(translationErrorMsg);
     console.error(translationErrorMsg, err);
