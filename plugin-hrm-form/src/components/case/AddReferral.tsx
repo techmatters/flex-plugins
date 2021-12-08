@@ -26,7 +26,7 @@ import { transformValues } from '../../services/ContactService';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 import { getConfig } from '../../HrmFormPlugin';
 import useFocus from '../../utils/useFocus';
-import { recordFormValidationError, recordingErrorHandler } from '../../fullStory';
+import { recordingErrorHandler } from '../../fullStory';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;

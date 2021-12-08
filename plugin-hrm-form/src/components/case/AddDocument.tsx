@@ -36,7 +36,7 @@ import {
 import type { DefinitionVersion } from '../common/forms/types';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 import useFocus from '../../utils/useFocus';
-import { recordFormValidationError, recordingErrorHandler } from '../../fullStory';
+import { recordingErrorHandler } from '../../fullStory';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
