@@ -4,7 +4,7 @@ const { defaults } = require('jest-config');
 module.exports = config => {
   config = config || { ...defaults, rootDir: '.' };
   config.transformIgnorePatterns = ['/node_modules/(?!wavesurfer.js)'];
-  config.setupFiles = ['./src/___tests__/setup.js']
+  config.setupFiles = ['./src/setupTests.js'];
 
   return config;
 };
