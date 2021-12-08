@@ -5,14 +5,17 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 
 import { StyledMenuItem, StyledListItemText, NoIcon } from '../../styles/menu';
 
-const MenuItem = ({ Icon, text, red, onClick, theme, ...rest }) => (
-  <StyledMenuItem tabIndex={0} onClick={onClick} {...rest}>
-    <ListItemIcon>
-      {Icon ? <Icon nativeColor={red ? theme.colors.declineColor : theme.colors.defaultButtonColor} /> : <NoIcon />}
-    </ListItemIcon>
-    <StyledListItemText primary={text} red={red} />
-  </StyledMenuItem>
-);
+const MenuItem = props => {
+  const { Icon, text, red, onClick, theme } = props;
+  return (
+    <StyledMenuItem tabIndex={0} onClick={onClick} data-fs-id={props['data-fs-id']}>
+      <ListItemIcon>
+        {Icon ? <Icon nativeColor={red ? theme.colors.declineColor : theme.colors.defaultButtonColor} /> : <NoIcon />}
+      </ListItemIcon>
+      <StyledListItemText primary={text} red={red} />
+    </StyledMenuItem>
+  );
+};
 
 MenuItem.displayName = 'MenuItem';
 MenuItem.propTypes = {
@@ -26,11 +29,13 @@ MenuItem.propTypes = {
       defaultButtonColor: PropTypes.string,
     }),
   }).isRequired,
+  'data-fs-id': PropTypes.string,
 };
 MenuItem.defaultProps = {
   Icon: null,
   red: false,
   onClick: () => null,
+  'data-fs-id': null,
 };
 
 export default withTheme(MenuItem);

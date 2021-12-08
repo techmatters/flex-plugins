@@ -272,7 +272,7 @@ const Case: React.FC<Props> = props => {
   const onClickAddDocument = () => {
     props.updateTempInfo({ screen: 'add-document', info: null }, props.task.taskSid);
     props.changeRoute({ route, subroute: 'add-document' }, props.task.taskSid);
-  };
+  };MeniuI
 
   const onClickViewHousehold = (household: HouseholdEntry) => {
     props.updateTempInfo({ screen: 'view-household', info: household }, props.task.taskSid);
@@ -529,6 +529,7 @@ const Case: React.FC<Props> = props => {
                 Icon={CancelIcon}
                 text={<Template code="BottomBar-CancelNewCaseAndClose" />}
                 onClick={handleCancelNewCaseAndClose}
+                data-fs-id="Case-SaveAndEnd-Button"
               />
             </Menu>
           </CaseContainer>
