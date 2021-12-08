@@ -2,9 +2,14 @@
 const { defaults } = require('jest-config');
 
 module.exports = config => {
-  config = config || { ...defaults, rootDir: '.' };
-  config.transformIgnorePatterns = ['/node_modules/(?!wavesurfer.js)'];
-  config.setupFiles = ['./src/setupTests.js'];
+  config = config || {
+    ...defaults,
+    rootDir: '.',
+    transformIgnorePatterns: ['/node_modules/(?!wavesurfer.js)'],
+    setupFiles: ['./src/setupTests.js'],
+    testEnvironment: 'jsdom',
+    testTimeout: 2 * 60 * 1000, // 2 minutes in ms
+  };
 
   return config;
 };
