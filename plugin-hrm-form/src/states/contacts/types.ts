@@ -1,5 +1,6 @@
 import type { TaskEntry } from './reducer';
 import { DataCallTypes } from '../DomainConstants';
+import { CSAMReportEntry } from '../../types/types';
 
 // Action types
 export const UPDATE_FORM = 'UPDATE_FORM';
@@ -10,6 +11,7 @@ export const HANDLE_SELECT_SEARCH_RESULT = 'HANDLE_SELECT_SEARCH_RESULT';
 export const PREPOPULATE_FORM = 'PREPOPULATE_FORM';
 export const RESTORE_ENTIRE_FORM = 'RESTORE_ENTIRE_FORM';
 export const UPDATE_HELPLINE = 'UPDATE_HELPLINE';
+export const ADD_CSAM_REPORT_ENTRY = 'contacts/ADD_CSAM_REPORT_ENTRY';
 
 type UpdateFormAction = {
   type: typeof UPDATE_FORM;
@@ -54,6 +56,12 @@ type UpdateHelpline = {
   taskId: string;
 };
 
+type AddCSAMReportEntry = {
+  type: typeof ADD_CSAM_REPORT_ENTRY;
+  csamReportEntry: CSAMReportEntry;
+  taskId: string;
+};
+
 export type ContactsActionType =
   | UpdateFormAction
   | SaveEndMillisAction
@@ -61,4 +69,5 @@ export type ContactsActionType =
   | HandleExpandCategoryAction
   | PrePopulateFormAction
   | RestoreEntireFormAction
-  | UpdateHelpline;
+  | UpdateHelpline
+  | AddCSAMReportEntry;
