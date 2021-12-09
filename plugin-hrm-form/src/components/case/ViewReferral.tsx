@@ -5,8 +5,7 @@ import { Template } from '@twilio/flex-ui';
 
 import type { DefinitionVersion } from '../common/forms/types';
 import { Container, Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
-import { namespace, connectedCaseBase, configurationBase, routingBase, RootState } from '../../states';
-import * as RoutingActions from '../../states/routing/actions';
+import { namespace, connectedCaseBase, configurationBase, RootState } from '../../states';
 import { CaseLayout } from '../../styles/case';
 import ActionHeader from './ActionHeader';
 import SectionEntry from '../SectionEntry';
@@ -23,16 +22,11 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const caseState = state[namespace][connectedCaseBase];
   const { temporaryCaseInfo } = caseState.tasks[ownProps.task.taskSid];
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
-  const { route } = state[namespace][routingBase].tasks[ownProps.task.taskSid];
 
-  return { tempInfo: temporaryCaseInfo, counselorsHash, route };
+  return { tempInfo: temporaryCaseInfo, counselorsHash };
 };
 
-const mapDispatchToProps = {
-  changeRoute: RoutingActions.changeRoute,
-};
-
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 
 const ViewReferral: React.FC<Props> = ({ onClickClose, tempInfo, counselorsHash, definitionVersion }) => {
   if (!tempInfo || tempInfo.screen !== 'view-referral') return null;
@@ -75,4 +69,4 @@ const ViewReferral: React.FC<Props> = ({ onClickClose, tempInfo, counselorsHash,
 ViewReferral.displayName = 'ViewReferral';
 
 export const UnconnectedViewReferral = ViewReferral;
-export default connect(mapStateToProps, mapDispatchToProps)(ViewReferral);
+export default connect(mapStateToProps, null)(ViewReferral);
