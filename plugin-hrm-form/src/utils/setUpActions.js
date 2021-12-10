@@ -19,7 +19,6 @@ import callTypes, { transferModes } from '../states/DomainConstants';
 import * as TransferHelpers from './transfer';
 import { saveFormSharedState, loadFormSharedState } from './sharedState';
 import { prepopulateForm } from './prepopulateForm';
-import { defaultLanguage } from './pluginHelpers';
 
 /**
  * @param {string} version
@@ -133,7 +132,8 @@ const handleTransferredTask = async task => {
   await restoreFormIfTransfer(task);
 };
 
-const getTaskLanguage = ({ helplineLanguage }) => ({ task }) => task.attributes.language || helplineLanguage;
+const getTaskLanguage = ({ helplineLanguage, configuredLanguage }) => ({ task }) =>
+  task.attributes.language || helplineLanguage || configuredLanguage;
 
 /**
  * @param {string} messageKey

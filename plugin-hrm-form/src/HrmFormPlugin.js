@@ -32,13 +32,13 @@ export const getConfig = () => {
   const logoUrl = manager.serviceConfiguration.attributes.logo_url;
   const chatServiceSid = manager.serviceConfiguration.chat_service_instance_sid;
   const workerSid = manager.workerClient.sid;
-  const { helpline, counselorLanguage } = manager.workerClient.attributes;
+  const { helpline, counselorLanguage, helplineLanguage } = manager.workerClient.attributes;
   const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
   const { identity, token } = manager.user;
   const counselorName = manager.workerClient.attributes.full_name;
   const isSupervisor = manager.workerClient.attributes.roles.includes('supervisor');
   const {
-    helplineLanguage,
+    configuredLanguage,
     definitionVersion,
     pdfImagesSource,
     multipleOfficeSupport,
@@ -60,6 +60,7 @@ export const getConfig = () => {
     currentWorkspace,
     counselorLanguage,
     helplineLanguage,
+    configuredLanguage,
     identity,
     token,
     counselorName,
@@ -151,7 +152,7 @@ const setUpTransfers = setupObject => {
 const setUpLocalization = config => {
   const manager = Flex.Manager.getInstance();
 
-  const { counselorLanguage, helplineLanguage } = config;
+  const { counselorLanguage, helplineLanguage, configuredLanguage } = config;
 
   const twilioStrings = { ...manager.strings }; // save the originals
   const setNewStrings = newStrings => (manager.strings = { ...manager.strings, ...newStrings });
@@ -160,7 +161,7 @@ const setUpLocalization = config => {
     Flex.Actions.invokeAction('NavigateToView', { viewName: manager.store.getState().flex.view.activeView }); // force a re-render
   };
   const localizationConfig = { twilioStrings, setNewStrings, afterNewStrings };
-  const initialLanguage = counselorLanguage || helplineLanguage;
+  const initialLanguage = counselorLanguage || helplineLanguage || configuredLanguage;
 
   return initLocalization(localizationConfig, initialLanguage);
 };
