@@ -149,19 +149,28 @@ const sendMessageOfKey = messageKey => setupObject => async payload => {
   });
 };
 
+let customGoodbyeMessage;
+export const setCustomGoodbyeMessage = message => (customGoodbyeMessage = message);
+
 /**
  * @param {string} messageKey
  * @returns {(setupObject: ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }) => import('@twilio/flex-ui').ActionFunction}
  */
-const sendSystemMessageOfKey = messageKey => setupObject => async payload => {
+const sendSystemMessageOfKeyOrCustom = messageKey => setupObject => async payload => {
+  if (customGoodbyeMessage) {
+    const message = customGoodbyeMessage;
+    customGoodbyeMessage = null; // Clear customGoodbyeMessage
+    return sendSystemMessage({ taskSid: payload.task.taskSid, message, from: 'Bot' });
+  }
+
   const { getMessage } = setupObject;
   const taskLanguage = getTaskLanguage(setupObject)(payload);
   const message = await getMessage(messageKey)(taskLanguage);
-  await sendSystemMessage({ taskSid: payload.task.taskSid, message, from: 'Bot' });
+  return sendSystemMessage({ taskSid: payload.task.taskSid, message, from: 'Bot' });
 };
 
 const sendWelcomeMessage = sendMessageOfKey('WelcomeMsg');
-const sendGoodbyeMessage = sendSystemMessageOfKey('GoodbyeMsg');
+const sendGoodbyeMessage = sendSystemMessageOfKeyOrCustom('GoodbyeMsg');
 
 /**
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject

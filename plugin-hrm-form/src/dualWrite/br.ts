@@ -1,6 +1,9 @@
-import { Actions as FlexActions, ITask } from '@twilio/flex-ui';
+import { ITask } from '@twilio/flex-ui';
 
 import { saveContactToSaferNet } from '../services/ServerlessService';
+import { getConfig } from '../HrmFormPlugin';
+import { getMessage } from '../utils/pluginHelpers';
+import { setCustomGoodbyeMessage } from '../utils/setUpActions';
 
 const saveContact = async (task: ITask, payload: any) => {
   const { channelSid } = task.attributes;
@@ -8,11 +11,11 @@ const saveContact = async (task: ITask, payload: any) => {
 
   const postSurveyUrl = await saveContactToSaferNet(payload);
 
-  // TODO: Pre-pend something like 'Please answer the following survey: '
-  await FlexActions.invokeAction('SendMessage', {
-    body: postSurveyUrl,
-    channelSid,
-  });
+  const { helplineLanguage } = getConfig();
+  const language = task.attributes.language || helplineLanguage;
+  const message = await getMessage('SaferNet-CustomGoodbyeMsg')(language);
+
+  setCustomGoodbyeMessage(`${message} ${postSurveyUrl}`);
 };
 
 export default saveContact;
