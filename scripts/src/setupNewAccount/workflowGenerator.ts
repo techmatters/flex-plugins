@@ -31,9 +31,9 @@ type WorkflowConfig = {
 };
 
 export const checkWorkflowInSync = async (remoteUrl: string, templatePath: string) => {
-  const aseloDevConfig = {
-    environment: 'Development',
-    shortEnvironment: 'DEV',
+  const aseloBetaConfig = {
+    environment: 'Staging',
+    shortEnvironment: 'STG',
     helpline: 'Aselo',
     shortHelpline: 'AS',
   };
@@ -41,7 +41,7 @@ export const checkWorkflowInSync = async (remoteUrl: string, templatePath: strin
   const response = await fetch(remoteUrl);
   const expected = await response.text();
 
-  const generated = generateWorkflowContent(aseloDevConfig, templatePath);
+  const generated = generateWorkflowContent(aseloBetaConfig, templatePath);
 
   if (expected !== generated)
     throw new Error(

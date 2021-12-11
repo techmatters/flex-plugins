@@ -13,10 +13,25 @@
  *  DATADOG_ACCESS_TOKEN=<Datadog Access Token>
  */
 import twilio from 'twilio';
+import { KeyInstance } from 'twilio/lib/rest/api/v2010/account/key';
+import { ServiceInstance } from 'twilio/lib/rest/sync/v1/service';
+import { WorkflowInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/workflow';
+import { TaskQueueInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/taskQueue';
+import { TaskChannelInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/taskChannel';
 import { saveSSMParameter } from '../helpers/ssm';
 import { createS3Bucket } from '../helpers/s3';
 import { logError, logSuccess, logWarning } from '../helpers/log';
 import { ScriptsInput } from './types';
+import { removeResource, removeWorkspaceResource } from './removeTwilioResource';
+
+const PRE_CHATBOT_UNIQUE_NAME = 'demo_chatbot';
+const POST_CHATBOT_UNIQUE_NAME = 'post_survey_bot';
+
+const WORKFLOW_FRIENDLY_NAME = 'Master Workflow';
+const SYNC_SERVICE_FRIENDLY_NAME = 'Shared State Service';
+const HRM_API_KEY_FRIENDLY_NAME = 'hrm-static-key';
+
+const SURVEY_RESOURCE_FRIENDLY_NAME = 'Survey';
 
 const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
@@ -131,9 +146,15 @@ const saveStateKeyToSSM = (key: keyof DynamicState) => async (state: State) => {
   const description = getSSMDescriptionFunction[key](state);
   const tags = getSSMTags(state);
 
-  await saveSSMParameter(name, value, description, tags);
+  try {
+    await saveSSMParameter(name, value, description, tags);
 
-  logSuccess(`AWS Parameter Store: Succesfully saved ${name}`);
+    logSuccess(`AWS Parameter Store: Successfully saved ${name}`);
+  } catch (error) {
+    if ((<any>error).code === 'ParameterAlreadyExists') {
+      logWarning(`Parameter ${key} already exists, moving on.`);
+    } else throw error;
+  }
   return state;
 };
 
@@ -185,7 +206,7 @@ const createTaskQueue = async (state: State) => {
     targetWorkers: `helpline=='${state.helpline}'`,
   });
 
-  logSuccess(`Twilio resource: Succesfully created task queue ${q.sid}`);
+  logSuccess(`Twilio resource: Successfully created task queue ${q.sid}`);
   return { ...state, taskQueueSid: q.sid };
 };
 
@@ -194,7 +215,7 @@ const createWorkflow = async (state: State) => {
   if (!state.taskQueueSid) throw new Error('state.taskQueueSid missing at createWorkflow');
 
   const workflow = await client.taskrouter.workspaces(state.workspaceSid).workflows.create({
-    friendlyName: 'Master Workflow',
+    friendlyName: WORKFLOW_FRIENDLY_NAME,
     configuration: JSON.stringify({
       task_routing: {
         filters: [
@@ -214,30 +235,30 @@ const createWorkflow = async (state: State) => {
     }),
   });
 
-  logSuccess(`Twilio resource: Succesfully created workflow ${workflow.sid}`);
+  logSuccess(`Twilio resource: Successfully created workflow ${workflow.sid}`);
   return { ...state, workflowSid: workflow.sid };
 };
 
 const createSyncService = async (state: State) => {
   const service = await client.sync.services.create({
-    friendlyName: 'Shared State Service ',
+    friendlyName: SYNC_SERVICE_FRIENDLY_NAME,
   });
 
-  logSuccess(`Twilio resource: Succesfully created Sync service ${service.sid}`);
+  logSuccess(`Twilio resource: Successfully created Sync service ${service.sid}`);
   return { ...state, syncServiceSid: service.sid };
 };
 
 const createAPIKey = async (state: State) => {
-  const key = await client.newKeys.create({ friendlyName: 'Shared State Service' });
+  const key = await client.newKeys.create({ friendlyName: SYNC_SERVICE_FRIENDLY_NAME });
 
-  logSuccess(`Twilio resource: Succesfully created API key ${key.sid}`);
+  logSuccess(`Twilio resource: Successfully created API key ${key.sid}`);
   return { ...state, apiKeySid: key.sid, apiKeySecret: key.secret };
 };
 
 const createHrmStaticAPIKey = async (state: State) => {
   const key = await client.newKeys.create({ friendlyName: 'hrm-static-key' });
 
-  logSuccess(`Twilio resource: Succesfully created HRM static API key ${key.sid}`);
+  logSuccess(`Twilio resource: Successfully created HRM static API key ${key.sid}`);
   return { ...state, hrmStaticApiKeySid: key.sid, hrmStaticApiKeySecret: key.secret };
 };
 
@@ -247,7 +268,7 @@ const fetchChatService = async (state: State) => {
 
   if (!service)
     throw new Error(`Flex Chat Service not found in account ${process.env.TWILIO_ACCOUNT_SID}`);
-
+  logSuccess('Found chat service');
   return { ...state, chatServiceSid: service.sid };
 };
 
@@ -255,11 +276,11 @@ const createSurveyTaskQueue = async (state: State) => {
   if (!state.workspaceSid) throw new Error('state.workspaceSid missing at createSurveyTaskQueue');
 
   const q = await client.taskrouter.workspaces(state.workspaceSid).taskQueues.create({
-    friendlyName: 'Survey',
+    friendlyName: SURVEY_RESOURCE_FRIENDLY_NAME,
     targetWorkers: '1==0',
   });
 
-  logSuccess(`Twilio resource: Succesfully created survey task queue ${q.sid}`);
+  logSuccess(`Twilio resource: Successfully created survey task queue ${q.sid}`);
   return { ...state, surveyTaskQueueSid: q.sid };
 };
 
@@ -269,7 +290,7 @@ const createSurveyWorkflow = async (state: State) => {
     throw new Error('state.surveyTaskQueueSid missing at createSurveyWorkflow');
 
   const workflow = await client.taskrouter.workspaces(state.workspaceSid).workflows.create({
-    friendlyName: 'Survey',
+    friendlyName: SURVEY_RESOURCE_FRIENDLY_NAME,
     configuration: JSON.stringify({
       task_routing: {
         filters: [
@@ -296,7 +317,7 @@ const createSurveyTaskChannel = async (state: State) => {
 
   const taskChannel = await client.taskrouter.workspaces(state.workspaceSid).taskChannels.create({
     uniqueName: 'survey',
-    friendlyName: 'Survey',
+    friendlyName: SURVEY_RESOURCE_FRIENDLY_NAME,
   });
 
   logSuccess(`Twilio resource: Succesfully created survey task channel ${taskChannel.sid}`);
@@ -304,25 +325,58 @@ const createSurveyTaskChannel = async (state: State) => {
 };
 
 const createPreSurveyBot = async (state: State): Promise<State> => {
-  const preSurveyBot = await client.autopilot.assistants.create({
-    uniqueName: 'demo_chatbot',
-    friendlyName: 'A bot that collects a pre-survey',
-  });
+  try {
+    const preSurveyBot = await client.autopilot.assistants.create({
+      uniqueName: PRE_CHATBOT_UNIQUE_NAME,
+      friendlyName: 'A bot that collects a pre-survey',
+    });
 
-  logSuccess(`Twilio resource: Succesfully created pre survey chatbot ${preSurveyBot.sid}`);
-  return { ...state, preSurveyBotSid: preSurveyBot.sid };
+    logSuccess(`Twilio resource: Succesfully created pre survey chatbot ${preSurveyBot.sid}`);
+    return { ...state, preSurveyBotSid: preSurveyBot.sid };
+  } catch (error) {
+    if ((<Error>error).message?.includes(`UniqueName ${PRE_CHATBOT_UNIQUE_NAME} already exists`)) {
+      logWarning(`${PRE_CHATBOT_UNIQUE_NAME} already created, attempting to fetch details`);
+      const existingSid = (await client.autopilot.assistants(PRE_CHATBOT_UNIQUE_NAME).fetch())?.sid;
+      if (!existingSid) {
+        throw new Error(
+          `${PRE_CHATBOT_UNIQUE_NAME} not found despite create api claiming it already exists. Check the Twilio GUI to see if a bot with this name is scheduled for deletion.`,
+        );
+      }
+      return {
+        ...state,
+        preSurveyBotSid: existingSid,
+      };
+    }
+    throw error;
+  }
 };
 
 const createPostSurveyBot = async (state: State): Promise<State> => {
-  const postSurveyBot = await client.autopilot.assistants.create({
-    uniqueName: 'post_survey_bot',
-    friendlyName: 'A bot that collects a post-survey',
-  });
+  let sid: string;
+  try {
+    const postSurveyBot = await client.autopilot.assistants.create({
+      uniqueName: POST_CHATBOT_UNIQUE_NAME,
+      friendlyName: 'A bot that collects a post-survey',
+    });
+    sid = postSurveyBot.sid;
 
-  const postSurveyBotChatUrl = `https://channels.autopilot.twilio.com/v1/${process.env.TWILIO_ACCOUNT_SID}/${postSurveyBot.sid}/twilio-chat`;
-
-  logSuccess(`Twilio resource: Succesfully created post survey chatbot ${postSurveyBot.sid}`);
-  return { ...state, postSurveyBotSid: postSurveyBot.sid, postSurveyBotChatUrl };
+    logSuccess(`Twilio resource: Successfully created post survey chatbot ${postSurveyBot.sid}`);
+  } catch (error) {
+    if ((<Error>error).message?.includes(`UniqueName ${POST_CHATBOT_UNIQUE_NAME} already exists`)) {
+      logWarning(`${POST_CHATBOT_UNIQUE_NAME} already created`);
+      sid = (await client.autopilot.assistants(POST_CHATBOT_UNIQUE_NAME).fetch())?.sid;
+      if (!sid) {
+        throw new Error(
+          `${POST_CHATBOT_UNIQUE_NAME} not found despite create api claiming it already exists. Check the Twilio GUI to see if a bot with this name is scheduled for deletion.`,
+        );
+      }
+      logSuccess(`Twilio resource: Successfully located existing post survey chatbot ${sid}`);
+    } else {
+      throw error;
+    }
+  }
+  const postSurveyBotChatUrl = `https://channels.autopilot.twilio.com/v1/${process.env.TWILIO_ACCOUNT_SID}/${sid}/twilio-chat`;
+  return { ...state, postSurveyBotSid: sid, postSurveyBotChatUrl };
 };
 
 export const getDocsBucketName = (shortHelpline: string, environment: string): string =>
@@ -335,114 +389,99 @@ const createDocsBucket = async (state: State): Promise<State> => {
   logSuccess(`AWS S3 Bucket: Succesfully created ${bucketName}`);
   return { ...state, docsBucket: bucketName };
 };
-
 /**
  * Cleanup functions
  */
 const removeAPIKey = async (state: State) => {
   const { apiKeySid, apiKeySecret, ...rest } = state;
-  if (apiKeySid) {
-    await client.keys.get(apiKeySid).remove();
-    logWarning(`Twilio resource: Succesfully removed API key ${apiKeySid}`);
-  }
-
+  await removeResource<KeyInstance>('API key', SYNC_SERVICE_FRIENDLY_NAME, () => client.keys);
   return rest;
 };
 
 const removeHrmStaticAPIKey = async (state: State) => {
   const { hrmStaticApiKeySid, hrmStaticApiKeySecret, ...rest } = state;
-  if (hrmStaticApiKeySid) {
-    await client.keys.get(hrmStaticApiKeySid).remove();
-    logWarning(`Twilio resource: Succesfully removed HRM static API key ${hrmStaticApiKeySid}`);
-  }
-
+  await removeResource<KeyInstance>(
+    'HRM static API key',
+    HRM_API_KEY_FRIENDLY_NAME,
+    () => client.keys,
+  );
   return rest;
 };
 
 const removeSyncService = async (state: State) => {
   const { syncServiceSid, ...rest } = state;
-  if (syncServiceSid) {
-    await client.sync.services(syncServiceSid).remove();
-    logWarning(`Twilio resource: Succesfully removed Sync service ${syncServiceSid}`);
-  }
-
+  await removeResource<ServiceInstance>(
+    'Sync service',
+    SYNC_SERVICE_FRIENDLY_NAME,
+    () => client.sync.services,
+  );
   return rest;
 };
 
 const removeWorkflow = async (state: State) => {
   const { workflowSid, ...rest } = state;
-  if (!state.workspaceSid)
-    throw new Error(
-      'Flex Task Assignment Workspace not found while trying to remove the workflow.',
-    );
-
-  if (workflowSid) {
-    await client.taskrouter.workspaces(state.workspaceSid).workflows(workflowSid).remove();
-    logWarning(`Twilio resource: Succesfully removed workflow ${workflowSid}`);
-  }
-
+  await removeWorkspaceResource<WorkflowInstance>(
+    client,
+    state.workspaceSid,
+    'workflow',
+    WORKFLOW_FRIENDLY_NAME,
+    (workspace) => workspace.workflows,
+  );
   return rest;
 };
 
 const removeTaskQueue = async (state: State) => {
   const { taskQueueSid, ...rest } = state;
-  if (!state.workspaceSid)
-    throw new Error(
-      'Flex Task Assignment Workspace not found while trying to remove the task queue.',
-    );
 
-  if (taskQueueSid) {
-    await client.taskrouter.workspaces(state.workspaceSid).taskQueues(taskQueueSid).remove();
-    logWarning(`Twilio resource: Succesfully removed task queue ${taskQueueSid}`);
-  }
+  await removeWorkspaceResource<TaskQueueInstance>(
+    client,
+    state.workspaceSid,
+    'task queue',
+    state.helpline,
+    (workspace) => workspace.taskQueues,
+  );
 
   return rest;
 };
 
 const removeSurveyTaskChannel = async (state: State) => {
   const { surveyTaskChannelSid, ...rest } = state;
-  if (!state.workspaceSid)
-    throw new Error(
-      'Flex Task Assignment Workspace not found while trying to remove the survey task channel.',
-    );
 
-  if (surveyTaskChannelSid) {
-    await client.taskrouter
-      .workspaces(state.workspaceSid)
-      .taskChannels(surveyTaskChannelSid)
-      .remove();
-    logWarning(`Twilio resource: Succesfully removed survey task channel ${surveyTaskChannelSid}`);
-  }
+  await removeWorkspaceResource<TaskChannelInstance>(
+    client,
+    state.workspaceSid,
+    'survey task channel',
+    SURVEY_RESOURCE_FRIENDLY_NAME,
+    (workspace) => workspace.taskChannels,
+  );
 
   return rest;
 };
 
 const removeSurveyWorkflow = async (state: State) => {
   const { surveyWorkflowSid, ...rest } = state;
-  if (!state.workspaceSid)
-    throw new Error(
-      'Flex Task Assignment Workspace not found while trying to remove the survey workflow.',
-    );
 
-  if (surveyWorkflowSid) {
-    await client.taskrouter.workspaces(state.workspaceSid).workflows(surveyWorkflowSid).remove();
-    logWarning(`Twilio resource: Succesfully removed survey workflow ${surveyWorkflowSid}`);
-  }
+  await removeWorkspaceResource<WorkflowInstance>(
+    client,
+    state.workspaceSid,
+    'survey workflow',
+    SURVEY_RESOURCE_FRIENDLY_NAME,
+    (workspace) => workspace.workflows,
+  );
 
   return rest;
 };
 
 const removeSurveyTaskQueue = async (state: State) => {
   const { surveyTaskQueueSid, ...rest } = state;
-  if (!state.workspaceSid)
-    throw new Error(
-      'Flex Task Assignment Workspace not found while trying to remove the survey task queue.',
-    );
 
-  if (surveyTaskQueueSid) {
-    await client.taskrouter.workspaces(state.workspaceSid).taskQueues(surveyTaskQueueSid).remove();
-    logWarning(`Twilio resource: Succesfully removed survey task queue ${surveyTaskQueueSid}`);
-  }
+  await removeWorkspaceResource<TaskQueueInstance>(
+    client,
+    state.workspaceSid,
+    'survey task queue',
+    SURVEY_RESOURCE_FRIENDLY_NAME,
+    (workspace) => workspace.taskQueues,
+  );
 
   return rest;
 };
@@ -450,22 +489,26 @@ const removeSurveyTaskQueue = async (state: State) => {
 const removePreSurveyBot = async (state: State) => {
   const { preSurveyBotSid, ...rest } = state;
 
-  if (preSurveyBotSid) {
-    await client.autopilot.assistants('demo_chatbot').remove();
-    logWarning(`Twilio resource: Succesfully removed pre survey chatbot ${preSurveyBotSid}`);
-  }
+  logWarning(
+    `NOT deleting ${PRE_CHATBOT_UNIQUE_NAME}, as this takes 30 days to take effect. If you wish to remove the bot, use the twilio command line or GUI (${
+      preSurveyBotSid
+        ? `bot was created with sid:${preSurveyBotSid}`
+        : 'no bot was created this run anyway'
+    }).`,
+  );
 
   return rest;
 };
 
 const removePostSurveyBot = async (state: State) => {
   const { postSurveyBotSid, ...rest } = state;
-
-  if (postSurveyBotSid) {
-    await client.autopilot.assistants('post_survey_bot').remove();
-    logWarning(`Twilio resource: Succesfully removed post survey chatbot ${postSurveyBotSid}`);
-  }
-
+  logWarning(
+    `NOT deleting ${POST_CHATBOT_UNIQUE_NAME}, as this takes 30 days to take effect. If you wish to remove the bot, use the twilio command line or GUI (${
+      postSurveyBotSid
+        ? `bot was created with sid:${postSurveyBotSid}`
+        : 'no bot was created this run anyway'
+    }).`,
+  );
   return rest;
 };
 

@@ -15,6 +15,7 @@ To run the script:
 - Run `npm run setupNewAccount` on the root folder.
 
 To run this script we need to provide the following environment
+
 | Variable               | Description |
 |------------------------|-------------|
 | AWS_ACCESS_KEY_ID      | AWS script-user access key (or any other user with Parameter Store access) |
@@ -71,6 +72,7 @@ To run the script:
 - Run `npm run copyFlow` on the root folder.
 
 To run this script we need to provide the following environment
+
 | Variable               | Description |
 |------------------------|-------------|
 | TWILIO_ACCOUNT_SID_SOURCE | Twilio account sid of the account that contains the desired Studio Flow |

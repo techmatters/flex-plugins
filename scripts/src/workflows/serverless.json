@@ -1,5 +1,5 @@
 {
   "workflowTemplatePath": "templates/serverless-workflow-template",
   "fileName": "new-serverless-workflow.yml",
-  "remoteUrl": "https://raw.githubusercontent.com/techmatters/serverless/master/.github/workflows/aselo_development.yml"
+  "remoteUrl": "https://raw.githubusercontent.com/techmatters/serverless/master/.github/workflows/aselo_beta.yml"
 }
