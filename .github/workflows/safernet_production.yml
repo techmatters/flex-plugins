@@ -96,3 +96,12 @@ jobs:
          TWILIO_AUTH_TOKEN: ${{ secrets.BR_PROD_AUTH_TOKEN }}
         run: twilio flex:plugins:release --plugin plugin-hrm-form@latest
         working-directory: ./plugin-hrm-form
+      # Send Slack notifying success
+      - name: Slack Aselo channel
+        id: slack
+        uses: slackapi/slack-github-action@v1.14.0
+        with:
+          channel-id: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
+          slack-message: "`[FLEX]` Action ${{ github.workflow }} completed with SHA ${{ github.sha }}. Changelog is: ${{ github.event.inputs.changelog }} :rocket:."
+        env:
+          SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
