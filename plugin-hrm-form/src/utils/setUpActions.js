@@ -325,18 +325,21 @@ export const setUpPostSurvey = setupObject => {
 };
 
 /**
- * @type {import('@twilio/flex-ui').ActionFunction}
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
+ * @param {{ task: import('@twilio/flex-ui').ITask }} payload
  */
-const triggerPostSurvey = async payload => {
+const triggerPostSurvey = async (setupObject, payload) => {
   const { task } = payload;
 
-  // if (featureFlags.enable_post_survey) {
   if (TaskHelper.isChatBasedTask(task)) {
+    const { taskSid } = task;
     const channelSid = TaskHelper.getTaskChatChannelSid(task);
+    const taskLanguage = getTaskLanguage(setupObject)(payload);
 
-    await postSurveyInit({ channelSid, taskSid: task.taskSid });
+    const body = taskLanguage ? { channelSid, taskSid, taskLanguage } : { channelSid, taskSid };
+
+    await postSurveyInit(body);
   }
-  // }
 };
 
 /**
@@ -347,7 +350,7 @@ export const afterCompleteTask = setupObject => async payload => {
   const { featureFlags } = setupObject;
 
   if (featureFlags.enable_post_survey) {
-    await triggerPostSurvey(payload);
+    await triggerPostSurvey(setupObject, payload);
   }
 
   removeContactForm(payload);
