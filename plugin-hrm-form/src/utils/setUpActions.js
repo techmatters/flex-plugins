@@ -133,7 +133,7 @@ const handleTransferredTask = async task => {
   await restoreFormIfTransfer(task);
 };
 
-const getTaskLanguage = ({ helplineLanguage }) => ({ task }) => task.attributes.language || helplineLanguage;
+export const getTaskLanguage = ({ helplineLanguage }) => ({ task }) => task.attributes.language || helplineLanguage;
 
 /**
  * @param {string} messageKey
@@ -149,28 +149,29 @@ const sendMessageOfKey = messageKey => setupObject => async payload => {
   });
 };
 
-let customGoodbyeMessage;
-export const setCustomGoodbyeMessage = message => (customGoodbyeMessage = message);
-
 /**
  * @param {string} messageKey
  * @returns {(setupObject: ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }) => import('@twilio/flex-ui').ActionFunction}
  */
-const sendSystemMessageOfKeyOrCustom = messageKey => setupObject => async payload => {
-  if (customGoodbyeMessage) {
-    const message = customGoodbyeMessage;
-    customGoodbyeMessage = null; // Clear customGoodbyeMessage
-    return sendSystemMessage({ taskSid: payload.task.taskSid, message, from: 'Bot' });
-  }
-
+const sendSystemMessageOfKey = messageKey => setupObject => async payload => {
   const { getMessage } = setupObject;
   const taskLanguage = getTaskLanguage(setupObject)(payload);
   const message = await getMessage(messageKey)(taskLanguage);
-  return sendSystemMessage({ taskSid: payload.task.taskSid, message, from: 'Bot' });
+  await sendSystemMessage({ taskSid: payload.task.taskSid, message, from: 'Bot' });
+};
+
+let customGoodbyeMessage;
+export const setCustomGoodbyeMessage = message => (customGoodbyeMessage = message);
+
+const sendSystemCustomGoodyeMessage = () => () => async payload => {
+  const message = customGoodbyeMessage;
+  customGoodbyeMessage = null; // Clear customGoodbyeMessage
+  await sendSystemMessage({ taskSid: payload.task.taskSid, message, from: 'Bot' });
 };
 
 const sendWelcomeMessage = sendMessageOfKey('WelcomeMsg');
-const sendGoodbyeMessage = sendSystemMessageOfKeyOrCustom('GoodbyeMsg');
+const sendGoodbyeMessage = () =>
+  customGoodbyeMessage ? sendSystemCustomGoodyeMessage() : sendSystemMessageOfKey('GoodbyeMsg');
 
 /**
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
@@ -273,7 +274,7 @@ export const hangupCall = fromActionFunction(saveEndMillis);
 export const wrapupTask = setupObject =>
   fromActionFunction(async payload => {
     if (TaskHelper.isChatBasedTask(payload.task)) {
-      await sendGoodbyeMessage(setupObject)(payload);
+      await sendGoodbyeMessage()(setupObject)(payload);
     }
     await saveEndMillis(payload);
   });
