@@ -32,7 +32,7 @@ type WorkflowConfig = {
 
 export const checkWorkflowInSync = async (remoteUrl: string, templatePath: string) => {
   const aseloBetaConfig = {
-    environment: 'Staging',
+    environment: 'Beta',
     shortEnvironment: 'STG',
     helpline: 'Aselo',
     shortHelpline: 'AS',
@@ -43,10 +43,13 @@ export const checkWorkflowInSync = async (remoteUrl: string, templatePath: strin
 
   const generated = generateWorkflowContent(aseloBetaConfig, templatePath);
 
-  if (expected !== generated)
+  if (expected !== generated) {
+    writeFileSync('./expected_serverless_workflow.yml', expected);
+    writeFileSync('./actual_serverless_workflow.yml', generated);
     throw new Error(
-      'The generated workflow file differs from the one being used by Aselo Development.',
+      `The generated workflow file (length ${generated.length}) differs from the one being used by Aselo Beta (length ${expected.length}). Diff expected_serverless_workflow.yml and actual_serverless_workflow.yml to see exact differences.`,
     );
+  }
 };
 
 /**
