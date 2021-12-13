@@ -62,6 +62,11 @@
     "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
+    "name": "dateBirth",
+    "label": "Date of Birth",
+    "type": "date-input"
+  },
+  {
     "name": "permanentAddress",
     "label": "Permanent Address",
     "type": "input"
@@ -99,8 +104,19 @@
   {
     "name": "canContact",
     "label": "Can the child be contacted for further information?",
-    "type": "checkbox",
+    "type": "select",
+    "options": [
+      { "value": "", "label": "" },
+      { "value": "Yes", "label": "Yes" },
+      { "value": "No", "label": "No" },
+      { "value": "Unknown", "label": "Unknown" }
+    ],
     "required": { "value": true, "message": "RequiredFieldError" }
+  },
+  {
+    "name": "preferredTime",
+    "label": "Preferred Time of Contact",
+    "type": "input"
   },
   {
     "name": "preferredMethod",
@@ -125,15 +141,15 @@
     ]  
   },
   {
-    "name": "dateBirth",
-    "label": "Date of Birth",
-    "type": "date-input",
-    "required": { "value": true, "message": "RequiredFieldError" }
-  },
-  {
     "name": "validID",
     "label": "Valid ID available?",
-    "type": "checkbox",
+    "type": "select",
+    "options": [
+      { "value": "", "label": "" },
+      { "value": "Yes", "label": "Yes" },
+      { "value": "No", "label": "No" },
+      { "value": "Unknown", "label": "Unknown" }
+    ],
     "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
@@ -171,6 +187,7 @@
     "type": "select",
     "options": [
       { "value": "Unknown", "label": "" },
+      { "value": "Pre-School", "label": "Pre-School" },
       { "value": "Grade 1 to 4", "label": "Grade 1 to 4" },
       { "value": "Grade 5 to 7", "label": "Grade 5 to 7" },
       { "value": "Grade 8 to 9", "label": "Grade 8 to 9" },
@@ -187,8 +204,9 @@
       { "value": "Child Care Institution", "label": "Child Care Institution" },
       { "value": "Group residential facility/hostel", "label": "Group residential facility/Hostel" },
       { "value": "Homeless or marginally housed", "label": "Homeless or marginally housed" },
-      { "value": "Observation", "label": "Observation" },
+      { "value": "Observation Home", "label": "Observation Home" },
       { "value": "Living independently", "label": "Living independently" },
+      { "value": "Migrant Children", "label": "Migrant Children" },
       { "value": "With parent(s)", "label": "With parent(s)" },
       { "value": "With relatives", "label": "With relatives" },
       { "value": "Other", "label": "Other" }
@@ -212,7 +230,13 @@
   {
     "name": "imminentDanger",
     "label": "Child in imminent physical danger?",
-    "type": "mixed-checkbox",
+    "type": "select",
+    "options": [
+      { "value": "", "label": "" },
+      { "value": "Yes", "label": "Yes" },
+      { "value": "No", "label": "No" },
+      { "value": "Unknown", "label": "Unknown" }
+    ],
     "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
@@ -234,16 +258,6 @@
     "name": "LGBTQI+",
     "label": "LGBTQI+ / SOGIESC child",
     "type": "mixed-checkbox"
-  },
-  {
-    "name": "childOnTheMove",
-    "label": "Child on the move",
-    "type": "select",
-    "options": [
-      { "value": "Unknown", "label": "" },
-      { "value": "Involuntary", "label": "Involuntary" },
-      { "value": "Voluntary", "label": "Voluntary" }
-    ]
   },
   {
     "name": "region",
