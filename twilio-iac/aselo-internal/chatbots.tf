@@ -77,6 +77,108 @@ resource "twilio_autopilot_assistants_tasks_v1" "survey" {
   })
 }
 
+resource "twilio_autopilot_assistants_tasks_v1" "redirect_function" {
+  unique_name = "redirect_function"
+  assistant_sid = twilio_autopilot_assistants_v1.pre_survey.sid
+  actions = jsonencode({
+    "actions" : [
+      {
+        "redirect" : {
+          "method" : "POST",
+          "uri" : "https://serverless-9907-production.twil.io/autopilotRedirect"
+        }
+      }
+    ]
+  })
+}
+
+resource "twilio_autopilot_assistants_tasks_v1" "gender_why" {
+  unique_name = "gender_why"
+  assistant_sid = twilio_autopilot_assistants_v1.pre_survey.sid
+  actions = jsonencode({
+    "actions" : [
+      {
+        "remember" : { "at" : "gender_why" }
+      },
+      {
+        "collect" : {
+          "on_complete" : {
+            "redirect" : "task://redirect_function"
+          },
+          "name" : "collect_survey",
+          "questions" : [
+            {
+              "type" : "Gender",
+              "validate" : {
+                "on_failure" : {
+                  "messages" : [{ "say" : "Got it." }]
+                },
+                "max_attempts" : {
+                  "redirect" : "task://redirect_function",
+                  "num_attempts" : 1
+                },
+                "allowed_values" : {
+                  "list" : [
+                    "Boy",
+                    "Girl",
+                    "Non-binary"
+                  ]
+                }
+              },
+              "question" : "We ask for gender--whether you identify as a boy, girl, or neither--to help understand who is using our helpline. If you're uncomfortable answering, just say 'prefer not to answer.'",
+              "name" : "gender"
+            }
+          ]
+        }
+      }
+    ]
+  })
+}
+
+resource "twilio_autopilot_assistants_tasks_v1" "survey_start" {
+  unique_name = "survey_start"
+  assistant_sid = twilio_autopilot_assistants_v1.pre_survey.sid
+  actions = jsonencode({
+    "actions" : [
+      {
+        "remember" : { "at" : "survey_start" }
+      },
+      {
+        "collect" : {
+          "on_complete" : {
+            "redirect" : "task://survey"
+          },
+          "name" : "collect_survey",
+          "questions" : [
+            {
+              "type" : "Twilio.YES_NO",
+              "validate" : {
+                "on_failure" : {
+                  "repeat_question" : true,
+                  "messages" : [
+                    {
+                      "say" : "Sorry, I didn't understand that."
+                    },
+                    {
+                      "say" : "I still didn't get that."
+                    }
+                  ]
+                },
+                "max_attempts" : {
+                  "redirect" : "task://redirect_function",
+                  "num_attempts" : 2
+                }
+              },
+              "question" : "Are you calling about yourself? Please answer Yes or No.",
+              "name" : "about_self"
+            }
+          ]
+        }
+      }
+    ]
+  })
+}
+
 resource "twilio_autopilot_assistants_tasks_v1" "goodbye" {
   unique_name   = "goodbye"
   assistant_sid = twilio_autopilot_assistants_v1.pre_survey.sid
