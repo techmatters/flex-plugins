@@ -11,20 +11,8 @@
     },
     {
       "name": "relationshipToChild",
-      "type": "select",
-      "label": "Relationship to child",
-      "options": [
-        { "value": "", "label": "" },
-        { "value": "Guardian", "label": "Guardian" },
-        { "value": "Other adult known to child", "label": "Other adult known to child" },          
-        { "value": "Parent", "label": "Parent" },
-        { "value": "Peer", "label": "Peer" },
-        { "value": "Person in a position of responsibility", "label": "Person in a position of responsibility" },
-        { "value": "Sibling", "label": "Sibling" },
-        { "value": "Stranger", "label": "Stranger" },
-        { "value": "Other", "label": "Other" },
-        { "value": "Unknown", "label": "Unknown" }
-      ]
+      "type": "input",
+      "label": "Relationship to child"
     },
     {
       "name": "address",
@@ -50,7 +38,17 @@
       "name": "postalCode",
       "label": "Pin Code",
       "type": "input"
-    },    
+    },  
+    {
+      "name": "income",
+      "label": "Income",
+      "type": "input"
+    },
+    {
+      "name": "occupation",
+      "label": "Occupation",
+      "type": "input"
+    },
     {
       "name": "phone1",
       "label": "Phone #1",
