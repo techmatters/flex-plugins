@@ -43,10 +43,6 @@
         "type": "mixed-checkbox"
       },
       {
-        "name": "childOnTheMove",
-        "insights": ["customers", "email"]
-      },
-      {
         "name": "childWithDisability",
         "insights": ["customers", "customer_attribute_3"],
         "type": "mixed-checkbox"
