@@ -16,10 +16,6 @@
         "insights": ["customers", "zip"]
       },
       {
-        "name": "district",
-        "insights": ["customers", "customer_attribute_6"]
-      },
-      {
         "name": "gradeLevel",
         "insights": ["customers", "acquisition_date"]
       },
