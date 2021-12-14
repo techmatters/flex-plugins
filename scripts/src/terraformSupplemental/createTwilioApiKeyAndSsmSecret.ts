@@ -11,6 +11,12 @@ async function main() {
     { Key: 'Helpline', Value: process.argv[4] },
     { Key: 'Environment', Value: process.argv[5] },
   ]);
+  if (process.argv[6]) {
+    saveSSMParameter(process.argv[6], key.sid, process.argv[3] ?? `SID for key ${key.sid}`, [
+      { Key: 'Helpline', Value: process.argv[4] },
+      { Key: 'Environment', Value: process.argv[5] },
+    ]);
+  }
 }
 
 main().catch((err) => {

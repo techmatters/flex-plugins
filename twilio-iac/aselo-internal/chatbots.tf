@@ -287,14 +287,14 @@ resource "twilio_autopilot_assistants_field_types_field_values_v1" "number_age_g
   , "70", "71", "72", "73", "74", "75", "76", "77", "78", "79"
   , "80", "81", "82", "83", "84", "85", "86", "87", "88", "89"
   , "90", "91", "92", "93", "94", "95", "96", "97", "98", "99"
-  , "100"])
+  , "100", "Unknown"])
   assistant_sid = twilio_autopilot_assistants_v1.pre_survey.sid
   field_type_sid = twilio_autopilot_assistants_field_types_v1.age.sid
   value = each.key
   language = "en-US"
 }
-
 resource "twilio_autopilot_assistants_field_types_field_values_v1" "unknown_age_group" {
+  depends_on = [twilio_autopilot_assistants_field_types_field_values_v1.number_age_group] //Synonym creation fails if not created after what they alias
   for_each = toset(["Prefer not to answer", "X", "prefer not", "prefer not to"])
   assistant_sid = twilio_autopilot_assistants_v1.pre_survey.sid
   field_type_sid = twilio_autopilot_assistants_field_types_v1.age.sid
@@ -317,6 +317,7 @@ resource "twilio_autopilot_assistants_field_types_field_values_v1" "gender_group
 }
 
 resource "twilio_autopilot_assistants_field_types_field_values_v1" "gender_boy_synonym_group" {
+  depends_on = [twilio_autopilot_assistants_field_types_field_values_v1.gender_group] //Synonym creation fails if not created after what they alias
   for_each = toset(["male", "man", "M", "guy", "dude", "males", "B"])
   assistant_sid = twilio_autopilot_assistants_v1.pre_survey.sid
   field_type_sid = twilio_autopilot_assistants_field_types_v1.gender.sid
@@ -326,6 +327,7 @@ resource "twilio_autopilot_assistants_field_types_field_values_v1" "gender_boy_s
 }
 
 resource "twilio_autopilot_assistants_field_types_field_values_v1" "gender_girl_synonym_group" {
+  depends_on = [twilio_autopilot_assistants_field_types_field_values_v1.gender_group] //Synonym creation fails if not created after what they alias
   for_each = toset(["female", "woman", "F", "W", "lady", "females", "G"])
   assistant_sid = twilio_autopilot_assistants_v1.pre_survey.sid
   field_type_sid = twilio_autopilot_assistants_field_types_v1.gender.sid
@@ -335,6 +337,7 @@ resource "twilio_autopilot_assistants_field_types_field_values_v1" "gender_girl_
 }
 
 resource "twilio_autopilot_assistants_field_types_field_values_v1" "gender_unknown_synonym_group" {
+  depends_on = [twilio_autopilot_assistants_field_types_field_values_v1.gender_group] //Synonym creation fails if not created after what they alias
   for_each = toset(["prefer not to answer", "X", "none of your business", "prefer not", "prefer not to"])
   assistant_sid = twilio_autopilot_assistants_v1.pre_survey.sid
   field_type_sid = twilio_autopilot_assistants_field_types_v1.gender.sid
@@ -344,6 +347,7 @@ resource "twilio_autopilot_assistants_field_types_field_values_v1" "gender_unkno
 }
 
 resource "twilio_autopilot_assistants_field_types_field_values_v1" "gender_nonbinary_synonym_group" {
+  depends_on = [twilio_autopilot_assistants_field_types_field_values_v1.gender_group] //Synonym creation fails if not created after what they alias
   for_each = toset(["NB", "agender", "nonbinary", "non binary"])
   assistant_sid = twilio_autopilot_assistants_v1.pre_survey.sid
   field_type_sid = twilio_autopilot_assistants_field_types_v1.gender.sid
