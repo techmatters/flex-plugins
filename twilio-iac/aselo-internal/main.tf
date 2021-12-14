@@ -10,13 +10,21 @@ terraform {
 variable "account_sid" {}
 variable "auth_token" {}
 variable "helpline" {}
+variable "short_helpline" {}
+
+variable "environment" {}
+variable "short_environment" {}
+
+variable "datadog_app_id" {}
+variable "datadog_access_token" {}
+variable "operating_info_key" {}
+
 
 provider "twilio" {
   # Configuration options
   username = var.account_sid
   password  = var.auth_token
 }
-
 resource "twilio_chat_services_v2" "flex_chat_service" {
   friendly_name = "Flex Chat Service"
 }
@@ -25,8 +33,20 @@ resource "twilio_api_accounts_keys_v2010" "shared_state_key" {
   friendly_name = "Shared State Service"
 }
 
+output "shared_state_key" {
+  value = twilio_api_accounts_keys_v2010.shared_state_key.sid
+}
+
 resource "twilio_api_accounts_keys_v2010" "hrm_static_key" {
   friendly_name = "hrm-static-key"
+}
+
+output "hrm_static_key" {
+  value = twilio_api_accounts_keys_v2010.hrm_static_key.sid
+}
+
+resource "twilio_proxy_services_v1" "flex_proxy_service" {
+  unique_name = "Flex Proxy Service"
 }
 
 // Workspaces
