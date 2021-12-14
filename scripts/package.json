@@ -9,7 +9,8 @@
     "configure": "node configureNewAccount.js",
     "compile": "npx tsc",
     "setupNewAccount": "npm run compile && node dist/setupNewAccount/index.js",
-    "copyFlow": "npm run compile && node dist/copyFlow/index.js"
+    "copyFlow": "npm run compile && node dist/copyFlow/index.js",
+    "importDefaultTwilioResourcesToTerraform": "npm run compile && node dist/terraformSupplemental/importDefaultTwilioResourcesToTerraform.js"
   },
   "author": "",
   "license": "ISC",
