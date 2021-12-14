@@ -10,53 +10,6 @@
       "label": "Last Name"
     },
     {
-      "name": "relationshipToChild",
-      "type": "select",
-      "label": "Relationship to child",
-      "options": [
-        { "value": "", "label": "" },
-        { "value": "Caregiver", "label": "Caregiver" },
-        { "value": "Other adult known to child", "label": "Other adult known to child" },          
-        { "value": "Parent", "label": "Parent" },
-        { "value": "Person in a position of responsibility", "label": "Person in a position of responsibility" },
-        { "value": "Peer", "label": "Peer" },
-        { "value": "Sibling", "label": "Sibling(s)" },
-        { "value": "Stranger", "label": "Stranger" },      
-        { "value": "Other", "label": "Other" },
-        { "value": "Unknown", "label": "Unknown" }
-      ]
-    },
-    {
-      "name": "address",
-      "label": "Address",
-      "type": "input"
-    },
-    {
-      "name": "city",
-      "label": "City/Town/Village",
-      "type": "input"
-    },
-    {
-      "name": "district",
-      "label": "District",
-      "type": "input"
-    },
-    {
-      "name": "state",
-      "label": "State/Union Territory",
-      "type": "input"
-    },
-    {
-      "name": "postalCode",
-      "label": "Pin Code",
-      "type": "input"
-    },    
-    {
-      "name": "phone1",
-      "label": "Phone #1",
-      "type": "input"
-    },
-    {
       "name": "gender",
       "label": "Gender",
       "type": "select",
@@ -106,8 +59,67 @@
       ]
     },
     {
+      "name": "knownToChild",
+      "label": "Is perpetrator know to child?",
+      "type": "checkbox"
+    },
+    {
+      "name": "relationshipToChild",
+      "type": "select",
+      "label": "Relationship to child",
+      "options": [
+        { "value": "Unknown", "label": "" },
+        { "value": "Grand Parent", "label": "Grand Parent" },
+        { "value": "Member of CCI/OH", "label": "Member of CCI/OH" },
+        { "value": "Other close relative", "label": "Other close relative" },          
+        { "value": "Parent", "label": "Parent" },
+        { "value": "Person living in the neighborhood", "label": "Person living in the neighborhood" },
+        { "value": "Person living in educational institution", "label": "Person educational institution" },
+        { "value": "Peer", "label": "Peer" },
+        { "value": "Sibling", "label": "Sibling(s)" },
+        { "value": "Partner", "label": "Stranger" },   
+        { "value": "Public Servant", "label": "Publice Servant" },
+        { "value": "Other", "label": "Other" }
+      ]
+    },
+    {
+      "name": "address",
+      "label": "Address",
+      "type": "input"
+    },
+    {
+      "name": "city",
+      "label": "City/Town/Village",
+      "type": "input"
+    },
+    {
+      "name": "district",
+      "label": "District",
+      "type": "input"
+    },
+    {
+      "name": "state",
+      "label": "State/Union Territory",
+      "type": "input"
+    },
+    {
+      "name": "postalCode",
+      "label": "Pin Code",
+      "type": "input"
+    },    
+    {
+      "name": "phone1",
+      "label": "Phone #1",
+      "type": "input"
+    },
+    {
       "name": "nationality",
       "label": "Nationality",
+      "type": "input"
+    },
+    {
+      "name": "perpetratorHistory",
+      "label": "Previous allegations/Prosecution History",
       "type": "input"
     },
     {
