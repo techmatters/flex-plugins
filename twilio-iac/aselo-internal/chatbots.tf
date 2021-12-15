@@ -1,11 +1,58 @@
 //Pre Survey
 resource "twilio_autopilot_assistants_v1" "pre_survey" {
   unique_name       = "demo_chatbot"
+  friendly_name     = "A bot that collects a pre-survey"
+  style_sheet       = jsonencode({
+    "style_sheet" : {
+      "collect" : {
+        "validate" : {
+          "on_failure" : {
+            "repeat_question" : false,
+            "messages" : [
+              {
+                "say" : {
+                  "speech" : "I didn't get that. What did you say?"
+                }
+              },
+              {
+                "say" : {
+                  "speech" : "I still didn't catch that. Please repeat."
+                }
+              },
+              {
+                "say" : {
+                  "speech" : "Let's try one last time. Say it again please."
+                }
+              }
+            ]
+          },
+          "on_success" : { "say" : { "speech" : "" } },
+          "max_attempts" : 4
+        }
+      },
+      "voice" : {
+        "say_voice" : "Polly.Matthew"
+      },
+      "name" : ""
+    }
+  })
+  defaults          = jsonencode({
+    "defaults" : {
+      "assistant_initiation" : "task://greeting",
+      "fallback" : "task://fallback",
+      "collect" : {
+        "validate_on_failure" : "task://collect_fallback"
+      }
+    }
+  })
+  log_queries = true
 }
 
 //Post Survey
 resource "twilio_autopilot_assistants_v1" "post_survey" {
   unique_name       = "post_survey_bot"
+  friendly_name     = "A bot that collects a pre-survey"
+  log_queries = true
 }
 
 resource "twilio_autopilot_assistants_tasks_v1" "survey" {
