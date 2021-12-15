@@ -8,25 +8,25 @@ config();
 const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
 async function main() {
-  const key = await client.newKeys.create({ friendlyName: process.argv[1] });
+  const key = await client.newKeys.create({ friendlyName: process.argv[2] });
   const { secret } = key;
   saveSSMParameter(
-    process.argv[2],
+    process.argv[3],
     secret,
-    process.argv[3] ?? `Secret for Twilio key '${process.argv[1]}'`,
+    process.argv[4] ?? `Secret for Twilio key '${process.argv[2]}'`,
     [
-      { Key: 'Helpline', Value: process.argv[4] },
-      { Key: 'Environment', Value: process.argv[5] },
+      { Key: 'Helpline', Value: process.argv[5] },
+      { Key: 'Environment', Value: process.argv[6] },
     ],
   );
-  if (process.argv[6]) {
+  if (process.argv[7]) {
     saveSSMParameter(
-      process.argv[6],
+      process.argv[7],
       key.sid,
-      process.argv[3] ?? `SID for Twilio API key '${process.argv[1]}'`,
+      process.argv[4] ?? `SID for Twilio API key '${process.argv[2]}'`,
       [
-        { Key: 'Helpline', Value: process.argv[4] },
-        { Key: 'Environment', Value: process.argv[5] },
+        { Key: 'Helpline', Value: process.argv[5] },
+        { Key: 'Environment', Value: process.argv[6] },
       ],
     );
   }

@@ -19,10 +19,11 @@ function attemptTerraformImport(
   description: string,
 ): void {
   try {
-    execSync(
-      `terraform import -var-file poc-private.tfvars ${terraformResource} ${twilioResourceSid}`,
-      { cwd: TERRAFORM_WORKING_DIRECTORY },
-    );
+    const command = `terraform import -var-file ${
+      process.argv[2] || 'poc-private.tfvars'
+    } ${terraformResource} ${twilioResourceSid}`;
+    logSuccess(`Running command: ${command}`);
+    execSync(command, { cwd: TERRAFORM_WORKING_DIRECTORY });
     logSuccess(
       `${description}, sid ${twilioResourceSid} successfully imported to terraform as '${terraformResource}'`,
     );
