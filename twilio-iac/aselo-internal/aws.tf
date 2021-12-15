@@ -14,7 +14,7 @@ provider "aws" {
 
 locals {
   docs_s3_location = "tl-aselo-docs-${lower(var.short_helpline)}-${lower(var.environment)}"
-  chat_s3_location = "tl-public-chat-${lower(var.short_helpline)}-${lower(var.environment)}"
+  chat_s3_location = "tl-public-chat-${lower(var.short_helpline)}-${lower(var.short_environment)}"
 }
 
 resource "aws_s3_bucket" "docs" {
@@ -73,7 +73,7 @@ resource "aws_ssm_parameter" "main_group" {
 
   }
   name  = "${var.short_environment}_${jsondecode(each.value)[0]}_${var.short_helpline}_${each.key}"
-  type  = "String"
+  type  = "SecureString"
   value = jsondecode(each.value)[1]
   description = jsondecode(each.value)[2]
 }

@@ -54,6 +54,6 @@ This Terraform project is currently incomplete, this is what isn't covered and n
 
 ### What it shouldn't do
 
-* Workflows - It won't generate new serverless & flex workflows. The aim is to refactor these into single workflows, so in the meantime use the existing scripts in /scripts/setupNewAccount for these
+* Workflows - It won't generate new serverless & flex github workflows. The aim is to refactor these into single workflows, so in the meantime use the existing scripts in /scripts/setupNewAccount for these
 * Deployments - Terraform isn't supposed to deploy, only provision, so this script will never deploy our plugin, serverless functions, the TwilioErrorReporter lambda or webchat.
-
+* Upload Images - Seems more like deployment.

@@ -10,7 +10,8 @@
     "compile": "npx tsc",
     "setupNewAccount": "npm run compile && node dist/setupNewAccount/index.js",
     "copyFlow": "npm run compile && node dist/copyFlow/index.js",
-    "importDefaultTwilioResourcesToTerraform": "npm run compile && node dist/terraformSupplemental/importDefaultTwilioResourcesToTerraform.js"
+    "importDefaultTwilioResourcesToTerraform": "npm run compile && node dist/terraformSupplemental/importDefaultTwilioResourcesToTerraform.js",
+    "createTwilioApiKeyAndSsmSecret": "npm run compile && node dist/terraformSupplemental/createTwilioApiKeyAndSsmSecret.js"
   },
   "author": "",
   "license": "ISC",
