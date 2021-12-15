@@ -9,8 +9,7 @@ resource "twilio_taskrouter_workspaces_task_queues_v1" "survey_queue" {
 resource "twilio_taskrouter_workspaces_workflows_v1" "survey_workflow" {
   friendly_name = "Survey"
   workspace_sid = twilio_taskrouter_workspaces_v1.flex_task_assignment.id
-  configuration = <<EOF
-{
+  configuration = jsonencode({
   "task_routing": {
         "filters": [
           {
@@ -18,14 +17,12 @@ resource "twilio_taskrouter_workspaces_workflows_v1" "survey_workflow" {
             "expression": "helpline=='${var.helpline}'",
             "targets": [
               {
-                "expression":
-                  "isSurveyTask==true",
-                "queue": "${twilio_taskrouter_workspaces_task_queues_v1.survey_queue.sid}"
+                "expression": "isSurveyTask==true",
+                "queue": twilio_taskrouter_workspaces_task_queues_v1.survey_queue.sid
               }
             ]
           }
         ]
       }
-}
-EOF
+})
 }

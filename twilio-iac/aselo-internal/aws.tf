@@ -36,7 +36,7 @@ resource "aws_s3_bucket_public_access_block" "docs" {
 }
 
 resource "aws_s3_bucket" "chat" {
-  bucket = local.docs_s3_location
+  bucket = local.chat_s3_location
   cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["GET", "POST", "PUT"]
@@ -46,7 +46,7 @@ resource "aws_s3_bucket" "chat" {
 }
 
 resource "aws_s3_bucket_public_access_block" "chat" {
-  bucket = aws_s3_bucket.docs.id
+  bucket = aws_s3_bucket.chat.id
   block_public_acls = false
   ignore_public_acls = false
   block_public_policy = false
@@ -58,12 +58,12 @@ resource "aws_ssm_parameter" "main_group" {
     WORKSPACE_SID = jsonencode(["TWILIO", twilio_taskrouter_workspaces_v1.flex_task_assignment.sid, "Twilio account - Workspace SID"])
     CHAT_WORKFLOW_SID = jsonencode(["TWILIO", twilio_taskrouter_workspaces_workflows_v1.master_workflow.sid, "Twilio account - Chat transfer workflow SID"])
     SYNC_SID = jsonencode(["TWILIO", twilio_sync_services_v1.shared_state_service.sid, "Twilio account - Sync service "])
-    //API_KEY = jsonencode(["TWILIO", twilio_api_accounts_keys_v2010.shared_state_key.sid, "Twilio account - Sync API key"])
-    //SECRET = jsonencode(["TWILIO", "NOT_SET", "Twilio account - Sync API secret"])
+    // API Key secrets are not accessible from the twilio terraform provider
+    // SECRET = jsonencode(["TWILIO", "NOT_SET", "Twilio account - Sync API secret"])
     CHAT_SERVICE_SID = jsonencode(["TWILIO", twilio_chat_services_v2.flex_chat_service.sid, "Twilio account - Chat service SID"])
     FLEX_PROXY_SERVICE_SID = jsonencode(["TWILIO", twilio_proxy_services_v1.flex_proxy_service.sid, "Twilio account - Flex Proxy servivice SID"])
     SURVEY_WORKFLOW_SID =  jsonencode(["TWILIO", twilio_taskrouter_workspaces_workflows_v1.survey_workflow.sid, "Twilio account - Survey Workflow SID"])
-    // API Key secrets are not directly accessible from the twilio terraform provider
+    // API Key secrets are not accessible from the twilio terraform provider
     // HRM_STATIC_KEY = jsonencode(["TWILIO", "NOT_SET", "Twilio account - HRM static secret to perform backend calls"])
     S3_BUCKET_DOCS = jsonencode(["TWILIO", local.docs_s3_location, "Twilio account - Post Survey bot chat url"])
     POST_SURVEY_BOT_CHAT_URL = jsonencode(["TWILIO", "https://channels.autopilot.twilio.com/v1/${var.account_sid}/${twilio_autopilot_assistants_v1.post_survey.sid}/twilio-chat", "Twilio account - Post Survey bot chat url"])

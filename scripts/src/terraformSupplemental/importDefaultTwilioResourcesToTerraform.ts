@@ -23,10 +23,50 @@ function attemptTerraformImport(
       `terraform import -var-file poc-private.tfvars ${terraformResource} ${twilioResourceSid}`,
       { cwd: TERRAFORM_WORKING_DIRECTORY },
     );
+    logSuccess(
+      `${description}, sid ${twilioResourceSid} successfully imported to terraform as '${terraformResource}'`,
+    );
   } catch (error) {
     if ((<any>error).stderr.toString().includes('Resource already managed by Terraform')) {
       logWarning(`${description} already in terraform, moving on.`);
     } else throw error;
+  }
+}
+
+async function locateAndImportDefaultTaskChannel(
+  workspaceSid: string,
+  taskChannelUniqueName: string,
+): Promise<void> {
+  const taskChannel = (
+    await client.taskrouter.workspaces(workspaceSid).taskChannels.list({ limit: 50 })
+  ).find((tc) => tc.uniqueName === taskChannelUniqueName);
+
+  if (taskChannel) {
+    attemptTerraformImport(
+      `${workspaceSid}/${taskChannel.sid}`,
+      `twilio_taskrouter_workspaces_task_channels_v1.${taskChannelUniqueName}`,
+      `${taskChannelUniqueName} task channel`,
+    );
+  } else {
+    logWarning(`${taskChannelUniqueName} task channel not found to import`);
+  }
+}
+async function locateAndImportDefaultFlexFlow(
+  flexFlowFriendlyName: string,
+  terraformResourceName: string,
+): Promise<void> {
+  const flexFlow = (await client.flexApi.flexFlow.list({ limit: 50 })).find(
+    (tc) => tc.friendlyName === flexFlowFriendlyName,
+  );
+
+  if (flexFlow) {
+    attemptTerraformImport(
+      `${flexFlow.sid}`,
+      `twilio_flex_flex_flows_v1.${terraformResourceName}`,
+      `${flexFlowFriendlyName} flex flow`,
+    );
+  } else {
+    logWarning(`${flexFlowFriendlyName} flex flow not found to import`);
   }
 }
 
@@ -41,16 +81,6 @@ async function main() {
       'twilio_proxy_services_v1.flex_proxy_service',
       'Flex Proxy Service',
     );
-    try {
-      execSync(
-        `terraform import -var-file poc-private.tfvars twilio_proxy_services_v1.flex_proxy_service ${proxy.sid}`,
-        { cwd: TERRAFORM_WORKING_DIRECTORY },
-      );
-    } catch (error) {
-      if ((<any>error).stderr.toString().includes('Resource already managed by Terraform')) {
-        logWarning('Flex Proxy Service already in terraform, moving on.');
-      } else throw error;
-    }
   } else {
     logWarning('Flex proxy Service not found to import');
   }
@@ -78,9 +108,18 @@ async function main() {
       'twilio_taskrouter_workspaces_v1.flex_task_assignment',
       'Flex Task Assignment workflow',
     );
+    await locateAndImportDefaultTaskChannel(workspace.sid, 'default');
+    await locateAndImportDefaultTaskChannel(workspace.sid, 'voice');
+    await locateAndImportDefaultTaskChannel(workspace.sid, 'chat');
+    await locateAndImportDefaultTaskChannel(workspace.sid, 'sms');
+    await locateAndImportDefaultTaskChannel(workspace.sid, 'video');
+    await locateAndImportDefaultTaskChannel(workspace.sid, 'email');
   } else {
     logWarning('Flex Task Assignment workflow not found to import');
   }
+
+  await locateAndImportDefaultFlexFlow('Flex Messaging Channel Flow', 'messaging_flow');
+  await locateAndImportDefaultFlexFlow('Flex Web Channel Flow', 'webchat_flow');
 }
 
 main().catch((err) => {
