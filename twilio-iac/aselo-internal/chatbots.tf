@@ -132,7 +132,7 @@ resource "twilio_autopilot_assistants_tasks_v1" "redirect_function" {
       {
         "redirect" : {
           "method" : "POST",
-          "uri" : "https://serverless-9907-production.twil.io/autopilotRedirect"
+          "uri" : "${var.serverless_url}/autopilotRedirect"
         }
       }
     ]

@@ -1,4 +1,4 @@
-variable "serverless_number" {}
+variable "serverless_url" {}
 
 resource "twilio_serverless_services_v1" "serverless" {
   unique_name = "serverless"
