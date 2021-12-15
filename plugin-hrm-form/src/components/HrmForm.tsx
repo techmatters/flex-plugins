@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { withTaskContext, ITask } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 
 import { CaseLayout } from '../styles/case';

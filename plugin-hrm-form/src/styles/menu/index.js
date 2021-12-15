@@ -1,11 +1,13 @@
 import React from 'react';
-import styled from 'react-emotion';
+import { styled } from '@twilio/flex-ui';
 import Popper from '@material-ui/core/Popper';
 import Paper from '@material-ui/core/Paper';
 import MenuList from '@material-ui/core/MenuList';
 import MenuItem from '@material-ui/core/MenuItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import CancelIcon from '@material-ui/icons/Cancel';
+
+import HrmTheme from '../HrmTheme';
 
 export const StyledPopper = styled(Popper)`
   & {
@@ -37,7 +39,7 @@ export const StyledMenuItem = styled(props => <MenuItem {...props} classes={{ ro
 export const StyledListItemText = styled(props => <ListItemText {...props} classes={{ primary: 'primary' }} />)`
   && > .primary {
     font-size: 13px;
-    color: ${props => (props.red ? props.theme.colors.declineColor : props.theme.colors.defaultButtonColor)};
+    color: ${props => (props.red ? HrmTheme.colors.declineColor : HrmTheme.colors.defaultButtonColor)};
   }
 `;
 

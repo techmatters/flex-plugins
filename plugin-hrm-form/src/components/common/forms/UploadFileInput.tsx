@@ -55,7 +55,7 @@ const UploadFileInput: React.FC<UploadFileInputProps> = ({
   htmlElRef,
 }) => {
   const [isLoading, setLoading] = useState(false);
-  const fileUploadRef = useRef<HTMLButtonElement>();
+  const fileUploadRef = useRef<HTMLInputElement>();
 
   const fileName = watch(path);
   const error = get(errors, path);
@@ -111,9 +111,9 @@ const UploadFileInput: React.FC<UploadFileInputProps> = ({
             id="upload-button-styled"
             disabled={isLoading}
             onClick={() => fileUploadRef.current.click()}
-            innerRef={() => {
+            ref={() => {
               if (htmlElRef) {
-                // Couldn't get HTML element from innerRef. As a workaround, we getting the element by its id
+                // Couldn't get HTML element from ref. As a workaround, we getting the element by its id
                 const htmlButton = document.getElementById('upload-button-styled');
                 htmlElRef.current = htmlButton;
               }
@@ -136,7 +136,7 @@ const UploadFileInput: React.FC<UploadFileInputProps> = ({
             aria-describedby={`${path}-error`}
             onChange={handleChange}
             defaultValue={initialValue}
-            innerRef={fileUploadRef}
+            ref={fileUploadRef}
             style={{ visibility: 'hidden', height: 0 }}
           />
           <input id={path} name={path} type="hidden" ref={register(rules)} />

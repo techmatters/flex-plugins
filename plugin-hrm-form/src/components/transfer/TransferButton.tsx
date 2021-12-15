@@ -5,13 +5,13 @@ import { Actions, Template } from '@twilio/flex-ui';
 import { TransferStyledButton } from '../../styles/HrmStyles';
 import HhrTheme from '../../styles/HrmTheme';
 
-type Props = typeof HhrTheme;
+type Props = {};
 
-const TransferButton: React.FC<Props> = ({ theme }) => {
+const TransferButton: React.FC<Props> = () => {
   return (
     <TransferStyledButton
-      color={theme.colors.secondaryButtonTextColor}
-      background={theme.colors.secondaryButtonColor}
+      color={HhrTheme.colors.secondaryButtonTextColor}
+      background={HhrTheme.colors.secondaryButtonColor}
       onClick={() => Actions.invokeAction('ShowDirectory')}
       data-fs-id="Task-Transfer-Button"
     >

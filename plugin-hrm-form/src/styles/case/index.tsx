@@ -1,9 +1,9 @@
 import React from 'react';
-import styled from 'react-emotion';
-import { Button, IconButton } from '@twilio/flex-ui';
+import { Button, IconButton, styled } from '@twilio/flex-ui';
 import { Typography, ButtonBase } from '@material-ui/core';
 
 import { FontOpenSans, FormInput, FormSelect, FormSelectWrapper, Row, Column } from '../HrmStyles';
+import HrmTheme from '../HrmTheme';
 
 export const CaseLayout = styled('div')`
   display: flex;
@@ -43,7 +43,7 @@ export const CenteredContainer = styled(CaseContainer)`
 CenteredContainer.displayName = 'CenteredContainer';
 
 export const CaseSectionFont = styled(FontOpenSans)`
-  color: ${({ theme }) => theme.colors.categoryTextColor};
+  color: ${HrmTheme.colors.categoryTextColor};
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 1.67px;
@@ -73,8 +73,8 @@ type ViewButtonProps = {
   onClick: () => void;
 };
 
-export const ViewButton = styled<ViewButtonProps>(props => <Button roundCorners={false} {...props} />)`
-  color: ${({ theme }) => theme.colors.categoryTextColor};
+export const ViewButton = styled(props => <Button roundCorners={false} {...props} />)`
+  color: ${HrmTheme.colors.categoryTextColor};
   background-color: #ecedf1;
   border-radius: 4px;
   font-weight: normal;
@@ -148,7 +148,7 @@ CaseActionDetailFont.displayName = 'CaseActionDetailFont';
 
 const BaseTextArea = styled('textarea')`
   resize: none;
-  background-color: ${props => props.theme.colors.base2};
+  background-color: ${HrmTheme.colors.base2};
   font-family: Open Sans;
   font-weight: 500;
   font-size: 12px;
@@ -334,7 +334,7 @@ export const StyledInputField = styled(FormInput)`
   width: 130px !important;
   height: 36px;
   color: #000000;
-  background-color: ${props => props.theme.colors.inputBackgroundColor};
+  background-color: ${HrmTheme.colors.inputBackgroundColor};
   font-weight: 600;
   padding-left: 10px !important;
   margin-top: 7px;

@@ -1,13 +1,13 @@
 import React from 'react';
-import styled from 'react-emotion';
 import { ButtonBase, Paper, Button, FormControlLabel, Switch, Collapse, withStyles } from '@material-ui/core';
-import { Tabs, TabsProps } from '@twilio/flex-ui';
+import { Tabs, TabsProps, styled } from '@twilio/flex-ui';
 import Folder from '@material-ui/icons/Folder';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import Link from '@material-ui/icons/Link';
 import { ButtonProps } from '@material-ui/core/Button';
 
 import { Flex, Row, FontOpenSans, BottomButtonBar, TabbedFormsContainer } from '../HrmStyles';
+import HrmTheme from '../HrmTheme';
 
 // CaseViewer Styles
 export const CaseWrapper = styled('div')`
@@ -131,7 +131,7 @@ export const StyledLink = styled(({ onClick, ...rest }: StyledLinkProps) => (
   &&:hover {
     text-decoration: ${props => (props.underline ? 'underline' : 'none')};
     text-decoration-color: ${props => (props.underline ? '#1874e1' : 'transparent')};
-    background-color: ${props => (props.underline ? 'transparent' : props.theme.colors.hyperlinkHoverBackgroundColor)};
+    background-color: ${props => (props.underline ? 'transparent' : HrmTheme.colors.hyperlinkHoverBackgroundColor)};
   }
 
   &&:focus {
@@ -188,7 +188,7 @@ export const PrevNameText = styled(FontOpenSans)`
   color: #182b33;
 `;
 
-export const StyledTabs = styled((props: TabsProps) => <Tabs {...props} />)`
+export const StyledTabs = styled((props: Partial<TabsProps>) => <Tabs {...props} />)`
   .Twilio-TabHeader-StateIndicator-Active {
     background-color: black;
   }
@@ -515,6 +515,6 @@ SearchTitle.displayName = 'SearchTitle';
 export const StandaloneSearchContainer = styled(TabbedFormsContainer)`
   width: 50%;
   padding-right: 50%;
-  background-color: ${props => props.theme.colors.base2};
+  background-color: ${HrmTheme.colors.base2};
 `;
 StandaloneSearchContainer.displayName = 'StandaloneSearchContainer';

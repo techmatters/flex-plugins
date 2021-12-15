@@ -3,14 +3,19 @@ import PropTypes from 'prop-types';
 import { withTheme } from '@twilio/flex-ui';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 
+import HrmTheme from '../../styles/HrmTheme';
 import { StyledMenuItem, StyledListItemText, NoIcon } from '../../styles/menu';
 
 const MenuItem = props => {
-  const { Icon, text, red, onClick, theme } = props;
+  const { Icon, text, red, onClick } = props;
   return (
     <StyledMenuItem tabIndex={0} onClick={onClick} data-fs-id={props['data-fs-id']}>
       <ListItemIcon>
-        {Icon ? <Icon nativeColor={red ? theme.colors.declineColor : theme.colors.defaultButtonColor} /> : <NoIcon />}
+        {Icon ? (
+          <Icon nativeColor={red ? HrmTheme.colors.declineColor : HrmTheme.colors.defaultButtonColor} />
+        ) : (
+          <NoIcon />
+        )}
       </ListItemIcon>
       <StyledListItemText primary={text} red={red} />
     </StyledMenuItem>

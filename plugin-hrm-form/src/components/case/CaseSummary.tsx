@@ -58,7 +58,7 @@ const mapStateToProps = (state, ownProps: OwnProps) => {
   return { connectedCaseState };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
+const mapDispatchToProps = dispatch => ({
   updateCaseInfo: bindActionCreators(CaseActions.updateCaseInfo, dispatch),
 });
 

@@ -84,11 +84,12 @@ const RequiredAsterisk = () => (
 const getRules = (field: FormItemDefinition): RegisterOptions =>
   pick(field, ['max', 'maxLength', 'min', 'minLength', 'pattern', 'required', 'validate']);
 
-const bindCreateSelectOptions = (path: string) => (o: SelectOption) => (
-  <FormOption key={`${path}-${o.label}-${o.value}`} value={o.value} isEmptyValue={o.value === ''}>
-    {o.label}
-  </FormOption>
-);
+const bindCreateSelectOptions = (path: string) => (o: SelectOption) =>
+  (
+    <FormOption key={`${path}-${o.label}-${o.value}`} value={o.value} isEmptyValue={o.value === ''}>
+      {o.label}
+    </FormOption>
+  );
 
 /**
  * Creates a Form with each input connected to RHF's wrapping Context, based on the definition.
@@ -96,462 +97,463 @@ const bindCreateSelectOptions = (path: string) => (o: SelectOption) => (
  * @param {() => void} updateCallback Callback called to update form state. When is the callback called is specified in the input type.
  * @param {FormItemDefinition} def Definition for a single input.
  */
-const getInputType = (parents: string[], updateCallback: () => void, customHandlers?: CustomHandlers) => (
-  def: FormItemDefinition,
-) => (
-  initialValue: any, // TODO: restrict this type
-  htmlElRef?: HTMLElementRef,
-) => {
-  const rules = getRules(def);
-  const path = [...parents, def.name].join('.');
+const getInputType =
+  (parents: string[], updateCallback: () => void, customHandlers?: CustomHandlers) =>
+  (def: FormItemDefinition) =>
+  (
+    initialValue: any, // TODO: restrict this type
+    htmlElRef?: HTMLElementRef,
+  ) => {
+    const rules = getRules(def);
+    const path = [...parents, def.name].join('.');
 
-  const labelTextComponent = <Template code={`${def.label}`} className=".fullstory-unmask" />;
+    const labelTextComponent = <Template code={`${def.label}`} className=".fullstory-unmask" />;
 
-  switch (def.type) {
-    case 'input':
-      return (
-        <ConnectForm key={path}>
-          {({ errors, register }) => {
-            const error = get(errors, path);
-            return (
-              <FormLabel htmlFor={path}>
-                <Row>
-                  <Box marginBottom="8px">
-                    {labelTextComponent}
-                    {rules.required && <RequiredAsterisk />}
-                  </Box>
-                </Row>
-                <FormInput
-                  id={path}
-                  name={path}
-                  error={Boolean(error)}
-                  aria-invalid={Boolean(error)}
-                  aria-describedby={`${path}-error`}
-                  onBlur={updateCallback}
-                  innerRef={innerRef => {
-                    if (htmlElRef) {
-                      htmlElRef.current = innerRef;
-                    }
-
-                    register(rules)(innerRef);
-                  }}
-                  defaultValue={initialValue}
-                />
-                {error && (
-                  <FormError>
-                    <Template id={`${path}-error`} code={error.message} />
-                  </FormError>
-                )}
-              </FormLabel>
-            );
-          }}
-        </ConnectForm>
-      );
-    case 'numeric-input':
-      return (
-        <ConnectForm key={path}>
-          {({ errors, register }) => {
-            const error = get(errors, path);
-            return (
-              <FormLabel htmlFor={path}>
-                <Row>
-                  <Box marginBottom="8px">
-                    {labelTextComponent}
-                    {rules.required && <RequiredAsterisk />}
-                  </Box>
-                </Row>
-                <FormInput
-                  id={path}
-                  name={path}
-                  error={Boolean(error)}
-                  aria-invalid={Boolean(error)}
-                  aria-describedby={`${path}-error`}
-                  onBlur={updateCallback}
-                  innerRef={innerRef => {
-                    if (htmlElRef) {
-                      htmlElRef.current = innerRef;
-                    }
-
-                    register({
-                      ...rules,
-                      pattern: { value: /^[0-9]+$/g, message: 'This field only accepts numeric input.' },
-                    })(innerRef);
-                  }}
-                  defaultValue={initialValue}
-                />
-                {error && (
-                  <FormError>
-                    <Template id={`${path}-error`} code={error.message} />
-                  </FormError>
-                )}
-              </FormLabel>
-            );
-          }}
-        </ConnectForm>
-      );
-    case 'select':
-      return (
-        <ConnectForm key={path}>
-          {({ errors, register }) => {
-            const error = get(errors, path);
-            const createSelectOptions = bindCreateSelectOptions(path);
-
-            return (
-              <FormLabel htmlFor={path}>
-                <Row>
-                  <Box marginBottom="8px">
-                    {labelTextComponent}
-                    {rules.required && <RequiredAsterisk />}
-                  </Box>
-                </Row>
-                <FormSelectWrapper>
-                  <FormSelect
+    switch (def.type) {
+      case 'input':
+        return (
+          <ConnectForm key={path}>
+            {({ errors, register }) => {
+              const error = get(errors, path);
+              return (
+                <FormLabel htmlFor={path}>
+                  <Row>
+                    <Box marginBottom="8px">
+                      {labelTextComponent}
+                      {rules.required && <RequiredAsterisk />}
+                    </Box>
+                  </Row>
+                  <FormInput
                     id={path}
                     name={path}
                     error={Boolean(error)}
                     aria-invalid={Boolean(error)}
                     aria-describedby={`${path}-error`}
                     onBlur={updateCallback}
-                    innerRef={innerRef => {
+                    ref={ref => {
                       if (htmlElRef) {
-                        htmlElRef.current = innerRef;
+                        htmlElRef.current = ref;
                       }
 
-                      register(rules)(innerRef);
+                      register(rules)(ref);
                     }}
                     defaultValue={initialValue}
-                  >
-                    {def.options.map(createSelectOptions)}
-                  </FormSelect>
-                </FormSelectWrapper>
-                {error && (
-                  <FormError>
-                    <Template id={`${path}-error`} code={error.message} />
-                  </FormError>
-                )}
-              </FormLabel>
-            );
-          }}
-        </ConnectForm>
-      );
-    case 'dependent-select':
-      return (
-        <ConnectForm key={path}>
-          {({ errors, register, watch, setValue }) => {
-            const isMounted = React.useRef(false); // mutable value to avoid reseting the state in the first render. This preserves the "intialValue" provided
-            const prevDependeeValue = React.useRef(undefined); // mutable value to store previous dependeeValue
-
-            const dependeePath = [...parents, def.dependsOn].join('.');
-            const dependeeValue = watch(dependeePath);
-
-            React.useEffect(() => {
-              if (isMounted.current && prevDependeeValue.current && dependeeValue !== prevDependeeValue.current) {
-                setValue(path, def.defaultOption.value, { shouldValidate: true });
-              } else isMounted.current = true;
-
-              prevDependeeValue.current = dependeeValue;
-            }, [setValue, dependeeValue]);
-
-            const error = get(errors, path);
-            const hasOptions = Boolean(dependeeValue && def.options[dependeeValue]);
-            const shouldInitialize = initialValue && !isMounted.current;
-
-            const validate = (data: any) =>
-              hasOptions && def.required && data === def.defaultOption.value ? 'RequiredFieldError' : null;
-
-            // eslint-disable-next-line no-nested-ternary
-            const options: SelectOption[] = hasOptions
-              ? [def.defaultOption, ...def.options[dependeeValue]]
-              : shouldInitialize
-              ? [def.defaultOption, { label: initialValue, value: initialValue }]
-              : [def.defaultOption];
-
-            const disabled = !hasOptions && !shouldInitialize;
-
-            const createSelectOptions = bindCreateSelectOptions(path);
-
-            return (
-              <DependentSelectLabel htmlFor={path} disabled={disabled}>
-                <Row>
-                  <Box marginBottom="8px">
-                    {labelTextComponent}
-                    {hasOptions && rules.required && <RequiredAsterisk />}
-                  </Box>
-                </Row>
-                <FormSelectWrapper>
-                  <FormSelect
+                  />
+                  {error && (
+                    <FormError>
+                      <Template id={`${path}-error`} code={error.message} />
+                    </FormError>
+                  )}
+                </FormLabel>
+              );
+            }}
+          </ConnectForm>
+        );
+      case 'numeric-input':
+        return (
+          <ConnectForm key={path}>
+            {({ errors, register }) => {
+              const error = get(errors, path);
+              return (
+                <FormLabel htmlFor={path}>
+                  <Row>
+                    <Box marginBottom="8px">
+                      {labelTextComponent}
+                      {rules.required && <RequiredAsterisk />}
+                    </Box>
+                  </Row>
+                  <FormInput
                     id={path}
                     name={path}
                     error={Boolean(error)}
                     aria-invalid={Boolean(error)}
                     aria-describedby={`${path}-error`}
                     onBlur={updateCallback}
-                    innerRef={innerRef => {
+                    ref={ref => {
                       if (htmlElRef) {
-                        htmlElRef.current = innerRef;
+                        htmlElRef.current = ref;
                       }
 
-                      register({ validate })(innerRef);
+                      register({
+                        ...rules,
+                        pattern: { value: /^[0-9]+$/g, message: 'This field only accepts numeric input.' },
+                      })(ref);
                     }}
-                    disabled={disabled}
                     defaultValue={initialValue}
-                  >
-                    {options.map(createSelectOptions)}
-                  </FormSelect>
-                </FormSelectWrapper>
-                {error && (
-                  <FormError>
-                    <Template id={`${path}-error`} code={error.message} />
-                  </FormError>
-                )}
-              </DependentSelectLabel>
-            );
-          }}
-        </ConnectForm>
-      );
-    case 'checkbox':
-      return (
-        <ConnectForm key={path}>
-          {({ errors, register }) => {
-            const error = get(errors, path);
-            return (
-              <FormLabel htmlFor={path}>
-                <FormCheckBoxWrapper error={Boolean(error)}>
-                  <Box marginRight="5px">
-                    <FormCheckbox
+                  />
+                  {error && (
+                    <FormError>
+                      <Template id={`${path}-error`} code={error.message} />
+                    </FormError>
+                  )}
+                </FormLabel>
+              );
+            }}
+          </ConnectForm>
+        );
+      case 'select':
+        return (
+          <ConnectForm key={path}>
+            {({ errors, register }) => {
+              const error = get(errors, path);
+              const createSelectOptions = bindCreateSelectOptions(path);
+
+              return (
+                <FormLabel htmlFor={path}>
+                  <Row>
+                    <Box marginBottom="8px">
+                      {labelTextComponent}
+                      {rules.required && <RequiredAsterisk />}
+                    </Box>
+                  </Row>
+                  <FormSelectWrapper>
+                    <FormSelect
                       id={path}
                       name={path}
-                      type="checkbox"
+                      error={Boolean(error)}
                       aria-invalid={Boolean(error)}
-                      aria-describedby={`${path}-error`}
-                      onChange={updateCallback}
-                      innerRef={innerRef => {
-                        if (htmlElRef) {
-                          htmlElRef.current = innerRef;
-                        }
-
-                        register(rules)(innerRef);
-                      }}
-                      defaultChecked={initialValue}
-                    />
-                  </Box>
-                  {labelTextComponent}
-                  {rules.required && <RequiredAsterisk />}
-                </FormCheckBoxWrapper>
-                {error && (
-                  <FormError>
-                    <Template id={`${path}-error`} code={error.message} />
-                  </FormError>
-                )}
-              </FormLabel>
-            );
-          }}
-        </ConnectForm>
-      );
-    case 'mixed-checkbox':
-      return (
-        <ConnectForm key={path}>
-          {({ errors, register, setValue }) => {
-            React.useEffect(() => {
-              register(path, rules);
-            }, [register]);
-
-            const initialChecked =
-              initialValue === undefined || typeof initialValue !== 'boolean' ? 'mixed' : initialValue;
-            const [checked, setChecked] = React.useState<MixedOrBool>(initialChecked);
-
-            React.useEffect(() => {
-              setValue(path, checked);
-            }, [checked, setValue]);
-
-            const error = get(errors, path);
-
-            return (
-              <FormLabel htmlFor={path}>
-                <FormCheckBoxWrapper error={Boolean(error)}>
-                  <Box marginRight="5px">
-                    <FormMixedCheckbox
-                      id={path}
-                      type="checkbox"
-                      className="mixed-checkbox"
-                      aria-invalid={Boolean(error)}
-                      aria-checked={checked}
                       aria-describedby={`${path}-error`}
                       onBlur={updateCallback}
-                      onChange={() => {
-                        if (checked === 'mixed') setChecked(true);
-                        if (checked === true) setChecked(false);
-                        if (checked === false) setChecked('mixed');
-                      }}
-                      innerRef={innerRef => {
+                      ref={ref => {
                         if (htmlElRef) {
-                          htmlElRef.current = innerRef;
+                          htmlElRef.current = ref;
                         }
+
+                        register(rules)(ref);
                       }}
-                    />
-                  </Box>
-                  {labelTextComponent}
-                  {rules.required && <RequiredAsterisk />}
-                </FormCheckBoxWrapper>
-                {error && (
-                  <FormError>
-                    <Template id={`${path}-error`} code={error.message} />
-                  </FormError>
-                )}
-              </FormLabel>
-            );
-          }}
-        </ConnectForm>
-      );
-    case 'textarea':
-      return (
-        <ConnectForm key={path}>
-          {({ errors, register }) => {
-            const error = get(errors, path);
-            return (
-              <FormLabel htmlFor={path}>
-                <Row>
-                  <Box marginBottom="8px">
+                      defaultValue={initialValue}
+                    >
+                      {def.options.map(createSelectOptions)}
+                    </FormSelect>
+                  </FormSelectWrapper>
+                  {error && (
+                    <FormError>
+                      <Template id={`${path}-error`} code={error.message} />
+                    </FormError>
+                  )}
+                </FormLabel>
+              );
+            }}
+          </ConnectForm>
+        );
+      case 'dependent-select':
+        return (
+          <ConnectForm key={path}>
+            {({ errors, register, watch, setValue }) => {
+              const isMounted = React.useRef(false); // mutable value to avoid reseting the state in the first render. This preserves the "intialValue" provided
+              const prevDependeeValue = React.useRef(undefined); // mutable value to store previous dependeeValue
+
+              const dependeePath = [...parents, def.dependsOn].join('.');
+              const dependeeValue = watch(dependeePath);
+
+              React.useEffect(() => {
+                if (isMounted.current && prevDependeeValue.current && dependeeValue !== prevDependeeValue.current) {
+                  setValue(path, def.defaultOption.value, { shouldValidate: true });
+                } else isMounted.current = true;
+
+                prevDependeeValue.current = dependeeValue;
+              }, [setValue, dependeeValue]);
+
+              const error = get(errors, path);
+              const hasOptions = Boolean(dependeeValue && def.options[dependeeValue]);
+              const shouldInitialize = initialValue && !isMounted.current;
+
+              const validate = (data: any) =>
+                hasOptions && def.required && data === def.defaultOption.value ? 'RequiredFieldError' : null;
+
+              // eslint-disable-next-line no-nested-ternary
+              const options: SelectOption[] = hasOptions
+                ? [def.defaultOption, ...def.options[dependeeValue]]
+                : shouldInitialize
+                ? [def.defaultOption, { label: initialValue, value: initialValue }]
+                : [def.defaultOption];
+
+              const disabled = !hasOptions && !shouldInitialize;
+
+              const createSelectOptions = bindCreateSelectOptions(path);
+
+              return (
+                <DependentSelectLabel htmlFor={path} disabled={disabled}>
+                  <Row>
+                    <Box marginBottom="8px">
+                      {labelTextComponent}
+                      {hasOptions && rules.required && <RequiredAsterisk />}
+                    </Box>
+                  </Row>
+                  <FormSelectWrapper>
+                    <FormSelect
+                      id={path}
+                      name={path}
+                      error={Boolean(error)}
+                      aria-invalid={Boolean(error)}
+                      aria-describedby={`${path}-error`}
+                      onBlur={updateCallback}
+                      ref={ref => {
+                        if (htmlElRef) {
+                          htmlElRef.current = ref;
+                        }
+
+                        register({ validate })(ref);
+                      }}
+                      disabled={disabled}
+                      defaultValue={initialValue}
+                    >
+                      {options.map(createSelectOptions)}
+                    </FormSelect>
+                  </FormSelectWrapper>
+                  {error && (
+                    <FormError>
+                      <Template id={`${path}-error`} code={error.message} />
+                    </FormError>
+                  )}
+                </DependentSelectLabel>
+              );
+            }}
+          </ConnectForm>
+        );
+      case 'checkbox':
+        return (
+          <ConnectForm key={path}>
+            {({ errors, register }) => {
+              const error = get(errors, path);
+              return (
+                <FormLabel htmlFor={path}>
+                  <FormCheckBoxWrapper error={Boolean(error)}>
+                    <Box marginRight="5px">
+                      <FormCheckbox
+                        id={path}
+                        name={path}
+                        type="checkbox"
+                        aria-invalid={Boolean(error)}
+                        aria-describedby={`${path}-error`}
+                        onChange={updateCallback}
+                        ref={ref => {
+                          if (htmlElRef) {
+                            htmlElRef.current = ref;
+                          }
+
+                          register(rules)(ref);
+                        }}
+                        defaultChecked={initialValue}
+                      />
+                    </Box>
                     {labelTextComponent}
                     {rules.required && <RequiredAsterisk />}
-                  </Box>
-                </Row>
-                <FormTextArea
-                  id={path}
-                  name={path}
-                  error={Boolean(error)}
-                  aria-invalid={Boolean(error)}
-                  aria-describedby={`${path}-error`}
-                  onBlur={updateCallback}
-                  innerRef={innerRef => {
-                    if (htmlElRef) {
-                      htmlElRef.current = innerRef;
-                    }
+                  </FormCheckBoxWrapper>
+                  {error && (
+                    <FormError>
+                      <Template id={`${path}-error`} code={error.message} />
+                    </FormError>
+                  )}
+                </FormLabel>
+              );
+            }}
+          </ConnectForm>
+        );
+      case 'mixed-checkbox':
+        return (
+          <ConnectForm key={path}>
+            {({ errors, register, setValue }) => {
+              React.useEffect(() => {
+                register(path, rules);
+              }, [register]);
 
-                    register(rules)(innerRef);
-                  }}
-                  rows={def.rows ? def.rows : 10}
-                  width={def.width}
-                  defaultValue={initialValue}
-                />
-                {error && (
-                  <FormError>
-                    <Template id={`${path}-error`} code={error.message} />
-                  </FormError>
-                )}
-              </FormLabel>
-            );
-          }}
-        </ConnectForm>
-      );
-    case 'time-input':
-      return (
-        <ConnectForm key={path}>
-          {({ errors, register }) => {
-            const error = get(errors, path);
-            return (
-              <FormLabel htmlFor={path}>
-                <Row>
-                  <Box marginBottom="8px">
+              const initialChecked =
+                initialValue === undefined || typeof initialValue !== 'boolean' ? 'mixed' : initialValue;
+              const [checked, setChecked] = React.useState<MixedOrBool>(initialChecked);
+
+              React.useEffect(() => {
+                setValue(path, checked);
+              }, [checked, setValue]);
+
+              const error = get(errors, path);
+
+              return (
+                <FormLabel htmlFor={path}>
+                  <FormCheckBoxWrapper error={Boolean(error)}>
+                    <Box marginRight="5px">
+                      <FormMixedCheckbox
+                        id={path}
+                        type="checkbox"
+                        className="mixed-checkbox"
+                        aria-invalid={Boolean(error)}
+                        aria-checked={checked}
+                        aria-describedby={`${path}-error`}
+                        onBlur={updateCallback}
+                        onChange={() => {
+                          if (checked === 'mixed') setChecked(true);
+                          if (checked === true) setChecked(false);
+                          if (checked === false) setChecked('mixed');
+                        }}
+                        ref={ref => {
+                          if (htmlElRef) {
+                            htmlElRef.current = ref;
+                          }
+                        }}
+                      />
+                    </Box>
                     {labelTextComponent}
                     {rules.required && <RequiredAsterisk />}
-                  </Box>
-                </Row>
-                <FormTimeInput
-                  type="time"
-                  id={path}
-                  name={path}
-                  error={Boolean(error)}
-                  aria-invalid={Boolean(error)}
-                  aria-describedby={`${path}-error`}
-                  onBlur={updateCallback}
-                  innerRef={innerRef => {
-                    if (htmlElRef) {
-                      htmlElRef.current = innerRef;
-                    }
+                  </FormCheckBoxWrapper>
+                  {error && (
+                    <FormError>
+                      <Template id={`${path}-error`} code={error.message} />
+                    </FormError>
+                  )}
+                </FormLabel>
+              );
+            }}
+          </ConnectForm>
+        );
+      case 'textarea':
+        return (
+          <ConnectForm key={path}>
+            {({ errors, register }) => {
+              const error = get(errors, path);
+              return (
+                <FormLabel htmlFor={path}>
+                  <Row>
+                    <Box marginBottom="8px">
+                      {labelTextComponent}
+                      {rules.required && <RequiredAsterisk />}
+                    </Box>
+                  </Row>
+                  <FormTextArea
+                    id={path}
+                    name={path}
+                    error={Boolean(error)}
+                    aria-invalid={Boolean(error)}
+                    aria-describedby={`${path}-error`}
+                    onBlur={updateCallback}
+                    ref={ref => {
+                      if (htmlElRef) {
+                        htmlElRef.current = ref;
+                      }
 
-                    register(rules)(innerRef);
-                  }}
-                  defaultValue={initialValue}
-                />
-                {error && (
-                  <FormError>
-                    <Template id={`${path}-error`} code={error.message} />
-                  </FormError>
-                )}
-              </FormLabel>
-            );
-          }}
-        </ConnectForm>
-      );
-    case 'date-input':
-      return (
-        <ConnectForm key={path}>
-          {({ errors, register }) => {
-            const error = get(errors, path);
-            return (
-              <FormLabel htmlFor={path}>
-                <Row>
-                  <Box marginBottom="8px">
-                    {labelTextComponent}
-                    {rules.required && <RequiredAsterisk />}
-                  </Box>
-                </Row>
-                <FormDateInput
-                  type="date"
-                  id={path}
-                  name={path}
-                  error={Boolean(error)}
-                  aria-invalid={Boolean(error)}
-                  aria-describedby={`${path}-error`}
-                  onBlur={updateCallback}
-                  innerRef={innerRef => {
-                    if (htmlElRef) {
-                      htmlElRef.current = innerRef;
-                    }
+                      register(rules)(ref);
+                    }}
+                    rows={def.rows ? def.rows : 10}
+                    width={def.width}
+                    defaultValue={initialValue}
+                  />
+                  {error && (
+                    <FormError>
+                      <Template id={`${path}-error`} code={error.message} />
+                    </FormError>
+                  )}
+                </FormLabel>
+              );
+            }}
+          </ConnectForm>
+        );
+      case 'time-input':
+        return (
+          <ConnectForm key={path}>
+            {({ errors, register }) => {
+              const error = get(errors, path);
+              return (
+                <FormLabel htmlFor={path}>
+                  <Row>
+                    <Box marginBottom="8px">
+                      {labelTextComponent}
+                      {rules.required && <RequiredAsterisk />}
+                    </Box>
+                  </Row>
+                  <FormTimeInput
+                    type="time"
+                    id={path}
+                    name={path}
+                    error={Boolean(error)}
+                    aria-invalid={Boolean(error)}
+                    aria-describedby={`${path}-error`}
+                    onBlur={updateCallback}
+                    ref={ref => {
+                      if (htmlElRef) {
+                        htmlElRef.current = ref;
+                      }
 
-                    register(rules)(innerRef);
-                  }}
-                  defaultValue={initialValue}
-                />
-                {error && (
-                  <FormError>
-                    <Template id={`${path}-error`} code={error.message} />
-                  </FormError>
-                )}
-              </FormLabel>
-            );
-          }}
-        </ConnectForm>
-      );
-    case 'file-upload':
-      return (
-        <ConnectForm key={path}>
-          {({ errors, clearErrors, register, setValue, watch }) => (
-            <UploadFileInput
-              errors={errors}
-              clearErrors={clearErrors}
-              register={register}
-              setValue={setValue}
-              watch={watch}
-              rules={rules}
-              path={path}
-              label={labelTextComponent}
-              description={def.description}
-              onFileChange={customHandlers.onFileChange}
-              onDeleteFile={customHandlers.onDeleteFile}
-              updateCallback={updateCallback}
-              RequiredAsterisk={RequiredAsterisk}
-              initialValue={initialValue}
-              htmlElRef={htmlElRef}
-            />
-          )}
-        </ConnectForm>
-      );
-    default:
-      return null;
-  }
-};
+                      register(rules)(ref);
+                    }}
+                    defaultValue={initialValue}
+                  />
+                  {error && (
+                    <FormError>
+                      <Template id={`${path}-error`} code={error.message} />
+                    </FormError>
+                  )}
+                </FormLabel>
+              );
+            }}
+          </ConnectForm>
+        );
+      case 'date-input':
+        return (
+          <ConnectForm key={path}>
+            {({ errors, register }) => {
+              const error = get(errors, path);
+              return (
+                <FormLabel htmlFor={path}>
+                  <Row>
+                    <Box marginBottom="8px">
+                      {labelTextComponent}
+                      {rules.required && <RequiredAsterisk />}
+                    </Box>
+                  </Row>
+                  <FormDateInput
+                    type="date"
+                    id={path}
+                    name={path}
+                    error={Boolean(error)}
+                    aria-invalid={Boolean(error)}
+                    aria-describedby={`${path}-error`}
+                    onBlur={updateCallback}
+                    ref={ref => {
+                      if (htmlElRef) {
+                        htmlElRef.current = ref;
+                      }
+
+                      register(rules)(ref);
+                    }}
+                    defaultValue={initialValue}
+                  />
+                  {error && (
+                    <FormError>
+                      <Template id={`${path}-error`} code={error.message} />
+                    </FormError>
+                  )}
+                </FormLabel>
+              );
+            }}
+          </ConnectForm>
+        );
+      case 'file-upload':
+        return (
+          <ConnectForm key={path}>
+            {({ errors, clearErrors, register, setValue, watch }) => (
+              <UploadFileInput
+                errors={errors}
+                clearErrors={clearErrors}
+                register={register}
+                setValue={setValue}
+                watch={watch}
+                rules={rules}
+                path={path}
+                label={labelTextComponent}
+                description={def.description}
+                onFileChange={customHandlers.onFileChange}
+                onDeleteFile={customHandlers.onDeleteFile}
+                updateCallback={updateCallback}
+                RequiredAsterisk={RequiredAsterisk}
+                initialValue={initialValue}
+                htmlElRef={htmlElRef}
+              />
+            )}
+          </ConnectForm>
+        );
+      default:
+        return null;
+    }
+  };
 
 type FileUploadCustomHandlers = {
   onFileChange: (event: any) => Promise<string>;
@@ -566,19 +568,20 @@ export type CustomHandlers = FileUploadCustomHandlers;
  * @param {string[]} parents Array of parents. Allows you to easily create nested form fields. https://react-hook-form.com/api#register.
  * @param {() => void} updateCallback Callback called to update form state. When is the callback called is specified in the input type (getInputType).
  */
-export const createFormFromDefinition = (definition: FormDefinition) => (parents: string[]) => (
-  initialValues: any,
-  firstElementRef: HTMLElementRef,
-) => (updateCallback: () => void, customHandlers?: CustomHandlers): JSX.Element[] => {
-  const bindGetInputType = getInputType(parents, updateCallback, customHandlers);
+export const createFormFromDefinition =
+  (definition: FormDefinition) =>
+  (parents: string[]) =>
+  (initialValues: any, firstElementRef: HTMLElementRef) =>
+  (updateCallback: () => void, customHandlers?: CustomHandlers): JSX.Element[] => {
+    const bindGetInputType = getInputType(parents, updateCallback, customHandlers);
 
-  return definition.map((e: FormItemDefinition, index: number) => {
-    const elementRef = index === 0 ? firstElementRef : null;
-    const maybeValue = get(initialValues, e.name);
-    const initialValue = maybeValue === undefined ? getInitialValue(e) : maybeValue;
-    return bindGetInputType(e)(initialValue, elementRef);
-  });
-};
+    return definition.map((e: FormItemDefinition, index: number) => {
+      const elementRef = index === 0 ? firstElementRef : null;
+      const maybeValue = get(initialValues, e.name);
+      const initialValue = maybeValue === undefined ? getInitialValue(e) : maybeValue;
+      return bindGetInputType(e)(initialValue, elementRef);
+    });
+  };
 
 export const disperseInputs = (margin: number) => (formItems: JSX.Element[]) =>
   formItems.map(i => (
