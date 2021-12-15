@@ -37,11 +37,18 @@ Not attempted this yet. If it's the same process as for the new environment, it 
 
 ## Missing Bits
 
-This terraform is currently incomplete, this is what isn't covered and needs creating with scripts or manually:
+This Terraform project is currently incomplete, this is what isn't covered and needs creating with scripts or manually:
+
+### What it should do but doesn't
 
 * Service Configuration - not currently managed by the twilio provider. We can use a provisioner but currently you need still need to call the REST service manually
 * API Keys - Whilst API Keys can be created using the twilio terraform provider, it's a bit useless because it provides no way of accessing the secret to record somewhere, so a key created in terraform can never be accessed as far as I can tell.
 * Okta - doesn't set up anything in Twilio or Okta for this right now.
 * DataDog - it puts the keys you provide via tfvars in the AWS Parameter Store, but it won't provision the application in DataDog for you (but it could!).
+...
+
+### What it shouldn't do
+
+* Workflows - It won't generate new serverless & flex workflows. The aim is to refactor these into single workflows, so in the meantime use the existing scripts in /scripts/setupNewAccount for these
 * Deployments - Terraform isn't supposed to deploy, only provision, so this script will never deploy our plugin, serverless functions or webchat.
 
