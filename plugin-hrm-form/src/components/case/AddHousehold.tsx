@@ -3,7 +3,7 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
-import { useForm, FormProvider } from 'react-hook-form';
+import { useForm, FormProvider, SubmitErrorHandler, FieldValues } from 'react-hook-form';
 
 import {
   Box,
@@ -33,6 +33,7 @@ import {
 import type { DefinitionVersion } from '../common/forms/types';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 import useFocus from '../../utils/useFocus';
+import { recordingErrorHandler } from '../../fullStory';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;
@@ -116,9 +117,10 @@ const AddHousehold: React.FC<Props> = ({
     onClickClose();
   }
   const { strings } = getConfig();
-  function onError() {
+  const onError: SubmitErrorHandler<FieldValues> = recordingErrorHandler('Case: Add Household', () => {
     window.alert(strings['Error-Form']);
-  }
+  });
+
   return (
     <FormProvider {...methods}>
       <CaseActionLayout>

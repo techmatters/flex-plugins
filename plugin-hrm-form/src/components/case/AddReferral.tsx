@@ -3,7 +3,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
-import { useForm, FormProvider } from 'react-hook-form';
+import { useForm, FormProvider, SubmitErrorHandler, FieldValues } from 'react-hook-form';
 
 import ActionHeader from './ActionHeader';
 import {
@@ -26,6 +26,7 @@ import { transformValues } from '../../services/ContactService';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 import { getConfig } from '../../HrmFormPlugin';
 import useFocus from '../../utils/useFocus';
+import { recordingErrorHandler } from '../../fullStory';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;
@@ -82,9 +83,9 @@ const AddReferral: React.FC<Props> = ({
   };
 
   const { strings } = getConfig();
-  function onError() {
+  const onError: SubmitErrorHandler<FieldValues> = recordingErrorHandler('Case: Add Referral', () => {
     window.alert(strings['Error-Form']);
-  }
+  });
 
   return (
     <FormProvider {...methods}>
