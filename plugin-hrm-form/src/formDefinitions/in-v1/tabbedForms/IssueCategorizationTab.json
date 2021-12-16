@@ -7,7 +7,7 @@
         "Erotic Posing",
         "Solo Sexual Activity",
         "Content featuring Non-penetrative sexual activity ",
-        "Content featuring Penetrative Sexual activity",
+        "Content featuring Penetrative sexual activity",
         "Violent Sexual Content",
         "Intimate Content Without Nudity",
         "Adult Pornographic Content",
@@ -15,7 +15,7 @@
         "Unspecified/Other"
       ]
     },
-    "Sexual Offenses": {
+    "Sexual Offences": {
       "color": "#F5A623",
       "subcategories": [
         "Penetrative Sexual Assualt",
@@ -43,7 +43,7 @@
         "Unspecified/Other"
       ]
     },
-    "Mental Health": {
+    "Mental Health Status": {
       "color": "#E86B6B",
       "subcategories": [
         "Addictive behaviours and substance use",
@@ -60,7 +60,7 @@
         "Unspecified/Other"
       ]
     },
-    "Accessibility": {
+    "Intervention Required": {
       "color": "#8055BA",
       "subcategories": [
         "Education",
@@ -70,42 +70,6 @@
         "Mental health services",
         "Sexual health services",
         "Socio-economical services",
-        "Unspecified/Other"
-      ]
-    },
-    "Peer Relationships": {
-      "color": "#9AD703",
-      "subcategories": [
-        "Friends and friendships",
-        "Partner relationships",
-        "Classmates/colleagues relationships",
-        "Online relationships",
-        "Unspecified/Other"
-      ]
-    },
-    "Education and Occupation": {
-      "color": "#55AFAF",
-      "subcategories": [
-        "Academic issues",
-        "Unspecified/Other"
-      ]
-    },
-    "Sexuality": {
-      "color": "#506BA5",
-      "subcategories": [
-        "Sexual orientation and gender identity",
-        "Sexual behaviours",
-        "Unspecified/Other"
-      ]
-    },
-    "Non-Counselling contacts": {
-      "color": "#767777",
-      "subcategories": [
-        "Complaints about the child helpline",
-        "Questions by parents",
-        "Questions about the child helpline",
-        "Questions about other services",
-        "\"Thank you for your assistance\"",
         "Unspecified/Other"
       ]
     }
