@@ -27,6 +27,21 @@
     ]
   },
   {
+    "name": "service",
+    "label": "Case Category",
+    "type": "select",
+    "options": [
+      { "value": "", "label": "" },
+      { "value": "Aarambh Trustline", "label": "Aarambh Trustline" },
+      { "value": "Other", "label": "Other" }
+    ]
+  },
+  {
+    "name": "serviceOther",
+    "label": "Specify other service",
+    "type": "input"
+  },
+  {
     "name": "howDidYouKnowAboutOurLine",
     "label": "How did you hear about our line/number",
     "type": "select",

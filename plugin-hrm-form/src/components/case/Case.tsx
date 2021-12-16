@@ -532,6 +532,7 @@ const Case: React.FC<Props> = props => {
                 Icon={CancelIcon}
                 text={<Template code="BottomBar-CancelNewCaseAndClose" />}
                 onClick={handleCancelNewCaseAndClose}
+                data-fs-id="Case-SaveAndEnd-Button"
               />
             </Menu>
           </CaseContainer>

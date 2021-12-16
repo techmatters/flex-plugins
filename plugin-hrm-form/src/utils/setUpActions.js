@@ -19,6 +19,7 @@ import callTypes, { transferModes } from '../states/DomainConstants';
 import * as TransferHelpers from './transfer';
 import { saveFormSharedState, loadFormSharedState } from './sharedState';
 import { prepopulateForm } from './prepopulateForm';
+import { defaultLanguage } from './pluginHelpers';
 import { recordEvent } from '../fullStory';
 
 /**
@@ -133,8 +134,7 @@ const handleTransferredTask = async task => {
   await restoreFormIfTransfer(task);
 };
 
-const getTaskLanguage = ({ helplineLanguage, configuredLanguage }) => ({ task }) =>
-  task.attributes.language || helplineLanguage || configuredLanguage;
+export const getTaskLanguage = ({ helplineLanguage }) => ({ task }) => task.attributes.language || helplineLanguage;
 
 /**
  * @param {string} messageKey
@@ -161,8 +161,18 @@ const sendSystemMessageOfKey = messageKey => setupObject => async payload => {
   await sendSystemMessage({ taskSid: payload.task.taskSid, message, from: 'Bot' });
 };
 
+let customGoodbyeMessage;
+export const setCustomGoodbyeMessage = message => (customGoodbyeMessage = message);
+
+const sendSystemCustomGoodyeMessage = () => () => async payload => {
+  const message = customGoodbyeMessage;
+  customGoodbyeMessage = null; // Clear customGoodbyeMessage
+  await sendSystemMessage({ taskSid: payload.task.taskSid, message, from: 'Bot' });
+};
+
 const sendWelcomeMessage = sendMessageOfKey('WelcomeMsg');
-const sendGoodbyeMessage = sendSystemMessageOfKey('GoodbyeMsg');
+const sendGoodbyeMessage = () =>
+  customGoodbyeMessage ? sendSystemCustomGoodyeMessage() : sendSystemMessageOfKey('GoodbyeMsg');
 
 /**
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
@@ -266,7 +276,7 @@ export const hangupCall = fromActionFunction(saveEndMillis);
 export const wrapupTask = setupObject =>
   fromActionFunction(async payload => {
     if (TaskHelper.isChatBasedTask(payload.task)) {
-      await sendGoodbyeMessage(setupObject)(payload);
+      await sendGoodbyeMessage()(setupObject)(payload);
     }
     await saveEndMillis(payload);
   });
@@ -317,18 +327,21 @@ export const setUpPostSurvey = setupObject => {
 };
 
 /**
- * @type {import('@twilio/flex-ui').ActionFunction}
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
+ * @param {{ task: import('@twilio/flex-ui').ITask }} payload
  */
-const triggerPostSurvey = async payload => {
+const triggerPostSurvey = async (setupObject, payload) => {
   const { task } = payload;
 
-  // if (featureFlags.enable_post_survey) {
   if (TaskHelper.isChatBasedTask(task)) {
+    const { taskSid } = task;
     const channelSid = TaskHelper.getTaskChatChannelSid(task);
+    const taskLanguage = getTaskLanguage(setupObject)(payload);
 
-    await postSurveyInit({ channelSid, taskSid: task.taskSid });
+    const body = taskLanguage ? { channelSid, taskSid, taskLanguage } : { channelSid, taskSid };
+
+    await postSurveyInit(body);
   }
-  // }
 };
 
 /**
@@ -339,7 +352,7 @@ export const afterCompleteTask = setupObject => async payload => {
   const { featureFlags } = setupObject;
 
   if (featureFlags.enable_post_survey) {
-    await triggerPostSurvey(payload);
+    await triggerPostSurvey(setupObject, payload);
   }
 
   removeContactForm(payload);

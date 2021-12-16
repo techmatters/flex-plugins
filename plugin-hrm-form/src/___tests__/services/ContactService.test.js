@@ -10,6 +10,9 @@ import { offlineContactTaskSid } from '../../types/types';
 
 const helpline = 'ChildLine Zambia (ZM)';
 
+// eslint-disable-next-line no-empty-function
+global.fetch = global.fetch ? global.fetch : () => {};
+
 jest.mock('../../services/formSubmissionHelpers', () => ({
   getHelplineToSave: () => ({
     helpline: Promise.resolve(helpline),
