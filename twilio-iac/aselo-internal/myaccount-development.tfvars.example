@@ -1,0 +1,8 @@
+helpline    = "MyAccount"
+short_helpline = "POC"
+short_environment = "DEV"
+environment = "Development"
+account_sid = "###"
+datadog_app_id = "###"
+operating_info_key = "ma"
+serverless_number = 0000
