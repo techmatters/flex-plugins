@@ -27,14 +27,14 @@ In order to set up the Aselo Terraform project:
 
 There are currently some gotchas which mean that, unfortunately, it's not a simple as running `terraform apply` when provisioning an environment for the first time (but hopefully should be good after that).
 
-The process for a first fun is as follows:
+The process for a first run is as follows:
 
 * Run the following to create a new workspace for your environment (this is required you can track state separately for each account)
 ```terraform new workspace <helpline>-<environment>```
 *
 * Run the script below. Twilio creates a bunch of default resources on a new account and Aselo uses some of them. We need to import them into terraform first, otherwise terraform assumes they don't exist and will try to create them, resulting in errors.
 ```
-npm run importDefaultTwilioResourcesToTerraform <your tfvars file relative to /twilio-iac/aselo-internal>
+npm run importDefaultTwilioResourcesToTerraform <your tfvars file relative to /twilio-iac/aselo-terraform>
 ```
 * Run and review the output of:
 ```terraform plan -var-file <helpline>-<environment>.tfvars```

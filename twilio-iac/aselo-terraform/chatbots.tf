@@ -51,7 +51,7 @@ resource "twilio_autopilot_assistants_v1" "pre_survey" {
 //Post Survey
 resource "twilio_autopilot_assistants_v1" "post_survey" {
   unique_name       = "post_survey_bot"
-  friendly_name     = "A bot that collects a pre-survey"
+  friendly_name     = "A bot that collects a post-survey"
   log_queries = true
 }
 
