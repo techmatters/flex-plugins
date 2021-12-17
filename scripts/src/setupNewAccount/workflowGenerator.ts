@@ -44,7 +44,7 @@ export const checkWorkflowInSync = async (remoteUrl: string, templatePath: strin
   const generated = generateWorkflowContent(aseloDevConfig, templatePath);
 
   if (expected !== generated)
-    logError(
+    throw new Error(
       'The generated workflow file differs from the one being used by Aselo Development.',
     );
 };
