@@ -560,7 +560,6 @@ const TaskButtonBase = withStyles({
 
 // @ts-ignore
 export const AddTaskIconContainer = styled('div')`
-  ${props => console.log('>>>>>>>>>', props)}
   display: flex;
   flex: 0 0 44px;
   height: 44px;
