@@ -1,0 +1,1 @@
+variable "serverless_url" {}

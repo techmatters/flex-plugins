@@ -70,7 +70,7 @@ locals {
             "x": -20
           },
           "chat_channel": "{{trigger.message.ChannelSid}}",
-          "autopilot_assistant_sid": twilio_autopilot_assistants_v1.pre_survey.sid
+          "autopilot_assistant_sid": module.chatbots.pre_survey_bot_sid
         }
       },
       {
