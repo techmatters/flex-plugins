@@ -12,8 +12,8 @@ You will require the following installed locally:
 * Clone, build & install the latest version of the Twilio Terraform Provider: https://www.terraform.io/downloads. Windows users - the projects `Makefile` contains bash specific commands, so will not run even if you install make, but the commands can be run manually: https://github.com/twilio/terraform-provider-twilio/blob/main/Makefile (should probably make a script).
 * You need the following environment variables: 
   - AWS_ACCESS_KEY_ID & AWS_SECRET_ACCESS_KEY set for the script user
-  - TWILIO_ACCOUNT_SID & TWILIO_AUTH_TOKEN set to the account you want to manage
-  - TF_VAR_datadog_access_token set for the RUM app that should already be created for the account
+  - TWILIO_ACCOUNT_SID & TWILIO_AUTH_TOKEN set to the account you want to manage, and TF_VAR_account_sid to the same as TWILIO_ACCOUNT_SID (we need the account sid as a variable as well as a cred.)
+  - TF_VAR_datadog_app_id & TF_VAR_datadog_access_token set for the RUM app that should already be created for the account
 
 ## Preparation
 

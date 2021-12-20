@@ -5,19 +5,7 @@ variable "short_helpline" {}
 
 variable "environment" {}
 variable "short_environment" {}
-
-variable "datadog_app_id" {}
-variable "datadog_access_token" {}
 variable "operating_info_key" {}
-
-
-provider "twilio" {
-  # Configuration options
-  # Override the account_sid with the one in the tfvars file you provide.
-  # This means if your twilio environment variables are set to the wrong account, it will get an auth failure rather than risking trashing an account
-  username = var.account_sid
-}
-
 
 // Workspaces
 resource "twilio_taskrouter_workspaces_v1" "flex_task_assignment" {
