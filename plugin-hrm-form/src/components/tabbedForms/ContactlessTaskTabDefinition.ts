@@ -15,10 +15,10 @@ const channelOptions = [{ value: '', label: '' }].concat(
 );
 
 export const createContactlessTaskTabDefinition = (
+  // workerSid: string,
   counselorsList: CounselorsList,
   helplineDefinitions: HelplineDefinitions,
 ): FormDefinition => {
-  const { workerSid } = getConfig();
   const counsellorOptions = [
     { label: '', value: '' },
     ...counselorsList.map(c => ({ label: c.fullName, value: c.sid })),
@@ -44,7 +44,7 @@ export const createContactlessTaskTabDefinition = (
       type: 'select',
       label: 'Counsellor',
       options: counsellorOptions,
-      defaultOption: workerSid,
+      // defaultOption: workerSid,
       required: { value: true, message: 'RequiredFieldError' },
     },
     {
