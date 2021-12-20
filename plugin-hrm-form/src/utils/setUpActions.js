@@ -10,10 +10,11 @@ import {
   getDefinitionVersion,
   postSurveyInit,
 } from '../services/ServerlessService';
-import { namespace, contactFormsBase, connectedCaseBase, configurationBase } from '../states';
+import { namespace, contactFormsBase, connectedCaseBase, configurationBase, dualWriteBase } from '../states';
 import * as Actions from '../states/contacts/actions';
 import { populateCurrentDefinitionVersion, updateDefinitionVersion } from '../states/configuration/actions';
 import { changeRoute } from '../states/routing/actions';
+import { clearCustomGoodbyeMessage } from '../states/dualWrite/actions';
 import * as GeneralActions from '../states/actions';
 import callTypes, { transferModes } from '../states/DomainConstants';
 import * as TransferHelpers from './transfer';
@@ -161,18 +162,20 @@ const sendSystemMessageOfKey = messageKey => setupObject => async payload => {
   await sendSystemMessage({ taskSid: payload.task.taskSid, message, from: 'Bot' });
 };
 
-let customGoodbyeMessage;
-export const setCustomGoodbyeMessage = message => (customGoodbyeMessage = message);
-
-const sendSystemCustomGoodyeMessage = () => () => async payload => {
-  const message = customGoodbyeMessage;
-  customGoodbyeMessage = null; // Clear customGoodbyeMessage
-  await sendSystemMessage({ taskSid: payload.task.taskSid, message, from: 'Bot' });
+const sendSystemCustomGoodyeMessage = customGoodbyeMessage => () => async payload => {
+  const { taskSid } = payload.task;
+  Manager.getInstance().store.dispatch(clearCustomGoodbyeMessage(taskSid));
+  await sendSystemMessage({ taskSid, message: customGoodbyeMessage, from: 'Bot' });
 };
 
 const sendWelcomeMessage = sendMessageOfKey('WelcomeMsg');
-const sendGoodbyeMessage = () =>
-  customGoodbyeMessage ? sendSystemCustomGoodyeMessage() : sendSystemMessageOfKey('GoodbyeMsg');
+const sendGoodbyeMessage = taskSid => {
+  const customGoodbyeMessage = Manager.getInstance().store.getState()[namespace][dualWriteBase].tasks[taskSid]
+    ?.customGoodbyeMessage;
+  return customGoodbyeMessage
+    ? sendSystemCustomGoodyeMessage(customGoodbyeMessage)
+    : sendSystemMessageOfKey('GoodbyeMsg');
+};
 
 /**
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
@@ -276,7 +279,7 @@ export const hangupCall = fromActionFunction(saveEndMillis);
 export const wrapupTask = setupObject =>
   fromActionFunction(async payload => {
     if (TaskHelper.isChatBasedTask(payload.task)) {
-      await sendGoodbyeMessage()(setupObject)(payload);
+      await sendGoodbyeMessage(payload.task.taskSid)(setupObject)(payload);
     }
     await saveEndMillis(payload);
   });
