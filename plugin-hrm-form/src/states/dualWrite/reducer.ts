@@ -13,7 +13,6 @@ type DualWriteState = {
 
 const initialState: DualWriteState = { tasks: {} };
 
-// eslint-disable-next-line import/no-unused-modules
 export function reduce(state = initialState, action: t.DualWriteActionType | GeneralActionType): DualWriteState {
   switch (action.type) {
     case t.SET_CUSTOM_GOODBYE_MESSAGE:

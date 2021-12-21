@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 // eslint-disable-next-line no-unused-vars
 import { Manager, TaskHelper, Actions as FlexActions, StateHelper, ChatOrchestrator } from '@twilio/flex-ui';
 
@@ -162,7 +163,7 @@ const sendSystemMessageOfKey = messageKey => setupObject => async payload => {
   await sendSystemMessage({ taskSid: payload.task.taskSid, message, from: 'Bot' });
 };
 
-const sendSystemCustomGoodyeMessage = customGoodbyeMessage => () => async payload => {
+const sendSystemCustomGoodbyeMessage = customGoodbyeMessage => () => async payload => {
   const { taskSid } = payload.task;
   Manager.getInstance().store.dispatch(clearCustomGoodbyeMessage(taskSid));
   await sendSystemMessage({ taskSid, message: customGoodbyeMessage, from: 'Bot' });
@@ -170,10 +171,13 @@ const sendSystemCustomGoodyeMessage = customGoodbyeMessage => () => async payloa
 
 const sendWelcomeMessage = sendMessageOfKey('WelcomeMsg');
 const sendGoodbyeMessage = taskSid => {
-  const customGoodbyeMessage = Manager.getInstance().store.getState()[namespace][dualWriteBase].tasks[taskSid]
-    ?.customGoodbyeMessage;
+  const { enable_dual_write } = getConfig().featureFlags;
+
+  const customGoodbyeMessage =
+    enable_dual_write &&
+    Manager.getInstance().store.getState()[namespace][dualWriteBase].tasks[taskSid]?.customGoodbyeMessage;
   return customGoodbyeMessage
-    ? sendSystemCustomGoodyeMessage(customGoodbyeMessage)
+    ? sendSystemCustomGoodbyeMessage(customGoodbyeMessage)
     : sendSystemMessageOfKey('GoodbyeMsg');
 };
 
