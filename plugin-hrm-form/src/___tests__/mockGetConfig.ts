@@ -1,5 +1,8 @@
 /* eslint-disable camelcase */
-import mockV1 from '../formDefinitions/v1';
+
+import { DefinitionVersion } from '../components/common/forms/types';
+import { DefinitionVersionId } from '../formDefinitions';
+import { getDefinitionVersions } from '../HrmFormPlugin';
 
 jest.mock('../HrmFormPlugin', () => ({
   getConfig: () => {
@@ -31,8 +34,16 @@ jest.mock('../HrmFormPlugin', () => ({
       },
     };
   },
-  getDefinitionVersions: jest.fn(() => ({
-    currentDefinitionVersion: mockV1,
-    definitionVersions: { v1: mockV1 },
-  })),
+  getDefinitionVersions: jest.fn(),
 }));
+
+export const mockGetDefinitionsResponse = (
+  funcToMock: () => any,
+  mockVersion: DefinitionVersionId,
+  mockFormDefinitions: DefinitionVersion,
+) => {
+  (<jest.Mock>funcToMock).mockReturnValue({
+    currentDefinitionVersion: mockFormDefinitions,
+    definitionVersions: { [mockVersion]: mockFormDefinitions },
+  });
+};

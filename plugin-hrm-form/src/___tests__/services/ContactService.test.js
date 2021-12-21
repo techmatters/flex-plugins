@@ -1,12 +1,12 @@
 import { set } from 'lodash/fp';
 
-import '../mockGetConfig';
-
+import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import { transformForm, saveContact, createCategoriesObject } from '../../services/ContactService';
 import { createNewTaskEntry } from '../../states/contacts/reducer';
 import callTypes, { channelTypes } from '../../states/DomainConstants';
-import mockV1 from '../../formDefinitions/v1';
 import { offlineContactTaskSid } from '../../types/types';
+import { DefinitionVersionId, loadDefinition } from '../../formDefinitions';
+import { getDefinitionVersions } from '../../HrmFormPlugin';
 
 const helpline = 'ChildLine Zambia (ZM)';
 
@@ -18,6 +18,13 @@ jest.mock('../../services/formSubmissionHelpers', () => ({
     helpline: Promise.resolve(helpline),
   }),
 }));
+
+let mockV1;
+
+beforeAll(async () => {
+  mockV1 = await loadDefinition(DefinitionVersionId.v1);
+  mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
+});
 
 describe('transformForm', () => {
   test('removes control information and presents values only', () => {
@@ -90,11 +97,8 @@ describe('transformForm', () => {
   });
 });
 
-// The tabbed form definitions, used to create new form state.
-const definitions = mockV1;
-
 const createForm = ({ callType, childFirstName }, contactlessTaskInfo = undefined) => {
-  const blankForm = createNewTaskEntry(definitions)(false);
+  const blankForm = createNewTaskEntry(mockV1)(false);
   const contactlessTask = contactlessTaskInfo || blankForm.contactlessTask;
 
   return {

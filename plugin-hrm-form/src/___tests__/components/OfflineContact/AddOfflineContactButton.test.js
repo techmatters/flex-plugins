@@ -11,7 +11,9 @@ import HrmTheme from '../../../styles/HrmTheme';
 import { AddOfflineContactButton } from '../../../components/OfflineContact';
 import { namespace, routingBase, configurationBase } from '../../../states';
 import { reRenderAgentDesktop } from '../../../HrmFormPlugin';
-import v1 from '../../../formDefinitions/v1';
+import { DefinitionVersionId, loadDefinition } from '../../../formDefinitions';
+
+let v1;
 
 jest.mock('../../../services/ServerlessService');
 jest.mock('../../../HrmFormPlugin.js', () => ({
@@ -24,7 +26,9 @@ jest.mock('@twilio/flex-ui', () => ({
   },
 }));
 
-beforeEach(() => {
+beforeAll(async () => (v1 = await loadDefinition(DefinitionVersionId.v1)));
+
+beforeEach(async () => {
   Actions.invokeAction.mockClear();
   reRenderAgentDesktop.mockClear();
 });

@@ -6,6 +6,7 @@ import { Text, View, Image } from '@react-pdf/renderer';
 import { getConfig } from '../../../HrmFormPlugin';
 import styles from './styles';
 import CasePrintCategories from './CasePrintCategories';
+import { DefinitionVersionId } from '../../../formDefinitions';
 
 type OwnProps = {
   status: string;
@@ -24,7 +25,7 @@ type OwnProps = {
       [subcategory: string]: boolean;
     };
   };
-  version: string;
+  version: DefinitionVersionId;
   chkOnBlob?: string;
   chkOffBlob?: string;
 };

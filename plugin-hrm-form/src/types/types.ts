@@ -2,6 +2,7 @@
 import { ITask } from '@twilio/flex-ui';
 
 import type { CallTypes } from '../states/DomainConstants';
+import { DefinitionVersionId } from '../formDefinitions';
 
 type EntryInfo = { createdAt: string; twilioWorkerId: string };
 
@@ -44,7 +45,7 @@ export const blankReferral = {
 };
 
 export type CaseInfo = {
-  definitionVersion?: string;
+  definitionVersion?: DefinitionVersionId;
   offlineContactCreator?: string;
   summary?: string;
   notes?: NoteEntry[];
@@ -75,7 +76,7 @@ export type InformationObject = NestedInformation & {
 
 // Information about a single contact, as expected from DB (we might want to reuse this type in backend) - (is this a correct placement for this?)
 export type ContactRawJson = {
-  definitionVersion?: string;
+  definitionVersion?: DefinitionVersionId;
   callType: CallTypes | '';
   childInformation: InformationObject;
   callerInformation: InformationObject;

@@ -3,18 +3,25 @@ import renderer from 'react-test-renderer';
 import { format } from 'date-fns';
 
 import '../mockStyled';
-import '../mockGetConfig';
 
+import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import ContactPreview from '../../components/search/ContactPreview';
 import ChildNameAndDate from '../../components/search/ContactPreview/ChildNameAndDate';
 import CallSummary from '../../components/search/ContactPreview/CallSummary';
 import TagsAndCounselor from '../../components/search/ContactPreview/TagsAndCounselor';
 import { mapCallType } from '../../utils';
+import { getDefinitionVersions } from '../../HrmFormPlugin';
+import { DefinitionVersionId, loadDefinition } from '../../formDefinitions';
 
 const NonExisting = () => <>NonExisting</>;
 NonExisting.displayName = 'NonExisting';
 
-test('<ContactPreview> should mount', () => {
+test('<ContactPreview> should mount', async () => {
+  mockGetDefinitionsResponse(
+    getDefinitionVersions,
+    DefinitionVersionId.v1,
+    await loadDefinition(DefinitionVersionId.v1),
+  );
   const contact = {
     contactId: '123',
     overview: {

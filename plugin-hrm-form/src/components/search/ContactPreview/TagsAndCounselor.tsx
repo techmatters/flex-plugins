@@ -6,6 +6,7 @@ import { Flex } from '../../../styles/HrmStyles';
 import { ContactTag, CounselorText, TagText, TagMiddleDot, SummaryText, TagsWrapper } from '../../../styles/search';
 import CategoryWithTooltip from '../../common/CategoryWithTooltip';
 import { getContactTags } from '../../../utils/categories';
+import { DefinitionVersionId } from '../../../formDefinitions';
 
 // eslint-disable-next-line react/display-name
 const renderTag = (tag, color) => (
@@ -18,7 +19,7 @@ const renderTag = (tag, color) => (
 type OwnProps = {
   counselor: string;
   categories: { [category: string]: string[] };
-  definitionVersion: string;
+  definitionVersion: DefinitionVersionId;
 };
 
 type Props = OwnProps;

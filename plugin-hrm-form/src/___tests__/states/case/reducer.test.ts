@@ -2,7 +2,7 @@ import { reduce } from '../../../states/case/reducer';
 import * as actions from '../../../states/case/actions';
 import * as GeneralActions from '../../../states/actions';
 import { Case } from '../../../types/types';
-import mockV1 from '../../../formDefinitions/v1';
+import { DefinitionVersionId, loadDefinition } from '../../../formDefinitions';
 
 const task = { taskSid: 'task1' };
 const voidDefinitions = {
@@ -14,6 +14,11 @@ const voidDefinitions = {
 
 describe('test reducer', () => {
   let state = undefined;
+  let mockV1;
+
+  beforeAll(async () => {
+    mockV1 = await loadDefinition(DefinitionVersionId.v1);
+  });
 
   test('should return initial state', async () => {
     const expected = { tasks: {} };

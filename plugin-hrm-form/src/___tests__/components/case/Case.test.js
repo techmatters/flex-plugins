@@ -8,14 +8,15 @@ import { mount } from 'enzyme';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 
-import '../../mockGetConfig';
+import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import HrmTheme from '../../../styles/HrmTheme';
 import Case from '../../../components/case';
 import CaseDetails from '../../../components/case/CaseDetails';
 import { namespace, configurationBase, contactFormsBase, connectedCaseBase, routingBase } from '../../../states';
 import { UPDATE_TEMP_INFO } from '../../../states/case/types';
 import { cancelCase, getActivities } from '../../../services/CaseService';
-import mockV1 from '../../../formDefinitions/v1';
+import { DefinitionVersionId, loadDefinition } from '../../../formDefinitions';
+import { getDefinitionVersions } from '../../../HrmFormPlugin';
 
 jest.mock('react', () => ({
   ...jest.requireActual('react'),
@@ -88,7 +89,60 @@ const ownProps = {
   },
 };
 
+let mockV1;
+let initialState;
 describe('useState mocked', () => {
+  beforeAll(async () => {
+    mockV1 = await loadDefinition(DefinitionVersionId.v1);
+    mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
+  });
+
+  beforeEach(() => {
+    initialState = createState({
+      [configurationBase]: {
+        counselors: {
+          list: [],
+          hash: { worker1: 'worker1 name' },
+        },
+        definitionVersions: { v1: mockV1 },
+        currentDefinitionVersion: mockV1,
+      },
+      [contactFormsBase]: {
+        tasks: {
+          task1: {
+            childInformation: {
+              firstName: 'first',
+              lastName: 'last',
+            },
+            metadata: {},
+            caseInformation: {
+              callSummary: 'contact call summary',
+            },
+            categories: [],
+          },
+          temporaryCaseInfo: '',
+        },
+      },
+      [connectedCaseBase]: {
+        tasks: {
+          task1: {
+            connectedCase: {
+              id: 123,
+              createdAt: '2020-06-29T22:26:00.208Z',
+              twilioWorkerId: 'worker1',
+              status: 'open',
+              info: { definitionVersion: 'v1' },
+              connectedContacts: [],
+            },
+            temporaryCaseInfo: '',
+            prevStatus: 'open',
+          },
+        },
+      },
+      [routingBase]: { tasks: { task1: { route: 'new-case' } } },
+    });
+  });
+
   const setState = jest.fn();
   const useStateMock = initState => [initState, setState];
 
@@ -99,7 +153,7 @@ describe('useState mocked', () => {
   });
 
   test('Case (should return null)', async () => {
-    const initialState = createState({
+    initialState = createState({
       [contactFormsBase]: {
         tasks: {
           task1: {
@@ -135,50 +189,6 @@ describe('useState mocked', () => {
 
     const details = component.findAllByType(CaseDetails);
     expect(details.length).toBe(0);
-  });
-
-  const initialState = createState({
-    [configurationBase]: {
-      counselors: {
-        list: [],
-        hash: { worker1: 'worker1 name' },
-      },
-      definitionVersions: { v1: mockV1 },
-      currentDefinitionVersion: mockV1,
-    },
-    [contactFormsBase]: {
-      tasks: {
-        task1: {
-          childInformation: {
-            firstName: 'first',
-            lastName: 'last',
-          },
-          metadata: {},
-          caseInformation: {
-            callSummary: 'contact call summary',
-          },
-          categories: [],
-        },
-        temporaryCaseInfo: '',
-      },
-    },
-    [connectedCaseBase]: {
-      tasks: {
-        task1: {
-          connectedCase: {
-            id: 123,
-            createdAt: '2020-06-29T22:26:00.208Z',
-            twilioWorkerId: 'worker1',
-            status: 'open',
-            info: { definitionVersion: 'v1' },
-            connectedContacts: [],
-          },
-          temporaryCaseInfo: '',
-          prevStatus: 'open',
-        },
-      },
-    },
-    [routingBase]: { tasks: { task1: { route: 'new-case' } } },
   });
 
   const addInfoToCase = info => ({
