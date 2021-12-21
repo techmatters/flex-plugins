@@ -7,13 +7,14 @@ These are scripts for provisioning some of the Aselo Twilio infrastructure.
 You will require the following installed locally:
 
 * Terraform - https://www.terraform.io/downloads
-* Go - https://www.terraform.io/downloads. This is required to build the Twilio Terraform Plugin. You require version 17+ to build the plugin. Ubuntu users, do not use the version on the Debian package manager, it is too old to build the plugin, follow the instructions on the link instead
+* Go - https://go.dev/dl/. This is required to build the Twilio Terraform Plugin. You require version 17+ to build the plugin. Ubuntu users, do not use the version on the Debian package manager, it is too old to build the plugin, follow the instructions on the link instead
 * Make - used to build the plugin (except on Windows, see next point)
 * Clone, build & install the latest version of the Twilio Terraform Provider: https://www.terraform.io/downloads. Windows users - the projects `Makefile` contains bash specific commands, so will not run even if you install make, but the commands can be run manually: https://github.com/twilio/terraform-provider-twilio/blob/main/Makefile (should probably make a script).
 * You need the following environment variables: 
   - AWS_ACCESS_KEY_ID & AWS_SECRET_ACCESS_KEY set for the script user
   - TWILIO_ACCOUNT_SID & TWILIO_AUTH_TOKEN set to the account you want to manage, and TF_VAR_account_sid to the same as TWILIO_ACCOUNT_SID (we need the account sid as a variable as well as a cred.)
   - TF_VAR_datadog_app_id & TF_VAR_datadog_access_token set for the RUM app that should already be created for the account
+  - TF_VAR_serverless_url - once set, the production serverless environment's domain, once set, use a placeholder until then.
 
 ## Preparation
 
@@ -40,7 +41,7 @@ npm run importDefaultTwilioResourcesToTerraform <your tfvars file relative to /t
 ```terraform plan -var-file <helpline>-<environment>.tfvars```
  Run:
 ```terraform apply -var-file <helpline>-<environment>.tfvars```
-* Go to the console for your environment, go into Functions > Services > serverless > environments and copy the domain for production (e.g. http://serverless-1234-production.twil.io) and set it as your `serverless_url` in your *.tfvars file.
+* Go to the console for your environment, go into Functions > Services > serverless > environments and copy the domain for production (e.g. http://serverless-1234-production.twil.io) and set it as your `TF_VAR_serverless_url` environment variable.
 * Rerun
 ```terraform apply -var-file <helpline>-<environment>.tfvars```
 

@@ -8,9 +8,6 @@ config();
 
 const TERRAFORM_WORKING_DIRECTORY = '../twilio-iac/aselo-terraform';
 
-logSuccess(fs.realpathSync(TERRAFORM_WORKING_DIRECTORY));
-logSuccess(process.env.TWILIO_ACCOUNT_SID);
-logSuccess(process.env.TWILIO_AUTH_TOKEN);
 const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
 function attemptTerraformImport(
