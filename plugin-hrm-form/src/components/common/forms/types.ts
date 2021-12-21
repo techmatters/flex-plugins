@@ -2,7 +2,7 @@
 import type { RegisterOptions } from 'react-hook-form';
 
 import { CallTypeKeys } from '../../../states/DomainConstants';
-import { OneToManyConfigSpecs, OneToOneConfigSpec } from '../../../insightsConfig/types';
+import { OneToOneConfigSpec, OneToManyConfigSpecs } from '../../../insightsConfig/types';
 
 export type FormFieldType = { value: string; error?: string; validation?: string[]; touched?: boolean };
 

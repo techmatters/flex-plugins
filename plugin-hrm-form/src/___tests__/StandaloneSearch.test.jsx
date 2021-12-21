@@ -6,11 +6,11 @@ import configureMockStore from 'redux-mock-store';
 
 import './mockStyled';
 
+import { mockGetDefinitionsResponse } from './mockGetConfig';
 import StandaloneSearch from '../components/StandaloneSearch';
 import { initialState as searchInitialState } from '../states/search/reducer';
 import { standaloneTaskSid } from '../types/types';
 import { DefinitionVersionId, loadDefinition } from '../formDefinitions';
-import { mockGetDefinitionsResponse } from './mockGetConfig';
 import { getDefinitionVersions } from '../HrmFormPlugin';
 
 const mockStore = configureMockStore([]);
