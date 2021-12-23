@@ -1,0 +1,5 @@
+helpline    = "Aarambh"
+short_helpline = "IN"
+short_environment = "PROD"
+environment = "Production"
+operating_info_key = "aselo-dev"
