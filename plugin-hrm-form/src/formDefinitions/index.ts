@@ -10,12 +10,12 @@ import {
 import { OneToManyConfigSpecs, OneToOneConfigSpec } from '../insightsConfig/types';
 
 export enum DefinitionVersionId {
-  v1 = 'v1',
-  brV1 = 'br-v1',
-  etV1 = 'et-v1',
-  inV1 = 'in-v1',
-  mwV1 = 'mw-v1',
-  zaV1 = 'za-v1',
+  v1 = 'v1', // Zambia V1
+  brV1 = 'br-v1', // Safernet Brasil v1
+  etV1 = 'et-v1', // Ethiopia v1
+  inV1 = 'in-v1', // Aarambh Trustline v1
+  mwV1 = 'mw-v1', // Malawi v1
+  zaV1 = 'za-v1', // South Africa v1
 }
 
 export async function loadDefinition(version: DefinitionVersionId) {
