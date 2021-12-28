@@ -75,7 +75,7 @@
   },
   {
     "name": "didTheChildFeelWeSolvedTheirProblem",
-    "label": "Did the child feel we solved their problem?",
+    "label": "Did the caller feel satisfied with the response to the call?",
     "type": "mixed-checkbox"
   }
 ]
