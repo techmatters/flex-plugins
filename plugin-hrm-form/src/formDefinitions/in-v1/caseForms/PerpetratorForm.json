@@ -60,8 +60,8 @@
     },
     {
       "name": "knownToChild",
-      "label": "Is perpetrator know to child?",
-      "type": "checkbox"
+      "label": "Is perpetrator known to victim?",
+      "type": "mixed-checkbox"
     },
     {
       "name": "relationshipToChild",
