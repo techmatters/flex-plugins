@@ -83,6 +83,11 @@
       ]
     },
     {
+      "name": "otherRelationship",
+      "label": "If Other, please specify",
+      "type": "input"
+    },
+    {
       "name": "address",
       "label": "Address",
       "type": "input"
