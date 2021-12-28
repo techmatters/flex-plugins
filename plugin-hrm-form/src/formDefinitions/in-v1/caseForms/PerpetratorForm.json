@@ -74,7 +74,7 @@
         { "value": "Other close relative", "label": "Other close relative" },          
         { "value": "Parent", "label": "Parent" },
         { "value": "Person living in the neighborhood", "label": "Person living in the neighborhood" },
-        { "value": "Person living in educational institution", "label": "Person educational institution" },
+        { "value": "Person living in educational institution", "label": "Person in educational institution" },
         { "value": "Peer", "label": "Peer" },
         { "value": "Sibling", "label": "Sibling(s)" },
         { "value": "Partner", "label": "Stranger" },   
