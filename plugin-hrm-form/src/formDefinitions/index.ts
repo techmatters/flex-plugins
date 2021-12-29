@@ -56,7 +56,7 @@ export async function loadDefinition(version: DefinitionVersionId) {
 
   const { helplines } = helplineInformationModule.default;
   const defaultHelpline =
-    helplineInformationModule.default.helplines.find(helpline => helplines).value || helplines[0].value;
+    helplineInformationModule.default.helplines.find(helpline => helpline.default).value || helplines[0].value;
   return {
     caseForms: {
       HouseholdForm: householdFormModule.default as FormDefinition,
