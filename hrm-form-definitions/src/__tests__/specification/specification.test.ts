@@ -109,7 +109,6 @@ describe('processDefinitionFiles', () => {
     expect(() => processDefinitionFiles(circularStructure, processor)).toThrow();
   });
 
-
   test('Structure with array of DefinitionFileSpecifications - processes each passing the index to the path', () => {
     const processor = jest.fn();
 
