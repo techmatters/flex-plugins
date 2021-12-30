@@ -88,7 +88,7 @@ const TaskView: React.FC<Props> = props => {
     <Flex flexDirection="column" height="100%">
       {featureFlags.enable_previous_contacts && <PreviousContactsBanner task={task} />}
       {!hasTaskControl(task) && <FormNotEditable />}
-      <HrmForm task={task} />
+      <HrmForm task={task} featureFlags={featureFlags} />
     </Flex>
   );
 };

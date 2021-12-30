@@ -12,6 +12,8 @@ import {
 } from '../../../states/types';
 import { reduce, newTaskEntry } from '../../../states/search/reducer';
 
+jest.mock('../../../components/CSAMReport/CSAMReportFormDefinition');
+
 // @ts-ignore
 Object.fromEntries = fromentries;
 
