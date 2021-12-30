@@ -1,6 +1,6 @@
 /* eslint-disable import/no-unused-modules */
-import { OneToOneConfigSpec, OneToManyConfigSpecs } from './insightsConfig';
 import { RegisterOptions } from './reackHookFormTypes';
+import { OneToOneConfigSpec, OneToManyConfigSpecs } from './insightsConfig';
 import { CallTypeKeys } from './callTypes';
 
 /**
@@ -79,6 +79,11 @@ type FileUploadDefinition = {
 } & ItemBase &
   RegisterOptions;
 
+type CallTypeButtonInputDefinition = {
+  type: 'button';
+  category: 'data' | 'non-data';
+} & ItemBase;
+
 export type FormItemDefinition =
   | InputDefinition
   | NumericInputDefinition
@@ -89,7 +94,8 @@ export type FormItemDefinition =
   | TextareaDefinition
   | DateInputDefinition
   | TimeInputDefinition
-  | FileUploadDefinition;
+  | FileUploadDefinition
+  | CallTypeButtonInputDefinition;
 export type FormDefinition = FormItemDefinition[];
 
 export type CategoryEntry = { color: string; subcategories: string[] };
@@ -175,7 +181,7 @@ export type DefinitionVersion = {
     CaseInformationTab: FormDefinition;
     ChildInformationTab: FormDefinition;
     IssueCategorizationTab: (helpline: string) => CategoriesDefinition;
-  }
+  };
   callTypeButtons: CallTypeButtonsDefinitions;
   layoutVersion: LayoutVersion;
   helplineInformation: HelplineDefinitions;

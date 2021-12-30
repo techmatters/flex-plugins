@@ -6,13 +6,13 @@ import {
   isDefinitionSpecification,
   isFormDefinitionSpecification,
   processDefinitionFiles,
+  aseloFormTemplates,
 } from 'hrm-form-definitions';
-import { aseloFormTemplates } from 'hrm-form-definitions/aseloForms';
 
 function main() {
   const rootFolder = process.argv[2];
-  console.log('cwd', process.cwd());
   processDefinitionFiles(aseloFormTemplates, async (definitionSpecification) => {
+    console.log(`Generating ${definitionSpecification.definitionFilePath}`);
     let jsonToWrite: string | undefined;
     if (isFormDefinitionSpecification(definitionSpecification)) {
       const defaultForm = generateDefaultForm(definitionSpecification);

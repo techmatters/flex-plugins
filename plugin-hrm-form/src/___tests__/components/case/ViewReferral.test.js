@@ -4,11 +4,11 @@ import '@testing-library/jest-dom/extend-expect';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import { UnconnectedViewReferral } from '../../../components/case/ViewReferral';
 import HrmTheme from '../../../styles/HrmTheme';
-import { DefinitionVersionId, loadDefinition } from '../../../formDefinitions';
 import { getDefinitionVersions } from '../../../HrmFormPlugin';
 
 expect.extend(toHaveNoViolations);

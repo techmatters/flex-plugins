@@ -5,14 +5,14 @@ import configureMockStore from 'redux-mock-store';
 
 import '../mockStyled';
 
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import Search from '../../components/search';
 import SearchForm from '../../components/search/SearchForm';
-import SearchResults from '../../components/search/SearchResults';
 import ContactDetails from '../../components/search/ContactDetails';
 import { SearchPages } from '../../states/search/types';
 import { channelTypes } from '../../states/DomainConstants';
-import { DefinitionVersionId, loadDefinition } from '../../formDefinitions';
 import { getDefinitionVersions } from '../../HrmFormPlugin';
 
 const mockStore = configureMockStore([]);

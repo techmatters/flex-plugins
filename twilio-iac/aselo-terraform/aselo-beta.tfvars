@@ -1,0 +1,6 @@
+helpline    = "Aarambh"
+short_helpline = "AS"
+short_environment = "STG"
+environment = "Staging"
+operating_info_key = "aselo-dev"
+serverless_url = "https://serverless-2360-production.twil.io"

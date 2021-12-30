@@ -1,8 +1,6 @@
 /* eslint-disable camelcase */
 
-import { DefinitionVersion } from '../components/common/forms/types';
-import { DefinitionVersionId } from '../formDefinitions';
-import { getDefinitionVersions } from '../HrmFormPlugin';
+import { DefinitionVersion, DefinitionVersionId } from 'hrm-form-definitions/src';
 
 jest.mock('../HrmFormPlugin', () => ({
   getConfig: () => {

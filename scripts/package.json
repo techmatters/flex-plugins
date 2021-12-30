@@ -13,9 +13,7 @@
     "copyFlow": "npm run compile && node dist/copyFlow/index.js",
     "importDefaultTwilioResourcesToTerraform": "npm run compile && node dist/terraformSupplemental/importDefaultTwilioResourcesToTerraform.js",
     "createTwilioApiKeyAndSsmSecret": "npm run compile && node dist/terraformSupplemental/createTwilioApiKeyAndSsmSecret.js",
-    "generateNewHelplineFormDefinitions": "npm run compile && npm run _generateNewHelplineFormDefinitions",
-    "_generateNewHelplineFormDefinitions": "npm run compile && node dist/formDefinitions/generateNewHelplineFormDefinitions.js"
-
+    "generateNewHelplineFormDefinitions": "npm run compile && node dist/formDefinitions/generateNewHelplineFormDefinitions.js"
   },
   "author": "",
   "license": "ISC",

@@ -1,8 +1,6 @@
 /* eslint-disable import/no-unused-modules */
 import { ITask } from '@twilio/flex-ui';
-
-import type { CallTypes } from '../states/DomainConstants';
-import { DefinitionVersionId } from '../formDefinitions';
+import { DefinitionVersionId, CallTypes } from 'hrm-form-definitions/src';
 
 type EntryInfo = { createdAt: string; twilioWorkerId: string };
 

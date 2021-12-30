@@ -1,15 +1,17 @@
 {
-
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "es5",
+    "module": "CommonJS",
+    "target": "es2019",
+    "strict": true,
     "sourceMap": true,
-    "lib": [
-      "es2019",
-      "dom"
-    ]
+    "esModuleInterop": true,
+    "declaration": true,
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true,
+    "checkJs": true,
+    "resolveJsonModule": true,
+    "outDir": "./dist",
+    "rootDir": "./src"
   },
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["src/**/*.ts", "src/**/*.js"]
 }
