@@ -5,3 +5,4 @@ destination.json
 node_modules/
 dist/
 .env
+private/

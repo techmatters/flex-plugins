@@ -22,6 +22,7 @@ import { hasTaskControl } from '../../utils/transfer';
 import { namespace, contactFormsBase, connectedCaseBase } from '../../states';
 import { isNonDataCallType } from '../../states/ValidationRules';
 import callTypes from '../../states/DomainConstants';
+import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 
 class BottomBar extends Component {
   static displayName = 'BottomBar';
@@ -72,6 +73,7 @@ class BottomBar extends Component {
       this.props.changeRoute({ route: 'new-case' }, taskSid);
       this.props.setConnectedCase(caseFromDB, taskSid, false);
     } catch (error) {
+      recordBackendError('Open New Case', error);
       window.alert(strings['Error-Backend']);
     }
   };
@@ -97,10 +99,10 @@ class BottomBar extends Component {
     }
   };
 
-  onError = () => {
+  onError = recordingErrorHandler('Tabbed HRM Form', () => {
     const { strings } = getConfig();
     window.alert(strings['Error-Form']);
-  };
+  });
 
   render() {
     const { showNextButton, showSubmitButton, handleSubmitIfValid, optionalButtons, contactForm } = this.props;

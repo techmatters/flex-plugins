@@ -8,6 +8,7 @@ import { reduce as QueuesStatusReducer } from './queuesStatus/reducer';
 import { reduce as ConfigurationReducer } from './configuration/reducer';
 import { reduce as RoutingReducer } from './routing/reducer';
 import { reduce as CSAMReportReducer } from './csam-report/reducer';
+import { reduce as DualWriteReducer } from './dualWrite/reducer';
 
 // Register your redux store under a unique namespace
 export const namespace = 'plugin-hrm-form';
@@ -18,6 +19,7 @@ export const queuesStatusBase = 'queuesStatusState';
 export const configurationBase = 'configuration';
 export const routingBase = 'routing';
 export const csamReportBase = 'csam-report';
+export const dualWriteBase = 'dualWrite';
 
 const reducers = {
   [contactFormsBase]: ContactStateReducer,
@@ -27,6 +29,7 @@ const reducers = {
   [configurationBase]: ConfigurationReducer,
   [routingBase]: RoutingReducer,
   [csamReportBase]: CSAMReportReducer,
+  [dualWriteBase]: DualWriteReducer,
 };
 
 // Combine the reducers

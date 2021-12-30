@@ -27,6 +27,21 @@
     ]
   },
   {
+    "name": "service",
+    "label": "Case Category",
+    "type": "select",
+    "options": [
+      { "value": "", "label": "" },
+      { "value": "Aarambh Trustline", "label": "Aarambh Trustline" },
+      { "value": "Other", "label": "Other" }
+    ]
+  },
+  {
+    "name": "serviceOther",
+    "label": "Specify other service",
+    "type": "input"
+  },
+  {
     "name": "howDidYouKnowAboutOurLine",
     "label": "How did you hear about our line/number",
     "type": "select",
@@ -60,7 +75,7 @@
   },
   {
     "name": "didTheChildFeelWeSolvedTheirProblem",
-    "label": "Did the child feel we solved their problem?",
+    "label": "Did the caller feel satisfied with the response to the call?",
     "type": "mixed-checkbox"
   }
 ]

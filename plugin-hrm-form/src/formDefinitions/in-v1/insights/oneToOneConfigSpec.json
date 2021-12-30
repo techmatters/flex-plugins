@@ -16,10 +16,6 @@
         "insights": ["customers", "zip"]
       },
       {
-        "name": "district",
-        "insights": ["customers", "customer_attribute_6"]
-      },
-      {
         "name": "gradeLevel",
         "insights": ["customers", "acquisition_date"]
       },
@@ -41,10 +37,6 @@
         "name": "memberOfAnEthnic",
         "insights": ["conversations", "conversation_measure_4"],
         "type": "mixed-checkbox"
-      },
-      {
-        "name": "childOnTheMove",
-        "insights": ["customers", "email"]
       },
       {
         "name": "childWithDisability",

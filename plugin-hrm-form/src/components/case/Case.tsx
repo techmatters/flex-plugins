@@ -65,6 +65,7 @@ import {
 } from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
 import { getPermissionsForCase, PermissionActions } from '../../permissions';
+import { recordBackendError } from '../../fullStory';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -235,6 +236,7 @@ const Case: React.FC<Props> = props => {
       await completeTask(task);
     } catch (error) {
       console.error(error);
+      recordBackendError('Save and End Case', error);
       window.alert(strings['Error-Backend']);
     } finally {
       setLoading(false);
@@ -346,6 +348,7 @@ const Case: React.FC<Props> = props => {
       }
     } catch (error) {
       console.error(error);
+      recordBackendError('Update Case', error);
       window.alert(strings['Error-Backend']);
     } finally {
       setLoading(false);
