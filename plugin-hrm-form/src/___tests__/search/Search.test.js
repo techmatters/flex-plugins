@@ -2,11 +2,9 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import renderer from 'react-test-renderer';
 import configureMockStore from 'redux-mock-store';
-
-import '../mockStyled';
-
 import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
+import '../mockStyled';
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import Search from '../../components/search';
 import SearchForm from '../../components/search/SearchForm';
