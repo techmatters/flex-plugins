@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
-import { format } from 'date-fns';
 
 import { Box, Column, Row } from '../../styles/HrmStyles';
 import { CSAMAttachmentText, CSAMAttachmentIcon } from '../../styles/CSAMReport';
+import { formatStringToDateAndTime } from '../../utils';
 import type { CSAMReportEntry } from '../../types/types';
 
 type Props = {
@@ -16,7 +16,7 @@ const CSAMAttachments: React.FC<Props> = ({ csamReports }) => {
     <Box marginTop="10px">
       <Column>
         {csamReports.map(r => {
-          const formattedCreatedAt = format(new Date(r.createdAt), 'yyyy MM dd h:mm aaaaa');
+          const formattedCreatedAt = formatStringToDateAndTime(r.createdAt);
 
           return (
             <Row key={r.csamReportId}>
