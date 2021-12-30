@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest",
     "build": "npx tsc",
-    "lint": "eslint --ext ts ./src"
+    "lint": "eslint --max-warnings 5 --ext ts ./src"
   },
   "author": "",
   "license": "ISC",
