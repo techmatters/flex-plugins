@@ -213,10 +213,16 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                   aria-invalid={Boolean(error)}
                   aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
-                  innerRef={register({
-                    ...rules,
-                    pattern: { value: /\S+@\S+\.\S+/, message: 'Entered value does not match email format' },
-                  })}
+                  innerRef={innerRef => {
+                    if (htmlElRef) {
+                      htmlElRef.current = innerRef;
+                    }
+
+                    register({
+                      ...rules,
+                      pattern: { value: /\S+@\S+\.\S+/, message: 'Entered value does not match email format' },
+                    })(innerRef);
+                  }}
                   defaultValue={initialValue}
                   type="email"
                 />
