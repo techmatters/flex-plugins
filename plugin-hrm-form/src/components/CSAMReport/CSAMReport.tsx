@@ -164,7 +164,10 @@ export const CSAMReportScreen: React.FC<Props> = ({
       );
     }
     default: {
-      window.alert('Invalid route reached!');
+      console.error('Error: unexpected route reached on CSAM Report: ', routing);
+
+      const { strings } = getConfig();
+      window.alert(strings['Error-Unexpected']);
       onClickClose();
       return null;
     }
