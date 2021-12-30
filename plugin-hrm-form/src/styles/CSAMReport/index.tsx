@@ -79,15 +79,6 @@ export const CSAMAttachmentText = styled(FontOpenSans)`
 `;
 CSAMAttachmentText.displayName = 'CSAMAttachmentText';
 
-/*
- * export const CSAMAttachmentIcon = styled(AttachFile)`
- *   width: 14px;
- *   height: 14px;
- *   color: #080808;
- * `;
- * CSAMAttachmentIcon.displayName = 'CSAMAttachmentIcon';
- */
-
 export const CSAMAttachmentIcon = withStyles({
   root: {
     width: 14,
