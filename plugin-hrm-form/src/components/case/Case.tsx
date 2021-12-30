@@ -122,7 +122,6 @@ const Case: React.FC<Props> = props => {
   const [mockedMessage, setMockedMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [timeline, setTimeline] = useState([]);
-  const { route, subroute } = props.routing;
 
   useEffect(() => {
     /**
@@ -243,6 +242,10 @@ const Case: React.FC<Props> = props => {
       setLoading(false);
     }
   };
+
+  if (props.routing.route === 'csam-report') return null;
+
+  const { route, subroute } = props.routing;
 
   // Redirects to the proper view when the user clicks 'Close' button.
   const handleClose = () => {
@@ -423,13 +426,13 @@ const Case: React.FC<Props> = props => {
     case 'add-referral':
       return <AddReferral {...addScreenProps} />;
     case 'add-household':
-      return <AddHousehold {...addScreenProps} />;
+      return <AddHousehold {...{ ...addScreenProps, route }} />;
     case 'add-perpetrator':
-      return <AddPerpetrator {...addScreenProps} />;
+      return <AddPerpetrator {...{ ...addScreenProps, route }} />;
     case 'add-incident':
       return <AddIncident {...addScreenProps} />;
     case 'add-document':
-      return <AddDocument {...addScreenProps} />;
+      return <AddDocument {...{ ...addScreenProps, route }} />;
     case 'view-contact':
       return <ViewContact {...addScreenProps} />;
     case 'view-note':
@@ -478,7 +481,14 @@ const Case: React.FC<Props> = props => {
               />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
-              <Timeline timelineActivities={timeline} caseObj={connectedCase} task={task} form={form} can={can} />
+              <Timeline
+                timelineActivities={timeline}
+                caseObj={connectedCase}
+                taskSid={task.taskSid}
+                form={form}
+                can={can}
+                route={route}
+              />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
               <Households
@@ -532,7 +542,6 @@ const Case: React.FC<Props> = props => {
                 Icon={CancelIcon}
                 text={<Template code="BottomBar-CancelNewCaseAndClose" />}
                 onClick={handleCancelNewCaseAndClose}
-                data-fs-id="Case-SaveAndEnd-Button"
               />
             </Menu>
           </CaseContainer>
@@ -544,7 +553,7 @@ const Case: React.FC<Props> = props => {
                     <Template code="BottomBar-Cancel" />
                   </StyledNextStepButton>
                 </Box>
-                <StyledNextStepButton roundCorners onClick={handleSaveAndEnd} data-fs-id="Case-SaveAndEnd-Button">
+                <StyledNextStepButton roundCorners onClick={handleSaveAndEnd}>
                   <Template code="BottomBar-SaveAndEnd" />
                 </StyledNextStepButton>
               </>

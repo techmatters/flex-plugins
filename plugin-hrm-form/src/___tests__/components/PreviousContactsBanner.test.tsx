@@ -9,6 +9,8 @@ import { UnconnectedPreviousContactsBanner } from '../../components/PreviousCont
 import { channelTypes } from '../../states/DomainConstants';
 import { SearchPages } from '../../states/search/types';
 
+jest.mock('../../components/CSAMReport/CSAMReportFormDefinition');
+
 expect.extend(toHaveNoViolations);
 
 const ip = 'task-ip';

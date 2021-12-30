@@ -6,6 +6,8 @@ import { InnerQueuesStatusWriter as QueuesStatusWriter } from '../../../componen
 import { channelTypes } from '../../../states/DomainConstants';
 import { newQueueEntry, initializeQueuesStatus, getNewQueuesStatus } from '../../../components/queuesStatus/helpers';
 
+jest.mock('../../../components/CSAMReport/CSAMReportFormDefinition');
+
 jest.mock('../../../services/ServerlessService', () => ({
   listWorkerQueues: async ({ workerSid }) => {
     if (workerSid === 'worker-admin')
