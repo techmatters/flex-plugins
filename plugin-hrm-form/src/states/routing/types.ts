@@ -26,8 +26,8 @@ export const NewCaseSubroutes = {
   CasePrintView: 'case-print-view',
 } as const;
 
-// The different routes we have in our app
-export type AppRoutes =
+// Routes that may lead to Case screen (maybe we need an improvement here)
+export type AppRoutesWithCase =
   // TODO: enum the possible subroutes on each route
   | {
       route: 'tabbed-forms';
@@ -43,6 +43,16 @@ export type AppRoutes =
       route: 'select-call-type';
       subroute?: typeof NewCaseSubroutes[keyof typeof NewCaseSubroutes];
     };
+
+export type CSAMReportRoute = {
+  route: 'csam-report';
+  subroute: 'form' | 'loading' | 'status';
+};
+
+type OtherRoutes = CSAMReportRoute;
+
+// The different routes we have in our app
+export type AppRoutes = AppRoutesWithCase | OtherRoutes;
 
 type ChangeRouteAction = {
   type: typeof CHANGE_ROUTE;

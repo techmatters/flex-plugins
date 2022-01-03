@@ -12,6 +12,8 @@ import { namespace, contactFormsBase } from '../../../states';
 import { setCategoriesGridView } from '../../../states/contacts/actions';
 import { DefinitionVersionId, loadDefinition } from '../../../formDefinitions';
 
+jest.mock('../../../components/CSAMReport/CSAMReportFormDefinition');
+
 let mockV1;
 const helpline = 'ChildLine Zambia (ZM)';
 let definition;

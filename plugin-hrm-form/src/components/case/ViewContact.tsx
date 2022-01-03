@@ -5,7 +5,7 @@ import { Template } from '@twilio/flex-ui';
 
 import { Container, StyledNextStepButton, BottomButtonBar } from '../../styles/HrmStyles';
 import { CaseLayout } from '../../styles/case';
-import { namespace, connectedCaseBase, contactFormsBase, configurationBase, routingBase } from '../../states';
+import { namespace, connectedCaseBase, contactFormsBase, configurationBase, RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import ContactDetails from '../ContactDetails';
@@ -14,20 +14,18 @@ import { adaptFormToContactDetails, adaptContactToDetailsScreen } from './Contac
 import { CaseState } from '../../states/case/reducer';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 
-const mapStateToProps = (state, ownProps: OwnProps) => {
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const form = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
   const caseState: CaseState = state[namespace][connectedCaseBase];
   const { temporaryCaseInfo } = caseState.tasks[ownProps.task.taskSid];
-  const { route } = state[namespace][routingBase].tasks[ownProps.task.taskSid];
 
-  return { form, counselorsHash, tempInfo: temporaryCaseInfo, route };
+  return { form, counselorsHash, tempInfo: temporaryCaseInfo };
 };
 
 const mapDispatchToProps = {
   updateTempInfo: CaseActions.updateTempInfo,
   setConnectedCase: CaseActions.setConnectedCase,
-  changeRoute: RoutingActions.changeRoute,
 };
 
 type OwnProps = {

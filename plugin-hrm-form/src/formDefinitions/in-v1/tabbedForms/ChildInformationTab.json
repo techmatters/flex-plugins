@@ -1007,7 +1007,9 @@
     "type": "select",
     "options": [
       { "value": "Unknown", "label": "" },
-      { "value": "Hindi", "label": "Hindi" }
+      { "value": "Hindi", "label": "Hindi" },
+      { "value": "English", "label": "English" },
+      { "value": "Other", "label": "Other" }
     ]  
   },
   {
