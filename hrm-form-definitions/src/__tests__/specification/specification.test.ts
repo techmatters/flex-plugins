@@ -1,4 +1,8 @@
-import { processDefinitionFiles } from '../../specification';
+import {
+  isDefinitionSpecification,
+  isFormDefinitionSpecification,
+  processDefinitionFiles,
+} from '../../specification';
 
 describe('processDefinitionFiles', () => {
   test('Single Definition File - applies processor to node', () => {
@@ -131,5 +135,35 @@ describe('processDefinitionFiles', () => {
     expect(processor).toHaveBeenCalledWith(array[0], ['a', '0']);
     expect(processor).toHaveBeenCalledWith(array[1], ['a', '1']);
     expect(processor).toHaveBeenCalledWith(array[3], ['a', '3']);
+  });
+});
+
+describe('isFormDefinitionSpecification', () => {
+  test("Has 'items' object property - true", () => {
+    expect(isFormDefinitionSpecification({ items: {} })).toBeTruthy();
+  });
+  test("Has no 'items' object property - false", () => {
+    expect(isFormDefinitionSpecification({ validator: () => {} })).toBeFalsy();
+  });
+  test("Has 'items' property of other type - false", () => {
+    expect(isFormDefinitionSpecification({ items: 12 })).toBeFalsy();
+  });
+  test("Has 'items' object property and 'validator' function property - true", () => {
+    expect(isFormDefinitionSpecification({ items: {}, validator: () => {} })).toBeTruthy();
+  });
+  test("Has 'validator' non function property - false", () => {
+    expect(isFormDefinitionSpecification({ items: {}, validator: 'Hello' })).toBeFalsy();
+  });
+});
+
+describe('isDefinitionSpecification', () => {
+  test("Has 'required' boolean property - true", () => {
+    expect(isDefinitionSpecification({ required: false })).toBeTruthy();
+  });
+  test("Has no 'required' property - false", () => {
+    expect(isFormDefinitionSpecification({})).toBeFalsy();
+  });
+  test("Has 'required' property of other type - false", () => {
+    expect(isFormDefinitionSpecification({ required: {} })).toBeFalsy();
   });
 });
