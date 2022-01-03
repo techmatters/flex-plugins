@@ -15,7 +15,7 @@ type FormAndItemDefinition = { form: FormDefinition; item: FormItemDefinition };
 export type FormItemDefinitionSpecification = DefinitionSpecification<
   FormItemDefinition,
   FormAndItemDefinition
->;
+> & { order?: number };
 
 export type FormDefinitionSpecification = {
   items: Record<string, FormItemDefinitionSpecification>;

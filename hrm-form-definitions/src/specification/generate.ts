@@ -23,6 +23,10 @@ export function generateDefaultForm(specification: FormDefinitionSpecification):
         isDefinitionSpecification(itemDefinitionSpecification) &&
         (itemDefinitionSpecification.required || itemDefinitionSpecification.default),
     )
+    .sort(
+      ([, spec1], [, spec2]) =>
+        (spec1.order ?? Number.MAX_VALUE) - (spec2.order ?? Number.MAX_VALUE),
+    )
     .map(([name, itemDefinitionSpecification]) =>
       generateDefaultItem(<DefinitionSpecification>itemDefinitionSpecification, {
         type: 'input',
