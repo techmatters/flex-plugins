@@ -16,11 +16,11 @@ function main() {
     let jsonToWrite: string | undefined;
     if (isFormDefinitionSpecification(definitionSpecification)) {
       const defaultForm = generateDefaultForm(definitionSpecification);
-      jsonToWrite = JSON.stringify(defaultForm);
+      jsonToWrite = JSON.stringify(defaultForm, null, 2);
     } else if (isDefinitionSpecification(definitionSpecification)) {
       const defaultItem = generateDefaultItem(definitionSpecification, {});
       if (defaultItem) {
-        jsonToWrite = JSON.stringify(defaultItem);
+        jsonToWrite = JSON.stringify(defaultItem, null, 2);
       }
     }
     if (jsonToWrite) {

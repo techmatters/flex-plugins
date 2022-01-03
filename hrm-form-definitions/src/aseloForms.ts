@@ -4,7 +4,7 @@ import {
   FormDefinitionSpecification,
   FormItemDefinitionSpecification,
 } from './specification';
-import { OneToManyConfigSpecs, OneToOneConfigSpec } from './formDefinition';
+import { OneToManyConfigSpecs, OneToOneConfigSpec, SelectOption } from './formDefinition';
 
 type FormFileSpecification = FormDefinitionSpecification & DefinitionFileSpecification;
 type JsonFileSpecification<T = any> = DefinitionSpecification<T> & DefinitionFileSpecification;
@@ -42,6 +42,18 @@ export type AseloFormTemplateDefinitions = {
   caseStatus: JsonFileSpecification<Record<string, CaseStatus>>;
 };
 
+function generateAgeRangeOptions(from: number, to: number): SelectOption[] {
+  return Array(to - from + 1)
+    .fill(null)
+    .map((_, i) => {
+      const value = (from + i).toString();
+      return {
+        value,
+        label: value,
+      };
+    });
+}
+
 export const aseloFormTemplates: AseloFormTemplateDefinitions = {
   caseForms: {
     HouseholdForm: {
@@ -58,7 +70,26 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
     },
     PerpetratorForm: {
       definitionFilePath: './caseForms/PerpetratorForm.json',
-      items: {},
+      items: {
+        firstName: {
+          required: true,
+          default: {
+            name: 'firstName',
+            label: 'First Name',
+            type: 'input',
+            required: { value: true, message: 'RequiredFieldError' },
+          },
+        },
+        lastName: {
+          required: true,
+          default: {
+            name: 'lastName',
+            label: 'Last Name',
+            type: 'input',
+            required: { value: true, message: 'RequiredFieldError' },
+          },
+        },
+      },
     },
     ReferralForm: {
       definitionFilePath: './caseForms/ReferralForm.json',
@@ -72,15 +103,96 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
   tabbedForms: {
     CallerInformationTab: {
       definitionFilePath: './tabbedForms/CallerInformationTab.json',
-      items: {},
+      items: {
+        firstName: {
+          required: true,
+          default: {
+            name: 'firstName',
+            label: 'First Name',
+            type: 'input',
+            required: { value: true, message: 'RequiredFieldError' },
+          },
+        },
+        lastName: {
+          required: true,
+          default: {
+            name: 'lastName',
+            label: 'Last Name',
+            type: 'input',
+            required: { value: true, message: 'RequiredFieldError' },
+          },
+        },
+      },
     },
     CaseInformationTab: {
       definitionFilePath: './tabbedForms/CaseInformationTab.json',
-      items: {},
+      items: {
+        callSummary: {
+          required: true,
+          default: {
+            name: 'callSummary',
+            label: 'Contact Summary',
+            type: 'textarea',
+            required: { value: true, message: 'RequiredFieldError' },
+          },
+        },
+      },
     },
     ChildInformationTab: {
       definitionFilePath: './tabbedForms/ChildInformationTab.json',
-      items: {},
+      items: {
+        firstName: {
+          required: true,
+          default: {
+            name: 'firstName',
+            label: 'First Name',
+            type: 'input',
+            required: { value: true, message: 'RequiredFieldError' },
+          },
+        },
+        lastName: {
+          required: true,
+          default: {
+            name: 'lastName',
+            label: 'Last Name',
+            type: 'input',
+            required: { value: true, message: 'RequiredFieldError' },
+          },
+        },
+        age: {
+          required: true,
+          default: {
+            name: 'age',
+            label: 'Age',
+            type: 'select',
+            options: [
+              { value: '', label: '' },
+              { value: 'Unborn', label: 'Unborn' },
+              ...generateAgeRangeOptions(0, 60),
+              { value: '>60', label: '>60' },
+              { value: 'Unknown', label: 'Unknown' },
+              { value: 'Other', label: 'Other' },
+            ],
+            required: { value: true, message: 'RequiredFieldError' },
+          },
+        },
+        gender: {
+          required: true,
+          default: {
+            name: 'gender',
+            label: 'Gender',
+            type: 'select',
+            options: [
+              { value: '', label: '' },
+              { value: 'Boy', label: 'Boy' },
+              { value: 'Girl', label: 'Girl' },
+              { value: 'Non-Binary', label: 'Non-Binary' },
+              { value: 'Unknown', label: 'Unknown' },
+            ],
+            required: { value: true, message: 'RequiredFieldError' },
+          },
+        },
+      },
     },
     IssueCategorizationTab: {
       required: true,
