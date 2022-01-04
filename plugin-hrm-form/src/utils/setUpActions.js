@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 // eslint-disable-next-line no-unused-vars
 import { Manager, TaskHelper, Actions as FlexActions, StateHelper, ChatOrchestrator } from '@twilio/flex-ui';
+import { callTypes } from 'hrm-form-definitions';
 
 // eslint-disable-next-line no-unused-vars
 import { DEFAULT_TRANSFER_MODE, getConfig } from '../HrmFormPlugin';
@@ -17,7 +18,7 @@ import { populateCurrentDefinitionVersion, updateDefinitionVersion } from '../st
 import { changeRoute } from '../states/routing/actions';
 import { clearCustomGoodbyeMessage } from '../states/dualWrite/actions';
 import * as GeneralActions from '../states/actions';
-import callTypes, { transferModes } from '../states/DomainConstants';
+import { transferModes } from '../states/DomainConstants';
 import * as TransferHelpers from './transfer';
 import { saveFormSharedState, loadFormSharedState } from './sharedState';
 import { prepopulateForm } from './prepopulateForm';

@@ -5,6 +5,7 @@ import { Page, Document, View, PDFViewer } from '@react-pdf/renderer';
 import { Template, Strings } from '@twilio/flex-ui';
 import { ButtonBase, CircularProgress } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
+import { DefinitionVersion, FormDefinition, callTypes } from 'hrm-form-definitions';
 
 import { getConfig } from '../../../HrmFormPlugin';
 import CasePrintSection from './CasePrintSection';
@@ -19,8 +20,6 @@ import CasePrintHeader from './CasePrintHeader';
 import CasePrintFooter from './CasePrintFooter';
 // import CasePrintContact from './CasePrintContact'; // Removed by ZA request, could be useful for other helplines.
 import { getImageAsString, ImageSource } from './helpers';
-import { DefinitionVersion, FormDefinition } from '../../common/forms/types';
-import callTypes from '../../../states/DomainConstants';
 import { ContactRawJson } from '../../../types/types';
 
 type OwnProps = {

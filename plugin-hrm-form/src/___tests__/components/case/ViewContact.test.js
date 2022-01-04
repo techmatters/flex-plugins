@@ -6,13 +6,13 @@ import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import { UnconnectedViewContact } from '../../../components/case/ViewContact';
 import HrmTheme from '../../../styles/HrmTheme';
 import { ContactDetailsSections } from '../../../components/common/ContactDetails';
 import { adaptFormToContactDetails } from '../../../components/case/ContactDetailsAdapter';
-import { DefinitionVersionId, loadDefinition } from '../../../formDefinitions';
 import { getDefinitionVersions } from '../../../HrmFormPlugin';
 
 expect.extend(toHaveNoViolations);

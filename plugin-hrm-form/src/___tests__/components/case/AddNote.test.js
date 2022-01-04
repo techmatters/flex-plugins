@@ -6,12 +6,12 @@ import { mount } from 'enzyme';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import HrmTheme from '../../../styles/HrmTheme';
 import AddNote from '../../../components/case/AddNote';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../../states';
-import { DefinitionVersionId, loadDefinition } from '../../../formDefinitions';
 import { getDefinitionVersions } from '../../../HrmFormPlugin';
 
 jest.mock('../../../services/CaseService');

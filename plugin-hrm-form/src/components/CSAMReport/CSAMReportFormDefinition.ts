@@ -1,4 +1,4 @@
-import type { FormItemDefinition } from '../common/forms/types';
+import type { FormItemDefinition } from 'hrm-form-definitions';
 import { getInitialValue } from '../common/forms/formGenerators';
 
 export const keys = {

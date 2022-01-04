@@ -4,6 +4,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import { useForm, FormProvider, SubmitErrorHandler, FieldValues } from 'react-hook-form';
+import type { DefinitionVersion } from 'hrm-form-definitions';
 
 import ActionHeader from './ActionHeader';
 import {
@@ -21,7 +22,6 @@ import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { updateCase } from '../../services/CaseService';
 import { createFormFromDefinition, disperseInputs, splitInHalf } from '../common/forms/formGenerators';
-import type { DefinitionVersion } from '../common/forms/types';
 import { transformValues } from '../../services/ContactService';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 import { getConfig } from '../../HrmFormPlugin';

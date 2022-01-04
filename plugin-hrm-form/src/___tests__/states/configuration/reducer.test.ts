@@ -1,8 +1,9 @@
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+
 import { reduce } from '../../../states/configuration/reducer';
 import * as types from '../../../states/configuration/types';
 import * as actions from '../../../states/configuration/actions';
 import { defaultLanguage } from '../../../utils/pluginHelpers';
-import { DefinitionVersionId, loadDefinition } from '../../../formDefinitions';
 
 describe('test reducer', () => {
   let state = undefined;

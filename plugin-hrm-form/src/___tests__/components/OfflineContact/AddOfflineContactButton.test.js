@@ -6,12 +6,12 @@ import { StorelessThemeProvider, withTheme, Actions } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import '@testing-library/jest-dom/extend-expect';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
 import HrmTheme from '../../../styles/HrmTheme';
 import { AddOfflineContactButton } from '../../../components/OfflineContact';
 import { namespace, routingBase, configurationBase } from '../../../states';
 import { reRenderAgentDesktop } from '../../../HrmFormPlugin';
-import { DefinitionVersionId, loadDefinition } from '../../../formDefinitions';
 
 let v1;
 

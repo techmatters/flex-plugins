@@ -9,6 +9,7 @@ import FolderIcon from '@material-ui/icons/Folder';
 import AddIcon from '@material-ui/icons/Add';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
+import { callTypes } from 'hrm-form-definitions';
 
 import { Menu, MenuItem } from '../menu';
 import { taskType } from '../../types';
@@ -21,7 +22,6 @@ import { submitContactForm, completeTask } from '../../services/formSubmissionHe
 import { hasTaskControl } from '../../utils/transfer';
 import { namespace, contactFormsBase, connectedCaseBase } from '../../states';
 import { isNonDataCallType } from '../../states/ValidationRules';
-import callTypes from '../../states/DomainConstants';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 
 class BottomBar extends Component {

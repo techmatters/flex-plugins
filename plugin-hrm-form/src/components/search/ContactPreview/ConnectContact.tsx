@@ -1,11 +1,11 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
+import { CallTypes } from 'hrm-form-definitions';
 
 import { isNonDataCallType } from '../../../states/ValidationRules';
 import { StyledButtonBase, ConnectIcon } from '../../../styles/search';
 import { Flex, Box, HiddenText } from '../../../styles/HrmStyles';
-import { CallTypes } from '../../../states/DomainConstants';
 
 type OwnProps = {
   callType: CallTypes;

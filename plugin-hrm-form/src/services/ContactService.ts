@@ -1,6 +1,7 @@
 /* eslint-disable sonarjs/prefer-immediate-return */
 import { set } from 'lodash/fp';
 import { ITask, TaskHelper, Actions as FlexActions } from '@twilio/flex-ui';
+import type { CategoriesDefinition, CategoryEntry, FormDefinition, FormItemDefinition } from 'hrm-form-definitions';
 
 import { createNewTaskEntry, TaskEntry } from '../states/contacts/reducer';
 import { isNonDataCallType } from '../states/ValidationRules';
@@ -10,12 +11,6 @@ import { getLimitAndOffsetParams } from './PaginationParams';
 import fetchHrmApi from './fetchHrmApi';
 import { getDateTime } from '../utils/helpers';
 import { getConfig, getDefinitionVersions } from '../HrmFormPlugin';
-import type {
-  CategoriesDefinition,
-  CategoryEntry,
-  FormDefinition,
-  FormItemDefinition,
-} from '../components/common/forms/types';
 import {
   InformationObject,
   ContactRawJson,

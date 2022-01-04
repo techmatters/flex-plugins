@@ -3,6 +3,7 @@
 import React from 'react';
 import { ITask, TaskHelper, Template } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
+import { callTypes, CallTypeKeys } from 'hrm-form-definitions';
 
 import { namespace, contactFormsBase, configurationBase, connectedCaseBase, RootState } from '../../states';
 import { updateCallType } from '../../states/contacts/actions';
@@ -10,7 +11,6 @@ import { changeRoute } from '../../states/routing/actions';
 import { withLocalization } from '../../contexts/LocalizationContext';
 import { Box, Flex } from '../../styles/HrmStyles';
 import { Container, Label, DataCallTypeButton, NonDataCallTypeButton } from '../../styles/callTypeButtons';
-import callTypes, { CallTypeKeys } from '../../states/DomainConstants';
 import { isNonDataCallType } from '../../states/ValidationRules';
 import NonDataCallTypeDialog from './NonDataCallTypeDialog';
 import { hasTaskControl } from '../../utils/transfer';

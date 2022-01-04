@@ -1,7 +1,8 @@
 /* eslint-disable import/no-unused-modules */
+import { CallTypes, DataCallTypes } from 'hrm-form-definitions';
+
 import * as t from './types';
 import { TaskEntry } from './reducer';
-import { CallTypes, DataCallTypes } from '../DomainConstants';
 import { CSAMReportEntry } from '../../types/types';
 
 // Action creators

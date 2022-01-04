@@ -6,11 +6,12 @@ import { CircularProgress, IconButton } from '@material-ui/core';
 import { Link as LinkIcon } from '@material-ui/icons';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
+import { callTypes } from 'hrm-form-definitions';
 
 import { DetailsContainer, NameContainer, DetNameText } from '../styles/search';
 import Section from './Section';
 import SectionEntry from './SectionEntry';
-import callTypes, { channelTypes } from '../states/DomainConstants';
+import { channelTypes } from '../states/DomainConstants';
 import { isNonDataCallType } from '../states/ValidationRules';
 import { contactType } from '../types';
 import { formatDuration, formatName, formatCategories, mapChannel, mapChannelForInsights } from '../utils';

@@ -1,6 +1,6 @@
 import { ITask } from '@twilio/flex-ui';
+import { HelplineDefinitions } from 'hrm-form-definitions';
 
-import { HelplineDefinitions } from '../common/forms/types';
 import { TaskEntry } from '../../states/contacts/reducer';
 import { Activity, ConnectedCaseActivity } from '../../states/case/types';
 import { channelsAndDefault } from '../../states/DomainConstants';

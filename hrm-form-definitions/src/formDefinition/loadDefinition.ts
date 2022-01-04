@@ -18,7 +18,8 @@ export enum DefinitionVersionId {
   zaV1 = 'za-v1', // South Africa v1
 }
 
-const DEFINITION_JSON_ROOT = '../../form-definitions/';
+// Using a variable for the root of the dynamic import confuses webpack :-(
+// const DEFINITION_JSON_ROOT = '../../form-definitions/';
 
 export async function loadDefinition(version: DefinitionVersionId) {
   /*
@@ -27,55 +28,55 @@ export async function loadDefinition(version: DefinitionVersionId) {
    * Not sure if this is a Twilio Flex specific issue or just misconfiguration - but loading the modules eagerly gets around it.
    */
   const layoutDefinitionsModule = await import(
-    /* webpackMode: "eager" */ `${DEFINITION_JSON_ROOT}${version}/LayoutDefinitions.json`
+    /* webpackMode: "eager" */ `../../form-definitions/${version}/LayoutDefinitions.json`
   );
   const householdFormModule = await import(
-    /* webpackMode: "eager" */ `${DEFINITION_JSON_ROOT}${version}/caseForms/HouseholdForm.json`
+    /* webpackMode: "eager" */ `../../form-definitions/${version}/caseForms/HouseholdForm.json`
   );
   const incidentFormModule = await import(
-    /* webpackMode: "eager" */ `${DEFINITION_JSON_ROOT}${version}/caseForms/IncidentForm.json`
+    /* webpackMode: "eager" */ `../../form-definitions/${version}/caseForms/IncidentForm.json`
   );
   const noteFormModule = await import(
-    /* webpackMode: "eager" */ `${DEFINITION_JSON_ROOT}${version}/caseForms/NoteForm.json`
+    /* webpackMode: "eager" */ `../../form-definitions/${version}/caseForms/NoteForm.json`
   );
   const perpetratorFormModule = await import(
-    /* webpackMode: "eager" */ `${DEFINITION_JSON_ROOT}${version}/caseForms/PerpetratorForm.json`
+    /* webpackMode: "eager" */ `../../form-definitions/${version}/caseForms/PerpetratorForm.json`
   );
   const referralFormModule = await import(
-    /* webpackMode: "eager" */ `${DEFINITION_JSON_ROOT}${version}/caseForms/ReferralForm.json`
+    /* webpackMode: "eager" */ `../../form-definitions/${version}/caseForms/ReferralForm.json`
   );
   const documentFormModule = await import(
-    /* webpackMode: "eager" */ `${DEFINITION_JSON_ROOT}${version}/caseForms/DocumentForm.json`
+    /* webpackMode: "eager" */ `../../form-definitions/${version}/caseForms/DocumentForm.json`
   );
   const callerInformationTabModule = await import(
-    /* webpackMode: "eager" */ `${DEFINITION_JSON_ROOT}${version}/tabbedForms/CallerInformationTab.json`
+    /* webpackMode: "eager" */ `../../form-definitions/${version}/tabbedForms/CallerInformationTab.json`
   );
   const caseInformationTabModule = await import(
-    /* webpackMode: "eager" */ `${DEFINITION_JSON_ROOT}${version}/tabbedForms/CaseInformationTab.json`
+    /* webpackMode: "eager" */ `../../form-definitions/${version}/tabbedForms/CaseInformationTab.json`
   );
   const childInformationTabModule = await import(
-    /* webpackMode: "eager" */ `${DEFINITION_JSON_ROOT}${version}/tabbedForms/ChildInformationTab.json`
+    /* webpackMode: "eager" */ `../../form-definitions/${version}/tabbedForms/ChildInformationTab.json`
   );
   const issueCategorizationTabModule = await import(
-    /* webpackMode: "eager" */ `${DEFINITION_JSON_ROOT}${version}/tabbedForms/IssueCategorizationTab.json`
+    /* webpackMode: "eager" */ `../../form-definitions/${version}/tabbedForms/IssueCategorizationTab.json`
   );
   const callTypeButtonsModule = await import(
-    /* webpackMode: "eager" */ `${DEFINITION_JSON_ROOT}${version}/CallTypeButtons.json`
+    /* webpackMode: "eager" */ `../../form-definitions/${version}/CallTypeButtons.json`
   );
   const helplineInformationModule = await import(
-    /* webpackMode: "eager" */ `${DEFINITION_JSON_ROOT}${version}/HelplineInformation.json`
+    /* webpackMode: "eager" */ `../../form-definitions/${version}/HelplineInformation.json`
   );
   const cannedResponsesModule = await import(
-    /* webpackMode: "eager" */ `${DEFINITION_JSON_ROOT}${version}/CannedResponses.json`
+    /* webpackMode: "eager" */ `../../form-definitions/${version}/CannedResponses.json`
   );
   const oneToOneConfigSpecModule = await import(
-    /* webpackMode: "eager" */ `${DEFINITION_JSON_ROOT}${version}/insights/oneToOneConfigSpec.json`
+    /* webpackMode: "eager" */ `../../form-definitions/${version}/insights/oneToOneConfigSpec.json`
   );
   const oneToManyConfigSpecsModule = await import(
-    /* webpackMode: "eager" */ `${DEFINITION_JSON_ROOT}${version}/insights/oneToManyConfigSpecs.json`
+    /* webpackMode: "eager" */ `../../form-definitions/${version}/insights/oneToManyConfigSpecs.json`
   );
   const caseStatusModule = await import(
-    /* webpackMode: "eager" */ `${DEFINITION_JSON_ROOT}${version}/CaseStatus.json`
+    /* webpackMode: "eager" */ `../../form-definitions/${version}/CaseStatus.json`
   );
 
   const { helplines } = helplineInformationModule.default;

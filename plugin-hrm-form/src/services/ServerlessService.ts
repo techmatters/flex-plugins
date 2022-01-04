@@ -1,11 +1,10 @@
 /* eslint-disable sonarjs/prefer-immediate-return */
 /* eslint-disable camelcase */
 import { ITask, Notifications } from '@twilio/flex-ui';
+import { DefinitionVersionId, loadDefinition, DefinitionVersion } from 'hrm-form-definitions';
 
 import fetchProtectedApi from './fetchProtectedApi';
 import { getConfig } from '../HrmFormPlugin';
-import { DefinitionVersionId, loadDefinition } from '../formDefinitions';
-import type { DefinitionVersion } from '../components/common/forms/types';
 import type { CSAMReportForm } from '../states/csam-report/types';
 
 type PopulateCounselorsReturn = { sid: string; fullName: string }[];

@@ -2,6 +2,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
+import type { DefinitionVersion } from 'hrm-form-definitions';
 
 import { Container, StyledNextStepButton, BottomButtonBar, Box } from '../../styles/HrmStyles';
 import { CaseLayout } from '../../styles/case';
@@ -9,7 +10,6 @@ import { namespace, connectedCaseBase, configurationBase, RootState } from '../.
 import { CaseState } from '../../states/case/reducer';
 import SectionEntry from '../SectionEntry';
 import ActionHeader from './ActionHeader';
-import type { DefinitionVersion } from '../common/forms/types';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {

@@ -13,7 +13,7 @@ import {
   BottomButtonBarHeight,
 } from '../../styles/HrmStyles';
 import { createFormFromDefinition, disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
-import type { FormDefinition, LayoutDefinition } from '../common/forms/types';
+import type { FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 import type { TaskEntry } from '../../states/contacts/reducer';
 import type { CustomITask } from '../../types/types';
 import useFocus from '../../utils/useFocus';

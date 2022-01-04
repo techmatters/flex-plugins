@@ -3,7 +3,7 @@ import React from 'react';
 import { View } from '@react-pdf/renderer';
 
 import CasePrintSection from './CasePrintSection';
-import { FormDefinition } from '../../common/forms/types';
+import { FormDefinition } from 'hrm-form-definitions';
 import { HouseholdEntry, PerpetratorEntry, IncidentEntry, ReferralEntry } from '../../../types/types';
 
 type OwnProps = {

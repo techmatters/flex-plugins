@@ -1,5 +1,6 @@
+import { DataCallTypes } from 'hrm-form-definitions';
+
 import type { TaskEntry } from './reducer';
-import { DataCallTypes } from '../DomainConstants';
 import { CSAMReportEntry } from '../../types/types';
 
 // Action types

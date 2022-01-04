@@ -9,17 +9,19 @@ import { CallTypeKeys } from './callTypes';
 type ItemBase = {
   name: string;
   label: string;
-};
+} & RegisterOptions;
 
 type InputDefinition = {
   type: 'input';
-} & ItemBase &
-  RegisterOptions;
+} & ItemBase;
 
 type NumericInputDefinition = {
   type: 'numeric-input';
-} & ItemBase &
-  RegisterOptions;
+} & ItemBase;
+
+type EmailInputDefinition = {
+  type: 'email';
+} & ItemBase;
 
 export type SelectOption = { value: any; label: string };
 
@@ -28,8 +30,7 @@ type SelectDefinition = {
   options: SelectOption[];
   defaultOption?: SelectOption['value'];
   unknownOption?: SelectOption['value'];
-} & ItemBase &
-  RegisterOptions;
+} & ItemBase;
 
 type DependentOptions = { [dependeeValue: string]: SelectOption[] };
 
@@ -38,46 +39,39 @@ type DependentSelectDefinition = {
   dependsOn: ItemBase['name'];
   defaultOption: SelectOption;
   options: DependentOptions;
-} & ItemBase &
-  RegisterOptions;
+} & ItemBase;
 
 type CheckboxDefinition = {
   type: 'checkbox';
   initialChecked?: boolean;
-} & ItemBase &
-  RegisterOptions;
+} & ItemBase;
 
 export type MixedOrBool = boolean | 'mixed';
 type MixedCheckboxDefinition = {
   type: 'mixed-checkbox';
   initialChecked?: MixedOrBool;
-} & ItemBase &
-  RegisterOptions;
+} & ItemBase;
 
 type TextareaDefinition = {
   type: 'textarea';
   placeholder?: string;
   rows?: number;
   width?: number;
-} & ItemBase &
-  RegisterOptions;
+} & ItemBase;
 
 type DateInputDefinition = {
   type: 'date-input';
-} & ItemBase &
-  RegisterOptions;
+} & ItemBase;
 
 type TimeInputDefinition = {
   type: 'time-input';
-} & ItemBase &
-  RegisterOptions;
+} & ItemBase;
 
 type FileUploadDefinition = {
   type: 'file-upload';
   description: string;
   onChange: () => void;
-} & ItemBase &
-  RegisterOptions;
+} & ItemBase;
 
 type CallTypeButtonInputDefinition = {
   type: 'button';
@@ -87,6 +81,7 @@ type CallTypeButtonInputDefinition = {
 export type FormItemDefinition =
   | InputDefinition
   | NumericInputDefinition
+  | EmailInputDefinition
   | SelectDefinition
   | DependentSelectDefinition
   | CheckboxDefinition
