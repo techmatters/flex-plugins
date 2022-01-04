@@ -74,7 +74,7 @@ export async function loadDefinition(version: DefinitionVersionId) {
     },
     callTypeButtons: callTypeButtonsModule.default as CallTypeButtonsDefinitions,
     layoutVersion: layoutDefinitionsModule.default as LayoutVersion,
-    helplineInformation: helplines as HelplineDefinitions,
+    helplineInformation: helplineInformationModule.default as HelplineDefinitions,
     cannedResponses: cannedResponsesModule.default as CannedResponsesDefinitions,
     insights: {
       oneToOneConfigSpec: (oneToOneConfigSpecModule.default as unknown) as OneToOneConfigSpec,
