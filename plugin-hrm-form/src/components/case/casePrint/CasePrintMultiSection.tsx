@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { View } from '@react-pdf/renderer';
+import { FormDefinition } from 'hrm-form-definitions';
 
 import CasePrintSection from './CasePrintSection';
-import { FormDefinition } from 'hrm-form-definitions';
 import { HouseholdEntry, PerpetratorEntry, IncidentEntry, ReferralEntry } from '../../../types/types';
 
 type OwnProps = {

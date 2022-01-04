@@ -1,5 +1,3 @@
-
-
 export const channelTypes = {
   facebook: 'facebook',
   web: 'web',

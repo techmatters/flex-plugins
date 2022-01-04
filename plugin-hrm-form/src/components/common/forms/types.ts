@@ -1,4 +1,4 @@
-
+/* eslint-disable import/no-unused-modules */
 
 export type FormFieldType = { value: string; error?: string; validation?: string[]; touched?: boolean };
 
@@ -23,7 +23,6 @@ export type DefaultEventHandlers = (
   handleFocus: React.FocusEventHandler<HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement>;
   handleChange: React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement>;
 };
-
 
 export type HTMLElementRef = {
   current: HTMLElement;
