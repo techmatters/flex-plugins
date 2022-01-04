@@ -55,8 +55,7 @@ export async function loadDefinition(version: DefinitionVersionId) {
   const caseStatusModule = await import(/* webpackMode: "eager" */ `./${version}/CaseStatus.json`);
 
   const { helplines } = helplineInformationModule.default;
-  const defaultHelpline =
-    helplineInformationModule.default.helplines.find(helpline => helpline.default).value || helplines[0].value;
+  const defaultHelpline = helplines.find(helpline => helpline.default).value || helplines[0].value;
   return {
     caseForms: {
       HouseholdForm: householdFormModule.default as FormDefinition,
@@ -75,7 +74,7 @@ export async function loadDefinition(version: DefinitionVersionId) {
     },
     callTypeButtons: callTypeButtonsModule.default as CallTypeButtonsDefinitions,
     layoutVersion: layoutDefinitionsModule.default as LayoutVersion,
-    helplineInformation: helplineInformationModule.default as HelplineDefinitions,
+    helplineInformation: helplines as HelplineDefinitions,
     cannedResponses: cannedResponsesModule.default as CannedResponsesDefinitions,
     insights: {
       oneToOneConfigSpec: (oneToOneConfigSpecModule.default as unknown) as OneToOneConfigSpec,
