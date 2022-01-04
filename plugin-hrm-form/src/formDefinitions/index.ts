@@ -55,8 +55,7 @@ export async function loadDefinition(version: DefinitionVersionId) {
   const caseStatusModule = await import(/* webpackMode: "eager" */ `./${version}/CaseStatus.json`);
 
   const { helplines } = helplineInformationModule.default;
-  const defaultHelpline =
-    helplineInformationModule.default.helplines.find(helpline => helplines).value || helplines[0].value;
+  const defaultHelpline = helplines.find(helpline => helpline.default).value || helplines[0].value;
   return {
     caseForms: {
       HouseholdForm: householdFormModule.default as FormDefinition,
