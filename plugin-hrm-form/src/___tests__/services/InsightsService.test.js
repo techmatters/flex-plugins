@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import '../mockGetConfig'; // This causes the definition version to be "v1" (i.e. Zambia v1), hence that's what we gonna use to match the tests
+import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import {
   baseUpdates,
   contactlessTaskUpdates,
@@ -7,9 +7,10 @@ import {
   mergeAttributes,
   buildInsightsData,
 } from '../../services/InsightsService';
-import { getDateTime } from '../../utils/helpers';
-import v1 from '../../formDefinitions/v1';
+import { DefinitionVersionId, loadDefinition } from '../../formDefinitions';
+import { getDefinitionVersions } from '../../HrmFormPlugin';
 
+let v1;
 /*
  * This helper matches the way attributes were updated previous the changes Gian introduced in https://github.com/tech-matters/flex-plugins/pull/364/commits/9d09afec0db49716ef0b7518aaa5f7bc6159db64
  * Used to test that the attributes matches with what we expected before
@@ -28,6 +29,11 @@ const expectWithV1Zambia = (attributes, contactForm, caseForm) =>
   [baseUpdates, contactlessTaskUpdates, zambiaUpdates]
     .map(f => f(attributes, contactForm, caseForm))
     .reduce((acc, curr) => mergeAttributes(acc, curr), { ...attributes });
+
+beforeAll(async () => {
+  v1 = await loadDefinition(DefinitionVersionId.v1);
+  mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, v1);
+});
 
 test('Insights Data for non-data callType', async () => {
   const previousAttributes = {

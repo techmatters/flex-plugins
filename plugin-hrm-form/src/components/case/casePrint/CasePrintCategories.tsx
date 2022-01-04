@@ -5,6 +5,7 @@ import { Text, View } from '@react-pdf/renderer';
 import { getConfig } from '../../../HrmFormPlugin';
 import styles from './styles';
 import CaseTags from '../CaseTags';
+import { DefinitionVersionId } from '../../../formDefinitions';
 
 type OwnProps = {
   categories?: {
@@ -12,7 +13,7 @@ type OwnProps = {
       [subcategory: string]: boolean;
     };
   };
-  version: string;
+  version: DefinitionVersionId;
 };
 
 type Props = OwnProps;

@@ -2,10 +2,15 @@ import { reduce } from '../../../states/configuration/reducer';
 import * as types from '../../../states/configuration/types';
 import * as actions from '../../../states/configuration/actions';
 import { defaultLanguage } from '../../../utils/pluginHelpers';
-import mockV1 from '../../../formDefinitions/v1';
+import { DefinitionVersionId, loadDefinition } from '../../../formDefinitions';
 
 describe('test reducer', () => {
   let state = undefined;
+  let mockV1;
+
+  beforeAll(async () => {
+    mockV1 = loadDefinition(DefinitionVersionId.v1);
+  });
 
   test('should return initial state', async () => {
     const expected = {

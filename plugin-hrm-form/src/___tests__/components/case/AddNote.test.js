@@ -7,14 +7,12 @@ import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 
-import '../../mockGetConfig';
+import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import HrmTheme from '../../../styles/HrmTheme';
 import AddNote from '../../../components/case/AddNote';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../../states';
-import * as RoutingActions from '../../../states/routing/actions';
-import * as CaseActions from '../../../states/case/actions';
-import { updateCase } from '../../../services/CaseService';
-import mockV1 from '../../../formDefinitions/v1';
+import { DefinitionVersionId, loadDefinition } from '../../../formDefinitions';
+import { getDefinitionVersions } from '../../../HrmFormPlugin';
 
 jest.mock('../../../services/CaseService');
 
@@ -72,70 +70,78 @@ store.dispatch = jest.fn();
 const themeConf = {
   colorTheme: HrmTheme,
 };
+describe('Add Note', () => {
+  let mockV1;
 
-test('Test close functionality', async () => {
-  const onClickClose = jest.fn();
+  beforeAll(async () => {
+    mockV1 = await loadDefinition(DefinitionVersionId.v1);
+    mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
+  });
 
-  const ownProps = {
-    counselor: 'Someone',
-    onClickClose,
-    task: {
-      taskSid: 'task1',
-    },
-    definitionVersion: mockV1,
-  };
+  test('Test close functionality', async () => {
+    const onClickClose = jest.fn();
 
-  render(
-    <StorelessThemeProvider themeConf={themeConf}>
-      <Provider store={store}>
-        <AddNote {...ownProps} />
-      </Provider>
-    </StorelessThemeProvider>,
-  );
+    const ownProps = {
+      counselor: 'Someone',
+      onClickClose,
+      task: {
+        taskSid: 'task1',
+      },
+      definitionVersion: mockV1,
+    };
 
-  expect(onClickClose).not.toHaveBeenCalled();
+    render(
+      <StorelessThemeProvider themeConf={themeConf}>
+        <Provider store={store}>
+          <AddNote {...ownProps} />
+        </Provider>
+      </StorelessThemeProvider>,
+    );
 
-  expect(screen.getByTestId('Case-CloseCross')).toBeInTheDocument();
-  screen.getByTestId('Case-CloseCross').click();
+    expect(onClickClose).not.toHaveBeenCalled();
 
-  expect(onClickClose).toHaveBeenCalled();
+    expect(screen.getByTestId('Case-CloseCross')).toBeInTheDocument();
+    screen.getByTestId('Case-CloseCross').click();
 
-  onClickClose.mockClear();
+    expect(onClickClose).toHaveBeenCalled();
 
-  expect(onClickClose).not.toHaveBeenCalled();
+    onClickClose.mockClear();
 
-  expect(screen.getByTestId('Case-CloseButton')).toBeInTheDocument();
-  screen.getByTestId('Case-CloseButton').click();
+    expect(onClickClose).not.toHaveBeenCalled();
 
-  expect(onClickClose).toHaveBeenCalled();
-});
+    expect(screen.getByTestId('Case-CloseButton')).toBeInTheDocument();
+    screen.getByTestId('Case-CloseButton').click();
 
-test('a11y', async () => {
-  const onClickClose = jest.fn();
+    expect(onClickClose).toHaveBeenCalled();
+  });
 
-  const ownProps = {
-    counselor: 'Someone',
-    onClickClose,
-    task: {
-      taskSid: 'task1',
-    },
-    definitionVersion: mockV1,
-  };
+  test('a11y', async () => {
+    const onClickClose = jest.fn();
 
-  const wrapper = mount(
-    <StorelessThemeProvider themeConf={themeConf}>
-      <Provider store={store}>
-        <AddNote {...ownProps} />
-      </Provider>
-    </StorelessThemeProvider>,
-  );
+    const ownProps = {
+      counselor: 'Someone',
+      onClickClose,
+      task: {
+        taskSid: 'task1',
+      },
+      definitionVersion: mockV1,
+    };
 
-  const rules = {
-    region: { enabled: false },
-  };
+    const wrapper = mount(
+      <StorelessThemeProvider themeConf={themeConf}>
+        <Provider store={store}>
+          <AddNote {...ownProps} />
+        </Provider>
+      </StorelessThemeProvider>,
+    );
 
-  const axe = configureAxe({ rules });
-  const results = await axe(wrapper.getDOMNode());
+    const rules = {
+      region: { enabled: false },
+    };
 
-  expect(results).toHaveNoViolations();
+    const axe = configureAxe({ rules });
+    const results = await axe(wrapper.getDOMNode());
+
+    expect(results).toHaveNoViolations();
+  });
 });

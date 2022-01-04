@@ -4,12 +4,13 @@ import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 
 import '../mockStyled';
-import '../mockGetConfig';
 
+import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import ContactDetails from '../../components/search/ContactDetails';
 import Section from '../../components/Section';
 import callTypes, { channelTypes } from '../../states/DomainConstants';
-import mockV1 from '../../formDefinitions/v1';
+import { DefinitionVersionId, loadDefinition } from '../../formDefinitions';
+import { getDefinitionVersions } from '../../HrmFormPlugin';
 
 const mockStore = configureMockStore([]);
 
@@ -98,15 +99,22 @@ const detailsExpanded = {
   'General details': true,
 };
 
-const initialState = {
-  'plugin-hrm-form': {
-    configuration: {
-      definitionVersions: { v1: mockV1 },
-      currentDefinitionVersion: mockV1,
-      counselors: { hash: { HASH1: 'CreatorOfTheCase' } },
+let mockV1;
+let initialState;
+
+beforeAll(async () => {
+  mockV1 = await loadDefinition(DefinitionVersionId.v1);
+  mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
+  initialState = {
+    'plugin-hrm-form': {
+      configuration: {
+        definitionVersions: { v1: mockV1 },
+        currentDefinitionVersion: mockV1,
+        counselors: { hash: { HASH1: 'CreatorOfTheCase' } },
+      },
     },
-  },
-};
+  };
+});
 
 test(`<ContactDetails> with contact of type ${callTypes.child}`, () => {
   const contact = contactOfType(callTypes.child);
