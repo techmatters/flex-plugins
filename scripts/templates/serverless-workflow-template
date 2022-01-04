@@ -104,9 +104,9 @@ jobs:
         with:
           ssm_parameter: "<SHORT_ENVIRONMENT>_TWILIO_<SHORT_HELPLINE>_S3_BUCKET_DOCS"
           env_variable_name: "S3_BUCKET"
-      # Call deploy-beta to compile and deploy
-      - name: Executing deploy-beta
-        uses: ./.github/actions/deploy-beta
+      # Call main-action to compile and deploy
+      - name: Executing main-action
+        uses: ./.github/actions/main-action
         with:
           account-sid: ${{ secrets.<SHORT_HELPLINE>_<SHORT_ENVIRONMENT>_ACCOUNT_SID }}
           auth-token: ${{ secrets.<SHORT_HELPLINE>_<SHORT_ENVIRONMENT>_AUTH_TOKEN }}

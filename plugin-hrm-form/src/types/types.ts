@@ -38,6 +38,8 @@ export type Document = { [key: string]: string | boolean };
 
 export type DocumentEntry = { document: Document } & EntryInfo;
 
+export type CSAMReportEntry = { csamReportId: string; id: number } & EntryInfo;
+
 export const blankReferral = {
   date: null,
   referredTo: null,
@@ -99,6 +101,7 @@ export type SearchContact = {
     conversationDuration: number;
   };
   details: ContactRawJson;
+  csamReports: CSAMReportEntry[];
 };
 
 export type SearchContactResult = {

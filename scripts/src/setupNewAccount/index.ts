@@ -69,7 +69,7 @@ async function main() {
     }
 
     if (promptResult.generateServerlessDeploymentFile === 'y') {
-      logSuccess('Generating serverless deployment file...');
+      logSuccess('Generating serverless.tf deployment file...');
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       await generateWorkflow(input, serverlessConfig);
     }

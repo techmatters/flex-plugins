@@ -39,6 +39,7 @@ export const getInitialValue = (def: FormItemDefinition) => {
   switch (def.type) {
     case 'input':
     case 'numeric-input':
+    case 'email':
     case 'textarea':
     case 'date-input':
     case 'time-input':
@@ -96,7 +97,7 @@ const bindCreateSelectOptions = (path: string) => (o: SelectOption) => (
  * @param {() => void} updateCallback Callback called to update form state. When is the callback called is specified in the input type.
  * @param {FormItemDefinition} def Definition for a single input.
  */
-const getInputType = (parents: string[], updateCallback: () => void, customHandlers?: CustomHandlers) => (
+export const getInputType = (parents: string[], updateCallback: () => void, customHandlers?: CustomHandlers) => (
   def: FormItemDefinition,
 ) => (
   initialValue: any, // TODO: restrict this type
@@ -123,6 +124,7 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
                 </Row>
                 <FormInput
                   id={path}
+                  data-testid={path}
                   name={path}
                   error={Boolean(error)}
                   aria-invalid={Boolean(error)}
@@ -162,6 +164,7 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
                 </Row>
                 <FormInput
                   id={path}
+                  data-testid={path}
                   name={path}
                   error={Boolean(error)}
                   aria-invalid={Boolean(error)}
@@ -178,6 +181,50 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
                     })(innerRef);
                   }}
                   defaultValue={initialValue}
+                />
+                {error && (
+                  <FormError>
+                    <Template id={`${path}-error`} code={error.message} />
+                  </FormError>
+                )}
+              </FormLabel>
+            );
+          }}
+        </ConnectForm>
+      );
+    case 'email':
+      return (
+        <ConnectForm key={path}>
+          {({ errors, register }) => {
+            const error = get(errors, path);
+            return (
+              <FormLabel htmlFor={path}>
+                <Row>
+                  <Box marginBottom="8px">
+                    {labelTextComponent}
+                    {rules.required && <RequiredAsterisk />}
+                  </Box>
+                </Row>
+                <FormInput
+                  id={path}
+                  data-testid={path}
+                  name={path}
+                  error={Boolean(error)}
+                  aria-invalid={Boolean(error)}
+                  aria-describedby={`${path}-error`}
+                  onBlur={updateCallback}
+                  innerRef={innerRef => {
+                    if (htmlElRef) {
+                      htmlElRef.current = innerRef;
+                    }
+
+                    register({
+                      ...rules,
+                      pattern: { value: /\S+@\S+\.\S+/, message: 'Entered value does not match email format' },
+                    })(innerRef);
+                  }}
+                  defaultValue={initialValue}
+                  type="email"
                 />
                 {error && (
                   <FormError>
@@ -207,6 +254,7 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
                 <FormSelectWrapper>
                   <FormSelect
                     id={path}
+                    data-testid={path}
                     name={path}
                     error={Boolean(error)}
                     aria-invalid={Boolean(error)}
@@ -281,6 +329,7 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
                 <FormSelectWrapper>
                   <FormSelect
                     id={path}
+                    data-testid={path}
                     name={path}
                     error={Boolean(error)}
                     aria-invalid={Boolean(error)}
@@ -320,6 +369,7 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
                   <Box marginRight="5px">
                     <FormCheckbox
                       id={path}
+                      data-testid={path}
                       name={path}
                       type="checkbox"
                       aria-invalid={Boolean(error)}
@@ -372,6 +422,7 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
                   <Box marginRight="5px">
                     <FormMixedCheckbox
                       id={path}
+                      data-testid={path}
                       type="checkbox"
                       className="mixed-checkbox"
                       aria-invalid={Boolean(error)}
@@ -418,6 +469,7 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
                 </Row>
                 <FormTextArea
                   id={path}
+                  data-testid={path}
                   name={path}
                   error={Boolean(error)}
                   aria-invalid={Boolean(error)}
@@ -460,6 +512,7 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
                 <FormTimeInput
                   type="time"
                   id={path}
+                  data-testid={path}
                   name={path}
                   error={Boolean(error)}
                   aria-invalid={Boolean(error)}
@@ -500,6 +553,7 @@ const getInputType = (parents: string[], updateCallback: () => void, customHandl
                 <FormDateInput
                   type="date"
                   id={path}
+                  data-testid={path}
                   name={path}
                   error={Boolean(error)}
                   aria-invalid={Boolean(error)}

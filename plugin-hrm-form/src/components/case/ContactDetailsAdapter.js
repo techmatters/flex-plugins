@@ -42,7 +42,7 @@ export const adaptContactToDetailsScreen = (contact, counselorName) => {
   const categories = retrieveCategories(caseInformation.categories);
   const notes = caseInformation.callSummary;
   const channelType = contact.channel;
-  const { conversationDuration } = contact;
+  const { conversationDuration, csamReports } = contact;
   const counselor = counselorName;
 
   return {
@@ -59,6 +59,7 @@ export const adaptContactToDetailsScreen = (contact, counselorName) => {
     },
     counselor,
     details: contact.rawJson,
+    csamReports,
   };
 };
 
@@ -72,6 +73,7 @@ export const adaptFormToContactDetails = (task, form, date, counselor) => {
   const notes = caseInformation.callSummary;
   const { channelType } = task;
   const conversationDuration = getConversationDuration(task, form.metadata);
+  const { csamReports } = form;
 
   return {
     overview: {
@@ -87,5 +89,6 @@ export const adaptFormToContactDetails = (task, form, date, counselor) => {
     },
     counselor,
     details,
+    csamReports,
   };
 };

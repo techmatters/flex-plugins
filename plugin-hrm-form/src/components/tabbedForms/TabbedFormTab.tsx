@@ -26,6 +26,7 @@ type OwnProps = {
   tabPath: keyof TaskEntry;
   initialValues: TaskEntry['callerInformation'] | TaskEntry['childInformation'] | TaskEntry['caseInformation'];
   autoFocus: boolean;
+  extraChildrenRight?: React.ReactNode;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -40,6 +41,7 @@ const TabbedFormTab: React.FC<Props> = ({
   initialValues,
   autoFocus,
   updateForm,
+  extraChildrenRight,
 }) => {
   const shouldFocusFirstElement = display && autoFocus;
   const firstElementRef = useFocus(shouldFocusFirstElement);
@@ -69,7 +71,10 @@ const TabbedFormTab: React.FC<Props> = ({
         <Box paddingBottom={`${BottomButtonBarHeight}px`}>
           <TwoColumnLayout>
             <ColumnarBlock>{l}</ColumnarBlock>
-            <ColumnarBlock>{r}</ColumnarBlock>
+            <ColumnarBlock>
+              {r}
+              {extraChildrenRight}
+            </ColumnarBlock>
           </TwoColumnLayout>
         </Box>
       </Container>

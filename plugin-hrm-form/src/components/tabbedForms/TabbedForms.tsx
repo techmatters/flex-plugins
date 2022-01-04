@@ -17,7 +17,7 @@ import { changeRoute } from '../../states/routing/actions';
 import { TaskEntry, emptyCategories } from '../../states/contacts/reducer';
 import { TabbedFormSubroutes, NewCaseSubroutes } from '../../states/routing/types';
 import { CustomITask, isOfflineContactTask, SearchContact } from '../../types/types';
-import { TabbedFormsContainer, Box, StyledTabs } from '../../styles/HrmStyles';
+import { TabbedFormsContainer, Box, StyledTabs, Row } from '../../styles/HrmStyles';
 import FormTab from '../common/forms/FormTab';
 import callTypes from '../../states/DomainConstants';
 import Search from '../search';
@@ -28,7 +28,8 @@ import BottomBar from './BottomBar';
 import { hasTaskControl } from '../../utils/transfer';
 import { isNonDataCallType } from '../../states/ValidationRules';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
-import { isStandaloneITask } from '../case/Case';
+import CSAMReportButton from './CSAMReportButton';
+import CSAMAttachments from './CSAMAttachments';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -72,16 +73,30 @@ const mapTabsToIndex = (task: CustomITask, contactForm: TaskEntry): TabbedFormSu
 
 type OwnProps = {
   task: CustomITask;
+  csamReportEnabled: boolean;
 };
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, currentDefinitionVersion }) => {
+const TabbedForms: React.FC<Props> = ({
+  dispatch,
+  routing,
+  task,
+  contactForm,
+  currentDefinitionVersion,
+  csamReportEnabled,
+}) => {
   const methods = useForm({
     shouldFocusError: false,
     mode: 'onChange',
   });
+
+  const csamAttachments = React.useMemo(() => <CSAMAttachments csamReports={contactForm.csamReports} />, [
+    contactForm.csamReports,
+  ]);
+
+  const isMounted = React.useRef(false); // mutable value to avoid reseting the state in the first render.
 
   const { setValue } = methods;
   const { helpline } = contactForm;
@@ -90,7 +105,8 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, cu
    * Clear some parts of the form state when helpline changes.
    */
   React.useEffect(() => {
-    setValue('categories', emptyCategories);
+    if (isMounted.current) setValue('categories', emptyCategories);
+    else isMounted.current = true;
   }, [helpline, setValue]);
 
   if (routing.route !== 'tabbed-forms') return null;
@@ -164,13 +180,29 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, cu
   const isDataCallType = !isNonDataCallType(contactForm.callType);
   const showSubmitButton = !isEmptyCallType(contactForm.callType) && tabIndex === tabs.length - 1;
 
+  // eslint-disable-next-line react/display-name
+  const HeaderControlButtons = () => (
+    <Box marginTop="10px" marginBottom="10px" paddingLeft="20px">
+      <Row>
+        <SearchResultsBackButton handleBack={handleBackButton} text={<Template code="TabbedForms-BackButton" />} />
+        {csamReportEnabled && (
+          <Box marginLeft="auto">
+            <CSAMReportButton
+              handleClick={() => dispatch(changeRoute({ route: 'csam-report', subroute: 'form' }, taskId))}
+            />
+          </Box>
+        )}
+      </Row>
+    </Box>
+  );
+
   return (
     <FormProvider {...methods}>
       <div role="form" style={{ height: '100%', overflow: 'scroll' }}>
         <TabbedFormsContainer>
-          <Box marginTop="10px" marginBottom="10px">
-            <SearchResultsBackButton handleBack={handleBackButton} text={<Template code="TabbedForms-BackButton" />} />
-          </Box>
+          {/* Buttons at the top of the form */}
+          <HeaderControlButtons />
+
           <StyledTabs name="tab" variant="scrollable" scrollButtons="auto" value={tabIndex} onChange={handleTabsChange}>
             {tabs}
           </StyledTabs>
@@ -224,6 +256,7 @@ const TabbedForms: React.FC<Props> = ({ dispatch, routing, task, contactForm, cu
                     initialValues={contactForm.caseInformation}
                     display={subroute === 'caseInformation'}
                     autoFocus={autoFocus}
+                    extraChildrenRight={csamAttachments}
                   />
                 </>
               )}
