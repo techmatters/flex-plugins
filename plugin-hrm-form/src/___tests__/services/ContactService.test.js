@@ -1,11 +1,11 @@
 import { set } from 'lodash/fp';
+import { callTypes, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import { transformForm, saveContact, createCategoriesObject } from '../../services/ContactService';
 import { createNewTaskEntry } from '../../states/contacts/reducer';
-import callTypes, { channelTypes } from '../../states/DomainConstants';
+import { channelTypes } from '../../states/DomainConstants';
 import { offlineContactTaskSid } from '../../types/types';
-import { DefinitionVersionId, loadDefinition } from '../../formDefinitions';
 import { getDefinitionVersions } from '../../HrmFormPlugin';
 
 const helpline = 'ChildLine Zambia (ZM)';

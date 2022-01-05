@@ -1,0 +1,243 @@
+{
+  "ChildLine Zambia (ZM)": {
+    "Missing children": {
+      "color": "#BBE3FF",
+      "subcategories": [
+        "Child abduction",
+        "Lost, unaccounted for or otherwise missing child",
+        "Runaway",
+        "Unspecified/Other"
+      ]
+    },
+    "Violence": {
+      "color": "#F5A623",
+      "subcategories": [
+        "Bullying",
+        "Child/Early/Forced marriage",
+        "Child labour",
+        "Commercial sexual exploitation (offline)",
+        "Female Genital Mutilation (FGM)",
+        "Gender-based harmful traditional practices (other than FGM)",
+        "Harmful traditional practices other than child marriage and FGM",
+        "Mental/Emotional violence",
+        "Neglect (or negligent treatment)",
+        "Online sexual abuse (OSA)",
+        "Online sexual exploitation (OSE)",
+        "Information seeking about OSE/OSA",
+        "Physical violence",
+        "Sexual violence",
+        "Unspecified/Other"
+      ]
+    },
+    "Mental Health": {
+      "color": "#F8E900",
+      "subcategories": [
+        "Addictive behaviours and substance use",
+        "Behavioural problems",
+        "Concerns about the self",
+        "Emotional distress – anger problems",
+        "Emotional distress – fear and anxiety problems",
+        "Emotional distress – mood problems",
+        "Neurodevelopmental concerns",
+        "Problems with eating behaviour",
+        "Self-harming behaviour",
+        "Suicidal thoughts and suicide attempts",
+        "Traumatic distress",
+        "Unspecified/Other"
+      ]
+    },
+    "Physical Health": {
+      "color": "#E86B6B",
+      "subcategories": [
+        "COVID-19",
+        "General medical or lifestyle concerns",
+        "Medical or lifestyle information about HIV/AIDS",
+        "Male circumcision",
+        "Pregnancy and maternal care",
+        "Sexual and reproductive health",
+        "Nutrition",
+        "Unspecified/Other"
+      ]
+    },
+    "Accessibility": {
+      "color": "#8055BA",
+      "subcategories": [
+        "Education",
+        "Essential needs",
+        "General healthcare services",
+        "Legal services and advice",
+        "Mental health services",
+        "Sexual health services",
+        "Socio-economical services",
+        "Unspecified/Other"
+      ]
+    },
+    "Discrimination and Exclusion": {
+      "color": "#B971AF",
+      "subcategories": [
+        "Ethnicity/nationality",
+        "Financial situation",
+        "Gender",
+        "Gender identity or expression and sexual orientation",
+        "Health",
+        "Philosophical or religious beliefs",
+        "Unspecified/Other"
+      ]
+    },
+    "Family Relationships": {
+      "color": "#239613",
+      "subcategories": [
+        "Adoption, fostering, and extended family placement",
+        "Relationship to caregiver",
+        "Family health and wellbeing",
+        "Relationship with sibling(s)",
+        "Unspecified/Other"
+      ]
+    },
+    "Peer Relationships": {
+      "color": "#9AD703",
+      "subcategories": [
+        "Friends and friendships",
+        "Partner relationships",
+        "Classmates/colleagues relationships",
+        "Unspecified/Other"
+      ]
+    },
+    "Education and Occupation": {
+      "color": "#55AFAF",
+      "subcategories": [
+        "Academic issues",
+        "Teacher and school problems",
+        "Problems at work",
+        "Unspecified/Other"
+      ]
+    },
+    "Sexuality": {
+      "color": "#506BA5",
+      "subcategories": [
+        "Sexual orientation and gender identity",
+        "Sexual behaviours",
+        "Unspecified/Other"
+      ]
+    },
+    "Non-Counselling contacts": {
+      "color": "#767777",
+      "subcategories": [
+        "Complaints about the child helpline",
+        "Questions by parents",
+        "Questions about the child helpline",
+        "Questions about other services",
+        "\"Thank you for your assistance\"",
+        "Unspecified/Other"
+      ]
+    }
+  },
+  "LifeLine Zambia (ZM)": {
+    "Physical and Sexual Health": {
+      "color": "#BBE3FF",
+      "subcategories": [
+        "COVID-19",
+        "Condom Use",
+        "Medical or lifestyle information about HIV/AIDS",
+        "Male Circumcision",
+        "Pregnancy and maternal care",
+        "Sexual and reproductive health",
+        "Sexually Transmitted Diseases",
+        "Nutrition",
+        "Unspecified/Other"
+      ]
+    },
+    "Mental Health": {
+      "color": "#F5A623",
+      "subcategories": [
+        "Emotional distress – anger problems",
+        "Emotional distress – fear and anxiety problems",
+        "Emotional distress – mood problems",
+        "Problems with eating behaviour",
+        "Self-harming behaviour",
+        "Suicidal thoughts and suicide attempts",
+        "Traumatic distress",
+        "Unspecified/Other"
+      ]
+    },
+    "Abuse": {
+      "color": "#F8E900",
+      "subcategories": [
+        "Addictive behaviours and substance use",
+        "Cyber Bullying",
+        "Gender Based Violence (GBV)",
+        "Mental/Emotional violence",
+        "Economic abuse",
+        "Online sexual abuse",
+        "Online sexual exploitation",
+        "Physical violence",
+        "Sexual violence",
+        "Unspecified/Other"
+      ]
+    },
+    "Relationships": {
+      "color": "#E86B6B",
+      "subcategories": [
+        "Family Relationships",
+        "Marital Issues",
+        "Unspecified/Other"
+      ]
+    },
+    "Education and Occupation": {
+      "color": "#8055BA",
+      "subcategories": [
+        "Problems at learning institution",
+        "Problems at work",
+        "Unspecified/Other"
+      ]
+    },
+    "Supporting Women's Livelihood (SWL)": {
+      "color": "#B971AF",
+      "subcategories": [
+        "Inclusion",
+        "Exclusion",
+        "Service Standard",
+        "Payment",
+        "Serious Complaints",
+        "Training and Mentorship",
+        "Fraud and Corruption",
+        "Unspecified/Other"
+      ]
+    },
+    "Keeping Girls in School (KGS)": {
+      "color": "#239613",
+      "subcategories": [
+        "Inclusion",
+        "Exclusion",
+        "Service Standard",
+        "Payment",
+        "Serious Complaints",
+        "Fraud and Corruption",
+        "Unspecified/Other"
+      ]
+    },
+    "Social Cash Transfer (SCT)": {
+      "color": "#9AD703",
+      "subcategories": [
+        "Inclusion",
+        "Exclusion",
+        "Service Standard",
+        "Payment",
+        "Serious Complaints",
+        "Exit",
+        "Unspecified/Other"
+      ]
+    },
+    "Non-Counselling contacts": {
+      "color": "#767777",
+      "subcategories": [
+        "Complaints about the child helpline",
+        "Questions by parents",
+        "Questions about the child helpline",
+        "Questions about other services",
+        "\"Thank you for your assistance\"",
+        "Unspecified/Other"
+      ]
+    }
+  }
+}

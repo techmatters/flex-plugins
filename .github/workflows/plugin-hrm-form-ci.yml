@@ -26,6 +26,15 @@ jobs:
         mkdir ./src/private
         touch ./src/private/secret.js
       working-directory: ./plugin-hrm-form
+    - name: Install hrm-form-definitions Packages
+      run: npm ci
+      working-directory: ./hrm-form-definitions
+    - name: Run hrm-form-definitions Lint
+      run: npm run lint
+      working-directory: ./hrm-form-definitions
+    - name: Run hrm-form-definitions Tests
+      run: npm run test
+      working-directory: ./hrm-form-definitions
     - name: Install Packages
       run: UNBUNDLED_REACT=true npm ci
       working-directory: ./plugin-hrm-form
