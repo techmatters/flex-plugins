@@ -142,3 +142,64 @@ export const savePendingContactToSharedState = async (task, payload, error) => {
     return null;
   }
 };
+
+/**
+ * Loops through the pending contacts and try saving them to the external backend.
+ * When a pending contact is successfully saved to the external backend, it's removed from the pending contacts list.
+ * When a pending contact fails to be saved on the external backend, its 'retries' attribute is incremented.
+ * @param {*} saveContactFn Function that saves a contact to the external backend
+ */
+export const autoRetrySavingPendingContacts = async saveContactFn => {
+  const { sharedStateClient, strings } = getConfig();
+
+  if (!isSharedStateClientConnected(sharedStateClient)) {
+    console.error('Error with Sync Client conection. Sync Client object is: ', sharedStateClient);
+    console.error(strings.SharedStateSaveContactError);
+    return;
+  }
+
+  // Lock to prevent concurrency isues
+  const pendingContactsLock = await sharedStateClient.document('pending-contacts-lock');
+  if (pendingContactsLock.value.isLocked) return;
+
+  await pendingContactsLock.set({ isLocked: true });
+
+  try {
+    const list = await sharedStateClient.list('pending-contacts');
+    const successfulRetriesIndexes = [];
+    const failedRetriesIndexes = [];
+
+    const pendingContacts = (await list.getItems()).items;
+
+    if (pendingContacts.length === 0) {
+      await pendingContactsLock.set({ isLocked: false });
+      return;
+    }
+
+    for (const listItem of pendingContacts) {
+      const { index, value } = listItem; // This index is part of ListItem object (it's not the index from the array, it's more like an id)
+      const { task, payload } = value;
+
+      try {
+        await saveContactFn(task, payload);
+        successfulRetriesIndexes.push(index);
+      } catch (e) {
+        failedRetriesIndexes.push(index);
+      }
+    }
+
+    const incrementRetries = pendingContact => {
+      pendingContact.retries = (pendingContact.retries || 0) + 1;
+      return pendingContact;
+    };
+    await Promise.all(failedRetriesIndexes.map(itemIndex => list.mutate(itemIndex, incrementRetries)));
+    await Promise.all(successfulRetriesIndexes.map(itemIndex => list.remove(itemIndex)));
+
+    console.log(`${successfulRetriesIndexes.length} pending contacts were saved to external backend`);
+    console.log(`${failedRetriesIndexes.length} pending contacts could not be saved`);
+  } catch (e) {
+    console.error('Error while auto retrying to save pending contacts', e);
+  } finally {
+    await pendingContactsLock.set({ isLocked: false });
+  }
+};

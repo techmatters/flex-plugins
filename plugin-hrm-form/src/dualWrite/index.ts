@@ -1,7 +1,7 @@
 import { ITask } from '@twilio/flex-ui';
 
 import { getConfig } from '../HrmFormPlugin';
-import { savePendingContactToSharedState } from '../utils/sharedState';
+import { savePendingContactToSharedState, autoRetrySavingPendingContacts } from '../utils/sharedState';
 import saveContactToSaferNet from './br';
 
 type DualWriteFn = (task: ITask, payload: any) => Promise<void>;
@@ -22,6 +22,7 @@ export const saveContactToExternalBackend = async (task: ITask, payload: any) =>
   if (saveContact) {
     try {
       await saveContact(task, payload);
+      autoRetrySavingPendingContacts(saveContact);
     } catch (err) {
       savePendingContactToSharedState(task, payload, err);
     }
