@@ -60,8 +60,8 @@
     },
     {
       "name": "knownToChild",
-      "label": "Is perpetrator known to victim?",
-      "type": "mixed-checkbox"
+      "label": "Is perpetrator know to child?",
+      "type": "checkbox"
     },
     {
       "name": "relationshipToChild",
@@ -74,18 +74,13 @@
         { "value": "Other close relative", "label": "Other close relative" },          
         { "value": "Parent", "label": "Parent" },
         { "value": "Person living in the neighborhood", "label": "Person living in the neighborhood" },
-        { "value": "Person living in educational institution", "label": "Person in educational institution" },
+        { "value": "Person living in educational institution", "label": "Person educational institution" },
         { "value": "Peer", "label": "Peer" },
         { "value": "Sibling", "label": "Sibling(s)" },
         { "value": "Partner", "label": "Stranger" },   
         { "value": "Public Servant", "label": "Publice Servant" },
         { "value": "Other", "label": "Other" }
       ]
-    },
-    {
-      "name": "otherRelationship",
-      "label": "If Other, please specify",
-      "type": "input"
     },
     {
       "name": "address",

@@ -6,6 +6,7 @@ import { DefinitionVersionId } from 'hrm-form-definitions';
 import { getConfig } from '../../../HrmFormPlugin';
 import styles from './styles';
 import CaseTags from '../CaseTags';
+import { DefinitionVersionId } from '../../../formDefinitions';
 
 type OwnProps = {
   categories?: {
