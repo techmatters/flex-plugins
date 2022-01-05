@@ -4,7 +4,7 @@ import { getConfig } from '../HrmFormPlugin';
 import { savePendingContactToSharedState, autoRetrySavingPendingContacts } from '../utils/sharedState';
 import saveContactToSaferNet from './br';
 
-type DualWriteFn = (task: ITask, payload: any) => Promise<void>;
+type DualWriteFn = (task: ITask, payload: any, isAutoRetry?: boolean) => Promise<void>;
 
 type SaveContactByDefinitionVersion = {
   [definitionVersion: string]: DualWriteFn;

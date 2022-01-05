@@ -180,7 +180,7 @@ export const autoRetrySavingPendingContacts = async saveContactFn => {
       const { task, payload } = value;
 
       try {
-        await saveContactFn(task, payload);
+        await saveContactFn(task, payload, true);
         successfulRetriesIndexes.push(index);
       } catch (e) {
         failedRetriesIndexes.push(index);
@@ -199,6 +199,10 @@ export const autoRetrySavingPendingContacts = async saveContactFn => {
   } catch (e) {
     console.error('Error while auto retrying to save pending contacts', e);
   } finally {
-    await pendingContactsLock.set({ isLocked: false });
+    try {
+      await pendingContactsLock.set({ isLocked: false });
+    } catch (e) {
+      console.error('Error releasing pending-contacts-lock', e);
+    }
   }
 };
