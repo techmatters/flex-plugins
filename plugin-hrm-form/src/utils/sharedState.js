@@ -1,5 +1,4 @@
 import { getConfig } from '../HrmFormPlugin';
-import { saveContactToExternalBackend } from '../dualWrite';
 import { recordBackendError } from '../fullStory';
 
 const isSharedStateClientConnected = sharedStateClient =>
@@ -145,7 +144,7 @@ export const savePendingContactToSharedState = async (task, payload, error) => {
 
 /**
  * Loops through the pending contacts and try saving them to the external backend.
- * When a pending contact is successfully saved to the external backend, it's removed from the pending contacts list.
+ * When a pending contact is successfully saved on the external backend, it's removed from the pending contacts list.
  * When a pending contact fails to be saved on the external backend, its 'retries' attribute is incremented.
  * @param {*} saveContactFn Function that saves a contact to the external backend
  */
