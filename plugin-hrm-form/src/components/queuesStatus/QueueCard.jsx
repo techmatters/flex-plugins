@@ -75,7 +75,11 @@ class QueuesCard extends React.PureComponent {
   };
 
   renderChannel = (channel, color, value, marginLeft, channelAria) => (
-    <ChannelColumn marginLeft={marginLeft} aria-label={`${value} ${channelAria || channel},`}>
+    <ChannelColumn
+      data-testid={`channel-column-${channel.toLowerCase()}`}
+      marginLeft={marginLeft}
+      aria-label={`${value} ${channelAria || channel},`}
+    >
       <ChannelBox isZero={value === 0} backgroundColor={color}>
         {value}
       </ChannelBox>

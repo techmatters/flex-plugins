@@ -1,0 +1,22 @@
+{
+  "name": "e2e-tests",
+  "version": "0.0.1",
+  "description": "End to end tests for the Aselo HRM",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx playwright test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/techmatters/flex-plugin.git"
+  },
+  "author": "Tech Matters",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/techmatters/flex-plugin/issues"
+  },
+  "homepage": "https://github.com/techmatters/flex-plugin#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.17.1"
+  }
+}
