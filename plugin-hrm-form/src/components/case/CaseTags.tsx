@@ -9,7 +9,6 @@ import CategoryWithTooltip from '../common/CategoryWithTooltip';
 import { retrieveCategories } from './ContactDetailsAdapter';
 import { getContactTags, renderTag } from '../../utils/categories';
 import styles from './casePrint/styles';
-import { DefinitionVersionId } from '../../formDefinitions';
 
 type OwnProps = {
   categories?: {

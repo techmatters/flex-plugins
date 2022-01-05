@@ -7,7 +7,6 @@ import { DefinitionVersionId } from 'hrm-form-definitions';
 import { getConfig } from '../../../HrmFormPlugin';
 import styles from './styles';
 import CasePrintCategories from './CasePrintCategories';
-import { DefinitionVersionId } from '../../../formDefinitions';
 
 type OwnProps = {
   status: string;
