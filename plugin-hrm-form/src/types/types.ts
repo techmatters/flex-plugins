@@ -1,7 +1,6 @@
 /* eslint-disable import/no-unused-modules */
 import { ITask } from '@twilio/flex-ui';
-
-import type { CallTypes } from '../states/DomainConstants';
+import { DefinitionVersionId, CallTypes } from 'hrm-form-definitions/src';
 
 type EntryInfo = { createdAt: string; twilioWorkerId: string };
 
@@ -37,6 +36,8 @@ export type Document = { [key: string]: string | boolean };
 
 export type DocumentEntry = { document: Document } & EntryInfo;
 
+export type CSAMReportEntry = { csamReportId: string; id: number } & EntryInfo;
+
 export const blankReferral = {
   date: null,
   referredTo: null,
@@ -44,7 +45,7 @@ export const blankReferral = {
 };
 
 export type CaseInfo = {
-  definitionVersion?: string;
+  definitionVersion?: DefinitionVersionId;
   offlineContactCreator?: string;
   summary?: string;
   notes?: NoteEntry[];
@@ -75,7 +76,7 @@ export type InformationObject = NestedInformation & {
 
 // Information about a single contact, as expected from DB (we might want to reuse this type in backend) - (is this a correct placement for this?)
 export type ContactRawJson = {
-  definitionVersion?: string;
+  definitionVersion?: DefinitionVersionId;
   callType: CallTypes | '';
   childInformation: InformationObject;
   callerInformation: InformationObject;
@@ -98,6 +99,7 @@ export type SearchContact = {
     conversationDuration: number;
   };
   details: ContactRawJson;
+  csamReports: CSAMReportEntry[];
 };
 
 export type SearchContactResult = {

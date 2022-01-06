@@ -11,10 +11,12 @@ export const BottomButtonBarHeight = 55;
 type BoxProps = {
   width?: string;
   height?: string;
+  margin?: string;
   marginTop?: string;
   marginBottom?: string;
   marginLeft?: string;
   marginRight?: string;
+  padding?: string;
   paddingTop?: string;
   paddingBottom?: string;
   paddingLeft?: string;
@@ -25,10 +27,12 @@ type BoxProps = {
 export const Box = styled('div')<BoxProps>`
   ${({ width }) => width && `width: ${width};`}
   ${({ height }) => height && `height: ${height};`}
+  ${({ margin }) => margin && `margin: ${margin}`}
   ${({ marginTop }) => marginTop && `margin-top: ${marginTop};`}
   ${({ marginBottom }) => marginBottom && `margin-bottom: ${marginBottom};`}
   ${({ marginLeft }) => marginLeft && `margin-left: ${marginLeft};`}
   ${({ marginRight }) => marginRight && `margin-right: ${marginRight};`}
+  ${({ padding }) => padding && `padding: ${padding}`}
   ${({ paddingTop }) => paddingTop && `padding-top: ${paddingTop};`}
   ${({ paddingBottom }) => paddingBottom && `padding-bottom: ${paddingBottom};`}
   ${({ paddingLeft }) => paddingLeft && `padding-left: ${paddingLeft};`}
@@ -372,6 +376,7 @@ export const StyledTab = withStyles({
     height: 35,
     minHeight: 35,
     minWidth: 120,
+    width: 120,
     backgroundColor: '#ecedf1',
     borderTopLeftRadius: 4,
     borderTopRightRadius: 4,
@@ -1011,6 +1016,13 @@ export const Bold = styled('span')`
 `;
 
 Bold.displayName = 'Bold';
+
+export const CSAMReportButtonText = styled(FontOpenSans)`
+  font-size: 12px;
+  color: ${props => props.theme.colors.hyperlinkColor};
+  font-weight: 600;
+`;
+CSAMReportButtonText.displayName = 'CSAMReportButtonText';
 
 export const StyledBackButton = styled(ButtonBase)`
   &:focus {

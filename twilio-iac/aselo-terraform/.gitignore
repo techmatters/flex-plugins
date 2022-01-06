@@ -1,1 +1,7 @@
 *-private.tfvars
+
+.env
+
+.terraform/
+
+.terraform.lock.hcl

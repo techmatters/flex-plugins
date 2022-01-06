@@ -1,8 +1,14 @@
 import * as types from '../../../states/configuration/types';
 import * as actions from '../../../states/configuration/actions';
-import mockV1 from '../../../formDefinitions/v1';
+import { DefinitionVersionId, loadDefinition } from '../../../formDefinitions';
 
 describe('test action creators', () => {
+  let mockV1;
+
+  beforeAll(async () => {
+    mockV1 = await loadDefinition(DefinitionVersionId.v1);
+  });
+
   test('changeLanguage', async () => {
     const language = 'es';
 

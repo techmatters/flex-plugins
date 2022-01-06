@@ -1,0 +1,74 @@
+{
+  "contactForm": {
+    "callerInformation": [
+      {
+        "name": "relationshipToChild",
+        "insights": ["conversations", "initiated_by"]
+      }
+    ],
+    "childInformation": [
+      {
+        "name": "city",
+        "insights": ["customers", "city"]
+      },
+      {
+        "name": "ethnicity",
+        "insights": ["customers", "customer_attribute_2"]
+      }
+    ],
+    "caseInformation": [
+      {
+        "name": "actionTaken",
+        "insights": ["conversations", "initiative"]
+      },
+      {
+        "name": "didTheChildFeelWeSolvedTheirProblem",
+        "insights": ["conversations", "productive"],
+        "type": "mixed-checkbox"
+      },
+      {
+        "name": "hasConversationEvolved",
+        "insights": ["conversations", "conversation_attribute_6"],
+        "type": "select"
+      }
+    ]
+  },
+  "caseForm": {
+    "topLevel": [
+      {
+        "name": "id",
+        "insights": ["conversations", "case"]
+      }
+    ],
+    "perpetrator": [
+      {
+        "name": "relationshipToChild",
+        "insights": ["customers", "organization"]
+      },
+      {
+        "name": "gender",
+        "insights": ["conversations", "followed_by"]
+      },
+      {
+        "name": "age",
+        "insights": ["conversations", "preceded_by"]
+      }
+    ],
+    "incident": [
+      {
+        "name": "duration",
+        "insights": ["conversations", "in_business_hours"]
+      },
+      {
+        "name": "location",
+        "insights": ["customers", "market_segment"]
+      }
+    ],
+    "referral": [
+      {
+        "name": "referredTo",
+        "insights": ["customers", "customer_manager"]
+      }
+    ]
+  }
+}

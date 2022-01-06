@@ -4,11 +4,12 @@ import '@testing-library/jest-dom/extend-expect';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
-import '../../mockGetConfig';
+import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import { UnconnectedViewReferral } from '../../../components/case/ViewReferral';
 import HrmTheme from '../../../styles/HrmTheme';
-import mockV1 from '../../../formDefinitions/v1';
+import { getDefinitionVersions } from '../../../HrmFormPlugin';
 
 expect.extend(toHaveNoViolations);
 
@@ -40,6 +41,13 @@ describe('ViewReferral screen', () => {
 
   const taskSid = 'task-id';
   const route = 'new-case';
+
+  let mockV1;
+
+  beforeAll(async () => {
+    mockV1 = await loadDefinition(DefinitionVersionId.v1);
+    mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
+  });
 
   test('displays counselor, activity date, referral date, referredTo and comments', () => {
     render(

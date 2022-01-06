@@ -5,16 +5,24 @@ import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
 
-import '../../mockGetConfig';
+import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import { UnconnectedViewNote } from '../../../components/case/ViewNote';
 import HrmTheme from '../../../styles/HrmTheme';
-import mockV1 from '../../../formDefinitions/v1';
+import { DefinitionVersionId, loadDefinition } from '../../../formDefinitions';
+import { getDefinitionVersions } from '../../../HrmFormPlugin';
 
 expect.extend(toHaveNoViolations);
 
 const themeConf = {
   colorTheme: HrmTheme,
 };
+
+let mockV1;
+
+beforeAll(async () => {
+  mockV1 = loadDefinition(DefinitionVersionId.v1);
+  mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
+});
 
 test('displays counselor, date and note', () => {
   const counselor = 'John Doe';

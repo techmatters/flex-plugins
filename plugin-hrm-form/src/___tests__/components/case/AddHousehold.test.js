@@ -7,12 +7,19 @@ import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 
-import '../../mockGetConfig';
+import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../../states';
 import AddHousehold from '../../../components/case/AddHousehold';
 import HrmTheme from '../../../styles/HrmTheme';
-import { updateCase } from '../../../services/CaseService';
-import mockV1 from '../../../formDefinitions/v1';
+import { DefinitionVersionId, loadDefinition } from '../../../formDefinitions';
+import { getDefinitionVersions } from '../../../HrmFormPlugin';
+
+let mockV1;
+
+beforeAll(async () => {
+  mockV1 = await loadDefinition(DefinitionVersionId.v1);
+  mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
+});
 
 jest.mock('../../../services/CaseService');
 

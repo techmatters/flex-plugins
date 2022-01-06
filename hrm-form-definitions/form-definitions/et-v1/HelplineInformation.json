@@ -1,0 +1,15 @@
+{
+  "label": "Helpline",
+  "helplines": [
+    {
+      "label": "Adama Child Helpline",
+      "value": "Adama Child Helpline",
+      "default": true,
+      "manager": {
+        "name": "Tamirat Abebe",
+        "phone": "000 000 0000",
+        "email": "mira3620@gmail.com"
+      }
+    }
+  ]
+}

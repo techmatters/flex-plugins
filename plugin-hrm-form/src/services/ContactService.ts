@@ -191,7 +191,7 @@ const saveContactToHrm = async (
   // This might change if isNonDataCallType, that's why we use rawForm
   const timeOfContact = getDateTime(rawForm.contactlessTask);
 
-  const { helpline } = form;
+  const { helpline, csamReports } = form;
   /*
    * We do a transform from the original and then add things.
    * Not sure if we should drop that all into one function or not.
@@ -219,6 +219,7 @@ const saveContactToHrm = async (
     taskId: uniqueIdentifier,
     channelSid,
     serviceSid,
+    csamReports,
   };
 
   const options = {
@@ -240,6 +241,7 @@ export const saveContact = async (
 ) => {
   const response = await saveContactToHrm(task, form, workerSid, uniqueIdentifier, shouldFillEndMillis);
 
+  // TODO: add catch clause to handle saving to Sync Doc
   try {
     await saveContactToExternalBackend(task, response.requestPayload);
   } finally {
