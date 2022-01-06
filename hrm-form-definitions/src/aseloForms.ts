@@ -66,7 +66,19 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
     },
     NoteForm: {
       definitionFilePath: './caseForms/NoteForm.json',
-      items: {},
+      items: {
+        note: {
+          required: false,
+          default: {
+            name: 'note',
+            label: 'Note',
+            type: 'textarea',
+            placeholder: 'Type here to add note...',
+            rows: 20,
+            width: 500,
+          },
+        },
+      },
     },
     PerpetratorForm: {
       definitionFilePath: './caseForms/PerpetratorForm.json',
@@ -196,7 +208,140 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
     },
     IssueCategorizationTab: {
       required: true,
-      default: {},
+      default: {
+        'Example Helpline': {
+          'Missing children': {
+            color: '#BBE3FF',
+            subcategories: [
+              'Child abduction',
+              'Lost, unaccounted for or otherwise missing child',
+              'Runaway',
+              'Unspecified/Other',
+            ],
+          },
+          Violence: {
+            color: '#F5A623',
+            subcategories: [
+              'Bullying',
+              'Child/Early/Forced marriage',
+              'Child labour',
+              'Commercial sexual exploitation (offline)',
+              'Female Genital Mutilation (FGM)',
+              'Gender-based harmful traditional practices (other than FGM)',
+              'Harmful traditional practices other than child marriage and FGM',
+              'Mental/Emotional violence',
+              'Neglect (or negligent treatment)',
+              'Online sexual abuse',
+              'Online sexual exploitation',
+              'Physical violence',
+              'Sexual violence',
+              'Unspecified/Other',
+            ],
+          },
+          'Mental Health': {
+            color: '#F8E900',
+            subcategories: [
+              'Addictive behaviours and substance use',
+              'Behavioural problems',
+              'Concerns about the self',
+              'Emotional distress – anger problems',
+              'Emotional distress – fear and anxiety problems',
+              'Emotional distress – mood problems',
+              'Neurodevelopmental concerns',
+              'Problems with eating behaviour',
+              'Self-harming behaviour',
+              'Suicidal thoughts and suicide attempts',
+              'Traumatic distress',
+              'Unspecified/Other',
+            ],
+          },
+          'Physical Health': {
+            color: '#E86B6B',
+            subcategories: [
+              'COVID-19',
+              'General medical or lifestyle concerns',
+              'Medical or lifestyle information about HIV/AIDS',
+              'Male circumcision',
+              'Pregnancy and maternal care',
+              'Sexual and reproductive health',
+              'Nutrition',
+              'Unspecified/Other',
+            ],
+          },
+          Accessibility: {
+            color: '#8055BA',
+            subcategories: [
+              'Education',
+              'Essential needs',
+              'General healthcare services',
+              'Legal services and advice',
+              'Mental health services',
+              'Sexual health services',
+              'Socio-economical services',
+              'Unspecified/Other',
+            ],
+          },
+          'Discrimination and Exclusion': {
+            color: '#B971AF',
+            subcategories: [
+              'Ethnicity/nationality',
+              'Financial situation',
+              'Gender',
+              'Gender identity or expression and sexual orientation',
+              'Health',
+              'Philosophical or religious beliefs',
+              'Unspecified/Other',
+            ],
+          },
+          'Family Relationships': {
+            color: '#239613',
+            subcategories: [
+              'Adoption, fostering, and extended family placement',
+              'Relationship to caregiver',
+              'Family health and wellbeing',
+              'Relationship with sibling(s)',
+              'Unspecified/Other',
+            ],
+          },
+          'Peer Relationships': {
+            color: '#9AD703',
+            subcategories: [
+              'Friends and friendships',
+              'Partner relationships',
+              'Classmates/colleagues relationships',
+              'Unspecified/Other',
+            ],
+          },
+          'Education and Occupation': {
+            color: '#55AFAF',
+            subcategories: [
+              'Academic issues',
+              'Teacher and school problems',
+              'Problems at work',
+              'Unspecified/Other',
+            ],
+          },
+          Sexuality: {
+            color: '#506BA5',
+            subcategories: [
+              'Sexual orientation and gender identity',
+              'Sexual behaviours',
+              'Unspecified/Other',
+            ],
+          },
+          'Non-Counselling contacts': {
+            color: '#767777',
+            subcategories: [
+              'Complaints about the child helpline',
+              'Questions by parents',
+              'Questions about the child helpline',
+              'Questions about other services',
+              '"Thank you for your assistance"',
+              'Unspecified/Other',
+            ],
+          },
+        },
+      },
       definitionFilePath: './tabbedForms/IssueCategorizationTab.json',
     },
   },
@@ -204,7 +349,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
     definitionFilePath: './CallTypeButtons.json',
     items: {
       child: {
-        required: true,
+        required: false,
         default: {
           name: 'child',
           label: 'Child calling about self',
@@ -213,7 +358,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
         },
       },
       caller: {
-        required: true,
+        required: false,
         default: {
           name: 'caller',
           label: 'Someone calling about a child',
@@ -221,11 +366,104 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           category: 'data',
         },
       },
+      silent: {
+        required: false,
+        default: {
+          name: 'silent',
+          label: 'Silent',
+          type: 'button',
+          category: 'non-data',
+        },
+      },
+      blank: {
+        required: false,
+        default: {
+          name: 'blank',
+          label: 'Blank',
+          type: 'button',
+          category: 'non-data',
+        },
+      },
+      joke: {
+        required: false,
+        default: {
+          name: 'joke',
+          label: 'Joke',
+          type: 'button',
+          category: 'non-data',
+        },
+      },
+      hangup: {
+        required: false,
+        default: {
+          name: 'hangup',
+          label: 'Hang up',
+          type: 'button',
+          category: 'non-data',
+        },
+      },
+      wrongnumber: {
+        required: false,
+        default: {
+          name: 'wrongnumber',
+          label: 'Wrong Number',
+          type: 'button',
+          category: 'non-data',
+        },
+      },
+      abusive: {
+        required: false,
+        default: {
+          name: 'abusive',
+          label: 'Abusive',
+          type: 'button',
+          category: 'non-data',
+        },
+      },
     },
   },
   layoutVersion: {
     definitionFilePath: './LayoutDefinitions.json',
     required: true,
+    default: {
+      contact: {
+        callerInformation: {},
+        childInformation: {},
+        caseInformation: {
+          splitFormAt: 4,
+        },
+      },
+      case: {
+        households: {
+          splitFormAt: 7,
+        },
+        perpetrators: {
+          splitFormAt: 7,
+        },
+        incidents: {
+          previewFields: ['date', 'duration', 'location'],
+          layout: {
+            date: {
+              includeLabel: false,
+              format: 'date',
+            },
+            duration: {
+              includeLabel: true,
+            },
+            location: {
+              includeLabel: true,
+            },
+          },
+          splitFormAt: 3,
+        },
+        referrals: {
+          splitFormAt: 2,
+        },
+        documents: {
+          splitFormAt: 1,
+        },
+      },
+    },
   },
   helplineInformation: {
     definitionFilePath: './HelplineInformation.json',
@@ -250,6 +488,19 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
   caseStatus: {
     required: true,
     definitionFilePath: './CaseStatus.json',
-    default: {},
+    default: {
+      open: {
+        value: 'open',
+        label: 'Open',
+        color: 'green',
+        transitions: ['closed'],
+      },
+      closed: {
+        value: 'closed',
+        label: 'Closed',
+        color: 'red',
+        transitions: ['open'],
+      },
+    },
   },
 };
