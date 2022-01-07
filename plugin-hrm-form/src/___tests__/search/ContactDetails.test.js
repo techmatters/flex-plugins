@@ -2,14 +2,13 @@ import React from 'react';
 import renderer from 'react-test-renderer';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
-
 import '../mockStyled';
+import { callTypes, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import ContactDetails from '../../components/search/ContactDetails';
 import Section from '../../components/Section';
-import callTypes, { channelTypes } from '../../states/DomainConstants';
-import { DefinitionVersionId, loadDefinition } from '../../formDefinitions';
+import { channelTypes } from '../../states/DomainConstants';
 import { getDefinitionVersions } from '../../HrmFormPlugin';
 
 const mockStore = configureMockStore([]);

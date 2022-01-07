@@ -11,7 +11,7 @@
       "options": [
         { "value": "", "label": "" },
         { "value": "Ongoing", "label": "Ongoing" },
-        { "value": "Once Off", "label": "Single/Once Off" },
+        { "value": "One Off", "label": "One Off" },
         { "value": "Repeated", "label": "Repeated" },
         { "value": "Other", "label": "Other" }
       ]
@@ -55,7 +55,7 @@
     },
     {
       "name": "otherPlatform",
-      "label": "If Other, please specify platform",
+      "label": "If Other, please specify",
       "type": "input"
     },
     {

@@ -2,13 +2,13 @@
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { connect, ConnectedProps } from 'react-redux';
+import type { CategoriesDefinition } from 'hrm-form-definitions';
 
 import { RootState, namespace, contactFormsBase } from '../../states';
 import * as actions from '../../states/contacts/actions';
 import type { TaskEntry } from '../../states/contacts/reducer';
 import { CategoriesFromDefinition, createSubCategoriesInputs } from '../common/forms/categoriesTabGenerator';
 import { TabbedFormTabContainer } from '../../styles/HrmStyles';
-import type { CategoriesDefinition } from '../common/forms/types';
 import type { CustomITask } from '../../types/types';
 import useFocus from '../../utils/useFocus';
 

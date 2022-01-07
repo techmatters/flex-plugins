@@ -1,13 +1,13 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
+import type { DefinitionVersion } from 'hrm-form-definitions';
 
 import type { CaseInfo, IncidentEntry } from '../../types/types';
 import { Box, Row } from '../../styles/HrmStyles';
 import { CaseSectionFont, TimelineRow, PlaceHolderText } from '../../styles/case';
 import CaseAddButton from './CaseAddButton';
 import TimelineInformationRow from './TimelineInformationRow';
-import type { DefinitionVersion } from '../common/forms/types';
 import { PermissionActions, PermissionActionType } from '../../permissions';
 
 type OwnProps = {

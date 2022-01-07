@@ -2,8 +2,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
+import type { DefinitionVersion } from 'hrm-form-definitions';
 
-import type { DefinitionVersion } from '../common/forms/types';
 import { Container, Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import { namespace, connectedCaseBase, configurationBase, RootState } from '../../states';
 import { CaseLayout } from '../../styles/case';

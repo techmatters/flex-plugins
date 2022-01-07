@@ -3,14 +3,13 @@ import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
-
 import '../mockStyled';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import { SearchPages } from '../../states/search/types';
 import SearchResults from '../../components/search/SearchResults';
 import { configurationBase, searchContactsBase, connectedCaseBase, contactFormsBase, namespace } from '../../states';
-import { DefinitionVersionId, loadDefinition } from '../../formDefinitions';
 import { getDefinitionVersions } from '../../HrmFormPlugin';
 
 const mockStore = configureMockStore([]);

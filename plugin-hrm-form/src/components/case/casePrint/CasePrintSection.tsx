@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Text, View } from '@react-pdf/renderer';
+import { FormDefinition } from 'hrm-form-definitions';
 
 import styles from './styles';
-import { FormDefinition } from '../../common/forms/types';
 import { unNestInformation } from '../../../services/ContactService';
 import { presentValue } from '../../../utils';
 

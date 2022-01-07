@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import FaceIcon from '@material-ui/icons/Face';
+import { callTypes, CallTypes } from 'hrm-form-definitions';
 
-import callTypes, { CallTypes } from '../../../states/DomainConstants';
 import { Flex } from '../../../styles/HrmStyles';
 import { SilentText } from '../../../styles/search';
 

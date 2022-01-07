@@ -6,13 +6,13 @@ import configureMockStore from 'redux-mock-store';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import HrmTheme from '../../../styles/HrmTheme';
 import CaseList from '../../../components/caseList';
 import { namespace, configurationBase } from '../../../states';
 import { getCases } from '../../../services/CaseService';
-import { DefinitionVersionId, loadDefinition } from '../../../formDefinitions';
 import { getDefinitionVersions } from '../../../HrmFormPlugin';
 
 // console.log = () => null;

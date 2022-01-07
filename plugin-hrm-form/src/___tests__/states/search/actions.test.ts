@@ -1,3 +1,5 @@
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import * as t from '../../../states/search/types';
 import * as actions from '../../../states/search/actions';
@@ -6,7 +8,6 @@ import { SearchContact } from '../../../types/types';
 import { searchContacts } from '../../../services/ContactService';
 import { searchCases } from '../../../services/CaseService';
 import { CASES_PER_PAGE, CONTACTS_PER_PAGE } from '../../../components/search/SearchResults';
-import { DefinitionVersionId, loadDefinition } from '../../../formDefinitions';
 import { getDefinitionVersions } from '../../../HrmFormPlugin';
 
 jest.mock('../../../services/ContactService', () => ({ searchContacts: jest.fn() }));

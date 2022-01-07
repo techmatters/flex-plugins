@@ -1,16 +1,12 @@
 import React from 'react';
-import { Provider } from 'react-redux';
-import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import configureMockStore from 'redux-mock-store';
-
 import './mockStyled';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from './mockGetConfig';
-import StandaloneSearch from '../components/StandaloneSearch';
 import { initialState as searchInitialState } from '../states/search/reducer';
 import { standaloneTaskSid } from '../types/types';
-import { DefinitionVersionId, loadDefinition } from '../formDefinitions';
 import { getDefinitionVersions } from '../HrmFormPlugin';
 
 const mockStore = configureMockStore([]);

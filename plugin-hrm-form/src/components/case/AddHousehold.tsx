@@ -4,6 +4,7 @@ import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { useForm, FormProvider, SubmitErrorHandler, FieldValues } from 'react-hook-form';
+import type { DefinitionVersion } from 'hrm-form-definitions';
 
 import {
   Box,
@@ -30,7 +31,6 @@ import {
   splitInHalf,
   splitAt,
 } from '../common/forms/formGenerators';
-import type { DefinitionVersion } from '../common/forms/types';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 import type { AppRoutesWithCase } from '../../states/routing/types';
 import useFocus from '../../utils/useFocus';
