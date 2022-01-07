@@ -3,12 +3,13 @@ import React from 'react';
 import { format } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
 import { Fullscreen } from '@material-ui/icons';
+import { CallTypes } from 'hrm-form-definitions';
 
 import { Flex, Row, StyledIcon, HiddenText, addHover } from '../../../styles/HrmStyles';
 import { PrevNameText, ContactButtonsWrapper, StyledButtonBase, DateText } from '../../../styles/search';
 import { isNonDataCallType } from '../../../states/ValidationRules';
 import CallTypeIcon from '../../common/icons/CallTypeIcon';
-import { channelTypes, ChannelTypes, CallTypes } from '../../../states/DomainConstants';
+import { channelTypes, ChannelTypes } from '../../../states/DomainConstants';
 
 const FullscreenIcon = addHover(StyledIcon(Fullscreen));
 

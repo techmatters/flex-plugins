@@ -4,13 +4,13 @@ import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { FormProvider } from 'react-hook-form';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
 import IssueCategorizationTab from '../../../components/tabbedForms/IssueCategorizationTab';
 import { ToggleViewButton } from '../../../styles/HrmStyles';
 import HrmTheme from '../../../styles/HrmTheme';
 import { namespace, contactFormsBase } from '../../../states';
 import { setCategoriesGridView } from '../../../states/contacts/actions';
-import { DefinitionVersionId, loadDefinition } from '../../../formDefinitions';
 
 jest.mock('../../../components/CSAMReport/CSAMReportFormDefinition');
 

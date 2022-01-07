@@ -7,6 +7,7 @@ import React, { useCallback } from 'react';
 import { useFormContext, RegisterOptions } from 'react-hook-form';
 import { get, pick } from 'lodash';
 import { Template } from '@twilio/flex-ui';
+import { FormItemDefinition, FormDefinition, SelectOption, MixedOrBool } from 'hrm-form-definitions';
 
 import {
   Box,
@@ -27,7 +28,7 @@ import {
   FormSelectWrapper,
   FormTextArea,
 } from '../../../styles/HrmStyles';
-import type { FormItemDefinition, FormDefinition, SelectOption, MixedOrBool, HTMLElementRef } from './types';
+import type { HTMLElementRef } from './types';
 import UploadIcon from '../icons/UploadIcon';
 import UploadFileInput from './UploadFileInput';
 

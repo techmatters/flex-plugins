@@ -1,8 +1,7 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
-import { format } from 'date-fns';
-
 import '../mockStyled';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import ContactPreview from '../../components/search/ContactPreview';
@@ -11,7 +10,6 @@ import CallSummary from '../../components/search/ContactPreview/CallSummary';
 import TagsAndCounselor from '../../components/search/ContactPreview/TagsAndCounselor';
 import { mapCallType } from '../../utils';
 import { getDefinitionVersions } from '../../HrmFormPlugin';
-import { DefinitionVersionId, loadDefinition } from '../../formDefinitions';
 
 const NonExisting = () => <>NonExisting</>;
 NonExisting.displayName = 'NonExisting';

@@ -6,6 +6,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import { useForm, FormProvider } from 'react-hook-form';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
+import { callTypes } from 'hrm-form-definitions';
 
 import { CaseLayout } from '../../styles/case';
 import Case from '../case';
@@ -19,7 +20,6 @@ import { TabbedFormSubroutes, NewCaseSubroutes } from '../../states/routing/type
 import { CustomITask, isOfflineContactTask, SearchContact } from '../../types/types';
 import { TabbedFormsContainer, Box, StyledTabs, Row } from '../../styles/HrmStyles';
 import FormTab from '../common/forms/FormTab';
-import callTypes from '../../states/DomainConstants';
 import Search from '../search';
 import IssueCategorizationTab from './IssueCategorizationTab';
 import TabbedFormTab from './TabbedFormTab';

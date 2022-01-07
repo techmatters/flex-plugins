@@ -1,12 +1,11 @@
 import { ITask, Manager } from '@twilio/flex-ui';
 import { capitalize } from 'lodash';
+import { callTypes, FormDefinition } from 'hrm-form-definitions';
 
 import { mapAge, mapGenericOption } from './mappers';
 import * as RoutingActions from '../states/routing/actions';
 import { prepopulateForm as prepopulateFormAction } from '../states/contacts/actions';
-import type { FormDefinition } from '../components/common/forms/types';
 import { getDefinitionVersions } from '../HrmFormPlugin';
-import callTypes from '../states/DomainConstants';
 
 const getUnknownOption = (key: string, definition: FormDefinition) => {
   const inputDef = definition.find(e => e.name === key);

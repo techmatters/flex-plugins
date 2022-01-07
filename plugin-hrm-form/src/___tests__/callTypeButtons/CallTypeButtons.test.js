@@ -5,13 +5,13 @@ import '@testing-library/jest-dom/extend-expect';
 import { Template } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
-
 import '../mockStyled';
 import '../mockGetConfig';
+import { callTypes } from 'hrm-form-definitions';
+
 import CallTypeButtons from '../../components/callTypeButtons';
 import { DataCallTypeButton, NonDataCallTypeButton, ConfirmButton, CancelButton } from '../../styles/callTypeButtons';
 import LocalizationContext from '../../contexts/LocalizationContext';
-import callTypes from '../../states/DomainConstants';
 import { namespace, contactFormsBase, connectedCaseBase, configurationBase } from '../../states';
 import { changeRoute } from '../../states/routing/actions';
 import { updateCallType } from '../../states/contacts/actions';

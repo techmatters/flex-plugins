@@ -224,7 +224,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
     },
   },
   layoutVersion: {
-    definitionFilePath: './LayoutDefinition.json',
+    definitionFilePath: './LayoutDefinitions.json',
     required: true,
   },
   helplineInformation: {

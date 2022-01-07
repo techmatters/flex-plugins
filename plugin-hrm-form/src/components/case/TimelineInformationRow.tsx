@@ -2,11 +2,11 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
+import type { FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 
 import { TimelineRow, TimelineText, TimelineLabel, ViewButton, RowItemContainer } from '../../styles/case';
 import { Box, HiddenText } from '../../styles/HrmStyles';
 import { formatValue } from '../common/forms/helpers';
-import type { FormDefinition, LayoutDefinition } from '../common/forms/types';
 import type { Incident } from '../../types/types';
 
 type OwnProps = {

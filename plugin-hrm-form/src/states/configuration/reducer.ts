@@ -1,7 +1,8 @@
+import type { DefinitionVersion } from 'hrm-form-definitions';
+
 import * as t from './types';
 import { defaultLanguage } from '../../utils/pluginHelpers';
 import { createCounselorsHash } from '../helpers';
-import type { DefinitionVersion } from '../../components/common/forms/types';
 
 export type ConfigurationState = {
   language: string;

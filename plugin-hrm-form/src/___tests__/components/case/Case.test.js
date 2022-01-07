@@ -7,6 +7,7 @@ import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import HrmTheme from '../../../styles/HrmTheme';
@@ -15,7 +16,6 @@ import CaseDetails from '../../../components/case/CaseDetails';
 import { namespace, configurationBase, contactFormsBase, connectedCaseBase, routingBase } from '../../../states';
 import { UPDATE_TEMP_INFO } from '../../../states/case/types';
 import { cancelCase, getActivities } from '../../../services/CaseService';
-import { DefinitionVersionId, loadDefinition } from '../../../formDefinitions';
 import { getDefinitionVersions } from '../../../HrmFormPlugin';
 
 jest.mock('react', () => ({

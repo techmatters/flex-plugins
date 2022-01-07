@@ -1,6 +1,7 @@
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+
 import * as types from '../../../states/configuration/types';
 import * as actions from '../../../states/configuration/actions';
-import { DefinitionVersionId, loadDefinition } from '../../../formDefinitions';
 
 describe('test action creators', () => {
   let mockV1;

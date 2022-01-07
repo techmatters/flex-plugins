@@ -1,7 +1,7 @@
+import { DefinitionVersionId, HelplineEntry } from 'hrm-form-definitions';
+
 import type * as t from '../../types/types';
-import { HelplineEntry } from '../../components/common/forms/types';
 import { NewCaseSubroutes } from '../routing/types';
-import { DefinitionVersionId } from '../../formDefinitions';
 
 // Action types
 export const SET_CONNECTED_CASE = 'SET_CONNECTED_CASE';

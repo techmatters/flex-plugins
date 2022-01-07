@@ -1,4 +1,5 @@
 import { omit } from 'lodash';
+import { callTypes, CallTypes } from 'hrm-form-definitions';
 
 import * as t from './types';
 import {
@@ -10,7 +11,6 @@ import {
 } from '../types';
 import { createStateItem } from '../../components/common/forms/formGenerators';
 import { createContactlessTaskTabDefinition } from '../../components/tabbedForms/ContactlessTaskTabDefinition';
-import callTypes, { CallTypes } from '../DomainConstants';
 import type { CSAMReportEntry } from '../../types/types';
 
 export type TaskEntry = {

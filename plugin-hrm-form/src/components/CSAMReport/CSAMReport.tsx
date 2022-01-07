@@ -3,11 +3,11 @@ import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { CircularProgress } from '@material-ui/core';
 import { connect, ConnectedProps } from 'react-redux';
+import { FormItemDefinition } from 'hrm-form-definitions';
 
 import CSAMReportStatusScreen from './CSAMReportStatusScreen';
 import CSAMReportFormScreen from './CSAMReportFormScreen';
 import { CSAMReportContainer, CSAMReportLayout, CenterContent } from '../../styles/CSAMReport';
-import { FormItemDefinition } from '../common/forms/types';
 import { getInputType } from '../common/forms/formGenerators';
 import { definitionObject, keys, initialValues } from './CSAMReportFormDefinition';
 import type { CustomITask } from '../../types/types';

@@ -1,8 +1,9 @@
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+
 import { reduce } from '../../../states/case/reducer';
 import * as actions from '../../../states/case/actions';
 import * as GeneralActions from '../../../states/actions';
 import { Case } from '../../../types/types';
-import { DefinitionVersionId, loadDefinition } from '../../../formDefinitions';
 
 const task = { taskSid: 'task1' };
 const voidDefinitions = {

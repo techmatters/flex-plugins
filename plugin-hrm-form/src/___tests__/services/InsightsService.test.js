@@ -1,4 +1,6 @@
 /* eslint-disable camelcase */
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import {
   baseUpdates,
@@ -7,7 +9,6 @@ import {
   mergeAttributes,
   buildInsightsData,
 } from '../../services/InsightsService';
-import { DefinitionVersionId, loadDefinition } from '../../formDefinitions';
 import { getDefinitionVersions } from '../../HrmFormPlugin';
 
 let v1;
