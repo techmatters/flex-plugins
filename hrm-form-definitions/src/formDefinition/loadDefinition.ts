@@ -16,6 +16,7 @@ export enum DefinitionVersionId {
   inV1 = 'in-v1', // Aarambh Trustline v1
   mwV1 = 'mw-v1', // Malawi v1
   zaV1 = 'za-v1', // South Africa v1
+  jmV1 = 'jm-v1', // SafeSpot v1
 }
 
 // Using a variable for the root of the dynamic import confuses webpack :-(
