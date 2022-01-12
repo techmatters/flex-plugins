@@ -60,10 +60,6 @@
         "type": "mixed-checkbox"
       },
       {
-        "name": "actionTaken",
-        "insights": ["conversations", "initiative"]
-      },
-      {
         "name": "howDidYouKnowAboutOurLine",
         "insights": ["conversations", "conversation_attribute_5"]
       },
