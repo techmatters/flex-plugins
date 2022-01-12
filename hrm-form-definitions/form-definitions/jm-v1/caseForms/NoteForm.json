@@ -15,7 +15,7 @@
     "rows": 5,
     "width": 500
   },
-{
+  {
     "name": "subjective",
     "label": "Subjective",
     "type": "textarea",
