@@ -47,5 +47,11 @@
       "label": "Abusive",
       "type": "button",
       "category": "non-data"
+  },  
+  {
+      "name": "adult",
+      "label": "Adult Contact",
+      "type": "button",
+      "category": "non-data"
   }
 ]
