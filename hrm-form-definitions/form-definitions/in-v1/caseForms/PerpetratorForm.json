@@ -61,7 +61,13 @@
     {
       "name": "knownToChild",
       "label": "Is perpetrator known to victim?",
-      "type": "mixed-checkbox"
+      "type": "select",
+      "options": [
+        { "value": "Unknown", "label": "" },
+        { "value": "Yes", "label": "Yes" },
+        { "value": "No", "label": "No" },
+        { "value": "DontKnow", "label": "Don't Know" }
+      ]
     },
     {
       "name": "relationshipToChild",
