@@ -34,11 +34,6 @@
     "type": "input"
   },
   {
-    "name": "city",
-    "label": "City",
-    "type": "input"
-  },
-  {
     "name": "parish",
     "label": "Parish",
     "type": "select",
