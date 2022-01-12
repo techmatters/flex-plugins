@@ -65,9 +65,7 @@
       { "value": "Gender not disclosed", "label": "" },
       { "value": "Male", "label": "Male" },
       { "value": "Female", "label": "Female" },
-      { "value": "Non-Binary", "label": "Non-Binary" },
-      { "value": "Gender Fluid", "label": "Gender Fluid" },
-      { "value": "Transgender", "label": "Transgender" },
+      { "value": "Other", "label": "Other" },
       { "value": "Assigned a different gender at birth", "label": "Assigned a different gender at birth" }
     ]
   },
