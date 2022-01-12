@@ -18,26 +18,44 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 const ManualPullButton: React.FC<Props> = ({ queuesStatusState, chatChannelCapacity, worker, workerClient }) => {
   const [isWaitingNewTask, setWaitingNewTask] = useState(false);
 
+  const [, availableActivity] = React.useMemo(() => {
+    return Array.from(workerClient.activities).find(([k, v]) => v.name === 'Available');
+  }, [workerClient.activities]);
+
+  // move to utils for reusability
+  const setKeepAvailable = async () => {
+    const attributes = { ...workerClient.attributes, keepAvailable: true };
+    await workerClient.setAttributes(attributes);
+  };
+
+  // move to utils for reusability
+  const unsetKeepAvailable = async () => {
+    const { keepAvailable, ...attributes } = workerClient.attributes;
+    await workerClient.setAttributes(attributes);
+  };
+
   // Increase chat capacity, if no reservation is created within 5 seconds, capacity is decreased and shows a notification.
   const increaseChatCapacity = async () => {
     setWaitingNewTask(true);
     let alertTimeout = null;
 
-    const cancelTimeout = () => {
+    const cancelTimeout = async () => {
       setWaitingNewTask(false);
       clearTimeout(alertTimeout);
+      await unsetKeepAvailable();
     };
 
     alertTimeout = setTimeout(async () => {
       setWaitingNewTask(false);
       workerClient.removeListener('reservationCreated', cancelTimeout);
       Notifications.showNotification('NoTaskAssignableNotification');
-      await adjustChatCapacity('decrease');
+      await Promise.all([unsetKeepAvailable(), adjustChatCapacity('decrease')]);
     }, 5000);
 
     workerClient.once('reservationCreated', cancelTimeout);
 
-    await adjustChatCapacity('increase');
+    await Promise.all([setKeepAvailable(), adjustChatCapacity('increase')]);
+    await availableActivity.setAsCurrent();
   };
 
   const { maxMessageCapacity } = worker.attributes;
@@ -46,11 +64,8 @@ const ManualPullButton: React.FC<Props> = ({ queuesStatusState, chatChannelCapac
   const noTasks = worker.tasks.size === 0;
 
   const disabled =
-    !isAvailable ||
-    noTasks ||
-    maxCapacityReached ||
-    !isAnyChatPending(queuesStatusState.queuesStatus) ||
-    isWaitingNewTask;
+    // !isAvailable || this should change to "not is ready"
+    noTasks || maxCapacityReached || !isAnyChatPending(queuesStatusState.queuesStatus) || isWaitingNewTask;
 
   return (
     <AddTaskButton
