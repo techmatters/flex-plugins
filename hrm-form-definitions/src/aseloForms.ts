@@ -1226,21 +1226,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
   helplineInformation: {
     definitionFilePath: './HelplineInformation.json',
     required: true,
-    default: {
-      label: 'Example Helpline',
-      helplines: [
-        {
-          label: 'Example Helpline',
-          value: 'Example Helpline (CC)',
-          default: true,
-          manager: {
-            name: 'Manager Name',
-            phone: '+00 00 000 0000',
-            email: 'manager@mail.com',
-          },
-        },
-      ],
-    },
+    default: [],
   },
   cannedResponses: {
     required: true,
@@ -1251,7 +1237,6 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
     oneToOneConfigSpec: {
       required: true,
       definitionFilePath: './insights/oneToOneConfigSpec.json',
-      default: [],
     },
     oneToManyConfigSpecs: {
       required: true,
