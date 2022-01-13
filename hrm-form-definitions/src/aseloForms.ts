@@ -4,10 +4,8 @@ import {
   FormDefinitionSpecification,
   FormItemDefinitionSpecification,
 } from './specification';
-import {
-  OneToManyConfigSpecs,
-  OneToOneConfigSpec,
-  SelectOption,
+import { 
+    OneToManyConfigSpecs, OneToOneConfigSpec, SelectOption,
 } from './formDefinition';
 
 type FormFileSpecification = FormDefinitionSpecification & DefinitionFileSpecification;
