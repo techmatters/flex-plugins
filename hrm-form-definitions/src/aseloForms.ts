@@ -10,12 +10,9 @@ import {
   SelectOption,
 } from './formDefinition';
 
-type FormFileSpecification = FormDefinitionSpecification &
-  DefinitionFileSpecification;
-type JsonFileSpecification<T = any> = DefinitionSpecification<T> &
-  DefinitionFileSpecification;
-type FormItemFileSpecification = FormItemDefinitionSpecification &
-  DefinitionFileSpecification;
+type FormFileSpecification = FormDefinitionSpecification & DefinitionFileSpecification;
+type JsonFileSpecification<T = any> = DefinitionSpecification<T> & DefinitionFileSpecification;
+type FormItemFileSpecification = FormItemDefinitionSpecification & DefinitionFileSpecification;
 type CaseStatus = {
   value: string;
   label: string;
@@ -1258,6 +1255,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
     oneToOneConfigSpec: {
       required: true,
       definitionFilePath: './insights/oneToOneConfigSpec.json',
+      default: [],
     },
     oneToManyConfigSpecs: {
       required: true,
