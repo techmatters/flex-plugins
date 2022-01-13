@@ -1226,7 +1226,6 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
   helplineInformation: {
     definitionFilePath: './HelplineInformation.json',
     required: true,
-    default: [],
   },
   cannedResponses: {
     required: true,
