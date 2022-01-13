@@ -4,8 +4,7 @@ import {
   FormDefinitionSpecification,
   FormItemDefinitionSpecification,
 } from './specification';
-import { OneToManyConfigSpecs, OneToOneConfigSpec, SelectOption,
-} from './formDefinition';
+import { OneToManyConfigSpecs, OneToOneConfigSpec, SelectOption,} from './formDefinition';
 
 type FormFileSpecification = FormDefinitionSpecification & DefinitionFileSpecification;
 type JsonFileSpecification<T = any> = DefinitionSpecification<T> & DefinitionFileSpecification;
