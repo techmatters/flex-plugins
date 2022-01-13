@@ -53,7 +53,7 @@
       { "value": "St. Ann", "label": "St. Ann" },
       { "value": "St. Mary", "label": "St. Mary" },       
       { "value": "Portland", "label": "Portland" },   
-      { "value": "Location not disclosed", "label": "Location not disclosed" }
+      { "value": "Unknown", "label": "Location not disclosed" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" }
   },
@@ -72,7 +72,7 @@
       { "value": "Male", "label": "Male" },
       { "value": "Female", "label": "Female" },
       { "value": "Other", "label": "Other" },
-      { "value": "Gender not disclosed", "label": "Gender not disclosed" }
+      { "value": "Unknown", "label": "Gender not disclosed" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" }
   },
