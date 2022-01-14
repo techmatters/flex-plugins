@@ -11,7 +11,10 @@ const getUnknownOption = (key: string, definition: FormDefinition) => {
   const inputDef = definition.find(e => e.name === key);
 
   if (inputDef && inputDef.type === 'select') {
-    return inputDef.unknownOption || inputDef.options.find(e => e.value === 'Unknown').value;
+    const unknownOption = inputDef.unknownOption || inputDef.options.find(e => e.value === 'Unknown');
+    if (unknownOption && unknownOption.value) return unknownOption.value;
+
+    console.error(`getUnknownOption couldn't determine a valid unknown option for key ${key}.`);
   }
 
   return 'Unknown';
