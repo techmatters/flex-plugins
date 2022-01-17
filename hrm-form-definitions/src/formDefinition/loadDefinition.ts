@@ -1,3 +1,5 @@
+/* eslint-disable global-require */
+/* eslint-disable import/no-dynamic-require */
 import {
   CallTypeButtonsDefinitions,
   CannedResponsesDefinitions,
@@ -22,7 +24,7 @@ export enum DefinitionVersionId {
 // Using a variable for the root of the dynamic import confuses webpack :-(
 // const DEFINITION_JSON_ROOT = '../../form-definitions/';
 
-export async function loadDefinition(version: DefinitionVersionId) {
+export async function loadDefinition(version: DefinitionVersionId): Promise<DefinitionVersion> {
   /*
    * Unfortuntately I could not get lazy loading to work, which would have been nice because only the form definitions used by that helpline would be loeded.
    * It appears to be an issue with the module loader, when the bundle was split across multiple files for lazy loading, the additional bundle JS files were not loaded at runtime.
@@ -80,6 +82,13 @@ export async function loadDefinition(version: DefinitionVersionId) {
     /* webpackMode: "eager" */ `../../form-definitions/${version}/CaseStatus.json`
   );
 
+  let prepopulateKeys;
+  try {
+    prepopulateKeys = require(`../../form-definitions/${version}/PrepopulateKeys.json`);
+  } catch (err) {
+    prepopulateKeys = [];
+  }
+
   const { helplines } = helplineInformationModule.default;
   const defaultHelpline =
     helplineInformationModule.default.helplines.find((helpline: HelplineEntry) => helpline.default)
@@ -110,5 +119,6 @@ export async function loadDefinition(version: DefinitionVersionId) {
       oneToManyConfigSpecs: oneToManyConfigSpecsModule.default as OneToManyConfigSpecs,
     },
     caseStatus: caseStatusModule.default as DefinitionVersion['caseStatus'],
+    prepopulateKeys,
   };
 }

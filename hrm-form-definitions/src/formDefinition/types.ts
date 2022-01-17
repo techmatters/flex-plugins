@@ -188,4 +188,5 @@ export type DefinitionVersion = {
   caseStatus: {
     [status: string]: StatusInfo;
   };
+  prepopulateKeys: string[];
 };
