@@ -136,59 +136,59 @@
     "Physical and Sexual Health": {
       "color": "#BBE3FF",
       "subcategories": [
-        "COVID-19 - PSH",
-        "Condom Use - PSH",
-        "Medical or lifestyle information about HIV/AIDS - PSH",
-        "Male Circumcision - PSH",
-        "Pregnancy and maternal care - PSH",
-        "Sexual and reproductive health - PSH",
-        "Sexually Transmitted Diseases - PSH",
-        "Nutrition - PSH",
-        "Unspecified/Other - PSH"
+        "COVID-19",
+        "Condom Use",
+        "Medical or lifestyle information about HIV/AIDS",
+        "Male Circumcision",
+        "Pregnancy and maternal care",
+        "Sexual and reproductive health",
+        "Sexually Transmitted Diseases",
+        "Nutrition",
+        "Unspecified/Other"
       ]
     },
     "Mental Health": {
       "color": "#F5A623",
       "subcategories": [
-        "Emotional distress – anger problems - MH",
-        "Emotional distress – fear and anxiety problems - MH",
-        "Emotional distress – mood problems - MH",
-        "Problems with eating behaviour - MH",
-        "Self-harming behaviour - MH",
-        "Suicidal thoughts and suicide attempts - MH",
-        "Traumatic distress - MH",
-        "Unspecified/Other - MH"
+        "Emotional distress – anger problems",
+        "Emotional distress – fear and anxiety problems",
+        "Emotional distress – mood problems",
+        "Problems with eating behaviour",
+        "Self-harming behaviour",
+        "Suicidal thoughts and suicide attempts",
+        "Traumatic distress",
+        "Unspecified/Other"
       ]
     },
     "Abuse": {
       "color": "#F8E900",
       "subcategories": [
-        "Addictive behaviours and substance use - A",
-        "Cyber Bullying - A",
-        "Gender Based Violence (GBV) - A",
-        "Mental/Emotional violence - A",
-        "Economic abuse - A",
-        "Online sexual abuse - A",
-        "Online sexual exploitation - A",
-        "Physical violence - A",
-        "Sexual violence - A",
-        "Unspecified/Other - A"
+        "Addictive behaviours and substance use",
+        "Cyber Bullying",
+        "Gender Based Violence (GBV)",
+        "Mental/Emotional violence",
+        "Economic abuse",
+        "Online sexual abuse",
+        "Online sexual exploitation",
+        "Physical violence",
+        "Sexual violence",
+        "Unspecified/Other"
       ]
     },
     "Relationships": {
       "color": "#E86B6B",
       "subcategories": [
-        "Family Relationships - R",
-        "Marital Issues - R",
-        "Unspecified/Other - R"
+        "Family Relationships",
+        "Marital Issues",
+        "Unspecified/Other"
       ]
     },
     "Education and Occupation": {
       "color": "#8055BA",
       "subcategories": [
-        "Problems at learning institution - EO",
-        "Problems at work - EO",
-        "Unspecified/Other - EO"
+        "Problems at learning institution",
+        "Problems at work",
+        "Unspecified/Other"
       ]
     },
     "Supporting Women's Livelihood (SWL)": {
@@ -199,7 +199,7 @@
         "Service Standard - SWL",
         "Payment - SWL",
         "Serious Complaints - SWL",
-        "Training and Mentorship - SWL",
+        "Training and Mentorship",
         "Fraud and Corruption - SWL",
         "Unspecified/Other - SWL"
       ]
@@ -231,12 +231,12 @@
     "Non-Counselling contacts": {
       "color": "#767777",
       "subcategories": [
-        "Complaints about the child helpline - NCC",
-        "Questions by parents - NCC",
-        "Questions about the child helpline - NCC",
-        "Questions about other services - NCC",
-        "\"Thank you for your assistance\" - NCC",
-        "Unspecified/Other - NCC"
+        "Complaints about the child helpline",
+        "Questions by parents",
+        "Questions about the child helpline",
+        "Questions about other services",
+        "\"Thank you for your assistance\"",
+        "Unspecified/Other"
       ]
     }
   }
