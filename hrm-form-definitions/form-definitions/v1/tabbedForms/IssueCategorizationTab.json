@@ -136,107 +136,107 @@
     "Physical and Sexual Health": {
       "color": "#BBE3FF",
       "subcategories": [
-        "COVID-19",
-        "Condom Use",
-        "Medical or lifestyle information about HIV/AIDS",
-        "Male Circumcision",
-        "Pregnancy and maternal care",
-        "Sexual and reproductive health",
-        "Sexually Transmitted Diseases",
-        "Nutrition",
-        "Unspecified/Other"
+        "COVID-19 - PSH",
+        "Condom Use - PSH",
+        "Medical or lifestyle information about HIV/AIDS - PSH",
+        "Male Circumcision - PSH",
+        "Pregnancy and maternal care - PSH",
+        "Sexual and reproductive health - PSH",
+        "Sexually Transmitted Diseases - PSH",
+        "Nutrition - PSH",
+        "Unspecified/Other - PSH"
       ]
     },
     "Mental Health": {
       "color": "#F5A623",
       "subcategories": [
-        "Emotional distress – anger problems",
-        "Emotional distress – fear and anxiety problems",
-        "Emotional distress – mood problems",
-        "Problems with eating behaviour",
-        "Self-harming behaviour",
-        "Suicidal thoughts and suicide attempts",
-        "Traumatic distress",
-        "Unspecified/Other"
+        "Emotional distress – anger problems - MH",
+        "Emotional distress – fear and anxiety problems - MH",
+        "Emotional distress – mood problems - MH",
+        "Problems with eating behaviour - MH",
+        "Self-harming behaviour - MH",
+        "Suicidal thoughts and suicide attempts - MH",
+        "Traumatic distress - MH",
+        "Unspecified/Other - MH"
       ]
     },
     "Abuse": {
       "color": "#F8E900",
       "subcategories": [
-        "Addictive behaviours and substance use",
-        "Cyber Bullying",
-        "Gender Based Violence (GBV)",
-        "Mental/Emotional violence",
-        "Economic abuse",
-        "Online sexual abuse",
-        "Online sexual exploitation",
-        "Physical violence",
-        "Sexual violence",
-        "Unspecified/Other"
+        "Addictive behaviours and substance use - A",
+        "Cyber Bullying - A",
+        "Gender Based Violence (GBV) - A",
+        "Mental/Emotional violence - A",
+        "Economic abuse - A",
+        "Online sexual abuse - A",
+        "Online sexual exploitation - A",
+        "Physical violence - A",
+        "Sexual violence - A",
+        "Unspecified/Other - A"
       ]
     },
     "Relationships": {
       "color": "#E86B6B",
       "subcategories": [
-        "Family Relationships",
-        "Marital Issues",
-        "Unspecified/Other"
+        "Family Relationships - R",
+        "Marital Issues - R",
+        "Unspecified/Other - R"
       ]
     },
     "Education and Occupation": {
       "color": "#8055BA",
       "subcategories": [
-        "Problems at learning institution",
-        "Problems at work",
-        "Unspecified/Other"
+        "Problems at learning institution - EO",
+        "Problems at work - EO",
+        "Unspecified/Other - EO"
       ]
     },
     "Supporting Women's Livelihood (SWL)": {
       "color": "#B971AF",
       "subcategories": [
-        "Inclusion",
-        "Exclusion",
-        "Service Standard",
-        "Payment",
-        "Serious Complaints",
-        "Training and Mentorship",
-        "Fraud and Corruption",
-        "Unspecified/Other"
+        "Inclusion - SWL",
+        "Exclusion - SWL",
+        "Service Standard - SWL",
+        "Payment - SWL",
+        "Serious Complaints - SWL",
+        "Training and Mentorship - SWL",
+        "Fraud and Corruption - SWL",
+        "Unspecified/Other - SWL"
       ]
     },
     "Keeping Girls in School (KGS)": {
       "color": "#239613",
       "subcategories": [
-        "Inclusion",
-        "Exclusion",
-        "Service Standard",
-        "Payment",
-        "Serious Complaints",
-        "Fraud and Corruption",
-        "Unspecified/Other"
+        "Inclusion - KGS",
+        "Exclusion - KGS",
+        "Service Standard - KGS",
+        "Payment - KGS",
+        "Serious Complaints - KGS",
+        "Fraud and Corruption - KGS",
+        "Unspecified/Other - KGS"
       ]
     },
     "Social Cash Transfer (SCT)": {
       "color": "#9AD703",
       "subcategories": [
-        "Inclusion",
-        "Exclusion",
-        "Service Standard",
-        "Payment",
-        "Serious Complaints",
-        "Exit",
-        "Unspecified/Other"
+        "Inclusion - SCT",
+        "Exclusion - SCT",
+        "Service Standard - SCT",
+        "Payment - SCT",
+        "Serious Complaints - SCT",
+        "Exit - SCT",
+        "Unspecified/Other - SCT"
       ]
     },
     "Non-Counselling contacts": {
       "color": "#767777",
       "subcategories": [
-        "Complaints about the child helpline",
-        "Questions by parents",
-        "Questions about the child helpline",
-        "Questions about other services",
-        "\"Thank you for your assistance\"",
-        "Unspecified/Other"
+        "Complaints about the child helpline - NCC",
+        "Questions by parents - NCC",
+        "Questions about the child helpline - NCC",
+        "Questions about other services - NCC",
+        "\"Thank you for your assistance\" - NCC",
+        "Unspecified/Other - NCC"
       ]
     }
   }
