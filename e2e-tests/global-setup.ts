@@ -8,8 +8,8 @@ async function globalSetup(config: FullConfig) {
   const project = config.projects[0];
   const browser = await chromium.launch();
   const page = await browser.newPage();
-  page.goto(project.use.baseURL);
-  await page.waitForNavigation({timeout: 180000});
+  page.goto(project.use.baseURL, {timeout: 180000});
+  await page.waitForNavigation({timeout: 179000});
   const usernameBox = page.locator('input#okta-signin-username');
   const passwordBox = page.locator('input#okta-signin-password');
   const submitButton = page.locator('input#okta-signin-submit');
