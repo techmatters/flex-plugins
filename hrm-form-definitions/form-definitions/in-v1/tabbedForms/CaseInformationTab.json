@@ -48,7 +48,7 @@
   {
     "name": "OtherAction",
     "label": "Other action",
-    "type": "checkbox"
+    "type": "input"
   },
   {
     "name": "service",
