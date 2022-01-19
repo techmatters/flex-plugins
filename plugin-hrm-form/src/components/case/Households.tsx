@@ -12,11 +12,12 @@ import { PermissionActions, PermissionActionType } from '../../permissions';
 type OwnProps = {
   onClickAddHousehold: () => void;
   onClickView: (household: HouseholdEntry) => void;
+  onClickEdit: (household: HouseholdEntry, index: number) => void;
   households: CaseInfo['households'];
   can: (action: PermissionActionType) => boolean;
 };
 
-const Households: React.FC<OwnProps> = ({ onClickAddHousehold, onClickView, households, can }) => {
+const Households: React.FC<OwnProps> = ({ onClickAddHousehold, onClickView, onClickEdit, households, can }) => {
   return (
     <>
       <Box marginBottom="10px">
@@ -33,7 +34,12 @@ const Households: React.FC<OwnProps> = ({ onClickAddHousehold, onClickView, hous
       </Box>
       {households.length ? (
         households.map((h, index) => (
-          <InformationRow key={`household-${index}`} person={h.household} onClickView={() => onClickView(h)} />
+          <InformationRow
+            key={`household-${index}`}
+            person={h.household}
+            onClickView={() => onClickView(h)}
+            onClickEdit={() => onClickEdit(h, index)}
+          />
         ))
       ) : (
         <TimelineRow>

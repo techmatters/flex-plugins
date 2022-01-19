@@ -12,11 +12,12 @@ import { PermissionActions, PermissionActionType } from '../../permissions';
 type OwnProps = {
   onClickAddPerpetrator: () => void;
   onClickView: (perpetrator: PerpetratorEntry) => void;
+  onClickEdit: (perpetrator: PerpetratorEntry, index: number) => void;
   perpetrators: CaseInfo['perpetrators'];
   can: (action: PermissionActionType) => boolean;
 };
 
-const Perpetrators: React.FC<OwnProps> = ({ onClickAddPerpetrator, onClickView, perpetrators, can }) => {
+const Perpetrators: React.FC<OwnProps> = ({ onClickAddPerpetrator, onClickView, onClickEdit, perpetrators, can }) => {
   return (
     <>
       <Box marginBottom="10px">
@@ -33,7 +34,12 @@ const Perpetrators: React.FC<OwnProps> = ({ onClickAddPerpetrator, onClickView, 
       </Box>
       {perpetrators.length ? (
         perpetrators.map((p, index) => (
-          <InformationRow key={`perpetrator-${index}`} person={p.perpetrator} onClickView={() => onClickView(p)} />
+          <InformationRow
+            key={`perpetrator-${index}`}
+            person={p.perpetrator}
+            onClickView={() => onClickView(p)}
+            onClickEdit={() => onClickEdit(p, index)}
+          />
         ))
       ) : (
         <TimelineRow>

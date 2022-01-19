@@ -34,8 +34,8 @@ import {
   splitInHalf,
   splitAt,
 } from '../common/forms/formGenerators';
-import type { CustomITask, StandaloneITask } from '../../types/types';
-import type { AppRoutesWithCase } from '../../states/routing/types';
+import { CustomITask, StandaloneITask, Document as tDocument, DocumentEntry } from '../../types/types';
+import { AppRoutesWithCase, NewCaseSubroutes } from '../../states/routing/types';
 import useFocus from '../../utils/useFocus';
 import { recordingErrorHandler } from '../../fullStory';
 
@@ -69,7 +69,23 @@ const AddDocument: React.FC<Props> = ({
   const { DocumentForm } = definitionVersion.caseForms;
   const { layoutVersion } = definitionVersion;
 
-  const init = temporaryCaseInfo && temporaryCaseInfo.screen === 'add-document' ? temporaryCaseInfo.info : {};
+  const getTemporaryFormContent = (): tDocument | null => {
+    switch (temporaryCaseInfo?.screen) {
+      case NewCaseSubroutes.AddDocument:
+        return temporaryCaseInfo.info;
+      case NewCaseSubroutes.EditDocument:
+        return temporaryCaseInfo.info.document;
+      default:
+        return null;
+    }
+  };
+
+  const getTemporaryIndex = (): number | null =>
+    temporaryCaseInfo?.screen === NewCaseSubroutes.EditDocument ? temporaryCaseInfo.info.index : null;
+
+  const isEditingExistingItem = (): boolean => temporaryCaseInfo?.screen === NewCaseSubroutes.EditDocument;
+
+  const init = getTemporaryFormContent() ?? {};
   const [initialForm] = React.useState(init); // grab initial values in first render only. This value should never change or will ruin the memoization below
   const methods = useForm({ shouldUnregister: false });
 
@@ -148,15 +164,27 @@ const AddDocument: React.FC<Props> = ({
   ]);
 
   const saveDocument = async shouldStayInForm => {
-    if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-document') return;
+    const temporaryDoc = getTemporaryFormContent();
+    const index = getTemporaryIndex();
+    if (!temporaryDoc) return;
 
     const { info, id } = connectedCaseState.connectedCase;
-    const document = transformValues(DocumentForm)(temporaryCaseInfo.info);
+    const document = transformValues(DocumentForm)(temporaryDoc);
     const createdAt = new Date().toISOString();
     const { workerSid } = getConfig();
     const documentId = uuidV4();
-    const newDocument = { id: documentId, document, createdAt, twilioWorkerId: workerSid };
-    const documents = info && info.documents ? [...info.documents, newDocument] : [newDocument];
+    const newDocument = {
+      id: documentId,
+      document,
+      createdAt,
+      twilioWorkerId: workerSid,
+    };
+    const documents: DocumentEntry[] = [...(info?.documents ?? [])];
+    if (typeof index === 'number') {
+      documents[index] = newDocument;
+    } else {
+      documents.push(newDocument);
+    }
     const newInfo = info ? { ...info, documents } : { documents };
     const updatedCase = await updateCase(id, { info: newInfo });
     setConnectedCase(updatedCase, task.taskSid, true);
@@ -178,15 +206,22 @@ const AddDocument: React.FC<Props> = ({
   }
   const { strings } = getConfig();
 
-  const onError: SubmitErrorHandler<FieldValues> = recordingErrorHandler('Case: Add Document', () => {
-    window.alert(strings['Error-Form']);
-  });
+  const onError: SubmitErrorHandler<FieldValues> = recordingErrorHandler(
+    isEditingExistingItem() ? 'Case: Edit Document' : 'Case: Add Document',
+    () => {
+      window.alert(strings['Error-Form']);
+    },
+  );
 
   return (
     <FormProvider {...methods}>
       <CaseActionLayout>
         <CaseActionFormContainer>
-          <ActionHeader titleTemplate="Case-AddDocument" onClickClose={onClickClose} counselor={counselor} />
+          <ActionHeader
+            titleTemplate={isEditingExistingItem() ? 'Case-EditDocument' : 'Case-AddDocument'}
+            onClickClose={onClickClose}
+            counselor={counselor}
+          />
           <Container>
             <Box paddingBottom={`${BottomButtonBarHeight}px`}>
               <TwoColumnLayout>
@@ -203,16 +238,18 @@ const AddDocument: React.FC<Props> = ({
               <Template code="BottomBar-Cancel" />
             </StyledNextStepButton>
           </Box>
-          <Box marginRight="15px">
-            <StyledNextStepButton
-              data-testid="Case-AddDocumentScreen-SaveAndAddAnotherDocument"
-              secondary
-              roundCorners
-              onClick={methods.handleSubmit(saveDocumentAndStay, onError)}
-            >
-              <Template code="BottomBar-SaveAndAddAnotherDocument" />
-            </StyledNextStepButton>
-          </Box>
+          {!isEditingExistingItem() && (
+            <Box marginRight="15px">
+              <StyledNextStepButton
+                data-testid="Case-AddDocumentScreen-SaveAndAddAnotherDocument"
+                secondary
+                roundCorners
+                onClick={methods.handleSubmit(saveDocumentAndStay, onError)}
+              >
+                <Template code="BottomBar-SaveAndAddAnotherDocument" />
+              </StyledNextStepButton>
+            </Box>
+          )}
           <StyledNextStepButton
             data-testid="Case-AddDocumentScreen-SaveDocument"
             roundCorners

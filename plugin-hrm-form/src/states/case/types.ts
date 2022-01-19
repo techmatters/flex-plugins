@@ -31,6 +31,36 @@ export type ViewReferral = {
   date: string;
 };
 
+type Indexable = { index: number };
+
+export type ViewContactTemporaryCaseInfo = { screen: typeof NewCaseSubroutes.ViewContact; info: ViewContact };
+export type ViewNoteTemporaryCaseInfo = { screen: typeof NewCaseSubroutes.ViewNote; info: t.NoteEntry };
+export type ViewHouseholdTemporaryCaseInfo = { screen: typeof NewCaseSubroutes.ViewHousehold; info: t.HouseholdEntry };
+export type ViewPerpetratorTemporaryCaseInfo = {
+  screen: typeof NewCaseSubroutes.ViewPerpetrator;
+  info: t.PerpetratorEntry;
+};
+export type ViewIncidentTemporaryCaseInfo = { screen: typeof NewCaseSubroutes.ViewIncident; info: t.IncidentEntry };
+export type ViewReferralTemporaryCaseInfo = { screen: typeof NewCaseSubroutes.ViewReferral; info: t.ReferralEntry };
+export type ViewDocumentTemporaryCaseInfo = { screen: typeof NewCaseSubroutes.ViewDocument; info: t.DocumentEntry };
+
+export type EditHouseholdTemporaryCaseInfo = {
+  screen: typeof NewCaseSubroutes.EditHousehold;
+  info: t.HouseholdEntry & Indexable;
+};
+export type EditPerpetratorTemporaryCaseInfo = {
+  screen: typeof NewCaseSubroutes.EditPerpetrator;
+  info: t.PerpetratorEntry & Indexable;
+};
+export type EditIncidentTemporaryCaseInfo = {
+  screen: typeof NewCaseSubroutes.EditIncident;
+  info: t.IncidentEntry & Indexable;
+};
+export type EditDocumentTemporaryCaseInfo = {
+  screen: typeof NewCaseSubroutes.EditDocument;
+  info: t.DocumentEntry & Indexable;
+};
+
 export type TemporaryCaseInfo =
   | { screen: typeof NewCaseSubroutes.AddNote; info: t.Note }
   | { screen: typeof NewCaseSubroutes.AddReferral; info: t.Referral }
@@ -38,13 +68,17 @@ export type TemporaryCaseInfo =
   | { screen: typeof NewCaseSubroutes.AddPerpetrator; info: t.Perpetrator }
   | { screen: typeof NewCaseSubroutes.AddIncident; info: t.Incident }
   | { screen: typeof NewCaseSubroutes.AddDocument; info: t.Document }
-  | { screen: typeof NewCaseSubroutes.ViewContact; info: ViewContact }
-  | { screen: typeof NewCaseSubroutes.ViewNote; info: t.NoteEntry }
-  | { screen: typeof NewCaseSubroutes.ViewHousehold; info: t.HouseholdEntry }
-  | { screen: typeof NewCaseSubroutes.ViewPerpetrator; info: t.PerpetratorEntry }
-  | { screen: typeof NewCaseSubroutes.ViewIncident; info: t.IncidentEntry }
-  | { screen: typeof NewCaseSubroutes.ViewReferral; info: t.ReferralEntry }
-  | { screen: typeof NewCaseSubroutes.ViewDocument; info: t.DocumentEntry };
+  | ViewContactTemporaryCaseInfo
+  | ViewNoteTemporaryCaseInfo
+  | ViewHouseholdTemporaryCaseInfo
+  | ViewPerpetratorTemporaryCaseInfo
+  | ViewIncidentTemporaryCaseInfo
+  | ViewReferralTemporaryCaseInfo
+  | ViewDocumentTemporaryCaseInfo
+  | EditHouseholdTemporaryCaseInfo
+  | EditPerpetratorTemporaryCaseInfo
+  | EditIncidentTemporaryCaseInfo
+  | EditDocumentTemporaryCaseInfo;
 
 type SetConnectedCaseAction = {
   type: typeof SET_CONNECTED_CASE;

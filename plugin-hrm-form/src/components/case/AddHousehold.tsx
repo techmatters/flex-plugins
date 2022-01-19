@@ -31,10 +31,11 @@ import {
   splitInHalf,
   splitAt,
 } from '../common/forms/formGenerators';
-import type { CustomITask, StandaloneITask } from '../../types/types';
-import type { AppRoutesWithCase } from '../../states/routing/types';
+import type { CustomITask, StandaloneITask, Household as tHousehold, HouseholdEntry } from '../../types/types';
+import { AppRoutesWithCase, NewCaseSubroutes } from '../../states/routing/types';
 import useFocus from '../../utils/useFocus';
 import { recordingErrorHandler } from '../../fullStory';
+import { TemporaryCaseInfo } from '../../states/case/types';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;
@@ -64,14 +65,51 @@ const AddHousehold: React.FC<Props> = ({
   const { HouseholdForm } = definitionVersion.caseForms;
   const { layoutVersion } = definitionVersion;
 
-  const init = temporaryCaseInfo && temporaryCaseInfo.screen === 'add-household' ? temporaryCaseInfo.info : {};
+  const getTemporaryFormContent = (): tHousehold | null => {
+    switch (temporaryCaseInfo?.screen) {
+      case NewCaseSubroutes.AddHousehold:
+        return temporaryCaseInfo.info;
+      case NewCaseSubroutes.EditHousehold:
+        return temporaryCaseInfo.info.household;
+      default:
+        return null;
+    }
+  };
+
+  const createUpdatedTemporaryFormContent = (household: tHousehold): TemporaryCaseInfo => {
+    switch (temporaryCaseInfo?.screen) {
+      case NewCaseSubroutes.AddHousehold:
+        temporaryCaseInfo.info = household;
+        return {
+          ...temporaryCaseInfo,
+          info: household,
+        };
+      case NewCaseSubroutes.EditHousehold:
+        return {
+          ...temporaryCaseInfo,
+          info: {
+            ...temporaryCaseInfo?.info,
+            household,
+          },
+        };
+      default:
+        return null;
+    }
+  };
+
+  const getTemporaryIndex = (): number | null =>
+    temporaryCaseInfo?.screen === NewCaseSubroutes.EditHousehold ? temporaryCaseInfo.info.index : null;
+
+  const isEditingExistingItem = (): boolean => temporaryCaseInfo?.screen === NewCaseSubroutes.EditHousehold;
+
+  const init = getTemporaryFormContent() ?? {};
   const [initialForm] = React.useState(init); // grab initial values in first render only. This value should never change or will ruin the memoization below
   const methods = useForm();
 
   const [l, r] = React.useMemo(() => {
     const updateCallBack = () => {
       const household = methods.getValues();
-      updateTempInfo({ screen: 'add-household', info: household }, task.taskSid);
+      updateTempInfo(createUpdatedTemporaryFormContent(household), task.taskSid);
     };
 
     const generatedForm = createFormFromDefinition(HouseholdForm)([])(initialForm, firstElementRef)(updateCallBack);
@@ -91,22 +129,30 @@ const AddHousehold: React.FC<Props> = ({
   ]);
 
   const saveHousehold = async shouldStayInForm => {
-    if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'add-household') return;
+    const temporaryItem = getTemporaryFormContent();
+    const index = getTemporaryIndex();
+    if (!temporaryItem) return;
 
     const { info, id } = connectedCaseState.connectedCase;
-    const household = transformValues(HouseholdForm)(temporaryCaseInfo.info);
+    const household = transformValues(HouseholdForm)(temporaryItem);
     const createdAt = new Date().toISOString();
     const { workerSid } = getConfig();
     const newHousehold = { household, createdAt, twilioWorkerId: workerSid };
-    const households = info && info.households ? [...info.households, newHousehold] : [newHousehold];
+    const households: HouseholdEntry[] = [...(info?.households ?? [])];
+    if (typeof index === 'number') {
+      households[index] = newHousehold;
+    } else {
+      households.push(newHousehold);
+    }
+
     const newInfo = info ? { ...info, households } : { households };
     const updatedCase = await updateCase(id, { info: newInfo });
     setConnectedCase(updatedCase, task.taskSid, true);
     if (shouldStayInForm) {
       const blankForm = HouseholdForm.reduce(createStateItem, {});
       methods.reset(blankForm); // Resets the form.
-      updateTempInfo({ screen: 'add-household', info: {} }, task.taskSid);
-      changeRoute({ route, subroute: 'add-household' }, task.taskSid);
+      updateTempInfo({ screen: NewCaseSubroutes.AddHousehold, info: {} }, task.taskSid);
+      changeRoute({ route, subroute: NewCaseSubroutes.AddHousehold }, task.taskSid);
     }
   };
 
@@ -127,7 +173,11 @@ const AddHousehold: React.FC<Props> = ({
     <FormProvider {...methods}>
       <CaseActionLayout>
         <CaseActionFormContainer>
-          <ActionHeader titleTemplate="Case-AddHousehold" onClickClose={onClickClose} counselor={counselor} />
+          <ActionHeader
+            titleTemplate={isEditingExistingItem() ? 'Case-EditHousehold' : 'Case-AddHousehold'}
+            onClickClose={onClickClose}
+            counselor={counselor}
+          />
           <Container>
             <Box paddingBottom={`${BottomButtonBarHeight}px`}>
               <TwoColumnLayout>
@@ -144,16 +194,18 @@ const AddHousehold: React.FC<Props> = ({
               <Template code="BottomBar-Cancel" />
             </StyledNextStepButton>
           </Box>
-          <Box marginRight="15px">
-            <StyledNextStepButton
-              data-testid="Case-AddHouseholdScreen-SaveAndAddAnotherHousehold"
-              secondary
-              roundCorners
-              onClick={methods.handleSubmit(saveHouseholdAndStay, onError)}
-            >
-              <Template code="BottomBar-SaveAndAddAnotherHousehold" />
-            </StyledNextStepButton>
-          </Box>
+          {!isEditingExistingItem() && (
+            <Box marginRight="15px">
+              <StyledNextStepButton
+                data-testid="Case-AddHouseholdScreen-SaveAndAddAnotherHousehold"
+                secondary
+                roundCorners
+                onClick={methods.handleSubmit(saveHouseholdAndStay, onError)}
+              >
+                <Template code="BottomBar-SaveAndAddAnotherHousehold" />
+              </StyledNextStepButton>
+            </Box>
+          )}
           <StyledNextStepButton
             data-testid="Case-AddHouseholdScreen-SaveHousehold"
             roundCorners

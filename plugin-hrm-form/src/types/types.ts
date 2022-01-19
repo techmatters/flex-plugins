@@ -2,7 +2,7 @@
 import { ITask } from '@twilio/flex-ui';
 import { DefinitionVersionId, CallTypes } from 'hrm-form-definitions/src';
 
-type EntryInfo = { createdAt: string; twilioWorkerId: string };
+export type EntryInfo = { createdAt: string; twilioWorkerId: string };
 
 /*
  * export type ReferralEntry = {
