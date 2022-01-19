@@ -18,11 +18,8 @@
       { "value": "", "label": "" },
       { "value": "Male", "label": "Male" },
       { "value": "Female", "label": "Female" },
-      { "value": "Non-Binary", "label": "Non-Binary" },
-      { "value": "Gender Fluid", "label": "Gender Fluid" },
-      { "value": "Transgender", "label": "Transgender" },
-      { "value": "Assigned a different gender at birth", "label": "Assigned a different gender at birth" },
-      { "value": "Gender not disclosed", "label": "Gender not disclosed" }
+      { "value": "Other", "label": "Other" },
+      { "value": "Unknown", "label": "Gender not disclosed" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" }
   },
@@ -89,7 +86,7 @@
       { "value": "St. Ann", "label": "St. Ann" },
       { "value": "St. Mary", "label": "St. Mary" },       
       { "value": "Portland", "label": "Portland" },   
-      { "value": "Location not disclosed", "label": "Location not disclosed" }
+      { "value": "Unknown", "label": "Location not disclosed" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" }
   },

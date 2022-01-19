@@ -35,7 +35,7 @@
       "label": "Parish",
       "type": "select",
       "options": [
-        { "value": "Location not disclosed", "label": "" },
+        { "value": "Unknown", "label": "" },
         { "value": "Kingston", "label": "Kingston" },
         { "value": "St. Andrew", "label": "St. Andrew" },
         { "value": "St. Thomas", "label": "St. Thomas" },
@@ -70,11 +70,8 @@
         { "value": "", "label": "" },
         { "value": "Male", "label": "Male" },
         { "value": "Female", "label": "Female" },
-        { "value": "Non-Binary", "label": "Non-Binary" },
-        { "value": "Gender Fluid", "label": "Gender Fluid" },
-        { "value": "Transgender", "label": "Transgender" },
-        { "value": "Assigned a different gender at birth", "label": "Assigned a different gender at birth" },
-        { "value": "Gender not disclosed", "label": "Gender not disclosed" }
+        { "value": "Other", "label": "Other" },
+        { "value": "Unknown", "label": "Gender not disclosed" }
       ],
       "required": { "value": true, "message": "RequiredFieldError" }
     },

@@ -5,15 +5,15 @@
       "childInformation": {
       },
       "caseInformation": {
-        "splitFormAt": 4
+        "splitFormAt": 3
       }
     },
     "case": {
       "households": {
-        "splitFormAt": 7
+        "splitFormAt": 5
       },
       "perpetrators": {
-        "splitFormAt": 7
+        "splitFormAt": 5
       },
       "incidents": {
         "previewFields": ["date", "duration", "location"],
@@ -32,7 +32,7 @@
         "splitFormAt": 3
       },
       "referrals": {
-        "splitFormAt": 2
+        "splitFormAt": 3
       },
       "documents": {
         "splitFormAt": 1
