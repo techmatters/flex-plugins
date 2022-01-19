@@ -73,7 +73,7 @@ const getValuesFromAnswers = (
   task: ITask,
   answers: any,
   tabFormDefinition: FormDefinition,
-  prepopulateKeys: DefinitionVersion['prepopulateKeys'],
+  prepopulateKeys: string[],
 ) => {
   // Get values from task attributes
   const { firstName, language } = task.attributes;
@@ -114,8 +114,11 @@ export const prepopulateForm = (task: ITask) => {
     const isAboutSelf = answers.about_self.answer === 'Yes';
     const callType = isAboutSelf ? callTypes.child : callTypes.caller;
     const tabFormDefinition = isAboutSelf ? ChildInformationTab : CallerInformationTab;
+    const prepopulateKeys = isAboutSelf
+      ? currentDefinitionVersion.prepopulateKeys.ChildInformationTab
+      : currentDefinitionVersion.prepopulateKeys.CallerInformationTab;
 
-    const values = getValuesFromAnswers(task, answers, tabFormDefinition, currentDefinitionVersion.prepopulateKeys);
+    const values = getValuesFromAnswers(task, answers, tabFormDefinition, prepopulateKeys);
 
     Manager.getInstance().store.dispatch(prepopulateFormAction(callType, values, task.taskSid));
 
