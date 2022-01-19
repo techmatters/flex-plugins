@@ -86,7 +86,7 @@ export async function loadDefinition(version: DefinitionVersionId): Promise<Defi
   try {
     prepopulateKeys = require(`../../form-definitions/${version}/PrepopulateKeys.json`);
   } catch (err) {
-    prepopulateKeys = [];
+    prepopulateKeys = { ChildInformationTab: [], CallerInformationTab: [] };
   }
 
   const { helplines } = helplineInformationModule.default;

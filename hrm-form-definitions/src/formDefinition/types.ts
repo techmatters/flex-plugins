@@ -188,5 +188,5 @@ export type DefinitionVersion = {
   caseStatus: {
     [status: string]: StatusInfo;
   };
-  prepopulateKeys: string[];
+  prepopulateKeys: { ChildInformationTab: string[]; CallerInformationTab: string[] };
 };
