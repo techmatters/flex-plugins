@@ -84,7 +84,9 @@ export async function loadDefinition(version: DefinitionVersionId): Promise<Defi
 
   let prepopulateKeys;
   try {
-    prepopulateKeys = require(`../../form-definitions/${version}/PrepopulateKeys.json`);
+    prepopulateKeys = await import(
+      /* webpackMode: "eager" */ `../../form-definitions/${version}/PrepopulateKeys.json`
+    );
   } catch (err) {
     prepopulateKeys = { ChildInformationTab: [], CallerInformationTab: [] };
   }
