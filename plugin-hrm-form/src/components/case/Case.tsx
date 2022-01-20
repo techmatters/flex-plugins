@@ -37,10 +37,6 @@ import * as ConfigActions from '../../states/configuration/actions';
 import Timeline from './Timeline';
 import AddNote from './AddNote';
 import AddReferral from './AddReferral';
-import Households from './Households';
-import Perpetrators from './Perpetrators';
-import Incidents from './Incidents';
-import Documents from './Documents';
 import CaseSummary from './CaseSummary';
 import ViewContact from './ViewContact';
 import AddHousehold from './AddHousehold';
@@ -55,7 +51,9 @@ import ViewReferral from './ViewReferral';
 import ViewDocument from './ViewDocument';
 import type {
   CaseDetailsName,
+  EditDocumentTemporaryCaseInfo,
   EditHouseholdTemporaryCaseInfo,
+  EditIncidentTemporaryCaseInfo,
   EditPerpetratorTemporaryCaseInfo,
   TemporaryCaseInfo,
   ViewDocumentTemporaryCaseInfo,
@@ -68,6 +66,10 @@ import CasePrintView from './casePrint/CasePrintView';
 import { getPermissionsForCase, PermissionActions } from '../../permissions';
 import { recordBackendError } from '../../fullStory';
 import { AppRoutes, AppRoutesWithCase, NewCaseSubroutes } from '../../states/routing/types';
+import CaseSection from './CaseSection';
+import InformationRow from './InformationRow';
+import TimelineInformationRow from './TimelineInformationRow';
+import DocumentInformationRow from './DocumentInformationRow';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -385,10 +387,6 @@ const Case: React.FC<Props> = props => {
     definitionVersion,
   };
 
-  const editScreenProps = {
-    ...addScreenProps,
-  };
-
   const caseDetails = {
     id: connectedCase.id,
     name,
@@ -410,6 +408,86 @@ const Case: React.FC<Props> = props => {
     office,
     version,
     contact: firstConnectedContact,
+  };
+
+  const itemRowRenderer = <TViewCaseInfo extends TemporaryCaseInfo, TEditCaseInfo extends TemporaryCaseInfo>(
+    itemTypeName: string,
+    viewSubroute: CaseItemRoute,
+    editSubroute: CaseItemRoute,
+    items: CaseItemInfo<TViewCaseInfo>[],
+  ) => {
+    const itemRows = () => {
+      return items.length ? (
+        <>
+          {items.map((item, index) => (
+            <InformationRow
+              key={`${itemTypeName}-${index}`}
+              person={item[itemTypeName]}
+              onClickView={() => onViewCaseItemClick<TViewCaseInfo>(viewSubroute)(item)}
+              onClickEdit={() => onEditCaseItemClick<TEditCaseInfo>(editSubroute)({ ...item, index }, index)}
+            />
+          ))}
+        </>
+      ) : null;
+    };
+    itemRows.displayName = `${name}Rows`;
+    return itemRows;
+  };
+
+  const householdRows = itemRowRenderer<ViewHouseholdTemporaryCaseInfo, EditHouseholdTemporaryCaseInfo>(
+    'household',
+    NewCaseSubroutes.ViewHousehold,
+    NewCaseSubroutes.EditHousehold,
+    households,
+  );
+
+  const perpetratorRows = itemRowRenderer<ViewPerpetratorTemporaryCaseInfo, EditPerpetratorTemporaryCaseInfo>(
+    'perpetrator',
+    NewCaseSubroutes.ViewPerpetrator,
+    NewCaseSubroutes.EditPerpetrator,
+    perpetrators,
+  );
+
+  const incidentRows = () => {
+    return incidents.length ? (
+      <>
+        {incidents.map((item, index) => (
+          <TimelineInformationRow
+            key={`incident-${index}`}
+            onClickView={() => onViewCaseItemClick<ViewIncidentTemporaryCaseInfo>(NewCaseSubroutes.ViewIncident)(item)}
+            onClickEdit={() =>
+              onEditCaseItemClick<EditIncidentTemporaryCaseInfo>(NewCaseSubroutes.EditIncident)(
+                { ...item, index },
+                index,
+              )
+            }
+            definition={definitionVersion.caseForms.IncidentForm}
+            values={item.incident}
+            layoutDefinition={definitionVersion.layoutVersion.case.incidents}
+          />
+        ))}
+      </>
+    ) : null;
+  };
+
+  const documentRows = () => {
+    return documents.length ? (
+      <>
+        {documents.map((item, index) => (
+          <DocumentInformationRow
+            key={`document-${index}`}
+            documentEntry={item}
+            onClickView={() => onViewCaseItemClick<ViewDocumentTemporaryCaseInfo>(NewCaseSubroutes.ViewDocument)(item)}
+            onClickEdit={() =>
+              onEditCaseItemClick<EditDocumentTemporaryCaseInfo>(NewCaseSubroutes.EditDocument)(
+                { ...item, index },
+                index,
+              )
+            }
+          />
+        ))}
+      </>
+    ) : null;
   };
 
   switch (subroute) {
@@ -486,40 +564,41 @@ const Case: React.FC<Props> = props => {
               />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
-              <Households
-                households={households}
+              <CaseSection
                 can={can}
-                onClickAddHousehold={onAddCaseItemClick(NewCaseSubroutes.AddHousehold)}
-                onClickView={onViewCaseItemClick<ViewHouseholdTemporaryCaseInfo>(NewCaseSubroutes.ViewHousehold)}
-                onClickEdit={onEditCaseItemClick<EditHouseholdTemporaryCaseInfo>(NewCaseSubroutes.EditHousehold)}
-              />
+                onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.AddHousehold)}
+                sectionTypeId="Household"
+              >
+                {householdRows()}
+              </CaseSection>
             </Box>
             <Box marginLeft="25px" marginTop="25px">
-              <Perpetrators
-                perpetrators={perpetrators}
+              <CaseSection
                 can={can}
-                onClickAddPerpetrator={onAddCaseItemClick(NewCaseSubroutes.AddPerpetrator)}
-                onClickView={onViewCaseItemClick<ViewPerpetratorTemporaryCaseInfo>(NewCaseSubroutes.ViewPerpetrator)}
-                onClickEdit={onEditCaseItemClick<EditPerpetratorTemporaryCaseInfo>(NewCaseSubroutes.EditPerpetrator)}
-              />
+                onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.AddPerpetrator)}
+                sectionTypeId="Perpetrator"
+              >
+                {perpetratorRows()}
+              </CaseSection>
             </Box>
             <Box marginLeft="25px" marginTop="25px">
-              <Incidents
-                incidents={incidents}
-                onClickAddIncident={onAddCaseItemClick(NewCaseSubroutes.AddIncident)}
-                onClickView={onViewCaseItemClick<ViewIncidentTemporaryCaseInfo>(NewCaseSubroutes.ViewIncident)}
+              <CaseSection
                 can={can}
-                definitionVersion={definitionVersion}
-              />
+                onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.AddIncident)}
+                sectionTypeId="Incident"
+              >
+                {incidentRows()}
+              </CaseSection>
             </Box>
             {featureFlags.enable_upload_documents && (
               <Box marginLeft="25px" marginTop="25px">
-                <Documents
-                  documents={documents}
+                <CaseSection
+                  onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.AddDocument)}
                   can={can}
-                  onClickAddDocument={onAddCaseItemClick(NewCaseSubroutes.AddDocument)}
-                  onClickView={onViewCaseItemClick<ViewDocumentTemporaryCaseInfo>(NewCaseSubroutes.ViewDocument)}
-                />
+                  sectionTypeId="Document"
+                >
+                  {documentRows()}
+                </CaseSection>
               </Box>
             )}
             <Box marginLeft="25px" marginTop="25px">
