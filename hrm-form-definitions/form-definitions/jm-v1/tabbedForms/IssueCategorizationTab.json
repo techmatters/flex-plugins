@@ -55,9 +55,9 @@
           "Behavioural problems",
           "Concerns about the self",
           "Depression",
-          "Emotional distress – anger problems",
-          "Emotional distress – fear and anxiety problems",
-          "Emotional distress – mood problems",
+          "Emotional distress - anger problems",
+          "Emotional distress - fear and anxiety problems",
+          "Emotional distress - mood problems",
           "Feelings of being overwhelmed",
           "Feelings of worry",
           "Feeling unwanted",
@@ -67,7 +67,7 @@
           "Problems with eating behaviour",
           "Self-esteem issues",
           "Self-harming behaviour",
-          "Sleep disorders"
+          "Sleep disorders",
           "Stress",
           "Suicidal thoughts and suicide attempts",
           "Traumatic distress",
@@ -127,7 +127,7 @@
           "Family problems/disputes - conflict between child and other members of the family", 
           "Grief/bereavement - family",
           "Left behind children",
-          "Mental health - parental/relative"
+          "Mental health - parental/relative",
           "Relationship with sibling(s)",
           "Relationship to caregiver"
         ]
@@ -136,7 +136,7 @@
         "color": "#9AD703",
         "subcategories": [
           "Friends and friendships",
-          "Grief/bereavement - peers"
+          "Grief/bereavement - peers",
           "Partner relationships",
           "Classmates/colleagues relationships",
           "Unspecified/Other"
