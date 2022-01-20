@@ -58,6 +58,7 @@ const AddHousehold: React.FC<Props> = ({
   setConnectedCase,
   updateTempInfo,
   changeRoute,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const firstElementRef = useFocus();
 

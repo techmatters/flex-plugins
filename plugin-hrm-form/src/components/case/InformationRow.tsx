@@ -10,7 +10,7 @@ import {
   TimelineText,
   ViewButton,
   RowItemContainer,
-  EditButton
+  EditButton,
 } from '../../styles/case';
 import { Box, HiddenText } from '../../styles/HrmStyles';
 import { formatName } from '../../utils';
