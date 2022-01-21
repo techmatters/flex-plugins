@@ -38,6 +38,7 @@ import { CustomITask, StandaloneITask, Document as tDocument, DocumentEntry } fr
 import { AppRoutesWithCase, NewCaseSubroutes } from '../../states/routing/types';
 import useFocus from '../../utils/useFocus';
 import { recordingErrorHandler } from '../../fullStory';
+import { EditDocumentTemporaryCaseInfo } from '../../states/case/types';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
@@ -74,7 +75,7 @@ const AddDocument: React.FC<Props> = ({
       case NewCaseSubroutes.AddDocument:
         return temporaryCaseInfo.info;
       case NewCaseSubroutes.EditDocument:
-        return temporaryCaseInfo.info.document;
+        return (temporaryCaseInfo as EditDocumentTemporaryCaseInfo).info.document;
       default:
         return null;
     }

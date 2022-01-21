@@ -12,7 +12,8 @@ import {
   TimelineFileName,
   TimelineDate,
   ViewButton,
-  RowItemContainer, EditButton
+  RowItemContainer,
+  EditButton,
 } from '../../styles/case';
 import { Box, HiddenText } from '../../styles/HrmStyles';
 import { formatFileNameAtAws } from '../../utils';

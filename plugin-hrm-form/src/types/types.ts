@@ -12,6 +12,10 @@ export type EntryInfo = { createdAt: string; twilioWorkerId: string };
  * };
  */
 
+export type CaseItemFormValues = { [key: string]: string | boolean };
+
+export type CaseItemEntry = { form: CaseItemFormValues; id: string | undefined } & EntryInfo;
+
 export type Household = { [key: string]: string | boolean };
 
 export type HouseholdEntry = { household: Household } & EntryInfo;

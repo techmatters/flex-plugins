@@ -1,18 +1,20 @@
+// @ts-ignore
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
-import { StorelessThemeProvider } from '@twilio/flex-ui';
+import { ITask, StorelessThemeProvider, ThemeConfigProps } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../../states';
-import AddHousehold from '../../../components/case/AddHousehold';
-import HrmTheme from '../../../styles/HrmTheme';
+import AddEditCaseItem, { AddEditCaseItemProps } from '../../../components/case/AddEditCaseItem';
 import { getDefinitionVersions } from '../../../HrmFormPlugin';
+import { updateCaseSectionListByIndex } from '../../../states/case/types';
+import { StandaloneITask, standaloneTaskSid } from '../../../types/types';
 
 let mockV1;
 
@@ -80,6 +82,10 @@ const state2 = {
     [connectedCaseBase]: {
       tasks: {
         task1: {
+          attributes: {
+            isContactlessTask: false,
+          },
+          taskSid: 'task1',
           temporaryCaseInfo: { screen: 'add-household', info: {} },
           connectedCase: {
             createdAt: 1593469560208,
@@ -132,29 +138,30 @@ const state3 = {
 const store3 = mockStore(state3);
 store3.dispatch = jest.fn();
 
-const themeConf = {
-  colorTheme: HrmTheme,
-};
-
-const task = {
-  taskSid: 'task1',
-};
+const themeConf: ThemeConfigProps = {};
 
 describe('Test AddHousehold', () => {
+  const onClickClose = jest.fn();
+  let ownProps: AddEditCaseItemProps;
+  beforeEach(
+    () =>
+      (ownProps = {
+        task: state2[namespace][connectedCaseBase].tasks.task1 as StandaloneITask,
+        counselor: 'Someone',
+        onClickClose,
+        layout: mockV1.layoutVersion.case.households,
+        applyTemporaryInfoToCase: updateCaseSectionListByIndex('households', 'household'),
+        formDefinition: mockV1.caseForms.HouseholdForm,
+        definitionVersion: mockV1,
+        itemType: 'Household',
+        route: 'tabbed-forms',
+      }),
+  );
   test('Test close functionality', async () => {
-    const onClickClose = jest.fn();
-
-    const ownProps = {
-      counselor: 'Someone',
-      onClickClose,
-      task,
-      definitionVersion: mockV1,
-    };
-
     render(
       <StorelessThemeProvider themeConf={themeConf}>
         <Provider store={store2}>
-          <AddHousehold {...ownProps} />
+          <AddEditCaseItem {...ownProps} />
         </Provider>
       </StorelessThemeProvider>,
     );
@@ -176,19 +183,10 @@ describe('Test AddHousehold', () => {
   });
 
   test('a11y', async () => {
-    const onClickClose = jest.fn();
-
-    const ownProps = {
-      counselor: 'Someone',
-      onClickClose,
-      task,
-      definitionVersion: mockV1,
-    };
-
     const wrapper = mount(
       <StorelessThemeProvider themeConf={themeConf}>
         <Provider store={store2}>
-          <AddHousehold {...ownProps} />
+          <AddEditCaseItem {...ownProps} />
         </Provider>
       </StorelessThemeProvider>,
     );
@@ -200,6 +198,6 @@ describe('Test AddHousehold', () => {
     const axe = configureAxe({ rules });
     const results = await axe(wrapper.getDOMNode());
 
-    expect(results).toHaveNoViolations();
+    (expect(results) as any).toHaveNoViolations();
   });
 });

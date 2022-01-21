@@ -20,7 +20,13 @@ type OwnProps = {
 const RowItem: React.FC = ({ children }) => <RowItemContainer style={{ flex: 1 }}>{children}</RowItemContainer>;
 RowItem.displayName = 'RowItem';
 
-const TimelineInformationRow: React.FC<OwnProps> = ({ definition, values, layoutDefinition, onClickView, onClickEdit }) => {
+const TimelineInformationRow: React.FC<OwnProps> = ({
+  definition,
+  values,
+  layoutDefinition,
+  onClickView,
+  onClickEdit,
+}) => {
   return (
     <TimelineRow>
       {layoutDefinition.previewFields.map((name, index) => {

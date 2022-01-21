@@ -39,7 +39,6 @@ import AddNote from './AddNote';
 import AddReferral from './AddReferral';
 import CaseSummary from './CaseSummary';
 import ViewContact from './ViewContact';
-import AddHousehold from './AddHousehold';
 import AddPerpetrator from './AddPerpetrator';
 import AddIncident from './AddIncident';
 import AddDocument from './AddDocument';
@@ -49,17 +48,18 @@ import ViewPerpetrator from './ViewPerpetrator';
 import ViewIncident from './ViewIncident';
 import ViewReferral from './ViewReferral';
 import ViewDocument from './ViewDocument';
-import type {
+import {
   CaseDetailsName,
   EditDocumentTemporaryCaseInfo,
-  EditHouseholdTemporaryCaseInfo,
   EditIncidentTemporaryCaseInfo,
   EditPerpetratorTemporaryCaseInfo,
+  EditTemporaryCaseInfo,
   TemporaryCaseInfo,
   ViewDocumentTemporaryCaseInfo,
   ViewHouseholdTemporaryCaseInfo,
   ViewIncidentTemporaryCaseInfo,
   ViewPerpetratorTemporaryCaseInfo,
+  updateCaseSectionListByIndex,
 } from '../../states/case/types';
 import { Case as CaseType, CustomITask, StandaloneITask } from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
@@ -70,6 +70,7 @@ import CaseSection from './CaseSection';
 import InformationRow from './InformationRow';
 import TimelineInformationRow from './TimelineInformationRow';
 import DocumentInformationRow from './DocumentInformationRow';
+import AddEditCaseItem from './AddEditCaseItem';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -267,17 +268,7 @@ const Case: React.FC<Props> = props => {
 
   type CaseItemInfo<T extends TemporaryCaseInfo> = T['info']; // A bit redundant but looks cleaner than the anonymous subtype reference syntax
 
-  const onEditCaseItemClick = <T extends TemporaryCaseInfo>(
-    targetSubroute: CaseItemRoute<T>,
-  ): ((entry: CaseItemInfo<T>, index: number) => void) => (entry: CaseItemInfo<T>, index: number) => {
-    props.updateTempInfo(
-      { screen: targetSubroute, info: { ...entry, index } } as TemporaryCaseInfo,
-      props.task.taskSid,
-    );
-    props.changeRoute({ route, subroute: targetSubroute } as AppRoutes, props.task.taskSid);
-  };
-
-  const onViewCaseItemClick = <T extends TemporaryCaseInfo>(
+  const onCaseItemActionClick = <T extends TemporaryCaseInfo>(
     targetSubroute: CaseItemRoute<T>,
   ): ((entry: CaseItemInfo<T>) => void) => (entry: CaseItemInfo<T>) => {
     props.updateTempInfo({ screen: targetSubroute, info: entry } as TemporaryCaseInfo, props.task.taskSid);
@@ -423,8 +414,8 @@ const Case: React.FC<Props> = props => {
             <InformationRow
               key={`${itemTypeName}-${index}`}
               person={item[itemTypeName]}
-              onClickView={() => onViewCaseItemClick<TViewCaseInfo>(viewSubroute)(item)}
-              onClickEdit={() => onEditCaseItemClick<TEditCaseInfo>(editSubroute)({ ...item, index }, index)}
+              onClickView={() => onCaseItemActionClick<TViewCaseInfo>(viewSubroute)(item)}
+              onClickEdit={() => onCaseItemActionClick<TEditCaseInfo>(editSubroute)({ ...item, index })}
             />
           ))}
         </>
@@ -434,11 +425,11 @@ const Case: React.FC<Props> = props => {
     return itemRows;
   };
 
-  const householdRows = itemRowRenderer<ViewHouseholdTemporaryCaseInfo, EditHouseholdTemporaryCaseInfo>(
-    'household',
+  const householdRows = itemRowRenderer<ViewHouseholdTemporaryCaseInfo, EditTemporaryCaseInfo>(
+    'form',
     NewCaseSubroutes.ViewHousehold,
     NewCaseSubroutes.EditHousehold,
-    households,
+    households.map(h => ({ ...h, form: h.household })),
   );
 
   const perpetratorRows = itemRowRenderer<ViewPerpetratorTemporaryCaseInfo, EditPerpetratorTemporaryCaseInfo>(
@@ -454,12 +445,11 @@ const Case: React.FC<Props> = props => {
         {incidents.map((item, index) => (
           <TimelineInformationRow
             key={`incident-${index}`}
-            onClickView={() => onViewCaseItemClick<ViewIncidentTemporaryCaseInfo>(NewCaseSubroutes.ViewIncident)(item)}
+            onClickView={() =>
+              onCaseItemActionClick<ViewIncidentTemporaryCaseInfo>(NewCaseSubroutes.ViewIncident)(item)
+            }
             onClickEdit={() =>
-              onEditCaseItemClick<EditIncidentTemporaryCaseInfo>(NewCaseSubroutes.EditIncident)(
-                { ...item, index },
-                index,
-              )
+              onCaseItemActionClick<EditIncidentTemporaryCaseInfo>(NewCaseSubroutes.EditIncident)({ ...item, index })
             }
             definition={definitionVersion.caseForms.IncidentForm}
             values={item.incident}
@@ -477,12 +467,11 @@ const Case: React.FC<Props> = props => {
           <DocumentInformationRow
             key={`document-${index}`}
             documentEntry={item}
-            onClickView={() => onViewCaseItemClick<ViewDocumentTemporaryCaseInfo>(NewCaseSubroutes.ViewDocument)(item)}
+            onClickView={() =>
+              onCaseItemActionClick<ViewDocumentTemporaryCaseInfo>(NewCaseSubroutes.ViewDocument)(item)
+            }
             onClickEdit={() =>
-              onEditCaseItemClick<EditDocumentTemporaryCaseInfo>(NewCaseSubroutes.EditDocument)(
-                { ...item, index },
-                index,
-              )
+              onCaseItemActionClick<EditDocumentTemporaryCaseInfo>(NewCaseSubroutes.EditDocument)({ ...item, index })
             }
           />
         ))}
@@ -497,7 +486,18 @@ const Case: React.FC<Props> = props => {
       return <AddReferral {...addScreenProps} />;
     case NewCaseSubroutes.AddHousehold:
     case NewCaseSubroutes.EditHousehold:
-      return <AddHousehold {...{ ...addScreenProps, route }} />;
+      return (
+        <AddEditCaseItem
+          {...{
+            ...addScreenProps,
+            route,
+            layout: addScreenProps.definitionVersion.layoutVersion.case.households,
+            itemType: 'Household',
+            applyTemporaryInfoToCase: updateCaseSectionListByIndex('households', 'household'),
+            formDefinition: definitionVersion.caseForms.HouseholdForm,
+          }}
+        />
+      );
     case NewCaseSubroutes.AddPerpetrator:
     case NewCaseSubroutes.EditPerpetrator:
       return <AddPerpetrator {...{ ...addScreenProps, route }} />;
