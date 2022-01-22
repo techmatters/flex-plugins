@@ -35,7 +35,6 @@ type Indexable = { index: number };
 
 export type ViewContactTemporaryCaseInfo = { screen: typeof NewCaseSubroutes.ViewContact; info: ViewContact };
 export type ViewNoteTemporaryCaseInfo = { screen: typeof NewCaseSubroutes.ViewNote; info: t.NoteEntry };
-export type ViewHouseholdTemporaryCaseInfo = { screen: typeof NewCaseSubroutes.ViewHousehold; info: t.HouseholdEntry };
 export type ViewPerpetratorTemporaryCaseInfo = {
   screen: typeof NewCaseSubroutes.ViewPerpetrator;
   info: t.PerpetratorEntry;
@@ -43,6 +42,36 @@ export type ViewPerpetratorTemporaryCaseInfo = {
 export type ViewIncidentTemporaryCaseInfo = { screen: typeof NewCaseSubroutes.ViewIncident; info: t.IncidentEntry };
 export type ViewReferralTemporaryCaseInfo = { screen: typeof NewCaseSubroutes.ViewReferral; info: t.ReferralEntry };
 export type ViewDocumentTemporaryCaseInfo = { screen: typeof NewCaseSubroutes.ViewDocument; info: t.DocumentEntry };
+
+export type ViewTemporaryCaseInfo = {
+  screen: /*
+   * | typeof NewCaseSubroutes.ViewDocument
+   * | typeof NewCaseSubroutes.ViewIncident
+   * | typeof NewCaseSubroutes.ViewPerpetrator
+   */
+  typeof NewCaseSubroutes.ViewHousehold;
+  /*
+   * | typeof NewCaseSubroutes.ViewNote
+   * | typeof NewCaseSubroutes.ViewReferral;
+   */
+  info: t.CaseItemEntry;
+};
+
+export function isViewTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is ViewTemporaryCaseInfo {
+  return (
+    tci &&
+    /*
+     * tci.screen === NewCaseSubroutes.ViewDocument ||
+     * tci.screen === NewCaseSubroutes.ViewIncident ||
+     * tci.screen === NewCaseSubroutes.ViewPerpetrator ||
+     */
+    tci.screen === NewCaseSubroutes.ViewHousehold // ||
+    /*
+     * tci.screen === NewCaseSubroutes.ViewNote ||
+     * tci.screen === NewCaseSubroutes.ViewReferral
+     */
+  );
+}
 
 export type EditHouseholdTemporaryCaseInfo = {
   screen: typeof NewCaseSubroutes.EditHousehold;
@@ -103,11 +132,11 @@ export type TemporaryCaseInfo =
   | { screen: typeof NewCaseSubroutes.AddReferral; info: t.Referral }
   | ViewContactTemporaryCaseInfo
   | ViewNoteTemporaryCaseInfo
-  | ViewHouseholdTemporaryCaseInfo
   | ViewPerpetratorTemporaryCaseInfo
   | ViewIncidentTemporaryCaseInfo
   | ViewReferralTemporaryCaseInfo
   | ViewDocumentTemporaryCaseInfo
+  | ViewTemporaryCaseInfo
   | AddTemporaryCaseInfo
   | EditHouseholdTemporaryCaseInfo
   | EditPerpetratorTemporaryCaseInfo

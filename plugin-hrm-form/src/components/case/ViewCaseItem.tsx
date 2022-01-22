@@ -2,7 +2,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
-import type { DefinitionVersion } from 'hrm-form-definitions';
+import { FormDefinition } from 'hrm-form-definitions';
 
 import { Container, StyledNextStepButton, BottomButtonBar, Box } from '../../styles/HrmStyles';
 import { CaseLayout } from '../../styles/case';
@@ -11,8 +11,9 @@ import { CaseState } from '../../states/case/reducer';
 import SectionEntry from '../SectionEntry';
 import ActionHeader from './ActionHeader';
 import type { CustomITask, StandaloneITask } from '../../types/types';
+import { isViewTemporaryCaseInfo } from '../../states/case/types';
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
+const mapStateToProps = (state: RootState, ownProps: ViewCaseItemProps) => {
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
   const caseState: CaseState = state[namespace][connectedCaseBase];
   const { temporaryCaseInfo } = caseState.tasks[ownProps.task.taskSid];
@@ -20,38 +21,45 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   return { counselorsHash, temporaryCaseInfo };
 };
 
-type OwnProps = {
+export type ViewCaseItemProps = {
   task: CustomITask | StandaloneITask;
-  definitionVersion: DefinitionVersion;
   onClickClose: () => void;
+  itemType: string;
+  formDefinition: FormDefinition;
 };
 
-type Props = OwnProps & ReturnType<typeof mapStateToProps>;
+type Props = ViewCaseItemProps & ReturnType<typeof mapStateToProps>;
 
-const ViewHousehold: React.FC<Props> = ({ counselorsHash, temporaryCaseInfo, onClickClose, definitionVersion }) => {
-  if (!temporaryCaseInfo || temporaryCaseInfo.screen !== 'view-household') return null;
-
+const ViewCaseItem: React.FC<Props> = ({
+  counselorsHash,
+  temporaryCaseInfo,
+  onClickClose,
+  formDefinition,
+  itemType,
+}) => {
+  if (!isViewTemporaryCaseInfo(temporaryCaseInfo))
+    throw new Error('This component only supports temporary case info of the ViewTemporaryCaseInfo type');
   const counselorName = counselorsHash[temporaryCaseInfo.info.twilioWorkerId] || 'Unknown';
   const added = new Date(temporaryCaseInfo.info.createdAt);
 
-  const { household } = temporaryCaseInfo.info;
+  const { form } = temporaryCaseInfo.info;
 
   return (
     <CaseLayout>
       <Container>
         <ActionHeader
-          titleTemplate="Case-ViewHousehold"
+          titleTemplate={`Case-View${itemType}}`}
           onClickClose={onClickClose}
           counselor={counselorName}
           added={added}
         />
         <Box paddingTop="10px">
           <>
-            {definitionVersion.caseForms.HouseholdForm.map(e => (
+            {formDefinition.map(e => (
               <SectionEntry
                 key={`entry-${e.label}`}
                 description={<Template code={e.label} />}
-                value={household[e.name]}
+                value={form[e.name]}
                 definition={e}
               />
             ))}
@@ -67,6 +75,6 @@ const ViewHousehold: React.FC<Props> = ({ counselorsHash, temporaryCaseInfo, onC
   );
 };
 
-ViewHousehold.displayName = 'ViewHousehold';
+ViewCaseItem.displayName = 'ViewCaseItem';
 
-export default connect(mapStateToProps, null)(ViewHousehold);
+export default connect(mapStateToProps, null)(ViewCaseItem);

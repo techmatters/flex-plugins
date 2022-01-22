@@ -39,11 +39,7 @@ import AddNote from './AddNote';
 import AddReferral from './AddReferral';
 import CaseSummary from './CaseSummary';
 import ViewContact from './ViewContact';
-import AddPerpetrator from './AddPerpetrator';
-import AddIncident from './AddIncident';
-import AddDocument from './AddDocument';
 import ViewNote from './ViewNote';
-import ViewHousehold from './ViewHousehold';
 import ViewPerpetrator from './ViewPerpetrator';
 import ViewIncident from './ViewIncident';
 import ViewReferral from './ViewReferral';
@@ -56,10 +52,10 @@ import {
   EditTemporaryCaseInfo,
   TemporaryCaseInfo,
   ViewDocumentTemporaryCaseInfo,
-  ViewHouseholdTemporaryCaseInfo,
   ViewIncidentTemporaryCaseInfo,
   ViewPerpetratorTemporaryCaseInfo,
   updateCaseSectionListByIndex,
+  ViewTemporaryCaseInfo,
 } from '../../states/case/types';
 import { Case as CaseType, CustomITask, StandaloneITask } from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
@@ -71,6 +67,7 @@ import InformationRow from './InformationRow';
 import TimelineInformationRow from './TimelineInformationRow';
 import DocumentInformationRow from './DocumentInformationRow';
 import AddEditCaseItem from './AddEditCaseItem';
+import ViewCaseItem from './ViewCaseItem';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -425,11 +422,14 @@ const Case: React.FC<Props> = props => {
     return itemRows;
   };
 
-  const householdRows = itemRowRenderer<ViewHouseholdTemporaryCaseInfo, EditTemporaryCaseInfo>(
+  const householdRows = itemRowRenderer<ViewTemporaryCaseInfo, EditTemporaryCaseInfo>(
     'form',
     NewCaseSubroutes.ViewHousehold,
     NewCaseSubroutes.EditHousehold,
-    households.map(h => ({ ...h, form: h.household })),
+    households.map(h => {
+      const { household, ...caseInfoItem } = { ...h, form: h.household, id: null };
+      return caseInfoItem;
+    }),
   );
 
   const perpetratorRows = itemRowRenderer<ViewPerpetratorTemporaryCaseInfo, EditPerpetratorTemporaryCaseInfo>(
@@ -500,18 +500,57 @@ const Case: React.FC<Props> = props => {
       );
     case NewCaseSubroutes.AddPerpetrator:
     case NewCaseSubroutes.EditPerpetrator:
-      return <AddPerpetrator {...{ ...addScreenProps, route }} />;
+      return (
+        <AddEditCaseItem
+          {...{
+            ...addScreenProps,
+            route,
+            layout: addScreenProps.definitionVersion.layoutVersion.case.perpetrators,
+            itemType: 'Perpetrator',
+            applyTemporaryInfoToCase: updateCaseSectionListByIndex('perpetrators', 'perpetrator'),
+            formDefinition: definitionVersion.caseForms.PerpetratorForm,
+          }}
+        />
+      );
     case NewCaseSubroutes.AddIncident:
-      return <AddIncident {...addScreenProps} />;
+      return (
+        <AddEditCaseItem
+          {...{
+            ...addScreenProps,
+            route,
+            layout: addScreenProps.definitionVersion.layoutVersion.case.incidents,
+            itemType: 'Incident',
+            applyTemporaryInfoToCase: updateCaseSectionListByIndex('incidents', 'incident'),
+            formDefinition: definitionVersion.caseForms.IncidentForm,
+          }}
+        />
+      );
     case NewCaseSubroutes.AddDocument:
     case NewCaseSubroutes.EditDocument:
-      return <AddDocument {...{ ...addScreenProps, route }} />;
+      return (
+        <AddEditCaseItem
+          {...{
+            ...addScreenProps,
+            route,
+            layout: addScreenProps.definitionVersion.layoutVersion.case.documents,
+            itemType: 'Document',
+            applyTemporaryInfoToCase: updateCaseSectionListByIndex('documents', 'document'),
+            formDefinition: definitionVersion.caseForms.DocumentForm,
+          }}
+        />
+      );
     case NewCaseSubroutes.ViewContact:
       return <ViewContact {...addScreenProps} />;
     case NewCaseSubroutes.ViewNote:
       return <ViewNote {...addScreenProps} />;
     case NewCaseSubroutes.ViewHousehold:
-      return <ViewHousehold {...addScreenProps} />;
+      return (
+        <ViewCaseItem
+          {...addScreenProps}
+          itemType="Household"
+          formDefinition={definitionVersion.caseForms.HouseholdForm}
+        />
+      );
     case NewCaseSubroutes.ViewPerpetrator:
       return <ViewPerpetrator {...addScreenProps} />;
     case NewCaseSubroutes.ViewIncident:

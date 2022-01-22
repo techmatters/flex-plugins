@@ -1,3 +1,4 @@
+// @ts-ignore
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
@@ -6,13 +7,13 @@ import { mount } from 'enzyme';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersion, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../../states';
-import ViewHousehold from '../../../components/case/ViewHousehold';
-import HrmTheme from '../../../styles/HrmTheme';
+import ViewCaseItem, { ViewCaseItemProps } from '../../../components/case/ViewCaseItem';
 import { getDefinitionVersions } from '../../../HrmFormPlugin';
+import { CaseItemEntry, StandaloneITask } from '../../../types/types';
 
 expect.extend(toHaveNoViolations);
 const mockStore = configureMockStore([]);
@@ -34,7 +35,12 @@ const household = {
   relationshipToChild: 'Friend',
 };
 
-const householdEntry = { household, createdAt: '2020-06-29T22:26:00.208Z', twilioWorkerId: 'worker1' };
+const caseItemEntry: CaseItemEntry = {
+  form: household,
+  createdAt: '2020-06-29T22:26:00.208Z',
+  twilioWorkerId: 'worker1',
+  id: null,
+};
 
 const state = {
   [namespace]: {
@@ -57,7 +63,8 @@ const state = {
     [connectedCaseBase]: {
       tasks: {
         task1: {
-          temporaryCaseInfo: { screen: 'view-household', info: householdEntry },
+          taskSid: 'task1',
+          temporaryCaseInfo: { screen: 'view-household', info: caseItemEntry },
           connectedCase: {
             createdAt: 1593469560208,
             twilioWorkerId: 'worker1',
@@ -72,35 +79,37 @@ const state = {
 const store = mockStore(state);
 store.dispatch = jest.fn();
 
-const themeConf = {
-  colorTheme: HrmTheme,
-};
+const themeConf = {};
 
 const task = {
   taskSid: 'task1',
 };
 
 describe('Test ViewHousehold', () => {
-  let mockV1;
+  let mockV1: DefinitionVersion;
+  const onClickClose = jest.fn();
+
+  let ownProps: ViewCaseItemProps;
 
   beforeAll(async () => {
     mockV1 = await loadDefinition(DefinitionVersionId.v1);
     mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
   });
 
-  test('Test close functionality', async () => {
-    const onClickClose = jest.fn();
-
-    const ownProps = {
+  beforeEach(async () => {
+    ownProps = {
       onClickClose,
-      task,
-      definitionVersion: mockV1,
+      task: task as StandaloneITask,
+      formDefinition: mockV1.caseForms.HouseholdForm,
+      itemType: 'Household',
     };
+  });
 
+  test('Test close functionality', async () => {
     render(
       <StorelessThemeProvider themeConf={themeConf}>
         <Provider store={store}>
-          <ViewHousehold {...ownProps} />
+          <ViewCaseItem {...ownProps} />
         </Provider>
       </StorelessThemeProvider>,
     );
@@ -122,18 +131,10 @@ describe('Test ViewHousehold', () => {
   });
 
   test('a11y', async () => {
-    const onClickClose = jest.fn();
-
-    const ownProps = {
-      onClickClose,
-      task,
-      definitionVersion: mockV1,
-    };
-
     const wrapper = mount(
       <StorelessThemeProvider themeConf={themeConf}>
         <Provider store={store}>
-          <ViewHousehold {...ownProps} />
+          <ViewCaseItem {...ownProps} />
         </Provider>
       </StorelessThemeProvider>,
     );
@@ -145,6 +146,6 @@ describe('Test ViewHousehold', () => {
     const axe = configureAxe({ rules });
     const results = await axe(wrapper.getDOMNode());
 
-    expect(results).toHaveNoViolations();
+    (expect(results) as any).toHaveNoViolations();
   });
 });

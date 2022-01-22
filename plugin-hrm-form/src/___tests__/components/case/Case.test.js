@@ -383,8 +383,13 @@ describe('useState mocked', () => {
 
     screen.getByTestId('Case-InformationRow-ViewButton').click();
 
+    const { household, ...caseItemEntry } = { ...householdEntry, form: householdEntry.household, id: null };
+
     expect(store.dispatch).toHaveBeenCalledWith({
-      value: { screen: 'view-household', info: householdEntry },
+      value: {
+        screen: 'view-household',
+        info: caseItemEntry,
+      },
       taskId: 'task1',
       type: UPDATE_TEMP_INFO,
     });
