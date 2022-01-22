@@ -48,7 +48,7 @@ const ViewCaseItem: React.FC<Props> = ({
     <CaseLayout>
       <Container>
         <ActionHeader
-          titleTemplate={`Case-View${itemType}}`}
+          titleTemplate={`Case-View${itemType}`}
           onClickClose={onClickClose}
           counselor={counselorName}
           added={added}

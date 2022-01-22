@@ -22,7 +22,7 @@ import CaseAddButton from './CaseAddButton';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { ContactDetailsSections } from '../common/ContactDetails';
-import { blankReferral, Case as CaseType, CustomITask } from '../../types/types';
+import { blankReferral, Case as CaseType, CaseItemEntry, CustomITask } from '../../types/types';
 import { isConnectedCaseActivity } from './caseHelpers';
 import { TaskEntry } from '../../states/contacts/reducer';
 import { Activity } from '../../states/case/types';
@@ -49,18 +49,20 @@ const Timeline: React.FC<Props> = props => {
     const { twilioWorkerId } = activity;
 
     if (activity.type === 'note') {
-      const info = {
-        note: activity.text,
-        counselor: twilioWorkerId,
-        date: parseISO(activity.date).toISOString(),
+      const info: CaseItemEntry = {
+        id: null,
+        form: { note: activity.text },
+        twilioWorkerId,
+        createdAt: parseISO(activity.date).toISOString(),
       };
       updateTempInfo({ screen: 'view-note', info }, taskSid);
       changeRoute({ route, subroute: 'view-note' }, taskSid);
     } else if (activity.type === 'referral') {
-      const info = {
-        referral: activity.referral,
-        counselor: twilioWorkerId,
-        date: parseISO(activity.createdAt).toISOString(),
+      const info: CaseItemEntry = {
+        id: null,
+        form: { referral: activity.referral },
+        twilioWorkerId,
+        createdAt: parseISO(activity.date).toISOString(),
       };
       updateTempInfo({ screen: 'view-referral', info }, taskSid);
       changeRoute({ route, subroute: 'view-referral' }, taskSid);

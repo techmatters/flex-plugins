@@ -33,62 +33,29 @@ export type ViewReferral = {
 
 type Indexable = { index: number };
 
-export type ViewContactTemporaryCaseInfo = { screen: typeof NewCaseSubroutes.ViewContact; info: ViewContact };
-export type ViewNoteTemporaryCaseInfo = { screen: typeof NewCaseSubroutes.ViewNote; info: t.NoteEntry };
-export type ViewPerpetratorTemporaryCaseInfo = {
-  screen: typeof NewCaseSubroutes.ViewPerpetrator;
-  info: t.PerpetratorEntry;
-};
-export type ViewIncidentTemporaryCaseInfo = { screen: typeof NewCaseSubroutes.ViewIncident; info: t.IncidentEntry };
-export type ViewReferralTemporaryCaseInfo = { screen: typeof NewCaseSubroutes.ViewReferral; info: t.ReferralEntry };
-export type ViewDocumentTemporaryCaseInfo = { screen: typeof NewCaseSubroutes.ViewDocument; info: t.DocumentEntry };
-
 export type ViewTemporaryCaseInfo = {
-  screen: /*
-   * | typeof NewCaseSubroutes.ViewDocument
-   * | typeof NewCaseSubroutes.ViewIncident
-   * | typeof NewCaseSubroutes.ViewPerpetrator
-   */
-  typeof NewCaseSubroutes.ViewHousehold;
-  /*
-   * | typeof NewCaseSubroutes.ViewNote
-   * | typeof NewCaseSubroutes.ViewReferral;
-   */
+  screen:
+    | typeof NewCaseSubroutes.ViewDocument
+    | typeof NewCaseSubroutes.ViewIncident
+    | typeof NewCaseSubroutes.ViewPerpetrator
+    | typeof NewCaseSubroutes.ViewHousehold
+    | typeof NewCaseSubroutes.ViewNote
+    | typeof NewCaseSubroutes.ViewReferral;
   info: t.CaseItemEntry;
 };
 
 export function isViewTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is ViewTemporaryCaseInfo {
   return (
     tci &&
-    /*
-     * tci.screen === NewCaseSubroutes.ViewDocument ||
-     * tci.screen === NewCaseSubroutes.ViewIncident ||
-     * tci.screen === NewCaseSubroutes.ViewPerpetrator ||
-     */
-    tci.screen === NewCaseSubroutes.ViewHousehold // ||
-    /*
-     * tci.screen === NewCaseSubroutes.ViewNote ||
-     * tci.screen === NewCaseSubroutes.ViewReferral
-     */
+    (tci.screen === NewCaseSubroutes.ViewDocument ||
+      tci.screen === NewCaseSubroutes.ViewIncident ||
+      tci.screen === NewCaseSubroutes.ViewPerpetrator ||
+      tci.screen === NewCaseSubroutes.ViewHousehold ||
+      tci.screen === NewCaseSubroutes.ViewNote ||
+      tci.screen === NewCaseSubroutes.ViewReferral)
   );
 }
 
-export type EditHouseholdTemporaryCaseInfo = {
-  screen: typeof NewCaseSubroutes.EditHousehold;
-  info: t.HouseholdEntry & Indexable;
-};
-export type EditPerpetratorTemporaryCaseInfo = {
-  screen: typeof NewCaseSubroutes.EditPerpetrator;
-  info: t.PerpetratorEntry & Indexable;
-};
-export type EditIncidentTemporaryCaseInfo = {
-  screen: typeof NewCaseSubroutes.EditIncident;
-  info: t.IncidentEntry & Indexable;
-};
-export type EditDocumentTemporaryCaseInfo = {
-  screen: typeof NewCaseSubroutes.EditDocument;
-  info: t.DocumentEntry & Indexable;
-};
 export type EditTemporaryCaseInfo = {
   screen:
     | typeof NewCaseSubroutes.EditDocument
@@ -130,18 +97,9 @@ export function isAddTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is AddTempor
 export type TemporaryCaseInfo =
   | { screen: typeof NewCaseSubroutes.AddNote; info: t.Note }
   | { screen: typeof NewCaseSubroutes.AddReferral; info: t.Referral }
-  | ViewContactTemporaryCaseInfo
-  | ViewNoteTemporaryCaseInfo
-  | ViewPerpetratorTemporaryCaseInfo
-  | ViewIncidentTemporaryCaseInfo
-  | ViewReferralTemporaryCaseInfo
-  | ViewDocumentTemporaryCaseInfo
+  | { screen: typeof NewCaseSubroutes.ViewContact; info: ViewContact }
   | ViewTemporaryCaseInfo
   | AddTemporaryCaseInfo
-  | EditHouseholdTemporaryCaseInfo
-  | EditPerpetratorTemporaryCaseInfo
-  | EditIncidentTemporaryCaseInfo
-  | EditDocumentTemporaryCaseInfo
   | EditTemporaryCaseInfo;
 
 type SetConnectedCaseAction = {

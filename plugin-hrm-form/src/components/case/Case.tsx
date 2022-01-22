@@ -39,21 +39,10 @@ import AddNote from './AddNote';
 import AddReferral from './AddReferral';
 import CaseSummary from './CaseSummary';
 import ViewContact from './ViewContact';
-import ViewNote from './ViewNote';
-import ViewPerpetrator from './ViewPerpetrator';
-import ViewIncident from './ViewIncident';
-import ViewReferral from './ViewReferral';
-import ViewDocument from './ViewDocument';
 import {
   CaseDetailsName,
-  EditDocumentTemporaryCaseInfo,
-  EditIncidentTemporaryCaseInfo,
-  EditPerpetratorTemporaryCaseInfo,
   EditTemporaryCaseInfo,
   TemporaryCaseInfo,
-  ViewDocumentTemporaryCaseInfo,
-  ViewIncidentTemporaryCaseInfo,
-  ViewPerpetratorTemporaryCaseInfo,
   updateCaseSectionListByIndex,
   ViewTemporaryCaseInfo,
 } from '../../states/case/types';
@@ -68,6 +57,7 @@ import TimelineInformationRow from './TimelineInformationRow';
 import DocumentInformationRow from './DocumentInformationRow';
 import AddEditCaseItem from './AddEditCaseItem';
 import ViewCaseItem from './ViewCaseItem';
+import documentUploadHandler from './documentUploadHandler';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -432,30 +422,36 @@ const Case: React.FC<Props> = props => {
     }),
   );
 
-  const perpetratorRows = itemRowRenderer<ViewPerpetratorTemporaryCaseInfo, EditPerpetratorTemporaryCaseInfo>(
-    'perpetrator',
+  const perpetratorRows = itemRowRenderer<ViewTemporaryCaseInfo, EditTemporaryCaseInfo>(
+    'form',
     NewCaseSubroutes.ViewPerpetrator,
     NewCaseSubroutes.EditPerpetrator,
-    perpetrators,
+    perpetrators.map(p => {
+      const { perpetrator, ...caseInfoItem } = { ...p, form: p.perpetrator, id: null };
+      return caseInfoItem;
+    }),
   );
 
   const incidentRows = () => {
     return incidents.length ? (
       <>
-        {incidents.map((item, index) => (
-          <TimelineInformationRow
-            key={`incident-${index}`}
-            onClickView={() =>
-              onCaseItemActionClick<ViewIncidentTemporaryCaseInfo>(NewCaseSubroutes.ViewIncident)(item)
-            }
-            onClickEdit={() =>
-              onCaseItemActionClick<EditIncidentTemporaryCaseInfo>(NewCaseSubroutes.EditIncident)({ ...item, index })
-            }
-            definition={definitionVersion.caseForms.IncidentForm}
-            values={item.incident}
-            layoutDefinition={definitionVersion.layoutVersion.case.incidents}
-          />
-        ))}
+        {incidents.map((item, index) => {
+          const { incident, ...caseItemEntry } = { ...item, form: item.incident, id: null };
+          return (
+            <TimelineInformationRow
+              key={`incident-${index}`}
+              onClickView={() =>
+                onCaseItemActionClick<ViewTemporaryCaseInfo>(NewCaseSubroutes.ViewIncident)(caseItemEntry)
+              }
+              onClickEdit={() =>
+                onCaseItemActionClick<EditTemporaryCaseInfo>(NewCaseSubroutes.EditIncident)({ ...caseItemEntry, index })
+              }
+              definition={definitionVersion.caseForms.IncidentForm}
+              values={item.incident}
+              layoutDefinition={definitionVersion.layoutVersion.case.incidents}
+            />
+          );
+        })}
       </>
     ) : null;
   };
@@ -463,18 +459,21 @@ const Case: React.FC<Props> = props => {
   const documentRows = () => {
     return documents.length ? (
       <>
-        {documents.map((item, index) => (
-          <DocumentInformationRow
-            key={`document-${index}`}
-            documentEntry={item}
-            onClickView={() =>
-              onCaseItemActionClick<ViewDocumentTemporaryCaseInfo>(NewCaseSubroutes.ViewDocument)(item)
-            }
-            onClickEdit={() =>
-              onCaseItemActionClick<EditDocumentTemporaryCaseInfo>(NewCaseSubroutes.EditDocument)({ ...item, index })
-            }
-          />
-        ))}
+        {documents.map((item, index) => {
+          const { document, ...caseItemEntry } = { ...item, form: item.document, index };
+          return (
+            <DocumentInformationRow
+              key={`document-${index}`}
+              documentEntry={item}
+              onClickView={() =>
+                onCaseItemActionClick<ViewTemporaryCaseInfo>(NewCaseSubroutes.ViewDocument)(caseItemEntry)
+              }
+              onClickEdit={() =>
+                onCaseItemActionClick<EditTemporaryCaseInfo>(NewCaseSubroutes.EditDocument)(caseItemEntry)
+              }
+            />
+          );
+        })}
       </>
     ) : null;
   };
@@ -513,6 +512,7 @@ const Case: React.FC<Props> = props => {
         />
       );
     case NewCaseSubroutes.AddIncident:
+    case NewCaseSubroutes.EditIncident:
       return (
         <AddEditCaseItem
           {...{
@@ -536,13 +536,17 @@ const Case: React.FC<Props> = props => {
             itemType: 'Document',
             applyTemporaryInfoToCase: updateCaseSectionListByIndex('documents', 'document'),
             formDefinition: definitionVersion.caseForms.DocumentForm,
+            customFormHandlers: documentUploadHandler,
+            reactHookFormOptions: {
+              shouldUnregister: false,
+            },
           }}
         />
       );
     case NewCaseSubroutes.ViewContact:
       return <ViewContact {...addScreenProps} />;
     case NewCaseSubroutes.ViewNote:
-      return <ViewNote {...addScreenProps} />;
+      return <ViewCaseItem {...addScreenProps} itemType="Note" formDefinition={definitionVersion.caseForms.NoteForm} />;
     case NewCaseSubroutes.ViewHousehold:
       return (
         <ViewCaseItem
@@ -552,13 +556,37 @@ const Case: React.FC<Props> = props => {
         />
       );
     case NewCaseSubroutes.ViewPerpetrator:
-      return <ViewPerpetrator {...addScreenProps} />;
+      return (
+        <ViewCaseItem
+          {...addScreenProps}
+          itemType="Perpetrator"
+          formDefinition={definitionVersion.caseForms.PerpetratorForm}
+        />
+      );
     case NewCaseSubroutes.ViewIncident:
-      return <ViewIncident {...addScreenProps} />;
+      return (
+        <ViewCaseItem
+          {...addScreenProps}
+          itemType="Incident"
+          formDefinition={definitionVersion.caseForms.IncidentForm}
+        />
+      );
     case NewCaseSubroutes.ViewReferral:
-      return <ViewReferral {...addScreenProps} />;
+      return (
+        <ViewCaseItem
+          {...addScreenProps}
+          itemType="Referral"
+          formDefinition={definitionVersion.caseForms.ReferralForm}
+        />
+      );
     case NewCaseSubroutes.ViewDocument:
-      return <ViewDocument {...addScreenProps} />;
+      return (
+        <ViewCaseItem
+          {...addScreenProps}
+          itemType="Document"
+          formDefinition={definitionVersion.caseForms.DocumentForm}
+        />
+      );
     case NewCaseSubroutes.CasePrintView:
       return <CasePrintView caseDetails={caseDetails} {...addScreenProps} />;
     default:

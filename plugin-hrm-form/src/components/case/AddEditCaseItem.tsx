@@ -31,6 +31,7 @@ import {
   disperseInputs,
   splitInHalf,
   splitAt,
+  CustomHandlers,
 } from '../common/forms/formGenerators';
 import type { CustomITask, StandaloneITask, CaseInfo, CaseItemEntry } from '../../types/types';
 import { AppRoutesWithCase } from '../../states/routing/types';
@@ -69,6 +70,8 @@ export type AddEditCaseItemProps = {
   formDefinition: FormDefinition;
   layout: LayoutDefinition;
   applyTemporaryInfoToCase: CaseUpdater;
+  customFormHandlers?: CustomHandlers;
+  reactHookFormOptions?: Partial<{ shouldUnregister: boolean }>;
 };
 // eslint-disable-next-line no-use-before-define
 type Props = AddEditCaseItemProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
@@ -86,6 +89,8 @@ const AddEditCaseItem: React.FC<Props> = ({
   formDefinition,
   layout,
   applyTemporaryInfoToCase,
+  customFormHandlers,
+  reactHookFormOptions,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const firstElementRef = useFocus();
@@ -96,7 +101,7 @@ const AddEditCaseItem: React.FC<Props> = ({
 
   const init = getTemporaryFormContent(temporaryCaseInfo) ?? {};
   const [initialForm] = React.useState(init); // grab initial values in first render only. This value should never change or will ruin the memoization below
-  const methods = useForm();
+  const methods = useForm(reactHookFormOptions);
 
   const [l, r] = React.useMemo(() => {
     const createUpdatedTemporaryFormContent = (
@@ -121,12 +126,25 @@ const AddEditCaseItem: React.FC<Props> = ({
       updateTempInfo(createUpdatedTemporaryFormContent(formValues), task.taskSid);
     };
 
-    const generatedForm = createFormFromDefinition(formDefinition)([])(initialForm, firstElementRef)(updateCallBack);
+    const generatedForm = createFormFromDefinition(formDefinition)([])(initialForm, firstElementRef)(
+      updateCallBack,
+      customFormHandlers,
+    );
 
     if (layout.splitFormAt) return splitAt(layout.splitFormAt)(disperseInputs(7)(generatedForm));
 
     return splitInHalf(disperseInputs(7)(generatedForm));
-  }, [formDefinition, initialForm, firstElementRef, layout.splitFormAt, methods, task.taskSid, updateTempInfo]);
+  }, [
+    formDefinition,
+    initialForm,
+    firstElementRef,
+    layout.splitFormAt,
+    methods,
+    task.taskSid,
+    updateTempInfo,
+    temporaryCaseInfo,
+    customFormHandlers,
+  ]);
 
   const save = async shouldStayInForm => {
     const { info, id } = connectedCaseState.connectedCase;

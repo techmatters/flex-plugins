@@ -38,7 +38,7 @@ export type ReferralEntry = { [key: string]: string | boolean };
 
 export type Document = { [key: string]: string | boolean };
 
-export type DocumentEntry = { document: Document } & EntryInfo;
+export type DocumentEntry = { document: Document; id: string | undefined } & EntryInfo;
 
 export type CSAMReportEntry = { csamReportId: string; id: number } & EntryInfo;
 
