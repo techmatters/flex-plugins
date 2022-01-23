@@ -16,6 +16,7 @@ import {
   TimelineDate,
   TimelineText,
   TimelineCallTypeIcon,
+  EditButton,
 } from '../../styles/case';
 import { Box, Row } from '../../styles/HrmStyles';
 import CaseAddButton from './CaseAddButton';
@@ -27,7 +28,7 @@ import { isConnectedCaseActivity } from './caseHelpers';
 import { TaskEntry } from '../../states/contacts/reducer';
 import { Activity } from '../../states/case/types';
 import { PermissionActions, PermissionActionType } from '../../permissions';
-import type { AppRoutesWithCase } from '../../states/routing/types';
+import { NewCaseSubroutes, AppRoutesWithCase } from '../../states/routing/types';
 
 type OwnProps = {
   timelineActivities: Activity[];
@@ -45,58 +46,66 @@ const Timeline: React.FC<Props> = props => {
   const { can, taskSid, form, caseObj, changeRoute, updateTempInfo, route, timelineActivities } = props;
   const [mockedMessage, setMockedMessage] = useState(null);
 
-  const handleOnClickView = activity => {
+  const handleNoteButtonClick = screen => activity => {
+    const { twilioWorkerId } = activity;
+    const info: CaseItemEntry = {
+      id: null,
+      form: { note: activity.text },
+      twilioWorkerId,
+      createdAt: parseISO(activity.date).toISOString(),
+    };
+    updateTempInfo({ screen, info }, taskSid);
+    changeRoute({ route, subroute: screen }, taskSid);
+  };
+
+  const handleOnClickViewNote = handleNoteButtonClick(NewCaseSubroutes.ViewNote);
+  const handleOnClickEditNote = handleNoteButtonClick(NewCaseSubroutes.EditNote);
+
+  const handleReferralButtonClick = screen => activity => {
+    const { twilioWorkerId } = activity;
+    const info: CaseItemEntry = {
+      id: null,
+      form: { referral: activity.referral },
+      twilioWorkerId,
+      createdAt: parseISO(activity.date).toISOString(),
+    };
+    updateTempInfo({ screen, info }, taskSid);
+    changeRoute({ route, subroute: screen }, taskSid);
+  };
+
+  const handleOnClickViewReferral = handleReferralButtonClick(NewCaseSubroutes.ViewReferral);
+  const handleOnClickEditReferral = handleReferralButtonClick(NewCaseSubroutes.EditReferral);
+
+  const handleOnClickViewConnectedCaseActivity = activity => {
     const { twilioWorkerId } = activity;
 
-    if (activity.type === 'note') {
-      const info: CaseItemEntry = {
-        id: null,
-        form: { note: activity.text },
-        twilioWorkerId,
-        createdAt: parseISO(activity.date).toISOString(),
-      };
-      updateTempInfo({ screen: 'view-note', info }, taskSid);
-      changeRoute({ route, subroute: 'view-note' }, taskSid);
-    } else if (activity.type === 'referral') {
-      const info: CaseItemEntry = {
-        id: null,
-        form: { referral: activity.referral },
-        twilioWorkerId,
-        createdAt: parseISO(activity.date).toISOString(),
-      };
-      updateTempInfo({ screen: 'view-referral', info }, taskSid);
-      changeRoute({ route, subroute: 'view-referral' }, taskSid);
-    } else if (isConnectedCaseActivity(activity)) {
-      const detailsExpanded = {
-        [ContactDetailsSections.GENERAL_DETAILS]: true,
-        [ContactDetailsSections.CALLER_INFORMATION]: false,
-        [ContactDetailsSections.CHILD_INFORMATION]: false,
-        [ContactDetailsSections.ISSUE_CATEGORIZATION]: false,
-        [ContactDetailsSections.CONTACT_SUMMARY]: false,
-      };
-      const contact = caseObj.connectedContacts.find(c => c.id === activity.contactId);
-      const tempInfo = {
-        detailsExpanded,
-        contact,
-        createdAt: activity.createdAt,
-        timeOfContact: activity.date,
-        counselor: twilioWorkerId,
-      };
-      updateTempInfo({ screen: 'view-contact', info: tempInfo }, taskSid);
-      changeRoute({ route, subroute: 'view-contact' }, taskSid);
-    } else {
-      setMockedMessage(<Template code="NotImplemented" />);
-    }
+    const detailsExpanded = {
+      [ContactDetailsSections.GENERAL_DETAILS]: true,
+      [ContactDetailsSections.CALLER_INFORMATION]: false,
+      [ContactDetailsSections.CHILD_INFORMATION]: false,
+      [ContactDetailsSections.ISSUE_CATEGORIZATION]: false,
+      [ContactDetailsSections.CONTACT_SUMMARY]: false,
+    };
+    const contact = caseObj.connectedContacts.find(c => c.id === activity.contactId);
+    const tempInfo = {
+      detailsExpanded,
+      contact,
+      createdAt: activity.createdAt,
+      timeOfContact: activity.date,
+      counselor: twilioWorkerId,
+    };
+    updateTempInfo({ screen: NewCaseSubroutes.ViewContact, info: tempInfo }, taskSid);
+    changeRoute({ route, subroute: NewCaseSubroutes.ViewContact }, taskSid);
   };
 
   const handleAddNoteClick = () => {
-    updateTempInfo({ screen: 'add-note', info: null }, taskSid);
-    changeRoute({ route, subroute: 'add-note' }, taskSid);
+    updateTempInfo({ screen: NewCaseSubroutes.AddNote, info: null }, taskSid);
+    changeRoute({ route, subroute: NewCaseSubroutes.AddNote }, taskSid);
   };
 
   const handleAddReferralClick = () => {
-    updateTempInfo({ screen: 'add-referral', info: blankReferral }, taskSid);
-    changeRoute({ route, subroute: 'add-referral' }, taskSid);
+    updateTempInfo({ screen: NewCaseSubroutes.AddReferral, info: blankReferral }, taskSid);
+    changeRoute({ route, subroute: NewCaseSubroutes.AddReferral }, taskSid);
   };
 
   /*
@@ -104,6 +113,45 @@ const Timeline: React.FC<Props> = props => {
    * Else If case was already created we should return rawJson value.
    */
   const callType = form?.callType || caseObj.connectedContacts[0]?.rawJson?.callType;
+
+  const renderActivityControls = activity => {
+    if (activity.type === 'note') {
+      return (
+        <Box marginLeft="auto" marginRight="10px">
+          <ViewButton onClick={() => handleOnClickViewNote(activity)}>
+            <Template code="Case-ViewButton" />
+          </ViewButton>
+          <EditButton onClick={() => handleOnClickEditNote(activity)}>
+            <Template code="Case-EditButton" />
+          </EditButton>
+        </Box>
+      );
+    } else if (activity.type === 'referral') {
+      return (
+        <Box marginLeft="auto" marginRight="10px">
+          <ViewButton onClick={() => handleOnClickViewReferral(activity)}>
+            <Template code="Case-ViewButton" />
+          </ViewButton>
+          <EditButton onClick={() => handleOnClickEditReferral(activity)}>
+            <Template code="Case-EditButton" />
+          </EditButton>
+        </Box>
+      );
+    } else if (isConnectedCaseActivity(activity)) {
+      return (
+        <Box marginLeft="auto" marginRight="10px">
+          <ViewButton onClick={() => handleOnClickViewConnectedCaseActivity(activity)}>
+            <Template code="Case-ViewButton" />
+          </ViewButton>
+        </Box>
+      );
+    }
+    return (
+      <Box marginLeft="auto" marginRight="10px">
+        -- --
+      </Box>
+    );
+  };
 
   return (
     <Box marginTop="25px">
@@ -145,9 +193,7 @@ const Timeline: React.FC<Props> = props => {
               )}
               <TimelineText>{activity?.text}</TimelineText>
               <Box marginLeft="auto" marginRight="10px">
-                <ViewButton onClick={() => handleOnClickView(activity)}>
-                  <Template code="Case-ViewButton" />
-                </ViewButton>
+                {renderActivityControls(activity)}
               </Box>
             </TimelineRow>
           );

@@ -35,18 +35,17 @@ import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import * as ConfigActions from '../../states/configuration/actions';
 import Timeline from './Timeline';
-import AddNote from './AddNote';
-import AddReferral from './AddReferral';
 import CaseSummary from './CaseSummary';
 import ViewContact from './ViewContact';
 import {
   CaseDetailsName,
   EditTemporaryCaseInfo,
   TemporaryCaseInfo,
+  updateCaseListByIndex,
   updateCaseSectionListByIndex,
   ViewTemporaryCaseInfo,
 } from '../../states/case/types';
-import { Case as CaseType, CustomITask, StandaloneITask } from '../../types/types';
+import { Case as CaseType, CustomITask, NoteEntry, ReferralEntry, StandaloneITask } from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
 import { getPermissionsForCase, PermissionActions } from '../../permissions';
 import { recordBackendError } from '../../fullStory';
@@ -477,12 +476,48 @@ const Case: React.FC<Props> = props => {
       </>
     ) : null;
   };
-
+  const { caseForms } = definitionVersion;
   switch (subroute) {
     case NewCaseSubroutes.AddNote:
-      return <AddNote {...addScreenProps} />;
+    case NewCaseSubroutes.EditNote:
+      return (
+        <AddEditCaseItem
+          {...{
+            ...addScreenProps,
+            layout: {},
+            itemType: 'Note',
+            route,
+            formDefinition: caseForms.NoteForm,
+          }}
+          applyTemporaryInfoToCase={updateCaseListByIndex<NoteEntry>(
+            ci => {
+              ci.notes = ci.notes ?? [];
+              return ci.notes;
+            },
+            temp => ({ note: (temp.form.note ?? '').toString(), counselor: temp.twilioWorkerId, date: temp.createdAt }),
+          )}
+        />
+      );
     case NewCaseSubroutes.AddReferral:
-      return <AddReferral {...addScreenProps} />;
+    case NewCaseSubroutes.EditReferral:
+      return (
+        <AddEditCaseItem
+          {...{
+            ...addScreenProps,
+            layout: {},
+            itemType: 'Referral',
+            route,
+            formDefinition: caseForms.ReferralForm,
+          }}
+          applyTemporaryInfoToCase={updateCaseListByIndex<ReferralEntry>(
+            ci => {
+              ci.referrals = ci.referrals ?? [];
+              return ci.referrals;
+            },
+            temp => ({ ...temp.form }),
+          )}
+        />
+      );
     case NewCaseSubroutes.AddHousehold:
     case NewCaseSubroutes.EditHousehold:
       return (
@@ -493,7 +528,7 @@ const Case: React.FC<Props> = props => {
             layout: addScreenProps.definitionVersion.layoutVersion.case.households,
             itemType: 'Household',
             applyTemporaryInfoToCase: updateCaseSectionListByIndex('households', 'household'),
-            formDefinition: definitionVersion.caseForms.HouseholdForm,
+            formDefinition: caseForms.HouseholdForm,
           }}
         />
       );
@@ -507,7 +542,7 @@ const Case: React.FC<Props> = props => {
             layout: addScreenProps.definitionVersion.layoutVersion.case.perpetrators,
             itemType: 'Perpetrator',
             applyTemporaryInfoToCase: updateCaseSectionListByIndex('perpetrators', 'perpetrator'),
-            formDefinition: definitionVersion.caseForms.PerpetratorForm,
+            formDefinition: caseForms.PerpetratorForm,
           }}
         />
       );
@@ -521,7 +556,7 @@ const Case: React.FC<Props> = props => {
             layout: addScreenProps.definitionVersion.layoutVersion.case.incidents,
             itemType: 'Incident',
             applyTemporaryInfoToCase: updateCaseSectionListByIndex('incidents', 'incident'),
-            formDefinition: definitionVersion.caseForms.IncidentForm,
+            formDefinition: caseForms.IncidentForm,
           }}
         />
       );
@@ -535,7 +570,7 @@ const Case: React.FC<Props> = props => {
             layout: addScreenProps.definitionVersion.layoutVersion.case.documents,
             itemType: 'Document',
             applyTemporaryInfoToCase: updateCaseSectionListByIndex('documents', 'document'),
-            formDefinition: definitionVersion.caseForms.DocumentForm,
+            formDefinition: caseForms.DocumentForm,
             customFormHandlers: documentUploadHandler,
             reactHookFormOptions: {
               shouldUnregister: false,
@@ -548,45 +583,15 @@ const Case: React.FC<Props> = props => {
     case NewCaseSubroutes.ViewNote:
       return <ViewCaseItem {...addScreenProps} itemType="Note" formDefinition={definitionVersion.caseForms.NoteForm} />;
     case NewCaseSubroutes.ViewHousehold:
-      return (
-        <ViewCaseItem
-          {...addScreenProps}
-          itemType="Household"
-          formDefinition={definitionVersion.caseForms.HouseholdForm}
-        />
-      );
+      return <ViewCaseItem {...addScreenProps} itemType="Household" formDefinition={caseForms.HouseholdForm} />;
     case NewCaseSubroutes.ViewPerpetrator:
-      return (
-        <ViewCaseItem
-          {...addScreenProps}
-          itemType="Perpetrator"
-          formDefinition={definitionVersion.caseForms.PerpetratorForm}
-        />
-      );
+      return <ViewCaseItem {...addScreenProps} itemType="Perpetrator" formDefinition={caseForms.PerpetratorForm} />;
     case NewCaseSubroutes.ViewIncident:
-      return (
-        <ViewCaseItem
-          {...addScreenProps}
-          itemType="Incident"
-          formDefinition={definitionVersion.caseForms.IncidentForm}
-        />
-      );
+      return <ViewCaseItem {...addScreenProps} itemType="Incident" formDefinition={caseForms.IncidentForm} />;
     case NewCaseSubroutes.ViewReferral:
-      return (
-        <ViewCaseItem
-          {...addScreenProps}
-          itemType="Referral"
-          formDefinition={definitionVersion.caseForms.ReferralForm}
-        />
-      );
+      return <ViewCaseItem {...addScreenProps} itemType="Referral" formDefinition={caseForms.ReferralForm} />;
     case NewCaseSubroutes.ViewDocument:
-      return (
-        <ViewCaseItem
-          {...addScreenProps}
-          itemType="Document"
-          formDefinition={definitionVersion.caseForms.DocumentForm}
-        />
-      );
+      return <ViewCaseItem {...addScreenProps} itemType="Document" formDefinition={caseForms.DocumentForm} />;
     case NewCaseSubroutes.CasePrintView:
       return <CasePrintView caseDetails={caseDetails} {...addScreenProps} />;
     default:
