@@ -1,0 +1,27 @@
+# This is a basic workflow to publish a Twilio Flex-plugins with Github Actions
+
+name: (NEW) Aselo Development release
+
+# Controls when the action will run.
+on:
+  workflow_dispatch:
+    inputs:
+      changelog:
+        description: Release Changelog - Add a comment about the changes to be included in this release.
+        required: true
+  
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Call main-action to compile and deploy
+      - name: Executing main-action
+        uses: ./.github/actions/main-action
+        with:
+          account-sid: ${{ secrets.AS_DEV_ACCOUNT_SID }}
+          auth-token: ${{ secrets.AS_DEV_AUTH_TOKEN }}
