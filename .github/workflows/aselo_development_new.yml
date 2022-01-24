@@ -31,3 +31,6 @@ jobs:
         with:
           account-sid: ${{ secrets.AS_DEV_ACCOUNT_SID }}
           auth-token: ${{ secrets.AS_DEV_AUTH_TOKEN }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
