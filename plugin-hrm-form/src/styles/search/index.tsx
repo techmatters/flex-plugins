@@ -437,6 +437,9 @@ export const ScrollableList = styled('div')`
 export const StyledButtonBase = withStyles({
   root: {
     margin: 5,
+    '&:focus': {
+      outline: 'auto',
+    },
   },
   disabled: {
     color: 'rgba(0, 0, 0, 0.26)',
