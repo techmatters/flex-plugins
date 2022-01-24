@@ -61,7 +61,9 @@ export type EditTemporaryCaseInfo = {
     | typeof NewCaseSubroutes.EditDocument
     | typeof NewCaseSubroutes.EditIncident
     | typeof NewCaseSubroutes.EditPerpetrator
-    | typeof NewCaseSubroutes.EditHousehold;
+    | typeof NewCaseSubroutes.EditHousehold
+    | typeof NewCaseSubroutes.EditNote
+    | typeof NewCaseSubroutes.EditReferral;
   info: t.CaseItemEntry & Indexable;
 };
 
@@ -71,7 +73,9 @@ export function isEditTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is EditTemp
     (tci.screen === NewCaseSubroutes.EditDocument ||
       tci.screen === NewCaseSubroutes.EditIncident ||
       tci.screen === NewCaseSubroutes.EditPerpetrator ||
-      tci.screen === NewCaseSubroutes.EditHousehold)
+      tci.screen === NewCaseSubroutes.EditHousehold ||
+      tci.screen === NewCaseSubroutes.EditNote ||
+      tci.screen === NewCaseSubroutes.EditReferral)
   );
 }
 
@@ -80,7 +84,9 @@ export type AddTemporaryCaseInfo = {
     | typeof NewCaseSubroutes.AddDocument
     | typeof NewCaseSubroutes.AddIncident
     | typeof NewCaseSubroutes.AddPerpetrator
-    | typeof NewCaseSubroutes.AddHousehold;
+    | typeof NewCaseSubroutes.AddHousehold
+    | typeof NewCaseSubroutes.AddNote
+    | typeof NewCaseSubroutes.AddReferral;
   info: t.CaseItemFormValues;
 };
 
@@ -90,13 +96,13 @@ export function isAddTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is AddTempor
     (tci.screen === NewCaseSubroutes.AddDocument ||
       tci.screen === NewCaseSubroutes.AddIncident ||
       tci.screen === NewCaseSubroutes.AddPerpetrator ||
-      tci.screen === NewCaseSubroutes.AddHousehold)
+      tci.screen === NewCaseSubroutes.AddHousehold ||
+      tci.screen === NewCaseSubroutes.AddNote ||
+      tci.screen === NewCaseSubroutes.AddReferral)
   );
 }
 
 export type TemporaryCaseInfo =
-  | { screen: typeof NewCaseSubroutes.AddNote; info: t.Note }
-  | { screen: typeof NewCaseSubroutes.AddReferral; info: t.Referral }
   | { screen: typeof NewCaseSubroutes.ViewContact; info: ViewContact }
   | ViewTemporaryCaseInfo
   | AddTemporaryCaseInfo

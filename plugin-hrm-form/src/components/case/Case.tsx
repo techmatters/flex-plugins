@@ -364,6 +364,9 @@ const Case: React.FC<Props> = props => {
     definitionVersion,
   };
 
+  const { caseForms } = definitionVersion;
+  const caseLayouts = definitionVersion.layoutVersion.case;
+
   const caseDetails = {
     id: connectedCase.id,
     name,
@@ -445,9 +448,9 @@ const Case: React.FC<Props> = props => {
               onClickEdit={() =>
                 onCaseItemActionClick<EditTemporaryCaseInfo>(NewCaseSubroutes.EditIncident)({ ...caseItemEntry, index })
               }
-              definition={definitionVersion.caseForms.IncidentForm}
+              definition={caseForms.IncidentForm}
               values={item.incident}
-              layoutDefinition={definitionVersion.layoutVersion.case.incidents}
+              layoutDefinition={caseLayouts.incidents}
             />
           );
         })}
@@ -476,7 +479,6 @@ const Case: React.FC<Props> = props => {
       </>
     ) : null;
   };
-  const { caseForms } = definitionVersion;
   switch (subroute) {
     case NewCaseSubroutes.AddNote:
     case NewCaseSubroutes.EditNote:
@@ -489,12 +491,12 @@ const Case: React.FC<Props> = props => {
             route,
             formDefinition: caseForms.NoteForm,
           }}
-          applyTemporaryInfoToCase={updateCaseListByIndex<NoteEntry>(
+          applyTemporaryInfoToCase={updateCaseListByIndex<String>(
             ci => {
               ci.notes = ci.notes ?? [];
               return ci.notes;
             },
-            temp => ({ note: (temp.form.note ?? '').toString(), counselor: temp.twilioWorkerId, date: temp.createdAt }),
+            temp => (temp.form.note ?? '').toString(),
           )}
         />
       );
@@ -525,7 +527,7 @@ const Case: React.FC<Props> = props => {
           {...{
             ...addScreenProps,
             route,
-            layout: addScreenProps.definitionVersion.layoutVersion.case.households,
+            layout: caseLayouts.households,
             itemType: 'Household',
             applyTemporaryInfoToCase: updateCaseSectionListByIndex('households', 'household'),
             formDefinition: caseForms.HouseholdForm,
@@ -539,7 +541,7 @@ const Case: React.FC<Props> = props => {
           {...{
             ...addScreenProps,
             route,
-            layout: addScreenProps.definitionVersion.layoutVersion.case.perpetrators,
+            layout: caseLayouts.perpetrators,
             itemType: 'Perpetrator',
             applyTemporaryInfoToCase: updateCaseSectionListByIndex('perpetrators', 'perpetrator'),
             formDefinition: caseForms.PerpetratorForm,
@@ -553,7 +555,7 @@ const Case: React.FC<Props> = props => {
           {...{
             ...addScreenProps,
             route,
-            layout: addScreenProps.definitionVersion.layoutVersion.case.incidents,
+            layout: caseLayouts.incidents,
             itemType: 'Incident',
             applyTemporaryInfoToCase: updateCaseSectionListByIndex('incidents', 'incident'),
             formDefinition: caseForms.IncidentForm,
@@ -567,7 +569,7 @@ const Case: React.FC<Props> = props => {
           {...{
             ...addScreenProps,
             route,
-            layout: addScreenProps.definitionVersion.layoutVersion.case.documents,
+            layout: caseLayouts.documents,
             itemType: 'Document',
             applyTemporaryInfoToCase: updateCaseSectionListByIndex('documents', 'document'),
             formDefinition: caseForms.DocumentForm,

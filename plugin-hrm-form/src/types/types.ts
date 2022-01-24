@@ -52,7 +52,7 @@ export type CaseInfo = {
   definitionVersion?: DefinitionVersionId;
   offlineContactCreator?: string;
   summary?: string;
-  notes?: NoteEntry[];
+  notes?: string[];
   perpetrators?: PerpetratorEntry[];
   households?: HouseholdEntry[];
   referrals?: ReferralEntry[];

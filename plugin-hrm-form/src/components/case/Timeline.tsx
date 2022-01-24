@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { parseISO } from 'date-fns';
-import { Template, ITask } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 
@@ -46,7 +46,7 @@ const Timeline: React.FC<Props> = props => {
   const { can, taskSid, form, caseObj, changeRoute, updateTempInfo, route, timelineActivities } = props;
   const [mockedMessage, setMockedMessage] = useState(null);
 
-  const handleNoteButtonClick = screen => activity => {
+  const handleNoteButtonClick = screen => (activity, index) => {
     const { twilioWorkerId } = activity;
     const info: CaseItemEntry = {
       id: null,
@@ -54,14 +54,14 @@ const Timeline: React.FC<Props> = props => {
       twilioWorkerId,
       createdAt: parseISO(activity.date).toISOString(),
     };
-    updateTempInfo({ screen, info }, taskSid);
+    updateTempInfo({ screen, info: { ...info, index } }, taskSid);
     changeRoute({ route, subroute: screen }, taskSid);
   };
 
   const handleOnClickViewNote = handleNoteButtonClick(NewCaseSubroutes.ViewNote);
   const handleOnClickEditNote = handleNoteButtonClick(NewCaseSubroutes.EditNote);
 
-  const handleReferralButtonClick = screen => activity => {
+  const handleReferralButtonClick = screen => (activity, index) => {
     const { twilioWorkerId } = activity;
     const info: CaseItemEntry = {
       id: null,
@@ -69,7 +69,7 @@ const Timeline: React.FC<Props> = props => {
       twilioWorkerId,
       createdAt: parseISO(activity.date).toISOString(),
     };
-    updateTempInfo({ screen, info }, taskSid);
+    updateTempInfo({ screen, info: { ...info, index } }, taskSid);
     changeRoute({ route, subroute: screen }, taskSid);
   };
 
@@ -94,7 +94,7 @@ const Timeline: React.FC<Props> = props => {
       timeOfContact: activity.date,
       counselor: twilioWorkerId,
     };
-    updateTempInfo({ screen: NewCaseSubroutes.ViewContact, info: tempInfo }, taskSid);
+    updateTempInfo({ screen: NewCaseSubroutes.ViewContact, info: { ...tempInfo } }, taskSid);
     changeRoute({ route, subroute: NewCaseSubroutes.ViewContact }, taskSid);
   };
 
@@ -108,6 +108,18 @@ const Timeline: React.FC<Props> = props => {
     changeRoute({ route, subroute: NewCaseSubroutes.AddReferral }, taskSid);
   };
 
+  const indexableTypes: Record<string, Activity[]> = {};
+
+  const findIndex = (activity: Activity): number => {
+    indexableTypes[activity.type] =
+      indexableTypes[activity.type] ??
+      timelineActivities.filter(a => a.type === activity.type).sort((a, b) => (a.date > b.date ? 1 : -1));
+    const idx = indexableTypes[activity.type].indexOf(activity);
+    if (idx === -1)
+      throw new Error(`Could not find activity dated '${activity.date}' of type ${activity.type} in timeline!`);
+    return idx;
+  };
+
   /*
    * If case has not been created yet, we should return value from the form.
    * Else If case was already created we should return rawJson value.
@@ -118,10 +130,10 @@ const Timeline: React.FC<Props> = props => {
     if (activity.type === 'note') {
       return (
         <Box marginLeft="auto" marginRight="10px">
-          <ViewButton onClick={() => handleOnClickViewNote(activity)}>
+          <ViewButton onClick={() => handleOnClickViewNote(activity, findIndex(activity))}>
             <Template code="Case-ViewButton" />
           </ViewButton>
-          <EditButton onClick={() => handleOnClickEditNote(activity)}>
+          <EditButton onClick={() => handleOnClickEditNote(activity, findIndex(activity))}>
             <Template code="Case-EditButton" />
           </EditButton>
         </Box>
@@ -129,10 +141,10 @@ const Timeline: React.FC<Props> = props => {
     } else if (activity.type === 'referral') {
       return (
         <Box marginLeft="auto" marginRight="10px">
-          <ViewButton onClick={() => handleOnClickViewReferral(activity)}>
+          <ViewButton onClick={() => handleOnClickViewReferral(activity, findIndex(activity))}>
             <Template code="Case-ViewButton" />
           </ViewButton>
-          <EditButton onClick={() => handleOnClickEditReferral(activity)}>
+          <EditButton onClick={() => handleOnClickEditReferral(activity, findIndex(activity))}>
             <Template code="Case-EditButton" />
           </EditButton>
         </Box>
