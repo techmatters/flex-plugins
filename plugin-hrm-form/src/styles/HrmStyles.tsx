@@ -1024,10 +1024,15 @@ export const CSAMReportButtonText = styled(FontOpenSans)`
 `;
 CSAMReportButtonText.displayName = 'CSAMReportButtonText';
 
-export const StyledBackButton = styled(ButtonBase)`
+const TabbedFormsHeaderButton = styled(ButtonBase)`
   &:focus {
     outline: auto;
   }
 `;
+TabbedFormsHeaderButton.displayName = 'TabbedFormsHeaderButton';
 
+export const StyledBackButton = TabbedFormsHeaderButton;
 StyledBackButton.displayName = 'StyledBackButton';
+
+export const StyledCSAMReportButton = TabbedFormsHeaderButton;
+StyledCSAMReportButton.displayName = 'StyledCSAMReportButton';
