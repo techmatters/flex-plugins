@@ -639,7 +639,7 @@ const Case: React.FC<Props> = props => {
             </Box>
             <Box marginLeft="25px" marginTop="25px">
               <CaseSection
-                can={can}
+                can={() => can(PermissionActions.ADD_HOUSEHOLD)}
                 onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.AddHousehold)}
                 sectionTypeId="Household"
               >
@@ -648,7 +648,7 @@ const Case: React.FC<Props> = props => {
             </Box>
             <Box marginLeft="25px" marginTop="25px">
               <CaseSection
-                can={can}
+                can={() => can(PermissionActions.ADD_PERPETRATOR)}
                 onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.AddPerpetrator)}
                 sectionTypeId="Perpetrator"
               >
@@ -657,7 +657,7 @@ const Case: React.FC<Props> = props => {
             </Box>
             <Box marginLeft="25px" marginTop="25px">
               <CaseSection
-                can={can}
+                can={() => can(PermissionActions.ADD_INCIDENT)}
                 onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.AddIncident)}
                 sectionTypeId="Incident"
               >
@@ -668,7 +668,7 @@ const Case: React.FC<Props> = props => {
               <Box marginLeft="25px" marginTop="25px">
                 <CaseSection
                   onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.AddDocument)}
-                  can={can}
+                  can={() => can(PermissionActions.ADD_DOCUMENT)}
                   sectionTypeId="Document"
                 >
                   {documentRows()}

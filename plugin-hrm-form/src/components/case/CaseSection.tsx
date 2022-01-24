@@ -9,7 +9,7 @@ import { PermissionActions, PermissionActionType } from '../../permissions';
 
 type OwnProps = {
   onClickAddItem: () => void;
-  can: (action: PermissionActionType) => boolean;
+  can: () => boolean;
   sectionTypeId: string;
   children?: JSX.Element;
 };
@@ -25,7 +25,7 @@ const CaseSection: React.FC<OwnProps> = ({ onClickAddItem, can, children, sectio
           <CaseAddButton
             templateCode={`Case-${sectionTypeId}`}
             onClick={onClickAddItem}
-            disabled={!can(PermissionActions.ADD_HOUSEHOLD)}
+            disabled={!can()}
           />
         </Row>
       </Box>
