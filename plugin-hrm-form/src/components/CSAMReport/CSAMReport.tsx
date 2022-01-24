@@ -90,16 +90,18 @@ export const CSAMReportScreen: React.FC<Props> = ({
 
   if (routing.route !== 'csam-report') return null;
 
+  const { previousRoute } = routing;
+
   const onClickClose = () => {
     clearCSAMReportAction(taskSid);
-    changeRoute({ route: 'tabbed-forms', subroute: 'caseInformation' }, taskSid);
+    changeRoute({ ...previousRoute }, taskSid);
   };
 
   switch (routing.subroute) {
     case 'form': {
       const onValid = async form => {
         try {
-          changeRoute({ route: 'csam-report', subroute: 'loading' }, taskSid);
+          changeRoute({ route: 'csam-report', subroute: 'loading', previousRoute }, taskSid);
           const report = await reportToIWF(form);
           const storedReport = await createCSAMReport({
             csamReportId: report['IWFReportService1.0'].responseData,
@@ -108,11 +110,11 @@ export const CSAMReportScreen: React.FC<Props> = ({
 
           updateStatusAction(report['IWFReportService1.0'], taskSid);
           addCSAMReportEntry(storedReport, taskSid);
-          changeRoute({ route: 'csam-report', subroute: 'status' }, taskSid);
+          changeRoute({ route: 'csam-report', subroute: 'status', previousRoute }, taskSid);
         } catch (err) {
           console.error(err);
           window.alert(getConfig().strings['Error-Backend']);
-          changeRoute({ route: 'csam-report', subroute: 'form' }, taskSid);
+          changeRoute({ route: 'csam-report', subroute: 'form', previousRoute }, taskSid);
         }
       };
 
@@ -152,7 +154,7 @@ export const CSAMReportScreen: React.FC<Props> = ({
     case 'status': {
       const onSendAnotherReport = () => {
         clearCSAMReportAction(taskSid);
-        changeRoute({ route: 'csam-report', subroute: 'form' }, taskSid);
+        changeRoute({ route: 'csam-report', subroute: 'form', previousRoute }, taskSid);
       };
 
       return (

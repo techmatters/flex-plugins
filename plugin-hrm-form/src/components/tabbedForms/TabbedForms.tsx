@@ -188,7 +188,9 @@ const TabbedForms: React.FC<Props> = ({
         {csamReportEnabled && (
           <Box marginLeft="auto">
             <CSAMReportButton
-              handleClick={() => dispatch(changeRoute({ route: 'csam-report', subroute: 'form' }, taskId))}
+              handleClick={() =>
+                dispatch(changeRoute({ route: 'csam-report', subroute: 'form', previousRoute: routing }, taskId))
+              }
             />
           </Box>
         )}
