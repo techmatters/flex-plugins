@@ -1036,3 +1036,14 @@ StyledBackButton.displayName = 'StyledBackButton';
 
 export const StyledCSAMReportButton = TabbedFormsHeaderButton;
 StyledCSAMReportButton.displayName = 'StyledCSAMReportButton';
+
+export const HeaderCloseButton = styled(ButtonBase)`
+  && {
+    margin-left: auto;
+  }
+
+  :focus {
+    outline: auto;
+  }
+`;
+HeaderCloseButton.displayName = 'HeaderCloseButton';

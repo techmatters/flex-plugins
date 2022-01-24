@@ -2,13 +2,12 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
-import { ButtonBase } from '@material-ui/core';
 import CheckCircleTwoToneIcon from '@material-ui/icons/CheckCircleTwoTone';
 import FileCopyOutlined from '@material-ui/icons/FileCopyOutlined';
 import Close from '@material-ui/icons/Close';
 import CheckCircle from '@material-ui/icons/CheckCircle';
 
-import { BottomButtonBar, Box, HiddenText, Row, StyledNextStepButton } from '../../styles/HrmStyles';
+import { BottomButtonBar, Box, HiddenText, Row, StyledNextStepButton, HeaderCloseButton } from '../../styles/HrmStyles';
 import {
   CSAMReportContainer,
   CSAMReportLayout,
@@ -42,12 +41,12 @@ const CSAMReportStatusScreen: React.FC<Props> = ({ reportStatus, onClickClose, o
     // how should we handle possible IWF API error here? Show a screen, an alert & go back to form?
     <CSAMReportContainer data-testid="CSAMReport-StatusScreen">
       <CSAMReportLayout>
-        <ButtonBase onClick={onClickClose} style={{ marginLeft: 'auto' }} data-testid="Case-CloseCross">
+        <HeaderCloseButton onClick={onClickClose} data-testid="Case-CloseCross">
           <HiddenText>
             <Template code="Case-CloseButton" />
           </HiddenText>
           <Close />
-        </ButtonBase>
+        </HeaderCloseButton>
         <Box marginTop="15%" marginBottom="auto">
           <CenterContent>
             <Row>
