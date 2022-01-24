@@ -22,11 +22,7 @@ const CaseSection: React.FC<OwnProps> = ({ onClickAddItem, can, children, sectio
           <CaseSectionFont id={`Case-Add${sectionTypeId}Section-label`}>
             <Template code={`Case-Add${sectionTypeId}Section`} />
           </CaseSectionFont>
-          <CaseAddButton
-            templateCode={`Case-${sectionTypeId}`}
-            onClick={onClickAddItem}
-            disabled={!can()}
-          />
+          <CaseAddButton templateCode={`Case-${sectionTypeId}`} onClick={onClickAddItem} disabled={!can()} />
         </Row>
       </Box>
 
