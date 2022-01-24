@@ -3,8 +3,8 @@ import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { Close } from '@material-ui/icons';
 
-import { Row, HiddenText } from '../../styles/HrmStyles';
-import { CaseActionTitle, CaseActionDetailFont, CaseActionCloseButton } from '../../styles/case';
+import { Row, HiddenText, HeaderCloseButton } from '../../styles/HrmStyles';
+import { CaseActionTitle, CaseActionDetailFont } from '../../styles/case';
 import { formatDateTime } from '../../utils/formatters';
 
 type OwnProps = {
@@ -25,12 +25,12 @@ const ActionHeader: React.FC<Props> = ({ titleTemplate, onClickClose, added, cou
         <CaseActionTitle style={{ marginTop: 'auto' }}>
           <Template code={titleTemplate} />
         </CaseActionTitle>
-        <CaseActionCloseButton onClick={onClickClose} data-testid="Case-CloseCross">
+        <HeaderCloseButton onClick={onClickClose} data-testid="Case-CloseCross">
           <HiddenText>
             <Template code="Case-CloseButton" />
           </HiddenText>
           <Close />
-        </CaseActionCloseButton>
+        </HeaderCloseButton>
       </Row>
       <Row style={{ width: '100%' }}>
         <CaseActionDetailFont style={{ marginRight: 20 }} data-testid="Case-ActionHeaderAdded">
