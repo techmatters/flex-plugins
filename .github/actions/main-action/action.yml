@@ -52,6 +52,7 @@ runs:
       - name: Create appConfig.js
         run: cp ./public/appConfig.example.js ./public/appConfig.js
         working-directory: ./plugin-hrm-form
+        shell: bash
       - name: Replace Twilio account SID in appConfig.js
         uses: falnyr/replace-env-vars-action@master
         env:
@@ -63,6 +64,7 @@ runs:
           mkdir ./src/private
           touch ./src/private/secret.js
         working-directory: ./plugin-hrm-form
+        shell: bash
       - name: Fill secret.js
         run: |
           cat <<EOT >> ./src/private/secret.js
@@ -72,10 +74,12 @@ runs:
           export const fullStoryId = '$FULLSTORY_ID';
           EOT
         working-directory: ./plugin-hrm-form
+        shell: bash
       # Runs a single command using the runners shell  
       - name: Install dependencies for the flex-plugins
         run: UNBUNDLED_REACT=true npm install
         working-directory: ./plugin-hrm-form
+        shell: bash
       # Install the Twilio CLI and the flex plugin, then deploy the plugin
       - name: Install twilio cli and run deploy command
         env:
@@ -84,6 +88,7 @@ runs:
          UNBUNDLED_REACT: true
         run: npm install twilio-cli -g && twilio plugins:install @twilio-labs/plugin-flex && twilio flex:plugins:deploy --changelog "${{ github.event.inputs.changelog }} (commit ${{ github.sha }})"
         working-directory: ./plugin-hrm-form
+        shell: bash
       # Release flex plugin
       - name: Run release command
         env:
@@ -91,6 +96,7 @@ runs:
          TWILIO_AUTH_TOKEN: ${{ inputs.auth-token }}
         run: twilio flex:plugins:release --plugin plugin-hrm-form@latest
         working-directory: ./plugin-hrm-form
+        shell: bash
       # Send Slack notifying success
       - name: Slack Aselo channel
         id: slack
