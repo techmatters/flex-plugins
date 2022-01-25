@@ -8,7 +8,7 @@ import { FormItemDefinition } from 'hrm-form-definitions';
 import CSAMReportStatusScreen from './CSAMReportStatusScreen';
 import CSAMReportFormScreen from './CSAMReportFormScreen';
 import { CSAMReportContainer, CSAMReportLayout, CenterContent } from '../../styles/CSAMReport';
-import { getInputType } from '../common/forms/formGenerators';
+import { addMargin, getInputType } from '../common/forms/formGenerators';
 import { definitionObject, keys, initialValues } from './CSAMReportFormDefinition';
 import type { CustomITask } from '../../types/types';
 import { getConfig } from '../../HrmFormPlugin';
@@ -82,7 +82,7 @@ export const CSAMReportScreen: React.FC<Props> = ({
       index: number,
     ) => ({
       ...accum,
-      [k]: generateInput(e, index),
+      [k]: addMargin(5)(generateInput(e, index)),
     });
 
     return Object.entries(definitionObject).reduce(reducerFunc, null);

@@ -635,12 +635,13 @@ export const createFormFromDefinition = (definition: FormDefinition) => (parents
   });
 };
 
-export const disperseInputs = (margin: number) => (formItems: JSX.Element[]) =>
-  formItems.map(i => (
-    <Box key={`${i.key}-wrapping-box`} marginTop={`${margin.toString()}px`} marginBottom={`${margin.toString()}px`}>
-      {i}
-    </Box>
-  ));
+export const addMargin = (margin: number) => (i: JSX.Element) => (
+  <Box key={`${i.key}-wrapping-box`} marginTop={`${margin.toString()}px`} marginBottom={`${margin.toString()}px`}>
+    {i}
+  </Box>
+);
+
+export const disperseInputs = (margin: number) => (formItems: JSX.Element[]) => formItems.map(addMargin(margin));
 
 export const splitInHalf = (formItems: JSX.Element[]) => {
   const m = Math.ceil(formItems.length / 2);
