@@ -287,6 +287,7 @@
   "YouMustBeAvailableToPerformThisOp": "You must be available to perform this operation.",
 
   "RequiredFieldError": "This field is required.",
+  "NotURLFieldError": "This field only accepts URLs.",
   "DateCantBeGreaterThanToday": "Date can't be greater than today.",
   "DateCantBeLesserThanEpoch": "Date can't be lesser than 00:00:00 UTC on 1 January 1970.",
   "TimeCantBeGreaterThanNow": "Time can't be greater than now.",

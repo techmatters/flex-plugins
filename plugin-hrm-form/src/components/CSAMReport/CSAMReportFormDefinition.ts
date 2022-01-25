@@ -15,6 +15,9 @@ type CSAMFormDefinitionObject = {
   [k in keyof typeof keys]: FormItemDefinition;
 };
 
+// eslint-disable-next-line prefer-named-capture-group
+const urlRegex = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/g;
+
 export const definitionObject: CSAMFormDefinitionObject = {
   webAddress: {
     name: 'webAddress',
@@ -22,6 +25,10 @@ export const definitionObject: CSAMFormDefinitionObject = {
     type: 'input',
     required: { value: true, message: 'RequiredFieldError' },
     maxLength: 1000,
+    pattern: {
+      value: urlRegex,
+      message: 'NotURLFieldError',
+    },
   },
   description: {
     name: 'description',
