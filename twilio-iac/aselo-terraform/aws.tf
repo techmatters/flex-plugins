@@ -1,5 +1,8 @@
 variable "datadog_app_id" {}
 variable "datadog_access_token" {}
+variable "operating_info_key" {}
+variable "environment" {}
+variable "short_environment" {}
 
 locals {
   docs_s3_location = "tl-aselo-docs-${lower(var.short_helpline)}-${lower(var.environment)}"
@@ -44,13 +47,13 @@ resource "aws_s3_bucket_public_access_block" "chat" {
 
 resource "aws_ssm_parameter" "main_group" {
   for_each = {
-    WORKSPACE_SID = jsonencode(["TWILIO", twilio_taskrouter_workspaces_v1.flex_task_assignment.sid, "Twilio account - Workspace SID"])
-    CHAT_WORKFLOW_SID = jsonencode(["TWILIO", twilio_taskrouter_workspaces_workflows_v1.master_workflow.sid, "Twilio account - Chat transfer workflow SID"])
-    SYNC_SID = jsonencode(["TWILIO", twilio_sync_services_v1.shared_state_service.sid, "Twilio account - Sync service "])
+    WORKSPACE_SID = jsonencode(["TWILIO", module.taskRouter.flex_task_assignment_workspace_sid, "Twilio account - Workspace SID"])
+    CHAT_WORKFLOW_SID = jsonencode(["TWILIO", module.taskRouter.master_workflow_sid, "Twilio account - Chat transfer workflow SID"])
+    SYNC_SID = jsonencode(["TWILIO", module.taskRouter.shared_state_sync_service_sid, "Twilio account - Sync service "])
     // API Key secrets are not accessible from the twilio terraform provider
     // SECRET = jsonencode(["TWILIO", "NOT_SET", "Twilio account - Sync API secret"])
-    CHAT_SERVICE_SID = jsonencode(["TWILIO", twilio_chat_services_v2.flex_chat_service.sid, "Twilio account - Chat service SID"])
-    FLEX_PROXY_SERVICE_SID = jsonencode(["TWILIO", twilio_proxy_services_v1.flex_proxy_service.sid, "Twilio account - Flex Proxy servivice SID"])
+    CHAT_SERVICE_SID = jsonencode(["TWILIO", module.services.flex_chat_service_sid, "Twilio account - Chat service SID"])
+    FLEX_PROXY_SERVICE_SID = jsonencode(["TWILIO", module.services.flex_proxy_service_sid, "Twilio account - Flex Proxy service SID"])
     SURVEY_WORKFLOW_SID =  jsonencode(["TWILIO", twilio_taskrouter_workspaces_workflows_v1.survey_workflow.sid, "Twilio account - Survey Workflow SID"])
     // API Key secrets are not accessible from the twilio terraform provider
     // HRM_STATIC_KEY = jsonencode(["TWILIO", "NOT_SET", "Twilio account - HRM static secret to perform backend calls"])

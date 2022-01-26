@@ -1,0 +1,24 @@
+output "flex_task_assignment_workspace_sid" {
+  description = "Twilio SID of the 'Flex Task Assignment' workspace"
+  value = twilio_taskrouter_workspaces_v1.flex_task_assignment.sid
+}
+
+output "master_workflow_sid" {
+  description = "Twilio SID of the 'Master Workflow' service"
+  value = twilio_taskrouter_workspaces_workflows_v1.master_workflow.sid
+}
+
+output "chat_task_channel_sid" {
+  description = "Twilio SID of the 'chat' task channel"
+  value = twilio_taskrouter_workspaces_task_channels_v1.chat.sid
+}
+
+output "default_task_channel_sid" {
+  description = "Twilio SID of the 'chat' task channel"
+  value = twilio_taskrouter_workspaces_task_channels_v1.default.sid
+}
+
+output "shared_state_sync_service_sid" {
+  description = "Twilio SID of the 'Shared State Service' sync service"
+  value = twilio_sync_services_v1.shared_state_service.sid
+}

@@ -14,6 +14,12 @@ terraform {
   }
 }
 
+variable "account_sid" {}
+variable "serverless_url" {}
+variable "helpline" {}
+variable "short_helpline" {}
+
+
 module "chatbots" {
   source = "../terraform-modules/chatbots/default"
   serverless_url = var.serverless_url
@@ -21,4 +27,14 @@ module "chatbots" {
 
 module "serverless" {
   source = "../terraform-modules/serverless/default"
+}
+
+module "services" {
+  source = "../terraform-modules/services/default"
+}
+
+module "taskRouter" {
+  source = "../terraform-modules/taskRouter/default"
+  serverless_url = var.serverless_url
+  helpline = var.helpline
 }

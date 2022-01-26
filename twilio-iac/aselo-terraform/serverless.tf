@@ -1,4 +1,5 @@
-variable "serverless_url" {}
+// Legacy file only kept to facilitate migration. Once all accounts have been migrated to use the module, delete me.
+// Known accounts that require migration: aarambh production, safespot staging
 
 moved {
   from = twilio_serverless_services_v1.serverless

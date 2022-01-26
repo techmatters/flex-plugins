@@ -39,8 +39,8 @@ locals {
         "name": "smsAttributes",
         "properties": {
           "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
-          "workflow": twilio_taskrouter_workspaces_workflows_v1.master_workflow.sid,
-          "channel":  twilio_taskrouter_workspaces_task_channels_v1.chat.sid,
+          "workflow": module.taskRouter.master_workflow_sid,
+          "channel":  module.taskRouter.chat_task_channel_sid,
           "offset": {
             "y": 810,
             "x": 270
@@ -119,8 +119,8 @@ locals {
         "name": "defaultAttributes",
         "properties": {
           "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
-          "workflow": twilio_taskrouter_workspaces_workflows_v1.master_workflow.sid,
-          "channel":  twilio_taskrouter_workspaces_task_channels_v1.default.sid,
+          "workflow": module.taskRouter.master_workflow_sid,
+          "channel":  module.taskRouter.default_task_channel_sid,
           "offset": {
             "y": 810,
             "x": -690
@@ -143,8 +143,8 @@ locals {
         "name": "whatsappAttributes",
         "properties": {
           "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
-          "workflow": twilio_taskrouter_workspaces_workflows_v1.master_workflow.sid,
-          "channel":  twilio_taskrouter_workspaces_task_channels_v1.chat.sid,
+          "workflow": module.taskRouter.master_workflow_sid,
+          "channel":  module.taskRouter.chat_task_channel_sid,
           "offset": {
             "y": 810,
             "x": -370
@@ -167,8 +167,8 @@ locals {
         "name": "facebookAttributes",
         "properties": {
           "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
-          "workflow": twilio_taskrouter_workspaces_workflows_v1.master_workflow.sid,
-          "channel":  twilio_taskrouter_workspaces_task_channels_v1.chat.sid,
+          "workflow": module.taskRouter.master_workflow_sid,
+          "channel":  module.taskRouter.chat_task_channel_sid,
           "offset": {
             "y": 810,
             "x": -50
@@ -191,8 +191,8 @@ locals {
         "name": "webAttributes",
         "properties": {
           "attributes": "{\"ip\":\"{{trigger.message.ChannelAttributes.pre_engagement_data.ip}}\",\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"{{trigger.message.ChannelAttributes.pre_engagement_data.helpline}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
-          "workflow": twilio_taskrouter_workspaces_workflows_v1.master_workflow.sid,
-          "channel": twilio_taskrouter_workspaces_task_channels_v1.chat.sid,
+          "workflow": module.taskRouter.master_workflow_sid,
+          "channel": module.taskRouter.chat_task_channel_sid,
           "offset": {
             "y": 810,
             "x": 590

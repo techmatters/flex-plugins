@@ -1,14 +1,14 @@
-//TaskQueue
+// TaskQueue
 resource "twilio_taskrouter_workspaces_task_queues_v1" "survey_queue" {
   friendly_name  = "Survey"
-  workspace_sid  = twilio_taskrouter_workspaces_v1.flex_task_assignment.id
+  workspace_sid  = module.taskRouter.flex_task_assignment_workspace_sid
   target_workers = "1==0"
 }
 
 // Workflow
 resource "twilio_taskrouter_workspaces_workflows_v1" "survey_workflow" {
   friendly_name = "Survey"
-  workspace_sid = twilio_taskrouter_workspaces_v1.flex_task_assignment.id
+  workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
   configuration = jsonencode({
   "task_routing": {
         "filters": [
