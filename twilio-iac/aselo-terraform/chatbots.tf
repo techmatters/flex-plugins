@@ -1,3 +1,5 @@
+# Legacy file only kept to facilitate migration. Once all accounts have been migrated to use the module, delete me.
+# Known accounts that require migration: aarambh production, safespot staging
 moved {
   from = twilio_autopilot_assistants_v1.pre_survey
   to = module.chatbots.twilio_autopilot_assistants_v1.pre_survey
