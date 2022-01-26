@@ -54,7 +54,7 @@ export const CSAMReportScreen: React.FC<Props> = ({
   counselorsHash,
 }) => {
   const [initialForm] = React.useState(csamReportState.form); // grab initial values in first render only. This value should never change or will ruin the memoization below
-  const methods = useForm();
+  const methods = useForm({ reValidateMode: 'onChange' });
   const firstElementRef = useFocus();
 
   const currentCounselor = React.useMemo(() => {
@@ -126,7 +126,8 @@ export const CSAMReportScreen: React.FC<Props> = ({
 
       const anonymousWatch = methods.watch('anonymous');
       const renderContactDetails =
-        anonymousWatch === false || (anonymousWatch === undefined && initialForm.anonymous === false);
+        anonymousWatch === 'non-anonymous' ||
+        (anonymousWatch === undefined && initialForm.anonymous === 'non-anonymous');
 
       return (
         <FormProvider {...methods}>

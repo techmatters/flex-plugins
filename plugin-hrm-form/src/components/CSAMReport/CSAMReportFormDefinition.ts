@@ -16,7 +16,7 @@ type CSAMFormDefinitionObject = {
 };
 
 // eslint-disable-next-line prefer-named-capture-group
-const urlRegex = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/g;
+const urlRegex = /(https?:\/\/)?([\w\-])+\.{1}([a-zA-Z]{2,63})([\/\w-]*)*\/?\??([^#\n\r]*)?#?([^\n\r]*)/g;
 
 export const definitionObject: CSAMFormDefinitionObject = {
   webAddress: {
@@ -38,9 +38,13 @@ export const definitionObject: CSAMFormDefinitionObject = {
   },
   anonymous: {
     name: 'anonymous',
-    label: 'File anonymously',
-    type: 'checkbox',
-    initialChecked: true,
+    label: '',
+    type: 'radio-input',
+    options: [
+      { value: 'anonymous', label: 'File anonymously' },
+      { value: 'non-anonymous', label: 'Provide contact details' },
+    ],
+    required: { value: true, message: 'RequiredFieldError' },
   },
   firstName: {
     name: 'firstName',
