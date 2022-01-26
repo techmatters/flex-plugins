@@ -13,7 +13,6 @@ import {
   TimelineDate,
   ViewButton,
   RowItemContainer,
-  EditButton,
 } from '../../styles/case';
 import { Box, HiddenText } from '../../styles/HrmStyles';
 import { formatFileNameAtAws } from '../../utils';
@@ -21,7 +20,6 @@ import { formatFileNameAtAws } from '../../utils';
 type OwnProps = {
   documentEntry: DocumentEntry;
   onClickView: () => void;
-  onClickEdit: () => void;
 };
 
 const RowItem: React.FC<{ isName?: boolean }> = ({ children, isName }) => (
@@ -29,7 +27,7 @@ const RowItem: React.FC<{ isName?: boolean }> = ({ children, isName }) => (
 );
 RowItem.displayName = 'RowItem';
 
-const DocumentInformationRow: React.FC<OwnProps> = ({ documentEntry, onClickView, onClickEdit }) => {
+const DocumentInformationRow: React.FC<OwnProps> = ({ documentEntry, onClickView }) => {
   const date = parseISO(documentEntry.createdAt).toLocaleDateString(navigator.language);
   return (
     <TimelineRow>
@@ -50,9 +48,6 @@ const DocumentInformationRow: React.FC<OwnProps> = ({ documentEntry, onClickView
         <ViewButton onClick={onClickView} data-testid="Case-InformationRow-ViewButton">
           <Template code="Case-ViewButton" />
         </ViewButton>
-        <EditButton onClick={onClickEdit} data-testid="Case-InformationRow-EditButton">
-          <Template code="Case-EditButton" />
-        </EditButton>
       </Box>
     </TimelineRow>
   );

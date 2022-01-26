@@ -4,21 +4,13 @@ import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
 import { Household, Perpetrator } from '../../types/types';
-import {
-  TimelineRow,
-  InformationBoldText,
-  TimelineText,
-  ViewButton,
-  RowItemContainer,
-  EditButton,
-} from '../../styles/case';
+import { TimelineRow, InformationBoldText, TimelineText, ViewButton, RowItemContainer } from '../../styles/case';
 import { Box, HiddenText } from '../../styles/HrmStyles';
 import { formatName } from '../../utils';
 
 type OwnProps = {
   person: Household | Perpetrator;
   onClickView: () => void;
-  onClickEdit: () => void;
 };
 
 const RowItem: React.FC<{ isName?: boolean }> = ({ children, isName }) => (
@@ -26,7 +18,7 @@ const RowItem: React.FC<{ isName?: boolean }> = ({ children, isName }) => (
 );
 RowItem.displayName = 'RowItem';
 
-const InformationRow: React.FC<OwnProps> = ({ person, onClickView, onClickEdit }) => {
+const InformationRow: React.FC<OwnProps> = ({ person, onClickView }) => {
   return (
     <TimelineRow>
       <RowItem isName>
@@ -58,9 +50,6 @@ const InformationRow: React.FC<OwnProps> = ({ person, onClickView, onClickEdit }
           <ViewButton onClick={onClickView} data-testid="Case-InformationRow-ViewButton">
             <Template code="Case-ViewButton" />
           </ViewButton>
-          <EditButton onClick={onClickEdit} data-testid="Case-InformationRow-EditButton">
-            <Template code="Case-EditButton" />
-          </EditButton>
         </Box>
       </RowItem>
     </TimelineRow>

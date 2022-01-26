@@ -4,7 +4,7 @@ import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import type { FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 
-import { TimelineRow, TimelineText, TimelineLabel, ViewButton, RowItemContainer, EditButton } from '../../styles/case';
+import { TimelineRow, TimelineText, TimelineLabel, ViewButton, RowItemContainer } from '../../styles/case';
 import { Box, HiddenText } from '../../styles/HrmStyles';
 import { formatValue } from '../common/forms/helpers';
 import type { Incident } from '../../types/types';
@@ -14,19 +14,12 @@ type OwnProps = {
   values: Incident; // expand this type to make this reusable (perpetrators, hh)
   layoutDefinition: LayoutDefinition;
   onClickView: () => void;
-  onClickEdit: () => void;
 };
 
 const RowItem: React.FC = ({ children }) => <RowItemContainer style={{ flex: 1 }}>{children}</RowItemContainer>;
 RowItem.displayName = 'RowItem';
 
-const TimelineInformationRow: React.FC<OwnProps> = ({
-  definition,
-  values,
-  layoutDefinition,
-  onClickView,
-  onClickEdit,
-}) => {
+const TimelineInformationRow: React.FC<OwnProps> = ({ definition, values, layoutDefinition, onClickView }) => {
   return (
     <TimelineRow>
       {layoutDefinition.previewFields.map((name, index) => {
@@ -51,9 +44,6 @@ const TimelineInformationRow: React.FC<OwnProps> = ({
           <ViewButton onClick={onClickView} data-testid="Case-InformationRow-ViewButton">
             <Template code="Case-ViewButton" />
           </ViewButton>
-          <EditButton onClick={onClickEdit} data-testid="Case-InformationRow-EditButton">
-            <Template code="Case-EditButton" />
-          </EditButton>
         </Box>
       </RowItem>
     </TimelineRow>

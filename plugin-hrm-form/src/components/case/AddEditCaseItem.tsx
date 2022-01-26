@@ -18,7 +18,7 @@ import {
 } from '../../styles/HrmStyles';
 import { CaseActionLayout, CaseActionFormContainer } from '../../styles/case';
 import ActionHeader from './ActionHeader';
-import { namespace, connectedCaseBase, routingBase, RootState } from '../../states';
+import { namespace, connectedCaseBase, RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseState } from '../../states/case/reducer';
@@ -37,14 +37,7 @@ import type { CustomITask, StandaloneITask, CaseInfo, CaseItemEntry } from '../.
 import { AppRoutesWithCase } from '../../states/routing/types';
 import useFocus from '../../utils/useFocus';
 import { recordingErrorHandler } from '../../fullStory';
-import {
-  AddTemporaryCaseInfo,
-  CaseUpdater,
-  EditTemporaryCaseInfo,
-  isAddTemporaryCaseInfo,
-  isEditTemporaryCaseInfo,
-  TemporaryCaseInfo,
-} from '../../states/case/types';
+import { AddTemporaryCaseInfo, CaseUpdater, isAddTemporaryCaseInfo, TemporaryCaseInfo } from '../../states/case/types';
 
 type CaseItemPayload = { [key: string]: string | boolean };
 
@@ -52,9 +45,7 @@ const UNSUPPORTED_TEMPORARY_INFO_TYPE_MESSAGE =
   'Only AddTemporaryCaseInfo and EditTemporaryCaseInfo temporary case data types are supported by this component.';
 
 const getTemporaryFormContent = (temporaryCaseInfo: TemporaryCaseInfo): CaseItemPayload | null => {
-  if (isEditTemporaryCaseInfo(temporaryCaseInfo)) {
-    return temporaryCaseInfo.info.form;
-  } else if (isAddTemporaryCaseInfo(temporaryCaseInfo)) {
+  if (isAddTemporaryCaseInfo(temporaryCaseInfo)) {
     return temporaryCaseInfo.info;
   }
   return null;
@@ -97,21 +88,12 @@ const AddEditCaseItem: React.FC<Props> = ({
 
   const { temporaryCaseInfo } = connectedCaseState;
 
-  const isEditingExistingItem = (): boolean => isEditTemporaryCaseInfo(temporaryCaseInfo);
-
   const [initialForm] = React.useState(getTemporaryFormContent(temporaryCaseInfo) ?? {}); // grab initial values in first render only. This value should never change or will ruin the memoization below
   const methods = useForm(reactHookFormOptions);
 
   const [l, r] = React.useMemo(() => {
-    const createUpdatedTemporaryFormContent = (
-      payload: CaseItemPayload,
-    ): AddTemporaryCaseInfo | EditTemporaryCaseInfo => {
-      if (isEditTemporaryCaseInfo(temporaryCaseInfo)) {
-        return {
-          ...temporaryCaseInfo,
-          info: { ...temporaryCaseInfo.info, form: payload },
-        };
-      } else if (isAddTemporaryCaseInfo(temporaryCaseInfo)) {
+    const createUpdatedTemporaryFormContent = (payload: CaseItemPayload): AddTemporaryCaseInfo => {
+      if (isAddTemporaryCaseInfo(temporaryCaseInfo)) {
         return {
           ...temporaryCaseInfo,
           info: payload,
@@ -150,17 +132,8 @@ const AddEditCaseItem: React.FC<Props> = ({
     const form = transformValues(formDefinition)(getTemporaryFormContent(temporaryCaseInfo));
     const createdAt = new Date().toISOString();
     const { workerSid } = getConfig();
-    let newInfo: CaseInfo;
-    if (isEditTemporaryCaseInfo(temporaryCaseInfo)) {
-      newInfo = applyTemporaryInfoToCase(
-        info,
-        { ...temporaryCaseInfo.info, form, id: temporaryCaseInfo.info.id ?? uuidV4() },
-        temporaryCaseInfo.info.index,
-      );
-    } else {
-      const newItem: CaseItemEntry = { form, createdAt, twilioWorkerId: workerSid, id: uuidV4() };
-      newInfo = applyTemporaryInfoToCase(info, newItem, undefined);
-    }
+    const newItem: CaseItemEntry = { form, createdAt, twilioWorkerId: workerSid, id: uuidV4() };
+    const newInfo: CaseInfo = applyTemporaryInfoToCase(info, newItem, undefined);
 
     const updatedCase = await updateCase(id, { info: newInfo });
     setConnectedCase(updatedCase, task.taskSid, true);
@@ -181,22 +154,15 @@ const AddEditCaseItem: React.FC<Props> = ({
     onClickClose();
   }
   const { strings } = getConfig();
-  const onError: SubmitErrorHandler<FieldValues> = recordingErrorHandler(
-    isEditingExistingItem() ? `Case: Edit ${itemType}` : `Case: Add ${itemType}`,
-    () => {
-      window.alert(strings['Error-Form']);
-    },
-  );
+  const onError: SubmitErrorHandler<FieldValues> = recordingErrorHandler(`Case: Add ${itemType}`, () => {
+    window.alert(strings['Error-Form']);
+  });
 
   return (
     <FormProvider {...methods}>
       <CaseActionLayout>
         <CaseActionFormContainer>
-          <ActionHeader
-            titleTemplate={isEditingExistingItem() ? `Case-Edit${itemType}` : `Case-Add${itemType}`}
-            onClickClose={onClickClose}
-            counselor={counselor}
-          />
+          <ActionHeader titleTemplate={`Case-Add${itemType}`} onClickClose={onClickClose} counselor={counselor} />
           <Container>
             <Box paddingBottom={`${BottomButtonBarHeight}px`}>
               <TwoColumnLayout>
@@ -213,18 +179,16 @@ const AddEditCaseItem: React.FC<Props> = ({
               <Template code="BottomBar-Cancel" />
             </StyledNextStepButton>
           </Box>
-          {!isEditingExistingItem() && (
-            <Box marginRight="15px">
-              <StyledNextStepButton
-                data-testid="Case-AddEditItemScreen-SaveAndAddAnotherItem"
-                secondary
-                roundCorners
-                onClick={methods.handleSubmit(saveAndStay, onError)}
-              >
-                <Template code={`BottomBar-SaveAndAddAnother${itemType}`} />
-              </StyledNextStepButton>
-            </Box>
-          )}
+          <Box marginRight="15px">
+            <StyledNextStepButton
+              data-testid="Case-AddEditItemScreen-SaveAndAddAnotherItem"
+              secondary
+              roundCorners
+              onClick={methods.handleSubmit(saveAndStay, onError)}
+            >
+              <Template code={`BottomBar-SaveAndAddAnother${itemType}`} />
+            </StyledNextStepButton>
+          </Box>
           <StyledNextStepButton
             data-testid="Case-AddEditItemScreen-SaveItem"
             roundCorners

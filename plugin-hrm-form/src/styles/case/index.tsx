@@ -88,25 +88,6 @@ export const ViewButton = styled<ViewButtonProps>(props => <Button roundCorners=
 `;
 ViewButton.displayName = 'ViewButton';
 
-type EditButtonProps = {
-  onClick: () => void;
-};
-
-export const EditButton = styled<EditButtonProps>(props => <Button roundCorners={false} {...props} />)`
-  color: ${({ theme }) => theme.colors.categoryTextColor};
-  background-color: #ecedf1;
-  border-radius: 4px;
-  font-weight: normal;
-  letter-spacing: normal;
-  font-size: 12px;
-  box-shadow: none;
-
-  :focus {
-    outline: auto;
-  }
-`;
-EditButton.displayName = 'EditButton';
-
 type CaseAddButtonProps = {
   withDivider: boolean;
 };

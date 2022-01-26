@@ -16,7 +16,6 @@ import {
   TimelineDate,
   TimelineText,
   TimelineCallTypeIcon,
-  EditButton,
 } from '../../styles/case';
 import { Box, Row } from '../../styles/HrmStyles';
 import CaseAddButton from './CaseAddButton';
@@ -46,7 +45,7 @@ const Timeline: React.FC<Props> = props => {
   const { can, taskSid, form, caseObj, changeRoute, updateTempInfo, route, timelineActivities } = props;
   const [mockedMessage, setMockedMessage] = useState(null);
 
-  const handleNoteButtonClick = screen => (activity, index) => {
+  const handleOnClickViewNote = activity => {
     const { twilioWorkerId } = activity;
     const info: CaseItemEntry = {
       id: null,
@@ -54,14 +53,11 @@ const Timeline: React.FC<Props> = props => {
       twilioWorkerId,
       createdAt: parseISO(activity.date).toISOString(),
     };
-    updateTempInfo({ screen, info: { ...info, index } }, taskSid);
-    changeRoute({ route, subroute: screen }, taskSid);
+    updateTempInfo({ screen: NewCaseSubroutes.ViewNote, info: { ...info } }, taskSid);
+    changeRoute({ route, subroute: NewCaseSubroutes.ViewNote }, taskSid);
   };
 
-  const handleOnClickViewNote = handleNoteButtonClick(NewCaseSubroutes.ViewNote);
-  const handleOnClickEditNote = handleNoteButtonClick(NewCaseSubroutes.EditNote);
-
-  const handleReferralButtonClick = screen => (activity, index) => {
+  const handleOnClickViewReferral = activity => {
     const { twilioWorkerId } = activity;
     const info: CaseItemEntry = {
       id: null,
@@ -69,12 +65,9 @@ const Timeline: React.FC<Props> = props => {
       twilioWorkerId,
       createdAt: parseISO(activity.date).toISOString(),
     };
-    updateTempInfo({ screen, info: { ...info, index } }, taskSid);
-    changeRoute({ route, subroute: screen }, taskSid);
+    updateTempInfo({ screen: NewCaseSubroutes.ViewReferral, info: { ...info } }, taskSid);
+    changeRoute({ route, subroute: NewCaseSubroutes.ViewReferral }, taskSid);
   };
-
-  const handleOnClickViewReferral = handleReferralButtonClick(NewCaseSubroutes.ViewReferral);
-  const handleOnClickEditReferral = handleReferralButtonClick(NewCaseSubroutes.EditReferral);
 
   const handleOnClickViewConnectedCaseActivity = activity => {
     const { twilioWorkerId } = activity;
@@ -108,18 +101,6 @@ const Timeline: React.FC<Props> = props => {
     changeRoute({ route, subroute: NewCaseSubroutes.AddReferral }, taskSid);
   };
 
-  const indexableTypes: Record<string, Activity[]> = {};
-
-  const findIndex = (activity: Activity): number => {
-    indexableTypes[activity.type] =
-      indexableTypes[activity.type] ??
-      timelineActivities.filter(a => a.type === activity.type).sort((a, b) => (a.date > b.date ? 1 : -1));
-    const idx = indexableTypes[activity.type].indexOf(activity);
-    if (idx === -1)
-      throw new Error(`Could not find activity dated '${activity.date}' of type ${activity.type} in timeline!`);
-    return idx;
-  };
-
   /*
    * If case has not been created yet, we should return value from the form.
    * Else If case was already created we should return rawJson value.
@@ -130,23 +111,17 @@ const Timeline: React.FC<Props> = props => {
     if (activity.type === 'note') {
       return (
         <Box marginLeft="auto" marginRight="10px">
-          <ViewButton onClick={() => handleOnClickViewNote(activity, findIndex(activity))}>
+          <ViewButton onClick={() => handleOnClickViewNote(activity)}>
             <Template code="Case-ViewButton" />
           </ViewButton>
-          <EditButton onClick={() => handleOnClickEditNote(activity, findIndex(activity))}>
-            <Template code="Case-EditButton" />
-          </EditButton>
         </Box>
       );
     } else if (activity.type === 'referral') {
       return (
         <Box marginLeft="auto" marginRight="10px">
-          <ViewButton onClick={() => handleOnClickViewReferral(activity, findIndex(activity))}>
+          <ViewButton onClick={() => handleOnClickViewReferral(activity)}>
             <Template code="Case-ViewButton" />
           </ViewButton>
-          <EditButton onClick={() => handleOnClickEditReferral(activity, findIndex(activity))}>
-            <Template code="Case-EditButton" />
-          </EditButton>
         </Box>
       );
     } else if (isConnectedCaseActivity(activity)) {
