@@ -1,28 +1,14 @@
+// Legacy file only kept to facilitate migration. Once all accounts have been migrated to use the module, delete me.
+// Known accounts that require migration: aarambh production, safespot staging
+
 // TaskQueue
-resource "twilio_taskrouter_workspaces_task_queues_v1" "survey_queue" {
-  friendly_name  = "Survey"
-  workspace_sid  = module.taskRouter.flex_task_assignment_workspace_sid
-  target_workers = "1==0"
+moved {
+  from = twilio_taskrouter_workspaces_task_queues_v1.survey_queue
+  to = module.survey.twilio_taskrouter_workspaces_task_queues_v1.survey_queue
 }
 
 // Workflow
-resource "twilio_taskrouter_workspaces_workflows_v1" "survey_workflow" {
-  friendly_name = "Survey"
-  workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
-  configuration = jsonencode({
-  "task_routing": {
-        "filters": [
-          {
-            "filter_friendly_name": "Survey Filter",
-            "expression": "helpline=='${var.helpline}'",
-            "targets": [
-              {
-                "expression": "isSurveyTask==true",
-                "queue": twilio_taskrouter_workspaces_task_queues_v1.survey_queue.sid
-              }
-            ]
-          }
-        ]
-      }
-})
+moved {
+  from = twilio_taskrouter_workspaces_workflows_v1.survey_workflow
+  to = module.survey.twilio_taskrouter_workspaces_workflows_v1.survey_workflow
 }

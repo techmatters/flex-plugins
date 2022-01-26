@@ -1,14 +1,12 @@
-resource "twilio_flex_flex_flows_v1" "messaging_flow" {
-  channel_type  = "sms"
-  chat_service_sid = module.services.flex_chat_service_sid
-  friendly_name = "Flex Messaging Channel Flow"
-  integration_type = "studio"
-  integration_flow_sid = twilio_studio_flows_v2.messaging_flow.sid
+// Legacy file only kept to facilitate migration. Once all accounts have been migrated to use the module, delete me.
+// Known accounts that require migration: aarambh production, safespot staging
+
+moved {
+  from = twilio_flex_flex_flows_v1.messaging_flow
+  to = module.flex.twilio_flex_flex_flows_v1.messaging_flow
 }
-resource "twilio_flex_flex_flows_v1" "webchat_flow" {
-  channel_type  = "web"
-  chat_service_sid = module.services.flex_chat_service_sid
-  friendly_name = "Flex Web Channel Flow"
-  integration_type = "studio"
-  integration_flow_sid = twilio_studio_flows_v2.messaging_flow.sid
+
+moved {
+  from = twilio_flex_flex_flows_v1.webchat_flow
+  to = module.flex.twilio_flex_flex_flows_v1.webchat_flow
 }
