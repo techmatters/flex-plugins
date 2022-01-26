@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { View, Text } from '@react-pdf/renderer';
+import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import { Flex } from '../../styles/HrmStyles';
 import { TagsWrapper } from '../../styles/search';
@@ -15,7 +16,7 @@ type OwnProps = {
       [subcategory: string]: boolean;
     };
   };
-  definitionVersion: string;
+  definitionVersion: DefinitionVersionId;
   printPDF?: boolean;
 };
 

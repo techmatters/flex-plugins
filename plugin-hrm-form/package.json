@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "preinstall": "cd ../hrm-form-definitions && npm ci && npm run build",
     "postinstall": "flex-plugin pre-script-check",
     "prestart": "flex-plugin pre-start-check",
     "dev": "UNBUNDLED_REACT=true NO_MONITORING=true npm start",
@@ -21,6 +22,7 @@
   },
   "dependencies": {
     "@datadog/browser-rum": "^1.20.0",
+    "@fullstory/browser": "^1.4.9",
     "@react-pdf/renderer": "^1.6.13",
     "date-fns": "^2.11.1",
     "lodash": "^4.17.19",
@@ -31,7 +33,8 @@
     "react-keyboard-event-handler": "^1.5.4",
     "rollbar": "^2.19.3",
     "uuid": "^8.3.2",
-    "@babel/runtime": "^7.16.3"
+    "@babel/runtime": "^7.16.3",
+    "hrm-form-definitions": "file:../hrm-form-definitions"
   },
   "devDependencies": {
     "@babel/plugin-transform-runtime": "^7.16.4",

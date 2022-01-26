@@ -6,12 +6,14 @@ import { StorelessThemeProvider, withTheme, Actions } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import '@testing-library/jest-dom/extend-expect';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
 import HrmTheme from '../../../styles/HrmTheme';
 import { AddOfflineContactButton } from '../../../components/OfflineContact';
 import { namespace, routingBase, configurationBase } from '../../../states';
 import { reRenderAgentDesktop } from '../../../HrmFormPlugin';
-import v1 from '../../../formDefinitions/v1';
+
+let v1;
 
 jest.mock('../../../services/ServerlessService');
 jest.mock('../../../HrmFormPlugin.js', () => ({
@@ -24,7 +26,9 @@ jest.mock('@twilio/flex-ui', () => ({
   },
 }));
 
-beforeEach(() => {
+beforeAll(async () => (v1 = await loadDefinition(DefinitionVersionId.v1)));
+
+beforeEach(async () => {
   Actions.invokeAction.mockClear();
   reRenderAgentDesktop.mockClear();
 });

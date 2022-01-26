@@ -1,5 +1,6 @@
+import type { DefinitionVersion } from 'hrm-form-definitions';
+
 import * as t from './types';
-import type { DefinitionVersion } from '../../components/common/forms/types';
 
 // Action creators
 export const changeLanguage = (language: string): t.ConfigurationActionType => ({ type: t.CHANGE_LANGUAGE, language });

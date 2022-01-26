@@ -1,9 +1,9 @@
 import React from 'react';
 import { truncate } from 'lodash';
 import { format } from 'date-fns';
+import { FormItemDefinition } from 'hrm-form-definitions';
 
 import { getConfig } from '../HrmFormPlugin';
-import { FormItemDefinition } from '../components/common/forms/types';
 import { channelTypes } from '../states/DomainConstants';
 import { getNumberFromTask } from '../services/ContactService';
 

@@ -4,6 +4,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { FieldError, useFormContext } from 'react-hook-form';
 import { isFuture } from 'date-fns';
 import { get } from 'lodash';
+import type { HelplineDefinitions } from 'hrm-form-definitions';
 
 import { createFormFromDefinition, disperseInputs } from '../common/forms/formGenerators';
 import { updateForm } from '../../states/contacts/actions';
@@ -13,7 +14,6 @@ import type { TaskEntry } from '../../states/contacts/reducer';
 import { createContactlessTaskTabDefinition } from './ContactlessTaskTabDefinition';
 import { splitDate, splitTime } from '../../utils/helpers';
 import type { OfflineContactTask } from '../../types/types';
-import type { HelplineDefinitions } from '../common/forms/types';
 import useFocus from '../../utils/useFocus';
 
 type OwnProps = {

@@ -3,7 +3,8 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
-import { useForm, FormProvider } from 'react-hook-form';
+import { useForm, FormProvider, SubmitErrorHandler, FieldValues } from 'react-hook-form';
+import type { DefinitionVersion } from 'hrm-form-definitions';
 
 import {
   Box,
@@ -21,10 +22,10 @@ import * as CaseActions from '../../states/case/actions';
 import { getConfig } from '../../HrmFormPlugin';
 import { updateCase } from '../../services/CaseService';
 import { createFormFromDefinition, disperseInputs, splitInHalf, splitAt } from '../common/forms/formGenerators';
-import type { DefinitionVersion } from '../common/forms/types';
 import { transformValues } from '../../services/ContactService';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 import useFocus from '../../utils/useFocus';
+import { recordingErrorHandler } from '../../fullStory';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;
@@ -99,9 +100,9 @@ const AddIncident: React.FC<Props> = ({
   }
 
   const { strings } = getConfig();
-  function onError() {
+  const onError: SubmitErrorHandler<FieldValues> = recordingErrorHandler('Case: Add Incident', () => {
     window.alert(strings['Error-Form']);
-  }
+  });
 
   return (
     <FormProvider {...methods}>

@@ -89,8 +89,7 @@
   "SharedStateSaveFormError": "The information stored in the form couldn't be saved. Task will be transferred anyway.",
   "SharedStateLoadFormError": "The information stored in the form by previous counsellor couldn't be retrieved. Starting current task with clear contact form.",
   "SharedStateSaveContactError": "Could not save pending contact at the Shared State.",
-  "SharedStateRetryPendingContactsError": "Could not retry saving the pending contacts from the Shared State.",
-
+  
   "Transfer-TransferButton": "Transfer",
   "Transfer-AcceptTransferButton": "Accept Transfer",
   "Transfer-RejectTransferButton": "Reject Transfer",
@@ -137,12 +136,14 @@
   "TabbedForms-AddCaseInfoTab": "Summary",
   "TabbedForms-AddContactInfoTab": "Contact Info",
   "TabbedForms-BackButton": "Categorize Contact Type",
+  "TabbedForms-CSAMReportButton": "File CSAM Report",
 
   "NotImplemented": "Not implemented yet!",
   "Error-Backend": "Error from backend system.",
   "Error-ContinueWithoutRecording": "Error from backend system.  Are you sure you want to end the task without recording?",
   "Error-Form": "There is a problem with your submission.  Please check the form for errors.",
   "Error-CategoryRequired": "Required 1 category minimum, 3 categories maximum",
+  "Error-Unexpected": "Unexpected error has occurred",
 
   "Case-CaseNumber": "Case #",
   "Case-TimelineSection": "Timeline",
@@ -317,6 +318,24 @@
   "PreviousContacts-OnlyShowRecordsFrom": "Only show records from",
 
   "UploadFile-ButtonText": "Upload File",
-  "DownloadFile-ButtonText": "Download File"
+  "DownloadFile-ButtonText": "Download File",
+  
+  "CSAMReportForm-Header": "File a Report: Child Sexual Abuse Material",
+  "CSAMReportForm-WebsiteDetails": "Website details",
+  "CSAMReportForm-WebsiteDetailsDescription": "Please provide details where the material was discovered.<br>To report more than one website do a separate report.",
+  "CSAMReportForm-ContactDetails": "Contact details",
+  "CSAMReportForm-ContactDetailsDescription": "Reports can be filed anonymously or with contact details if the caller would like to follow up or be available to provide further details to IWF.",
+  "CSAMReportForm-LearnMore": "Learn more",
+  "CSAMReportForm-ContactDetailsInfo": "Contact details will be recorded on the IWF database for 3 months, and then will then be deleted in accordance with the UK Data Protection Act",
+  "CSAMReportForm-ReportSent": "CSAM Report Sent!",
+  "CSAMReportForm-CopyCode": "Copy confirmation code for sharing",
+  "CSAMReportForm-Attachment": "CSAM Report has been filled",
+  "CSAMReportForm-ReportsSubmitted": "Reports Submitted",
 
+  "SpecifyIfAnonymousOrNot": "Specify if this report is either anonymous or not",
+  "BottomBar-SendReport": "Send Report",
+  "BottomBar-SendAnotherReport": "Send Another Report",
+  "BottomBar-CloseView": "Close View",
+  "CopyCode": "Copy Code",
+  "Copied": "Copied!"
 }

@@ -6,13 +6,14 @@ import configureMockStore from 'redux-mock-store';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
-import '../../mockGetConfig';
+import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import HrmTheme from '../../../styles/HrmTheme';
 import CaseList from '../../../components/caseList';
 import { namespace, configurationBase } from '../../../states';
 import { getCases } from '../../../services/CaseService';
-import mockV1 from '../../../formDefinitions/v1';
+import { getDefinitionVersions } from '../../../HrmFormPlugin';
 
 // console.log = () => null;
 console.error = () => null;
@@ -56,6 +57,13 @@ function createState(state) {
     [namespace]: state,
   };
 }
+
+let mockV1;
+
+beforeAll(async () => {
+  mockV1 = await loadDefinition(DefinitionVersionId.v1);
+  mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
+});
 
 test('Should render', async () => {
   // @ts-ignore

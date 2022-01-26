@@ -188,7 +188,7 @@ const setUpComponents = setupObject => {
   if (!Boolean(helpline)) Components.setUpDeveloperComponents(setupObject); // utilities for developers only
 
   // remove dynamic components
-  Components.removeActionsIfWrapping();
+  Components.removeTaskCanvasHeaderActions(setupObject);
   Components.setLogo(setupObject.logoUrl);
   if (featureFlags.enable_transfers) {
     Components.removeDirectoryButton();

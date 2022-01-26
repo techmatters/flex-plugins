@@ -2,6 +2,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Text, View, Image } from '@react-pdf/renderer';
+import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import { getConfig } from '../../../HrmFormPlugin';
 import styles from './styles';
@@ -24,7 +25,7 @@ type OwnProps = {
       [subcategory: string]: boolean;
     };
   };
-  version: string;
+  version: DefinitionVersionId;
   chkOnBlob?: string;
   chkOffBlob?: string;
 };

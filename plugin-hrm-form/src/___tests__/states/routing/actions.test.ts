@@ -33,4 +33,12 @@ describe('test action creators', () => {
       taskId: task.taskSid,
     });
   });
+
+  test('changeRoute (csam-report route)', async () => {
+    expect(actions.changeRoute({ route: 'csam-report', subroute: 'form' }, task.taskSid)).toStrictEqual({
+      type: types.CHANGE_ROUTE,
+      routing: { route: 'csam-report', subroute: 'form' },
+      taskId: task.taskSid,
+    });
+  });
 });

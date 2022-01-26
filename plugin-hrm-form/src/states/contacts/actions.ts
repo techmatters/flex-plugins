@@ -1,7 +1,9 @@
 /* eslint-disable import/no-unused-modules */
+import { CallTypes, DataCallTypes } from 'hrm-form-definitions';
+
 import * as t from './types';
 import { TaskEntry } from './reducer';
-import { CallTypes, DataCallTypes } from '../DomainConstants';
+import { CSAMReportEntry } from '../../types/types';
 
 // Action creators
 export const updateForm = (
@@ -56,5 +58,11 @@ export const restoreEntireForm = (form: TaskEntry, taskId: string): t.ContactsAc
 export const updateHelpline = (taskId: string, helpline: string): t.ContactsActionType => ({
   type: t.UPDATE_HELPLINE,
   helpline,
+  taskId,
+});
+
+export const addCSAMReportEntry = (csamReportEntry: CSAMReportEntry, taskId: string): t.ContactsActionType => ({
+  type: t.ADD_CSAM_REPORT_ENTRY,
+  csamReportEntry,
   taskId,
 });

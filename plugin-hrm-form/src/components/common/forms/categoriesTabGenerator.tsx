@@ -6,6 +6,7 @@ import React from 'react';
 import GridIcon from '@material-ui/icons/GridOn';
 import ListIcon from '@material-ui/icons/List';
 import { Template } from '@twilio/flex-ui';
+import { CategoriesDefinition } from 'hrm-form-definitions';
 
 import Section from '../../Section';
 import {
@@ -21,7 +22,7 @@ import {
   CategoryCheckbox,
   CategoryCheckboxLabel,
 } from '../../../styles/HrmStyles';
-import type { CategoriesDefinition, HTMLElementRef } from './types';
+import type { HTMLElementRef } from './types';
 import { ConnectForm } from './formGenerators';
 
 export const createSubcategoryCheckbox = (

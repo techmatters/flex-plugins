@@ -1,4 +1,6 @@
-import callTypes, { channelTypes, otherContactChannels } from '../states/DomainConstants';
+import { callTypes } from 'hrm-form-definitions';
+
+import { channelTypes, otherContactChannels } from '../states/DomainConstants';
 
 export const mapCallType = (str: string) => {
   switch (str) {

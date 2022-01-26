@@ -1,5 +1,7 @@
+/* eslint-disable camelcase */
 // eslint-disable-next-line no-unused-vars
 import { Manager, TaskHelper, Actions as FlexActions, StateHelper, ChatOrchestrator } from '@twilio/flex-ui';
+import { callTypes } from 'hrm-form-definitions';
 
 // eslint-disable-next-line no-unused-vars
 import { DEFAULT_TRANSFER_MODE, getConfig } from '../HrmFormPlugin';
@@ -10,16 +12,18 @@ import {
   getDefinitionVersion,
   postSurveyInit,
 } from '../services/ServerlessService';
-import { namespace, contactFormsBase, connectedCaseBase, configurationBase } from '../states';
+import { namespace, contactFormsBase, connectedCaseBase, configurationBase, dualWriteBase } from '../states';
 import * as Actions from '../states/contacts/actions';
 import { populateCurrentDefinitionVersion, updateDefinitionVersion } from '../states/configuration/actions';
 import { changeRoute } from '../states/routing/actions';
+import { clearCustomGoodbyeMessage } from '../states/dualWrite/actions';
 import * as GeneralActions from '../states/actions';
-import callTypes, { transferModes } from '../states/DomainConstants';
+import { transferModes } from '../states/DomainConstants';
 import * as TransferHelpers from './transfer';
 import { saveFormSharedState, loadFormSharedState } from './sharedState';
 import { prepopulateForm } from './prepopulateForm';
 import { defaultLanguage } from './pluginHelpers';
+import { recordEvent } from '../fullStory';
 
 /**
  * @param {string} version
@@ -133,7 +137,7 @@ const handleTransferredTask = async task => {
   await restoreFormIfTransfer(task);
 };
 
-const getTaskLanguage = ({ helplineLanguage }) => ({ task }) => task.attributes.language || helplineLanguage;
+export const getTaskLanguage = ({ helplineLanguage }) => ({ task }) => task.attributes.language || helplineLanguage;
 
 /**
  * @param {string} messageKey
@@ -160,8 +164,23 @@ const sendSystemMessageOfKey = messageKey => setupObject => async payload => {
   await sendSystemMessage({ taskSid: payload.task.taskSid, message, from: 'Bot' });
 };
 
+const sendSystemCustomGoodbyeMessage = customGoodbyeMessage => () => async payload => {
+  const { taskSid } = payload.task;
+  Manager.getInstance().store.dispatch(clearCustomGoodbyeMessage(taskSid));
+  await sendSystemMessage({ taskSid, message: customGoodbyeMessage, from: 'Bot' });
+};
+
 const sendWelcomeMessage = sendMessageOfKey('WelcomeMsg');
-const sendGoodbyeMessage = sendSystemMessageOfKey('GoodbyeMsg');
+const sendGoodbyeMessage = taskSid => {
+  const { enable_dual_write } = getConfig().featureFlags;
+
+  const customGoodbyeMessage =
+    enable_dual_write &&
+    Manager.getInstance().store.getState()[namespace][dualWriteBase].tasks[taskSid]?.customGoodbyeMessage;
+  return customGoodbyeMessage
+    ? sendSystemCustomGoodbyeMessage(customGoodbyeMessage)
+    : sendSystemMessageOfKey('GoodbyeMsg');
+};
 
 /**
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
@@ -221,6 +240,7 @@ export const customTransferTask = setupObject => async (payload, original) => {
    * We shortcut the rest of the function to save extra time and unnecessary visual changes.
    */
   if (!TaskHelper.isCallTask(payload.task) && mode === transferModes.warm) {
+    recordEvent('Transfer Warm Chat Blocked', {});
     window.alert(Manager.getInstance().strings['Transfer-ChatWarmNotAllowed']);
     return () => undefined; // Not calling original(payload) prevents the additional "Task cannot be transferred" notification
   }
@@ -264,7 +284,7 @@ export const hangupCall = fromActionFunction(saveEndMillis);
 export const wrapupTask = setupObject =>
   fromActionFunction(async payload => {
     if (TaskHelper.isChatBasedTask(payload.task)) {
-      await sendGoodbyeMessage(setupObject)(payload);
+      await sendGoodbyeMessage(payload.task.taskSid)(setupObject)(payload);
     }
     await saveEndMillis(payload);
   });
@@ -315,18 +335,21 @@ export const setUpPostSurvey = setupObject => {
 };
 
 /**
- * @type {import('@twilio/flex-ui').ActionFunction}
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
+ * @param {{ task: import('@twilio/flex-ui').ITask }} payload
  */
-const triggerPostSurvey = async payload => {
+const triggerPostSurvey = async (setupObject, payload) => {
   const { task } = payload;
 
-  // if (featureFlags.enable_post_survey) {
   if (TaskHelper.isChatBasedTask(task)) {
+    const { taskSid } = task;
     const channelSid = TaskHelper.getTaskChatChannelSid(task);
+    const taskLanguage = getTaskLanguage(setupObject)(payload);
 
-    await postSurveyInit({ channelSid, taskSid: task.taskSid });
+    const body = taskLanguage ? { channelSid, taskSid, taskLanguage } : { channelSid, taskSid };
+
+    await postSurveyInit(body);
   }
-  // }
 };
 
 /**
@@ -337,7 +360,7 @@ export const afterCompleteTask = setupObject => async payload => {
   const { featureFlags } = setupObject;
 
   if (featureFlags.enable_post_survey) {
-    await triggerPostSurvey(payload);
+    await triggerPostSurvey(setupObject, payload);
   }
 
   removeContactForm(payload);

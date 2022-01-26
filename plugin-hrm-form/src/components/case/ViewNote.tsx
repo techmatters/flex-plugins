@@ -2,12 +2,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
+import type { DefinitionVersion } from 'hrm-form-definitions';
 
-import type { DefinitionVersion } from '../common/forms/types';
 import { Container, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
-import { namespace, connectedCaseBase, configurationBase, routingBase, RootState } from '../../states';
+import { namespace, connectedCaseBase, configurationBase, RootState } from '../../states';
 import { CaseState } from '../../states/case/reducer';
-import * as RoutingActions from '../../states/routing/actions';
 import { CaseLayout, NoteContainer } from '../../styles/case';
 import ActionHeader from './ActionHeader';
 import { formatName } from '../../utils';
@@ -23,16 +22,11 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const caseState: CaseState = state[namespace][connectedCaseBase];
   const { temporaryCaseInfo } = caseState.tasks[ownProps.task.taskSid];
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
-  const { route } = state[namespace][routingBase].tasks[ownProps.task.taskSid];
 
-  return { tempInfo: temporaryCaseInfo, counselorsHash, route };
+  return { tempInfo: temporaryCaseInfo, counselorsHash };
 };
 
-const mapDispatchToProps = {
-  changeRoute: RoutingActions.changeRoute,
-};
-
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 
 const ViewNote: React.FC<Props> = ({ tempInfo, onClickClose, counselorsHash, definitionVersion }) => {
   if (!tempInfo || tempInfo.screen !== 'view-note') return null;
@@ -59,4 +53,4 @@ const ViewNote: React.FC<Props> = ({ tempInfo, onClickClose, counselorsHash, def
 ViewNote.displayName = 'ViewNote';
 
 export const UnconnectedViewNote = ViewNote;
-export default connect(mapStateToProps, mapDispatchToProps)(ViewNote);
+export default connect(mapStateToProps, null)(ViewNote);

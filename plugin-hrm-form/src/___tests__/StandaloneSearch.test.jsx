@@ -1,15 +1,13 @@
 import React from 'react';
-import { Provider } from 'react-redux';
-import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import configureMockStore from 'redux-mock-store';
-
 import './mockStyled';
-import './mockGetConfig';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
-import StandaloneSearch from '../components/StandaloneSearch';
+import { mockGetDefinitionsResponse } from './mockGetConfig';
 import { initialState as searchInitialState } from '../states/search/reducer';
 import { standaloneTaskSid } from '../types/types';
+import { getDefinitionVersions } from '../HrmFormPlugin';
 
 const mockStore = configureMockStore([]);
 
@@ -35,6 +33,14 @@ function createState() {
     },
   };
 }
+
+beforeAll(async () => {
+  mockGetDefinitionsResponse(
+    getDefinitionVersions,
+    DefinitionVersionId.v1,
+    await loadDefinition(DefinitionVersionId.v1),
+  );
+});
 
 test('<StandaloneSearch> should display <Search />', () => {
   /*
