@@ -1,10 +1,9 @@
-// @ts-ignore
-import React from 'react';
+import * as React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
-import { ITask, StorelessThemeProvider, ThemeConfigProps } from '@twilio/flex-ui';
+import { StorelessThemeProvider, ThemeConfigProps } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
@@ -14,7 +13,7 @@ import { configurationBase, connectedCaseBase, contactFormsBase, namespace } fro
 import AddEditCaseItem, { AddEditCaseItemProps } from '../../../components/case/AddEditCaseItem';
 import { getDefinitionVersions } from '../../../HrmFormPlugin';
 import { updateCaseSectionListByIndex } from '../../../states/case/types';
-import { StandaloneITask, standaloneTaskSid } from '../../../types/types';
+import { StandaloneITask } from '../../../types/types';
 
 let mockV1;
 
