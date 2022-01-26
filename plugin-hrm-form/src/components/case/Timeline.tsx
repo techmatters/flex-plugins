@@ -45,7 +45,7 @@ const Timeline: React.FC<Props> = props => {
   const { can, taskSid, form, caseObj, changeRoute, updateTempInfo, route, timelineActivities } = props;
   const [mockedMessage, setMockedMessage] = useState(null);
 
-  const handleOnClickViewNote = activity => {
+  const handleViewNoteClick = activity => {
     const { twilioWorkerId } = activity;
     const info: CaseItemEntry = {
       id: null,
@@ -57,7 +57,7 @@ const Timeline: React.FC<Props> = props => {
     changeRoute({ route, subroute: NewCaseSubroutes.ViewNote }, taskSid);
   };
 
-  const handleOnClickViewReferral = activity => {
+  const handleViewReferralClick = activity => {
     const { twilioWorkerId } = activity;
     const info: CaseItemEntry = {
       id: null,
@@ -69,7 +69,7 @@ const Timeline: React.FC<Props> = props => {
     changeRoute({ route, subroute: NewCaseSubroutes.ViewReferral }, taskSid);
   };
 
-  const handleOnClickViewConnectedCaseActivity = activity => {
+  const handleViewConnectedCaseActivityClick = activity => {
     const { twilioWorkerId } = activity;
 
     const detailsExpanded = {
@@ -109,11 +109,11 @@ const Timeline: React.FC<Props> = props => {
 
   const handleViewClick = activity => {
     if (activity.type === 'note') {
-      handleOnClickViewNote(activity);
+      handleViewNoteClick(activity);
     } else if (activity.type === 'referral') {
-      handleOnClickViewReferral(activity);
+      handleViewReferralClick(activity);
     } else if (isConnectedCaseActivity(activity)) {
-      handleOnClickViewConnectedCaseActivity(activity);
+      handleViewConnectedCaseActivityClick(activity);
     } else {
       setMockedMessage(<Template code="NotImplemented" />);
     }
