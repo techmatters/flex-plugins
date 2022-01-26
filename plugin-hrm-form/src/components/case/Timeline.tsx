@@ -107,37 +107,16 @@ const Timeline: React.FC<Props> = props => {
    */
   const callType = form?.callType || caseObj.connectedContacts[0]?.rawJson?.callType;
 
-  const renderActivityControls = activity => {
+  const handleViewClick = activity => {
     if (activity.type === 'note') {
-      return (
-        <Box marginLeft="auto" marginRight="10px">
-          <ViewButton onClick={() => handleOnClickViewNote(activity)}>
-            <Template code="Case-ViewButton" />
-          </ViewButton>
-        </Box>
-      );
+      handleOnClickViewNote(activity);
     } else if (activity.type === 'referral') {
-      return (
-        <Box marginLeft="auto" marginRight="10px">
-          <ViewButton onClick={() => handleOnClickViewReferral(activity)}>
-            <Template code="Case-ViewButton" />
-          </ViewButton>
-        </Box>
-      );
+      handleOnClickViewReferral(activity);
     } else if (isConnectedCaseActivity(activity)) {
-      return (
-        <Box marginLeft="auto" marginRight="10px">
-          <ViewButton onClick={() => handleOnClickViewConnectedCaseActivity(activity)}>
-            <Template code="Case-ViewButton" />
-          </ViewButton>
-        </Box>
-      );
+      handleOnClickViewConnectedCaseActivity(activity);
+    } else {
+      setMockedMessage(<Template code="NotImplemented" />);
     }
-    return (
-      <Box marginLeft="auto" marginRight="10px">
-        -- --
-      </Box>
-    );
   };
 
   return (
@@ -180,7 +159,11 @@ const Timeline: React.FC<Props> = props => {
               )}
               <TimelineText>{activity?.text}</TimelineText>
               <Box marginLeft="auto" marginRight="10px">
-                {renderActivityControls(activity)}
+                <Box marginLeft="auto" marginRight="10px">
+                  <ViewButton onClick={() => handleViewClick(activity)}>
+                    <Template code="Case-ViewButton" />
+                  </ViewButton>
+                </Box>
               </Box>
             </TimelineRow>
           );
