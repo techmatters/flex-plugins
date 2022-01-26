@@ -18,3 +18,7 @@ module "chatbots" {
   source = "../terraform-modules/chatbots/default"
   serverless_url = var.serverless_url
 }
+
+module "serverless" {
+  source = "../terraform-modules/serverless/default"
+}

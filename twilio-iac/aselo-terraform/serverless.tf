@@ -1,19 +1,16 @@
 variable "serverless_url" {}
 
-resource "twilio_serverless_services_v1" "serverless" {
-  unique_name = "serverless"
-  friendly_name = "serverless"
-  include_credentials = true
+moved {
+  from = twilio_serverless_services_v1.serverless
+  to = module.serverless.twilio_serverless_services_v1.serverless
 }
 
-resource "twilio_serverless_services_environments_v1" "dev" {
-  service_sid = twilio_serverless_services_v1.serverless.sid
-  unique_name = "dev"
-  domain_suffix = "dev"
+moved {
+  from = twilio_serverless_services_environments_v1.dev
+  to = module.serverless.twilio_serverless_services_environments_v1.dev
 }
 
-resource "twilio_serverless_services_environments_v1" "production" {
-  service_sid = twilio_serverless_services_v1.serverless.sid
-  unique_name = "production"
-  domain_suffix = "production"
+moved {
+  from = twilio_serverless_services_environments_v1.production
+  to = module.serverless.twilio_serverless_services_environments_v1.production
 }
