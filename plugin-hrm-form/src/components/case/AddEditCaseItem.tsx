@@ -99,8 +99,7 @@ const AddEditCaseItem: React.FC<Props> = ({
 
   const isEditingExistingItem = (): boolean => isEditTemporaryCaseInfo(temporaryCaseInfo);
 
-  const init = getTemporaryFormContent(temporaryCaseInfo) ?? {};
-  const [initialForm] = React.useState(init); // grab initial values in first render only. This value should never change or will ruin the memoization below
+  const [initialForm] = React.useState(getTemporaryFormContent(temporaryCaseInfo) ?? {}); // grab initial values in first render only. This value should never change or will ruin the memoization below
   const methods = useForm(reactHookFormOptions);
 
   const [l, r] = React.useMemo(() => {
