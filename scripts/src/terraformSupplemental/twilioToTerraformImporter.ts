@@ -1,18 +1,26 @@
 import { execSync } from 'child_process';
 import { logSuccess, logWarning } from '../helpers/log';
 
-const DEFAULT_TERRAFORM_WORKING_DIRECTORY = '../twilio-iac/aselo-terraform';
+const TWILIO_TERRAFORM_ROOT_DIRECTORY = '../twilio-iac/aselo-terraform';
+
+type AttemptTerraformImportOptions = {
+  description: string;
+  tfvarsFile: string;
+};
 
 export function attemptTerraformImport(
   twilioResourceSid: string,
   terraformResource: string,
-  description: string = `${terraformResource} '${twilioResourceSid}'`,
-  cwd: string = DEFAULT_TERRAFORM_WORKING_DIRECTORY,
+  account: string,
+  {
+    description = `${terraformResource} '${twilioResourceSid}'`,
+    tfvarsFile,
+  }: Partial<AttemptTerraformImportOptions> = {},
 ): void {
+  const cwd = `${TWILIO_TERRAFORM_ROOT_DIRECTORY}/${account}`;
+  const tfVarsArg = tfvarsFile ? `-var-file ${tfvarsFile}` : '';
   try {
-    const command = `terraform import -var-file ${
-      process.argv[2] || 'poc-private.tfvars'
-    } ${terraformResource} ${twilioResourceSid}`;
+    const command = `terraform import ${tfVarsArg} ${terraformResource} ${twilioResourceSid}`;
     logSuccess(`Running command: ${command}`);
     execSync(command, { cwd });
     logSuccess(

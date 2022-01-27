@@ -4,13 +4,14 @@ import { logError } from '../helpers/log';
 import { attemptTerraformImport } from './twilioToTerraformImporter';
 import { fieldTypeValue } from './hclRegexPatterns';
 
+const account = 'aselo-terraform';
 const hclFile = '../twilio-iac/aselo-terraform/chatbots.tf';
 const modulePrefix = '';
 
 const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
 async function processHCLFile(): Promise<void> {
-  const chatbotHCL = FS.readFileSync('../twilio-iac/aselo-terraform/chatbots.tf', {
+  const chatbotHCL = FS.readFileSync(`../twilio-iac/${account}/chatbots.tf`, {
     encoding: 'utf-8',
   }).toString();
 
@@ -36,7 +37,11 @@ async function processHCLFile(): Promise<void> {
         // eslint-disable-next-line no-await-in-loop
         const fieldTypeSid = await assistant.fieldTypes(fieldTypeValueHCL.fieldTypeSid).fetch();
 
-        attemptTerraformImport(`${assistantSid}/${fieldTypeSid}`, `${modulePrefix}${resource}`);
+        attemptTerraformImport(
+          `${assistantSid}/${fieldTypeSid}`,
+          `${modulePrefix}${resource}`,
+          account,
+        );
       }
     }
   }
