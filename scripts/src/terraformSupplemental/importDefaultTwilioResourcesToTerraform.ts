@@ -6,8 +6,8 @@ import { logError, logSuccess, logWarning } from '../helpers/log';
 
 config();
 
-const TERRAFORM_WORKING_DIRECTORY = '../twilio-iac/aselo-terraform';
 
+const terraformWorkingDirectory = `../twilio-iac/${process.argv[2]}`;
 const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
 function attemptTerraformImport(
@@ -16,11 +16,11 @@ function attemptTerraformImport(
   description: string,
 ): void {
   try {
-    const command = `terraform import -var-file ${
-      process.argv[2] || 'poc-private.tfvars'
+    const command = `terraform import${
+      process.argv[3] ? ' -var-file poc-private.tfvars' : ''
     } ${terraformResource} ${twilioResourceSid}`;
     logSuccess(`Running command: ${command}`);
-    execSync(command, { cwd: TERRAFORM_WORKING_DIRECTORY });
+    execSync(command, { cwd: process.argv[2] });
     logSuccess(
       `${description}, sid ${twilioResourceSid} successfully imported to terraform as '${terraformResource}'`,
     );
@@ -69,7 +69,7 @@ async function locateAndImportDefaultFlexFlow(
 }
 
 async function main() {
-  execSync('terraform init', { cwd: TERRAFORM_WORKING_DIRECTORY });
+  execSync('terraform init', { cwd: terraformWorkingDirectory });
   const proxy = (await client.proxy.services.list({ limit: 20 })).find(
     (p) => p.uniqueName === 'Flex Proxy Service',
   );
