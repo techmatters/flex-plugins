@@ -68,6 +68,117 @@ test("Form renders but can't be submitted empty", async () => {
   expect(alertSpy).toHaveBeenCalled();
 });
 
+test("Form renders but can't be submitted on invalid url", async () => {
+  const alertSpy = jest.spyOn(window, 'alert');
+
+  const updateFormAction = jest.fn();
+  const updateStatusAction = jest.fn();
+  const clearCSAMReportAction = jest.fn();
+  const changeRoute = jest.fn();
+  const addCSAMReportEntry = jest.fn();
+  const csamReportState = { form: initialValues };
+  const routing = { route: 'csam-report', subroute: 'form' };
+  const counselorsHash = { workerSid };
+
+  render(
+    <StorelessThemeProvider themeConf={themeConf}>
+      <CSAMReportScreen
+        taskSid={taskSid}
+        updateFormAction={updateFormAction}
+        updateStatusAction={updateStatusAction}
+        clearCSAMReportAction={clearCSAMReportAction}
+        changeRoute={changeRoute}
+        addCSAMReportEntry={addCSAMReportEntry}
+        csamReportState={csamReportState}
+        routing={routing}
+        counselorsHash={counselorsHash}
+      />
+    </StorelessThemeProvider>,
+  );
+
+  expect(screen.getByTestId('CSAMReport-FormScreen')).toBeInTheDocument();
+  expect(screen.queryByTestId('CSAMReport-Loading')).not.toBeInTheDocument();
+  expect(screen.queryByTestId('CSAMReport-StatusScreen')).not.toBeInTheDocument();
+
+  const webAddressInput = screen.getByTestId('webAddress');
+  expect(webAddressInput).toBeInTheDocument();
+
+  fireEvent.change(webAddressInput, {
+    target: {
+      value: 'this is not a valid url',
+    },
+  });
+
+  const submitButton = screen.getByTestId('CSAMReport-SubmitButton');
+  expect(submitButton).toBeInTheDocument();
+
+  fireEvent.click(submitButton);
+
+  expect(await screen.findAllByText('NotURLFieldError')).not.toHaveLength(0);
+  expect(alertSpy).toHaveBeenCalled();
+});
+
+test("Form can't be submitted if anonymous value is undefined", async () => {
+  const alertSpy = jest.spyOn(window, 'alert');
+
+  const updateFormAction = jest.fn();
+  const updateStatusAction = jest.fn();
+  const clearCSAMReportAction = jest.fn();
+  const changeRoute = jest.fn();
+  const addCSAMReportEntry = jest.fn();
+  const csamReportState = { form: initialValues };
+  const routing = { route: 'csam-report', subroute: 'form' };
+  const counselorsHash = { workerSid };
+
+  const reportToIWFSpy = jest.spyOn(ServerlessService, 'reportToIWF').mockImplementationOnce(() =>
+    Promise.resolve({
+      'IWFReportService1.0': { responseData: {} },
+    }),
+  );
+  const createCSAMReportSpy = jest.spyOn(CSAMReportService, 'createCSAMReport').mockImplementationOnce(() =>
+    Promise.resolve({
+      csamReportId: 'report-sid',
+    }),
+  );
+
+  render(
+    <StorelessThemeProvider themeConf={themeConf}>
+      <CSAMReportScreen
+        taskSid={taskSid}
+        updateFormAction={updateFormAction}
+        updateStatusAction={updateStatusAction}
+        clearCSAMReportAction={clearCSAMReportAction}
+        changeRoute={changeRoute}
+        addCSAMReportEntry={addCSAMReportEntry}
+        csamReportState={csamReportState}
+        routing={routing}
+        counselorsHash={counselorsHash}
+      />
+    </StorelessThemeProvider>,
+  );
+
+  expect(screen.getByTestId('CSAMReport-FormScreen')).toBeInTheDocument();
+  expect(screen.queryByTestId('CSAMReport-Loading')).not.toBeInTheDocument();
+  expect(screen.queryByTestId('CSAMReport-StatusScreen')).not.toBeInTheDocument();
+
+  const submitButton = screen.getByTestId('CSAMReport-SubmitButton');
+  expect(submitButton).toBeInTheDocument();
+
+  const webAddressInput = screen.getByTestId('webAddress');
+  expect(webAddressInput).toBeInTheDocument();
+
+  fireEvent.change(webAddressInput, {
+    target: {
+      value: 'validurl.com',
+    },
+  });
+
+  fireEvent.click(submitButton);
+
+  expect(await screen.findAllByText('RequiredFieldError')).not.toHaveLength(0);
+  expect(alertSpy).toHaveBeenCalled();
+});
+
 test('Form can be submitted if valid (anonymous)', async () => {
   const updateFormAction = jest.fn();
   const updateStatusAction = jest.fn();
@@ -117,9 +228,16 @@ test('Form can be submitted if valid (anonymous)', async () => {
 
   fireEvent.change(webAddressInput, {
     target: {
-      value: 'some-url',
+      value: 'validurl.com',
     },
   });
+
+  const anonymousInput = screen.getByTestId('anonymous-anonymous');
+  expect(anonymousInput).toBeInTheDocument();
+  const nonanonymousInput = screen.getByTestId('anonymous-non-anonymous');
+  expect(nonanonymousInput).toBeInTheDocument();
+
+  fireEvent.change(anonymousInput, { target: { checked: true } });
 
   fireEvent.click(submitButton);
 
@@ -181,14 +299,16 @@ test('Form can be submitted if valid (non-anonymous)', async () => {
 
   fireEvent.change(webAddressInput, {
     target: {
-      value: 'some-url',
+      value: 'validurl.com',
     },
   });
 
-  const anonymousInput = screen.getByTestId('anonymous');
+  const anonymousInput = screen.getByTestId('anonymous-anonymous');
   expect(anonymousInput).toBeInTheDocument();
+  const nonanonymousInput = screen.getByTestId('anonymous-non-anonymous');
+  expect(nonanonymousInput).toBeInTheDocument();
 
-  fireEvent.click(anonymousInput);
+  fireEvent.change(nonanonymousInput, { target: { checked: true } });
 
   const firstNameInput = screen.getByTestId('firstName');
   expect(firstNameInput).toBeInTheDocument();
