@@ -2,7 +2,8 @@ import FS from 'fs';
 import twilio from 'twilio';
 import { logError } from '../helpers/log';
 import { attemptTerraformImport } from './twilioToTerraformImporter';
-import { fieldTypeValue } from './hclRegexPatterns';
+import { fieldType, fieldTypeValue } from './hclRegexPatterns';
+import { findFieldTypeSids, findFieldValueSids } from './resourceSidLocators/chatbotSidLocators';
 
 const account = 'aselo-terraform';
 const hclFile = '../twilio-iac/aselo-terraform/chatbots.tf';
@@ -10,43 +11,53 @@ const modulePrefix = '';
 
 const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
-async function processHCLFile(): Promise<void> {
-  const chatbotHCL = FS.readFileSync(`../twilio-iac/${account}/chatbots.tf`, {
+enum ResourceType {
+  AssistantFieldValue = 'twilio_autopilot_assistants_field_types_field_values_v1',
+  AssistantFieldType = 'twilio_autopilot_assistants_field_values_v1',
+}
+
+export type FieldValueParser = {
+  pattern: RegExp;
+  findResourceSids: (client: twilio.Twilio, captures: Record<string, string>) => Promise<string[]>;
+};
+
+const registry: Record<ResourceType, FieldValueParser> = {
+  [ResourceType.AssistantFieldValue]: {
+    pattern: fieldTypeValue,
+    findResourceSids: findFieldValueSids,
+  },
+  [ResourceType.AssistantFieldType]: {
+    pattern: fieldType,
+    findResourceSids: findFieldTypeSids,
+  },
+};
+
+async function processResourceTypeInHCLFile(resourceType: ResourceType): Promise<void> {
+  const hcl = FS.readFileSync(`../twilio-iac/${account}/chatbots.tf`, {
     encoding: 'utf-8',
   }).toString();
-
-  type HCLMatches = {
-    resourceName: string;
-    assistantSid: string;
-    fieldTypeSid: string;
-  };
-
-  const matches = chatbotHCL.matchAll(fieldTypeValue);
+  const { pattern, findResourceSids } = registry[resourceType];
+  const matches = hcl.matchAll(pattern);
   if (!matches) {
     throw new Error(`Regex failed to parse any resources from ${hclFile}`);
   } else {
     // eslint-disable-next-line no-restricted-syntax
     for (const match of matches) {
       if (match.groups) {
-        const fieldTypeValueHCL = <HCLMatches>match.groups;
-        const resource = fieldTypeValueHCL.resourceName;
-        // eslint-disable-next-line no-await-in-loop
-        const assistant = await client.autopilot.assistants(fieldTypeValueHCL.assistantSid);
-        // eslint-disable-next-line no-await-in-loop
-        const assistantSid = await assistant.fetch();
-        // eslint-disable-next-line no-await-in-loop
-        const fieldTypeSid = await assistant.fieldTypes(fieldTypeValueHCL.fieldTypeSid).fetch();
+        const captures = match.groups;
+        const resource = captures.resourceName;
 
-        attemptTerraformImport(
-          `${assistantSid}/${fieldTypeSid}`,
-          `${modulePrefix}${resource}`,
-          account,
+        // eslint-disable-next-line no-await-in-loop
+        const resourceSids = await findResourceSids(client, captures);
+
+        resourceSids.forEach((sid) =>
+          attemptTerraformImport(sid, `${modulePrefix}${resource}`, account),
         );
       }
     }
   }
 }
 
-processHCLFile().catch((err) => {
+processResourceTypeInHCLFile(ResourceType.AssistantFieldValue).catch((err) => {
   logError(err);
 });
