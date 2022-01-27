@@ -25,9 +25,9 @@ export const definitionObject: CSAMFormDefinitionObject = {
     type: 'input',
     required: { value: true, message: 'RequiredFieldError' },
     maxLength: 1000,
-    pattern: {
-      value: urlRegex,
-      message: 'NotURLFieldError',
+    validate: data => {
+      if (!data.match(urlRegex)) return 'NotURLFieldError';
+      return null;
     },
   },
   description: {
