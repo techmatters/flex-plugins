@@ -4,19 +4,22 @@ import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { FormProvider } from 'react-hook-form';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
 import IssueCategorizationTab from '../../../components/tabbedForms/IssueCategorizationTab';
 import { ToggleViewButton } from '../../../styles/HrmStyles';
 import HrmTheme from '../../../styles/HrmTheme';
 import { namespace, contactFormsBase } from '../../../states';
 import { setCategoriesGridView } from '../../../states/contacts/actions';
-import mockV1 from '../../../formDefinitions/v1';
 
+jest.mock('../../../components/CSAMReport/CSAMReportFormDefinition');
+
+let mockV1;
 const helpline = 'ChildLine Zambia (ZM)';
-const definition = mockV1.tabbedForms.IssueCategorizationTab(helpline);
+let definition;
 
 // Copy paste from state/contacts initial state
-const expanded = Object.keys(definition).reduce((acc, category) => ({ ...acc, [category]: false }), {});
+let expanded;
 
 const taskId = 'task-id';
 const mockStore = configureMockStore([]);
@@ -27,6 +30,12 @@ const themeConf = {
 
 const getGridIcon = wrapper => wrapper.find(ToggleViewButton).at(0);
 const getListIcon = wrapper => wrapper.find(ToggleViewButton).at(1);
+
+beforeAll(async () => {
+  mockV1 = await loadDefinition(DefinitionVersionId.v1);
+  definition = mockV1.tabbedForms.IssueCategorizationTab(helpline);
+  expanded = Object.keys(definition).reduce((acc, category) => ({ ...acc, [category]: false }), {});
+});
 
 test('Click on view subcategories as grid icon', () => {
   const store = mockStore({

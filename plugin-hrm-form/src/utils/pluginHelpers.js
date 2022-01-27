@@ -9,14 +9,19 @@ const defaultMessages = require(`../translations/${defaultLanguage}/messages.jso
 const ptBRTranslation = require(`../translations/pt-BR/flexUI.json`);
 const ptBRMessages = require(`../translations/pt-BR/messages.json`);
 
+const enINTranslation = require(`../translations/en-IN/flexUI.json`);
+const enINMessages = require(`../translations/en-IN/messages.json`);
+
 const bundledTranslations = {
   [defaultLanguage]: defaultTranslation,
   'pt-BR': ptBRTranslation,
+  'en-IN': enINTranslation,
 };
 
 const bundledMessages = {
   [defaultLanguage]: defaultMessages,
   'pt-BR': ptBRMessages,
+  'en-IN': enINMessages,
 };
 
 const translationErrorMsg = 'Could not translate, using default';

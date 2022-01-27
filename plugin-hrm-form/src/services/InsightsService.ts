@@ -1,5 +1,15 @@
 /* eslint-disable camelcase */
 import { get, cloneDeep } from 'lodash';
+import {
+  DefinitionVersion,
+  callTypes,
+  FieldType,
+  InsightsFieldSpec,
+  InsightsFormSpec,
+  OneToOneConfigSpec,
+  OneToManyConfigSpec,
+  OneToManyConfigSpecs,
+} from 'hrm-form-definitions';
 
 import { isNonDataCallType } from '../states/ValidationRules';
 import { mapChannelForInsights } from '../utils/mappers';
@@ -7,18 +17,8 @@ import { getDateTime } from '../utils/helpers';
 import { TaskEntry } from '../states/contacts/reducer';
 import { Case, CustomITask } from '../types/types';
 import { formatCategories } from '../utils/formatters';
-import callTypes from '../states/DomainConstants';
-import {
-  FieldType,
-  InsightsFieldSpec,
-  InsightsFormSpec,
-  OneToOneConfigSpec,
-  OneToManyConfigSpec,
-  OneToManyConfigSpecs,
-} from '../insightsConfig/types';
 import { getDefinitionVersions } from '../HrmFormPlugin';
 import { shouldSendInsightsData } from '../utils/setUpActions';
-import type { DefinitionVersion } from '../components/common/forms/types';
 
 /*
  * 'Any' is the best we can do, since we're limited by Twilio here.

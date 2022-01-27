@@ -1,7 +1,7 @@
 import { isFuture } from 'date-fns';
+import type { FormDefinition, HelplineDefinitions } from 'hrm-form-definitions';
 
 import { channelTypes, otherContactChannels } from '../../states/DomainConstants';
-import type { FormDefinition, HelplineDefinitions } from '../common/forms/types';
 import { mapChannelForInsights } from '../../utils/mappers';
 import { splitDate } from '../../utils/helpers';
 import type { CounselorsList } from '../../states/configuration/types';

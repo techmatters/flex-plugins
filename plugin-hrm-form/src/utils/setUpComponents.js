@@ -361,12 +361,14 @@ export const setUpStandaloneSearch = () => {
 };
 
 /**
- * Removes the actions buttons from TaskCanvasHeaders if the task is wrapping
+ * Removes the actions buttons from TaskCanvasHeaders if the task is wrapping or if dual write is on (temporary prevents bug)
+ * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
  */
-export const removeActionsIfWrapping = () => {
+export const removeTaskCanvasHeaderActions = setupObject => {
+  const { featureFlags } = setupObject;
   // Must use submit buttons in CRM container to complete task
   Flex.TaskCanvasHeader.Content.remove('actions', {
-    if: props => props.task && props.task.status === 'wrapping',
+    if: props => (props.task && props.task.status === 'wrapping') || featureFlags.enable_dual_write,
   });
 };
 

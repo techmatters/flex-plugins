@@ -1,13 +1,13 @@
+import { DefinitionVersionId } from 'hrm-form-definitions';
+
 import { Case, SearchContact } from '../types/types';
 import { getDefinitionVersionsList } from '../services/ServerlessService';
 import { getDefinitionVersions } from '../HrmFormPlugin';
 
 // eslint-disable-next-line import/no-unused-modules
-const getMissingDefinitionVersions = async (versions: string[]) => {
+const getMissingDefinitionVersions = async (versions: DefinitionVersionId[]) => {
   const { definitionVersions } = getDefinitionVersions();
-  const missingDefinitionVersions = Object.keys(
-    versions.reduce((accum, v) => (definitionVersions[v] ? accum : { ...accum, [v]: true }), {}),
-  );
+  const missingDefinitionVersions: DefinitionVersionId[] = versions.filter(v => !definitionVersions[v]);
 
   // eslint-disable-next-line sonarjs/prefer-immediate-return
   const definitions = await getDefinitionVersionsList(missingDefinitionVersions);

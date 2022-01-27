@@ -1,6 +1,7 @@
 /* eslint-disable sonarjs/prefer-immediate-return */
 import { set } from 'lodash/fp';
 import { ITask, TaskHelper, Actions as FlexActions } from '@twilio/flex-ui';
+import type { CategoriesDefinition, CategoryEntry, FormDefinition, FormItemDefinition } from 'hrm-form-definitions';
 
 import { createNewTaskEntry, TaskEntry } from '../states/contacts/reducer';
 import { isNonDataCallType } from '../states/ValidationRules';
@@ -10,12 +11,6 @@ import { getLimitAndOffsetParams } from './PaginationParams';
 import fetchHrmApi from './fetchHrmApi';
 import { getDateTime } from '../utils/helpers';
 import { getConfig, getDefinitionVersions } from '../HrmFormPlugin';
-import type {
-  CategoriesDefinition,
-  CategoryEntry,
-  FormDefinition,
-  FormItemDefinition,
-} from '../components/common/forms/types';
 import {
   InformationObject,
   ContactRawJson,
@@ -191,7 +186,7 @@ const saveContactToHrm = async (
   // This might change if isNonDataCallType, that's why we use rawForm
   const timeOfContact = getDateTime(rawForm.contactlessTask);
 
-  const { helpline } = form;
+  const { helpline, csamReports } = form;
   /*
    * We do a transform from the original and then add things.
    * Not sure if we should drop that all into one function or not.
@@ -219,6 +214,7 @@ const saveContactToHrm = async (
     taskId: uniqueIdentifier,
     channelSid,
     serviceSid,
+    csamReports,
   };
 
   const options = {
@@ -240,6 +236,7 @@ export const saveContact = async (
 ) => {
   const response = await saveContactToHrm(task, form, workerSid, uniqueIdentifier, shouldFillEndMillis);
 
+  // TODO: add catch clause to handle saving to Sync Doc
   try {
     await saveContactToExternalBackend(task, response.requestPayload);
   } finally {

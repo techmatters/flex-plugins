@@ -6,14 +6,14 @@ import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
-import '../../mockGetConfig';
-
+import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import { UnconnectedViewContact } from '../../../components/case/ViewContact';
 import HrmTheme from '../../../styles/HrmTheme';
 import { ContactDetailsSections } from '../../../components/common/ContactDetails';
 import { adaptFormToContactDetails } from '../../../components/case/ContactDetailsAdapter';
-import mockV1 from '../../../formDefinitions/v1';
+import { getDefinitionVersions } from '../../../HrmFormPlugin';
 
 expect.extend(toHaveNoViolations);
 
@@ -132,173 +132,181 @@ const tempInfo = {
     timeOfContact: '8/12/2020',
   },
 };
+describe('View Contact', () => {
+  let mockV1;
+  let initialState;
 
-const initialState = {
-  'plugin-hrm-form': {
-    configuration: {
-      counselors: {
-        list: [],
-        hash: {},
+  beforeAll(async () => {
+    mockV1 = await loadDefinition(DefinitionVersionId.v1);
+    mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
+    initialState = {
+      'plugin-hrm-form': {
+        configuration: {
+          counselors: {
+            list: [],
+            hash: {},
+          },
+          definitionVersions: { v1: mockV1 },
+          currentDefinitionVersion: mockV1,
+        },
       },
-      definitionVersions: { v1: mockV1 },
-      currentDefinitionVersion: mockV1,
-    },
-  },
-};
+    };
+  });
 
-const form = {
-  helpline: 'helpline',
-};
-
-test('displays counselor, date and contact details', async () => {
-  adaptFormToContactDetails.mockReturnValueOnce(contact);
-  const store = mockStore(initialState);
-
-  render(
-    <Provider store={store}>
-      <StorelessThemeProvider themeConf={themeConf}>
-        <UnconnectedViewContact
-          task={task}
-          form={form}
-          counselorsHash={counselorsHash}
-          tempInfo={tempInfo}
-          updateTempInfo={jest.fn()}
-          onClickClose={jest.fn()}
-          route={route}
-        />
-      </StorelessThemeProvider>
-    </Provider>,
-  );
-
-  await waitFor(() => expect(screen.getByTestId('Case-ActionHeaderCounselor')).toBeInTheDocument());
-
-  expect(screen.getByTestId('Case-ActionHeaderCounselor')).toHaveTextContent('John Doe');
-  expect(screen.getByTestId('Case-ActionHeaderAdded')).toHaveTextContent('8/12/2020');
-  expect(screen.getByTestId('ContactDetails-Container')).toBeInTheDocument();
-  expect(screen.getByText('Jill Smith'.toUpperCase())).toBeInTheDocument();
-});
-
-test('click on x button', async () => {
-  const onClickClose = jest.fn();
-  adaptFormToContactDetails.mockReturnValueOnce(contact);
-  const store = mockStore(initialState);
-
-  render(
-    <Provider store={store}>
-      <StorelessThemeProvider themeConf={themeConf}>
-        <UnconnectedViewContact
-          task={task}
-          form={form}
-          counselorsHash={counselorsHash}
-          tempInfo={tempInfo}
-          updateTempInfo={jest.fn()}
-          onClickClose={onClickClose}
-          route={route}
-        />
-      </StorelessThemeProvider>
-    </Provider>,
-  );
-
-  await waitFor(() => expect(screen.getByTestId('Case-CloseCross')).toBeInTheDocument());
-
-  screen.getByTestId('Case-CloseCross').click();
-
-  expect(onClickClose).toHaveBeenCalled();
-});
-
-test('click on close button', async () => {
-  const onClickClose = jest.fn();
-  adaptFormToContactDetails.mockReturnValueOnce(contact);
-  const store = mockStore(initialState);
-
-  render(
-    <Provider store={store}>
-      <StorelessThemeProvider themeConf={themeConf}>
-        <UnconnectedViewContact
-          task={task}
-          form={form}
-          counselorsHash={counselorsHash}
-          tempInfo={tempInfo}
-          updateTempInfo={jest.fn()}
-          onClickClose={onClickClose}
-          route={route}
-        />
-      </StorelessThemeProvider>
-    </Provider>,
-  );
-
-  await waitFor(() => expect(screen.getByTestId('Case-ViewContactScreen-CloseButton')).toBeInTheDocument());
-
-  screen.getByTestId('Case-ViewContactScreen-CloseButton').click();
-
-  expect(onClickClose).toHaveBeenCalled();
-});
-
-test('click on expand section', async () => {
-  const updateTempInfo = jest.fn();
-  adaptFormToContactDetails.mockReturnValueOnce(contact);
-  const store = mockStore(initialState);
-
-  render(
-    <Provider store={store}>
-      <StorelessThemeProvider themeConf={themeConf}>
-        <UnconnectedViewContact
-          task={task}
-          form={form}
-          counselorsHash={counselorsHash}
-          tempInfo={tempInfo}
-          updateTempInfo={updateTempInfo}
-          onClickClose={jest.fn()}
-          route={route}
-        />
-      </StorelessThemeProvider>
-    </Provider>,
-  );
-
-  const updatedTempInfo = {
-    ...tempInfo,
-    info: {
-      ...tempInfo.info,
-      detailsExpanded: {
-        ...tempInfo.info.detailsExpanded,
-        [ContactDetailsSections.CHILD_INFORMATION]: !tempInfo.info.detailsExpanded[
-          ContactDetailsSections.CHILD_INFORMATION
-        ],
-      },
-    },
+  const form = {
+    helpline: 'helpline',
   };
 
-  await waitFor(() => expect(screen.getByTestId('ContactDetails-Section-ChildInformation')).toBeInTheDocument());
+  test('displays counselor, date and contact details', async () => {
+    adaptFormToContactDetails.mockReturnValueOnce(contact);
+    const store = mockStore(initialState);
 
-  screen.getByTestId('ContactDetails-Section-ChildInformation').click();
+    render(
+      <Provider store={store}>
+        <StorelessThemeProvider themeConf={themeConf}>
+          <UnconnectedViewContact
+            task={task}
+            form={form}
+            counselorsHash={counselorsHash}
+            tempInfo={tempInfo}
+            updateTempInfo={jest.fn()}
+            onClickClose={jest.fn()}
+            route={route}
+          />
+        </StorelessThemeProvider>
+      </Provider>,
+    );
 
-  expect(updateTempInfo).toHaveBeenCalledWith(updatedTempInfo, task.taskSid);
-});
+    await waitFor(() => expect(screen.getByTestId('Case-ActionHeaderCounselor')).toBeInTheDocument());
 
-test('a11y', async () => {
-  adaptFormToContactDetails.mockReturnValueOnce(contact);
-  const store = mockStore(initialState);
-  const wrapper = mount(
-    <Provider store={store}>
-      <StorelessThemeProvider themeConf={themeConf}>
-        <UnconnectedViewContact
-          task={task}
-          form={form}
-          counselorsHash={counselorsHash}
-          tempInfo={tempInfo}
-          updateTempInfo={jest.fn()}
-          onClickClose={jest.fn()}
-          route={route}
-        />
-      </StorelessThemeProvider>
-    </Provider>,
-  );
+    expect(screen.getByTestId('Case-ActionHeaderCounselor')).toHaveTextContent('John Doe');
+    expect(screen.getByTestId('Case-ActionHeaderAdded')).toHaveTextContent('8/12/2020');
+    expect(screen.getByTestId('ContactDetails-Container')).toBeInTheDocument();
+    expect(screen.getByText('Jill Smith'.toUpperCase())).toBeInTheDocument();
+  });
 
-  const rules = {
-    region: { enabled: false },
-  };
+  test('click on x button', async () => {
+    const onClickClose = jest.fn();
+    adaptFormToContactDetails.mockReturnValueOnce(contact);
+    const store = mockStore(initialState);
 
-  const axe = configureAxe({ rules });
-  const results = await axe(wrapper.getDOMNode());
-  expect(results).toHaveNoViolations();
+    render(
+      <Provider store={store}>
+        <StorelessThemeProvider themeConf={themeConf}>
+          <UnconnectedViewContact
+            task={task}
+            form={form}
+            counselorsHash={counselorsHash}
+            tempInfo={tempInfo}
+            updateTempInfo={jest.fn()}
+            onClickClose={onClickClose}
+            route={route}
+          />
+        </StorelessThemeProvider>
+      </Provider>,
+    );
+
+    await waitFor(() => expect(screen.getByTestId('Case-CloseCross')).toBeInTheDocument());
+
+    screen.getByTestId('Case-CloseCross').click();
+
+    expect(onClickClose).toHaveBeenCalled();
+  });
+
+  test('click on close button', async () => {
+    const onClickClose = jest.fn();
+    adaptFormToContactDetails.mockReturnValueOnce(contact);
+    const store = mockStore(initialState);
+
+    render(
+      <Provider store={store}>
+        <StorelessThemeProvider themeConf={themeConf}>
+          <UnconnectedViewContact
+            task={task}
+            form={form}
+            counselorsHash={counselorsHash}
+            tempInfo={tempInfo}
+            updateTempInfo={jest.fn()}
+            onClickClose={onClickClose}
+            route={route}
+          />
+        </StorelessThemeProvider>
+      </Provider>,
+    );
+
+    await waitFor(() => expect(screen.getByTestId('Case-ViewContactScreen-CloseButton')).toBeInTheDocument());
+
+    screen.getByTestId('Case-ViewContactScreen-CloseButton').click();
+
+    expect(onClickClose).toHaveBeenCalled();
+  });
+
+  test('click on expand section', async () => {
+    const updateTempInfo = jest.fn();
+    adaptFormToContactDetails.mockReturnValueOnce(contact);
+    const store = mockStore(initialState);
+
+    render(
+      <Provider store={store}>
+        <StorelessThemeProvider themeConf={themeConf}>
+          <UnconnectedViewContact
+            task={task}
+            form={form}
+            counselorsHash={counselorsHash}
+            tempInfo={tempInfo}
+            updateTempInfo={updateTempInfo}
+            onClickClose={jest.fn()}
+            route={route}
+          />
+        </StorelessThemeProvider>
+      </Provider>,
+    );
+
+    const updatedTempInfo = {
+      ...tempInfo,
+      info: {
+        ...tempInfo.info,
+        detailsExpanded: {
+          ...tempInfo.info.detailsExpanded,
+          [ContactDetailsSections.CHILD_INFORMATION]: !tempInfo.info.detailsExpanded[
+            ContactDetailsSections.CHILD_INFORMATION
+          ],
+        },
+      },
+    };
+
+    await waitFor(() => expect(screen.getByTestId('ContactDetails-Section-ChildInformation')).toBeInTheDocument());
+
+    screen.getByTestId('ContactDetails-Section-ChildInformation').click();
+
+    expect(updateTempInfo).toHaveBeenCalledWith(updatedTempInfo, task.taskSid);
+  });
+
+  test('a11y', async () => {
+    adaptFormToContactDetails.mockReturnValueOnce(contact);
+    const store = mockStore(initialState);
+    const wrapper = mount(
+      <Provider store={store}>
+        <StorelessThemeProvider themeConf={themeConf}>
+          <UnconnectedViewContact
+            task={task}
+            form={form}
+            counselorsHash={counselorsHash}
+            tempInfo={tempInfo}
+            updateTempInfo={jest.fn()}
+            onClickClose={jest.fn()}
+            route={route}
+          />
+        </StorelessThemeProvider>
+      </Provider>,
+    );
+
+    const rules = {
+      region: { enabled: false },
+    };
+
+    const axe = configureAxe({ rules });
+    const results = await axe(wrapper.getDOMNode());
+    expect(results).toHaveNoViolations();
+  });
 });

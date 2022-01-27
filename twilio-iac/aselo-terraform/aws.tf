@@ -61,6 +61,7 @@ resource "aws_ssm_parameter" "main_group" {
     ACCESS_TOKEN = jsonencode(["DATADOG", var.datadog_access_token, "Datadog - Access Token"])
 
   }
+  # Deserialise the JSON used for the keys - this way we can have multiple values per key
   name  = "${var.short_environment}_${jsondecode(each.value)[0]}_${var.short_helpline}_${each.key}"
   type  = "SecureString"
   value = jsondecode(each.value)[1]

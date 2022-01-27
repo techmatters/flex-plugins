@@ -1,8 +1,15 @@
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+
 import * as types from '../../../states/configuration/types';
 import * as actions from '../../../states/configuration/actions';
-import mockV1 from '../../../formDefinitions/v1';
 
 describe('test action creators', () => {
+  let mockV1;
+
+  beforeAll(async () => {
+    mockV1 = await loadDefinition(DefinitionVersionId.v1);
+  });
+
   test('changeLanguage', async () => {
     const language = 'es';
 

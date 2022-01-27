@@ -1,0 +1,192 @@
+{
+    "SafeSpot": {
+      "Missing children": {
+        "color": "#BBE3FF",
+        "subcategories": [
+          "Child abduction",
+          "Lost, unaccounted for or otherwise missing child",
+          "Runaway",
+          "Unspecified/Other"
+        ]
+      },
+      "Violence": {
+        "color": "#F5A623",
+        "subcategories": [
+          "Bullying in school",
+          "Bullying out of school school",
+          "Child labour (general)",
+          "Child labour (domestic)",
+          "Cyberbullying",
+          "Emotional maltreatment/abuse",
+          "Exposure to criminal violence",
+          "Exposure to domestic violence",
+          "Exposure to pornography",
+          "Gender-based harmful traditional practices (other than FGM)",
+          "Harmful traditional practices other than child marriage and FGM",
+          "Inappropriate sex talk",
+          "Indecent assault",
+          "Neglect (emotional)",
+          "Neglect (education)",
+          "Neglect (health & nutrition)",
+          "Neglect (physical)",
+          "Neglect (or negligent treatment)",
+          "Online sexual abuse",
+          "Online sexual exploitation",
+          "Physical maltreatment/abuse",
+          "Sexual violence",
+          "Verbal maltreatment/abuse",
+          "Unspecified/Other"
+        ]
+      },
+      "Trafficking": {
+        "color": "#e26e58",
+        "subcategories": [
+          "Child begging",
+          "Child used for criminal activity",
+          "Commercial sexual exploitation (offline)",
+          "Commercial sexual exploitation (online)",
+          "Labour exploitation (domestic servitude)"
+        ]
+      },        
+      "Mental Health": {
+        "color": "#F8E900",
+        "subcategories": [
+          "Addictive behaviours and substance use",
+          "Behavioural problems",
+          "Concerns about the self",
+          "Depression",
+          "Emotional distress - anger problems",
+          "Emotional distress - fear and anxiety problems",
+          "Emotional distress - mood problems",
+          "Feelings of being overwhelmed",
+          "Feelings of worry",
+          "Feeling unwanted",
+          "Hyperactivity/attention deficit",
+          "Loneliness",
+          "Neurodevelopmental concerns",
+          "Problems with eating behaviour",
+          "Self-esteem issues",
+          "Self-harming behaviour",
+          "Sleep disorders",
+          "Stress",
+          "Suicidal thoughts and suicide attempts",
+          "Traumatic distress",
+          "Unspecified/Other"
+        ]
+      },
+      "Physical Health": {
+        "color": "#E86B6B",
+        "subcategories": [
+          "COVID-19",
+          "General medical or lifestyle concerns",
+          "Medical or lifestyle information about HIV/AIDS",
+          "Pregnancy and maternal care",
+          "Sexual and reproductive health",
+          "Nutrition",
+          "Unspecified/Other"
+        ]
+      },
+      "Accessibility": {
+        "color": "#8055BA",
+        "subcategories": [
+          "Career Guidance",
+          "Education",
+          "Essential needs (food, shelther, water, clothing)",
+          "Financial services",
+          "General healthcare services",
+          "Legal services and advice",
+          "Mental health services",
+          "Sexual health services",
+          "Socio-economical services",
+          "Unspecified/Other"
+        ]
+      },
+      "Discrimination and Exclusion": {
+        "color": "#B971AF",
+        "subcategories": [
+          "Ethnicity/nationality",
+          "Financial situation",
+          "Gender",
+          "Gender identity or expression and sexual orientation",
+          "Health",
+          "Philosophical or religious beliefs",
+          "Socio-economic situation",
+          "Street children",
+          "Unspecified/Other"
+        ]
+      },
+      "Family Relationships": {
+        "color": "#239613",
+        "subcategories": [
+          "Adoption, fostering, and extended family placement",
+          "Child in children's home",
+          "Divorce/separation of parents",
+          "Family health and wellbeing",
+          "Family problems/disputes - conflict between parents/caregivers",
+          "Family problems/disputes - conflict between parents/caregivers and child",
+          "Family problems/disputes - conflict between child and other members of the family", 
+          "Grief/bereavement - family",
+          "Left behind children",
+          "Mental health - parental/relative",
+          "Relationship with sibling(s)",
+          "Relationship to caregiver"
+        ]
+      },
+      "Peer Relationships": {
+        "color": "#9AD703",
+        "subcategories": [
+          "Friends and friendships",
+          "Grief/bereavement - peers",
+          "Partner relationships",
+          "Classmates/colleagues relationships",
+          "Unspecified/Other"
+        ]
+      },
+      "Education and Occupation": {
+        "color": "#55AFAF",
+        "subcategories": [
+          "Academic issues",
+          "Challenges with online schooling",
+          "Child not attending school",
+          "Child truanting from school",
+          "Corporal punishment",
+          "Homework/study tips",
+          "Learning problems",
+          "Performance anxiety",
+          "Problems at work",
+          "Teacher and school problems",
+          "Unspecified/Other"
+        ]
+      },
+      "Sexuality": {
+        "color": "#506BA5",
+        "subcategories": [
+          "Sexual orientation and gender identity",
+          "Sexual behaviours",
+          "Unspecified/Other"
+        ]
+      },
+      "Disability": {
+        "color": "#b36ae3",
+        "subcategories": [
+          "Hearing disability",
+          "Intellectual disability",
+          "Hearing disability",
+          "Physical disability",
+          "Visual disability"
+        ]
+      },        
+      "Non-Counselling contacts": {
+        "color": "#767777",
+        "subcategories": [
+          "Complaints about the child helpline",
+          "No issue presented",
+          "Questions by parents",
+          "Questions about the child helpline",
+          "Questions about other services",
+          "\"Thank you for your assistance\"",
+          "Unspecified/Other"
+        ]
+      }
+    }
+  }

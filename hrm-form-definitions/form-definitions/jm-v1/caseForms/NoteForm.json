@@ -1,0 +1,34 @@
+[
+  {
+    "name": "subjective",
+    "label": "Subjective",
+    "type": "textarea",
+    "placeholder": "",
+    "rows": 5,
+    "width": 500
+  },
+  {
+    "name": "objective",
+    "label": "Objective",
+    "type": "textarea",
+    "placeholder": "",
+    "rows": 5,
+    "width": 500
+  },
+  {
+    "name": "assessment",
+    "label": "Assessment",
+    "type": "textarea",
+    "placeholder": "",
+    "rows": 5,
+    "width": 500
+  },
+  {
+    "name": "plan",
+    "label": "Plan",
+    "type": "textarea",
+    "placeholder": "",
+    "rows": 5,
+    "width": 500
+  }
+]

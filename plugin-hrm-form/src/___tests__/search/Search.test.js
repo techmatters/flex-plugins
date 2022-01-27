@@ -2,19 +2,19 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import renderer from 'react-test-renderer';
 import configureMockStore from 'redux-mock-store';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
 import '../mockStyled';
-import '../mockGetConfig';
-
+import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import Search from '../../components/search';
 import SearchForm from '../../components/search/SearchForm';
-import SearchResults from '../../components/search/SearchResults';
 import ContactDetails from '../../components/search/ContactDetails';
 import { SearchPages } from '../../states/search/types';
 import { channelTypes } from '../../states/DomainConstants';
-import mockV1 from '../../formDefinitions/v1';
+import { getDefinitionVersions } from '../../HrmFormPlugin';
 
 const mockStore = configureMockStore([]);
+let mockV1;
 
 jest.mock('../../services/ServerlessService', () => ({
   populateCounselors: async () => [],
@@ -74,6 +74,11 @@ function createState(
 const detailsExpanded = {
   'General details': true,
 };
+
+beforeAll(async () => {
+  mockV1 = await loadDefinition(DefinitionVersionId.v1);
+  mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
+});
 
 test('<Search> should display <SearchForm />', () => {
   const currentPage = SearchPages.form;

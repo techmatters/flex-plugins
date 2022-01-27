@@ -6,11 +6,12 @@ import { CircularProgress, IconButton } from '@material-ui/core';
 import { Link as LinkIcon } from '@material-ui/icons';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
+import { callTypes } from 'hrm-form-definitions';
 
 import { DetailsContainer, NameContainer, DetNameText } from '../styles/search';
 import Section from './Section';
 import SectionEntry from './SectionEntry';
-import callTypes, { channelTypes } from '../states/DomainConstants';
+import { channelTypes } from '../states/DomainConstants';
 import { isNonDataCallType } from '../states/ValidationRules';
 import { contactType } from '../types';
 import { formatDuration, formatName, formatCategories, mapChannel, mapChannelForInsights } from '../utils';
@@ -58,7 +59,7 @@ const Details: React.FC<Props> = ({
   }, [definitionVersions, updateDefinitionVersion, version]);
 
   // Object destructuring on contact
-  const { overview, details, counselor } = contact;
+  const { overview, details, counselor, csamReports } = contact;
   const {
     dateTime,
     name: childName,
@@ -93,6 +94,12 @@ const Details: React.FC<Props> = ({
 
   const definitionVersion = definitionVersions[version];
   const addedBy = counselorsHash[createdBy];
+
+  const csamReportsAttached =
+    csamReports &&
+    csamReports
+      .map(r => `CSAM on ${format(new Date(r.createdAt), 'yyyy MM dd h:mm aaaaa')}m\n#${r.csamReportId}`)
+      .join('\n\n');
 
   if (!definitionVersion)
     return (
@@ -211,6 +218,13 @@ const Details: React.FC<Props> = ({
               definition={e}
             />
           ))}
+          {csamReportsAttached && (
+            <SectionEntry
+              key="CaseInformation-AttachedCSAMReports"
+              description={<Template code="CSAMReportForm-ReportsSubmitted" />}
+              value={csamReportsAttached}
+            />
+          )}
         </Section>
       )}
     </DetailsContainer>

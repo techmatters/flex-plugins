@@ -1,8 +1,8 @@
 /* eslint-disable sonarjs/no-identical-functions */
 /* eslint-disable sonarjs/no-collapsible-if */
 import cloneDeep from 'lodash/cloneDeep';
+import { callTypes } from 'hrm-form-definitions';
 
-import callTypes from './DomainConstants';
 import { FieldType, ValidationType, isNotCategory, isNotSubcategory } from './ContactFormStateFactory';
 import { getConfig } from '../HrmFormPlugin';
 

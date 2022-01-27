@@ -4,6 +4,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import { useForm, FormProvider } from 'react-hook-form';
+import type { DefinitionVersion } from 'hrm-form-definitions';
 
 import ActionHeader from './ActionHeader';
 import {
@@ -22,7 +23,6 @@ import * as RoutingActions from '../../states/routing/actions';
 import { CaseState } from '../../states/case/reducer';
 import { updateCase } from '../../services/CaseService';
 import { createFormFromDefinition, disperseInputs, splitInHalf } from '../common/forms/formGenerators';
-import type { DefinitionVersion } from '../common/forms/types';
 import { transformValues } from '../../services/ContactService';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 import useFocus from '../../utils/useFocus';
@@ -116,15 +116,13 @@ AddNote.displayName = 'AddNote';
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const caseState: CaseState = state[namespace][connectedCaseBase]; // casting type as inference is not working for the store yet
   const connectedCaseState = caseState.tasks[ownProps.task.taskSid];
-  const { route } = state[namespace][routingBase].tasks[ownProps.task.taskSid];
 
-  return { connectedCaseState, route };
+  return { connectedCaseState };
 };
 
 const mapDispatchToProps = {
   updateTempInfo: CaseActions.updateTempInfo,
   setConnectedCase: CaseActions.setConnectedCase,
-  changeRoute: RoutingActions.changeRoute,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddNote);

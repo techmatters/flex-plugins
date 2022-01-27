@@ -3,7 +3,8 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
-import { useForm, FormProvider } from 'react-hook-form';
+import { useForm, FormProvider, SubmitErrorHandler, FieldValues } from 'react-hook-form';
+import type { DefinitionVersion } from 'hrm-form-definitions';
 
 import {
   Box,
@@ -30,15 +31,17 @@ import {
   splitInHalf,
   splitAt,
 } from '../common/forms/formGenerators';
-import type { DefinitionVersion } from '../common/forms/types';
 import type { CustomITask, StandaloneITask } from '../../types/types';
+import type { AppRoutesWithCase } from '../../states/routing/types';
 import useFocus from '../../utils/useFocus';
+import { recordingErrorHandler } from '../../fullStory';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;
   counselor: string;
   definitionVersion: DefinitionVersion;
   onClickClose: () => void;
+  route: AppRoutesWithCase['route'];
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -122,9 +125,9 @@ const AddPerpetrator: React.FC<Props> = ({
   }
 
   const { strings } = getConfig();
-  function onError() {
+  const onError: SubmitErrorHandler<FieldValues> = recordingErrorHandler('Case: Add Perpetrator', () => {
     window.alert(strings['Error-Form']);
-  }
+  });
 
   return (
     <FormProvider {...methods}>
@@ -175,9 +178,8 @@ AddPerpetrator.displayName = 'AddPerpetrator';
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const caseState: CaseState = state[namespace][connectedCaseBase]; // casting type as inference is not working for the store yet
   const connectedCaseState = caseState.tasks[ownProps.task.taskSid];
-  const { route } = state[namespace][routingBase].tasks[ownProps.task.taskSid];
 
-  return { connectedCaseState, route };
+  return { connectedCaseState };
 };
 
 const mapDispatchToProps = {

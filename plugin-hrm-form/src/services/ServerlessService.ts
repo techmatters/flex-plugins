@@ -1,11 +1,11 @@
 /* eslint-disable sonarjs/prefer-immediate-return */
 /* eslint-disable camelcase */
 import { ITask, Notifications } from '@twilio/flex-ui';
+import { DefinitionVersionId, loadDefinition, DefinitionVersion } from 'hrm-form-definitions';
 
 import fetchProtectedApi from './fetchProtectedApi';
 import { getConfig } from '../HrmFormPlugin';
-import definitionVersions from '../formDefinitions';
-import type { DefinitionVersion } from '../components/common/forms/types';
+import type { CSAMReportForm } from '../states/csam-report/types';
 
 type PopulateCounselorsReturn = { sid: string; fullName: string }[];
 
@@ -105,9 +105,10 @@ export const listWorkerQueues = async (body: {
  * Function that mimics the fetching of a version definition for all the forms used within the app.
  * Later on this will be fetched in async way.
  */
-export const getDefinitionVersion = async (version: string): Promise<DefinitionVersion> => definitionVersions[version];
+export const getDefinitionVersion = async (version: DefinitionVersionId): Promise<DefinitionVersion> =>
+  loadDefinition(version);
 
-export const getDefinitionVersionsList = async (missingDefinitionVersions: string[]) =>
+export const getDefinitionVersionsList = async (missingDefinitionVersions: DefinitionVersionId[]) =>
   Promise.all(
     missingDefinitionVersions.map(async version => {
       const definition = await getDefinitionVersion(version);
@@ -138,7 +139,11 @@ export const getWorkerAttributes = async (workerSid: string) => {
   return response;
 };
 
-export const postSurveyInit = async (body: { channelSid: string; taskSid: string }): Promise<any> => {
+export const postSurveyInit = async (body: {
+  channelSid: string;
+  taskSid: string;
+  taskLanguage?: string;
+}): Promise<any> => {
   const response = await fetchProtectedApi('/postSurveyInit', body);
   return response;
 };
@@ -167,6 +172,23 @@ export const getFileDownloadUrl = async (fileNameAtAws: string, fileName: string
 export const getFileUploadUrl = async (fileName: string, mimeType: string) => {
   const body = { fileName, mimeType };
   const response = await fetchProtectedApi('/getFileUploadUrl', body);
+  return response;
+};
+
+/**
+ * Send a CSAM report to IWF
+ */
+export const reportToIWF = async (form: CSAMReportForm) => {
+  const body = {
+    Reported_URL: form.webAddress,
+    Reporter_Description: form.description,
+    Reporter_Anonymous: form.anonymous ? 'Y' : 'N',
+    Reporter_First_Name: form.firstName,
+    Reporter_Last_Name: form.lastName,
+    Reporter_Email_ID: form.email,
+  };
+
+  const response = await fetchProtectedApi('/reportToIWF', body);
   return response;
 };
 

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
+    "preinstall": "cd ../hrm-form-definitions && npm run build",
     "lint": "eslint --ext js .",
     "lint:fix": "npm run lint -- --fix",
     "copyFlowLegacy": "node copyFlow.js",
@@ -12,7 +13,7 @@
     "copyFlow": "npm run compile && node dist/copyFlow/index.js",
     "importDefaultTwilioResourcesToTerraform": "npm run compile && node dist/terraformSupplemental/importDefaultTwilioResourcesToTerraform.js",
     "createTwilioApiKeyAndSsmSecret": "npm run compile && node dist/terraformSupplemental/createTwilioApiKeyAndSsmSecret.js",
-    "importToTerraform": "npm run compile && node dist/terraformSupplemental/importHCLTwilioResourcesToTerraform.js"
+    "generateNewHelplineFormDefinitions": "npm run compile && node dist/formDefinitions/generateNewHelplineFormDefinitions.js"
   },
   "author": "",
   "license": "ISC",
@@ -23,13 +24,15 @@
     "prompt": "^1.2.0",
     "prompt-confirm": "^2.0.4",
     "twilio": "^3.66.0",
-    "yargs": "^15.4.1"
+    "yargs": "17.3.1",
+    "hrm-form-definitions": "file:../hrm-form-definitions"
   },
   "devDependencies": {
     "@tsconfig/node14": "^1.0.1",
     "@types/node": "^16.3.2",
     "@types/node-fetch": "^2.5.12",
     "@types/prompt": "^1.1.1",
+    "@types/yargs": "^17.0.8",
     "@typescript-eslint/eslint-plugin": "^4.28.3",
     "@typescript-eslint/parser": "^4.28.3",
     "eslint": "^7.4.0",
