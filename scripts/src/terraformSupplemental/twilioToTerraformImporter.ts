@@ -30,7 +30,7 @@ export function attemptTerraformImport(
       logSuccess(`Running command: ${command} (from ${cwd})`);
       execSync(command, { cwd });
     } catch (error) {
-      if ((<any>error).stderr.toString().includes('Resource already managed by Terraform')) {
+      if ((<any>error).stderr?.toString().includes('Resource already managed by Terraform')) {
         logWarning(`${description} already in terraform, moving on.`);
       } else throw error;
     }

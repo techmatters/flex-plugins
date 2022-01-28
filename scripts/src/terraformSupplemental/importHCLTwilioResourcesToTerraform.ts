@@ -1,7 +1,7 @@
 import FS from 'fs';
 import twilio from 'twilio';
 import { attemptTerraformImport } from './twilioToTerraformImporter';
-import { logSuccess } from '../helpers/log';
+import { logSuccess, logWarning } from '../helpers/log';
 import { FieldValueParser, ResourceType } from './resourceParsers';
 import { assistant, fieldType, fieldTypeValue } from './hclRegexPatterns';
 import {
@@ -50,11 +50,12 @@ async function processResourceTypeInHCLFile(
   account: string,
   hcl: string,
   dryRun: boolean,
+  tfvarsFile?: string,
 ): Promise<void> {
   const { pattern, findResourceSids } = registry[resourceType];
   const matches = hcl.matchAll(pattern);
   if (!matches) {
-    throw new Error(`Regex failed to parse any resources of '${resourceType}'`);
+    logWarning(`Regex failed to parse any resources of '${resourceType}'`);
   } else {
     // eslint-disable-next-line no-restricted-syntax
     for (const match of matches) {
@@ -72,18 +73,27 @@ async function processResourceTypeInHCLFile(
             knownSidKey,
           );
           knownResourceSids[fqResourceName] = sid;
-          attemptTerraformImport(terraformId, fqResourceName, account, { dryRun });
+          attemptTerraformImport(terraformId, fqResourceName, account, { dryRun, tfvarsFile });
         });
       }
     }
   }
 }
 
+export type ImportResourcesOptions = {
+  dryRun: boolean;
+  resourceTypes: ResourceType[];
+  tfvarsFile: string;
+};
+
 export default async function importResources(
   accountDirectory: string,
   tfFilePath: string,
-  dryRun: boolean,
-  resourceTypes: ResourceType[] = <ResourceType[]>Object.keys(registry),
+  {
+    resourceTypes = <ResourceType[]>Object.keys(registry),
+    dryRun = false,
+    tfvarsFile,
+  }: Partial<ImportResourcesOptions>,
 ): Promise<void> {
   const tfFullFilePath = `../twilio-iac/${tfFilePath}`;
   logSuccess(`Loading from: ${tfFullFilePath}`);
@@ -95,6 +105,13 @@ export default async function importResources(
   // eslint-disable-next-line no-restricted-syntax
   for (const resourceType of resourceTypes) {
     // eslint-disable-next-line no-await-in-loop
-    await processResourceTypeInHCLFile(client, resourceType, accountDirectory, hcl, dryRun);
+    await processResourceTypeInHCLFile(
+      client,
+      resourceType,
+      accountDirectory,
+      hcl,
+      dryRun,
+      tfvarsFile,
+    );
   }
 }

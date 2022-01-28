@@ -30,6 +30,11 @@ async function main() {
           describe:
             'Do a dry run, it will log the terraform import commands it would have otherwise run to stdout instead for you to review / copy & run manually',
         });
+        argv.option('v', {
+          type: 'string',
+          alias: 'varFile',
+          describe: 'Specify a tfvars file relative to the account directory',
+        });
       },
       async (argv) => {
         if (argv.type && (argv.type as string[]).length > 0) {
@@ -42,19 +47,17 @@ async function main() {
               `The following specified resource types are not supported by this import tool: ${unrecognisedTypes}`,
             );
           } else {
-            await importResources(
-              argv.accountDirectory as string,
-              argv.tfFilePath as string,
-              argv.dryRun as boolean,
-              types as ResourceType[],
-            );
+            await importResources(argv.accountDirectory as string, argv.tfFilePath as string, {
+              tfvarsFile: argv.varFile as string,
+              dryRun: argv.dryRun as boolean,
+              resourceTypes: types as ResourceType[],
+            });
           }
         } else {
-          await importResources(
-            argv.accountDirectory as string,
-            argv.tfFilePath as string,
-            argv.dryRun as boolean,
-          );
+          await importResources(argv.accountDirectory as string, argv.tfFilePath as string, {
+            tfvarsFile: argv.varFile as string,
+            dryRun: argv.dryRun as boolean,
+          });
         }
       },
     )
