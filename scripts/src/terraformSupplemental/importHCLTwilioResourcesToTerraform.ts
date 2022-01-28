@@ -1,45 +1,60 @@
 import FS from 'fs';
 import twilio from 'twilio';
-import { logError } from '../helpers/log';
 import { attemptTerraformImport } from './twilioToTerraformImporter';
-import { fieldType, fieldTypeValue } from './hclRegexPatterns';
-import { findFieldTypeSids, findFieldValueSids } from './resourceSidLocators/chatbotSidLocators';
+import { logSuccess } from '../helpers/log';
+import { FieldValueParser, ResourceType } from './resourceParsers';
+import { assistant, fieldType, fieldTypeValue } from './hclRegexPatterns';
+import {
+  findAssistantSids,
+  findFieldTypeSids,
+  findFieldValueSids,
+} from './resourceSidLocators/chatbotSidLocators';
 
-const account = 'aselo-terraform';
-const hclFile = '../twilio-iac/aselo-terraform/chatbots.tf';
-const modulePrefix = '';
+const knownResourceSids: Record<string, string> = {};
 
-const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-
-enum ResourceType {
-  AssistantFieldValue = 'twilio_autopilot_assistants_field_types_field_values_v1',
-  AssistantFieldType = 'twilio_autopilot_assistants_field_values_v1',
-}
-
-export type FieldValueParser = {
-  pattern: RegExp;
-  findResourceSids: (client: twilio.Twilio, captures: Record<string, string>) => Promise<string[]>;
-};
-
-const registry: Record<ResourceType, FieldValueParser> = {
-  [ResourceType.AssistantFieldValue]: {
-    pattern: fieldTypeValue,
-    findResourceSids: findFieldValueSids,
+export const registry: Record<ResourceType, FieldValueParser> = {
+  [ResourceType.Assistant]: {
+    pattern: assistant,
+    findResourceSids: findAssistantSids,
   },
   [ResourceType.AssistantFieldType]: {
     pattern: fieldType,
     findResourceSids: findFieldTypeSids,
   },
+  [ResourceType.AssistantFieldValue]: {
+    pattern: fieldTypeValue,
+    findResourceSids: findFieldValueSids,
+  },
 };
 
-async function processResourceTypeInHCLFile(resourceType: ResourceType): Promise<void> {
-  const hcl = FS.readFileSync(`../twilio-iac/${account}/chatbots.tf`, {
-    encoding: 'utf-8',
-  }).toString();
+function formatFullyQualifiedTerraformResource(
+  resourceType: string,
+  resourceName: string,
+  resourceKey: string | number | undefined,
+): string {
+  const withoutKey = `${resourceType}.${resourceName}`;
+
+  switch (typeof resourceKey) {
+    case 'number':
+      return `${withoutKey}[${resourceKey}]`;
+    case 'string':
+      return `${withoutKey}["${resourceKey}"]`;
+    default:
+      return withoutKey;
+  }
+}
+
+async function processResourceTypeInHCLFile(
+  client: twilio.Twilio,
+  resourceType: ResourceType,
+  account: string,
+  hcl: string,
+  dryRun: boolean,
+): Promise<void> {
   const { pattern, findResourceSids } = registry[resourceType];
   const matches = hcl.matchAll(pattern);
   if (!matches) {
-    throw new Error(`Regex failed to parse any resources from ${hclFile}`);
+    throw new Error(`Regex failed to parse any resources of '${resourceType}'`);
   } else {
     // eslint-disable-next-line no-restricted-syntax
     for (const match of matches) {
@@ -48,16 +63,38 @@ async function processResourceTypeInHCLFile(resourceType: ResourceType): Promise
         const resource = captures.resourceName;
 
         // eslint-disable-next-line no-await-in-loop
-        const resourceSids = await findResourceSids(client, captures);
+        const resourceIds = await findResourceSids(client, knownResourceSids, captures);
 
-        resourceSids.forEach((sid) =>
-          attemptTerraformImport(sid, `${modulePrefix}${resource}`, account),
-        );
+        resourceIds.forEach(({ sid, terraformId, knownSidKey }) => {
+          const fqResourceName = formatFullyQualifiedTerraformResource(
+            resourceType,
+            resource,
+            knownSidKey,
+          );
+          knownResourceSids[fqResourceName] = sid;
+          attemptTerraformImport(terraformId, fqResourceName, account, { dryRun });
+        });
       }
     }
   }
 }
 
-processResourceTypeInHCLFile(ResourceType.AssistantFieldValue).catch((err) => {
-  logError(err);
-});
+export default async function importResources(
+  accountDirectory: string,
+  tfFilePath: string,
+  dryRun: boolean,
+  resourceTypes: ResourceType[] = <ResourceType[]>Object.keys(registry),
+): Promise<void> {
+  const tfFullFilePath = `../twilio-iac/${tfFilePath}`;
+  logSuccess(`Loading from: ${tfFullFilePath}`);
+  const hcl = FS.readFileSync(tfFullFilePath, {
+    encoding: 'utf-8',
+  }).toString();
+  const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+  logSuccess(`Processing these types in this order: ${resourceTypes}`);
+  // eslint-disable-next-line no-restricted-syntax
+  for (const resourceType of resourceTypes) {
+    // eslint-disable-next-line no-await-in-loop
+    await processResourceTypeInHCLFile(client, resourceType, accountDirectory, hcl, dryRun);
+  }
+}
