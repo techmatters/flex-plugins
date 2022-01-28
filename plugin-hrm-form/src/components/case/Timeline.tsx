@@ -61,7 +61,7 @@ const Timeline: React.FC<Props> = props => {
     const { twilioWorkerId } = activity;
     const info: CaseItemEntry = {
       id: null,
-      form: { referral: activity.referral },
+      form: { ...activity.referral },
       twilioWorkerId,
       createdAt: parseISO(activity.date).toISOString(),
     };
