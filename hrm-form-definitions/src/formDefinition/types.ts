@@ -1,5 +1,6 @@
 /* eslint-disable import/no-unused-modules */
-import { RegisterOptions } from './reackHookFormTypes';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { RegisterOptions } from 'react-hook-form';
 import { OneToOneConfigSpec, OneToManyConfigSpecs } from './insightsConfig';
 import { CallTypeKeys } from './callTypes';
 
@@ -188,4 +189,5 @@ export type DefinitionVersion = {
   caseStatus: {
     [status: string]: StatusInfo;
   };
+  prepopulateKeys: { ChildInformationTab: string[]; CallerInformationTab: string[] };
 };

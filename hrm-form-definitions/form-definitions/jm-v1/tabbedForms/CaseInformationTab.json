@@ -11,6 +11,11 @@
     "type": "mixed-checkbox"
   },
   {
+    "name": "didYouDiscussRightsWithTheChild",
+    "label": "Did you discuss rights with the child as well as Safeguarding Children adn Confidentiality Policy?",
+    "type": "mixed-checkbox"
+  },
+  {
     "name": "actionTaken",
     "label": "Action Taken",
     "type": "select",
@@ -55,11 +60,6 @@
   {
     "name": "okForCaseWorkerToCall",
     "label": "Ok for case worker to call?",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "didYouDiscussRightsWithTheChild",
-    "label": "Did you discuss rights with the child as well as Safeguarding Children adn Confidentiality Policy?",
     "type": "mixed-checkbox"
   },
   {
