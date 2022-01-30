@@ -1,6 +1,7 @@
 import { Page, test } from '@playwright/test';
-import { botStatement, callerStatement, WebChatPage } from '../webchat';
 import * as webchat from '../webchat';
+import { botStatement, callerStatement, WebChatPage } from '../webchat';
+import { statusIndicator, WorkerStatus } from '../workerStatus';
 
 test.describe.serial('Web chat caller', ()=> {
   let chatPage: WebChatPage, pluginPage: Page;
@@ -33,6 +34,7 @@ test.describe.serial('Web chat caller', ()=> {
       callerStatement("girl"),
       botStatement("We'll transfer you now. Please hold for a counsellor."),
     ])
+    await statusIndicator(pluginPage).setStatus(WorkerStatus.AVAILABLE);
   })
 
 })
