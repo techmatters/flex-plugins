@@ -1,13 +1,16 @@
-import { test, Page } from '@playwright/test';
-import * as webchat from '../webchat';
+import { Page, test } from '@playwright/test';
 import { botStatement, callerStatement, WebChatPage } from '../webchat';
+import * as webchat from '../webchat';
 
 test.describe.serial('Web chat caller', ()=> {
   let chatPage: WebChatPage, pluginPage: Page;
   test.beforeAll(async ({browser})=> {
     pluginPage = await browser.newPage();
-    await pluginPage.goto('/');
+    console.log('Plugin page browser session launched.');
+    await pluginPage.goto('/', {waitUntil: 'networkidle', timeout: 120000});
+    console.log('Plugin page visited.');
     chatPage = await webchat.open(browser);
+    console.log('Webchat browser session launched.');
   });
 
   test.afterAll(async ({browser})=> {

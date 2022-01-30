@@ -52,11 +52,13 @@ export async function open(browser: Browser): Promise<WebChatPage> {
     chatAvatars: page.locator('div.Twilio-MessageListItem div.Twilio-ChatItem-Avatar'),
   }
   await page.goto(ASELO_DEV_CHAT_URL);
-  await selectors.startChatButton.waitFor();
+  console.log('Waiting for start chat button to render.');
+  await selectors.toggleChatOpenButton.waitFor();
+  console.log('Found start chat button.');
 
   return {
     openChat: async ()=> {
-      await expect(selectors.chatPanelWindow).toHaveCount(0);
+      await expect(selectors.chatPanelWindow).toHaveCount(0, { timeout: 500});
       await selectors.toggleChatOpenButton.click();
       await expect(selectors.chatPanelWindow).toBeVisible();
     },
@@ -78,11 +80,16 @@ export async function open(browser: Browser): Promise<WebChatPage> {
         const { text, origin }: ChatStatement = statementItem;
         switch (origin) {
           case ChatStatementOrigin.CALLER:
+            console.debug('Entering caller text:', text);
             await selectors.chatInput.fill(text);
+            console.debug('Sending caller message:', text);
             await selectors.chatSendButton.click();
+            console.debug('Sent caller message:', text);
             break;
           case ChatStatementOrigin.BOT:
-            await selectors.chatPanelWindow.locator(`div.Twilio-MessageListItem div.Twilio-MessageBubble:text("${text}")`).waitFor();
+            console.debug('Waiting for bot text:', text);
+            await selectors.chatPanelWindow.locator(`div.Twilio-MessageListItem div.Twilio-MessageBubble-Body:text("${text}")`).waitFor({ timeout: 60000});
+            console.debug('Found for bot text:', text);
             break;
         }
       }
