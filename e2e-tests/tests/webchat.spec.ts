@@ -1,7 +1,16 @@
 import { Page, test } from '@playwright/test';
 import * as webchat from '../webchat';
-import { botStatement, callerStatement, WebChatPage } from '../webchat';
+import { WebChatPage } from '../webchat';
 import { statusIndicator, WorkerStatus } from '../workerStatus';
+import {
+  botStatement,
+  callerStatement,
+  ChatStatement,
+  ChatStatementOrigin,
+  counselorAutoStatement, counselorStatement
+} from '../chatModel';
+import { flexChat } from '../flexChat';
+import { tasks } from '../tasks';
 
 test.describe.serial('Web chat caller', ()=> {
   let chatPage: WebChatPage, pluginPage: Page;
@@ -23,7 +32,7 @@ test.describe.serial('Web chat caller', ()=> {
   test('Chat ', async ()=> {
     await chatPage.openChat();
     await chatPage.selectHelpline('Fake Helpline');
-    await chatPage.chat([
+    const chatScript = [
       botStatement("Welcome to the helpline. To help us better serve you, please answer the following three questions."),
       botStatement("Are you calling about yourself? Please answer Yes or No."),
       callerStatement("yes"),
@@ -33,7 +42,32 @@ test.describe.serial('Web chat caller', ()=> {
       botStatement("What is your gender?"),
       callerStatement("girl"),
       botStatement("We'll transfer you now. Please hold for a counsellor."),
-    ])
+      counselorAutoStatement('Hi, this is the counsellor. How can I help you?'),
+      callerStatement('CALLER TEST CHAT MESSAGE'),
+      counselorStatement('COUNSELLOR TEST CHAT MESSAGE'),
+    ]
+
+    const webchatProgress = chatPage.chat(chatScript);
+    const flexChatProgress: AsyncIterator<ChatStatement> = flexChat(pluginPage).chat(chatScript);
+
+    for await (const expectedCounselorStatement of webchatProgress) {
+      console.log('Statement for flex chat to process', expectedCounselorStatement);
+      if (expectedCounselorStatement) {
+        switch (expectedCounselorStatement.origin) {
+          case ChatStatementOrigin.COUNSELOR_AUTO:
+            if (expectedCounselorStatement.text.startsWith('Hi, this is the counsellor')) {
+              await tasks(pluginPage).acceptNextTask();
+            }
+            await flexChatProgress.next();
+            break;
+          default:
+            await flexChatProgress.next();
+            break;
+        }
+      }
+    }
+
+
     await statusIndicator(pluginPage).setStatus(WorkerStatus.AVAILABLE);
   })
 

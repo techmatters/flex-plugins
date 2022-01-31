@@ -1,41 +1,21 @@
 import { Browser, expect } from '@playwright/test';
+import { ChatStatement, ChatStatementOrigin } from './chatModel';
 
 const ASELO_DEV_CHAT_URL = 'https://tl-public-chat-staging.s3.amazonaws.com/chat-staging.html'
-
-enum ChatStatementOrigin {
-  BOT,
-  CALLER
-}
-
-type ChatStatement = { text: string, origin: ChatStatementOrigin};
-
-export function botStatement(text: string): ChatStatement {
-  return {
-    text,
-    origin: ChatStatementOrigin.BOT
-  }
-}
-
-export function callerStatement(text: string): ChatStatement {
-  return {
-    text,
-    origin: ChatStatementOrigin.CALLER
-  }
-}
 
 export type WebChatPage = {
   openChat: () => Promise<void>,
   selectHelpline: (helpline: string) => Promise<void>,
-  chat: (statements: ChatStatement[])=> Promise<void>,
+  chat: (statements: ChatStatement[])=> AsyncIterable<ChatStatement>,
   close: ()=> Promise<void>,
 }
 
 
 export async function open(browser: Browser): Promise<WebChatPage> {
-
   const page = await browser.newPage();
+  const chatPanelWindow = page.locator('div.Twilio-MainContainer');
   const selectors = {
-    chatPanelWindow: page.locator('div.Twilio-MainContainer'),
+    chatPanelWindow,
     toggleChatOpenButton:  page.locator('button.Twilio-EntryPoint'),
 
     //Pre engagement
@@ -50,6 +30,7 @@ export async function open(browser: Browser): Promise<WebChatPage> {
     chatSendButton: page.locator('button.Twilio-MessageInput-SendButton'),
     messageBubbles: page.locator('div.Twilio-MessageListItem div.Twilio-MessageBubble'),
     chatAvatars: page.locator('div.Twilio-MessageListItem div.Twilio-ChatItem-Avatar'),
+    messageWithText: (text: string) => chatPanelWindow.locator(`div.Twilio-MessageListItem div.Twilio-MessageBubble-Body:text-is("${text}")`)
   }
   await page.goto(ASELO_DEV_CHAT_URL);
   console.log('Waiting for start chat button to render.');
@@ -70,7 +51,7 @@ export async function open(browser: Browser): Promise<WebChatPage> {
       await selectors.helplineOptions.locator(`li[data-value='${helpline}']`).click();
       await expect(selectors.helplineOptions).toHaveCount(0);
     },
-    chat: async (statements: ChatStatement[] ) => {
+    chat: async function*(statements: ChatStatement[] ): AsyncIterable<ChatStatement> {
       await selectors.startChatButton.click();
       await selectors.chatInput.waitFor();
       let botAvatars = 0;
@@ -80,17 +61,15 @@ export async function open(browser: Browser): Promise<WebChatPage> {
         const { text, origin }: ChatStatement = statementItem;
         switch (origin) {
           case ChatStatementOrigin.CALLER:
-            console.debug('Entering caller text:', text);
             await selectors.chatInput.fill(text);
-            console.debug('Sending caller message:', text);
             await selectors.chatSendButton.click();
-            console.debug('Sent caller message:', text);
             break;
           case ChatStatementOrigin.BOT:
-            console.debug('Waiting for bot text:', text);
-            await selectors.chatPanelWindow.locator(`div.Twilio-MessageListItem div.Twilio-MessageBubble-Body:text("${text}")`).waitFor({ timeout: 60000});
-            console.debug('Found for bot text:', text);
+            await selectors.messageWithText(text).waitFor({ timeout: 60000});
             break;
+          default:
+            yield statementItem;
+            await selectors.messageWithText(text).waitFor({ timeout: 60000});
         }
       }
     },
