@@ -37,13 +37,8 @@ export const getConfig = () => {
   const { identity, token } = manager.user;
   const counselorName = manager.workerClient.attributes.full_name;
   const isSupervisor = manager.workerClient.attributes.roles.includes('supervisor');
-  const {
-    helplineLanguage,
-    definitionVersion,
-    pdfImagesSource,
-    multipleOfficeSupport,
-    permissionConfig,
-  } = manager.serviceConfiguration.attributes;
+  const { helplineLanguage, definitionVersion, pdfImagesSource, multipleOfficeSupport, permissionConfig } =
+    manager.serviceConfiguration.attributes;
   const featureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
   /**
    *  @type {{ strings: { [key: string]: string } }}
@@ -79,9 +74,8 @@ export const getConfig = () => {
  * @returns {{currentDefinitionVersion: import('./states/configuration/reducer').ConfigurationState['currentDefinitionVersion'], definitionVersions: import('./states/configuration/reducer').ConfigurationState['definitionVersions']}}
  */
 export const getDefinitionVersions = () => {
-  const { currentDefinitionVersion, definitionVersions } = Flex.Manager.getInstance().store.getState()[namespace][
-    configurationBase
-  ];
+  const { currentDefinitionVersion, definitionVersions } =
+    Flex.Manager.getInstance().store.getState()[namespace][configurationBase];
 
   return { currentDefinitionVersion, definitionVersions };
 };

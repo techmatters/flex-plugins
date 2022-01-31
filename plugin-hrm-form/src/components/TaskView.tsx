@@ -27,14 +27,8 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const TaskView: React.FC<Props> = props => {
-  const {
-    shouldRecreateState,
-    currentDefinitionVersion,
-    task,
-    contactForm,
-    updateHelpline,
-    recreateContactState,
-  } = props;
+  const { shouldRecreateState, currentDefinitionVersion, task, contactForm, updateHelpline, recreateContactState } =
+    props;
 
   React.useEffect(() => {
     if (shouldRecreateState) {

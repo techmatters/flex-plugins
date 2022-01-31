@@ -116,11 +116,8 @@ export function transformCategories(helpline, categories: TaskEntry['categories'
  */
 export function transformForm(form: TaskEntry): ContactRawJson {
   const { callType, metadata, contactlessTask } = form;
-  const {
-    CallerInformationTab,
-    CaseInformationTab,
-    ChildInformationTab,
-  } = getDefinitionVersions().currentDefinitionVersion.tabbedForms;
+  const { CallerInformationTab, CaseInformationTab, ChildInformationTab } =
+    getDefinitionVersions().currentDefinitionVersion.tabbedForms;
   // transform the form values before submit (e.g. "mixed" for 3-way checkbox becomes null)
   const transformedValues = {
     callerInformation: transformValues(CallerInformationTab)(form.callerInformation),

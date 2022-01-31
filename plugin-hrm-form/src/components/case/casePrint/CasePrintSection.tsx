@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+/* eslint-disable react/require-default-props */
 import React from 'react';
 import { Text, View } from '@react-pdf/renderer';
 import { FormDefinition } from 'hrm-form-definitions';

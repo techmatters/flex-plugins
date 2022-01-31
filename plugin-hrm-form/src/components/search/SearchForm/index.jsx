@@ -86,16 +86,8 @@ class SearchForm extends Component {
   }
 
   render() {
-    const {
-      firstName,
-      lastName,
-      counselor,
-      helpline,
-      phoneNumber,
-      dateFrom,
-      dateTo,
-      contactNumber,
-    } = this.props.values;
+    const { firstName, lastName, counselor, helpline, phoneNumber, dateFrom, dateTo, contactNumber } =
+      this.props.values;
 
     const counselorsOptions = this.props.counselors.map(e => ({
       label: e.fullName,

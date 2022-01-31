@@ -268,9 +268,8 @@ describe('View Contact', () => {
         ...tempInfo.info,
         detailsExpanded: {
           ...tempInfo.info.detailsExpanded,
-          [ContactDetailsSections.CHILD_INFORMATION]: !tempInfo.info.detailsExpanded[
-            ContactDetailsSections.CHILD_INFORMATION
-          ],
+          [ContactDetailsSections.CHILD_INFORMATION]:
+            !tempInfo.info.detailsExpanded[ContactDetailsSections.CHILD_INFORMATION],
         },
       },
     };

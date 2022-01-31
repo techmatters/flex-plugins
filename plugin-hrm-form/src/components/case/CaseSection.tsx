@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+/* eslint-disable react/require-default-props */
 import React, { ReactNode } from 'react';
 import { Template } from '@twilio/flex-ui';
 

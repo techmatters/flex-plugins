@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+/* eslint-disable react/require-default-props */
 import React, { useState } from 'react';
 import { format } from 'date-fns';
 import { Template } from '@twilio/flex-ui';

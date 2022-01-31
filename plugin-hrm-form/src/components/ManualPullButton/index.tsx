@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+/* eslint-disable react/require-default-props */
 import React, { useState } from 'react';
 import { Notifications } from '@twilio/flex-ui';
 import { connect } from 'react-redux';

@@ -42,46 +42,48 @@ type ContactsState = {
 export const emptyCategories = [];
 
 // eslint-disable-next-line import/no-unused-modules
-export const createNewTaskEntry = (definitions: DefinitionVersion) => (recreated: boolean): TaskEntry => {
-  const initialChildInformation = definitions.tabbedForms.ChildInformationTab.reduce(createStateItem, {});
-  const initialCallerInformation = definitions.tabbedForms.CallerInformationTab.reduce(createStateItem, {});
-  const initialCaseInformation = definitions.tabbedForms.CaseInformationTab.reduce(createStateItem, {});
+export const createNewTaskEntry =
+  (definitions: DefinitionVersion) =>
+  (recreated: boolean): TaskEntry => {
+    const initialChildInformation = definitions.tabbedForms.ChildInformationTab.reduce(createStateItem, {});
+    const initialCallerInformation = definitions.tabbedForms.CallerInformationTab.reduce(createStateItem, {});
+    const initialCaseInformation = definitions.tabbedForms.CaseInformationTab.reduce(createStateItem, {});
 
-  const { helplines } = definitions.helplineInformation;
-  const defaultHelpline = helplines.find(helpline => helpline.default).value || helplines[0].value;
-  if (defaultHelpline === null || defaultHelpline === undefined) throw new Error('No helpline definition was found');
+    const { helplines } = definitions.helplineInformation;
+    const defaultHelpline = helplines.find(helpline => helpline.default).value || helplines[0].value;
+    if (defaultHelpline === null || defaultHelpline === undefined) throw new Error('No helpline definition was found');
 
-  const categoriesMeta = {
-    gridView: false,
-    expanded: Object.keys(definitions.tabbedForms.IssueCategorizationTab(defaultHelpline)).reduce(
-      (acc, category) => ({ ...acc, [category]: false }),
-      {},
-    ),
+    const categoriesMeta = {
+      gridView: false,
+      expanded: Object.keys(definitions.tabbedForms.IssueCategorizationTab(defaultHelpline)).reduce(
+        (acc, category) => ({ ...acc, [category]: false }),
+        {},
+      ),
+    };
+
+    const metadata = {
+      startMillis: recreated ? null : new Date().getTime(),
+      endMillis: null,
+      tab: 1,
+      recreated,
+      categories: categoriesMeta,
+    };
+
+    const initialContactlessTaskTabDefinition = createContactlessTaskTabDefinition([], definitions.helplineInformation);
+    const contactlessTask = initialContactlessTaskTabDefinition.reduce(createStateItem, {});
+
+    return {
+      helpline: '',
+      callType: '',
+      childInformation: initialChildInformation,
+      callerInformation: initialCallerInformation,
+      caseInformation: initialCaseInformation,
+      contactlessTask,
+      categories: emptyCategories,
+      csamReports: [],
+      metadata,
+    };
   };
-
-  const metadata = {
-    startMillis: recreated ? null : new Date().getTime(),
-    endMillis: null,
-    tab: 1,
-    recreated,
-    categories: categoriesMeta,
-  };
-
-  const initialContactlessTaskTabDefinition = createContactlessTaskTabDefinition([], definitions.helplineInformation);
-  const contactlessTask = initialContactlessTaskTabDefinition.reduce(createStateItem, {});
-
-  return {
-    helpline: '',
-    callType: '',
-    childInformation: initialChildInformation,
-    callerInformation: initialCallerInformation,
-    caseInformation: initialCaseInformation,
-    contactlessTask,
-    categories: emptyCategories,
-    csamReports: [],
-    metadata,
-  };
-};
 
 const initialState: ContactsState = { tasks: {} };
 

@@ -90,20 +90,22 @@ export const formatStringToDateAndTime = (dateTime: string): string => {
  * Formats a form value into a readable string.
  * @param value Value to format
  */
-export const presentValue = (value: string | number | boolean) => (definition: FormItemDefinition = null) => {
-  const { strings } = getConfig();
+export const presentValue =
+  (value: string | number | boolean) =>
+  (definition: FormItemDefinition = null) => {
+    const { strings } = getConfig();
 
-  // eslint-disable-next-line dot-notation
-  if (definition && definition.type === 'mixed-checkbox' && value === null) return strings['Unknown'];
-  if (typeof value === 'string' && value.trim()) return value;
-  if (typeof value === 'number') return value.toString();
-  if (typeof value === 'boolean') {
-    if (value) return strings['SectionEntry-Yes'];
-    return strings['SectionEntry-No'];
-  }
+    // eslint-disable-next-line dot-notation
+    if (definition && definition.type === 'mixed-checkbox' && value === null) return strings['Unknown'];
+    if (typeof value === 'string' && value.trim()) return value;
+    if (typeof value === 'number') return value.toString();
+    if (typeof value === 'boolean') {
+      if (value) return strings['SectionEntry-Yes'];
+      return strings['SectionEntry-No'];
+    }
 
-  return '-';
-};
+    return '-';
+  };
 
 /**
  *

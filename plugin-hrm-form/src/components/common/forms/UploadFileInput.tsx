@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+/* eslint-disable react/require-default-props */
 import React, { useState, useRef, ReactDOM } from 'react';
 import { get } from 'lodash';
 import { Template } from '@twilio/flex-ui';

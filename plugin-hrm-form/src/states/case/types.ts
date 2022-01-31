@@ -194,35 +194,36 @@ export type CaseUpdater = (
   index: number | undefined,
 ) => t.CaseInfo;
 
-export const updateCaseSectionListByIndex = (
-  listProperty: string,
-  entryProperty: string = listProperty,
-): CaseUpdater => (original: t.CaseInfo, temporaryInfo: t.CaseItemEntry, index: number | undefined) => {
-  const sectionList = [...((original ?? {})[listProperty] ?? [])];
-  const { ...entry } = { ...temporaryInfo, [entryProperty]: temporaryInfo.form };
-  if (entryProperty !== 'form') {
-    delete entry.form;
-  }
-  if (typeof index === 'number') {
-    sectionList[index] = entry;
-  } else {
-    sectionList.push(entry);
-  }
+export const updateCaseSectionListByIndex =
+  (listProperty: string, entryProperty: string = listProperty): CaseUpdater =>
+  (original: t.CaseInfo, temporaryInfo: t.CaseItemEntry, index: number | undefined) => {
+    const sectionList = [...((original ?? {})[listProperty] ?? [])];
+    const { ...entry } = { ...temporaryInfo, [entryProperty]: temporaryInfo.form };
+    if (entryProperty !== 'form') {
+      delete entry.form;
+    }
+    if (typeof index === 'number') {
+      sectionList[index] = entry;
+    } else {
+      sectionList.push(entry);
+    }
 
-  return original ? { ...original, [listProperty]: sectionList } : { [listProperty]: sectionList };
-};
+    return original ? { ...original, [listProperty]: sectionList } : { [listProperty]: sectionList };
+  };
 
-export const updateCaseListByIndex = <T>(
-  listGetter: (ci: t.CaseInfo) => T[] | undefined,
-  caseItemToListItem: (caseItemEntry: t.CaseItemEntry) => T,
-): CaseUpdater => (original: t.CaseInfo, temporaryInfo: t.CaseItemEntry, index: number | undefined) => {
-  const copy = { ...original };
-  const sectionList = listGetter(copy);
-  const entry: T = caseItemToListItem(temporaryInfo);
-  if (typeof index === 'number') {
-    sectionList[index] = entry;
-  } else {
-    sectionList.push(entry);
-  }
-  return copy;
-};
+export const updateCaseListByIndex =
+  <T>(
+    listGetter: (ci: t.CaseInfo) => T[] | undefined,
+    caseItemToListItem: (caseItemEntry: t.CaseItemEntry) => T,
+  ): CaseUpdater =>
+  (original: t.CaseInfo, temporaryInfo: t.CaseItemEntry, index: number | undefined) => {
+    const copy = { ...original };
+    const sectionList = listGetter(copy);
+    const entry: T = caseItemToListItem(temporaryInfo);
+    if (typeof index === 'number') {
+      sectionList[index] = entry;
+    } else {
+      sectionList.push(entry);
+    }
+    return copy;
+  };

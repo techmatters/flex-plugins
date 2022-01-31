@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 /* eslint-disable react/prop-types */
+/* eslint-disable react/require-default-props */
 import React from 'react';
 import { Text, View, Image } from '@react-pdf/renderer';
 import { DefinitionVersionId } from 'hrm-form-definitions';

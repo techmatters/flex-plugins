@@ -137,7 +137,10 @@ const handleTransferredTask = async task => {
   await restoreFormIfTransfer(task);
 };
 
-export const getTaskLanguage = ({ helplineLanguage }) => ({ task }) => task.attributes.language || helplineLanguage;
+export const getTaskLanguage =
+  ({ helplineLanguage }) =>
+  ({ task }) =>
+    task.attributes.language || helplineLanguage;
 
 /**
  * @param {string} messageKey

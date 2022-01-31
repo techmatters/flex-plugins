@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/no-multi-comp */
+/* eslint-disable react/require-default-props */
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -187,7 +188,6 @@ Search.displayName = 'Search';
 Search.defaultProps = {
   currentIsCaller: false,
   currentContact: null,
-  error: null,
 };
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
@@ -199,8 +199,6 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const isStandaloneSearch = taskId === standaloneTaskSid;
 
   return {
-    isRequesting: taskSearchState.isRequesting,
-    error: taskSearchState.error,
     currentPage: taskSearchState.currentPage,
     currentContact: taskSearchState.currentContact,
     form: taskSearchState.form,

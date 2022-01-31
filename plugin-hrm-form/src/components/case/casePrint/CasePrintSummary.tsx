@@ -1,5 +1,6 @@
 /* eslint-disable dot-notation */
 /* eslint-disable react/prop-types */
+/* eslint-disable react/require-default-props */
 import React from 'react';
 import { Text, View } from '@react-pdf/renderer';
 

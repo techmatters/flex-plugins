@@ -1,6 +1,7 @@
 /* eslint-disable complexity */
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/prop-types */
+/* eslint-disable react/require-default-props */
 import React, { useEffect, useState } from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
@@ -253,12 +254,12 @@ const Case: React.FC<Props> = props => {
 
   type CaseItemInfo<T extends TemporaryCaseInfo> = T['info']; // A bit redundant but looks cleaner than the anonymous subtype reference syntax
 
-  const onCaseItemActionClick = <T extends TemporaryCaseInfo>(
-    targetSubroute: CaseItemRoute<T>,
-  ): ((entry: CaseItemInfo<T>) => void) => (entry: CaseItemInfo<T>) => {
-    props.updateTempInfo({ screen: targetSubroute, info: entry } as TemporaryCaseInfo, props.task.taskSid);
-    props.changeRoute({ route, subroute: targetSubroute } as AppRoutes, props.task.taskSid);
-  };
+  const onCaseItemActionClick =
+    <T extends TemporaryCaseInfo>(targetSubroute: CaseItemRoute<T>): ((entry: CaseItemInfo<T>) => void) =>
+    (entry: CaseItemInfo<T>) => {
+      props.updateTempInfo({ screen: targetSubroute, info: entry } as TemporaryCaseInfo, props.task.taskSid);
+      props.changeRoute({ route, subroute: targetSubroute } as AppRoutes, props.task.taskSid);
+    };
 
   const onAddCaseItemClick = (targetSubroute: CaseItemRoute) => () => {
     props.updateTempInfo({ screen: targetSubroute, info: null }, props.task.taskSid);

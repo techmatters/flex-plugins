@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+/* eslint-disable react/require-default-props */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
@@ -84,13 +85,8 @@ const Details: React.FC<Props> = ({
     channel === channelTypes.voice || channel === channelTypes.sms || channel === channelTypes.whatsapp;
   const formattedCategories = formatCategories(categories);
 
-  const {
-    GENERAL_DETAILS,
-    CALLER_INFORMATION,
-    CHILD_INFORMATION,
-    ISSUE_CATEGORIZATION,
-    CONTACT_SUMMARY,
-  } = ContactDetailsSections;
+  const { GENERAL_DETAILS, CALLER_INFORMATION, CHILD_INFORMATION, ISSUE_CATEGORIZATION, CONTACT_SUMMARY } =
+    ContactDetailsSections;
 
   const definitionVersion = definitionVersions[version];
   const addedBy = counselorsHash[createdBy];

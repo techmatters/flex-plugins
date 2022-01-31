@@ -1,5 +1,6 @@
 /* eslint-disable react/no-multi-comp */
 /* eslint-disable react/prop-types */
+/* eslint-disable react/require-default-props */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { parseISO } from 'date-fns';

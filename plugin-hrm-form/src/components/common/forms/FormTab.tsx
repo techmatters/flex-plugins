@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+/* eslint-disable react/require-default-props */
 import React from 'react';
 import ErrorIcon from '@material-ui/icons/Error';
 import { Template } from '@twilio/flex-ui';

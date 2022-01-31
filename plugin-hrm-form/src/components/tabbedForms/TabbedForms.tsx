@@ -92,9 +92,10 @@ const TabbedForms: React.FC<Props> = ({
     mode: 'onChange',
   });
 
-  const csamAttachments = React.useMemo(() => <CSAMAttachments csamReports={contactForm.csamReports} />, [
-    contactForm.csamReports,
-  ]);
+  const csamAttachments = React.useMemo(
+    () => <CSAMAttachments csamReports={contactForm.csamReports} />,
+    [contactForm.csamReports],
+  );
 
   const isMounted = React.useRef(false); // mutable value to avoid reseting the state in the first render.
 

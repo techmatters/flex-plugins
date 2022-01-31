@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-max-depth */
 /* eslint-disable react/prop-types */
+/* eslint-disable react/require-default-props */
 import { v4 as uuidV4 } from 'uuid';
 import React from 'react';
 import { Template } from '@twilio/flex-ui';

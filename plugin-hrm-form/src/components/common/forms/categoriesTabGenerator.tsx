@@ -2,6 +2,7 @@
 /* eslint-disable import/no-unused-modules */
 /* eslint-disable react/display-name */
 /* eslint-disable react/prop-types */
+/* eslint-disable react/require-default-props */
 import React from 'react';
 import GridIcon from '@material-ui/icons/GridOn';
 import ListIcon from '@material-ui/icons/List';
