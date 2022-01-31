@@ -574,7 +574,14 @@ const Case: React.FC<Props> = props => {
     case NewCaseSubroutes.ViewIncident:
       return <ViewCaseItem {...addScreenProps} itemType="Incident" formDefinition={caseForms.IncidentForm} />;
     case NewCaseSubroutes.ViewReferral:
-      return <ViewCaseItem {...addScreenProps} itemType="Referral" formDefinition={caseForms.ReferralForm} />;
+      return (
+        <ViewCaseItem
+          {...addScreenProps}
+          itemType="Referral"
+          formDefinition={caseForms.ReferralForm}
+          includeAddedTime={false}
+        />
+      );
     case NewCaseSubroutes.ViewDocument:
       return <ViewCaseItem {...addScreenProps} itemType="Document" formDefinition={caseForms.DocumentForm} />;
     case NewCaseSubroutes.CasePrintView:

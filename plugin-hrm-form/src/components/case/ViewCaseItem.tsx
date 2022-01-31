@@ -5,7 +5,7 @@ import { Template } from '@twilio/flex-ui';
 import { FormDefinition } from 'hrm-form-definitions';
 
 import { Container, StyledNextStepButton, BottomButtonBar, Box } from '../../styles/HrmStyles';
-import { CaseLayout } from '../../styles/case';
+import { CaseLayout, FullWidthFormTextContainer } from '../../styles/case';
 import { namespace, connectedCaseBase, configurationBase, RootState } from '../../states';
 import { CaseState } from '../../states/case/reducer';
 import SectionEntry from '../SectionEntry';
@@ -26,6 +26,7 @@ export type ViewCaseItemProps = {
   onClickClose: () => void;
   itemType: string;
   formDefinition: FormDefinition;
+  includeAddedTime?: boolean;
 };
 
 type Props = ViewCaseItemProps & ReturnType<typeof mapStateToProps>;
@@ -36,6 +37,7 @@ const ViewCaseItem: React.FC<Props> = ({
   onClickClose,
   formDefinition,
   itemType,
+  includeAddedTime = true,
 }) => {
   if (!isViewTemporaryCaseInfo(temporaryCaseInfo))
     throw new Error('This component only supports temporary case info of the ViewTemporaryCaseInfo type');
@@ -52,19 +54,26 @@ const ViewCaseItem: React.FC<Props> = ({
           onClickClose={onClickClose}
           counselor={counselorName}
           added={added}
+          includeTime = {includeAddedTime}
         />
-        <Box paddingTop="10px">
-          <>
-            {formDefinition.map(e => (
-              <SectionEntry
-                key={`entry-${e.label}`}
-                description={<Template code={e.label} />}
-                value={form[e.name]}
-                definition={e}
-              />
-            ))}
-          </>
-        </Box>
+        {formDefinition.length === 1 && formDefinition[0].type === 'textarea' ? (
+          <FullWidthFormTextContainer data-testid="Case-ViewCaseItemScreen-FullWidthTextArea">
+            {form[formDefinition[0].name]}
+          </FullWidthFormTextContainer>
+        ) : (
+          <Box paddingTop="10px">
+            <>
+              {formDefinition.map(e => (
+                <SectionEntry
+                  key={`entry-${e.label}`}
+                  description={<Template code={e.label} />}
+                  value={form[e.name]}
+                  definition={e}
+                />
+              ))}
+            </>
+          </Box>
+        )}
       </Container>
       <BottomButtonBar>
         <StyledNextStepButton roundCorners onClick={onClickClose} data-testid="Case-CloseButton">
