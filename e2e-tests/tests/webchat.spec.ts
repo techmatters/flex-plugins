@@ -11,6 +11,7 @@ import {
 } from '../chatModel';
 import { flexChat } from '../flexChat';
 import { tasks } from '../tasks';
+import { Categories, contactForm, ContactFormTab } from '../contactForm';
 
 test.describe.serial('Web chat caller', ()=> {
   let chatPage: WebChatPage, pluginPage: Page;
@@ -56,6 +57,7 @@ test.describe.serial('Web chat caller', ()=> {
         switch (expectedCounselorStatement.origin) {
           case ChatStatementOrigin.COUNSELOR_AUTO:
             if (expectedCounselorStatement.text.startsWith('Hi, this is the counsellor')) {
+              await statusIndicator(pluginPage).setStatus(WorkerStatus.AVAILABLE);
               await tasks(pluginPage).acceptNextTask();
             }
             await flexChatProgress.next();
@@ -66,9 +68,38 @@ test.describe.serial('Web chat caller', ()=> {
         }
       }
     }
+    const form = contactForm(pluginPage);
+    await form.fill([
+      <ContactFormTab>{
+        id: 'childInformation',
+        label: 'Child Info',
+        fill: form.fillStandardTab,
+        items: {
+          firstName: 'E2E',
+          lastName: 'TEST',
+          phone1: '1234512345',
+          province: 'Lusaka',
+          district: 'Rufunsa'
+        }
+      },
+      <ContactFormTab<Categories>>{
+        id: 'categories',
+        label: 'Categories',
+        fill: form.fillCategoriesTab,
+        items: {
+          'Accessibility': ['Education'],
+        }
+      },
+      <ContactFormTab>{
+        id: 'caseInformation',
+        label: 'Summary',
+        fill: form.fillStandardTab,
+        items: {
+          callSummary: 'E2E TEST CALL',
+        }
+      }
+    ]);
+    await form.save();
+  });
 
-
-    await statusIndicator(pluginPage).setStatus(WorkerStatus.AVAILABLE);
-  })
-
-})
+});

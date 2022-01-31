@@ -17,10 +17,14 @@ export function statusIndicator(page: Page) {
   return {
     setStatus: async function (status: WorkerStatus) {
       await selectors.userControlsAvatar.click();
+      console.log('Worker status dropdown should be open');
       const statusSelector = selectors.userControlsStatusOption(status);
       await statusSelector.waitFor({state: 'visible'});
+      console.log('Worker status option spotted');
       await statusSelector.click();
-      await expect(selectors.userCardStatus).toContainText(status.toLocaleString())
+      console.log('Worker status option clicked');
+      await expect(selectors.userCardStatus).toContainText(status.toLocaleString());
+      console.log('Status changed');
     }
   }
 
