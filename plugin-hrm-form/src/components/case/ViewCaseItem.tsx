@@ -54,7 +54,7 @@ const ViewCaseItem: React.FC<Props> = ({
           onClickClose={onClickClose}
           counselor={counselorName}
           added={added}
-          includeTime = {includeAddedTime}
+          includeTime={includeAddedTime}
         />
         {formDefinition.length === 1 && formDefinition[0].type === 'textarea' ? (
           <FullWidthFormTextContainer data-testid="Case-ViewCaseItemScreen-FullWidthTextArea">
