@@ -7,6 +7,7 @@ export const callTypes = {
   hangup: 'Hang up',
   wrongnumber: 'Wrong Number',
   abusive: 'Abusive',
+  adult: 'Adult Contact',
   test: 'test',
 } as const;
 
