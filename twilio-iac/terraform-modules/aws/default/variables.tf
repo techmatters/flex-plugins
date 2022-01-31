@@ -29,12 +29,12 @@ variable "operating_info_key" {
 }
 
 variable "environment" {
-  description = "Short upper case environment identifier, typically 'PROD', 'STG' or 'DEV'"
+  description = "Full capitialised environment name, typically 'Production', 'Staging' or 'Development'"
   type        = string
 }
 
 variable "short_environment" {
-  description = "Short upper case environment identifier, typically 'Production', 'Staging' or 'Development'"
+  description = "Short upper case environment identifier, typically 'PROD', 'STG' or 'DEV'"
   type        = string
 }
 
