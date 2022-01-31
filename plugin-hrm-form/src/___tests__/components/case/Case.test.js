@@ -383,8 +383,13 @@ describe('useState mocked', () => {
 
     screen.getByTestId('Case-InformationRow-ViewButton').click();
 
+    const { household, ...caseItemEntry } = { ...householdEntry, form: householdEntry.household, id: null };
+
     expect(store.dispatch).toHaveBeenCalledWith({
-      value: { screen: 'view-household', info: householdEntry },
+      value: {
+        screen: 'view-household',
+        info: caseItemEntry,
+      },
       taskId: 'task1',
       type: UPDATE_TEMP_INFO,
     });
@@ -403,6 +408,7 @@ describe('useState mocked', () => {
     const store = mockStore(stateWithPerpetrators);
     store.dispatch = jest.fn();
 
+    const { perpetrator, ...caseItemEntry } = { ...perpetratorEntry, form: perpetratorEntry.perpetrator, id: null };
     render(
       <StorelessThemeProvider themeConf={themeConf}>
         <Provider store={store}>
@@ -414,7 +420,7 @@ describe('useState mocked', () => {
     screen.getByTestId('Case-InformationRow-ViewButton').click();
 
     expect(store.dispatch).toHaveBeenCalledWith({
-      value: { screen: 'view-perpetrator', info: perpetratorEntry },
+      value: { screen: 'view-perpetrator', info: caseItemEntry },
       taskId: 'task1',
       type: UPDATE_TEMP_INFO,
     });
