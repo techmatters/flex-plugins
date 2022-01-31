@@ -31,20 +31,56 @@ export type ViewReferral = {
   date: string;
 };
 
+export type ViewTemporaryCaseInfo = {
+  screen:
+    | typeof NewCaseSubroutes.ViewDocument
+    | typeof NewCaseSubroutes.ViewIncident
+    | typeof NewCaseSubroutes.ViewPerpetrator
+    | typeof NewCaseSubroutes.ViewHousehold
+    | typeof NewCaseSubroutes.ViewNote
+    | typeof NewCaseSubroutes.ViewReferral;
+  info: t.CaseItemEntry;
+};
+
+export function isViewTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is ViewTemporaryCaseInfo {
+  return (
+    tci &&
+    (tci.screen === NewCaseSubroutes.ViewDocument ||
+      tci.screen === NewCaseSubroutes.ViewIncident ||
+      tci.screen === NewCaseSubroutes.ViewPerpetrator ||
+      tci.screen === NewCaseSubroutes.ViewHousehold ||
+      tci.screen === NewCaseSubroutes.ViewNote ||
+      tci.screen === NewCaseSubroutes.ViewReferral)
+  );
+}
+
+export type AddTemporaryCaseInfo = {
+  screen:
+    | typeof NewCaseSubroutes.AddDocument
+    | typeof NewCaseSubroutes.AddIncident
+    | typeof NewCaseSubroutes.AddPerpetrator
+    | typeof NewCaseSubroutes.AddHousehold
+    | typeof NewCaseSubroutes.AddNote
+    | typeof NewCaseSubroutes.AddReferral;
+  info: t.CaseItemFormValues;
+};
+
+export function isAddTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is AddTemporaryCaseInfo {
+  return (
+    tci &&
+    (tci.screen === NewCaseSubroutes.AddDocument ||
+      tci.screen === NewCaseSubroutes.AddIncident ||
+      tci.screen === NewCaseSubroutes.AddPerpetrator ||
+      tci.screen === NewCaseSubroutes.AddHousehold ||
+      tci.screen === NewCaseSubroutes.AddNote ||
+      tci.screen === NewCaseSubroutes.AddReferral)
+  );
+}
+
 export type TemporaryCaseInfo =
-  | { screen: typeof NewCaseSubroutes.AddNote; info: t.Note }
-  | { screen: typeof NewCaseSubroutes.AddReferral; info: t.Referral }
-  | { screen: typeof NewCaseSubroutes.AddHousehold; info: t.Household }
-  | { screen: typeof NewCaseSubroutes.AddPerpetrator; info: t.Perpetrator }
-  | { screen: typeof NewCaseSubroutes.AddIncident; info: t.Incident }
-  | { screen: typeof NewCaseSubroutes.AddDocument; info: t.Document }
   | { screen: typeof NewCaseSubroutes.ViewContact; info: ViewContact }
-  | { screen: typeof NewCaseSubroutes.ViewNote; info: t.NoteEntry }
-  | { screen: typeof NewCaseSubroutes.ViewHousehold; info: t.HouseholdEntry }
-  | { screen: typeof NewCaseSubroutes.ViewPerpetrator; info: t.PerpetratorEntry }
-  | { screen: typeof NewCaseSubroutes.ViewIncident; info: t.IncidentEntry }
-  | { screen: typeof NewCaseSubroutes.ViewReferral; info: t.ReferralEntry }
-  | { screen: typeof NewCaseSubroutes.ViewDocument; info: t.DocumentEntry };
+  | ViewTemporaryCaseInfo
+  | AddTemporaryCaseInfo;
 
 type SetConnectedCaseAction = {
   type: typeof SET_CONNECTED_CASE;
@@ -150,4 +186,43 @@ export type CaseDetails = {
   office?: HelplineEntry;
   version?: DefinitionVersionId;
   contact: any; // ToDo: change this
+};
+
+export type CaseUpdater = (
+  original: t.CaseInfo,
+  temporaryInfo: t.CaseItemEntry,
+  index: number | undefined,
+) => t.CaseInfo;
+
+export const updateCaseSectionListByIndex = (
+  listProperty: string,
+  entryProperty: string = listProperty,
+): CaseUpdater => (original: t.CaseInfo, temporaryInfo: t.CaseItemEntry, index: number | undefined) => {
+  const sectionList = [...((original ?? {})[listProperty] ?? [])];
+  const { ...entry } = { ...temporaryInfo, [entryProperty]: temporaryInfo.form };
+  if (entryProperty !== 'form') {
+    delete entry.form;
+  }
+  if (typeof index === 'number') {
+    sectionList[index] = entry;
+  } else {
+    sectionList.push(entry);
+  }
+
+  return original ? { ...original, [listProperty]: sectionList } : { [listProperty]: sectionList };
+};
+
+export const updateCaseListByIndex = <T>(
+  listGetter: (ci: t.CaseInfo) => T[] | undefined,
+  caseItemToListItem: (caseItemEntry: t.CaseItemEntry) => T,
+): CaseUpdater => (original: t.CaseInfo, temporaryInfo: t.CaseItemEntry, index: number | undefined) => {
+  const copy = { ...original };
+  const sectionList = listGetter(copy);
+  const entry: T = caseItemToListItem(temporaryInfo);
+  if (typeof index === 'number') {
+    sectionList[index] = entry;
+  } else {
+    sectionList.push(entry);
+  }
+  return copy;
 };

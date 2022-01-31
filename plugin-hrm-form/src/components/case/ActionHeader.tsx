@@ -12,12 +12,13 @@ type OwnProps = {
   onClickClose: () => void;
   added?: Date;
   counselor: string;
+  includeTime?: boolean;
 };
 
 type Props = OwnProps;
 
-const ActionHeader: React.FC<Props> = ({ titleTemplate, onClickClose, added, counselor }) => {
-  const dateString = formatDateTime(added || new Date());
+const ActionHeader: React.FC<Props> = ({ titleTemplate, onClickClose, added, counselor, includeTime = true }) => {
+  const dateString = formatDateTime(added || new Date(), includeTime);
 
   return (
     <>
