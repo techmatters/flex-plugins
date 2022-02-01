@@ -76,7 +76,7 @@ module aws {
   datadog_access_token = var.datadog_access_token
   flex_task_assignment_workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
   master_workflow_sid = module.taskRouter.master_workflow_sid
-  shared_state_sync_service_sid = module.taskRouter.shared_state_sync_service_sid
+  shared_state_sync_service_sid = module.services.shared_state_sync_service_sid
   flex_chat_service_sid = module.services.flex_chat_service_sid
   flex_proxy_service_sid = module.services.flex_proxy_service_sid
   post_survey_bot_sid = module.chatbots.post_survey_bot_sid

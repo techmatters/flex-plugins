@@ -45,11 +45,6 @@ resource "twilio_taskrouter_workspaces_workflows_v1" "master_workflow" {
   })
 }
 
-//Sync Service
-resource "twilio_sync_services_v1" "shared_state_service" {
-  friendly_name                   = "Shared State Service"
-}
-
 resource "twilio_taskrouter_workspaces_task_channels_v1" "default" {
   workspace_sid = twilio_taskrouter_workspaces_v1.flex_task_assignment.sid
   friendly_name = "Default"

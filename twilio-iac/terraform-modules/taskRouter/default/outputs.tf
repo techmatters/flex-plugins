@@ -17,8 +17,3 @@ output "default_task_channel_sid" {
   description = "Twilio SID of the 'chat' task channel"
   value = twilio_taskrouter_workspaces_task_channels_v1.default.sid
 }
-
-output "shared_state_sync_service_sid" {
-  description = "Twilio SID of the 'Shared State Service' sync service"
-  value = twilio_sync_services_v1.shared_state_service.sid
-}
