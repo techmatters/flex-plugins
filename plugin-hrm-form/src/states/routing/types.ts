@@ -18,10 +18,10 @@ export const NewCaseSubroutes = {
   AddDocument: 'add-document',
   ViewContact: 'view-contact',
   ViewNote: 'view-note',
+  ViewReferral: 'view-referral',
   ViewHousehold: 'view-household',
   ViewPerpetrator: 'view-perpetrator',
   ViewIncident: 'view-incident',
-  ViewReferral: 'view-referral',
   ViewDocument: 'view-document',
   CasePrintView: 'case-print-view',
 } as const;

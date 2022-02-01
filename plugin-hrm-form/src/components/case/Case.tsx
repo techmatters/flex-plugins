@@ -1,7 +1,7 @@
 /* eslint-disable complexity */
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
@@ -12,20 +12,20 @@ import DialogContent from '@material-ui/core/DialogContent';
 import { format } from 'date-fns';
 
 import {
-  namespace,
-  contactFormsBase,
-  connectedCaseBase,
   configurationBase,
-  routingBase,
+  connectedCaseBase,
+  contactFormsBase,
+  namespace,
   RootState,
+  routingBase,
 } from '../../states';
 import { getConfig } from '../../HrmFormPlugin';
 import { connectToCase, transformCategories } from '../../services/ContactService';
-import { cancelCase, updateCase, getActivities } from '../../services/CaseService';
-import { submitContactForm, completeTask } from '../../services/formSubmissionHelpers';
+import { cancelCase, getActivities, updateCase } from '../../services/CaseService';
+import { completeTask, submitContactForm } from '../../services/formSubmissionHelpers';
 import { getDefinitionVersion } from '../../services/ServerlessService';
-import { isConnectedCaseActivity, getDateFromNotSavedContact, sortActivities, getHelplineData } from './caseHelpers';
-import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
+import { getDateFromNotSavedContact, getHelplineData, isConnectedCaseActivity, sortActivities } from './caseHelpers';
+import { BottomButtonBar, Box, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseContainer, CenteredContainer } from '../../styles/case';
 import CaseDetails from './CaseDetails';
 import { Menu, MenuItem } from '../menu';
@@ -35,37 +35,27 @@ import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import * as ConfigActions from '../../states/configuration/actions';
 import Timeline from './Timeline';
-import AddNote from './AddNote';
-import AddReferral from './AddReferral';
-import Households from './Households';
-import Perpetrators from './Perpetrators';
-import Incidents from './Incidents';
-import Documents from './Documents';
 import CaseSummary from './CaseSummary';
 import ViewContact from './ViewContact';
-import AddHousehold from './AddHousehold';
-import AddPerpetrator from './AddPerpetrator';
-import AddIncident from './AddIncident';
-import AddDocument from './AddDocument';
-import ViewNote from './ViewNote';
-import ViewHousehold from './ViewHousehold';
-import ViewPerpetrator from './ViewPerpetrator';
-import ViewIncident from './ViewIncident';
-import ViewReferral from './ViewReferral';
-import ViewDocument from './ViewDocument';
-import type { CaseDetailsName } from '../../states/case/types';
 import {
-  HouseholdEntry,
-  PerpetratorEntry,
-  IncidentEntry,
-  DocumentEntry,
-  Case as CaseType,
-  CustomITask,
-  StandaloneITask,
-} from '../../types/types';
+  CaseDetailsName,
+  TemporaryCaseInfo,
+  updateCaseListByIndex,
+  updateCaseSectionListByIndex,
+  ViewTemporaryCaseInfo,
+} from '../../states/case/types';
+import { Case as CaseType, CustomITask, NoteEntry, ReferralEntry, StandaloneITask } from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
 import { getPermissionsForCase, PermissionActions } from '../../permissions';
 import { recordBackendError } from '../../fullStory';
+import { AppRoutes, AppRoutesWithCase, NewCaseSubroutes } from '../../states/routing/types';
+import CaseSection from './CaseSection';
+import InformationRow from './InformationRow';
+import TimelineInformationRow from './TimelineInformationRow';
+import DocumentInformationRow from './DocumentInformationRow';
+import AddEditCaseItem from './AddEditCaseItem';
+import ViewCaseItem from './ViewCaseItem';
+import documentUploadHandler from './documentUploadHandler';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -259,44 +249,20 @@ const Case: React.FC<Props> = props => {
     }
   };
 
-  const onClickAddHousehold = () => {
-    props.updateTempInfo({ screen: 'add-household', info: null }, props.task.taskSid);
-    props.changeRoute({ route, subroute: 'add-household' }, props.task.taskSid);
+  type CaseItemRoute<T extends TemporaryCaseInfo = TemporaryCaseInfo> = T['screen'] & AppRoutesWithCase['subroute'];
+
+  type CaseItemInfo<T extends TemporaryCaseInfo> = T['info']; // A bit redundant but looks cleaner than the anonymous subtype reference syntax
+
+  const onCaseItemActionClick = <T extends TemporaryCaseInfo>(
+    targetSubroute: CaseItemRoute<T>,
+  ): ((entry: CaseItemInfo<T>) => void) => (entry: CaseItemInfo<T>) => {
+    props.updateTempInfo({ screen: targetSubroute, info: entry } as TemporaryCaseInfo, props.task.taskSid);
+    props.changeRoute({ route, subroute: targetSubroute } as AppRoutes, props.task.taskSid);
   };
 
-  const onClickAddPerpetrator = () => {
-    props.updateTempInfo({ screen: 'add-perpetrator', info: null }, props.task.taskSid);
-    props.changeRoute({ route, subroute: 'add-perpetrator' }, props.task.taskSid);
-  };
-
-  const onClickAddIncident = () => {
-    props.updateTempInfo({ screen: 'add-incident', info: null }, props.task.taskSid);
-    props.changeRoute({ route, subroute: 'add-incident' }, props.task.taskSid);
-  };
-
-  const onClickAddDocument = () => {
-    props.updateTempInfo({ screen: 'add-document', info: null }, props.task.taskSid);
-    props.changeRoute({ route, subroute: 'add-document' }, props.task.taskSid);
-  };
-
-  const onClickViewHousehold = (household: HouseholdEntry) => {
-    props.updateTempInfo({ screen: 'view-household', info: household }, props.task.taskSid);
-    props.changeRoute({ route, subroute: 'view-household' }, props.task.taskSid);
-  };
-
-  const onClickViewPerpetrator = (perpetrator: PerpetratorEntry) => {
-    props.updateTempInfo({ screen: 'view-perpetrator', info: perpetrator }, props.task.taskSid);
-    props.changeRoute({ route, subroute: 'view-perpetrator' }, props.task.taskSid);
-  };
-
-  const onClickViewIncident = (incident: IncidentEntry) => {
-    props.updateTempInfo({ screen: 'view-incident', info: incident }, props.task.taskSid);
-    props.changeRoute({ route, subroute: 'view-incident' }, props.task.taskSid);
-  };
-
-  const onClickViewDocument = (document: DocumentEntry) => {
-    props.updateTempInfo({ screen: 'view-document', info: document }, props.task.taskSid);
-    props.changeRoute({ route, subroute: 'view-document' }, props.task.taskSid);
+  const onAddCaseItemClick = (targetSubroute: CaseItemRoute) => () => {
+    props.updateTempInfo({ screen: targetSubroute, info: null }, props.task.taskSid);
+    props.changeRoute({ route, subroute: targetSubroute } as AppRoutes, props.task.taskSid);
   };
 
   const onInfoChange = (fieldName, value) => {
@@ -397,6 +363,9 @@ const Case: React.FC<Props> = props => {
     definitionVersion,
   };
 
+  const { caseForms } = definitionVersion;
+  const caseLayouts = definitionVersion.layoutVersion.case;
+
   const caseDetails = {
     id: connectedCase.id,
     name,
@@ -420,34 +389,202 @@ const Case: React.FC<Props> = props => {
     contact: firstConnectedContact,
   };
 
+  const itemRowRenderer = <TViewCaseInfo extends TemporaryCaseInfo>(
+    itemTypeName: string,
+    viewSubroute: CaseItemRoute,
+    items: CaseItemInfo<TViewCaseInfo>[],
+  ) => {
+    const itemRows = () => {
+      return items.length ? (
+        <>
+          {items.map((item, index) => (
+            <InformationRow
+              key={`${itemTypeName}-${index}`}
+              person={item[itemTypeName]}
+              onClickView={() => onCaseItemActionClick<TViewCaseInfo>(viewSubroute)(item)}
+            />
+          ))}
+        </>
+      ) : null;
+    };
+    itemRows.displayName = `${name}Rows`;
+    return itemRows;
+  };
+
+  const householdRows = itemRowRenderer<ViewTemporaryCaseInfo>(
+    'form',
+    NewCaseSubroutes.ViewHousehold,
+    households.map(h => {
+      const { household, ...caseInfoItem } = { ...h, form: h.household, id: null };
+      return caseInfoItem;
+    }),
+  );
+
+  const perpetratorRows = itemRowRenderer<ViewTemporaryCaseInfo>(
+    'form',
+    NewCaseSubroutes.ViewPerpetrator,
+    perpetrators.map(p => {
+      const { perpetrator, ...caseInfoItem } = { ...p, form: p.perpetrator, id: null };
+      return caseInfoItem;
+    }),
+  );
+
+  const incidentRows = () => {
+    return incidents.length ? (
+      <>
+        {incidents.map((item, index) => {
+          const { incident, ...caseItemEntry } = { ...item, form: item.incident, id: null };
+          return (
+            <TimelineInformationRow
+              key={`incident-${index}`}
+              onClickView={() =>
+                onCaseItemActionClick<ViewTemporaryCaseInfo>(NewCaseSubroutes.ViewIncident)(caseItemEntry)
+              }
+              definition={caseForms.IncidentForm}
+              values={item.incident}
+              layoutDefinition={caseLayouts.incidents}
+            />
+          );
+        })}
+      </>
+    ) : null;
+  };
+
+  const documentRows = () => {
+    return documents.length ? (
+      <>
+        {documents.map((item, index) => {
+          const { document, ...caseItemEntry } = { ...item, form: item.document, index };
+          return (
+            <DocumentInformationRow
+              key={`document-${index}`}
+              documentEntry={item}
+              onClickView={() =>
+                onCaseItemActionClick<ViewTemporaryCaseInfo>(NewCaseSubroutes.ViewDocument)(caseItemEntry)
+              }
+            />
+          );
+        })}
+      </>
+    ) : null;
+  };
   switch (subroute) {
-    case 'add-note':
-      return <AddNote {...addScreenProps} />;
-    case 'add-referral':
-      return <AddReferral {...addScreenProps} />;
-    case 'add-household':
-      return <AddHousehold {...{ ...addScreenProps, route }} />;
-    case 'add-perpetrator':
-      return <AddPerpetrator {...{ ...addScreenProps, route }} />;
-    case 'add-incident':
-      return <AddIncident {...addScreenProps} />;
-    case 'add-document':
-      return <AddDocument {...{ ...addScreenProps, route }} />;
-    case 'view-contact':
+    case NewCaseSubroutes.AddNote:
+      return (
+        <AddEditCaseItem
+          {...{
+            ...addScreenProps,
+            layout: {},
+            itemType: 'Note',
+            route,
+            formDefinition: caseForms.NoteForm,
+          }}
+          applyTemporaryInfoToCase={updateCaseListByIndex<String>(
+            ci => {
+              ci.notes = ci.notes ?? [];
+              return ci.notes;
+            },
+            temp => (temp.form.note ?? '').toString(),
+          )}
+        />
+      );
+    case NewCaseSubroutes.AddReferral:
+      return (
+        <AddEditCaseItem
+          {...{
+            ...addScreenProps,
+            layout: {},
+            itemType: 'Referral',
+            route,
+            formDefinition: caseForms.ReferralForm,
+          }}
+          applyTemporaryInfoToCase={updateCaseListByIndex<ReferralEntry>(
+            ci => {
+              ci.referrals = ci.referrals ?? [];
+              return ci.referrals;
+            },
+            temp => ({ ...temp.form }),
+          )}
+        />
+      );
+    case NewCaseSubroutes.AddHousehold:
+      return (
+        <AddEditCaseItem
+          {...{
+            ...addScreenProps,
+            route,
+            layout: caseLayouts.households,
+            itemType: 'Household',
+            applyTemporaryInfoToCase: updateCaseSectionListByIndex('households', 'household'),
+            formDefinition: caseForms.HouseholdForm,
+          }}
+        />
+      );
+    case NewCaseSubroutes.AddPerpetrator:
+      return (
+        <AddEditCaseItem
+          {...{
+            ...addScreenProps,
+            route,
+            layout: caseLayouts.perpetrators,
+            itemType: 'Perpetrator',
+            applyTemporaryInfoToCase: updateCaseSectionListByIndex('perpetrators', 'perpetrator'),
+            formDefinition: caseForms.PerpetratorForm,
+          }}
+        />
+      );
+    case NewCaseSubroutes.AddIncident:
+      return (
+        <AddEditCaseItem
+          {...{
+            ...addScreenProps,
+            route,
+            layout: caseLayouts.incidents,
+            itemType: 'Incident',
+            applyTemporaryInfoToCase: updateCaseSectionListByIndex('incidents', 'incident'),
+            formDefinition: caseForms.IncidentForm,
+          }}
+        />
+      );
+    case NewCaseSubroutes.AddDocument:
+      return (
+        <AddEditCaseItem
+          {...{
+            ...addScreenProps,
+            route,
+            layout: caseLayouts.documents,
+            itemType: 'Document',
+            applyTemporaryInfoToCase: updateCaseSectionListByIndex('documents', 'document'),
+            formDefinition: caseForms.DocumentForm,
+            customFormHandlers: documentUploadHandler,
+            reactHookFormOptions: {
+              shouldUnregister: false,
+            },
+          }}
+        />
+      );
+    case NewCaseSubroutes.ViewContact:
       return <ViewContact {...addScreenProps} />;
-    case 'view-note':
-      return <ViewNote {...addScreenProps} />;
-    case 'view-household':
-      return <ViewHousehold {...addScreenProps} />;
-    case 'view-perpetrator':
-      return <ViewPerpetrator {...addScreenProps} />;
-    case 'view-incident':
-      return <ViewIncident {...addScreenProps} />;
-    case 'view-referral':
-      return <ViewReferral {...addScreenProps} />;
-    case 'view-document':
-      return <ViewDocument {...addScreenProps} />;
-    case 'case-print-view':
+    case NewCaseSubroutes.ViewNote:
+      return <ViewCaseItem {...addScreenProps} itemType="Note" formDefinition={definitionVersion.caseForms.NoteForm} />;
+    case NewCaseSubroutes.ViewHousehold:
+      return <ViewCaseItem {...addScreenProps} itemType="Household" formDefinition={caseForms.HouseholdForm} />;
+    case NewCaseSubroutes.ViewPerpetrator:
+      return <ViewCaseItem {...addScreenProps} itemType="Perpetrator" formDefinition={caseForms.PerpetratorForm} />;
+    case NewCaseSubroutes.ViewIncident:
+      return <ViewCaseItem {...addScreenProps} itemType="Incident" formDefinition={caseForms.IncidentForm} />;
+    case NewCaseSubroutes.ViewReferral:
+      return (
+        <ViewCaseItem
+          {...addScreenProps}
+          itemType="Referral"
+          formDefinition={caseForms.ReferralForm}
+          includeAddedTime={false}
+        />
+      );
+    case NewCaseSubroutes.ViewDocument:
+      return <ViewCaseItem {...addScreenProps} itemType="Document" formDefinition={caseForms.DocumentForm} />;
+    case NewCaseSubroutes.CasePrintView:
       return <CasePrintView caseDetails={caseDetails} {...addScreenProps} />;
     default:
       return loading || !definitionVersion ? (
@@ -491,38 +628,41 @@ const Case: React.FC<Props> = props => {
               />
             </Box>
             <Box marginLeft="25px" marginTop="25px">
-              <Households
-                households={households}
-                can={can}
-                onClickAddHousehold={onClickAddHousehold}
-                onClickView={onClickViewHousehold}
-              />
+              <CaseSection
+                can={() => can(PermissionActions.ADD_HOUSEHOLD)}
+                onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.AddHousehold)}
+                sectionTypeId="Household"
+              >
+                {householdRows()}
+              </CaseSection>
             </Box>
             <Box marginLeft="25px" marginTop="25px">
-              <Perpetrators
-                perpetrators={perpetrators}
-                can={can}
-                onClickAddPerpetrator={onClickAddPerpetrator}
-                onClickView={onClickViewPerpetrator}
-              />
+              <CaseSection
+                can={() => can(PermissionActions.ADD_PERPETRATOR)}
+                onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.AddPerpetrator)}
+                sectionTypeId="Perpetrator"
+              >
+                {perpetratorRows()}
+              </CaseSection>
             </Box>
             <Box marginLeft="25px" marginTop="25px">
-              <Incidents
-                incidents={incidents}
-                onClickAddIncident={onClickAddIncident}
-                onClickView={onClickViewIncident}
-                can={can}
-                definitionVersion={definitionVersion}
-              />
+              <CaseSection
+                can={() => can(PermissionActions.ADD_INCIDENT)}
+                onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.AddIncident)}
+                sectionTypeId="Incident"
+              >
+                {incidentRows()}
+              </CaseSection>
             </Box>
             {featureFlags.enable_upload_documents && (
               <Box marginLeft="25px" marginTop="25px">
-                <Documents
-                  documents={documents}
-                  can={can}
-                  onClickAddDocument={onClickAddDocument}
-                  onClickView={onClickViewDocument}
-                />
+                <CaseSection
+                  onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.AddDocument)}
+                  can={() => can(PermissionActions.ADD_DOCUMENT)}
+                  sectionTypeId="Document"
+                >
+                  {documentRows()}
+                </CaseSection>
               </Box>
             )}
             <Box marginLeft="25px" marginTop="25px">

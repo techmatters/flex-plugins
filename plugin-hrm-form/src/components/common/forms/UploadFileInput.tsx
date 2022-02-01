@@ -18,6 +18,7 @@ import { StyledLink } from '../../../styles/search';
 import UploadIcon from '../icons/UploadIcon';
 import { formatFileNameAtAws } from '../../../utils';
 import type { HTMLElementRef } from './types';
+import DownloadFile from './DownloadFile';
 
 type UploadFileInputProps = {
   label: string | JSX.Element;
@@ -53,11 +54,12 @@ const UploadFileInput: React.FC<UploadFileInputProps> = ({
   RequiredAsterisk,
   initialValue,
   htmlElRef,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [isLoading, setLoading] = useState(false);
   const fileUploadRef = useRef<HTMLButtonElement>();
+  const fileName = initialValue || watch(path);
 
-  const fileName = watch(path);
   const error = get(errors, path);
   const showUploadButton = !Boolean(fileName);
 
@@ -158,6 +160,8 @@ const UploadFileInput: React.FC<UploadFileInputProps> = ({
               <Box marginLeft="20px">Delete</Box>
             </StyledLink>
           )}
+          <FormInput id="file-input" type="hidden" defaultValue={initialValue} innerRef={fileUploadRef} />
+          <input id={path} name={path} type="hidden" ref={register(rules)} value={fileName} />
         </>
       )}
       {error && (
