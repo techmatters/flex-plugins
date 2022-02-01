@@ -7,22 +7,25 @@ inputs:
   auth-token:
     description: 'Twilio Token'
     required: true
+  aws-access-key-id:
+    description: 'AWS credentials for Aselo user'
+    required: true
+  aws-secret-access-key:
+    description: 'AWS credentials for Aselo user'
+    required: true
+  aws-region:
+    description: 'AWS region where Aselo documents bucket is hosted'
+    required: true
 runs:
   using: "composite"
   steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-      - name: Use Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: '12.x'
       # Setup credentials to access AWS for parameters
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+          aws-access-key-id: ${{ inputs.aws-access-key-id }}
+          aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
+          aws-region: ${{ inputs.aws-region }}
       # Get AWS parameters
       - name: Set Datadog Application ID
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
@@ -58,6 +61,7 @@ runs:
       - name: Create appConfig.js
         run: cp ./public/appConfig.example.js ./public/appConfig.js
         working-directory: ./plugin-hrm-form
+        shell: bash
       - name: Replace Twilio account SID in appConfig.js
         uses: falnyr/replace-env-vars-action@master
         env:
@@ -69,6 +73,7 @@ runs:
           mkdir ./src/private
           touch ./src/private/secret.js
         working-directory: ./plugin-hrm-form
+        shell: bash
       - name: Fill secret.js
         run: |
           cat <<EOT >> ./src/private/secret.js
@@ -78,10 +83,12 @@ runs:
           export const fullStoryId = '$FULLSTORY_ID';
           EOT
         working-directory: ./plugin-hrm-form
+        shell: bash
       # Runs a single command using the runners shell  
       - name: Install dependencies for the flex-plugins
         run: UNBUNDLED_REACT=true npm install
         working-directory: ./plugin-hrm-form
+        shell: bash
       # Install the Twilio CLI and the flex plugin, then deploy the plugin
       - name: Install twilio cli and run deploy command
         env:
@@ -90,6 +97,7 @@ runs:
          UNBUNDLED_REACT: true
         run: npm install twilio-cli -g && twilio plugins:install @twilio-labs/plugin-flex && twilio flex:plugins:deploy --changelog "${{ github.event.inputs.changelog }} (commit ${{ github.sha }})"
         working-directory: ./plugin-hrm-form
+        shell: bash
       # Release flex plugin
       - name: Run release command
         env:
@@ -97,6 +105,7 @@ runs:
          TWILIO_AUTH_TOKEN: ${{ inputs.auth-token }}
         run: twilio flex:plugins:release --plugin plugin-hrm-form@latest
         working-directory: ./plugin-hrm-form
+        shell: bash
       # Send Slack notifying success
       - name: Slack Aselo channel
         id: slack

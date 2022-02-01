@@ -240,7 +240,7 @@ export const RowItemContainer = styled(Row)`
 `;
 RowItemContainer.displayName = 'RowItemContainer';
 
-export const NoteContainer = styled('div')`
+export const FullWidthFormTextContainer = styled('div')`
   white-space: break-spaces;
   font-family: 'Open Sans', sans-serif;
   line-height: 30px;
@@ -249,7 +249,7 @@ export const NoteContainer = styled('div')`
   margin: 10px auto 0px;
   text-align: justify;
 `;
-NoteContainer.displayName = 'NoteContainer';
+FullWidthFormTextContainer.displayName = 'FullWidthFormTextContainer';
 
 export const DetailsHeaderContainer = styled('div')`
   display: flex;
