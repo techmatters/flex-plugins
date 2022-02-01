@@ -1,27 +1,3 @@
-/*
-This is a legacy main.tf for managing those accounts where the state is managed as a workspace in a global state, rather than separately
-
-Currently there are only 2 accounts in this state:
-
-Aarambh Production
-SafeSpot Staging
-
-To migrate the state of an account:
-1. Ensure you have a directory created & populated, and the required S3 bucket & dynamodb table created for the new account (instructions are in the README.md)
-2. Ensure you have your AWS environment variables set up, and the twilio creds environment variables for the target account
-3. Run the following sequence of commands
-
-terraform init
-terraform workspace select <workspace name for your account - if you don't know it you can see a list with `terraform workspace list`>
-Linux / Mac -> terraform state pull > dump.tfstate
-Windows (Powershell) -> terraform state pull | sc dump.tfstate
-cd ../<new account directory>
-terraform init
-terraform state push ../aselo-terraform/dump.tfstate
-
-Your existing state should now be in the new dedicated state S3 bucket that your account specific directory points at, under the default workspace
-*/
-
 terraform {
   required_providers {
     twilio = {
@@ -31,22 +7,12 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "tl-terraform-state-twilio"
+    bucket         = "tl-terraform-state-twilio-in-production"
     key            = "twilio/terraform.tfstate"
-    dynamodb_table = "twilio-terraform-locks"
+    dynamodb_table = "twilio-terraform-in-production-locks"
     encrypt        = true
   }
 }
-
-variable "account_sid" {}
-variable "serverless_url" {}
-variable "helpline" {}
-variable "short_helpline" {}
-variable "datadog_app_id" {}
-variable "datadog_access_token" {}
-variable "operating_info_key" {}
-variable "environment" {}
-variable "short_environment" {}
 
 
 module "chatbots" {
