@@ -46,7 +46,7 @@ The process for a first run is as follows:
 
 * Run the script below. Twilio creates a bunch of default resources on a new account and Aselo uses some of them. We need to import them into terraform first, otherwise terraform assumes they don't exist and will try to create them, resulting in errors.
 ```
-npm run importDefaultTwilioResourcesToTerraform <helpline>-<environment> [my-private.tfvars]]
+npm run twilioResources import-account-defaults <helpline>-<environment> [-v my-private.tfvars]]
 ```
 * Run and review the output of:
 ```terraform plan [-var-file my-private.tfvars]```
