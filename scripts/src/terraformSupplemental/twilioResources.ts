@@ -1,9 +1,27 @@
 import yargs from 'yargs';
+import { config } from 'dotenv';
 import importResources from './importHCLTwilioResourcesToTerraform';
 import { ResourceType } from './resourceParsers';
+import { importDefaultResources } from './importDefaultTwilioResourcesToTerraform';
+
+config();
 
 async function main() {
   yargs(process.argv.slice(2))
+    .option('d', {
+      type: 'boolean',
+      default: false,
+      alias: 'dryRun',
+      global: true,
+      describe:
+        'Do a dry run, it will log the terraform import commands it would have otherwise run to stdout instead for you to review / copy & run manually',
+    })
+    .option('v', {
+      type: 'string',
+      alias: 'varFile',
+      global: true,
+      describe: 'Specify a tfvars file relative to the account directory',
+    })
     .command(
       'import-tf <accountDirectory>  <tfFilePath>',
       "Import the current state of all the resources specified in the provided .tf file from a Twilio Account into the provided terraform configuration's state. Requires Twilio account environment variable to ber set, and AWS account variables to be set for anything other than a dry run.",
@@ -54,7 +72,7 @@ async function main() {
           return <[string, string]>[name, valueBits.join('=')];
         });
 
-        const modulePath = (argv.modulePath as string ?? '').split('.');
+        const modulePath = ((argv.modulePath as string) ?? '').split('.');
         if (argv.type && (argv.type as string[]).length > 0) {
           const types = argv.type as string[];
           const unrecognisedTypes = types.filter((t) =>
@@ -81,6 +99,24 @@ async function main() {
             sids,
           });
         }
+      },
+    )
+    .command(
+      'import-account-defaults <accountDirectory>',
+      "Import the current state of all the resources specified in the provided .tf file from a Twilio Account into the provided terraform configuration's state. Requires Twilio account environment variable to ber set, and AWS account variables to be set for anything other than a dry run.",
+      (argv) => {
+        argv.positional('accountDirectory', {
+          describe:
+            'The directory of the main.tf file for the target account, relative to the twilio-iac directory',
+          type: 'string',
+        });
+      },
+      async (argv) => {
+        await importDefaultResources(
+          argv.accountDirectory as string,
+          argv.tfFilePath as string,
+          argv.dryRun as boolean,
+        );
       },
     )
     .demandCommand()
