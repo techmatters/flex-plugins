@@ -374,30 +374,30 @@ module "safespot_gender_field" {
 
 moved {
   from = twilio_autopilot_assistants_field_types_v1.gender
-  to = module.default_gender_field.twilio_autopilot_assistants_field_types_v1.gender
+  to = module.default_gender_field[0].twilio_autopilot_assistants_field_types_v1.gender
 }
 
 moved {
   from = twilio_autopilot_assistants_field_types_field_values_v1.gender_group
-  to = module.default_gender_field.twilio_autopilot_assistants_field_types_field_values_v1.gender_group
+  to = module.default_gender_field[0].twilio_autopilot_assistants_field_types_field_values_v1.gender_group
 }
 
 moved {
   from = twilio_autopilot_assistants_field_types_field_values_v1.gender_boy_synonym_group
-  to = module.default_gender_field.twilio_autopilot_assistants_field_types_field_values_v1.gender_boy_synonym_group
+  to = module.default_gender_field[0].twilio_autopilot_assistants_field_types_field_values_v1.gender_boy_synonym_group
 }
 
 moved {
   from = twilio_autopilot_assistants_field_types_field_values_v1.gender_girl_synonym_group
-  to = module.default_gender_field.twilio_autopilot_assistants_field_types_field_values_v1.gender_girl_synonym_group
+  to = module.default_gender_field[0].twilio_autopilot_assistants_field_types_field_values_v1.gender_girl_synonym_group
 }
 
 moved {
   from = twilio_autopilot_assistants_field_types_field_values_v1.gender_unknown_synonym_group
-  to = module.default_gender_field.twilio_autopilot_assistants_field_types_field_values_v1.gender_unknown_synonym_group
+  to = module.default_gender_field[0].twilio_autopilot_assistants_field_types_field_values_v1.gender_unknown_synonym_group
 }
 
 moved {
   from = twilio_autopilot_assistants_field_types_field_values_v1.gender_nonbinary_synonym_group
-  to = module.default_gender_field.twilio_autopilot_assistants_field_types_field_values_v1.gender_nonbinary_synonym_group
+  to = module.default_gender_field[0].twilio_autopilot_assistants_field_types_field_values_v1.gender_nonbinary_synonym_group
 }
