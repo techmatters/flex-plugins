@@ -17,8 +17,8 @@ function attemptTerraformImport(
     const command = `terraform import${
       process.argv[3] ? ` -var-file ${process.argv[3]}` : ''
     } ${terraformResource} ${twilioResourceSid}`;
-    logSuccess(`Running command: ${command}`);
-    execSync(command, { cwd: process.argv[2] });
+    logSuccess(`Running command (in ${terraformWorkingDirectory}): ${command}`);
+    execSync(command, { cwd: terraformWorkingDirectory });
     logSuccess(
       `${description}, sid ${twilioResourceSid} successfully imported to terraform as '${terraformResource}'`,
     );
