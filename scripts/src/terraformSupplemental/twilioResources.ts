@@ -35,8 +35,26 @@ async function main() {
           alias: 'varFile',
           describe: 'Specify a tfvars file relative to the account directory',
         });
+        argv.option('s', {
+          type: 'array',
+          alias: 'sid',
+          describe:
+            'Specify an sid referenced in the tf file which would otherwise come from an external source, e.g. --sid var.sid=1234 or --sid twilio_taskrouter_workspaces_v1.from_other_tf_file.sid=4321',
+        });
+        argv.option('m', {
+          type: 'string',
+          alias: 'modulePath',
+          describe: 'Specify a dot separated path for the module, e.g. top_module1.sub_module2',
+        });
       },
       async (argv) => {
+        const sidKvps = argv.sid as string[];
+        const sids = sidKvps.map((kvp) => {
+          const [name, ...valueBits] = kvp.split('=');
+          return <[string, string]>[name, valueBits.join('=')];
+        });
+
+        const modulePath = (argv.modulePath as string ?? '').split('.');
         if (argv.type && (argv.type as string[]).length > 0) {
           const types = argv.type as string[];
           const unrecognisedTypes = types.filter((t) =>
@@ -50,6 +68,8 @@ async function main() {
             await importResources(argv.accountDirectory as string, argv.tfFilePath as string, {
               tfvarsFile: argv.varFile as string,
               dryRun: argv.dryRun as boolean,
+              sids,
+              modulePath,
               resourceTypes: types as ResourceType[],
             });
           }
@@ -57,6 +77,8 @@ async function main() {
           await importResources(argv.accountDirectory as string, argv.tfFilePath as string, {
             tfvarsFile: argv.varFile as string,
             dryRun: argv.dryRun as boolean,
+            modulePath,
+            sids,
           });
         }
       },

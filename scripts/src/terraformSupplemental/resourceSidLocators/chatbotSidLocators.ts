@@ -1,5 +1,5 @@
 import twilio from 'twilio';
-import { logSuccess, logWarning } from '../../helpers/log';
+import { logDebug, logSuccess, logWarning } from '../../helpers/log';
 import { FieldValueParser, Ids } from '../resourceParsers';
 
 type AssistantRegexCaptures = {
@@ -33,7 +33,7 @@ export const findFieldTypeSids: ResourceLocator = async (
 ): Promise<Ids[]> => {
   const captures: FieldTypeRegexCaptures = <FieldTypeRegexCaptures>rawCaptures;
   const assistantSid = knownSids[captures.assistantResource];
-  logSuccess(`Found assistantSid: ${assistantSid}`);
+  logDebug(`Found assistantSid: ${captures.assistantResource} = ${assistantSid}`);
 
   const assistant = await client.autopilot.assistants(assistantSid).fetch();
   const fieldTypeListInstance = await assistant.fieldTypes().list();
