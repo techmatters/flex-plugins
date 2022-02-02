@@ -40,7 +40,7 @@ async function locateAndImportDefaultTaskChannel(
   if (taskChannel) {
     attemptTerraformImport(
       `${workspaceSid}/${taskChannel.sid}`,
-      `twilio_taskrouter_workspaces_task_channels_v1.${taskChannelUniqueName}`,
+      `module.taskRouter.twilio_taskrouter_workspaces_task_channels_v1.${taskChannelUniqueName}`,
       `${taskChannelUniqueName} task channel`,
     );
   } else {
@@ -58,7 +58,7 @@ async function locateAndImportDefaultFlexFlow(
   if (flexFlow) {
     attemptTerraformImport(
       `${flexFlow.sid}`,
-      `twilio_flex_flex_flows_v1.${terraformResourceName}`,
+      `module.flex.twilio_flex_flex_flows_v1.${terraformResourceName}`,
       `${flexFlowFriendlyName} flex flow`,
     );
   } else {
@@ -74,7 +74,7 @@ async function main() {
   if (proxy) {
     attemptTerraformImport(
       proxy.sid,
-      'twilio_proxy_services_v1.flex_proxy_service',
+      'module.services.twilio_proxy_services_v1.flex_proxy_service',
       'Flex Proxy Service',
     );
   } else {
@@ -88,7 +88,7 @@ async function main() {
   if (chatService) {
     attemptTerraformImport(
       chatService.sid,
-      'twilio_chat_services_v2.flex_chat_service',
+      'module.services.twilio_chat_services_v2.flex_chat_service',
       'Flex Chat Service',
     );
   } else {
@@ -101,7 +101,7 @@ async function main() {
   if (workspace) {
     attemptTerraformImport(
       workspace.sid,
-      'twilio_taskrouter_workspaces_v1.flex_task_assignment',
+      'module.taskRouter.twilio_taskrouter_workspaces_v1.flex_task_assignment',
       'Flex Task Assignment workflow',
     );
     await locateAndImportDefaultTaskChannel(workspace.sid, 'default');
