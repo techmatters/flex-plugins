@@ -1,11 +1,9 @@
 import twilio from 'twilio';
-import * as fs from 'fs';
 import { execSync } from 'child_process';
 import { config } from 'dotenv';
 import { logError, logSuccess, logWarning } from '../helpers/log';
 
 config();
-
 
 const terraformWorkingDirectory = `../twilio-iac/${process.argv[2]}`;
 const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
@@ -17,7 +15,7 @@ function attemptTerraformImport(
 ): void {
   try {
     const command = `terraform import${
-      process.argv[3] ? ' -var-file poc-private.tfvars' : ''
+      process.argv[3] ? ` -var-file ${process.argv[3]}` : ''
     } ${terraformResource} ${twilioResourceSid}`;
     logSuccess(`Running command: ${command}`);
     execSync(command, { cwd: process.argv[2] });
