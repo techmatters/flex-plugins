@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import * as fs from 'fs';
 import path from 'path';
 import yargs from 'yargs';
@@ -50,11 +51,12 @@ async function main() {
           name: 'overwriteDefinitions',
           description: 'Target directory (rootDir) not empty! Overwrite? (y/n)',
           required: true,
-          pattern: /y|n/g,
+          pattern: /[yn]/g,
           message: 'Type Y (yes) or N (no)',
         },
       ]);
       if (promptResult.overwriteDefinitions !== 'y') {
+        // eslint-disable-next-line no-console
         console.log('Aborting operation.');
         return;
       }
