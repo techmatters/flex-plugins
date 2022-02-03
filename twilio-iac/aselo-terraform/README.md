@@ -28,7 +28,7 @@ There are currently some gotchas which mean that, unfortunately, it's not a simp
 The process for a first run is as follows:
 
 * Create a new directory in /twilio-iac named using the <helpline>-<environment> convention
-* Copy any .tf extension files from the 'terraform-poc-account' folder into the new folder
+* Copy any .tf extension files from the 'terraform-poc-account' folder into the new folder (or if it is a production account, copy from the helpline's staging account, this will save a lot of time aligning them later)
 * In the 'backend "s3""' section modify the 'bucket' and 'dynamodb_table' to replace 'terraform-poc' with the account identifier convention we use for s3, i.e. <short_lowercase_helpline_code>.<full+_lowercase_environment_name> . For example, Aarambh Production would look like this:
 ```hcl
   backend "s3" {
