@@ -1,0 +1,4 @@
+account_sid = "<TWILIO_ACCOUNT_SID>"
+datadog_access_token = "****"
+datadog_app_id = "****"
+serverless_url = "https://serverless-0000-production.twil.io"
