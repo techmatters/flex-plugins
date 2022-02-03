@@ -8,4 +8,9 @@ variable "serverless_url" {
   type        = string
 }
 
+variable "custom_task_routing_filter_expression" {
+  description = "Setting this will override the default task routing filter expression, which is helpline=='<var.helpline>'"
+  type = string
+  default = ""
+}
 

@@ -18,3 +18,4 @@ variable "environment" {
 variable "short_environment" {
   default = "STG"
 }
+

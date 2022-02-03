@@ -8,7 +8,7 @@ terraform {
 }
 
 locals {
-  flow_definition = jsonencode({
+  flow_definition = var.custom_flow_definition != "" ? var.custom_flow_definition : jsonencode({
     "states": [
       {
         "transitions": [
