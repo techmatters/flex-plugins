@@ -10,7 +10,7 @@ variable "short_helpline" {
   default = "JM"
 }
 variable "operating_info_key" {
-  default = "aselo-dev"
+  default = "jm"
 }
 variable "environment" {
   default = "Staging"

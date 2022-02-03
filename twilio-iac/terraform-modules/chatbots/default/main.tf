@@ -64,73 +64,9 @@ resource "twilio_autopilot_assistants_v1" "post_survey" {
   log_queries = true
 }
 
-resource "twilio_autopilot_assistants_tasks_v1" "survey" {
-  unique_name   = "survey"
-  assistant_sid = twilio_autopilot_assistants_v1.pre_survey.sid
-  actions       = jsonencode({
-    "actions" : [
-      {
-        "remember" : { "at" : "survey" }
-      },
-      {
-        "say" : "Thank you. You can say 'prefer not to answer' (or type X) to any question."
-      },
-      {
-        "collect" : {
-          "on_complete" : {
-            "redirect" : "task://redirect_function"
-          },
-          "name" : "collect_survey",
-          "questions" : [
-            {
-              "type" : "Age",
-              "validate" : {
-                "on_failure" : {
-                  "repeat_question" : true,
-                  "messages" : [
-                    {
-                      "say" : "Sorry, I didn't understand that. Please respond with a number."
-                    },
-                    {
-                      "say" : "Sorry, I still didn't get that."
-                    }
-                  ]
-                },
-                "max_attempts" : {
-                  "redirect" : "task://redirect_function",
-                  "num_attempts" : 2
-                }
-              },
-              "question" : "How old are you?",
-              "name" : "age"
-            },
-            {
-              "type" : "Gender",
-              "validate" : {
-                "on_failure" : {
-                  "repeat_question" : true,
-                  "messages" : [
-                    {
-                      "say" : "Sorry, I didn't understand that. Please try again."
-                    },
-                    {
-                      "say" : "Sorry, I still didn't get that."
-                    }
-                  ]
-                },
-                "max_attempts" : {
-                  "redirect" : "task://redirect_function",
-                  "num_attempts" : 2
-                }
-              },
-              "question" : "What is your gender?",
-              "name" : "gender"
-            }
-          ]
-        }
-      }
-    ]
-  })
+moved {
+  from = twilio_autopilot_assistants_tasks_v1.survey
+  to = module.default_pre_survey_task[0].twilio_autopilot_assistants_tasks_v1.survey
 }
 
 resource "twilio_autopilot_assistants_tasks_v1" "redirect_function" {
@@ -317,7 +253,17 @@ resource "twilio_autopilot_assistants_tasks_v1" "goodbye" {
     ]
   })
 }
+module "default_pre_survey_task" {
+  count = var.gender_field_type == "default" ? 1 : 0
+  source = "../terraform-modules/pre-survey-task/default"
+  bot_sid = twilio_autopilot_assistants_v1.pre_survey.sid
+}
 
+module "safespot_pre_survey_task" {
+  count = var.gender_field_type == "safespot" ? 1 : 0
+  source = "../terraform-modules/pre-survey-task/safespot"
+  bot_sid = twilio_autopilot_assistants_v1.pre_survey.sid
+}
 
 resource "twilio_autopilot_assistants_tasks_samples_v1" "goodbye_group" {
   for_each = toset(["no thanks", "that is all thank you", "that's all for today", "go away", "that would be all thanks", "no", "no thanks", "that would be all", "goodbye", "goodnight", "cancel", "good bye", "stop talking", "stop", "see ya", "bye bye", "that's all"])
