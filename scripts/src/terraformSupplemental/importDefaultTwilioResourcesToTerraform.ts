@@ -1,13 +1,11 @@
 import twilio from 'twilio';
-import * as fs from 'fs';
 import { execSync } from 'child_process';
 import { config } from 'dotenv';
 import { logError, logSuccess, logWarning } from '../helpers/log';
 
 config();
 
-const TERRAFORM_WORKING_DIRECTORY = '../twilio-iac/aselo-terraform';
-
+const terraformWorkingDirectory = `../twilio-iac/${process.argv[2]}`;
 const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
 function attemptTerraformImport(
@@ -16,11 +14,11 @@ function attemptTerraformImport(
   description: string,
 ): void {
   try {
-    const command = `terraform import -var-file ${
-      process.argv[2] || 'poc-private.tfvars'
+    const command = `terraform import${
+      process.argv[3] ? ` -var-file ${process.argv[3]}` : ''
     } ${terraformResource} ${twilioResourceSid}`;
-    logSuccess(`Running command: ${command}`);
-    execSync(command, { cwd: TERRAFORM_WORKING_DIRECTORY });
+    logSuccess(`Running command (in ${terraformWorkingDirectory}): ${command}`);
+    execSync(command, { cwd: terraformWorkingDirectory });
     logSuccess(
       `${description}, sid ${twilioResourceSid} successfully imported to terraform as '${terraformResource}'`,
     );
@@ -42,7 +40,7 @@ async function locateAndImportDefaultTaskChannel(
   if (taskChannel) {
     attemptTerraformImport(
       `${workspaceSid}/${taskChannel.sid}`,
-      `twilio_taskrouter_workspaces_task_channels_v1.${taskChannelUniqueName}`,
+      `module.taskRouter.twilio_taskrouter_workspaces_task_channels_v1.${taskChannelUniqueName}`,
       `${taskChannelUniqueName} task channel`,
     );
   } else {
@@ -60,7 +58,7 @@ async function locateAndImportDefaultFlexFlow(
   if (flexFlow) {
     attemptTerraformImport(
       `${flexFlow.sid}`,
-      `twilio_flex_flex_flows_v1.${terraformResourceName}`,
+      `module.flex.twilio_flex_flex_flows_v1.${terraformResourceName}`,
       `${flexFlowFriendlyName} flex flow`,
     );
   } else {
@@ -69,14 +67,14 @@ async function locateAndImportDefaultFlexFlow(
 }
 
 async function main() {
-  execSync('terraform init', { cwd: TERRAFORM_WORKING_DIRECTORY });
+  execSync('terraform init', { cwd: terraformWorkingDirectory });
   const proxy = (await client.proxy.services.list({ limit: 20 })).find(
     (p) => p.uniqueName === 'Flex Proxy Service',
   );
   if (proxy) {
     attemptTerraformImport(
       proxy.sid,
-      'twilio_proxy_services_v1.flex_proxy_service',
+      'module.services.twilio_proxy_services_v1.flex_proxy_service',
       'Flex Proxy Service',
     );
   } else {
@@ -90,7 +88,7 @@ async function main() {
   if (chatService) {
     attemptTerraformImport(
       chatService.sid,
-      'twilio_chat_services_v2.flex_chat_service',
+      'module.services.twilio_chat_services_v2.flex_chat_service',
       'Flex Chat Service',
     );
   } else {
@@ -103,7 +101,7 @@ async function main() {
   if (workspace) {
     attemptTerraformImport(
       workspace.sid,
-      'twilio_taskrouter_workspaces_v1.flex_task_assignment',
+      'module.taskRouter.twilio_taskrouter_workspaces_v1.flex_task_assignment',
       'Flex Task Assignment workflow',
     );
     await locateAndImportDefaultTaskChannel(workspace.sid, 'default');

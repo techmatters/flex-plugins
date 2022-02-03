@@ -359,55 +359,45 @@ resource "twilio_autopilot_assistants_field_types_field_values_v1" "unknown_age_
   synonym_of = "Unknown"
 }
 
-resource "twilio_autopilot_assistants_field_types_v1" "gender" {
-  unique_name = "Gender"
-  assistant_sid = twilio_autopilot_assistants_v1.pre_survey.sid
+module "default_gender_field" {
+  count = var.gender_field_type == "default" ? 1 : 0
+  source = "../terraform-modules/gender-field/default"
+  bot_sid = twilio_autopilot_assistants_v1.pre_survey.sid
 }
 
-resource "twilio_autopilot_assistants_field_types_field_values_v1" "gender_group" {
-  for_each = toset(["Boy", "Girl", "Unknown", "Non-Binary"])
-  assistant_sid = twilio_autopilot_assistants_v1.pre_survey.sid
-  field_type_sid = twilio_autopilot_assistants_field_types_v1.gender.sid
-  value = each.key
-  language = "en-US"
+module "safespot_gender_field" {
+  count = var.gender_field_type == "safespot" ? 1 : 0
+  source = "../terraform-modules/gender-field/safespot"
+  bot_sid = twilio_autopilot_assistants_v1.pre_survey.sid
 }
 
-resource "twilio_autopilot_assistants_field_types_field_values_v1" "gender_boy_synonym_group" {
-  depends_on = [twilio_autopilot_assistants_field_types_field_values_v1.gender_group] //Synonym creation fails if not created after what they alias
-  for_each = toset(["male", "man", "M", "guy", "dude", "males", "B"])
-  assistant_sid = twilio_autopilot_assistants_v1.pre_survey.sid
-  field_type_sid = twilio_autopilot_assistants_field_types_v1.gender.sid
-  value = each.key
-  language = "en-US"
-  synonym_of = "Boy"
+
+moved {
+  from = twilio_autopilot_assistants_field_types_v1.gender
+  to = module.default_gender_field[0].twilio_autopilot_assistants_field_types_v1.gender
 }
 
-resource "twilio_autopilot_assistants_field_types_field_values_v1" "gender_girl_synonym_group" {
-  depends_on = [twilio_autopilot_assistants_field_types_field_values_v1.gender_group] //Synonym creation fails if not created after what they alias
-  for_each = toset(["female", "woman", "F", "W", "lady", "females", "G"])
-  assistant_sid = twilio_autopilot_assistants_v1.pre_survey.sid
-  field_type_sid = twilio_autopilot_assistants_field_types_v1.gender.sid
-  value = each.key
-  language = "en-US"
-  synonym_of = "Girl"
+moved {
+  from = twilio_autopilot_assistants_field_types_field_values_v1.gender_group
+  to = module.default_gender_field[0].twilio_autopilot_assistants_field_types_field_values_v1.gender_group
 }
 
-resource "twilio_autopilot_assistants_field_types_field_values_v1" "gender_unknown_synonym_group" {
-  depends_on = [twilio_autopilot_assistants_field_types_field_values_v1.gender_group] //Synonym creation fails if not created after what they alias
-  for_each = toset(["prefer not to answer", "X", "none of your business", "prefer not", "prefer not to"])
-  assistant_sid = twilio_autopilot_assistants_v1.pre_survey.sid
-  field_type_sid = twilio_autopilot_assistants_field_types_v1.gender.sid
-  value = each.key
-  language = "en-US"
-  synonym_of = "Unknown"
+moved {
+  from = twilio_autopilot_assistants_field_types_field_values_v1.gender_boy_synonym_group
+  to = module.default_gender_field[0].twilio_autopilot_assistants_field_types_field_values_v1.gender_boy_synonym_group
 }
 
-resource "twilio_autopilot_assistants_field_types_field_values_v1" "gender_nonbinary_synonym_group" {
-  depends_on = [twilio_autopilot_assistants_field_types_field_values_v1.gender_group] //Synonym creation fails if not created after what they alias
-  for_each = toset(["NB", "agender", "nonbinary", "non binary"])
-  assistant_sid = twilio_autopilot_assistants_v1.pre_survey.sid
-  field_type_sid = twilio_autopilot_assistants_field_types_v1.gender.sid
-  value = each.key
-  language = "en-US"
-  synonym_of = "Non-Binary"
+moved {
+  from = twilio_autopilot_assistants_field_types_field_values_v1.gender_girl_synonym_group
+  to = module.default_gender_field[0].twilio_autopilot_assistants_field_types_field_values_v1.gender_girl_synonym_group
+}
+
+moved {
+  from = twilio_autopilot_assistants_field_types_field_values_v1.gender_unknown_synonym_group
+  to = module.default_gender_field[0].twilio_autopilot_assistants_field_types_field_values_v1.gender_unknown_synonym_group
+}
+
+moved {
+  from = twilio_autopilot_assistants_field_types_field_values_v1.gender_nonbinary_synonym_group
+  to = module.default_gender_field[0].twilio_autopilot_assistants_field_types_field_values_v1.gender_nonbinary_synonym_group
 }

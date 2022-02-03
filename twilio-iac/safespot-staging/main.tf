@@ -5,10 +5,17 @@ terraform {
       version = "0.11.1"
     }
   }
+
+  backend "s3" {
+    bucket         = "tl-terraform-state-twilio-jm-staging"
+    key            = "twilio/terraform.tfstate"
+    dynamodb_table = "twilio-terraform-jm-staging-locks"
+    encrypt        = true
+  }
 }
 
 locals {
-  flow_definition = var.custom_flow_definition != "" ? var.custom_flow_definition : jsonencode({
+  safespot_flow_definition = jsonencode({
     "states": [
       {
         "transitions": [
@@ -21,6 +28,9 @@ locals {
           },
           {
             "event": "incomingRequest"
+          },
+          {
+            "event": "incomingParent"
           }
         ],
         "type": "trigger",
@@ -48,8 +58,8 @@ locals {
         "name": "smsAttributes",
         "properties": {
           "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
-          "workflow": var.master_workflow_sid,
-          "channel":  var.chat_task_channel_sid,
+          "workflow": module.taskRouter.master_workflow_sid,
+          "channel":  module.taskRouter.chat_task_channel_sid,
           "offset": {
             "y": 810,
             "x": 270
@@ -79,7 +89,7 @@ locals {
             "x": -20
           },
           "chat_channel": "{{trigger.message.ChannelSid}}",
-          "autopilot_assistant_sid": var.pre_survey_bot_sid
+          "autopilot_assistant_sid": module.chatbots.pre_survey_bot_sid
         }
       },
       {
@@ -128,8 +138,8 @@ locals {
         "name": "defaultAttributes",
         "properties": {
           "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
-          "workflow": var.master_workflow_sid,
-          "channel":  var.default_task_channel_sid,
+          "workflow": module.taskRouter.master_workflow_sid,
+          "channel":  module.taskRouter.default_task_channel_sid,
           "offset": {
             "y": 810,
             "x": -690
@@ -152,8 +162,8 @@ locals {
         "name": "whatsappAttributes",
         "properties": {
           "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
-          "workflow": var.master_workflow_sid,
-          "channel":  var.chat_task_channel_sid,
+          "workflow": module.taskRouter.master_workflow_sid,
+          "channel":  module.taskRouter.chat_task_channel_sid,
           "offset": {
             "y": 810,
             "x": -370
@@ -176,8 +186,8 @@ locals {
         "name": "facebookAttributes",
         "properties": {
           "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
-          "workflow": var.master_workflow_sid,
-          "channel":  var.chat_task_channel_sid,
+          "workflow": module.taskRouter.master_workflow_sid,
+          "channel":  module.taskRouter.chat_task_channel_sid,
           "offset": {
             "y": 810,
             "x": -50
@@ -199,9 +209,9 @@ locals {
         "type": "send-to-flex",
         "name": "webAttributes",
         "properties": {
-          "attributes": "{\"ip\":\"{{trigger.message.ChannelAttributes.pre_engagement_data.ip}}\",\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"{{trigger.message.ChannelAttributes.pre_engagement_data.helpline}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
-          "workflow": var.master_workflow_sid,
-          "channel": var.chat_task_channel_sid,
+          "attributes": "{\"ip\":\"{{trigger.message.ChannelAttributes.pre_engagement_data.ip}}\",\"firstName\": \"{{trigger.message.ChannelAttributes.from}}\",\"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"SafeSpot\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}"
+          "workflow": module.taskRouter.master_workflow_sid,
+          "channel": module.taskRouter.chat_task_channel_sid,
           "offset": {
             "y": 810,
             "x": 590
@@ -290,8 +300,64 @@ locals {
   })
 }
 
-resource "twilio_studio_flows_v2" "messaging_flow" {
-  friendly_name = "Messaging Flow"
-  status = "published"
-  definition = local.flow_definition
+
+module "chatbots" {
+  source = "../terraform-modules/chatbots/default"
+  serverless_url = var.serverless_url
+  gender_field_type = "safespot"
+}
+
+module "serverless" {
+  source = "../terraform-modules/serverless/default"
+}
+
+module "services" {
+  source = "../terraform-modules/services/default"
+}
+
+module "taskRouter" {
+  source = "../terraform-modules/taskRouter/default"
+  serverless_url = var.serverless_url
+  helpline = var.helpline
+  custom_task_routing_filter_expression = "helpline=='${var.helpline}' OR channelType==\"web\" OR to==\"+14244147346\" OR to==\"+18767287042\""
+}
+
+module studioFlow {
+  source = "../terraform-modules/studioFlow/default"
+  custom_flow_definition = local.safespot_flow_definition
+  master_workflow_sid = module.taskRouter.master_workflow_sid
+  chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
+  default_task_channel_sid = module.taskRouter.default_task_channel_sid
+  pre_survey_bot_sid = module.chatbots.pre_survey_bot_sid
+}
+
+module flex {
+  source = "../terraform-modules/flex/default"
+  flex_chat_service_sid = module.services.flex_chat_service_sid
+  messaging_studio_flow_sid = module.studioFlow.messaging_studio_flow_sid
+}
+
+module survey {
+  source = "../terraform-modules/survey/default"
+  helpline = var.helpline
+  flex_task_assignment_workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
+}
+
+module aws {
+  source = "../terraform-modules/aws/default"
+  account_sid = var.account_sid
+  helpline = var.helpline
+  short_helpline = var.short_helpline
+  environment = var.environment
+  short_environment = var.short_environment
+  operating_info_key = var.operating_info_key
+  datadog_app_id = var.datadog_app_id
+  datadog_access_token = var.datadog_access_token
+  flex_task_assignment_workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
+  master_workflow_sid = module.taskRouter.master_workflow_sid
+  shared_state_sync_service_sid = module.services.shared_state_sync_service_sid
+  flex_chat_service_sid = module.services.flex_chat_service_sid
+  flex_proxy_service_sid = module.services.flex_proxy_service_sid
+  post_survey_bot_sid = module.chatbots.post_survey_bot_sid
+  survey_workflow_sid = module.survey.survey_workflow_sid
 }
