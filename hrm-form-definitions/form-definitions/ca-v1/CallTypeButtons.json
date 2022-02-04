@@ -18,14 +18,8 @@
     "category": "non-data"
   },
   {
-    "name": "blank",
-    "label": "Blank",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
     "name": "joke",
-    "label": "Joke",
+    "label": "Prank",
     "type": "button",
     "category": "non-data"
   },
@@ -44,6 +38,24 @@
   {
     "name": "abusive",
     "label": "Abusive",
+    "type": "button",
+    "category": "non-data"
+  }.
+  {
+    "name": "thankyou",
+    "label": "Thank You",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "complaint",
+    "label": "Complaint",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "information",
+    "label": "Wanted Information about KHP",
     "type": "button",
     "category": "non-data"
   }
