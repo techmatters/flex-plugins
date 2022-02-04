@@ -1,134 +1,214 @@
 {
-  "Example Helpline": {
-    "Missing children": {
+  "Kids Help Phone": {
+    "Suicide/Suicidality": {
       "color": "#BBE3FF",
       "subcategories": [
-        "Child abduction",
-        "Lost, unaccounted for or otherwise missing child",
-        "Runaway",
-        "Unspecified/Other"
+        "Suicide/Suicidality"
       ]
     },
-    "Violence": {
+    "Self-Injury": {
       "color": "#F5A623",
       "subcategories": [
-        "Bullying",
-        "Child/Early/Forced marriage",
-        "Child labour",
-        "Commercial sexual exploitation (offline)",
-        "Female Genital Mutilation (FGM)",
-        "Gender-based harmful traditional practices (other than FGM)",
-        "Harmful traditional practices other than child marriage and FGM",
-        "Mental/Emotional violence",
-        "Neglect (or negligent treatment)",
-        "Online sexual abuse",
-        "Online sexual exploitation",
-        "Physical violence",
-        "Sexual violence",
-        "Unspecified/Other"
+        "Self-Injury"
       ]
     },
-    "Mental Health": {
+    "Harming Others": {
       "color": "#F8E900",
       "subcategories": [
-        "Addictive behaviours and substance use",
-        "Behavioural problems",
-        "Concerns about the self",
-        "Emotional distress – anger problems",
-        "Emotional distress – fear and anxiety problems",
-        "Emotional distress – mood problems",
-        "Neurodevelopmental concerns",
-        "Problems with eating behaviour",
-        "Self-harming behaviour",
-        "Suicidal thoughts and suicide attempts",
-        "Traumatic distress",
-        "Unspecified/Other"
+        "Harming Others"
       ]
     },
-    "Physical Health": {
+    "Homicide": {
       "color": "#E86B6B",
       "subcategories": [
-        "COVID-19",
-        "General medical or lifestyle concerns",
-        "Medical or lifestyle information about HIV/AIDS",
-        "Male circumcision",
-        "Pregnancy and maternal care",
-        "Sexual and reproductive health",
-        "Nutrition",
-        "Unspecified/Other"
+        "Homicide"
       ]
     },
-    "Accessibility": {
+    "Abuse": {
       "color": "#8055BA",
       "subcategories": [
-        "Education",
-        "Essential needs",
-        "General healthcare services",
-        "Legal services and advice",
-        "Mental health services",
-        "Sexual health services",
-        "Socio-economical services",
-        "Unspecified/Other"
+        "Emotional/Verbal (By a parent/caregiver/family member)",
+        "Emotional/Verbal (By an intimate partner/spouse)",
+        "Emotional/Verbal (Other/Unspecified) ",
+        "Physical (By a parent/caregiver/family member)",
+        "Physical (By an intimate partner/spouse)",
+        "Physical (Other/Unspecified)",
+        "Sexual (By a parent/caregiver/family member)",
+        "Sexual (By an intimate partner/spouse)",
+        "Sexual (Other/Unspecified)",
+        "Neglect"
       ]
     },
-    "Discrimination and Exclusion": {
+    "Assault": {
       "color": "#B971AF",
       "subcategories": [
-        "Ethnicity/nationality",
-        "Financial situation",
-        "Gender",
-        "Gender identity or expression and sexual orientation",
-        "Health",
-        "Philosophical or religious beliefs",
+        "Physical Assault",
+        "Sexual Assault",
         "Unspecified/Other"
       ]
     },
-    "Family Relationships": {
+    "Body Image": {
       "color": "#239613",
       "subcategories": [
-        "Adoption, fostering, and extended family placement",
-        "Relationship to caregiver",
-        "Family health and wellbeing",
-        "Relationship with sibling(s)",
-        "Unspecified/Other"
+        "Body Image"
       ]
     },
-    "Peer Relationships": {
+    "Bullying/Harassment": {
       "color": "#9AD703",
       "subcategories": [
-        "Friends and friendships",
-        "Partner relationships",
-        "Classmates/colleagues relationships",
-        "Unspecified/Other"
+        "In person bullying/harassment",
+        "Online bullying/harassment"
       ]
     },
-    "Education and Occupation": {
+    "Extortion/Exploitation": {
       "color": "#55AFAF",
       "subcategories": [
-        "Academic issues",
-        "Teacher and school problems",
-        "Problems at work",
-        "Unspecified/Other"
+        "In person extortion/exploitation",
+        "Online extortion/exploitation"
       ]
     },
-    "Sexuality": {
+    "Current or Past Events": {
       "color": "#506BA5",
       "subcategories": [
-        "Sexual orientation and gender identity",
-        "Sexual behaviours",
-        "Unspecified/Other"
+        "Global/national crisis",
+        "Historical events",
+        "News headline",
+        "Societal unrest/demonstrations/protests"
       ]
     },
-    "Non-Counselling contacts": {
+    "Disability/Ability": {
       "color": "#767777",
       "subcategories": [
-        "Complaints about the child helpline",
-        "Questions by parents",
-        "Questions about the child helpline",
-        "Questions about other services",
-        "\"Thank you for your assistance\"",
-        "Unspecified/Other"
+        "Intellectual",
+        "Learning",
+        "Bodily",
+        "Hearing",
+        "Vision",
+        "Other Disability/Ability"
       ]
+    },
+    "Financial Concerns": {
+        "color": "#b36ae3",
+        "subcategories": [
+          "Financial Concerns (e.g., Poverty, Financial Stress. etc.)"
+        ]
+      },
+      "Health": {
+        "color": "#e26e58",
+        "subcategories": [
+          "Physical Illness",
+          "Chronic Illness"
+        ]
+      },
+      "Identity": {
+        "color": "#8bde63",
+        "subcategories": [
+          "Gender/Sexual Expression or Orientation",
+          "Self-expression",
+          "Cultural/ethnic",
+          "Religious",
+          "Neurodivergence",
+          "Other - Identity"
+        ]
+      },
+      "Living Situation": {
+        "color": "#fc33e5",
+        "subcategories": [
+          "Living Situation (e.g., Homelessness, Moving out/moving to a new place, Anything related to someone's living situation)"
+        ]
+      },
+      "Legal Concerns": {
+        "color": "#df7419",
+        "subcategories": [
+          "Legal Concerns (e.g., Going to court, Looking for legal advice, how to report things, etc.)"
+        ]
+      },
+      "Mental Health & Wellbeing (Symptoms and Behaviours)": {
+        "color": "#e4fbfa",
+        "subcategories": [
+          "Anger/Hostility/Violence",
+          "Anxiety/Stress/Panic/Fear/Worry",
+          "Sleeping Habits/Difficulties",
+          "Attention Difficulties",
+          "Sadness/Depression/Hopelessness",
+          "Paranoia/Hallucinations/Dissociation",
+          "Extreme Mood Swings/Changes in Mood",
+          "Guilt",
+          "Loneliness/Social Isolation/Withdrawal",
+          "Grief/Loss",
+          "Difficulty Coping",
+          "Disordered Eating",
+          "Sex Drive Changes/Habits",
+          "Substance Use",
+          "Addictions",
+          "Trauma Response",
+          "Trouble understanding/relating to others",
+          "Lack of Motivation",
+          "Formal diagnosis mentioned/discussed"
+        ]
+      },
+      "Substance abuse": {
+        "color": "#d0021b",
+        "subcategories": [
+          "Child - alcohol abuse",
+          "Child - other drug abuse",
+          "Drug dealing",
+          "Exposure to alcohol/drug abuse",
+          "Information on alcohol/drugs",
+          "Parent/caretaker - alcohol abuse",
+          "Parent/caretaker - drug abuse"
+        ]
+      },
+      "Parenting": {
+        "color": "#50e3c2",
+        "subcategories": [
+          "Parenting"
+        ]
+      },  
+      "Prejudice/Discrimination/Microaggresion/Oppression": {
+        "color": "#8b572a",
+        "subcategories": [
+          "Ableism",
+          "Homophobia",
+          "Transphobia",
+          "Racism",
+          "Religious",
+          "Systemic (e.g., unfair treatment from the criminal/justice/health/education systems)",
+          "Sexism",
+          "Body Shaming",
+          "Mental Health Related",
+          "Unknown/Other"
+        ]
+      },
+      "Relationships": {
+        "color": "#BBE3FF",
+        "subcategories": [
+          "With family member(s) (e.g., parents/guardians, siblings, etc.)",
+          "With friend(s)/peer(s)",
+          "With partner(s) (e.g., boyfriend/girlfriend, spouse, romantic partner)",
+          "Other relationship(s)"
+        ]
+      },
+      "Substance Use/Experimentation": {
+        "color": "#F5A623",
+        "subcategories": [
+          "Substance Use/Experimentation"
+        ]
+      },
+      "Sex/Sexual Health/Pregnancy": {
+        "color": "#F8E900",
+        "subcategories": [
+          "Sex/Sexual Health/Pregnancy"
+        ]
+      },
+      "School and Work": {
+        "color": "#E86B6B",
+        "subcategories": [
+          "Academic issues",
+          "Teacher and school problems",
+          "Problems at work",
+          "Unspecified/Other"
+        ]
+      }
     }
-  }
 }
