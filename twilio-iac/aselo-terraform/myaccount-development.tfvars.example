@@ -1,6 +1,0 @@
-helpline    = "MyAccount"
-short_helpline = "POC"
-short_environment = "DEV"
-environment = "Development"
-operating_info_key = "ma"
-serverless_number = 0000
