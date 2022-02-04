@@ -118,7 +118,7 @@ async function main() {
       async (argv) => {
         await importDefaultResources(
           argv.accountDirectory as string,
-          argv.tfFilePath as string,
+          argv.varFile as string,
           argv.dryRun as boolean,
         );
       },
