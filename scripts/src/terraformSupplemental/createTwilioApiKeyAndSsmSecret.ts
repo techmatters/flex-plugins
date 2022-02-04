@@ -1,6 +1,6 @@
 import twilio from 'twilio';
 import { saveSSMParameter } from '../helpers/ssm';
-import { logSuccess } from '../helpers/log';
+import { logDebug, logSuccess } from '../helpers/log';
 
 export type CreateTwilioApiKeyAndSsmSecretOptions = {
   sidSmmParameterName: string;
@@ -15,8 +15,8 @@ export async function createTwilioApiKeyAndSsmSecret(
   environment: string,
   {
     sidSmmParameterName,
-    sidSmmParameterDescription = `SID for Twilio API key '${sidSmmParameterName}'`,
-    secretSmmParameterDescription = `Secret for Twilio key '${twilioFriendlyName}'`,
+    sidSmmParameterDescription = `SID for Twilio API key '${twilioFriendlyName}, ${helpline} (${environment})'`,
+    secretSmmParameterDescription = `Secret for Twilio API key '${twilioFriendlyName} ${helpline} (${environment})'`,
   }: Partial<CreateTwilioApiKeyAndSsmSecretOptions>,
 ) {
   const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
@@ -33,7 +33,7 @@ export async function createTwilioApiKeyAndSsmSecret(
       { Key: 'Helpline', Value: helpline },
       { Key: 'Environment', Value: environment },
     ]);
-    logSuccess(`SSM parameter ${ssmKeyName} saved.`);
+    logSuccess(`SSM parameter ${sidSmmParameterName} saved.`);
   }
   logSuccess('All createTwilioApiKeyAndSsmSecret operations complete');
 }

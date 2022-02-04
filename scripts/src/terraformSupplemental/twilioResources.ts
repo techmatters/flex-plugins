@@ -124,7 +124,7 @@ async function main() {
       },
     )
     .command(
-      'new-key-with-smm-secret <twilioFriendlyName> <ssmSecretName> <helpline> <environment>',
+      'new-key-with-ssm-secret <twilioFriendlyName> <ssmSecretName> <helpline> <environment>',
       'Create a twilio API key and a AWS SSM parameter to hold the secret. Requires Twilio creds and AWS creds & region to be set up with standard account variables.',
       (argv) => {
         argv.positional('twilioFriendlyName', {
@@ -144,20 +144,20 @@ async function main() {
             "Name of the environment the api key is for (i.e. 'Production' or 'Staging'), used as a tag in the SSM parameters",
           type: 'string',
         });
-        argv.option('d', {
+        argv.option('sd', {
           alias: 'ssmSecretDescription',
           describe:
-            "Set a custom description for the secret's SSM parameter - 'Secret for Twilio Key <twilioFriendlyName>' is used if not set",
+            "Set a custom description for the secret's SSM parameter - 'Secret for Twilio Key *twilioFriendlyName*' is used if not set",
           type: 'string',
         });
-        argv.option('sn', {
-          alias: 'ssmSidName',
+        argv.option('an', {
+          alias: 'ssmApiKeySidName',
           describe:
             'If the API Key SID needs storing as a SSM parameter alongside the secret, set the name to use with this parameter. No SSM key will be created for the API Key if this is not set',
           type: 'string',
         });
-        argv.option('sd', {
-          alias: 'ssmSidDescription',
+        argv.option('ad', {
+          alias: 'ssmApiKeySidDescription',
           describe:
             'If the API Key SID needs storing as a SSM parameter alongside the secret, this option can be used to provide a description. Has no effect if ssmAPiKeyName is not set.',
           type: 'string',
@@ -170,8 +170,8 @@ async function main() {
           argv.helpline as string,
           argv.environment as string,
           {
-            sidSmmParameterDescription: argv.ssmSidDescription,
-            sidSmmParameterName: argv.ssmSidName,
+            sidSmmParameterDescription: argv.ssmApiKeySidDescription,
+            sidSmmParameterName: argv.ssmApiKeySidName,
             secretSmmParameterDescription: argv.ssmSecretDescription,
           } as Partial<CreateTwilioApiKeyAndSsmSecretOptions>,
         );

@@ -48,6 +48,11 @@ The process for a first run is as follows:
 ```
 npm run twilioResources -- import-account-defaults <helpline>-<environment> [-v my-private.tfvars]]
 ```
+* Run the scripts below to work around the fact that API keys are currently broken in the Twilio Terraform Provider
+```shell
+npm run twilioResources -- new-key-with-ssm-secret hrm-static-key <short_environment>_TWILIO_<short_helpline>_HRM_STATIC_KEY <helpline> <environement>
+npm run twilioResources -- new-key-with-ssm-secret "Shared State Service" <short_environment>_TWILIO_<short_helpline>_SECRET <helpline> <environement> --an=<short_environment>_TWILIO_<short_helpline>_API_KEY
+```
 * Run and review the output of:
 ```terraform plan [-var-file my-private.tfvars]```
 * Run:
