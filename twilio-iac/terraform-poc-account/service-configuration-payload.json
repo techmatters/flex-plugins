@@ -59,14 +59,14 @@
       "enable_post_survey": false
     },
     "seenOnboarding": true,
-    "permissionConfig": "jm",
+    "permissionConfig": "aselo-dev",
     "hrm_api_version": "v0",
-    "definitionVersion": "jm-v1",
+    "definitionVersion": "v1",
     "monitoringEnv": "production",
     "hrm_base_url": "https://hrm-test.tl.techmatters.org",
     "pdfImagesSource": "https://tl-public-chat.s3.amazonaws.com",
     "logo_url": "https://aselo-logo.s3.amazonaws.com/145+transparent+background+no+TM.png",
     "multipleOfficeSupport": true,
-    "serverless_base_url": "https://serverless-8025-production.twil.io"
+    "serverless_base_url": "*"
   }
 }
