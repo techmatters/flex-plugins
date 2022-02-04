@@ -1,6 +1,6 @@
 import twilio from 'twilio';
 import { execSync } from 'child_process';
-import { logInfo, logWarning } from '../helpers/log';
+import { logDebug, logInfo, logWarning } from '../helpers/log';
 import { attemptTerraformImport } from './twilioToTerraformImporter';
 
 const TERRAFORM_ROOT_DIRECTORY = '../twilio-iac';
@@ -10,6 +10,8 @@ export async function importDefaultResources(
   tfvarsFile?: string,
   dryRun: boolean = false,
 ) {
+  logDebug(`Importing default resources for '${account}'.`);
+
   const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
   async function locateAndImportDefaultTaskChannel(
