@@ -41,7 +41,7 @@ The process for a first run is as follows:
 * Create an S3 bucket named after the one specified in the 'bucket' attribute you just set. You can copy the S3 settings from the `tl-terraform-state-twilio-terraform-poc`
 * Create a dynamo db table named after the 'dynamodb_table' attribute you just set. It needs a String partition key called `LockID` but otherwise the default settings are fine
 * Open the `variables.tf` file and update the defaults to ones appropriate to this helpline & environment
-* Run `terraform init` from your new folder
+* Run `terraform init` from your new folder (you might need to run `terraform init -reconfigure` if it complains.)
 * _Optional:_ You can create a private `.tfvars` for the sensitive variables you can't check in values for - if you name it something ending in `private.tfvars` it will be ignored by git - or you can use TF_VAR_* environment variables for these as instructed above.
 
 * Run the script below. Twilio creates a bunch of default resources on a new account and Aselo uses some of them. We need to import them into terraform first, otherwise terraform assumes they don't exist and will try to create them, resulting in errors.
@@ -49,12 +49,27 @@ The process for a first run is as follows:
 npm run importDefaultTwilioResourcesToTerraform <helpline>-<environment> [my-private.tfvars]]
 ```
 * Run and review the output of:
-```terraform plan [-var-file my-private.tfvars]```
+```shell
+terraform plan [-var-file my-private.tfvars]
+```
 * Run:
-```terraform apply [-var-file my-private.tfvars]```
+
+```shell
+terraform apply [-var-file my-private.tfvars]
+```
 * Go to the console for your environment, go into Functions > Services > serverless > environments and copy the domain for production (e.g. http://serverless-1234-production.twil.io) and set it as your `TF_VAR_serverless_url` environment variable.
 * Rerun
-```terraform apply [-var-file my-private.tfvars]```
+```shell
+terraform apply [-var-file my-private.tfvars]
+```
+* Review the contents of `service-configuration-payload.json` and update the required values - pay particular attention to `hrm_base_url`, `definitionVersion` and `permissionConfig`.
+  Don't populate `serverless_base_url` or `account_sid` - this file will be checked in and cannot contain sensitive values
+* Copy the `service-configuration-payload.json` file and rename it `service-configuration-payload-private.json` in the same directory.
+* In the new file replace the asterisk values for the real required value (currently `serverless_base_url` or `account_sid`)
+* From within the configuration directory run (Windows users need to run it from git bash or WSL with curl installed, or do the post request via PS or Postman or w/e)
+```shell
+curl https://flex-api.twilio.com/v1/Configuration -X POST -u <TWILIO_ACCOUNT_ID>:<TWILIO_AUTH_TOKEN> --data-binary "@service-configuration-payload-private.json"
+```
 
 Unfortunately, a feature gap in the twilio terraform provider means the domain URL cannot be extracted from the resource. The easiest workaround is to put it in a variable after it has been generated initially
 
