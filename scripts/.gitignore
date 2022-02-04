@@ -5,3 +5,7 @@ destination.json
 dist/
 .env
 private/
+
+# Generated files
+new-flex-plugins-workflow.yml
+new-serverless-workflow.yml
