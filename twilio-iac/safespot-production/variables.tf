@@ -16,6 +16,6 @@ variable "environment" {
   default = "Production"
 }
 variable "short_environment" {
-  default = "Prod"
+  default = "PROD"
 }
 
