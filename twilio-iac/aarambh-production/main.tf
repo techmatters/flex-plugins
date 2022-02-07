@@ -22,6 +22,7 @@ module "chatbots" {
 
 module "hrmServiceIntegration" {
   source = "../terraform-modules/hrmServiceIntegration/default"
+  local_os = var.local_os
   helpline = var.helpline
   short_helpline = var.short_helpline
   environment = var.environment
@@ -34,6 +35,7 @@ module "serverless" {
 
 module "services" {
   source = "../terraform-modules/services/default"
+  local_os = var.local_os
   helpline = var.helpline
   short_helpline = var.short_helpline
   environment = var.environment
