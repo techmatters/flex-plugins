@@ -20,12 +20,24 @@ module "chatbots" {
   serverless_url = var.serverless_url
 }
 
+module "hrmServiceIntegration" {
+  source = "../terraform-modules/hrmServiceIntegration/default"
+  helpline = var.helpline
+  short_helpline = var.short_helpline
+  environment = var.environment
+  short_environment = var.short_environment
+}
+
 module "serverless" {
   source = "../terraform-modules/serverless/default"
 }
 
 module "services" {
   source = "../terraform-modules/services/default"
+  helpline = var.helpline
+  short_helpline = var.short_helpline
+  environment = var.environment
+  short_environment = var.short_environment
 }
 
 module "taskRouter" {
