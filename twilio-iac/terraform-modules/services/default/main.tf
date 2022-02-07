@@ -18,3 +18,10 @@ resource "twilio_proxy_services_v1" "flex_proxy_service" {
 resource "twilio_sync_services_v1" "shared_state_service" {
   friendly_name                   = "Shared State Service"
 }
+
+resource "null_resource" "sync_api_key" {
+  provisioner "local-exec" {
+    working_dir = "${path.module}/../../../../scripts"
+    command = "npm run twilioResources -- new-key-with-ssm-secret \"Shared State Service\" ${var.short_environment}_TWILIO_${var.short_helpline}_SECRET ${var.helpline} ${var.environment} --an=${var.short_environment}_TWILIO_${var.short_helpline}_API_KEY"
+  }
+}
