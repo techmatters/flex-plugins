@@ -35,7 +35,11 @@ export async function createTwilioApiKeyAndSsmSecret(
     sidSmmParameterName && (await getSSMParameter(sidSmmParameterName))
   );
 
-  if (apiKeyAlreadyExists && ssmParamForSecretAlreadyExists && smmParamForSidAlreadyExists) {
+  if (
+    apiKeyAlreadyExists &&
+    ssmParamForSecretAlreadyExists &&
+    (!sidSmmParameterName || smmParamForSidAlreadyExists)
+  ) {
     logInfo(
       `API key '${twilioFriendlyName}' and ssm key(s) ${ssmParametersString} already exist, skipping creation. To recreate them, delete the ${ssmParametersString} SSM keys and they and the API key will be recreated`,
     );
