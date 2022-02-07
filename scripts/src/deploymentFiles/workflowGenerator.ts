@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 import { readFileSync, writeFileSync } from 'fs';
 import { inspect } from 'util';
-import { logSuccess, logError } from '../helpers/log';
+import { logSuccess, logError, logWarning } from '../helpers/log';
 import type { ScriptsInput } from './types';
 
 const replaceAll = (search: string, replacement: string) => (target: string) =>
@@ -43,10 +43,17 @@ export const checkWorkflowInSync = async (remoteUrl: string, templatePath: strin
 
   const generated = generateWorkflowContent(aseloDevConfig, templatePath);
 
-  if (expected !== generated)
+  if (expected !== generated) {
+    if (process.env.IGNORE_CHECK?.toLowerCase() === 'true') {
+      logWarning(
+        'The generated workflow file differs from the one being used by Aselo Development.',
+      );
+      return;
+    }
     throw new Error(
       'The generated workflow file differs from the one being used by Aselo Development.',
     );
+  }
 };
 
 /**
