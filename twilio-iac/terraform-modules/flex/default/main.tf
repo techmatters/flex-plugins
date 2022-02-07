@@ -83,7 +83,7 @@ resource "twilio_flex_flex_flows_v1" "webchat_flow" {
   integration_flow_sid = var.messaging_studio_flow_sid
 }
 
-resource "null_resource" "hrm_static_api_key" {
+resource "null_resource" "service_configuration" {
   triggers = {
     configuration: local.service_configuration_payload
   }
