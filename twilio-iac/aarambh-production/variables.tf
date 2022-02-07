@@ -24,3 +24,31 @@ variable "environment" {
 variable "short_environment" {
   default = "PROD"
 }
+
+variable "definition_version" {
+  description = "Key that determines which set of form definitions this helpline will use"
+  type        = string
+  default = "in-v1"
+}
+
+variable multi_office {
+  default = false
+  type = bool
+  description = "Sets the multipleOfficeSupport flag in Flex Service Configuration"
+}
+
+variable "feature_flags" {
+  description = "A map of feature flags that need to be set for this helpline's flex plugin"
+  type = map(bool)
+  default = {
+
+    "enable_upload_documents" = true
+    "enable_previous_contacts" = true
+    "enable_case_management" = true
+    "enable_offline_contact" = true
+    "enable_transfers" = true
+    "enable_manual_pulling" = true
+    "enable_canned_responses" = true
+    "enable_save_insights" = true
+  }
+}
