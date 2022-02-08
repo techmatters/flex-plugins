@@ -27,17 +27,33 @@ const themeConf = {
 const taskSid = 'task-sid';
 const workerSid = 'worker-sid';
 
-test("Form renders but can't be submitted empty", async () => {
-  const alertSpy = jest.spyOn(window, 'alert');
+const setupProps = (subroute, csamReportState) => ({
+  alertSpy: jest.spyOn(window, 'alert'),
+  updateFormAction: jest.fn(),
+  updateStatusAction: jest.fn(),
+  clearCSAMReportAction: jest.fn(),
+  changeRoute: jest.fn(),
+  addCSAMReportEntry: jest.fn(),
+  csamReportState,
+  routing: { route: 'csam-report', subroute },
+  counselorsHash: { workerSid },
+});
 
-  const updateFormAction = jest.fn();
-  const updateStatusAction = jest.fn();
-  const clearCSAMReportAction = jest.fn();
-  const changeRoute = jest.fn();
-  const addCSAMReportEntry = jest.fn();
-  const csamReportState = { form: initialValues };
-  const routing = { route: 'csam-report', subroute: 'form' };
-  const counselorsHash = { workerSid };
+/**
+ * @param {: 'form' | 'loading' | 'status'} subroute
+ */
+const renderCSAMReportScreen = (subrouteParam = 'form', csamReportStateParam = { form: initialValues }) => {
+  const {
+    alertSpy,
+    updateFormAction,
+    updateStatusAction,
+    clearCSAMReportAction,
+    changeRoute,
+    addCSAMReportEntry,
+    csamReportState,
+    routing,
+    counselorsHash,
+  } = setupProps(subrouteParam, csamReportStateParam);
 
   render(
     <StorelessThemeProvider themeConf={themeConf}>
@@ -54,6 +70,32 @@ test("Form renders but can't be submitted empty", async () => {
       />
     </StorelessThemeProvider>,
   );
+
+  return {
+    alertSpy,
+    updateFormAction,
+    updateStatusAction,
+    clearCSAMReportAction,
+    changeRoute,
+    addCSAMReportEntry,
+    csamReportState,
+    routing,
+    counselorsHash,
+  };
+};
+
+test("Form renders but can't be submitted empty", async () => {
+  const {
+    alertSpy,
+    updateFormAction,
+    updateStatusAction,
+    clearCSAMReportAction,
+    changeRoute,
+    addCSAMReportEntry,
+    csamReportState,
+    routing,
+    counselorsHash,
+  } = renderCSAMReportScreen();
 
   expect(screen.getByTestId('CSAMReport-FormScreen')).toBeInTheDocument();
   expect(screen.queryByTestId('CSAMReport-Loading')).not.toBeInTheDocument();
@@ -69,33 +111,17 @@ test("Form renders but can't be submitted empty", async () => {
 });
 
 test("Form renders but can't be submitted on invalid url", async () => {
-  const alertSpy = jest.spyOn(window, 'alert');
-
-  const updateFormAction = jest.fn();
-  const updateStatusAction = jest.fn();
-  const clearCSAMReportAction = jest.fn();
-  const changeRoute = jest.fn();
-  const addCSAMReportEntry = jest.fn();
-  const csamReportState = { form: initialValues };
-  const routing = { route: 'csam-report', subroute: 'form' };
-  const counselorsHash = { workerSid };
-
-  render(
-    <StorelessThemeProvider themeConf={themeConf}>
-      <CSAMReportScreen
-        taskSid={taskSid}
-        updateFormAction={updateFormAction}
-        updateStatusAction={updateStatusAction}
-        clearCSAMReportAction={clearCSAMReportAction}
-        changeRoute={changeRoute}
-        addCSAMReportEntry={addCSAMReportEntry}
-        csamReportState={csamReportState}
-        routing={routing}
-        counselorsHash={counselorsHash}
-      />
-    </StorelessThemeProvider>,
-  );
-
+  const {
+    alertSpy,
+    updateFormAction,
+    updateStatusAction,
+    clearCSAMReportAction,
+    changeRoute,
+    addCSAMReportEntry,
+    csamReportState,
+    routing,
+    counselorsHash,
+  } = renderCSAMReportScreen();
   expect(screen.getByTestId('CSAMReport-FormScreen')).toBeInTheDocument();
   expect(screen.queryByTestId('CSAMReport-Loading')).not.toBeInTheDocument();
   expect(screen.queryByTestId('CSAMReport-StatusScreen')).not.toBeInTheDocument();
@@ -119,17 +145,6 @@ test("Form renders but can't be submitted on invalid url", async () => {
 });
 
 test("Form can't be submitted if anonymous value is undefined", async () => {
-  const alertSpy = jest.spyOn(window, 'alert');
-
-  const updateFormAction = jest.fn();
-  const updateStatusAction = jest.fn();
-  const clearCSAMReportAction = jest.fn();
-  const changeRoute = jest.fn();
-  const addCSAMReportEntry = jest.fn();
-  const csamReportState = { form: initialValues };
-  const routing = { route: 'csam-report', subroute: 'form' };
-  const counselorsHash = { workerSid };
-
   const reportToIWFSpy = jest.spyOn(ServerlessService, 'reportToIWF').mockImplementationOnce(() =>
     Promise.resolve({
       'IWFReportService1.0': { responseData: {} },
@@ -141,21 +156,17 @@ test("Form can't be submitted if anonymous value is undefined", async () => {
     }),
   );
 
-  render(
-    <StorelessThemeProvider themeConf={themeConf}>
-      <CSAMReportScreen
-        taskSid={taskSid}
-        updateFormAction={updateFormAction}
-        updateStatusAction={updateStatusAction}
-        clearCSAMReportAction={clearCSAMReportAction}
-        changeRoute={changeRoute}
-        addCSAMReportEntry={addCSAMReportEntry}
-        csamReportState={csamReportState}
-        routing={routing}
-        counselorsHash={counselorsHash}
-      />
-    </StorelessThemeProvider>,
-  );
+  const {
+    alertSpy,
+    updateFormAction,
+    updateStatusAction,
+    clearCSAMReportAction,
+    changeRoute,
+    addCSAMReportEntry,
+    csamReportState,
+    routing,
+    counselorsHash,
+  } = renderCSAMReportScreen();
 
   expect(screen.getByTestId('CSAMReport-FormScreen')).toBeInTheDocument();
   expect(screen.queryByTestId('CSAMReport-Loading')).not.toBeInTheDocument();
@@ -180,15 +191,6 @@ test("Form can't be submitted if anonymous value is undefined", async () => {
 });
 
 test('Form can be submitted if valid (anonymous)', async () => {
-  const updateFormAction = jest.fn();
-  const updateStatusAction = jest.fn();
-  const clearCSAMReportAction = jest.fn();
-  const changeRoute = jest.fn();
-  const addCSAMReportEntry = jest.fn();
-  const csamReportState = { form: initialValues };
-  const routing = { route: 'csam-report', subroute: 'form' };
-  const counselorsHash = { workerSid };
-
   const reportToIWFSpy = jest.spyOn(ServerlessService, 'reportToIWF').mockImplementationOnce(() =>
     Promise.resolve({
       'IWFReportService1.0': { responseData: {} },
@@ -200,21 +202,17 @@ test('Form can be submitted if valid (anonymous)', async () => {
     }),
   );
 
-  render(
-    <StorelessThemeProvider themeConf={themeConf}>
-      <CSAMReportScreen
-        taskSid={taskSid}
-        updateFormAction={updateFormAction}
-        updateStatusAction={updateStatusAction}
-        clearCSAMReportAction={clearCSAMReportAction}
-        changeRoute={changeRoute}
-        addCSAMReportEntry={addCSAMReportEntry}
-        csamReportState={csamReportState}
-        routing={routing}
-        counselorsHash={counselorsHash}
-      />
-    </StorelessThemeProvider>,
-  );
+  const {
+    alertSpy,
+    updateFormAction,
+    updateStatusAction,
+    clearCSAMReportAction,
+    changeRoute,
+    addCSAMReportEntry,
+    csamReportState,
+    routing,
+    counselorsHash,
+  } = renderCSAMReportScreen();
 
   expect(screen.getByTestId('CSAMReport-FormScreen')).toBeInTheDocument();
   expect(screen.queryByTestId('CSAMReport-Loading')).not.toBeInTheDocument();
@@ -251,15 +249,6 @@ test('Form can be submitted if valid (anonymous)', async () => {
 });
 
 test('Form can be submitted if valid (non-anonymous)', async () => {
-  const updateFormAction = jest.fn();
-  const updateStatusAction = jest.fn();
-  const clearCSAMReportAction = jest.fn();
-  const changeRoute = jest.fn();
-  const addCSAMReportEntry = jest.fn();
-  const csamReportState = { form: initialValues };
-  const routing = { route: 'csam-report', subroute: 'form' };
-  const counselorsHash = { workerSid };
-
   const reportToIWFSpy = jest.spyOn(ServerlessService, 'reportToIWF').mockImplementationOnce(() =>
     Promise.resolve({
       'IWFReportService1.0': { responseData: {} },
@@ -271,21 +260,17 @@ test('Form can be submitted if valid (non-anonymous)', async () => {
     }),
   );
 
-  render(
-    <StorelessThemeProvider themeConf={themeConf}>
-      <CSAMReportScreen
-        taskSid={taskSid}
-        updateFormAction={updateFormAction}
-        updateStatusAction={updateStatusAction}
-        clearCSAMReportAction={clearCSAMReportAction}
-        changeRoute={changeRoute}
-        addCSAMReportEntry={addCSAMReportEntry}
-        csamReportState={csamReportState}
-        routing={routing}
-        counselorsHash={counselorsHash}
-      />
-    </StorelessThemeProvider>,
-  );
+  const {
+    alertSpy,
+    updateFormAction,
+    updateStatusAction,
+    clearCSAMReportAction,
+    changeRoute,
+    addCSAMReportEntry,
+    csamReportState,
+    routing,
+    counselorsHash,
+  } = renderCSAMReportScreen();
 
   expect(screen.getByTestId('CSAMReport-FormScreen')).toBeInTheDocument();
   expect(screen.queryByTestId('CSAMReport-Loading')).not.toBeInTheDocument();
@@ -334,30 +319,17 @@ test('Form can be submitted if valid (non-anonymous)', async () => {
 });
 
 test('Loading screen renders', async () => {
-  const updateFormAction = jest.fn();
-  const updateStatusAction = jest.fn();
-  const clearCSAMReportAction = jest.fn();
-  const changeRoute = jest.fn();
-  const addCSAMReportEntry = jest.fn();
-  const csamReportState = { form: initialValues };
-  const routing = { route: 'csam-report', subroute: 'loading' };
-  const counselorsHash = { workerSid };
-
-  render(
-    <StorelessThemeProvider themeConf={themeConf}>
-      <CSAMReportScreen
-        taskSid={taskSid}
-        updateFormAction={updateFormAction}
-        updateStatusAction={updateStatusAction}
-        clearCSAMReportAction={clearCSAMReportAction}
-        changeRoute={changeRoute}
-        addCSAMReportEntry={addCSAMReportEntry}
-        csamReportState={csamReportState}
-        routing={routing}
-        counselorsHash={counselorsHash}
-      />
-    </StorelessThemeProvider>,
-  );
+  const {
+    alertSpy,
+    updateFormAction,
+    updateStatusAction,
+    clearCSAMReportAction,
+    changeRoute,
+    addCSAMReportEntry,
+    csamReportState,
+    routing,
+    counselorsHash,
+  } = renderCSAMReportScreen('loading');
 
   expect(screen.getByTestId('CSAMReport-Loading')).toBeInTheDocument();
   expect(screen.queryByTestId('CSAMReport-FormScreen')).not.toBeInTheDocument();
@@ -365,22 +337,6 @@ test('Loading screen renders', async () => {
 });
 
 test('Report Status screen renders + copy button works', async () => {
-  const updateFormAction = jest.fn();
-  const updateStatusAction = jest.fn();
-  const clearCSAMReportAction = jest.fn();
-  const changeRoute = jest.fn();
-  const addCSAMReportEntry = jest.fn();
-  const csamReportState = {
-    form: initialValues,
-    reportStatus: {
-      responseCode: 'responseCode',
-      responseData: 'responseData',
-      responseDescription: 'responseDescription',
-    },
-  };
-  const routing = { route: 'csam-report', subroute: 'status' };
-  const counselorsHash = { workerSid };
-
   Object.assign(navigator, {
     clipboard: {
       writeText: async () => undefined,
@@ -389,21 +345,24 @@ test('Report Status screen renders + copy button works', async () => {
 
   const copySpy = jest.spyOn(navigator.clipboard, 'writeText');
 
-  render(
-    <StorelessThemeProvider themeConf={themeConf}>
-      <CSAMReportScreen
-        taskSid={taskSid}
-        updateFormAction={updateFormAction}
-        updateStatusAction={updateStatusAction}
-        clearCSAMReportAction={clearCSAMReportAction}
-        changeRoute={changeRoute}
-        addCSAMReportEntry={addCSAMReportEntry}
-        csamReportState={csamReportState}
-        routing={routing}
-        counselorsHash={counselorsHash}
-      />
-    </StorelessThemeProvider>,
-  );
+  const {
+    alertSpy,
+    updateFormAction,
+    updateStatusAction,
+    clearCSAMReportAction,
+    changeRoute,
+    addCSAMReportEntry,
+    csamReportState,
+    routing,
+    counselorsHash,
+  } = renderCSAMReportScreen('status', {
+    form: initialValues,
+    reportStatus: {
+      responseCode: 'responseCode',
+      responseData: 'responseData',
+      responseDescription: 'responseDescription',
+    },
+  });
 
   expect(screen.getByTestId('CSAMReport-StatusScreen')).toBeInTheDocument();
   expect(screen.queryByTestId('CSAMReport-FormScreen')).not.toBeInTheDocument();
