@@ -162,7 +162,6 @@ jest.mock('../styles/case', () => ({
   CaseActionContainer: 'CaseActionContainer',
   CaseActionFormContainer: 'CaseActionFormContainer',
   CaseAddButton: 'CaseAddButton',
-  CaseActionCloseButton: 'CaseActionCloseButton',
   CenteredContainer: 'CenteredContainer',
   CaseSectionFont: 'CaseSectionFont',
   ViewButton: 'ViewButton',

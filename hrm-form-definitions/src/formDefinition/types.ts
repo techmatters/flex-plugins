@@ -24,6 +24,14 @@ type EmailInputDefinition = {
   type: 'email';
 } & ItemBase;
 
+export type InputOption = { value: any; label: string };
+
+type RadioInputDefinition = {
+  type: 'radio-input';
+  options: InputOption[];
+  defaultOption?: InputOption['value'];
+} & ItemBase;
+
 export type SelectOption = { value: any; label: string };
 
 type SelectDefinition = {
@@ -83,6 +91,7 @@ export type FormItemDefinition =
   | InputDefinition
   | NumericInputDefinition
   | EmailInputDefinition
+  | RadioInputDefinition
   | SelectDefinition
   | DependentSelectDefinition
   | CheckboxDefinition

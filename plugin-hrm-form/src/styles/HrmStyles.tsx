@@ -654,6 +654,13 @@ export const FormLabel = styled('label')`
 `;
 FormLabel.displayName = 'FormLabel';
 
+export const FormFieldset = styled('fieldset')<FormInputProps>`
+  display: flex;
+  flex-direction: column;
+  border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
+`;
+FormFieldset.displayName = 'FormFieldset';
+
 export const UploadFileLabel = styled(Flex)`
   font-size: 14px;
   letter-spacing: 0;
@@ -715,6 +722,35 @@ export const FormInput = styled('input')<FormInputProps>`
   }
 `;
 FormInput.displayName = 'FormInput';
+
+export const FormRadioInput = styled('input')<FormInputProps>`
+  &[type='radio'] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+
+    width: 24px;
+    height: 24px;
+    margin-right: 5px;
+    border: 2px solid #080808;
+    background-color: ${props => props.theme.colors.inputBackgroundColor};
+    border-radius: 50%;
+    display: grid;
+    place-content: center;
+  }
+
+  &[type='radio']:checked:after {
+    display: block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    content: '';
+    position: relative;
+    background: #080808;
+    background-color: #080808;
+  }
+`;
+FormRadioInput.displayName = 'FormRadioInput';
 
 export const FormDateInput = styled(FormInput)`
   &[type='date']::-webkit-clear-button,
@@ -1024,10 +1060,26 @@ export const CSAMReportButtonText = styled(FontOpenSans)`
 `;
 CSAMReportButtonText.displayName = 'CSAMReportButtonText';
 
-export const StyledBackButton = styled(ButtonBase)`
+const TabbedFormsHeaderButton = styled(ButtonBase)`
   &:focus {
     outline: auto;
   }
 `;
+TabbedFormsHeaderButton.displayName = 'TabbedFormsHeaderButton';
 
+export const StyledBackButton = TabbedFormsHeaderButton;
 StyledBackButton.displayName = 'StyledBackButton';
+
+export const StyledCSAMReportButton = TabbedFormsHeaderButton;
+StyledCSAMReportButton.displayName = 'StyledCSAMReportButton';
+
+export const HeaderCloseButton = styled(ButtonBase)`
+  && {
+    margin-left: auto;
+  }
+
+  :focus {
+    outline: auto;
+  }
+`;
+HeaderCloseButton.displayName = 'HeaderCloseButton';

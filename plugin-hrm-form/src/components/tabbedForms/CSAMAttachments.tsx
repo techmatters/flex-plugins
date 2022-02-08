@@ -27,7 +27,7 @@ const CSAMAttachments: React.FC<Props> = ({ csamReports }) => {
               <CSAMAttachmentText>
                 <Template code="CSAMReportForm-Attachment" />
                 <br />
-                {`${formattedCreatedAt}m #${r.csamReportId}`}
+                {`${formattedCreatedAt} #${r.csamReportId}`}
               </CSAMAttachmentText>
             </Row>
           );
