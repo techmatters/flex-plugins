@@ -265,7 +265,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                     </Box>
                   </Row>
                 )}
-                {def.options.map(({ value, label }) => (
+                {def.options.map(({ value, label }, index) => (
                   <Box key={`${path}-${value}`} marginBottom="15px">
                     <FormLabel htmlFor={`${path}-${value}`}>
                       <Row>
@@ -276,7 +276,14 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                           type="radio"
                           value={value}
                           onChange={updateCallback}
-                          innerRef={register(rules)}
+                          innerRef={innerRef => {
+                            // If autofocus is pertinent, focus first radio input
+                            if (index === 0 && htmlElRef) {
+                              htmlElRef.current = innerRef;
+                            }
+
+                            register(rules)(innerRef);
+                          }}
                           checked={currentValue === value}
                         />
                         <Template code={label} className=".fullstory-unmask" />
