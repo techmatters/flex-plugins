@@ -88,10 +88,22 @@ function setUpFullStory() {
   console.log('Fullstory monitoring is enabled');
 }
 
+/**
+ * Identifies and usage by Twilio Account ID (accountSid) in FullStory
+ * @param workerClient 
+ */
+function helplineIdentifierFullStory(workerClient){
+  const {accountSid} = workerClient
+  FullStory.setUserVars({helpline:accountSid})
+}
+
 export default function setUpMonitoring(plugin, workerClient, serviceConfiguration) {
   const monitoringEnv = serviceConfiguration.attributes.monitoringEnv || 'staging';
 
   setUpDatadogRum(workerClient, monitoringEnv);
   setUpRollbarLogger(plugin, workerClient, monitoringEnv);
-  if (serviceConfiguration.attributes.feature_flags.enable_fullstory_monitoring) setUpFullStory();
+  if (serviceConfiguration.attributes.feature_flags.enable_fullstory_monitoring) {
+    setUpFullStory()
+    helplineIdentifierFullStory(workerClient)
+  };
 }
