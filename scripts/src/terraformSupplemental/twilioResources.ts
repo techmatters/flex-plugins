@@ -62,12 +62,13 @@ async function main() {
           type: 'array',
           alias: 'sid',
           describe:
-            'Specify an sid referenced in the tf file which would otherwise come from an external source, e.g. --sid var.sid=1234 or --sid twilio_taskrouter_workspaces_v1.from_other_tf_file.sid=4321',
+            'Specify an sid referenced in the tf file which would otherwise come from an external source, e.g. a variable: --sid var.sid=1234 or the sid of a resource defined in another file in the same module: --sid twilio_taskrouter_workspaces_v1.from_other_tf_file.sid=4321',
         });
         argv.option('m', {
           type: 'string',
           alias: 'modulePath',
-          describe: 'Specify a dot separated path for the module, e.g. top_module1.sub_module2',
+          describe:
+            'Specify a dot separated path for the module, e.g. top_module1.sub_module2. Omit this if the .tf file is in the root module for this configuration',
         });
       },
       async (argv) => {
