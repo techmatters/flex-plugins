@@ -3,7 +3,12 @@ import Rollbar from 'rollbar';
 import { datadogRum } from '@datadog/browser-rum';
 import * as FullStory from '@fullstory/browser';
 
-import { rollbarAccessToken, datadogAccessToken, datadogApplicationID, fullStoryId } from '../private/secret';
+import {
+  rollbarAccessToken,
+  datadogAccessToken,
+  datadogApplicationID,
+  fullStoryId,
+} from '../private/secret';
 
 function setUpDatadogRum(workerClient, monitoringEnv) {
   datadogRum.init({
@@ -67,7 +72,8 @@ function setUpRollbarLogger(plugin, workerClient, monitoringEnv) {
         }
 
         const args = entry.args.join();
-        const isRollbarMethod = typeof plugin.Rollbar[entry.subject] === 'function';
+        const isRollbarMethod =
+          typeof plugin.Rollbar[entry.subject] === 'function';
 
         if (isRollbarMethod) {
           plugin.Rollbar[entry.subject](args);
@@ -87,11 +93,29 @@ function setUpFullStory() {
   });
   console.log('Fullstory monitoring is enabled');
 }
+/**
+ * Identifies and usage by Twilio Account ID (accountSid) in FullStory
+ * @param workerClient
+ */
+function helplineIdentifierFullStory(workerClient) {
+  const { accountSid } = workerClient;
+  FullStory.setUserVars({ helpline: accountSid });
+}
 
-export default function setUpMonitoring(plugin, workerClient, serviceConfiguration) {
-  const monitoringEnv = serviceConfiguration.attributes.monitoringEnv || 'staging';
+export default function setUpMonitoring(
+  plugin,
+  workerClient,
+  serviceConfiguration
+) {
+  const monitoringEnv =
+    serviceConfiguration.attributes.monitoringEnv || 'staging';
 
   setUpDatadogRum(workerClient, monitoringEnv);
   setUpRollbarLogger(plugin, workerClient, monitoringEnv);
-  if (serviceConfiguration.attributes.feature_flags.enable_fullstory_monitoring) setUpFullStory();
+  if (
+    serviceConfiguration.attributes.feature_flags.enable_fullstory_monitoring
+  ) {
+    setUpFullStory();
+    helplineIdentifierFullStory(workerClient);
+  }
 }
