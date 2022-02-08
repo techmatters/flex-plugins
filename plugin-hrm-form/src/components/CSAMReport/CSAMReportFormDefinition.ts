@@ -24,7 +24,7 @@ export const definitionObject: CSAMFormDefinitionObject = {
     label: 'Web address',
     type: 'input',
     required: { value: true, message: 'RequiredFieldError' },
-    maxLength: 1000,
+    maxLength: { value: 1000, message: '1000 characters max.' },
     validate: data => {
       if (!data.match(urlRegex)) return 'NotURLFieldError';
       return null;
@@ -34,7 +34,7 @@ export const definitionObject: CSAMFormDefinitionObject = {
     name: 'description',
     label: 'Description (500 characters)',
     type: 'textarea',
-    maxLength: 500,
+    maxLength: { value: 500, message: '500 characters max.' },
   },
   anonymous: {
     name: 'anonymous',
@@ -50,20 +50,20 @@ export const definitionObject: CSAMFormDefinitionObject = {
     name: 'firstName',
     label: "Reporter's First Name",
     type: 'input',
-    maxLength: 50,
+    maxLength: { value: 50, message: '50 characters max.' },
   },
   lastName: {
     name: 'lastName',
     label: "Reporter's Last Name",
     type: 'input',
-    maxLength: 50,
+    maxLength: { value: 50, message: '50 characters max.' },
   },
   email: {
     name: 'email',
     label: 'Email Address',
     type: 'email',
     required: { value: true, message: 'RequiredFieldError' },
-    maxLength: 100,
+    maxLength: { value: 100, message: '100 characters max.' },
   },
 };
 
