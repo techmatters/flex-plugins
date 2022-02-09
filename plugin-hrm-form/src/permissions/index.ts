@@ -19,6 +19,7 @@ export const PermissionActions = {
   ADD_PERPETRATOR: 'addPerpetrator',
   ADD_INCIDENT: 'addIncident',
   ADD_DOCUMENT: 'addDocument',
+  EDIT_NOTE: 'editNote',
   EDIT_CASE_SUMMARY: 'editCaseSummary',
   EDIT_CHILD_IS_AT_RISK: 'editChildIsAtRisk',
   EDIT_FOLLOW_UP_DATE: 'editFollowUpDate',
@@ -30,6 +31,7 @@ type PermissionConfig = 'zm' | 'za' | 'et' | 'mw' | 'br' | 'in' | 'jm'| 'ca';
 type Rule = (isSupervisor: boolean, isCreator: boolean, isCaseOpen: boolean) => boolean;
 type Rules = {
   canEditCaseSummary: Rule;
+  canEditNote: Rule;
   canEditGenericField: Rule;
   canReopenCase: Rule;
 };
@@ -66,6 +68,8 @@ export const getPermissionsForCase = (twilioWorkerId: t.Case['twilioWorkerId'], 
         return rules.canEditCaseSummary(isSupervisor, isCreator, isCaseOpen);
       case PermissionActions.REOPEN_CASE:
         return rules.canReopenCase(isSupervisor, isCreator, isCaseOpen);
+      case PermissionActions.EDIT_NOTE:
+        return rules.canEditNote(isSupervisor, isCaseOpen);
       default:
         return rules.canEditGenericField(isSupervisor, isCreator, isCaseOpen);
     }
