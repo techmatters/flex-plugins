@@ -61,9 +61,11 @@ terraform apply [-var-file my-private.tfvars]
 ```shell
 terraform apply [-var-file my-private.tfvars]
 ```
-14. Don't forget to raise a PR to merge the new configuration you created
-
 Unfortunately, a feature gap in the twilio terraform provider means the domain URL cannot be extracted from the resource. The easiest workaround is to put it in a variable after it has been generated initially
+14. Go into Twilio Console and check if the 'redirect_function' task has the correct serverless url set. If it is not correct, update it manually in Twilio Console.
+    Unfortunately due to this issue with the provider, it may not be updated as part of the second `terraform apply`: https://github.com/twilio/terraform-provider-twilio/issues/92
+15. Don't forget to raise a PR to merge the new configuration you created
+
 
 ## Importing a pre-existing environment
 
