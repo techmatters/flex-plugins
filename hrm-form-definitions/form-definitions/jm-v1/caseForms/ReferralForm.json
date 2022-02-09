@@ -22,6 +22,11 @@
       "required": { "value": true, "message": "RequiredFieldError" }
     },
     {
+        "name": "referredToOther",
+        "label": "If other, please specify: ",
+        "type": "input"
+    },
+    {
         "name": "reasonforReferral",
         "label": "Reason for referral",
         "type": "textarea",
