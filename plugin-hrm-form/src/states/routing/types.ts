@@ -47,6 +47,7 @@ export type AppRoutesWithCase =
 export type CSAMReportRoute = {
   route: 'csam-report';
   subroute: 'form' | 'loading' | 'status';
+  previousRoute: AppRoutes;
 };
 
 type OtherRoutes = CSAMReportRoute;

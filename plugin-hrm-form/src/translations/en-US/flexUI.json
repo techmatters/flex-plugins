@@ -293,6 +293,7 @@
   "YouMustBeAvailableToPerformThisOp": "You must be available to perform this operation.",
 
   "RequiredFieldError": "This field is required.",
+  "NotURLFieldError": "This field only accepts URLs.",
   "DateCantBeGreaterThanToday": "Date can't be greater than today.",
   "DateCantBeLesserThanEpoch": "Date can't be lesser than 00:00:00 UTC on 1 January 1970.",
   "TimeCantBeGreaterThanNow": "Time can't be greater than now.",
@@ -332,7 +333,7 @@
   "CSAMReportForm-ContactDetails": "Contact details",
   "CSAMReportForm-ContactDetailsDescription": "Reports can be filed anonymously or with contact details if the caller would like to follow up or be available to provide further details to IWF.",
   "CSAMReportForm-LearnMore": "Learn more",
-  "CSAMReportForm-ContactDetailsInfo": "Contact details will be recorded on the IWF database for 3 months, and then will then be deleted in accordance with the UK Data Protection Act",
+  "CSAMReportForm-ContactDetailsInfo": "Contact details will be recorded on the IWF database for 3 months, and then will then be deleted in accordance with the <a class=\"link-text-decoration-none\" href=\"https://www.legislation.gov.uk/ukpga/2018/12/contents/enacted\">UK Data Protection Act</a>",
   "CSAMReportForm-ReportSent": "CSAM Report Sent!",
   "CSAMReportForm-CopyCode": "Copy confirmation code for sharing",
   "CSAMReportForm-Attachment": "CSAM Report has been filled",

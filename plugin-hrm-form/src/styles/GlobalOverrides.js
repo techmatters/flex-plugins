@@ -32,4 +32,10 @@ injectGlobal`
   button.Twilio-MessageInput-SendButton {
     background: rgba(216, 27, 96, 0.8);
   }
+
+  a.link-text-decoration-none { text-decoration: none; color: #1874e1; }
+  a.link-text-decoration-none:visited { text-decoration: none; color: #1874e1; }
+  a.link-text-decoration-none:hover { text-decoration: none; color: #1874e1; }
+  a.link-text-decoration-none:focus { text-decoration: none; color: #1874e1; }
+  a.link-text-decoration-none:active { text-decoration: none; color: #1874e1; }
 `;

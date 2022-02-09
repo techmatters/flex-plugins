@@ -8,7 +8,7 @@ import { FormItemDefinition } from 'hrm-form-definitions';
 import CSAMReportStatusScreen from './CSAMReportStatusScreen';
 import CSAMReportFormScreen from './CSAMReportFormScreen';
 import { CSAMReportContainer, CSAMReportLayout, CenterContent } from '../../styles/CSAMReport';
-import { getInputType } from '../common/forms/formGenerators';
+import { addMargin, getInputType } from '../common/forms/formGenerators';
 import { definitionObject, keys, initialValues } from './CSAMReportFormDefinition';
 import type { CustomITask } from '../../types/types';
 import { getConfig } from '../../HrmFormPlugin';
@@ -54,7 +54,7 @@ export const CSAMReportScreen: React.FC<Props> = ({
   counselorsHash,
 }) => {
   const [initialForm] = React.useState(csamReportState.form); // grab initial values in first render only. This value should never change or will ruin the memoization below
-  const methods = useForm();
+  const methods = useForm({ reValidateMode: 'onChange' });
   const firstElementRef = useFocus();
 
   const currentCounselor = React.useMemo(() => {
@@ -82,7 +82,7 @@ export const CSAMReportScreen: React.FC<Props> = ({
       index: number,
     ) => ({
       ...accum,
-      [k]: generateInput(e, index),
+      [k]: addMargin(5)(generateInput(e, index)),
     });
 
     return Object.entries(definitionObject).reduce(reducerFunc, null);
@@ -90,16 +90,18 @@ export const CSAMReportScreen: React.FC<Props> = ({
 
   if (routing.route !== 'csam-report') return null;
 
+  const { previousRoute } = routing;
+
   const onClickClose = () => {
     clearCSAMReportAction(taskSid);
-    changeRoute({ route: 'tabbed-forms', subroute: 'caseInformation' }, taskSid);
+    changeRoute({ ...previousRoute }, taskSid);
   };
 
   switch (routing.subroute) {
     case 'form': {
       const onValid = async form => {
         try {
-          changeRoute({ route: 'csam-report', subroute: 'loading' }, taskSid);
+          changeRoute({ route: 'csam-report', subroute: 'loading', previousRoute }, taskSid);
           const report = await reportToIWF(form);
           const storedReport = await createCSAMReport({
             csamReportId: report['IWFReportService1.0'].responseData,
@@ -108,11 +110,11 @@ export const CSAMReportScreen: React.FC<Props> = ({
 
           updateStatusAction(report['IWFReportService1.0'], taskSid);
           addCSAMReportEntry(storedReport, taskSid);
-          changeRoute({ route: 'csam-report', subroute: 'status' }, taskSid);
+          changeRoute({ route: 'csam-report', subroute: 'status', previousRoute }, taskSid);
         } catch (err) {
           console.error(err);
           window.alert(getConfig().strings['Error-Backend']);
-          changeRoute({ route: 'csam-report', subroute: 'form' }, taskSid);
+          changeRoute({ route: 'csam-report', subroute: 'form', previousRoute }, taskSid);
         }
       };
 
@@ -124,7 +126,8 @@ export const CSAMReportScreen: React.FC<Props> = ({
 
       const anonymousWatch = methods.watch('anonymous');
       const renderContactDetails =
-        anonymousWatch === false || (anonymousWatch === undefined && initialForm.anonymous === false);
+        anonymousWatch === 'non-anonymous' ||
+        (anonymousWatch === undefined && initialForm.anonymous === 'non-anonymous');
 
       return (
         <FormProvider {...methods}>
@@ -152,7 +155,7 @@ export const CSAMReportScreen: React.FC<Props> = ({
     case 'status': {
       const onSendAnotherReport = () => {
         clearCSAMReportAction(taskSid);
-        changeRoute({ route: 'csam-report', subroute: 'form' }, taskSid);
+        changeRoute({ route: 'csam-report', subroute: 'form', previousRoute }, taskSid);
       };
 
       return (

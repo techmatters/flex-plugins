@@ -182,7 +182,7 @@ export const reportToIWF = async (form: CSAMReportForm) => {
   const body = {
     Reported_URL: form.webAddress,
     Reporter_Description: form.description,
-    Reporter_Anonymous: form.anonymous ? 'Y' : 'N',
+    Reporter_Anonymous: form.anonymous === 'anonymous' ? 'Y' : 'N',
     Reporter_First_Name: form.firstName,
     Reporter_Last_Name: form.lastName,
     Reporter_Email_ID: form.email,

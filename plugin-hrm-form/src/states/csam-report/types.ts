@@ -6,7 +6,7 @@ export const CLEAR_CSAM_REPORT = 'csam-report/CLEAR_CSAM_REPORT';
 export type CSAMReportForm = {
   webAddress: string;
   description: string;
-  anonymous: boolean;
+  anonymous: string;
   firstName: string;
   lastName: string;
   email: string;

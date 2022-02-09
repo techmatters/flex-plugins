@@ -7,7 +7,7 @@ import React, { useCallback } from 'react';
 import { useFormContext, RegisterOptions } from 'react-hook-form';
 import { get, pick } from 'lodash';
 import { Template } from '@twilio/flex-ui';
-import { FormItemDefinition, FormDefinition, SelectOption, MixedOrBool } from 'hrm-form-definitions';
+import { FormItemDefinition, FormDefinition, InputOption, SelectOption, MixedOrBool } from 'hrm-form-definitions';
 
 import {
   Box,
@@ -27,6 +27,8 @@ import {
   FormOption,
   FormSelectWrapper,
   FormTextArea,
+  FormRadioInput,
+  FormFieldset,
 } from '../../../styles/HrmStyles';
 import type { HTMLElementRef } from './types';
 import UploadIcon from '../icons/UploadIcon';
@@ -46,6 +48,8 @@ export const getInitialValue = (def: FormItemDefinition) => {
     case 'time-input':
     case 'file-upload':
       return '';
+    case 'radio-input':
+      return def.defaultOption ?? '';
     case 'select':
       return def.defaultOption ? def.defaultOption : def.options[0].value;
     case 'dependent-select':
@@ -233,6 +237,66 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                   </FormError>
                 )}
               </FormLabel>
+            );
+          }}
+        </ConnectForm>
+      );
+    case 'radio-input':
+      return (
+        <ConnectForm key={path}>
+          {({ errors, register, setValue, watch }) => {
+            const [isMounted, setIsMounted] = React.useState(false); // value to avoid setting the default in the first render.
+
+            React.useEffect(() => {
+              if (isMounted && def.defaultOption) setValue(path, def.defaultOption);
+              else setIsMounted(true);
+            }, [isMounted, setValue]);
+
+            const error = get(errors, path);
+            const currentValue = watch(path);
+
+            return (
+              <FormFieldset error={Boolean(error)} aria-invalid={Boolean(error)} aria-describedby={`${path}-error`}>
+                {def.label && (
+                  <Row>
+                    <Box marginBottom="8px">
+                      {labelTextComponent}
+                      {rules.required && <RequiredAsterisk />}
+                    </Box>
+                  </Row>
+                )}
+                {def.options.map(({ value, label }, index) => (
+                  <Box key={`${path}-${value}`} marginBottom="15px">
+                    <FormLabel htmlFor={`${path}-${value}`}>
+                      <Row>
+                        <FormRadioInput
+                          id={`${path}-${value}`}
+                          data-testid={`${path}-${value}`}
+                          name={path}
+                          type="radio"
+                          value={value}
+                          onChange={updateCallback}
+                          innerRef={innerRef => {
+                            // If autofocus is pertinent, focus first radio input
+                            if (index === 0 && htmlElRef) {
+                              htmlElRef.current = innerRef;
+                            }
+
+                            register(rules)(innerRef);
+                          }}
+                          checked={currentValue === value}
+                        />
+                        <Template code={label} className=".fullstory-unmask" />
+                      </Row>
+                    </FormLabel>
+                  </Box>
+                ))}
+                {error && (
+                  <FormError>
+                    <Template id={`${path}-error`} code={error.message} />
+                  </FormError>
+                )}
+              </FormFieldset>
             );
           }}
         </ConnectForm>
@@ -635,12 +699,13 @@ export const createFormFromDefinition = (definition: FormDefinition) => (parents
   });
 };
 
-export const disperseInputs = (margin: number) => (formItems: JSX.Element[]) =>
-  formItems.map(i => (
-    <Box key={`${i.key}-wrapping-box`} marginTop={`${margin.toString()}px`} marginBottom={`${margin.toString()}px`}>
-      {i}
-    </Box>
-  ));
+export const addMargin = (margin: number) => (i: JSX.Element) => (
+  <Box key={`${i.key}-wrapping-box`} marginTop={`${margin.toString()}px`} marginBottom={`${margin.toString()}px`}>
+    {i}
+  </Box>
+);
+
+export const disperseInputs = (margin: number) => (formItems: JSX.Element[]) => formItems.map(addMargin(margin));
 
 export const splitInHalf = (formItems: JSX.Element[]) => {
   const m = Math.ceil(formItems.length / 2);

@@ -61,7 +61,7 @@ terraform apply [-var-file my-private.tfvars]
 ```shell
 terraform apply [-var-file my-private.tfvars]
 ```
-4Don't forget to raise a PR to merge the new configuration you created
+14. Don't forget to raise a PR to merge the new configuration you created
 
 Unfortunately, a feature gap in the twilio terraform provider means the domain URL cannot be extracted from the resource. The easiest workaround is to put it in a variable after it has been generated initially
 

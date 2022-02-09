@@ -127,17 +127,6 @@ export const CaseActionTitle = styled(FontOpenSans)`
 `;
 CaseActionTitle.displayName = 'CaseActionTitle';
 
-export const CaseActionCloseButton = styled(ButtonBase)`
-  && {
-    margin-left: auto;
-  }
-
-  :focus {
-    outline: auto;
-  }
-`;
-CaseActionCloseButton.displayName = 'CaseActionCloseButton';
-
 export const CaseActionDetailFont = styled(FontOpenSans)`
   font-style: italic;
   font-size: 12px;
