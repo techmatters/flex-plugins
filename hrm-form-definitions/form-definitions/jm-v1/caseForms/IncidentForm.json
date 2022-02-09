@@ -2,8 +2,7 @@
     {
       "name": "date",
       "type": "date-input",
-      "label": "Date of Incident",
-      "required": { "value": true, "message": "RequiredFieldError" }
+      "label": "Date of Incident"
     },
     {
       "name": "duration",
