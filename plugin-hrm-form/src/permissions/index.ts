@@ -7,6 +7,7 @@ import * as mwRules from './mw';
 import * as brRules from './br';
 import * as inRules from './in';
 import * as jmRules from './jm';
+import * as caRules from './ca';
 
 export const PermissionActions = {
   CLOSE_CASE: 'closeCase',
@@ -25,7 +26,7 @@ export const PermissionActions = {
 
 type PermissionActionsKeys = keyof typeof PermissionActions;
 export type PermissionActionType = typeof PermissionActions[PermissionActionsKeys];
-type PermissionConfig = 'zm' | 'za' | 'et' | 'mw' | 'br' | 'in' | 'jm';
+type PermissionConfig = 'zm' | 'za' | 'et' | 'mw' | 'br' | 'in' | 'jm'| 'ca';
 type Rule = (isSupervisor: boolean, isCreator: boolean, isCaseOpen: boolean) => boolean;
 type Rules = {
   canEditCaseSummary: Rule;
@@ -41,6 +42,7 @@ const rulesMap: { [permissionConfig in PermissionConfig]: Rules } = {
   br: brRules,
   in: inRules,
   jm: jmRules,
+  ca: caRules,
 };
 
 const fallbackRules = zaRules;
