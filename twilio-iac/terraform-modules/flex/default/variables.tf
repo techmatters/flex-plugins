@@ -18,6 +18,12 @@ variable "operating_info_key" {
   type        = string
 }
 
+variable "permission_config" {
+  description = "Key used to determine the permissions scheme to use. Normally the short helpline code in lowercase, unless the helpline hasn't had its own permissions configured yet, in which case it can 'borrow' a different set temporarily. Defaults to operating_key value"
+  type        = string
+  default = ""
+}
+
 variable "definition_version" {
   description = "Key that determines which set of form definitions this helpline will use"
   type        = string
