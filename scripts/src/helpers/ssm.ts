@@ -38,6 +38,20 @@ export const saveSSMParameter = async (
   });
 };
 
+export const getSSMParameter = (name: string) =>
+  new Promise<AWS.SSM.GetParameterResult | undefined>((resolve, reject) => {
+    ssm.getParameter({ Name: name }, (err, result) => {
+      if (err) {
+        if (err.code === 'ParameterNotFound') {
+          resolve(undefined);
+        }
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+
 // export const deleteSSMParameter = async (Name: string) => {
 //   ssm.deleteParameter({ Name }, (err, data) => {
 //     if (err) {

@@ -7,6 +7,7 @@ import {
   createTwilioApiKeyAndSsmSecret,
   CreateTwilioApiKeyAndSsmSecretOptions,
 } from './createTwilioApiKeyAndSsmSecret';
+import updateFlexServiceConfiguration from './updateFlexServiceConfiguration';
 
 config();
 
@@ -176,6 +177,27 @@ async function main() {
             secretSmmParameterDescription: argv.ssmSecretDescription,
           } as Partial<CreateTwilioApiKeyAndSsmSecretOptions>,
         );
+      },
+    )
+    .command(
+      'update-flex-configuration',
+      'Make a POST call to the flex service configuration to update it. Rewquires Twilio creds to be set up on standard env vars, payload can be passed either as an argument or using the TWILIO_FLEX_SERVICE_CONFIGURATION_PAYLOAD environment variable',
+      (argv) => {
+        argv.option('p', {
+          alias: 'payload',
+          describe:
+            'Can be used to specify the JSON payload that will be used to patch the flex service configuration for this account. Required if the TWILIO_FLEX_SERVICE_CONFIGURATION_PAYLOAD is not set and will override it if it is.',
+          type: 'string',
+        });
+      },
+      async (argv) => {
+        const jsonPayload = argv.payload ?? process.env.TWILIO_FLEX_SERVICE_CONFIGURATION_PAYLOAD;
+        if (typeof jsonPayload !== 'string') {
+          throw new Error(
+            'Flex Service configuration payload must be set either via the --payload argument or the TWILIO_FLEX_SERVICE_CONFIGURATION_PAYLOAD environment variable.',
+          );
+        }
+        await updateFlexServiceConfiguration(JSON.parse(jsonPayload));
       },
     )
     .demandCommand()

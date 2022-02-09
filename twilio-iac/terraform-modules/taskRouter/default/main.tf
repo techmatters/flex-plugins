@@ -8,7 +8,7 @@ terraform {
 }
 
 locals {
-  task_routing_filter_expression = var.custom_task_routing_filter_expression != "" ? var.custom_task_routing_filter_expression : "helpline=='${var.helpline}'"
+  task_routing_filter_expression = var.custom_task_routing_filter_expression != "" ? var.custom_task_routing_filter_expression : "helpline=='${var.helpline}' OR channelType ==\"web\" "
 }
 
 // Workspaces

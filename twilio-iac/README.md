@@ -48,11 +48,6 @@ The process for a first run is as follows:
 ```
 npm run twilioResources -- import-account-defaults <helpline>-<environment> [-v my-private.tfvars]]
 ```
-* Run the scripts below to work around the fact that API keys are currently broken in the Twilio Terraform Provider
-```shell
-npm run twilioResources -- new-key-with-ssm-secret hrm-static-key <short_environment>_TWILIO_<short_helpline>_HRM_STATIC_KEY <helpline> <environement>
-npm run twilioResources -- new-key-with-ssm-secret "Shared State Service" <short_environment>_TWILIO_<short_helpline>_SECRET <helpline> <environement> --an=<short_environment>_TWILIO_<short_helpline>_API_KEY
-```
 10. Run and review the output of:
 ```shell
 terraform plan [-var-file my-private.tfvars]
@@ -66,17 +61,11 @@ terraform apply [-var-file my-private.tfvars]
 ```shell
 terraform apply [-var-file my-private.tfvars]
 ```
-14. Review the contents of `service-configuration-payload.json` and update the required values - pay particular attention to `hrm_base_url`, `definitionVersion` and `permissionConfig`. 
-Don't populate `serverless_base_url` or `account_sid` - this file will be checked in and cannot contain sensitive values
-15. Copy the `service-configuration-payload.json` file and rename it `service-configuration-payload-private.json` in the same directory.
-16. In the new file replace the asterisk values for the real required value (currently `serverless_base_url` or `account_sid`)
-17. From within the configuration directory run (Windows users need to run it from git bash or WSL with curl installed, or do the post request via PS or Postman or w/e)
-```shell
-curl https://flex-api.twilio.com/v1/Configuration -X POST -u <TWILIO_ACCOUNT_ID>:<TWILIO_AUTH_TOKEN> --data-binary "@service-configuration-payload-private.json"
-```
-18. Don't forget to raise a PR to merge the new configuration you created
-
 Unfortunately, a feature gap in the twilio terraform provider means the domain URL cannot be extracted from the resource. The easiest workaround is to put it in a variable after it has been generated initially
+14. Go into Twilio Console and check if the 'redirect_function' task has the correct serverless url set. If it is not correct, update it manually in Twilio Console.
+    Unfortunately due to this issue with the provider, it may not be updated as part of the second `terraform apply`: https://github.com/twilio/terraform-provider-twilio/issues/92
+15. Don't forget to raise a PR to merge the new configuration you created
+
 
 ## Importing a pre-existing environment
 
@@ -103,12 +92,11 @@ This Terraform project is currently incomplete, this is what isn't covered and n
 ### What it should do but doesn't
 
 * Github Secrets - not currently added to serverless or flex (can be done though).
-* HRM process.env - not currently updated. Terraform isn't great at provisioning parts of files.
-* Service Configuration - not currently managed by the twilio provider. We can use a provisioner but currently you need still need to call the REST service manually
-* API Keys - Whilst API Keys can be created using the twilio terraform provider, it's a bit useless because it provides no way of accessing the secret to record somewhere, so a key created in terraform can never be accessed as far as I can tell.
+* HRM process.env - not currently updated. Terraform isn't great at provisioning parts of files, refactoring this code to use SSM parameters which could be managed as terraform resources .
 * Okta - doesn't set up anything in Twilio or Okta for this right now. No sign of any support for setting up single sign on in the Twilio provider, but there is an Okta provider.
 * DataDog - it puts the keys you provide via tfvars in the AWS Parameter Store, but it won't provision the application in DataDog for you (but it could!).
 * Default Studio Flows - it doesn't clean up the original 'Messaging Flow', because it's never under control of terraform. Could be removed with a provisioner possibly, but this might result in unexpected behaviour if somebody duplicates the terraform managed Messaging Flow to test with and then terraform goes and deletes it...
+* AWS Cloudwatch Alarms - now we have 'per account' alarms, they seem like a good candidate for managing in TF?
 ...
 
 ### What it shouldn't do

@@ -307,12 +307,26 @@ module "chatbots" {
   gender_field_type = "safespot"
 }
 
+module "hrmServiceIntegration" {
+  source = "../terraform-modules/hrmServiceIntegration/default"
+  local_os = var.local_os
+  helpline = var.helpline
+  short_helpline = var.short_helpline
+  environment = var.environment
+  short_environment = var.short_environment
+}
+
 module "serverless" {
   source = "../terraform-modules/serverless/default"
 }
 
 module "services" {
   source = "../terraform-modules/services/default"
+  local_os = var.local_os
+  helpline = var.helpline
+  short_helpline = var.short_helpline
+  environment = var.environment
+  short_environment = var.short_environment
 }
 
 module "taskRouter" {
@@ -333,6 +347,13 @@ module studioFlow {
 
 module flex {
   source = "../terraform-modules/flex/default"
+  account_sid = var.account_sid
+  short_environment = var.short_environment
+  operating_info_key = var.operating_info_key
+  definition_version = var.definition_version
+  serverless_url = var.serverless_url
+  multi_office_support = var.multi_office
+  feature_flags = var.feature_flags
   flex_chat_service_sid = module.services.flex_chat_service_sid
   messaging_studio_flow_sid = module.studioFlow.messaging_studio_flow_sid
 }
