@@ -1,44 +1,89 @@
 import twilio from 'twilio';
-import { config } from 'dotenv';
-import { logError } from '../helpers/log';
-import { saveSSMParameter } from '../helpers/ssm';
+import { getSSMParameter, saveSSMParameter } from '../helpers/ssm';
+import { logDebug, logError, logInfo, logSuccess, logWarning } from '../helpers/log';
 
-config();
+export type CreateTwilioApiKeyAndSsmSecretOptions = {
+  sidSmmParameterName: string;
+  sidSmmParameterDescription: string;
+  secretSmmParameterDescription: string;
+};
 
-const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+export async function createTwilioApiKeyAndSsmSecret(
+  twilioFriendlyName: string,
+  secretSsmParameterName: string,
+  helpline: string,
+  environment: string,
+  {
+    sidSmmParameterName,
+    sidSmmParameterDescription = `SID for Twilio API key '${twilioFriendlyName}, ${helpline} (${environment})'`,
+    secretSmmParameterDescription = `Secret for Twilio API key '${twilioFriendlyName} ${helpline} (${environment})'`,
+  }: Partial<CreateTwilioApiKeyAndSsmSecretOptions>,
+) {
+  const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+  const ssmParametersString = (
+    sidSmmParameterName ? [secretSsmParameterName, sidSmmParameterName] : secretSsmParameterName
+  ).toString();
 
-async function main() {
-  const key = await client.newKeys.create({ friendlyName: process.argv[2] });
-  const { secret } = key;
-  saveSSMParameter(
-    process.argv[3],
-    secret,
-    process.argv[4] || `Secret for Twilio key '${process.argv[2]}'`,
-    [
-      { Key: 'Helpline', Value: process.argv[5] },
-      { Key: 'Environment', Value: process.argv[6] },
-    ],
+  logDebug(
+    `Checking if api key '${twilioFriendlyName}' and ssm key(s) ${ssmParametersString} already exist.`,
   );
-  if (process.argv[7]) {
-    saveSSMParameter(
-      process.argv[7],
-      key.sid,
-      process.argv[4] || `SID for Twilio API key '${process.argv[2]}'`,
-      [
-        { Key: 'Helpline', Value: process.argv[5] },
-        { Key: 'Environment', Value: process.argv[6] },
-      ],
+  const apiKeyAlreadyExists = !!(await client.keys.list()).find(
+    (k) => k.friendlyName === twilioFriendlyName,
+  );
+  const ssmParamForSecretAlreadyExists = !!(await getSSMParameter(secretSsmParameterName));
+  const smmParamForSidAlreadyExists = !!(
+    sidSmmParameterName && (await getSSMParameter(sidSmmParameterName))
+  );
+
+  if (
+    apiKeyAlreadyExists &&
+    ssmParamForSecretAlreadyExists &&
+    (!sidSmmParameterName || smmParamForSidAlreadyExists)
+  ) {
+    logInfo(
+      `API key '${twilioFriendlyName}' and ssm key(s) ${ssmParametersString} already exist, skipping creation. To recreate them, delete the ${ssmParametersString} SSM keys and they and the API key will be recreated`,
+    );
+    return;
+  }
+
+  if (
+    apiKeyAlreadyExists &&
+    !ssmParamForSecretAlreadyExists &&
+    (!smmParamForSidAlreadyExists || !sidSmmParameterName)
+  ) {
+    logWarning(
+      `API key '${twilioFriendlyName}' already exists but ssm key(s) ${ssmParametersString} do not. Recreating all 3 since the secret cannot be read from an existing key`,
     );
   }
-}
 
-/**
- * Script to create API keys in Twilio and save their details to AWS SSM
- * The CLI inputs are horrible right now, it is intended to be called from a terraform provisioner rather than directly, but still might make sense to make them a little nicer
- * npm run createTwilioApiKeyAndSsmSecret <friendly_name> <secret ssm name> <secret ssm description> <helpline> <environment> [<api key ssm name> <api key ssm description>]
- */
-main().catch((err) => {
-  logError('Script interrupted due to error.');
-  logError(err);
-  process.exitCode = 1;
-});
+  if (!apiKeyAlreadyExists && (ssmParamForSecretAlreadyExists || smmParamForSidAlreadyExists)) {
+    let existingKeysDescription;
+    if (ssmParamForSecretAlreadyExists && smmParamForSidAlreadyExists) {
+      existingKeysDescription = `${secretSsmParameterName} and ${sidSmmParameterName}`;
+    } else if (ssmParamForSecretAlreadyExists) {
+      existingKeysDescription = sidSmmParameterName;
+    } else {
+      existingKeysDescription = secretSsmParameterName;
+    }
+    throw new Error(
+      `API key '${twilioFriendlyName}' does not exist but ssm key(s) (${existingKeysDescription} do. Cannot continue in this inconsistent state. Delete the ${existingKeysDescription} SSM parameters and try again.`,
+    );
+  }
+
+  const key = await client.newKeys.create({ friendlyName: twilioFriendlyName });
+  logSuccess(`Twilio API Key ${twilioFriendlyName} created.`);
+  const { secret } = key;
+  await saveSSMParameter(secretSsmParameterName, secret, secretSmmParameterDescription, [
+    { Key: 'Helpline', Value: helpline },
+    { Key: 'Environment', Value: environment },
+  ]);
+  logSuccess(`SSM parameter ${secretSsmParameterName} saved.`);
+  if (sidSmmParameterName) {
+    await saveSSMParameter(sidSmmParameterName, key.sid, sidSmmParameterDescription, [
+      { Key: 'Helpline', Value: helpline },
+      { Key: 'Environment', Value: environment },
+    ]);
+    logSuccess(`SSM parameter ${sidSmmParameterName} saved.`);
+  }
+  logSuccess('All createTwilioApiKeyAndSsmSecret operations complete');
+}

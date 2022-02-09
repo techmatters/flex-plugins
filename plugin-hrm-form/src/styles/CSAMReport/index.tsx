@@ -59,8 +59,9 @@ export const RegularText = styled(FontOpenSans)`
 RegularText.displayName = 'RegularText';
 
 export const ReportCodeText = styled(FontOpenSans)`
-  color: #009dff;
+  color: #0074d8;
   font-size: 12px;
+  font-weight: 600;
   line-height: 14px;
 `;
 ReportCodeText.displayName = 'ReportCodeText';

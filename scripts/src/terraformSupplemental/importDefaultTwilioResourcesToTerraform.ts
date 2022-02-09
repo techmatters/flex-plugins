@@ -1,73 +1,67 @@
 import twilio from 'twilio';
 import { execSync } from 'child_process';
-import { config } from 'dotenv';
-import { logError, logSuccess, logWarning } from '../helpers/log';
+import { logDebug, logInfo, logWarning } from '../helpers/log';
+import { attemptTerraformImport } from './twilioToTerraformImporter';
 
-config();
+const TERRAFORM_ROOT_DIRECTORY = '../twilio-iac';
 
-const terraformWorkingDirectory = `../twilio-iac/${process.argv[2]}`;
-const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+export async function importDefaultResources(
+  account: string,
+  tfvarsFile?: string,
+  dryRun: boolean = false,
+) {
+  logDebug(`Importing default resources for '${account}'.`);
 
-function attemptTerraformImport(
-  twilioResourceSid: string,
-  terraformResource: string,
-  description: string,
-): void {
-  try {
-    const command = `terraform import${
-      process.argv[3] ? ` -var-file ${process.argv[3]}` : ''
-    } ${terraformResource} ${twilioResourceSid}`;
-    logSuccess(`Running command (in ${terraformWorkingDirectory}): ${command}`);
-    execSync(command, { cwd: terraformWorkingDirectory });
-    logSuccess(
-      `${description}, sid ${twilioResourceSid} successfully imported to terraform as '${terraformResource}'`,
-    );
-  } catch (error) {
-    if ((<any>error).stderr.toString().includes('Resource already managed by Terraform')) {
-      logWarning(`${description} already in terraform, moving on.`);
-    } else throw error;
+  const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+
+  async function locateAndImportDefaultTaskChannel(
+    workspaceSid: string,
+    taskChannelUniqueName: string,
+  ): Promise<void> {
+    const taskChannel = (
+      await client.taskrouter.workspaces(workspaceSid).taskChannels.list({ limit: 50 })
+    ).find((tc) => tc.uniqueName === taskChannelUniqueName);
+
+    if (taskChannel) {
+      attemptTerraformImport(
+        `${workspaceSid}/${taskChannel.sid}`,
+        `module.taskRouter.twilio_taskrouter_workspaces_task_channels_v1.${taskChannelUniqueName}`,
+        account,
+        { description: `${taskChannelUniqueName} task channel`, tfvarsFile, dryRun },
+      );
+    } else {
+      logWarning(`${taskChannelUniqueName} task channel not found to import`);
+    }
   }
-}
 
-async function locateAndImportDefaultTaskChannel(
-  workspaceSid: string,
-  taskChannelUniqueName: string,
-): Promise<void> {
-  const taskChannel = (
-    await client.taskrouter.workspaces(workspaceSid).taskChannels.list({ limit: 50 })
-  ).find((tc) => tc.uniqueName === taskChannelUniqueName);
-
-  if (taskChannel) {
-    attemptTerraformImport(
-      `${workspaceSid}/${taskChannel.sid}`,
-      `module.taskRouter.twilio_taskrouter_workspaces_task_channels_v1.${taskChannelUniqueName}`,
-      `${taskChannelUniqueName} task channel`,
+  async function locateAndImportDefaultFlexFlow(
+    flexFlowFriendlyName: string,
+    terraformResourceName: string,
+  ): Promise<void> {
+    const flexFlow = (await client.flexApi.flexFlow.list({ limit: 50 })).find(
+      (tc) => tc.friendlyName === flexFlowFriendlyName,
     );
+
+    if (flexFlow) {
+      attemptTerraformImport(
+        `${flexFlow.sid}`,
+        `module.flex.twilio_flex_flex_flows_v1.${terraformResourceName}`,
+        account,
+        { description: `${flexFlowFriendlyName} flex flow`, tfvarsFile, dryRun },
+      );
+    } else {
+      logWarning(`${flexFlowFriendlyName} flex flow not found to import`);
+    }
+  }
+
+  if (dryRun) {
+    logInfo('================== DRY RUN ==================');
+    logInfo('No imports will be performed, command outputs are what would have been run.');
   } else {
-    logWarning(`${taskChannelUniqueName} task channel not found to import`);
+    execSync(`terraform init${tfvarsFile ? ` --var-file ${tfvarsFile}` : ''}`, {
+      cwd: `${TERRAFORM_ROOT_DIRECTORY}/${account}`,
+    });
   }
-}
-async function locateAndImportDefaultFlexFlow(
-  flexFlowFriendlyName: string,
-  terraformResourceName: string,
-): Promise<void> {
-  const flexFlow = (await client.flexApi.flexFlow.list({ limit: 50 })).find(
-    (tc) => tc.friendlyName === flexFlowFriendlyName,
-  );
-
-  if (flexFlow) {
-    attemptTerraformImport(
-      `${flexFlow.sid}`,
-      `module.flex.twilio_flex_flex_flows_v1.${terraformResourceName}`,
-      `${flexFlowFriendlyName} flex flow`,
-    );
-  } else {
-    logWarning(`${flexFlowFriendlyName} flex flow not found to import`);
-  }
-}
-
-async function main() {
-  execSync('terraform init', { cwd: terraformWorkingDirectory });
   const proxy = (await client.proxy.services.list({ limit: 20 })).find(
     (p) => p.uniqueName === 'Flex Proxy Service',
   );
@@ -75,7 +69,12 @@ async function main() {
     attemptTerraformImport(
       proxy.sid,
       'module.services.twilio_proxy_services_v1.flex_proxy_service',
-      'Flex Proxy Service',
+      account,
+      {
+        description: 'Flex Proxy Service',
+        tfvarsFile,
+        dryRun,
+      },
     );
   } else {
     logWarning('Flex proxy Service not found to import');
@@ -89,7 +88,12 @@ async function main() {
     attemptTerraformImport(
       chatService.sid,
       'module.services.twilio_chat_services_v2.flex_chat_service',
-      'Flex Chat Service',
+      account,
+      {
+        description: 'Flex Chat Service',
+        tfvarsFile,
+        dryRun,
+      },
     );
   } else {
     logWarning('Flex Chat Service not found to import');
@@ -102,7 +106,12 @@ async function main() {
     attemptTerraformImport(
       workspace.sid,
       'module.taskRouter.twilio_taskrouter_workspaces_v1.flex_task_assignment',
-      'Flex Task Assignment workflow',
+      account,
+      {
+        description: 'Flex Task Assignment workflow',
+        tfvarsFile,
+        dryRun,
+      },
     );
     await locateAndImportDefaultTaskChannel(workspace.sid, 'default');
     await locateAndImportDefaultTaskChannel(workspace.sid, 'voice');
@@ -117,9 +126,3 @@ async function main() {
   await locateAndImportDefaultFlexFlow('Flex Messaging Channel Flow', 'messaging_flow');
   await locateAndImportDefaultFlexFlow('Flex Web Channel Flow', 'webchat_flow');
 }
-
-main().catch((err) => {
-  logError('Script interrupted due to error.');
-  logError(err);
-  process.exitCode = 1;
-});

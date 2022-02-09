@@ -56,3 +56,28 @@ npm run generateNewHelplineFormDefinitions <helpline> [-f] [-r rootDirectory]
 | helpline  | The helpline code, normally a 2 letter code, a dash and then the version prefixed by a 'v', e.g. `za-v1`. This is the name of the directory that will be created to put all the generated definitions under. |
 | -r, --root | Root directory. If omitted it will put them in `[REPO ROOT]/hrm-form-definitions/form-definitions`, which is where they need to go to be used in the plugin. If you need to generate them elsewhere, for testing for example, specifiy a relative or absolute local path using this option |
 | -f, --force | By default, if the script detects the helpline directory it's about to create already exists, it will warn you and ask permission to continue (because any files with the same name will be overwritten if you proceed). Specifying this option supresses that prompt and overwrites automatically, use with care! |
+
+## twilioResources
+A collection of commands to assist managing twilio resources in Terraform - primarily to assist in ensuring that the Terraform tfstate reflects the rreal state of the Twilio resources on the account.
+
+Each command has --help docs for specific information about how to use each parameter, the descriptions here provide a more general context & describe typical use cases.
+
+### import-account-defaults
+
+Takes a hardcoded set of resources that normally get created by default when a new Twilio account is created, checks to see if they exist on the target account, and imports them if they are.
+
+It is a required step prior to running `terraform apply` on a brand new account, because otherwise terraform will encounter a resources from its configuration that is not in the `tfstate` but does exist on the account (because we reuse these default resources in our Aselo configuration), which upsets Terraform. 
+This script will line up the tfstate of a fresh account with the reality, allowing the first terraform apply to run correctly.
+
+Using this script as part of setting up a new account is described in /twilio-iac/README.md
+
+### import-tf
+
+Takes a single *.tf Terraform configuration file and it scans the resources in there. It will then search for those resources in the Twilio account you provide credentials for and if it finds them, imports them into the `tfstate` for this configuration.
+
+Its use cases are those which involve trying to import large amounts of resources that are defined in configuration, already exist on the account, but aren't in the `tfstate`. 
+Importing existing, non-terraform managed accounts into Terraform is one use case, but also importing significant additions made to staging accounts outside Terraform would be another (I used it to import the SafeSpot 'which district?' autopilot question, which would have been time consuming otherwise).
+In both of these use cases, the Terraform resources would need to have been configured in the `*.tf` files prior to using this command to update the state, naturally.
+
+*Note:* You STILL need to pass any SIDs that come from variables in using an `--sid` parameter, even if they are defined in the `tfvars` file you pass in with `-v`or as a `TF_VARS_*` environment variable. 
+The script doesn't scan provided terraform variables automatically for its own use, it just passes the `*.tfvars` file you specify down to the `terraform import` command. It could be enhanced to do this if needed, but doesn't right now.
