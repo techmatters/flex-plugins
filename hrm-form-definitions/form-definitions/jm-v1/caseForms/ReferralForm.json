@@ -23,7 +23,7 @@
     },
     {
         "name": "referredToOther",
-        "label": "If other, please specify: "
+        "label": "If other, please specify: ",
         "type": "input"
     },
     {
