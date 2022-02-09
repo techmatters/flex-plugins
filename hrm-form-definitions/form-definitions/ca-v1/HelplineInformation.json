@@ -1,1 +1,15 @@
-{}
+{
+  "label": "Helpline",
+  "helplines": [
+    {
+      "label": "Kids Help Phone",
+      "value": "Kids Help Phone",
+      "default": true,
+      "manager": {
+        "name": "Placeholder",
+        "phone": "+20000000",
+        "email": "placeholder@placeholder.org"
+      }
+    }
+  ]
+}
