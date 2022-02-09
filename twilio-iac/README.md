@@ -46,7 +46,12 @@ The process for a first run is as follows:
 
 9. Run the script below. Twilio creates a bunch of default resources on a new account and Aselo uses some of them. We need to import them into terraform first, otherwise terraform assumes they don't exist and will try to create them, resulting in errors.
 ```
-npm run twilioResources import-account-defaults <helpline>-<environment> [-v my-private.tfvars]]
+npm run twilioResources -- import-account-defaults <helpline>-<environment> [-v my-private.tfvars]]
+```
+* Run the scripts below to work around the fact that API keys are currently broken in the Twilio Terraform Provider
+```shell
+npm run twilioResources -- new-key-with-ssm-secret hrm-static-key <short_environment>_TWILIO_<short_helpline>_HRM_STATIC_KEY <helpline> <environement>
+npm run twilioResources -- new-key-with-ssm-secret "Shared State Service" <short_environment>_TWILIO_<short_helpline>_SECRET <helpline> <environement> --an=<short_environment>_TWILIO_<short_helpline>_API_KEY
 ```
 10. Run and review the output of:
 ```shell
@@ -83,10 +88,7 @@ Once you have the environment created / imported, to make changes:
 
 1. Make required changes to the terraform scripts
 2. Raise a PR & get them reviewed & approved
-3. Ensure the AWS, Twilio & Datadog environment variables are set correctly and you are in the right Terraform workspace by running:
-```shell
-terraform workspace select <helpline>-<environment>
-```
+3. Ensure the AWS, Twilio & Datadog environment variables are set correctly and you are in the right Terraform configuration directory:
 4. Run:
 ```shell
 terraform apply -var-file <helpline>-<environment>.tfvars

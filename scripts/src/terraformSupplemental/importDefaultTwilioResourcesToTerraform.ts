@@ -1,6 +1,6 @@
 import twilio from 'twilio';
 import { execSync } from 'child_process';
-import { logInfo, logWarning } from '../helpers/log';
+import { logDebug, logInfo, logWarning } from '../helpers/log';
 import { attemptTerraformImport } from './twilioToTerraformImporter';
 
 const TERRAFORM_ROOT_DIRECTORY = '../twilio-iac';
@@ -10,6 +10,8 @@ export async function importDefaultResources(
   tfvarsFile?: string,
   dryRun: boolean = false,
 ) {
+  logDebug(`Importing default resources for '${account}'.`);
+
   const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
   async function locateAndImportDefaultTaskChannel(
@@ -23,7 +25,7 @@ export async function importDefaultResources(
     if (taskChannel) {
       attemptTerraformImport(
         `${workspaceSid}/${taskChannel.sid}`,
-        `twilio_taskrouter_workspaces_task_channels_v1.${taskChannelUniqueName}`,
+        `module.taskRouter.twilio_taskrouter_workspaces_task_channels_v1.${taskChannelUniqueName}`,
         account,
         { description: `${taskChannelUniqueName} task channel`, tfvarsFile, dryRun },
       );
@@ -43,7 +45,7 @@ export async function importDefaultResources(
     if (flexFlow) {
       attemptTerraformImport(
         `${flexFlow.sid}`,
-        `twilio_flex_flex_flows_v1.${terraformResourceName}`,
+        `module.flex.twilio_flex_flex_flows_v1.${terraformResourceName}`,
         account,
         { description: `${flexFlowFriendlyName} flex flow`, tfvarsFile, dryRun },
       );
@@ -55,20 +57,25 @@ export async function importDefaultResources(
   if (dryRun) {
     logInfo('================== DRY RUN ==================');
     logInfo('No imports will be performed, command outputs are what would have been run.');
+  } else {
+    execSync(`terraform init${tfvarsFile ? ` --var-file ${tfvarsFile}` : ''}`, {
+      cwd: `${TERRAFORM_ROOT_DIRECTORY}/${account}`,
+    });
   }
-
-  execSync(`terraform init${tfvarsFile ? ` --var-file ${tfvarsFile}` : ''}`, {
-    cwd: `${TERRAFORM_ROOT_DIRECTORY}/${account}`,
-  });
   const proxy = (await client.proxy.services.list({ limit: 20 })).find(
     (p) => p.uniqueName === 'Flex Proxy Service',
   );
   if (proxy) {
-    attemptTerraformImport(proxy.sid, 'twilio_proxy_services_v1.flex_proxy_service', account, {
-      description: 'Flex Proxy Service',
-      tfvarsFile,
-      dryRun,
-    });
+    attemptTerraformImport(
+      proxy.sid,
+      'module.services.twilio_proxy_services_v1.flex_proxy_service',
+      account,
+      {
+        description: 'Flex Proxy Service',
+        tfvarsFile,
+        dryRun,
+      },
+    );
   } else {
     logWarning('Flex proxy Service not found to import');
   }
@@ -78,11 +85,16 @@ export async function importDefaultResources(
   );
 
   if (chatService) {
-    attemptTerraformImport(chatService.sid, 'twilio_chat_services_v2.flex_chat_service', account, {
-      description: 'Flex Chat Service',
-      tfvarsFile,
-      dryRun,
-    });
+    attemptTerraformImport(
+      chatService.sid,
+      'module.services.twilio_chat_services_v2.flex_chat_service',
+      account,
+      {
+        description: 'Flex Chat Service',
+        tfvarsFile,
+        dryRun,
+      },
+    );
   } else {
     logWarning('Flex Chat Service not found to import');
   }
@@ -93,7 +105,7 @@ export async function importDefaultResources(
   if (workspace) {
     attemptTerraformImport(
       workspace.sid,
-      'twilio_taskrouter_workspaces_v1.flex_task_assignment',
+      'module.taskRouter.twilio_taskrouter_workspaces_v1.flex_task_assignment',
       account,
       {
         description: 'Flex Task Assignment workflow',

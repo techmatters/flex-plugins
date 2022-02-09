@@ -1,44 +1,39 @@
 import twilio from 'twilio';
-import { config } from 'dotenv';
-import { logError } from '../helpers/log';
 import { saveSSMParameter } from '../helpers/ssm';
+import { logDebug, logSuccess } from '../helpers/log';
 
-config();
+export type CreateTwilioApiKeyAndSsmSecretOptions = {
+  sidSmmParameterName: string;
+  sidSmmParameterDescription: string;
+  secretSmmParameterDescription: string;
+};
 
-const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-
-async function main() {
-  const key = await client.newKeys.create({ friendlyName: process.argv[2] });
+export async function createTwilioApiKeyAndSsmSecret(
+  twilioFriendlyName: string,
+  ssmKeyName: string,
+  helpline: string,
+  environment: string,
+  {
+    sidSmmParameterName,
+    sidSmmParameterDescription = `SID for Twilio API key '${twilioFriendlyName}, ${helpline} (${environment})'`,
+    secretSmmParameterDescription = `Secret for Twilio API key '${twilioFriendlyName} ${helpline} (${environment})'`,
+  }: Partial<CreateTwilioApiKeyAndSsmSecretOptions>,
+) {
+  const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+  const key = await client.newKeys.create({ friendlyName: twilioFriendlyName });
+  logSuccess(`Twilio API Key ${twilioFriendlyName} created.`);
   const { secret } = key;
-  saveSSMParameter(
-    process.argv[3],
-    secret,
-    process.argv[4] || `Secret for Twilio key '${process.argv[2]}'`,
-    [
-      { Key: 'Helpline', Value: process.argv[5] },
-      { Key: 'Environment', Value: process.argv[6] },
-    ],
-  );
-  if (process.argv[7]) {
-    saveSSMParameter(
-      process.argv[7],
-      key.sid,
-      process.argv[4] || `SID for Twilio API key '${process.argv[2]}'`,
-      [
-        { Key: 'Helpline', Value: process.argv[5] },
-        { Key: 'Environment', Value: process.argv[6] },
-      ],
-    );
+  await saveSSMParameter(ssmKeyName, secret, secretSmmParameterDescription, [
+    { Key: 'Helpline', Value: helpline },
+    { Key: 'Environment', Value: environment },
+  ]);
+  logSuccess(`SSM parameter ${ssmKeyName} saved.`);
+  if (sidSmmParameterName) {
+    await saveSSMParameter(sidSmmParameterName, key.sid, sidSmmParameterDescription, [
+      { Key: 'Helpline', Value: helpline },
+      { Key: 'Environment', Value: environment },
+    ]);
+    logSuccess(`SSM parameter ${sidSmmParameterName} saved.`);
   }
+  logSuccess('All createTwilioApiKeyAndSsmSecret operations complete');
 }
-
-/**
- * Script to create API keys in Twilio and save their details to AWS SSM
- * The CLI inputs are horrible right now, it is intended to be called from a terraform provisioner rather than directly, but still might make sense to make them a little nicer
- * npm run createTwilioApiKeyAndSsmSecret <friendly_name> <secret ssm name> <secret ssm description> <helpline> <environment> [<api key ssm name> <api key ssm description>]
- */
-main().catch((err) => {
-  logError('Script interrupted due to error.');
-  logError(err);
-  process.exitCode = 1;
-});

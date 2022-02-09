@@ -3,6 +3,10 @@ import { config } from 'dotenv';
 import importResources from './importHCLTwilioResourcesToTerraform';
 import { ResourceType } from './resourceParsers';
 import { importDefaultResources } from './importDefaultTwilioResourcesToTerraform';
+import {
+  createTwilioApiKeyAndSsmSecret,
+  CreateTwilioApiKeyAndSsmSecretOptions,
+} from './createTwilioApiKeyAndSsmSecret';
 
 config();
 
@@ -115,8 +119,62 @@ async function main() {
       async (argv) => {
         await importDefaultResources(
           argv.accountDirectory as string,
-          argv.tfFilePath as string,
+          argv.varFile as string,
           argv.dryRun as boolean,
+        );
+      },
+    )
+    .command(
+      'new-key-with-ssm-secret <twilioFriendlyName> <ssmSecretName> <helpline> <environment>',
+      'Create a twilio API key and a AWS SSM parameter to hold the secret. Requires Twilio creds and AWS creds & region to be set up with standard account variables.',
+      (argv) => {
+        argv.positional('twilioFriendlyName', {
+          describe: "The 'friendly name' for the API Key used in twilio",
+          type: 'string',
+        });
+        argv.positional('ssmSecretName', {
+          describe: 'The name for the SSM parameter used to hold the API secret in AWS',
+          type: 'string',
+        });
+        argv.positional('helpline', {
+          describe: 'Name of the helpline the api key is for, used as a tag in the SSM parameters',
+          type: 'string',
+        });
+        argv.positional('environment', {
+          describe:
+            "Name of the environment the api key is for (i.e. 'Production' or 'Staging'), used as a tag in the SSM parameters",
+          type: 'string',
+        });
+        argv.option('sd', {
+          alias: 'ssmSecretDescription',
+          describe:
+            "Set a custom description for the secret's SSM parameter - 'Secret for Twilio Key *twilioFriendlyName*' is used if not set",
+          type: 'string',
+        });
+        argv.option('an', {
+          alias: 'ssmApiKeySidName',
+          describe:
+            'If the API Key SID needs storing as a SSM parameter alongside the secret, set the name to use with this parameter. No SSM key will be created for the API Key if this is not set',
+          type: 'string',
+        });
+        argv.option('ad', {
+          alias: 'ssmApiKeySidDescription',
+          describe:
+            'If the API Key SID needs storing as a SSM parameter alongside the secret, this option can be used to provide a description. Has no effect if ssmAPiKeyName is not set.',
+          type: 'string',
+        });
+      },
+      async (argv) => {
+        await createTwilioApiKeyAndSsmSecret(
+          argv.twilioFriendlyName as string,
+          argv.ssmSecretName as string,
+          argv.helpline as string,
+          argv.environment as string,
+          {
+            sidSmmParameterDescription: argv.ssmApiKeySidDescription,
+            sidSmmParameterName: argv.ssmApiKeySidName,
+            secretSmmParameterDescription: argv.ssmSecretDescription,
+          } as Partial<CreateTwilioApiKeyAndSsmSecretOptions>,
         );
       },
     )
