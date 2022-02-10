@@ -93,7 +93,7 @@ function setUpFullStory() {
  */
 function helplineIdentifierFullStory(workerClient) {
   const { accountSid } = workerClient;
-  FullStory.setUserVars({ helpline: accountSid });
+  FullStory.setUserVars({ accountSid: accountSid });
 }
 
 export default function setUpMonitoring(plugin, workerClient, serviceConfiguration) {
