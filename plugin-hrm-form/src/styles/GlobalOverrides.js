@@ -38,4 +38,10 @@ injectGlobal`
   a.link-text-decoration-none:hover { text-decoration: none; color: #1874e1; }
   a.link-text-decoration-none:focus { text-decoration: none; color: #1874e1; }
   a.link-text-decoration-none:active { text-decoration: none; color: #1874e1; }
+
+  span.ContactDetailsInfo-open-in-new-icon {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+  }
 `;
