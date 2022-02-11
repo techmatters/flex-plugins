@@ -269,7 +269,6 @@ export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
     )};
 
   &&:focus {
-    outline-color: #4d90fe;
     outline-style: auto;
     outline-width: initial;
   }
@@ -860,8 +859,7 @@ export const FormCheckbox = styled(CheckboxBase)`
   }
 
   &[type='checkbox']:focus:not(:focus-visible) {
-    outline: rgb(0, 95, 204) 2px solid;
-    outline-offset: 2px;
+    outline: auto;
   }
 `;
 FormCheckbox.displayName = 'FormCheckbox';

@@ -105,7 +105,6 @@ export const ConfirmButton = styled(Button)<ConfirmButtonProps>`
   ${p => getBackgroundWithHoverCSS(p.theme.colors.declineColor, true, false, p.disabled)};
 
   &:focus {
-    outline-color: #4d90fe;
     outline-style: auto;
     outline-width: initial;
   }
