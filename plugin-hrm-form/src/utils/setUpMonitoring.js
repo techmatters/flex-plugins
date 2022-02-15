@@ -84,11 +84,13 @@ function setUpRollbarLogger(plugin, workerClient, monitoringEnv) {
 function setUpFullStory() {
   FullStory.init({
     orgId: fullStoryId,
+    devMode: false,
   });
   console.log('Fullstory monitoring is enabled');
 }
+
 /**
- * Identifies and usage by Twilio Account ID (accountSid) in FullStory
+ * Identifies helpline usage by Twilio Account ID (accountSid) in FullStory
  * @param workerClient
  */
 function helplineIdentifierFullStory(workerClient) {
@@ -99,8 +101,11 @@ function helplineIdentifierFullStory(workerClient) {
 export default function setUpMonitoring(plugin, workerClient, serviceConfiguration) {
   const monitoringEnv = serviceConfiguration.attributes.monitoringEnv || 'staging';
 
-  setUpDatadogRum(workerClient, monitoringEnv);
-  setUpRollbarLogger(plugin, workerClient, monitoringEnv);
+  if (process.env.NODE_ENV !== 'development'){
+    setUpDatadogRum(workerClient, monitoringEnv);
+    setUpRollbarLogger(plugin, workerClient, monitoringEnv);
+  }
+
   if (serviceConfiguration.attributes.feature_flags.enable_fullstory_monitoring) {
     setUpFullStory();
     helplineIdentifierFullStory(workerClient);
