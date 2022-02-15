@@ -198,6 +198,9 @@ const setUpComponents = setupObject => {
   Components.setUpStandaloneSearch();
 
   if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
+
+  // set feature flag here
+  if (true) Components.setUpWorkerStatusHandler();
 };
 
 /**

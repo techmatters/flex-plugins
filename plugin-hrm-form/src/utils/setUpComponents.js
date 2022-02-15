@@ -8,6 +8,7 @@ import * as TransferHelpers from './transfer';
 import CannedResponses from '../components/CannedResponses';
 import QueuesStatusWriter from '../components/queuesStatus/QueuesStatusWriter';
 import QueuesStatus from '../components/queuesStatus';
+import WorkerStatusHandler from '../components/WorkerStatusHandler/WorkerStatusHandler';
 import CustomCRMContainer from '../components/CustomCRMContainer';
 import LocalizationContext from '../contexts/LocalizationContext';
 import Translator from '../components/translator';
@@ -87,6 +88,19 @@ export const setUpQueuesStatusWriter = setupObject => {
       key="queue-status-writer"
       workerSid={workerSid}
     />,
+    {
+      sortOrder: -1,
+      align: 'start',
+    },
+  );
+};
+
+/**
+ * Add an "invisible" component that tracks the state of the worker, setting the status activity accordingly
+ */
+export const setUpWorkerStatusHandler = () => {
+  Flex.MainContainer.Content.add(
+    <WorkerStatusHandler workerClient={Flex.Manager.getInstance().workerClient} key="worker-status-handler" />,
     {
       sortOrder: -1,
       align: 'start',
