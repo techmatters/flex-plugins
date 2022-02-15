@@ -101,7 +101,7 @@ function helplineIdentifierFullStory(workerClient) {
 export default function setUpMonitoring(plugin, workerClient, serviceConfiguration) {
   const monitoringEnv = serviceConfiguration.attributes.monitoringEnv || 'staging';
 
-  if (process.env.NODE_ENV !== 'development'){
+  if (process.env.NODE_ENV !== 'development') {
     setUpDatadogRum(workerClient, monitoringEnv);
     setUpRollbarLogger(plugin, workerClient, monitoringEnv);
   }
