@@ -29,7 +29,7 @@ async function main() {
     })
     .command(
       'import-tf <accountDirectory>  <tfFilePath>',
-      "Import the current state of all the resources specified in the provided .tf file from a Twilio Account into the provided terraform configuration's state. Requires Twilio account environment variable to ber set, and AWS account variables to be set for anything other than a dry run.",
+      "Import the current state of all the resources specified in the provided .tf file from a Twilio Account into the provided terraform configuration's state. Requires Twilio account environment variable to be set, and AWS account variables to be set for anything other than a dry run.",
       (argv) => {
         argv.positional('accountDirectory', {
           describe:
@@ -109,7 +109,7 @@ async function main() {
     )
     .command(
       'import-account-defaults <accountDirectory>',
-      "Import the current state of all the resources specified in the provided .tf file from a Twilio Account into the provided terraform configuration's state. Requires Twilio account environment variable to ber set, and AWS account variables to be set for anything other than a dry run.",
+      "Import the current state of all the resources specified in the provided .tf file from a Twilio Account into the provided terraform configuration's state. Requires Twilio account environment variable to be set, and AWS account variables to be set for anything other than a dry run.",
       (argv) => {
         argv.positional('accountDirectory', {
           describe:

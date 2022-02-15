@@ -58,7 +58,7 @@ npm run generateNewHelplineFormDefinitions <helpline> [-f] [-r rootDirectory]
 | -f, --force | By default, if the script detects the helpline directory it's about to create already exists, it will warn you and ask permission to continue (because any files with the same name will be overwritten if you proceed). Specifying this option supresses that prompt and overwrites automatically, use with care! |
 
 ## twilioResources
-A collection of commands to assist managing twilio resources in Terraform - primarily to assist in ensuring that the Terraform tfstate reflects the rreal state of the Twilio resources on the account.
+A collection of commands to assist managing twilio resources in Terraform - primarily to assist in ensuring that the Terraform tfstate reflects the real state of the Twilio resources on the account.
 
 Each command has --help docs for specific information about how to use each parameter, the descriptions here provide a more general context & describe typical use cases.
 
