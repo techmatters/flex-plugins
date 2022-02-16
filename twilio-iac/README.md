@@ -44,22 +44,30 @@ The process for a first run is as follows:
 7. Run `terraform init` from your new folder (you might need to run `terraform init -reconfigure` if it complains.)
 8. _Optional:_ You can create a private `.tfvars` for the sensitive variables you can't check in values for - if you name it something ending in `private.tfvars` it will be ignored by git - or you can use TF_VAR_* environment variables for these as instructed above.
 
-9. Run the script below from flex-plugins/scrips/ folder. Twilio creates a bunch of default resources on a new account and Aselo uses some of them. We need to import them into terraform first, otherwise terraform assumes they don't exist and will try to create them, resulting in errors.
+For the following steps (9-13), make sure to have the following env vars loaded in your terminal session:
+```shell
+TWILIO_ACCOUNT_SID=XXX
+TWILIO_AUTH_TOKEN=xxx
+AWS_REGION=us-east-1
 ```
-TWILIO_ACCOUNT_SID=XXX TWILIO_AUTH_TOKEN=xxx AWS_REGION=us-east-1 npm run twilioResources -- import-account-defaults <helpline>-<environment> [-v my-private.tfvars]]
+On MacOS/Unix you can export them or prepend those vars when running a command.
+
+9. Run the script below from flex-plugins/scrips/ folder. Twilio creates a bunch of default resources on a new account and Aselo uses some of them. We need to import them into terraform first, otherwise terraform assumes they don't exist and will try to create them, resulting in errors.
+```shell
+npm run twilioResources -- import-account-defaults <helpline>-<environment> [-v my-private.tfvars]]
 ```
 10. Run and review the output of:
 ```shell
-TWILIO_ACCOUNT_SID=XXX TWILIO_AUTH_TOKEN=xxx AWS_REGION=us-east-1 terraform plan [-var-file my-private.tfvars]
+terraform plan [-var-file my-private.tfvars]
 ```
 11. Run:
 ```shell
-TWILIO_ACCOUNT_SID=XXX TWILIO_AUTH_TOKEN=xxx AWS_REGION=us-east-1 terraform apply [-var-file my-private.tfvars]
+terraform apply [-var-file my-private.tfvars]
 ```
 12. Go to the console for your environment, go into Functions > Services > serverless > environments and copy the domain for production (e.g. http://serverless-1234-production.twil.io) and set it as your `TF_VAR_serverless_url` environment variable.
 13. Rerun
 ```shell
-TWILIO_ACCOUNT_SID=XXX TWILIO_AUTH_TOKEN=xxx AWS_REGION=us-east-1 terraform apply [-var-file my-private.tfvars]
+terraform apply [-var-file my-private.tfvars]
 ```
 Unfortunately, a feature gap in the twilio terraform provider means the domain URL cannot be extracted from the resource. The easiest workaround is to put it in a variable after it has been generated initially
 
