@@ -84,7 +84,7 @@ function setUpRollbarLogger(plugin, workerClient, monitoringEnv) {
 function setUpFullStory() {
   FullStory.init({
     orgId: fullStoryId,
-    devMode: true,
+    devMode: process.env.NODE_ENV === 'development',
   });
   console.log('Fullstory monitoring is enabled');
 }
