@@ -250,8 +250,7 @@ export default class HrmFormPlugin extends FlexPlugin {
   init(flex, manager) {
     loadCSS('https://use.fontawesome.com/releases/v5.15.1/css/solid.css');
 
-    if (process.env.NODE_ENV !== 'development')
-      setUpMonitoring(this, manager.workerClient, manager.serviceConfiguration);
+    setUpMonitoring(this, manager.workerClient, manager.serviceConfiguration);
 
     console.log(`Welcome to ${PLUGIN_NAME}`);
     this.registerReducers(manager);
