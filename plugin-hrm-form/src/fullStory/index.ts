@@ -30,11 +30,19 @@ export function recordEvent(eventType: string, payload: any) {
 /**
  * Sends form validation errors to fullstory.com, under the event name 'Form Error'
  * Specvific form error information is sent as a JSON blob in a single property for now because I'm not sure how much fullstory likes dynamic payloads
+ * In addition to 'Form Error', a custom 'Single Field Error' event is also sent which will separate the Form Error into specific field errors. 
+ * To achieve 'Single Field Error', the original error is cleaned up with serializableFormValidationError method and flattened into the errorArr which holds all the error objects in an array.
  * @param origin - A string identifying the form the error originated from
  * @param formError - The error object produced by the form validation (i.e. the first parameter of the error handler)
  */
 export function recordFormValidationError(origin: string, formError: FieldValues): void {
   let errorJson: string = '{}';
+
+  let errorObj = serializableFormValidationError(formError)
+  let errorArr = Object.values(errorObj)
+    .flatMap(obj => Object.entries(obj))
+    .map(([key, value]) => ({ [key]: value }))
+
   try {
     errorJson = JSON.stringify(serializableFormValidationError(formError));
   } catch (serializeError) {
@@ -49,6 +57,17 @@ export function recordFormValidationError(origin: string, formError: FieldValues
     // eslint-disable-next-line camelcase
     errors_str: errorJson,
   });
+
+  errorArr.map((error) => {
+    recordEvent('Single Field Error', {
+      // eslint-disable-next-line camelcase
+      form_str: origin,
+      // eslint-disable-next-line camelcase
+      field_str: `${Object.keys(error)}`,
+      // eslint-disable-next-line camelcase
+      error_str: JSON.stringify(error),
+    });
+  })
 }
 
 /**
