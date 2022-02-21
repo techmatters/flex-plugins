@@ -269,7 +269,6 @@ export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
     )};
 
   &&:focus {
-    outline-color: #4d90fe;
     outline-style: auto;
     outline-width: initial;
   }
@@ -729,9 +728,11 @@ export const FormRadioInput = styled('input')<FormInputProps>`
     -moz-appearance: none;
     appearance: none;
 
-    width: 24px;
-    height: 24px;
-    margin-right: 5px;
+    box-sizing: content-box;
+    padding: 0;
+    margin: 0 5px 0 0;
+    width: 12px;
+    height: 12px;
     border: 2px solid #080808;
     background-color: ${props => props.theme.colors.inputBackgroundColor};
     border-radius: 50%;
@@ -741,8 +742,8 @@ export const FormRadioInput = styled('input')<FormInputProps>`
 
   &[type='radio']:checked:after {
     display: block;
-    width: 12px;
-    height: 12px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     content: '';
     position: relative;
@@ -858,8 +859,7 @@ export const FormCheckbox = styled(CheckboxBase)`
   }
 
   &[type='checkbox']:focus:not(:focus-visible) {
-    outline: rgb(0, 95, 204) 2px solid;
-    outline-offset: 2px;
+    outline: auto;
   }
 `;
 FormCheckbox.displayName = 'FormCheckbox';

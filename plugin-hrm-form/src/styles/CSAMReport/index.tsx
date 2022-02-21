@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'react-emotion';
 import { withStyles } from '@material-ui/core';
 import AttachFile from '@material-ui/icons/AttachFile';
+import CheckCircle from '@material-ui/icons/CheckCircle';
+import FileCopyOutlined from '@material-ui/icons/FileCopyOutlined';
 
 import { FontOpenSans, StyledNextStepButton } from '../HrmStyles';
 
@@ -89,3 +91,25 @@ export const CSAMAttachmentIcon = withStyles({
   },
 })(AttachFile);
 CSAMAttachmentIcon.displayName = 'CSAMAttachmentIcon';
+
+export const SuccessReportIcon = withStyles({
+  root: {
+    width: '24px',
+    height: '24px',
+    fill: '#00884C',
+  },
+})(CheckCircle);
+SuccessReportIcon.displayName = 'SuccessReportIcon';
+
+const styleCopyCodeIcon = withStyles({
+  root: {
+    width: '20px',
+    height: '20px',
+  },
+});
+
+export const StyledCheckCircle = styleCopyCodeIcon(CheckCircle);
+StyledCheckCircle.displayName = 'StyledCheckCircle';
+
+export const StyledFileCopyOutlined = styleCopyCodeIcon(FileCopyOutlined);
+StyledFileCopyOutlined.displayName = 'StyledFileCopyOutlined';

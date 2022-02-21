@@ -49,7 +49,7 @@ const CSAMReportFormScreen: React.FC<Props> = ({
       <RegularText>
         <Template code="CSAMReportForm-ContactDetailsDescription" />
       </RegularText>
-      <Box padding="15px 15px 15px 20px">{formElements.anonymous}</Box>
+      <Box padding="15px 15px 0 15px">{formElements.anonymous}</Box>
 
       {/** Conditional part of the form only shown if contact is not anon */}
       {renderContactDetails && (
