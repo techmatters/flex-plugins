@@ -1,0 +1,15 @@
+{
+  "label": "Helpline",
+  "helplines": [
+    {
+      "label": "ECPAT Philippines",
+      "value": "ECPAT Philippines",
+      "default": true,
+      "manager": {
+        "name": "",
+        "phone": "",
+        "email": ""
+      }
+    }
+  ]
+}
