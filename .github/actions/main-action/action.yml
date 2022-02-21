@@ -95,7 +95,7 @@ runs:
          TWILIO_ACCOUNT_SID: ${{ inputs.account-sid }}
          TWILIO_AUTH_TOKEN: ${{ inputs.auth-token }}
          UNBUNDLED_REACT: true
-        run: npm install twilio-cli -g && twilio plugins:install @twilio-labs/plugin-flex && twilio flex:plugins:deploy --changelog "${{ github.event.inputs.changelog }} (commit ${{ github.sha }})"
+        run: npm install twilio-cli -g && twilio plugins:install @twilio-labs/plugin-flex@4.3.4 && twilio flex:plugins:deploy --changelog "${{ github.event.inputs.changelog }} (commit ${{ github.sha }})"
         working-directory: ./plugin-hrm-form
         shell: bash
       # Release flex plugin
