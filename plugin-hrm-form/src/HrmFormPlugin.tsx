@@ -24,7 +24,7 @@ export const DEFAULT_TRANSFER_MODE = transferModes.cold;
  */
 let sharedStateClient;
 
-export const getConfig = () => {
+export const getConfig: any = () => {
   const manager = Flex.Manager.getInstance();
 
   const hrmBaseUrl = `${manager.serviceConfiguration.attributes.hrm_base_url}/${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${manager.workerClient.accountSid}`;
@@ -247,7 +247,7 @@ export default class HrmFormPlugin extends FlexPlugin {
    * @param flex { typeof import('@twilio/flex-ui') }
    * @param manager { import('@twilio/flex-ui').Manager }
    */
-  init(flex, manager) {
+  init(flex: typeof Flex, manager: Flex.Manager) {
     loadCSS('https://use.fontawesome.com/releases/v5.15.1/css/solid.css');
 
     setUpMonitoring(this, manager.workerClient, manager.serviceConfiguration);
@@ -269,7 +269,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     setUpComponents(setupObject);
     setUpActions(setupObject);
 
-    const managerConfiguration = {
+    const managerConfiguration: any = {
       colorTheme: HrmTheme,
     };
     manager.updateConfig(managerConfiguration);
@@ -287,7 +287,7 @@ export default class HrmFormPlugin extends FlexPlugin {
    *
    * @param {import('@twilio/flex-ui').Manager} manager
    */
-  registerReducers(manager) {
+  registerReducers(manager: Flex.Manager) {
     if (!manager.store.addReducer) {
       // eslint: disable-next-line
       console.error(`You need FlexUI > 1.9.0 to use built-in redux; you are currently on ${Flex.VERSION}`);
