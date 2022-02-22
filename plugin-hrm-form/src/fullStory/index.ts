@@ -37,14 +37,11 @@ export function recordEvent(eventType: string, payload: any) {
  */
 export function recordFormValidationError(origin: string, formError: FieldValues): void {
   let errorJson: string = '{}';
-
-  const errorObj = serializableFormValidationError(formError);
-  const errorArr = Object.values(errorObj)
-    .flatMap(obj => Object.entries(obj))
-    .map(([key, value]) => ({ [key]: value }));
-
+  let errorObj: object = {};
   try {
     errorJson = JSON.stringify(serializableFormValidationError(formError));
+
+    errorObj = serializableFormValidationError(formError);
   } catch (serializeError) {
     console.warn(
       `Error serializing error data for form validation error from ${origin}, sending event with no data`,
@@ -57,6 +54,10 @@ export function recordFormValidationError(origin: string, formError: FieldValues
     // eslint-disable-next-line camelcase
     errors_str: errorJson,
   });
+
+  const errorArr = Object.values(errorObj)
+    .flatMap(obj => Object.entries(obj))
+    .map(([key, value]) => ({ [key]: value }));
 
   errorArr.map(error => {
     return recordEvent('Custom Error', {
