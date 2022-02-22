@@ -2,21 +2,21 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
-import CheckCircleTwoToneIcon from '@material-ui/icons/CheckCircleTwoTone';
-import FileCopyOutlined from '@material-ui/icons/FileCopyOutlined';
 import Close from '@material-ui/icons/Close';
-import CheckCircle from '@material-ui/icons/CheckCircle';
 
 import { BottomButtonBar, Box, HiddenText, Row, StyledNextStepButton, HeaderCloseButton } from '../../styles/HrmStyles';
 import {
   CSAMReportContainer,
   CSAMReportLayout,
+  SuccessReportIcon,
   BoldDescriptionText,
   RegularText,
   CenterContent,
   ReportCodeText,
   ButtonText,
   CopyCodeButton,
+  StyledCheckCircle,
+  StyledFileCopyOutlined,
 } from '../../styles/CSAMReport';
 import type { CSAMReportStatus } from '../../states/csam-report/types';
 
@@ -34,7 +34,7 @@ const CSAMReportStatusScreen: React.FC<Props> = ({ reportStatus, onClickClose, o
     setCopied(true);
   };
 
-  const CopyCodeButtonIcon = copied ? CheckCircle : FileCopyOutlined;
+  const CopyCodeButtonIcon = copied ? StyledCheckCircle : StyledFileCopyOutlined;
   const CopyCodeButtonText = copied ? 'Copied' : 'CopyCode';
 
   return (
@@ -51,7 +51,7 @@ const CSAMReportStatusScreen: React.FC<Props> = ({ reportStatus, onClickClose, o
           <CenterContent>
             <Row>
               <Box marginRight="10px">
-                <CheckCircleTwoToneIcon nativeColor="#00884C" width="24px" height="24px" />
+                <SuccessReportIcon />
               </Box>
               <BoldDescriptionText fontSize="16px">
                 <Template code="CSAMReportForm-ReportSent" />
@@ -67,9 +67,8 @@ const CSAMReportStatusScreen: React.FC<Props> = ({ reportStatus, onClickClose, o
                 <ReportCodeText>#{reportStatus.responseData}</ReportCodeText>
               </Box>
               <CopyCodeButton secondary roundCorners onClick={onCopyCode} data-testid="CSAMReport-CopyCodeButton">
-                <Box marginRight="5px">
-                  <CopyCodeButtonIcon width="20px" height="20px" />
-                </Box>
+                <CopyCodeButtonIcon />
+                <div style={{ width: 10 }} />
                 <ButtonText>
                   <Template code={CopyCodeButtonText} />
                 </ButtonText>
