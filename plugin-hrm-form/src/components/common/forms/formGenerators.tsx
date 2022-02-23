@@ -44,10 +44,26 @@ export const getInitialValue = (def: FormItemDefinition) => {
     case 'numeric-input':
     case 'email':
     case 'textarea':
-    case 'date-input':
-    case 'time-input':
     case 'file-upload':
       return '';
+    case 'date-input': {
+      if (def.initializeWithCurrent) {
+        const date = new Date();
+        // Return the YYYY-MM-DD part of the ISO string (from new Date to fix timezone differences)
+        return new Date(`${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`).toISOString().slice(0, 10);
+      }
+
+      return '';
+    }
+    case 'time-input': {
+      if (def.initializeWithCurrent) {
+        const date = new Date();
+        // Return the locale hh:mm
+        return `${date.getHours()}:${date.getMinutes()}`;
+      }
+
+      return '';
+    }
     case 'radio-input':
       return def.defaultOption ?? '';
     case 'select':

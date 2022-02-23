@@ -68,13 +68,17 @@ type TextareaDefinition = {
   width?: number;
 } & ItemBase;
 
+type TimeRelatedInput = {
+  initializeWithCurrent?: boolean;
+} & ItemBase;
+
 type DateInputDefinition = {
   type: 'date-input';
-} & ItemBase;
+} & TimeRelatedInput;
 
 type TimeInputDefinition = {
   type: 'time-input';
-} & ItemBase;
+} & TimeRelatedInput;
 
 type FileUploadDefinition = {
   type: 'file-upload';
