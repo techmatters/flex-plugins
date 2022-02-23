@@ -51,6 +51,7 @@ export const createContactlessTaskTabDefinition = (
       name: 'date',
       type: 'date-input',
       label: 'Date of Contact',
+      initializeWithCurrent: true,
       required: { value: true, message: 'RequiredFieldError' },
       validate: date => {
         const [y, m, d] = splitDate(date);
@@ -69,6 +70,7 @@ export const createContactlessTaskTabDefinition = (
       name: 'time',
       type: 'time-input',
       label: 'Time of Contact',
+      initializeWithCurrent: true,
       required: { value: true, message: 'RequiredFieldError' },
     },
     {
