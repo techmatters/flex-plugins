@@ -18,7 +18,7 @@ import { populateCurrentDefinitionVersion, updateDefinitionVersion } from '../st
 import { changeRoute } from '../states/routing/actions';
 import { clearCustomGoodbyeMessage } from '../states/dualWrite/actions';
 import * as GeneralActions from '../states/actions';
-import { transferModes } from '../states/DomainConstants';
+import { transferModes, isAseloCustomChannelTask } from '../states/DomainConstants';
 import * as TransferHelpers from './transfer';
 import { saveFormSharedState, loadFormSharedState } from './sharedState';
 import { prepopulateForm } from './prepopulateForm';
@@ -322,15 +322,19 @@ const removeContactForm = payload => {
 export const setUpPostSurvey = setupObject => {
   const { featureFlags } = setupObject;
   if (featureFlags.enable_post_survey) {
-    const excludeDeactivateChatChannel = event => {
+    const maybeExcludeDeactivateChatChannel = event => {
+      const defaultOrchestrations = ChatOrchestrator.getOrchestrations(event);
+      const excludeDeactivateChatChannel = defaultOrchestrations.filter(e => e !== 'DeactivateChatChannel');
+
       ChatOrchestrator.setOrchestrations(
         event,
-        ChatOrchestrator.getOrchestrations(event).filter(e => e !== 'DeactivateChatChannel'),
+        // Instead than setting the orchestrations as a list of actions (ChatOrchestration[]), we can set it to a callback with type (task: ITask) => ChatOrchestration[]
+        task => (isAseloCustomChannelTask(task) ? defaultOrchestrations : excludeDeactivateChatChannel),
       );
     };
 
-    excludeDeactivateChatChannel('wrapup');
-    excludeDeactivateChatChannel('completed');
+    maybeExcludeDeactivateChatChannel('wrapup');
+    maybeExcludeDeactivateChatChannel('completed');
   }
 };
 
@@ -341,7 +345,7 @@ export const setUpPostSurvey = setupObject => {
 const triggerPostSurvey = async (setupObject, payload) => {
   const { task } = payload;
 
-  if (TaskHelper.isChatBasedTask(task)) {
+  if (TaskHelper.isChatBasedTask(task) && !isAseloCustomChannelTask(task)) {
     const { taskSid } = task;
     const channelSid = TaskHelper.getTaskChatChannelSid(task);
     const taskLanguage = getTaskLanguage(setupObject)(payload);
