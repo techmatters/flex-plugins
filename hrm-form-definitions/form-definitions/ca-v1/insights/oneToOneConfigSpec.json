@@ -27,7 +27,7 @@
         },
         {
           "name": "sexualOrientation",
-          "insights": ["conversations", "conversation_measure_1"],
+          "insights": ["conversations", "conversation_measure_1"]
         },
         {
           "name": "Newcomer",
