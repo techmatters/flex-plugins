@@ -25,6 +25,7 @@ import HrmTheme from '../styles/HrmTheme';
 import { TLHPaddingLeft } from '../styles/GlobalOverrides';
 import { Container } from '../styles/queuesStatus';
 import TwitterIcon from '../components/common/icons/TwitterIcon';
+import InstagramIcon from '../components/common/icons/InstagramIcon';
 // eslint-disable-next-line
 import { getConfig } from '../HrmFormPlugin';
 import { isInMyBehalfITask } from '../types/types';
@@ -50,7 +51,7 @@ const queuesStatusUI = () => (
       smsColor: smsColor.Accepted,
       whatsappColor: whatsappColor.Accepted,
       twitterColor,
-      instagramColor
+      instagramColor,
     }}
   />
 );
@@ -479,4 +480,4 @@ export const setupInstagramChatChannel = () => {
   };
 
   Flex.TaskChannels.register(InstagramChatChannel);
-}; 
+};
