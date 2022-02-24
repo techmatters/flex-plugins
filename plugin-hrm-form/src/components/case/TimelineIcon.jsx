@@ -27,7 +27,7 @@ const getIcon = type => {
     case channelTypes.twitter:
       return <TwitterIcon width="24px" height="24px" />;
     case channelTypes.instagram:
-      return <InstagramIcon width="30px" height="30px" color="#E70970" />;
+      return <InstagramIcon width="20px" height="20px" />;
     case 'note':
       return <NoteIcon style={{ opacity: 0.62, fontSize: '20px' }} />;
     case 'referral':
