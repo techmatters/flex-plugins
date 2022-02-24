@@ -41,7 +41,7 @@
       ],
       "caseInformation": [
         {
-          "name": "repeatCaller",
+          "name": "safetyPlan",
           "insights": ["conversations", "conversation_attribute_7"],
           "type": "mixed-checkbox"
         },
@@ -50,7 +50,7 @@
           "insights": ["conversations", "initiative"]
         },
         {
-          "name": "howDidYouKnowAboutOurLine",
+          "name": "contactType",
           "insights": ["conversations", "conversation_attribute_5"]
         },
         {
@@ -59,9 +59,14 @@
           "type": "mixed-checkbox"
         },
         {
-          "name": "wouldTheChildRecommendUsToAFriend",
+          "name": "emergencyReferralPolice",
           "insights": ["conversations", "conversation_attribute_6"],
-          "type": "mixed-checkbox"
+          "type": "checkbox"
+        },
+        {
+          "name": "emergencyReferralCPS",
+          "insights": ["customers", "organization"],
+          "type": "checkbox"
         }
       ]
     },
@@ -73,10 +78,6 @@
         }
       ],
       "perpetrator": [
-        {
-          "name": "relationshipToChild",
-          "insights": ["customers", "organization"]
-        },
         {
           "name": "gender",
           "insights": ["conversations", "followed_by"]
