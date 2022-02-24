@@ -117,7 +117,7 @@ class QueuesCard extends React.PureComponent {
               {this.renderChannel('WA', whatsappColor, whatsapp, true, 'Whatsapp')}
               {this.renderChannel('Chat', webColor, web, true)}
               {this.renderChannel('Twtr', twitterColor, twitter, true)}
-              {this.renderChannel('Instg', instagramColor, instagram, true)}
+              {this.renderChannel('IG', instagramColor, instagram, true)}
             </Row>
           </Box>
           <Row>
