@@ -48,7 +48,7 @@ export const CopyCodeButton = styled(StyledNextStepButton)`
 `;
 CopyCodeButton.displayName = 'CopyCodeButton';
 
-export const BoldDescriptionText = styled(FontOpenSans)<{ fontSize?: string }>`
+export const BoldDescriptionText = styled(FontOpenSans) <{ fontSize?: string }>`
   color: #14171a;
   font-size: ${({ fontSize }) => (fontSize ? fontSize : '14px')};
   font-weight: 700;

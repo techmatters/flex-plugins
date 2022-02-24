@@ -25,6 +25,7 @@ import HrmTheme from '../styles/HrmTheme';
 import { TLHPaddingLeft } from '../styles/GlobalOverrides';
 import { Container } from '../styles/queuesStatus';
 import TwitterIcon from '../components/common/icons/TwitterIcon';
+import InstagramIcon from '../components/common/icons/InstagramIcon';
 // eslint-disable-next-line
 import { getConfig } from '../HrmFormPlugin';
 import { isInMyBehalfITask } from '../types/types';
@@ -35,6 +36,7 @@ const facebookColor = Flex.DefaultTaskChannels.ChatMessenger.colors.main;
 const smsColor = Flex.DefaultTaskChannels.ChatSms.colors.main;
 const whatsappColor = Flex.DefaultTaskChannels.ChatWhatsApp.colors.main;
 const twitterColor = '#1DA1F2';
+const instagramColor = '#E70970';
 
 /**
  * Returns the UI for the "Contacts Waiting" section
@@ -49,6 +51,7 @@ const queuesStatusUI = () => (
       smsColor: smsColor.Accepted,
       whatsappColor: whatsappColor.Accepted,
       twitterColor,
+      instagramColor
     }}
   />
 );
@@ -417,7 +420,7 @@ export const setupCannedResponses = () => {
 };
 
 export const setupTwitterChatChannel = () => {
-  const icon = <TwitterIcon width="24px" height="24px" color="white" />; // This is just an example and should be changed to use the Twitter icon
+  const icon = <TwitterIcon width="24px" height="24px" color="white" />;
 
   const TwitterChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel(
     'twitter',
@@ -450,4 +453,31 @@ export const setupTwitterChatChannel = () => {
   };
 
   Flex.TaskChannels.register(TwitterChatChannel);
+};
+
+export const setupInstagramChatChannel = () => {
+  const icon = <InstagramIcon width="1em" height="1em" color="#fff" />;
+
+  const InstagramChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel(
+    'instagram',
+    task => task.channelType === 'instagram',
+  );
+
+  InstagramChatChannel.colors.main = {
+    Accepted: instagramColor,
+    Assigned: instagramColor,
+    Pending: instagramColor,
+    Reserved: instagramColor,
+    Wrapping: Flex.DefaultTaskChannels.Chat.colors.main.Wrapping,
+    Completed: Flex.DefaultTaskChannels.Chat.colors.main.Completed,
+    Canceled: Flex.DefaultTaskChannels.Chat.colors.main.Canceled,
+  };
+
+  InstagramChatChannel.icons = {
+    active: icon,
+    list: icon,
+    main: icon,
+  };
+
+  Flex.TaskChannels.register(InstagramChatChannel);
 };

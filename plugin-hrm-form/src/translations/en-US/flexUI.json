@@ -1,17 +1,14 @@
 {
   "TaskHeaderLineTwitter": "@{{task.attributes.twitterUserHandle}}",
-
   "ChatWelcomeText": "Conversation started",
   "TaskHeaderEndCall": "Hang Up",
   "TaskHeaderEndChat": "End Chat",
   "TranslateButtonAriaLabel": "Change language",
   "CloseButton": "Close",
   "CancelButton": "Cancel",
-
   "CallSummary-None": "- No call summary -",
   "CallSummary-ViewFull": "See full record",
   "CallSummary-MoreNotes": "more notes",
-
   "CallType-child": "Child calling about self",
   "CallType-caller": "Someone calling about a child",
   "CallType-silent": "Silent",
@@ -21,30 +18,22 @@
   "CallType-wrongnumber": "Wrong Number",
   "CallType-abusive": "Abusive",
   "CallType-CloseContact": "Close Contact",
-
   "CallTypeAndCounselor-Label": "Counsellor: ",
-
   "CallTypeButtons-Categorize": "categorize this contact",
   "CallTypeButtons-Or": "Or was this contact…",
-
   "ConnectDialog-Child": "Copy child information from this record to new contact?",
   "ConnectDialog-Caller": "Copy caller information from this record to new contact?",
-
   "QueueCard-WaitLabel": "Longest wait time:",
   "QueueCard-None": "none",
   "QueueCard-LessThanMinute": "less than a minute",
   "QueueCard-OneMinute": "1 minute",
   "QueueCard-Minutes": "&nbsp;minutes",
   "QueueCard-Name": "Queue name: ",
-
   "QueueIndex-ContactsWaiting": "Contacts waiting",
   "AddButtons-Header": "Add...",
   "OfflineContacts-Header": "Offline Contacts",
-
   "NonDataCallTypeDialog-CloseConfirm": "Are you sure?",
-
   "SearchContactsAndCases-Title": "Search for Contacts and Cases",
-
   "SearchForm-Name": "Name",
   "SearchForm-First": "First",
   "SearchForm-Last": "Last",
@@ -55,7 +44,6 @@
   "SearchForm-Phone": "Phone",
   "SearchForm-Office": "Office",
   "SearchForm-Button": "Search",
-
   "SearchResultsIndex-Back": "Return to Search Criteria",
   "SearchResultsIndex-BackToResults": "Return to Search Results",
   "SearchResultsIndex-Result": " result",
@@ -66,9 +54,7 @@
   "SearchResultsIndex-ClosedCases": "Closed Cases",
   "SearchResultsIndex-ViewContacts": "View Contacts",
   "SearchResultsIndex-ViewCases": "View Cases",
-
   "StandaloneSearch-SideNav": "Search",
-
   "CaseHeader-Opened": "Opened",
   "CaseHeader-Updated": "Updated",
   "CaseHeader-Closed": "Closed",
@@ -82,20 +68,16 @@
   "CaseSummary-ReadMore": "see more",
   "CaseSummary-ReadLess": "see less",
   "CaseSummary-NoSummaryProvided": "No Summary provided",
-
   "SectionEntry-Yes": "Yes",
   "SectionEntry-No": "No",
-
   "SharedStateSaveFormError": "The information stored in the form couldn't be saved. Task will be transferred anyway.",
   "SharedStateLoadFormError": "The information stored in the form by previous counsellor couldn't be retrieved. Starting current task with clear contact form.",
   "SharedStateSaveContactError": "Could not save pending contact at the Shared State.",
-  
   "Transfer-TransferButton": "Transfer",
   "Transfer-AcceptTransferButton": "Accept Transfer",
   "Transfer-RejectTransferButton": "Reject Transfer",
   "TaskLineCallTransferWorker": "Transfer from {{task.incomingTransferObject.worker.fullName}} (direct)",
   "TaskLineCallTransferQueue": "Transfer from {{task.incomingTransferObject.worker.fullName}} ({{task.incomingTransferObject.queue.name}})",
-
   "Transfer-TaskLineCallReserved": "transfer from",
   "Transfer-TaskLineChatReserved": "transfer from",
   "Transfer-TaskLineChatLineReserved": "transfer from",
@@ -106,7 +88,6 @@
   "Transfer-Warm": "Warm",
   "Transfer-FormNotEditable": "Form locked until transfer is completed.",
   "Transfer-ChatWarmNotAllowed": "Warm transfer for chats is currently not supported.",
-
   "BottomBar-Next": "Next",
   "BottomBar-SaveAndAddToCase": "Save and Add to Case...",
   "BottomBar-SaveContact": "Save Contact",
@@ -130,9 +111,7 @@
   "BottomBar-SaveDocument": "Save Document",
   "BottomBar-Close": "Close",
   "BottomBar-Update": "Update",
-
   "Categories-Title": "Categorize this contact",
-
   "TabbedForms-AddCallerInfoTab": "Caller Info",
   "TabbedForms-AddChildInfoTab": "Child Info",
   "TabbedForms-CategoriesTab": "Categories",
@@ -140,14 +119,12 @@
   "TabbedForms-AddContactInfoTab": "Contact Info",
   "TabbedForms-BackButton": "Categorize Contact Type",
   "TabbedForms-CSAMReportButton": "File CSAM Report",
-
   "NotImplemented": "Not implemented yet!",
   "Error-Backend": "Error from backend system.",
   "Error-ContinueWithoutRecording": "Error from backend system.  Are you sure you want to end the task without recording?",
   "Error-Form": "There is a problem with your submission.  Please check the form for errors.",
   "Error-CategoryRequired": "Required 1 category minimum, 3 categories maximum",
   "Error-Unexpected": "Unexpected error has occurred",
-
   "Case-CaseNumber": "Case #",
   "Case-TimelineSection": "Timeline",
   "Case-AddPerpetratorSection": "Perpetrators",
@@ -211,9 +188,7 @@
   "Case-CaseStatus": "Case Status",
   "Case-CaseManager": "Case Manager",
   "Case-Notes": "Notes",
-
   "SideNavCaseList": "Case List",
-
   "CaseList-AllCases": "All Cases",
   "CaseList-THCase": "Case #",
   "CaseList-THChildName": "Child's Name",
@@ -227,11 +202,9 @@
   "CaseList-PrevPage": "Previous page",
   "CaseList-NextPage": "Next page",
   "CaseList-SomethingWentWrong": "Something went wrong while loading cases list. Please retry in a moment.",
-
   "ContactPreview-CopyButton": "Copy informaton",
   "ContactPreview-ExpandButton": "Open case details",
   "ContactPreview-MoreOptionsButton": "More options",
-
   "CallerForm-FirstName": "First name",
   "CallerForm-LastName": "Last name",
   "CallerForm-RelationshipToChild": "Relationship to Child",
@@ -246,7 +219,6 @@
   "CallerForm-PostalCode": "Postal code",
   "CallerForm-Phone#1": "Phone #1",
   "CallerForm-Phone#2": "Phone #2",
-
   "CallerSection-Name": "Name",
   "CallerSection-RelationshipToChild": "Relationship to Child",
   "CallerSection-Address": "Address",
@@ -257,7 +229,6 @@
   "CallerSection-Language": "Language",
   "CallerSection-Nationality": "Nationality",
   "CallerSection-Ethnicity": "Ethnicity",
-
   "ContactDetails-GeneralDetails": "General Details",
   "ContactDetails-GeneralDetails-Channel": "Channel",
   "ContactDetails-GeneralDetails-PhoneNumber": "Phone Number",
@@ -274,7 +245,6 @@
   "ContactDetails-GeneralDetails-DiscussRights": "Did you discuss rights with the child?",
   "ContactDetails-GeneralDetails-SolvedProblem": "Did the child feel we solved their problem?",
   "ContactDetails-GeneralDetails-WouldRecommend": "Would the child recommend us to a friend?",
-
   "SectionName-CallerInformation": "Caller Information",
   "SectionName-ChildInformation": "Child Information",
   "SectionName-Contact": "Contact",
@@ -284,14 +254,12 @@
   "SectionName-Referral": "Referral",
   "SectionName-Notes": "Notes",
   "SectionName-CaseSummary": "Case Summary",
-
   "ManualPullButtonText": "Another Task",
   "NoTaskAssignableNotification": "No task assignable to you at the moment.",
   "OfflineContactButtonText": "Offline Contact Record",
   "ResumeContactButtonText": "Resume Offline Contact",
   "CancelOfflineContact": "Cancel Offline Contact",
   "YouMustBeAvailableToPerformThisOp": "You must be available to perform this operation.",
-
   "RequiredFieldError": "This field is required.",
   "NotURLFieldError": "This field only accepts URLs.",
   "DateCantBeGreaterThanToday": "Date can't be greater than today.",
@@ -299,13 +267,11 @@
   "TimeCantBeGreaterThanNow": "Time can't be greater than now.",
   "NoCaseSummary": "No case summary",
   "CannedResponses": "Canned Responses",
-
   "OfflineContactFirstLine": "Offline Contact",
   "OfflineContactSecondLine": "In progress",
   "Category": "Category",
   "Unknown": "Unknown",
   "Anonymous": "Anonymous",
-
   "PreviousContacts-ThereAre": "There are",
   "PreviousContacts-ThereIs": "There is",
   "PreviousContacts-Returned": "returned in this search.",
@@ -321,12 +287,11 @@
   "PreviousContacts-WhatsappNumber": "Whatsapp number",
   "PreviousContacts-FacebookUser": "Facebook user",
   "PreviousContacts-TwitterUser": "Twitter user",
+  "PreviousContacts-InstagramUser": "Instagram user",
   "PreviousContacts-ViewRecords": "View Records",
   "PreviousContacts-OnlyShowRecordsFrom": "Only show records from",
-
   "UploadFile-ButtonText": "Upload File",
   "DownloadFile-ButtonText": "Download File",
-  
   "CSAMReportForm-Header": "File a Report: Child Sexual Abuse Material",
   "CSAMReportForm-WebsiteDetails": "Website details",
   "CSAMReportForm-WebsiteDetailsDescription": "Please provide details where the material was discovered.<br>To report more than one website do a separate report.",
@@ -338,7 +303,6 @@
   "CSAMReportForm-CopyCode": "Copy confirmation code for sharing",
   "CSAMReportForm-Attachment": "CSAM Report has been filled",
   "CSAMReportForm-ReportsSubmitted": "Reports Submitted",
-
   "SpecifyIfAnonymousOrNot": "Specify if this report is either anonymous or not",
   "BottomBar-SendReport": "Send Report",
   "BottomBar-SendAnotherReport": "Send Another Report",
