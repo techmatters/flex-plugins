@@ -56,7 +56,7 @@ function transformErrorObj(errorObj: any) {
  */
 export function recordFormValidationError(origin: string, formError: FieldValues): void {
   let errorJson: string = '{}';
-  let errorArr: any;
+  let errorArr: any[] = [];
   try {
     errorJson = JSON.stringify(serializableFormValidationError(formError));
     errorArr = transformErrorObj(serializableFormValidationError(formError));
