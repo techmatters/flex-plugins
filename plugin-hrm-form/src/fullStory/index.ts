@@ -36,8 +36,10 @@ export function recordEvent(eventType: string, payload: any) {
 function getFieldErrorObj(tabName: string, fieldName: string, object: any): any[] {
   if (object.hasOwnProperty('type') && object.hasOwnProperty('message')) {
     return [{ [fieldName]: { tab: tabName, ...object } }];
+  } else if (typeof object === 'object') {
+    return Object.keys(object).flatMap(child => getFieldErrorObj(tabName, child, object[child]));
   }
-  return Object.keys(object).flatMap(child => getFieldErrorObj(tabName, child, object[child]));
+  return [];
 }
 /**
  * Transforms a form error object into single field errors - returns an array of all the field errors at error object for a form
