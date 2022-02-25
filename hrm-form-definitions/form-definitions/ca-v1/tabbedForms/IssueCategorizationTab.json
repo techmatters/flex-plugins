@@ -106,7 +106,7 @@
           "Gender/Sexual Expression or Orientation",
           "Self-expression",
           "Cultural/ethnic",
-          "Religious",
+          "Religious - Identity",
           "Neurodivergence",
           "Other - Identity"
         ]
@@ -147,18 +147,6 @@
           "Formal diagnosis mentioned/discussed"
         ]
       },
-      "Substance abuse": {
-        "color": "#d0021b",
-        "subcategories": [
-          "Child - alcohol abuse",
-          "Child - other drug abuse",
-          "Drug dealing",
-          "Exposure to alcohol/drug abuse",
-          "Information on alcohol/drugs",
-          "Parent/caretaker - alcohol abuse",
-          "Parent/caretaker - drug abuse"
-        ]
-      },
       "Parenting": {
         "color": "#50e3c2",
         "subcategories": [
@@ -181,7 +169,7 @@
         ]
       },
       "Relationships": {
-        "color": "#BBE3FF",
+        "color": "#d0021b",
         "subcategories": [
           "With family member(s) (e.g., parents/guardians, siblings, etc.)",
           "With friend(s)/peer(s)",

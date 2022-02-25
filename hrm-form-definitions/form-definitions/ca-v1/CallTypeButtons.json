@@ -55,7 +55,7 @@
   },
   {
     "name": "information",
-    "label": "Wanted Information about KHP",
+    "label": "Information about KHP",
     "type": "button",
     "category": "non-data"
   }
