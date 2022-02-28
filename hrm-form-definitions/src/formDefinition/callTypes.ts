@@ -4,6 +4,7 @@ export const callTypes = {
   caller: 'Someone calling about a child',
 } as const;
 
-export type DataCallTypes = typeof callTypes['child' | 'caller'];
-export type CallTypeKeys = DataCallTypes | string; // This results in "strings" as it's a broader type. Leaving the DataCallTypes in intentionally to emphasize them.
-export type CallTypes = string;
+export type DataCallTypesKeys = keyof typeof callTypes;
+export type CallTypeKeys = DataCallTypesKeys | string; // This results in "strings" as it's a broader type. Leaving the DataCallTypesKeys in intentionally to emphasize them.
+export type DataCallTypes = typeof callTypes[keyof typeof callTypes];
+export type CallTypes = DataCallTypes | string; // This results in "strings" as it's a broader type. Leaving the DataCallTypes in intentionally to emphasize them.
