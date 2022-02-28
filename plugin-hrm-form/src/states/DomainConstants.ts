@@ -5,6 +5,7 @@ export const channelTypes = {
   sms: 'sms',
   whatsapp: 'whatsapp',
   twitter: 'twitter',
+  instagram: 'instagram',
 } as const;
 
 export const channelsAndDefault = {
