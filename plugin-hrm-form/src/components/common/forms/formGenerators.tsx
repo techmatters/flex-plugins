@@ -59,7 +59,7 @@ export const getInitialValue = (def: FormItemDefinition) => {
       if (def.initializeWithCurrent) {
         const date = new Date();
         // Return the locale hh:mm
-        return `${`0${date.getHours()}`.slice(-2)}:${`0${date.getMinutes()}`.slice(-2)}`;
+        return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
       }
 
       return '';
