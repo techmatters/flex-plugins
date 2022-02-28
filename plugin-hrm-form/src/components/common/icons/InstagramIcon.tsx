@@ -18,7 +18,7 @@ const InstagramIcon: React.FC<Props> = ({ width, height, color }) => {
 
 InstagramIcon.displayName = 'InstagramIcon';
 InstagramIcon.defaultProps = {
-  color: '#E70970',
+  color: '#833AB4',
   width: '30px',
   height: '30px',
 };
