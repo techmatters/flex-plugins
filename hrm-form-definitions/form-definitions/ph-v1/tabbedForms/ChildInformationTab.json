@@ -18,6 +18,36 @@
     }
   },
   {
+    "name": "multipleVictims",
+    "label": "Multiple Victims",
+    "type": "checkbox"
+  },
+  {
+    "name": "numberOfVictims",
+    "label": "No. of Victims",
+    "type": "input"
+  },
+  {
+    "name": "numberOfMaleVictims",
+    "label": "No. of Male Victims",
+    "type": "input"
+  },
+  {
+    "name": "numberOfFemaleVictims",
+    "label": "No. of Female Victims",
+    "type": "input"
+  },
+  {
+    "name": "numberOfNBVictims",
+    "label": "No. of Non-binary Victims",
+    "type": "input"
+  },
+  {
+    "name": "ageRangeVictims",
+    "label": "Age Range of Victims",
+    "type": "input"
+  },
+  {
     "name": "age",
     "label": "Age",
     "type": "select",
