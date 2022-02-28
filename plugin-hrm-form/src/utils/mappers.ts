@@ -32,7 +32,7 @@ export const mapChannel = (channel: string) => {
       return 'WhatsApp';
     case channelTypes.twitter:
       return 'Twitter';
-    case channelTypes.twitter:
+    case channelTypes.instagram:
       return 'Instagram';
     default:
       return 'Undefined';

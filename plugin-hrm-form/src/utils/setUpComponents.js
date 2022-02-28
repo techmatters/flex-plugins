@@ -456,7 +456,7 @@ export const setupTwitterChatChannel = () => {
 };
 
 export const setupInstagramChatChannel = () => {
-  const icon = <InstagramIcon width="1em" height="1em" color="#fff" />;
+  const icon = <InstagramIcon width="24px" height="24px" color="white" />;
 
   const InstagramChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel(
     'instagram',
