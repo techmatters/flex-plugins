@@ -1,6 +1,7 @@
 import { Case, CaseInfo } from '../../../types/types';
 import * as types from '../../../states/case/types';
 import * as actions from '../../../states/case/actions';
+import { NewCaseSubroutes } from '../../../states/routing/types';
 
 const task = { taskSid: 'task1' };
 
@@ -48,7 +49,15 @@ describe('test action creators', () => {
   });
 
   test('updateTempInfo', async () => {
-    const value = 'Some string here';
+    const value = {
+      screen: NewCaseSubroutes.ViewNote,
+      info: {
+        form: {},
+        id: 'TEST_NOTE_ID',
+        createdAt: new Date().toISOString(),
+        twilioWorkerId: 'TEST_WORKER_ID',
+      },
+    };
     const expectedAction: types.CaseActionType = {
       type: types.UPDATE_TEMP_INFO,
       value,

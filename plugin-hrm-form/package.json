@@ -57,6 +57,7 @@
     "fromentries": "^1.2.0",
     "jest": "^27.4.3",
     "jest-axe": "^3.4.0",
+    "jest-each": "^27.5.1",
     "jest-environment-jsdom-sixteen": "^1.0.3",
     "redux-mock-store": "^1.5.4",
     "rxjs-compat": "6.6.3",
