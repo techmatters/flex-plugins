@@ -20,7 +20,7 @@ describe('updateCaseSectionListByIndex', () => {
     case: { childIsAtRisk: false },
     description: 'case with no list defined',
   });
-  const testCaseWithList = () => ( {
+  const testCaseWithList = () => ({
     case: { referrals: [{}, {}, {}, {}] },
     description: 'case with populated list',
   });
@@ -107,7 +107,6 @@ describe('updateCaseListByIndex', () => {
     description: 'case with populated list',
   });
 
-
   const payload = {};
   const convertedReferral: ReferralEntry = { hello: 'world' };
   const caseItemToListItem: (item: CaseItemEntry) => ReferralEntry = () => convertedReferral;
@@ -147,7 +146,11 @@ describe('updateCaseListByIndex', () => {
 
   test(`Throws if listGetter returns nothing`, () => {
     expect(() =>
-      updateCaseListByIndex(() => undefined, caseItemToListItem)(testCase().case, testCaseItemEntry(payload), undefined),
+      updateCaseListByIndex(() => undefined, caseItemToListItem)(
+        testCase().case,
+        testCaseItemEntry(payload),
+        undefined,
+      ),
     ).toThrow();
   });
 });
