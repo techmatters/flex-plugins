@@ -13,37 +13,13 @@
   },
   {
     "name": "silent",
-    "label": "Silent",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
-    "name": "blank",
-    "label": "Blank",
+    "label": "Unresponsive",
     "type": "button",
     "category": "non-data"
   },
   {
     "name": "joke",
-    "label": "Joke",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
-    "name": "hangup",
-    "label": "Hang up",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
-    "name": "wrongnumber",
-    "label": "Wrong Number",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
-    "name": "abusive",
-    "label": "Abusive",
+    "label": "Prank",
     "type": "button",
     "category": "non-data"
   }
