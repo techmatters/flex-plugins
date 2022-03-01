@@ -1,5 +1,3 @@
-import { CustomITask } from '../types/types';
-
 export const channelTypes = {
   facebook: 'facebook',
   web: 'web',
@@ -9,8 +7,6 @@ export const channelTypes = {
   twitter: 'twitter',
   instagram: 'instagram',
 } as const;
-
-export const isAseloCustomChannelTask = (task: CustomITask) => ['twitter', 'instagram'].includes(task.channelType);
 
 export const channelsAndDefault = {
   ...channelTypes,

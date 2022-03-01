@@ -18,11 +18,10 @@ import { populateCurrentDefinitionVersion, updateDefinitionVersion } from '../st
 import { changeRoute } from '../states/routing/actions';
 import { clearCustomGoodbyeMessage } from '../states/dualWrite/actions';
 import * as GeneralActions from '../states/actions';
-import { transferModes, isAseloCustomChannelTask } from '../states/DomainConstants';
+import { transferModes, channelTypes } from '../states/DomainConstants';
 import * as TransferHelpers from './transfer';
 import { saveFormSharedState, loadFormSharedState } from './sharedState';
 import { prepopulateForm } from './prepopulateForm';
-import { defaultLanguage } from './pluginHelpers';
 import { recordEvent } from '../fullStory';
 
 /**
@@ -315,6 +314,13 @@ const removeContactForm = payload => {
   const manager = Manager.getInstance();
   manager.store.dispatch(GeneralActions.removeContactState(payload.task.taskSid));
 };
+
+/**
+ *
+ * @param {import('../types/types').CustomITask} task
+ */
+const isAseloCustomChannelTask = task =>
+  task.channelType === channelTypes.twitter || task.channelType === channelTypes.instagram;
 
 /**
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
