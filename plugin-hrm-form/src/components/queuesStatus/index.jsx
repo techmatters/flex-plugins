@@ -41,6 +41,7 @@ QueuesStatus.propTypes = {
     smsColor: PropTypes.string,
     whatsappColor: PropTypes.string,
     twitterColor: PropTypes.string,
+    instagramColor: PropTypes.string,
   }).isRequired,
   queuesStatusState: PropTypes.shape({
     queuesStatus: PropTypes.shape({

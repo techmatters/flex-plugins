@@ -178,6 +178,7 @@ const setUpComponents = setupObject => {
   Components.setUpNoTasksUI(setupObject);
   Components.setUpCustomCRMContainer();
   Components.setupTwitterChatChannel();
+  Components.setupInstagramChatChannel();
   if (featureFlags.enable_transfers) {
     Components.setUpTransferComponents();
     Components.setUpIncomingTransferMessage();

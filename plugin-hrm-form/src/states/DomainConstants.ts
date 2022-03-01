@@ -7,6 +7,7 @@ export const channelTypes = {
   sms: 'sms',
   whatsapp: 'whatsapp',
   twitter: 'twitter',
+  instagram: 'instagram',
 } as const;
 
 export const isAseloCustomChannelTask = (task: CustomITask) => ['twitter', 'instagram'].includes(task.channelType);

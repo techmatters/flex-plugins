@@ -10,6 +10,7 @@ export const newQueueEntry: QueueEntry = {
   web: 0,
   whatsapp: 0,
   twitter: 0,
+  instagram: 0,
   longestWaitingDate: null,
   isChatPending: false,
 };
