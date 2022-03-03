@@ -24,6 +24,7 @@ class QueuesCard extends React.PureComponent {
     web: PropTypes.number.isRequired,
     whatsapp: PropTypes.number.isRequired,
     twitter: PropTypes.number.isRequired,
+    instagram: PropTypes.number.isRequired,
     longestWaitingDate: PropTypes.string,
     colors: PropTypes.shape({
       voiceColor: PropTypes.string,
@@ -32,6 +33,7 @@ class QueuesCard extends React.PureComponent {
       smsColor: PropTypes.string,
       whatsappColor: PropTypes.string,
       twitterColor: PropTypes.string,
+      instagramColor: PropTypes.string,
     }).isRequired,
   };
 
@@ -96,8 +98,8 @@ class QueuesCard extends React.PureComponent {
   };
 
   render() {
-    const { qName, colors, facebook, sms, voice, web, whatsapp, twitter } = this.props;
-    const { voiceColor, smsColor, facebookColor, whatsappColor, webColor, twitterColor } = colors;
+    const { qName, colors, facebook, sms, voice, web, whatsapp, twitter, instagram } = this.props;
+    const { voiceColor, smsColor, facebookColor, whatsappColor, webColor, twitterColor, instagramColor } = colors;
 
     return (
       <>
@@ -115,6 +117,7 @@ class QueuesCard extends React.PureComponent {
               {this.renderChannel('WA', whatsappColor, whatsapp, true, 'Whatsapp')}
               {this.renderChannel('Chat', webColor, web, true)}
               {this.renderChannel('Twtr', twitterColor, twitter, true)}
+              {this.renderChannel('IG', instagramColor, instagram, true)}
             </Row>
           </Box>
           <Row>
