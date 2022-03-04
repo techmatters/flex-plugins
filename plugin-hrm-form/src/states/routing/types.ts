@@ -23,7 +23,22 @@ export const NewCaseSubroutes = {
   ViewPerpetrator: 'view-perpetrator',
   ViewIncident: 'view-incident',
   ViewDocument: 'view-document',
+  EditNote: 'edit-note',
+  EditReferral: 'edit-referral',
+  EditHousehold: 'edit-household',
+  EditPerpetrator: 'edit-perpetrator',
+  EditIncident: 'edit-incident',
+  EditDocument: 'edit-document',
   CasePrintView: 'case-print-view',
+} as const;
+
+export const ViewCastSubrouteToEditCaseSubroute = {
+  [NewCaseSubroutes.ViewNote]: NewCaseSubroutes.EditNote,
+  [NewCaseSubroutes.ViewReferral]: NewCaseSubroutes.EditReferral,
+  [NewCaseSubroutes.ViewHousehold]: NewCaseSubroutes.EditHousehold,
+  [NewCaseSubroutes.ViewPerpetrator]: NewCaseSubroutes.EditPerpetrator,
+  [NewCaseSubroutes.ViewIncident]: NewCaseSubroutes.EditIncident,
+  [NewCaseSubroutes.ViewDocument]: NewCaseSubroutes.EditDocument,
 } as const;
 
 // Routes that may lead to Case screen (maybe we need an improvement here)
@@ -43,6 +58,10 @@ export type AppRoutesWithCase =
       route: 'select-call-type';
       subroute?: typeof NewCaseSubroutes[keyof typeof NewCaseSubroutes];
     };
+
+export function isAppRouteWithCase(appRoute: AppRoutes): appRoute is AppRoutesWithCase {
+  return ['tabbed-forms', 'new-case', 'select-call-type'].includes(appRoute.route);
+}
 
 export type CSAMReportRoute = {
   route: 'csam-report';

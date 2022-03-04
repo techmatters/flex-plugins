@@ -12,6 +12,9 @@ import SectionEntry from '../SectionEntry';
 import ActionHeader from './ActionHeader';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 import { isViewTemporaryCaseInfo } from '../../states/case/types';
+import { AppRoutesWithCase, ViewCastSubrouteToEditCaseSubroute } from '../../states/routing/types';
+import * as CaseActions from '../../states/case/actions';
+import * as RoutingActions from '../../states/routing/actions';
 
 const mapStateToProps = (state: RootState, ownProps: ViewCaseItemProps) => {
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
@@ -23,17 +26,23 @@ const mapStateToProps = (state: RootState, ownProps: ViewCaseItemProps) => {
 
 export type ViewCaseItemProps = {
   task: CustomITask | StandaloneITask;
+  route: AppRoutesWithCase['route'];
   onClickClose: () => void;
   itemType: string;
   formDefinition: FormDefinition;
   includeAddedTime?: boolean;
 };
 
-type Props = ViewCaseItemProps & ReturnType<typeof mapStateToProps>;
+// eslint-disable-next-line no-use-before-define
+type Props = ViewCaseItemProps & ReturnType<typeof mapStateToProps> & typeof mapToDispatchProps;
 
 const ViewCaseItem: React.FC<Props> = ({
+  task,
+  route,
   counselorsHash,
   temporaryCaseInfo,
+  updateTempInfo,
+  changeRoute,
   onClickClose,
   formDefinition,
   itemType,
@@ -45,6 +54,14 @@ const ViewCaseItem: React.FC<Props> = ({
   const added = new Date(temporaryCaseInfo.info.createdAt);
 
   const { form } = temporaryCaseInfo.info;
+
+  const onEditCaseItemClick = () => {
+    updateTempInfo(
+      { screen: ViewCastSubrouteToEditCaseSubroute[temporaryCaseInfo.screen], info: temporaryCaseInfo.info },
+      task.taskSid,
+    );
+    changeRoute({ route, subroute: ViewCastSubrouteToEditCaseSubroute[temporaryCaseInfo.screen] }, task.taskSid);
+  };
 
   return (
     <CaseLayout>
@@ -76,6 +93,9 @@ const ViewCaseItem: React.FC<Props> = ({
         )}
       </Container>
       <BottomButtonBar>
+        <StyledNextStepButton roundCorners onClick={onEditCaseItemClick} data-testid="Case-EditButton">
+          <Template code="EditButton" />
+        </StyledNextStepButton>
         <StyledNextStepButton roundCorners onClick={onClickClose} data-testid="Case-CloseButton">
           <Template code="CloseButton" />
         </StyledNextStepButton>
@@ -86,4 +106,9 @@ const ViewCaseItem: React.FC<Props> = ({
 
 ViewCaseItem.displayName = 'ViewCaseItem';
 
-export default connect(mapStateToProps, null)(ViewCaseItem);
+const mapToDispatchProps = {
+  updateTempInfo: CaseActions.updateTempInfo,
+  changeRoute: RoutingActions.changeRoute,
+};
+
+export default connect(mapStateToProps, mapToDispatchProps)(ViewCaseItem);

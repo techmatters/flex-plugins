@@ -31,16 +31,51 @@ export type ViewReferral = {
   date: string;
 };
 
-export type ViewTemporaryCaseInfo = {
-  screen:
-    | typeof NewCaseSubroutes.ViewDocument
-    | typeof NewCaseSubroutes.ViewIncident
-    | typeof NewCaseSubroutes.ViewPerpetrator
-    | typeof NewCaseSubroutes.ViewHousehold
-    | typeof NewCaseSubroutes.ViewNote
-    | typeof NewCaseSubroutes.ViewReferral;
-  info: t.CaseItemEntry;
+type Indexable = { index: number };
+
+export type ViewDocumentTemporaryCaseInfo = {
+  screen: typeof NewCaseSubroutes.ViewDocument;
+  editScreen: typeof NewCaseSubroutes.EditDocument;
+  info: t.CaseItemEntry & Indexable;
 };
+
+export type ViewIncidentTemporaryCaseInfo = {
+  screen: typeof NewCaseSubroutes.ViewIncident;
+  editScreen: typeof NewCaseSubroutes.EditIncident;
+  info: t.CaseItemEntry & Indexable;
+};
+
+export type ViewPerpetratorTemporaryCaseInfo = {
+  screen: typeof NewCaseSubroutes.ViewPerpetrator;
+  editScreen: typeof NewCaseSubroutes.EditPerpetrator;
+  info: t.CaseItemEntry & Indexable;
+};
+
+export type ViewHouseholdTemporaryCaseInfo = {
+  screen: typeof NewCaseSubroutes.ViewHousehold;
+  editScreen: typeof NewCaseSubroutes.EditHousehold;
+  info: t.CaseItemEntry & Indexable;
+};
+
+export type ViewNoteTemporaryCaseInfo = {
+  screen: typeof NewCaseSubroutes.ViewNote;
+  editScreen: typeof NewCaseSubroutes.EditNote;
+  info: t.CaseItemEntry & Indexable;
+};
+
+export type ViewReferralTemporaryCaseInfo = {
+  screen: typeof NewCaseSubroutes.ViewReferral;
+  editScreen: typeof NewCaseSubroutes.EditReferral;
+  info: t.CaseItemEntry & Indexable;
+};
+
+export type ViewTemporaryCaseInfo =
+  | ViewDocumentTemporaryCaseInfo
+  | ViewIncidentTemporaryCaseInfo
+  | ViewPerpetratorTemporaryCaseInfo
+  | ViewHouseholdTemporaryCaseInfo
+  | ViewReferralTemporaryCaseInfo
+  | ViewNoteTemporaryCaseInfo;
 
 export function isViewTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is ViewTemporaryCaseInfo {
   return (
@@ -51,6 +86,29 @@ export function isViewTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is ViewTemp
       tci.screen === NewCaseSubroutes.ViewHousehold ||
       tci.screen === NewCaseSubroutes.ViewNote ||
       tci.screen === NewCaseSubroutes.ViewReferral)
+  );
+}
+
+export type EditTemporaryCaseInfo = {
+  screen:
+    | typeof NewCaseSubroutes.EditDocument
+    | typeof NewCaseSubroutes.EditIncident
+    | typeof NewCaseSubroutes.EditPerpetrator
+    | typeof NewCaseSubroutes.EditHousehold
+    | typeof NewCaseSubroutes.EditNote
+    | typeof NewCaseSubroutes.EditReferral;
+  info: t.CaseItemEntry & Indexable;
+};
+
+export function isEditTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is EditTemporaryCaseInfo {
+  return (
+    tci &&
+    (tci.screen === NewCaseSubroutes.EditDocument ||
+      tci.screen === NewCaseSubroutes.EditIncident ||
+      tci.screen === NewCaseSubroutes.EditPerpetrator ||
+      tci.screen === NewCaseSubroutes.EditHousehold ||
+      tci.screen === NewCaseSubroutes.EditNote ||
+      tci.screen === NewCaseSubroutes.EditReferral)
   );
 }
 
@@ -80,7 +138,8 @@ export function isAddTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is AddTempor
 export type TemporaryCaseInfo =
   | { screen: typeof NewCaseSubroutes.ViewContact; info: ViewContact }
   | ViewTemporaryCaseInfo
-  | AddTemporaryCaseInfo;
+  | AddTemporaryCaseInfo
+  | EditTemporaryCaseInfo;
 
 type SetConnectedCaseAction = {
   type: typeof SET_CONNECTED_CASE;

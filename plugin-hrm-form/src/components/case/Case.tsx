@@ -38,7 +38,9 @@ import Timeline from './Timeline';
 import CaseSummary from './CaseSummary';
 import ViewContact from './ViewContact';
 import {
+  AddTemporaryCaseInfo,
   CaseDetailsName,
+  EditTemporaryCaseInfo,
   TemporaryCaseInfo,
   updateCaseListByIndex,
   updateCaseSectionListByIndex,
@@ -260,7 +262,7 @@ const Case: React.FC<Props> = props => {
     props.changeRoute({ route, subroute: targetSubroute } as AppRoutes, props.task.taskSid);
   };
 
-  const onAddCaseItemClick = (targetSubroute: CaseItemRoute) => () => {
+  const onAddCaseItemClick = (targetSubroute: CaseItemRoute<AddTemporaryCaseInfo>) => () => {
     props.updateTempInfo({ screen: targetSubroute, info: null }, props.task.taskSid);
     props.changeRoute({ route, subroute: targetSubroute } as AppRoutes, props.task.taskSid);
   };
@@ -357,6 +359,7 @@ const Case: React.FC<Props> = props => {
 
   const addScreenProps = {
     task: props.task,
+    route: props.routing.route,
     counselor: currentCounselor,
     counselorsHash,
     onClickClose: handleClose,
@@ -414,18 +417,18 @@ const Case: React.FC<Props> = props => {
   const householdRows = itemRowRenderer<ViewTemporaryCaseInfo>(
     'form',
     NewCaseSubroutes.ViewHousehold,
-    households.map(h => {
+    households.map((h, index) => {
       const { household, ...caseInfoItem } = { ...h, form: h.household, id: null };
-      return caseInfoItem;
+      return { ...caseInfoItem, index };
     }),
   );
 
   const perpetratorRows = itemRowRenderer<ViewTemporaryCaseInfo>(
     'form',
     NewCaseSubroutes.ViewPerpetrator,
-    perpetrators.map(p => {
+    perpetrators.map((p, index) => {
       const { perpetrator, ...caseInfoItem } = { ...p, form: p.perpetrator, id: null };
-      return caseInfoItem;
+      return { ...caseInfoItem, index };
     }),
   );
 
@@ -438,7 +441,7 @@ const Case: React.FC<Props> = props => {
             <TimelineInformationRow
               key={`incident-${index}`}
               onClickView={() =>
-                onCaseItemActionClick<ViewTemporaryCaseInfo>(NewCaseSubroutes.ViewIncident)(caseItemEntry)
+                onCaseItemActionClick<ViewTemporaryCaseInfo>(NewCaseSubroutes.ViewIncident)({ ...caseItemEntry, index })
               }
               definition={caseForms.IncidentForm}
               values={item.incident}
@@ -470,6 +473,7 @@ const Case: React.FC<Props> = props => {
   };
   switch (subroute) {
     case NewCaseSubroutes.AddNote:
+    case NewCaseSubroutes.EditNote:
       return (
         <AddEditCaseItem
           {...{
@@ -479,16 +483,21 @@ const Case: React.FC<Props> = props => {
             route,
             formDefinition: caseForms.NoteForm,
           }}
-          applyTemporaryInfoToCase={updateCaseListByIndex<String>(
+          applyTemporaryInfoToCase={updateCaseListByIndex<NoteEntry>(
             ci => {
-              ci.notes = ci.notes ?? [];
-              return ci.notes;
+              ci.counsellorNotes = ci.counsellorNotes ?? [];
+              return ci.counsellorNotes;
             },
-            temp => (temp.form.note ?? '').toString(),
+            temp => ({
+              note: temp.form.note.toString(),
+              createdAt: temp.createdAt,
+              twilioWorkerId: temp.twilioWorkerId,
+            }),
           )}
         />
       );
     case NewCaseSubroutes.AddReferral:
+    case NewCaseSubroutes.EditReferral:
       return (
         <AddEditCaseItem
           {...{
@@ -508,6 +517,7 @@ const Case: React.FC<Props> = props => {
         />
       );
     case NewCaseSubroutes.AddHousehold:
+    case NewCaseSubroutes.EditHousehold:
       return (
         <AddEditCaseItem
           {...{
@@ -521,6 +531,7 @@ const Case: React.FC<Props> = props => {
         />
       );
     case NewCaseSubroutes.AddPerpetrator:
+    case NewCaseSubroutes.EditPerpetrator:
       return (
         <AddEditCaseItem
           {...{
@@ -534,6 +545,7 @@ const Case: React.FC<Props> = props => {
         />
       );
     case NewCaseSubroutes.AddIncident:
+    case NewCaseSubroutes.EditIncident:
       return (
         <AddEditCaseItem
           {...{
@@ -547,6 +559,7 @@ const Case: React.FC<Props> = props => {
         />
       );
     case NewCaseSubroutes.AddDocument:
+    case NewCaseSubroutes.EditDocument:
       return (
         <AddEditCaseItem
           {...{
@@ -722,7 +735,8 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   form: state[namespace][contactFormsBase].tasks[ownProps.task.taskSid],
   connectedCaseState: state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid],
   connectedCaseId: state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid]?.connectedCase?.id,
-  connectedCaseNotes: state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid]?.connectedCase?.info?.notes,
+  connectedCaseNotes:
+    state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid]?.connectedCase?.info?.counsellorNotes,
   connectedCaseReferrals:
     state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid]?.connectedCase?.info?.referrals,
   counselorsHash: state[namespace][configurationBase].counselors.hash,

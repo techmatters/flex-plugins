@@ -45,7 +45,7 @@ const Timeline: React.FC<Props> = props => {
   const { can, taskSid, form, caseObj, changeRoute, updateTempInfo, route, timelineActivities } = props;
   const [mockedMessage, setMockedMessage] = useState(null);
 
-  const handleViewNoteClick = activity => {
+  const handleViewNoteClick = (activity, index) => {
     const { twilioWorkerId } = activity;
     const info: CaseItemEntry = {
       id: null,
@@ -53,11 +53,14 @@ const Timeline: React.FC<Props> = props => {
       twilioWorkerId,
       createdAt: parseISO(activity.date).toISOString(),
     };
-    updateTempInfo({ screen: NewCaseSubroutes.ViewNote, info: { ...info } }, taskSid);
+    updateTempInfo(
+      { screen: NewCaseSubroutes.ViewNote, editScreen: NewCaseSubroutes.EditNote, info: { ...info, index } },
+      taskSid,
+    );
     changeRoute({ route, subroute: NewCaseSubroutes.ViewNote }, taskSid);
   };
 
-  const handleViewReferralClick = activity => {
+  const handleViewReferralClick = (activity, index) => {
     const { twilioWorkerId } = activity;
     const info: CaseItemEntry = {
       id: null,
@@ -65,7 +68,10 @@ const Timeline: React.FC<Props> = props => {
       twilioWorkerId,
       createdAt: parseISO(activity.date).toISOString(),
     };
-    updateTempInfo({ screen: NewCaseSubroutes.ViewReferral, info: { ...info } }, taskSid);
+    updateTempInfo(
+      { screen: NewCaseSubroutes.ViewReferral, editScreen: NewCaseSubroutes.EditReferral, info: { ...info, index } },
+      taskSid,
+    );
     changeRoute({ route, subroute: NewCaseSubroutes.ViewReferral }, taskSid);
   };
 
@@ -101,6 +107,18 @@ const Timeline: React.FC<Props> = props => {
     changeRoute({ route, subroute: NewCaseSubroutes.AddReferral }, taskSid);
   };
 
+  const indexableTypes: Record<string, Activity[]> = {};
+
+  const findIndex = (activity: Activity): number => {
+    indexableTypes[activity.type] =
+      indexableTypes[activity.type] ??
+      timelineActivities.filter(a => a.type === activity.type).sort((a, b) => b.date.localeCompare(a.date));
+    const idx = indexableTypes[activity.type].indexOf(activity);
+    if (idx === -1)
+      throw new Error(`Could not find activity dated '${activity.date}' of type ${activity.type} in timeline!`);
+    return idx;
+  };
+
   /*
    * If case has not been created yet, we should return value from the form.
    * Else If case was already created we should return rawJson value.
@@ -109,9 +127,9 @@ const Timeline: React.FC<Props> = props => {
 
   const handleViewClick = activity => {
     if (activity.type === 'note') {
-      handleViewNoteClick(activity);
+      handleViewNoteClick(activity, findIndex(activity));
     } else if (activity.type === 'referral') {
-      handleViewReferralClick(activity);
+      handleViewReferralClick(activity, findIndex(activity));
     } else if (isConnectedCaseActivity(activity)) {
       handleViewConnectedCaseActivityClick(activity);
     } else {
