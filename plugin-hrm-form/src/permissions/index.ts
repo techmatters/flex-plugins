@@ -8,6 +8,8 @@ import * as brRules from './br';
 import * as inRules from './in';
 import * as jmRules from './jm';
 
+const zmJsonRules = require('./zm.json');
+
 export const PermissionActions = {
   CLOSE_CASE: 'closeCase',
   REOPEN_CASE: 'reopenCase',
@@ -21,6 +23,12 @@ export const PermissionActions = {
   EDIT_CASE_SUMMARY: 'editCaseSummary',
   EDIT_CHILD_IS_AT_RISK: 'editChildIsAtRisk',
   EDIT_FOLLOW_UP_DATE: 'editFollowUpDate',
+  EDIT_NOTE: 'editNote',
+  EDIT_REFERRAL: 'editReferral',
+  EDIT_HOUSEHOLD: 'editHousehold',
+  EDIT_PERPETRATOR: 'editPerpetrator',
+  EDIT_INCIDENT: 'editIncident',
+  EDIT_DOCUMENT: 'editDocument',
 };
 
 type PermissionActionsKeys = keyof typeof PermissionActions;
@@ -51,25 +59,47 @@ export const getPermissionsForCase = (twilioWorkerId: t.Case['twilioWorkerId'], 
 
   const isCreator = workerSid === twilioWorkerId;
   const isCaseOpen = status !== 'closed';
-  let rules = rulesMap[permissionConfig];
 
-  if (!rules) {
-    console.error(`Cannot find rules for ${permissionConfig}. Using fallback rules.`);
-    rules = fallbackRules;
-  }
+  const conditionsState: { [condition: string]: boolean } = {
+    isSupervisor,
+    isCreator,
+    isCaseOpen,
+  };
+
+  const checkCondition = (condition: string) => conditionsState[condition];
+  const checkConditionsSet = (conditionsSet: string[]) => conditionsSet.every(checkCondition);
+  const checkConditionsSets = (conditionsSets: string[][]) => conditionsSets.some(checkConditionsSet);
+
+  const rules = zmJsonRules;
+  // let rules = rulesMap[permissionConfig];
+
+  /*
+   *TODO: Uncomment
+   * if (!rules) {
+   *   console.error(`Cannot find rules for ${permissionConfig}. Using fallback rules.`);
+   *   rules = fallbackRules;
+   * }
+   */
+
+  const rulesAreValid = Object.values(PermissionActions).every(action => rules[action]);
+  if (!rulesAreValid) throw new Error(`Rules file for ${permissionConfig} is incomplete.`);
+
+  // TODO: remove debug log
+  console.log('>>>>>>>>> permissions results');
+  Object.values(PermissionActions).forEach(action => console.log(action, checkConditionsSets(rules[action])));
 
   const can = (action: PermissionActionType): boolean => {
-    switch (action) {
-      case PermissionActions.EDIT_CASE_SUMMARY:
-        return rules.canEditCaseSummary(isSupervisor, isCreator, isCaseOpen);
-      case PermissionActions.REOPEN_CASE:
-        return rules.canReopenCase(isSupervisor, isCreator, isCaseOpen);
-      default:
-        return rules.canEditGenericField(isSupervisor, isCreator, isCaseOpen);
+    if (!rules[action]) {
+      console.error(`Cannot find rules for ${action}. Returning false.`);
+      return isSupervisor || (isCreator && isCaseOpen);
     }
+
+    return checkConditionsSets(rules[action]);
   };
 
   return {
     can,
   };
 };
+
+console.log('zmJsonRules', zmJsonRules);
