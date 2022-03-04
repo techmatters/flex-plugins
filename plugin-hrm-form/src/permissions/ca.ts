@@ -3,6 +3,7 @@ export const canEditCaseSummary = (isSupervisor: boolean, isCreator: boolean, is
 
 export const canReopenCase = (isSupervisor: boolean, isCreator: boolean, isCaseOpen: boolean) => isSupervisor;
 
+export const canEditNote = (isSupervisor: boolean, isCaseOpen: boolean) => isSupervisor;
 /**
  * For now, all the other actions are the same, and can use the below permission.
  */
