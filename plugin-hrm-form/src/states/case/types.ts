@@ -230,21 +230,25 @@ export type CaseDetails = {
     };
   };
   status: string;
+  prevStatus: string;
   caseCounselor: string;
   currentCounselor: string;
   openedDate: string;
   lastUpdatedDate: string;
   followUpDate: string;
+  followUpPrintedDate: string;
   households: t.HouseholdEntry[];
   perpetrators: t.PerpetratorEntry[];
   incidents: t.IncidentEntry[];
   referrals: t.ReferralEntry[];
   notes: NoteActivity[];
+  documents: t.DocumentEntry[];
   summary: string;
   childIsAtRisk: boolean;
   office?: HelplineEntry;
   version?: DefinitionVersionId;
   contact: any; // ToDo: change this
+  contacts: any[];
 };
 
 export type CaseUpdater = (

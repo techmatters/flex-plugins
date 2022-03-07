@@ -31,10 +31,10 @@ import { NewCaseSubroutes, AppRoutesWithCase } from '../../states/routing/types'
 
 type OwnProps = {
   timelineActivities: Activity[];
+  contacts: any[],
   can: (action: PermissionActionType) => boolean;
   taskSid: CustomITask['taskSid'];
   form: TaskEntry;
-  caseObj: CaseType;
   route: AppRoutesWithCase['route'];
 };
 
@@ -42,7 +42,7 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const Timeline: React.FC<Props> = props => {
-  const { can, taskSid, form, caseObj, changeRoute, updateTempInfo, route, timelineActivities } = props;
+  const { can, taskSid, form, changeRoute, updateTempInfo, route, timelineActivities } = props;
   const [mockedMessage, setMockedMessage] = useState(null);
 
   const handleViewNoteClick = (activity, index) => {
@@ -85,7 +85,7 @@ const Timeline: React.FC<Props> = props => {
       [ContactDetailsSections.ISSUE_CATEGORIZATION]: false,
       [ContactDetailsSections.CONTACT_SUMMARY]: false,
     };
-    const contact = caseObj.connectedContacts.find(c => c.id === activity.contactId);
+    const contact = props.contacts.find(c => c.id === activity.contactId);
     const tempInfo = {
       detailsExpanded,
       contact,
@@ -123,7 +123,7 @@ const Timeline: React.FC<Props> = props => {
    * If case has not been created yet, we should return value from the form.
    * Else If case was already created we should return rawJson value.
    */
-  const callType = form?.callType || caseObj.connectedContacts[0]?.rawJson?.callType;
+  const callType = form?.callType || props.contacts[0]?.rawJson?.callType;
 
   const handleViewClick = activity => {
     if (activity.type === 'note') {
