@@ -1,14 +1,7 @@
 import { getConfig } from '../HrmFormPlugin';
 import type * as t from '../types/types';
-import * as zmRules from './zm';
-import * as zaRules from './za';
-import * as etRules from './et';
-import * as mwRules from './mw';
-import * as brRules from './br';
-import * as inRules from './in';
-import * as jmRules from './jm';
 
-const zmJsonRules = require('./zm.json');
+const zmRules = require('./zm.json');
 
 export const PermissionActions = {
   CLOSE_CASE: 'closeCase',
@@ -33,25 +26,26 @@ export const PermissionActions = {
 
 type PermissionActionsKeys = keyof typeof PermissionActions;
 export type PermissionActionType = typeof PermissionActions[PermissionActionsKeys];
-type PermissionConfig = 'zm' | 'za' | 'et' | 'mw' | 'br' | 'in' | 'jm';
-type Rule = (isSupervisor: boolean, isCreator: boolean, isCaseOpen: boolean) => boolean;
-type Rules = {
-  canEditCaseSummary: Rule;
-  canEditGenericField: Rule;
-  canReopenCase: Rule;
-};
+type Condition = 'isSupervisor' | 'isCreator' | 'isCaseOpen' | 'everyone';
+type ConditionSet = Condition[];
+type ConditionSets = ConditionSet[];
 
-const rulesMap: { [permissionConfig in PermissionConfig]: Rules } = {
-  zm: zmRules,
-  za: zaRules,
-  et: etRules,
-  mw: mwRules,
-  br: brRules,
-  in: inRules,
-  jm: jmRules,
-};
+// TODO: do this once, on initialization, then consume from the global state.
+const fetchRules = (permissionConfig: string) => {
+  try {
+    // eslint-disable-next-line global-require
+    const rules = require(`./${permissionConfig}.json`);
 
-const fallbackRules = zaRules;
+    if (!rules) throw new Error(`Cannot find rules for ${permissionConfig}`);
+
+    return rules;
+  } catch (err) {
+    const errorMessage = err.message ?? err;
+    console.error('Error fetching rules, using fallback rules. ', errorMessage);
+
+    return zmRules;
+  }
+};
 
 export const getPermissionsForCase = (twilioWorkerId: t.Case['twilioWorkerId'], status: t.Case['status']) => {
   const { workerSid, isSupervisor, permissionConfig } = getConfig();
@@ -60,33 +54,21 @@ export const getPermissionsForCase = (twilioWorkerId: t.Case['twilioWorkerId'], 
   const isCreator = workerSid === twilioWorkerId;
   const isCaseOpen = status !== 'closed';
 
-  const conditionsState: { [condition: string]: boolean } = {
+  const conditionsState: { [condition in Condition]: boolean } = {
     isSupervisor,
     isCreator,
     isCaseOpen,
+    everyone: true,
   };
 
-  const checkCondition = (condition: string) => conditionsState[condition];
-  const checkConditionsSet = (conditionsSet: string[]) => conditionsSet.every(checkCondition);
-  const checkConditionsSets = (conditionsSets: string[][]) => conditionsSets.some(checkConditionsSet);
+  const checkCondition = (condition: Condition) => conditionsState[condition];
+  const checkConditionsSet = (conditionsSet: ConditionSet) => conditionsSet.every(checkCondition);
+  const checkConditionsSets = (conditionsSets: ConditionSets) => conditionsSets.some(checkConditionsSet);
 
-  const rules = zmJsonRules;
-  // let rules = rulesMap[permissionConfig];
-
-  /*
-   *TODO: Uncomment
-   * if (!rules) {
-   *   console.error(`Cannot find rules for ${permissionConfig}. Using fallback rules.`);
-   *   rules = fallbackRules;
-   * }
-   */
+  const rules = fetchRules(permissionConfig);
 
   const rulesAreValid = Object.values(PermissionActions).every(action => rules[action]);
   if (!rulesAreValid) throw new Error(`Rules file for ${permissionConfig} is incomplete.`);
-
-  // TODO: remove debug log
-  console.log('>>>>>>>>> permissions results');
-  Object.values(PermissionActions).forEach(action => console.log(action, checkConditionsSets(rules[action])));
 
   const can = (action: PermissionActionType): boolean => {
     if (!rules[action]) {
@@ -101,5 +83,3 @@ export const getPermissionsForCase = (twilioWorkerId: t.Case['twilioWorkerId'], 
     can,
   };
 };
-
-console.log('zmJsonRules', zmJsonRules);
