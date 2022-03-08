@@ -761,6 +761,9 @@
   {
     "name": "Notes",
     "label": "Notes/Remarks",
-    "type": "input"
+    "type": "textarea",
+    "placeholder": "Type here to add note...",
+    "rows": 10,
+    "width": 500
   }
 ]
