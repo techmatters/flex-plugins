@@ -62,6 +62,7 @@ const UploadFileInput: React.FC<UploadFileInputProps> = ({
 
   const error = get(errors, path);
   const showUploadButton = !Boolean(fileName);
+  const showDeleteButton = !showUploadButton && !initialValue;
 
   const handleChange = async event => {
     try {
@@ -155,7 +156,7 @@ const UploadFileInput: React.FC<UploadFileInputProps> = ({
               <CircularProgress color="inherit" size={20} />
             </Box>
           )}
-          {!isLoading && (
+          {!isLoading && showDeleteButton && (
             <StyledLink underline onClick={handleDelete}>
               <Box marginLeft="20px">Delete</Box>
             </StyledLink>
