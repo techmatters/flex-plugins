@@ -41,7 +41,7 @@ const splitFullName = (name: CaseDetailsName) => {
   return `${name.firstName} ${name.lastName}`;
 };
 
-type CaseHomeProps = {
+export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
   definitionVersion: DefinitionVersion;
   caseDetails: CaseDetails;
@@ -312,7 +312,12 @@ const CaseHome: React.FC<Props> = ({
         <Dialog onClose={closeMockedMessage} open={isMockedMessageOpen}>
           <DialogContent>{mockedMessage}</DialogContent>
         </Dialog>
-        <Menu anchorEl={anchorEl} open={isMenuOpen} onClickAway={() => setMenuOpen(false)}>
+        <Menu
+          data-testid="CaseHome-CancelMenu"
+          anchorEl={anchorEl}
+          open={isMenuOpen}
+          onClickAway={() => setMenuOpen(false)}
+        >
           <MenuItem
             Icon={AddIcon}
             text={<Template code="BottomBar-AddThisContactToExistingCase" />}
@@ -330,7 +335,7 @@ const CaseHome: React.FC<Props> = ({
         {isCreating && (
           <>
             <Box marginRight="15px">
-              <StyledNextStepButton secondary roundCorners onClick={toggleCaseMenu}>
+              <StyledNextStepButton data-testid="CaseHome-CancelButton" secondary roundCorners onClick={toggleCaseMenu}>
                 <Template code="BottomBar-Cancel" />
               </StyledNextStepButton>
             </Box>
@@ -342,7 +347,7 @@ const CaseHome: React.FC<Props> = ({
         {!isCreating && (
           <>
             <Box marginRight="15px">
-              <StyledNextStepButton secondary roundCorners onClick={handleClose}>
+              <StyledNextStepButton secondary roundCorners onClick={handleClose} data-testid="CaseHome-CloseButton">
                 <Template code="BottomBar-Close" />
               </StyledNextStepButton>
             </Box>
