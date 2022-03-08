@@ -5,6 +5,7 @@
   "TaskHeaderEndChat": "End Chat",
   "TranslateButtonAriaLabel": "Change language",
   "CloseButton": "Close",
+  "EditButton": "Edit",
   "CancelButton": "Cancel",
   "CallSummary-None": "- No call summary -",
   "CallSummary-ViewFull": "See full record",
