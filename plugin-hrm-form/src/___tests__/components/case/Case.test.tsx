@@ -1,27 +1,22 @@
 /* eslint-disable no-empty-function */
+// @ts-ignore
 import React from 'react';
 import { Provider } from 'react-redux';
 import renderer from 'react-test-renderer';
 import configureMockStore from 'redux-mock-store';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
-import { render, screen, fireEvent } from '@testing-library/react';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
-import HrmTheme from '../../../styles/HrmTheme';
 import Case from '../../../components/case';
 import CaseHome from '../../../components/case/CaseHome';
 import { namespace, configurationBase, contactFormsBase, connectedCaseBase, routingBase } from '../../../states';
-import { UPDATE_TEMP_INFO } from '../../../states/case/types';
-import { cancelCase, getActivities } from '../../../services/CaseService';
+import { getActivities } from '../../../services/CaseService';
 import { getDefinitionVersions } from '../../../HrmFormPlugin';
+import { StandaloneITask } from '../../../types/types';
 
-jest.mock('react', () => ({
-  ...jest.requireActual('react'),
-  useState: jest.fn(),
-}));
 jest.mock('../../../services/CaseService', () => ({ getActivities: jest.fn(() => []), cancelCase: jest.fn() }));
 jest.mock('../../../permissions', () => ({
   getPermissionsForCase: jest.fn(() => ({
@@ -29,19 +24,6 @@ jest.mock('../../../permissions', () => ({
   })),
   PermissionActions: {},
 }));
-
-/**
- * Fix issue with Popper.js:
- * https://stackoverflow.com/questions/60333156/how-to-fix-typeerror-document-createrange-is-not-a-function-error-while-testi
- */
-global.document.createRange = () => ({
-  setStart: () => null,
-  setEnd: () => null,
-  commonAncestorContainer: {
-    nodeName: 'BODY',
-    ownerDocument: document,
-  },
-});
 
 expect.extend(toHaveNoViolations);
 const mockStore = configureMockStore([]);
@@ -52,18 +34,7 @@ function createState(state) {
   };
 }
 
-const themeConf = {
-  colorTheme: HrmTheme,
-};
-
-const ownProps = {
-  task: {
-    taskSid: 'task1',
-    attributes: {
-      isContactlessTask: false,
-    },
-  },
-};
+let ownProps;
 
 let mockV1;
 let initialState;
@@ -102,6 +73,7 @@ describe('useState mocked', () => {
       [connectedCaseBase]: {
         tasks: {
           task1: {
+            taskSid: 'task1',
             connectedCase: {
               id: 123,
               createdAt: '2020-06-29T22:26:00.208Z',
@@ -117,6 +89,10 @@ describe('useState mocked', () => {
       },
       [routingBase]: { tasks: { task1: { route: 'new-case' } } },
     });
+
+    ownProps = {
+      task: initialState[namespace][connectedCaseBase].tasks.task1 as StandaloneITask,
+    };
   });
 
   const setState = jest.fn();
@@ -156,7 +132,7 @@ describe('useState mocked', () => {
     const store = mockStore(initialState);
 
     const component = renderer.create(
-      <StorelessThemeProvider themeConf={themeConf}>
+      <StorelessThemeProvider themeConf={{}}>
         <Provider store={store}>
           <Case {...ownProps} />
         </Provider>
@@ -171,7 +147,7 @@ describe('useState mocked', () => {
     const store = mockStore(initialState);
 
     const component = renderer.create(
-      <StorelessThemeProvider themeConf={themeConf}>
+      <StorelessThemeProvider themeConf={{}}>
         <Provider store={store}>
           <Case {...ownProps} />
         </Provider>
@@ -195,11 +171,11 @@ describe('useState mocked', () => {
   });
 
   test('a11y', async () => {
-    getActivities.mockReturnValueOnce(Promise.resolve([]));
+    (getActivities as jest.Mock).mockResolvedValue([]);
     const store = mockStore(initialState);
 
     const wrapper = mount(
-      <StorelessThemeProvider themeConf={themeConf}>
+      <StorelessThemeProvider themeConf={{}}>
         <Provider store={store}>
           <Case {...ownProps} />
         </Provider>
@@ -213,6 +189,6 @@ describe('useState mocked', () => {
     const axe = configureAxe({ rules });
     const results = await axe(wrapper.getDOMNode());
 
-    expect(results).toHaveNoViolations();
+    (expect(results) as any).toHaveNoViolations();
   });
 });

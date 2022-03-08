@@ -55,23 +55,6 @@ let mockV1;
 let initialState;
 let caseDetails: CaseDetails;
 
-const addInfoToCase = info => ({
-  [namespace]: {
-    ...initialState[namespace],
-    [connectedCaseBase]: {
-      tasks: {
-        task1: {
-          ...initialState[namespace][connectedCaseBase].tasks.task1,
-          connectedCase: {
-            ...initialState[namespace][connectedCaseBase].tasks.task1.connectedCase,
-            info: { ...info, definitionVersion: 'v1' },
-          },
-        },
-      },
-    },
-  },
-});
-
 describe('useState mocked', () => {
   beforeAll(async () => {
     mockV1 = await loadDefinition(DefinitionVersionId.v1);
