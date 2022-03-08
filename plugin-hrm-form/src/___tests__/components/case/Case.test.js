@@ -388,7 +388,7 @@ describe('useState mocked', () => {
     expect(store.dispatch).toHaveBeenCalledWith({
       value: {
         screen: 'view-household',
-        info: caseItemEntry,
+        info: { ...caseItemEntry, index:0 },
       },
       taskId: 'task1',
       type: UPDATE_TEMP_INFO,
@@ -420,7 +420,7 @@ describe('useState mocked', () => {
     screen.getByTestId('Case-InformationRow-ViewButton').click();
 
     expect(store.dispatch).toHaveBeenCalledWith({
-      value: { screen: 'view-perpetrator', info: caseItemEntry },
+      value: { screen: 'view-perpetrator', info: { ...caseItemEntry, index: 0 } },
       taskId: 'task1',
       type: UPDATE_TEMP_INFO,
     });

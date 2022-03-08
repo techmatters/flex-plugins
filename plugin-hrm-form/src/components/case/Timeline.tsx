@@ -31,7 +31,7 @@ import { NewCaseSubroutes, AppRoutesWithCase } from '../../states/routing/types'
 
 type OwnProps = {
   timelineActivities: Activity[];
-  contacts: any[],
+  contacts: any[];
   can: (action: PermissionActionType) => boolean;
   taskSid: CustomITask['taskSid'];
   form: TaskEntry;

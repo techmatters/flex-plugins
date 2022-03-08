@@ -1,12 +1,7 @@
-/* eslint-disable react/prop-types */
+/* eslint-disable react/prop-types,complexity,sonarjs/cognitive-complexity */
 import React, { useEffect, useState } from 'react';
-import { Template } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
-import CancelIcon from '@material-ui/icons/Cancel';
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
 import { format } from 'date-fns';
 
 import {
