@@ -388,7 +388,7 @@ describe('useState mocked', () => {
     expect(store.dispatch).toHaveBeenCalledWith({
       value: {
         screen: 'view-household',
-        info: { ...caseItemEntry, index:0 },
+        info: { ...caseItemEntry, index: 0 },
       },
       taskId: 'task1',
       type: UPDATE_TEMP_INFO,
