@@ -93,12 +93,16 @@ const ViewCaseItem: React.FC<Props> = ({
         )}
       </Container>
       <BottomButtonBar>
-        <StyledNextStepButton roundCorners onClick={onEditCaseItemClick} data-testid="Case-EditButton">
-          <Template code="EditButton" />
-        </StyledNextStepButton>
-        <StyledNextStepButton roundCorners onClick={onClickClose} data-testid="Case-CloseButton">
-          <Template code="CloseButton" />
-        </StyledNextStepButton>
+        <Box marginRight="15px">
+          <StyledNextStepButton secondary roundCorners onClick={onEditCaseItemClick} data-testid="Case-EditButton">
+            <Template code="EditButton" />
+          </StyledNextStepButton>
+        </Box>
+        <Box marginRight="15px">
+          <StyledNextStepButton roundCorners onClick={onClickClose} data-testid="Case-CloseButton">
+            <Template code="CloseButton" />
+          </StyledNextStepButton>
+        </Box>
       </BottomButtonBar>
     </CaseLayout>
   );

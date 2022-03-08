@@ -91,6 +91,7 @@ const Case: React.FC<Props> = ({
   changeRoute,
   updateAllCasesView,
   isCreating,
+  handleClose,
   ...props
 }) => {
   const [loading, setLoading] = useState(false);
@@ -154,7 +155,7 @@ const Case: React.FC<Props> = ({
   const { route, subroute } = props.routing;
 
   // Redirects to the proper view when the user clicks 'Close' button.
-  const handleClose = () => {
+  const handleCloseSubSection = () => {
     props.updateTempInfo(null, task.taskSid);
     if (route === 'select-call-type') {
       changeRoute({ route: 'select-call-type' }, task.taskSid);
@@ -273,7 +274,7 @@ const Case: React.FC<Props> = ({
     route: props.routing.route,
     counselor: currentCounselor,
     counselorsHash,
-    onClickClose: handleClose,
+    onClickClose: handleCloseSubSection,
     definitionVersion,
   };
 
