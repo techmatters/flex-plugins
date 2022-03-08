@@ -7,6 +7,7 @@ import * as mwRules from './mw';
 import * as brRules from './br';
 import * as inRules from './in';
 import * as jmRules from './jm';
+import * as caRules from './ca';
 
 export const PermissionActions = {
   CLOSE_CASE: 'closeCase',
@@ -18,6 +19,7 @@ export const PermissionActions = {
   ADD_PERPETRATOR: 'addPerpetrator',
   ADD_INCIDENT: 'addIncident',
   ADD_DOCUMENT: 'addDocument',
+  EDIT_NOTE: 'editNote',
   EDIT_CASE_SUMMARY: 'editCaseSummary',
   EDIT_CHILD_IS_AT_RISK: 'editChildIsAtRisk',
   EDIT_FOLLOW_UP_DATE: 'editFollowUpDate',
@@ -25,10 +27,11 @@ export const PermissionActions = {
 
 type PermissionActionsKeys = keyof typeof PermissionActions;
 export type PermissionActionType = typeof PermissionActions[PermissionActionsKeys];
-type PermissionConfig = 'zm' | 'za' | 'et' | 'mw' | 'br' | 'in' | 'jm';
+type PermissionConfig = 'zm' | 'za' | 'et' | 'mw' | 'br' | 'in' | 'jm' | 'ca';
 type Rule = (isSupervisor: boolean, isCreator: boolean, isCaseOpen: boolean) => boolean;
 type Rules = {
   canEditCaseSummary: Rule;
+  canEditNote: Rule;
   canEditGenericField: Rule;
   canReopenCase: Rule;
 };
@@ -41,6 +44,7 @@ const rulesMap: { [permissionConfig in PermissionConfig]: Rules } = {
   br: brRules,
   in: inRules,
   jm: jmRules,
+  ca: caRules,
 };
 
 const fallbackRules = zaRules;
@@ -64,6 +68,8 @@ export const getPermissionsForCase = (twilioWorkerId: t.Case['twilioWorkerId'], 
         return rules.canEditCaseSummary(isSupervisor, isCreator, isCaseOpen);
       case PermissionActions.REOPEN_CASE:
         return rules.canReopenCase(isSupervisor, isCreator, isCaseOpen);
+      case PermissionActions.EDIT_NOTE:
+        return rules.canEditNote(isSupervisor, isCaseOpen);
       default:
         return rules.canEditGenericField(isSupervisor, isCreator, isCaseOpen);
     }
