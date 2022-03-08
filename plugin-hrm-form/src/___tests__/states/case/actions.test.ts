@@ -1,7 +1,8 @@
 import { Case, CaseInfo } from '../../../types/types';
 import * as types from '../../../states/case/types';
 import * as actions from '../../../states/case/actions';
-import { NewCaseSubroutes } from '../../../states/routing/types';
+import { CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
+import { AddTemporaryCaseInfo, TemporaryCaseInfo } from '../../../states/case/types';
 
 const task = { taskSid: 'task1' };
 
@@ -49,10 +50,10 @@ describe('test action creators', () => {
   });
 
   test('updateTempInfo', async () => {
-    const value = {
-      screen: NewCaseSubroutes.ViewNote,
+    const value: AddTemporaryCaseInfo = {
+      screen: NewCaseSubroutes.Note,
+      action: CaseItemAction.Add,
       info: {
-        form: {},
         id: 'TEST_NOTE_ID',
         createdAt: new Date().toISOString(),
         twilioWorkerId: 'TEST_WORKER_ID',

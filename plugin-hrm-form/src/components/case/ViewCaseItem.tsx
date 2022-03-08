@@ -4,15 +4,15 @@ import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import { FormDefinition } from 'hrm-form-definitions';
 
-import { Container, StyledNextStepButton, BottomButtonBar, Box } from '../../styles/HrmStyles';
+import { BottomButtonBar, Box, Container, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseLayout, FullWidthFormTextContainer } from '../../styles/case';
-import { namespace, connectedCaseBase, configurationBase, RootState } from '../../states';
+import { configurationBase, connectedCaseBase, namespace, RootState } from '../../states';
 import { CaseState } from '../../states/case/reducer';
 import SectionEntry from '../SectionEntry';
 import ActionHeader from './ActionHeader';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 import { isViewTemporaryCaseInfo } from '../../states/case/types';
-import { AppRoutesWithCase, ViewCastSubrouteToEditCaseSubroute } from '../../states/routing/types';
+import { AppRoutesWithCaseAndAction, CaseItemAction } from '../../states/routing/types';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 
@@ -26,8 +26,8 @@ const mapStateToProps = (state: RootState, ownProps: ViewCaseItemProps) => {
 
 export type ViewCaseItemProps = {
   task: CustomITask | StandaloneITask;
-  route: AppRoutesWithCase['route'];
-  onClickClose: () => void;
+  routing: AppRoutesWithCaseAndAction;
+  exitItem: () => void;
   itemType: string;
   formDefinition: FormDefinition;
   includeAddedTime?: boolean;
@@ -38,12 +38,12 @@ type Props = ViewCaseItemProps & ReturnType<typeof mapStateToProps> & typeof map
 
 const ViewCaseItem: React.FC<Props> = ({
   task,
-  route,
+  routing,
   counselorsHash,
   temporaryCaseInfo,
   updateTempInfo,
   changeRoute,
-  onClickClose,
+  exitItem,
   formDefinition,
   itemType,
   includeAddedTime = true,
@@ -57,10 +57,10 @@ const ViewCaseItem: React.FC<Props> = ({
 
   const onEditCaseItemClick = () => {
     updateTempInfo(
-      { screen: ViewCastSubrouteToEditCaseSubroute[temporaryCaseInfo.screen], info: temporaryCaseInfo.info },
+      { screen: temporaryCaseInfo.screen, action: CaseItemAction.Edit, info: temporaryCaseInfo.info },
       task.taskSid,
     );
-    changeRoute({ route, subroute: ViewCastSubrouteToEditCaseSubroute[temporaryCaseInfo.screen] }, task.taskSid);
+    changeRoute({ ...routing, action: CaseItemAction.Edit }, task.taskSid);
   };
 
   return (
@@ -68,7 +68,7 @@ const ViewCaseItem: React.FC<Props> = ({
       <Container>
         <ActionHeader
           titleTemplate={`Case-View${itemType}`}
-          onClickClose={onClickClose}
+          onClickClose={exitItem}
           counselor={counselorName}
           added={added}
           includeTime={includeAddedTime}
@@ -99,7 +99,7 @@ const ViewCaseItem: React.FC<Props> = ({
           </StyledNextStepButton>
         </Box>
         <Box marginRight="15px">
-          <StyledNextStepButton roundCorners onClick={onClickClose} data-testid="Case-CloseButton">
+          <StyledNextStepButton roundCorners onClick={exitItem} data-testid="Case-CloseButton">
             <Template code="CloseButton" />
           </StyledNextStepButton>
         </Box>

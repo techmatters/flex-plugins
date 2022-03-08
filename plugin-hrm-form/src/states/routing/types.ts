@@ -9,54 +9,68 @@ export type TabbedFormSubroutes =
   | 'categories'
   | 'caseInformation';
 
-export const NewCaseSubroutes = {
-  AddNote: 'add-note',
-  AddReferral: 'add-referral',
-  AddHousehold: 'add-household',
-  AddPerpetrator: 'add-perpetrator',
-  AddIncident: 'add-incident',
-  AddDocument: 'add-document',
+export const NewCaseSectionSubroutes = {
+  Note: 'note',
+  Referral: 'referral',
+  Household: 'household',
+  Perpetrator: 'perpetrator',
+  Incident: 'incident',
+  Document: 'document',
+} as const;
+
+export const NewCaseOtherSubroutes = {
   ViewContact: 'view-contact',
-  ViewNote: 'view-note',
-  ViewReferral: 'view-referral',
-  ViewHousehold: 'view-household',
-  ViewPerpetrator: 'view-perpetrator',
-  ViewIncident: 'view-incident',
-  ViewDocument: 'view-document',
-  EditNote: 'edit-note',
-  EditReferral: 'edit-referral',
-  EditHousehold: 'edit-household',
-  EditPerpetrator: 'edit-perpetrator',
-  EditIncident: 'edit-incident',
-  EditDocument: 'edit-document',
   CasePrintView: 'case-print-view',
 } as const;
 
-export const ViewCastSubrouteToEditCaseSubroute = {
-  [NewCaseSubroutes.ViewNote]: NewCaseSubroutes.EditNote,
-  [NewCaseSubroutes.ViewReferral]: NewCaseSubroutes.EditReferral,
-  [NewCaseSubroutes.ViewHousehold]: NewCaseSubroutes.EditHousehold,
-  [NewCaseSubroutes.ViewPerpetrator]: NewCaseSubroutes.EditPerpetrator,
-  [NewCaseSubroutes.ViewIncident]: NewCaseSubroutes.EditIncident,
-  [NewCaseSubroutes.ViewDocument]: NewCaseSubroutes.EditDocument,
-} as const;
+export const NewCaseSubroutes = Object.freeze(Object.assign(NewCaseOtherSubroutes, NewCaseSectionSubroutes));
 
-// Routes that may lead to Case screen (maybe we need an improvement here)
-export type AppRoutesWithCase =
-  // TODO: enum the possible subroutes on each route
+export enum CaseItemAction {
+  Add = 'add',
+  Edit = 'edit',
+  View = 'view',
+}
+
+export type AppRoutesWithCaseAndAction =
   | {
       route: 'tabbed-forms';
-      subroute?: TabbedFormSubroutes | typeof NewCaseSubroutes[keyof typeof NewCaseSubroutes];
+      subroute?: typeof NewCaseSectionSubroutes[keyof typeof NewCaseSectionSubroutes];
+      action: CaseItemAction;
       autoFocus?: boolean;
     }
   | {
       route: 'new-case';
-      subroute?: typeof NewCaseSubroutes[keyof typeof NewCaseSubroutes];
+      subroute?: typeof NewCaseSectionSubroutes[keyof typeof NewCaseSectionSubroutes];
+      action: CaseItemAction;
       autoFocus?: boolean;
     }
   | {
       route: 'select-call-type';
-      subroute?: typeof NewCaseSubroutes[keyof typeof NewCaseSubroutes];
+      subroute?: typeof NewCaseSectionSubroutes[keyof typeof NewCaseSectionSubroutes];
+      action: CaseItemAction;
+    };
+
+export function isAppRoutesWithCaseAndAction(appRoute: AppRoutes): appRoute is AppRoutesWithCaseAndAction {
+  return Object.values(<any>NewCaseSectionSubroutes).includes(appRoute.subroute);
+}
+
+// Routes that may lead to Case screen (maybe we need an improvement here)
+export type AppRoutesWithCase =
+  // TODO: enum the possible subroutes on each route
+  | AppRoutesWithCaseAndAction
+  | {
+      route: 'tabbed-forms';
+      subroute?: TabbedFormSubroutes | typeof NewCaseOtherSubroutes[keyof typeof NewCaseOtherSubroutes];
+      autoFocus?: boolean;
+    }
+  | {
+      route: 'new-case';
+      subroute?: typeof NewCaseOtherSubroutes[keyof typeof NewCaseOtherSubroutes];
+      autoFocus?: boolean;
+    }
+  | {
+      route: 'select-call-type';
+      subroute?: typeof NewCaseOtherSubroutes[keyof typeof NewCaseOtherSubroutes];
     };
 
 export function isAppRouteWithCase(appRoute: AppRoutes): appRoute is AppRoutesWithCase {

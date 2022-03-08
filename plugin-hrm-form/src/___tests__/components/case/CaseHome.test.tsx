@@ -12,6 +12,7 @@ import { configurationBase, connectedCaseBase, contactFormsBase, namespace, rout
 import { HouseholdEntry, PerpetratorEntry, StandaloneITask } from '../../../types/types';
 import { CaseDetails, UPDATE_TEMP_INFO } from '../../../states/case/types';
 import { getDefinitionVersions } from '../../../HrmFormPlugin';
+import { CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
 
 const mockStore = configureMockStore([]);
 
@@ -171,7 +172,8 @@ describe('useState mocked', () => {
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
         route: 'new-case',
-        subroute: 'add-note',
+        subroute: NewCaseSubroutes.Note,
+        action: CaseItemAction.Add,
       },
       taskId: 'task1',
       type: 'CHANGE_ROUTE',
@@ -194,7 +196,8 @@ describe('useState mocked', () => {
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
         route: 'new-case',
-        subroute: 'add-referral',
+        subroute: NewCaseSubroutes.Referral,
+        action: CaseItemAction.Add,
       },
       taskId: 'task1',
       type: 'CHANGE_ROUTE',
@@ -217,7 +220,8 @@ describe('useState mocked', () => {
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
         route: 'new-case',
-        subroute: 'add-household',
+        subroute: NewCaseSubroutes.Household,
+        action: CaseItemAction.Add,
       },
       taskId: 'task1',
       type: 'CHANGE_ROUTE',
@@ -240,7 +244,8 @@ describe('useState mocked', () => {
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
         route: 'new-case',
-        subroute: 'add-perpetrator',
+        subroute: NewCaseSubroutes.Perpetrator,
+        action: CaseItemAction.Add,
       },
       taskId: 'task1',
       type: 'CHANGE_ROUTE',
@@ -266,8 +271,9 @@ describe('useState mocked', () => {
 
     expect(store.dispatch).toHaveBeenCalledWith({
       value: {
-        screen: 'view-household',
         info: { ...caseItemEntry, index: 0 },
+        screen: NewCaseSubroutes.Household,
+        action: CaseItemAction.View,
       },
       taskId: 'task1',
       type: UPDATE_TEMP_INFO,
@@ -275,7 +281,8 @@ describe('useState mocked', () => {
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
         route: 'new-case',
-        subroute: 'view-household',
+        subroute: NewCaseSubroutes.Household,
+        action: CaseItemAction.View,
       },
       taskId: 'task1',
       type: 'CHANGE_ROUTE',
@@ -299,14 +306,19 @@ describe('useState mocked', () => {
     screen.getByTestId('Case-InformationRow-ViewButton').click();
 
     expect(store.dispatch).toHaveBeenCalledWith({
-      value: { screen: 'view-perpetrator', info: { ...caseItemEntry, index: 0 } },
+      value: {
+        info: { ...caseItemEntry, index: 0 },
+        screen: NewCaseSubroutes.Perpetrator,
+        action: CaseItemAction.View,
+      },
       taskId: 'task1',
       type: UPDATE_TEMP_INFO,
     });
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
         route: 'new-case',
-        subroute: 'view-perpetrator',
+        subroute: NewCaseSubroutes.Perpetrator,
+        action: CaseItemAction.View,
       },
       taskId: 'task1',
       type: 'CHANGE_ROUTE',

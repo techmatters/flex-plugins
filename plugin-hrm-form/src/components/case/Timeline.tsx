@@ -27,7 +27,7 @@ import { isConnectedCaseActivity } from './caseHelpers';
 import { TaskEntry } from '../../states/contacts/reducer';
 import { Activity } from '../../states/case/types';
 import { PermissionActions, PermissionActionType } from '../../permissions';
-import { NewCaseSubroutes, AppRoutesWithCase } from '../../states/routing/types';
+import { NewCaseSubroutes, AppRoutesWithCase, CaseItemAction } from '../../states/routing/types';
 
 type OwnProps = {
   timelineActivities: Activity[];
@@ -53,11 +53,8 @@ const Timeline: React.FC<Props> = props => {
       twilioWorkerId,
       createdAt: parseISO(activity.date).toISOString(),
     };
-    updateTempInfo(
-      { screen: NewCaseSubroutes.ViewNote, editScreen: NewCaseSubroutes.EditNote, info: { ...info, index } },
-      taskSid,
-    );
-    changeRoute({ route, subroute: NewCaseSubroutes.ViewNote }, taskSid);
+    updateTempInfo({ screen: NewCaseSubroutes.Note, action: CaseItemAction.View, info: { ...info, index } }, taskSid);
+    changeRoute({ route, subroute: NewCaseSubroutes.Note, action: CaseItemAction.View }, taskSid);
   };
 
   const handleViewReferralClick = (activity, index) => {
@@ -69,10 +66,10 @@ const Timeline: React.FC<Props> = props => {
       createdAt: parseISO(activity.date).toISOString(),
     };
     updateTempInfo(
-      { screen: NewCaseSubroutes.ViewReferral, editScreen: NewCaseSubroutes.EditReferral, info: { ...info, index } },
+      { screen: NewCaseSubroutes.Referral, action: CaseItemAction.View, info: { ...info, index } },
       taskSid,
     );
-    changeRoute({ route, subroute: NewCaseSubroutes.ViewReferral }, taskSid);
+    changeRoute({ route, subroute: NewCaseSubroutes.Referral, action: CaseItemAction.View }, taskSid);
   };
 
   const handleViewConnectedCaseActivityClick = activity => {
@@ -98,13 +95,13 @@ const Timeline: React.FC<Props> = props => {
   };
 
   const handleAddNoteClick = () => {
-    updateTempInfo({ screen: NewCaseSubroutes.AddNote, info: null }, taskSid);
-    changeRoute({ route, subroute: NewCaseSubroutes.AddNote }, taskSid);
+    updateTempInfo({ screen: NewCaseSubroutes.Note, action: CaseItemAction.Add, info: null }, taskSid);
+    changeRoute({ route, subroute: NewCaseSubroutes.Note, action: CaseItemAction.Add }, taskSid);
   };
 
   const handleAddReferralClick = () => {
-    updateTempInfo({ screen: NewCaseSubroutes.AddReferral, info: blankReferral }, taskSid);
-    changeRoute({ route, subroute: NewCaseSubroutes.AddReferral }, taskSid);
+    updateTempInfo({ screen: NewCaseSubroutes.Referral, action: CaseItemAction.Add, info: blankReferral }, taskSid);
+    changeRoute({ route, subroute: NewCaseSubroutes.Referral, action: CaseItemAction.Add }, taskSid);
   };
 
   const indexableTypes: Record<string, Activity[]> = {};
