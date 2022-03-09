@@ -173,7 +173,7 @@ const AddEditCaseItem: React.FC<Props> = ({
   async function close() {
     if (isEditTemporaryCaseInfo(temporaryCaseInfo)) {
       updateTempInfo({ ...temporaryCaseInfo, action: CaseItemAction.View }, task.taskSid);
-      changeRoute({ ...routing, action: CaseItemAction.Add }, task.taskSid);
+      changeRoute({ ...routing, action: CaseItemAction.View }, task.taskSid);
     } else {
       exitItem();
     }
