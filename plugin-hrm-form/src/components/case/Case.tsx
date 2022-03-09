@@ -56,6 +56,7 @@ import DocumentInformationRow from './DocumentInformationRow';
 import AddEditCaseItem from './AddEditCaseItem';
 import ViewCaseItem from './ViewCaseItem';
 import documentUploadHandler from './documentUploadHandler';
+import { IframeController } from '@twilio/flex-ui/src/components/Insights/Dashboard/IframeController';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -112,6 +113,7 @@ const Case: React.FC<Props> = props => {
   const [mockedMessage, setMockedMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [timeline, setTimeline] = useState([]);
+  const [closeDialog, setCloseDialog] = useState(false)
 
   useEffect(() => {
     /**
@@ -318,6 +320,9 @@ const Case: React.FC<Props> = props => {
       window.alert(strings['Error-Backend']);
     } finally {
       setLoading(false);
+      if (closeDialog == true) {
+        setCloseDialog(false)
+      }
     }
   };
 
@@ -701,10 +706,14 @@ const Case: React.FC<Props> = props => {
             {!props.isCreating && (
               <>
                 <Box marginRight="15px">
-                  <StyledNextStepButton secondary roundCorners onClick={props.handleClose}>
+                  <StyledNextStepButton secondary roundCorners onClick={caseHasBeenEdited == true ? () => setCloseDialog(true) : props.handleClose}>
                     <Template code="BottomBar-Close" />
                   </StyledNextStepButton>
                 </Box>
+                <Dialog open={closeDialog == true} onClose={props.handleClose}>
+                  <button onClick={props.handleClose}>Dont Save</button>
+                  <button onClick={handleUpdate}>Save</button>
+                </Dialog>
                 <StyledNextStepButton disabled={!caseHasBeenEdited} roundCorners onClick={handleUpdate}>
                   <Template code="BottomBar-Update" />
                 </StyledNextStepButton>
