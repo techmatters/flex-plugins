@@ -93,8 +93,7 @@
   {
     "name": "phone1",
     "label": "Phone #1",
-    "type": "input",
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "type": "input"
   },
   {
     "name": "phone2",
