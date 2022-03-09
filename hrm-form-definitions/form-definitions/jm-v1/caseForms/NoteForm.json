@@ -4,7 +4,7 @@
     "label": "Subjective",
     "type": "textarea",
     "placeholder": "",
-    "rows": 5,
+    "rows": 10,
     "width": 250
   },
   {
@@ -12,7 +12,7 @@
     "label": "Objective",
     "type": "textarea",
     "placeholder": "",
-    "rows": 5,
+    "rows": 10,
     "width": 250
   },
   {
@@ -20,7 +20,7 @@
     "label": "Assessment",
     "type": "textarea",
     "placeholder": "",
-    "rows": 5,
+    "rows": 10,
     "width": 250
   },
   {
@@ -28,7 +28,7 @@
     "label": "Plan",
     "type": "textarea",
     "placeholder": "",
-    "rows": 5,
+    "rows": 10,
     "width": 250
   }
 ]
