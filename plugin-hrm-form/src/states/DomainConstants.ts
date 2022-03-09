@@ -8,11 +8,6 @@ export const channelTypes = {
   instagram: 'instagram',
 } as const;
 
-export const channelsAndDefault = {
-  ...channelTypes,
-  default: 'default',
-} as const;
-
 export type ChannelTypes = typeof channelTypes[keyof typeof channelTypes];
 
 export const otherContactChannels = {

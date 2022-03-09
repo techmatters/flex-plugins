@@ -15,18 +15,11 @@ import { Menu, MenuItem } from '../menu';
 import Timeline from './Timeline';
 import CaseSection from './CaseSection';
 import { PermissionActions } from '../../permissions';
-import {
-  AppRoutes,
-  AppRoutesWithCase,
-  AppRoutesWithCaseAndAction,
-  CaseItemAction,
-  NewCaseSubroutes,
-} from '../../states/routing/types';
+import { AppRoutes, CaseItemAction, CaseSectionSubroute, NewCaseSubroutes } from '../../states/routing/types';
 import CaseSummary from './CaseSummary';
 import { contactFormsBase, namespace, RootState, routingBase } from '../../states';
 import {
   Activity,
-  AddTemporaryCaseInfo,
   CaseDetails,
   CaseDetailsName,
   TemporaryCaseInfo,
@@ -95,19 +88,17 @@ const CaseHome: React.FC<Props> = ({
 
   const isMockedMessageOpen = Boolean(mockedMessage);
 
-  type CaseItemRoute<T extends TemporaryCaseInfo = TemporaryCaseInfo> = T['screen'] & AppRoutesWithCase['subroute'];
-
   type CaseItemInfo<T extends TemporaryCaseInfo> = T['info']; // A bit redundant but looks cleaner than the anonymous subtype reference syntax
 
   const onCaseItemActionClick = <T extends ViewTemporaryCaseInfo>(
-    targetSubroute: CaseItemRoute<T>,
+    targetSubroute: CaseSectionSubroute,
     targetAction: T['action'],
   ): ((entry: CaseItemInfo<T>) => void) => (entry: CaseItemInfo<T>) => {
     updateTempInfo({ screen: targetSubroute, info: entry, action: targetAction }, task.taskSid);
     changeRoute({ route, subroute: targetSubroute, action: targetAction } as AppRoutes, task.taskSid);
   };
 
-  const onAddCaseItemClick = (targetSubroute: CaseItemRoute<AddTemporaryCaseInfo>) => () => {
+  const onAddCaseItemClick = (targetSubroute: CaseSectionSubroute) => () => {
     updateTempInfo({ screen: targetSubroute, action: CaseItemAction.Add, info: null }, task.taskSid);
     changeRoute({ route, subroute: targetSubroute, action: CaseItemAction.Add } as AppRoutes, task.taskSid);
   };
@@ -161,7 +152,7 @@ const CaseHome: React.FC<Props> = ({
 
   const itemRowRenderer = <TViewCaseInfo extends ViewTemporaryCaseInfo>(
     itemTypeName: string,
-    viewSubroute: CaseItemRoute & AppRoutesWithCaseAndAction['subroute'],
+    viewSubroute: CaseSectionSubroute,
     items: CaseItemInfo<TViewCaseInfo>[],
   ) => {
     const itemRows = () => {

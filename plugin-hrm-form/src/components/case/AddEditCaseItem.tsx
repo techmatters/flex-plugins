@@ -220,16 +220,18 @@ const AddEditCaseItem: React.FC<Props> = ({
               <Template code="BottomBar-Cancel" />
             </StyledNextStepButton>
           </Box>
-          <Box marginRight="15px">
-            <StyledNextStepButton
-              data-testid="Case-AddEditItemScreen-SaveAndAddAnotherItem"
-              secondary
-              roundCorners
-              onClick={methods.handleSubmit(saveAndStay, onError)}
-            >
-              <Template code={`BottomBar-SaveAndAddAnother${itemType}`} />
-            </StyledNextStepButton>
-          </Box>
+          {routing.action === CaseItemAction.Add && (
+            <Box marginRight="15px">
+              <StyledNextStepButton
+                data-testid="Case-AddEditItemScreen-SaveAndAddAnotherItem"
+                secondary
+                roundCorners
+                onClick={methods.handleSubmit(saveAndStay, onError)}
+              >
+                <Template code={`BottomBar-SaveAndAddAnother${itemType}`} />
+              </StyledNextStepButton>
+            </Box>
+          )}
           <StyledNextStepButton
             data-testid="Case-AddEditItemScreen-SaveItem"
             roundCorners

@@ -1,8 +1,16 @@
-import { Case, CaseInfo } from '../../../types/types';
-import * as types from '../../../states/case/types';
+import { Case } from '../../../types/types';
+import {
+  AddTemporaryCaseInfo,
+  SET_CONNECTED_CASE,
+  REMOVE_CONNECTED_CASE,
+  UPDATE_CASE_INFO,
+  MARK_CASE_AS_UPDATED,
+  UPDATE_TEMP_INFO,
+  UPDATE_CASE_STATUS,
+  CaseActionType,
+} from '../../../states/case/types';
 import * as actions from '../../../states/case/actions';
 import { CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
-import { AddTemporaryCaseInfo, TemporaryCaseInfo } from '../../../states/case/types';
 
 const task = { taskSid: 'task1' };
 
@@ -19,8 +27,8 @@ describe('test action creators', () => {
       connectedContacts: null,
     };
 
-    const expectedAction: types.CaseActionType = {
-      type: types.SET_CONNECTED_CASE,
+    const expectedAction: CaseActionType = {
+      type: SET_CONNECTED_CASE,
       connectedCase,
       taskId: task.taskSid,
       caseHasBeenEdited: false,
@@ -30,8 +38,8 @@ describe('test action creators', () => {
   });
 
   test('removeConnectedCase', async () => {
-    const expectedAction: types.CaseActionType = {
-      type: types.REMOVE_CONNECTED_CASE,
+    const expectedAction: CaseActionType = {
+      type: REMOVE_CONNECTED_CASE,
       taskId: task.taskSid,
     };
 
@@ -40,8 +48,8 @@ describe('test action creators', () => {
 
   test('updateCaseInfo', async () => {
     const info = { summary: 'Some summary', notes: ['Some note'] };
-    const expectedAction: types.CaseActionType = {
-      type: types.UPDATE_CASE_INFO,
+    const expectedAction: CaseActionType = {
+      type: UPDATE_CASE_INFO,
       info,
       taskId: task.taskSid,
     };
@@ -59,8 +67,8 @@ describe('test action creators', () => {
         twilioWorkerId: 'TEST_WORKER_ID',
       },
     };
-    const expectedAction: types.CaseActionType = {
-      type: types.UPDATE_TEMP_INFO,
+    const expectedAction: CaseActionType = {
+      type: UPDATE_TEMP_INFO,
       value,
       taskId: task.taskSid,
     };
@@ -69,8 +77,8 @@ describe('test action creators', () => {
   });
 
   test('markCaseAsUpdated', async () => {
-    const expectedAction: types.CaseActionType = {
-      type: types.MARK_CASE_AS_UPDATED,
+    const expectedAction: CaseActionType = {
+      type: MARK_CASE_AS_UPDATED,
       taskId: task.taskSid,
     };
 

@@ -1,7 +1,7 @@
 import { DefinitionVersionId, HelplineEntry } from 'hrm-form-definitions';
 
 import type * as t from '../../types/types';
-import { CaseItemAction, NewCaseSubroutes } from '../routing/types';
+import { CaseItemAction, CaseSectionSubroute, NewCaseSectionSubroutes, NewCaseSubroutes } from '../routing/types';
 
 // Action types
 export const SET_CONNECTED_CASE = 'SET_CONNECTED_CASE';
@@ -11,13 +11,7 @@ export const UPDATE_TEMP_INFO = 'UPDATE_TEMP_INFO';
 export const UPDATE_CASE_STATUS = 'UPDATE_CASE_STATUS';
 export const MARK_CASE_AS_UPDATED = 'MARK_CASE_AS_UPDATED';
 
-export type ViewNote = {
-  note: string;
-  counselor: string;
-  date: string;
-};
-
-export type ViewContact = {
+type ViewContact = {
   contact?: any; // TODO: create Contact type
   detailsExpanded: { [section: string]: boolean };
   createdAt: string;
@@ -25,22 +19,10 @@ export type ViewContact = {
   counselor: string;
 };
 
-export type ViewReferral = {
-  referral: t.ReferralEntry;
-  counselor: string;
-  date: string;
-};
-
 type Indexable = { index: number };
 
 export type ViewTemporaryCaseInfo = {
-  screen:
-    | typeof NewCaseSubroutes.Document
-    | typeof NewCaseSubroutes.Incident
-    | typeof NewCaseSubroutes.Perpetrator
-    | typeof NewCaseSubroutes.Household
-    | typeof NewCaseSubroutes.Note
-    | typeof NewCaseSubroutes.Referral;
+  screen: CaseSectionSubroute;
   action: CaseItemAction.View;
   info: t.CaseItemEntry & Indexable;
 };
@@ -50,13 +32,7 @@ export function isViewTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is ViewTemp
 }
 
 export type EditTemporaryCaseInfo = {
-  screen:
-    | typeof NewCaseSubroutes.Document
-    | typeof NewCaseSubroutes.Incident
-    | typeof NewCaseSubroutes.Perpetrator
-    | typeof NewCaseSubroutes.Household
-    | typeof NewCaseSubroutes.Note
-    | typeof NewCaseSubroutes.Referral;
+  screen: CaseSectionSubroute;
   action: CaseItemAction.Edit;
   info: t.CaseItemEntry & Indexable;
 };
@@ -66,13 +42,7 @@ export function isEditTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is EditTemp
 }
 
 export type AddTemporaryCaseInfo = {
-  screen:
-    | typeof NewCaseSubroutes.Document
-    | typeof NewCaseSubroutes.Incident
-    | typeof NewCaseSubroutes.Perpetrator
-    | typeof NewCaseSubroutes.Household
-    | typeof NewCaseSubroutes.Note
-    | typeof NewCaseSubroutes.Referral;
+  screen: CaseSectionSubroute;
   action: CaseItemAction.Add;
   info: t.CaseItemFormValues;
 };
@@ -137,9 +107,10 @@ export type NoteActivity = {
   type: string;
   text: string;
   twilioWorkerId: string;
+  originalIndex: number;
 };
 
-type ReferralActivity = {
+export type ReferralActivity = {
   date: string;
   createdAt: string;
   type: string;
@@ -150,6 +121,7 @@ type ReferralActivity = {
     referredTo: string;
   };
   twilioWorkerId: string;
+  originalIndex: number;
 };
 
 export type ConnectedCaseActivity = {
@@ -160,6 +132,7 @@ export type ConnectedCaseActivity = {
   text: string;
   twilioWorkerId: string;
   channel: string;
+  originalIndex: number;
 };
 
 export type CaseDetailsName = {

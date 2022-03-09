@@ -18,6 +18,8 @@ export const NewCaseSectionSubroutes = {
   Document: 'document',
 } as const;
 
+export type CaseSectionSubroute = typeof NewCaseSectionSubroutes[keyof typeof NewCaseSectionSubroutes];
+
 export const NewCaseOtherSubroutes = {
   ViewContact: 'view-contact',
   CasePrintView: 'case-print-view',
@@ -34,19 +36,19 @@ export enum CaseItemAction {
 export type AppRoutesWithCaseAndAction =
   | {
       route: 'tabbed-forms';
-      subroute?: typeof NewCaseSectionSubroutes[keyof typeof NewCaseSectionSubroutes];
+      subroute?: CaseSectionSubroute;
       action: CaseItemAction;
       autoFocus?: boolean;
     }
   | {
       route: 'new-case';
-      subroute?: typeof NewCaseSectionSubroutes[keyof typeof NewCaseSectionSubroutes];
+      subroute?: CaseSectionSubroute;
       action: CaseItemAction;
       autoFocus?: boolean;
     }
   | {
       route: 'select-call-type';
-      subroute?: typeof NewCaseSectionSubroutes[keyof typeof NewCaseSectionSubroutes];
+      subroute?: CaseSectionSubroute;
       action: CaseItemAction;
     };
 

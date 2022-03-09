@@ -14,9 +14,10 @@ import {
 } from '../../states';
 import { getConfig } from '../../HrmFormPlugin';
 import { connectToCase, transformCategories } from '../../services/ContactService';
-import { cancelCase, getActivities, updateCase } from '../../services/CaseService';
+import { cancelCase, updateCase } from '../../services/CaseService';
 import { getDefinitionVersion } from '../../services/ServerlessService';
-import { getDateFromNotSavedContact, getHelplineData, isConnectedCaseActivity, sortActivities } from './caseHelpers';
+import { getActivitiesFromCase, isConnectedCaseActivity, sortActivities } from './caseActivities';
+import { getDateFromNotSavedContact, getHelplineData } from './caseHelpers';
 import { getLocaleDateTime } from '../../utils/helpers';
 import * as SearchActions from '../../states/search/actions';
 import * as CaseActions from '../../states/case/actions';
@@ -107,7 +108,7 @@ const Case: React.FC<Props> = ({
       if (!props.connectedCaseId) return;
 
       setLoading(true);
-      const activities = await getActivities(props.connectedCaseId);
+      const activities = getActivitiesFromCase(props.connectedCaseState.connectedCase);
       setLoading(false);
       let timelineActivities = sortActivities(activities);
 
@@ -124,6 +125,7 @@ const Case: React.FC<Props> = ({
           text: form.caseInformation.callSummary.toString(),
           twilioWorkerId: workerSid,
           channel: task.channelType === 'default' ? form.contactlessTask.channel.toString() : task.channelType,
+          originalIndex: 0,
         };
 
         timelineActivities = sortActivities([...timelineActivities, connectCaseActivity]);
@@ -132,7 +134,15 @@ const Case: React.FC<Props> = ({
     };
 
     getTimeline();
-  }, [task, form, props.connectedCaseId, props.connectedCaseNotes, props.connectedCaseReferrals, setLoading]);
+  }, [
+    task,
+    form,
+    props.connectedCaseId,
+    props.connectedCaseNotes,
+    props.connectedCaseReferrals,
+    props.connectedCaseState?.connectedCase,
+    setLoading,
+  ]);
 
   const version = props.connectedCaseState?.connectedCase.info.definitionVersion;
   const { updateDefinitionVersion, definitionVersions } = props;
