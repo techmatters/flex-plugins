@@ -12,7 +12,6 @@ export function generateDefaultItem<T>(
   if (specification.default) {
     return specification.default;
   }
-  console.warn('No default was specified, using fallback');
   return fallback;
 }
 
