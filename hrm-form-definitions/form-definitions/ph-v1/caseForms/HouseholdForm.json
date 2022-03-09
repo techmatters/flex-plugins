@@ -720,7 +720,7 @@
     "name": "isFacilitator",
     "label": "Is Facilitator",
     "type": "checkbox"
-  }
+  },
   {
     "name": "isPerpetrator",
     "label": "Is Perpetrator",
