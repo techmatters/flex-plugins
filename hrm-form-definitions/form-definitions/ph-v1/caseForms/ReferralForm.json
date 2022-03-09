@@ -18,24 +18,36 @@
         "label": ""
       },
       {
-        "value": "Clinic",
-        "label": "Clinic"
+        "value": "Recommendations",
+        "label": "Recommendations"
       },
       {
-        "value": "Hospital",
-        "label": "Hospital"
+        "value": "Referrals to school counsellors",
+        "label": "Referrals to school counsellors"
       },
       {
-        "value": "Social Welfare",
-        "label": "Social Welfare"
+        "value": "Referral to MS/CSWDO"
+        "label": "Referral to MS/CSWDO"
       },
       {
-        "value": "Police",
-        "label": "Police"
+        "value": "Referral to BCPC"
+        "label": "Referral to BCPC"
       },
       {
-        "value": "Religious leader",
-        "label": "Religious leader"
+        "value": "Referrals to law enforcement agencies ",
+        "label": "Referrals to law enforcement agencies "
+      },
+      {
+        "value": "Referrals to general healthcare services",
+        "label": "Referrals to general healthcare services"
+      },
+      {
+        "value": "Referrals to other organisations",
+        "label": "Referrals to other organisations"
+      },
+      {
+        "value": "Direct interventions by the child helpline",
+        "label": "Direct interventions by the child helpline"
       },
       {
         "value": "Other",
