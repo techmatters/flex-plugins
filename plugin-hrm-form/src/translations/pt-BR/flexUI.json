@@ -11,7 +11,6 @@
   "AgentStatusBusy": "Ocupado",
   "AgentStatusUnavailable": "Indisponível",
   "AgentStatusOffline": "Offline",
-
   "ReconnectingConnection": "Conexão perdida. Tentando reconectar.",
   "Error-Backend": "Erro do sistema de back-end.",
   "NoTasksTitle": "Status",
@@ -156,6 +155,9 @@
   "BottomBar-CancelNewCaseAndClose": "Sim, cancele o novo caso e feche",
   "BottomBar-Update": "Atualizar",
   "BottomBar-AddThisContactToExistingCase": "Adicionar este contato a um caso existente",
+  "BottomBar-SaveOnClose": "Salvar mudanças?",
+  "BottomBar-DontSave": "Não Salvar",
+  "BottomBar-Save": "Sim, Salvar",
   "Case-Counsellor": "Atendente",
   "Case-CaseNumber": "Caso #",
   "Case-ActionHeaderAdded": "Adicionado:",
@@ -185,10 +187,8 @@
   "CallSummary-ViewFull": "Veja o registro completo",
   "CallSummary-MoreNotes": "mais notas",
   "TranslateButtonAriaLabel": "Mudar idioma",
-
-  "TaskInfoPanelContent" : "<h1>CONTEXTO DA TAREFA</h1><h2>Tipo de tarefa</h2><p>{{task.channelType}}</p><h2>Tarefa criada em</h2><p>{{task.dateCreated}}</p><h2>Prioridade da tarefa</h2><p>{{task.priority}}</p><h2>Fila de tarefa</h2><p>{{task.queueName}}</p><h2>Tarefa SID</h2><p>{{task.taskSid}}</p><h2>Reservas SID</h2><p>{{task.sid}}</p><hr /><h1>CONTEXTO DO CLIENTE</h1><h2>Nome do cliente / número de telefone</h2><p>{{task.defaultFrom}}</p><h2>País</h2><p>{{task.attributes.caller_country}}</p><hr /><h1>ADDONS</h1><p>Nenhum add-ons ativado. Para expandir sua experiência, visite</p><a href=\"https://www.twilio.com/marketplaceadd-ons\" target=\"blank\">Twilio Marketplace</a>",
-  "SupervisorTaskInfoPanelContent" : "<h1>CONTEXTO DA TAREFA</h1><h2>Tipo de tarefa</h2><p>{{task.channelType}}</p><h2>Tarefa criada em</h2><p>{{task.dateCreated}}</p><h2>Prioridade da tarefa</h2><p>{{task.priority}}</p><h2>Fila de tarefa</h2><p>{{task.queueName}}</p><h2>Tarefa SID</h2><p>{{task.taskSid}}</p><h2>Reservas SID</h2><p>{{task.sid}}</p><hr /><h1>CONTEXTO DO CLIENTE</h1><h2>Nome do cliente / número de telefone</h2><p>{{task.defaultFrom}}</p><h2>País</h2><p>{{task.attributes.caller_country}}</p><hr /><h1>ADDONS</h1><p>Nenhum add-ons ativado. Para expandir sua experiência, visite</p><a href=\"https://www.twilio.com/marketplaceadd-ons\" target=\"blank\">Twilio Marketplace</a>",
-  
+  "TaskInfoPanelContent": "<h1>CONTEXTO DA TAREFA</h1><h2>Tipo de tarefa</h2><p>{{task.channelType}}</p><h2>Tarefa criada em</h2><p>{{task.dateCreated}}</p><h2>Prioridade da tarefa</h2><p>{{task.priority}}</p><h2>Fila de tarefa</h2><p>{{task.queueName}}</p><h2>Tarefa SID</h2><p>{{task.taskSid}}</p><h2>Reservas SID</h2><p>{{task.sid}}</p><hr /><h1>CONTEXTO DO CLIENTE</h1><h2>Nome do cliente / número de telefone</h2><p>{{task.defaultFrom}}</p><h2>País</h2><p>{{task.attributes.caller_country}}</p><hr /><h1>ADDONS</h1><p>Nenhum add-ons ativado. Para expandir sua experiência, visite</p><a href=\"https://www.twilio.com/marketplaceadd-ons\" target=\"blank\">Twilio Marketplace</a>",
+  "SupervisorTaskInfoPanelContent": "<h1>CONTEXTO DA TAREFA</h1><h2>Tipo de tarefa</h2><p>{{task.channelType}}</p><h2>Tarefa criada em</h2><p>{{task.dateCreated}}</p><h2>Prioridade da tarefa</h2><p>{{task.priority}}</p><h2>Fila de tarefa</h2><p>{{task.queueName}}</p><h2>Tarefa SID</h2><p>{{task.taskSid}}</p><h2>Reservas SID</h2><p>{{task.sid}}</p><hr /><h1>CONTEXTO DO CLIENTE</h1><h2>Nome do cliente / número de telefone</h2><p>{{task.defaultFrom}}</p><h2>País</h2><p>{{task.attributes.caller_country}}</p><hr /><h1>ADDONS</h1><p>Nenhum add-ons ativado. Para expandir sua experiência, visite</p><a href=\"https://www.twilio.com/marketplaceadd-ons\" target=\"blank\">Twilio Marketplace</a>",
   "SearchContactsAndCases-Title": "Pesquisar contatos e casos",
   "SearchForm-Name": "Nome",
   "SearchForm-First": "Primeiro",
@@ -218,7 +218,6 @@
   "ContactDetails-AddedBy": "Adicionado por",
   "Unknown": "Desconhecido",
   "CallTypeAndCounselor-Label": "Atendente:",
-
   "ColumnHeaderAgent": "Agente",
   "ColumnHeaderCalls": "Chamadas",
   "ColumnHeaderTasks": "Outras Tarefas",
@@ -241,7 +240,6 @@
   "FilterItemOnly": "{{item.label}} só",
   "FilterItemAmountSelected": "{{amount}} selecionado",
   "TeamsViewResultsSummaryNoWorkersDisplayed": "Não conseguimos encontrar nenhum agente que correspondam aos seus critérios de filtro. Você pode tentar novamente com filtros diferentes.",
-
   "ActiveTasksTileTitle": "Tarefas Ativas",
   "WaitingTasksTileTitle": "Esperando Tarefas",
   "LongestWaitTimeTileTitle": "Maior Espera",
@@ -252,7 +250,6 @@
   "QueuesStatsHeaderLongestWait": "Mais longo",
   "QueuesStatsHeaderAgentsActivity": "Agentes",
   "QueuesStatsHeaderSLA": "SLA",
-
   "CaseList-AllCases": "Todos os Casos",
   "CaseList-THCase": "Caso #",
   "CaseList-THChildName": "Nome da criança",
@@ -270,7 +267,6 @@
   "ContactPreview-CopyButton": "Copiar informação",
   "ContactPreview-ExpandButton": "Abrir detalhes do caso",
   "ContactPreview-MoreOptionsButton": "Mais opções",
-
   "ContactDetails-GeneralDetails-PhoneNumber": "Número de telefone",
   "ContactDetails-GeneralDetails-ConversationDuration": "Duração da conversa",
   "ContactDetails-GeneralDetails-Counselor": "Conselheiro",
@@ -300,11 +296,8 @@
   "Case-DocumentComments": "Comentários",
   "Case-ViewDocument": "Ver documento",
   "Case-CaseDetails": "Detalhes do caso",
-
   "TaskHeaderLineTwitter": "@{{task.attributes.twitterUserHandle}}",
-  
   "CloseButton": "Fechar",
-
   "CallType-child": "Criança ou adolescentes pedindo ajuda para ela mesma",
   "CallType-caller": "Alguém buscando ajuda para outra criança",
   "CallType-silent": "Silencioso",
@@ -314,24 +307,18 @@
   "CallType-wrongnumber": "Wrong Number",
   "CallType-abusive": "Abusivo",
   "CallType-CloseContact": "Contato próximo",
-
   "ConnectDialog-Child": "Copiar as informações da criança deste registro para o novo contato?",
   "ConnectDialog-Caller": "Copiar as informações do chamador deste registro para o novo contato?",
   "QueueCard-Name": "Nome da fila: ",
-
   "CaseHeader-ViewCase": "Ver Caso",
-
   "Transfer-AcceptTransferButton": "Accept Transfer",
   "Transfer-RejectTransferButton": "Reject Transfer",
-
   "TaskLineCallTransferWorker": "Transferir de {{task.incomingTransferObject.worker.fullName}} (direct)",
   "TaskLineCallTransferQueue": "Transferir de {{task.incomingTransferObject.worker.fullName}} ({{task.incomingTransferObject.queue.name}})",
   "Transfer-TaskLineChatLineReserved": "Transferir de",
   "Transfer-FormNotEditable": "Form locked until transfer is completed.",
   "Transfer-ChatWarmNotAllowed": "Warm transfer for chats is currently not supported.",
-
   "Error-ContinueWithoutRecording": "Erro do sistema de back-end.  Are you sure you want to end the task without recording?",
-
   "Case-CaseDetailsChildName": "Child Name",
   "Case-CaseDetailsOwner": "Atendente",
   "Case-CaseDetailsStatusOpen": "Abrir",
@@ -345,7 +332,6 @@
   "Case-ReferralReferredTo": "Referred To...",
   "Case-ReferralComments": "Comments",
   "Case-Notes": "Notas",
-
   "CallerForm-FirstName": "First name",
   "CallerForm-LastName": "Last name",
   "CallerForm-RelationshipToChild": "Relationship to Child",
@@ -360,7 +346,6 @@
   "CallerForm-PostalCode": "Postal code",
   "CallerForm-Phone#1": "Phone #1",
   "CallerForm-Phone#2": "Phone #2",
-
   "CallerSection-Name": "Name",
   "CallerSection-RelationshipToChild": "Relationship to Child",
   "CallerSection-Address": "Address",
@@ -371,7 +356,6 @@
   "CallerSection-Language": "Language",
   "CallerSection-Nationality": "Nationality",
   "CallerSection-Ethnicity": "Ethnicity",
-
   "ContactDetails-GeneralDetails-AddedBy": "Added By",
   "ContactDetails-GeneralDetails-ContactSummary": "Contact Summary",
   "ContactDetails-GeneralDetails-RepeatCaller": "Repeat Caller?",
@@ -380,18 +364,13 @@
   "ContactDetails-GeneralDetails-DiscussRights": "Did you discuss rights with the child?",
   "ContactDetails-GeneralDetails-SolvedProblem": "Did the child feel we solved their problem?",
   "ContactDetails-GeneralDetails-WouldRecommend": "Would the child recommend us to a friend?",
-
   "SectionName-Contact": "Contato",
   "SectionName-CaseSummary": "Resumo do Caso",
-
   "CannedResponses": "Respostas predefinidas",
-
   "OfflineContactFirstLine": "Contato off-line",
-
   "PreviousContacts-PreviousContact": "contato anteriores",
   "PreviousContacts-Contact": "contato",
   "PreviousContacts-Contacts": "contato",
   "PreviousContacts-Case": "caso",
   "PreviousContacts-TwitterUser": "usuário do Twitter"
-
 }

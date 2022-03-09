@@ -25,8 +25,9 @@ import { cancelCase, getActivities, updateCase } from '../../services/CaseServic
 import { completeTask, submitContactForm } from '../../services/formSubmissionHelpers';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { getDateFromNotSavedContact, getHelplineData, isConnectedCaseActivity, sortActivities } from './caseHelpers';
-import { BottomButtonBar, Box, StyledNextStepButton } from '../../styles/HrmStyles';
-import { CaseContainer, CenteredContainer } from '../../styles/case';
+import { BottomButtonBar, Box, Row, StyledNextStepButton, HiddenText } from '../../styles/HrmStyles';
+import { CaseContainer, CenteredContainer, CloseDialogText } from '../../styles/case';
+import { CloseTaskDialog, CloseButton } from '../../styles/callTypeButtons';
 import CaseDetails from './CaseDetails';
 import { Menu, MenuItem } from '../menu';
 import { getLocaleDateTime } from '../../utils/helpers';
@@ -56,7 +57,6 @@ import DocumentInformationRow from './DocumentInformationRow';
 import AddEditCaseItem from './AddEditCaseItem';
 import ViewCaseItem from './ViewCaseItem';
 import documentUploadHandler from './documentUploadHandler';
-import { IframeController } from '@twilio/flex-ui/src/components/Insights/Dashboard/IframeController';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -113,7 +113,7 @@ const Case: React.FC<Props> = props => {
   const [mockedMessage, setMockedMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [timeline, setTimeline] = useState([]);
-  const [closeDialog, setCloseDialog] = useState(false)
+  const [closeDialog, setCloseDialog] = useState(false);
 
   useEffect(() => {
     /**
@@ -320,8 +320,8 @@ const Case: React.FC<Props> = props => {
       window.alert(strings['Error-Backend']);
     } finally {
       setLoading(false);
-      if (closeDialog == true) {
-        setCloseDialog(false)
+      if (closeDialog) {
+        setCloseDialog(false);
       }
     }
   };
@@ -706,14 +706,36 @@ const Case: React.FC<Props> = props => {
             {!props.isCreating && (
               <>
                 <Box marginRight="15px">
-                  <StyledNextStepButton secondary roundCorners onClick={caseHasBeenEdited == true ? () => setCloseDialog(true) : props.handleClose}>
+                  <StyledNextStepButton
+                    secondary
+                    roundCorners
+                    onClick={caseHasBeenEdited ? () => setCloseDialog(true) : props.handleClose}
+                  >
                     <Template code="BottomBar-Close" />
                   </StyledNextStepButton>
                 </Box>
-                <Dialog open={closeDialog == true} onClose={props.handleClose}>
-                  <button onClick={props.handleClose}>Dont Save</button>
-                  <button onClick={handleUpdate}>Save</button>
-                </Dialog>
+                <CloseTaskDialog open={closeDialog} onClose={props.handleClose}>
+                  <Box marginLeft="auto" onClick={() => setCloseDialog(false)}>
+                    <HiddenText id="CloseButton">
+                      <Template code="CloseButton" />
+                    </HiddenText>
+                    <CloseButton aria-label="CloseButton" />
+                  </Box>
+                  <CloseDialogText>
+                    <Template code="BottomBar-SaveOnClose" />
+                  </CloseDialogText>
+                  <Box margin="25px">
+                    <Row>
+                      <StyledNextStepButton secondary onClick={props.handleClose} margin="auto">
+                        <Template code="BottomBar-DontSave" />
+                      </StyledNextStepButton>
+                      <StyledNextStepButton disabled={null} onClick={handleUpdate} margin="auto">
+                        <Template code="BottomBar-Save" />
+                      </StyledNextStepButton>
+                    </Row>
+                  </Box>
+                </CloseTaskDialog>
+
                 <StyledNextStepButton disabled={!caseHasBeenEdited} roundCorners onClick={handleUpdate}>
                   <Template code="BottomBar-Update" />
                 </StyledNextStepButton>
