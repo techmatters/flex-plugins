@@ -113,7 +113,7 @@ const Case: React.FC<Props> = props => {
   const [mockedMessage, setMockedMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [timeline, setTimeline] = useState([]);
-  const [closeDialog, setCloseDialog] = useState(false)
+  const [closeDialog, setCloseDialog] = useState(false);
 
   useEffect(() => {
     /**
@@ -320,7 +320,7 @@ const Case: React.FC<Props> = props => {
       window.alert(strings['Error-Backend']);
     } finally {
       setLoading(false);
-      if (closeDialog === true) setCloseDialog(false)
+      if (closeDialog === true) setCloseDialog(false);
     }
   };
 
@@ -704,7 +704,11 @@ const Case: React.FC<Props> = props => {
             {!props.isCreating && (
               <>
                 <Box marginRight="15px">
-                  <StyledNextStepButton secondary roundCorners onClick={caseHasBeenEdited === true ? () => setCloseDialog(true) : props.handleClose}>
+                  <StyledNextStepButton
+                    secondary
+                    roundCorners
+                    onClick={caseHasBeenEdited === true ? () => setCloseDialog(true) : props.handleClose}
+                  >
                     <Template code="BottomBar-Close" />
                   </StyledNextStepButton>
                   <CloseTaskDialog open={closeDialog} onClose={props.handleClose}>
@@ -717,16 +721,14 @@ const Case: React.FC<Props> = props => {
                     <CloseDialogText>
                       <Template code="BottomBar-SaveOnClose" />
                     </CloseDialogText>
-                    <Box margin="25px">
-                      <Row>
-                        <StyledNextStepButton secondary onClick={props.handleClose} margin="auto">
-                          <Template code="BottomBar-DontSave" />
-                        </StyledNextStepButton>
-                        <StyledNextStepButton disabled={null} onClick={handleUpdate} margin="auto">
-                          <Template code="BottomBar-Save" />
-                        </StyledNextStepButton>
-                      </Row>
-                    </Box>
+                    <Row>
+                      <StyledNextStepButton secondary onClick={props.handleClose} margin="auto">
+                        <Template code="BottomBar-DontSave" />
+                      </StyledNextStepButton>
+                      <StyledNextStepButton disabled={null} onClick={handleUpdate} margin="auto">
+                        <Template code="BottomBar-Save" />
+                      </StyledNextStepButton>
+                    </Row>
                   </CloseTaskDialog>
                 </Box>
                 <StyledNextStepButton disabled={!caseHasBeenEdited} roundCorners onClick={handleUpdate}>
