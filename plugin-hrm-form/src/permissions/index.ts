@@ -1,7 +1,6 @@
 import { getConfig } from '../HrmFormPlugin';
 import type * as t from '../types/types';
-
-const zmRules = require('./zm.json');
+import { fetchRules } from './fetchRules';
 
 export const PermissionActions = {
   CLOSE_CASE: 'closeCase',
@@ -30,25 +29,9 @@ type Condition = 'isSupervisor' | 'isCreator' | 'isCaseOpen' | 'everyone';
 type ConditionSet = Condition[];
 type ConditionSets = ConditionSet[];
 
-// TODO: do this once, on initialization, then consume from the global state.
-const fetchRules = (permissionConfig: string) => {
-  try {
-    // eslint-disable-next-line global-require
-    const rules = require(`./${permissionConfig}.json`);
-
-    if (!rules) throw new Error(`Cannot find rules for ${permissionConfig}`);
-
-    return rules;
-  } catch (err) {
-    const errorMessage = err.message ?? err;
-    console.error('Error fetching rules, using fallback rules. ', errorMessage);
-
-    return zmRules;
-  }
-};
-
 export const getPermissionsForCase = (twilioWorkerId: t.Case['twilioWorkerId'], status: t.Case['status']) => {
   const { workerSid, isSupervisor, permissionConfig } = getConfig();
+
   if (!permissionConfig || !twilioWorkerId || !status) return { can: undefined };
 
   const isCreator = workerSid === twilioWorkerId;
