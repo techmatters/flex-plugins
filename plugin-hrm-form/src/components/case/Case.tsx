@@ -320,7 +320,10 @@ const Case: React.FC<Props> = props => {
       window.alert(strings['Error-Backend']);
     } finally {
       setLoading(false);
-      if (closeDialog === true) setCloseDialog(false);
+      if (closeDialog === true) {
+        setCloseDialog(false);
+        props.handleClose();
+      }
     }
   };
 
@@ -722,13 +725,14 @@ const Case: React.FC<Props> = props => {
                       <Template code="BottomBar-SaveOnClose" />
                     </CloseDialogText>
                     <Row>
-                      <StyledNextStepButton secondary onClick={props.handleClose} margin="auto">
+                      <StyledNextStepButton secondary onClick={props.handleClose} margin="15px auto">
                         <Template code="BottomBar-DontSave" />
                       </StyledNextStepButton>
-                      <StyledNextStepButton disabled={null} onClick={handleUpdate} margin="auto">
+                      <StyledNextStepButton disabled={null} onClick={handleUpdate} margin="15px auto">
                         <Template code="BottomBar-Save" />
                       </StyledNextStepButton>
                     </Row>
+                    <Box marginBottom="25px" />
                   </CloseTaskDialog>
                 </Box>
                 <StyledNextStepButton disabled={!caseHasBeenEdited} roundCorners onClick={handleUpdate}>
