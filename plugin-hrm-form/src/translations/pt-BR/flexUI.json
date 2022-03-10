@@ -336,6 +336,7 @@
   "Case-CaseDetailsOwner": "Atendente",
   "Case-CaseDetailsStatusOpen": "Abrir",
   "Case-CloseButton": "Fechar",
+  "Case-EditButton": "Editar",
   "Case-PerpetratorName": "Perpetrator Name: ",
   "Case-PerpetratorGender": "Gender: ",
   "Case-PerpetratorAge": "Age: ",
