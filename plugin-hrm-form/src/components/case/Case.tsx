@@ -714,7 +714,7 @@ const Case: React.FC<Props> = props => {
                   >
                     <Template code="BottomBar-Close" />
                   </StyledNextStepButton>
-                  <CloseTaskDialog open={closeDialog} onClose={()=>setCloseDialog(false)}>
+                  <CloseTaskDialog open={closeDialog} onClose={() => setCloseDialog(false)}>
                     <Box marginLeft="auto" onClick={() => setCloseDialog(false)}>
                       <HiddenText id="CloseButton">
                         <Template code="CloseButton" />
