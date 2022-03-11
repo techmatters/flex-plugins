@@ -1,0 +1,20 @@
+{
+  "closeCase": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
+  "reopenCase": [["isSupervisor"]],
+  "caseStatusTransition": [],
+  "addNote": [["everyone"]],
+  "editNote": [["everyone"]],
+  "addReferral": [["everyone"]],
+  "editReferral": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
+  "addHousehold": [["everyone"]],
+  "editHousehold": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
+  "addPerpetrator": [["everyone"]],
+  "editPerpetrator": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
+  "addIncident": [["everyone"]],
+  "editIncident": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
+  "addDocument": [["everyone"]],
+  "editDocument": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
+  "editCaseSummary": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
+  "editChildIsAtRisk": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
+  "editFollowUpDate": [["isSupervisor"], ["isCreator", "isCaseOpen"]]
+}
