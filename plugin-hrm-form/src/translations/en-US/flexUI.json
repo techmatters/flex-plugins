@@ -308,5 +308,9 @@
   "BottomBar-SendAnotherReport": "Send Another Report",
   "BottomBar-CloseView": "Close View",
   "CopyCode": "Copy Code",
-  "Copied": "Copied!"
+  "Copied": "Copied!",
+  
+  "BottomBar-SaveOnClose": "Save Changes?",
+  "BottomBar-DontSave": "No, Don't Save",
+  "BottomBar-Save": "Yes, Save"
 }
