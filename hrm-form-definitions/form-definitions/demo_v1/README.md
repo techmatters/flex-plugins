@@ -27,7 +27,7 @@ The Aselo demo environments are a mock Aselo helpline with a generic form defini
 1. In Google Drive -- Edit customization spreadsheets to reflect the current CHI data frameworks (glossary [here](https://drive.google.com/file/d/18ouXwDYmHjXah32f09_Evouv9PG3Hgvl/view))
 2. In Github -- Edit form definition jsons to reflect the customizations
 
-> Here is how each json file correspondants to the google sheet:
+**Here is how each json file correspondants to the google sheet:**
 
 *Case forms*
 
@@ -44,38 +44,22 @@ The Aselo demo environments are a mock Aselo helpline with a generic form defini
 `.../tabbedForms/ChildInformationTab.json` <-> `Contacts Data Capture - Demo > Child Information`  
 `.../tabbedForms/IssueCategorizationTab.json` <-> `Contacts Data Capture - Demo > Categories`  
 
-#### Customize basic platform data
+*Customize basic platform data*
 
 `...CallTypeButtons.json` <-> `Basic Platform Data - Demo > Call Types`  
 `.../CannedResponses.json` <-> `Custom Messages Data - Demo > Canned Responses`
 
 
-#### Other customizations
+> other customizations
+> - Pre-survey chatbot
+> - Post-survey chatbot
+> - Operating hours
+> - automated messaging
+> - Insights
+> - All channels supported
+> - Permissions
+> - Checkbox for if it’s a perpetrator, in the HouseholdForm.json
 
-> TBD
-
-Pre-survey chatbot
-
-Post-survey chatbot
-
-Operating hours
-
-automated messaging
-
-Insights
-
-All channels supported
-- Voice
-- SMS
-- Facebook
-- WhatsApp
-- Webchat
-- Twitter
-- IG (once IG is done)
-
-Permissions
-
-Checkbox for if it’s a perpetrator, in the HouseholdForm.json
 
 ### Step 3: Test before pushing to Github
 
