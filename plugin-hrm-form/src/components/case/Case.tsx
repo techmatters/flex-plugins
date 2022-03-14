@@ -57,6 +57,7 @@ import DocumentInformationRow from './DocumentInformationRow';
 import AddEditCaseItem from './AddEditCaseItem';
 import ViewCaseItem from './ViewCaseItem';
 import documentUploadHandler from './documentUploadHandler';
+import TabPressWrapper from '../TabPressWrapper';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -715,24 +716,26 @@ const Case: React.FC<Props> = props => {
                     <Template code="BottomBar-Close" />
                   </StyledNextStepButton>
                   <CloseTaskDialog open={closeDialog} onClose={() => setCloseDialog(false)}>
-                    <Box marginLeft="auto" onClick={() => setCloseDialog(false)}>
-                      <HiddenText id="CloseButton">
-                        <Template code="CloseButton" />
-                      </HiddenText>
-                      <CloseButton aria-label="CloseButton" />
-                    </Box>
+                    <TabPressWrapper>
+                      <Box textAlign="end" onClick={() => setCloseDialog(false)} tabIndex={3}>
+                        <HiddenText id="CloseButton">
+                          <Template code="CloseButton" />
+                        </HiddenText>
+                        <CloseButton aria-label="CloseButton" />
+                      </Box>
                     <CloseDialogText>
                       <Template code="BottomBar-SaveOnClose" />
                     </CloseDialogText>
-                    <Row>
-                      <StyledNextStepButton secondary onClick={props.handleClose} margin="15px auto">
+                    <Row> 
+                      <StyledNextStepButton tabIndex={1} secondary onClick={props.handleClose} margin="15px auto">
                         <Template code="BottomBar-DontSave" />
                       </StyledNextStepButton>
-                      <StyledNextStepButton disabled={null} onClick={handleUpdate} margin="15px auto">
+                      <StyledNextStepButton tabIndex={2} onClick={handleUpdate} margin="15px auto">
                         <Template code="BottomBar-Save" />
                       </StyledNextStepButton>
                     </Row>
                     <Box marginBottom="25px" />
+                    </TabPressWrapper>
                   </CloseTaskDialog>
                 </Box>
                 <StyledNextStepButton disabled={!caseHasBeenEdited} roundCorners onClick={handleUpdate}>
