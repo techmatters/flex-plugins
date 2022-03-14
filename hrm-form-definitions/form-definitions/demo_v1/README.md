@@ -1,47 +1,47 @@
-# Aselo Demo Staging/Production Environments
+
+# Aselo Demo Environments
 
 ## Overview
 
-Staging : 
+The Aselo demo environments serve as a mock Aselo helpline with a generic set of form definitions and default customizations.
 
-Production : 
+We will have separate demo staging and demo production environments. We treat them in the same way as any other staging and production environments.
 
+Benefits of the demo environments:
+- Clean, generic demo
+- Eng can deploy new features to the demo environment and consider it “done,” before actually deploying to any of the actual helplines
+- Security testing
 
 ## How I set up the demo environments
 
 ### Step 1: Create Customization Files
-- Create new customization sheets folder in Google Drive: `Tech Matters > Aselo > Implementations > Demo`
-	- Make copies from Master Customization Sheets
-		- Basic Platform Data - Demo
-		- ...
-- Created a new branch: joyce_demo_envs
-	- Created new form definitions folder: `~/flex-plugins/hrm-form-definitions/form-definitions/demo_v1/`
+1. Create a new customization sheets folder in Google Drive: `Tech Matters > Aselo > Implementations > Demo`.
+2. Make copies from the `Master Customization Sheets` folder and put them in the new folder.
+3. Created a new `joyce_demo_envs` branch in the flex-plugins repo.
+4. Under the new branch, create a definitions folder `~/flex-plugins/hrm-form-definitions/form-definitions/demo_v1/` and copy all the `.../v1` jsons into this new folder.
 
 ### Step 2: Determine customization requirements
-Edit customization spreadsheets
-- Reflect the current CHI data frameworks (glossary [here](https://drive.google.com/file/d/18ouXwDYmHjXah32f09_Evouv9PG3Hgvl/view))
-
-Edit form definition jsons to reflect the customizations
-
+1. Edit customization spreadsheets to reflect the current CHI data frameworks (glossary [here](https://drive.google.com/file/d/18ouXwDYmHjXah32f09_Evouv9PG3Hgvl/view))
+2. Edit form definition jsons to reflect the customizations
 
 #### Customize form definitions
 
-**case forms**
-`/caseForms/HouseholdForm.json` <-> `Cases Data Capture - Demo > Household Member`
-`/caseForms/IncidentForm.json` <-> `Cases Data Capture - Demo > Incident`
-`/caseForms/PerpetratorForm.json` <-> `Cases Data Capture - Demo > Perpetrator`
-`/caseForms/ReferralForm.json` <-> `Cases Data Capture - Demo > Referral`
-`/CaseStatus.json` <-> `Cases Data Capture - Demo > Case Detail`
+**Case forms**
+`/caseForms/HouseholdForm.json` <-> `Cases Data Capture - Demo > Household Member`  
+`/caseForms/IncidentForm.json` <-> `Cases Data Capture - Demo > Incident`  
+`/caseForms/PerpetratorForm.json` <-> `Cases Data Capture - Demo > Perpetrator`  
+`/caseForms/ReferralForm.json` <-> `Cases Data Capture - Demo > Referral`  
+`/CaseStatus.json` <-> `Cases Data Capture - Demo > Case Detail`  
 
-**contact (tabbed) forms**
-`/tabbedForms/CallerInformationTab.json` <-> `Contacts Data Capture - Demo > Caller Information`
-`/tabbedForms/CaseInformationTab.json` <-> `Contacts Data Capture - Demo > Summary`
-`/tabbedForms/ChildInformationTab.json` <-> `Contacts Data Capture - Demo > Child Information`
-`/tabbedForms/IssueCategorizationTab.json` <-> `Contacts Data Capture - Demo > Categories`
+**Contact (tabbed) forms**
+`/tabbedForms/CallerInformationTab.json` <-> `Contacts Data Capture - Demo > Caller Information`  
+`/tabbedForms/CaseInformationTab.json` <-> `Contacts Data Capture - Demo > Summary`  
+`/tabbedForms/ChildInformationTab.json` <-> `Contacts Data Capture - Demo > Child Information`  
+`/tabbedForms/IssueCategorizationTab.json` <-> `Contacts Data Capture - Demo > Categories`  
 
 #### Customize basic platform data
 
-`/CallTypeButtons.json` <-> `Basic Platform Data - Demo > Call Types`
+`/CallTypeButtons.json` <-> `Basic Platform Data - Demo > Call Types`  
 `/CannedResponses.json` <-> `Custom Messages Data - Demo > Canned Responses`
 
 
