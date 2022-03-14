@@ -1,13 +1,10 @@
 # Aselo Demo Staging/Production Environments
 
+## Overview
+
 Staging : 
 
 Production : 
-
-## Feature highlights
-
-The "customizable" symbol:
-
 
 
 ## How I set up the demo environments
@@ -27,31 +24,36 @@ Edit customization spreadsheets
 Edit form definition jsons to reflect the customizations
 
 
-##### Customize case forms
+#### Customize form definitions
+
+**case forms**
 `/caseForms/HouseholdForm.json` <-> `Cases Data Capture - Demo > Household Member`
 `/caseForms/IncidentForm.json` <-> `Cases Data Capture - Demo > Incident`
 `/caseForms/PerpetratorForm.json` <-> `Cases Data Capture - Demo > Perpetrator`
 `/caseForms/ReferralForm.json` <-> `Cases Data Capture - Demo > Referral`
 `/CaseStatus.json` <-> `Cases Data Capture - Demo > Case Detail`
 
-
-##### Customize contact (tabbed) forms
+**contact (tabbed) forms**
 `/tabbedForms/CallerInformationTab.json` <-> `Contacts Data Capture - Demo > Caller Information`
+`/tabbedForms/CaseInformationTab.json` <-> `Contacts Data Capture - Demo > Summary`
+`/tabbedForms/ChildInformationTab.json` <-> `Contacts Data Capture - Demo > Child Information`
+`/tabbedForms/IssueCategorizationTab.json` <-> `Contacts Data Capture - Demo > Categories`
 
+#### Customize basic platform data
+
+`/CallTypeButtons.json` <-> `Basic Platform Data - Demo > Call Types`
+`/CannedResponses.json` <-> `Custom Messages Data - Demo > Canned Responses`
+
+
+#### Customize insights
+?
 
 ### Step 3: Test before pushing to Github
-Create a pull request with ABC members to look at
+?
 
-
-
-## Background on demo environments
-
-
-## Next phase demo features
+## Next phase features
 - multiple languages
-
-
-
-Notes:
-Callers formet (adult on behalf of a child, child, child on behalf of another child, person in a position of responsibility)
-Repeat callers
+- multiple helplines
+- Create a customized case form
+- create a "customizable" symbol in the demo environment
+- More advanced pre-survey chatbot and routing

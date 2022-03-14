@@ -18,12 +18,6 @@
         "category": "non-data"
     },
     {
-        "name": "blank",
-        "label": "Blank",
-        "type": "button",
-        "category": "non-data"
-    },
-    {
         "name": "joke",
         "label": "Joke",
         "type": "button",
@@ -44,6 +38,30 @@
     {
         "name": "abusive",
         "label": "Abusive",
+        "type": "button",
+        "category": "non-data"
+    },
+    {
+        "name": "gratitude",
+        "label": "Gratitude",
+        "type": "button",
+        "category": "non-data"
+    },
+    {
+        "name": "questions",
+        "label": "Questions",
+        "type": "button",
+        "category": "non-data"
+    },
+    {
+        "name": "complaints",
+        "label": "Complaints",
+        "type": "button",
+        "category": "non-data"
+    },
+    {
+        "name": "other",
+        "label": "Unspecified/Other",
         "type": "button",
         "category": "non-data"
     }

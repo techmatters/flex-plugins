@@ -33,14 +33,10 @@
     "label": "How did you know about our line/number",
     "type": "select",
     "options": [
-      { "value": "Unknown", "label": "" },
-      { "value": "Radio", "label": "Radio" },
-      { "value": "Television", "label": "Television" },
-      { "value": "School", "label": "School" },
-      { "value": "Community", "label": "Community" },
+      { "value": "Word of mouth", "label": "Word of mouth" },
+      { "value": "Media", "label": "Media" },
       { "value": "Friend", "label": "Friend" },
-      { "value": "Social media", "label": "Social media" },
-      { "value": "Partners", "label": "Partners" },
+      { "value": "School", "label": "School" },
       { "value": "Others", "label": "Others" }
     ]
   },
