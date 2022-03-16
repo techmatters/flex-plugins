@@ -1,5 +1,5 @@
 {
-  "ChildLine Zambia (ZM)": {
+  "ChildLine ABC": {
     "Missing children": {
       "color": "#BBE3FF",
       "subcategories": [
@@ -119,20 +119,9 @@
         "Sexual behaviours",
         "Unspecified/Other"
       ]
-    },
-    "Non-Counselling contacts": {
-      "color": "#767777",
-      "subcategories": [
-        "Complaints about the child helpline",
-        "Questions by parents",
-        "Questions about the child helpline",
-        "Questions about other services",
-        "\"Thank you for your assistance\"",
-        "Unspecified/Other"
-      ]
     }
   },
-  "LifeLine Zambia (ZM)": {
+  "LifeLine XYZ": {
     "Physical and Sexual Health": {
       "color": "#BBE3FF",
       "subcategories": [
@@ -226,17 +215,6 @@
         "Serious Complaints - SCT",
         "Exit - SCT",
         "Unspecified/Other - SCT"
-      ]
-    },
-    "Non-Counselling contacts": {
-      "color": "#767777",
-      "subcategories": [
-        "Complaints about the child helpline",
-        "Questions by parents",
-        "Questions about the child helpline",
-        "Questions about other services",
-        "\"Thank you for your assistance\"",
-        "Unspecified/Other"
       ]
     }
   }

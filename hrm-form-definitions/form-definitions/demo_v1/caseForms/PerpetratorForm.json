@@ -41,62 +41,43 @@
   },
   {
     "name": "province",
-    "label": "Province",
+    "label": "Province (c)",
     "type": "select",
     "options": [
       { "value": "", "label": "" },
-      { "value": "Central", "label": "Central" },
-      { "value": "Copperbelt", "label": "Copperbelt" },
+      { "value": "Northern", "label": "Northern" },
       { "value": "Eastern", "label": "Eastern" },
+      { "value": "Western", "label": "Western" },
+      { "value": "Southern", "label": "Southern" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
     "name": "district",
-    "label": "District",
+    "label": "District (c)",
     "type": "dependent-select",
     "dependsOn": "province",
     "defaultOption": { "value": "", "label": "" },
     "options": {
-      "Central": [
-        { "value": "Chibombo", "label": "Chibombo" },
-        { "value": "Chisamba", "label": "Chisamba" },
-        { "value": "Chitambo", "label": "Chitambo" },
-        { "value": "Itezhi-Tezhi", "label": "Itezhi-Tezhi" },
-        { "value": "Kabwe", "label": "Kabwe" },
-        { "value": "KapiriMposhi", "label": "KapiriMposhi" },
-        { "value": "Luano", "label": "Luano" },
-        { "value": "Mkushi", "label": "Mkushi" },
-        { "value": "Mumbwa", "label": "Mumbwa" },
-        { "value": "Ngabwe", "label": "Ngabwe" },
-        { "value": "Serenje", "label": "Serenje" },
-        { "value": "Shibuyunji", "label": "Shibuyunji" },
-        { "value": "Unknown", "label": "Unknown" }
-      ],
-      "Copperbelt": [
-        { "value": "Chililabombwe", "label": "Chililabombwe" },
-        { "value": "Chingola", "label": "Chingola" },
-        { "value": "Kalulushi", "label": "Kalulushi" },
-        { "value": "Kitwe", "label": "Kitwe" },
-        { "value": "Luanshya", "label": "Luanshya" },
-        { "value": "Lufwanyama", "label": "Lufwanyama" },
-        { "value": "Masaiti", "label": "Masaiti" },
-        { "value": "Mpongwe", "label": "Mpongwe" },
-        { "value": "Mufulira", "label": "Mufulira" },
-        { "value": "Ndola", "label": "Ndola" },
-        { "value": "Unknown", "label": "Unknown" }
+      "Northern": [
+        { "value": "District A", "label": "District A" },
+        { "value": "District B", "label": "District B" },
+        { "value": "District C", "label": "District C" }
       ],
       "Eastern": [
-        { "value": "Chadiza", "label": "Chadiza" },
-        { "value": "Chipata", "label": "Chipata" },
-        { "value": "Katete", "label": "Katete" },
-        { "value": "Lundazi", "label": "Lundazi" },
-        { "value": "Mambwe", "label": "Mambwe" },
-        { "value": "Nyimba", "label": "Nyimba" },
-        { "value": "Petauke", "label": "Petauke" },
-        { "value": "Sinda", "label": "Sinda" },
-        { "value": "Vubwi", "label": "Vubwi" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "District A", "label": "District A" },
+        { "value": "District B", "label": "District B" },
+        { "value": "District C", "label": "District C" }
+      ],
+      "Western": [
+        { "value": "District A", "label": "District A" },
+        { "value": "District B", "label": "District B" },
+        { "value": "District C", "label": "District C" }
+      ],
+      "Southern": [
+        { "value": "District A", "label": "District A" },
+        { "value": "District B", "label": "District B" },
+        { "value": "District C", "label": "District C" }
       ]
     },
     "required": { "value": true, "message": "RequiredFieldError" }
@@ -204,18 +185,15 @@
   },
   {
     "name": "language",
-    "label": "Language",
+    "label": "Language (c)",
     "type": "select",
     "options": [
       { "value": "Unknown", "label": "" },
+      { "value": "Hausa", "label": "Hausa" },
+      { "value": "English", "label": "English" },
+      { "value": "Xhosa", "label": "Xhosa" },
       { "value": "Bemba", "label": "Bemba" },
-      { "value": "en-US", "label": "English" },
-      { "value": "Kaonde", "label": "Kaonde" },
-      { "value": "Lozi", "label": "Lozi" },
-      { "value": "Lunda", "label": "Lunda" },
-      { "value": "Luvale", "label": "Luvale" },
-      { "value": "Nyanja", "label": "Nyanja" },
-      { "value": "Tonga", "label": "Tonga" }
+      { "value": "Other", "label": "Other" },
     ]  
   },
   {

@@ -29,7 +29,7 @@ The Aselo demo environments are a mock Aselo helpline with a generic form defini
 1. In Google Drive -- Edit customization spreadsheets to reflect the current CHI data frameworks (glossary [here](https://drive.google.com/file/d/18ouXwDYmHjXah32f09_Evouv9PG3Hgvl/view))
 2. In Github -- Edit form definition jsons to reflect the customizations
 
-**Here is how each json file correspondants to the google sheet:**
+> Edit json files based on the google sheets
 
 *Case forms*
 
@@ -52,8 +52,20 @@ The Aselo demo environments are a mock Aselo helpline with a generic form defini
 `.../CannedResponses.json` <-> `Custom Messages Data - Demo > Canned Responses`
 
 
-`HelplineInformation.json`
+> Edit json files using other information
 
+`.../HelplineInformation.json`  
+`.../PrepopulateKeys.json`
+
+
+Can we come up with some more basic Canned Responses that we think would be helpful for the helpline to visualize the purpose of this feature? 
+
+Some examples I'm just brainstorming:
+- Thanks for contacting
+- Confidentiality / Privacy
+- Contacting Emergency Services
+- Helpline operating hours closing
+- Are you still there (silent)
 
 
 

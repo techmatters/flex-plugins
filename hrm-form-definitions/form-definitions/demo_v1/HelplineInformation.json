@@ -2,23 +2,23 @@
   "label": "Helpline",
   "helplines": [
     {
-      "label": "ChildLine",
-      "value": "ChildLine Zambia (ZM)",
+      "label": "ChildLine ABC",
+      "value": "ChildLine ABC",
       "default": true,
       "manager": {
-        "name": "Beenzu Mweetwa",
-        "phone": "+260 97 798 3966",
-        "email": "bflochibeka@gmail.com"
+        "name": "Dee Manager",
+        "phone": "+123 45 678",
+        "email": "dee@techmatters.org"
       }
     },
     {
-      "label": "LifeLine",
-      "value": "LifeLine Zambia (ZM)",
+      "label": "LifeLine XYZ",
+      "value": "LifeLine XYZ",
       "default": false,
       "manager": {
-        "name": "Ernest Chibesa Chilufya",
-        "phone": "+260 97 995 4048",
-        "email": "chibesaernest@gmail.com"
+        "name": "Dee Manager",
+        "phone": "+123 45 678",
+        "email": "dee@techmatters.org"
       }
     }
   ]

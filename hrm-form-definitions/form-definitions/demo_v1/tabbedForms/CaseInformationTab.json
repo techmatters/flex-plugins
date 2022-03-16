@@ -8,7 +8,7 @@
   {
     "name": "repeatCaller",
     "label": "Repeat Caller?",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   },
   {
     "name": "actionTaken",
@@ -30,7 +30,7 @@
   },
   {
     "name": "howDidYouKnowAboutOurLine",
-    "label": "How did you know about our line/number",
+    "label": "How did you know about our line/number (c)",
     "type": "select",
     "options": [
       { "value": "Word of mouth", "label": "Word of mouth" },
@@ -43,12 +43,17 @@
   {
     "name": "keepConfidential",
     "label": "Keep confidential?",
-    "type": "checkbox",
+    "type": "mixed-checkbox",
     "initialChecked": true
   },
   {
+    "name": "mustCallBack",
+    "label": "Is it necessary for a case worker to call back?",
+    "type": "mixed-checkbox"
+  },
+  {
     "name": "okForCaseWorkerToCall",
-    "label": "Ok for case worker to call?",
+    "label": "Is it okay for case worker to call?",
     "type": "mixed-checkbox"
   },
   {
