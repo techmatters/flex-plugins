@@ -351,7 +351,10 @@ export const setUpPostSurvey = setupObject => {
 const triggerPostSurvey = async (setupObject, payload) => {
   const { task } = payload;
 
-  if (TaskHelper.isChatBasedTask(task) && !isAseloCustomChannelTask(task)) {
+  const shouldTriggerPostSurvey =
+    TaskHelper.isChatBasedTask(task) && !isAseloCustomChannelTask(task) && TransferHelpers.hasTaskControl(task);
+
+  if (shouldTriggerPostSurvey) {
     const { taskSid } = task;
     const channelSid = TaskHelper.getTaskChatChannelSid(task);
     const taskLanguage = getTaskLanguage(setupObject)(payload);

@@ -78,7 +78,7 @@ export const NonDataCallTypeButton = styled(Button)<NonDataCallTypeButtonProps>`
 
 export const CloseTaskDialog = styled<DialogProps>(props => <Dialog {...props} classes={{ paper: 'paper' }} />)`
   && .paper {
-    width: 350px;
+    width: 360px;
   }
 `;
 

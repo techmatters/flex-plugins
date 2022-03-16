@@ -365,3 +365,12 @@ export const StyledSelectField = styled(({ color, ...rest }: StyledSelectFieldPr
 `;
 
 StyledSelectField.displayName = 'StyledSelectField';
+
+export const CloseDialogText = styled('p')`
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  align-self: center;
+`;
+
+CloseDialogText.displayName = 'CloseDialogText';

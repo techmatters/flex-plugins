@@ -2,6 +2,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
+import Edit from '@material-ui/icons/Edit';
 import { FormDefinition } from 'hrm-form-definitions';
 
 import { Container, StyledNextStepButton, BottomButtonBar, Box } from '../../styles/HrmStyles';
