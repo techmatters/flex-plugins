@@ -2,6 +2,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
+import Edit from '@material-ui/icons/Edit';
 import { FormDefinition } from 'hrm-form-definitions';
 
 import { Container, StyledNextStepButton, BottomButtonBar, Box } from '../../styles/HrmStyles';
@@ -93,9 +94,12 @@ const ViewCaseItem: React.FC<Props> = ({
         )}
       </Container>
       <BottomButtonBar>
-        <StyledNextStepButton roundCorners onClick={onEditCaseItemClick} data-testid="Case-EditButton">
-          <Template code="EditButton" />
-        </StyledNextStepButton>
+        <Box marginRight="15px">
+          <StyledNextStepButton roundCorners onClick={onEditCaseItemClick} secondary data-testid="Case-EditButton">
+            <Edit fontSize="inherit" style={{ marginRight: 5 }} />
+            <Template code="EditButton" />
+          </StyledNextStepButton>
+        </Box>
         <StyledNextStepButton roundCorners onClick={onClickClose} data-testid="Case-CloseButton">
           <Template code="CloseButton" />
         </StyledNextStepButton>
