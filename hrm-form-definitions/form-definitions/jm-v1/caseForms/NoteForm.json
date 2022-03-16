@@ -4,31 +4,31 @@
     "label": "Subjective",
     "type": "textarea",
     "placeholder": "",
-    "rows": 5,
-    "width": 500
+    "rows": 10,
+    "width": 250
   },
   {
     "name": "objective",
     "label": "Objective",
     "type": "textarea",
     "placeholder": "",
-    "rows": 5,
-    "width": 500
+    "rows": 10,
+    "width": 250
   },
   {
     "name": "assessment",
     "label": "Assessment",
     "type": "textarea",
     "placeholder": "",
-    "rows": 5,
-    "width": 500
+    "rows": 10,
+    "width": 250
   },
   {
     "name": "plan",
     "label": "Plan",
     "type": "textarea",
     "placeholder": "",
-    "rows": 5,
-    "width": 500
+    "rows": 10,
+    "width": 250
   }
 ]

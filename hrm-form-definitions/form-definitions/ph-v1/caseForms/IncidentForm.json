@@ -36,6 +36,11 @@
     }
   },
   {
+    "name": "otherSpecify",
+    "label": "If other, specify years/months",
+    "type": "input"
+  },
+  {
     "name": "location",
     "label": "Location",
     "type": "select",
@@ -53,8 +58,12 @@
         "label": "School"
       },
       {
-        "value": "Home",
-        "label": "Home"
+        "value": "HomeOwn",
+        "label": "Home (own)"
+      },
+      {
+        "value": "HomeOther",
+        "label": "Home (other)"
       },
       {
         "value": "Institution",
@@ -69,6 +78,14 @@
         "label": "Public Place"
       },
       {
+        "value": "Community",
+        "label": "Community"
+      },
+      {
+        "value": "Travel & Tourism Establishment",
+        "label": "Travel & Tourism Establishment"
+      },
+      {
         "value": "Other",
         "label": "Other"
       }
@@ -77,6 +94,11 @@
       "value": true,
       "message": "RequiredFieldError"
     }
+  },
+  {
+    "name": "establishmentSpecify",
+    "label": "Specify name of Establishment",
+    "type": "input"
   },
   {
     "name": "isCaregiverAware",
@@ -97,5 +119,13 @@
     "name": "whereElseBeenReported",
     "label": "Where else the incident has been reported?",
     "type": "mixed-checkbox"
+  },
+  {
+    "name": "note",
+    "label": "Note",
+    "type": "textarea",
+    "placeholder": "Type here to add note...",
+    "rows": 10,
+    "width": 500
   }
 ]

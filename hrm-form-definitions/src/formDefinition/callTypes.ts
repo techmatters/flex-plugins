@@ -1,16 +1,10 @@
+// Data callTypes. Preserving name to avoid big refactor
 export const callTypes = {
   child: 'Child calling about self',
   caller: 'Someone calling about a child',
-  silent: 'Silent',
-  blank: 'Blank',
-  joke: 'Joke',
-  hangup: 'Hang up',
-  wrongnumber: 'Wrong Number',
-  abusive: 'Abusive',
-  adult: 'Adult Contact',
-  test: 'test',
 } as const;
 
-export type CallTypeKeys = keyof typeof callTypes;
-export type CallTypes = typeof callTypes[keyof typeof callTypes];
-export type DataCallTypes = typeof callTypes['child' | 'caller'];
+export type DataCallTypesKeys = keyof typeof callTypes;
+export type CallTypeKeys = DataCallTypesKeys | string; // This results in "strings" as it's a broader type. Leaving the DataCallTypesKeys in intentionally to emphasize them.
+export type DataCallTypes = typeof callTypes[keyof typeof callTypes];
+export type CallTypes = DataCallTypes | string; // This results in "strings" as it's a broader type. Leaving the DataCallTypes in intentionally to emphasize them.

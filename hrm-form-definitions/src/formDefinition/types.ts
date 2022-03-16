@@ -110,7 +110,7 @@ export type FormDefinition = FormItemDefinition[];
 export type CategoryEntry = { color: string; subcategories: string[] };
 export type CategoriesDefinition = { [category: string]: CategoryEntry };
 
-type CallTypeButtonsEntry = {
+export type CallTypeButtonsEntry = {
   type: 'button';
   name: CallTypeKeys;
   label: string;

@@ -1,1 +1,103 @@
-{}
+{
+  "contactForm": {
+    "callerInformation": [
+      {
+        "name": "relationshipToChild",
+        "insights": ["conversations", "initiated_by"]
+      }
+    ],
+    "childInformation": [
+      {
+        "name": "province",
+        "insights": ["customers", "city"]
+      },
+      {
+        "name": "gradeLevel",
+        "insights": ["customers", "acquisition_date"]
+      },
+      {
+        "name": "livingSituation",
+        "insights": ["customers", "customer_attribute_1"]
+      },
+      {
+        "name": "inConflictWithTheLaw",
+        "insights": ["conversations", "conversation_measure_1"],
+        "type": "mixed-checkbox"
+      },
+      {
+        "name": "livingInConflictZone",
+        "insights": ["conversations", "conversation_measure_2"],
+        "type": "mixed-checkbox"
+      },
+      {
+        "name": "livingInPoverty",
+        "insights": ["conversations", "conversation_measure_3"],
+        "type": "mixed-checkbox"
+      },
+      {
+        "name": "memberOfAnEthnic",
+        "insights": ["conversations", "conversation_measure_4"],
+        "type": "mixed-checkbox"
+      },
+      {
+        "name": "childWithDisability",
+        "insights": ["customers", "customer_attribute_3"],
+        "type": "mixed-checkbox"
+      }
+    ],
+    "caseInformation": [
+      {
+        "name": "repeatCaller",
+        "insights": ["conversations", "conversation_attribute_7"],
+        "type": "mixed-checkbox"
+      },
+      {
+        "name": "actionTaken",
+        "insights": ["conversations", "initiative"]
+      },
+      {
+        "name": "didTheChildFeelWeSolvedTheirProblem",
+        "insights": ["conversations", "productive"],
+        "type": "mixed-checkbox"
+      }
+    ]
+  },
+  "caseForm": {
+    "topLevel": [
+      {
+        "name": "id",
+        "insights": ["conversations", "case"]
+      }
+    ],
+    "perpetrator": [
+      {
+        "name": "relationshipToChild",
+        "insights": ["customers", "organization"]
+      },
+      {
+        "name": "gender",
+        "insights": ["conversations", "followed_by"]
+      },
+      {
+        "name": "age",
+        "insights": ["conversations", "preceded_by"]
+      }
+    ],
+    "incident": [
+      {
+        "name": "duration",
+        "insights": ["conversations", "in_business_hours"]
+      },
+      {
+        "name": "location",
+        "insights": ["customers", "market_segment"]
+      }
+    ],
+    "referral": [
+      {
+        "name": "referredTo",
+        "insights": ["customers", "customer_manager"]
+      }
+    ]
+  }
+}
