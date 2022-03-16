@@ -25,9 +25,8 @@ import { cancelCase, getActivities, updateCase } from '../../services/CaseServic
 import { completeTask, submitContactForm } from '../../services/formSubmissionHelpers';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { getDateFromNotSavedContact, getHelplineData, isConnectedCaseActivity, sortActivities } from './caseHelpers';
-import { BottomButtonBar, Box, Row, StyledNextStepButton, HiddenText } from '../../styles/HrmStyles';
-import { CaseContainer, CenteredContainer, CloseDialogText } from '../../styles/case';
-import { CloseTaskDialog, CloseButton } from '../../styles/callTypeButtons';
+import { BottomButtonBar, Box, StyledNextStepButton } from '../../styles/HrmStyles';
+import { CaseContainer, CenteredContainer } from '../../styles/case';
 import CaseDetails from './CaseDetails';
 import { Menu, MenuItem } from '../menu';
 import { getLocaleDateTime } from '../../utils/helpers';
@@ -57,6 +56,7 @@ import DocumentInformationRow from './DocumentInformationRow';
 import AddEditCaseItem from './AddEditCaseItem';
 import ViewCaseItem from './ViewCaseItem';
 import documentUploadHandler from './documentUploadHandler';
+import CloseCaseDialog from './CloseCaseDialog';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -714,26 +714,12 @@ const Case: React.FC<Props> = props => {
                   >
                     <Template code="BottomBar-Close" />
                   </StyledNextStepButton>
-                  <CloseTaskDialog open={closeDialog} onClose={() => setCloseDialog(false)}>
-                    <Box marginLeft="auto" onClick={() => setCloseDialog(false)}>
-                      <HiddenText id="CloseButton">
-                        <Template code="CloseButton" />
-                      </HiddenText>
-                      <CloseButton aria-label="CloseButton" />
-                    </Box>
-                    <CloseDialogText>
-                      <Template code="BottomBar-SaveOnClose" />
-                    </CloseDialogText>
-                    <Row>
-                      <StyledNextStepButton secondary onClick={props.handleClose} margin="15px auto">
-                        <Template code="BottomBar-DontSave" />
-                      </StyledNextStepButton>
-                      <StyledNextStepButton disabled={null} onClick={handleUpdate} margin="15px auto">
-                        <Template code="BottomBar-Save" />
-                      </StyledNextStepButton>
-                    </Row>
-                    <Box marginBottom="25px" />
-                  </CloseTaskDialog>
+                  <CloseCaseDialog
+                    setDialog={() => setCloseDialog(false)}
+                    handleDontSaveClose={props.handleClose}
+                    handleSaveUpdate={handleUpdate}
+                    openDialog={closeDialog}
+                  />
                 </Box>
                 <StyledNextStepButton disabled={!caseHasBeenEdited} roundCorners onClick={handleUpdate}>
                   <Template code="BottomBar-Update" />
