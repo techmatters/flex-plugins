@@ -361,7 +361,8 @@ const CaseHome: React.FC<Props> = ({
         {!isCreating && (
           <>
             <Box marginRight="15px">
-              <StyledNextStepButton data-testid="CaseHome-CloseButton"
+              <StyledNextStepButton
+                data-testid="CaseHome-CloseButton"
                 secondary
                 roundCorners
                 onClick={isEdited === true ? () => setCloseDialog(true) : handleClose}
