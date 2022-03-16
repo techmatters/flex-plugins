@@ -2,6 +2,8 @@
 # Aselo Demo Environments
 
 
+TEST TEST TEST
+
 ## Overview
 
 The Aselo demo environments are a mock Aselo helpline with a generic form definitions and default customizations. There are separate demo *staging* and demo *production* environments. We treat them the same way as any other staging and production environments. They have the following benefits:
@@ -50,26 +52,33 @@ The Aselo demo environments are a mock Aselo helpline with a generic form defini
 `.../CannedResponses.json` <-> `Custom Messages Data - Demo > Canned Responses`
 
 
-> other customizations
-> - Pre-survey chatbot
-> - Post-survey chatbot
-> - Operating hours
-> - automated messaging
-> - Insights
+`HelplineInformation.json`
+
+
+
+
+### Step 3: Deploy form defitinions
+
+
+### Step 4: Configure Twillio
+
+
+## Next phase customizations
+
+> - Operating Hours: https://github.com/techmatters/serverless/tree/master/assets/operatingInfo
+> - Webchat Configurations: https://github.com/techmatters/webchat/tree/master/configurations
+> - Automated messaging
 > - All channels supported
-> - Permissions
 > - Checkbox for if it’s a perpetrator, in the HouseholdForm.json
 
 
-### Step 3: Test before pushing to Github
-
-> ?
+Hold on Permissions
 
 
-## Next phase features
 - multiple languages
 - multiple helplines
 - Create a customized case form
 - create a "customizable" symbol in the demo environment
 - More advanced pre-survey chatbot and routing
+- Insights
 
