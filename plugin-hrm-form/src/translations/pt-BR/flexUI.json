@@ -393,6 +393,9 @@
   "PreviousContacts-Contact": "contato",
   "PreviousContacts-Contacts": "contato",
   "PreviousContacts-Case": "caso",
-  "PreviousContacts-TwitterUser": "usuário do Twitter"
+  "PreviousContacts-TwitterUser": "usuário do Twitter",
 
+  "BottomBar-SaveOnClose": "Salvar mudanças?",
+  "BottomBar-DontSave": "Não Salvar",
+  "BottomBar-Save": "Sim, Salvar"
 }

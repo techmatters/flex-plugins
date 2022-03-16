@@ -236,6 +236,7 @@ StyledMenuItem.displayName = 'StyledMenuItem';
 type StyledNextStepButtonProps = {
   secondary?: boolean;
   disabled?: boolean;
+  margin?: string;
 };
 
 export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
@@ -247,7 +248,7 @@ export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
     props.secondary ? props.theme.colors.secondaryButtonTextColor : props.theme.colors.buttonTextColor};
   border: none;
   border-radius: 4px;
-  margin: 0;
+  margin: ${props => (props.margin ? props.margin : '0')};
   padding: 7px 23px;
   background-color: ${props =>
     props.disabled

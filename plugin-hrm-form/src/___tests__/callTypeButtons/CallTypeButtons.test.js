@@ -50,6 +50,59 @@ afterEach(() => {
   jest.resetAllMocks();
 });
 
+const currentDefinitionVersion = {
+  callTypeButtons: [
+    {
+      name: 'child',
+      label: 'Child calling about self',
+      type: 'button',
+      category: 'data',
+    },
+    {
+      name: 'caller',
+      label: 'Someone calling about a child',
+      type: 'button',
+      category: 'data',
+    },
+    {
+      name: 'silent',
+      label: 'Silent',
+      type: 'button',
+      category: 'non-data',
+    },
+    {
+      name: 'blank',
+      label: 'Blank',
+      type: 'button',
+      category: 'non-data',
+    },
+    {
+      name: 'joke',
+      label: 'Joke',
+      type: 'button',
+      category: 'non-data',
+    },
+    {
+      name: 'hangup',
+      label: 'Hang up',
+      type: 'button',
+      category: 'non-data',
+    },
+    {
+      name: 'wrongnumber',
+      label: 'Wrong Number',
+      type: 'button',
+      category: 'non-data',
+    },
+    {
+      name: 'abusive',
+      label: 'Abusive',
+      type: 'button',
+      category: 'non-data',
+    },
+  ],
+};
+
 test('<CallTypeButtons> inital render (no dialog)', () => {
   const initialState = {
     [namespace]: {
@@ -61,58 +114,7 @@ test('<CallTypeButtons> inital render (no dialog)', () => {
         },
       },
       [configurationBase]: {
-        currentDefinitionVersion: {
-          callTypeButtons: [
-            {
-              name: 'child',
-              label: 'Child calling about self',
-              type: 'button',
-              category: 'data',
-            },
-            {
-              name: 'caller',
-              label: 'Someone calling about a child',
-              type: 'button',
-              category: 'data',
-            },
-            {
-              name: 'silent',
-              label: 'Silent',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'blank',
-              label: 'Blank',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'joke',
-              label: 'Joke',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'hangup',
-              label: 'Hang up',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'wrongnumber',
-              label: 'Wrong Number',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'abusive',
-              label: 'Abusive',
-              type: 'button',
-              category: 'non-data',
-            },
-          ],
-        },
+        currentDefinitionVersion,
       },
       [connectedCaseBase]: { tasks: {} },
     },
@@ -147,58 +149,7 @@ test('<CallTypeButtons> renders dialog with all buttons', () => {
         },
       },
       [configurationBase]: {
-        currentDefinitionVersion: {
-          callTypeButtons: [
-            {
-              name: 'child',
-              label: 'Child calling about self',
-              type: 'button',
-              category: 'data',
-            },
-            {
-              name: 'caller',
-              label: 'Someone calling about a child',
-              type: 'button',
-              category: 'data',
-            },
-            {
-              name: 'silent',
-              label: 'Silent',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'blank',
-              label: 'Blank',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'joke',
-              label: 'Joke',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'hangup',
-              label: 'Hang up',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'wrongnumber',
-              label: 'Wrong Number',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'abusive',
-              label: 'Abusive',
-              type: 'button',
-              category: 'non-data',
-            },
-          ],
-        },
+        currentDefinitionVersion,
       },
       [connectedCaseBase]: { tasks: {} },
     },
@@ -238,58 +189,7 @@ test('<CallTypeButtons> renders dialog with END CHAT button', () => {
         },
       },
       [configurationBase]: {
-        currentDefinitionVersion: {
-          callTypeButtons: [
-            {
-              name: 'child',
-              label: 'Child calling about self',
-              type: 'button',
-              category: 'data',
-            },
-            {
-              name: 'caller',
-              label: 'Someone calling about a child',
-              type: 'button',
-              category: 'data',
-            },
-            {
-              name: 'silent',
-              label: 'Silent',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'blank',
-              label: 'Blank',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'joke',
-              label: 'Joke',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'hangup',
-              label: 'Hang up',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'wrongnumber',
-              label: 'Wrong Number',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'abusive',
-              label: 'Abusive',
-              type: 'button',
-              category: 'non-data',
-            },
-          ],
-        },
+        currentDefinitionVersion,
       },
       [connectedCaseBase]: { tasks: {} },
     },
@@ -323,58 +223,7 @@ test('<CallTypeButtons> renders dialog with HANG UP button', () => {
         },
       },
       [configurationBase]: {
-        currentDefinitionVersion: {
-          callTypeButtons: [
-            {
-              name: 'child',
-              label: 'Child calling about self',
-              type: 'button',
-              category: 'data',
-            },
-            {
-              name: 'caller',
-              label: 'Someone calling about a child',
-              type: 'button',
-              category: 'data',
-            },
-            {
-              name: 'silent',
-              label: 'Silent',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'blank',
-              label: 'Blank',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'joke',
-              label: 'Joke',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'hangup',
-              label: 'Hang up',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'wrongnumber',
-              label: 'Wrong Number',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'abusive',
-              label: 'Abusive',
-              type: 'button',
-              category: 'non-data',
-            },
-          ],
-        },
+        currentDefinitionVersion,
       },
       [connectedCaseBase]: { tasks: {} },
     },
@@ -408,58 +257,7 @@ test('<CallTypeButtons> click on Data (Child) button', () => {
         },
       },
       [configurationBase]: {
-        currentDefinitionVersion: {
-          callTypeButtons: [
-            {
-              name: 'child',
-              label: 'Child calling about self',
-              type: 'button',
-              category: 'data',
-            },
-            {
-              name: 'caller',
-              label: 'Someone calling about a child',
-              type: 'button',
-              category: 'data',
-            },
-            {
-              name: 'silent',
-              label: 'Silent',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'blank',
-              label: 'Blank',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'joke',
-              label: 'Joke',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'hangup',
-              label: 'Hang up',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'wrongnumber',
-              label: 'Wrong Number',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'abusive',
-              label: 'Abusive',
-              type: 'button',
-              category: 'non-data',
-            },
-          ],
-        },
+        currentDefinitionVersion,
       },
       [connectedCaseBase]: { tasks: {} },
     },
@@ -497,58 +295,7 @@ test('<CallTypeButtons> click on NonData (Joke) button', () => {
         },
       },
       [configurationBase]: {
-        currentDefinitionVersion: {
-          callTypeButtons: [
-            {
-              name: 'child',
-              label: 'Child calling about self',
-              type: 'button',
-              category: 'data',
-            },
-            {
-              name: 'caller',
-              label: 'Someone calling about a child',
-              type: 'button',
-              category: 'data',
-            },
-            {
-              name: 'silent',
-              label: 'Silent',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'blank',
-              label: 'Blank',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'joke',
-              label: 'Joke',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'hangup',
-              label: 'Hang up',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'wrongnumber',
-              label: 'Wrong Number',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'abusive',
-              label: 'Abusive',
-              type: 'button',
-              category: 'non-data',
-            },
-          ],
-        },
+        currentDefinitionVersion,
       },
       [connectedCaseBase]: { tasks: {} },
     },
@@ -569,7 +316,7 @@ test('<CallTypeButtons> click on NonData (Joke) button', () => {
   expect(screen.getByText('Joke')).toBeInTheDocument();
   screen.getByText('Joke').click();
 
-  expect(store.dispatch).toHaveBeenCalledWith(updateCallType(task.taskSid, callTypes.joke));
+  expect(store.dispatch).toHaveBeenCalledWith(updateCallType(task.taskSid, 'Joke'));
 });
 
 test('<CallTypeButtons> click on END CHAT button', async () => {
@@ -583,58 +330,7 @@ test('<CallTypeButtons> click on END CHAT button', async () => {
         },
       },
       [configurationBase]: {
-        currentDefinitionVersion: {
-          callTypeButtons: [
-            {
-              name: 'child',
-              label: 'Child calling about self',
-              type: 'button',
-              category: 'data',
-            },
-            {
-              name: 'caller',
-              label: 'Someone calling about a child',
-              type: 'button',
-              category: 'data',
-            },
-            {
-              name: 'silent',
-              label: 'Silent',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'blank',
-              label: 'Blank',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'joke',
-              label: 'Joke',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'hangup',
-              label: 'Hang up',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'wrongnumber',
-              label: 'Wrong Number',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'abusive',
-              label: 'Abusive',
-              type: 'button',
-              category: 'non-data',
-            },
-          ],
-        },
+        currentDefinitionVersion,
       },
       [connectedCaseBase]: { tasks: {} },
     },
@@ -670,58 +366,7 @@ test('<CallTypeButtons> click on CANCEL button', () => {
         },
       },
       [configurationBase]: {
-        currentDefinitionVersion: {
-          callTypeButtons: [
-            {
-              name: 'child',
-              label: 'Child calling about self',
-              type: 'button',
-              category: 'data',
-            },
-            {
-              name: 'caller',
-              label: 'Someone calling about a child',
-              type: 'button',
-              category: 'data',
-            },
-            {
-              name: 'silent',
-              label: 'Silent',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'blank',
-              label: 'Blank',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'joke',
-              label: 'Joke',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'hangup',
-              label: 'Hang up',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'wrongnumber',
-              label: 'Wrong Number',
-              type: 'button',
-              category: 'non-data',
-            },
-            {
-              name: 'abusive',
-              label: 'Abusive',
-              type: 'button',
-              category: 'non-data',
-            },
-          ],
-        },
+        currentDefinitionVersion,
       },
       [connectedCaseBase]: { tasks: {} },
     },

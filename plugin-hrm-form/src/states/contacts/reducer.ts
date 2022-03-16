@@ -15,7 +15,7 @@ import type { CSAMReportEntry } from '../../types/types';
 
 export type TaskEntry = {
   helpline: string;
-  callType: CallTypes | '';
+  callType: CallTypes;
   childInformation: { [key: string]: string | boolean };
   callerInformation: { [key: string]: string | boolean };
   caseInformation: { [key: string]: string | boolean };
