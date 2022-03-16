@@ -11,14 +11,12 @@ type Props = {
   setDialog: () => void;
   handleDontSaveClose: () => void;
   handleSaveUpdate: () => void;
-  closeDialog: boolean;
+  openDialog: boolean;
 };
-
-// eslint-disable-next-line react/display-name
-export default function CloseCaseDialog({ setDialog, handleDontSaveClose, handleSaveUpdate, closeDialog }: Props) {
+export default function CloseCaseDialog({ setDialog, handleDontSaveClose, handleSaveUpdate, openDialog }: Props) {
   return (
     <>
-      <CloseTaskDialog open={closeDialog} onClose={setDialog}>
+      <CloseTaskDialog open={openDialog} onClose={setDialog}>
         <TabPressWrapper>
           <Box textAlign="end" onClick={setDialog} tabIndex={3}>
             <HiddenText id="CloseButton">
@@ -52,3 +50,5 @@ export default function CloseCaseDialog({ setDialog, handleDontSaveClose, handle
     </>
   );
 }
+
+CloseCaseDialog.displayName = 'CloseCaseDialog';

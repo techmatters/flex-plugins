@@ -718,7 +718,7 @@ const Case: React.FC<Props> = props => {
                     setDialog={() => setCloseDialog(false)}
                     handleDontSaveClose={props.handleClose}
                     handleSaveUpdate={handleUpdate}
-                    closeDialog={closeDialog}
+                    openDialog={closeDialog}
                   />
                 </Box>
                 <StyledNextStepButton disabled={!caseHasBeenEdited} roundCorners onClick={handleUpdate}>
