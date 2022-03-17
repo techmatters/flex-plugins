@@ -9,12 +9,12 @@
     "value": "closed", 
     "label": "Closed", 
     "color": "red", 
-    "transitions": ["inProgress", "open"] 
+    "transitions": ["inProgress"] 
   },
   "inProgress": { 
     "value": "inProgress", 
     "label": "In Progress", 
     "color": "blue", 
-    "transitions": ["closed", "open"] 
+    "transitions": ["closed"] 
   }
 }
