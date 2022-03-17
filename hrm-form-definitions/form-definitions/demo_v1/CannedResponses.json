@@ -1,4 +1,24 @@
 [
+  { "label": "Thank you for contacting.",
+    "text": "Thank you for contacting Childline ABC! My name is Dee. Nice to meet you."
+  },
+  { "label": "Confidentiality / Privacy",
+    "text": "Everything you say here is confidential."
+  },
+  { "label": "Contacting Emergency Services",
+    "text": "Here are ways to contact emergency services in your area: ..."
+  },
+  { "label": "Are you still here?",
+    "text": "Are you still here? If you prefer a callback, please provide your phone number and end it with the pound sign."
+  },
+  {
+    "label": "Please stay on the line.",
+    "text": "Please stay on the line. I will be back soon.",
+  }
+  {
+    "label": "Callback.",
+    "text": "If you prefer a callback, please provide your phone number and end it with the pound sign."
+  },
   {
     "label": "How do people contract HIV?",
     "text": "HIV (human immunodeficiency virus) is a virus that attacks cells that help the body fight infection, making a person more likely to get other infections and diseases. The most common way that someone can get HIV is by having unprotected sex (anal, vaginal, or oral) with a person who has HIV or sharing drug needles or other drug equipment with someone who has HIV. If you're worried about HIV you need to get help quickly and the best place to go is to your local health clinic where they have special safe spaces for teenagers and young adults."
@@ -86,5 +106,5 @@
   {
     "label": "What is Puberty?",
     "text": "Puberty is when a child's body begins to develop and change as they become an adult: ; Girls - develop breasts and start their periods.; Boys - Boys develop a deeper voice and facial hair will start to appear.; Periods - is a release of blood from a girl's uterus, out through her vagina."
-  } 
+  }
 ]

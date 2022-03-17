@@ -67,16 +67,6 @@ Edit form definition jsons to reflect the customizations in Google Sheets.
 `.../HelplineInformation.json`  
 `.../PrepopulateKeys.json`
 
-Can we come up with some more basic Canned Responses that we think would be helpful for the helpline to visualize the purpose of this feature? 
-
-Some examples I'm just brainstorming:
-- Thanks for contacting
-- Confidentiality / Privacy
-- Contacting Emergency Services
-- Helpline operating hours closing
-- Are you still there (silent)
-
-
 ### Step 3: Deploy form defitinions
 
 
