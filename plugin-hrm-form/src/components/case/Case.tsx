@@ -229,7 +229,6 @@ const Case: React.FC<Props> = ({
 
   const handleUpdate = async () => {
     setLoading(true);
-    const { strings } = getConfig();
 
     try {
       const updatedCase = await updateCase(connectedCase.id, { ...connectedCase });
@@ -242,6 +241,7 @@ const Case: React.FC<Props> = ({
     } catch (error) {
       console.error(error);
       recordBackendError('Update Case', error);
+      const { strings } = getConfig();
       window.alert(strings['Error-Backend']);
     } finally {
       setLoading(false);
