@@ -9,12 +9,12 @@ import { PermissionActions, PermissionActionType } from '../../permissions';
 
 type OwnProps = {
   onClickAddItem: () => void;
-  can: () => boolean;
+  canAdd: () => boolean;
   sectionTypeId: string;
   children?: JSX.Element;
 };
 
-const CaseSection: React.FC<OwnProps> = ({ onClickAddItem, can, children, sectionTypeId }) => {
+const CaseSection: React.FC<OwnProps> = ({ onClickAddItem, canAdd, children, sectionTypeId }) => {
   return (
     <>
       <Box marginBottom="10px">
@@ -22,7 +22,7 @@ const CaseSection: React.FC<OwnProps> = ({ onClickAddItem, can, children, sectio
           <CaseSectionFont id={`Case-Add${sectionTypeId}Section-label`}>
             <Template code={`Case-Add${sectionTypeId}Section`} />
           </CaseSectionFont>
-          <CaseAddButton templateCode={`Case-${sectionTypeId}`} onClick={onClickAddItem} disabled={!can()} />
+          <CaseAddButton templateCode={`Case-${sectionTypeId}`} onClick={onClickAddItem} disabled={!canAdd()} />
         </Row>
       </Box>
 

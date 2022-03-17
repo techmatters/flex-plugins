@@ -96,6 +96,7 @@ const ViewCaseItem: React.FC<Props> = ({
       <BottomButtonBar>
         <Box marginRight="15px">
           <StyledNextStepButton secondary roundCorners onClick={onEditCaseItemClick} data-testid="Case-EditButton">
+            <Edit fontSize="inherit" style={{ marginRight: 5 }} />
             <Template code="EditButton" />
           </StyledNextStepButton>
         </Box>
