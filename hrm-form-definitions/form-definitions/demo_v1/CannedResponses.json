@@ -1,63 +1,27 @@
 [
   { "label": "Thank you for contacting.",
-    "text": "Thank you for contacting Childline ABC! My name is Dee. Nice to meet you."
+    "text": "Thank you for contacting the helpline. We are here to support you. My name is XXX and I am a counselor at the helpline. "
   },
   { "label": "Confidentiality / Privacy",
-    "text": "Everything you say here is confidential."
+    "text": "Before we continue, I would love for you to know that this is a safe space for you to just talk and share the challenges that you are having. Everything you say here will remain here except in cases where you indicate that you are being harmed by someone (meaning any form of abuse), that you want to harm yourself (meaning suicide) or you want to harm someone. In any of these cases, I would have to inform my supervisor and inform the relevant authorities. Do you understand this?"
   },
-  { "label": "Contacting Emergency Services",
-    "text": "Here are ways to contact emergency services in your area: ..."
+  { "label": "What is the helpline?",
+    "text": "ChildLine is a 24/7 counseling helpline that provides free counselling and psychosocial support to children and teens under the age of 18 years."
   },
-  { "label": "Are you still here?",
-    "text": "Are you still here? If you prefer a callback, please provide your phone number and end it with the pound sign."
+  { "label": "Affirmations",
+    "text": "Thank you for sharing this with me. It is completely natural to feel the way you do."
   },
   {
-    "label": "Please stay on the line.",
-    "text": "Please stay on the line. I will be back soon.",
+    "label": "How did you learn about the helpline?",
+    "text": "If you don't mind me asking, can you please share with me how you came to know about the helpline?",
   }
   {
-    "label": "Callback.",
-    "text": "If you prefer a callback, please provide your phone number and end it with the pound sign."
+    "label": "Silent",
+    "text": "Unfortunately because there has been no response, we will have to end this conversation to speak with the next caller. When you are ready to chat with us you are welcome to reach out again."
   },
   {
     "label": "How do people contract HIV?",
     "text": "HIV (human immunodeficiency virus) is a virus that attacks cells that help the body fight infection, making a person more likely to get other infections and diseases. The most common way that someone can get HIV is by having unprotected sex (anal, vaginal, or oral) with a person who has HIV or sharing drug needles or other drug equipment with someone who has HIV. If you're worried about HIV you need to get help quickly and the best place to go is to your local health clinic where they have special safe spaces for teenagers and young adults."
-  },
-  {
-    "label": "What are the Early signs and symptoms?",
-    "text": "Many of the early signs and symptoms of HIV feel like those when you have a bad cold or the flu. They can include: ; Being tired all of the time; Swollen glands in your neck or groin; Fever that lasts for more than 10 days; Sweating at Night; Weight loss even if you’re still eating the same amount of food; Purplish spots on your skin that don't go away; The only way you can know for sure if you have HIV is to get tested and the best option is usually to go your nearest health clinic where they have special safe spaces for teenagers and young adults."
-  },
-  {
-    "label": "What is a Condom and how is it used?",
-    "text": "A condom is a sheath-shaped barrier device used during sexual intercourse to reduce the probability of pregnancy or a sexually transmitted infection. There are both male and female condoms. ; Using a condom properly every time you have sex is the best way of stopping you getting HIV and preventing pregnancy. There are different condoms for men and women and not everyone knows how to use them correctly, which is very important. So if you’re not sure or need free condoms the best place to go is to your local health clinic where you can talk to a service provider."
-  },
-  {
-    "label": "What are the Treatment and medications for HIV?",
-    "text": "There is no actual cure but HIV is treated by taking a combination of medicines which help fight the virus at different stages. It’s really important to get tested and get on the right medicine for you as soon as possible, because this will help keep you healthy and stop HIV from affecting how you feel day to day."
-  },
-  {
-    "label": "What are the Common myths and untruths on HIV/AIDS?",
-    "text": "None of these is true but a lot of people think they are:; You can’t get HIV from having unprotected sex if the other person is HIV positive but taking medication - FALSE ; People with blood group O can’t get HIV - FALSE; There’s a cure for HIV and AIDS - FALSE; Everyone who has TB is HIV positive - FALSE; If you double up (use two condoms) you’re more protected- FALSE; Men using two condoms or both the man and the woman each using their own condom actually makes the condoms a lot less effective and can put you at risk of HIV or pregnancy - FALSE; Having sex with a virgin will reverse or prevent you from getting HIV - FALSE; You can get HIV from kissing or holding hands with someone who is HIV positive – FALSE"
-  },
-  {
-    "label": "What is PrEP?",
-    "text": "Pre-exposure prophylaxis is the use of medications used to prevent the spread of disease in people who have not yet been exposed to a disease-causing agent, usually a virus. The term typically refers to the specific use of antiviral drugs as a strategy for HIV/AIDS prevention."
-  },
-  {
-    "label": "What is PEP?",
-    "text": "Post-exposure prophylaxis, also known as post-exposure prevention, is any preventive medical treatment started after exposure to a pathogen in order to prevent the infection from occurring. This is usually given to victims of sexual abuse."
-  },
-  {
-    "label": "How long is one supposed to be on the PEP and PREP drug?",
-    "text": "You need to take the PEP medicines every day for 28 days;You will need to take PrEP for 7 days before you are protected, and then every day for as long as you want protection."
-  },
-  {
-    "label": "What is STI?",
-    "text": "An infection transmitted through sexual contact, caused by bacteria, viruses or parasites.; People can get STIs by having sex without using condoms and they can be scary and embarrassing, as well as painful. If something’s “not quite right” or “different” around your private parts, if it hurts when you go to the toilet or if you’ve got itching, swelling or blisters “down there” the best place to go is to your local health clinic and get tested."
-  },
-  {
-    "label": "What is Masturbation?",
-    "text": "Masturbation is touching one’s own body for sexual pleasure."
   },
   {
     "label": "What is Physical abuse?",
