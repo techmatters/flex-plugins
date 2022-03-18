@@ -1,5 +1,5 @@
 {
-  "ChildLine ABC": {
+  "Childline": {
     "Missing children": {
       "color": "#BBE3FF",
       "subcategories": [
@@ -121,7 +121,7 @@
       ]
     }
   },
-  "LifeLine XYZ": {
+  "LifeLine": {
     "Physical and Sexual Health": {
       "color": "#BBE3FF",
       "subcategories": [
@@ -178,43 +178,6 @@
         "Problems at learning institution",
         "Problems at work",
         "Unspecified/Other"
-      ]
-    },
-    "Supporting Women's Livelihood (SWL)": {
-      "color": "#B971AF",
-      "subcategories": [
-        "Inclusion - SWL",
-        "Exclusion - SWL",
-        "Service Standard - SWL",
-        "Payment - SWL",
-        "Serious Complaints - SWL",
-        "Training and Mentorship",
-        "Fraud and Corruption - SWL",
-        "Unspecified/Other - SWL"
-      ]
-    },
-    "Keeping Girls in School (KGS)": {
-      "color": "#239613",
-      "subcategories": [
-        "Inclusion - KGS",
-        "Exclusion - KGS",
-        "Service Standard - KGS",
-        "Payment - KGS",
-        "Serious Complaints - KGS",
-        "Fraud and Corruption - KGS",
-        "Unspecified/Other - KGS"
-      ]
-    },
-    "Social Cash Transfer (SCT)": {
-      "color": "#9AD703",
-      "subcategories": [
-        "Inclusion - SCT",
-        "Exclusion - SCT",
-        "Service Standard - SCT",
-        "Payment - SCT",
-        "Serious Complaints - SCT",
-        "Exit - SCT",
-        "Unspecified/Other - SCT"
       ]
     }
   }
