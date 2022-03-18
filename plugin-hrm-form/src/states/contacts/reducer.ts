@@ -67,7 +67,11 @@ export const createNewTaskEntry = (definitions: DefinitionVersion) => (recreated
     categories: categoriesMeta,
   };
 
-  const initialContactlessTaskTabDefinition = createContactlessTaskTabDefinition([], definitions.helplineInformation);
+  const initialContactlessTaskTabDefinition = createContactlessTaskTabDefinition({
+    counselorsList: [],
+    definition: definitions.tabbedForms.ContactlessTaskTab,
+    helplineInformation: definitions.helplineInformation,
+  });
   const contactlessTask = initialContactlessTaskTabDefinition.reduce(createStateItem, {});
 
   return {
