@@ -72,7 +72,7 @@
   },
   {
     "name": "province",
-    "label": "Province (c)",
+    "label": "Province",
     "type": "select",
     "options": [
       { "value": "", "label": "" },
@@ -85,7 +85,7 @@
   },
   {
     "name": "district",
-    "label": "District (c)",
+    "label": "District",
     "type": "dependent-select",
     "dependsOn": "province",
     "defaultOption": { "value": "", "label": "" },
@@ -130,7 +130,7 @@
   },
   {
     "name": "language",
-    "label": "Language (c)",
+    "label": "Language",
     "type": "select",
     "options": [
       { "value": "Unknown", "label": "" },
