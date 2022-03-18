@@ -7,7 +7,7 @@
   },
   {
     "name": "referredTo",
-    "label": "Referred To (c)",
+    "label": "Referred To",
     "type": "select",
     "options": [
       { "value": "", "label": "" },
