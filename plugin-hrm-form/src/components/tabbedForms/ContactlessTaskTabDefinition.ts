@@ -1,14 +1,14 @@
 import { isFuture } from 'date-fns';
 import type { FormDefinition, DefinitionVersion } from 'hrm-form-definitions';
 
-import { channelTypes, otherContactChannels } from '../../states/DomainConstants';
+import { channelTypes } from '../../states/DomainConstants';
 import { mapChannelForInsights } from '../../utils/mappers';
 import { splitDate } from '../../utils/helpers';
 import type { CounselorsList } from '../../states/configuration/types';
 import { getConfig } from '../../HrmFormPlugin';
 
 const defaultChannelOptions = [{ value: '', label: '' }].concat(
-  [...Object.values(channelTypes), ...Object.values(otherContactChannels)].map(s => ({
+  Object.values(channelTypes).map(s => ({
     label: mapChannelForInsights(s),
     value: s,
   })),

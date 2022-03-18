@@ -1,5 +1,5 @@
 import { mapAge, mapCallType, mapChannel } from '../../utils';
-import { channelTypes, otherContactChannels } from '../../states/DomainConstants';
+import { channelTypes } from '../../states/DomainConstants';
 
 test('Test contact call type mapper', () => {
   const mapSelf = 'Child calling about self';
@@ -51,8 +51,6 @@ test('Test contact channel mapper', () => {
   expect(fmtCh5).toEqual(expectCh5);
   expect(fmtCh6).toEqual(expectCh6);
   expect(fmtCh7).toEqual(expectCh7);
-  // otherContactChannels are mapped with it's identity
-  Object.values(otherContactChannels).forEach(value => expect(mapChannel(value)).toBe(value));
   expect(fmtUndef).toEqual(expectUndef);
 });
 
