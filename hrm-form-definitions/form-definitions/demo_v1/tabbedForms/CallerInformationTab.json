@@ -11,7 +11,7 @@
   },
   {
     "name": "relationshipToChild",
-    "label": "Relationship to child (c)",
+    "label": "Relationship to child",
     "type": "select",
     "options": [
       { "value": "Unknown", "label": "" },
