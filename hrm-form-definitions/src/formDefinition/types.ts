@@ -190,7 +190,7 @@ export type DefinitionVersion = {
     CaseInformationTab: FormDefinition;
     ChildInformationTab: FormDefinition;
     IssueCategorizationTab: (helpline: string) => CategoriesDefinition;
-    ContactlessTaskTab: { customChannels?: string[] };
+    ContactlessTaskTab: { offlineChannels?: string[] };
   };
   callTypeButtons: CallTypeButtonsDefinitions;
   layoutVersion: LayoutVersion;

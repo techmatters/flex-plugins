@@ -36,8 +36,8 @@ export const createContactlessTaskTabDefinition = ({
     helplineInformation.helplines.find(helpline => helpline.default) || helplineInformation.helplines[0]
   ).value;
 
-  const channelOptions = definition.customChannels
-    ? defaultChannelOptions.concat(definition.customChannels.map(c => ({ value: c, label: c })))
+  const channelOptions = definition.offlineChannels
+    ? defaultChannelOptions.concat(definition.offlineChannels.map(c => ({ value: c, label: c })))
     : defaultChannelOptions;
 
   return [
