@@ -2,23 +2,23 @@
   "label": "Helpline",
   "helplines": [
     {
-      "label": "ChildLine ABC",
-      "value": "ChildLine ABC",
+      "label": "Childline",
+      "value": "Childline",
       "default": true,
       "manager": {
-        "name": "Dee Manager",
+        "name": "Helpline Manager",
         "phone": "+123 45 678",
-        "email": "dee@techmatters.org"
+        "email": "supervisor@helpline.org"
       }
     },
     {
-      "label": "LifeLine XYZ",
-      "value": "LifeLine XYZ",
+      "label": "Lifeline",
+      "value": "Lifeline",
       "default": false,
       "manager": {
-        "name": "Dee Manager",
+        "name": "Helpline Manager",
         "phone": "+123 45 678",
-        "email": "dee@techmatters.org"
+        "email": "supervisor@helpline.org"
       }
     }
   ]
