@@ -1,7 +1,7 @@
 import { DefinitionVersionId, HelplineEntry } from 'hrm-form-definitions';
 
 import type * as t from '../../types/types';
-import { CaseItemAction, CaseSectionSubroute, NewCaseSectionSubroutes, NewCaseSubroutes } from '../routing/types';
+import { CaseItemAction, CaseSectionSubroute, NewCaseSubroutes } from '../routing/types';
 
 // Action types
 export const SET_CONNECTED_CASE = 'SET_CONNECTED_CASE';
@@ -207,4 +207,18 @@ export const updateCaseListByIndex = <T>(
     sectionList.push(entry);
   }
   return copy;
+};
+
+export const temporaryCaseInfoHistory = (
+  temporaryCaseInfo: EditTemporaryCaseInfo | ViewTemporaryCaseInfo,
+  counselorsHash: Record<string, string>,
+) => {
+  const addingCounsellorName =
+    counselorsHash[temporaryCaseInfo.info.createdBy ?? temporaryCaseInfo.info.twilioWorkerId] || 'Unknown';
+  const added = new Date(temporaryCaseInfo.info.createdAt);
+  const updatingCounsellorName = temporaryCaseInfo.info.updatedBy
+    ? counselorsHash[temporaryCaseInfo.info.updatedBy] || 'Unknown'
+    : undefined;
+  const updated = temporaryCaseInfo.info.updatedAt ? new Date(temporaryCaseInfo.info.updatedAt) : undefined;
+  return { addingCounsellorName, added, updatingCounsellorName, updated };
 };

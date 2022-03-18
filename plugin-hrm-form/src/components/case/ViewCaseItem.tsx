@@ -47,12 +47,17 @@ const ViewCaseItem: React.FC<Props> = ({
   exitItem,
   formDefinition,
   itemType,
-  includeAddedTime = true,
 }) => {
   if (!isViewTemporaryCaseInfo(temporaryCaseInfo))
     throw new Error('This component only supports temporary case info of the ViewTemporaryCaseInfo type');
-  const counselorName = counselorsHash[temporaryCaseInfo.info.twilioWorkerId] || 'Unknown';
+
+  const addingCounsellorName =
+    counselorsHash[temporaryCaseInfo.info.createdBy ?? temporaryCaseInfo.info.twilioWorkerId] || 'Unknown';
   const added = new Date(temporaryCaseInfo.info.createdAt);
+  const updatingCounsellorName = temporaryCaseInfo.info.updatedBy
+    ? counselorsHash[temporaryCaseInfo.info.updatedBy] || 'Unknown'
+    : undefined;
+  const updated = temporaryCaseInfo.info.updatedAt ? new Date(temporaryCaseInfo.info.updatedAt) : undefined;
 
   const { form } = temporaryCaseInfo.info;
 
@@ -70,9 +75,10 @@ const ViewCaseItem: React.FC<Props> = ({
         <ActionHeader
           titleTemplate={`Case-View${itemType}`}
           onClickClose={exitItem}
-          counselor={counselorName}
+          addingCounsellor={addingCounsellorName}
           added={added}
-          includeTime={includeAddedTime}
+          updatingCounsellor={updatingCounsellorName}
+          updated={updated}
         />
         {formDefinition.length === 1 && formDefinition[0].type === 'textarea' ? (
           <FullWidthFormTextContainer data-testid="Case-ViewCaseItemScreen-FullWidthTextArea">

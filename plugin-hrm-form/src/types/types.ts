@@ -2,7 +2,13 @@
 import { ITask } from '@twilio/flex-ui';
 import { DefinitionVersionId, CallTypes } from 'hrm-form-definitions';
 
-export type EntryInfo = { createdAt: string; twilioWorkerId: string };
+export type EntryInfo = {
+  createdAt: string;
+  createdBy?: string;
+  updatedAt?: string;
+  updatedBy?: string;
+  twilioWorkerId: string;
+};
 
 /*
  * export type ReferralEntry = {
@@ -34,7 +40,7 @@ export type NoteEntry = { note: string } & EntryInfo;
 
 export type Referral = { [key: string]: string | boolean };
 
-export type ReferralEntry = { [key: string]: string | boolean };
+export type ReferralEntry = Referral & EntryInfo;
 
 export type Document = { [key: string]: string | boolean };
 

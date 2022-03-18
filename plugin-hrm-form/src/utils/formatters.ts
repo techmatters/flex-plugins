@@ -70,12 +70,12 @@ export const formatCategories = categories =>
     subcats.map(subcat => (subcat === 'Unspecified/Other' ? `${subcat} - ${cat}` : subcat)),
   );
 
-export const formatDateTime = (date, includeTime: boolean = true) => {
+export const formatDateTime = (date) => {
   const locale = navigator.language;
   const dateString = date.toLocaleDateString(locale);
   const timeString = date.toLocaleTimeString(locale, { timeStyle: 'short' }).replace('AM', 'am').replace('PM', 'pm');
 
-  return includeTime ? `${dateString} at ${timeString}` : dateString;
+  return `${dateString} at ${timeString}`;
 };
 
 /**

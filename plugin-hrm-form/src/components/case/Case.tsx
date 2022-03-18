@@ -351,7 +351,6 @@ const Case: React.FC<Props> = ({
               {...addScreenProps}
               itemType="Referral"
               formDefinition={caseForms.ReferralForm}
-              includeAddedTime={false}
             />
           );
         }
@@ -368,7 +367,10 @@ const Case: React.FC<Props> = ({
                 ci.referrals = ci.referrals ?? [];
                 return ci.referrals;
               },
-              temp => ({ ...temp.form }),
+              temp => {
+                const { form: referralForm, ...entryInfo } = temp;
+                return { ...referralForm, ...entryInfo };
+              },
             )}
           />
         );
