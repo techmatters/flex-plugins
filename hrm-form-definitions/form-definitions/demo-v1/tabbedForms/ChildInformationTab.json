@@ -56,7 +56,7 @@
       { "value": "24", "label": "24" },
       { "value": "25", "label": "25" },
       { "value": ">25", "label": ">25" },
-      { "value": "Unknown", "label": "Unknown" },
+      { "value": "Unknown", "label": "Unknown" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" }
   },
@@ -138,7 +138,7 @@
       { "value": "English", "label": "English" },
       { "value": "Xhosa", "label": "Xhosa" },
       { "value": "Bemba", "label": "Bemba" },
-      { "value": "Other", "label": "Other" },
+      { "value": "Other", "label": "Other" }
     ]  
   },
   {
