@@ -38,7 +38,7 @@ export type Note = { [key: string]: string | boolean };
 
 export type NoteEntry = { note: string } & EntryInfo;
 
-export type Referral = { [key: string]: string | boolean };
+export type Referral = { date: string; referredTo: string; [key: string]: string | boolean };
 
 export type ReferralEntry = Referral & EntryInfo;
 

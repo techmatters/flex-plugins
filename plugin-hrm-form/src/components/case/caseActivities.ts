@@ -24,11 +24,12 @@ const noteActivities = (counsellorNotes: NoteEntry[]): Activity[] =>
   (counsellorNotes || [])
     .map((n, originalIndex) => {
       try {
+        const { createdAt: date, note: text, ...toCopy } = n;
         return {
-          date: n.createdAt,
+          ...toCopy,
+          date,
           type: ActivityTypes.addNote,
-          text: n.note,
-          twilioWorkerId: n.twilioWorkerId,
+          text,
           originalIndex,
         };
       } catch (err) {
@@ -40,19 +41,18 @@ const noteActivities = (counsellorNotes: NoteEntry[]): Activity[] =>
 
 const referralActivities = (referrals: ReferralEntry[]): Activity[] =>
   (referrals || [])
-    .map((r, originalIndex) => {
+    .map((referral, originalIndex) => {
+      const { referredTo: text, ...toCopy } = referral;
       try {
         return {
-          date: r.date as string,
-          createdAt: r.createdAt as string,
+          ...toCopy,
           type: ActivityTypes.addReferral,
-          text: r.referredTo as string,
-          twilioWorkerId: r.twilioWorkerId as string,
-          referral: r,
+          text,
+          referral,
           originalIndex,
         };
       } catch (err) {
-        console.warn(`Error processing referral, excluding from data`, r, err);
+        console.warn(`Error processing referral, excluding from data`, referral, err);
         return null;
       }
     })

@@ -2,11 +2,9 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { Close } from '@material-ui/icons';
-import { update } from 'lodash';
 
 import { Row, HiddenText, HeaderCloseButton } from '../../styles/HrmStyles';
 import { CaseActionTitle, CaseActionDetailFont } from '../../styles/case';
-import { formatDateTime } from '../../utils/formatters';
 
 type OwnProps = {
   titleTemplate: string;
@@ -28,9 +26,7 @@ const ActionHeader: React.FC<Props> = ({
   updated,
   updatingCounsellor,
 }) => {
-  const addDateString = formatDateTime(added || new Date());
-  const updateDateString = updated ? formatDateTime(updated) : undefined;
-
+  // @ts-ignore
   return (
     <>
       <Row style={{ width: '100%' }}>
@@ -46,22 +42,26 @@ const ActionHeader: React.FC<Props> = ({
       </Row>
       <Row style={{ width: '100%' }}>
         <CaseActionDetailFont style={{ marginRight: 20 }} data-testid="Case-ActionHeaderAdded">
-          <Template code="Case-ActionHeaderAdded" /> {addDateString}
-        </CaseActionDetailFont>
-        <CaseActionDetailFont style={{ marginRight: 20 }} data-testid="Case-ActionHeaderCounselor">
-          <Template code="Case-ActionHeaderCounselor" /> {addingCounsellor}
+          <Template
+            code="Case-ActionHeaderAdded"
+            date={added.toLocaleDateString()}
+            time={added.toLocaleTimeString(undefined, { minute: '2-digit', hour: '2-digit' })}
+            counsellor={addingCounsellor}
+          />
         </CaseActionDetailFont>
       </Row>
       {updated && (
         <Row style={{ width: '100%' }}>
-          <CaseActionDetailFont style={{ marginRight: 20 }} data-testid="Case-ActionHeaderAdded">
-            <Template code="Case-ActionHeaderUpdated" /> {updateDateString}
-          </CaseActionDetailFont>
-          <CaseActionDetailFont style={{ marginRight: 20 }} data-testid="Case-ActionHeaderCounselor">
-            <Template code="Case-ActionHeaderUpdatingCounsellor" /> {updatingCounsellor}
+          <CaseActionDetailFont style={{ marginRight: 20 }} data-testid="Case-ActionHeaderUpdated">
+            <Template
+              code="Case-ActionHeaderUpdated"
+              date={updated.toLocaleDateString()}
+              time={updated.toLocaleTimeString(undefined, { minute: '2-digit', hour: '2-digit' })}
+              counsellor={updatingCounsellor}
+            />
           </CaseActionDetailFont>
         </Row>
-      )};
+      )}
     </>
   );
 };

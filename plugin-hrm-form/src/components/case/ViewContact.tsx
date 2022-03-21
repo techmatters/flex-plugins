@@ -74,7 +74,7 @@ const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, on
         <ActionHeader
           titleTemplate="Case-Contact"
           onClickClose={onClickClose}
-          counselor={counselorName}
+          addingCounsellor={counselorName}
           added={added}
         />
         <ContactDetails

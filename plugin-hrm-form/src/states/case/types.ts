@@ -107,6 +107,8 @@ export type NoteActivity = {
   type: string;
   text: string;
   twilioWorkerId: string;
+  updatedAt?: string;
+  updatedBy?: string;
   originalIndex: number;
 };
 
@@ -121,6 +123,8 @@ export type ReferralActivity = {
     referredTo: string;
   };
   twilioWorkerId: string;
+  updatedAt?: string;
+  updatedBy?: string;
   originalIndex: number;
 };
 

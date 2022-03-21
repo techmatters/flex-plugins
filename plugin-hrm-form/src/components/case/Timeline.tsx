@@ -52,6 +52,8 @@ const Timeline: React.FC<Props> = props => {
       form: { note: activity.text },
       twilioWorkerId,
       createdAt: parseISO(activity.date).toISOString(),
+      updatedAt: activity.updatedAt ? parseISO(activity.updatedAt).toISOString() : undefined,
+      updatedBy: activity.updatedBy,
     };
     updateTempInfo(
       { screen: NewCaseSubroutes.Note, action: CaseItemAction.View, info: { ...info, index: activity.originalIndex } },
@@ -67,6 +69,8 @@ const Timeline: React.FC<Props> = props => {
       form: { ...activity.referral },
       twilioWorkerId,
       createdAt: parseISO(activity.date).toISOString(),
+      updatedAt: activity.updatedAt ? parseISO(activity.updatedAt).toISOString() : undefined,
+      updatedBy: activity.updatedBy,
     };
     updateTempInfo(
       {

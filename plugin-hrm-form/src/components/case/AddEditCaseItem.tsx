@@ -152,13 +152,17 @@ const AddEditCaseItem: React.FC<Props> = ({
     const { workerSid } = getConfig();
     let newInfo: CaseInfo;
     if (isEditTemporaryCaseInfo(temporaryCaseInfo)) {
+      /*
+       * Need to add these to the temporaryCaseInfo instance rather than straight to the applyTemporaryInfoToCase parameter.
+       * This way changes are reflected when you go back to the view after an edit
+       */
+      temporaryCaseInfo.info.updatedAt = now;
+      temporaryCaseInfo.info.updatedBy = workerSid;
       newInfo = applyTemporaryInfoToCase(
         info,
         {
           ...temporaryCaseInfo.info,
           form,
-          updatedAt: now,
-          updatedBy: workerSid,
           id: temporaryCaseInfo.info.id ?? uuidV4(),
         },
         temporaryCaseInfo.info.index,
@@ -173,15 +177,8 @@ const AddEditCaseItem: React.FC<Props> = ({
       };
       newInfo = applyTemporaryInfoToCase(info, newItem, undefined);
     }
-
     const updatedCase = await updateCase(id, { info: newInfo });
     setConnectedCase(updatedCase, task.taskSid, true);
-    if (shouldStayInForm && isAddTemporaryCaseInfo(temporaryCaseInfo)) {
-      const blankForm = formDefinition.reduce(createStateItem, {});
-      methods.reset(blankForm); // Resets the form.
-      updateTempInfo({ screen: temporaryCaseInfo.screen, info: {}, action: CaseItemAction.Add }, task.taskSid);
-      changeRoute({ ...routing, action: CaseItemAction.Add }, task.taskSid);
-    }
   };
 
   async function close() {
@@ -195,6 +192,12 @@ const AddEditCaseItem: React.FC<Props> = ({
 
   async function saveAndStay() {
     await save(true);
+    if (isAddTemporaryCaseInfo(temporaryCaseInfo)) {
+      const blankForm = formDefinition.reduce(createStateItem, {});
+      methods.reset(blankForm); // Resets the form.
+      updateTempInfo({ screen: temporaryCaseInfo.screen, info: {}, action: CaseItemAction.Add }, task.taskSid);
+      changeRoute({ ...routing, action: CaseItemAction.Add }, task.taskSid);
+    }
   }
 
   async function saveAndLeave() {
