@@ -170,11 +170,7 @@ const AddEditCaseItem: React.FC<Props> = ({
     <FormProvider {...methods}>
       <CaseActionLayout>
         <CaseActionFormContainer>
-          <ActionHeader
-            titleTemplate={`Case-Add${itemType}`}
-            onClickClose={tempInfoHasBeenEdited ? () => setOpenDialog(true) : onClickClose}
-            counselor={counselor}
-          />
+          <ActionHeader titleTemplate={`Case-Add${itemType}`} onClickClose={onClickClose} counselor={counselor} />
           <Container>
             <Box paddingBottom={`${BottomButtonBarHeight}px`}>
               <TwoColumnLayout>

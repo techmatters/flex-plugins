@@ -178,7 +178,7 @@ describe('Test AddHousehold', () => {
     expect(screen.getByTestId('Case-CloseButton')).toBeInTheDocument();
     screen.getByTestId('Case-CloseButton').click();
 
-    expect(onClickClose).toHaveBeenCalled();
+    expect(screen.getByTestId('CloseCaseDialog')).toBeInTheDocument();
   });
 
   test('a11y', async () => {
