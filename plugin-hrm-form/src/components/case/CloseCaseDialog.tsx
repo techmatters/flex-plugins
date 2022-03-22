@@ -25,9 +25,7 @@ export default function CloseCaseDialog({ setDialog, handleDontSaveClose, handle
             <CloseButton aria-label="CloseButton" />
           </Box>
           <CloseDialogText>
-            <p>
-              <WarningIcon style={{ color: '#f6ca4a' }} />
-            </p>
+            <WarningIcon style={{ color: '#f6ca4a' }} /> <br />
             <Template code="BottomBar-SaveOnClose" />
           </CloseDialogText>
           <Row>

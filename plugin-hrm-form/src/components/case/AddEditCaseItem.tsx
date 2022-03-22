@@ -38,6 +38,7 @@ import { AppRoutesWithCase } from '../../states/routing/types';
 import useFocus from '../../utils/useFocus';
 import { recordingErrorHandler } from '../../fullStory';
 import { AddTemporaryCaseInfo, CaseUpdater, isAddTemporaryCaseInfo, TemporaryCaseInfo } from '../../states/case/types';
+import CloseCaseDialog from './CloseCaseDialog';
 
 type CaseItemPayload = { [key: string]: string | boolean };
 
@@ -87,6 +88,13 @@ const AddEditCaseItem: React.FC<Props> = ({
   const firstElementRef = useFocus();
 
   const { temporaryCaseInfo } = connectedCaseState;
+  const [tempInfoHasBeenEdited, setTempInfoHasBeenEdited] = React.useState(false);
+  const [openDialog, setOpenDialog] = React.useState(false);
+  React.useEffect(() => {
+    if (temporaryCaseInfo.info !== null) {
+      setTempInfoHasBeenEdited(true);
+    }
+  }, [temporaryCaseInfo.info]);
 
   const [initialForm] = React.useState(getTemporaryFormContent(temporaryCaseInfo) ?? {}); // grab initial values in first render only. This value should never change or will ruin the memoization below
   const methods = useForm(reactHookFormOptions);
@@ -162,7 +170,11 @@ const AddEditCaseItem: React.FC<Props> = ({
     <FormProvider {...methods}>
       <CaseActionLayout>
         <CaseActionFormContainer>
-          <ActionHeader titleTemplate={`Case-Add${itemType}`} onClickClose={onClickClose} counselor={counselor} />
+          <ActionHeader
+            titleTemplate={`Case-Add${itemType}`}
+            onClickClose={tempInfoHasBeenEdited ? () => setOpenDialog(true) : onClickClose}
+            counselor={counselor}
+          />
           <Container>
             <Box paddingBottom={`${BottomButtonBarHeight}px`}>
               <TwoColumnLayout>
@@ -175,9 +187,20 @@ const AddEditCaseItem: React.FC<Props> = ({
         <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
         <BottomButtonBar>
           <Box marginRight="15px">
-            <StyledNextStepButton data-testid="Case-CloseButton" secondary roundCorners onClick={onClickClose}>
+            <StyledNextStepButton
+              data-testid="Case-CloseButton"
+              secondary
+              roundCorners
+              onClick={tempInfoHasBeenEdited ? () => setOpenDialog(true) : onClickClose}
+            >
               <Template code="BottomBar-Cancel" />
             </StyledNextStepButton>
+            <CloseCaseDialog
+              setDialog={() => setOpenDialog(false)}
+              handleDontSaveClose={onClickClose}
+              handleSaveUpdate={saveAndLeave}
+              openDialog={openDialog}
+            />
           </Box>
           <Box marginRight="15px">
             <StyledNextStepButton
