@@ -145,7 +145,7 @@ const AddEditCaseItem: React.FC<Props> = ({
     customFormHandlers,
   ]);
 
-  const save = async shouldStayInForm => {
+  const save = async () => {
     const { info, id } = connectedCaseState.connectedCase;
     const form = transformValues(formDefinition)(getTemporaryFormContent(temporaryCaseInfo));
     const now = new Date().toISOString();
@@ -191,7 +191,7 @@ const AddEditCaseItem: React.FC<Props> = ({
   }
 
   async function saveAndStay() {
-    await save(true);
+    await save();
     if (isAddTemporaryCaseInfo(temporaryCaseInfo)) {
       const blankForm = formDefinition.reduce(createStateItem, {});
       methods.reset(blankForm); // Resets the form.
@@ -201,7 +201,7 @@ const AddEditCaseItem: React.FC<Props> = ({
   }
 
   async function saveAndLeave() {
-    await save(false);
+    await save();
     close();
   }
 

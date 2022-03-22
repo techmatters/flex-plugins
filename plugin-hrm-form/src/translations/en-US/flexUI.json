@@ -159,7 +159,7 @@
   "Case-EditDocument": "Edit Document",
   "Case-AddNoteTypeHere": "Type here to add note...",
   "Case-AddCaseSummaryHere": "Add case summary here...",
-  "Case-ActionHeaderAdded": "Created on {{date}} at {{time}} by {{counsellor}}",
+  "Case-ActionHeaderAdded": "Added on {{date}} at {{time}} by {{counsellor}}",
   "Case-ActionHeaderUpdated": "Updated on {{date}} at {{time}} by {{counsellor}}",
   "Case-ActionHeaderCounselor": "Counsellor:",
   "Case-CloseButton": "Close",
