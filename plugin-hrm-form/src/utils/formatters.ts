@@ -1,11 +1,8 @@
-import React from 'react';
 import { truncate } from 'lodash';
 import { format } from 'date-fns';
 import { FormItemDefinition } from 'hrm-form-definitions';
 
 import { getConfig } from '../HrmFormPlugin';
-import { channelTypes } from '../states/DomainConstants';
-import { getNumberFromTask } from '../services/ContactService';
 
 /**
  * @param {string} name
@@ -96,15 +93,6 @@ export const presentValue = (value: string | number | boolean) => (definition: F
 
   return '-';
 };
-
-/**
- *
- * @param {ITask | CustomITask} task
- * @param contactNumberFromTask
- */
-
-export const formatNumberFromTask = task =>
-  task.channelType === channelTypes.twitter ? `@${task.attributes.twitterUserHandle}` : getNumberFromTask(task);
 
 /**
  * Removes the prefixed milliseconds from the fileName saved at AWS and returns only the original fileName

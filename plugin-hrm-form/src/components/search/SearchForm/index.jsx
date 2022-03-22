@@ -22,9 +22,8 @@ import { SearchTitle } from '../../../styles/search';
 import { searchFormType, taskType } from '../../../types';
 import { getConfig } from '../../../HrmFormPlugin';
 import { namespace, configurationBase, searchContactsBase, contactFormsBase } from '../../../states';
-import { getNumberFromTask } from '../../../services/ContactService';
 import { localizedSource } from '../../PreviousContactsBanner';
-import { formatNumberFromTask } from '../../../utils/formatters';
+import { getFormattedNumberFromTask, getNumberFromTask } from '../../../utils/task';
 
 const getField = value => ({
   value,
@@ -138,7 +137,7 @@ class SearchForm extends Component {
     const { task } = this.props;
 
     const contactNumberFromTask = getNumberFromTask(task);
-    const checkBoxName = formatNumberFromTask(task);
+    const checkBoxName = getFormattedNumberFromTask(task);
 
     const handleChangePreviousContactsCheckbox = () => {
       const value = contactNumber === '' ? contactNumberFromTask : '';
