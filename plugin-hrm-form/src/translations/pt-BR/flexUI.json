@@ -167,6 +167,7 @@
   "Case-CaseNumber": "Caso #",
   "Case-ActionHeaderAdded": "Adicionado {{date}}, {{time}} - {{counsellor}}",
   "Case-ActionHeaderUpdated": "Updated on {{date}} at {{time}} by {{counsellor}}",
+  "Case-ActionHeaderCounselor": "Atendente:",
   "SessionExpired": "Sua sessão expirou. Clique aqui para fazer login novamente",
   "TaskTabAgentInfoLabel": "Info",
   "TaskTabSupervisorInfoLabel": "Info",

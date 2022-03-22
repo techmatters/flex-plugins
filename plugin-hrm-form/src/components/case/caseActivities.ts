@@ -42,7 +42,7 @@ const noteActivities = (counsellorNotes: NoteEntry[]): Activity[] =>
 const referralActivities = (referrals: ReferralEntry[]): Activity[] =>
   (referrals || [])
     .map((referral, originalIndex) => {
-      const { referredTo: text, ...toCopy } = referral;
+      const { comments, referredTo: text, ...toCopy } = referral;
       try {
         return {
           ...toCopy,

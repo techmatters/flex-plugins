@@ -104,7 +104,7 @@ export const presentValue = (value: string | number | boolean) => (definition: F
  */
 
 export const formatNumberFromTask = task =>
-  task.channelType === channelTypes.twitter ? `@${task.attributes.twitterUserHandle}` : getNumberFromTask(task);
+  task.channelType === channelTypes.twitter ? `@${task.attributes.twitterUserHandle}` : ''; // getNumberFromTask(task);
 
 /**
  * Removes the prefixed milliseconds from the fileName saved at AWS and returns only the original fileName

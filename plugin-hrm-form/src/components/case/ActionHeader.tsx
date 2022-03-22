@@ -40,15 +40,23 @@ const ActionHeader: React.FC<Props> = ({
           <Close />
         </HeaderCloseButton>
       </Row>
+
       <Row style={{ width: '100%' }}>
-        <CaseActionDetailFont style={{ marginRight: 20 }} data-testid="Case-ActionHeaderAdded">
-          <Template
-            code="Case-ActionHeaderAdded"
-            date={added.toLocaleDateString()}
-            time={added.toLocaleTimeString(undefined, { minute: '2-digit', hour: '2-digit' })}
-            counsellor={addingCounsellor}
-          />
-        </CaseActionDetailFont>
+        {added && (
+          <CaseActionDetailFont style={{ marginRight: 20 }} data-testid="Case-ActionHeaderAdded">
+            <Template
+              code="Case-ActionHeaderAdded"
+              date={added.toLocaleDateString()}
+              time={added.toLocaleTimeString(undefined, { minute: '2-digit', hour: '2-digit' })}
+              counsellor={addingCounsellor}
+            />
+          </CaseActionDetailFont>
+        )}
+        {!added && (
+          <CaseActionDetailFont style={{ marginRight: 20 }} data-testid="Case-ActionHeaderCounselor">
+            <Template code="Case-ActionHeaderCounselor" /> {addingCounsellor}
+          </CaseActionDetailFont>
+        )}
       </Row>
       {updated && (
         <Row style={{ width: '100%' }}>
