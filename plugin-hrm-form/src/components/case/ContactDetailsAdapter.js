@@ -3,8 +3,9 @@
  * a better solution later on.
  */
 
-import { transformForm, getNumberFromTask } from '../../services/ContactService';
+import { transformForm } from '../../services/ContactService';
 import { getConversationDuration } from '../../utils/conversationDuration';
+import { getNumberFromTask } from '../../utils/task';
 
 /**
  * @param {string[]} accumulator
