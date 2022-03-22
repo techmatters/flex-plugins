@@ -12,7 +12,7 @@ import { CaseState } from '../../states/case/reducer';
 import SectionEntry from '../SectionEntry';
 import ActionHeader from './ActionHeader';
 import type { CustomITask, StandaloneITask } from '../../types/types';
-import { isViewTemporaryCaseInfo } from '../../states/case/types';
+import { isViewTemporaryCaseInfo, temporaryCaseInfoHistory } from '../../states/case/types';
 import { AppRoutesWithCaseAndAction, CaseItemAction } from '../../states/routing/types';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
@@ -51,13 +51,10 @@ const ViewCaseItem: React.FC<Props> = ({
   if (!isViewTemporaryCaseInfo(temporaryCaseInfo))
     throw new Error('This component only supports temporary case info of the ViewTemporaryCaseInfo type');
 
-  const addingCounsellorName =
-    counselorsHash[temporaryCaseInfo.info.createdBy ?? temporaryCaseInfo.info.twilioWorkerId] || 'Unknown';
-  const added = new Date(temporaryCaseInfo.info.createdAt);
-  const updatingCounsellorName = temporaryCaseInfo.info.updatedBy
-    ? counselorsHash[temporaryCaseInfo.info.updatedBy] || 'Unknown'
-    : undefined;
-  const updated = temporaryCaseInfo.info.updatedAt ? new Date(temporaryCaseInfo.info.updatedAt) : undefined;
+  const { addingCounsellorName, added, updatingCounsellorName, updated } = temporaryCaseInfoHistory(
+    temporaryCaseInfo,
+    counselorsHash,
+  );
 
   const { form } = temporaryCaseInfo.info;
 

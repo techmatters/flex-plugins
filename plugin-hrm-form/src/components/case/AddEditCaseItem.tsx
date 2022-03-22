@@ -178,7 +178,7 @@ const AddEditCaseItem: React.FC<Props> = ({
       newInfo = applyTemporaryInfoToCase(info, newItem, undefined);
     }
     const updatedCase = await updateCase(id, { info: newInfo });
-    setConnectedCase(updatedCase, task.taskSid, true);
+    setConnectedCase(updatedCase, task.taskSid, connectedCaseState.caseHasBeenEdited);
   };
 
   async function close() {
