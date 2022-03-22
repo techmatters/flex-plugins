@@ -23,13 +23,13 @@
     "type": "select",
     "options": [
       { "value": "", "label": "" },
-      { "value": "HomeOwn", "label": "Home (own)" }
+      { "value": "HomeOwn", "label": "Home (own)" },
       { "value": "HomeOther", "label": "Home (other)" },
       { "value": "EducationalEstablishment", "label": "Educational establishment" },
       { "value": "Institution", "label": "Institution" },
       { "value": "Public place", "label": "Public place" },
       { "value": "Online", "label": "Online" },
-      { "value": "Other", "label": "Other" }
+      { "value": "Other", "label": "Other" },
       { "value": "Unknown", "label": "Unknown" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" }
