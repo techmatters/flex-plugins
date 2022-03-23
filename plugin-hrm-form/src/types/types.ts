@@ -4,7 +4,6 @@ import { DefinitionVersionId, CallTypes } from 'hrm-form-definitions';
 
 export type EntryInfo = {
   createdAt: string;
-  createdBy?: string;
   updatedAt?: string;
   updatedBy?: string;
   twilioWorkerId: string;

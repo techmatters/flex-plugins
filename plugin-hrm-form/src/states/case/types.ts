@@ -218,7 +218,7 @@ export const temporaryCaseInfoHistory = (
   counselorsHash: Record<string, string>,
 ) => {
   const addingCounsellorName =
-    counselorsHash[temporaryCaseInfo.info.createdBy ?? temporaryCaseInfo.info.twilioWorkerId] || 'Unknown';
+    counselorsHash[temporaryCaseInfo.info.twilioWorkerId] || 'Unknown';
   const added = new Date(temporaryCaseInfo.info.createdAt);
   const updatingCounsellorName = temporaryCaseInfo.info.updatedBy
     ? counselorsHash[temporaryCaseInfo.info.updatedBy] || 'Unknown'

@@ -171,7 +171,6 @@ const AddEditCaseItem: React.FC<Props> = ({
       const newItem: CaseItemEntry = {
         form,
         createdAt: now,
-        createdBy: workerSid,
         twilioWorkerId: workerSid,
         id: uuidV4(),
       };
