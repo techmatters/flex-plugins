@@ -1,8 +1,8 @@
 /* eslint-disable sonarjs/prefer-immediate-return */
 import fetchHrmApi from './fetchHrmApi';
-import { getLimitAndOffsetParams } from './PaginationParams';
+import { getQueryParams } from './PaginationParams';
 import { getConfig } from '../HrmFormPlugin';
-import { Case, SearchCaseResult, isOfflineContactTask, CustomITask } from '../types/types';
+import { Case, SearchCaseResult, isOfflineContactTask, CustomITask, GetCasesParams } from '../types/types';
 import type { TaskEntry as ContactForm } from '../states/contacts/reducer';
 
 export async function createCase(task: CustomITask, contactForm: ContactForm) {
@@ -33,8 +33,8 @@ export async function createCase(task: CustomITask, contactForm: ContactForm) {
   return responseJson;
 }
 
-export async function getCases(limit: number, offset: number, helpline?: string): Promise<SearchCaseResult> {
-  const queryParams = getLimitAndOffsetParams(limit, offset, helpline);
+export async function getCases({ limit, offset, sortBy, order, helpline }: GetCasesParams): Promise<SearchCaseResult> {
+  const queryParams = getQueryParams({ limit, offset, sortBy, order, helpline });
   const responseJson = await fetchHrmApi(`/cases${queryParams}`);
 
   return responseJson;
@@ -64,7 +64,7 @@ export async function getActivities(caseId: Case['id']) {
 }
 
 export async function searchCases(searchParams, limit, offset): Promise<SearchCaseResult> {
-  const queryParams = getLimitAndOffsetParams(limit, offset);
+  const queryParams = getQueryParams({ limit, offset });
 
   const options = {
     method: 'POST',

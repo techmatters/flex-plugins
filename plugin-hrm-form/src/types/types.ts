@@ -116,6 +116,14 @@ export type SearchCaseResult = {
   cases: Case[];
 };
 
+export type GetCasesParams = {
+  limit?: number;
+  offset?: number;
+  sortBy?: 'id' | 'childName' | 'counselorName' | 'createdAt' | 'updatedAt' | 'followUpDate';
+  order?: 'ASC' | 'DESC';
+  helpline?: string;
+};
+
 /**
  * Custom tasks
  */
