@@ -10,6 +10,7 @@ import {
   UPDATE_TEMP_INFO,
   UPDATE_CASE_STATUS,
   MARK_CASE_AS_UPDATED,
+  MARK_TEMP_CASE_AS_UPDATED,
 } from './types';
 import { GeneralActionType, REMOVE_CONTACT_STATE } from '../types';
 
@@ -79,6 +80,7 @@ export function reduce(state = initialState, action: CaseActionType | GeneralAct
           [action.taskId]: {
             ...state.tasks[action.taskId],
             temporaryCaseInfo: action.value,
+            tempInfoHasBeenEdited: false,
           },
         },
       };
@@ -104,6 +106,17 @@ export function reduce(state = initialState, action: CaseActionType | GeneralAct
           [action.taskId]: {
             ...state.tasks[action.taskId],
             caseHasBeenEdited: false,
+          },
+        },
+      };
+    case MARK_TEMP_CASE_AS_UPDATED:
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...state.tasks[action.taskId],
+            tempInfoHasBeenEdited: false,
           },
         },
       };

@@ -109,7 +109,15 @@ describe('test reducer', () => {
 
     const { connectedCase, prevStatus } = state.tasks.task1;
     const expected = {
-      tasks: { task1: { connectedCase, temporaryCaseInfo: randomTemp, caseHasBeenEdited: true, prevStatus } },
+      tasks: {
+        task1: {
+          connectedCase,
+          temporaryCaseInfo: randomTemp,
+          caseHasBeenEdited: true,
+          prevStatus,
+          tempInfoHasBeenEdited: false,
+        },
+      },
     };
 
     const result = reduce(state, actions.updateTempInfo(randomTemp, task.taskSid));

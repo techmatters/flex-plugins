@@ -62,6 +62,7 @@ describe('test action creators', () => {
       type: types.UPDATE_TEMP_INFO,
       value,
       taskId: task.taskSid,
+      tempInfoHasBeenEdited: undefined,
     };
 
     expect(actions.updateTempInfo(value, task.taskSid)).toStrictEqual(expectedAction);
