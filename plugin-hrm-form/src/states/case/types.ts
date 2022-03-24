@@ -10,6 +10,7 @@ export const UPDATE_CASE_INFO = 'UPDATE_CASE_INFO';
 export const UPDATE_TEMP_INFO = 'UPDATE_TEMP_INFO';
 export const UPDATE_CASE_STATUS = 'UPDATE_CASE_STATUS';
 export const MARK_CASE_AS_UPDATED = 'MARK_CASE_AS_UPDATED';
+export const MARK_TEMP_CASE_AS_UPDATED = 'MARK_TEMP_CASE_AS_UPDATED';
 
 export type ViewNote = {
   note: string;
@@ -118,13 +119,19 @@ type MarkCaseAsUpdated = {
   taskId: string;
 };
 
+type MarkTempCaseAsUpdated = {
+  type: typeof MARK_TEMP_CASE_AS_UPDATED;
+  taskId: string;
+};
+
 export type CaseActionType =
   | SetConnectedCaseAction
   | RemoveConnectedCaseAction
   | UpdateCaseInfoAction
   | TemporaryCaseInfoAction
   | UpdateCasesStatusAction
-  | MarkCaseAsUpdated;
+  | MarkCaseAsUpdated
+  | MarkTempCaseAsUpdated;
 
 export type Activity = NoteActivity | ReferralActivity | ConnectedCaseActivity;
 

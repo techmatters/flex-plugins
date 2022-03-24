@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-max-depth */
 /* eslint-disable react/prop-types */
 import { v4 as uuidV4 } from 'uuid';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { useForm, FormProvider, SubmitErrorHandler, FieldValues } from 'react-hook-form';
@@ -83,22 +83,28 @@ const AddEditCaseItem: React.FC<Props> = ({
   applyTemporaryInfoToCase,
   customFormHandlers,
   reactHookFormOptions,
+  // tempCaseAsUpdated
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const firstElementRef = useFocus();
 
-  const { temporaryCaseInfo, tempInfoHasBeenEdited } = connectedCaseState;
-  // const [tempInfoHasBeenEdited, setTempInfoHasBeenEdited] = React.useState(false);
+  const { temporaryCaseInfo} = connectedCaseState;
   const [openDialog, setOpenDialog] = React.useState(false);
-  // React.useEffect(() => {
-  //   if (temporaryCaseInfo.info !== null) {
-  //     setTempInfoHasBeenEdited(true);
-  //   }
-  // }, [temporaryCaseInfo.info]);
 
   const [initialForm] = React.useState(getTemporaryFormContent(temporaryCaseInfo) ?? {}); // grab initial values in first render only. This value should never change or will ruin the memoization below
   const methods = useForm(reactHookFormOptions);
 
+const [isDirty, setIsEdited] = React.useState(false)
+  // let isEdited = false
+  useEffect(()=>{
+    setIsEdited(methods.formState.isDirty)
+    // setIsEdited(isDirty)
+    console.log('redux isDirty', isDirty)
+    // connectedCaseState.tempInfoHasBeenEdited = isDirty
+    // console.log('redux connectedCaseState.tempInfoHasBeenEdited', isDirty)
+
+  },[methods.formState.isDirty])
+  
   const [l, r] = React.useMemo(() => {
     const createUpdatedTemporaryFormContent = (payload: CaseItemPayload): AddTemporaryCaseInfo => {
       if (isAddTemporaryCaseInfo(temporaryCaseInfo)) {
@@ -109,11 +115,12 @@ const AddEditCaseItem: React.FC<Props> = ({
       }
       throw new Error(UNSUPPORTED_TEMPORARY_INFO_TYPE_MESSAGE);
     };
-
+    
     const updateCallBack = () => {
       const formValues = methods.getValues();
-      updateTempInfo(createUpdatedTemporaryFormContent(formValues), task.taskSid);
+      updateTempInfo(createUpdatedTemporaryFormContent(formValues), task.taskSid,);
     };
+    console.log('redux connectedCaseState',connectedCaseState)
 
     const generatedForm = createFormFromDefinition(formDefinition)([])(initialForm, firstElementRef)(
       updateCallBack,
@@ -142,7 +149,7 @@ const AddEditCaseItem: React.FC<Props> = ({
     const { workerSid } = getConfig();
     const newItem: CaseItemEntry = { form, createdAt, twilioWorkerId: workerSid, id: uuidV4() };
     const newInfo: CaseInfo = applyTemporaryInfoToCase(info, newItem, undefined);
-
+    
     const updatedCase = await updateCase(id, { info: newInfo });
     setConnectedCase(updatedCase, task.taskSid, true);
     if (shouldStayInForm && isAddTemporaryCaseInfo(temporaryCaseInfo)) {
@@ -187,7 +194,11 @@ const AddEditCaseItem: React.FC<Props> = ({
               data-testid="Case-CloseButton"
               secondary
               roundCorners
-              onClick={tempInfoHasBeenEdited ? () => setOpenDialog(true) : onClickClose}
+              // onClick={onClickClose}
+              // onClick={isDirty}
+              onClick={methods.formState.isDirty ? () => setOpenDialog(true) : onClickClose}
+              // onClick={() => setOpenDialog(true)}
+
             >
               <Template code="BottomBar-Cancel" />
             </StyledNextStepButton>
@@ -235,6 +246,7 @@ const mapDispatchToProps = {
   updateCaseInfo: CaseActions.updateCaseInfo,
   setConnectedCase: CaseActions.setConnectedCase,
   changeRoute: RoutingActions.changeRoute,
+  markTempCaseAsUpdated: CaseActions.markTempCaseAsUpdated
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddEditCaseItem);

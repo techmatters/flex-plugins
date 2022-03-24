@@ -8,6 +8,7 @@ import {
   UPDATE_TEMP_INFO,
   UPDATE_CASE_STATUS,
   MARK_CASE_AS_UPDATED,
+  MARK_TEMP_CASE_AS_UPDATED
 } from './types';
 
 // Action creators
@@ -29,7 +30,7 @@ export const updateCaseInfo = (info: CaseInfo, taskId: string): CaseActionType =
   taskId,
 });
 
-export const updateTempInfo = (value: TemporaryCaseInfo, taskId: string,tempInfoHasBeenEdited?:Boolean): CaseActionType => ({
+export const updateTempInfo = (value: TemporaryCaseInfo, taskId: string, tempInfoHasBeenEdited?:Boolean): CaseActionType => ({
   type: UPDATE_TEMP_INFO,
   value,
   taskId,
@@ -49,5 +50,10 @@ export const updateCaseStatus = (status: string, taskId: string): CaseActionType
 
 export const markCaseAsUpdated = (taskId: string): CaseActionType => ({
   type: MARK_CASE_AS_UPDATED,
+  taskId,
+});
+
+export const markTempCaseAsUpdated = (taskId: string): CaseActionType => ({
+  type: MARK_TEMP_CASE_AS_UPDATED,
   taskId,
 });
