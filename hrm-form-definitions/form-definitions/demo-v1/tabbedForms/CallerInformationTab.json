@@ -2,14 +2,12 @@
   {
     "name": "firstName",
     "label": "First Name",
-    "type": "input",
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "type": "input"
   },
   {
     "name": "lastName",
     "label": "Last Name",
-    "type": "input",
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "type": "input"
   },
   {
     "name": "relationshipToChild",
@@ -42,62 +40,43 @@
   },
   {
     "name": "province",
-    "label": "Province",
+    "label": "Province (c)",
     "type": "select",
     "options": [
       { "value": "", "label": "" },
-      { "value": "Central", "label": "Central" },
-      { "value": "Copperbelt", "label": "Copperbelt" },
-      { "value": "Eastern", "label": "Eastern" }
+      { "value": "Northern", "label": "Northern" },
+      { "value": "Eastern", "label": "Eastern" },
+      { "value": "Western", "label": "Western" },
+      { "value": "Southern", "label": "Southern" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
     "name": "district",
-    "label": "District",
+    "label": "District (c)",
     "type": "dependent-select",
     "dependsOn": "province",
     "defaultOption": { "value": "", "label": "" },
     "options": {
-      "Central": [
-        { "value": "Chibombo", "label": "Chibombo" },
-        { "value": "Chisamba", "label": "Chisamba" },
-        { "value": "Chitambo", "label": "Chitambo" },
-        { "value": "Itezhi-Tezhi", "label": "Itezhi-Tezhi" },
-        { "value": "Kabwe", "label": "Kabwe" },
-        { "value": "KapiriMposhi", "label": "KapiriMposhi" },
-        { "value": "Luano", "label": "Luano" },
-        { "value": "Mkushi", "label": "Mkushi" },
-        { "value": "Mumbwa", "label": "Mumbwa" },
-        { "value": "Ngabwe", "label": "Ngabwe" },
-        { "value": "Serenje", "label": "Serenje" },
-        { "value": "Shibuyunji", "label": "Shibuyunji" },
-        { "value": "Unknown", "label": "Unknown" }
-      ],
-      "Copperbelt": [
-        { "value": "Chililabombwe", "label": "Chililabombwe" },
-        { "value": "Chingola", "label": "Chingola" },
-        { "value": "Kalulushi", "label": "Kalulushi" },
-        { "value": "Kitwe", "label": "Kitwe" },
-        { "value": "Luanshya", "label": "Luanshya" },
-        { "value": "Lufwanyama", "label": "Lufwanyama" },
-        { "value": "Masaiti", "label": "Masaiti" },
-        { "value": "Mpongwe", "label": "Mpongwe" },
-        { "value": "Mufulira", "label": "Mufulira" },
-        { "value": "Ndola", "label": "Ndola" },
-        { "value": "Unknown", "label": "Unknown" }
+      "Northern": [
+        { "value": "District A", "label": "District A" },
+        { "value": "District B", "label": "District B" },
+        { "value": "District C", "label": "District C" }
       ],
       "Eastern": [
-        { "value": "Chadiza", "label": "Chadiza" },
-        { "value": "Chipata", "label": "Chipata" },
-        { "value": "Katete", "label": "Katete" },
-        { "value": "Lundazi", "label": "Lundazi" },
-        { "value": "Mambwe", "label": "Mambwe" },
-        { "value": "Nyimba", "label": "Nyimba" },
-        { "value": "Petauke", "label": "Petauke" },
-        { "value": "Sinda", "label": "Sinda" },
-        { "value": "Vubwi", "label": "Vubwi" },
-        { "value": "Unknown", "label": "Unknown" }
+        { "value": "District A", "label": "District A" },
+        { "value": "District B", "label": "District B" },
+        { "value": "District C", "label": "District C" }
+      ],
+      "Western": [
+        { "value": "District A", "label": "District A" },
+        { "value": "District B", "label": "District B" },
+        { "value": "District C", "label": "District C" }
+      ],
+      "Southern": [
+        { "value": "District A", "label": "District A" },
+        { "value": "District B", "label": "District B" },
+        { "value": "District C", "label": "District C" }
       ]
     },
     "required": { "value": true, "message": "RequiredFieldError" }
@@ -110,8 +89,7 @@
   {
     "name": "phone1",
     "label": "Phone #1",
-    "type": "input",
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "type": "input"
   },
   {
     "name": "phone2",
@@ -136,15 +114,15 @@
     "options": [
       { "value": "Unknown", "label": "" },
       { "value": "0", "label": "0" },
-      { "value": "1", "label": "1" },
-      { "value": "2", "label": "2" },
-      { "value": "3", "label": "3" },
-      { "value": "4", "label": "4" },
-      { "value": "5", "label": "5" },
-      { "value": "6", "label": "6" },
-      { "value": "7", "label": "7" },
-      { "value": "8", "label": "8" },
-      { "value": "9", "label": "9" },
+      { "value": "01", "label": "1" },
+      { "value": "02", "label": "2" },
+      { "value": "03", "label": "3" },
+      { "value": "04", "label": "4" },
+      { "value": "05", "label": "5" },
+      { "value": "06", "label": "6" },
+      { "value": "07", "label": "7" },
+      { "value": "08", "label": "8" },
+      { "value": "09", "label": "9" },
       { "value": "10", "label": "10" },
       { "value": "11", "label": "11" },
       { "value": "12", "label": "12" },
@@ -207,14 +185,11 @@
     "type": "select",
     "options": [
       { "value": "Unknown", "label": "" },
+      { "value": "Hausa", "label": "Hausa" },
+      { "value": "English", "label": "English" },
+      { "value": "Xhosa", "label": "Xhosa" },
       { "value": "Bemba", "label": "Bemba" },
-      { "value": "en-US", "label": "English" },
-      { "value": "Kaonde", "label": "Kaonde" },
-      { "value": "Lozi", "label": "Lozi" },
-      { "value": "Lunda", "label": "Lunda" },
-      { "value": "Luvale", "label": "Luvale" },
-      { "value": "Nyanja", "label": "Nyanja" },
-      { "value": "Tonga", "label": "Tonga" }
+      { "value": "Other", "label": "Other" }
     ]  
   },
   {
