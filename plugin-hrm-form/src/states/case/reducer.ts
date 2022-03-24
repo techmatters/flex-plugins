@@ -20,6 +20,7 @@ export type CaseState = {
       temporaryCaseInfo?: TemporaryCaseInfo;
       caseHasBeenEdited: Boolean;
       prevStatus: string; // the status as it comes from the DB (required as it may be locally updated in connectedCase)
+      tempInfoHasBeenEdited?: Boolean;
     };
   };
 };

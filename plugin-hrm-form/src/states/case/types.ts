@@ -104,6 +104,7 @@ type TemporaryCaseInfoAction = {
   type: typeof UPDATE_TEMP_INFO;
   value: TemporaryCaseInfo;
   taskId: string;
+  tempInfoHasBeenEdited?: Boolean;
 };
 
 type UpdateCasesStatusAction = {

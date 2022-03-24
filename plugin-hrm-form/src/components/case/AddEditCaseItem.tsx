@@ -87,14 +87,14 @@ const AddEditCaseItem: React.FC<Props> = ({
 }) => {
   const firstElementRef = useFocus();
 
-  const { temporaryCaseInfo } = connectedCaseState;
-  const [tempInfoHasBeenEdited, setTempInfoHasBeenEdited] = React.useState(false);
+  const { temporaryCaseInfo, tempInfoHasBeenEdited } = connectedCaseState;
+  // const [tempInfoHasBeenEdited, setTempInfoHasBeenEdited] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState(false);
-  React.useEffect(() => {
-    if (temporaryCaseInfo.info !== null) {
-      setTempInfoHasBeenEdited(true);
-    }
-  }, [temporaryCaseInfo.info]);
+  // React.useEffect(() => {
+  //   if (temporaryCaseInfo.info !== null) {
+  //     setTempInfoHasBeenEdited(true);
+  //   }
+  // }, [temporaryCaseInfo.info]);
 
   const [initialForm] = React.useState(getTemporaryFormContent(temporaryCaseInfo) ?? {}); // grab initial values in first render only. This value should never change or will ruin the memoization below
   const methods = useForm(reactHookFormOptions);

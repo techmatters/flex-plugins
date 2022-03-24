@@ -29,10 +29,11 @@ export const updateCaseInfo = (info: CaseInfo, taskId: string): CaseActionType =
   taskId,
 });
 
-export const updateTempInfo = (value: TemporaryCaseInfo, taskId: string): CaseActionType => ({
+export const updateTempInfo = (value: TemporaryCaseInfo, taskId: string,tempInfoHasBeenEdited?:Boolean): CaseActionType => ({
   type: UPDATE_TEMP_INFO,
   value,
   taskId,
+  tempInfoHasBeenEdited
 });
 
 /**
