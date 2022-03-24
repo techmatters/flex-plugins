@@ -1,7 +1,7 @@
 import { DefinitionVersionId, HelplineEntry } from 'hrm-form-definitions';
 
 import type * as t from '../../types/types';
-import { NewCaseSubroutes } from '../routing/types';
+import { CaseItemAction, CaseSectionSubroute, NewCaseSectionSubroutes, NewCaseSubroutes } from '../routing/types';
 
 // Action types
 export const SET_CONNECTED_CASE = 'SET_CONNECTED_CASE';
@@ -11,13 +11,7 @@ export const UPDATE_TEMP_INFO = 'UPDATE_TEMP_INFO';
 export const UPDATE_CASE_STATUS = 'UPDATE_CASE_STATUS';
 export const MARK_CASE_AS_UPDATED = 'MARK_CASE_AS_UPDATED';
 
-export type ViewNote = {
-  note: string;
-  counselor: string;
-  date: string;
-};
-
-export type ViewContact = {
+type ViewContact = {
   contact?: any; // TODO: create Contact type
   detailsExpanded: { [section: string]: boolean };
   createdAt: string;
@@ -25,62 +19,43 @@ export type ViewContact = {
   counselor: string;
 };
 
-export type ViewReferral = {
-  referral: t.ReferralEntry;
-  counselor: string;
-  date: string;
-};
+type Indexable = { index: number };
 
 export type ViewTemporaryCaseInfo = {
-  screen:
-    | typeof NewCaseSubroutes.ViewDocument
-    | typeof NewCaseSubroutes.ViewIncident
-    | typeof NewCaseSubroutes.ViewPerpetrator
-    | typeof NewCaseSubroutes.ViewHousehold
-    | typeof NewCaseSubroutes.ViewNote
-    | typeof NewCaseSubroutes.ViewReferral;
-  info: t.CaseItemEntry;
+  screen: CaseSectionSubroute;
+  action: CaseItemAction.View;
+  info: t.CaseItemEntry & Indexable;
 };
 
 export function isViewTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is ViewTemporaryCaseInfo {
-  return (
-    tci &&
-    (tci.screen === NewCaseSubroutes.ViewDocument ||
-      tci.screen === NewCaseSubroutes.ViewIncident ||
-      tci.screen === NewCaseSubroutes.ViewPerpetrator ||
-      tci.screen === NewCaseSubroutes.ViewHousehold ||
-      tci.screen === NewCaseSubroutes.ViewNote ||
-      tci.screen === NewCaseSubroutes.ViewReferral)
-  );
+  return tci && (<ViewTemporaryCaseInfo>tci).action === CaseItemAction.View;
+}
+
+export type EditTemporaryCaseInfo = {
+  screen: CaseSectionSubroute;
+  action: CaseItemAction.Edit;
+  info: t.CaseItemEntry & Indexable;
+};
+
+export function isEditTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is EditTemporaryCaseInfo {
+  return tci && (<EditTemporaryCaseInfo>tci).action === CaseItemAction.Edit;
 }
 
 export type AddTemporaryCaseInfo = {
-  screen:
-    | typeof NewCaseSubroutes.AddDocument
-    | typeof NewCaseSubroutes.AddIncident
-    | typeof NewCaseSubroutes.AddPerpetrator
-    | typeof NewCaseSubroutes.AddHousehold
-    | typeof NewCaseSubroutes.AddNote
-    | typeof NewCaseSubroutes.AddReferral;
+  screen: CaseSectionSubroute;
+  action: CaseItemAction.Add;
   info: t.CaseItemFormValues;
 };
 
 export function isAddTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is AddTemporaryCaseInfo {
-  return (
-    tci &&
-    (tci.screen === NewCaseSubroutes.AddDocument ||
-      tci.screen === NewCaseSubroutes.AddIncident ||
-      tci.screen === NewCaseSubroutes.AddPerpetrator ||
-      tci.screen === NewCaseSubroutes.AddHousehold ||
-      tci.screen === NewCaseSubroutes.AddNote ||
-      tci.screen === NewCaseSubroutes.AddReferral)
-  );
+  return tci && (<AddTemporaryCaseInfo>tci).action === CaseItemAction.Add;
 }
 
 export type TemporaryCaseInfo =
   | { screen: typeof NewCaseSubroutes.ViewContact; info: ViewContact }
   | ViewTemporaryCaseInfo
-  | AddTemporaryCaseInfo;
+  | AddTemporaryCaseInfo
+  | EditTemporaryCaseInfo;
 
 type SetConnectedCaseAction = {
   type: typeof SET_CONNECTED_CASE;
@@ -132,9 +107,10 @@ export type NoteActivity = {
   type: string;
   text: string;
   twilioWorkerId: string;
+  originalIndex: number;
 };
 
-type ReferralActivity = {
+export type ReferralActivity = {
   date: string;
   createdAt: string;
   type: string;
@@ -145,6 +121,7 @@ type ReferralActivity = {
     referredTo: string;
   };
   twilioWorkerId: string;
+  originalIndex: number;
 };
 
 export type ConnectedCaseActivity = {
@@ -155,6 +132,7 @@ export type ConnectedCaseActivity = {
   text: string;
   twilioWorkerId: string;
   channel: string;
+  originalIndex: number;
 };
 
 export type CaseDetailsName = {
@@ -171,21 +149,25 @@ export type CaseDetails = {
     };
   };
   status: string;
+  prevStatus: string;
   caseCounselor: string;
   currentCounselor: string;
   openedDate: string;
   lastUpdatedDate: string;
   followUpDate: string;
+  followUpPrintedDate: string;
   households: t.HouseholdEntry[];
   perpetrators: t.PerpetratorEntry[];
   incidents: t.IncidentEntry[];
   referrals: t.ReferralEntry[];
   notes: NoteActivity[];
+  documents: t.DocumentEntry[];
   summary: string;
   childIsAtRisk: boolean;
   office?: HelplineEntry;
   version?: DefinitionVersionId;
   contact: any; // ToDo: change this
+  contacts: any[];
 };
 
 export type CaseUpdater = (

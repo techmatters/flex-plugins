@@ -30,7 +30,7 @@ export type IncidentEntry = { incident: Incident } & EntryInfo;
 
 export type Note = { [key: string]: string | boolean };
 
-export type NoteEntry = { note: string; counselor: string; date: string };
+export type NoteEntry = { note: string } & EntryInfo;
 
 export type Referral = { [key: string]: string | boolean };
 
@@ -52,7 +52,7 @@ export type CaseInfo = {
   definitionVersion?: DefinitionVersionId;
   offlineContactCreator?: string;
   summary?: string;
-  notes?: string[];
+  counsellorNotes?: NoteEntry[];
   perpetrators?: PerpetratorEntry[];
   households?: HouseholdEntry[];
   referrals?: ReferralEntry[];

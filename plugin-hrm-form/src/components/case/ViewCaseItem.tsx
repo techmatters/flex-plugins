@@ -2,16 +2,20 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
+import Edit from '@material-ui/icons/Edit';
 import { FormDefinition } from 'hrm-form-definitions';
 
-import { Container, StyledNextStepButton, BottomButtonBar, Box } from '../../styles/HrmStyles';
+import { BottomButtonBar, Box, Container, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseLayout, FullWidthFormTextContainer } from '../../styles/case';
-import { namespace, connectedCaseBase, configurationBase, RootState } from '../../states';
+import { configurationBase, connectedCaseBase, namespace, RootState } from '../../states';
 import { CaseState } from '../../states/case/reducer';
 import SectionEntry from '../SectionEntry';
 import ActionHeader from './ActionHeader';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 import { isViewTemporaryCaseInfo } from '../../states/case/types';
+import { AppRoutesWithCaseAndAction, CaseItemAction } from '../../states/routing/types';
+import * as CaseActions from '../../states/case/actions';
+import * as RoutingActions from '../../states/routing/actions';
 
 const mapStateToProps = (state: RootState, ownProps: ViewCaseItemProps) => {
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
@@ -23,18 +27,24 @@ const mapStateToProps = (state: RootState, ownProps: ViewCaseItemProps) => {
 
 export type ViewCaseItemProps = {
   task: CustomITask | StandaloneITask;
-  onClickClose: () => void;
+  routing: AppRoutesWithCaseAndAction;
+  exitItem: () => void;
   itemType: string;
   formDefinition: FormDefinition;
   includeAddedTime?: boolean;
 };
 
-type Props = ViewCaseItemProps & ReturnType<typeof mapStateToProps>;
+// eslint-disable-next-line no-use-before-define
+type Props = ViewCaseItemProps & ReturnType<typeof mapStateToProps> & typeof mapToDispatchProps;
 
 const ViewCaseItem: React.FC<Props> = ({
+  task,
+  routing,
   counselorsHash,
   temporaryCaseInfo,
-  onClickClose,
+  updateTempInfo,
+  changeRoute,
+  exitItem,
   formDefinition,
   itemType,
   includeAddedTime = true,
@@ -46,12 +56,20 @@ const ViewCaseItem: React.FC<Props> = ({
 
   const { form } = temporaryCaseInfo.info;
 
+  const onEditCaseItemClick = () => {
+    updateTempInfo(
+      { screen: temporaryCaseInfo.screen, action: CaseItemAction.Edit, info: temporaryCaseInfo.info },
+      task.taskSid,
+    );
+    changeRoute({ ...routing, action: CaseItemAction.Edit }, task.taskSid);
+  };
+
   return (
     <CaseLayout>
       <Container>
         <ActionHeader
           titleTemplate={`Case-View${itemType}`}
-          onClickClose={onClickClose}
+          onClickClose={exitItem}
           counselor={counselorName}
           added={added}
           includeTime={includeAddedTime}
@@ -76,9 +94,17 @@ const ViewCaseItem: React.FC<Props> = ({
         )}
       </Container>
       <BottomButtonBar>
-        <StyledNextStepButton roundCorners onClick={onClickClose} data-testid="Case-CloseButton">
-          <Template code="CloseButton" />
-        </StyledNextStepButton>
+        <Box marginRight="15px">
+          <StyledNextStepButton secondary roundCorners onClick={onEditCaseItemClick} data-testid="Case-EditButton">
+            <Edit fontSize="inherit" style={{ marginRight: 5 }} />
+            <Template code="EditButton" />
+          </StyledNextStepButton>
+        </Box>
+        <Box marginRight="15px">
+          <StyledNextStepButton roundCorners onClick={exitItem} data-testid="Case-CloseButton">
+            <Template code="CloseButton" />
+          </StyledNextStepButton>
+        </Box>
       </BottomButtonBar>
     </CaseLayout>
   );
@@ -86,4 +112,9 @@ const ViewCaseItem: React.FC<Props> = ({
 
 ViewCaseItem.displayName = 'ViewCaseItem';
 
-export default connect(mapStateToProps, null)(ViewCaseItem);
+const mapToDispatchProps = {
+  updateTempInfo: CaseActions.updateTempInfo,
+  changeRoute: RoutingActions.changeRoute,
+};
+
+export default connect(mapStateToProps, mapToDispatchProps)(ViewCaseItem);
