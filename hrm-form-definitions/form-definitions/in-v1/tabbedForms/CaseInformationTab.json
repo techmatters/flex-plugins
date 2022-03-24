@@ -16,8 +16,8 @@
     "type": "checkbox"
   },
   {
-    "name": "Recommendations",
-    "label": "Recommendations",
+    "name": "ReferralsToMentalHealthServices",
+    "label": "Referrals to Mental Health Services",
     "type": "checkbox"
   },
   {
@@ -67,7 +67,7 @@
   },
   {
     "name": "howDidYouKnowAboutOurLine",
-    "label": "How did you hear about our line/number",
+    "label": "How did you hear about us?",
     "type": "select",
     "options": [
       { "value": "Unknown", "label": "" },

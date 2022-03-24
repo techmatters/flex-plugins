@@ -8,24 +8,22 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import { connect, ConnectedProps } from 'react-redux';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
-import { CaseContainer, CloseDialogText } from '../../styles/case';
+import { CaseContainer } from '../../styles/case';
 import { BottomButtonBar, Box, Row, StyledNextStepButton, HiddenText } from '../../styles/HrmStyles';
-import { CloseTaskDialog, CloseButton } from '../../styles/callTypeButtons';
 import CaseDetailsComponent from './CaseDetails';
 import { Menu, MenuItem } from '../menu';
 import Timeline from './Timeline';
 import CaseSection from './CaseSection';
 import { PermissionActions } from '../../permissions';
-import { AppRoutes, AppRoutesWithCase, NewCaseSubroutes } from '../../states/routing/types';
+import { AppRoutes, CaseItemAction, CaseSectionSubroute, NewCaseSubroutes } from '../../states/routing/types';
 import CaseSummary from './CaseSummary';
 import { contactFormsBase, namespace, RootState, routingBase } from '../../states';
 import {
   Activity,
-  AddTemporaryCaseInfo,
+  CaseDetails,
   CaseDetailsName,
   TemporaryCaseInfo,
   ViewTemporaryCaseInfo,
-  CaseDetails,
 } from '../../states/case/types';
 import { CustomITask, StandaloneITask } from '../../types/types';
 import * as RoutingActions from '../../states/routing/actions';
@@ -34,6 +32,7 @@ import { getConfig } from '../../HrmFormPlugin';
 import InformationRow from './InformationRow';
 import TimelineInformationRow from './TimelineInformationRow';
 import DocumentInformationRow from './DocumentInformationRow';
+import CloseCaseDialog from './CloseCaseDialog';
 
 const splitFullName = (name: CaseDetailsName) => {
   if (name.firstName === 'Unknown' && name.lastName === 'Unknown') {
@@ -92,20 +91,19 @@ const CaseHome: React.FC<Props> = ({
 
   const isMockedMessageOpen = Boolean(mockedMessage);
 
-  type CaseItemRoute<T extends TemporaryCaseInfo = TemporaryCaseInfo> = T['screen'] & AppRoutesWithCase['subroute'];
-
   type CaseItemInfo<T extends TemporaryCaseInfo> = T['info']; // A bit redundant but looks cleaner than the anonymous subtype reference syntax
 
-  const onCaseItemActionClick = <T extends TemporaryCaseInfo>(
-    targetSubroute: CaseItemRoute<T>,
+  const onCaseItemActionClick = <T extends ViewTemporaryCaseInfo>(
+    targetSubroute: CaseSectionSubroute,
+    targetAction: T['action'],
   ): ((entry: CaseItemInfo<T>) => void) => (entry: CaseItemInfo<T>) => {
-    updateTempInfo({ screen: targetSubroute, info: entry } as TemporaryCaseInfo, task.taskSid);
-    changeRoute({ route, subroute: targetSubroute } as AppRoutes, task.taskSid);
+    updateTempInfo({ screen: targetSubroute, info: entry, action: targetAction }, task.taskSid);
+    changeRoute({ route, subroute: targetSubroute, action: targetAction } as AppRoutes, task.taskSid);
   };
 
-  const onAddCaseItemClick = (targetSubroute: CaseItemRoute<AddTemporaryCaseInfo>) => () => {
-    updateTempInfo({ screen: targetSubroute, info: null }, task.taskSid);
-    changeRoute({ route, subroute: targetSubroute } as AppRoutes, task.taskSid);
+  const onAddCaseItemClick = (targetSubroute: CaseSectionSubroute) => () => {
+    updateTempInfo({ screen: targetSubroute, action: CaseItemAction.Add, info: null }, task.taskSid);
+    changeRoute({ route, subroute: targetSubroute, action: CaseItemAction.Add } as AppRoutes, task.taskSid);
   };
 
   const onPrintCase = () => {
@@ -166,9 +164,9 @@ const CaseHome: React.FC<Props> = ({
   } = caseDetails;
   const fullName = splitFullName(name);
 
-  const itemRowRenderer = <TViewCaseInfo extends TemporaryCaseInfo>(
+  const itemRowRenderer = <TViewCaseInfo extends ViewTemporaryCaseInfo>(
     itemTypeName: string,
-    viewSubroute: CaseItemRoute,
+    viewSubroute: CaseSectionSubroute,
     items: CaseItemInfo<TViewCaseInfo>[],
   ) => {
     const itemRows = () => {
@@ -178,7 +176,7 @@ const CaseHome: React.FC<Props> = ({
             <InformationRow
               key={`${itemTypeName}-${index}`}
               person={item[itemTypeName]}
-              onClickView={() => onCaseItemActionClick<TViewCaseInfo>(viewSubroute)(item)}
+              onClickView={() => onCaseItemActionClick<TViewCaseInfo>(viewSubroute, CaseItemAction.View)(item)}
             />
           ))}
         </>
@@ -190,7 +188,7 @@ const CaseHome: React.FC<Props> = ({
 
   const householdRows = itemRowRenderer<ViewTemporaryCaseInfo>(
     'form',
-    NewCaseSubroutes.ViewHousehold,
+    NewCaseSubroutes.Household,
     households.map((h, index) => {
       const { household, ...caseInfoItem } = { ...h, form: h.household, id: null };
       return { ...caseInfoItem, index };
@@ -199,7 +197,7 @@ const CaseHome: React.FC<Props> = ({
 
   const perpetratorRows = itemRowRenderer<ViewTemporaryCaseInfo>(
     'form',
-    NewCaseSubroutes.ViewPerpetrator,
+    NewCaseSubroutes.Perpetrator,
     perpetrators.map((p, index) => {
       const { perpetrator, ...caseInfoItem } = { ...p, form: p.perpetrator, id: null };
       return { ...caseInfoItem, index };
@@ -215,7 +213,10 @@ const CaseHome: React.FC<Props> = ({
             <TimelineInformationRow
               key={`incident-${index}`}
               onClickView={() =>
-                onCaseItemActionClick<ViewTemporaryCaseInfo>(NewCaseSubroutes.ViewIncident)({ ...caseItemEntry, index })
+                onCaseItemActionClick<ViewTemporaryCaseInfo>(
+                  NewCaseSubroutes.Incident,
+                  CaseItemAction.View,
+                )({ ...caseItemEntry, index })
               }
               definition={caseForms.IncidentForm}
               values={item.incident}
@@ -237,7 +238,10 @@ const CaseHome: React.FC<Props> = ({
               key={`document-${index}`}
               documentEntry={item}
               onClickView={() =>
-                onCaseItemActionClick<ViewTemporaryCaseInfo>(NewCaseSubroutes.ViewDocument)(caseItemEntry)
+                onCaseItemActionClick<ViewTemporaryCaseInfo>(
+                  NewCaseSubroutes.Document,
+                  CaseItemAction.View,
+                )(caseItemEntry)
               }
             />
           );
@@ -285,7 +289,7 @@ const CaseHome: React.FC<Props> = ({
         <Box marginLeft="25px" marginTop="25px">
           <CaseSection
             canAdd={() => can(PermissionActions.ADD_HOUSEHOLD)}
-            onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.AddHousehold)}
+            onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.Household)}
             sectionTypeId="Household"
           >
             {householdRows()}
@@ -294,7 +298,7 @@ const CaseHome: React.FC<Props> = ({
         <Box marginLeft="25px" marginTop="25px">
           <CaseSection
             canAdd={() => can(PermissionActions.ADD_PERPETRATOR)}
-            onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.AddPerpetrator)}
+            onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.Perpetrator)}
             sectionTypeId="Perpetrator"
           >
             {perpetratorRows()}
@@ -303,7 +307,7 @@ const CaseHome: React.FC<Props> = ({
         <Box marginLeft="25px" marginTop="25px">
           <CaseSection
             canAdd={() => can(PermissionActions.ADD_INCIDENT)}
-            onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.AddIncident)}
+            onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.Incident)}
             sectionTypeId="Incident"
           >
             {incidentRows()}
@@ -312,7 +316,7 @@ const CaseHome: React.FC<Props> = ({
         {featureFlags.enable_upload_documents && (
           <Box marginLeft="25px" marginTop="25px">
             <CaseSection
-              onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.AddDocument)}
+              onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.Document)}
               canAdd={() => can(PermissionActions.ADD_DOCUMENT)}
               sectionTypeId="Document"
             >
@@ -369,26 +373,12 @@ const CaseHome: React.FC<Props> = ({
               >
                 <Template code="BottomBar-Close" />
               </StyledNextStepButton>
-              <CloseTaskDialog open={closeDialog} onClose={() => setCloseDialog(false)}>
-                <Box marginLeft="auto" onClick={() => setCloseDialog(false)}>
-                  <HiddenText id="CloseButton">
-                    <Template code="CloseButton" />
-                  </HiddenText>
-                  <CloseButton aria-label="CloseButton" />
-                </Box>
-                <CloseDialogText>
-                  <Template code="BottomBar-SaveOnClose" />
-                </CloseDialogText>
-                <Row>
-                  <StyledNextStepButton secondary onClick={handleClose} margin="15px auto">
-                    <Template code="BottomBar-DontSave" />
-                  </StyledNextStepButton>
-                  <StyledNextStepButton disabled={null} onClick={onCloseDialogSave} margin="15px auto">
-                    <Template code="BottomBar-Save" />
-                  </StyledNextStepButton>
-                </Row>
-                <Box marginBottom="25px" />
-              </CloseTaskDialog>
+              <CloseCaseDialog
+                setDialog={() => setCloseDialog(false)}
+                handleDontSaveClose={handleClose}
+                handleSaveUpdate={onCloseDialogSave}
+                openDialog={closeDialog}
+              />
             </Box>
             <StyledNextStepButton disabled={!isEdited} roundCorners onClick={handleUpdate}>
               <Template code="BottomBar-Update" />

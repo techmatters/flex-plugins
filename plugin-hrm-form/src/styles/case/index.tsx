@@ -371,6 +371,7 @@ export const CloseDialogText = styled('p')`
   font-weight: 700;
   margin-bottom: 20px;
   align-self: center;
+  text-align: center;
 `;
 
 CloseDialogText.displayName = 'CloseDialogText';

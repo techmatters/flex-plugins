@@ -59,19 +59,6 @@
         "Traumatic distress",
         "Unspecified/Other"
       ]
-    },
-    "Intervention Required": {
-      "color": "#8055BA",
-      "subcategories": [
-        "Education",
-        "Essential needs",
-        "General healthcare services",
-        "Legal services and advice",
-        "Mental health services",
-        "Sexual health services",
-        "Socio-economical services",
-        "Unspecified/Other"
-      ]
     }
   }
 }

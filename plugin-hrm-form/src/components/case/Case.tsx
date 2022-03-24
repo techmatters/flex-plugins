@@ -14,9 +14,10 @@ import {
 } from '../../states';
 import { getConfig } from '../../HrmFormPlugin';
 import { connectToCase, transformCategories } from '../../services/ContactService';
-import { cancelCase, getActivities, updateCase } from '../../services/CaseService';
+import { cancelCase, updateCase } from '../../services/CaseService';
 import { getDefinitionVersion } from '../../services/ServerlessService';
-import { getDateFromNotSavedContact, getHelplineData, isConnectedCaseActivity, sortActivities } from './caseHelpers';
+import { getActivitiesFromCase, isConnectedCaseActivity, sortActivities } from './caseActivities';
+import { getDateFromNotSavedContact, getHelplineData } from './caseHelpers';
 import { getLocaleDateTime } from '../../utils/helpers';
 import * as SearchActions from '../../states/search/actions';
 import * as CaseActions from '../../states/case/actions';
@@ -26,7 +27,7 @@ import ViewContact from './ViewContact';
 import { CaseDetailsName, updateCaseListByIndex, updateCaseSectionListByIndex } from '../../states/case/types';
 import { Case as CaseType, CustomITask, NoteEntry, ReferralEntry, StandaloneITask } from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
-import { NewCaseSubroutes } from '../../states/routing/types';
+import { CaseItemAction, isAppRoutesWithCaseAndAction, NewCaseSubroutes } from '../../states/routing/types';
 import CaseHome from './CaseHome';
 import AddEditCaseItem from './AddEditCaseItem';
 import ViewCaseItem from './ViewCaseItem';
@@ -92,6 +93,7 @@ const Case: React.FC<Props> = ({
   updateAllCasesView,
   isCreating,
   handleClose,
+  routing,
   ...props
 }) => {
   const [loading, setLoading] = useState(false);
@@ -106,7 +108,7 @@ const Case: React.FC<Props> = ({
       if (!props.connectedCaseId) return;
 
       setLoading(true);
-      const activities = await getActivities(props.connectedCaseId);
+      const activities = getActivitiesFromCase(props.connectedCaseState.connectedCase);
       setLoading(false);
       let timelineActivities = sortActivities(activities);
 
@@ -123,6 +125,7 @@ const Case: React.FC<Props> = ({
           text: form.caseInformation.callSummary.toString(),
           twilioWorkerId: workerSid,
           channel: task.channelType === 'default' ? form.contactlessTask.channel.toString() : task.channelType,
+          originalIndex: 0,
         };
 
         timelineActivities = sortActivities([...timelineActivities, connectCaseActivity]);
@@ -131,7 +134,15 @@ const Case: React.FC<Props> = ({
     };
 
     getTimeline();
-  }, [task, form, props.connectedCaseId, props.connectedCaseNotes, props.connectedCaseReferrals, setLoading]);
+  }, [
+    task,
+    form,
+    props.connectedCaseId,
+    props.connectedCaseNotes,
+    props.connectedCaseReferrals,
+    props.connectedCaseState?.connectedCase,
+    setLoading,
+  ]);
 
   const version = props.connectedCaseState?.connectedCase.info.definitionVersion;
   const { updateDefinitionVersion, definitionVersions } = props;
@@ -150,16 +161,14 @@ const Case: React.FC<Props> = ({
     }
   }, [definitionVersions, updateDefinitionVersion, version]);
 
-  if (props.routing.route === 'csam-report') return null;
-
-  const { route, subroute } = props.routing;
+  if (routing.route === 'csam-report') return null;
 
   // Redirects to the proper view when the user clicks 'Close' button.
   const handleCloseSubSection = () => {
     props.updateTempInfo(null, task.taskSid);
-    if (route === 'select-call-type') {
+    if (routing.route === 'select-call-type') {
       changeRoute({ route: 'select-call-type' }, task.taskSid);
-    } else if (route === 'new-case') {
+    } else if (routing.route === 'new-case') {
       changeRoute({ route: 'new-case' }, task.taskSid);
     } else {
       changeRoute({ route: 'tabbed-forms', subroute: 'search' }, task.taskSid);
@@ -269,15 +278,6 @@ const Case: React.FC<Props> = ({
     }
   };
 
-  const addScreenProps = {
-    task,
-    route: props.routing.route,
-    counselor: currentCounselor,
-    counselorsHash,
-    onClickClose: handleCloseSubSection,
-    definitionVersion,
-  };
-
   const { caseForms } = definitionVersion;
   const caseLayouts = definitionVersion.layoutVersion.case;
 
@@ -306,135 +306,150 @@ const Case: React.FC<Props> = ({
     contact: firstConnectedContact,
     contacts: connectedCase?.connectedContacts ?? [],
   };
+  if (isAppRoutesWithCaseAndAction(routing)) {
+    const { action, subroute } = routing;
 
-  switch (subroute) {
-    case NewCaseSubroutes.AddNote:
-    case NewCaseSubroutes.EditNote:
-      return (
-        <AddEditCaseItem
-          {...{
-            ...addScreenProps,
-            layout: {},
-            itemType: 'Note',
-            route,
-            formDefinition: caseForms.NoteForm,
-          }}
-          applyTemporaryInfoToCase={updateCaseListByIndex<NoteEntry>(
-            ci => {
-              ci.counsellorNotes = ci.counsellorNotes ?? [];
-              return ci.counsellorNotes;
-            },
-            temp => ({
-              note: temp.form.note.toString(),
-              createdAt: temp.createdAt,
-              twilioWorkerId: temp.twilioWorkerId,
-            }),
-          )}
-        />
-      );
-    case NewCaseSubroutes.AddReferral:
-    case NewCaseSubroutes.EditReferral:
-      return (
-        <AddEditCaseItem
-          {...{
-            ...addScreenProps,
-            layout: {},
-            itemType: 'Referral',
-            route,
-            formDefinition: caseForms.ReferralForm,
-          }}
-          applyTemporaryInfoToCase={updateCaseListByIndex<ReferralEntry>(
-            ci => {
-              ci.referrals = ci.referrals ?? [];
-              return ci.referrals;
-            },
-            temp => ({ ...temp.form }),
-          )}
-        />
-      );
-    case NewCaseSubroutes.AddHousehold:
-    case NewCaseSubroutes.EditHousehold:
-      return (
-        <AddEditCaseItem
-          {...{
-            ...addScreenProps,
-            route,
-            layout: caseLayouts.households,
-            itemType: 'Household',
-            applyTemporaryInfoToCase: updateCaseSectionListByIndex('households', 'household'),
-            formDefinition: caseForms.HouseholdForm,
-          }}
-        />
-      );
-    case NewCaseSubroutes.AddPerpetrator:
-    case NewCaseSubroutes.EditPerpetrator:
-      return (
-        <AddEditCaseItem
-          {...{
-            ...addScreenProps,
-            route,
-            layout: caseLayouts.perpetrators,
-            itemType: 'Perpetrator',
-            applyTemporaryInfoToCase: updateCaseSectionListByIndex('perpetrators', 'perpetrator'),
-            formDefinition: caseForms.PerpetratorForm,
-          }}
-        />
-      );
-    case NewCaseSubroutes.AddIncident:
-    case NewCaseSubroutes.EditIncident:
-      return (
-        <AddEditCaseItem
-          {...{
-            ...addScreenProps,
-            route,
-            layout: caseLayouts.incidents,
-            itemType: 'Incident',
-            applyTemporaryInfoToCase: updateCaseSectionListByIndex('incidents', 'incident'),
-            formDefinition: caseForms.IncidentForm,
-          }}
-        />
-      );
-    case NewCaseSubroutes.AddDocument:
-    case NewCaseSubroutes.EditDocument:
-      return (
-        <AddEditCaseItem
-          {...{
-            ...addScreenProps,
-            route,
-            layout: caseLayouts.documents,
-            itemType: 'Document',
-            applyTemporaryInfoToCase: updateCaseSectionListByIndex('documents', 'document'),
-            formDefinition: caseForms.DocumentForm,
-            customFormHandlers: documentUploadHandler,
-            reactHookFormOptions: {
-              shouldUnregister: false,
-            },
-          }}
-        />
-      );
+    const addScreenProps = {
+      task,
+      routing,
+      counselor: currentCounselor,
+      counselorsHash,
+      exitItem: handleCloseSubSection,
+      definitionVersion,
+    };
+
+    switch (subroute) {
+      case NewCaseSubroutes.Note:
+        if (action === CaseItemAction.View) {
+          return <ViewCaseItem {...addScreenProps} itemType="Note" formDefinition={caseForms.NoteForm} />;
+        }
+        return (
+          <AddEditCaseItem
+            {...{
+              ...addScreenProps,
+              layout: {},
+              itemType: 'Note',
+              formDefinition: caseForms.NoteForm,
+            }}
+            applyTemporaryInfoToCase={updateCaseListByIndex<NoteEntry>(
+              ci => {
+                ci.counsellorNotes = ci.counsellorNotes ?? [];
+                return ci.counsellorNotes;
+              },
+              temp => ({
+                note: temp.form.note.toString(),
+                createdAt: temp.createdAt,
+                twilioWorkerId: temp.twilioWorkerId,
+              }),
+            )}
+          />
+        );
+      case NewCaseSubroutes.Referral:
+        if (action === CaseItemAction.View) {
+          return (
+            <ViewCaseItem
+              {...addScreenProps}
+              itemType="Referral"
+              formDefinition={caseForms.ReferralForm}
+              includeAddedTime={false}
+            />
+          );
+        }
+        return (
+          <AddEditCaseItem
+            {...{
+              ...addScreenProps,
+              layout: {},
+              itemType: 'Referral',
+              formDefinition: caseForms.ReferralForm,
+            }}
+            applyTemporaryInfoToCase={updateCaseListByIndex<ReferralEntry>(
+              ci => {
+                ci.referrals = ci.referrals ?? [];
+                return ci.referrals;
+              },
+              temp => ({ ...temp.form }),
+            )}
+          />
+        );
+      case NewCaseSubroutes.Household:
+        if (action === CaseItemAction.View) {
+          return <ViewCaseItem {...addScreenProps} itemType="Household" formDefinition={caseForms.HouseholdForm} />;
+        }
+        return (
+          <AddEditCaseItem
+            {...{
+              ...addScreenProps,
+              layout: caseLayouts.households,
+              itemType: 'Household',
+              applyTemporaryInfoToCase: updateCaseSectionListByIndex('households', 'household'),
+              formDefinition: caseForms.HouseholdForm,
+            }}
+          />
+        );
+      case NewCaseSubroutes.Perpetrator:
+        if (action === CaseItemAction.View) {
+          return <ViewCaseItem {...addScreenProps} itemType="Perpetrator" formDefinition={caseForms.PerpetratorForm} />;
+        }
+        return (
+          <AddEditCaseItem
+            {...{
+              ...addScreenProps,
+              layout: caseLayouts.perpetrators,
+              itemType: 'Perpetrator',
+              applyTemporaryInfoToCase: updateCaseSectionListByIndex('perpetrators', 'perpetrator'),
+              formDefinition: caseForms.PerpetratorForm,
+            }}
+          />
+        );
+      case NewCaseSubroutes.Incident:
+        if (action === CaseItemAction.View) {
+          return <ViewCaseItem {...addScreenProps} itemType="Incident" formDefinition={caseForms.IncidentForm} />;
+        }
+        return (
+          <AddEditCaseItem
+            {...{
+              ...addScreenProps,
+              layout: caseLayouts.incidents,
+              itemType: 'Incident',
+              applyTemporaryInfoToCase: updateCaseSectionListByIndex('incidents', 'incident'),
+              formDefinition: caseForms.IncidentForm,
+            }}
+          />
+        );
+      case NewCaseSubroutes.Document:
+        if (action === CaseItemAction.View) {
+          return <ViewCaseItem {...addScreenProps} itemType="Document" formDefinition={caseForms.DocumentForm} />;
+        }
+        return (
+          <AddEditCaseItem
+            {...{
+              ...addScreenProps,
+              layout: caseLayouts.documents,
+              itemType: 'Document',
+              applyTemporaryInfoToCase: updateCaseSectionListByIndex('documents', 'document'),
+              formDefinition: caseForms.DocumentForm,
+              customFormHandlers: documentUploadHandler,
+              reactHookFormOptions: {
+                shouldUnregister: false,
+              },
+            }}
+          />
+        );
+      default:
+      // Fall through to next switch for other routes without actions
+    }
+  }
+  switch (routing.subroute) {
     case NewCaseSubroutes.ViewContact:
-      return <ViewContact {...addScreenProps} />;
-    case NewCaseSubroutes.ViewNote:
-      return <ViewCaseItem {...addScreenProps} itemType="Note" formDefinition={definitionVersion.caseForms.NoteForm} />;
-    case NewCaseSubroutes.ViewHousehold:
-      return <ViewCaseItem {...addScreenProps} itemType="Household" formDefinition={caseForms.HouseholdForm} />;
-    case NewCaseSubroutes.ViewPerpetrator:
-      return <ViewCaseItem {...addScreenProps} itemType="Perpetrator" formDefinition={caseForms.PerpetratorForm} />;
-    case NewCaseSubroutes.ViewIncident:
-      return <ViewCaseItem {...addScreenProps} itemType="Incident" formDefinition={caseForms.IncidentForm} />;
-    case NewCaseSubroutes.ViewReferral:
+      return <ViewContact onClickClose={handleCloseSubSection} task={task} />;
+    case NewCaseSubroutes.CasePrintView:
       return (
-        <ViewCaseItem
-          {...addScreenProps}
-          itemType="Referral"
-          formDefinition={caseForms.ReferralForm}
-          includeAddedTime={false}
+        <CasePrintView
+          caseDetails={caseDetails}
+          {...{ counselorsHash, onClickClose: handleCloseSubSection, definitionVersion }}
         />
       );
-    case NewCaseSubroutes.ViewDocument:
-      return <ViewCaseItem {...addScreenProps} itemType="Document" formDefinition={caseForms.DocumentForm} />;
-    case NewCaseSubroutes.CasePrintView:
-      return <CasePrintView caseDetails={caseDetails} {...addScreenProps} />;
     default:
       return loading || !definitionVersion ? (
         <CenteredContainer>

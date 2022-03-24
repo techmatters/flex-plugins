@@ -13,7 +13,6 @@ import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import Case from '../../../components/case';
 import CaseHome from '../../../components/case/CaseHome';
 import { namespace, configurationBase, contactFormsBase, connectedCaseBase, routingBase } from '../../../states';
-import { getActivities } from '../../../services/CaseService';
 import { getDefinitionVersions } from '../../../HrmFormPlugin';
 import { StandaloneITask } from '../../../types/types';
 
@@ -171,7 +170,6 @@ describe('useState mocked', () => {
   });
 
   test('a11y', async () => {
-    (getActivities as jest.Mock).mockResolvedValue([]);
     const store = mockStore(initialState);
 
     const wrapper = mount(

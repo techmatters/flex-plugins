@@ -22,12 +22,12 @@ import CaseAddButton from './CaseAddButton';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { ContactDetailsSections } from '../common/ContactDetails';
-import { blankReferral, Case as CaseType, CaseItemEntry, CustomITask } from '../../types/types';
-import { isConnectedCaseActivity } from './caseHelpers';
+import { blankReferral, CaseItemEntry, CustomITask } from '../../types/types';
+import { isConnectedCaseActivity } from './caseActivities';
 import { TaskEntry } from '../../states/contacts/reducer';
-import { Activity } from '../../states/case/types';
+import { Activity, NoteActivity, ReferralActivity } from '../../states/case/types';
 import { PermissionActions, PermissionActionType } from '../../permissions';
-import { NewCaseSubroutes, AppRoutesWithCase } from '../../states/routing/types';
+import { NewCaseSubroutes, AppRoutesWithCase, CaseItemAction } from '../../states/routing/types';
 
 type OwnProps = {
   timelineActivities: Activity[];
@@ -45,7 +45,7 @@ const Timeline: React.FC<Props> = props => {
   const { can, taskSid, form, changeRoute, updateTempInfo, route, timelineActivities } = props;
   const [mockedMessage, setMockedMessage] = useState(null);
 
-  const handleViewNoteClick = (activity, index) => {
+  const handleViewNoteClick = (activity: NoteActivity) => {
     const { twilioWorkerId } = activity;
     const info: CaseItemEntry = {
       id: null,
@@ -54,13 +54,13 @@ const Timeline: React.FC<Props> = props => {
       createdAt: parseISO(activity.date).toISOString(),
     };
     updateTempInfo(
-      { screen: NewCaseSubroutes.ViewNote, editScreen: NewCaseSubroutes.EditNote, info: { ...info, index } },
+      { screen: NewCaseSubroutes.Note, action: CaseItemAction.View, info: { ...info, index: activity.originalIndex } },
       taskSid,
     );
-    changeRoute({ route, subroute: NewCaseSubroutes.ViewNote }, taskSid);
+    changeRoute({ route, subroute: NewCaseSubroutes.Note, action: CaseItemAction.View }, taskSid);
   };
 
-  const handleViewReferralClick = (activity, index) => {
+  const handleViewReferralClick = (activity: ReferralActivity) => {
     const { twilioWorkerId } = activity;
     const info: CaseItemEntry = {
       id: null,
@@ -69,10 +69,14 @@ const Timeline: React.FC<Props> = props => {
       createdAt: parseISO(activity.date).toISOString(),
     };
     updateTempInfo(
-      { screen: NewCaseSubroutes.ViewReferral, editScreen: NewCaseSubroutes.EditReferral, info: { ...info, index } },
+      {
+        screen: NewCaseSubroutes.Referral,
+        action: CaseItemAction.View,
+        info: { ...info, index: activity.originalIndex },
+      },
       taskSid,
     );
-    changeRoute({ route, subroute: NewCaseSubroutes.ViewReferral }, taskSid);
+    changeRoute({ route, subroute: NewCaseSubroutes.Referral, action: CaseItemAction.View }, taskSid);
   };
 
   const handleViewConnectedCaseActivityClick = activity => {
@@ -98,25 +102,13 @@ const Timeline: React.FC<Props> = props => {
   };
 
   const handleAddNoteClick = () => {
-    updateTempInfo({ screen: NewCaseSubroutes.AddNote, info: null }, taskSid);
-    changeRoute({ route, subroute: NewCaseSubroutes.AddNote }, taskSid);
+    updateTempInfo({ screen: NewCaseSubroutes.Note, action: CaseItemAction.Add, info: null }, taskSid);
+    changeRoute({ route, subroute: NewCaseSubroutes.Note, action: CaseItemAction.Add }, taskSid);
   };
 
   const handleAddReferralClick = () => {
-    updateTempInfo({ screen: NewCaseSubroutes.AddReferral, info: blankReferral }, taskSid);
-    changeRoute({ route, subroute: NewCaseSubroutes.AddReferral }, taskSid);
-  };
-
-  const indexableTypes: Record<string, Activity[]> = {};
-
-  const findIndex = (activity: Activity): number => {
-    indexableTypes[activity.type] =
-      indexableTypes[activity.type] ??
-      timelineActivities.filter(a => a.type === activity.type).sort((a, b) => b.date.localeCompare(a.date));
-    const idx = indexableTypes[activity.type].indexOf(activity);
-    if (idx === -1)
-      throw new Error(`Could not find activity dated '${activity.date}' of type ${activity.type} in timeline!`);
-    return idx;
+    updateTempInfo({ screen: NewCaseSubroutes.Referral, action: CaseItemAction.Add, info: blankReferral }, taskSid);
+    changeRoute({ route, subroute: NewCaseSubroutes.Referral, action: CaseItemAction.Add }, taskSid);
   };
 
   /*
@@ -127,9 +119,9 @@ const Timeline: React.FC<Props> = props => {
 
   const handleViewClick = activity => {
     if (activity.type === 'note') {
-      handleViewNoteClick(activity, findIndex(activity));
+      handleViewNoteClick(activity);
     } else if (activity.type === 'referral') {
-      handleViewReferralClick(activity, findIndex(activity));
+      handleViewReferralClick(activity);
     } else if (isConnectedCaseActivity(activity)) {
       handleViewConnectedCaseActivityClick(activity);
     } else {
