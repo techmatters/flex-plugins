@@ -68,7 +68,7 @@ const Timeline: React.FC<Props> = props => {
       id: null,
       form: { ...activity.referral },
       twilioWorkerId,
-      createdAt: parseISO(activity.date).toISOString(),
+      createdAt: parseISO(activity.createdAt).toISOString(),
       updatedAt: activity.updatedAt ? parseISO(activity.updatedAt).toISOString() : undefined,
       updatedBy: activity.updatedBy,
     };
