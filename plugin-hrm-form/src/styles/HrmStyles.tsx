@@ -22,6 +22,7 @@ type BoxProps = {
   paddingLeft?: string;
   paddingRight?: string;
   alignSelf?: string;
+  textAlign?: string;
 };
 
 export const Box = styled('div')<BoxProps>`
@@ -38,6 +39,7 @@ export const Box = styled('div')<BoxProps>`
   ${({ paddingLeft }) => paddingLeft && `padding-left: ${paddingLeft};`}
   ${({ paddingRight }) => paddingRight && `padding-right: ${paddingRight};`}
   ${({ alignSelf }) => alignSelf && `align-self: ${alignSelf};`}
+  ${({ textAlign }) => textAlign && `text-align: ${textAlign};`}
 `;
 Box.displayName = 'Box';
 

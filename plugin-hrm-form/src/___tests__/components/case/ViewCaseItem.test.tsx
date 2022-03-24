@@ -1,12 +1,12 @@
 // @ts-ignore
 import React from 'react';
+import { Provider } from 'react-redux';
+import configureMockStore from 'redux-mock-store';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
-import { Provider } from 'react-redux';
-import configureMockStore from 'redux-mock-store';
 import { DefinitionVersion, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
@@ -14,6 +14,7 @@ import { configurationBase, connectedCaseBase, contactFormsBase, namespace } fro
 import ViewCaseItem, { ViewCaseItemProps } from '../../../components/case/ViewCaseItem';
 import { getDefinitionVersions } from '../../../HrmFormPlugin';
 import { CaseItemEntry, StandaloneITask } from '../../../types/types';
+import { CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
 
 expect.extend(toHaveNoViolations);
 const mockStore = configureMockStore([]);
@@ -64,7 +65,7 @@ const state = {
       tasks: {
         task1: {
           taskSid: 'task1',
-          temporaryCaseInfo: { screen: 'view-household', info: caseItemEntry },
+          temporaryCaseInfo: { screen: 'view-household', info: caseItemEntry, action: CaseItemAction.View },
           connectedCase: {
             createdAt: 1593469560208,
             twilioWorkerId: 'worker1',
@@ -87,7 +88,7 @@ const task = {
 
 describe('Test ViewHousehold', () => {
   let mockV1: DefinitionVersion;
-  const onClickClose = jest.fn();
+  const exitItem = jest.fn();
 
   let ownProps: ViewCaseItemProps;
 
@@ -98,10 +99,15 @@ describe('Test ViewHousehold', () => {
 
   beforeEach(async () => {
     ownProps = {
-      onClickClose,
+      exitItem,
       task: task as StandaloneITask,
       formDefinition: mockV1.caseForms.HouseholdForm,
       itemType: 'Household',
+      routing: {
+        route: 'tabbed-forms',
+        subroute: NewCaseSubroutes.Household,
+        action: CaseItemAction.View,
+      },
     };
   });
 
@@ -114,20 +120,20 @@ describe('Test ViewHousehold', () => {
       </StorelessThemeProvider>,
     );
 
-    expect(onClickClose).not.toHaveBeenCalled();
+    expect(exitItem).not.toHaveBeenCalled();
 
     expect(screen.getByTestId('Case-CloseCross')).toBeInTheDocument();
     screen.getByTestId('Case-CloseCross').click();
 
-    expect(onClickClose).toHaveBeenCalled();
+    expect(exitItem).toHaveBeenCalled();
 
-    onClickClose.mockClear();
-    expect(onClickClose).not.toHaveBeenCalled();
+    exitItem.mockClear();
+    expect(exitItem).not.toHaveBeenCalled();
 
     expect(screen.getByTestId('Case-CloseButton')).toBeInTheDocument();
     screen.getByTestId('Case-CloseButton').click();
 
-    expect(onClickClose).toHaveBeenCalled();
+    expect(exitItem).toHaveBeenCalled();
   });
 
   test('a11y', async () => {

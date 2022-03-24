@@ -14,6 +14,7 @@ import AddEditCaseItem, { AddEditCaseItemProps } from '../../../components/case/
 import { getDefinitionVersions } from '../../../HrmFormPlugin';
 import { updateCaseSectionListByIndex } from '../../../states/case/types';
 import { StandaloneITask } from '../../../types/types';
+import { CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
 
 let mockV1;
 
@@ -140,20 +141,24 @@ store3.dispatch = jest.fn();
 const themeConf: ThemeConfigProps = {};
 
 describe('Test AddHousehold', () => {
-  const onClickClose = jest.fn();
+  const exitItem = jest.fn();
   let ownProps: AddEditCaseItemProps;
   beforeEach(
     () =>
       (ownProps = {
         task: state2[namespace][connectedCaseBase].tasks.task1 as StandaloneITask,
         counselor: 'Someone',
-        onClickClose,
+        exitItem,
         layout: mockV1.layoutVersion.case.households,
         applyTemporaryInfoToCase: updateCaseSectionListByIndex('households', 'household'),
         formDefinition: mockV1.caseForms.HouseholdForm,
         definitionVersion: mockV1,
         itemType: 'Household',
-        route: 'tabbed-forms',
+        routing: {
+          route: 'tabbed-forms',
+          subroute: NewCaseSubroutes.Household,
+          action: CaseItemAction.Add,
+        },
       }),
   );
   test('Test close functionality', async () => {
@@ -165,20 +170,20 @@ describe('Test AddHousehold', () => {
       </StorelessThemeProvider>,
     );
 
-    expect(onClickClose).not.toHaveBeenCalled();
+    expect(exitItem).not.toHaveBeenCalled();
 
     expect(screen.getByTestId('Case-CloseCross')).toBeInTheDocument();
     screen.getByTestId('Case-CloseCross').click();
 
-    expect(onClickClose).toHaveBeenCalled();
+    expect(exitItem).toHaveBeenCalled();
 
-    onClickClose.mockClear();
-    expect(onClickClose).not.toHaveBeenCalled();
+    exitItem.mockClear();
+    expect(exitItem).not.toHaveBeenCalled();
 
     expect(screen.getByTestId('Case-CloseButton')).toBeInTheDocument();
     screen.getByTestId('Case-CloseButton').click();
 
-    expect(onClickClose).toHaveBeenCalled();
+    expect(exitItem).toHaveBeenCalled();
   });
 
   test('a11y', async () => {
