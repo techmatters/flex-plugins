@@ -1,0 +1,25 @@
+{
+  "label": "Helpline",
+  "helplines": [
+    {
+      "label": "Childline",
+      "value": "Childline",
+      "default": true,
+      "manager": {
+        "name": "Helpline Manager",
+        "phone": "+123 45 678",
+        "email": "supervisor@helpline.org"
+      }
+    },
+    {
+      "label": "Lifeline",
+      "value": "Lifeline",
+      "default": false,
+      "manager": {
+        "name": "Helpline Manager",
+        "phone": "+123 45 678",
+        "email": "supervisor@helpline.org"
+      }
+    }
+  ]
+}
