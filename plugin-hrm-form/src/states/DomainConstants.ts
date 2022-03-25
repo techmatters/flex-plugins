@@ -10,17 +10,6 @@ export const channelTypes = {
 
 export type ChannelTypes = typeof channelTypes[keyof typeof channelTypes];
 
-export const otherContactChannels = {
-  'Bulletin board': 'Bulletin board',
-  'E-mail': 'E-mail',
-  'Mobile app': 'Mobile app',
-  Outreach: 'Outreach',
-  Post: 'Post',
-  'Walk-in / In person': 'Walk-in / In person',
-  'Website forum': 'Website forum',
-  Other: 'Other',
-} as const;
-
 export const transferModes = {
   cold: 'COLD',
   warm: 'WARM',

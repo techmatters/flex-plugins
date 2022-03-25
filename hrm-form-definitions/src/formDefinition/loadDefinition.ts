@@ -65,6 +65,16 @@ export async function loadDefinition(version: DefinitionVersionId): Promise<Defi
   const issueCategorizationTabModule = await import(
     /* webpackMode: "eager" */ `../../form-definitions/${version}/tabbedForms/IssueCategorizationTab.json`
   );
+
+  let contactlessTaskTabModule;
+  try {
+    contactlessTaskTabModule = await import(
+      /* webpackMode: "eager" */ `../../form-definitions/${version}/tabbedForms/ContactlessTaskTab.json`
+    );
+  } catch (err) {
+    contactlessTaskTabModule = {};
+  }
+
   const callTypeButtonsModule = await import(
     /* webpackMode: "eager" */ `../../form-definitions/${version}/CallTypeButtons.json`
   );
@@ -113,6 +123,7 @@ export async function loadDefinition(version: DefinitionVersionId): Promise<Defi
       IssueCategorizationTab: (helpline: string) =>
         issueCategorizationTabModule.default[helpline] ||
         issueCategorizationTabModule.default[defaultHelpline],
+      ContactlessTaskTab: contactlessTaskTabModule,
     },
     callTypeButtons: callTypeButtonsModule.default as CallTypeButtonsDefinitions,
     layoutVersion: layoutDefinitionsModule.default as LayoutVersion,

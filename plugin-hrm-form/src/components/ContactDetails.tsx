@@ -76,7 +76,7 @@ const Details: React.FC<Props> = ({
   const childOrUnknown = formatName(childName);
   const childUpperCased = childOrUnknown.toUpperCase();
   const formattedChannel =
-    channel === 'default' ? mapChannelForInsights(details.contactlessTask.channel) : mapChannel(channel);
+    channel === 'default' ? mapChannelForInsights(details.contactlessTask.channel) : mapChannelForInsights(channel);
   const formattedDate = `${format(new Date(dateTime), 'MMM d, yyyy / h:mm aaaaa')}m`;
   const formattedDuration = formatDuration(conversationDuration);
 
