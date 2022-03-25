@@ -10,7 +10,7 @@ terraform {
     bucket         = "tl-terraform-state-twilio-uk-staging"
     key            = "twilio/terraform.tfstate"
     dynamodb_table = "twilio-terraform-uk-staging-locks"
-    encrypt        = true
+    encrypt        = true 
   }
 }
 
