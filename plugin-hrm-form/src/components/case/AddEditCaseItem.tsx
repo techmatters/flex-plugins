@@ -46,6 +46,7 @@ import {
   TemporaryCaseInfo,
   temporaryCaseInfoHistory,
 } from '../../states/case/types';
+import CloseCaseDialog from './CloseCaseDialog';
 
 type CaseItemPayload = { [key: string]: string | boolean };
 
@@ -212,21 +213,28 @@ const AddEditCaseItem: React.FC<Props> = ({
     },
   );
 
+  const [openDialog, setOpenDialog] = React.useState(false);
+
   const { added, addingCounsellorName, updated, updatingCounsellorName } = isEditTemporaryCaseInfo(temporaryCaseInfo)
     ? temporaryCaseInfoHistory(temporaryCaseInfo, counselorsHash)
     : { added: new Date(), addingCounsellorName: counselor, updated: undefined, updatingCounsellorName: undefined };
-
   return (
     <FormProvider {...methods}>
       <CaseActionLayout>
         <CaseActionFormContainer>
           <ActionHeader
             titleTemplate={routing.action === CaseItemAction.Edit ? `Case-Edit${itemType}` : `Case-Add${itemType}`}
-            onClickClose={close}
+            onClickClose={() => setOpenDialog(true)}
             addingCounsellor={addingCounsellorName}
             added={added}
             updatingCounsellor={updatingCounsellorName}
             updated={updated}
+          />
+          <CloseCaseDialog
+            openDialog={openDialog}
+            setDialog={() => setOpenDialog(false)}
+            handleDontSaveClose={close}
+            handleSaveUpdate={saveAndLeave}
           />
           <Container>
             <Box paddingBottom={`${BottomButtonBarHeight}px`}>
@@ -240,9 +248,20 @@ const AddEditCaseItem: React.FC<Props> = ({
         <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
         <BottomButtonBar>
           <Box marginRight="15px">
-            <StyledNextStepButton data-testid="Case-CloseButton" secondary roundCorners onClick={close}>
+            <StyledNextStepButton
+              data-testid="Case-CloseButton"
+              secondary
+              roundCorners
+              onClick={() => setOpenDialog(true)}
+            >
               <Template code="BottomBar-Cancel" />
             </StyledNextStepButton>
+            <CloseCaseDialog
+              openDialog={openDialog}
+              setDialog={() => setOpenDialog(false)}
+              handleDontSaveClose={close}
+              handleSaveUpdate={saveAndLeave}
+            />
           </Box>
           {routing.action === CaseItemAction.Add && (
             <Box marginRight="15px">
