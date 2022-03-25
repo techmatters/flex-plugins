@@ -176,8 +176,6 @@ describe('Test AddHousehold', () => {
     screen.getByTestId('Case-CloseCross').click();
 
     expect(exitItem).toHaveBeenCalled();
-    // expect(screen.getByTestId('CloseCaseDialog')).toBeInTheDocument();
-
 
     exitItem.mockClear();
     expect(exitItem).not.toHaveBeenCalled();
@@ -185,8 +183,7 @@ describe('Test AddHousehold', () => {
     expect(screen.getByTestId('Case-CloseButton')).toBeInTheDocument();
     screen.getByTestId('Case-CloseButton').click();
 
-    // expect(exitItem).toHaveBeenCalled();
-    expect(screen.getByTestId('CloseCaseDialog')).toBeInTheDocument();
+    expect(exitItem).toHaveBeenCalled();
   });
 
   test('a11y', async () => {

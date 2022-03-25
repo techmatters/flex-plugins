@@ -16,7 +16,7 @@ type Props = {
 export default function CloseCaseDialog({ setDialog, handleDontSaveClose, handleSaveUpdate, openDialog }: Props) {
   return (
     <>
-      <CloseTaskDialog datatest-id="CloseCaseDialog" open={openDialog} onClose={setDialog}>
+      <CloseTaskDialog open={openDialog} onClose={setDialog}>
         <TabPressWrapper>
           <Box textAlign="end" onClick={setDialog} tabIndex={3}>
             <HiddenText id="CloseButton">

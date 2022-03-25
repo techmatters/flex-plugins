@@ -25,7 +25,6 @@ export type ViewTemporaryCaseInfo = {
   screen: CaseSectionSubroute;
   action: CaseItemAction.View;
   info: t.CaseItemEntry & Indexable;
-  isEdited?: boolean;
 };
 
 export function isViewTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is ViewTemporaryCaseInfo {
