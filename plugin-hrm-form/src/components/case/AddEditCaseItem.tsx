@@ -100,8 +100,23 @@ const AddEditCaseItem: React.FC<Props> = ({
 
   const { temporaryCaseInfo } = connectedCaseState;
 
+  if(!isEditTemporaryCaseInfo(temporaryCaseInfo) && !isAddTemporaryCaseInfo(temporaryCaseInfo)){
+    throw new Error('This component only supports Add or Edit tempCaseInfo')
+  }
+
   const [initialForm] = React.useState(getTemporaryFormContent(temporaryCaseInfo) ?? {}); // grab initial values in first render only. This value should never change or will ruin the memoization below
   const methods = useForm(reactHookFormOptions);
+
+  const [isDirty, setDirty] = React.useState(false)
+  console.log('redux temporaryCaseInfo', temporaryCaseInfo)
+  // temporaryCaseInfo.isEdited = true
+
+  React.useEffect(() => {
+    setDirty(methods.formState.isDirty)
+  },[methods.formState.isDirty])
+    console.log('redux isDirty', isDirty)
+    console.log('redux temporaryCaseInfo', temporaryCaseInfo)
+
 
   const [l, r] = React.useMemo(() => {
     const createUpdatedTemporaryFormContent = (
@@ -111,11 +126,13 @@ const AddEditCaseItem: React.FC<Props> = ({
         return {
           ...temporaryCaseInfo,
           info: { ...temporaryCaseInfo.info, form: payload },
+          isEdited: isDirty ?  true : temporaryCaseInfo.isEdited
         };
       } else if (isAddTemporaryCaseInfo(temporaryCaseInfo)) {
         return {
           ...temporaryCaseInfo,
           info: payload,
+          isEdited: isDirty ?  true : temporaryCaseInfo.isEdited
         };
       }
       throw new Error(UNSUPPORTED_TEMPORARY_INFO_TYPE_MESSAGE);
@@ -183,7 +200,7 @@ const AddEditCaseItem: React.FC<Props> = ({
 
   async function close() {
     if (isEditTemporaryCaseInfo(temporaryCaseInfo)) {
-      updateTempInfo({ ...temporaryCaseInfo, action: CaseItemAction.View }, task.taskSid);
+      updateTempInfo({ ...temporaryCaseInfo, action: CaseItemAction.View}, task.taskSid);
       changeRoute({ ...routing, action: CaseItemAction.View }, task.taskSid);
     } else {
       exitItem();
@@ -195,7 +212,7 @@ const AddEditCaseItem: React.FC<Props> = ({
     if (isAddTemporaryCaseInfo(temporaryCaseInfo)) {
       const blankForm = formDefinition.reduce(createStateItem, {});
       methods.reset(blankForm); // Resets the form.
-      updateTempInfo({ screen: temporaryCaseInfo.screen, info: {}, action: CaseItemAction.Add }, task.taskSid);
+      updateTempInfo({ screen: temporaryCaseInfo.screen, info: {}, action: CaseItemAction.Add}, task.taskSid);
       changeRoute({ ...routing, action: CaseItemAction.Add }, task.taskSid);
     }
   }
@@ -224,7 +241,7 @@ const AddEditCaseItem: React.FC<Props> = ({
         <CaseActionFormContainer>
           <ActionHeader
             titleTemplate={routing.action === CaseItemAction.Edit ? `Case-Edit${itemType}` : `Case-Add${itemType}`}
-            onClickClose={() => setOpenDialog(true)}
+            onClickClose={temporaryCaseInfo.isEdited ? () => setOpenDialog(true) : close}
             addingCounsellor={addingCounsellorName}
             added={added}
             updatingCounsellor={updatingCounsellorName}
@@ -252,7 +269,8 @@ const AddEditCaseItem: React.FC<Props> = ({
               data-testid="Case-CloseButton"
               secondary
               roundCorners
-              onClick={() => setOpenDialog(true)}
+              // onClick={isDirty? () => setOpenDialog(true) : close}
+              onClick={temporaryCaseInfo.isEdited? () => setOpenDialog(true) : close}
             >
               <Template code="BottomBar-Cancel" />
             </StyledNextStepButton>

@@ -71,6 +71,7 @@ export function reduce(state = initialState, action: CaseActionType | GeneralAct
       };
     }
     case UPDATE_TEMP_INFO:
+      // console.log('redux reducer temporaryCaseInfo:', action.value) 
       return {
         ...state,
         tasks: {
