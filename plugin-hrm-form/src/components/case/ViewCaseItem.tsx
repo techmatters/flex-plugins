@@ -12,7 +12,7 @@ import { CaseState } from '../../states/case/reducer';
 import SectionEntry from '../SectionEntry';
 import ActionHeader from './ActionHeader';
 import type { CustomITask, StandaloneITask } from '../../types/types';
-import { isViewTemporaryCaseInfo } from '../../states/case/types';
+import { isViewTemporaryCaseInfo, temporaryCaseInfoHistory } from '../../states/case/types';
 import { AppRoutesWithCaseAndAction, CaseItemAction } from '../../states/routing/types';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
@@ -47,12 +47,14 @@ const ViewCaseItem: React.FC<Props> = ({
   exitItem,
   formDefinition,
   itemType,
-  includeAddedTime = true,
 }) => {
   if (!isViewTemporaryCaseInfo(temporaryCaseInfo))
     throw new Error('This component only supports temporary case info of the ViewTemporaryCaseInfo type');
-  const counselorName = counselorsHash[temporaryCaseInfo.info.twilioWorkerId] || 'Unknown';
-  const added = new Date(temporaryCaseInfo.info.createdAt);
+
+  const { addingCounsellorName, added, updatingCounsellorName, updated } = temporaryCaseInfoHistory(
+    temporaryCaseInfo,
+    counselorsHash,
+  );
 
   const { form } = temporaryCaseInfo.info;
 
@@ -70,9 +72,10 @@ const ViewCaseItem: React.FC<Props> = ({
         <ActionHeader
           titleTemplate={`Case-View${itemType}`}
           onClickClose={exitItem}
-          counselor={counselorName}
+          addingCounsellor={addingCounsellorName}
           added={added}
-          includeTime={includeAddedTime}
+          updatingCounsellor={updatingCounsellorName}
+          updated={updated}
         />
         {formDefinition.length === 1 && formDefinition[0].type === 'textarea' ? (
           <FullWidthFormTextContainer data-testid="Case-ViewCaseItemScreen-FullWidthTextArea">

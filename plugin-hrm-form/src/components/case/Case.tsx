@@ -336,24 +336,19 @@ const Case: React.FC<Props> = ({
                 ci.counsellorNotes = ci.counsellorNotes ?? [];
                 return ci.counsellorNotes;
               },
-              temp => ({
-                note: temp.form.note.toString(),
-                createdAt: temp.createdAt,
-                twilioWorkerId: temp.twilioWorkerId,
-              }),
+              temp => {
+                const { form: noteForm, ...entryInfo } = temp;
+                return {
+                  ...entryInfo,
+                  note: noteForm.note.toString(),
+                };
+              },
             )}
           />
         );
       case NewCaseSubroutes.Referral:
         if (action === CaseItemAction.View) {
-          return (
-            <ViewCaseItem
-              {...addScreenProps}
-              itemType="Referral"
-              formDefinition={caseForms.ReferralForm}
-              includeAddedTime={false}
-            />
-          );
+          return <ViewCaseItem {...addScreenProps} itemType="Referral" formDefinition={caseForms.ReferralForm} />;
         }
         return (
           <AddEditCaseItem
@@ -368,7 +363,15 @@ const Case: React.FC<Props> = ({
                 ci.referrals = ci.referrals ?? [];
                 return ci.referrals;
               },
-              temp => ({ ...temp.form }),
+              temp => {
+                const { form: referralForm, ...entryInfo } = temp;
+                return {
+                  ...referralForm,
+                  referredTo: referralForm.referredTo as string,
+                  date: referralForm.date as string,
+                  ...entryInfo,
+                };
+              },
             )}
           />
         );

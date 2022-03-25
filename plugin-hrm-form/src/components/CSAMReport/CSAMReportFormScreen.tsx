@@ -24,7 +24,7 @@ const CSAMReportFormScreen: React.FC<Props> = ({
 }) => (
   <CSAMReportContainer data-testid="CSAMReport-FormScreen">
     <CSAMReportLayout>
-      <ActionHeader titleTemplate="CSAMReportForm-Header" onClickClose={onClickClose} counselor={counselor} />
+      <ActionHeader titleTemplate="CSAMReportForm-Header" onClickClose={onClickClose} addingCounsellor={counselor} />
 
       {/** Website details */}
       <Box marginTop="20px" marginBottom="5px">
