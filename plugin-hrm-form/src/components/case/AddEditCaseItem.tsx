@@ -46,6 +46,7 @@ import {
   TemporaryCaseInfo,
   temporaryCaseInfoHistory,
 } from '../../states/case/types';
+import CloseCaseDialog from './CloseCaseDialog';
 
 type CaseItemPayload = { [key: string]: string | boolean };
 
@@ -101,6 +102,13 @@ const AddEditCaseItem: React.FC<Props> = ({
 
   const [initialForm] = React.useState(getTemporaryFormContent(temporaryCaseInfo) ?? {}); // grab initial values in first render only. This value should never change or will ruin the memoization below
   const methods = useForm(reactHookFormOptions);
+  const [openDialog, setOpenDialog] = React.useState(false);
+
+  // The hook along with useEffect help render the DOM at first instance checking for user changes in the form. Without, atleast 2 more changes by the user are required when relying on methods.formState.isDirty directly
+  const [isDirty, setDirty] = React.useState(false);
+  React.useEffect(() => {
+    setDirty(methods.formState.isDirty);
+  }, [methods.formState.isDirty]);
 
   const [l, r] = React.useMemo(() => {
     const createUpdatedTemporaryFormContent = (
@@ -110,11 +118,13 @@ const AddEditCaseItem: React.FC<Props> = ({
         return {
           ...temporaryCaseInfo,
           info: { ...temporaryCaseInfo.info, form: payload },
+          isEdited: isDirty ? true : temporaryCaseInfo.isEdited,
         };
       } else if (isAddTemporaryCaseInfo(temporaryCaseInfo)) {
         return {
           ...temporaryCaseInfo,
           info: payload,
+          isEdited: isDirty ? true : temporaryCaseInfo.isEdited,
         };
       }
       throw new Error(UNSUPPORTED_TEMPORARY_INFO_TYPE_MESSAGE);
@@ -143,6 +153,7 @@ const AddEditCaseItem: React.FC<Props> = ({
     updateTempInfo,
     temporaryCaseInfo,
     customFormHandlers,
+    isDirty,
   ]);
 
   const save = async () => {
@@ -216,17 +227,34 @@ const AddEditCaseItem: React.FC<Props> = ({
     ? temporaryCaseInfoHistory(temporaryCaseInfo, counselorsHash)
     : { added: new Date(), addingCounsellorName: counselor, updated: undefined, updatingCounsellorName: undefined };
 
+  // Checks that the type of TemporaryCaseInfo is either AddTemporaryCaseInfo type or EditTemporaryCaseInfo type in order to pass the isEdited flag within the redux state for connectedCaseState.temporaryCaseInfo
+  const checkForEdits = () => {
+    if (
+      (isEditTemporaryCaseInfo(temporaryCaseInfo) || isAddTemporaryCaseInfo(temporaryCaseInfo)) &&
+      temporaryCaseInfo.isEdited
+    ) {
+      setOpenDialog(true);
+    } else close();
+  };
+
   return (
     <FormProvider {...methods}>
       <CaseActionLayout>
         <CaseActionFormContainer>
           <ActionHeader
             titleTemplate={routing.action === CaseItemAction.Edit ? `Case-Edit${itemType}` : `Case-Add${itemType}`}
-            onClickClose={close}
+            onClickClose={checkForEdits}
             addingCounsellor={addingCounsellorName}
             added={added}
             updatingCounsellor={updatingCounsellorName}
             updated={updated}
+          />
+          <CloseCaseDialog
+            data-testid="CloseCase-Dialog"
+            openDialog={openDialog}
+            setDialog={() => setOpenDialog(false)}
+            handleDontSaveClose={close}
+            handleSaveUpdate={saveAndLeave}
           />
           <Container>
             <Box paddingBottom={`${BottomButtonBarHeight}px`}>
@@ -240,9 +268,16 @@ const AddEditCaseItem: React.FC<Props> = ({
         <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
         <BottomButtonBar>
           <Box marginRight="15px">
-            <StyledNextStepButton data-testid="Case-CloseButton" secondary roundCorners onClick={close}>
+            <StyledNextStepButton data-testid="Case-CloseButton" secondary roundCorners onClick={checkForEdits}>
               <Template code="BottomBar-Cancel" />
             </StyledNextStepButton>
+            <CloseCaseDialog
+              data-testid="CloseCaseDialog"
+              openDialog={openDialog}
+              setDialog={() => setOpenDialog(false)}
+              handleDontSaveClose={close}
+              handleSaveUpdate={saveAndLeave}
+            />
           </Box>
           {routing.action === CaseItemAction.Add && (
             <Box marginRight="15px">

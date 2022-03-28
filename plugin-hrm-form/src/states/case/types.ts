@@ -35,6 +35,7 @@ export type EditTemporaryCaseInfo = {
   screen: CaseSectionSubroute;
   action: CaseItemAction.Edit;
   info: t.CaseItemEntry & Indexable;
+  isEdited?: boolean;
 };
 
 export function isEditTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is EditTemporaryCaseInfo {
@@ -45,6 +46,7 @@ export type AddTemporaryCaseInfo = {
   screen: CaseSectionSubroute;
   action: CaseItemAction.Add;
   info: t.CaseItemFormValues;
+  isEdited?: boolean;
 };
 
 export function isAddTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is AddTemporaryCaseInfo {
