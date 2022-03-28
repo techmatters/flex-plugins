@@ -170,7 +170,7 @@ CaseDetails.displayName = 'CaseDetails';
 CaseDetails.propTypes = {
   caseId: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
-  categories: PropTypes.array.isRequired,
+  categories: PropTypes.object.isRequired,
   counselor: PropTypes.string.isRequired,
   openedDate: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,

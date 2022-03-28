@@ -1,5 +1,5 @@
 {
-  "ChildLine Zambia (ZM)": {
+  "Childline": {
     "Missing children": {
       "color": "#BBE3FF",
       "subcategories": [
@@ -119,20 +119,9 @@
         "Sexual behaviours",
         "Unspecified/Other"
       ]
-    },
-    "Non-Counselling contacts": {
-      "color": "#767777",
-      "subcategories": [
-        "Complaints about the child helpline",
-        "Questions by parents",
-        "Questions about the child helpline",
-        "Questions about other services",
-        "\"Thank you for your assistance\"",
-        "Unspecified/Other"
-      ]
     }
   },
-  "LifeLine Zambia (ZM)": {
+  "LifeLine": {
     "Physical and Sexual Health": {
       "color": "#BBE3FF",
       "subcategories": [
@@ -188,54 +177,6 @@
       "subcategories": [
         "Problems at learning institution",
         "Problems at work",
-        "Unspecified/Other"
-      ]
-    },
-    "Supporting Women's Livelihood (SWL)": {
-      "color": "#B971AF",
-      "subcategories": [
-        "Inclusion - SWL",
-        "Exclusion - SWL",
-        "Service Standard - SWL",
-        "Payment - SWL",
-        "Serious Complaints - SWL",
-        "Training and Mentorship",
-        "Fraud and Corruption - SWL",
-        "Unspecified/Other - SWL"
-      ]
-    },
-    "Keeping Girls in School (KGS)": {
-      "color": "#239613",
-      "subcategories": [
-        "Inclusion - KGS",
-        "Exclusion - KGS",
-        "Service Standard - KGS",
-        "Payment - KGS",
-        "Serious Complaints - KGS",
-        "Fraud and Corruption - KGS",
-        "Unspecified/Other - KGS"
-      ]
-    },
-    "Social Cash Transfer (SCT)": {
-      "color": "#9AD703",
-      "subcategories": [
-        "Inclusion - SCT",
-        "Exclusion - SCT",
-        "Service Standard - SCT",
-        "Payment - SCT",
-        "Serious Complaints - SCT",
-        "Exit - SCT",
-        "Unspecified/Other - SCT"
-      ]
-    },
-    "Non-Counselling contacts": {
-      "color": "#767777",
-      "subcategories": [
-        "Complaints about the child helpline",
-        "Questions by parents",
-        "Questions about the child helpline",
-        "Questions about other services",
-        "\"Thank you for your assistance\"",
         "Unspecified/Other"
       ]
     }

@@ -1,9 +1,6 @@
 
 # Aselo Demo Environments
 
-
-TEST TEST TEST
-
 ## Overview
 
 The Aselo demo environments are a mock Aselo helpline with a generic form definitions and default customizations. There are separate demo *staging* and demo *production* environments. We treat them the same way as any other staging and production environments. They have the following benefits:
@@ -13,7 +10,7 @@ The Aselo demo environments are a mock Aselo helpline with a generic form defini
 - Security testing
 
 
-## How the demo environments were created
+## Process
 
 
 ### Step 1: Create Customization Files
@@ -26,10 +23,24 @@ The Aselo demo environments are a mock Aselo helpline with a generic form defini
 
 ### Step 2: Determine customization requirements
 
-1. In Google Drive -- Edit customization spreadsheets to reflect the current CHI data frameworks (glossary [here](https://drive.google.com/file/d/18ouXwDYmHjXah32f09_Evouv9PG3Hgvl/view))
-2. In Github -- Edit form definition jsons to reflect the customizations
+#### Customize in Google Drive
 
-**Here is how each json file correspondants to the google sheet:**
+Edit customization spreadsheets to reflect the current CHI data frameworks (glossary [here](https://drive.google.com/file/d/18ouXwDYmHjXah32f09_Evouv9PG3Hgvl/view))
+
+
+**New modifications from the Master sheets**
+
+- Used generic information that is not identifiable with any specific helplines.
+- Created new "In progress" status. 
+	- "Open" = New case that has not been worked on. Can transition to "in progress" and "closed."
+	- "In progress" = Case is being acted on and awaiting subsequent actions. Can transition to "closed."
+	- "Closed" = Case is completed. Can transition to "in progress."
+- Created new "location" and "language" tabs in the [Basic Platform Data - Demo spreadsheet](https://docs.google.com/spreadsheets/d/1agM6rKjZfMQFzrITbvqtJh6IUwN2Ahh2cgX0dHzOUDE/edit#gid=1722158917) to provide a standard set of options across all the forms.
+
+
+#### Customizie in Github
+
+Edit form definition jsons to reflect the customizations in Google Sheets.
 
 *Case forms*
 
@@ -51,11 +62,10 @@ The Aselo demo environments are a mock Aselo helpline with a generic form defini
 `...CallTypeButtons.json` <-> `Basic Platform Data - Demo > Call Types`  
 `.../CannedResponses.json` <-> `Custom Messages Data - Demo > Canned Responses`
 
+> Edit json files using other information
 
-`HelplineInformation.json`
-
-
-
+`.../HelplineInformation.json`  
+`.../PrepopulateKeys.json`
 
 ### Step 3: Deploy form defitinions
 

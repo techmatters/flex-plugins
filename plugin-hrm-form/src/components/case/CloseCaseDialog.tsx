@@ -8,10 +8,10 @@ import { CloseButton, CloseTaskDialog } from '../../styles/callTypeButtons';
 import { CloseDialogText } from '../../styles/case';
 
 type Props = {
+  openDialog: boolean;
   setDialog: () => void;
   handleDontSaveClose: () => void;
   handleSaveUpdate: () => void;
-  openDialog: boolean;
 };
 export default function CloseCaseDialog({ setDialog, handleDontSaveClose, handleSaveUpdate, openDialog }: Props) {
   return (
@@ -25,9 +25,7 @@ export default function CloseCaseDialog({ setDialog, handleDontSaveClose, handle
             <CloseButton aria-label="CloseButton" />
           </Box>
           <CloseDialogText>
-            <p>
-              <WarningIcon style={{ color: '#f6ca4a' }} />
-            </p>
+            <WarningIcon style={{ color: '#f6ca4a' }} /> <br />
             <Template code="BottomBar-SaveOnClose" />
           </CloseDialogText>
           <Row>

@@ -24,12 +24,6 @@
         "category": "non-data"
     },
     {
-        "name": "wrongnumber",
-        "label": "Wrong Number",
-        "type": "button",
-        "category": "non-data"
-    },
-    {
         "name": "abusive",
         "label": "Abusive",
         "type": "button",

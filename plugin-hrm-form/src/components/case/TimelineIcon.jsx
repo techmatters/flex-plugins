@@ -7,7 +7,7 @@ import AssignmentInd from '@material-ui/icons/AssignmentInd';
 import ReplyIcon from '@material-ui/icons/Reply';
 
 import { TimelineIconContainer } from '../../styles/case';
-import { channelTypes, otherContactChannels } from '../../states/DomainConstants';
+import { channelTypes } from '../../states/DomainConstants';
 import TwitterIcon from '../common/icons/TwitterIcon';
 import InstagramIcon from '../common/icons/InstagramIcon';
 
@@ -32,7 +32,7 @@ const getIcon = type => {
       return <NoteIcon style={{ opacity: 0.62, fontSize: '20px' }} />;
     case 'referral':
       return <ReplyIcon style={{ transform: 'scaleX(-1)', fontSize: '20px' }} />;
-    // defaulting to otherContactChannels.includes(type). Maybe at some point we need to address this in a different way.
+    // defaulting to isOtherContactChannel(channel). Maybe at some point we need to address this in a different way.
     default:
       return <AssignmentInd style={{ opacity: 0.62, fontSize: '20px' }} />;
   }
@@ -42,8 +42,7 @@ const TimelineIcon = ({ type }) => <TimelineIconContainer>{getIcon(type)}</Timel
 
 TimelineIcon.displayName = 'TimelineIcon';
 TimelineIcon.propTypes = {
-  type: PropTypes.oneOf([...Object.values(channelTypes), ...Object.values(otherContactChannels), 'note', 'referral'])
-    .isRequired,
+  type: PropTypes.string.isRequired,
 };
 
 const DefaultIcon = ({ defaultTaskChannel }) => (

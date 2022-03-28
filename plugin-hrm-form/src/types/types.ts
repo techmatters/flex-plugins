@@ -2,7 +2,12 @@
 import { ITask } from '@twilio/flex-ui';
 import { DefinitionVersionId, CallTypes } from 'hrm-form-definitions';
 
-export type EntryInfo = { createdAt: string; twilioWorkerId: string };
+export type EntryInfo = {
+  createdAt: string;
+  updatedAt?: string;
+  updatedBy?: string;
+  twilioWorkerId: string;
+};
 
 /*
  * export type ReferralEntry = {
@@ -30,11 +35,11 @@ export type IncidentEntry = { incident: Incident } & EntryInfo;
 
 export type Note = { [key: string]: string | boolean };
 
-export type NoteEntry = { note: string; counselor: string; date: string };
+export type NoteEntry = { note: string } & EntryInfo;
 
-export type Referral = { [key: string]: string | boolean };
+export type Referral = { date: string; referredTo: string; [key: string]: string | boolean };
 
-export type ReferralEntry = { [key: string]: string | boolean };
+export type ReferralEntry = Referral & EntryInfo;
 
 export type Document = { [key: string]: string | boolean };
 
@@ -52,7 +57,7 @@ export type CaseInfo = {
   definitionVersion?: DefinitionVersionId;
   offlineContactCreator?: string;
   summary?: string;
-  notes?: string[];
+  counsellorNotes?: NoteEntry[];
   perpetrators?: PerpetratorEntry[];
   households?: HouseholdEntry[];
   referrals?: ReferralEntry[];

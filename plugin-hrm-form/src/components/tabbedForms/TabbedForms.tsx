@@ -216,7 +216,8 @@ const TabbedForms: React.FC<Props> = ({
                 <ContactlessTaskTab
                   task={task}
                   display={subroute === 'contactlessTask'}
-                  definition={currentDefinitionVersion.helplineInformation}
+                  helplineInformation={currentDefinitionVersion.helplineInformation}
+                  definition={currentDefinitionVersion.tabbedForms.ContactlessTaskTab}
                   initialValues={contactForm.contactlessTask}
                   autoFocus={autoFocus}
                 />
