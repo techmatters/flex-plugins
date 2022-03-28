@@ -119,7 +119,7 @@ export type SearchCaseResult = {
 export type GetCasesParams = {
   limit?: number;
   offset?: number;
-  sortBy?: 'id' | 'childName' | 'counselorName' | 'createdAt' | 'updatedAt' | 'followUpDate';
+  sortBy?: 'id' | 'createdAt' | 'updatedAt' | 'info.followUpDate';
   order?: 'ASC' | 'DESC';
   helpline?: string;
 };
