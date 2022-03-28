@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import { TableBody, CircularProgress } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
@@ -26,6 +27,7 @@ type OwnProps = {
   handleClickViewCase: (currentCase: Case) => () => void;
 };
 
+// eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 
 /**
@@ -61,7 +63,11 @@ const CaseListTable: React.FC<Props> = ({
           {loading && (
             <TableBody>
               <CLTableRow
-                style={{ position: 'relative', background: 'transparent', height: `${(caseList.length || getCasesParams.limit) * ROW_HEIGHT}px` }}
+                style={{
+                  position: 'relative',
+                  background: 'transparent',
+                  height: `${(caseList.length || getCasesParams.limit) * ROW_HEIGHT}px`,
+                }}
               >
                 <CLNamesCell style={{ position: 'absolute', textAlign: 'center', width: '100%', top: '40%' }}>
                   <CircularProgress size={50} />
