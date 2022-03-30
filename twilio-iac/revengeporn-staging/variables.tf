@@ -10,7 +10,7 @@ variable "local_os" {
 }
 
 variable "helpline" {
-  default = "Revenge Porn Helpline"
+  default = "RevengePorn"
 }
 
 variable "short_helpline" {
