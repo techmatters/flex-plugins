@@ -15,6 +15,7 @@
     "type": "select",
     "options": [
       { "value": "", "label": "" },
+      { "value": "Child on behalf of another child", "label": "Child on behalf of another child" },
       { "value": "Peer", "label": "Peer" },
       { "value": "Parent/Caregiver", "label": "Parent/Caregiver" },
       { "value": "Partner", "label": "Partner" },
