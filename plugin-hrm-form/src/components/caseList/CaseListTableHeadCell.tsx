@@ -3,6 +3,7 @@ import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { ExpandMore } from '@material-ui/icons';
 
+import { getConfig } from '../../HrmFormPlugin';
 import { CLTableHeaderFont, CLTableCell } from '../../styles/caseList';
 import { GetCasesParams, GetCasesSortDirection } from '../../types/types';
 
@@ -34,7 +35,10 @@ const CaseListTableHeadCell: React.FC<Props> = ({
   sortDirection,
   handleColumnClick,
 }) => {
+  const { featureFlags } = getConfig();
+
   const drawSort = () => {
+    if (!featureFlags.enable_sort_cases) return null;
     if (column !== sortBy) return null;
 
     return (
@@ -49,9 +53,18 @@ const CaseListTableHeadCell: React.FC<Props> = ({
     );
   };
 
-  const borderBottom = () => (sortBy === column ? '3px solid #009DFF' : 'none');
+  const borderBottom = () => {
+    if (!featureFlags.enable_sort_cases) return 'none';
+    return sortBy === column ? '3px solid #009DFF' : 'none';
+  };
+
+  const cursor = () => {
+    if (!featureFlags.enable_sort_cases) return 'auto';
+    return column ? 'pointer' : 'auto';
+  };
 
   const handleClick = async () => {
+    if (!featureFlags.enable_sort_cases) return;
     if (!column) return;
 
     const isDifferentColumn = column !== sortBy;
@@ -61,7 +74,7 @@ const CaseListTableHeadCell: React.FC<Props> = ({
   };
 
   return (
-    <CLTableCell style={{ width: width || '8%', cursor: column ? 'pointer' : 'auto' }} onClick={handleClick}>
+    <CLTableCell style={{ width: width || '8%', cursor: cursor() }} onClick={handleClick}>
       <CLTableHeaderFont style={{ borderBottom: borderBottom() }}>
         <Template code={localizedText} /> {drawSort()}
       </CLTableHeaderFont>
