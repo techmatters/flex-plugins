@@ -11,6 +11,7 @@ type SortBy = GetCasesParams['sortBy'];
 
 type Props = {
   column?: SortBy;
+  defaultSortDirection?: SortDirection;
   localizedText?: string;
   width?: string;
   sortBy: SortBy;
@@ -26,6 +27,7 @@ const changeSortDirection = (sortDirection: SortDirection): SortDirection =>
  */
 const CaseListTableHeadCell: React.FC<Props> = ({
   column,
+  defaultSortDirection = GetCasesSortDirection.DESC,
   localizedText,
   width,
   sortBy,
@@ -41,7 +43,7 @@ const CaseListTableHeadCell: React.FC<Props> = ({
           fontSize: 20,
           marginLeft: '10px',
           verticalAlign: 'middle',
-          transform: sortDirection === 'ASC' ? 'rotate(180deg) scaleX(-1)' : 'none',
+          transform: sortDirection === GetCasesSortDirection.ASC ? 'rotate(180deg) scaleX(-1)' : 'none',
         }}
       />
     );
@@ -53,7 +55,7 @@ const CaseListTableHeadCell: React.FC<Props> = ({
     if (!column) return;
 
     const isDifferentColumn = column !== sortBy;
-    const updatedSortDirection = isDifferentColumn ? GetCasesSortDirection.DESC : changeSortDirection(sortDirection);
+    const updatedSortDirection = isDifferentColumn ? defaultSortDirection : changeSortDirection(sortDirection);
 
     await handleColumnClick(column, updatedSortDirection);
   };
