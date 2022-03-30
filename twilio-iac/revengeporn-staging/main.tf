@@ -4,10 +4,6 @@ terraform {
       source  = "twilio/twilio"
       version = "0.11.1"
     }
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 3.74"
-    }
   }
 
   backend "s3" {
