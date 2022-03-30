@@ -121,6 +121,13 @@ export type SearchCaseResult = {
   cases: Case[];
 };
 
+export enum GetCasesSortBy {
+  ID = 'id',
+  CREATED_AT = 'createdAt',
+  UPDATED_AT = 'updatedAt',
+  FOLLOW_UP_DATE = 'info.followUpDate',
+}
+
 export enum GetCasesSortDirection {
   ASC = 'ASC',
   DESC = 'DESC',
@@ -129,7 +136,7 @@ export enum GetCasesSortDirection {
 export type GetCasesParams = {
   limit?: number;
   offset?: number;
-  sortBy?: 'id' | 'createdAt' | 'updatedAt' | 'info.followUpDate';
+  sortBy?: GetCasesSortBy;
   sortDirection?: GetCasesSortDirection;
   helpline?: string;
 };

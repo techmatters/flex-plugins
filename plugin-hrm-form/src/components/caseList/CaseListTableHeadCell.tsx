@@ -6,7 +6,7 @@ import { ExpandMore } from '@material-ui/icons';
 import { CLTableHeaderFont, CLTableCell } from '../../styles/caseList';
 import { GetCasesParams, GetCasesSortDirection } from '../../types/types';
 
-type SortDirection = GetCasesSortDirection;
+type SortDirection = GetCasesParams['sortDirection'];
 type SortBy = GetCasesParams['sortBy'];
 
 type Props = {
