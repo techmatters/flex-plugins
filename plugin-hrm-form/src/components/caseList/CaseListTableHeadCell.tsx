@@ -4,9 +4,9 @@ import { Template } from '@twilio/flex-ui';
 import { ExpandMore } from '@material-ui/icons';
 
 import { CLTableHeaderFont, CLTableCell } from '../../styles/caseList';
-import type { GetCasesParams } from '../../types/types';
+import { GetCasesParams, GetCasesSortDirection } from '../../types/types';
 
-type SortDirection = GetCasesParams['sortDirection'];
+type SortDirection = GetCasesSortDirection;
 type SortBy = GetCasesParams['sortBy'];
 
 type Props = {
@@ -15,10 +15,11 @@ type Props = {
   width?: string;
   sortBy: SortBy;
   sortDirection: SortDirection;
-  handleColumnClick: (sortBy: SortBy, order: SortDirection) => void;
+  handleColumnClick: (sortBy: SortBy, sortDirection: SortDirection) => void;
 };
 
-const changeSortDirection = (sortDirection: SortDirection): SortDirection => (sortDirection === 'ASC' ? 'DESC' : 'ASC');
+const changeSortDirection = (sortDirection: SortDirection): SortDirection =>
+  sortDirection === GetCasesSortDirection.ASC ? GetCasesSortDirection.DESC : GetCasesSortDirection.ASC;
 
 /**
  * If column prop is filled, the cell will enable sorting by this column
@@ -52,7 +53,7 @@ const CaseListTableHeadCell: React.FC<Props> = ({
     if (!column) return;
 
     const isDifferentColumn = column !== sortBy;
-    const updatedSortDirection = isDifferentColumn ? 'DESC' : changeSortDirection(sortDirection);
+    const updatedSortDirection = isDifferentColumn ? GetCasesSortDirection.DESC : changeSortDirection(sortDirection);
 
     await handleColumnClick(column, updatedSortDirection);
   };

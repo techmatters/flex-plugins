@@ -5,7 +5,7 @@ import { Template } from '@twilio/flex-ui';
 
 import { getConfig } from '../../HrmFormPlugin';
 import Case from '../case';
-import { Case as CaseType, StandaloneITask, GetCasesParams } from '../../types/types';
+import { Case as CaseType, StandaloneITask, GetCasesParams, GetCasesSortDirection } from '../../types/types';
 import CaseListTable from './CaseListTable';
 import { CaseListContainer, CenteredContainer, SomethingWentWrongText } from '../../styles/caseList';
 import { getCases } from '../../services/CaseService';
@@ -39,7 +39,7 @@ const initialState: State = {
     limit: CASES_PER_PAGE,
     offset: 0,
     sortBy: 'id',
-    sortDirection: 'DESC',
+    sortDirection: GetCasesSortDirection.DESC,
     helpline: '',
   },
 };
