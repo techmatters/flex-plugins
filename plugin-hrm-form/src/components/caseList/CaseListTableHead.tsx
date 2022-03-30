@@ -4,10 +4,10 @@ import { TableHead, TableRow } from '@material-ui/core';
 
 import CaseListTableHeadCell from './CaseListTableHeadCell';
 
-const CaseListTableHead = ({ sortBy, order, handleColumnClick }) => {
+const CaseListTableHead = ({ sortBy, sortDirection, handleColumnClick }) => {
   const tableCellProps = {
     sortBy,
-    order,
+    sortDirection,
     handleColumnClick,
   };
 

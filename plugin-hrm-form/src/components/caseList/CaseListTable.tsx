@@ -23,7 +23,7 @@ type OwnProps = {
   page: number;
   getCasesParams: GetCasesParams;
   handleChangePage: (page: number) => void;
-  handleColumnClick: (sortBy: GetCasesParams['sortBy'], order: GetCasesParams['order']) => void;
+  handleColumnClick: (sortBy: GetCasesParams['sortBy'], order: GetCasesParams['sortDirection']) => void;
   handleClickViewCase: (currentCase: Case) => () => void;
 };
 
@@ -57,7 +57,7 @@ const CaseListTable: React.FC<Props> = ({
         <CLTable tabIndex={0} aria-labelledby="CaseList-AllCases-label" data-testid="CaseList-Table">
           <CaseListTableHead
             sortBy={getCasesParams.sortBy}
-            order={getCasesParams.order}
+            sortDirection={getCasesParams.sortDirection}
             handleColumnClick={handleColumnClick}
           />
           {loading && (

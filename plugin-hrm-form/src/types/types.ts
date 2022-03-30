@@ -125,7 +125,7 @@ export type GetCasesParams = {
   limit?: number;
   offset?: number;
   sortBy?: 'id' | 'createdAt' | 'updatedAt' | 'info.followUpDate';
-  order?: 'ASC' | 'DESC';
+  sortDirection?: 'ASC' | 'DESC';
   helpline?: string;
 };
 

@@ -39,7 +39,7 @@ const initialState: State = {
     limit: CASES_PER_PAGE,
     offset: 0,
     sortBy: 'id',
-    order: 'DESC',
+    sortDirection: 'DESC',
     helpline: '',
   },
 };
@@ -146,12 +146,12 @@ const CaseList: React.FC<Props> = ({ setConnectedCase, definitionVersions, updat
     await fetchCaseList(page, getCasesParams);
   };
 
-  const handleColumnClick = async (sortBy, order) => {
+  const handleColumnClick = async (sortBy, sortDirection) => {
     const getCasesParams = {
       ...state.getCasesParams,
       offset: 0,
       sortBy,
-      order,
+      sortDirection,
     };
     await fetchCaseList(0, getCasesParams);
   };

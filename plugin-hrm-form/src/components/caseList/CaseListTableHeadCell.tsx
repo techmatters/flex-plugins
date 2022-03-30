@@ -6,7 +6,7 @@ import { ExpandMore } from '@material-ui/icons';
 import { CLTableHeaderFont, CLTableCell } from '../../styles/caseList';
 import type { GetCasesParams } from '../../types/types';
 
-type Order = GetCasesParams['order'];
+type SortDirection = GetCasesParams['sortDirection'];
 type SortBy = GetCasesParams['sortBy'];
 
 type Props = {
@@ -14,16 +14,23 @@ type Props = {
   localizedText?: string;
   width?: string;
   sortBy: SortBy;
-  order: Order;
-  handleColumnClick: (sortBy: SortBy, order: Order) => void;
+  sortDirection: SortDirection;
+  handleColumnClick: (sortBy: SortBy, order: SortDirection) => void;
 };
 
-const changeOrder = (order: Order): Order => (order === 'ASC' ? 'DESC' : 'ASC');
+const changeSortDirection = (sortDirection: SortDirection): SortDirection => (sortDirection === 'ASC' ? 'DESC' : 'ASC');
 
 /**
  * If column prop is filled, the cell will enable sorting by this column
  */
-const CaseListTableHeadCell: React.FC<Props> = ({ column, localizedText, width, sortBy, order, handleColumnClick }) => {
+const CaseListTableHeadCell: React.FC<Props> = ({
+  column,
+  localizedText,
+  width,
+  sortBy,
+  sortDirection,
+  handleColumnClick,
+}) => {
   const drawSort = () => {
     if (column !== sortBy) return null;
 
@@ -33,7 +40,7 @@ const CaseListTableHeadCell: React.FC<Props> = ({ column, localizedText, width, 
           fontSize: 20,
           marginLeft: '10px',
           verticalAlign: 'middle',
-          transform: order === 'ASC' ? 'rotate(180deg) scaleX(-1)' : 'none',
+          transform: sortDirection === 'ASC' ? 'rotate(180deg) scaleX(-1)' : 'none',
         }}
       />
     );
@@ -45,9 +52,9 @@ const CaseListTableHeadCell: React.FC<Props> = ({ column, localizedText, width, 
     if (!column) return;
 
     const isDifferentColumn = column !== sortBy;
-    const updatedOrder = isDifferentColumn ? 'DESC' : changeOrder(order);
+    const updatedSortDirection = isDifferentColumn ? 'DESC' : changeSortDirection(sortDirection);
 
-    await handleColumnClick(column, updatedOrder);
+    await handleColumnClick(column, updatedSortDirection);
   };
 
   return (
