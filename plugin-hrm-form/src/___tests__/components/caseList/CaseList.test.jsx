@@ -89,8 +89,6 @@ test('Should render', async () => {
     </StorelessThemeProvider>,
   );
 
-  expect(screen.queryByTestId('CaseList-Table')).toBeNull();
-
   await waitFor(() => screen.getByTestId('CaseList-Table'));
 
   expect(screen.getByTestId('CaseList-Table')).toBeInTheDocument();
@@ -132,8 +130,6 @@ test('Should not render (error)', async () => {
       </Provider>
     </StorelessThemeProvider>,
   );
-
-  expect(screen.queryByTestId('CaseList-Table')).toBeNull();
 
   await waitFor(() => screen.getByTestId('CaseList-SomethingWentWrongText'));
 
