@@ -5,8 +5,8 @@ import type { CategoriesDefinition, CategoryEntry, FormDefinition, FormItemDefin
 
 import { createNewTaskEntry, TaskEntry } from '../states/contacts/reducer';
 import { isNonDataCallType } from '../states/ValidationRules';
+import { getQueryParams } from './PaginationParams';
 import { fillEndMillis, getConversationDuration } from '../utils/conversationDuration';
-import { getLimitAndOffsetParams } from './PaginationParams';
 import fetchHrmApi from './fetchHrmApi';
 import { getDateTime } from '../utils/helpers';
 import { getConfig, getDefinitionVersions } from '../HrmFormPlugin';
@@ -40,7 +40,7 @@ const unNestInformationObject = (
   def.reduce((acc, e) => ({ ...acc, [e.name]: unNestInformation(e, obj) }), {});
 
 export async function searchContacts(searchParams, limit, offset): Promise<SearchContactResult> {
-  const queryParams = getLimitAndOffsetParams(limit, offset);
+  const queryParams = getQueryParams({ limit, offset });
 
   const options = {
     method: 'POST',

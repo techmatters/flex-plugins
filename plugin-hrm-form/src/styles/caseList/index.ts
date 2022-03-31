@@ -52,6 +52,7 @@ export const CLTableCell = withStyles(theme => ({
     borderBottom: 0,
     textTransform: 'none',
     overflow: 'hidden',
+    paddingLeft: '10px',
   },
   body: {
     verticalAlign: 'top',
@@ -97,6 +98,9 @@ export const CLTableHeaderFont = styled(FontOpenSans)`
   font-size: 12px;
   line-height: 30px;
   letter-spacing: 0;
+  display: flex;
+  align-items: center;
+  width: fit-content;
 `;
 CLTableHeaderFont.displayName = 'CLTableHeaderFont';
 
