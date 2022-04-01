@@ -1,6 +1,6 @@
 # This is a basic workflow to publish a Twilio Flex-plugins with Github Actions
 
-name: Revenge_Porn_Helpline Staging release
+name: Revenge Porn Helpline Staging release
 
 # Controls when the action will run.
 on:
