@@ -35,6 +35,10 @@ variable "definition_version" {
   default = "uk-v1"
 }
 
+variable "permission_config" {
+  default = "uk"
+}
+
 variable multi_office {
   default = false
   type = bool
