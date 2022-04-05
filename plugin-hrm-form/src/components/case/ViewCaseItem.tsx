@@ -32,6 +32,7 @@ export type ViewCaseItemProps = {
   itemType: string;
   formDefinition: FormDefinition;
   includeAddedTime?: boolean;
+  canEdit: () => boolean;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -47,6 +48,7 @@ const ViewCaseItem: React.FC<Props> = ({
   exitItem,
   formDefinition,
   itemType,
+  canEdit,
 }) => {
   if (!isViewTemporaryCaseInfo(temporaryCaseInfo))
     throw new Error('This component only supports temporary case info of the ViewTemporaryCaseInfo type');
@@ -97,12 +99,14 @@ const ViewCaseItem: React.FC<Props> = ({
         )}
       </Container>
       <BottomButtonBar>
-        <Box marginRight="15px">
-          <StyledNextStepButton secondary roundCorners onClick={onEditCaseItemClick} data-testid="Case-EditButton">
-            <Edit fontSize="inherit" style={{ marginRight: 5 }} />
-            <Template code="EditButton" />
-          </StyledNextStepButton>
-        </Box>
+        {canEdit() && (
+          <Box marginRight="15px">
+            <StyledNextStepButton secondary roundCorners onClick={onEditCaseItemClick} data-testid="Case-EditButton">
+              <Edit fontSize="inherit" style={{ marginRight: 5 }} />
+              <Template code="EditButton" />
+            </StyledNextStepButton>
+          </Box>
+        )}
         <Box marginRight="15px">
           <StyledNextStepButton roundCorners onClick={exitItem} data-testid="Case-CloseButton">
             <Template code="CloseButton" />
