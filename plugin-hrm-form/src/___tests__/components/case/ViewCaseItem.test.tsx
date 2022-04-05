@@ -108,6 +108,7 @@ describe('Test ViewHousehold', () => {
         subroute: NewCaseSubroutes.Household,
         action: CaseItemAction.View,
       },
+      canEdit: () => true,
     };
   });
 
@@ -123,6 +124,7 @@ describe('Test ViewHousehold', () => {
     expect(exitItem).not.toHaveBeenCalled();
 
     expect(screen.getByTestId('Case-CloseCross')).toBeInTheDocument();
+    expect(screen.getByTestId('Case-EditButton')).toBeInTheDocument();
     screen.getByTestId('Case-CloseCross').click();
 
     expect(exitItem).toHaveBeenCalled();
@@ -134,6 +136,17 @@ describe('Test ViewHousehold', () => {
     screen.getByTestId('Case-CloseButton').click();
 
     expect(exitItem).toHaveBeenCalled();
+  });
+  test('Test no edit permissions', async () => {
+    render(
+      <StorelessThemeProvider themeConf={themeConf}>
+        <Provider store={store}>
+          <ViewCaseItem {...ownProps} canEdit={() => false} />
+        </Provider>
+      </StorelessThemeProvider>,
+    );
+    expect(screen.getByTestId('Case-CloseCross')).toBeInTheDocument();
+    expect(screen.queryByTestId('Case-EditButton')).toBeNull();
   });
 
   test('a11y', async () => {
