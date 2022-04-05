@@ -1,7 +1,7 @@
 import styled from 'react-emotion';
 import { Table, TableCell, TableRow, withStyles } from '@material-ui/core';
 
-import { Absolute, FontOpenSans } from '../HrmStyles';
+import { Absolute, FontOpenSans, Flex } from '../HrmStyles';
 
 export const CaseListContainer = styled(Absolute)`
   height: 100%;
@@ -164,3 +164,12 @@ export const SomethingWentWrongText = styled(FontOpenSans)`
   font-size: 20px;
 `;
 SomethingWentWrongText.displayName = 'SomethingWentWrongText';
+
+export const FiltersContainer = styled(Flex)`
+  margin-left: 15px;
+  margin-right: 10px;
+  padding: 10px;
+  font-size: 13px;
+  box-shadow: 0 1px 2px 0 rgba(25, 43, 51, 0.1);
+`;
+FiltersContainer.displayName = 'FiltersContainer';

@@ -5,9 +5,10 @@ import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 
 import { namespace, configurationBase } from '../../states';
-import { TableContainer, CLTable, CLTableRow, CLNamesCell } from '../../styles/caseList';
+import { TableContainer, CLTable, CLTableRow, CLNamesCell, FiltersContainer } from '../../styles/caseList';
 import { Box, HeaderContainer } from '../../styles/HrmStyles';
 import { TLHPaddingLeft } from '../../styles/GlobalOverrides';
+import Filters from './filters/Filters';
 import CaseListTableHead from './CaseListTableHead';
 import CaseListTableRow from './CaseListTableRow';
 import Pagination from '../Pagination';
@@ -48,11 +49,15 @@ const CaseListTable: React.FC<Props> = ({
 
   return (
     <>
-      <HeaderContainer>
-        <Box marginTop="15px" marginBottom="14px" marginLeft={TLHPaddingLeft} id="CaseList-AllCases-label">
+      <FiltersContainer id="CaseList-AllCases-label">
+        <span style={{ fontSize: 14, fontWeight: 600 }}>
           <Template code="CaseList-AllCases" />
-        </Box>
-      </HeaderContainer>
+        </span>
+      </FiltersContainer>
+      <Filters
+        statusOptions={['open', 'in progress', 'closed']}
+        counsellorOptions={['John', 'Ana', 'Maria', 'Ross', 'Jack', 'Jade']}
+      />
       <TableContainer>
         <CLTable tabIndex={0} aria-labelledby="CaseList-AllCases-label" data-testid="CaseList-Table">
           <CaseListTableHead
