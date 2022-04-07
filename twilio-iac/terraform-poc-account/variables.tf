@@ -35,6 +35,12 @@ variable "definition_version" {
   default = "v1"
 }
 
+variable "permission_config" {
+  description = "Key that determines which set of permission rules this helpline will use"
+  type        = string
+  default = "demo"
+}
+
 variable multi_office {
   default = false
   type = bool
