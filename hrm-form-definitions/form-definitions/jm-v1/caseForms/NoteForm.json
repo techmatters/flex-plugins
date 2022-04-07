@@ -16,7 +16,7 @@
     "width": 250
   },
   {
-    "name": "assessment",
+    "name": "note",
     "label": "Assessment",
     "type": "textarea",
     "placeholder": "",
