@@ -67,7 +67,8 @@
   {
     "name": "okForCaseWorkerToCall",
     "label": "Ok for case worker to call?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "highlightedAtCasePrint": false
   },
   {
     "name": "didWeSolveTheirProblem",

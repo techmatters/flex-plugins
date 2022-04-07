@@ -44,7 +44,8 @@
     {
       "name": "okForCaseWorkerToCall",
       "label": "Ok para alguém da equipe contatar?",
-      "type": "mixed-checkbox"
+      "type": "mixed-checkbox",
+      "highlightedAtCasePrint": false
     },
     {
       "name": "didYouDiscussRightsWithTheChild",

@@ -44,7 +44,8 @@
     "name": "keepConfidential",
     "label": "Keep confidential?",
     "type": "mixed-checkbox",
-    "initialChecked": true
+    "initialChecked": true,
+    "highlightedAtCasePrint": false
   },
   {
     "name": "mustCallBack",
@@ -54,7 +55,8 @@
   {
     "name": "okForCaseWorkerToCall",
     "label": "Is it okay for case worker to call?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "highlightedAtCasePrint": false
   },
   {
     "name": "didYouDiscussRightsWithTheChild",
