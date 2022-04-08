@@ -30,29 +30,59 @@ type OwnProps = {
 };
 type Props = OwnProps;
 
-const extraFieldDefinitions = (strings: ReturnType<typeof getConfig>['strings']): FormDefinition => {
-  return [
-    {
-      name: 'keepConfidential',
-      label: strings['ContactDetails-GeneralDetails-KeepConfidential'],
-      type: 'checkbox',
-    },
-    {
-      name: 'okForCaseWorkerToCall',
-      label: strings['ContactDetails-GeneralDetails-OKToCall'],
-      type: 'mixed-checkbox',
-    },
-  ];
-};
-
-const addExtraValues = (caseInformation: ContactRawJson['caseInformation']) => {
-  return {
-    keepConfidential: Boolean(caseInformation?.keepConfidential),
-    okForCaseWorkerToCall: caseInformation?.okForCaseWorkerToCall,
-  };
-};
-
 const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionVersion, counselorsHash }) => {
+  const caseInfotab = (name: string): any =>
+    definitionVersion.tabbedForms.CaseInformationTab.filter(def => {
+      return def.name === name;
+    });
+
+  const printKeepConfidential = caseInfotab('keepConfidential')[0].highlightedAtCasePrint;
+  const printOkForCaseWorkerToCall = caseInfotab('okForCaseWorkerToCall')[0].highlightedAtCasePrint;
+
+  const extraFieldDefinitions = (strings: ReturnType<typeof getConfig>['strings']): FormDefinition => {
+    let extraDefinitions;
+    if (printKeepConfidential && printOkForCaseWorkerToCall) {
+      extraDefinitions = [
+        {
+          name: 'keepConfidential',
+          label: strings['ContactDetails-GeneralDetails-KeepConfidential'],
+          type: 'checkbox',
+        },
+        {
+          name: 'okForCaseWorkerToCall',
+          label: strings['ContactDetails-GeneralDetails-OKToCall'],
+          type: 'mixed-checkbox',
+        },
+      ];
+    } else if (printKeepConfidential) {
+      extraDefinitions = [
+        {
+          name: 'keepConfidential',
+          label: strings['ContactDetails-GeneralDetails-KeepConfidential'],
+          type: 'checkbox',
+        },
+      ];
+    } else if (printOkForCaseWorkerToCall) {
+      extraDefinitions = [
+        {
+          name: 'okForCaseWorkerToCall',
+          label: strings['ContactDetails-GeneralDetails-OKToCall'],
+          type: 'mixed-checkbox',
+        },
+      ];
+    } else {
+      extraDefinitions = [];
+    }
+    return extraDefinitions;
+  };
+
+  const addExtraValues = (caseInformation: ContactRawJson['caseInformation']) => {
+    return {
+      keepConfidential: Boolean(caseInformation?.keepConfidential),
+      okForCaseWorkerToCall: caseInformation?.okForCaseWorkerToCall,
+    };
+  };
+
   const { pdfImagesSource, strings } = getConfig();
 
   const logoSource = `${pdfImagesSource}/helpline-logo.png`;
@@ -63,7 +93,6 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
   const [logoBlob, setLogoBlob] = useState<string>(null);
   const [chkOnBlob, setChkOnBlob] = useState<string>(null);
   const [chkOffBlob, setChkOffBlob] = useState<string>(null);
-
   /*
    * The purpose of this effect is to load all the images at once, to avoid re-renders in PDFViewer that leads to issues
    * https://stackoverflow.com/questions/60614940/unhandled-rejection-typeerror-nbind-externallistnum-dereference-is-not-a-f

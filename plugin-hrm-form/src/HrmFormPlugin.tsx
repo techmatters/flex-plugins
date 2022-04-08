@@ -49,7 +49,6 @@ export const getConfig: any = () => {
    *  @type {{ strings: { [key: string]: string } }}
    */
   const { strings } = manager;
-
   return {
     hrmBaseUrl,
     serverlessBaseUrl,
