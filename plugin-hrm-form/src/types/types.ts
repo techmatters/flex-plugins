@@ -125,6 +125,7 @@ export enum GetCasesSortBy {
   ID = 'id',
   CREATED_AT = 'createdAt',
   UPDATED_AT = 'updatedAt',
+  CHILD_NAME = 'childName',
   FOLLOW_UP_DATE = 'info.followUpDate',
 }
 
