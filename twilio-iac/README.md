@@ -46,11 +46,23 @@ The process for a first run is as follows:
 
 For the following steps (9-13), make sure to have the following env vars loaded in your terminal session:
 ```shell
-TWILIO_ACCOUNT_SID=XXX
-TWILIO_AUTH_TOKEN=xxx
+AWS_ACCESS_KEY_ID=xxx
+AWS_SECRET_ACCESS_KEY=xxx
 AWS_REGION=us-east-1
+TWILIO_ACCOUNT_SID=xxx
+TWILIO_AUTH_TOKEN=xxx
 ```
 On MacOS/Unix you can export them or prepend those vars when running a command.
+Another possible way to so (Unix) is composing a .env file like
+```shell
+AWS_ACCESS_KEY_ID=xxx
+AWS_SECRET_ACCESS_KEY=xxx
+AWS_REGION=us-east-1
+TWILIO_ACCOUNT_SID=xxx
+TWILIO_AUTH_TOKEN=xxx
+```
+and load the content of the file in the terminal session like `➜ export $(grep -v '^#' .env | xargs)`
+
 
 9. Run the script below from flex-plugins/scrips/ folder. Twilio creates a bunch of default resources on a new account and Aselo uses some of them. We need to import them into terraform first, otherwise terraform assumes they don't exist and will try to create them, resulting in errors.
 ```shell
