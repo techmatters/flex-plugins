@@ -1,9 +1,9 @@
 export const channelTypes = {
-  facebook: 'facebook',
-  web: 'web',
   voice: 'voice',
   sms: 'sms',
+  facebook: 'facebook',
   whatsapp: 'whatsapp',
+  web: 'web',
   twitter: 'twitter',
   instagram: 'instagram',
 } as const;
