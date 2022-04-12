@@ -3,7 +3,7 @@ import { FlexPlugin, loadCSS } from 'flex-plugin';
 import SyncClient from 'twilio-sync';
 
 import './styles/GlobalOverrides';
-import reducers, { namespace, configurationBase } from './states';
+import reducers, { namespace, configurationBase, RootState } from './states';
 import HrmTheme from './styles/HrmTheme';
 import { transferModes } from './states/DomainConstants';
 import { initLocalization } from './utils/pluginHelpers';
@@ -18,13 +18,9 @@ const PLUGIN_NAME = 'HrmFormPlugin';
 
 export const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
-/**
- * Sync Client used to store and share documents across counselors
- * @type {SyncClient}
- */
-let sharedStateClient;
+let sharedStateClient: SyncClient;
 
-export const getConfig: any = () => {
+export const getConfig = () => {
   const manager = Flex.Manager.getInstance();
 
   const hrmBaseUrl = `${manager.serviceConfiguration.attributes.hrm_base_url}/${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${manager.workerClient.accountSid}`;
@@ -45,10 +41,8 @@ export const getConfig: any = () => {
     permissionConfig,
   } = manager.serviceConfiguration.attributes;
   const featureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
-  /**
-   *  @type {{ strings: { [key: string]: string } }}
-   */
-  const { strings } = manager;
+  const contactsWaitingChannels = manager.serviceConfiguration.attributes.contacts_waiting_channels || null;
+  const { strings } = (manager as unknown) as { strings: { [key: string]: string } };
 
   return {
     hrmBaseUrl,
@@ -71,17 +65,23 @@ export const getConfig: any = () => {
     pdfImagesSource,
     multipleOfficeSupport,
     permissionConfig,
+    contactsWaitingChannels: ['instagram', 'voice', 'web'],
   };
+};
+
+// eslint-disable-next-line import/no-unused-modules
+export type SetupObject = ReturnType<typeof getConfig> & {
+  translateUI: (language: string) => Promise<void>;
+  getMessage: (messageKey: string) => (language: string) => Promise<string>;
 };
 
 /**
  * Helper to expose the forms definitions without the need of calling Manager
- * @returns {{currentDefinitionVersion: import('./states/configuration/reducer').ConfigurationState['currentDefinitionVersion'], definitionVersions: import('./states/configuration/reducer').ConfigurationState['definitionVersions']}}
  */
 export const getDefinitionVersions = () => {
-  const { currentDefinitionVersion, definitionVersions } = Flex.Manager.getInstance().store.getState()[namespace][
-    configurationBase
-  ];
+  const { currentDefinitionVersion, definitionVersions } = (Flex.Manager.getInstance().store.getState() as RootState)[
+    namespace
+  ][configurationBase];
 
   return { currentDefinitionVersion, definitionVersions };
 };
@@ -115,10 +115,7 @@ const setUpSharedStateClient = () => {
   initSharedStateClient();
 };
 
-/**
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
- */
-const setUpTransferredTaskJanitor = async setupObject => {
+const setUpTransferredTaskJanitor = async (setupObject: SetupObject) => {
   const { workerSid } = setupObject;
   const query = 'data.attributes.transferStarted == "true"';
   const reservationQuery = await Flex.Manager.getInstance().insightsClient.liveQuery('tr-reservation', query);
@@ -137,25 +134,20 @@ const setUpTransferredTaskJanitor = async setupObject => {
   });
 };
 
-/**
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
- */
-const setUpTransfers = setupObject => {
+const setUpTransfers = (setupObject: SetupObject) => {
   setUpSharedStateClient();
   setUpTransferredTaskJanitor(setupObject);
 };
 
-/**
- * @param {ReturnType<typeof getConfig>} config
- */
-const setUpLocalization = config => {
+const setUpLocalization = (config: ReturnType<typeof getConfig>) => {
   const manager = Flex.Manager.getInstance();
 
   const { counselorLanguage, helplineLanguage } = config;
 
   const twilioStrings = { ...manager.strings }; // save the originals
-  const setNewStrings = newStrings => (manager.strings = { ...manager.strings, ...newStrings });
-  const afterNewStrings = language => {
+  const setNewStrings = (newStrings: typeof config['strings']) =>
+    (manager.strings = { ...manager.strings, ...newStrings });
+  const afterNewStrings = (language: string) => {
     manager.store.dispatch(changeLanguage(language));
     Flex.Actions.invokeAction('NavigateToView', { viewName: manager.store.getState().flex.view.activeView }); // force a re-render
   };
@@ -165,15 +157,12 @@ const setUpLocalization = config => {
   return initLocalization(localizationConfig, initialLanguage);
 };
 
-/**
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
- */
-const setUpComponents = setupObject => {
+const setUpComponents = (setupObject: SetupObject) => {
   const { helpline, featureFlags } = setupObject;
 
   // setUp (add) dynamic components
   Components.setUpQueuesStatusWriter(setupObject);
-  Components.setUpQueuesStatus();
+  Components.setUpQueuesStatus(setupObject);
   Components.setUpAddButtons(setupObject);
   Components.setUpNoTasksUI(setupObject);
   Components.setUpCustomCRMContainer();
@@ -201,10 +190,7 @@ const setUpComponents = setupObject => {
   if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
 };
 
-/**
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
- */
-const setUpActions = setupObject => {
+const setUpActions = (setupObject: SetupObject) => {
   const { featureFlags } = setupObject;
 
   // Is this the correct place for this call?
@@ -244,9 +230,6 @@ export default class HrmFormPlugin extends FlexPlugin {
   /**
    * This code is run when your plugin is being started
    * Use this to modify any UI components or attach to the actions framework
-   *
-   * @param flex { typeof import('@twilio/flex-ui') }
-   * @param manager { import('@twilio/flex-ui').Manager }
    */
   init(flex: typeof Flex, manager: Flex.Manager) {
     loadCSS('https://use.fontawesome.com/releases/v5.15.1/css/solid.css');
@@ -285,8 +268,6 @@ export default class HrmFormPlugin extends FlexPlugin {
 
   /**
    * Registers the plugin reducers
-   *
-   * @param {import('@twilio/flex-ui').Manager} manager
    */
   registerReducers(manager: Flex.Manager) {
     if (!manager.store.addReducer) {
