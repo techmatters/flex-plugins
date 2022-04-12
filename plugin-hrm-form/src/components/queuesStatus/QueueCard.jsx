@@ -12,6 +12,7 @@ import {
   WaitTimeLabel,
   WaitTimeValue,
 } from '../../styles/queuesStatus';
+import { channelTypes, ChannelTypes } from '../../states/DomainConstants';
 
 class QueuesCard extends React.PureComponent {
   static displayName = 'QueuesCard';
@@ -35,10 +36,12 @@ class QueuesCard extends React.PureComponent {
       twitterColor: PropTypes.string,
       instagramColor: PropTypes.string,
     }).isRequired,
+    contactsWaitingChannels: PropTypes.shape([]),
   };
 
   static defaultProps = {
     longestWaitingDate: null,
+    contactsWaitingChannels: null,
   };
 
   state = {
@@ -76,15 +79,6 @@ class QueuesCard extends React.PureComponent {
     this.setState({ intervalId, waitingMinutes });
   };
 
-  renderChannel = (channel, color, value, marginLeft, channelAria) => (
-    <ChannelColumn marginLeft={marginLeft} aria-label={`${value} ${channelAria || channel},`}>
-      <ChannelBox isZero={value === 0} backgroundColor={color}>
-        {value}
-      </ChannelBox>
-      <ChannelLabel>{channel}</ChannelLabel>
-    </ChannelColumn>
-  );
-
   getWaitingMessage = () => {
     if (this.props.longestWaitingDate === null) return <Template code="QueueCard-None" />;
     if (this.state.waitingMinutes === 0) return <Template code="QueueCard-LessThanMinute" />;
@@ -97,9 +91,48 @@ class QueuesCard extends React.PureComponent {
     );
   };
 
-  render() {
-    const { qName, colors, facebook, sms, voice, web, whatsapp, twitter, instagram } = this.props;
+  renderChannelUI = (channel, color, value, marginLeft, channelAria) => (
+    <ChannelColumn marginLeft={marginLeft} aria-label={`${value} ${channelAria || channel},`}>
+      <ChannelBox isZero={value === 0} backgroundColor={color}>
+        {value}
+      </ChannelBox>
+      <ChannelLabel>{channel}</ChannelLabel>
+    </ChannelColumn>
+  );
+
+  /**
+   * @param {ChannelTypes} channel
+   */
+  renderChannel = channel => {
+    const { colors, facebook, sms, voice, web, whatsapp, twitter, instagram } = this.props;
     const { voiceColor, smsColor, facebookColor, whatsappColor, webColor, twitterColor, instagramColor } = colors;
+
+    switch (channel) {
+      case channelTypes.voice:
+        return this.renderChannelUI('Calls', voiceColor, voice, false);
+      case channelTypes.sms:
+        return this.renderChannelUI('SMS', smsColor, sms, true);
+      case channelTypes.facebook:
+        return this.renderChannelUI('FB', facebookColor, facebook, true, 'Facebook');
+      case channelTypes.whatsapp:
+        return this.renderChannelUI('WA', whatsappColor, whatsapp, true, 'Whatsapp');
+      case channelTypes.web:
+        return this.renderChannelUI('Chat', webColor, web, true);
+      case channelTypes.twitter:
+        return this.renderChannelUI('Twtr', twitterColor, twitter, true);
+      case channelTypes.instagram:
+        return this.renderChannelUI('IG', instagramColor, instagram, true);
+      default:
+        return null;
+    }
+  };
+
+  render() {
+    /*
+     * const { qName, colors, facebook, sms, voice, web, whatsapp, twitter, instagram } = this.props;
+     * const { voiceColor, smsColor, facebookColor, whatsappColor, webColor, twitterColor, instagramColor } = colors;
+     */
+    const { qName, contactsWaitingChannels } = this.props;
 
     return (
       <>
@@ -111,13 +144,11 @@ class QueuesCard extends React.PureComponent {
           <QueueName>{qName}</QueueName>
           <Box marginTop="7px" marginBottom="14px">
             <Row>
-              {this.renderChannel('Calls', voiceColor, voice, false)}
-              {this.renderChannel('SMS', smsColor, sms, true)}
-              {this.renderChannel('FB', facebookColor, facebook, true, 'Facebook')}
-              {this.renderChannel('WA', whatsappColor, whatsapp, true, 'Whatsapp')}
-              {this.renderChannel('Chat', webColor, web, true)}
-              {this.renderChannel('Twtr', twitterColor, twitter, true)}
-              {this.renderChannel('IG', instagramColor, instagram, true)}
+              {Boolean(contactsWaitingChannels && Array.isArray(contactsWaitingChannels))
+                ? Object.values(channelTypes)
+                    .filter(c => contactsWaitingChannels.includes(c))
+                    .map(this.renderChannel)
+                : Object.values(channelTypes).map(this.renderChannel)}
             </Row>
           </Box>
           <Row>
