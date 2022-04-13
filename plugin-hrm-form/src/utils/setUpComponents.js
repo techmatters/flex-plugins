@@ -29,13 +29,26 @@ import InstagramIcon from '../components/common/icons/InstagramIcon';
 // eslint-disable-next-line
 import { isInMyBehalfITask } from '../types/types';
 
-const voiceColor = { Accepted: Flex.DefaultTaskChannels.Call.colors.main() };
-const webColor = Flex.DefaultTaskChannels.Chat.colors.main;
-const facebookColor = Flex.DefaultTaskChannels.ChatMessenger.colors.main;
-const smsColor = Flex.DefaultTaskChannels.ChatSms.colors.main;
-const whatsappColor = Flex.DefaultTaskChannels.ChatWhatsApp.colors.main;
+const voiceColor = Flex.DefaultTaskChannels.Call.colors.main();
+const webColor = Flex.DefaultTaskChannels.Chat.colors.main.Accepted;
+const facebookColor = Flex.DefaultTaskChannels.ChatMessenger.colors.main.Accepted;
+const smsColor = Flex.DefaultTaskChannels.ChatSms.colors.main.Accepted;
+const whatsappColor = Flex.DefaultTaskChannels.ChatWhatsApp.colors.main.Accepted;
 const twitterColor = '#1DA1F2';
 const instagramColor = '#833AB4';
+
+/**
+ * @type {import('../states/DomainConstants').ChannelColors}
+ */
+const colors = {
+  voice: voiceColor,
+  web: webColor,
+  facebook: facebookColor,
+  sms: smsColor,
+  whatsapp: whatsappColor,
+  twitter: twitterColor,
+  instagram: instagramColor,
+};
 
 /**
  * Returns the UI for the "Contacts Waiting" section
@@ -44,15 +57,7 @@ const instagramColor = '#833AB4';
 const queuesStatusUI = setupObject => (
   <QueuesStatus
     key="queue-status-task-list"
-    colors={{
-      voiceColor: voiceColor.Accepted,
-      webColor: webColor.Accepted,
-      facebookColor: facebookColor.Accepted,
-      smsColor: smsColor.Accepted,
-      whatsappColor: whatsappColor.Accepted,
-      twitterColor,
-      instagramColor,
-    }}
+    colors={colors}
     contactsWaitingChannels={setupObject.contactsWaitingChannels}
   />
 );

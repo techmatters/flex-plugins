@@ -10,6 +10,10 @@ export const channelTypes = {
 
 export type ChannelTypes = typeof channelTypes[keyof typeof channelTypes];
 
+export type ChannelColors = {
+  [C in ChannelTypes]: string;
+};
+
 export const transferModes = {
   cold: 'COLD',
   warm: 'WARM',

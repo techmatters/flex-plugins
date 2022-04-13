@@ -8,20 +8,12 @@ import QueueCard from './QueueCard';
 import { Container, QueuesContainer } from '../../styles/queuesStatus';
 import { Box, ErrorText, HeaderContainer } from '../../styles/HrmStyles';
 import { TLHPaddingLeft } from '../../styles/GlobalOverrides';
-import type { SetupObject } from '../../HrmFormPlugin';
+import type { ChannelTypes, ChannelColors } from '../../states/DomainConstants';
 
 type OwnProps = {
-  colors: {
-    voiceColor: string;
-    webColor: string;
-    facebookColor: string;
-    smsColor: string;
-    whatsappColor: string;
-    twitterColor: string;
-    instagramColor: string;
-  };
+  colors: ChannelColors;
   paddingRight: boolean;
-  contactsWaitingChannels?: SetupObject['contactsWaitingChannels'];
+  contactsWaitingChannels?: ChannelTypes[];
 };
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
