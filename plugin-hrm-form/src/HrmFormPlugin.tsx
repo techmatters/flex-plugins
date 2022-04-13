@@ -65,7 +65,7 @@ export const getConfig = () => {
     pdfImagesSource,
     multipleOfficeSupport,
     permissionConfig,
-    contactsWaitingChannels: ['instagram', 'voice', 'web'],
+    contactsWaitingChannels,
   };
 };
 
