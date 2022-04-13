@@ -21,7 +21,7 @@ type OwnProps = {
     instagramColor: string;
   };
   paddingRight: boolean;
-  contactsWaitingChannels: SetupObject['contactsWaitingChannels'];
+  contactsWaitingChannels?: SetupObject['contactsWaitingChannels'];
 };
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {

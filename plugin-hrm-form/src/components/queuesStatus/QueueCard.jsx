@@ -91,9 +91,14 @@ class QueuesCard extends React.PureComponent {
     );
   };
 
-  renderChannelUI = (channel, color, value, marginLeft, channelAria) => (
+  getChannelUI = (channel, color, value, marginLeft, channelAria) => (
     <ChannelColumn marginLeft={marginLeft} aria-label={`${value} ${channelAria || channel},`}>
-      <ChannelBox isZero={value === 0} backgroundColor={color}>
+      <ChannelBox
+        isZero={value === 0}
+        backgroundColor={color}
+        className="channel-box-inner-value"
+        data-testid="channel-box-inner-value"
+      >
         {value}
       </ChannelBox>
       <ChannelLabel>{channel}</ChannelLabel>
@@ -109,34 +114,31 @@ class QueuesCard extends React.PureComponent {
 
     switch (channel) {
       case channelTypes.voice:
-        return this.renderChannelUI('Calls', voiceColor, voice, false);
+        return this.getChannelUI('Calls', voiceColor, voice, false);
       case channelTypes.sms:
-        return this.renderChannelUI('SMS', smsColor, sms, true);
+        return this.getChannelUI('SMS', smsColor, sms, true);
       case channelTypes.facebook:
-        return this.renderChannelUI('FB', facebookColor, facebook, true, 'Facebook');
+        return this.getChannelUI('FB', facebookColor, facebook, true, 'Facebook');
       case channelTypes.whatsapp:
-        return this.renderChannelUI('WA', whatsappColor, whatsapp, true, 'Whatsapp');
+        return this.getChannelUI('WA', whatsappColor, whatsapp, true, 'Whatsapp');
       case channelTypes.web:
-        return this.renderChannelUI('Chat', webColor, web, true);
+        return this.getChannelUI('Chat', webColor, web, true);
       case channelTypes.twitter:
-        return this.renderChannelUI('Twtr', twitterColor, twitter, true);
+        return this.getChannelUI('Twtr', twitterColor, twitter, true);
       case channelTypes.instagram:
-        return this.renderChannelUI('IG', instagramColor, instagram, true);
+        return this.getChannelUI('IG', instagramColor, instagram, true);
       default:
         return null;
     }
   };
 
   render() {
-    /*
-     * const { qName, colors, facebook, sms, voice, web, whatsapp, twitter, instagram } = this.props;
-     * const { voiceColor, smsColor, facebookColor, whatsappColor, webColor, twitterColor, instagramColor } = colors;
-     */
     const { qName, contactsWaitingChannels } = this.props;
+    const renderFun = channel => <div data-testid={`${qName}-${channel}`}>{this.renderChannel(channel)}</div>;
 
     return (
       <>
-        <Box paddingLeft="10px" paddingTop="10px">
+        <Box paddingLeft="10px" paddingTop="10px" data-testid={`Queue-Status${qName}`}>
           <HiddenText id={`name-${qName}`}>
             <Template code="QueueCard-Name" />
           </HiddenText>
@@ -144,11 +146,11 @@ class QueuesCard extends React.PureComponent {
           <QueueName>{qName}</QueueName>
           <Box marginTop="7px" marginBottom="14px">
             <Row>
-              {Boolean(contactsWaitingChannels && Array.isArray(contactsWaitingChannels))
+              {contactsWaitingChannels && Array.isArray(contactsWaitingChannels)
                 ? Object.values(channelTypes)
                     .filter(c => contactsWaitingChannels.includes(c))
-                    .map(this.renderChannel)
-                : Object.values(channelTypes).map(this.renderChannel)}
+                    .map(renderFun)
+                : Object.values(channelTypes).map(renderFun)}
             </Row>
           </Box>
           <Row>
