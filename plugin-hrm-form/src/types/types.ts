@@ -121,24 +121,32 @@ export type SearchCaseResult = {
   cases: Case[];
 };
 
-export enum GetCasesSortBy {
+export enum ListCasesSortBy {
   ID = 'id',
   CREATED_AT = 'createdAt',
   UPDATED_AT = 'updatedAt',
   FOLLOW_UP_DATE = 'info.followUpDate',
 }
 
-export enum GetCasesSortDirection {
+export enum ListCasesSortDirection {
   ASC = 'ASC',
   DESC = 'DESC',
 }
 
-export type GetCasesParams = {
+export type ListCasesQueryParams = {
   limit?: number;
   offset?: number;
-  sortBy?: GetCasesSortBy;
-  sortDirection?: GetCasesSortDirection;
-  helpline?: string;
+  sortBy?: ListCasesSortBy;
+  sortDirection?: ListCasesSortDirection;
+};
+
+export type ListCasesFilters = {
+  counsellors: string[];
+  statuses: string[];
+};
+
+export type CounselorHash = {
+  [sid: string]: string;
 };
 
 /**

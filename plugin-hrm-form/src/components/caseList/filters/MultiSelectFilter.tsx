@@ -1,20 +1,27 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { FormCheckbox, FormLabel } from '../../../styles/HrmStyles';
 
-type Values = {
+export type Item = {
+  value: string;
+  label: string;
+  checked: boolean;
+};
+
+type ReactHookFormValues = {
   [name: string]: boolean;
 };
 
 type OwnProps = {
   name: string;
   text: string;
-  defaultValues: Values;
+  defaultValues: Item[];
   withSearch?: boolean;
   openedFilter: string;
-  applyFilter: (values: Values) => void;
+  searchable?: boolean;
+  applyFilter: (values: Item[]) => void;
   setOpenedFilter: (name: string) => void;
 };
 
@@ -26,29 +33,49 @@ const MultiSelectFilter: React.FC<Props> = ({
   text,
   defaultValues,
   openedFilter,
+  searchable,
   applyFilter,
   setOpenedFilter,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const { register, handleSubmit, reset, getValues, setValue } = useForm({ defaultValues });
-  const [selectedCount, setSelectedCount] = useState(0);
+  const transformToItems = (values: ReactHookFormValues): Item[] =>
+    defaultValues.map(item => ({ ...item, checked: values[item.value] }));
 
-  const updateSelectedCount = data => {
-    const countSelected = (count: number, value: boolean) => count + (value ? 1 : 0);
-    const count = Object.values(data).reduce<number>(countSelected, 0);
-    setSelectedCount(count);
-  };
+  const transformToValues = (items: Item[]) =>
+    items.reduce((acc, item) => ({ ...acc, [item.value]: item.checked }), {});
 
-  const onSubmit = (data: Values) => {
+  const { register, handleSubmit, reset, getValues } = useForm({
+    defaultValues: transformToValues(defaultValues),
+  });
+
+  const [selectedCount, setSelectedCount] = useState<number>(0);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+
+  // Force React Hook Forms to rerender whenever defaultValues changes
+  useEffect(() => {
+    const updateSelectedCount = () => {
+      const count = defaultValues.reduce((acc, item) => (item.checked ? acc + 1 : acc), 0);
+      setSelectedCount(count);
+    };
+
+    reset(defaultValues);
+    updateSelectedCount();
+  }, [reset, defaultValues]);
+
+  const onSubmit = (values: ReactHookFormValues) => {
     setOpenedFilter(null);
-    updateSelectedCount(data);
-    applyFilter(data);
+    setSearchTerm('');
+
+    const items = transformToItems(values);
+    applyFilter(items);
   };
 
   const isOpened = name === openedFilter;
 
   const handleClick = () => {
-    // Need to call reset so that React Hook Forms renders the new defaultValues
+    // Always reset to defaultValues whenever you open/close the component
     reset(defaultValues);
+    setSearchTerm('');
 
     if (isOpened) {
       setOpenedFilter(null);
@@ -60,8 +87,15 @@ const MultiSelectFilter: React.FC<Props> = ({
   const handleClear = () => {
     const values = getValues();
     const assignFalse = (acc: object, key: string) => ({ ...acc, [key]: false });
-    const clearedValues: Values = Object.keys(values).reduce(assignFalse, {});
+    const clearedValues = Object.keys(values).reduce(assignFalse, {});
+
     reset(clearedValues);
+    setSearchTerm('');
+  };
+
+  const handleChangeSearch = event => {
+    const { value } = event.target;
+    setSearchTerm(value);
   };
 
   const drawCount = () => (selectedCount === 0 ? '' : ` (${selectedCount})`);
@@ -92,23 +126,28 @@ const MultiSelectFilter: React.FC<Props> = ({
             minWidth: 200,
             padding: '15px 5px',
             border: '1px solid lightgray',
+            zIndex: 100,
           }}
         >
+          {searchable && (
+            <input value={searchTerm} onChange={handleChangeSearch} type="string" style={{ marginBottom: '15px' }} />
+          )}
           <form onSubmit={handleSubmit(onSubmit)}>
             <ul>
-              {Object.keys(defaultValues).map((option, i) => {
-                console.log(`${option}: ${defaultValues[option]}`);
+              {defaultValues.map((item, i) => {
+                const hidden = !item.label.toLowerCase().includes(searchTerm.toLowerCase());
+
                 return (
-                  <li key={i}>
-                    <FormLabel htmlFor={option} style={{ flexDirection: 'row' }}>
+                  <li key={i} style={{ visibility: hidden ? 'hidden' : 'visible', height: hidden ? '0' : 'auto' }}>
+                    <FormLabel htmlFor={item.value} style={{ flexDirection: 'row' }}>
                       <FormCheckbox
-                        id={option}
-                        name={option}
+                        id={item.value}
+                        name={item.value}
                         type="checkbox"
-                        defaultChecked={defaultValues[option]}
+                        defaultChecked={item.checked}
                         innerRef={register}
                       />
-                      {option}
+                      {item.label}
                     </FormLabel>
                   </li>
                 );
