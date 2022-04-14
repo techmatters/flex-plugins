@@ -143,7 +143,7 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
                   </View>
                 ) : (
                   <CasePrintSection
-                    sectionName={strings['SectionName-CallerInformation']}
+                    sectionName={strings['SectionName-ChildInformation']}
                     definitions={[
                       ...definitionVersion.tabbedForms.CaseInformationTab.filter(definition => {
                         // eslint-disable-next-line
@@ -153,7 +153,7 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
                     ]}
                     values={{
                       ...caseDetails.contact?.rawJson?.caseInformation,
-                      ...caseDetails.contact?.rawJson?.callerInformation,
+                      ...caseDetails.contact?.rawJson?.childInformation,
                     }}
                     unNestInfo={true}
                   />
