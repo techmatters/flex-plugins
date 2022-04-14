@@ -149,7 +149,7 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
                         // eslint-disable-next-line
                         return definition['highlightedAtCasePrint'] ? definition : null;
                       }),
-                      ...definitionVersion.tabbedForms.CallerInformationTab,
+                      ...definitionVersion.tabbedForms.ChildInformationTab,
                     ]}
                     values={{
                       ...caseDetails.contact?.rawJson?.caseInformation,
