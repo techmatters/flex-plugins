@@ -30,28 +30,6 @@ type OwnProps = {
 };
 type Props = OwnProps;
 
-const extraFieldDefinitions = (strings: ReturnType<typeof getConfig>['strings']): FormDefinition => {
-  return [
-    {
-      name: 'keepConfidential',
-      label: strings['ContactDetails-GeneralDetails-KeepConfidential'],
-      type: 'checkbox',
-    },
-    {
-      name: 'okForCaseWorkerToCall',
-      label: strings['ContactDetails-GeneralDetails-OKToCall'],
-      type: 'mixed-checkbox',
-    },
-  ];
-};
-
-const addExtraValues = (caseInformation: ContactRawJson['caseInformation']) => {
-  return {
-    keepConfidential: Boolean(caseInformation?.keepConfidential),
-    okForCaseWorkerToCall: caseInformation?.okForCaseWorkerToCall,
-  };
-};
-
 const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionVersion, counselorsHash }) => {
   const { pdfImagesSource, strings } = getConfig();
 
@@ -102,6 +80,25 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
     loadImagesInMemory(imageSources);
   }, [logoSource, chkOnSource, chkOffSource]);
 
+  const caseInfoDefinitions = [...definitionVersion.tabbedForms.CaseInformationTab].filter(definition => {
+    // eslint-disable-next-line
+    return definition['highlightedAtCasePrint'] ? definition : null;
+  });
+
+  const addExtraValues = (caseInformation: ContactRawJson['caseInformation']) => {
+    return {
+      keepConfidential: Boolean(caseInformation?.keepConfidential),
+      okForCaseWorkerToCall: caseInformation?.okForCaseWorkerToCall,
+      callSummary: caseInformation?.callSummary,
+      repeatCaller: caseInformation?.repeatCaller,
+      actionTaken: caseInformation?.actionTaken,
+      howDidYouKnowAboutOurLine: caseInformation?.howDidYouKnowAboutOurLine,
+      didYouDiscussRightsWithTheChild: caseInformation?.didYouDiscussRightsWithTheChild,
+      didTheChildFeelWeSolvedTheirProblem: caseInformation?.didTheChildFeelWeSolvedTheirProblem,
+      wouldTheChildRecommendUsToAFriend: caseInformation?.wouldTheChildRecommendUsToAFriend,
+    };
+  };
+
   return (
     <CasePrintViewContainer>
       <ButtonBase onClick={onClickClose} style={{ marginLeft: 'auto' }} data-testid="CasePrint-CloseCross">
@@ -143,10 +140,7 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
                   <View>
                     <CasePrintSection
                       sectionName={strings['SectionName-CallerInformation']}
-                      definitions={[
-                        ...extraFieldDefinitions(strings),
-                        ...definitionVersion.tabbedForms.CallerInformationTab,
-                      ]}
+                      definitions={[...caseInfoDefinitions, ...definitionVersion.tabbedForms.CallerInformationTab]}
                       values={{
                         ...addExtraValues(caseDetails.contact?.rawJson?.caseInformation),
                         ...caseDetails.contact?.rawJson?.callerInformation,
@@ -163,10 +157,7 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
                 ) : (
                   <CasePrintSection
                     sectionName={strings['SectionName-ChildInformation']}
-                    definitions={[
-                      ...extraFieldDefinitions(strings),
-                      ...definitionVersion.tabbedForms.ChildInformationTab,
-                    ]}
+                    definitions={[...caseInfoDefinitions, ...definitionVersion.tabbedForms.ChildInformationTab]}
                     values={{
                       ...addExtraValues(caseDetails.contact?.rawJson?.caseInformation),
                       ...caseDetails.contact?.rawJson?.childInformation,
