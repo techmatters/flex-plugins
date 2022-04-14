@@ -29,13 +29,13 @@ function createState(queuesStatusState) {
 }
 
 const colors = {
-  voiceColor: '#000000',
-  webColor: '#000000',
-  facebookColor: '#000000',
-  smsColor: '#000000',
-  whatsappColor: '#000000',
-  twitterColor: '#000000',
-  instagramColor: '#000000',
+  voice: '#000000',
+  web: '#000000',
+  facebook: '#000000',
+  sms: '#000000',
+  whatsapp: '#000000',
+  twitter: '#000000',
+  instagram: '#000000',
 };
 
 test('Test <QueuesStatus> with initial state (display Not initialized)', () => {
@@ -308,5 +308,6 @@ test('a11y', async () => {
   const axe = configureAxe({ rules });
   const results = await axe(container);
 
+  // @ts-ignore
   expect(results).toHaveNoViolations();
 });
