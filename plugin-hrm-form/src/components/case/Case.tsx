@@ -108,7 +108,7 @@ const Case: React.FC<Props> = ({
       if (!props.connectedCaseId) return;
 
       setLoading(true);
-      const activities = getActivitiesFromCase(props.connectedCaseState.connectedCase);
+      const activities = await getActivitiesFromCase(props.connectedCaseState.connectedCase);
       setLoading(false);
       let timelineActivities = sortActivities(activities);
 
@@ -346,8 +346,8 @@ const Case: React.FC<Props> = ({
               temp => {
                 const { form: noteForm, ...entryInfo } = temp;
                 return {
+                  ...noteForm,
                   ...entryInfo,
-                  note: noteForm.note.toString(),
                 };
               },
             )}

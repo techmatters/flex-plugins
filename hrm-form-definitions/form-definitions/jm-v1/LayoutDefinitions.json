@@ -36,6 +36,9 @@
       },
       "documents": {
         "splitFormAt": 1
+      },
+      "notes": {
+        "previewFields": ["assessment"]
       }
     }
   }
