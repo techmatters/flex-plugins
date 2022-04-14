@@ -80,25 +80,6 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
     loadImagesInMemory(imageSources);
   }, [logoSource, chkOnSource, chkOffSource]);
 
-  const caseInfoDefinitions = [...definitionVersion.tabbedForms.CaseInformationTab].filter(definition => {
-    // eslint-disable-next-line
-    return definition['highlightedAtCasePrint'] ? definition : null;
-  });
-
-  const addExtraValues = (caseInformation: ContactRawJson['caseInformation']) => {
-    return {
-      keepConfidential: Boolean(caseInformation?.keepConfidential),
-      okForCaseWorkerToCall: caseInformation?.okForCaseWorkerToCall,
-      callSummary: caseInformation?.callSummary,
-      repeatCaller: caseInformation?.repeatCaller,
-      actionTaken: caseInformation?.actionTaken,
-      howDidYouKnowAboutOurLine: caseInformation?.howDidYouKnowAboutOurLine,
-      didYouDiscussRightsWithTheChild: caseInformation?.didYouDiscussRightsWithTheChild,
-      didTheChildFeelWeSolvedTheirProblem: caseInformation?.didTheChildFeelWeSolvedTheirProblem,
-      wouldTheChildRecommendUsToAFriend: caseInformation?.wouldTheChildRecommendUsToAFriend,
-    };
-  };
-
   return (
     <CasePrintViewContainer>
       <ButtonBase onClick={onClickClose} style={{ marginLeft: 'auto' }} data-testid="CasePrint-CloseCross">
@@ -140,9 +121,15 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
                   <View>
                     <CasePrintSection
                       sectionName={strings['SectionName-CallerInformation']}
-                      definitions={[...caseInfoDefinitions, ...definitionVersion.tabbedForms.CallerInformationTab]}
+                      definitions={[
+                        ...definitionVersion.tabbedForms.CaseInformationTab.filter(definition => {
+                          // eslint-disable-next-line
+                          return definition['highlightedAtCasePrint'] ? definition : null;
+                        }),
+                        ...definitionVersion.tabbedForms.CallerInformationTab,
+                      ]}
                       values={{
-                        ...addExtraValues(caseDetails.contact?.rawJson?.caseInformation),
+                        ...caseDetails.contact?.rawJson?.caseInformation,
                         ...caseDetails.contact?.rawJson?.callerInformation,
                       }}
                       unNestInfo={true}
@@ -156,11 +143,17 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
                   </View>
                 ) : (
                   <CasePrintSection
-                    sectionName={strings['SectionName-ChildInformation']}
-                    definitions={[...caseInfoDefinitions, ...definitionVersion.tabbedForms.ChildInformationTab]}
+                    sectionName={strings['SectionName-CallerInformation']}
+                    definitions={[
+                      ...definitionVersion.tabbedForms.CaseInformationTab.filter(definition => {
+                        // eslint-disable-next-line
+                        return definition['highlightedAtCasePrint'] ? definition : null;
+                      }),
+                      ...definitionVersion.tabbedForms.CallerInformationTab,
+                    ]}
                     values={{
-                      ...addExtraValues(caseDetails.contact?.rawJson?.caseInformation),
-                      ...caseDetails.contact?.rawJson?.childInformation,
+                      ...caseDetails.contact?.rawJson?.caseInformation,
+                      ...caseDetails.contact?.rawJson?.callerInformation,
                     }}
                     unNestInfo={true}
                   />
