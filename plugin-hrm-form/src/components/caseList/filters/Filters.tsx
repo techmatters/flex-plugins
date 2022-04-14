@@ -33,6 +33,7 @@ const getCounselorsInitialValue = (counselorsHash: CounselorHash) =>
 const emptyFilters: ListCasesFilters = {
   counsellors: [],
   statuses: [],
+  includeOrphans: false,
 };
 
 /**
@@ -80,7 +81,7 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ha
   useEffect(() => {
     const statuses = filterCheckedItems(statusValues);
     const counsellors = filterCheckedItems(counselorValues);
-    setDefaultFilters({ statuses, counsellors });
+    setDefaultFilters({ statuses, counsellors, includeOrphans: false });
   }, [setDefaultFilters, statusValues, counselorValues]);
 
   const handleApplyStatusFilter = (values: Item[]) => {

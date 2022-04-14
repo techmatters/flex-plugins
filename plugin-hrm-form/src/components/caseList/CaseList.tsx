@@ -52,6 +52,7 @@ const initialState: State = {
   filters: {
     counsellors: [],
     statuses: [],
+    includeOrphans: false,
   },
 };
 
