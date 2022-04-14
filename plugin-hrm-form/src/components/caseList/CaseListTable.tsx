@@ -4,6 +4,7 @@ import { TableBody, CircularProgress } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 
+import { getConfig } from '../../HrmFormPlugin';
 import { namespace, configurationBase } from '../../states';
 import { TableContainer, CLTable, CLTableRow, CLNamesCell, FiltersContainer } from '../../styles/caseList';
 import Filters from './filters/Filters';
@@ -46,6 +47,7 @@ const CaseListTable: React.FC<Props> = ({
   counselorsHash,
   currentDefinitionVersion,
 }) => {
+  const { featureFlags } = getConfig();
   const pagesCount = Math.ceil(caseCount / CASES_PER_PAGE);
 
   return (
@@ -55,11 +57,13 @@ const CaseListTable: React.FC<Props> = ({
           <Template code="CaseList-AllCases" />
         </span>
       </FiltersContainer>
-      <Filters
-        currentDefinitionVersion={currentDefinitionVersion}
-        counselorsHash={counselorsHash}
-        handleApplyFilter={handleApplyFilter}
-      />
+      {featureFlags.enable_filter_cases && (
+        <Filters
+          currentDefinitionVersion={currentDefinitionVersion}
+          counselorsHash={counselorsHash}
+          handleApplyFilter={handleApplyFilter}
+        />
+      )}
       <TableContainer>
         <CLTable tabIndex={0} aria-labelledby="CaseList-AllCases-label" data-testid="CaseList-Table">
           <CaseListTableHead
