@@ -6,7 +6,7 @@ module.exports = config => {
     ...defaults,
     rootDir: '.',
     setupFiles: ['./src/setupTests.js'],
-    testEnvironment: 'jsdom',
+    testEnvironment: 'jest-environment-jsdom-latest',
     testTimeout: 2 * 60 * 1000, // 2 minutes in ms
   };
 

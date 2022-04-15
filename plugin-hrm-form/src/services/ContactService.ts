@@ -18,7 +18,7 @@ import {
   SearchContactResult,
 } from '../types/types';
 import { saveContactToExternalBackend } from '../dualWrite';
-import { getNumberFromTask } from '../utils/task';
+import { getNumberFromTask } from '../utils';
 
 /**
  * Un-nests the information (caller/child) as it comes from DB, to match the form structure
