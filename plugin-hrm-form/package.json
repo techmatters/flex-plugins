@@ -35,8 +35,8 @@
     "@material-ui/icons": "^3.0.2",
     "rollbar": "^2.19.3",
     "uuid": "^8.3.2",
-    "@babel/runtime": "^7.16.3",,
-    "hrm-form-definitions": "file:../hrm-form-definitions",
+    "@babel/runtime": "^7.16.3",
+    "hrm-form-definitions": "file:../hrm-form-definitions"
   },
   "devDependencies": {
     "@babel/plugin-transform-runtime": "^7.16.4",
