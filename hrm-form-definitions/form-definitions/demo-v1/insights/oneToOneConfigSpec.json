@@ -4,6 +4,14 @@
       {
         "name": "relationshipToChild",
         "insights": ["conversations", "initiated_by"]
+      },
+      {
+        "name": "gender",
+        "insights": ["conversations", "conversation_attribute_4"]
+      },
+      {
+        "name": "age",
+        "insights": ["conversations", "conversation_attribute_3"]
       }
     ],
     "childInformation": [
@@ -13,7 +21,7 @@
       },
       {
         "name": "age",
-        "insights": ["customers", "age"]
+        "insights": ["customers", "year_of_birth"]
       },
       {
         "name": "city",
