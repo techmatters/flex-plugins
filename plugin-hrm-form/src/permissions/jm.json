@@ -11,7 +11,7 @@
   "addPerpetrator": [["everyone"]],
   "editPerpetrator": [["isSupervisor"]],
   "addIncident": [["everyone"]],
-  "editIncident": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
+  "editIncident": [["isSupervisor"]],
   "addDocument": [["everyone"]],
   "editDocument": [["isSupervisor"]],
   "editCaseSummary": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
