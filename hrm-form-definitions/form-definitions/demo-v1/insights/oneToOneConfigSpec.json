@@ -8,7 +8,15 @@
     ],
     "childInformation": [
       {
-        "name": "village",
+        "name": "gender",
+        "insights": ["customers", "gender"]
+      },
+      {
+        "name": "age",
+        "insights": ["customers", "age"]
+      },
+      {
+        "name": "city",
         "insights": ["customers", "city"]
       },
       {
@@ -26,11 +34,6 @@
       {
         "name": "livingSituation",
         "insights": ["customers", "customer_attribute_1"]
-      },
-      {
-        "name": "hivPositive",
-        "insights": ["customers", "category"],
-        "type": "mixed-checkbox"
       },
       {
         "name": "inConflictWithTheLaw",

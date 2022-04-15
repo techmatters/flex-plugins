@@ -34,11 +34,6 @@
     "type": "input"
   },
   {
-    "name": "village",
-    "label": "Village",
-    "type": "input"
-  },
-  {
     "name": "province",
     "label": "Province (c)",
     "type": "select",
