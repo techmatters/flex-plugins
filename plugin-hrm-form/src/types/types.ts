@@ -144,6 +144,7 @@ export type ListCasesQueryParams = {
 export type ListCasesFilters = {
   counsellors: string[];
   statuses: string[];
+  includeOrphans: boolean;
 };
 
 export type CounselorHash = {

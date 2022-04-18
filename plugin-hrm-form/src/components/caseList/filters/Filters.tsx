@@ -1,7 +1,9 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react';
+import { Template } from '@twilio/flex-ui';
 import type { DefinitionVersion } from 'hrm-form-definitions';
 
+import { getConfig } from '../../../HrmFormPlugin';
 import { FiltersContainer } from '../../../styles/caseList';
 import MultiSelectFilter, { Item } from './MultiSelectFilter';
 import { ListCasesFilters, CounselorHash } from '../../../types/types';
@@ -31,6 +33,7 @@ const getCounselorsInitialValue = (counselorsHash: CounselorHash) =>
 const emptyFilters: ListCasesFilters = {
   counsellors: [],
   statuses: [],
+  includeOrphans: false,
 };
 
 /**
@@ -78,7 +81,7 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ha
   useEffect(() => {
     const statuses = filterCheckedItems(statusValues);
     const counsellors = filterCheckedItems(counselorValues);
-    setDefaultFilters({ statuses, counsellors });
+    setDefaultFilters({ statuses, counsellors, includeOrphans: false });
   }, [setDefaultFilters, statusValues, counselorValues]);
 
   const handleApplyStatusFilter = (values: Item[]) => {
@@ -100,12 +103,16 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ha
     handleApplyFilter(emptyFilters);
   };
 
+  const { strings } = getConfig();
+
   return (
     <FiltersContainer>
-      <span style={{ fontWeight: 600 }}>Filters</span>
+      <span style={{ fontWeight: 600 }}>
+        <Template code="CaseList-Filters" />
+      </span>
       <MultiSelectFilter
         name="status"
-        text="Status"
+        text={strings['CaseList-Filters-Status']}
         defaultValues={statusValues}
         openedFilter={openedFilter}
         applyFilter={handleApplyStatusFilter}
@@ -113,7 +120,7 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ha
       />
       <MultiSelectFilter
         name="counselor"
-        text="Counselor"
+        text={strings['CaseList-Filters-Counselor']}
         defaultValues={counselorValues}
         openedFilter={openedFilter}
         applyFilter={handleApplyCounselorFilter}
@@ -121,7 +128,7 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ha
         searchable
       />
       <button type="button" onClick={handleClearFilters}>
-        Clear Filters
+        <Template code="CaseList-Filters-ClearFilters" />
       </button>
     </FiltersContainer>
   );

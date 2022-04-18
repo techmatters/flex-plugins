@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { Template } from '@twilio/flex-ui';
 
 import { FormCheckbox, FormLabel } from '../../../styles/HrmStyles';
 
@@ -155,9 +156,11 @@ const MultiSelectFilter: React.FC<Props> = ({
             </ul>
             <br />
             <button type="button" onClick={handleClear}>
-              Clear
+              <Template code="CaseList-Filters-Clear" />
             </button>
-            <button type="submit">Apply</button>
+            <button type="submit">
+              <Template code="CaseList-Filters-Apply" />
+            </button>
           </form>
         </div>
       )}
