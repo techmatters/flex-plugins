@@ -16,14 +16,6 @@
     ],
     "childInformation": [
       {
-        "name": "gender",
-        "insights": ["customers", "gender"]
-      },
-      {
-        "name": "age",
-        "insights": ["customers", "year_of_birth"]
-      },
-      {
         "name": "city",
         "insights": ["customers", "city"]
       },
