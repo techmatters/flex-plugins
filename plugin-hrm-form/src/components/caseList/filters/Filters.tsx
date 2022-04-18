@@ -7,6 +7,8 @@ import { getConfig } from '../../../HrmFormPlugin';
 import { FiltersContainer } from '../../../styles/caseList';
 import MultiSelectFilter, { Item } from './MultiSelectFilter';
 import { ListCasesFilters, CounselorHash } from '../../../types/types';
+import DateRangeFilter from './DateRangeFilter';
+import { standardCaseListDateFilterOptions } from './dateFilters';
 
 /**
  * Reads the definition version and returns and array of items (type Item[])
@@ -95,7 +97,6 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ha
     handleApplyFilter(filters);
     setCounselorValues(values);
   };
-
   const handleClearFilters = () => {
     clearMultiSelectFilter(statusValues, setStatusValues);
     clearMultiSelectFilter(counselorValues, setCounselorValues);
@@ -126,6 +127,13 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ha
         applyFilter={handleApplyCounselorFilter}
         setOpenedFilter={setOpenedFilter}
         searchable
+      />
+      <DateRangeFilter
+        name="followUpDateFilter"
+        options={standardCaseListDateFilterOptions()}
+        openedFilter={openedFilter}
+        applyFilter={handleApplyDateRangeFilter}
+        setOpenedFilter={setOpenedFilter}
       />
       <button type="button" onClick={handleClearFilters}>
         <Template code="CaseList-Filters-ClearFilters" />
