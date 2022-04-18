@@ -75,7 +75,7 @@ const CaseListTableHeadCell: React.FC<Props> = ({
 
   return (
     <CLTableCell style={{ width: width || '8%', cursor: cursor() }} onClick={handleClick}>
-      <CLTableHeaderFont style={{ borderBottom: borderBottom() }}>
+      <CLTableHeaderFont style={{ borderBottom: borderBottom(), whiteSpace: 'nowrap' }}>
         <Template code={localizedText} /> {drawSort()}
       </CLTableHeaderFont>
     </CLTableCell>

@@ -48,8 +48,7 @@
       { "value": "SMS/Text Message", "label": "SMS/Text Message" },      
       { "value": "Traditional Media", "label": "Traditional Media (TV, Radio, Local News Outlet, Newspaper, etc.)" },
       { "value": "Word of Mouth", "label": "Word of Mouth" }
-    ],
-    "required": { "value": true, "message": "RequiredFieldError" }
+    ]
   },
   {
     "name": "keepConfidential",

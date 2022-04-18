@@ -10,35 +10,35 @@ variable "local_os" {
 }
 
 variable "helpline" {
-  default = "TerraformPOC"
+  default = "ECPAT Phillippines"
 }
 
 variable "short_helpline" {
-  default = "POC"
+  default = "PH"
 }
 
 variable "operating_info_key" {
-  default = "poc"
+  default = "aselo-dev"
 }
 
 variable "environment" {
-  default = "Development"
+  default = "Production"
 }
 
 variable "short_environment" {
-  default = "DEV"
+  default = "PROD"
 }
 
 variable "definition_version" {
   description = "Key that determines which set of form definitions this helpline will use"
   type        = string
-  default = "v1"
+  default = "ph-v1"
 }
 
 variable "permission_config" {
   description = "Key that determines which set of permission rules this helpline will use"
   type        = string
-  default = "demo"
+  default = "zm"
 }
 
 variable multi_office {

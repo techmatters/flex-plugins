@@ -34,7 +34,7 @@ import ViewCaseItem from './ViewCaseItem';
 import documentUploadHandler from './documentUploadHandler';
 import { recordBackendError } from '../../fullStory';
 import { completeTask, submitContactForm } from '../../services/formSubmissionHelpers';
-import { getPermissionsForCase } from '../../permissions';
+import { getPermissionsForCase, PermissionActions } from '../../permissions';
 import { CenteredContainer } from '../../styles/case';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
@@ -321,7 +321,14 @@ const Case: React.FC<Props> = ({
     switch (subroute) {
       case NewCaseSubroutes.Note:
         if (action === CaseItemAction.View) {
-          return <ViewCaseItem {...addScreenProps} itemType="Note" formDefinition={caseForms.NoteForm} />;
+          return (
+            <ViewCaseItem
+              {...addScreenProps}
+              itemType="Note"
+              formDefinition={caseForms.NoteForm}
+              canEdit={() => can(PermissionActions.EDIT_NOTE)}
+            />
+          );
         }
         return (
           <AddEditCaseItem
@@ -348,7 +355,14 @@ const Case: React.FC<Props> = ({
         );
       case NewCaseSubroutes.Referral:
         if (action === CaseItemAction.View) {
-          return <ViewCaseItem {...addScreenProps} itemType="Referral" formDefinition={caseForms.ReferralForm} />;
+          return (
+            <ViewCaseItem
+              {...addScreenProps}
+              itemType="Referral"
+              formDefinition={caseForms.ReferralForm}
+              canEdit={() => can(PermissionActions.EDIT_REFERRAL)}
+            />
+          );
         }
         return (
           <AddEditCaseItem
@@ -377,7 +391,14 @@ const Case: React.FC<Props> = ({
         );
       case NewCaseSubroutes.Household:
         if (action === CaseItemAction.View) {
-          return <ViewCaseItem {...addScreenProps} itemType="Household" formDefinition={caseForms.HouseholdForm} />;
+          return (
+            <ViewCaseItem
+              {...addScreenProps}
+              itemType="Household"
+              formDefinition={caseForms.HouseholdForm}
+              canEdit={() => can(PermissionActions.EDIT_HOUSEHOLD)}
+            />
+          );
         }
         return (
           <AddEditCaseItem
@@ -392,7 +413,14 @@ const Case: React.FC<Props> = ({
         );
       case NewCaseSubroutes.Perpetrator:
         if (action === CaseItemAction.View) {
-          return <ViewCaseItem {...addScreenProps} itemType="Perpetrator" formDefinition={caseForms.PerpetratorForm} />;
+          return (
+            <ViewCaseItem
+              {...addScreenProps}
+              itemType="Perpetrator"
+              formDefinition={caseForms.PerpetratorForm}
+              canEdit={() => can(PermissionActions.EDIT_PERPETRATOR)}
+            />
+          );
         }
         return (
           <AddEditCaseItem
@@ -407,7 +435,14 @@ const Case: React.FC<Props> = ({
         );
       case NewCaseSubroutes.Incident:
         if (action === CaseItemAction.View) {
-          return <ViewCaseItem {...addScreenProps} itemType="Incident" formDefinition={caseForms.IncidentForm} />;
+          return (
+            <ViewCaseItem
+              {...addScreenProps}
+              itemType="Incident"
+              formDefinition={caseForms.IncidentForm}
+              canEdit={() => can(PermissionActions.EDIT_INCIDENT)}
+            />
+          );
         }
         return (
           <AddEditCaseItem
@@ -422,7 +457,14 @@ const Case: React.FC<Props> = ({
         );
       case NewCaseSubroutes.Document:
         if (action === CaseItemAction.View) {
-          return <ViewCaseItem {...addScreenProps} itemType="Document" formDefinition={caseForms.DocumentForm} />;
+          return (
+            <ViewCaseItem
+              {...addScreenProps}
+              itemType="Document"
+              formDefinition={caseForms.DocumentForm}
+              canEdit={() => can(PermissionActions.EDIT_DOCUMENT)}
+            />
+          );
         }
         return (
           <AddEditCaseItem

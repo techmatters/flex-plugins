@@ -46,12 +46,14 @@
     "name": "keepConfidential",
     "label": "Keep confidential?",
     "type": "checkbox",
-    "initialChecked": true
+    "initialChecked": true,
+    "highlightedAtCasePrinting": true
   },
   {
     "name": "okForCaseWorkerToCall",
     "label": "May social worker call/SMS?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "highlightedAtCasePrinting": true
   },
   {
     "name": "didYouDiscussRightsWithTheChild",
