@@ -48,12 +48,14 @@
     "name": "keepConfidential",
     "label": "Keep confidential?",
     "type": "checkbox",
-    "initialChecked": true
+    "initialChecked": true,
+    "highlightedAtCasePrinting": true
   },
   {
     "name": "okForCaseWorkerToCall",
     "label": "Ok for case worker to call?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "highlightedAtCasePrinting": true
   },
   {
     "name": "didYouDiscussRightsWithTheChild",

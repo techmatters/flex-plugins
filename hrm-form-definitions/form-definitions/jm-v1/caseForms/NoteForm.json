@@ -30,5 +30,13 @@
     "placeholder": "",
     "rows": 10,
     "width": 250
+  },
+  {
+    "name": "notes",
+    "label": "General Comments (Interns)",
+    "type": "textarea",
+    "placeholder": "",
+    "rows": 10,
+    "width": 250
   }
 ]
