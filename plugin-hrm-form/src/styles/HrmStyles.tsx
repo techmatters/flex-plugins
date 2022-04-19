@@ -822,7 +822,7 @@ export const FormCheckBoxWrapper = styled(Row)<FormInputProps>`
 `;
 FormCheckBoxWrapper.displayName = 'FormCheckBoxWrapper';
 
-const CheckboxBase = styled('input')<FormInputProps>`
+export const CheckboxBase = styled('input')<FormInputProps>`
   &[type='checkbox'] {
     display: inline-block;
     position: relative;
