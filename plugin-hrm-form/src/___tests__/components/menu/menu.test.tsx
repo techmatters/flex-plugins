@@ -10,18 +10,6 @@ import { Menu, MenuItem } from '../../../components/menu';
 
 expect.extend(toHaveNoViolations);
 
-declare global {
-  namespace jest {
-    interface Matchers<R> {
-      toParseAsDate(date: Date): R;
-    }
-    // @ts-ignore
-    interface Expect<R> {
-      toParseAsDate(date: Date): R;
-    }
-  }
-}
-
 const themeConf = {};
 const anchorEl = React.createRef();
 
