@@ -10,6 +10,18 @@ import { Menu, MenuItem } from '../../../components/menu';
 
 expect.extend(toHaveNoViolations);
 
+declare global {
+  namespace jest {
+    interface Matchers<R> {
+      toHaveNoViolations(): R;
+    }
+    // @ts-ignore
+    interface Expect<R> {
+      toHaveNoViolations(): R;
+    }
+  }
+}
+
 const themeConf = {};
 const anchorEl = React.createRef();
 
