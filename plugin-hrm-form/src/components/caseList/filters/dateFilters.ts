@@ -1,5 +1,11 @@
 import { addDays, endOfDay, startOfDay, subDays } from 'date-fns';
 
+export type DateFilterType = {
+  labelKey: string;
+  filterPayloadParameter: string;
+  currentSetting?: DateFilterOption;
+};
+
 export type RelativeDateRange = {
   titleKey: string;
   from: (now: Date) => Date;
@@ -13,7 +19,7 @@ export type FixedDateRange = {
   to?: Date;
 };
 
-export const enum DateExistsCondition {
+export enum DateExistsCondition {
   MUST_EXIST = 'MUST_EXIST',
   MUST_NOT_EXIST = 'MUST_NOT_EXIST',
 }
@@ -27,7 +33,7 @@ export type Divider = { __divider: 'divider' };
 
 export type DateFilter = RelativeDateRange | FixedDateRange | ExistsDateFilter;
 
-export type DateFilterOption = [string, DateFilter]
+export type DateFilterOption = [string, DateFilter];
 
 export type DateFilterOptions = (DateFilterOption | Divider)[];
 
@@ -73,10 +79,12 @@ const customRange = (): FixedDateRange => ({
 
 const divider = (): Divider => ({ __divider: 'divider' });
 
-export const isDivider = (item: any): item is Divider => (<Divider>item).__divider === 'divider';
+export const isDivider = (item: any): item is Divider => (<Divider>item)?.__divider === 'divider';
 
 export const isFixedDateRange = (item: any): item is FixedDateRange =>
   (<FixedDateRange>item).__fixedDateRange === 'fixedDateRange';
+
+export const isExistsDateFilter = (item: any): item is ExistsDateFilter => Boolean((<ExistsDateFilter>item)?.exists);
 
 export const standardCaseListDateFilterOptions = (): DateFilterOptions => [
   ['TODAY', today()],

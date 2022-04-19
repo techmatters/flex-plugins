@@ -63,7 +63,9 @@ const DateRangeFilter: React.FC<Props> = ({
     return [values[name], copy];
   };
 
-  const dateFilterToForm = ([option, dateFilter]: DateFilterOption | undefined): ReactHookFormValues => {
+  const dateFilterToForm = (
+    [option, dateFilter]: DateFilterOption | undefined = [undefined, undefined],
+  ): ReactHookFormValues => {
     const values = {
       [name]: option,
     };
@@ -115,7 +117,7 @@ const DateRangeFilter: React.FC<Props> = ({
         tabIndex={0}
         style={{
           display: 'inline-block',
-          background: isOpened ? 'lightgray' : 'white',
+          background: isOpened || current ? 'lightgray' : 'white',
           cursor: 'pointer',
           margin: '0 15px',
         }}

@@ -6,9 +6,17 @@ import type { DefinitionVersion } from 'hrm-form-definitions';
 import { getConfig } from '../../../HrmFormPlugin';
 import { FiltersContainer } from '../../../styles/caseList';
 import MultiSelectFilter, { Item } from './MultiSelectFilter';
-import { ListCasesFilters, CounselorHash } from '../../../types/types';
+import { CounselorHash, ListCasesFilters } from '../../../types/types';
 import DateRangeFilter from './DateRangeFilter';
-import { standardCaseListDateFilterOptions } from './dateFilters';
+import {
+  DateExistsCondition,
+  DateFilter,
+  DateFilterOption,
+  DateFilterType,
+  isExistsDateFilter,
+  isFixedDateRange,
+  standardCaseListDateFilterOptions,
+} from './dateFilters';
 
 /**
  * Reads the definition version and returns and array of items (type Item[])
@@ -37,6 +45,12 @@ const emptyFilters: ListCasesFilters = {
   statuses: [],
   includeOrphans: false,
 };
+
+const getInitialDateFilters = () => [
+  { labelKey: 'CaseList-Filters-DateFilter-CreatedAt', filterPayloadParameter: 'createdAt' },
+  { labelKey: 'CaseList-Filters-DateFilter-UpdatedAt', filterPayloadParameter: 'updatedAt' },
+  { labelKey: 'CaseList-Filters-DateFilter-FollowUpDate', filterPayloadParameter: 'followUpDate' },
+];
 
 /**
  * Gets an array of items (type Item[]) and makes all of them checked = false
@@ -71,6 +85,7 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ha
   const [openedFilter, setOpenedFilter] = useState<string>();
   const [statusValues, setStatusValues] = useState<Item[]>(statusInitialValues);
   const [counselorValues, setCounselorValues] = useState<Item[]>([]);
+  const [dateFilters, setDateFilters] = useState<DateFilterType[]>(getInitialDateFilters());
   const [defaultFilters, setDefaultFilters] = useState<ListCasesFilters>(emptyFilters);
 
   // updates counselor options when counselorHash is updated
@@ -97,9 +112,38 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ha
     handleApplyFilter(filters);
     setCounselorValues(values);
   };
+
+  const handleApplyDateRangeFilter = (filterType: DateFilterType) => ([option, filter]: DateFilterOption) => {
+    let filterPayload: { from?: string; to?: string; exists: DateExistsCondition };
+    if (isFixedDateRange(filter)) {
+      filterPayload = {
+        from: filter.from.toISOString(),
+        to: filter.to.toISOString(),
+        exists: DateExistsCondition.MUST_EXIST,
+      };
+    } else if (isExistsDateFilter(filter)) {
+      filterPayload = {
+        exists: filter.exists,
+      };
+    } else {
+      // relative range from a preset
+      const now = new Date();
+      filterPayload = {
+        from: filter.from(now).toISOString(),
+        to: filter.to(now).toISOString(),
+        exists: DateExistsCondition.MUST_EXIST,
+      };
+    }
+    const filters = { ...defaultFilters, [filterType.filterPayloadParameter]: filterPayload };
+    handleApplyFilter(filters);
+    filterType.currentSetting = [option, filter];
+    setDateFilters(dateFilters); // refresh date filters after being modified in place locally
+  };
+
   const handleClearFilters = () => {
     clearMultiSelectFilter(statusValues, setStatusValues);
     clearMultiSelectFilter(counselorValues, setCounselorValues);
+    setDateFilters(getInitialDateFilters());
     setOpenedFilter(null);
     handleApplyFilter(emptyFilters);
   };
@@ -128,13 +172,19 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ha
         setOpenedFilter={setOpenedFilter}
         searchable
       />
-      <DateRangeFilter
-        name="followUpDateFilter"
-        options={standardCaseListDateFilterOptions()}
-        openedFilter={openedFilter}
-        applyFilter={handleApplyDateRangeFilter}
-        setOpenedFilter={setOpenedFilter}
-      />
+      {dateFilters.map(df => {
+        return (
+          <DateRangeFilter
+            key={df.filterPayloadParameter}
+            name={`${df.filterPayloadParameter}Filter`}
+            options={standardCaseListDateFilterOptions()}
+            openedFilter={openedFilter}
+            applyFilter={handleApplyDateRangeFilter(df)}
+            setOpenedFilter={setOpenedFilter}
+            current={df.currentSetting}
+          />
+        );
+      })}
       <button type="button" onClick={handleClearFilters}>
         <Template code="CaseList-Filters-ClearFilters" />
       </button>

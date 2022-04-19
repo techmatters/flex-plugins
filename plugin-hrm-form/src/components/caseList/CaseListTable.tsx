@@ -57,7 +57,7 @@ const CaseListTable: React.FC<Props> = ({
           <Template code="CaseList-AllCases" />
         </span>
       </FiltersContainer>
-      {featureFlags.enable_filter_cases && (
+      {true && (
         <Filters
           currentDefinitionVersion={currentDefinitionVersion}
           counselorsHash={counselorsHash}
