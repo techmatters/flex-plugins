@@ -27,38 +27,44 @@ import { Container } from '../styles/queuesStatus';
 import TwitterIcon from '../components/common/icons/TwitterIcon';
 import InstagramIcon from '../components/common/icons/InstagramIcon';
 // eslint-disable-next-line
-import { getConfig } from '../HrmFormPlugin';
 import { isInMyBehalfITask } from '../types/types';
 
-const voiceColor = { Accepted: Flex.DefaultTaskChannels.Call.colors.main() };
-const webColor = Flex.DefaultTaskChannels.Chat.colors.main;
-const facebookColor = Flex.DefaultTaskChannels.ChatMessenger.colors.main;
-const smsColor = Flex.DefaultTaskChannels.ChatSms.colors.main;
-const whatsappColor = Flex.DefaultTaskChannels.ChatWhatsApp.colors.main;
+const voiceColor = Flex.DefaultTaskChannels.Call.colors.main();
+const webColor = Flex.DefaultTaskChannels.Chat.colors.main.Accepted;
+const facebookColor = Flex.DefaultTaskChannels.ChatMessenger.colors.main.Accepted;
+const smsColor = Flex.DefaultTaskChannels.ChatSms.colors.main.Accepted;
+const whatsappColor = Flex.DefaultTaskChannels.ChatWhatsApp.colors.main.Accepted;
 const twitterColor = '#1DA1F2';
 const instagramColor = '#833AB4';
 
 /**
- * Returns the UI for the "Contacts Waiting" section
+ * @type {import('../states/DomainConstants').ChannelColors}
  */
-const queuesStatusUI = () => (
+const colors = {
+  voice: voiceColor,
+  web: webColor,
+  facebook: facebookColor,
+  sms: smsColor,
+  whatsapp: whatsappColor,
+  twitter: twitterColor,
+  instagram: instagramColor,
+};
+
+/**
+ * Returns the UI for the "Contacts Waiting" section
+ * @param {import('../HrmFormPlugin').SetupObject} setupObject
+ */
+const queuesStatusUI = setupObject => (
   <QueuesStatus
     key="queue-status-task-list"
-    colors={{
-      voiceColor: voiceColor.Accepted,
-      webColor: webColor.Accepted,
-      facebookColor: facebookColor.Accepted,
-      smsColor: smsColor.Accepted,
-      whatsappColor: whatsappColor.Accepted,
-      twitterColor,
-      instagramColor,
-    }}
+    colors={colors}
+    contactsWaitingChannels={setupObject.contactsWaitingChannels}
   />
 );
 
 /**
  * Returns the UI for the "Add..." section
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
+ * @param {import('../HrmFormPlugin').SetupObject} setupObject
  */
 const addButtonsUI = setupObject => {
   const manager = Flex.Manager.getInstance();
@@ -79,7 +85,7 @@ const addButtonsUI = setupObject => {
 
 /**
  * Add an "invisible" component that tracks the state of the queues, updating the pending tasks in each channel
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
+ * @param {import('../HrmFormPlugin').SetupObject} setupObject
  */
 export const setUpQueuesStatusWriter = setupObject => {
   const { workerSid } = setupObject;
@@ -110,11 +116,12 @@ const setUpRerenderOnReservation = () => {
 
 /**
  * Add a widget at the beginnig of the TaskListContainer, which shows the pending tasks in each channel (consumes from QueuesStatusWriter)
+ * @param {import('../HrmFormPlugin').SetupObject} setupObject
  */
-export const setUpQueuesStatus = () => {
+export const setUpQueuesStatus = setupObject => {
   setUpRerenderOnReservation();
 
-  Flex.TaskListContainer.Content.add(queuesStatusUI(), {
+  Flex.TaskListContainer.Content.add(queuesStatusUI(setupObject), {
     sortOrder: -1,
     align: 'start',
   });
@@ -167,7 +174,7 @@ const setUpOfflineContact = () => {
 
 /**
  * Add buttons to pull / create tasks
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
+ * @param {import('../HrmFormPlugin').SetupObject} setupObject
  */
 export const setUpAddButtons = setupObject => {
   const { featureFlags } = setupObject;
@@ -193,12 +200,12 @@ export const setUpAddButtons = setupObject => {
 
 /**
  * Adds the corresponding UI when there are no active tasks
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
+ * @param {import('../HrmFormPlugin').SetupObject} setupObject
  */
 export const setUpNoTasksUI = setupObject => {
   Flex.AgentDesktopView.Content.add(
     <Column key="no-task-agent-desktop-section" style={{ backgroundColor: HrmTheme.colors.base2, minWidth: 300 }}>
-      {queuesStatusUI()}
+      {queuesStatusUI(setupObject)}
       {<OfflineContactTask key="offline-contact-task" />}
       {addButtonsUI(setupObject)}
     </Column>,
@@ -255,7 +262,7 @@ export const setUpTransferComponents = () => {
 
 /**
  * Add components used only by developers
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
+ * @param {import('../HrmFormPlugin').SetupObject} setupObject
  */
 export const setUpDeveloperComponents = setupObject => {
   const manager = Flex.Manager.getInstance();
@@ -365,7 +372,7 @@ export const setUpStandaloneSearch = () => {
 
 /**
  * Removes the actions buttons from TaskCanvasHeaders if the task is wrapping or if dual write is on (temporary prevents bug)
- * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
+ * @param {import('../HrmFormPlugin').SetupObject} setupObject
  */
 export const removeTaskCanvasHeaderActions = setupObject => {
   const { featureFlags } = setupObject;
