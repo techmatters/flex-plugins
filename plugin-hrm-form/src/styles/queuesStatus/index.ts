@@ -2,7 +2,7 @@ import styled from 'react-emotion';
 
 import { FontOpenSans } from '../HrmStyles';
 
-export const Container = styled('div')`
+export const Container = styled('div')<{ backgroundColor?: string }>`
   display: flex;
   flex-grow: 0;
   flex-direction: column;
@@ -10,7 +10,7 @@ export const Container = styled('div')`
   border-style: solid;
 `;
 
-export const QueuesContainer = styled('div')`
+export const QueuesContainer = styled('div')<{ paddingRight?: boolean }>`
   width: 100%;
   ${props => props.paddingRight && 'padding-right: 30px;'}
 `;
@@ -22,14 +22,14 @@ export const QueueName = styled(FontOpenSans)`
   padding-left: 2px;
 `;
 
-export const ChannelColumn = styled('div')`
+export const ChannelColumn = styled('div')<{ marginLeft?: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
   ${props => props.marginLeft && 'margin-left: 3px;'}
 `;
 
-export const ChannelBox = styled('div')`
+export const ChannelBox = styled('div')<{ isZero?: boolean; backgroundColor: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
