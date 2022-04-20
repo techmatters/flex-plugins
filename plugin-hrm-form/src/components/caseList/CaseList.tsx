@@ -8,13 +8,14 @@ import Case from '../case';
 import {
   Case as CaseType,
   StandaloneITask,
-  GetCasesParams,
-  GetCasesSortBy,
-  GetCasesSortDirection,
+  ListCasesQueryParams,
+  ListCasesFilters,
+  ListCasesSortBy,
+  ListCasesSortDirection,
 } from '../../types/types';
 import CaseListTable from './CaseListTable';
 import { CaseListContainer, CenteredContainer, SomethingWentWrongText } from '../../styles/caseList';
-import { getCases } from '../../services/CaseService';
+import { listCases } from '../../services/CaseService';
 import { CaseLayout } from '../../styles/case';
 import * as CaseActions from '../../states/case/actions';
 import * as ConfigActions from '../../states/configuration/actions';
@@ -31,7 +32,8 @@ type State = {
   caseList: CaseType[];
   caseCount: number;
   page: number;
-  getCasesParams: GetCasesParams;
+  queryParams: ListCasesQueryParams;
+  filters: ListCasesFilters;
 };
 
 const initialState: State = {
@@ -41,12 +43,16 @@ const initialState: State = {
   caseList: [],
   caseCount: 0,
   page: 0,
-  getCasesParams: {
+  queryParams: {
     limit: CASES_PER_PAGE,
     offset: 0,
-    sortBy: GetCasesSortBy.ID,
-    sortDirection: GetCasesSortDirection.DESC,
-    helpline: '',
+    sortBy: ListCasesSortBy.ID,
+    sortDirection: ListCasesSortDirection.DESC,
+  },
+  filters: {
+    counsellors: [],
+    statuses: [],
+    includeOrphans: false,
   },
 };
 
@@ -61,7 +67,8 @@ type CaseListActions =
   | { type: 'showCaseDetails' }
   | { type: 'hideCaseDetails' }
   | { type: 'setPage'; payload: number }
-  | { type: 'setGetCasesParams'; payload: GetCasesParams };
+  | { type: 'setQueryParams'; payload: ListCasesQueryParams }
+  | { type: 'setFilters'; payload: ListCasesFilters };
 
 function reducer(state: State, action: CaseListActions) {
   switch (action.type) {
@@ -88,8 +95,11 @@ function reducer(state: State, action: CaseListActions) {
     case 'setPage': {
       return { ...state, page: action.payload };
     }
-    case 'setGetCasesParams': {
-      return { ...state, getCasesParams: action.payload };
+    case 'setQueryParams': {
+      return { ...state, queryParams: action.payload };
+    }
+    case 'setFilters': {
+      return { ...state, filters: action.payload };
     }
     default:
       return state;
@@ -106,18 +116,24 @@ type OwnProps = {};
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const CaseList: React.FC<Props> = ({ setConnectedCase, definitionVersions, updateDefinitionVersion }) => {
+const CaseList: React.FC<Props> = ({ setConnectedCase, updateDefinitionVersion }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { helpline } = getConfig();
 
-  const fetchCaseList = async (page: number, getCasesParams: GetCasesParams) => {
-    const { getCasesParams: previousGetCasesParam, page: previousPage } = state;
+  const fetchCaseList = async (page: number, queryParams: ListCasesQueryParams, filters: ListCasesFilters) => {
+    const { queryParams: previousGetCasesParam, filters: previousFilters, page: previousPage } = state;
 
     try {
       dispatch({ type: 'fetchStarted' });
-      dispatch({ type: 'setGetCasesParams', payload: getCasesParams });
+      dispatch({ type: 'setQueryParams', payload: queryParams });
+      dispatch({ type: 'setFilters', payload: filters });
       dispatch({ type: 'setPage', payload: page });
-      const { cases, count } = await getCases(getCasesParams);
+
+      const listCasesPayload = {
+        filters,
+        helpline,
+      };
+      const { cases, count } = await listCases(queryParams, listCasesPayload);
 
       const definitions = await getCasesMissingVersions(cases);
       definitions.forEach(d => updateDefinitionVersion(d.version, d.definition));
@@ -128,38 +144,38 @@ const CaseList: React.FC<Props> = ({ setConnectedCase, definitionVersions, updat
       });
     } catch (error) {
       console.error(error);
-      dispatch({ type: 'setGetCasesParams', payload: previousGetCasesParam });
+      dispatch({ type: 'setQueryParams', payload: previousGetCasesParam });
+      dispatch({ type: 'setFilters', payload: previousFilters });
       dispatch({ type: 'setPage', payload: previousPage });
       dispatch({ type: 'fetchError', payload: { error } });
     }
   };
 
   useEffect(() => {
-    const getCasesParams = {
-      ...state.getCasesParams,
-      helpline,
-    };
-    fetchCaseList(state.page, state.getCasesParams);
-    dispatch({ type: 'setGetCasesParams', payload: getCasesParams });
+    fetchCaseList(state.page, state.queryParams, state.filters);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleChangePage = async page => {
-    const getCasesParams = {
-      ...state.getCasesParams,
+    const queryParams = {
+      ...state.queryParams,
       offset: CASES_PER_PAGE * page,
     };
-    await fetchCaseList(page, getCasesParams);
+    await fetchCaseList(page, queryParams, state.filters);
   };
 
   const handleColumnClick = async (sortBy, sortDirection) => {
-    const getCasesParams = {
-      ...state.getCasesParams,
+    const queryParams = {
+      ...state.queryParams,
       offset: 0,
       sortBy,
       sortDirection,
     };
-    await fetchCaseList(0, getCasesParams);
+    await fetchCaseList(0, queryParams, state.filters);
+  };
+
+  const handleApplyFilter = async (filters: ListCasesFilters) => {
+    await fetchCaseList(0, state.queryParams, filters);
   };
 
   const handleClickViewCase = currentCase => () => {
@@ -208,9 +224,10 @@ const CaseList: React.FC<Props> = ({ setConnectedCase, definitionVersions, updat
           caseList={state.caseList}
           caseCount={state.caseCount}
           page={state.page}
-          getCasesParams={state.getCasesParams}
+          queryParams={state.queryParams}
           handleChangePage={handleChangePage}
           handleColumnClick={handleColumnClick}
+          handleApplyFilter={handleApplyFilter}
           handleClickViewCase={handleClickViewCase}
         />
       </CaseListContainer>
@@ -221,21 +238,16 @@ const CaseList: React.FC<Props> = ({ setConnectedCase, definitionVersions, updat
 CaseList.displayName = 'CaseList';
 
 CaseList.propTypes = {
-  definitionVersions: PropTypes.shape({}).isRequired,
   setConnectedCase: PropTypes.func.isRequired,
   updateDefinitionVersion: PropTypes.func.isRequired,
 };
-
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
-  definitionVersions: state[namespace][configurationBase].definitionVersions,
-});
 
 const mapDispatchToProps = {
   setConnectedCase: CaseActions.setConnectedCase,
   updateDefinitionVersion: ConfigActions.updateDefinitionVersion,
 };
 
-const connector = connect(mapStateToProps, mapDispatchToProps);
+const connector = connect(null, mapDispatchToProps);
 const connected = connector(CaseList);
 
 export default connected;
