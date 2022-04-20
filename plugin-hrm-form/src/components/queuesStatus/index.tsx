@@ -1,15 +1,32 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
-import { namespace, queuesStatusBase } from '../../states';
+import { namespace, queuesStatusBase, RootState } from '../../states';
 import QueueCard from './QueueCard';
 import { Container, QueuesContainer } from '../../styles/queuesStatus';
 import { Box, ErrorText, HeaderContainer } from '../../styles/HrmStyles';
 import { TLHPaddingLeft } from '../../styles/GlobalOverrides';
+import type { ChannelTypes, ChannelColors } from '../../states/DomainConstants';
 
-const QueuesStatus = ({ colors, queuesStatusState, paddingRight }) => {
+type OwnProps = {
+  colors: ChannelColors;
+  paddingRight: boolean;
+  contactsWaitingChannels?: ChannelTypes[];
+};
+
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
+  const queuesStatusState = state[namespace][queuesStatusBase];
+
+  return { queuesStatusState };
+};
+
+const connector = connect(mapStateToProps, null);
+
+type Props = OwnProps & ConnectedProps<typeof connector>;
+
+const QueuesStatus: React.FC<Props> = ({ colors, queuesStatusState, paddingRight, contactsWaitingChannels }) => {
   const { queuesStatus, error } = queuesStatusState;
   return (
     <Container role="complementary" tabIndex={0} className=".fullstory-unmask">
@@ -23,7 +40,13 @@ const QueuesStatus = ({ colors, queuesStatusState, paddingRight }) => {
           {error && <ErrorText>{error}</ErrorText>}
           {queuesStatus &&
             Object.entries(queuesStatus).map(([qName, qStatus]) => (
-              <QueueCard key={qName} qName={qName} colors={colors} {...qStatus} />
+              <QueueCard
+                key={qName}
+                qName={qName}
+                colors={colors}
+                contactsWaitingChannels={contactsWaitingChannels}
+                {...qStatus}
+              />
             ))}
         </QueuesContainer>
       </Box>
@@ -33,34 +56,8 @@ const QueuesStatus = ({ colors, queuesStatusState, paddingRight }) => {
 
 QueuesStatus.displayName = 'QueuesStatus';
 
-QueuesStatus.propTypes = {
-  colors: PropTypes.shape({
-    voiceColor: PropTypes.string,
-    webColor: PropTypes.string,
-    facebookColor: PropTypes.string,
-    smsColor: PropTypes.string,
-    whatsappColor: PropTypes.string,
-    twitterColor: PropTypes.string,
-    instagramColor: PropTypes.string,
-  }).isRequired,
-  queuesStatusState: PropTypes.shape({
-    queuesStatus: PropTypes.shape({
-      Admin: PropTypes.shape({}),
-    }),
-    error: PropTypes.string,
-    loading: PropTypes.bool,
-  }).isRequired,
-  paddingRight: PropTypes.bool,
-};
-
 QueuesStatus.defaultProps = {
   paddingRight: false,
 };
 
-const mapStateToProps = (state, ownProps) => {
-  const queuesStatusState = state[namespace][queuesStatusBase];
-
-  return { queuesStatusState };
-};
-
-export default connect(mapStateToProps, null)(QueuesStatus);
+export default connector(QueuesStatus);

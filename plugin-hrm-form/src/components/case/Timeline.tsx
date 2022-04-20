@@ -49,7 +49,7 @@ const Timeline: React.FC<Props> = props => {
     const { twilioWorkerId } = activity;
     const info: CaseItemEntry = {
       id: null,
-      form: { note: activity.text },
+      form: { ...activity.note },
       twilioWorkerId,
       createdAt: parseISO(activity.date).toISOString(),
       updatedAt: activity.updatedAt ? parseISO(activity.updatedAt).toISOString() : undefined,

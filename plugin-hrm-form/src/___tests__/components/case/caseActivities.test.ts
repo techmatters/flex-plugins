@@ -1,10 +1,14 @@
-import { getActivitiesFromCase } from '../../../components/case/caseActivities';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+
 import { Case, CaseInfo } from '../../../types/types';
+import { mockGetDefinitionsResponse } from '../../mockGetConfig';
+import { getDefinitionVersions } from '../../../HrmFormPlugin';
+import { getActivitiesFromCase } from '../../../components/case/caseActivities';
 
 const createFakeCase = (info: CaseInfo, connectedContacts: any[] = []): Case => ({
   id: 0,
   status: 'borked',
-  info,
+  info: { definitionVersion: DefinitionVersionId.v1, ...info },
   helpline: 'Fakeline',
   connectedContacts,
   twilioWorkerId: 'fake-worker',
@@ -12,10 +16,19 @@ const createFakeCase = (info: CaseInfo, connectedContacts: any[] = []): Case => 
   updatedAt: new Date().toISOString(),
 });
 
-describe('getActivitiesFromCase', () => {
-  test('single note added', async () => {
-    const createdAt = '2020-30-07 18:55:20';
+let formDefinition;
 
+beforeAll(async () => {
+  formDefinition = await loadDefinition(DefinitionVersionId.v1);
+});
+
+describe('getActivitiesFromCase', () => {
+  const createdAt = '2020-07-30 18:55:20';
+  const updatedAt = '2020-08-30 18:55:20';
+  beforeEach(async () => {
+    mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, formDefinition);
+  });
+  test('single note added', async () => {
     const fakeCase = createFakeCase({
       counsellorNotes: [
         {
@@ -31,16 +44,103 @@ describe('getActivitiesFromCase', () => {
       originalIndex: 0,
       date: createdAt,
       type: 'note',
+      note: {
+        note: 'content',
+      },
       text: 'content',
       twilioWorkerId: 'note-twilio-worker-id',
+      updatedBy: undefined,
+      updatedAt: undefined,
+    };
+
+    expect(activities).toStrictEqual([expectedActivity]);
+  });
+
+  test('custom note added without preview fields specified in layout - uses first field for text property', async () => {
+    mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, {
+      ...formDefinition,
+      caseForms: {
+        ...formDefinition.caseForms,
+        NoteForm: [{ name: 'customProperty1' }, { name: 'customProperty2' }],
+      },
+    });
+
+    const fakeCase = createFakeCase({
+      counsellorNotes: [
+        {
+          twilioWorkerId: 'note-twilio-worker-id',
+          createdAt,
+          customProperty1: 'customProperty1 content',
+          customProperty2: 'customProperty2 content',
+        },
+      ],
+    });
+
+    const activities = getActivitiesFromCase(fakeCase);
+    const expectedActivity = {
+      originalIndex: 0,
+      date: createdAt,
+      type: 'note',
+      note: {
+        customProperty1: 'customProperty1 content',
+        customProperty2: 'customProperty2 content',
+      },
+      text: 'customProperty1 content',
+      twilioWorkerId: 'note-twilio-worker-id',
+      updatedBy: undefined,
+      updatedAt: undefined,
+    };
+
+    expect(activities).toStrictEqual([expectedActivity]);
+  });
+
+  test('custom note added with preview fields in layout - uses preview fields specified in layout for text property', async () => {
+    mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, {
+      ...formDefinition,
+      caseForms: {
+        ...formDefinition.caseForms,
+        NoteForm: [{ name: 'customProperty1' }, { name: 'customProperty2' }, { name: 'customProperty3' }],
+      },
+      layoutVersion: {
+        ...formDefinition.layoutVersion,
+        case: {
+          ...formDefinition.layoutVersion.case,
+          notes: { previewFields: ['customProperty1', 'customProperty3'] },
+        },
+      },
+    });
+    const fakeCase = createFakeCase({
+      counsellorNotes: [
+        {
+          twilioWorkerId: 'note-twilio-worker-id',
+          createdAt,
+          customProperty1: 'customProperty1 content',
+          customProperty2: 'customProperty2 content',
+          customProperty3: 'customProperty3 content',
+        },
+      ],
+    });
+
+    const activities = getActivitiesFromCase(fakeCase);
+    const expectedActivity = {
+      originalIndex: 0,
+      date: createdAt,
+      type: 'note',
+      note: {
+        customProperty1: 'customProperty1 content',
+        customProperty2: 'customProperty2 content',
+        customProperty3: 'customProperty3 content',
+      },
+      text: expect.stringMatching(/.*customProperty1 content.*customProperty3 content.*/),
+      twilioWorkerId: 'note-twilio-worker-id',
+      updatedBy: undefined,
+      updatedAt: undefined,
     };
 
     expect(activities).toStrictEqual([expectedActivity]);
   });
 
   test('multiple notes added', async () => {
-    const createdAt = '2020-30-07 18:55:20';
-
     const fakeCase = createFakeCase({
       counsellorNotes: [
         {
@@ -52,6 +152,8 @@ describe('getActivitiesFromCase', () => {
           twilioWorkerId: 'note-twilio-worker-id',
           createdAt,
           note: 'moar content',
+          updatedBy: 'updater',
+          updatedAt,
         },
       ],
     });
@@ -63,14 +165,24 @@ describe('getActivitiesFromCase', () => {
         date: createdAt,
         type: 'note',
         text: 'content',
+        note: {
+          note: 'content',
+        },
         twilioWorkerId: 'note-twilio-worker-id',
+        updatedBy: undefined,
+        updatedAt: undefined,
       },
       {
         originalIndex: 1,
         date: createdAt,
         type: 'note',
+        note: {
+          note: 'moar content',
+        },
         text: 'moar content',
         twilioWorkerId: 'note-twilio-worker-id',
+        updatedBy: 'updater',
+        updatedAt,
       },
     ];
 
@@ -78,7 +190,6 @@ describe('getActivitiesFromCase', () => {
   });
 
   test('single referral added', async () => {
-    const createdAt = '2020-30-07 18:55:20';
     const referral = {
       date: '2020-12-15',
       referredTo: 'State Agency 1',
@@ -89,7 +200,7 @@ describe('getActivitiesFromCase', () => {
     const fakeCase = createFakeCase({
       referrals: [referral],
     });
-
+    const { createdAt: referralCreatedAt, twilioWorkerId, ...restOfReferral } = referral;
     const activities = getActivitiesFromCase(fakeCase);
     const expectedActivity = {
       originalIndex: 0,
@@ -97,8 +208,10 @@ describe('getActivitiesFromCase', () => {
       createdAt,
       type: 'referral',
       text: referral.referredTo,
-      referral,
-      twilioWorkerId: 'referral-adder',
+      referral: restOfReferral,
+      twilioWorkerId,
+      updatedBy: undefined,
+      updatedAt: undefined,
     };
 
     expect(activities).toStrictEqual([expectedActivity]);
@@ -106,7 +219,6 @@ describe('getActivitiesFromCase', () => {
 
   test('single facebook contact connected', async () => {
     const timeOfContact = '2020-29-07 18:55:20';
-    const createdAt = '2020-30-07 18:55:20';
 
     const fakeCase = createFakeCase({}, [
       {
@@ -140,7 +252,6 @@ describe('getActivitiesFromCase', () => {
 
   test('single facebook contact (contactless task)', async () => {
     const timeOfContact = '2021-01-07 10:00:00';
-    const createdAt = '2020-30-07 18:55:20';
 
     const fakeCase = createFakeCase({}, [
       {
@@ -217,14 +328,20 @@ describe('getActivitiesFromCase', () => {
     );
 
     const activities = getActivitiesFromCase(fakeCase);
+    const { createdAt: _createdAt, twilioWorkerId, ...restOfReferral } = referral;
 
     const expectedActivities = [
       {
         originalIndex: 0,
         date: noteCreatedAt,
         type: 'note',
+        note: {
+          note: 'content',
+        },
         text: 'content',
         twilioWorkerId: 'note-adder',
+        updatedBy: undefined,
+        updatedAt: undefined,
       },
       {
         originalIndex: 0,
@@ -232,8 +349,10 @@ describe('getActivitiesFromCase', () => {
         createdAt: referralCreatedAt,
         type: 'referral',
         text: referral.referredTo,
-        referral,
+        referral: restOfReferral,
         twilioWorkerId: 'referral-adder',
+        updatedBy: undefined,
+        updatedAt: undefined,
       },
       {
         originalIndex: 0,
