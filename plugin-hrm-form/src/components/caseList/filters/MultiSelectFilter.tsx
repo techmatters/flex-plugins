@@ -1,9 +1,24 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { Template } from '@twilio/flex-ui';
+import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
+import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 
-import { FormCheckbox, FormLabel } from '../../../styles/HrmStyles';
+import SearchInput from './SearchInput';
+import { Flex, Box, FormCheckbox, FormLabel } from '../../../styles/HrmStyles';
+import {
+  MultiSelectButton,
+  DialogArrow,
+  FiltersDialog,
+  FiltersDialogTitle,
+  MultiSelectUnorderedList,
+  MultiSelectListItem,
+  MultiSelectCheckboxLabel,
+  FiltersBottomButtons,
+  FiltersApplyButton,
+  FiltersClearButton,
+} from '../../../styles/caseList/filters';
 
 export type Item = {
   value: string;
@@ -22,6 +37,7 @@ type OwnProps = {
   withSearch?: boolean;
   openedFilter: string;
   searchable?: boolean;
+  searchDescription?: string;
   applyFilter: (values: Item[]) => void;
   setOpenedFilter: (name: string) => void;
 };
@@ -35,6 +51,7 @@ const MultiSelectFilter: React.FC<Props> = ({
   defaultValues,
   openedFilter,
   searchable,
+  searchDescription,
   applyFilter,
   setOpenedFilter,
   // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -52,6 +69,9 @@ const MultiSelectFilter: React.FC<Props> = ({
   const [selectedCount, setSelectedCount] = useState<number>(0);
   const [searchTerm, setSearchTerm] = useState<string>('');
 
+  const firstElement = useRef(null);
+  const lastElement = useRef(null);
+
   // Force React Hook Forms to rerender whenever defaultValues changes
   useEffect(() => {
     const updateSelectedCount = () => {
@@ -63,6 +83,26 @@ const MultiSelectFilter: React.FC<Props> = ({
     updateSelectedCount();
   }, [reset, defaultValues]);
 
+  const isOpened = name === openedFilter;
+
+  // Close dialog on ESC
+  useEffect(() => {
+    const closeDialog = event => {
+      if (event.key === 'Escape') {
+        // Always reset to defaultValues whenever you open/close the component
+        reset(defaultValues);
+        setSearchTerm('');
+        setOpenedFilter(null);
+      }
+    };
+
+    if (isOpened) {
+      window.addEventListener('keydown', closeDialog);
+    }
+
+    return () => window.removeEventListener('keydown', closeDialog);
+  }, [isOpened, defaultValues, reset, setSearchTerm, setOpenedFilter]);
+
   const onSubmit = (values: ReactHookFormValues) => {
     setOpenedFilter(null);
     setSearchTerm('');
@@ -70,8 +110,6 @@ const MultiSelectFilter: React.FC<Props> = ({
     const items = transformToItems(values);
     applyFilter(items);
   };
-
-  const isOpened = name === openedFilter;
 
   const handleClick = () => {
     // Always reset to defaultValues whenever you open/close the component
@@ -99,70 +137,115 @@ const MultiSelectFilter: React.FC<Props> = ({
     setSearchTerm(value);
   };
 
+  const clearSearchTerm = () => setSearchTerm('');
+
+  const handleTabForLastElement = event => {
+    if (!event.shiftKey && event.key === 'Tab') {
+      event.preventDefault();
+
+      if (firstElement.current) {
+        firstElement.current.focus();
+      }
+    }
+  };
+
+  const handleShiftTabForFirstElement = event => {
+    if (event.shiftKey && event.key === 'Tab') {
+      event.preventDefault();
+
+      if (lastElement.current) {
+        lastElement.current.focus();
+      }
+    }
+  };
+
   const drawCount = () => (selectedCount === 0 ? '' : ` (${selectedCount})`);
+
+  const highlightLabel = (label: string) => {
+    if (!searchable || searchTerm.length === 0) {
+      return <span>{label}</span>;
+    }
+
+    const startIndex = label.toLowerCase().indexOf(searchTerm.toLowerCase());
+    const endIndex = startIndex + searchTerm.length;
+
+    const preffix = label.substring(0, startIndex);
+    const highlighted = label.substring(startIndex, endIndex);
+    const suffix = label.substring(endIndex);
+
+    return (
+      <>
+        {preffix}
+        <strong>{highlighted}</strong>
+        {suffix}
+      </>
+    );
+  };
 
   return (
     <div style={{ position: 'relative' }}>
-      <div
-        role="button"
-        tabIndex={0}
-        style={{
-          display: 'inline-block',
-          background: isOpened ? 'lightgray' : 'white',
-          cursor: 'pointer',
-          margin: '0 15px',
-        }}
-        onClick={handleClick}
-      >
+      <MultiSelectButton isOpened={isOpened} type="button" onClick={handleClick}>
         {text}
         {drawCount()}
-      </div>
+        <Flex marginLeft="15px">
+          {isOpened && <ArrowDropUp />}
+          {!isOpened && <ArrowDropDown />}
+        </Flex>
+      </MultiSelectButton>
       {isOpened && (
-        <div
-          style={{
-            position: 'absolute',
-            background: 'white',
-            top: 30,
-            left: -20,
-            minWidth: 200,
-            padding: '15px 5px',
-            border: '1px solid lightgray',
-            zIndex: 100,
-          }}
-        >
+        <FiltersDialog role="dialog" aria-labelledby="dialog-title">
+          <DialogArrow />
+          <FiltersDialogTitle id="dialog-title">Filter by: {text}</FiltersDialogTitle>
           {searchable && (
-            <input value={searchTerm} onChange={handleChangeSearch} type="string" style={{ marginBottom: '15px' }} />
+            <SearchInput
+              label={searchDescription}
+              innerRef={firstElement}
+              searchTerm={searchTerm}
+              onChangeSearch={handleChangeSearch}
+              clearSearchTerm={clearSearchTerm}
+              onShiftTab={handleShiftTabForFirstElement}
+            />
           )}
           <form onSubmit={handleSubmit(onSubmit)}>
-            <ul>
+            <MultiSelectUnorderedList scrollable={searchable}>
               {defaultValues.map((item, i) => {
                 const hidden = !item.label.toLowerCase().includes(searchTerm.toLowerCase());
+                const isFirstFocusableElement = i === 0 && !searchable;
 
                 return (
-                  <li key={i} style={{ visibility: hidden ? 'hidden' : 'visible', height: hidden ? '0' : 'auto' }}>
+                  <MultiSelectListItem key={i} hidden={hidden}>
                     <FormLabel htmlFor={item.value} style={{ flexDirection: 'row' }}>
                       <FormCheckbox
                         id={item.value}
                         name={item.value}
                         type="checkbox"
                         defaultChecked={item.checked}
-                        innerRef={register}
+                        innerRef={innerRef => {
+                          if (isFirstFocusableElement) {
+                            firstElement.current = innerRef;
+                          }
+                          register(innerRef);
+                        }}
+                        onKeyDown={isFirstFocusableElement ? handleShiftTabForFirstElement : null}
                       />
-                      {item.label}
+                      <MultiSelectCheckboxLabel>{highlightLabel(item.label)}</MultiSelectCheckboxLabel>
                     </FormLabel>
-                  </li>
+                  </MultiSelectListItem>
                 );
               })}
-            </ul>
-            <br />
-            <button type="button" onClick={handleClear}>
-              <Template code="CaseList-Filters-Clear" />
-            </button>
-            <button type="submit">
-              <Template code="CaseList-Filters-Apply" />
-            </button>
+            </MultiSelectUnorderedList>
+            <FiltersBottomButtons>
+              <Box marginRight="10px">
+                <FiltersClearButton type="button" onClick={handleClear}>
+                  <Template code="CaseList-Filters-Clear" />
+                </FiltersClearButton>
+              </Box>
+              <FiltersApplyButton type="submit" onKeyDown={handleTabForLastElement} innerRef={lastElement}>
+                <Template code="CaseList-Filters-Apply" />
+              </FiltersApplyButton>
+            </FiltersBottomButtons>
           </form>
-        </div>
+        </FiltersDialog>
       )}
     </div>
   );
