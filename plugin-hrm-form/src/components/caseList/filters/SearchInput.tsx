@@ -35,6 +35,7 @@ const SearchInput: React.FC<Props> = ({ label, searchTerm, innerRef, onChangeSea
           onChange={onChangeSearch}
           type="string"
           onKeyDown={onShiftTab}
+          autoComplete="off"
         />
         {showClearButton && (
           <ClearIcon

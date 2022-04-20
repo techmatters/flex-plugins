@@ -262,8 +262,8 @@
   "QueuesStatsHeaderSLA": "SLA",
 
   "CaseList-Cases": "Casos",
-  "CaseList-Filters-CaseCount-Singular": "caso",
-  "CaseList-Filters-CaseCount-Plural": "casos",
+  "CaseList-Filters-CaseCount-Singular": "{{count}} caso",
+  "CaseList-Filters-CaseCount-Plural": "{{count}} casos",
   "CaseList-THCase": "Caso #",
   "CaseList-THChildName": "Nome da criança",
   "CaseList-THSummary": "Resumo",

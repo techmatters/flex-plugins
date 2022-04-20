@@ -107,12 +107,8 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ca
 
   const { strings, featureFlags } = getConfig();
 
-  const getCasesCountString = () => {
-    const casesString =
-      caseCount === 1 ? strings['CaseList-Filters-CaseCount-Singular'] : strings['CaseList-Filters-CaseCount-Plural'];
-
-    return `${caseCount} ${casesString}`;
-  };
+  const getCasesCountString = () =>
+    caseCount === 1 ? 'CaseList-Filters-CaseCount-Singular' : 'CaseList-Filters-CaseCount-Plural';
 
   const hasFiltersApplied =
     filterCheckedItems(statusValues).length > 0 || filterCheckedItems(counselorValues).length > 0;
@@ -128,7 +124,9 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ca
             <Template code="CaseList-Filters-ResetAllFilters" />
           </FiltersResetAll>
         )}
-        <CasesCount>{getCasesCountString()}</CasesCount>
+        <CasesCount>
+          <Template code={getCasesCountString()} count={caseCount} />
+        </CasesCount>
       </FiltersContainer>
       {featureFlags.enable_filter_cases && (
         <FiltersContainer>

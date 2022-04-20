@@ -165,6 +165,10 @@ export const MultiSelectCheckboxLabel = styled('span')`
   font-size: 13px;
   color: #192b33;
   margin-left: 2px;
+
+  strong {
+    font-weight: 700;
+  }
 `;
 MultiSelectCheckboxLabel.displayName = 'MultiSelectCheckboxLabel';
 

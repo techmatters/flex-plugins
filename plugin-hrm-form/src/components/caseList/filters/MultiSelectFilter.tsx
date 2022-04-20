@@ -161,6 +161,27 @@ const MultiSelectFilter: React.FC<Props> = ({
 
   const drawCount = () => (selectedCount === 0 ? '' : ` (${selectedCount})`);
 
+  const highlightLabel = (label: string) => {
+    if (!searchable || searchTerm.length === 0) {
+      return <span>{label}</span>;
+    }
+
+    const startIndex = label.toLowerCase().indexOf(searchTerm.toLowerCase());
+    const endIndex = startIndex + searchTerm.length;
+
+    const preffix = label.substring(0, startIndex);
+    const highlighted = label.substring(startIndex, endIndex);
+    const suffix = label.substring(endIndex);
+
+    return (
+      <>
+        {preffix}
+        <strong>{highlighted}</strong>
+        {suffix}
+      </>
+    );
+  };
+
   return (
     <div style={{ position: 'relative' }}>
       <MultiSelectButton isOpened={isOpened} type="button" onClick={handleClick}>
@@ -207,7 +228,7 @@ const MultiSelectFilter: React.FC<Props> = ({
                         }}
                         onKeyDown={isFirstFocusableElement ? handleShiftTabForFirstElement : null}
                       />
-                      <MultiSelectCheckboxLabel>{item.label}</MultiSelectCheckboxLabel>
+                      <MultiSelectCheckboxLabel>{highlightLabel(item.label)}</MultiSelectCheckboxLabel>
                     </FormLabel>
                   </MultiSelectListItem>
                 );
