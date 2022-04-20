@@ -2,11 +2,12 @@
 import React, { useEffect, useState } from 'react';
 import { Template } from '@twilio/flex-ui';
 import type { DefinitionVersion } from 'hrm-form-definitions';
+import FilterList from '@material-ui/icons/FilterList';
 
 import { getConfig } from '../../../HrmFormPlugin';
-import { FiltersContainer } from '../../../styles/caseList';
+import { FiltersContainer, FiltersResetAll, CasesTitle, CasesCount, FilterBy } from '../../../styles/caseList/filters';
 import MultiSelectFilter, { Item } from './MultiSelectFilter';
-import { CounselorHash, ListCasesFilters } from '../../../types/types';
+import { ListCasesFilters, CounselorHash } from '../../../types/types';
 import DateRangeFilter from './DateRangeFilter';
 import {
   DateExistsCondition,
@@ -17,7 +18,6 @@ import {
   isFixedDateRange,
   standardCaseListDateFilterOptions,
 } from './dateFilters';
-
 /**
  * Reads the definition version and returns and array of items (type Item[])
  * to be used as the options for the status filter
@@ -73,13 +73,14 @@ const filterCheckedItems = (items: Item[]): string[] => items.filter(item => ite
 type OwnProps = {
   currentDefinitionVersion: DefinitionVersion;
   counselorsHash: CounselorHash;
+  caseCount: number;
   handleApplyFilter: (filters: ListCasesFilters) => void;
 };
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps;
 
-const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, handleApplyFilter }) => {
+const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, caseCount, handleApplyFilter }) => {
   const statusInitialValues = getStatusInitialValue(currentDefinitionVersion);
 
   const [openedFilter, setOpenedFilter] = useState<string>();
@@ -148,47 +149,69 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ha
     handleApplyFilter(emptyFilters);
   };
 
-  const { strings } = getConfig();
+  const { strings, featureFlags } = getConfig();
+
+  const getCasesCountString = () =>
+    caseCount === 1 ? 'CaseList-Filters-CaseCount-Singular' : 'CaseList-Filters-CaseCount-Plural';
+
+  const hasFiltersApplied =
+    filterCheckedItems(statusValues).length > 0 || filterCheckedItems(counselorValues).length > 0;
 
   return (
-    <FiltersContainer>
-      <span style={{ fontWeight: 600 }}>
-        <Template code="CaseList-Filters" />
-      </span>
-      <MultiSelectFilter
-        name="status"
-        text={strings['CaseList-Filters-Status']}
-        defaultValues={statusValues}
-        openedFilter={openedFilter}
-        applyFilter={handleApplyStatusFilter}
-        setOpenedFilter={setOpenedFilter}
-      />
-      <MultiSelectFilter
-        name="counselor"
-        text={strings['CaseList-Filters-Counselor']}
-        defaultValues={counselorValues}
-        openedFilter={openedFilter}
-        applyFilter={handleApplyCounselorFilter}
-        setOpenedFilter={setOpenedFilter}
-        searchable
-      />
-      {dateFilters.map(df => {
-        return (
-          <DateRangeFilter
-            key={df.filterPayloadParameter}
-            name={`${df.filterPayloadParameter}Filter`}
-            options={standardCaseListDateFilterOptions()}
+    <>
+      <FiltersContainer id="CaseList-Cases-label">
+        <CasesTitle>
+          <Template code="CaseList-Cases" />
+        </CasesTitle>
+        {hasFiltersApplied && (
+          <FiltersResetAll type="button" onClick={handleClearFilters}>
+            <Template code="CaseList-Filters-ResetAllFilters" />
+          </FiltersResetAll>
+        )}
+        <CasesCount>
+          <Template code={getCasesCountString()} count={caseCount} />
+        </CasesCount>
+      </FiltersContainer>
+      {featureFlags.enable_filter_cases && (
+        <FiltersContainer>
+          <FilterList />
+          <FilterBy>
+            <Template code="CaseList-FilterBy" />
+          </FilterBy>
+          <MultiSelectFilter
+            name="status"
+            text={strings['CaseList-Filters-Status']}
+            defaultValues={statusValues}
             openedFilter={openedFilter}
-            applyFilter={handleApplyDateRangeFilter(df)}
+            applyFilter={handleApplyStatusFilter}
             setOpenedFilter={setOpenedFilter}
-            current={df.currentSetting}
           />
-        );
-      })}
-      <button type="button" onClick={handleClearFilters}>
-        <Template code="CaseList-Filters-ClearFilters" />
-      </button>
-    </FiltersContainer>
+          <MultiSelectFilter
+            name="counselor"
+            searchDescription={strings['CaseList-Filters-SearchForCounselor']}
+            text={strings['CaseList-Filters-Counselor']}
+            defaultValues={counselorValues}
+            openedFilter={openedFilter}
+            applyFilter={handleApplyCounselorFilter}
+            setOpenedFilter={setOpenedFilter}
+            searchable
+          />
+          {dateFilters.map(df => {
+            return (
+              <DateRangeFilter
+                key={df.filterPayloadParameter}
+                name={`${df.filterPayloadParameter}Filter`}
+                options={standardCaseListDateFilterOptions()}
+                openedFilter={openedFilter}
+                applyFilter={handleApplyDateRangeFilter(df)}
+                setOpenedFilter={setOpenedFilter}
+                current={df.currentSetting}
+              />
+            );
+          })}
+        </FiltersContainer>
+      )}
+    </>
   );
 };
 
