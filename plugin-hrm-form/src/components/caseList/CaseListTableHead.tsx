@@ -23,8 +23,8 @@ const CaseListTableHead = ({ sortBy, sortDirection, handleColumnClick }) => {
         />
         <CaseListTableHeadCell
           {...tableCellProps}
-          column={GetCasesSortBy.CHILD_NAME}
-          defaultSortDirection={GetCasesSortDirection.ASC}
+          column={ListCasesSortBy.CHILD_NAME}
+          defaultSortDirection={ListCasesSortDirection.ASC}
           localizedText="CaseList-THChildName"
         />
         <CaseListTableHeadCell {...tableCellProps} localizedText="CaseList-THSummary" width="30%" />
