@@ -1,6 +1,7 @@
 import { Activity, ConnectedCaseActivity } from '../../states/case/types';
 import { Case, NoteEntry, ReferralEntry } from '../../types/types';
 import { channelTypes } from '../../states/DomainConstants';
+import { getDefinitionVersions } from '../../HrmFormPlugin';
 
 const ActivityTypes = {
   createCase: 'create',
@@ -20,16 +21,24 @@ const ActivityTypes = {
 export const isConnectedCaseActivity = (activity): activity is ConnectedCaseActivity =>
   Boolean(ActivityTypes.connectContact[activity.type]);
 
-const noteActivities = (counsellorNotes: NoteEntry[]): Activity[] =>
+const noteActivities = (counsellorNotes: NoteEntry[], previewFields: string[]): Activity[] =>
   (counsellorNotes || [])
     .map((n, originalIndex) => {
       try {
-        const { createdAt: date, note: text, ...toCopy } = n;
+        const { createdAt: date, updatedAt, updatedBy, twilioWorkerId, ...toCopy } = n;
+        const text =
+          previewFields
+            .map(pf => toCopy[pf])
+            .filter(pv => pv)
+            .join(', ') || '--';
         return {
-          ...toCopy,
-          date,
-          type: ActivityTypes.addNote,
+          updatedAt,
+          updatedBy,
           text,
+          date,
+          twilioWorkerId,
+          type: ActivityTypes.addNote,
+          note: toCopy,
           originalIndex,
         };
       } catch (err) {
@@ -42,13 +51,18 @@ const noteActivities = (counsellorNotes: NoteEntry[]): Activity[] =>
 const referralActivities = (referrals: ReferralEntry[]): Activity[] =>
   (referrals || [])
     .map((referral, originalIndex) => {
-      const { comments, referredTo: text, ...toCopy } = referral;
+      const { createdAt, date, updatedAt, updatedBy, twilioWorkerId, ...toCopy } = referral;
+      const { referredTo: text } = referral;
       try {
         return {
-          ...toCopy,
+          date,
+          createdAt,
+          twilioWorkerId,
+          updatedAt,
+          updatedBy,
           type: ActivityTypes.addReferral,
           text,
-          referral,
+          referral: { date, ...toCopy },
           originalIndex,
         };
       } catch (err) {
@@ -82,8 +96,14 @@ const connectedContactActivities = (caseContacts): Activity[] =>
     .filter(cca => cca);
 
 export const getActivitiesFromCase = (sourceCase: Case): Activity[] => {
+  const { definitionVersions } = getDefinitionVersions();
+  const formDefs = definitionVersions[sourceCase.info.definitionVersion];
+  let { previewFields } = formDefs.layoutVersion.case.notes ?? {};
+  if (!previewFields || !previewFields.length) {
+    previewFields = formDefs.caseForms.NoteForm.length ? [formDefs.caseForms.NoteForm[0].name] : [];
+  }
   return [
-    ...noteActivities(sourceCase.info.counsellorNotes ?? []),
+    ...noteActivities(sourceCase.info.counsellorNotes ?? [], previewFields),
     ...referralActivities(sourceCase.info.referrals ?? []),
     ...connectedContactActivities(sourceCase.connectedContacts ?? []),
   ];

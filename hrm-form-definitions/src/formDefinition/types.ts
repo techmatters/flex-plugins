@@ -162,6 +162,7 @@ export type LayoutVersion = {
     incidents: LayoutDefinition;
     referrals: LayoutDefinition;
     documents: LayoutDefinition;
+    notes?: LayoutDefinition;
   };
 };
 

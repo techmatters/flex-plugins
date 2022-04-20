@@ -108,6 +108,7 @@ export type NoteActivity = {
   date: string;
   type: string;
   text: string;
+  note: t.Note;
   twilioWorkerId: string;
   updatedAt?: string;
   updatedBy?: string;
@@ -119,11 +120,7 @@ export type ReferralActivity = {
   createdAt: string;
   type: string;
   text: string;
-  referral: {
-    date: string;
-    comments: string;
-    referredTo: string;
-  };
+  referral: t.Referral;
   twilioWorkerId: string;
   updatedAt?: string;
   updatedBy?: string;
