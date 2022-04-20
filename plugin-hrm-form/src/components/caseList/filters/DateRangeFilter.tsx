@@ -48,7 +48,8 @@ const DateRangeFilter: React.FC<Props> = ({
 
   const optionsWithoutDividers = options.filter(opt => !isDivider(opt)) as DateFilterOption[];
   const { strings } = getConfig();
-  let currentWorkingCopy: DateFilterOption = current;
+
+  const [currentWorkingCopy, setCurrentWorkingCopy] = useState<DateFilterOption>(current);
 
   const formToDateFilter = (values: ReactHookFormValues): DateFilterOption | undefined => {
     const [, selected] = optionsWithoutDividers.find(([opt]) => opt === values[name]);
@@ -57,8 +58,8 @@ const DateRangeFilter: React.FC<Props> = ({
     }
     const copy = { ...selected };
     if (isFixedDateRange(copy)) {
-      copy.from = values.CaseList_DateFilter_From ? new Date(values.CaseList_DateFilter_From) : undefined;
-      copy.to = values.CaseList_DateFilter_From ? new Date(values.CaseList_DateFilter_From) : undefined;
+      copy.from = values.customDateRangeFrom ? new Date(values.customDateRangeFrom) : undefined;
+      copy.to = values.customDateRangeTo ? new Date(values.customDateRangeTo) : undefined;
     }
     return [values[name], copy];
   };
@@ -82,7 +83,7 @@ const DateRangeFilter: React.FC<Props> = ({
 
   // Force React Hook Forms to rerender whenever current value changes
   useEffect(() => {
-    currentWorkingCopy = current;
+    setCurrentWorkingCopy(current);
     reset(dateFilterToForm(current));
   }, [reset, current]);
 
@@ -95,7 +96,7 @@ const DateRangeFilter: React.FC<Props> = ({
 
   const handleClick = () => {
     // Always reset to defaultValues whenever you open/close the component
-    currentWorkingCopy = current;
+    setCurrentWorkingCopy(current);
     reset(dateFilterToForm(current));
 
     if (isOpened) {
@@ -106,7 +107,7 @@ const DateRangeFilter: React.FC<Props> = ({
   };
 
   const handleClear = () => {
-    currentWorkingCopy = undefined;
+    setCurrentWorkingCopy(undefined);
     reset();
   };
 
@@ -145,7 +146,7 @@ const DateRangeFilter: React.FC<Props> = ({
                     <li key={i}>
                       <FormLabel htmlFor={option} style={{ flexDirection: 'row' }}>
                         <FormRadioInput
-                          onChange={() => (currentWorkingCopy = formToDateFilter(getValues()))}
+                          onChange={() => setCurrentWorkingCopy(formToDateFilter(getValues()))}
                           id={option}
                           name={name}
                           type="radio"

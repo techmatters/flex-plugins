@@ -31,6 +31,8 @@
     "react-dom": "~16.13.1",
     "react-hook-form": "^6.11.0",
     "react-keyboard-event-handler": "^1.5.4",
+    "@material-ui/core": "^3.9.4",
+    "@material-ui/icons": "^3.0.2",
     "rollbar": "^2.19.3",
     "uuid": "^8.3.2",
     "@babel/runtime": "^7.16.3",
@@ -41,7 +43,7 @@
     "@testing-library/dom": "^7.21.0",
     "@testing-library/jest-dom": "^5.11.1",
     "@testing-library/react": "^10.4.7",
-    "@twilio/flex-ui": "1.28.1",
+    "@twilio/flex-ui": "1.30.2",
     "@types/jest": "^26.0.20",
     "@types/react-redux": "^7.1.16",
     "@typescript-eslint/parser": "^3.8.0",
@@ -59,10 +61,10 @@
     "jest": "^27.4.3",
     "jest-axe": "^3.4.0",
     "jest-each": "^27.5.1",
-    "jest-environment-jsdom-sixteen": "^1.0.3",
+    "jest-environment-jsdom-latest": "^26.6.2",
     "redux-mock-store": "^1.5.4",
     "rxjs-compat": "6.6.3",
     "ts-jest": "^26.5.0",
-    "typescript": "^4.6.3"
+    "typescript": "^3.9.7"
   }
 }

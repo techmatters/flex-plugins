@@ -82,7 +82,7 @@ const divider = (): Divider => ({ __divider: 'divider' });
 export const isDivider = (item: any): item is Divider => (<Divider>item)?.__divider === 'divider';
 
 export const isFixedDateRange = (item: any): item is FixedDateRange =>
-  (<FixedDateRange>item).__fixedDateRange === 'fixedDateRange';
+  (<FixedDateRange>item)?.__fixedDateRange === 'fixedDateRange';
 
 export const isExistsDateFilter = (item: any): item is ExistsDateFilter => Boolean((<ExistsDateFilter>item)?.exists);
 
