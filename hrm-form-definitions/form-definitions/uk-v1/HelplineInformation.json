@@ -1,0 +1,25 @@
+{
+  "label": "Helpline",
+  "helplines": [
+    {
+      "label": "Revenge Porn Helpline",
+      "value": "Revenge Porn Helpline",
+      "default": true,
+      "manager": {
+        "name": "Zara Roddis",
+        "phone": "(+41) 0000000",
+        "email": "zara.roddis@swgfl.org.uk"
+      }
+    },
+    {
+      "label": "Report Harmful Content",
+      "value": "Report Harmful Content",
+      "default": false,
+      "manager": {
+        "name": "Kate Worthington",
+        "phone": "(+41) 0000000",
+        "email": "Kate.Worthington@swgfl.org.uk"
+      }
+    }
+  ]
+}
