@@ -5,10 +5,10 @@ import { ExpandMore } from '@material-ui/icons';
 
 import { getConfig } from '../../HrmFormPlugin';
 import { CLTableHeaderFont, CLTableCell } from '../../styles/caseList';
-import { GetCasesParams, GetCasesSortDirection } from '../../types/types';
+import { ListCasesQueryParams, ListCasesSortDirection } from '../../types/types';
 
-type SortDirection = GetCasesParams['sortDirection'];
-type SortBy = GetCasesParams['sortBy'];
+type SortDirection = ListCasesQueryParams['sortDirection'];
+type SortBy = ListCasesQueryParams['sortBy'];
 
 type Props = {
   column?: SortBy;
@@ -21,14 +21,14 @@ type Props = {
 };
 
 const changeSortDirection = (sortDirection: SortDirection): SortDirection =>
-  sortDirection === GetCasesSortDirection.ASC ? GetCasesSortDirection.DESC : GetCasesSortDirection.ASC;
+  sortDirection === ListCasesSortDirection.ASC ? ListCasesSortDirection.DESC : ListCasesSortDirection.ASC;
 
 /**
  * If column prop is filled, the cell will enable sorting by this column
  */
 const CaseListTableHeadCell: React.FC<Props> = ({
   column,
-  defaultSortDirection = GetCasesSortDirection.DESC,
+  defaultSortDirection = ListCasesSortDirection.DESC,
   localizedText,
   width,
   sortBy,
@@ -47,7 +47,7 @@ const CaseListTableHeadCell: React.FC<Props> = ({
           fontSize: 20,
           marginLeft: '10px',
           verticalAlign: 'middle',
-          transform: sortDirection === GetCasesSortDirection.ASC ? 'rotate(180deg) scaleX(-1)' : 'none',
+          transform: sortDirection === ListCasesSortDirection.ASC ? 'rotate(180deg) scaleX(-1)' : 'none',
         }}
       />
     );

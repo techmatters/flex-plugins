@@ -3,7 +3,7 @@ import React from 'react';
 import { TableHead, TableRow } from '@material-ui/core';
 
 import CaseListTableHeadCell from './CaseListTableHeadCell';
-import { GetCasesSortBy, GetCasesSortDirection } from '../../types/types';
+import { ListCasesSortBy, ListCasesSortDirection } from '../../types/types';
 
 const CaseListTableHead = ({ sortBy, sortDirection, handleColumnClick }) => {
   const tableCellProps = {
@@ -17,34 +17,34 @@ const CaseListTableHead = ({ sortBy, sortDirection, handleColumnClick }) => {
       <TableRow>
         <CaseListTableHeadCell
           {...tableCellProps}
-          column={GetCasesSortBy.ID}
-          defaultSortDirection={GetCasesSortDirection.DESC}
+          column={ListCasesSortBy.ID}
+          defaultSortDirection={ListCasesSortDirection.DESC}
           localizedText="CaseList-THCase"
         />
         <CaseListTableHeadCell
           {...tableCellProps}
-          column={GetCasesSortBy.CHILD_NAME}
-          defaultSortDirection={GetCasesSortDirection.ASC}
+          column={ListCasesSortBy.CHILD_NAME}
+          defaultSortDirection={ListCasesSortDirection.ASC}
           localizedText="CaseList-THChildName"
         />
         <CaseListTableHeadCell {...tableCellProps} localizedText="CaseList-THSummary" width="30%" />
         <CaseListTableHeadCell {...tableCellProps} localizedText="CaseList-THCounselor" />
         <CaseListTableHeadCell
           {...tableCellProps}
-          column={GetCasesSortBy.CREATED_AT}
-          defaultSortDirection={GetCasesSortDirection.DESC}
+          column={ListCasesSortBy.CREATED_AT}
+          defaultSortDirection={ListCasesSortDirection.DESC}
           localizedText="CaseList-THOpened"
         />
         <CaseListTableHeadCell
           {...tableCellProps}
-          column={GetCasesSortBy.UPDATED_AT}
-          defaultSortDirection={GetCasesSortDirection.DESC}
+          column={ListCasesSortBy.UPDATED_AT}
+          defaultSortDirection={ListCasesSortDirection.DESC}
           localizedText="CaseList-THUpdated"
         />
         <CaseListTableHeadCell
           {...tableCellProps}
-          column={GetCasesSortBy.FOLLOW_UP_DATE}
-          defaultSortDirection={GetCasesSortDirection.DESC}
+          column={ListCasesSortBy.FOLLOW_UP_DATE}
+          defaultSortDirection={ListCasesSortDirection.DESC}
           localizedText="CaseList-THFollowUp"
         />
         <CaseListTableHeadCell {...tableCellProps} localizedText="CaseList-THCategory" width="30%" />

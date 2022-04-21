@@ -12,7 +12,7 @@ import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import HrmTheme from '../../../styles/HrmTheme';
 import CaseList from '../../../components/caseList';
 import { namespace, configurationBase } from '../../../states';
-import { getCases } from '../../../services/CaseService';
+import { listCases } from '../../../services/CaseService';
 import { getDefinitionVersions } from '../../../HrmFormPlugin';
 
 // console.log = () => null;
@@ -43,7 +43,7 @@ const mockedCaseList = [
   },
 ];
 
-jest.mock('../../../services/CaseService', () => ({ getCases: jest.fn() }));
+jest.mock('../../../services/CaseService', () => ({ listCases: jest.fn() }));
 
 expect.extend(toHaveNoViolations);
 const mockStore = configureMockStore([]);
@@ -67,7 +67,7 @@ beforeAll(async () => {
 
 test('Should render', async () => {
   // @ts-ignore
-  getCases.mockReturnValueOnce(Promise.resolve({ cases: mockedCaseList, count: mockedCaseList.length }));
+  listCases.mockReturnValueOnce(Promise.resolve({ cases: mockedCaseList, count: mockedCaseList.length }));
 
   const initialState = createState({
     [configurationBase]: {
@@ -107,7 +107,7 @@ test('Should render', async () => {
 
 test('Should not render (error)', async () => {
   // @ts-ignore
-  getCases.mockImplementationOnce(async () => {
+  listCases.mockImplementationOnce(async () => {
     throw new Error('Some error');
   });
 
@@ -141,7 +141,7 @@ test('Should not render (error)', async () => {
 
 test('a11y', async () => {
   // @ts-ignore
-  getCases.mockReturnValueOnce(Promise.resolve({ cases: mockedCaseList, count: mockedCaseList.length }));
+  listCases.mockReturnValueOnce(Promise.resolve({ cases: mockedCaseList, count: mockedCaseList.length }));
 
   const initialState = createState({
     [configurationBase]: {

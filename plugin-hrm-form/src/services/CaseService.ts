@@ -2,7 +2,7 @@
 import fetchHrmApi from './fetchHrmApi';
 import { getQueryParams } from './PaginationParams';
 import { getConfig } from '../HrmFormPlugin';
-import { Case, SearchCaseResult, isOfflineContactTask, CustomITask, GetCasesParams } from '../types/types';
+import { Case, SearchCaseResult, isOfflineContactTask, CustomITask } from '../types/types';
 import type { TaskEntry as ContactForm } from '../states/contacts/reducer';
 
 export async function createCase(task: CustomITask, contactForm: ContactForm) {
@@ -29,19 +29,6 @@ export async function createCase(task: CustomITask, contactForm: ContactForm) {
   };
 
   const responseJson = await fetchHrmApi('/cases', options);
-
-  return responseJson;
-}
-
-export async function getCases({
-  limit,
-  offset,
-  sortBy,
-  sortDirection,
-  helpline,
-}: GetCasesParams): Promise<SearchCaseResult> {
-  const queryParams = getQueryParams({ limit, offset, sortBy, sortDirection, helpline });
-  const responseJson = await fetchHrmApi(`/cases${queryParams}`);
 
   return responseJson;
 }
@@ -74,6 +61,19 @@ export async function searchCases(searchParams, limit, offset): Promise<SearchCa
   };
 
   const responseJson = await fetchHrmApi(`/cases/search${queryParams}`, options);
+
+  return responseJson;
+}
+
+export async function listCases(queryParams, listCasesPayload): Promise<SearchCaseResult> {
+  const queryParamsString = getQueryParams(queryParams);
+
+  const options = {
+    method: 'POST',
+    body: JSON.stringify(listCasesPayload),
+  };
+
+  const responseJson = await fetchHrmApi(`/cases/search${queryParamsString}`, options);
 
   return responseJson;
 }

@@ -1,18 +1,16 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { TableBody, CircularProgress } from '@material-ui/core';
-import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 
 import { namespace, configurationBase } from '../../states';
 import { TableContainer, CLTable, CLTableRow, CLNamesCell } from '../../styles/caseList';
-import { Box, HeaderContainer } from '../../styles/HrmStyles';
-import { TLHPaddingLeft } from '../../styles/GlobalOverrides';
+import Filters from './filters/Filters';
 import CaseListTableHead from './CaseListTableHead';
 import CaseListTableRow from './CaseListTableRow';
 import Pagination from '../Pagination';
 import { CASES_PER_PAGE } from './CaseList';
-import type { Case, GetCasesParams } from '../../types/types';
+import type { Case, ListCasesQueryParams, ListCasesFilters } from '../../types/types';
 
 const ROW_HEIGHT = 89;
 
@@ -21,9 +19,10 @@ type OwnProps = {
   caseList: Case[];
   caseCount: number;
   page: number;
-  getCasesParams: GetCasesParams;
+  queryParams: ListCasesQueryParams;
   handleChangePage: (page: number) => void;
-  handleColumnClick: (sortBy: GetCasesParams['sortBy'], order: GetCasesParams['sortDirection']) => void;
+  handleColumnClick: (sortBy: ListCasesQueryParams['sortBy'], order: ListCasesQueryParams['sortDirection']) => void;
+  handleApplyFilter: (filters: ListCasesFilters) => void;
   handleClickViewCase: (currentCase: Case) => () => void;
 };
 
@@ -38,26 +37,29 @@ const CaseListTable: React.FC<Props> = ({
   caseList,
   caseCount,
   page,
-  getCasesParams,
+  queryParams,
   handleChangePage,
   handleColumnClick,
+  handleApplyFilter,
   handleClickViewCase,
   counselorsHash,
+  currentDefinitionVersion,
 }) => {
   const pagesCount = Math.ceil(caseCount / CASES_PER_PAGE);
 
   return (
     <>
-      <HeaderContainer>
-        <Box marginTop="15px" marginBottom="14px" marginLeft={TLHPaddingLeft} id="CaseList-AllCases-label">
-          <Template code="CaseList-AllCases" />
-        </Box>
-      </HeaderContainer>
+      <Filters
+        caseCount={caseCount}
+        currentDefinitionVersion={currentDefinitionVersion}
+        counselorsHash={counselorsHash}
+        handleApplyFilter={handleApplyFilter}
+      />
       <TableContainer>
-        <CLTable tabIndex={0} aria-labelledby="CaseList-AllCases-label" data-testid="CaseList-Table">
+        <CLTable tabIndex={0} aria-labelledby="CaseList-Cases-label" data-testid="CaseList-Table">
           <CaseListTableHead
-            sortBy={getCasesParams.sortBy}
-            sortDirection={getCasesParams.sortDirection}
+            sortBy={queryParams.sortBy}
+            sortDirection={queryParams.sortDirection}
             handleColumnClick={handleColumnClick}
           />
           {loading && (
@@ -66,7 +68,7 @@ const CaseListTable: React.FC<Props> = ({
                 style={{
                   position: 'relative',
                   background: 'transparent',
-                  height: `${(caseList.length || getCasesParams.limit) * ROW_HEIGHT}px`,
+                  height: `${(caseList.length || queryParams.limit) * ROW_HEIGHT}px`,
                 }}
               >
                 <CLNamesCell style={{ position: 'absolute', textAlign: 'center', width: '100%', top: '40%' }}>
@@ -98,6 +100,7 @@ CaseListTable.displayName = 'CaseListTable';
 
 const mapStateToProps = state => ({
   counselorsHash: state[namespace][configurationBase].counselors.hash,
+  currentDefinitionVersion: state[namespace][configurationBase].currentDefinitionVersion,
 });
 
 export default connect(mapStateToProps)(CaseListTable);
