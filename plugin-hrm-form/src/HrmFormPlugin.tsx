@@ -28,11 +28,10 @@ export const getConfig = () => {
   const logoUrl = manager.serviceConfiguration.attributes.logo_url;
   const chatServiceSid = manager.serviceConfiguration.chat_service_instance_sid;
   const workerSid = manager.workerClient.sid;
-  const { helpline, counselorLanguage } = manager.workerClient.attributes;
+  const { helpline, counselorLanguage, full_name: counselorName, roles } = manager.workerClient.attributes as any;
   const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
   const { identity, token } = manager.user;
-  const counselorName = manager.workerClient.attributes.full_name;
-  const isSupervisor = manager.workerClient.attributes.roles.includes('supervisor');
+  const isSupervisor = roles.includes('supervisor');
   const {
     helplineLanguage,
     definitionVersion,
