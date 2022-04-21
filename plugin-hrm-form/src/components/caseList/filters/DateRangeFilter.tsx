@@ -2,14 +2,14 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Template } from '@twilio/flex-ui';
+import { endOfDay, format } from 'date-fns';
 
-import { Box, FormLabel, FormRadioInput } from '../../../styles/HrmStyles';
+import { Box, FormDateInput, FormLabel, FormRadioInput } from '../../../styles/HrmStyles';
 import { DateFilterOption, DateFilterOptions, isDivider, isFixedDateRange } from './dateFilters';
-import FieldDate from '../../FieldDate';
-import { getConfig } from '../../../HrmFormPlugin';
 
 type OwnProps = {
   name: string;
+  labelKey: string;
   options: DateFilterOptions;
   current?: DateFilterOption;
   withSearch?: boolean;
@@ -18,7 +18,7 @@ type OwnProps = {
   setOpenedFilter: (name: string) => void;
 };
 
-const defaultEventHandlers = fieldName => ({
+const defaultEventHandlers = () => ({
   handleChange: () => {
     /* fu eslint */
   },
@@ -35,6 +35,7 @@ type Props = OwnProps;
 
 const DateRangeFilter: React.FC<Props> = ({
   name,
+  labelKey,
   options,
   current,
   openedFilter,
@@ -47,7 +48,6 @@ const DateRangeFilter: React.FC<Props> = ({
   };
 
   const optionsWithoutDividers = options.filter(opt => !isDivider(opt)) as DateFilterOption[];
-  const { strings } = getConfig();
 
   const [currentWorkingCopy, setCurrentWorkingCopy] = useState<DateFilterOption>(current);
 
@@ -59,7 +59,7 @@ const DateRangeFilter: React.FC<Props> = ({
     const copy = { ...selected };
     if (isFixedDateRange(copy)) {
       copy.from = values.customDateRangeFrom ? new Date(values.customDateRangeFrom) : undefined;
-      copy.to = values.customDateRangeTo ? new Date(values.customDateRangeTo) : undefined;
+      copy.to = values.customDateRangeTo ? endOfDay(new Date(values.customDateRangeTo)) : undefined;
     }
     return [values[name], copy];
   };
@@ -71,8 +71,8 @@ const DateRangeFilter: React.FC<Props> = ({
       [name]: option,
     };
     if (isFixedDateRange(dateFilter)) {
-      values.customDateRangeFrom = dateFilter.from.toISOString();
-      values.customDateRangeTo = dateFilter.to.toISOString();
+      values.customDateRangeFrom = dateFilter.from ? format(dateFilter.from, 'yyyy-MM-dd') : null;
+      values.customDateRangeTo = dateFilter.to ? format(dateFilter.to, 'yyyy-MM-dd') : null;
     }
     return values;
   };
@@ -108,8 +108,10 @@ const DateRangeFilter: React.FC<Props> = ({
 
   const handleClear = () => {
     setCurrentWorkingCopy(undefined);
-    reset();
+    reset(dateFilterToForm(undefined));
   };
+
+  const [, currentWorkingFilter] = currentWorkingCopy ?? [];
 
   return (
     <div style={{ position: 'relative' }}>
@@ -123,7 +125,9 @@ const DateRangeFilter: React.FC<Props> = ({
           margin: '0 15px',
         }}
         onClick={handleClick}
-      />
+      >
+        <Template code={labelKey} />
+      </div>
       {isOpened && (
         <div
           style={{
@@ -148,11 +152,12 @@ const DateRangeFilter: React.FC<Props> = ({
                         <FormRadioInput
                           onChange={() => setCurrentWorkingCopy(formToDateFilter(getValues()))}
                           id={option}
+                          value={option}
                           name={name}
                           type="radio"
                           innerRef={register}
                         />
-                        {strings[filter.titleKey]}
+                        <Template code={filter.titleKey} />
                       </FormLabel>
                     </li>
                   );
@@ -164,32 +169,24 @@ const DateRangeFilter: React.FC<Props> = ({
                 );
               })}
             </ul>
-            <Box style={{ visibility: isFixedDateRange(currentWorkingCopy) ? 'inherit' : 'hidden' }}>
-              <FieldDate
-                {...defaultEventHandlers}
+            <Box style={{ visibility: isFixedDateRange(currentWorkingFilter) ? 'inherit' : 'hidden' }}>
+              <Template code="CaseList-DateFilter-CustomRange" />
+              <FormDateInput
+                type="date"
                 id="customDateRangeFrom"
-                label={strings['CaseList-DateFilter-CustomRange']}
-                placeholder={strings['SearchForm-Start']}
-                field={{
-                  value: isFixedDateRange(current) ? current.from : null,
-                  error: null,
-                  validation: null,
-                  touched: false,
-                }}
-                style={{ marginRight: '10px' }}
+                data-testid="customDateRangeFrom"
+                name="customDateRangeFrom"
+                onChange={() => setCurrentWorkingCopy(formToDateFilter(getValues()))}
+                innerRef={register}
               />
-              <FieldDate
-                {...defaultEventHandlers}
+
+              <FormDateInput
+                type="date"
                 id="customDateRangeTo"
-                label=" "
-                placeholder={strings['SearchForm-End']}
-                field={{
-                  value: isFixedDateRange(current) ? current.to : null,
-                  error: null,
-                  validation: null,
-                  touched: false,
-                }}
-                style={{ marginRight: '10px' }}
+                data-testid="customDateRangeTo"
+                name="customDateRangeTo"
+                onChange={() => setCurrentWorkingCopy(formToDateFilter(getValues()))}
+                innerRef={register}
               />
             </Box>
             <br />

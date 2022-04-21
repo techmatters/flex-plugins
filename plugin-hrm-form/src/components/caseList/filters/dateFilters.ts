@@ -1,11 +1,5 @@
 import { addDays, endOfDay, startOfDay, subDays } from 'date-fns';
 
-export type DateFilterType = {
-  labelKey: string;
-  filterPayloadParameter: string;
-  currentSetting?: DateFilterOption;
-};
-
 export type RelativeDateRange = {
   titleKey: string;
   from: (now: Date) => Date;
@@ -37,6 +31,13 @@ export type DateFilterOption = [string, DateFilter];
 
 export type DateFilterOptions = (DateFilterOption | Divider)[];
 
+export type DateFilterType = {
+  labelKey: string;
+  filterPayloadParameter: string;
+  currentSetting?: DateFilterOption;
+  options: DateFilterOptions;
+};
+
 const today = (): RelativeDateRange => ({
   titleKey: 'CaseList-Filters-DateFilterOptions-Today',
   from: referenceDate => startOfDay(referenceDate),
@@ -62,7 +63,7 @@ const tomorrow = (): RelativeDateRange => ({
 });
 
 const nextXDays = (days: number): RelativeDateRange => ({
-  titleKey: 'CaseList-Filters-DateFilterOptions-CustomRange',
+  titleKey: 'CaseList-Filters-DateFilterOptions-NextXDays',
   from: referenceDate => startOfDay(referenceDate),
   to: referenceDate => endOfDay(addDays(referenceDate, days)),
 });
@@ -87,6 +88,15 @@ export const isFixedDateRange = (item: any): item is FixedDateRange =>
 export const isExistsDateFilter = (item: any): item is ExistsDateFilter => Boolean((<ExistsDateFilter>item)?.exists);
 
 export const standardCaseListDateFilterOptions = (): DateFilterOptions => [
+  ['TODAY', today()],
+  ['YESTERDAY', yesterday()],
+  ['PAST_7_DAYS', pastXDays(7)],
+  ['PAST_30_DAYS', pastXDays(30)],
+  divider(),
+  ['CUSTOM_RANGE', customRange()],
+];
+
+export const followUpDateFilterOptions = (): DateFilterOptions => [
   ['TODAY', today()],
   ['YESTERDAY', yesterday()],
   ['PAST_7_DAYS', pastXDays(7)],

@@ -11,7 +11,6 @@ import { ListCasesFilters, CounselorHash } from '../../../types/types';
 import DateRangeFilter from './DateRangeFilter';
 import {
   DateExistsCondition,
-  DateFilter,
   DateFilterOption,
   DateFilterType,
   isExistsDateFilter,
@@ -70,6 +69,36 @@ const clearMultiSelectFilter = (values, setValues) => {
  */
 const filterCheckedItems = (items: Item[]): string[] => items.filter(item => item.checked).map(item => item.value);
 
+const dateFilterValues = (filters: DateFilterType[]) => {
+  const entries = filters
+    .filter(f => f.currentSetting)
+    .map(ft => {
+      let filterPayload: { from?: string; to?: string; exists: DateExistsCondition };
+      const [, filter] = ft.currentSetting;
+      if (isFixedDateRange(filter)) {
+        filterPayload = {
+          from: filter.from?.toISOString(),
+          to: filter.to?.toISOString(),
+          exists: DateExistsCondition.MUST_EXIST,
+        };
+      } else if (isExistsDateFilter(filter)) {
+        filterPayload = {
+          exists: filter.exists,
+        };
+      } else {
+        // relative range from a preset
+        const now = new Date();
+        filterPayload = {
+          from: filter.from(now).toISOString(),
+          to: filter.to(now).toISOString(),
+          exists: DateExistsCondition.MUST_EXIST,
+        };
+      }
+      return [ft.filterPayloadParameter, filterPayload];
+    });
+  return Object.fromEntries(entries);
+};
+
 type OwnProps = {
   currentDefinitionVersion: DefinitionVersion;
   counselorsHash: CounselorHash;
@@ -99,46 +128,25 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ca
   useEffect(() => {
     const statuses = filterCheckedItems(statusValues);
     const counsellors = filterCheckedItems(counselorValues);
-    setDefaultFilters({ statuses, counsellors, includeOrphans: false });
+    setDefaultFilters({ statuses, counsellors, includeOrphans: false, ...dateFilterValues(dateFilters) });
   }, [setDefaultFilters, statusValues, counselorValues]);
 
   const handleApplyStatusFilter = (values: Item[]) => {
-    const filters = { ...defaultFilters, statuses: filterCheckedItems(values) };
+    const filters = { ...defaultFilters, statuses: filterCheckedItems(values), ...dateFilterValues(dateFilters) };
     handleApplyFilter(filters);
     setStatusValues(values);
   };
 
   const handleApplyCounselorFilter = (values: Item[]) => {
-    const filters = { ...defaultFilters, counsellors: filterCheckedItems(values) };
+    const filters = { ...defaultFilters, counsellors: filterCheckedItems(values), ...dateFilterValues(dateFilters) };
     handleApplyFilter(filters);
     setCounselorValues(values);
   };
 
-  const handleApplyDateRangeFilter = (filterType: DateFilterType) => ([option, filter]: DateFilterOption) => {
-    let filterPayload: { from?: string; to?: string; exists: DateExistsCondition };
-    if (isFixedDateRange(filter)) {
-      filterPayload = {
-        from: filter.from.toISOString(),
-        to: filter.to.toISOString(),
-        exists: DateExistsCondition.MUST_EXIST,
-      };
-    } else if (isExistsDateFilter(filter)) {
-      filterPayload = {
-        exists: filter.exists,
-      };
-    } else {
-      // relative range from a preset
-      const now = new Date();
-      filterPayload = {
-        from: filter.from(now).toISOString(),
-        to: filter.to(now).toISOString(),
-        exists: DateExistsCondition.MUST_EXIST,
-      };
-    }
-    const filters = { ...defaultFilters, [filterType.filterPayloadParameter]: filterPayload };
-    handleApplyFilter(filters);
-    filterType.currentSetting = [option, filter];
+  const handleApplyDateRangeFilter = (filterType: DateFilterType) => (filterOption: DateFilterOption | undefined) => {
+    filterType.currentSetting = filterOption;
     setDateFilters(dateFilters); // refresh date filters after being modified in place locally
+    handleApplyFilter({ ...defaultFilters, ...dateFilterValues(dateFilters) } as ListCasesFilters);
   };
 
   const handleClearFilters = () => {
@@ -199,6 +207,7 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ca
           {dateFilters.map(df => {
             return (
               <DateRangeFilter
+                labelKey={df.labelKey}
                 key={df.filterPayloadParameter}
                 name={`${df.filterPayloadParameter}Filter`}
                 options={standardCaseListDateFilterOptions()}

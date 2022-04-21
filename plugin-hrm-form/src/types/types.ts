@@ -1,6 +1,7 @@
 /* eslint-disable import/no-unused-modules */
 import { ITask } from '@twilio/flex-ui';
 import { DefinitionVersionId, CallTypes } from 'hrm-form-definitions';
+import { DateFilterType } from '../components/caseList/filters/dateFilters';
 
 export type EntryInfo = {
   createdAt: string;
@@ -145,6 +146,9 @@ export type ListCasesFilters = {
   counsellors: string[];
   statuses: string[];
   includeOrphans: boolean;
+  createdAt?: DateFilterType;
+  updatedAt?: DateFilterType;
+  followUpDate?: DateFilterType;
 };
 
 export type CounselorHash = {
