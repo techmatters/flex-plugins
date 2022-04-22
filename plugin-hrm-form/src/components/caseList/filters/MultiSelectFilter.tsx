@@ -184,7 +184,7 @@ const MultiSelectFilter: React.FC<Props> = ({
 
   return (
     <div style={{ position: 'relative' }}>
-      <MultiSelectButton isOpened={isOpened} type="button" onClick={handleClick}>
+      <MultiSelectButton isOpened={isOpened} isActive={Boolean(selectedCount > 0)} type="button" onClick={handleClick}>
         {text}
         {drawCount()}
         <Flex marginLeft="15px">

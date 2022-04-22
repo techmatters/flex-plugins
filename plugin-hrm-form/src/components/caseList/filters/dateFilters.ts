@@ -15,12 +15,12 @@ type FixedDateRange = {
   to?: Date;
 };
 
-export enum DateExistsCondition {
+enum DateExistsCondition {
   MUST_EXIST = 'MUST_EXIST',
   MUST_NOT_EXIST = 'MUST_NOT_EXIST',
 }
 
-export type ExistsDateFilter = {
+type ExistsDateFilter = {
   titleKey: string;
   titleParameters?: Record<string, string | number>;
   exists: DateExistsCondition;
@@ -28,7 +28,7 @@ export type ExistsDateFilter = {
 
 type Divider = { __divider: 'divider' };
 
-export type DateFilter = RelativeDateRange | FixedDateRange | ExistsDateFilter;
+type DateFilter = RelativeDateRange | FixedDateRange | ExistsDateFilter;
 
 export type DateFilterOption = [string, DateFilter];
 
@@ -90,7 +90,7 @@ export const isDivider = (item: any): item is Divider => (<Divider>item)?.__divi
 export const isFixedDateRange = (item: any): item is FixedDateRange =>
   (<FixedDateRange>item)?.__fixedDateRange === 'fixedDateRange';
 
-export const isExistsDateFilter = (item: any): item is ExistsDateFilter => Boolean((<ExistsDateFilter>item)?.exists);
+const isExistsDateFilter = (item: any): item is ExistsDateFilter => Boolean((<ExistsDateFilter>item)?.exists);
 
 const isRelativeDateRange = (item: any): item is RelativeDateRange => {
   const rdr = <RelativeDateRange>item;

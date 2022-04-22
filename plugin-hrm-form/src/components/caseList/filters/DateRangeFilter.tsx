@@ -25,6 +25,10 @@ import {
   MultiSelectUnorderedList,
 } from '../../../styles/caseList/filters';
 
+type ReactHookFormValues = {
+  [name: string]: string;
+};
+
 type OwnProps = {
   name: string;
   labelKey: string;
@@ -39,6 +43,37 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps;
 
+const dateFilterToForm = (
+  selectedOptionField: string,
+  [option, dateFilter]: DateFilterOption | undefined = [undefined, undefined],
+): ReactHookFormValues => {
+  const values = {
+    [selectedOptionField]: option,
+  };
+  if (isFixedDateRange(dateFilter)) {
+    values.customDateRangeFrom = dateFilter.from ? format(dateFilter.from, 'yyyy-MM-dd') : null;
+    values.customDateRangeTo = dateFilter.to ? format(dateFilter.to, 'yyyy-MM-dd') : null;
+  }
+  return values;
+};
+
+const formToDateFilter = (
+  selectedOptionField: string,
+  filterOptions: DateFilterOption[],
+  values: ReactHookFormValues,
+): DateFilterOption | undefined => {
+  const [, selected] = filterOptions.find(([opt]) => opt === values[selectedOptionField]);
+  if (!selected) {
+    return undefined;
+  }
+  const copy = { ...selected };
+  if (isFixedDateRange(copy)) {
+    copy.from = values.customDateRangeFrom ? new Date(values.customDateRangeFrom) : undefined;
+    copy.to = values.customDateRangeTo ? endOfDay(new Date(values.customDateRangeTo)) : undefined;
+  }
+  return [values[selectedOptionField], copy];
+};
+
 const DateRangeFilter: React.FC<Props> = ({
   name,
   labelKey,
@@ -47,11 +82,8 @@ const DateRangeFilter: React.FC<Props> = ({
   openedFilter,
   applyFilter,
   setOpenedFilter,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  type ReactHookFormValues = {
-    [name: string]: string;
-  };
-
   const optionsWithoutDividers = options.filter(opt => !isDivider(opt)) as DateFilterOption[];
 
   const [currentWorkingCopy, setCurrentWorkingCopy] = useState<DateFilterOption>(current);
@@ -59,41 +91,15 @@ const DateRangeFilter: React.FC<Props> = ({
   const firstElement = useRef(null);
   const lastElement = useRef(null);
 
-  const formToDateFilter = (values: ReactHookFormValues): DateFilterOption | undefined => {
-    const [, selected] = optionsWithoutDividers.find(([opt]) => opt === values[name]);
-    if (!selected) {
-      return undefined;
-    }
-    const copy = { ...selected };
-    if (isFixedDateRange(copy)) {
-      copy.from = values.customDateRangeFrom ? new Date(values.customDateRangeFrom) : undefined;
-      copy.to = values.customDateRangeTo ? endOfDay(new Date(values.customDateRangeTo)) : undefined;
-    }
-    return [values[name], copy];
-  };
-
-  const dateFilterToForm = (
-    [option, dateFilter]: DateFilterOption | undefined = [undefined, undefined],
-  ): ReactHookFormValues => {
-    const values = {
-      [name]: option,
-    };
-    if (isFixedDateRange(dateFilter)) {
-      values.customDateRangeFrom = dateFilter.from ? format(dateFilter.from, 'yyyy-MM-dd') : null;
-      values.customDateRangeTo = dateFilter.to ? format(dateFilter.to, 'yyyy-MM-dd') : null;
-    }
-    return values;
-  };
-
   const { register, handleSubmit, reset, getValues } = useForm({
-    defaultValues: dateFilterToForm(current),
+    defaultValues: dateFilterToForm(name, current),
   });
 
   // Force React Hook Forms to rerender whenever current value changes
   useEffect(() => {
     setCurrentWorkingCopy(current);
-    reset(dateFilterToForm(current));
-  }, [reset, current]);
+    reset(dateFilterToForm(name, current));
+  }, [name, reset, current]);
 
   const onSubmit = () => {
     setOpenedFilter(null);
@@ -105,7 +111,7 @@ const DateRangeFilter: React.FC<Props> = ({
   const handleClick = () => {
     // Always reset to defaultValues whenever you open/close the component
     setCurrentWorkingCopy(current);
-    reset(dateFilterToForm(current));
+    reset(dateFilterToForm(name, current));
 
     if (isOpened) {
       setOpenedFilter(null);
@@ -166,7 +172,9 @@ const DateRangeFilter: React.FC<Props> = ({
                     <li style={{ marginBottom: '10px' }} key={i}>
                       <FormLabel htmlFor={option} style={{ flexDirection: 'row' }}>
                         <FormRadioInput
-                          onChange={() => setCurrentWorkingCopy(formToDateFilter(getValues()))}
+                          onChange={() =>
+                            setCurrentWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))
+                          }
                           id={option}
                           value={option}
                           name={name}
@@ -193,17 +201,15 @@ const DateRangeFilter: React.FC<Props> = ({
                 id="customDateRangeFrom"
                 data-testid="customDateRangeFrom"
                 name="customDateRangeFrom"
-                onChange={() => setCurrentWorkingCopy(formToDateFilter(getValues()))}
+                onChange={() => setCurrentWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))}
                 innerRef={register}
-              />
-              <Template code="CaseList-Filters-DateFilter-CustomRange" />
-              <FormDateInput
+              /> <Template code="CaseList-Filters-DateFilter-CustomRange" /> <FormDateInput
                 style={{ width: '80pt', display: 'inline' }}
                 type="date"
                 id="customDateRangeTo"
                 data-testid="customDateRangeTo"
                 name="customDateRangeTo"
-                onChange={() => setCurrentWorkingCopy(formToDateFilter(getValues()))}
+                onChange={() => setCurrentWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))}
                 innerRef={register}
               />
             </Box>

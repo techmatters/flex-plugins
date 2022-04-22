@@ -110,7 +110,7 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ca
     const statuses = filterCheckedItems(statusValues);
     const counsellors = filterCheckedItems(counselorValues);
     setDefaultFilters({ statuses, counsellors, includeOrphans: false, ...dateFilterPayloadFromFilters(dateFilters) });
-  }, [setDefaultFilters, statusValues, counselorValues]);
+  }, [setDefaultFilters, statusValues, counselorValues, dateFilters]);
 
   const handleApplyStatusFilter = (values: Item[]) => {
     const filters = {
@@ -152,7 +152,9 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ca
     caseCount === 1 ? 'CaseList-Filters-CaseCount-Singular' : 'CaseList-Filters-CaseCount-Plural';
 
   const hasFiltersApplied =
-    filterCheckedItems(statusValues).length > 0 || filterCheckedItems(counselorValues).length > 0;
+    filterCheckedItems(statusValues).length > 0 ||
+    filterCheckedItems(counselorValues).length > 0 ||
+    Boolean(dateFilters.filter(df => df.currentSetting).length);
 
   return (
     <>

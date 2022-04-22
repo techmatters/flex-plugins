@@ -165,7 +165,7 @@ export const SomethingWentWrongText = styled(FontOpenSans)`
 `;
 SomethingWentWrongText.displayName = 'SomethingWentWrongText';
 
-export const FiltersContainer = styled(Flex)`
+const FiltersContainer = styled(Flex)`
   margin-left: 15px;
   margin-right: 10px;
   padding: 10px;
