@@ -15,7 +15,7 @@ type FixedDateRange = {
   to?: Date;
 };
 
-enum DateExistsCondition {
+export enum DateExistsCondition {
   MUST_EXIST = 'MUST_EXIST',
   MUST_NOT_EXIST = 'MUST_NOT_EXIST',
 }
@@ -107,10 +107,7 @@ export const dateFilterOptionsAreEqual = (option1: DateFilterOption, option2: Da
     if (isExistsDateFilter(filter1) && isExistsDateFilter(filter2)) {
       return filter1.exists === filter2.exists;
     } else if (isFixedDateRange(filter1) && isFixedDateRange(filter2)) {
-      return (
-        filter1.from?.getUTCDate() === filter2.from?.getUTCDate() &&
-        filter1.to?.getUTCDate() === filter2.to?.getUTCDate()
-      );
+      return filter1.from?.valueOf() === filter2.from?.valueOf() && filter1.to?.valueOf() === filter2.to?.valueOf();
     }
     return isRelativeDateRange(filter1) && isRelativeDateRange(filter2);
   }
@@ -141,7 +138,11 @@ export const followUpDateFilterOptions = (): DateFilterOptions => [
   ['CUSTOM_RANGE', customRange()],
 ];
 
-export const dateFilterPayloadFromFilters = (filters: DateFilter[]) => {
+/**
+ * Creates the date filters sub section of the search endpoint POST payload from a list of DateFilter objects
+ * @param filters
+ */
+export const dateFilterPayloadFromFilters = (filters: DateFilter[], referenceDate = null) => {
   const entries = filters
     .filter(f => f.currentSetting)
     .map(ft => {
@@ -159,7 +160,7 @@ export const dateFilterPayloadFromFilters = (filters: DateFilter[]) => {
         };
       } else {
         // relative range from a preset
-        const now = new Date();
+        const now = referenceDate ?? new Date();
         filterPayload = {
           from: filter.from(now).toISOString(),
           to: filter.to(now).toISOString(),
