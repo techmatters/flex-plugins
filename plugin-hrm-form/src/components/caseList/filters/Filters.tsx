@@ -11,7 +11,7 @@ import { ListCasesFilters, CounselorHash } from '../../../types/types';
 import DateRangeFilter from './DateRangeFilter';
 import {
   DateFilterOption,
-  DateFilterType,
+  DateFilter,
   dateFilterPayloadFromFilters,
   followUpDateFilterOptions,
   standardCaseListDateFilterOptions,
@@ -44,7 +44,7 @@ const emptyFilters: ListCasesFilters = {
   includeOrphans: false,
 };
 
-const getInitialDateFilters = (): DateFilterType[] => [
+const getInitialDateFilters = (): DateFilter[] => [
   {
     labelKey: 'CaseList-Filters-DateFilter-CreatedAt',
     filterPayloadParameter: 'createdAt',
@@ -96,7 +96,7 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ca
   const [openedFilter, setOpenedFilter] = useState<string>();
   const [statusValues, setStatusValues] = useState<Item[]>(statusInitialValues);
   const [counselorValues, setCounselorValues] = useState<Item[]>([]);
-  const [dateFilters, setDateFilters] = useState<DateFilterType[]>(getInitialDateFilters());
+  const [dateFilters, setDateFilters] = useState<DateFilter[]>(getInitialDateFilters());
   const [defaultFilters, setDefaultFilters] = useState<ListCasesFilters>(emptyFilters);
 
   // updates counselor options when counselorHash is updated
@@ -132,7 +132,7 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ca
     setCounselorValues(values);
   };
 
-  const handleApplyDateRangeFilter = (filterType: DateFilterType) => (filterOption: DateFilterOption | undefined) => {
+  const handleApplyDateRangeFilter = (filterType: DateFilter) => (filterOption: DateFilterOption | undefined) => {
     filterType.currentSetting = filterOption;
     setDateFilters(dateFilters); // refresh date filters after being modified in place locally
     handleApplyFilter({ ...defaultFilters, ...dateFilterPayloadFromFilters(dateFilters) } as ListCasesFilters);

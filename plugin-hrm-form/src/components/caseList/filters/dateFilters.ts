@@ -28,13 +28,13 @@ type ExistsDateFilter = {
 
 type Divider = { __divider: 'divider' };
 
-type DateFilter = RelativeDateRange | FixedDateRange | ExistsDateFilter;
+type DateFilterSetting = RelativeDateRange | FixedDateRange | ExistsDateFilter;
 
-export type DateFilterOption = [string, DateFilter];
+export type DateFilterOption = [string, DateFilterSetting];
 
 export type DateFilterOptions = (DateFilterOption | Divider)[];
 
-export type DateFilterType = {
+export type DateFilter = {
   labelKey: string;
   filterPayloadParameter: string;
   currentSetting?: DateFilterOption;
@@ -141,7 +141,7 @@ export const followUpDateFilterOptions = (): DateFilterOptions => [
   ['CUSTOM_RANGE', customRange()],
 ];
 
-export const dateFilterPayloadFromFilters = (filters: DateFilterType[]) => {
+export const dateFilterPayloadFromFilters = (filters: DateFilter[]) => {
   const entries = filters
     .filter(f => f.currentSetting)
     .map(ft => {
