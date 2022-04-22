@@ -203,7 +203,9 @@ const DateRangeFilter: React.FC<Props> = ({
                 name="customDateRangeFrom"
                 onChange={() => setCurrentWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))}
                 innerRef={register}
-              /> <Template code="CaseList-Filters-DateFilter-CustomRange" /> <FormDateInput
+              />{' '}
+              <Template code="CaseList-Filters-DateFilter-CustomRange" />{' '}
+              <FormDateInput
                 style={{ width: '80pt', display: 'inline' }}
                 type="date"
                 id="customDateRangeTo"
