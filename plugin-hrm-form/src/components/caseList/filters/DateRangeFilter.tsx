@@ -1,11 +1,29 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Template } from '@twilio/flex-ui';
 import { endOfDay, format } from 'date-fns';
+import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
+import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 
-import { Box, FormDateInput, FormLabel, FormRadioInput } from '../../../styles/HrmStyles';
-import { DateFilterOption, DateFilterOptions, isDivider, isFixedDateRange } from './dateFilters';
+import { Box, Flex, FormDateInput, FormLabel, FormRadioInput } from '../../../styles/HrmStyles';
+import {
+  DateFilterOption,
+  DateFilterOptions,
+  dateFilterOptionsAreEqual,
+  isDivider,
+  isFixedDateRange,
+} from './dateFilters';
+import {
+  DialogArrow,
+  FiltersDialog,
+  FiltersApplyButton,
+  FiltersBottomButtons,
+  FiltersClearButton,
+  FiltersDialogTitle,
+  MultiSelectButton,
+  MultiSelectUnorderedList,
+} from '../../../styles/caseList/filters';
 
 type OwnProps = {
   name: string;
@@ -18,18 +36,6 @@ type OwnProps = {
   setOpenedFilter: (name: string) => void;
 };
 
-const defaultEventHandlers = () => ({
-  handleChange: () => {
-    /* fu eslint */
-  },
-  handleBlur: () => {
-    /* fu eslint */
-  },
-  handleFocus: () => {
-    /* fu eslint */
-  },
-});
-
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps;
 
@@ -41,7 +47,6 @@ const DateRangeFilter: React.FC<Props> = ({
   openedFilter,
   applyFilter,
   setOpenedFilter,
-  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   type ReactHookFormValues = {
     [name: string]: string;
@@ -50,6 +55,9 @@ const DateRangeFilter: React.FC<Props> = ({
   const optionsWithoutDividers = options.filter(opt => !isDivider(opt)) as DateFilterOption[];
 
   const [currentWorkingCopy, setCurrentWorkingCopy] = useState<DateFilterOption>(current);
+
+  const firstElement = useRef(null);
+  const lastElement = useRef(null);
 
   const formToDateFilter = (values: ReactHookFormValues): DateFilterOption | undefined => {
     const [, selected] = optionsWithoutDividers.find(([opt]) => opt === values[name]);
@@ -111,43 +119,51 @@ const DateRangeFilter: React.FC<Props> = ({
     reset(dateFilterToForm(undefined));
   };
 
+  const handleTabForLastElement = event => {
+    if (!event.shiftKey && event.key === 'Tab') {
+      event.preventDefault();
+
+      if (firstElement.current) {
+        firstElement.current.focus();
+      }
+    }
+  };
+
+  const handleShiftTabForFirstElement = event => {
+    if (event.shiftKey && event.key === 'Tab') {
+      event.preventDefault();
+
+      if (lastElement.current) {
+        lastElement.current.focus();
+      }
+    }
+  };
+
   const [, currentWorkingFilter] = currentWorkingCopy ?? [];
 
   return (
     <div style={{ position: 'relative' }}>
-      <div
-        role="button"
-        tabIndex={0}
-        style={{
-          display: 'inline-block',
-          background: isOpened || current ? 'lightgray' : 'white',
-          cursor: 'pointer',
-          margin: '0 15px',
-        }}
-        onClick={handleClick}
-      >
+      <MultiSelectButton isOpened={isOpened} isActive={Boolean(current)} type="button" onClick={handleClick}>
         <Template code={labelKey} />
-      </div>
+        <Flex marginLeft="15px">
+          {isOpened && <ArrowDropUp />}
+          {!isOpened && <ArrowDropDown />}
+        </Flex>
+      </MultiSelectButton>
       {isOpened && (
-        <div
-          style={{
-            position: 'absolute',
-            background: 'white',
-            top: 30,
-            left: -20,
-            minWidth: 200,
-            padding: '15px 5px',
-            border: '1px solid lightgray',
-            zIndex: 100,
-          }}
-        >
+        <FiltersDialog role="dialog" aria-labelledby="dialog-title">
+          <DialogArrow />
+          <FiltersDialogTitle id="dialog-title">
+            <Template code="CaseList-Filters-DialogTitlePrefix" /> <Template code={labelKey} />
+          </FiltersDialogTitle>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <ul>
+            <MultiSelectUnorderedList>
               {options.map((item, i) => {
+                const isFirstFocusableElement = i === 0;
                 if (!isDivider(item)) {
                   const [option, filter] = item;
                   return (
-                    <li key={i}>
+                    <li style={{ marginBottom: '10px' }} key={i}>
                       <FormLabel htmlFor={option} style={{ flexDirection: 'row' }}>
                         <FormRadioInput
                           onChange={() => setCurrentWorkingCopy(formToDateFilter(getValues()))}
@@ -156,8 +172,9 @@ const DateRangeFilter: React.FC<Props> = ({
                           name={name}
                           type="radio"
                           innerRef={register}
+                          onKeyDown={isFirstFocusableElement ? handleShiftTabForFirstElement : null}
                         />
-                        <Template code={filter.titleKey} />
+                        <Template code={filter.titleKey} {...(filter.titleParameters ?? {})} />
                       </FormLabel>
                     </li>
                   );
@@ -168,10 +185,10 @@ const DateRangeFilter: React.FC<Props> = ({
                   </li>
                 );
               })}
-            </ul>
+            </MultiSelectUnorderedList>
             <Box style={{ visibility: isFixedDateRange(currentWorkingFilter) ? 'inherit' : 'hidden' }}>
-              <Template code="CaseList-DateFilter-CustomRange" />
               <FormDateInput
+                style={{ width: '80pt', display: 'inline' }}
                 type="date"
                 id="customDateRangeFrom"
                 data-testid="customDateRangeFrom"
@@ -179,8 +196,9 @@ const DateRangeFilter: React.FC<Props> = ({
                 onChange={() => setCurrentWorkingCopy(formToDateFilter(getValues()))}
                 innerRef={register}
               />
-
+              <Template code="CaseList-Filters-DateFilter-CustomRange" />
               <FormDateInput
+                style={{ width: '80pt', display: 'inline' }}
                 type="date"
                 id="customDateRangeTo"
                 data-testid="customDateRangeTo"
@@ -189,15 +207,24 @@ const DateRangeFilter: React.FC<Props> = ({
                 innerRef={register}
               />
             </Box>
-            <br />
-            <button type="button" onClick={handleClear}>
-              <Template code="CaseList-Filters-Clear" />
-            </button>
-            <button type="submit">
-              <Template code="CaseList-Filters-Apply" />
-            </button>
+
+            <FiltersBottomButtons>
+              <Box marginRight="10px">
+                <FiltersClearButton type="button" onClick={handleClear} disabled={!currentWorkingCopy}>
+                  <Template code="CaseList-Filters-Clear" />
+                </FiltersClearButton>
+              </Box>
+              <FiltersApplyButton
+                type="submit"
+                onKeyDown={handleTabForLastElement}
+                innerRef={lastElement}
+                disabled={dateFilterOptionsAreEqual(current, currentWorkingCopy)}
+              >
+                <Template code="CaseList-Filters-Apply" />
+              </FiltersApplyButton>
+            </FiltersBottomButtons>
           </form>
-        </div>
+        </FiltersDialog>
       )}
     </div>
   );

@@ -10,11 +10,10 @@ import MultiSelectFilter, { Item } from './MultiSelectFilter';
 import { ListCasesFilters, CounselorHash } from '../../../types/types';
 import DateRangeFilter from './DateRangeFilter';
 import {
-  DateExistsCondition,
   DateFilterOption,
   DateFilterType,
-  isExistsDateFilter,
-  isFixedDateRange,
+  dateFilterPayloadFromFilters,
+  followUpDateFilterOptions,
   standardCaseListDateFilterOptions,
 } from './dateFilters';
 /**
@@ -45,10 +44,22 @@ const emptyFilters: ListCasesFilters = {
   includeOrphans: false,
 };
 
-const getInitialDateFilters = () => [
-  { labelKey: 'CaseList-Filters-DateFilter-CreatedAt', filterPayloadParameter: 'createdAt' },
-  { labelKey: 'CaseList-Filters-DateFilter-UpdatedAt', filterPayloadParameter: 'updatedAt' },
-  { labelKey: 'CaseList-Filters-DateFilter-FollowUpDate', filterPayloadParameter: 'followUpDate' },
+const getInitialDateFilters = (): DateFilterType[] => [
+  {
+    labelKey: 'CaseList-Filters-DateFilter-CreatedAt',
+    filterPayloadParameter: 'createdAt',
+    options: standardCaseListDateFilterOptions(),
+  },
+  {
+    labelKey: 'CaseList-Filters-DateFilter-UpdatedAt',
+    filterPayloadParameter: 'updatedAt',
+    options: standardCaseListDateFilterOptions(),
+  },
+  {
+    labelKey: 'CaseList-Filters-DateFilter-FollowUpDate',
+    filterPayloadParameter: 'followUpDate',
+    options: followUpDateFilterOptions(),
+  },
 ];
 
 /**
@@ -68,36 +79,6 @@ const clearMultiSelectFilter = (values, setValues) => {
  * @returns string[]
  */
 const filterCheckedItems = (items: Item[]): string[] => items.filter(item => item.checked).map(item => item.value);
-
-const dateFilterValues = (filters: DateFilterType[]) => {
-  const entries = filters
-    .filter(f => f.currentSetting)
-    .map(ft => {
-      let filterPayload: { from?: string; to?: string; exists: DateExistsCondition };
-      const [, filter] = ft.currentSetting;
-      if (isFixedDateRange(filter)) {
-        filterPayload = {
-          from: filter.from?.toISOString(),
-          to: filter.to?.toISOString(),
-          exists: DateExistsCondition.MUST_EXIST,
-        };
-      } else if (isExistsDateFilter(filter)) {
-        filterPayload = {
-          exists: filter.exists,
-        };
-      } else {
-        // relative range from a preset
-        const now = new Date();
-        filterPayload = {
-          from: filter.from(now).toISOString(),
-          to: filter.to(now).toISOString(),
-          exists: DateExistsCondition.MUST_EXIST,
-        };
-      }
-      return [ft.filterPayloadParameter, filterPayload];
-    });
-  return Object.fromEntries(entries);
-};
 
 type OwnProps = {
   currentDefinitionVersion: DefinitionVersion;
@@ -128,17 +109,25 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ca
   useEffect(() => {
     const statuses = filterCheckedItems(statusValues);
     const counsellors = filterCheckedItems(counselorValues);
-    setDefaultFilters({ statuses, counsellors, includeOrphans: false, ...dateFilterValues(dateFilters) });
+    setDefaultFilters({ statuses, counsellors, includeOrphans: false, ...dateFilterPayloadFromFilters(dateFilters) });
   }, [setDefaultFilters, statusValues, counselorValues]);
 
   const handleApplyStatusFilter = (values: Item[]) => {
-    const filters = { ...defaultFilters, statuses: filterCheckedItems(values), ...dateFilterValues(dateFilters) };
+    const filters = {
+      ...defaultFilters,
+      statuses: filterCheckedItems(values),
+      ...dateFilterPayloadFromFilters(dateFilters),
+    };
     handleApplyFilter(filters);
     setStatusValues(values);
   };
 
   const handleApplyCounselorFilter = (values: Item[]) => {
-    const filters = { ...defaultFilters, counsellors: filterCheckedItems(values), ...dateFilterValues(dateFilters) };
+    const filters = {
+      ...defaultFilters,
+      counsellors: filterCheckedItems(values),
+      ...dateFilterPayloadFromFilters(dateFilters),
+    };
     handleApplyFilter(filters);
     setCounselorValues(values);
   };
@@ -146,7 +135,7 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ca
   const handleApplyDateRangeFilter = (filterType: DateFilterType) => (filterOption: DateFilterOption | undefined) => {
     filterType.currentSetting = filterOption;
     setDateFilters(dateFilters); // refresh date filters after being modified in place locally
-    handleApplyFilter({ ...defaultFilters, ...dateFilterValues(dateFilters) } as ListCasesFilters);
+    handleApplyFilter({ ...defaultFilters, ...dateFilterPayloadFromFilters(dateFilters) } as ListCasesFilters);
   };
 
   const handleClearFilters = () => {
@@ -204,20 +193,23 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ca
             setOpenedFilter={setOpenedFilter}
             searchable
           />
-          {dateFilters.map(df => {
-            return (
-              <DateRangeFilter
-                labelKey={df.labelKey}
-                key={df.filterPayloadParameter}
-                name={`${df.filterPayloadParameter}Filter`}
-                options={standardCaseListDateFilterOptions()}
-                openedFilter={openedFilter}
-                applyFilter={handleApplyDateRangeFilter(df)}
-                setOpenedFilter={setOpenedFilter}
-                current={df.currentSetting}
-              />
-            );
-          })}
+          <FiltersContainer style={{ marginLeft: '100px' }}>
+            <Template code="CaseList-Filters-DateFiltersLabel" />
+            {dateFilters.map(df => {
+              return (
+                <DateRangeFilter
+                  labelKey={df.labelKey}
+                  key={df.filterPayloadParameter}
+                  name={`${df.filterPayloadParameter}Filter`}
+                  options={df.options}
+                  openedFilter={openedFilter}
+                  applyFilter={handleApplyDateRangeFilter(df)}
+                  setOpenedFilter={setOpenedFilter}
+                  current={df.currentSetting}
+                />
+              );
+            })}
+          </FiltersContainer>
         </FiltersContainer>
       )}
     </>
