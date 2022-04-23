@@ -18,36 +18,6 @@
     }
   },
   {
-    "name": "multipleVictims",
-    "label": "Multiple Victims",
-    "type": "checkbox"
-  },
-  {
-    "name": "numberOfVictims",
-    "label": "No. of Victims",
-    "type": "input"
-  },
-  {
-    "name": "numberOfMaleVictims",
-    "label": "No. of Male Victims",
-    "type": "input"
-  },
-  {
-    "name": "numberOfFemaleVictims",
-    "label": "No. of Female Victims",
-    "type": "input"
-  },
-  {
-    "name": "numberOfNBVictims",
-    "label": "No. of Non-binary Victims",
-    "type": "input"
-  },
-  {
-    "name": "ageRangeVictims",
-    "label": "Age Range of Victims",
-    "type": "input"
-  },
-  {
     "name": "age",
     "label": "Age",
     "type": "select",
@@ -57,80 +27,8 @@
         "label": ""
       },
       {
-        "value": "Unborn",
-        "label": "Unborn"
-      },
-      {
-        "value": "0",
-        "label": "0"
-      },
-      {
-        "value": "1",
-        "label": "1"
-      },
-      {
-        "value": "2",
-        "label": "2"
-      },
-      {
-        "value": "3",
-        "label": "3"
-      },
-      {
-        "value": "4",
-        "label": "4"
-      },
-      {
-        "value": "5",
-        "label": "5"
-      },
-      {
-        "value": "6",
-        "label": "6"
-      },
-      {
-        "value": "7",
-        "label": "7"
-      },
-      {
-        "value": "8",
-        "label": "8"
-      },
-      {
-        "value": "9",
-        "label": "9"
-      },
-      {
-        "value": "10",
-        "label": "10"
-      },
-      {
-        "value": "11",
-        "label": "11"
-      },
-      {
-        "value": "12",
-        "label": "12"
-      },
-      {
-        "value": "13",
-        "label": "13"
-      },
-      {
-        "value": "14",
-        "label": "14"
-      },
-      {
-        "value": "15",
-        "label": "15"
-      },
-      {
-        "value": "16",
-        "label": "16"
-      },
-      {
-        "value": "17",
-        "label": "17"
+        "value": "<18",
+        "label": "<18"
       },
       {
         "value": "18",
@@ -165,8 +63,152 @@
         "label": "25"
       },
       {
-        "value": ">25",
-        "label": ">25"
+        "value": "24",
+        "label": "24"
+      },
+      {
+        "value": "25",
+        "label": "25"
+      },
+      {
+        "value": "26",
+        "label": "26"
+      },
+      {
+        "value": "27",
+        "label": "27"
+      },
+      {
+        "value": "28",
+        "label": "28"
+      },
+      {
+        "value": "29",
+        "label": "29"
+      },
+      {
+        "value": "30",
+        "label": "30"
+      },
+      {
+        "value": "31",
+        "label": "31"
+      },
+      {
+        "value": "32",
+        "label": "32"
+      },
+      {
+        "value": "33",
+        "label": "33"
+      },
+      {
+        "value": "34",
+        "label": "34"
+      },
+      {
+        "value": "35",
+        "label": "35"
+      },
+      {
+        "value": "36",
+        "label": "36"
+      },
+      {
+        "value": "37",
+        "label": "37"
+      },
+      {
+        "value": "38",
+        "label": "38"
+      },
+      {
+        "value": "39",
+        "label": "39"
+      },
+      {
+        "value": "40",
+        "label": "40"
+      },
+      {
+        "value": "41",
+        "label": "41"
+      },
+      {
+        "value": "42",
+        "label": "42"
+      },
+      {
+        "value": "43",
+        "label": "43"
+      },
+      {
+        "value": "44",
+        "label": "44"
+      },
+      {
+        "value": "45",
+        "label": "45"
+      },
+      {
+        "value": "46",
+        "label": "46"
+      },
+      {
+        "value": "47",
+        "label": "47"
+      },
+      {
+        "value": "48",
+        "label": "48"
+      },
+      {
+        "value": "49",
+        "label": "49"
+      },
+      {
+        "value": "50",
+        "label": "50"
+      },
+      {
+        "value": "51",
+        "label": "51"
+      },
+      {
+        "value": "52",
+        "label": "52"
+      },
+      {
+        "value": "53",
+        "label": "53"
+      },
+      {
+        "value": "54",
+        "label": "54"
+      },
+      {
+        "value": "55",
+        "label": "55"
+      },
+      {
+        "value": "56",
+        "label": "56"
+      },
+      {
+        "value": "57",
+        "label": "57"
+      },
+      {
+        "value": "58",
+        "label": "58"
+      },
+      {
+        "value": "59",
+        "label": "59"
+      },
+      {
+        "value": ">59",
+        "label": ">59"
       },
       {
         "value": "Unknown",
@@ -192,12 +234,12 @@
         "label": ""
       },
       {
-        "value": "Boy",
-        "label": "Boy"
+        "value": "Male",
+        "label": "Male"
       },
       {
-        "value": "Girl",
-        "label": "Girl"
+        "value": "Female",
+        "label": "Female"
       },
       {
         "value": "Non-Binary",
@@ -214,343 +256,268 @@
     }
   },
   {
-    "name": "streetAddress",
-    "label": "Street Address",
-    "type": "input"
-  },
-  {
-    "name": "province",
-    "label": "Province",
+      "name": "imageLocation",
+      "label": "Location of Images",
+      "type": "select",
+      "options": [
+         {
+            "value":"Unknown",
+            "label":""
+         },
+         {
+            "value":"clientDidntAnswer",
+            "label":"Client Didn't Answer"
+         },
+         {
+            "value":"clientDoesntKnow",
+            "label":"Client Doesn't Know"
+         },
+         {
+            "value":"clientWantedNoDataCollected",
+            "label":"Client Wanted No Data Collected"
+         },
+         {
+            "value":"datingSite",
+            "label":"Dating Site"
+         },
+         {
+            "value":"datingSite",
+            "label":"Dating Site"
+         },
+         {
+            "value":"discord",
+            "label":"Discord"
+         },
+         {
+            "value":"emailTextDM",
+            "label":"Email/Text/Dms"
+         },
+         {
+            "value":"facebook",
+            "label":"Facebook"
+         },
+         {
+            "value":"pornSite",
+            "label":"General Porn Site"
+         },
+         {
+            "value":"pornSite",
+            "label":"General Porn Site"
+         },
+         {
+            "value":"hardCopy",
+            "label":"Hard copy pictures"
+         },
+         {
+            "value":"multipleLocations",
+            "label":"Multiple Locations"
+         },
+         {
+            "value":"notRelevant",
+            "label":"Not relevant"
+         },
+         {
+            "value":"instagram",
+            "label":"Instagram"
+         },
+         {
+            "value":"snapchat",
+            "label":"Snapchat"
+         },
+         {
+            "value":"twitch",
+            "label":"Twitch"
+         },
+         {
+            "value":"twitter",
+            "label":"Twitter"
+         },
+         {
+            "value":"subscriptionSite",
+            "label":"Subscription Site (OnlyFans, Fansly etc)"
+         },
+         {
+            "value":"youtube",
+            "label":"Youtube"
+         },
+         {
+            "value":"collectorSite",
+            "label":"Collector site (forums made specifically for sharing content)"
+         },
+         {
+            "value":"questionNotAsked",
+            "label":"Question Not Asked"
+         },
+         {
+            "value":"RPwebsite",
+            "label":"RP Website"
+         },
+         {
+            "value":"threatToPublish",
+            "label":"Threat to publish"
+         },
+         {
+            "value":"webCamCapture",
+            "label":"Web Cam Capture"
+         }
+      ]  
+    },
+    {
+      "name": "threatLocation",
+      "label": "Location of Threat",
+      "type": "select",
+      "options": [
+         {
+            "value":"Unknown",
+            "label":""
+         },
+         {
+            "value":"clientDidntAnswer",
+            "label":"Client Didn't Answer"
+         },
+         {
+            "value":"clientDoesntKnow",
+            "label":"Client Doesn't Know"
+         },
+         {
+            "value":"clientWantedNoDataCollected",
+            "label":"Client Wanted No Data Collected"
+         },
+         {
+            "value":"datingSite",
+            "label":"Dating Site"
+         },
+         {
+            "value":"discord",
+            "label":"Discord"
+         },
+         {
+            "value":"emailTextDM",
+            "label":"Email/Text/Dms"
+         },
+         {
+            "value":"facebook",
+            "label":"Facebook"
+         },
+         {
+            "value":"pornSite",
+            "label":"General Porn Site"
+         },
+         {
+            "value":"hardCopy",
+            "label":"Hard copy pictures"
+         },
+         {
+            "value":"multipleLocations",
+            "label":"Multiple Locations"
+         },
+         {
+            "value":"notRelevant",
+            "label":"Not relevant"
+         },
+         {
+            "value":"instagram",
+            "label":"Instagram"
+         },
+         {
+            "value":"snapchat",
+            "label":"Snapchat"
+         },
+         {
+            "value":"twitch",
+            "label":"Twitch"
+         },
+         {
+            "value":"twitter",
+            "label":"Twitter"
+         },
+         {
+            "value":"subscriptionSite",
+            "label":"Subscription Site (OnlyFans, Fansly etc)"
+         },
+         {
+            "value":"youtube",
+            "label":"Youtube"
+         },
+         {
+            "value":"questionNotAsked",
+            "label":"Question Not Asked"
+         },
+         {
+            "value":"RPwebsite",
+            "label":"RP Website"
+         },
+         {
+            "value":"threatToPublish",
+            "label":"Threat to publish"
+         },
+         {
+            "value":"webCamCapture",
+            "label":"Web Cam Capture"
+         }
+      ]   
+    },
+    {
+    "name": "location",
+    "label": "Location",
     "type": "select",
     "options": [
        {
-          "value":"Abra",
-          "label":"Abra"
+          "value":"Unknown",
+          "label":""
        },
        {
-          "value":"Agusan Del Norte",
-          "label":"Agusan Del Norte"
+          "value":"England",
+          "label":"England"
        },
        {
-          "value":"Agusan Del Sur",
-          "label":"Agusan Del Sur"
+          "value":"Wales",
+          "label":"Wales"
        },
        {
-          "value":"Aklan",
-          "label":"Aklan"
+          "value":"Scotland",
+          "label":"Scotland"
        },
        {
-          "value":"Albay",
-          "label":"Albay"
+          "value":"Ireland",
+          "label":"Ireland"
        },
        {
-          "value":"Antique",
-          "label":"Antique"
+          "value":"ROI",
+          "label":"ROI"
        },
        {
-          "value":"Apayao",
-          "label":"Apayao"
-       },
-       {
-          "value":"Aurora",
-          "label":"Aurora"
-       },
-       {
-          "value":"Basilan",
-          "label":"Basilan"
-       },
-       {
-          "value":"Bataan",
-          "label":"Bataan"
-       },
-       {
-          "value":"Batanes",
-          "label":"Batanes"
-       },
-       {
-          "value":"Batangas",
-          "label":"Batangas"
-       },
-       {
-          "value":"Benguet",
-          "label":"Benguet"
-       },
-       {
-          "value":"Biliran",
-          "label":"Biliran"
-       },
-       {
-          "value":"Bohol",
-          "label":"Bohol"
-       },
-       {
-          "value":"Bukidnon",
-          "label":"Bukidnon"
-       },
-       {
-          "value":"Bulacan",
-          "label":"Bulacan"
-       },
-       {
-          "value":"Cagayan",
-          "label":"Cagayan"
-       },
-       {
-          "value":"Camarines Norte",
-          "label":"Camarines Norte"
-       },
-       {
-          "value":"Camarines Sur",
-          "label":"Camarines Sur"
-       },
-       {
-          "value":"Camiguin",
-          "label":"Camiguin"
-       },
-       {
-          "value":"Capiz",
-          "label":"Capiz"
-       },
-       {
-          "value":"Catanduanes",
-          "label":"Catanduanes"
-       },
-       {
-          "value":"Cavite",
-          "label":"Cavite"
-       },
-       {
-          "value":"Cebu",
-          "label":"Cebu"
-       },
-       {
-          "value":"Compostella Valley",
-          "label":"Compostella Valley"
-       },
-       {
-          "value":"Cotabato",
-          "label":"Cotabato"
-       },
-       {
-          "value":"Davao Del Norte",
-          "label":"Davao Del Norte"
-       },
-       {
-          "value":"Davao Del Sur",
-          "label":"Davao Del Sur"
-       },
-       {
-          "value":"Davao Occidental",
-          "label":"Davao Occidental"
-       },
-       {
-          "value":"Davao Oriental",
-          "label":"Davao Oriental"
-       },
-       {
-          "value":"Dinagat Islands",
-          "label":"Dinagat Islands"
-       },
-       {
-          "value":"Eastern Samar",
-          "label":"Eastern Samar"
-       },
-       {
-          "value":"Guimaras",
-          "label":"Guimaras"
-       },
-       {
-          "value":"Ifugao",
-          "label":"Ifugao"
-       },
-       {
-          "value":"Ilocos Norte",
-          "label":"Ilocos Norte"
-       },
-       {
-          "value":"Ilocos Sur",
-          "label":"Ilocos Sur"
-       },
-       {
-          "value":"Iloilo",
-          "label":"Iloilo"
-       },
-       {
-          "value":"Isabela",
-          "label":"Isabela"
-       },
-       {
-          "value":"Kalinga",
-          "label":"Kalinga"
-       },
-       {
-          "value":"La Union",
-          "label":"La Union"
-       },
-       {
-          "value":"Laguna",
-          "label":"Laguna"
-       },
+          "value": "NotUK",
+          "label": "Not UK"
+       }
+    ]
+  },
+  {
+    "name": "ifNotUk",
+    "label": "If not UK, where?",
+    "type": "input"
+  },
+  {
+    "name": "mentalHealthIssueDisclosed",
+    "label": "Did the client disclose Mental Health Issues?",
+    "type": "select",
+    "options": [
        {
-          "value":"Lanao Del Norte",
-          "label":"Lanao Del Norte"
+          "value":"",
+          "label":""
        },
        {
-          "value":"Lanao Del Sur",
-          "label":"Lanao Del Sur"
+          "value":"yes",
+          "label":"Yes"
        },
        {
-          "value":"Leyte",
-          "label":"Leyte"
+          "value":"no",
+          "label":"No"
        },
        {
-          "value":"Maguindanao",
-          "label":"Maguindanao"
-       },
-       {
-          "value":"Marinduque",
-          "label":"Marinduque"
-       },
-       {
-          "value":"Masbate",
-          "label":"Masbate"
-       },
-       {
-          "value":"Misamis Occidental",
-          "label":"Misamis Occidental"
-       },
-       {
-          "value":"Misamis Oriental",
-          "label":"Misamis Oriental"
-       },
-       {
-          "value":"Mountain Province",
-          "label":"Mountain Province"
-       },
-       {
-          "value":"Negros Occidental",
-          "label":"Negros Occidental"
-       },
-       {
-          "value":"Negros Oriental",
-          "label":"Negros Oriental"
-       },
-       {
-          "value":"Northern Samar",
-          "label":"Northern Samar"
-       },
-       {
-          "value":"Nueva Ecija",
-          "label":"Nueva Ecija"
-       },
-       {
-          "value":"Nueva Vizcaya",
-          "label":"Nueva Vizcaya"
-       },
-       {
-          "value":"Occidental Mindoro",
-          "label":"Occidental Mindoro"
-       },
-       {
-          "value":"Oriental Mindoro",
-          "label":"Oriental Mindoro"
-       },
-       {
-          "value":"Palawan",
-          "label":"Palawan"
-       },
-       {
-          "value":"Pampanga",
-          "label":"Pampanga"
-       },
-       {
-          "value":"Pangasinan",
-          "label":"Pangasinan"
-       },
-       {
-          "value":"Quezon",
-          "label":"Quezon"
-       },
-       {
-          "value":"Quirino",
-          "label":"Quirino"
-       },
-       {
-          "value":"Rizal",
-          "label":"Rizal"
-       },
-       {
-          "value":"Romblon",
-          "label":"Romblon"
-       },
-       {
-          "value":"Samar",
-          "label":"Samar"
-       },
-       {
-          "value":"Sarangani",
-          "label":"Sarangani"
-       },
-       {
-          "value":"Siquijor",
-          "label":"Siquijor"
-       },
-       {
-          "value":"Sorsogon",
-          "label":"Sorsogon"
-       },
-       {
-          "value":"South Cotabato",
-          "label":"South Cotabato"
-       },
-       {
-          "value":"Southern Leyte",
-          "label":"Southern Leyte"
-       },
-       {
-          "value":"Sultan Kudarat",
-          "label":"Sultan Kudarat"
-       },
-       {
-          "value":"Sulu",
-          "label":"Sulu"
-       },
-       {
-          "value":"Surigao Del Norte",
-          "label":"Surigao Del Norte"
-       },
-       {
-          "value":"Surigao Del Sur",
-          "label":"Surigao Del Sur"
-       },
-       {
-          "value":"Tarlac",
-          "label":"Tarlac"
-       },
-       {
-          "value":"Tawi-Tawi",
-          "label":"Tawi-Tawi"
-       },
-       {
-          "value":"Zambales",
-          "label":"Zambales"
-       },
-       {
-          "value":"Zamboanga Del Norte",
-          "label":"Zamboanga Del Norte"
-       },
-       {
-          "value":"Zamboanga Del Sur",
-          "label":"Zamboanga Del Sur"
-       },
-       {
-          "value":"Zamboanga Sibugay",
-          "label":"Zamboanga Sibugay"
-       },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      }
+          "value":"didntAsk",
+          "label":"Didn't ask"
+       }
     ],
     "required": {
       "value": true,
@@ -558,27 +525,76 @@
     }
   },
   {
-    "name": "city",
-    "label": "City/Municipality",
-    "type": "input",
+    "name": "answerHOQuestions",
+    "label": "Is the client happy to answer HO data questions?",
+    "type": "select",
+    "options": [
+       {
+          "value":"Unknown",
+          "label":""
+       },
+       {
+          "value":"yes",
+          "label":"Yes"
+       },
+       {
+          "value":"no",
+          "label":"No"
+       },
+       {
+          "value":"didntAsk",
+          "label":"Didn't ask"
+       }
+    ]
+  },
+  {
+    "name": "whyHONotAsked",
+    "label": "Why didn't you ask HO questions?",
+    "type": "select",
+    "options": [
+       {
+          "value":"",
+          "label":""
+       },
+       {
+          "value":"clientDistressed",
+          "label":"Client Distressed"
+       },
+       {
+          "value":"MHofClient",
+          "label":"MH of Client"
+       },
+       {
+          "value":"clientNotInUK",
+          "label":"Client not in UK"
+       },
+       {
+          "value":"client under 18",
+          "label":"Client under 18"
+       },
+       {
+          "value":"previousClient",
+          "label":"PreviousClient"
+       }
+    ],
     "required": {
       "value": true,
       "message": "RequiredFieldError"
     }
   },
   {
-    "name": "barangay",
-    "label": "Barangay",
+    "name": "numberOfInteractions",
+    "label": "Number of Interactions with client",
     "type": "input"
   },
   {
-    "name": "schoolName",
-    "label": "School Name",
-    "type": "input"
+    "name": "contentCreator",
+    "label": "Sex Worker/ Content Creator",
+    "type": "checkbox"
   },
   {
-    "name": "gradeLevel",
-    "label": "Grade Level",
+    "name": "whoAlerted",
+    "label": "Who alerted them to the content?",
     "type": "select",
     "options": [
       {
@@ -586,102 +602,25 @@
         "label": ""
       },
       {
-        "value": "nurserySchool",
-        "label": "Nursery School"
+        "value": "coldMessaged",
+        "label": "Cold Messaged"
       },
       {
-        "value": "Grade 1 to 4",
-        "label": "Grade 1 to 4"
+        "value": "familyOrFriend",
+        "label": "Family member/ Friend"
       },
       {
-        "value": "Grade 5 to 7",
-        "label": "Grade 5 to 7"
+        "value": "perpetrator",
+        "label": "Perpetrator"
       },
       {
-        "value": "Grade 8 to 9",
-        "label": "Grade 8 to 9"
+        "value": "policeSupportService",
+        "label": "Police/ Support service"
       },
       {
-        "value": "Grade 10 to 12",
-        "label": "Grade 10 to 12"
-      },
-      {
-        "value": "Out of school",
-        "label": "Out of school"
+        "value": "selfIdentified",
+        "label": "Self identified"
       }
     ]
-  },
-  {
-    "name": "livingSituation",
-    "label": "Living Situation",
-    "type": "select",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Alternative care",
-        "label": "Alternative care"
-      },
-      {
-        "value": "Group residential facility",
-        "label": "Group residential facility"
-      },
-      {
-        "value": "Homeless or marginally housed",
-        "label": "Homeless or marginally housed"
-      },
-      {
-        "value": "In detention",
-        "label": "In detention"
-      },
-      {
-        "value": "Living independently",
-        "label": "Living independently"
-      },
-      {
-        "value": "With parent(s)",
-        "label": "With parent(s)"
-      },
-      {
-        "value": "With relatives",
-        "label": "With relatives"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
-      }
-    ]
-  },
-  {
-    "name": "livingInConflictZone",
-    "label": "Child living in conflict zone",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "inConflictWithTheLaw",
-    "label": "Child in conflict with the law",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "livingInPoverty",
-    "label": "Child living on the streets",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "memberOfAnEthnic",
-    "label": "Child member of an ethnic, racial or religious minority",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "childWithDisability",
-    "label": "Child with disability",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "LGBTQI+",
-    "label": "LGBTQI+ / SOGIESC child",
-    "type": "mixed-checkbox"
   }
 ]
