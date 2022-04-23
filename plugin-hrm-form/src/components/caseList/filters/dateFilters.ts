@@ -97,6 +97,12 @@ const isRelativeDateRange = (item: any): item is RelativeDateRange => {
   return typeof rdr.from === 'function' && typeof rdr.to === 'function';
 };
 
+/**
+ * Compares 2 date filter options for equality. Requires the option and functional filter settings to be the same
+ * Title keys are ignored
+ * @param option1
+ * @param option2
+ */
 export const dateFilterOptionsAreEqual = (option1: DateFilterOption, option2: DateFilterOption): boolean => {
   if (!option1 && !option2) {
     return true;
@@ -140,7 +146,8 @@ export const followUpDateFilterOptions = (): DateFilterOptions => [
 
 /**
  * Creates the date filters sub section of the search endpoint POST payload from a list of DateFilter objects
- * @param filters
+ * @param filters - the input date filters used to build the payload
+ * @param referenceDate - optional date to specify 'now' as the reference point for calculating relative date ranges. Current time is used if not specified. Primarily for testing
  */
 export const dateFilterPayloadFromFilters = (filters: DateFilter[], referenceDate = null) => {
   const entries = filters

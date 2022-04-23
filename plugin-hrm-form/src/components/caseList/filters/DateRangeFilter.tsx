@@ -29,20 +29,12 @@ type ReactHookFormValues = {
   [name: string]: string;
 };
 
-type OwnProps = {
-  name: string;
-  labelKey: string;
-  options: DateFilterOptions;
-  current?: DateFilterOption;
-  withSearch?: boolean;
-  openedFilter: string;
-  applyFilter: (filter: DateFilterOption) => void;
-  setOpenedFilter: (name: string) => void;
-};
-
-// eslint-disable-next-line no-use-before-define
-type Props = OwnProps;
-
+/**
+ * Converts a date filter option from the current filter state to a map of values that can be used to populate the form
+ * @param selectedOptionField - The key in the form map the selected option name is under (the DateRangeFilter's 'name' property in practice)
+ * @param option - the name of the selected option
+ * @param dateFilter - the additional settings for the selected option
+ */
 const dateFilterToForm = (
   selectedOptionField: string,
   [option, dateFilter]: DateFilterOption | undefined = [undefined, undefined],
@@ -57,6 +49,12 @@ const dateFilterToForm = (
   return values;
 };
 
+/**
+ * Converts the React Hook Form value map into a DateFilterOption, that is used to represent a selected date filter option + additional parameters internally
+ * @param selectedOptionField - The key in the form map the selected option name is under (the DateRangeFilter's 'name' property in practice)
+ * @param filterOptions - the valid filter options for the DateFilter being set
+ * @param values - the form values map
+ */
 const formToDateFilter = (
   selectedOptionField: string,
   filterOptions: DateFilterOption[],
@@ -74,22 +72,31 @@ const formToDateFilter = (
   return [values[selectedOptionField], copy];
 };
 
+type OwnProps = {
+  name: string;
+  labelKey: string;
+  options: DateFilterOptions;
+  current?: DateFilterOption;
+  withSearch?: boolean;
+  openedFilter: string;
+  applyFilter: (filter: DateFilterOption) => void;
+  setOpenedFilter: (name: string) => void;
+};
+
+type Props = OwnProps;
+
 const DateRangeFilter: React.FC<Props> = ({
   name,
   labelKey,
   options,
-  current,
+  current, // represents the current filter applied to the list, as opposed to currentWorkingCopy, which is the one the user is currently changing in this component.
   openedFilter,
   applyFilter,
   setOpenedFilter,
-  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const optionsWithoutDividers = options.filter(opt => !isDivider(opt)) as DateFilterOption[];
 
   const [currentWorkingCopy, setCurrentWorkingCopy] = useState<DateFilterOption>(current);
-
-  const firstElement = useRef(null);
-  const lastElement = useRef(null);
 
   const { register, handleSubmit, reset, getValues } = useForm({
     defaultValues: dateFilterToForm(name, current),
@@ -125,26 +132,6 @@ const DateRangeFilter: React.FC<Props> = ({
     reset(dateFilterToForm(undefined));
   };
 
-  const handleTabForLastElement = event => {
-    if (!event.shiftKey && event.key === 'Tab') {
-      event.preventDefault();
-
-      if (firstElement.current) {
-        firstElement.current.focus();
-      }
-    }
-  };
-
-  const handleShiftTabForFirstElement = event => {
-    if (event.shiftKey && event.key === 'Tab') {
-      event.preventDefault();
-
-      if (lastElement.current) {
-        lastElement.current.focus();
-      }
-    }
-  };
-
   const [, currentWorkingFilter] = currentWorkingCopy ?? [];
 
   return (
@@ -165,7 +152,6 @@ const DateRangeFilter: React.FC<Props> = ({
           <form onSubmit={handleSubmit(onSubmit)}>
             <MultiSelectUnorderedList>
               {options.map((item, i) => {
-                const isFirstFocusableElement = i === 0;
                 if (!isDivider(item)) {
                   const [option, filter] = item;
                   return (
@@ -180,7 +166,6 @@ const DateRangeFilter: React.FC<Props> = ({
                           name={name}
                           type="radio"
                           innerRef={register}
-                          onKeyDown={isFirstFocusableElement ? handleShiftTabForFirstElement : null}
                         />
                         <Template code={filter.titleKey} {...(filter.titleParameters ?? {})} />
                       </FormLabel>
@@ -222,12 +207,7 @@ const DateRangeFilter: React.FC<Props> = ({
                   <Template code="CaseList-Filters-Clear" />
                 </FiltersClearButton>
               </Box>
-              <FiltersApplyButton
-                type="submit"
-                onKeyDown={handleTabForLastElement}
-                innerRef={lastElement}
-                disabled={dateFilterOptionsAreEqual(current, currentWorkingCopy)}
-              >
+              <FiltersApplyButton type="submit" disabled={dateFilterOptionsAreEqual(current, currentWorkingCopy)}>
                 <Template code="CaseList-Filters-Apply" />
               </FiltersApplyButton>
             </FiltersBottomButtons>
