@@ -62,8 +62,10 @@
     "jest-axe": "^3.4.0",
     "jest-each": "^27.5.1",
     "jest-environment-jsdom-latest": "^26.6.2",
+    "mockdate": "^3.0.5",
     "redux-mock-store": "^1.5.4",
     "rxjs-compat": "6.6.3",
+    "timezoned-date": "^3.0.2",
     "ts-jest": "^26.5.0",
     "typescript": "^3.9.7"
   }

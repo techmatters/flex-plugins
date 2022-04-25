@@ -6,6 +6,7 @@
 import React, { useCallback } from 'react';
 import { useFormContext, RegisterOptions } from 'react-hook-form';
 import { get, pick } from 'lodash';
+import { format, startOfDay } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
 import { FormItemDefinition, FormDefinition, InputOption, SelectOption, MixedOrBool } from 'hrm-form-definitions';
 
@@ -48,18 +49,14 @@ export const getInitialValue = (def: FormItemDefinition) => {
       return '';
     case 'date-input': {
       if (def.initializeWithCurrent) {
-        const date = new Date();
-        // Return the YYYY-MM-DD part of the ISO string (from new Date to fix timezone differences)
-        return new Date(`${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`).toISOString().slice(0, 10);
+        return format(startOfDay(new Date()), 'yyyy-MM-dd');
       }
 
       return '';
     }
     case 'time-input': {
       if (def.initializeWithCurrent) {
-        const date = new Date();
-        // Return the locale hh:mm
-        return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+        return format(new Date(), 'HH:mm');
       }
 
       return '';
