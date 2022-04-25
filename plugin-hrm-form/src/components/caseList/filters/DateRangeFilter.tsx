@@ -164,7 +164,7 @@ const DateRangeFilter: React.FC<Props> = ({
   };
 
   const [, currentWorkingFilter] = currentWorkingCopy ?? [];
-
+  const dividerStyle = { border: 'none', height: '1px', backgroundColor: 'rgb(216, 216, 216)' };
   return (
     <div style={{ position: 'relative' }}>
       <MultiSelectButton
@@ -220,32 +220,52 @@ const DateRangeFilter: React.FC<Props> = ({
                 }
                 return (
                   <li key={i}>
-                    <hr />
+                    <hr style={dividerStyle} />
                   </li>
                 );
               })}
             </MultiSelectUnorderedList>
-            <Box style={{ visibility: isFixedDateRange(currentWorkingFilter) ? 'inherit' : 'hidden' }}>
-              <FormDateInput
-                style={{ width: '80pt', display: 'inline' }}
-                type="date"
-                id="customDateRangeFrom"
-                data-testid="customDateRangeFrom"
-                name="customDateRangeFrom"
-                onChange={() => setCurrentWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))}
-                innerRef={register}
-              />{' '}
-              <Template code="CaseList-Filters-DateFilter-CustomRange" />{' '}
-              <FormDateInput
-                style={{ width: '80pt', display: 'inline' }}
-                type="date"
-                id="customDateRangeTo"
-                data-testid="customDateRangeTo"
-                name="customDateRangeTo"
-                onChange={() => setCurrentWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))}
-                innerRef={register}
-              />
+            <Box
+              style={{
+                visibility: isFixedDateRange(currentWorkingFilter) ? 'inherit' : 'hidden',
+                alignContent: 'bottom',
+                marginLeft: '20px',
+              }}
+            >
+              <Box style={{ display: 'inline-block' }}>
+                <p style={{ marginBottom: '5px' }}>
+                  <Template code="CaseList-Filters-DateFilter-CustomDateFrom" />
+                </p>
+                <FormDateInput
+                  style={{ width: '80pt' }}
+                  type="date"
+                  id="customDateRangeFrom"
+                  data-testid="customDateRangeFrom"
+                  name="customDateRangeFrom"
+                  onChange={() => setCurrentWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))}
+                  innerRef={register}
+                />
+              </Box>
+              <span style={{ padding: '5px' }}>
+                {' '}
+                <Template code="CaseList-Filters-DateFilter-CustomRange" />{' '}
+              </span>
+              <Box style={{ display: 'inline-block' }}>
+                <p style={{ marginBottom: '5px' }}>
+                  <Template code="CaseList-Filters-DateFilter-CustomDateTo" />
+                </p>
+                <FormDateInput
+                  style={{ width: '80pt', display: 'inline-block' }}
+                  type="date"
+                  id="customDateRangeTo"
+                  data-testid="customDateRangeTo"
+                  name="customDateRangeTo"
+                  onChange={() => setCurrentWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))}
+                  innerRef={register}
+                />
+              </Box>
             </Box>
+            <hr style={dividerStyle} />
 
             <FiltersBottomButtons>
               <Box marginRight="10px">

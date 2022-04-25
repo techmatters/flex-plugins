@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { Template } from '@twilio/flex-ui';
 import type { DefinitionVersion } from 'hrm-form-definitions';
 import FilterList from '@material-ui/icons/FilterList';
+import DateRange from '@material-ui/icons/DateRange';
+import Edit from '@material-ui/icons/Edit';
 
 import { getConfig } from '../../../HrmFormPlugin';
 import { FiltersContainer, FiltersResetAll, CasesTitle, CasesCount, FilterBy } from '../../../styles/caseList/filters';
@@ -195,7 +197,8 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ca
             setOpenedFilter={setOpenedFilter}
             searchable
           />
-          <FiltersContainer style={{ marginLeft: '100px' }}>
+          <FiltersContainer style={{ marginLeft: '100px', boxShadow: 'none' }}>
+            <DateRange fontSize="inherit" style={{ marginRight: 5 }} />
             <Template code="CaseList-Filters-DateFiltersLabel" />
             {dateFilters.map(df => {
               return (
