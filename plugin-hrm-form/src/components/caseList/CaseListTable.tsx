@@ -3,7 +3,6 @@ import React from 'react';
 import { TableBody, CircularProgress } from '@material-ui/core';
 import { connect } from 'react-redux';
 
-import { getConfig } from '../../HrmFormPlugin';
 import { namespace, configurationBase } from '../../states';
 import { TableContainer, CLTable, CLTableRow, CLNamesCell } from '../../styles/caseList';
 import Filters from './filters/Filters';
@@ -46,7 +45,6 @@ const CaseListTable: React.FC<Props> = ({
   counselorsHash,
   currentDefinitionVersion,
 }) => {
-  const { featureFlags } = getConfig();
   const pagesCount = Math.ceil(caseCount / CASES_PER_PAGE);
 
   return (
