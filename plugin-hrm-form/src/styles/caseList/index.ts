@@ -43,6 +43,10 @@ export const CLTableRow = withStyles({
     borderColor: 'rgba(127, 134, 155, 0.07)',
     borderRadius: 4,
     boxShadow: '0 1px 1px 0 rgba(0, 0, 0, 0.06)',
+    '&:hover': {
+      backgroundColor: '#F4F4F4',
+      boxShadow: '3px rgba(25, 43, 51, .4)',
+    },
   },
 })(TableRow);
 CLTableRow.displayName = 'CLTableRow';

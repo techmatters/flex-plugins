@@ -22,7 +22,6 @@ import { caseStatuses } from '../../states/DomainConstants';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
 
 const CHAR_LIMIT = 200;
-const FullscreenIcon = addHover(StyledIcon(Fullscreen));
 
 // eslint-disable-next-line react/no-multi-comp
 const CaseListTableRow = ({ caseItem, counselorsHash, handleClickViewCase }) => {
