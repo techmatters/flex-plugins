@@ -109,7 +109,8 @@ type CLTableBodyFontProps = {
 };
 
 export const CLTableBodyFont = styled(FontOpenSans)<CLTableBodyFontProps>`
-  color: ${props => (props.isOpenCase ? '#192b33' : '#666c7c')};
+  /* color: ${props => (props.isOpenCase ? '#192b33' : '#666c7c')}; */
+  color: #192b33;
   font-size: 12px;
   line-height: 18px;
   font-weight: 600;
@@ -124,8 +125,6 @@ type CLCaseNumberContainerProps = {
 export const CLCaseNumberContainer = styled('div')<CLCaseNumberContainerProps>`
   display: inline-block;
   padding: 0 6px;
-  border: ${props => (props.isOpenCase ? '1px solid #192b33' : '0')};
-  border-radius: 2px;
 `;
 CLCaseNumberContainer.displayName = 'CLCaseNumberContainer';
 

@@ -15,7 +15,7 @@ import {
   CLTableBodyFont,
   CLCaseNumberContainer,
 } from '../../styles/caseList';
-import { Box, HiddenText, StyledIcon, addHover } from '../../styles/HrmStyles';
+import { Box, HiddenText, StyledIcon, addHover, CaseListLink } from '../../styles/HrmStyles';
 import { formatName, getShortSummary } from '../../utils';
 import { getContactTags, renderTag } from '../../utils/categories';
 import { caseStatuses } from '../../states/DomainConstants';
@@ -26,6 +26,7 @@ const FullscreenIcon = addHover(StyledIcon(Fullscreen));
 
 // eslint-disable-next-line react/no-multi-comp
 const CaseListTableRow = ({ caseItem, counselorsHash, handleClickViewCase }) => {
+  const status = caseItem.status
   const name = formatName(caseItem.childName);
   const summary = caseItem.info && caseItem.info.summary;
   const shortSummary = getShortSummary(summary, CHAR_LIMIT, 'case');
@@ -44,7 +45,8 @@ const CaseListTableRow = ({ caseItem, counselorsHash, handleClickViewCase }) => 
     <CLTableRow data-testid="CaseList-TableRow">
       <CLNumberCell>
         <CLCaseNumberContainer isOpenCase={isOpenCase}>
-          <CLTableBodyFont isOpenCase={isOpenCase}>#{caseItem.id}</CLTableBodyFont>
+          <CLTableBodyFont onClick={handleClickViewCase(caseItem)} isOpenCase={isOpenCase} style={{ color: '#1876D1', textDecoration: 'underline', cursor: 'pointer'}}>{caseItem.id}</CLTableBodyFont>
+          <CLTableBodyFont isOpenCase={isOpenCase} style={{ color: '#606B85', paddingTop: '2px' }}>{status.charAt(0).toUpperCase() + status.slice(1)}</CLTableBodyFont>
         </CLCaseNumberContainer>
       </CLNumberCell>
       <CLNamesCell>
@@ -75,7 +77,7 @@ const CaseListTableRow = ({ caseItem, counselorsHash, handleClickViewCase }) => 
             ))}
         </div>
       </CLTableCell>
-      <CLActionCell>
+      {/* <CLActionCell>
         <ButtonBase onClick={handleClickViewCase(caseItem)}>
           <HiddenText>
             <Template code="CaseList-ExpandButton" />
@@ -83,7 +85,7 @@ const CaseListTableRow = ({ caseItem, counselorsHash, handleClickViewCase }) => 
           </HiddenText>
           <FullscreenIcon />
         </ButtonBase>
-      </CLActionCell>
+      </CLActionCell> */}
     </CLTableRow>
   );
 };

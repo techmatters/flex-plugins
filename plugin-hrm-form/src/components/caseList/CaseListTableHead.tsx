@@ -27,7 +27,7 @@ const CaseListTableHead = ({ sortBy, sortDirection, handleColumnClick }) => {
           defaultSortDirection={ListCasesSortDirection.ASC}
           localizedText="CaseList-THChildName"
         />
-        <CaseListTableHeadCell {...tableCellProps} localizedText="CaseList-THSummary" width="30%" />
+        <CaseListTableHeadCell {...tableCellProps} localizedText="CaseList-THSummary" width="20%" />
         <CaseListTableHeadCell {...tableCellProps} localizedText="CaseList-THCounselor" />
         <CaseListTableHeadCell
           {...tableCellProps}
@@ -47,8 +47,8 @@ const CaseListTableHead = ({ sortBy, sortDirection, handleColumnClick }) => {
           defaultSortDirection={ListCasesSortDirection.DESC}
           localizedText="CaseList-THFollowUp"
         />
-        <CaseListTableHeadCell {...tableCellProps} localizedText="CaseList-THCategory" width="30%" />
-        <CaseListTableHeadCell {...tableCellProps} width="4%" />
+        <CaseListTableHeadCell {...tableCellProps} localizedText="CaseList-THCategory" width="15%" />
+        {/* <CaseListTableHeadCell {...tableCellProps} width="4%" /> */}
       </TableRow>
     </TableHead>
   );

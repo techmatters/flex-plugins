@@ -264,7 +264,7 @@
   "CaseList-Cases": "Casos",
   "CaseList-Filters-CaseCount-Singular": "{{count}} caso",
   "CaseList-Filters-CaseCount-Plural": "{{count}} casos",
-  "CaseList-THCase": "Caso #",
+  "CaseList-THCase": "Caso",
   "CaseList-THChildName": "Nome da criança",
   "CaseList-THSummary": "Resumo",
   "CaseList-THCounselor": "Atendente",
