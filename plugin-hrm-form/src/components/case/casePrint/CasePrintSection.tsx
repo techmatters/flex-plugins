@@ -32,7 +32,9 @@ const CasePrintSection: React.FC<Props> = ({ sectionName, values, definitions, u
                 <Text style={{ marginRight: '10px' }}>{def.label}</Text>
               </View>
               <View style={styles.sectionItemSecondColumn}>
-                <Text>{presentValue(unNestInfo ? unNestInformation(def, values) : values[def.name], strings)(def)}</Text>
+                <Text>
+                  {presentValue(unNestInfo ? unNestInformation(def, values) : values[def.name], strings)(def)}
+                </Text>
               </View>
             </View>
           );
