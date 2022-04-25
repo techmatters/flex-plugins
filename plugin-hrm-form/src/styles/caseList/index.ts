@@ -109,7 +109,6 @@ type CLTableBodyFontProps = {
 };
 
 export const CLTableBodyFont = styled(FontOpenSans)<CLTableBodyFontProps>`
-  /* color: ${props => (props.isOpenCase ? '#192b33' : '#666c7c')}; */
   color: #192b33;
   font-size: 12px;
   line-height: 18px;
