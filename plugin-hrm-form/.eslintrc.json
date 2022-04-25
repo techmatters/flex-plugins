@@ -15,8 +15,12 @@
     "no-warning-comments": "off",
     "no-confusing-arrow": "off",
     "no-alert": "off",
+    "no-shadow": "off",
     "import/no-extraneous-dependencies": "off",
     "jsx-a11y/tabindex-no-positive": "off",
-    "sonarjs/no-duplicate-string": "off"
+    "sonarjs/no-duplicate-string": "off",
+    "no-use-before-define": "off",
+    "react/prop-types": "off",
+    "react/display-name": "off"
   }
 }
