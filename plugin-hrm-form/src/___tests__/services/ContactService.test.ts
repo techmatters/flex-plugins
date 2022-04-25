@@ -3,7 +3,7 @@ import { callTypes, DefinitionVersionId, loadDefinition } from 'hrm-form-definit
 
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import { transformForm, saveContact, createCategoriesObject } from '../../services/ContactService';
-import { createNewTaskEntry } from '../../states/contacts/reducer';
+import { createNewTaskEntry, TaskEntry } from '../../states/contacts/reducer';
 import { channelTypes } from '../../states/DomainConstants';
 import { offlineContactTaskSid } from '../../types/types';
 import { getDefinitionVersions } from '../../HrmFormPlugin';
@@ -11,12 +11,20 @@ import { getDefinitionVersions } from '../../HrmFormPlugin';
 const helpline = 'ChildLine Zambia (ZM)';
 
 // eslint-disable-next-line no-empty-function
-global.fetch = global.fetch ? global.fetch : () => {};
+global.fetch = global.fetch ? global.fetch : () => Promise.resolve(<any>{ ok: true });
 
 jest.mock('../../services/formSubmissionHelpers', () => ({
   getHelplineToSave: () => ({
     helpline: Promise.resolve(helpline),
   }),
+}));
+
+jest.mock('@twilio/flex-ui', () => ({
+  __esModule: true,
+  ...(<any>jest.requireActual('@twilio/flex-ui')),
+  TaskHelper: {
+    isChatBasedTask: () => true,
+  },
 }));
 
 let mockV1;
@@ -28,7 +36,7 @@ beforeAll(async () => {
 
 describe('transformForm', () => {
   test('removes control information and presents values only', () => {
-    const oldForm = {
+    const oldForm: TaskEntry = {
       helpline,
       callType: callTypes.caller,
       callerInformation: {
@@ -50,7 +58,8 @@ describe('transformForm', () => {
         date: '',
         time: '',
       },
-      metadata: {},
+      csamReports: [],
+      metadata: <any>{},
     };
 
     const expectedCategories = oldForm.categories.reduce((acc, path) => set(path, true, acc), {
@@ -77,8 +86,6 @@ describe('transformForm', () => {
       },
       metadata: {},
     };
-
-    oldForm.categories.reduce((acc, path) => set(path, true, acc));
 
     const transformed = transformForm(oldForm);
     // expect().toStrictEqual(expected);
@@ -125,10 +132,7 @@ describe('saveContact()', () => {
   };
   const workerSid = 'worker-sid';
   const uniqueIdentifier = 'uniqueIdentifier';
-  const fetchSuccess = Promise.resolve({
-    ok: true,
-    json: () => Promise.resolve(),
-  });
+  const fetchSuccess = Promise.resolve(<any>{ ok: true });
 
   test('data calltype saves form data', async () => {
     const form = createForm({ callType: callTypes.child, childFirstName: 'Jill' });
@@ -145,13 +149,13 @@ describe('saveContact()', () => {
   });
 
   test('non-data calltype do not save form data', async () => {
-    const form = createForm({ callType: callTypes.hangup, childFirstName: 'Jill' });
+    const form = createForm({ callType: 'hang up', childFirstName: 'Jill' });
     const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
 
     await saveContact(task, form, workerSid, uniqueIdentifier);
 
     const formFromPOST = getFormFromPOST(mockedFetch);
-    expect(formFromPOST.callType).toEqual(callTypes.hangup);
+    expect(formFromPOST.callType).toEqual('hang up');
     expect(formFromPOST.childInformation.name.firstName).toEqual('');
 
     mockedFetch.mockClear();
@@ -167,10 +171,7 @@ describe('saveContact() (isContactlessTask)', () => {
   };
   const workerSid = 'worker-sid';
   const uniqueIdentifier = 'uniqueIdentifier';
-  const fetchSuccess = Promise.resolve({
-    ok: true,
-    json: () => Promise.resolve(),
-  });
+  const fetchSuccess = Promise.resolve(<any>{ ok: true });
 
   test('data calltype saves form data', async () => {
     const form = createForm(
@@ -191,7 +192,7 @@ describe('saveContact() (isContactlessTask)', () => {
 
   test('non-data calltype do not save form data (but captures contactlessTask info)', async () => {
     const contactlessTask = { channel: 'web', date: '2020-11-24', time: '12:00', createdOnBehalfOf: 'someone else' };
-    const form = createForm({ callType: callTypes.hangup, childFirstName: 'Jill' }, contactlessTask);
+    const form = createForm({ callType: 'hang up', childFirstName: 'Jill' }, contactlessTask);
     const mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
 
     await saveContact({ ...task, taskSid: offlineContactTaskSid }, form, workerSid, uniqueIdentifier);
@@ -199,7 +200,7 @@ describe('saveContact() (isContactlessTask)', () => {
     const expected = { ...contactlessTask };
 
     const formFromPOST = getFormFromPOST(mockedFetch);
-    expect(formFromPOST.callType).toEqual(callTypes.hangup);
+    expect(formFromPOST.callType).toEqual('hang up');
     expect(formFromPOST.childInformation.name.firstName).toEqual('');
     expect(formFromPOST.contactlessTask).toStrictEqual(expected);
     expect(getTimeOfContactFromPOST(mockedFetch)).toEqual(new Date(2020, 10, 24, 12, 0).getTime());

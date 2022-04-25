@@ -1,3 +1,4 @@
+// @ts-ignore
 import React from 'react';
 import { axe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
@@ -5,14 +6,23 @@ import { StorelessThemeProvider } from '@twilio/flex-ui';
 import FolderIcon from '@material-ui/icons/FolderOpen';
 import CancelIcon from '@material-ui/icons/Cancel';
 
-import HrmTheme from '../../../styles/HrmTheme';
 import { Menu, MenuItem } from '../../../components/menu';
 
 expect.extend(toHaveNoViolations);
 
-const themeConf = {
-  colorTheme: HrmTheme,
-};
+declare global {
+  namespace jest {
+    interface Matchers<R> {
+      toHaveNoViolations(): R;
+    }
+    // @ts-ignore
+    interface Expect<R> {
+      toHaveNoViolations(): R;
+    }
+  }
+}
+
+const themeConf = {};
 const anchorEl = React.createRef();
 
 test('do not show menu', () => {
