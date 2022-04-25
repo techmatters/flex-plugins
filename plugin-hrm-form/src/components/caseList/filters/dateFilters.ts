@@ -97,29 +97,6 @@ const isRelativeDateRange = (item: any): item is RelativeDateRange => {
   return typeof rdr.from === 'function' && typeof rdr.to === 'function';
 };
 
-/**
- * Compares 2 date filter options for equality. Requires the option and functional filter settings to be the same
- * Title keys are ignored
- * @param option1
- * @param option2
- */
-export const dateFilterOptionsAreEqual = (option1: DateFilterOption, option2: DateFilterOption): boolean => {
-  if (!option1 && !option2) {
-    return true;
-  }
-  if (option1 && option2 && option1[0] === option2[0]) {
-    const [, filter1] = option1;
-    const [, filter2] = option2;
-    if (isExistsDateFilter(filter1) && isExistsDateFilter(filter2)) {
-      return filter1.exists === filter2.exists;
-    } else if (isFixedDateRange(filter1) && isFixedDateRange(filter2)) {
-      return filter1.from?.valueOf() === filter2.from?.valueOf() && filter1.to?.valueOf() === filter2.to?.valueOf();
-    }
-    return isRelativeDateRange(filter1) && isRelativeDateRange(filter2);
-  }
-  return false;
-};
-
 export const standardCaseListDateFilterOptions = (): DateFilterOptions => [
   ['TODAY', today()],
   ['YESTERDAY', yesterday()],

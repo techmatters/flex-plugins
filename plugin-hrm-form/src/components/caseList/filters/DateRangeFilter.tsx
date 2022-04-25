@@ -7,13 +7,7 @@ import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 
 import { Box, Flex, FormDateInput, FormLabel, FormRadioInput } from '../../../styles/HrmStyles';
-import {
-  DateFilterOption,
-  DateFilterOptions,
-  dateFilterOptionsAreEqual,
-  isDivider,
-  isFixedDateRange,
-} from './dateFilters';
+import { DateFilterOption, DateFilterOptions, isDivider, isFixedDateRange } from './dateFilters';
 import {
   DialogArrow,
   FiltersDialog,
@@ -93,14 +87,21 @@ const DateRangeFilter: React.FC<Props> = ({
   openedFilter,
   applyFilter,
   setOpenedFilter,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const optionsWithoutDividers = options.filter(opt => !isDivider(opt)) as DateFilterOption[];
 
   const [currentWorkingCopy, setCurrentWorkingCopy] = useState<DateFilterOption>(current);
 
+  const filterButtonElement = useRef(null);
+  const firstOptionElement = useRef(null);
+  const applyButtonElement = useRef(null);
+
   const { register, handleSubmit, reset, getValues } = useForm({
     defaultValues: dateFilterToForm(name, current),
   });
+
+  const isOpened = name === openedFilter;
 
   // Force React Hook Forms to rerender whenever current value changes
   useEffect(() => {
@@ -108,12 +109,28 @@ const DateRangeFilter: React.FC<Props> = ({
     reset(dateFilterToForm(name, current));
   }, [name, reset, current]);
 
+  // Close dialog on ESC
+  useEffect(() => {
+    const closeDialog = event => {
+      if (event.key === 'Escape') {
+        // Always reset to defaultValues whenever you open/close the component
+        reset(dateFilterToForm(name, current));
+        setOpenedFilter(null);
+        filterButtonElement.current?.focus();
+      }
+    };
+
+    if (isOpened) {
+      window.addEventListener('keydown', closeDialog);
+    }
+
+    return () => window.removeEventListener('keydown', closeDialog);
+  }, [isOpened, reset, setOpenedFilter, name, current]);
+
   const onSubmit = () => {
     setOpenedFilter(null);
     applyFilter(currentWorkingCopy);
   };
-
-  const isOpened = name === openedFilter;
 
   const handleClick = () => {
     // Always reset to defaultValues whenever you open/close the component
@@ -127,6 +144,20 @@ const DateRangeFilter: React.FC<Props> = ({
     }
   };
 
+  const handleTabForLastElement = event => {
+    if (!event.shiftKey && event.key === 'Tab') {
+      event.preventDefault();
+      firstOptionElement.current?.focus();
+    }
+  };
+
+  const handleShiftTabForFirstElement = event => {
+    if (event.shiftKey && event.key === 'Tab') {
+      event.preventDefault();
+      applyButtonElement.current?.focus();
+    }
+  };
+
   const handleClear = () => {
     setCurrentWorkingCopy(undefined);
     reset(dateFilterToForm(undefined));
@@ -136,7 +167,16 @@ const DateRangeFilter: React.FC<Props> = ({
 
   return (
     <div style={{ position: 'relative' }}>
-      <MultiSelectButton isOpened={isOpened} isActive={Boolean(current)} type="button" onClick={handleClick}>
+      <MultiSelectButton
+        isOpened={isOpened}
+        isActive={Boolean(current)}
+        type="button"
+        onClick={handleClick}
+        innerRef={innerRef => {
+          filterButtonElement.current = innerRef;
+          register(innerRef);
+        }}
+      >
         <Template code={labelKey} />
         <Flex marginLeft="15px">
           {isOpened && <ArrowDropUp />}
@@ -158,6 +198,7 @@ const DateRangeFilter: React.FC<Props> = ({
                     <li style={{ marginBottom: '10px' }} key={i}>
                       <FormLabel htmlFor={option} style={{ flexDirection: 'row' }}>
                         <FormRadioInput
+                          onKeyDown={i === 0 ? handleShiftTabForFirstElement : null}
                           onChange={() =>
                             setCurrentWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))
                           }
@@ -165,7 +206,12 @@ const DateRangeFilter: React.FC<Props> = ({
                           value={option}
                           name={name}
                           type="radio"
-                          innerRef={register}
+                          innerRef={innerRef => {
+                            if (i === 0) {
+                              firstOptionElement.current = innerRef;
+                            }
+                            register(innerRef);
+                          }}
                         />
                         <Template code={filter.titleKey} {...(filter.titleParameters ?? {})} />
                       </FormLabel>
@@ -203,11 +249,18 @@ const DateRangeFilter: React.FC<Props> = ({
 
             <FiltersBottomButtons>
               <Box marginRight="10px">
-                <FiltersClearButton type="button" onClick={handleClear} disabled={!currentWorkingCopy}>
+                <FiltersClearButton type="button" onClick={handleClear}>
                   <Template code="CaseList-Filters-Clear" />
                 </FiltersClearButton>
               </Box>
-              <FiltersApplyButton type="submit" disabled={dateFilterOptionsAreEqual(current, currentWorkingCopy)}>
+              <FiltersApplyButton
+                type="submit"
+                innerRef={innerRef => {
+                  applyButtonElement.current = innerRef;
+                  register(innerRef);
+                }}
+                onKeyDown={handleTabForLastElement}
+              >
                 <Template code="CaseList-Filters-Apply" />
               </FiltersApplyButton>
             </FiltersBottomButtons>
