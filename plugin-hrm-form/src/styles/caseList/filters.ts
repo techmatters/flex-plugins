@@ -1,4 +1,5 @@
 import styled from 'react-emotion';
+import { Button } from '@twilio/flex-ui';
 
 import { Flex } from '../HrmStyles';
 
@@ -50,12 +51,13 @@ CasesCount.displayName = 'CasesCount';
 
 type MultiSelectButtonProps = {
   isOpened?: Boolean;
+  isActive?: Boolean;
 };
 
 export const MultiSelectButton = styled('button')<MultiSelectButtonProps>`
   display: flex;
   align-items: center;
-  background-color: ${props => (props.isOpened ? 'white' : '#ecedf1')};
+  background-color: ${props => (props.isOpened || props.isActive ? 'white' : '#ecedf1')};
   cursor: pointer;
   margin: 0 15px;
   height: 28px;
@@ -218,6 +220,13 @@ export const FiltersApplyButton = styled('button')`
   &:hover {
     background-color: rgba(25, 43, 51, 0.8);
   }
+
+  &:disabled {
+    background-color: ${props => props.theme.colors.disabledColor};
+    &:hover {
+      cursor: not-allowed;
+    }
+  }
 `;
 FiltersApplyButton.displayName = 'FiltersApplyButton';
 
@@ -227,6 +236,11 @@ export const FiltersClearButton = styled(FiltersApplyButton)`
 
   &:hover {
     background-color: rgba(25, 43, 51, 0.1);
+  }
+
+  &:disabled {
+    background-color: transparent;
+    color: ${props => props.theme.colors.disabledColor};
   }
 `;
 FiltersClearButton.displayName = 'FiltersClearButton';

@@ -175,7 +175,7 @@ const CaseList: React.FC<Props> = ({ setConnectedCase, updateDefinitionVersion }
   };
 
   const handleApplyFilter = async (filters: ListCasesFilters) => {
-    await fetchCaseList(0, state.queryParams, filters);
+    await fetchCaseList(0, { ...state.queryParams, offset: 0 }, filters);
   };
 
   const handleClickViewCase = currentCase => () => {
