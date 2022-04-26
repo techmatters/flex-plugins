@@ -1,28 +1,5 @@
 [
   {
-    "name": "perpetrator/facilitator",
-    "label": "Perpetrator/Facilitator",
-    "type": "select",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "perpetrator",
-        "label": "Perpetrator"
-      },
-      {
-        "value": "facilitator",
-        "label": "Facilitator"
-      }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
     "name": "firstName",
     "label": "First Name",
     "type": "input"
