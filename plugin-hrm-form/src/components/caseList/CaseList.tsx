@@ -201,11 +201,7 @@ const CaseList: React.FC<Props> = ({ setConnectedCase, updateDefinitionVersion }
     return (
       <StandaloneSearchContainer>
         <CaseLayout>
-          <Case
-            task={standaloneTask}
-            isCreating={false}
-            handleClose={closeCaseView}
-          />
+          <Case task={standaloneTask} isCreating={false} handleClose={closeCaseView} />
         </CaseLayout>
       </StandaloneSearchContainer>
     );
