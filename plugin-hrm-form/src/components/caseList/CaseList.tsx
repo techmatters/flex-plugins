@@ -20,7 +20,6 @@ import { CaseLayout } from '../../styles/case';
 import * as CaseActions from '../../states/case/actions';
 import * as ConfigActions from '../../states/configuration/actions';
 import { StandaloneSearchContainer } from '../../styles/search';
-import { RootState, namespace, configurationBase } from '../../states';
 import { getCasesMissingVersions } from '../../utils/definitionVersions';
 
 export const CASES_PER_PAGE = 5;
@@ -183,13 +182,10 @@ const CaseList: React.FC<Props> = ({ setConnectedCase, updateDefinitionVersion }
     dispatch({ type: 'showCaseDetails' });
   };
 
-  const closeCaseView = () => {
+  const closeCaseView = async () => {
+    // Reload the current page of the list to reflect any updates to the case just being viewed
+    await fetchCaseList(state.page, state.queryParams, state.filters);
     dispatch({ type: 'hideCaseDetails' });
-  };
-
-  const handleUpdatedCase = (updatedCase: CaseType) => {
-    const caseList = state.caseList.map(c => (c.id === updatedCase.id ? { ...c, ...updatedCase } : { ...c }));
-    dispatch({ type: 'fetchUpdate', payload: { caseList } });
   };
 
   if (state.error)
@@ -209,7 +205,6 @@ const CaseList: React.FC<Props> = ({ setConnectedCase, updateDefinitionVersion }
             task={standaloneTask}
             isCreating={false}
             handleClose={closeCaseView}
-            updateAllCasesView={handleUpdatedCase}
           />
         </CaseLayout>
       </StandaloneSearchContainer>

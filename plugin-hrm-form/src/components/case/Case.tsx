@@ -45,7 +45,6 @@ type OwnProps = {
   task: CustomITask | StandaloneITask;
   isCreating?: boolean;
   handleClose?: () => void;
-  updateAllCasesView?: (updatedCase: CaseType) => void;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -90,7 +89,6 @@ const Case: React.FC<Props> = ({
   updateCases,
   markCaseAsUpdated,
   changeRoute,
-  updateAllCasesView,
   isCreating,
   handleClose,
   routing,
@@ -104,11 +102,11 @@ const Case: React.FC<Props> = ({
      * Gets the activities timeline from current caseId
      * If the case is just being created, adds the case's description as a new activity.
      */
-    const getTimeline = async () => {
+    const getTimeline = () => {
       if (!props.connectedCaseId) return;
 
       setLoading(true);
-      const activities = await getActivitiesFromCase(props.connectedCaseState.connectedCase);
+      const activities = getActivitiesFromCase(props.connectedCaseState.connectedCase);
       setLoading(false);
       let timelineActivities = sortActivities(activities);
 
@@ -134,15 +132,7 @@ const Case: React.FC<Props> = ({
     };
 
     getTimeline();
-  }, [
-    task,
-    form,
-    props.connectedCaseId,
-    props.connectedCaseNotes,
-    props.connectedCaseReferrals,
-    props.connectedCaseState?.connectedCase,
-    setLoading,
-  ]);
+  }, [task, form, props.connectedCaseId, props.connectedCaseState?.connectedCase, setLoading]);
 
   const version = props.connectedCaseState?.connectedCase.info.definitionVersion;
   const { updateDefinitionVersion, definitionVersions } = props;
@@ -212,7 +202,7 @@ const Case: React.FC<Props> = ({
   const incidents = info && info.incidents ? info.incidents : [];
   const documents = info && info.documents ? info.documents : [];
   const childIsAtRisk = info && info.childIsAtRisk;
-  const referrals = props.connectedCaseReferrals;
+  const referrals = info?.referrals;
   const notes = timeline.filter(x => x.type === 'note');
   const summary = info?.summary;
   const definitionVersion = props.definitionVersions[version];
@@ -234,10 +224,6 @@ const Case: React.FC<Props> = ({
       const updatedCase = await updateCase(connectedCase.id, { ...connectedCase });
       setConnectedCase(updatedCase, task.taskSid, false);
       updateCases(task.taskSid, updatedCase);
-      // IF case has been edited from All Cases view, we should update that view
-      if (updateAllCasesView) {
-        updateAllCasesView(updatedCase);
-      }
     } catch (error) {
       console.error(error);
       recordBackendError('Update Case', error);
@@ -526,10 +512,6 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   form: state[namespace][contactFormsBase].tasks[ownProps.task.taskSid],
   connectedCaseState: state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid],
   connectedCaseId: state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid]?.connectedCase?.id,
-  connectedCaseNotes:
-    state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid]?.connectedCase?.info?.counsellorNotes,
-  connectedCaseReferrals:
-    state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid]?.connectedCase?.info?.referrals,
   counselorsHash: state[namespace][configurationBase].counselors.hash,
   routing: state[namespace][routingBase].tasks[ownProps.task.taskSid],
   definitionVersions: state[namespace][configurationBase].definitionVersions,

@@ -171,6 +171,7 @@ const DateRangeFilter: React.FC<Props> = ({
         isOpened={isOpened}
         isActive={Boolean(current)}
         type="button"
+        name={name}
         onClick={handleClick}
         innerRef={innerRef => {
           filterButtonElement.current = innerRef;
@@ -269,12 +270,13 @@ const DateRangeFilter: React.FC<Props> = ({
 
             <FiltersBottomButtons>
               <Box marginRight="10px">
-                <FiltersClearButton type="button" onClick={handleClear}>
+                <FiltersClearButton type="button" name="applyButton" onClick={handleClear}>
                   <Template code="CaseList-Filters-Clear" />
                 </FiltersClearButton>
               </Box>
               <FiltersApplyButton
                 type="submit"
+                name="applyButton"
                 innerRef={innerRef => {
                   applyButtonElement.current = innerRef;
                   register(innerRef);
