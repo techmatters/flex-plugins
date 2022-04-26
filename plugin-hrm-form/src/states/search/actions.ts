@@ -76,17 +76,6 @@ export const viewPreviousContacts = (dispatch: Dispatch<any>) => (task: ITask) =
   dispatch({ type: t.VIEW_PREVIOUS_CONTACTS, taskId, contactNumber });
 };
 
-/**
- * Updates a case in redux
- * @param taskId TaskId
- * @param updatedCase Case to update
- */
-export const updateCases = (taskId: string, updatedCase: Case): t.SearchActionType => ({
-  type: t.SEARCH_CASES_UPDATE,
-  taskId,
-  updatedCase,
-});
-
 export const changeSearchPage = (taskId: string) => (page: t.SearchPagesType): t.SearchActionType => ({
   type: t.CHANGE_SEARCH_PAGE,
   page,

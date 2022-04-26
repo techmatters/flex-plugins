@@ -19,13 +19,12 @@ import { getDefinitionVersion } from '../../services/ServerlessService';
 import { getActivitiesFromCase, isConnectedCaseActivity, sortActivities } from './caseActivities';
 import { getDateFromNotSavedContact, getHelplineData } from './caseHelpers';
 import { getLocaleDateTime } from '../../utils/helpers';
-import * as SearchActions from '../../states/search/actions';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import * as ConfigActions from '../../states/configuration/actions';
 import ViewContact from './ViewContact';
 import { CaseDetailsName, updateCaseListByIndex, updateCaseSectionListByIndex } from '../../states/case/types';
-import { Case as CaseType, CustomITask, NoteEntry, ReferralEntry, StandaloneITask } from '../../types/types';
+import { CustomITask, NoteEntry, ReferralEntry, StandaloneITask } from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
 import { CaseItemAction, isAppRoutesWithCaseAndAction, NewCaseSubroutes } from '../../states/routing/types';
 import CaseHome from './CaseHome';
@@ -86,7 +85,6 @@ const Case: React.FC<Props> = ({
   removeConnectedCase,
   updateCaseInfo,
   updateCaseStatus,
-  updateCases,
   markCaseAsUpdated,
   changeRoute,
   isCreating,
@@ -223,7 +221,6 @@ const Case: React.FC<Props> = ({
     try {
       const updatedCase = await updateCase(connectedCase.id, { ...connectedCase });
       setConnectedCase(updatedCase, task.taskSid, false);
-      updateCases(task.taskSid, updatedCase);
     } catch (error) {
       console.error(error);
       recordBackendError('Update Case', error);
@@ -525,7 +522,6 @@ const mapDispatchToProps = {
   updateCaseStatus: CaseActions.updateCaseStatus,
   setConnectedCase: CaseActions.setConnectedCase,
   markCaseAsUpdated: CaseActions.markCaseAsUpdated,
-  updateCases: SearchActions.updateCases,
   updateDefinitionVersion: ConfigActions.updateDefinitionVersion,
 };
 
