@@ -82,10 +82,6 @@
         "label": "Community"
       },
       {
-        "value": "Travel & Tourism Establishment",
-        "label": "Travel & Tourism Establishment"
-      },
-      {
         "value": "Other",
         "label": "Other"
       }
@@ -94,11 +90,6 @@
       "value": true,
       "message": "RequiredFieldError"
     }
-  },
-  {
-    "name": "establishmentSpecify",
-    "label": "Specify name of Establishment",
-    "type": "input"
   },
   {
     "name": "ReportedElsewhere",
