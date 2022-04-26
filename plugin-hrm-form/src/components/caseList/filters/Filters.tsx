@@ -3,12 +3,21 @@ import React, { useEffect, useState } from 'react';
 import { Template } from '@twilio/flex-ui';
 import type { DefinitionVersion } from 'hrm-form-definitions';
 import FilterList from '@material-ui/icons/FilterList';
+import DateRange from '@material-ui/icons/DateRange';
+import Edit from '@material-ui/icons/Edit';
 
 import { getConfig } from '../../../HrmFormPlugin';
 import { FiltersContainer, FiltersResetAll, CasesTitle, CasesCount, FilterBy } from '../../../styles/caseList/filters';
 import MultiSelectFilter, { Item } from './MultiSelectFilter';
 import { ListCasesFilters, CounselorHash } from '../../../types/types';
-
+import DateRangeFilter from './DateRangeFilter';
+import {
+  DateFilterOption,
+  DateFilter,
+  dateFilterPayloadFromFilters,
+  followUpDateFilterOptions,
+  standardCaseListDateFilterOptions,
+} from './dateFilters';
 /**
  * Reads the definition version and returns and array of items (type Item[])
  * to be used as the options for the status filter
@@ -36,6 +45,24 @@ const emptyFilters: ListCasesFilters = {
   statuses: [],
   includeOrphans: false,
 };
+
+const getInitialDateFilters = (): DateFilter[] => [
+  {
+    labelKey: 'CaseList-Filters-DateFilter-CreatedAt',
+    filterPayloadParameter: 'createdAt',
+    options: standardCaseListDateFilterOptions(),
+  },
+  {
+    labelKey: 'CaseList-Filters-DateFilter-UpdatedAt',
+    filterPayloadParameter: 'updatedAt',
+    options: standardCaseListDateFilterOptions(),
+  },
+  {
+    labelKey: 'CaseList-Filters-DateFilter-FollowUpDate',
+    filterPayloadParameter: 'followUpDate',
+    options: followUpDateFilterOptions(),
+  },
+];
 
 /**
  * Gets an array of items (type Item[]) and makes all of them checked = false
@@ -71,6 +98,7 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ca
   const [openedFilter, setOpenedFilter] = useState<string>();
   const [statusValues, setStatusValues] = useState<Item[]>(statusInitialValues);
   const [counselorValues, setCounselorValues] = useState<Item[]>([]);
+  const [dateFilters, setDateFilters] = useState<DateFilter[]>(getInitialDateFilters());
   const [defaultFilters, setDefaultFilters] = useState<ListCasesFilters>(emptyFilters);
 
   // updates counselor options when counselorHash is updated
@@ -83,24 +111,39 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ca
   useEffect(() => {
     const statuses = filterCheckedItems(statusValues);
     const counsellors = filterCheckedItems(counselorValues);
-    setDefaultFilters({ statuses, counsellors, includeOrphans: false });
-  }, [setDefaultFilters, statusValues, counselorValues]);
+    setDefaultFilters({ statuses, counsellors, includeOrphans: false, ...dateFilterPayloadFromFilters(dateFilters) });
+  }, [setDefaultFilters, statusValues, counselorValues, dateFilters]);
 
   const handleApplyStatusFilter = (values: Item[]) => {
-    const filters = { ...defaultFilters, statuses: filterCheckedItems(values) };
+    const filters = {
+      ...defaultFilters,
+      statuses: filterCheckedItems(values),
+      ...dateFilterPayloadFromFilters(dateFilters),
+    };
     handleApplyFilter(filters);
     setStatusValues(values);
   };
 
   const handleApplyCounselorFilter = (values: Item[]) => {
-    const filters = { ...defaultFilters, counsellors: filterCheckedItems(values) };
+    const filters = {
+      ...defaultFilters,
+      counsellors: filterCheckedItems(values),
+      ...dateFilterPayloadFromFilters(dateFilters),
+    };
     handleApplyFilter(filters);
     setCounselorValues(values);
+  };
+
+  const handleApplyDateRangeFilter = (filterType: DateFilter) => (filterOption: DateFilterOption | undefined) => {
+    filterType.currentSetting = filterOption;
+    setDateFilters(dateFilters); // refresh date filters after being modified in place locally
+    handleApplyFilter({ ...defaultFilters, ...dateFilterPayloadFromFilters(dateFilters) } as ListCasesFilters);
   };
 
   const handleClearFilters = () => {
     clearMultiSelectFilter(statusValues, setStatusValues);
     clearMultiSelectFilter(counselorValues, setCounselorValues);
+    setDateFilters(getInitialDateFilters());
     setOpenedFilter(null);
     handleApplyFilter(emptyFilters);
   };
@@ -111,7 +154,9 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ca
     caseCount === 1 ? 'CaseList-Filters-CaseCount-Singular' : 'CaseList-Filters-CaseCount-Plural';
 
   const hasFiltersApplied =
-    filterCheckedItems(statusValues).length > 0 || filterCheckedItems(counselorValues).length > 0;
+    filterCheckedItems(statusValues).length > 0 ||
+    filterCheckedItems(counselorValues).length > 0 ||
+    Boolean(dateFilters.filter(df => df.currentSetting).length);
 
   return (
     <>
@@ -152,6 +197,24 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ca
             setOpenedFilter={setOpenedFilter}
             searchable
           />
+          <FiltersContainer style={{ marginLeft: '100px', boxShadow: 'none' }}>
+            <DateRange fontSize="inherit" style={{ marginRight: 5 }} />
+            <Template code="CaseList-Filters-DateFiltersLabel" />
+            {dateFilters.map(df => {
+              return (
+                <DateRangeFilter
+                  labelKey={df.labelKey}
+                  key={df.filterPayloadParameter}
+                  name={`${df.filterPayloadParameter}Filter`}
+                  options={df.options}
+                  openedFilter={openedFilter}
+                  applyFilter={handleApplyDateRangeFilter(df)}
+                  setOpenedFilter={setOpenedFilter}
+                  current={df.currentSetting}
+                />
+              );
+            })}
+          </FiltersContainer>
         </FiltersContainer>
       )}
     </>
