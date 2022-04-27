@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { TableBody, CircularProgress } from '@material-ui/core';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 
-import { namespace, configurationBase } from '../../states';
+import { namespace, configurationBase, RootState, caseListBase } from '../../states';
 import { TableContainer, CLTable, CLTableRow, CLNamesCell } from '../../styles/caseList';
 import Filters from './filters/Filters';
 import CaseListTableHead from './CaseListTableHead';
@@ -11,6 +11,7 @@ import CaseListTableRow from './CaseListTableRow';
 import Pagination from '../Pagination';
 import { CASES_PER_PAGE } from './CaseList';
 import type { Case, ListCasesQueryParams, ListCasesFilters } from '../../types/types';
+import * as CaseListSettingsActions from '../../states/caseList/settings';
 
 const ROW_HEIGHT = 89;
 
@@ -21,12 +22,11 @@ type OwnProps = {
   page: number;
   queryParams: ListCasesQueryParams;
   handleChangePage: (page: number) => void;
-  handleColumnClick: (sortBy: ListCasesQueryParams['sortBy'], order: ListCasesQueryParams['sortDirection']) => void;
   handleClickViewCase: (currentCase: Case) => () => void;
 };
 
 // eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ReturnType<typeof mapStateToProps>;
+type Props = OwnProps & ConnectedProps<typeof connector>;
 
 /**
  * This component is splitted to make it easier to read, but is basically a 9 columns Table (8 for data, 1 for the "expand" button)
@@ -35,10 +35,9 @@ const CaseListTable: React.FC<Props> = ({
   loading,
   caseList,
   caseCount,
-  page,
+  currentPage,
   queryParams,
-  handleChangePage,
-  handleColumnClick,
+  updateCaseListPage,
   handleClickViewCase,
   counselorsHash,
   currentDefinitionVersion,
@@ -54,11 +53,7 @@ const CaseListTable: React.FC<Props> = ({
       />
       <TableContainer>
         <CLTable tabIndex={0} aria-labelledby="CaseList-Cases-label" data-testid="CaseList-Table">
-          <CaseListTableHead
-            sortBy={queryParams.sortBy}
-            sortDirection={queryParams.sortDirection}
-            handleColumnClick={handleColumnClick}
-          />
+          <CaseListTableHead sortBy={queryParams.sortBy} sortDirection={queryParams.sortDirection} />
           {loading && (
             <TableBody>
               <CLTableRow
@@ -86,7 +81,7 @@ const CaseListTable: React.FC<Props> = ({
               ))}
             </TableBody>
           )}
-          <Pagination page={page} pagesCount={pagesCount} handleChangePage={handleChangePage} />
+          <Pagination page={currentPage} pagesCount={pagesCount} handleChangePage={updateCaseListPage} />
         </CLTable>
       </TableContainer>
     </>
@@ -98,6 +93,14 @@ CaseListTable.displayName = 'CaseListTable';
 const mapStateToProps = state => ({
   counselorsHash: state[namespace][configurationBase].counselors.hash,
   currentDefinitionVersion: state[namespace][configurationBase].currentDefinitionVersion,
+  currentPage: state[namespace][caseListBase].currentSettings.page,
 });
 
-export default connect(mapStateToProps)(CaseListTable);
+const mapDispatchToProps = {
+  updateCaseListPage: CaseListSettingsActions.updateCaseListPage,
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+const connected = connector(CaseListTable);
+
+export default connected;

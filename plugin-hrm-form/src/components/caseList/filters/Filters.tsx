@@ -81,6 +81,7 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 const Filters: React.FC<Props> = ({
   currentDefinitionVersion,
   currentFilter,
+  currentFilterCompare,
   counselorsHash,
   caseCount,
   updateCaseListFilter,
@@ -96,6 +97,9 @@ const Filters: React.FC<Props> = ({
     updatedAt?: DateFilterValue;
     followUpDate?: DateFilterValue;
   }>({});
+  const [uiFiltersComparable, setUIFilterComparable] = useState(
+    JSON.stringify({ statusValues, counselorValues, dateFilterValues }),
+  );
 
   // updates counselor options when counselorHash is updated
   useEffect(() => {
@@ -113,31 +117,41 @@ const Filters: React.FC<Props> = ({
       includeOrphans: false,
       ...dateFilterValues,
     });
-  }, [JSON.stringify({ statusValues, counselorValues, dateFilterValues })]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [uiFiltersComparable]);
 
   // Updates UI state from current filters
   useEffect(() => {
     const { counsellors, statuses, includeOrphans, ...currentDateFilters } = currentFilter;
-    setCounselorValues(c => c.map(cv => ({ ...cv, checked: counsellors.includes(cv.value) })));
-    setStatusValues(s => s.map(sv => ({ ...sv, checked: statuses.includes(sv.value) })));
+    const newCounselorValues = counselorValues.map(cv => ({ ...cv, checked: counsellors.includes(cv.value) }));
+    const newStatusValues = statusValues.map(sv => ({ ...sv, checked: statuses.includes(sv.value) }));
+    setCounselorValues(newCounselorValues);
+    setStatusValues(newStatusValues);
     setDateFilterValues(currentDateFilters);
-  }, [JSON.stringify(currentFilter)]);
+    setUIFilterComparable(
+      JSON.stringify({
+        statusValues: newStatusValues,
+        counselorValues: newCounselorValues,
+        dateFilterValues: currentDateFilters,
+      }),
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentFilterCompare]);
 
   const handleApplyStatusFilter = (values: Item[]) => {
-    updateCaseListFilter({
-      statuses: filterCheckedItems(values),
-    });
+    setStatusValues(values);
+    setUIFilterComparable(JSON.stringify({ statusValues: values, dateFilterValues, counselorValues }));
   };
 
   const handleApplyCounselorFilter = (values: Item[]) => {
-    updateCaseListFilter({
-      counsellors: filterCheckedItems(values),
-    });
+    setCounselorValues(values);
+    setUIFilterComparable(JSON.stringify({ statusValues, dateFilterValues, counselorValues: values }));
   };
 
   const handleApplyDateRangeFilter = (filter: DateFilter) => (filterValue: DateFilterValue | undefined) => {
-    setDateFilterValues({ ...dateFilterValues, [filter.filterPayloadParameter]: filterValue });
-    updateCaseListFilter(dateFilterValues);
+    const updatesDateFilterValues = { ...dateFilterValues, [filter.filterPayloadParameter]: filterValue };
+    setDateFilterValues(updatesDateFilterValues);
+    setUIFilterComparable(JSON.stringify({ statusValues, dateFilterValues: updatesDateFilterValues, counselorValues }));
   };
 
   const handleClearFilters = () => {
@@ -226,6 +240,7 @@ const mapDispatchToProps = {
 
 const mapStateToProps = (state: RootState) => ({
   currentFilter: state[namespace][caseListBase].currentSettings.filter,
+  currentFilterCompare: JSON.stringify(state[namespace][caseListBase].currentSettings.filter),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

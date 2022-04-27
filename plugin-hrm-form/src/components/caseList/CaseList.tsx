@@ -11,7 +11,7 @@ import {
   ListCasesQueryParams,
   ListCasesFilters,
   ListCasesSortBy,
-  ListCasesSortDirection,
+  ListCasesSortDirection, ListCasesSort
 } from '../../types/types';
 import CaseListTable from './CaseListTable';
 import { CaseListContainer, CenteredContainer, SomethingWentWrongText } from '../../styles/caseList';
@@ -122,11 +122,13 @@ const CaseList: React.FC<Props> = ({ setConnectedCase, updateDefinitionVersion, 
   const [state, dispatch] = useReducer(reducer, initialState);
   const { helpline } = getConfig();
 
-  const fetchCaseList = async (page: number, filters: ListCasesFilters) => {
+  const fetchCaseList = async (page: number, sort: ListCasesSort, filters: ListCasesFilters) => {
     try {
       dispatch({ type: 'fetchStarted' });
       const queryParams: ListCasesQueryParams = {
+        ...sort,
         offset: page * CASES_PER_PAGE,
+        limit: CASES_PER_PAGE,
       };
       const listCasesPayload = {
         filters: {
@@ -155,7 +157,7 @@ const CaseList: React.FC<Props> = ({ setConnectedCase, updateDefinitionVersion, 
   };
 
   useEffect(() => {
-    fetchCaseList(state.page, currentSettings.filter);
+    fetchCaseList(currentSettings.page, currentSettings.sort, currentSettings.filter);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSettings]);
 
@@ -164,21 +166,7 @@ const CaseList: React.FC<Props> = ({ setConnectedCase, updateDefinitionVersion, 
       ...state.queryParams,
       offset: CASES_PER_PAGE * page,
     };
-    await fetchCaseList(page, currentSettings.filter);
-  };
-
-  const handleColumnClick = async (sortBy, sortDirection) => {
-    const queryParams = {
-      ...state.queryParams,
-      offset: 0,
-      sortBy,
-      sortDirection,
-    };
-    await fetchCaseList(0, currentSettings.filter);
-  };
-
-  const handleApplyFilter = async (filters: ListCasesFilters) => {
-    await fetchCaseList(0, currentSettings.filter);
+    await fetchCaseList(page, currentSettings.sort, currentSettings.filter);
   };
 
   const handleClickViewCase = currentCase => () => {
@@ -188,7 +176,7 @@ const CaseList: React.FC<Props> = ({ setConnectedCase, updateDefinitionVersion, 
 
   const closeCaseView = async () => {
     // Reload the current page of the list to reflect any updates to the case just being viewed
-    await fetchCaseList(state.page, currentSettings.filter);
+    await fetchCaseList(state.page, currentSettings.sort, currentSettings.filter);
     dispatch({ type: 'hideCaseDetails' });
   };
 
@@ -221,7 +209,6 @@ const CaseList: React.FC<Props> = ({ setConnectedCase, updateDefinitionVersion, 
           page={state.page}
           queryParams={state.queryParams}
           handleChangePage={handleChangePage}
-          handleColumnClick={handleColumnClick}
           handleClickViewCase={handleClickViewCase}
         />
       </CaseListContainer>

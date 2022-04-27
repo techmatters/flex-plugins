@@ -1,10 +1,11 @@
-import { ListCasesFilters, ListCasesSort } from '../../types/types';
+import { ListCasesFilters, ListCasesSort, ListCasesSortBy, ListCasesSortDirection } from '../../types/types';
 
 // State
 
 export type CaseListSettingsState = {
   filter: ListCasesFilters;
   sort: ListCasesSort;
+  page: number;
 };
 
 export const caseListSettingsInitialState = (): CaseListSettingsState => ({
@@ -13,7 +14,11 @@ export const caseListSettingsInitialState = (): CaseListSettingsState => ({
     counsellors: [],
     statuses: [],
   },
-  sort: {},
+  sort: {
+    sortBy: ListCasesSortBy.ID,
+    sortDirection: ListCasesSortDirection.DESC,
+  },
+  page: 0,
 });
 
 // Update filter action & reducer
@@ -78,7 +83,26 @@ export const updatedSortReducer = (state: CaseListSettingsState, action: UpdateC
   sort: action.sort,
 });
 
+// Update sort action & reducer
+export const UPDATE_CASE_LIST_PAGE = 'UPDATE_CASE_LIST_PAGE';
+
+export type UpdateCaseListPageAction = {
+  type: typeof UPDATE_CASE_LIST_PAGE;
+  page: number;
+};
+
+export const updateCaseListPage = (page: number): UpdateCaseListPageAction => ({
+  type: UPDATE_CASE_LIST_PAGE,
+  page,
+});
+
+export const updatedPageReducer = (state: CaseListSettingsState, action: UpdateCaseListPageAction) => ({
+  ...state,
+  page: action.page,
+});
+
 export type CaseListSettingsActionType =
   | UpdateCaseListFilterAction
   | ClearCaseListFilterAction
-  | UpdateCaseListSortAction;
+  | UpdateCaseListSortAction
+  | UpdateCaseListPageAction;

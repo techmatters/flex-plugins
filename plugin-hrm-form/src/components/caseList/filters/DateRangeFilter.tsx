@@ -52,9 +52,12 @@ const dateFilterToForm = (
     [selectedOptionField]: dateFilterValue.option,
   };
   const dateFilterOption = findCurrentOption(options, dateFilterValue);
-  if (isFixedDateRange(dateFilterOption) && !isExistsDateFilterValue(dateFilterValue)) {
-    values.customDateRangeFrom = dateFilterValue.from ? format(dateFilterValue.from, 'yyyy-MM-dd') : null;
-    values.customDateRangeTo = dateFilterValue.to ? format(dateFilterValue.to, 'yyyy-MM-dd') : null;
+  if (dateFilterOption) {
+    const [, filterParams] = dateFilterOption;
+    if (isFixedDateRange(filterParams) && !isExistsDateFilterValue(dateFilterValue)) {
+      values.customDateRangeFrom = dateFilterValue.from ? format(dateFilterValue.from, 'yyyy-MM-dd') : null;
+      values.customDateRangeTo = dateFilterValue.to ? format(dateFilterValue.to, 'yyyy-MM-dd') : null;
+    }
   }
   return values;
 };

@@ -2,9 +2,9 @@ import {
   CaseListSettingsActionType,
   caseListSettingsInitialState,
   CaseListSettingsState, CLEAR_CASE_LIST_FILTER, clearFilterReducer,
-  UPDATE_CASE_LIST_FILTER,
+  UPDATE_CASE_LIST_FILTER, UPDATE_CASE_LIST_PAGE,
   UPDATE_CASE_LIST_SORT,
-  updatedFilterReducer,
+  updatedFilterReducer, updatedPageReducer,
   updatedSortReducer
 } from './settings';
 import { GeneralActionType } from '../types';
@@ -48,6 +48,8 @@ export const reduce = (
       };
     case UPDATE_CASE_LIST_SORT:
       return { ...state, currentSettings: updatedSortReducer(state.currentSettings, action) };
+    case UPDATE_CASE_LIST_PAGE:
+      return { ...state, currentSettings: updatedPageReducer(state.currentSettings, action) };
     case UNDO_CASE_LIST_SETTINGS_UPDATE:
       if (!state.previousSettings) {
         console.warn('No previous settings to roll back to, undo action failed');
