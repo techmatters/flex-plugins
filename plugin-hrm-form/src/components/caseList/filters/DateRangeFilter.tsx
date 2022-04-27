@@ -7,7 +7,15 @@ import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 
 import { Box, Flex, FormDateInput, FormLabel, FormRadioInput } from '../../../styles/HrmStyles';
-import { DateFilterOption, DateFilterOptions, isDivider, isFixedDateRange } from './dateFilters';
+import {
+  DateFilterOption,
+  DateFilterOptions,
+  DateFilterValue,
+  isDivider,
+  isExistsDateFilter,
+  isExistsDateFilterValue,
+  isFixedDateRange,
+} from './dateFilters';
 import {
   DialogArrow,
   FiltersDialog,
@@ -23,22 +31,30 @@ type ReactHookFormValues = {
   [name: string]: string;
 };
 
+const findCurrentOption = (options: DateFilterOption[], dateFilterValue: DateFilterValue | undefined) =>
+  dateFilterValue ? options.find(([option]) => option === dateFilterValue.option) : undefined;
+
 /**
  * Converts a date filter option from the current filter state to a map of values that can be used to populate the form
  * @param selectedOptionField - The key in the form map the selected option name is under (the DateRangeFilter's 'name' property in practice)
- * @param option - the name of the selected option
- * @param dateFilter - the additional settings for the selected option
+ * @param options - the name of the selected option
+ * @param dateFilterValue - the additional settings for the selected option
  */
 const dateFilterToForm = (
   selectedOptionField: string,
-  [option, dateFilter]: DateFilterOption | undefined = [undefined, undefined],
+  options: DateFilterOption[],
+  dateFilterValue: DateFilterValue | undefined,
 ): ReactHookFormValues => {
+  if (!dateFilterValue) {
+    return {};
+  }
   const values = {
-    [selectedOptionField]: option,
+    [selectedOptionField]: dateFilterValue.option,
   };
-  if (isFixedDateRange(dateFilter)) {
-    values.customDateRangeFrom = dateFilter.from ? format(dateFilter.from, 'yyyy-MM-dd') : null;
-    values.customDateRangeTo = dateFilter.to ? format(dateFilter.to, 'yyyy-MM-dd') : null;
+  const dateFilterOption = findCurrentOption(options, dateFilterValue);
+  if (isFixedDateRange(dateFilterOption) && !isExistsDateFilterValue(dateFilterValue)) {
+    values.customDateRangeFrom = dateFilterValue.from ? format(dateFilterValue.from, 'yyyy-MM-dd') : null;
+    values.customDateRangeTo = dateFilterValue.to ? format(dateFilterValue.to, 'yyyy-MM-dd') : null;
   }
   return values;
 };
@@ -53,27 +69,35 @@ const formToDateFilter = (
   selectedOptionField: string,
   filterOptions: DateFilterOption[],
   values: ReactHookFormValues,
-): DateFilterOption | undefined => {
+): DateFilterValue | undefined => {
   const [, selected] = filterOptions.find(([opt]) => opt === values[selectedOptionField]);
   if (!selected) {
     return undefined;
   }
-  const copy = { ...selected };
-  if (isFixedDateRange(copy)) {
-    copy.from = values.customDateRangeFrom ? new Date(values.customDateRangeFrom) : undefined;
-    copy.to = values.customDateRangeTo ? endOfDay(new Date(values.customDateRangeTo)) : undefined;
+  if (isExistsDateFilter(selected)) {
+    return { option: values[selectedOptionField], exists: selected.exists };
+  } else if (isFixedDateRange(selected)) {
+    return {
+      option: values[selectedOptionField],
+      from: values.customDateRangeFrom ? new Date(values.customDateRangeFrom) : undefined,
+      to: values.customDateRangeTo ? endOfDay(new Date(values.customDateRangeTo)) : undefined,
+    };
   }
-  return [values[selectedOptionField], copy];
+  return {
+    option: values[selectedOptionField],
+    from: selected.from(new Date()),
+    to: selected.to(new Date()),
+  };
 };
 
 type OwnProps = {
   name: string;
   labelKey: string;
   options: DateFilterOptions;
-  current?: DateFilterOption;
+  current?: DateFilterValue;
   withSearch?: boolean;
   openedFilter: string;
-  applyFilter: (filter: DateFilterOption) => void;
+  applyFilter: (filter: DateFilterValue) => void;
   setOpenedFilter: (name: string) => void;
 };
 
@@ -91,30 +115,36 @@ const DateRangeFilter: React.FC<Props> = ({
 }) => {
   const optionsWithoutDividers = options.filter(opt => !isDivider(opt)) as DateFilterOption[];
 
-  const [currentWorkingCopy, setCurrentWorkingCopy] = useState<DateFilterOption>(current);
+  const [currentWorkingCopy, setCurrentWorkingCopy] = useState<DateFilterValue>(current);
 
   const filterButtonElement = useRef(null);
   const firstOptionElement = useRef(null);
   const applyButtonElement = useRef(null);
 
   const { register, handleSubmit, reset, getValues } = useForm({
-    defaultValues: dateFilterToForm(name, current),
+    defaultValues: dateFilterToForm(name, optionsWithoutDividers, currentWorkingCopy),
   });
 
   const isOpened = name === openedFilter;
 
+  /**
+   * Need to update the UI & the working copy together
+   * @param newWorkingCopy
+   */
+  const updateWorkingCopy = (newWorkingCopy: DateFilterValue | undefined) => {
+    setCurrentWorkingCopy(newWorkingCopy);
+    reset(dateFilterToForm(name, optionsWithoutDividers, newWorkingCopy));
+  };
+
   // Force React Hook Forms to rerender whenever current value changes
-  useEffect(() => {
-    setCurrentWorkingCopy(current);
-    reset(dateFilterToForm(name, current));
-  }, [name, reset, current]);
+  useEffect(() => updateWorkingCopy(current), [name, reset, current]);
 
   // Close dialog on ESC
   useEffect(() => {
     const closeDialog = event => {
       if (event.key === 'Escape') {
         // Always reset to defaultValues whenever you open/close the component
-        reset(dateFilterToForm(name, current));
+        reset(dateFilterToForm(name, optionsWithoutDividers, current));
         setOpenedFilter(null);
         filterButtonElement.current?.focus();
       }
@@ -134,8 +164,7 @@ const DateRangeFilter: React.FC<Props> = ({
 
   const handleClick = () => {
     // Always reset to defaultValues whenever you open/close the component
-    setCurrentWorkingCopy(current);
-    reset(dateFilterToForm(name, current));
+    updateWorkingCopy(current);
 
     if (isOpened) {
       setOpenedFilter(null);
@@ -159,12 +188,12 @@ const DateRangeFilter: React.FC<Props> = ({
   };
 
   const handleClear = () => {
-    setCurrentWorkingCopy(undefined);
-    reset(dateFilterToForm(undefined));
+    updateWorkingCopy(undefined);
   };
 
-  const [, currentWorkingFilter] = currentWorkingCopy ?? [];
   const dividerStyle = { border: 'none', height: '1px', backgroundColor: 'rgb(216, 216, 216)' };
+  const currentOption = findCurrentOption(optionsWithoutDividers, currentWorkingCopy);
+  const showCustomDateFields = currentOption ? isFixedDateRange(currentOption[1]) : false;
   return (
     <div style={{ position: 'relative' }}>
       <MultiSelectButton
@@ -201,7 +230,7 @@ const DateRangeFilter: React.FC<Props> = ({
                         <FormRadioInput
                           onKeyDown={i === 0 ? handleShiftTabForFirstElement : null}
                           onChange={() =>
-                            setCurrentWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))
+                            updateWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))
                           }
                           id={option}
                           value={option}
@@ -228,7 +257,7 @@ const DateRangeFilter: React.FC<Props> = ({
             </MultiSelectUnorderedList>
             <Box
               style={{
-                visibility: isFixedDateRange(currentWorkingFilter) ? 'inherit' : 'hidden',
+                visibility: showCustomDateFields ? 'inherit' : 'hidden',
                 alignContent: 'bottom',
                 marginLeft: '20px',
               }}
@@ -243,7 +272,7 @@ const DateRangeFilter: React.FC<Props> = ({
                   id="customDateRangeFrom"
                   data-testid="customDateRangeFrom"
                   name="customDateRangeFrom"
-                  onChange={() => setCurrentWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))}
+                  onChange={() => updateWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))}
                   innerRef={register}
                 />
               </Box>
@@ -261,7 +290,7 @@ const DateRangeFilter: React.FC<Props> = ({
                   id="customDateRangeTo"
                   data-testid="customDateRangeTo"
                   name="customDateRangeTo"
-                  onChange={() => setCurrentWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))}
+                  onChange={() => updateWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))}
                   innerRef={register}
                 />
               </Box>

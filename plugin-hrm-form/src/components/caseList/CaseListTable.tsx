@@ -22,7 +22,6 @@ type OwnProps = {
   queryParams: ListCasesQueryParams;
   handleChangePage: (page: number) => void;
   handleColumnClick: (sortBy: ListCasesQueryParams['sortBy'], order: ListCasesQueryParams['sortDirection']) => void;
-  handleApplyFilter: (filters: ListCasesFilters) => void;
   handleClickViewCase: (currentCase: Case) => () => void;
 };
 
@@ -40,7 +39,6 @@ const CaseListTable: React.FC<Props> = ({
   queryParams,
   handleChangePage,
   handleColumnClick,
-  handleApplyFilter,
   handleClickViewCase,
   counselorsHash,
   currentDefinitionVersion,
@@ -53,7 +51,6 @@ const CaseListTable: React.FC<Props> = ({
         caseCount={caseCount}
         currentDefinitionVersion={currentDefinitionVersion}
         counselorsHash={counselorsHash}
-        handleApplyFilter={handleApplyFilter}
       />
       <TableContainer>
         <CLTable tabIndex={0} aria-labelledby="CaseList-Cases-label" data-testid="CaseList-Table">
