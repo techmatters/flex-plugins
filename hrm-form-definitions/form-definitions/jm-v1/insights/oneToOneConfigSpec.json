@@ -80,11 +80,11 @@
         },
         {
           "name": "locationOfIssue",
-          "insights": ["customers", "category"],     
+          "insights": ["customers", "category"]  
         },
         {
           "name": "outcomeOfContact",
-          "insights": ["conversations", "conversation_attribute_9"],    
+          "insights": ["conversations", "conversation_attribute_9"]    
         }         
       ]
     },
