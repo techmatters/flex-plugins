@@ -1,0 +1,67 @@
+{
+  "RevengePorn": {
+    "Nature of Issues": {
+      "color": "#F5A623",
+      "subcategories": [
+        "Content sharing leak",
+        "Extortion by a known person",
+        "Fear of sharing",
+        "Hacked account",
+        "Harassment",
+        "Images shared",
+        "Sextortion",
+        "Sexual assault",
+        "Stalking",
+        "Threats to share images",
+        "Under 18",
+        "Voyeurism",
+        "Unspecified/Other"
+      ]
+    },
+    "Nature of Images": {
+      "color": "#F8E900",
+      "subcategories": [
+        "Stills",
+        "Photoshopped images",
+        "Stills and Videos",
+        "Videos",
+        "Unspecified/Unknown"
+      ]
+    }
+  },
+  "Report Harmful Content": {
+    "Nature of Issues": {
+      "color": "#F5A623",
+      "subcategories": [
+        "Abuse",
+        "Bullying / repeated harassment",
+        "Direct threats",
+        "Impersonation",
+        "Pornography",
+        "Self harm/ suicide",
+        "Unwanted sexual advances (non image)",
+        "Violent content",
+        "Unspecified/Other"
+      ]
+    },
+    "Wider Issues Surrounding Case": {
+      "color": "#F8E900",
+      "subcategories": [
+        "IIA",
+        "Malicious comms",
+        "Rape/ Sexual abuse",
+        "Harassment",
+        "Stalking",
+        "Coercive control",
+        "Domestic Abuse",
+        "Identity Theft",
+        "Fraud",
+        "Voyeurism",
+        "Extortion",
+        "Hate speech",
+        "Hacked account",
+        "Threat to life"
+      ]
+    }
+  }
+}
