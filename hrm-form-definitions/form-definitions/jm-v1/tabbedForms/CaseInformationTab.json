@@ -21,10 +21,7 @@
     "type": "select",
     "options": [
       { "value": "Unknown", "label": "" },
-      { "value": "Affirmation that SafeSpot is available 24/7 for support", "label": "Affirmation that SafeSpot is available 24/7 for support" },
-      { "value": "Collection of additional information for external referral", "label": "Collection of additional information for external referral" },
       { "value": "Direct interventions by the child helpline", "label": "Direct interventions by the child helpline" },
-      { "value": "Internal referral to counselling psychologist", "label": "Internal referral to counselling psychologist" },
       { "value": "Provision of information about SafeSpot", "label": "Provision of information about SafeSpot" },
       { "value": "Recommendations of resources", "label": "Recommendations of resources" },
       { "value": "Recommendation that young person contact SafeSpot", "label": "Recommendation that young person contact SafeSpot" },
