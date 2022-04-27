@@ -85,7 +85,7 @@
         {
           "name": "outcomeOfContact",
           "insights": ["conversations", "conversation_attribute_9"],    
-        },         
+        }         
       ]
     },
     "caseForm": {
