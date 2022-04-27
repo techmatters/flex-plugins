@@ -6,6 +6,21 @@
     "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
+    "name": "locationOfIssue",
+    "label": "Location of Issue",
+    "type": "select",
+    "options": [
+      { "value": "Unknown", "label": "" },
+      { "value": "Home (own)", "label": "Home (own)" },
+      { "value": "Home (other)", "label": "Home (other)" },
+      { "value": "Educational Establishment", "label": "Educational Establishment" },
+      { "value": "Institution", "label": "Institution" },
+      { "value": "Online", "label": "Online" },
+      { "value": "Public place", "label": "Public place" },
+      { "value": "Other", "label": "Other" }
+    ]
+  },
+  {
     "name": "repeatCaller",
     "label": "Repeat Caller?",
     "type": "mixed-checkbox"
@@ -32,6 +47,17 @@
       { "value": "Referrals to other organisations", "label": "Referrals to other organisations" },
       { "value": "Referrals to school counsellors", "label": "Referrals to school counsellors" },
       { "value": "Reports to Child Sexual Abuse Material", "label": "Reports to Child Sexual Abuse Material" }
+    ]
+  },
+  {
+    "name": "outcomeOfContact",
+    "label": "Outcome of Contact",
+    "type": "select",
+    "options": [
+      { "value": "Unknown", "label": "" },
+      { "value": "Resolved", "label": "Resolved" },
+      { "value": "Follow up by next shift", "label": "Follow up by next shift" },    
+      { "value": "Follow up with external entity", "label": "Follow up with external entity" }
     ]
   },
   {
