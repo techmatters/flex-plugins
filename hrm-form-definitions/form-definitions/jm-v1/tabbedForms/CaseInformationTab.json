@@ -21,6 +21,11 @@
     ]
   },
   {
+    "name": "otherLocation",
+    "label": "If Other, please specify.",
+    "type": "input"
+  },
+  {
     "name": "repeatCaller",
     "label": "Repeat Caller?",
     "type": "mixed-checkbox"
