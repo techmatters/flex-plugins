@@ -77,7 +77,15 @@
           "name": "wouldTheChildRecommendUsToAFriend",
           "insights": ["conversations", "conversation_attribute_6"],
           "type": "mixed-checkbox"
-        }
+        },
+        {
+          "name": "locationOfIssue",
+          "insights": ["customers", "category"],     
+        },
+        {
+          "name": "outcomeOfContact",
+          "insights": ["conversations", "conversation_attribute_9"],    
+        },         
       ]
     },
     "caseForm": {
