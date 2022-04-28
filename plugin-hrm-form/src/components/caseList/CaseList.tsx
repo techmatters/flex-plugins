@@ -176,7 +176,7 @@ const CaseList: React.FC<Props> = ({ setConnectedCase, updateDefinitionVersion, 
 
   const closeCaseView = async () => {
     // Reload the current page of the list to reflect any updates to the case just being viewed
-    await fetchCaseList(state.page, currentSettings.sort, currentSettings.filter);
+    await fetchCaseList(currentSettings.page, currentSettings.sort, currentSettings.filter);
     dispatch({ type: 'hideCaseDetails' });
   };
 

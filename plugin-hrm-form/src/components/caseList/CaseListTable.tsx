@@ -43,10 +43,7 @@ const CaseListTable: React.FC<Props> = ({
 
   return (
     <>
-      <Filters
-        caseCount={caseCount}
-        currentDefinitionVersion={currentDefinitionVersion}
-      />
+      <Filters caseCount={caseCount} currentDefinitionVersion={currentDefinitionVersion} />
       <TableContainer>
         <CLTable tabIndex={0} aria-labelledby="CaseList-Cases-label" data-testid="CaseList-Table">
           <CaseListTableHead />
