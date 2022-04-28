@@ -272,6 +272,8 @@
   "CaseList-THUpdated": "Atualizada",
   "CaseList-THFollowUp": "Acompanhamento",
   "CaseList-THCategory": "Categoria",
+  "CaseList-StatusOpen": "Aberto",
+  "CaseList-StatusClosed": "Fechado",
   "NoCaseSummary": "Sem resumo do caso",
   "CaseList-ExpandButton": "Abrir detalhes do caso",
   "CaseList-PrevPage": "Página anterior",

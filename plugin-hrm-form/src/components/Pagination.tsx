@@ -26,11 +26,11 @@ const renderPaginationButton = (page, handleChangePage) => n => {
     );
 
   return (
-    <ButtonBase key={`CaseList-pagination-${n}`} onClick={() => handleChangePage(n)}>
-      <PaginationButton highlight={page === n}>
+    // <ButtonBase >
+      <PaginationButton highlight={page === n} key={`CaseList-pagination-${n}`} onClick={() => handleChangePage(n)}>
         <ButtonText highlight={page === n}>{n + 1}</ButtonText>
       </PaginationButton>
-    </ButtonBase>
+    // </ButtonBase>
   );
 };
 
@@ -43,16 +43,16 @@ type ChevronButtonProps = {
 const ChevronButton: React.FC<ChevronButtonProps> = ({ chevronDirection, onClick, templateCode }) => {
   const ChevronIcon = chevronDirection === 'left' ? ChevronLeft : ChevronRight;
   return (
-    <ButtonBase onClick={onClick}>
-      <PaginationChevron>
+    // <ButtonBase >
+      <PaginationChevron onClick={onClick}>
         <HiddenText>
           <Template code={templateCode} />
         </HiddenText>
-        <ButtonText>
+        {/* <ButtonText> */}
           <ChevronIcon />
-        </ButtonText>
+        {/* </ButtonText> */}
       </PaginationChevron>
-    </ButtonBase>
+    //</ButtonBase>
   );
 };
 ChevronButton.displayName = 'ChevronButton';
@@ -76,17 +76,17 @@ const Pagination: React.FC<PaginationProps> = ({ page, pagesCount, handleChangeP
   };
 
   return (
-    <TableFooter data-testid="CaseList-TableFooter">
-      <PaginationRow transparent={transparent}>
-        <TableCell colSpan={8}>
-          <div style={{ display: 'flex', width: '100%', justifyContent: 'center' }}>
+    // <TableFooter >
+      <PaginationRow transparent={transparent} data-testid="CaseList-TableFooter">
+        {/* <TableCell colSpan={8}> */}
+          {/* <div style={{ display: 'flex', width: '100%', justifyContent: 'center' }}> */}
             <ChevronButton chevronDirection="left" onClick={decreasePage} templateCode="CaseList-PrevPage" />
             {getPaginationNumbers(page, pagesCount).map(renderButtons)}
             <ChevronButton chevronDirection="right" onClick={increasePage} templateCode="CaseList-NextPage" />
-          </div>
-        </TableCell>
+          {/* </div> */}
+        {/* </TableCell> */}
       </PaginationRow>
-    </TableFooter>
+    // </TableFooter>
   );
 };
 

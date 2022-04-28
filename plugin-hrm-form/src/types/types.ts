@@ -76,6 +76,8 @@ export type Case = {
   createdAt: string;
   updatedAt: string;
   connectedContacts: any[]; // TODO: create contact type
+  childName: string;
+  categories: {};
 };
 
 type NestedInformation = { name: { firstName: string; lastName: string } };

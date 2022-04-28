@@ -43,10 +43,10 @@ export const CLTableRow = withStyles({
     borderColor: 'rgba(127, 134, 155, 0.07)',
     borderRadius: 4,
     boxShadow: '0 1px 1px 0 rgba(0, 0, 0, 0.06)',
-    '&:hover': {
-      backgroundColor: '#F4F4F4',
-      boxShadow: '3px rgba(25, 43, 51, .4)',
-    },
+    // '&:hover': {
+    //   backgroundColor: '#F4F4F4',
+    //   boxShadow: '3px rgba(25, 43, 51, .4)',
+    // },
   },
 })(TableRow);
 CLTableRow.displayName = 'CLTableRow';
@@ -109,7 +109,7 @@ export const CLTableHeaderFont = styled(FontOpenSans)`
 CLTableHeaderFont.displayName = 'CLTableHeaderFont';
 
 type CLTableBodyFontProps = {
-  isOpenCase: boolean;
+  // isOpenCase: boolean;
 };
 
 export const CLTableBodyFont = styled(FontOpenSans)<CLTableBodyFontProps>`
@@ -122,7 +122,7 @@ export const CLTableBodyFont = styled(FontOpenSans)<CLTableBodyFontProps>`
 CLTableBodyFont.displayName = 'CLTableBodyFont';
 
 type CLCaseNumberContainerProps = {
-  isOpenCase: boolean;
+  // isOpenCase: boolean;
 };
 
 export const CLCaseNumberContainer = styled('div')<CLCaseNumberContainerProps>`
@@ -131,22 +131,36 @@ export const CLCaseNumberContainer = styled('div')<CLCaseNumberContainerProps>`
 `;
 CLCaseNumberContainer.displayName = 'CLCaseNumberContainer';
 
+export const CLCaseIDButton = styled('button')`
+  color: #1876D1;
+  text-decoration: 'underline';
+  cursor: 'pointer';
+  border: none;
+  background-color: transparent;
+  padding: inherit;
+`;
+
 type PaginationButtonProps = {
   highlight?: Boolean;
 };
 
-export const PaginationButton = styled('div')<PaginationButtonProps>`
+export const PaginationButton = styled('button')<PaginationButtonProps>`
   background-color: ${props => (props.highlight ? '#1976D2' : 'transparent')};
   box-shadow: ${props => (props.highlight ? '0 1px 1px 0 rgba(0, 0, 0, 0.06)' : '0')};
   border-radius: 4px;
   padding: 5px 10px;
-  margin: 5px 5px 0 5px;
+  margin: 25px 2px;
+  border: none;
+  &:focus-visible{
+    outline: auto;
+    outline-color: #1976D2;
+  }
 `;
 PaginationButton.displayName = 'PaginationButton';
 
 export const PaginationChevron = styled(PaginationButton)`
-  margin: 0;
-  padding-bottom: 10px;
+  /* margin: 0; */
+  /* padding-bottom: 10px; */
 `;
 PaginationChevron.displayName = 'PaginationChevron';
 
@@ -158,6 +172,10 @@ export const ButtonText = styled(FontOpenSans)<ButtonTextProps>`
   font-size: 13px;
   color: ${props => (props.highlight ? '#ffffff' : '#666c7c')};
   font-weight: ${props => (props.highlight ? 700 : 600)};
+  &:focus-visible{
+    outline: auto;
+    border: black solid 5px;
+  }
 `;
 ButtonText.displayName = 'ButtonText';
 

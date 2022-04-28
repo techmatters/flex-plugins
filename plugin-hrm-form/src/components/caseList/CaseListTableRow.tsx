@@ -1,9 +1,11 @@
+/* eslint-disable react/prop-types */
+
 import React from 'react';
-import PropTypes from 'prop-types';
 import { format, parseISO } from 'date-fns';
-import { ButtonBase } from '@material-ui/core';
-import { Fullscreen } from '@material-ui/icons';
+import { Link, Button, ButtonBase } from '@material-ui/core';
+// import { FullscreenIcon } from '@material-ui/icons';
 import { Template } from '@twilio/flex-ui';
+import type { Case, CounselorHash } from '../../types/types';
 
 import {
   CLTableRow,
@@ -14,18 +16,25 @@ import {
   CLActionCell,
   CLTableBodyFont,
   CLCaseNumberContainer,
+  CLCaseIDButton
 } from '../../styles/caseList';
 import { Box, HiddenText, StyledIcon, addHover } from '../../styles/HrmStyles';
 import { formatName, getShortSummary } from '../../utils';
 import { getContactTags, renderTag } from '../../utils/categories';
 import { caseStatuses } from '../../states/DomainConstants';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
+import ta from 'date-fns/esm/locale/ta/index.js';
 
 const CHAR_LIMIT = 200;
 
+type Props = {
+  caseItem: Case;
+  counselorsHash: CounselorHash;
+  handleClickViewCase:(currentCase: Case) => () => void;
+};
+
 // eslint-disable-next-line react/no-multi-comp
-const CaseListTableRow = ({ caseItem, counselorsHash, handleClickViewCase }) => {
-  // eslint-disable-next-line
+const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleClickViewCase }) => {
   const status = caseItem.status;
   const name = formatName(caseItem.childName);
   const summary = caseItem.info && caseItem.info.summary;
@@ -39,41 +48,48 @@ const CaseListTableRow = ({ caseItem, counselorsHash, handleClickViewCase }) => 
       ? `${format(parseISO(caseItem.info.followUpDate), 'MMM d, yyyy')}`
       : '—';
   const categories = getContactTags(caseItem.info.definitionVersion, caseItem.categories);
-  const isOpenCase = caseItem.status !== caseStatuses.closed;
+  // const isOpenCase = caseItem.status !== caseStatuses.closed;
 
   return (
     <CLTableRow data-testid="CaseList-TableRow">
-      <CLNumberCell>
-        <CLCaseNumberContainer isOpenCase={isOpenCase}>
+      <CLNumberCell aria-sort="ascending">
+        <CLCaseNumberContainer>
           <CLTableBodyFont
-            onClick={handleClickViewCase(caseItem)}
-            isOpenCase={isOpenCase}
-            style={{ color: '#1876D1', textDecoration: 'underline', cursor: 'pointer' }}
           >
-            {caseItem.id}
+            <CLCaseIDButton
+              aria-label={`Open Case ${caseItem.id}`}
+              type='button'
+              style={{ color: '#1876D1', textDecoration: 'underline', cursor: 'pointer' }}
+              tabIndex={0}
+              onClick={handleClickViewCase(caseItem)}
+            >
+              {caseItem.id}
+            </CLCaseIDButton>
           </CLTableBodyFont>
-          <CLTableBodyFont isOpenCase={isOpenCase} style={{ color: '#606B85', paddingTop: '2px' }}>
-            {status.charAt(0).toUpperCase() + status.slice(1)}
+          <CLTableBodyFont aria-label="Case Status" style={{ color: '#606B85', paddingTop: '2px' }}>
+              { status === 'open'
+                ? <Template code="CaseList-StatusOpen"/>
+                : <Template code="CaseList-StatusClosed"/>}
           </CLTableBodyFont>
         </CLCaseNumberContainer>
       </CLNumberCell>
       <CLNamesCell>
-        <CLTableBodyFont isOpenCase={isOpenCase}>{name}</CLTableBodyFont>
+        <CLTableBodyFont>{name}</CLTableBodyFont>
       </CLNamesCell>
       <CLSummaryCell>
-        <CLTableBodyFont isOpenCase={isOpenCase}>{shortSummary}</CLTableBodyFont>
+        <CLTableBodyFont>{shortSummary}</CLTableBodyFont>
       </CLSummaryCell>
       <CLNamesCell>
-        <CLTableBodyFont isOpenCase={isOpenCase}>{counselor}</CLTableBodyFont>
+        <CLTableBodyFont>{counselor}</CLTableBodyFont>
       </CLNamesCell>
       <CLTableCell>
-        <CLTableBodyFont isOpenCase={isOpenCase}>{opened}</CLTableBodyFont>
+        <CLTableBodyFont>{opened}</CLTableBodyFont>
       </CLTableCell>
       <CLTableCell>
-        <CLTableBodyFont isOpenCase={isOpenCase}>{updated}</CLTableBodyFont>
+        <CLTableBodyFont>{updated}</CLTableBodyFont>
       </CLTableCell>
       <CLTableCell>
-        <CLTableBodyFont isOpenCase={isOpenCase}>{followUpDate}</CLTableBodyFont>
+        <CLTableBodyFont>{followUpDate}</CLTableBodyFont>
       </CLTableCell>
       <CLTableCell>
         <div style={{ display: 'inline-block', flexDirection: 'column' }}>
@@ -85,38 +101,10 @@ const CaseListTableRow = ({ caseItem, counselorsHash, handleClickViewCase }) => 
             ))}
         </div>
       </CLTableCell>
-      {/* <CLActionCell>
-        <ButtonBase onClick={handleClickViewCase(caseItem)}>
-          <HiddenText>
-            <Template code="CaseList-ExpandButton" />
-            {caseItem.id}
-          </HiddenText>
-          <FullscreenIcon />
-        </ButtonBase>
-      </CLActionCell> */}
     </CLTableRow>
   );
 };
 
 CaseListTableRow.displayName = 'CaseListTableRow';
-CaseListTableRow.propTypes = {
-  caseItem: PropTypes.shape({
-    id: PropTypes.number,
-    twilioWorkerId: PropTypes.string,
-    createdAt: PropTypes.string,
-    updatedAt: PropTypes.string,
-    status: PropTypes.string,
-    info: PropTypes.shape({
-      definitionVersion: PropTypes.string,
-      summary: PropTypes.string,
-      followUpDate: PropTypes.string,
-    }),
-    childName: PropTypes.string,
-    callSummary: PropTypes.string,
-    categories: PropTypes.arrayOf(PropTypes.string),
-  }).isRequired,
-  counselorsHash: PropTypes.shape({}).isRequired,
-  handleClickViewCase: PropTypes.func.isRequired,
-};
 
 export default CaseListTableRow;

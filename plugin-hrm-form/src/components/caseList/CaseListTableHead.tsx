@@ -48,7 +48,7 @@ const CaseListTableHead = ({ sortBy, sortDirection, handleColumnClick }) => {
           localizedText="CaseList-THFollowUp"
         />
         <CaseListTableHeadCell {...tableCellProps} localizedText="CaseList-THCategory" width="15%" />
-        {/* <CaseListTableHeadCell {...tableCellProps} width="4%" /> */}
+        <CaseListTableHeadCell {...tableCellProps} width="4%" />
       </TableRow>
     </TableHead>
   );

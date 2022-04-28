@@ -89,9 +89,9 @@ const CaseListTable: React.FC<Props> = ({
               ))}
             </TableBody>
           )}
-          <Pagination page={page} pagesCount={pagesCount} handleChangePage={handleChangePage} />
         </CLTable>
       </TableContainer>
+      <Pagination page={page} pagesCount={pagesCount} handleChangePage={handleChangePage} />
     </>
   );
 };
