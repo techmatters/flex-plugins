@@ -3,7 +3,7 @@
   "helplines": [
     {
       "label": "Revenge Porn Helpline",
-      "value": "RevengePornHelpline",
+      "value": "RevengePorn",
       "default": true,
       "manager": {
         "name": "Zara Roddis",
