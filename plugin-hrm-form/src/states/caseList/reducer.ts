@@ -23,7 +23,7 @@ const initialState: CaseListState = {
 };
 
 // Undo action & reducer
-const UNDO_CASE_LIST_SETTINGS_UPDATE = 'UNDO_CASE_LIST_SETTINGS_UPDATE';
+export const UNDO_CASE_LIST_SETTINGS_UPDATE = 'UNDO_CASE_LIST_SETTINGS_UPDATE';
 
 type UndoCaseListSettingsUpdateAction = {
   type: typeof UNDO_CASE_LIST_SETTINGS_UPDATE;
