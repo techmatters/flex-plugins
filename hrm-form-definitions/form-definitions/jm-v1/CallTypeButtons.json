@@ -53,5 +53,11 @@
       "label": "Adult Contact",
       "type": "button",
       "category": "non-data"
+  },
+  {
+      "name": "missed",
+      "label": "Missed Contact",
+      "type": "button",
+      "category": "non-data"
   }
 ]

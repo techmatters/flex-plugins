@@ -30,7 +30,7 @@
       { "value": "Unknown", "label": "Unknown" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" }
-  }
+  },
   {
     "name": "gender",
     "label": "Gender",
