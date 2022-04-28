@@ -289,7 +289,7 @@
   "CaseList-Filters-DateFilter-CreatedAt": "Aberto",
   "CaseList-Filters-DateFilter-UpdatedAt": "Atualizada",
   "CaseList-Filters-DateFilter-FollowUpDate": "Acompanhamento",
-  "CaseList-Filters-DateFilter-CustomRange": "para",
+  "CaseList-Filters-DateFilter-CustomRange": "até",
   "CaseList-Filters-DateFilterOptions-Today": "Hoje",
   "CaseList-Filters-DateFilterOptions-Yesterday": "Ontem",
   "CaseList-Filters-DateFilterOptions-PastXDays": "Últimos {{days}} dias",
