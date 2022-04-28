@@ -29,7 +29,7 @@
       ]
     }
   },
-  "Report Harmful Content": {
+  "RHC": {
     "Nature of Issues": {
       "color": "#F5A623",
       "subcategories": [

@@ -1,1 +1,1 @@
-{ "ChildInformationTab": ["location"], "CallerInformationTab": ["location"] }
+{ "ChildInformationTab": ["geolocation"], "CallerInformationTab": ["geolocation"] }
