@@ -184,6 +184,7 @@ const MultiSelectFilter: React.FC<Props> = ({
         isOpened={isOpened}
         isActive={Boolean(selectedCount > 0)}
         type="button"
+        name={name}
         onClick={handleClick}
         innerRef={innerRef => {
           filterButtonElement.current = innerRef;
@@ -241,11 +242,16 @@ const MultiSelectFilter: React.FC<Props> = ({
             </MultiSelectUnorderedList>
             <FiltersBottomButtons>
               <Box marginRight="10px">
-                <FiltersClearButton type="button" onClick={handleClear}>
+                <FiltersClearButton type="button" name="clearButton" onClick={handleClear}>
                   <Template code="CaseList-Filters-Clear" />
                 </FiltersClearButton>
               </Box>
-              <FiltersApplyButton type="submit" onKeyDown={handleTabForLastElement} innerRef={lastElement}>
+              <FiltersApplyButton
+                type="submit"
+                name="applyButton"
+                onKeyDown={handleTabForLastElement}
+                innerRef={lastElement}
+              >
                 <Template code="CaseList-Filters-Apply" />
               </FiltersApplyButton>
             </FiltersBottomButtons>

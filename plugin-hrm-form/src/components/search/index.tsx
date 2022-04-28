@@ -93,7 +93,14 @@ const Search: React.FC<Props> = props => {
 
   const goToResultsOnContacts = () => props.changeSearchPage(SearchPages.resultsContacts);
 
-  const goToResultsOnCases = () => props.changeSearchPage(SearchPages.resultsCases);
+  const goToResultsOnCases = async () => {
+    /*
+     * This returns you to the first page of results from viewing a case, which is safest for now since the UI state is inconsistent otherwise.
+     * We will need a follow on fix to allow returning to the same page of results as the case to work correctly
+     */
+    await props.searchCases(searchParams, props.counselorsHash, CASES_PER_PAGE, 0);
+    props.changeSearchPage(SearchPages.resultsCases);
+  };
 
   const renderMockDialog = () => {
     const isOpen = Boolean(mockedMessage);
