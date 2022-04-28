@@ -12,14 +12,12 @@ import MultiSelectFilter, { Item } from './MultiSelectFilter';
 import { CounselorHash } from '../../../types/types';
 import DateRangeFilter from './DateRangeFilter';
 import {
-  DateFilterOption,
   DateFilter,
-  dateFilterPayloadFromFilters,
   followUpDateFilterOptions,
   standardCaseListDateFilterOptions,
   DateFilterValue,
 } from './dateFilters';
-import { caseListBase, namespace, RootState } from '../../../states';
+import { caseListBase, configurationBase, namespace, RootState } from '../../../states';
 import * as CaseListSettingsActions from '../../../states/caseList/settings';
 /**
  * Reads the definition version and returns and array of items (type Item[])
@@ -71,7 +69,6 @@ const filterCheckedItems = (items: Item[]): string[] => items.filter(item => ite
 
 type OwnProps = {
   currentDefinitionVersion: DefinitionVersion;
-  counselorsHash: CounselorHash;
   caseCount: number;
 };
 
@@ -83,6 +80,7 @@ const Filters: React.FC<Props> = ({
   currentFilter,
   currentFilterCompare,
   counselorsHash,
+  counselorsHashCompare,
   caseCount,
   updateCaseListFilter,
   clearCaseListFilter,
@@ -105,7 +103,8 @@ const Filters: React.FC<Props> = ({
   useEffect(() => {
     const counselorInitialValues = getCounselorsInitialValue(counselorsHash);
     setCounselorValues(counselorInitialValues);
-  }, [counselorsHash]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [counselorsHashCompare]);
 
   // Updates current filters from UI state
   useEffect(() => {
@@ -241,6 +240,8 @@ const mapDispatchToProps = {
 const mapStateToProps = (state: RootState) => ({
   currentFilter: state[namespace][caseListBase].currentSettings.filter,
   currentFilterCompare: JSON.stringify(state[namespace][caseListBase].currentSettings.filter),
+  counselorsHash: state[namespace][configurationBase].counselors.hash,
+  counselorsHashCompare: JSON.stringify(state[namespace][configurationBase].counselors.hash),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

@@ -18,8 +18,6 @@ type OwnProps = {
   defaultSortDirection?: SortDirection;
   localizedText?: string;
   width?: string;
-  sortBy: SortBy;
-  sortDirection: SortDirection;
 };
 
 // eslint-disable-next-line no-use-before-define

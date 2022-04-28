@@ -78,6 +78,7 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
                   onChange={handleClickChildIsAtRisk}
                   defaultChecked={Boolean(childIsAtRisk)}
                   disabled={!canEditChildAtRisk}
+                  autoFocus={canEditChildAtRisk}
                 />
               </Box>
               <Template code="Case-ChildIsAtRisk" />

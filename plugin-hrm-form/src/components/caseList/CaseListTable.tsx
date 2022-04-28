@@ -10,7 +10,7 @@ import CaseListTableHead from './CaseListTableHead';
 import CaseListTableRow from './CaseListTableRow';
 import Pagination from '../Pagination';
 import { CASES_PER_PAGE } from './CaseList';
-import type { Case, ListCasesQueryParams, ListCasesFilters } from '../../types/types';
+import type { Case } from '../../types/types';
 import * as CaseListSettingsActions from '../../states/caseList/settings';
 
 const ROW_HEIGHT = 89;
@@ -19,8 +19,6 @@ type OwnProps = {
   loading: boolean;
   caseList: Case[];
   caseCount: number;
-  page: number;
-  queryParams: ListCasesQueryParams;
   handleChangePage: (page: number) => void;
   handleClickViewCase: (currentCase: Case) => () => void;
 };
@@ -36,7 +34,6 @@ const CaseListTable: React.FC<Props> = ({
   caseList,
   caseCount,
   currentPage,
-  queryParams,
   updateCaseListPage,
   handleClickViewCase,
   counselorsHash,
@@ -49,18 +46,17 @@ const CaseListTable: React.FC<Props> = ({
       <Filters
         caseCount={caseCount}
         currentDefinitionVersion={currentDefinitionVersion}
-        counselorsHash={counselorsHash}
       />
       <TableContainer>
         <CLTable tabIndex={0} aria-labelledby="CaseList-Cases-label" data-testid="CaseList-Table">
-          <CaseListTableHead sortBy={queryParams.sortBy} sortDirection={queryParams.sortDirection} />
+          <CaseListTableHead />
           {loading && (
             <TableBody>
               <CLTableRow
                 style={{
                   position: 'relative',
                   background: 'transparent',
-                  height: `${(caseList.length || queryParams.limit) * ROW_HEIGHT}px`,
+                  height: `${(caseList.length || CASES_PER_PAGE) * ROW_HEIGHT}px`,
                 }}
               >
                 <CLNamesCell style={{ position: 'absolute', textAlign: 'center', width: '100%', top: '40%' }}>

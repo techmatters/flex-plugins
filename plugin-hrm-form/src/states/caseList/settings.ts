@@ -41,6 +41,7 @@ export function updatedFilterReducer(
   return {
     ...state,
     filter: { ...state.filter, ...action.filter },
+    page: 0,
   };
 }
 
@@ -62,6 +63,7 @@ export function clearFilterReducer(
   return {
     ...state,
     filter: caseListSettingsInitialState().filter,
+    page: 0,
   };
 }
 
@@ -81,6 +83,7 @@ export const updateCaseListSort = (sort: ListCasesSort): UpdateCaseListSortActio
 export const updatedSortReducer = (state: CaseListSettingsState, action: UpdateCaseListSortAction) => ({
   ...state,
   sort: action.sort,
+  page: 0,
 });
 
 // Update sort action & reducer

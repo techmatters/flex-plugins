@@ -206,8 +206,6 @@ const CaseList: React.FC<Props> = ({ setConnectedCase, updateDefinitionVersion, 
           loading={state.loading}
           caseList={state.caseList}
           caseCount={state.caseCount}
-          page={state.page}
-          queryParams={state.queryParams}
           handleChangePage={handleChangePage}
           handleClickViewCase={handleClickViewCase}
         />
