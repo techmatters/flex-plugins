@@ -1,19 +1,11 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
 import { getConfig } from '../../HrmFormPlugin';
 import Case from '../case';
-import {
-  Case as CaseType,
-  StandaloneITask,
-  ListCasesQueryParams,
-  ListCasesFilters,
-  ListCasesSortBy,
-  ListCasesSortDirection,
-  ListCasesSort,
-} from '../../types/types';
+import { StandaloneITask, ListCasesQueryParams, ListCasesFilters, ListCasesSort } from '../../types/types';
 import CaseListTable from './CaseListTable';
 import { CaseListContainer, CenteredContainer, SomethingWentWrongText } from '../../styles/caseList';
 import { listCases } from '../../services/CaseService';
@@ -25,89 +17,9 @@ import { getCasesMissingVersions } from '../../utils/definitionVersions';
 import { caseListBase, namespace, RootState } from '../../states';
 import { undoCaseListSettingsUpdate } from '../../states/caseList/reducer';
 import { dateFilterPayloadFromFilters } from './filters/dateFilters';
+import * as ListContent from '../../states/caseList/listContent';
 
 export const CASES_PER_PAGE = 5;
-
-type State = {
-  loading: boolean;
-  showCaseDetails: boolean;
-  error: any;
-  caseList: CaseType[];
-  caseCount: number;
-  page: number;
-  queryParams: ListCasesQueryParams;
-  filters: ListCasesFilters;
-};
-
-const initialState: State = {
-  loading: true,
-  showCaseDetails: false,
-  error: null,
-  caseList: [],
-  caseCount: 0,
-  page: 0,
-  queryParams: {
-    limit: CASES_PER_PAGE,
-    offset: 0,
-    sortBy: ListCasesSortBy.ID,
-    sortDirection: ListCasesSortDirection.DESC,
-  },
-  filters: {
-    counsellors: [],
-    statuses: [],
-    includeOrphans: false,
-  },
-};
-
-type CaseListActions =
-  | { type: 'fetchStarted' }
-  | {
-      type: 'fetchSuccess';
-      payload: { caseList: CaseType[]; caseCount: number };
-    }
-  | { type: 'fetchError'; payload: { error: any } }
-  | { type: 'fetchUpdate'; payload: { caseList: CaseType[] } }
-  | { type: 'showCaseDetails' }
-  | { type: 'hideCaseDetails' }
-  | { type: 'setPage'; payload: number }
-  | { type: 'setQueryParams'; payload: ListCasesQueryParams }
-  | { type: 'setFilters'; payload: ListCasesFilters };
-
-function reducer(state: State, action: CaseListActions) {
-  switch (action.type) {
-    case 'fetchStarted':
-      return { ...state, loading: true };
-    // TODO: after this succeeds, we should check if there is a case such that it's definitionVersion is not loaded in the state, then load it and dispatch it to global state, only then set loading to false
-    case 'fetchSuccess': {
-      const { caseList, caseCount } = action.payload;
-      return { ...state, caseList, caseCount, loading: false };
-    }
-    case 'fetchError': {
-      return { ...state, loading: false, error: action.payload.error };
-    }
-    case 'fetchUpdate': {
-      const { caseList } = action.payload;
-      return { ...state, caseList };
-    }
-    case 'showCaseDetails': {
-      return { ...state, showCaseDetails: true };
-    }
-    case 'hideCaseDetails': {
-      return { ...state, showCaseDetails: false };
-    }
-    case 'setPage': {
-      return { ...state, page: action.payload };
-    }
-    case 'setQueryParams': {
-      return { ...state, queryParams: action.payload };
-    }
-    case 'setFilters': {
-      return { ...state, filters: action.payload };
-    }
-    default:
-      return state;
-  }
-}
 
 const standaloneTask: StandaloneITask = {
   taskSid: 'standalone-task-sid',
@@ -119,13 +31,26 @@ type OwnProps = {};
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const CaseList: React.FC<Props> = ({ setConnectedCase, updateDefinitionVersion, currentSettings }) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+const CaseList: React.FC<Props> = ({
+  setConnectedCase,
+  updateDefinitionVersion,
+  currentSettings,
+  fetchCaseListStarted,
+  fetchCaseListSuccess,
+  fetchCaseListError,
+  openCaseDetails,
+  closeCaseDetails,
+  caseList,
+  caseCount,
+  caseDetailsOpen,
+  fetchError,
+  listLoading,
+}) => {
   const { helpline } = getConfig();
 
   const fetchCaseList = async (page: number, sort: ListCasesSort, filters: ListCasesFilters) => {
     try {
-      dispatch({ type: 'fetchStarted' });
+      fetchCaseListStarted();
       const queryParams: ListCasesQueryParams = {
         ...sort,
         offset: page * CASES_PER_PAGE,
@@ -146,15 +71,11 @@ const CaseList: React.FC<Props> = ({ setConnectedCase, updateDefinitionVersion, 
 
       const definitions = await getCasesMissingVersions(cases);
       definitions.forEach(d => updateDefinitionVersion(d.version, d.definition));
-
-      dispatch({
-        type: 'fetchSuccess',
-        payload: { caseList: cases, caseCount: count },
-      });
+      fetchCaseListSuccess(cases, count);
     } catch (error) {
       console.error(error);
       undoCaseListSettingsUpdate();
-      dispatch({ type: 'fetchError', payload: { error } });
+      fetchCaseListError(error);
     }
   };
 
@@ -163,26 +84,18 @@ const CaseList: React.FC<Props> = ({ setConnectedCase, updateDefinitionVersion, 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSettings]);
 
-  const handleChangePage = async page => {
-    const queryParams = {
-      ...state.queryParams,
-      offset: CASES_PER_PAGE * page,
-    };
-    await fetchCaseList(page, currentSettings.sort, currentSettings.filter);
-  };
-
   const handleClickViewCase = currentCase => () => {
     setConnectedCase(currentCase, standaloneTask.taskSid, false);
-    dispatch({ type: 'showCaseDetails' });
+    openCaseDetails();
   };
 
   const closeCaseView = async () => {
     // Reload the current page of the list to reflect any updates to the case just being viewed
     await fetchCaseList(currentSettings.page, currentSettings.sort, currentSettings.filter);
-    dispatch({ type: 'hideCaseDetails' });
+    closeCaseDetails();
   };
 
-  if (state.error)
+  if (fetchError)
     return (
       <CenteredContainer>
         <SomethingWentWrongText data-testid="CaseList-SomethingWentWrongText">
@@ -191,7 +104,7 @@ const CaseList: React.FC<Props> = ({ setConnectedCase, updateDefinitionVersion, 
       </CenteredContainer>
     );
 
-  if (state.showCaseDetails) {
+  if (caseDetailsOpen) {
     return (
       <StandaloneSearchContainer>
         <CaseLayout>
@@ -205,10 +118,9 @@ const CaseList: React.FC<Props> = ({ setConnectedCase, updateDefinitionVersion, 
     <>
       <CaseListContainer>
         <CaseListTable
-          loading={state.loading}
-          caseList={state.caseList}
-          caseCount={state.caseCount}
-          handleChangePage={handleChangePage}
+          loading={listLoading}
+          caseList={caseList}
+          caseCount={caseCount}
           handleClickViewCase={handleClickViewCase}
         />
       </CaseListContainer>
@@ -227,11 +139,17 @@ const mapDispatchToProps = {
   setConnectedCase: CaseActions.setConnectedCase,
   updateDefinitionVersion: ConfigActions.updateDefinitionVersion,
   undoSettingsUpdate: undoCaseListSettingsUpdate,
+  fetchCaseListStarted: ListContent.fetchCaseListStarted,
+  fetchCaseListSuccess: ListContent.fetchCaseListSuccess,
+  fetchCaseListError: ListContent.fetchCaseListError,
+  openCaseDetails: ListContent.openCaseDetails,
+  closeCaseDetails: ListContent.closeCaseDetails,
 };
 
 const mapStateToProps = (state: RootState) => ({
   currentSettings: state[namespace][caseListBase].currentSettings,
   previousSettings: state[namespace][caseListBase].previousSettings,
+  ...state[namespace][caseListBase].content,
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

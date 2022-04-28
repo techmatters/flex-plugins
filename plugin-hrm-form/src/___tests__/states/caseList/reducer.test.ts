@@ -1,8 +1,7 @@
 import { reduce, undoCaseListSettingsUpdate } from '../../../states/caseList/reducer';
-import { DateExistsCondition } from '../../../components/caseList/filters/dateFilters';
 import { ListCasesSortBy, ListCasesSortDirection } from '../../../types/types';
+import { caseListContentInitialState } from '../../../states/caseList/listContent';
 
-const baselineDate = new Date(2012, 11, 3);
 describe('reduce', () => {
   describe('UNDO_CASE_LIST_SETTINGS_UPDATE', () => {
     const currentSettings = {
@@ -35,12 +34,14 @@ describe('reduce', () => {
         {
           currentSettings,
           previousSettings,
+          content: caseListContentInitialState(),
         },
         undoCaseListSettingsUpdate(),
       );
       expect(updatedState).toStrictEqual({
         currentSettings: previousSettings,
         previousSettings: undefined,
+        content: caseListContentInitialState(),
       });
     });
 
@@ -49,12 +50,14 @@ describe('reduce', () => {
         {
           currentSettings,
           previousSettings: undefined,
+          content: caseListContentInitialState(),
         },
         undoCaseListSettingsUpdate(),
       );
       expect(updatedState).toStrictEqual({
         currentSettings,
         previousSettings: undefined,
+        content: caseListContentInitialState(),
       });
     });
   });

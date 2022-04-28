@@ -19,7 +19,6 @@ type OwnProps = {
   loading: boolean;
   caseList: Case[];
   caseCount: number;
-  handleChangePage: (page: number) => void;
   handleClickViewCase: (currentCase: Case) => () => void;
 };
 
@@ -50,6 +49,7 @@ const CaseListTable: React.FC<Props> = ({
           {loading && (
             <TableBody>
               <CLTableRow
+                data-testid="CaseList-Table-Loading"
                 style={{
                   position: 'relative',
                   background: 'transparent',
