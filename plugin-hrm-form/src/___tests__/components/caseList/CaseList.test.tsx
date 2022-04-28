@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { Provider } from 'react-redux';
 import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
@@ -9,11 +9,11 @@ import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
-import HrmTheme from '../../../styles/HrmTheme';
 import CaseList from '../../../components/caseList';
-import { namespace, configurationBase } from '../../../states';
+import { namespace, configurationBase, caseListBase } from '../../../states';
 import { listCases } from '../../../services/CaseService';
 import { getDefinitionVersions } from '../../../HrmFormPlugin';
+import { CaseListState } from '../../../states/caseList/reducer';
 
 // console.log = () => null;
 console.error = () => null;
@@ -48,15 +48,25 @@ jest.mock('../../../services/CaseService', () => ({ listCases: jest.fn() }));
 expect.extend(toHaveNoViolations);
 const mockStore = configureMockStore([]);
 
-const themeConf = {
-  colorTheme: HrmTheme,
-};
+const themeConf = {};
 
 function createState(state) {
   return {
     [namespace]: state,
   };
 }
+
+const blankCaseListState: CaseListState = {
+  currentSettings: {
+    filter: {
+      counsellors: [],
+      statuses: [],
+      includeOrphans: false,
+    },
+    sort: {},
+    page: 0,
+  },
+};
 
 let mockV1;
 
@@ -78,6 +88,7 @@ test('Should render', async () => {
       definitionVersions: { v1: mockV1 },
       currentDefinitionVersion: mockV1,
     },
+    [caseListBase]: blankCaseListState,
   });
   const store = mockStore(initialState);
 
@@ -120,6 +131,7 @@ test('Should not render (error)', async () => {
       definitionVersions: { v1: mockV1 },
       currentDefinitionVersion: mockV1,
     },
+    [caseListBase]: blankCaseListState,
   });
   const store = mockStore(initialState);
 
@@ -140,8 +152,9 @@ test('Should not render (error)', async () => {
 });
 
 test('a11y', async () => {
-  // @ts-ignore
-  listCases.mockReturnValueOnce(Promise.resolve({ cases: mockedCaseList, count: mockedCaseList.length }));
+  (listCases as jest.Mock).mockReturnValueOnce(
+    Promise.resolve({ cases: mockedCaseList, count: mockedCaseList.length }),
+  );
 
   const initialState = createState({
     [configurationBase]: {
@@ -152,6 +165,7 @@ test('a11y', async () => {
       definitionVersions: { v1: mockV1 },
       currentDefinitionVersion: mockV1,
     },
+    [caseListBase]: blankCaseListState,
   });
   const store = mockStore(initialState);
 
@@ -170,5 +184,5 @@ test('a11y', async () => {
   const axe = configureAxe({ rules });
   const results = await axe(wrapper.getDOMNode());
 
-  expect(results).toHaveNoViolations();
+  (expect(results) as any).toHaveNoViolations();
 });

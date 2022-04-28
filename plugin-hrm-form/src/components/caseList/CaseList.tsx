@@ -11,7 +11,8 @@ import {
   ListCasesQueryParams,
   ListCasesFilters,
   ListCasesSortBy,
-  ListCasesSortDirection, ListCasesSort
+  ListCasesSortDirection,
+  ListCasesSort,
 } from '../../types/types';
 import CaseListTable from './CaseListTable';
 import { CaseListContainer, CenteredContainer, SomethingWentWrongText } from '../../styles/caseList';
@@ -153,6 +154,7 @@ const CaseList: React.FC<Props> = ({ setConnectedCase, updateDefinitionVersion, 
     } catch (error) {
       console.error(error);
       undoCaseListSettingsUpdate();
+      dispatch({ type: 'fetchError', payload: { error } });
     }
   };
 

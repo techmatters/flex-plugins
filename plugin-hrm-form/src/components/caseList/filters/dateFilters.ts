@@ -142,7 +142,7 @@ export const followUpDateFilterOptions = (): DateFilterOptions => [
  * @param filters - the input date filters used to build the payload
  * @param referenceDate - optional date to specify 'now' as the reference point for calculating relative date ranges. Current time is used if not specified. Primarily for testing
  */
-export const dateFilterPayloadFromFilters = (filters: Record<string, DateFilterValue>, referenceDate = null) => {
+export const dateFilterPayloadFromFilters = (filters: Record<string, DateFilterValue>) => {
   if (!filters) return {};
   const entries = Object.entries(filters)
     .filter(([, filter]) => filter)

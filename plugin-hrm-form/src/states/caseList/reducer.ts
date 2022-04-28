@@ -1,15 +1,19 @@
 import {
   CaseListSettingsActionType,
   caseListSettingsInitialState,
-  CaseListSettingsState, CLEAR_CASE_LIST_FILTER, clearFilterReducer,
-  UPDATE_CASE_LIST_FILTER, UPDATE_CASE_LIST_PAGE,
+  CaseListSettingsState,
+  CLEAR_CASE_LIST_FILTER,
+  clearFilterReducer,
+  UPDATE_CASE_LIST_FILTER,
+  updatedFilterReducer,
+  UPDATE_CASE_LIST_PAGE,
+  updatedPageReducer,
   UPDATE_CASE_LIST_SORT,
-  updatedFilterReducer, updatedPageReducer,
-  updatedSortReducer
+  updatedSortReducer,
 } from './settings';
 import { GeneralActionType } from '../types';
 
-type CaseListState = {
+export type CaseListState = {
   currentSettings: CaseListSettingsState;
   previousSettings?: CaseListSettingsState;
 };

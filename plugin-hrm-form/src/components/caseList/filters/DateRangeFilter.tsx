@@ -140,6 +140,7 @@ const DateRangeFilter: React.FC<Props> = ({
   };
 
   // Force React Hook Forms to rerender whenever current value changes
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => updateWorkingCopy(current), [name, reset, current]);
 
   // Close dialog on ESC
@@ -158,6 +159,7 @@ const DateRangeFilter: React.FC<Props> = ({
     }
 
     return () => window.removeEventListener('keydown', closeDialog);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpened, reset, setOpenedFilter, name, current]);
 
   const onSubmit = () => {
