@@ -47,7 +47,7 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
 
   return (
     <CLTableRow data-testid="CaseList-TableRow">
-      <CLNumberCell aria-sort="descending">
+      <CLNumberCell>
         <CLCaseNumberContainer isOpenCase={isOpenCase}>
           <CLCaseIDButton aria-label={`Open Case ${caseItem.id}`} tabIndex={0} onClick={handleClickViewCase(caseItem)}>
             {caseItem.id}

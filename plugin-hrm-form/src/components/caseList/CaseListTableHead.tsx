@@ -20,6 +20,7 @@ const CaseListTableHead = ({ sortBy, sortDirection, handleColumnClick }) => {
           column={ListCasesSortBy.ID}
           defaultSortDirection={ListCasesSortDirection.DESC}
           localizedText="CaseList-THCase"
+          aria-sort="descending"
         />
         <CaseListTableHeadCell
           {...tableCellProps}
