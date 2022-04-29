@@ -30,7 +30,7 @@
   },
   {
     "name": "howDidYouKnowAboutOurLine",
-    "label": "How did you know about our line/number (c)",
+    "label": "How did you know about our line/number?",
     "type": "select",
     "options": [
       { "value": "Word of mouth", "label": "Word of mouth" },

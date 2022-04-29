@@ -11,7 +11,7 @@
   },
   {
     "name": "relationshipToChild",
-    "label": "Relationship to child",
+    "label": "Relationship to Child",
     "type": "select",
     "options": [
       { "value": "Unknown", "label": "" },
@@ -35,7 +35,7 @@
   },
   {
     "name": "province",
-    "label": "Province (c)",
+    "label": "Province",
     "type": "select",
     "options": [
       { "value": "", "label": "" },
@@ -48,7 +48,7 @@
   },
   {
     "name": "district",
-    "label": "District (c)",
+    "label": "District",
     "type": "dependent-select",
     "dependsOn": "province",
     "defaultOption": { "value": "", "label": "" },
