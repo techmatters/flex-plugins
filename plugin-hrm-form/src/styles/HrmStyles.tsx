@@ -525,11 +525,12 @@ type PaginationRowProps = {
   transparent?: boolean;
 };
 
-export const PaginationRow = styled(TableRow)<PaginationRowProps>`
+export const PaginationRow = styled('nav')<PaginationRowProps>`
   height: auto;
   vertical-align: top;
   background-color: ${props => (props.transparent ? 'transparent' : props.theme.colors.base2)};
-  margin-top: -5;
+  margin: 3rem auto;
+  text-align: center;
 `;
 PaginationRow.displayName = 'PaginationRow';
 
