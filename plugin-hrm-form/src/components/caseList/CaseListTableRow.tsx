@@ -10,12 +10,11 @@ import {
   CLNamesCell,
   CLSummaryCell,
   CLNumberCell,
-  CLActionCell,
   CLTableBodyFont,
   CLCaseNumberContainer,
   CLCaseIDButton,
 } from '../../styles/caseList';
-import { Box, HiddenText, StyledIcon, addHover } from '../../styles/HrmStyles';
+import { Box } from '../../styles/HrmStyles';
 import { formatName, getShortSummary } from '../../utils';
 import { getContactTags, renderTag } from '../../utils/categories';
 import { caseStatuses } from '../../states/DomainConstants';
@@ -48,7 +47,7 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
 
   return (
     <CLTableRow data-testid="CaseList-TableRow">
-      <CLNumberCell aria-sort="ascending">
+      <CLNumberCell aria-sort="descending">
         <CLCaseNumberContainer isOpenCase={isOpenCase}>
           <CLCaseIDButton aria-label={`Open Case ${caseItem.id}`} tabIndex={0} onClick={handleClickViewCase(caseItem)}>
             {caseItem.id}

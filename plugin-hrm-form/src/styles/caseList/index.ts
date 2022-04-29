@@ -89,14 +89,6 @@ export const CLSummaryCell = withStyles({
 })(CLTableCell);
 CLSummaryCell.displayName = 'CLSummaryCell';
 
-export const CLActionCell = withStyles({
-  body: {
-    paddingRight: '10px !important',
-    textAlign: 'right',
-  },
-})(CLTableCell);
-CLActionCell.displayName = 'CLActionCell';
-
 export const CLTableHeaderFont = styled(FontOpenSans)`
   font-weight: 600;
   font-size: 12px;
