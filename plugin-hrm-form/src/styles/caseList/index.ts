@@ -133,18 +133,23 @@ type PaginationButtonProps = {
   highlight?: Boolean;
 };
 
-export const PaginationButton = styled('div')<PaginationButtonProps>`
+export const PaginationButton = styled('button')<PaginationButtonProps>`
   background-color: ${props => (props.highlight ? '#1976D2' : 'transparent')};
   box-shadow: ${props => (props.highlight ? '0 1px 1px 0 rgba(0, 0, 0, 0.06)' : '0')};
   border-radius: 4px;
-  padding: 5px 10px;
-  margin: 5px 5px 0 5px;
+  padding: 6px 10px;
+  margin: 0 2px;
+  border: none;
+  &:focus-visible {
+    outline: auto;
+    outline-color: #1976d2;
+  }
 `;
 PaginationButton.displayName = 'PaginationButton';
 
 export const PaginationChevron = styled(PaginationButton)`
   margin: 0;
-  padding-bottom: 10px;
+  padding: 7px 3px;
 `;
 PaginationChevron.displayName = 'PaginationChevron';
 

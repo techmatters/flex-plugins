@@ -21,16 +21,14 @@ const renderPaginationButton = (page, handleChangePage) => n => {
   if (n === -1)
     return (
       <PaginationButton key={`ellipsis-${Math.random()}`}>
-        <ButtonText style={{ paddingTop: 10 }}>...</ButtonText>
+        <ButtonText>...</ButtonText>
       </PaginationButton>
     );
 
   return (
-    <ButtonBase key={`CaseList-pagination-${n}`} onClick={() => handleChangePage(n)}>
-      <PaginationButton highlight={page === n}>
-        <ButtonText highlight={page === n}>{n + 1}</ButtonText>
-      </PaginationButton>
-    </ButtonBase>
+    <PaginationButton highlight={page === n} key={`CaseList-pagination-${n}`} onClick={() => handleChangePage(n)}>
+      <ButtonText highlight={page === n}>{n + 1}</ButtonText>
+    </PaginationButton>
   );
 };
 
@@ -43,16 +41,12 @@ type ChevronButtonProps = {
 const ChevronButton: React.FC<ChevronButtonProps> = ({ chevronDirection, onClick, templateCode }) => {
   const ChevronIcon = chevronDirection === 'left' ? ChevronLeft : ChevronRight;
   return (
-    <ButtonBase onClick={onClick}>
-      <PaginationChevron>
-        <HiddenText>
-          <Template code={templateCode} />
-        </HiddenText>
-        <ButtonText>
-          <ChevronIcon />
-        </ButtonText>
-      </PaginationChevron>
-    </ButtonBase>
+    <PaginationChevron onClick={onClick}>
+      <HiddenText>
+        <Template code={templateCode} />
+      </HiddenText>
+      <ChevronIcon style={{ margin: '-7px 0' }} />
+    </PaginationChevron>
   );
 };
 ChevronButton.displayName = 'ChevronButton';
@@ -76,17 +70,11 @@ const Pagination: React.FC<PaginationProps> = ({ page, pagesCount, handleChangeP
   };
 
   return (
-    <TableFooter data-testid="CaseList-TableFooter">
-      <PaginationRow transparent={transparent}>
-        <TableCell colSpan={8}>
-          <div style={{ display: 'flex', width: '100%', justifyContent: 'center' }}>
-            <ChevronButton chevronDirection="left" onClick={decreasePage} templateCode="CaseList-PrevPage" />
-            {getPaginationNumbers(page, pagesCount).map(renderButtons)}
-            <ChevronButton chevronDirection="right" onClick={increasePage} templateCode="CaseList-NextPage" />
-          </div>
-        </TableCell>
-      </PaginationRow>
-    </TableFooter>
+    <PaginationRow transparent={transparent} data-testid="CaseList-TableFooter">
+      <ChevronButton chevronDirection="left" onClick={decreasePage} templateCode="CaseList-PrevPage" />
+      {getPaginationNumbers(page, pagesCount).map(renderButtons)}
+      <ChevronButton chevronDirection="right" onClick={increasePage} templateCode="CaseList-NextPage" />
+    </PaginationRow>
   );
 };
 
