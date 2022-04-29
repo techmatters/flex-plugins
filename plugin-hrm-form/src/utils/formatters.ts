@@ -1,8 +1,6 @@
 import { truncate } from 'lodash';
 import { format } from 'date-fns';
-import { FormItemDefinition } from 'hrm-form-definitions';
-
-import { getConfig } from '../HrmFormPlugin';
+import type { FormItemDefinition } from 'hrm-form-definitions';
 
 /**
  * @param {string} name
@@ -78,10 +76,11 @@ export const formatStringToDateAndTime = (dateTime: string): string => {
 /**
  * Formats a form value into a readable string.
  * @param value Value to format
+ * @param strings Translation lookups
  */
-export const presentValue = (value: string | number | boolean) => (definition: FormItemDefinition = null) => {
-  const { strings } = getConfig();
-
+export const presentValue = (value: string | number | boolean, strings: Record<string, string>) => (
+  definition: FormItemDefinition = null,
+) => {
   // eslint-disable-next-line dot-notation
   if (definition && definition.type === 'mixed-checkbox' && value === null) return strings['Unknown'];
   if (typeof value === 'string' && value.trim()) return value;

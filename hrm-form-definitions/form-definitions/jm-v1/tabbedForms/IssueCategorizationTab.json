@@ -71,6 +71,7 @@
           "Stress",
           "Suicidal thoughts and suicide attempts",
           "Traumatic distress",
+          "Wellbeing support",
           "Unspecified/Other"
         ]
       },
@@ -179,8 +180,6 @@
         "color": "#767777",
         "subcategories": [
           "Complaints about the child helpline",
-          "No issue presented",
-          "Questions by parents",
           "Questions about the child helpline",
           "Questions about other services",
           "\"Thank you for your assistance\"",

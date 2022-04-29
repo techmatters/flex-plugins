@@ -69,6 +69,7 @@ const MultiSelectFilter: React.FC<Props> = ({
   const [selectedCount, setSelectedCount] = useState<number>(0);
   const [searchTerm, setSearchTerm] = useState<string>('');
 
+  const filterButtonElement = useRef(null);
   const firstElement = useRef(null);
   const lastElement = useRef(null);
 
@@ -93,6 +94,7 @@ const MultiSelectFilter: React.FC<Props> = ({
         reset(defaultValues);
         setSearchTerm('');
         setOpenedFilter(null);
+        filterButtonElement.current?.focus();
       }
     };
 
@@ -142,20 +144,14 @@ const MultiSelectFilter: React.FC<Props> = ({
   const handleTabForLastElement = event => {
     if (!event.shiftKey && event.key === 'Tab') {
       event.preventDefault();
-
-      if (firstElement.current) {
-        firstElement.current.focus();
-      }
+      firstElement.current?.focus();
     }
   };
 
   const handleShiftTabForFirstElement = event => {
     if (event.shiftKey && event.key === 'Tab') {
       event.preventDefault();
-
-      if (lastElement.current) {
-        lastElement.current.focus();
-      }
+      lastElement.current?.focus();
     }
   };
 
@@ -184,7 +180,17 @@ const MultiSelectFilter: React.FC<Props> = ({
 
   return (
     <div style={{ position: 'relative' }}>
-      <MultiSelectButton isOpened={isOpened} type="button" onClick={handleClick}>
+      <MultiSelectButton
+        isOpened={isOpened}
+        isActive={Boolean(selectedCount > 0)}
+        type="button"
+        name={name}
+        onClick={handleClick}
+        innerRef={innerRef => {
+          filterButtonElement.current = innerRef;
+          register(innerRef);
+        }}
+      >
         {text}
         {drawCount()}
         <Flex marginLeft="15px">
@@ -236,11 +242,16 @@ const MultiSelectFilter: React.FC<Props> = ({
             </MultiSelectUnorderedList>
             <FiltersBottomButtons>
               <Box marginRight="10px">
-                <FiltersClearButton type="button" onClick={handleClear}>
+                <FiltersClearButton type="button" name="clearButton" onClick={handleClear}>
                   <Template code="CaseList-Filters-Clear" />
                 </FiltersClearButton>
               </Box>
-              <FiltersApplyButton type="submit" onKeyDown={handleTabForLastElement} innerRef={lastElement}>
+              <FiltersApplyButton
+                type="submit"
+                name="applyButton"
+                onKeyDown={handleTabForLastElement}
+                innerRef={lastElement}
+              >
                 <Template code="CaseList-Filters-Apply" />
               </FiltersApplyButton>
             </FiltersBottomButtons>

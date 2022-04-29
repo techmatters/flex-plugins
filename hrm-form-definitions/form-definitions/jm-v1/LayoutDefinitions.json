@@ -5,7 +5,7 @@
       "childInformation": {
       },
       "caseInformation": {
-        "splitFormAt": 3
+        "splitFormAt": 5
       }
     },
     "case": {
@@ -29,7 +29,7 @@
             "includeLabel": true
           }
         },
-        "splitFormAt": 3
+        "splitFormAt": 4
       },
       "referrals": {
         "splitFormAt": 3
