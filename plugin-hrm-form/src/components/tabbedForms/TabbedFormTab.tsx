@@ -5,14 +5,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import type { FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 
 import * as actions from '../../states/contacts/actions';
-import {
-  ColumnarBlock,
-  Container,
-  TwoColumnLayout,
-  TabbedFormTabContainer,
-  Box,
-  BottomButtonBarHeight,
-} from '../../styles/HrmStyles';
+import { ColumnarBlock, Container, TwoColumnLayout, Box, BottomButtonBarHeight } from '../../styles/HrmStyles';
 import { createFormFromDefinition, disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
 import type { TaskEntry } from '../../states/contacts/reducer';
 import type { CustomITask } from '../../types/types';
@@ -66,19 +59,17 @@ const TabbedFormTab: React.FC<Props> = ({
   }, [definition, getValues, initialForm, firstElementRef, layoutDefinition, tabPath, task.taskSid, updateForm]);
 
   return (
-    <TabbedFormTabContainer display={display}>
-      <Container>
-        <Box paddingBottom={`${BottomButtonBarHeight}px`}>
-          <TwoColumnLayout>
-            <ColumnarBlock>{l}</ColumnarBlock>
-            <ColumnarBlock>
-              {r}
-              {extraChildrenRight}
-            </ColumnarBlock>
-          </TwoColumnLayout>
-        </Box>
-      </Container>
-    </TabbedFormTabContainer>
+    <Container>
+      <Box paddingBottom={`${BottomButtonBarHeight}px`}>
+        <TwoColumnLayout>
+          <ColumnarBlock>{l}</ColumnarBlock>
+          <ColumnarBlock>
+            {r}
+            {extraChildrenRight}
+          </ColumnarBlock>
+        </TwoColumnLayout>
+      </Box>
+    </Container>
   );
 };
 

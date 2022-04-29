@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import PropTypes from 'prop-types';
 import { format } from 'date-fns';
 import { CircularProgress, IconButton } from '@material-ui/core';
 import { Link as LinkIcon } from '@material-ui/icons';
@@ -8,39 +7,39 @@ import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes } from 'hrm-form-definitions';
 
-import { DetailsContainer, NameContainer, DetNameText } from '../styles/search';
-import Section from './Section';
-import SectionEntry from './SectionEntry';
-import { channelTypes } from '../states/DomainConstants';
-import { isNonDataCallType } from '../states/ValidationRules';
-import { contactType } from '../types';
-import { formatDuration, formatName, formatCategories, mapChannel, mapChannelForInsights } from '../utils';
-import { ContactDetailsSections } from './common/ContactDetails';
-import { unNestInformation } from '../services/ContactService';
-import { namespace, configurationBase, RootState } from '../states';
-import * as ConfigActions from '../states/configuration/actions';
-import { getDefinitionVersion } from '../services/ServerlessService';
+import { DetailsContainer, NameContainer, DetNameText } from '../../styles/search';
+import Section from '../Section';
+import SectionEntry from '../SectionEntry';
+import { channelTypes } from '../../states/DomainConstants';
+import { isNonDataCallType } from '../../states/ValidationRules';
+import { formatDuration, formatName, formatCategories, mapChannelForInsights } from '../../utils';
+import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/ContactDetails';
+import { unNestInformation } from '../../services/ContactService';
+import { namespace, configurationBase, RootState, contactFormsBase } from '../../states';
+import * as ConfigActions from '../../states/configuration/actions';
+import { getDefinitionVersion } from '../../services/ServerlessService';
+
 
 // TODO: complete this type
 type OwnProps = {
-  contact: any;
+  contactId: string;
   detailsExpanded: any;
-  showActionIcons?: any;
-  handleOpenConnectDialog?: any;
-  handleExpandDetailsSection: any;
+  showActionIcons?: boolean;
+  handleOpenConnectDialog?: (event: any) => void;
+  handleExpandDetailsSection: (section: ContactDetailsSectionsType) => void;
 };
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
 const Details: React.FC<Props> = ({
-  contact,
   detailsExpanded,
-  showActionIcons,
+  showActionIcons = false,
   handleOpenConnectDialog,
   handleExpandDetailsSection,
   definitionVersions,
   updateDefinitionVersion,
   counselorsHash,
+  contact,
 }) => {
   const version = contact.details.definitionVersion;
 
@@ -59,8 +58,9 @@ const Details: React.FC<Props> = ({
   }, [definitionVersions, updateDefinitionVersion, version]);
 
   // Object destructuring on contact
-  const { overview, details, counselor, csamReports } = contact;
+  const { overview, details, csamReports } = contact;
   const {
+    counselor,
     dateTime,
     name: childName,
     customerNumber,
@@ -76,7 +76,9 @@ const Details: React.FC<Props> = ({
   const childOrUnknown = formatName(childName);
   const childUpperCased = childOrUnknown.toUpperCase();
   const formattedChannel =
-    channel === 'default' ? mapChannelForInsights(details.contactlessTask.channel) : mapChannelForInsights(channel);
+    channel === 'default'
+      ? mapChannelForInsights(details.contactlessTask.channel.toString())
+      : mapChannelForInsights(channel);
   const formattedDate = `${format(new Date(dateTime), 'MMM d, yyyy / h:mm aaaaa')}m`;
   const formattedDuration = formatDuration(conversationDuration);
 
@@ -214,7 +216,7 @@ const Details: React.FC<Props> = ({
             <SectionEntry
               key={`CaseInformation-${e.label}`}
               description={<Template code={e.label} />}
-              value={contact.details.caseInformation[e.name]}
+              value={contact.details.caseInformation[e.name] as boolean | string}
               definition={e}
             />
           ))}
@@ -233,13 +235,6 @@ const Details: React.FC<Props> = ({
 
 Details.displayName = 'Details';
 
-Details.propTypes = {
-  contact: contactType.isRequired,
-  detailsExpanded: PropTypes.objectOf(PropTypes.bool).isRequired,
-  handleOpenConnectDialog: PropTypes.func,
-  handleExpandDetailsSection: PropTypes.func.isRequired,
-  showActionIcons: PropTypes.bool,
-};
 Details.defaultProps = {
   handleOpenConnectDialog: () => null,
   showActionIcons: false,
@@ -248,6 +243,7 @@ Details.defaultProps = {
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   definitionVersions: state[namespace][configurationBase].definitionVersions,
   counselorsHash: state[namespace][configurationBase].counselors.hash,
+  contact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.contact,
 });
 
 const mapDispatchToProps = {

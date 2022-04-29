@@ -1,17 +1,26 @@
 import { omit } from 'lodash';
-import { callTypes, CallTypes } from 'hrm-form-definitions';
+import { CallTypes, callTypes } from 'hrm-form-definitions';
 
 import * as t from './types';
 import {
+  DefinitionVersion,
+  GeneralActionType,
   INITIALIZE_CONTACT_STATE,
   RECREATE_CONTACT_STATE,
   REMOVE_CONTACT_STATE,
-  GeneralActionType,
-  DefinitionVersion,
 } from '../types';
 import { createStateItem } from '../../components/common/forms/formGenerators';
 import { createContactlessTaskTabDefinition } from '../../components/tabbedForms/ContactlessTaskTabDefinition';
-import type { CSAMReportEntry } from '../../types/types';
+import {
+  Contact,
+  ExistingContactAction,
+  ExistingContactsState,
+  LOAD_CONTACT_ACTION,
+  loadContactReducer,
+  RELEASE_CONTACT_ACTION,
+  releaseContactReducer,
+} from './existingContacts';
+import { CSAMReportEntry } from '../../types/types';
 
 export type TaskEntry = {
   helpline: string;
@@ -37,6 +46,7 @@ type ContactsState = {
   tasks: {
     [taskId: string]: TaskEntry;
   };
+  existingContacts: ExistingContactsState;
 };
 
 export const emptyCategories = [];
@@ -87,10 +97,13 @@ export const createNewTaskEntry = (definitions: DefinitionVersion) => (recreated
   };
 };
 
-const initialState: ContactsState = { tasks: {} };
+const initialState: ContactsState = { tasks: {}, existingContacts: {} };
 
 // eslint-disable-next-line import/no-unused-modules
-export function reduce(state = initialState, action: t.ContactsActionType | GeneralActionType): ContactsState {
+export function reduce(
+  state = initialState,
+  action: t.ContactsActionType | ExistingContactAction | GeneralActionType,
+): ContactsState {
   switch (action.type) {
     case INITIALIZE_CONTACT_STATE:
       return {
@@ -242,6 +255,12 @@ export function reduce(state = initialState, action: t.ContactsActionType | Gene
           },
         },
       };
+    }
+    case LOAD_CONTACT_ACTION: {
+      return { ...state, existingContacts: loadContactReducer(state.existingContacts, action) };
+    }
+    case RELEASE_CONTACT_ACTION: {
+      return { ...state, existingContacts: releaseContactReducer(state.existingContacts, action) };
     }
     default:
       return state;

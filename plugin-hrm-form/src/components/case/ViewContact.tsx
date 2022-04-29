@@ -3,16 +3,16 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
-import { Container, StyledNextStepButton, BottomButtonBar } from '../../styles/HrmStyles';
+import { BottomButtonBar, Container, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseLayout } from '../../styles/case';
-import { namespace, connectedCaseBase, contactFormsBase, configurationBase, RootState } from '../../states';
+import { configurationBase, connectedCaseBase, contactFormsBase, namespace, RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
-import * as RoutingActions from '../../states/routing/actions';
-import ContactDetails from '../ContactDetails';
+import ContactDetails, { ContactDetailsRoute } from '../contact/ContactDetails';
 import ActionHeader from './ActionHeader';
-import { adaptFormToContactDetails, adaptContactToDetailsScreen } from './ContactDetailsAdapter';
+import { adaptContactToDetailsScreen, adaptFormToContactDetails } from './ContactDetailsAdapter';
 import { CaseState } from '../../states/case/reducer';
 import type { CustomITask, StandaloneITask } from '../../types/types';
+import { loadContact } from '../../states/contacts/existingContacts';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const form = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
@@ -51,6 +51,8 @@ const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, on
 
   if (!contact) return null;
 
+  loadContact(contact.id, contact);
+
   const handleExpandDetailsSection = section => {
     const updatedDetailsExpanded = {
       ...detailsExpanded,
@@ -78,7 +80,8 @@ const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, on
           added={added}
         />
         <ContactDetails
-          contact={contact}
+          contactDetailsRoute={ContactDetailsRoute.HOME}
+          contactId={contact}
           detailsExpanded={detailsExpanded}
           handleExpandDetailsSection={handleExpandDetailsSection}
         />
