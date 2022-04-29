@@ -209,6 +209,8 @@
   "CaseList-THFollowUp": "Follow Up",
   "CaseList-THCategory": "Category",
   "CaseList-ExpandButton": "Open case details",
+  "CaseList-StatusOpen": "Open",
+  "CaseList-StatusClosed": "Closed",
   "CaseList-PrevPage": "Previous page",
   "CaseList-NextPage": "Next page",
   "CaseList-FilterBy": "Filter by",

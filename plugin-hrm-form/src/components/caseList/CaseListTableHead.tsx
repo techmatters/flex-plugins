@@ -47,8 +47,7 @@ const CaseListTableHead = ({ sortBy, sortDirection, handleColumnClick }) => {
           defaultSortDirection={ListCasesSortDirection.DESC}
           localizedText="CaseList-THFollowUp"
         />
-        <CaseListTableHeadCell {...tableCellProps} localizedText="CaseList-THCategory" width="15%" />
-        {/* <CaseListTableHeadCell {...tableCellProps} width="4%" /> */}
+        <CaseListTableHeadCell {...tableCellProps} localizedText="CaseList-THCategory" width="20%" />
       </TableRow>
     </TableHead>
   );

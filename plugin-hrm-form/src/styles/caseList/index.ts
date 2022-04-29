@@ -109,7 +109,7 @@ export const CLTableHeaderFont = styled(FontOpenSans)`
 CLTableHeaderFont.displayName = 'CLTableHeaderFont';
 
 type CLTableBodyFontProps = {
-  isOpenCase: boolean;
+  isOpenCase?: boolean;
 };
 
 export const CLTableBodyFont = styled(FontOpenSans)<CLTableBodyFontProps>`
@@ -122,7 +122,7 @@ export const CLTableBodyFont = styled(FontOpenSans)<CLTableBodyFontProps>`
 CLTableBodyFont.displayName = 'CLTableBodyFont';
 
 type CLCaseNumberContainerProps = {
-  isOpenCase: boolean;
+  isOpenCase?: boolean;
 };
 
 export const CLCaseNumberContainer = styled('div')<CLCaseNumberContainerProps>`
@@ -130,6 +130,15 @@ export const CLCaseNumberContainer = styled('div')<CLCaseNumberContainerProps>`
   padding: 0 6px;
 `;
 CLCaseNumberContainer.displayName = 'CLCaseNumberContainer';
+
+export const CLCaseIDButton = styled('button')`
+  color: #1876d1;
+  text-decoration: underline;
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+  padding: 2px 0px;
+`;
 
 type PaginationButtonProps = {
   highlight?: Boolean;

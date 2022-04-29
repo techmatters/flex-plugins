@@ -1,10 +1,9 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
-import PropTypes from 'prop-types';
 import { format, parseISO } from 'date-fns';
-import { ButtonBase } from '@material-ui/core';
-import { Fullscreen } from '@material-ui/icons';
 import { Template } from '@twilio/flex-ui';
 
+import { Case, CounselorHash } from '../../types/types';
 import {
   CLTableRow,
   CLTableCell,
@@ -14,6 +13,7 @@ import {
   CLActionCell,
   CLTableBodyFont,
   CLCaseNumberContainer,
+  CLCaseIDButton,
 } from '../../styles/caseList';
 import { Box, HiddenText, StyledIcon, addHover } from '../../styles/HrmStyles';
 import { formatName, getShortSummary } from '../../utils';
@@ -23,8 +23,13 @@ import CategoryWithTooltip from '../common/CategoryWithTooltip';
 
 const CHAR_LIMIT = 200;
 
-// eslint-disable-next-line react/no-multi-comp
-const CaseListTableRow = ({ caseItem, counselorsHash, handleClickViewCase }) => {
+type Props = {
+  caseItem: Case;
+  counselorsHash: CounselorHash;
+  handleClickViewCase: (currentCase: Case) => () => void;
+};
+
+const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleClickViewCase }) => {
   // eslint-disable-next-line
   const status = caseItem.status;
   const name = formatName(caseItem.childName);
@@ -43,17 +48,13 @@ const CaseListTableRow = ({ caseItem, counselorsHash, handleClickViewCase }) => 
 
   return (
     <CLTableRow data-testid="CaseList-TableRow">
-      <CLNumberCell>
+      <CLNumberCell aria-sort="ascending">
         <CLCaseNumberContainer isOpenCase={isOpenCase}>
-          <CLTableBodyFont
-            onClick={handleClickViewCase(caseItem)}
-            isOpenCase={isOpenCase}
-            style={{ color: '#1876D1', textDecoration: 'underline', cursor: 'pointer' }}
-          >
+          <CLCaseIDButton aria-label={`Open Case ${caseItem.id}`} tabIndex={0} onClick={handleClickViewCase(caseItem)}>
             {caseItem.id}
-          </CLTableBodyFont>
-          <CLTableBodyFont isOpenCase={isOpenCase} style={{ color: '#606B85', paddingTop: '2px' }}>
-            {status.charAt(0).toUpperCase() + status.slice(1)}
+          </CLCaseIDButton>
+          <CLTableBodyFont style={{ color: '#606B85', paddingTop: '2px', textAlign: 'center' }}>
+            {status === 'open' ? <Template code="CaseList-StatusOpen" /> : <Template code="CaseList-StatusClosed" />}
           </CLTableBodyFont>
         </CLCaseNumberContainer>
       </CLNumberCell>
@@ -85,38 +86,10 @@ const CaseListTableRow = ({ caseItem, counselorsHash, handleClickViewCase }) => 
             ))}
         </div>
       </CLTableCell>
-      {/* <CLActionCell>
-        <ButtonBase onClick={handleClickViewCase(caseItem)}>
-          <HiddenText>
-            <Template code="CaseList-ExpandButton" />
-            {caseItem.id}
-          </HiddenText>
-          <FullscreenIcon />
-        </ButtonBase>
-      </CLActionCell> */}
     </CLTableRow>
   );
 };
 
 CaseListTableRow.displayName = 'CaseListTableRow';
-CaseListTableRow.propTypes = {
-  caseItem: PropTypes.shape({
-    id: PropTypes.number,
-    twilioWorkerId: PropTypes.string,
-    createdAt: PropTypes.string,
-    updatedAt: PropTypes.string,
-    status: PropTypes.string,
-    info: PropTypes.shape({
-      definitionVersion: PropTypes.string,
-      summary: PropTypes.string,
-      followUpDate: PropTypes.string,
-    }),
-    childName: PropTypes.string,
-    callSummary: PropTypes.string,
-    categories: PropTypes.arrayOf(PropTypes.string),
-  }).isRequired,
-  counselorsHash: PropTypes.shape({}).isRequired,
-  handleClickViewCase: PropTypes.func.isRequired,
-};
 
 export default CaseListTableRow;
