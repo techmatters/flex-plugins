@@ -30,6 +30,19 @@ type Divider = { __divider: 'divider' };
 
 type DateFilterSetting = RelativeDateRange | FixedDateRange | ExistsDateFilter;
 
+type RangeDateFilterValue = {
+  option: string;
+  from?: Date;
+  to?: Date;
+};
+
+type ExistsDateFilterValue = {
+  option: string;
+  exists: DateExistsCondition;
+};
+
+export type DateFilterValue = RangeDateFilterValue | ExistsDateFilterValue;
+
 export type DateFilterOption = [string, DateFilterSetting];
 
 export type DateFilterOptions = (DateFilterOption | Divider)[];
@@ -90,12 +103,15 @@ export const isDivider = (item: any): item is Divider => (<Divider>item)?.__divi
 export const isFixedDateRange = (item: any): item is FixedDateRange =>
   (<FixedDateRange>item)?.__fixedDateRange === 'fixedDateRange';
 
-const isExistsDateFilter = (item: any): item is ExistsDateFilter => Boolean((<ExistsDateFilter>item)?.exists);
+export const isExistsDateFilter = (item: any): item is ExistsDateFilter => Boolean((<ExistsDateFilter>item)?.exists);
 
 const isRelativeDateRange = (item: any): item is RelativeDateRange => {
   const rdr = <RelativeDateRange>item;
   return typeof rdr.from === 'function' && typeof rdr.to === 'function';
 };
+
+export const isExistsDateFilterValue = (filterValue: DateFilterValue): filterValue is ExistsDateFilterValue =>
+  Boolean((filterValue as ExistsDateFilterValue)?.exists);
 
 export const standardCaseListDateFilterOptions = (): DateFilterOptions => [
   ['TODAY', today()],
@@ -126,32 +142,24 @@ export const followUpDateFilterOptions = (): DateFilterOptions => [
  * @param filters - the input date filters used to build the payload
  * @param referenceDate - optional date to specify 'now' as the reference point for calculating relative date ranges. Current time is used if not specified. Primarily for testing
  */
-export const dateFilterPayloadFromFilters = (filters: DateFilter[], referenceDate = null) => {
-  const entries = filters
-    .filter(f => f.currentSetting)
-    .map(ft => {
+export const dateFilterPayloadFromFilters = (filters: Record<string, DateFilterValue>) => {
+  if (!filters) return {};
+  const entries = Object.entries(filters)
+    .filter(([, filter]) => filter)
+    .map(([key, filter]) => {
       let filterPayload: { from?: string; to?: string; exists: DateExistsCondition };
-      const [, filter] = ft.currentSetting;
-      if (isFixedDateRange(filter)) {
+      if (isExistsDateFilterValue(filter)) {
+        filterPayload = {
+          exists: filter.exists,
+        };
+      } else {
         filterPayload = {
           from: filter.from?.toISOString(),
           to: filter.to?.toISOString(),
           exists: DateExistsCondition.MUST_EXIST,
         };
-      } else if (isExistsDateFilter(filter)) {
-        filterPayload = {
-          exists: filter.exists,
-        };
-      } else {
-        // relative range from a preset
-        const now = referenceDate ?? new Date();
-        filterPayload = {
-          from: filter.from(now).toISOString(),
-          to: filter.to(now).toISOString(),
-          exists: DateExistsCondition.MUST_EXIST,
-        };
       }
-      return [ft.filterPayloadParameter, filterPayload];
+      return [key, filterPayload];
     });
   return Object.fromEntries(entries);
 };
