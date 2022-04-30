@@ -1,42 +1,51 @@
 /* eslint-disable no-empty-function */
-import React, { Component, useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
 import { Template } from '@twilio/flex-ui';
+import { connect } from 'react-redux';
 
 import { Container } from '../../../styles/HrmStyles';
-import { contactType } from '../../../types';
 import GeneralContactDetails from '../../contact/ContactDetails';
 import ConnectDialog from '../ConnectDialog';
 import BackToSearchResultsButton from '../SearchResults/SearchResultsBackButton';
 import { SearchContact } from '../../../types/types';
-import { ContactDetailsSections } from '../../common/ContactDetails';
+import { loadContact, releaseContact } from '../../../states/contacts/existingContacts';
+import { DetailsContext } from '../../../states/contacts/contactDetails';
 
 type OwnProps = {
   task: any;
   currentIsCaller: boolean;
   contact: SearchContact;
   showActionIcons: boolean;
-  detailsExpanded: Record<string, boolean>;
   handleBack: () => void;
   handleSelectSearchResult: (contact: SearchContact) => void;
-  handleMockedMessage: () => void;
-  handleExpandDetailsSection: (section: typeof ContactDetailsSections[keyof typeof ContactDetailsSections]) => void;
 };
 
-type Props = OwnProps;
+const mapDispatchToProps = {
+  loadContactIntoState: loadContact,
+  releaseContactFromState: releaseContact,
+};
+
+type Props = OwnProps & typeof mapDispatchToProps;
 
 const ContactDetails: React.FC<Props> = ({
   contact,
-  detailsExpanded,
   currentIsCaller,
   handleBack,
   showActionIcons,
   task,
   handleSelectSearchResult,
-  handleExpandDetailsSection,
-  handleMockedMessage,
+  loadContactIntoState,
+  releaseContactFromState,
 }: Props) => {
   const [anchorEl, setAnchorEl] = useState(null);
+
+  useEffect(() => {
+    loadContactIntoState(contact);
+    return () => {
+      releaseContactFromState(contact.contactId);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contact]);
 
   const handleCloseDialog = () => {
     setAnchorEl(null);
@@ -65,12 +74,10 @@ const ContactDetails: React.FC<Props> = ({
       />
       <BackToSearchResultsButton text={<Template code="SearchResultsIndex-BackToResults" />} handleBack={handleBack} />
       <GeneralContactDetails
+        context={DetailsContext.CONTACT_SEARCH}
         showActionIcons={showActionIcons}
         contactId={contact.contactId}
-        detailsExpanded={detailsExpanded}
         handleOpenConnectDialog={handleOpenConnectDialog}
-        handleMockedMessage={handleMockedMessage}
-        handleExpandDetailsSection={handleExpandDetailsSection}
       />
     </Container>
   );
@@ -78,4 +85,4 @@ const ContactDetails: React.FC<Props> = ({
 
 ContactDetails.displayName = 'ContactDetails';
 
-export default ContactDetails;
+export default connect(null, mapDispatchToProps)(ContactDetails);

@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import renderer from 'react-test-renderer';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
@@ -10,10 +10,12 @@ import ContactDetails from '../../components/search/ContactDetails';
 import Section from '../../components/Section';
 import { channelTypes } from '../../states/DomainConstants';
 import { getDefinitionVersions } from '../../HrmFormPlugin';
+import { DetailsContext } from '../../states/contacts/contactDetails';
 
 const mockStore = configureMockStore([]);
 
 const contactOfType = type => ({
+  contactId: 'TEST CONTACT ID',
   details: {
     definitionVersion: 'v1',
     childInformation: {
@@ -93,7 +95,6 @@ const contactOfType = type => ({
 const handleBack = jest.fn();
 const handleMockedMessage = jest.fn();
 const handleSelectSearchResult = jest.fn();
-const handleExpandDetailsSection = jest.fn();
 const detailsExpanded = {
   'General details': true,
 };
@@ -104,20 +105,33 @@ let initialState;
 beforeAll(async () => {
   mockV1 = await loadDefinition(DefinitionVersionId.v1);
   mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
-  initialState = {
+  initialState = type => ({
     'plugin-hrm-form': {
       configuration: {
         definitionVersions: { v1: mockV1 },
         currentDefinitionVersion: mockV1,
         counselors: { hash: { HASH1: 'CreatorOfTheCase' } },
       },
+      activeContacts: {
+        existingContacts: {
+          'TEST CONTACT ID': {
+            refCount: 1,
+            contact: contactOfType(type),
+          },
+        },
+        contactDetails: {
+          [DetailsContext.CONTACT_SEARCH]: {
+            detailsExpanded: {},
+          },
+        },
+      },
     },
-  };
+  });
 });
 
 test(`<ContactDetails> with contact of type ${callTypes.child}`, () => {
   const contact = contactOfType(callTypes.child);
-  const store = mockStore(initialState);
+  const store = mockStore(initialState(callTypes.child));
 
   const component = renderer.create(
     <Provider store={store}>
@@ -128,7 +142,6 @@ test(`<ContactDetails> with contact of type ${callTypes.child}`, () => {
         handleMockedMessage={handleMockedMessage}
         handleSelectSearchResult={handleSelectSearchResult}
         detailsExpanded={detailsExpanded}
-        handleExpandDetailsSection={handleExpandDetailsSection}
       />
     </Provider>,
   ).root;
@@ -140,7 +153,7 @@ test(`<ContactDetails> with contact of type ${callTypes.child}`, () => {
 
 test(`<ContactDetails> with contact of type ${callTypes.caller}`, () => {
   const contact = contactOfType(callTypes.caller);
-  const store = mockStore(initialState);
+  const store = mockStore(initialState(callTypes.caller));
 
   const component = renderer.create(
     <Provider store={store}>
@@ -151,7 +164,6 @@ test(`<ContactDetails> with contact of type ${callTypes.caller}`, () => {
         handleMockedMessage={handleMockedMessage}
         handleSelectSearchResult={handleSelectSearchResult}
         detailsExpanded={detailsExpanded}
-        handleExpandDetailsSection={handleExpandDetailsSection}
       />
     </Provider>,
   ).root;
@@ -162,7 +174,7 @@ test(`<ContactDetails> with contact of type ${callTypes.caller}`, () => {
 
 test(`<ContactDetails> with a non data (standalone) contact`, () => {
   const contact = contactOfType('anything else');
-  const store = mockStore(initialState);
+  const store = mockStore(initialState('anything else'));
 
   const component = renderer.create(
     <Provider store={store}>
@@ -173,7 +185,6 @@ test(`<ContactDetails> with a non data (standalone) contact`, () => {
         handleMockedMessage={handleMockedMessage}
         handleSelectSearchResult={handleSelectSearchResult}
         detailsExpanded={detailsExpanded}
-        handleExpandDetailsSection={handleExpandDetailsSection}
       />
     </Provider>,
   ).root;

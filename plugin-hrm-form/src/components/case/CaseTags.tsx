@@ -6,7 +6,7 @@ import { DefinitionVersionId } from 'hrm-form-definitions';
 import { Flex } from '../../styles/HrmStyles';
 import { TagsWrapper } from '../../styles/search';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
-import { retrieveCategories } from './ContactDetailsAdapter';
+import { retrieveCategories } from '../../states/contacts/contactDetailsAdapter';
 import { getContactTags, renderTag } from '../../utils/categories';
 import styles from './casePrint/styles';
 

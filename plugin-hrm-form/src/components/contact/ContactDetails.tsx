@@ -2,33 +2,23 @@
 import React from 'react';
 
 import ContactDetailsHome from './ContactDetailsHome';
-import { ContactDetailsSectionsType } from '../common/ContactDetails';
-
-export enum ContactDetailsRoute {
-  HOME = 'home',
-  EDIT_CALLER_INFO = 'editCallerInformation',
-  EDIT_CHILD_INFORMATION = 'editChildInformation',
-  EDIT_CATEGORIES = 'editCaseInformation',
-}
+import { DetailsContext } from '../../states/contacts/contactDetails';
 
 type OwnProps = {
   contactId: string;
-  contactDetailsRoute: ContactDetailsRoute;
-  detailsExpanded: any;
-  handleExpandDetailsSection: (section: ContactDetailsSectionsType) => void;
-  handleOpenConnectDialog: (event: any) => void;
-  showActionIcons: boolean;
+  context: DetailsContext;
+  handleOpenConnectDialog?: (event: any) => void;
+  showActionIcons?: boolean;
 };
 
 type Props = OwnProps;
 
-const ContactDetails: React.FC<Props> = ({ contactId, detailsExpanded, handleExpandDetailsSection, handleOpenConnectDialog, showActionIcons }) => {
+const ContactDetails: React.FC<Props> = ({ context, contactId, handleOpenConnectDialog, showActionIcons }) => {
   return (
     <ContactDetailsHome
+      context={context}
       showActionIcons={showActionIcons}
       contactId={contactId}
-      detailsExpanded={detailsExpanded}
-      handleExpandDetailsSection={handleExpandDetailsSection}
       handleOpenConnectDialog={handleOpenConnectDialog}
     />
   );

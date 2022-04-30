@@ -1,6 +1,7 @@
 import { CallTypes } from 'hrm-form-definitions';
 
-import { ContactRawJson, CSAMReportEntry, SearchContact } from '../../types/types';
+import { CSAMReportEntry, SearchContact } from '../../types/types';
+import { hrmServiceContactToSearchContact } from './contactDetailsAdapter';
 
 export type Contact = {
   helpline: string;
@@ -28,10 +29,16 @@ type LoadContactAction = {
   contact: SearchContact;
 };
 
-export const loadContact = (id: string, contact: SearchContact): LoadContactAction => ({
+export const loadContact = (contact: SearchContact): LoadContactAction => ({
   type: LOAD_CONTACT_ACTION,
-  id,
+  id: contact.contactId,
   contact,
+});
+
+export const loadRawContact = (contact: any): LoadContactAction => ({
+  type: LOAD_CONTACT_ACTION,
+  id: contact.id,
+  contact: hrmServiceContactToSearchContact(contact),
 });
 
 export const loadContactReducer = (state: ExistingContactsState, action: LoadContactAction) => {

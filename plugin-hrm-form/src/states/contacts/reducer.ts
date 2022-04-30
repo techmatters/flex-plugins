@@ -21,6 +21,13 @@ import {
   releaseContactReducer,
 } from './existingContacts';
 import { CSAMReportEntry } from '../../types/types';
+import {
+  ContactDetailsState,
+  DetailsContext,
+  sectionExpandedStateReducer,
+  TOGGLE_DETAIL_EXPANDED_ACTION,
+  ToggleDetailExpandedAction,
+} from './contactDetails';
 
 export type TaskEntry = {
   helpline: string;
@@ -47,6 +54,7 @@ type ContactsState = {
     [taskId: string]: TaskEntry;
   };
   existingContacts: ExistingContactsState;
+  contactDetails: ContactDetailsState;
 };
 
 export const emptyCategories = [];
@@ -97,12 +105,19 @@ export const createNewTaskEntry = (definitions: DefinitionVersion) => (recreated
   };
 };
 
-const initialState: ContactsState = { tasks: {}, existingContacts: {} };
+const initialState: ContactsState = {
+  tasks: {},
+  existingContacts: {},
+  contactDetails: {
+    [DetailsContext.CASE_DETAILS]: { detailsExpanded: {} },
+    [DetailsContext.CONTACT_SEARCH]: { detailsExpanded: {} },
+  },
+};
 
 // eslint-disable-next-line import/no-unused-modules
 export function reduce(
   state = initialState,
-  action: t.ContactsActionType | ExistingContactAction | GeneralActionType,
+  action: t.ContactsActionType | ExistingContactAction | ToggleDetailExpandedAction | GeneralActionType,
 ): ContactsState {
   switch (action.type) {
     case INITIALIZE_CONTACT_STATE:
@@ -261,6 +276,9 @@ export function reduce(
     }
     case RELEASE_CONTACT_ACTION: {
       return { ...state, existingContacts: releaseContactReducer(state.existingContacts, action) };
+    }
+    case TOGGLE_DETAIL_EXPANDED_ACTION: {
+      return { ...state, contactDetails: sectionExpandedStateReducer(state.contactDetails, action) };
     }
     default:
       return state;

@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
@@ -7,12 +7,12 @@ import { BottomButtonBar, Container, StyledNextStepButton } from '../../styles/H
 import { CaseLayout } from '../../styles/case';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace, RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
-import ContactDetails, { ContactDetailsRoute } from '../contact/ContactDetails';
+import ContactDetails from '../contact/ContactDetails';
 import ActionHeader from './ActionHeader';
-import { adaptContactToDetailsScreen, adaptFormToContactDetails } from './ContactDetailsAdapter';
 import { CaseState } from '../../states/case/reducer';
 import type { CustomITask, StandaloneITask } from '../../types/types';
-import { loadContact } from '../../states/contacts/existingContacts';
+import { loadRawContact, releaseContact } from '../../states/contacts/existingContacts';
+import { DetailsContext } from '../../states/contacts/contactDetails';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const form = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
@@ -26,6 +26,8 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
 const mapDispatchToProps = {
   updateTempInfo: CaseActions.updateTempInfo,
   setConnectedCase: CaseActions.setConnectedCase,
+  loadContactIntoState: loadRawContact,
+  releaseContactFromState: releaseContact,
 };
 
 type OwnProps = {
@@ -35,38 +37,31 @@ type OwnProps = {
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, onClickClose, updateTempInfo }) => {
+const ViewContact: React.FC<Props> = ({
+  task,
+  counselorsHash,
+  tempInfo,
+  onClickClose,
+  updateTempInfo,
+  loadContactIntoState,
+  releaseContactFromState,
+}) => {
+  useEffect(() => {
+    if (tempInfo && tempInfo.screen === 'view-contact') {
+      const { contact: contactFromInfo } = tempInfo.info;
+      if (contactFromInfo) {
+        loadContactIntoState(contactFromInfo);
+        return () => releaseContactFromState(contactFromInfo.id);
+      }
+    }
+    return () => {
+      /* no cleanup to do. */
+    };
+  }, [tempInfo, counselorsHash, loadContactIntoState, releaseContactFromState]);
+
   if (!tempInfo || tempInfo.screen !== 'view-contact') return null;
-
-  const { detailsExpanded, contact: contactFromInfo, createdAt, timeOfContact, counselor } = tempInfo.info;
-  const counselorName = counselorsHash[counselor] || 'Unknown';
-
-  let contact;
-
-  if (contactFromInfo) {
-    contact = adaptContactToDetailsScreen(contactFromInfo, counselorName);
-  } else if (form && form.helpline !== null && form.helpline !== undefined) {
-    contact = adaptFormToContactDetails(task, form, timeOfContact, counselorName);
-  }
-
-  if (!contact) return null;
-
-  loadContact(contact.id, contact);
-
-  const handleExpandDetailsSection = section => {
-    const updatedDetailsExpanded = {
-      ...detailsExpanded,
-      [section]: !detailsExpanded[section],
-    };
-    const updatedTempInfo = {
-      detailsExpanded: updatedDetailsExpanded,
-      contact: contactFromInfo,
-      createdAt,
-      timeOfContact,
-      counselor,
-    };
-    updateTempInfo({ screen: 'view-contact', info: updatedTempInfo }, task.taskSid);
-  };
+  const { contact: contactFromInfo, createdAt } = tempInfo.info;
+  const createdByName = counselorsHash[contactFromInfo.createdBy] || 'Unknown';
 
   const added = new Date(createdAt);
 
@@ -76,15 +71,10 @@ const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, on
         <ActionHeader
           titleTemplate="Case-Contact"
           onClickClose={onClickClose}
-          addingCounsellor={counselorName}
+          addingCounsellor={createdByName}
           added={added}
         />
-        <ContactDetails
-          contactDetailsRoute={ContactDetailsRoute.HOME}
-          contactId={contact}
-          detailsExpanded={detailsExpanded}
-          handleExpandDetailsSection={handleExpandDetailsSection}
-        />
+        <ContactDetails contactId={contactFromInfo.id} context={DetailsContext.CASE_DETAILS} />
       </Container>
       <BottomButtonBar>
         <StyledNextStepButton roundCorners onClick={onClickClose} data-testid="Case-ViewContactScreen-CloseButton">
@@ -97,5 +87,4 @@ const ViewContact: React.FC<Props> = ({ task, form, counselorsHash, tempInfo, on
 
 ViewContact.displayName = 'ViewContact';
 
-export const UnconnectedViewContact = ViewContact;
 export default connect(mapStateToProps, mapDispatchToProps)(ViewContact);

@@ -18,30 +18,31 @@ import { unNestInformation } from '../../services/ContactService';
 import { namespace, configurationBase, RootState, contactFormsBase } from '../../states';
 import * as ConfigActions from '../../states/configuration/actions';
 import { getDefinitionVersion } from '../../services/ServerlessService';
-
+import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
 
 // TODO: complete this type
 type OwnProps = {
   contactId: string;
-  detailsExpanded: any;
+  context: DetailsContext;
   showActionIcons?: boolean;
   handleOpenConnectDialog?: (event: any) => void;
-  handleExpandDetailsSection: (section: ContactDetailsSectionsType) => void;
 };
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
 const Details: React.FC<Props> = ({
+  context,
   detailsExpanded,
   showActionIcons = false,
   handleOpenConnectDialog,
-  handleExpandDetailsSection,
   definitionVersions,
   updateDefinitionVersion,
   counselorsHash,
   contact,
+  toggleSectionExpandedForContext,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const version = contact.details.definitionVersion;
+  const version = contact?.details.definitionVersion;
 
   /**
    * Check if the definitionVersion for this case exists in redux, and look for it if not.
@@ -52,10 +53,19 @@ const Details: React.FC<Props> = ({
       updateDefinitionVersion(version, definitionVersion);
     };
 
-    if (!definitionVersions[version]) {
+    if (version && !definitionVersions[version]) {
       fetchDefinitionVersions(version);
     }
-  }, [definitionVersions, updateDefinitionVersion, version]);
+  }, [definitionVersions, updateDefinitionVersion, version, contact]);
+
+  const definitionVersion = definitionVersions[version];
+
+  if (!contact || !definitionVersion)
+    return (
+      <DetailsContainer>
+        <CircularProgress size={50} />
+      </DetailsContainer>
+    );
 
   // Object destructuring on contact
   const { overview, details, csamReports } = contact;
@@ -93,9 +103,9 @@ const Details: React.FC<Props> = ({
     ISSUE_CATEGORIZATION,
     CONTACT_SUMMARY,
   } = ContactDetailsSections;
-
-  const definitionVersion = definitionVersions[version];
   const addedBy = counselorsHash[createdBy];
+  const counselorName = counselorsHash[counselor];
+  const toggleSection = (section: ContactDetailsSectionsType) => toggleSectionExpandedForContext(context, section);
 
   const csamReportsAttached =
     csamReports &&
@@ -129,7 +139,7 @@ const Details: React.FC<Props> = ({
       <Section
         sectionTitle={<Template code="ContactDetails-GeneralDetails" />}
         expanded={detailsExpanded[GENERAL_DETAILS]}
-        handleExpandClick={() => handleExpandDetailsSection(GENERAL_DETAILS)}
+        handleExpandClick={() => toggleSection(GENERAL_DETAILS)}
       >
         <SectionEntry
           description={<Template code="ContactDetails-GeneralDetails-Channel" />}
@@ -143,7 +153,7 @@ const Details: React.FC<Props> = ({
           description={<Template code="ContactDetails-GeneralDetails-ConversationDuration" />}
           value={formattedDuration}
         />
-        <SectionEntry description={<Template code="ContactDetails-GeneralDetails-Counselor" />} value={counselor} />
+        <SectionEntry description={<Template code="ContactDetails-GeneralDetails-Counselor" />} value={counselorName} />
         <SectionEntry description={<Template code="ContactDetails-GeneralDetails-DateTime" />} value={formattedDate} />
         {addedBy && addedBy !== counselor && (
           <SectionEntry description={<Template code="ContactDetails-GeneralDetails-AddedBy" />} value={addedBy} />
@@ -153,7 +163,7 @@ const Details: React.FC<Props> = ({
         <Section
           sectionTitle={<Template code="TabbedForms-AddCallerInfoTab" />}
           expanded={detailsExpanded[CALLER_INFORMATION]}
-          handleExpandClick={() => handleExpandDetailsSection(CALLER_INFORMATION)}
+          handleExpandClick={() => toggleSection(CALLER_INFORMATION)}
           buttonDataTestid="ContactDetails-Section-CallerInformation"
         >
           {definitionVersion.tabbedForms.CallerInformationTab.map(e => (
@@ -170,7 +180,7 @@ const Details: React.FC<Props> = ({
         <Section
           sectionTitle={<Template code="TabbedForms-AddChildInfoTab" />}
           expanded={detailsExpanded[CHILD_INFORMATION]}
-          handleExpandClick={() => handleExpandDetailsSection(CHILD_INFORMATION)}
+          handleExpandClick={() => toggleSection(CHILD_INFORMATION)}
           buttonDataTestid="ContactDetails-Section-ChildInformation"
         >
           {definitionVersion.tabbedForms.ChildInformationTab.map(e => (
@@ -187,7 +197,7 @@ const Details: React.FC<Props> = ({
         <Section
           sectionTitle={<Template code="TabbedForms-CategoriesTab" />}
           expanded={detailsExpanded[ISSUE_CATEGORIZATION]}
-          handleExpandClick={() => handleExpandDetailsSection(ISSUE_CATEGORIZATION)}
+          handleExpandClick={() => toggleSection(ISSUE_CATEGORIZATION)}
         >
           {formattedCategories.length ? (
             formattedCategories.map((c, index) => (
@@ -210,7 +220,7 @@ const Details: React.FC<Props> = ({
         <Section
           sectionTitle={<Template code="TabbedForms-AddCaseInfoTab" />}
           expanded={detailsExpanded[CONTACT_SUMMARY]}
-          handleExpandClick={() => handleExpandDetailsSection(CONTACT_SUMMARY)}
+          handleExpandClick={() => toggleSection(CONTACT_SUMMARY)}
         >
           {definitionVersion.tabbedForms.CaseInformationTab.map(e => (
             <SectionEntry
@@ -244,10 +254,12 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   definitionVersions: state[namespace][configurationBase].definitionVersions,
   counselorsHash: state[namespace][configurationBase].counselors.hash,
   contact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.contact,
+  detailsExpanded: state[namespace][contactFormsBase].contactDetails[ownProps.context].detailsExpanded,
 });
 
 const mapDispatchToProps = {
   updateDefinitionVersion: ConfigActions.updateDefinitionVersion,
+  toggleSectionExpandedForContext: toggleDetailSectionExpanded,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Details);

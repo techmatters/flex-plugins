@@ -122,23 +122,6 @@ export function reduce(state = initialState, action: t.SearchActionType | Genera
         },
       };
     }
-    case t.HANDLE_EXPAND_DETAILS_SECTION: {
-      const task = state.tasks[action.taskId];
-      const { detailsExpanded } = task;
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: {
-            ...task,
-            detailsExpanded: {
-              ...detailsExpanded,
-              [action.section]: !detailsExpanded[action.section],
-            },
-          },
-        },
-      };
-    }
     case t.SEARCH_CONTACTS_REQUEST: {
       const task = state.tasks[action.taskId];
       return {
