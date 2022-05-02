@@ -27,7 +27,7 @@ const renderPaginationButton = (page, handleChangePage) => n => {
 
   return (
     <PaginationButton
-      aria-label={`Page${n + 1}`}
+      aria-label={`Page ${n + 1}`}
       highlight={page === n}
       key={`CaseList-pagination-${n}`}
       onClick={() => handleChangePage(n)}
