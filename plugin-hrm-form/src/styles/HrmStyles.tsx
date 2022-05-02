@@ -526,7 +526,7 @@ type PaginationRowProps = {
 };
 
 export const PaginationRow = styled('nav')<PaginationRowProps>`
-  display:flex;
+  display: flex;
   justify-content: center;
   height: auto;
   background-color: ${props => (props.transparent ? 'transparent' : props.theme.colors.base2)};
