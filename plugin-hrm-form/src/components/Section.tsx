@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { ArrowDropDownTwoTone, ArrowDropUpTwoTone } from '@material-ui/icons';
 import { Template } from '@twilio/flex-ui';
 
@@ -14,7 +13,19 @@ import {
 const ArrowDownIcon = ContactDetailsIcon(ArrowDropDownTwoTone);
 const ArrowUpIcon = ContactDetailsIcon(ArrowDropUpTwoTone);
 
-const Section = ({
+type MyProps = {
+  sectionTitle: string | JSX.Element;
+  color?: string;
+  expanded: boolean;
+  handleExpandClick: (event?: any) => void;
+  buttonDataTestid: string;
+  hideIcon?: boolean;
+  htmlElRef?: any;
+  showEditButton?: boolean;
+  handleEditClick?: (event?: any) => void;
+};
+
+const Section: React.FC<MyProps> = ({
   color,
   sectionTitle,
   expanded,
@@ -24,7 +35,9 @@ const Section = ({
   buttonDataTestid,
   htmlElRef,
   showEditButton,
-  handleEditClick,
+  handleEditClick = () => {
+    /* */
+  },
 }) => (
   <>
     <SectionTitleContainer color={color}>
@@ -53,25 +66,5 @@ const Section = ({
 );
 
 Section.displayName = 'Section';
-Section.propTypes = {
-  sectionTitle: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
-  color: PropTypes.string,
-  children: PropTypes.node.isRequired,
-  expanded: PropTypes.bool,
-  hideIcon: PropTypes.bool,
-  handleExpandClick: PropTypes.func.isRequired,
-  buttonDataTestid: PropTypes.string,
-  // eslint-disable-next-line react/forbid-prop-types
-  htmlElRef: PropTypes.any,
-  showEditButton: PropTypes.bool,
-  handleEditClick: PropTypes.func,
-};
-Section.defaultProps = {
-  expanded: false,
-  hideIcon: false,
-  color: null,
-  buttonDataTestid: null,
-  htmlElRef: null,
-};
 
 export default Section;

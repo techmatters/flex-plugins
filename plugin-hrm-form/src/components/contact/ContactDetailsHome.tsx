@@ -22,7 +22,7 @@ import {
   ContactDetailsRoute,
   DetailsContext,
   navigateContactDetails,
-  toggleDetailSectionExpanded
+  toggleDetailSectionExpanded,
 } from '../../states/contacts/contactDetails';
 
 // TODO: complete this type
@@ -121,6 +121,7 @@ const Details: React.FC<Props> = ({
         sectionTitle={<Template code="ContactDetails-GeneralDetails" />}
         expanded={detailsExpanded[GENERAL_DETAILS]}
         handleExpandClick={() => toggleSection(GENERAL_DETAILS)}
+        buttonDataTestid={`ContactDetails-Section-${GENERAL_DETAILS}`}
       >
         <SectionEntry
           description={<Template code="ContactDetails-GeneralDetails-Channel" />}
@@ -183,6 +184,7 @@ const Details: React.FC<Props> = ({
           sectionTitle={<Template code="TabbedForms-CategoriesTab" />}
           expanded={detailsExpanded[ISSUE_CATEGORIZATION]}
           handleExpandClick={() => toggleSection(ISSUE_CATEGORIZATION)}
+          buttonDataTestid="ContactDetails-Section-IssueCategorization"
         >
           {formattedCategories.length ? (
             formattedCategories.map((c, index) => (
@@ -206,6 +208,7 @@ const Details: React.FC<Props> = ({
           sectionTitle={<Template code="TabbedForms-AddCaseInfoTab" />}
           expanded={detailsExpanded[CONTACT_SUMMARY]}
           handleExpandClick={() => toggleSection(CONTACT_SUMMARY)}
+          buttonDataTestid={`ContactDetails-Section-${CONTACT_SUMMARY}`}
         >
           {definitionVersion.tabbedForms.CaseInformationTab.map(e => (
             <SectionEntry
