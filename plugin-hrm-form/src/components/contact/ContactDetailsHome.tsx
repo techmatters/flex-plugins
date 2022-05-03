@@ -1,24 +1,29 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { format } from 'date-fns';
-import { CircularProgress, IconButton } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
 import { Link as LinkIcon } from '@material-ui/icons';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes } from 'hrm-form-definitions';
 
-import { DetailsContainer, NameContainer, DetNameText } from '../../styles/search';
+import { getConfig } from '../../HrmFormPlugin';
+import { DetailsContainer, DetNameText, NameContainer } from '../../styles/search';
 import Section from '../Section';
 import SectionEntry from '../SectionEntry';
 import { channelTypes } from '../../states/DomainConstants';
 import { isNonDataCallType } from '../../states/ValidationRules';
-import { formatDuration, formatName, formatCategories, mapChannelForInsights } from '../../utils';
+import { formatCategories, formatDuration, formatName, mapChannelForInsights } from '../../utils';
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/ContactDetails';
 import { unNestInformation } from '../../services/ContactService';
-import { namespace, configurationBase, RootState, contactFormsBase } from '../../states';
+import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
 import * as ConfigActions from '../../states/configuration/actions';
-import { getDefinitionVersion } from '../../services/ServerlessService';
-import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
+import {
+  ContactDetailsRoute,
+  DetailsContext,
+  navigateContactDetails,
+  toggleDetailSectionExpanded
+} from '../../states/contacts/contactDetails';
 
 // TODO: complete this type
 type OwnProps = {
@@ -36,36 +41,18 @@ const Details: React.FC<Props> = ({
   showActionIcons = false,
   handleOpenConnectDialog,
   definitionVersions,
-  updateDefinitionVersion,
   counselorsHash,
   contact,
   toggleSectionExpandedForContext,
+  navigateForContext,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
+  const { strings, featureFlags } = getConfig();
   const version = contact?.details.definitionVersion;
-
-  /**
-   * Check if the definitionVersion for this case exists in redux, and look for it if not.
-   */
-  React.useEffect(() => {
-    const fetchDefinitionVersions = async (v: string) => {
-      const definitionVersion = await getDefinitionVersion(version);
-      updateDefinitionVersion(version, definitionVersion);
-    };
-
-    if (version && !definitionVersions[version]) {
-      fetchDefinitionVersions(version);
-    }
-  }, [definitionVersions, updateDefinitionVersion, version, contact]);
 
   const definitionVersion = definitionVersions[version];
 
-  if (!contact || !definitionVersion)
-    return (
-      <DetailsContainer>
-        <CircularProgress size={50} />
-      </DetailsContainer>
-    );
+  if (!contact || !definitionVersion) return null;
 
   // Object destructuring on contact
   const { overview, details, csamReports } = contact;
@@ -106,19 +93,13 @@ const Details: React.FC<Props> = ({
   const addedBy = counselorsHash[createdBy];
   const counselorName = counselorsHash[counselor];
   const toggleSection = (section: ContactDetailsSectionsType) => toggleSectionExpandedForContext(context, section);
+  const navigate = (route: ContactDetailsRoute) => navigateForContext(context, route);
 
   const csamReportsAttached =
     csamReports &&
     csamReports
       .map(r => `CSAM on ${format(new Date(r.createdAt), 'yyyy MM dd h:mm aaaaa')}m\n#${r.csamReportId}`)
       .join('\n\n');
-
-  if (!definitionVersion)
-    return (
-      <DetailsContainer>
-        <CircularProgress size={50} />
-      </DetailsContainer>
-    );
 
   return (
     <DetailsContainer data-testid="ContactDetails-Container">
@@ -164,6 +145,8 @@ const Details: React.FC<Props> = ({
           sectionTitle={<Template code="TabbedForms-AddCallerInfoTab" />}
           expanded={detailsExpanded[CALLER_INFORMATION]}
           handleExpandClick={() => toggleSection(CALLER_INFORMATION)}
+          showEditButton={true || featureFlags.enable_contact_editing}
+          handleEditClick={() => navigate(ContactDetailsRoute.EDIT_CALLER_INFORMATION)}
           buttonDataTestid="ContactDetails-Section-CallerInformation"
         >
           {definitionVersion.tabbedForms.CallerInformationTab.map(e => (
@@ -181,6 +164,8 @@ const Details: React.FC<Props> = ({
           sectionTitle={<Template code="TabbedForms-AddChildInfoTab" />}
           expanded={detailsExpanded[CHILD_INFORMATION]}
           handleExpandClick={() => toggleSection(CHILD_INFORMATION)}
+          showEditButton={true || featureFlags.enable_contact_editing}
+          handleEditClick={() => navigate(ContactDetailsRoute.EDIT_CHILD_INFORMATION)}
           buttonDataTestid="ContactDetails-Section-ChildInformation"
         >
           {definitionVersion.tabbedForms.ChildInformationTab.map(e => (
@@ -260,6 +245,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
 const mapDispatchToProps = {
   updateDefinitionVersion: ConfigActions.updateDefinitionVersion,
   toggleSectionExpandedForContext: toggleDetailSectionExpanded,
+  navigateForContext: navigateContactDetails,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Details);

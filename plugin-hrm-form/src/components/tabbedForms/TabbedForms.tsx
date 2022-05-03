@@ -227,7 +227,7 @@ const TabbedForms: React.FC<Props> = ({
               {isCallerType && (
                 <TabbedFormTabContainer display={subroute === 'callerInformation'}>
                   <TabbedFormTab
-                    task={task}
+                    entityIdentifier={task.taskSid}
                     tabPath="callerInformation"
                     definition={currentDefinitionVersion.tabbedForms.CallerInformationTab}
                     layoutDefinition={currentDefinitionVersion.layoutVersion.contact.callerInformation}
@@ -241,7 +241,7 @@ const TabbedForms: React.FC<Props> = ({
                 <>
                   <TabbedFormTabContainer display={subroute === 'childInformation'}>
                     <TabbedFormTab
-                      task={task}
+                      entityIdentifier={task.taskSid}
                       tabPath="childInformation"
                       definition={currentDefinitionVersion.tabbedForms.ChildInformationTab}
                       layoutDefinition={currentDefinitionVersion.layoutVersion.contact.childInformation}
@@ -261,7 +261,7 @@ const TabbedForms: React.FC<Props> = ({
                   </TabbedFormTabContainer>
                   <TabbedFormTabContainer display={subroute === 'caseInformation'}>
                     <TabbedFormTab
-                      task={task}
+                      entityIdentifier={task.taskSid}
                       tabPath="caseInformation"
                       definition={currentDefinitionVersion.tabbedForms.CaseInformationTab}
                       layoutDefinition={currentDefinitionVersion.layoutVersion.contact.caseInformation}

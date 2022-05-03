@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ArrowDropDownTwoTone, ArrowDropUpTwoTone } from '@material-ui/icons';
+import { Template } from '@twilio/flex-ui';
 
 import {
   SectionTitleContainer,
@@ -22,6 +23,8 @@ const Section = ({
   handleExpandClick,
   buttonDataTestid,
   htmlElRef,
+  showEditButton,
+  handleEditClick,
 }) => (
   <>
     <SectionTitleContainer color={color}>
@@ -37,6 +40,11 @@ const Section = ({
         <SectionTitleText>{sectionTitle}</SectionTitleText>
         {!hideIcon && (expanded ? <ArrowUpIcon /> : <ArrowDownIcon />)}
       </SectionTitleButton>
+      {showEditButton && (
+        <button type="button" onClick={handleEditClick}>
+          <Template code="EditButton" />
+        </button>
+      )}
     </SectionTitleContainer>
     <SectionCollapse expanded={expanded} timeout="auto">
       {children}
@@ -55,6 +63,8 @@ Section.propTypes = {
   buttonDataTestid: PropTypes.string,
   // eslint-disable-next-line react/forbid-prop-types
   htmlElRef: PropTypes.any,
+  showEditButton: PropTypes.bool,
+  handleEditClick: PropTypes.func,
 };
 Section.defaultProps = {
   expanded: false,

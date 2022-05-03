@@ -12,7 +12,6 @@ import {
 import { createStateItem } from '../../components/common/forms/formGenerators';
 import { createContactlessTaskTabDefinition } from '../../components/tabbedForms/ContactlessTaskTabDefinition';
 import {
-  Contact,
   ExistingContactAction,
   ExistingContactsState,
   LOAD_CONTACT_ACTION,
@@ -22,11 +21,14 @@ import {
 } from './existingContacts';
 import { CSAMReportEntry } from '../../types/types';
 import {
+  ContactDetailsAction,
+  ContactDetailsRoute,
   ContactDetailsState,
   DetailsContext,
+  NAVIGATE_CONTACT_DETAILS_ACTION,
+  navigateContactDetailsReducer,
   sectionExpandedStateReducer,
   TOGGLE_DETAIL_EXPANDED_ACTION,
-  ToggleDetailExpandedAction,
 } from './contactDetails';
 
 export type TaskEntry = {
@@ -109,15 +111,15 @@ const initialState: ContactsState = {
   tasks: {},
   existingContacts: {},
   contactDetails: {
-    [DetailsContext.CASE_DETAILS]: { detailsExpanded: {} },
-    [DetailsContext.CONTACT_SEARCH]: { detailsExpanded: {} },
+    [DetailsContext.CASE_DETAILS]: { detailsExpanded: {}, route: ContactDetailsRoute.HOME },
+    [DetailsContext.CONTACT_SEARCH]: { detailsExpanded: {}, route: ContactDetailsRoute.HOME },
   },
 };
 
 // eslint-disable-next-line import/no-unused-modules
 export function reduce(
   state = initialState,
-  action: t.ContactsActionType | ExistingContactAction | ToggleDetailExpandedAction | GeneralActionType,
+  action: t.ContactsActionType | ExistingContactAction | ContactDetailsAction | GeneralActionType,
 ): ContactsState {
   switch (action.type) {
     case INITIALIZE_CONTACT_STATE:
@@ -279,6 +281,9 @@ export function reduce(
     }
     case TOGGLE_DETAIL_EXPANDED_ACTION: {
       return { ...state, contactDetails: sectionExpandedStateReducer(state.contactDetails, action) };
+    }
+    case NAVIGATE_CONTACT_DETAILS_ACTION: {
+      return { ...state, contactDetails: navigateContactDetailsReducer(state.contactDetails, action) };
     }
     default:
       return state;

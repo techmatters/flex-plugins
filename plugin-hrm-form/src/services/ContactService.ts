@@ -33,7 +33,7 @@ const nestName = (information: { firstName: string; lastName: string }) => {
   return { ...rest, name: { firstName, lastName } };
 };
 
-const unNestInformationObject = (
+export const unNestInformationObject = (
   def: FormDefinition,
   obj: InformationObject,
 ): TaskEntry['childInformation'] | TaskEntry['callerInformation'] =>
