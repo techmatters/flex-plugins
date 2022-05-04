@@ -10,6 +10,7 @@ import EditContactSection from './EditContactSection';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { DetailsContainer } from '../../styles/search';
 import * as ConfigActions from '../../states/configuration/actions';
+import { contactDetailsSectionForm } from './contactDetailsSectionForms';
 
 type OwnProps = {
   contactId: string;
@@ -68,22 +69,35 @@ const ContactDetails: React.FC<Props> = ({
     case ContactDetailsRoute.EDIT_CHILD_INFORMATION:
       return (
         <EditContactSection
+          context={context}
           contactId={contactId}
-          formPath="childInformation"
-          getFormData={contact => contact.details.childInformation}
-          getFormDefinition={def => def.tabbedForms.ChildInformationTab}
+          contactDetailsSectionForm={contactDetailsSectionForm.CHILD_INFORMATION}
         />
       );
     case ContactDetailsRoute.EDIT_CALLER_INFORMATION:
       return (
         <EditContactSection
+          context={context}
           contactId={contactId}
-          formPath="callerInformation"
-          getFormData={contact => contact.details.callerInformation}
-          getFormDefinition={def => def.tabbedForms.CallerInformationTab}
+          contactDetailsSectionForm={contactDetailsSectionForm.CALLER_INFORMATION}
         />
       );
     case ContactDetailsRoute.EDIT_CATEGORIES:
+      return (
+        <EditContactSection
+          context={context}
+          contactId={contactId}
+          contactDetailsSectionForm={contactDetailsSectionForm.ISSUE_CATEGORIZATION}
+        />
+      );
+    case ContactDetailsRoute.EDIT_CASE_INFORMATION:
+      return (
+        <EditContactSection
+          context={context}
+          contactId={contactId}
+          contactDetailsSectionForm={contactDetailsSectionForm.CASE_INFORMATION}
+        />
+      );
     case ContactDetailsRoute.HOME:
     default:
       return (

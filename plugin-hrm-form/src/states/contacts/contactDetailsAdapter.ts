@@ -42,11 +42,12 @@ export const hrmServiceContactToSearchContact = (contact): SearchContact => {
   const categories = retrieveCategories(caseInformation.categories);
   const notes = caseInformation.callSummary;
   const channelType = contact.channel;
-  const { conversationDuration, csamReports, createdBy } = contact;
+  const { conversationDuration, csamReports, createdBy, helpline } = contact;
 
   return {
     contactId: contact.id,
     overview: {
+      helpline,
       dateTime,
       name,
       customerNumber,

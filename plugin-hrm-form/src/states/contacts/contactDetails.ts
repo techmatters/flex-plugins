@@ -9,7 +9,8 @@ export enum ContactDetailsRoute {
   HOME = 'home',
   EDIT_CALLER_INFORMATION = 'editCallerInformation',
   EDIT_CHILD_INFORMATION = 'editChildInformation',
-  EDIT_CATEGORIES = 'editCaseInformation',
+  EDIT_CATEGORIES = 'editIssueCategories',
+  EDIT_CASE_INFORMATION = 'editCaseInformation',
 }
 
 export type ContactDetailsState = {

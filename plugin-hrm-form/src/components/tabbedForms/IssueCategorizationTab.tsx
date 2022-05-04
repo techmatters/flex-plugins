@@ -1,44 +1,45 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { connect, ConnectedProps } from 'react-redux';
 import type { CategoriesDefinition } from 'hrm-form-definitions';
 
 import { RootState, namespace, contactFormsBase } from '../../states';
 import * as actions from '../../states/contacts/actions';
-import type { TaskEntry } from '../../states/contacts/reducer';
 import { CategoriesFromDefinition, createSubCategoriesInputs } from '../common/forms/categoriesTabGenerator';
-import { TabbedFormTabContainer } from '../../styles/HrmStyles';
-import type { CustomITask } from '../../types/types';
 import useFocus from '../../utils/useFocus';
+import { CustomITask } from '../../types/types';
+import { setCategoriesGridView, toggleCategoryExpanded } from '../../states/contacts/existingContacts';
 
-type OwnProps = {
-  task: CustomITask;
+type CommonOwnProps = {
   display: boolean;
-  initialValue: TaskEntry['categories'];
+  initialValue: string[];
   definition: CategoriesDefinition;
   autoFocus: boolean;
 };
 
+type FromTaskProps = CommonOwnProps & { task: CustomITask };
+type FromExistingContactsProps = CommonOwnProps & { contactId: string };
+
+type OwnProps = FromTaskProps | FromExistingContactsProps;
+
+const isFromTaskProps = (props: OwnProps): props is FromTaskProps => Boolean((props as FromTaskProps).task);
+
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const IssueCategorizationTab: React.FC<Props> = ({
-  task,
-  display,
-  categoriesMeta,
-  initialValue,
-  definition,
-  autoFocus,
-  updateForm,
-  setCategoriesGridView,
-  handleExpandCategory,
-}) => {
+const IssueCategorizationTab: React.FC<Props> = props => {
+  const isFromTask = isFromTaskProps(props);
+  const entityIdentifier = (props as FromExistingContactsProps).contactId ?? (props as FromTaskProps).task.taskSid;
+  const { display, categoriesMeta, initialValue, definition, autoFocus, updateForm } = props;
+
   const shouldFocusFirstElement = display && autoFocus;
   const firstElementRef = useFocus(shouldFocusFirstElement);
 
   const { getValues, setValue } = useFormContext();
   const IssueCategorizationTabDefinition = definition;
+
+  const [, setCategories] = useState(initialValue);
 
   // Couldn't find a way to provide initial values to an field array, as a workaround, intentionally run this only on first render
   React.useEffect(() => {
@@ -49,20 +50,25 @@ const IssueCategorizationTab: React.FC<Props> = ({
   const subcategoriesInputs = React.useMemo(() => {
     const updateCallback = () => {
       const { categories } = getValues();
-      updateForm(task.taskSid, 'categories', categories);
+      if (isFromTask) {
+        updateForm(entityIdentifier, 'categories', categories);
+      } else {
+        setCategories(categories);
+      }
     };
 
     if (IssueCategorizationTabDefinition === null || IssueCategorizationTabDefinition === undefined) return {};
     return createSubCategoriesInputs(IssueCategorizationTabDefinition, ['categories'], updateCallback);
-  }, [IssueCategorizationTabDefinition, getValues, task.taskSid, updateForm]);
+  }, [IssueCategorizationTabDefinition, getValues, entityIdentifier, updateForm, isFromTask]);
 
-  const toggleCategoriesGridView = (gridView: boolean) => {
-    setCategoriesGridView(gridView, task.taskSid);
-  };
-
-  const toggleExpandCategory = (category: string) => {
-    handleExpandCategory(category, task.taskSid);
-  };
+  const toggleExpandCategory = (category: string) =>
+    isFromTaskProps(props)
+      ? props.taskHandleExpandCategory(category, props.task.taskSid)
+      : props.existingContactHandleExpandCategory(props.contactId, category);
+  const toggleCategoriesGridView = (useGridView: boolean) =>
+    isFromTaskProps(props)
+      ? props.taskSetCategoriesGridView(useGridView, props.task.taskSid)
+      : props.existingContactSetCategoriesGridView(props.contactId, useGridView);
 
   return (
     <CategoriesFromDefinition
@@ -78,14 +84,20 @@ const IssueCategorizationTab: React.FC<Props> = ({
 
 IssueCategorizationTab.displayName = 'IssueCategorizationTab';
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
-  categoriesMeta: state[namespace][contactFormsBase].tasks[ownProps.task.taskSid].metadata.categories,
-});
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
+  if (isFromTaskProps(ownProps)) {
+    return { categoriesMeta: state[namespace][contactFormsBase].tasks[ownProps.task.taskSid].metadata.categories };
+  }
+
+  return { categoriesMeta: state[namespace][contactFormsBase].existingContacts[ownProps.contactId].categories };
+};
 
 const mapDispatchToProps = {
   updateForm: actions.updateForm,
-  handleExpandCategory: actions.handleExpandCategory,
-  setCategoriesGridView: actions.setCategoriesGridView,
+  taskHandleExpandCategory: actions.handleExpandCategory,
+  taskSetCategoriesGridView: actions.setCategoriesGridView,
+  existingContactHandleExpandCategory: toggleCategoryExpanded,
+  existingContactSetCategoriesGridView: setCategoriesGridView,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

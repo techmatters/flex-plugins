@@ -185,15 +185,17 @@ const Details: React.FC<Props> = ({
           expanded={detailsExpanded[ISSUE_CATEGORIZATION]}
           handleExpandClick={() => toggleSection(ISSUE_CATEGORIZATION)}
           buttonDataTestid="ContactDetails-Section-IssueCategorization"
+          showEditButton={true || featureFlags.enable_contact_editing}
+          handleEditClick={() => navigate(ContactDetailsRoute.EDIT_CATEGORIES)}
         >
           {formattedCategories.length ? (
             formattedCategories.map((c, index) => (
               <SectionEntry
                 key={`Category ${index + 1}`}
                 description={
-                  <div style={{ display: 'inline-block' }}>
+                  <span style={{ display: 'inline-block' }}>
                     <Template code="Category" /> {index + 1}
-                  </div>
+                  </span>
                 }
                 value={c}
               />
@@ -209,6 +211,8 @@ const Details: React.FC<Props> = ({
           expanded={detailsExpanded[CONTACT_SUMMARY]}
           handleExpandClick={() => toggleSection(CONTACT_SUMMARY)}
           buttonDataTestid={`ContactDetails-Section-${CONTACT_SUMMARY}`}
+          showEditButton={true || featureFlags.enable_contact_editing}
+          handleEditClick={() => navigate(ContactDetailsRoute.EDIT_CASE_INFORMATION)}
         >
           {definitionVersion.tabbedForms.CaseInformationTab.map(e => (
             <SectionEntry
@@ -246,7 +250,6 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
 });
 
 const mapDispatchToProps = {
-  updateDefinitionVersion: ConfigActions.updateDefinitionVersion,
   toggleSectionExpandedForContext: toggleDetailSectionExpanded,
   navigateForContext: navigateContactDetails,
 };

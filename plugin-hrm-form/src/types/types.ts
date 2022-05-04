@@ -99,6 +99,7 @@ export type ContactRawJson = {
 export type SearchContact = {
   contactId: string;
   overview: {
+    helpline: string;
     dateTime: string;
     name: string;
     customerNumber: string;
