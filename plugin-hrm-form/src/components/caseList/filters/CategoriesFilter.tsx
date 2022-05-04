@@ -90,6 +90,8 @@ const CategoriesFilter: React.FC<Props> = ({
 
   // Force React Hook Forms to rerender whenever defaultValues changes
   useEffect(() => {
+    console.log('>> Categories filter defaultValues change');
+    console.log({ defaultValues });
     const updateSelectedCount = () => {
       const count = defaultValues
         .flatMap(category => category.subcategories)

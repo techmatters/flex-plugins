@@ -91,12 +91,6 @@ type SearchExpandSectionAction = {
   taskId: string;
 };
 
-type SearchCasesUpdateAction = {
-  type: typeof SEARCH_CASES_UPDATE;
-  taskId: string;
-  updatedCase: Case;
-};
-
 type ViewPreviousContactsAction = {
   type: typeof VIEW_PREVIOUS_CONTACTS;
   taskId: string;
@@ -114,5 +108,4 @@ export type SearchActionType =
   | SearchChangePageAction
   | SearchViewContactAction
   | SearchExpandSectionAction
-  | SearchCasesUpdateAction
   | ViewPreviousContactsAction;

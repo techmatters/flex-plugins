@@ -2,7 +2,7 @@
 import { ITask } from '@twilio/flex-ui';
 import { DefinitionVersionId, CallTypes } from 'hrm-form-definitions';
 
-import { DateFilter } from '../components/caseList/filters/dateFilters';
+import { DateFilter, DateFilterOption, DateFilterValue } from '../components/caseList/filters/dateFilters';
 
 export type EntryInfo = {
   createdAt: string;
@@ -136,12 +136,17 @@ export enum ListCasesSortDirection {
   DESC = 'DESC',
 }
 
+export type ListCasesSort = {
+  sortBy?: ListCasesSortBy;
+  sortDirection?: ListCasesSortDirection;
+};
+
 export type ListCasesQueryParams = {
   limit?: number;
   offset?: number;
   sortBy?: ListCasesSortBy;
   sortDirection?: ListCasesSortDirection;
-};
+} & ListCasesSort;
 
 export type CategoryFilter = {
   category: string;
@@ -152,10 +157,10 @@ export type ListCasesFilters = {
   counsellors: string[];
   statuses: string[];
   includeOrphans: boolean;
-  createdAt?: DateFilter;
-  updatedAt?: DateFilter;
-  followUpDate?: DateFilter;
-  categories?: CategoryFilter;
+  createdAt?: DateFilterValue;
+  updatedAt?: DateFilterValue;
+  followUpDate?: DateFilterValue;
+  categories?: CategoryFilter[];
 };
 
 export type CounselorHash = {

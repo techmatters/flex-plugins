@@ -1,9 +1,10 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Template } from '@twilio/flex-ui';
 import type { DefinitionVersion } from 'hrm-form-definitions';
 import FilterList from '@material-ui/icons/FilterList';
 import DateRange from '@material-ui/icons/DateRange';
+import { connect, ConnectedProps } from 'react-redux';
 
 import { getConfig } from '../../../HrmFormPlugin';
 import { FiltersContainer, FiltersResetAll, CasesTitle, CasesCount, FilterBy } from '../../../styles/caseList/filters';
@@ -11,14 +12,14 @@ import MultiSelectFilter, { Item } from './MultiSelectFilter';
 import { ListCasesFilters, CategoryFilter, CounselorHash } from '../../../types/types';
 import DateRangeFilter from './DateRangeFilter';
 import {
-  DateFilterOption,
   DateFilter,
-  dateFilterPayloadFromFilters,
   followUpDateFilterOptions,
   standardCaseListDateFilterOptions,
+  DateFilterValue,
 } from './dateFilters';
 import CategoriesFilter, { Category } from './CategoriesFilter';
-
+import { caseListBase, configurationBase, namespace, RootState } from '../../../states';
+import * as CaseListSettingsActions from '../../../states/caseList/settings';
 /**
  * Reads the definition version and returns and array of items (type Item[])
  * to be used as the options for the status filter
@@ -41,12 +42,6 @@ const getStatusInitialValue = (definitionVersion: DefinitionVersion) =>
 const getCounselorsInitialValue = (counselorsHash: CounselorHash) =>
   Object.keys(counselorsHash).map(key => ({ value: key, label: counselorsHash[key], checked: false }));
 
-const emptyFilters: ListCasesFilters = {
-  counsellors: [],
-  statuses: [],
-  includeOrphans: false,
-};
-
 const getInitialDateFilters = (): DateFilter[] => [
   {
     labelKey: 'CaseList-Filters-DateFilter-CreatedAt',
@@ -65,15 +60,25 @@ const getInitialDateFilters = (): DateFilter[] => [
   },
 ];
 
+/**
+ * Due to an issue of ReactHookForms transforming names with double quotes or single quotes,
+ * we're explicitally replacing these chars with placeholders and vice-versa when needed.
+ * ex: There's a subcategory named '"Thank you for your assistance"',
+ * (the double quotes should be part of its name).
+ *
+ * TODO: Open an issue on ReactHookForms GitHub, so they can fix or tell us the appropiate way
+ * to handle this scenario.
+ */
 const SINGLE_QUOTE_PLACEHOLDER = '(SINGLE_QUOTE_PLACEHOLDER)';
 const DOUBLE_QUOTES_PLACEHOLDER = '(DOUBLE_QUOTES_PLACEHOLDER)';
 const addPlaceholders = text =>
   text.replaceAll("'", SINGLE_QUOTE_PLACEHOLDER).replaceAll('"', DOUBLE_QUOTES_PLACEHOLDER);
 const removePlaceholders = text =>
   text.replaceAll(SINGLE_QUOTE_PLACEHOLDER, "'").replaceAll(DOUBLE_QUOTES_PLACEHOLDER, '"');
+
 /**
- * Reads the definition version and returns and array of items (type Item[])
- * to be used as the options for the status filter
+ * Reads the definition version and returns and array of categories (type Category[])
+ * to be used as the options for the categories filter
  * @param definitionVersion DefinitionVersion
  * @returns Item[]
  */
@@ -90,16 +95,6 @@ const getCategoriesInitialValue = (definitionVersion: DefinitionVersion, helplin
   );
 
 /**
- * Gets an array of items (type Item[]) and makes all of them checked = false
- * @param values Item[]
- * @param setValues setter function
- */
-const clearMultiSelectFilter = (values, setValues) => {
-  const clearedValues = values.map(value => ({ ...value, checked: false }));
-  setValues(clearedValues);
-};
-
-/**
  * Convert an array of items (type Item[]) into an array of strings.
  * This array will contain only the items that are checked.
  * @param items Item[]
@@ -107,6 +102,12 @@ const clearMultiSelectFilter = (values, setValues) => {
  */
 const filterCheckedItems = (items: Item[]): string[] => items.filter(item => item.checked).map(item => item.value);
 
+/**
+ * Convert an array of categories (type Category[]) into an array of CategoryFilter.
+ * This array will contain only the categories that are checked.
+ * @param categories Category[]
+ * @returns CategoryFilter[]
+ */
 const filterCheckedCategories = (categories: Category[]): CategoryFilter[] =>
   categories.flatMap(category =>
     category.subcategories
@@ -117,17 +118,45 @@ const filterCheckedCategories = (categories: Category[]): CategoryFilter[] =>
       })),
   );
 
+/**
+ * Given the selected categories from redux and the previous categoriesValues,
+ * it returns the updated values for categoriesValues, whith the correct checked values.
+ *
+ * @param categories Selected categories from redux (type CategoryFilter[])
+ * @param categoriesValues Previous categoriesValues (type Category[])
+ * @returns
+ */
+const getUpdatedCategoriesValues = (categories: CategoryFilter[], categoriesValues: Category[]): Category[] => {
+  const isChecked = (categoryName: string, subcategoryName: string) =>
+    categories.some(c => c.category === categoryName && c.subcategory === subcategoryName);
+
+  return categoriesValues.map(categoryValue => ({
+    ...categoryValue,
+    subcategories: categoryValue.subcategories.map(subcategory => ({
+      ...subcategory,
+      checked: isChecked(categoryValue.categoryName, subcategory.label),
+    })),
+  }));
+};
+
 type OwnProps = {
   currentDefinitionVersion: DefinitionVersion;
-  counselorsHash: CounselorHash;
   caseCount: number;
-  handleApplyFilter: (filters: ListCasesFilters) => void;
 };
 
 // eslint-disable-next-line no-use-before-define
-type Props = OwnProps;
+type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, caseCount, handleApplyFilter }) => {
+const Filters: React.FC<Props> = ({
+  currentDefinitionVersion,
+  currentFilter,
+  currentFilterCompare,
+  counselorsHash,
+  counselorsHashCompare,
+  caseCount,
+  updateCaseListFilter,
+  clearCaseListFilter,
+}) => {
   const { strings, featureFlags, helpline } = getConfig();
 
   const statusInitialValues = getStatusInitialValue(currentDefinitionVersion);
@@ -135,49 +164,43 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ca
 
   const [openedFilter, setOpenedFilter] = useState<string>();
   const [statusValues, setStatusValues] = useState<Item[]>(statusInitialValues);
-  const [counselorValues, setCounselorValues] = useState<Item[]>([]);
-  const [dateFilters, setDateFilters] = useState<DateFilter[]>(getInitialDateFilters());
+  const [counselorValues, setCounselorValues] = useState<Item[]>(getCounselorsInitialValue(counselorsHash));
+  const [dateFilterValues, setDateFilterValues] = useState<{
+    createdAt?: DateFilterValue;
+    updatedAt?: DateFilterValue;
+    followUpDate?: DateFilterValue;
+  }>({});
   const [categoriesValues, setCategoriesValues] = useState<Category[]>(categoriesInitialValues);
-  const [defaultFilters, setDefaultFilters] = useState<ListCasesFilters>(emptyFilters);
 
-  // updates counselor options when counselorHash is updated
+  // Updates UI state from current filters
   useEffect(() => {
-    const counselorInitialValues = getCounselorsInitialValue(counselorsHash);
-    setCounselorValues(counselorInitialValues);
-  }, [counselorsHash]);
-
-  // Keeps defaultFilters up-to-date
-  useEffect(() => {
-    const statuses = filterCheckedItems(statusValues);
-    const counsellors = filterCheckedItems(counselorValues);
-    const categories = filterCheckedCategories(categoriesValues);
-    setDefaultFilters({
-      statuses,
-      counsellors,
-      categories,
-      includeOrphans: false,
-      ...dateFilterPayloadFromFilters(dateFilters),
-    });
-  }, [setDefaultFilters, statusValues, counselorValues, categoriesValues, dateFilters]);
+    const { counsellors, statuses, categories, includeOrphans, ...currentDateFilters } = currentFilter;
+    const newCounselorValues = getCounselorsInitialValue(counselorsHash).map(cv => ({
+      ...cv,
+      checked: counsellors.includes(cv.value),
+    }));
+    const newStatusValues = statusValues.map(sv => ({ ...sv, checked: statuses.includes(sv.value) }));
+    const newCategoriesValues = getUpdatedCategoriesValues(categories, categoriesValues);
+    setCounselorValues(newCounselorValues);
+    setStatusValues(newStatusValues);
+    setDateFilterValues(currentDateFilters);
+    setCategoriesValues(newCategoriesValues);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentFilterCompare, counselorsHashCompare]);
 
   const handleApplyStatusFilter = (values: Item[]) => {
-    const filters = {
-      ...defaultFilters,
-      statuses: filterCheckedItems(values),
-      ...dateFilterPayloadFromFilters(dateFilters),
-    };
-    handleApplyFilter(filters);
-    setStatusValues(values);
+    updateCaseListFilter({ statuses: filterCheckedItems(values) });
   };
 
   const handleApplyCounselorFilter = (values: Item[]) => {
-    const filters = {
-      ...defaultFilters,
-      counsellors: filterCheckedItems(values),
-      ...dateFilterPayloadFromFilters(dateFilters),
-    };
-    handleApplyFilter(filters);
-    setCounselorValues(values);
+    updateCaseListFilter({ counsellors: filterCheckedItems(values) });
+  };
+
+  const handleApplyDateRangeFilter = (filter: DateFilter) => (filterValue: DateFilterValue | undefined) => {
+    const updatedDateFilterValues = { ...dateFilterValues, [filter.filterPayloadParameter]: filterValue };
+    updateCaseListFilter({
+      ...updatedDateFilterValues,
+    });
   };
 
   const handleApplyCategoriesFilter = (values: Category[]) => {
@@ -188,28 +211,11 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ca
         label: removePlaceholders(subcategory.label),
       })),
     }));
-    const filters = {
-      ...defaultFilters,
-      ...dateFilterPayloadFromFilters(dateFilters),
-      categories: filterCheckedCategories(sanitizedValues),
-    };
-    handleApplyFilter(filters);
-    setCategoriesValues(sanitizedValues);
-  };
-
-  const handleApplyDateRangeFilter = (filterType: DateFilter) => (filterOption: DateFilterOption | undefined) => {
-    filterType.currentSetting = filterOption;
-    setDateFilters(dateFilters); // refresh date filters after being modified in place locally
-    handleApplyFilter({ ...defaultFilters, ...dateFilterPayloadFromFilters(dateFilters) } as ListCasesFilters);
+    updateCaseListFilter({ categories: filterCheckedCategories(sanitizedValues) });
   };
 
   const handleClearFilters = () => {
-    clearMultiSelectFilter(statusValues, setStatusValues);
-    clearMultiSelectFilter(counselorValues, setCounselorValues);
-    setDateFilters(getInitialDateFilters());
-    setCategoriesValues(categoriesInitialValues);
-    setOpenedFilter(null);
-    handleApplyFilter(emptyFilters);
+    clearCaseListFilter();
   };
 
   const getCasesCountString = () =>
@@ -218,7 +224,8 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ca
   const hasFiltersApplied =
     filterCheckedItems(statusValues).length > 0 ||
     filterCheckedItems(counselorValues).length > 0 ||
-    Boolean(dateFilters.filter(df => df.currentSetting).length);
+    Boolean(Object.values(dateFilterValues).filter(dfv => dfv).length) ||
+    filterCheckedCategories(categoriesValues).length > 0;
 
   return (
     <>
@@ -272,7 +279,7 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ca
           <FiltersContainer style={{ marginLeft: '100px', boxShadow: 'none' }}>
             <DateRange fontSize="inherit" style={{ marginRight: 5 }} />
             <Template code="CaseList-Filters-DateFiltersLabel" />
-            {dateFilters.map(df => {
+            {getInitialDateFilters().map(df => {
               return (
                 <DateRangeFilter
                   labelKey={df.labelKey}
@@ -282,7 +289,7 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ca
                   openedFilter={openedFilter}
                   applyFilter={handleApplyDateRangeFilter(df)}
                   setOpenedFilter={setOpenedFilter}
-                  current={df.currentSetting}
+                  current={dateFilterValues[df.filterPayloadParameter]}
                 />
               );
             })}
@@ -295,4 +302,19 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ca
 
 Filters.displayName = 'Filters';
 
-export default Filters;
+const mapDispatchToProps = {
+  updateCaseListFilter: CaseListSettingsActions.updateCaseListFilter,
+  clearCaseListFilter: CaseListSettingsActions.clearCaseListFilter,
+};
+
+const mapStateToProps = (state: RootState) => ({
+  currentFilter: state[namespace][caseListBase].currentSettings.filter,
+  currentFilterCompare: JSON.stringify(state[namespace][caseListBase].currentSettings.filter),
+  counselorsHash: state[namespace][configurationBase].counselors.hash,
+  counselorsHashCompare: JSON.stringify(state[namespace][configurationBase].counselors.hash),
+});
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+const connected = connector(Filters);
+
+export default connected;
