@@ -4,12 +4,11 @@ import { Template } from '@twilio/flex-ui';
 import type { DefinitionVersion } from 'hrm-form-definitions';
 import FilterList from '@material-ui/icons/FilterList';
 import DateRange from '@material-ui/icons/DateRange';
-import Edit from '@material-ui/icons/Edit';
 
 import { getConfig } from '../../../HrmFormPlugin';
 import { FiltersContainer, FiltersResetAll, CasesTitle, CasesCount, FilterBy } from '../../../styles/caseList/filters';
 import MultiSelectFilter, { Item } from './MultiSelectFilter';
-import { ListCasesFilters, CounselorHash } from '../../../types/types';
+import { ListCasesFilters, CategoryFilter, CounselorHash } from '../../../types/types';
 import DateRangeFilter from './DateRangeFilter';
 import {
   DateFilterOption,
@@ -18,6 +17,8 @@ import {
   followUpDateFilterOptions,
   standardCaseListDateFilterOptions,
 } from './dateFilters';
+import CategoriesFilter, { Category } from './CategoriesFilter';
+
 /**
  * Reads the definition version and returns and array of items (type Item[])
  * to be used as the options for the status filter
@@ -64,6 +65,30 @@ const getInitialDateFilters = (): DateFilter[] => [
   },
 ];
 
+const SINGLE_QUOTE_PLACEHOLDER = '(SINGLE_QUOTE_PLACEHOLDER)';
+const DOUBLE_QUOTES_PLACEHOLDER = '(DOUBLE_QUOTES_PLACEHOLDER)';
+const addPlaceholders = text =>
+  text.replaceAll("'", SINGLE_QUOTE_PLACEHOLDER).replaceAll('"', DOUBLE_QUOTES_PLACEHOLDER);
+const removePlaceholders = text =>
+  text.replaceAll(SINGLE_QUOTE_PLACEHOLDER, "'").replaceAll(DOUBLE_QUOTES_PLACEHOLDER, '"');
+/**
+ * Reads the definition version and returns and array of items (type Item[])
+ * to be used as the options for the status filter
+ * @param definitionVersion DefinitionVersion
+ * @returns Item[]
+ */
+const getCategoriesInitialValue = (definitionVersion: DefinitionVersion, helpline: string) =>
+  Object.entries(definitionVersion.tabbedForms.IssueCategorizationTab(helpline)).map(
+    ([categoryName, { subcategories }]) => ({
+      categoryName,
+      subcategories: subcategories.map(subcategory => ({
+        value: addPlaceholders(subcategory),
+        label: subcategory,
+        checked: false,
+      })),
+    }),
+  );
+
 /**
  * Gets an array of items (type Item[]) and makes all of them checked = false
  * @param values Item[]
@@ -82,6 +107,16 @@ const clearMultiSelectFilter = (values, setValues) => {
  */
 const filterCheckedItems = (items: Item[]): string[] => items.filter(item => item.checked).map(item => item.value);
 
+const filterCheckedCategories = (categories: Category[]): CategoryFilter[] =>
+  categories.flatMap(category =>
+    category.subcategories
+      .filter(subcategory => subcategory.checked)
+      .map(subcategory => ({
+        category: category.categoryName,
+        subcategory: subcategory.label,
+      })),
+  );
+
 type OwnProps = {
   currentDefinitionVersion: DefinitionVersion;
   counselorsHash: CounselorHash;
@@ -93,12 +128,16 @@ type OwnProps = {
 type Props = OwnProps;
 
 const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, caseCount, handleApplyFilter }) => {
+  const { strings, featureFlags, helpline } = getConfig();
+
   const statusInitialValues = getStatusInitialValue(currentDefinitionVersion);
+  const categoriesInitialValues = getCategoriesInitialValue(currentDefinitionVersion, helpline);
 
   const [openedFilter, setOpenedFilter] = useState<string>();
   const [statusValues, setStatusValues] = useState<Item[]>(statusInitialValues);
   const [counselorValues, setCounselorValues] = useState<Item[]>([]);
   const [dateFilters, setDateFilters] = useState<DateFilter[]>(getInitialDateFilters());
+  const [categoriesValues, setCategoriesValues] = useState<Category[]>(categoriesInitialValues);
   const [defaultFilters, setDefaultFilters] = useState<ListCasesFilters>(emptyFilters);
 
   // updates counselor options when counselorHash is updated
@@ -111,8 +150,15 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ca
   useEffect(() => {
     const statuses = filterCheckedItems(statusValues);
     const counsellors = filterCheckedItems(counselorValues);
-    setDefaultFilters({ statuses, counsellors, includeOrphans: false, ...dateFilterPayloadFromFilters(dateFilters) });
-  }, [setDefaultFilters, statusValues, counselorValues, dateFilters]);
+    const categories = filterCheckedCategories(categoriesValues);
+    setDefaultFilters({
+      statuses,
+      counsellors,
+      categories,
+      includeOrphans: false,
+      ...dateFilterPayloadFromFilters(dateFilters),
+    });
+  }, [setDefaultFilters, statusValues, counselorValues, categoriesValues, dateFilters]);
 
   const handleApplyStatusFilter = (values: Item[]) => {
     const filters = {
@@ -134,6 +180,23 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ca
     setCounselorValues(values);
   };
 
+  const handleApplyCategoriesFilter = (values: Category[]) => {
+    const sanitizedValues = values.map(category => ({
+      ...category,
+      subcategories: category.subcategories.map(subcategory => ({
+        ...subcategory,
+        label: removePlaceholders(subcategory.label),
+      })),
+    }));
+    const filters = {
+      ...defaultFilters,
+      ...dateFilterPayloadFromFilters(dateFilters),
+      categories: filterCheckedCategories(sanitizedValues),
+    };
+    handleApplyFilter(filters);
+    setCategoriesValues(sanitizedValues);
+  };
+
   const handleApplyDateRangeFilter = (filterType: DateFilter) => (filterOption: DateFilterOption | undefined) => {
     filterType.currentSetting = filterOption;
     setDateFilters(dateFilters); // refresh date filters after being modified in place locally
@@ -144,11 +207,10 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ca
     clearMultiSelectFilter(statusValues, setStatusValues);
     clearMultiSelectFilter(counselorValues, setCounselorValues);
     setDateFilters(getInitialDateFilters());
+    setCategoriesValues(categoriesInitialValues);
     setOpenedFilter(null);
     handleApplyFilter(emptyFilters);
   };
-
-  const { strings, featureFlags } = getConfig();
 
   const getCasesCountString = () =>
     caseCount === 1 ? 'CaseList-Filters-CaseCount-Singular' : 'CaseList-Filters-CaseCount-Plural';
@@ -194,6 +256,16 @@ const Filters: React.FC<Props> = ({ currentDefinitionVersion, counselorsHash, ca
             defaultValues={counselorValues}
             openedFilter={openedFilter}
             applyFilter={handleApplyCounselorFilter}
+            setOpenedFilter={setOpenedFilter}
+            searchable
+          />
+          <CategoriesFilter
+            name="categories"
+            searchDescription={strings['CaseList-Filters-SearchByCategory']}
+            text={strings['CaseList-Filters-Categories']}
+            defaultValues={categoriesValues}
+            openedFilter={openedFilter}
+            applyFilter={handleApplyCategoriesFilter}
             setOpenedFilter={setOpenedFilter}
             searchable
           />

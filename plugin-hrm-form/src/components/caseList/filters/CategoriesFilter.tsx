@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
@@ -6,24 +7,23 @@ import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 
 import SearchInput from './SearchInput';
-import { Flex, Box, FormCheckbox, FormLabel } from '../../../styles/HrmStyles';
+import { Flex, Box } from '../../../styles/HrmStyles';
 import {
   MultiSelectButton,
   DialogArrow,
   FiltersDialog,
   FiltersDialogTitle,
-  MultiSelectUnorderedList,
-  MultiSelectListItem,
-  MultiSelectCheckboxLabel,
   FiltersBottomButtons,
   FiltersApplyButton,
   FiltersClearButton,
 } from '../../../styles/caseList/filters';
+import type { Item } from './MultiSelectFilter';
+import CategorySection from './CategorySection';
 
-export type Item = {
-  value: string;
-  label: string;
-  checked: boolean;
+type Subcategory = Item;
+export type Category = {
+  categoryName: string;
+  subcategories: Subcategory[];
 };
 
 type ReactHookFormValues = {
@@ -33,19 +33,19 @@ type ReactHookFormValues = {
 type OwnProps = {
   name: string;
   text: string;
-  defaultValues: Item[];
+  defaultValues: Category[];
   withSearch?: boolean;
   openedFilter: string;
   searchable?: boolean;
   searchDescription?: string;
-  applyFilter: (values: Item[]) => void;
+  applyFilter: (values: Category[]) => void;
   setOpenedFilter: (name: string) => void;
 };
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps;
 
-const MultiSelectFilter: React.FC<Props> = ({
+const CategoriesFilter: React.FC<Props> = ({
   name,
   text,
   defaultValues,
@@ -56,18 +56,33 @@ const MultiSelectFilter: React.FC<Props> = ({
   setOpenedFilter,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const transformToItems = (values: ReactHookFormValues): Item[] =>
-    defaultValues.map(item => ({ ...item, checked: values[item.value] }));
+  const transformToCategories = (values: ReactHookFormValues): Category[] => {
+    const getSubcategories = category =>
+      Object.keys(category).map(subcategoryName => ({
+        value: subcategoryName,
+        label: subcategoryName,
+        checked: category[subcategoryName],
+      }));
 
-  const transformToValues = (items: Item[]) =>
-    items.reduce((acc, item) => ({ ...acc, [item.value]: item.checked }), {});
+    return Object.keys(values).map(categoryName => ({
+      categoryName,
+      subcategories: getSubcategories(values[categoryName]),
+    }));
+  };
 
-  const { register, handleSubmit, reset, getValues } = useForm({
+  const transformToValues = (categories: Category[]) => {
+    const getSubcategories = (category: Category) =>
+      category.subcategories.reduce((acc, subcategory) => ({ ...acc, [subcategory.label]: subcategory.checked }), {});
+    return categories.reduce((acc, category) => ({ ...acc, [category.categoryName]: getSubcategories(category) }), {});
+  };
+
+  const { register, handleSubmit, reset, getValues, setValue, watch } = useForm<any>({
     defaultValues: transformToValues(defaultValues),
   });
 
   const [selectedCount, setSelectedCount] = useState<number>(0);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [categories, setCategories] = useState(defaultValues);
 
   const filterButtonElement = useRef(null);
   const firstElement = useRef(null);
@@ -76,10 +91,13 @@ const MultiSelectFilter: React.FC<Props> = ({
   // Force React Hook Forms to rerender whenever defaultValues changes
   useEffect(() => {
     const updateSelectedCount = () => {
-      const count = defaultValues.reduce((acc, item) => (item.checked ? acc + 1 : acc), 0);
+      const count = defaultValues
+        .flatMap(category => category.subcategories)
+        .reduce((acc, item) => (item.checked ? acc + 1 : acc), 0);
       setSelectedCount(count);
     };
 
+    setCategories(defaultValues);
     reset(defaultValues);
     updateSelectedCount();
   }, [reset, defaultValues]);
@@ -94,6 +112,7 @@ const MultiSelectFilter: React.FC<Props> = ({
         reset(defaultValues);
         setSearchTerm('');
         setOpenedFilter(null);
+
         filterButtonElement.current?.focus();
       }
     };
@@ -109,8 +128,8 @@ const MultiSelectFilter: React.FC<Props> = ({
     setOpenedFilter(null);
     setSearchTerm('');
 
-    const items = transformToItems(values);
-    applyFilter(items);
+    const categories = transformToCategories(values);
+    applyFilter(categories);
   };
 
   const handleClick = () => {
@@ -127,10 +146,14 @@ const MultiSelectFilter: React.FC<Props> = ({
 
   const handleClear = () => {
     const values = getValues();
-    const assignFalse = (acc: object, key: string) => ({ ...acc, [key]: false });
-    const clearedValues = Object.keys(values).reduce(assignFalse, {});
+    const getSubcategoriesFullName = (category, categoryName) =>
+      Object.keys(category).map(subcategoryName => `${categoryName}.${subcategoryName}`);
 
-    reset(clearedValues);
+    // // Mark all values as false
+    Object.keys(values)
+      .flatMap(categoryName => getSubcategoriesFullName(values[categoryName], categoryName))
+      .forEach(subcategoryFullName => setValue(`${subcategoryFullName}`, false));
+
     setSearchTerm('');
   };
 
@@ -144,6 +167,7 @@ const MultiSelectFilter: React.FC<Props> = ({
   const handleTabForLastElement = event => {
     if (!event.shiftKey && event.key === 'Tab') {
       event.preventDefault();
+
       firstElement.current?.focus();
     }
   };
@@ -151,6 +175,7 @@ const MultiSelectFilter: React.FC<Props> = ({
   const handleShiftTabForFirstElement = event => {
     if (event.shiftKey && event.key === 'Tab') {
       event.preventDefault();
+
       lastElement.current?.focus();
     }
   };
@@ -188,7 +213,6 @@ const MultiSelectFilter: React.FC<Props> = ({
         onClick={handleClick}
         innerRef={innerRef => {
           filterButtonElement.current = innerRef;
-          register(innerRef);
         }}
       >
         {text}
@@ -199,7 +223,7 @@ const MultiSelectFilter: React.FC<Props> = ({
         </Flex>
       </MultiSelectButton>
       {isOpened && (
-        <FiltersDialog role="dialog" aria-labelledby="dialog-title">
+        <FiltersDialog width="450px" role="dialog" aria-labelledby="dialog-title">
           <DialogArrow />
           <FiltersDialogTitle id="dialog-title">Filter by: {text}</FiltersDialogTitle>
           {searchable && (
@@ -213,33 +237,18 @@ const MultiSelectFilter: React.FC<Props> = ({
             />
           )}
           <form onSubmit={handleSubmit(onSubmit)}>
-            <MultiSelectUnorderedList scrollable={searchable}>
-              {defaultValues.map((item, i) => {
-                const hidden = !item.label.toLowerCase().includes(searchTerm.toLowerCase());
-                const isFirstFocusableElement = i === 0 && !searchable;
-
-                return (
-                  <MultiSelectListItem key={i} hidden={hidden}>
-                    <FormLabel htmlFor={item.value} style={{ flexDirection: 'row' }}>
-                      <FormCheckbox
-                        id={item.value}
-                        name={item.value}
-                        type="checkbox"
-                        defaultChecked={item.checked}
-                        innerRef={innerRef => {
-                          if (isFirstFocusableElement) {
-                            firstElement.current = innerRef;
-                          }
-                          register(innerRef);
-                        }}
-                        onKeyDown={isFirstFocusableElement ? handleShiftTabForFirstElement : null}
-                      />
-                      <MultiSelectCheckboxLabel>{highlightLabel(item.label)}</MultiSelectCheckboxLabel>
-                    </FormLabel>
-                  </MultiSelectListItem>
-                );
-              })}
-            </MultiSelectUnorderedList>
+            {categories.map((category, i) => (
+              <CategorySection
+                key={i}
+                category={category}
+                searchTerm={searchTerm}
+                getValues={getValues}
+                setValue={setValue}
+                watch={watch}
+                highlightLabel={highlightLabel}
+                register={register}
+              />
+            ))}
             <FiltersBottomButtons>
               <Box marginRight="10px">
                 <FiltersClearButton type="button" onClick={handleClear}>
@@ -257,6 +266,6 @@ const MultiSelectFilter: React.FC<Props> = ({
   );
 };
 
-MultiSelectFilter.displayName = 'MultiSelectFilter';
+CategoriesFilter.displayName = 'CategoriesFilter';
 
-export default MultiSelectFilter;
+export default CategoriesFilter;

@@ -109,10 +109,15 @@ export const DialogArrow = styled(Flex)`
 `;
 DialogArrow.displayName = 'DialogArrow';
 
-export const FiltersDialog = styled('div')`
+type FiltersDialogProps = {
+  width?: string;
+};
+
+export const FiltersDialog = styled('div')<FiltersDialogProps>`
   position: absolute;
   background: white;
-  width: 270px;
+  box-sizing: border-box;
+  width: ${props => (props.width ? props.width : '330px')};
   top: 43px;
   left: -20px;
   min-width: 200px;
@@ -158,7 +163,7 @@ type MultiSelectListItemProps = {
 export const MultiSelectListItem = styled('li')<MultiSelectListItemProps>`
   visibility: ${props => (props.hidden ? 'hidden' : 'visible')};
   height: ${props => (props.hidden ? '0' : 'auto')};
-  margin-bottom: ${props => (props.hidden ? '0' : '3px')};
+  margin-bottom: ${props => (props.hidden ? '0' : '5px')};
 `;
 MultiSelectListItem.displayName = 'MultiSelectListItem';
 
@@ -244,3 +249,50 @@ export const FiltersClearButton = styled(FiltersApplyButton)`
   }
 `;
 FiltersClearButton.displayName = 'FiltersClearButton';
+
+export const CategoryCheckbox = styled('input')`
+  &[type='checkbox'] {
+    display: inline-block;
+    position: relative;
+    padding-left: 1.4em;
+    cursor: default;
+    margin-right: 5px;
+  }
+  &[type='checkbox']::before,
+  &[type='checkbox']::after {
+    position: absolute;
+    top: 50%;
+    left: 7px;
+    transform: translate(-50%, -50%);
+    content: '';
+  }
+  &[type='checkbox']::before {
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(94, 99, 105, 0.8);
+    border-radius: 0.2em;
+    background-image: linear-gradient(to bottom, hsl(300, 3%, 93%), #fff 30%);
+  }
+  &[type='checkbox']:active::before {
+    background-image: linear-gradient(to bottom, hsl(300, 3%, 73%), hsl(300, 3%, 93%) 30%);
+  }
+
+  &[type='checkbox']:checked::before,
+  &[type='checkbox']:indeterminate::before {
+    border-color: rgba(94, 99, 105, 0.8);
+    background: #080808;
+  }
+  &[type='checkbox']:checked::after {
+    font-family: 'Font Awesome 5 Free';
+    font-size: 11px;
+    content: '\f00c';
+    color: #ffffff;
+  }
+  &[type='checkbox']:indeterminate::after {
+    font-weight: 900;
+    font-size: 9px;
+    content: '—';
+    color: #ffffff;
+  }
+`;
+CategoryCheckbox.displayName = 'CategoryCheckbox';
