@@ -140,6 +140,7 @@ FiltersDialogTitle.displayName = 'FiltersDialogTitle';
 
 type MultiSelectUnorderedListProps = {
   scrollable?: Boolean;
+  height?: string;
 };
 
 const scrollableUnorderedList = `
@@ -153,6 +154,7 @@ const scrollableUnorderedList = `
 
 export const MultiSelectUnorderedList = styled('ul')<MultiSelectUnorderedListProps>`
   ${props => (props.scrollable ? scrollableUnorderedList : '')}
+  ${props => (props.height ? `height: ${props.height};` : '')}
 `;
 MultiSelectUnorderedList.displayName = 'MultiSelectUnorderedList';
 

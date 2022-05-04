@@ -16,6 +16,7 @@ import {
   FiltersBottomButtons,
   FiltersApplyButton,
   FiltersClearButton,
+  MultiSelectUnorderedList,
 } from '../../../styles/caseList/filters';
 import type { Item } from './MultiSelectFilter';
 import CategorySection from './CategorySection';
@@ -151,7 +152,7 @@ const CategoriesFilter: React.FC<Props> = ({
     const getSubcategoriesFullName = (category, categoryName) =>
       Object.keys(category).map(subcategoryName => `${categoryName}.${subcategoryName}`);
 
-    // // Mark all values as false
+    // Mark all values as false
     Object.keys(values)
       .flatMap(categoryName => getSubcategoriesFullName(values[categoryName], categoryName))
       .forEach(subcategoryFullName => setValue(`${subcategoryFullName}`, false));
@@ -239,18 +240,21 @@ const CategoriesFilter: React.FC<Props> = ({
             />
           )}
           <form onSubmit={handleSubmit(onSubmit)}>
-            {categories.map((category, i) => (
-              <CategorySection
-                key={i}
-                category={category}
-                searchTerm={searchTerm}
-                getValues={getValues}
-                setValue={setValue}
-                watch={watch}
-                highlightLabel={highlightLabel}
-                register={register}
-              />
-            ))}
+            <MultiSelectUnorderedList scrollable={true} height="300px">
+              {categories.map((category, i) => (
+                <li key={i}>
+                  <CategorySection
+                    category={category}
+                    searchTerm={searchTerm}
+                    getValues={getValues}
+                    setValue={setValue}
+                    watch={watch}
+                    highlightLabel={highlightLabel}
+                    register={register}
+                  />
+                </li>
+              ))}
+            </MultiSelectUnorderedList>
             <FiltersBottomButtons>
               <Box marginRight="10px">
                 <FiltersClearButton type="button" onClick={handleClear}>
