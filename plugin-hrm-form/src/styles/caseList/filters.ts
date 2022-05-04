@@ -252,7 +252,7 @@ export const FiltersClearButton = styled(FiltersApplyButton)`
 `;
 FiltersClearButton.displayName = 'FiltersClearButton';
 
-export const CategoryCheckbox = styled('input')`
+export const FiltersCheckbox = styled('input')`
   &[type='checkbox'] {
     display: inline-block;
     position: relative;
@@ -297,4 +297,4 @@ export const CategoryCheckbox = styled('input')`
     color: #ffffff;
   }
 `;
-CategoryCheckbox.displayName = 'CategoryCheckbox';
+FiltersCheckbox.displayName = 'FiltersCheckbox';

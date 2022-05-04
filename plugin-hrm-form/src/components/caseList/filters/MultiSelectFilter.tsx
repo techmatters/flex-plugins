@@ -6,7 +6,7 @@ import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 
 import SearchInput from './SearchInput';
-import { Flex, Box, FormCheckbox, FormLabel } from '../../../styles/HrmStyles';
+import { Flex, Box, FormLabel } from '../../../styles/HrmStyles';
 import {
   MultiSelectButton,
   DialogArrow,
@@ -18,6 +18,7 @@ import {
   FiltersBottomButtons,
   FiltersApplyButton,
   FiltersClearButton,
+  FiltersCheckbox,
 } from '../../../styles/caseList/filters';
 
 export type Item = {
@@ -221,7 +222,7 @@ const MultiSelectFilter: React.FC<Props> = ({
                 return (
                   <MultiSelectListItem key={i} hidden={hidden}>
                     <FormLabel htmlFor={item.value} style={{ flexDirection: 'row' }}>
-                      <FormCheckbox
+                      <FiltersCheckbox
                         id={item.value}
                         name={item.value}
                         type="checkbox"

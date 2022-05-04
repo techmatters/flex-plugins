@@ -6,7 +6,7 @@ import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 
 import { FormLabel } from '../../../styles/HrmStyles';
-import { MultiSelectListItem, MultiSelectCheckboxLabel, CategoryCheckbox } from '../../../styles/caseList/filters';
+import { MultiSelectListItem, MultiSelectCheckboxLabel, FiltersCheckbox } from '../../../styles/caseList/filters';
 import type { Category } from './CategoriesFilter';
 
 type OwnProps = {
@@ -122,7 +122,7 @@ const CategorySection: React.FC<Props> = ({
         onClick={handleExpandCategory}
       >
         {!searchTerm && (
-          <CategoryCheckbox
+          <FiltersCheckbox
             type="checkbox"
             checked={categoryChecked}
             onClick={handleClickCategory}
@@ -158,7 +158,7 @@ const CategorySection: React.FC<Props> = ({
           return (
             <MultiSelectListItem key={j} hidden={hidden}>
               <FormLabel htmlFor={name} style={{ flexDirection: 'row', alignItems: 'baseline' }}>
-                <CategoryCheckbox
+                <FiltersCheckbox
                   id={name}
                   name={name}
                   type="checkbox"
