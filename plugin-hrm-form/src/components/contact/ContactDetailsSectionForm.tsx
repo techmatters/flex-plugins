@@ -24,7 +24,7 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const TabbedFormTab: React.FC<Props> = ({
+const ContactDetailsSectionForm: React.FC<Props> = ({
   entityIdentifier,
   display,
   definition,
@@ -72,13 +72,13 @@ const TabbedFormTab: React.FC<Props> = ({
   );
 };
 
-TabbedFormTab.displayName = 'TabbedFormTab';
+ContactDetailsSectionForm.displayName = 'TabbedFormTab';
 
 const mapDispatchToProps = {
   updateForm: actions.updateForm,
 };
 
 const connector = connect(null, mapDispatchToProps);
-const connected = connector(TabbedFormTab);
+const connected = connector(ContactDetailsSectionForm);
 
 export default connected;

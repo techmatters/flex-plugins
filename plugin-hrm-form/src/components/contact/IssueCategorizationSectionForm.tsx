@@ -28,7 +28,7 @@ const isFromTaskProps = (props: OwnProps): props is FromTaskProps => Boolean((pr
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const IssueCategorizationTab: React.FC<Props> = props => {
+const EditIssueCategorizationForm: React.FC<Props> = props => {
   const isFromTask = isFromTaskProps(props);
   const entityIdentifier = (props as FromExistingContactsProps).contactId ?? (props as FromTaskProps).task.taskSid;
   const { display, categoriesMeta, initialValue, definition, autoFocus, updateForm } = props;
@@ -82,7 +82,7 @@ const IssueCategorizationTab: React.FC<Props> = props => {
   );
 };
 
-IssueCategorizationTab.displayName = 'IssueCategorizationTab';
+EditIssueCategorizationForm.displayName = 'IssueCategorizationTab';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   if (isFromTaskProps(ownProps)) {
@@ -101,6 +101,6 @@ const mapDispatchToProps = {
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
-const connected = connector(IssueCategorizationTab);
+const connected = connector(EditIssueCategorizationForm);
 
 export default connected;

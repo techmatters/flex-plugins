@@ -10,9 +10,9 @@ import EditContactSection from './EditContactSection';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { DetailsContainer } from '../../styles/search';
 import * as ConfigActions from '../../states/configuration/actions';
-import { ContactDetailsSectionForm, contactDetailsSectionForm, ContactFormValues } from './contactDetailsSectionForms';
-import TabbedFormTab from '../tabbedForms/TabbedFormTab';
-import IssueCategorizationTab from '../tabbedForms/IssueCategorizationTab';
+import { ContactDetailsSectionFormApi, contactDetailsSectionFormApi } from './contactDetailsSectionFormApi';
+import TabbedFormTab from './ContactDetailsSectionForm';
+import IssueCategorizationTab from './IssueCategorizationSectionForm';
 import { TaskEntry } from '../../states/contacts/reducer';
 
 type OwnProps = {
@@ -69,7 +69,7 @@ const ContactDetails: React.FC<Props> = ({
     );
 
   const editContactSectionElement = (
-    section: ContactDetailsSectionForm,
+    section: ContactDetailsSectionFormApi,
     formPath: 'callerInformation' | 'childInformation' | 'caseInformation',
   ) => (
     <EditContactSection context={context} contactId={contactId} contactDetailsSectionForm={section}>
@@ -87,16 +87,16 @@ const ContactDetails: React.FC<Props> = ({
 
   switch (route) {
     case ContactDetailsRoute.EDIT_CHILD_INFORMATION:
-      return editContactSectionElement(contactDetailsSectionForm.CHILD_INFORMATION, 'childInformation');
+      return editContactSectionElement(contactDetailsSectionFormApi.CHILD_INFORMATION, 'childInformation');
     case ContactDetailsRoute.EDIT_CALLER_INFORMATION:
-      return editContactSectionElement(contactDetailsSectionForm.CALLER_INFORMATION, 'callerInformation');
+      return editContactSectionElement(contactDetailsSectionFormApi.CALLER_INFORMATION, 'callerInformation');
     case ContactDetailsRoute.EDIT_CATEGORIES:
-      const issueSection = contactDetailsSectionForm.ISSUE_CATEGORIZATION;
+      const issueSection = contactDetailsSectionFormApi.ISSUE_CATEGORIZATION;
       return (
         <EditContactSection
           context={context}
           contactId={contactId}
-          contactDetailsSectionForm={contactDetailsSectionForm.ISSUE_CATEGORIZATION}
+          contactDetailsSectionForm={contactDetailsSectionFormApi.ISSUE_CATEGORIZATION}
         >
           <IssueCategorizationTab
             definition={definitionVersion.tabbedForms.IssueCategorizationTab(contact.overview.helpline)}
@@ -108,7 +108,7 @@ const ContactDetails: React.FC<Props> = ({
         </EditContactSection>
       );
     case ContactDetailsRoute.EDIT_CASE_INFORMATION: {
-      return editContactSectionElement(contactDetailsSectionForm.CASE_INFORMATION, 'caseInformation');
+      return editContactSectionElement(contactDetailsSectionFormApi.CASE_INFORMATION, 'caseInformation');
     }
     case ContactDetailsRoute.HOME:
     default:

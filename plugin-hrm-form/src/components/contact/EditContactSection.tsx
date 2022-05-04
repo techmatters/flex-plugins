@@ -1,31 +1,26 @@
 import { connect, ConnectedProps } from 'react-redux';
 import React, { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { DefinitionVersion, FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 import { Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
 
-import { InformationObject, SearchContact } from '../../types/types';
 import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
-import TabbedFormTab from '../tabbedForms/TabbedFormTab';
-import { transformContactFormValues, unNestInformationObject, updateContactInHrm } from '../../services/ContactService';
-import { TaskEntry } from '../../states/contacts/reducer';
+import { updateContactInHrm } from '../../services/ContactService';
 import { Box, StyledNextStepButton } from '../../styles/HrmStyles';
 import { recordingErrorHandler } from '../../fullStory';
 import { getConfig } from '../../HrmFormPlugin';
 import { ContactDetailsRoute, DetailsContext, navigateContactDetails } from '../../states/contacts/contactDetails';
 import {
-  ContactDetailsSectionForm,
+  ContactDetailsSectionFormApi,
   ContactFormValues,
   isIssueCategorizationSectionForm,
-  IssueCategorizationSectionForm,
-} from './contactDetailsSectionForms';
-import IssueCategorizationTab from '../tabbedForms/IssueCategorizationTab';
+  IssueCategorizationSectionFormApi,
+} from './contactDetailsSectionFormApi';
 
 type OwnProps = {
   context: DetailsContext;
   contactId: string;
-  contactDetailsSectionForm: ContactDetailsSectionForm | IssueCategorizationSectionForm;
+  contactDetailsSectionForm: ContactDetailsSectionFormApi | IssueCategorizationSectionFormApi;
   children?: React.ReactNode;
 };
 

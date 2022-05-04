@@ -1,7 +1,6 @@
 import { DefinitionVersion, FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 
-import { ContactRawJson, InformationObject, SearchContact } from '../../types/types';
-import { TaskEntry } from '../../states/contacts/reducer';
+import { ContactRawJson, SearchContact } from '../../types/types';
 import {
   transformCategories,
   transformContactFormValues,
@@ -12,7 +11,7 @@ export type ContactFormValues = {
   [key in 'childInformation' | 'callerInformation' | 'caseInformation']?: Record<string, string | boolean>;
 };
 
-export type ContactDetailsSectionForm = {
+export type ContactDetailsSectionFormApi = {
   getFormDefinition: (def: DefinitionVersion) => FormDefinition;
   getLayoutDefinition: (def: DefinitionVersion) => LayoutDefinition;
   getFormValues: (def: DefinitionVersion, contact: SearchContact) => ContactFormValues;
@@ -27,7 +26,7 @@ export type ContactDetailsSectionForm = {
   };
 };
 
-export type IssueCategorizationSectionForm = {
+export type IssueCategorizationSectionFormApi = {
   getFormDefinition: (def: DefinitionVersion) => FormDefinition;
   getLayoutDefinition: (def: DefinitionVersion) => LayoutDefinition;
   getFormValues: (def: DefinitionVersion, contact: SearchContact) => { categories: string[] };
@@ -39,14 +38,14 @@ export type IssueCategorizationSectionForm = {
 };
 
 export const isIssueCategorizationSectionForm = (
-  form: ContactDetailsSectionForm | IssueCategorizationSectionForm,
-): form is IssueCategorizationSectionForm => Boolean((form as IssueCategorizationSectionForm).type);
+  form: ContactDetailsSectionFormApi | IssueCategorizationSectionFormApi,
+): form is IssueCategorizationSectionFormApi => Boolean((form as IssueCategorizationSectionFormApi).type);
 
-export const contactDetailsSectionForm: {
-  CHILD_INFORMATION: ContactDetailsSectionForm;
-  CALLER_INFORMATION: ContactDetailsSectionForm;
-  ISSUE_CATEGORIZATION: IssueCategorizationSectionForm;
-  CASE_INFORMATION: ContactDetailsSectionForm;
+export const contactDetailsSectionFormApi: {
+  CHILD_INFORMATION: ContactDetailsSectionFormApi;
+  CALLER_INFORMATION: ContactDetailsSectionFormApi;
+  ISSUE_CATEGORIZATION: IssueCategorizationSectionFormApi;
+  CASE_INFORMATION: ContactDetailsSectionFormApi;
 } = {
   CHILD_INFORMATION: {
     getFormValues: (def, contact) => ({

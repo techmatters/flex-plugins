@@ -6,7 +6,7 @@ import configureMockStore from 'redux-mock-store';
 import { FormProvider } from 'react-hook-form';
 import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
-import IssueCategorizationTab from '../../../components/tabbedForms/IssueCategorizationTab';
+import IssueCategorizationSectionForm from '../../../components/contact/IssueCategorizationSectionForm';
 import { ToggleViewButton } from '../../../styles/HrmStyles';
 import HrmTheme from '../../../styles/HrmTheme';
 import { namespace, contactFormsBase } from '../../../states';
@@ -65,7 +65,7 @@ test('Click on view subcategories as grid icon', () => {
     <StorelessThemeProvider themeConf={themeConf}>
       <Provider store={store}>
         <FormProvider {...mockMethods}>
-          <IssueCategorizationTab task={{ taskSid: taskId }} definition={definition} display={true} />
+          <IssueCategorizationSectionForm task={{ taskSid: taskId }} definition={definition} display={true} />
         </FormProvider>
       </Provider>
     </StorelessThemeProvider>,
@@ -107,7 +107,7 @@ test('Click on view subcategories as list icon', () => {
     <StorelessThemeProvider themeConf={themeConf}>
       <Provider store={store}>
         <FormProvider {...mockMethods}>
-          <IssueCategorizationTab task={{ taskSid: taskId }} definition={definition} display={true} />
+          <IssueCategorizationSectionForm task={{ taskSid: taskId }} definition={definition} display={true} />
         </FormProvider>
       </Provider>
     </StorelessThemeProvider>,

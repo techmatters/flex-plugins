@@ -21,8 +21,8 @@ import { CustomITask, isOfflineContactTask, SearchContact } from '../../types/ty
 import { TabbedFormsContainer, TabbedFormTabContainer, Box, StyledTabs, Row } from '../../styles/HrmStyles';
 import FormTab from '../common/forms/FormTab';
 import Search from '../search';
-import IssueCategorizationTab from './IssueCategorizationTab';
-import TabbedFormTab from './TabbedFormTab';
+import IssueCategorizationSectionForm from '../contact/IssueCategorizationSectionForm';
+import ContactDetailsSectionForm from '../contact/ContactDetailsSectionForm';
 import ContactlessTaskTab from './ContactlessTaskTab';
 import BottomBar from './BottomBar';
 import { hasTaskControl } from '../../utils/transfer';
@@ -226,7 +226,7 @@ const TabbedForms: React.FC<Props> = ({
               )}
               {isCallerType && (
                 <TabbedFormTabContainer display={subroute === 'callerInformation'}>
-                  <TabbedFormTab
+                  <ContactDetailsSectionForm
                     entityIdentifier={task.taskSid}
                     tabPath="callerInformation"
                     definition={currentDefinitionVersion.tabbedForms.CallerInformationTab}
@@ -240,7 +240,7 @@ const TabbedForms: React.FC<Props> = ({
               {isDataCallType && (
                 <>
                   <TabbedFormTabContainer display={subroute === 'childInformation'}>
-                    <TabbedFormTab
+                    <ContactDetailsSectionForm
                       entityIdentifier={task.taskSid}
                       tabPath="childInformation"
                       definition={currentDefinitionVersion.tabbedForms.ChildInformationTab}
@@ -251,7 +251,7 @@ const TabbedForms: React.FC<Props> = ({
                     />
                   </TabbedFormTabContainer>
                   <TabbedFormTabContainer display={subroute === 'categories'}>
-                    <IssueCategorizationTab
+                    <IssueCategorizationSectionForm
                       task={task}
                       display={subroute === 'categories'}
                       initialValue={contactForm.categories}
@@ -260,7 +260,7 @@ const TabbedForms: React.FC<Props> = ({
                     />
                   </TabbedFormTabContainer>
                   <TabbedFormTabContainer display={subroute === 'caseInformation'}>
-                    <TabbedFormTab
+                    <ContactDetailsSectionForm
                       entityIdentifier={task.taskSid}
                       tabPath="caseInformation"
                       definition={currentDefinitionVersion.tabbedForms.CaseInformationTab}
