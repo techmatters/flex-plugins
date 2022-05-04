@@ -1,12 +1,20 @@
-/* eslint-disable sonarjs/cognitive-complexity */
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react';
 import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 
 import { FormLabel } from '../../../styles/HrmStyles';
-import { MultiSelectListItem, MultiSelectCheckboxLabel, FiltersCheckbox } from '../../../styles/caseList/filters';
+import {
+  MultiSelectListItem,
+  MultiSelectCheckboxLabel,
+  FiltersCheckbox,
+  CategoryContainer,
+  CategoryHeader,
+  CategoryTitle,
+  ArrowButton,
+  SubcategoryList,
+} from '../../../styles/caseList/filters';
 import type { Category } from './CategoriesFilter';
 
 type OwnProps = {
@@ -104,23 +112,8 @@ const CategorySection: React.FC<Props> = ({
   );
 
   return (
-    <div
-      style={{
-        display: searchTerm && noMatch ? 'none' : 'block',
-        cursor: searchTerm ? 'default' : 'pointer',
-      }}
-    >
-      <h3
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          padding: '0 12px',
-          marginBottom: '3px',
-          backgroundColor: '#F6F6F6',
-          height: '36px',
-        }}
-        onClick={handleExpandCategory}
-      >
+    <CategoryContainer searchTerm={searchTerm} noMatch={noMatch}>
+      <CategoryHeader onClick={handleExpandCategory}>
         {!searchTerm && (
           <FiltersCheckbox
             type="checkbox"
@@ -134,23 +127,17 @@ const CategorySection: React.FC<Props> = ({
             }}
           />
         )}
-        <span style={{ marginLeft: searchTerm ? '0' : '10px', fontWeight: 600 }}>
+        <CategoryTitle searchTerm={searchTerm}>
           {categoryName} {drawCount()}
-        </span>
+        </CategoryTitle>
         {!searchTerm && (
-          <button type="button" style={{ marginLeft: 'auto', border: 'none', background: 'none', cursor: 'pointer' }}>
+          <ArrowButton type="button">
             {expanded && <ArrowDropUp />}
             {!expanded && <ArrowDropDown />}
-          </button>
+          </ArrowButton>
         )}
-      </h3>
-      <ul
-        style={{
-          display: expanded || searchTerm ? 'block' : 'none',
-          padding: '5px 20px',
-          paddingRight: '0',
-        }}
-      >
+      </CategoryHeader>
+      <SubcategoryList expanded={expanded} searchTerm={searchTerm}>
         {subcategories.map((subcategory, j) => {
           const hidden = !subcategory.label.toLowerCase().includes(searchTerm.toLowerCase());
           const name = `${categoryName}.${subcategory.value}`;
@@ -170,8 +157,8 @@ const CategorySection: React.FC<Props> = ({
             </MultiSelectListItem>
           );
         })}
-      </ul>
-    </div>
+      </SubcategoryList>
+    </CategoryContainer>
   );
 };
 

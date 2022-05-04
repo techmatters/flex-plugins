@@ -1,5 +1,4 @@
 import styled from 'react-emotion';
-import { Button } from '@twilio/flex-ui';
 
 import { Flex } from '../HrmStyles';
 
@@ -298,3 +297,53 @@ export const FiltersCheckbox = styled('input')`
   }
 `;
 FiltersCheckbox.displayName = 'FiltersCheckbox';
+
+type CategoryContainerProps = {
+  searchTerm: string;
+  noMatch: boolean;
+};
+
+export const CategoryContainer = styled('div')<CategoryContainerProps>`
+  display: ${props => (props.searchTerm && props.noMatch ? 'none' : 'block')};
+  cursor: ${props => (props.searchTerm ? 'default' : 'pointer')};
+`;
+CategoryContainer.displayName = 'CategoryContainer';
+
+export const CategoryHeader = styled(Flex)`
+  align-items: center;
+  padding: 0 12px;
+  margin-bottom: 3px;
+  background-color: #f6f6f6;
+  height: 36px;
+`;
+CategoryHeader.displayName = 'CategoryHeader';
+
+type CategoryTitleProps = {
+  searchTerm: string;
+};
+
+export const CategoryTitle = styled('h3')<CategoryTitleProps>`
+  margin-left: ${props => (props.searchTerm ? '0' : '10px')};
+  font-weight: 600;
+`;
+CategoryTitle.displayName = 'CategoryTitle';
+
+export const ArrowButton = styled('button')`
+  margin-left: auto;
+  border: none;
+  background: none;
+  cursor: pointer;
+`;
+ArrowButton.displayName = 'ArrowButton';
+
+type SubcategoryListProps = {
+  searchTerm: string;
+  expanded: boolean;
+};
+
+export const SubcategoryList = styled('ul')<SubcategoryListProps>`
+  display: ${props => (props.searchTerm || props.expanded ? 'block' : 'none')};
+  padding: 5px 20px;
+  padding-right: 0;
+`;
+SubcategoryList.displayName = 'SubcategoryList';
