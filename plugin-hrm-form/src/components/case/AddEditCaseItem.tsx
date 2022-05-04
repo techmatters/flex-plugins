@@ -101,14 +101,15 @@ const AddEditCaseItem: React.FC<Props> = ({
   const { temporaryCaseInfo } = connectedCaseState;
 
   const [initialForm] = React.useState(getTemporaryFormContent(temporaryCaseInfo) ?? {}); // grab initial values in first render only. This value should never change or will ruin the memoization below
-  const methods = useForm(reactHookFormOptions);
+  const methods = useForm({ mode:'onChange' });
   const [openDialog, setOpenDialog] = React.useState(false);
 
-  // The hook along with useEffect help render the DOM at first instance checking for user changes in the form. Without, atleast 2 more changes by the user are required when relying on methods.formState.isDirty directly
   const [isDirty, setDirty] = React.useState(false);
   React.useEffect(() => {
-    setDirty(methods.formState.isDirty);
-  }, [methods.formState.isDirty]);
+    if (methods.formState.isDirty && methods.formState.isValid){
+      setDirty(true);
+    }
+  }, [methods.formState.isDirty, methods.formState.isValid]);
 
   const [l, r] = React.useMemo(() => {
     const createUpdatedTemporaryFormContent = (
@@ -227,16 +228,14 @@ const AddEditCaseItem: React.FC<Props> = ({
     ? temporaryCaseInfoHistory(temporaryCaseInfo, counselorsHash)
     : { added: new Date(), addingCounsellorName: counselor, updated: undefined, updatingCounsellorName: undefined };
 
-  // Checks that the type of TemporaryCaseInfo is either AddTemporaryCaseInfo type or EditTemporaryCaseInfo type in order to pass the isEdited flag within the redux state for connectedCaseState.temporaryCaseInfo
   const checkForEdits = () => {
     if (
       (isEditTemporaryCaseInfo(temporaryCaseInfo) || isAddTemporaryCaseInfo(temporaryCaseInfo)) &&
-      temporaryCaseInfo.isEdited
+      temporaryCaseInfo.isEdited && isDirty
     ) {
       setOpenDialog(true);
     } else close();
   };
-
   return (
     <FormProvider {...methods}>
       <CaseActionLayout>
@@ -286,6 +285,7 @@ const AddEditCaseItem: React.FC<Props> = ({
                 secondary
                 roundCorners
                 onClick={methods.handleSubmit(saveAndStay, onError)}
+                disabled={!isDirty}
               >
                 <Template code={`BottomBar-SaveAndAddAnother${itemType}`} />
               </StyledNextStepButton>
@@ -295,6 +295,7 @@ const AddEditCaseItem: React.FC<Props> = ({
             data-testid="Case-AddEditItemScreen-SaveItem"
             roundCorners
             onClick={methods.handleSubmit(saveAndLeave, onError)}
+            disabled={!isDirty}
           >
             <Template code={`BottomBar-Save${itemType}`} />
           </StyledNextStepButton>
