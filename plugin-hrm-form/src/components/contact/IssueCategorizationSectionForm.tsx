@@ -4,35 +4,32 @@ import { useFormContext } from 'react-hook-form';
 import { connect, ConnectedProps } from 'react-redux';
 import type { CategoriesDefinition } from 'hrm-form-definitions';
 
-import { RootState, namespace, contactFormsBase } from '../../states';
-import * as actions from '../../states/contacts/actions';
+import { RootState } from '../../states';
 import { CategoriesFromDefinition, createSubCategoriesInputs } from '../common/forms/categoriesTabGenerator';
 import useFocus from '../../utils/useFocus';
-import { CustomITask } from '../../types/types';
-import { setCategoriesGridView, toggleCategoryExpanded } from '../../states/contacts/existingContacts';
+import { IssueCategorizationStateApi } from '../../states/contacts/issueCategorizationStateApi';
 
-type CommonOwnProps = {
+type OwnProps = {
   display: boolean;
   initialValue: string[];
   definition: CategoriesDefinition;
   autoFocus: boolean;
+  stateApi: IssueCategorizationStateApi;
 };
-
-type FromTaskProps = CommonOwnProps & { task: CustomITask };
-type FromExistingContactsProps = CommonOwnProps & { contactId: string };
-
-type OwnProps = FromTaskProps | FromExistingContactsProps;
-
-const isFromTaskProps = (props: OwnProps): props is FromTaskProps => Boolean((props as FromTaskProps).task);
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const EditIssueCategorizationForm: React.FC<Props> = props => {
-  const isFromTask = isFromTaskProps(props);
-  const entityIdentifier = (props as FromExistingContactsProps).contactId ?? (props as FromTaskProps).task.taskSid;
-  const { display, categoriesMeta, initialValue, definition, autoFocus, updateForm } = props;
-
+const IssueCategorizationSectionForm: React.FC<Props> = ({
+  display,
+  categoriesMeta,
+  initialValue,
+  definition,
+  autoFocus,
+  updateForm,
+  toggleCategoryExpanded,
+  setCategoriesGridView,
+}) => {
   const shouldFocusFirstElement = display && autoFocus;
   const firstElementRef = useFocus(shouldFocusFirstElement);
 
@@ -50,57 +47,39 @@ const EditIssueCategorizationForm: React.FC<Props> = props => {
   const subcategoriesInputs = React.useMemo(() => {
     const updateCallback = () => {
       const { categories } = getValues();
-      if (isFromTask) {
-        updateForm(entityIdentifier, 'categories', categories);
-      } else {
-        setCategories(categories);
-      }
+      updateForm(categories);
+      setCategories(categories);
     };
 
     if (IssueCategorizationTabDefinition === null || IssueCategorizationTabDefinition === undefined) return {};
     return createSubCategoriesInputs(IssueCategorizationTabDefinition, ['categories'], updateCallback);
-  }, [IssueCategorizationTabDefinition, getValues, entityIdentifier, updateForm, isFromTask]);
-
-  const toggleExpandCategory = (category: string) =>
-    isFromTaskProps(props)
-      ? props.taskHandleExpandCategory(category, props.task.taskSid)
-      : props.existingContactHandleExpandCategory(props.contactId, category);
-  const toggleCategoriesGridView = (useGridView: boolean) =>
-    isFromTaskProps(props)
-      ? props.taskSetCategoriesGridView(useGridView, props.task.taskSid)
-      : props.existingContactSetCategoriesGridView(props.contactId, useGridView);
+  }, [IssueCategorizationTabDefinition, getValues, updateForm]);
 
   return (
     <CategoriesFromDefinition
       definition={IssueCategorizationTabDefinition}
       subcategoriesInputs={subcategoriesInputs}
       categoriesMeta={categoriesMeta}
-      toggleCategoriesGridView={toggleCategoriesGridView}
-      toggleExpandCategory={toggleExpandCategory}
+      toggleCategoriesGridView={setCategoriesGridView}
+      toggleExpandCategory={toggleCategoryExpanded}
       firstElementRef={firstElementRef}
     />
   );
 };
 
-EditIssueCategorizationForm.displayName = 'IssueCategorizationTab';
+IssueCategorizationSectionForm.displayName = 'IssueCategorizationTab';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
-  if (isFromTaskProps(ownProps)) {
-    return { categoriesMeta: state[namespace][contactFormsBase].tasks[ownProps.task.taskSid].metadata.categories };
-  }
-
-  return { categoriesMeta: state[namespace][contactFormsBase].existingContacts[ownProps.contactId].categories };
+  return { categoriesMeta: ownProps.stateApi.retrieveState(state) };
 };
 
-const mapDispatchToProps = {
-  updateForm: actions.updateForm,
-  taskHandleExpandCategory: actions.handleExpandCategory,
-  taskSetCategoriesGridView: actions.setCategoriesGridView,
-  existingContactHandleExpandCategory: toggleCategoryExpanded,
-  existingContactSetCategoriesGridView: setCategoriesGridView,
-};
+const mapDispatchToProps = (dispatch, ownProps: OwnProps) => ({
+  updateForm: ownProps.stateApi.updateFormActionDispatcher(dispatch),
+  toggleCategoryExpanded: ownProps.stateApi.toggleCategoryExpandedActionDispatcher(dispatch),
+  setCategoriesGridView: ownProps.stateApi.setGridViewActionDispatcher(dispatch),
+});
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
-const connected = connector(EditIssueCategorizationForm);
+const connected = connector(IssueCategorizationSectionForm);
 
 export default connected;

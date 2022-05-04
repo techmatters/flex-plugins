@@ -30,6 +30,7 @@ import { isNonDataCallType } from '../../states/ValidationRules';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
 import CSAMReportButton from './CSAMReportButton';
 import CSAMAttachments from './CSAMAttachments';
+import { forTask } from '../../states/contacts/issueCategorizationStateApi';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -252,7 +253,7 @@ const TabbedForms: React.FC<Props> = ({
                   </TabbedFormTabContainer>
                   <TabbedFormTabContainer display={subroute === 'categories'}>
                     <IssueCategorizationSectionForm
-                      task={task}
+                      stateApi={forTask(task)}
                       display={subroute === 'categories'}
                       initialValue={contactForm.categories}
                       definition={currentDefinitionVersion.tabbedForms.IssueCategorizationTab(helpline)}

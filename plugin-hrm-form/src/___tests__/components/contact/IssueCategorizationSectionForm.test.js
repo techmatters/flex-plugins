@@ -11,6 +11,7 @@ import { ToggleViewButton } from '../../../styles/HrmStyles';
 import HrmTheme from '../../../styles/HrmTheme';
 import { namespace, contactFormsBase } from '../../../states';
 import { setCategoriesGridView } from '../../../states/contacts/actions';
+import { forTask } from '../../../states/contacts/issueCategorizationStateApi';
 
 jest.mock('../../../components/CSAMReport/CSAMReportFormDefinition');
 
@@ -65,7 +66,11 @@ test('Click on view subcategories as grid icon', () => {
     <StorelessThemeProvider themeConf={themeConf}>
       <Provider store={store}>
         <FormProvider {...mockMethods}>
-          <IssueCategorizationSectionForm task={{ taskSid: taskId }} definition={definition} display={true} />
+          <IssueCategorizationSectionForm
+            definition={definition}
+            display={true}
+            stateApi={forTask({ taskSid: taskId })}
+          />
         </FormProvider>
       </Provider>
     </StorelessThemeProvider>,
@@ -107,7 +112,11 @@ test('Click on view subcategories as list icon', () => {
     <StorelessThemeProvider themeConf={themeConf}>
       <Provider store={store}>
         <FormProvider {...mockMethods}>
-          <IssueCategorizationSectionForm task={{ taskSid: taskId }} definition={definition} display={true} />
+          <IssueCategorizationSectionForm
+            definition={definition}
+            display={true}
+            stateApi={forTask({ taskSid: taskId })}
+          />
         </FormProvider>
       </Provider>
     </StorelessThemeProvider>,

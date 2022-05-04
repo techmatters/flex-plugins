@@ -11,9 +11,9 @@ import { getDefinitionVersion } from '../../services/ServerlessService';
 import { DetailsContainer } from '../../styles/search';
 import * as ConfigActions from '../../states/configuration/actions';
 import { ContactDetailsSectionFormApi, contactDetailsSectionFormApi } from './contactDetailsSectionFormApi';
-import TabbedFormTab from './ContactDetailsSectionForm';
-import IssueCategorizationTab from './IssueCategorizationSectionForm';
-import { TaskEntry } from '../../states/contacts/reducer';
+import ContactDetailsSectionForm from './ContactDetailsSectionForm';
+import IssueCategorizationSectionForm from './IssueCategorizationSectionForm';
+import { forExistingContact } from '../../states/contacts/issueCategorizationStateApi';
 
 type OwnProps = {
   contactId: string;
@@ -73,7 +73,7 @@ const ContactDetails: React.FC<Props> = ({
     formPath: 'callerInformation' | 'childInformation' | 'caseInformation',
   ) => (
     <EditContactSection context={context} contactId={contactId} contactDetailsSectionForm={section}>
-      <TabbedFormTab
+      <ContactDetailsSectionForm
         entityIdentifier={contactId}
         tabPath={formPath}
         definition={section.getFormDefinition(definitionVersion)}
@@ -98,10 +98,10 @@ const ContactDetails: React.FC<Props> = ({
           contactId={contactId}
           contactDetailsSectionForm={contactDetailsSectionFormApi.ISSUE_CATEGORIZATION}
         >
-          <IssueCategorizationTab
+          <IssueCategorizationSectionForm
             definition={definitionVersion.tabbedForms.IssueCategorizationTab(contact.overview.helpline)}
             initialValue={issueSection.getFormValues(definitionVersion, contact).categories}
-            contactId={contactId}
+            stateApi={forExistingContact(contactId)}
             display={true}
             autoFocus={true}
           />
