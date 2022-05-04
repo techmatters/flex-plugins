@@ -20,8 +20,9 @@ import {
   ContactRawJson,
   InformationObject,
   isOfflineContactTask,
-  isTwilioTask, SearchContact,
-  SearchContactResult
+  isTwilioTask,
+  SearchContact,
+  SearchContactResult,
 } from '../types/types';
 import { saveContactToExternalBackend } from '../dualWrite';
 import { getNumberFromTask } from '../utils';

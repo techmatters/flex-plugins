@@ -7,7 +7,7 @@ import {
   GeneralActionType,
   INITIALIZE_CONTACT_STATE,
   RECREATE_CONTACT_STATE,
-  REMOVE_CONTACT_STATE
+  REMOVE_CONTACT_STATE,
 } from '../types';
 import { createStateItem } from '../../components/common/forms/formGenerators';
 import { createContactlessTaskTabDefinition } from '../../components/tabbedForms/ContactlessTaskTabDefinition';
@@ -17,8 +17,11 @@ import {
   LOAD_CONTACT_ACTION,
   loadContactReducer,
   RELEASE_CONTACT_ACTION,
-  releaseContactReducer, EXISTING_CONTACT_SET_CATEGORIES_GRID_VIEW_ACTION, setCategoriesGridViewReducer,
-  EXISTING_CONTACT_TOGGLE_CATEGORY_EXPANDED_ACTION, toggleCategoryExpandedReducer
+  releaseContactReducer,
+  EXISTING_CONTACT_SET_CATEGORIES_GRID_VIEW_ACTION,
+  setCategoriesGridViewReducer,
+  EXISTING_CONTACT_TOGGLE_CATEGORY_EXPANDED_ACTION,
+  toggleCategoryExpandedReducer,
 } from './existingContacts';
 import { CSAMReportEntry } from '../../types/types';
 import {
@@ -29,7 +32,7 @@ import {
   NAVIGATE_CONTACT_DETAILS_ACTION,
   navigateContactDetailsReducer,
   sectionExpandedStateReducer,
-  TOGGLE_DETAIL_EXPANDED_ACTION
+  TOGGLE_DETAIL_EXPANDED_ACTION,
 } from './contactDetails';
 
 export type TaskEntry = {
