@@ -101,12 +101,12 @@ const AddEditCaseItem: React.FC<Props> = ({
   const { temporaryCaseInfo } = connectedCaseState;
 
   const [initialForm] = React.useState(getTemporaryFormContent(temporaryCaseInfo) ?? {}); // grab initial values in first render only. This value should never change or will ruin the memoization below
-  const methods = useForm({ mode:'onChange' });
+  const methods = useForm({ mode: 'onChange' });
   const [openDialog, setOpenDialog] = React.useState(false);
 
   const [isDirty, setDirty] = React.useState(false);
   React.useEffect(() => {
-    if (methods.formState.isDirty && methods.formState.isValid){
+    if (methods.formState.isDirty && methods.formState.isValid) {
       setDirty(true);
     }
   }, [methods.formState.isDirty, methods.formState.isValid]);
@@ -231,7 +231,8 @@ const AddEditCaseItem: React.FC<Props> = ({
   const checkForEdits = () => {
     if (
       (isEditTemporaryCaseInfo(temporaryCaseInfo) || isAddTemporaryCaseInfo(temporaryCaseInfo)) &&
-      temporaryCaseInfo.isEdited && isDirty
+      temporaryCaseInfo.isEdited &&
+      isDirty
     ) {
       setOpenDialog(true);
     } else close();
