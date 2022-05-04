@@ -16,6 +16,7 @@ import { getConfig } from '../../HrmFormPlugin';
 import { ContactDetailsRoute, DetailsContext, navigateContactDetails } from '../../states/contacts/contactDetails';
 import {
   ContactDetailsSectionForm,
+  ContactFormValues,
   isIssueCategorizationSectionForm,
   IssueCategorizationSectionForm,
 } from './contactDetailsSectionForms';
@@ -25,6 +26,7 @@ type OwnProps = {
   context: DetailsContext;
   contactId: string;
   contactDetailsSectionForm: ContactDetailsSectionForm | IssueCategorizationSectionForm;
+  children?: React.ReactNode;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -35,8 +37,9 @@ const EditContactSection: React.FC<Props> = ({
   contact,
   contactId,
   definitionVersions,
-  contactDetailsSectionForm,
   navigateForContext,
+  contactDetailsSectionForm,
+  children,
 }) => {
   const methods = useForm({
     shouldFocusError: false,
@@ -48,7 +51,6 @@ const EditContactSection: React.FC<Props> = ({
   const definitionVersion = definitionVersions[version];
 
   const [isSubmitting, setSubmitting] = useState(false);
-  const [initialValue] = useState(contactDetailsSectionForm.getFormValues(definitionVersion, contact));
 
   const navigate = (route: ContactDetailsRoute) => navigateForContext(context, route);
 
@@ -56,11 +58,19 @@ const EditContactSection: React.FC<Props> = ({
 
   const onSubmitValidForm = async () => {
     setSubmitting(true);
-    const payload = contactDetailsSectionForm.formToPayload(
-      definitionVersion,
-      methods.getValues()[contactDetailsSectionForm.formPath],
-    );
-    await updateContactInHrm(contactId, payload);
+    if (isIssueCategorizationSectionForm(contactDetailsSectionForm)) {
+      const payload = contactDetailsSectionForm.formToPayload(
+        definitionVersion,
+        methods.getValues() as { categories: string[] },
+      );
+      await updateContactInHrm(contactId, payload);
+    } else {
+      const payload = contactDetailsSectionForm.formToPayload(
+        definitionVersion,
+        methods.getValues() as ContactFormValues,
+      );
+      await updateContactInHrm(contactId, payload);
+    }
     navigate(ContactDetailsRoute.HOME);
   };
 
@@ -71,26 +81,7 @@ const EditContactSection: React.FC<Props> = ({
 
   return (
     <FormProvider {...methods}>
-      {isIssueCategorizationSectionForm(contactDetailsSectionForm) && (
-        <IssueCategorizationTab
-          definition={definitionVersion.tabbedForms.IssueCategorizationTab(contact.overview.helpline)}
-          initialValue={initialValue as string[]}
-          contactId={contactId}
-          display={true}
-          autoFocus={true}
-        />
-      )}
-      {!isIssueCategorizationSectionForm(contactDetailsSectionForm) && (
-        <TabbedFormTab
-          entityIdentifier={contactId}
-          tabPath={contactDetailsSectionForm.formPath}
-          definition={contactDetailsSectionForm.getFormDefinition(definitionVersion)}
-          layoutDefinition={contactDetailsSectionForm.getLayoutDefinition(definitionVersion)}
-          initialValues={initialValue as any}
-          display={true}
-          autoFocus={true}
-        />
-      )}
+      {children}
       <Box marginRight="15px">
         <StyledNextStepButton
           roundCorners={true}

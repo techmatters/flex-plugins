@@ -10,7 +10,10 @@ import EditContactSection from './EditContactSection';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { DetailsContainer } from '../../styles/search';
 import * as ConfigActions from '../../states/configuration/actions';
-import { contactDetailsSectionForm } from './contactDetailsSectionForms';
+import { ContactDetailsSectionForm, contactDetailsSectionForm, ContactFormValues } from './contactDetailsSectionForms';
+import TabbedFormTab from '../tabbedForms/TabbedFormTab';
+import IssueCategorizationTab from '../tabbedForms/IssueCategorizationTab';
+import { TaskEntry } from '../../states/contacts/reducer';
 
 type OwnProps = {
   contactId: string;
@@ -65,39 +68,48 @@ const ContactDetails: React.FC<Props> = ({
       </DetailsContainer>
     );
 
+  const editContactSectionElement = (
+    section: ContactDetailsSectionForm,
+    formPath: 'callerInformation' | 'childInformation' | 'caseInformation',
+  ) => (
+    <EditContactSection context={context} contactId={contactId} contactDetailsSectionForm={section}>
+      <TabbedFormTab
+        entityIdentifier={contactId}
+        tabPath={formPath}
+        definition={section.getFormDefinition(definitionVersion)}
+        layoutDefinition={section.getLayoutDefinition(definitionVersion)}
+        initialValues={section.getFormValues(definitionVersion, contact)[formPath]}
+        display={true}
+        autoFocus={true}
+      />
+    </EditContactSection>
+  );
+
   switch (route) {
     case ContactDetailsRoute.EDIT_CHILD_INFORMATION:
-      return (
-        <EditContactSection
-          context={context}
-          contactId={contactId}
-          contactDetailsSectionForm={contactDetailsSectionForm.CHILD_INFORMATION}
-        />
-      );
+      return editContactSectionElement(contactDetailsSectionForm.CHILD_INFORMATION, 'childInformation');
     case ContactDetailsRoute.EDIT_CALLER_INFORMATION:
-      return (
-        <EditContactSection
-          context={context}
-          contactId={contactId}
-          contactDetailsSectionForm={contactDetailsSectionForm.CALLER_INFORMATION}
-        />
-      );
+      return editContactSectionElement(contactDetailsSectionForm.CALLER_INFORMATION, 'callerInformation');
     case ContactDetailsRoute.EDIT_CATEGORIES:
+      const issueSection = contactDetailsSectionForm.ISSUE_CATEGORIZATION;
       return (
         <EditContactSection
           context={context}
           contactId={contactId}
           contactDetailsSectionForm={contactDetailsSectionForm.ISSUE_CATEGORIZATION}
-        />
+        >
+          <IssueCategorizationTab
+            definition={definitionVersion.tabbedForms.IssueCategorizationTab(contact.overview.helpline)}
+            initialValue={issueSection.getFormValues(definitionVersion, contact).categories}
+            contactId={contactId}
+            display={true}
+            autoFocus={true}
+          />
+        </EditContactSection>
       );
-    case ContactDetailsRoute.EDIT_CASE_INFORMATION:
-      return (
-        <EditContactSection
-          context={context}
-          contactId={contactId}
-          contactDetailsSectionForm={contactDetailsSectionForm.CASE_INFORMATION}
-        />
-      );
+    case ContactDetailsRoute.EDIT_CASE_INFORMATION: {
+      return editContactSectionElement(contactDetailsSectionForm.CASE_INFORMATION, 'caseInformation');
+    }
     case ContactDetailsRoute.HOME:
     default:
       return (
