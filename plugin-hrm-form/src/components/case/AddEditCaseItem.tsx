@@ -286,7 +286,6 @@ const AddEditCaseItem: React.FC<Props> = ({
                 secondary
                 roundCorners
                 onClick={methods.handleSubmit(saveAndStay, onError)}
-                disabled={!isDirty}
               >
                 <Template code={`BottomBar-SaveAndAddAnother${itemType}`} />
               </StyledNextStepButton>
@@ -296,7 +295,6 @@ const AddEditCaseItem: React.FC<Props> = ({
             data-testid="Case-AddEditItemScreen-SaveItem"
             roundCorners
             onClick={methods.handleSubmit(saveAndLeave, onError)}
-            disabled={!isDirty}
           >
             <Template code={`BottomBar-Save${itemType}`} />
           </StyledNextStepButton>
