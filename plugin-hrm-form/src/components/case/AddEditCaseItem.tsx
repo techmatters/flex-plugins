@@ -47,7 +47,6 @@ import {
   temporaryCaseInfoHistory,
 } from '../../states/case/types';
 import CloseCaseDialog from './CloseCaseDialog';
-import { isEqual } from 'lodash';
 
 type CaseItemPayload = { [key: string]: string | boolean };
 
@@ -102,7 +101,7 @@ const AddEditCaseItem: React.FC<Props> = ({
   const { temporaryCaseInfo } = connectedCaseState;
 
   const [initialForm] = React.useState(getTemporaryFormContent(temporaryCaseInfo) ?? {}); // grab initial values in first render only. This value should never change or will ruin the memoization below
-  const methods = useForm({...reactHookFormOptions, mode: 'onChange' });
+  const methods = useForm({ ...reactHookFormOptions, mode: 'onChange' });
   const [openDialog, setOpenDialog] = React.useState(false);
   const [isDirty, setDirty] = React.useState(false);
 
