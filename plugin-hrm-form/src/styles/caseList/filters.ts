@@ -1,5 +1,4 @@
 import styled from 'react-emotion';
-import { Button } from '@twilio/flex-ui';
 
 import { Flex } from '../HrmStyles';
 
@@ -109,10 +108,15 @@ export const DialogArrow = styled(Flex)`
 `;
 DialogArrow.displayName = 'DialogArrow';
 
-export const FiltersDialog = styled('div')`
+type FiltersDialogProps = {
+  width?: string;
+};
+
+export const FiltersDialog = styled('div')<FiltersDialogProps>`
   position: absolute;
   background: white;
-  width: 270px;
+  box-sizing: border-box;
+  width: ${props => (props.width ? props.width : '330px')};
   top: 43px;
   left: -20px;
   min-width: 200px;
@@ -135,6 +139,7 @@ FiltersDialogTitle.displayName = 'FiltersDialogTitle';
 
 type MultiSelectUnorderedListProps = {
   scrollable?: Boolean;
+  height?: string;
 };
 
 const scrollableUnorderedList = `
@@ -148,6 +153,7 @@ const scrollableUnorderedList = `
 
 export const MultiSelectUnorderedList = styled('ul')<MultiSelectUnorderedListProps>`
   ${props => (props.scrollable ? scrollableUnorderedList : '')}
+  ${props => (props.height ? `height: ${props.height};` : '')}
 `;
 MultiSelectUnorderedList.displayName = 'MultiSelectUnorderedList';
 
@@ -158,7 +164,7 @@ type MultiSelectListItemProps = {
 export const MultiSelectListItem = styled('li')<MultiSelectListItemProps>`
   visibility: ${props => (props.hidden ? 'hidden' : 'visible')};
   height: ${props => (props.hidden ? '0' : 'auto')};
-  margin-bottom: ${props => (props.hidden ? '0' : '3px')};
+  margin-bottom: ${props => (props.hidden ? '0' : '5px')};
 `;
 MultiSelectListItem.displayName = 'MultiSelectListItem';
 
@@ -244,3 +250,100 @@ export const FiltersClearButton = styled(FiltersApplyButton)`
   }
 `;
 FiltersClearButton.displayName = 'FiltersClearButton';
+
+export const FiltersCheckbox = styled('input')`
+  &[type='checkbox'] {
+    display: inline-block;
+    position: relative;
+    padding-left: 1.4em;
+    cursor: default;
+    margin-right: 5px;
+  }
+  &[type='checkbox']::before,
+  &[type='checkbox']::after {
+    position: absolute;
+    top: 50%;
+    left: 7px;
+    transform: translate(-50%, -50%);
+    content: '';
+  }
+  &[type='checkbox']::before {
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(94, 99, 105, 0.8);
+    border-radius: 0.2em;
+    background-image: linear-gradient(to bottom, hsl(300, 3%, 93%), #fff 30%);
+  }
+  &[type='checkbox']:active::before {
+    background-image: linear-gradient(to bottom, hsl(300, 3%, 73%), hsl(300, 3%, 93%) 30%);
+  }
+
+  &[type='checkbox']:checked::before,
+  &[type='checkbox']:indeterminate::before {
+    border-color: rgba(94, 99, 105, 0.8);
+    background: #080808;
+  }
+  &[type='checkbox']:checked::after {
+    font-family: 'Font Awesome 5 Free';
+    font-size: 11px;
+    content: '\f00c';
+    color: #ffffff;
+  }
+  &[type='checkbox']:indeterminate::after {
+    font-weight: 900;
+    font-size: 9px;
+    content: '—';
+    color: #ffffff;
+  }
+`;
+FiltersCheckbox.displayName = 'FiltersCheckbox';
+
+type CategoryContainerProps = {
+  searchTerm: string;
+  noMatch: boolean;
+};
+
+export const CategoryContainer = styled('div')<CategoryContainerProps>`
+  display: ${props => (props.searchTerm && props.noMatch ? 'none' : 'block')};
+  cursor: ${props => (props.searchTerm ? 'default' : 'pointer')};
+`;
+CategoryContainer.displayName = 'CategoryContainer';
+
+export const CategoryHeader = styled(Flex)`
+  align-items: center;
+  padding: 0 12px;
+  margin-bottom: 3px;
+  background-color: #f6f6f6;
+  height: 36px;
+`;
+CategoryHeader.displayName = 'CategoryHeader';
+
+type CategoryTitleProps = {
+  searchTerm: string;
+};
+
+export const CategoryTitle = styled('h3')<CategoryTitleProps>`
+  margin-left: ${props => (props.searchTerm ? '0' : '10px')};
+  font-weight: 600;
+`;
+CategoryTitle.displayName = 'CategoryTitle';
+
+export const ArrowButton = styled('button')`
+  margin-left: auto;
+  border: none;
+  background: none;
+  cursor: pointer;
+`;
+ArrowButton.displayName = 'ArrowButton';
+
+type SubcategoryListProps = {
+  searchTerm: string;
+  expanded: boolean;
+};
+
+export const SubcategoryList = styled('ul')<SubcategoryListProps>`
+  display: ${props => (props.searchTerm || props.expanded ? 'block' : 'none')};
+  padding: 5px 20px;
+  padding-right: 0;
+`;
+SubcategoryList.displayName = 'SubcategoryList';

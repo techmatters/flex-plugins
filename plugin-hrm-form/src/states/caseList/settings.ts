@@ -13,6 +13,7 @@ export const caseListSettingsInitialState = (): CaseListSettingsState => ({
     includeOrphans: false,
     counsellors: [],
     statuses: [],
+    categories: [],
   },
   sort: {
     sortBy: ListCasesSortBy.ID,

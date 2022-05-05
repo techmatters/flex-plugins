@@ -9,7 +9,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { getConfig } from '../../../HrmFormPlugin';
 import { FiltersContainer, FiltersResetAll, CasesTitle, CasesCount, FilterBy } from '../../../styles/caseList/filters';
 import MultiSelectFilter, { Item } from './MultiSelectFilter';
-import { CounselorHash } from '../../../types/types';
+import { CategoryFilter, CounselorHash } from '../../../types/types';
 import DateRangeFilter from './DateRangeFilter';
 import {
   DateFilter,
@@ -17,6 +17,7 @@ import {
   standardCaseListDateFilterOptions,
   DateFilterValue,
 } from './dateFilters';
+import CategoriesFilter, { Category } from './CategoriesFilter';
 import { caseListBase, configurationBase, namespace, RootState } from '../../../states';
 import * as CaseListSettingsActions from '../../../states/caseList/settings';
 /**
@@ -60,12 +61,67 @@ const getInitialDateFilters = (): DateFilter[] => [
 ];
 
 /**
+ * Reads the definition version and returns and array of categories (type Category[])
+ * to be used as the options for the categories filter
+ * @param definitionVersion DefinitionVersion
+ * @returns Item[]
+ */
+const getCategoriesInitialValue = (definitionVersion: DefinitionVersion, helpline: string) =>
+  Object.entries(definitionVersion.tabbedForms.IssueCategorizationTab(helpline)).map(
+    ([categoryName, { subcategories }]) => ({
+      categoryName,
+      subcategories: subcategories.map(subcategory => ({
+        value: subcategory,
+        label: subcategory,
+        checked: false,
+      })),
+    }),
+  );
+
+/**
  * Convert an array of items (type Item[]) into an array of strings.
  * This array will contain only the items that are checked.
  * @param items Item[]
  * @returns string[]
  */
 const filterCheckedItems = (items: Item[]): string[] => items.filter(item => item.checked).map(item => item.value);
+
+/**
+ * Convert an array of categories (type Category[]) into an array of CategoryFilter.
+ * This array will contain only the categories that are checked.
+ * @param categories Category[]
+ * @returns CategoryFilter[]
+ */
+const filterCheckedCategories = (categories: Category[]): CategoryFilter[] =>
+  categories.flatMap(category =>
+    category.subcategories
+      .filter(subcategory => subcategory.checked)
+      .map(subcategory => ({
+        category: category.categoryName,
+        subcategory: subcategory.label,
+      })),
+  );
+
+/**
+ * Given the selected categories from redux and the previous categoriesValues,
+ * it returns the updated values for categoriesValues, whith the correct checked values.
+ *
+ * @param categories Selected categories from redux (type CategoryFilter[])
+ * @param categoriesValues Previous categoriesValues (type Category[])
+ * @returns
+ */
+const getUpdatedCategoriesValues = (categories: CategoryFilter[], categoriesValues: Category[]): Category[] => {
+  const isChecked = (categoryName: string, subcategoryName: string) =>
+    categories.some(c => c.category === categoryName && c.subcategory === subcategoryName);
+
+  return categoriesValues.map(categoryValue => ({
+    ...categoryValue,
+    subcategories: categoryValue.subcategories.map(subcategory => ({
+      ...subcategory,
+      checked: isChecked(categoryValue.categoryName, subcategory.label),
+    })),
+  }));
+};
 
 type OwnProps = {
   currentDefinitionVersion: DefinitionVersion;
@@ -85,7 +141,10 @@ const Filters: React.FC<Props> = ({
   updateCaseListFilter,
   clearCaseListFilter,
 }) => {
+  const { strings, featureFlags, helpline } = getConfig();
+
   const statusInitialValues = getStatusInitialValue(currentDefinitionVersion);
+  const categoriesInitialValues = getCategoriesInitialValue(currentDefinitionVersion, helpline);
 
   const [openedFilter, setOpenedFilter] = useState<string>();
   const [statusValues, setStatusValues] = useState<Item[]>(statusInitialValues);
@@ -95,18 +154,21 @@ const Filters: React.FC<Props> = ({
     updatedAt?: DateFilterValue;
     followUpDate?: DateFilterValue;
   }>({});
+  const [categoriesValues, setCategoriesValues] = useState<Category[]>(categoriesInitialValues);
 
   // Updates UI state from current filters
   useEffect(() => {
-    const { counsellors, statuses, includeOrphans, ...currentDateFilters } = currentFilter;
+    const { counsellors, statuses, categories, includeOrphans, ...currentDateFilters } = currentFilter;
     const newCounselorValues = getCounselorsInitialValue(counselorsHash).map(cv => ({
       ...cv,
       checked: counsellors.includes(cv.value),
     }));
     const newStatusValues = statusValues.map(sv => ({ ...sv, checked: statuses.includes(sv.value) }));
+    const newCategoriesValues = getUpdatedCategoriesValues(categories, categoriesValues);
     setCounselorValues(newCounselorValues);
     setStatusValues(newStatusValues);
     setDateFilterValues(currentDateFilters);
+    setCategoriesValues(newCategoriesValues);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentFilterCompare, counselorsHashCompare]);
 
@@ -125,11 +187,13 @@ const Filters: React.FC<Props> = ({
     });
   };
 
+  const handleApplyCategoriesFilter = (values: Category[]) => {
+    updateCaseListFilter({ categories: filterCheckedCategories(values) });
+  };
+
   const handleClearFilters = () => {
     clearCaseListFilter();
   };
-
-  const { strings, featureFlags } = getConfig();
 
   const getCasesCountString = () =>
     caseCount === 1 ? 'CaseList-Filters-CaseCount-Singular' : 'CaseList-Filters-CaseCount-Plural';
@@ -137,7 +201,8 @@ const Filters: React.FC<Props> = ({
   const hasFiltersApplied =
     filterCheckedItems(statusValues).length > 0 ||
     filterCheckedItems(counselorValues).length > 0 ||
-    Boolean(Object.values(dateFilterValues).filter(dfv => dfv).length);
+    Boolean(Object.values(dateFilterValues).filter(dfv => dfv).length) ||
+    filterCheckedCategories(categoriesValues).length > 0;
 
   return (
     <>
@@ -175,6 +240,16 @@ const Filters: React.FC<Props> = ({
             defaultValues={counselorValues}
             openedFilter={openedFilter}
             applyFilter={handleApplyCounselorFilter}
+            setOpenedFilter={setOpenedFilter}
+            searchable
+          />
+          <CategoriesFilter
+            name="categories"
+            searchDescription={strings['CaseList-Filters-SearchByCategory']}
+            text={strings['CaseList-Filters-Categories']}
+            defaultValues={categoriesValues}
+            openedFilter={openedFilter}
+            applyFilter={handleApplyCategoriesFilter}
             setOpenedFilter={setOpenedFilter}
             searchable
           />

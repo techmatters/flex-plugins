@@ -148,6 +148,11 @@ export type ListCasesQueryParams = {
   sortDirection?: ListCasesSortDirection;
 } & ListCasesSort;
 
+export type CategoryFilter = {
+  category: string;
+  subcategory: string;
+};
+
 export type ListCasesFilters = {
   counsellors: string[];
   statuses: string[];
@@ -155,6 +160,7 @@ export type ListCasesFilters = {
   createdAt?: DateFilterValue;
   updatedAt?: DateFilterValue;
   followUpDate?: DateFilterValue;
+  categories?: CategoryFilter[];
 };
 
 export type CounselorHash = {
