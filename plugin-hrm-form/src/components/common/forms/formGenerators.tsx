@@ -439,6 +439,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
 
                                 register(rules)(innerRef);
                               }}
+                              defaultChecked={initialValue.includes(value)}
                             />
                           </Box>
                           <Template code={label} className=".fullstory-unmask" />
