@@ -21,6 +21,55 @@ import {
 import type { Item } from './MultiSelectFilter';
 import CategorySection from './CategorySection';
 
+/**
+ * Due to an issue of ReactHookForms transforming names with double quotes or single quotes,
+ * we're explicitally replacing these chars with placeholders and vice-versa when needed.
+ * ex: There's a subcategory named '"Thank you for your assistance"',
+ * (the double quotes should be part of its name).
+ *
+ * TODO: Open an issue on ReactHookForms GitHub, so they can fix or tell us the appropiate way
+ * to handle this scenario.
+ */
+const SINGLE_QUOTE_PLACEHOLDER = 'SINGLE_QUOTE_PLACEHOLDER';
+const DOUBLE_QUOTES_PLACEHOLDER = 'DOUBLE_QUOTES_PLACEHOLDER';
+
+const addPlaceholdersToDefaultValues = (categories: Category[]): Category[] => {
+  const addPlaceholders = text => text.replace(/'/g, SINGLE_QUOTE_PLACEHOLDER).replace(/"/g, DOUBLE_QUOTES_PLACEHOLDER);
+
+  return categories.map(({ categoryName, subcategories }) => ({
+    categoryName,
+    subcategories: subcategories.map(subcategory => ({
+      ...subcategory,
+      value: addPlaceholders(subcategory.value),
+    })),
+  }));
+};
+
+const transformToCategories = (values: ReactHookFormValues): Category[] => {
+  const removePlaceholders = text =>
+    text
+      .replace(new RegExp(SINGLE_QUOTE_PLACEHOLDER, 'g'), "'")
+      .replace(new RegExp(DOUBLE_QUOTES_PLACEHOLDER, 'g'), '"');
+
+  const getSubcategories = category =>
+    Object.keys(category).map(subcategoryName => ({
+      value: removePlaceholders(subcategoryName),
+      label: removePlaceholders(subcategoryName),
+      checked: category[subcategoryName],
+    }));
+
+  return Object.keys(values).map(categoryName => ({
+    categoryName,
+    subcategories: getSubcategories(values[categoryName]),
+  }));
+};
+
+const transformToValues = (categories: Category[]) => {
+  const getSubcategories = (category: Category) =>
+    category.subcategories.reduce((acc, subcategory) => ({ ...acc, [subcategory.label]: subcategory.checked }), {});
+  return categories.reduce((acc, category) => ({ ...acc, [category.categoryName]: getSubcategories(category) }), {});
+};
+
 type Subcategory = Item;
 export type Category = {
   categoryName: string;
@@ -49,7 +98,7 @@ type Props = OwnProps;
 const CategoriesFilter: React.FC<Props> = ({
   name,
   text,
-  defaultValues,
+  defaultValues: defaultValuesRaw,
   openedFilter,
   searchable,
   searchDescription,
@@ -57,25 +106,8 @@ const CategoriesFilter: React.FC<Props> = ({
   setOpenedFilter,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const transformToCategories = (values: ReactHookFormValues): Category[] => {
-    const getSubcategories = category =>
-      Object.keys(category).map(subcategoryName => ({
-        value: subcategoryName,
-        label: subcategoryName,
-        checked: category[subcategoryName],
-      }));
-
-    return Object.keys(values).map(categoryName => ({
-      categoryName,
-      subcategories: getSubcategories(values[categoryName]),
-    }));
-  };
-
-  const transformToValues = (categories: Category[]) => {
-    const getSubcategories = (category: Category) =>
-      category.subcategories.reduce((acc, subcategory) => ({ ...acc, [subcategory.label]: subcategory.checked }), {});
-    return categories.reduce((acc, category) => ({ ...acc, [category.categoryName]: getSubcategories(category) }), {});
-  };
+  const [defaultValues, setDefaultValues] = useState(addPlaceholdersToDefaultValues(defaultValuesRaw));
+  useEffect(() => setDefaultValues(addPlaceholdersToDefaultValues(defaultValuesRaw)), [defaultValuesRaw]);
 
   const { register, handleSubmit, reset, getValues, setValue, watch } = useForm<any>({
     defaultValues: transformToValues(defaultValues),
@@ -91,8 +123,6 @@ const CategoriesFilter: React.FC<Props> = ({
 
   // Force React Hook Forms to rerender whenever defaultValues changes
   useEffect(() => {
-    console.log('>> Categories filter defaultValues change');
-    console.log({ defaultValues });
     const updateSelectedCount = () => {
       const count = defaultValues
         .flatMap(category => category.subcategories)

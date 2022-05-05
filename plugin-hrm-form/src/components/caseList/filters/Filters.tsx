@@ -61,21 +61,6 @@ const getInitialDateFilters = (): DateFilter[] => [
 ];
 
 /**
- * Due to an issue of ReactHookForms transforming names with double quotes or single quotes,
- * we're explicitally replacing these chars with placeholders and vice-versa when needed.
- * ex: There's a subcategory named '"Thank you for your assistance"',
- * (the double quotes should be part of its name).
- *
- * TODO: Open an issue on ReactHookForms GitHub, so they can fix or tell us the appropiate way
- * to handle this scenario.
- */
-const SINGLE_QUOTE_PLACEHOLDER = 'SINGLE_QUOTE_PLACEHOLDER';
-const DOUBLE_QUOTES_PLACEHOLDER = 'DOUBLE_QUOTES_PLACEHOLDER';
-const addPlaceholders = text => text.replace(/'/g, SINGLE_QUOTE_PLACEHOLDER).replace(/"/g, DOUBLE_QUOTES_PLACEHOLDER);
-const removePlaceholders = text =>
-  text.replace(new RegExp(SINGLE_QUOTE_PLACEHOLDER, 'g'), "'").replace(new RegExp(DOUBLE_QUOTES_PLACEHOLDER, 'g'), '"');
-
-/**
  * Reads the definition version and returns and array of categories (type Category[])
  * to be used as the options for the categories filter
  * @param definitionVersion DefinitionVersion
@@ -86,7 +71,7 @@ const getCategoriesInitialValue = (definitionVersion: DefinitionVersion, helplin
     ([categoryName, { subcategories }]) => ({
       categoryName,
       subcategories: subcategories.map(subcategory => ({
-        value: addPlaceholders(subcategory),
+        value: subcategory,
         label: subcategory,
         checked: false,
       })),
@@ -203,14 +188,7 @@ const Filters: React.FC<Props> = ({
   };
 
   const handleApplyCategoriesFilter = (values: Category[]) => {
-    const sanitizedValues = values.map(category => ({
-      ...category,
-      subcategories: category.subcategories.map(subcategory => ({
-        ...subcategory,
-        label: removePlaceholders(subcategory.label),
-      })),
-    }));
-    updateCaseListFilter({ categories: filterCheckedCategories(sanitizedValues) });
+    updateCaseListFilter({ categories: filterCheckedCategories(values) });
   };
 
   const handleClearFilters = () => {
