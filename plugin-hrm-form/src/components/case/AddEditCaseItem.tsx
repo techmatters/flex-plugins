@@ -47,6 +47,7 @@ import {
   temporaryCaseInfoHistory,
 } from '../../states/case/types';
 import CloseCaseDialog from './CloseCaseDialog';
+import { isEqual } from 'lodash';
 
 type CaseItemPayload = { [key: string]: string | boolean };
 
@@ -101,15 +102,15 @@ const AddEditCaseItem: React.FC<Props> = ({
   const { temporaryCaseInfo } = connectedCaseState;
 
   const [initialForm] = React.useState(getTemporaryFormContent(temporaryCaseInfo) ?? {}); // grab initial values in first render only. This value should never change or will ruin the memoization below
-  const methods = useForm({ mode: 'onChange' });
+  const methods = useForm({...reactHookFormOptions, mode: 'onChange' });
   const [openDialog, setOpenDialog] = React.useState(false);
-
   const [isDirty, setDirty] = React.useState(false);
+
   React.useEffect(() => {
-    if (methods.formState.isDirty && methods.formState.isValid) {
+    if (methods.formState.isDirty) {
       setDirty(true);
     }
-  }, [methods.formState.isDirty, methods.formState.isValid]);
+  }, [methods.formState.isDirty]);
 
   const [l, r] = React.useMemo(() => {
     const createUpdatedTemporaryFormContent = (
@@ -231,8 +232,7 @@ const AddEditCaseItem: React.FC<Props> = ({
   const checkForEdits = () => {
     if (
       (isEditTemporaryCaseInfo(temporaryCaseInfo) || isAddTemporaryCaseInfo(temporaryCaseInfo)) &&
-      temporaryCaseInfo.isEdited &&
-      isDirty
+      temporaryCaseInfo.isEdited
     ) {
       setOpenDialog(true);
     } else close();
@@ -254,7 +254,7 @@ const AddEditCaseItem: React.FC<Props> = ({
             openDialog={openDialog}
             setDialog={() => setOpenDialog(false)}
             handleDontSaveClose={close}
-            handleSaveUpdate={saveAndLeave}
+            handleSaveUpdate={methods.handleSubmit(saveAndLeave, onError)}
           />
           <Container>
             <Box paddingBottom={`${BottomButtonBarHeight}px`}>
@@ -276,7 +276,7 @@ const AddEditCaseItem: React.FC<Props> = ({
               openDialog={openDialog}
               setDialog={() => setOpenDialog(false)}
               handleDontSaveClose={close}
-              handleSaveUpdate={saveAndLeave}
+              handleSaveUpdate={methods.handleSubmit(saveAndLeave, onError)}
             />
           </Box>
           {routing.action === CaseItemAction.Add && (
