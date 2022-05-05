@@ -12,10 +12,9 @@ import {
   CLNamesCell,
   CLSummaryCell,
   CLNumberCell,
-  CLActionCell,
   CLTableBodyFont,
   CLCaseNumberContainer,
-  CLCaseIDButton
+  CLCaseIDButton,
 } from '../../styles/caseList';
 import { Box, HiddenText, StyledIcon, addHover } from '../../styles/HrmStyles';
 import { formatName, getShortSummary } from '../../utils';
@@ -57,7 +56,6 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
           <CLCaseIDButton aria-label={`Open Case ${caseItem.id}`} tabIndex={0} onClick={handleClickViewCase(caseItem)}>
             {caseItem.id}
           </CLCaseIDButton>
-
             <CLTableBodyFont style={{ color: '#606B85', paddingTop: '2px', textAlign: 'center' }} isOpenCase={isOpenCase}>
             {status === 'open' ? <Template code="CaseList-StatusOpen" /> : <Template code="CaseList-StatusClosed" />}
           </CLTableBodyFont>
@@ -91,7 +89,7 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
             ))}
         </div>
       </CLTableCell>
-      <CLActionCell>
+      {/* <CLActionCell> */}
         <ButtonBase onClick={handleClickViewCase(caseItem)}>
           <HiddenText>
             <Template code="CaseList-ExpandButton" />
@@ -99,7 +97,7 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
           </HiddenText>
           <FullscreenIcon />
         </ButtonBase>
-      </CLActionCell>
+      {/* </CLActionCell> */}
     </CLTableRow>
   );
 };
