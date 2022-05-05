@@ -41,12 +41,13 @@ type ChevronButtonProps = {
   chevronDirection: 'left' | 'right';
   onClick: () => void;
   templateCode: string;
+  disabled?: boolean;
 };
 
-const ChevronButton: React.FC<ChevronButtonProps> = ({ chevronDirection, onClick, templateCode }) => {
+const ChevronButton: React.FC<ChevronButtonProps> = ({ chevronDirection, onClick, templateCode, disabled }) => {
   const ChevronIcon = chevronDirection === 'left' ? ChevronLeft : ChevronRight;
   return (
-    <PaginationChevron onClick={onClick}>
+    <PaginationChevron onClick={onClick} disabled={disabled}>
       <HiddenText>
         <Template code={templateCode} />
       </HiddenText>
@@ -76,17 +77,19 @@ const Pagination: React.FC<PaginationProps> = ({ page, pagesCount, handleChangeP
 
   return (
     <PaginationRow transparent={transparent} data-testid="CaseList-TableFooter">
-      {page < 1 ? (
-        <ChevronLeft style={{ color: 'grey', padding: '3px' }} />
-      ) : (
-        <ChevronButton chevronDirection="left" onClick={decreasePage} templateCode="CaseList-PrevPage" />
-      )}
+      <ChevronButton
+        disabled={page === 0}
+        chevronDirection="left"
+        onClick={decreasePage}
+        templateCode="CaseList-PrevPage"
+      />
       {getPaginationNumbers(page, pagesCount).map(renderButtons)}
-      {page === pagesCount - 1 ? (
-        <ChevronRight style={{ color: 'grey', padding: '3px' }} />
-      ) : (
-        <ChevronButton chevronDirection="right" onClick={increasePage} templateCode="CaseList-NextPage" />
-      )}
+      <ChevronButton
+        disabled={page === pagesCount - 1}
+        chevronDirection="right"
+        onClick={increasePage}
+        templateCode="CaseList-NextPage"
+      />
     </PaginationRow>
   );
 };
