@@ -6,6 +6,7 @@ import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { FieldValues, FormProvider, SubmitErrorHandler, useForm } from 'react-hook-form';
 import type { DefinitionVersion, FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
+import { isEqual } from 'lodash';
 
 import {
   BottomButtonBar,
@@ -100,39 +101,50 @@ const AddEditCaseItem: React.FC<Props> = ({
 
   const { temporaryCaseInfo } = connectedCaseState;
 
-  const [initialForm] = React.useState(getTemporaryFormContent(temporaryCaseInfo) ?? {}); // grab initial values in first render only. This value should never change or will ruin the memoization below
-  const methods = useForm({ ...reactHookFormOptions, mode: 'onChange' });
-  const [openDialog, setOpenDialog] = React.useState(false);
-  const [isDirty, setDirty] = React.useState(false);
+  // Grab initial values in first render only. If getTemporaryFormContent(temporaryCaseInfo), cherrypick the values using formDefinition, if not build the object with getInitialValue
+  const [initialForm] = React.useState(() => {
+    const initialTemporaryFormContent = getTemporaryFormContent(temporaryCaseInfo);
 
-  React.useEffect(() => {
-    if (methods.formState.isDirty) {
-      setDirty(true);
-    }
-  }, [methods.formState.isDirty]);
+    if (initialTemporaryFormContent)
+      return formDefinition.reduce(
+        (accum, curr) => ({
+          ...accum,
+          [curr.name]: initialTemporaryFormContent[curr.name],
+        }),
+        {},
+      );
+
+    return formDefinition.reduce(createStateItem, {});
+  });
+
+  const methods = useForm(reactHookFormOptions);
+  const [openDialog, setOpenDialog] = React.useState(false);
+
+  const { getValues } = methods;
 
   const [l, r] = React.useMemo(() => {
     const createUpdatedTemporaryFormContent = (
       payload: CaseItemPayload,
     ): AddTemporaryCaseInfo | EditTemporaryCaseInfo => {
+      const isEdited = !isEqual(initialForm, payload);
       if (isEditTemporaryCaseInfo(temporaryCaseInfo)) {
         return {
           ...temporaryCaseInfo,
           info: { ...temporaryCaseInfo.info, form: payload },
-          isEdited: isDirty ? true : temporaryCaseInfo.isEdited,
+          isEdited,
         };
       } else if (isAddTemporaryCaseInfo(temporaryCaseInfo)) {
         return {
           ...temporaryCaseInfo,
           info: payload,
-          isEdited: isDirty ? true : temporaryCaseInfo.isEdited,
+          isEdited,
         };
       }
       throw new Error(UNSUPPORTED_TEMPORARY_INFO_TYPE_MESSAGE);
     };
 
     const updateCallBack = () => {
-      const formValues = methods.getValues();
+      const formValues = getValues();
       updateTempInfo(createUpdatedTemporaryFormContent(formValues), task.taskSid);
     };
 
@@ -148,13 +160,12 @@ const AddEditCaseItem: React.FC<Props> = ({
     formDefinition,
     initialForm,
     firstElementRef,
-    layout.splitFormAt,
-    methods,
-    task.taskSid,
-    updateTempInfo,
-    temporaryCaseInfo,
     customFormHandlers,
-    isDirty,
+    layout.splitFormAt,
+    temporaryCaseInfo,
+    getValues,
+    updateTempInfo,
+    task.taskSid,
   ]);
 
   const save = async () => {
@@ -221,6 +232,7 @@ const AddEditCaseItem: React.FC<Props> = ({
     routing.action === CaseItemAction.Edit ? `Case: Edit ${itemType}` : `Case: Add ${itemType}`,
     () => {
       window.alert(strings['Error-Form']);
+      if (openDialog) setOpenDialog(false);
     },
   );
 
