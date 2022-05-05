@@ -21,6 +21,7 @@ test('updatedFilterReducer - Patches existing filter state with action payload a
       filter: {
         counsellors: ['something'],
         statuses: [],
+        categories: [{ category: 'Violence', subcategory: 'Bullying' }],
         createdAt: { option: 'B', to: baselineDate },
         followUpDate: { option: 'A', exists: DateExistsCondition.MUST_NOT_EXIST },
         includeOrphans: false,
@@ -33,6 +34,7 @@ test('updatedFilterReducer - Patches existing filter state with action payload a
     },
     updateCaseListFilter({
       counsellors: ['another', 'thing'],
+      categories: [{ category: 'Missing children', subcategory: 'Child abduction' }],
       updatedAt: { option: 'D', from: baselineDate, to: addDays(baselineDate, 1) },
       followUpDate: { option: 'C', from: baselineDate },
       createdAt: undefined,
@@ -42,6 +44,7 @@ test('updatedFilterReducer - Patches existing filter state with action payload a
     filter: {
       counsellors: ['another', 'thing'],
       statuses: [],
+      categories: [{ category: 'Missing children', subcategory: 'Child abduction' }],
       createdAt: undefined,
       updatedAt: { option: 'D', from: baselineDate, to: addDays(baselineDate, 1) },
       followUpDate: { option: 'C', from: baselineDate },
@@ -148,6 +151,7 @@ test('clearFilterReducer - Replaces filter settings with defaults and resets pag
     filter: {
       counsellors: [],
       statuses: [],
+      categories: [],
       includeOrphans: false,
     },
     page: 0,
