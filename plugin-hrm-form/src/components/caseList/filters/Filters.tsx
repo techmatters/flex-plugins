@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Template } from '@twilio/flex-ui';
 import type { DefinitionVersion } from 'hrm-form-definitions';
 import FilterList from '@material-ui/icons/FilterList';
@@ -9,7 +9,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { getConfig } from '../../../HrmFormPlugin';
 import { FiltersContainer, FiltersResetAll, CasesTitle, CasesCount, FilterBy } from '../../../styles/caseList/filters';
 import MultiSelectFilter, { Item } from './MultiSelectFilter';
-import { ListCasesFilters, CategoryFilter, CounselorHash } from '../../../types/types';
+import { CategoryFilter, CounselorHash } from '../../../types/types';
 import DateRangeFilter from './DateRangeFilter';
 import {
   DateFilter,
@@ -69,12 +69,11 @@ const getInitialDateFilters = (): DateFilter[] => [
  * TODO: Open an issue on ReactHookForms GitHub, so they can fix or tell us the appropiate way
  * to handle this scenario.
  */
-const SINGLE_QUOTE_PLACEHOLDER = '(SINGLE_QUOTE_PLACEHOLDER)';
-const DOUBLE_QUOTES_PLACEHOLDER = '(DOUBLE_QUOTES_PLACEHOLDER)';
-const addPlaceholders = text =>
-  text.replaceAll("'", SINGLE_QUOTE_PLACEHOLDER).replaceAll('"', DOUBLE_QUOTES_PLACEHOLDER);
+const SINGLE_QUOTE_PLACEHOLDER = 'SINGLE_QUOTE_PLACEHOLDER';
+const DOUBLE_QUOTES_PLACEHOLDER = 'DOUBLE_QUOTES_PLACEHOLDER';
+const addPlaceholders = text => text.replace(/'/g, SINGLE_QUOTE_PLACEHOLDER).replace(/"/g, DOUBLE_QUOTES_PLACEHOLDER);
 const removePlaceholders = text =>
-  text.replaceAll(SINGLE_QUOTE_PLACEHOLDER, "'").replaceAll(DOUBLE_QUOTES_PLACEHOLDER, '"');
+  text.replace(new RegExp(SINGLE_QUOTE_PLACEHOLDER, 'g'), "'").replace(new RegExp(DOUBLE_QUOTES_PLACEHOLDER, 'g'), '"');
 
 /**
  * Reads the definition version and returns and array of categories (type Category[])
