@@ -123,6 +123,7 @@ export const CLCaseNumberContainer = styled('div')<CLCaseNumberContainerProps>`
 `;
 CLCaseNumberContainer.displayName = 'CLCaseNumberContainer';
 
+// eslint-disable-next-line import/no-unused-modules
 export const CLCaseIDButton = styled('button')`
   color: #1876d1;
   text-decoration: underline;

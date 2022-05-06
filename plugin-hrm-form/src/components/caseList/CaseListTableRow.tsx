@@ -33,8 +33,8 @@ type Props = {
 };
 
 const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleClickViewCase }) => {
-  // eslint-disable-next-line
-  const status = caseItem.status;
+  const { status } = caseItem;
+  const statusString = status.charAt(0).toUpperCase() + status.slice(1);
   const name = formatName(caseItem.childName);
   const summary = caseItem.info && caseItem.info.summary;
   const shortSummary = getShortSummary(summary, CHAR_LIMIT, 'case');
@@ -50,14 +50,14 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
   const isOpenCase = caseItem.status !== caseStatuses.closed;
 
   return (
-    <CLTableRow data-testid="CaseList-TableRow">
+    <CLTableRow data-testid="CaseList-TableRow" onClick={handleClickViewCase(caseItem)}>
       <CLNumberCell>
         <CLCaseNumberContainer isOpenCase={isOpenCase}>
           <CLCaseIDButton aria-label={`Open Case ${caseItem.id}`} tabIndex={0} onClick={handleClickViewCase(caseItem)}>
             {caseItem.id}
           </CLCaseIDButton>
-            <CLTableBodyFont style={{ color: '#606B85', paddingTop: '2px', textAlign: 'center' }} isOpenCase={isOpenCase}>
-            {status === 'open' ? <Template code="CaseList-StatusOpen" /> : <Template code="CaseList-StatusClosed" />}
+          <CLTableBodyFont style={{ color: '#606B85', paddingTop: '2px', textAlign: 'center' }} isOpenCase={isOpenCase}>
+            <Template code={`CaseList-Status${statusString}`} />
           </CLTableBodyFont>
         </CLCaseNumberContainer>
       </CLNumberCell>
@@ -71,15 +71,6 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
         <CLTableBodyFont isOpenCase={isOpenCase}>{counselor}</CLTableBodyFont>
       </CLNamesCell>
       <CLTableCell>
-        <CLTableBodyFont isOpenCase={isOpenCase}>{opened}</CLTableBodyFont>
-      </CLTableCell>
-      <CLTableCell>
-        <CLTableBodyFont isOpenCase={isOpenCase}>{updated}</CLTableBodyFont>
-      </CLTableCell>
-      <CLTableCell>
-        <CLTableBodyFont isOpenCase={isOpenCase}>{followUpDate}</CLTableBodyFont>
-      </CLTableCell>
-      <CLTableCell>
         <div style={{ display: 'inline-block', flexDirection: 'column' }}>
           {categories &&
             categories.map(category => (
@@ -89,15 +80,15 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
             ))}
         </div>
       </CLTableCell>
-      {/* <CLActionCell> */}
-        <ButtonBase onClick={handleClickViewCase(caseItem)}>
-          <HiddenText>
-            <Template code="CaseList-ExpandButton" />
-            {caseItem.id}
-          </HiddenText>
-          <FullscreenIcon />
-        </ButtonBase>
-      {/* </CLActionCell> */}
+      <CLTableCell>
+        <CLTableBodyFont isOpenCase={isOpenCase}>{opened}</CLTableBodyFont>
+      </CLTableCell>
+      <CLTableCell>
+        <CLTableBodyFont isOpenCase={isOpenCase}>{updated}</CLTableBodyFont>
+      </CLTableCell>
+      <CLTableCell>
+        <CLTableBodyFont isOpenCase={isOpenCase}>{followUpDate}</CLTableBodyFont>
+      </CLTableCell>
     </CLTableRow>
   );
 };
