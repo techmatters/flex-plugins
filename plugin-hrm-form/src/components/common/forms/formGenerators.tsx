@@ -405,6 +405,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                 onKeyDown={handleOnKeyDown}
                 onFocus={handleOnFocus}
                 onBlur={handleOnBlur}
+                data-testid={`listbox-multiselect-${path}`}
               >
                 <Row>
                   <Box marginBottom="8px">
@@ -422,7 +423,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                           <Box marginRight="5px">
                             <FormCheckbox
                               id={`${path}-${value}`}
-                              data-testid={`${path}-${value}`}
+                              data-testid={`listbox-multiselect-option-${path}-${value}`}
                               name={path}
                               type="checkbox"
                               value={value}
