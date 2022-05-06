@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { format, parseISO } from 'date-fns';
-import { ButtonBase } from '@material-ui/core';
 import { Fullscreen } from '@material-ui/icons';
 import { Template } from '@twilio/flex-ui';
 
@@ -16,14 +15,13 @@ import {
   CLCaseNumberContainer,
   CLCaseIDButton,
 } from '../../styles/caseList';
-import { Box, HiddenText, StyledIcon, addHover } from '../../styles/HrmStyles';
+import { Box } from '../../styles/HrmStyles';
 import { formatName, getShortSummary } from '../../utils';
 import { getContactTags, renderTag } from '../../utils/categories';
 import { caseStatuses } from '../../states/DomainConstants';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
 
 const CHAR_LIMIT = 200;
-const FullscreenIcon = addHover(StyledIcon(Fullscreen));
 
 // eslint-disable-next-line react/no-multi-comp
 type Props = {
@@ -64,12 +62,12 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
       <CLNamesCell>
         <CLTableBodyFont isOpenCase={isOpenCase}>{name}</CLTableBodyFont>
       </CLNamesCell>
+      <CLTableCell>
+        <CLTableBodyFont isOpenCase={isOpenCase}>{counselor}</CLTableBodyFont>
+      </CLTableCell>
       <CLSummaryCell>
         <CLTableBodyFont isOpenCase={isOpenCase}>{shortSummary}</CLTableBodyFont>
       </CLSummaryCell>
-      <CLNamesCell>
-        <CLTableBodyFont isOpenCase={isOpenCase}>{counselor}</CLTableBodyFont>
-      </CLNamesCell>
       <CLTableCell>
         <div style={{ display: 'inline-block', flexDirection: 'column' }}>
           {categories &&

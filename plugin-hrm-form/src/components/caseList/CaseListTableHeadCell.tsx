@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
-import { ExpandMore } from '@material-ui/icons';
+import { ArrowDownward } from '@material-ui/icons';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { getConfig } from '../../HrmFormPlugin';
@@ -44,7 +44,7 @@ const CaseListTableHeadCell: React.FC<Props> = ({
     if (!currentSort || !column || column !== currentSort.sortBy) return null;
 
     return (
-      <ExpandMore
+      <ArrowDownward
         style={{
           fontSize: 20,
           marginLeft: '10px',
