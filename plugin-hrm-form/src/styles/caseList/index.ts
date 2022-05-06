@@ -142,7 +142,7 @@ export const PaginationButton = styled('button')<PaginationButtonProps>`
   border: none;
   &:focus {
     outline: auto;
-    outline-color: #1976d2;
+    outline-color: #000;
   }
 `;
 PaginationButton.displayName = 'PaginationButton';

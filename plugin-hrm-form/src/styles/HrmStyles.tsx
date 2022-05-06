@@ -530,7 +530,7 @@ export const PaginationRow = styled('nav')<PaginationRowProps>`
   justify-content: center;
   height: auto;
   background-color: ${props => (props.transparent ? 'transparent' : props.theme.colors.base2)};
-  margin: 3rem auto;
+  margin: 40px auto;
 `;
 PaginationRow.displayName = 'PaginationRow';
 
