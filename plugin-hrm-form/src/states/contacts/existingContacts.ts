@@ -1,5 +1,3 @@
-import { CallTypes } from 'hrm-form-definitions';
-
 import { SearchContact } from '../../types/types';
 import { hrmServiceContactToSearchContact } from './contactDetailsAdapter';
 
@@ -20,22 +18,31 @@ type LoadContactAction = {
   type: typeof LOAD_CONTACT_ACTION;
   id: string;
   contact: SearchContact;
+  addReference: boolean;
 };
 
-export const loadContact = (contact: SearchContact): LoadContactAction => ({
+export const loadContact = (contact: SearchContact, addReference = true): LoadContactAction => ({
   type: LOAD_CONTACT_ACTION,
   id: contact.contactId,
   contact,
+  addReference,
 });
 
-export const loadRawContact = (contact: any): LoadContactAction => ({
+export const loadRawContact = (contact: any, addReference = true): LoadContactAction => ({
   type: LOAD_CONTACT_ACTION,
   id: contact.id,
   contact: hrmServiceContactToSearchContact(contact),
+  addReference,
 });
+
+export const refreshRawContact = (contact: any) => loadRawContact(contact, false);
 
 export const loadContactReducer = (state: ExistingContactsState, action: LoadContactAction) => {
   const current = state[action.id] ?? { refCount: 0 };
+  if (current.refCount === 0 && !action.addReference) {
+    // Refreshing a contact that isn't already loaded is a noop
+    return state;
+  }
   return {
     ...state,
     [action.id]: {
@@ -46,7 +53,7 @@ export const loadContactReducer = (state: ExistingContactsState, action: LoadCon
         },
       }),
       contact: action.contact,
-      refCount: current.refCount + 1,
+      refCount: action.addReference ? current.refCount + 1 : current.refCount,
     },
   };
 };

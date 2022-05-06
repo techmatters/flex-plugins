@@ -17,7 +17,6 @@ import { formatCategories, formatDuration, formatName, mapChannelForInsights } f
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/ContactDetails';
 import { unNestInformation } from '../../services/ContactService';
 import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
-import * as ConfigActions from '../../states/configuration/actions';
 import {
   ContactDetailsRoute,
   DetailsContext,
@@ -45,9 +44,8 @@ const Details: React.FC<Props> = ({
   contact,
   toggleSectionExpandedForContext,
   navigateForContext,
-  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const { strings, featureFlags } = getConfig();
+  const { featureFlags } = getConfig();
   const version = contact?.details.definitionVersion;
 
   const definitionVersion = definitionVersions[version];

@@ -235,7 +235,7 @@ const saveContactToHrm = async (
 export const updateContactInHrm = async (
   contactId: string,
   body: {
-    contactRawJson: Partial<Omit<ContactRawJson, 'caseInformation'>> & Partial<ContactRawJson['caseInformation']>;
+    rawJson: Partial<Omit<ContactRawJson, 'caseInformation'>> & Partial<ContactRawJson['caseInformation']>;
   },
 ) => {
   const options = {
@@ -244,11 +244,7 @@ export const updateContactInHrm = async (
   };
 
   console.log('Faked out update contacts call', `/contacts/${contactId}`, body, options.method);
-
-  return {
-    ...body,
-    contactId,
-  };
+  return fetchHrmApi(`/contacts/${contactId}`, options);
 };
 
 export const saveContact = async (

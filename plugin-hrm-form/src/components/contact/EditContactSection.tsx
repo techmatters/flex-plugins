@@ -7,15 +7,11 @@ import { CircularProgress } from '@material-ui/core';
 import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
 import { updateContactInHrm } from '../../services/ContactService';
 import { Box, StyledNextStepButton } from '../../styles/HrmStyles';
-import { recordingErrorHandler } from '../../fullStory';
+import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 import { getConfig } from '../../HrmFormPlugin';
 import { ContactDetailsRoute, DetailsContext, navigateContactDetails } from '../../states/contacts/contactDetails';
-import {
-  ContactDetailsSectionFormApi,
-  ContactFormValues,
-  isIssueCategorizationSectionForm,
-  IssueCategorizationSectionFormApi,
-} from './contactDetailsSectionFormApi';
+import { ContactDetailsSectionFormApi, IssueCategorizationSectionFormApi } from './contactDetailsSectionFormApi';
+import { refreshRawContact } from '../../states/contacts/existingContacts';
 
 type OwnProps = {
   context: DetailsContext;
@@ -33,6 +29,7 @@ const EditContactSection: React.FC<Props> = ({
   contactId,
   definitionVersions,
   navigateForContext,
+  refreshContact,
   contactDetailsSectionForm,
   children,
 }) => {
@@ -40,6 +37,7 @@ const EditContactSection: React.FC<Props> = ({
     shouldFocusError: false,
     mode: 'onChange',
   });
+  const { strings } = getConfig();
 
   const version = contact?.details.definitionVersion;
 
@@ -53,20 +51,19 @@ const EditContactSection: React.FC<Props> = ({
 
   const onSubmitValidForm = async () => {
     setSubmitting(true);
-    if (isIssueCategorizationSectionForm(contactDetailsSectionForm)) {
-      const payload = contactDetailsSectionForm.formToPayload(
-        definitionVersion,
-        methods.getValues() as { categories: string[] },
-      );
-      await updateContactInHrm(contactId, payload);
-    } else {
-      const payload = contactDetailsSectionForm.formToPayload(
-        definitionVersion,
-        methods.getValues() as ContactFormValues,
-      );
-      await updateContactInHrm(contactId, payload);
+    const payload = contactDetailsSectionForm.formToPayload(
+      definitionVersion,
+      methods.getValues() as { categories: string[] },
+    );
+    try {
+      const updatedContact = await updateContactInHrm(contactId, payload);
+      refreshContact(updatedContact);
+      navigate(ContactDetailsRoute.HOME);
+    } catch (error) {
+      setSubmitting(false);
+      recordBackendError('Open New Case', error);
+      window.alert(strings['Error-Backend']);
     }
-    navigate(ContactDetailsRoute.HOME);
   };
 
   const onError = recordingErrorHandler('Edit Contact Form', () => {
@@ -104,6 +101,7 @@ const EditContactSection: React.FC<Props> = ({
 
 const mapDispatchToProps = {
   navigateForContext: navigateContactDetails,
+  refreshContact: refreshRawContact,
 };
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({

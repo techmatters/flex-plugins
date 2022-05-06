@@ -7,7 +7,7 @@ import {
   unNestInformationObject,
 } from '../../services/ContactService';
 
-export type ContactFormValues = {
+type ContactFormValues = {
   [key in 'childInformation' | 'callerInformation' | 'caseInformation']?: Record<string, string | boolean>;
 };
 
@@ -19,7 +19,7 @@ export type ContactDetailsSectionFormApi = {
     def: DefinitionVersion,
     form: ContactFormValues,
   ) => {
-    contactRawJson: Partial<
+    rawJson: Partial<
       | Pick<ContactRawJson, 'callerInformation' | 'childInformation'>
       | { caseInformation: Omit<ContactRawJson['caseInformation'], 'categories'> }
     >;
@@ -34,12 +34,8 @@ export type IssueCategorizationSectionFormApi = {
   formToPayload: (
     def: DefinitionVersion,
     form: { categories: string[] },
-  ) => { contactRawJson: { caseInformation: Pick<ContactRawJson['caseInformation'], 'categories'> } };
+  ) => { rawJson: { caseInformation: Pick<ContactRawJson['caseInformation'], 'categories'> } };
 };
-
-export const isIssueCategorizationSectionForm = (
-  form: ContactDetailsSectionFormApi | IssueCategorizationSectionFormApi,
-): form is IssueCategorizationSectionFormApi => Boolean((form as IssueCategorizationSectionFormApi).type);
 
 export const contactDetailsSectionFormApi: {
   CHILD_INFORMATION: ContactDetailsSectionFormApi;
@@ -54,7 +50,7 @@ export const contactDetailsSectionFormApi: {
     getFormDefinition: def => def.tabbedForms.ChildInformationTab,
     getLayoutDefinition: def => def.layoutVersion.contact.childInformation,
     formToPayload: (def, form) => ({
-      contactRawJson: {
+      rawJson: {
         childInformation: transformContactFormValues(form.childInformation, def.tabbedForms.ChildInformationTab),
       },
     }),
@@ -69,7 +65,7 @@ export const contactDetailsSectionFormApi: {
     getFormDefinition: def => def.tabbedForms.CallerInformationTab,
     getLayoutDefinition: def => def.layoutVersion.contact.callerInformation,
     formToPayload: (def, form) => ({
-      contactRawJson: {
+      rawJson: {
         callerInformation: transformContactFormValues(form.callerInformation, def.tabbedForms.CallerInformationTab),
       },
     }),
@@ -84,18 +80,18 @@ export const contactDetailsSectionFormApi: {
     getFormDefinition: def => def.tabbedForms.CallerInformationTab,
     getLayoutDefinition: def => def.layoutVersion.contact.callerInformation,
     formToPayload: (def, form) => ({
-      contactRawJson: { caseInformation: { categories: transformCategories('', form.categories) } },
+      rawJson: { caseInformation: { categories: transformCategories('', form.categories) } },
     }),
   },
   CASE_INFORMATION: {
     getFormValues: (def, contact) => {
       const { categories, ...caseInformation } = contact.details.caseInformation;
-      return caseInformation as ContactFormValues;
+      return { caseInformation } as ContactFormValues;
     },
     getFormDefinition: def => def.tabbedForms.CaseInformationTab,
     getLayoutDefinition: def => def.layoutVersion.contact.caseInformation,
     formToPayload: (def, form) => ({
-      contactRawJson: {
+      rawJson: {
         caseInformation: transformContactFormValues(form.caseInformation, def.tabbedForms.CaseInformationTab),
       },
     }),
