@@ -5,7 +5,7 @@ import { ArrowDownward } from '@material-ui/icons';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { getConfig } from '../../HrmFormPlugin';
-import { CLTableHeaderFont, CLTableCell } from '../../styles/caseList';
+import { CLTableHeaderFont, CLTableCell, CLHeaderSort } from '../../styles/caseList';
 import { ListCasesQueryParams, ListCasesSortDirection } from '../../types/types';
 import * as CaseListSettingsActions from '../../states/caseList/settings';
 import { caseListBase, namespace, RootState } from '../../states';
@@ -36,6 +36,7 @@ const CaseListTableHeadCell: React.FC<Props> = ({
   width,
   currentSort,
   updateCaseListSort,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const { featureFlags } = getConfig();
 
@@ -46,7 +47,7 @@ const CaseListTableHeadCell: React.FC<Props> = ({
     return (
       <ArrowDownward
         style={{
-          fontSize: 20,
+          fontSize: 16,
           marginLeft: '10px',
           verticalAlign: 'middle',
           transform: currentSort.sortDirection === ListCasesSortDirection.ASC ? 'rotate(180deg) scaleX(-1)' : 'none',
@@ -76,11 +77,25 @@ const CaseListTableHeadCell: React.FC<Props> = ({
 
     updateCaseListSort({ sortBy: column, sortDirection: updatedSortDirection });
   };
-
+  console.log('>>>> ', currentSort);
   return (
-    <CLTableCell style={{ width: width || '8%', cursor: cursor() }} onClick={handleClick}>
+    <CLTableCell
+      style={{ width: width || '8%', cursor: cursor() }}
+      onClick={handleClick}
+      scope="col"
+      sortDirection={currentSort.sortDirection === ListCasesSortDirection.ASC ? 'asc' : 'desc'}
+      id="sort"
+    >
       <CLTableHeaderFont style={{ borderBottom: borderBottom(), whiteSpace: 'nowrap' }}>
-        <Template code={localizedText} /> {drawSort()}
+        <CLHeaderSort
+          type="button"
+          aria-label={`${localizedText} ${
+            currentSort.sortDirection === ListCasesSortDirection.ASC ? 'Ascending' : 'Descending'
+          }`}
+        >
+          <Template code={localizedText} />
+        </CLHeaderSort>
+        <span aria-hidden="true">{drawSort()}</span>
       </CLTableHeaderFont>
     </CLTableCell>
   );
