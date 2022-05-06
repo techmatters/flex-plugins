@@ -10,6 +10,9 @@ export const FiltersContainer = styled(Flex)`
   padding: 10px;
   font-size: 13px;
   box-shadow: 0 1px 2px 0 rgba(25, 43, 51, 0.1);
+  &:focus {
+    outline: auto;
+  }
 `;
 FiltersContainer.displayName = 'FiltersContainer';
 
