@@ -77,14 +77,12 @@ const CaseListTableHeadCell: React.FC<Props> = ({
 
     updateCaseListSort({ sortBy: column, sortDirection: updatedSortDirection });
   };
-  console.log('>>>> ', currentSort);
   return (
     <CLTableCell
       style={{ width: width || '8%', cursor: cursor() }}
       onClick={handleClick}
       scope="col"
       sortDirection={currentSort.sortDirection === ListCasesSortDirection.ASC ? 'asc' : 'desc'}
-      id="sort"
     >
       <CLTableHeaderFont style={{ borderBottom: borderBottom(), whiteSpace: 'nowrap' }}>
         <CLHeaderSort
