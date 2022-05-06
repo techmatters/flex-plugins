@@ -38,7 +38,7 @@ const CaseListTableHeadCell: React.FC<Props> = ({
   updateCaseListSort,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const { featureFlags } = getConfig();
+  const { featureFlags, strings } = getConfig();
 
   const drawSort = () => {
     if (!featureFlags.enable_sort_cases) return null;
@@ -87,7 +87,7 @@ const CaseListTableHeadCell: React.FC<Props> = ({
       <CLTableHeaderFont style={{ borderBottom: borderBottom(), whiteSpace: 'nowrap' }}>
         <CLHeaderSort
           type="button"
-          aria-label={`${localizedText} ${
+          aria-label={`${strings[localizedText]} ${
             currentSort.sortDirection === ListCasesSortDirection.ASC ? 'Ascending' : 'Descending'
           }`}
         >
