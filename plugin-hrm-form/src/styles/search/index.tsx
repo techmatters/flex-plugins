@@ -397,6 +397,7 @@ export const SectionValueText = styled(BodyText)<SectionValueTextProps>`
   overflow-wrap: anywhere;
   white-space: pre-wrap;
   max-width: 40em;
+  line-height: 18px;
   ${props => props.notBold && 'font-weight: 500'};
 `;
 

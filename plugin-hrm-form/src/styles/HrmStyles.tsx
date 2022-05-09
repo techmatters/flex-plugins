@@ -657,12 +657,60 @@ export const FormLabel = styled('label')`
 `;
 FormLabel.displayName = 'FormLabel';
 
+export const FormLegend = styled('legend')`
+  display: flex;
+  font-size: 14px;
+  letter-spacing: 0;
+  min-height: 18px;
+  color: #000000;
+`;
+FormLegend.displayName = 'FormLegend';
+
 export const FormFieldset = styled('fieldset')<FormInputProps>`
   display: flex;
   flex-direction: column;
   border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
+  border-radius: 4px;
 `;
 FormFieldset.displayName = 'FormFieldset';
+
+type FormListboxMultiselectProps = FormInputProps & { height?: number; width?: number };
+
+export const FormListboxMultiselect = styled('ul')<FormListboxMultiselectProps>`
+  display: flex;
+  flex-direction: column;
+  border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
+  border-radius: 4px;
+  height: ${props => (props.height ? `${props.height}px` : '250px')};
+  width: ${props => (props.width ? `${props.width}px` : '220px')};
+
+  &:focus-within {
+    outline: auto;
+  }
+`;
+FormListboxMultiselect.displayName = 'FormListboxMultiselect';
+
+export const FormListboxMultiselectOptionsContainer = styled('div')<FormListboxMultiselectProps>`
+  display: flex;
+  flex-direction: column;
+  padding-left: 10px;
+  padding-top: 10px;
+  overflow-y: scroll;
+  box-sizing: border-box;
+  border: 1px solid #e6e6e6;
+  border-radius: 4px;
+`;
+FormListboxMultiselectOptionsContainer.displayName = 'FormListboxMultiselectOptionsContainer';
+
+export const FormListboxMultiselectOption = styled('li')`
+  display: inline-flex;
+`;
+FormListboxMultiselectOption.displayName = 'FormListboxMultiselectOption';
+
+export const FormListboxMultiselectOptionLabel = styled(FormLabel)`
+  flex-direction: row;
+  align-items: start;
+`;
 
 export const UploadFileLabel = styled(Flex)`
   font-size: 14px;

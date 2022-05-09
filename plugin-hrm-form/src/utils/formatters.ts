@@ -78,16 +78,21 @@ export const formatStringToDateAndTime = (dateTime: string): string => {
  * @param value Value to format
  * @param strings Translation lookups
  */
-export const presentValue = (value: string | number | boolean, strings: Record<string, string>) => (
+export const presentValue = (value: string | number | boolean | string[], strings: Record<string, string>) => (
   definition: FormItemDefinition = null,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 ) => {
   // eslint-disable-next-line dot-notation
   if (definition && definition.type === 'mixed-checkbox' && value === null) return strings['Unknown'];
+
+  if (definition && definition.type === 'listbox-multiselect' && Array.isArray(value))
+    return value.map(val => (strings[val] ? strings[val] : val)).join('\n');
+
   if (typeof value === 'string' && value.trim()) return value;
   if (typeof value === 'number') return value.toString();
   if (typeof value === 'boolean') {
-    if (value) return strings['SectionEntry-Yes'];
-    return strings['SectionEntry-No'];
+    if (value) return strings['SectionEntry-Yes'] ? strings['SectionEntry-Yes'] : value.toString();
+    return strings['SectionEntry-No'] ? strings['SectionEntry-No'] : value.toString();
   }
 
   return '-';
