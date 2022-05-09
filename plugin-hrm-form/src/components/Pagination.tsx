@@ -20,17 +20,20 @@ export const getPaginationNumbers = (page, pageCount) => {
 const renderPaginationButton = (page, handleChangePage) => n => {
   if (n === -1)
     return (
-      <PaginationButton key={`ellipsis-${Math.random()}`}>
-        <ButtonText style={{ paddingTop: 10 }}>...</ButtonText>
-      </PaginationButton>
+      <ButtonText style={{ padding: '6px 10px', margin: '0 2px' }} key={`ellipsis-${Math.random()}`}>
+        ...
+      </ButtonText>
     );
 
   return (
-    <ButtonBase key={`CaseList-pagination-${n}`} onClick={() => handleChangePage(n)}>
-      <PaginationButton highlight={page === n}>
-        <ButtonText highlight={page === n}>{n + 1}</ButtonText>
-      </PaginationButton>
-    </ButtonBase>
+    <PaginationButton
+      aria-label={`Page ${n + 1}`}
+      highlight={page === n}
+      key={`CaseList-pagination-${n}`}
+      onClick={() => handleChangePage(n)}
+    >
+      <ButtonText highlight={page === n}>{n + 1}</ButtonText>
+    </PaginationButton>
   );
 };
 
@@ -38,21 +41,18 @@ type ChevronButtonProps = {
   chevronDirection: 'left' | 'right';
   onClick: () => void;
   templateCode: string;
+  disabled?: boolean;
 };
 
-const ChevronButton: React.FC<ChevronButtonProps> = ({ chevronDirection, onClick, templateCode }) => {
+const ChevronButton: React.FC<ChevronButtonProps> = ({ chevronDirection, onClick, templateCode, disabled }) => {
   const ChevronIcon = chevronDirection === 'left' ? ChevronLeft : ChevronRight;
   return (
-    <ButtonBase onClick={onClick}>
-      <PaginationChevron>
-        <HiddenText>
-          <Template code={templateCode} />
-        </HiddenText>
-        <ButtonText>
-          <ChevronIcon />
-        </ButtonText>
-      </PaginationChevron>
-    </ButtonBase>
+    <PaginationChevron onClick={onClick} disabled={disabled}>
+      <HiddenText>
+        <Template code={templateCode} />
+      </HiddenText>
+      <ChevronIcon style={{ margin: '-7px 0' }} />
+    </PaginationChevron>
   );
 };
 ChevronButton.displayName = 'ChevronButton';
@@ -76,17 +76,21 @@ const Pagination: React.FC<PaginationProps> = ({ page, pagesCount, handleChangeP
   };
 
   return (
-    <TableFooter data-testid="CaseList-TableFooter">
-      <PaginationRow transparent={transparent}>
-        <TableCell colSpan={8}>
-          <div style={{ display: 'flex', width: '100%', justifyContent: 'center' }}>
-            <ChevronButton chevronDirection="left" onClick={decreasePage} templateCode="CaseList-PrevPage" />
-            {getPaginationNumbers(page, pagesCount).map(renderButtons)}
-            <ChevronButton chevronDirection="right" onClick={increasePage} templateCode="CaseList-NextPage" />
-          </div>
-        </TableCell>
-      </PaginationRow>
-    </TableFooter>
+    <PaginationRow transparent={transparent} data-testid="CaseList-TableFooter">
+      <ChevronButton
+        disabled={page === 0}
+        chevronDirection="left"
+        onClick={decreasePage}
+        templateCode="CaseList-PrevPage"
+      />
+      {getPaginationNumbers(page, pagesCount).map(renderButtons)}
+      <ChevronButton
+        disabled={page === pagesCount - 1}
+        chevronDirection="right"
+        onClick={increasePage}
+        templateCode="CaseList-NextPage"
+      />
+    </PaginationRow>
   );
 };
 

@@ -54,7 +54,7 @@ describe('Pagination', () => {
     ).root;
 
     expect(() => component.findAllByType(PaginationButton)).not.toThrow();
-    expect(component.findAllByType(PaginationButton)).toHaveLength(12);
+    expect(component.findAllByType(PaginationButton)).toHaveLength(11);
   });
 
   test('page 10/20', async () => {
@@ -65,7 +65,7 @@ describe('Pagination', () => {
     ).root;
 
     expect(() => component.findAllByType(PaginationButton)).not.toThrow();
-    expect(component.findAllByType(PaginationButton)).toHaveLength(13);
+    expect(component.findAllByType(PaginationButton)).toHaveLength(11);
   });
 
   test('page 20/20', async () => {
@@ -76,6 +76,6 @@ describe('Pagination', () => {
     ).root;
 
     expect(() => component.findAllByType(PaginationButton)).not.toThrow();
-    expect(component.findAllByType(PaginationButton)).toHaveLength(12);
+    expect(component.findAllByType(PaginationButton)).toHaveLength(11);
   });
 });
