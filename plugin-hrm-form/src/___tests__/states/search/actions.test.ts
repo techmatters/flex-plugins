@@ -48,14 +48,6 @@ describe('test action creators', () => {
     });
   });
 
-  test('handleExpandDetailsSection', () => {
-    expect(actions.handleExpandDetailsSection(taskId)(ContactDetailsSections.CALLER_INFORMATION)).toStrictEqual({
-      type: t.HANDLE_EXPAND_DETAILS_SECTION,
-      taskId,
-      section: ContactDetailsSections.CALLER_INFORMATION,
-    });
-  });
-
   test('handleSearchFormChange', () => {
     expect(actions.handleSearchFormChange(taskId)('firstName', 'Some name')).toStrictEqual({
       type: t.HANDLE_SEARCH_FORM_CHANGE,

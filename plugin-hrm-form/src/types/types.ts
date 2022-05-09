@@ -93,7 +93,7 @@ export type ContactRawJson = {
   callType: CallTypes | '';
   childInformation: InformationObject;
   callerInformation: InformationObject;
-  caseInformation: { categories: {} } & { [key: string]: string | boolean | {} }; // // having {} makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
+  caseInformation: { categories: {} } & { [key: string]: string | boolean | {} }; // having {} makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
   contactlessTask: { [key: string]: string | boolean };
 };
 
@@ -110,6 +110,7 @@ export type SearchContact = {
     notes: string;
     channel: string;
     conversationDuration: number;
+    createdBy: string;
   };
   details: ContactRawJson;
   csamReports: CSAMReportEntry[];

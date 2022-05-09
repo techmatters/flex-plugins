@@ -20,7 +20,6 @@ import {
   viewContactDetails,
   searchContacts,
   searchCases,
-  handleExpandDetailsSection,
 } from '../../states/search/actions';
 import { namespace, searchContactsBase, configurationBase, routingBase, RootState } from '../../states';
 import { Flex } from '../../styles/HrmStyles';
@@ -150,11 +149,8 @@ const Search: React.FC<Props> = props => {
             showActionIcons={props.showActionIcons}
             currentIsCaller={props.currentIsCaller}
             contact={currentContact}
-            detailsExpanded={props.detailsExpanded}
             handleBack={goToResultsOnContacts}
             handleSelectSearchResult={props.handleSelectSearchResult}
-            handleMockedMessage={handleMockedMessage}
-            handleExpandDetailsSection={props.handleExpandDetailsSection}
           />
         );
       case SearchPages.case:
@@ -213,7 +209,6 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
     form: taskSearchState.form,
     searchContactsResults: taskSearchState.searchContactsResult,
     searchCasesResults: taskSearchState.searchCasesResult,
-    detailsExpanded: taskSearchState.detailsExpanded,
     counselorsHash: counselors.hash,
     showActionIcons: !isStandaloneSearch,
     routing,
@@ -227,7 +222,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     handleSearchFormChange: bindActionCreators(handleSearchFormChange(taskId), dispatch),
     changeSearchPage: bindActionCreators(changeSearchPage(taskId), dispatch),
     viewContactDetails: bindActionCreators(viewContactDetails(taskId), dispatch),
-    handleExpandDetailsSection: bindActionCreators(handleExpandDetailsSection(taskId), dispatch),
     searchContacts: searchContacts(dispatch)(taskId),
     searchCases: searchCases(dispatch)(taskId),
   };

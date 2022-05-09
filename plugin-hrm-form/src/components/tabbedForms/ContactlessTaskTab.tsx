@@ -101,14 +101,12 @@ const ContactlessTaskTab: React.FC<Props> = ({
   }, [setValue, time]);
 
   return (
-    <TabbedFormTabContainer display={display}>
-      <Container>
-        <TwoColumnLayout>
-          <ColumnarBlock>{contactlessTaskForm}</ColumnarBlock>
-          <ColumnarBlock />
-        </TwoColumnLayout>
-      </Container>
-    </TabbedFormTabContainer>
+    <Container>
+      <TwoColumnLayout>
+        <ColumnarBlock>{contactlessTaskForm}</ColumnarBlock>
+        <ColumnarBlock />
+      </TwoColumnLayout>
+    </Container>
   );
 };
 

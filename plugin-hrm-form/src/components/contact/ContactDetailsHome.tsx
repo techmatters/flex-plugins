@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import PropTypes from 'prop-types';
 import { format } from 'date-fns';
 import { CircularProgress, IconButton } from '@material-ui/core';
 import { Link as LinkIcon } from '@material-ui/icons';
@@ -8,41 +7,42 @@ import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes } from 'hrm-form-definitions';
 
-import { DetailsContainer, NameContainer, DetNameText } from '../styles/search';
-import Section from './Section';
-import SectionEntry from './SectionEntry';
-import { channelTypes } from '../states/DomainConstants';
-import { isNonDataCallType } from '../states/ValidationRules';
-import { contactType } from '../types';
-import { formatDuration, formatName, formatCategories, mapChannel, mapChannelForInsights } from '../utils';
-import { ContactDetailsSections } from './common/ContactDetails';
-import { unNestInformation } from '../services/ContactService';
-import { namespace, configurationBase, RootState } from '../states';
-import * as ConfigActions from '../states/configuration/actions';
-import { getDefinitionVersion } from '../services/ServerlessService';
+import { DetailsContainer, NameContainer, DetNameText } from '../../styles/search';
+import Section from '../Section';
+import SectionEntry from '../SectionEntry';
+import { channelTypes } from '../../states/DomainConstants';
+import { isNonDataCallType } from '../../states/ValidationRules';
+import { formatDuration, formatName, formatCategories, mapChannelForInsights } from '../../utils';
+import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/ContactDetails';
+import { unNestInformation } from '../../services/ContactService';
+import { namespace, configurationBase, RootState, contactFormsBase } from '../../states';
+import * as ConfigActions from '../../states/configuration/actions';
+import { getDefinitionVersion } from '../../services/ServerlessService';
+import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
 
 // TODO: complete this type
 type OwnProps = {
-  contact: any;
-  detailsExpanded: any;
-  showActionIcons?: any;
-  handleOpenConnectDialog?: any;
-  handleExpandDetailsSection: any;
+  contactId: string;
+  context: DetailsContext;
+  showActionIcons?: boolean;
+  handleOpenConnectDialog?: (event: any) => void;
 };
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
 const Details: React.FC<Props> = ({
-  contact,
+  context,
   detailsExpanded,
-  showActionIcons,
+  showActionIcons = false,
   handleOpenConnectDialog,
-  handleExpandDetailsSection,
   definitionVersions,
   updateDefinitionVersion,
   counselorsHash,
+  contact,
+  toggleSectionExpandedForContext,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const version = contact.details.definitionVersion;
+  const version = contact?.details.definitionVersion;
 
   /**
    * Check if the definitionVersion for this case exists in redux, and look for it if not.
@@ -53,14 +53,24 @@ const Details: React.FC<Props> = ({
       updateDefinitionVersion(version, definitionVersion);
     };
 
-    if (!definitionVersions[version]) {
+    if (version && !definitionVersions[version]) {
       fetchDefinitionVersions(version);
     }
-  }, [definitionVersions, updateDefinitionVersion, version]);
+  }, [definitionVersions, updateDefinitionVersion, version, contact]);
+
+  const definitionVersion = definitionVersions[version];
+
+  if (!contact || !definitionVersion)
+    return (
+      <DetailsContainer>
+        <CircularProgress size={50} />
+      </DetailsContainer>
+    );
 
   // Object destructuring on contact
-  const { overview, details, counselor, csamReports } = contact;
+  const { overview, details, csamReports } = contact;
   const {
+    counselor,
     dateTime,
     name: childName,
     customerNumber,
@@ -76,7 +86,9 @@ const Details: React.FC<Props> = ({
   const childOrUnknown = formatName(childName);
   const childUpperCased = childOrUnknown.toUpperCase();
   const formattedChannel =
-    channel === 'default' ? mapChannelForInsights(details.contactlessTask.channel) : mapChannelForInsights(channel);
+    channel === 'default'
+      ? mapChannelForInsights(details.contactlessTask.channel.toString())
+      : mapChannelForInsights(channel);
   const formattedDate = `${format(new Date(dateTime), 'MMM d, yyyy / h:mm aaaaa')}m`;
   const formattedDuration = formatDuration(conversationDuration);
 
@@ -91,9 +103,9 @@ const Details: React.FC<Props> = ({
     ISSUE_CATEGORIZATION,
     CONTACT_SUMMARY,
   } = ContactDetailsSections;
-
-  const definitionVersion = definitionVersions[version];
   const addedBy = counselorsHash[createdBy];
+  const counselorName = counselorsHash[counselor];
+  const toggleSection = (section: ContactDetailsSectionsType) => toggleSectionExpandedForContext(context, section);
 
   const csamReportsAttached =
     csamReports &&
@@ -127,7 +139,7 @@ const Details: React.FC<Props> = ({
       <Section
         sectionTitle={<Template code="ContactDetails-GeneralDetails" />}
         expanded={detailsExpanded[GENERAL_DETAILS]}
-        handleExpandClick={() => handleExpandDetailsSection(GENERAL_DETAILS)}
+        handleExpandClick={() => toggleSection(GENERAL_DETAILS)}
       >
         <SectionEntry
           description={<Template code="ContactDetails-GeneralDetails-Channel" />}
@@ -141,7 +153,7 @@ const Details: React.FC<Props> = ({
           description={<Template code="ContactDetails-GeneralDetails-ConversationDuration" />}
           value={formattedDuration}
         />
-        <SectionEntry description={<Template code="ContactDetails-GeneralDetails-Counselor" />} value={counselor} />
+        <SectionEntry description={<Template code="ContactDetails-GeneralDetails-Counselor" />} value={counselorName} />
         <SectionEntry description={<Template code="ContactDetails-GeneralDetails-DateTime" />} value={formattedDate} />
         {addedBy && addedBy !== counselor && (
           <SectionEntry description={<Template code="ContactDetails-GeneralDetails-AddedBy" />} value={addedBy} />
@@ -151,7 +163,7 @@ const Details: React.FC<Props> = ({
         <Section
           sectionTitle={<Template code="TabbedForms-AddCallerInfoTab" />}
           expanded={detailsExpanded[CALLER_INFORMATION]}
-          handleExpandClick={() => handleExpandDetailsSection(CALLER_INFORMATION)}
+          handleExpandClick={() => toggleSection(CALLER_INFORMATION)}
           buttonDataTestid="ContactDetails-Section-CallerInformation"
         >
           {definitionVersion.tabbedForms.CallerInformationTab.map(e => (
@@ -168,7 +180,7 @@ const Details: React.FC<Props> = ({
         <Section
           sectionTitle={<Template code="TabbedForms-AddChildInfoTab" />}
           expanded={detailsExpanded[CHILD_INFORMATION]}
-          handleExpandClick={() => handleExpandDetailsSection(CHILD_INFORMATION)}
+          handleExpandClick={() => toggleSection(CHILD_INFORMATION)}
           buttonDataTestid="ContactDetails-Section-ChildInformation"
         >
           {definitionVersion.tabbedForms.ChildInformationTab.map(e => (
@@ -185,7 +197,7 @@ const Details: React.FC<Props> = ({
         <Section
           sectionTitle={<Template code="TabbedForms-CategoriesTab" />}
           expanded={detailsExpanded[ISSUE_CATEGORIZATION]}
-          handleExpandClick={() => handleExpandDetailsSection(ISSUE_CATEGORIZATION)}
+          handleExpandClick={() => toggleSection(ISSUE_CATEGORIZATION)}
         >
           {formattedCategories.length ? (
             formattedCategories.map((c, index) => (
@@ -208,13 +220,13 @@ const Details: React.FC<Props> = ({
         <Section
           sectionTitle={<Template code="TabbedForms-AddCaseInfoTab" />}
           expanded={detailsExpanded[CONTACT_SUMMARY]}
-          handleExpandClick={() => handleExpandDetailsSection(CONTACT_SUMMARY)}
+          handleExpandClick={() => toggleSection(CONTACT_SUMMARY)}
         >
           {definitionVersion.tabbedForms.CaseInformationTab.map(e => (
             <SectionEntry
               key={`CaseInformation-${e.label}`}
               description={<Template code={e.label} />}
-              value={contact.details.caseInformation[e.name]}
+              value={contact.details.caseInformation[e.name] as boolean | string}
               definition={e}
             />
           ))}
@@ -233,13 +245,6 @@ const Details: React.FC<Props> = ({
 
 Details.displayName = 'Details';
 
-Details.propTypes = {
-  contact: contactType.isRequired,
-  detailsExpanded: PropTypes.objectOf(PropTypes.bool).isRequired,
-  handleOpenConnectDialog: PropTypes.func,
-  handleExpandDetailsSection: PropTypes.func.isRequired,
-  showActionIcons: PropTypes.bool,
-};
 Details.defaultProps = {
   handleOpenConnectDialog: () => null,
   showActionIcons: false,
@@ -248,10 +253,13 @@ Details.defaultProps = {
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   definitionVersions: state[namespace][configurationBase].definitionVersions,
   counselorsHash: state[namespace][configurationBase].counselors.hash,
+  contact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.contact,
+  detailsExpanded: state[namespace][contactFormsBase].contactDetails[ownProps.context].detailsExpanded,
 });
 
 const mapDispatchToProps = {
   updateDefinitionVersion: ConfigActions.updateDefinitionVersion,
+  toggleSectionExpandedForContext: toggleDetailSectionExpanded,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Details);

@@ -1,17 +1,33 @@
 import { omit } from 'lodash';
-import { callTypes, CallTypes } from 'hrm-form-definitions';
+import { CallTypes, callTypes } from 'hrm-form-definitions';
 
 import * as t from './types';
 import {
+  DefinitionVersion,
+  GeneralActionType,
   INITIALIZE_CONTACT_STATE,
   RECREATE_CONTACT_STATE,
   REMOVE_CONTACT_STATE,
-  GeneralActionType,
-  DefinitionVersion,
 } from '../types';
 import { createStateItem } from '../../components/common/forms/formGenerators';
 import { createContactlessTaskTabDefinition } from '../../components/tabbedForms/ContactlessTaskTabDefinition';
-import type { CSAMReportEntry } from '../../types/types';
+import {
+  Contact,
+  ExistingContactAction,
+  ExistingContactsState,
+  LOAD_CONTACT_ACTION,
+  loadContactReducer,
+  RELEASE_CONTACT_ACTION,
+  releaseContactReducer,
+} from './existingContacts';
+import { CSAMReportEntry } from '../../types/types';
+import {
+  ContactDetailsState,
+  DetailsContext,
+  sectionExpandedStateReducer,
+  TOGGLE_DETAIL_EXPANDED_ACTION,
+  ToggleDetailExpandedAction,
+} from './contactDetails';
 
 export type TaskEntry = {
   helpline: string;
@@ -37,6 +53,8 @@ type ContactsState = {
   tasks: {
     [taskId: string]: TaskEntry;
   };
+  existingContacts: ExistingContactsState;
+  contactDetails: ContactDetailsState;
 };
 
 export const emptyCategories = [];
@@ -87,10 +105,20 @@ export const createNewTaskEntry = (definitions: DefinitionVersion) => (recreated
   };
 };
 
-const initialState: ContactsState = { tasks: {} };
+const initialState: ContactsState = {
+  tasks: {},
+  existingContacts: {},
+  contactDetails: {
+    [DetailsContext.CASE_DETAILS]: { detailsExpanded: {} },
+    [DetailsContext.CONTACT_SEARCH]: { detailsExpanded: {} },
+  },
+};
 
 // eslint-disable-next-line import/no-unused-modules
-export function reduce(state = initialState, action: t.ContactsActionType | GeneralActionType): ContactsState {
+export function reduce(
+  state = initialState,
+  action: t.ContactsActionType | ExistingContactAction | ToggleDetailExpandedAction | GeneralActionType,
+): ContactsState {
   switch (action.type) {
     case INITIALIZE_CONTACT_STATE:
       return {
@@ -242,6 +270,15 @@ export function reduce(state = initialState, action: t.ContactsActionType | Gene
           },
         },
       };
+    }
+    case LOAD_CONTACT_ACTION: {
+      return { ...state, existingContacts: loadContactReducer(state.existingContacts, action) };
+    }
+    case RELEASE_CONTACT_ACTION: {
+      return { ...state, existingContacts: releaseContactReducer(state.existingContacts, action) };
+    }
+    case TOGGLE_DETAIL_EXPANDED_ACTION: {
+      return { ...state, contactDetails: sectionExpandedStateReducer(state.contactDetails, action) };
     }
     default:
       return state;
