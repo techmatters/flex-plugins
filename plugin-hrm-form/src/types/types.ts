@@ -49,12 +49,6 @@ export type DocumentEntry = { document: Document; id: string | undefined } & Ent
 
 export type CSAMReportEntry = { csamReportId: string; id: number } & EntryInfo;
 
-export const blankReferral = {
-  date: null,
-  referredTo: null,
-  comments: null,
-};
-
 export type CaseInfo = {
   definitionVersion?: DefinitionVersionId;
   offlineContactCreator?: string;
