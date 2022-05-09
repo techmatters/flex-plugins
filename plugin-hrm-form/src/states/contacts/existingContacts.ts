@@ -1,5 +1,6 @@
 import { SearchContact } from '../../types/types';
 import { hrmServiceContactToSearchContact } from './contactDetailsAdapter';
+import { omit } from 'lodash';
 
 export type ExistingContactsState = {
   [contactId: string]: {
@@ -84,9 +85,7 @@ export const releaseContactReducer = (state: ExistingContactsState, action: Rele
         `Contact id ${action.id} had a refCount of ${current.refCount} before it was removed, it should never go lower than 1`,
       );
     }
-    const copy = { ...state };
-    delete copy[action.id];
-    return copy;
+    return omit(state, action.id);
   }
   return {
     ...state,
