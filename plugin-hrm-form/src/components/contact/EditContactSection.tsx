@@ -54,6 +54,7 @@ const EditContactSection: React.FC<Props> = ({
     const payload = contactDetailsSectionForm.formToPayload(
       definitionVersion,
       methods.getValues() as { categories: string[] },
+      contact.overview.helpline,
     );
     try {
       const updatedContact = await updateContactInHrm(contactId, payload);

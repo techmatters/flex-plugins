@@ -4,10 +4,11 @@ import { ContactRawJson, SearchContact } from '../../types/types';
 import {
   transformCategories,
   transformContactFormValues,
+  transformValues,
   unNestInformationObject,
 } from '../../services/ContactService';
 
-type ContactFormValues = {
+export type ContactFormValues = {
   [key in 'childInformation' | 'callerInformation' | 'caseInformation']?: Record<string, string | boolean>;
 };
 
@@ -34,6 +35,7 @@ export type IssueCategorizationSectionFormApi = {
   formToPayload: (
     def: DefinitionVersion,
     form: { categories: string[] },
+    helpline: string,
   ) => { rawJson: { caseInformation: Pick<ContactRawJson['caseInformation'], 'categories'> } };
 };
 
@@ -79,8 +81,8 @@ export const contactDetailsSectionFormApi: {
     }),
     getFormDefinition: def => def.tabbedForms.CallerInformationTab,
     getLayoutDefinition: def => def.layoutVersion.contact.callerInformation,
-    formToPayload: (def, form) => ({
-      rawJson: { caseInformation: { categories: transformCategories('', form.categories, def) } },
+    formToPayload: (def, form, helpline) => ({
+      rawJson: { caseInformation: { categories: transformCategories(helpline, form.categories, def) } },
     }),
   },
   CASE_INFORMATION: {
@@ -92,7 +94,7 @@ export const contactDetailsSectionFormApi: {
     getLayoutDefinition: def => def.layoutVersion.contact.caseInformation,
     formToPayload: (def, form) => ({
       rawJson: {
-        caseInformation: transformContactFormValues(form.caseInformation, def.tabbedForms.CaseInformationTab),
+        caseInformation: transformValues(def.tabbedForms.CaseInformationTab)(form.caseInformation),
       },
     }),
   },
