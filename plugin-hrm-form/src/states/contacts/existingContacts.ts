@@ -76,6 +76,7 @@ export const releaseContactReducer = (state: ExistingContactsState, action: Rele
     console.warn(
       `Tried to release contact id ${action.id} but wasn't in the redux state. You should only release previously loaded contacts once`,
     );
+    return state;
   }
   if (current.refCount < 2) {
     if (current.refCount !== 1) {
