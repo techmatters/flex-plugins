@@ -1,8 +1,15 @@
 import { set } from 'lodash/fp';
-import { callTypes, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { callTypes, DefinitionVersion, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
-import { transformForm, saveContact, createCategoriesObject } from '../../services/ContactService';
+import {
+  transformForm,
+  saveContact,
+  createCategoriesObject,
+  transformContactFormValues,
+  updateContactInHrm,
+  transformCategories,
+} from '../../services/ContactService';
 import { createNewTaskEntry, TaskEntry } from '../../states/contacts/reducer';
 import { channelTypes } from '../../states/DomainConstants';
 import { offlineContactTaskSid } from '../../types/types';
@@ -252,5 +259,202 @@ describe('saveContact() (isContactlessTask)', () => {
     expect(numberFromPOST).toEqual('');
 
     mockedFetch.mockClear();
+  });
+});
+
+describe('transformContactFormValues', () => {
+  test('Strips entries in formValues that are not defined in provided form definition and adds undefiend entries for form items without values', () => {
+    const result = transformContactFormValues(
+      {
+        input1: 'something',
+        input2: 'something else',
+        input3: 'another thing',
+        notInDef: 'delete me',
+      },
+      [
+        { name: 'input1', type: 'input', label: '' },
+        { name: 'input2', type: 'input', label: '' },
+        { name: 'input3', type: 'input', label: '' },
+        { name: 'input4', type: 'input', label: '' },
+      ],
+    );
+
+    expect(result).toStrictEqual({
+      name: {
+        firstName: undefined,
+        lastName: undefined,
+      },
+      input1: 'something',
+      input2: 'something else',
+      input3: 'another thing',
+      input4: undefined,
+    });
+  });
+  test("Creates a 'name' subobject and populates 'firstName' and 'lastName' properties from top level of input object", () => {
+    const result = transformContactFormValues(
+      {
+        firstName: 'Lorna',
+        lastName: 'Ballantyne',
+      },
+      [
+        { name: 'firstName', type: 'input', label: '' },
+        { name: 'lastName', type: 'input', label: '' },
+      ],
+    );
+
+    expect(result).toStrictEqual({
+      name: {
+        firstName: 'Lorna',
+        lastName: 'Ballantyne',
+      },
+    });
+  });
+  test("Converts 'mixed' values to nulls for mixed-checkbox types", () => {
+    const result = transformContactFormValues(
+      {
+        mixed1: 'mixed',
+        mixed2: true,
+        mixed3: false,
+        notMixed: 'mixed',
+      },
+      [
+        { name: 'mixed1', type: 'mixed-checkbox', label: '' },
+        { name: 'mixed2', type: 'mixed-checkbox', label: '' },
+        { name: 'mixed3', type: 'mixed-checkbox', label: '' },
+        { name: 'notMixed', type: 'input', label: '' },
+      ],
+    );
+
+    expect(result).toStrictEqual({
+      name: {
+        firstName: undefined,
+        lastName: undefined,
+      },
+      mixed1: null,
+      mixed2: true,
+      mixed3: false,
+      notMixed: 'mixed',
+    });
+  });
+});
+
+test('updateContactInHrm - calls a PATCH HRM endpoint using the supplied contact ID in the route', async () => {
+  const responseBody = { from: 'HRM' };
+  const mockedFetch = jest
+    .spyOn(global, 'fetch')
+    .mockResolvedValue(<Response>{ ok: true, json: () => Promise.resolve(responseBody) });
+  try {
+    const inputPatch = { rawJson: { caseInformation: { categories: {} } } };
+    const ret = await updateContactInHrm('1234', inputPatch);
+    expect(ret).toStrictEqual(responseBody);
+    expect(mockedFetch).toHaveBeenCalledWith(
+      '/contacts/1234',
+      expect.objectContaining({
+        method: 'PATCH',
+        body: JSON.stringify(inputPatch),
+      }),
+    );
+  } finally {
+    mockedFetch.mockClear();
+  }
+});
+
+describe('transformCategories', () => {
+  let mockDef: DefinitionVersion;
+  beforeAll(async () => {
+    const v1Defs = await loadDefinition(DefinitionVersionId.v1);
+    mockDef = {
+      ...v1Defs,
+      tabbedForms: {
+        ...v1Defs.tabbedForms,
+        IssueCategorizationTab: jest.fn(() => ({
+          category1: {
+            color: '',
+            subcategories: ['subCategory1', 'subCategory2'],
+          },
+          category2: {
+            color: '',
+            subcategories: ['subCategory1', 'subCategory2'],
+          },
+        })),
+      },
+    };
+  });
+
+  test("Categories in input match the paths of those in definition - sets the subcategories found in defintions to 'true'", () => {
+    const transformed = transformCategories(
+      'a helpline',
+      ['categories.category1.subCategory2', 'categories.category2.subCategory1'],
+      mockDef,
+    );
+    expect(transformed).toStrictEqual({
+      category1: {
+        subCategory1: false,
+        subCategory2: true,
+      },
+      category2: {
+        subCategory1: true,
+        subCategory2: false,
+      },
+    });
+    // Supplied helpline should be used to look up the categories
+    expect(mockDef.tabbedForms.IssueCategorizationTab).toBeCalledWith('a helpline');
+  });
+
+  test("Empty array of categories - produces matrix of categories all set 'false'", () => {
+    const transformed = transformCategories('a helpline', [], mockDef);
+    expect(transformed).toStrictEqual({
+      category1: {
+        subCategory1: false,
+        subCategory2: false,
+      },
+      category2: {
+        subCategory1: false,
+        subCategory2: false,
+      },
+    });
+  });
+
+  test("Categories in input don't match the paths of those in definition - adds the missing paths to the output set to 'true'", () => {
+    const transformed = transformCategories(
+      'a helpline',
+      ['categories.category3.subCategory2', 'categories.category2.subCategory1'],
+      mockDef,
+    );
+    expect(transformed).toStrictEqual({
+      category1: {
+        subCategory1: false,
+        subCategory2: false,
+      },
+      category2: {
+        subCategory1: true,
+        subCategory2: false,
+      },
+      category3: {
+        subCategory2: true,
+      },
+    });
+  });
+
+  test("Categories in input has paths with something other than 2 sections - adds the paths anyway to the output set to 'true'", () => {
+    const transformed = transformCategories(
+      'a helpline',
+      ['categories.category2', 'categories.category1.subCategory1.subSubCategory'],
+      mockDef,
+    );
+    /*
+     * Stuff gets weird, subCategory1 was a boolean, but it now has a sub property so got converted to a 'Boolean' wrapper type.
+     * Probably best to avoid this scenario :-P
+     */
+    // eslint-disable-next-line no-new-wrappers
+    const subCategory1 = new Boolean();
+    (<any>subCategory1).subSubCategory = true;
+    expect(transformed).toStrictEqual({
+      category1: {
+        subCategory1,
+        subCategory2: false,
+      },
+      category2: true,
+    });
   });
 });

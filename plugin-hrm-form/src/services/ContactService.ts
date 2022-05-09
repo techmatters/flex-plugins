@@ -96,8 +96,10 @@ export const searchResultToContactForm = (def: FormDefinition, obj: InformationO
 export function transformCategories(
   helpline,
   categories: TaskEntry['categories'],
+  definitionVersion: DefinitionVersion | undefined = undefined,
 ): Record<string, Record<string, boolean>> {
-  const { IssueCategorizationTab } = getDefinitionVersions().currentDefinitionVersion.tabbedForms;
+  const def = definitionVersion ?? getDefinitionVersions().currentDefinitionVersion;
+  const { IssueCategorizationTab } = def.tabbedForms;
   const cleanCategories = createCategoriesObject(IssueCategorizationTab(helpline));
   const transformedCategories = categories.reduce((acc, path) => set(path, true, acc), {
     categories: cleanCategories, // use an object with categories property so we can reuse the entire path (they look like categories.Category.Subcategory)
@@ -242,8 +244,6 @@ export const updateContactInHrm = async (
     method: 'PATCH',
     body: JSON.stringify(body),
   };
-
-  console.log('Faked out update contacts call', `/contacts/${contactId}`, body, options.method);
   return fetchHrmApi(`/contacts/${contactId}`, options);
 };
 

@@ -80,7 +80,7 @@ export const contactDetailsSectionFormApi: {
     getFormDefinition: def => def.tabbedForms.CallerInformationTab,
     getLayoutDefinition: def => def.layoutVersion.contact.callerInformation,
     formToPayload: (def, form) => ({
-      rawJson: { caseInformation: { categories: transformCategories('', form.categories) } },
+      rawJson: { caseInformation: { categories: transformCategories('', form.categories, def) } },
     }),
   },
   CASE_INFORMATION: {
