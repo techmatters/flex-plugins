@@ -217,7 +217,7 @@ const AddEditCaseItem: React.FC<Props> = ({
     if (isAddTemporaryCaseInfo(temporaryCaseInfo)) {
       const blankForm = formDefinition.reduce(createStateItem, {});
       methods.reset(blankForm); // Resets the form.
-      updateTempInfo({ screen: temporaryCaseInfo.screen, info: {}, action: CaseItemAction.Add }, task.taskSid);
+      updateTempInfo({ screen: temporaryCaseInfo.screen, info: null, action: CaseItemAction.Add }, task.taskSid);
       changeRoute({ ...routing, action: CaseItemAction.Add }, task.taskSid);
     }
   }
