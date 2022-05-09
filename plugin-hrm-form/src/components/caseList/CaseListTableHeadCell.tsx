@@ -5,7 +5,7 @@ import { ArrowDownward } from '@material-ui/icons';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { getConfig } from '../../HrmFormPlugin';
-import { CLTableHeaderFont, CLTableCell, CLHeaderSort } from '../../styles/caseList';
+import { CLTableHeaderFont, CLTableCell } from '../../styles/caseList';
 import { ListCasesQueryParams, ListCasesSortDirection } from '../../types/types';
 import * as CaseListSettingsActions from '../../states/caseList/settings';
 import { caseListBase, namespace, RootState } from '../../states';
@@ -78,21 +78,9 @@ const CaseListTableHeadCell: React.FC<Props> = ({
     updateCaseListSort({ sortBy: column, sortDirection: updatedSortDirection });
   };
   return (
-    <CLTableCell
-      style={{ width: width || '8%', cursor: cursor() }}
-      onClick={handleClick}
-      scope="col"
-      sortDirection={currentSort.sortDirection === ListCasesSortDirection.ASC ? 'asc' : 'desc'}
-    >
+    <CLTableCell style={{ width: width || '8%', cursor: cursor() }} onClick={handleClick} scope="col">
       <CLTableHeaderFont style={{ borderBottom: borderBottom(), whiteSpace: 'nowrap' }}>
-        <CLHeaderSort
-          type="button"
-          aria-label={`${strings[localizedText]} ${
-            currentSort.sortDirection === ListCasesSortDirection.ASC ? 'Ascending' : 'Descending'
-          }`}
-        >
-          <Template code={localizedText} />
-        </CLHeaderSort>
+        <Template code={localizedText} />
         <span aria-hidden="true">{drawSort()}</span>
       </CLTableHeaderFont>
     </CLTableCell>

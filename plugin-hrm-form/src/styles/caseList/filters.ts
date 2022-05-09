@@ -69,9 +69,11 @@ export const MultiSelectButton = styled('button')<MultiSelectButtonProps>`
   font-family: 'Open Sans';
   font-weight: ${props => (props.isOpened ? 'bold' : 'normal')};
   color: #192b33;
-
   &:hover {
     background-color: ${props => (props.isOpened ? 'white' : 'rgba(255, 255, 255, 0.5)')};
+  }
+  &:focus {
+    outline: auto;
   }
 `;
 MultiSelectButton.displayName = 'MultiSelectButton';

@@ -100,17 +100,6 @@ export const CLTableHeaderFont = styled(FontOpenSans)`
 `;
 CLTableHeaderFont.displayName = 'CLTableHeaderFont';
 
-// eslint-disable-next-line import/no-unused-modules
-export const CLHeaderSort = styled('button')`
-  border: none;
-  background-color: transparent;
-  &:focus {
-    outline: auto;
-  }
-`;
-CLHeaderSort.displayName = 'CLHeaderSort';
-
-
 export const CLTableBodyFont = styled(FontOpenSans)`
   color: #192b33;
   font-size: 12px;
@@ -133,11 +122,11 @@ export const CLCaseIDButton = styled('button')`
   border: none;
   background-color: transparent;
   padding: 2px 0px;
-  &:focus{
+  &:focus {
     outline: auto;
     outline-color: black;
   }
-`
+`;
 CLCaseIDButton.displayName = 'CLCaseIDButton';
 
 type PaginationButtonProps = {
