@@ -43,6 +43,10 @@ export const CLTableRow = withStyles({
     borderColor: 'rgba(127, 134, 155, 0.07)',
     borderRadius: 4,
     boxShadow: '0 1px 1px 0 rgba(0, 0, 0, 0.06)',
+    '&:hover': {
+      outline: 'auto',
+      outlineColor: '#a0a8bd66',
+    },
   },
 })(TableRow);
 CLTableRow.displayName = 'CLTableRow';
@@ -85,14 +89,6 @@ export const CLSummaryCell = withStyles({
 })(CLTableCell);
 CLSummaryCell.displayName = 'CLSummaryCell';
 
-export const CLActionCell = withStyles({
-  body: {
-    paddingRight: '10px !important',
-    textAlign: 'right',
-  },
-})(CLTableCell);
-CLActionCell.displayName = 'CLActionCell';
-
 export const CLTableHeaderFont = styled(FontOpenSans)`
   font-weight: 600;
   font-size: 12px;
@@ -104,12 +100,8 @@ export const CLTableHeaderFont = styled(FontOpenSans)`
 `;
 CLTableHeaderFont.displayName = 'CLTableHeaderFont';
 
-type CLTableBodyFontProps = {
-  isOpenCase: boolean;
-};
-
-export const CLTableBodyFont = styled(FontOpenSans)<CLTableBodyFontProps>`
-  color: ${props => (props.isOpenCase ? '#192b33' : '#666c7c')};
+export const CLTableBodyFont = styled(FontOpenSans)`
+  color: #192b33;
   font-size: 12px;
   line-height: 18px;
   font-weight: 600;
@@ -117,17 +109,25 @@ export const CLTableBodyFont = styled(FontOpenSans)<CLTableBodyFontProps>`
 `;
 CLTableBodyFont.displayName = 'CLTableBodyFont';
 
-type CLCaseNumberContainerProps = {
-  isOpenCase: boolean;
-};
-
-export const CLCaseNumberContainer = styled('div')<CLCaseNumberContainerProps>`
+export const CLCaseNumberContainer = styled('div')`
   display: inline-block;
   padding: 0 6px;
-  border: ${props => (props.isOpenCase ? '1px solid #192b33' : '0')};
-  border-radius: 2px;
 `;
 CLCaseNumberContainer.displayName = 'CLCaseNumberContainer';
+
+export const CLCaseIDButton = styled('button')`
+  color: #1876d1;
+  text-decoration: underline;
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+  padding: 2px 0px;
+  &:focus {
+    outline: auto;
+    outline-color: black;
+  }
+`;
+CLCaseIDButton.displayName = 'CLCaseIDButton';
 
 type PaginationButtonProps = {
   highlight?: Boolean;

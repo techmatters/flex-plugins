@@ -75,6 +75,8 @@ export type Case = {
   helpline: string;
   twilioWorkerId: string;
   info?: CaseInfo;
+  childName: string;
+  categories: {};
   createdAt: string;
   updatedAt: string;
   connectedContacts: any[]; // TODO: create contact type
