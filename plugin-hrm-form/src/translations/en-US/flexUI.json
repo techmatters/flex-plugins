@@ -126,7 +126,7 @@
   "Error-Form": "There is a problem with your submission.  Please check the form for errors.",
   "Error-CategoryRequired": "Required 1 category minimum, 3 categories maximum",
   "Error-Unexpected": "Unexpected error has occurred",
-  "Case-CaseNumber": "Case",
+  "Case-CaseNumber": "Case #",
   "Case-TimelineSection": "Timeline",
   "Case-AddPerpetratorSection": "Perpetrators",
   "Case-AddIncidentSection": "Incidents",

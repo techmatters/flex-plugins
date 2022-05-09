@@ -110,11 +110,8 @@ export const CLHeaderSort = styled('button')`
 `;
 CLHeaderSort.displayName = 'CLHeaderSort';
 
-type CLTableBodyFontProps = {
-  isOpenCase?: boolean;
-};
 
-export const CLTableBodyFont = styled(FontOpenSans)<CLTableBodyFontProps>`
+export const CLTableBodyFont = styled(FontOpenSans)`
   color: #192b33;
   font-size: 12px;
   line-height: 18px;
@@ -123,11 +120,7 @@ export const CLTableBodyFont = styled(FontOpenSans)<CLTableBodyFontProps>`
 `;
 CLTableBodyFont.displayName = 'CLTableBodyFont';
 
-type CLCaseNumberContainerProps = {
-  isOpenCase?: boolean;
-};
-
-export const CLCaseNumberContainer = styled('div')<CLCaseNumberContainerProps>`
+export const CLCaseNumberContainer = styled('div')`
   display: inline-block;
   padding: 0 6px;
 `;
@@ -144,7 +137,7 @@ export const CLCaseIDButton = styled('button')`
     outline: auto;
     outline-color: black;
   }
-`;
+`
 CLCaseIDButton.displayName = 'CLCaseIDButton';
 
 type PaginationButtonProps = {

@@ -164,7 +164,7 @@
   "BottomBar-Update": "Atualizar",
   "BottomBar-AddThisContactToExistingCase": "Adicionar este contato a um caso existente",
   "Case-Counsellor": "Atendente",
-  "Case-CaseNumber": "Caso",
+  "Case-CaseNumber": "Caso #",
   "Case-ActionHeaderAdded": "Adicionado em {{date}} às {{time}} por {{counsellor}}",
   "Case-ActionHeaderUpdated": "Atualizado em {{date}} às {{time}} por {{counsellor}}",
   "Case-ActionHeaderCounselor": "Atendente:",

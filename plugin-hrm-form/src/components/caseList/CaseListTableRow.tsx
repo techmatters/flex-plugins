@@ -15,7 +15,7 @@ import {
   CLCaseNumberContainer,
   CLCaseIDButton,
 } from '../../styles/caseList';
-import { Box } from '../../styles/HrmStyles';
+import { Box, Row, HiddenText } from '../../styles/HrmStyles';
 import { formatName, getShortSummary } from '../../utils';
 import { getContactTags, renderTag } from '../../utils/categories';
 import { caseStatuses } from '../../states/DomainConstants';
@@ -48,25 +48,29 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
   const isOpenCase = caseItem.status !== caseStatuses.closed;
 
   return (
-    <CLTableRow data-testid="CaseList-TableRow" onClick={handleClickViewCase(caseItem)}>
+    <CLTableRow data-testid="CaseList-TableRow">
       <CLNumberCell>
-        <CLCaseNumberContainer isOpenCase={isOpenCase}>
-          <CLCaseIDButton aria-label={`Open Case ${caseItem.id}`} tabIndex={0} onClick={handleClickViewCase(caseItem)}>
+        <CLCaseNumberContainer>
+          <CLCaseIDButton tabIndex={0} onClick={handleClickViewCase(caseItem)}>
+            <HiddenText>
+              <Template code={statusString} />
+              <Template code="CaseList-THCase" />
+            </HiddenText>
             {caseItem.id}
           </CLCaseIDButton>
-          <CLTableBodyFont style={{ color: '#606B85', paddingTop: '2px', textAlign: 'center' }} isOpenCase={isOpenCase}>
+          <CLTableBodyFont style={{ color: '#606B85', paddingTop: '2px', textAlign: 'center' }}>
             <Template code={`CaseList-Status${statusString}`} />
           </CLTableBodyFont>
         </CLCaseNumberContainer>
       </CLNumberCell>
       <CLNamesCell>
-        <CLTableBodyFont isOpenCase={isOpenCase}>{name}</CLTableBodyFont>
+        <CLTableBodyFont>{name}</CLTableBodyFont>
       </CLNamesCell>
       <CLTableCell>
-        <CLTableBodyFont isOpenCase={isOpenCase}>{counselor}</CLTableBodyFont>
+        <CLTableBodyFont>{counselor}</CLTableBodyFont>
       </CLTableCell>
       <CLSummaryCell>
-        <CLTableBodyFont isOpenCase={isOpenCase}>{shortSummary}</CLTableBodyFont>
+        <CLTableBodyFont>{shortSummary}</CLTableBodyFont>
       </CLSummaryCell>
       <CLTableCell>
         <div style={{ display: 'inline-block', flexDirection: 'column' }}>
@@ -79,13 +83,13 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
         </div>
       </CLTableCell>
       <CLTableCell>
-        <CLTableBodyFont isOpenCase={isOpenCase}>{opened}</CLTableBodyFont>
+        <CLTableBodyFont>{opened}</CLTableBodyFont>
       </CLTableCell>
       <CLTableCell>
-        <CLTableBodyFont isOpenCase={isOpenCase}>{updated}</CLTableBodyFont>
+        <CLTableBodyFont>{updated}</CLTableBodyFont>
       </CLTableCell>
       <CLTableCell>
-        <CLTableBodyFont isOpenCase={isOpenCase}>{followUpDate}</CLTableBodyFont>
+        <CLTableBodyFont>{followUpDate}</CLTableBodyFont>
       </CLTableCell>
     </CLTableRow>
   );
