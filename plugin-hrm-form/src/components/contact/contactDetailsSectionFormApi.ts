@@ -8,7 +8,7 @@ import {
   unNestInformationObject,
 } from '../../services/ContactService';
 
-export type ContactFormValues = {
+type ContactFormValues = {
   [key in 'childInformation' | 'callerInformation' | 'caseInformation']?: Record<string, string | boolean>;
 };
 
@@ -23,7 +23,7 @@ export type ContactDetailsSectionFormApi = {
     rawJson: Partial<
       | Pick<ContactRawJson, 'callerInformation' | 'childInformation'>
       | { caseInformation: Omit<ContactRawJson['caseInformation'], 'categories'> }
-      >;
+    >;
   };
 };
 

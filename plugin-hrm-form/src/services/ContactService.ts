@@ -96,8 +96,10 @@ export const searchResultToContactForm = (def: FormDefinition, obj: InformationO
 export function transformCategories(
   helpline,
   categories: TaskEntry['categories'],
+  definition: DefinitionVersion | undefined = undefined,
 ): Record<string, Record<string, boolean>> {
-  const { IssueCategorizationTab } = getDefinitionVersions().currentDefinitionVersion.tabbedForms;
+  const def: DefinitionVersion = definition ?? getDefinitionVersions().currentDefinitionVersion;
+  const { IssueCategorizationTab } = def.tabbedForms;
   const cleanCategories = createCategoriesObject(IssueCategorizationTab(helpline));
   const transformedCategories = categories.reduce((acc, path) => set(path, true, acc), {
     categories: cleanCategories, // use an object with categories property so we can reuse the entire path (they look like categories.Category.Subcategory)
