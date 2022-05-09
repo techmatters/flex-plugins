@@ -1,6 +1,7 @@
+import { omit } from 'lodash';
+
 import { SearchContact } from '../../types/types';
 import { hrmServiceContactToSearchContact } from './contactDetailsAdapter';
-import { omit } from 'lodash';
 
 export type ExistingContactsState = {
   [contactId: string]: {
