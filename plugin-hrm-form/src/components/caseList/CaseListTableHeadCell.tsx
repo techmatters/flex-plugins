@@ -77,10 +77,25 @@ const CaseListTableHeadCell: React.FC<Props> = ({
 
     updateCaseListSort({ sortBy: column, sortDirection: updatedSortDirection });
   };
+
+  const getSortDirectionValue = () => {
+    if (!featureFlags.enable_sort_cases) return false;
+    if (!currentSort || !column || column !== currentSort.sortBy) return false;
+
+    return currentSort.sortDirection === ListCasesSortDirection.ASC ? 'asc' : 'desc';
+  };
+
   return (
-    <CLTableCell style={{ width: width || '8%', cursor: cursor() }} onClick={handleClick} scope="col">
+    <CLTableCell 
+      onClick={handleClick} 
+      scope="col"
+      sortDirection={getSortDirectionValue()}
+      style={{ width: width || '8%', cursor: cursor() }}
+    >
       <CLTableHeaderFont style={{ borderBottom: borderBottom(), whiteSpace: 'nowrap' }}>
-        <Template code={localizedText} />
+        <button disabled={!column ? true : false}>
+          <Template code={localizedText} />
+        </button>
         <span aria-hidden="true">{drawSort()}</span>
       </CLTableHeaderFont>
     </CLTableCell>
