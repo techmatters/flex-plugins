@@ -8,7 +8,7 @@ terraform {
 }
 
 locals {
-  hrm_url = var.short_environment == "PROD" ? "https://hrm-production.tl.techmatters.org" : (var.short_environment == "STG" ? "https://hrm-test.tl.techmatters.org" : "https://hrm-development.tl.techmatters.org")
+  hrm_url = var.short_environment == "PROD" ? "https://hrm-production.tl.techmatters.org" : (var.short_environment == "STG" || var.short_environment == "STG-III"  ? "https://hrm-test.tl.techmatters.org" : "https://hrm-development.tl.techmatters.org")
   permission_config = var.permission_config == "" ? var.operating_info_key : var.permission_config
   service_configuration_payload = jsonencode({"ui_attributes":  {
     "warmTransfers": {
