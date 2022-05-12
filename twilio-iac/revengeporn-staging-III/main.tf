@@ -39,7 +39,7 @@ module "services" {
   short_helpline = var.short_helpline
   environment = var.environment
   short_environment = var.short_environment
-  uses_conversations_service = var.uses_conversations_service
+  uses_conversation_service = var.uses_conversation_service
 }
 
 module "taskRouter" {

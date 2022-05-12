@@ -1,4 +1,4 @@
-variable "uses_conversations_service" {
+variable "uses_conversation_service" {
   default = true
   type = bool
   description = "Tells Terraform if the service being used is Flex Conversations Service"
