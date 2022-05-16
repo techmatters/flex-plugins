@@ -19,7 +19,7 @@ import { undoCaseListSettingsUpdate } from '../../states/caseList/reducer';
 import { dateFilterPayloadFromFilters } from './filters/dateFilters';
 import * as ListContent from '../../states/caseList/listContent';
 
-export const CASES_PER_PAGE = 5;
+export const CASES_PER_PAGE = 10;
 
 const standaloneTask: StandaloneITask = {
   taskSid: 'standalone-task-sid',

@@ -5,7 +5,6 @@ import { Absolute, FontOpenSans, Flex } from '../HrmStyles';
 
 export const CaseListContainer = styled(Absolute)`
   height: 100%;
-  width: 100%;
   background-color: ${props => props.theme.colors.base2};
 `;
 CaseListContainer.displayName = 'CaseListContainer';
@@ -17,9 +16,10 @@ export const CenteredContainer = styled(CaseListContainer)`
 `;
 CenteredContainer.displayName = 'CenteredContainer';
 
-export const TableContainer = styled('div')`
+export const TableContainer = styled(Flex)`
   border-left: 15px solid ${props => props.theme.colors.base2};
   border-right: 10px solid ${props => props.theme.colors.base2};
+  
 `;
 TableContainer.displayName = 'TableContainer';
 
@@ -31,6 +31,7 @@ export const CLTable = withStyles({
       outline: 'none',
     },
   },
+  
 })(Table);
 CLTable.displayName = 'CLTable';
 
