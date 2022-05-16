@@ -27,6 +27,61 @@
         "Videos",
         "Unspecified/Unknown"
       ]
+    },
+    "Locstion of Images": {
+      "color": "#E86B6B",
+      "subcategories": [  
+        "Unknown",
+        "Client Didn't Answer",
+        "Client Doesn't Know",
+        "Client Wanted No Data Collected",
+        "Dating Site",
+        "Discord",
+        "Email/Text/Dms",
+        "Facebook",
+        "General Porn Site",
+        "Hard copy pictures",
+        "Instagram",
+        "Multiple Locations",
+        "Not relevant",
+        "Question Not Asked",
+        "RP Website",
+        "Snapchat",
+        "Subscription Site (OnlyFans, Fansly etc)",
+        "Threat to publish",
+        "Twitch",
+        "Twitter",
+        "Web Cam Capture",
+        "Youtube"
+      ]  
+    },
+    "Locstion of Threat": {
+      "color": "#8055BA",
+      "subcategories": [  
+        "Unknown",
+        "Client Didn't Answer",
+        "Client Doesn't Know",
+        "Client Wanted No Data Collected",
+        "Collector site (forums made specifically for sharing content)",
+        "Dating Site",
+        "Discord",
+        "Email/Text/Dms",
+        "Facebook",
+        "General Porn Site",
+        "Hard copy pictures",
+        "Instagram",
+        "Multiple Locations",
+        "Not relevant",
+        "Question Not Asked",
+        "RP Website",
+        "Snapchat",
+        "Subscription Site (OnlyFans, Fansly etc)",
+        "Threat to publish",
+        "Twitch",
+        "Twitter",
+        "Web Cam Capture",
+        "Youtube"
+      ]   
     }
   },
   "RHC": {
@@ -62,6 +117,38 @@
         "Hacked account",
         "Threat to life"
       ]
+    },
+    "Locstion of Images": {
+      "color": "#E86B6B",
+      "subcategories": [  
+        "Unknown",
+        "Bing",
+        "Blogger",
+        "Dating Site",
+        "Discord",
+        "Email/Text/Dms",
+        "Facebook",
+        "Google seach",
+        "Hard copy pictures",
+        "Instagram",
+        "LinkedIn",
+        "Minecraft",
+        "Multiple Locations",
+        "Other",
+        "Question Not Asked",
+        "Roblox",
+        "RP Website",
+        "Skype",
+        "Snapchat",
+        "Subscription Site (OnlyFans, Fansly etc)",
+        "Tik Tok",
+        "Twitch",
+        "Twitter",
+        "Web Cam Capture",
+        "Xbox Live",
+        "Youtube",
+        "Youtube Kids"
+      ]  
     }
   }
 }
