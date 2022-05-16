@@ -148,7 +148,6 @@ const Filters: React.FC<Props> = ({
 
   const [openedFilter, setOpenedFilter] = useState<string>();
   const [statusValues, setStatusValues] = useState<Item[]>(statusInitialValues);
-  console.log('>>>statusValues ', statusValues)
   const [counselorValues, setCounselorValues] = useState<Item[]>(getCounselorsInitialValue(counselorsHash));
   const [dateFilterValues, setDateFilterValues] = useState<{
     createdAt?: DateFilterValue;
@@ -165,7 +164,6 @@ const Filters: React.FC<Props> = ({
       checked: counsellors.includes(cv.value),
     }));
     const newStatusValues = statusValues.map(sv => ({ ...sv, checked: statuses.includes(sv.value) }));
-    console.log('>>> newStatusValues', newStatusValues)
     const newCategoriesValues = getUpdatedCategoriesValues(categories, categoriesValues);
     setCounselorValues(newCounselorValues);
     setStatusValues(newStatusValues);
@@ -255,7 +253,7 @@ const Filters: React.FC<Props> = ({
             setOpenedFilter={setOpenedFilter}
             searchable
           />
-          <FiltersContainer style={{ marginLeft: 'auto', boxShadow: 'none', }}>
+          <FiltersContainer style={{ marginLeft: 'auto', boxShadow: 'none' }}>
             <DateRange fontSize="inherit" style={{ marginRight: 5 }} />
             <Template code="CaseList-Filters-DateFiltersLabel" />
             {getInitialDateFilters().map(df => {
