@@ -67,7 +67,7 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
   const definitionVersion = definitionVersions[version];
 
   // Get the status for a case from the value of CaseStatus.json of the current form definitions
-  const getStatusValue = (caseStatus: string) => {
+  const getCaseStatusLabel = (caseStatus: string) => {
     return Object.values(definitionVersion.caseStatus).filter(status => status.value === caseStatus)[0].label;
   };
 
@@ -83,7 +83,7 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
             {caseItem.id}
           </CLCaseIDButton>
           <CLTableBodyFont style={{ color: '#606B85', paddingTop: '2px', textAlign: 'center' }}>
-            {getStatusValue(caseItem.status)}
+            {getCaseStatusLabel(caseItem.status)}
           </CLTableBodyFont>
         </CLCaseNumberContainer>
       </CLNumberCell>
