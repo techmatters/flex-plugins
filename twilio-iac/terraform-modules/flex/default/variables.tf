@@ -2,16 +2,22 @@ variable "account_sid" {
   description = "Twilio Account SID"
   type        = string
 }
-
 variable "serverless_url" {
   description = "URL used to access Aselo Twilio serverless functions"
   type        = string
+}
+
+variable "hrm_url" {
+  description = "Custom URL for the HRM backend (leave blank and it will infer a default) from the environments name"
+  type = string
+  default = ""
 }
 
 variable "short_environment" {
   description = "Short upper case environment identifier, typically 'PROD', 'STG' or 'DEV'"
   type        = string
 }
+
 
 variable "operating_info_key" {
   description = "Operating info key for this helpline"
