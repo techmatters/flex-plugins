@@ -30,6 +30,7 @@ type OwnProps = {
   context: DetailsContext;
   showActionIcons?: boolean;
   handleOpenConnectDialog?: (event: any) => void;
+  canEditContact: ()=> boolean
 };
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
@@ -44,6 +45,7 @@ const Details: React.FC<Props> = ({
   contact,
   toggleSectionExpandedForContext,
   navigateForContext,
+  canEditContact
 }) => {
   const { featureFlags } = getConfig();
   const version = contact?.details.definitionVersion;
@@ -98,7 +100,7 @@ const Details: React.FC<Props> = ({
     csamReports
       .map(r => `CSAM on ${format(new Date(r.createdAt), 'yyyy MM dd h:mm aaaaa')}m\n#${r.csamReportId}`)
       .join('\n\n');
-
+  console.log('>>> can Edit',canEditContact())
   return (
     <DetailsContainer data-testid="ContactDetails-Container">
       <NameContainer>
@@ -144,7 +146,7 @@ const Details: React.FC<Props> = ({
           sectionTitle={<Template code="TabbedForms-AddCallerInfoTab" />}
           expanded={detailsExpanded[CALLER_INFORMATION]}
           handleExpandClick={() => toggleSection(CALLER_INFORMATION)}
-          showEditButton={featureFlags.enable_contact_editing}
+          showEditButton={canEditContact() && featureFlags.enable_contact_editing}
           handleEditClick={() => navigate(ContactDetailsRoute.EDIT_CALLER_INFORMATION)}
           buttonDataTestid="ContactDetails-Section-CallerInformation"
         >
@@ -183,8 +185,8 @@ const Details: React.FC<Props> = ({
           expanded={detailsExpanded[ISSUE_CATEGORIZATION]}
           handleExpandClick={() => toggleSection(ISSUE_CATEGORIZATION)}
           buttonDataTestid="ContactDetails-Section-IssueCategorization"
-          showEditButton={featureFlags.enable_contact_editing}
-          handleEditClick={() => navigate(ContactDetailsRoute.EDIT_CATEGORIES)}
+          showEditButton={canEditContact() && featureFlags.enable_contact_editing}
+          handleEditClick={canEditContact() ? () => navigate(ContactDetailsRoute.EDIT_CATEGORIES) : null }
         >
           {formattedCategories.length ? (
             formattedCategories.map((c, index) => (
@@ -209,7 +211,7 @@ const Details: React.FC<Props> = ({
           expanded={detailsExpanded[CONTACT_SUMMARY]}
           handleExpandClick={() => toggleSection(CONTACT_SUMMARY)}
           buttonDataTestid={`ContactDetails-Section-${CONTACT_SUMMARY}`}
-          showEditButton={featureFlags.enable_contact_editing}
+          showEditButton={canEditContact() && featureFlags.enable_contact_editing}
           handleEditClick={() => navigate(ContactDetailsRoute.EDIT_CASE_INFORMATION)}
         >
           {definitionVersion.tabbedForms.CaseInformationTab.map(e => (

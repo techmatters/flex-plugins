@@ -14,6 +14,8 @@ import { ContactDetailsSectionFormApi, contactDetailsSectionFormApi } from './co
 import ContactDetailsSectionForm from './ContactDetailsSectionForm';
 import IssueCategorizationSectionForm from './IssueCategorizationSectionForm';
 import { forExistingContact } from '../../states/contacts/issueCategorizationStateApi';
+import { getPermissionsForContact, PermissionActions } from '../../permissions';
+
 
 type OwnProps = {
   contactId: string;
@@ -35,6 +37,12 @@ const ContactDetails: React.FC<Props> = ({
   contact,
   navigateForContext,
 }) => {
+
+  console.log('>>> contact', contact?.overview.createdBy)
+  // Permission to edit is based the counselor who created the contact - identified by Twilio worker ID
+  const createdByTwilioWorkerId = contact?.overview.createdBy
+  const { can } = getPermissionsForContact(createdByTwilioWorkerId);
+
   const version = contact?.details.definitionVersion;
 
   /**
@@ -118,6 +126,7 @@ const ContactDetails: React.FC<Props> = ({
           showActionIcons={showActionIcons}
           contactId={contactId}
           handleOpenConnectDialog={handleOpenConnectDialog}
+          canEditContact={()=> can(PermissionActions.EDIT_CONTACT)}
         />
       );
   }
