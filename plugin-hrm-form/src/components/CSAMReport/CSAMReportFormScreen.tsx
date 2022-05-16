@@ -24,7 +24,7 @@ const CSAMReportFormScreen: React.FC<Props> = ({
 }) => (
   <CSAMReportContainer data-testid="CSAMReport-FormScreen">
     <CSAMReportLayout>
-      <ActionHeader titleTemplate="CSAMReportForm-Header" onClickClose={onClickClose} counselor={counselor} />
+      <ActionHeader titleTemplate="CSAMReportForm-Header" onClickClose={onClickClose} addingCounsellor={counselor} />
 
       {/** Website details */}
       <Box marginTop="20px" marginBottom="5px">
@@ -49,7 +49,7 @@ const CSAMReportFormScreen: React.FC<Props> = ({
       <RegularText>
         <Template code="CSAMReportForm-ContactDetailsDescription" />
       </RegularText>
-      <Box padding="15px 15px 15px 20px">{formElements.anonymous}</Box>
+      <Box padding="15px 15px 0 15px">{formElements.anonymous}</Box>
 
       {/** Conditional part of the form only shown if contact is not anon */}
       {renderContactDetails && (

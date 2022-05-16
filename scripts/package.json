@@ -9,15 +9,17 @@
     "copyFlowLegacy": "node copyFlow.js",
     "configure": "node configureNewAccount.js",
     "compile": "npx tsc",
-    "setupNewAccount": "npm run compile && node dist/setupNewAccount/index.js",
+    "generateDeploymentFiles": "npm run compile && node dist/deploymentFiles/index.js",
     "copyFlow": "npm run compile && node dist/copyFlow/index.js",
     "importDefaultTwilioResourcesToTerraform": "npm run compile && node dist/terraformSupplemental/importDefaultTwilioResourcesToTerraform.js",
     "createTwilioApiKeyAndSsmSecret": "npm run compile && node dist/terraformSupplemental/createTwilioApiKeyAndSsmSecret.js",
-    "generateNewHelplineFormDefinitions": "npm run compile && node dist/formDefinitions/generateNewHelplineFormDefinitions.js"
+    "generateNewHelplineFormDefinitions": "npm run compile && node dist/formDefinitions/generateNewHelplineFormDefinitions.js",
+    "twilioResources": "npm run compile && node dist/terraformSupplemental/twilioResources.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.25.0",
     "aws-sdk": "^2.947.0",
     "dotenv": "^10.0.0",
     "node-fetch": "^2.6.4",

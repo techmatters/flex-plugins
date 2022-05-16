@@ -1,6 +1,6 @@
 # This is a basic workflow to publish a Twilio Flex-plugins with Github Actions
 
-name: Safernet Staging release
+name: SaferNet Staging release
 
 # Controls when the action will run.
 on:
@@ -24,7 +24,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: '12.x'
+          node-version: '14.x'
       # Call main-action to compile and deploy
       - name: Executing main-action
         uses: ./.github/actions/main-action

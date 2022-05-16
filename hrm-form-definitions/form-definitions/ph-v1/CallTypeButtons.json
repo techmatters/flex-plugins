@@ -1,0 +1,26 @@
+[
+  {
+    "name": "child",
+    "label": "Child calling about self",
+    "type": "button",
+    "category": "data"
+  },
+  {
+    "name": "caller",
+    "label": "Someone calling about a child",
+    "type": "button",
+    "category": "data"
+  },
+  {
+    "name": "silent",
+    "label": "Unresponsive",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "joke",
+    "label": "Prank",
+    "type": "button",
+    "category": "non-data"
+  }
+]

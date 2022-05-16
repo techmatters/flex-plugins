@@ -6,13 +6,33 @@
     "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
+    "name": "locationOfIssue",
+    "label": "Location of Issue",
+    "type": "select",
+    "options": [
+      { "value": "Unknown", "label": "" },
+      { "value": "Home (own)", "label": "Home (own)" },
+      { "value": "Home (other)", "label": "Home (other)" },
+      { "value": "Educational Establishment", "label": "Educational Establishment" },
+      { "value": "Institution", "label": "Institution" },
+      { "value": "Online", "label": "Online" },
+      { "value": "Public place", "label": "Public place" },
+      { "value": "Other", "label": "Other" }
+    ]
+  },
+  {
+    "name": "otherLocation",
+    "label": "If Other, please specify.",
+    "type": "input"
+  },
+  {
     "name": "repeatCaller",
     "label": "Repeat Caller?",
     "type": "mixed-checkbox"
   },
   {
     "name": "didYouDiscussRightsWithTheChild",
-    "label": "Did you discuss rights with the child as well as Safeguarding Children adn Confidentiality Policy?",
+    "label": "Did you discuss rights with the child as well as Safeguarding Children and Confidentiality Policy?",
     "type": "mixed-checkbox"
   },
   {
@@ -21,10 +41,7 @@
     "type": "select",
     "options": [
       { "value": "Unknown", "label": "" },
-      { "value": "Affirmation that SafeSpot is available 24/7 for support", "label": "Affirmation that SafeSpot is available 24/7 for support" },
-      { "value": "Collection of additional information for external referral", "label": "Collection of additional information for external referral" },
       { "value": "Direct interventions by the child helpline", "label": "Direct interventions by the child helpline" },
-      { "value": "Internal referral to counselling psychologist", "label": "Internal referral to counselling psychologist" },
       { "value": "Provision of information about SafeSpot", "label": "Provision of information about SafeSpot" },
       { "value": "Recommendations of resources", "label": "Recommendations of resources" },
       { "value": "Recommendation that young person contact SafeSpot", "label": "Recommendation that young person contact SafeSpot" },
@@ -38,6 +55,18 @@
     ]
   },
   {
+    "name": "outcomeOfContact",
+    "label": "Outcome of Contact",
+    "type": "select",
+    "options": [
+      { "value": "Unknown", "label": "" },
+      { "value": "Resolved", "label": "Resolved" },
+      { "value": "Follow up by next shift", "label": "Follow up by next shift" },    
+      { "value": "Follow up with external entity", "label": "Follow up with external entity" }
+    ],
+    "required": { "value": true, "message": "RequiredFieldError" }
+  },
+  {
     "name": "howDidYouKnowAboutOurLine",
     "label": "How did the child hear about us?",
     "type": "select",
@@ -48,8 +77,7 @@
       { "value": "SMS/Text Message", "label": "SMS/Text Message" },      
       { "value": "Traditional Media", "label": "Traditional Media (TV, Radio, Local News Outlet, Newspaper, etc.)" },
       { "value": "Word of Mouth", "label": "Word of Mouth" }
-    ],
-    "required": { "value": true, "message": "RequiredFieldError" }
+    ]
   },
   {
     "name": "keepConfidential",

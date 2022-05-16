@@ -1,8 +1,15 @@
 /* eslint-disable import/no-unused-modules */
 import { ITask } from '@twilio/flex-ui';
-import { DefinitionVersionId, CallTypes } from 'hrm-form-definitions/src';
+import { DefinitionVersionId, CallTypes } from 'hrm-form-definitions';
 
-export type EntryInfo = { createdAt: string; twilioWorkerId: string };
+import { DateFilter, DateFilterOption, DateFilterValue } from '../components/caseList/filters/dateFilters';
+
+export type EntryInfo = {
+  createdAt: string;
+  updatedAt?: string;
+  updatedBy?: string;
+  twilioWorkerId: string;
+};
 
 /*
  * export type ReferralEntry = {
@@ -30,11 +37,11 @@ export type IncidentEntry = { incident: Incident } & EntryInfo;
 
 export type Note = { [key: string]: string | boolean };
 
-export type NoteEntry = { note: string; counselor: string; date: string };
+export type NoteEntry = Note & EntryInfo;
 
-export type Referral = { [key: string]: string | boolean };
+export type Referral = { date: string; referredTo: string; [key: string]: string | boolean };
 
-export type ReferralEntry = { [key: string]: string | boolean };
+export type ReferralEntry = Referral & EntryInfo;
 
 export type Document = { [key: string]: string | boolean };
 
@@ -42,17 +49,11 @@ export type DocumentEntry = { document: Document; id: string | undefined } & Ent
 
 export type CSAMReportEntry = { csamReportId: string; id: number } & EntryInfo;
 
-export const blankReferral = {
-  date: null,
-  referredTo: null,
-  comments: null,
-};
-
 export type CaseInfo = {
   definitionVersion?: DefinitionVersionId;
   offlineContactCreator?: string;
   summary?: string;
-  notes?: string[];
+  counsellorNotes?: NoteEntry[];
   perpetrators?: PerpetratorEntry[];
   households?: HouseholdEntry[];
   referrals?: ReferralEntry[];
@@ -68,6 +69,8 @@ export type Case = {
   helpline: string;
   twilioWorkerId: string;
   info?: CaseInfo;
+  childName: string;
+  categories: {};
   createdAt: string;
   updatedAt: string;
   connectedContacts: any[]; // TODO: create contact type
@@ -84,7 +87,7 @@ export type ContactRawJson = {
   callType: CallTypes | '';
   childInformation: InformationObject;
   callerInformation: InformationObject;
-  caseInformation: { categories: {} } & { [key: string]: string | boolean | {} }; // // having {} makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
+  caseInformation: { categories: {} } & { [key: string]: string | boolean | {} }; // having {} makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
   contactlessTask: { [key: string]: string | boolean };
 };
 
@@ -101,6 +104,7 @@ export type SearchContact = {
     notes: string;
     channel: string;
     conversationDuration: number;
+    createdBy: string;
   };
   details: ContactRawJson;
   csamReports: CSAMReportEntry[];
@@ -114,6 +118,50 @@ export type SearchContactResult = {
 export type SearchCaseResult = {
   count: number;
   cases: Case[];
+};
+
+export enum ListCasesSortBy {
+  ID = 'id',
+  CREATED_AT = 'createdAt',
+  UPDATED_AT = 'updatedAt',
+  CHILD_NAME = 'childName',
+  FOLLOW_UP_DATE = 'info.followUpDate',
+}
+
+export enum ListCasesSortDirection {
+  ASC = 'ASC',
+  DESC = 'DESC',
+}
+
+export type ListCasesSort = {
+  sortBy?: ListCasesSortBy;
+  sortDirection?: ListCasesSortDirection;
+};
+
+export type ListCasesQueryParams = {
+  limit?: number;
+  offset?: number;
+  sortBy?: ListCasesSortBy;
+  sortDirection?: ListCasesSortDirection;
+} & ListCasesSort;
+
+export type CategoryFilter = {
+  category: string;
+  subcategory: string;
+};
+
+export type ListCasesFilters = {
+  counsellors: string[];
+  statuses: string[];
+  includeOrphans: boolean;
+  createdAt?: DateFilterValue;
+  updatedAt?: DateFilterValue;
+  followUpDate?: DateFilterValue;
+  categories?: CategoryFilter[];
+};
+
+export type CounselorHash = {
+  [sid: string]: string;
 };
 
 /**

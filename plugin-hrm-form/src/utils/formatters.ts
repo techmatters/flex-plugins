@@ -1,11 +1,6 @@
-import React from 'react';
 import { truncate } from 'lodash';
 import { format } from 'date-fns';
-import { FormItemDefinition } from 'hrm-form-definitions';
-
-import { getConfig } from '../HrmFormPlugin';
-import { channelTypes } from '../states/DomainConstants';
-import { getNumberFromTask } from '../services/ContactService';
+import type { FormItemDefinition } from 'hrm-form-definitions';
 
 /**
  * @param {string} name
@@ -70,14 +65,6 @@ export const formatCategories = categories =>
     subcats.map(subcat => (subcat === 'Unspecified/Other' ? `${subcat} - ${cat}` : subcat)),
   );
 
-export const formatDateTime = (date, includeTime: boolean = true) => {
-  const locale = navigator.language;
-  const dateString = date.toLocaleDateString(locale);
-  const timeString = date.toLocaleTimeString(locale, { timeStyle: 'short' }).replace('AM', 'am').replace('PM', 'pm');
-
-  return includeTime ? `${dateString} at ${timeString}` : dateString;
-};
-
 /**
  * Formats Date Time (string) into a friendly readable format
  * @param dateTime
@@ -89,30 +76,27 @@ export const formatStringToDateAndTime = (dateTime: string): string => {
 /**
  * Formats a form value into a readable string.
  * @param value Value to format
+ * @param strings Translation lookups
  */
-export const presentValue = (value: string | number | boolean) => (definition: FormItemDefinition = null) => {
-  const { strings } = getConfig();
-
+export const presentValue = (value: string | number | boolean | string[], strings: Record<string, string>) => (
+  definition: FormItemDefinition = null,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
+) => {
   // eslint-disable-next-line dot-notation
   if (definition && definition.type === 'mixed-checkbox' && value === null) return strings['Unknown'];
+
+  if (definition && definition.type === 'listbox-multiselect' && Array.isArray(value))
+    return value.map(val => (strings[val] ? strings[val] : val)).join('\n');
+
   if (typeof value === 'string' && value.trim()) return value;
   if (typeof value === 'number') return value.toString();
   if (typeof value === 'boolean') {
-    if (value) return strings['SectionEntry-Yes'];
-    return strings['SectionEntry-No'];
+    if (value) return strings['SectionEntry-Yes'] ? strings['SectionEntry-Yes'] : value.toString();
+    return strings['SectionEntry-No'] ? strings['SectionEntry-No'] : value.toString();
   }
 
   return '-';
 };
-
-/**
- *
- * @param {ITask | CustomITask} task
- * @param contactNumberFromTask
- */
-
-export const formatNumberFromTask = task =>
-  task.channelType === channelTypes.twitter ? `@${task.attributes.twitterUserHandle}` : getNumberFromTask(task);
 
 /**
  * Removes the prefixed milliseconds from the fileName saved at AWS and returns only the original fileName

@@ -2,8 +2,7 @@
     {
       "name": "date",
       "type": "date-input",
-      "label": "Date of Incident",
-      "required": { "value": true, "message": "RequiredFieldError" }
+      "label": "Date of Incident"
     },
     {
       "name": "duration",
@@ -32,6 +31,13 @@
         { "value": "Other", "label": "Other" }
       ],
       "required": { "value": true, "message": "RequiredFieldError" }
+    },
+    {
+        "name": "detailsOfIncident",
+        "label": "Details of incident",
+        "type": "textarea",
+        "rows": 25,
+        "width": 300
     },
     {
       "name": "isCaregiverAware",

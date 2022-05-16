@@ -1,29 +1,18 @@
 export const channelTypes = {
-  facebook: 'facebook',
-  web: 'web',
   voice: 'voice',
   sms: 'sms',
+  facebook: 'facebook',
   whatsapp: 'whatsapp',
+  web: 'web',
   twitter: 'twitter',
-} as const;
-
-export const channelsAndDefault = {
-  ...channelTypes,
-  default: 'default',
+  instagram: 'instagram',
 } as const;
 
 export type ChannelTypes = typeof channelTypes[keyof typeof channelTypes];
 
-export const otherContactChannels = {
-  'Bulletin board': 'Bulletin board',
-  'E-mail': 'E-mail',
-  'Mobile app': 'Mobile app',
-  Outreach: 'Outreach',
-  Post: 'Post',
-  'Walk-in / In person': 'Walk-in / In person',
-  'Website forum': 'Website forum',
-  Other: 'Other',
-} as const;
+export type ChannelColors = {
+  [C in ChannelTypes]: string;
+};
 
 export const transferModes = {
   cold: 'COLD',

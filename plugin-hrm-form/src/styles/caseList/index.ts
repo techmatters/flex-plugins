@@ -1,7 +1,7 @@
 import styled from 'react-emotion';
 import { Table, TableCell, TableRow, withStyles } from '@material-ui/core';
 
-import { Absolute, FontOpenSans } from '../HrmStyles';
+import { Absolute, FontOpenSans, Flex } from '../HrmStyles';
 
 export const CaseListContainer = styled(Absolute)`
   height: 100%;
@@ -43,6 +43,10 @@ export const CLTableRow = withStyles({
     borderColor: 'rgba(127, 134, 155, 0.07)',
     borderRadius: 4,
     boxShadow: '0 1px 1px 0 rgba(0, 0, 0, 0.06)',
+    '&:hover': {
+      outline: 'auto',
+      outlineColor: '#a0a8bd66',
+    },
   },
 })(TableRow);
 CLTableRow.displayName = 'CLTableRow';
@@ -52,6 +56,7 @@ export const CLTableCell = withStyles(theme => ({
     borderBottom: 0,
     textTransform: 'none',
     overflow: 'hidden',
+    paddingLeft: '10px',
   },
   body: {
     verticalAlign: 'top',
@@ -84,28 +89,19 @@ export const CLSummaryCell = withStyles({
 })(CLTableCell);
 CLSummaryCell.displayName = 'CLSummaryCell';
 
-export const CLActionCell = withStyles({
-  body: {
-    paddingRight: '10px !important',
-    textAlign: 'right',
-  },
-})(CLTableCell);
-CLActionCell.displayName = 'CLActionCell';
-
 export const CLTableHeaderFont = styled(FontOpenSans)`
   font-weight: 600;
   font-size: 12px;
   line-height: 30px;
   letter-spacing: 0;
+  display: flex;
+  align-items: center;
+  width: fit-content;
 `;
 CLTableHeaderFont.displayName = 'CLTableHeaderFont';
 
-type CLTableBodyFontProps = {
-  isOpenCase: boolean;
-};
-
-export const CLTableBodyFont = styled(FontOpenSans)<CLTableBodyFontProps>`
-  color: ${props => (props.isOpenCase ? '#192b33' : '#666c7c')};
+export const CLTableBodyFont = styled(FontOpenSans)`
+  color: #192b33;
   font-size: 12px;
   line-height: 18px;
   font-weight: 600;
@@ -113,34 +109,46 @@ export const CLTableBodyFont = styled(FontOpenSans)<CLTableBodyFontProps>`
 `;
 CLTableBodyFont.displayName = 'CLTableBodyFont';
 
-type CLCaseNumberContainerProps = {
-  isOpenCase: boolean;
-};
-
-export const CLCaseNumberContainer = styled('div')<CLCaseNumberContainerProps>`
+export const CLCaseNumberContainer = styled('div')`
   display: inline-block;
   padding: 0 6px;
-  border: ${props => (props.isOpenCase ? '1px solid #192b33' : '0')};
-  border-radius: 2px;
 `;
 CLCaseNumberContainer.displayName = 'CLCaseNumberContainer';
+
+export const CLCaseIDButton = styled('button')`
+  color: #1876d1;
+  text-decoration: underline;
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+  padding: 2px 0px;
+  &:focus {
+    outline: auto;
+    outline-color: black;
+  }
+`;
+CLCaseIDButton.displayName = 'CLCaseIDButton';
 
 type PaginationButtonProps = {
   highlight?: Boolean;
 };
 
-export const PaginationButton = styled('div')<PaginationButtonProps>`
+export const PaginationButton = styled('button')<PaginationButtonProps>`
   background-color: ${props => (props.highlight ? '#1976D2' : 'transparent')};
   box-shadow: ${props => (props.highlight ? '0 1px 1px 0 rgba(0, 0, 0, 0.06)' : '0')};
   border-radius: 4px;
-  padding: 5px 10px;
-  margin: 5px 5px 0 5px;
+  padding: 6px 10px;
+  margin: 0 2px;
+  border: none;
+  &:focus {
+    outline: auto;
+  }
 `;
 PaginationButton.displayName = 'PaginationButton';
 
 export const PaginationChevron = styled(PaginationButton)`
   margin: 0;
-  padding-bottom: 10px;
+  padding: 7px 3px;
 `;
 PaginationChevron.displayName = 'PaginationChevron';
 
@@ -160,3 +168,12 @@ export const SomethingWentWrongText = styled(FontOpenSans)`
   font-size: 20px;
 `;
 SomethingWentWrongText.displayName = 'SomethingWentWrongText';
+
+const FiltersContainer = styled(Flex)`
+  margin-left: 15px;
+  margin-right: 10px;
+  padding: 10px;
+  font-size: 13px;
+  box-shadow: 0 1px 2px 0 rgba(25, 43, 51, 0.1);
+`;
+FiltersContainer.displayName = 'FiltersContainer';

@@ -6,15 +6,12 @@
       "splitFormAt": 15
     },
     "caseInformation": {
-      "splitFormAt": 4
     }
   },
   "case": {
     "households": {
-      "splitFormAt": 7
     },
     "perpetrators": {
-      "splitFormAt": 7
     },
     "incidents": {
       "previewFields": ["date", "duration", "location"],
@@ -29,8 +26,7 @@
         "location":  {
           "includeLabel": true
         }
-      },
-      "splitFormAt": 13
+      }
     },
     "referrals": {
       "splitFormAt": 2

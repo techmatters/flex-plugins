@@ -127,17 +127,6 @@ export const CaseActionTitle = styled(FontOpenSans)`
 `;
 CaseActionTitle.displayName = 'CaseActionTitle';
 
-export const CaseActionCloseButton = styled(ButtonBase)`
-  && {
-    margin-left: auto;
-  }
-
-  :focus {
-    outline: auto;
-  }
-`;
-CaseActionCloseButton.displayName = 'CaseActionCloseButton';
-
 export const CaseActionDetailFont = styled(FontOpenSans)`
   font-style: italic;
   font-size: 12px;
@@ -376,3 +365,13 @@ export const StyledSelectField = styled(({ color, ...rest }: StyledSelectFieldPr
 `;
 
 StyledSelectField.displayName = 'StyledSelectField';
+
+export const CloseDialogText = styled('p')`
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  align-self: center;
+  text-align: center;
+`;
+
+CloseDialogText.displayName = 'CloseDialogText';

@@ -1,35 +1,44 @@
 import { isFuture } from 'date-fns';
-import type { FormDefinition, HelplineDefinitions } from 'hrm-form-definitions';
+import type { FormDefinition, DefinitionVersion } from 'hrm-form-definitions';
 
-import { channelTypes, otherContactChannels } from '../../states/DomainConstants';
+import { channelTypes } from '../../states/DomainConstants';
 import { mapChannelForInsights } from '../../utils/mappers';
 import { splitDate } from '../../utils/helpers';
 import type { CounselorsList } from '../../states/configuration/types';
 import { getConfig } from '../../HrmFormPlugin';
 
-const channelOptions = [{ value: '', label: '' }].concat(
-  [...Object.values(channelTypes), ...Object.values(otherContactChannels)].map(s => ({
+const defaultChannelOptions = [{ value: '', label: '' }].concat(
+  Object.values(channelTypes).map(s => ({
     label: mapChannelForInsights(s),
     value: s,
   })),
 );
 
-export const createContactlessTaskTabDefinition = (
-  counselorsList: CounselorsList,
-  helplineDefinitions: HelplineDefinitions,
-): FormDefinition => {
+export const createContactlessTaskTabDefinition = ({
+  counselorsList,
+  helplineInformation,
+  definition,
+}: {
+  counselorsList: CounselorsList;
+  helplineInformation: DefinitionVersion['helplineInformation'];
+  definition: DefinitionVersion['tabbedForms']['ContactlessTaskTab'];
+}): FormDefinition => {
   const { workerSid } = getConfig();
   const counsellorOptions = [
     { label: '', value: '' },
     ...counselorsList.map(c => ({ label: c.fullName, value: c.sid })),
   ];
 
-  const helplineLabel = helplineDefinitions.label;
+  const helplineLabel = helplineInformation.label;
   const mapHelplineEntriesToOptions = ({ value, label }) => ({ value, label });
-  const helplineOptions = helplineDefinitions.helplines.map(mapHelplineEntriesToOptions);
+  const helplineOptions = helplineInformation.helplines.map(mapHelplineEntriesToOptions);
   const defaultHelplineOption = (
-    helplineDefinitions.helplines.find(helpline => helpline.default) || helplineDefinitions.helplines[0]
+    helplineInformation.helplines.find(helpline => helpline.default) || helplineInformation.helplines[0]
   ).value;
+
+  const channelOptions = definition.offlineChannels
+    ? defaultChannelOptions.concat(definition.offlineChannels.map(c => ({ value: c, label: c })))
+    : defaultChannelOptions;
 
   return [
     {
@@ -51,6 +60,7 @@ export const createContactlessTaskTabDefinition = (
       name: 'date',
       type: 'date-input',
       label: 'Date of Contact',
+      initializeWithCurrent: true,
       required: { value: true, message: 'RequiredFieldError' },
       validate: date => {
         const [y, m, d] = splitDate(date);
@@ -69,6 +79,7 @@ export const createContactlessTaskTabDefinition = (
       name: 'time',
       type: 'time-input',
       label: 'Time of Contact',
+      initializeWithCurrent: true,
       required: { value: true, message: 'RequiredFieldError' },
     },
     {

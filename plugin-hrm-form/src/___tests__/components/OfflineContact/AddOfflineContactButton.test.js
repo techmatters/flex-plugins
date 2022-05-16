@@ -16,7 +16,7 @@ import { reRenderAgentDesktop } from '../../../HrmFormPlugin';
 let v1;
 
 jest.mock('../../../services/ServerlessService');
-jest.mock('../../../HrmFormPlugin.js', () => ({
+jest.mock('../../../HrmFormPlugin', () => ({
   reRenderAgentDesktop: jest.fn(),
 }));
 jest.mock('@twilio/flex-ui', () => ({

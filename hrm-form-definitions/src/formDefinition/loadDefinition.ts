@@ -19,6 +19,9 @@ export enum DefinitionVersionId {
   mwV1 = 'mw-v1', // Malawi v1
   zaV1 = 'za-v1', // South Africa v1
   jmV1 = 'jm-v1', // SafeSpot v1
+  caV1 = 'ca-v1', // Kids Help Phone Canada v1
+  phV1 = 'ph-v1', // ECPAT Phillippines v1
+  ukV1 = 'uk-v1', // Revenge Porn UK v1
 }
 
 // Using a variable for the root of the dynamic import confuses webpack :-(
@@ -63,6 +66,16 @@ export async function loadDefinition(version: DefinitionVersionId): Promise<Defi
   const issueCategorizationTabModule = await import(
     /* webpackMode: "eager" */ `../../form-definitions/${version}/tabbedForms/IssueCategorizationTab.json`
   );
+
+  let contactlessTaskTabModule;
+  try {
+    contactlessTaskTabModule = await import(
+      /* webpackMode: "eager" */ `../../form-definitions/${version}/tabbedForms/ContactlessTaskTab.json`
+    );
+  } catch (err) {
+    contactlessTaskTabModule = {};
+  }
+
   const callTypeButtonsModule = await import(
     /* webpackMode: "eager" */ `../../form-definitions/${version}/CallTypeButtons.json`
   );
@@ -111,6 +124,7 @@ export async function loadDefinition(version: DefinitionVersionId): Promise<Defi
       IssueCategorizationTab: (helpline: string) =>
         issueCategorizationTabModule.default[helpline] ||
         issueCategorizationTabModule.default[defaultHelpline],
+      ContactlessTaskTab: contactlessTaskTabModule,
     },
     callTypeButtons: callTypeButtonsModule.default as CallTypeButtonsDefinitions,
     layoutVersion: layoutDefinitionsModule.default as LayoutVersion,

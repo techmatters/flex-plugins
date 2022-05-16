@@ -4,6 +4,8 @@ import { reduce } from '../../../states/case/reducer';
 import * as actions from '../../../states/case/actions';
 import * as GeneralActions from '../../../states/actions';
 import { Case } from '../../../types/types';
+import { REMOVE_CONTACT_STATE } from '../../../states/types';
+import { TemporaryCaseInfo } from '../../../states/case/types';
 
 const task = { taskSid: 'task1' };
 const voidDefinitions = {
@@ -24,7 +26,10 @@ describe('test reducer', () => {
   test('should return initial state', async () => {
     const expected = { tasks: {} };
 
-    const result = reduce(state, {});
+    const result = reduce(state, {
+      type: REMOVE_CONTACT_STATE,
+      taskId: 'TEST_TASK_ID',
+    });
     expect(result).toStrictEqual(expected);
 
     state = result;
@@ -92,14 +97,22 @@ describe('test reducer', () => {
   });
 
   test('should handle UPDATE_TEMP_INFO', async () => {
-    const randomTemp = { screen: 'add-note', info: '' };
+    const randomTemp: TemporaryCaseInfo = {
+      screen: 'add-note',
+      info: {
+        form: true,
+        id: 'TEST_NOTE_ID',
+        createdAt: new Date().toISOString(),
+        twilioWorkerId: 'TEST_WORKER_ID',
+      },
+    };
 
     const { connectedCase, prevStatus } = state.tasks.task1;
     const expected = {
       tasks: { task1: { connectedCase, temporaryCaseInfo: randomTemp, caseHasBeenEdited: true, prevStatus } },
     };
 
-    const result = reduce(state, actions.updateTempInfo({ screen: 'add-note', info: '' }, task.taskSid));
+    const result = reduce(state, actions.updateTempInfo(randomTemp, task.taskSid));
     expect(result).toStrictEqual(expected);
 
     state = result;

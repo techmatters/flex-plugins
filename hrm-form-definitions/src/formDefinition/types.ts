@@ -24,6 +24,21 @@ type EmailInputDefinition = {
   type: 'email';
 } & ItemBase;
 
+export type InputOption = { value: any; label: string };
+
+type RadioInputDefinition = {
+  type: 'radio-input';
+  options: InputOption[];
+  defaultOption?: InputOption['value'];
+} & ItemBase;
+
+type ListboxMultiselectDefinition = {
+  type: 'listbox-multiselect';
+  options: InputOption[];
+  height?: number;
+  width?: number;
+} & ItemBase;
+
 export type SelectOption = { value: any; label: string };
 
 type SelectDefinition = {
@@ -60,13 +75,17 @@ type TextareaDefinition = {
   width?: number;
 } & ItemBase;
 
+type TimeRelatedInput = {
+  initializeWithCurrent?: boolean;
+} & ItemBase;
+
 type DateInputDefinition = {
   type: 'date-input';
-} & ItemBase;
+} & TimeRelatedInput;
 
 type TimeInputDefinition = {
   type: 'time-input';
-} & ItemBase;
+} & TimeRelatedInput;
 
 type FileUploadDefinition = {
   type: 'file-upload';
@@ -83,6 +102,8 @@ export type FormItemDefinition =
   | InputDefinition
   | NumericInputDefinition
   | EmailInputDefinition
+  | RadioInputDefinition
+  | ListboxMultiselectDefinition
   | SelectDefinition
   | DependentSelectDefinition
   | CheckboxDefinition
@@ -97,7 +118,7 @@ export type FormDefinition = FormItemDefinition[];
 export type CategoryEntry = { color: string; subcategories: string[] };
 export type CategoriesDefinition = { [category: string]: CategoryEntry };
 
-type CallTypeButtonsEntry = {
+export type CallTypeButtonsEntry = {
   type: 'button';
   name: CallTypeKeys;
   label: string;
@@ -149,6 +170,7 @@ export type LayoutVersion = {
     incidents: LayoutDefinition;
     referrals: LayoutDefinition;
     documents: LayoutDefinition;
+    notes?: LayoutDefinition;
   };
 };
 
@@ -177,6 +199,7 @@ export type DefinitionVersion = {
     CaseInformationTab: FormDefinition;
     ChildInformationTab: FormDefinition;
     IssueCategorizationTab: (helpline: string) => CategoriesDefinition;
+    ContactlessTaskTab: { offlineChannels?: string[] };
   };
   callTypeButtons: CallTypeButtonsDefinitions;
   layoutVersion: LayoutVersion;

@@ -19,6 +19,24 @@
         "phone": "021 762 8198",
         "email": "nicole@childlinewc.org"
       }
+    },
+    {
+      "label": "Free State",
+      "value": "Free State",
+      "manager": {
+        "name": "Cynthia Burger Du Toit",
+        "phone": "051 430 3311",
+        "email": "cynthiadt@cwcl.org.za"
+      }
+    },
+    {
+      "label": "Northern Cape",
+      "value": "Northern Cape",
+      "manager": {
+        "name": "Marietha Le Roux",
+        "phone": "021 762 8198",
+        "email": "mariethaj@cwcl.org.za"
+      }
     }
   ]
 }

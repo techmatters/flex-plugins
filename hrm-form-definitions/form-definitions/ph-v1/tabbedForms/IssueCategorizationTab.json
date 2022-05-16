@@ -1,0 +1,46 @@
+{
+  "ECPAT Philippines": {
+    "Violence": {
+      "color": "#F5A623",
+      "subcategories": [
+        "Bullying",
+        "Child/Early/Forced marriage",
+        "Child labour",
+        "Gender-based harmful traditional practices (other than FGM)",
+        "Mental/Emotional violence",
+        "Neglect (or negligent treatment)",
+        "Physical violence",
+        "Sexual abuse (i.e rape, sexual molestation)",
+        "Unspecified/Other - Physical or Sexual Violence"
+      ]
+    },
+    "Trafficking": {
+      "color": "#F8E900",
+      "subcategories": [
+        "SEC in Travel and Tourism",
+        "SEC in Community / Street"
+      ]
+    },
+    "OSEC": {
+      "color": "#E86B6B",
+      "subcategories": [
+        "CSAM (Production, Distribution, and Possession)",
+        "Online Grooming",
+        "Online Trafficking",
+        "Sextortion",
+        "Live Streaming",
+        "Online Prostitution"
+      ]
+    },
+    "Information & Other Non-Counselling contacts": {
+      "color": "#767777",
+      "subcategories": [
+        "Complaints about the child helpline",
+        "Questions about the child helpline",
+        "Questions about other services",
+        "\"Thank you for your assistance\"",
+        "Unspecified/Other - Information & Other Non-counselling Contacts"
+      ]
+    }
+  }
+}

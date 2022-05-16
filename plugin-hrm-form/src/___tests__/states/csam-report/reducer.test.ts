@@ -1,14 +1,37 @@
 /* eslint-disable sonarjs/no-identical-functions */
+import { DefinitionVersion } from 'hrm-form-definitions';
+
 import { reduce, initialState, newTaskEntry } from '../../../states/csam-report/reducer';
 import * as actions from '../../../states/csam-report/actions';
 import * as GeneralActions from '../../../states/actions';
+import { GeneralActionType } from '../../../states/types';
 
 const task = { taskSid: 'task-sid' };
-const voidDefinitions = {
-  callerFormDefinition: [],
-  caseInfoFormDefinition: [],
-  categoriesFormDefinition: {},
-  childFormDefinition: [],
+const voidDefinitions: DefinitionVersion = {
+  tabbedForms: {
+    CallerInformationTab: [],
+    ChildInformationTab: [],
+    CaseInformationTab: [],
+    ContactlessTaskTab: {},
+    IssueCategorizationTab: () => ({}),
+  },
+  caseForms: {
+    HouseholdForm: [],
+    PerpetratorForm: [],
+    ReferralForm: [],
+    NoteForm: [],
+    DocumentForm: [],
+    IncidentForm: [],
+  },
+  callTypeButtons: [],
+  caseStatus: {},
+  layoutVersion: {
+    contact: { callerInformation: {}, caseInformation: {}, childInformation: {} },
+    case: { households: {}, referrals: {}, documents: {}, perpetrators: {}, incidents: {} },
+  },
+  helplineInformation: { label: '', helplines: [] },
+  prepopulateKeys: { ChildInformationTab: [], CallerInformationTab: [] },
+  insights: { oneToOneConfigSpec: {}, oneToManyConfigSpecs: [] },
 };
 
 describe('test reducer', () => {
@@ -17,7 +40,7 @@ describe('test reducer', () => {
 
     const expected = initialState;
 
-    const result = reduce(state, {});
+    const result = reduce(state, <GeneralActionType>{});
     expect(result).toStrictEqual(expected);
   });
 

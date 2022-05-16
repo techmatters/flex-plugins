@@ -16,8 +16,8 @@
     "type": "checkbox"
   },
   {
-    "name": "Recommendations",
-    "label": "Recommendations",
+    "name": "ReferralsToMentalHealthServices",
+    "label": "Referrals to Mental Health Services",
     "type": "checkbox"
   },
   {
@@ -67,7 +67,7 @@
   },
   {
     "name": "howDidYouKnowAboutOurLine",
-    "label": "How did you hear about our line/number",
+    "label": "How did you hear about us?",
     "type": "select",
     "options": [
       { "value": "Unknown", "label": "" },
@@ -82,19 +82,8 @@
     ]
   },
   {
-    "name": "keepConfidential",
-    "label": "Keep confidential?",
-    "type": "checkbox",
-    "initialChecked": true
-  },
-  {
     "name": "okForCaseWorkerToCall",
     "label": "Ok for case worker to call?",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "didYouDiscussRightsWithTheChild",
-    "label": "Did you discuss rights with the child?",
     "type": "mixed-checkbox"
   },
   {

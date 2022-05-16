@@ -65,16 +65,14 @@ const IssueCategorizationTab: React.FC<Props> = ({
   };
 
   return (
-    <TabbedFormTabContainer display={display}>
-      <CategoriesFromDefinition
-        definition={IssueCategorizationTabDefinition}
-        subcategoriesInputs={subcategoriesInputs}
-        categoriesMeta={categoriesMeta}
-        toggleCategoriesGridView={toggleCategoriesGridView}
-        toggleExpandCategory={toggleExpandCategory}
-        firstElementRef={firstElementRef}
-      />
-    </TabbedFormTabContainer>
+    <CategoriesFromDefinition
+      definition={IssueCategorizationTabDefinition}
+      subcategoriesInputs={subcategoriesInputs}
+      categoriesMeta={categoriesMeta}
+      toggleCategoriesGridView={toggleCategoriesGridView}
+      toggleExpandCategory={toggleExpandCategory}
+      firstElementRef={firstElementRef}
+    />
   );
 };
 

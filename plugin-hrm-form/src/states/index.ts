@@ -4,6 +4,7 @@ import { combineReducers } from 'redux';
 import { reduce as ContactStateReducer } from './contacts/reducer';
 import { reduce as SearchFormReducer } from './search/reducer';
 import { reduce as ConnectedCaseReducer } from './case/reducer';
+import { reduce as CaseListReducer } from './caseList/reducer';
 import { reduce as QueuesStatusReducer } from './queuesStatus/reducer';
 import { reduce as ConfigurationReducer } from './configuration/reducer';
 import { reduce as RoutingReducer } from './routing/reducer';
@@ -14,6 +15,7 @@ import { reduce as DualWriteReducer } from './dualWrite/reducer';
 export const namespace = 'plugin-hrm-form';
 export const contactFormsBase = 'activeContacts';
 export const searchContactsBase = 'searchContacts';
+export const caseListBase = 'caseList';
 export const connectedCaseBase = 'connectedCase';
 export const queuesStatusBase = 'queuesStatusState';
 export const configurationBase = 'configuration';
@@ -26,6 +28,7 @@ const reducers = {
   [searchContactsBase]: SearchFormReducer,
   [queuesStatusBase]: QueuesStatusReducer,
   [connectedCaseBase]: ConnectedCaseReducer,
+  [caseListBase]: CaseListReducer,
   [configurationBase]: ConfigurationReducer,
   [routingBase]: RoutingReducer,
   [csamReportBase]: CSAMReportReducer,

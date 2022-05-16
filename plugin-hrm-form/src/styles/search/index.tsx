@@ -397,6 +397,7 @@ export const SectionValueText = styled(BodyText)<SectionValueTextProps>`
   overflow-wrap: anywhere;
   white-space: pre-wrap;
   max-width: 40em;
+  line-height: 18px;
   ${props => props.notBold && 'font-weight: 500'};
 `;
 
@@ -437,6 +438,9 @@ export const ScrollableList = styled('div')`
 export const StyledButtonBase = withStyles({
   root: {
     margin: 5,
+    '&:focus': {
+      outline: 'auto',
+    },
   },
   disabled: {
     color: 'rgba(0, 0, 0, 0.26)',

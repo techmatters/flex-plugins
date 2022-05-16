@@ -1,24 +1,24 @@
 /* eslint-disable sonarjs/prefer-immediate-return */
 import { set } from 'lodash/fp';
-import { ITask, TaskHelper, Actions as FlexActions } from '@twilio/flex-ui';
+import { TaskHelper } from '@twilio/flex-ui';
 import type { CategoriesDefinition, CategoryEntry, FormDefinition, FormItemDefinition } from 'hrm-form-definitions';
 
 import { createNewTaskEntry, TaskEntry } from '../states/contacts/reducer';
 import { isNonDataCallType } from '../states/ValidationRules';
-import { channelTypes } from '../states/DomainConstants';
-import { getConversationDuration, fillEndMillis } from '../utils/conversationDuration';
-import { getLimitAndOffsetParams } from './PaginationParams';
+import { getQueryParams } from './PaginationParams';
+import { fillEndMillis, getConversationDuration } from '../utils/conversationDuration';
 import fetchHrmApi from './fetchHrmApi';
 import { getDateTime } from '../utils/helpers';
 import { getConfig, getDefinitionVersions } from '../HrmFormPlugin';
 import {
-  InformationObject,
   ContactRawJson,
-  SearchContactResult,
+  InformationObject,
   isOfflineContactTask,
   isTwilioTask,
+  SearchContactResult,
 } from '../types/types';
 import { saveContactToExternalBackend } from '../dualWrite';
+import { getNumberFromTask } from '../utils';
 
 /**
  * Un-nests the information (caller/child) as it comes from DB, to match the form structure
@@ -40,7 +40,7 @@ const unNestInformationObject = (
   def.reduce((acc, e) => ({ ...acc, [e.name]: unNestInformation(e, obj) }), {});
 
 export async function searchContacts(searchParams, limit, offset): Promise<SearchContactResult> {
-  const queryParams = getLimitAndOffsetParams(limit, offset);
+  const queryParams = getQueryParams({ limit, offset });
 
   const options = {
     method: 'POST',
@@ -50,18 +50,6 @@ export async function searchContacts(searchParams, limit, offset): Promise<Searc
   const responseJson = await fetchHrmApi(`/contacts/search${queryParams}`, options);
 
   return responseJson;
-}
-
-export function getNumberFromTask(task: ITask) {
-  if (task.channelType === channelTypes.facebook) {
-    return task.defaultFrom.replace('messenger:', '');
-  } else if (task.channelType === channelTypes.whatsapp) {
-    return task.defaultFrom.replace('whatsapp:', '');
-  } else if (task.channelType === channelTypes.web) {
-    return task.attributes.ip;
-  }
-
-  return task.defaultFrom;
 }
 
 /**

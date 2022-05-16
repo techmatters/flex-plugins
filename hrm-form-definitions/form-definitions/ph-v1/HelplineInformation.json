@@ -1,0 +1,15 @@
+{
+  "label": "Helpline",
+  "helplines": [
+    {
+      "label": "ECPAT Philippines",
+      "value": "ECPAT Philippines",
+      "default": true,
+      "manager": {
+        "name": "Ginno Corral",
+        "phone": "(+632) 920 8151",
+        "email": "ginnoreycorral@gmail.com"
+      }
+    }
+  ]
+}

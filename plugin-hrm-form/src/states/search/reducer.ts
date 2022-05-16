@@ -122,23 +122,6 @@ export function reduce(state = initialState, action: t.SearchActionType | Genera
         },
       };
     }
-    case t.HANDLE_EXPAND_DETAILS_SECTION: {
-      const task = state.tasks[action.taskId];
-      const { detailsExpanded } = task;
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: {
-            ...task,
-            detailsExpanded: {
-              ...detailsExpanded,
-              [action.section]: !detailsExpanded[action.section],
-            },
-          },
-        },
-      };
-    }
     case t.SEARCH_CONTACTS_REQUEST: {
       const task = state.tasks[action.taskId];
       return {
@@ -233,44 +216,6 @@ export function reduce(state = initialState, action: t.SearchActionType | Genera
             casesError: action.error,
           },
         },
-      };
-    }
-    case t.SEARCH_CASES_UPDATE: {
-      /**
-       * Updates searchCasesResult with the updatedCase to a specific TaskEntry
-       * @param taskId TaskEntry Id
-       */
-      const updateSearchCasesInTask = (taskId: string): TaskEntry => {
-        const taskEntry = state.tasks[taskId];
-        const updatedCases = taskEntry.searchCasesResult.cases.map(c =>
-          c.id === action.updatedCase.id ? action.updatedCase : c,
-        );
-        return {
-          ...taskEntry,
-          searchCasesResult: {
-            ...taskEntry.searchCasesResult,
-            cases: updatedCases,
-          },
-        };
-      };
-
-      /**
-       * Searches in the entire task collection and updates it with the new taskEntry.
-       * This code contemplates the following scenario:
-       * 1. The User opens two or more tasks.
-       * 2. The user triggers a search with similar parameters on each task.
-       * 3. One case (i.e. Case: XXXX) is returned in several tasks.
-       * 4. The user triggers an update for Case: XXXX in one of the tasks.
-       * 5. Case is updated across all tasks.
-       */
-      const tasks = Object.keys(state.tasks).reduce(
-        (acc, taskId) => ({ ...acc, [taskId]: updateSearchCasesInTask(taskId) }),
-        {},
-      );
-
-      return {
-        ...state,
-        tasks,
       };
     }
     case t.VIEW_PREVIOUS_CONTACTS: {

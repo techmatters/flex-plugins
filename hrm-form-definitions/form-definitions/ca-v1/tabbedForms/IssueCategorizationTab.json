@@ -1,0 +1,202 @@
+{
+  "Kids Help Phone": {
+    "Suicide/Suicidality": {
+      "color": "#BBE3FF",
+      "subcategories": [
+        "Suicide/Suicidality"
+      ]
+    },
+    "Self-Injury": {
+      "color": "#F5A623",
+      "subcategories": [
+        "Self-Injury"
+      ]
+    },
+    "Harming Others": {
+      "color": "#F8E900",
+      "subcategories": [
+        "Harming Others"
+      ]
+    },
+    "Homicide": {
+      "color": "#E86B6B",
+      "subcategories": [
+        "Homicide"
+      ]
+    },
+    "Abuse": {
+      "color": "#8055BA",
+      "subcategories": [
+        "Emotional/Verbal (By a parent/caregiver/family member)",
+        "Emotional/Verbal (By an intimate partner/spouse)",
+        "Emotional/Verbal (Other/Unspecified) ",
+        "Physical (By a parent/caregiver/family member)",
+        "Physical (By an intimate partner/spouse)",
+        "Physical (Other/Unspecified)",
+        "Sexual (By a parent/caregiver/family member)",
+        "Sexual (By an intimate partner/spouse)",
+        "Sexual (Other/Unspecified)",
+        "Neglect"
+      ]
+    },
+    "Assault": {
+      "color": "#B971AF",
+      "subcategories": [
+        "Physical Assault",
+        "Sexual Assault",
+        "Unspecified/Other"
+      ]
+    },
+    "Body Image": {
+      "color": "#239613",
+      "subcategories": [
+        "Body Image"
+      ]
+    },
+    "Bullying/Harassment": {
+      "color": "#9AD703",
+      "subcategories": [
+        "In person bullying/harassment",
+        "Online bullying/harassment"
+      ]
+    },
+    "Extortion/Exploitation": {
+      "color": "#55AFAF",
+      "subcategories": [
+        "In person extortion/exploitation",
+        "Online extortion/exploitation"
+      ]
+    },
+    "Current or Past Events": {
+      "color": "#506BA5",
+      "subcategories": [
+        "Global/national crisis",
+        "Historical events",
+        "News headline",
+        "Societal unrest/demonstrations/protests"
+      ]
+    },
+    "Disability/Ability": {
+      "color": "#767777",
+      "subcategories": [
+        "Intellectual",
+        "Learning",
+        "Bodily",
+        "Hearing",
+        "Vision",
+        "Other Disability/Ability"
+      ]
+    },
+    "Financial Concerns": {
+        "color": "#b36ae3",
+        "subcategories": [
+          "Financial Concerns (e.g., Poverty, Financial Stress. etc.)"
+        ]
+      },
+      "Health": {
+        "color": "#e26e58",
+        "subcategories": [
+          "Physical Illness",
+          "Chronic Illness"
+        ]
+      },
+      "Identity": {
+        "color": "#8bde63",
+        "subcategories": [
+          "Gender/Sexual Expression or Orientation",
+          "Self-expression",
+          "Cultural/ethnic",
+          "Religious - Identity",
+          "Neurodivergence",
+          "Other - Identity"
+        ]
+      },
+      "Living Situation": {
+        "color": "#fc33e5",
+        "subcategories": [
+          "Living Situation (e.g., Homelessness, Moving out/moving to a new place, Anything related to someone's living situation)"
+        ]
+      },
+      "Legal Concerns": {
+        "color": "#df7419",
+        "subcategories": [
+          "Legal Concerns (e.g., Going to court, Looking for legal advice, how to report things, etc.)"
+        ]
+      },
+      "Mental Health & Wellbeing (Symptoms and Behaviours)": {
+        "color": "#e4fbfa",
+        "subcategories": [
+          "Anger/Hostility/Violence",
+          "Anxiety/Stress/Panic/Fear/Worry",
+          "Sleeping Habits/Difficulties",
+          "Attention Difficulties",
+          "Sadness/Depression/Hopelessness",
+          "Paranoia/Hallucinations/Dissociation",
+          "Extreme Mood Swings/Changes in Mood",
+          "Guilt",
+          "Loneliness/Social Isolation/Withdrawal",
+          "Grief/Loss",
+          "Difficulty Coping",
+          "Disordered Eating",
+          "Sex Drive Changes/Habits",
+          "Substance Use",
+          "Addictions",
+          "Trauma Response",
+          "Trouble understanding/relating to others",
+          "Lack of Motivation",
+          "Formal diagnosis mentioned/discussed"
+        ]
+      },
+      "Parenting": {
+        "color": "#50e3c2",
+        "subcategories": [
+          "Parenting"
+        ]
+      },  
+      "Prejudice/Discrimination/Microaggresion/Oppression": {
+        "color": "#8b572a",
+        "subcategories": [
+          "Ableism",
+          "Homophobia",
+          "Transphobia",
+          "Racism",
+          "Religious",
+          "Systemic (e.g., unfair treatment from the criminal/justice/health/education systems)",
+          "Sexism",
+          "Body Shaming",
+          "Mental Health Related",
+          "Unknown/Other"
+        ]
+      },
+      "Relationships": {
+        "color": "#d0021b",
+        "subcategories": [
+          "With family member(s) (e.g., parents/guardians, siblings, etc.)",
+          "With friend(s)/peer(s)",
+          "With partner(s) (e.g., boyfriend/girlfriend, spouse, romantic partner)",
+          "Other relationship(s)"
+        ]
+      },
+      "Substance Use/Experimentation": {
+        "color": "#F5A623",
+        "subcategories": [
+          "Substance Use/Experimentation"
+        ]
+      },
+      "Sex/Sexual Health/Pregnancy": {
+        "color": "#F8E900",
+        "subcategories": [
+          "Sex/Sexual Health/Pregnancy"
+        ]
+      },
+      "School and Work": {
+        "color": "#E86B6B",
+        "subcategories": [
+          "Academic issues",
+          "Teacher and school problems",
+          "Problems at work",
+          "Unspecified/Other"
+        ]
+      }
+    }
+}

@@ -1,5 +1,0 @@
-helpline    = "SafeSpot"
-short_helpline = "JM"
-short_environment = "STG"
-environment = "Staging"
-operating_info_key = "jm"

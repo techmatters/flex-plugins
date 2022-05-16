@@ -22,19 +22,19 @@ import CaseAddButton from './CaseAddButton';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { ContactDetailsSections } from '../common/ContactDetails';
-import { blankReferral, Case as CaseType, CaseItemEntry, CustomITask } from '../../types/types';
-import { isConnectedCaseActivity } from './caseHelpers';
+import { CaseItemEntry, CustomITask } from '../../types/types';
+import { isConnectedCaseActivity } from './caseActivities';
 import { TaskEntry } from '../../states/contacts/reducer';
-import { Activity } from '../../states/case/types';
+import { Activity, NoteActivity, ReferralActivity } from '../../states/case/types';
 import { PermissionActions, PermissionActionType } from '../../permissions';
-import { NewCaseSubroutes, AppRoutesWithCase } from '../../states/routing/types';
+import { NewCaseSubroutes, AppRoutesWithCase, CaseItemAction } from '../../states/routing/types';
 
 type OwnProps = {
   timelineActivities: Activity[];
+  contacts: any[];
   can: (action: PermissionActionType) => boolean;
   taskSid: CustomITask['taskSid'];
   form: TaskEntry;
-  caseObj: CaseType;
   route: AppRoutesWithCase['route'];
 };
 
@@ -42,31 +42,45 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const Timeline: React.FC<Props> = props => {
-  const { can, taskSid, form, caseObj, changeRoute, updateTempInfo, route, timelineActivities } = props;
+  const { can, taskSid, form, changeRoute, updateTempInfo, route, timelineActivities } = props;
   const [mockedMessage, setMockedMessage] = useState(null);
 
-  const handleViewNoteClick = activity => {
+  const handleViewNoteClick = (activity: NoteActivity) => {
     const { twilioWorkerId } = activity;
     const info: CaseItemEntry = {
       id: null,
-      form: { note: activity.text },
+      form: { ...activity.note },
       twilioWorkerId,
       createdAt: parseISO(activity.date).toISOString(),
+      updatedAt: activity.updatedAt ? parseISO(activity.updatedAt).toISOString() : undefined,
+      updatedBy: activity.updatedBy,
     };
-    updateTempInfo({ screen: NewCaseSubroutes.ViewNote, info: { ...info } }, taskSid);
-    changeRoute({ route, subroute: NewCaseSubroutes.ViewNote }, taskSid);
+    updateTempInfo(
+      { screen: NewCaseSubroutes.Note, action: CaseItemAction.View, info: { ...info, index: activity.originalIndex } },
+      taskSid,
+    );
+    changeRoute({ route, subroute: NewCaseSubroutes.Note, action: CaseItemAction.View }, taskSid);
   };
 
-  const handleViewReferralClick = activity => {
+  const handleViewReferralClick = (activity: ReferralActivity) => {
     const { twilioWorkerId } = activity;
     const info: CaseItemEntry = {
       id: null,
       form: { ...activity.referral },
       twilioWorkerId,
-      createdAt: parseISO(activity.date).toISOString(),
+      createdAt: parseISO(activity.createdAt).toISOString(),
+      updatedAt: activity.updatedAt ? parseISO(activity.updatedAt).toISOString() : undefined,
+      updatedBy: activity.updatedBy,
     };
-    updateTempInfo({ screen: NewCaseSubroutes.ViewReferral, info: { ...info } }, taskSid);
-    changeRoute({ route, subroute: NewCaseSubroutes.ViewReferral }, taskSid);
+    updateTempInfo(
+      {
+        screen: NewCaseSubroutes.Referral,
+        action: CaseItemAction.View,
+        info: { ...info, index: activity.originalIndex },
+      },
+      taskSid,
+    );
+    changeRoute({ route, subroute: NewCaseSubroutes.Referral, action: CaseItemAction.View }, taskSid);
   };
 
   const handleViewConnectedCaseActivityClick = activity => {
@@ -79,7 +93,7 @@ const Timeline: React.FC<Props> = props => {
       [ContactDetailsSections.ISSUE_CATEGORIZATION]: false,
       [ContactDetailsSections.CONTACT_SUMMARY]: false,
     };
-    const contact = caseObj.connectedContacts.find(c => c.id === activity.contactId);
+    const contact = props.contacts.find(c => c.id === activity.contactId);
     const tempInfo = {
       detailsExpanded,
       contact,
@@ -92,20 +106,20 @@ const Timeline: React.FC<Props> = props => {
   };
 
   const handleAddNoteClick = () => {
-    updateTempInfo({ screen: NewCaseSubroutes.AddNote, info: null }, taskSid);
-    changeRoute({ route, subroute: NewCaseSubroutes.AddNote }, taskSid);
+    updateTempInfo({ screen: NewCaseSubroutes.Note, action: CaseItemAction.Add, info: null }, taskSid);
+    changeRoute({ route, subroute: NewCaseSubroutes.Note, action: CaseItemAction.Add }, taskSid);
   };
 
   const handleAddReferralClick = () => {
-    updateTempInfo({ screen: NewCaseSubroutes.AddReferral, info: blankReferral }, taskSid);
-    changeRoute({ route, subroute: NewCaseSubroutes.AddReferral }, taskSid);
+    updateTempInfo({ screen: NewCaseSubroutes.Referral, action: CaseItemAction.Add, info: null }, taskSid);
+    changeRoute({ route, subroute: NewCaseSubroutes.Referral, action: CaseItemAction.Add }, taskSid);
   };
 
   /*
    * If case has not been created yet, we should return value from the form.
    * Else If case was already created we should return rawJson value.
    */
-  const callType = form?.callType || caseObj.connectedContacts[0]?.rawJson?.callType;
+  const callType = form?.callType || props.contacts[0]?.rawJson?.callType;
 
   const handleViewClick = activity => {
     if (activity.type === 'note') {

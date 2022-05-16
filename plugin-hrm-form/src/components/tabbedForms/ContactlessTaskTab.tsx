@@ -4,7 +4,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { FieldError, useFormContext } from 'react-hook-form';
 import { isFuture } from 'date-fns';
 import { get } from 'lodash';
-import type { HelplineDefinitions } from 'hrm-form-definitions';
+import type { DefinitionVersion } from 'hrm-form-definitions';
 
 import { createFormFromDefinition, disperseInputs } from '../common/forms/formGenerators';
 import { updateForm } from '../../states/contacts/actions';
@@ -19,7 +19,8 @@ import useFocus from '../../utils/useFocus';
 type OwnProps = {
   task: OfflineContactTask;
   display: boolean;
-  definition: HelplineDefinitions;
+  helplineInformation: DefinitionVersion['helplineInformation'];
+  definition: DefinitionVersion['tabbedForms']['ContactlessTaskTab'];
   initialValues: TaskEntry[keyof TaskEntry];
   autoFocus: boolean;
 };
@@ -31,6 +32,7 @@ const ContactlessTaskTab: React.FC<Props> = ({
   dispatch,
   display,
   task,
+  helplineInformation,
   definition,
   initialValues,
   counselorsList,
@@ -49,14 +51,23 @@ const ContactlessTaskTab: React.FC<Props> = ({
       dispatch(updateForm(task.taskSid, 'contactlessTask', rest));
     };
 
-    const formDefinition = createContactlessTaskTabDefinition(counselorsList, definition);
+    const formDefinition = createContactlessTaskTabDefinition({ counselorsList, helplineInformation, definition });
 
     const tab = createFormFromDefinition(formDefinition)(['contactlessTask'])(initialForm, firstElementRef)(
       updateCallBack,
     );
 
     return disperseInputs(5)(tab);
-  }, [counselorsList, dispatch, getValues, definition, initialForm, firstElementRef, task.taskSid]);
+  }, [
+    counselorsList,
+    helplineInformation,
+    definition,
+    initialForm,
+    firstElementRef,
+    getValues,
+    dispatch,
+    task.taskSid,
+  ]);
 
   // Add invisible field that errors if date + time are future (triggered by validaiton)
   React.useEffect(() => {
@@ -90,14 +101,12 @@ const ContactlessTaskTab: React.FC<Props> = ({
   }, [setValue, time]);
 
   return (
-    <TabbedFormTabContainer display={display}>
-      <Container>
-        <TwoColumnLayout>
-          <ColumnarBlock>{contactlessTaskForm}</ColumnarBlock>
-          <ColumnarBlock />
-        </TwoColumnLayout>
-      </Container>
-    </TabbedFormTabContainer>
+    <Container>
+      <TwoColumnLayout>
+        <ColumnarBlock>{contactlessTaskForm}</ColumnarBlock>
+        <ColumnarBlock />
+      </TwoColumnLayout>
+    </Container>
   );
 };
 

@@ -13,7 +13,7 @@
         "color": "#F5A623",
         "subcategories": [
           "Bullying in school",
-          "Bullying out of school school",
+          "Bullying out of school",
           "Child labour (general)",
           "Child labour (domestic)",
           "Cyberbullying",
@@ -54,15 +54,10 @@
           "Addictive behaviours and substance use",
           "Behavioural problems",
           "Concerns about the self",
-          "Depression",
           "Emotional distress - anger problems",
           "Emotional distress - fear and anxiety problems",
           "Emotional distress - mood problems",
-          "Feelings of being overwhelmed",
-          "Feelings of worry",
-          "Feeling unwanted",
           "Hyperactivity/attention deficit",
-          "Loneliness",
           "Neurodevelopmental concerns",
           "Problems with eating behaviour",
           "Self-esteem issues",
@@ -71,6 +66,7 @@
           "Stress",
           "Suicidal thoughts and suicide attempts",
           "Traumatic distress",
+          "Wellbeing support",
           "Unspecified/Other"
         ]
       },
@@ -169,7 +165,6 @@
       "Disability": {
         "color": "#b36ae3",
         "subcategories": [
-          "Hearing disability",
           "Intellectual disability",
           "Hearing disability",
           "Physical disability",
@@ -180,8 +175,6 @@
         "color": "#767777",
         "subcategories": [
           "Complaints about the child helpline",
-          "No issue presented",
-          "Questions by parents",
           "Questions about the child helpline",
           "Questions about other services",
           "\"Thank you for your assistance\"",
