@@ -68,7 +68,7 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
 
   // Get the status for a case from the value of CaseStatus.json of the current form definitions
   const getCaseStatusLabel = (caseStatus: string) => {
-    return Object.values(definitionVersion.caseStatus).filter(status => status.value === caseStatus)[0].label;
+    return Object.values(definitionVersion.caseStatus).filter(status => status.value === caseStatus)[0]?.label;
   };
 
   return (
