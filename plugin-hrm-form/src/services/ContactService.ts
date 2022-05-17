@@ -245,7 +245,6 @@ export const updateContactInHrm = async (
     body: JSON.stringify(body),
   };
 
-  console.log('Faked out update contacts call', `/contacts/${contactId}`, body, options.method);
   return fetchHrmApi(`/contacts/${contactId}`, options);
 };
 
