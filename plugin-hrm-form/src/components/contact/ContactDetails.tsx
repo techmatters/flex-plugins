@@ -74,13 +74,15 @@ const ContactDetails: React.FC<Props> = ({
   ) => (
     <EditContactSection context={context} contactId={contactId} contactDetailsSectionForm={section}>
       <ContactDetailsSectionForm
-        entityIdentifier={contactId}
         tabPath={formPath}
         definition={section.getFormDefinition(definitionVersion)}
         layoutDefinition={section.getLayoutDefinition(definitionVersion)}
         initialValues={section.getFormValues(definitionVersion, contact)[formPath]}
         display={true}
         autoFocus={true}
+        updateFormActionDispatcher={() => () => {
+          /* */
+        }}
       />
     </EditContactSection>
   );

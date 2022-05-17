@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { Dispatch } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { connect, ConnectedProps } from 'react-redux';
 import type { FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
@@ -11,7 +11,6 @@ import type { TaskEntry } from '../../states/contacts/reducer';
 import useFocus from '../../utils/useFocus';
 
 type OwnProps = {
-  entityIdentifier: string;
   display: boolean;
   definition: FormDefinition;
   layoutDefinition?: LayoutDefinition;
@@ -19,13 +18,13 @@ type OwnProps = {
   initialValues: TaskEntry['callerInformation'] | TaskEntry['childInformation'] | TaskEntry['caseInformation'];
   autoFocus: boolean;
   extraChildrenRight?: React.ReactNode;
+  updateFormActionDispatcher: (dispatch: Dispatch<any>) => (values: any) => void;
 };
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ContactDetailsSectionForm: React.FC<Props> = ({
-  entityIdentifier,
   display,
   definition,
   layoutDefinition,
@@ -43,8 +42,7 @@ const ContactDetailsSectionForm: React.FC<Props> = ({
 
   const [l, r] = React.useMemo(() => {
     const updateCallback = () => {
-      const values = getValues()[tabPath];
-      updateForm(entityIdentifier, tabPath, values);
+      updateForm(getValues());
     };
 
     const generatedForm = createFormFromDefinition(definition)([tabPath])(initialForm, firstElementRef)(updateCallback);
@@ -55,7 +53,7 @@ const ContactDetailsSectionForm: React.FC<Props> = ({
       return splitAt(layoutDefinition.splitFormAt)(disperseInputs(7)(generatedForm));
 
     return splitInHalf(disperseInputs(margin)(generatedForm));
-  }, [definition, getValues, initialForm, firstElementRef, layoutDefinition, tabPath, entityIdentifier, updateForm]);
+  }, [definition, getValues, initialForm, firstElementRef, layoutDefinition, tabPath, updateForm]);
 
   return (
     <Container>
@@ -74,9 +72,9 @@ const ContactDetailsSectionForm: React.FC<Props> = ({
 
 ContactDetailsSectionForm.displayName = 'TabbedFormTab';
 
-const mapDispatchToProps = {
-  updateForm: actions.updateForm,
-};
+const mapDispatchToProps = (dispatch, ownProps: OwnProps) => ({
+  updateForm: ownProps.updateFormActionDispatcher(dispatch),
+});
 
 const connector = connect(null, mapDispatchToProps);
 const connected = connector(ContactDetailsSectionForm);
