@@ -11,39 +11,40 @@
     "type": "mixed-checkbox"
   },
   {
-    "name": "DirectInterventionsByTheChildHelpline",
-    "label": "Direct interventions by the child helpline",
-    "type": "checkbox"
-  },
-  {
-    "name": "ReferralsToMentalHealthServices",
-    "label": "Referrals to Mental Health Services",
-    "type": "checkbox"
-  },
-  {
-    "name": "ReferralsToChildProtectionAgencies",
-    "label": "Referrals to child protection agencies",
-    "type": "checkbox"
-  },
-  {
-    "name": "ReferralsToGeneralHealthcareProfessionals",
-    "label": "Referrals to general healthcare professionals",
-    "type": "checkbox"
-  },
-  {
-    "name": "ReferralsToLawEnforcementAgencies",
-    "label": "Referrals to law enforcement agencies",
-    "type": "checkbox"
-  },
-  {
-    "name": "ReferralsToOtherOrganisations",
-    "label": "Referrals to other organisations",
-    "type": "checkbox"
-  },
-  {
-    "name": "ReferralsToGrievanceOfficers",
-    "label": "Referrals to Grievance Officers",
-    "type": "checkbox"
+    "name": "actionTaken",
+    "label": "Action Taken",
+    "type": "listbox-multiselect",
+    "options": [
+      { "value": "Unknown", "label": "" },
+      {
+        "value": "DirectInterventionsByTheChildHelpline",
+        "label": "Direct interventions by the child helpline"
+      },
+      {
+        "value": "ReferralsToMentalHealthServices",
+        "label": "Referrals to Mental Health Services"
+      },
+      {
+        "value": "ReferralsToChildProtectionAgencies",
+        "label": "Referrals to child protection agencies"
+      },
+      {
+        "value": "ReferralsToGeneralHealthcareProfessionals",
+        "label": "Referrals to general healthcare professionals"
+      },
+      {
+        "value": "ReferralsToLawEnforcementAgencies",
+        "label": "Referrals to law enforcement agencies"
+      },
+      {
+        "value": "ReferralsToOtherOrganisations",
+        "label": "Referrals to other organisations"
+      },
+      {
+        "value": "ReferralsToGrievanceOfficers",
+        "label": "Referrals to Grievance Officers"
+      }
+    ]
   },
   {
     "name": "OtherAction",
