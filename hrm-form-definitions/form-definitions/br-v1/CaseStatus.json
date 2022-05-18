@@ -10,5 +10,11 @@
       "label": "Fechado", 
       "color": "red", 
       "transitions": ["open"] 
+    },
+    "progress": { 
+      "value": "closed", 
+      "label": "Fechado", 
+      "color": "red", 
+      "transitions": ["open"] 
     }
   } 
