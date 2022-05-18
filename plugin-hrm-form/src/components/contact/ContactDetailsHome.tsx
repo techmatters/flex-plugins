@@ -185,7 +185,7 @@ const Details: React.FC<Props> = ({
           expanded={detailsExpanded[ISSUE_CATEGORIZATION]}
           handleExpandClick={() => toggleSection(ISSUE_CATEGORIZATION)}
           buttonDataTestid="ContactDetails-Section-IssueCategorization"
-          showEditButton={canEditContact() && featureFlags.enable_contact_editing}
+          showEditButton={featureFlags.enable_contact_editing}
           handleEditClick={canEditContact() ? () => navigate(ContactDetailsRoute.EDIT_CATEGORIES) : null }
         >
           {formattedCategories.length ? (
@@ -211,7 +211,7 @@ const Details: React.FC<Props> = ({
           expanded={detailsExpanded[CONTACT_SUMMARY]}
           handleExpandClick={() => toggleSection(CONTACT_SUMMARY)}
           buttonDataTestid={`ContactDetails-Section-${CONTACT_SUMMARY}`}
-          showEditButton={canEditContact() && featureFlags.enable_contact_editing}
+          showEditButton={ featureFlags.enable_contact_editing}
           handleEditClick={() => navigate(ContactDetailsRoute.EDIT_CASE_INFORMATION)}
         >
           {definitionVersion.tabbedForms.CaseInformationTab.map(e => (
