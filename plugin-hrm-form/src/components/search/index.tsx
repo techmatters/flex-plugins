@@ -90,7 +90,10 @@ const Search: React.FC<Props> = props => {
 
   const goToForm = () => props.changeSearchPage('form');
 
-  const goToResultsOnContacts = () => props.changeSearchPage(SearchPages.resultsContacts);
+  const goToResultsOnContacts = async () => {
+    await props.searchContacts(searchParams, props.counselorsHash, CONTACTS_PER_PAGE, 0);
+    props.changeSearchPage(SearchPages.resultsContacts);
+  };
 
   const goToResultsOnCases = async () => {
     /*
