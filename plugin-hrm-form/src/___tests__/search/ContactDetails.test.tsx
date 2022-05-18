@@ -12,6 +12,11 @@ import { channelTypes } from '../../states/DomainConstants';
 import { getDefinitionVersions } from '../../HrmFormPlugin';
 import { DetailsContext } from '../../states/contacts/contactDetails';
 
+import { configureAxe, toHaveNoViolations } from 'jest-axe';
+
+import { getPermissionsForContact, PermissionActions } from '../../permissions';
+
+
 const mockStore = configureMockStore([]);
 
 const contactOfType = type => ({
@@ -98,6 +103,7 @@ const handleSelectSearchResult = jest.fn();
 const detailsExpanded = {
   'General details': true,
 };
+const can = jest.fn()
 
 let mockV1;
 let initialState;
@@ -192,3 +198,17 @@ test(`<ContactDetails> with a non data (standalone) contact`, () => {
   const sectionsCount = sections.length;
   expect(sectionsCount).toEqual(1);
 });
+
+
+
+// test('Test no edit permissions', async () => {
+//   render(
+//     <StorelessThemeProvider themeConf={themeConf}>
+//       <Provider store={store}>
+//         <ViewCaseItem {...ownProps} canEdit={() => false} />
+//       </Provider>
+//     </StorelessThemeProvider>,
+//   );
+//   expect(screen.getByTestId('Case-CloseCross')).toBeInTheDocument();
+//   expect(screen.queryByTestId('Case-EditButton')).toBeNull();
+// });

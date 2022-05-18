@@ -2,7 +2,7 @@ import each from 'jest-each';
 
 import { getConfig } from '../../HrmFormPlugin';
 import * as fetchRulesModule from '../../permissions/fetchRules';
-import { getPermissionsForCase, PermissionActions } from '../../permissions';
+import { getPermissionsForCase, getPermissionsForContact, PermissionActions } from '../../permissions';
 
 jest.mock('../../HrmFormPlugin');
 
@@ -34,7 +34,8 @@ describe('Test that all actions work fine (everyone)', () => {
   });
 });
 
-describe('Test different scenarios (random action)', () => {
+
+describe('Test different scenarios (random action) for Cases', () => {
   const PermissionActionsValues = Object.values(PermissionActions);
   const getRandomAction = () =>
     PermissionActionsValues[Math.floor(Math.random() * 100) % PermissionActionsValues.length];
@@ -130,6 +131,97 @@ describe('Test different scenarios (random action)', () => {
       });
 
       const { can } = getPermissionsForCase('creator', status);
+
+      expect(can(action)).toBe(expectedResult);
+    },
+  );
+});
+
+describe('Test different scenarios (random action) for Contacts', () => {
+  const PermissionActionsValues = Object.values(PermissionActions);
+  const getRandomAction = () =>
+    PermissionActionsValues[Math.floor(Math.random() * 100) % PermissionActionsValues.length];
+
+  each(
+    [
+      {
+        action: getRandomAction(),
+        conditionsSets: [['everyone']],
+        workerSid: 'not creator',
+        isSupervisor: false,
+        expectedResult: true,
+        expectedDescription: 'is not creator nor supervisor',
+      },
+      {
+        action: getRandomAction(),
+        conditionsSets: [],
+        workerSid: 'creator',
+        isSupervisor: true,
+        expectedResult: false,
+        expectedDescription: 'user is creator, supervisor',
+      },
+      {
+        action: getRandomAction(),
+        conditionsSets: [['isCreator']],
+        workerSid: 'creator',
+        isSupervisor: false,
+        expectedResult: true,
+        expectedDescription: 'is a creator but not a supervisor',
+      },
+      {
+        action: getRandomAction(),
+        conditionsSets: [['isSupervisor']],
+        workerSid: 'not creator',
+        isSupervisor: true,
+        expectedResult: true,
+        expectedDescription: 'is a supervisor but not a creator',
+      },
+      {
+        action: getRandomAction(),
+        conditionsSets: [['isCreator']],
+        workerSid: 'not creator',
+        isSupervisor: true,
+        expectedResult: false,
+        expectedDescription: 'is not a creator but a supervisorr',
+      },
+      {
+        action: getRandomAction(),
+        conditionsSets: [['isSupervisor']],
+        workerSid: 'creator',
+        isSupervisor: false,
+        expectedResult: false,
+        expectedDescription: 'is a supervisor but not a creator',
+      },
+      {
+        action: getRandomAction(),
+        conditionsSets: [['isSupervisor'], ['isCreator']],
+        workerSid: 'not creator',
+        isSupervisor: true,
+        expectedResult: true,
+        expectedDescription: 'user is supervisor but not creator',
+      },
+      {
+        action: getRandomAction(),
+        conditionsSets: [['isSupervisor'], ['isCreator']],
+        workerSid: 'not creator',
+        isSupervisor: false,
+        expectedResult: false,
+        expectedDescription: 'user is supervisor but not creator',
+      }
+    ].map(t => ({ ...t, prettyConditionsSets: t.conditionsSets.map(arr => `[${arr.join(',')}]`) })),
+  ).test(
+    `Should return $expectedResult when $expectedDescription and conditionsSets are $prettyConditionsSets`,
+    ({ action, conditionsSets, workerSid, isSupervisor, expectedResult }) => {
+      const rules = buildRules(conditionsSets);
+      jest.spyOn(fetchRulesModule, 'fetchRules').mockReturnValueOnce(rules);
+
+      getConfig.mockReturnValueOnce({
+        workerSid,
+        isSupervisor,
+        permissionConfig: 'wareva',
+      });
+
+      const { can } = getPermissionsForContact('creator');
 
       expect(can(action)).toBe(expectedResult);
     },
