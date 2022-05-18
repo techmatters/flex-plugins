@@ -2,7 +2,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Text, View, Image } from '@react-pdf/renderer';
-import { DefinitionVersionId } from 'hrm-form-definitions';
+import { DefinitionVersionId, DefinitionVersion } from 'hrm-form-definitions';
 
 import { getConfig } from '../../../HrmFormPlugin';
 import styles from './styles';
@@ -28,6 +28,7 @@ type OwnProps = {
   version: DefinitionVersionId;
   chkOnBlob?: string;
   chkOffBlob?: string;
+  definitionVersion: DefinitionVersion
 };
 
 type Props = OwnProps;
@@ -44,8 +45,11 @@ const CasePrintDetails: React.FC<Props> = ({
   version,
   chkOnBlob,
   chkOffBlob,
+  definitionVersion,
 }) => {
   const { strings } = getConfig();
+
+  const { hideCounselorDetails } = definitionVersion.layoutVersion.case;
 
   return (
     <View style={styles.caseDetailsContainer}>
@@ -75,6 +79,7 @@ const CasePrintDetails: React.FC<Props> = ({
           </View>
         </View>
       </View>
+      {hideCounselorDetails ? null : 
       <View style={styles.caseDetailsSubSection}>
         <View style={styles.caseCounsellorSection}>
           <View style={styles.flexColumn}>
@@ -91,7 +96,7 @@ const CasePrintDetails: React.FC<Props> = ({
         <View>
           <CasePrintCategories categories={categories} version={version} />
         </View>
-      </View>
+      </View>}
     </View>
   );
 };

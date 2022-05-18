@@ -116,6 +116,7 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
                   caseManager={caseDetails.office?.manager}
                   chkOnBlob={chkOnBlob}
                   chkOffBlob={chkOffBlob}
+                  definitionVersion={definitionVersion}
                 />
                 {caseDetails.contact?.rawJson?.callType === callTypes.caller ? (
                   <View>
