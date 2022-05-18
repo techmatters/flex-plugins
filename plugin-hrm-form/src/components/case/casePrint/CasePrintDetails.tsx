@@ -28,7 +28,7 @@ type OwnProps = {
   version: DefinitionVersionId;
   chkOnBlob?: string;
   chkOffBlob?: string;
-  definitionVersion: DefinitionVersion
+  definitionVersion: DefinitionVersion;
 };
 
 type Props = OwnProps;
@@ -79,24 +79,25 @@ const CasePrintDetails: React.FC<Props> = ({
           </View>
         </View>
       </View>
-      {hideCounselorDetails ? null : 
-      <View style={styles.caseDetailsSubSection}>
-        <View style={styles.caseCounsellorSection}>
-          <View style={styles.flexColumn}>
-            <Text>{strings['Case-Counsellor']}</Text>
-            <Text style={styles.caseDetailsBoldText}>{counselor}</Text>
+      {hideCounselorDetails ? null : (
+        <View style={styles.caseDetailsSubSection}>
+          <View style={styles.caseCounsellorSection}>
+            <View style={styles.flexColumn}>
+              <Text>{strings['Case-Counsellor']}</Text>
+              <Text style={styles.caseDetailsBoldText}>{counselor}</Text>
+            </View>
+            <View style={{ marginTop: 15, ...styles.flexColumn }}>
+              <Text>{strings['Case-CaseManager']}</Text>
+              <Text style={styles.caseDetailsBoldText}>{caseManager?.name}</Text>
+              <Text style={styles.caseDetailsBoldText}>{caseManager?.phone}</Text>
+              <Text style={styles.caseDetailsBoldText}>{caseManager?.email}</Text>
+            </View>
           </View>
-          <View style={{ marginTop: 15, ...styles.flexColumn }}>
-            <Text>{strings['Case-CaseManager']}</Text>
-            <Text style={styles.caseDetailsBoldText}>{caseManager?.name}</Text>
-            <Text style={styles.caseDetailsBoldText}>{caseManager?.phone}</Text>
-            <Text style={styles.caseDetailsBoldText}>{caseManager?.email}</Text>
+          <View>
+            <CasePrintCategories categories={categories} version={version} />
           </View>
         </View>
-        <View>
-          <CasePrintCategories categories={categories} version={version} />
-        </View>
-      </View>}
+      )}
     </View>
   );
 };
