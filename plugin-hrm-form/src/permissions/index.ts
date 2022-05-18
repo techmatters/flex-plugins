@@ -21,6 +21,7 @@ export const PermissionActions = {
   EDIT_PERPETRATOR: 'editPerpetrator',
   EDIT_INCIDENT: 'editIncident',
   EDIT_DOCUMENT: 'editDocument',
+  EDIT_CONTACT: 'editContact',
 };
 
 type PermissionActionsKeys = keyof typeof PermissionActions;
@@ -66,3 +67,42 @@ export const getPermissionsForCase = (twilioWorkerId: t.Case['twilioWorkerId'], 
     can,
   };
 };
+type ContactCondition = 'isSupervisor' | 'isCreator' | 'everyone';
+type ContactConditionSet = ContactCondition[];
+type ContactConditionSets = ContactConditionSet[];
+
+export const getPermissionsForContact = (twilioWorkerId: t.Case['twilioWorkerId']) => {
+  const { workerSid, isSupervisor, permissionConfig } = getConfig();
+
+  if (!permissionConfig || !twilioWorkerId) return { can: undefined };
+
+  const isCreator = workerSid === twilioWorkerId;
+
+  const conditionsState: { [condition in ContactCondition]: boolean } = {
+    isSupervisor,
+    isCreator,
+    everyone: true,
+  };
+
+  const checkCondition = (condition: ContactCondition) => conditionsState[condition];
+  const checkConditionsSet = (conditionsSet: ContactConditionSet) => conditionsSet.every(checkCondition);
+  const checkConditionsSets = (conditionsSets: ContactConditionSets) => conditionsSets.some(checkConditionsSet);
+
+  const rules = fetchRules(permissionConfig);
+
+  const rulesAreValid = Object.values(PermissionActions).every(action => rules[action]);
+  if (!rulesAreValid) throw new Error(`Rules file for ${permissionConfig} is incomplete.`);
+
+  const can = (action: PermissionActionType): boolean => {
+    if (!rules[action]) {
+      console.error(`Cannot find rules for ${action}. Returning false.`);
+      return isSupervisor || (isCreator);
+    }
+
+    return checkConditionsSets(rules[action]);
+  };
+
+  return {
+    can,
+  };
+}; 

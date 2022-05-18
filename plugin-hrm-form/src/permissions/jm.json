@@ -16,5 +16,5 @@
   "editDocument": [["isSupervisor"]],
   "editCaseSummary": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
   "editChildIsAtRisk": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
-  "editFollowUpDate": [["isSupervisor"], ["isCreator", "isCaseOpen"]]
+  "editFollowUpDate": [["isSupervisor"], ["isCreator", "isCaseOpen"]],"editContact": [["isSupervisor"]]
 }
