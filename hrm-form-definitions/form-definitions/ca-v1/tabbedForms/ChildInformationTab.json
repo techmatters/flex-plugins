@@ -138,10 +138,6 @@
     "type": "listbox-multiselect",
     "options": [
       {
-        "value": "",
-        "label": ""
-      },
-      {
         "value": "Agender",
         "label": "Agender"
       },
@@ -193,10 +189,6 @@
     "label": "Sexual Orientation",
     "type": "listbox-multiselect",
     "options": [
-      {
-        "value": "",
-        "label": ""
-      },
       {
         "value": "Asexual",
         "label": "Asexual"
@@ -332,10 +324,6 @@
     "label": "Race/Ethnicity",
     "type": "listbox-multiselect",
     "options": [
-        {
-          "value": "",
-          "label": ""
-        },
         {
           "value": "Black",
           "label": "Black (e.g., African, Afro-Caribbean, African Canadian descent)"
