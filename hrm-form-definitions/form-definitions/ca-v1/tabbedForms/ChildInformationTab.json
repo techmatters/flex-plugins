@@ -135,7 +135,7 @@
   {
     "name": "gender",
     "label": "Gender",
-    "type": "select",
+    "type": "listbox-multiselect",
     "options": [
       {
         "value": "",
@@ -191,7 +191,7 @@
   {
     "name": "sexualOrientation",
     "label": "Sexual Orientation",
-    "type": "select",
+    "type": "listbox-multiselect",
     "options": [
       {
         "value": "",
@@ -330,7 +330,7 @@
   {
     "name": "ethnicity",
     "label": "Race/Ethnicity",
-    "type": "select",
+    "type": "listbox-multiselect",
     "options": [
         {
           "value": "",
