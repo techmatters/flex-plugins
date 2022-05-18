@@ -1,25 +1,16 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { Dispatch } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { connect, ConnectedProps } from 'react-redux';
 import type { FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 
 import * as actions from '../../states/contacts/actions';
-import {
-  ColumnarBlock,
-  Container,
-  TwoColumnLayout,
-  TabbedFormTabContainer,
-  Box,
-  BottomButtonBarHeight,
-} from '../../styles/HrmStyles';
+import { ColumnarBlock, Container, TwoColumnLayout, Box, BottomButtonBarHeight } from '../../styles/HrmStyles';
 import { createFormFromDefinition, disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
 import type { TaskEntry } from '../../states/contacts/reducer';
-import type { CustomITask } from '../../types/types';
 import useFocus from '../../utils/useFocus';
 
 type OwnProps = {
-  task: CustomITask;
   display: boolean;
   definition: FormDefinition;
   layoutDefinition?: LayoutDefinition;
@@ -27,13 +18,13 @@ type OwnProps = {
   initialValues: TaskEntry['callerInformation'] | TaskEntry['childInformation'] | TaskEntry['caseInformation'];
   autoFocus: boolean;
   extraChildrenRight?: React.ReactNode;
+  updateFormActionDispatcher: (dispatch: Dispatch<any>) => (values: any) => void;
 };
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const TabbedFormTab: React.FC<Props> = ({
-  task,
+const ContactDetailsSectionForm: React.FC<Props> = ({
   display,
   definition,
   layoutDefinition,
@@ -51,8 +42,7 @@ const TabbedFormTab: React.FC<Props> = ({
 
   const [l, r] = React.useMemo(() => {
     const updateCallback = () => {
-      const values = getValues()[tabPath];
-      updateForm(task.taskSid, tabPath, values);
+      updateForm(getValues());
     };
 
     const generatedForm = createFormFromDefinition(definition)([tabPath])(initialForm, firstElementRef)(updateCallback);
@@ -63,32 +53,30 @@ const TabbedFormTab: React.FC<Props> = ({
       return splitAt(layoutDefinition.splitFormAt)(disperseInputs(7)(generatedForm));
 
     return splitInHalf(disperseInputs(margin)(generatedForm));
-  }, [definition, getValues, initialForm, firstElementRef, layoutDefinition, tabPath, task.taskSid, updateForm]);
+  }, [definition, getValues, initialForm, firstElementRef, layoutDefinition, tabPath, updateForm]);
 
   return (
-    <TabbedFormTabContainer display={display}>
-      <Container>
-        <Box paddingBottom={`${BottomButtonBarHeight}px`}>
-          <TwoColumnLayout>
-            <ColumnarBlock>{l}</ColumnarBlock>
-            <ColumnarBlock>
-              {r}
-              {extraChildrenRight}
-            </ColumnarBlock>
-          </TwoColumnLayout>
-        </Box>
-      </Container>
-    </TabbedFormTabContainer>
+    <Container>
+      <Box paddingBottom={`${BottomButtonBarHeight}px`}>
+        <TwoColumnLayout>
+          <ColumnarBlock>{l}</ColumnarBlock>
+          <ColumnarBlock>
+            {r}
+            {extraChildrenRight}
+          </ColumnarBlock>
+        </TwoColumnLayout>
+      </Box>
+    </Container>
   );
 };
 
-TabbedFormTab.displayName = 'TabbedFormTab';
+ContactDetailsSectionForm.displayName = 'TabbedFormTab';
 
-const mapDispatchToProps = {
-  updateForm: actions.updateForm,
-};
+const mapDispatchToProps = (dispatch, ownProps: OwnProps) => ({
+  updateForm: ownProps.updateFormActionDispatcher(dispatch),
+});
 
 const connector = connect(null, mapDispatchToProps);
-const connected = connector(TabbedFormTab);
+const connected = connector(ContactDetailsSectionForm);
 
 export default connected;

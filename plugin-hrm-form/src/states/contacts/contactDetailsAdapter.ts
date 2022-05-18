@@ -3,9 +3,7 @@
  * a better solution later on.
  */
 
-import { transformForm } from '../../services/ContactService';
-import { getConversationDuration } from '../../utils/conversationDuration';
-import { getNumberFromTask } from '../../utils/task';
+import { SearchContact } from '../../types/types';
 
 /**
  * @param {string[]} accumulator
@@ -35,61 +33,33 @@ export const retrieveCategories = categories => {
   return Object.entries(categories).reduce(catsReducer, {});
 };
 
-export const adaptContactToDetailsScreen = (contact, counselorName) => {
+export const hrmServiceContactToSearchContact = (contact): SearchContact => {
   const dateTime = contact.timeOfContact;
+
   const name = `${contact.rawJson.childInformation.name.firstName} ${contact.rawJson.childInformation.name.lastName}`;
   const customerNumber = contact.number;
   const { callType, caseInformation } = contact.rawJson;
   const categories = retrieveCategories(caseInformation.categories);
   const notes = caseInformation.callSummary;
   const channelType = contact.channel;
-  const { conversationDuration, csamReports } = contact;
-  const counselor = counselorName;
+  const { conversationDuration, csamReports, createdBy, helpline } = contact;
 
   return {
+    contactId: contact.id,
     overview: {
+      helpline,
       dateTime,
       name,
       customerNumber,
       callType,
       categories,
-      counselor,
+      counselor: contact.twilioWorkerId,
       notes,
       channel: channelType,
       conversationDuration,
+      createdBy,
     },
-    counselor,
     details: contact.rawJson,
-    csamReports,
-  };
-};
-
-export const adaptFormToContactDetails = (task, form, date, counselor) => {
-  const details = transformForm(form);
-  const dateTime = date;
-  const name = `${details.childInformation.name.firstName} ${details.childInformation.name.lastName}`;
-  const customerNumber = getNumberFromTask(task);
-  const { callType, caseInformation } = details;
-  const categories = retrieveCategories(caseInformation.categories);
-  const notes = caseInformation.callSummary;
-  const { channelType } = task;
-  const conversationDuration = getConversationDuration(task, form.metadata);
-  const { csamReports } = form;
-
-  return {
-    overview: {
-      dateTime,
-      name,
-      customerNumber,
-      callType,
-      categories,
-      counselor,
-      notes,
-      channel: channelType,
-      conversationDuration,
-    },
-    counselor,
-    details,
     csamReports,
   };
 };

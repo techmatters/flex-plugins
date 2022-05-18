@@ -1,6 +1,5 @@
-import { SearchContact, SearchCaseResult, Case } from '../../types/types';
+import { SearchContact, SearchCaseResult } from '../../types/types';
 import { addDetails } from './helpers';
-import { ContactDetailsSectionsType } from '../../components/common/ContactDetails';
 // Action types
 export const HANDLE_SEARCH_FORM_CHANGE = 'HANDLE_SEARCH_FORM_CHANGE';
 export const CHANGE_SEARCH_PAGE = 'CHANGE_SEARCH_PAGE';
@@ -12,7 +11,6 @@ export const SEARCH_CASES_REQUEST = 'SEARCH_CASES_REQUEST';
 export const SEARCH_CASES_SUCCESS = 'SEARCH_CASES_SUCCESS';
 export const SEARCH_CASES_FAILURE = 'SEARCH_CASES_FAILURE';
 export const SEARCH_CASES_UPDATE = 'SEARCH_CASES_UPDATE';
-export const HANDLE_EXPAND_DETAILS_SECTION = 'HANDLE_EXPAND_DETAILS_SECTION';
 export const VIEW_PREVIOUS_CONTACTS = 'VIEW_PREVIOUS_CONTACTS';
 
 // types and constants used to construct search form
@@ -85,12 +83,6 @@ type SearchChangePageAction = { type: typeof CHANGE_SEARCH_PAGE; page: SearchPag
 
 type SearchViewContactAction = { type: typeof VIEW_CONTACT_DETAILS; contact: SearchContact; taskId: string };
 
-type SearchExpandSectionAction = {
-  type: typeof HANDLE_EXPAND_DETAILS_SECTION;
-  section: ContactDetailsSectionsType;
-  taskId: string;
-};
-
 type ViewPreviousContactsAction = {
   type: typeof VIEW_PREVIOUS_CONTACTS;
   taskId: string;
@@ -107,5 +99,4 @@ export type SearchActionType =
   | SearchCasesFailureAction
   | SearchChangePageAction
   | SearchViewContactAction
-  | SearchExpandSectionAction
   | ViewPreviousContactsAction;

@@ -12,6 +12,7 @@ import ContactDetails from '../../components/search/ContactDetails';
 import { SearchPages } from '../../states/search/types';
 import { channelTypes } from '../../states/DomainConstants';
 import { getDefinitionVersions } from '../../HrmFormPlugin';
+import { DetailsContext } from '../../states/contacts/contactDetails';
 
 const mockStore = configureMockStore([]);
 let mockV1;
@@ -64,6 +65,17 @@ function createState(
         tasks: {
           [taskId]: {
             helpline: 'helpline',
+          },
+        },
+        existingContacts: {
+          'TEST CONTACT ID': {
+            refCount: 1,
+            contact: currentContact,
+          },
+        },
+        contactDetails: {
+          [DetailsContext.CONTACT_SEARCH]: {
+            detailsExpanded: {},
           },
         },
       },
@@ -151,6 +163,7 @@ test('<Search> should display <SearchForm /> with previous contacts checkbox', (
 test('<Search> should display <ContactDetails />', () => {
   const currentPage = SearchPages.details;
   const currentContact = {
+    contactId: 'TEST CONTACT ID',
     details: {
       definitionVersion: 'v1',
       childInformation: {

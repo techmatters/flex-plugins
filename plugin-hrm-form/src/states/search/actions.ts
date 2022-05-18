@@ -87,9 +87,3 @@ export const viewContactDetails = (taskId: string) => (contact: SearchContact): 
   contact,
   taskId,
 });
-
-export const handleExpandDetailsSection = (taskId: string) => (section: ContactDetailsSectionsType) => ({
-  type: t.HANDLE_EXPAND_DETAILS_SECTION,
-  section,
-  taskId,
-});

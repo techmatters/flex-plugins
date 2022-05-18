@@ -2,7 +2,7 @@
 import { ITask } from '@twilio/flex-ui';
 import { DefinitionVersionId, CallTypes } from 'hrm-form-definitions';
 
-import { DateFilter, DateFilterOption, DateFilterValue } from '../components/caseList/filters/dateFilters';
+import { DateFilterValue } from '../components/caseList/filters/dateFilters';
 
 export type EntryInfo = {
   createdAt: string;
@@ -49,12 +49,6 @@ export type DocumentEntry = { document: Document; id: string | undefined } & Ent
 
 export type CSAMReportEntry = { csamReportId: string; id: number } & EntryInfo;
 
-export const blankReferral = {
-  date: null,
-  referredTo: null,
-  comments: null,
-};
-
 export type CaseInfo = {
   definitionVersion?: DefinitionVersionId;
   offlineContactCreator?: string;
@@ -75,6 +69,8 @@ export type Case = {
   helpline: string;
   twilioWorkerId: string;
   info?: CaseInfo;
+  childName: string;
+  categories: {};
   createdAt: string;
   updatedAt: string;
   connectedContacts: any[]; // TODO: create contact type
@@ -91,7 +87,7 @@ export type ContactRawJson = {
   callType: CallTypes | '';
   childInformation: InformationObject;
   callerInformation: InformationObject;
-  caseInformation: { categories: {} } & { [key: string]: string | boolean | {} }; // // having {} makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
+  caseInformation: { categories: {} } & { [key: string]: string | boolean | {} }; // having {} makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
   contactlessTask: { [key: string]: string | boolean };
 };
 
@@ -99,6 +95,7 @@ export type ContactRawJson = {
 export type SearchContact = {
   contactId: string;
   overview: {
+    helpline: string;
     dateTime: string;
     name: string;
     customerNumber: string;
@@ -108,6 +105,7 @@ export type SearchContact = {
     notes: string;
     channel: string;
     conversationDuration: number;
+    createdBy: string;
   };
   details: ContactRawJson;
   csamReports: CSAMReportEntry[];

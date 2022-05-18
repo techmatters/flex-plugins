@@ -32,6 +32,13 @@ type RadioInputDefinition = {
   defaultOption?: InputOption['value'];
 } & ItemBase;
 
+type ListboxMultiselectDefinition = {
+  type: 'listbox-multiselect';
+  options: InputOption[];
+  height?: number;
+  width?: number;
+} & ItemBase;
+
 export type SelectOption = { value: any; label: string };
 
 type SelectDefinition = {
@@ -96,6 +103,7 @@ export type FormItemDefinition =
   | NumericInputDefinition
   | EmailInputDefinition
   | RadioInputDefinition
+  | ListboxMultiselectDefinition
   | SelectDefinition
   | DependentSelectDefinition
   | CheckboxDefinition

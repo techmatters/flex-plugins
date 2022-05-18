@@ -18,11 +18,11 @@ import { changeRoute } from '../../states/routing/actions';
 import { TaskEntry, emptyCategories } from '../../states/contacts/reducer';
 import { TabbedFormSubroutes, NewCaseSubroutes } from '../../states/routing/types';
 import { CustomITask, isOfflineContactTask, SearchContact } from '../../types/types';
-import { TabbedFormsContainer, Box, StyledTabs, Row } from '../../styles/HrmStyles';
+import { TabbedFormsContainer, TabbedFormTabContainer, Box, StyledTabs, Row } from '../../styles/HrmStyles';
 import FormTab from '../common/forms/FormTab';
 import Search from '../search';
-import IssueCategorizationTab from './IssueCategorizationTab';
-import TabbedFormTab from './TabbedFormTab';
+import IssueCategorizationSectionForm from '../contact/IssueCategorizationSectionForm';
+import ContactDetailsSectionForm from '../contact/ContactDetailsSectionForm';
 import ContactlessTaskTab from './ContactlessTaskTab';
 import BottomBar from './BottomBar';
 import { hasTaskControl } from '../../utils/transfer';
@@ -30,6 +30,7 @@ import { isNonDataCallType } from '../../states/ValidationRules';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
 import CSAMReportButton from './CSAMReportButton';
 import CSAMAttachments from './CSAMAttachments';
+import { forTask } from '../../states/contacts/issueCategorizationStateApi';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -213,54 +214,67 @@ const TabbedForms: React.FC<Props> = ({
           ) : (
             <div style={{ height: '100%', overflow: 'hidden' }}>
               {isOfflineContactTask(task) && (
-                <ContactlessTaskTab
-                  task={task}
-                  display={subroute === 'contactlessTask'}
-                  helplineInformation={currentDefinitionVersion.helplineInformation}
-                  definition={currentDefinitionVersion.tabbedForms.ContactlessTaskTab}
-                  initialValues={contactForm.contactlessTask}
-                  autoFocus={autoFocus}
-                />
+                <TabbedFormTabContainer display={subroute === 'contactlessTask'}>
+                  <ContactlessTaskTab
+                    task={task}
+                    display={subroute === 'contactlessTask'}
+                    helplineInformation={currentDefinitionVersion.helplineInformation}
+                    definition={currentDefinitionVersion.tabbedForms.ContactlessTaskTab}
+                    initialValues={contactForm.contactlessTask}
+                    autoFocus={autoFocus}
+                  />
+                </TabbedFormTabContainer>
               )}
               {isCallerType && (
-                <TabbedFormTab
-                  task={task}
-                  tabPath="callerInformation"
-                  definition={currentDefinitionVersion.tabbedForms.CallerInformationTab}
-                  layoutDefinition={currentDefinitionVersion.layoutVersion.contact.callerInformation}
-                  initialValues={contactForm.callerInformation}
-                  display={subroute === 'callerInformation'}
-                  autoFocus={autoFocus}
-                />
+                <TabbedFormTabContainer display={subroute === 'callerInformation'}>
+                  <ContactDetailsSectionForm
+                    tabPath="callerInformation"
+                    definition={currentDefinitionVersion.tabbedForms.CallerInformationTab}
+                    layoutDefinition={currentDefinitionVersion.layoutVersion.contact.callerInformation}
+                    initialValues={contactForm.callerInformation}
+                    display={subroute === 'callerInformation'}
+                    autoFocus={autoFocus}
+                    updateFormActionDispatcher={dispatch => values =>
+                      dispatch(updateForm(task.taskSid, 'callerInformation', values.callerInformation))}
+                  />
+                </TabbedFormTabContainer>
               )}
               {isDataCallType && (
                 <>
-                  <TabbedFormTab
-                    task={task}
-                    tabPath="childInformation"
-                    definition={currentDefinitionVersion.tabbedForms.ChildInformationTab}
-                    layoutDefinition={currentDefinitionVersion.layoutVersion.contact.childInformation}
-                    initialValues={contactForm.childInformation}
-                    display={subroute === 'childInformation'}
-                    autoFocus={autoFocus}
-                  />
-                  <IssueCategorizationTab
-                    task={task}
-                    display={subroute === 'categories'}
-                    initialValue={contactForm.categories}
-                    definition={currentDefinitionVersion.tabbedForms.IssueCategorizationTab(helpline)}
-                    autoFocus={autoFocus}
-                  />
-                  <TabbedFormTab
-                    task={task}
-                    tabPath="caseInformation"
-                    definition={currentDefinitionVersion.tabbedForms.CaseInformationTab}
-                    layoutDefinition={currentDefinitionVersion.layoutVersion.contact.caseInformation}
-                    initialValues={contactForm.caseInformation}
-                    display={subroute === 'caseInformation'}
-                    autoFocus={autoFocus}
-                    extraChildrenRight={csamAttachments}
-                  />
+                  <TabbedFormTabContainer display={subroute === 'childInformation'}>
+                    <ContactDetailsSectionForm
+                      tabPath="childInformation"
+                      definition={currentDefinitionVersion.tabbedForms.ChildInformationTab}
+                      layoutDefinition={currentDefinitionVersion.layoutVersion.contact.childInformation}
+                      initialValues={contactForm.childInformation}
+                      display={subroute === 'childInformation'}
+                      autoFocus={autoFocus}
+                      updateFormActionDispatcher={dispatch => values =>
+                        dispatch(updateForm(task.taskSid, 'childInformation', values.childInformation))}
+                    />
+                  </TabbedFormTabContainer>
+                  <TabbedFormTabContainer display={subroute === 'categories'}>
+                    <IssueCategorizationSectionForm
+                      stateApi={forTask(task)}
+                      display={subroute === 'categories'}
+                      initialValue={contactForm.categories}
+                      definition={currentDefinitionVersion.tabbedForms.IssueCategorizationTab(helpline)}
+                      autoFocus={autoFocus}
+                    />
+                  </TabbedFormTabContainer>
+                  <TabbedFormTabContainer display={subroute === 'caseInformation'}>
+                    <ContactDetailsSectionForm
+                      tabPath="caseInformation"
+                      definition={currentDefinitionVersion.tabbedForms.CaseInformationTab}
+                      layoutDefinition={currentDefinitionVersion.layoutVersion.contact.caseInformation}
+                      initialValues={contactForm.caseInformation}
+                      display={subroute === 'caseInformation'}
+                      autoFocus={autoFocus}
+                      extraChildrenRight={csamAttachments}
+                      updateFormActionDispatcher={dispatch => values =>
+                        dispatch(updateForm(task.taskSid, 'caseInformation', values.caseInformation))}
+                    />
+                  </TabbedFormTabContainer>
                 </>
               )}
             </div>

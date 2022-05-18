@@ -22,7 +22,7 @@ import CaseAddButton from './CaseAddButton';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { ContactDetailsSections } from '../common/ContactDetails';
-import { blankReferral, CaseItemEntry, CustomITask } from '../../types/types';
+import { CaseItemEntry, CustomITask } from '../../types/types';
 import { isConnectedCaseActivity } from './caseActivities';
 import { TaskEntry } from '../../states/contacts/reducer';
 import { Activity, NoteActivity, ReferralActivity } from '../../states/case/types';
@@ -111,7 +111,7 @@ const Timeline: React.FC<Props> = props => {
   };
 
   const handleAddReferralClick = () => {
-    updateTempInfo({ screen: NewCaseSubroutes.Referral, action: CaseItemAction.Add, info: blankReferral }, taskSid);
+    updateTempInfo({ screen: NewCaseSubroutes.Referral, action: CaseItemAction.Add, info: null }, taskSid);
     changeRoute({ route, subroute: NewCaseSubroutes.Referral, action: CaseItemAction.Add }, taskSid);
   };
 

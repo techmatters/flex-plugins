@@ -6,6 +6,7 @@ import Folder from '@material-ui/icons/Folder';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import Link from '@material-ui/icons/Link';
 import { ButtonProps } from '@material-ui/core/Button';
+import { TransitionProps } from '@material-ui/core/transitions/transition';
 
 import { Flex, Row, FontOpenSans, BottomButtonBar, TabbedFormsContainer } from '../HrmStyles';
 
@@ -338,9 +339,11 @@ type CollapseProps = {
   expanded: boolean;
 };
 
-export const SectionCollapse = styled(({ expanded, ...rest }: CollapseProps) => (
-  <Collapse in={expanded} {...rest} />
-))<CollapseProps>`
+export const SectionCollapse = styled(
+  ({ expanded, ...rest }: CollapseProps & { timeout?: TransitionProps['timeout'] | 'auto' }) => (
+    <Collapse in={expanded} {...rest} />
+  ),
+)<CollapseProps>`
   visibility: ${props => (props.expanded ? 'visible' : 'collapse')};
 `;
 SectionCollapse.displayName = 'SectionCollapse';
@@ -397,6 +400,7 @@ export const SectionValueText = styled(BodyText)<SectionValueTextProps>`
   overflow-wrap: anywhere;
   white-space: pre-wrap;
   max-width: 40em;
+  line-height: 18px;
   ${props => props.notBold && 'font-weight: 500'};
 `;
 
