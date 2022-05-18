@@ -135,12 +135,8 @@
   {
     "name": "gender",
     "label": "Gender",
-    "type": "select",
+    "type": "listbox-multiselect",
     "options": [
-      {
-        "value": "",
-        "label": ""
-      },
       {
         "value": "Agender",
         "label": "Agender"
@@ -191,12 +187,8 @@
   {
     "name": "sexualOrientation",
     "label": "Sexual Orientation",
-    "type": "select",
+    "type": "listbox-multiselect",
     "options": [
-      {
-        "value": "",
-        "label": ""
-      },
       {
         "value": "Asexual",
         "label": "Asexual"
@@ -330,12 +322,8 @@
   {
     "name": "ethnicity",
     "label": "Race/Ethnicity",
-    "type": "select",
+    "type": "listbox-multiselect",
     "options": [
-        {
-          "value": "",
-          "label": ""
-        },
         {
           "value": "Black",
           "label": "Black (e.g., African, Afro-Caribbean, African Canadian descent)"
