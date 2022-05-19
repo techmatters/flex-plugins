@@ -127,7 +127,7 @@ const QueuesCard: React.FC<Props> = props => {
       <Box paddingLeft="10px" paddingTop="10px" data-testid={`Queue-Status${qName}`}>
         <HiddenText id={`name-${qName}`}>
           <Template code="QueueCard-Name" />
-        </HiddenText> 
+        </HiddenText>
         <HiddenText aria-labelledby={`name-${qName}`} />
         <QueueName>{qName}</QueueName>
         <Box marginTop="7px" marginBottom="14px">
