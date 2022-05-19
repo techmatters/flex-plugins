@@ -4,6 +4,9 @@
  */
 
 import { SearchContact } from '../../types/types';
+import { getNumberFromTask } from '../../utils';
+import { transformForm } from '../../services/ContactService';
+import { getConversationDuration } from '../../utils/conversationDuration';
 
 /**
  * @param {string[]} accumulator
@@ -60,6 +63,37 @@ export const hrmServiceContactToSearchContact = (contact): SearchContact => {
       createdBy,
     },
     details: contact.rawJson,
+    csamReports,
+  };
+};
+
+export const taskFormToSearchContact = (task, form, date, counselor, temporaryId): SearchContact => {
+  const details = transformForm(form);
+  const dateTime = date;
+  const name = `${details.childInformation.name.firstName} ${details.childInformation.name.lastName}`;
+  const customerNumber = getNumberFromTask(task);
+  const { callType, caseInformation } = details;
+  const categories = retrieveCategories(caseInformation.categories);
+  const notes = caseInformation.callSummary as string;
+  const { channelType } = task;
+  const conversationDuration = getConversationDuration(task, form.metadata);
+  const { csamReports } = form;
+
+  return {
+    contactId: temporaryId,
+    overview: {
+      createdBy: counselor,
+      dateTime,
+      name,
+      customerNumber,
+      callType,
+      categories,
+      counselor,
+      notes,
+      channel: channelType,
+      conversationDuration,
+    },
+    details,
     csamReports,
   };
 };
