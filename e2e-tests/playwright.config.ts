@@ -6,6 +6,7 @@ const config: PlaywrightTestConfig = {
   use: {
     storageState: 'temp/state.json',
     baseURL: 'http://localhost:3000',
+    headless: false,
     permissions: ['microphone']
   },
   timeout: 180000
