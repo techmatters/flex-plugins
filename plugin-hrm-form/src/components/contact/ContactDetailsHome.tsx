@@ -204,9 +204,9 @@ const Details: React.FC<Props> = ({
               <SectionEntry
                 key={`Category ${index + 1}`}
                 description={
-                  <div style={{ display: 'inline-block' }}>
+                  <span style={{ display: 'inline-block' }}>
                     <Template code="Category" /> {index + 1}
-                  </div>
+                  </span>
                 }
                 value={c}
               />
