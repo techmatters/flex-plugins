@@ -71,6 +71,7 @@ const ViewContact: React.FC<Props> = ({
     task,
     form,
     loadRawContactIntoState,
+    tempInfo,
   ]);
 
   if (!tempInfo || tempInfo.screen !== 'view-contact') return null;
