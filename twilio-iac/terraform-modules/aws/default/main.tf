@@ -11,6 +11,11 @@ terraform {
   }
 }
 
+provider "aws" {
+  alias = "bucket"
+  region = var.bucket_region
+}
+
 
 locals {
   docs_s3_location = "tl-aselo-docs-${lower(var.short_helpline)}-${lower(var.environment)}"
@@ -19,6 +24,7 @@ locals {
 
 resource "aws_s3_bucket" "docs" {
   bucket = local.docs_s3_location
+  provider = aws.bucket
   cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["GET", "POST", "PUT"]
@@ -53,6 +59,7 @@ resource "aws_s3_bucket_public_access_block" "chat" {
   restrict_public_buckets = false
 }
 
+// Still put SSM parameters in default region, they don't store any helpline data & it keeps the workflow logic simpler
 resource "aws_ssm_parameter" "main_group" {
   for_each = {
     WORKSPACE_SID = jsonencode(["TWILIO", var.flex_task_assignment_workspace_sid, "Twilio account - Workspace SID"])
