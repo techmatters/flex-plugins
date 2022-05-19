@@ -113,11 +113,11 @@
   "BottomBar-Close": "Close",
   "BottomBar-Update": "Update",
   "Categories-Title": "Categorize this contact",
-  "TabbedForms-AddCallerInfoTab": "Caller Info",
-  "TabbedForms-AddChildInfoTab": "Child Info",
+  "TabbedForms-AddCallerInfoTab": "Caller",
+  "TabbedForms-AddChildInfoTab": "Child",
   "TabbedForms-CategoriesTab": "Categories",
   "TabbedForms-AddCaseInfoTab": "Summary",
-  "TabbedForms-AddContactInfoTab": "Contact Info",
+  "TabbedForms-AddContactInfoTab": "Contact",
   "TabbedForms-BackButton": "Categorize Contact Type",
   "TabbedForms-CSAMReportButton": "File CSAM Report",
   "NotImplemented": "Not implemented yet!",
@@ -343,7 +343,7 @@
   "BottomBar-CloseView": "Close View",
   "CopyCode": "Copy Code",
   "Copied": "Copied!",
-  
+
   "BottomBar-SaveOnClose": "Save Changes?",
   "BottomBar-DontSave": "No, Don't Save",
   "BottomBar-Save": "Yes, Save"
