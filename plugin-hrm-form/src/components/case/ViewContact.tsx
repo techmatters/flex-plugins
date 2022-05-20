@@ -90,6 +90,7 @@ const ViewContact: React.FC<Props> = ({
         />
         <ContactDetails
           contactId={contactFromInfo?.id ?? `__unsavedFromCase:${connectedCase.id}`}
+          enableEditing={Boolean(contactFromInfo)}
           context={DetailsContext.CASE_DETAILS}
         />
       </Container>

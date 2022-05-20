@@ -77,11 +77,12 @@ export const taskFormToSearchContact = (task, form, date, counselor, temporaryId
   const notes = caseInformation.callSummary as string;
   const { channelType } = task;
   const conversationDuration = getConversationDuration(task, form.metadata);
-  const { csamReports } = form;
+  const { csamReports, helpline } = form;
 
   return {
     contactId: temporaryId,
     overview: {
+      helpline,
       createdBy: counselor,
       dateTime,
       name,
