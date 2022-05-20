@@ -2,7 +2,7 @@ import each from 'jest-each';
 
 import { getConfig } from '../../HrmFormPlugin';
 import * as fetchRulesModule from '../../permissions/fetchRules';
-import { getPermissionsForCase, PermissionActions } from '../../permissions';
+import { getPermissionsForCase, getPermissionsForContact, PermissionActions } from '../../permissions';
 
 jest.mock('../../HrmFormPlugin');
 
@@ -34,7 +34,7 @@ describe('Test that all actions work fine (everyone)', () => {
   });
 });
 
-describe('Test different scenarios (random action)', () => {
+describe('Test different scenarios (random action) for Cases', () => {
   const PermissionActionsValues = Object.values(PermissionActions);
   const getRandomAction = () =>
     PermissionActionsValues[Math.floor(Math.random() * 100) % PermissionActionsValues.length];
@@ -130,6 +130,97 @@ describe('Test different scenarios (random action)', () => {
       });
 
       const { can } = getPermissionsForCase('creator', status);
+
+      expect(can(action)).toBe(expectedResult);
+    },
+  );
+});
+
+describe('Test different scenarios (random action) for Contacts', () => {
+  const PermissionActionsValues = Object.values(PermissionActions);
+  const getRandomAction = () =>
+    PermissionActionsValues[Math.floor(Math.random() * 100) % PermissionActionsValues.length];
+
+  each(
+    [
+      {
+        action: getRandomAction(),
+        conditionsSets: [['everyone']],
+        workerSid: 'not owner',
+        isSupervisor: false,
+        expectedResult: true,
+        expectedDescription: 'is not owner nor supervisor',
+      },
+      {
+        action: getRandomAction(),
+        conditionsSets: [],
+        workerSid: 'owner',
+        isSupervisor: true,
+        expectedResult: false,
+        expectedDescription: 'user is owner and supervisor',
+      },
+      {
+        action: getRandomAction(),
+        conditionsSets: [['isOwner']],
+        workerSid: 'owner',
+        isSupervisor: false,
+        expectedResult: true,
+        expectedDescription: 'is a owner but not a supervisor',
+      },
+      {
+        action: getRandomAction(),
+        conditionsSets: [['isSupervisor']],
+        workerSid: 'not owner',
+        isSupervisor: true,
+        expectedResult: true,
+        expectedDescription: 'is a supervisor but not a owner',
+      },
+      {
+        action: getRandomAction(),
+        conditionsSets: [['isOwner']],
+        workerSid: 'not owner',
+        isSupervisor: true,
+        expectedResult: false,
+        expectedDescription: 'is not a owner but a supervisorr',
+      },
+      {
+        action: getRandomAction(),
+        conditionsSets: [['isSupervisor']],
+        workerSid: 'owner',
+        isSupervisor: false,
+        expectedResult: false,
+        expectedDescription: 'is a supervisor but not a owner',
+      },
+      {
+        action: getRandomAction(),
+        conditionsSets: [['isSupervisor'], ['isOwner']],
+        workerSid: 'not owner',
+        isSupervisor: true,
+        expectedResult: true,
+        expectedDescription: 'user is supervisor but not owner',
+      },
+      {
+        action: getRandomAction(),
+        conditionsSets: [['isSupervisor'], ['isOwner']],
+        workerSid: 'not owner',
+        isSupervisor: false,
+        expectedResult: false,
+        expectedDescription: 'user is supervisor but not owner',
+      },
+    ].map(t => ({ ...t, prettyConditionsSets: t.conditionsSets.map(arr => `[${arr.join(',')}]`) })),
+  ).test(
+    `Should return $expectedResult when $expectedDescription and conditionsSets are $prettyConditionsSets`,
+    ({ action, conditionsSets, workerSid, isSupervisor, expectedResult }) => {
+      const rules = buildRules(conditionsSets);
+      jest.spyOn(fetchRulesModule, 'fetchRules').mockReturnValueOnce(rules);
+
+      getConfig.mockReturnValueOnce({
+        workerSid,
+        isSupervisor,
+        permissionConfig: 'wareva',
+      });
+
+      const { can } = getPermissionsForContact('owner');
 
       expect(can(action)).toBe(expectedResult);
     },
