@@ -15,6 +15,7 @@ import CaseHome from '../../../components/case/CaseHome';
 import { namespace, configurationBase, contactFormsBase, connectedCaseBase, routingBase } from '../../../states';
 import { getDefinitionVersions } from '../../../HrmFormPlugin';
 import { StandaloneITask } from '../../../types/types';
+import { getLocaleDateTime } from '../../../utils/helpers';
 
 jest.mock('../../../services/CaseService', () => ({ getActivities: jest.fn(() => []), cancelCase: jest.fn() }));
 jest.mock('../../../permissions', () => ({
@@ -155,7 +156,7 @@ describe('useState mocked', () => {
 
     expect(component.findAllByType(CaseHome).length).toBe(1);
     const details = component.findByType(CaseHome);
-    const { id, name, caseCounselor, status, openedDate, lastUpdatedDate, followUpDate } = details.props.caseDetails;
+    const { id, name, caseCounselor, status, createdAt, updatedAt, followUpDate } = details.props.caseDetails;
 
     expect(id).toBe(123);
     expect(name).toStrictEqual({
@@ -164,8 +165,8 @@ describe('useState mocked', () => {
     });
     expect(caseCounselor).toBe('worker1 name');
     expect(status).toBe('open');
-    expect(openedDate).toBe('6/29/2020'); // the day the createdAt number represents
-    expect(lastUpdatedDate).toBe('Invalid Date');
+    expect(getLocaleDateTime(createdAt)).toBe('6/29/2020'); // the day the createdAt number represents
+    expect(getLocaleDateTime(updatedAt)).toBe('Invalid Date');
     expect(followUpDate).toBe('');
   });
 
