@@ -213,9 +213,16 @@ each([
           const channelInQ = screen.getByTestId(`${qName}-${c}`);
           expect(channelInQ).toBeInTheDocument();
           // Check that it contains one value and it's the same as the value for the channel in the given queue
+          let value: string
+
+          if(queuesStatusState.queuesStatus[qName][c].toString() === '0'){
+            value = '<span>—</span>'
+          }else{
+            value = queuesStatusState.queuesStatus[qName][c].toString()
+          }
           const channelBoxInnerValues = channelInQ.getElementsByClassName('channel-box-inner-value');
           expect(channelBoxInnerValues).toHaveLength(1);
-          expect(channelBoxInnerValues[0].innerHTML).toContain(queuesStatusState.queuesStatus[qName][c].toString());
+          expect(channelBoxInnerValues[0].innerHTML).toContain(value);
         } else {
           // Check that the UI filters out this channel (cause it's not defined in contactsWaitingChannels)
           expect(screen.queryByTestId(`${qName}-${c}`)).not.toBeInTheDocument();
@@ -311,3 +318,5 @@ test('a11y', async () => {
   // @ts-ignore
   expect(results).toHaveNoViolations();
 });
+
+
