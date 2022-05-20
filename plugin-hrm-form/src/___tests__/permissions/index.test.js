@@ -137,14 +137,10 @@ describe('Test different scenarios (random action) for Cases', () => {
 });
 
 describe('Test different scenarios (random action) for Contacts', () => {
-  const PermissionActionsValues = Object.values(PermissionActions);
-  const getRandomAction = () =>
-    PermissionActionsValues[Math.floor(Math.random() * 100) % PermissionActionsValues.length];
-
   each(
     [
       {
-        action: getRandomAction(),
+        action: 'editContact',
         conditionsSets: [['everyone']],
         workerSid: 'not owner',
         isSupervisor: false,
@@ -152,7 +148,7 @@ describe('Test different scenarios (random action) for Contacts', () => {
         expectedDescription: 'is not owner nor supervisor',
       },
       {
-        action: getRandomAction(),
+        action: 'editContact',
         conditionsSets: [],
         workerSid: 'owner',
         isSupervisor: true,
@@ -160,7 +156,7 @@ describe('Test different scenarios (random action) for Contacts', () => {
         expectedDescription: 'user is owner and supervisor',
       },
       {
-        action: getRandomAction(),
+        action: 'editContact',
         conditionsSets: [['isOwner']],
         workerSid: 'owner',
         isSupervisor: false,
@@ -168,7 +164,7 @@ describe('Test different scenarios (random action) for Contacts', () => {
         expectedDescription: 'is a owner but not a supervisor',
       },
       {
-        action: getRandomAction(),
+        action: 'editContact',
         conditionsSets: [['isSupervisor']],
         workerSid: 'not owner',
         isSupervisor: true,
@@ -176,7 +172,7 @@ describe('Test different scenarios (random action) for Contacts', () => {
         expectedDescription: 'is a supervisor but not a owner',
       },
       {
-        action: getRandomAction(),
+        action: 'editContact',
         conditionsSets: [['isOwner']],
         workerSid: 'not owner',
         isSupervisor: true,
@@ -184,7 +180,7 @@ describe('Test different scenarios (random action) for Contacts', () => {
         expectedDescription: 'is not a owner but a supervisorr',
       },
       {
-        action: getRandomAction(),
+        action: 'editContact',
         conditionsSets: [['isSupervisor']],
         workerSid: 'owner',
         isSupervisor: false,
@@ -192,7 +188,7 @@ describe('Test different scenarios (random action) for Contacts', () => {
         expectedDescription: 'is a supervisor but not a owner',
       },
       {
-        action: getRandomAction(),
+        action: 'editContact',
         conditionsSets: [['isSupervisor'], ['isOwner']],
         workerSid: 'not owner',
         isSupervisor: true,
@@ -200,7 +196,7 @@ describe('Test different scenarios (random action) for Contacts', () => {
         expectedDescription: 'user is supervisor but not owner',
       },
       {
-        action: getRandomAction(),
+        action: 'editContact',
         conditionsSets: [['isSupervisor'], ['isOwner']],
         workerSid: 'not owner',
         isSupervisor: false,
