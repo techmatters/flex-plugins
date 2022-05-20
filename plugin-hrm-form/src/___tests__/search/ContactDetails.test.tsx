@@ -11,11 +11,13 @@ import Section from '../../components/Section';
 import { channelTypes } from '../../states/DomainConstants';
 import { getDefinitionVersions } from '../../HrmFormPlugin';
 import { DetailsContext } from '../../states/contacts/contactDetails';
-
-import { configureAxe, toHaveNoViolations } from 'jest-axe';
-
 import { getPermissionsForContact, PermissionActions } from '../../permissions';
 
+jest.mock('../../permissions', () => ({
+  // @ts-ignore
+  ...jest.requireActual('../../permissions'),
+  getPermissionsForContact: jest.fn(),
+}));
 
 const mockStore = configureMockStore([]);
 
@@ -103,7 +105,6 @@ const handleSelectSearchResult = jest.fn();
 const detailsExpanded = {
   'General details': true,
 };
-const can = jest.fn()
 
 let mockV1;
 let initialState;
@@ -136,6 +137,11 @@ beforeAll(async () => {
 });
 
 test(`<ContactDetails> with contact of type ${callTypes.child}`, () => {
+  // @ts-ignore
+  getPermissionsForContact.mockImplementationOnce(() => ({
+    can: () => true,
+  }));
+
   const contact = contactOfType(callTypes.child);
   const store = mockStore(initialState(callTypes.child));
 
@@ -198,8 +204,6 @@ test(`<ContactDetails> with a non data (standalone) contact`, () => {
   const sectionsCount = sections.length;
   expect(sectionsCount).toEqual(1);
 });
-
-
 
 // test('Test no edit permissions', async () => {
 //   render(
