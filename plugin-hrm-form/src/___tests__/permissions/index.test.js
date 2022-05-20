@@ -136,7 +136,7 @@ describe('Test different scenarios (random action) for Cases', () => {
   );
 });
 
-describe('Test different scenarios (random action) for Contacts', () => {
+describe('Test different scenarios for Contacts', () => {
   each(
     [
       {
