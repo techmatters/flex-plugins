@@ -14,11 +14,11 @@ variable "helpline" {
 }
 
 variable "short_helpline" {
-  default = "ukr"
+  default = "UKR"
 }
 
 variable "operating_info_key" {
-  default = "UKR"
+  default = "ukr"
 }
 
 variable "environment" {

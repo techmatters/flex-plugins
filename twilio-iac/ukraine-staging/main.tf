@@ -68,6 +68,7 @@ module flex {
   hrm_url = "https://hrm-staging-eu.tl.techmatters.org"
   multi_office_support = var.multi_office
   feature_flags = var.feature_flags
+  messaging_flow_contact_identity = "+12053089376"
   flex_chat_service_sid = module.services.flex_chat_service_sid
   messaging_studio_flow_sid = module.studioFlow.messaging_studio_flow_sid
 }
