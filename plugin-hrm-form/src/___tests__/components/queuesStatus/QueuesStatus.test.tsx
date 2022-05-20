@@ -213,12 +213,12 @@ each([
           const channelInQ = screen.getByTestId(`${qName}-${c}`);
           expect(channelInQ).toBeInTheDocument();
           // Check that it contains one value and it's the same as the value for the channel in the given queue
-          let value: string
+          let value: string;
 
-          if(queuesStatusState.queuesStatus[qName][c].toString() === '0'){
-            value = '<span>—</span>'
-          }else{
-            value = queuesStatusState.queuesStatus[qName][c].toString()
+          if (queuesStatusState.queuesStatus[qName][c].toString() === '0') {
+            value = '<span>—</span>';
+          } else {
+            value = queuesStatusState.queuesStatus[qName][c].toString();
           }
           const channelBoxInnerValues = channelInQ.getElementsByClassName('channel-box-inner-value');
           expect(channelBoxInnerValues).toHaveLength(1);
@@ -318,5 +318,3 @@ test('a11y', async () => {
   // @ts-ignore
   expect(results).toHaveNoViolations();
 });
-
-
