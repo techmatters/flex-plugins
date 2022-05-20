@@ -1,5 +1,5 @@
 {
-  "Childline": {
+  "International Ukrainian Helpline": {
     "Missing children": {
       "color": "#BBE3FF",
       "subcategories": [
@@ -117,66 +117,6 @@
       "subcategories": [
         "Sexual orientation and gender identity",
         "Sexual behaviours",
-        "Unspecified/Other"
-      ]
-    }
-  },
-  "LifeLine": {
-    "Physical and Sexual Health": {
-      "color": "#BBE3FF",
-      "subcategories": [
-        "COVID-19",
-        "Condom Use",
-        "Medical or lifestyle information about HIV/AIDS",
-        "Male Circumcision",
-        "Pregnancy and maternal care",
-        "Sexual and reproductive health",
-        "Sexually Transmitted Diseases",
-        "Nutrition",
-        "Unspecified/Other"
-      ]
-    },
-    "Mental Health": {
-      "color": "#F5A623",
-      "subcategories": [
-        "Emotional distress – anger problems",
-        "Emotional distress – fear and anxiety problems",
-        "Emotional distress – mood problems",
-        "Problems with eating behaviour",
-        "Self-harming behaviour",
-        "Suicidal thoughts and suicide attempts",
-        "Traumatic distress",
-        "Unspecified/Other"
-      ]
-    },
-    "Abuse": {
-      "color": "#F8E900",
-      "subcategories": [
-        "Addictive behaviours and substance use",
-        "Cyber Bullying",
-        "Gender Based Violence (GBV)",
-        "Mental/Emotional violence",
-        "Economic abuse",
-        "Online sexual abuse",
-        "Online sexual exploitation",
-        "Physical violence",
-        "Sexual violence",
-        "Unspecified/Other"
-      ]
-    },
-    "Relationships": {
-      "color": "#E86B6B",
-      "subcategories": [
-        "Family Relationships",
-        "Marital Issues",
-        "Unspecified/Other"
-      ]
-    },
-    "Education and Occupation": {
-      "color": "#8055BA",
-      "subcategories": [
-        "Problems at learning institution",
-        "Problems at work",
         "Unspecified/Other"
       ]
     }
