@@ -21,11 +21,12 @@ export const PermissionActions = {
   EDIT_PERPETRATOR: 'editPerpetrator',
   EDIT_INCIDENT: 'editIncident',
   EDIT_DOCUMENT: 'editDocument',
+  EDIT_CONTACT: 'editContact',
 };
 
 type PermissionActionsKeys = keyof typeof PermissionActions;
 export type PermissionActionType = typeof PermissionActions[PermissionActionsKeys];
-type Condition = 'isSupervisor' | 'isCreator' | 'isCaseOpen' | 'everyone';
+type Condition = 'isSupervisor' | 'isCreator' | 'isCaseOpen' | 'isOwner' | 'everyone';
 type ConditionSet = Condition[];
 type ConditionSets = ConditionSet[];
 
@@ -37,7 +38,7 @@ export const getPermissionsForCase = (twilioWorkerId: t.Case['twilioWorkerId'], 
   const isCreator = workerSid === twilioWorkerId;
   const isCaseOpen = status !== 'closed';
 
-  const conditionsState: { [condition in Condition]: boolean } = {
+  const conditionsState: Partial<{ [condition in Condition]: boolean }> = {
     isSupervisor,
     isCreator,
     isCaseOpen,
@@ -57,6 +58,42 @@ export const getPermissionsForCase = (twilioWorkerId: t.Case['twilioWorkerId'], 
     if (!rules[action]) {
       console.error(`Cannot find rules for ${action}. Returning false.`);
       return isSupervisor || (isCreator && isCaseOpen);
+    }
+
+    return checkConditionsSets(rules[action]);
+  };
+
+  return {
+    can,
+  };
+};
+
+export const getPermissionsForContact = (twilioWorkerId: t.SearchContact['overview']['createdBy']) => {
+  const { workerSid, isSupervisor, permissionConfig } = getConfig();
+
+  if (!permissionConfig || !twilioWorkerId) return { can: undefined };
+
+  const isOwner = workerSid === twilioWorkerId;
+
+  const conditionsState: Partial<{ [condition in Condition]: boolean }> = {
+    isSupervisor,
+    isOwner,
+    everyone: true,
+  };
+
+  const checkCondition = (condition: Condition) => conditionsState[condition];
+  const checkConditionsSet = (conditionsSet: ConditionSet) => conditionsSet.every(checkCondition);
+  const checkConditionsSets = (conditionsSets: ConditionSets) => conditionsSets.some(checkConditionsSet);
+
+  const rules = fetchRules(permissionConfig);
+
+  const rulesAreValid = Object.values(PermissionActions).every(action => rules[action]);
+  if (!rulesAreValid) throw new Error(`Rules file for ${permissionConfig} is incomplete.`);
+
+  const can = (action: PermissionActionType): boolean => {
+    if (!rules[action]) {
+      console.error(`Cannot find rules for ${action}. Returning false.`);
+      return isSupervisor || isOwner;
     }
 
     return checkConditionsSets(rules[action]);

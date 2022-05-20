@@ -23,6 +23,7 @@ import {
   navigateContactDetails,
   toggleDetailSectionExpanded,
 } from '../../states/contacts/contactDetails';
+import { getPermissionsForContact, PermissionActions } from '../../permissions';
 
 // TODO: complete this type
 type OwnProps = {
@@ -35,6 +36,7 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
+/* eslint-disable complexity */
 const Details: React.FC<Props> = ({
   context,
   detailsExpanded,
@@ -46,6 +48,7 @@ const Details: React.FC<Props> = ({
   toggleSectionExpandedForContext,
   navigateForContext,
   enableEditing,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const version = contact?.details.definitionVersion;
 
@@ -66,6 +69,10 @@ const Details: React.FC<Props> = ({
     categories,
     createdBy,
   } = overview;
+
+  // Permission to edit is based the counselor who created the contact - identified by Twilio worker ID
+  const createdByTwilioWorkerId = contact?.overview.createdBy;
+  const { can } = getPermissionsForContact(createdByTwilioWorkerId);
 
   // Format the obtained information
   const isDataCall = !isNonDataCallType(callType);
@@ -145,7 +152,7 @@ const Details: React.FC<Props> = ({
           sectionTitle={<Template code="TabbedForms-AddCallerInfoTab" />}
           expanded={detailsExpanded[CALLER_INFORMATION]}
           handleExpandClick={() => toggleSection(CALLER_INFORMATION)}
-          showEditButton={enableEditing}
+          showEditButton={enableEditing && can(PermissionActions.EDIT_CONTACT)}
           handleEditClick={() => navigate(ContactDetailsRoute.EDIT_CALLER_INFORMATION)}
           buttonDataTestid="ContactDetails-Section-CallerInformation"
         >
@@ -164,7 +171,7 @@ const Details: React.FC<Props> = ({
           sectionTitle={<Template code="TabbedForms-AddChildInfoTab" />}
           expanded={detailsExpanded[CHILD_INFORMATION]}
           handleExpandClick={() => toggleSection(CHILD_INFORMATION)}
-          showEditButton={enableEditing}
+          showEditButton={enableEditing && can(PermissionActions.EDIT_CONTACT)}
           handleEditClick={() => navigate(ContactDetailsRoute.EDIT_CHILD_INFORMATION)}
           buttonDataTestid="ContactDetails-Section-ChildInformation"
         >
@@ -184,7 +191,7 @@ const Details: React.FC<Props> = ({
           expanded={detailsExpanded[ISSUE_CATEGORIZATION]}
           handleExpandClick={() => toggleSection(ISSUE_CATEGORIZATION)}
           buttonDataTestid="ContactDetails-Section-IssueCategorization"
-          showEditButton={enableEditing}
+          showEditButton={enableEditing && can(PermissionActions.EDIT_CONTACT)}
           handleEditClick={() => navigate(ContactDetailsRoute.EDIT_CATEGORIES)}
         >
           {formattedCategories.length ? (
@@ -210,7 +217,7 @@ const Details: React.FC<Props> = ({
           expanded={detailsExpanded[CONTACT_SUMMARY]}
           handleExpandClick={() => toggleSection(CONTACT_SUMMARY)}
           buttonDataTestid={`ContactDetails-Section-${CONTACT_SUMMARY}`}
-          showEditButton={enableEditing}
+          showEditButton={enableEditing && can(PermissionActions.EDIT_CONTACT)}
           handleEditClick={() => navigate(ContactDetailsRoute.EDIT_CASE_INFORMATION)}
         >
           {definitionVersion.tabbedForms.CaseInformationTab.map(e => (
