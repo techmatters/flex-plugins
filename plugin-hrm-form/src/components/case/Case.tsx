@@ -189,8 +189,6 @@ const Case: React.FC<Props> = ({
   const { workerSid } = getConfig();
   const caseCounselor = counselorsHash[twilioWorkerId];
   const currentCounselor = counselorsHash[workerSid];
-  const openedDate = getLocaleDateTime(createdAt);
-  const lastUpdatedDate = getLocaleDateTime(updatedAt);
   // -- Date cannot be converted here since the date dropdown uses the yyyy-MM-dd format.
   const followUpDate = info && info.followUpDate ? info.followUpDate : '';
   // -- Converting followUpDate to match the same format as the rest of the dates
@@ -272,8 +270,8 @@ const Case: React.FC<Props> = ({
     prevStatus,
     caseCounselor,
     currentCounselor,
-    openedDate,
-    lastUpdatedDate,
+    createdAt,
+    updatedAt,
     followUpDate,
     followUpPrintedDate,
     households,

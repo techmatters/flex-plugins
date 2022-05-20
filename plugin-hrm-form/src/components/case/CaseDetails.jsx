@@ -19,14 +19,15 @@ import {
 } from '../../styles/case';
 import { FormOption } from '../../styles/HrmStyles';
 import { PermissionActions } from '../../permissions';
+import { getLocaleDateTime } from '../../utils/helpers';
 
 const CaseDetails = ({
   caseId,
   name,
   categories,
   counselor,
-  openedDate,
-  lastUpdatedDate,
+  createdAt,
+  updatedAt,
   followUpDate,
   status,
   prevStatus,
@@ -78,7 +79,8 @@ const CaseDetails = ({
   const canTransition = statusOptions.length !== 1;
 
   const color = definitionVersion.caseStatus[status].color || '#000000';
-  const lastUpdatedClosedDate = openedDate === lastUpdatedDate ? '—' : lastUpdatedDate;
+  const formattedCreatedAt = getLocaleDateTime(createdAt);
+  const formattedUpdatedAt = createdAt === updatedAt ? '—' : getLocaleDateTime(updatedAt);
 
   return (
     <>
@@ -104,7 +106,7 @@ const CaseDetails = ({
             <StyledInputField
               disabled
               id="Details_DateOpened"
-              value={openedDate}
+              value={formattedCreatedAt}
               aria-labelledby="CaseDetailsDateOpened"
             />
           </div>
@@ -117,7 +119,7 @@ const CaseDetails = ({
             <StyledInputField
               disabled
               id="Details_DateLastUpdated"
-              value={lastUpdatedClosedDate}
+              value={formattedUpdatedAt}
               aria-labelledby="CaseDetailsLastUpdated"
             />
           </div>
@@ -172,13 +174,13 @@ CaseDetails.propTypes = {
   name: PropTypes.string.isRequired,
   categories: PropTypes.object.isRequired,
   counselor: PropTypes.string.isRequired,
-  openedDate: PropTypes.string.isRequired,
+  createdAt: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
   prevStatus: PropTypes.string.isRequired,
   can: PropTypes.func.isRequired,
   office: PropTypes.string,
   followUpDate: PropTypes.string,
-  lastUpdatedDate: PropTypes.string,
+  updatedAt: PropTypes.string,
   childIsAtRisk: PropTypes.bool.isRequired,
   handlePrintCase: PropTypes.func.isRequired,
   handleInfoChange: PropTypes.func.isRequired,
@@ -192,7 +194,7 @@ CaseDetails.propTypes = {
 CaseDetails.defaultProps = {
   office: '',
   followUpDate: '',
-  lastUpdatedDate: '',
+  updatedAt: '',
   isOrphanedCase: false,
 };
 
