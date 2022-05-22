@@ -1,23 +1,11 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { TableBody, TableRow, CircularProgress } from '@material-ui/core';
+import { TableBody, CircularProgress } from '@material-ui/core';
 import { connect, ConnectedProps } from 'react-redux';
-import { Absolute, FontOpenSans, Flex } from '../../styles/HrmStyles';
+import { Template } from '@twilio/flex-ui';
 
-import {
-  namespace,
-  configurationBase,
-  RootState,
-  caseListBase,
-} from '../../states';
-import {
-  TableContainer,
-  CLTable,
-  CLTableRow,
-  CLNamesCell,
-  CLTableCell,
-  CLTableBodyFont,
-} from '../../styles/caseList';
+import { namespace, configurationBase, RootState, caseListBase } from '../../states';
+import { TableContainer, CLTable, CLTableRow, CLNamesCell, CLTableCell, CLTableBodyFont } from '../../styles/caseList';
 import Filters from './filters/Filters';
 import CaseListTableHead from './CaseListTableHead';
 import CaseListTableRow from './CaseListTableRow';
@@ -25,7 +13,6 @@ import Pagination from '../Pagination';
 import { CASES_PER_PAGE } from './CaseList';
 import type { Case } from '../../types/types';
 import * as CaseListSettingsActions from '../../states/caseList/settings';
-import { Template } from '@twilio/flex-ui';
 
 const ROW_HEIGHT = 89;
 
@@ -56,16 +43,9 @@ const CaseListTable: React.FC<Props> = ({
 
   return (
     <>
-      <Filters
-        caseCount={caseCount}
-        currentDefinitionVersion={currentDefinitionVersion}
-      />
+      <Filters caseCount={caseCount} currentDefinitionVersion={currentDefinitionVersion} />
       <TableContainer>
-        <CLTable
-          tabIndex={0}
-          aria-labelledby="CaseList-Cases-label"
-          data-testid="CaseList-Table"
-        >
+        <CLTable tabIndex={0} aria-labelledby="CaseList-Cases-label" data-testid="CaseList-Table">
           <CaseListTableHead />
           {loading && (
             <TableBody>
@@ -74,19 +54,10 @@ const CaseListTable: React.FC<Props> = ({
                 style={{
                   position: 'relative',
                   background: 'transparent',
-                  height: `${
-                    (caseList.length || CASES_PER_PAGE) * ROW_HEIGHT
-                  }px`,
+                  height: `${(caseList.length || CASES_PER_PAGE) * ROW_HEIGHT}px`,
                 }}
               >
-                <CLNamesCell
-                  style={{
-                    position: 'absolute',
-                    textAlign: 'center',
-                    width: '100%',
-                    top: '40%',
-                  }}
-                >
+                <CLNamesCell style={{ position: 'absolute', textAlign: 'center', width: '100%', top: '40%' }}>
                   <CircularProgress size={50} />
                 </CLNamesCell>
               </CLTableRow>
@@ -106,9 +77,7 @@ const CaseListTable: React.FC<Props> = ({
               ) : (
                 <CLTableRow>
                   <CLTableCell colSpan={8}>
-                    <CLTableBodyFont
-                      style={{ paddingLeft: '6px', fontWeight: 'initial' }}
-                    >
+                    <CLTableBodyFont style={{ paddingLeft: '6px', fontWeight: 'initial' }}>
                       <Template code="CaseList-NoCases" />
                     </CLTableBodyFont>
                   </CLTableCell>
@@ -119,11 +88,7 @@ const CaseListTable: React.FC<Props> = ({
         </CLTable>
       </TableContainer>
       {caseList.length > 0 ? (
-        <Pagination
-          page={currentPage}
-          pagesCount={pagesCount}
-          handleChangePage={updateCaseListPage}
-        />
+        <Pagination page={currentPage} pagesCount={pagesCount} handleChangePage={updateCaseListPage} />
       ) : null}
     </>
   );
@@ -133,8 +98,7 @@ CaseListTable.displayName = 'CaseListTable';
 
 const mapStateToProps = state => ({
   counselorsHash: state[namespace][configurationBase].counselors.hash,
-  currentDefinitionVersion:
-    state[namespace][configurationBase].currentDefinitionVersion,
+  currentDefinitionVersion: state[namespace][configurationBase].currentDefinitionVersion,
   currentPage: state[namespace][caseListBase].currentSettings.page,
 });
 
