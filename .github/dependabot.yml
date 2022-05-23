@@ -3,7 +3,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/scripts/"
     schedule:
-      interval: "monthly"
+      interval: "weekly"
     open-pull-requests-limit: 0
     allow:
       - dependency-name: "*"
@@ -15,7 +15,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/plugin-hrm-form/"
     schedule:
-      interval: "monthly"
+      interval: "weekly"
     open-pull-requests-limit: 0
     allow:
       - dependency-name: "*"
@@ -27,7 +27,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/hrm-form-definitions/"
     schedule:
-      interval: "monthly"
+      interval: "weekly"
     open-pull-requests-limit: 0
     allow:
       - dependency-name: "*"
