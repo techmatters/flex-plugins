@@ -59,7 +59,7 @@ export const CLTableCell = withStyles(theme => ({
   },
   body: {
     verticalAlign: 'top',
-    padding: '10px 0',
+    paddingTop: 8,
   },
 }))(TableCell);
 CLTableCell.displayName = 'CLTableCell';

@@ -530,6 +530,7 @@ export const PaginationRow = styled('nav')<PaginationRowProps>`
   justify-content: center;
   height: auto;
   background-color: ${props => (props.transparent ? 'transparent' : props.theme.colors.base2)};
+  padding: 40px auto;
   margin: 40px auto;
 `;
 PaginationRow.displayName = 'PaginationRow';
@@ -782,7 +783,7 @@ export const FormRadioInput = styled('input')<FormInputProps>`
 
     box-sizing: content-box;
     padding: 0;
-    margin: 0 5px 0 0;
+    margin: 0 7px 0 0;
     width: 12px;
     height: 12px;
     border: 2px solid #080808;

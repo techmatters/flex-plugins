@@ -43,6 +43,7 @@ export const FilterTitle = styled('span')`
   font-weight: 600;
   margin-left: 10px;
   margin-right: 20px;
+  white-space: nowrap;
 `;
 FilterTitle.displayName = 'FilterTitle';
 
@@ -70,6 +71,7 @@ export const MultiSelectButton = styled('button')<MultiSelectButtonProps>`
   font-family: 'Open Sans';
   font-weight: ${props => (props.isOpened ? 'bold' : 'normal')};
   color: #192b33;
+  white-space: nowrap;
   &:hover {
     background-color: ${props => (props.isOpened ? 'white' : 'rgba(255, 255, 255, 0.5)')};
   }
@@ -200,7 +202,7 @@ export const MultiSelectSearchInput = styled('input')`
   background-color: ${props => props.theme.colors.inputBackgroundColor};
   color: #192b33;
   border: none;
-  boxshadow: none;
+  box-shadow: none;
   padding: 0 34px;
 
   &:focus {

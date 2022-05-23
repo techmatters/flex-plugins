@@ -26,7 +26,7 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 /**
- * This component is splitted to make it easier to read, but is basically a 9 columns Table (8 for data, 1 for the "expand" button)
+ * This component is splitted to make it easier to read, but is basically a 8 columns Table (8 for data, 1 for the "expand" button)
  */
 const CaseListTable: React.FC<Props> = ({
   loading,

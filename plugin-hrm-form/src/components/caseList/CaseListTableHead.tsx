@@ -21,7 +21,7 @@ const CaseListTableHead = () => {
         />
         <CaseListTableHeadCell localizedText="CaseList-THCounselor" />
         <CaseListTableHeadCell localizedText="CaseList-THSummary" width="20%" />
-        <CaseListTableHeadCell localizedText="CaseList-THCategory" width="17%" />
+        <CaseListTableHeadCell localizedText="CaseList-THCategory" width="15%" />
         <CaseListTableHeadCell
           column={ListCasesSortBy.CREATED_AT}
           defaultSortDirection={ListCasesSortDirection.DESC}

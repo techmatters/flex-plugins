@@ -231,7 +231,7 @@ const DateRangeFilter: React.FC<Props> = ({
                   const [option, filter] = item;
                   return (
                     <li style={{ marginBottom: '10px' }} key={i}>
-                      <FormLabel htmlFor={option} style={{ flexDirection: 'row', alignItems:'center' }}>
+                      <FormLabel htmlFor={option} style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <FormRadioInput
                           onKeyDown={i === 0 ? handleShiftTabForFirstElement : null}
                           onChange={() =>

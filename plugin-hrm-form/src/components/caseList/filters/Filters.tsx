@@ -7,7 +7,13 @@ import DateRange from '@material-ui/icons/DateRange';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { getConfig } from '../../../HrmFormPlugin';
-import { FiltersContainer, FiltersResetAll, CasesTitle, CasesCount, FilterTitle } from '../../../styles/caseList/filters';
+import {
+  FiltersContainer,
+  FiltersResetAll,
+  CasesTitle,
+  CasesCount,
+  FilterTitle,
+} from '../../../styles/caseList/filters';
 import MultiSelectFilter, { Item } from './MultiSelectFilter';
 import { CategoryFilter, CounselorHash } from '../../../types/types';
 import DateRangeFilter from './DateRangeFilter';
@@ -222,7 +228,7 @@ const Filters: React.FC<Props> = ({
       </FiltersContainer>
       {featureFlags.enable_filter_cases && (
         <FiltersContainer>
-          <FilterList fontSize='small'/>
+          <FilterList fontSize="small" />
           <FilterTitle>
             <Template code="CaseList-FilterBy" />
           </FilterTitle>
@@ -254,9 +260,9 @@ const Filters: React.FC<Props> = ({
             setOpenedFilter={setOpenedFilter}
             searchable
           />
-          <div style={{display:'inline-flex', marginLeft: 'auto'}}>
+          <div style={{ display: 'inline-flex', marginLeft: 'auto' }}>
             <DateRange fontSize="small" style={{ marginTop: '4px' }} />
-            <FilterTitle style={{margin: '5px 10px 0 6px'}}>
+            <FilterTitle style={{ margin: '5px 10px 0 6px' }}>
               <Template code="CaseList-Filters-DateFiltersLabel" />
             </FilterTitle>
             {getInitialDateFilters().map(df => {
