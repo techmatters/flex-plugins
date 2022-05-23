@@ -59,7 +59,7 @@ export const CLTableCell = withStyles(theme => ({
   },
   body: {
     verticalAlign: 'top',
-    paddingTop: 12,
+    padding: '10px 0',
   },
 }))(TableCell);
 CLTableCell.displayName = 'CLTableCell';
@@ -105,6 +105,7 @@ export const CLTableBodyFont = styled(FontOpenSans)`
   line-height: 18px;
   font-weight: 600;
   max-height: ${() => 85 - 12 /* 85px of cell height - 12px of padding*/}px;
+  overflow: hidden;
 `;
 CLTableBodyFont.displayName = 'CLTableBodyFont';
 

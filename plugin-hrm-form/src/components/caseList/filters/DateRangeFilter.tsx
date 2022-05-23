@@ -231,7 +231,7 @@ const DateRangeFilter: React.FC<Props> = ({
                   const [option, filter] = item;
                   return (
                     <li style={{ marginBottom: '10px' }} key={i}>
-                      <FormLabel htmlFor={option} style={{ flexDirection: 'row' }}>
+                      <FormLabel htmlFor={option} style={{ flexDirection: 'row', alignItems:'center' }}>
                         <FormRadioInput
                           onKeyDown={i === 0 ? handleShiftTabForFirstElement : null}
                           onChange={() =>
@@ -264,7 +264,7 @@ const DateRangeFilter: React.FC<Props> = ({
               style={{
                 visibility: showCustomDateFields ? 'inherit' : 'hidden',
                 alignContent: 'bottom',
-                marginLeft: '20px',
+                marginLeft: '8px',
               }}
             >
               <Box style={{ display: 'inline-block' }}>
@@ -272,7 +272,7 @@ const DateRangeFilter: React.FC<Props> = ({
                   <Template code="CaseList-Filters-DateFilter-CustomDateFrom" />
                 </p>
                 <FormDateInput
-                  style={{ width: '80pt' }}
+                  style={{ width: '85pt' }}
                   type="date"
                   id="customDateRangeFrom"
                   data-testid="customDateRangeFrom"
@@ -290,7 +290,7 @@ const DateRangeFilter: React.FC<Props> = ({
                   <Template code="CaseList-Filters-DateFilter-CustomDateTo" />
                 </p>
                 <FormDateInput
-                  style={{ width: '80pt', display: 'inline-block' }}
+                  style={{ width: '85pt', display: 'inline-block' }}
                   type="date"
                   id="customDateRangeTo"
                   data-testid="customDateRangeTo"
