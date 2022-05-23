@@ -252,7 +252,7 @@ const CaseHome: React.FC<Props> = ({
 
   return (
     <>
-      <CaseContainer>
+      <CaseContainer data-testid="CaseHome-CaseDetailsComponent">
         <Box marginLeft="25px" marginTop="13px">
           <CaseDetailsComponent
             caseId={id}

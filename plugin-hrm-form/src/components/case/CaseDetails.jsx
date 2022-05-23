@@ -104,6 +104,7 @@ const CaseDetails = ({
               </label>
             </DetailDescription>
             <StyledInputField
+              data-testid="Case-Details_DateOpened"
               disabled
               id="Details_DateOpened"
               value={formattedCreatedAt}
@@ -117,6 +118,7 @@ const CaseDetails = ({
               </label>
             </DetailDescription>
             <StyledInputField
+              data-testid="Case-Details_DateLastUpdated"
               disabled
               id="Details_DateLastUpdated"
               value={formattedUpdatedAt}
@@ -147,6 +149,7 @@ const CaseDetails = ({
             </DetailDescription>
             <StyledSelectWrapper disabled={!canTransition}>
               <StyledSelectField
+                data-testid="Case-Details_CaseStatus"
                 id="Details_CaseStatus"
                 name="Details_CaseStatus"
                 aria-labelledby="CaseDetailsStatusLabel"

@@ -102,7 +102,6 @@ const Case: React.FC<Props> = ({
      */
     const getTimeline = () => {
       if (!props.connectedCaseId) return;
-
       setLoading(true);
       const activities = getActivitiesFromCase(props.connectedCaseState.connectedCase);
       setLoading(false);
@@ -466,6 +465,7 @@ const Case: React.FC<Props> = ({
       // Fall through to next switch for other routes without actions
     }
   }
+
   switch (routing.subroute) {
     case NewCaseSubroutes.ViewContact:
       return <ViewContact onClickClose={handleCloseSubSection} task={task} />;
