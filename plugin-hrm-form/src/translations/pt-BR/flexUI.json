@@ -90,9 +90,9 @@
   "NonDataCallTypeDialog-CloseConfirm": "Tem certeza?",
   "Cancel": "Cancelar",
   "CancelButton": "Cancelar",
-  "TabbedForms-AddContactInfoTab": "Informação de contato",
-  "TabbedForms-AddCallerInfoTab": "Informações do chamador ",
-  "TabbedForms-AddChildInfoTab": "Informações da criança",
+  "TabbedForms-AddContactInfoTab": "Contato",
+  "TabbedForms-AddCallerInfoTab": "Chamador",
+  "TabbedForms-AddChildInfoTab": "Criança",
   "TabbedForms-CategoriesTab": "Categorias",
   "TabbedForms-AddCaseInfoTab": "Resumo",
   "CancelOfflineContact": "Cancelar contato offline",
@@ -194,9 +194,9 @@
   "CallSummary-MoreNotes": "mais notas",
   "TranslateButtonAriaLabel": "Mudar idioma",
 
-  "TaskInfoPanelContent" : "<h1>CONTEXTO DA TAREFA</h1><h2>Tipo de tarefa</h2><p>{{task.channelType}}</p><h2>Tarefa criada em</h2><p>{{task.dateCreated}}</p><h2>Prioridade da tarefa</h2><p>{{task.priority}}</p><h2>Fila de tarefa</h2><p>{{task.queueName}}</p><h2>Tarefa SID</h2><p>{{task.taskSid}}</p><h2>Reservas SID</h2><p>{{task.sid}}</p><hr /><h1>CONTEXTO DO CLIENTE</h1><h2>Nome do cliente / número de telefone</h2><p>{{task.defaultFrom}}</p><h2>País</h2><p>{{task.attributes.caller_country}}</p><hr /><h1>ADDONS</h1><p>Nenhum add-ons ativado. Para expandir sua experiência, visite</p><a href=\"https://www.twilio.com/marketplaceadd-ons\" target=\"blank\">Twilio Marketplace</a>",
-  "SupervisorTaskInfoPanelContent" : "<h1>CONTEXTO DA TAREFA</h1><h2>Tipo de tarefa</h2><p>{{task.channelType}}</p><h2>Tarefa criada em</h2><p>{{task.dateCreated}}</p><h2>Prioridade da tarefa</h2><p>{{task.priority}}</p><h2>Fila de tarefa</h2><p>{{task.queueName}}</p><h2>Tarefa SID</h2><p>{{task.taskSid}}</p><h2>Reservas SID</h2><p>{{task.sid}}</p><hr /><h1>CONTEXTO DO CLIENTE</h1><h2>Nome do cliente / número de telefone</h2><p>{{task.defaultFrom}}</p><h2>País</h2><p>{{task.attributes.caller_country}}</p><hr /><h1>ADDONS</h1><p>Nenhum add-ons ativado. Para expandir sua experiência, visite</p><a href=\"https://www.twilio.com/marketplaceadd-ons\" target=\"blank\">Twilio Marketplace</a>",
-  
+  "TaskInfoPanelContent": "<h1>CONTEXTO DA TAREFA</h1><h2>Tipo de tarefa</h2><p>{{task.channelType}}</p><h2>Tarefa criada em</h2><p>{{task.dateCreated}}</p><h2>Prioridade da tarefa</h2><p>{{task.priority}}</p><h2>Fila de tarefa</h2><p>{{task.queueName}}</p><h2>Tarefa SID</h2><p>{{task.taskSid}}</p><h2>Reservas SID</h2><p>{{task.sid}}</p><hr /><h1>CONTEXTO DO CLIENTE</h1><h2>Nome do cliente / número de telefone</h2><p>{{task.defaultFrom}}</p><h2>País</h2><p>{{task.attributes.caller_country}}</p><hr /><h1>ADDONS</h1><p>Nenhum add-ons ativado. Para expandir sua experiência, visite</p><a href=\"https://www.twilio.com/marketplaceadd-ons\" target=\"blank\">Twilio Marketplace</a>",
+  "SupervisorTaskInfoPanelContent": "<h1>CONTEXTO DA TAREFA</h1><h2>Tipo de tarefa</h2><p>{{task.channelType}}</p><h2>Tarefa criada em</h2><p>{{task.dateCreated}}</p><h2>Prioridade da tarefa</h2><p>{{task.priority}}</p><h2>Fila de tarefa</h2><p>{{task.queueName}}</p><h2>Tarefa SID</h2><p>{{task.taskSid}}</p><h2>Reservas SID</h2><p>{{task.sid}}</p><hr /><h1>CONTEXTO DO CLIENTE</h1><h2>Nome do cliente / número de telefone</h2><p>{{task.defaultFrom}}</p><h2>País</h2><p>{{task.attributes.caller_country}}</p><hr /><h1>ADDONS</h1><p>Nenhum add-ons ativado. Para expandir sua experiência, visite</p><a href=\"https://www.twilio.com/marketplaceadd-ons\" target=\"blank\">Twilio Marketplace</a>",
+
   "SearchContactsAndCases-Title": "Pesquisar contatos e casos",
   "SearchForm-Name": "Nome",
   "SearchForm-First": "Primeiro",
@@ -333,7 +333,7 @@
   "Case-CaseDetails": "Detalhes do caso",
 
   "TaskHeaderLineTwitter": "@{{task.attributes.twitterUserHandle}}",
-  
+
   "CloseButton": "Fechar",
 
   "CallType-child": "Criança ou adolescentes pedindo ajuda para ela mesma",
