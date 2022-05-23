@@ -126,7 +126,7 @@ export const FiltersDialog = styled('div')<FiltersDialogProps>`
   box-sizing: border-box;
   width: ${props => (props.width ? props.width : '330px')};
   top: 43px;
-  left: -20px;
+  left: -35px;
   min-width: 200px;
   padding: 25px 32px;
   border: 1px solid lightgray;
