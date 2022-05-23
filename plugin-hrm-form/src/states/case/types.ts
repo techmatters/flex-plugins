@@ -155,8 +155,8 @@ export type CaseDetails = {
   prevStatus: string;
   caseCounselor: string;
   currentCounselor: string;
-  openedDate: string;
-  lastUpdatedDate: string;
+  createdAt: string;
+  updatedAt: string;
   followUpDate: string;
   followUpPrintedDate: string;
   households: t.HouseholdEntry[];
