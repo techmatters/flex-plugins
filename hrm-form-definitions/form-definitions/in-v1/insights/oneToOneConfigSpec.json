@@ -68,6 +68,10 @@
         "insights": ["conversations", "conversation_measure_2"]
       },
       {
+        "name": "actionTaken",
+        "insights": ["conversations", "initiative"]
+      },
+      {
         "name": "didTheChildFeelWeSolvedTheirProblem",
         "insights": ["conversations", "productive"],
         "type": "mixed-checkbox"
