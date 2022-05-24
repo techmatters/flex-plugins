@@ -6,12 +6,5 @@
       "contactForm.childInformation.state",
       "contactForm.childInformation.district"
     ]
-  },
-  {
-    "attributeName": "initiative",
-    "insightsObject": "conversations",
-    "paths": [
-      "contactForm.caseInformationTab.actionTaken"
-    ]
   }
 ]
