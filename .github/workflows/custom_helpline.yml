@@ -1,0 +1,47 @@
+# This is a basic workflow to publish a Twilio Flex-plugins with Github Actions
+
+name: Custom Helpline Release
+
+# Controls when the action will run.
+on:
+  workflow_dispatch:
+    inputs:
+      helpline_code:
+        description: The short (usually 2 character) upper case code used to identify the helpline internally, e.g. ZA, IN, BR.
+        required: true
+      environment_code:
+        description: The short upper case code used to identify the environment internally, e.g. STG, PROD, DEV
+        required: true
+      changelog:
+        description: Release Changelog - Add a comment about the changes to be included in this release.
+        required: true
+        default: .
+
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    env:
+      TWILIO_ACCOUNT_SID_SECRET_NAME: ${{github.event.inputs.helpline_code}}_${{github.event.inputs.environment_code}}_ACCOUNT_SID
+      TWILIO_AUTH_TOKEN_SECRET_NAME: ${{github.event.inputs.helpline_code}}_${{github.event.inputs.environment_code}}_AUTH_TOKEN
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+      # Call main-action to compile and deploy
+      - name: Executing main-action
+        uses: ./.github/actions/main-action
+        with:
+          account-sid: ${{ secrets[env.TWILIO_ACCOUNT_SID_SECRET_NAME] }}
+          auth-token: ${{ secrets[env.TWILIO_AUTH_TOKEN_SECRET_NAME] }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}

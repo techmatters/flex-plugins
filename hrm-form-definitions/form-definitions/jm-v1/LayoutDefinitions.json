@@ -39,6 +39,7 @@
       },
       "notes": {
         "previewFields": ["assessment"]
-      }
+      },
+      "hideCounselorDetails": true
     }
   }

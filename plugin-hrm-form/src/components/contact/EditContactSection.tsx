@@ -35,7 +35,7 @@ const EditContactSection: React.FC<Props> = ({
 }) => {
   const methods = useForm({
     shouldFocusError: false,
-    mode: 'onChange',
+    mode: 'onSubmit',
   });
   const { strings } = getConfig();
 

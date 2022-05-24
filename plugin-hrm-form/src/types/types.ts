@@ -49,12 +49,6 @@ export type DocumentEntry = { document: Document; id: string | undefined } & Ent
 
 export type CSAMReportEntry = { csamReportId: string; id: number } & EntryInfo;
 
-export const blankReferral = {
-  date: null,
-  referredTo: null,
-  comments: null,
-};
-
 export type CaseInfo = {
   definitionVersion?: DefinitionVersionId;
   offlineContactCreator?: string;
@@ -75,6 +69,8 @@ export type Case = {
   helpline: string;
   twilioWorkerId: string;
   info?: CaseInfo;
+  childName: string;
+  categories: {};
   createdAt: string;
   updatedAt: string;
   connectedContacts: any[]; // TODO: create contact type
@@ -150,6 +146,11 @@ export type ListCasesQueryParams = {
   sortDirection?: ListCasesSortDirection;
 } & ListCasesSort;
 
+export type CategoryFilter = {
+  category: string;
+  subcategory: string;
+};
+
 export type ListCasesFilters = {
   counsellors: string[];
   statuses: string[];
@@ -157,6 +158,7 @@ export type ListCasesFilters = {
   createdAt?: DateFilterValue;
   updatedAt?: DateFilterValue;
   followUpDate?: DateFilterValue;
+  categories?: CategoryFilter[];
 };
 
 export type CounselorHash = {

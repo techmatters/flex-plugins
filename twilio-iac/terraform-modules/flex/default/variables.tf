@@ -8,6 +8,12 @@ variable "serverless_url" {
   type        = string
 }
 
+variable "hrm_url" {
+  description = "Custom URL for the HRM backend (leave blank and it will infer a default) from the environments name"
+  type = string
+  default = ""
+}
+
 variable "short_environment" {
   description = "Short upper case environment identifier, typically 'PROD', 'STG' or 'DEV'"
   type        = string

@@ -14,11 +14,13 @@ import { ContactDetailsSectionFormApi, contactDetailsSectionFormApi } from './co
 import ContactDetailsSectionForm from './ContactDetailsSectionForm';
 import IssueCategorizationSectionForm from './IssueCategorizationSectionForm';
 import { forExistingContact } from '../../states/contacts/issueCategorizationStateApi';
+import { getConfig } from '../../HrmFormPlugin';
 
 type OwnProps = {
   contactId: string;
   context: DetailsContext;
   handleOpenConnectDialog?: (event: any) => void;
+  enableEditing?: boolean;
   showActionIcons?: boolean;
 };
 
@@ -34,9 +36,11 @@ const ContactDetails: React.FC<Props> = ({
   updateDefinitionVersion,
   contact,
   navigateForContext,
+  enableEditing = true,
 }) => {
   const version = contact?.details.definitionVersion;
 
+  const { featureFlags } = getConfig();
   /**
    * Check if the definitionVersion for this case exists in redux, and look for it if not.
    */
@@ -74,13 +78,15 @@ const ContactDetails: React.FC<Props> = ({
   ) => (
     <EditContactSection context={context} contactId={contactId} contactDetailsSectionForm={section}>
       <ContactDetailsSectionForm
-        entityIdentifier={contactId}
         tabPath={formPath}
         definition={section.getFormDefinition(definitionVersion)}
         layoutDefinition={section.getLayoutDefinition(definitionVersion)}
         initialValues={section.getFormValues(definitionVersion, contact)[formPath]}
         display={true}
         autoFocus={true}
+        updateFormActionDispatcher={() => () => {
+          /* */
+        }}
       />
     </EditContactSection>
   );
@@ -118,6 +124,7 @@ const ContactDetails: React.FC<Props> = ({
           showActionIcons={showActionIcons}
           contactId={contactId}
           handleOpenConnectDialog={handleOpenConnectDialog}
+          enableEditing={enableEditing && featureFlags.enable_contact_editing}
         />
       );
   }

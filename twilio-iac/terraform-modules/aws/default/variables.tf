@@ -73,3 +73,8 @@ variable "post_survey_bot_sid" {
   type        = string
 }
 
+variable "bucket_region" {
+  description = "The region where the document & chat s3 buckets should be created"
+  type = string
+  default = "us-east-1"
+}

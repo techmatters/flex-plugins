@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
-import { ExpandMore } from '@material-ui/icons';
+import { ArrowDownward } from '@material-ui/icons';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { getConfig } from '../../HrmFormPlugin';
@@ -36,17 +36,18 @@ const CaseListTableHeadCell: React.FC<Props> = ({
   width,
   currentSort,
   updateCaseListSort,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const { featureFlags } = getConfig();
+  const { featureFlags, strings } = getConfig();
 
   const drawSort = () => {
     if (!featureFlags.enable_sort_cases) return null;
     if (!currentSort || !column || column !== currentSort.sortBy) return null;
 
     return (
-      <ExpandMore
+      <ArrowDownward
         style={{
-          fontSize: 20,
+          fontSize: 16,
           marginLeft: '10px',
           verticalAlign: 'middle',
           transform: currentSort.sortDirection === ListCasesSortDirection.ASC ? 'rotate(180deg) scaleX(-1)' : 'none',
@@ -76,11 +77,11 @@ const CaseListTableHeadCell: React.FC<Props> = ({
 
     updateCaseListSort({ sortBy: column, sortDirection: updatedSortDirection });
   };
-
   return (
-    <CLTableCell style={{ width: width || '8%', cursor: cursor() }} onClick={handleClick}>
+    <CLTableCell style={{ width: width || '8%', cursor: cursor() }} onClick={handleClick} scope="col">
       <CLTableHeaderFont style={{ borderBottom: borderBottom(), whiteSpace: 'nowrap' }}>
-        <Template code={localizedText} /> {drawSort()}
+        <Template code={localizedText} />
+        <span aria-hidden="true">{drawSort()}</span>
       </CLTableHeaderFont>
     </CLTableCell>
   );

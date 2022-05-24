@@ -63,7 +63,8 @@
       { "value": "Resolved", "label": "Resolved" },
       { "value": "Follow up by next shift", "label": "Follow up by next shift" },    
       { "value": "Follow up with external entity", "label": "Follow up with external entity" }
-    ]
+    ],
+    "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
     "name": "howDidYouKnowAboutOurLine",

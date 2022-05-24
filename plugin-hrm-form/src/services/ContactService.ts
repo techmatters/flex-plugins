@@ -96,9 +96,9 @@ export const searchResultToContactForm = (def: FormDefinition, obj: InformationO
 export function transformCategories(
   helpline,
   categories: TaskEntry['categories'],
-  definitionVersion: DefinitionVersion | undefined = undefined,
+  definition: DefinitionVersion | undefined = undefined,
 ): Record<string, Record<string, boolean>> {
-  const def = definitionVersion ?? getDefinitionVersions().currentDefinitionVersion;
+  const def: DefinitionVersion = definition ?? getDefinitionVersions().currentDefinitionVersion;
   const { IssueCategorizationTab } = def.tabbedForms;
   const cleanCategories = createCategoriesObject(IssueCategorizationTab(helpline));
   const transformedCategories = categories.reduce((acc, path) => set(path, true, acc), {
@@ -244,6 +244,7 @@ export const updateContactInHrm = async (
     method: 'PATCH',
     body: JSON.stringify(body),
   };
+
   return fetchHrmApi(`/contacts/${contactId}`, options);
 };
 

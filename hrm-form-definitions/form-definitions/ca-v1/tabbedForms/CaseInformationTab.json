@@ -11,9 +11,8 @@
   {
     "name": "actionTaken",
     "label": "Action Taken",
-    "type": "select",
+    "type": "listbox-multiselect",
     "options": [
-      { "value": "Unknown", "label": "" },
       { "value": "Direct interventions by the child helpline", "label": "Direct interventions by the child helpline" },
       { "value": "Recommendations of resources", "label": "Recommendations of resources" },
       { "value": "Referrals to child protection agencies", "label": "Referrals to child protection agencies" },
@@ -103,9 +102,8 @@
   {
     "name": "technicalProblems",
     "label": "Please indicate if you experienced any technical problems for this contact.",
-    "type": "select",
+    "type": "listbox-multiselect",
     "options": [
-      { "value": "Unknown", "label": "" },
       { "value": "Dropped Contact - Unknown Reason", "label": "Dropped Contact - Unknown reason" },
       { "value": "Dropped Contact - Internet Outage", "label": "Dropped Contact - Internet Outage" },
       { "value": "Dropped Contact - VPN Outage", "label": "Dropped Contact - VPN Outage" },
@@ -124,9 +122,8 @@
   {
     "name": "additionalTools",
     "label": "What tools helped support you with this contact?",
-    "type": "select",
+    "type": "listbox-multiselect",
     "options": [
-      { "value": "Unknown", "label": "" },
       { "value": "KMS", "label": "KMS" },
       { "value": "The Gateway (KHP Website)", "label": "The Gateway (KHP Website)" },
       { "value": "RAM", "label": "RAM" },
