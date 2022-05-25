@@ -171,7 +171,7 @@ test('Should render list if it is populated', async () => {
 
 test('Should render no cases and show No Cases Found row', async () => {
   // @ts-ignore
-  listCases.mockReturnValueOnce(Promise.resolve({ cases: [], count: 0}));
+  listCases.mockReturnValueOnce(Promise.resolve({ cases: [], count: 0 }));
 
   const initialState = createState({
     [configurationBase]: {
@@ -212,7 +212,6 @@ test('Should render no cases and show No Cases Found row', async () => {
 
   expect(screen.queryByTestId('CaseList-TableRow')).not.toBeInTheDocument();
 });
-
 
 test('Should dispatch fetchStarted and fetchError actions if case lists error', async () => {
   // @ts-ignore
