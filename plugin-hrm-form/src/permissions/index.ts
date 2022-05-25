@@ -68,7 +68,7 @@ export const getPermissionsForCase = (twilioWorkerId: t.Case['twilioWorkerId'], 
   };
 };
 
-export const getPermissionsForContact = (twilioWorkerId: t.SearchContact['overview']['createdBy']) => {
+export const getPermissionsForContact = (twilioWorkerId: t.SearchContact['overview']['counselor']) => {
   const { workerSid, isSupervisor, permissionConfig } = getConfig();
 
   if (!permissionConfig || !twilioWorkerId) return { can: undefined };
