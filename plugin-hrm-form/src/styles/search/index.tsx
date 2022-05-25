@@ -520,8 +520,8 @@ export const SearchTitle = styled(FontOpenSans)`
 SearchTitle.displayName = 'SearchTitle';
 
 export const StandaloneSearchContainer = styled(TabbedFormsContainer)`
-  width: 50%;
-  padding-right: 50%;
+  max-width: 1000px;
+  width: 100%;
   background-color: ${props => props.theme.colors.base2};
 `;
 StandaloneSearchContainer.displayName = 'StandaloneSearchContainer';

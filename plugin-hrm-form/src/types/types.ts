@@ -106,6 +106,7 @@ export type SearchContact = {
     channel: string;
     conversationDuration: number;
     createdBy: string;
+    taskId: string;
   };
   details: ContactRawJson;
   csamReports: CSAMReportEntry[];

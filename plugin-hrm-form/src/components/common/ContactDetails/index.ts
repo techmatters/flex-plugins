@@ -4,6 +4,7 @@ export const ContactDetailsSections = {
   CHILD_INFORMATION: 'Child information',
   ISSUE_CATEGORIZATION: 'Issue categorization',
   CONTACT_SUMMARY: 'Contact summary',
+  TRANSCRIPT: 'Transcript',
 } as const;
 
 export type ContactDetailsSectionsType = typeof ContactDetailsSections[keyof typeof ContactDetailsSections];

@@ -1,13 +1,12 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { IconButton } from '@material-ui/core';
 import { Link as LinkIcon } from '@material-ui/icons';
-import { Template } from '@twilio/flex-ui';
+import { Actions, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes } from 'hrm-form-definitions';
 
-import { getConfig } from '../../HrmFormPlugin';
 import { DetailsContainer, DetNameText, NameContainer } from '../../styles/search';
 import Section from '../Section';
 import SectionEntry from '../SectionEntry';
@@ -23,6 +22,7 @@ import {
   navigateContactDetails,
   toggleDetailSectionExpanded,
 } from '../../states/contacts/contactDetails';
+import { LoadConversationButton } from '../../styles/contact';
 
 // TODO: complete this type
 type OwnProps = {
@@ -35,7 +35,8 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-const Details: React.FC<Props> = ({
+// eslint-disable-next-line complexity,sonarjs/cognitive-complexity
+const Details: React.FC<Props> = function ({
   context,
   detailsExpanded,
   showActionIcons = false,
@@ -46,10 +47,18 @@ const Details: React.FC<Props> = ({
   toggleSectionExpandedForContext,
   navigateForContext,
   enableEditing,
-}) => {
+  canViewTranscript,
+}) {
   const version = contact?.details.definitionVersion;
 
   const definitionVersion = definitionVersions[version];
+
+  useEffect(
+    () => () => {
+      Actions.invokeAction(Insights.Player.Action.INSIGHTS_PLAYER_HIDE);
+    },
+    [],
+  );
 
   if (!contact || !definitionVersion) return null;
 
@@ -93,6 +102,13 @@ const Details: React.FC<Props> = ({
   const counselorName = counselorsHash[counselor];
   const toggleSection = (section: ContactDetailsSectionsType) => toggleSectionExpandedForContext(context, section);
   const navigate = (route: ContactDetailsRoute) => navigateForContext(context, route);
+
+  const loadConversationIntoOverlay = async () => {
+    await Actions.invokeAction(Insights.Player.Action.INSIGHTS_PLAYER_PLAY, {
+      // taskSid: contact.overview.taskId,
+      segmentId: '07a95236-df00-5c02-b08d-4039e6e2488f',
+    });
+  };
 
   const csamReportsAttached =
     csamReports &&
@@ -230,6 +246,19 @@ const Details: React.FC<Props> = ({
           )}
         </Section>
       )}
+      {canViewTranscript &&
+        contact.overview.taskId &&
+        (!contact.details.contactlessTask || !contact.details.contactlessTask.date) && (
+          <div style={{ textAlign: 'center', margin: '10px' }}>
+            <LoadConversationButton type="button" roundCorners={true} onClick={loadConversationIntoOverlay}>
+              {channel === channelTypes.voice ? (
+                <Template code="ContactDetails-LoadRecording-Button" />
+              ) : (
+                <Template code="ContactDetails-LoadTranscript-Button" />
+              )}
+            </LoadConversationButton>
+          </div>
+        )}
     </DetailsContainer>
   );
 };
@@ -246,6 +275,9 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   counselorsHash: state[namespace][configurationBase].counselors.hash,
   contact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.contact,
   detailsExpanded: state[namespace][contactFormsBase].contactDetails[ownProps.context].detailsExpanded,
+  canViewTranscript: (state.flex.worker.attributes.roles as string[]).some(
+    role => role.toLowerCase().startsWith('wfo') && role !== 'wfo.',
+  ),
 });
 
 const mapDispatchToProps = {
