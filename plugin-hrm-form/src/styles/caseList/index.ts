@@ -89,7 +89,7 @@ export const CLSummaryCell = withStyles({
 CLSummaryCell.displayName = 'CLSummaryCell';
 
 export const CLDateCell = withStyles({
-  root: {
+  body: {
     textAlign: 'right',
   },
 })(CLTableCell);
@@ -115,12 +115,6 @@ export const CLTableBodyFont = styled(FontOpenSans)`
   overflow: hidden;
 `;
 CLTableBodyFont.displayName = 'CLTableBodyFont';
-
-export const CLTableDateFont = withStyles({
-  body: {
-fontSize:20,  },
-})(CLTableBodyFont);
-CLTableDateFont.displayName = 'CLTableDateFont';
 
 export const CLCaseNumberContainer = styled('div')`
   display: inline-block;
