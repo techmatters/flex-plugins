@@ -71,7 +71,7 @@ const Details: React.FC<Props> = ({
   } = overview;
 
   // Permission to edit is based the counselor who created the contact - identified by Twilio worker ID
-  const createdByTwilioWorkerId = contact?.overview.createdBy;
+  const createdByTwilioWorkerId = contact?.overview.counselor;
   const { can } = getPermissionsForContact(createdByTwilioWorkerId);
 
   // Format the obtained information
