@@ -112,8 +112,8 @@ test('Should dispatch fetchStarted and fetchSuccess actions if case lists return
   expect(screen.getByTestId('CaseList-Table')).toBeInTheDocument();
 
   expect(screen.getAllByTestId('CaseList-TableHead')).toHaveLength(1);
+  expect(screen.queryByTestId('CaseList-TableFooter')).not.toBeInTheDocument();
 
-  expect(screen.getAllByTestId('CaseList-TableFooter')).toHaveLength(1);
   expect(store.getActions().length).toBe(2);
 
   expect(store.getActions()[0]).toStrictEqual(fetchCaseListStarted());
@@ -168,6 +168,51 @@ test('Should render list if it is populated', async () => {
   expect(row1.textContent).toContain('Michael Smith');
   expect(row2.textContent).toContain('Sonya Michels');
 });
+
+test('Should render no cases and show No Cases Found row', async () => {
+  // @ts-ignore
+  listCases.mockReturnValueOnce(Promise.resolve({ cases: [], count: 0}));
+
+  const initialState = createState({
+    [configurationBase]: {
+      counselors: {
+        list: [],
+        hash: { worker1: 'worker1 name' },
+      },
+      definitionVersions: { v1: mockV1 },
+      currentDefinitionVersion: mockV1,
+    },
+    [caseListBase]: {
+      ...blankCaseListState,
+      content: {
+        ...blankCaseListState.content,
+        caseList: [],
+        caseCount: 0,
+        listLoading: false,
+      },
+    },
+  });
+  const store = mockStore(initialState);
+
+  render(
+    <StorelessThemeProvider themeConf={themeConf}>
+      <Provider store={store}>
+        <CaseList />
+      </Provider>
+    </StorelessThemeProvider>,
+  );
+
+  await waitFor(() => screen.getByTestId('CaseList-Table'));
+
+  expect(screen.getByTestId('CaseList-Table')).toBeInTheDocument();
+
+  expect(screen.getAllByTestId('CaseList-TableHead')).toHaveLength(1);
+
+  expect(screen.queryByTestId('CaseList-TableFooter')).not.toBeInTheDocument();
+
+  expect(screen.queryByTestId('CaseList-TableRow')).not.toBeInTheDocument();
+});
+
 
 test('Should dispatch fetchStarted and fetchError actions if case lists error', async () => {
   // @ts-ignore
