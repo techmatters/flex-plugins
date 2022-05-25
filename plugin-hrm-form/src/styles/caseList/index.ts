@@ -44,7 +44,7 @@ export const CLTableRow = withStyles({
     boxShadow: '0 1px 1px 0 rgba(0, 0, 0, 0.06)',
     '&:hover': {
       outline: 'auto',
-      outlineColor: '#a0a8bd66',
+      outlineColor: '#000',
     },
   },
 })(TableRow);
@@ -88,6 +88,13 @@ export const CLSummaryCell = withStyles({
 })(CLTableCell);
 CLSummaryCell.displayName = 'CLSummaryCell';
 
+export const CLDateCell = withStyles({
+  root: {
+    textAlign: 'right',
+  },
+})(CLTableCell);
+CLDateCell.displayName = 'CLDateCell';
+
 export const CLTableHeaderFont = styled(FontOpenSans)`
   font-weight: 600;
   font-size: 12px;
@@ -101,13 +108,19 @@ CLTableHeaderFont.displayName = 'CLTableHeaderFont';
 
 export const CLTableBodyFont = styled(FontOpenSans)`
   color: #192b33;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 18px;
-  font-weight: 600;
+  font-weight: 500;
   max-height: ${() => 85 - 12 /* 85px of cell height - 12px of padding*/}px;
   overflow: hidden;
 `;
 CLTableBodyFont.displayName = 'CLTableBodyFont';
+
+export const CLTableDateFont = withStyles({
+  body: {
+fontSize:20,  },
+})(CLTableBodyFont);
+CLTableDateFont.displayName = 'CLTableDateFont';
 
 export const CLCaseNumberContainer = styled('div')`
   display: inline-block;
@@ -122,6 +135,7 @@ export const CLCaseIDButton = styled('button')`
   border: none;
   background-color: transparent;
   padding: 2px 0px;
+  font-family: 'Open Sans';
   &:focus {
     outline: auto;
     outline-color: black;

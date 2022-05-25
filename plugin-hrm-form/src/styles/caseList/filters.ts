@@ -44,12 +44,14 @@ export const FilterTitle = styled('span')`
   margin-left: 10px;
   margin-right: 20px;
   white-space: nowrap;
+  font-size: 13px;
 `;
 FilterTitle.displayName = 'FilterTitle';
 
-export const CasesCount = styled(Flex)`
+export const CasesCount = styled('span')`
   margin-left: auto;
   padding-right: 10px;
+  display: 'inline-flex';
 `;
 CasesCount.displayName = 'CasesCount';
 
