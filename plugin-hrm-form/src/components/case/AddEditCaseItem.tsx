@@ -36,7 +36,7 @@ import {
 } from '../common/forms/formGenerators';
 import type { CaseInfo, CaseItemEntry, CustomITask, StandaloneITask } from '../../types/types';
 import { AppRoutesWithCaseAndAction, CaseItemAction } from '../../states/routing/types';
-import useFocus from '../../utils/useFocus';
+import useFocus from '../../hooks/useFocus';
 import { recordingErrorHandler } from '../../fullStory';
 import {
   AddTemporaryCaseInfo,

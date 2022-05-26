@@ -18,7 +18,7 @@ import * as contactsActions from '../../states/contacts/actions';
 import { RootState, csamReportBase, namespace, routingBase, configurationBase } from '../../states';
 import { reportToIWF } from '../../services/ServerlessService';
 import { createCSAMReport } from '../../services/CSAMReportService';
-import useFocus from '../../utils/useFocus';
+import useFocus from '../../hooks/useFocus';
 
 type OwnProps = {
   taskSid: CustomITask['taskSid'];

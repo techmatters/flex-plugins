@@ -6,7 +6,7 @@ import type { CategoriesDefinition } from 'hrm-form-definitions';
 
 import { RootState } from '../../states';
 import { CategoriesFromDefinition, createSubCategoriesInputs } from '../common/forms/categoriesTabGenerator';
-import useFocus from '../../utils/useFocus';
+import useFocus from '../../hooks/useFocus';
 import { IssueCategorizationStateApi } from '../../states/contacts/issueCategorizationStateApi';
 
 type OwnProps = {

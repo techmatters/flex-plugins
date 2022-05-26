@@ -8,7 +8,7 @@ import * as actions from '../../states/contacts/actions';
 import { ColumnarBlock, Container, TwoColumnLayout, Box, BottomButtonBarHeight } from '../../styles/HrmStyles';
 import { createFormFromDefinition, disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
 import type { TaskEntry } from '../../states/contacts/reducer';
-import useFocus from '../../utils/useFocus';
+import useFocus from '../../hooks/useFocus';
 
 type OwnProps = {
   display: boolean;

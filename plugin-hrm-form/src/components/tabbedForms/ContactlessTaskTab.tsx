@@ -14,7 +14,7 @@ import type { TaskEntry } from '../../states/contacts/reducer';
 import { createContactlessTaskTabDefinition } from './ContactlessTaskTabDefinition';
 import { splitDate, splitTime } from '../../utils/helpers';
 import type { OfflineContactTask } from '../../types/types';
-import useFocus from '../../utils/useFocus';
+import useFocus from '../../hooks/useFocus';
 
 type OwnProps = {
   task: OfflineContactTask;
