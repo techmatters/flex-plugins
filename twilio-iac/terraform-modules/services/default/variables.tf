@@ -1,3 +1,9 @@
+variable "uses_conversation_service" {
+  default = true
+  type = bool
+  description = "Tells Terraform if the service being used is Flex Conversations Service"
+}
+
 variable "local_os" {
   description = "The OS running the terraform script. The only value that currently changes behaviour from default is 'Windows'"
   type        = string
