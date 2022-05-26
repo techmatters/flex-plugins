@@ -2,7 +2,7 @@
 import { ITask } from '@twilio/flex-ui';
 import { DefinitionVersionId, CallTypes } from 'hrm-form-definitions';
 
-import { DateFilter, DateFilterOption, DateFilterValue } from '../components/caseList/filters/dateFilters';
+import { DateFilterValue } from '../components/caseList/filters/dateFilters';
 
 export type EntryInfo = {
   createdAt: string;
@@ -48,12 +48,6 @@ export type Document = { [key: string]: string | boolean };
 export type DocumentEntry = { document: Document; id: string | undefined } & EntryInfo;
 
 export type CSAMReportEntry = { csamReportId: string; id: number } & EntryInfo;
-
-export const blankReferral = {
-  date: null,
-  referredTo: null,
-  comments: null,
-};
 
 export type CaseInfo = {
   definitionVersion?: DefinitionVersionId;
@@ -101,6 +95,7 @@ export type ContactRawJson = {
 export type SearchContact = {
   contactId: string;
   overview: {
+    helpline: string;
     dateTime: string;
     name: string;
     customerNumber: string;

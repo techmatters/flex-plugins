@@ -253,7 +253,7 @@ const Filters: React.FC<Props> = ({
             setOpenedFilter={setOpenedFilter}
             searchable
           />
-          <FiltersContainer style={{ marginLeft: '100px', boxShadow: 'none' }}>
+          <FiltersContainer style={{ marginLeft: 'auto', boxShadow: 'none' }}>
             <DateRange fontSize="inherit" style={{ marginRight: 5 }} />
             <Template code="CaseList-Filters-DateFiltersLabel" />
             {getInitialDateFilters().map(df => {

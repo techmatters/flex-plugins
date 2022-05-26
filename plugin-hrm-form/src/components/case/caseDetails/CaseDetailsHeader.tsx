@@ -50,15 +50,17 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
   return (
     <DetailsHeaderContainer>
       <DetailsHeaderTextContainer>
-        <DetailsHeaderChildName variant="h6">{childName}</DetailsHeaderChildName>
+        <DetailsHeaderChildName variant="h6" data-testid="Case-DetailsHeaderChildName">
+          {childName}
+        </DetailsHeaderChildName>
         <DetailsHeaderCaseContainer>
-          <DetailsHeaderCaseId id="Case-CaseId-label">
+          <DetailsHeaderCaseId id="Case-CaseId-label" data-testid="Case-DetailsHeaderCaseId">
             <Template code="Case-CaseNumber" />
             {caseId}
           </DetailsHeaderCaseId>
           {multipleOfficeSupport && office && <DetailsHeaderOfficeName>({office})</DetailsHeaderOfficeName>}
         </DetailsHeaderCaseContainer>
-        <DetailsHeaderCounselor>
+        <DetailsHeaderCounselor data-testid="Case-DetailsHeaderCounselor">
           <Template code="Case-Counsellor" />: {counselor}
         </DetailsHeaderCounselor>
       </DetailsHeaderTextContainer>

@@ -19,6 +19,42 @@
         "phone": "021 762 8198",
         "email": "nicole@childlinewc.org"
       }
+    },
+    {
+      "label": "Free State",
+      "value": "Free State",
+      "manager": {
+        "name": "Cynthia Burger Du Toit",
+        "phone": "051 430 3311",
+        "email": "cynthiadt@cwcl.org.za"
+      }
+    },
+    {
+      "label": "Northern Cape",
+      "value": "Northern Cape",
+      "manager": {
+        "name": "Marietha Le Roux",
+        "phone": "021 762 8198",
+        "email": "mariethaj@cwcl.org.za"
+      }
+    },
+    {
+      "label": "Mpumalanga",
+      "value": "Mpumalanga",
+      "manager": {
+        "name": "Prudence Manzini",
+        "phone": "27 00000",
+        "email": "prudencem@childlinempu.org.za"
+      }
+    },
+    {
+      "label": "Limpopo",
+      "value": "Limpopo",
+      "manager": {
+        "name": "Dr. Benita Nel",
+        "phone": "083 331 6961",
+        "email": "benita@childlinempu.org.za"
+      }
     }
   ]
 }

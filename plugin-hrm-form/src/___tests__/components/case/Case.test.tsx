@@ -2,16 +2,15 @@
 // @ts-ignore
 import React from 'react';
 import { Provider } from 'react-redux';
-import renderer from 'react-test-renderer';
+import { render, screen, within } from '@testing-library/react';
+import '@testing-library/jest-dom/extend-expect';
 import configureMockStore from 'redux-mock-store';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
-import { mount } from 'enzyme';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import Case from '../../../components/case';
-import CaseHome from '../../../components/case/CaseHome';
 import { namespace, configurationBase, contactFormsBase, connectedCaseBase, routingBase } from '../../../states';
 import { getDefinitionVersions } from '../../../HrmFormPlugin';
 import { StandaloneITask } from '../../../types/types';
@@ -76,6 +75,7 @@ describe('useState mocked', () => {
             connectedCase: {
               id: 123,
               createdAt: '2020-06-29T22:26:00.208Z',
+              updatedAt: '2020-06-29T22:26:00.208Z',
               twilioWorkerId: 'worker1',
               status: 'open',
               info: { definitionVersion: 'v1' },
@@ -93,11 +93,6 @@ describe('useState mocked', () => {
       task: initialState[namespace][connectedCaseBase].tasks.task1 as StandaloneITask,
     };
   });
-
-  const setState = jest.fn();
-  const useStateMock = initState => [initState, setState];
-
-  jest.spyOn(React, 'useState').mockImplementation(useStateMock);
 
   afterEach(() => {
     jest.clearAllMocks();
@@ -130,49 +125,69 @@ describe('useState mocked', () => {
     });
     const store = mockStore(initialState);
 
-    const component = renderer.create(
+    render(
       <StorelessThemeProvider themeConf={{}}>
         <Provider store={store}>
           <Case {...ownProps} />
         </Provider>
       </StorelessThemeProvider>,
-    ).root;
+    );
 
-    const details = component.findAllByType(CaseHome);
-    expect(details.length).toBe(0);
+    expect(screen.queryByTestId('CaseHome-CaseDetailsComponent')).not.toBeInTheDocument();
   });
 
-  test('Case (should render)', async () => {
+  test('Case (should render, no updated)', async () => {
     const store = mockStore(initialState);
 
-    const component = renderer.create(
+    render(
       <StorelessThemeProvider themeConf={{}}>
         <Provider store={store}>
           <Case {...ownProps} />
         </Provider>
       </StorelessThemeProvider>,
-    ).root;
+    );
 
-    expect(component.findAllByType(CaseHome).length).toBe(1);
-    const details = component.findByType(CaseHome);
-    const { id, name, caseCounselor, status, openedDate, lastUpdatedDate, followUpDate } = details.props.caseDetails;
+    expect(screen.getByTestId('CaseHome-CaseDetailsComponent')).toBeInTheDocument();
 
-    expect(id).toBe(123);
-    expect(name).toStrictEqual({
-      firstName: 'first',
-      lastName: 'last',
-    });
-    expect(caseCounselor).toBe('worker1 name');
-    expect(status).toBe('open');
-    expect(openedDate).toBe('6/29/2020'); // the day the createdAt number represents
-    expect(lastUpdatedDate).toBe('Invalid Date');
-    expect(followUpDate).toBe('');
+    expect(screen.getByTestId('Case-DetailsHeaderCaseId').innerHTML).toContain('123');
+    expect(screen.getByTestId('Case-DetailsHeaderChildName').innerHTML).toContain('first last');
+    expect(screen.getByTestId('Case-DetailsHeaderCounselor').innerHTML).toContain('worker1 name');
+    expect(
+      within(screen.getByTestId('Case-Details_CaseStatus')).getByRole('option', { name: 'Open' }).selected,
+    ).toBeTruthy();
+    expect(screen.getByTestId('Case-Details_DateOpened').value).toBe('6/29/2020');
+    expect(screen.getByTestId('Case-Details_DateLastUpdated').value).toBe('—');
+  });
+
+  test('Case (should render, after update)', async () => {
+    const initial = initialState;
+    initial[namespace][connectedCaseBase].tasks.task1.connectedCase.updatedAt = '2020-06-29T22:29:00.208Z';
+    const store = mockStore(initial);
+
+    render(
+      <StorelessThemeProvider themeConf={{}}>
+        <Provider store={store}>
+          <Case {...ownProps} />
+        </Provider>
+      </StorelessThemeProvider>,
+    );
+
+    expect(screen.getByTestId('CaseHome-CaseDetailsComponent')).toBeInTheDocument();
+
+    expect(screen.getByTestId('Case-DetailsHeaderCaseId').innerHTML).toContain('123');
+    expect(screen.getByTestId('Case-DetailsHeaderChildName').innerHTML).toContain('first last');
+    expect(screen.getByTestId('Case-DetailsHeaderCounselor').innerHTML).toContain('worker1 name');
+    expect(
+      within(screen.getByTestId('Case-Details_CaseStatus')).getByRole('option', { name: 'Open' }).selected,
+    ).toBeTruthy();
+    expect(screen.getByTestId('Case-Details_DateOpened').value).toBe('6/29/2020');
+    expect(screen.getByTestId('Case-Details_DateLastUpdated').value).toBe('6/29/2020');
   });
 
   test('a11y', async () => {
     const store = mockStore(initialState);
 
-    const wrapper = mount(
+    const { container } = render(
       <StorelessThemeProvider themeConf={{}}>
         <Provider store={store}>
           <Case {...ownProps} />
@@ -185,7 +200,7 @@ describe('useState mocked', () => {
     };
 
     const axe = configureAxe({ rules });
-    const results = await axe(wrapper.getDOMNode());
+    const results = await axe(container);
 
     (expect(results) as any).toHaveNoViolations();
   });

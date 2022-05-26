@@ -165,6 +165,7 @@ export type LayoutVersion = {
     caseInformation: LayoutDefinition;
   };
   case: {
+    hideCounselorDetails?: boolean;
     households: LayoutDefinition;
     perpetrators: LayoutDefinition;
     incidents: LayoutDefinition;

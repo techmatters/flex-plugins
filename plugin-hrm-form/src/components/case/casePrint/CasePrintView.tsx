@@ -20,7 +20,7 @@ import CasePrintHeader from './CasePrintHeader';
 import CasePrintFooter from './CasePrintFooter';
 // import CasePrintContact from './CasePrintContact'; // Removed by ZA request, could be useful for other helplines.
 import { getImageAsString, ImageSource } from './helpers';
-import { ContactRawJson } from '../../../types/types';
+import { getLocaleDateTime } from '../../../utils/helpers';
 
 type OwnProps = {
   onClickClose: () => void;
@@ -106,8 +106,8 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
               <View>
                 <CasePrintDetails
                   status={caseDetails.status}
-                  openedDate={caseDetails.openedDate}
-                  lastUpdatedDate={caseDetails.lastUpdatedDate}
+                  openedDate={getLocaleDateTime(caseDetails.createdAt)}
+                  lastUpdatedDate={getLocaleDateTime(caseDetails.updatedAt)}
                   followUpDate={caseDetails.followUpPrintedDate}
                   childIsAtRisk={caseDetails.childIsAtRisk}
                   counselor={caseDetails.caseCounselor}
@@ -116,6 +116,7 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
                   caseManager={caseDetails.office?.manager}
                   chkOnBlob={chkOnBlob}
                   chkOffBlob={chkOffBlob}
+                  definitionVersion={definitionVersion}
                 />
                 {caseDetails.contact?.rawJson?.callType === callTypes.caller ? (
                   <View>

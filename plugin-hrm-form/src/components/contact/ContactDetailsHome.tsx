@@ -1,24 +1,29 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { format } from 'date-fns';
-import { CircularProgress, IconButton } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
 import { Link as LinkIcon } from '@material-ui/icons';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes } from 'hrm-form-definitions';
 
-import { DetailsContainer, NameContainer, DetNameText } from '../../styles/search';
+import { getConfig } from '../../HrmFormPlugin';
+import { DetailsContainer, DetNameText, NameContainer } from '../../styles/search';
 import Section from '../Section';
 import SectionEntry from '../SectionEntry';
 import { channelTypes } from '../../states/DomainConstants';
 import { isNonDataCallType } from '../../states/ValidationRules';
-import { formatDuration, formatName, formatCategories, mapChannelForInsights } from '../../utils';
+import { formatCategories, formatDuration, formatName, mapChannelForInsights } from '../../utils';
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/ContactDetails';
 import { unNestInformation } from '../../services/ContactService';
-import { namespace, configurationBase, RootState, contactFormsBase } from '../../states';
-import * as ConfigActions from '../../states/configuration/actions';
-import { getDefinitionVersion } from '../../services/ServerlessService';
-import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
+import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
+import {
+  ContactDetailsRoute,
+  DetailsContext,
+  navigateContactDetails,
+  toggleDetailSectionExpanded,
+} from '../../states/contacts/contactDetails';
+import { getPermissionsForContact, PermissionActions } from '../../permissions';
 
 // TODO: complete this type
 type OwnProps = {
@@ -26,46 +31,30 @@ type OwnProps = {
   context: DetailsContext;
   showActionIcons?: boolean;
   handleOpenConnectDialog?: (event: any) => void;
+  enableEditing: boolean;
 };
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
+/* eslint-disable complexity */
 const Details: React.FC<Props> = ({
   context,
   detailsExpanded,
   showActionIcons = false,
   handleOpenConnectDialog,
   definitionVersions,
-  updateDefinitionVersion,
   counselorsHash,
   contact,
   toggleSectionExpandedForContext,
+  navigateForContext,
+  enableEditing,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const version = contact?.details.definitionVersion;
 
-  /**
-   * Check if the definitionVersion for this case exists in redux, and look for it if not.
-   */
-  React.useEffect(() => {
-    const fetchDefinitionVersions = async (v: string) => {
-      const definitionVersion = await getDefinitionVersion(version);
-      updateDefinitionVersion(version, definitionVersion);
-    };
-
-    if (version && !definitionVersions[version]) {
-      fetchDefinitionVersions(version);
-    }
-  }, [definitionVersions, updateDefinitionVersion, version, contact]);
-
   const definitionVersion = definitionVersions[version];
 
-  if (!contact || !definitionVersion)
-    return (
-      <DetailsContainer>
-        <CircularProgress size={50} />
-      </DetailsContainer>
-    );
+  if (!contact || !definitionVersion) return null;
 
   // Object destructuring on contact
   const { overview, details, csamReports } = contact;
@@ -80,6 +69,10 @@ const Details: React.FC<Props> = ({
     categories,
     createdBy,
   } = overview;
+
+  // Permission to edit is based the counselor who created the contact - identified by Twilio worker ID
+  const createdByTwilioWorkerId = contact?.overview.counselor;
+  const { can } = getPermissionsForContact(createdByTwilioWorkerId);
 
   // Format the obtained information
   const isDataCall = !isNonDataCallType(callType);
@@ -106,19 +99,13 @@ const Details: React.FC<Props> = ({
   const addedBy = counselorsHash[createdBy];
   const counselorName = counselorsHash[counselor];
   const toggleSection = (section: ContactDetailsSectionsType) => toggleSectionExpandedForContext(context, section);
+  const navigate = (route: ContactDetailsRoute) => navigateForContext(context, route);
 
   const csamReportsAttached =
     csamReports &&
     csamReports
       .map(r => `CSAM on ${format(new Date(r.createdAt), 'yyyy MM dd h:mm aaaaa')}m\n#${r.csamReportId}`)
       .join('\n\n');
-
-  if (!definitionVersion)
-    return (
-      <DetailsContainer>
-        <CircularProgress size={50} />
-      </DetailsContainer>
-    );
 
   return (
     <DetailsContainer data-testid="ContactDetails-Container">
@@ -140,6 +127,7 @@ const Details: React.FC<Props> = ({
         sectionTitle={<Template code="ContactDetails-GeneralDetails" />}
         expanded={detailsExpanded[GENERAL_DETAILS]}
         handleExpandClick={() => toggleSection(GENERAL_DETAILS)}
+        buttonDataTestid={`ContactDetails-Section-${GENERAL_DETAILS}`}
       >
         <SectionEntry
           description={<Template code="ContactDetails-GeneralDetails-Channel" />}
@@ -164,6 +152,8 @@ const Details: React.FC<Props> = ({
           sectionTitle={<Template code="TabbedForms-AddCallerInfoTab" />}
           expanded={detailsExpanded[CALLER_INFORMATION]}
           handleExpandClick={() => toggleSection(CALLER_INFORMATION)}
+          showEditButton={enableEditing && can(PermissionActions.EDIT_CONTACT)}
+          handleEditClick={() => navigate(ContactDetailsRoute.EDIT_CALLER_INFORMATION)}
           buttonDataTestid="ContactDetails-Section-CallerInformation"
         >
           {definitionVersion.tabbedForms.CallerInformationTab.map(e => (
@@ -181,6 +171,8 @@ const Details: React.FC<Props> = ({
           sectionTitle={<Template code="TabbedForms-AddChildInfoTab" />}
           expanded={detailsExpanded[CHILD_INFORMATION]}
           handleExpandClick={() => toggleSection(CHILD_INFORMATION)}
+          showEditButton={enableEditing && can(PermissionActions.EDIT_CONTACT)}
+          handleEditClick={() => navigate(ContactDetailsRoute.EDIT_CHILD_INFORMATION)}
           buttonDataTestid="ContactDetails-Section-ChildInformation"
         >
           {definitionVersion.tabbedForms.ChildInformationTab.map(e => (
@@ -198,15 +190,18 @@ const Details: React.FC<Props> = ({
           sectionTitle={<Template code="TabbedForms-CategoriesTab" />}
           expanded={detailsExpanded[ISSUE_CATEGORIZATION]}
           handleExpandClick={() => toggleSection(ISSUE_CATEGORIZATION)}
+          buttonDataTestid="ContactDetails-Section-IssueCategorization"
+          showEditButton={enableEditing && can(PermissionActions.EDIT_CONTACT)}
+          handleEditClick={() => navigate(ContactDetailsRoute.EDIT_CATEGORIES)}
         >
           {formattedCategories.length ? (
             formattedCategories.map((c, index) => (
               <SectionEntry
                 key={`Category ${index + 1}`}
                 description={
-                  <div style={{ display: 'inline-block' }}>
+                  <span style={{ display: 'inline-block' }}>
                     <Template code="Category" /> {index + 1}
-                  </div>
+                  </span>
                 }
                 value={c}
               />
@@ -221,6 +216,9 @@ const Details: React.FC<Props> = ({
           sectionTitle={<Template code="TabbedForms-AddCaseInfoTab" />}
           expanded={detailsExpanded[CONTACT_SUMMARY]}
           handleExpandClick={() => toggleSection(CONTACT_SUMMARY)}
+          buttonDataTestid={`ContactDetails-Section-${CONTACT_SUMMARY}`}
+          showEditButton={enableEditing && can(PermissionActions.EDIT_CONTACT)}
+          handleEditClick={() => navigate(ContactDetailsRoute.EDIT_CASE_INFORMATION)}
         >
           {definitionVersion.tabbedForms.CaseInformationTab.map(e => (
             <SectionEntry
@@ -258,8 +256,8 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
 });
 
 const mapDispatchToProps = {
-  updateDefinitionVersion: ConfigActions.updateDefinitionVersion,
   toggleSectionExpandedForContext: toggleDetailSectionExpanded,
+  navigateForContext: navigateContactDetails,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Details);

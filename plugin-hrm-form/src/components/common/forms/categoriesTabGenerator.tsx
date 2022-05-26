@@ -124,6 +124,7 @@ export const CategoriesFromDefinition: React.FC<Props> = ({
               expanded={expanded[category]}
               handleExpandClick={() => toggleExpandCategory(category)}
               htmlElRef={index === 0 ? firstElementRef : null}
+              buttonDataTestid={`IssueCategorization-Section-${category}`}
             >
               <SubcategoriesWrapper gridView={gridView}>{subcategoriesInputs[category]}</SubcategoriesWrapper>
             </Section>
