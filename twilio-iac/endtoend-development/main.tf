@@ -7,9 +7,9 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "tl-terraform-state-twilio-endtoend-dev"
+    bucket         = "tl-terraform-state-twilio-e2e-development"
     key            = "twilio/terraform.tfstate"
-    dynamodb_table = "twilio-terraform-terraform-poc-locks"
+    dynamodb_table = "twilio-terraform-e2e-development-locks"
     encrypt        = true
   }
 }
@@ -69,6 +69,7 @@ module flex {
   feature_flags = var.feature_flags
   flex_chat_service_sid = module.services.flex_chat_service_sid
   messaging_studio_flow_sid = module.studioFlow.messaging_studio_flow_sid
+  messaging_flow_contact_identity = "+12607821891"
 }
 
 module survey {
@@ -94,4 +95,11 @@ module aws {
   flex_proxy_service_sid = module.services.flex_proxy_service_sid
   post_survey_bot_sid = module.chatbots.post_survey_bot_sid
   survey_workflow_sid = module.survey.survey_workflow_sid
+}
+
+module aws_monitoring {
+  source = "../terraform-modules/aws-monitoring/default"
+  helpline = var.helpline
+  short_helpline = var.short_helpline
+  environment = var.environment
 }

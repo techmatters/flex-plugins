@@ -10,7 +10,7 @@ variable "local_os" {
 }
 
 variable "helpline" {
-  default = "TerraformPOC"
+  default = "End To End Testing"
 }
 
 variable "short_helpline" {
