@@ -6,18 +6,5 @@
       "contactForm.childInformation.state",
       "contactForm.childInformation.district"
     ]
-  },
-  {
-    "attributeName": "initiative",
-    "insightsObject": "conversations",
-    "paths": [
-      "contactForm.caseInformationTab.DirectInterventionsByTheChildHelpline",
-      "contactForm.caseInformationTab.Recommendations",
-      "contactForm.caseInformationTab.ReferralsToChildProtectionAgencies",
-      "contactForm.caseInformationTab.ReferralsToGeneralHealthcareProfessionals",
-      "contactForm.caseInformationTab.ReferralsToLawEnforcementAgencies",
-      "contactForm.caseInformationTab.ReferralsToOtherOrganisations",
-      "contactForm.caseInformationTab.ReferralsToGrievanceOfficers"
-    ]
   }
 ]

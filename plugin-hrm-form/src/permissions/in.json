@@ -1,7 +1,7 @@
 {
   "closeCase": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
   "reopenCase": [["isSupervisor"]],
-  "caseStatusTransition": [],
+  "caseStatusTransition": [["isSupervisor"], ["isCreator"]],
   "addNote": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
   "editNote": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
   "addReferral": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
