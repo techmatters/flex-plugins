@@ -153,8 +153,8 @@ const CaseHome: React.FC<Props> = ({
     name,
     categories,
     contact,
-    openedDate,
-    lastUpdatedDate,
+    createdAt,
+    updatedAt,
     childIsAtRisk,
     caseCounselor,
     status,
@@ -252,7 +252,7 @@ const CaseHome: React.FC<Props> = ({
 
   return (
     <>
-      <CaseContainer>
+      <CaseContainer data-testid="CaseHome-CaseDetailsComponent">
         <Box marginLeft="25px" marginTop="13px">
           <CaseDetailsComponent
             caseId={id}
@@ -262,8 +262,8 @@ const CaseHome: React.FC<Props> = ({
             can={can}
             counselor={caseCounselor}
             categories={categories}
-            openedDate={openedDate}
-            lastUpdatedDate={lastUpdatedDate}
+            createdAt={createdAt}
+            updatedAt={updatedAt}
             followUpDate={followUpDate}
             childIsAtRisk={childIsAtRisk}
             office={office?.label}
