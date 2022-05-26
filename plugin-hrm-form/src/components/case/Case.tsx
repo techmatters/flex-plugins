@@ -15,13 +15,11 @@ import {
 import { getConfig } from '../../HrmFormPlugin';
 import { connectToCase, transformCategories } from '../../services/ContactService';
 import { cancelCase, updateCase } from '../../services/CaseService';
-import { getDefinitionVersion } from '../../services/ServerlessService';
 import { getActivitiesFromCase, isConnectedCaseActivity, sortActivities } from './caseActivities';
 import { getDateFromNotSavedContact, getHelplineData } from './caseHelpers';
 import { getLocaleDateTime } from '../../utils/helpers';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
-import * as ConfigActions from '../../states/configuration/actions';
 import ViewContact from './ViewContact';
 import { CaseDetailsName, updateCaseListByIndex, updateCaseSectionListByIndex } from '../../states/case/types';
 import { CustomITask, NoteEntry, ReferralEntry, StandaloneITask } from '../../types/types';
@@ -35,6 +33,7 @@ import { recordBackendError } from '../../fullStory';
 import { completeTask, submitContactForm } from '../../services/formSubmissionHelpers';
 import { getPermissionsForCase, PermissionActions } from '../../permissions';
 import { CenteredContainer } from '../../styles/case';
+import useDefinitionVersion from '../../hooks/useDefinitionVersion';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -132,21 +131,7 @@ const Case: React.FC<Props> = ({
   }, [task, form, props.connectedCaseId, props.connectedCaseState?.connectedCase, setLoading]);
 
   const version = props.connectedCaseState?.connectedCase.info.definitionVersion;
-  const { updateDefinitionVersion, definitionVersions } = props;
-
-  /**
-   * Check if the definitionVersion for this case exists in redux, and look for it if not.
-   */
-  useEffect(() => {
-    const fetchDefinitionVersions = async (v: string) => {
-      const definitionVersion = await getDefinitionVersion(version);
-      updateDefinitionVersion(version, definitionVersion);
-    };
-
-    if (version && !definitionVersions[version]) {
-      fetchDefinitionVersions(version);
-    }
-  }, [definitionVersions, updateDefinitionVersion, version]);
+  const { definitionVersion, error: dvError } = useDefinitionVersion(version);
 
   if (routing.route === 'csam-report') return null;
 
@@ -200,7 +185,6 @@ const Case: React.FC<Props> = ({
   const referrals = info?.referrals;
   const notes = timeline.filter(x => x.type === 'note');
   const summary = info?.summary;
-  const definitionVersion = props.definitionVersions[version];
   const office = getHelplineData(connectedCase.helpline, definitionVersion.helplineInformation);
 
   const onInfoChange = (fieldName, value) => {
@@ -509,7 +493,6 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   connectedCaseId: state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid]?.connectedCase?.id,
   counselorsHash: state[namespace][configurationBase].counselors.hash,
   routing: state[namespace][routingBase].tasks[ownProps.task.taskSid],
-  definitionVersions: state[namespace][configurationBase].definitionVersions,
 });
 
 const mapDispatchToProps = {
@@ -520,7 +503,6 @@ const mapDispatchToProps = {
   updateCaseStatus: CaseActions.updateCaseStatus,
   setConnectedCase: CaseActions.setConnectedCase,
   markCaseAsUpdated: CaseActions.markCaseAsUpdated,
-  updateDefinitionVersion: ConfigActions.updateDefinitionVersion,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

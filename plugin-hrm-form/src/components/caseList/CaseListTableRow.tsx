@@ -1,10 +1,9 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect } from 'react';
+import React from 'react';
 import { format, parseISO } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { getDefinitionVersion } from '../../services/ServerlessService';
 import { configurationBase, namespace, RootState } from '../../states';
 import * as ConfigActions from '../../states/configuration/actions';
 import { Case, CounselorHash } from '../../types/types';
@@ -23,6 +22,7 @@ import { formatName, getShortSummary } from '../../utils';
 import { getContactTags, renderTag } from '../../utils/categories';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
 import { caseStatuses } from '../../states/DomainConstants';
+import useDefinitionVersion from '../../hooks/useDefinitionVersion';
 
 const CHAR_LIMIT = 200;
 
@@ -51,20 +51,8 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
       : '—';
   const categories = getContactTags(caseItem.info.definitionVersion, caseItem.categories);
 
-  const { updateDefinitionVersion, definitionVersions } = props;
   const version = caseItem.info.definitionVersion;
-
-  useEffect(() => {
-    const fetchDefinitionVersions = async (v: string) => {
-      const definitionVersion = await getDefinitionVersion(version);
-      updateDefinitionVersion(version, definitionVersion);
-    };
-    if (version && !definitionVersions[version]) {
-      fetchDefinitionVersions(version);
-    }
-  }, [definitionVersions, updateDefinitionVersion, version]);
-
-  const definitionVersion = definitionVersions[version];
+  const { definitionVersion, error: dvError } = useDefinitionVersion(version);
 
   // Get the status for a case from the value of CaseStatus.json of the current form definitions
   const getCaseStatusLabel = (caseStatus: string) => {

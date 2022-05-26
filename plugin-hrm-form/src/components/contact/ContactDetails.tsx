@@ -7,14 +7,13 @@ import ContactDetailsHome from './ContactDetailsHome';
 import { ContactDetailsRoute, DetailsContext, navigateContactDetails } from '../../states/contacts/contactDetails';
 import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
 import EditContactSection from './EditContactSection';
-import { getDefinitionVersion } from '../../services/ServerlessService';
 import { DetailsContainer } from '../../styles/search';
-import * as ConfigActions from '../../states/configuration/actions';
 import { ContactDetailsSectionFormApi, contactDetailsSectionFormApi } from './contactDetailsSectionFormApi';
 import ContactDetailsSectionForm from './ContactDetailsSectionForm';
 import IssueCategorizationSectionForm from './IssueCategorizationSectionForm';
 import { forExistingContact } from '../../states/contacts/issueCategorizationStateApi';
 import { getConfig } from '../../HrmFormPlugin';
+import useDefinitionVersion from '../../hooks/useDefinitionVersion';
 
 type OwnProps = {
   contactId: string;
@@ -32,28 +31,14 @@ const ContactDetails: React.FC<Props> = ({
   handleOpenConnectDialog,
   showActionIcons,
   route,
-  definitionVersions,
-  updateDefinitionVersion,
   contact,
   navigateForContext,
   enableEditing = true,
 }) => {
   const version = contact?.details.definitionVersion;
+  const { definitionVersion, error: dvError } = useDefinitionVersion(version);
 
   const { featureFlags } = getConfig();
-  /**
-   * Check if the definitionVersion for this case exists in redux, and look for it if not.
-   */
-  React.useEffect(() => {
-    const fetchDefinitionVersions = async (v: string) => {
-      const definitionVersion = await getDefinitionVersion(version);
-      updateDefinitionVersion(version, definitionVersion);
-    };
-
-    if (version && !definitionVersions[version]) {
-      fetchDefinitionVersions(version);
-    }
-  }, [definitionVersions, updateDefinitionVersion, version, contact]);
 
   /**
    * Reset to home after we leave
@@ -63,9 +48,8 @@ const ContactDetails: React.FC<Props> = ({
       navigateForContext(context, ContactDetailsRoute.HOME);
     };
   }, [navigateForContext, context]);
-  const definitionVersion = definitionVersions[version];
 
-  if (!definitionVersion)
+  if (!definitionVersion && !dvError)
     return (
       <DetailsContainer>
         <CircularProgress size={50} />
@@ -131,7 +115,6 @@ const ContactDetails: React.FC<Props> = ({
 };
 
 const mapDispatchToProps = {
-  updateDefinitionVersion: ConfigActions.updateDefinitionVersion,
   navigateForContext: navigateContactDetails,
 };
 
