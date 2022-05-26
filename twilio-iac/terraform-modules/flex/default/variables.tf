@@ -60,3 +60,9 @@ variable "messaging_studio_flow_sid" {
   description = "Internal Twilio resource SID provided by another module"
   type        = string
 }
+
+variable "messaging_flow_contact_identity" {
+  description = "SMS number or whatever for the messaging flow"
+  type = string
+  default = null
+}
