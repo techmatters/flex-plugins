@@ -77,14 +77,25 @@ const CaseListTableHeadCell: React.FC<Props> = ({
 
     updateCaseListSort({ sortBy: column, sortDirection: updatedSortDirection });
   };
-  console.log('>>>>',{localizedText})
+  console.log('>>>>', { localizedText });
   const textAlign = () => {
-    if(localizedText === 'CaseList-THOpened' || localizedText === 'CaseList-THUpdated' || localizedText === 'CaseList-THFollowUp') return 'right'
-    return 'left'
-  }
+    if (
+      localizedText === 'CaseList-THOpened' ||
+      localizedText === 'CaseList-THUpdated' ||
+      localizedText === 'CaseList-THFollowUp'
+    )
+      return 'right';
+    return 'left';
+  };
   return (
-    <CLTableCell style={{ width: width || '8%', cursor: cursor() }} align='right' variant='head' onClick={handleClick} scope="col">
-      <CLTableHeaderFont style={{ borderBottom: borderBottom(), whiteSpace: 'nowrap', textAlign:textAlign() }}>
+    <CLTableCell
+      style={{ width: width || '8%', cursor: cursor() }}
+      align="right"
+      variant="head"
+      onClick={handleClick}
+      scope="col"
+    >
+      <CLTableHeaderFont style={{ borderBottom: borderBottom(), whiteSpace: 'nowrap', textAlign: textAlign() }}>
         <Template code={localizedText} />
         <span aria-hidden="true">{drawSort()}</span>
       </CLTableHeaderFont>

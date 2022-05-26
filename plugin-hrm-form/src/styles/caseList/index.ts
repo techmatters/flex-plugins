@@ -98,12 +98,6 @@ export const CLTableHeaderFont = styled(FontOpenSans)`
 `;
 CLTableHeaderFont.displayName = 'CLTableHeaderFont';
 
-export const CLTableDateHeaderFont = styled(CLTableHeaderFont)`
-  display: none;
-  width: none;
-  text-align:'right';
-`
-
 export const CLTableBodyFont = styled(FontOpenSans)`
   color: #192b33;
   font-size: 12px;
