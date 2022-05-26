@@ -45,7 +45,7 @@ module "services" {
 module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
   serverless_url = var.serverless_url
-  helpline = "ChildLine Zambia (ZM)"
+  helpline = "Childline"
 }
 
 module studioFlow {
@@ -102,4 +102,13 @@ module aws_monitoring {
   helpline = var.helpline
   short_helpline = var.short_helpline
   environment = var.environment
+}
+
+module github {
+
+  source = "../terraform-modules/github/default"
+  twilio_account_sid = var.account_sid
+  twilio_auth_token = var.auth_token
+  short_environment = var.short_environment
+  short_helpline = var.short_helpline
 }

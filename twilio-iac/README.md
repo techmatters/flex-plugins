@@ -10,9 +10,10 @@ You will require the following installed locally:
 * _You previously had to build & install the twilio-terraform-provider yourself, but they are being pushed up to the Terraform registry now: https://registry.terraform.io/providers/twilio/twilio_
 * You need the following environment variables: 
   - AWS_ACCESS_KEY_ID & AWS_SECRET_ACCESS_KEY set for the script user
-  - TWILIO_ACCOUNT_SID & TWILIO_AUTH_TOKEN set to the account you want to manage, and TF_VAR_account_sid to the same as TWILIO_ACCOUNT_SID (we need the account sid as a variable as well as a cred.)
+  - TWILIO_ACCOUNT_SID & TWILIO_AUTH_TOKEN set to the account you want to manage, and TF_VAR_account_sid & TF_VAR_auth_token to the same as TWILIO_ACCOUNT_SID & TWILIO_AUTH_TOKEN respectively (we need the account sid & token as a variable as well as a cred.)
   - TF_VAR_datadog_app_id & TF_VAR_datadog_access_token set for the RUM app that should already be created for the account
   - TF_VAR_serverless_url - once set, the production serverless environment's domain, once set, use a placeholder until then.
+  - GITHUB_TOKEN - a personal access token with write access to the tech matters serverless & flex plugins repo
 
 ## Preparation
 
@@ -112,12 +113,10 @@ This Terraform project is currently incomplete, this is what isn't covered and n
 
 ### What it should do but doesn't
 
-* Github Secrets - not currently added to serverless or flex (can be done though).
 * HRM process.env - not currently updated. Terraform isn't great at provisioning parts of files, refactoring this code to use SSM parameters which could be managed as terraform resources .
 * Okta - doesn't set up anything in Twilio or Okta for this right now. No sign of any support for setting up single sign on in the Twilio provider, but there is an Okta provider.
 * DataDog - it puts the keys you provide via tfvars in the AWS Parameter Store, but it won't provision the application in DataDog for you (but it could!).
 * Default Studio Flows - it doesn't clean up the original 'Messaging Flow', because it's never under control of terraform. Could be removed with a provisioner possibly, but this might result in unexpected behaviour if somebody duplicates the terraform managed Messaging Flow to test with and then terraform goes and deletes it...
-* AWS Cloudwatch Alarms - now we have 'per account' alarms, they seem like a good candidate for managing in TF?
 ...
 
 ### What it shouldn't do

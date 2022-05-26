@@ -36,7 +36,7 @@ resource "aws_cloudwatch_metric_alarm" "alarm_twilio_pager_duty" {
 
 # Email Alarm
 resource "aws_cloudwatch_metric_alarm" "alarm_twilio_email" {
-  alarm_name                = "${lower(var.environment)}-twilio-reporter-${lower(var.short_helpline)}-pager-duty"
+  alarm_name                = "${lower(var.environment)}-twilio-reporter-${lower(var.short_helpline)}-email"
   comparison_operator       = "GreaterThanOrEqualToThreshold"
   evaluation_periods        = "1"
   datapoints_to_alarm       = "1"
@@ -50,7 +50,7 @@ resource "aws_cloudwatch_metric_alarm" "alarm_twilio_email" {
     "Value": "${upper(var.short_helpline)}_${upper(var.environment)}"
   }
   actions_enabled           = "true"
-  alarm_description         = "${var.helpline} (${var.environment}) received at least ${local.email_threshold} Twilio errors in the past hour. Sent Pager Duty notification."
+  alarm_description         = "${var.helpline} (${var.environment}) received at least ${local.email_threshold} Twilio errors in the past hour. Sent email notification."
   alarm_actions = [local.email_arn]
   treat_missing_data = "notBreaching"
 }
