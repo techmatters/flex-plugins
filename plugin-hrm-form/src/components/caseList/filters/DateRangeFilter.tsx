@@ -223,9 +223,9 @@ const DateRangeFilter: React.FC<Props> = ({
         <FiltersDialog
           role="dialog"
           aria-labelledby="dialog-title"
-          left={name === 'followUpDateFilter' ? '-200px' : '-75px'}
+          left={name === 'followUpDateFilter' ? '-200px' : '-95px'}
         >
-          <DialogArrow left={name === 'followUpDateFilter' ? '250px' : '120px'} />
+          <DialogArrow left={name === 'followUpDateFilter' ? '250px' : '140px'} />
           <FiltersDialogTitle id="dialog-title">
             <Template code="CaseList-Filters-DialogTitlePrefix" /> <Template code={labelKey} />
           </FiltersDialogTitle>
