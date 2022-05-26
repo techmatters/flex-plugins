@@ -204,7 +204,7 @@ export const MultiSelectSearchInput = styled('input')`
   background-color: ${props => props.theme.colors.inputBackgroundColor};
   color: #192b33;
   border: none;
-  boxshadow: none;
+  box-shadow: none;
   padding: 0 34px;
 
   &:focus {
