@@ -58,7 +58,7 @@ const CaseListTableHeadCell: React.FC<Props> = ({
 
   const borderBottom = () => {
     if (!featureFlags.enable_sort_cases || !column) return 'none';
-    return currentSort?.sortBy === column ? '3px solid #009DFF' : 'none';
+    return currentSort?.sortBy === column ? '3px solid #000000' : 'none';
   };
 
   const cursor = () => {

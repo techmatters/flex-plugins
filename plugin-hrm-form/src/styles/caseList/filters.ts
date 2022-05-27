@@ -9,7 +9,7 @@ export const FiltersContainer = styled(Flex)`
   margin-right: 10px;
   padding: 10px;
   font-size: 13px;
-  box-shadow: 0 1px 2px 0 rgba(25, 43, 51, 0.1);
+  border-bottom: 2px solid #d8d8d8;
   &:focus {
     outline: auto;
   }
@@ -39,15 +39,19 @@ export const FiltersResetAll = styled('button')`
 `;
 FiltersResetAll.displayName = 'FiltersResetAll';
 
-export const FilterBy = styled('span')`
+export const FilterTitle = styled('span')`
   font-weight: 600;
-  margin-left: 15px;
-  margin-right: 30px;
+  margin-left: 10px;
+  margin-right: 20px;
+  white-space: nowrap;
+  font-size: 13px;
 `;
-FilterBy.displayName = 'FilterBy';
+FilterTitle.displayName = 'FilterTitle';
 
-export const CasesCount = styled(Flex)`
+export const CasesCount = styled('span')`
   margin-left: auto;
+  padding-right: 10px;
+  display: 'inline-flex';
 `;
 CasesCount.displayName = 'CasesCount';
 
@@ -61,7 +65,7 @@ export const MultiSelectButton = styled('button')<MultiSelectButtonProps>`
   align-items: center;
   background-color: ${props => (props.isOpened || props.isActive ? 'white' : '#ecedf1')};
   cursor: pointer;
-  margin: 0 15px;
+  margin: 0 5px;
   height: 28px;
   border: 1px solid #c0c1c3;
   border-radius: 4px;
@@ -69,6 +73,7 @@ export const MultiSelectButton = styled('button')<MultiSelectButtonProps>`
   font-family: 'Open Sans';
   font-weight: ${props => (props.isOpened ? 'bold' : 'normal')};
   color: #192b33;
+  white-space: nowrap;
   &:hover {
     background-color: ${props => (props.isOpened ? 'white' : 'rgba(255, 255, 255, 0.5)')};
   }
