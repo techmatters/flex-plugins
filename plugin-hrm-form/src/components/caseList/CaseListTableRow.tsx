@@ -107,13 +107,13 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
         </div>
       </CLTableCell>
       <CLTableCell>
-        <CLTableBodyFont>{opened}</CLTableBodyFont>
+        <CLTableBodyFont style={{ textAlign: 'right' }}>{opened}</CLTableBodyFont>
       </CLTableCell>
       <CLTableCell>
-        <CLTableBodyFont>{updated}</CLTableBodyFont>
+        <CLTableBodyFont style={{ textAlign: 'right' }}>{updated}</CLTableBodyFont>
       </CLTableCell>
       <CLTableCell>
-        <CLTableBodyFont>{followUpDate}</CLTableBodyFont>
+        <CLTableBodyFont style={{ textAlign: 'right' }}>{followUpDate}</CLTableBodyFont>
       </CLTableCell>
     </CLTableRow>
   );
