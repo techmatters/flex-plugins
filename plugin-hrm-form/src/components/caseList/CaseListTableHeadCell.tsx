@@ -77,7 +77,6 @@ const CaseListTableHeadCell: React.FC<Props> = ({
 
     updateCaseListSort({ sortBy: column, sortDirection: updatedSortDirection });
   };
-  console.log('>>>>', { localizedText });
   const textAlign = () => {
     if (
       localizedText === 'CaseList-THOpened' ||
