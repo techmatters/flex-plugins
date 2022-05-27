@@ -2,9 +2,10 @@
 import React from 'react';
 import { TableBody, CircularProgress } from '@material-ui/core';
 import { connect, ConnectedProps } from 'react-redux';
+import { Template } from '@twilio/flex-ui';
 
 import { namespace, configurationBase, RootState, caseListBase } from '../../states';
-import { TableContainer, CLTable, CLTableRow, CLNamesCell } from '../../styles/caseList';
+import { TableContainer, CLTable, CLTableRow, CLNamesCell, CLTableCell, CLTableBodyFont } from '../../styles/caseList';
 import Filters from './filters/Filters';
 import CaseListTableHead from './CaseListTableHead';
 import CaseListTableRow from './CaseListTableRow';
@@ -64,19 +65,31 @@ const CaseListTable: React.FC<Props> = ({
           )}
           {!loading && (
             <TableBody>
-              {caseList.map(caseItem => (
-                <CaseListTableRow
-                  caseItem={caseItem}
-                  key={`CaseListItem-${caseItem.id}`}
-                  handleClickViewCase={handleClickViewCase}
-                  counselorsHash={counselorsHash}
-                />
-              ))}
+              {caseList.length > 0 ? (
+                caseList.map(caseItem => (
+                  <CaseListTableRow
+                    caseItem={caseItem}
+                    key={`CaseListItem-${caseItem.id}`}
+                    handleClickViewCase={handleClickViewCase}
+                    counselorsHash={counselorsHash}
+                  />
+                ))
+              ) : (
+                <CLTableRow>
+                  <CLTableCell colSpan={8}>
+                    <CLTableBodyFont style={{ paddingLeft: '6px', fontWeight: 'initial' }}>
+                      <Template code="CaseList-NoCases" />
+                    </CLTableBodyFont>
+                  </CLTableCell>
+                </CLTableRow>
+              )}
             </TableBody>
           )}
         </CLTable>
       </TableContainer>
-      <Pagination page={currentPage} pagesCount={pagesCount} handleChangePage={updateCaseListPage} />
+      {caseList.length > 0 ? (
+        <Pagination page={currentPage} pagesCount={pagesCount} handleChangePage={updateCaseListPage} />
+      ) : null}
     </>
   );
 };
