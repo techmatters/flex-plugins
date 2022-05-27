@@ -80,9 +80,18 @@ export async function importDefaultResources(
     logWarning('Flex proxy Service not found to import');
   }
 
-  const chatService = (await client.chat.services.list({ limit: 20 })).find(
+  logInfo('Trying to import Flex Chat Service');
+  let chatService = (await client.chat.services.list({ limit: 20 })).find(
     (p) => p.friendlyName === 'Flex Chat Service',
   );
+
+  if (!chatService) {
+    logWarning('Flex Chat Service not found to import');
+    logInfo('Trying to import Flex Conversation Service');
+    chatService = (await client.chat.services.list({ limit: 20 })).find(
+      (p) => p.friendlyName === 'Flex Conversation Service',
+    );
+  }
 
   if (chatService) {
     attemptTerraformImport(

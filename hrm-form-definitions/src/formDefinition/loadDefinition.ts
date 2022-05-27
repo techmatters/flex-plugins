@@ -12,6 +12,7 @@ import {
 import { OneToManyConfigSpecs, OneToOneConfigSpec } from './insightsConfig';
 
 export enum DefinitionVersionId {
+  demoV1 = 'demo-v1', // Demo v1
   v1 = 'v1', // Zambia V1
   brV1 = 'br-v1', // Safernet Brasil v1
   etV1 = 'et-v1', // Ethiopia v1
@@ -22,6 +23,7 @@ export enum DefinitionVersionId {
   caV1 = 'ca-v1', // Kids Help Phone Canada v1
   phV1 = 'ph-v1', // ECPAT Phillippines v1
   ukV1 = 'uk-v1', // Revenge Porn UK v1
+  ukrV1 = 'ukr-v1', // International Ukrainian Helpline v1
 }
 
 // Using a variable for the root of the dynamic import confuses webpack :-(

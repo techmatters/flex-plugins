@@ -83,10 +83,14 @@ export const MultiSelectButton = styled('button')<MultiSelectButtonProps>`
 `;
 MultiSelectButton.displayName = 'MultiSelectButton';
 
-export const DialogArrow = styled(Flex)`
+type DialogArrowProps = {
+  left?: string;
+};
+
+export const DialogArrow = styled(Flex)<DialogArrowProps>`
   position: absolute;
   top: 0;
-  left: 60px;
+  left: ${props => (props.left ? props.left : '75px')};
   background: #ffffff;
   border: 0px solid #d3d3d3;
 
@@ -120,6 +124,7 @@ DialogArrow.displayName = 'DialogArrow';
 
 type FiltersDialogProps = {
   width?: string;
+  left?: string;
 };
 
 export const FiltersDialog = styled('div')<FiltersDialogProps>`
@@ -128,7 +133,7 @@ export const FiltersDialog = styled('div')<FiltersDialogProps>`
   box-sizing: border-box;
   width: ${props => (props.width ? props.width : '330px')};
   top: 43px;
-  left: -35px;
+  left: ${props => (props.left ? props.left : '-20px')};
   min-width: 200px;
   padding: 25px 32px;
   border: 1px solid lightgray;

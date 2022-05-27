@@ -102,7 +102,6 @@ const Case: React.FC<Props> = ({
      */
     const getTimeline = () => {
       if (!props.connectedCaseId) return;
-
       setLoading(true);
       const activities = getActivitiesFromCase(props.connectedCaseState.connectedCase);
       setLoading(false);
@@ -189,8 +188,6 @@ const Case: React.FC<Props> = ({
   const { workerSid } = getConfig();
   const caseCounselor = counselorsHash[twilioWorkerId];
   const currentCounselor = counselorsHash[workerSid];
-  const openedDate = getLocaleDateTime(createdAt);
-  const lastUpdatedDate = getLocaleDateTime(updatedAt);
   // -- Date cannot be converted here since the date dropdown uses the yyyy-MM-dd format.
   const followUpDate = info && info.followUpDate ? info.followUpDate : '';
   // -- Converting followUpDate to match the same format as the rest of the dates
@@ -272,8 +269,8 @@ const Case: React.FC<Props> = ({
     prevStatus,
     caseCounselor,
     currentCounselor,
-    openedDate,
-    lastUpdatedDate,
+    createdAt,
+    updatedAt,
     followUpDate,
     followUpPrintedDate,
     households,
@@ -468,6 +465,7 @@ const Case: React.FC<Props> = ({
       // Fall through to next switch for other routes without actions
     }
   }
+
   switch (routing.subroute) {
     case NewCaseSubroutes.ViewContact:
       return <ViewContact onClickClose={handleCloseSubSection} task={task} />;

@@ -101,9 +101,8 @@ export const CLTableHeaderFont = styled(FontOpenSans)`
   font-size: 12px;
   line-height: 30px;
   letter-spacing: 0;
-  display: flex;
-  align-items: center;
-  width: fit-content;
+  padding: 0 2px;
+  align-items: right;
 `;
 CLTableHeaderFont.displayName = 'CLTableHeaderFont';
 

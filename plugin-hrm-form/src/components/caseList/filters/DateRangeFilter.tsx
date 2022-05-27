@@ -199,6 +199,7 @@ const DateRangeFilter: React.FC<Props> = ({
   const dividerStyle = { border: 'none', height: '1px', backgroundColor: 'rgb(216, 216, 216)' };
   const currentOption = findCurrentOption(optionsWithoutDividers, currentWorkingCopy);
   const showCustomDateFields = currentOption ? isFixedDateRange(currentOption[1]) : false;
+
   return (
     <div style={{ position: 'relative' }}>
       <MultiSelectButton
@@ -219,8 +220,12 @@ const DateRangeFilter: React.FC<Props> = ({
         </Flex>
       </MultiSelectButton>
       {isOpened && (
-        <FiltersDialog role="dialog" aria-labelledby="dialog-title">
-          <DialogArrow />
+        <FiltersDialog
+          role="dialog"
+          aria-labelledby="dialog-title"
+          left={name === 'followUpDateFilter' ? '-200px' : '-95px'}
+        >
+          <DialogArrow left={name === 'followUpDateFilter' ? '250px' : '140px'} />
           <FiltersDialogTitle id="dialog-title">
             <Template code="CaseList-Filters-DialogTitlePrefix" /> <Template code={labelKey} />
           </FiltersDialogTitle>
