@@ -21,8 +21,8 @@ import { CustomITask, isOfflineContactTask, SearchContact } from '../../types/ty
 import { TabbedFormsContainer, TabbedFormTabContainer, Box, StyledTabs, Row } from '../../styles/HrmStyles';
 import FormTab from '../common/forms/FormTab';
 import Search from '../search';
-import IssueCategorizationTab from './IssueCategorizationTab';
-import TabbedFormTab from './TabbedFormTab';
+import IssueCategorizationSectionForm from '../contact/IssueCategorizationSectionForm';
+import ContactDetailsSectionForm from '../contact/ContactDetailsSectionForm';
 import ContactlessTaskTab from './ContactlessTaskTab';
 import BottomBar from './BottomBar';
 import { hasTaskControl } from '../../utils/transfer';
@@ -30,6 +30,7 @@ import { isNonDataCallType } from '../../states/ValidationRules';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
 import CSAMReportButton from './CSAMReportButton';
 import CSAMAttachments from './CSAMAttachments';
+import { forTask } from '../../states/contacts/issueCategorizationStateApi';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -226,33 +227,35 @@ const TabbedForms: React.FC<Props> = ({
               )}
               {isCallerType && (
                 <TabbedFormTabContainer display={subroute === 'callerInformation'}>
-                  <TabbedFormTab
-                    task={task}
+                  <ContactDetailsSectionForm
                     tabPath="callerInformation"
                     definition={currentDefinitionVersion.tabbedForms.CallerInformationTab}
                     layoutDefinition={currentDefinitionVersion.layoutVersion.contact.callerInformation}
                     initialValues={contactForm.callerInformation}
                     display={subroute === 'callerInformation'}
                     autoFocus={autoFocus}
+                    updateFormActionDispatcher={dispatch => values =>
+                      dispatch(updateForm(task.taskSid, 'callerInformation', values.callerInformation))}
                   />
                 </TabbedFormTabContainer>
               )}
               {isDataCallType && (
                 <>
                   <TabbedFormTabContainer display={subroute === 'childInformation'}>
-                    <TabbedFormTab
-                      task={task}
+                    <ContactDetailsSectionForm
                       tabPath="childInformation"
                       definition={currentDefinitionVersion.tabbedForms.ChildInformationTab}
                       layoutDefinition={currentDefinitionVersion.layoutVersion.contact.childInformation}
                       initialValues={contactForm.childInformation}
                       display={subroute === 'childInformation'}
                       autoFocus={autoFocus}
+                      updateFormActionDispatcher={dispatch => values =>
+                        dispatch(updateForm(task.taskSid, 'childInformation', values.childInformation))}
                     />
                   </TabbedFormTabContainer>
                   <TabbedFormTabContainer display={subroute === 'categories'}>
-                    <IssueCategorizationTab
-                      task={task}
+                    <IssueCategorizationSectionForm
+                      stateApi={forTask(task)}
                       display={subroute === 'categories'}
                       initialValue={contactForm.categories}
                       definition={currentDefinitionVersion.tabbedForms.IssueCategorizationTab(helpline)}
@@ -260,8 +263,7 @@ const TabbedForms: React.FC<Props> = ({
                     />
                   </TabbedFormTabContainer>
                   <TabbedFormTabContainer display={subroute === 'caseInformation'}>
-                    <TabbedFormTab
-                      task={task}
+                    <ContactDetailsSectionForm
                       tabPath="caseInformation"
                       definition={currentDefinitionVersion.tabbedForms.CaseInformationTab}
                       layoutDefinition={currentDefinitionVersion.layoutVersion.contact.caseInformation}
@@ -269,6 +271,8 @@ const TabbedForms: React.FC<Props> = ({
                       display={subroute === 'caseInformation'}
                       autoFocus={autoFocus}
                       extraChildrenRight={csamAttachments}
+                      updateFormActionDispatcher={dispatch => values =>
+                        dispatch(updateForm(task.taskSid, 'caseInformation', values.caseInformation))}
                     />
                   </TabbedFormTabContainer>
                 </>

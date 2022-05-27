@@ -1,7 +1,13 @@
 /* eslint-disable sonarjs/prefer-immediate-return */
 import { set } from 'lodash/fp';
 import { TaskHelper } from '@twilio/flex-ui';
-import type { CategoriesDefinition, CategoryEntry, FormDefinition, FormItemDefinition } from 'hrm-form-definitions';
+import type {
+  CategoriesDefinition,
+  CategoryEntry,
+  DefinitionVersion,
+  FormDefinition,
+  FormItemDefinition,
+} from 'hrm-form-definitions';
 
 import { createNewTaskEntry, TaskEntry } from '../states/contacts/reducer';
 import { isNonDataCallType } from '../states/ValidationRules';
@@ -15,6 +21,7 @@ import {
   InformationObject,
   isOfflineContactTask,
   isTwilioTask,
+  SearchContact,
   SearchContactResult,
 } from '../types/types';
 import { saveContactToExternalBackend } from '../dualWrite';
@@ -28,12 +35,12 @@ import { getNumberFromTask } from '../utils';
 export const unNestInformation = (e: FormItemDefinition, obj: InformationObject) =>
   ['firstName', 'lastName'].includes(e.name) ? obj.name[e.name] : obj[e.name];
 
-const nestName = (information: { firstName: string; lastName: string }) => {
+const nestName = (information: { firstName: string; lastName: string }): InformationObject => {
   const { firstName, lastName, ...rest } = information;
   return { ...rest, name: { firstName, lastName } };
 };
 
-const unNestInformationObject = (
+export const unNestInformationObject = (
   def: FormDefinition,
   obj: InformationObject,
 ): TaskEntry['childInformation'] | TaskEntry['callerInformation'] =>
@@ -47,9 +54,7 @@ export async function searchContacts(searchParams, limit, offset): Promise<Searc
     body: JSON.stringify(searchParams),
   };
 
-  const responseJson = await fetchHrmApi(`/contacts/search${queryParams}`, options);
-
-  return responseJson;
+  return fetchHrmApi(`/contacts/search${queryParams}`, options);
 }
 
 /**
@@ -88,8 +93,13 @@ export const searchResultToContactForm = (def: FormDefinition, obj: InformationO
   return deTransformed;
 };
 
-export function transformCategories(helpline, categories: TaskEntry['categories']) {
-  const { IssueCategorizationTab } = getDefinitionVersions().currentDefinitionVersion.tabbedForms;
+export function transformCategories(
+  helpline,
+  categories: TaskEntry['categories'],
+  definition: DefinitionVersion | undefined = undefined,
+): Record<string, Record<string, boolean>> {
+  const def: DefinitionVersion = definition ?? getDefinitionVersions().currentDefinitionVersion;
+  const { IssueCategorizationTab } = def.tabbedForms;
   const cleanCategories = createCategoriesObject(IssueCategorizationTab(helpline));
   const transformedCategories = categories.reduce((acc, path) => set(path, true, acc), {
     categories: cleanCategories, // use an object with categories property so we can reuse the entire path (they look like categories.Category.Subcategory)
@@ -97,6 +107,15 @@ export function transformCategories(helpline, categories: TaskEntry['categories'
 
   return transformedCategories.categories;
 }
+
+export const transformContactFormValues = (
+  formValues: Record<string, string | boolean>,
+  formDefinition: FormDefinition,
+): InformationObject => {
+  // transform the form values before submit (e.g. "mixed" for 3-way checkbox becomes null)
+  const transformedValue = transformValues(formDefinition)(formValues);
+  return nestName(<{ firstName: string; lastName: string }>transformedValue);
+};
 
 /**
  * Transforms the form to be saved as the backend expects it
@@ -215,6 +234,20 @@ const saveContactToHrm = async (
   return { responseJson, requestPayload: body };
 };
 
+export const updateContactInHrm = async (
+  contactId: string,
+  body: {
+    rawJson: Partial<Omit<ContactRawJson, 'caseInformation'>> & Partial<ContactRawJson['caseInformation']>;
+  },
+) => {
+  const options = {
+    method: 'PATCH',
+    body: JSON.stringify(body),
+  };
+
+  return fetchHrmApi(`/contacts/${contactId}`, options);
+};
+
 export const saveContact = async (
   task,
   form,
@@ -227,9 +260,13 @@ export const saveContact = async (
   // TODO: add catch clause to handle saving to Sync Doc
   try {
     await saveContactToExternalBackend(task, response.requestPayload);
-  } finally {
-    return response.responseJson;
+  } catch (err) {
+    console.error(
+      `Saving task with sid ${task.taskSid} failed, presumably the attempt to add it to the pending store also failed so this data is likely lost`,
+      err,
+    );
   }
+  return response.responseJson;
 };
 
 export async function connectToCase(contactId, caseId) {

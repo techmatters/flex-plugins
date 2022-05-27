@@ -1,9 +1,12 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { format, parseISO } from 'date-fns';
-import { Fullscreen } from '@material-ui/icons';
 import { Template } from '@twilio/flex-ui';
+import { connect, ConnectedProps } from 'react-redux';
 
+import { getDefinitionVersion } from '../../services/ServerlessService';
+import { configurationBase, namespace, RootState } from '../../states';
+import * as ConfigActions from '../../states/configuration/actions';
 import { Case, CounselorHash } from '../../types/types';
 import {
   CLTableRow,
@@ -15,22 +18,24 @@ import {
   CLCaseNumberContainer,
   CLCaseIDButton,
 } from '../../styles/caseList';
-import { Box, Row, HiddenText } from '../../styles/HrmStyles';
+import { Box, HiddenText } from '../../styles/HrmStyles';
 import { formatName, getShortSummary } from '../../utils';
 import { getContactTags, renderTag } from '../../utils/categories';
-import { caseStatuses } from '../../states/DomainConstants';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
+import { caseStatuses } from '../../states/DomainConstants';
 
 const CHAR_LIMIT = 200;
 
 // eslint-disable-next-line react/no-multi-comp
-type Props = {
+type OwnProps = {
   caseItem: Case;
   counselorsHash: CounselorHash;
   handleClickViewCase: (currentCase: Case) => () => void;
 };
 
-const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleClickViewCase }) => {
+type Props = OwnProps & ConnectedProps<typeof connector>;
+
+const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleClickViewCase, ...props }) => {
   const { status } = caseItem;
   const statusString = status.charAt(0).toUpperCase() + status.slice(1);
   const name = formatName(caseItem.childName);
@@ -45,10 +50,29 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
       ? `${format(parseISO(caseItem.info.followUpDate), 'MMM d, yyyy')}`
       : '—';
   const categories = getContactTags(caseItem.info.definitionVersion, caseItem.categories);
-  const isOpenCase = caseItem.status !== caseStatuses.closed;
+
+  const { updateDefinitionVersion, definitionVersions } = props;
+  const version = caseItem.info.definitionVersion;
+
+  useEffect(() => {
+    const fetchDefinitionVersions = async (v: string) => {
+      const definitionVersion = await getDefinitionVersion(version);
+      updateDefinitionVersion(version, definitionVersion);
+    };
+    if (version && !definitionVersions[version]) {
+      fetchDefinitionVersions(version);
+    }
+  }, [definitionVersions, updateDefinitionVersion, version]);
+
+  const definitionVersion = definitionVersions[version];
+
+  // Get the status for a case from the value of CaseStatus.json of the current form definitions
+  const getCaseStatusLabel = (caseStatus: string) => {
+    return Object.values(definitionVersion.caseStatus).filter(status => status.value === caseStatus)[0].label;
+  };
 
   return (
-    <CLTableRow data-testid="CaseList-TableRow">
+    <CLTableRow data-testid="CaseList-TableRow" onClick={handleClickViewCase(caseItem)}>
       <CLNumberCell>
         <CLCaseNumberContainer>
           <CLCaseIDButton tabIndex={0} onClick={handleClickViewCase(caseItem)}>
@@ -59,7 +83,7 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
             {caseItem.id}
           </CLCaseIDButton>
           <CLTableBodyFont style={{ color: '#606B85', paddingTop: '2px', textAlign: 'center' }}>
-            <Template code={`CaseList-Status${statusString}`} />
+            {getCaseStatusLabel(caseItem.status)}
           </CLTableBodyFont>
         </CLCaseNumberContainer>
       </CLNumberCell>
@@ -97,4 +121,15 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
 
 CaseListTableRow.displayName = 'CaseListTableRow';
 
-export default CaseListTableRow;
+const mapStateToProps = (state: RootState) => ({
+  definitionVersions: state[namespace][configurationBase].definitionVersions,
+});
+
+const mapDispatchToProps = {
+  updateDefinitionVersion: ConfigActions.updateDefinitionVersion,
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+const connected = connector(CaseListTableRow);
+
+export default connected;

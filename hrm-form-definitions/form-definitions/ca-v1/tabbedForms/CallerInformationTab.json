@@ -178,12 +178,8 @@
   {
     "name": "gender",
     "label": "Gender",
-    "type": "select",
+    "type": "listbox-multiselect",
     "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
       {
         "value": "Agender",
         "label": "Agender"

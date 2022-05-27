@@ -4,18 +4,22 @@
  */
 
 import { SearchContact } from '../../types/types';
+import { getNumberFromTask } from '../../utils';
+import { transformForm } from '../../services/ContactService';
+import { getConversationDuration } from '../../utils/conversationDuration';
 
 /**
  * @param {string[]} accumulator
  * @param {[string, boolean]} currentValue
  */
-const subcatsReducer = (accumulator, [subcat, bool]) => (bool ? [...accumulator, subcat] : accumulator);
+const subcatsReducer = (accumulator, [subcat, bool]: [string, boolean]) =>
+  bool ? [...accumulator, subcat] : accumulator;
 
 /**
  * @param {{ [category: string]: string[] }} accumulator
  * @param {[string, { [subcategory: string]: boolean }]} currentValue
  */
-const catsReducer = (accumulator, [cat, subcats]) => {
+const catsReducer = (accumulator, [cat, subcats]: [string, Record<string, boolean>]) => {
   const subcatsList = Object.entries(subcats).reduce(subcatsReducer, []);
 
   if (!subcatsList.length) return accumulator;
@@ -27,7 +31,7 @@ const catsReducer = (accumulator, [cat, subcats]) => {
  * @param {{ [category: string]: { [subcategory: string]: boolean } }} categories categories object
  * @returns {{ [category: string]: string[] }} returns an object containing each truthy subcategory under the category name
  */
-export const retrieveCategories = categories => {
+export const retrieveCategories = (categories: Record<string, Record<string, boolean>>): Record<string, string[]> => {
   if (!categories) return {};
 
   return Object.entries(categories).reduce(catsReducer, {});
@@ -41,12 +45,12 @@ export const hrmServiceContactToSearchContact = (contact): SearchContact => {
   const { callType, caseInformation } = contact.rawJson;
   const categories = retrieveCategories(caseInformation.categories);
   const notes = caseInformation.callSummary;
-  const channelType = contact.channel;
-  const { conversationDuration, csamReports, createdBy } = contact;
+  const { conversationDuration, csamReports, createdBy, helpline, channel } = contact;
 
   return {
     contactId: contact.id,
     overview: {
+      helpline,
       dateTime,
       name,
       customerNumber,
@@ -54,11 +58,43 @@ export const hrmServiceContactToSearchContact = (contact): SearchContact => {
       categories,
       counselor: contact.twilioWorkerId,
       notes,
-      channel: channelType,
+      channel,
       conversationDuration,
       createdBy,
     },
     details: contact.rawJson,
+    csamReports,
+  };
+};
+
+export const taskFormToSearchContact = (task, form, date, counselor, temporaryId): SearchContact => {
+  const details = transformForm(form);
+  const dateTime = date;
+  const name = `${details.childInformation.name.firstName} ${details.childInformation.name.lastName}`;
+  const customerNumber = getNumberFromTask(task);
+  const { callType, caseInformation } = details;
+  const categories = retrieveCategories(caseInformation.categories);
+  const notes = caseInformation.callSummary as string;
+  const { channelType } = task;
+  const conversationDuration = getConversationDuration(task, form.metadata);
+  const { csamReports, helpline } = form;
+
+  return {
+    contactId: temporaryId,
+    overview: {
+      helpline,
+      createdBy: counselor,
+      dateTime,
+      name,
+      customerNumber,
+      callType,
+      categories,
+      counselor,
+      notes,
+      channel: channelType,
+      conversationDuration,
+    },
+    details,
     csamReports,
   };
 };

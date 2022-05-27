@@ -45,7 +45,7 @@ module "services" {
 module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
   serverless_url = var.serverless_url
-  helpline = var.helpline
+  helpline = "ChildLine Zambia (ZM)"
 }
 
 module studioFlow {
@@ -61,8 +61,10 @@ module flex {
   account_sid = var.account_sid
   short_environment = var.short_environment
   operating_info_key = var.operating_info_key
+  permission_config = "zm"
   definition_version = var.definition_version
   serverless_url = var.serverless_url
+  hrm_url = "https://hrm-development-eu.tl.techmatters.org"
   multi_office_support = var.multi_office
   feature_flags = var.feature_flags
   flex_chat_service_sid = module.services.flex_chat_service_sid

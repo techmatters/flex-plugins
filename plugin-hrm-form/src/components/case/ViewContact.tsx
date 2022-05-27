@@ -11,22 +11,23 @@ import ContactDetails from '../contact/ContactDetails';
 import ActionHeader from './ActionHeader';
 import { CaseState } from '../../states/case/reducer';
 import type { CustomITask, StandaloneITask } from '../../types/types';
-import { loadRawContact, releaseContact } from '../../states/contacts/existingContacts';
+import { loadContact, loadRawContact, releaseContact } from '../../states/contacts/existingContacts';
 import { DetailsContext } from '../../states/contacts/contactDetails';
+import { taskFormToSearchContact } from '../../states/contacts/contactDetailsAdapter';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const form = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
   const caseState: CaseState = state[namespace][connectedCaseBase];
-  const { temporaryCaseInfo } = caseState.tasks[ownProps.task.taskSid];
+  const { temporaryCaseInfo, connectedCase } = caseState.tasks[ownProps.task.taskSid];
 
-  return { form, counselorsHash, tempInfo: temporaryCaseInfo };
+  return { form, counselorsHash, tempInfo: temporaryCaseInfo, connectedCase };
 };
 
 const mapDispatchToProps = {
-  updateTempInfo: CaseActions.updateTempInfo,
   setConnectedCase: CaseActions.setConnectedCase,
-  loadContactIntoState: loadRawContact,
+  loadRawContactIntoState: loadRawContact,
+  loadContactIntoState: loadContact,
   releaseContactFromState: releaseContact,
 };
 
@@ -38,30 +39,44 @@ type OwnProps = {
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
 const ViewContact: React.FC<Props> = ({
+  form,
   task,
   counselorsHash,
   tempInfo,
   onClickClose,
-  updateTempInfo,
   loadContactIntoState,
+  loadRawContactIntoState,
   releaseContactFromState,
+  connectedCase,
 }) => {
   useEffect(() => {
     if (tempInfo && tempInfo.screen === 'view-contact') {
-      const { contact: contactFromInfo } = tempInfo.info;
+      const { contact: contactFromInfo, timeOfContact, counselor } = tempInfo.info;
       if (contactFromInfo) {
-        loadContactIntoState(contactFromInfo);
+        loadRawContactIntoState(contactFromInfo);
         return () => releaseContactFromState(contactFromInfo.id);
       }
+      const temporaryId = `__unsavedFromCase:${connectedCase.id}`;
+      loadContactIntoState(taskFormToSearchContact(task, form, timeOfContact, counselor, temporaryId));
+      return () => releaseContactFromState(temporaryId);
     }
     return () => {
       /* no cleanup to do. */
     };
-  }, [tempInfo, counselorsHash, loadContactIntoState, releaseContactFromState]);
+  }, [
+    counselorsHash,
+    loadContactIntoState,
+    releaseContactFromState,
+    connectedCase.id,
+    task,
+    form,
+    loadRawContactIntoState,
+    tempInfo,
+  ]);
 
   if (!tempInfo || tempInfo.screen !== 'view-contact') return null;
-  const { contact: contactFromInfo, createdAt } = tempInfo.info;
-  const createdByName = counselorsHash[contactFromInfo.createdBy] || 'Unknown';
+  const { contact: contactFromInfo, createdAt, counselor } = tempInfo.info;
+  const createdByName = counselorsHash[contactFromInfo?.createdBy ?? counselor] || 'Unknown';
 
   const added = new Date(createdAt);
 
@@ -74,7 +89,11 @@ const ViewContact: React.FC<Props> = ({
           addingCounsellor={createdByName}
           added={added}
         />
-        <ContactDetails contactId={contactFromInfo.id} context={DetailsContext.CASE_DETAILS} />
+        <ContactDetails
+          contactId={contactFromInfo?.id ?? `__unsavedFromCase:${connectedCase.id}`}
+          enableEditing={Boolean(contactFromInfo)}
+          context={DetailsContext.CASE_DETAILS}
+        />
       </Container>
       <BottomButtonBar>
         <StyledNextStepButton roundCorners onClick={onClickClose} data-testid="Case-ViewContactScreen-CloseButton">

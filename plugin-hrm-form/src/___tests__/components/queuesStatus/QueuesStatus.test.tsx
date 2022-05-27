@@ -65,6 +65,16 @@ test('Test <QueuesStatus> with initial state (display Not initialized)', () => {
   expect(screen.getByText('Not initialized')).toBeInTheDocument();
 });
 
+const checkValue = (qName: string, c: string, queuesStatusState) => {
+  let value: string;
+  if (queuesStatusState.queuesStatus[qName][c].toString() === '0') {
+    value = '<span>—</span>';
+  } else {
+    value = queuesStatusState.queuesStatus[qName][c].toString();
+  }
+  return value;
+};
+
 test('Test <QueuesStatus> after update', () => {
   const secondsAgo = new Date();
   const oneMinuteAgo = new Date(secondsAgo.getTime() - 60 * 1000);
@@ -144,7 +154,7 @@ test('Test <QueuesStatus> after update', () => {
       // Check that it contains one value and it's the same as the value for the channel in the given queue
       const channelBoxInnerValues = channelInQ.getElementsByClassName('channel-box-inner-value');
       expect(channelBoxInnerValues).toHaveLength(1);
-      expect(channelBoxInnerValues[0].innerHTML).toContain(queuesStatusState.queuesStatus[qName][c].toString());
+      expect(channelBoxInnerValues[0].innerHTML).toContain(checkValue(qName, c, queuesStatusState));
     });
   Object.entries(queuesStatusState.queuesStatus).forEach(expectAllChannelsRendersInQ);
 
@@ -215,7 +225,7 @@ each([
           // Check that it contains one value and it's the same as the value for the channel in the given queue
           const channelBoxInnerValues = channelInQ.getElementsByClassName('channel-box-inner-value');
           expect(channelBoxInnerValues).toHaveLength(1);
-          expect(channelBoxInnerValues[0].innerHTML).toContain(queuesStatusState.queuesStatus[qName][c].toString());
+          expect(channelBoxInnerValues[0].innerHTML).toContain(checkValue(qName, c, queuesStatusState));
         } else {
           // Check that the UI filters out this channel (cause it's not defined in contactsWaitingChannels)
           expect(screen.queryByTestId(`${qName}-${c}`)).not.toBeInTheDocument();
