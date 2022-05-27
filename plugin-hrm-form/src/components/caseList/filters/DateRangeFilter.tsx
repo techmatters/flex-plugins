@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Template } from '@twilio/flex-ui';
-import { endOfDay, format } from 'date-fns';
+import { endOfDay, format, parse } from 'date-fns';
 import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 
@@ -80,10 +80,15 @@ const formToDateFilter = (
   if (isExistsDateFilter(selected)) {
     return { option: values[selectedOptionField], exists: selected.exists };
   } else if (isFixedDateRange(selected)) {
+    const dateFrom = new Date(values.customDateRangeFrom);
+    const dateTo = new Date(values.customDateRangeTo);
+    const timeValue = 60 * 1000;
     return {
       option: values[selectedOptionField],
-      from: values.customDateRangeFrom ? new Date(values.customDateRangeFrom) : undefined,
-      to: values.customDateRangeTo ? endOfDay(new Date(values.customDateRangeTo)) : undefined,
+      from: values.customDateRangeFrom
+        ? new Date(dateFrom.valueOf() + dateFrom.getTimezoneOffset() * timeValue)
+        : undefined,
+      to: values.customDateRangeTo ? endOfDay(dateTo.valueOf() + dateTo.getTimezoneOffset() * timeValue) : undefined,
     };
   }
   return {
@@ -192,13 +197,14 @@ const DateRangeFilter: React.FC<Props> = ({
     }
   };
 
+  const dividerStyle = { border: 'none', height: '1px', backgroundColor: 'rgb(216, 216, 216)' };
+  const currentOption = findCurrentOption(optionsWithoutDividers, currentWorkingCopy);
+  const showCustomDateFields = currentOption ? isFixedDateRange(currentOption[1]) : false;
+
   const handleClear = () => {
     updateWorkingCopy(undefined);
   };
 
-  const dividerStyle = { border: 'none', height: '1px', backgroundColor: 'rgb(216, 216, 216)' };
-  const currentOption = findCurrentOption(optionsWithoutDividers, currentWorkingCopy);
-  const showCustomDateFields = currentOption ? isFixedDateRange(currentOption[1]) : false;
   return (
     <div style={{ position: 'relative' }}>
       <MultiSelectButton
@@ -237,6 +243,8 @@ const DateRangeFilter: React.FC<Props> = ({
                           onChange={() =>
                             updateWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))
                           }
+                          // This is a work around to issue CHI-1200: Custom Date Filters
+                          onClick={() => updateWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))}
                           id={option}
                           value={option}
                           name={name}

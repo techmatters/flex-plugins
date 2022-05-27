@@ -259,14 +259,14 @@ const Filters: React.FC<Props> = ({
             {getInitialDateFilters().map(df => {
               return (
                 <DateRangeFilter
-                  labelKey={df.labelKey}
-                  key={df.filterPayloadParameter}
                   name={`${df.filterPayloadParameter}Filter`}
+                  labelKey={df.labelKey}
                   options={df.options}
+                  current={dateFilterValues[df.filterPayloadParameter]}
                   openedFilter={openedFilter}
                   applyFilter={handleApplyDateRangeFilter(df)}
                   setOpenedFilter={setOpenedFilter}
-                  current={dateFilterValues[df.filterPayloadParameter]}
+                  key={df.filterPayloadParameter}
                 />
               );
             })}
