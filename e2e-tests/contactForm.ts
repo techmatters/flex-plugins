@@ -12,7 +12,7 @@ export type ContactFormTab<T = Record<string, string>> = {
 export function contactForm(page: Page) {
   const formArea = page.locator('div.Twilio-CRMContainer');
   const selectors = {
-    tabButton: (tab: ContactFormTab<unknown>) => formArea.locator(`button:has-text("${tab.label}")`),
+    tabButton: (tab: ContactFormTab<unknown>) => formArea.locator(`button :text-is("${tab.label}")`),
     formInput: (tabId, itemId) => formArea.locator(`input#${tabId}\\.${itemId}`),
     formSelect: (tabId, itemId) => formArea.locator(`select#${tabId}\\.${itemId}`),
     formTextarea: (tabId, itemId) => formArea.locator(`textarea#${tabId}\\.${itemId}`),

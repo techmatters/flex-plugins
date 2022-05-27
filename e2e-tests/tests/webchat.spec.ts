@@ -40,8 +40,8 @@ test.describe.serial('Web chat caller', ()=> {
       botStatement("Thank you. You can say 'prefer not to answer' (or type X) to any question."),
       botStatement("How old are you?"),
       callerStatement("10"),
-      // botStatement("What is your gender?"), // Step required in Aselo Dev, not in E2E
-      // callerStatement("girl"),
+      botStatement("What is your gender?"), // Step required in Aselo Dev, not in E2E
+      callerStatement("girl"),
       botStatement("We'll transfer you now. Please hold for a counsellor."),
       counselorAutoStatement('Hi, this is the counsellor. How can I help you?'),
       callerStatement('CALLER TEST CHAT MESSAGE'),
@@ -66,20 +66,23 @@ test.describe.serial('Web chat caller', ()=> {
             await flexChatProgress.next();
             break;
         }
+      } else {
+
       }
     }
+    console.log('Starting filling form');
     const form = contactForm(pluginPage);
     await form.fill([
       <ContactFormTab>{
         id: 'childInformation',
-        label: 'Child Info',
+        label: 'Child',
         fill: form.fillStandardTab,
         items: {
           firstName: 'E2E',
           lastName: 'TEST',
           phone1: '1234512345',
-          province: 'Lusaka',
-          district: 'Rufunsa'
+          province: 'Northern',
+          district: 'District A'
         }
       },
       <ContactFormTab<Categories>>{
