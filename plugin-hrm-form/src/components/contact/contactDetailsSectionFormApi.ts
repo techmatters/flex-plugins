@@ -8,7 +8,7 @@ import {
   unNestInformationObject,
 } from '../../services/ContactService';
 
-type ContactFormValues = {
+export type ContactFormValues = {
   [key in 'childInformation' | 'callerInformation' | 'caseInformation']?: Record<string, string | boolean>;
 };
 
