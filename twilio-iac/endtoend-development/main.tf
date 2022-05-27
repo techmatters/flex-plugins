@@ -45,7 +45,7 @@ module "services" {
 module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
   serverless_url = var.serverless_url
-  helpline = "Childline"
+  helplines = ["Childline", ""]
 }
 
 module studioFlow {
