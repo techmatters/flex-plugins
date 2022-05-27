@@ -2,6 +2,7 @@ import { Browser, expect } from '@playwright/test';
 import { ChatStatement, ChatStatementOrigin } from './chatModel';
 
 const ASELO_DEV_CHAT_URL = 'https://tl-public-chat-staging.s3.amazonaws.com/chat-staging.html'
+const E2E_CHAT_URL = 'https://tl-public-chat-e2e-dev.s3.amazonaws.com/e2e-chat-development.html'
 
 export type WebChatPage = {
   openChat: () => Promise<void>,
@@ -32,7 +33,7 @@ export async function open(browser: Browser): Promise<WebChatPage> {
     chatAvatars: page.locator('div.Twilio-MessageListItem div.Twilio-ChatItem-Avatar'),
     messageWithText: (text: string) => chatPanelWindow.locator(`div.Twilio-MessageListItem div.Twilio-MessageBubble-Body:text-is("${text}")`)
   }
-  await page.goto(ASELO_DEV_CHAT_URL);
+  await page.goto(E2E_CHAT_URL);
   console.log('Waiting for start chat button to render.');
   await selectors.toggleChatOpenButton.waitFor();
   console.log('Found start chat button.');
