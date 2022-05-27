@@ -7,12 +7,14 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "tl-terraform-state-twilio-uk-staging-iii"
+    bucket         = "tl-terraform-state-twilio-ukr-staging"
     key            = "twilio/terraform.tfstate"
-    dynamodb_table = "twilio-terraform-uk-staging-iii-locks"
-    encrypt        = true 
+    dynamodb_table = "twilio-terraform-ukr-staging-locks"
+    region = "us-east-1"
+    encrypt        = true
   }
 }
+
 
 module "chatbots" {
   source = "../terraform-modules/chatbots/default"
@@ -39,13 +41,12 @@ module "services" {
   short_helpline = var.short_helpline
   environment = var.environment
   short_environment = var.short_environment
-  uses_conversation_service = var.uses_conversation_service
 }
 
 module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
   serverless_url = var.serverless_url
-  helpline = var.helpline
+  helpline = "International Ukrainian Helpline"
 }
 
 module studioFlow {
@@ -61,10 +62,13 @@ module flex {
   account_sid = var.account_sid
   short_environment = var.short_environment
   operating_info_key = var.operating_info_key
+  permission_config = "demo"
   definition_version = var.definition_version
   serverless_url = var.serverless_url
+  hrm_url = "https://hrm-staging-eu.tl.techmatters.org"
   multi_office_support = var.multi_office
   feature_flags = var.feature_flags
+  messaging_flow_contact_identity = "+12053089376"
   flex_chat_service_sid = module.services.flex_chat_service_sid
   messaging_studio_flow_sid = module.studioFlow.messaging_studio_flow_sid
 }
@@ -82,7 +86,6 @@ module aws {
   short_helpline = var.short_helpline
   environment = var.environment
   short_environment = var.short_environment
-  hrm_url = "https://hrm-test.tl.techmatters.org"
   operating_info_key = var.operating_info_key
   datadog_app_id = var.datadog_app_id
   datadog_access_token = var.datadog_access_token
@@ -93,4 +96,5 @@ module aws {
   flex_proxy_service_sid = module.services.flex_proxy_service_sid
   post_survey_bot_sid = module.chatbots.post_survey_bot_sid
   survey_workflow_sid = module.survey.survey_workflow_sid
+  bucket_region = "us-east-1"
 }
