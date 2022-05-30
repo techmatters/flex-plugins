@@ -8,7 +8,7 @@ async function globalSetup(config: FullConfig) {
     console.warn(`Tests have ${config.projects.length} set up, only running global configuration against the first one - consider revising the global setup code.` )
   }
   const project = config.projects[0];
-  const browser = await chromium.launch({ headless: false });
+  const browser = await chromium.launch( project.use);
   console.log('Global setup browser launched');
   const page = await browser.newPage();
   page.goto(project.use.baseURL, {timeout: 30000});
