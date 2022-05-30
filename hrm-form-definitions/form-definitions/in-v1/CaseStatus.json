@@ -8,7 +8,7 @@
   "passive": { 
     "value": "passive", 
     "label": "Passive", 
-    "color": "orange", 
+    "color": "green", 
     "transitions": ["closed", "open"] 
   },
   "closed": { 

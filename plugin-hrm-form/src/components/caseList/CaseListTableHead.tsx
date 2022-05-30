@@ -20,8 +20,8 @@ const CaseListTableHead = () => {
           localizedText="CaseList-THChildName"
         />
         <CaseListTableHeadCell localizedText="CaseList-THCounselor" />
-        <CaseListTableHeadCell localizedText="CaseList-THSummary" width="15%" />
-        <CaseListTableHeadCell localizedText="CaseList-THCategory" width="20%" />
+        <CaseListTableHeadCell localizedText="CaseList-THSummary" width="20%" />
+        <CaseListTableHeadCell localizedText="CaseList-THCategory" width="15%" />
         <CaseListTableHeadCell
           column={ListCasesSortBy.CREATED_AT}
           defaultSortDirection={ListCasesSortDirection.DESC}

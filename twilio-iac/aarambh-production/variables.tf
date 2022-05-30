@@ -10,7 +10,7 @@ variable "local_os" {
 }
 
 variable "helpline" {
-  default = "Aarambh"
+  default = "Meri Trustline"
 }
 variable "short_helpline" {
   default = "IN"
