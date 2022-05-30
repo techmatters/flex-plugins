@@ -9,7 +9,7 @@ export const FiltersContainer = styled(Flex)`
   margin-right: 10px;
   padding: 10px;
   font-size: 13px;
-  box-shadow: 0 1px 2px 0 rgba(25, 43, 51, 0.1);
+  border-bottom: 2px solid #d8d8d8;
   &:focus {
     outline: auto;
   }
@@ -39,15 +39,19 @@ export const FiltersResetAll = styled('button')`
 `;
 FiltersResetAll.displayName = 'FiltersResetAll';
 
-export const FilterBy = styled('span')`
+export const FilterTitle = styled('span')`
   font-weight: 600;
-  margin-left: 15px;
-  margin-right: 30px;
+  margin-left: 10px;
+  margin-right: 20px;
+  white-space: nowrap;
+  font-size: 13px;
 `;
-FilterBy.displayName = 'FilterBy';
+FilterTitle.displayName = 'FilterTitle';
 
-export const CasesCount = styled(Flex)`
+export const CasesCount = styled('span')`
   margin-left: auto;
+  padding-right: 10px;
+  display: 'inline-flex';
 `;
 CasesCount.displayName = 'CasesCount';
 
@@ -61,7 +65,7 @@ export const MultiSelectButton = styled('button')<MultiSelectButtonProps>`
   align-items: center;
   background-color: ${props => (props.isOpened || props.isActive ? 'white' : '#ecedf1')};
   cursor: pointer;
-  margin: 0 15px;
+  margin: 0 5px;
   height: 28px;
   border: 1px solid #c0c1c3;
   border-radius: 4px;
@@ -69,6 +73,7 @@ export const MultiSelectButton = styled('button')<MultiSelectButtonProps>`
   font-family: 'Open Sans';
   font-weight: ${props => (props.isOpened ? 'bold' : 'normal')};
   color: #192b33;
+  white-space: nowrap;
   &:hover {
     background-color: ${props => (props.isOpened ? 'white' : 'rgba(255, 255, 255, 0.5)')};
   }
@@ -78,10 +83,14 @@ export const MultiSelectButton = styled('button')<MultiSelectButtonProps>`
 `;
 MultiSelectButton.displayName = 'MultiSelectButton';
 
-export const DialogArrow = styled(Flex)`
+type DialogArrowProps = {
+  left?: string;
+};
+
+export const DialogArrow = styled(Flex)<DialogArrowProps>`
   position: absolute;
   top: 0;
-  left: 60px;
+  left: ${props => (props.left ? props.left : '75px')};
   background: #ffffff;
   border: 0px solid #d3d3d3;
 
@@ -115,6 +124,7 @@ DialogArrow.displayName = 'DialogArrow';
 
 type FiltersDialogProps = {
   width?: string;
+  left?: string;
 };
 
 export const FiltersDialog = styled('div')<FiltersDialogProps>`
@@ -123,7 +133,7 @@ export const FiltersDialog = styled('div')<FiltersDialogProps>`
   box-sizing: border-box;
   width: ${props => (props.width ? props.width : '330px')};
   top: 43px;
-  left: -20px;
+  left: ${props => (props.left ? props.left : '-20px')};
   min-width: 200px;
   padding: 25px 32px;
   border: 1px solid lightgray;
@@ -199,7 +209,7 @@ export const MultiSelectSearchInput = styled('input')`
   background-color: ${props => props.theme.colors.inputBackgroundColor};
   color: #192b33;
   border: none;
-  boxshadow: none;
+  box-shadow: none;
   padding: 0 34px;
 
   &:focus {

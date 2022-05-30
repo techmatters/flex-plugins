@@ -58,7 +58,7 @@ const CaseListTableHeadCell: React.FC<Props> = ({
 
   const borderBottom = () => {
     if (!featureFlags.enable_sort_cases || !column) return 'none';
-    return currentSort?.sortBy === column ? '3px solid #009DFF' : 'none';
+    return currentSort?.sortBy === column ? '3px solid #000000' : 'none';
   };
 
   const cursor = () => {
@@ -77,9 +77,24 @@ const CaseListTableHeadCell: React.FC<Props> = ({
 
     updateCaseListSort({ sortBy: column, sortDirection: updatedSortDirection });
   };
+  const textAlign = () => {
+    if (
+      localizedText === 'CaseList-THOpened' ||
+      localizedText === 'CaseList-THUpdated' ||
+      localizedText === 'CaseList-THFollowUp'
+    )
+      return 'right';
+    return 'left';
+  };
   return (
-    <CLTableCell style={{ width: width || '8%', cursor: cursor() }} onClick={handleClick} scope="col">
-      <CLTableHeaderFont style={{ borderBottom: borderBottom(), whiteSpace: 'nowrap' }}>
+    <CLTableCell
+      style={{ width: width || '8%', cursor: cursor() }}
+      align="right"
+      variant="head"
+      onClick={handleClick}
+      scope="col"
+    >
+      <CLTableHeaderFont style={{ borderBottom: borderBottom(), whiteSpace: 'nowrap', textAlign: textAlign() }}>
         <Template code={localizedText} />
         <span aria-hidden="true">{drawSort()}</span>
       </CLTableHeaderFont>

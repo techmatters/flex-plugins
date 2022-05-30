@@ -28,7 +28,7 @@ const getChannelUI = (
       className="channel-box-inner-value"
       data-testid="channel-box-inner-value"
     >
-      {value}
+      {value === 0 ? <span>&mdash;</span> : value}
     </ChannelBox>
     <ChannelLabel>{shortChannel}</ChannelLabel>
   </ChannelColumn>

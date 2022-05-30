@@ -2,13 +2,13 @@
   "label": "Helpline",
   "helplines": [
     {
-      "label": "Aarambh Trustline",
-      "value": "Aarambh",
+      "label": "Meri Trustline",
+      "value": "Meri Trustline",
       "default": true,
       "manager": {
         "name": "Siddarth Pillai",
-        "phone": "+2000000000",
-        "email": "siddharth@aarambhindia.org"
+        "phone": "+91 90826 40268",
+        "email": "siddharth@ratifoundation.org"
       }
     }
   ]
