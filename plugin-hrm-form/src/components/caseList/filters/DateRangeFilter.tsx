@@ -192,13 +192,13 @@ const DateRangeFilter: React.FC<Props> = ({
     }
   };
 
-  const dividerStyle = { border: 'none', height: '1px', backgroundColor: 'rgb(216, 216, 216)' };
-  const currentOption = findCurrentOption(optionsWithoutDividers, currentWorkingCopy);
-  const showCustomDateFields = currentOption ? isFixedDateRange(currentOption[1]) : false;
-
   const handleClear = () => {
     updateWorkingCopy(undefined);
   };
+
+  const dividerStyle = { border: 'none', height: '1px', backgroundColor: 'rgb(216, 216, 216)' };
+  const currentOption = findCurrentOption(optionsWithoutDividers, currentWorkingCopy);
+  const showCustomDateFields = currentOption ? isFixedDateRange(currentOption[1]) : false;
 
   return (
     <div style={{ position: 'relative' }}>
