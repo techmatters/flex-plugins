@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Template } from '@twilio/flex-ui';
-import { endOfDay, format } from 'date-fns';
+import { endOfDay, format, parse } from 'date-fns';
 import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 
@@ -82,8 +82,8 @@ const formToDateFilter = (
   } else if (isFixedDateRange(selected)) {
     return {
       option: values[selectedOptionField],
-      from: values.customDateRangeFrom ? new Date(values.customDateRangeFrom) : undefined,
-      to: values.customDateRangeTo ? endOfDay(new Date(values.customDateRangeTo)) : undefined,
+      from: values.customDateRangeFrom ? parse(values.customDateRangeFrom, 'yyyy-MM-dd', new Date()) : undefined,
+      to: values.customDateRangeTo ? endOfDay(parse(values.customDateRangeTo, 'yyyy-MM-dd', new Date())) : undefined,
     };
   }
   return {
@@ -242,6 +242,8 @@ const DateRangeFilter: React.FC<Props> = ({
                           onChange={() =>
                             updateWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))
                           }
+                          // This is a work around to issue CHI-1200: Custom Date Filters
+                          onClick={() => updateWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))}
                           id={option}
                           value={option}
                           name={name}
