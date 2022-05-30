@@ -85,15 +85,8 @@ const formToDateFilter = (
     const timeValue = 60 * 1000;
     return {
       option: values[selectedOptionField],
-<<<<<<< HEAD
       from: values.customDateRangeFrom ? parse(values.customDateRangeFrom, 'yyyy-MM-dd', new Date()) : undefined,
       to: values.customDateRangeTo ? endOfDay(parse(values.customDateRangeTo, 'yyyy-MM-dd', new Date())) : undefined,
-=======
-      from: values.customDateRangeFrom
-        ? new Date(dateFrom.valueOf() + dateFrom.getTimezoneOffset() * timeValue)
-        : undefined,
-      to: values.customDateRangeTo ? endOfDay(dateTo.valueOf() + dateTo.getTimezoneOffset() * timeValue) : undefined,
->>>>>>> de26ba708552619bc6d17f420169bc4e056831b5
     };
   }
   return {
