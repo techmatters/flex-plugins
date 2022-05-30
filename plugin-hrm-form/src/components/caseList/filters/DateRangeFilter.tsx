@@ -80,15 +80,10 @@ const formToDateFilter = (
   if (isExistsDateFilter(selected)) {
     return { option: values[selectedOptionField], exists: selected.exists };
   } else if (isFixedDateRange(selected)) {
-    const dateFrom = new Date(values.customDateRangeFrom);
-    const dateTo = new Date(values.customDateRangeTo);
-    const timeValue = 60 * 1000;
     return {
       option: values[selectedOptionField],
-      from: values.customDateRangeFrom
-        ? new Date(dateFrom.valueOf() + dateFrom.getTimezoneOffset() * timeValue)
-        : undefined,
-      to: values.customDateRangeTo ? endOfDay(dateTo.valueOf() + dateTo.getTimezoneOffset() * timeValue) : undefined,
+      from: values.customDateRangeFrom ? parse(values.customDateRangeFrom, 'yyyy-MM-dd', new Date()) : undefined,
+      to: values.customDateRangeTo ? endOfDay(parse(values.customDateRangeTo, 'yyyy-MM-dd', new Date())) : undefined,
     };
   }
   return {
