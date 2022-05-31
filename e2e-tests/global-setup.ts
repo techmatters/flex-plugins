@@ -1,5 +1,6 @@
 import { chromium, expect, FullConfig, firefox } from '@playwright/test';
 import config from './playwright.config';
+import { oktaSsoLogin } from './okta/sso-login';
 
 // TODO: Replace with API call
 async function globalSetup(config: FullConfig) {
@@ -11,6 +12,8 @@ async function globalSetup(config: FullConfig) {
   const browser = await chromium.launch( project.use);
   console.log('Global setup browser launched');
   const page = await browser.newPage();
+  await oktaSsoLogin(browser.contexts()[0].request, process.env.PLAYWRIGHT_USER_USERNAME, process.env.PLAYWRIGHT_USER_PASSWORD, process.env.TWILIO_ACCOUNT_SID);
+  throw 'plop';
   page.goto(project.use.baseURL, {timeout: 30000});
   await page.waitForNavigation({timeout: 30001});
   const usernameBox = page.locator('input#okta-signin-username');
