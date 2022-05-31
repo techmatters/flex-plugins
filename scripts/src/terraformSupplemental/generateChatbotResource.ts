@@ -169,14 +169,14 @@ const generateTaskSamplesTF = (taskDefinition: TaskDefinition, referenceName: st
   const taskSamplesProperties = [
     `for_each = toset(${JSON.stringify(samples)})`,
     `assistant_sid = twilio_autopilot_assistants_v1.${referenceName}.sid`,
-    `task_sid = twilio_autopilot_assistants_tasks_v1.${taskDefinition.uniqueName}.sid`,
+    `task_sid = twilio_autopilot_assistants_tasks_v1.${referenceName}_${taskDefinition.uniqueName}.sid`,
     `language = "${taskDefinition.samples[0].language}"`,
     'tagged_text = each.key',
   ];
 
   return generateTFResource(
     'twilio_autopilot_assistants_tasks_samples_v1',
-    `${taskDefinition.uniqueName}_group`,
+    `${referenceName}_${taskDefinition.uniqueName}_group`,
     taskSamplesProperties,
   );
 };
@@ -191,7 +191,7 @@ const generateTaskTF = (taskDefinition: TaskDefinition, referenceName: string) =
 
   const taskResource = generateTFResource(
     'twilio_autopilot_assistants_tasks_v1',
-    taskDefinition.uniqueName,
+    `${referenceName}_${taskDefinition.uniqueName}`,
     taskProperties,
   );
 
@@ -225,24 +225,24 @@ const generateFieldTypeValuesTF = (fieldType: FieldTypeResource, referenceName: 
   const baseValuesProperties = [
     `for_each = toset(${JSON.stringify(baseValues)})`,
     `assistant_sid = twilio_autopilot_assistants_v1.${referenceName}.sid`,
-    `field_type_sid = twilio_autopilot_assistants_field_types_v1.${fieldType.uniqueName}.sid`,
+    `field_type_sid = twilio_autopilot_assistants_field_types_v1.${referenceName}_${fieldType.uniqueName}.sid`,
     'value = each.key',
     'language = "en-US"',
   ];
 
   const baseValuesResource = generateTFResource(
     'twilio_autopilot_assistants_field_types_field_values_v1',
-    `${fieldType.uniqueName}_group`,
+    `${referenceName}_values_${fieldType.uniqueName}_group`,
     baseValuesProperties,
   );
 
   // Add synonyms for above values
   const synonymsResources = Object.entries(synonymsMap).map(([baseValue, synonymsValues]) => {
     const synonymsProperties = [
-      `depends_on = [twilio_autopilot_assistants_field_types_field_values_v1.${fieldType.uniqueName}_group]`,
+      `depends_on = [twilio_autopilot_assistants_field_types_field_values_v1.${referenceName}_values_${fieldType.uniqueName}_group]`,
       `for_each = toset(${JSON.stringify(synonymsValues)})`,
       `assistant_sid = twilio_autopilot_assistants_v1.${referenceName}.sid`,
-      `field_type_sid = twilio_autopilot_assistants_field_types_v1.${fieldType.uniqueName}.sid`,
+      `field_type_sid = twilio_autopilot_assistants_field_types_v1.${referenceName}_${fieldType.uniqueName}.sid`,
       `synonym_of = "${baseValue}"`,
       'value = each.key',
       'language = "en-US"',
@@ -250,7 +250,7 @@ const generateFieldTypeValuesTF = (fieldType: FieldTypeResource, referenceName: 
 
     return generateTFResource(
       'twilio_autopilot_assistants_field_types_field_values_v1',
-      `${baseValue}_${fieldType.uniqueName}_group`,
+      `${referenceName}_synonymsOf_${baseValue}_${fieldType.uniqueName}_group`,
       synonymsProperties,
     );
   });
@@ -267,7 +267,7 @@ const generateFieldTypeTF = (fieldType: FieldTypeResource, referenceName: string
 
   const fieldTypeResource = generateTFResource(
     'twilio_autopilot_assistants_field_types_v1',
-    fieldType.uniqueName,
+    `${referenceName}_${fieldType.uniqueName}`,
     fieldTypeProperties,
   );
 
@@ -311,19 +311,7 @@ export const generateChatbotResource = async (
 
   const generator = generateResourceTF(referenceName);
 
-  const terraformFileDefinition = [
-    'terraform {',
-    '  required_providers {',
-    '    twilio = {',
-    '      source  = "twilio/twilio"',
-    '      version = "0.11.1"',
-    '    }',
-    '  }',
-    '}',
-  ].join('\n');
-
   const fileString = [
-    terraformFileDefinition,
     generator('twilio_autopilot_assistants_v1', assistantDefinition),
     taskDefinitions.map((t) => generator('twilio_autopilot_assistants_tasks_v1', t)),
     fieldTypeDefinitions.map((ft) => generator('twilio_autopilot_assistants_field_types_v1', ft)),
