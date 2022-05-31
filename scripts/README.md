@@ -3,6 +3,11 @@
 ## Scripts index
 - [generateDeploymentFiles](#generateDeploymentFiles)
 - [copyFlow](#copyFlow)
+- [generateNewHelplineFormDefinitions](#generateNewHelplineFormDefinitions)
+- [twilioResources](#twilioResources)
+  - [import-account-defaults](#import-account-defaults)
+  - [import-tf](#import-tf)
+  - [generate-chatbot-tf](#generate-chatbot-tf)
 
 ## generateDeploymentFiles
 This script generates deployment files for `flex-plugins` and `serverless` repos.
@@ -81,3 +86,19 @@ In both of these use cases, the Terraform resources would need to have been conf
 
 *Note:* You STILL need to pass any SIDs that come from variables in using an `--sid` parameter, even if they are defined in the `tfvars` file you pass in with `-v`or as a `TF_VARS_*` environment variable. 
 The script doesn't scan provided terraform variables automatically for its own use, it just passes the `*.tfvars` file you specify down to the `terraform import` command. It could be enhanced to do this if needed, but doesn't right now.
+
+### generate-chatbot-tf
+
+Given an already existing chatbot assistant, living in a Twilio account, will generate the `.tf` file that represents that definition.
+It will create the file locally, so you need to grab it and drop it where it makes sense.
+
+You need to have `TWILIO_ACCOUNT_SID` and `TWILIO_AUTH_TOKEN` environemt variables set (either passed in the command itself or in a `.env` file).
+You also must provide the following parameters to the script: 
+  - `assistantSid`: Target chatbot's assistant sid to generate the .tf from.
+  - `referenceName`: The reference name that will be used as the top level resurce (the name of the assistant resource in the .tf file).
+  - `serverlessUrl`: \[optional\] The serverless url of the account. If present, will replace it for the dynamic form in the .tf file.
+Example: 
+```
+➜ npm run twilioResources -- generate-chatbot-tf --assistantSid=UAxxxxxxxxxxxx --referenceName=my_custom_bot --serverlessUrl=https://serverless-xxxx-production.twil.io
+```
+will create a new file `my_custom_bot.tf` that contains the definition of the bot with the sid `UAxxxxxxxxxxxx`, and will replace all the occurrences of `https://serverless-xxxx-production.twil.io` for the dynamic form we use in the terraform setup (`${var.serverless_url}`).
