@@ -1,6 +1,6 @@
 # This is a basic workflow to publish a Twilio Flex-plugins with Github Actions
 
-name: Arambh Production release
+name: Rati Production release
 
 # Controls when the action will run.
 on:
