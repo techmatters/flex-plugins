@@ -15,7 +15,7 @@
     "label": "Action Taken",
     "type": "listbox-multiselect",
     "options": [
-      { "value": "Unknown", "label": "" },
+      { "value": "Unknown", "label": "No action" },
       {
         "value": "DirectInterventionsByTheChildHelpline",
         "label": "Direct interventions by the child helpline"
@@ -56,7 +56,6 @@
     "label": "Case Category",
     "type": "select",
     "options": [
-      { "value": "", "label": "" },
       { "value": "Meri Trustline", "label": "Meri Trustline" },
       { "value": "Other", "label": "Other" }
     ]
