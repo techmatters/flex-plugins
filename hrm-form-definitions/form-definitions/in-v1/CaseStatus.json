@@ -3,12 +3,12 @@
     "value": "open", 
     "label": "Open", 
     "color": "green", 
-    "transitions": ["closed"] 
+    "transitions": ["closed", "passive"] 
   },
   "passive": { 
     "value": "passive", 
     "label": "Passive", 
-    "color": "green", 
+    "color": "yellow", 
     "transitions": ["closed", "open"] 
   },
   "closed": { 

@@ -262,6 +262,7 @@
   "QueuesStatsHeaderSLA": "SLA",
 
   "CaseList-Cases": "Casos",
+  "CaseList-NoCases": "Nenhum caso encontrado.",
   "CaseList-Filters-CaseCount-Singular": "{{count}} caso",
   "CaseList-Filters-CaseCount-Plural": "{{count}} casos",
   "CaseList-THCase": "Caso #",

@@ -192,6 +192,7 @@ const CategoriesFilter: React.FC<Props> = ({
 
   const handleChangeSearch = event => {
     const { value } = event.target;
+
     setSearchTerm(value);
   };
 
@@ -275,7 +276,7 @@ const CategoriesFilter: React.FC<Props> = ({
                 <li key={i}>
                   <CategorySection
                     category={category}
-                    searchTerm={searchTerm}
+                    searchTerm={searchTerm.length < 3 ? '' : searchTerm}
                     getValues={getValues}
                     setValue={setValue}
                     watch={watch}
