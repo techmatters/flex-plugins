@@ -1,4 +1,5 @@
 // playwright.config.ts
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { PlaywrightTestConfig } from '@playwright/test';
 
 const config: PlaywrightTestConfig = {
@@ -7,8 +8,8 @@ const config: PlaywrightTestConfig = {
     storageState: 'temp/state.json',
     baseURL: 'http://localhost:3001',
     headless: false,
-    permissions: ['microphone']
+    permissions: ['microphone'],
   },
-  timeout: 180000
+  timeout: 180000,
 };
 export default config;

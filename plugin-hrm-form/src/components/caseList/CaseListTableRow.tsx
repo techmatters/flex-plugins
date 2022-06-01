@@ -14,6 +14,7 @@ import {
   CLNamesCell,
   CLSummaryCell,
   CLNumberCell,
+  CLDateCell,
   CLTableBodyFont,
   CLCaseNumberContainer,
   CLCaseIDButton,
@@ -22,7 +23,6 @@ import { Box, HiddenText } from '../../styles/HrmStyles';
 import { formatName, getShortSummary } from '../../utils';
 import { getContactTags, renderTag } from '../../utils/categories';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
-import { caseStatuses } from '../../states/DomainConstants';
 
 const CHAR_LIMIT = 200;
 
@@ -107,13 +107,13 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
         </div>
       </CLTableCell>
       <CLTableCell>
-        <CLTableBodyFont>{opened}</CLTableBodyFont>
+        <CLTableBodyFont style={{ textAlign: 'right' }}>{opened}</CLTableBodyFont>
       </CLTableCell>
       <CLTableCell>
-        <CLTableBodyFont>{updated}</CLTableBodyFont>
+        <CLTableBodyFont style={{ textAlign: 'right' }}>{updated}</CLTableBodyFont>
       </CLTableCell>
       <CLTableCell>
-        <CLTableBodyFont>{followUpDate}</CLTableBodyFont>
+        <CLTableBodyFont style={{ textAlign: 'right' }}>{followUpDate}</CLTableBodyFont>
       </CLTableCell>
     </CLTableRow>
   );

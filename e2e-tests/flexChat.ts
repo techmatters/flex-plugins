@@ -1,6 +1,6 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { Page } from '@playwright/test';
 import { ChatStatement, ChatStatementOrigin } from './chatModel';
-
 
 export function flexChat(page: Page) {
   const taskCanvas = page.locator('div.Twilio-TaskCanvas');
@@ -11,15 +11,17 @@ export function flexChat(page: Page) {
     chatInput: taskCanvas.locator('.Twilio-MessageInputArea-TextArea textarea'),
     chatSendButton: taskCanvas.locator('button.Twilio-MessageInput-SendButton'),
     messageBubbles: taskCanvas.locator('div.Twilio-MessageListItem div.Twilio-MessageBubble'),
-    messageWithText: (text: string) => taskCanvas.locator(`div.Twilio-MessageListItem div.Twilio-MessageBubble-Body :text-is("${text}")`)
-  }
+    messageWithText: (text: string) =>
+      taskCanvas.locator(
+        `div.Twilio-MessageListItem div.Twilio-MessageBubble-Body :text-is("${text}")`,
+      ),
+  };
 
   return {
-
-    chat: async function* (statements: ChatStatement[] ): AsyncIterator<ChatStatement> {
+    chat: async function* (statements: ChatStatement[]): AsyncIterator<ChatStatement> {
       await selectors.chatInput.waitFor();
 
-      for(const statementItem of statements) {
+      for (const statementItem of statements) {
         const { text, origin }: ChatStatement = statementItem;
         switch (origin) {
           case ChatStatementOrigin.COUNSELOR:
@@ -34,10 +36,10 @@ export function flexChat(page: Page) {
               // Not already sent
               yield statementItem;
             }
-            await selectors.messageWithText(text).waitFor({ timeout: 60000});
+            await selectors.messageWithText(text).waitFor({ timeout: 60000 });
             break;
         }
       }
     },
-  }
+  };
 }

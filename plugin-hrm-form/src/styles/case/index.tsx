@@ -39,6 +39,7 @@ export const CaseActionFormContainer = styled('div')`
 export const CenteredContainer = styled(CaseContainer)`
   align-items: center;
   justify-content: center;
+  max-width: 1280px;
 `;
 CenteredContainer.displayName = 'CenteredContainer';
 

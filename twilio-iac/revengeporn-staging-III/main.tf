@@ -82,6 +82,7 @@ module aws {
   short_helpline = var.short_helpline
   environment = var.environment
   short_environment = var.short_environment
+  hrm_url = "https://hrm-test.tl.techmatters.org"
   operating_info_key = var.operating_info_key
   datadog_app_id = var.datadog_app_id
   datadog_access_token = var.datadog_access_token

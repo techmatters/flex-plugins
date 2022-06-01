@@ -137,6 +137,7 @@ const CategorySection: React.FC<Props> = ({
           </ArrowButton>
         )}
       </CategoryHeader>
+
       <SubcategoryList expanded={expanded} searchTerm={searchTerm}>
         {subcategories.map((subcategory, j) => {
           const hidden = !subcategory.label.toLowerCase().includes(searchTerm.toLowerCase());

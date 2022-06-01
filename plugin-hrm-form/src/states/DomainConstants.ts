@@ -24,8 +24,3 @@ export const transferStatuses = {
   accepted: 'accepted',
   rejected: 'rejected',
 };
-
-export const caseStatuses = {
-  open: 'open',
-  closed: 'closed',
-};
