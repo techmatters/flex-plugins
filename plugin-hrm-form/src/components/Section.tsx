@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowDropDownTwoTone, ArrowRightTwoTone, Edit } from '@material-ui/icons';
+import { ArrowDropDownTwoTone, ArrowDropUpTwoTone } from '@material-ui/icons';
 import { Template } from '@twilio/flex-ui';
 
 import {
@@ -8,12 +8,10 @@ import {
   SectionTitleText,
   SectionCollapse,
   ContactDetailsIcon,
-  SectionEditButton,
 } from '../styles/search';
 
 const ArrowDownIcon = ContactDetailsIcon(ArrowDropDownTwoTone);
-const ArrowRightIcon = ContactDetailsIcon(ArrowRightTwoTone);
-const EditIcon = ContactDetailsIcon(Edit);
+const ArrowUpIcon = ContactDetailsIcon(ArrowDropUpTwoTone);
 
 type MyProps = {
   sectionTitle: string | JSX.Element;
@@ -52,16 +50,13 @@ const Section: React.FC<MyProps> = ({
         onClick={handleExpandClick}
         data-testid={buttonDataTestid}
       >
-        {!hideIcon && (expanded ? <ArrowDownIcon /> : <ArrowRightIcon />)}
         <SectionTitleText>{sectionTitle}</SectionTitleText>
+        {!hideIcon && (expanded ? <ArrowUpIcon /> : <ArrowDownIcon />)}
       </SectionTitleButton>
       {showEditButton && (
-        <>
-          <SectionEditButton type="button" onClick={handleEditClick}>
-            <EditIcon style={{ fontSize: '14px' }} />
-            <Template code="EditButton" />
-          </SectionEditButton>
-        </>
+        <button type="button" onClick={handleEditClick}>
+          <Template code="EditButton" />
+        </button>
       )}
     </SectionTitleContainer>
     <SectionCollapse expanded={expanded} timeout="auto">

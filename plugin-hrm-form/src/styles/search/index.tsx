@@ -323,6 +323,7 @@ export const SectionTitleContainer = styled(Row)<ColorProps>`
   background-color: #ecedf1;
   padding: 8px;
   padding-left: 18px;
+  margin: 2px 0;
   border-left: ${({ color }) => (color ? `6px solid ${color}` : 'none')};
 `;
 SectionTitleContainer.displayName = 'SectionTitleContainer';
@@ -336,12 +337,14 @@ export const SectionTitleButton = styled(ButtonBase)`
 `;
 SectionTitleButton.displayName = 'SectionTitleButton';
 
-export const SectionEditButton = styled('button')`
+export const SectionActionButton = styled('button')`
   display: flex;
-  border:none;
+  border: none;
   background-color: transparent;
   font-size: 13px;
+  font-weight: 600;
   color: #1976d2;
+  padding: '0 6px';
   font-family: 'Open Sans';
   :focus {
     outline: auto;
@@ -362,13 +365,6 @@ export const SectionCollapse = styled(
 `;
 SectionCollapse.displayName = 'SectionCollapse';
 
-export const NameContainer = styled(SectionTitleContainer)`
-  background-color: #000000;
-  border-radius: 4px 4px 0 0;
-  margin-top: 20px;
-  margin-bottom: 3px;
-`;
-
 const BoldDetailFont = styled(FontOpenSans)`
   font-size: 12px;
   font-weight: 700;
@@ -380,18 +376,17 @@ export const BackText = styled(BoldDetailFont)`
   font-weight: 600;
 `;
 
-export const DetNameText = styled(BoldDetailFont)`
-  color: #ffffff;
-  margin-right: auto;
+export const NameText = styled(FontOpenSans)`
+  margin: 28px auto 20px 0;
+  font-weight: 600;
+  font-size: 15px;
 `;
 
 export const SectionTitleText = styled(FontOpenSans)`
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
-  letter-spacing: 1.8px;
   line-height: 13px;
   margin-right: auto;
-  text-transform: uppercase;
 `;
 
 const BodyText = styled(FontOpenSans)`

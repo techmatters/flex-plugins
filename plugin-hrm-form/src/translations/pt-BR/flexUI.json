@@ -310,6 +310,8 @@
   "ContactDetails-GeneralDetails-DateTime": "Data/hora",
   "ContactDetails-GeneralDetails-KeepConfidential": "Manter a confidencialidade?",
   "ContactDetails-GeneralDetails-OKToCall": "O assistente social pode ligar / enviar SMS?",
+  "ContactDetails-ActionHeaderAdded": "Adicionado em {{date}} às {{time}} por {{counsellor}}",
+
   "SectionName-CallerInformation": "Informação do chamador",
   "SectionName-ChildInformation": "Informação da criança",
   "SectionName-HouseholdMember": "Membro da família",
@@ -319,6 +321,7 @@
   "SectionName-Perpetrator": "Perpetrador/Autor da violência",
   "SectionEntry-No": "Não",
   "SectionEntry-Yes": "Sim",
+  "ContactCopyButton": "Copie",
   "Case-CaseStatus": "Status do caso",
   "Case-CaseManager": "Gerente de caso",
   "First Name": "Primeiro nome",
