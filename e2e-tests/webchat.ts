@@ -57,6 +57,16 @@ export async function open(browser: Browser): Promise<WebChatPage> {
       await selectors.helplineOptions.locator(`li[data-value='${helpline}']`).click();
       await expect(selectors.helplineOptions).toHaveCount(0);
     },
+
+    /**
+     * This function runs the 'caller side' of a webchat conversation.
+     * It will loop through a list of chat statements, typing and sending caller statements in the webchat client
+     * As soon as it hits a caller statement in the list, it will yield execution back to the calling code, so it can action the caller statement(s)
+     *
+     * A similar function exists in flexChat.ts to handle actioning the counselor side of the conversation.
+     * This means that they can both be looping through the same conversation, yielding control when they hit a statement the other chat function needs to handle
+     * @param statements - a unified list of all the chat statements in a conversation, for caller and counselor
+     */
     chat: async function* (statements: ChatStatement[]): AsyncIterable<ChatStatement> {
       await selectors.startChatButton.click();
       await selectors.chatInput.waitFor();
