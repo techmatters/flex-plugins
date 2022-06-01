@@ -7,8 +7,9 @@ These end-to-end tests are a Proof of Concept written using the Playwright testi
 
 | env | value | comment |
 |--------------------------|----------------------------|---|
-| PLAYWRIGHT_USER_USERNAME | \<a valid aselo dev user\> | |
+| PLAYWRIGHT_USER_USERNAME | \<a valid e2e dev account okta user\> | |
 | PLAYWRIGHT_USER_PASSWORD | \<password for PLAYWRIGHT_USER_USERNAME\> | |
+| TWILIO_ACCOUNT_SID       | E2E twilio account SID | |
 | DEBUG                    | pw:api | optional, but recommended for useable log output |
 
 2. Run the plugin in the dev server (i.e. `npm start` from `../plugin-hrm-form/`)
