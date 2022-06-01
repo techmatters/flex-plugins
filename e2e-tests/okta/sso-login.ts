@@ -1,4 +1,4 @@
-import { Browser, expect } from '@playwright/test';
+import { Browser, chromium, expect, FullConfig, request } from '@playwright/test';
 
 const formRegex = /<input\s*name="SAMLResponse"\s*type="hidden"\s*value="(?<samlResponse>[\w;#&]+)"\s*\/>\s*<input\s*name="RelayState"\s*type="hidden"\s*value="(?<relayState>[\w;#&]+)"\s*\/>/
 
@@ -11,17 +11,16 @@ function decodeHtmlSymbols(htmlString: string): string {
   })
 }
 
-export async function oktaSsoLoginViaApi(browser: Browser, homeUrl: string, username: string, password: string, accountSid: string): Promise<void> {
-  const context = await browser.newContext();
-  const request = context.request;
+export async function oktaSsoLoginViaApi(homeUrl: string, username: string, password: string, accountSid: string): Promise<void> {
+  const apiRequest = await request.newContext();
   // Get the saml location URL
   const authenticateRequestOptions = { data: {products: ["flex"], resource: homeUrl}}
-  const authenticateResponse = await request.post(`https://preview.twilio.com/iam/Accounts/${accountSid}/authenticate`, authenticateRequestOptions);
+  const authenticateResponse = await apiRequest.post(`https://preview.twilio.com/iam/Accounts/${accountSid}/authenticate`, authenticateRequestOptions);
   expect(authenticateResponse.ok());
   const { location: samlLocation } = await authenticateResponse.json();
 
   // Login via okta API
-  const authnResponse = await request.post('https://techmatters.okta.com/api/v1/authn',{
+  const authnResponse = await apiRequest.post('https://techmatters.okta.com/api/v1/authn',{
     data: { username, password, options: {warnBeforePasswordExpired: true, multiOptionalFactorEnroll: true} },
   });
   expect(authnResponse.ok()).toBe(true);
@@ -29,7 +28,7 @@ export async function oktaSsoLoginViaApi(browser: Browser, homeUrl: string, user
   expect(status).toBe('SUCCESS');
 
   // Cookie redirect
-  const redirectResponse = await request.get(`https://techmatters.okta.com/login/sessionCookieRedirect?checkAccountSetupComplete=true&token=${encodeURIComponent(sessionToken)}&redirectUrl=${encodeURIComponent(samlLocation)}`,    {
+  const redirectResponse = await apiRequest.get(`https://techmatters.okta.com/login/sessionCookieRedirect?checkAccountSetupComplete=true&token=${encodeURIComponent(sessionToken)}&redirectUrl=${encodeURIComponent(samlLocation)}`,    {
     headers: {
       accept: 'application/json',
       authority: 'techmatters.okta.org'
@@ -43,17 +42,20 @@ export async function oktaSsoLoginViaApi(browser: Browser, homeUrl: string, user
   const { samlResponse, relayState } = samlResponseHtml.match(formRegex).groups;
 
   // Post the SAML response to twilio - if successful this redirects to the flex landing page, whose contents we drop on the floor, we just want to ensure the cookies get set
-  const flexPageResponse = await request.post(`https://iam.twilio.com/v1/Accounts/${accountSid}/saml2`, { form: { 'SAMLResponse': decodeHtmlSymbols(samlResponse), 'RelayState': decodeHtmlSymbols(relayState) }});
+  const flexPageResponse = await apiRequest.post(`https://iam.twilio.com/v1/Accounts/${accountSid}/saml2`, { form: { 'SAMLResponse': decodeHtmlSymbols(samlResponse), 'RelayState': decodeHtmlSymbols(relayState) }});
   expect(flexPageResponse.ok()).toBe(true);
   await flexPageResponse.dispose(); //Not sure if this is strictly necessary
 
-  await context.storageState({ path: 'temp/state.json' })
+  await apiRequest.storageState({ path: 'temp/state.json' })
 }
 
 
-export async function oktaSsoLoginViaGui(browser: Browser, homeUrl: string, username: string, password: string): Promise<void> {
+export async function oktaSsoLoginViaGui(config: FullConfig, username: string, password: string): Promise<void> {
+  const project = config.projects[0];
+  const browser = await chromium.launch( project.use);
+  console.log('Global setup browser launched');
   const page = await browser.newPage();
-  page.goto(homeUrl, {timeout: 30000});
+  page.goto(project.use.baseURL, {timeout: 30000});
   await page.waitForNavigation({timeout: 30001});
   const usernameBox = page.locator('input#okta-signin-username');
   const passwordBox = page.locator('input#okta-signin-password');
@@ -74,4 +76,5 @@ export async function oktaSsoLoginViaGui(browser: Browser, homeUrl: string, user
   await logoImage.waitFor();
   await expect(logoImage).toHaveAttribute('src', /.*aselo.*/);
   await page.context().storageState({ path: 'temp/state.json' });
+  await browser.close();
 }
