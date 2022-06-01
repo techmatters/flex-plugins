@@ -18,6 +18,15 @@ export function flexChat(page: Page) {
   };
 
   return {
+    /**
+     * This function runs the 'counselor side' of a webchat conversation.
+     * It will loop through a list of chat statements, typing and sending counselor statements in flex
+     * As soon as it hits a caller statement in the list, it will yield execution back to the calling code, so it can action the caller statement(s)
+     *
+     * A similar function exists in webchat.ts to handle actioning the caller side of the conversation.
+     * This means that they can both be looping through the same conversation, yielding control when they hit a statement the other chat function needs to handle
+     * @param statements - a unified list of all the chat statements in a conversation, for caller and counselor
+     */
     chat: async function* (statements: ChatStatement[]): AsyncIterator<ChatStatement> {
       await selectors.chatInput.waitFor();
 
