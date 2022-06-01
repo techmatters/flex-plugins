@@ -9,7 +9,7 @@ export const FiltersContainer = styled(Flex)`
   margin-right: 10px;
   padding: 10px;
   font-size: 13px;
-  border-bottom: 2px solid #E5E6E7;
+  border-bottom: 2px solid #e5e6e7;
   &:focus {
     outline: auto;
   }
@@ -310,7 +310,7 @@ export const FiltersCheckbox = styled('input')`
     content: '—';
     color: #ffffff;
   }
-  &:focus{
+  &:focus {
     outline: auto;
     padding: -1px;
   }

@@ -812,6 +812,10 @@ export const FormDateInput = styled(FormInput)`
     -webkit-appearance: none;
     display: none;
   }
+  &[type='date']::placeholder{
+    color: '#AEAEAE';
+    opacity: 1;
+  }
   /* &[type='date'] {} */
   /* &[type='date']::-webkit-calendar-picker-indicator {} */
 `;
