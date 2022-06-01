@@ -290,11 +290,6 @@ const generateResourceTF =
     }
   };
 
-// TODO: parametrize
-// const assistantSid = 'UA19ad9f719702d7b5f8e6d03c8d38d57f';
-// const referenceName = 'language_bot';
-// const serverlessUrl = 'https://serverless-1270-production.twil.io';
-
 export const generateChatbotResource = async (
   assistantSid: string,
   referenceName: string,
