@@ -142,6 +142,7 @@ const generateTFResource = (
 };
 
 const generateAssistantTF = (resource: AssistantDefinition, referenceName: string) => {
+  // Respect the order given in assistant regex (hclRegexPatterns.js)
   const assistantProperties = [
     `unique_name = "${resource.uniqueName}"`,
     `friendly_name = "${resource.friendlyName}"`,
@@ -166,6 +167,7 @@ const generateTaskSamplesTF = (taskDefinition: TaskDefinition, referenceName: st
 
   const samples = taskDefinition.samples.map((s) => s.taggedText);
 
+  // Respect the order given in taskSample regex (hclRegexPatterns.js)
   const taskSamplesProperties = [
     `for_each = toset(${JSON.stringify(samples)})`,
     `assistant_sid = twilio_autopilot_assistants_v1.${referenceName}.sid`,
@@ -182,9 +184,10 @@ const generateTaskSamplesTF = (taskDefinition: TaskDefinition, referenceName: st
 };
 
 const generateTaskTF = (taskDefinition: TaskDefinition, referenceName: string) => {
+  // Respect the order given in task regex (hclRegexPatterns.js)
   const taskProperties = [
-    `assistant_sid = twilio_autopilot_assistants_v1.${referenceName}.sid`,
     `unique_name = "${taskDefinition.uniqueName}"`,
+    `assistant_sid = twilio_autopilot_assistants_v1.${referenceName}.sid`,
     ...(taskDefinition.friendlyName ? `friendly_name = "${taskDefinition.friendlyName}"` : []),
     `actions = jsonencode(${JSON.stringify({ actions: taskDefinition.actions }, null, '  ')})`,
   ];
@@ -221,7 +224,7 @@ const generateFieldTypeValuesTF = (fieldType: FieldTypeResource, referenceName: 
     };
   }, {});
 
-  // Add the base values resource
+  // Add the base values resource. Respect the order given in fieldTypeValue regex (hclRegexPatterns.js)
   const baseValuesProperties = [
     `for_each = toset(${JSON.stringify(baseValues)})`,
     `assistant_sid = twilio_autopilot_assistants_v1.${referenceName}.sid`,
@@ -236,7 +239,7 @@ const generateFieldTypeValuesTF = (fieldType: FieldTypeResource, referenceName: 
     baseValuesProperties,
   );
 
-  // Add synonyms for above values
+  // Add synonyms for above values. Respect the order given in fieldTypeValue regex (hclRegexPatterns.js)
   const synonymsResources = Object.entries(synonymsMap).map(([baseValue, synonymsValues]) => {
     const synonymsProperties = [
       `depends_on = [twilio_autopilot_assistants_field_types_field_values_v1.${referenceName}_values_${fieldType.uniqueName}_group]`,
@@ -259,6 +262,7 @@ const generateFieldTypeValuesTF = (fieldType: FieldTypeResource, referenceName: 
 };
 
 const generateFieldTypeTF = (fieldType: FieldTypeResource, referenceName: string) => {
+  // Respect the order given in fieldType regex (hclRegexPatterns.js)
   const fieldTypeProperties = [
     `unique_name = "${fieldType.uniqueName}"`,
     `assistant_sid = twilio_autopilot_assistants_v1.${referenceName}.sid`,

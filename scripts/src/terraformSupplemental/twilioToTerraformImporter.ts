@@ -22,13 +22,15 @@ export function attemptTerraformImport(
   const cwd = `${TWILIO_TERRAFORM_ROOT_DIRECTORY}/${account}`;
   const tfVarsArg = tfvarsFile ? `-var-file ${tfvarsFile}` : '';
   let terraformResourceArg = terraformResource
-    .replace(/\s/g, process.platform === 'win32' ? ' ' : '\\ ')
+    // .replace(/\s/g, process.platform === 'win32' ? ' ' : '\\ ')
+    .replace(/\s/g, ' ')
     // Bit of a crappy check - should really be based on shell being used rather than OS
     // Assumes windows uses win32 and everything else is bash.
-    .replace(/"/g, process.platform === 'win32' ? '\\"' : '"');
-  if (process.platform === 'win32') {
-    terraformResourceArg = `"${terraformResourceArg}"`;
-  }
+    // .replace(/"/g, process.platform === 'win32' ? '\\"' : '"');
+    .replace(/"/g, '\\"');
+  // if (process.platform === 'win32') {
+  terraformResourceArg = `"${terraformResourceArg}"`;
+  // }
   const command = `terraform import ${tfVarsArg} ${terraformResourceArg} ${twilioResourceSid}`;
   if (dryRun) {
     logDebug(`Would run command (from ${cwd}):`);
