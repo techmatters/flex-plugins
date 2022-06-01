@@ -310,6 +310,7 @@ export const ContactDetailsIcon = icon => styled(icon)`
   color: #000000;
   width: 50px;
   height: 50px;
+  font-size: medium;
 `;
 
 const containerPadding = 40;
@@ -334,6 +335,19 @@ export const SectionTitleButton = styled(ButtonBase)`
   }
 `;
 SectionTitleButton.displayName = 'SectionTitleButton';
+
+export const SectionEditButton = styled('button')`
+  display: flex;
+  border:none;
+  background-color: transparent;
+  font-size: 13px;
+  color: #1976d2;
+  font-family: 'Open Sans';
+  :focus {
+    outline: auto;
+    outline-color: black;
+  }
+`;
 
 type CollapseProps = {
   expanded: boolean;
