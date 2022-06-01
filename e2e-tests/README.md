@@ -25,6 +25,6 @@ npx playwright test --headed webchat.spec.ts
 
 ## TODO
 * Currently the tests rely on a plugin dev server being run separately. There should be a single task that manages starting the dev server, running the tests, then shutting down the dev server
-* There is no dedicated Twilio account on Aselo Dev for tests, you need to use an existing one.
+* There is no dedicated Twilio user account on E2E Dev for tests, you need to use an existing one.
 * The tests will get into a bad state if they fail partway through, particularly if they leave a task partially complete. We need code that attempts to 'reset' the state of the worker & tasks so the tests always start in a consistent state - this would ideally be done directly via the Twilio API rather than by pushing buttons in the GUI
 * The preflight login step is done using the Okta GUI. We should replace this with API calls to make it faster & more robust - we aren't trying to test Okta's GUI for them!
