@@ -9,7 +9,7 @@ export const FiltersContainer = styled(Flex)`
   margin-right: 10px;
   padding: 10px;
   font-size: 13px;
-  border-bottom: 2px solid #d8d8d8;
+  border-bottom: 2px solid #E5E6E7;
   &:focus {
     outline: auto;
   }
