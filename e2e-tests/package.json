@@ -17,7 +17,8 @@
   },
   "homepage": "https://github.com/techmatters/flex-plugin#readme",
   "devDependencies": {
-    "@playwright/test": "^1.17.1",
-    "playwright-core": "^1.17.2"
+    "@playwright/test": "^1.22.2",
+    "date-fns": "^2.28.0",
+    "playwright-core": "^1.22.2"
   }
 }
