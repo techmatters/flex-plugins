@@ -46,3 +46,6 @@ jobs:
       working-directory: ./plugin-hrm-form
       env:
         CI: true
+    - name: Run e2e test code Lint
+      run: npm run lint
+      working-directory: ./e2e-tests
