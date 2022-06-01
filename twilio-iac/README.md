@@ -64,7 +64,7 @@ TWILIO_AUTH_TOKEN=xxx
 and load the content of the file in the terminal session like `➜ export $(grep -v '^#' .env | xargs)`
 
 
-9. Run the script below from flex-plugins/scrips/ folder. Twilio creates a bunch of default resources on a new account and Aselo uses some of them. We need to import them into terraform first, otherwise terraform assumes they don't exist and will try to create them, resulting in errors.
+9. Run the script below from flex-plugins/scripts/ folder. Twilio creates a bunch of default resources on a new account and Aselo uses some of them. We need to import them into terraform first, otherwise terraform assumes they don't exist and will try to create them, resulting in errors.
 ```shell
 npm run twilioResources -- import-account-defaults <helpline>-<environment> [-v my-private.tfvars]]
 ```

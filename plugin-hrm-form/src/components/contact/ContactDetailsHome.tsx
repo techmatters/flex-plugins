@@ -23,6 +23,7 @@ import {
   toggleDetailSectionExpanded,
 } from '../../states/contacts/contactDetails';
 import { LoadConversationButton } from '../../styles/contact';
+import { getPermissionsForContact, PermissionActions } from '../../permissions';
 
 // TODO: complete this type
 type OwnProps = {
@@ -75,6 +76,10 @@ const Details: React.FC<Props> = function ({
     categories,
     createdBy,
   } = overview;
+
+  // Permission to edit is based the counselor who created the contact - identified by Twilio worker ID
+  const createdByTwilioWorkerId = contact?.overview.counselor;
+  const { can } = getPermissionsForContact(createdByTwilioWorkerId);
 
   // Format the obtained information
   const isDataCall = !isNonDataCallType(callType);
@@ -161,7 +166,7 @@ const Details: React.FC<Props> = function ({
           sectionTitle={<Template code="TabbedForms-AddCallerInfoTab" />}
           expanded={detailsExpanded[CALLER_INFORMATION]}
           handleExpandClick={() => toggleSection(CALLER_INFORMATION)}
-          showEditButton={enableEditing}
+          showEditButton={enableEditing && can(PermissionActions.EDIT_CONTACT)}
           handleEditClick={() => navigate(ContactDetailsRoute.EDIT_CALLER_INFORMATION)}
           buttonDataTestid="ContactDetails-Section-CallerInformation"
         >
@@ -180,7 +185,7 @@ const Details: React.FC<Props> = function ({
           sectionTitle={<Template code="TabbedForms-AddChildInfoTab" />}
           expanded={detailsExpanded[CHILD_INFORMATION]}
           handleExpandClick={() => toggleSection(CHILD_INFORMATION)}
-          showEditButton={enableEditing}
+          showEditButton={enableEditing && can(PermissionActions.EDIT_CONTACT)}
           handleEditClick={() => navigate(ContactDetailsRoute.EDIT_CHILD_INFORMATION)}
           buttonDataTestid="ContactDetails-Section-ChildInformation"
         >
@@ -200,7 +205,7 @@ const Details: React.FC<Props> = function ({
           expanded={detailsExpanded[ISSUE_CATEGORIZATION]}
           handleExpandClick={() => toggleSection(ISSUE_CATEGORIZATION)}
           buttonDataTestid="ContactDetails-Section-IssueCategorization"
-          showEditButton={enableEditing}
+          showEditButton={enableEditing && can(PermissionActions.EDIT_CONTACT)}
           handleEditClick={() => navigate(ContactDetailsRoute.EDIT_CATEGORIES)}
         >
           {formattedCategories.length ? (
@@ -226,7 +231,7 @@ const Details: React.FC<Props> = function ({
           expanded={detailsExpanded[CONTACT_SUMMARY]}
           handleExpandClick={() => toggleSection(CONTACT_SUMMARY)}
           buttonDataTestid={`ContactDetails-Section-${CONTACT_SUMMARY}`}
-          showEditButton={enableEditing}
+          showEditButton={enableEditing && can(PermissionActions.EDIT_CONTACT)}
           handleEditClick={() => navigate(ContactDetailsRoute.EDIT_CASE_INFORMATION)}
         >
           {definitionVersion.tabbedForms.CaseInformationTab.map(e => (

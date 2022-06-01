@@ -7,7 +7,13 @@ import DateRange from '@material-ui/icons/DateRange';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { getConfig } from '../../../HrmFormPlugin';
-import { FiltersContainer, FiltersResetAll, CasesTitle, CasesCount, FilterBy } from '../../../styles/caseList/filters';
+import {
+  FiltersContainer,
+  FiltersResetAll,
+  CasesTitle,
+  CasesCount,
+  FilterTitle,
+} from '../../../styles/caseList/filters';
 import MultiSelectFilter, { Item } from './MultiSelectFilter';
 import { CategoryFilter, CounselorHash } from '../../../types/types';
 import DateRangeFilter from './DateRangeFilter';
@@ -20,6 +26,7 @@ import {
 import CategoriesFilter, { Category } from './CategoriesFilter';
 import { caseListBase, configurationBase, namespace, RootState } from '../../../states';
 import * as CaseListSettingsActions from '../../../states/caseList/settings';
+import { Flex } from '../../../styles/HrmStyles';
 /**
  * Reads the definition version and returns and array of items (type Item[])
  * to be used as the options for the status filter
@@ -221,10 +228,10 @@ const Filters: React.FC<Props> = ({
       </FiltersContainer>
       {featureFlags.enable_filter_cases && (
         <FiltersContainer>
-          <FilterList />
-          <FilterBy>
+          <FilterList fontSize="small" />
+          <FilterTitle>
             <Template code="CaseList-FilterBy" />
-          </FilterBy>
+          </FilterTitle>
           <MultiSelectFilter
             name="status"
             text={strings['CaseList-Filters-Status']}
@@ -253,24 +260,26 @@ const Filters: React.FC<Props> = ({
             setOpenedFilter={setOpenedFilter}
             searchable
           />
-          <FiltersContainer style={{ marginLeft: 'auto', boxShadow: 'none' }}>
-            <DateRange fontSize="inherit" style={{ marginRight: 5 }} />
-            <Template code="CaseList-Filters-DateFiltersLabel" />
+          <div style={{ display: 'inline-flex', marginLeft: 'auto' }}>
+            <DateRange fontSize="small" style={{ marginTop: '4px' }} />
+            <FilterTitle style={{ margin: '5px 10px 0 6px' }}>
+              <Template code="CaseList-Filters-DateFiltersLabel" />
+            </FilterTitle>
             {getInitialDateFilters().map(df => {
               return (
                 <DateRangeFilter
-                  labelKey={df.labelKey}
-                  key={df.filterPayloadParameter}
                   name={`${df.filterPayloadParameter}Filter`}
+                  labelKey={df.labelKey}
                   options={df.options}
+                  current={dateFilterValues[df.filterPayloadParameter]}
                   openedFilter={openedFilter}
                   applyFilter={handleApplyDateRangeFilter(df)}
                   setOpenedFilter={setOpenedFilter}
-                  current={dateFilterValues[df.filterPayloadParameter]}
+                  key={df.filterPayloadParameter}
                 />
               );
             })}
-          </FiltersContainer>
+          </div>
         </FiltersContainer>
       )}
     </>

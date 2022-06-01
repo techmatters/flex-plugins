@@ -1,3 +1,5 @@
+import { omit } from 'lodash';
+
 import { SearchContact } from '../../types/types';
 import { hrmServiceContactToSearchContact } from './contactDetailsAdapter';
 
@@ -76,6 +78,7 @@ export const releaseContactReducer = (state: ExistingContactsState, action: Rele
     console.warn(
       `Tried to release contact id ${action.id} but wasn't in the redux state. You should only release previously loaded contacts once`,
     );
+    return state;
   }
   if (current.refCount < 2) {
     if (current.refCount !== 1) {
@@ -83,9 +86,7 @@ export const releaseContactReducer = (state: ExistingContactsState, action: Rele
         `Contact id ${action.id} had a refCount of ${current.refCount} before it was removed, it should never go lower than 1`,
       );
     }
-    const copy = { ...state };
-    delete copy[action.id];
-    return copy;
+    return omit(state, action.id);
   }
   return {
     ...state,
