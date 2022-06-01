@@ -73,11 +73,46 @@ Using this script as part of setting up a new account is described in /twilio-ia
 
 ### import-tf
 
-Takes a single *.tf Terraform configuration file and it scans the resources in there. It will then search for those resources in the Twilio account you provide credentials for and if it finds them, imports them into the `tfstate` for this configuration.
+Takes a single *.tf Terraform configuration file and scans the resources defined in there. It will then search for those resources in the Twilio account you provide credentials for and if it finds them, imports them into the `tfstate` for this configuration.
 
 Its use cases are those which involve trying to import large amounts of resources that are defined in configuration, already exist on the account, but aren't in the `tfstate`. 
-Importing existing, non-terraform managed accounts into Terraform is one use case, but also importing significant additions made to staging accounts outside Terraform would be another (I used it to import the SafeSpot 'which district?' autopilot question, which would have been time consuming otherwise).
+Importing existing, non-terraform managed accounts into Terraform is one use case, but also importing significant additions made to staging accounts outside Terraform would be another (I used it to import the SafeSpot 'which district?' autopilot question, which would have been time-consuming otherwise).
 In both of these use cases, the Terraform resources would need to have been configured in the `*.tf` files prior to using this command to update the state, naturally.
 
 *Note:* You STILL need to pass any SIDs that come from variables in using an `--sid` parameter, even if they are defined in the `tfvars` file you pass in with `-v`or as a `TF_VARS_*` environment variable. 
 The script doesn't scan provided terraform variables automatically for its own use, it just passes the `*.tfvars` file you specify down to the `terraform import` command. It could be enhanced to do this if needed, but doesn't right now.
+
+#### Example
+
+`npm run twilioResources -- import-tf a-helpline-staging ./terraform-modules/chatbots/terraform-modules/pre-survey-task/safespot/main.tf --sid var.bot_sid=UAxxx -m chatbots.custom_pre_survey_task[0] -v private.tfvars`
+
+The above command was used in the following scenario:
+
+The helpline required a specific chatbot custom behaviour. That behaviour was already created for the staging environment in Twilio console, and already defined in the helpline's staging environment.
+It was not, however, imported into the Terraform state for this account. The above command was used to autopopulate the state based on the information in the tf file, and queried from the Twilio API for the account
+
+The following environment variables needed to be present before running the script:
+
+`AWS_ACCESS_KEY_ID` 
+`AWS_SECRET_ACCESS_KEY`
+`TWILIO_ACCOUNT_SID`
+`TWILIO_AUTH_TOKEN`
+
+_(these would typically be set anyway if you are running Aselo's Twilio terraform scripts)_
+
+Parameters:
+
+-------------------------------------------------
+| Parameter                | Meaning            |
+|--------------------------|--------------------|
+| `a-helpline-staging` | The directory, located under `/twilio-iac/` where the helpline's configuration is located |
+| `./terraform-modules/chatbots/terraform-modules/pre-survey-task/a-helpline/main.tf` | The *.tf file we are basing our imports on, relative to `/twilio-iac/`, not the CWD. |
+| `--sid var.bot_sid=UAxxx` | The `--sid` parameter is a way of providing external variables required by the module. In this case, the `pre-survey-task` modules take a variable called `bot_sid` (`./terraform-modules/chatbots/terraform-modules/pre-survey-task/safespot/variables.tf`). This needs to be provided in the form `var.<variable_name>=<variable.value>`. The `--sid` parameter can be repeated as often as required, e.g. `--sid var.a=b --sid var.c=d --sid var.e=f ...` |
+| `-m chatbots.custom_pre_survey_task[0]` | This is the path to the module within the configuration structure of the target helpline. Note that `custom_pre_survey_task` specifies index 0. This is because the idiomatic way to conditionally include a module is via the 'count' property of a module being set to 1 or 0 based on conditional logic. This technically turns it into a list of modules with a single element, rather than a single module. As such any modules included conditionally will need the `[0]` qualifier |
+| `-v private.tfvars` | This specifies a tfvars file relative to the configuration directory specified in the first parameter (so this means `/twilio-iac/a-helpline/private.tfvars`). This is currently ONLY used to pass into the `terraform import` commands the script initiates, it is NOT a substitrute for `--sid` parameters. If a variable is used in the .tf file, it still needs an `--sid` parameter to specify if whether it is present in the tfvars file specified here or not |
+
+#### --dryRun / -d
+
+This flag can be used to test the automatic import logic generated by this script. It will output the `terraform import ...` commands to stdout rather than ruinning them
+
+From here you can either C&P the commands and run them manually, or rerun the script without this parameter if all looks good with the grenerated commands
