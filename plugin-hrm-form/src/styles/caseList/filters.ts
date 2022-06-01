@@ -283,8 +283,8 @@ export const FiltersCheckbox = styled('input')`
     content: '';
   }
   &[type='checkbox']::before {
-    width: 14px;
-    height: 14px;
+    width: 12px;
+    height: 12px;
     border: 2px solid rgba(94, 99, 105, 0.8);
     border-radius: 0.2em;
     background-image: linear-gradient(to bottom, hsl(300, 3%, 93%), #fff 30%);
@@ -309,6 +309,10 @@ export const FiltersCheckbox = styled('input')`
     font-size: 9px;
     content: '—';
     color: #ffffff;
+  }
+  &:focus{
+    outline: auto;
+    padding: -1px;
   }
 `;
 FiltersCheckbox.displayName = 'FiltersCheckbox';
