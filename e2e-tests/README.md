@@ -12,7 +12,7 @@ These end-to-end tests are a Proof of Concept written using the Playwright testi
 | TWILIO_ACCOUNT_SID       | E2E twilio account SID | |
 | DEBUG                    | pw:api | optional, but recommended for useable log output |
 
-2. Run the plugin in the dev server (i.e. `npm start` from `../plugin-hrm-form/`)
+2. Run the plugin in the dev server (i.e. `npm run start` from `../plugin-hrm-form/`)
 3. run `npx playwright test` for headless tests or `npx playwright test --headed` to see the browser sessions
 
 ### Running a single test file
