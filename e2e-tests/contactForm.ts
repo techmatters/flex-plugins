@@ -15,11 +15,12 @@ export function contactForm(page: Page) {
   const selectors = {
     tabButton: (tab: ContactFormTab<unknown>) =>
       formArea.locator(`button :text-is("${tab.label}")`),
-    formInput: (tabId, itemId) => formArea.locator(`input#${tabId}\\.${itemId}`),
-    formSelect: (tabId, itemId) => formArea.locator(`select#${tabId}\\.${itemId}`),
-    formTextarea: (tabId, itemId) => formArea.locator(`textarea#${tabId}\\.${itemId}`),
-    topCategorySelector: (category) => formArea.locator(`button:has-text("${category}")`),
-    subCategoryCheckbox: (tabId, topCategory, subCategory) =>
+    formInput: (tabId: string, itemId: string) => formArea.locator(`input#${tabId}\\.${itemId}`),
+    formSelect: (tabId: string, itemId: string) => formArea.locator(`select#${tabId}\\.${itemId}`),
+    formTextarea: (tabId: string, itemId: string) =>
+      formArea.locator(`textarea#${tabId}\\.${itemId}`),
+    topCategorySelector: (category: string) => formArea.locator(`button:has-text("${category}")`),
+    subCategoryCheckbox: (tabId: string, topCategory: string, subCategory: string) =>
       formArea.locator(`//input[@value='${tabId}.${topCategory}.${subCategory}']`),
     saveContactButton: formArea.locator(`button.Twilio-Button:has-text("Save Contact")`),
   };
@@ -53,7 +54,7 @@ export function contactForm(page: Page) {
   }
 
   return {
-    fill: async (tabs: ContactFormTab<unknown>[]) => {
+    fill: async (tabs: ContactFormTab<any>[]) => {
       for (const tab of tabs) {
         await selectTab(tab);
         await tab.fill(tab);
