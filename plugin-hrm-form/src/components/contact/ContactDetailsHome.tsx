@@ -108,7 +108,7 @@ const ContactDetailsHome: React.FC<Props> = ({
   return (
     <DetailsContainer data-testid="ContactDetails-Container">
       <NameText>{childOrUnknown}</NameText>
-      {/* {showActionIcons && (
+      {showActionIcons && (
           <>
             <IconButton
               onClick={handleOpenConnectDialog}
@@ -118,7 +118,7 @@ const ContactDetailsHome: React.FC<Props> = ({
               <LinkIcon style={{ color: '#ffffff' }} />
             </IconButton>
           </>
-        )} */}
+        )}
       <ContactDetailsSection
         sectionTitle={<Template code="ContactDetails-GeneralDetails" />}
         expanded={detailsExpanded[GENERAL_DETAILS]}

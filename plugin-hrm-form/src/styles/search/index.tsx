@@ -422,6 +422,7 @@ export const ListContainer = styled(BottomButtonBar)`
   flex-grow: 1;
   padding: 0;
 `;
+ListContainer.displayName='ListContainer'
 
 export const ScrollableList = styled('div')`
   display: flex;
@@ -534,3 +535,4 @@ export const SectionActionButton = styled('button')`
     outline-color: black;
   }
 `;
+SectionActionButton.displayName = 'SectionActionButton'
