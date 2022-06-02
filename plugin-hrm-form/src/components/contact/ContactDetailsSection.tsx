@@ -17,9 +17,8 @@ const ArrowRightIcon = ContactDetailsIcon(ArrowRightTwoTone);
 const EditIcon = ContactDetailsIcon(Edit);
 const LinkIcon = ContactDetailsIcon(Link);
 
-type MyProps = {
+type Props = {
   sectionTitle: string | JSX.Element;
-  color?: string;
   expanded: boolean;
   handleExpandClick: (event?: any) => void;
   buttonDataTestid: string;
@@ -31,8 +30,7 @@ type MyProps = {
   showActionIcons?: boolean;
 };
 
-const ContactDetailsSection: React.FC<MyProps> = ({
-  color,
+const ContactDetailsSection: React.FC<Props> = ({
   sectionTitle,
   expanded,
   hideIcon,
@@ -45,10 +43,9 @@ const ContactDetailsSection: React.FC<MyProps> = ({
   showActionIcons,
   handleEditClick,
 }) => {
-  console.log('>>>', buttonDataTestid);
   return (
     <>
-      <SectionTitleContainer color={color}>
+      <SectionTitleContainer>
         <SectionTitleButton
           buttonRef={buttonRef => {
             if (htmlElRef) {

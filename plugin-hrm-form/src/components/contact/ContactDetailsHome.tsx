@@ -1,13 +1,11 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { format } from 'date-fns';
-import { IconButton } from '@material-ui/core';
-import { Link as LinkIcon } from '@material-ui/icons';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes } from 'hrm-form-definitions';
 
-import { DetailsContainer, NameText } from '../../styles/search';
+import { DetailsContainer, NameText, ContactAddedFont } from '../../styles/search';
 import ContactDetailsSection from './ContactDetailsSection';
 import SectionEntry from '../SectionEntry';
 import { channelTypes } from '../../states/DomainConstants';
@@ -68,7 +66,6 @@ const ContactDetailsHome: React.FC<Props> = ({
     categories,
     createdBy,
   } = overview;
-  console.log('>>>', counselor, dateTime, createdBy);
   // Permission to edit is based the counselor who created the contact - identified by Twilio worker ID
   const createdByTwilioWorkerId = contact?.overview.counselor;
   const { can } = getPermissionsForContact(createdByTwilioWorkerId);
@@ -80,9 +77,10 @@ const ContactDetailsHome: React.FC<Props> = ({
     channel === 'default'
       ? mapChannelForInsights(details.contactlessTask.channel.toString())
       : mapChannelForInsights(channel);
-  const formattedDate = `${format(new Date(dateTime), 'MMM d, yyyy / h:mm aaaaa')}m`;
+  const formattedDate = `${format(new Date(dateTime), 'MMM d, yyyy')}`;
+  const formattedTime = `${format(new Date(dateTime), 'h:mm aaaaa')}m`;
+  const formattedDateTime = `${format(new Date(dateTime), 'MMM d, yyyy / h:mm aaaaa')}m`;
   const formattedDuration = formatDuration(conversationDuration);
-  console.log('>>>', counselor, formattedDate, createdBy);
 
   const isPhoneContact =
     channel === channelTypes.voice || channel === channelTypes.sms || channel === channelTypes.whatsapp;
@@ -97,7 +95,6 @@ const ContactDetailsHome: React.FC<Props> = ({
   } = ContactDetailsSections;
   const addedBy = counselorsHash[createdBy];
   const counselorName = counselorsHash[counselor];
-  console.log('>>>', counselorName, formattedDate, addedBy);
 
   const toggleSection = (section: ContactDetailsSectionsType) => toggleSectionExpandedForContext(context, section);
   const navigate = (route: ContactDetailsRoute) => navigateForContext(context, route);
@@ -111,6 +108,14 @@ const ContactDetailsHome: React.FC<Props> = ({
   return (
     <DetailsContainer data-testid="ContactDetails-Container">
       <NameText>{childOrUnknown}</NameText>
+      <ContactAddedFont style={{ marginRight: 20 }} data-testid="ContactDetails-ActionHeaderAdded">
+        <Template
+          code="ContactDetails-ActionHeaderAdded"
+          date={formattedDate}
+          time={formattedTime}
+          counsellor={addedBy}
+        />
+      </ContactAddedFont>
       <ContactDetailsSection
         sectionTitle={<Template code="ContactDetails-GeneralDetails" />}
         expanded={detailsExpanded[GENERAL_DETAILS]}
@@ -130,7 +135,10 @@ const ContactDetailsHome: React.FC<Props> = ({
           value={formattedDuration}
         />
         <SectionEntry description={<Template code="ContactDetails-GeneralDetails-Counselor" />} value={counselorName} />
-        <SectionEntry description={<Template code="ContactDetails-GeneralDetails-DateTime" />} value={formattedDate} />
+        <SectionEntry
+          description={<Template code="ContactDetails-GeneralDetails-DateTime" />}
+          value={formattedDateTime}
+        />
         {addedBy && addedBy !== counselor && (
           <SectionEntry description={<Template code="ContactDetails-GeneralDetails-AddedBy" />} value={addedBy} />
         )}

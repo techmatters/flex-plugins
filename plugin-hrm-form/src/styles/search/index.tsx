@@ -346,6 +346,7 @@ export const SectionActionButton = styled('button')`
   color: #1976d2;
   padding: '0 6px';
   font-family: 'Open Sans';
+  cursor: pointer;
   :focus {
     outline: auto;
     outline-color: black;
@@ -377,10 +378,18 @@ export const BackText = styled(BoldDetailFont)`
 `;
 
 export const NameText = styled(FontOpenSans)`
-  margin: 28px auto 20px 0;
+  margin: 25px auto 5px 0;
   font-weight: 600;
   font-size: 15px;
 `;
+
+export const ContactAddedFont = styled(FontOpenSans)`
+  font-style: italic;
+  font-size: 12px;
+  line-height: 30px;
+  opacity: 67%;
+`;
+ContactAddedFont.displayName = 'ContactAddedFont';
 
 export const SectionTitleText = styled(FontOpenSans)`
   font-size: 12px;
@@ -534,3 +543,11 @@ export const StandaloneSearchContainer = styled(TabbedFormsContainer)`
   background-color: ${props => props.theme.colors.base2};
 `;
 StandaloneSearchContainer.displayName = 'StandaloneSearchContainer';
+
+export const ViewContactButton = styled('button')`
+  background: #E7E8EE ;
+  border: none;
+  padding: 3px 7px;
+  border-radius: 5px;
+  cursor: pointer;
+`;

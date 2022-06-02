@@ -55,6 +55,8 @@
   "SearchResultsIndex-ClosedCases": "Closed Cases",
   "SearchResultsIndex-ViewContacts": "View Contacts",
   "SearchResultsIndex-ViewCases": "View Cases",
+  "Contact-ViewButton": "View",
+
   "StandaloneSearch-SideNav": "Search",
   "CaseHeader-Opened": "Opened",
   "CaseHeader-Updated": "Updated",
@@ -163,7 +165,6 @@
   "Case-ActionHeaderUpdated": "Updated on {{date}} at {{time}} by {{counsellor}}",
   "Case-ActionHeaderCounselor": "Counsellor:",
   "Case-CloseButton": "Close",
-  "Case-ViewButton": "View",
   "Case-EditButton": "Edit",
   "Case-PerpetratorName": "Perpetrator Name: ",
   "Case-PerpetratorGender": "Gender: ",
