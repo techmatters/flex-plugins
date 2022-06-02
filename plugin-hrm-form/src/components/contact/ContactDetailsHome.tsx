@@ -7,8 +7,7 @@ import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes } from 'hrm-form-definitions';
 
-import { getConfig } from '../../HrmFormPlugin';
-import { DetailsContainer, DetNameText, NameContainer } from '../../styles/search';
+import { DetailsContainer, NameText } from '../../styles/search';
 import ContactDetailsSection from './ContactDetailsSection';
 import SectionEntry from '../SectionEntry';
 import { channelTypes } from '../../states/DomainConstants';
@@ -37,7 +36,7 @@ type OwnProps = {
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
 /* eslint-disable complexity */
-const Details: React.FC<Props> = ({
+const ContactDetailsHome: React.FC<Props> = ({
   context,
   detailsExpanded,
   showActionIcons = false,
@@ -77,7 +76,6 @@ const Details: React.FC<Props> = ({
   // Format the obtained information
   const isDataCall = !isNonDataCallType(callType);
   const childOrUnknown = formatName(childName);
-  const childUpperCased = childOrUnknown.toUpperCase();
   const formattedChannel =
     channel === 'default'
       ? mapChannelForInsights(details.contactlessTask.channel.toString())
@@ -109,9 +107,8 @@ const Details: React.FC<Props> = ({
 
   return (
     <DetailsContainer data-testid="ContactDetails-Container">
-      <NameContainer>
-        <DetNameText>{childUpperCased}</DetNameText>
-        {showActionIcons && (
+      <NameText>{childOrUnknown}</NameText>
+      {/* {showActionIcons && (
           <>
             <IconButton
               onClick={handleOpenConnectDialog}
@@ -121,8 +118,7 @@ const Details: React.FC<Props> = ({
               <LinkIcon style={{ color: '#ffffff' }} />
             </IconButton>
           </>
-        )}
-      </NameContainer>
+        )} */}
       <ContactDetailsSection
         sectionTitle={<Template code="ContactDetails-GeneralDetails" />}
         expanded={detailsExpanded[GENERAL_DETAILS]}
@@ -174,6 +170,8 @@ const Details: React.FC<Props> = ({
           showEditButton={enableEditing && can(PermissionActions.EDIT_CONTACT)}
           handleEditClick={() => navigate(ContactDetailsRoute.EDIT_CHILD_INFORMATION)}
           buttonDataTestid="ContactDetails-Section-ChildInformation"
+          handleOpenConnectDialog={handleOpenConnectDialog}
+          showActionIcons={showActionIcons}
         >
           {definitionVersion.tabbedForms.ChildInformationTab.map(e => (
             <SectionEntry
@@ -241,9 +239,9 @@ const Details: React.FC<Props> = ({
   );
 };
 
-Details.displayName = 'Details';
+ContactDetailsHome.displayName = 'Details';
 
-Details.defaultProps = {
+ContactDetailsHome.defaultProps = {
   handleOpenConnectDialog: () => null,
   showActionIcons: false,
 };
@@ -260,4 +258,4 @@ const mapDispatchToProps = {
   navigateForContext: navigateContactDetails,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Details);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsHome);

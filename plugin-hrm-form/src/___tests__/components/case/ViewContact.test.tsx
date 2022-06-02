@@ -181,7 +181,7 @@ describe('View Contact', () => {
     await waitFor(() => expect(screen.getByTestId('Case-ActionHeaderAdded')).toBeInTheDocument());
     // TODO: Verify interpolated translations contain the expected data
     await waitFor(() => expect(screen.getByTestId('ContactDetails-Container')).toBeInTheDocument());
-    expect(screen.getByText('Jill Smith'.toUpperCase())).toBeInTheDocument();
+    expect(screen.getByText('Jill Smith')).toBeInTheDocument();
   });
 
   test('click on x button', async () => {

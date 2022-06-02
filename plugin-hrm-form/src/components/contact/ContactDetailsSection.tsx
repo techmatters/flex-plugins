@@ -1,5 +1,6 @@
 import React from 'react';
-import { ArrowDropDownTwoTone, ArrowRightTwoTone, Edit } from '@material-ui/icons';
+import { ArrowDropDownTwoTone, ArrowRightTwoTone, Edit, Link } from '@material-ui/icons';
+import { IconButton } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
 
 import {
@@ -8,14 +9,15 @@ import {
   SectionTitleText,
   SectionCollapse,
   ContactDetailsIcon,
-  SectionEditButton,
+  SectionActionButton,
 } from '../../styles/search';
 
 const ArrowDownIcon = ContactDetailsIcon(ArrowDropDownTwoTone);
 const ArrowRightIcon = ContactDetailsIcon(ArrowRightTwoTone);
 const EditIcon = ContactDetailsIcon(Edit);
+const LinkIcon = ContactDetailsIcon(Link);
 
-type MyProps = {
+type Props = {
   sectionTitle: string | JSX.Element;
   color?: string;
   expanded: boolean;
@@ -25,9 +27,11 @@ type MyProps = {
   htmlElRef?: any;
   showEditButton?: boolean;
   handleEditClick?: (event?: any) => void;
+  handleOpenConnectDialog?: (event: any) => void;
+  showActionIcons?: boolean;
 };
 
-const ContactDetailsSection: React.FC<MyProps> = ({
+const ContactDetailsSection: React.FC<Props> = ({
   sectionTitle,
   expanded,
   hideIcon,
@@ -36,7 +40,9 @@ const ContactDetailsSection: React.FC<MyProps> = ({
   buttonDataTestid,
   htmlElRef,
   showEditButton,
-  handleEditClick
+  handleEditClick,
+  handleOpenConnectDialog,
+  showActionIcons,
 }) => (
   <>
     <SectionTitleContainer>
@@ -52,12 +58,18 @@ const ContactDetailsSection: React.FC<MyProps> = ({
         {!hideIcon && (expanded ? <ArrowDownIcon /> : <ArrowRightIcon />)}
         <SectionTitleText>{sectionTitle}</SectionTitleText>
       </SectionTitleButton>
+      {showActionIcons && buttonDataTestid === 'ContactDetails-Section-ChildInformation' && (
+        <SectionActionButton onClick={handleOpenConnectDialog}>
+          <LinkIcon style={{ fontSize: '18px', padding: '0 6px' }} />
+          <Template code="ContactCopyButton" />
+        </SectionActionButton>
+      )}
       {showEditButton && (
         <>
-          <SectionEditButton type="button" onClick={handleEditClick}>
-            <EditIcon style={{ fontSize: '14px' }} />
+          <SectionActionButton type="button" onClick={handleEditClick}>
+            <EditIcon style={{ fontSize: '14px', padding: '3px 6px 0 6px' }} />
             <Template code="EditButton" />
-          </SectionEditButton>
+          </SectionActionButton>
         </>
       )}
     </SectionTitleContainer>

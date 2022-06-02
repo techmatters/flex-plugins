@@ -336,19 +336,6 @@ export const SectionTitleButton = styled(ButtonBase)`
 `;
 SectionTitleButton.displayName = 'SectionTitleButton';
 
-export const SectionEditButton = styled('button')`
-  display: flex;
-  border:none;
-  background-color: transparent;
-  font-size: 13px;
-  color: #1976d2;
-  font-family: 'Open Sans';
-  :focus {
-    outline: auto;
-    outline-color: black;
-  }
-`;
-
 type CollapseProps = {
   expanded: boolean;
 };
@@ -362,13 +349,6 @@ export const SectionCollapse = styled(
 `;
 SectionCollapse.displayName = 'SectionCollapse';
 
-export const NameContainer = styled(SectionTitleContainer)`
-  background-color: #000000;
-  border-radius: 4px 4px 0 0;
-  margin-top: 20px;
-  margin-bottom: 3px;
-`;
-
 const BoldDetailFont = styled(FontOpenSans)`
   font-size: 12px;
   font-weight: 700;
@@ -380,7 +360,7 @@ export const BackText = styled(BoldDetailFont)`
   font-weight: 600;
 `;
 
-export const DetNameText = styled(BoldDetailFont)`
+export const NameText = styled(BoldDetailFont)`
   color: #ffffff;
   margin-right: auto;
 `;
@@ -539,3 +519,18 @@ export const StandaloneSearchContainer = styled(TabbedFormsContainer)`
   background-color: ${props => props.theme.colors.base2};
 `;
 StandaloneSearchContainer.displayName = 'StandaloneSearchContainer';
+
+export const SectionActionButton = styled('button')`
+  display: flex;
+  border: none;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1976d2;
+  padding: '0 6px';
+  font-family: 'Open Sans';
+  :focus {
+    outline: auto;
+    outline-color: black;
+  }
+`;
