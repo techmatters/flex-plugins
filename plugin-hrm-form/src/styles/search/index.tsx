@@ -545,7 +545,7 @@ export const StandaloneSearchContainer = styled(TabbedFormsContainer)`
 StandaloneSearchContainer.displayName = 'StandaloneSearchContainer';
 
 export const ViewContactButton = styled('button')`
-  background: #E7E8EE ;
+  background: #e7e8ee;
   border: none;
   padding: 3px 7px;
   border-radius: 5px;
