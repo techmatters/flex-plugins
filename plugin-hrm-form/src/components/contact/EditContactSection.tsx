@@ -47,7 +47,7 @@ const EditContactSection: React.FC<Props> = ({
 
   const [isSubmitting, setSubmitting] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
-  const [initialFormValues, setInitialFormValues] = useState<any>({});
+  const [initialFormValues, setInitialFormValues] = useState<React.ReactNode>({});
 
   useEffect(() => {
     /*
@@ -85,7 +85,7 @@ const EditContactSection: React.FC<Props> = ({
     window.alert(strings['Error-Form']);
   });
 
-  const checkForEdits = async () => {
+  const checkForEdits = () => {
     if (_.isEqual(methods.getValues(), initialFormValues)) {
       navigate(ContactDetailsRoute.HOME);
     } else {
