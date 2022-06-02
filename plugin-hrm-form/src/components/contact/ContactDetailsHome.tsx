@@ -9,7 +9,7 @@ import { callTypes } from 'hrm-form-definitions';
 
 import { getConfig } from '../../HrmFormPlugin';
 import { DetailsContainer, DetNameText, NameContainer } from '../../styles/search';
-import Section from '../Section';
+import ContactDetailsSection from './ContactDetailsSection';
 import SectionEntry from '../SectionEntry';
 import { channelTypes } from '../../states/DomainConstants';
 import { isNonDataCallType } from '../../states/ValidationRules';
@@ -123,7 +123,7 @@ const Details: React.FC<Props> = ({
           </>
         )}
       </NameContainer>
-      <Section
+      <ContactDetailsSection
         sectionTitle={<Template code="ContactDetails-GeneralDetails" />}
         expanded={detailsExpanded[GENERAL_DETAILS]}
         handleExpandClick={() => toggleSection(GENERAL_DETAILS)}
@@ -146,9 +146,9 @@ const Details: React.FC<Props> = ({
         {addedBy && addedBy !== counselor && (
           <SectionEntry description={<Template code="ContactDetails-GeneralDetails-AddedBy" />} value={addedBy} />
         )}
-      </Section>
+      </ContactDetailsSection>
       {callType === callTypes.caller && (
-        <Section
+        <ContactDetailsSection
           sectionTitle={<Template code="TabbedForms-AddCallerInfoTab" />}
           expanded={detailsExpanded[CALLER_INFORMATION]}
           handleExpandClick={() => toggleSection(CALLER_INFORMATION)}
@@ -164,10 +164,10 @@ const Details: React.FC<Props> = ({
               definition={e}
             />
           ))}
-        </Section>
+        </ContactDetailsSection>
       )}
       {isDataCall && (
-        <Section
+        <ContactDetailsSection
           sectionTitle={<Template code="TabbedForms-AddChildInfoTab" />}
           expanded={detailsExpanded[CHILD_INFORMATION]}
           handleExpandClick={() => toggleSection(CHILD_INFORMATION)}
@@ -183,10 +183,10 @@ const Details: React.FC<Props> = ({
               definition={e}
             />
           ))}
-        </Section>
+        </ContactDetailsSection>
       )}
       {isDataCall && (
-        <Section
+        <ContactDetailsSection
           sectionTitle={<Template code="TabbedForms-CategoriesTab" />}
           expanded={detailsExpanded[ISSUE_CATEGORIZATION]}
           handleExpandClick={() => toggleSection(ISSUE_CATEGORIZATION)}
@@ -209,10 +209,10 @@ const Details: React.FC<Props> = ({
           ) : (
             <SectionEntry description="No category provided" value="" />
           )}
-        </Section>
+        </ContactDetailsSection>
       )}
       {isDataCall && (
-        <Section
+        <ContactDetailsSection
           sectionTitle={<Template code="TabbedForms-AddCaseInfoTab" />}
           expanded={detailsExpanded[CONTACT_SUMMARY]}
           handleExpandClick={() => toggleSection(CONTACT_SUMMARY)}
@@ -235,7 +235,7 @@ const Details: React.FC<Props> = ({
               value={csamReportsAttached}
             />
           )}
-        </Section>
+        </ContactDetailsSection>
       )}
     </DetailsContainer>
   );

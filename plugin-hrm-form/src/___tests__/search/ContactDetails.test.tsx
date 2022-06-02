@@ -7,7 +7,7 @@ import { callTypes, DefinitionVersionId, loadDefinition } from 'hrm-form-definit
 
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import ContactDetails from '../../components/search/ContactDetails';
-import Section from '../../components/Section';
+import ContactDetailsSection from '../../components/contact/ContactDetailsSection';
 import { channelTypes } from '../../states/DomainConstants';
 import { getDefinitionVersions } from '../../HrmFormPlugin';
 import { DetailsContext } from '../../states/contacts/contactDetails';
@@ -146,7 +146,7 @@ test(`<ContactDetails> with contact of type ${callTypes.child}`, () => {
     </Provider>,
   ).root;
 
-  const sections = component.findAllByType(Section);
+  const sections = component.findAllByType(ContactDetailsSection);
   const sectionsCount = sections.length;
   expect(sectionsCount).toEqual(4);
 });
@@ -167,7 +167,7 @@ test(`<ContactDetails> with contact of type ${callTypes.caller}`, () => {
       />
     </Provider>,
   ).root;
-  const sections = component.findAllByType(Section);
+  const sections = component.findAllByType(ContactDetailsSection);
   const sectionsCount = sections.length;
   expect(sectionsCount).toEqual(5);
 });
@@ -188,7 +188,7 @@ test(`<ContactDetails> with a non data (standalone) contact`, () => {
       />
     </Provider>,
   ).root;
-  const sections = component.findAllByType(Section);
+  const sections = component.findAllByType(ContactDetailsSection);
   const sectionsCount = sections.length;
   expect(sectionsCount).toEqual(1);
 });
