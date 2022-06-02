@@ -18,14 +18,14 @@ const bundledTranslations = {
   [defaultLanguage]: defaultTranslation,
   'pt-BR': ptBRTranslation,
   'en-IN': enINTranslation,
-  'es-ES': esESTranslation
+  'es-ES': esESTranslation,
 };
 
 const bundledMessages = {
   [defaultLanguage]: defaultMessages,
   'pt-BR': ptBRMessages,
   'en-IN': enINMessages,
-  'es-ES': esESMessages
+  'es-ES': esESMessages,
 };
 
 const translationErrorMsg = 'Could not translate, using default';
