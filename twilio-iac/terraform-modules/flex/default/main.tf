@@ -2,7 +2,7 @@ terraform {
   required_providers {
     twilio = {
       source  = "twilio/twilio"
-      version = "0.11.1"
+      version = "0.17.0"
     }
   }
 }
@@ -75,6 +75,7 @@ resource "twilio_flex_flex_flows_v1" "messaging_flow" {
   friendly_name = "Flex Messaging Channel Flow"
   integration_type = "studio"
   integration_flow_sid = var.messaging_studio_flow_sid
+  contact_identity = var.messaging_flow_contact_identity
 }
 resource "twilio_flex_flex_flows_v1" "webchat_flow" {
   channel_type  = "web"

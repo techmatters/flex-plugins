@@ -95,3 +95,19 @@ module aws {
   post_survey_bot_sid = module.chatbots.post_survey_bot_sid
   survey_workflow_sid = module.survey.survey_workflow_sid
 }
+
+module aws_monitoring {
+  source = "../terraform-modules/aws-monitoring/default"
+  helpline = var.helpline
+  short_helpline = var.short_helpline
+  environment = var.environment
+}
+
+module github {
+
+  source = "../terraform-modules/github/default"
+  twilio_account_sid = var.account_sid
+  twilio_auth_token = var.auth_token
+  short_environment = var.short_environment
+  short_helpline = var.short_helpline
+}

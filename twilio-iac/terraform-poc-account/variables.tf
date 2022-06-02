@@ -1,4 +1,5 @@
 variable "account_sid" {}
+variable "auth_token" {}
 variable "serverless_url" {}
 variable "datadog_app_id" {}
 variable "datadog_access_token" {}

@@ -1,6 +1,13 @@
 variable "helpline" {
   description = "Full capitalised helpline name"
   type        = string
+  default = null
+}
+
+variable "helplines" {
+  description = "List of helplines to route via helpline queue"
+  type        = list(string)
+  default = []
 }
 
 variable "serverless_url" {
@@ -13,4 +20,3 @@ variable "custom_task_routing_filter_expression" {
   type = string
   default = ""
 }
-

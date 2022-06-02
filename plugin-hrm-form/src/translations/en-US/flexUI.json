@@ -198,6 +198,7 @@
   "Case-Notes": "Notes",
   "SideNavCaseList": "Case List",
   "CaseList-Cases": "Cases",
+  "CaseList-NoCases": "No cases found.",
   "CaseList-Filters-CaseCount-Singular": "{{count}} case",
   "CaseList-Filters-CaseCount-Plural": "{{count}} cases",
   "CaseList-THCase": "Case",
