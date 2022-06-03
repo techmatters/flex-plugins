@@ -1,0 +1,45 @@
+{
+  "name": "e2e-tests",
+  "version": "0.0.1",
+  "description": "End to end tests for the Aselo HRM",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx playwright test",
+    "lint": "eslint --ext ts ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/techmatters/flex-plugin.git"
+  },
+  "author": "Tech Matters",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/techmatters/flex-plugin/issues"
+  },
+  "homepage": "https://github.com/techmatters/flex-plugin#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.22.2",
+    "@typescript-eslint/eslint-plugin": "^5.27.0",
+    "@typescript-eslint/parser": "^5.27.0",
+    "eslint": "^8.16.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-import-resolver-typescript": "^2.7.1",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "playwright-core": "^1.22.2",
+    "prettier": "^2.6.2",
+    "typescript": "^4.7.2",
+    "date-fns": "^2.28.0"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "all",
+    "tabWidth": 2,
+    "endOfLine": "auto"
+  }
+}
