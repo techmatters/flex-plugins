@@ -47,7 +47,7 @@ const EditContactSection: React.FC<Props> = ({
 
   const [isSubmitting, setSubmitting] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
-  const [initialFormValues, setInitialFormValues] = useState<React.ReactNode>({});
+  const [initialFormValues, setInitialFormValues] = useState({});
 
   useEffect(() => {
     /*
