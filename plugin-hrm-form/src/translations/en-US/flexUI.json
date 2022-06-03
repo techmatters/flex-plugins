@@ -197,6 +197,8 @@
   "Case-CaseStatus": "Case Status",
   "Case-CaseManager": "Case Manager",
   "Case-Notes": "Notes",
+  "Case-ViewButton": "View",
+
   "SideNavCaseList": "Case List",
   "CaseList-Cases": "Cases",
   "CaseList-NoCases": "No cases found.",

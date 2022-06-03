@@ -335,6 +335,7 @@
   "Case-DocumentComments": "Comentários",
   "Case-ViewDocument": "Ver documento",
   "Case-CaseDetails": "Detalhes do caso",
+  "Case-ViewButton": "Visualizar",
 
   "TaskHeaderLineTwitter": "@{{task.attributes.twitterUserHandle}}",
 
