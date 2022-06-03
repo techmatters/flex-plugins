@@ -270,8 +270,8 @@ const DateRangeFilter: React.FC<Props> = ({
                 <Template code="CaseList-Filters-DateFilter-CustomDateFrom" />
               </p>
               <FormDateInput
-                placeholder='red'
-                style={{ width: '85pt'}}
+                placeholder="red"
+                style={{ width: '85pt' }}
                 type="date"
                 id="customDateRangeFrom"
                 data-testid="customDateRangeFrom"
