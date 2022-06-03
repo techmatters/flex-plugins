@@ -6,7 +6,7 @@ import { CircularProgress } from '@material-ui/core';
 
 import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
 import { updateContactInHrm } from '../../services/ContactService';
-import { Box, StyledNextStepButton } from '../../styles/HrmStyles';
+import { Flex, Box, StyledNextStepButton } from '../../styles/HrmStyles';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 import { getConfig } from '../../HrmFormPlugin';
 import { ContactDetailsRoute, DetailsContext, navigateContactDetails } from '../../states/contacts/contactDetails';
@@ -75,27 +75,29 @@ const EditContactSection: React.FC<Props> = ({
   return (
     <FormProvider {...methods}>
       {children}
-      <Box marginRight="15px">
-        <StyledNextStepButton
-          roundCorners={true}
-          onClick={() => navigate(ContactDetailsRoute.HOME)}
-          disabled={isSubmitting}
-          secondary
-          data-fs-id="BottomBar-Cancel"
-        >
-          {isSubmitting ? <CircularProgress size={12} /> : <Template code="BottomBar-Cancel" />}
-        </StyledNextStepButton>
-      </Box>
-      <Box marginRight="15px">
-        <StyledNextStepButton
-          roundCorners={true}
-          onClick={methods.handleSubmit(onSubmitValidForm, onError)}
-          disabled={isSubmitting}
-          data-fs-id="Contact-SaveContact-Button"
-        >
-          {isSubmitting ? <CircularProgress size={12} /> : <Template code="BottomBar-SaveContact" />}
-        </StyledNextStepButton>
-      </Box>
+      <Flex marginLeft="auto">
+        <Box marginRight="15px">
+          <StyledNextStepButton
+            roundCorners={true}
+            onClick={() => navigate(ContactDetailsRoute.HOME)}
+            disabled={isSubmitting}
+            secondary
+            data-fs-id="BottomBar-Cancel"
+          >
+            {isSubmitting ? <CircularProgress size={12} /> : <Template code="BottomBar-Cancel" />}
+          </StyledNextStepButton>
+        </Box>
+        <Box marginRight="15px">
+          <StyledNextStepButton
+            roundCorners={true}
+            onClick={methods.handleSubmit(onSubmitValidForm, onError)}
+            disabled={isSubmitting}
+            data-fs-id="Contact-SaveContact-Button"
+          >
+            {isSubmitting ? <CircularProgress size={12} /> : <Template code="BottomBar-SaveContact" />}
+          </StyledNextStepButton>
+        </Box>
+      </Flex>
     </FormProvider>
   );
 };

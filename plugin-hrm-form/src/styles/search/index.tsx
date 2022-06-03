@@ -551,3 +551,4 @@ export const ViewContactButton = styled('button')`
   border-radius: 5px;
   cursor: pointer;
 `;
+ViewContactButton.displayName = 'ViewContactButton';
