@@ -382,7 +382,7 @@ export const NameText = styled(FontOpenSans)`
   font-weight: 600;
   font-size: 15px;
 `;
-NameText.displayName ='NameText'
+NameText.displayName = 'NameText';
 
 export const ContactAddedFont = styled(FontOpenSans)`
   font-style: italic;
@@ -398,7 +398,7 @@ export const SectionTitleText = styled(FontOpenSans)`
   line-height: 13px;
   margin-right: auto;
 `;
-SectionTitleText.displayName='SectionTitleText'
+SectionTitleText.displayName = 'SectionTitleText';
 
 const BodyText = styled(FontOpenSans)`
   font-size: 13px;
