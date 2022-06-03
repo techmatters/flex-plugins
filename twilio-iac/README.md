@@ -13,6 +13,7 @@ You will require the following installed locally:
   - TWILIO_ACCOUNT_SID & TWILIO_AUTH_TOKEN set to the account you want to manage, and TF_VAR_account_sid & TF_VAR_auth_token to the same as TWILIO_ACCOUNT_SID & TWILIO_AUTH_TOKEN respectively (we need the account sid & token as a variable as well as a cred.)
   - TF_VAR_datadog_app_id & TF_VAR_datadog_access_token set for the RUM app that should already be created for the account
   - TF_VAR_serverless_url - once set, the production serverless environment's domain, once set, use a placeholder until then.
+  - TF_VAR_aws_account_id - The account ID of the AWS account you are using to create resources
   - GITHUB_TOKEN - a personal access token with write access to the tech matters serverless & flex plugins repo
 
 ## Preparation
