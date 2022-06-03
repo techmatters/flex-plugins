@@ -1,7 +1,6 @@
 import React from 'react';
-import { ArrowDropDownTwoTone, ArrowRightTwoTone, Edit, Link } from '@material-ui/icons';
-import { IconButton } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
+import { ArrowDropDownTwoTone, ArrowRightTwoTone, Edit, Link } from '@material-ui/icons';
 
 import {
   SectionTitleContainer,
