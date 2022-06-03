@@ -80,6 +80,6 @@ const ContactDetailsSection: React.FC<Props> = ({
   );
 };
 
-ContactDetailsSection.displayName = 'Section';
+ContactDetailsSection.displayName = 'ContactDetailsSection';
 
 export default ContactDetailsSection;
