@@ -7,12 +7,18 @@ variable "helpline" {
 variable "helplines" {
   description = "List of helplines to route via helpline queue"
   type        = list(string)
-  default = []
+  default = null
 }
 
 variable "serverless_url" {
   description = "Internal Twilio resource SID provided by another module"
   type        = string
+}
+
+variable "custom_target_workers" {
+  description = "Setting this will override the default task queue expression for target, which is locals.helplines_filter"
+  type = string
+  default = ""
 }
 
 variable "custom_task_routing_filter_expression" {

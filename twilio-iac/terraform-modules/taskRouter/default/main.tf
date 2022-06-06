@@ -27,7 +27,7 @@ resource "twilio_taskrouter_workspaces_v1" "flex_task_assignment" {
 resource "twilio_taskrouter_workspaces_task_queues_v1" "helpline_queue" {
   friendly_name  = local.helplines_friendly_name
   workspace_sid  = twilio_taskrouter_workspaces_v1.flex_task_assignment.id
-  target_workers = local.helplines_filter
+  target_workers = var.custom_target_workers != "" ? var.custom_target_workers : local.helplines_filter
 }
 
 // Workflow
