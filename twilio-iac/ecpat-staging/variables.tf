@@ -10,7 +10,7 @@ variable "local_os" {
 }
 
 variable "helpline" {
-  default = "ECPAT Phillippines"
+  default = "ECPAT"
 }
 
 variable "short_helpline" {
@@ -58,4 +58,12 @@ variable "feature_flags" {
     "enable_save_insights" = true
     "enable_post_survey" = false
   }
+}
+
+variable "uses_conversation_service" {
+  default = false
+}
+
+variable "custom_target_workers" {
+  default = "1==1"
 }

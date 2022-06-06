@@ -48,12 +48,14 @@ module "services" {
   short_helpline = var.short_helpline
   environment = var.environment
   short_environment = var.short_environment
+  uses_conversation_service = var.uses_conversation_service
 }
 
 module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
   serverless_url = var.serverless_url
   helpline = var.helpline
+  custom_target_workers = var.custom_target_workers
 }
 
 module studioFlow {
