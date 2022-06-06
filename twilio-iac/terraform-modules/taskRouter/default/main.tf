@@ -43,7 +43,7 @@ resource "twilio_taskrouter_workspaces_workflows_v1" "master_workflow" {
           "expression": local.task_routing_filter_expression,
           "targets": [
             {
-              "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
+              "expression": file("${path.module}/default_target_expression.tftpl"),
               "queue": twilio_taskrouter_workspaces_task_queues_v1.helpline_queue.sid
             }
           ]
