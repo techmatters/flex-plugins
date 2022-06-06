@@ -6,16 +6,12 @@ terraform {
     }
   }
 
-  backend "local" {
-    path = "dev.tfstate"
+  backend "s3" {
+    bucket         = "tl-terraform-state-twilio-ph-staging"
+    key            = "twilio/terraform.tfstate"
+    dynamodb_table = "twilio-terraform-ph-staging-locks"
+    encrypt        = true
   }
-
-  # backend "s3" {
-  #   bucket         = "tl-terraform-state-twilio-ph-staging"
-  #   key            = "twilio/terraform.tfstate"
-  #   dynamodb_table = "twilio-terraform-ph-staging-locks"
-  #   encrypt        = true
-  # }
 }
 
 module "chatbots" {
