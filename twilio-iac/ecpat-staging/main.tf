@@ -52,10 +52,12 @@ module "services" {
 }
 
 module "taskRouter" {
-  source = "../terraform-modules/taskRouter/default"
+  source = "../terraform-modules/taskRouter/ecpat"
   serverless_url = var.serverless_url
   helpline = var.helpline
   custom_target_workers = var.custom_target_workers
+  ecpat_messenger_number = var.ecpat_messenger_number
+  eyca_messenger_number = var.eyca_messenger_number
 }
 
 module studioFlow {

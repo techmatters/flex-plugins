@@ -67,3 +67,11 @@ variable "uses_conversation_service" {
 variable "custom_target_workers" {
   default = "1==1"
 }
+
+variable "ecpat_messenger_number" {
+  default = "106378571968698"
+}
+
+variable "eyca_messenger_number" {
+  default = "107068235266897"
+}
