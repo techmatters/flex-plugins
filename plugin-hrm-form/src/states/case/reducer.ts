@@ -28,6 +28,7 @@ const initialState: CaseState = {
   tasks: {},
 };
 
+// eslint-disable-next-line import/no-unused-modules
 export function reduce(state = initialState, action: CaseActionType | GeneralActionType): CaseState {
   switch (action.type) {
     case SET_CONNECTED_CASE:
