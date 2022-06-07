@@ -89,13 +89,6 @@ export const CLSummaryCell = withStyles({
 })(CLTableCell);
 CLSummaryCell.displayName = 'CLSummaryCell';
 
-export const CLDateCell = withStyles({
-  body: {
-    textAlign: 'right',
-  },
-})(CLTableCell);
-CLDateCell.displayName = 'CLDateCell';
-
 export const CLTableHeaderFont = styled(FontOpenSans)`
   font-weight: 600;
   font-size: 12px;
@@ -113,8 +106,16 @@ export const CLTableBodyFont = styled(FontOpenSans)`
   font-weight: 500;
   max-height: ${() => 85 - 12 /* 85px of cell height - 12px of padding*/}px;
   overflow: hidden;
+  text-overflow: ellipsis;
 `;
 CLTableBodyFont.displayName = 'CLTableBodyFont';
+
+export const CLTableSummaryFont = styled(CLTableBodyFont)`
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+`;
+CLTableSummaryFont.displayName = 'CLTableSummaryFont';
 
 export const CLCaseNumberContainer = styled('div')`
   display: inline-block;

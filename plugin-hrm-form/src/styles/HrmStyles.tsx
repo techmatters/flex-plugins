@@ -528,7 +528,6 @@ type PaginationRowProps = {
 export const PaginationRow = styled('nav')<PaginationRowProps>`
   display: flex;
   justify-content: center;
-  height: auto;
   background-color: ${props => (props.transparent ? 'transparent' : props.theme.colors.base2)};
   padding: 40px auto;
   margin: 40px auto;
@@ -811,6 +810,10 @@ export const FormDateInput = styled(FormInput)`
   &[type='date']::-webkit-inner-spin-button {
     -webkit-appearance: none;
     display: none;
+  }
+  &[type='date']::placeholder {
+    color: '#AEAEAE';
+    opacity: 1;
   }
   /* &[type='date'] {} */
   /* &[type='date']::-webkit-calendar-picker-indicator {} */
