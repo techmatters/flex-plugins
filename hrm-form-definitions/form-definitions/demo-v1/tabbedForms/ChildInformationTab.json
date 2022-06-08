@@ -67,7 +67,7 @@
   },
   {
     "name": "city",
-    "label": "city",
+    "label": "City",
     "type": "input"
   },
   {
@@ -79,7 +79,8 @@
       { "value": "Northern", "label": "Northern" },
       { "value": "Eastern", "label": "Eastern" },
       { "value": "Western", "label": "Western" },
-      { "value": "Southern", "label": "Southern" }
+      { "value": "Southern", "label": "Southern" },
+      { "value": "Unknown", "label": "Unknown"}
     ],
     "required": { "value": true, "message": "RequiredFieldError" }
   },
@@ -93,22 +94,26 @@
       "Northern": [
         { "value": "District A", "label": "District A" },
         { "value": "District B", "label": "District B" },
-        { "value": "District C", "label": "District C" }
+        { "value": "District C", "label": "District C" },
+        { "value": "Unknown", "label": "Unknown"}
       ],
       "Eastern": [
         { "value": "District A", "label": "District A" },
         { "value": "District B", "label": "District B" },
-        { "value": "District C", "label": "District C" }
+        { "value": "District C", "label": "District C" },
+        { "value": "Unknown", "label": "Unknown"}
       ],
       "Western": [
         { "value": "District A", "label": "District A" },
         { "value": "District B", "label": "District B" },
-        { "value": "District C", "label": "District C" }
+        { "value": "District C", "label": "District C" },
+        { "value": "Unknown", "label": "Unknown"}
       ],
       "Southern": [
         { "value": "District A", "label": "District A" },
         { "value": "District B", "label": "District B" },
-        { "value": "District C", "label": "District C" }
+        { "value": "District C", "label": "District C" },
+        { "value": "Unknown", "label": "Unknown"}
       ]
     },
     "required": { "value": true, "message": "RequiredFieldError" }

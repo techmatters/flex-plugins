@@ -4,11 +4,19 @@
       {
         "name": "relationshipToChild",
         "insights": ["conversations", "initiated_by"]
+      },
+      {
+        "name": "gender",
+        "insights": ["conversations", "conversation_attribute_4"]
+      },
+      {
+        "name": "age",
+        "insights": ["conversations", "conversation_attribute_3"]
       }
     ],
     "childInformation": [
       {
-        "name": "village",
+        "name": "city",
         "insights": ["customers", "city"]
       },
       {
@@ -26,11 +34,6 @@
       {
         "name": "livingSituation",
         "insights": ["customers", "customer_attribute_1"]
-      },
-      {
-        "name": "hivPositive",
-        "insights": ["customers", "category"],
-        "type": "mixed-checkbox"
       },
       {
         "name": "inConflictWithTheLaw",
