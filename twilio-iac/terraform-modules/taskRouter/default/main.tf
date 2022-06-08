@@ -2,13 +2,17 @@ terraform {
   required_providers {
     twilio = {
       source  = "twilio/twilio"
-      version = "0.11.1"
+      version = "0.17.0"
     }
   }
 }
 
 locals {
-  task_routing_filter_expression = var.custom_task_routing_filter_expression != "" ? var.custom_task_routing_filter_expression : "helpline=='${var.helpline}' OR channelType ==\"web\" "
+  helplines = var.helplines == null ? [var.helpline] : var.helplines
+  helplines_filter = "helpline IN [${join(", ", formatlist("'%s'", local.helplines))}]"
+  helplines_friendly_name = join(", ", compact(local.helplines))
+  task_routing_filter_expression = var.custom_task_routing_filter_expression != "" ? var.custom_task_routing_filter_expression : "${local.helplines_filter} OR channelType ==\"web\" "
+
 }
 
 // Workspaces
@@ -21,9 +25,9 @@ resource "twilio_taskrouter_workspaces_v1" "flex_task_assignment" {
 
 //TaskQueue
 resource "twilio_taskrouter_workspaces_task_queues_v1" "helpline_queue" {
-  friendly_name  = var.helpline
+  friendly_name  = local.helplines_friendly_name
   workspace_sid  = twilio_taskrouter_workspaces_v1.flex_task_assignment.id
-  target_workers = "helpline=='${var.helpline}'"
+  target_workers = local.helplines_filter
 }
 
 // Workflow
@@ -35,7 +39,7 @@ resource "twilio_taskrouter_workspaces_workflows_v1" "master_workflow" {
     "task_routing": {
       "filters": [
         {
-          "filter_friendly_name": var.helpline,
+          "filter_friendly_name": local.helplines_friendly_name,
           "expression": local.task_routing_filter_expression,
           "targets": [
             {
