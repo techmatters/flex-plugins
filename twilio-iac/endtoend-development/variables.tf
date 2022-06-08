@@ -17,15 +17,15 @@ variable "local_os" {
 }
 
 variable "helpline" {
-  default = "TerraformPOC"
+  default = "End To End Testing"
 }
 
 variable "short_helpline" {
-  default = "POC"
+  default = "E2E"
 }
 
 variable "operating_info_key" {
-  default = "poc"
+  default = "e2e"
 }
 
 variable "environment" {
@@ -39,7 +39,7 @@ variable "short_environment" {
 variable "definition_version" {
   description = "Key that determines which set of form definitions this helpline will use"
   type        = string
-  default = "v1"
+  default = "demo-v1"
 }
 
 variable "permission_config" {

@@ -2,7 +2,7 @@ terraform {
   required_providers {
     twilio = {
       source  = "twilio/twilio"
-      version = "0.11.1"
+      version = "0.17.0"
     }
   }
 }
@@ -26,7 +26,7 @@ resource "twilio_sync_services_v1" "shared_state_service" {
 resource "null_resource" "sync_api_key" {
   provisioner "local-exec" {
     working_dir = "${path.module}/../../../../scripts"
-    command = "npm run twilioResources -- new-key-with-ssm-secret \"Shared State Service\" ${var.short_environment}_TWILIO_${var.short_helpline}_SECRET ${var.helpline} ${var.environment} --an=${var.short_environment}_TWILIO_${var.short_helpline}_API_KEY"
+    command = "npm run twilioResources -- new-key-with-ssm-secret \"Shared State Service\" ${var.short_environment}_TWILIO_${var.short_helpline}_SECRET \"${var.helpline}\" ${var.environment} --an=${var.short_environment}_TWILIO_${var.short_helpline}_API_KEY"
     interpreter = local.sync_key_provisioner_interpreter
   }
 }
