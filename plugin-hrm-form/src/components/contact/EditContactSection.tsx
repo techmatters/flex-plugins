@@ -7,7 +7,7 @@ import _ from 'lodash';
 
 import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
 import { updateContactInHrm } from '../../services/ContactService';
-import { Box, StyledNextStepButton } from '../../styles/HrmStyles';
+import { Flex, Box, StyledNextStepButton, BottomButtonBar } from '../../styles/HrmStyles';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 import { getConfig } from '../../HrmFormPlugin';
 import { ContactDetailsRoute, DetailsContext, navigateContactDetails } from '../../states/contacts/contactDetails';
@@ -96,34 +96,36 @@ const EditContactSection: React.FC<Props> = ({
   return (
     <FormProvider {...methods}>
       {children}
-      <Box marginRight="15px">
-        <StyledNextStepButton
-          roundCorners={true}
-          onClick={checkForEdits}
-          disabled={isSubmitting}
-          secondary
-          data-fs-id="BottomBar-Cancel"
-        >
-          <Template code="BottomBar-Cancel" />
-        </StyledNextStepButton>
-        <CloseCaseDialog
-          data-testid="CloseCaseDialog"
-          openDialog={openDialog}
-          setDialog={() => setOpenDialog(false)}
-          handleDontSaveClose={() => navigate(ContactDetailsRoute.HOME)}
-          handleSaveUpdate={methods.handleSubmit(onSubmitValidForm, onError)}
-        />
-      </Box>
-      <Box marginRight="15px">
-        <StyledNextStepButton
-          roundCorners={true}
-          onClick={methods.handleSubmit(onSubmitValidForm, onError)}
-          disabled={isSubmitting}
-          data-fs-id="Contact-SaveContact-Button"
-        >
-          {isSubmitting ? <CircularProgress size={12} /> : <Template code="BottomBar-SaveContact" />}
-        </StyledNextStepButton>
-      </Box>
+      <BottomButtonBar>
+        <Box marginRight="15px">
+          <StyledNextStepButton
+            roundCorners={true}
+            onClick={checkForEdits}
+            disabled={isSubmitting}
+            secondary
+            data-fs-id="BottomBar-Cancel"
+          >
+            <Template code="BottomBar-Cancel" />
+          </StyledNextStepButton>
+          <CloseCaseDialog
+            data-testid="CloseCaseDialog"
+            openDialog={openDialog}
+            setDialog={() => setOpenDialog(false)}
+            handleDontSaveClose={() => navigate(ContactDetailsRoute.HOME)}
+            handleSaveUpdate={methods.handleSubmit(onSubmitValidForm, onError)}
+          />
+        </Box>
+        <Box marginRight="15px">
+          <StyledNextStepButton
+            roundCorners={true}
+            onClick={methods.handleSubmit(onSubmitValidForm, onError)}
+            disabled={isSubmitting}
+            data-fs-id="Contact-SaveContact-Button"
+          >
+            {isSubmitting ? <CircularProgress size={12} /> : <Template code="BottomBar-SaveContact" />}
+          </StyledNextStepButton>
+        </Box>
+      </BottomButtonBar>
     </FormProvider>
   );
 };
