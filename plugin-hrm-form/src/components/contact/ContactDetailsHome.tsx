@@ -82,7 +82,7 @@ const ContactDetailsHome: React.FC<Props> = ({
   const formattedTimeStandard = `${format(new Date(dateTime), 'h:mm a')}`;
 
   const formattedDate = `${format(new Date(dateTime), 'MMM dd, yyyy')}`;
-  const formattedTime= `${format(new Date(dateTime), 'h:mm aaaaa')}m`;
+  const formattedTime = `${format(new Date(dateTime), 'h:mm aaaaa')}m`;
 
   const formattedDuration = formatDuration(conversationDuration);
 
