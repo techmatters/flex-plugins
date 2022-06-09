@@ -1,3 +1,9 @@
+variable "aws_account_id" {
+  description = "Numeric AWS account ID used in ARNs"
+  type        = string
+  default     = null
+}
+
 variable "short_helpline" {
   description = "Short (usually 2 letter) upper case code for helpline"
   type        = string

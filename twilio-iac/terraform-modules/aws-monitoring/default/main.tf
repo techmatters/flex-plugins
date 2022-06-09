@@ -1,8 +1,8 @@
 locals {
   email_threshold = "1"
   pager_duty_threshold = "5"
-  email_arn = var.email_arn == null ? "arn:aws:sns:${var.cloudwatch_region}:712893914485:AWS-${lower(var.environment)}-alarms" : var.email_arn
-  pager_duty_arn = var.pager_duty_arn == null ? "arn:aws:sns:${var.cloudwatch_region}:712893914485:AWS-PagerDuty-Endpoint" : var.pager_duty_arn
+  email_arn = var.email_arn == null ? "arn:aws:sns:${var.cloudwatch_region}:${var.aws_account_id}:AWS-${lower(var.environment)}-alarms" : var.email_arn
+  pager_duty_arn = var.pager_duty_arn == null ? "arn:aws:sns:${var.cloudwatch_region}:${var.aws_account_id}:AWS-PagerDuty-Endpoint" : var.pager_duty_arn
   # TODO: Should we create Pager Duty SNS topic from Terraform?
 }
 

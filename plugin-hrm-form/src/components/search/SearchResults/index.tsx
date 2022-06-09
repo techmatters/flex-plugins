@@ -247,7 +247,7 @@ const SearchResults: React.FC<Props> = ({
             <>
               <StyledContactResultsHeader>
                 <StyledCount data-testid="ContactsCount">
-                  {contactsCount}{' '}
+                  {contactsCount}&nbsp;
                   {contactsCount === 1 ? (
                     <Template code="PreviousContacts-Contact" />
                   ) : (

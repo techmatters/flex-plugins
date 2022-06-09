@@ -3,8 +3,9 @@ import { Provider } from 'react-redux';
 import renderer from 'react-test-renderer';
 import configureMockStore from 'redux-mock-store';
 import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { StorelessThemeProvider } from '@twilio/flex-ui';
 
-import '../mockStyled';
+import HrmTheme from '../../styles/HrmTheme';
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import Search from '../../components/search';
 import SearchForm from '../../components/search/SearchForm';
@@ -16,6 +17,10 @@ import { DetailsContext } from '../../states/contacts/contactDetails';
 
 const mockStore = configureMockStore([]);
 let mockV1;
+
+const themeConf = {
+  colorTheme: HrmTheme,
+};
 
 jest.mock('../../services/ServerlessService', () => ({
   populateCounselors: async () => [],
@@ -107,11 +112,15 @@ test('<Search> should display <SearchForm />', () => {
   const initialState = createState(task.taskSid, { currentPage, searchFormValues, detailsExpanded });
   const store = mockStore(initialState);
 
-  const component = renderer.create(
-    <Provider store={store}>
-      <Search task={task} handleSelectSearchResult={() => null} handleExpandDetailsSection={() => null} />
-    </Provider>,
+  const wrapper = renderer.create(
+    <StorelessThemeProvider themeConf={themeConf}>
+      <Provider store={store}>
+        <Search task={task} handleSelectSearchResult={() => null} handleExpandDetailsSection={() => null} />
+      </Provider>
+    </StorelessThemeProvider>,
   ).root;
+
+  const component = wrapper.findByType(Search);
 
   expect(() => component.findByType(SearchForm)).not.toThrow();
   expect(() => component.findByType(ContactDetails)).toThrow();
@@ -146,11 +155,15 @@ test('<Search> should display <SearchForm /> with previous contacts checkbox', (
   const initialState = createState(task.taskSid, { currentPage, searchFormValues, detailsExpanded, previousContacts });
   const store = mockStore(initialState);
 
-  const component = renderer.create(
-    <Provider store={store}>
-      <Search task={task} handleSelectSearchResult={() => null} handleExpandDetailsSection={() => null} />
-    </Provider>,
+  const wrapper = renderer.create(
+    <StorelessThemeProvider themeConf={themeConf}>
+      <Provider store={store}>
+        <Search task={task} handleSelectSearchResult={() => null} handleExpandDetailsSection={() => null} />
+      </Provider>
+    </StorelessThemeProvider>,
   ).root;
+
+  const component = wrapper.findByType(Search);
 
   expect(() => component.findByType(SearchForm)).not.toThrow();
   expect(() => component.findByProps({ 'data-testid': 'Search-PreviousContactsCheckbox' })).not.toThrow();
@@ -242,11 +255,15 @@ test('<Search> should display <ContactDetails />', () => {
   const initialState = createState(task.taskSid, { currentPage, currentContact, detailsExpanded });
   const store = mockStore(initialState);
 
-  const component = renderer.create(
-    <Provider store={store}>
-      <Search task={task} handleSelectSearchResult={() => null} handleExpandDetailsSection={() => null} />
-    </Provider>,
+  const wrapper = renderer.create(
+    <StorelessThemeProvider themeConf={themeConf}>
+      <Provider store={store}>
+        <Search task={task} handleSelectSearchResult={() => null} handleExpandDetailsSection={() => null} />
+      </Provider>
+    </StorelessThemeProvider>,
   ).root;
+
+  const component = wrapper.findByType(Search);
 
   expect(() => component.findByType(SearchForm)).toThrow();
   expect(() => component.findByType(ContactDetails)).not.toThrow();

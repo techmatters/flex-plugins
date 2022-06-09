@@ -1,15 +1,12 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { format } from 'date-fns';
-import { IconButton } from '@material-ui/core';
-import { Link as LinkIcon } from '@material-ui/icons';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes } from 'hrm-form-definitions';
 
-import { getConfig } from '../../HrmFormPlugin';
-import { DetailsContainer, DetNameText, NameContainer } from '../../styles/search';
-import Section from '../Section';
+import { DetailsContainer, NameText, ContactAddedFont } from '../../styles/search';
+import ContactDetailsSection from './ContactDetailsSection';
 import SectionEntry from '../SectionEntry';
 import { channelTypes } from '../../states/DomainConstants';
 import { isNonDataCallType } from '../../states/ValidationRules';
@@ -37,7 +34,7 @@ type OwnProps = {
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
 /* eslint-disable complexity */
-const Details: React.FC<Props> = ({
+const ContactDetailsHome: React.FC<Props> = ({
   context,
   detailsExpanded,
   showActionIcons = false,
@@ -69,7 +66,6 @@ const Details: React.FC<Props> = ({
     categories,
     createdBy,
   } = overview;
-
   // Permission to edit is based the counselor who created the contact - identified by Twilio worker ID
   const createdByTwilioWorkerId = contact?.overview.counselor;
   const { can } = getPermissionsForContact(createdByTwilioWorkerId);
@@ -77,12 +73,17 @@ const Details: React.FC<Props> = ({
   // Format the obtained information
   const isDataCall = !isNonDataCallType(callType);
   const childOrUnknown = formatName(childName);
-  const childUpperCased = childOrUnknown.toUpperCase();
   const formattedChannel =
     channel === 'default'
       ? mapChannelForInsights(details.contactlessTask.channel.toString())
       : mapChannelForInsights(channel);
-  const formattedDate = `${format(new Date(dateTime), 'MMM d, yyyy / h:mm aaaaa')}m`;
+  console.log('>>>', { overview });
+  const formattedDateStandard = `${format(new Date(dateTime), 'M/dd/yyyy')}`;
+  const formattedTimeStandard = `${format(new Date(dateTime), 'h:mm a')}`;
+
+  const formattedDate = `${format(new Date(dateTime), 'MMM dd, yyyy')}`;
+  const formattedTime = `${format(new Date(dateTime), 'h:mm aaaaa')}m`;
+
   const formattedDuration = formatDuration(conversationDuration);
 
   const isPhoneContact =
@@ -98,6 +99,7 @@ const Details: React.FC<Props> = ({
   } = ContactDetailsSections;
   const addedBy = counselorsHash[createdBy];
   const counselorName = counselorsHash[counselor];
+
   const toggleSection = (section: ContactDetailsSectionsType) => toggleSectionExpandedForContext(context, section);
   const navigate = (route: ContactDetailsRoute) => navigateForContext(context, route);
 
@@ -109,21 +111,16 @@ const Details: React.FC<Props> = ({
 
   return (
     <DetailsContainer data-testid="ContactDetails-Container">
-      <NameContainer>
-        <DetNameText>{childUpperCased}</DetNameText>
-        {showActionIcons && (
-          <>
-            <IconButton
-              onClick={handleOpenConnectDialog}
-              disabled={!isDataCall}
-              style={{ paddingTop: 0, paddingBottom: 0 }}
-            >
-              <LinkIcon style={{ color: '#ffffff' }} />
-            </IconButton>
-          </>
-        )}
-      </NameContainer>
-      <Section
+      <NameText>{childOrUnknown}</NameText>
+      <ContactAddedFont style={{ marginRight: 20 }} data-testid="ContactDetails-ActionHeaderAdded">
+        <Template
+          code="ContactDetails-ActionHeaderAdded"
+          date={formattedDateStandard}
+          time={formattedTimeStandard}
+          counsellor={addedBy}
+        />
+      </ContactAddedFont>
+      <ContactDetailsSection
         sectionTitle={<Template code="ContactDetails-GeneralDetails" />}
         expanded={detailsExpanded[GENERAL_DETAILS]}
         handleExpandClick={() => toggleSection(GENERAL_DETAILS)}
@@ -142,13 +139,16 @@ const Details: React.FC<Props> = ({
           value={formattedDuration}
         />
         <SectionEntry description={<Template code="ContactDetails-GeneralDetails-Counselor" />} value={counselorName} />
-        <SectionEntry description={<Template code="ContactDetails-GeneralDetails-DateTime" />} value={formattedDate} />
+        <SectionEntry
+          description={<Template code="ContactDetails-GeneralDetails-DateTime" />}
+          value={`${formattedDate} / ${formattedTime}`}
+        />
         {addedBy && addedBy !== counselor && (
           <SectionEntry description={<Template code="ContactDetails-GeneralDetails-AddedBy" />} value={addedBy} />
         )}
-      </Section>
+      </ContactDetailsSection>
       {callType === callTypes.caller && (
-        <Section
+        <ContactDetailsSection
           sectionTitle={<Template code="TabbedForms-AddCallerInfoTab" />}
           expanded={detailsExpanded[CALLER_INFORMATION]}
           handleExpandClick={() => toggleSection(CALLER_INFORMATION)}
@@ -164,16 +164,18 @@ const Details: React.FC<Props> = ({
               definition={e}
             />
           ))}
-        </Section>
+        </ContactDetailsSection>
       )}
       {isDataCall && (
-        <Section
+        <ContactDetailsSection
           sectionTitle={<Template code="TabbedForms-AddChildInfoTab" />}
           expanded={detailsExpanded[CHILD_INFORMATION]}
           handleExpandClick={() => toggleSection(CHILD_INFORMATION)}
           showEditButton={enableEditing && can(PermissionActions.EDIT_CONTACT)}
           handleEditClick={() => navigate(ContactDetailsRoute.EDIT_CHILD_INFORMATION)}
           buttonDataTestid="ContactDetails-Section-ChildInformation"
+          handleOpenConnectDialog={handleOpenConnectDialog}
+          showActionIcons={showActionIcons}
         >
           {definitionVersion.tabbedForms.ChildInformationTab.map(e => (
             <SectionEntry
@@ -183,10 +185,10 @@ const Details: React.FC<Props> = ({
               definition={e}
             />
           ))}
-        </Section>
+        </ContactDetailsSection>
       )}
       {isDataCall && (
-        <Section
+        <ContactDetailsSection
           sectionTitle={<Template code="TabbedForms-CategoriesTab" />}
           expanded={detailsExpanded[ISSUE_CATEGORIZATION]}
           handleExpandClick={() => toggleSection(ISSUE_CATEGORIZATION)}
@@ -209,10 +211,10 @@ const Details: React.FC<Props> = ({
           ) : (
             <SectionEntry description="No category provided" value="" />
           )}
-        </Section>
+        </ContactDetailsSection>
       )}
       {isDataCall && (
-        <Section
+        <ContactDetailsSection
           sectionTitle={<Template code="TabbedForms-AddCaseInfoTab" />}
           expanded={detailsExpanded[CONTACT_SUMMARY]}
           handleExpandClick={() => toggleSection(CONTACT_SUMMARY)}
@@ -235,15 +237,15 @@ const Details: React.FC<Props> = ({
               value={csamReportsAttached}
             />
           )}
-        </Section>
+        </ContactDetailsSection>
       )}
     </DetailsContainer>
   );
 };
 
-Details.displayName = 'Details';
+ContactDetailsHome.displayName = 'Details';
 
-Details.defaultProps = {
+ContactDetailsHome.defaultProps = {
   handleOpenConnectDialog: () => null,
   showActionIcons: false,
 };
@@ -260,4 +262,4 @@ const mapDispatchToProps = {
   navigateForContext: navigateContactDetails,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Details);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsHome);

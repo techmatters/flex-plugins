@@ -101,6 +101,7 @@ module aws_monitoring {
   helpline = var.helpline
   short_helpline = var.short_helpline
   environment = var.environment
+  aws_account_id = var.aws_account_id
 }
 
 module github {
