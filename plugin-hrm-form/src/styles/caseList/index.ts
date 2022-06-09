@@ -5,7 +5,6 @@ import { Absolute, FontOpenSans, Flex } from '../HrmStyles';
 
 export const CaseListContainer = styled(Absolute)`
   height: 100%;
-  /* background-color: ${props => props.theme.colors.base2}; */
   max-width: 1280px;
   background-color: #f6f6f6;
 `;

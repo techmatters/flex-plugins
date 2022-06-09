@@ -77,9 +77,13 @@ const ContactDetailsHome: React.FC<Props> = ({
     channel === 'default'
       ? mapChannelForInsights(details.contactlessTask.channel.toString())
       : mapChannelForInsights(channel);
-  const formattedDate = `${format(new Date(dateTime), 'MMM d, yyyy')}`;
-  const formattedTime = `${format(new Date(dateTime), 'h:mm aaaaa')}m`;
-  const formattedDateTime = `${format(new Date(dateTime), 'MMM d, yyyy / h:mm aaaaa')}m`;
+  console.log('>>>', { overview });
+  const formattedDateStandard = `${format(new Date(dateTime), 'M/dd/yyyy')}`;
+  const formattedTimeStandard = `${format(new Date(dateTime), 'h:mm a')}`;
+
+  const formattedDate = `${format(new Date(dateTime), 'MMM dd, yyyy')}`;
+  const formattedTime= `${format(new Date(dateTime), 'h:mm aaaaa')}m`;
+
   const formattedDuration = formatDuration(conversationDuration);
 
   const isPhoneContact =
@@ -111,8 +115,8 @@ const ContactDetailsHome: React.FC<Props> = ({
       <ContactAddedFont style={{ marginRight: 20 }} data-testid="ContactDetails-ActionHeaderAdded">
         <Template
           code="ContactDetails-ActionHeaderAdded"
-          date={formattedDate}
-          time={formattedTime}
+          date={formattedDateStandard}
+          time={formattedTimeStandard}
           counsellor={addedBy}
         />
       </ContactAddedFont>
@@ -137,7 +141,7 @@ const ContactDetailsHome: React.FC<Props> = ({
         <SectionEntry description={<Template code="ContactDetails-GeneralDetails-Counselor" />} value={counselorName} />
         <SectionEntry
           description={<Template code="ContactDetails-GeneralDetails-DateTime" />}
-          value={formattedDateTime}
+          value={`${formattedDate} / ${formattedTime}`}
         />
         {addedBy && addedBy !== counselor && (
           <SectionEntry description={<Template code="ContactDetails-GeneralDetails-AddedBy" />} value={addedBy} />

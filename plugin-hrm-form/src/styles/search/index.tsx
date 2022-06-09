@@ -310,7 +310,7 @@ export const ContactDetailsIcon = icon => styled(icon)`
   color: #000000;
   width: 50px;
   height: 50px;
-  font-size: medium;
+  font-size: 16px;
 `;
 
 const containerPadding = 40;
