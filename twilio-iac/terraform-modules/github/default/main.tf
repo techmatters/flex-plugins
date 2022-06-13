@@ -1,7 +1,7 @@
 
 
 provider "github" {
-  organization = "techmatters"
+  owner = "techmatters"
 }
 
 

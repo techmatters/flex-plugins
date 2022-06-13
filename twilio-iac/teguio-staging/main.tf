@@ -2,14 +2,14 @@ terraform {
   required_providers {
     twilio = {
       source  = "twilio/twilio"
-      version = "0.11.1"
+      version = "0.17.0"
     }
   }
 
   backend "s3" {
-    bucket         = "tl-terraform-state-twilio-terraform-poc"
+    bucket         = "tl-terraform-state-twilio-co-staging"
     key            = "twilio/terraform.tfstate"
-    dynamodb_table = "twilio-terraform-terraform-poc-locks"
+    dynamodb_table = "twilio-terraform-co-staging-locks"
     encrypt        = true
   }
 }
@@ -45,7 +45,7 @@ module "services" {
 module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
   serverless_url = var.serverless_url
-  helpline = "ChildLine Zambia (ZM)"
+  helpline = var.helpline
 }
 
 module studioFlow {
@@ -61,10 +61,10 @@ module flex {
   account_sid = var.account_sid
   short_environment = var.short_environment
   operating_info_key = var.operating_info_key
-  permission_config = "zm"
+  permission_config = "co"
   definition_version = var.definition_version
   serverless_url = var.serverless_url
-  hrm_url = "https://hrm-development-eu.tl.techmatters.org"
+  hrm_url = "https://hrm-test.tl.techmatters.org"
   multi_office_support = var.multi_office
   feature_flags = var.feature_flags
   flex_chat_service_sid = module.services.flex_chat_service_sid
@@ -105,11 +105,11 @@ module aws_monitoring {
   aws_account_id = var.aws_account_id
 }
 
-module github {
+# module github {
 
-  source = "../terraform-modules/github/default"
-  twilio_account_sid = var.account_sid
-  twilio_auth_token = var.auth_token
-  short_environment = var.short_environment
-  short_helpline = var.short_helpline
-}
+#   source = "../terraform-modules/github/default"
+#   twilio_account_sid = var.account_sid
+#   twilio_auth_token = var.auth_token
+#   short_environment = var.short_environment
+#   short_helpline = var.short_helpline
+# }

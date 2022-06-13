@@ -7,7 +7,7 @@ variable "helpline" {
 variable "helplines" {
   description = "List of helplines to route via helpline queue"
   type        = list(string)
-  default = []
+  default = null
 }
 
 variable "serverless_url" {

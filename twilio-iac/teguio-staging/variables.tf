@@ -17,35 +17,33 @@ variable "local_os" {
 }
 
 variable "helpline" {
-  default = "TerraformPOC"
+  default = "Te Guio Colombia"
 }
 
 variable "short_helpline" {
-  default = "POC"
+  default = "CO"
 }
 
 variable "operating_info_key" {
-  default = "poc"
-}
+  default = "co"
+} 
 
 variable "environment" {
-  default = "Development"
+  default = "Staging"
 }
 
 variable "short_environment" {
-  default = "DEV"
+  default = "STG"
 }
 
 variable "definition_version" {
   description = "Key that determines which set of form definitions this helpline will use"
   type        = string
-  default = "v1"
+  default = "co-v1"
 }
 
 variable "permission_config" {
-  description = "Key that determines which set of permission rules this helpline will use"
-  type        = string
-  default = "demo"
+  default = "co"
 }
 
 variable multi_office {
@@ -58,7 +56,7 @@ variable "feature_flags" {
   description = "A map of feature flags that need to be set for this helpline's flex plugin"
   type = map(bool)
   default = {
-    "enable_fullstory_monitoring": false,
+     "enable_fullstory_monitoring": false,
     "enable_upload_documents": true,
     "enable_post_survey": false,
     "enable_case_management": true,
@@ -76,5 +74,5 @@ variable "feature_flags" {
 }
 
 variable "messaging_flow_contact_identity" {
-  default = "Add phone number"
+  default = "+12076565437"
 }
