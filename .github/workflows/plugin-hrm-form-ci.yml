@@ -44,11 +44,11 @@ jobs:
     - name: Install e2e-test Packages
       run: npm ci 
       working-directory: ./e2e-tests
+    - uses: microsoft/playwright-github-action@v1
     - name: Run e2e test code Lint
       run: npm run lint
       working-directory: ./e2e-tests
     - name: Run e2e test
-      uses: microsoft/playwright-github-action@v1
       run: npx playwright install-deps chromium && PLAYWRIGHT_USER_USERNAME=${{secrets.PLAYWRIGHT_USER_USERNAME}} PLAYWRIGHT_USER_PASSWORD=${{secrets.PLAYWRIGHT_USER_PASSWORD}} TWILIO_ACCOUNT_SID=${{secrets.E2E_DEV_ACCOUNT_SID}} npx playwright test
       working-directory: ./e2e-tests
       env:
