@@ -41,11 +41,6 @@ jobs:
     - name: Run Lint
       run: npm run lint --if-present
       working-directory: ./plugin-hrm-form
-    - name: Run Tests
-      run: TWILIO_ACCOUNT_SID=${{secrets.E2E_DEV_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{secrets.E2E_DEV_AUTH_TOKEN}} npm run test:jest
-      working-directory: ./plugin-hrm-form
-      env:
-        CI: true
     - name: Install e2e-test Packages
       run: npm ci
       working-directory: ./e2e-tests
@@ -55,3 +50,11 @@ jobs:
     - name: Run e2e test
       run: PLAYWRIGHT_USER_USERNAME=${{secrets.PLAYWRIGHT_USER_USERNAME}} PLAYWRIGHT_USER_PASSWORD=${{secrets.PLAYWRIGHT_USER_PASSWORD}} TWILIO_ACCOUNT_SID=${{secrets.E2E_DEV_ACCOUNT_SID}} npx playwright test
       working-directory: ./e2e-tests
+      env:
+        CI: true
+    - name: Run Tests
+      run: TWILIO_ACCOUNT_SID=${{secrets.E2E_DEV_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{secrets.E2E_DEV_AUTH_TOKEN}} npm run test:jest
+      working-directory: ./plugin-hrm-form
+      env:
+        CI: true
+    
