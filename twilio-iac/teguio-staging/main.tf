@@ -13,7 +13,7 @@ terraform {
     encrypt        = true
   }
 }
- 
+
 
 module "chatbots" {
   source = "../terraform-modules/chatbots/default"
@@ -44,7 +44,7 @@ module "services" {
 
 module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
-  serverless_url = "https://serverless-6384-production.twil.io"
+  serverless_url = var.serverless_url
   helpline = var.helpline
 }
 
@@ -64,11 +64,12 @@ module flex {
   permission_config = "co"
   definition_version = var.definition_version
   serverless_url = var.serverless_url
-  hrm_url = "https://hrm-development-eu.tl.techmatters.org"
+  hrm_url = "https://hrm-test.tl.techmatters.org"
   multi_office_support = var.multi_office
   feature_flags = var.feature_flags
   flex_chat_service_sid = module.services.flex_chat_service_sid
   messaging_studio_flow_sid = module.studioFlow.messaging_studio_flow_sid
+  messaging_flow_contact_identity = var.messaging_flow_contact_identity
 }
 
 module survey {
@@ -95,3 +96,20 @@ module aws {
   post_survey_bot_sid = module.chatbots.post_survey_bot_sid
   survey_workflow_sid = module.survey.survey_workflow_sid
 }
+
+module aws_monitoring {
+  source = "../terraform-modules/aws-monitoring/default"
+  helpline = var.helpline
+  short_helpline = var.short_helpline
+  environment = var.environment
+  aws_account_id = var.aws_account_id
+}
+
+# module github {
+
+#   source = "../terraform-modules/github/default"
+#   twilio_account_sid = var.account_sid
+#   twilio_auth_token = var.auth_token
+#   short_environment = var.short_environment
+#   short_helpline = var.short_helpline
+# }

@@ -3,14 +3,19 @@ import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
-import '../mockStyled';
+import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
+import HrmTheme from '../../styles/HrmTheme';
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import { SearchPages } from '../../states/search/types';
 import SearchResults from '../../components/search/SearchResults';
 import { configurationBase, searchContactsBase, connectedCaseBase, contactFormsBase, namespace } from '../../states';
 import { getDefinitionVersions } from '../../HrmFormPlugin';
+
+const themeConf = {
+  colorTheme: HrmTheme,
+};
 
 const mockStore = configureMockStore([]);
 
@@ -97,18 +102,20 @@ describe('Search Results', () => {
   describe('<SearchResults> with 0 results', () => {
     test('on contacts tab', () => {
       render(
-        <Provider store={store1}>
-          <SearchResults
-            task={task}
-            currentIsCaller={false}
-            searchContactsResults={{ count: 0, contacts: [] }}
-            searchCasesResults={{ count: 0, cases: [] }}
-            handleSelectSearchResult={jest.fn()}
-            handleBack={jest.fn()}
-            handleViewDetails={jest.fn()}
-            handleMockedMessage={jest.fn()}
-          />
-        </Provider>,
+        <StorelessThemeProvider themeConf={themeConf}>
+          <Provider store={store1}>
+            <SearchResults
+              task={task}
+              currentIsCaller={false}
+              searchContactsResults={{ count: 0, contacts: [] }}
+              searchCasesResults={{ count: 0, cases: [] }}
+              handleSelectSearchResult={jest.fn()}
+              handleBack={jest.fn()}
+              handleViewDetails={jest.fn()}
+              handleMockedMessage={jest.fn()}
+            />
+          </Provider>
+        </StorelessThemeProvider>,
       );
 
       expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('0 PreviousContacts-Cases');
@@ -117,18 +124,20 @@ describe('Search Results', () => {
 
     test('on cases tab', () => {
       render(
-        <Provider store={storeOnCasesTab}>
-          <SearchResults
-            task={task}
-            currentIsCaller={false}
-            searchContactsResults={{ count: 0, contacts: [] }}
-            searchCasesResults={{ count: 0, cases: [] }}
-            handleSelectSearchResult={jest.fn()}
-            handleBack={jest.fn()}
-            handleViewDetails={jest.fn()}
-            handleMockedMessage={jest.fn()}
-          />
-        </Provider>,
+        <StorelessThemeProvider themeConf={themeConf}>
+          <Provider store={storeOnCasesTab}>
+            <SearchResults
+              task={task}
+              currentIsCaller={false}
+              searchContactsResults={{ count: 0, contacts: [] }}
+              searchCasesResults={{ count: 0, cases: [] }}
+              handleSelectSearchResult={jest.fn()}
+              handleBack={jest.fn()}
+              handleViewDetails={jest.fn()}
+              handleMockedMessage={jest.fn()}
+            />
+          </Provider>
+        </StorelessThemeProvider>,
       );
 
       expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('0 PreviousContacts-Contacts');
@@ -179,18 +188,20 @@ describe('Search Results', () => {
 
     test('on contacts tab', () => {
       render(
-        <Provider store={store1}>
-          <SearchResults
-            task={task}
-            currentIsCaller={false}
-            searchContactsResults={searchContactsResults}
-            searchCasesResults={searchCasesResults}
-            handleSelectSearchResult={jest.fn()}
-            handleBack={jest.fn()}
-            handleViewDetails={jest.fn()}
-            handleMockedMessage={jest.fn()}
-          />
-        </Provider>,
+        <StorelessThemeProvider themeConf={themeConf}>
+          <Provider store={store1}>
+            <SearchResults
+              task={task}
+              currentIsCaller={false}
+              searchContactsResults={searchContactsResults}
+              searchCasesResults={searchCasesResults}
+              handleSelectSearchResult={jest.fn()}
+              handleBack={jest.fn()}
+              handleViewDetails={jest.fn()}
+              handleMockedMessage={jest.fn()}
+            />
+          </Provider>
+        </StorelessThemeProvider>,
       );
 
       expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('1 PreviousContacts-Case');
@@ -199,18 +210,20 @@ describe('Search Results', () => {
 
     test('on cases tab', () => {
       render(
-        <Provider store={storeOnCasesTab}>
-          <SearchResults
-            task={task}
-            currentIsCaller={false}
-            searchContactsResults={searchContactsResults}
-            searchCasesResults={searchCasesResults}
-            handleSelectSearchResult={jest.fn()}
-            handleBack={jest.fn()}
-            handleViewDetails={jest.fn()}
-            handleMockedMessage={jest.fn()}
-          />
-        </Provider>,
+        <StorelessThemeProvider themeConf={themeConf}>
+          <Provider store={storeOnCasesTab}>
+            <SearchResults
+              task={task}
+              currentIsCaller={false}
+              searchContactsResults={searchContactsResults}
+              searchCasesResults={searchCasesResults}
+              handleSelectSearchResult={jest.fn()}
+              handleBack={jest.fn()}
+              handleViewDetails={jest.fn()}
+              handleMockedMessage={jest.fn()}
+            />
+          </Provider>
+        </StorelessThemeProvider>,
       );
 
       expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('1 PreviousContacts-Contact');
@@ -289,18 +302,20 @@ describe('Search Results', () => {
 
     test('on contacts tab', () => {
       render(
-        <Provider store={store1}>
-          <SearchResults
-            task={task}
-            currentIsCaller={false}
-            searchContactsResults={searchContactsResults}
-            searchCasesResults={searchCasesResults}
-            handleSelectSearchResult={jest.fn()}
-            handleBack={jest.fn()}
-            handleViewDetails={jest.fn()}
-            handleMockedMessage={jest.fn()}
-          />
-        </Provider>,
+        <StorelessThemeProvider themeConf={themeConf}>
+          <Provider store={store1}>
+            <SearchResults
+              task={task}
+              currentIsCaller={false}
+              searchContactsResults={searchContactsResults}
+              searchCasesResults={searchCasesResults}
+              handleSelectSearchResult={jest.fn()}
+              handleBack={jest.fn()}
+              handleViewDetails={jest.fn()}
+              handleMockedMessage={jest.fn()}
+            />
+          </Provider>
+        </StorelessThemeProvider>,
       );
 
       expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('2 PreviousContacts-Cases');
@@ -309,18 +324,20 @@ describe('Search Results', () => {
 
     test('on cases tab', () => {
       render(
-        <Provider store={storeOnCasesTab}>
-          <SearchResults
-            task={task}
-            currentIsCaller={false}
-            searchContactsResults={searchContactsResults}
-            searchCasesResults={searchCasesResults}
-            handleSelectSearchResult={jest.fn()}
-            handleBack={jest.fn()}
-            handleViewDetails={jest.fn()}
-            handleMockedMessage={jest.fn()}
-          />
-        </Provider>,
+        <StorelessThemeProvider themeConf={themeConf}>
+          <Provider store={storeOnCasesTab}>
+            <SearchResults
+              task={task}
+              currentIsCaller={false}
+              searchContactsResults={searchContactsResults}
+              searchCasesResults={searchCasesResults}
+              handleSelectSearchResult={jest.fn()}
+              handleBack={jest.fn()}
+              handleViewDetails={jest.fn()}
+              handleMockedMessage={jest.fn()}
+            />
+          </Provider>
+        </StorelessThemeProvider>,
       );
 
       expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('2 PreviousContacts-Contacts');

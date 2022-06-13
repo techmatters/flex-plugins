@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { TableBody, CircularProgress } from '@material-ui/core';
+import { TableBody, CircularProgress, TableFooter, TableRow } from '@material-ui/core';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
@@ -88,7 +88,9 @@ const CaseListTable: React.FC<Props> = ({
         </CLTable>
       </TableContainer>
       {caseList.length > 0 ? (
-        <Pagination page={currentPage} pagesCount={pagesCount} handleChangePage={updateCaseListPage} />
+        <div style={{ minHeight: '100px' }}>
+          <Pagination transparent page={currentPage} pagesCount={pagesCount} handleChangePage={updateCaseListPage} />
+        </div>
       ) : null}
     </>
   );
