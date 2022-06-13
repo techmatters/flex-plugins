@@ -42,18 +42,19 @@ jobs:
       run: npm run lint --if-present
       working-directory: ./plugin-hrm-form
     - name: Install e2e-test Packages
-      run: npm ci && npx playwright install --with-deps
+      run: npm ci 
       working-directory: ./e2e-tests
     - name: Run e2e test code Lint
       run: npm run lint
       working-directory: ./e2e-tests
     - name: Run e2e test
-      run: PLAYWRIGHT_USER_USERNAME=${{secrets.PLAYWRIGHT_USER_USERNAME}} PLAYWRIGHT_USER_PASSWORD=${{secrets.PLAYWRIGHT_USER_PASSWORD}} TWILIO_ACCOUNT_SID=${{secrets.E2E_DEV_ACCOUNT_SID}} npx playwright test
+      uses: microsoft/playwright-github-action@v1
+      run: npx playwright install-deps chromium && PLAYWRIGHT_USER_USERNAME=${{secrets.PLAYWRIGHT_USER_USERNAME}} PLAYWRIGHT_USER_PASSWORD=${{secrets.PLAYWRIGHT_USER_PASSWORD}} TWILIO_ACCOUNT_SID=${{secrets.E2E_DEV_ACCOUNT_SID}} npx playwright test
       working-directory: ./e2e-tests
       env:
         TWILIO_ACCOUNT_SID: ${{secrets.E2E_DEV_ACCOUNT_SID}}
     - name: Run Tests
-      run: TWILIO_ACCOUNT_SID=${{secrets.E2E_DEV_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{secrets.E2E_DEV_AUTH_TOKEN}} npm run test:jest
+      run: TWILIO_ACCOUNT_SID=${{secrets.AS_DEV_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{secrets.AS_DEV_AUTH_TOKEN}} npm run test:jest
       working-directory: ./plugin-hrm-form
       env:
         CI: true
