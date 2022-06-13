@@ -64,7 +64,7 @@ module flex {
   permission_config = "zm"
   definition_version = var.definition_version
   serverless_url = var.serverless_url
-  hrm_url = "https://hrm-test.tl.techmatters.org"
+  hrm_url = "https://hrm-development-eu.tl.techmatters.org"
   multi_office_support = var.multi_office
   feature_flags = var.feature_flags
   flex_chat_service_sid = module.services.flex_chat_service_sid
