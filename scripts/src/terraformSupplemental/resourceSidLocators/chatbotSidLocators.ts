@@ -19,11 +19,10 @@ export const findAssistantSids: ResourceLocator = async (
   return [{ sid: assistant.sid, terraformId: assistant.sid }];
 };
 
-type FieldValueRegexCaptures = {
+type FieldTypeRegexCaptures = {
   resourceName: string;
   assistantResource: string;
-  fieldTypeResource: string;
-  fieldValues: string;
+  uniqueName: string;
 };
 
 export const findFieldTypeSids: ResourceLocator = async (
@@ -41,6 +40,13 @@ export const findFieldTypeSids: ResourceLocator = async (
   return fieldTypeListInstance
     .filter((ft) => ft.uniqueName === captures.uniqueName)
     .map((ft) => ({ terraformId: `${assistantSid}/${ft.sid}`, sid: ft.sid }));
+};
+
+type FieldValueRegexCaptures = {
+  resourceName: string;
+  assistantResource: string;
+  fieldTypeResource: string;
+  fieldValues: string;
 };
 
 export const findFieldValueSids: ResourceLocator = async (
@@ -78,8 +84,65 @@ export const findFieldValueSids: ResourceLocator = async (
     .filter((v) => v) as Ids[];
 };
 
-type FieldTypeRegexCaptures = {
+type TaskRegexCaptures = {
+  resourceName: string;
+  uniqueName: string;
+  assistantResource: string;
+};
+
+export const findTaskSids: ResourceLocator = async (
+  client: twilio.Twilio,
+  knownSids: Record<string, string>,
+  rawCaptures: Record<string, string>,
+): Promise<Ids[]> => {
+  const captures: TaskRegexCaptures = <TaskRegexCaptures>rawCaptures;
+  const assistantSid = knownSids[captures.assistantResource];
+  logDebug(`Found assistantSid: ${captures.assistantResource} = ${assistantSid}`);
+
+  const assistant = await client.autopilot.assistants(assistantSid).fetch();
+  const taskListInstance = await assistant.tasks().list();
+
+  return taskListInstance
+    .filter((t) => t.uniqueName === captures.uniqueName)
+    .map((t) => ({ terraformId: `${assistantSid}/${t.sid}`, sid: t.sid }));
+};
+
+type TaskSampleRegexCaptures = {
   resourceName: string;
   assistantResource: string;
-  uniqueName: string;
+  samples: string;
+  taskResource: string;
+};
+
+export const findTaskSampleSids: ResourceLocator = async (
+  client: twilio.Twilio,
+  knownSids: Record<string, string>,
+  rawCaptures: Record<string, string>,
+): Promise<Ids[]> => {
+  const captures: TaskSampleRegexCaptures = <TaskSampleRegexCaptures>rawCaptures;
+  const assistantSid = knownSids[captures.assistantResource];
+  const taskSid = knownSids[captures.taskResource];
+
+  const taskInstance = await client.autopilot.assistants(assistantSid).tasks(taskSid).fetch();
+
+  const samples: string[] = JSON.parse(captures.samples);
+
+  // eslint-disable-next-line no-await-in-loop
+  const sampleList = await taskInstance.samples().list();
+  return samples
+    .map((val) => {
+      const sampleInstance = sampleList.find((s) => s.taggedText === val);
+      if (sampleInstance) {
+        return {
+          sid: sampleInstance.sid,
+          terraformId: `${assistantSid}/${taskSid}/${sampleInstance.sid}`,
+          knownSidKey: val,
+        };
+      }
+      logWarning(
+        `Sample '${val}' not currently present in task '${captures.taskResource}' for assistant '${captures.assistantResource}', skipping import`,
+      );
+      return null;
+    })
+    .filter((v) => v) as Ids[];
 };

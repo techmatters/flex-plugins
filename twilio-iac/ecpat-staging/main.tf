@@ -14,9 +14,13 @@ terraform {
   }
 }
 
-
 module "chatbots" {
   source = "../terraform-modules/chatbots/default"
+  serverless_url = var.serverless_url
+}
+
+module "custom_chatbots" {
+  source = "../terraform-modules/chatbots/ecpat"
   serverless_url = var.serverless_url
 }
 
@@ -40,16 +44,32 @@ module "services" {
   short_helpline = var.short_helpline
   environment = var.environment
   short_environment = var.short_environment
+  uses_conversation_service = var.uses_conversation_service
 }
 
 module "taskRouter" {
-  source = "../terraform-modules/taskRouter/default"
+  source = "../terraform-modules/taskRouter/ecpat"
   serverless_url = var.serverless_url
   helpline = var.helpline
+  custom_target_workers = var.custom_target_workers
+  ecpat_messenger_number = var.ecpat_messenger_number
+  eyca_messenger_number = var.eyca_messenger_number
 }
 
 module studioFlow {
   source = "../terraform-modules/studioFlow/default"
+  custom_flow_definition = templatefile(
+    "../terraform-modules/studioFlow/ecpat/Messaging Flow.tftpl",
+    {
+      master_workflow_sid = module.taskRouter.master_workflow_sid
+      chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
+      pre_survey_bot_sid = module.chatbots.pre_survey_bot_sid
+      default_task_channel_sid = module.taskRouter.default_task_channel_sid
+      language_bot_sid = module.custom_chatbots.language_bot_sid
+      permission_bot_en_sid = module.custom_chatbots.permission_bot_en_sid
+      permission_bot_fil_sid = module.custom_chatbots.permission_bot_fil_sid
+      pre_survey_bot_fil_sid = module.custom_chatbots.pre_survey_bot_fil_sid
+    })
   master_workflow_sid = module.taskRouter.master_workflow_sid
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
   default_task_channel_sid = module.taskRouter.default_task_channel_sid
