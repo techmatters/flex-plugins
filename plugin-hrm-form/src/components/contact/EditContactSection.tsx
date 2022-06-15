@@ -2,7 +2,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Template } from '@twilio/flex-ui';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress, Dialog } from '@material-ui/core';
 import _ from 'lodash';
 
 import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
@@ -47,6 +47,7 @@ const EditContactSection: React.FC<Props> = ({
 
   const [isSubmitting, setSubmitting] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  const [openEditDialog] = useState(true);
   const [initialFormValues, setInitialFormValues] = useState({});
 
   useEffect(() => {
@@ -94,39 +95,41 @@ const EditContactSection: React.FC<Props> = ({
   };
 
   return (
-    <FormProvider {...methods}>
-      {children}
-      <BottomButtonBar>
-        <Box marginRight="15px">
-          <StyledNextStepButton
-            roundCorners={true}
-            onClick={checkForEdits}
-            disabled={isSubmitting}
-            secondary
-            data-fs-id="BottomBar-Cancel"
-          >
-            <Template code="BottomBar-Cancel" />
-          </StyledNextStepButton>
-          <CloseCaseDialog
-            data-testid="CloseCaseDialog"
-            openDialog={openDialog}
-            setDialog={() => setOpenDialog(false)}
-            handleDontSaveClose={() => navigate(ContactDetailsRoute.HOME)}
-            handleSaveUpdate={methods.handleSubmit(onSubmitValidForm, onError)}
-          />
-        </Box>
-        <Box marginRight="15px">
-          <StyledNextStepButton
-            roundCorners={true}
-            onClick={methods.handleSubmit(onSubmitValidForm, onError)}
-            disabled={isSubmitting}
-            data-fs-id="Contact-SaveContact-Button"
-          >
-            {isSubmitting ? <CircularProgress size={12} /> : <Template code="BottomBar-SaveContact" />}
-          </StyledNextStepButton>
-        </Box>
-      </BottomButtonBar>
-    </FormProvider>
+    <Dialog open={openEditDialog}>
+      <FormProvider {...methods}>
+        {children}
+        <BottomButtonBar>
+          <Box marginRight="15px">
+            <StyledNextStepButton
+              roundCorners={true}
+              onClick={checkForEdits}
+              disabled={isSubmitting}
+              secondary
+              data-fs-id="BottomBar-Cancel"
+            >
+              <Template code="BottomBar-Cancel" />
+            </StyledNextStepButton>
+            <CloseCaseDialog
+              data-testid="CloseCaseDialog"
+              openDialog={openDialog}
+              setDialog={() => setOpenDialog(false)}
+              handleDontSaveClose={() => navigate(ContactDetailsRoute.HOME)}
+              handleSaveUpdate={methods.handleSubmit(onSubmitValidForm, onError)}
+            />
+          </Box>
+          <Box marginRight="15px">
+            <StyledNextStepButton
+              roundCorners={true}
+              onClick={methods.handleSubmit(onSubmitValidForm, onError)}
+              disabled={isSubmitting}
+              data-fs-id="Contact-SaveContact-Button"
+            >
+              {isSubmitting ? <CircularProgress size={12} /> : <Template code="BottomBar-SaveContact" />}
+            </StyledNextStepButton>
+          </Box>
+        </BottomButtonBar>
+      </FormProvider>
+    </Dialog>
   );
 };
 
