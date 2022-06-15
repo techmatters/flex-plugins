@@ -108,6 +108,8 @@
     "BottomBar-SaveAndAddAnotherNote": "Guardar y agregar otra nota",
     "BottomBar-SaveAndAddToCase": "Guardar y agregar al caso",
     "BottomBar-SaveContact": "Guardar contacto",
+    "BottomBar-SaveCaseContact": "Guardar contacto",
+    "BottomBar-AddContactToNewCase": "Agregar contacto a un caso nuevo",
     "Error-Unexpected": "Un error inesperado ha ocurrido",
     "Error-Form": "Hay un problema con su envío. Verifique el formulario en busca de errores.",
     "NotURLFieldError": "Este campo solo acepta URLs",

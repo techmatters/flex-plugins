@@ -94,6 +94,8 @@
   "BottomBar-Next": "Next",
   "BottomBar-SaveAndAddToCase": "Save and Add to Case...",
   "BottomBar-SaveContact": "Save",
+  "BottomBar-SaveCaseContact": "Save Contact",
+  "BottomBar-AddContactToNewCase": "Add Contact to New Case",
   "BottomBar-OpenNewCase": "Open New Case",
   "BottomBar-AddToExistingCase": "Add to Existing Case",
   "BottomBar-Cancel": "Cancel",

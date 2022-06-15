@@ -119,20 +119,6 @@ class BottomBar extends Component {
         <Dialog onClose={this.closeMockedMessage} open={isMockedMessageOpen}>
           <DialogContent>{mockedMessage}</DialogContent>
         </Dialog>
-        <Menu anchorEl={anchorEl} open={isMenuOpen} onClickAway={() => this.setState({ isMenuOpen: false })}>
-          <MenuItem
-            Icon={FolderOpenIcon}
-            text={<Template code="BottomBar-OpenNewCase" />}
-            onClick={handleSubmitIfValid(this.handleOpenNewCase, this.onError)}
-            data-fs-id="Contact-OpenNewCase-Button"
-          />
-          <MenuItem
-            Icon={AddIcon}
-            text={<Template code="BottomBar-AddToExistingCase" />}
-            onClick={this.handleMockedMessage}
-            data-fs-id="Contact-AddToExistingCase-Button"
-          />
-        </Menu>
 
         <BottomButtonBar>
           {optionalButtons &&
@@ -157,12 +143,11 @@ class BottomBar extends Component {
                     type="button"
                     roundCorners
                     secondary
-                    onClick={this.toggleCaseMenu}
-                    disabled={isSubmitting}
+                    onClick={handleSubmitIfValid(this.handleOpenNewCase, this.onError)}
                     data-fs-id="Contact-SaveAndAddToCase-Button"
                   >
                     <FolderIcon style={{ fontSize: '16px', marginRight: '10px' }} />
-                    <Template code="BottomBar-SaveAndAddToCase" />
+                    <Template code="BottomBar-AddContactToNewCase" />
                   </StyledNextStepButton>
                 </Box>
               )}
@@ -172,7 +157,7 @@ class BottomBar extends Component {
                 disabled={isSubmitting}
                 data-fs-id="Contact-SaveContact-Button"
               >
-                {isSubmitting ? <CircularProgress size={12} /> : <Template code="BottomBar-SaveContact" />}
+                {isSubmitting ? <CircularProgress size={12} /> : <Template code="BottomBar-SaveCaseContact" />}
               </StyledNextStepButton>
             </>
           )}
