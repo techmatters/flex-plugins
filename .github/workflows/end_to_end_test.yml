@@ -42,15 +42,17 @@ jobs:
         run: UNBUNDLED_REACT=true npm ci
         working-directory: ./plugin-hrm-form
       
-      #Build Playwright
-      - uses: microsoft/playwright-github-action@v1
+      # Build Playwright
+      - name: Setup dependencies for playwright/browsers
+        uses: microsoft/playwright-github-action@v1
       - name: Install Playwright CLI
         run: npx playwright install-deps chromium
-      - name: Install e2e-test Packages
+        working-directory: ./e2e-tests
+      - name: Install e2e-tests dependencies
         run: npm install
         working-directory: ./e2e-tests
-      - name: Run Playwright test
+      
+      # Run E2E tests
+      - name: Run Playwright tests
         run: PLAYWRIGHT_USER_USERNAME=${{secrets.PLAYWRIGHT_USER_USERNAME}} PLAYWRIGHT_USER_PASSWORD=${{secrets.PLAYWRIGHT_USER_PASSWORD}} TWILIO_ACCOUNT_SID=${{secrets.E2E_DEV_ACCOUNT_SID}} npx playwright test
         working-directory: ./e2e-tests
-
-      
