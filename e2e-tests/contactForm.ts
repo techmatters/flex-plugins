@@ -22,7 +22,7 @@ export function contactForm(page: Page) {
     topCategorySelector: (category: string) => formArea.locator(`button:has-text("${category}")`),
     subCategoryCheckbox: (tabId: string, topCategory: string, subCategory: string) =>
       formArea.locator(`//input[@value='${tabId}.${topCategory}.${subCategory}']`),
-    saveContactButton: formArea.locator(`button.Twilio-Button:has-text("Save Contact")`),
+    saveContactButton: formArea.locator(`//button[@data-fs-id='Contact-SaveContact-Button']`),
   };
 
   async function selectTab(tab: ContactFormTab<unknown>) {
