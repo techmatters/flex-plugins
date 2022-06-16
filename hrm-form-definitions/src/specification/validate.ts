@@ -47,7 +47,8 @@ export function validateFormDefinition(
           validateFormItemDefinition(form, item, templateItem);
           return null;
         } catch (error) {
-          return `Item '${item.name} failed validation: ${(<Error>error).message}'`;
+          valid = false;
+          return `Item ${item.name} failed validation: ${(<Error>error).message}`;
         }
       })
       .filter((issue) => issue);
@@ -95,8 +96,8 @@ export function validateCategoriesDefinition(
 
   const subcategoriesIssues = categoriesList
     .map(([category, entry]) =>
-      !Array.isArray(entry.subcategories)
-        ? `Subcategories array missing for category ${category}`
+      !Array.isArray(entry.subcategories) || entry.subcategories.length === 0
+        ? `Subcategories array missing for category ${category}.`
         : null,
     )
     .filter((issue) => issue);
