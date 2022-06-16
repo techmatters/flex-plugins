@@ -1,49 +1,49 @@
 [
   {
     "name": "child",
-    "label": "Child calling about self",
+    "label": "Niño llamando sobre si mismo",
     "type": "button",
     "category": "data"
   },
   {
     "name": "caller",
-    "label": "Someone calling about a child",
+    "label": "Alguien llamando sobre un niño",
     "type": "button",
     "category": "data"
   },
   {
     "name": "silent",
-    "label": "Silent",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
-    "name": "blank",
-    "label": "Blank",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
-    "name": "joke",
-    "label": "Joke",
+    "label": "Sin respuesta",
     "type": "button",
     "category": "non-data"
   },
   {
     "name": "hangup",
-    "label": "Hang up",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
-    "name": "wrongnumber",
-    "label": "Wrong Number",
+    "label": "Colgado",
     "type": "button",
     "category": "non-data"
   },
   {
     "name": "abusive",
-    "label": "Abusive",
+    "label": "Abusivo",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "thanks",
+    "label": "Agradecimiento",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "questions",
+    "label": "Preguntas",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "complaints",
+    "label": "Quejas",
     "type": "button",
     "category": "non-data"
   }

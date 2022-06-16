@@ -1,5 +1,5 @@
 {
-  "Example Helpline": {
+  "Childline": {
     "Missing children": {
       "color": "#BBE3FF",
       "subcategories": [
@@ -21,8 +21,9 @@
         "Harmful traditional practices other than child marriage and FGM",
         "Mental/Emotional violence",
         "Neglect (or negligent treatment)",
-        "Online sexual abuse",
-        "Online sexual exploitation",
+        "Online sexual abuse (OSA)",
+        "Online sexual exploitation (OSE)",
+        "Information seeking about OSE/OSA",
         "Physical violence",
         "Sexual violence",
         "Unspecified/Other"
@@ -118,15 +119,64 @@
         "Sexual behaviours",
         "Unspecified/Other"
       ]
-    },
-    "Non-Counselling contacts": {
-      "color": "#767777",
+    }
+  },
+  "LifeLine": {
+    "Physical and Sexual Health": {
+      "color": "#BBE3FF",
       "subcategories": [
-        "Complaints about the child helpline",
-        "Questions by parents",
-        "Questions about the child helpline",
-        "Questions about other services",
-        "\"Thank you for your assistance\"",
+        "COVID-19",
+        "Condom Use",
+        "Medical or lifestyle information about HIV/AIDS",
+        "Male Circumcision",
+        "Pregnancy and maternal care",
+        "Sexual and reproductive health",
+        "Sexually Transmitted Diseases",
+        "Nutrition",
+        "Unspecified/Other"
+      ]
+    },
+    "Mental Health": {
+      "color": "#F5A623",
+      "subcategories": [
+        "Emotional distress – anger problems",
+        "Emotional distress – fear and anxiety problems",
+        "Emotional distress – mood problems",
+        "Problems with eating behaviour",
+        "Self-harming behaviour",
+        "Suicidal thoughts and suicide attempts",
+        "Traumatic distress",
+        "Unspecified/Other"
+      ]
+    },
+    "Abuse": {
+      "color": "#F8E900",
+      "subcategories": [
+        "Addictive behaviours and substance use",
+        "Cyber Bullying",
+        "Gender Based Violence (GBV)",
+        "Mental/Emotional violence",
+        "Economic abuse",
+        "Online sexual abuse",
+        "Online sexual exploitation",
+        "Physical violence",
+        "Sexual violence",
+        "Unspecified/Other"
+      ]
+    },
+    "Relationships": {
+      "color": "#E86B6B",
+      "subcategories": [
+        "Family Relationships",
+        "Marital Issues",
+        "Unspecified/Other"
+      ]
+    },
+    "Education and Occupation": {
+      "color": "#8055BA",
+      "subcategories": [
+        "Problems at learning institution",
+        "Problems at work",
         "Unspecified/Other"
       ]
     }

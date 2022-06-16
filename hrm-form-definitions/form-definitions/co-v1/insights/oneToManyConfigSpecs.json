@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "attributeName": "area",
+    "insightsObject": "clientes",
+    "paths": [
+      "contactForm.childInformation.province",
+      "contactForm.childInformation.district"
+    ]
+  }
+]
