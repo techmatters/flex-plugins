@@ -3,11 +3,13 @@ import twilio from 'twilio';
 import { attemptTerraformImport } from './twilioToTerraformImporter';
 import { logDebug, logInfo, logWarning } from '../helpers/log';
 import { FieldValueParser, ResourceType } from './resourceParsers';
-import { assistant, fieldType, fieldTypeValue } from './hclRegexPatterns';
+import { assistant, fieldType, fieldTypeValue, task, taskSample } from './hclRegexPatterns';
 import {
   findAssistantSids,
   findFieldTypeSids,
   findFieldValueSids,
+  findTaskSids,
+  findTaskSampleSids,
 } from './resourceSidLocators/chatbotSidLocators';
 
 const knownResourceSids: Record<string, string> = {};
@@ -24,6 +26,14 @@ export const registry: Record<ResourceType, FieldValueParser> = {
   [ResourceType.AssistantFieldValue]: {
     pattern: fieldTypeValue,
     findResourceSids: findFieldValueSids,
+  },
+  [ResourceType.AssistantTask]: {
+    pattern: task,
+    findResourceSids: findTaskSids,
+  },
+  [ResourceType.AssistantTaskSample]: {
+    pattern: taskSample,
+    findResourceSids: findTaskSampleSids,
   },
 };
 

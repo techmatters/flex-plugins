@@ -8,6 +8,7 @@ import {
   CreateTwilioApiKeyAndSsmSecretOptions,
 } from './createTwilioApiKeyAndSsmSecret';
 import updateFlexServiceConfiguration from './updateFlexServiceConfiguration';
+import { generateChatbotResource } from './generateChatbotResource';
 
 config();
 
@@ -198,6 +199,33 @@ async function main() {
           );
         }
         await updateFlexServiceConfiguration(JSON.parse(jsonPayload));
+      },
+    )
+    .command(
+      'generate-chatbot-tf',
+      'Generates a .tf file with the chatbot assistant configuration as it is in the Twilio account',
+      (argv) => {
+        argv.option('assistantSid', {
+          describe: "Target chatbot's assistant sid to generate .tf from",
+          type: 'string',
+        });
+        argv.option('referenceName', {
+          describe:
+            'The reference name that will be used as the top level resurce (the name of the assistant resource in the .tf file',
+          type: 'string',
+        });
+        argv.option('serverlessUrl', {
+          describe:
+            'The serverless url of the account. If present, will replace it for the dynamic form in the .tf file',
+          type: 'string',
+        });
+      },
+      async (argv) => {
+        await generateChatbotResource(
+          argv.assistantSid as string,
+          argv.referenceName as string,
+          argv.serverlessUrl as string,
+        );
       },
     )
     .demandCommand()

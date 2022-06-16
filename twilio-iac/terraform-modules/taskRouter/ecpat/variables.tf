@@ -21,8 +21,13 @@ variable "custom_target_workers" {
   default = ""
 }
 
-variable "custom_task_routing_filter_expression" {
-  description = "Setting this will override the default task routing filter expression, which is helpline=='<var.helpline>'"
+variable "ecpat_messenger_number" {
+  description = "Messanger number (FB page id) for ECPAT queue"
   type = string
-  default = ""
 }
+
+variable "eyca_messenger_number" {
+  description = "Messanger number (FB page id) for EYCA queue"
+  type = string
+}
+
