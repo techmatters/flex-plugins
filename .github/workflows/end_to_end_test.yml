@@ -87,4 +87,19 @@ jobs:
         if: ${{ always() }}
         with:
           name: test-artifacts
-          path: plugin-hrm-form
+          path: plugin-hrm-form/src
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: test-artifacts
+          path: plugin-hrm-form/public
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: test-artifacts
+          path: plugin-hrm-form/package.json
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: test-artifacts
+          path: plugin-hrm-form/package-lock.json
