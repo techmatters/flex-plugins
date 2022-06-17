@@ -11,6 +11,6 @@ const config: PlaywrightTestConfig = {
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
   },
-  timeout: 180000,
+  timeout: 60000,
 };
 export default config;
