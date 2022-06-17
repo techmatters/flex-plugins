@@ -116,7 +116,6 @@
     "RequiredFieldError": "Este campo es requerido.",
     "Bottombar-close": "",
     "BottomBar-OpenNewCase": "Abrir nuevo caso",
-    "BottomBar-AddToExistingCase": "Agregar al caso existente",
     "Case-TimelineSection": "Línea de tiempo",
     "Case-AddHouseholdSection": "Información del hogar",
     "Case-AddPerpetratorSection": "Perpetradores",

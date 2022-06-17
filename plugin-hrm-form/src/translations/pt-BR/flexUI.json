@@ -105,7 +105,6 @@
   "Error-Form": "Há um problema com o seu envio. Verifique se há erros no formulário.",
   "RequiredFieldError": "Este campo é obrigatório.",
   "BottomBar-OpenNewCase": "Abrir novo caso",
-  "BottomBar-AddToExistingCase": "Adicionar ao caso existente",
   "Case-TimelineSection": "Linha do tempo",
   "Case-AddHouseholdSection": "Informação de moradia",
   "Case-AddPerpetratorSection": "Perpetradores/autor da violência",
