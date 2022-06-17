@@ -121,6 +121,7 @@ const EditContactSection: React.FC<Props> = ({
             onClick={methods.handleSubmit(onSubmitValidForm, onError)}
             disabled={isSubmitting}
             data-fs-id="Contact-SaveContact-Button"
+            data-testid="EditContact-SaveContact-Button"
           >
             {isSubmitting ? <CircularProgress size={12} /> : <Template code="BottomBar-SaveContact" />}
           </StyledNextStepButton>
