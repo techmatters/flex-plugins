@@ -79,11 +79,11 @@ export async function open(browser: Browser): Promise<WebChatPage> {
             await selectors.chatSendButton.click();
             break;
           case ChatStatementOrigin.BOT:
-            await selectors.messageWithText(text).waitFor({ timeout: 60000 });
+            await selectors.messageWithText(text).waitFor({ timeout: 60000, state: 'attached' });
             break;
           default:
             yield statementItem;
-            await selectors.messageWithText(text).waitFor({ timeout: 60000 });
+            await selectors.messageWithText(text).waitFor({ timeout: 60000, state: 'attached' });
         }
       }
     },
