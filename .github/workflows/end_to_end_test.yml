@@ -2,6 +2,7 @@ name: End to End Testing CI
 
 # Action 
 on: [push]
+concurrency: e2e
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:

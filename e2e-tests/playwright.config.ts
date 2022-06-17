@@ -9,6 +9,6 @@ const config: PlaywrightTestConfig = {
     baseURL: process.env.PLAYWRIGHT_BASEURL ?? 'http://localhost:3000',
     permissions: ['microphone'],
   },
-  timeout: 60000,
+  timeout: 180000,
 };
 export default config;
