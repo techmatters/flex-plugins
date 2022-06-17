@@ -62,7 +62,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
       definitionFilePath: './caseForms/HouseholdForm.json',
       items: {
         firstName: {
-          required: true,
+          required: false,
           default: {
             name: 'firstName',
             label: 'First Name',
@@ -71,7 +71,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           },
         },
         lastName: {
-          required: true,
+          required: false,
           default: {
             name: 'lastName',
             label: 'Last Name',
@@ -310,7 +310,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
       definitionFilePath: './caseForms/PerpetratorForm.json',
       items: {
         firstName: {
-          required: true,
+          required: false,
           default: {
             name: 'firstName',
             label: 'First Name',
@@ -319,7 +319,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           },
         },
         lastName: {
-          required: true,
+          required: false,
           default: {
             name: 'lastName',
             label: 'Last Name',
