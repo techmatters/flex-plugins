@@ -19,10 +19,10 @@ export function contactForm(page: Page) {
     formSelect: (tabId: string, itemId: string) => formArea.locator(`select#${tabId}\\.${itemId}`),
     formTextarea: (tabId: string, itemId: string) =>
       formArea.locator(`textarea#${tabId}\\.${itemId}`),
-    topCategorySelector: (category: string) => formArea.locator(`button:has-text("${category}")`),
+    topCategorySelector: (category: string) => formArea.locator(`//button[@data-testid='IssueCategorization-Section-${category}']`),
     subCategoryCheckbox: (tabId: string, topCategory: string, subCategory: string) =>
       formArea.locator(`//input[@value='${tabId}.${topCategory}.${subCategory}']`),
-    saveContactButton: formArea.locator(`//button[@data-fs-id='Contact-SaveContact-Button']`),
+    saveContactButton: formArea.locator(`//button[@data-testid='BottomBar-SaveContact-Button']`),
   };
 
   async function selectTab(tab: ContactFormTab<unknown>) {

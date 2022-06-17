@@ -171,6 +171,7 @@ class BottomBar extends Component {
                 onClick={handleSubmitIfValid(this.handleSubmit, this.onError)}
                 disabled={isSubmitting}
                 data-fs-id="Contact-SaveContact-Button"
+                data-testid="BottomBar-SaveContact-Button"
               >
                 {isSubmitting ? <CircularProgress size={12} /> : <Template code="BottomBar-SaveContact" />}
               </StyledNextStepButton>

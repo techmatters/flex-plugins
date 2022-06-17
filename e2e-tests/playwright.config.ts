@@ -6,7 +6,7 @@ const config: PlaywrightTestConfig = {
   globalSetup: require.resolve('./global-setup'),
   use: {
     storageState: 'temp/state.json',
-    baseURL: 'http://localhost:3000',
+    baseURL: process.env.PLAYWRIGHT_BASEURL ?? 'http://localhost:3000',
     permissions: ['microphone'],
   },
   timeout: 60000,
