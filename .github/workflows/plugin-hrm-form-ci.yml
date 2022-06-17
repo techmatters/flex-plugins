@@ -1,5 +1,6 @@
 name: Run plugin-hrm-form CI
 
+on: [push]
 
 jobs:
   build:
