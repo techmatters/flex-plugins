@@ -172,7 +172,6 @@
     "Case-Contact": "Contacto",
     "BottomBar-CancelNewCaseAndClose": "Sí, cancelar el nuevo caso y cierre",
     "BottomBar-Update": "Actualizar",
-    "BottomBar-AddThisContactToExistingCase": "Agregar este contacto al caso existente",
     "Case-Counsellor": "Consejero",
     "Case-CaseNumber": "Caso #",
     "Case-ActionHeaderAdded": "Agregado el {{date}} a las {{time}} por {{counsellor}}",
