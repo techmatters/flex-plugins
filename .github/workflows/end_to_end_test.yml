@@ -61,7 +61,7 @@ jobs:
 
       # Run server
       - name: Run Flex Dev Server
-        run: UNBUNDLED_REACT=true npm run start &
+        run: UNBUNDLED_REACT=true npm run start
         working-directory: ./plugin-hrm-form
 
       # Build Playwright
