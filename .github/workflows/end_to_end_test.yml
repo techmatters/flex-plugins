@@ -28,7 +28,7 @@ jobs:
       - name: Replace Twilio account SID in appConfig.js
         uses: falnyr/replace-env-vars-action@master
         env:
-          TWILIO_ACCOUNT_SID: ${{ secrets.E2E_ACCOUNT_SID}}
+          TWILIO_ACCOUNT_SID: ${{ secrets.E2E_DEV_ACCOUNT_SID}}
         with:
           filename: ./plugin-hrm-form/public/appConfig.js
 
