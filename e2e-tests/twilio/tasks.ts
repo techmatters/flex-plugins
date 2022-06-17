@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import twilio from 'twilio';
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
