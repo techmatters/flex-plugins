@@ -2,6 +2,7 @@ name: End to End Testing CI
 
 # Action 
 on: [push]
+concurrency: e2e
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -41,6 +42,11 @@ jobs:
         run: UNBUNDLED_REACT=true npm ci
         working-directory: ./plugin-hrm-form
 
+      # Run server
+      - name: Run Flex Dev Server
+        run: UNBUNDLED_REACT=true npm run start &
+        working-directory: ./plugin-hrm-form
+
       # Build Playwright
       - name: Install e2e-tests dependencies
         run: npm install
@@ -50,16 +56,7 @@ jobs:
       - name: Install Playwright CLI
         run: npx playwright install
         working-directory: ./e2e-tests
-  test:
-    needs: build
-    runs-on:  ubuntu-latest
-    concurrency: e2e
 
-    steps:
-      # Run server
-      - name: Run Flex Dev Server
-        run: UNBUNDLED_REACT=true npm run start &
-        working-directory: ./plugin-hrm-form
       # Run E2E tests
       - name: Run Playwright tests
         run: DEBUG=pw:api PLAYWRIGHT_USER_USERNAME=${{secrets.PLAYWRIGHT_USER_USERNAME}} PLAYWRIGHT_USER_PASSWORD=${{secrets.PLAYWRIGHT_USER_PASSWORD}} TWILIO_ACCOUNT_SID=${{secrets.E2E_DEV_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{secrets.E2E_DEV_AUTH_TOKEN}} npx playwright test
