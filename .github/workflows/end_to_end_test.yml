@@ -32,6 +32,17 @@ jobs:
         with:
           filename: ./plugin-hrm-form/public/appConfig.js
 
+      - name: Fill secret.js
+        run: |
+          cat <<EOT >> ./src/private/secret.js
+          export const rollbarAccessToken = 'x';
+          export const datadogAccessToken = 'x';
+          export const datadogApplicationID = 'x';
+          export const fullStoryId = 'x';
+          EOT
+        working-directory: ./plugin-hrm-form
+        shell: bash
+
       # Build Flex-plugins
       - name: Install the Twilio CLI and plugins
         run: npm install twilio-cli -g && twilio plugins:install @twilio-labs/plugin-flex
