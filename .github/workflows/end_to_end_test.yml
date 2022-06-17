@@ -43,7 +43,7 @@ jobs:
         working-directory: ./plugin-hrm-form
 
       # Run server
-      - name: Install Flex Plugin Packages
+      - name: Run Flex Dev Server
         run: UNBUNDLED_REACT=true npm run start &
         working-directory: ./plugin-hrm-form
       
@@ -59,5 +59,5 @@ jobs:
       
       # Run E2E tests
       - name: Run Playwright tests
-        run: PLAYWRIGHT_USER_USERNAME=${{secrets.PLAYWRIGHT_USER_USERNAME}} PLAYWRIGHT_USER_PASSWORD=${{secrets.PLAYWRIGHT_USER_PASSWORD}} TWILIO_ACCOUNT_SID=${{secrets.E2E_DEV_ACCOUNT_SID}} npx playwright test
+        run: PLAYWRIGHT_USER_USERNAME=${{secrets.PLAYWRIGHT_USER_USERNAME}} PLAYWRIGHT_USER_PASSWORD=${{secrets.PLAYWRIGHT_USER_PASSWORD}} TWILIO_ACCOUNT_SID=${{secrets.E2E_DEV_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{secrets.E2E_DEV_AUTH_TOKEN}} npx playwright test
         working-directory: ./e2e-tests
