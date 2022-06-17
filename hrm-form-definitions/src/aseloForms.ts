@@ -6,10 +6,12 @@ import {
 } from './specification';
 import { OneToManyConfigSpecs, OneToOneConfigSpec, SelectOption } from './formDefinition';
 
-type FormFileSpecification = FormDefinitionSpecification & DefinitionFileSpecification;
-type JsonFileSpecification<T = any> = DefinitionSpecification<T> & DefinitionFileSpecification;
-type FormItemFileSpecification = FormItemDefinitionSpecification & DefinitionFileSpecification;
-type CaseStatus = {
+export type FormFileSpecification = FormDefinitionSpecification & DefinitionFileSpecification;
+export type JsonFileSpecification<T = any> = DefinitionSpecification<T> &
+  DefinitionFileSpecification;
+export type FormItemFileSpecification = FormItemDefinitionSpecification &
+  DefinitionFileSpecification;
+export type CaseStatus = {
   value: string;
   label: string;
   color: string;
@@ -60,7 +62,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
       definitionFilePath: './caseForms/HouseholdForm.json',
       items: {
         firstName: {
-          required: true,
+          required: false,
           default: {
             name: 'firstName',
             label: 'First Name',
@@ -69,7 +71,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           },
         },
         lastName: {
-          required: true,
+          required: false,
           default: {
             name: 'lastName',
             label: 'Last Name',
@@ -78,7 +80,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           },
         },
         relationshipToChild: {
-          required: true,
+          required: false,
           default: {
             name: 'relationshipToChild',
             label: 'Relationship to child',
@@ -112,7 +114,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           },
         },
         province: {
-          required: true,
+          required: false,
           default: {
             name: 'province',
             label: 'Province',
@@ -126,7 +128,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           },
         },
         district: {
-          required: true,
+          required: false,
           default: {
             name: 'district',
             label: 'District',
@@ -155,7 +157,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           },
         },
         gender: {
-          required: true,
+          required: false,
           default: {
             name: 'gender',
             label: 'Gender',
@@ -171,7 +173,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           },
         },
         age: {
-          required: true,
+          required: false,
           default: {
             name: 'age',
             label: 'Age',
@@ -212,7 +214,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
       definitionFilePath: './caseForms/IncidentForm.json',
       items: {
         date: {
-          required: true,
+          required: false,
           default: {
             name: 'date',
             label: 'Date',
@@ -221,7 +223,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           },
         },
         duration: {
-          required: true,
+          required: false,
           default: {
             name: 'duration',
             label: 'Duration',
@@ -236,7 +238,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           },
         },
         location: {
-          required: true,
+          required: false,
           default: {
             name: 'location',
             label: 'Location',
@@ -308,7 +310,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
       definitionFilePath: './caseForms/PerpetratorForm.json',
       items: {
         firstName: {
-          required: true,
+          required: false,
           default: {
             name: 'firstName',
             label: 'First Name',
@@ -317,7 +319,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           },
         },
         lastName: {
-          required: true,
+          required: false,
           default: {
             name: 'lastName',
             label: 'Last Name',
@@ -326,7 +328,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           },
         },
         relationshipToChild: {
-          required: true,
+          required: false,
           default: {
             name: 'relationshipToChild',
             label: 'Relationship to child',
@@ -360,7 +362,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           },
         },
         province: {
-          required: true,
+          required: false,
           default: {
             name: 'province',
             label: 'Province',
@@ -374,7 +376,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           },
         },
         district: {
-          required: true,
+          required: false,
           default: {
             name: 'district',
             label: 'District',
@@ -403,7 +405,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           },
         },
         gender: {
-          required: true,
+          required: false,
           default: {
             name: 'gender',
             label: 'Gender',
@@ -419,7 +421,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           },
         },
         age: {
-          required: true,
+          required: false,
           default: {
             name: 'age',
             label: 'Age',
@@ -460,7 +462,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
       definitionFilePath: './caseForms/ReferralForm.json',
       items: {
         date: {
-          required: true,
+          required: false,
           default: {
             name: 'date',
             label: 'Date',
@@ -469,7 +471,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           },
         },
         referredTo: {
-          required: true,
+          required: false,
           default: {
             name: 'referredTo',
             label: 'Referred To',
@@ -556,7 +558,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           },
         },
         province: {
-          required: true,
+          required: false,
           default: {
             name: 'province',
             label: 'Province',
@@ -570,7 +572,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           },
         },
         district: {
-          required: true,
+          required: false,
           default: {
             name: 'district',
             label: 'District',
@@ -591,7 +593,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           },
         },
         phone1: {
-          required: true,
+          required: false,
           default: {
             name: 'phone1',
             label: 'Phone #1',
@@ -764,7 +766,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           },
         },
         province: {
-          required: true,
+          required: false,
           default: {
             name: 'province',
             label: 'Province',
@@ -778,7 +780,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           },
         },
         district: {
-          required: true,
+          required: false,
           default: {
             name: 'district',
             label: 'District',
@@ -799,7 +801,7 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
           },
         },
         phone1: {
-          required: true,
+          required: false,
           default: {
             name: 'phone1',
             label: 'Phone #1',
