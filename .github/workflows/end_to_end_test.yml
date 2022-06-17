@@ -83,3 +83,8 @@ jobs:
         with:
           name: test-artifacts
           path: e2e-tests/test-results
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: test-artifacts
+          path: plugin-hrm-form
