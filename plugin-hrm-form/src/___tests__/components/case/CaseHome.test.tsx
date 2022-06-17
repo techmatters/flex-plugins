@@ -384,7 +384,6 @@ describe('useState mocked', () => {
 
     screen.getByTestId('CaseHome-CancelButton').click();
     // Brittle AF but the HTML the menu component produces makes it difficult to do better.
-    // (await screen.findAllByRole('menuitem'))[1].click();
 
     expect(ownProps.handleCancelNewCaseAndClose).toHaveBeenCalled();
     expect(ownProps.handleClose).not.toHaveBeenCalled();
