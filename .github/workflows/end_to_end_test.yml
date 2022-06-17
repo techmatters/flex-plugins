@@ -32,6 +32,12 @@ jobs:
         with:
           filename: ./plugin-hrm-form/public/appConfig.js
 
+      - name: Create secret.js
+        run: |
+          mkdir ./src/private
+          touch ./src/private/secret.js
+        working-directory: ./plugin-hrm-form
+        shell: bash
       - name: Fill secret.js
         run: |
           cat <<EOT >> ./src/private/secret.js
