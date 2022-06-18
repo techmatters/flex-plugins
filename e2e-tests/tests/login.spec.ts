@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/test';
-import { logPageErrors } from '../browser-logs';
+import { logPageTelemetry } from '../browser-logs';
 
 test('Plugin loads', async ({ page }) => {
-  logPageErrors(page, false);
+  logPageTelemetry(page);
   page.goto('/', { waitUntil: 'networkidle' });
   const callsWaitingLabel = page.locator(
     "div.Twilio-AgentDesktopView-default div[data-testid='Childline-voice']",
