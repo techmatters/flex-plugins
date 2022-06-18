@@ -22,7 +22,7 @@ jobs:
 
       # Create Configuration file to replace AS_DEV_ACCOUNT_SID with E2E_ACCOUNT_SID
       - name: Create appConfig.js
-        run: cp ./public/appConfig.example.js ./public/appConfig.js
+        run: cp ./public/appConfig.template.e2e.js ./public/appConfig.js
         working-directory: ./plugin-hrm-form
         shell: bash
       - name: Replace Twilio account SID in appConfig.js
