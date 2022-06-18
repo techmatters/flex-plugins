@@ -56,12 +56,12 @@ jobs:
         run: npm ci
         working-directory: ./hrm-form-definitions
       - name: Install Flex Plugin Packages
-        run: UNBUNDLED_REACT=true npm ci
+        run: NODE_ENV=development UNBUNDLED_REACT=true npm ci
         working-directory: ./plugin-hrm-form
 
       # Run server
       - name: Run Flex Dev Server
-        run: UNBUNDLED_REACT=true npm run start &
+        run: NODE_ENV=development UNBUNDLED_REACT=true npm run start &
         working-directory: ./plugin-hrm-form
 
       # Build Playwright
