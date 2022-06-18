@@ -20,7 +20,7 @@ test.describe.serial('Web chat caller', () => {
   let chatPage: WebChatPage, pluginPage: Page;
   test.beforeAll(async ({ browser }) => {
     pluginPage = await browser.newPage();
-    logPageErrors(pluginPage);
+    logPageErrors(pluginPage, false);
     console.log('Plugin page browser session launched.');
     await pluginPage.goto('/', { waitUntil: 'networkidle', timeout: 120000 });
     console.log('Plugin page visited.');

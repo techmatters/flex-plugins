@@ -1,9 +1,9 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Page } from '@playwright/test';
 
-export function logPageErrors(page: Page): void {
+export function logPageErrors(page: Page, errorsOnly = true): void {
   page.on('console', (message) => {
-    if (message.type() === 'error' || message.type() === 'warn') {
+    if (!errorsOnly || message.type() === 'error' || message.type() === 'warn') {
       console.log(`[BROWSER: ${page.url()} (${message.type()})] ${message.text()}`);
     }
   });
@@ -14,9 +14,9 @@ export function logPageErrors(page: Page): void {
   });
   page.on('requestfinished', async (request) => {
     const response = await request.response();
-    if (response && response.status() >= 400) {
+    if (response && (!errorsOnly || response.status() >= 400)) {
       console.log(
-        `[BROWSER: ${page.url()} (REQUEST ERROR STATUS)] ${request.method()} ${request.url()} ${response.status()}: ${await response.text()}`,
+        `[BROWSER: ${page.url()} (REQUEST)] ${request.method()} ${request.url()} ${response.status()}: ${await response.text()}`,
       );
     }
   });
