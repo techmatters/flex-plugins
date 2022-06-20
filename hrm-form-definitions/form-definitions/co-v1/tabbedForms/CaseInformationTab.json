@@ -1,7 +1,7 @@
 [
   {
     "name": "callSummary",
-    "label": "Contact Summary",
+    "label": "Resumen de Contacto",
     "type": "textarea",
     "required": {
       "value": true,
@@ -10,36 +10,118 @@
   },
   {
     "name": "repeatCaller",
-    "label": "Repeat Caller?",
-    "type": "mixed-checkbox"
+    "label": "¿Llamante repetido?",
+    "type": "checkbox"
   },
   {
     "name": "actionTaken",
-    "label": "Action Taken",
-    "type": "select",
+    "label": "Acción Tomada",
+    "type": "listbox-multiselect",
     "options": [
       {
-        "value": "Unknown",
-        "label": " "
+        "value": "Intervenciones directas por la línea de ayuda",
+        "label": "Intervenciones directas por la línea de ayuda"
       },
       {
-        "value": "Action taken",
-        "label": "Action taken"
+        "value": "Recomendaciones de fuentes o recursos",
+        "label": "Recomendaciones de fuentes o recursos"
       },
       {
-        "value": "Other",
-        "label": "Other"
+        "value": "Referencias a agencias de protección infantil",
+        "label": "Referencias a agencias de protección infantil"
+      },
+      {
+        "value": "Referencias a profesionales generales de salud",
+        "label": "Referencias a profesionales generales de salud"
+      },
+      {
+        "value": "Referencia a la policía",
+        "label": "Referencia a la policía"
+      },
+      {
+        "value": "Referencias a servicios de salud mental",
+        "label": "Referencias a servicios de salud mental"
+      },
+      {
+        "value": "Referencias a otras organizaciones",
+        "label": "Referencias a otras organizaciones"
+      },
+      {
+        "value": "Referencias a consejeros escolares",
+        "label": "Referencias a consejeros escolares"
+      },
+      {
+        "value": "Reportes de material de abuso sexual infantil",
+        "label": "Reportes de material de abuso sexual infantil"
+      },
+      {
+        "value": "Otro",
+        "label": "Otro"
       }
     ]
   },
   {
+    "name": "howDidYouKnowAboutOurLine",
+    "label": "Cómo supo de nuestra línea/número",
+    "type": "select",
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "Boca a boca",
+        "label": "Boca a boca"
+      },
+      {
+        "value": "Medios de comunicación",
+        "label": "Medios de comunicación"
+      },
+      {
+        "value": "Amigo",
+        "label": "Amigo"
+      },
+      {
+        "value": "Escuela",
+        "label": "Escuela"
+      },
+      {
+        "value": "Otros",
+        "label": "Otros"
+      }
+    ]
+  },
+  {
+    "name": "keepConfidential",
+    "label": "¿Mantener confidencial?",
+    "type": "mixed-checkbox",
+    "initialChecked": true
+  },
+  {
+    "name": "hasConsent",
+    "label": "¿Se recibió consentimiento para almacenar datos personales?",
+    "type": "mixed-checkbox"
+  },
+  {
+    "name": "mustCallBack",
+    "label": "¿Es necesario que un guía devuelva la llamada?",
+    "type": "mixed-checkbox"
+  },
+  {
     "name": "okForCaseWorkerToCall",
-    "label": "Ok for case worker to call?",
+    "label": "¿Está bien que el guía llame?",
     "type": "mixed-checkbox"
   },
   {
     "name": "didYouDiscussRightsWithTheChild",
-    "label": "Did you discuss rights with the child?",
+    "label": "¿Se habló de derechos con el niño?",
+    "type": "mixed-checkbox"
+  },
+  {
+    "name": "didTheChildFeelWeSolvedTheirProblem",
+    "label": "¿Sintió el niño que resolvió su problema?",
+    "type": "mixed-checkbox"
+  },
+  {
+    "name": "wouldTheChildRecommendUsToAFriend",
+    "label": "¿Nos recomendaría el niño con algún amigo?",
     "type": "mixed-checkbox"
   }
 ]

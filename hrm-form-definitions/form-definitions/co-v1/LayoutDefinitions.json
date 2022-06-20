@@ -1,7 +1,10 @@
 {
   "contact": {
-    "callerInformation": {},
-    "childInformation": {},
+    "callerInformation": {
+    },
+    "childInformation": {
+      "splitFormAt": 8
+    },
     "caseInformation": {
       "splitFormAt": 4
     }
@@ -14,20 +17,16 @@
       "splitFormAt": 7
     },
     "incidents": {
-      "previewFields": [
-        "date",
-        "duration",
-        "location"
-      ],
+      "previewFields": ["date", "duration", "location"],
       "layout": {
-        "date": {
-          "includeLabel": false,
-          "format": "date"
-        },
-        "duration": {
-          "includeLabel": true
-        },
-        "location": {
+        "date":  {
+            "includeLabel": false,
+            "format": "date"
+          },
+        "duration":  {
+            "includeLabel": true
+          },
+        "location":  {
           "includeLabel": true
         }
       },

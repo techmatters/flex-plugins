@@ -1,1 +1,15 @@
-{}
+{
+  "label": "Helpline",
+  "helplines": [
+    {
+      "label": "Te Guío",
+      "value": "Te Guío",
+      "default": true,
+      "manager": {
+        "name": "Helpline Manager",
+        "phone": "+123 45 678",
+        "email": "supervisor@helpline.org"
+      }
+    }
+  ]
+}
