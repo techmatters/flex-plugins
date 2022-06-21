@@ -323,6 +323,11 @@
     }
   },
   {
+    "name": "mentalHealthIssueDetail",
+    "label": "Description of Mental Health Issue",
+    "type": "input"
+  },
+  {
     "name": "answerHOQuestions",
     "label": "Is the client happy to answer HO data questions?",
     "type": "select",
