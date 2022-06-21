@@ -8,7 +8,7 @@
 // import { setOutput, setFailed } from '@actions/core';
 import packageLock from '../../../plugin-hrm-form/package-lock.json';
 
-const uiVersion = packageLock.dependencies['@twilio/flex-ui'];
+const uiVersion = packageLock.dependencies['@twilio/flex-ui'].version;
 if (uiVersion) {
   console.log(`flex ui version: ${JSON.stringify(uiVersion)}`);
   // setOutput(`flex ui version: ${uiVersion}`, true);
