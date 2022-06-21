@@ -5,15 +5,15 @@
  * For details see https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action#commit-tag-and-push-your-action-to-github 
  */ 
 
-import { setOutput, setFailed } from '@actions/core';
+// import { setOutput, setFailed } from '@actions/core';
 import packageLock from '../../../plugin-hrm-form/package-lock.json';
 
 const uiVersion = packageLock.dependencies['@twilio/flex-ui'];
 if (uiVersion) {
   console.log(`flex ui version: ${uiVersion}`);
-  setOutput(`flex ui version: ${uiVersion}`, true);
+  // setOutput(`flex ui version: ${uiVersion}`, true);
 } else {
   console.log('Flex ui version not found');
-  setFailed('Flex ui version not found');
+  // setFailed('Flex ui version not found');
 }
  
