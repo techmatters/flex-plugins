@@ -1,17 +1,12 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react';
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
-import AddIcon from '@material-ui/icons/Add';
 import { Template } from '@twilio/flex-ui';
-import CancelIcon from '@material-ui/icons/Cancel';
 import { connect, ConnectedProps } from 'react-redux';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { CaseContainer } from '../../styles/case';
-import { BottomButtonBar, Box, Row, StyledNextStepButton, HiddenText } from '../../styles/HrmStyles';
+import { BottomButtonBar, Box, StyledNextStepButton } from '../../styles/HrmStyles';
 import CaseDetailsComponent from './CaseDetails';
-import { Menu, MenuItem } from '../menu';
 import Timeline from './Timeline';
 import CaseSection from './CaseSection';
 import { PermissionActions } from '../../permissions';
@@ -79,17 +74,12 @@ const CaseHome: React.FC<Props> = ({
   caseDetails,
   can,
 }) => {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [isMenuOpen, setMenuOpen] = useState(false);
-  const [mockedMessage, setMockedMessage] = useState(null);
   const [closeDialog, setCloseDialog] = useState(false);
 
   const { featureFlags } = getConfig();
 
   if (routing.route === 'csam-report') return null; // narrow type before deconstructing
   const { route } = routing;
-
-  const isMockedMessageOpen = Boolean(mockedMessage);
 
   type CaseItemInfo<T extends TemporaryCaseInfo> = T['info']; // A bit redundant but looks cleaner than the anonymous subtype reference syntax
 
@@ -124,19 +114,6 @@ const CaseHome: React.FC<Props> = ({
       }
     }
   };
-
-  const toggleCaseMenu = e => {
-    e.persist();
-    setAnchorEl(e.currentTarget || e.target);
-    setMenuOpen(!isMenuOpen);
-  };
-
-  const handleMockedMessage = () => {
-    setMockedMessage(<Template code="NotImplemented" />);
-    setMenuOpen(false);
-  };
-
-  const closeMockedMessage = () => setMockedMessage(null);
 
   // -- Date cannot be converted here since the date dropdown uses the yyyy-MM-dd format.
 
@@ -327,34 +304,18 @@ const CaseHome: React.FC<Props> = ({
         <Box marginLeft="25px" marginTop="25px">
           <CaseSummary task={task} readonly={!can(PermissionActions.EDIT_CASE_SUMMARY)} />
         </Box>
-        <Dialog onClose={closeMockedMessage} open={isMockedMessageOpen}>
-          <DialogContent>{mockedMessage}</DialogContent>
-        </Dialog>
-        <Menu
-          data-testid="CaseHome-CancelMenu"
-          anchorEl={anchorEl}
-          open={isMenuOpen}
-          onClickAway={() => setMenuOpen(false)}
-        >
-          <MenuItem
-            Icon={AddIcon}
-            text={<Template code="BottomBar-AddThisContactToExistingCase" />}
-            onClick={handleMockedMessage}
-          />
-          <MenuItem
-            red
-            Icon={CancelIcon}
-            text={<Template code="BottomBar-CancelNewCaseAndClose" />}
-            onClick={handleCancelNewCaseAndClose}
-          />
-        </Menu>
       </CaseContainer>
       <BottomButtonBar>
         {isCreating && (
           <>
             <Box marginRight="15px">
-              <StyledNextStepButton data-testid="CaseHome-CancelButton" secondary roundCorners onClick={toggleCaseMenu}>
-                <Template code="BottomBar-Cancel" />
+              <StyledNextStepButton
+                data-testid="CaseHome-CancelButton"
+                secondary
+                roundCorners
+                onClick={handleCancelNewCaseAndClose}
+              >
+                <Template code="BottomBar-CancelNewCaseAndClose" />
               </StyledNextStepButton>
             </Box>
             <StyledNextStepButton roundCorners onClick={handleSaveAndEnd}>
