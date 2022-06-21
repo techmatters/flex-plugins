@@ -26,8 +26,7 @@ jobs:
         with:
           node-version: '14.x'
       - name: Update UI Version
-        run: ls -al
-        # run: node ${{ github.action_path }}/dist/index.js
+        run: node .github/actions/update-ui-version/dist/index.js
         env:
           TWILIO_ACCOUNT_SID: ${{ inputs.account-sid }}
           TWILIO_AUTH_TOKEN: ${{ inputs.auth-token }}
