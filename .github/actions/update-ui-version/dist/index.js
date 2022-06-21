@@ -23,7 +23,7 @@ const package_lock_namespaceObject = JSON.parse('{"HO":{"bq1":{"version":"1.30.2
 
 const uiVersion = package_lock_namespaceObject.HO.bq1;
 if (uiVersion) {
-  console.log(`flex ui version: ${uiVersion}`);
+  console.log(`flex ui version: ${JSON.stringify(uiVersion)}`);
   // setOutput(`flex ui version: ${uiVersion}`, true);
 } else {
   console.log('Flex ui version not found');

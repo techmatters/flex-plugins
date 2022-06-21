@@ -10,7 +10,7 @@ import packageLock from '../../../plugin-hrm-form/package-lock.json';
 
 const uiVersion = packageLock.dependencies['@twilio/flex-ui'];
 if (uiVersion) {
-  console.log(`flex ui version: ${uiVersion}`);
+  console.log(`flex ui version: ${JSON.stringify(uiVersion)}`);
   // setOutput(`flex ui version: ${uiVersion}`, true);
 } else {
   console.log('Flex ui version not found');
