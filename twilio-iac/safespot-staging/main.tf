@@ -327,13 +327,16 @@ module "services" {
   short_helpline = var.short_helpline
   environment = var.environment
   short_environment = var.short_environment
+  uses_conversation_service = false
 }
 
 module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
   serverless_url = var.serverless_url
   helpline = var.helpline
-  custom_task_routing_filter_expression = "helpline=='${var.helpline}' OR channelType==\"web\" OR to==\"+14244147346\" OR to==\"+18767287042\""
+  custom_task_routing_filter_expression = "isContactlessTask==true OR channelType==\"web\" OR to==\"+14244147346\" OR to==\"+18767287042\""
+  custom_task_routing_survey_queue_target_filter_expression = "(worker.waitingOfflineContact != true AND ((task.transferTargetType == \"worker\" AND task.targetSid == worker.sid) OR (task.transferTargetType != \"worker\" AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)"
+
 }
 
 module studioFlow {
