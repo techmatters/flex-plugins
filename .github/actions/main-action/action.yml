@@ -59,7 +59,7 @@ runs:
           env_variable_name: "ASELO_DEPLOYS_CHANNEL_ID"
       # Create temporal files for the release
       - name: Create appConfig.js
-        run: cp ./public/appConfig.example.js ./public/appConfig.js
+        run: cp ./public/appConfig.template.deploy.js ./public/appConfig.js
         working-directory: ./plugin-hrm-form
         shell: bash
       - name: Replace Twilio account SID in appConfig.js

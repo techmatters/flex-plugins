@@ -8,6 +8,8 @@ const config: PlaywrightTestConfig = {
     storageState: 'temp/state.json',
     baseURL: process.env.PLAYWRIGHT_BASEURL ?? 'http://localhost:3000',
     permissions: ['microphone'],
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
   },
   timeout: 60000,
 };
