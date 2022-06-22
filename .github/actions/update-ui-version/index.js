@@ -5,15 +5,56 @@
  * For details see https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action#commit-tag-and-push-your-action-to-github 
  */ 
 
-// import { setOutput, setFailed } from '@actions/core';
+import { setOutput, setFailed } from '@actions/core';
+import fetch from 'node-fetch';
 import packageLock from '../../../plugin-hrm-form/package-lock.json';
 
-const uiVersion = packageLock.dependencies['@twilio/flex-ui'].version;
-if (uiVersion) {
-  console.log(`flex ui version: ${JSON.stringify(uiVersion)}`);
-  // setOutput(`flex ui version: ${uiVersion}`, true);
-} else {
-  console.log('Flex ui version not found');
-  // setFailed('Flex ui version not found');
+const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
+const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
+
+const url = 'https://flex-api.twilio.com/v1/Configuration';
+
+function toBase64(text) {
+  return Buffer.from(text).toString('base64');
 }
+
+async function setUiVersion(uiVersion) {
+  const payload = {
+    'account_sid': TWILIO_ACCOUNT_SID, // Required field
+    'ui_version': `~${uiVersion}`, // Twilio Flex sets the UI version using the '~' modifier
+  };
+
+  const options = {
+    method: 'POST',
+    headers: {
+      Authorization: `Basic ${toBase64(`${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`)}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  };
+
+  const response = await fetch(url, options);
+  const data = await response.json();
+
+  return data['ui_version'];
+}
+
+async function main() {
+  const uiVersion = packageLock.dependencies['@twilio/flex-ui'].version;
+  if (!uiVersion) {
+    return setFailed('>> Flex UI Version not found');
+  }
+
+  try {
+    const result = await setUiVersion(uiVersion);
+    setOutput(`>> Flex UI Version set: ${result}`, true);
+  } catch (e) {
+    console.error(e);
+    setFailed('>> Could not set Flex UI Version');
+  }
+}
+
+main();
+
+
  
