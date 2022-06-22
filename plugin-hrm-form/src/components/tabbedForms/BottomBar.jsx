@@ -94,6 +94,7 @@ class BottomBar extends Component {
 
     if (!showBottomBar) return null;
 
+    // Added this comment just for PR review purposes.
     return (
       <>
         <BottomButtonBar>
