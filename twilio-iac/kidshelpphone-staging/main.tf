@@ -76,7 +76,6 @@ module survey {
   helpline = var.helpline
   flex_task_assignment_workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
   custom_task_routing_filter_expression = "isSurveyTask==true"
-  custom_task_routing_survey_queue_target_filter_expression =
 }
 
 module aws {
