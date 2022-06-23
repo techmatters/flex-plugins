@@ -2142,6 +2142,8 @@ const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
 
 const url = 'https://flex-api.twilio.com/v1/Configuration';
 
+(0,core.info)('>> Update UI Version loaded');
+
 function toBase64(text) {
   return Buffer.from(text).toString('base64');
 }
@@ -2168,8 +2170,10 @@ async function setUiVersion(uiVersion) {
 }
 
 async function main() {
+  (0,core.info)('>> Starting main() function...');
   const uiVersion = package_lock_namespaceObject.HO.bq1.i8;
   if (!uiVersion) {
+    (0,core.error)('>> Flex UI Version not found');
     return (0,core.setFailed)('>> Flex UI Version not found');
   }
 
@@ -2178,9 +2182,9 @@ async function main() {
 }
 
 main()
-  .then(uiVersion => (0,core.setOutput)(`>> Flex UI Version set: ${uiVersion}`, true))
+  .then(uiVersion => (0,core.info)(`>> Flex UI Version set: ${uiVersion}`))
   .catch(err => {
-    console.error(err);
+    (0,core.error)(err);
     (0,core.setFailed)('>> Could not set Flex UI Version');
   });
  

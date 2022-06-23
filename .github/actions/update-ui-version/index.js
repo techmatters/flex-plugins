@@ -5,7 +5,7 @@
  * For details see https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action#commit-tag-and-push-your-action-to-github 
  */ 
 
-import { setOutput, setFailed } from '@actions/core';
+import { setOutput, setFailed, info, error } from '@actions/core';
 import fetch from 'node-fetch';
 import packageLock from '../../../plugin-hrm-form/package-lock.json';
 
@@ -13,6 +13,8 @@ const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
 const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
 
 const url = 'https://flex-api.twilio.com/v1/Configuration';
+
+info('>> Update UI Version loaded');
 
 function toBase64(text) {
   return Buffer.from(text).toString('base64');
@@ -40,8 +42,10 @@ async function setUiVersion(uiVersion) {
 }
 
 async function main() {
+  info('>> Starting main() function...');
   const uiVersion = packageLock.dependencies['@twilio/flex-ui'].version;
   if (!uiVersion) {
+    error('>> Flex UI Version not found');
     return setFailed('>> Flex UI Version not found');
   }
 
@@ -50,9 +54,9 @@ async function main() {
 }
 
 main()
-  .then(uiVersion => setOutput(`>> Flex UI Version set: ${uiVersion}`, true))
+  .then(uiVersion => info(`>> Flex UI Version set: ${uiVersion}`))
   .catch(err => {
-    console.error(err);
+    error(err);
     setFailed('>> Could not set Flex UI Version');
   });
  
