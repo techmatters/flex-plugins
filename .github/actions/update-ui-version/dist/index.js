@@ -2173,18 +2173,16 @@ async function main() {
     return (0,core.setFailed)('>> Flex UI Version not found');
   }
 
-  try {
-    const result = await setUiVersion(uiVersion);
-    (0,core.setOutput)(`>> Flex UI Version set: ${result}`, true);
-  } catch (e) {
-    console.error(e);
-    (0,core.setFailed)('>> Could not set Flex UI Version');
-  }
+  const result = await setUiVersion(uiVersion);
+  return result;
 }
 
-main();
-
-
+main()
+  .then(uiVersion => (0,core.setOutput)(`>> Flex UI Version set: ${uiVersion}`, true))
+  .catch(err => {
+    console.error(err);
+    (0,core.setFailed)('>> Could not set Flex UI Version');
+  });
  
 
 /***/ }),

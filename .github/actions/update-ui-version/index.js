@@ -45,16 +45,14 @@ async function main() {
     return setFailed('>> Flex UI Version not found');
   }
 
-  try {
-    const result = await setUiVersion(uiVersion);
-    setOutput(`>> Flex UI Version set: ${result}`, true);
-  } catch (e) {
-    console.error(e);
-    setFailed('>> Could not set Flex UI Version');
-  }
+  const result = await setUiVersion(uiVersion);
+  return result;
 }
 
-main();
-
-
+main()
+  .then(uiVersion => setOutput(`>> Flex UI Version set: ${uiVersion}`, true))
+  .catch(err => {
+    console.error(err);
+    setFailed('>> Could not set Flex UI Version');
+  });
  
