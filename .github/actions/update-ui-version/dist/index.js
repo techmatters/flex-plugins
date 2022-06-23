@@ -2128,8 +2128,8 @@ const package_lock_namespaceObject = JSON.parse('{"HO":{"bq1":{"i8":"1.30.2"}}}'
 ;// CONCATENATED MODULE: ./index.js
 /**
  * If changes are made to this file, it needs to be recompiled using @vercel/ncc (https://github.com/vercel/ncc).
- * 1) Install vercel/ncc by running this command in your terminal. npm i -g @vercel/ncc
- * 2) Compile your index.js file. ncc build index.js --license licenses.txt
+ * 1) Install vercel/ncc by running this command in your terminal: npm i -g @vercel/ncc
+ * 2) Compile your index.js file: ncc build index.js --license licenses.txt
  * For details see https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action#commit-tag-and-push-your-action-to-github 
  */ 
 
@@ -2137,10 +2137,9 @@ const package_lock_namespaceObject = JSON.parse('{"HO":{"bq1":{"i8":"1.30.2"}}}'
 
 
 
+
 const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
 const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
-
-(0,core.info)('>> env: ', process.env);
 
 const url = 'https://flex-api.twilio.com/v1/Configuration';
 
@@ -2163,21 +2162,16 @@ async function setUiVersion(uiVersion) {
     body: JSON.stringify(payload),
   };
 
-  (0,core.info)('>> POST to service configuration');
-  (0,core.info)(JSON.stringify(options, null, 2));
   const response = await fetch(url, options);
   const data = await response.json();
-  (0,core.info)('>> data returned');
 
   return data['ui_version'];
 }
 
 async function main() {
-  (0,core.info)(`>> TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}`);
-  (0,core.info)(`>> TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN}`);
-
   const uiVersion = package_lock_namespaceObject.HO.bq1.i8;
   (0,core.info)(`>> UI Version from lock: ${uiVersion}`);
+
   if (!uiVersion) {
     (0,core.error)('>> Flex UI Version not found');
     return (0,core.setFailed)('>> Flex UI Version not found');

@@ -1,18 +1,17 @@
 /**
  * If changes are made to this file, it needs to be recompiled using @vercel/ncc (https://github.com/vercel/ncc).
- * 1) Install vercel/ncc by running this command in your terminal. npm i -g @vercel/ncc
- * 2) Compile your index.js file. ncc build index.js --license licenses.txt
+ * 1) Install vercel/ncc by running this command in your terminal: npm i -g @vercel/ncc
+ * 2) Compile your index.js file: ncc build index.js --license licenses.txt
  * For details see https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action#commit-tag-and-push-your-action-to-github 
  */ 
 
 import { setFailed, info, error } from '@actions/core';
 import fetch from 'node-fetch';
+
 import packageLock from '../../../plugin-hrm-form/package-lock.json';
 
 const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
 const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
-
-info('>> env: ', process.env);
 
 const url = 'https://flex-api.twilio.com/v1/Configuration';
 
@@ -35,21 +34,16 @@ async function setUiVersion(uiVersion) {
     body: JSON.stringify(payload),
   };
 
-  info('>> POST to service configuration');
-  info(JSON.stringify(options, null, 2));
   const response = await fetch(url, options);
   const data = await response.json();
-  info('>> data returned');
 
   return data['ui_version'];
 }
 
 async function main() {
-  info(`>> TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}`);
-  info(`>> TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN}`);
-
   const uiVersion = packageLock.dependencies['@twilio/flex-ui'].version;
   info(`>> UI Version from lock: ${uiVersion}`);
+
   if (!uiVersion) {
     error('>> Flex UI Version not found');
     return setFailed('>> Flex UI Version not found');
