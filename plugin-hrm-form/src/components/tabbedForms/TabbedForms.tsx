@@ -7,10 +7,18 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import { callTypes } from 'hrm-form-definitions';
+import { bindActionCreators } from 'redux';
 
 import { CaseLayout } from '../../styles/case';
 import Case from '../case';
-import { namespace, contactFormsBase, routingBase, RootState, configurationBase } from '../../states';
+import {
+  namespace,
+  contactFormsBase,
+  routingBase,
+  RootState,
+  configurationBase,
+  searchContactsBase,
+} from '../../states';
 import { updateCallType, updateForm } from '../../states/contacts/actions';
 import { searchResultToContactForm } from '../../services/ContactService';
 import { removeOfflineContact } from '../../services/formSubmissionHelpers';
@@ -31,6 +39,9 @@ import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackBu
 import CSAMReportButton from './CSAMReportButton';
 import CSAMAttachments from './CSAMAttachments';
 import { forTask } from '../../states/contacts/issueCategorizationStateApi';
+import { SearchPages } from '../../states/search/types';
+import { changeSearchPage } from '../../states/search/actions';
+import ContactDetails from '../search/ContactDetails';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes) => {
@@ -87,6 +98,8 @@ const TabbedForms: React.FC<Props> = ({
   contactForm,
   currentDefinitionVersion,
   csamReportEnabled,
+  searchCurrentPage,
+  searchCurrentContact,
 }) => {
   const methods = useForm({
     shouldFocusError: false,
@@ -163,6 +176,22 @@ const TabbedForms: React.FC<Props> = ({
       <CaseLayout>
         <Case task={task} isCreating={false} />
       </CaseLayout>
+    );
+  }
+
+  // If the subroute is search and current page is view contact, trim the React tree to render only the contact (mimic the look of ContactDetails under Search component)
+  if (subroute === 'search' && searchCurrentPage === SearchPages.details) {
+    tabIndex = tabsToIndex.findIndex(t => t === 'search');
+    return (
+      <ContactDetails
+        task={task}
+        currentIsCaller={isCallerType}
+        contact={searchCurrentContact}
+        handleBack={() => {
+          dispatch(changeSearchPage(task.taskSid)(SearchPages.resultsContacts));
+        }}
+        handleSelectSearchResult={onSelectSearchResult}
+      />
     );
   }
 
@@ -304,7 +333,10 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const routing = state[namespace][routingBase].tasks[ownProps.task.taskSid];
   const contactForm = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
   const { currentDefinitionVersion } = state[namespace][configurationBase];
-  return { routing, contactForm, currentDefinitionVersion };
+  const { currentPage: searchCurrentPage, currentContact: searchCurrentContact } = state[namespace][
+    searchContactsBase
+  ].tasks[ownProps.task.taskSid];
+  return { routing, contactForm, currentDefinitionVersion, searchCurrentPage, searchCurrentContact };
 };
 
 const connector = connect(mapStateToProps);

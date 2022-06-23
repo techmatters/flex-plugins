@@ -12,16 +12,17 @@ import ActionHeader from './ActionHeader';
 import { CaseState } from '../../states/case/reducer';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 import { loadContact, loadRawContact, releaseContact } from '../../states/contacts/existingContacts';
-import { DetailsContext } from '../../states/contacts/contactDetails';
+import { ContactDetailsRoute, DetailsContext } from '../../states/contacts/contactDetails';
 import { taskFormToSearchContact } from '../../states/contacts/contactDetailsAdapter';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const form = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
+  const contactDetailsRoute = state[namespace][contactFormsBase].contactDetails[DetailsContext.CASE_DETAILS].route;
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
   const caseState: CaseState = state[namespace][connectedCaseBase];
   const { temporaryCaseInfo, connectedCase } = caseState.tasks[ownProps.task.taskSid];
 
-  return { form, counselorsHash, tempInfo: temporaryCaseInfo, connectedCase };
+  return { form, counselorsHash, tempInfo: temporaryCaseInfo, connectedCase, contactDetailsRoute };
 };
 
 const mapDispatchToProps = {
@@ -48,6 +49,7 @@ const ViewContact: React.FC<Props> = ({
   loadRawContactIntoState,
   releaseContactFromState,
   connectedCase,
+  contactDetailsRoute,
 }) => {
   useEffect(() => {
     if (tempInfo && tempInfo.screen === 'view-contact') {
@@ -83,12 +85,14 @@ const ViewContact: React.FC<Props> = ({
   return (
     <CaseLayout>
       <Container>
-        <ActionHeader
-          titleTemplate="Case-Contact"
-          onClickClose={onClickClose}
-          addingCounsellor={createdByName}
-          added={added}
-        />
+        {contactDetailsRoute === ContactDetailsRoute.HOME && (
+          <ActionHeader
+            titleTemplate="Case-Contact"
+            onClickClose={onClickClose}
+            addingCounsellor={createdByName}
+            added={added}
+          />
+        )}
         <ContactDetails
           contactId={contactFromInfo?.id ?? `__unsavedFromCase:${connectedCase.id}`}
           enableEditing={Boolean(contactFromInfo)}
