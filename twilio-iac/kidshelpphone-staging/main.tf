@@ -39,6 +39,7 @@ module "services" {
   short_helpline = var.short_helpline
   environment = var.environment
   short_environment = var.short_environment
+  uses_conversation_service = false
 }
 
 module "taskRouter" {
@@ -53,6 +54,7 @@ module studioFlow {
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
   default_task_channel_sid = module.taskRouter.default_task_channel_sid
   pre_survey_bot_sid = module.chatbots.pre_survey_bot_sid
+
 }
 
 module flex {
@@ -73,6 +75,7 @@ module survey {
   source = "../terraform-modules/survey/default"
   helpline = var.helpline
   flex_task_assignment_workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
+  custom_task_routing_filter_expression = "isSurveyTask==true"
 }
 
 module aws {

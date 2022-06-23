@@ -12,7 +12,7 @@ locals {
   helplines_filter = "helpline IN [${join(", ", formatlist("'%s'", local.helplines))}]"
   helplines_friendly_name = join(", ", compact(local.helplines))
   task_routing_filter_expression = var.custom_task_routing_filter_expression != "" ? var.custom_task_routing_filter_expression : "${local.helplines_filter} OR channelType ==\"web\" "
-
+  task_routing_survey_queue_target_filter_expression = var.custom_task_routing_survey_queue_target_filter_expression != "" ? var.custom_task_routing_survey_queue_target_filter_expression : file("${path.module}/default_target_expression.tftpl")
 }
 
 // Workspaces
@@ -43,7 +43,7 @@ resource "twilio_taskrouter_workspaces_workflows_v1" "master_workflow" {
           "expression": local.task_routing_filter_expression,
           "targets": [
             {
-              "expression": file("${path.module}/default_target_expression.tftpl"),
+              "expression": local.task_routing_survey_queue_target_filter_expression,
               "queue": twilio_taskrouter_workspaces_task_queues_v1.helpline_queue.sid
             }
           ]

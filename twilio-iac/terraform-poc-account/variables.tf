@@ -76,5 +76,5 @@ variable "feature_flags" {
 }
 
 variable "messaging_flow_contact_identity" {
-  default = "Add phone number"
+  default = "+18506053963"
 }

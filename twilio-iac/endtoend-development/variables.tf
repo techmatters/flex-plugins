@@ -7,7 +7,6 @@ variable "datadog_access_token" {}
 variable "aws_account_id" {
   description = "Numeric AWS account ID used in ARNs"
   type        = string
-  default     = null
 }
 
 variable "local_os" {
