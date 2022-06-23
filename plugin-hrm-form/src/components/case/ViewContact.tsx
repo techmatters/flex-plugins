@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
@@ -49,6 +49,7 @@ const ViewContact: React.FC<Props> = ({
   releaseContactFromState,
   connectedCase,
 }) => {
+  const [hideControls, setHideControls] = useState<boolean>(false);
   useEffect(() => {
     if (tempInfo && tempInfo.screen === 'view-contact') {
       const { contact: contactFromInfo, timeOfContact, counselor } = tempInfo.info;
@@ -83,23 +84,28 @@ const ViewContact: React.FC<Props> = ({
   return (
     <CaseLayout>
       <Container>
-        <ActionHeader
-          titleTemplate="Case-Contact"
-          onClickClose={onClickClose}
-          addingCounsellor={createdByName}
-          added={added}
-        />
+        {hideControls && (
+          <ActionHeader
+            titleTemplate="Case-Contact"
+            onClickClose={onClickClose}
+            addingCounsellor={createdByName}
+            added={added}
+          />
+        )}
         <ContactDetails
           contactId={contactFromInfo?.id ?? `__unsavedFromCase:${connectedCase.id}`}
           enableEditing={Boolean(contactFromInfo)}
           context={DetailsContext.CASE_DETAILS}
+          setHideControls={setHideControls}
         />
       </Container>
-      <BottomButtonBar>
-        <StyledNextStepButton roundCorners onClick={onClickClose} data-testid="Case-ViewContactScreen-CloseButton">
-          <Template code="CloseButton" />
-        </StyledNextStepButton>
-      </BottomButtonBar>
+      {hideControls && (
+        <BottomButtonBar>
+          <StyledNextStepButton roundCorners onClick={onClickClose} data-testid="Case-ViewContactScreen-CloseButton">
+            <Template code="CloseButton" />
+          </StyledNextStepButton>
+        </BottomButtonBar>
+      )}
     </CaseLayout>
   );
 };

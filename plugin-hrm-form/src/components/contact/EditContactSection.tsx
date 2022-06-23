@@ -20,6 +20,7 @@ type OwnProps = {
   contactId: string;
   contactDetailsSectionForm: ContactDetailsSectionFormApi | IssueCategorizationSectionFormApi;
   children?: React.ReactNode;
+  setHideControls: (hideControls: boolean) => void;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -33,6 +34,7 @@ const EditContactSection: React.FC<Props> = ({
   navigateForContext,
   refreshContact,
   contactDetailsSectionForm,
+  setHideControls,
   children,
 }) => {
   const methods = useForm({
@@ -48,7 +50,7 @@ const EditContactSection: React.FC<Props> = ({
   const [isSubmitting, setSubmitting] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [initialFormValues, setInitialFormValues] = useState({});
-
+  console.log('>>>', { children });
   useEffect(() => {
     /*
      * we need this to run only once, hence no need
@@ -57,6 +59,11 @@ const EditContactSection: React.FC<Props> = ({
     setInitialFormValues(methods.getValues());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    setHideControls(false);
+    return () => setHideControls(true);
+  }, [setHideControls]);
 
   const navigate = (route: ContactDetailsRoute) => navigateForContext(context, route);
 
