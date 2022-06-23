@@ -28,8 +28,8 @@ jobs:
       - name: Update UI Version
         run: node .github/actions/update-ui-version/dist/index.js
         env:
-          TWILIO_ACCOUNT_SID: ${{ inputs.account-sid }}
-          TWILIO_AUTH_TOKEN: ${{ inputs.auth-token }}
+          TWILIO_ACCOUNT_SID: ${{ secrets.AS_DEV_ACCOUNT_SID }}
+          TWILIO_AUTH_TOKEN: ${{ secrets.AS_DEV_AUTH_TOKEN }}
         shell: bash
       # Call main-action to compile and deploy
       # - name: Executing main-action

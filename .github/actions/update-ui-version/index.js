@@ -5,12 +5,12 @@
  * For details see https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action#commit-tag-and-push-your-action-to-github 
  */ 
 
-import { getInput, setFailed, info, error } from '@actions/core';
+import { setFailed, info, error } from '@actions/core';
 import fetch from 'node-fetch';
 import packageLock from '../../../plugin-hrm-form/package-lock.json';
 
-const TWILIO_ACCOUNT_SID = getInput('account-sid');//process.env.TWILIO_ACCOUNT_SID;
-const TWILIO_AUTH_TOKEN = getInput('auth-token');//process.env.TWILIO_AUTH_TOKEN;
+const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
+const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
 
 info('>> env: ', process.env);
 
