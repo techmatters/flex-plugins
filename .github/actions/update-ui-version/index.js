@@ -12,9 +12,6 @@ import packageLock from '../../../plugin-hrm-form/package-lock.json';
 const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
 const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
 
-info(`>> TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}`);
-info(`>> TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN}`);
-
 const url = 'https://flex-api.twilio.com/v1/Configuration';
 
 function toBase64(text) {
@@ -46,6 +43,9 @@ async function setUiVersion(uiVersion) {
 }
 
 async function main() {
+  info(`>> TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}`);
+  info(`>> TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN}`);
+
   const uiVersion = packageLock.dependencies['@twilio/flex-ui'].version;
   info(`>> UI Version from lock: ${uiVersion}`);
   if (!uiVersion) {

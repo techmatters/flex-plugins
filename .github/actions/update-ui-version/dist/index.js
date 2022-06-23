@@ -2171,6 +2171,9 @@ async function setUiVersion(uiVersion) {
 }
 
 async function main() {
+  (0,core.info)(`>> TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}`);
+  (0,core.info)(`>> TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN}`);
+
   const uiVersion = package_lock_namespaceObject.HO.bq1.i8;
   (0,core.info)(`>> UI Version from lock: ${uiVersion}`);
   if (!uiVersion) {
