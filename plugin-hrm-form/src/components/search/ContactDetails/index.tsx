@@ -7,7 +7,7 @@ import { Container } from '../../../styles/HrmStyles';
 import GeneralContactDetails from '../../contact/ContactDetails';
 import ConnectDialog from '../ConnectDialog';
 import BackToSearchResultsButton from '../SearchResults/SearchResultsBackButton';
-import { SearchContact } from '../../../types/types';
+import { SearchContact, standaloneTaskSid } from '../../../types/types';
 import { loadContact, releaseContact } from '../../../states/contacts/existingContacts';
 import { DetailsContext } from '../../../states/contacts/contactDetails';
 
@@ -15,7 +15,6 @@ type OwnProps = {
   task: any;
   currentIsCaller: boolean;
   contact: SearchContact;
-  showActionIcons: boolean;
   handleBack: () => void;
   handleSelectSearchResult: (contact: SearchContact) => void;
 };
@@ -31,7 +30,6 @@ const ContactDetails: React.FC<Props> = ({
   contact,
   currentIsCaller,
   handleBack,
-  showActionIcons,
   task,
   handleSelectSearchResult,
   loadContactIntoState,
@@ -61,6 +59,8 @@ const ContactDetails: React.FC<Props> = ({
     e.stopPropagation();
     setAnchorEl(e.currentTarget);
   };
+
+  const showActionIcons = task.taskSid !== standaloneTaskSid;
 
   return (
     <Container>

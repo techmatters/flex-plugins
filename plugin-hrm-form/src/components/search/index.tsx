@@ -12,7 +12,7 @@ import SearchResults, { CONTACTS_PER_PAGE, CASES_PER_PAGE } from './SearchResult
 import ContactDetails from './ContactDetails';
 import Case from '../case';
 import { SearchPages } from '../../states/search/types';
-import { CustomITask, SearchContact, standaloneTaskSid } from '../../types/types';
+import { CustomITask, SearchContact } from '../../types/types';
 import SearchResultsBackButton from './SearchResults/SearchResultsBackButton';
 import {
   handleSearchFormChange,
@@ -149,7 +149,6 @@ const Search: React.FC<Props> = props => {
         return (
           <ContactDetails
             task={props.task}
-            showActionIcons={props.showActionIcons}
             currentIsCaller={props.currentIsCaller}
             contact={currentContact}
             handleBack={goToResultsOnContacts}
@@ -202,7 +201,6 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const taskSearchState = searchContactsState.tasks[taskId];
   const { counselors } = state[namespace][configurationBase];
   const routing = state[namespace][routingBase].tasks[taskId];
-  const isStandaloneSearch = taskId === standaloneTaskSid;
 
   return {
     isRequesting: taskSearchState.isRequesting,
@@ -213,7 +211,6 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
     searchContactsResults: taskSearchState.searchContactsResult,
     searchCasesResults: taskSearchState.searchCasesResult,
     counselorsHash: counselors.hash,
-    showActionIcons: !isStandaloneSearch,
     routing,
   };
 };
