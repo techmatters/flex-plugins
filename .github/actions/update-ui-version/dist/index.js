@@ -2142,8 +2142,6 @@ const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
 
 const url = 'https://flex-api.twilio.com/v1/Configuration';
 
-(0,core.info)('>> Update UI Version loaded');
-
 function toBase64(text) {
   return Buffer.from(text).toString('base64');
 }
@@ -2163,15 +2161,18 @@ async function setUiVersion(uiVersion) {
     body: JSON.stringify(payload),
   };
 
+  (0,core.info)('>> POST to service configuration');
+  (0,core.info)(JSON.stringify(options, null, 2));
   const response = await fetch(url, options);
   const data = await response.json();
+  (0,core.info)('>> data returned');
 
   return data['ui_version'];
 }
 
 async function main() {
-  (0,core.info)('>> Starting main() function...');
   const uiVersion = package_lock_namespaceObject.HO.bq1.i8;
+  (0,core.info)(`>> UI Version from lock: ${uiVersion}`);
   if (!uiVersion) {
     (0,core.error)('>> Flex UI Version not found');
     return (0,core.setFailed)('>> Flex UI Version not found');
