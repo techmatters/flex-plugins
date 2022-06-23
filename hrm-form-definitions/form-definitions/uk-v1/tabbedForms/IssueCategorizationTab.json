@@ -27,6 +27,61 @@
         "Videos",
         "Unspecified/Unknown"
       ]
+    },
+    "Location of Images": {
+      "color": "#E86B6B",
+      "subcategories": [
+        "Unknown",
+        "Client Didn't Answer",
+        "Client Doesn't Know",
+        "Client Wanted No Data Collected",
+        "Collector site (forums made specifically for sharing content)",
+        "Dating Site",
+        "Discord",
+        "Email/Text/Dms",
+        "Facebook",
+        "General Porn Site",
+        "Hard copy pictures",
+        "Instagram",
+        "Multiple Locations",
+        "Not relevant",
+        "Question Not Asked",
+        "RP Website",
+        "Snapchat",
+        "Subscription Site (OnlyFans, Fansly etc)",
+        "Threat to publish",
+        "Twitch",
+        "Twitter",
+        "Web Cam Capture",
+        "Youtube"
+      ]  
+    },
+    "Location of Threat": {
+      "color": "#8055BA",
+      "subcategories": [
+        "Unknown",
+        "Client Didn't Answer",
+        "Client Doesn't Know",
+        "Client Wanted No Data Collected",
+        "Dating Site",
+        "Discord",
+        "Email/Text/Dms",
+        "Facebook",
+        "General Porn Site",
+        "Hard copy pictures",
+        "Instagram",
+        "Multiple Locations",
+        "Not relevant",
+        "Question Not Asked",
+        "RP Website",
+        "Snapchat",
+        "Subscription Site (OnlyFans, Fansly etc)",
+        "Threat to publish",
+        "Twitch",
+        "Twitter",
+        "Web Cam Capture",
+        "Youtube"
+      ]   
     }
   },
   "RHC": {
