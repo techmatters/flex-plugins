@@ -2140,6 +2140,8 @@ const package_lock_namespaceObject = JSON.parse('{"HO":{"bq1":{"i8":"1.30.2"}}}'
 const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
 const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
 
+(0,core.info)('>> env: ', process.env);
+
 const url = 'https://flex-api.twilio.com/v1/Configuration';
 
 function toBase64(text) {
