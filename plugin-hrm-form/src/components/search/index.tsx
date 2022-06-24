@@ -21,7 +21,14 @@ import {
   searchContacts,
   searchCases,
 } from '../../states/search/actions';
-import { namespace, searchContactsBase, configurationBase, routingBase, RootState } from '../../states';
+import {
+  namespace,
+  searchContactsBase,
+  configurationBase,
+  routingBase,
+  RootState,
+  contactFormsBase,
+} from '../../states';
 import { Flex } from '../../styles/HrmStyles';
 
 type OwnProps = {
@@ -203,6 +210,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const { counselors } = state[namespace][configurationBase];
   const routing = state[namespace][routingBase].tasks[taskId];
   const isStandaloneSearch = taskId === standaloneTaskSid;
+  const editContactFormOpen = state[namespace][contactFormsBase].editingContact;
 
   return {
     isRequesting: taskSearchState.isRequesting,
@@ -214,6 +222,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
     searchCasesResults: taskSearchState.searchCasesResult,
     counselorsHash: counselors.hash,
     showActionIcons: !isStandaloneSearch,
+    editContactFormOpen,
     routing,
   };
 };

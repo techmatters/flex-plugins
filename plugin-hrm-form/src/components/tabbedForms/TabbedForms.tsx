@@ -87,6 +87,7 @@ const TabbedForms: React.FC<Props> = ({
   contactForm,
   currentDefinitionVersion,
   csamReportEnabled,
+  editContactFormOpen,
 }) => {
   const methods = useForm({
     shouldFocusError: false,
@@ -183,7 +184,7 @@ const TabbedForms: React.FC<Props> = ({
 
   // eslint-disable-next-line react/display-name
   const HeaderControlButtons = () => (
-    <Box marginTop="10px" marginBottom="10px" paddingLeft="20px">
+    <Box className="hiddenWhenEditingContact" marginTop="10px" marginBottom="10px" paddingLeft="20px">
       <Row>
         <SearchResultsBackButton handleBack={handleBackButton} text={<Template code="TabbedForms-BackButton" />} />
         {csamReportEnabled && (
@@ -201,12 +202,23 @@ const TabbedForms: React.FC<Props> = ({
 
   return (
     <FormProvider {...methods}>
-      <div role="form" style={{ height: '100%', overflow: 'scroll' }}>
+      <div
+        role="form"
+        style={{ height: '100%', overflow: 'scroll' }}
+        className={editContactFormOpen ? 'editingContact' : ''}
+      >
         <TabbedFormsContainer>
           {/* Buttons at the top of the form */}
           <HeaderControlButtons />
 
-          <StyledTabs name="tab" variant="scrollable" scrollButtons="auto" value={tabIndex} onChange={handleTabsChange}>
+          <StyledTabs
+            className="hiddenWhenEditingContact"
+            name="tab"
+            variant="scrollable"
+            scrollButtons="auto"
+            value={tabIndex}
+            onChange={handleTabsChange}
+          >
             {tabs}
           </StyledTabs>
           {subroute === 'search' ? (
@@ -279,19 +291,21 @@ const TabbedForms: React.FC<Props> = ({
               )}
             </div>
           )}
-          <BottomBar
-            task={task}
-            nextTab={() =>
-              dispatch(
-                changeRoute({ route: 'tabbed-forms', subroute: tabsToIndex[tabIndex + 1], autoFocus: true }, taskId),
-              )
-            }
-            // TODO: move this two functions to a separate file to centralize "handle task completions"
-            showNextButton={tabIndex !== 0 && tabIndex < tabs.length - 1}
-            showSubmitButton={showSubmitButton}
-            handleSubmitIfValid={methods.handleSubmit} // TODO: this should be used within BottomBar, but that requires a small refactor to make it a functional component
-            optionalButtons={optionalButtons}
-          />
+          <div className="hiddenWhenEditingContact">
+            <BottomBar
+              task={task}
+              nextTab={() =>
+                dispatch(
+                  changeRoute({ route: 'tabbed-forms', subroute: tabsToIndex[tabIndex + 1], autoFocus: true }, taskId),
+                )
+              }
+              // TODO: move this two functions to a separate file to centralize "handle task completions"
+              showNextButton={tabIndex !== 0 && tabIndex < tabs.length - 1}
+              showSubmitButton={showSubmitButton}
+              handleSubmitIfValid={methods.handleSubmit} // TODO: this should be used within BottomBar, but that requires a small refactor to make it a functional component
+              optionalButtons={optionalButtons}
+            />
+          </div>
         </TabbedFormsContainer>
       </div>
     </FormProvider>
@@ -303,8 +317,9 @@ TabbedForms.displayName = 'TabbedForms';
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const routing = state[namespace][routingBase].tasks[ownProps.task.taskSid];
   const contactForm = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
+  const editContactFormOpen = state[namespace][contactFormsBase].editingContact;
   const { currentDefinitionVersion } = state[namespace][configurationBase];
-  return { routing, contactForm, currentDefinitionVersion };
+  return { routing, contactForm, currentDefinitionVersion, editContactFormOpen };
 };
 
 const connector = connect(mapStateToProps);

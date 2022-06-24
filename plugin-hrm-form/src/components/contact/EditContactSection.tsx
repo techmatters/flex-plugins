@@ -14,6 +14,7 @@ import { ContactDetailsRoute, DetailsContext, navigateContactDetails } from '../
 import { ContactDetailsSectionFormApi, IssueCategorizationSectionFormApi } from './contactDetailsSectionFormApi';
 import { refreshRawContact } from '../../states/contacts/existingContacts';
 import CloseCaseDialog from '../case/CloseCaseDialog';
+import * as t from '../../states/contacts/actions';
 
 type OwnProps = {
   context: DetailsContext;
@@ -33,6 +34,8 @@ const EditContactSection: React.FC<Props> = ({
   navigateForContext,
   refreshContact,
   contactDetailsSectionForm,
+  setEditContactPageOpen,
+  setEditContactPageClosed,
   children,
 }) => {
   const methods = useForm({
@@ -55,6 +58,10 @@ const EditContactSection: React.FC<Props> = ({
      * of adding any dependency inside the array
      */
     setInitialFormValues(methods.getValues());
+    setEditContactPageOpen();
+    return () => {
+      setEditContactPageClosed();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -134,6 +141,8 @@ const EditContactSection: React.FC<Props> = ({
 const mapDispatchToProps = {
   navigateForContext: navigateContactDetails,
   refreshContact: refreshRawContact,
+  setEditContactPageOpen: t.setEditContactPageOpen,
+  setEditContactPageClosed: t.setEditContactPageClosed,
 };
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
