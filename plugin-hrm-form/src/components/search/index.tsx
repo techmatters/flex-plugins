@@ -189,6 +189,7 @@ const Search: React.FC<Props> = props => {
   const { currentPage, currentContact, searchContactsResults, searchCasesResults, form, routing } = props;
 
   return (
+    // TODO: Needs converting to a div and the className={editContactFormOpen ? 'editingContact' : ''} adding, but that messes up the CSS
     <>
       {renderMockDialog()}
       {renderSearchPages(currentPage, currentContact, searchContactsResults, searchCasesResults, form, routing)}
