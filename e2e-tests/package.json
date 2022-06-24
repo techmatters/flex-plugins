@@ -42,5 +42,8 @@
     "trailingComma": "all",
     "tabWidth": 2,
     "endOfLine": "auto"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.1"
   }
 }
