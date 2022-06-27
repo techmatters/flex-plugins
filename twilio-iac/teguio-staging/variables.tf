@@ -39,7 +39,7 @@ variable "short_environment" {
 variable "definition_version" {
   description = "Key that determines which set of form definitions this helpline will use"
   type        = string
-  default = "co-v2"
+  default = "co-v1"
 }
 
 variable "permission_config" {
