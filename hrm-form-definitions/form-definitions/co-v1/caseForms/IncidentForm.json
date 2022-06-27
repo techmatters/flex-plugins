@@ -1,8 +1,8 @@
 [
   {
     "name": "date",
-    "label": "Date",
     "type": "date-input",
+    "label": "Fecha del Incidente",
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -10,7 +10,7 @@
   },
   {
     "name": "duration",
-    "label": "Duration",
+    "label": "Duración",
     "type": "select",
     "options": [
       {
@@ -18,16 +18,16 @@
         "label": ""
       },
       {
-        "value": "Ongoing",
-        "label": "Ongoing"
+        "value": "Ocurriendo",
+        "label": "Ocurriendo"
       },
       {
-        "value": "Once Off",
-        "label": "Once Off"
+        "value": "Una vez",
+        "label": "Una vez"
       },
       {
-        "value": "Other",
-        "label": "Other"
+        "value": "Otra",
+        "label": "Otra"
       }
     ],
     "required": {
@@ -37,7 +37,7 @@
   },
   {
     "name": "location",
-    "label": "Location",
+    "label": "Lugar del Incidente",
     "type": "select",
     "options": [
       {
@@ -45,32 +45,36 @@
         "label": ""
       },
       {
-        "value": "Unknown",
-        "label": "Unknown"
+        "value": "Hogar (Propio)",
+        "label": "Hogar (Propio)"
       },
       {
-        "value": "School",
-        "label": "School"
+        "value": "Hogar (Ajeno)",
+        "label": "Hogar (Ajeno)"
       },
       {
-        "value": "Home",
-        "label": "Home"
+        "value": "Establecimiento Educacional",
+        "label": "Establecimiento Educacional"
       },
       {
-        "value": "Institution",
-        "label": "Institution"
+        "value": "Institución",
+        "label": "Institución"
       },
       {
-        "value": "Online",
-        "label": "Online"
+        "value": "Lugar Público",
+        "label": "Lugar Público"
       },
       {
-        "value": "Public Place",
-        "label": "Public Place"
+        "value": "En Línea",
+        "label": "En Línea"
       },
       {
-        "value": "Other",
-        "label": "Other"
+        "value": "Otro",
+        "label": "Otro"
+      },
+      {
+        "value": "Desconocido",
+        "label": "Desconocido"
       }
     ],
     "required": {
@@ -80,22 +84,22 @@
   },
   {
     "name": "isCaregiverAware",
-    "label": "Is caregiver aware?",
+    "label": "¿Está la persona responsable al tanto?",
     "type": "mixed-checkbox"
   },
   {
     "name": "incidentWitnessed",
-    "label": "Was the incident witnessed by anyone?",
+    "label": "¿Fue el incidente presenciado por alguien?",
     "type": "mixed-checkbox"
   },
   {
     "name": "abuseReportedElsewhere",
-    "label": "Has abuse been reported elsewhere?",
+    "label": "¿Ha sido el abuso reportado en alguna parte?",
     "type": "mixed-checkbox"
   },
   {
     "name": "whereElseBeenReported",
-    "label": "Where else the incident has been reported?",
-    "type": "mixed-checkbox"
+    "label": "¿En dónde ha sido reportado el incidente?",
+    "type": "input"
   }
 ]
