@@ -1,131 +1,133 @@
 {
-  "Línea de Ayuda": {
+  "Example Helpline": {
     "Missing children": {
       "color": "#BBE3FF",
       "subcategories": [
-        "Sustracción de menores",
-        "Perdido, no encontrado o niño perdido",
-        "Huida",
-        "No especificado/otro"
+        "Child abduction",
+        "Lost, unaccounted for or otherwise missing child",
+        "Runaway",
+        "Unspecified/Other"
       ]
     },
-    "Violencia": {
+    "Violence": {
       "color": "#F5A623",
       "subcategories": [
-        "Acoso",
-        "Matrimonio infantil/temprano/forzado",
-        "Explotación sexual comercial (fuera de línea)",
-        "Trabajo infantil",
-        "Mutilación genital femenina (MGF)",
-        "Prácticas tradicionales dañinas basadas en género (que no sean MGF)",
-        "Violencia mental / emocional",
-        "Negligencia (o tratamiento negligente)",
-        "Prácticas tradicionales dañinas que no sean el matrimonio infantil y la MGF",
-        "Abuso sexual infantil en línea",
-        "Explotación sexual infantil en línea",
-        "Violencia física",
-        "Violencia sexual",
-        "No especificado/otro - Violencia física"
+        "Bullying",
+        "Child/Early/Forced marriage",
+        "Child labour",
+        "Commercial sexual exploitation (offline)",
+        "Female Genital Mutilation (FGM)",
+        "Gender-based harmful traditional practices (other than FGM)",
+        "Harmful traditional practices other than child marriage and FGM",
+        "Mental/Emotional violence",
+        "Neglect (or negligent treatment)",
+        "Online sexual abuse",
+        "Online sexual exploitation",
+        "Physical violence",
+        "Sexual violence",
+        "Unspecified/Other"
       ]
     },
-    "Salud Mental": {
+    "Mental Health": {
       "color": "#F8E900",
       "subcategories": [
-        "Comportamientos adictivos y uso de sustancias",
-        "Problemas de conducta",
-        "Preocupaciones sobre si mismo",
-        "Angustia emocional - problemas de ira",
-        "Angustia emocional - problemas de miedo y ansiedad",
-        "Angustia emocional - problemas de humor",
-        "Preocupaciones del desarrollo neurológico",
-        "Problemas con el comportamiento alimentario",
-        "Comportamientos de autolesión",
-        "Angustia traumática",
-        "Pensamientos suicidas e intentos de suicidio",
-        "No especificado/otro - Salud mental"
+        "Addictive behaviours and substance use",
+        "Behavioural problems",
+        "Concerns about the self",
+        "Emotional distress – anger problems",
+        "Emotional distress – fear and anxiety problems",
+        "Emotional distress – mood problems",
+        "Neurodevelopmental concerns",
+        "Problems with eating behaviour",
+        "Self-harming behaviour",
+        "Suicidal thoughts and suicide attempts",
+        "Traumatic distress",
+        "Unspecified/Other"
       ]
     },
-    "Salud Física": {
+    "Physical Health": {
       "color": "#E86B6B",
       "subcategories": [
         "COVID-19",
-        "Información médica o de estilo de vida sobre VIH/SIDA",
-        "Preocupaciones médicas generales o de estilo de vida",
-        "Embarazo y atención materna",
-        "Salud sexual y reproductiva",
-        "Nutrición",
-        "No especificado/otro - Salud física"
+        "General medical or lifestyle concerns",
+        "Medical or lifestyle information about HIV/AIDS",
+        "Male circumcision",
+        "Pregnancy and maternal care",
+        "Sexual and reproductive health",
+        "Nutrition",
+        "Unspecified/Other"
       ]
     },
-    "Accesibilidad": {
+    "Accessibility": {
       "color": "#8055BA",
       "subcategories": [
-        "Educación",
-        "Necesidades esenciales",
-        "Servicios generales de atención médica",
-        "Servicios legales y asesoramiento",
-        "Servicios de salud mental",
-        "Servicios de salud sexual",
-        "Servicios socioeconómicos",
-        "No especificado/otro - Accesibilidad"
+        "Education",
+        "Essential needs",
+        "General healthcare services",
+        "Legal services and advice",
+        "Mental health services",
+        "Sexual health services",
+        "Socio-economical services",
+        "Unspecified/Other"
       ]
     },
-    "Discriminación y Exclusión": {
+    "Discrimination and Exclusion": {
       "color": "#B971AF",
       "subcategories": [
-        "Etnia/nacionalidad",
-        "Situación financiera",
-        "Género",
-        "Identidad o expresión de género y orientación sexual",
-        "Salud",
-        "Creencias filosóficas o religiosas",
-        "No especificado/otro - discriminación y exclusión"
+        "Ethnicity/nationality",
+        "Financial situation",
+        "Gender",
+        "Gender identity or expression and sexual orientation",
+        "Health",
+        "Philosophical or religious beliefs",
+        "Unspecified/Other"
       ]
     },
-    "Relaciones Familiares": {
+    "Family Relationships": {
       "color": "#239613",
       "subcategories": [
-        "Adopción, crianza y ubicación en familiar extendida,",
-        "Relación con el cuidador",
-        "Salud y bienestar familiar",
-        "Relación con los hermanos (s)",
-        "No especificado/otros - Relaciones familiares"
+        "Adoption, fostering, and extended family placement",
+        "Relationship to caregiver",
+        "Family health and wellbeing",
+        "Relationship with sibling(s)",
+        "Unspecified/Other"
       ]
     },
-    "Relaciones con Pares": {
+    "Peer Relationships": {
       "color": "#9AD703",
       "subcategories": [
-        "Amigos y amistades",
-        "Relaciones de pareja",
-        "Relaciones de compañeros de clase/colegas",
-        "No especificado/otro - Relaciones con pares"
+        "Friends and friendships",
+        "Partner relationships",
+        "Classmates/colleagues relationships",
+        "Unspecified/Other"
       ]
     },
-    "Educación y Ocupación": {
+    "Education and Occupation": {
       "color": "#55AFAF",
       "subcategories": [
-        "Problemas académicos",
-        "Problemas con profesores o escolares",
-        "Problemas en el trabajo",
-        "No especificado/otro - Escuela"
+        "Academic issues",
+        "Teacher and school problems",
+        "Problems at work",
+        "Unspecified/Other"
       ]
     },
-    "Sexualidad": {
+    "Sexuality": {
       "color": "#506BA5",
       "subcategories": [
-        "Orientación sexual e identidad de género",
-        "Comportamientos sexuales",
-        "No especificado/otro - Sexualidad"
+        "Sexual orientation and gender identity",
+        "Sexual behaviours",
+        "Unspecified/Other"
       ]
     },
-    "Información y Otro Tipo de Llamadas ": {
-      "color": "#edb780",
+    "Non-Counselling contacts": {
+      "color": "#767777",
       "subcategories": [
-        "Quejas sobre la línea de ayuda",
-        "Preguntas sobre la línea de ayuda",
-        "Preguntas sobre otros servicios",
-        "Agradecimiento",
-        "No especificado/otro - Información y otros "
+        "Complaints about the child helpline",
+        "Questions by parents",
+        "Questions about the child helpline",
+        "Questions about other services",
+        "\"Thank you for your assistance\"",
+        "Unspecified/Other"
       ]
     }
   }

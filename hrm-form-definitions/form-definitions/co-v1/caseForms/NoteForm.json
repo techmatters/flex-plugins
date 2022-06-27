@@ -1,8 +1,10 @@
-[{
+[
+  {
     "name": "note",
-    "label": "Nota",
+    "label": "Note",
     "type": "textarea",
-    "placeholder": "Escriba aquí para agregar nota...",
+    "placeholder": "Type here to add note...",
     "rows": 20,
     "width": 500
-  }]
+  }
+]
