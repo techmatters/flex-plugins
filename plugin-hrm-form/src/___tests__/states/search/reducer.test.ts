@@ -12,6 +12,8 @@ import {
 } from '../../../states/types';
 import { reduce, newTaskEntry } from '../../../states/search/reducer';
 
+jest.mock('../../../components/CSAMReport/CSAMReportFormDefinition');
+
 // @ts-ignore
 Object.fromEntries = fromentries;
 
@@ -174,7 +176,7 @@ describe('search reducer', () => {
   });
 
   test('SEARCH_CASES_SUCCESS action', () => {
-    const searchResult = {
+    const searchResult = ({
       count: 2,
       cases: [
         {
@@ -194,7 +196,7 @@ describe('search reducer', () => {
           },
         },
       ],
-    } as SearchCaseResult;
+    } as unknown) as SearchCaseResult;
     const action: t.SearchActionType = {
       type: t.SEARCH_CASES_SUCCESS,
       searchResult,
@@ -214,21 +216,5 @@ describe('search reducer', () => {
     const { tasks } = result;
     expect(tasks[task.taskSid].casesError).toBe('Some error');
     state = result;
-  });
-
-  test('HANDLE_EXPAND_DETAILS_SECTION action', () => {
-    expect(state.tasks[task.taskSid].detailsExpanded[ContactDetailsSections.ISSUE_CATEGORIZATION]).toBeFalsy();
-    const action: t.SearchActionType = {
-      type: t.HANDLE_EXPAND_DETAILS_SECTION,
-      section: ContactDetailsSections.ISSUE_CATEGORIZATION,
-      taskId: task.taskSid,
-    };
-    const result1 = reduce(state, action);
-
-    expect(result1.tasks[task.taskSid].detailsExpanded[ContactDetailsSections.ISSUE_CATEGORIZATION]).toBeTruthy();
-
-    const result2 = reduce(result1, action);
-
-    expect(result2.tasks[task.taskSid].detailsExpanded[ContactDetailsSections.ISSUE_CATEGORIZATION]).toBeFalsy();
   });
 });

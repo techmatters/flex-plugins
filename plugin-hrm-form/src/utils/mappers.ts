@@ -1,4 +1,6 @@
-import callTypes, { channelTypes, otherContactChannels } from '../states/DomainConstants';
+import { callTypes } from 'hrm-form-definitions';
+
+import { channelTypes } from '../states/DomainConstants';
 
 export const mapCallType = (str: string) => {
   switch (str) {
@@ -11,7 +13,7 @@ export const mapCallType = (str: string) => {
   }
 };
 
-const isOtherContactChannel = (channel: string) => (Object.values(otherContactChannels) as string[]).includes(channel); // Needed typecast here. For details see https://github.com/microsoft/TypeScript/issues/26255
+const isOtherContactChannel = (channel: string) => !(Object.values(channelTypes) as string[]).includes(channel); // Needed typecast here. For details see https://github.com/microsoft/TypeScript/issues/26255
 
 export const mapChannel = (channel: string) => {
   if (isOtherContactChannel(channel)) {
@@ -30,6 +32,8 @@ export const mapChannel = (channel: string) => {
       return 'WhatsApp';
     case channelTypes.twitter:
       return 'Twitter';
+    case channelTypes.instagram:
+      return 'Instagram';
     default:
       return 'Undefined';
   }

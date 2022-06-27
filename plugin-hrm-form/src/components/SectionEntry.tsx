@@ -1,13 +1,13 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Grid } from '@material-ui/core';
-import { Template } from '@twilio/flex-ui';
+import type { FormItemDefinition, LayoutValue } from 'hrm-form-definitions';
 
 import { SectionDescriptionText, SectionValueText } from '../styles/search';
 import { formatValue } from './common/forms/helpers';
-import type { FormItemDefinition, LayoutValue } from './common/forms/types';
 import { presentValue } from '../utils/formatters';
 import DownloadFile from './common/forms/DownloadFile';
+import { getConfig } from '../HrmFormPlugin';
 
 type Props = {
   description: React.ReactNode | string;
@@ -18,7 +18,8 @@ type Props = {
 };
 
 const SectionEntry: React.FC<Props> = ({ description, value, definition, layout, notBold }) => {
-  const formatted = presentValue(formatValue(layout)(value))(definition);
+  const { strings } = getConfig();
+  const formatted = presentValue(formatValue(layout)(value), strings)(definition);
 
   const getValue = () => {
     if (definition && definition.type === 'file-upload' && value !== null)

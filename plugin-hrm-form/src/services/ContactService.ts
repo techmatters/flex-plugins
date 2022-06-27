@@ -1,29 +1,31 @@
 /* eslint-disable sonarjs/prefer-immediate-return */
 import { set } from 'lodash/fp';
-import { ITask, TaskHelper, Actions as FlexActions } from '@twilio/flex-ui';
-
-import { createNewTaskEntry, TaskEntry } from '../states/contacts/reducer';
-import { isNonDataCallType } from '../states/ValidationRules';
-import { channelTypes } from '../states/DomainConstants';
-import { getConversationDuration, fillEndMillis } from '../utils/conversationDuration';
-import { getLimitAndOffsetParams } from './PaginationParams';
-import fetchHrmApi from './fetchHrmApi';
-import { getDateTime } from '../utils/helpers';
-import { getConfig, getDefinitionVersions } from '../HrmFormPlugin';
+import { TaskHelper } from '@twilio/flex-ui';
 import type {
   CategoriesDefinition,
   CategoryEntry,
+  DefinitionVersion,
   FormDefinition,
   FormItemDefinition,
-} from '../components/common/forms/types';
+} from 'hrm-form-definitions';
+
+import { createNewTaskEntry, TaskEntry } from '../states/contacts/reducer';
+import { isNonDataCallType } from '../states/ValidationRules';
+import { getQueryParams } from './PaginationParams';
+import { fillEndMillis, getConversationDuration } from '../utils/conversationDuration';
+import fetchHrmApi from './fetchHrmApi';
+import { getDateTime } from '../utils/helpers';
+import { getConfig, getDefinitionVersions } from '../HrmFormPlugin';
 import {
-  InformationObject,
   ContactRawJson,
-  SearchContactResult,
+  InformationObject,
   isOfflineContactTask,
   isTwilioTask,
+  SearchContact,
+  SearchContactResult,
 } from '../types/types';
 import { saveContactToExternalBackend } from '../dualWrite';
+import { getNumberFromTask } from '../utils';
 
 /**
  * Un-nests the information (caller/child) as it comes from DB, to match the form structure
@@ -33,40 +35,26 @@ import { saveContactToExternalBackend } from '../dualWrite';
 export const unNestInformation = (e: FormItemDefinition, obj: InformationObject) =>
   ['firstName', 'lastName'].includes(e.name) ? obj.name[e.name] : obj[e.name];
 
-const nestName = (information: { firstName: string; lastName: string }) => {
+const nestName = (information: { firstName: string; lastName: string }): InformationObject => {
   const { firstName, lastName, ...rest } = information;
   return { ...rest, name: { firstName, lastName } };
 };
 
-const unNestInformationObject = (
+export const unNestInformationObject = (
   def: FormDefinition,
   obj: InformationObject,
 ): TaskEntry['childInformation'] | TaskEntry['callerInformation'] =>
   def.reduce((acc, e) => ({ ...acc, [e.name]: unNestInformation(e, obj) }), {});
 
 export async function searchContacts(searchParams, limit, offset): Promise<SearchContactResult> {
-  const queryParams = getLimitAndOffsetParams(limit, offset);
+  const queryParams = getQueryParams({ limit, offset });
 
   const options = {
     method: 'POST',
     body: JSON.stringify(searchParams),
   };
 
-  const responseJson = await fetchHrmApi(`/contacts/search${queryParams}`, options);
-
-  return responseJson;
-}
-
-export function getNumberFromTask(task: ITask) {
-  if (task.channelType === channelTypes.facebook) {
-    return task.defaultFrom.replace('messenger:', '');
-  } else if (task.channelType === channelTypes.whatsapp) {
-    return task.defaultFrom.replace('whatsapp:', '');
-  } else if (task.channelType === channelTypes.web) {
-    return task.attributes.ip;
-  }
-
-  return task.defaultFrom;
+  return fetchHrmApi(`/contacts/search${queryParams}`, options);
 }
 
 /**
@@ -105,8 +93,13 @@ export const searchResultToContactForm = (def: FormDefinition, obj: InformationO
   return deTransformed;
 };
 
-export function transformCategories(helpline, categories: TaskEntry['categories']) {
-  const { IssueCategorizationTab } = getDefinitionVersions().currentDefinitionVersion.tabbedForms;
+export function transformCategories(
+  helpline,
+  categories: TaskEntry['categories'],
+  definition: DefinitionVersion | undefined = undefined,
+): Record<string, Record<string, boolean>> {
+  const def: DefinitionVersion = definition ?? getDefinitionVersions().currentDefinitionVersion;
+  const { IssueCategorizationTab } = def.tabbedForms;
   const cleanCategories = createCategoriesObject(IssueCategorizationTab(helpline));
   const transformedCategories = categories.reduce((acc, path) => set(path, true, acc), {
     categories: cleanCategories, // use an object with categories property so we can reuse the entire path (they look like categories.Category.Subcategory)
@@ -114,6 +107,15 @@ export function transformCategories(helpline, categories: TaskEntry['categories'
 
   return transformedCategories.categories;
 }
+
+export const transformContactFormValues = (
+  formValues: Record<string, string | boolean>,
+  formDefinition: FormDefinition,
+): InformationObject => {
+  // transform the form values before submit (e.g. "mixed" for 3-way checkbox becomes null)
+  const transformedValue = transformValues(formDefinition)(formValues);
+  return nestName(<{ firstName: string; lastName: string }>transformedValue);
+};
 
 /**
  * Transforms the form to be saved as the backend expects it
@@ -191,7 +193,7 @@ const saveContactToHrm = async (
   // This might change if isNonDataCallType, that's why we use rawForm
   const timeOfContact = getDateTime(rawForm.contactlessTask);
 
-  const { helpline } = form;
+  const { helpline, csamReports } = form;
   /*
    * We do a transform from the original and then add things.
    * Not sure if we should drop that all into one function or not.
@@ -219,6 +221,7 @@ const saveContactToHrm = async (
     taskId: uniqueIdentifier,
     channelSid,
     serviceSid,
+    csamReports,
   };
 
   const options = {
@@ -231,6 +234,20 @@ const saveContactToHrm = async (
   return { responseJson, requestPayload: body };
 };
 
+export const updateContactInHrm = async (
+  contactId: string,
+  body: {
+    rawJson: Partial<Omit<ContactRawJson, 'caseInformation'>> & Partial<ContactRawJson['caseInformation']>;
+  },
+) => {
+  const options = {
+    method: 'PATCH',
+    body: JSON.stringify(body),
+  };
+
+  return fetchHrmApi(`/contacts/${contactId}`, options);
+};
+
 export const saveContact = async (
   task,
   form,
@@ -240,11 +257,16 @@ export const saveContact = async (
 ) => {
   const response = await saveContactToHrm(task, form, workerSid, uniqueIdentifier, shouldFillEndMillis);
 
+  // TODO: add catch clause to handle saving to Sync Doc
   try {
     await saveContactToExternalBackend(task, response.requestPayload);
-  } finally {
-    return response.responseJson;
+  } catch (err) {
+    console.error(
+      `Saving task with sid ${task.taskSid} failed, presumably the attempt to add it to the pending store also failed so this data is likely lost`,
+      err,
+    );
   }
+  return response.responseJson;
 };
 
 export async function connectToCase(contactId, caseId) {

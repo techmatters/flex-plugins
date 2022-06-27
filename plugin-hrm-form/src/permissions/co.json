@@ -1,0 +1,22 @@
+{
+"closeCase":  [["isSupervisor"],["isCreator", "isCaseOpen"]],
+"reopenCase":  [["isSupervisor"]],
+"caseStatusTransition":  [["isSupervisor"]],
+"addNote":  [["isSupervisor"],["isCreator", "isCaseOpen"]],
+"editNote":  [["isSupervisor"],["isCreator", "isCaseOpen"]],
+"addReferral":  [["isSupervisor"],["isCreator", "isCaseOpen"]],
+"editReferral":  [["isSupervisor"]],
+"addHousehold":  [["isSupervisor"],["isCreator", "isCaseOpen"]],
+"editHousehold":  [["isSupervisor"],["isCreator", "isCaseOpen"]],
+"addPerpetrator":  [["isSupervisor"],["isCreator", "isCaseOpen"]],
+"editPerpetrator":  [["isSupervisor"],["isCreator", "isCaseOpen"]],
+"addIncident":  [["isSupervisor"],["isCreator", "isCaseOpen"]],
+"editIncident":  [["isSupervisor"],["isCreator", "isCaseOpen"]],
+"addDocument":  [["isSupervisor"],["isCreator", "isCaseOpen"]],
+"editDocument":  [["isSupervisor"],["isCreator", "isCaseOpen"]],
+"editCaseSummary":  [["isSupervisor"],["isCreator", "isCaseOpen"]],
+"editChildIsAtRisk":  [["isSupervisor"],["isCreator", "isCaseOpen"]],
+"editFollowUpDate":  [["isSupervisor"],["isCreator", "isCaseOpen"]],
+"editContact":  [["isSupervisor"],["isCreator", "isCaseOpen"]],
+"viewPostSurvey": [["isSupervisor"]]
+}

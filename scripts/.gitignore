@@ -2,6 +2,10 @@ source.json
 destination.json
 !package.json
 !package-lock.json
-node_modules/
 dist/
 .env
+private/
+
+# Generated files
+new-flex-plugins-workflow.yml
+new-serverless-workflow.yml

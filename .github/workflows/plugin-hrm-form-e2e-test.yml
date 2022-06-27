@@ -1,0 +1,87 @@
+name: End to End Testing CI
+
+# Action 
+on: [pull_request]
+concurrency: e2e
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout Branch
+        uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+
+      # Create Configuration file to replace AS_DEV_ACCOUNT_SID with E2E_ACCOUNT_SID
+      - name: Create appConfig.js
+        run: cp ./public/appConfig.template.e2e.js ./public/appConfig.js
+        working-directory: ./plugin-hrm-form
+        shell: bash
+      - name: Replace Twilio account SID in appConfig.js
+        uses: falnyr/replace-env-vars-action@master
+        env:
+          TWILIO_ACCOUNT_SID: ${{ secrets.E2E_DEV_ACCOUNT_SID}}
+        with:
+          filename: ./plugin-hrm-form/public/appConfig.js
+
+      - name: Create secret.js
+        run: |
+          mkdir ./src/private
+          touch ./src/private/secret.js
+        working-directory: ./plugin-hrm-form
+        shell: bash
+      - name: Fill secret.js
+        run: |
+          cat <<EOT >> ./src/private/secret.js
+          export const rollbarAccessToken = 'x';
+          export const datadogAccessToken = 'x';
+          export const datadogApplicationID = 'x';
+          export const fullStoryId = 'x';
+          EOT
+        working-directory: ./plugin-hrm-form
+        shell: bash
+
+      # Build Flex-plugins
+      - name: Install the Twilio CLI and plugins
+        run: npm install twilio-cli -g && twilio plugins:install @twilio-labs/plugin-flex
+      - name: Install hrm-form-definitions Packages
+        run: npm ci
+        working-directory: ./hrm-form-definitions
+      - name: Install Flex Plugin Packages
+        run: NODE_ENV=development UNBUNDLED_REACT=true npm ci
+        working-directory: ./plugin-hrm-form
+
+      # Run server
+      - name: Run Flex Dev Server
+        run: NODE_ENV=development UNBUNDLED_REACT=true npm run start &
+        working-directory: ./plugin-hrm-form
+
+      # Build Playwright
+      - name: Install e2e-tests dependencies
+        run: npm install
+        working-directory: ./e2e-tests
+      - name: Setup dependencies for playwright/browsers
+        uses: microsoft/playwright-github-action@v1
+      - name: Install Playwright CLI
+        run: npx playwright install
+        working-directory: ./e2e-tests
+
+      # Run E2E tests
+      - name: Run Playwright tests
+        run: DEBUG=pw:api PLAYWRIGHT_USER_USERNAME=${{secrets.PLAYWRIGHT_USER_USERNAME}} PLAYWRIGHT_USER_PASSWORD=${{secrets.PLAYWRIGHT_USER_PASSWORD}} TWILIO_ACCOUNT_SID=${{secrets.E2E_DEV_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{secrets.E2E_DEV_AUTH_TOKEN}} npx playwright test
+        working-directory: ./e2e-tests
+
+      # Upload artifacts
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: test-artifacts
+          path: e2e-tests/test-results

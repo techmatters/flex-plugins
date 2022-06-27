@@ -1,14 +1,16 @@
 import { isNullOrUndefined } from '../utils';
 
-export function getLimitAndOffsetParams(limit, offset, helpline) {
+export function getQueryParams({ limit, offset, sortBy = undefined, sortDirection = undefined, helpline = undefined }) {
   const hasLimit = !isNullOrUndefined(limit);
   const hasOffset = !isNullOrUndefined(offset);
+  const hasSortBy = !isNullOrUndefined(sortBy);
+  const hasSortDirection = !isNullOrUndefined(sortDirection);
   const hasHelpline = !isNullOrUndefined(helpline);
-
-  if (!hasLimit && !hasOffset) return '';
 
   const appendLimit = hasLimit ? `limit=${limit}` : '';
   const appendOffset = hasOffset ? `offset=${offset}` : '';
+  const appendSortBy = hasSortBy ? `sortBy=${sortBy}` : '';
+  const appendSortDirection = hasSortDirection ? `sortDirection=${sortDirection}` : '';
   const appendHelpline = hasHelpline ? `helpline=${helpline}` : '';
-  return `?${[appendLimit, appendOffset, appendHelpline].filter(e => e).join('&')}`;
+  return `?${[appendLimit, appendOffset, appendSortBy, appendSortDirection, appendHelpline].filter(e => e).join('&')}`;
 }

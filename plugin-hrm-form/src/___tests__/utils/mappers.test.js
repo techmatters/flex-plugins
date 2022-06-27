@@ -1,5 +1,5 @@
 import { mapAge, mapCallType, mapChannel } from '../../utils';
-import { channelTypes, otherContactChannels } from '../../states/DomainConstants';
+import { channelTypes } from '../../states/DomainConstants';
 
 test('Test contact call type mapper', () => {
   const mapSelf = 'Child calling about self';
@@ -32,8 +32,16 @@ test('Test contact channel mapper', () => {
   const expectCh5 = 'WhatsApp';
   const fmtCh5 = mapChannel(ch5);
 
-  const undef = 'anything else';
-  const expectUndef = 'Undefined';
+  const ch6 = channelTypes.twitter;
+  const expectCh6 = 'Twitter';
+  const fmtCh6 = mapChannel(ch6);
+
+  const ch7 = channelTypes.instagram;
+  const expectCh7 = 'Instagram';
+  const fmtCh7 = mapChannel(ch7);
+
+  const undef = 'Anything else';
+  const expectUndef = 'Anything else';
   const fmtUndef = mapChannel(undef);
 
   expect(fmtCh1).toEqual(expectCh1);
@@ -41,8 +49,8 @@ test('Test contact channel mapper', () => {
   expect(fmtCh3).toEqual(expectCh3);
   expect(fmtCh4).toEqual(expectCh4);
   expect(fmtCh5).toEqual(expectCh5);
-  // otherContactChannels are mapped with it's identity
-  Object.values(otherContactChannels).forEach(value => expect(mapChannel(value)).toBe(value));
+  expect(fmtCh6).toEqual(expectCh6);
+  expect(fmtCh7).toEqual(expectCh7);
   expect(fmtUndef).toEqual(expectUndef);
 });
 

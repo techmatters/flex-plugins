@@ -13,29 +13,35 @@ export const BottomButtonBarHeight = 55;
 type BoxProps = {
   width?: string;
   height?: string;
+  margin?: string;
   marginTop?: string;
   marginBottom?: string;
   marginLeft?: string;
   marginRight?: string;
+  padding?: string;
   paddingTop?: string;
   paddingBottom?: string;
   paddingLeft?: string;
   paddingRight?: string;
   alignSelf?: string;
+  textAlign?: string;
 };
 
 export const Box = styled('div')<BoxProps>`
   ${({ width }) => width && `width: ${width};`}
   ${({ height }) => height && `height: ${height};`}
+  ${({ margin }) => margin && `margin: ${margin}`}
   ${({ marginTop }) => marginTop && `margin-top: ${marginTop};`}
   ${({ marginBottom }) => marginBottom && `margin-bottom: ${marginBottom};`}
   ${({ marginLeft }) => marginLeft && `margin-left: ${marginLeft};`}
   ${({ marginRight }) => marginRight && `margin-right: ${marginRight};`}
+  ${({ padding }) => padding && `padding: ${padding}`}
   ${({ paddingTop }) => paddingTop && `padding-top: ${paddingTop};`}
   ${({ paddingBottom }) => paddingBottom && `padding-bottom: ${paddingBottom};`}
   ${({ paddingLeft }) => paddingLeft && `padding-left: ${paddingLeft};`}
   ${({ paddingRight }) => paddingRight && `padding-right: ${paddingRight};`}
   ${({ alignSelf }) => alignSelf && `align-self: ${alignSelf};`}
+  ${({ textAlign }) => textAlign && `text-align: ${textAlign};`}
 `;
 Box.displayName = 'Box';
 
@@ -244,6 +250,7 @@ StyledMenuItem.displayName = 'StyledMenuItem';
 type StyledNextStepButtonProps = {
   secondary?: boolean;
   disabled?: boolean;
+  margin?: string;
 };
 
 export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
@@ -254,7 +261,7 @@ export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
   color: ${props => (props.secondary ? HrmTheme.colors.secondaryButtonTextColor : HrmTheme.colors.buttonTextColor)};
   border: none;
   border-radius: 4px;
-  margin: 0;
+  margin: ${props => (props.margin ? props.margin : '0')};
   padding: 7px 23px;
   background-color: ${props =>
     props.disabled
@@ -276,7 +283,6 @@ export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
     )};
 
   &&:focus {
-    outline-color: #4d90fe;
     outline-style: auto;
     outline-width: initial;
   }
@@ -383,6 +389,7 @@ export const StyledTab = withStyles({
     height: 35,
     minHeight: 35,
     minWidth: 120,
+    width: 120,
     backgroundColor: '#ecedf1',
     borderTopLeftRadius: 4,
     borderTopRightRadius: 4,
@@ -529,11 +536,12 @@ type PaginationRowProps = {
   transparent?: boolean;
 };
 
-export const PaginationRow = styled(TableRow)<PaginationRowProps>`
-  height: auto;
-  vertical-align: top;
-  background-color: ${props => (props.transparent ? 'transparent' : HrmTheme.colors.base2)};
-  margin-top: -5;
+export const PaginationRow = styled('nav')<PaginationRowProps>`
+  display: flex;
+  justify-content: center;
+  background-color: ${props => (props.transparent ? 'transparent' : props.theme.colors.base2)};
+  padding: 40px auto;
+  margin: 40px auto;
 `;
 PaginationRow.displayName = 'PaginationRow';
 
@@ -661,6 +669,61 @@ export const FormLabel = styled('label')`
 `;
 FormLabel.displayName = 'FormLabel';
 
+export const FormLegend = styled('legend')`
+  display: flex;
+  font-size: 14px;
+  letter-spacing: 0;
+  min-height: 18px;
+  color: #000000;
+`;
+FormLegend.displayName = 'FormLegend';
+
+export const FormFieldset = styled('fieldset')<FormInputProps>`
+  display: flex;
+  flex-direction: column;
+  border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
+  border-radius: 4px;
+`;
+FormFieldset.displayName = 'FormFieldset';
+
+type FormListboxMultiselectProps = FormInputProps & { height?: number; width?: number };
+
+export const FormListboxMultiselect = styled('ul')<FormListboxMultiselectProps>`
+  display: flex;
+  flex-direction: column;
+  border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
+  border-radius: 4px;
+  height: ${props => (props.height ? `${props.height}px` : '250px')};
+  width: ${props => (props.width ? `${props.width}px` : '220px')};
+
+  &:focus-within {
+    outline: auto;
+  }
+`;
+FormListboxMultiselect.displayName = 'FormListboxMultiselect';
+
+export const FormListboxMultiselectOptionsContainer = styled('div')<FormListboxMultiselectProps>`
+  display: flex;
+  flex-direction: column;
+  padding-left: 10px;
+  padding-top: 10px;
+  overflow-y: scroll;
+  box-sizing: border-box;
+  border: 1px solid #e6e6e6;
+  border-radius: 4px;
+`;
+FormListboxMultiselectOptionsContainer.displayName = 'FormListboxMultiselectOptionsContainer';
+
+export const FormListboxMultiselectOption = styled('li')`
+  display: inline-flex;
+`;
+FormListboxMultiselectOption.displayName = 'FormListboxMultiselectOption';
+
+export const FormListboxMultiselectOptionLabel = styled(FormLabel)`
+  flex-direction: row;
+  align-items: start;
+`;
+
 export const UploadFileLabel = styled(Flex)`
   font-size: 14px;
   letter-spacing: 0;
@@ -728,11 +791,46 @@ export const FormInput = styled('input')<FormInputProps>`
 `;
 FormInput.displayName = 'FormInput';
 
+export const FormRadioInput = styled('input')<FormInputProps>`
+  &[type='radio'] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+
+    box-sizing: content-box;
+    padding: 0;
+    margin: 0 7px 0 0;
+    width: 12px;
+    height: 12px;
+    border: 2px solid #080808;
+    background-color: ${props => props.theme.colors.inputBackgroundColor};
+    border-radius: 50%;
+    display: grid;
+    place-content: center;
+  }
+
+  &[type='radio']:checked:after {
+    display: block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    content: '';
+    position: relative;
+    background: #080808;
+    background-color: #080808;
+  }
+`;
+FormRadioInput.displayName = 'FormRadioInput';
+
 export const FormDateInput = styled(FormInput)`
   &[type='date']::-webkit-clear-button,
   &[type='date']::-webkit-inner-spin-button {
     -webkit-appearance: none;
     display: none;
+  }
+  &[type='date']::placeholder {
+    color: '#AEAEAE';
+    opacity: 1;
   }
   /* &[type='date'] {} */
   /* &[type='date']::-webkit-calendar-picker-indicator {} */
@@ -839,8 +937,7 @@ export const FormCheckbox = styled(CheckboxBase)`
   }
 
   &[type='checkbox']:focus:not(:focus-visible) {
-    outline: rgb(0, 95, 204) 2px solid;
-    outline-offset: 2px;
+    outline: auto;
   }
 `;
 FormCheckbox.displayName = 'FormCheckbox';
@@ -1039,10 +1136,33 @@ export const Bold = styled('span')`
 
 Bold.displayName = 'Bold';
 
-export const StyledBackButton = styled(ButtonBase)`
+export const CSAMReportButtonText = styled(FontOpenSans)`
+  font-size: 12px;
+  color: ${props => props.theme.colors.hyperlinkColor};
+  font-weight: 600;
+`;
+CSAMReportButtonText.displayName = 'CSAMReportButtonText';
+
+const TabbedFormsHeaderButton = styled(ButtonBase)`
   &:focus {
     outline: auto;
   }
 `;
+TabbedFormsHeaderButton.displayName = 'TabbedFormsHeaderButton';
 
+export const StyledBackButton = TabbedFormsHeaderButton;
 StyledBackButton.displayName = 'StyledBackButton';
+
+export const StyledCSAMReportButton = TabbedFormsHeaderButton;
+StyledCSAMReportButton.displayName = 'StyledCSAMReportButton';
+
+export const HeaderCloseButton = styled(ButtonBase)`
+  && {
+    margin-left: auto;
+  }
+
+  :focus {
+    outline: auto;
+  }
+`;
+HeaderCloseButton.displayName = 'HeaderCloseButton';

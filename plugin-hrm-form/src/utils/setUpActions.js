@@ -1,5 +1,7 @@
+/* eslint-disable camelcase */
 // eslint-disable-next-line no-unused-vars
 import { Manager, TaskHelper, Actions as FlexActions, StateHelper, ChatOrchestrator } from '@twilio/flex-ui';
+import { callTypes } from 'hrm-form-definitions';
 
 // eslint-disable-next-line no-unused-vars
 import { DEFAULT_TRANSFER_MODE, getConfig } from '../HrmFormPlugin';
@@ -10,15 +12,17 @@ import {
   getDefinitionVersion,
   postSurveyInit,
 } from '../services/ServerlessService';
-import { namespace, contactFormsBase, configurationBase } from '../states';
+import { namespace, contactFormsBase, configurationBase, dualWriteBase } from '../states';
 import * as Actions from '../states/contacts/actions';
 import { populateCurrentDefinitionVersion, updateDefinitionVersion } from '../states/configuration/actions';
 import { changeRoute } from '../states/routing/actions';
+import { clearCustomGoodbyeMessage } from '../states/dualWrite/actions';
 import * as GeneralActions from '../states/actions';
-import callTypes, { transferModes } from '../states/DomainConstants';
+import { transferModes, channelTypes } from '../states/DomainConstants';
 import * as TransferHelpers from './transfer';
 import { saveFormSharedState, loadFormSharedState } from './sharedState';
 import { prepopulateForm } from './prepopulateForm';
+import { recordEvent } from '../fullStory';
 
 /**
  * @param {string} version
@@ -145,18 +149,23 @@ const sendSystemMessageOfKey = messageKey => setupObject => async payload => {
   await sendSystemMessage({ taskSid: payload.task.taskSid, message, from: 'Bot' });
 };
 
-let customGoodbyeMessage;
-export const setCustomGoodbyeMessage = message => (customGoodbyeMessage = message);
-
-const sendSystemCustomGoodyeMessage = () => () => async payload => {
-  const message = customGoodbyeMessage;
-  customGoodbyeMessage = null; // Clear customGoodbyeMessage
-  await sendSystemMessage({ taskSid: payload.task.taskSid, message, from: 'Bot' });
+const sendSystemCustomGoodbyeMessage = customGoodbyeMessage => () => async payload => {
+  const { taskSid } = payload.task;
+  Manager.getInstance().store.dispatch(clearCustomGoodbyeMessage(taskSid));
+  await sendSystemMessage({ taskSid, message: customGoodbyeMessage, from: 'Bot' });
 };
 
 const sendWelcomeMessage = sendMessageOfKey('WelcomeMsg');
-const sendGoodbyeMessage = () =>
-  customGoodbyeMessage ? sendSystemCustomGoodyeMessage() : sendSystemMessageOfKey('GoodbyeMsg');
+const sendGoodbyeMessage = taskSid => {
+  const { enable_dual_write } = getConfig().featureFlags;
+
+  const customGoodbyeMessage =
+    enable_dual_write &&
+    Manager.getInstance().store.getState()[namespace][dualWriteBase].tasks[taskSid]?.customGoodbyeMessage;
+  return customGoodbyeMessage
+    ? sendSystemCustomGoodbyeMessage(customGoodbyeMessage)
+    : sendSystemMessageOfKey('GoodbyeMsg');
+};
 
 /**
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
@@ -216,6 +225,7 @@ export const customTransferTask = setupObject => async (payload, original) => {
    * We shortcut the rest of the function to save extra time and unnecessary visual changes.
    */
   if (!TaskHelper.isCallTask(payload.task) && mode === transferModes.warm) {
+    recordEvent('Transfer Warm Chat Blocked', {});
     window.alert(Manager.getInstance().strings['Transfer-ChatWarmNotAllowed']);
     return () => undefined; // Not calling original(payload) prevents the additional "Task cannot be transferred" notification
   }
@@ -259,7 +269,7 @@ export const hangupCall = fromActionFunction(saveEndMillis);
 export const wrapupTask = setupObject =>
   fromActionFunction(async payload => {
     if (TaskHelper.isChatBasedTask(payload.task)) {
-      await sendGoodbyeMessage()(setupObject)(payload);
+      await sendGoodbyeMessage(payload.task.taskSid)(setupObject)(payload);
     }
     await saveEndMillis(payload);
   });
@@ -292,20 +302,31 @@ const removeContactForm = payload => {
 };
 
 /**
+ *
+ * @param {import('../types/types').CustomITask} task
+ */
+const isAseloCustomChannelTask = task =>
+  task.channelType === channelTypes.twitter || task.channelType === channelTypes.instagram;
+
+/**
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
  */
 export const setUpPostSurvey = setupObject => {
   const { featureFlags } = setupObject;
   if (featureFlags.enable_post_survey) {
-    const excludeDeactivateChatChannel = event => {
+    const maybeExcludeDeactivateChatChannel = event => {
+      const defaultOrchestrations = ChatOrchestrator.getOrchestrations(event);
+      const excludeDeactivateChatChannel = defaultOrchestrations.filter(e => e !== 'DeactivateChatChannel');
+
       ChatOrchestrator.setOrchestrations(
         event,
-        ChatOrchestrator.getOrchestrations(event).filter(e => e !== 'DeactivateChatChannel'),
+        // Instead than setting the orchestrations as a list of actions (ChatOrchestration[]), we can set it to a callback with type (task: ITask) => ChatOrchestration[]
+        task => (isAseloCustomChannelTask(task) ? defaultOrchestrations : excludeDeactivateChatChannel),
       );
     };
 
-    excludeDeactivateChatChannel('wrapup');
-    excludeDeactivateChatChannel('completed');
+    maybeExcludeDeactivateChatChannel('wrapup');
+    maybeExcludeDeactivateChatChannel('completed');
   }
 };
 
@@ -316,7 +337,10 @@ export const setUpPostSurvey = setupObject => {
 const triggerPostSurvey = async (setupObject, payload) => {
   const { task } = payload;
 
-  if (TaskHelper.isChatBasedTask(task)) {
+  const shouldTriggerPostSurvey =
+    TaskHelper.isChatBasedTask(task) && !isAseloCustomChannelTask(task) && TransferHelpers.hasTaskControl(task);
+
+  if (shouldTriggerPostSurvey) {
     const { taskSid } = task;
     const channelSid = TaskHelper.getTaskChatChannelSid(task);
     const taskLanguage = getTaskLanguage(setupObject)(payload);

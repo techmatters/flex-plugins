@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { parseISO } from 'date-fns';
-import { Template, ITask } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 
@@ -22,85 +22,116 @@ import CaseAddButton from './CaseAddButton';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { ContactDetailsSections } from '../common/ContactDetails';
-import { namespace, routingBase } from '../../states';
-import { blankReferral, Case as CaseType } from '../../types/types';
-import { isConnectedCaseActivity } from './caseHelpers';
+import { CaseItemEntry, CustomITask } from '../../types/types';
+import { isConnectedCaseActivity } from './caseActivities';
 import { TaskEntry } from '../../states/contacts/reducer';
-import { Activity } from '../../states/case/types';
+import { Activity, NoteActivity, ReferralActivity } from '../../states/case/types';
 import { PermissionActions, PermissionActionType } from '../../permissions';
+import { NewCaseSubroutes, AppRoutesWithCase, CaseItemAction } from '../../states/routing/types';
 
 type OwnProps = {
   timelineActivities: Activity[];
+  contacts: any[];
   can: (action: PermissionActionType) => boolean;
-  task: ITask;
+  taskSid: CustomITask['taskSid'];
   form: TaskEntry;
-  caseObj: CaseType;
+  route: AppRoutesWithCase['route'];
 };
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const Timeline: React.FC<Props> = props => {
-  const { can, task, form, caseObj, changeRoute, updateTempInfo, route, timelineActivities } = props;
+  const { can, taskSid, form, changeRoute, updateTempInfo, route, timelineActivities } = props;
   const [mockedMessage, setMockedMessage] = useState(null);
 
-  const handleOnClickView = activity => {
+  const handleViewNoteClick = (activity: NoteActivity) => {
+    const { twilioWorkerId } = activity;
+    const info: CaseItemEntry = {
+      id: null,
+      form: { ...activity.note },
+      twilioWorkerId,
+      createdAt: parseISO(activity.date).toISOString(),
+      updatedAt: activity.updatedAt ? parseISO(activity.updatedAt).toISOString() : undefined,
+      updatedBy: activity.updatedBy,
+    };
+    updateTempInfo(
+      { screen: NewCaseSubroutes.Note, action: CaseItemAction.View, info: { ...info, index: activity.originalIndex } },
+      taskSid,
+    );
+    changeRoute({ route, subroute: NewCaseSubroutes.Note, action: CaseItemAction.View }, taskSid);
+  };
+
+  const handleViewReferralClick = (activity: ReferralActivity) => {
+    const { twilioWorkerId } = activity;
+    const info: CaseItemEntry = {
+      id: null,
+      form: { ...activity.referral },
+      twilioWorkerId,
+      createdAt: parseISO(activity.createdAt).toISOString(),
+      updatedAt: activity.updatedAt ? parseISO(activity.updatedAt).toISOString() : undefined,
+      updatedBy: activity.updatedBy,
+    };
+    updateTempInfo(
+      {
+        screen: NewCaseSubroutes.Referral,
+        action: CaseItemAction.View,
+        info: { ...info, index: activity.originalIndex },
+      },
+      taskSid,
+    );
+    changeRoute({ route, subroute: NewCaseSubroutes.Referral, action: CaseItemAction.View }, taskSid);
+  };
+
+  const handleViewConnectedCaseActivityClick = activity => {
     const { twilioWorkerId } = activity;
 
-    if (activity.type === 'note') {
-      const info = {
-        note: activity.text,
-        counselor: twilioWorkerId,
-        date: parseISO(activity.date).toISOString(),
-      };
-      updateTempInfo({ screen: 'view-note', info }, task.taskSid);
-      changeRoute({ route, subroute: 'view-note' }, task.taskSid);
-    } else if (activity.type === 'referral') {
-      const info = {
-        referral: activity.referral,
-        counselor: twilioWorkerId,
-        date: parseISO(activity.createdAt).toISOString(),
-      };
-      updateTempInfo({ screen: 'view-referral', info }, task.taskSid);
-      changeRoute({ route, subroute: 'view-referral' }, task.taskSid);
-    } else if (isConnectedCaseActivity(activity)) {
-      const detailsExpanded = {
-        [ContactDetailsSections.GENERAL_DETAILS]: true,
-        [ContactDetailsSections.CALLER_INFORMATION]: false,
-        [ContactDetailsSections.CHILD_INFORMATION]: false,
-        [ContactDetailsSections.ISSUE_CATEGORIZATION]: false,
-        [ContactDetailsSections.CONTACT_SUMMARY]: false,
-      };
-      const contact = caseObj.connectedContacts.find(c => c.id === activity.contactId);
-      const tempInfo = {
-        detailsExpanded,
-        contact,
-        createdAt: activity.createdAt,
-        timeOfContact: activity.date,
-        counselor: twilioWorkerId,
-      };
-      updateTempInfo({ screen: 'view-contact', info: tempInfo }, task.taskSid);
-      changeRoute({ route, subroute: 'view-contact' }, task.taskSid);
-    } else {
-      setMockedMessage(<Template code="NotImplemented" />);
-    }
+    const detailsExpanded = {
+      [ContactDetailsSections.GENERAL_DETAILS]: true,
+      [ContactDetailsSections.CALLER_INFORMATION]: false,
+      [ContactDetailsSections.CHILD_INFORMATION]: false,
+      [ContactDetailsSections.ISSUE_CATEGORIZATION]: false,
+      [ContactDetailsSections.CONTACT_SUMMARY]: false,
+    };
+    const contact = props.contacts.find(c => c.id === activity.contactId);
+    const tempInfo = {
+      detailsExpanded,
+      contact,
+      createdAt: activity.createdAt,
+      timeOfContact: activity.date,
+      counselor: twilioWorkerId,
+    };
+    updateTempInfo({ screen: NewCaseSubroutes.ViewContact, info: { ...tempInfo } }, taskSid);
+    changeRoute({ route, subroute: NewCaseSubroutes.ViewContact }, taskSid);
   };
 
   const handleAddNoteClick = () => {
-    updateTempInfo({ screen: 'add-note', info: null }, task.taskSid);
-    changeRoute({ route, subroute: 'add-note' }, task.taskSid);
+    updateTempInfo({ screen: NewCaseSubroutes.Note, action: CaseItemAction.Add, info: null }, taskSid);
+    changeRoute({ route, subroute: NewCaseSubroutes.Note, action: CaseItemAction.Add }, taskSid);
   };
 
   const handleAddReferralClick = () => {
-    updateTempInfo({ screen: 'add-referral', info: blankReferral }, task.taskSid);
-    changeRoute({ route, subroute: 'add-referral' }, task.taskSid);
+    updateTempInfo({ screen: NewCaseSubroutes.Referral, action: CaseItemAction.Add, info: null }, taskSid);
+    changeRoute({ route, subroute: NewCaseSubroutes.Referral, action: CaseItemAction.Add }, taskSid);
   };
 
   /*
    * If case has not been created yet, we should return value from the form.
    * Else If case was already created we should return rawJson value.
    */
-  const callType = form?.callType || caseObj.connectedContacts[0]?.rawJson?.callType;
+  const callType = form?.callType || props.contacts[0]?.rawJson?.callType;
+
+  const handleViewClick = activity => {
+    if (activity.type === 'note') {
+      handleViewNoteClick(activity);
+    } else if (activity.type === 'referral') {
+      handleViewReferralClick(activity);
+    } else if (isConnectedCaseActivity(activity)) {
+      handleViewConnectedCaseActivityClick(activity);
+    } else {
+      setMockedMessage(<Template code="NotImplemented" />);
+    }
+  };
 
   return (
     <Box marginTop="25px">
@@ -142,9 +173,11 @@ const Timeline: React.FC<Props> = props => {
               )}
               <TimelineText>{activity?.text}</TimelineText>
               <Box marginLeft="auto" marginRight="10px">
-                <ViewButton onClick={() => handleOnClickView(activity)}>
-                  <Template code="Case-ViewButton" />
-                </ViewButton>
+                <Box marginLeft="auto" marginRight="10px">
+                  <ViewButton onClick={() => handleViewClick(activity)}>
+                    <Template code="Case-ViewButton" />
+                  </ViewButton>
+                </Box>
               </Box>
             </TimelineRow>
           );
@@ -155,16 +188,12 @@ const Timeline: React.FC<Props> = props => {
 
 Timeline.displayName = 'Timeline';
 
-const mapStateToProps = (state, ownProps) => ({
-  route: state[namespace][routingBase].tasks[ownProps.task.taskSid].route,
-});
-
 const mapDispatchToProps = dispatch => ({
   changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
   updateTempInfo: bindActionCreators(CaseActions.updateTempInfo, dispatch),
 });
 
-const connector = connect(mapStateToProps, mapDispatchToProps);
+const connector = connect(null, mapDispatchToProps);
 const connected = connector(Timeline);
 
 export default connected;

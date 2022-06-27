@@ -5,12 +5,13 @@ import { ITask } from '@twilio/flex-ui';
 import * as t from './types';
 import { ConfigurationState } from '../configuration/reducer';
 import { Case, SearchContact } from '../../types/types';
-import { searchContacts as searchContactsApiCall, getNumberFromTask } from '../../services/ContactService';
+import { searchContacts as searchContactsApiCall } from '../../services/ContactService';
 import { searchCases as searchCasesApiCall } from '../../services/CaseService';
 import { ContactDetailsSectionsType } from '../../components/common/ContactDetails';
 import { addDetails } from './helpers';
 import { updateDefinitionVersion } from '../configuration/actions';
 import { getContactsMissingVersions, getCasesMissingVersions } from '../../utils/definitionVersions';
+import { getNumberFromTask } from '../../utils/task';
 
 // Action creators
 export const handleSearchFormChange = (taskId: string) => <K extends keyof t.SearchFormValues>(
@@ -75,17 +76,6 @@ export const viewPreviousContacts = (dispatch: Dispatch<any>) => (task: ITask) =
   dispatch({ type: t.VIEW_PREVIOUS_CONTACTS, taskId, contactNumber });
 };
 
-/**
- * Updates a case in redux
- * @param taskId TaskId
- * @param updatedCase Case to update
- */
-export const updateCases = (taskId: string, updatedCase: Case): t.SearchActionType => ({
-  type: t.SEARCH_CASES_UPDATE,
-  taskId,
-  updatedCase,
-});
-
 export const changeSearchPage = (taskId: string) => (page: t.SearchPagesType): t.SearchActionType => ({
   type: t.CHANGE_SEARCH_PAGE,
   page,
@@ -95,11 +85,5 @@ export const changeSearchPage = (taskId: string) => (page: t.SearchPagesType): t
 export const viewContactDetails = (taskId: string) => (contact: SearchContact): t.SearchActionType => ({
   type: t.VIEW_CONTACT_DETAILS,
   contact,
-  taskId,
-});
-
-export const handleExpandDetailsSection = (taskId: string) => (section: ContactDetailsSectionsType) => ({
-  type: t.HANDLE_EXPAND_DETAILS_SECTION,
-  section,
   taskId,
 });

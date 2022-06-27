@@ -1,0 +1,17 @@
+
+   
+{
+    "label": "Helpline",
+    "helplines": [
+      {
+        "label": "SafeSpot",
+        "value": "SafeSpot",
+        "default": true,
+        "manager": {
+          "name": "Anna Dawkins",
+          "phone": "",
+          "email": "adawkins@safespotja.com"
+        }
+      }
+    ]
+  }

@@ -1,9 +1,15 @@
 /* eslint-disable import/no-unused-modules */
 import { ITask } from '@twilio/flex-ui';
+import { DefinitionVersionId, CallTypes } from 'hrm-form-definitions';
 
-import type { CallTypes } from '../states/DomainConstants';
+import { DateFilterValue } from '../components/caseList/filters/dateFilters';
 
-type EntryInfo = { createdAt: string; twilioWorkerId: string };
+export type EntryInfo = {
+  createdAt: string;
+  updatedAt?: string;
+  updatedBy?: string;
+  twilioWorkerId: string;
+};
 
 /*
  * export type ReferralEntry = {
@@ -12,6 +18,10 @@ type EntryInfo = { createdAt: string; twilioWorkerId: string };
  *   comments: string;
  * };
  */
+
+export type CaseItemFormValues = { [key: string]: string | boolean };
+
+export type CaseItemEntry = { form: CaseItemFormValues; id: string | undefined } & EntryInfo;
 
 export type Household = { [key: string]: string | boolean };
 
@@ -27,27 +37,23 @@ export type IncidentEntry = { incident: Incident } & EntryInfo;
 
 export type Note = { [key: string]: string | boolean };
 
-export type NoteEntry = { note: string; counselor: string; date: string };
+export type NoteEntry = Note & EntryInfo;
 
-export type Referral = { [key: string]: string | boolean };
+export type Referral = { date: string; referredTo: string; [key: string]: string | boolean };
 
-export type ReferralEntry = { [key: string]: string | boolean };
+export type ReferralEntry = Referral & EntryInfo;
 
 export type Document = { [key: string]: string | boolean };
 
-export type DocumentEntry = { document: Document } & EntryInfo;
+export type DocumentEntry = { document: Document; id: string | undefined } & EntryInfo;
 
-export const blankReferral = {
-  date: null,
-  referredTo: null,
-  comments: null,
-};
+export type CSAMReportEntry = { csamReportId: string; id: number } & EntryInfo;
 
 export type CaseInfo = {
-  definitionVersion?: string;
+  definitionVersion?: DefinitionVersionId;
   offlineContactCreator?: string;
   summary?: string;
-  notes?: NoteEntry[];
+  counsellorNotes?: NoteEntry[];
   perpetrators?: PerpetratorEntry[];
   households?: HouseholdEntry[];
   referrals?: ReferralEntry[];
@@ -63,6 +69,8 @@ export type Case = {
   helpline: string;
   twilioWorkerId: string;
   info?: CaseInfo;
+  childName: string;
+  categories: {};
   createdAt: string;
   updatedAt: string;
   connectedContacts: any[]; // TODO: create contact type
@@ -75,11 +83,11 @@ export type InformationObject = NestedInformation & {
 
 // Information about a single contact, as expected from DB (we might want to reuse this type in backend) - (is this a correct placement for this?)
 export type ContactRawJson = {
-  definitionVersion?: string;
+  definitionVersion?: DefinitionVersionId;
   callType: CallTypes | '';
   childInformation: InformationObject;
   callerInformation: InformationObject;
-  caseInformation: { categories: {} } & { [key: string]: string | boolean | {} }; // // having {} makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
+  caseInformation: { categories: {} } & { [key: string]: string | boolean | {} }; // having {} makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
   contactlessTask: { [key: string]: string | boolean };
 };
 
@@ -87,6 +95,7 @@ export type ContactRawJson = {
 export type SearchContact = {
   contactId: string;
   overview: {
+    helpline: string;
     dateTime: string;
     name: string;
     customerNumber: string;
@@ -96,8 +105,10 @@ export type SearchContact = {
     notes: string;
     channel: string;
     conversationDuration: number;
+    createdBy: string;
   };
   details: ContactRawJson;
+  csamReports: CSAMReportEntry[];
 };
 
 export type SearchContactResult = {
@@ -108,6 +119,50 @@ export type SearchContactResult = {
 export type SearchCaseResult = {
   count: number;
   cases: Case[];
+};
+
+export enum ListCasesSortBy {
+  ID = 'id',
+  CREATED_AT = 'createdAt',
+  UPDATED_AT = 'updatedAt',
+  CHILD_NAME = 'childName',
+  FOLLOW_UP_DATE = 'info.followUpDate',
+}
+
+export enum ListCasesSortDirection {
+  ASC = 'ASC',
+  DESC = 'DESC',
+}
+
+export type ListCasesSort = {
+  sortBy?: ListCasesSortBy;
+  sortDirection?: ListCasesSortDirection;
+};
+
+export type ListCasesQueryParams = {
+  limit?: number;
+  offset?: number;
+  sortBy?: ListCasesSortBy;
+  sortDirection?: ListCasesSortDirection;
+} & ListCasesSort;
+
+export type CategoryFilter = {
+  category: string;
+  subcategory: string;
+};
+
+export type ListCasesFilters = {
+  counsellors: string[];
+  statuses: string[];
+  includeOrphans: boolean;
+  createdAt?: DateFilterValue;
+  updatedAt?: DateFilterValue;
+  followUpDate?: DateFilterValue;
+  categories?: CategoryFilter[];
+};
+
+export type CounselorHash = {
+  [sid: string]: string;
 };
 
 /**

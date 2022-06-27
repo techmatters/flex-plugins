@@ -1,5 +1,6 @@
 import { getConfig } from '../HrmFormPlugin';
 import { saveContactToExternalBackend } from '../dualWrite';
+import { recordBackendError } from '../fullStory';
 
 const isSharedStateClientConnected = sharedStateClient =>
   sharedStateClient && sharedStateClient.connectionState === 'connected';
@@ -17,6 +18,7 @@ export const saveFormSharedState = async (form, task) => {
   try {
     if (!isSharedStateClientConnected(sharedStateClient)) {
       console.error('Error with Sync Client conection. Sync Client object is: ', sharedStateClient);
+      recordBackendError('Save Form Shared State', new Error('Sync Client Disconnected'));
       window.alert(strings.SharedStateSaveFormError);
       return null;
     }
@@ -49,6 +51,7 @@ export const loadFormSharedState = async task => {
   try {
     if (!isSharedStateClientConnected(sharedStateClient)) {
       console.error('Error with Sync Client conection. Sync Client object is: ', sharedStateClient);
+      recordBackendError('Load Form Shared State', new Error('Sync Client Disconnected'));
       window.alert(strings.SharedStateLoadFormError);
       return null;
     }

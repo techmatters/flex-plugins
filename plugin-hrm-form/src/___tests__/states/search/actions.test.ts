@@ -1,12 +1,14 @@
-import '../../mockGetConfig';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
+import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import * as t from '../../../states/search/types';
 import * as actions from '../../../states/search/actions';
 import { ContactDetailsSections } from '../../../components/common/ContactDetails';
 import { SearchContact } from '../../../types/types';
 import { searchContacts } from '../../../services/ContactService';
 import { searchCases } from '../../../services/CaseService';
-import { CONTACTS_PER_PAGE, CASES_PER_PAGE } from '../../../components/search/SearchResults';
+import { CASES_PER_PAGE, CONTACTS_PER_PAGE } from '../../../components/search/SearchResults';
+import { getDefinitionVersions } from '../../../HrmFormPlugin';
 
 jest.mock('../../../services/ContactService', () => ({ searchContacts: jest.fn() }));
 jest.mock('../../../services/CaseService', () => ({ searchCases: jest.fn() }));
@@ -16,6 +18,13 @@ const task = { taskSid: 'WT123' };
 const taskId = task.taskSid;
 
 describe('test action creators', () => {
+  beforeAll(async () => {
+    mockGetDefinitionsResponse(
+      getDefinitionVersions,
+      DefinitionVersionId.v1,
+      await loadDefinition(DefinitionVersionId.v1),
+    );
+  });
   test('changeSearchPage', () => {
     expect(actions.changeSearchPage(taskId)('details')).toStrictEqual({
       type: t.CHANGE_SEARCH_PAGE,
@@ -36,14 +45,6 @@ describe('test action creators', () => {
       type: t.CHANGE_SEARCH_PAGE,
       taskId,
       page: t.SearchPages.resultsCases,
-    });
-  });
-
-  test('handleExpandDetailsSection', () => {
-    expect(actions.handleExpandDetailsSection(taskId)(ContactDetailsSections.CALLER_INFORMATION)).toStrictEqual({
-      type: t.HANDLE_EXPAND_DETAILS_SECTION,
-      taskId,
-      section: ContactDetailsSections.CALLER_INFORMATION,
     });
   });
 

@@ -1,0 +1,94 @@
+[
+  {
+    "name": "callSummary",
+    "label": "Contact Summary",
+    "type": "textarea",
+    "required": { "value": true, "message": "RequiredFieldError" }
+  },
+  {
+    "name": "repeatCaller",
+    "label": "Repeat Caller?",
+    "type": "mixed-checkbox"
+  },
+  {
+    "name": "actionTaken",
+    "label": "Action Taken",
+    "type": "listbox-multiselect",
+    "options": [
+      { "value": "Unknown", "label": "No action" },
+      {
+        "value": "DirectInterventionsByTheChildHelpline",
+        "label": "Direct interventions by the child helpline"
+      },
+      {
+        "value": "ReferralsToMentalHealthServices",
+        "label": "Referrals to Mental Health Services"
+      },
+      {
+        "value": "ReferralsToChildProtectionAgencies",
+        "label": "Referrals to child protection agencies"
+      },
+      {
+        "value": "ReferralsToGeneralHealthcareProfessionals",
+        "label": "Referrals to general healthcare professionals"
+      },
+      {
+        "value": "ReferralsToLawEnforcementAgencies",
+        "label": "Referrals to law enforcement agencies"
+      },
+      {
+        "value": "ReferralsToOtherOrganisations",
+        "label": "Referrals to other organisations"
+      },
+      {
+        "value": "ReferralsToGrievanceOfficers",
+        "label": "Referrals to Grievance Officers"
+      }
+    ]
+  },
+  {
+    "name": "OtherAction",
+    "label": "Other action",
+    "type": "input"
+  },
+  {
+    "name": "service",
+    "label": "Case Category",
+    "type": "select",
+    "options": [
+      { "value": "Meri Trustline", "label": "Meri Trustline" },
+      { "value": "Other", "label": "Other" }
+    ]
+  },
+  {
+    "name": "serviceOther",
+    "label": "Specify Other",
+    "type": "input"
+  },
+  {
+    "name": "howDidYouKnowAboutOurLine",
+    "label": "How did you hear about us?",
+    "type": "select",
+    "options": [
+      { "value": "Unknown", "label": "" },
+      { "value": "Radio", "label": "Radio" },
+      { "value": "Television", "label": "Television" },
+      { "value": "School", "label": "School" },
+      { "value": "Community", "label": "Community" },
+      { "value": "Friend", "label": "Friend" },
+      { "value": "Social media", "label": "Social media" },
+      { "value": "Partners", "label": "Partners" },
+      { "value": "Others", "label": "Others" }
+    ]
+  },
+  {
+    "name": "okForCaseWorkerToCall",
+    "label": "Ok for case worker to call?",
+    "type": "mixed-checkbox"
+  },
+  {
+    "name": "didTheChildFeelWeSolvedTheirProblem",
+    "label": "Did the caller feel satisfied with the response to the call?",
+    "type": "mixed-checkbox"
+  }
+]

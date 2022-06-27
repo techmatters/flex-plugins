@@ -1,25 +1,49 @@
 import { omit } from 'lodash';
+import { CallTypes, callTypes } from 'hrm-form-definitions';
 
 import * as t from './types';
 import {
+  DefinitionVersion,
+  GeneralActionType,
   INITIALIZE_CONTACT_STATE,
   RECREATE_CONTACT_STATE,
   REMOVE_CONTACT_STATE,
-  GeneralActionType,
-  DefinitionVersion,
 } from '../types';
 import { createStateItem } from '../../components/common/forms/formGenerators';
 import { createContactlessTaskTabDefinition } from '../../components/tabbedForms/ContactlessTaskTabDefinition';
-import callTypes, { CallTypes } from '../DomainConstants';
+import {
+  ExistingContactAction,
+  ExistingContactsState,
+  LOAD_CONTACT_ACTION,
+  loadContactReducer,
+  RELEASE_CONTACT_ACTION,
+  releaseContactReducer,
+  EXISTING_CONTACT_SET_CATEGORIES_GRID_VIEW_ACTION,
+  setCategoriesGridViewReducer,
+  EXISTING_CONTACT_TOGGLE_CATEGORY_EXPANDED_ACTION,
+  toggleCategoryExpandedReducer,
+} from './existingContacts';
+import { CSAMReportEntry } from '../../types/types';
+import {
+  ContactDetailsAction,
+  ContactDetailsRoute,
+  ContactDetailsState,
+  DetailsContext,
+  NAVIGATE_CONTACT_DETAILS_ACTION,
+  navigateContactDetailsReducer,
+  sectionExpandedStateReducer,
+  TOGGLE_DETAIL_EXPANDED_ACTION,
+} from './contactDetails';
 
 export type TaskEntry = {
   helpline: string;
-  callType: CallTypes | '';
+  callType: CallTypes;
   childInformation: { [key: string]: string | boolean };
   callerInformation: { [key: string]: string | boolean };
   caseInformation: { [key: string]: string | boolean };
   contactlessTask: { [key: string]: string | boolean };
   categories: string[];
+  csamReports: CSAMReportEntry[];
   metadata: {
     startMillis: number;
     endMillis: number;
@@ -35,6 +59,8 @@ type ContactsState = {
   tasks: {
     [taskId: string]: TaskEntry;
   };
+  existingContacts: ExistingContactsState;
+  contactDetails: ContactDetailsState;
 };
 
 export const emptyCategories = [];
@@ -67,25 +93,40 @@ export const createNewTaskEntry =
       categories: categoriesMeta,
     };
 
-    const initialContactlessTaskTabDefinition = createContactlessTaskTabDefinition([], definitions.helplineInformation);
-    const contactlessTask = initialContactlessTaskTabDefinition.reduce(createStateItem, {});
+  const initialContactlessTaskTabDefinition = createContactlessTaskTabDefinition({
+    counselorsList: [],
+    definition: definitions.tabbedForms.ContactlessTaskTab,
+    helplineInformation: definitions.helplineInformation,
+  });
+  const contactlessTask = initialContactlessTaskTabDefinition.reduce(createStateItem, {});
 
-    return {
-      helpline: '',
-      callType: '',
-      childInformation: initialChildInformation,
-      callerInformation: initialCallerInformation,
-      caseInformation: initialCaseInformation,
-      contactlessTask,
-      categories: emptyCategories,
-      metadata,
-    };
+  return {
+    helpline: '',
+    callType: '',
+    childInformation: initialChildInformation,
+    callerInformation: initialCallerInformation,
+    caseInformation: initialCaseInformation,
+    contactlessTask,
+    categories: emptyCategories,
+    csamReports: [],
+    metadata,
   };
+};
 
-const initialState: ContactsState = { tasks: {} };
+const initialState: ContactsState = {
+  tasks: {},
+  existingContacts: {},
+  contactDetails: {
+    [DetailsContext.CASE_DETAILS]: { detailsExpanded: {}, route: ContactDetailsRoute.HOME },
+    [DetailsContext.CONTACT_SEARCH]: { detailsExpanded: {}, route: ContactDetailsRoute.HOME },
+  },
+};
 
 // eslint-disable-next-line import/no-unused-modules
-export function reduce(state = initialState, action: t.ContactsActionType | GeneralActionType): ContactsState {
+export function reduce(
+  state = initialState,
+  action: t.ContactsActionType | ExistingContactAction | ContactDetailsAction | GeneralActionType,
+): ContactsState {
   switch (action.type) {
     case INITIALIZE_CONTACT_STATE:
       return {
@@ -225,6 +266,36 @@ export function reduce(state = initialState, action: t.ContactsActionType | Gene
           },
         },
       };
+    }
+    case t.ADD_CSAM_REPORT_ENTRY: {
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...state.tasks[action.taskId],
+            csamReports: [...state.tasks[action.taskId].csamReports, action.csamReportEntry],
+          },
+        },
+      };
+    }
+    case LOAD_CONTACT_ACTION: {
+      return { ...state, existingContacts: loadContactReducer(state.existingContacts, action) };
+    }
+    case RELEASE_CONTACT_ACTION: {
+      return { ...state, existingContacts: releaseContactReducer(state.existingContacts, action) };
+    }
+    case EXISTING_CONTACT_TOGGLE_CATEGORY_EXPANDED_ACTION: {
+      return { ...state, existingContacts: toggleCategoryExpandedReducer(state.existingContacts, action) };
+    }
+    case EXISTING_CONTACT_SET_CATEGORIES_GRID_VIEW_ACTION: {
+      return { ...state, existingContacts: setCategoriesGridViewReducer(state.existingContacts, action) };
+    }
+    case TOGGLE_DETAIL_EXPANDED_ACTION: {
+      return { ...state, contactDetails: sectionExpandedStateReducer(state.contactDetails, action) };
+    }
+    case NAVIGATE_CONTACT_DETAILS_ACTION: {
+      return { ...state, contactDetails: navigateContactDetailsReducer(state.contactDetails, action) };
     }
     default:
       return state;

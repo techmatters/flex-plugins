@@ -1,20 +1,30 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
-import { format } from 'date-fns';
+import { StorelessThemeProvider } from '@twilio/flex-ui';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
-import '../mockStyled';
-import '../mockGetConfig';
-
+import HrmTheme from '../../styles/HrmTheme';
+import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import ContactPreview from '../../components/search/ContactPreview';
 import ChildNameAndDate from '../../components/search/ContactPreview/ChildNameAndDate';
 import CallSummary from '../../components/search/ContactPreview/CallSummary';
 import TagsAndCounselor from '../../components/search/ContactPreview/TagsAndCounselor';
 import { mapCallType } from '../../utils';
+import { getDefinitionVersions } from '../../HrmFormPlugin';
 
 const NonExisting = () => <>NonExisting</>;
 NonExisting.displayName = 'NonExisting';
 
-test('<ContactPreview> should mount', () => {
+const themeConf = {
+  colorTheme: HrmTheme,
+};
+
+test('<ContactPreview> should mount', async () => {
+  mockGetDefinitionsResponse(
+    getDefinitionVersions,
+    DefinitionVersionId.v1,
+    await loadDefinition(DefinitionVersionId.v1),
+  );
   const contact = {
     contactId: '123',
     overview: {
@@ -60,13 +70,17 @@ test('<ContactPreview> should mount', () => {
   const handleOpenConnectDialog = jest.fn();
   const handleViewDetails = jest.fn();
 
-  const component = renderer.create(
-    <ContactPreview
-      contact={contact}
-      handleOpenConnectDialog={handleOpenConnectDialog}
-      handleViewDetails={handleViewDetails}
-    />,
+  const wrapper = renderer.create(
+    <StorelessThemeProvider themeConf={themeConf}>
+      <ContactPreview
+        contact={contact}
+        handleOpenConnectDialog={handleOpenConnectDialog}
+        handleViewDetails={handleViewDetails}
+      />
+    </StorelessThemeProvider>,
   ).root;
+
+  const component = wrapper.findByType(ContactPreview);
 
   expect(() => component.findByType(ChildNameAndDate)).not.toThrow();
   expect(() => component.findByType(CallSummary)).not.toThrow();

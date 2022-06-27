@@ -3,6 +3,7 @@
 import React from 'react';
 import { ITask, TaskHelper, Template } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
+import { callTypes, CallTypeButtonsEntry } from 'hrm-form-definitions';
 
 import { namespace, contactFormsBase, configurationBase, connectedCaseBase, RootState } from '../../states';
 import { updateCallType } from '../../states/contacts/actions';
@@ -10,7 +11,6 @@ import { changeRoute } from '../../states/routing/actions';
 import { withLocalization } from '../../contexts/LocalizationContext';
 import { Box, Flex } from '../../styles/HrmStyles';
 import { Container, Label, DataCallTypeButton, NonDataCallTypeButton } from '../../styles/callTypeButtons';
-import callTypes, { CallTypeKeys } from '../../states/DomainConstants';
 import { isNonDataCallType } from '../../states/ValidationRules';
 import NonDataCallTypeDialog from './NonDataCallTypeDialog';
 import { hasTaskControl } from '../../utils/transfer';
@@ -40,31 +40,37 @@ const CallTypeButtons: React.FC<Props> = props => {
   if (!currentDefinitionVersion) return null;
   const { callTypeButtons } = currentDefinitionVersion;
 
-  const handleClick = (taskSid: string, callTypekey: CallTypeKeys) => {
+  const handleClick = (taskSid: string, callTypeEntry: CallTypeButtonsEntry) => {
     if (!hasTaskControl(task)) return;
-    // TODO: We currently need the call type name in English. I think we should actually save callType.name (instead of label) on the DB, and use it in here.
-    props.dispatch(updateCallType(taskSid, callTypes[callTypekey]));
+
+    /*
+     *  TODO: We currently save the call type name in English if data or the label string if non-data.
+     * I think we should actually save callType.name (instead of label) on the DB, and use it in here.
+     */
+    const callType = callTypes[callTypeEntry.name] ? callTypes[callTypeEntry.name] : callTypeEntry.label;
+
+    props.dispatch(updateCallType(taskSid, callType));
   };
 
-  const handleClickAndRedirect = (taskSid: string, callTypekey: CallTypeKeys) => {
+  const handleClickAndRedirect = (taskSid: string, callTypeEntry: CallTypeButtonsEntry) => {
     if (!hasTaskControl(task)) return;
 
     // eslint-disable-next-line no-nested-ternary
     const subroute = isOfflineContactTask(task)
       ? 'contactlessTask'
-      : callTypekey === 'caller'
+      : callTypeEntry.name === 'caller'
       ? 'callerInformation'
       : 'childInformation';
 
-    handleClick(taskSid, callTypekey);
+    handleClick(taskSid, callTypeEntry);
     props.dispatch(changeRoute({ route: 'tabbed-forms', subroute, autoFocus: true }, taskSid));
   };
 
-  const handleNonDataClick = (taskSid: string, callTypekey: CallTypeKeys) => {
+  const handleNonDataClick = (taskSid: string, callTypeEntry: CallTypeButtonsEntry) => {
     if (isOfflineContactTask(task)) {
-      handleClickAndRedirect(taskSid, callTypekey);
+      handleClickAndRedirect(taskSid, callTypeEntry);
     } else {
-      handleClick(taskSid, callTypekey);
+      handleClick(taskSid, callTypeEntry);
     }
   };
 
@@ -94,7 +100,7 @@ const CallTypeButtons: React.FC<Props> = props => {
             .map((callType, index) => {
               return (
                 <DataCallTypeButton
-                  onClick={() => handleClickAndRedirect(task.taskSid, callType.name)}
+                  onClick={() => handleClickAndRedirect(task.taskSid, callType)}
                   key={callType.name}
                   autoFocus={index === 0}
                 >
@@ -117,7 +123,7 @@ const CallTypeButtons: React.FC<Props> = props => {
             .map((callType, i) => (
               <NonDataCallTypeButton
                 key={callType.name}
-                onClick={() => handleNonDataClick(task.taskSid, callType.name)}
+                onClick={() => handleNonDataClick(task.taskSid, callType)}
                 marginRight={i % 2 === 0}
               >
                 {callType.label}

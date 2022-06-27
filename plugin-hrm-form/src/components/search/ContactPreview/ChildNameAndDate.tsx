@@ -2,15 +2,13 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
-import { Fullscreen } from '@material-ui/icons';
+import { CallTypes } from 'hrm-form-definitions';
 
-import { Flex, Row, StyledIcon, HiddenText, addHover } from '../../../styles/HrmStyles';
-import { PrevNameText, ContactButtonsWrapper, StyledButtonBase, DateText } from '../../../styles/search';
+import { Flex, Row } from '../../../styles/HrmStyles';
+import { PrevNameText, ContactButtonsWrapper, DateText, ViewContactButton } from '../../../styles/search';
 import { isNonDataCallType } from '../../../states/ValidationRules';
 import CallTypeIcon from '../../common/icons/CallTypeIcon';
-import { channelTypes, ChannelTypes, CallTypes } from '../../../states/DomainConstants';
-
-const FullscreenIcon = addHover(StyledIcon(Fullscreen));
+import { channelTypes, ChannelTypes } from '../../../states/DomainConstants';
 
 type OwnProps = {
   channel: ChannelTypes;
@@ -48,12 +46,9 @@ const ChildNameAndDate: React.FC<Props> = ({ channel, callType, name, number, da
         <Flex marginRight="20px">
           <DateText>{dateString}</DateText>
         </Flex>
-        <StyledButtonBase onClick={onClickFull}>
-          <HiddenText>
-            <Template code="ContactPreview-ExpandButton" />
-          </HiddenText>
-          <FullscreenIcon />
-        </StyledButtonBase>
+        <ViewContactButton type="button" onClick={onClickFull}>
+          <Template code="Contact-ViewButton" />
+        </ViewContactButton>
       </ContactButtonsWrapper>
     </Row>
   );

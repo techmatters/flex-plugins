@@ -5,6 +5,7 @@ import { Page, Document, View, PDFViewer } from '@react-pdf/renderer';
 import { Template, Strings } from '@twilio/flex-ui';
 import { ButtonBase, CircularProgress } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
+import { DefinitionVersion, FormDefinition, callTypes } from 'hrm-form-definitions';
 
 import { getConfig } from '../../../HrmFormPlugin';
 import CasePrintSection from './CasePrintSection';
@@ -19,9 +20,7 @@ import CasePrintHeader from './CasePrintHeader';
 import CasePrintFooter from './CasePrintFooter';
 // import CasePrintContact from './CasePrintContact'; // Removed by ZA request, could be useful for other helplines.
 import { getImageAsString, ImageSource } from './helpers';
-import { DefinitionVersion, FormDefinition } from '../../common/forms/types';
-import callTypes from '../../../states/DomainConstants';
-import { ContactRawJson } from '../../../types/types';
+import { getLocaleDateTime } from '../../../utils/helpers';
 
 type OwnProps = {
   onClickClose: () => void;
@@ -30,28 +29,6 @@ type OwnProps = {
   counselorsHash: { [sid: string]: string };
 };
 type Props = OwnProps;
-
-const extraFieldDefinitions = (strings: ReturnType<typeof getConfig>['strings']): FormDefinition => {
-  return [
-    {
-      name: 'keepConfidential',
-      label: strings['ContactDetails-GeneralDetails-KeepConfidential'],
-      type: 'checkbox',
-    },
-    {
-      name: 'okForCaseWorkerToCall',
-      label: strings['ContactDetails-GeneralDetails-OKToCall'],
-      type: 'mixed-checkbox',
-    },
-  ];
-};
-
-const addExtraValues = (caseInformation: ContactRawJson['caseInformation']) => {
-  return {
-    keepConfidential: Boolean(caseInformation?.keepConfidential),
-    okForCaseWorkerToCall: caseInformation?.okForCaseWorkerToCall,
-  };
-};
 
 const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionVersion, counselorsHash }) => {
   const { pdfImagesSource, strings } = getConfig();
@@ -129,9 +106,9 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
               <View>
                 <CasePrintDetails
                   status={caseDetails.status}
-                  openedDate={caseDetails.openedDate}
-                  lastUpdatedDate={caseDetails.lastUpdatedDate}
-                  followUpDate={caseDetails.followUpDate}
+                  openedDate={getLocaleDateTime(caseDetails.createdAt)}
+                  lastUpdatedDate={getLocaleDateTime(caseDetails.updatedAt)}
+                  followUpDate={caseDetails.followUpPrintedDate}
                   childIsAtRisk={caseDetails.childIsAtRisk}
                   counselor={caseDetails.caseCounselor}
                   categories={caseDetails.categories}
@@ -139,17 +116,21 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
                   caseManager={caseDetails.office?.manager}
                   chkOnBlob={chkOnBlob}
                   chkOffBlob={chkOffBlob}
+                  definitionVersion={definitionVersion}
                 />
                 {caseDetails.contact?.rawJson?.callType === callTypes.caller ? (
                   <View>
                     <CasePrintSection
                       sectionName={strings['SectionName-CallerInformation']}
                       definitions={[
-                        ...extraFieldDefinitions(strings),
+                        ...definitionVersion.tabbedForms.CaseInformationTab.filter(definition => {
+                          // eslint-disable-next-line
+                          return definition['highlightedAtCasePrint'] ? definition : null;
+                        }),
                         ...definitionVersion.tabbedForms.CallerInformationTab,
                       ]}
                       values={{
-                        ...addExtraValues(caseDetails.contact?.rawJson?.caseInformation),
+                        ...caseDetails.contact?.rawJson?.caseInformation,
                         ...caseDetails.contact?.rawJson?.callerInformation,
                       }}
                       unNestInfo={true}
@@ -165,11 +146,14 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
                   <CasePrintSection
                     sectionName={strings['SectionName-ChildInformation']}
                     definitions={[
-                      ...extraFieldDefinitions(strings),
+                      ...definitionVersion.tabbedForms.CaseInformationTab.filter(definition => {
+                        // eslint-disable-next-line
+                        return definition['highlightedAtCasePrint'] ? definition : null;
+                      }),
                       ...definitionVersion.tabbedForms.ChildInformationTab,
                     ]}
                     values={{
-                      ...addExtraValues(caseDetails.contact?.rawJson?.caseInformation),
+                      ...caseDetails.contact?.rawJson?.caseInformation,
                       ...caseDetails.contact?.rawJson?.childInformation,
                     }}
                     unNestInfo={true}

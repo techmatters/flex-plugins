@@ -1,5 +1,15 @@
 /* eslint-disable camelcase */
 import { get, cloneDeep } from 'lodash';
+import {
+  DefinitionVersion,
+  callTypes,
+  FieldType,
+  InsightsFieldSpec,
+  InsightsFormSpec,
+  OneToOneConfigSpec,
+  OneToManyConfigSpec,
+  OneToManyConfigSpecs,
+} from 'hrm-form-definitions';
 
 import { isNonDataCallType } from '../states/ValidationRules';
 import { mapChannelForInsights } from '../utils/mappers';
@@ -7,18 +17,8 @@ import { getDateTime } from '../utils/helpers';
 import { TaskEntry } from '../states/contacts/reducer';
 import { Case, CustomITask } from '../types/types';
 import { formatCategories } from '../utils/formatters';
-import callTypes from '../states/DomainConstants';
-import {
-  FieldType,
-  InsightsFieldSpec,
-  InsightsFormSpec,
-  OneToOneConfigSpec,
-  OneToManyConfigSpec,
-  OneToManyConfigSpecs,
-} from '../insightsConfig/types';
 import { getDefinitionVersions } from '../HrmFormPlugin';
 import { shouldSendInsightsData } from '../utils/setUpActions';
-import type { DefinitionVersion } from '../components/common/forms/types';
 
 /*
  * 'Any' is the best we can do, since we're limited by Twilio here.
@@ -73,6 +73,10 @@ const sanitizeInsightsValue = (value: string | boolean) => {
   if (typeof value === 'string' && value) return value;
 
   if (typeof value === 'boolean') return value.toString();
+
+  if (typeof value === 'number') return value;
+
+  if (Array.isArray(value)) return value.map(sanitizeInsightsValue).join(delimiter);
 
   return null;
 };
@@ -304,7 +308,7 @@ export const processHelplineConfig = (
         if (field.type === FieldType.MixedCheckbox) {
           value = convertMixedCheckbox(value);
         }
-        insightsAtts[insightsObject][insightsField] = value;
+        insightsAtts[insightsObject][insightsField] = sanitizeInsightsValue(value);
       });
     });
   });
@@ -318,7 +322,7 @@ const applyCustomUpdate = (customUpdate: OneToManyConfigSpec): InsightsUpdateFun
 
     const dataSource = { taskAttributes, contactForm, caseForm };
     // concatenate the values, taken from dataSource using paths (e.g. 'contactForm.childInformation.province')
-    const value = customUpdate.paths.map(path => get(dataSource, path, '')).join(delimiter);
+    const value = customUpdate.paths.map(path => sanitizeInsightsValue(get(dataSource, path, ''))).join(delimiter);
 
     return {
       [customUpdate.insightsObject]: {

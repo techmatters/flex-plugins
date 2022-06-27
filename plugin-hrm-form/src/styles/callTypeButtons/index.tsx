@@ -81,7 +81,7 @@ export const NonDataCallTypeButton = styled(Button)<NonDataCallTypeButtonProps>`
 
 export const CloseTaskDialog = styled(props => <Dialog {...props} classes={{ paper: 'paper' }} />)`
   && .paper {
-    width: 350px;
+    width: 360px;
   }
 `;
 
@@ -108,7 +108,6 @@ export const ConfirmButton = styled(Button)<ConfirmButtonProps>`
   ${p => getBackgroundWithHoverCSS(HrmTheme.colors.declineColor, true, false, p.disabled)};
 
   &:focus {
-    outline-color: #4d90fe;
     outline-style: auto;
     outline-width: initial;
   }

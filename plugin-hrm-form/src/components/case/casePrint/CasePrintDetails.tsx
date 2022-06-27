@@ -2,6 +2,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Text, View, Image } from '@react-pdf/renderer';
+import { DefinitionVersionId, DefinitionVersion } from 'hrm-form-definitions';
 
 import { getConfig } from '../../../HrmFormPlugin';
 import styles from './styles';
@@ -24,9 +25,10 @@ type OwnProps = {
       [subcategory: string]: boolean;
     };
   };
-  version: string;
+  version: DefinitionVersionId;
   chkOnBlob?: string;
   chkOffBlob?: string;
+  definitionVersion: DefinitionVersion;
 };
 
 type Props = OwnProps;
@@ -43,8 +45,11 @@ const CasePrintDetails: React.FC<Props> = ({
   version,
   chkOnBlob,
   chkOffBlob,
+  definitionVersion,
 }) => {
   const { strings } = getConfig();
+
+  const { hideCounselorDetails } = definitionVersion.layoutVersion.case;
 
   return (
     <View style={styles.caseDetailsContainer}>
@@ -74,23 +79,25 @@ const CasePrintDetails: React.FC<Props> = ({
           </View>
         </View>
       </View>
-      <View style={styles.caseDetailsSubSection}>
-        <View style={styles.caseCounsellorSection}>
-          <View style={styles.flexColumn}>
-            <Text>{strings['Case-Counsellor']}</Text>
-            <Text style={styles.caseDetailsBoldText}>{counselor}</Text>
+      {hideCounselorDetails ? null : (
+        <View style={styles.caseDetailsSubSection}>
+          <View style={styles.caseCounsellorSection}>
+            <View style={styles.flexColumn}>
+              <Text>{strings['Case-Counsellor']}</Text>
+              <Text style={styles.caseDetailsBoldText}>{counselor}</Text>
+            </View>
+            <View style={{ marginTop: 15, ...styles.flexColumn }}>
+              <Text>{strings['Case-CaseManager']}</Text>
+              <Text style={styles.caseDetailsBoldText}>{caseManager?.name}</Text>
+              <Text style={styles.caseDetailsBoldText}>{caseManager?.phone}</Text>
+              <Text style={styles.caseDetailsBoldText}>{caseManager?.email}</Text>
+            </View>
           </View>
-          <View style={{ marginTop: 15, ...styles.flexColumn }}>
-            <Text>{strings['Case-CaseManager']}</Text>
-            <Text style={styles.caseDetailsBoldText}>{caseManager?.name}</Text>
-            <Text style={styles.caseDetailsBoldText}>{caseManager?.phone}</Text>
-            <Text style={styles.caseDetailsBoldText}>{caseManager?.email}</Text>
+          <View>
+            <CasePrintCategories categories={categories} version={version} />
           </View>
         </View>
-        <View>
-          <CasePrintCategories categories={categories} version={version} />
-        </View>
-      </View>
+      )}
     </View>
   );
 };

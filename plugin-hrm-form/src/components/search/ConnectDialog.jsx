@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import CheckIcon from '@material-ui/icons/Check';
 import { Button, Popover } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
+import { callTypes } from 'hrm-form-definitions';
 
 import { Row } from '../../styles/HrmStyles';
 import { ConfirmContainer, ConfirmText, CancelButton } from '../../styles/search';
 import TabPressWrapper from '../TabPressWrapper';
-import callTypes from '../../states/DomainConstants';
 import { contactType } from '../../types';
 import { hasTaskControl } from '../../utils/transfer';
 

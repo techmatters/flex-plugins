@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
+import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import { Flex } from '../../../styles/HrmStyles';
 import { ContactTag, CounselorText, TagText, TagMiddleDot, SummaryText, TagsWrapper } from '../../../styles/search';
@@ -18,7 +19,7 @@ const renderTag = (tag, color) => (
 type OwnProps = {
   counselor: string;
   categories: { [category: string]: string[] };
-  definitionVersion: string;
+  definitionVersion: DefinitionVersionId;
 };
 
 type Props = OwnProps;

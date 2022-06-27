@@ -39,6 +39,7 @@ export const CaseActionFormContainer = styled('div')`
 export const CenteredContainer = styled(CaseContainer)`
   align-items: center;
   justify-content: center;
+  max-width: 1280px;
 `;
 CenteredContainer.displayName = 'CenteredContainer';
 
@@ -126,17 +127,6 @@ export const CaseActionTitle = styled(FontOpenSans)`
   color: #22333b;
 `;
 CaseActionTitle.displayName = 'CaseActionTitle';
-
-export const CaseActionCloseButton = styled(ButtonBase)`
-  && {
-    margin-left: auto;
-  }
-
-  :focus {
-    outline: auto;
-  }
-`;
-CaseActionCloseButton.displayName = 'CaseActionCloseButton';
 
 export const CaseActionDetailFont = styled(FontOpenSans)`
   font-style: italic;
@@ -240,7 +230,7 @@ export const RowItemContainer = styled(Row)`
 `;
 RowItemContainer.displayName = 'RowItemContainer';
 
-export const NoteContainer = styled('div')`
+export const FullWidthFormTextContainer = styled('div')`
   white-space: break-spaces;
   font-family: 'Open Sans', sans-serif;
   line-height: 30px;
@@ -249,7 +239,7 @@ export const NoteContainer = styled('div')`
   margin: 10px auto 0px;
   text-align: justify;
 `;
-NoteContainer.displayName = 'NoteContainer';
+FullWidthFormTextContainer.displayName = 'FullWidthFormTextContainer';
 
 export const DetailsHeaderContainer = styled('div')`
   display: flex;
@@ -376,3 +366,13 @@ export const StyledSelectField = styled(({ color, ...rest }: StyledSelectFieldPr
 `;
 
 StyledSelectField.displayName = 'StyledSelectField';
+
+export const CloseDialogText = styled('p')`
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  align-self: center;
+  text-align: center;
+`;
+
+CloseDialogText.displayName = 'CloseDialogText';

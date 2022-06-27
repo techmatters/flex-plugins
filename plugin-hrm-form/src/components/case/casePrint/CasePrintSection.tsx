@@ -1,11 +1,12 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Text, View } from '@react-pdf/renderer';
+import { FormDefinition } from 'hrm-form-definitions';
 
 import styles from './styles';
-import { FormDefinition } from '../../common/forms/types';
 import { unNestInformation } from '../../../services/ContactService';
 import { presentValue } from '../../../utils';
+import { getConfig } from '../../../HrmFormPlugin';
 
 type OwnProps = {
   sectionName: string;
@@ -17,6 +18,7 @@ type OwnProps = {
 type Props = OwnProps;
 
 const CasePrintSection: React.FC<Props> = ({ sectionName, values, definitions, unNestInfo }) => {
+  const { strings } = getConfig();
   return (
     <View>
       <View style={styles.sectionHeader}>
@@ -30,7 +32,9 @@ const CasePrintSection: React.FC<Props> = ({ sectionName, values, definitions, u
                 <Text style={{ marginRight: '10px' }}>{def.label}</Text>
               </View>
               <View style={styles.sectionItemSecondColumn}>
-                <Text>{presentValue(unNestInfo ? unNestInformation(def, values) : values[def.name])(def)}</Text>
+                <Text>
+                  {presentValue(unNestInfo ? unNestInformation(def, values) : values[def.name], strings)(def)}
+                </Text>
               </View>
             </View>
           );

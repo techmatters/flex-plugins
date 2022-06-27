@@ -7,8 +7,9 @@ import AssignmentInd from '@material-ui/icons/AssignmentInd';
 import ReplyIcon from '@material-ui/icons/Reply';
 
 import { TimelineIconContainer } from '../../styles/case';
-import { channelTypes, otherContactChannels } from '../../states/DomainConstants';
+import { channelTypes } from '../../states/DomainConstants';
 import TwitterIcon from '../common/icons/TwitterIcon';
+import InstagramIcon from '../common/icons/InstagramIcon';
 
 // eslint-disable-next-line react/display-name
 const getIcon = type => {
@@ -25,11 +26,13 @@ const getIcon = type => {
       return <DefaultIcon defaultTaskChannel={Flex.DefaultTaskChannels.Call} />;
     case channelTypes.twitter:
       return <TwitterIcon width="24px" height="24px" />;
+    case channelTypes.instagram:
+      return <InstagramIcon width="20px" height="20px" />;
     case 'note':
       return <NoteIcon style={{ opacity: 0.62, fontSize: '20px' }} />;
     case 'referral':
       return <ReplyIcon style={{ transform: 'scaleX(-1)', fontSize: '20px' }} />;
-    // defaulting to otherContactChannels.includes(type). Maybe at some point we need to address this in a different way.
+    // defaulting to isOtherContactChannel(channel). Maybe at some point we need to address this in a different way.
     default:
       return <AssignmentInd style={{ opacity: 0.62, fontSize: '20px' }} />;
   }
@@ -39,8 +42,7 @@ const TimelineIcon = ({ type }) => <TimelineIconContainer>{getIcon(type)}</Timel
 
 TimelineIcon.displayName = 'TimelineIcon';
 TimelineIcon.propTypes = {
-  type: PropTypes.oneOf([...Object.values(channelTypes), ...Object.values(otherContactChannels), 'note', 'referral'])
-    .isRequired,
+  type: PropTypes.string.isRequired,
 };
 
 const DefaultIcon = ({ defaultTaskChannel }) => (

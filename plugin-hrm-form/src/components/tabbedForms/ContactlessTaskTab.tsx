@@ -5,6 +5,7 @@ import { FieldError, useFormContext } from 'react-hook-form';
 import { isFuture } from 'date-fns';
 import { get } from 'lodash';
 import { useFlexSelector } from '@twilio/flex-ui';
+import type { DefinitionVersion } from 'hrm-form-definitions';
 
 import { createFormFromDefinition, disperseInputs } from '../common/forms/formGenerators';
 import { updateForm } from '../../states/contacts/actions';
@@ -15,13 +16,13 @@ import type { TaskEntry } from '../../states/contacts/reducer';
 import { createContactlessTaskTabDefinition } from './ContactlessTaskTabDefinition';
 import { splitDate, splitTime } from '../../utils/helpers';
 import type { OfflineContactTask } from '../../types/types';
-import type { HelplineDefinitions } from '../common/forms/types';
 import useFocus from '../../utils/useFocus';
 
 type OwnProps = {
   task: OfflineContactTask;
   display: boolean;
-  definition: HelplineDefinitions;
+  helplineInformation: DefinitionVersion['helplineInformation'];
+  definition: DefinitionVersion['tabbedForms']['ContactlessTaskTab'];
   initialValues: TaskEntry['contactlessTask'];
   autoFocus: boolean;
 };
@@ -33,6 +34,7 @@ const ContactlessTaskTab: React.FC<Props> = ({
   dispatch,
   display,
   task,
+  helplineInformation,
   definition,
   initialValues,
   counselorsList,
@@ -53,7 +55,7 @@ const ContactlessTaskTab: React.FC<Props> = ({
       dispatch(updateForm(task.taskSid, 'contactlessTask', rest));
     };
 
-    const formDefinition = createContactlessTaskTabDefinition(counselorsList, definition);
+    const formDefinition = createContactlessTaskTabDefinition({ counselorsList, helplineInformation, definition });
 
     // If no createdOnBehalfOf comming from state, we want the current counselor to be the default
     const createdOnBehalfOf = initialForm.createdOnBehalfOf || workerSid;
@@ -62,7 +64,17 @@ const ContactlessTaskTab: React.FC<Props> = ({
     const tab = createFormFromDefinition(formDefinition)(['contactlessTask'])(init, firstElementRef)(updateCallBack);
 
     return disperseInputs(5)(tab);
-  }, [workerSid, counselorsList, definition, initialForm, firstElementRef, getValues, dispatch, task.taskSid]);
+  }, [
+    workerSid,
+    counselorsList,
+    helplineInformation,
+    definition,
+    initialForm,
+    firstElementRef,
+    getValues,
+    dispatch,
+    task.taskSid,
+  ]);
 
   // Add invisible field that errors if date + time are future (triggered by validaiton)
   React.useEffect(() => {
@@ -96,14 +108,12 @@ const ContactlessTaskTab: React.FC<Props> = ({
   }, [setValue, time]);
 
   return (
-    <TabbedFormTabContainer display={display}>
-      <Container>
-        <TwoColumnLayout>
-          <ColumnarBlock>{contactlessTaskForm}</ColumnarBlock>
-          <ColumnarBlock />
-        </TwoColumnLayout>
-      </Container>
-    </TabbedFormTabContainer>
+    <Container>
+      <TwoColumnLayout>
+        <ColumnarBlock>{contactlessTaskForm}</ColumnarBlock>
+        <ColumnarBlock />
+      </TwoColumnLayout>
+    </Container>
   );
 };
 

@@ -10,14 +10,13 @@ import {
   searchCases as searchCasesAction,
 } from '../states/search/actions';
 import { namespace, searchContactsBase, configurationBase, RootState } from '../states';
-import { getNumberFromTask } from '../services/ContactService';
 import { CONTACTS_PER_PAGE, CASES_PER_PAGE } from './search/SearchResults';
 import { YellowBanner } from '../styles/previousContactsBanner';
 import { Bold } from '../styles/HrmStyles';
 import { StyledLink } from '../styles/search';
 import { ChannelTypes, channelTypes } from '../states/DomainConstants';
 import { changeRoute as changeRouteAction } from '../states/routing/actions';
-import { formatNumberFromTask } from '../utils/formatters';
+import { getFormattedNumberFromTask, getNumberFromTask } from '../utils/task';
 
 type OwnProps = {
   task: CustomITask;
@@ -33,6 +32,7 @@ export const localizedSource: { [channelType in ChannelTypes]: string } = {
   [channelTypes.whatsapp]: 'PreviousContacts-WhatsappNumber',
   [channelTypes.facebook]: 'PreviousContacts-FacebookUser',
   [channelTypes.twitter]: 'PreviousContacts-TwitterUser',
+  [channelTypes.instagram]: 'PreviousContacts-InstagramUser',
 };
 
 const PreviousContactsBanner: React.FC<Props> = ({
@@ -68,7 +68,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
     changeRoute({ route: 'tabbed-forms', subroute: 'search' });
   };
 
-  const contactIdentifier = formatNumberFromTask(task);
+  const contactIdentifier = getFormattedNumberFromTask(task);
   return (
     <YellowBanner data-testid="PreviousContacts-Container">
       {/* eslint-disable-next-line prettier/prettier */}

@@ -1,0 +1,45 @@
+{
+    "contact": {
+      "callerInformation": {
+      },
+      "childInformation": {
+      },
+      "caseInformation": {
+        "splitFormAt": 5
+      }
+    },
+    "case": {
+      "households": {
+        "splitFormAt": 5
+      },
+      "perpetrators": {
+        "splitFormAt": 5
+      },
+      "incidents": {
+        "previewFields": ["date", "duration", "location"],
+        "layout": {
+          "date":  {
+              "includeLabel": false,
+              "format": "date"
+            },
+          "duration":  {
+              "includeLabel": true
+            },
+          "location":  {
+            "includeLabel": true
+          }
+        },
+        "splitFormAt": 4
+      },
+      "referrals": {
+        "splitFormAt": 3
+      },
+      "documents": {
+        "splitFormAt": 1
+      },
+      "notes": {
+        "previewFields": ["assessment"]
+      },
+      "hideCounselorDetails": true
+    }
+  }

@@ -1,0 +1,107 @@
+
+   
+{
+    "contactForm": {
+      "callerInformation": [
+        {
+          "name": "relationshipToChild",
+          "insights": ["conversations", "initiated_by"]
+        }
+      ],
+      "childInformation": [
+        {
+          "name": "province",
+          "insights": ["customers", "city"]
+        },
+        {
+          "name": "ethnicity",
+          "insights": ["customers", "customer_attribute_2"]
+        },
+        {
+          "name": "school",
+          "insights": ["customers", "acquisition_date"]
+        },
+        {
+          "name": "livingSituation",
+          "insights": ["customers", "customer_attribute_1"]
+        },
+        {
+          "name": "sexualOrientation",
+          "insights": ["conversations", "conversation_measure_1"]
+        },
+        {
+          "name": "Newcomer",
+          "insights": ["conversations", "conversation_measure_3"],
+          "type": "mixed-checkbox"
+        },
+        {
+          "name": "region",
+          "insights": ["customers", "region"]
+        }
+      ],
+      "caseInformation": [
+        {
+          "name": "safetyPlan",
+          "insights": ["conversations", "conversation_attribute_7"],
+          "type": "mixed-checkbox"
+        },
+        {
+          "name": "actionTaken",
+          "insights": ["conversations", "initiative"]
+        },
+        {
+          "name": "contactType",
+          "insights": ["conversations", "conversation_attribute_5"]
+        },
+        {
+          "name": "didTheChildFeelWeSolvedTheirProblem",
+          "insights": ["conversations", "productive"],
+          "type": "mixed-checkbox"
+        },
+        {
+          "name": "emergencyReferralPolice",
+          "insights": ["conversations", "conversation_attribute_6"],
+          "type": "checkbox"
+        },
+        {
+          "name": "emergencyReferralCPS",
+          "insights": ["customers", "organization"],
+          "type": "checkbox"
+        }
+      ]
+    },
+    "caseForm": {
+      "topLevel": [
+        {
+          "name": "id",
+          "insights": ["conversations", "case"]
+        }
+      ],
+      "perpetrator": [
+        {
+          "name": "gender",
+          "insights": ["conversations", "followed_by"]
+        },
+        {
+          "name": "age",
+          "insights": ["conversations", "preceded_by"]
+        }
+      ],
+      "incident": [
+        {
+          "name": "duration",
+          "insights": ["conversations", "in_business_hours"]
+        },
+        {
+          "name": "location",
+          "insights": ["customers", "market_segment"]
+        }
+      ],
+      "referral": [
+        {
+          "name": "referredTo",
+          "insights": ["customers", "customer_manager"]
+        }
+      ]
+    }
+  }

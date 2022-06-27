@@ -5,6 +5,7 @@ import Folder from '@material-ui/icons/Folder';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import Link from '@material-ui/icons/Link';
 import { ButtonProps } from '@material-ui/core/Button';
+import { TransitionProps } from '@material-ui/core/transitions/transition';
 
 import { Flex, Row, FontOpenSans, BottomButtonBar, TabbedFormsContainer } from '../HrmStyles';
 import HrmTheme from '../HrmTheme';
@@ -309,6 +310,7 @@ export const ContactDetailsIcon = icon => styled(icon)`
   color: #000000;
   width: 50px;
   height: 50px;
+  font-size: 16px;
 `;
 
 const containerPadding = 40;
@@ -321,6 +323,7 @@ export const SectionTitleContainer = styled(Row)<ColorProps>`
   background-color: #ecedf1;
   padding: 8px;
   padding-left: 18px;
+  margin: 2px 0;
   border-left: ${({ color }) => (color ? `6px solid ${color}` : 'none')};
 `;
 SectionTitleContainer.displayName = 'SectionTitleContainer';
@@ -334,23 +337,34 @@ export const SectionTitleButton = styled(ButtonBase)`
 `;
 SectionTitleButton.displayName = 'SectionTitleButton';
 
+export const SectionActionButton = styled('button')`
+  display: flex;
+  border: none;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1976d2;
+  padding: '0 6px';
+  font-family: 'Open Sans';
+  cursor: pointer;
+  :focus {
+    outline: auto;
+    outline-color: black;
+  }
+`;
+
 type CollapseProps = {
   expanded: boolean;
 };
 
-export const SectionCollapse = styled(({ expanded, ...rest }: CollapseProps) => (
-  <Collapse in={expanded} {...rest} />
-))<CollapseProps>`
+export const SectionCollapse = styled(
+  ({ expanded, ...rest }: CollapseProps & { timeout?: TransitionProps['timeout'] | 'auto' }) => (
+    <Collapse in={expanded} {...rest} />
+  ),
+)<CollapseProps>`
   visibility: ${props => (props.expanded ? 'visible' : 'collapse')};
 `;
 SectionCollapse.displayName = 'SectionCollapse';
-
-export const NameContainer = styled(SectionTitleContainer)`
-  background-color: #000000;
-  border-radius: 4px 4px 0 0;
-  margin-top: 20px;
-  margin-bottom: 3px;
-`;
 
 const BoldDetailFont = styled(FontOpenSans)`
   font-size: 12px;
@@ -363,19 +377,28 @@ export const BackText = styled(BoldDetailFont)`
   font-weight: 600;
 `;
 
-export const DetNameText = styled(BoldDetailFont)`
-  color: #ffffff;
-  margin-right: auto;
+export const NameText = styled(FontOpenSans)`
+  margin: 25px auto 5px 0;
+  font-weight: 600;
+  font-size: 15px;
 `;
+NameText.displayName = 'NameText';
+
+export const ContactAddedFont = styled(FontOpenSans)`
+  font-style: italic;
+  font-size: 12px;
+  line-height: 30px;
+  opacity: 67%;
+`;
+ContactAddedFont.displayName = 'ContactAddedFont';
 
 export const SectionTitleText = styled(FontOpenSans)`
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
-  letter-spacing: 1.8px;
   line-height: 13px;
   margin-right: auto;
-  text-transform: uppercase;
 `;
+SectionTitleText.displayName = 'SectionTitleText';
 
 const BodyText = styled(FontOpenSans)`
   font-size: 13px;
@@ -397,6 +420,7 @@ export const SectionValueText = styled(BodyText)<SectionValueTextProps>`
   overflow-wrap: anywhere;
   white-space: pre-wrap;
   max-width: 40em;
+  line-height: 18px;
   ${props => props.notBold && 'font-weight: 500'};
 `;
 
@@ -437,6 +461,9 @@ export const ScrollableList = styled('div')`
 export const StyledButtonBase = withStyles({
   root: {
     margin: 5,
+    '&:focus': {
+      outline: 'auto',
+    },
   },
   disabled: {
     color: 'rgba(0, 0, 0, 0.26)',
@@ -518,3 +545,12 @@ export const StandaloneSearchContainer = styled(TabbedFormsContainer)`
   background-color: ${HrmTheme.colors.base2};
 `;
 StandaloneSearchContainer.displayName = 'StandaloneSearchContainer';
+
+export const ViewContactButton = styled('button')`
+  background: #e7e8ee;
+  border: none;
+  padding: 3px 7px;
+  border-radius: 5px;
+  cursor: pointer;
+`;
+ViewContactButton.displayName = 'ViewContactButton';
