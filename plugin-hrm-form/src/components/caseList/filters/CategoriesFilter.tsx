@@ -245,8 +245,8 @@ const CategoriesFilter: React.FC<Props> = ({
         isActive={Boolean(selectedCount > 0)}
         type="button"
         onClick={handleClick}
-        innerRef={innerRef => {
-          filterButtonElement.current = innerRef;
+        ref={ref => {
+          filterButtonElement.current = ref;
         }}
       >
         {text}
@@ -292,7 +292,7 @@ const CategoriesFilter: React.FC<Props> = ({
                   <Template code="CaseList-Filters-Clear" />
                 </FiltersClearButton>
               </Box>
-              <FiltersApplyButton type="submit" onKeyDown={handleTabForLastElement} innerRef={lastElement}>
+              <FiltersApplyButton type="submit" onKeyDown={handleTabForLastElement} ref={lastElement}>
                 <Template code="CaseList-Filters-Apply" />
               </FiltersApplyButton>
             </FiltersBottomButtons>

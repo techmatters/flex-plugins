@@ -539,7 +539,7 @@ type PaginationRowProps = {
 export const PaginationRow = styled('nav')<PaginationRowProps>`
   display: flex;
   justify-content: center;
-  background-color: ${props => (props.transparent ? 'transparent' : props.theme.colors.base2)};
+  background-color: ${HrmTheme.colors.base2};
   padding: 40px auto;
   margin: 40px auto;
 `;
@@ -803,7 +803,7 @@ export const FormRadioInput = styled('input')<FormInputProps>`
     width: 12px;
     height: 12px;
     border: 2px solid #080808;
-    background-color: ${props => props.theme.colors.inputBackgroundColor};
+    background-color: ${HrmTheme.colors.inputBackgroundColor};
     border-radius: 50%;
     display: grid;
     place-content: center;
@@ -1138,7 +1138,7 @@ Bold.displayName = 'Bold';
 
 export const CSAMReportButtonText = styled(FontOpenSans)`
   font-size: 12px;
-  color: ${props => props.theme.colors.hyperlinkColor};
+  color: ${HrmTheme.colors.hyperlinkColor};
   font-weight: 600;
 `;
 CSAMReportButtonText.displayName = 'CSAMReportButtonText';

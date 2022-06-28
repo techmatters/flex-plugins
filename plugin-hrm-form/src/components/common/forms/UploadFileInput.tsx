@@ -161,7 +161,7 @@ const UploadFileInput: React.FC<UploadFileInputProps> = ({
               <Box marginLeft="20px">Delete</Box>
             </StyledLink>
           )}
-          <FormInput id="file-input" type="hidden" defaultValue={initialValue} innerRef={fileUploadRef} />
+          <FormInput id="file-input" type="hidden" defaultValue={initialValue} ref={fileUploadRef} />
           <input id={path} name={path} type="hidden" ref={register(rules)} value={fileName} />
         </>
       )}

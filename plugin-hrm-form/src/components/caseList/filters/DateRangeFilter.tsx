@@ -206,9 +206,9 @@ const DateRangeFilter: React.FC<Props> = ({
         type="button"
         name={name}
         onClick={handleClick}
-        innerRef={innerRef => {
-          filterButtonElement.current = innerRef;
-          register(innerRef);
+        ref={ref => {
+          filterButtonElement.current = ref;
+          register(ref);
         }}
       >
         <Template code={labelKey} />
@@ -246,11 +246,11 @@ const DateRangeFilter: React.FC<Props> = ({
                           value={option}
                           name={name}
                           type="radio"
-                          innerRef={innerRef => {
+                          ref={ref => {
                             if (i === 0) {
-                              firstOptionElement.current = innerRef;
+                              firstOptionElement.current = ref;
                             }
-                            register(innerRef);
+                            register(ref);
                           }}
                         />
                         <Template code={filter.titleKey} {...(filter.titleParameters ?? {})} />
@@ -277,7 +277,7 @@ const DateRangeFilter: React.FC<Props> = ({
                 data-testid="customDateRangeFrom"
                 name="customDateRangeFrom"
                 onChange={() => updateWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))}
-                innerRef={register}
+                ref={register}
               />
             </Box>
             <span style={{ padding: '5px' }}>
@@ -294,7 +294,7 @@ const DateRangeFilter: React.FC<Props> = ({
                 data-testid="customDateRangeTo"
                 name="customDateRangeTo"
                 onChange={() => updateWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))}
-                innerRef={register}
+                ref={register}
               />
             </Box>
             <hr style={dividerStyle} />
@@ -308,9 +308,9 @@ const DateRangeFilter: React.FC<Props> = ({
               <FiltersApplyButton
                 type="submit"
                 name="applyButton"
-                innerRef={innerRef => {
-                  applyButtonElement.current = innerRef;
-                  register(innerRef);
+                ref={ref => {
+                  applyButtonElement.current = ref;
+                  register(ref);
                 }}
                 onKeyDown={handleTabForLastElement}
               >
