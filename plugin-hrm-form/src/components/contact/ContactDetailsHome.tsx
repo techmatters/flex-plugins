@@ -35,7 +35,8 @@ type OwnProps = {
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
 /* eslint-disable complexity */
-const ContactDetailsHome: React.FC<Props> = ({
+// eslint-disable-next-line sonarjs/cognitive-complexity
+const ContactDetailsHome: React.FC<Props> = function ({
   context,
   detailsExpanded,
   showActionIcons = false,
@@ -114,7 +115,7 @@ const ContactDetailsHome: React.FC<Props> = ({
   const loadConversationIntoOverlay = async () => {
     await Actions.invokeAction(Insights.Player.Action.INSIGHTS_PLAYER_PLAY, {
       // taskSid: contact.overview.taskId,
-      segmentId: '07a95236-df00-5c02-b08d-4039e6e2488f',
+      segmentId: '0982de9d-28c1-5a2a-92c7-d8f2b8665286',
     });
   };
 
@@ -254,19 +255,17 @@ const ContactDetailsHome: React.FC<Props> = ({
           )}
         </ContactDetailsSection>
       )}
-      {canViewTranscript &&
-        contact.overview.taskId &&
-        (!contact.details.contactlessTask || !contact.details.contactlessTask.date) && (
-          <div style={{ textAlign: 'center', margin: '10px' }}>
-            <LoadConversationButton type="button" roundCorners={true} onClick={loadConversationIntoOverlay}>
-              {channel === channelTypes.voice ? (
-                <Template code="ContactDetails-LoadRecording-Button" />
-              ) : (
-                <Template code="ContactDetails-LoadTranscript-Button" />
-              )}
-            </LoadConversationButton>
-          </div>
-        )}
+      {canViewTranscript && contact.overview.taskId && typeof contact.overview.conversationDuration === 'number' && (
+        <div style={{ textAlign: 'center', margin: '10px' }}>
+          <LoadConversationButton type="button" roundCorners={true} onClick={loadConversationIntoOverlay}>
+            {channel === channelTypes.voice ? (
+              <Template code="ContactDetails-LoadRecording-Button" />
+            ) : (
+              <Template code="ContactDetails-LoadTranscript-Button" />
+            )}
+          </LoadConversationButton>
+        </div>
+      )}
     </DetailsContainer>
   );
 };
