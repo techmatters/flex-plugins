@@ -210,7 +210,6 @@ const TabbedForms: React.FC<Props> = ({
         <TabbedFormsContainer>
           {/* Buttons at the top of the form */}
           <HeaderControlButtons />
-
           <StyledTabs
             className="hiddenWhenEditingContact"
             name="tab"

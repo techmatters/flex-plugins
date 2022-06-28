@@ -76,7 +76,7 @@ const ContactDetails: React.FC<Props> = ({
     section: ContactDetailsSectionFormApi,
     formPath: 'callerInformation' | 'childInformation' | 'caseInformation',
   ) => (
-    <EditContactSection context={context} contactId={contactId} contactDetailsSectionForm={section}>
+    <EditContactSection context={context} contactId={contactId} contactDetailsSectionForm={section} tabPath={formPath}>
       <ContactDetailsSectionForm
         tabPath={formPath}
         definition={section.getFormDefinition(definitionVersion)}
@@ -103,6 +103,7 @@ const ContactDetails: React.FC<Props> = ({
           context={context}
           contactId={contactId}
           contactDetailsSectionForm={contactDetailsSectionFormApi.ISSUE_CATEGORIZATION}
+          tabPath="categories"
         >
           <IssueCategorizationSectionForm
             definition={definitionVersion.tabbedForms.IssueCategorizationTab(contact.overview.helpline)}

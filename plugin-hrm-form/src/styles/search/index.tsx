@@ -313,7 +313,7 @@ export const ContactDetailsIcon = icon => styled(icon)`
   font-size: 16px;
 `;
 
-const containerPadding = 40;
+const containerPadding = 20;
 export const DetailsContainer = styled('div')`
   padding-left: ${containerPadding}px;
   padding-right: ${containerPadding}px;

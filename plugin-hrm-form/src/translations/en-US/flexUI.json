@@ -293,6 +293,12 @@
   "SectionName-Referral": "Referral",
   "SectionName-Notes": "Notes",
   "SectionName-CaseSummary": "Case Summary",
+  
+  "Contact-EditCaller":"Edit Caller Information",
+  "Contact-EditChild":"Edit Child Information",
+  "Contact-EditCategories":"Edit Categories",
+  "Contact-EditSummary":"Edit Summary",
+
   "ContactCopyButton": "Copy",
   "ManualPullButtonText": "Another Task",
   "NoTaskAssignableNotification": "No task assignable to you at the moment.",
