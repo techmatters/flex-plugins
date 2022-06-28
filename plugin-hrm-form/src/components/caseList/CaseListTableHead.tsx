@@ -7,7 +7,7 @@ import { ListCasesSortBy, ListCasesSortDirection } from '../../types/types';
 
 const CaseListTableHead = () => {
   return (
-    <TableHead style={{ boxShadow: '0 1px 2px 0 rgba(25, 43, 51, 0.1)' }} data-testid="CaseList-TableHead">
+    <TableHead style={{ boxShadow: '0 2px 0 0 #E5E6E7' }} data-testid="CaseList-TableHead">
       <TableRow>
         <CaseListTableHeadCell
           column={ListCasesSortBy.ID}

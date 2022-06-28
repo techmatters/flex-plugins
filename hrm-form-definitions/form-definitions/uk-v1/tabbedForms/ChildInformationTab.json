@@ -256,240 +256,38 @@
     }
   },
   {
-      "name": "imageLocation",
-      "label": "Location of Images",
-      "type": "select",
-      "options": [
-         {
-            "value":"Unknown",
-            "label":""
-         },
-         {
-            "value":"clientDidntAnswer",
-            "label":"Client Didn't Answer"
-         },
-         {
-            "value":"clientDoesntKnow",
-            "label":"Client Doesn't Know"
-         },
-         {
-            "value":"clientWantedNoDataCollected",
-            "label":"Client Wanted No Data Collected"
-         },
-         {
-            "value":"datingSite",
-            "label":"Dating Site"
-         },
-         {
-            "value":"datingSite",
-            "label":"Dating Site"
-         },
-         {
-            "value":"discord",
-            "label":"Discord"
-         },
-         {
-            "value":"emailTextDM",
-            "label":"Email/Text/Dms"
-         },
-         {
-            "value":"facebook",
-            "label":"Facebook"
-         },
-         {
-            "value":"pornSite",
-            "label":"General Porn Site"
-         },
-         {
-            "value":"pornSite",
-            "label":"General Porn Site"
-         },
-         {
-            "value":"hardCopy",
-            "label":"Hard copy pictures"
-         },
-         {
-            "value":"multipleLocations",
-            "label":"Multiple Locations"
-         },
-         {
-            "value":"notRelevant",
-            "label":"Not relevant"
-         },
-         {
-            "value":"instagram",
-            "label":"Instagram"
-         },
-         {
-            "value":"snapchat",
-            "label":"Snapchat"
-         },
-         {
-            "value":"twitch",
-            "label":"Twitch"
-         },
-         {
-            "value":"twitter",
-            "label":"Twitter"
-         },
-         {
-            "value":"subscriptionSite",
-            "label":"Subscription Site (OnlyFans, Fansly etc)"
-         },
-         {
-            "value":"youtube",
-            "label":"Youtube"
-         },
-         {
-            "value":"collectorSite",
-            "label":"Collector site (forums made specifically for sharing content)"
-         },
-         {
-            "value":"questionNotAsked",
-            "label":"Question Not Asked"
-         },
-         {
-            "value":"RPwebsite",
-            "label":"RP Website"
-         },
-         {
-            "value":"threatToPublish",
-            "label":"Threat to publish"
-         },
-         {
-            "value":"webCamCapture",
-            "label":"Web Cam Capture"
-         }
-      ]  
-    },
-    {
-      "name": "threatLocation",
-      "label": "Location of Threat",
-      "type": "select",
-      "options": [
-         {
-            "value":"Unknown",
-            "label":""
-         },
-         {
-            "value":"clientDidntAnswer",
-            "label":"Client Didn't Answer"
-         },
-         {
-            "value":"clientDoesntKnow",
-            "label":"Client Doesn't Know"
-         },
-         {
-            "value":"clientWantedNoDataCollected",
-            "label":"Client Wanted No Data Collected"
-         },
-         {
-            "value":"datingSite",
-            "label":"Dating Site"
-         },
-         {
-            "value":"discord",
-            "label":"Discord"
-         },
-         {
-            "value":"emailTextDM",
-            "label":"Email/Text/Dms"
-         },
-         {
-            "value":"facebook",
-            "label":"Facebook"
-         },
-         {
-            "value":"pornSite",
-            "label":"General Porn Site"
-         },
-         {
-            "value":"hardCopy",
-            "label":"Hard copy pictures"
-         },
-         {
-            "value":"multipleLocations",
-            "label":"Multiple Locations"
-         },
-         {
-            "value":"notRelevant",
-            "label":"Not relevant"
-         },
-         {
-            "value":"instagram",
-            "label":"Instagram"
-         },
-         {
-            "value":"snapchat",
-            "label":"Snapchat"
-         },
-         {
-            "value":"twitch",
-            "label":"Twitch"
-         },
-         {
-            "value":"twitter",
-            "label":"Twitter"
-         },
-         {
-            "value":"subscriptionSite",
-            "label":"Subscription Site (OnlyFans, Fansly etc)"
-         },
-         {
-            "value":"youtube",
-            "label":"Youtube"
-         },
-         {
-            "value":"questionNotAsked",
-            "label":"Question Not Asked"
-         },
-         {
-            "value":"RPwebsite",
-            "label":"RP Website"
-         },
-         {
-            "value":"threatToPublish",
-            "label":"Threat to publish"
-         },
-         {
-            "value":"webCamCapture",
-            "label":"Web Cam Capture"
-         }
-      ]   
-    },
-    {
     "name": "geolocation",
     "label": "Location",
     "type": "select",
     "options": [
-       {
-          "value":"Unknown",
-          "label":""
-       },
-       {
-          "value":"England",
-          "label":"England"
-       },
-       {
-          "value":"Wales",
-          "label":"Wales"
-       },
-       {
-          "value":"Scotland",
-          "label":"Scotland"
-       },
-       {
-          "value":"Northern Ireland",
-          "label":"Northern Ireland"
-       },
-       {
-          "value":"ROI",
-          "label":"ROI"
-       },
-       {
-          "value": "NotUK",
-          "label": "Not UK"
-       }
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "England",
+        "label": "England"
+      },
+      {
+        "value": "Wales",
+        "label": "Wales"
+      },
+      {
+        "value": "Scotland",
+        "label": "Scotland"
+      },
+      {
+        "value": "Northern Ireland",
+        "label": "Northern Ireland"
+      },
+      {
+        "value": "ROI",
+        "label": "ROI"
+      },
+      {
+        "value": "NotUK",
+        "label": "Not UK"
+      }
     ]
   },
   {
@@ -502,22 +300,22 @@
     "label": "Did the client disclose Mental Health Issues?",
     "type": "select",
     "options": [
-       {
-          "value":"",
-          "label":""
-       },
-       {
-          "value":"yes",
-          "label":"Yes"
-       },
-       {
-          "value":"no",
-          "label":"No"
-       },
-       {
-          "value":"didntAsk",
-          "label":"Didn't ask"
-       }
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "yes",
+        "label": "Yes"
+      },
+      {
+        "value": "no",
+        "label": "No"
+      },
+      {
+        "value": "didntAsk",
+        "label": "Didn't ask"
+      }
     ],
     "required": {
       "value": true,
@@ -525,26 +323,31 @@
     }
   },
   {
+    "name": "mentalHealthIssueDetail",
+    "label": "Description of Mental Health Issue",
+    "type": "input"
+  },
+  {
     "name": "answerHOQuestions",
     "label": "Is the client happy to answer HO data questions?",
     "type": "select",
     "options": [
-       {
-          "value":"Unknown",
-          "label":""
-       },
-       {
-          "value":"yes",
-          "label":"Yes"
-       },
-       {
-          "value":"no",
-          "label":"No"
-       },
-       {
-          "value":"didntAsk",
-          "label":"Didn't ask"
-       }
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "yes",
+        "label": "Yes"
+      },
+      {
+        "value": "no",
+        "label": "No"
+      },
+      {
+        "value": "didntAsk",
+        "label": "Didn't ask"
+      }
     ]
   },
   {
@@ -552,30 +355,30 @@
     "label": "Why didn't you ask HO questions?",
     "type": "select",
     "options": [
-       {
-          "value":"",
-          "label":""
-       },
-       {
-          "value":"clientDistressed",
-          "label":"Client Distressed"
-       },
-       {
-          "value":"MHofClient",
-          "label":"MH of Client"
-       },
-       {
-          "value":"clientNotInUK",
-          "label":"Client not in UK"
-       },
-       {
-          "value":"client under 18",
-          "label":"Client under 18"
-       },
-       {
-          "value":"previousClient",
-          "label":"PreviousClient"
-       }
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "clientDistressed",
+        "label": "Client Distressed"
+      },
+      {
+        "value": "MHofClient",
+        "label": "MH of Client"
+      },
+      {
+        "value": "clientNotInUK",
+        "label": "Client not in UK"
+      },
+      {
+        "value": "client under 18",
+        "label": "Client under 18"
+      },
+      {
+        "value": "previousClient",
+        "label": "Previous Client"
+      }
     ],
     "required": {
       "value": true,

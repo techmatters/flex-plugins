@@ -2,7 +2,7 @@ terraform {
   required_providers {
     twilio = {
       source  = "twilio/twilio"
-      version = "0.11.1"
+      version = "0.17.0"
     }
   }
 }
@@ -23,10 +23,10 @@ resource "twilio_taskrouter_workspaces_workflows_v1" "survey_workflow" {
       "filters": [
         {
           "filter_friendly_name": "Survey Filter",
-          "expression": "helpline=='${var.helpline}'",
+          "expression": var.custom_task_routing_filter_expression != "" ? var.custom_task_routing_filter_expression : "helpline=='${var.helpline}'",
           "targets": [
             {
-              "expression": "isSurveyTask==true",
+              "expression": var.custom_task_routing_survey_queue_target_filter_expression,
               "queue": twilio_taskrouter_workspaces_task_queues_v1.survey_queue.sid
             }
           ]

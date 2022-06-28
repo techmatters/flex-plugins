@@ -1,17 +1,19 @@
 import { connect, ConnectedProps } from 'react-redux';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
+import _ from 'lodash';
 
 import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
 import { updateContactInHrm } from '../../services/ContactService';
-import { Box, StyledNextStepButton } from '../../styles/HrmStyles';
+import { Flex, Box, StyledNextStepButton, BottomButtonBar } from '../../styles/HrmStyles';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 import { getConfig } from '../../HrmFormPlugin';
 import { ContactDetailsRoute, DetailsContext, navigateContactDetails } from '../../states/contacts/contactDetails';
 import { ContactDetailsSectionFormApi, IssueCategorizationSectionFormApi } from './contactDetailsSectionFormApi';
 import { refreshRawContact } from '../../states/contacts/existingContacts';
+import CloseCaseDialog from '../case/CloseCaseDialog';
 
 type OwnProps = {
   context: DetailsContext;
@@ -44,6 +46,17 @@ const EditContactSection: React.FC<Props> = ({
   const definitionVersion = definitionVersions[version];
 
   const [isSubmitting, setSubmitting] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [initialFormValues, setInitialFormValues] = useState({});
+
+  useEffect(() => {
+    /*
+     * we need this to run only once, hence no need
+     * of adding any dependency inside the array
+     */
+    setInitialFormValues(methods.getValues());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const navigate = (route: ContactDetailsRoute) => navigateForContext(context, route);
 
@@ -72,30 +85,48 @@ const EditContactSection: React.FC<Props> = ({
     window.alert(strings['Error-Form']);
   });
 
+  const checkForEdits = () => {
+    if (_.isEqual(methods.getValues(), initialFormValues)) {
+      navigate(ContactDetailsRoute.HOME);
+    } else {
+      setOpenDialog(true);
+    }
+  };
+
   return (
     <FormProvider {...methods}>
       {children}
-      <Box marginRight="15px">
-        <StyledNextStepButton
-          roundCorners={true}
-          onClick={() => navigate(ContactDetailsRoute.HOME)}
-          disabled={isSubmitting}
-          secondary
-          data-fs-id="BottomBar-Cancel"
-        >
-          {isSubmitting ? <CircularProgress size={12} /> : <Template code="BottomBar-Cancel" />}
-        </StyledNextStepButton>
-      </Box>
-      <Box marginRight="15px">
-        <StyledNextStepButton
-          roundCorners={true}
-          onClick={methods.handleSubmit(onSubmitValidForm, onError)}
-          disabled={isSubmitting}
-          data-fs-id="Contact-SaveContact-Button"
-        >
-          {isSubmitting ? <CircularProgress size={12} /> : <Template code="BottomBar-SaveContact" />}
-        </StyledNextStepButton>
-      </Box>
+      <BottomButtonBar>
+        <Box marginRight="15px">
+          <StyledNextStepButton
+            roundCorners={true}
+            onClick={checkForEdits}
+            disabled={isSubmitting}
+            secondary
+            data-fs-id="BottomBar-Cancel"
+          >
+            <Template code="BottomBar-Cancel" />
+          </StyledNextStepButton>
+          <CloseCaseDialog
+            data-testid="CloseCaseDialog"
+            openDialog={openDialog}
+            setDialog={() => setOpenDialog(false)}
+            handleDontSaveClose={() => navigate(ContactDetailsRoute.HOME)}
+            handleSaveUpdate={methods.handleSubmit(onSubmitValidForm, onError)}
+          />
+        </Box>
+        <Box marginRight="15px">
+          <StyledNextStepButton
+            roundCorners={true}
+            onClick={methods.handleSubmit(onSubmitValidForm, onError)}
+            disabled={isSubmitting}
+            data-fs-id="Contact-SaveContact-Button"
+            data-testid="EditContact-SaveContact-Button"
+          >
+            {isSubmitting ? <CircularProgress size={12} /> : <Template code="BottomBar-SaveContact" />}
+          </StyledNextStepButton>
+        </Box>
+      </BottomButtonBar>
     </FormProvider>
   );
 };

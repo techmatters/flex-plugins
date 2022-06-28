@@ -99,7 +99,6 @@ jest.mock('../styles/search', () => ({
   SectionTitleContainer: 'SectionTitleContainer',
   SectionTitleButton: 'SectionTitleButton',
   SectionCollapse: 'SectionCollapse',
-  NameContainer: 'NameContainer',
   BackText: 'BackText',
   DetNameText: 'DetNameText',
   SectionTitleText: 'SectionTitleText',

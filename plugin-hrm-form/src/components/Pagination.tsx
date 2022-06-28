@@ -2,7 +2,6 @@
 /* eslint-disable react/no-multi-comp */
 import React from 'react';
 import { range } from 'lodash';
-import { TableFooter, TableCell, ButtonBase } from '@material-ui/core';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 import { Template } from '@twilio/flex-ui';
 

@@ -13,11 +13,14 @@ import {
 import { flexChat } from '../flexChat';
 import { tasks } from '../tasks';
 import { Categories, contactForm, ContactFormTab } from '../contactForm';
+import { deleteAllTasksInQueue } from '../twilio/tasks';
+import { logPageTelemetry } from '../browser-logs';
 
 test.describe.serial('Web chat caller', () => {
   let chatPage: WebChatPage, pluginPage: Page;
   test.beforeAll(async ({ browser }) => {
     pluginPage = await browser.newPage();
+    logPageTelemetry(pluginPage);
     console.log('Plugin page browser session launched.');
     await pluginPage.goto('/', { waitUntil: 'networkidle', timeout: 120000 });
     console.log('Plugin page visited.');
@@ -26,7 +29,11 @@ test.describe.serial('Web chat caller', () => {
   });
 
   test.afterAll(async () => {
-    await Promise.all([chatPage?.close(), pluginPage?.close()]);
+    await Promise.all([
+      chatPage?.close(),
+      pluginPage?.close(),
+      deleteAllTasksInQueue('Flex Task Assignment', 'Master Workflow', 'Childline'),
+    ]);
   });
   test('Chat ', async () => {
     await chatPage.openChat();
@@ -105,6 +112,7 @@ test.describe.serial('Web chat caller', () => {
         },
       },
     ]);
+    console.log('Saving form');
     await form.save();
   });
 });

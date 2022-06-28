@@ -14,10 +14,10 @@ import {
   CLNamesCell,
   CLSummaryCell,
   CLNumberCell,
-  CLDateCell,
   CLTableBodyFont,
   CLCaseNumberContainer,
   CLCaseIDButton,
+  CLTableSummaryFont,
 } from '../../styles/caseList';
 import { Box, HiddenText } from '../../styles/HrmStyles';
 import { formatName, getShortSummary } from '../../utils';
@@ -94,7 +94,7 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
         <CLTableBodyFont>{counselor}</CLTableBodyFont>
       </CLTableCell>
       <CLSummaryCell>
-        <CLTableBodyFont>{shortSummary}</CLTableBodyFont>
+        <CLTableSummaryFont>{shortSummary}</CLTableSummaryFont>
       </CLSummaryCell>
       <CLTableCell>
         <div style={{ display: 'inline-block', flexDirection: 'column' }}>

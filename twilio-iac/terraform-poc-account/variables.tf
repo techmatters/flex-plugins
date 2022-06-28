@@ -1,7 +1,14 @@
 variable "account_sid" {}
+variable "auth_token" {}
 variable "serverless_url" {}
 variable "datadog_app_id" {}
 variable "datadog_access_token" {}
+
+variable "aws_account_id" {
+  description = "Numeric AWS account ID used in ARNs"
+  type        = string
+  default     = null
+}
 
 variable "local_os" {
   description = "The OS running the terraform script. The only value that currently changes behaviour from default is 'Windows'"
@@ -66,4 +73,8 @@ variable "feature_flags" {
     "enable_save_insights": true,
     "enable_previous_contacts": true
   }
+}
+
+variable "messaging_flow_contact_identity" {
+  default = "+18506053963"
 }

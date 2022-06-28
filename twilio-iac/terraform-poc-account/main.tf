@@ -2,7 +2,7 @@ terraform {
   required_providers {
     twilio = {
       source  = "twilio/twilio"
-      version = "0.11.1"
+      version = "0.17.0"
     }
   }
 
@@ -40,6 +40,7 @@ module "services" {
   short_helpline = var.short_helpline
   environment = var.environment
   short_environment = var.short_environment
+  uses_conversation_service = false
 }
 
 module "taskRouter" {
@@ -69,6 +70,7 @@ module flex {
   feature_flags = var.feature_flags
   flex_chat_service_sid = module.services.flex_chat_service_sid
   messaging_studio_flow_sid = module.studioFlow.messaging_studio_flow_sid
+  messaging_flow_contact_identity = var.messaging_flow_contact_identity
 }
 
 module survey {
@@ -94,4 +96,21 @@ module aws {
   flex_proxy_service_sid = module.services.flex_proxy_service_sid
   post_survey_bot_sid = module.chatbots.post_survey_bot_sid
   survey_workflow_sid = module.survey.survey_workflow_sid
+}
+
+module aws_monitoring {
+  source = "../terraform-modules/aws-monitoring/default"
+  helpline = var.helpline
+  short_helpline = var.short_helpline
+  environment = var.environment
+  aws_account_id = var.aws_account_id
+}
+
+module github {
+
+  source = "../terraform-modules/github/default"
+  twilio_account_sid = var.account_sid
+  twilio_auth_token = var.auth_token
+  short_environment = var.short_environment
+  short_helpline = var.short_helpline
 }

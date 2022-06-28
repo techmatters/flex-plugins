@@ -1,0 +1,146 @@
+[
+  {
+    "name": "firstName",
+    "label": "Nombre",
+    "type": "input"
+  },
+  {
+    "name": "lastName",
+    "label": "Apellido",
+    "type": "input"
+  },
+  {
+    "name": "relationshipToChild",
+    "label": "Relación con el niño",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Madre",
+        "label": "Madre"
+      },
+      {
+        "value": "Padre",
+        "label": "Padre"
+      },
+      {
+        "value": "Hermano(s)/Hermana(s)",
+        "label": "Hermano(s)/Hermana(s)"
+      },
+      {
+        "value": "Cuidador",
+        "label": "Cuidador"
+      },
+      {
+        "value": "Pareja",
+        "label": "Pareja"
+      },
+      {
+        "value": "Compañero/Compañera",
+        "label": "Compañero/Compañera"
+      },
+      {
+        "value": "Otro adulto conocido por el niño",
+        "label": "Otro adulto conocido por el niño"
+      },
+      {
+        "value": "Persona en posición de responsabilidad",
+        "label": "Persona en posición de responsabilidad"
+      },
+      {
+        "value": "Otro adulto conocido por el niño",
+        "label": "Otro adulto conocido por el niño"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "gender",
+    "label": "Género",
+    "type": "select",
+    "unknownOption": "Desconocido",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Niño",
+        "label": "Niño"
+      },
+      {
+        "value": "Niña",
+        "label": "Niña"
+      },
+      {
+        "value": "Hombre",
+        "label": "Hombre"
+      },
+      {
+        "value": "Mujer",
+        "label": "Mujer"
+      },
+      {
+        "value": "No binario",
+        "label": "No binario"
+      },
+      {
+        "value": "Desconocido",
+        "label": "Desconocido"
+      }
+    ]
+  },
+  {
+    "name": "age",
+    "label": "Age",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "0 - 03",
+        "label": "0 - 03"
+      },
+      {
+        "value": "04 - 06",
+        "label": "04 - 06"
+      },
+      {
+        "value": "07 - 09",
+        "label": "07 - 09"
+      },
+      {
+        "value": "10 - 12",
+        "label": "10 - 12"
+      },
+      {
+        "value": "13 - 15",
+        "label": "13 - 15"
+      },
+      {
+        "value": "16 - 17",
+        "label": "16 - 17"
+      },
+      {
+        "value": "18 - 24",
+        "label": "18 - 24"
+      },
+      {
+        "value": ">=25",
+        "label": ">=25"
+      },
+      {
+        "value": "Desconocido",
+        "label": "Desconocido"
+      }
+    ]
+  }
+]

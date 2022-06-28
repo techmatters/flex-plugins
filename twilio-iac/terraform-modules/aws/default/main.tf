@@ -2,11 +2,11 @@ terraform {
   required_providers {
     twilio = {
       source  = "twilio/twilio"
-      version = "0.11.1"
+      version = "0.17.0"
     }
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 3.74"
+      version = "~> 4.19.0"
     }
   }
 }
@@ -25,12 +25,6 @@ locals {
 resource "aws_s3_bucket" "docs" {
   bucket = local.docs_s3_location
   provider = aws.bucket
-  cors_rule {
-    allowed_headers = ["*"]
-    allowed_methods = ["GET", "POST", "PUT"]
-    allowed_origins = ["https://flex.twilio.com"]
-    expose_headers = []
-  }
 }
 
 resource "aws_s3_bucket_public_access_block" "docs" {
@@ -41,8 +35,8 @@ resource "aws_s3_bucket_public_access_block" "docs" {
   restrict_public_buckets = true
 }
 
-resource "aws_s3_bucket" "chat" {
-  bucket = local.chat_s3_location
+resource "aws_s3_bucket_cors_configuration" "docs" {
+  bucket = aws_s3_bucket.docs.bucket
   cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["GET", "POST", "PUT"]
@@ -51,12 +45,45 @@ resource "aws_s3_bucket" "chat" {
   }
 }
 
+resource "aws_s3_bucket_server_side_encryption_configuration" "docs" {
+  bucket = aws_s3_bucket.docs.bucket
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm     = "AES256"
+    }
+  }
+}
+
+resource "aws_s3_bucket" "chat" {
+  bucket = local.chat_s3_location
+  provider = aws.bucket
+}
+
 resource "aws_s3_bucket_public_access_block" "chat" {
   bucket = aws_s3_bucket.chat.id
   block_public_acls = false
   ignore_public_acls = false
   block_public_policy = false
   restrict_public_buckets = false
+}
+
+resource "aws_s3_bucket_cors_configuration" "chat" {
+  bucket = aws_s3_bucket.chat.bucket
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET", "POST", "PUT"]
+    allowed_origins = ["https://flex.twilio.com"]
+    expose_headers = []
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "chat" {
+  bucket = aws_s3_bucket.chat.bucket
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm     = "AES256"
+    }
+  }
 }
 
 // Still put SSM parameters in default region, they don't store any helpline data & it keeps the workflow logic simpler

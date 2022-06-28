@@ -2,7 +2,7 @@ terraform {
   required_providers {
     twilio = {
       source  = "twilio/twilio"
-      version = "0.11.1"
+      version = "0.17.0"
     }
   }
 
@@ -40,6 +40,7 @@ module "services" {
   short_helpline = var.short_helpline
   environment = var.environment
   short_environment = var.short_environment
+  uses_conversation_service = false
 }
 
 module "taskRouter" {

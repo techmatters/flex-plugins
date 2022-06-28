@@ -2,7 +2,7 @@ terraform {
   required_providers {
     twilio = {
       source  = "twilio/twilio"
-      version = "0.11.1"
+      version = "0.17.0"
     }
   }
 
@@ -40,12 +40,15 @@ module "services" {
   short_helpline = var.short_helpline
   environment = var.environment
   short_environment = var.short_environment
+  uses_conversation_service = false
 }
 
 module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
   serverless_url = var.serverless_url
   helpline = var.helpline
+  custom_target_workers = "1==1"
+  custom_task_routing_filter_expression = "isContactlessTask==true"
 }
 
 module studioFlow {
@@ -67,12 +70,14 @@ module flex {
   feature_flags = var.feature_flags
   flex_chat_service_sid = module.services.flex_chat_service_sid
   messaging_studio_flow_sid = module.studioFlow.messaging_studio_flow_sid
+
 }
 
 module survey {
   source = "../terraform-modules/survey/default"
   helpline = var.helpline
   flex_task_assignment_workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
+  custom_task_routing_filter_expression = "helpline=='Aarambh'"
 }
 
 module aws {
@@ -92,4 +97,5 @@ module aws {
   flex_proxy_service_sid = module.services.flex_proxy_service_sid
   post_survey_bot_sid = module.chatbots.post_survey_bot_sid
   survey_workflow_sid = module.survey.survey_workflow_sid
+
 }

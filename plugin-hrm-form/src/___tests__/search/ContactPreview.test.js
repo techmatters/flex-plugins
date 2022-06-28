@@ -1,8 +1,9 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
-import '../mockStyled';
+import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
+import HrmTheme from '../../styles/HrmTheme';
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import ContactPreview from '../../components/search/ContactPreview';
 import ChildNameAndDate from '../../components/search/ContactPreview/ChildNameAndDate';
@@ -13,6 +14,10 @@ import { getDefinitionVersions } from '../../HrmFormPlugin';
 
 const NonExisting = () => <>NonExisting</>;
 NonExisting.displayName = 'NonExisting';
+
+const themeConf = {
+  colorTheme: HrmTheme,
+};
 
 test('<ContactPreview> should mount', async () => {
   mockGetDefinitionsResponse(
@@ -65,13 +70,17 @@ test('<ContactPreview> should mount', async () => {
   const handleOpenConnectDialog = jest.fn();
   const handleViewDetails = jest.fn();
 
-  const component = renderer.create(
-    <ContactPreview
-      contact={contact}
-      handleOpenConnectDialog={handleOpenConnectDialog}
-      handleViewDetails={handleViewDetails}
-    />,
+  const wrapper = renderer.create(
+    <StorelessThemeProvider themeConf={themeConf}>
+      <ContactPreview
+        contact={contact}
+        handleOpenConnectDialog={handleOpenConnectDialog}
+        handleViewDetails={handleViewDetails}
+      />
+    </StorelessThemeProvider>,
   ).root;
+
+  const component = wrapper.findByType(ContactPreview);
 
   expect(() => component.findByType(ChildNameAndDate)).not.toThrow();
   expect(() => component.findByType(CallSummary)).not.toThrow();

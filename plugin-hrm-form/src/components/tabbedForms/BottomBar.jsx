@@ -3,15 +3,10 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 import { Template } from '@twilio/flex-ui';
-import FolderOpenIcon from '@material-ui/icons/FolderOpen';
 import { CircularProgress } from '@material-ui/core';
 import FolderIcon from '@material-ui/icons/Folder';
-import AddIcon from '@material-ui/icons/Add';
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
 import { callTypes } from 'hrm-form-definitions';
 
-import { Menu, MenuItem } from '../menu';
 import { taskType } from '../../types';
 import { Box, BottomButtonBar, StyledNextStepButton } from '../../styles/HrmStyles';
 import * as CaseActions from '../../states/case/actions';
@@ -44,20 +39,8 @@ class BottomBar extends Component {
   };
 
   state = {
-    anchorEl: null,
-    isMenuOpen: false,
-    mockedMessage: null,
     isSubmitting: false,
   };
-
-  toggleCaseMenu = e => {
-    e.persist();
-    this.setState(prevState => ({ anchorEl: e.currentTarget || e.target, isMenuOpen: !prevState.isMenuOpen }));
-  };
-
-  handleMockedMessage = () => this.setState({ mockedMessage: <Template code="NotImplemented" />, isMenuOpen: false });
-
-  closeMockedMessage = () => this.setState({ mockedMessage: null });
 
   handleOpenNewCase = async () => {
     const { task, contactForm } = this.props;
@@ -65,8 +48,6 @@ class BottomBar extends Component {
     const { strings } = getConfig();
 
     if (!hasTaskControl(task)) return;
-
-    this.setState({ isMenuOpen: false });
 
     try {
       const caseFromDB = await createCase(task, contactForm);
@@ -106,34 +87,15 @@ class BottomBar extends Component {
 
   render() {
     const { showNextButton, showSubmitButton, handleSubmitIfValid, optionalButtons, contactForm } = this.props;
-    const { isMenuOpen, anchorEl, mockedMessage, isSubmitting } = this.state;
+    const { isSubmitting } = this.state;
 
     const showBottomBar = showNextButton || showSubmitButton;
-    const isMockedMessageOpen = Boolean(mockedMessage);
     const { featureFlags } = getConfig();
 
     if (!showBottomBar) return null;
 
     return (
       <>
-        <Dialog onClose={this.closeMockedMessage} open={isMockedMessageOpen}>
-          <DialogContent>{mockedMessage}</DialogContent>
-        </Dialog>
-        <Menu anchorEl={anchorEl} open={isMenuOpen} onClickAway={() => this.setState({ isMenuOpen: false })}>
-          <MenuItem
-            Icon={FolderOpenIcon}
-            text={<Template code="BottomBar-OpenNewCase" />}
-            onClick={handleSubmitIfValid(this.handleOpenNewCase, this.onError)}
-            data-fs-id="Contact-OpenNewCase-Button"
-          />
-          <MenuItem
-            Icon={AddIcon}
-            text={<Template code="BottomBar-AddToExistingCase" />}
-            onClick={this.handleMockedMessage}
-            data-fs-id="Contact-AddToExistingCase-Button"
-          />
-        </Menu>
-
         <BottomButtonBar>
           {optionalButtons &&
             optionalButtons.map((i, index) => (
@@ -157,12 +119,11 @@ class BottomBar extends Component {
                     type="button"
                     roundCorners
                     secondary
-                    onClick={this.toggleCaseMenu}
-                    disabled={isSubmitting}
+                    onClick={handleSubmitIfValid(this.handleOpenNewCase, this.onError)}
                     data-fs-id="Contact-SaveAndAddToCase-Button"
                   >
                     <FolderIcon style={{ fontSize: '16px', marginRight: '10px' }} />
-                    <Template code="BottomBar-SaveAndAddToCase" />
+                    <Template code="BottomBar-AddContactToNewCase" />
                   </StyledNextStepButton>
                 </Box>
               )}
@@ -171,8 +132,9 @@ class BottomBar extends Component {
                 onClick={handleSubmitIfValid(this.handleSubmit, this.onError)}
                 disabled={isSubmitting}
                 data-fs-id="Contact-SaveContact-Button"
+                data-testid="BottomBar-SaveContact-Button"
               >
-                {isSubmitting ? <CircularProgress size={12} /> : <Template code="BottomBar-SaveContact" />}
+                {isSubmitting ? <CircularProgress size={12} /> : <Template code="BottomBar-SaveCaseContact" />}
               </StyledNextStepButton>
             </>
           )}
