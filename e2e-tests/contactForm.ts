@@ -24,6 +24,9 @@ export function contactForm(page: Page) {
     subCategoryCheckbox: (tabId: string, topCategory: string, subCategory: string) =>
       formArea.locator(`//input[@value='${tabId}.${topCategory}.${subCategory}']`),
     saveContactButton: formArea.locator(`//button[@data-testid='BottomBar-SaveContact-Button']`),
+    saveAndAddToCaseButton: formArea.locator(
+      `//button[@data-testid='BottomBar-SaveAndAddToCase-Button']`,
+    ),
   };
 
   async function selectTab(tab: ContactFormTab<unknown>) {
@@ -61,7 +64,7 @@ export function contactForm(page: Page) {
         await tab.fill(tab);
       }
     },
-    save: async () => {
+    save: async ({ saveAndAddToCase }: { saveAndAddToCase?: boolean } = {}) => {
       const tab = {
         id: 'caseInformation',
         label: 'Summary',
@@ -69,7 +72,10 @@ export function contactForm(page: Page) {
         items: {},
       };
       await selectTab(tab);
-      await selectors.saveContactButton.click();
+
+      if (saveAndAddToCase) await selectors.saveAndAddToCaseButton.click();
+      else await selectors.saveContactButton.click();
+
       await selectors.tabButton(tab).waitFor({ state: 'detached' });
     },
     fillCategoriesTab,
