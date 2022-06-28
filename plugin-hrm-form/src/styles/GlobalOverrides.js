@@ -44,4 +44,18 @@ injectGlobal`
     height: 16px;
     font-size: 16px;
   }
+  
+  .Twilio-View-case-list {
+    background-color: #f6f6f6;
+  }
+
+  .Twilio-View-search {
+    background-color: #f6f6f6;
+  }
+
+  .Twilio-SidePanel-Title.Twilio-SidePanel-TranscriptPlayer-Title {
+    text-transform: capitalize;
+    letter-spacing: inherit;
+    font-size: 14px;
+  }
 `;

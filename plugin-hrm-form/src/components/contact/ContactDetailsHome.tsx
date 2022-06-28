@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { format } from 'date-fns';
-import { Template } from '@twilio/flex-ui';
+import { Actions, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes } from 'hrm-form-definitions';
 
@@ -20,6 +20,7 @@ import {
   navigateContactDetails,
   toggleDetailSectionExpanded,
 } from '../../states/contacts/contactDetails';
+import { LoadConversationButton } from '../../styles/contact';
 import { getPermissionsForContact, PermissionActions } from '../../permissions';
 
 // TODO: complete this type
@@ -34,7 +35,8 @@ type OwnProps = {
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
 /* eslint-disable complexity */
-const ContactDetailsHome: React.FC<Props> = ({
+// eslint-disable-next-line sonarjs/cognitive-complexity
+const ContactDetailsHome: React.FC<Props> = function ({
   context,
   detailsExpanded,
   showActionIcons = false,
@@ -45,11 +47,18 @@ const ContactDetailsHome: React.FC<Props> = ({
   toggleSectionExpandedForContext,
   navigateForContext,
   enableEditing,
-  // eslint-disable-next-line sonarjs/cognitive-complexity
-}) => {
+  canViewTranscript,
+}) {
   const version = contact?.details.definitionVersion;
 
   const definitionVersion = definitionVersions[version];
+
+  useEffect(
+    () => () => {
+      Actions.invokeAction(Insights.Player.Action.INSIGHTS_PLAYER_HIDE);
+    },
+    [],
+  );
 
   if (!contact || !definitionVersion) return null;
 
@@ -102,6 +111,13 @@ const ContactDetailsHome: React.FC<Props> = ({
 
   const toggleSection = (section: ContactDetailsSectionsType) => toggleSectionExpandedForContext(context, section);
   const navigate = (route: ContactDetailsRoute) => navigateForContext(context, route);
+
+  const loadConversationIntoOverlay = async () => {
+    await Actions.invokeAction(Insights.Player.Action.INSIGHTS_PLAYER_PLAY, {
+      // taskSid: contact.overview.taskId,
+      segmentId: '0982de9d-28c1-5a2a-92c7-d8f2b8665286',
+    });
+  };
 
   const csamReportsAttached =
     csamReports &&
@@ -239,6 +255,17 @@ const ContactDetailsHome: React.FC<Props> = ({
           )}
         </ContactDetailsSection>
       )}
+      {canViewTranscript && contact.overview.taskId && typeof contact.overview.conversationDuration === 'number' && (
+        <div style={{ textAlign: 'center', margin: '10px' }}>
+          <LoadConversationButton type="button" roundCorners={true} onClick={loadConversationIntoOverlay}>
+            {channel === channelTypes.voice ? (
+              <Template code="ContactDetails-LoadRecording-Button" />
+            ) : (
+              <Template code="ContactDetails-LoadTranscript-Button" />
+            )}
+          </LoadConversationButton>
+        </div>
+      )}
     </DetailsContainer>
   );
 };
@@ -255,6 +282,9 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   counselorsHash: state[namespace][configurationBase].counselors.hash,
   contact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.contact,
   detailsExpanded: state[namespace][contactFormsBase].contactDetails[ownProps.context].detailsExpanded,
+  canViewTranscript: (state.flex.worker.attributes.roles as string[]).some(
+    role => role.toLowerCase().startsWith('wfo') && role !== 'wfo.',
+  ),
 });
 
 const mapDispatchToProps = {
