@@ -99,13 +99,8 @@ const ContactDetailsHome: React.FC<Props> = function ({
     channel === channelTypes.voice || channel === channelTypes.sms || channel === channelTypes.whatsapp;
   const formattedCategories = formatCategories(categories);
 
-  const {
-    GENERAL_DETAILS,
-    CALLER_INFORMATION,
-    CHILD_INFORMATION,
-    ISSUE_CATEGORIZATION,
-    CONTACT_SUMMARY,
-  } = ContactDetailsSections;
+  const { GENERAL_DETAILS, CALLER_INFORMATION, CHILD_INFORMATION, ISSUE_CATEGORIZATION, CONTACT_SUMMARY } =
+    ContactDetailsSections;
   const addedBy = counselorsHash[createdBy];
   const counselorName = counselorsHash[counselor];
 
@@ -114,8 +109,8 @@ const ContactDetailsHome: React.FC<Props> = function ({
 
   const loadConversationIntoOverlay = async () => {
     await Actions.invokeAction(Insights.Player.Action.INSIGHTS_PLAYER_PLAY, {
-      // taskSid: contact.overview.taskId,
-      segmentId: '0982de9d-28c1-5a2a-92c7-d8f2b8665286',
+      taskSid: contact.overview.taskId,
+      // segmentId: '0982de9d-28c1-5a2a-92c7-d8f2b8665286',
     });
   };
 

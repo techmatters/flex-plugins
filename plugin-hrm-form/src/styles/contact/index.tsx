@@ -1,4 +1,4 @@
-import styled from 'react-emotion';
+import { styled } from '@twilio/flex-ui';
 
 import { StyledNextStepButton } from '../HrmStyles';
 
