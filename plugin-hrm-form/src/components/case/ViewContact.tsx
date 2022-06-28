@@ -82,8 +82,6 @@ const ViewContact: React.FC<Props> = ({
   return (
     <CaseLayout
       className={editContactFormOpen ? 'editingContact' : ''}
-
-      // style={{ height: '-webkit-fill-available', border: '15px red solid' }}
     >
       <Container>
         <ContactDetails
