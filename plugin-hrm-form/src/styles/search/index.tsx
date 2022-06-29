@@ -321,9 +321,8 @@ export const DetailsContainer = styled('div')`
 
 export const SectionTitleContainer = styled(Row)<ColorProps>`
   background-color: #ecedf1;
-  padding: 8px;
-  padding-left: 18px;
-  margin: 2px 0;
+  padding: 8px 25px 8px;
+  margin:2px 0;
   border-left: ${({ color }) => (color ? `6px solid ${color}` : 'none')};
 `;
 SectionTitleContainer.displayName = 'SectionTitleContainer';
