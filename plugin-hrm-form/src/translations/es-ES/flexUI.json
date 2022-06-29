@@ -411,10 +411,10 @@
     "SectionEntry-No": "No",
     "SectionEntry-Yes": "Sí",
 
-  "Contact-EditCaller":"Editar información del Llamante",
-  "Contact-EditChild":"Editar información del niño",
-  "Contact-EditCategories":"Editar categorías",
-  "Contact-EditSummary":"Editar resumen",
+    "Contact-EditCaller":"Editar información del Llamante",
+    "Contact-EditChild":"Editar información del niño",
+    "Contact-EditCategories":"Editar categorías",
+    "Contact-EditSummary":"Editar resumen",
   
     "Case-CaseStatus": "Estado de la caja",
     "Case-CaseManager": "Administrador de casos",

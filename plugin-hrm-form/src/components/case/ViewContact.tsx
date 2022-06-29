@@ -74,7 +74,6 @@ const ViewContact: React.FC<Props> = ({
     loadRawContactIntoState,
     tempInfo,
   ]);
-  console.log('>>> ViewContact', { editContactFormOpen });
 
   if (!tempInfo || tempInfo.screen !== 'view-contact') return null;
   const { contact: contactFromInfo } = tempInfo.info;
