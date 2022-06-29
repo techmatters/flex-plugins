@@ -6,6 +6,7 @@ import { CallTypes } from 'hrm-form-definitions';
 
 import { Flex, Row } from '../../../styles/HrmStyles';
 import { PrevNameText, ContactButtonsWrapper, DateText, ViewContactButton } from '../../../styles/search';
+import { ViewButton } from '../../../styles/case';
 import { isNonDataCallType } from '../../../states/ValidationRules';
 import CallTypeIcon from '../../common/icons/CallTypeIcon';
 import { channelTypes, ChannelTypes } from '../../../states/DomainConstants';
@@ -46,9 +47,9 @@ const ChildNameAndDate: React.FC<Props> = ({ channel, callType, name, number, da
         <Flex marginRight="20px">
           <DateText>{dateString}</DateText>
         </Flex>
-        <ViewContactButton type="button" onClick={onClickFull}>
+        <ViewButton onClick={onClickFull}>
           <Template code="Contact-ViewButton" />
-        </ViewContactButton>
+        </ViewButton>
       </ContactButtonsWrapper>
     </Row>
   );

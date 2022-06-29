@@ -80,10 +80,8 @@ const ViewContact: React.FC<Props> = ({
   const { contact: contactFromInfo } = tempInfo.info;
 
   return (
-    <CaseLayout
-      className={editContactFormOpen ? 'editingContact' : ''}
-    >
-      <Container>
+    <CaseLayout className={editContactFormOpen ? 'editingContact' : ''}>
+      <Container removePadding={editContactFormOpen}>
         <ContactDetails
           contactId={contactFromInfo?.id ?? `__unsavedFromCase:${connectedCase.id}`}
           enableEditing={Boolean(contactFromInfo)}

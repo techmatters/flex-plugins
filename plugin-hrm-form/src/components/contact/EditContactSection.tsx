@@ -9,7 +9,7 @@ import { Close } from '@material-ui/icons';
 import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
 import { updateContactInHrm } from '../../services/ContactService';
 import { Box, StyledNextStepButton, BottomButtonBar, Row, HiddenText, HeaderCloseButton } from '../../styles/HrmStyles';
-import { CaseActionTitle } from '../../styles/case';
+import { CaseActionTitle, EditContactContainer } from '../../styles/case';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 import { getConfig } from '../../HrmFormPlugin';
 import { ContactDetailsRoute, DetailsContext, navigateContactDetails } from '../../states/contacts/contactDetails';
@@ -56,7 +56,7 @@ const EditContactSection: React.FC<Props> = ({
   const [isSubmitting, setSubmitting] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [initialFormValues, setInitialFormValues] = useState({});
-  console.log('>>>', { tabPath });
+
   useEffect(() => {
     /*
      * we need this to run only once, hence no need
@@ -120,19 +120,10 @@ const EditContactSection: React.FC<Props> = ({
   };
 
   return (
-    <div
-      className="CHANGEME"
-      style={{
-        display: 'grid',
-        height: '100%',
-        alignContent: 'space-between',
-        border: '10px grey solid',
-        overflow: 'overlay',
-      }}
-    >
+    <EditContactContainer>
       <FormProvider {...methods}>
-        <Row style={{ width: '100%', margin: '15px auto' }}>
-          <CaseActionTitle style={{ margin: 'auto 15px' }}>
+        <Row style={{ margin: '30px' }}>
+          <CaseActionTitle>
             <Template code={editContactSectionTitle(tabPath)} />
           </CaseActionTitle>
           <HeaderCloseButton
@@ -179,7 +170,7 @@ const EditContactSection: React.FC<Props> = ({
           </Box>
         </BottomButtonBar>
       </FormProvider>
-    </div>
+    </EditContactContainer>
   );
 };
 

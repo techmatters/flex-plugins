@@ -202,11 +202,7 @@ const TabbedForms: React.FC<Props> = ({
 
   return (
     <FormProvider {...methods}>
-      <div
-        role="form"
-        style={{ height: '100%', overflow: 'scroll' }}
-        className={editContactFormOpen ? 'editingContact' : ''}
-      >
+      <div role="form" style={{ height: '100%' }} className={editContactFormOpen ? 'editingContact' : ''}>
         <TabbedFormsContainer>
           {/* Buttons at the top of the form */}
           <HeaderControlButtons />
