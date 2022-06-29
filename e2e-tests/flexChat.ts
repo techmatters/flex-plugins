@@ -41,8 +41,12 @@ export function flexChat(page: Page) {
             console.log('Sent message in flex:', text);
             break;
           case ChatStatementOrigin.CALLER:
-            if (!(await selectors.messageWithText(text).count())) {
-              // Not already sent
+            try {
+              await selectors.messageWithText(text).waitFor({ timeout: 2000 });
+            } catch (err) {
+              console.log(
+                `Caller statement '${text}' not found after 2 seconds. Assuming action is required to send it so the flex chat processor is yielding control.`,
+              );
               yield statementItem;
             }
             await selectors.messageWithText(text).waitFor({ timeout: 60000 });
