@@ -2,6 +2,7 @@
   "name": "plugin-hrm-form",
   "version": "0.0.0",
   "private": true,
+  "type": "commonjs",
   "scripts": {
     "preinstall": "cd ../hrm-form-definitions && npm ci && npm run build",
     "postinstall": "flex-plugin pre-script-check",
@@ -18,7 +19,8 @@
     "remove": "flex-plugin remove",
     "eject": "flex-plugin eject",
     "lint": "eslint --ext js --ext jsx --ext ts --ext tsx src/",
-    "lint:fix": "npm run lint -- --fix"
+    "lint:fix": "npm run lint -- --fix",
+    "update-flex-ui-version": "npx ts-node --esm src/scripts/updateFlexUiVersion.ts"
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",
@@ -39,6 +41,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@actions/core": "^1.9.0",
     "@babel/plugin-transform-runtime": "^7.16.4",
     "@testing-library/dom": "^7.21.0",
     "@testing-library/jest-dom": "^5.11.1",
