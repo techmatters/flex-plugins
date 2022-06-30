@@ -59,13 +59,15 @@ export const searchCases = (dispatch: Dispatch<any>) => (taskId: string) => asyn
   try {
     dispatch({ type: t.SEARCH_CASES_REQUEST, taskId });
 
+    const { dateFrom, dateTo, ...rest } = searchParams || {};
+
     // Adapt dateFrom and dateTo to what is expected in the search endpoint
     const searchCasesPayload = {
-      ...searchParams,
+      ...rest,
       filters: {
         createdAt: {
-          from: searchParams.dateFrom ? new Date(searchParams.dateFrom).toISOString() : undefined,
-          to: searchParams.dateTo ? new Date(searchParams.dateTo).toISOString() : undefined,
+          from: dateFrom ? new Date(dateFrom).toISOString() : undefined,
+          to: dateTo ? new Date(dateTo).toISOString() : undefined,
         },
       },
     };
