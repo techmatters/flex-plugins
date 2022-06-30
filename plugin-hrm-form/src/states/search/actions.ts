@@ -58,7 +58,19 @@ export const searchCases = (dispatch: Dispatch<any>) => (taskId: string) => asyn
 ) => {
   try {
     dispatch({ type: t.SEARCH_CASES_REQUEST, taskId });
-    const searchResult = await searchCasesApiCall(searchParams, limit, offset);
+
+    // Adapt dateFrom and dateTo to what is expected in the search endpoint
+    const searchCasesPayload = {
+      ...searchParams,
+      filters: {
+        createdAt: {
+          from: searchParams.dateFrom ? new Date(searchParams.dateFrom).toISOString() : undefined,
+          to: searchParams.dateTo ? new Date(searchParams.dateTo).toISOString() : undefined,
+        },
+      },
+    };
+
+    const searchResult = await searchCasesApiCall(searchCasesPayload, limit, offset);
 
     const definitions = await getCasesMissingVersions(searchResult.cases);
     definitions.forEach(d => dispatch(updateDefinitionVersion(d.version, d.definition)));
