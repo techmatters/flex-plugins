@@ -103,6 +103,7 @@ const CallTypeButtons: React.FC<Props> = props => {
                   onClick={() => handleClickAndRedirect(task.taskSid, callType)}
                   key={callType.name}
                   autoFocus={index === 0}
+                  data-testid={`DataCallTypeButton-${callType.name}`}
                 >
                   <Flex width="50px" marginRight="5px">
                     {/* TODO: We currently need the call type name in English. I think we should actually save callType.name (instead of label) on the DB, and use it in here.  */}

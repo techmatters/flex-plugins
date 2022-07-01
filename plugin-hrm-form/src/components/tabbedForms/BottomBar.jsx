@@ -121,6 +121,7 @@ class BottomBar extends Component {
                     secondary
                     onClick={handleSubmitIfValid(this.handleOpenNewCase, this.onError)}
                     data-fs-id="Contact-SaveAndAddToCase-Button"
+                    data-testid="BottomBar-SaveAndAddToCase-Button"
                   >
                     <FolderIcon style={{ fontSize: '16px', marginRight: '10px' }} />
                     <Template code="BottomBar-AddContactToNewCase" />
