@@ -97,12 +97,8 @@
   },
   {
     "name": "idNumber",
-    "label": "NIP",
-    "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "label": "NUIP",
+    "type": "input"
   },
   {
     "name": "gender",
@@ -126,7 +122,11 @@
         "value": "No binario",
         "label": "No binario"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "ethnicity",
