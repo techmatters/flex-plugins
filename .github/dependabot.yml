@@ -8,9 +8,6 @@ updates:
     allow:
       - dependency-name: "*"
         dependency-type: "production"
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-patch"]
         
   - package-ecosystem: "npm"
     directory: "/plugin-hrm-form/"
@@ -20,9 +17,6 @@ updates:
     allow:
       - dependency-name: "*"
         dependency-type: "production"
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-patch"]
         
   - package-ecosystem: "npm"
     directory: "/hrm-form-definitions/"
@@ -32,6 +26,3 @@ updates:
     allow:
       - dependency-name: "*"
         dependency-type: "production"
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-patch"]

@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import twilio from 'twilio';
-import { environmentVariables } from '../global-setup';
+import environmentVariables from '../environmentVariables';
 
 const accountSid = environmentVariables.TWILIO_ACCOUNT_SID;
 const authToken = environmentVariables.TWILIO_AUTH_TOKEN;

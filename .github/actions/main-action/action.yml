@@ -106,6 +106,14 @@ runs:
         run: twilio flex:plugins:release --plugin plugin-hrm-form@latest
         working-directory: ./plugin-hrm-form
         shell: bash
+      # Update Flex UI Version
+      - name: Update UI Version
+        run: npm run update-flex-ui-version
+        env:
+          TWILIO_ACCOUNT_SID: ${{ inputs.account-sid }}
+          TWILIO_AUTH_TOKEN: ${{ inputs.auth-token }}
+        working-directory: ./plugin-hrm-form
+        shell: bash
       # Send Slack notifying success
       - name: Slack Aselo channel
         id: slack

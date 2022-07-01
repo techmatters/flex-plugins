@@ -12,15 +12,15 @@ import {
 import { createStateItem } from '../../components/common/forms/formGenerators';
 import { createContactlessTaskTabDefinition } from '../../components/tabbedForms/ContactlessTaskTabDefinition';
 import {
+  EXISTING_CONTACT_SET_CATEGORIES_GRID_VIEW_ACTION,
+  EXISTING_CONTACT_TOGGLE_CATEGORY_EXPANDED_ACTION,
   ExistingContactAction,
   ExistingContactsState,
   LOAD_CONTACT_ACTION,
   loadContactReducer,
   RELEASE_CONTACT_ACTION,
   releaseContactReducer,
-  EXISTING_CONTACT_SET_CATEGORIES_GRID_VIEW_ACTION,
   setCategoriesGridViewReducer,
-  EXISTING_CONTACT_TOGGLE_CATEGORY_EXPANDED_ACTION,
   toggleCategoryExpandedReducer,
 } from './existingContacts';
 import { CSAMReportEntry } from '../../types/types';
@@ -61,6 +61,7 @@ type ContactsState = {
   };
   existingContacts: ExistingContactsState;
   contactDetails: ContactDetailsState;
+  editingContact: boolean;
 };
 
 export const emptyCategories = [];
@@ -118,9 +119,10 @@ const initialState: ContactsState = {
     [DetailsContext.CASE_DETAILS]: { detailsExpanded: {}, route: ContactDetailsRoute.HOME },
     [DetailsContext.CONTACT_SEARCH]: { detailsExpanded: {}, route: ContactDetailsRoute.HOME },
   },
+  editingContact: false,
 };
 
-// eslint-disable-next-line import/no-unused-modules
+// eslint-disable-next-line import/no-unused-modules,complexity
 export function reduce(
   state = initialState,
   action: t.ContactsActionType | ExistingContactAction | ContactDetailsAction | GeneralActionType,
@@ -276,6 +278,9 @@ export function reduce(
           },
         },
       };
+    }
+    case t.SET_EDITING_CONTACT: {
+      return { ...state, editingContact: action.editing };
     }
     case LOAD_CONTACT_ACTION: {
       return { ...state, existingContacts: loadContactReducer(state.existingContacts, action) };

@@ -131,6 +131,52 @@ describe('test action creators', () => {
     expect(dispatch).toBeCalledWith({ type: t.SEARCH_CASES_SUCCESS, taskId, searchResult });
   });
 
+  test('searchCases bundles dateFrom and dateTo under filters object if provided', async () => {
+    const caseObject = {
+      createdAt: '2020-11-23T17:38:42.227Z',
+      updatedAt: '2020-11-23T17:38:42.227Z',
+      helpline: '',
+      info: {
+        definitionVersion: 'v1',
+        households: [{ household: { name: { firstName: 'Maria', lastName: 'Silva' } } }],
+      },
+    };
+
+    const searchResult = {
+      count: 1,
+      cases: [caseObject],
+    };
+    // @ts-ignore
+
+    searchCases.mockClear();
+    searchCases.mockReturnValueOnce(Promise.resolve(searchResult));
+    const dispatch = jest.fn();
+
+    await actions.searchCases(dispatch)(taskId)(
+      { dateFrom: '2020-11-23', dateTo: '2020-11-23', anotherProperty: 'anotherProperty' },
+      null,
+      CASES_PER_PAGE,
+      0,
+    );
+
+    expect(dispatch).toBeCalledTimes(2);
+    expect(dispatch).toBeCalledWith({ type: t.SEARCH_CASES_REQUEST, taskId });
+    expect(dispatch).toBeCalledWith({ type: t.SEARCH_CASES_SUCCESS, taskId, searchResult });
+    expect(searchCases).toBeCalledWith(
+      {
+        anotherProperty: 'anotherProperty',
+        filters: {
+          createdAt: {
+            from: '2020-11-23T00:00:00.000Z',
+            to: '2020-11-23T00:00:00.000Z',
+          },
+        },
+      },
+      20,
+      0,
+    );
+  });
+
   test('searchCases (failure)', async () => {
     const error = new Error('Testing failure');
     // @ts-ignore

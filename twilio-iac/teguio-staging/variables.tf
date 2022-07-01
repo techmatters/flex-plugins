@@ -26,7 +26,7 @@ variable "short_helpline" {
 
 variable "operating_info_key" {
   default = "co"
-} 
+}
 
 variable "environment" {
   default = "Staging"
@@ -43,6 +43,8 @@ variable "definition_version" {
 }
 
 variable "permission_config" {
+  description = "Key that determines which set of permission rules this helpline will use"
+  type        = string
   default = "co"
 }
 
@@ -56,7 +58,7 @@ variable "feature_flags" {
   description = "A map of feature flags that need to be set for this helpline's flex plugin"
   type = map(bool)
   default = {
-     "enable_fullstory_monitoring": false,
+    "enable_fullstory_monitoring": false,
     "enable_upload_documents": true,
     "enable_post_survey": false,
     "enable_case_management": true,
@@ -74,5 +76,5 @@ variable "feature_flags" {
 }
 
 variable "messaging_flow_contact_identity" {
-  default = "+12076565437"
+  default = "+17752526377"
 }

@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
-import { BottomButtonBar, Container, StyledNextStepButton } from '../../styles/HrmStyles';
+import { BottomButtonBar, Container, StyledNextStepButton, Flex } from '../../styles/HrmStyles';
 import { CaseLayout } from '../../styles/case';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace, RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
@@ -19,9 +19,9 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const form = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
   const caseState: CaseState = state[namespace][connectedCaseBase];
+  const editContactFormOpen = state[namespace][contactFormsBase].editingContact;
   const { temporaryCaseInfo, connectedCase } = caseState.tasks[ownProps.task.taskSid];
-
-  return { form, counselorsHash, tempInfo: temporaryCaseInfo, connectedCase };
+  return { form, counselorsHash, tempInfo: temporaryCaseInfo, connectedCase, editContactFormOpen };
 };
 
 const mapDispatchToProps = {
@@ -48,6 +48,7 @@ const ViewContact: React.FC<Props> = ({
   loadRawContactIntoState,
   releaseContactFromState,
   connectedCase,
+  editContactFormOpen,
 }) => {
   useEffect(() => {
     if (tempInfo && tempInfo.screen === 'view-contact') {
@@ -75,31 +76,22 @@ const ViewContact: React.FC<Props> = ({
   ]);
 
   if (!tempInfo || tempInfo.screen !== 'view-contact') return null;
-  const { contact: contactFromInfo, createdAt, counselor } = tempInfo.info;
-  const createdByName = counselorsHash[contactFromInfo?.createdBy ?? counselor] || 'Unknown';
-
-  const added = new Date(createdAt);
+  const { contact: contactFromInfo } = tempInfo.info;
 
   return (
-    <CaseLayout>
-      <Container>
-        <ActionHeader
-          titleTemplate="Case-Contact"
-          onClickClose={onClickClose}
-          addingCounsellor={createdByName}
-          added={added}
-        />
+    <CaseLayout className={editContactFormOpen ? 'editingContact' : ''}>
+      <Container removePadding={editContactFormOpen}>
         <ContactDetails
           contactId={contactFromInfo?.id ?? `__unsavedFromCase:${connectedCase.id}`}
           enableEditing={Boolean(contactFromInfo)}
           context={DetailsContext.CASE_DETAILS}
         />
+        <BottomButtonBar className="hiddenWhenEditingContact" style={{ marginBlockStart: 'auto' }}>
+          <StyledNextStepButton roundCorners onClick={onClickClose} data-testid="Case-ViewContactScreen-CloseButton">
+            <Template code="CloseButton" />
+          </StyledNextStepButton>
+        </BottomButtonBar>
       </Container>
-      <BottomButtonBar>
-        <StyledNextStepButton roundCorners onClick={onClickClose} data-testid="Case-ViewContactScreen-CloseButton">
-          <Template code="CloseButton" />
-        </StyledNextStepButton>
-      </BottomButtonBar>
     </CaseLayout>
   );
 };
