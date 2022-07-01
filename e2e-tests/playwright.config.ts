@@ -1,7 +1,7 @@
 // playwright.config.ts
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { PlaywrightTestConfig } from '@playwright/test';
-import { environmentVariables } from './global-setup';
+import environmentVariables from './environmentVariables';
 
 const config: PlaywrightTestConfig = {
   globalSetup: require.resolve('./global-setup'),

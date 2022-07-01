@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Page } from '@playwright/test';
-import { environmentVariables } from '../global-setup';
+import environmentVariables from '../environmentVariables';
 
 export const enum PageTelemetryLevel {
   NONE = 'none',
