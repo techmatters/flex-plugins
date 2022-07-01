@@ -77,7 +77,6 @@ const ContactDetailsHome: React.FC<Props> = ({
     channel === 'default'
       ? mapChannelForInsights(details.contactlessTask.channel.toString())
       : mapChannelForInsights(channel);
-  console.log('>>>', { overview });
   const formattedDateStandard = `${format(new Date(dateTime), 'M/dd/yyyy')}`;
   const formattedTimeStandard = `${format(new Date(dateTime), 'h:mm a')}`;
 

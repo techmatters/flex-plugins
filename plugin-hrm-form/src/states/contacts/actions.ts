@@ -66,3 +66,13 @@ export const addCSAMReportEntry = (csamReportEntry: CSAMReportEntry, taskId: str
   csamReportEntry,
   taskId,
 });
+
+export const setEditContactPageOpen = (): t.ContactsActionType => ({
+  type: t.SET_EDITING_CONTACT,
+  editing: true,
+});
+
+export const setEditContactPageClosed = (): t.ContactsActionType => ({
+  type: t.SET_EDITING_CONTACT,
+  editing: false,
+});

@@ -44,4 +44,8 @@ injectGlobal`
     height: 16px;
     font-size: 16px;
   }
+  
+  .editingContact .hiddenWhenEditingContact {
+    display: none;
+  }
 `;

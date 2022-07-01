@@ -178,29 +178,9 @@ describe('View Contact', () => {
       </Provider>,
     );
 
-    await waitFor(() => expect(screen.getByTestId('Case-ActionHeaderAdded')).toBeInTheDocument());
     // TODO: Verify interpolated translations contain the expected data
     await waitFor(() => expect(screen.getByTestId('ContactDetails-Container')).toBeInTheDocument());
     expect(screen.getByText('Jill Smith')).toBeInTheDocument();
-  });
-
-  test('click on x button', async () => {
-    const onClickClose = jest.fn();
-    const store = mockStore(initialState);
-
-    render(
-      <Provider store={store}>
-        <StorelessThemeProvider themeConf={themeConf}>
-          <ViewContact task={task as any} onClickClose={onClickClose} />
-        </StorelessThemeProvider>
-      </Provider>,
-    );
-
-    await waitFor(() => expect(screen.getByTestId('Case-CloseCross')).toBeInTheDocument());
-
-    screen.getByTestId('Case-CloseCross').click();
-
-    expect(onClickClose).toHaveBeenCalled();
   });
 
   test('click on close button', async () => {

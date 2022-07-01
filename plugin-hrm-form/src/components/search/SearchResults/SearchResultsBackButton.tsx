@@ -13,7 +13,7 @@ type Props = OwnProps;
 
 const SearchResultsBackButton: React.FC<Props> = ({ text, handleBack }) => {
   return (
-    <Row>
+    <Row className="hiddenWhenEditingContact">
       <StyledBackButton onClick={handleBack}>
         <Row>
           <BackIcon />
