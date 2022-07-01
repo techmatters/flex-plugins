@@ -10,7 +10,11 @@ test.describe.serial('Offline Contact (with Case)', () => {
     pluginPage = await browser.newPage();
     logPageTelemetry(pluginPage);
     console.log('Plugin page browser session launched.');
-    await pluginPage.goto('/', { waitUntil: 'networkidle', timeout: 120000 });
+    await Promise.all([
+      // Wait for this to be sure counsellors dropdown is populated
+      pluginPage.waitForResponse('**/populateCounselors'),
+      pluginPage.goto('/', { waitUntil: 'networkidle', timeout: 120000 }),
+    ]);
     console.log('Plugin page visited.');
   });
 
@@ -26,9 +30,6 @@ test.describe.serial('Offline Contact (with Case)', () => {
     await addOfflineContactButton.waitFor({ state: 'visible' });
     await expect(addOfflineContactButton).toContainText('Offline Contact Record');
     await addOfflineContactButton.click();
-
-    // Wait for 3 seconds in case the counselors dropdown is not yet populated
-    await pluginPage.waitForTimeout(3000);
 
     console.log('Starting filling form');
     const childCallTypeButton = pluginPage.locator(
