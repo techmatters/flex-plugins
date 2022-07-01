@@ -123,11 +123,8 @@ export const transformContactFormValues = (
  */
 export function transformForm(form: TaskEntry): ContactRawJson {
   const { callType, metadata, contactlessTask } = form;
-  const {
-    CallerInformationTab,
-    CaseInformationTab,
-    ChildInformationTab,
-  } = getDefinitionVersions().currentDefinitionVersion.tabbedForms;
+  const { CallerInformationTab, CaseInformationTab, ChildInformationTab } =
+    getDefinitionVersions().currentDefinitionVersion.tabbedForms;
   // transform the form values before submit (e.g. "mixed" for 3-way checkbox becomes null)
   const transformedValues = {
     callerInformation: transformValues(CallerInformationTab)(form.callerInformation),
@@ -204,9 +201,18 @@ const saveContactToHrm = async (
   let channelSid;
   let serviceSid;
 
-  if (isTwilioTask(task) && TaskHelper.isChatBasedTask(task)) {
-    ({ channelSid } = task.attributes);
-    serviceSid = getConfig().chatServiceSid;
+  if (isTwilioTask(task)) {
+    if (TaskHelper.isChatBasedTask(task)) {
+      ({ channelSid } = task.attributes);
+      serviceSid = getConfig().chatServiceSid;
+    } else if (TaskHelper.isCallTask(task)) {
+      /*
+       * The caller and the worker have their own call sids. The caller's call SID is the one given as the task's 'call_sid'
+       * However, the call SID with the recording attached is the worker call SID, which we need to dig into the conference attribute for
+       * Perhaps there's a nicer way to do this? I worry that this code might not work for all telco set ups.
+       */
+      channelSid = task.attributes?.conference?.participants.worker;
+    }
   }
 
   const body = {

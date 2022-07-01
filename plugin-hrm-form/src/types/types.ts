@@ -76,6 +76,15 @@ export type Case = {
   connectedContacts: any[]; // TODO: create contact type
 };
 
+export const contactMediaType = {
+  RECORDING: 'recording',
+  TRANSCRIPT: 'transcript',
+} as const;
+
+export type ContactMediaType = typeof contactMediaType[keyof typeof contactMediaType];
+
+export type ContactMediaUrl = { url: string; type: ContactMediaType };
+
 type NestedInformation = { name: { firstName: string; lastName: string } };
 export type InformationObject = NestedInformation & {
   [key: string]: string | boolean | NestedInformation[keyof NestedInformation]; // having NestedInformation[keyof NestedInformation] makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
@@ -89,6 +98,7 @@ export type ContactRawJson = {
   callerInformation: InformationObject;
   caseInformation: { categories: {} } & { [key: string]: string | boolean | {} }; // having {} makes type looser here because of this https://github.com/microsoft/TypeScript/issues/17867. Possible/future solution https://github.com/microsoft/TypeScript/pull/29317
   contactlessTask: { [key: string]: string | boolean };
+  mediaUrls?: ContactMediaUrl[];
 };
 
 // Information about a single contact, as expected from search contacts endpoint (we might want to reuse this type in backend) - (is this a correct placement for this?)

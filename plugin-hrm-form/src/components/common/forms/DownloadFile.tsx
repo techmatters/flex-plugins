@@ -9,9 +9,10 @@ import { getFileDownloadUrl } from '../../../services/ServerlessService';
 
 type Props = {
   fileNameAtAws: string;
+  convertFileName?: (original: string) => string;
 };
 
-const DownloadFile: React.FC<Props> = ({ fileNameAtAws }) => {
+const DownloadFile: React.FC<Props> = ({ fileNameAtAws, convertFileName = formatFileNameAtAws }) => {
   const [preSignedUrl, setPreSignedUrl] = useState('');
   const downloadLink = useRef<HTMLAnchorElement>();
 
@@ -21,7 +22,7 @@ const DownloadFile: React.FC<Props> = ({ fileNameAtAws }) => {
     }
   }, [preSignedUrl, downloadLink]);
 
-  const fileName = formatFileNameAtAws(fileNameAtAws);
+  const fileName = convertFileName(fileNameAtAws);
 
   const handleClick = async () => {
     const response = await getFileDownloadUrl(fileNameAtAws, fileName);

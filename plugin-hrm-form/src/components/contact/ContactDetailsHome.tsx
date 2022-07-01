@@ -21,6 +21,7 @@ import {
   toggleDetailSectionExpanded,
 } from '../../states/contacts/contactDetails';
 import { getPermissionsForContact, PermissionActions } from '../../permissions';
+import DownloadFile from '../common/forms/DownloadFile';
 
 // TODO: complete this type
 type OwnProps = {
@@ -90,13 +91,8 @@ const ContactDetailsHome: React.FC<Props> = ({
     channel === channelTypes.voice || channel === channelTypes.sms || channel === channelTypes.whatsapp;
   const formattedCategories = formatCategories(categories);
 
-  const {
-    GENERAL_DETAILS,
-    CALLER_INFORMATION,
-    CHILD_INFORMATION,
-    ISSUE_CATEGORIZATION,
-    CONTACT_SUMMARY,
-  } = ContactDetailsSections;
+  const { GENERAL_DETAILS, CALLER_INFORMATION, CHILD_INFORMATION, ISSUE_CATEGORIZATION, CONTACT_SUMMARY } =
+    ContactDetailsSections;
   const addedBy = counselorsHash[createdBy];
   const counselorName = counselorsHash[counselor];
 
@@ -238,6 +234,25 @@ const ContactDetailsHome: React.FC<Props> = ({
             />
           )}
         </ContactDetailsSection>
+      )}
+      {contact.details.mediaUrls && (
+        <>
+          <p>Media:</p>
+          {contact.details.mediaUrls.map(mediaUrl => {
+            let mediaPath = null;
+            try {
+              mediaPath = new URL(mediaUrl.url).pathname.slice(1);
+            } catch (err) {
+              console.warn(`Invalid media URL`, mediaUrl?.url);
+            }
+            return (
+              <p key={mediaUrl.url}>
+                [{mediaUrl.type}]: {mediaUrl.url}
+                {mediaPath && <DownloadFile fileNameAtAws={mediaPath} convertFileName={s => s} />}
+              </p>
+            );
+          })}
+        </>
       )}
     </DetailsContainer>
   );
