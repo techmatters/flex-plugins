@@ -25,6 +25,7 @@ import {
   FiltersDialogTitle,
   MultiSelectButton,
   MultiSelectUnorderedList,
+  DateErrorMessage,
 } from '../../../styles/caseList/filters';
 
 type ReactHookFormValues = {
@@ -119,6 +120,7 @@ const DateRangeFilter: React.FC<Props> = ({
   const optionsWithoutDividers = options.filter(opt => !isDivider(opt)) as DateFilterOption[];
 
   const [currentWorkingCopy, setCurrentWorkingCopy] = useState<DateFilterValue>(current);
+  const [dateValidations, setDateValidations] = useState({ to: false, from: false, error: '', errorColor: '' });
 
   const filterButtonElement = useRef(null);
   const firstOptionElement = useRef(null);
@@ -135,6 +137,7 @@ const DateRangeFilter: React.FC<Props> = ({
    * @param newWorkingCopy
    */
   const updateWorkingCopy = (newWorkingCopy: DateFilterValue | undefined) => {
+    resetDateValidation();
     setCurrentWorkingCopy(newWorkingCopy);
     reset(dateFilterToForm(name, optionsWithoutDividers, newWorkingCopy));
   };
@@ -194,9 +197,43 @@ const DateRangeFilter: React.FC<Props> = ({
 
   const handleClear = () => {
     updateWorkingCopy(undefined);
+    resetDateValidation();
   };
 
   const dividerStyle = { border: 'none', height: '1px', backgroundColor: 'rgb(216, 216, 216)' };
+
+  const resetDateValidation = () => {
+    setDateValidations(prev => ({ ...prev, to: false, from: false, error: '', errorColor: '' }));
+  };
+
+  const handleDateValidation = () => {
+    const today = new Date();
+
+    if (currentWorkingCopy.from !== undefined && currentWorkingCopy.to !== undefined) {
+      if (currentWorkingCopy.to < currentWorkingCopy.from) {
+        setDateValidations(prev => ({
+          ...prev,
+          to: true,
+          from: false,
+          error: `The end date selected cannot be before the start date`,
+          errorColor: '1px solid red',
+        }));
+        return;
+      }
+
+      if (name !== 'followUpDateFilter' && (currentWorkingCopy?.from > today || currentWorkingCopy?.to > today)) {
+        setDateValidations(prev => ({
+          ...prev,
+          // eslint-disable-next-line no-unneeded-ternary
+          to: currentWorkingCopy?.to > today ? true : false,
+          // eslint-disable-next-line no-unneeded-ternary
+          from: currentWorkingCopy?.from > today ? true : false,
+          error: `Date can't be in the future`,
+          errorColor: '1px solid red',
+        }));
+      }
+    }
+  };
 
   return (
     <div style={{ position: 'relative' }}>
@@ -271,12 +308,14 @@ const DateRangeFilter: React.FC<Props> = ({
               </p>
               <FormDateInput
                 placeholder="red"
-                style={{ width: '85pt' }}
+                style={{ width: '85pt', border: dateValidations.from ? dateValidations.errorColor : '' }}
                 type="date"
                 id="customDateRangeFrom"
                 data-testid="customDateRangeFrom"
                 name="customDateRangeFrom"
                 onChange={() => updateWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))}
+                onBlur={() => handleDateValidation()}
+                onFocus={() => resetDateValidation()}
                 innerRef={register}
               />
             </Box>
@@ -287,16 +326,26 @@ const DateRangeFilter: React.FC<Props> = ({
               <p style={{ marginBottom: '5px' }}>
                 <Template code="CaseList-Filters-DateFilter-CustomDateTo" />
               </p>
+
               <FormDateInput
-                style={{ width: '85pt', display: 'inline-block' }}
+                style={{
+                  width: '85pt',
+                  display: 'inline-block',
+                  border: dateValidations.to ? dateValidations.errorColor : '',
+                }}
                 type="date"
                 id="customDateRangeTo"
                 data-testid="customDateRangeTo"
                 name="customDateRangeTo"
                 onChange={() => updateWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))}
+                onBlur={() => handleDateValidation()}
+                onFocus={() => resetDateValidation()}
                 innerRef={register}
               />
             </Box>
+            <DateErrorMessage marginLeft="5px">{dateValidations.from ? dateValidations.error : ''}</DateErrorMessage>
+            <DateErrorMessage marginLeft="25px">{dateValidations.to ? dateValidations.error : ''}</DateErrorMessage>
+
             <hr style={dividerStyle} />
 
             <FiltersBottomButtons>
@@ -313,6 +362,8 @@ const DateRangeFilter: React.FC<Props> = ({
                   register(innerRef);
                 }}
                 onKeyDown={handleTabForLastElement}
+                // eslint-disable-next-line no-unneeded-ternary
+                disabled={dateValidations.to || dateValidations.from ? true : false}
               >
                 <Template code="CaseList-Filters-Apply" />
               </FiltersApplyButton>
