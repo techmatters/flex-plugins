@@ -209,30 +209,29 @@ const DateRangeFilter: React.FC<Props> = ({
   const handleDateValidation = () => {
     const today = new Date();
 
-    if (currentWorkingCopy.from !== undefined && currentWorkingCopy.to !== undefined) {
-      if (currentWorkingCopy.to < currentWorkingCopy.from) {
-        setDateValidations(prev => ({
-          ...prev,
-          to: true,
-          from: false,
-          error: `The end date selected cannot be before the start date`,
-          errorColor: '1px solid red',
-        }));
-        return;
-      }
-
-      if (name !== 'followUpDateFilter' && (currentWorkingCopy?.from > today || currentWorkingCopy?.to > today)) {
-        setDateValidations(prev => ({
-          ...prev,
-          // eslint-disable-next-line no-unneeded-ternary
-          to: currentWorkingCopy?.to > today ? true : false,
-          // eslint-disable-next-line no-unneeded-ternary
-          from: currentWorkingCopy?.from > today ? true : false,
-          error: `Date can't be in the future`,
-          errorColor: '1px solid red',
-        }));
-      }
+    if (currentWorkingCopy.to < currentWorkingCopy.from) {
+      setDateValidations(prev => ({
+        ...prev,
+        to: true,
+        from: false,
+        error: `The end date selected cannot be before the start date`,
+        errorColor: '1px solid red',
+      }));
+      return;
     }
+
+    if (name !== 'followUpDateFilter' && (currentWorkingCopy?.from > today || currentWorkingCopy?.to > today)) {
+      setDateValidations(prev => ({
+        ...prev,
+        // eslint-disable-next-line no-unneeded-ternary
+        to: currentWorkingCopy?.to > today ? true : false,
+        // eslint-disable-next-line no-unneeded-ternary
+        from: currentWorkingCopy?.from > today ? true : false,
+        error: `Date can't be in the future`,
+        errorColor: '1px solid red',
+      }));
+    }
+
   };
 
   return (
