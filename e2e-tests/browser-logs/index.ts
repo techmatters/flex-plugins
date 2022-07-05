@@ -2,7 +2,6 @@
 import { Page } from '@playwright/test';
 import environmentVariables from '../environmentVariables';
 
-
 export const enum PageTelemetryLevel {
   NONE = 'none',
   ERRORS = 'errors',
