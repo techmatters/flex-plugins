@@ -231,7 +231,6 @@ const DateRangeFilter: React.FC<Props> = ({
         errorColor: '1px solid red',
       }));
     }
-
   };
 
   return (
