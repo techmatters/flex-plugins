@@ -67,7 +67,9 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
       `//textarea[@data-testid='Case-CaseSummary-TextArea']`,
     );
     await caseSummaryArea.waitFor({ state: 'visible' });
-    await caseSummaryArea.fill(`E2E Case Summary Test Edited on ${new Date().getDate} ${new Date().getHours}`);
+    await caseSummaryArea.fill(
+      `E2E Case Summary Test Edited on ${new Date().getDate} ${new Date().getHours}`,
+    );
 
     const updateCaseButton = pluginPage.locator(`//button[@data-testid='CaseHome-Update-Button']`);
     await updateCaseButton.waitFor({ state: 'visible' });
@@ -76,12 +78,13 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
     const editedSummaryArea = pluginPage.locator(
       `//textarea[@data-testid='Case-CaseSummary-TextArea']`,
     );
-    await expect(editedSummaryArea).toContainText(`E2E Case Summary Test Edited on ${new Date().getDate} ${new Date().getHours}`);
+    await expect(editedSummaryArea).toContainText(
+      `E2E Case Summary Test Edited on ${new Date().getDate} ${new Date().getHours}`,
+    );
     console.log('Updated Case Summary');
 
     const casePrintButton = pluginPage.locator(`//button[@data-testid='CasePrint-Button']`);
     await casePrintButton.waitFor({ state: 'visible' });
-    // await expect(casePrintButton).toHaveClass('Twilio-IconButton');
     await casePrintButton.click();
     console.log('Opened Case Print');
 
