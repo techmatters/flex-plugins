@@ -80,22 +80,30 @@ export async function importDefaultResources(
     logWarning('Flex proxy Service not found to import');
   }
 
-  logInfo('Trying to import Flex Chat Service');
-  let chatService = (await client.chat.services.list({ limit: 20 })).find(
-    (p) => p.friendlyName === 'Flex Chat Service',
-  );
+  let chatServiceSid;
 
-  if (!chatService) {
-    logWarning('Flex Chat Service not found to import');
-    logInfo('Trying to import Flex Conversation Service');
-    chatService = (await client.chat.services.list({ limit: 20 })).find(
-      (p) => p.friendlyName === 'Flex Conversation Service',
-    );
+  logInfo('Trying to import chatServiceInstanceSid from Flex Service Configuration');
+  chatServiceSid = (await client.flexApi.configuration.get().fetch()).chatServiceInstanceSid;
+
+  if (!chatServiceSid) {
+    logWarning('Flex Service Configuration missing chatServiceInstanceSid');
+    logInfo('Trying to import Flex Chat Service');
+    chatServiceSid = (await client.chat.services.list({ limit: 20 })).find(
+      (p) => p.friendlyName === 'Flex Chat Service',
+    )?.sid;
   }
 
-  if (chatService) {
+  if (!chatServiceSid) {
+    logWarning('Flex Chat Service not found to import');
+    logInfo('Trying to import Flex Conversation Service');
+    chatServiceSid = (await client.chat.services.list({ limit: 20 })).find(
+      (p) => p.friendlyName === 'Flex Conversation Service',
+    )?.sid;
+  }
+
+  if (chatServiceSid) {
     attemptTerraformImport(
-      chatService.sid,
+      chatServiceSid,
       'module.services.twilio_chat_services_v2.flex_chat_service',
       account,
       {
