@@ -1,3 +1,4 @@
+import React from 'react';
 import { truncate } from 'lodash';
 import { format } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
