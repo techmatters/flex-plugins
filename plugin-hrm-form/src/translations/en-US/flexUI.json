@@ -358,6 +358,5 @@
 
   "BottomBar-SaveOnClose": "Save Changes?",
   "BottomBar-DontSave": "No, Don't Save",
-  "BottomBar-Save": "Yes, Save",
-  "Test-key": "whatever, is just a test!"
+  "BottomBar-Save": "Yes, Save"
 }
