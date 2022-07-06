@@ -1,5 +1,6 @@
 import { truncate } from 'lodash';
 import { format } from 'date-fns';
+import { Template } from '@twilio/flex-ui';
 import type { FormItemDefinition } from 'hrm-form-definitions';
 
 /**
@@ -42,9 +43,9 @@ export const formatDuration = inSeconds => {
  */
 export const getShortSummary = (summary, charLimit, chooseMessage = 'call') => {
   if (!summary) {
-    if (chooseMessage === 'case') return '- No case summary -';
+    if (chooseMessage === 'case') return <Template code="CaseSummary-None"/>;
 
-    return '- No call summary -';
+    return <Template code="CallSummary-None"/>;
   }
 
   return truncate(summary, {

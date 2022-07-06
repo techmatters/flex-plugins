@@ -358,5 +358,7 @@
 
   "BottomBar-SaveOnClose": "Save Changes?",
   "BottomBar-DontSave": "No, Don't Save",
-  "BottomBar-Save": "Yes, Save"
+  "BottomBar-Save": "Yes, Save",
+
+  "CaseSummary-None": "- No case summary -"
 }
