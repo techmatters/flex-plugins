@@ -44,9 +44,9 @@ export const formatDuration = inSeconds => {
  */
 export const getShortSummary = (summary, charLimit, chooseMessage = 'call') => {
   if (!summary) {
-    if (chooseMessage === 'case') return <Template code="CaseSummary-None"/>;
+    if (chooseMessage === 'case') return <Template code="CaseSummary-None" />;
 
-    return <Template code="CallSummary-None"/>;
+    return <Template code="CallSummary-None" />;
   }
 
   return truncate(summary, {
