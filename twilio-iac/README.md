@@ -2,6 +2,8 @@
 
 These are scripts for provisioning some of the Aselo Twilio infrastructure.
 
+This file looks better in your IDE than in the web :)
+
 ## Prerequisites
 
 You will require the following installed locally:
@@ -38,6 +40,7 @@ Important notes:
     - If you are copying over from `terraform-poc-account`, beware that in `main.tf`, under the `services` module, the flag `uses_conversation_service` is set to `false`. Remove this if you are working with a new Twilio account, as that is intended for compatibility with older setups of Flex.
     - Check under `flex` module, the poc account uses `hrm_url` to specify the target url for the Aselo backend. Remove this and rely on the naming convention to decide if it's staging or production (or specify the target one if the regular notation does not applies to this case).
     - Check under `flex` module, `permission_config` should be set to `var.permission_config` if you are describing it in the `variables.tf` file, or specify the correct one if not.
+    - Review the `main.tf` to make sure there are no stuff being harcoded unless you are sure that's what you want. A few minutes on this step might save you much more time debugging a missconfigured account.
 
 3. In the 'backend "s3""' section modify the 'bucket' and 'dynamodb_table' to replace 'terraform-poc' with the account identifier convention we use for s3, i.e. <short_lowercase_helpline_code>.<full+_lowercase_environment_name> . For example, Aarambh Production would look like this:
 ```hcl
