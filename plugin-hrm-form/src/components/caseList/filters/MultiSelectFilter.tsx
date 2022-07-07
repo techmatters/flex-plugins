@@ -223,7 +223,7 @@ const MultiSelectFilter: React.FC<Props> = ({
                   <MultiSelectListItem
                     key={i}
                     hidden={hidden}
-                    data-testid={`${openedFilter}${item.label.split(' ').join('')}`}
+                    data-testid={`${openedFilter.charAt(0).toUpperCase() + openedFilter.slice(1)}-${item.label}`}
                   >
                     <FormLabel htmlFor={item.value} style={{ flexDirection: 'row' }}>
                       <FiltersCheckbox
@@ -238,7 +238,6 @@ const MultiSelectFilter: React.FC<Props> = ({
                           register(innerRef);
                         }}
                         onKeyDown={isFirstFocusableElement ? handleShiftTabForFirstElement : null}
-                        data-testid={`${openedFilter}${item.label.split(' ').join('')}`}
                       />
                       <MultiSelectCheckboxLabel>{highlightLabel(item.label)}</MultiSelectCheckboxLabel>
                     </FormLabel>
