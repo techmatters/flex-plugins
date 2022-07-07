@@ -12,9 +12,9 @@ import { Box, StyledNextStepButton, BottomButtonBar, Row, HiddenText, HeaderClos
 import { CaseActionTitle, EditContactContainer } from '../../styles/case';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 import { getConfig } from '../../HrmFormPlugin';
-import { ContactDetailsRoute, DetailsContext, navigateContactDetails } from '../../states/contacts/contactDetails';
+import { DetailsContext } from '../../states/contacts/contactDetails';
 import { ContactDetailsSectionFormApi, IssueCategorizationSectionFormApi } from './contactDetailsSectionFormApi';
-import { refreshRawContact } from '../../states/contacts/existingContacts';
+import { clearDraft, refreshRawContact } from '../../states/contacts/existingContacts';
 import CloseCaseDialog from '../case/CloseCaseDialog';
 import * as t from '../../states/contacts/actions';
 import type { TaskEntry } from '../../states/contacts/reducer';
@@ -31,17 +31,16 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const EditContactSection: React.FC<Props> = ({
-  context,
-  contact,
+  savedContact,
   contactId,
   definitionVersions,
-  navigateForContext,
   refreshContact,
   contactDetailsSectionForm,
   setEditContactPageOpen,
   setEditContactPageClosed,
   tabPath,
   children,
+  clearContactDraft,
 }) => {
   const methods = useForm({
     shouldFocusError: false,
@@ -49,7 +48,7 @@ const EditContactSection: React.FC<Props> = ({
   });
   const { strings } = getConfig();
 
-  const version = contact?.details.definitionVersion;
+  const version = savedContact?.details.definitionVersion;
 
   const definitionVersion = definitionVersions[version];
 
@@ -70,21 +69,18 @@ const EditContactSection: React.FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const navigate = (route: ContactDetailsRoute) => navigateForContext(context, route);
-
-  if (!contact || !definitionVersion) return null;
+  if (!savedContact || !definitionVersion) return null;
 
   const onSubmitValidForm = async () => {
     setSubmitting(true);
     const payload = contactDetailsSectionForm.formToPayload(
       definitionVersion,
       methods.getValues() as { categories: string[] },
-      contact.overview.helpline,
+      savedContact.overview.helpline,
     );
     try {
       const updatedContact = await updateContactInHrm(contactId, payload);
       refreshContact(updatedContact);
-      navigate(ContactDetailsRoute.HOME);
     } catch (error) {
       setSubmitting(false);
       recordBackendError('Open New Case', error);
@@ -99,7 +95,7 @@ const EditContactSection: React.FC<Props> = ({
 
   const checkForEdits = () => {
     if (_.isEqual(methods.getValues(), initialFormValues)) {
-      navigate(ContactDetailsRoute.HOME);
+      clearContactDraft(contactId);
     } else {
       setOpenDialog(true);
     }
@@ -153,7 +149,7 @@ const EditContactSection: React.FC<Props> = ({
               data-testid="CloseCaseDialog"
               openDialog={openDialog}
               setDialog={() => setOpenDialog(false)}
-              handleDontSaveClose={() => navigate(ContactDetailsRoute.HOME)}
+              handleDontSaveClose={() => clearContactDraft(contactId)}
               handleSaveUpdate={methods.handleSubmit(onSubmitValidForm, onError)}
             />
           </Box>
@@ -175,16 +171,17 @@ const EditContactSection: React.FC<Props> = ({
 };
 
 const mapDispatchToProps = {
-  navigateForContext: navigateContactDetails,
   refreshContact: refreshRawContact,
   setEditContactPageOpen: t.setEditContactPageOpen,
   setEditContactPageClosed: t.setEditContactPageClosed,
+  clearContactDraft: clearDraft,
 };
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   definitionVersions: state[namespace][configurationBase].definitionVersions,
   counselorsHash: state[namespace][configurationBase].counselors.hash,
-  contact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.contact,
+  savedContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.savedContact,
+  draftContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.draftContact,
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

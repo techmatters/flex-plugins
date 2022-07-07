@@ -2,11 +2,20 @@ import { omit } from 'lodash';
 
 import { SearchContact } from '../../types/types';
 import { hrmServiceContactToSearchContact } from './contactDetailsAdapter';
+import { ContactDetailsRoute } from './contactDetails';
+
+// From https://stackoverflow.com/questions/47914536/use-partial-in-nested-property-with-typescript
+type RecursivePartial<T> = {
+  [P in keyof T]?: RecursivePartial<T[P]>;
+};
+
+export type SearchContactDraftChanges = RecursivePartial<SearchContact>;
 
 export type ExistingContactsState = {
   [contactId: string]: {
-    refCount: number;
-    contact: SearchContact;
+    references: Set<string>;
+    savedContact: SearchContact;
+    draftContact?: RecursivePartial<SearchContact>;
     categories: {
       gridView: boolean;
       expanded: { [key: string]: boolean };
@@ -20,42 +29,46 @@ type LoadContactAction = {
   type: typeof LOAD_CONTACT_ACTION;
   id: string;
   contact: SearchContact;
-  addReference: boolean;
+  reference?: string;
+  replaceExisting: boolean;
 };
 
-export const loadContact = (contact: SearchContact, addReference = true): LoadContactAction => ({
+export const loadContact = (contact: SearchContact, reference, replaceExisting = false): LoadContactAction => ({
   type: LOAD_CONTACT_ACTION,
   id: contact.contactId,
   contact,
-  addReference,
+  reference,
+  replaceExisting,
 });
 
-export const loadRawContact = (contact: any, addReference = true): LoadContactAction => ({
+export const loadRawContact = (contact: any, reference: string, replaceExisting = false): LoadContactAction => ({
   type: LOAD_CONTACT_ACTION,
   id: contact.id,
   contact: hrmServiceContactToSearchContact(contact),
-  addReference,
+  reference,
+  replaceExisting,
 });
 
-export const refreshRawContact = (contact: any) => loadRawContact(contact, false);
+export const refreshRawContact = (contact: any) => loadRawContact(contact, undefined, true);
 
 export const loadContactReducer = (state: ExistingContactsState, action: LoadContactAction) => {
-  const current = state[action.id] ?? { refCount: 0 };
-  if (current.refCount === 0 && !action.addReference) {
-    // Refreshing a contact that isn't already loaded is a noop
+  const current = state[action.id] ?? { references: new Set() };
+  if ((!action.reference || current.references.has(action.reference)) && !action.replaceExisting) {
+    // If the contact is already referenced and we are not updating, it's a noop
     return state;
   }
+  const { draftContact, ...currentContact } = state[action.id] ?? {
+    categories: {
+      expanded: {},
+      gridView: false,
+    },
+  };
   return {
     ...state,
     [action.id]: {
-      ...(state[action.id] ?? {
-        categories: {
-          expanded: {},
-          gridView: false,
-        },
-      }),
-      contact: action.contact,
-      refCount: action.addReference ? current.refCount + 1 : current.refCount,
+      ...currentContact,
+      savedContact: action.replaceExisting || !current.references.size ? action.contact : state[action.id].savedContact,
+      references: action.reference ? current.references.add(action.reference) : current.references,
     },
   };
 };
@@ -65,11 +78,13 @@ export const RELEASE_CONTACT_ACTION = 'RELEASE_CONTACT_ACTION';
 type ReleaseContactAction = {
   type: typeof RELEASE_CONTACT_ACTION;
   id: string;
+  reference: string;
 };
 
-export const releaseContact = (id: string): ReleaseContactAction => ({
+export const releaseContact = (id: string, reference: string): ReleaseContactAction => ({
   type: RELEASE_CONTACT_ACTION,
   id,
+  reference,
 });
 
 export const releaseContactReducer = (state: ExistingContactsState, action: ReleaseContactAction) => {
@@ -80,19 +95,14 @@ export const releaseContactReducer = (state: ExistingContactsState, action: Rele
     );
     return state;
   }
-  if (current.refCount < 2) {
-    if (current.refCount !== 1) {
-      console.warn(
-        `Contact id ${action.id} had a refCount of ${current.refCount} before it was removed, it should never go lower than 1`,
-      );
-    }
+  current.references.delete(action.reference);
+  if (current.references.size < 1) {
     return omit(state, action.id);
   }
   return {
     ...state,
     [action.id]: {
       ...current,
-      refCount: current.refCount - 1,
     },
   };
 };
@@ -166,8 +176,112 @@ export const setCategoriesGridViewReducer = (state: ExistingContactsState, actio
   };
 };
 
+export const EXISTING_CONTACT_UPDATE_DRAFT_ACTION = 'EXISTING_CONTACT_UPDATE_DRAFT_ACTION';
+
+type UpdateDraftAction = {
+  type: typeof EXISTING_CONTACT_UPDATE_DRAFT_ACTION;
+  contactId: string;
+  draft?: RecursivePartial<SearchContact>;
+};
+
+export const updateDraft = (contactId: string, draft: SearchContactDraftChanges): UpdateDraftAction => ({
+  type: EXISTING_CONTACT_UPDATE_DRAFT_ACTION,
+  contactId,
+  draft,
+});
+
+export const clearDraft = (contactId: string): UpdateDraftAction => ({
+  type: EXISTING_CONTACT_UPDATE_DRAFT_ACTION,
+  contactId,
+  draft: undefined,
+});
+
+export const updateDraftReducer = (state: ExistingContactsState, action: UpdateDraftAction): ExistingContactsState => {
+  if (!state[action.contactId]) {
+    console.error(
+      `Attempted to update draft changes on contact ID '${action.contactId}' but this contact has not been loaded into redux. Load the contact into the existing contacts store using 'loadContact' before attempting to manipulate it's category state`,
+    );
+    return state;
+  }
+  return {
+    ...state,
+    [action.contactId]: {
+      ...state[action.contactId],
+      draftContact: action.draft,
+    },
+  };
+};
+
+export const EXISTING_CONTACT_CREATE_DRAFT_ACTION = 'EXISTING_CONTACT_CREATE_DRAFT_ACTION';
+
+type CreateDraftAction = {
+  type: typeof EXISTING_CONTACT_CREATE_DRAFT_ACTION;
+  contactId: string;
+  draftRoute: ContactDetailsRoute;
+};
+
+export const createDraft = (contactId: string, draftRoute: ContactDetailsRoute): CreateDraftAction => ({
+  type: EXISTING_CONTACT_CREATE_DRAFT_ACTION,
+  contactId,
+  draftRoute,
+});
+
+export const createDraftReducer = (state: ExistingContactsState, action: CreateDraftAction): ExistingContactsState => {
+  if (!state[action.contactId]) {
+    console.error(
+      `Attempted to update draft changes on contact ID '${action.contactId}' but this contact has not been loaded into redux. Load the contact into the existing contacts store using 'loadContact' before attempting to manipulate it's category state`,
+    );
+    return state;
+  }
+  const { savedContact } = state[action.contactId];
+  let newDraft: SearchContactDraftChanges;
+
+  switch (action.draftRoute) {
+    case ContactDetailsRoute.EDIT_CHILD_INFORMATION:
+      newDraft = {
+        details: {
+          childInformation: savedContact.details.childInformation,
+        },
+      };
+      break;
+    case ContactDetailsRoute.EDIT_CALLER_INFORMATION:
+      newDraft = {
+        details: {
+          callerInformation: savedContact.details.callerInformation,
+        },
+      };
+      break;
+    case ContactDetailsRoute.EDIT_CASE_INFORMATION:
+      newDraft = {
+        details: {
+          caseInformation: savedContact.details.caseInformation,
+        },
+      };
+      break;
+    case ContactDetailsRoute.EDIT_CATEGORIES:
+      newDraft = {
+        overview: {
+          categories: savedContact.overview.categories,
+        },
+      };
+      break;
+    default:
+      newDraft = undefined;
+  }
+
+  return {
+    ...state,
+    [action.contactId]: {
+      ...state[action.contactId],
+      draftContact: newDraft,
+    },
+  };
+};
+
 export type ExistingContactAction =
   | LoadContactAction
   | ReleaseContactAction
   | ToggleCategoryExpandedAction
-  | SetCategoriesGridViewAction;
+  | SetCategoriesGridViewAction
+  | UpdateDraftAction
+  | CreateDraftAction;

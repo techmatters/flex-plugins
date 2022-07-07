@@ -154,8 +154,9 @@ describe('View Contact', () => {
           tasks: {},
           existingContacts: {
             'TEST ID': {
-              contact,
-              refCount: 1,
+              savedContact: contact,
+              references: new Set(['task-id']),
+              categories: { gridView: false, expanded: {} },
             },
           },
           contactDetails: {

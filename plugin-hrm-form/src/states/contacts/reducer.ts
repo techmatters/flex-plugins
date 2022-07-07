@@ -12,8 +12,11 @@ import {
 import { createStateItem } from '../../components/common/forms/formGenerators';
 import { createContactlessTaskTabDefinition } from '../../components/tabbedForms/ContactlessTaskTabDefinition';
 import {
+  createDraftReducer,
+  EXISTING_CONTACT_CREATE_DRAFT_ACTION,
   EXISTING_CONTACT_SET_CATEGORIES_GRID_VIEW_ACTION,
   EXISTING_CONTACT_TOGGLE_CATEGORY_EXPANDED_ACTION,
+  EXISTING_CONTACT_UPDATE_DRAFT_ACTION,
   ExistingContactAction,
   ExistingContactsState,
   LOAD_CONTACT_ACTION,
@@ -22,6 +25,7 @@ import {
   releaseContactReducer,
   setCategoriesGridViewReducer,
   toggleCategoryExpandedReducer,
+  updateDraftReducer,
 } from './existingContacts';
 import { CSAMReportEntry } from '../../types/types';
 import {
@@ -299,6 +303,12 @@ export function reduce(
     }
     case NAVIGATE_CONTACT_DETAILS_ACTION: {
       return { ...state, contactDetails: navigateContactDetailsReducer(state.contactDetails, action) };
+    }
+    case EXISTING_CONTACT_UPDATE_DRAFT_ACTION: {
+      return { ...state, existingContacts: updateDraftReducer(state.existingContacts, action) };
+    }
+    case EXISTING_CONTACT_CREATE_DRAFT_ACTION: {
+      return { ...state, existingContacts: createDraftReducer(state.existingContacts, action) };
     }
     default:
       return state;
