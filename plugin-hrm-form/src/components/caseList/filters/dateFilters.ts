@@ -39,8 +39,6 @@ type RangeDateFilterValue = {
 type ExistsDateFilterValue = {
   option: string;
   exists: DateExistsCondition;
-  from?: Date;
-  to?: Date;
 };
 
 export type DateFilterValue = RangeDateFilterValue | ExistsDateFilterValue;
