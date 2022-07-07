@@ -30,11 +30,8 @@ import {
 import { CSAMReportEntry } from '../../types/types';
 import {
   ContactDetailsAction,
-  ContactDetailsRoute,
   ContactDetailsState,
   DetailsContext,
-  NAVIGATE_CONTACT_DETAILS_ACTION,
-  navigateContactDetailsReducer,
   sectionExpandedStateReducer,
   TOGGLE_DETAIL_EXPANDED_ACTION,
 } from './contactDetails';
@@ -120,8 +117,8 @@ const initialState: ContactsState = {
   tasks: {},
   existingContacts: {},
   contactDetails: {
-    [DetailsContext.CASE_DETAILS]: { detailsExpanded: {}, route: ContactDetailsRoute.HOME },
-    [DetailsContext.CONTACT_SEARCH]: { detailsExpanded: {}, route: ContactDetailsRoute.HOME },
+    [DetailsContext.CASE_DETAILS]: { detailsExpanded: {} },
+    [DetailsContext.CONTACT_SEARCH]: { detailsExpanded: {} },
   },
   editingContact: false,
 };
@@ -300,9 +297,6 @@ export function reduce(
     }
     case TOGGLE_DETAIL_EXPANDED_ACTION: {
       return { ...state, contactDetails: sectionExpandedStateReducer(state.contactDetails, action) };
-    }
-    case NAVIGATE_CONTACT_DETAILS_ACTION: {
-      return { ...state, contactDetails: navigateContactDetailsReducer(state.contactDetails, action) };
     }
     case EXISTING_CONTACT_UPDATE_DRAFT_ACTION: {
       return { ...state, existingContacts: updateDraftReducer(state.existingContacts, action) };

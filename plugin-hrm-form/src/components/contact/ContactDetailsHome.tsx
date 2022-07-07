@@ -14,14 +14,9 @@ import { formatCategories, formatDuration, formatName, mapChannelForInsights } f
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/ContactDetails';
 import { unNestInformation } from '../../services/ContactService';
 import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
-import {
-  ContactDetailsRoute,
-  DetailsContext,
-  navigateContactDetails,
-  toggleDetailSectionExpanded,
-} from '../../states/contacts/contactDetails';
+import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
 import { getPermissionsForContact, PermissionActions } from '../../permissions';
-import { createDraft, updateDraft } from '../../states/contacts/existingContacts';
+import { createDraft, ContactDetailsRoute } from '../../states/contacts/existingContacts';
 
 // TODO: complete this type
 type OwnProps = {
@@ -260,7 +255,6 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
 
 const mapDispatchToProps = {
   toggleSectionExpandedForContext: toggleDetailSectionExpanded,
-  navigateForContext: navigateContactDetails,
   createContactDraft: createDraft,
 };
 

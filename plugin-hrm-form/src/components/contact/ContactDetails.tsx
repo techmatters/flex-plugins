@@ -4,7 +4,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 
 import ContactDetailsHome from './ContactDetailsHome';
-import { ContactDetailsRoute, DetailsContext, navigateContactDetails } from '../../states/contacts/contactDetails';
+import { DetailsContext } from '../../states/contacts/contactDetails';
 import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
 import EditContactSection from './EditContactSection';
 import { getDefinitionVersion } from '../../services/ServerlessService';
@@ -37,7 +37,6 @@ const ContactDetails: React.FC<Props> = ({
   updateDefinitionVersion,
   savedContact,
   draftContact,
-  navigateForContext,
   enableEditing = true,
   updateContactDraft,
 }) => {
@@ -58,14 +57,6 @@ const ContactDetails: React.FC<Props> = ({
     }
   }, [definitionVersions, updateDefinitionVersion, version, savedContact]);
 
-  /**
-   * Reset to home after we leave
-   */
-  React.useEffect(() => {
-    return () => {
-      navigateForContext(context, ContactDetailsRoute.HOME);
-    };
-  }, [navigateForContext, context]);
   const definitionVersion = definitionVersions[version];
 
   if (!definitionVersion)
@@ -140,13 +131,11 @@ const ContactDetails: React.FC<Props> = ({
 
 const mapDispatchToProps = {
   updateDefinitionVersion: ConfigActions.updateDefinitionVersion,
-  navigateForContext: navigateContactDetails,
   updateContactDraft: updateDraft,
 };
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   definitionVersions: state[namespace][configurationBase].definitionVersions,
-  route: state[namespace][contactFormsBase].contactDetails[ownProps.context].route,
   savedContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.savedContact,
   draftContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.draftContact,
 });

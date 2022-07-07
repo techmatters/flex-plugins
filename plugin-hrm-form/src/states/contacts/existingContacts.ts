@@ -2,7 +2,13 @@ import { omit } from 'lodash';
 
 import { SearchContact } from '../../types/types';
 import { hrmServiceContactToSearchContact } from './contactDetailsAdapter';
-import { ContactDetailsRoute } from './contactDetails';
+
+export enum ContactDetailsRoute {
+  EDIT_CALLER_INFORMATION = 'editCallerInformation',
+  EDIT_CHILD_INFORMATION = 'editChildInformation',
+  EDIT_CATEGORIES = 'editIssueCategories',
+  EDIT_CASE_INFORMATION = 'editCaseInformation',
+}
 
 // From https://stackoverflow.com/questions/47914536/use-partial-in-nested-property-with-typescript
 type RecursivePartial<T> = {

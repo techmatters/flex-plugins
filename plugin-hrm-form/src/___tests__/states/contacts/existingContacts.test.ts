@@ -1,5 +1,9 @@
 import { hrmServiceContactToSearchContact } from '../../../states/contacts/contactDetailsAdapter';
 import {
+  clearDraft,
+  createDraft,
+  createDraftReducer,
+  ExistingContactsState,
   loadContact,
   loadContactReducer,
   loadRawContact,
@@ -9,6 +13,9 @@ import {
   setCategoriesGridViewReducer,
   toggleCategoryExpanded,
   toggleCategoryExpandedReducer,
+  updateDraft,
+  updateDraftReducer,
+  ContactDetailsRoute,
 } from '../../../states/contacts/existingContacts';
 import { SearchContact } from '../../../types/types';
 
@@ -20,7 +27,7 @@ const baseContact: SearchContact = {
     name: 'Lorna Ballantyne',
     customerNumber: undefined,
     callType: undefined,
-    categories: {},
+    categories: ['x', 'y', 'z'],
     counselor: undefined,
     notes: undefined,
     channel: undefined,
@@ -31,11 +38,23 @@ const baseContact: SearchContact = {
     callType: '',
     caseInformation: { categories: {} },
     childInformation: { name: { firstName: 'Lorna', lastName: 'Ballantyne' } },
-    callerInformation: undefined,
+    callerInformation: { name: { firstName: 'Charlie', lastName: 'Ballantyne' } },
     contactlessTask: undefined,
   },
   csamReports: [],
 };
+
+const baseState: ExistingContactsState = {
+  [baseContact.contactId]: {
+    savedContact: baseContact,
+    references: new Set('x'),
+    categories: {
+      gridView: false,
+      expanded: {},
+    },
+  },
+} as const;
+
 jest.mock('../../../states/contacts/contactDetailsAdapter');
 
 describe('loadContactReducer', () => {
@@ -247,7 +266,7 @@ describe('toggleCategoryExpandedReducer', () => {
       {
         [baseContact.contactId]: {
           savedContact: baseContact,
-          refCount: 0,
+          references: new Set(['x']),
           categories: {
             gridView: false,
             expanded: {
@@ -313,5 +332,151 @@ describe('setCategoriesGridViewReducer', () => {
   test('Contact not loaded - noop', () => {
     const newState = setCategoriesGridViewReducer({}, setCategoriesGridView(baseContact.contactId, true));
     expect(newState).toStrictEqual({});
+  });
+});
+
+describe('updateDraftReducer', () => {
+  describe('updateDraft', () => {
+    test('Contact ID not loaded - noop', () => {
+      const newState = updateDraftReducer(baseState, updateDraft('42', { overview: { categories: ['category1'] } }));
+      expect(newState).toEqual(baseState);
+    });
+
+    test('Contact ID loaded - replaces any draftContact currently attached to the loaded contact', () => {
+      const startingState = { ...baseState };
+      startingState[baseContact.contactId].draftContact = {
+        details: {
+          childInformation: {
+            name: {
+              firstName: 'Bobby',
+              lastName: 'Ewing',
+            },
+          },
+        },
+      };
+      const newState = updateDraftReducer(
+        baseState,
+        updateDraft(baseContact.contactId, { overview: { categories: ['category1'] } }),
+      );
+      expect(newState).toEqual<ExistingContactsState>({
+        [baseContact.contactId]: {
+          ...baseState[baseContact.contactId],
+          draftContact: { overview: { categories: ['category1'] } },
+        },
+      });
+    });
+  });
+  describe('clearDraft', () => {
+    test('Contact ID not loaded - noop', () => {
+      const newState = updateDraftReducer(baseState, clearDraft('42'));
+      expect(newState).toEqual(baseState);
+    });
+
+    test('Contact ID loaded - removes any draftContact currently attached to the loaded contact', () => {
+      const startingState = { ...baseState };
+      startingState[baseContact.contactId].draftContact = {
+        details: {
+          childInformation: {
+            name: {
+              firstName: 'Bobby',
+              lastName: 'Ewing',
+            },
+          },
+        },
+      };
+      const newState = updateDraftReducer(baseState, clearDraft('42'));
+      expect(newState).toEqual<ExistingContactsState>(baseState);
+    });
+  });
+});
+
+describe('createDraftReducer', () => {
+  const stateWithExistingDraft = { ...baseState };
+  stateWithExistingDraft[baseContact.contactId].draftContact = {
+    details: {
+      childInformation: {
+        name: {
+          firstName: 'Bobby',
+          lastName: 'Ewing',
+        },
+      },
+    },
+  };
+
+  test('Contact ID not loaded - noop', () => {
+    const newState = createDraftReducer(baseState, createDraft('42', ContactDetailsRoute.EDIT_CHILD_INFORMATION));
+    expect(newState).toEqual(baseState);
+  });
+
+  test("Contact ID loaded & EDIT_CHILD_INFORMATION route specified - sets draft to saved contact's child information", () => {
+    const newState = createDraftReducer(
+      stateWithExistingDraft,
+      createDraft(baseContact.contactId, ContactDetailsRoute.EDIT_CHILD_INFORMATION),
+    );
+    expect(newState).toEqual<ExistingContactsState>({
+      ...baseState,
+      [baseContact.contactId]: {
+        ...baseState[baseContact.contactId],
+        draftContact: {
+          details: {
+            childInformation: baseContact.details.childInformation,
+          },
+        },
+      },
+    });
+  });
+
+  test("Contact ID loaded & EDIT_CALLER_INFORMATION route specified - sets draft to saved contact's caller information", () => {
+    const newState = createDraftReducer(
+      stateWithExistingDraft,
+      createDraft(baseContact.contactId, ContactDetailsRoute.EDIT_CALLER_INFORMATION),
+    );
+    expect(newState).toEqual<ExistingContactsState>({
+      ...baseState,
+      [baseContact.contactId]: {
+        ...baseState[baseContact.contactId],
+        draftContact: {
+          details: {
+            callerInformation: baseContact.details.callerInformation,
+          },
+        },
+      },
+    });
+  });
+
+  test("Contact ID loaded & EDIT_CASE_INFORMATION route specified - sets draft to saved contact's case information", () => {
+    const newState = createDraftReducer(
+      stateWithExistingDraft,
+      createDraft(baseContact.contactId, ContactDetailsRoute.EDIT_CASE_INFORMATION),
+    );
+    expect(newState).toEqual<ExistingContactsState>({
+      ...baseState,
+      [baseContact.contactId]: {
+        ...baseState[baseContact.contactId],
+        draftContact: {
+          details: {
+            caseInformation: baseContact.details.caseInformation,
+          },
+        },
+      },
+    });
+  });
+
+  test("Contact ID loaded & EDIT_CATEGORIES route specified - sets draft to saved contact's categories", () => {
+    const newState = createDraftReducer(
+      stateWithExistingDraft,
+      createDraft(baseContact.contactId, ContactDetailsRoute.EDIT_CATEGORIES),
+    );
+    expect(newState).toEqual<ExistingContactsState>({
+      ...baseState,
+      [baseContact.contactId]: {
+        ...baseState[baseContact.contactId],
+        draftContact: {
+          overview: {
+            categories: baseContact.overview.categories,
+          },
+        },
+      },
+    });
   });
 });
