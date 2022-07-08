@@ -98,7 +98,7 @@
   },
   {
     "name": "age",
-    "label": "Edad",
+    "label": "Age",
     "type": "select",
     "options": [
       {
