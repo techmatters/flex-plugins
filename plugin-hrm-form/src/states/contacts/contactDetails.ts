@@ -5,18 +5,9 @@ export enum DetailsContext {
   CASE_DETAILS = 'caseDetails',
 }
 
-export enum ContactDetailsRoute {
-  HOME = 'home',
-  EDIT_CALLER_INFORMATION = 'editCallerInformation',
-  EDIT_CHILD_INFORMATION = 'editChildInformation',
-  EDIT_CATEGORIES = 'editIssueCategories',
-  EDIT_CASE_INFORMATION = 'editCaseInformation',
-}
-
 export type ContactDetailsState = {
   [context in DetailsContext]: {
     detailsExpanded: { [Section in ContactDetailsSectionsType]?: boolean };
-    route: ContactDetailsRoute;
   };
 };
 
@@ -51,32 +42,4 @@ export const sectionExpandedStateReducer = (
   },
 });
 
-export const NAVIGATE_CONTACT_DETAILS_ACTION = 'NAVIGATE_CONTACT_DETAILS_ACTION';
-
-type NavigateContactDetailsAction = {
-  type: typeof NAVIGATE_CONTACT_DETAILS_ACTION;
-  context: DetailsContext;
-  route: ContactDetailsRoute;
-};
-
-export const navigateContactDetails = (
-  context: DetailsContext,
-  route: ContactDetailsRoute,
-): NavigateContactDetailsAction => ({
-  type: NAVIGATE_CONTACT_DETAILS_ACTION,
-  context,
-  route,
-});
-
-export const navigateContactDetailsReducer = (
-  state: ContactDetailsState,
-  action: NavigateContactDetailsAction,
-): ContactDetailsState => ({
-  ...state,
-  [action.context]: {
-    ...state[action.context],
-    route: action.route,
-  },
-});
-
-export type ContactDetailsAction = ToggleDetailExpandedAction | NavigateContactDetailsAction;
+export type ContactDetailsAction = ToggleDetailExpandedAction;

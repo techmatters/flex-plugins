@@ -50,20 +50,21 @@ const ViewContact: React.FC<Props> = ({
   connectedCase,
   editContactFormOpen,
 }) => {
+  const handleClose = () => {
+    releaseContactFromState(contactFromInfo.id, task.taskSid);
+    onClickClose();
+  };
+
   useEffect(() => {
     if (tempInfo && tempInfo.screen === 'view-contact') {
       const { contact: contactFromInfo, timeOfContact, counselor } = tempInfo.info;
       if (contactFromInfo) {
-        loadRawContactIntoState(contactFromInfo);
-        return () => releaseContactFromState(contactFromInfo.id);
+        loadRawContactIntoState(contactFromInfo, task.taskSid);
+      } else {
+        const temporaryId = `__unsavedFromCase:${connectedCase.id}`;
+        loadContactIntoState(taskFormToSearchContact(task, form, timeOfContact, counselor, temporaryId), task.taskSid);
       }
-      const temporaryId = `__unsavedFromCase:${connectedCase.id}`;
-      loadContactIntoState(taskFormToSearchContact(task, form, timeOfContact, counselor, temporaryId));
-      return () => releaseContactFromState(temporaryId);
     }
-    return () => {
-      /* no cleanup to do. */
-    };
   }, [
     counselorsHash,
     loadContactIntoState,
@@ -87,7 +88,7 @@ const ViewContact: React.FC<Props> = ({
           context={DetailsContext.CASE_DETAILS}
         />
         <BottomButtonBar className="hiddenWhenEditingContact" style={{ marginBlockStart: 'auto' }}>
-          <StyledNextStepButton roundCorners onClick={onClickClose} data-testid="Case-ViewContactScreen-CloseButton">
+          <StyledNextStepButton roundCorners onClick={handleClose} data-testid="Case-ViewContactScreen-CloseButton">
             <Template code="CloseButton" />
           </StyledNextStepButton>
         </BottomButtonBar>
