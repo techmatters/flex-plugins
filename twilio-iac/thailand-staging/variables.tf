@@ -45,7 +45,7 @@ variable "definition_version" {
 variable "permission_config" {
   description = "Key that determines which set of permission rules this helpline will use"
   type        = string
-  default = "th"
+  default = "demo"
 }
 
 variable multi_office {
