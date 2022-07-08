@@ -35,8 +35,6 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
 
     await page.updateCaseSummary();
 
-    // commenting out the following add case section to bypass the test due to backend permission rule
-    /*
     await page.addCaseSection({
       sectionTypeId: 'household',
       items: {
@@ -49,7 +47,6 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
         age: 'Unknown',
       },
     });
-    */
 
     await page.closeCase();
   });
