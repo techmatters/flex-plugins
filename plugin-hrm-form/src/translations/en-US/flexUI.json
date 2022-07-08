@@ -358,6 +358,5 @@
 
   "BottomBar-SaveOnClose": "Save Changes?",
   "BottomBar-DontSave": "No, Don't Save",
-  "BottomBar-Save": "Yes, Save",
-  "TEST-DELETE-KEY": "This key should not exist."
+  "BottomBar-Save": "Yes, Save"
 }
