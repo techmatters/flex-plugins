@@ -1,16 +1,13 @@
 import {
-  ContactDetailsRoute,
   ContactDetailsState,
   DetailsContext,
-  navigateContactDetails,
-  navigateContactDetailsReducer,
   sectionExpandedStateReducer,
   toggleDetailSectionExpanded,
 } from '../../../states/contacts/contactDetails';
 
 const emptyState: ContactDetailsState = {
-  [DetailsContext.CASE_DETAILS]: { detailsExpanded: {}, route: ContactDetailsRoute.HOME },
-  [DetailsContext.CONTACT_SEARCH]: { detailsExpanded: {}, route: ContactDetailsRoute.HOME },
+  [DetailsContext.CASE_DETAILS]: { detailsExpanded: {} },
+  [DetailsContext.CONTACT_SEARCH]: { detailsExpanded: {} },
 };
 
 describe('sectionExpandedStateReducer', () => {
@@ -20,7 +17,6 @@ describe('sectionExpandedStateReducer', () => {
         ...emptyState,
         [DetailsContext.CASE_DETAILS]: {
           detailsExpanded: { 'Caller information': true },
-          route: ContactDetailsRoute.HOME,
         },
       },
       toggleDetailSectionExpanded(DetailsContext.CASE_DETAILS, 'Caller information'),
@@ -39,21 +35,5 @@ describe('sectionExpandedStateReducer', () => {
       toggleDetailSectionExpanded(DetailsContext.CASE_DETAILS, 'Child information'),
     );
     expect(newState[DetailsContext.CASE_DETAILS].detailsExpanded['Child information']).toBe(true);
-  });
-});
-
-describe('navigateContactDetailsReducer', () => {
-  test('Sets the route in the specified context, changing nothing else in the state', () => {
-    const newState = navigateContactDetailsReducer(
-      emptyState,
-      navigateContactDetails(DetailsContext.CONTACT_SEARCH, ContactDetailsRoute.EDIT_CATEGORIES),
-    );
-    expect(newState).toStrictEqual({
-      ...emptyState,
-      [DetailsContext.CONTACT_SEARCH]: {
-        ...emptyState[DetailsContext.CONTACT_SEARCH],
-        route: ContactDetailsRoute.EDIT_CATEGORIES,
-      },
-    });
   });
 });

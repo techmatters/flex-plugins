@@ -3,7 +3,7 @@ import { Dispatch } from 'react';
 import { CustomITask } from '../../types/types';
 import { contactFormsBase, namespace, RootState } from '..';
 import * as actions from './actions';
-import { setCategoriesGridView, toggleCategoryExpanded } from './existingContacts';
+import { setCategoriesGridView, toggleCategoryExpanded, updateDraft } from './existingContacts';
 
 export type IssueCategorizationStateApi = {
   retrieveState: (
@@ -14,7 +14,7 @@ export type IssueCategorizationStateApi = {
   };
   toggleCategoryExpandedActionDispatcher: (dispatch: Dispatch<any>) => (category: string) => void;
   setGridViewActionDispatcher: (dispatch: Dispatch<any>) => (useGridView: boolean) => void;
-  updateFormActionDispatcher: (dispatch: Dispatch<any>) => (categories: any) => void;
+  updateFormActionDispatcher: (dispatch: Dispatch<any>) => (categories: string[]) => void;
 };
 
 export const forTask = (task: CustomITask): IssueCategorizationStateApi => ({
@@ -31,7 +31,12 @@ export const forExistingContact = (contactId: string): IssueCategorizationStateA
   retrieveState: state => state[namespace][contactFormsBase].existingContacts[contactId].categories,
   toggleCategoryExpandedActionDispatcher: dispatch => category => dispatch(toggleCategoryExpanded(contactId, category)),
   setGridViewActionDispatcher: dispatch => useGridView => dispatch(setCategoriesGridView(contactId, useGridView)),
-  updateFormActionDispatcher: () => () => {
-    /*  */
+  updateFormActionDispatcher: dispatch => categories => {
+    const draftCategories: Record<string, string[]> = {};
+    categories.forEach(c => {
+      const [, category, subCategory] = c.split('.');
+      draftCategories[category] = [...(draftCategories[category] ?? []), subCategory];
+    });
+    dispatch(updateDraft(contactId, { overview: { categories: draftCategories } }));
   },
 });
