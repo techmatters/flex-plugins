@@ -86,7 +86,9 @@ const PreviousContactsBanner: React.FC<Props> = ({
               {contactsCount} <Template code="PreviousContacts-PreviousContacts" />
             </Bold>
           )}
-          &nbsp;and&nbsp;
+          &nbsp;
+          <Template code="PreviousContacts-And" />
+          &nbsp;
           {casesCount === 1 ? (
             <Bold>
               {casesCount} <Template code="PreviousContacts-Case" />
