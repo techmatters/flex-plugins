@@ -14,14 +14,10 @@ import { formatCategories, formatDuration, formatName, mapChannelForInsights } f
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/ContactDetails';
 import { unNestInformation } from '../../services/ContactService';
 import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
-import {
-  ContactDetailsRoute,
-  DetailsContext,
-  navigateContactDetails,
-  toggleDetailSectionExpanded,
-} from '../../states/contacts/contactDetails';
+import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
 import { LoadConversationButton } from '../../styles/contact';
 import { getPermissionsForContact, PermissionActions } from '../../permissions';
+import { createDraft, ContactDetailsRoute } from '../../states/contacts/existingContacts';
 
 // TODO: complete this type
 type OwnProps = {
@@ -43,13 +39,14 @@ const ContactDetailsHome: React.FC<Props> = function ({
   handleOpenConnectDialog,
   definitionVersions,
   counselorsHash,
-  contact,
+  savedContact,
   toggleSectionExpandedForContext,
-  navigateForContext,
+  createContactDraft,
   enableEditing,
   canViewTranscript,
-}) {
-  const version = contact?.details.definitionVersion;
+  // eslint-disable-next-line sonarjs/cognitive-complexity
+}) => {
+  const version = savedContact?.details.definitionVersion;
 
   const definitionVersion = definitionVersions[version];
 
@@ -60,10 +57,10 @@ const ContactDetailsHome: React.FC<Props> = function ({
     [],
   );
 
-  if (!contact || !definitionVersion) return null;
+  if (!savedContact || !definitionVersion) return null;
 
   // Object destructuring on contact
-  const { overview, details, csamReports } = contact;
+  const { overview, details, csamReports } = savedContact;
   const {
     counselor,
     dateTime,
@@ -76,7 +73,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
     createdBy,
   } = overview;
   // Permission to edit is based the counselor who created the contact - identified by Twilio worker ID
-  const createdByTwilioWorkerId = contact?.overview.counselor;
+  const createdByTwilioWorkerId = savedContact?.overview.counselor;
   const { can } = getPermissionsForContact(createdByTwilioWorkerId);
 
   // Format the obtained information
@@ -86,7 +83,6 @@ const ContactDetailsHome: React.FC<Props> = function ({
     channel === 'default'
       ? mapChannelForInsights(details.contactlessTask.channel.toString())
       : mapChannelForInsights(channel);
-  console.log('>>>', { overview });
   const formattedDateStandard = `${format(new Date(dateTime), 'M/dd/yyyy')}`;
   const formattedTimeStandard = `${format(new Date(dateTime), 'h:mm a')}`;
 
@@ -110,7 +106,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const counselorName = counselorsHash[counselor];
 
   const toggleSection = (section: ContactDetailsSectionsType) => toggleSectionExpandedForContext(context, section);
-  const navigate = (route: ContactDetailsRoute) => navigateForContext(context, route);
+  const navigate = (route: ContactDetailsRoute) => createContactDraft(savedContact.contactId, route);
 
   const loadConversationIntoOverlay = async () => {
     await Actions.invokeAction(Insights.Player.Action.INSIGHTS_PLAYER_PLAY, {
@@ -176,7 +172,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
             <SectionEntry
               key={`CallerInformation-${e.label}`}
               description={<Template code={e.label} />}
-              value={unNestInformation(e, contact.details.callerInformation)}
+              value={unNestInformation(e, savedContact.details.callerInformation)}
               definition={e}
             />
           ))}
@@ -197,7 +193,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
             <SectionEntry
               key={`ChildInformation-${e.label}`}
               description={<Template code={e.label} />}
-              value={unNestInformation(e, contact.details.childInformation)}
+              value={unNestInformation(e, savedContact.details.childInformation)}
               definition={e}
             />
           ))}
@@ -242,7 +238,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
             <SectionEntry
               key={`CaseInformation-${e.label}`}
               description={<Template code={e.label} />}
-              value={contact.details.caseInformation[e.name] as boolean | string}
+              value={savedContact.details.caseInformation[e.name] as boolean | string}
               definition={e}
             />
           ))}
@@ -280,7 +276,8 @@ ContactDetailsHome.defaultProps = {
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   definitionVersions: state[namespace][configurationBase].definitionVersions,
   counselorsHash: state[namespace][configurationBase].counselors.hash,
-  contact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.contact,
+  savedContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.savedContact,
+  draftContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.draftContact,
   detailsExpanded: state[namespace][contactFormsBase].contactDetails[ownProps.context].detailsExpanded,
   canViewTranscript: (state.flex.worker.attributes.roles as string[]).some(
     role => role.toLowerCase().startsWith('wfo') && role !== 'wfo.',
@@ -289,7 +286,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
 
 const mapDispatchToProps = {
   toggleSectionExpandedForContext: toggleDetailSectionExpanded,
-  navigateForContext: navigateContactDetails,
+  createContactDraft: createDraft,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsHome);

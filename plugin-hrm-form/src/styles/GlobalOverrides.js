@@ -45,6 +45,10 @@ injectGlobal`
     font-size: 16px;
   }
   
+  .editingContact .hiddenWhenEditingContact {
+    display: none;
+  }
+  
   .Twilio-View-case-list {
     background-color: #f6f6f6;
   }

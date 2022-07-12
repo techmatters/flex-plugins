@@ -15,9 +15,7 @@ import { DetailsContext } from '../../states/contacts/contactDetails';
 
 const mockStore = configureMockStore([]);
 
-const themeConf = {
-  colorTheme: HrmTheme,
-};
+const themeConf = {};
 
 const contactOfType = type => ({
   contactId: 'TEST CONTACT ID',
@@ -121,7 +119,7 @@ beforeAll(async () => {
         existingContacts: {
           'TEST CONTACT ID': {
             refCount: 1,
-            contact: contactOfType(type),
+            savedContact: contactOfType(type),
           },
         },
         contactDetails: {
@@ -148,6 +146,7 @@ test(`<ContactDetails> with contact of type ${callTypes.child}`, () => {
           handleMockedMessage={handleMockedMessage}
           handleSelectSearchResult={handleSelectSearchResult}
           detailsExpanded={detailsExpanded}
+          task={{ taskSid: 'TEST_TASK_ID' }}
         />
       </Provider>
     </StorelessThemeProvider>,
@@ -172,6 +171,7 @@ test(`<ContactDetails> with contact of type ${callTypes.caller}`, () => {
           handleMockedMessage={handleMockedMessage}
           handleSelectSearchResult={handleSelectSearchResult}
           detailsExpanded={detailsExpanded}
+          task={{ taskSid: 'TEST_TASK_ID' }}
         />
       </Provider>
     </StorelessThemeProvider>,
@@ -196,6 +196,7 @@ test(`<ContactDetails> with a non data (standalone) contact`, () => {
           handleMockedMessage={handleMockedMessage}
           handleSelectSearchResult={handleSelectSearchResult}
           detailsExpanded={detailsExpanded}
+          task={{ taskSid: 'TEST_TASK_ID' }}
         />
       </Provider>
     </StorelessThemeProvider>,

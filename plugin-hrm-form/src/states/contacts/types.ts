@@ -13,6 +13,7 @@ export const PREPOPULATE_FORM = 'PREPOPULATE_FORM';
 export const RESTORE_ENTIRE_FORM = 'RESTORE_ENTIRE_FORM';
 export const UPDATE_HELPLINE = 'UPDATE_HELPLINE';
 export const ADD_CSAM_REPORT_ENTRY = 'contacts/ADD_CSAM_REPORT_ENTRY';
+export const SET_EDITING_CONTACT = 'SET_EDITING_CONTACT';
 
 type UpdateFormAction = {
   type: typeof UPDATE_FORM;
@@ -63,6 +64,11 @@ type AddCSAMReportEntry = {
   taskId: string;
 };
 
+type SetEditingContact = {
+  type: typeof SET_EDITING_CONTACT;
+  editing: boolean;
+};
+
 export type ContactsActionType =
   | UpdateFormAction
   | SaveEndMillisAction
@@ -71,4 +77,5 @@ export type ContactsActionType =
   | PrePopulateFormAction
   | RestoreEntireFormAction
   | UpdateHelpline
-  | AddCSAMReportEntry;
+  | AddCSAMReportEntry
+  | SetEditingContact;

@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Page } from '@playwright/test';
+import environmentVariables from '../environmentVariables';
 
 export const enum PageTelemetryLevel {
   NONE = 'none',
@@ -13,9 +14,9 @@ export type PageTelemetryConfig = {
 };
 
 const DEFAULT_CONFIG: PageTelemetryConfig = {
-  level: <PageTelemetryLevel>(process.env.PLAYWRIGHT_BROWSER_TELEMETRY_LEVEL ?? 'errors'),
+  level: <PageTelemetryLevel>(environmentVariables.PLAYWRIGHT_BROWSER_TELEMETRY_LEVEL ?? 'errors'),
   logResponseBody:
-    process.env.PLAYWRIGHT_BROWSER_TELEMETRY_LOG_RESPONSE_BODY?.toLowerCase() === 'true',
+    environmentVariables.PLAYWRIGHT_BROWSER_TELEMETRY_LOG_RESPONSE_BODY?.toLowerCase() === 'true',
 };
 
 export function logPageTelemetry(

@@ -1,0 +1,37 @@
+name: Run plugin-hrm-form actions on push against master
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x]
+
+    steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      # Check if localizable strings changed
+      - name: Get changed files (plugin-hrm-form/src/translations/en-US)
+        id: translations-changed
+        uses: tj-actions/changed-files@v23.1
+        with:
+          files: |
+            plugin-hrm-form/src/translations/en-US/*.json   
+      # Call notify-translations action if file(s) in translations/en-US changed
+      - name: Executing notify-translations
+        if: steps.translations-changed.outputs.any_changed == 'true'
+        uses: ./.github/actions/notify-translations
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}

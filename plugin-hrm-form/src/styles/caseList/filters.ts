@@ -366,3 +366,16 @@ export const SubcategoryList = styled('ul')<SubcategoryListProps>`
   padding-right: 0;
 `;
 SubcategoryList.displayName = 'SubcategoryList';
+
+type DateErrorMessageProps = {
+  marginLeft: string;
+};
+
+export const DateErrorMessage = styled('span')<DateErrorMessageProps>`
+  display: inline-block;
+  font-size: 11px;
+  color: red;
+  width: 85pt;
+  margin-left: ${props => props.marginLeft};
+`;
+DateErrorMessage.displayName = 'DateErrorMessage';

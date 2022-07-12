@@ -4,36 +4,43 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
 import _ from 'lodash';
+import { Close } from '@material-ui/icons';
 
 import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
 import { updateContactInHrm } from '../../services/ContactService';
-import { Flex, Box, StyledNextStepButton, BottomButtonBar } from '../../styles/HrmStyles';
+import { Box, StyledNextStepButton, BottomButtonBar, Row, HiddenText, HeaderCloseButton } from '../../styles/HrmStyles';
+import { CaseActionTitle, EditContactContainer } from '../../styles/case';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 import { getConfig } from '../../HrmFormPlugin';
-import { ContactDetailsRoute, DetailsContext, navigateContactDetails } from '../../states/contacts/contactDetails';
+import { DetailsContext } from '../../states/contacts/contactDetails';
 import { ContactDetailsSectionFormApi, IssueCategorizationSectionFormApi } from './contactDetailsSectionFormApi';
-import { refreshRawContact } from '../../states/contacts/existingContacts';
+import { clearDraft, refreshRawContact } from '../../states/contacts/existingContacts';
 import CloseCaseDialog from '../case/CloseCaseDialog';
+import * as t from '../../states/contacts/actions';
+import type { TaskEntry } from '../../states/contacts/reducer';
 
 type OwnProps = {
   context: DetailsContext;
   contactId: string;
   contactDetailsSectionForm: ContactDetailsSectionFormApi | IssueCategorizationSectionFormApi;
   children?: React.ReactNode;
+  tabPath?: keyof TaskEntry;
 };
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const EditContactSection: React.FC<Props> = ({
-  context,
-  contact,
+  savedContact,
   contactId,
   definitionVersions,
-  navigateForContext,
   refreshContact,
   contactDetailsSectionForm,
+  setEditContactPageOpen,
+  setEditContactPageClosed,
+  tabPath,
   children,
+  clearContactDraft,
 }) => {
   const methods = useForm({
     shouldFocusError: false,
@@ -41,7 +48,7 @@ const EditContactSection: React.FC<Props> = ({
   });
   const { strings } = getConfig();
 
-  const version = contact?.details.definitionVersion;
+  const version = savedContact?.details.definitionVersion;
 
   const definitionVersion = definitionVersions[version];
 
@@ -55,24 +62,25 @@ const EditContactSection: React.FC<Props> = ({
      * of adding any dependency inside the array
      */
     setInitialFormValues(methods.getValues());
+    setEditContactPageOpen();
+    return () => {
+      setEditContactPageClosed();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const navigate = (route: ContactDetailsRoute) => navigateForContext(context, route);
-
-  if (!contact || !definitionVersion) return null;
+  if (!savedContact || !definitionVersion) return null;
 
   const onSubmitValidForm = async () => {
     setSubmitting(true);
     const payload = contactDetailsSectionForm.formToPayload(
       definitionVersion,
       methods.getValues() as { categories: string[] },
-      contact.overview.helpline,
+      savedContact.overview.helpline,
     );
     try {
       const updatedContact = await updateContactInHrm(contactId, payload);
       refreshContact(updatedContact);
-      navigate(ContactDetailsRoute.HOME);
     } catch (error) {
       setSubmitting(false);
       recordBackendError('Open New Case', error);
@@ -87,59 +95,93 @@ const EditContactSection: React.FC<Props> = ({
 
   const checkForEdits = () => {
     if (_.isEqual(methods.getValues(), initialFormValues)) {
-      navigate(ContactDetailsRoute.HOME);
+      clearContactDraft(contactId);
     } else {
       setOpenDialog(true);
     }
   };
 
+  // With tabPath as an input, this function returns the localized string for section's title
+  const editContactSectionTitle = (tabPath: keyof TaskEntry): string => {
+    if (tabPath === 'callerInformation') {
+      return strings['Contact-EditCaller'];
+    } else if (tabPath === 'childInformation') {
+      return strings['Contact-EditChild'];
+    } else if (tabPath === 'categories') {
+      return strings['Contact-EditCategories'];
+    } else if (tabPath === 'caseInformation') {
+      return strings['Contact-EditSummary'];
+    }
+    return '';
+  };
+
   return (
-    <FormProvider {...methods}>
-      {children}
-      <BottomButtonBar>
-        <Box marginRight="15px">
-          <StyledNextStepButton
-            roundCorners={true}
+    <EditContactContainer>
+      <FormProvider {...methods}>
+        <Row style={{ margin: '30px' }}>
+          <CaseActionTitle>
+            <Template code={editContactSectionTitle(tabPath)} />
+          </CaseActionTitle>
+          <HeaderCloseButton
             onClick={checkForEdits}
-            disabled={isSubmitting}
-            secondary
-            data-fs-id="BottomBar-Cancel"
+            data-testid="Case-CloseCross"
+            style={{ marginRight: '15px', opacity: '.75' }}
           >
-            <Template code="BottomBar-Cancel" />
-          </StyledNextStepButton>
-          <CloseCaseDialog
-            data-testid="CloseCaseDialog"
-            openDialog={openDialog}
-            setDialog={() => setOpenDialog(false)}
-            handleDontSaveClose={() => navigate(ContactDetailsRoute.HOME)}
-            handleSaveUpdate={methods.handleSubmit(onSubmitValidForm, onError)}
-          />
-        </Box>
-        <Box marginRight="15px">
-          <StyledNextStepButton
-            roundCorners={true}
-            onClick={methods.handleSubmit(onSubmitValidForm, onError)}
-            disabled={isSubmitting}
-            data-fs-id="Contact-SaveContact-Button"
-            data-testid="EditContact-SaveContact-Button"
-          >
-            {isSubmitting ? <CircularProgress size={12} /> : <Template code="BottomBar-SaveContact" />}
-          </StyledNextStepButton>
-        </Box>
-      </BottomButtonBar>
-    </FormProvider>
+            <HiddenText>
+              <Template code="Case-CloseButton" />
+            </HiddenText>
+            <Close />
+          </HeaderCloseButton>
+        </Row>
+        {children}
+        <BottomButtonBar>
+          <Box marginRight="15px">
+            <StyledNextStepButton
+              roundCorners={true}
+              onClick={checkForEdits}
+              disabled={isSubmitting}
+              secondary
+              data-fs-id="BottomBar-Cancel"
+            >
+              <Template code="BottomBar-Cancel" />
+            </StyledNextStepButton>
+            <CloseCaseDialog
+              data-testid="CloseCaseDialog"
+              openDialog={openDialog}
+              setDialog={() => setOpenDialog(false)}
+              handleDontSaveClose={() => clearContactDraft(contactId)}
+              handleSaveUpdate={methods.handleSubmit(onSubmitValidForm, onError)}
+            />
+          </Box>
+          <Box marginRight="15px">
+            <StyledNextStepButton
+              roundCorners={true}
+              onClick={methods.handleSubmit(onSubmitValidForm, onError)}
+              disabled={isSubmitting}
+              data-fs-id="Contact-SaveContact-Button"
+              data-testid="EditContact-SaveContact-Button"
+            >
+              {isSubmitting ? <CircularProgress size={12} /> : <Template code="BottomBar-SaveContact" />}
+            </StyledNextStepButton>
+          </Box>
+        </BottomButtonBar>
+      </FormProvider>
+    </EditContactContainer>
   );
 };
 
 const mapDispatchToProps = {
-  navigateForContext: navigateContactDetails,
   refreshContact: refreshRawContact,
+  setEditContactPageOpen: t.setEditContactPageOpen,
+  setEditContactPageClosed: t.setEditContactPageClosed,
+  clearContactDraft: clearDraft,
 };
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   definitionVersions: state[namespace][configurationBase].definitionVersions,
   counselorsHash: state[namespace][configurationBase].counselors.hash,
-  contact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.contact,
+  savedContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.savedContact,
+  draftContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.draftContact,
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

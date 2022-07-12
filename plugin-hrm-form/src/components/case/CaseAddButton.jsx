@@ -9,7 +9,7 @@ import HrmTheme from '../../styles/HrmTheme';
 const CaseAddButton = ({ disabled, templateCode, onClick, withDivider }) => {
   const color = disabled ? HrmTheme.colors.disabledColor : 'initial';
   return (
-    <CaseAddButtonStyled disabled={disabled} onClick={onClick}>
+    <CaseAddButtonStyled disabled={disabled} onClick={onClick} data-testid={`${templateCode}-AddButton`}>
       {!disabled && (
         <>
           <Add style={{ marginRight: 10, fontSize: 16, height: 17, color }} />
