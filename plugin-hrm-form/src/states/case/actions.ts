@@ -13,17 +13,11 @@ import {
 import { searchContactToHrmServiceContact } from '../contacts/contactDetailsAdapter';
 
 // Action creators
-export const setConnectedCase = (
-  connectedCase: Case,
-  taskId: string,
-  caseHasBeenEdited: Boolean,
-  clearTemporaryInfo = true,
-): CaseActionType => ({
+export const setConnectedCase = (connectedCase: Case, taskId: string, caseHasBeenEdited: Boolean): CaseActionType => ({
   type: SET_CONNECTED_CASE,
   connectedCase,
   taskId,
   caseHasBeenEdited,
-  clearTemporaryInfo,
 });
 
 export const removeConnectedCase = (taskId: string): CaseActionType => ({
