@@ -8,12 +8,16 @@ import { CaseLayout } from '../../styles/case';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace, RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import ContactDetails from '../contact/ContactDetails';
-import ActionHeader from './ActionHeader';
 import { CaseState } from '../../states/case/reducer';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 import { loadContact, loadRawContact, releaseContact } from '../../states/contacts/existingContacts';
 import { DetailsContext } from '../../states/contacts/contactDetails';
 import { taskFormToSearchContact } from '../../states/contacts/contactDetailsAdapter';
+import { TemporaryCaseInfo, ViewContactInfo } from '../../states/case/types';
+
+function isViewContactCaseInfo(temporaryCaseInfo: TemporaryCaseInfo): temporaryCaseInfo is ViewContactInfo {
+  return temporaryCaseInfo && temporaryCaseInfo.screen === 'view-contact';
+}
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const form = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
@@ -21,11 +25,27 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const caseState: CaseState = state[namespace][connectedCaseBase];
   const editContactFormOpen = state[namespace][contactFormsBase].editingContact;
   const { temporaryCaseInfo, connectedCase } = caseState.tasks[ownProps.task.taskSid];
-  return { form, counselorsHash, tempInfo: temporaryCaseInfo, connectedCase, editContactFormOpen };
+  if (isViewContactCaseInfo(temporaryCaseInfo)) {
+    const { contact: contactFromInfo } = temporaryCaseInfo.info;
+    const isSavedContact = Boolean(contactFromInfo);
+    const contactId = contactFromInfo?.id ?? `__unsavedFromCase:${connectedCase.id}`;
+    const contact = state[namespace][contactFormsBase].existingContacts[contactId]?.savedContact;
+    return {
+      form,
+      counselorsHash,
+      tempInfo: temporaryCaseInfo,
+      connectedCase,
+      editContactFormOpen,
+      contactId,
+      contact,
+      isSavedContact,
+    };
+  }
+  return { form, connectedCase, counselorsHash, editContactFormOpen };
 };
 
 const mapDispatchToProps = {
-  setConnectedCase: CaseActions.setConnectedCase,
+  updateCaseContactsWithSearchContact: CaseActions.updateCaseContactsWithSearchContact,
   loadRawContactIntoState: loadRawContact,
   loadContactIntoState: loadContact,
   releaseContactFromState: releaseContact,
@@ -49,16 +69,20 @@ const ViewContact: React.FC<Props> = ({
   releaseContactFromState,
   connectedCase,
   editContactFormOpen,
+  contactId,
+  contact,
+  isSavedContact,
+  updateCaseContactsWithSearchContact,
 }) => {
   const handleClose = () => {
-    releaseContactFromState(contactFromInfo.id, task.taskSid);
+    releaseContactFromState(contactId, task.taskSid);
     onClickClose();
   };
 
   useEffect(() => {
-    if (tempInfo && tempInfo.screen === 'view-contact') {
+    if (isViewContactCaseInfo(tempInfo)) {
       const { contact: contactFromInfo, timeOfContact, counselor } = tempInfo.info;
-      if (contactFromInfo) {
+      if (isSavedContact) {
         loadRawContactIntoState(contactFromInfo, task.taskSid);
       } else {
         const temporaryId = `__unsavedFromCase:${connectedCase.id}`;
@@ -69,21 +93,31 @@ const ViewContact: React.FC<Props> = ({
     counselorsHash,
     loadContactIntoState,
     releaseContactFromState,
-    connectedCase.id,
+    connectedCase?.id,
     task,
     form,
     loadRawContactIntoState,
     tempInfo,
+    isSavedContact,
   ]);
 
-  if (!tempInfo || tempInfo.screen !== 'view-contact') return null;
+  useEffect(() => {
+    if (contact) {
+      updateCaseContactsWithSearchContact(task.taskSid, contact);
+    }
+  }, [updateCaseContactsWithSearchContact, task, contact]);
+
+  if (!isViewContactCaseInfo(tempInfo)) {
+    return null;
+  }
+
   const { contact: contactFromInfo } = tempInfo.info;
 
   return (
     <CaseLayout className={editContactFormOpen ? 'editingContact' : ''}>
       <Container removePadding={editContactFormOpen}>
         <ContactDetails
-          contactId={contactFromInfo?.id ?? `__unsavedFromCase:${connectedCase.id}`}
+          contactId={contactId}
           enableEditing={Boolean(contactFromInfo)}
           context={DetailsContext.CASE_DETAILS}
         />
