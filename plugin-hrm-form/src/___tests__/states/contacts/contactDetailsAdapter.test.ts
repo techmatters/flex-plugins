@@ -1,4 +1,9 @@
-import { hrmServiceContactToSearchContact, retrieveCategories } from '../../../states/contacts/contactDetailsAdapter';
+import {
+  hrmServiceContactToSearchContact,
+  retrieveCategories,
+  searchContactToHrmServiceContact,
+} from '../../../states/contacts/contactDetailsAdapter';
+import { SearchContact } from '../../../types/types';
 
 describe('retrieveCategories', () => {
   test('falsy input, empty object output', () => expect(retrieveCategories(null)).toStrictEqual({}));
@@ -35,6 +40,7 @@ describe('retrieveCategories', () => {
 
 describe('hrmServiceContactToSearchContact', () => {
   const emptyOverview = {
+    taskId: undefined,
     helpline: undefined,
     dateTime: undefined,
     name: 'undefined undefined',
@@ -239,5 +245,63 @@ describe('hrmServiceContactToSearchContact', () => {
       hrmServiceContactToSearchContact({ rawJson: { caseInformation: {}, childInformation: {} } }),
     ).toThrow();
     expect(() => hrmServiceContactToSearchContact({ rawJson: { childInformation: { name: {} } } })).toThrow();
+  });
+});
+
+describe('searchContactToHrmServiceContact', () => {
+  const baseSearchContact: SearchContact = {
+    contactId: '1337',
+    overview: {
+      helpline: 'A helpline',
+      taskId: 'TASK_ID',
+      conversationDuration: 14,
+      createdBy: 'bob',
+      channel: 'gopher',
+      counselor: 'WK_roberta',
+      customerNumber: '1234 4321',
+      dateTime: 'Last Tuesday',
+      callType: 'child',
+      name: 'Lo Ballantyne',
+      categories: {},
+      notes: 'Hello',
+    },
+    csamReports: [
+      {
+        id: 1,
+        csamReportId: '1',
+        twilioWorkerId: 'WK_roberta',
+        createdAt: 'Last Thursday',
+      },
+    ],
+    details: {
+      callType: 'child',
+      childInformation: { name: { firstName: 'Lo', lastName: 'Ballantyne' } },
+      callerInformation: { name: { firstName: 'Lo', lastName: 'Ballantyne' } },
+      caseInformation: { categories: {} },
+      contactlessTask: {},
+    },
+  };
+
+  test('maps SearchContact overview to top level properties', () => {
+    const hrmContact = searchContactToHrmServiceContact(baseSearchContact);
+    expect(hrmContact).toMatchObject({
+      helpline: 'A helpline',
+      taskId: 'TASK_ID',
+      conversationDuration: 14,
+      createdBy: 'bob',
+      channel: 'gopher',
+      twilioWorkerId: 'WK_roberta',
+      number: '1234 4321',
+      timeOfContact: 'Last Tuesday',
+    });
+  });
+
+  test('copies details, csamReports and contactId to top level', () => {
+    const hrmContact = searchContactToHrmServiceContact(baseSearchContact);
+    expect(hrmContact).toMatchObject({
+      id: baseSearchContact.contactId,
+      rawJson: baseSearchContact.details,
+      csamReports: baseSearchContact.csamReports,
+    });
   });
 });
