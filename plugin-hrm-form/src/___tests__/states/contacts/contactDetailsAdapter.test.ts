@@ -40,7 +40,6 @@ describe('retrieveCategories', () => {
 
 describe('hrmServiceContactToSearchContact', () => {
   const emptyOverview = {
-    taskId: undefined,
     helpline: undefined,
     dateTime: undefined,
     name: 'undefined undefined',
@@ -253,7 +252,6 @@ describe('searchContactToHrmServiceContact', () => {
     contactId: '1337',
     overview: {
       helpline: 'A helpline',
-      taskId: 'TASK_ID',
       conversationDuration: 14,
       createdBy: 'bob',
       channel: 'gopher',
@@ -286,7 +284,6 @@ describe('searchContactToHrmServiceContact', () => {
     const hrmContact = searchContactToHrmServiceContact(baseSearchContact);
     expect(hrmContact).toMatchObject({
       helpline: 'A helpline',
-      taskId: 'TASK_ID',
       conversationDuration: 14,
       createdBy: 'bob',
       channel: 'gopher',

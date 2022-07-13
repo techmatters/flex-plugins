@@ -45,7 +45,7 @@ export const hrmServiceContactToSearchContact = (contact): SearchContact => {
   const { callType, caseInformation } = contact.rawJson;
   const categories = retrieveCategories(caseInformation.categories);
   const notes = caseInformation.callSummary;
-  const { conversationDuration, csamReports, createdBy, helpline, channel, taskId } = contact;
+  const { conversationDuration, csamReports, createdBy, helpline, channel } = contact;
 
   return {
     contactId: contact.id,
@@ -61,7 +61,6 @@ export const hrmServiceContactToSearchContact = (contact): SearchContact => {
       channel,
       conversationDuration,
       createdBy,
-      taskId,
     },
     details: contact.rawJson,
     csamReports,
@@ -77,7 +76,6 @@ export const searchContactToHrmServiceContact = (contact: SearchContact) => {
     counselor,
     customerNumber,
     dateTime,
-    taskId,
   } = contact.overview;
   return {
     id: contact.contactId,
@@ -90,7 +88,6 @@ export const searchContactToHrmServiceContact = (contact: SearchContact) => {
     createdBy,
     helpline,
     channel,
-    taskId,
   };
 };
 
@@ -120,7 +117,6 @@ export const taskFormToSearchContact = (task, form, date, counselor, temporaryId
       notes,
       channel: channelType,
       conversationDuration,
-      taskId: task.taskSid,
     },
     details,
     csamReports,
