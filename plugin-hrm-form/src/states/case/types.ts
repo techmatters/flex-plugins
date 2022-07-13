@@ -63,7 +63,6 @@ type SetConnectedCaseAction = {
   connectedCase: t.Case;
   taskId: string;
   caseHasBeenEdited: Boolean;
-  clearTemporaryInfo: boolean;
 };
 
 type RemoveConnectedCaseAction = {
