@@ -3,13 +3,14 @@ import { omit } from 'lodash';
 import { Case } from '../../types/types';
 import {
   CaseActionType,
-  TemporaryCaseInfo,
-  SET_CONNECTED_CASE,
-  REMOVE_CONNECTED_CASE,
-  UPDATE_CASE_INFO,
-  UPDATE_TEMP_INFO,
-  UPDATE_CASE_STATUS,
   MARK_CASE_AS_UPDATED,
+  REMOVE_CONNECTED_CASE,
+  SET_CONNECTED_CASE,
+  TemporaryCaseInfo,
+  UPDATE_CASE_CONTACT,
+  UPDATE_CASE_INFO,
+  UPDATE_CASE_STATUS,
+  UPDATE_TEMP_INFO,
 } from './types';
 import { GeneralActionType, REMOVE_CONTACT_STATE } from '../types';
 
@@ -104,6 +105,22 @@ export function reduce(state = initialState, action: CaseActionType | GeneralAct
           [action.taskId]: {
             ...state.tasks[action.taskId],
             caseHasBeenEdited: false,
+          },
+        },
+      };
+    case UPDATE_CASE_CONTACT:
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...state.tasks[action.taskId],
+            connectedCase: {
+              ...state.tasks[action.taskId].connectedCase,
+              connectedContacts: state.tasks[action.taskId].connectedCase.connectedContacts.map(cc =>
+                cc.id === action.contact.id ? action.contact : cc,
+              ),
+            },
           },
         },
       };

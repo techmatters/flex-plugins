@@ -10,6 +10,7 @@ export const UPDATE_CASE_INFO = 'UPDATE_CASE_INFO';
 export const UPDATE_TEMP_INFO = 'UPDATE_TEMP_INFO';
 export const UPDATE_CASE_STATUS = 'UPDATE_CASE_STATUS';
 export const MARK_CASE_AS_UPDATED = 'MARK_CASE_AS_UPDATED';
+export const UPDATE_CASE_CONTACT = 'UPDATE_CASE_CONTACT';
 
 type ViewContact = {
   contact?: any; // TODO: create Contact type
@@ -53,17 +54,16 @@ export function isAddTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is AddTempor
   return tci && (<AddTemporaryCaseInfo>tci).action === CaseItemAction.Add;
 }
 
-export type TemporaryCaseInfo =
-  | { screen: typeof NewCaseSubroutes.ViewContact; info: ViewContact }
-  | ViewTemporaryCaseInfo
-  | AddTemporaryCaseInfo
-  | EditTemporaryCaseInfo;
+export type ViewContactInfo = { screen: typeof NewCaseSubroutes.ViewContact; info: ViewContact };
+
+export type TemporaryCaseInfo = ViewContactInfo | ViewTemporaryCaseInfo | AddTemporaryCaseInfo | EditTemporaryCaseInfo;
 
 type SetConnectedCaseAction = {
   type: typeof SET_CONNECTED_CASE;
   connectedCase: t.Case;
   taskId: string;
   caseHasBeenEdited: Boolean;
+  clearTemporaryInfo: boolean;
 };
 
 type RemoveConnectedCaseAction = {
@@ -94,13 +94,20 @@ type MarkCaseAsUpdated = {
   taskId: string;
 };
 
+type UpdateCaseContactAction = {
+  type: typeof UPDATE_CASE_CONTACT;
+  taskId: string;
+  contact: any;
+};
+
 export type CaseActionType =
   | SetConnectedCaseAction
   | RemoveConnectedCaseAction
   | UpdateCaseInfoAction
   | TemporaryCaseInfoAction
   | UpdateCasesStatusAction
-  | MarkCaseAsUpdated;
+  | MarkCaseAsUpdated
+  | UpdateCaseContactAction;
 
 export type Activity = NoteActivity | ReferralActivity | ConnectedCaseActivity;
 

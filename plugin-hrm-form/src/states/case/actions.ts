@@ -1,21 +1,29 @@
-import { Case, CaseInfo } from '../../types/types';
+import { Case, CaseInfo, SearchContact } from '../../types/types';
 import {
   CaseActionType,
-  TemporaryCaseInfo,
-  SET_CONNECTED_CASE,
-  REMOVE_CONNECTED_CASE,
-  UPDATE_CASE_INFO,
-  UPDATE_TEMP_INFO,
-  UPDATE_CASE_STATUS,
   MARK_CASE_AS_UPDATED,
+  REMOVE_CONNECTED_CASE,
+  SET_CONNECTED_CASE,
+  TemporaryCaseInfo,
+  UPDATE_CASE_CONTACT,
+  UPDATE_CASE_INFO,
+  UPDATE_CASE_STATUS,
+  UPDATE_TEMP_INFO,
 } from './types';
+import { searchContactToHrmServiceContact } from '../contacts/contactDetailsAdapter';
 
 // Action creators
-export const setConnectedCase = (connectedCase: Case, taskId: string, caseHasBeenEdited: Boolean): CaseActionType => ({
+export const setConnectedCase = (
+  connectedCase: Case,
+  taskId: string,
+  caseHasBeenEdited: Boolean,
+  clearTemporaryInfo = true,
+): CaseActionType => ({
   type: SET_CONNECTED_CASE,
   connectedCase,
   taskId,
   caseHasBeenEdited,
+  clearTemporaryInfo,
 });
 
 export const removeConnectedCase = (taskId: string): CaseActionType => ({
@@ -49,4 +57,10 @@ export const updateCaseStatus = (status: string, taskId: string): CaseActionType
 export const markCaseAsUpdated = (taskId: string): CaseActionType => ({
   type: MARK_CASE_AS_UPDATED,
   taskId,
+});
+
+export const updateCaseContactsWithSearchContact = (taskId: string, contact: SearchContact): CaseActionType => ({
+  type: UPDATE_CASE_CONTACT,
+  taskId,
+  contact: searchContactToHrmServiceContact(contact),
 });
