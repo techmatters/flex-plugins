@@ -1,6 +1,7 @@
 import { expect, Page, test } from '@playwright/test';
 import { Categories, contactForm, ContactFormTab } from '../contactForm';
 import { caseHome } from '../case';
+import { agentDesktop } from '../agent-desktop';
 import { logPageTelemetry } from '../browser-logs';
 
 test.describe.serial('Offline Contact (with Case)', () => {
@@ -24,20 +25,13 @@ test.describe.serial('Offline Contact (with Case)', () => {
 
   test('Offline Contact', async () => {
     console.log('Open a new offline contact');
-    const addOfflineContactButton = pluginPage.locator(
-      `//button[@data-fs-id='Task-AddOfflineContact-Button']`,
-    );
-    await addOfflineContactButton.waitFor({ state: 'visible' });
-    await expect(addOfflineContactButton).toContainText('Offline Contact Record');
-    await addOfflineContactButton.click();
+    const agentDesktopPage = agentDesktop(pluginPage);
+    await agentDesktopPage.addOfflineContact();
 
     console.log('Starting filling form');
-    const childCallTypeButton = pluginPage.locator(
-      `//button[@data-testid='DataCallTypeButton-child']`,
-    );
-    await expect(childCallTypeButton).toContainText('Child calling about self');
-    await childCallTypeButton.click();
+
     const form = contactForm(pluginPage);
+    await form.selectChildCallType();
     await form.fill([
       <ContactFormTab>{
         id: 'contactlessTask',
