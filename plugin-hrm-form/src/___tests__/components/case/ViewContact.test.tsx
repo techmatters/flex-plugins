@@ -16,7 +16,10 @@ import { SearchContact } from '../../../types/types';
 import { connectedCaseBase, contactFormsBase, RootState } from '../../../states';
 import { DetailsContext, TOGGLE_DETAIL_EXPANDED_ACTION } from '../../../states/contacts/contactDetails';
 
-jest.mock('@twilio/flex-ui', () => ({ ...jest.requireActual('@twilio/flex-ui'), Actions: { invokeAction: jest.fn() }, }));
+jest.mock('@twilio/flex-ui', () => ({
+  ...jest.requireActual('@twilio/flex-ui'),
+  Actions: { invokeAction: jest.fn() },
+}));
 
 expect.extend(toHaveNoViolations);
 
