@@ -5,7 +5,13 @@ import { Actions, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes } from 'hrm-form-definitions';
 
-import { DetailsContainer, NameText, ContactAddedFont } from '../../styles/search';
+import {
+  DetailsContainer,
+  NameText,
+  ContactAddedFont,
+  SectionTitleContainer,
+  SectionActionButton,
+} from '../../styles/search';
 import ContactDetailsSection from './ContactDetailsSection';
 import SectionEntry from '../SectionEntry';
 import { channelTypes } from '../../states/DomainConstants';
@@ -15,9 +21,9 @@ import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/Co
 import { unNestInformation } from '../../services/ContactService';
 import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
 import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
-import { LoadConversationButton } from '../../styles/contact';
 import { getPermissionsForContact, PermissionActions } from '../../permissions';
 import { createDraft, ContactDetailsRoute } from '../../states/contacts/existingContacts';
+import { getConfig } from '../../HrmFormPlugin';
 
 // TODO: complete this type
 type OwnProps = {
@@ -44,11 +50,12 @@ const ContactDetailsHome: React.FC<Props> = function ({
   createContactDraft,
   enableEditing,
   canViewTranscript,
-  // eslint-disable-next-line sonarjs/cognitive-complexity
-}) => {
+}) {
   const version = savedContact?.details.definitionVersion;
 
   const definitionVersion = definitionVersions[version];
+
+  const { featureFlags } = getConfig();
 
   useEffect(
     () => () => {
@@ -110,8 +117,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
 
   const loadConversationIntoOverlay = async () => {
     await Actions.invokeAction(Insights.Player.Action.INSIGHTS_PLAYER_PLAY, {
-      // taskSid: contact.overview.taskId,
-      segmentId: '0982de9d-28c1-5a2a-92c7-d8f2b8665286',
+      taskSid: savedContact.details.reservationSid,
     });
   };
 
@@ -251,17 +257,21 @@ const ContactDetailsHome: React.FC<Props> = function ({
           )}
         </ContactDetailsSection>
       )}
-      {canViewTranscript && contact.overview.taskId && typeof contact.overview.conversationDuration === 'number' && (
-        <div style={{ textAlign: 'center', margin: '10px' }}>
-          <LoadConversationButton type="button" roundCorners={true} onClick={loadConversationIntoOverlay}>
-            {channel === channelTypes.voice ? (
-              <Template code="ContactDetails-LoadRecording-Button" />
-            ) : (
-              <Template code="ContactDetails-LoadTranscript-Button" />
-            )}
-          </LoadConversationButton>
-        </div>
-      )}
+      {((featureFlags.enable_voice_recordings && channel === channelTypes.voice) ||
+        (featureFlags.enable_transcripts && channel !== channelTypes.voice)) &&
+        canViewTranscript &&
+        savedContact.details.reservationSid &&
+        typeof savedContact.overview.conversationDuration === 'number' && (
+          <SectionTitleContainer style={{ justifyContent: 'right', paddingTop: '10px', paddingBottom: '10px' }}>
+            <SectionActionButton type="button" onClick={loadConversationIntoOverlay}>
+              {channel === channelTypes.voice ? (
+                <Template code="ContactDetails-LoadRecording-Button" />
+              ) : (
+                <Template code="ContactDetails-LoadTranscript-Button" />
+              )}
+            </SectionActionButton>
+          </SectionTitleContainer>
+        )}
     </DetailsContainer>
   );
 };

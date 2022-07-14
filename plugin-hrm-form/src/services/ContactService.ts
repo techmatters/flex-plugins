@@ -121,8 +121,8 @@ export const transformContactFormValues = (
  * Transforms the form to be saved as the backend expects it
  * VisibleForTesting
  */
-export function transformForm(form: TaskEntry): ContactRawJson {
-  const { callType, metadata, contactlessTask } = form;
+export function transformForm(form: TaskEntry & { reservationSid: string }): ContactRawJson {
+  const { callType, contactlessTask, reservationSid } = form;
   const {
     CallerInformationTab,
     CaseInformationTab,
@@ -153,6 +153,7 @@ export function transformForm(form: TaskEntry): ContactRawJson {
       categories,
     },
     contactlessTask,
+    reservationSid,
   };
 
   return transformed;
@@ -176,6 +177,7 @@ const saveContactToHrm = async (
   const number = getNumberFromTask(task);
 
   let rawForm = form;
+  rawForm.reservationSid = task.sid;
   const { currentDefinitionVersion } = getDefinitionVersions();
 
   if (isNonDataCallType(callType)) {
