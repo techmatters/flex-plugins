@@ -29,7 +29,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
     const { contact: contactFromInfo } = temporaryCaseInfo.info;
     const isSavedContact = Boolean(contactFromInfo);
     const contactId = contactFromInfo?.id ?? `__unsavedFromCase:${connectedCase.id}`;
-    const contact = state[namespace][contactFormsBase].existingContacts[contactId]?.savedContact;
+    const contact = state[namespace][contactFormsBase].existingContacts[contactId]?.contact;
     return {
       form,
       counselorsHash,
@@ -74,21 +74,20 @@ const ViewContact: React.FC<Props> = ({
   isSavedContact,
   updateCaseContactsWithSearchContact,
 }) => {
-  const handleClose = () => {
-    releaseContactFromState(contactId, task.taskSid);
-    onClickClose();
-  };
-
   useEffect(() => {
     if (isViewContactCaseInfo(tempInfo)) {
       const { contact: contactFromInfo, timeOfContact, counselor } = tempInfo.info;
       if (isSavedContact) {
-        loadRawContactIntoState(contactFromInfo, task.taskSid);
-      } else {
-        const temporaryId = `__unsavedFromCase:${connectedCase.id}`;
-        loadContactIntoState(taskFormToSearchContact(task, form, timeOfContact, counselor, temporaryId), task.taskSid);
+        loadRawContactIntoState(contactFromInfo);
+        return () => releaseContactFromState(contactFromInfo.id);
       }
+      const temporaryId = `__unsavedFromCase:${connectedCase.id}`;
+      loadContactIntoState(taskFormToSearchContact(task, form, timeOfContact, counselor, temporaryId));
+      return () => releaseContactFromState(temporaryId);
     }
+    return () => {
+      /* no cleanup to do. */
+    };
   }, [
     counselorsHash,
     loadContactIntoState,
@@ -122,7 +121,7 @@ const ViewContact: React.FC<Props> = ({
           context={DetailsContext.CASE_DETAILS}
         />
         <BottomButtonBar className="hiddenWhenEditingContact" style={{ marginBlockStart: 'auto' }}>
-          <StyledNextStepButton roundCorners onClick={handleClose} data-testid="Case-ViewContactScreen-CloseButton">
+          <StyledNextStepButton roundCorners onClick={onClickClose} data-testid="Case-ViewContactScreen-CloseButton">
             <Template code="CloseButton" />
           </StyledNextStepButton>
         </BottomButtonBar>
