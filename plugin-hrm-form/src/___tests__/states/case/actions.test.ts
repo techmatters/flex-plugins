@@ -1,16 +1,21 @@
-import { Case } from '../../../types/types';
+import { Case, SearchContact } from '../../../types/types';
 import {
   AddTemporaryCaseInfo,
-  SET_CONNECTED_CASE,
-  REMOVE_CONNECTED_CASE,
-  UPDATE_CASE_INFO,
-  MARK_CASE_AS_UPDATED,
-  UPDATE_TEMP_INFO,
-  UPDATE_CASE_STATUS,
   CaseActionType,
+  MARK_CASE_AS_UPDATED,
+  REMOVE_CONNECTED_CASE,
+  SET_CONNECTED_CASE,
+  UPDATE_CASE_CONTACT,
+  UPDATE_CASE_INFO,
+  UPDATE_TEMP_INFO,
 } from '../../../states/case/types';
 import * as actions from '../../../states/case/actions';
 import { CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
+import { searchContactToHrmServiceContact } from '../../../states/contacts/contactDetailsAdapter';
+
+jest.mock('../../../states/contacts/contactDetailsAdapter', () => ({
+  searchContactToHrmServiceContact: jest.fn(),
+}));
 
 const task = { taskSid: 'task1' };
 
@@ -83,5 +88,21 @@ describe('test action creators', () => {
     };
 
     expect(actions.markCaseAsUpdated(task.taskSid)).toStrictEqual(expectedAction);
+  });
+
+  test('searchContactToHrmServiceContact', async () => {
+    const expectedAction: CaseActionType = {
+      type: UPDATE_CASE_CONTACT,
+      taskId: task.taskSid,
+      contact: 'I AM A HRM CONTACT',
+    };
+    (<jest.Mock>searchContactToHrmServiceContact).mockReturnValue('I AM A HRM CONTACT');
+    const input: Partial<SearchContact> = {
+      contactId: 'something',
+    };
+    expect(actions.updateCaseContactsWithSearchContact(task.taskSid, <SearchContact>input)).toStrictEqual(
+      expectedAction,
+    );
+    expect(searchContactToHrmServiceContact).toHaveBeenCalledWith(input);
   });
 });

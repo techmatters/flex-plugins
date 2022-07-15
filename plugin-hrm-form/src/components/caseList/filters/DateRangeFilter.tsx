@@ -206,6 +206,8 @@ const DateRangeFilter: React.FC<Props> = ({
   };
 
   const dividerStyle = { border: 'none', height: '1px', backgroundColor: 'rgb(216, 216, 216)' };
+  const currentOption = findCurrentOption(optionsWithoutDividers, currentWorkingCopy);
+  const showCustomDateFields = currentOption ? isFixedDateRange(currentOption[1]) : false;
 
   const resetDateValidation = () => {
     setDateValidations(prev => ({ ...prev, to: { invalid: false, error: '' }, from: { invalid: false, error: '' } }));
@@ -295,46 +297,52 @@ const DateRangeFilter: React.FC<Props> = ({
                 );
               })}
             </MultiSelectUnorderedList>
-            <Box style={{ display: 'inline-block' }}>
-              <p style={{ marginBottom: '5px' }}>
-                <Template code="CaseList-Filters-DateFilter-CustomDateFrom" />
-              </p>
-              <FormDateInput
-                placeholder="red"
-                style={{ width: '85pt', border: dateValidations.from.invalid ? '1px solid red' : '' }}
-                type="date"
-                id="customDateRangeFrom"
-                data-testid="customDateRangeFrom"
-                name="customDateRangeFrom"
-                onChange={() => updateWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))}
-                onBlur={() => handleDateValidation()}
-                onFocus={() => resetDateValidation()}
-                innerRef={register}
-              />
-            </Box>
-            <span style={{ padding: '5px' }}>
-              <Template code="CaseList-Filters-DateFilter-CustomRange" />{' '}
-            </span>
-            <Box style={{ display: 'inline-block' }}>
-              <p style={{ marginBottom: '5px' }}>
-                <Template code="CaseList-Filters-DateFilter-CustomDateTo" />
-              </p>
+            <Box
+              style={{
+                display: showCustomDateFields ? 'inherit' : 'none',
+              }}
+            >
+              <Box style={{ display: 'inline-block' }}>
+                <p style={{ marginBottom: '5px' }}>
+                  <Template code="CaseList-Filters-DateFilter-CustomDateFrom" />
+                </p>
+                <FormDateInput
+                  placeholder="red"
+                  style={{ width: '85pt', border: dateValidations.from.invalid ? '1px solid red' : '' }}
+                  type="date"
+                  id="customDateRangeFrom"
+                  data-testid="customDateRangeFrom"
+                  name="customDateRangeFrom"
+                  onChange={() => updateWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))}
+                  onBlur={() => handleDateValidation()}
+                  onFocus={() => resetDateValidation()}
+                  innerRef={register}
+                />
+              </Box>
+              <span style={{ padding: '5px' }}>
+                <Template code="CaseList-Filters-DateFilter-CustomRange" />{' '}
+              </span>
+              <Box style={{ display: 'inline-block' }}>
+                <p style={{ marginBottom: '5px' }}>
+                  <Template code="CaseList-Filters-DateFilter-CustomDateTo" />
+                </p>
 
-              <FormDateInput
-                style={{
-                  width: '85pt',
-                  display: 'inline-block',
-                  border: dateValidations.to.invalid ? '1px solid red' : '',
-                }}
-                type="date"
-                id="customDateRangeTo"
-                data-testid="customDateRangeTo"
-                name="customDateRangeTo"
-                onChange={() => updateWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))}
-                onBlur={() => handleDateValidation()}
-                onFocus={() => resetDateValidation()}
-                innerRef={register}
-              />
+                <FormDateInput
+                  style={{
+                    width: '85pt',
+                    display: 'inline-block',
+                    border: dateValidations.to.invalid ? '1px solid red' : '',
+                  }}
+                  type="date"
+                  id="customDateRangeTo"
+                  data-testid="customDateRangeTo"
+                  name="customDateRangeTo"
+                  onChange={() => updateWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))}
+                  onBlur={() => handleDateValidation()}
+                  onFocus={() => resetDateValidation()}
+                  innerRef={register}
+                />
+              </Box>
             </Box>
             <DateErrorMessage marginLeft="5px">
               {dateValidations.from.invalid ? dateValidations.from.error : ''}
