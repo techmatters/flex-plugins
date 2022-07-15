@@ -117,7 +117,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
 
   const loadConversationIntoOverlay = async () => {
     await Actions.invokeAction(Insights.Player.Action.INSIGHTS_PLAYER_PLAY, {
-      taskSid: savedContact.details.reservationSid,
+      taskSid: savedContact.details.conversationMedia[0],
     });
   };
 
@@ -260,7 +260,8 @@ const ContactDetailsHome: React.FC<Props> = function ({
       {((featureFlags.enable_voice_recordings && channel === channelTypes.voice) ||
         (featureFlags.enable_transcripts && channel !== channelTypes.voice)) &&
         canViewTranscript &&
-        savedContact.details.reservationSid &&
+        savedContact.details.conversationMedia &&
+        savedContact.details.conversationMedia.length &&
         typeof savedContact.overview.conversationDuration === 'number' && (
           <SectionTitleContainer style={{ justifyContent: 'right', paddingTop: '10px', paddingBottom: '10px' }}>
             <SectionActionButton type="button" onClick={loadConversationIntoOverlay}>
