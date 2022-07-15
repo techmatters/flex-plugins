@@ -29,7 +29,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
     const { contact: contactFromInfo } = temporaryCaseInfo.info;
     const isSavedContact = Boolean(contactFromInfo);
     const contactId = contactFromInfo?.id ?? `__unsavedFromCase:${connectedCase.id}`;
-    const contact = state[namespace][contactFormsBase].existingContacts[contactId]?.contact;
+    const contact = state[namespace][contactFormsBase].existingContacts[contactId]?.savedContact;
     return {
       form,
       counselorsHash,
