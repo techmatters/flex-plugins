@@ -38,10 +38,10 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
     await page.addCaseSection({
       sectionTypeId: 'note',
       items: {
-        note: 'test note',
+        note: 'TEST NOTE',
       },
     });
-
+    
     await page.addCaseSection({
       sectionTypeId: 'household',
       items: {

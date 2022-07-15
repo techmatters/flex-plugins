@@ -29,6 +29,7 @@ test.describe.serial('Web chat caller', () => {
   });
 
   test.afterAll(async () => {
+    await statusIndicator(pluginPage)?.setStatus(WorkerStatus.OFFLINE);
     await Promise.all([
       chatPage?.close(),
       pluginPage?.close(),
@@ -114,6 +115,5 @@ test.describe.serial('Web chat caller', () => {
     ]);
     console.log('Saving form');
     await form.save();
-    await statusIndicator(pluginPage).setStatus(WorkerStatus.OFFLINE);
   });
 });
