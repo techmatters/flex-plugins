@@ -17,7 +17,8 @@ import fetchHrmApi from './fetchHrmApi';
 import { getDateTime } from '../utils/helpers';
 import { getConfig, getDefinitionVersions } from '../HrmFormPlugin';
 import {
-  ContactRawJson, ConversationMedia,
+  ContactRawJson,
+  ConversationMedia,
   InformationObject,
   isOfflineContactTask,
   isTwilioTask,
