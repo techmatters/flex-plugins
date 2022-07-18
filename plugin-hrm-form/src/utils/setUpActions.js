@@ -351,18 +351,29 @@ export const setUpPostSurvey = setupObject => {
 const triggerPostSurvey = async (setupObject, payload) => {
   const { task } = payload;
 
-  const shouldTriggerPostSurvey =
-    TaskHelper.isChatBasedTask(task) && !isAseloCustomChannelTask(task) && TransferHelpers.hasTaskControl(task);
+  if (!TransferHelpers.hasTaskControl(task)) return 'Nothing to be done here :)';
 
-  if (shouldTriggerPostSurvey) {
+  if (TaskHelper.isChatBasedTask(task) && !isAseloCustomChannelTask(task)) {
     const { taskSid } = task;
     const channelSid = TaskHelper.getTaskChatChannelSid(task);
     const taskLanguage = getTaskLanguage(setupObject)(payload);
 
-    const body = taskLanguage ? { channelSid, taskSid, taskLanguage } : { channelSid, taskSid };
+    const body = { eventType: 'chat', channelSid, taskSid, taskLanguage };
 
-    await postSurveyInit(body);
+    return postSurveyInit(body);
   }
+
+  if (TaskHelper.isCallTask(task) && TransferHelpers.hasTaskControl(task)) {
+    const { taskSid } = task;
+    const callerAddress = task.attributes.caller;
+    const taskLanguage = getTaskLanguage(setupObject)(payload);
+
+    const body = { eventType: 'voice', callerAddress, taskSid, taskLanguage };
+
+    return postSurveyInit(body);
+  }
+
+  return 'No case matched.';
 };
 
 /**
