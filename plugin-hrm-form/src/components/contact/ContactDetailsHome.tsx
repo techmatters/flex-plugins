@@ -14,12 +14,7 @@ import { formatCategories, formatDuration, formatName, mapChannelForInsights } f
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/ContactDetails';
 import { unNestInformation } from '../../services/ContactService';
 import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
-import {
-  ContactDetailsRoute,
-  DetailsContext,
-  navigateContactDetails,
-  toggleDetailSectionExpanded,
-} from '../../states/contacts/contactDetails';
+import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
 import { LoadConversationButton } from '../../styles/contact';
 import { getPermissionsForContact, PermissionActions } from '../../permissions';
 import { createDraft, ContactDetailsRoute } from '../../states/contacts/existingContacts';
@@ -49,8 +44,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   createContactDraft,
   enableEditing,
   canViewTranscript,
-  // eslint-disable-next-line sonarjs/cognitive-complexity
-}) => {
+}) {
   const version = savedContact?.details.definitionVersion;
 
   const definitionVersion = definitionVersions[version];
@@ -62,7 +56,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
     [],
   );
 
--  if (!savedContact || !definitionVersion) return null;
+  if (!savedContact || !definitionVersion) return null;
 
   // Object destructuring on contact
   const { overview, details, csamReports } = savedContact;
@@ -100,8 +94,13 @@ const ContactDetailsHome: React.FC<Props> = function ({
     channel === channelTypes.voice || channel === channelTypes.sms || channel === channelTypes.whatsapp;
   const formattedCategories = formatCategories(categories);
 
-  const { GENERAL_DETAILS, CALLER_INFORMATION, CHILD_INFORMATION, ISSUE_CATEGORIZATION, CONTACT_SUMMARY } =
-    ContactDetailsSections;
+  const {
+    GENERAL_DETAILS,
+    CALLER_INFORMATION,
+    CHILD_INFORMATION,
+    ISSUE_CATEGORIZATION,
+    CONTACT_SUMMARY,
+  } = ContactDetailsSections;
   const addedBy = counselorsHash[createdBy];
   const counselorName = counselorsHash[counselor];
 
@@ -110,7 +109,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
 
   const loadConversationIntoOverlay = async () => {
     await Actions.invokeAction(Insights.Player.Action.INSIGHTS_PLAYER_PLAY, {
-      taskSid: contact.overview.taskId,
+      taskSid: savedContact.overview.taskId,
       // segmentId: '0982de9d-28c1-5a2a-92c7-d8f2b8665286',
     });
   };
@@ -251,17 +250,19 @@ const ContactDetailsHome: React.FC<Props> = function ({
           )}
         </ContactDetailsSection>
       )}
-      {canViewTranscript && contact.overview.taskId && typeof contact.overview.conversationDuration === 'number' && (
-        <div style={{ textAlign: 'center', margin: '10px' }}>
-          <LoadConversationButton type="button" roundCorners={true} onClick={loadConversationIntoOverlay}>
-            {channel === channelTypes.voice ? (
-              <Template code="ContactDetails-LoadRecording-Button" />
-            ) : (
-              <Template code="ContactDetails-LoadTranscript-Button" />
-            )}
-          </LoadConversationButton>
-        </div>
-      )}
+      {canViewTranscript &&
+        savedContact.overview.taskId &&
+        typeof savedContact.overview.conversationDuration === 'number' && (
+          <div style={{ textAlign: 'center', margin: '10px' }}>
+            <LoadConversationButton type="button" roundCorners={true} onClick={loadConversationIntoOverlay}>
+              {channel === channelTypes.voice ? (
+                <Template code="ContactDetails-LoadRecording-Button" />
+              ) : (
+                <Template code="ContactDetails-LoadTranscript-Button" />
+              )}
+            </LoadConversationButton>
+          </div>
+        )}
     </DetailsContainer>
   );
 };

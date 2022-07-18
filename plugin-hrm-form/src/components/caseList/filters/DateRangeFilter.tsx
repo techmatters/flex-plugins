@@ -340,7 +340,7 @@ const DateRangeFilter: React.FC<Props> = ({
                   onChange={() => updateWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))}
                   onBlur={() => handleDateValidation()}
                   onFocus={() => resetDateValidation()}
-                  innerRef={register}
+                  ref={register}
                 />
               </Box>
             </Box>
