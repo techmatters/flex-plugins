@@ -76,6 +76,7 @@ resource "twilio_flex_flex_flows_v1" "messaging_flow" {
   integration_type = "studio"
   integration_flow_sid = var.messaging_studio_flow_sid
   contact_identity = var.messaging_flow_contact_identity
+  enabled = true
 }
 resource "twilio_flex_flex_flows_v1" "webchat_flow" {
   channel_type  = "web"
@@ -83,6 +84,7 @@ resource "twilio_flex_flex_flows_v1" "webchat_flow" {
   friendly_name = "Flex Web Channel Flow"
   integration_type = "studio"
   integration_flow_sid = var.messaging_studio_flow_sid
+  enabled = true
 }
 
 resource "null_resource" "service_configuration" {

@@ -3,6 +3,7 @@ import { FullConfig } from '@playwright/test';
 import { differenceInMilliseconds } from 'date-fns';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { oktaSsoLoginViaApi, oktaSsoLoginViaGui } from './okta/sso-login';
+import environmentVariables from './environmentVariables';
 
 async function globalSetup(config: FullConfig) {
   const start = new Date();
@@ -15,14 +16,14 @@ async function globalSetup(config: FullConfig) {
 
   await oktaSsoLoginViaApi(
     config.projects[0].use.baseURL!,
-    process.env.PLAYWRIGHT_USER_USERNAME!,
-    process.env.PLAYWRIGHT_USER_PASSWORD!,
-    process.env.TWILIO_ACCOUNT_SID!,
+    environmentVariables.PLAYWRIGHT_USER_USERNAME!,
+    environmentVariables.PLAYWRIGHT_USER_PASSWORD!,
+    environmentVariables.TWILIO_ACCOUNT_SID!,
   );
   /* await oktaSsoLoginViaGui(
     config,
-    process.env.PLAYWRIGHT_USER_USERNAME ?? 'NOT SET',
-    process.env.PLAYWRIGHT_USER_PASSWORD ?? 'NOT SET',
+    environmentVariables.PLAYWRIGHT_USER_USERNAME ?? 'NOT SET',
+    environmentVariables.PLAYWRIGHT_USER_PASSWORD ?? 'NOT SET',
   );
    */
   console.log(

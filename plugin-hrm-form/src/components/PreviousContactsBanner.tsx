@@ -9,7 +9,7 @@ import {
   searchContacts as searchContactsAction,
   searchCases as searchCasesAction,
 } from '../states/search/actions';
-import { namespace, searchContactsBase, configurationBase, RootState } from '../states';
+import { namespace, searchContactsBase, configurationBase, RootState, contactFormsBase } from '../states';
 import { CONTACTS_PER_PAGE, CASES_PER_PAGE } from './search/SearchResults';
 import { YellowBanner } from '../styles/previousContactsBanner';
 import { Bold } from '../styles/HrmStyles';
@@ -43,6 +43,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
   searchContacts,
   searchCases,
   changeRoute,
+  editContactFormOpen,
 }) => {
   useEffect(() => {
     if (isTwilioTask(task) && previousContacts === undefined) {
@@ -70,42 +71,45 @@ const PreviousContactsBanner: React.FC<Props> = ({
 
   const contactIdentifier = getFormattedNumberFromTask(task);
   return (
-    <YellowBanner data-testid="PreviousContacts-Container">
-      {/* eslint-disable-next-line prettier/prettier */}
+    <div className={editContactFormOpen ? 'editingContact' : ''}>
+      <YellowBanner data-testid="PreviousContacts-Container" className="hiddenWhenEditingContact">
+        {/* eslint-disable-next-line prettier/prettier */}
       <pre>
-        <Template code="PreviousContacts-ThereAre" />
-        &nbsp;
-        {contactsCount === 1 ? (
-          <Bold>
-            {contactsCount} <Template code="PreviousContacts-PreviousContact" />
-          </Bold>
-        ) : (
-          <Bold>
-            {contactsCount} <Template code="PreviousContacts-PreviousContacts" />
-          </Bold>
-        )}
-        &nbsp;and&nbsp;
-        {casesCount === 1 ? (
-          <Bold>
-            {casesCount} <Template code="PreviousContacts-Case" />
-          </Bold>
-        ) : (
-          <Bold>
-            {casesCount} <Template code="PreviousContacts-Cases" />
-          </Bold>
-        )}
-        &nbsp;
-        <Template code="PreviousContacts-From" />
-        &nbsp;
-        <Template code={localizedSource[task.channelType]} />
-        &nbsp;
-        <Bold>{contactIdentifier}</Bold>.
-      </pre>
-
-      <StyledLink underline data-testid="PreviousContacts-ViewRecords" onClick={handleClickViewRecords}>
-        <Template code="PreviousContacts-ViewRecords" />
-      </StyledLink>
-    </YellowBanner>
+          <Template code="PreviousContacts-ThereAre" />
+          &nbsp;
+          {contactsCount === 1 ? (
+            <Bold>
+              {contactsCount} <Template code="PreviousContacts-PreviousContact" />
+            </Bold>
+          ) : (
+            <Bold>
+              {contactsCount} <Template code="PreviousContacts-PreviousContacts" />
+            </Bold>
+          )}
+          &nbsp;
+          <Template code="PreviousContacts-And" />
+          &nbsp;
+          {casesCount === 1 ? (
+            <Bold>
+              {casesCount} <Template code="PreviousContacts-Case" />
+            </Bold>
+          ) : (
+            <Bold>
+              {casesCount} <Template code="PreviousContacts-Cases" />
+            </Bold>
+          )}
+          &nbsp;
+          <Template code="PreviousContacts-From" />
+          &nbsp;
+          <Template code={localizedSource[task.channelType]} />
+          &nbsp;
+          <Bold>{contactIdentifier}</Bold>.
+        </pre>
+        <StyledLink underline data-testid="PreviousContacts-ViewRecords" onClick={handleClickViewRecords}>
+          <Template code="PreviousContacts-ViewRecords" />
+        </StyledLink>
+      </YellowBanner>
+    </div>
   );
 };
 
@@ -116,10 +120,12 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const taskId = ownProps.task.taskSid;
   const taskSearchState = searchContactsState.tasks[taskId];
   const { counselors } = state[namespace][configurationBase];
+  const editContactFormOpen = state[namespace][contactFormsBase].editingContact;
 
   return {
     previousContacts: taskSearchState.previousContacts,
     counselorsHash: counselors.hash,
+    editContactFormOpen,
   };
 };
 

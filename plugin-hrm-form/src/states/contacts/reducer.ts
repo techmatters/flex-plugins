@@ -12,25 +12,26 @@ import {
 import { createStateItem } from '../../components/common/forms/formGenerators';
 import { createContactlessTaskTabDefinition } from '../../components/tabbedForms/ContactlessTaskTabDefinition';
 import {
+  createDraftReducer,
+  EXISTING_CONTACT_CREATE_DRAFT_ACTION,
+  EXISTING_CONTACT_SET_CATEGORIES_GRID_VIEW_ACTION,
+  EXISTING_CONTACT_TOGGLE_CATEGORY_EXPANDED_ACTION,
+  EXISTING_CONTACT_UPDATE_DRAFT_ACTION,
   ExistingContactAction,
   ExistingContactsState,
   LOAD_CONTACT_ACTION,
   loadContactReducer,
   RELEASE_CONTACT_ACTION,
   releaseContactReducer,
-  EXISTING_CONTACT_SET_CATEGORIES_GRID_VIEW_ACTION,
   setCategoriesGridViewReducer,
-  EXISTING_CONTACT_TOGGLE_CATEGORY_EXPANDED_ACTION,
   toggleCategoryExpandedReducer,
+  updateDraftReducer,
 } from './existingContacts';
 import { CSAMReportEntry } from '../../types/types';
 import {
   ContactDetailsAction,
-  ContactDetailsRoute,
   ContactDetailsState,
   DetailsContext,
-  NAVIGATE_CONTACT_DETAILS_ACTION,
-  navigateContactDetailsReducer,
   sectionExpandedStateReducer,
   TOGGLE_DETAIL_EXPANDED_ACTION,
 } from './contactDetails';
@@ -61,6 +62,7 @@ type ContactsState = {
   };
   existingContacts: ExistingContactsState;
   contactDetails: ContactDetailsState;
+  editingContact: boolean;
 };
 
 export const emptyCategories = [];
@@ -117,12 +119,13 @@ const initialState: ContactsState = {
   tasks: {},
   existingContacts: {},
   contactDetails: {
-    [DetailsContext.CASE_DETAILS]: { detailsExpanded: {}, route: ContactDetailsRoute.HOME },
-    [DetailsContext.CONTACT_SEARCH]: { detailsExpanded: {}, route: ContactDetailsRoute.HOME },
+    [DetailsContext.CASE_DETAILS]: { detailsExpanded: {} },
+    [DetailsContext.CONTACT_SEARCH]: { detailsExpanded: {} },
   },
+  editingContact: false,
 };
 
-// eslint-disable-next-line import/no-unused-modules
+// eslint-disable-next-line import/no-unused-modules,complexity
 export function reduce(
   state = initialState,
   action: t.ContactsActionType | ExistingContactAction | ContactDetailsAction | GeneralActionType,
@@ -279,6 +282,9 @@ export function reduce(
         },
       };
     }
+    case t.SET_EDITING_CONTACT: {
+      return { ...state, editingContact: action.editing };
+    }
     case LOAD_CONTACT_ACTION: {
       return { ...state, existingContacts: loadContactReducer(state.existingContacts, action) };
     }
@@ -294,8 +300,11 @@ export function reduce(
     case TOGGLE_DETAIL_EXPANDED_ACTION: {
       return { ...state, contactDetails: sectionExpandedStateReducer(state.contactDetails, action) };
     }
-    case NAVIGATE_CONTACT_DETAILS_ACTION: {
-      return { ...state, contactDetails: navigateContactDetailsReducer(state.contactDetails, action) };
+    case EXISTING_CONTACT_UPDATE_DRAFT_ACTION: {
+      return { ...state, existingContacts: updateDraftReducer(state.existingContacts, action) };
+    }
+    case EXISTING_CONTACT_CREATE_DRAFT_ACTION: {
+      return { ...state, existingContacts: createDraftReducer(state.existingContacts, action) };
     }
     default:
       return state;

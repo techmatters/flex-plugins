@@ -318,7 +318,7 @@ const CaseHome: React.FC<Props> = ({
                 <Template code="BottomBar-CancelNewCaseAndClose" />
               </StyledNextStepButton>
             </Box>
-            <StyledNextStepButton roundCorners onClick={handleSaveAndEnd}>
+            <StyledNextStepButton roundCorners onClick={handleSaveAndEnd} data-testid="BottomBar-SaveCaseAndEnd">
               <Template code="BottomBar-SaveAndEnd" />
             </StyledNextStepButton>
           </>

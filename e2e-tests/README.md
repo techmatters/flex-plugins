@@ -2,10 +2,12 @@
 These end-to-end tests are a Proof of Concept written using the Playwright testing framework (https://playwright.dev/).
 
 ## To run the tests
+Make sure you have playwright installed, if not you can install it like `npx playwright install`.
 
-1. Set any required environment variables (see 'Environment Variable Reference' below')
-2. Run the plugin in the dev server (i.e. `npm run start` from `../plugin-hrm-form/`)
-3. run `npx playwright test` for headless tests or `npx playwright test --headed` to see the browser sessions
+1. Set any required environment variables (see 'Environment Variable Reference' below').
+This can be done either by attaching the env vars in the bash command to run the tests (step 3) or setting them in a `.env` file in the root of this folder.
+2. Run the plugin in the dev server (i.e. `npm run dev` from `../plugin-hrm-form/`).
+3. Run `npx playwright test` for headless tests or `npx playwright test --headed` to see the browser sessions (`ENV_VAR_1=xxxxxxxxx <...more env vars...> npx playwright test` if you are setting env vars in the command).
 
 ### Running a single test file
 

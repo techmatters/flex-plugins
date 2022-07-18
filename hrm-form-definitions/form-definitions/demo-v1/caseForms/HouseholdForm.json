@@ -14,7 +14,7 @@
   {
     "name": "relationshipToChild",
     "type": "select",
-    "label": "Relationship to child ✎",
+    "label": "Relationship to Child",
     "options": [
       { "value": "", "label": "" },
       { "value": "Peer", "label": "Peer" },

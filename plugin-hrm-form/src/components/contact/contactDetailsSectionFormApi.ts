@@ -1,12 +1,13 @@
 import { DefinitionVersion, FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 
-import { ContactRawJson, SearchContact } from '../../types/types';
+import { ContactRawJson, InformationObject, SearchContact } from '../../types/types';
 import {
   transformCategories,
   transformContactFormValues,
   transformValues,
   unNestInformationObject,
 } from '../../services/ContactService';
+import { SearchContactDraftChanges } from '../../states/contacts/existingContacts';
 
 export type ContactFormValues = {
   [key in 'childInformation' | 'callerInformation' | 'caseInformation']?: Record<string, string | boolean>;
@@ -15,7 +16,7 @@ export type ContactFormValues = {
 export type ContactDetailsSectionFormApi = {
   getFormDefinition: (def: DefinitionVersion) => FormDefinition;
   getLayoutDefinition: (def: DefinitionVersion) => LayoutDefinition;
-  getFormValues: (def: DefinitionVersion, contact: SearchContact) => ContactFormValues;
+  getFormValues: (def: DefinitionVersion, contact: SearchContactDraftChanges) => ContactFormValues;
   formToPayload: (
     def: DefinitionVersion,
     form: ContactFormValues,
@@ -30,7 +31,7 @@ export type ContactDetailsSectionFormApi = {
 export type IssueCategorizationSectionFormApi = {
   getFormDefinition: (def: DefinitionVersion) => FormDefinition;
   getLayoutDefinition: (def: DefinitionVersion) => LayoutDefinition;
-  getFormValues: (def: DefinitionVersion, contact: SearchContact) => { categories: string[] };
+  getFormValues: (def: DefinitionVersion, contact: SearchContactDraftChanges) => { categories: string[] };
   type: 'IssueCategorizationSectionForm';
   formToPayload: (
     def: DefinitionVersion,
@@ -47,7 +48,10 @@ export const contactDetailsSectionFormApi: {
 } = {
   CHILD_INFORMATION: {
     getFormValues: (def, contact) => ({
-      childInformation: unNestInformationObject(def.tabbedForms.ChildInformationTab, contact.details.childInformation),
+      childInformation: unNestInformationObject(
+        def.tabbedForms.ChildInformationTab,
+        <InformationObject>contact.details.childInformation,
+      ),
     }),
     getFormDefinition: def => def.tabbedForms.ChildInformationTab,
     getLayoutDefinition: def => def.layoutVersion.contact.childInformation,
@@ -61,7 +65,7 @@ export const contactDetailsSectionFormApi: {
     getFormValues: (def, contact) => ({
       callerInformation: unNestInformationObject(
         def.tabbedForms.CallerInformationTab,
-        contact.details.callerInformation,
+        <InformationObject>contact.details.callerInformation,
       ),
     }),
     getFormDefinition: def => def.tabbedForms.CallerInformationTab,

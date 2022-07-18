@@ -419,6 +419,11 @@
   "SectionName-Contact": "Contato",
   "SectionName-CaseSummary": "Resumo do Caso",
 
+  "Contact-EditCaller":"Editar Informação do Chamador",
+  "Contact-EditChild":"Editar Informação do Criança",
+  "Contact-EditCategories":"Editar Categorias",
+  "Contact-EditSummary":"Editar Resumo",
+
   "CannedResponses": "Respostas predefinidas",
 
   "OfflineContactFirstLine": "Contato off-line",

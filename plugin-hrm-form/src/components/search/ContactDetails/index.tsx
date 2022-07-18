@@ -1,8 +1,11 @@
 /* eslint-disable no-empty-function */
+/* eslint-disable react/require-default-props */
+
 import React, { useEffect, useState } from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 
+import { namespace, contactFormsBase, RootState } from '../../../states';
 import { Container } from '../../../styles/HrmStyles';
 import GeneralContactDetails from '../../contact/ContactDetails';
 import ConnectDialog from '../ConnectDialog';
@@ -19,13 +22,16 @@ type OwnProps = {
   handleBack: () => void;
   handleSelectSearchResult: (contact: SearchContact) => void;
 };
-
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
+  const editContactFormOpen = state[namespace][contactFormsBase].editingContact;
+  return { editContactFormOpen };
+};
 const mapDispatchToProps = {
   loadContactIntoState: loadContact,
   releaseContactFromState: releaseContact,
 };
 
-type Props = OwnProps & typeof mapDispatchToProps;
+type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
 const ContactDetails: React.FC<Props> = ({
   contact,
@@ -36,16 +42,19 @@ const ContactDetails: React.FC<Props> = ({
   handleSelectSearchResult,
   loadContactIntoState,
   releaseContactFromState,
+  editContactFormOpen,
 }: Props) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   useEffect(() => {
-    loadContactIntoState(contact);
-    return () => {
-      releaseContactFromState(contact.contactId);
-    };
+    loadContactIntoState(contact, task.taskSid);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contact]);
+
+  const handleBackToResults = () => {
+    releaseContactFromState(contact.contactId, task.taskSid);
+    handleBack();
+  };
 
   const handleCloseDialog = () => {
     setAnchorEl(null);
@@ -63,7 +72,7 @@ const ContactDetails: React.FC<Props> = ({
   };
 
   return (
-    <Container>
+    <Container removePadding={editContactFormOpen}>
       <ConnectDialog
         task={task}
         anchorEl={anchorEl}
@@ -72,7 +81,14 @@ const ContactDetails: React.FC<Props> = ({
         handleConfirm={handleConfirmDialog}
         handleClose={handleCloseDialog}
       />
-      <BackToSearchResultsButton text={<Template code="SearchResultsIndex-BackToResults" />} handleBack={handleBack} />
+
+      <div className={`${editContactFormOpen ? 'editingContact' : ''} hiddenWhenEditingContact`}>
+        <BackToSearchResultsButton
+          text={<Template code="SearchResultsIndex-BackToResults" />}
+          handleBack={handleBackToResults}
+        />
+      </div>
+
       <GeneralContactDetails
         context={DetailsContext.CONTACT_SEARCH}
         showActionIcons={showActionIcons}
@@ -85,4 +101,4 @@ const ContactDetails: React.FC<Props> = ({
 
 ContactDetails.displayName = 'ContactDetails';
 
-export default connect(null, mapDispatchToProps)(ContactDetails);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactDetails);

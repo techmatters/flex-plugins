@@ -4,7 +4,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 
 import ContactDetailsHome from './ContactDetailsHome';
-import { ContactDetailsRoute, DetailsContext, navigateContactDetails } from '../../states/contacts/contactDetails';
+import { DetailsContext } from '../../states/contacts/contactDetails';
 import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
 import EditContactSection from './EditContactSection';
 import { getDefinitionVersion } from '../../services/ServerlessService';
@@ -15,6 +15,8 @@ import ContactDetailsSectionForm from './ContactDetailsSectionForm';
 import IssueCategorizationSectionForm from './IssueCategorizationSectionForm';
 import { forExistingContact } from '../../states/contacts/issueCategorizationStateApi';
 import { getConfig } from '../../HrmFormPlugin';
+import { updateDraft } from '../../states/contacts/existingContacts';
+import { transformContactFormValues } from '../../services/ContactService';
 
 type OwnProps = {
   contactId: string;
@@ -31,14 +33,14 @@ const ContactDetails: React.FC<Props> = ({
   contactId,
   handleOpenConnectDialog,
   showActionIcons,
-  route,
   definitionVersions,
   updateDefinitionVersion,
-  contact,
-  navigateForContext,
+  savedContact,
+  draftContact,
   enableEditing = true,
+  updateContactDraft,
 }) => {
-  const version = contact?.details.definitionVersion;
+  const version = savedContact?.details.definitionVersion;
 
   const { featureFlags } = getConfig();
   /**
@@ -53,16 +55,8 @@ const ContactDetails: React.FC<Props> = ({
     if (version && !definitionVersions[version]) {
       fetchDefinitionVersions(version);
     }
-  }, [definitionVersions, updateDefinitionVersion, version, contact]);
+  }, [definitionVersions, updateDefinitionVersion, version, savedContact]);
 
-  /**
-   * Reset to home after we leave
-   */
-  React.useEffect(() => {
-    return () => {
-      navigateForContext(context, ContactDetailsRoute.HOME);
-    };
-  }, [navigateForContext, context]);
   const definitionVersion = definitionVersions[version];
 
   if (!definitionVersion)
@@ -76,69 +70,74 @@ const ContactDetails: React.FC<Props> = ({
     section: ContactDetailsSectionFormApi,
     formPath: 'callerInformation' | 'childInformation' | 'caseInformation',
   ) => (
-    <EditContactSection context={context} contactId={contactId} contactDetailsSectionForm={section}>
+    <EditContactSection context={context} contactId={contactId} contactDetailsSectionForm={section} tabPath={formPath}>
       <ContactDetailsSectionForm
         tabPath={formPath}
         definition={section.getFormDefinition(definitionVersion)}
         layoutDefinition={section.getLayoutDefinition(definitionVersion)}
-        initialValues={section.getFormValues(definitionVersion, contact)[formPath]}
+        initialValues={section.getFormValues(definitionVersion, draftContact)[formPath]}
         display={true}
         autoFocus={true}
-        updateFormActionDispatcher={() => () => {
-          /* */
-        }}
+        updateFormActionDispatcher={dispatch => values =>
+          dispatch(
+            updateContactDraft(contactId, {
+              details: {
+                [formPath]: transformContactFormValues(values[formPath], section.getFormDefinition(definitionVersion)),
+              },
+            }),
+          )}
       />
     </EditContactSection>
   );
 
-  switch (route) {
-    case ContactDetailsRoute.EDIT_CHILD_INFORMATION:
-      return editContactSectionElement(contactDetailsSectionFormApi.CHILD_INFORMATION, 'childInformation');
-    case ContactDetailsRoute.EDIT_CALLER_INFORMATION:
-      return editContactSectionElement(contactDetailsSectionFormApi.CALLER_INFORMATION, 'callerInformation');
-    case ContactDetailsRoute.EDIT_CATEGORIES:
+  if (draftContact) {
+    if (draftContact.overview?.categories) {
       const issueSection = contactDetailsSectionFormApi.ISSUE_CATEGORIZATION;
       return (
         <EditContactSection
           context={context}
           contactId={contactId}
           contactDetailsSectionForm={contactDetailsSectionFormApi.ISSUE_CATEGORIZATION}
+          tabPath="categories"
         >
           <IssueCategorizationSectionForm
-            definition={definitionVersion.tabbedForms.IssueCategorizationTab(contact.overview.helpline)}
-            initialValue={issueSection.getFormValues(definitionVersion, contact).categories}
+            definition={definitionVersion.tabbedForms.IssueCategorizationTab(draftContact.overview.helpline)}
+            initialValue={issueSection.getFormValues(definitionVersion, draftContact).categories}
             stateApi={forExistingContact(contactId)}
             display={true}
             autoFocus={true}
           />
         </EditContactSection>
       );
-    case ContactDetailsRoute.EDIT_CASE_INFORMATION: {
-      return editContactSectionElement(contactDetailsSectionFormApi.CASE_INFORMATION, 'caseInformation');
     }
-    case ContactDetailsRoute.HOME:
-    default:
-      return (
-        <ContactDetailsHome
-          context={context}
-          showActionIcons={showActionIcons}
-          contactId={contactId}
-          handleOpenConnectDialog={handleOpenConnectDialog}
-          enableEditing={enableEditing && featureFlags.enable_contact_editing}
-        />
-      );
+    const { callerInformation, caseInformation, childInformation } = draftContact.details;
+    if (childInformation)
+      return editContactSectionElement(contactDetailsSectionFormApi.CHILD_INFORMATION, 'childInformation');
+    if (callerInformation)
+      return editContactSectionElement(contactDetailsSectionFormApi.CALLER_INFORMATION, 'callerInformation');
+    if (caseInformation)
+      return editContactSectionElement(contactDetailsSectionFormApi.CASE_INFORMATION, 'caseInformation');
   }
+  return (
+    <ContactDetailsHome
+      context={context}
+      showActionIcons={showActionIcons}
+      contactId={contactId}
+      handleOpenConnectDialog={handleOpenConnectDialog}
+      enableEditing={enableEditing && featureFlags.enable_contact_editing}
+    />
+  );
 };
 
 const mapDispatchToProps = {
   updateDefinitionVersion: ConfigActions.updateDefinitionVersion,
-  navigateForContext: navigateContactDetails,
+  updateContactDraft: updateDraft,
 };
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   definitionVersions: state[namespace][configurationBase].definitionVersions,
-  route: state[namespace][contactFormsBase].contactDetails[ownProps.context].route,
-  contact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.contact,
+  savedContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.savedContact,
+  draftContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.draftContact,
 });
 
 ContactDetails.displayName = 'ContactDetails';

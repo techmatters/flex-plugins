@@ -96,9 +96,13 @@ export const TabbedFormTabContainer = styled(({ display, ...rest }: TabbedFormTa
 TabbedFormTabContainer.displayName = 'TabbedFormTabContainer';
 
 const containerLeftRightMargin = '5px';
-export const Container = styled('div')`
+
+type ContainerProps = {
+  removePadding?: boolean;
+};
+export const Container = styled('div')<ContainerProps>`
   display: flex;
-  padding: 32px 20px 12px 20px;
+  padding: ${({ removePadding }) => (removePadding ? '0' : '32px 20px 12px 20px')};
   flex-direction: column;
   flex-wrap: nowrap;
   background-color: #ffffff;

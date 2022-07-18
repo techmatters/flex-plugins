@@ -13,6 +13,7 @@ export type ContactFormTab<T = Record<string, string>> = {
 export function contactForm(page: Page) {
   const formArea = page.locator('div.Twilio-CRMContainer');
   const selectors = {
+    childCallTypeButton: () => page.locator(`//button[@data-testid='DataCallTypeButton-child']`),
     tabButton: (tab: ContactFormTab<unknown>) =>
       formArea.locator(`button :text-is("${tab.label}")`),
     formInput: (tabId: string, itemId: string) => formArea.locator(`input#${tabId}\\.${itemId}`),
@@ -24,6 +25,9 @@ export function contactForm(page: Page) {
     subCategoryCheckbox: (tabId: string, topCategory: string, subCategory: string) =>
       formArea.locator(`//input[@value='${tabId}.${topCategory}.${subCategory}']`),
     saveContactButton: formArea.locator(`//button[@data-testid='BottomBar-SaveContact-Button']`),
+    saveAndAddToCaseButton: formArea.locator(
+      `//button[@data-testid='BottomBar-SaveAndAddToCase-Button']`,
+    ),
   };
 
   async function selectTab(tab: ContactFormTab<unknown>) {
@@ -55,13 +59,17 @@ export function contactForm(page: Page) {
   }
 
   return {
+    selectChildCallType: async () => {
+      const childCallTypeButton = selectors.childCallTypeButton();
+      await childCallTypeButton.click();
+    },
     fill: async (tabs: ContactFormTab<any>[]) => {
       for (const tab of tabs) {
         await selectTab(tab);
         await tab.fill(tab);
       }
     },
-    save: async () => {
+    save: async ({ saveAndAddToCase }: { saveAndAddToCase?: boolean } = {}) => {
       const tab = {
         id: 'caseInformation',
         label: 'Summary',
@@ -69,7 +77,10 @@ export function contactForm(page: Page) {
         items: {},
       };
       await selectTab(tab);
-      await selectors.saveContactButton.click();
+
+      if (saveAndAddToCase) await selectors.saveAndAddToCaseButton.click();
+      else await selectors.saveContactButton.click();
+
       await selectors.tabButton(tab).waitFor({ state: 'detached' });
     },
     fillCategoriesTab,

@@ -1,8 +1,9 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import twilio from 'twilio';
+import environmentVariables from '../environmentVariables';
 
-const accountSid = process.env.TWILIO_ACCOUNT_SID;
-const authToken = process.env.TWILIO_AUTH_TOKEN;
+const accountSid = environmentVariables.TWILIO_ACCOUNT_SID;
+const authToken = environmentVariables.TWILIO_AUTH_TOKEN;
 const twilioClient = twilio(accountSid, authToken);
 
 export const deleteAllTasksInQueue = async (

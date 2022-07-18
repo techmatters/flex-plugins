@@ -316,7 +316,7 @@ export const ChildIsAtRiskWrapper = styled(Row)`
   box-sizing: border-box;
   border-radius: 4px;
   border: 'none';
-  boxshadow: 'none';
+  box-shadow: 'none';
 `;
 ChildIsAtRiskWrapper.displayName = 'ChildIsAtRiskWrapper';
 
@@ -376,3 +376,13 @@ export const CloseDialogText = styled('p')`
 `;
 
 CloseDialogText.displayName = 'CloseDialogText';
+
+export const EditContactContainer = styled('div')`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border: 8px rgba(25, 43, 51, 0.3) solid;
+  border-radius: 4px;
+  overflow-y: clip;
+`;
+EditContactContainer.displayName = 'EditContactContainer';

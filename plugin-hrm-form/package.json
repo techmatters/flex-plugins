@@ -2,6 +2,7 @@
   "name": "plugin-hrm-form",
   "version": "0.0.0",
   "private": true,
+  "type": "commonjs",
   "scripts": {
     "preinstall": "cd ../hrm-form-definitions && npm ci && npm run build",
     "postinstall": "flex-plugin pre-script-check",
@@ -15,7 +16,8 @@
     "test:jest": "cross-env NODE_OPTIONS=--experimental-vm-modules npx jest --config jest-standalone.config.js",
     "list": "twilio flex:plugins:list:plugins",
     "lint": "eslint --ext js --ext jsx --ext ts --ext tsx src/",
-    "lint:fix": "npm run lint -- --fix"
+    "lint:fix": "npm run lint -- --fix",
+    "update-flex-ui-version": "npx ts-node --esm src/scripts/updateFlexUiVersion.ts"
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",
@@ -43,6 +45,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@actions/core": "^1.9.0",
     "@babel/core": "^7.18.5",
     "@babel/plugin-transform-runtime": "^7.16.4",
     "@babel/preset-typescript": "^7.18.6",

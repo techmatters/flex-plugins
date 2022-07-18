@@ -313,7 +313,7 @@ export const ContactDetailsIcon = icon => styled(icon)`
   font-size: 16px;
 `;
 
-const containerPadding = 40;
+const containerPadding = 20;
 export const DetailsContainer = styled('div')`
   padding-left: ${containerPadding}px;
   padding-right: ${containerPadding}px;
@@ -321,8 +321,7 @@ export const DetailsContainer = styled('div')`
 
 export const SectionTitleContainer = styled(Row)<ColorProps>`
   background-color: #ecedf1;
-  padding: 8px;
-  padding-left: 18px;
+  padding: 8px 25px 8px;
   margin: 2px 0;
   border-left: ${({ color }) => (color ? `6px solid ${color}` : 'none')};
 `;
