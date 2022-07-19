@@ -167,6 +167,7 @@ const setUpComponents = (setupObject: SetupObject) => {
   Components.setUpCustomCRMContainer();
   Components.setupTwitterChatChannel();
   Components.setupInstagramChatChannel();
+  Components.setupLineChatChannel();
   if (featureFlags.enable_transfers) {
     Components.setUpTransferComponents();
     Components.setUpIncomingTransferMessage();

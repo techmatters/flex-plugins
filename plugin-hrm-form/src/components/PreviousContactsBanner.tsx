@@ -33,6 +33,7 @@ export const localizedSource: { [channelType in ChannelTypes]: string } = {
   [channelTypes.facebook]: 'PreviousContacts-FacebookUser',
   [channelTypes.twitter]: 'PreviousContacts-TwitterUser',
   [channelTypes.instagram]: 'PreviousContacts-InstagramUser',
+  [channelTypes.line]: 'PreviousContacts-LineUser',
 };
 
 const PreviousContactsBanner: React.FC<Props> = ({

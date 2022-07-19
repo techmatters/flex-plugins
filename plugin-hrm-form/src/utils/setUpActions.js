@@ -320,7 +320,9 @@ const removeContactForm = payload => {
  * @param {import('../types/types').CustomITask} task
  */
 const isAseloCustomChannelTask = task =>
-  task.channelType === channelTypes.twitter || task.channelType === channelTypes.instagram;
+  task.channelType === channelTypes.twitter ||
+  task.channelType === channelTypes.instagram ||
+  task.channelType === channelTypes.line;
 
 /**
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject

@@ -11,6 +11,7 @@ export const newQueueEntry: QueueEntry = {
   whatsapp: 0,
   twitter: 0,
   instagram: 0,
+  line: 0,
   longestWaitingDate: null,
   isChatPending: false,
 };

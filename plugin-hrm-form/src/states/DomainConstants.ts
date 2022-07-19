@@ -6,6 +6,7 @@ export const channelTypes = {
   web: 'web',
   twitter: 'twitter',
   instagram: 'instagram',
+  line: 'line',
 } as const;
 
 export type ChannelTypes = typeof channelTypes[keyof typeof channelTypes];
