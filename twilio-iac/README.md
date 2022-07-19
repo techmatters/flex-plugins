@@ -68,36 +68,36 @@ serverless_url = "https://serverless-XXX-production.twil.io"
 local_os = "Windows" (optional flag for Windows users)
 ```
 
-<div style="border: 1px solid #FFFDD0; border-radius: 4px; margin: 10px; padding: 5px;">
-For the following steps (9-13), make sure to have the following env vars loaded in your terminal session:
-<pre>
-AWS_ACCESS_KEY_ID=xxx
-AWS_SECRET_ACCESS_KEY=xxx
-AWS_REGION=us-east-1
-TWILIO_ACCOUNT_SID=xxx
-TWILIO_AUTH_TOKEN=xxx
-GITHUB_TOKEN=xxx
-</pre>
-On MacOS/Unix you can export them or prepend those vars when running a command.
-Another possible way to so (Unix) is composing a .env file like
-<pre>
-AWS_ACCESS_KEY_ID=xxx
-AWS_SECRET_ACCESS_KEY=xxx
-AWS_REGION=us-east-1
-TWILIO_ACCOUNT_SID=xxx
-TWILIO_AUTH_TOKEN=xxx
-GITHUB_TOKEN=xxx
-</pre>
-and load the content of the file in the terminal session like <pre>➜ export $(grep -v '^#' .env | xargs)</pre>
-Be aware that if you are not using a .private.tfvars, you need to bundle all it's equivalents in TF_VAR_* format here.
-
-<p style="color: red;">NOTE</p> 
-From now on, the above env vars are exported to this console session ~only~ (bash/powershel/whatever). Be sure you continue to use this session, or in case of opening a different one, you repeat the step to export the required variables.
-</div>
+> For the following steps (9-13), make sure to have the following env vars loaded in your terminal session:
+> ```
+> AWS_ACCESS_KEY_ID=xxx
+> AWS_SECRET_ACCESS_KEY=xxx
+> AWS_REGION=us-east-1
+> TWILIO_ACCOUNT_SID=xxx
+> TWILIO_AUTH_TOKEN=xxx
+> GITHUB_TOKEN=xxx
+> ```
+> On MacOS/Unix you can export them or prepend those vars when running a command.
+>
+> Another possible way to do so (Unix) is composing a .env file like
+> ```
+> AWS_ACCESS_KEY_ID=xxx
+> AWS_SECRET_ACCESS_KEY=xxx
+> AWS_REGION=us-east-1
+> TWILIO_ACCOUNT_SID=xxx
+> TWILIO_AUTH_TOKEN=xxx
+> GITHUB_TOKEN=xxx
+> ```
+> and load the content of the file in the terminal session like `➜ export $(grep -v '^#' .env | xargs)`.
+> Be aware that if you are not using a `.private.tfvars`, you need to bundle all it's equivalents in `TF_VAR_*` format here.
+>
+> NOTE (!!)
+>
+> From now on, the above env vars are exported to this console session ~only~ (bash/powershel/whatever). Be sure you continue to use this session, or in case of opening a different one, you repeat the step to export the required variables. 
 
 9. Run the script below from `flex-plugins/scripts/` folder. Twilio creates a bunch of default resources on a new account and Aselo uses some of them. We need to import them into terraform first, otherwise terraform assumes they don't exist and will try to create them, resulting in errors.
 ```shell
-npm run twilioResources -- import-account-defaults <helpline>-<environment> [-v my-private.tfvars]]
+npm run twilioResources -- import-account-defaults <helpline>-<environment> [-v my-private.tfvars]
 ```
 10. From the folder you created for the account (`twilio-iac/<helpline>-<environment>/`), run and review the output of:
 ```shell
