@@ -75,6 +75,8 @@ export type AddEditCaseItemProps = {
   applyTemporaryInfoToCase: CaseUpdater;
   customFormHandlers?: CustomHandlers;
   reactHookFormOptions?: Partial<{ shouldUnregister: boolean }>;
+  status?: string;
+  followUpDate?: string
 };
 // eslint-disable-next-line no-use-before-define
 type Props = AddEditCaseItemProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
@@ -95,6 +97,8 @@ const AddEditCaseItem: React.FC<Props> = ({
   applyTemporaryInfoToCase,
   customFormHandlers,
   reactHookFormOptions,
+  status,
+  followUpDate
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const firstElementRef = useFocus();
@@ -175,10 +179,20 @@ const AddEditCaseItem: React.FC<Props> = ({
     const { workerSid } = getConfig();
     let newInfo: CaseInfo;
     if (isEditTemporaryCaseInfo(temporaryCaseInfo)) {
+
+      if (temporaryCaseInfo.screen === 'caseSummary') {
+        temporaryCaseInfo.info.form.caseStatus = !Boolean(temporaryCaseInfo.info.form.caseStatus) ? status : temporaryCaseInfo.info.form.caseStatus;
+        temporaryCaseInfo.info.form.date = !Boolean(temporaryCaseInfo.info.form.date) ? status : temporaryCaseInfo.info.form.date;
+
+        console.log('trying to save form', temporaryCaseInfo, Boolean(temporaryCaseInfo.info.form.caseStatus), followUpDate)
+
+      }
+
       /*
        * Need to add these to the temporaryCaseInfo instance rather than straight to the applyTemporaryInfoToCase parameter.
        * This way changes are reflected when you go back to the view after an edit
        */
+
       temporaryCaseInfo.info.updatedAt = now;
       temporaryCaseInfo.info.updatedBy = workerSid;
       newInfo = applyTemporaryInfoToCase(
@@ -205,6 +219,11 @@ const AddEditCaseItem: React.FC<Props> = ({
 
   async function close() {
     if (isEditTemporaryCaseInfo(temporaryCaseInfo)) {
+      if (temporaryCaseInfo.screen === 'caseSummary') {
+        temporaryCaseInfo.isEdited = false;
+        exitItem();
+        return;
+      }
       updateTempInfo({ ...temporaryCaseInfo, action: CaseItemAction.View }, task.taskSid);
       changeRoute({ ...routing, action: CaseItemAction.View }, task.taskSid);
     } else {
@@ -248,6 +267,29 @@ const AddEditCaseItem: React.FC<Props> = ({
       setOpenDialog(true);
     } else close();
   };
+
+  const checkForCaseSummaryEdits = () => {
+    if (isEditTemporaryCaseInfo(temporaryCaseInfo)) {
+      if (isEqual(initialForm, temporaryCaseInfo.info.form)) {
+        temporaryCaseInfo.isEdited = false;
+        exitItem();
+      } else {
+        temporaryCaseInfo.isEdited = true;
+        setOpenDialog(true);
+      }
+    }
+  }
+
+  const handleCheckForEdits = () => {
+    if (temporaryCaseInfo.screen === 'caseSummary') {
+      checkForCaseSummaryEdits();
+    } else {
+      checkForEdits()
+    }
+  }
+
+  // console.log('Add edit data', initialForm, temporaryCaseInfo)
+
   return (
     <FormProvider {...methods}>
       <CaseActionLayout>
@@ -279,7 +321,7 @@ const AddEditCaseItem: React.FC<Props> = ({
         <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
         <BottomButtonBar>
           <Box marginRight="15px">
-            <StyledNextStepButton data-testid="Case-CloseButton" secondary roundCorners onClick={checkForEdits}>
+            <StyledNextStepButton data-testid="Case-CloseButton" secondary roundCorners onClick={handleCheckForEdits}>
               <Template code="BottomBar-Cancel" />
             </StyledNextStepButton>
             <CloseCaseDialog

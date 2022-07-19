@@ -68,3 +68,6 @@ build/
 private/
 
 .vscode
+
+#test file
+test.jsx

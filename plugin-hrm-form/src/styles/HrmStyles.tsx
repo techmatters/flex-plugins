@@ -23,9 +23,10 @@ type BoxProps = {
   paddingRight?: string;
   alignSelf?: string;
   textAlign?: string;
+  borderBottom?: string;
 };
 
-export const Box = styled('div')<BoxProps>`
+export const Box = styled('div') <BoxProps>`
   ${({ width }) => width && `width: ${width};`}
   ${({ height }) => height && `height: ${height};`}
   ${({ margin }) => margin && `margin: ${margin}`}
@@ -50,7 +51,7 @@ type FlexProps = {
   justifyContent?: string;
 };
 
-export const Flex = styled(Box)<FlexProps>`
+export const Flex = styled(Box) <FlexProps>`
   display: ${({ inline }) => (inline ? 'inline-flex' : 'flex')};
   ${({ flexDirection }) => flexDirection && `flex-direction: ${flexDirection};`}
   ${({ alignItems }) => alignItems && `align-items: ${alignItems};`}
@@ -65,7 +66,7 @@ type AbsoluteProps = {
   right?: string;
 };
 
-export const Absolute = styled('div')<AbsoluteProps>`
+export const Absolute = styled('div') <AbsoluteProps>`
   position: absolute;
   top: ${({ top }) => top || 'auto'};
   bottom: ${({ bottom }) => bottom || 'auto'};
@@ -87,7 +88,7 @@ type TabbedFormTabContainerProps = {
 
 export const TabbedFormTabContainer = styled(({ display, ...rest }: TabbedFormTabContainerProps) => (
   <Box {...rest} />
-))<TabbedFormTabContainerProps>`
+)) <TabbedFormTabContainerProps>`
   display: ${({ display }) => (display ? 'block' : 'none')};
   height: ${({ display }) => (display ? '100%' : '0px')};
 `;
@@ -98,7 +99,7 @@ const containerLeftRightMargin = '5px';
 type ContainerProps = {
   removePadding?: boolean;
 };
-export const Container = styled('div')<ContainerProps>`
+export const Container = styled('div') <ContainerProps>`
   display: flex;
   padding: ${({ removePadding }) => (removePadding ? '0' : '32px 20px 12px 20px')};
   flex-direction: column;
@@ -200,7 +201,7 @@ type StyledSelectProps = {
 
 export const StyledSelect = styled(({ isPlaceholder = false, ...rest }: StyledSelectProps) => (
   <Select {...rest} />
-))<StyledSelectProps>`
+)) <StyledSelectProps>`
   flex-grow: 0;
   flex-shrink: 0;
   width: 217px;
@@ -245,7 +246,7 @@ type StyledNextStepButtonProps = {
   margin?: string;
 };
 
-export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
+export const StyledNextStepButton = styled(Button) <StyledNextStepButtonProps>`
   display: flex;
   align-items: center;
   font-size: 13px;
@@ -260,16 +261,16 @@ export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
     props.disabled
       ? props.theme.colors.disabledColor
       : props.secondary
-      ? props.theme.colors.secondaryButtonColor
-      : props.theme.colors.defaultButtonColor};
+        ? props.theme.colors.secondaryButtonColor
+        : props.theme.colors.defaultButtonColor};
   cursor: ${props => (props.disabled ? 'not-allowed' : 'default')};
   ${p =>
     getBackgroundWithHoverCSS(
       p.disabled
         ? p.theme.colors.base5
         : p.secondary
-        ? p.theme.colors.secondaryButtonColor
-        : p.theme.colors.defaultButtonColor,
+          ? p.theme.colors.secondaryButtonColor
+          : p.theme.colors.defaultButtonColor,
       true,
       false,
       p.disabled,
@@ -319,7 +320,7 @@ TwoColumnLayout.displayName = 'TwoColumnLayout';
 
 type ToggleViewButtonProps = { active?: boolean };
 
-export const ToggleViewButton = styled('button')<ToggleViewButtonProps>`
+export const ToggleViewButton = styled('button') <ToggleViewButtonProps>`
   display: inline-flex;
   width: 37px;
   height: 37px;
@@ -355,7 +356,7 @@ CategoriesWrapper.displayName = 'CategoriesWrapper';
 
 type SubcategoriesWrapperProps = { gridView?: boolean };
 
-export const SubcategoriesWrapper = styled('div')<SubcategoriesWrapperProps>`
+export const SubcategoriesWrapper = styled('div') <SubcategoriesWrapperProps>`
   display: flex;
   padding: 10px 0 10px 6px;
   flex-wrap: wrap;
@@ -475,7 +476,7 @@ type TransferStyledButtonProps = {
   taller?: boolean;
 };
 
-export const TransferStyledButton = styled('button')<TransferStyledButtonProps>`
+export const TransferStyledButton = styled('button') <TransferStyledButtonProps>`
   background: ${props => (props.background ? props.background : '#ccc')};
   color: ${props => (props.color ? props.color : '#000')};
   letter-spacing: 0px;
@@ -529,7 +530,7 @@ type PaginationRowProps = {
   transparent?: boolean;
 };
 
-export const PaginationRow = styled('nav')<PaginationRowProps>`
+export const PaginationRow = styled('nav') <PaginationRowProps>`
   display: flex;
   justify-content: center;
   background-color: ${props => (props.transparent ? 'transparent' : props.theme.colors.base2)};
@@ -670,7 +671,7 @@ export const FormLegend = styled('legend')`
 `;
 FormLegend.displayName = 'FormLegend';
 
-export const FormFieldset = styled('fieldset')<FormInputProps>`
+export const FormFieldset = styled('fieldset') <FormInputProps>`
   display: flex;
   flex-direction: column;
   border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
@@ -680,7 +681,7 @@ FormFieldset.displayName = 'FormFieldset';
 
 type FormListboxMultiselectProps = FormInputProps & { height?: number; width?: number };
 
-export const FormListboxMultiselect = styled('ul')<FormListboxMultiselectProps>`
+export const FormListboxMultiselect = styled('ul') <FormListboxMultiselectProps>`
   display: flex;
   flex-direction: column;
   border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
@@ -694,7 +695,7 @@ export const FormListboxMultiselect = styled('ul')<FormListboxMultiselectProps>`
 `;
 FormListboxMultiselect.displayName = 'FormListboxMultiselect';
 
-export const FormListboxMultiselectOptionsContainer = styled('div')<FormListboxMultiselectProps>`
+export const FormListboxMultiselectOptionsContainer = styled('div') <FormListboxMultiselectProps>`
   display: flex;
   flex-direction: column;
   padding-left: 10px;
@@ -734,7 +735,7 @@ export const UploadFileFileName = styled(Flex)`
 `;
 UploadFileFileName.displayName = 'UploadFileFileName';
 
-export const DependentSelectLabel = styled(FormLabel)<{ disabled: boolean }>`
+export const DependentSelectLabel = styled(FormLabel) <{ disabled: boolean }>`
   ${({ disabled }) => disabled && `opacity: 0.30;`}
 `;
 DependentSelectLabel.displayName = 'DependentSelectLabel';
@@ -750,7 +751,7 @@ FormError.displayName = 'FormError';
 
 type FormInputProps = { error?: boolean; width?: number; fullWidth?: boolean };
 
-export const FormInput = styled('input')<FormInputProps>`
+export const FormInput = styled('input') <FormInputProps>`
   /* ---------- Input ---------- */
   & {
     display: flex;
@@ -765,7 +766,7 @@ export const FormInput = styled('input')<FormInputProps>`
     border-radius: 4px;
     background-color: ${props => props.theme.colors.inputBackgroundColor};
     color: ${props =>
-      props.theme.calculated.lightTheme ? props.theme.colors.darkTextColor : props.theme.colors.lightTextColor};
+    props.theme.calculated.lightTheme ? props.theme.colors.darkTextColor : props.theme.colors.lightTextColor};
     border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
     boxshadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
     padding: 0 7px;
@@ -778,7 +779,7 @@ export const FormInput = styled('input')<FormInputProps>`
 `;
 FormInput.displayName = 'FormInput';
 
-export const FormRadioInput = styled('input')<FormInputProps>`
+export const FormRadioInput = styled('input') <FormInputProps>`
   &[type='radio'] {
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -842,7 +843,7 @@ export const FormTimeInput = styled(FormInput)`
 `;
 FormTimeInput.displayName = 'FormTimeInput';
 
-export const FormTextArea = styled('textarea')<FormInputProps>`
+export const FormTextArea = styled('textarea') <FormInputProps>`
   & {
     display: flex;
     flex-grow: 0;
@@ -855,7 +856,7 @@ export const FormTextArea = styled('textarea')<FormInputProps>`
     border-radius: 4px;
     background-color: ${props => props.theme.colors.base2};
     color: ${props =>
-      props.theme.calculated.lightTheme ? props.theme.colors.darkTextColor : props.theme.colors.lightTextColor};
+    props.theme.calculated.lightTheme ? props.theme.colors.darkTextColor : props.theme.colors.lightTextColor};
     border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
     boxshadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
     padding: 5px;
@@ -868,7 +869,7 @@ export const FormTextArea = styled('textarea')<FormInputProps>`
   }
 `;
 
-export const FormCheckBoxWrapper = styled(Row)<FormInputProps>`
+export const FormCheckBoxWrapper = styled(Row) <FormInputProps>`
   align-items: flex-start;
   box-sizing: border-box; /* Tells the browser to account for any border and padding in the values you specify for an element's width and height. https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing*/
   width: 217px;
@@ -879,7 +880,7 @@ export const FormCheckBoxWrapper = styled(Row)<FormInputProps>`
 `;
 FormCheckBoxWrapper.displayName = 'FormCheckBoxWrapper';
 
-const CheckboxBase = styled('input')<FormInputProps>`
+const CheckboxBase = styled('input') <FormInputProps>`
   &[type='checkbox'] {
     display: inline-block;
     position: relative;
@@ -955,7 +956,7 @@ type FormSelectProps = {
   fullWidth?: boolean;
 };
 
-export const FormSelectWrapper = styled('div')<FormSelectProps>`
+export const FormSelectWrapper = styled('div') <FormSelectProps>`
   position: relative;
   box-sizing: border-box; /* Tells the browser to account for any border and padding in the values you specify for an element's width and height. https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing*/
   ${props => (props.fullWidth ? 'width: 100%' : 'width: 217px')};
@@ -979,7 +980,7 @@ export const FormSelectWrapper = styled('div')<FormSelectProps>`
 FormSelectWrapper.displayName = 'FormSelectWrapper';
 
 // eslint-disable-next-line import/no-unused-modules
-export const FormSelect = styled('select')<FormInputProps>`
+export const FormSelect = styled('select') <FormInputProps>`
   flex-grow: 0;
   flex-shrink: 0;
   font-family: Open Sans;
@@ -1006,7 +1007,7 @@ FormSelect.displayName = 'FormSelect';
 
 type FormOptionProps = { isEmptyValue?: boolean; disabled?: boolean };
 
-export const FormOption = styled('option')<FormOptionProps>`
+export const FormOption = styled('option') <FormOptionProps>`
   font-family: Open Sans;
   font-size: 12px;
   line-height: 1.33;
@@ -1024,7 +1025,7 @@ FormOption.displayName = 'FormOption';
 
 type CategoryCheckboxProps = { color: string; disabled: boolean };
 // eslint-disable-next-line import/no-unused-modules
-export const CategoryCheckbox = styled(CheckboxBase)<CategoryCheckboxProps>`
+export const CategoryCheckbox = styled(CheckboxBase) <CategoryCheckboxProps>`
   padding: 8px;
 
   &[type='checkbox']:checked {
@@ -1044,7 +1045,7 @@ export const CategoryCheckbox = styled(CheckboxBase)<CategoryCheckboxProps>`
 CategoryCheckbox.displayName = 'CategoryCheckbox';
 
 type CategoryCheckboxLabelProps = { disabled?: boolean };
-export const CategoryCheckboxLabel = styled('label')<CategoryCheckboxLabelProps>`
+export const CategoryCheckboxLabel = styled('label') <CategoryCheckboxLabelProps>`
   margin-top: auto;
   margin-bottom: auto;
   font-size: 12px;
@@ -1061,7 +1062,7 @@ type BaseCheckboxProps = {
   selected?: boolean;
   disabled?: boolean;
 };
-export const CategoryCheckboxField = styled('div')<BaseCheckboxProps>`
+export const CategoryCheckboxField = styled('div') <BaseCheckboxProps>`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -1070,10 +1071,9 @@ export const CategoryCheckboxField = styled('div')<BaseCheckboxProps>`
   height: 34px;
   box-sizing: border-box;
   border: ${({ color, disabled, theme }) =>
-    `1px solid ${
-      disabled
-        ? `${theme.colors.categoryDisabledColor}14` // Hex with alpha 0.08
-        : color
+    `1px solid ${disabled
+      ? `${theme.colors.categoryDisabledColor}14` // Hex with alpha 0.08
+      : color
     }`};
   border-radius: 2px;
   padding-right: 15px;

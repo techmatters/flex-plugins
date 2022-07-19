@@ -165,6 +165,7 @@ export type CaseDetails = {
   referrals: t.ReferralEntry[];
   notes: NoteActivity[];
   documents: t.DocumentEntry[];
+  caseSummaries?: t.CaseSummaryEntry[];
   summary: string;
   childIsAtRisk: boolean;
   office?: HelplineEntry;

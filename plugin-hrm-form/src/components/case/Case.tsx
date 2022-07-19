@@ -202,6 +202,7 @@ const Case: React.FC<Props> = ({
   const summary = info?.summary;
   const definitionVersion = props.definitionVersions[version];
   const office = getHelplineData(connectedCase.helpline, definitionVersion.helplineInformation);
+  const caseSummaries = info && info.caseSummaries ? info.caseSummaries : [];
 
   const onInfoChange = (fieldName, value) => {
     const newInfo = info ? { ...info, [fieldName]: value } : { [fieldName]: value };
@@ -261,6 +262,8 @@ const Case: React.FC<Props> = ({
   const { caseForms } = definitionVersion;
   const caseLayouts = definitionVersion.layoutVersion.case;
 
+  console.log(caseLayouts, caseForms)
+
   const caseDetails = {
     id: connectedCase.id,
     name,
@@ -285,6 +288,7 @@ const Case: React.FC<Props> = ({
     version,
     contact: firstConnectedContact,
     contacts: connectedCase?.connectedContacts ?? [],
+    caseSummaries
   };
   if (isAppRoutesWithCaseAndAction(routing)) {
     const { action, subroute } = routing;
@@ -458,6 +462,20 @@ const Case: React.FC<Props> = ({
               reactHookFormOptions: {
                 shouldUnregister: false,
               },
+            }}
+          />
+        );
+      case NewCaseSubroutes.CaseSummary:
+        return (
+          <AddEditCaseItem
+            {...{
+              ...addScreenProps,
+              layout: caseLayouts.caseSummaries,
+              itemType: 'CaseSummary',
+              applyTemporaryInfoToCase: updateCaseSectionListByIndex('caseSummaries', 'caseSummary'),
+              formDefinition: caseForms.CaseSummaryForm,
+              followUpDate,
+              status,
             }}
           />
         );

@@ -1,0 +1,33 @@
+[
+    {
+    "name": "caseStatus",
+    "label": "Case Status",
+    "type": "select",
+    "options": [
+      { "value": "", "label": "" },
+      { "value": "open", "label": "open" },
+      { "value": "close", "label": "close" }
+    ]
+  },
+  {
+    "name": "date",
+    "type": "date-input",
+    "label": "Follow Up Date"
+  },
+  {
+    "name": "inImminentPhysicalDanger",
+    "label": "Child is in imminent physical danger",
+    "type": "checkbox"
+  },
+    {
+    "name": "caseSummary",
+    "label": "Case Summary",
+    "type": "textarea"
+  }
+]
+
+
+
+
+
+
