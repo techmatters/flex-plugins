@@ -2,8 +2,6 @@
 
 These are scripts for provisioning some of the Aselo Twilio infrastructure.
 
-This file looks better in your IDE than in the web :)
-
 ## Prerequisites
 
 You will require the following installed locally:
