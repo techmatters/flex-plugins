@@ -5,15 +5,10 @@ import * as actions from '../../../states/case/actions';
 import * as GeneralActions from '../../../states/actions';
 import { Case } from '../../../types/types';
 import { REMOVE_CONTACT_STATE } from '../../../states/types';
-import { TemporaryCaseInfo } from '../../../states/case/types';
+import { TemporaryCaseInfo, UPDATE_CASE_CONTACT } from '../../../states/case/types';
+import { CaseItemAction } from '../../../states/routing/types';
 
 const task = { taskSid: 'task1' };
-const voidDefinitions = {
-  callerFormDefinition: [],
-  caseInfoFormDefinition: [],
-  categoriesFormDefinition: {},
-  childFormDefinition: [],
-};
 
 describe('test reducer', () => {
   let state = undefined;
@@ -50,6 +45,8 @@ describe('test reducer', () => {
       createdAt: '2020-07-31T20:39:37.408Z',
       updatedAt: '2020-07-31T20:39:37.408Z',
       connectedContacts: null,
+      categories: {},
+      childName: '',
     };
 
     const expected = {
@@ -98,7 +95,8 @@ describe('test reducer', () => {
 
   test('should handle UPDATE_TEMP_INFO', async () => {
     const randomTemp: TemporaryCaseInfo = {
-      screen: 'add-note',
+      screen: 'note',
+      action: CaseItemAction.Add,
       info: {
         form: true,
         id: 'TEST_NOTE_ID',
@@ -125,5 +123,139 @@ describe('test reducer', () => {
     expect(result).toStrictEqual(expected);
 
     state = result;
+  });
+  describe('UPDATE_CASE_CONTACT', () => {
+    const connectedCase: Case = {
+      id: 1,
+      helpline: '',
+      status: 'open',
+      twilioWorkerId: 'WK123',
+      info: null,
+      createdAt: '2020-07-31T20:39:37.408Z',
+      updatedAt: '2020-07-31T20:39:37.408Z',
+      categories: {},
+      childName: '',
+      connectedContacts: [
+        {
+          id: 'AN ID',
+          a: 1,
+        },
+        {
+          id: 'ANOTHER ID',
+          b: 2,
+        },
+      ],
+    };
+    test('should update a connectedContact for the connectedCase if one with an ID matching the ID for the action contact exists', async () => {
+      const expectedConnectedCase: Case = {
+        ...connectedCase,
+        connectedContacts: [
+          {
+            id: 'AN ID',
+            b: 100,
+          },
+          {
+            id: 'ANOTHER ID',
+            b: 2,
+          },
+        ],
+      };
+      const expected = {
+        tasks: { task1: { ...state.tasks.task1, connectedCase: expectedConnectedCase, caseHasBeenEdited: false } },
+      };
+
+      const result = reduce(
+        { tasks: { task1: { ...state.tasks.task1, connectedCase, caseHasBeenEdited: false } } },
+        {
+          type: UPDATE_CASE_CONTACT,
+          taskId: task.taskSid,
+          contact: {
+            id: 'AN ID',
+            b: 100,
+          },
+        },
+      );
+      expect(result).toStrictEqual(expected);
+
+      state = result;
+    });
+    test('should do nothing if no connectedContact with an ID matching the one in the action', async () => {
+      const startingState = { tasks: { task1: { ...state.tasks.task1, connectedCase, caseHasBeenEdited: false } } };
+
+      const result = reduce(startingState, {
+        type: UPDATE_CASE_CONTACT,
+        taskId: task.taskSid,
+        contact: {
+          id: 'NOT AN ID',
+          b: 100,
+        },
+      });
+      expect(result).toStrictEqual(startingState);
+    });
+    test('should do nothing if action contact has no id', async () => {
+      const startingState = { tasks: { task1: { ...state.tasks.task1, connectedCase, caseHasBeenEdited: false } } };
+
+      const result = reduce(startingState, {
+        type: UPDATE_CASE_CONTACT,
+        taskId: task.taskSid,
+        contact: {
+          b: 100,
+        },
+      });
+      expect(result).toStrictEqual(startingState);
+    });
+
+    test('should throw if action contact is missing', async () => {
+      const startingState = { tasks: { task1: { ...state.tasks.task1, connectedCase, caseHasBeenEdited: false } } };
+
+      expect(() =>
+        reduce(startingState, {
+          type: UPDATE_CASE_CONTACT,
+          taskId: task.taskSid,
+          contact: undefined,
+        }),
+      ).toThrow();
+    });
+    test('should throw if connected case has no connected contacts array', async () => {
+      const startingState = {
+        tasks: {
+          task1: {
+            ...state.tasks.task1,
+            connectedCase: { ...connectedCase, connectedContacts: null },
+          },
+        },
+      };
+
+      expect(() =>
+        reduce(startingState, {
+          type: UPDATE_CASE_CONTACT,
+          taskId: task.taskSid,
+          contact: {
+            id: 'AN ID',
+            b: 100,
+          },
+        }),
+      ).toThrow();
+    });
+    test('should throw if target taskId has no connected case', async () => {
+      const startingState = {
+        tasks: {
+          task1: {
+            ...state.tasks.task1,
+            connectedCase: undefined,
+          },
+        },
+      };
+      expect(() =>
+        reduce(startingState, {
+          type: UPDATE_CASE_CONTACT,
+          taskId: task.taskSid,
+          contact: {
+            id: 'AN ID',
+            b: 101,
+          },
+        }),
+      ).toThrow();
+    });
   });
 });

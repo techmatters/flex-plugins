@@ -293,7 +293,7 @@
   "SectionName-Referral": "Referral",
   "SectionName-Notes": "Notes",
   "SectionName-CaseSummary": "Case Summary",
-  
+
   "Contact-EditCaller":"Edit Caller Information",
   "Contact-EditChild":"Edit Child Information",
   "Contact-EditCategories":"Edit Categories",
@@ -327,6 +327,7 @@
   "PreviousContacts-Contacts": "contacts",
   "PreviousContacts-Case": "case",
   "PreviousContacts-Cases": "cases",
+  "PreviousContacts-And": "and",
   "PreviousContacts-From": "from",
   "PreviousContacts-IPAddress": "IP address",
   "PreviousContacts-PhoneNumber": "phone number",
@@ -358,5 +359,7 @@
 
   "BottomBar-SaveOnClose": "Save Changes?",
   "BottomBar-DontSave": "No, Don't Save",
-  "BottomBar-Save": "Yes, Save"
+  "BottomBar-Save": "Yes, Save",
+
+  "CaseSummary-None": "- No case summary -"
 }

@@ -5,6 +5,11 @@
     "type": "input"
   },
   {
+    "name": "lastName",
+    "label": "Apellido",
+    "type": "input"
+  },
+  {
     "name": "age",
     "label": "Edad",
     "type": "select",

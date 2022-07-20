@@ -27,20 +27,19 @@ class CallSummary extends React.Component {
 
   render() {
     const { callSummary } = this.props;
-    const isLong = callSummary.length > CHAR_LIMIT;
 
-    if (!callSummary) return null;
+    const isLong = callSummary && callSummary.length > CHAR_LIMIT;
 
     return this.state.expanded ? (
       <div>
-        <SummaryText>{this.props.callSummary}</SummaryText>
+        <SummaryText>{callSummary}</SummaryText>
         <StyledLink onClick={this.props.onClickFull}>
           <Template code="CallSummary-ViewFull" />
         </StyledLink>
       </div>
     ) : (
       <Row style={{ height: '23px' }}>
-        <ShortSummaryText>{getShortSummary(this.props.callSummary, CHAR_LIMIT)}</ShortSummaryText>
+        <ShortSummaryText>{getShortSummary(callSummary, CHAR_LIMIT)}</ShortSummaryText>
         {isLong && (
           <StyledLink onClick={this.handleClick(true)}>
             <Template code="CallSummary-MoreNotes" />

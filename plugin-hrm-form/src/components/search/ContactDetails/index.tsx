@@ -47,12 +47,14 @@ const ContactDetails: React.FC<Props> = ({
   const [anchorEl, setAnchorEl] = useState(null);
 
   useEffect(() => {
-    loadContactIntoState(contact);
-    return () => {
-      releaseContactFromState(contact.contactId);
-    };
+    loadContactIntoState(contact, task.taskSid);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contact]);
+
+  const handleBackToResults = () => {
+    releaseContactFromState(contact.contactId, task.taskSid);
+    handleBack();
+  };
 
   const handleCloseDialog = () => {
     setAnchorEl(null);
@@ -83,7 +85,7 @@ const ContactDetails: React.FC<Props> = ({
       <div className={`${editContactFormOpen ? 'editingContact' : ''} hiddenWhenEditingContact`}>
         <BackToSearchResultsButton
           text={<Template code="SearchResultsIndex-BackToResults" />}
-          handleBack={handleBack}
+          handleBack={handleBackToResults}
         />
       </div>
 

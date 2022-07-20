@@ -25,6 +25,7 @@ import {
   FiltersDialogTitle,
   MultiSelectButton,
   MultiSelectUnorderedList,
+  DateErrorMessage,
 } from '../../../styles/caseList/filters';
 
 type ReactHookFormValues = {
@@ -95,6 +96,7 @@ const formToDateFilter = (
 
 type OwnProps = {
   name: string;
+  allowFutureDates: boolean;
   labelKey: string;
   options: DateFilterOptions;
   current?: DateFilterValue;
@@ -108,6 +110,7 @@ type Props = OwnProps;
 
 const DateRangeFilter: React.FC<Props> = ({
   name,
+  allowFutureDates,
   labelKey,
   options,
   current, // represents the current filter applied to the list, as opposed to currentWorkingCopy, which is the one the user is currently changing in this component.
@@ -119,6 +122,10 @@ const DateRangeFilter: React.FC<Props> = ({
   const optionsWithoutDividers = options.filter(opt => !isDivider(opt)) as DateFilterOption[];
 
   const [currentWorkingCopy, setCurrentWorkingCopy] = useState<DateFilterValue>(current);
+  const [dateValidations, setDateValidations] = useState({
+    to: { invalid: false, error: '' },
+    from: { invalid: false, error: '' },
+  });
 
   const filterButtonElement = useRef(null);
   const firstOptionElement = useRef(null);
@@ -135,6 +142,7 @@ const DateRangeFilter: React.FC<Props> = ({
    * @param newWorkingCopy
    */
   const updateWorkingCopy = (newWorkingCopy: DateFilterValue | undefined) => {
+    resetDateValidation();
     setCurrentWorkingCopy(newWorkingCopy);
     reset(dateFilterToForm(name, optionsWithoutDividers, newWorkingCopy));
   };
@@ -194,9 +202,37 @@ const DateRangeFilter: React.FC<Props> = ({
 
   const handleClear = () => {
     updateWorkingCopy(undefined);
+    resetDateValidation();
   };
 
   const dividerStyle = { border: 'none', height: '1px', backgroundColor: 'rgb(216, 216, 216)' };
+  const currentOption = findCurrentOption(optionsWithoutDividers, currentWorkingCopy);
+  const showCustomDateFields = currentOption ? isFixedDateRange(currentOption[1]) : false;
+
+  const resetDateValidation = () => {
+    setDateValidations(prev => ({ ...prev, to: { invalid: false, error: '' }, from: { invalid: false, error: '' } }));
+  };
+
+  const handleDateValidation = () => {
+    const today = new Date();
+
+    if (!isExistsDateFilterValue(currentWorkingCopy)) {
+      if (!allowFutureDates && (currentWorkingCopy.from > today || currentWorkingCopy.to > today)) {
+        setDateValidations(prev => ({
+          ...prev,
+          to: { invalid: currentWorkingCopy.to > today, error: `Date can't be in the future` },
+          from: { invalid: currentWorkingCopy.from > today, error: `Date can't be in the future` },
+        }));
+      }
+
+      if (currentWorkingCopy.to < currentWorkingCopy.from) {
+        setDateValidations(prev => ({
+          ...prev,
+          to: { invalid: true, error: `The end date selected cannot be before the start date` },
+        }));
+      }
+    }
+  };
 
   return (
     <div style={{ position: 'relative' }}>
@@ -218,12 +254,8 @@ const DateRangeFilter: React.FC<Props> = ({
         </Flex>
       </MultiSelectButton>
       {isOpened && (
-        <FiltersDialog
-          role="dialog"
-          aria-labelledby="dialog-title"
-          left={name === 'followUpDateFilter' ? '-200px' : '-95px'}
-        >
-          <DialogArrow left={name === 'followUpDateFilter' ? '250px' : '140px'} />
+        <FiltersDialog role="dialog" aria-labelledby="dialog-title" left={allowFutureDates ? '-200px' : '-95px'}>
+          <DialogArrow left={allowFutureDates ? '250px' : '140px'} />
           <FiltersDialogTitle id="dialog-title">
             <Template code="CaseList-Filters-DialogTitlePrefix" /> <Template code={labelKey} />
           </FiltersDialogTitle>
@@ -265,38 +297,60 @@ const DateRangeFilter: React.FC<Props> = ({
                 );
               })}
             </MultiSelectUnorderedList>
-            <Box style={{ display: 'inline-block' }}>
-              <p style={{ marginBottom: '5px' }}>
-                <Template code="CaseList-Filters-DateFilter-CustomDateFrom" />
-              </p>
-              <FormDateInput
-                placeholder="red"
-                style={{ width: '85pt' }}
-                type="date"
-                id="customDateRangeFrom"
-                data-testid="customDateRangeFrom"
-                name="customDateRangeFrom"
-                onChange={() => updateWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))}
-                innerRef={register}
-              />
+            <Box
+              style={{
+                display: showCustomDateFields ? 'inherit' : 'none',
+              }}
+            >
+              <Box style={{ display: 'inline-block' }}>
+                <p style={{ marginBottom: '5px' }}>
+                  <Template code="CaseList-Filters-DateFilter-CustomDateFrom" />
+                </p>
+                <FormDateInput
+                  placeholder="red"
+                  style={{ width: '85pt', border: dateValidations.from.invalid ? '1px solid red' : '' }}
+                  type="date"
+                  id="customDateRangeFrom"
+                  data-testid="customDateRangeFrom"
+                  name="customDateRangeFrom"
+                  onChange={() => updateWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))}
+                  onBlur={() => handleDateValidation()}
+                  onFocus={() => resetDateValidation()}
+                  innerRef={register}
+                />
+              </Box>
+              <span style={{ padding: '5px' }}>
+                <Template code="CaseList-Filters-DateFilter-CustomRange" />{' '}
+              </span>
+              <Box style={{ display: 'inline-block' }}>
+                <p style={{ marginBottom: '5px' }}>
+                  <Template code="CaseList-Filters-DateFilter-CustomDateTo" />
+                </p>
+
+                <FormDateInput
+                  style={{
+                    width: '85pt',
+                    display: 'inline-block',
+                    border: dateValidations.to.invalid ? '1px solid red' : '',
+                  }}
+                  type="date"
+                  id="customDateRangeTo"
+                  data-testid="customDateRangeTo"
+                  name="customDateRangeTo"
+                  onChange={() => updateWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))}
+                  onBlur={() => handleDateValidation()}
+                  onFocus={() => resetDateValidation()}
+                  innerRef={register}
+                />
+              </Box>
             </Box>
-            <span style={{ padding: '5px' }}>
-              <Template code="CaseList-Filters-DateFilter-CustomRange" />{' '}
-            </span>
-            <Box style={{ display: 'inline-block' }}>
-              <p style={{ marginBottom: '5px' }}>
-                <Template code="CaseList-Filters-DateFilter-CustomDateTo" />
-              </p>
-              <FormDateInput
-                style={{ width: '85pt', display: 'inline-block' }}
-                type="date"
-                id="customDateRangeTo"
-                data-testid="customDateRangeTo"
-                name="customDateRangeTo"
-                onChange={() => updateWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))}
-                innerRef={register}
-              />
-            </Box>
+            <DateErrorMessage marginLeft="5px">
+              {dateValidations.from.invalid ? dateValidations.from.error : ''}
+            </DateErrorMessage>
+            <DateErrorMessage marginLeft="25px">
+              {dateValidations.to.invalid ? dateValidations.to.error : ''}
+            </DateErrorMessage>
+
             <hr style={dividerStyle} />
 
             <FiltersBottomButtons>
@@ -313,6 +367,7 @@ const DateRangeFilter: React.FC<Props> = ({
                   register(innerRef);
                 }}
                 onKeyDown={handleTabForLastElement}
+                disabled={dateValidations.to.invalid || dateValidations.from.invalid}
               >
                 <Template code="CaseList-Filters-Apply" />
               </FiltersApplyButton>

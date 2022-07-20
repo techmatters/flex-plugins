@@ -67,6 +67,22 @@ export const hrmServiceContactToSearchContact = (contact): SearchContact => {
   };
 };
 
+export const searchContactToHrmServiceContact = (contact: SearchContact) => {
+  const { conversationDuration, createdBy, helpline, channel, counselor, customerNumber, dateTime } = contact.overview;
+  return {
+    id: contact.contactId,
+    number: customerNumber,
+    rawJson: contact.details,
+    csamReports: contact.csamReports,
+    timeOfContact: dateTime,
+    twilioWorkerId: counselor,
+    conversationDuration,
+    createdBy,
+    helpline,
+    channel,
+  };
+};
+
 export const taskFormToSearchContact = (task, form, date, counselor, temporaryId): SearchContact => {
   const details = transformForm(form);
   const dateTime = date;

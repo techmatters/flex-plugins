@@ -4,6 +4,11 @@ import { contactFormsBase, namespace } from '../../../states';
 import * as taskActions from '../../../states/contacts/actions';
 import * as existingContactActions from '../../../states/contacts/existingContacts';
 
+const mockCats = [
+  'categories.category1.subcategory1',
+  'categories.category1.subcategory2',
+  'categories.category2.subcategory1',
+];
 describe('forTask', () => {
   const api = forTask(<CustomITask>{ taskSid: 'mock task' });
   test('retrieveState - Returns contact from the tasks area of the state', () => {
@@ -25,7 +30,7 @@ describe('forTask', () => {
   });
   test('updateFormActionDispatcher - dispatches an update form action with the task ID', () => {
     const mockDispatcher = jest.fn();
-    const mockCats = { any: 'thing' };
+
     api.updateFormActionDispatcher(mockDispatcher)(mockCats);
     expect(mockDispatcher).toHaveBeenCalledWith(taskActions.updateForm('mock task', 'categories', mockCats));
   });
@@ -53,9 +58,22 @@ describe('forExistingCategory', () => {
     api.setGridViewActionDispatcher(mockDispatcher)(true);
     expect(mockDispatcher).toHaveBeenCalledWith(existingContactActions.setCategoriesGridView(MOCK_CONTACT_ID, true));
   });
-  test('updateFormActionDispatcher - dispatches nothing', () => {
+  test('updateFormActionDispatcher - dispatches an updated categories draft', () => {
     const mockDispatcher = jest.fn();
-    api.updateFormActionDispatcher(mockDispatcher)({ going: 'nowhere' });
-    expect(mockDispatcher).not.toHaveBeenCalled();
+    api.updateFormActionDispatcher(mockDispatcher)([
+      'categories.category1.subcategory1',
+      'categories.category1.subcategory2',
+      'categories.category2.subcategory1',
+    ]);
+    expect(mockDispatcher).toHaveBeenCalledWith(
+      existingContactActions.updateDraft(MOCK_CONTACT_ID, {
+        overview: {
+          categories: {
+            category1: ['subcategory1', 'subcategory2'],
+            category2: ['subcategory1'],
+          },
+        },
+      }),
+    );
   });
 });
