@@ -17,7 +17,7 @@ variable "local_os" {
 }
 
 variable "helpline" {
-  default = "Linea Libre Helpline"
+  default = "Línea Libre Helpline"
 }
 
 variable "short_helpline" {
