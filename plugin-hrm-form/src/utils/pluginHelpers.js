@@ -16,7 +16,6 @@ const esESMessages = require(`../translations/es-ES/messages.json`);
 const huHUTranslation = require(`../translations/hu-HU/flexUI.json`);
 const huHUMessages = require(`../translations/hu-HU/messages.json`);
 
-
 const bundledTranslations = {
   [defaultLanguage]: defaultTranslation,
   'pt-BR': ptBRTranslation,
