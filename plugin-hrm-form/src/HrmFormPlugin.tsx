@@ -32,11 +32,16 @@ const readConfig = () => {
   const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
   const { identity, token } = manager.user;
   const isSupervisor = roles.includes('supervisor');
-  const { helplineLanguage, definitionVersion, pdfImagesSource, multipleOfficeSupport, permissionConfig } =
-    manager.serviceConfiguration.attributes;
+  const {
+    helplineLanguage,
+    definitionVersion,
+    pdfImagesSource,
+    multipleOfficeSupport,
+    permissionConfig,
+  } = manager.serviceConfiguration.attributes;
   const featureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
   const contactsWaitingChannels = manager.serviceConfiguration.attributes.contacts_waiting_channels || null;
-  const { strings } = manager as unknown as { strings: { [key: string]: string } };
+  const { strings } = (manager as unknown) as { strings: { [key: string]: string } };
 
   return {
     hrmBaseUrl,
