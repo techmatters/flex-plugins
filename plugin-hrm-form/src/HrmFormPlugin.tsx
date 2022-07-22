@@ -68,7 +68,16 @@ const readConfig = () => {
   };
 };
 
-let cachedConfig = readConfig();
+let cachedConfig;
+
+try {
+  cachedConfig = readConfig();
+} catch (err) {
+  console.log(
+    'Failed to read config on page load, leaving undefined for now (it will be populated when the flex reducer runs)',
+    err,
+  );
+}
 
 export const getConfig = () => cachedConfig;
 
@@ -280,6 +289,16 @@ export default class HrmFormPlugin extends FlexPlugin {
     }
 
     manager.store.addReducer(namespace, reducers);
-    manager.store.subscribe(() => (cachedConfig = readConfig()));
+    /*
+     * Direct use of 'subscribe' is generally discouraged.
+     * This is a workaround until we deprecate 'getConfig' in it's current form after we migrate to Flex 2.0
+     */
+    manager.store.subscribe(() => {
+      try {
+        cachedConfig = readConfig();
+      } catch (err) {
+        console.warn('Failed to read configuration - leaving cached version the same', err);
+      }
+    });
   }
 }
