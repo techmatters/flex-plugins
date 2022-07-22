@@ -20,7 +20,7 @@ export const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
 let sharedStateClient: SyncClient;
 
-export const getConfig = () => {
+const readConfig = () => {
   const manager = Flex.Manager.getInstance();
 
   const hrmBaseUrl = `${manager.serviceConfiguration.attributes.hrm_base_url}/${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${manager.workerClient.accountSid}`;
@@ -32,16 +32,11 @@ export const getConfig = () => {
   const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
   const { identity, token } = manager.user;
   const isSupervisor = roles.includes('supervisor');
-  const {
-    helplineLanguage,
-    definitionVersion,
-    pdfImagesSource,
-    multipleOfficeSupport,
-    permissionConfig,
-  } = manager.serviceConfiguration.attributes;
+  const { helplineLanguage, definitionVersion, pdfImagesSource, multipleOfficeSupport, permissionConfig } =
+    manager.serviceConfiguration.attributes;
   const featureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
   const contactsWaitingChannels = manager.serviceConfiguration.attributes.contacts_waiting_channels || null;
-  const { strings } = (manager as unknown) as { strings: { [key: string]: string } };
+  const { strings } = manager as unknown as { strings: { [key: string]: string } };
 
   return {
     hrmBaseUrl,
@@ -67,6 +62,10 @@ export const getConfig = () => {
     contactsWaitingChannels,
   };
 };
+
+let cachedConfig = readConfig();
+
+export const getConfig = () => cachedConfig;
 
 // eslint-disable-next-line import/no-unused-modules
 export type SetupObject = ReturnType<typeof getConfig> & {
@@ -276,5 +275,6 @@ export default class HrmFormPlugin extends FlexPlugin {
     }
 
     manager.store.addReducer(namespace, reducers);
+    manager.store.subscribe(() => (cachedConfig = readConfig()));
   }
 }
