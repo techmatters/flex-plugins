@@ -29,8 +29,8 @@ jobs:
       - name: Executing main-action
         uses: ./.github/actions/main-action
         with:
-          account-sid: ${{ secrets.Zw-v1_STG_ACCOUNT_SID }}
-          auth-token: ${{ secrets.Zw-v1_STG_AUTH_TOKEN }}
+          account-sid: ${{ secrets.ZW-_STG_ACCOUNT_SID }}
+          auth-token: ${{ secrets.ZW-_STG_AUTH_TOKEN }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
