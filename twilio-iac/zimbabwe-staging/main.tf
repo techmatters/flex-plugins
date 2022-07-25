@@ -7,13 +7,12 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "tl-terraform-state-twilio-terraform-poc"
+    bucket         = "tl-terraform-state-twilio-zw-staging"
     key            = "twilio/terraform.tfstate"
-    dynamodb_table = "twilio-terraform-terraform-poc-locks"
+    dynamodb_table = "twilio-terraform-zw-staging-locks"
     encrypt        = true
   }
 }
-
 
 module "chatbots" {
   source = "../terraform-modules/chatbots/default"
@@ -40,13 +39,12 @@ module "services" {
   short_helpline = var.short_helpline
   environment = var.environment
   short_environment = var.short_environment
-  uses_conversation_service = false
 }
 
 module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
   serverless_url = var.serverless_url
-  helpline = "ChildLine Zambia (ZM)"
+  helpline = var.helpline
 }
 
 module studioFlow {
@@ -62,10 +60,9 @@ module flex {
   account_sid = var.account_sid
   short_environment = var.short_environment
   operating_info_key = var.operating_info_key
-  permission_config = "zm"
+  permission_config = var.permission_config
   definition_version = var.definition_version
   serverless_url = var.serverless_url
-  hrm_url = "https://hrm-development-eu.tl.techmatters.org"
   multi_office_support = var.multi_office
   feature_flags = var.feature_flags
   flex_chat_service_sid = module.services.flex_chat_service_sid
