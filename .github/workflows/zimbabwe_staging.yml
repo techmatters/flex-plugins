@@ -1,6 +1,6 @@
 # This is a basic workflow to publish a Twilio Flex-plugins with Github Actions
 
-name: Childline Staging release
+name: Childline Zimbabwe Staging release
 
 # Controls when the action will run.
 on:
