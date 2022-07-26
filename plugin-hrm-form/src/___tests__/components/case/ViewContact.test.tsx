@@ -16,6 +16,11 @@ import { SearchContact } from '../../../types/types';
 import { connectedCaseBase, contactFormsBase, RootState } from '../../../states';
 import { DetailsContext, TOGGLE_DETAIL_EXPANDED_ACTION } from '../../../states/contacts/contactDetails';
 
+jest.mock('@twilio/flex-ui', () => ({
+  ...jest.requireActual('@twilio/flex-ui'),
+  Actions: { invokeAction: jest.fn() },
+}));
+
 expect.extend(toHaveNoViolations);
 
 const mockStore = configureMockStore([]);
@@ -126,7 +131,13 @@ describe('View Contact', () => {
     mockV1 = await loadDefinition(DefinitionVersionId.v1);
     mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
     initialState = {
-      flex: {} as any,
+      flex: {
+        worker: {
+          attributes: {
+            roles: [],
+          },
+        },
+      } as any,
       'plugin-hrm-form': {
         configuration: {
           language: '',

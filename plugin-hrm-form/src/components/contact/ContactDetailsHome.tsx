@@ -1,11 +1,17 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { format } from 'date-fns';
-import { Template } from '@twilio/flex-ui';
+import { Actions, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes } from 'hrm-form-definitions';
 
-import { DetailsContainer, NameText, ContactAddedFont } from '../../styles/search';
+import {
+  DetailsContainer,
+  NameText,
+  ContactAddedFont,
+  SectionTitleContainer,
+  SectionActionButton,
+} from '../../styles/search';
 import ContactDetailsSection from './ContactDetailsSection';
 import SectionEntry from '../SectionEntry';
 import { channelTypes } from '../../states/DomainConstants';
@@ -17,6 +23,7 @@ import { configurationBase, contactFormsBase, namespace, RootState } from '../..
 import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
 import { getPermissionsForContact, PermissionActions } from '../../permissions';
 import { createDraft, ContactDetailsRoute } from '../../states/contacts/existingContacts';
+import { getConfig } from '../../HrmFormPlugin';
 
 // TODO: complete this type
 type OwnProps = {
@@ -30,7 +37,8 @@ type OwnProps = {
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
 /* eslint-disable complexity */
-const ContactDetailsHome: React.FC<Props> = ({
+// eslint-disable-next-line sonarjs/cognitive-complexity
+const ContactDetailsHome: React.FC<Props> = function ({
   context,
   detailsExpanded,
   showActionIcons = false,
@@ -41,11 +49,20 @@ const ContactDetailsHome: React.FC<Props> = ({
   toggleSectionExpandedForContext,
   createContactDraft,
   enableEditing,
-  // eslint-disable-next-line sonarjs/cognitive-complexity
-}) => {
+  canViewTranscript,
+}) {
   const version = savedContact?.details.definitionVersion;
 
   const definitionVersion = definitionVersions[version];
+
+  const { featureFlags } = getConfig();
+
+  useEffect(
+    () => () => {
+      Actions.invokeAction(Insights.Player.Action.INSIGHTS_PLAYER_HIDE);
+    },
+    [],
+  );
 
   if (!savedContact || !definitionVersion) return null;
 
@@ -98,11 +115,24 @@ const ContactDetailsHome: React.FC<Props> = ({
   const toggleSection = (section: ContactDetailsSectionsType) => toggleSectionExpandedForContext(context, section);
   const navigate = (route: ContactDetailsRoute) => createContactDraft(savedContact.contactId, route);
 
+  const loadConversationIntoOverlay = async () => {
+    await Actions.invokeAction(Insights.Player.Action.INSIGHTS_PLAYER_PLAY, {
+      taskSid: savedContact.details.conversationMedia[0].reservationSid,
+    });
+  };
+
   const csamReportsAttached =
     csamReports &&
     csamReports
       .map(r => `CSAM on ${format(new Date(r.createdAt), 'yyyy MM dd h:mm aaaaa')}m\n#${r.csamReportId}`)
       .join('\n\n');
+
+  const transcriptOrRecordingAvailable =
+    ((featureFlags.enable_voice_recordings && channel === channelTypes.voice) ||
+      (featureFlags.enable_transcripts && channel !== channelTypes.voice)) &&
+    canViewTranscript &&
+    savedContact.details.conversationMedia?.length &&
+    typeof savedContact.overview.conversationDuration === 'number';
 
   return (
     <DetailsContainer data-testid="ContactDetails-Container">
@@ -234,6 +264,17 @@ const ContactDetailsHome: React.FC<Props> = ({
           )}
         </ContactDetailsSection>
       )}
+      {transcriptOrRecordingAvailable && (
+        <SectionTitleContainer style={{ justifyContent: 'right', paddingTop: '10px', paddingBottom: '10px' }}>
+          <SectionActionButton type="button" onClick={loadConversationIntoOverlay}>
+            {channel === channelTypes.voice ? (
+              <Template code="ContactDetails-LoadRecording-Button" />
+            ) : (
+              <Template code="ContactDetails-LoadTranscript-Button" />
+            )}
+          </SectionActionButton>
+        </SectionTitleContainer>
+      )}
     </DetailsContainer>
   );
 };
@@ -251,6 +292,9 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   savedContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.savedContact,
   draftContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.draftContact,
   detailsExpanded: state[namespace][contactFormsBase].contactDetails[ownProps.context].detailsExpanded,
+  canViewTranscript: (state.flex.worker.attributes.roles as string[]).some(
+    role => role.toLowerCase().startsWith('wfo') && role !== 'wfo.quality_process_manager',
+  ),
 });
 
 const mapDispatchToProps = {
