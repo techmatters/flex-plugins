@@ -127,6 +127,13 @@ const ContactDetailsHome: React.FC<Props> = function ({
       .map(r => `CSAM on ${format(new Date(r.createdAt), 'yyyy MM dd h:mm aaaaa')}m\n#${r.csamReportId}`)
       .join('\n\n');
 
+  const transcriptOrRecordingAvailable =
+    ((featureFlags.enable_voice_recordings && channel === channelTypes.voice) ||
+      (featureFlags.enable_transcripts && channel !== channelTypes.voice)) &&
+    canViewTranscript &&
+    savedContact.details.conversationMedia?.length &&
+    typeof savedContact.overview.conversationDuration === 'number';
+
   return (
     <DetailsContainer data-testid="ContactDetails-Container">
       <NameText>{childOrUnknown}</NameText>
@@ -257,21 +264,17 @@ const ContactDetailsHome: React.FC<Props> = function ({
           )}
         </ContactDetailsSection>
       )}
-      {((featureFlags.enable_voice_recordings && channel === channelTypes.voice) ||
-        (featureFlags.enable_transcripts && channel !== channelTypes.voice)) &&
-        canViewTranscript &&
-        savedContact.details.conversationMedia?.length &&
-        typeof savedContact.overview.conversationDuration === 'number' && (
-          <SectionTitleContainer style={{ justifyContent: 'right', paddingTop: '10px', paddingBottom: '10px' }}>
-            <SectionActionButton type="button" onClick={loadConversationIntoOverlay}>
-              {channel === channelTypes.voice ? (
-                <Template code="ContactDetails-LoadRecording-Button" />
-              ) : (
-                <Template code="ContactDetails-LoadTranscript-Button" />
-              )}
-            </SectionActionButton>
-          </SectionTitleContainer>
-        )}
+      {transcriptOrRecordingAvailable && (
+        <SectionTitleContainer style={{ justifyContent: 'right', paddingTop: '10px', paddingBottom: '10px' }}>
+          <SectionActionButton type="button" onClick={loadConversationIntoOverlay}>
+            {channel === channelTypes.voice ? (
+              <Template code="ContactDetails-LoadRecording-Button" />
+            ) : (
+              <Template code="ContactDetails-LoadTranscript-Button" />
+            )}
+          </SectionActionButton>
+        </SectionTitleContainer>
+      )}
     </DetailsContainer>
   );
 };
@@ -290,7 +293,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   draftContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.draftContact,
   detailsExpanded: state[namespace][contactFormsBase].contactDetails[ownProps.context].detailsExpanded,
   canViewTranscript: (state.flex.worker.attributes.roles as string[]).some(
-    role => role.toLowerCase().startsWith('wfo') && role !== 'wfo.',
+    role => role.toLowerCase().startsWith('wfo') && role !== 'wfo.quality_process_manager',
   ),
 });
 
