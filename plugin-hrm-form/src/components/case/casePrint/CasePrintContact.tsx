@@ -34,7 +34,7 @@ const CasePrintContact: React.FC<Props> = ({ sectionName, contact, counselor }) 
         <View style={styles.sectionItemRowOdd}>
           <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-ContactSummary']}</Text>
           <Text style={styles.sectionItemSecondColumn}>
-            {presentValue(rawJson.caseInformation?.callSummary, strings)}
+            {presentValue(rawJson.caseInformation?.callSummary, strings)()}
           </Text>
         </View>
         <View style={styles.sectionItemRowEven}>
@@ -43,17 +43,17 @@ const CasePrintContact: React.FC<Props> = ({ sectionName, contact, counselor }) 
         </View>
         <View style={styles.sectionItemRowOdd}>
           <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-PhoneNumber']}</Text>
-          <Text style={styles.sectionItemSecondColumn}>{presentValue(number, strings)}</Text>
+          <Text style={styles.sectionItemSecondColumn}>{presentValue(number, strings)()}</Text>
         </View>
         <View style={styles.sectionItemRowEven}>
           <Text style={styles.sectionItemFirstColumn}>
             {strings['ContactDetails-GeneralDetails-ConversationDuration']}
           </Text>
-          <Text style={styles.sectionItemSecondColumn}>{presentValue(conversationDuration, strings)}</Text>
+          <Text style={styles.sectionItemSecondColumn}>{presentValue(conversationDuration, strings)()}</Text>
         </View>
         <View style={styles.sectionItemRowOdd}>
           <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-Counselor']}</Text>
-          <Text style={styles.sectionItemSecondColumn}>{presentValue(counselor, strings)}</Text>
+          <Text style={styles.sectionItemSecondColumn}>{presentValue(counselor, strings)()}</Text>
         </View>
         <View style={styles.sectionItemRowEven}>
           <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-DateTime']}</Text>
@@ -62,50 +62,50 @@ const CasePrintContact: React.FC<Props> = ({ sectionName, contact, counselor }) 
         <View style={styles.sectionItemRowOdd}>
           <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-RepeatCaller']}</Text>
           <Text style={styles.sectionItemSecondColumn}>
-            {presentValue(rawJson.caseInformation?.repeatCaller, strings)}{' '}
+            {presentValue(rawJson.caseInformation?.repeatCaller, strings)()}{' '}
           </Text>
         </View>
         <View style={styles.sectionItemRowEven}>
           <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-ReferredTo']}</Text>
           <Text style={styles.sectionItemSecondColumn}>
-            {presentValue(rawJson.caseInformation?.referredTo, strings)}
+            {presentValue(rawJson.caseInformation?.referredTo, strings)()}
           </Text>
         </View>
         <View style={styles.sectionItemRowOdd}>
           <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-ChildHearAboutUs']}</Text>
           <Text style={styles.sectionItemSecondColumn}>
-            {presentValue(rawJson.caseInfomation?.howDidTheChildHearAboutUs, strings)}
+            {presentValue(rawJson.caseInfomation?.howDidTheChildHearAboutUs, strings)()}
           </Text>
         </View>
         <View style={styles.sectionItemRowEven}>
           <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-KeepConfidential']}</Text>
           <Text style={styles.sectionItemSecondColumn}>
             {' '}
-            {presentValue(rawJson.caseInfomation?.keepConfidential, strings)}
+            {presentValue(rawJson.caseInfomation?.keepConfidential, strings)()}
           </Text>
         </View>
         <View style={styles.sectionItemRowOdd}>
           <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-OKToCall']}</Text>
           <Text style={styles.sectionItemSecondColumn}>
-            {presentValue(rawJson.caseInfomation?.okForCaseWorkerToCall, strings)}
+            {presentValue(rawJson.caseInfomation?.okForCaseWorkerToCall, strings)()}
           </Text>
         </View>
         <View style={styles.sectionItemRowEven}>
           <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-DiscussRights']}</Text>
           <Text style={styles.sectionItemSecondColumn}>
-            {presentValue(rawJson.caseInfomation?.didYouDiscussRightsWithTheChild, strings)}
+            {presentValue(rawJson.caseInfomation?.didYouDiscussRightsWithTheChild, strings)()}
           </Text>
         </View>
         <View style={styles.sectionItemRowOdd}>
           <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-SolvedProblem']}</Text>
           <Text style={styles.sectionItemSecondColumn}>
-            {presentValue(rawJson.caseInfomation?.didTheChildFeelWeSolvedTheirProblem, strings)}
+            {presentValue(rawJson.caseInfomation?.didTheChildFeelWeSolvedTheirProblem, strings)()}
           </Text>
         </View>
         <View style={styles.sectionItemRowEven}>
           <Text style={styles.sectionItemFirstColumn}>{strings['ContactDetails-GeneralDetails-WouldRecommend']}</Text>
           <Text style={styles.sectionItemSecondColumn}>
-            {presentValue(rawJson.caseInfomation?.wouldTheChildRecommendUsToAFriend, strings)}
+            {presentValue(rawJson.caseInfomation?.wouldTheChildRecommendUsToAFriend, strings)()}
           </Text>
         </View>
       </View>
