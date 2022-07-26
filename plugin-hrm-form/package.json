@@ -71,7 +71,7 @@
     "eslint-config-twilio-react": "1.30.2",
     "eslint-plugin-sonarjs": "^0.13.0",
     "fromentries": "^1.2.0",
-    "flex-plugin": "^4.3.4",
+    "@twilio/flex-plugin": "^5.1.2",
     "jest": "^28.1.1",
     "jest-axe": "^3.4.0",
     "jest-config": "^28.1.1",

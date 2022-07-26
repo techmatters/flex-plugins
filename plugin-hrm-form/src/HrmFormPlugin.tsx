@@ -1,5 +1,5 @@
 import * as Flex from '@twilio/flex-ui';
-import { FlexPlugin, loadCSS } from 'flex-plugin';
+import { FlexPlugin, loadCSS } from '@twilio/flex-plugin';
 import SyncClient from 'twilio-sync';
 
 import './styles/GlobalOverrides';
