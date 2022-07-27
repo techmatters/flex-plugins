@@ -357,7 +357,7 @@ type CollapseProps = {
 };
 
 export const SectionCollapse = styled(
-  ({ expanded, ...rest }: CollapseProps & { timeout?: TransitionProps['timeout'] | 'auto', children?: any }) => (
+  ({ expanded, ...rest }: CollapseProps & { timeout?: TransitionProps['timeout'] | 'auto'; children?: any }) => (
     <Collapse in={expanded} {...rest} />
   ),
 )<CollapseProps>`
