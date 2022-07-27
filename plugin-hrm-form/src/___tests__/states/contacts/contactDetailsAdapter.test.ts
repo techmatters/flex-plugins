@@ -51,6 +51,7 @@ describe('hrmServiceContactToSearchContact', () => {
     channel: undefined,
     conversationDuration: undefined,
     createdBy: undefined,
+    taskId: undefined,
   };
 
   test('input rawJson.caseInformation.categories are converted using retrieveCategories and added to overview', () => {
@@ -86,6 +87,7 @@ describe('hrmServiceContactToSearchContact', () => {
       helpline: 'my-helpline',
       createdBy: 'bob',
       channel: 'a channel',
+      taskId: 'TASK_SID',
     };
     expect(hrmServiceContactToSearchContact(input)).toStrictEqual({
       contactId: undefined,
@@ -95,6 +97,7 @@ describe('hrmServiceContactToSearchContact', () => {
         helpline: input.helpline,
         createdBy: input.createdBy,
         channel: input.channel,
+        taskId: input.taskId,
       },
       details: input.rawJson,
       csamReports: undefined,
