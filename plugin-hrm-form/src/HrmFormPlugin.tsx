@@ -1,8 +1,8 @@
 import * as Flex from '@twilio/flex-ui';
-import { FlexPlugin, loadCSS } from 'flex-plugin';
+import { FlexPlugin, loadCSS } from '@twilio/flex-plugin';
 import SyncClient from 'twilio-sync';
 
-import './styles/GlobalOverrides';
+import './styles/global-overrides.css';
 import reducers, { namespace, configurationBase, RootState } from './states';
 import HrmTheme from './styles/HrmTheme';
 import { transferModes } from './states/DomainConstants';
