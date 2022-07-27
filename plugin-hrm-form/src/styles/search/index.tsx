@@ -189,7 +189,7 @@ export const PrevNameText = styled(FontOpenSans)`
   color: #182b33;
 `;
 
-export const StyledTabs = styled((props: Partial<TabsProps>) => <Tabs {...props} />)`
+export const StyledTabs = styled((props: Partial<TabsProps> & { children?: any }) => <Tabs {...props} />)`
   .Twilio-TabHeader-StateIndicator-Active {
     background-color: black;
   }
@@ -357,7 +357,7 @@ type CollapseProps = {
 };
 
 export const SectionCollapse = styled(
-  ({ expanded, ...rest }: CollapseProps & { timeout?: TransitionProps['timeout'] | 'auto' }) => (
+  ({ expanded, ...rest }: CollapseProps & { timeout?: TransitionProps['timeout'] | 'auto', children?: any }) => (
     <Collapse in={expanded} {...rest} />
   ),
 )<CollapseProps>`

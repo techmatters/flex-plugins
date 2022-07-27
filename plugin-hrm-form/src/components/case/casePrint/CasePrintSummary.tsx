@@ -1,5 +1,6 @@
 /* eslint-disable dot-notation */
 /* eslint-disable react/prop-types */
+/* eslint-disable dot-notation */
 import React from 'react';
 import { Text, View } from '@react-pdf/renderer';
 
@@ -17,11 +18,11 @@ const CasePrintSummary: React.FC<Props> = ({ summary }) => {
 
   return (
     <View>
-      <View style={styles.sectionHeader}>
-        <Text style={styles.whiteText}>{strings['Case-CaseSummarySection']}</Text>
+      <View style={styles['sectionHeader']}>
+        <Text style={styles['whiteText']}>{strings['Case-CaseSummarySection']}</Text>
       </View>
-      <View style={styles.sectionBody}>
-        <Text style={styles.caseSummaryText}>{summary ? summary : strings['NoCaseSummary']}</Text>
+      <View style={styles['sectionBody']}>
+        <Text style={styles['caseSummaryText']}>{summary ? summary : strings['NoCaseSummary']}</Text>
       </View>
     </View>
   );

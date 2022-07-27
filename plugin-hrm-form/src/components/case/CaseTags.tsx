@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+/* eslint-disable dot-notation */
 import React from 'react';
 import { View, Text } from '@react-pdf/renderer';
 import { DefinitionVersionId } from 'hrm-form-definitions';
@@ -28,20 +29,20 @@ const CaseTags: React.FC<Props> = ({ categories, definitionVersion, printPDF }) 
 
   if (printPDF) {
     return (
-      <View style={styles.categoryContainer}>
+      <View style={styles['categoryContainer']}>
         {category1 && (
-          <View style={{ ...styles.categoryView, backgroundColor: category1.color }}>
-            <Text style={styles.categoryText}>• {category1.label}</Text>
+          <View style={{ ...styles['categoryView'], backgroundColor: category1.color }}>
+            <Text style={styles['categoryText']}>• {category1.label}</Text>
           </View>
         )}
         {category2 && (
-          <View style={{ ...styles.categoryView, backgroundColor: category2.color }}>
-            <Text style={styles.categoryText}>• {category2.label}</Text>
+          <View style={{ ...styles['categoryView'], backgroundColor: category2.color }}>
+            <Text style={styles['categoryText']}>• {category2.label}</Text>
           </View>
         )}
         {category3 && (
-          <View style={{ ...styles.categoryView, backgroundColor: category3.color }}>
-            <Text style={styles.categoryText}>• {category3.label}</Text>
+          <View style={{ ...styles['categoryView'], backgroundColor: category3.color }}>
+            <Text style={styles['categoryText']}>• {category3.label}</Text>
           </View>
         )}
       </View>
