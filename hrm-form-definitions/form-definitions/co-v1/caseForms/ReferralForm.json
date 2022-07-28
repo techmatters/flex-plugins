@@ -18,12 +18,8 @@
         "label": ""
       },
       {
-        "value": "Te Protejo",
-        "label": "Te Protejo"
-      },
-      {
-        "value": "ICBF",
-        "label": "ICBF"
+        "value": "Te Protejo ICBF",
+        "label": "Te Protejo ICBF"
       },
       {
         "value": "Salud",
@@ -36,6 +32,26 @@
       {
         "value": "Fiscalía",
         "label": "Fiscalía"
+      },
+      {
+        "value": "Línea 123",
+        "label": "Línea 123"
+      },
+      {
+        "value": "Comisaría de Familia ",
+        "label": "Comisaría de Familia "
+      },
+      {
+        "value": "Policía de Infancia y Adolescencia",
+        "label": "Policía de Infancia y Adolescencia"
+      },
+      {
+        "value": "Línea Psicoactiva",
+        "label": "Línea Psicoactiva"
+      },
+      {
+        "value": "Profesionales y/o fundaciones privadas",
+        "label": "Profesionales y/o fundaciones privadas"
       }
     ],
     "required": {

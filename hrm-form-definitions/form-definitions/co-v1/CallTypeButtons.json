@@ -1,41 +1,50 @@
-[ {
-        "name": "child",
-        "label": "Niño llamando sobre si mismo",
-        "type": "button",
-        "category": "data"
-    },{
-        "name": "caller",
-        "label": "Alguien llamando sobre un niño",
-        "type": "button",
-        "category": "data"
-    },{
-        "name": "silent",
-        "label": "Sin respuesta",
-        "type": "button",
-        "category": "non-data"
-    },  {
-        "name": "hangup",
-        "label": "Ha colgado",
-        "type": "button",
-        "category": "non-data"
-    },{
-        "name": "abusive",
-        "label": "Abusivo",
-        "type": "button",
-        "category": "non-data"
-    },{
-        "name": "thanks",
-        "label": "Agradecimiento",
-        "type": "button",
-        "category": "non-data"
-    },{
-        "name": "questions",
-        "label": "Preguntas",
-        "type": "button",
-        "category": "non-data"
-    },{
-        "name": "complaints",
-        "label": "Quejas",
-        "type": "button",
-        "category": "non-data"
-    }]
+[
+  {
+    "name": "child",
+    "label": "Adolescente llamando por sí mismo",
+    "type": "button",
+    "category": "data"
+  },
+  {
+    "name": "caller",
+    "label": "Alguien llamando por un adolescente",
+    "type": "button",
+    "category": "data"
+  },
+  {
+    "name": "silent",
+    "label": "Sin respuesta",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "hangup",
+    "label": "Ha colgado",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "abusive",
+    "label": "Abusivo",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "thanks",
+    "label": "Agradecimiento",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "questions",
+    "label": "Preguntas",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "complaints",
+    "label": "Quejas",
+    "type": "button",
+    "category": "non-data"
+  }
+]
