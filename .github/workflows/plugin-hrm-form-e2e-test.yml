@@ -51,7 +51,7 @@ jobs:
 
       # Build Flex-plugins
       - name: Install the Twilio CLI and plugins
-        run: npm install twilio-cli -g && twilio plugins:install @twilio-labs/plugin-flex
+        run: npm install twilio-cli@3.6.0 -g && twilio plugins:install @twilio-labs/plugin-flex@5.1.2
       - name: Install hrm-form-definitions Packages
         run: npm ci
         working-directory: ./hrm-form-definitions
