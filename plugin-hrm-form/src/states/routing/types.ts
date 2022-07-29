@@ -16,6 +16,7 @@ export const NewCaseSectionSubroutes = {
   Perpetrator: 'perpetrator',
   Incident: 'incident',
   Document: 'document',
+  CaseSummary: 'caseSummary',
 } as const;
 
 export type CaseSectionSubroute = typeof NewCaseSectionSubroutes[keyof typeof NewCaseSectionSubroutes];
@@ -31,7 +32,7 @@ export enum CaseItemAction {
   Add = 'add',
   Edit = 'edit',
   View = 'view',
-}
+} 
 
 export type AppRoutesWithCaseAndAction =
   | {

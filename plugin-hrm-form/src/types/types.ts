@@ -49,6 +49,10 @@ export type DocumentEntry = { document: Document; id: string | undefined } & Ent
 
 export type CSAMReportEntry = { csamReportId: string; id: number } & EntryInfo;
 
+export type CaseSummary = { [key: string]: string | boolean };
+
+export type CaseSummaryEntry = { caseSummary: CaseSummary } & EntryInfo;
+
 export type CaseInfo = {
   definitionVersion?: DefinitionVersionId;
   offlineContactCreator?: string;
@@ -59,11 +63,13 @@ export type CaseInfo = {
   referrals?: ReferralEntry[];
   incidents?: IncidentEntry[];
   documents?: DocumentEntry[];
+  caseSummaries?: CaseSummaryEntry[];
   followUpDate?: string;
   childIsAtRisk?: boolean;
 };
 
 export type Case = {
+  accountSid: any;
   id: number;
   status: string;
   helpline: string;

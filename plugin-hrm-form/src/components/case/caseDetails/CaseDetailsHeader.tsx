@@ -47,6 +47,8 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
   const { multipleOfficeSupport } = getConfig();
   const canEditChildAtRisk = can(PermissionActions.EDIT_CHILD_IS_AT_RISK);
 
+  console.log(canEditChildAtRisk)
+
   return (
     <DetailsHeaderContainer>
       <DetailsHeaderTextContainer>
@@ -68,7 +70,7 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
         <Box alignSelf="flex-end">
           {!isOrphanedCase && <StyledPrintButton onClick={handlePrintCase} aria-label="Print" icon={<PrintIcon />} />}
         </Box>
-        <DetailsHeaderChildAtRiskContainer style={{ marginTop: 'auto', marginRight: 'auto' }}>
+        {/* <DetailsHeaderChildAtRiskContainer style={{ marginTop: 'auto', marginRight: 'auto' }}>
           <FormLabel htmlFor="childIsAtRisk">
             <ChildIsAtRiskWrapper style={{ height: 'auto' }}>
               <Box marginRight="5px">
@@ -86,7 +88,7 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
               <Template code="Case-ChildIsAtRisk" />
             </ChildIsAtRiskWrapper>
           </FormLabel>
-        </DetailsHeaderChildAtRiskContainer>
+        </DetailsHeaderChildAtRiskContainer> */}
       </Flex>
     </DetailsHeaderContainer>
   );

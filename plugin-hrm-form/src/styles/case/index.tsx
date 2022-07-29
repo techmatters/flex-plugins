@@ -93,7 +93,7 @@ type CaseAddButtonProps = {
   withDivider: boolean;
 };
 
-export const CaseAddButton = styled(ButtonBase)<CaseAddButtonProps>`
+export const CaseAddButton = styled(ButtonBase) <CaseAddButtonProps>`
   && {
     margin-left: auto;
     padding-left: ${props => (props.withDivider ? '12px' : '0px')};
@@ -112,7 +112,7 @@ type CaseAddButtonFontProps = {
 
 export const CaseAddButtonFont = styled(({ disabled, ...rest }: CaseAddButtonFontProps) => (
   <FontOpenSans {...rest} />
-))<CaseAddButtonFontProps>`
+)) <CaseAddButtonFontProps>`
   font-weight: 600;
   font-size: 12px;
   line-height: 14px;
@@ -320,7 +320,11 @@ export const ChildIsAtRiskWrapper = styled(Row)`
 `;
 ChildIsAtRiskWrapper.displayName = 'ChildIsAtRiskWrapper';
 
-export const StyledInputField = styled(FormInput)`
+type StyledInputField = {
+  color?: boolean
+}
+
+export const StyledInputField = styled(FormInput) <StyledInputField>`
   width: 130px !important;
   height: 36px;
   color: #000000;
@@ -336,11 +340,29 @@ export const StyledInputField = styled(FormInput)`
 
 StyledInputField.displayName = 'StyledInputField';
 
+export const StyledCaseOverview = styled('input') <StyledInputField>`
+  width: 130px !important;
+  height: 36px;
+  color: ${props => (props.color ? props.color : '#000000')};
+  background-color: ${props => props.theme.colors.inputBackgroundColor};
+  font-weight: 600;
+  padding-left: 10px !important;
+  margin-top: 7px;
+  border-radius: 5px;
+  border: none;
+
+  ::-webkit-calendar-picker-indicator {
+    margin-left: 0;
+  }
+`;
+
+StyledCaseOverview.displayName = 'StyledCaseOverview';
+
 type FormSelectWrapperProps = {
   disabled?: boolean;
 };
 
-export const StyledSelectWrapper = styled(FormSelectWrapper)<FormSelectWrapperProps>`
+export const StyledSelectWrapper = styled(FormSelectWrapper) <FormSelectWrapperProps>`
   width: 130px !important;
   height: 36px;
   margin-top: 7px;
@@ -358,7 +380,7 @@ type StyledSelectFieldProps = {
 
 export const StyledSelectField = styled(({ color, ...rest }: StyledSelectFieldProps) => (
   <FormSelect {...rest} />
-))<StyledSelectFieldProps>`
+)) <StyledSelectFieldProps>`
   width: 130px !important;
   height: 36px;
   font-weight: 600;
@@ -386,3 +408,13 @@ export const EditContactContainer = styled('div')`
   overflow-y: clip;
 `;
 EditContactContainer.displayName = 'EditContactContainer';
+
+type CaseDetailsBorderProps = {
+  paddingBottom?: string
+}
+
+export const CaseDetailsBorder = styled('div') <CaseDetailsBorderProps>`
+   border-bottom: 2px solid #e5e6e7;
+   margin-right: 25px;
+   padding-bottom: ${props => props.paddingBottom ? props.paddingBottom : '25px'};
+`;

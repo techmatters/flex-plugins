@@ -57,6 +57,9 @@ export async function loadDefinition(version: DefinitionVersionId): Promise<Defi
   const documentFormModule = await import(
     /* webpackMode: "eager" */ `../../form-definitions/${version}/caseForms/DocumentForm.json`
   );
+  const caseSummaryFormModule = await import(
+    /* webpackMode: "eager" */ `../../form-definitions/${version}/caseForms/CaseSummaryForm.json`
+  );
   const callerInformationTabModule = await import(
     /* webpackMode: "eager" */ `../../form-definitions/${version}/tabbedForms/CallerInformationTab.json`
   );
@@ -119,6 +122,7 @@ export async function loadDefinition(version: DefinitionVersionId): Promise<Defi
       PerpetratorForm: perpetratorFormModule.default as FormDefinition,
       ReferralForm: referralFormModule.default as FormDefinition,
       DocumentForm: documentFormModule.default as FormDefinition,
+      CaseSummaryForm: caseSummaryFormModule.default as FormDefinition,
     },
     tabbedForms: {
       CallerInformationTab: callerInformationTabModule.default as FormDefinition,

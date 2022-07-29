@@ -16,8 +16,11 @@ import {
   StyledInputField,
   StyledSelectField,
   StyledSelectWrapper,
+  CaseDetailsBorder,
+  CaseSectionFont,
+  StyledCaseOverview,
 } from '../../styles/case';
-import { FormOption } from '../../styles/HrmStyles';
+import { StyledNextStepButton, Box } from '../../styles/HrmStyles';
 import { PermissionActions } from '../../permissions';
 import { getLocaleDateTime } from '../../utils/helpers';
 
@@ -41,50 +44,26 @@ const CaseDetails = ({
   definitionVersion,
   definitionVersionName,
   isOrphanedCase,
+  editCaseSummary
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const statusOptions = React.useMemo(() => {
-    const statusTransitions = [prevStatus, ...definitionVersion.caseStatus[prevStatus].transitions];
-
-    const optionsArray = statusTransitions.reduce(
-      (acc, curr) => [...acc, { value: curr, label: definitionVersion.caseStatus[curr].label }],
-      [],
-    );
-
-    const enableBasedOnPermissions = o => {
-      if (o.value === prevStatus) return true;
-      if (o.value === 'closed' && prevStatus !== 'closed') return can(PermissionActions.CLOSE_CASE);
-      if (o.value !== 'closed' && prevStatus === 'closed') return can(PermissionActions.REOPEN_CASE);
-
-      return can(PermissionActions.CASE_STATUS_TRANSITION);
-    };
-
-    const renderStatusOptions = o => {
-      const disabled = !enableBasedOnPermissions(o);
-
-      return disabled ? null : (
-        <FormOption key={o.value} value={o.value} style={{ color: definitionVersion.caseStatus[o.value].color }}>
-          {o.label}
-        </FormOption>
-      );
-    };
-
-    return optionsArray.map(renderStatusOptions).filter(Boolean);
-  }, [can, definitionVersion.caseStatus, prevStatus]);
+ 
 
   const onStatusChange = selectedOption => {
     handleStatusChange(selectedOption);
   };
 
-  const canTransition = statusOptions.length !== 1;
+  // const canTransition = statusOptions.length !== 1;
 
   const color = definitionVersion.caseStatus[status].color || '#000000';
   const formattedCreatedAt = getLocaleDateTime(createdAt);
   const formattedUpdatedAt = createdAt === updatedAt ? '—' : getLocaleDateTime(updatedAt);
+  const editButton = can(PermissionActions.EDIT_CASE_SUMMARY)
 
   return (
     <>
-      <CaseDetailsHeader
+      <CaseDetailsBorder>
+        <CaseDetailsHeader
         caseId={caseId}
         childName={name}
         counselor={counselor}
@@ -95,6 +74,61 @@ const CaseDetails = ({
         isOrphanedCase={isOrphanedCase}
         can={can}
       />
+      <div style={{ paddingTop: '15px' }}>
+        <CaseTags definitionVersion={definitionVersionName} categories={categories} />
+      </div>
+      </CaseDetailsBorder>
+      <DetailsContainer aria-labelledby="Case-CaseId-label">
+        
+        <Box style={{ display: 'inline-block' }}>
+          <CaseSectionFont style={{marginBottom: '5px'}} id="Case-CaseOverview-label">
+          <Template code="Case-CaseOverviewLabel" />
+        </CaseSectionFont>
+        </Box>
+        {editButton && (
+          <Box style={{ display: 'inline-block' }} alignSelf="flex-end" marginTop="-20px" marginRight="25px">
+            <StyledNextStepButton secondary roundCorners onClick={editCaseSummary} data-testid="Case-EditButton">
+              <Template code="EditButton" />
+            </StyledNextStepButton>
+          </Box>
+        )}
+        
+        
+         <div style={{ display: 'flex', alignItems: 'center' }}>
+           <div style={{ paddingRight: '20px' }}>
+            <DetailDescription>
+              <label id="CaseDetailsStatusLabel">
+                <Template code="Case-CaseDetailsStatusLabel" />
+              </label>
+            </DetailDescription>           
+              <StyledCaseOverview
+                data-testid="Case-Details_CaseStatus"
+                id="Details_CaseStatus"
+                name="Details_CaseStatus"
+                aria-labelledby="CaseDetailsStatusLabel"
+                disabled={true}
+                defaultValue={status}
+                color={color}
+              />
+          </div>
+          <div style={{ paddingRight: '20px' }}>
+            <DetailDescription>
+              <label id="CaseChildIsAtRisk">
+                <Template code="Case-ChildIsAtRisk" />
+              </label>
+            </DetailDescription>
+            <StyledCaseOverview
+                data-testid="Case-Details_CaseStatus"
+                id="Details_CaseStatus"
+                name="Details_CaseStatus"
+                aria-labelledby="CaseDetailsStatusLabel"
+                disabled={true}
+                defaultValue={childIsAtRisk ? 'Yes' : 'No'}
+                color={childIsAtRisk ? 'red' : 'green'}
+              />
+          </div>
+         </div>
+      </DetailsContainer>
       <DetailsContainer aria-labelledby="Case-CaseId-label">
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <div style={{ paddingRight: '20px' }}>
@@ -131,41 +165,19 @@ const CaseDetails = ({
                 <Template code="Case-CaseDetailsFollowUpDate" />
               </label>
             </DetailDescription>
-            <StyledInputField
-              type="date"
+            <StyledCaseOverview
               id="Details_DateFollowUp"
               name="Details_DateFollowUp"
-              disabled={!can(PermissionActions.EDIT_FOLLOW_UP_DATE)}
-              value={followUpDate}
-              onChange={e => handleInfoChange('followUpDate', e.target.value)}
+              color={'#d8d8d8'}
+              // disabled={!can(PermissionActions.EDIT_FOLLOW_UP_DATE)}
+              disabled={true}
+              defaultValue={followUpDate || "—"}
+              // onChange={e => handleInfoChange('followUpDate', e.target.value)}
               aria-labelledby="CaseDetailsFollowUpDate"
             />
-          </div>
-          <div style={{ paddingRight: '20px' }}>
-            <DetailDescription>
-              <label id="CaseDetailsStatusLabel">
-                <Template code="Case-CaseDetailsStatusLabel" />
-              </label>
-            </DetailDescription>
-            <StyledSelectWrapper disabled={!canTransition}>
-              <StyledSelectField
-                data-testid="Case-Details_CaseStatus"
-                id="Details_CaseStatus"
-                name="Details_CaseStatus"
-                aria-labelledby="CaseDetailsStatusLabel"
-                disabled={!canTransition}
-                onChange={e => onStatusChange(e.target.value)}
-                defaultValue={status}
-                color={color}
-              >
-                {statusOptions}
-              </StyledSelectField>
-            </StyledSelectWrapper>
-          </div>
+          </div>         
         </div>
-        <div style={{ paddingTop: '15px' }}>
-          <CaseTags definitionVersion={definitionVersionName} categories={categories} />
-        </div>
+       
       </DetailsContainer>
     </>
   );
