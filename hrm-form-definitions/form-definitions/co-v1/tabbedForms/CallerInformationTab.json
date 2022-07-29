@@ -11,7 +11,7 @@
   },
   {
     "name": "relationshipToChild",
-    "label": "Relación con el Niño",
+    "label": "Relación con el Adolescente",
     "type": "select",
     "options": [
       {
@@ -19,16 +19,16 @@
         "label": ""
       },
       {
-        "value": "Mamá",
-        "label": "Mamá"
+        "value": "Madre",
+        "label": "Madre"
       },
       {
-        "value": "Papá",
-        "label": "Papá"
+        "value": "Padre",
+        "label": "Padre"
       },
       {
-        "value": "Hermanos",
-        "label": "Hermanos"
+        "value": "Hermano/Hermana",
+        "label": "Hermano/Hermana"
       },
       {
         "value": "Cuidador",
@@ -39,20 +39,20 @@
         "label": "Pareja"
       },
       {
-        "value": "Compañero",
-        "label": "Compañero"
+        "value": "Compañero/Compañera",
+        "label": "Compañero/Compañera"
       },
       {
-        "value": "Otro adulto conocido por el niño",
-        "label": "Otro adulto conocido por el niño"
+        "value": "Otro adulto conocido por el adolescente",
+        "label": "Otro adulto conocido por el adolescente"
       },
       {
         "value": "Persona en posición de responsabilidad",
         "label": "Persona en posición de responsabilidad"
       },
       {
-        "value": "Otro adulto conocido por el niño",
-        "label": "Otro adulto conocido por el niño"
+        "value": "Otro familiar",
+        "label": "Otro familiar"
       }
     ],
     "required": {
@@ -71,20 +71,12 @@
         "label": ""
       },
       {
-        "value": "Niño",
-        "label": "Niño"
+        "value": "Femenino",
+        "label": "Femenino"
       },
       {
-        "value": "Niña",
-        "label": "Niña"
-      },
-      {
-        "value": "Hombre",
-        "label": "Hombre"
-      },
-      {
-        "value": "Mujer",
-        "label": "Mujer"
+        "value": "Masculino",
+        "label": "Masculino"
       },
       {
         "value": "No binario",
@@ -103,36 +95,12 @@
         "label": ""
       },
       {
-        "value": "0-03",
-        "label": "0-03"
+        "value": "<18",
+        "label": "<18"
       },
       {
-        "value": "04 - 06",
-        "label": "04 - 06"
-      },
-      {
-        "value": "07 - 09",
-        "label": "07 - 09"
-      },
-      {
-        "value": "10 - 12",
-        "label": "10 - 12"
-      },
-      {
-        "value": "13 - 15",
-        "label": "13 - 15"
-      },
-      {
-        "value": "16 - 17",
-        "label": "16 - 17"
-      },
-      {
-        "value": "18 - 24",
-        "label": "18 - 24"
-      },
-      {
-        "value": ">=25",
-        "label": ">=25"
+        "value": ">18",
+        "label": ">18"
       }
     ]
   }
