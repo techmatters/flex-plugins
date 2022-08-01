@@ -50,6 +50,7 @@ export const newTaskEntry: TaskEntry = {
     [ContactDetailsSections.CHILD_INFORMATION]: false,
     [ContactDetailsSections.ISSUE_CATEGORIZATION]: false,
     [ContactDetailsSections.CONTACT_SUMMARY]: false,
+    [ContactDetailsSections.TRANSCRIPT]: false,
   },
   searchContactsResult: { count: 0, contacts: [] },
   searchCasesResult: { count: 0, cases: [] },

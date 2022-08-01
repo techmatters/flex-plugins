@@ -1,31 +1,31 @@
 {
   "Kids Help Phone": {
     "Suicide/Suicidality": {
-      "color": "#BBE3FF",
+      "color": "#0095C8",
       "subcategories": [
         "Suicide/Suicidality"
       ]
     },
     "Self-Injury": {
-      "color": "#F5A623",
+      "color": "#0095C8",
       "subcategories": [
         "Self-Injury"
       ]
     },
     "Harming Others": {
-      "color": "#F8E900",
+      "color": "#0095C8",
       "subcategories": [
         "Harming Others"
       ]
     },
     "Homicide": {
-      "color": "#E86B6B",
+      "color": "#0095C8",
       "subcategories": [
         "Homicide"
       ]
     },
     "Abuse": {
-      "color": "#8055BA",
+      "color": "#0095C8",
       "subcategories": [
         "Emotional/Verbal (By a parent/caregiver/family member)",
         "Emotional/Verbal (By an intimate partner/spouse)",
@@ -40,7 +40,7 @@
       ]
     },
     "Assault": {
-      "color": "#B971AF",
+      "color": "#0095C8",
       "subcategories": [
         "Physical Assault",
         "Sexual Assault",
@@ -48,27 +48,27 @@
       ]
     },
     "Body Image": {
-      "color": "#239613",
+      "color": "#0095C8",
       "subcategories": [
         "Body Image"
       ]
     },
     "Bullying/Harassment": {
-      "color": "#9AD703",
+      "color": "#0095C8",
       "subcategories": [
         "In person bullying/harassment",
         "Online bullying/harassment"
       ]
     },
     "Extortion/Exploitation": {
-      "color": "#55AFAF",
+      "color": "#0095C8",
       "subcategories": [
         "In person extortion/exploitation",
         "Online extortion/exploitation"
       ]
     },
     "Current or Past Events": {
-      "color": "#506BA5",
+      "color": "#0095C8",
       "subcategories": [
         "Global/national crisis",
         "Historical events",
@@ -77,7 +77,7 @@
       ]
     },
     "Disability/Ability": {
-      "color": "#767777",
+      "color": "#0095C8",
       "subcategories": [
         "Intellectual",
         "Learning",
@@ -88,20 +88,20 @@
       ]
     },
     "Financial Concerns": {
-        "color": "#b36ae3",
+        "color": "#0095C8",
         "subcategories": [
           "Financial Concerns (e.g., Poverty, Financial Stress. etc.)"
         ]
       },
       "Health": {
-        "color": "#e26e58",
+        "color": "#0095C8",
         "subcategories": [
           "Physical Illness",
           "Chronic Illness"
         ]
       },
       "Identity": {
-        "color": "#8bde63",
+        "color": "#0095C8",
         "subcategories": [
           "Gender/Sexual Expression or Orientation",
           "Self-expression",
@@ -112,19 +112,19 @@
         ]
       },
       "Living Situation": {
-        "color": "#fc33e5",
+        "color": "#0095C8",
         "subcategories": [
           "Living Situation (e.g., Homelessness, Moving out/moving to a new place, Anything related to someone's living situation)"
         ]
       },
       "Legal Concerns": {
-        "color": "#df7419",
+        "color": "#0095C8",
         "subcategories": [
           "Legal Concerns (e.g., Going to court, Looking for legal advice, how to report things, etc.)"
         ]
       },
       "Mental Health & Wellbeing (Symptoms and Behaviours)": {
-        "color": "#e4fbfa",
+        "color": "#0095C8",
         "subcategories": [
           "Anger/Hostility/Violence",
           "Anxiety/Stress/Panic/Fear/Worry",
@@ -148,13 +148,13 @@
         ]
       },
       "Parenting": {
-        "color": "#50e3c2",
+        "color": "#0095C8",
         "subcategories": [
           "Parenting"
         ]
       },  
       "Prejudice/Discrimination/Microaggresion/Oppression": {
-        "color": "#8b572a",
+        "color": "#0095C8",
         "subcategories": [
           "Ableism",
           "Homophobia",
@@ -169,7 +169,7 @@
         ]
       },
       "Relationships": {
-        "color": "#d0021b",
+        "color": "#0095C8",
         "subcategories": [
           "With family member(s) (e.g., parents/guardians, siblings, etc.)",
           "With friend(s)/peer(s)",
@@ -178,19 +178,19 @@
         ]
       },
       "Substance Use/Experimentation": {
-        "color": "#F5A623",
+        "color": "#0095C8",
         "subcategories": [
           "Substance Use/Experimentation"
         ]
       },
       "Sex/Sexual Health/Pregnancy": {
-        "color": "#F8E900",
+        "color": "#0095C8",
         "subcategories": [
           "Sex/Sexual Health/Pregnancy"
         ]
       },
       "School and Work": {
-        "color": "#E86B6B",
+        "color": "#0095C8",
         "subcategories": [
           "Academic issues",
           "Teacher and school problems",

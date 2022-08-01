@@ -20,7 +20,7 @@ export const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
 let sharedStateClient: SyncClient;
 
-export const getConfig = () => {
+const readConfig = () => {
   const manager = Flex.Manager.getInstance();
 
   const hrmBaseUrl = `${manager.serviceConfiguration.attributes.hrm_base_url}/${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${manager.workerClient.accountSid}`;
@@ -67,6 +67,19 @@ export const getConfig = () => {
     contactsWaitingChannels,
   };
 };
+
+let cachedConfig;
+
+try {
+  cachedConfig = readConfig();
+} catch (err) {
+  console.log(
+    'Failed to read config on page load, leaving undefined for now (it will be populated when the flex reducer runs)',
+    err,
+  );
+}
+
+export const getConfig = () => cachedConfig;
 
 // eslint-disable-next-line import/no-unused-modules
 export type SetupObject = ReturnType<typeof getConfig> & {
@@ -276,5 +289,16 @@ export default class HrmFormPlugin extends FlexPlugin {
     }
 
     manager.store.addReducer(namespace, reducers);
+    /*
+     * Direct use of 'subscribe' is generally discouraged.
+     * This is a workaround until we deprecate 'getConfig' in it's current form after we migrate to Flex 2.0
+     */
+    manager.store.subscribe(() => {
+      try {
+        cachedConfig = readConfig();
+      } catch (err) {
+        console.warn('Failed to read configuration - leaving cached version the same', err);
+      }
+    });
   }
 }

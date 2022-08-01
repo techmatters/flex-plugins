@@ -18,6 +18,7 @@ import { getDateTime } from '../utils/helpers';
 import { getConfig, getDefinitionVersions } from '../HrmFormPlugin';
 import {
   ContactRawJson,
+  ConversationMedia,
   InformationObject,
   isOfflineContactTask,
   isTwilioTask,
@@ -121,8 +122,8 @@ export const transformContactFormValues = (
  * Transforms the form to be saved as the backend expects it
  * VisibleForTesting
  */
-export function transformForm(form: TaskEntry): ContactRawJson {
-  const { callType, metadata, contactlessTask } = form;
+export function transformForm(form: TaskEntry, conversationMedia: ConversationMedia[] = []): ContactRawJson {
+  const { callType, contactlessTask } = form;
   const {
     CallerInformationTab,
     CaseInformationTab,
@@ -143,7 +144,7 @@ export function transformForm(form: TaskEntry): ContactRawJson {
   const categories = transformCategories(form.helpline, form.categories);
   const { definitionVersion } = getConfig();
 
-  const transformed = {
+  return {
     definitionVersion,
     callType,
     callerInformation,
@@ -153,9 +154,8 @@ export function transformForm(form: TaskEntry): ContactRawJson {
       categories,
     },
     contactlessTask,
+    conversationMedia,
   };
-
-  return transformed;
 }
 
 /**
@@ -176,6 +176,7 @@ const saveContactToHrm = async (
   const number = getNumberFromTask(task);
 
   let rawForm = form;
+  rawForm.reservationSid = task.sid;
   const { currentDefinitionVersion } = getDefinitionVersions();
 
   if (isNonDataCallType(callType)) {
@@ -194,20 +195,30 @@ const saveContactToHrm = async (
   const timeOfContact = getDateTime(rawForm.contactlessTask);
 
   const { helpline, csamReports } = form;
+
+  let channelSid;
+  let serviceSid;
+  const conversationMedia: ConversationMedia[] = [];
+
+  if (isTwilioTask(task)) {
+    if (TaskHelper.isChatBasedTask(task)) {
+      ({ channelSid } = task.attributes);
+      serviceSid = getConfig().chatServiceSid;
+    }
+
+    if (TaskHelper.isChatBasedTask(task) || TaskHelper.isCallTask(task)) {
+      conversationMedia.push({
+        store: 'twilio',
+        reservationSid: task.sid,
+      });
+    }
+  }
   /*
    * We do a transform from the original and then add things.
    * Not sure if we should drop that all into one function or not.
    * Probably.  It would just require passing the task.
    */
-  const formToSend = transformForm(rawForm);
-
-  let channelSid;
-  let serviceSid;
-
-  if (isTwilioTask(task) && TaskHelper.isChatBasedTask(task)) {
-    ({ channelSid } = task.attributes);
-    serviceSid = getConfig().chatServiceSid;
-  }
+  const formToSend = transformForm(rawForm, conversationMedia);
 
   const body = {
     form: formToSend,

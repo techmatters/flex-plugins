@@ -1,0 +1,15 @@
+{
+    "label": "Helpline",
+    "helplines": [
+      {
+        "label": "Childline",
+        "value": "Childline Zimbabwe",
+        "default": true,
+        "manager": {
+          "name": "no name",
+          "phone": "",
+          "email": ""
+        }
+      }
+    ]
+  }

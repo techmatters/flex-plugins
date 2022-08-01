@@ -419,6 +419,8 @@
     "ContactDetails-GeneralDetails-DateTime": "Fecha y Hora",
     "ContactDetails-GeneralDetails-KeepConfidential": "¿Mantener la confidencialidad?",
     "ContactDetails-GeneralDetails-OKToCall": "¿Puede llamar/SMS para el trabajador social?",
+    "ContactDetails-LoadRecording-Button": "Abrir Grabación",
+    "ContactDetails-LoadTranscript-Button": "Ver transcripción",
     "SectionName-CallerInformation": "Información del Llamante",
     "SectionName-ChildInformation": "Información del Niño",
     "SectionName-HouseholdMember": "Miembro del Hogar",

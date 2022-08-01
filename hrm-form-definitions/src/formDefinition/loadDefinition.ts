@@ -25,6 +25,7 @@ export enum DefinitionVersionId {
   ukV1 = 'uk-v1', // Revenge Porn UK v1
   ukrV1 = 'ukr-v1', // International Ukrainian Helpline v1
   thV1 = 'th-v1', // Childline Thailand v1
+  clV1 = 'cl-v1', // Línea Libre Chile v1
 }
 
 // Using a variable for the root of the dynamic import confuses webpack :-(

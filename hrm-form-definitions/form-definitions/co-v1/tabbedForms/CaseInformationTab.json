@@ -10,7 +10,7 @@
   },
   {
     "name": "repeatCaller",
-    "label": "¿Llamante repetido?",
+    "label": "¿Usuario antiguo?",
     "type": "checkbox"
   },
   {
@@ -111,17 +111,17 @@
   },
   {
     "name": "didYouDiscussRightsWithTheChild",
-    "label": "¿Se habló de derechos con el niño?",
+    "label": "¿Se habló de derechos con el adolescente?",
     "type": "mixed-checkbox"
   },
   {
     "name": "didTheChildFeelWeSolvedTheirProblem",
-    "label": "¿Sintió el niño que resolvió su problema?",
+    "label": "¿Sintió el adolescente que resolvió su problema?",
     "type": "mixed-checkbox"
   },
   {
     "name": "wouldTheChildRecommendUsToAFriend",
-    "label": "¿Nos recomendaría el niño con algún amigo?",
+    "label": "¿Nos recomendaría el adolescente con algún amigo?",
     "type": "mixed-checkbox"
   }
 ]

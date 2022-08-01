@@ -5,7 +5,6 @@ import configureMockStore from 'redux-mock-store';
 import { callTypes, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 
-import HrmTheme from '../../styles/HrmTheme';
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import ContactDetails from '../../components/search/ContactDetails';
 import ContactDetailsSection from '../../components/contact/ContactDetailsSection';
@@ -126,6 +125,13 @@ beforeAll(async () => {
           [DetailsContext.CONTACT_SEARCH]: {
             detailsExpanded: {},
           },
+        },
+      },
+    },
+    flex: {
+      worker: {
+        attributes: {
+          roles: [],
         },
       },
     },
