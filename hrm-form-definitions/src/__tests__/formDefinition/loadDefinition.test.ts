@@ -15,6 +15,7 @@ describe('loadDefiniton', () => {
         NoteForm: expect.anything(),
         PerpetratorForm: expect.anything(),
         ReferralForm: expect.anything(),
+        CaseSummaryForm: expect.anything(),
       });
       expect(definitions.tabbedForms).toMatchObject({
         CallerInformationTab: expect.anything(),
