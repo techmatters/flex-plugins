@@ -259,13 +259,6 @@ export const DetailsHeaderTextContainer = styled('div')`
 
 DetailsHeaderTextContainer.displayName = 'DetailsHeaderTextContainer';
 
-export const DetailsHeaderChildAtRiskContainer = styled('div')`
-  width: 136px;
-  align-self: flex-end;
-`;
-
-DetailsHeaderChildAtRiskContainer.displayName = 'DetailsHeaderChildAtRiskContainer';
-
 export const DetailsHeaderChildName = styled(Typography)`
   font-weight: 600 !important;
 `;
@@ -310,15 +303,6 @@ export const StyledPrintButton = styled(IconButton)`
 `;
 
 StyledPrintButton.displayName = 'StyledPrintButton';
-
-export const ChildIsAtRiskWrapper = styled(Row)`
-  align-items: flex-start;
-  box-sizing: border-box;
-  border-radius: 4px;
-  border: 'none';
-  box-shadow: 'none';
-`;
-ChildIsAtRiskWrapper.displayName = 'ChildIsAtRiskWrapper';
 
 type StyledInputField = {
   color?: boolean;
