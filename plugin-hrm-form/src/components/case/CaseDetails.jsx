@@ -14,8 +14,6 @@ import {
   DetailsContainer,
   DetailDescription,
   StyledInputField,
-  StyledSelectField,
-  StyledSelectWrapper,
   CaseDetailsBorder,
   CaseSectionFont,
   StyledCaseOverview,
@@ -33,57 +31,42 @@ const CaseDetails = ({
   updatedAt,
   followUpDate,
   status,
-  prevStatus,
   can,
   office,
   childIsAtRisk,
   handlePrintCase,
-  handleInfoChange,
-  handleStatusChange,
-  handleClickChildIsAtRisk,
   definitionVersion,
   definitionVersionName,
   isOrphanedCase,
-  editCaseSummary
+  editCaseSummary,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
- 
-
-  const onStatusChange = selectedOption => {
-    handleStatusChange(selectedOption);
-  };
-
-  // const canTransition = statusOptions.length !== 1;
-
   const color = definitionVersion.caseStatus[status].color || '#000000';
   const formattedCreatedAt = getLocaleDateTime(createdAt);
   const formattedUpdatedAt = createdAt === updatedAt ? '—' : getLocaleDateTime(updatedAt);
-  const editButton = can(PermissionActions.EDIT_CASE_SUMMARY)
+  const editButton = can(PermissionActions.EDIT_CASE_SUMMARY);
 
   return (
     <>
       <CaseDetailsBorder>
         <CaseDetailsHeader
-        caseId={caseId}
-        childName={name}
-        counselor={counselor}
-        childIsAtRisk={childIsAtRisk}
-        office={office}
-        handlePrintCase={handlePrintCase}
-        handleClickChildIsAtRisk={handleClickChildIsAtRisk}
-        isOrphanedCase={isOrphanedCase}
-        can={can}
-      />
-      <div style={{ paddingTop: '15px' }}>
-        <CaseTags definitionVersion={definitionVersionName} categories={categories} />
-      </div>
+          caseId={caseId}
+          childName={name}
+          counselor={counselor}
+          office={office}
+          handlePrintCase={handlePrintCase}
+          isOrphanedCase={isOrphanedCase}
+          can={can}
+        />
+        <div style={{ paddingTop: '15px' }}>
+          <CaseTags definitionVersion={definitionVersionName} categories={categories} />
+        </div>
       </CaseDetailsBorder>
       <DetailsContainer aria-labelledby="Case-CaseId-label">
-        
         <Box style={{ display: 'inline-block' }}>
-          <CaseSectionFont style={{marginBottom: '5px'}} id="Case-CaseOverview-label">
-          <Template code="Case-CaseOverviewLabel" />
-        </CaseSectionFont>
+          <CaseSectionFont style={{ marginBottom: '5px' }} id="Case-CaseOverview-label">
+            <Template code="Case-CaseOverviewLabel" />
+          </CaseSectionFont>
         </Box>
         {editButton && (
           <Box style={{ display: 'inline-block' }} alignSelf="flex-end" marginTop="-20px" marginRight="25px">
@@ -92,24 +75,23 @@ const CaseDetails = ({
             </StyledNextStepButton>
           </Box>
         )}
-        
-        
-         <div style={{ display: 'flex', alignItems: 'center' }}>
-           <div style={{ paddingRight: '20px' }}>
+
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ paddingRight: '20px' }}>
             <DetailDescription>
               <label id="CaseDetailsStatusLabel">
                 <Template code="Case-CaseDetailsStatusLabel" />
               </label>
-            </DetailDescription>           
-              <StyledCaseOverview
-                data-testid="Case-Details_CaseStatus"
-                id="Details_CaseStatus"
-                name="Details_CaseStatus"
-                aria-labelledby="CaseDetailsStatusLabel"
-                disabled={true}
-                defaultValue={status}
-                color={color}
-              />
+            </DetailDescription>
+            <StyledCaseOverview
+              data-testid="Case-Details_CaseStatus"
+              id="Details_CaseStatus"
+              name="Details_CaseStatus"
+              aria-labelledby="CaseDetailsStatusLabel"
+              disabled={true}
+              defaultValue={status === 'open' ? 'Open' : 'Closed'}
+              color={color}
+            />
           </div>
           <div style={{ paddingRight: '20px' }}>
             <DetailDescription>
@@ -118,16 +100,16 @@ const CaseDetails = ({
               </label>
             </DetailDescription>
             <StyledCaseOverview
-                data-testid="Case-Details_CaseStatus"
-                id="Details_CaseStatus"
-                name="Details_CaseStatus"
-                aria-labelledby="CaseDetailsStatusLabel"
-                disabled={true}
-                defaultValue={childIsAtRisk ? 'Yes' : 'No'}
-                color={childIsAtRisk ? 'red' : 'green'}
-              />
+              data-testid="Case-Details_ChildAtRisk"
+              id="Details_ChildAtRisk"
+              name="Details_ChildAtRisk"
+              aria-labelledby="CaseDetailsStatusLabel"
+              disabled={true}
+              defaultValue={childIsAtRisk ? 'Yes' : 'No'}
+              color={childIsAtRisk ? 'red' : 'green'}
+            />
           </div>
-         </div>
+        </div>
       </DetailsContainer>
       <DetailsContainer aria-labelledby="Case-CaseId-label">
         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -168,16 +150,13 @@ const CaseDetails = ({
             <StyledCaseOverview
               id="Details_DateFollowUp"
               name="Details_DateFollowUp"
-              color={'#d8d8d8'}
-              // disabled={!can(PermissionActions.EDIT_FOLLOW_UP_DATE)}
+              color="#d8d8d8"
               disabled={true}
-              defaultValue={followUpDate || "—"}
-              // onChange={e => handleInfoChange('followUpDate', e.target.value)}
+              defaultValue={followUpDate || '—'}
               aria-labelledby="CaseDetailsFollowUpDate"
             />
-          </div>         
+          </div>
         </div>
-       
       </DetailsContainer>
     </>
   );
@@ -191,16 +170,12 @@ CaseDetails.propTypes = {
   counselor: PropTypes.string.isRequired,
   createdAt: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
-  prevStatus: PropTypes.string.isRequired,
   can: PropTypes.func.isRequired,
   office: PropTypes.string,
   followUpDate: PropTypes.string,
   updatedAt: PropTypes.string,
   childIsAtRisk: PropTypes.bool.isRequired,
   handlePrintCase: PropTypes.func.isRequired,
-  handleInfoChange: PropTypes.func.isRequired,
-  handleStatusChange: PropTypes.func.isRequired,
-  handleClickChildIsAtRisk: PropTypes.func.isRequired,
   definitionVersion: PropTypes.shape({}).isRequired,
   definitionVersionName: PropTypes.string.isRequired,
   isOrphanedCase: PropTypes.bool,

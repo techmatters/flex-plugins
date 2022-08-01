@@ -4,9 +4,8 @@
     "label": "Case Status",
     "type": "select",
     "options": [
-      { "value": "", "label": "" },
       { "value": "open", "label": "open" },
-      { "value": "close", "label": "close" }
+      { "value": "closed", "label": "closed" }
     ]
   },
   {

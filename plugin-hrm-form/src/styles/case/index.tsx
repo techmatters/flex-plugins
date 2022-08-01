@@ -93,7 +93,7 @@ type CaseAddButtonProps = {
   withDivider: boolean;
 };
 
-export const CaseAddButton = styled(ButtonBase) <CaseAddButtonProps>`
+export const CaseAddButton = styled(ButtonBase)<CaseAddButtonProps>`
   && {
     margin-left: auto;
     padding-left: ${props => (props.withDivider ? '12px' : '0px')};
@@ -112,7 +112,7 @@ type CaseAddButtonFontProps = {
 
 export const CaseAddButtonFont = styled(({ disabled, ...rest }: CaseAddButtonFontProps) => (
   <FontOpenSans {...rest} />
-)) <CaseAddButtonFontProps>`
+))<CaseAddButtonFontProps>`
   font-weight: 600;
   font-size: 12px;
   line-height: 14px;
@@ -321,10 +321,10 @@ export const ChildIsAtRiskWrapper = styled(Row)`
 ChildIsAtRiskWrapper.displayName = 'ChildIsAtRiskWrapper';
 
 type StyledInputField = {
-  color?: boolean
-}
+  color?: boolean;
+};
 
-export const StyledInputField = styled(FormInput) <StyledInputField>`
+export const StyledInputField = styled(FormInput)<StyledInputField>`
   width: 130px !important;
   height: 36px;
   color: #000000;
@@ -340,7 +340,7 @@ export const StyledInputField = styled(FormInput) <StyledInputField>`
 
 StyledInputField.displayName = 'StyledInputField';
 
-export const StyledCaseOverview = styled('input') <StyledInputField>`
+export const StyledCaseOverview = styled('input')<StyledInputField>`
   width: 130px !important;
   height: 36px;
   color: ${props => (props.color ? props.color : '#000000')};
@@ -361,33 +361,6 @@ StyledCaseOverview.displayName = 'StyledCaseOverview';
 type FormSelectWrapperProps = {
   disabled?: boolean;
 };
-
-export const StyledSelectWrapper = styled(FormSelectWrapper) <FormSelectWrapperProps>`
-  width: 130px !important;
-  height: 36px;
-  margin-top: 7px;
-
-  &::after {
-    display: ${({ disabled }) => (disabled ? 'none' : 'initial')};
-  }
-`;
-
-StyledSelectWrapper.displayName = 'StyledSelectWrapper';
-
-type StyledSelectFieldProps = {
-  color: string;
-};
-
-export const StyledSelectField = styled(({ color, ...rest }: StyledSelectFieldProps) => (
-  <FormSelect {...rest} />
-)) <StyledSelectFieldProps>`
-  width: 130px !important;
-  height: 36px;
-  font-weight: 600;
-  color: ${({ color }) => (color ? `${color}` : '#000000')};
-`;
-
-StyledSelectField.displayName = 'StyledSelectField';
 
 export const CloseDialogText = styled('p')`
   font-size: 17px;
@@ -410,11 +383,11 @@ export const EditContactContainer = styled('div')`
 EditContactContainer.displayName = 'EditContactContainer';
 
 type CaseDetailsBorderProps = {
-  paddingBottom?: string
-}
+  paddingBottom?: string;
+};
 
-export const CaseDetailsBorder = styled('div') <CaseDetailsBorderProps>`
-   border-bottom: 2px solid #e5e6e7;
-   margin-right: 25px;
-   padding-bottom: ${props => props.paddingBottom ? props.paddingBottom : '25px'};
+export const CaseDetailsBorder = styled('div')<CaseDetailsBorderProps>`
+  border-bottom: 2px solid #e5e6e7;
+  margin-right: 25px;
+  padding-bottom: ${props => (props.paddingBottom ? props.paddingBottom : '25px')};
 `;

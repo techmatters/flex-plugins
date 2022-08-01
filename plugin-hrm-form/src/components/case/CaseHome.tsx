@@ -10,7 +10,13 @@ import CaseDetailsComponent from './CaseDetails';
 import Timeline from './Timeline';
 import CaseSection from './CaseSection';
 import { PermissionActions } from '../../permissions';
-import { AppRoutes, CaseItemAction, CaseSectionSubroute, NewCaseSubroutes, AppRoutesWithCaseAndAction } from '../../states/routing/types';
+import {
+  AppRoutes,
+  CaseItemAction,
+  CaseSectionSubroute,
+  NewCaseSubroutes,
+  AppRoutesWithCaseAndAction,
+} from '../../states/routing/types';
 import CaseSummary from './CaseSummary';
 import { contactFormsBase, namespace, RootState, routingBase, connectedCaseBase } from '../../states';
 import {
@@ -72,19 +78,18 @@ const CaseHome: React.FC<Props> = ({
   handleCancelNewCaseAndClose,
   handleUpdate,
   onInfoChange,
-  onStatusChange,
   timeline,
   caseDetails,
   can,
   temporaryCaseInfo,
   connectedCaseState,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [closeDialog, setCloseDialog] = useState(false);
 
   const { featureFlags } = getConfig();
   const { connectedCase } = connectedCaseState;
   const summary = connectedCase.info?.summary || '';
-
 
   if (routing.route === 'csam-report') return null; // narrow type before deconstructing
   const { route } = routing;
@@ -103,8 +108,6 @@ const CaseHome: React.FC<Props> = ({
     updateTempInfo({ screen: targetSubroute, action: CaseItemAction.Add, info: null }, task.taskSid);
     changeRoute({ route, subroute: targetSubroute, action: CaseItemAction.Add } as AppRoutes, task.taskSid);
   };
-
-
 
   const onPrintCase = () => {
     changeRoute({ route, subroute: 'case-print-view' }, task.taskSid);
@@ -237,56 +240,26 @@ const CaseHome: React.FC<Props> = ({
     ) : null;
   };
 
-  const statusOptions = React.useMemo(() => {
-    const statusTransitions = [prevStatus, ...definitionVersion.caseStatus[prevStatus].transitions];
-
-    const optionsArray = statusTransitions.reduce(
-      (acc, curr) => [...acc, { value: curr, label: definitionVersion.caseStatus[curr].label }],
-      [],
-    );
-
-    const enableBasedOnPermissions = o => {
-      if (o.value === prevStatus) return true;
-      if (o.value === 'closed' && prevStatus !== 'closed') return can(PermissionActions.CLOSE_CASE);
-      if (o.value !== 'closed' && prevStatus === 'closed') return can(PermissionActions.REOPEN_CASE);
-
-      return can(PermissionActions.CASE_STATUS_TRANSITION);
-    };
-
-    const renderStatusOptions = o => {
-      const disabled = !enableBasedOnPermissions(o);
-
-      return disabled ? null : (
-        <FormOption key={o.value} value={o.value} style={{ color: definitionVersion.caseStatus[o.value].color }}>
-          {o.label}
-        </FormOption>
-      );
-    };
-
-    return optionsArray.map(renderStatusOptions).filter(Boolean);
-  }, [can, definitionVersion.caseStatus, prevStatus]);
-
-
   const onEditCaseItemClick = (targetSubroute: CaseSectionSubroute) => {
     const summaryCaseInfo: EditTemporaryCaseInfo = {
       action: CaseItemAction.Edit,
       info: {
         createdAt: connectedCase.createdAt,
         updatedAt: connectedCase.updatedAt,
-        updatedBy: null,
+        updatedBy: connectedCase.twilioWorkerId,
         form: {
-          caseStatus: "",
-          date: "",
+          caseStatus: status,
+          date: followUpDate,
           inImminentPhysicalDanger: childIsAtRisk === undefined ? false : childIsAtRisk,
-          caseSummary: summary
+          caseSummary: summary,
         },
         id: null,
         index: 0,
         twilioWorkerId: connectedCase.twilioWorkerId,
       },
-      screen: "caseSummary",
-    }
-    temporaryCaseInfo = summaryCaseInfo
+      screen: 'caseSummary',
+    };
+    temporaryCaseInfo = summaryCaseInfo;
     if (isEditTemporaryCaseInfo(temporaryCaseInfo)) {
       updateTempInfo(
         { screen: temporaryCaseInfo.screen, action: CaseItemAction.Edit, info: temporaryCaseInfo.info },
@@ -296,8 +269,6 @@ const CaseHome: React.FC<Props> = ({
     changeRoute({ ...routing, subroute: targetSubroute, action: CaseItemAction.Edit } as AppRoutes, task.taskSid);
   };
 
-  // console.log('Add home case data', temporaryCaseInfo, isEditTemporaryCaseInfo(temporaryCaseInfo), 'connectedCaseState', connectedCase, connectedCaseState)
-
   return (
     <>
       <CaseContainer data-testid="CaseHome-CaseDetailsComponent">
@@ -306,7 +277,6 @@ const CaseHome: React.FC<Props> = ({
             caseId={id}
             name={fullName}
             status={status}
-            prevStatus={prevStatus}
             can={can}
             counselor={caseCounselor}
             categories={categories}
@@ -316,9 +286,6 @@ const CaseHome: React.FC<Props> = ({
             childIsAtRisk={childIsAtRisk}
             office={office?.label}
             handlePrintCase={onPrintCase}
-            handleInfoChange={onInfoChange}
-            handleStatusChange={onStatusChange}
-            handleClickChildIsAtRisk={onClickChildIsAtRisk}
             definitionVersion={definitionVersion}
             definitionVersionName={version}
             isOrphanedCase={!contact}
@@ -377,7 +344,6 @@ const CaseHome: React.FC<Props> = ({
             </CaseSection>
           </Box>
         )}
-
       </CaseContainer>
       <BottomButtonBar>
         {isCreating && (
@@ -434,8 +400,8 @@ const mapStateToProps = (state: RootState, ownProps: CaseHomeProps) => {
   const { temporaryCaseInfo } = caseState.tasks[ownProps.task.taskSid];
   const connectedCaseState = caseState.tasks[ownProps.task.taskSid];
 
-  return { form, routing, temporaryCaseInfo, connectedCaseState }
-}
+  return { form, routing, temporaryCaseInfo, connectedCaseState };
+};
 
 const mapDispatchToProps = {
   changeRoute: RoutingActions.changeRoute,

@@ -347,29 +347,6 @@ describe('useState mocked', () => {
     expect(updateCaseCall.info.summary).toBe('Some summary');
   });
 
-  test('click child is at risk checkbox', async () => {
-    const store = mockStore(initialState);
-    store.dispatch = jest.fn();
-
-    render(
-      <StorelessThemeProvider themeConf={{}}>
-        <Provider store={store}>
-          <CaseHome {...ownProps} />
-        </Provider>
-      </StorelessThemeProvider>,
-    );
-
-    const checkbox = screen.getByTestId('Case-ChildIsAtRisk-Checkbox');
-    fireEvent.click(checkbox);
-    expect(ownProps.onInfoChange).toHaveBeenCalledWith('childIsAtRisk', true);
-    /*
-     *const updateCaseCall = store.dispatch.mock.calls[0][0];
-     *expect(updateCaseCall.type).toBe('UPDATE_CASE_INFO');
-     *expect(updateCaseCall.taskId).toBe(ownProps.task.taskSid);
-     *expect(updateCaseCall.info.childIsAtRisk).toBe(true);
-     */
-  });
-
   test('Click cancel button on new case', async () => {
     const store = mockStore(initialState);
     ownProps.isCreating = true;

@@ -32,7 +32,7 @@ export enum CaseItemAction {
   Add = 'add',
   Edit = 'edit',
   View = 'view',
-} 
+}
 
 export type AppRoutesWithCaseAndAction =
   | {

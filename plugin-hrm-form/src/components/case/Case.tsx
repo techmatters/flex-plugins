@@ -263,8 +263,6 @@ const Case: React.FC<Props> = ({
   const { caseForms } = definitionVersion;
   const caseLayouts = definitionVersion.layoutVersion.case;
 
-  console.log(caseLayouts, caseForms)
-
   const caseDetails = {
     id: connectedCase.id,
     name,
@@ -289,7 +287,7 @@ const Case: React.FC<Props> = ({
     version,
     contact: firstConnectedContact,
     contacts: connectedCase?.connectedContacts ?? [],
-    caseSummaries
+    caseSummaries,
   };
   if (isAppRoutesWithCaseAndAction(routing)) {
     const { action, subroute } = routing;
@@ -476,7 +474,7 @@ const Case: React.FC<Props> = ({
               applyTemporaryInfoToCase: updateCaseSectionListByIndex('caseSummaries', 'caseSummary'),
               formDefinition: caseForms.CaseSummaryForm,
               followUpDate,
-              status,
+              caseStatus: status,
             }}
           />
         );
