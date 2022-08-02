@@ -61,7 +61,7 @@ const getTemporaryFormContent = (temporaryCaseInfo: TemporaryCaseInfo): CaseItem
   return null;
 };
 
-type AddEditCaseSummaryProps = {
+export type AddEditCaseSummaryProps = {
   task: CustomITask | StandaloneITask;
   counselor: string;
   definitionVersion: DefinitionVersion;
@@ -73,8 +73,6 @@ type AddEditCaseSummaryProps = {
   applyTemporaryInfoToCase: CaseUpdater;
   customFormHandlers?: CustomHandlers;
   reactHookFormOptions?: Partial<{ shouldUnregister: boolean }>;
-  caseStatus?: string;
-  followUpDate?: string;
 };
 // eslint-disable-next-line no-use-before-define
 type Props = AddEditCaseSummaryProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
@@ -99,6 +97,8 @@ const AddEditCaseSummary: React.FC<Props> = ({
 
   const { temporaryCaseInfo } = connectedCaseState;
 
+  console.log('checking for temporaryCaseInfo', temporaryCaseInfo);
+
   // Grab initial values in first render only. If getTemporaryFormContent(temporaryCaseInfo), cherrypick the values using formDefinition, if not build the object with getInitialValue
   const [initialForm] = React.useState(() => {
     if (isEditTemporaryCaseInfo(temporaryCaseInfo)) {
@@ -110,7 +110,7 @@ const AddEditCaseSummary: React.FC<Props> = ({
         inImminentPhysicalDanger,
       };
     }
-    return undefined;
+    return null;
   });
 
   const methods = useForm(reactHookFormOptions);
@@ -189,6 +189,8 @@ const AddEditCaseSummary: React.FC<Props> = ({
   async function close() {
     if (isEditTemporaryCaseInfo(temporaryCaseInfo)) {
       temporaryCaseInfo.isEdited = false;
+      exitItem();
+    } else {
       exitItem();
     }
   }

@@ -148,7 +148,6 @@ const CaseHome: React.FC<Props> = ({
     childIsAtRisk,
     caseCounselor,
     status,
-    prevStatus,
     followUpDate,
     version,
   } = caseDetails;
@@ -292,7 +291,6 @@ const CaseHome: React.FC<Props> = ({
             editCaseSummary={() => onEditCaseItemClick(NewCaseSubroutes.CaseSummary)}
           />
         </Box>
-        {/* readonly={!can(PermissionActions.EDIT_CASE_SUMMARY)} */}
         <Box margin="25px 25px 0 25px">
           <CaseSummary task={task} readonly={true} />
         </Box>

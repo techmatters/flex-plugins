@@ -71,7 +71,7 @@ const CaseDetails = ({
         {editButton && (
           <Box style={{ display: 'inline-block' }} alignSelf="flex-end" marginTop="-20px" marginRight="25px">
             <StyledNextStepButton secondary roundCorners onClick={editCaseSummary} data-testid="Case-EditButton">
-              <Template code="EditButton" />
+              <Template code="Case-EditButton" />
             </StyledNextStepButton>
           </Box>
         )}
