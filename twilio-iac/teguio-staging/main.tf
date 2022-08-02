@@ -14,12 +14,16 @@ terraform {
   }
 }
 
-
+module "custom_chatbots" {
+  source = "../terraform-modules/chatbots/te-guio-co"
+  serverless_url = var.serverless_url
+}
+/*
 module "chatbots" {
   source = "../terraform-modules/chatbots/default"
   serverless_url = var.serverless_url
 }
-
+*/
 module "hrmServiceIntegration" {
   source = "../terraform-modules/hrmServiceIntegration/default"
   local_os = var.local_os
@@ -46,6 +50,7 @@ module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
   serverless_url = var.serverless_url
   helpline = var.helpline
+  custom_task_routing_filter_expression = var.custom_task_routing_filter_expression
 }
 
 module studioFlow {
@@ -53,7 +58,7 @@ module studioFlow {
   master_workflow_sid = module.taskRouter.master_workflow_sid
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
   default_task_channel_sid = module.taskRouter.default_task_channel_sid
-  pre_survey_bot_sid = module.chatbots.pre_survey_bot_sid
+  pre_survey_bot_sid = module.custom_chatbots.pre_survey_bot_es_sid
 }
 
 module flex {
@@ -70,6 +75,7 @@ module flex {
   flex_chat_service_sid = module.services.flex_chat_service_sid
   messaging_studio_flow_sid = module.studioFlow.messaging_studio_flow_sid
   messaging_flow_contact_identity = var.messaging_flow_contact_identity
+  custom_flex_messaging_flow_enabled = var.custom_flex_messaging_flow_enabled
 }
 
 module survey {
@@ -93,7 +99,7 @@ module aws {
   shared_state_sync_service_sid = module.services.shared_state_sync_service_sid
   flex_chat_service_sid = module.services.flex_chat_service_sid
   flex_proxy_service_sid = module.services.flex_proxy_service_sid
-  post_survey_bot_sid = module.chatbots.post_survey_bot_sid
+  post_survey_bot_sid = module.custom_chatbots.post_survey_bot_es_sid
   survey_workflow_sid = module.survey.survey_workflow_sid
 }
 

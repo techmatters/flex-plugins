@@ -17,7 +17,7 @@ variable "local_os" {
 }
 
 variable "helpline" {
-  default = "Te Guio Colombia"
+  default = "Te Guío CO"
 }
 
 variable "short_helpline" {
@@ -77,4 +77,16 @@ variable "feature_flags" {
 
 variable "messaging_flow_contact_identity" {
   default = "+17752526377"
+}
+
+variable "custom_flex_messaging_flow_enabled" {
+  description = "Enable or disable Flex SMS Messaging Flow"
+  type = bool
+  default = false
+}
+
+variable "custom_task_routing_filter_expression" {
+  description = "Setting this will override the default task routing filter expression, which is helpline=='<var.helpline>'"
+  type = string
+  default = "channelType ==\"web\"  OR isContactlessTask == true OR twilioNumber == \"messenger:103574689075106\" OR  twilioNumber == \"twitter:1540032139563073538\"  OR channel_type ==\"twitter\""
 }

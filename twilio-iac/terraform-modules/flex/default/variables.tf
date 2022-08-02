@@ -66,3 +66,14 @@ variable "messaging_flow_contact_identity" {
   type = string
   default = null
 }
+
+variable "custom_flex_messaging_flow_enabled" {
+  description = "Enable or disable Flex SMS Messaging Flow"
+  type = bool
+  default = null
+}
+variable "custom_flex_webchat_flow_enabled" {
+  description = "Enable or disable Flex Webchat Messaging Flow"
+  type = bool
+  default = null
+}
