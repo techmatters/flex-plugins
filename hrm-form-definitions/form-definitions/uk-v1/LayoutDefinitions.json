@@ -38,6 +38,9 @@
     },
     "documents": {
       "splitFormAt": 1
-    }
+    },
+    "caseSummaries":{
+      "splitFormAt": 3
+   }
   }
 }
