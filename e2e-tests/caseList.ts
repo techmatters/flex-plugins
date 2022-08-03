@@ -46,7 +46,7 @@ export const caseList = (page: Page) => {
   };
 
   /** Filter cases (excluding Date filters)
-   * 
+   *
    * @param filter: Filter (status, counselor or categories)
    * @param option: string (required for all 3 filter)
    * @param option2: string (required only for Categories filter)
@@ -58,7 +58,7 @@ export const caseList = (page: Page) => {
     await openFilterButton.click();
 
     if (filter === 'Categories' && option2) {
-    //for Categories filter, 2 valid options are required
+      //for Categories filter, 2 valid options are required
       const selectOption = selectors.filterCategories(filter, option);
       selectOption.click();
 
