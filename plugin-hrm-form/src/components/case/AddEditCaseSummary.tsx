@@ -97,8 +97,6 @@ const AddEditCaseSummary: React.FC<Props> = ({
 
   const { temporaryCaseInfo } = connectedCaseState;
 
-  console.log('checking for temporaryCaseInfo', temporaryCaseInfo);
-
   // Grab initial values in first render only. If getTemporaryFormContent(temporaryCaseInfo), cherrypick the values using formDefinition, if not build the object with getInitialValue
   const [initialForm] = React.useState(() => {
     if (isEditTemporaryCaseInfo(temporaryCaseInfo)) {

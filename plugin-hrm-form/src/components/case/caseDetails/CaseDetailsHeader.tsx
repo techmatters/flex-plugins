@@ -17,7 +17,7 @@ import {
   StyledPrintButton,
 } from '../../../styles/case';
 import { Flex, Box } from '../../../styles/HrmStyles';
-import { PermissionActions, PermissionActionType } from '../../../permissions';
+import { PermissionActionType } from '../../../permissions';
 
 type OwnProps = {
   caseId: string;
@@ -40,9 +40,6 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
   can,
 }) => {
   const { multipleOfficeSupport } = getConfig();
-  const canEditChildAtRisk = can(PermissionActions.EDIT_CHILD_IS_AT_RISK);
-
-  console.log(canEditChildAtRisk);
 
   return (
     <DetailsHeaderContainer>
