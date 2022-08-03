@@ -269,6 +269,7 @@ const Filters: React.FC<Props> = ({
               return (
                 <DateRangeFilter
                   name={`${df.filterPayloadParameter}Filter`}
+                  allowFutureDates={df.filterPayloadParameter === 'followUpDate'}
                   labelKey={df.labelKey}
                   options={df.options}
                   current={dateFilterValues[df.filterPayloadParameter]}

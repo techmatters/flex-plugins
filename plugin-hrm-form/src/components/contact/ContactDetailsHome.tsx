@@ -1,11 +1,17 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { format } from 'date-fns';
-import { Template } from '@twilio/flex-ui';
+import { Actions, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes } from 'hrm-form-definitions';
 
-import { DetailsContainer, NameText, ContactAddedFont } from '../../styles/search';
+import {
+  DetailsContainer,
+  NameText,
+  ContactAddedFont,
+  SectionTitleContainer,
+  SectionActionButton,
+} from '../../styles/search';
 import ContactDetailsSection from './ContactDetailsSection';
 import SectionEntry from '../SectionEntry';
 import { channelTypes } from '../../states/DomainConstants';
@@ -14,13 +20,10 @@ import { formatCategories, formatDuration, formatName, mapChannelForInsights } f
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/ContactDetails';
 import { unNestInformation } from '../../services/ContactService';
 import { configurationBase, contactFormsBase, namespace, RootState } from '../../states';
-import {
-  ContactDetailsRoute,
-  DetailsContext,
-  navigateContactDetails,
-  toggleDetailSectionExpanded,
-} from '../../states/contacts/contactDetails';
+import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
 import { getPermissionsForContact, PermissionActions } from '../../permissions';
+import { createDraft, ContactDetailsRoute } from '../../states/contacts/existingContacts';
+import { getConfig } from '../../HrmFormPlugin';
 
 // TODO: complete this type
 type OwnProps = {
@@ -34,27 +37,37 @@ type OwnProps = {
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
 /* eslint-disable complexity */
-const ContactDetailsHome: React.FC<Props> = ({
+// eslint-disable-next-line sonarjs/cognitive-complexity
+const ContactDetailsHome: React.FC<Props> = function ({
   context,
   detailsExpanded,
   showActionIcons = false,
   handleOpenConnectDialog,
   definitionVersions,
   counselorsHash,
-  contact,
+  savedContact,
   toggleSectionExpandedForContext,
-  navigateForContext,
+  createContactDraft,
   enableEditing,
-  // eslint-disable-next-line sonarjs/cognitive-complexity
-}) => {
-  const version = contact?.details.definitionVersion;
+  canViewTranscript,
+}) {
+  const version = savedContact?.details.definitionVersion;
 
   const definitionVersion = definitionVersions[version];
 
-  if (!contact || !definitionVersion) return null;
+  const { featureFlags } = getConfig();
+
+  useEffect(
+    () => () => {
+      Actions.invokeAction(Insights.Player.Action.INSIGHTS_PLAYER_HIDE);
+    },
+    [],
+  );
+
+  if (!savedContact || !definitionVersion) return null;
 
   // Object destructuring on contact
-  const { overview, details, csamReports } = contact;
+  const { overview, details, csamReports } = savedContact;
   const {
     counselor,
     dateTime,
@@ -67,7 +80,7 @@ const ContactDetailsHome: React.FC<Props> = ({
     createdBy,
   } = overview;
   // Permission to edit is based the counselor who created the contact - identified by Twilio worker ID
-  const createdByTwilioWorkerId = contact?.overview.counselor;
+  const createdByTwilioWorkerId = savedContact?.overview.counselor;
   const { can } = getPermissionsForContact(createdByTwilioWorkerId);
 
   // Format the obtained information
@@ -100,13 +113,27 @@ const ContactDetailsHome: React.FC<Props> = ({
   const counselorName = counselorsHash[counselor];
 
   const toggleSection = (section: ContactDetailsSectionsType) => toggleSectionExpandedForContext(context, section);
-  const navigate = (route: ContactDetailsRoute) => navigateForContext(context, route);
+  const navigate = (route: ContactDetailsRoute) => createContactDraft(savedContact.contactId, route);
+
+  const loadConversationIntoOverlay = async () => {
+    await Actions.invokeAction(Insights.Player.Action.INSIGHTS_PLAYER_PLAY, {
+      taskSid: savedContact.details.conversationMedia[0].reservationSid,
+    });
+  };
 
   const csamReportsAttached =
     csamReports &&
     csamReports
       .map(r => `CSAM on ${format(new Date(r.createdAt), 'yyyy MM dd h:mm aaaaa')}m\n#${r.csamReportId}`)
       .join('\n\n');
+
+  const transcriptOrRecordingAvailable = Boolean(
+    ((featureFlags.enable_voice_recordings && channel === channelTypes.voice) ||
+      (featureFlags.enable_transcripts && channel !== channelTypes.voice)) &&
+      canViewTranscript &&
+      savedContact.details.conversationMedia?.length &&
+      typeof savedContact.overview.conversationDuration === 'number',
+  );
 
   return (
     <DetailsContainer data-testid="ContactDetails-Container">
@@ -159,7 +186,7 @@ const ContactDetailsHome: React.FC<Props> = ({
             <SectionEntry
               key={`CallerInformation-${e.label}`}
               description={<Template code={e.label} />}
-              value={unNestInformation(e, contact.details.callerInformation)}
+              value={unNestInformation(e, savedContact.details.callerInformation)}
               definition={e}
             />
           ))}
@@ -180,7 +207,7 @@ const ContactDetailsHome: React.FC<Props> = ({
             <SectionEntry
               key={`ChildInformation-${e.label}`}
               description={<Template code={e.label} />}
-              value={unNestInformation(e, contact.details.childInformation)}
+              value={unNestInformation(e, savedContact.details.childInformation)}
               definition={e}
             />
           ))}
@@ -225,7 +252,7 @@ const ContactDetailsHome: React.FC<Props> = ({
             <SectionEntry
               key={`CaseInformation-${e.label}`}
               description={<Template code={e.label} />}
-              value={contact.details.caseInformation[e.name] as boolean | string}
+              value={savedContact.details.caseInformation[e.name] as boolean | string}
               definition={e}
             />
           ))}
@@ -237,6 +264,17 @@ const ContactDetailsHome: React.FC<Props> = ({
             />
           )}
         </ContactDetailsSection>
+      )}
+      {transcriptOrRecordingAvailable && (
+        <SectionTitleContainer style={{ justifyContent: 'right', paddingTop: '10px', paddingBottom: '10px' }}>
+          <SectionActionButton type="button" onClick={loadConversationIntoOverlay}>
+            {channel === channelTypes.voice ? (
+              <Template code="ContactDetails-LoadRecording-Button" />
+            ) : (
+              <Template code="ContactDetails-LoadTranscript-Button" />
+            )}
+          </SectionActionButton>
+        </SectionTitleContainer>
       )}
     </DetailsContainer>
   );
@@ -252,13 +290,17 @@ ContactDetailsHome.defaultProps = {
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   definitionVersions: state[namespace][configurationBase].definitionVersions,
   counselorsHash: state[namespace][configurationBase].counselors.hash,
-  contact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.contact,
+  savedContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.savedContact,
+  draftContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.draftContact,
   detailsExpanded: state[namespace][contactFormsBase].contactDetails[ownProps.context].detailsExpanded,
+  canViewTranscript: (state.flex.worker.attributes.roles as string[]).some(
+    role => role.toLowerCase().startsWith('wfo') && role !== 'wfo.quality_process_manager',
+  ),
 });
 
 const mapDispatchToProps = {
   toggleSectionExpandedForContext: toggleDetailSectionExpanded,
-  navigateForContext: navigateContactDetails,
+  createContactDraft: createDraft,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsHome);

@@ -13,6 +13,7 @@ export type ContactFormTab<T = Record<string, string>> = {
 export function contactForm(page: Page) {
   const formArea = page.locator('div.Twilio-CRMContainer');
   const selectors = {
+    childCallTypeButton: () => page.locator(`//button[@data-testid='DataCallTypeButton-child']`),
     tabButton: (tab: ContactFormTab<unknown>) =>
       formArea.locator(`button :text-is("${tab.label}")`),
     formInput: (tabId: string, itemId: string) => formArea.locator(`input#${tabId}\\.${itemId}`),
@@ -58,6 +59,10 @@ export function contactForm(page: Page) {
   }
 
   return {
+    selectChildCallType: async () => {
+      const childCallTypeButton = selectors.childCallTypeButton();
+      await childCallTypeButton.click();
+    },
     fill: async (tabs: ContactFormTab<any>[]) => {
       for (const tab of tabs) {
         await selectTab(tab);

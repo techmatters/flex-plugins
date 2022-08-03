@@ -11,14 +11,23 @@ const ptBRMessages = require(`../translations/pt-BR/messages.json`);
 
 const enINTranslation = require(`../translations/en-IN/flexUI.json`);
 const enINMessages = require(`../translations/en-IN/messages.json`);
+
 const esESTranslation = require(`../translations/es-ES/flexUI.json`);
 const esESMessages = require(`../translations/es-ES/messages.json`);
+
+const esCOTranslation = require(`../translations/es-CO/flexUI.json`);
+const esCOMessages = require(`../translations/es-CO/messages.json`);
+
+const huHUTranslation = require(`../translations/hu-HU/flexUI.json`);
+const huHUMessages = require(`../translations/hu-HU/messages.json`);
 
 const bundledTranslations = {
   [defaultLanguage]: defaultTranslation,
   'pt-BR': ptBRTranslation,
   'en-IN': enINTranslation,
   'es-ES': esESTranslation,
+  'es-CO': esCOTranslation,
+  'hu-HU': huHUTranslation,
 };
 
 const bundledMessages = {
@@ -26,6 +35,8 @@ const bundledMessages = {
   'pt-BR': ptBRMessages,
   'en-IN': enINMessages,
   'es-ES': esESMessages,
+  'es-CO': esCOMessages,
+  'hu-HU': huHUTranslation,
 };
 
 const translationErrorMsg = 'Could not translate, using default';

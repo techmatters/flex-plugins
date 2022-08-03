@@ -1,4 +1,9 @@
-import { hrmServiceContactToSearchContact, retrieveCategories } from '../../../states/contacts/contactDetailsAdapter';
+import {
+  hrmServiceContactToSearchContact,
+  retrieveCategories,
+  searchContactToHrmServiceContact,
+} from '../../../states/contacts/contactDetailsAdapter';
+import { SearchContact } from '../../../types/types';
 
 describe('retrieveCategories', () => {
   test('falsy input, empty object output', () => expect(retrieveCategories(null)).toStrictEqual({}));
@@ -46,6 +51,7 @@ describe('hrmServiceContactToSearchContact', () => {
     channel: undefined,
     conversationDuration: undefined,
     createdBy: undefined,
+    taskId: undefined,
   };
 
   test('input rawJson.caseInformation.categories are converted using retrieveCategories and added to overview', () => {
@@ -81,6 +87,7 @@ describe('hrmServiceContactToSearchContact', () => {
       helpline: 'my-helpline',
       createdBy: 'bob',
       channel: 'a channel',
+      taskId: 'TASK_SID',
     };
     expect(hrmServiceContactToSearchContact(input)).toStrictEqual({
       contactId: undefined,
@@ -90,6 +97,7 @@ describe('hrmServiceContactToSearchContact', () => {
         helpline: input.helpline,
         createdBy: input.createdBy,
         channel: input.channel,
+        taskId: input.taskId,
       },
       details: input.rawJson,
       csamReports: undefined,
@@ -239,5 +247,61 @@ describe('hrmServiceContactToSearchContact', () => {
       hrmServiceContactToSearchContact({ rawJson: { caseInformation: {}, childInformation: {} } }),
     ).toThrow();
     expect(() => hrmServiceContactToSearchContact({ rawJson: { childInformation: { name: {} } } })).toThrow();
+  });
+});
+
+describe('searchContactToHrmServiceContact', () => {
+  const baseSearchContact: SearchContact = {
+    contactId: '1337',
+    overview: {
+      helpline: 'A helpline',
+      conversationDuration: 14,
+      createdBy: 'bob',
+      channel: 'gopher',
+      counselor: 'WK_roberta',
+      customerNumber: '1234 4321',
+      dateTime: 'Last Tuesday',
+      callType: 'child',
+      name: 'Lo Ballantyne',
+      categories: {},
+      notes: 'Hello',
+    },
+    csamReports: [
+      {
+        id: 1,
+        csamReportId: '1',
+        twilioWorkerId: 'WK_roberta',
+        createdAt: 'Last Thursday',
+      },
+    ],
+    details: {
+      callType: 'child',
+      childInformation: { name: { firstName: 'Lo', lastName: 'Ballantyne' } },
+      callerInformation: { name: { firstName: 'Lo', lastName: 'Ballantyne' } },
+      caseInformation: { categories: {} },
+      contactlessTask: {},
+    },
+  };
+
+  test('maps SearchContact overview to top level properties', () => {
+    const hrmContact = searchContactToHrmServiceContact(baseSearchContact);
+    expect(hrmContact).toMatchObject({
+      helpline: 'A helpline',
+      conversationDuration: 14,
+      createdBy: 'bob',
+      channel: 'gopher',
+      twilioWorkerId: 'WK_roberta',
+      number: '1234 4321',
+      timeOfContact: 'Last Tuesday',
+    });
+  });
+
+  test('copies details, csamReports and contactId to top level', () => {
+    const hrmContact = searchContactToHrmServiceContact(baseSearchContact);
+    expect(hrmContact).toMatchObject({
+      id: baseSearchContact.contactId,
+      rawJson: baseSearchContact.details,
+      csamReports: baseSearchContact.csamReports,
+    });
   });
 });

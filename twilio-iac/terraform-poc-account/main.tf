@@ -107,7 +107,6 @@ module aws_monitoring {
 }
 
 module github {
-
   source = "../terraform-modules/github/default"
   twilio_account_sid = var.account_sid
   twilio_auth_token = var.auth_token

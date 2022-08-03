@@ -1,13 +1,13 @@
 [
   {
     "name": "child",
-    "label": "Niño llamando sobre si mismo",
+    "label": "Adolescente llamando por sí mismo",
     "type": "button",
     "category": "data"
   },
   {
     "name": "caller",
-    "label": "Alguien llamando sobre un niño",
+    "label": "Alguien llamando por un adolescente",
     "type": "button",
     "category": "data"
   },
@@ -19,7 +19,7 @@
   },
   {
     "name": "hangup",
-    "label": "Colgado",
+    "label": "Ha colgado",
     "type": "button",
     "category": "non-data"
   },
