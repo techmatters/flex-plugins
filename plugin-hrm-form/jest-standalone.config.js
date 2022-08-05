@@ -8,6 +8,7 @@ module.exports = config => {
     setupFiles: ['./src/setupTests.js'],
     testEnvironment: 'jest-environment-jsdom-latest',
     testTimeout: 2 * 60 * 1000, // 2 minutes in ms
+    transformIgnorePatterns: ['/node_modules'],
   };
 
   return config;
