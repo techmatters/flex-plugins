@@ -295,9 +295,9 @@ resource "twilio_studio_flows_v2" "messaging_flow" {
   status = "published"
   definition = local.flow_definition
 }
-
+/*
 resource "twilio_studio_flows_v2" "twitter_messaging_flow" {
   friendly_name = "Twitter Messaging Flow"
   status = "published"
   definition = local.twitter_messaging_flow_definition
-}
+}*/
