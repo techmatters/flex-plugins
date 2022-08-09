@@ -5,7 +5,7 @@ import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { FieldValues, FormProvider, SubmitErrorHandler, useForm } from 'react-hook-form';
-import type { DefinitionVersion, FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
+import type { DefinitionVersion, FormDefinition } from 'hrm-form-definitions';
 import { isEqual } from 'lodash';
 
 import {
@@ -40,7 +40,6 @@ import { recordingErrorHandler } from '../../fullStory';
 import {
   CaseUpdater,
   EditTemporaryCaseInfo,
-  isAddTemporaryCaseInfo,
   isEditTemporaryCaseInfo,
   TemporaryCaseInfo,
   temporaryCaseInfoHistory,
@@ -50,34 +49,30 @@ import CloseCaseDialog from './CloseCaseDialog';
 type CaseItemPayload = { [key: string]: string | boolean };
 
 const UNSUPPORTED_TEMPORARY_INFO_TYPE_MESSAGE =
-  'Only AddTemporaryCaseInfo and EditTemporaryCaseInfo temporary case data types are supported by this component.';
+  'Only EditTemporaryCaseInfo temporary case data types are supported by this component.';
 
 const getTemporaryFormContent = (temporaryCaseInfo: TemporaryCaseInfo): CaseItemPayload | null => {
   if (isEditTemporaryCaseInfo(temporaryCaseInfo)) {
     return temporaryCaseInfo.info.form;
-  } else if (isAddTemporaryCaseInfo(temporaryCaseInfo)) {
-    return temporaryCaseInfo.info;
   }
   return null;
 };
 
-export type AddEditCaseSummaryProps = {
+export type EditCaseSummaryProps = {
   task: CustomITask | StandaloneITask;
   counselor: string;
   definitionVersion: DefinitionVersion;
   exitItem: () => void;
   routing: AppRoutesWithCaseAndAction;
   itemType: string;
-  formDefinition: FormDefinition;
-  layout: LayoutDefinition;
   applyTemporaryInfoToCase: CaseUpdater;
   customFormHandlers?: CustomHandlers;
   reactHookFormOptions?: Partial<{ shouldUnregister: boolean }>;
 };
 // eslint-disable-next-line no-use-before-define
-type Props = AddEditCaseSummaryProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+type Props = EditCaseSummaryProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-const AddEditCaseSummary: React.FC<Props> = ({
+const EditCaseSummary: React.FC<Props> = ({
   task,
   counselor,
   counselorsHash,
@@ -86,14 +81,44 @@ const AddEditCaseSummary: React.FC<Props> = ({
   itemType,
   setConnectedCase,
   updateTempInfo,
-  formDefinition,
-  layout,
   applyTemporaryInfoToCase,
   customFormHandlers,
   reactHookFormOptions,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const firstElementRef = useFocus();
+
+  const layout = {
+    splitFormAt: 3,
+  };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const formDefinition: FormDefinition = [
+    {
+      name: 'caseStatus',
+      label: 'Case Status',
+      type: 'select',
+      options: [
+        { value: 'open', label: 'open' },
+        { value: 'closed', label: 'closed' },
+      ],
+    },
+    {
+      name: 'date',
+      type: 'date-input',
+      label: 'Follow Up Date',
+    },
+    {
+      name: 'inImminentPhysicalDanger',
+      label: 'Child is in imminent physical danger',
+      type: 'checkbox',
+    },
+    {
+      name: 'caseSummary',
+      label: 'Case Summary',
+      type: 'textarea',
+    },
+  ];
 
   const { temporaryCaseInfo } = connectedCaseState;
 
@@ -269,9 +294,9 @@ const AddEditCaseSummary: React.FC<Props> = ({
   );
 };
 
-AddEditCaseSummary.displayName = 'AddEditCaseSummary';
+EditCaseSummary.displayName = 'EditCaseSummary';
 
-const mapStateToProps = (state: RootState, ownProps: AddEditCaseSummaryProps) => {
+const mapStateToProps = (state: RootState, ownProps: EditCaseSummaryProps) => {
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
   const caseState: CaseState = state[namespace][connectedCaseBase]; // casting type as inference is not working for the store yet
   const connectedCaseState = caseState.tasks[ownProps.task.taskSid];
@@ -286,4 +311,4 @@ const mapDispatchToProps = {
   changeRoute: RoutingActions.changeRoute,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddEditCaseSummary);
+export default connect(mapStateToProps, mapDispatchToProps)(EditCaseSummary);

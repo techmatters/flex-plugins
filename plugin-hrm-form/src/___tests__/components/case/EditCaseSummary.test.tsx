@@ -10,7 +10,7 @@ import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../../states';
-import AddEditCaseSummary, { AddEditCaseSummaryProps } from '../../../components/case/AddEditCaseSummary';
+import EditCaseSummary, { EditCaseSummaryProps } from '../../../components/case/EditCaseSummary';
 import { getDefinitionVersions } from '../../../HrmFormPlugin';
 import { updateCaseSectionListByIndex } from '../../../states/case/types';
 import { StandaloneITask } from '../../../types/types';
@@ -138,18 +138,49 @@ store3.dispatch = jest.fn();
 
 const themeConf: ThemeConfigProps = {};
 
+const layout = {
+  splitFormAt: 3,
+};
+
+const formDefinition = [
+  {
+    name: 'caseStatus',
+    label: 'Case Status',
+    type: 'select',
+    options: [
+      { value: 'open', label: 'open' },
+      { value: 'closed', label: 'closed' },
+    ],
+  },
+  {
+    name: 'date',
+    type: 'date-input',
+    label: 'Follow Up Date',
+  },
+  {
+    name: 'inImminentPhysicalDanger',
+    label: 'Child is in imminent physical danger',
+    type: 'checkbox',
+  },
+  {
+    name: 'caseSummary',
+    label: 'Case Summary',
+    type: 'textarea',
+  },
+];
+
 describe('Test EditCaseSummary', () => {
   const exitItem = jest.fn();
-  let ownProps: AddEditCaseSummaryProps;
+  let ownProps: EditCaseSummaryProps;
   beforeEach(
     () =>
       (ownProps = {
         task: state2[namespace][connectedCaseBase].tasks.task1 as StandaloneITask,
         counselor: 'Someone',
         exitItem,
-        layout: mockV1.layoutVersion.case.caseSummaries,
+        layout,
         applyTemporaryInfoToCase: updateCaseSectionListByIndex('caseSummaries', 'caseSummary'),
-        formDefinition: mockV1.caseForms.CaseSummaryForm,
+        formDefinition,
         definitionVersion: mockV1,
         itemType: 'CaseSummary',
         routing: {
@@ -163,7 +194,7 @@ describe('Test EditCaseSummary', () => {
     render(
       <StorelessThemeProvider themeConf={themeConf}>
         <Provider store={store2}>
-          <AddEditCaseSummary {...ownProps} />
+          <EditCaseSummary {...ownProps} />
         </Provider>
       </StorelessThemeProvider>,
     );
@@ -187,7 +218,7 @@ describe('Test EditCaseSummary', () => {
     const wrapper = mount(
       <StorelessThemeProvider themeConf={themeConf}>
         <Provider store={store2}>
-          <AddEditCaseSummary {...ownProps} />
+          <EditCaseSummary {...ownProps} />
         </Provider>
       </StorelessThemeProvider>,
     );

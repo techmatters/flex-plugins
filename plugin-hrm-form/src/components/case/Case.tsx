@@ -35,7 +35,7 @@ import { recordBackendError } from '../../fullStory';
 import { completeTask, submitContactForm } from '../../services/formSubmissionHelpers';
 import { getPermissionsForCase, PermissionActions } from '../../permissions';
 import { CenteredContainer } from '../../styles/case';
-import AddEditCaseSummary from './AddEditCaseSummary';
+import EditCaseSummary from './EditCaseSummary';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -203,7 +203,6 @@ const Case: React.FC<Props> = ({
   const summary = info?.summary;
   const definitionVersion = props.definitionVersions[version];
   const office = getHelplineData(connectedCase.helpline, definitionVersion.helplineInformation);
-  const caseSummaries = info && info.caseSummaries ? info.caseSummaries : [];
 
   const onInfoChange = (fieldName, value) => {
     const newInfo = info ? { ...info, [fieldName]: value } : { [fieldName]: value };
@@ -287,7 +286,6 @@ const Case: React.FC<Props> = ({
     version,
     contact: firstConnectedContact,
     contacts: connectedCase?.connectedContacts ?? [],
-    caseSummaries,
   };
   if (isAppRoutesWithCaseAndAction(routing)) {
     const { action, subroute } = routing;
@@ -466,13 +464,11 @@ const Case: React.FC<Props> = ({
         );
       case NewCaseSubroutes.CaseSummary:
         return (
-          <AddEditCaseSummary
+          <EditCaseSummary
             {...{
               ...addScreenProps,
-              layout: caseLayouts.caseSummaries,
               itemType: 'CaseSummary',
-              applyTemporaryInfoToCase: updateCaseSectionListByIndex('caseSummaries', 'caseSummary'),
-              formDefinition: caseForms.CaseSummaryForm,
+              applyTemporaryInfoToCase: updateCaseSectionListByIndex('caseSummary', 'caseSummary'),
               followUpDate,
               caseStatus: status,
             }}

@@ -379,9 +379,6 @@ const CaseHome: React.FC<Props> = ({
                 openDialog={closeDialog}
               />
             </Box>
-            <StyledNextStepButton disabled={!isEdited} roundCorners onClick={handleUpdate}>
-              <Template code="BottomBar-Update" />
-            </StyledNextStepButton>
           </>
         )}
       </BottomButtonBar>

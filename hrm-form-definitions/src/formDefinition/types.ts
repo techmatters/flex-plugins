@@ -172,7 +172,6 @@ export type LayoutVersion = {
     referrals: LayoutDefinition;
     documents: LayoutDefinition;
     notes?: LayoutDefinition;
-    caseSummaries: LayoutDefinition;
   };
 };
 
@@ -194,7 +193,6 @@ export type DefinitionVersion = {
     PerpetratorForm: FormDefinition;
     ReferralForm: FormDefinition;
     DocumentForm: FormDefinition;
-    CaseSummaryForm: FormDefinition;
   };
   // TODO: change this property to contactForms to be consistent (though that may create confusion with the component name)
   tabbedForms: {
