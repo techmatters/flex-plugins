@@ -181,6 +181,8 @@ const ContactDetailsHome: React.FC<Props> = function ({
           showEditButton={enableEditing && can(PermissionActions.EDIT_CONTACT)}
           handleEditClick={() => navigate(ContactDetailsRoute.EDIT_CALLER_INFORMATION)}
           buttonDataTestid="ContactDetails-Section-CallerInformation"
+          handleOpenConnectDialog={handleOpenConnectDialog}
+          showActionIcons={showActionIcons}
         >
           {definitionVersion.tabbedForms.CallerInformationTab.map(e => (
             <SectionEntry

@@ -76,3 +76,8 @@ export const setEditContactPageClosed = (): t.ContactsActionType => ({
   type: t.SET_EDITING_CONTACT,
   editing: false,
 });
+
+export const checkButtonData = (buttonData: boolean): t.ContactsActionType => ({
+  type: t.CHECK_BUTTON_DATA,
+  buttonData,
+});

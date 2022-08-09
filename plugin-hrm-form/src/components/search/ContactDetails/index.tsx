@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 
-import { namespace, contactFormsBase, RootState } from '../../../states';
+import { namespace, contactFormsBase, RootState, searchContactsBase } from '../../../states';
 import { Container } from '../../../styles/HrmStyles';
 import GeneralContactDetails from '../../contact/ContactDetails';
 import ConnectDialog from '../ConnectDialog';
@@ -24,7 +24,9 @@ type OwnProps = {
 };
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const editContactFormOpen = state[namespace][contactFormsBase].editingContact;
-  return { editContactFormOpen };
+  const { buttonData } = state[namespace][contactFormsBase];
+
+  return { editContactFormOpen, buttonData };
 };
 const mapDispatchToProps = {
   loadContactIntoState: loadContact,
@@ -43,6 +45,7 @@ const ContactDetails: React.FC<Props> = ({
   loadContactIntoState,
   releaseContactFromState,
   editContactFormOpen,
+  buttonData,
 }: Props) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -50,7 +53,6 @@ const ContactDetails: React.FC<Props> = ({
     loadContactIntoState(contact, task.taskSid);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contact]);
-
   const handleBackToResults = () => {
     releaseContactFromState(contact.contactId, task.taskSid);
     handleBack();
@@ -80,6 +82,7 @@ const ContactDetails: React.FC<Props> = ({
         contact={contact}
         handleConfirm={handleConfirmDialog}
         handleClose={handleCloseDialog}
+        buttonData={buttonData}
       />
 
       <div className={`${editContactFormOpen ? 'editingContact' : ''} hiddenWhenEditingContact`}>

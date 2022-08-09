@@ -54,6 +54,7 @@ export type TaskEntry = {
       expanded: { [key: string]: boolean };
     };
   };
+  buttonData: boolean;
 };
 
 type ContactsState = {
@@ -63,6 +64,7 @@ type ContactsState = {
   existingContacts: ExistingContactsState;
   contactDetails: ContactDetailsState;
   editingContact: boolean;
+  buttonData: boolean;
 };
 
 export const emptyCategories = [];
@@ -110,6 +112,7 @@ export const createNewTaskEntry = (definitions: DefinitionVersion) => (recreated
     categories: emptyCategories,
     csamReports: [],
     metadata,
+    buttonData: false,
   };
 };
 
@@ -121,6 +124,7 @@ const initialState: ContactsState = {
     [DetailsContext.CONTACT_SEARCH]: { detailsExpanded: {} },
   },
   editingContact: false,
+  buttonData: false,
 };
 
 // eslint-disable-next-line import/no-unused-modules,complexity
@@ -279,6 +283,9 @@ export function reduce(
           },
         },
       };
+    }
+    case t.CHECK_BUTTON_DATA: {
+      return { ...state, buttonData: action.buttonData };
     }
     case t.SET_EDITING_CONTACT: {
       return { ...state, editingContact: action.editing };

@@ -11,7 +11,7 @@ import TabPressWrapper from '../TabPressWrapper';
 import { contactType } from '../../types';
 import { hasTaskControl } from '../../utils/transfer';
 
-const ConnectDialog = ({ anchorEl, currentIsCaller, contact, handleConfirm, handleClose, task }) => {
+const ConnectDialog = ({ anchorEl, currentIsCaller, contact, handleConfirm, handleClose, task, buttonData }) => {
   const isOpen = Boolean(anchorEl);
   const id = isOpen ? 'simple-popover' : undefined;
 
@@ -23,7 +23,7 @@ const ConnectDialog = ({ anchorEl, currentIsCaller, contact, handleConfirm, hand
       case callTypes.child:
         return <Template code="ConnectDialog-Child" />;
       case callTypes.caller:
-        if (currentIsCaller) return <Template code="ConnectDialog-Caller" />;
+        if (currentIsCaller && buttonData) return <Template code="ConnectDialog-Caller" />;
         return <Template code="ConnectDialog-Child" />;
       default:
         return '';
