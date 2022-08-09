@@ -8,6 +8,7 @@
   - [import-account-defaults](#import-account-defaults)
   - [import-tf](#import-tf)
   - [generate-chatbot-tf](#generate-chatbot-tf)
+  - [patch-feature-flags](#patch-feature-flags)
 
 ## generateDeploymentFiles
 This script generates deployment files for `flex-plugins` and `serverless` repos.
@@ -137,3 +138,16 @@ Example:
 ➜ npm run twilioResources -- generate-chatbot-tf --assistantSid=UAxxxxxxxxxxxx --referenceName=my_custom_bot --serverlessUrl=https://serverless-xxxx-production.twil.io
 ```
 will create a new file `my_custom_bot.tf` that contains the definition of the bot with the sid `UAxxxxxxxxxxxx`, and will replace all the occurrences of `https://serverless-xxxx-production.twil.io` for the dynamic form we use in the terraform setup (`${var.serverless_url}`).
+
+### patch-feature-flags
+
+This script allows you to safely update the feature flags specified in a Twilio Account's Service Configuration without affecting other settings
+
+You need to have `TWILIO_ACCOUNT_SID` and `TWILIO_AUTH_TOKEN` environment variables set (either passed in the command itself or in a `.env` file).
+You also must provide the following parameters to the script:
+- `-f / --flag`: Use this to specify a flag and what you wish to set it to. The value must take the form {flag_name}:{flag_set}, e.g. -f my_flag:true. Can be specified multiple times
+  Example:
+```
+➜ npm run twilioResources patch-feature-flags -- -f enable_voice_recordings:false -f enable_transcripts:true
+```
+will set the `enable_voice_recordings` to false, and the `enable_transcripts` flag to true, creating them if they didn't previously exist, or overwriting their previous setting if they did.
