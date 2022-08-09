@@ -128,10 +128,10 @@ From here you can either C&P the commands and run them manually, or rerun the sc
 Given an already existing chatbot assistant, living in a Twilio account, will generate the `.tf` file that represents that definition.
 It will create the file locally, so you need to grab it and drop it where it makes sense.
 
-You need to have `TWILIO_ACCOUNT_SID` and `TWILIO_AUTH_TOKEN` environemt variables set (either passed in the command itself or in a `.env` file).
+You need to have `TWILIO_ACCOUNT_SID` and `TWILIO_AUTH_TOKEN` environment variables set (either passed in the command itself or in a `.env` file).
 You also must provide the following parameters to the script: 
   - `assistantSid`: Target chatbot's assistant sid to generate the .tf from.
-  - `referenceName`: The reference name that will be used as the top level resurce (the name of the assistant resource in the .tf file).
+  - `referenceName`: The reference name that will be used as the top level resource (the name of the assistant resource in the .tf file).
   - `serverlessUrl`: \[optional\] The serverless url of the account. If present, will replace it for the dynamic form in the .tf file.
 Example: 
 ```
