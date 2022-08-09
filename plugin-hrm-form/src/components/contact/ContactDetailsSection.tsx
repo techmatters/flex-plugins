@@ -1,7 +1,6 @@
-import React, { Dispatch } from 'react';
+import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { ArrowDropDownTwoTone, ArrowRightTwoTone, Edit, Link } from '@material-ui/icons';
 
 import {
@@ -13,7 +12,6 @@ import {
   SectionActionButton,
 } from '../../styles/search';
 import { checkButtonData } from '../../states/contacts/actions';
-import { namespace, RootState, searchContactsBase } from '../../states';
 
 const ArrowDownIcon = ContactDetailsIcon(ArrowDropDownTwoTone);
 const ArrowRightIcon = ContactDetailsIcon(ArrowRightTwoTone);
