@@ -195,5 +195,12 @@
     "name": "ethnicity",
     "label": "Ethnicity",
     "type": "input"
+  },
+  {
+    "name": "copyToHousehold",
+    "label": "Also a household member",
+    "type": "copy-to",
+    "target": "households",
+    "saved": false
   }
 ]

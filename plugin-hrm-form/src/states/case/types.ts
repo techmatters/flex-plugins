@@ -20,12 +20,10 @@ type ViewContact = {
   counselor: string;
 };
 
-type Indexable = { index: number };
-
 export type ViewTemporaryCaseInfo = {
   screen: CaseSectionSubroute;
   action: CaseItemAction.View;
-  info: t.CaseItemEntry & Indexable;
+  info: t.CaseItemEntry;
 };
 
 export function isViewTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is ViewTemporaryCaseInfo {
@@ -35,7 +33,7 @@ export function isViewTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is ViewTemp
 export type EditTemporaryCaseInfo = {
   screen: CaseSectionSubroute;
   action: CaseItemAction.Edit;
-  info: t.CaseItemEntry & Indexable;
+  info: t.CaseItemEntry;
   isEdited?: boolean;
 };
 

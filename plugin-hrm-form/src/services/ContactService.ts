@@ -9,6 +9,7 @@ import type {
   FormItemDefinition,
 } from 'hrm-form-definitions';
 
+import { isNonSaveable } from 'hrm-form-definitions';
 import { createNewTaskEntry, TaskEntry } from '../states/contacts/reducer';
 import { isNonDataCallType } from '../states/ValidationRules';
 import { getQueryParams } from './PaginationParams';
@@ -77,7 +78,7 @@ const transformValue = (e: FormItemDefinition) => (value: string | boolean | nul
 
 // TODO: find a place where this is shared, as it's used also in case forms
 export const transformValues = (def: FormDefinition) => (values: { [key: string]: string | boolean }) =>
-  def.reduce((acc, e) => ({ ...acc, [e.name]: transformValue(e)(values[e.name]) }), {});
+  def.reduce((acc, e) => (isNonSaveable(e) ? acc : { ...acc, [e.name]: transformValue(e)(values[e.name]) }), {});
 
 const deTransformValue = (e: FormItemDefinition) => (value: string | boolean | null) => {
   // de-transform mixed checkbox null DB value to be "mixed"

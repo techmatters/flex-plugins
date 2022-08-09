@@ -74,6 +74,7 @@ export const getInitialValue = (def: FormItemDefinition) => {
       return def.defaultOption ? def.defaultOption : def.options[0].value;
     case 'dependent-select':
       return def.defaultOption.value;
+    case 'copy-to':
     case 'checkbox':
       return Boolean(def.initialChecked);
     case 'mixed-checkbox':
@@ -581,6 +582,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
           }}
         </ConnectForm>
       );
+    case 'copy-to':
     case 'checkbox':
       return (
         <ConnectForm key={path}>

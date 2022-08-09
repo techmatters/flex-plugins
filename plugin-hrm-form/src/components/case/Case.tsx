@@ -35,6 +35,12 @@ import { recordBackendError } from '../../fullStory';
 import { completeTask, submitContactForm } from '../../services/formSubmissionHelpers';
 import { getPermissionsForCase, PermissionActions } from '../../permissions';
 import { CenteredContainer } from '../../styles/case';
+import { documentSectionApi } from '../../states/case/sections/document';
+import { incidentSectionApi } from '../../states/case/sections/incident';
+import { perpetratorSectionApi } from '../../states/case/sections/perpetrator';
+import { householdSectionApi } from '../../states/case/sections/household';
+import { referralSectionApi } from '../../states/case/sections/referral';
+import { noteSectionApi } from '../../states/case/sections/note';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -259,7 +265,6 @@ const Case: React.FC<Props> = ({
   };
 
   const { caseForms } = definitionVersion;
-  const caseLayouts = definitionVersion.layoutVersion.case;
 
   const caseDetails = {
     id: connectedCase.id,
@@ -304,8 +309,7 @@ const Case: React.FC<Props> = ({
           return (
             <ViewCaseItem
               {...addScreenProps}
-              itemType="Note"
-              formDefinition={caseForms.NoteForm}
+              sectionApi={noteSectionApi}
               canEdit={() => can(PermissionActions.EDIT_NOTE)}
             />
           );
@@ -314,23 +318,8 @@ const Case: React.FC<Props> = ({
           <AddEditCaseItem
             {...{
               ...addScreenProps,
-              layout: {},
-              itemType: 'Note',
-              formDefinition: caseForms.NoteForm,
+              sectionApi: noteSectionApi,
             }}
-            applyTemporaryInfoToCase={updateCaseListByIndex<NoteEntry>(
-              ci => {
-                ci.counsellorNotes = ci.counsellorNotes ?? [];
-                return ci.counsellorNotes;
-              },
-              temp => {
-                const { form: noteForm, ...entryInfo } = temp;
-                return {
-                  ...noteForm,
-                  ...entryInfo,
-                };
-              },
-            )}
           />
         );
       case NewCaseSubroutes.Referral:
@@ -338,8 +327,7 @@ const Case: React.FC<Props> = ({
           return (
             <ViewCaseItem
               {...addScreenProps}
-              itemType="Referral"
-              formDefinition={caseForms.ReferralForm}
+              sectionApi={referralSectionApi}
               canEdit={() => can(PermissionActions.EDIT_REFERRAL)}
             />
           );
@@ -348,25 +336,8 @@ const Case: React.FC<Props> = ({
           <AddEditCaseItem
             {...{
               ...addScreenProps,
-              layout: {},
-              itemType: 'Referral',
-              formDefinition: caseForms.ReferralForm,
+              sectionApi: referralSectionApi,
             }}
-            applyTemporaryInfoToCase={updateCaseListByIndex<ReferralEntry>(
-              ci => {
-                ci.referrals = ci.referrals ?? [];
-                return ci.referrals;
-              },
-              temp => {
-                const { form: referralForm, ...entryInfo } = temp;
-                return {
-                  ...referralForm,
-                  referredTo: referralForm.referredTo as string,
-                  date: referralForm.date as string,
-                  ...entryInfo,
-                };
-              },
-            )}
           />
         );
       case NewCaseSubroutes.Household:
@@ -374,8 +345,7 @@ const Case: React.FC<Props> = ({
           return (
             <ViewCaseItem
               {...addScreenProps}
-              itemType="Household"
-              formDefinition={caseForms.HouseholdForm}
+              sectionApi={householdSectionApi}
               canEdit={() => can(PermissionActions.EDIT_HOUSEHOLD)}
             />
           );
@@ -384,10 +354,7 @@ const Case: React.FC<Props> = ({
           <AddEditCaseItem
             {...{
               ...addScreenProps,
-              layout: caseLayouts.households,
-              itemType: 'Household',
-              applyTemporaryInfoToCase: updateCaseSectionListByIndex('households', 'household'),
-              formDefinition: caseForms.HouseholdForm,
+              sectionApi: householdSectionApi,
             }}
           />
         );
@@ -396,8 +363,7 @@ const Case: React.FC<Props> = ({
           return (
             <ViewCaseItem
               {...addScreenProps}
-              itemType="Perpetrator"
-              formDefinition={caseForms.PerpetratorForm}
+              sectionApi={perpetratorSectionApi}
               canEdit={() => can(PermissionActions.EDIT_PERPETRATOR)}
             />
           );
@@ -406,10 +372,7 @@ const Case: React.FC<Props> = ({
           <AddEditCaseItem
             {...{
               ...addScreenProps,
-              layout: caseLayouts.perpetrators,
-              itemType: 'Perpetrator',
-              applyTemporaryInfoToCase: updateCaseSectionListByIndex('perpetrators', 'perpetrator'),
-              formDefinition: caseForms.PerpetratorForm,
+              sectionApi: perpetratorSectionApi,
             }}
           />
         );
@@ -418,8 +381,7 @@ const Case: React.FC<Props> = ({
           return (
             <ViewCaseItem
               {...addScreenProps}
-              itemType="Incident"
-              formDefinition={caseForms.IncidentForm}
+              sectionApi={incidentSectionApi}
               canEdit={() => can(PermissionActions.EDIT_INCIDENT)}
             />
           );
@@ -428,10 +390,7 @@ const Case: React.FC<Props> = ({
           <AddEditCaseItem
             {...{
               ...addScreenProps,
-              layout: caseLayouts.incidents,
-              itemType: 'Incident',
-              applyTemporaryInfoToCase: updateCaseSectionListByIndex('incidents', 'incident'),
-              formDefinition: caseForms.IncidentForm,
+              sectionApi: incidentSectionApi,
             }}
           />
         );
@@ -440,8 +399,7 @@ const Case: React.FC<Props> = ({
           return (
             <ViewCaseItem
               {...addScreenProps}
-              itemType="Document"
-              formDefinition={caseForms.DocumentForm}
+              sectionApi={documentSectionApi}
               canEdit={() => can(PermissionActions.EDIT_DOCUMENT)}
             />
           );
@@ -450,10 +408,7 @@ const Case: React.FC<Props> = ({
           <AddEditCaseItem
             {...{
               ...addScreenProps,
-              layout: caseLayouts.documents,
-              itemType: 'Document',
-              applyTemporaryInfoToCase: updateCaseSectionListByIndex('documents', 'document'),
-              formDefinition: caseForms.DocumentForm,
+              sectionApi: documentSectionApi,
               customFormHandlers: documentUploadHandler,
               reactHookFormOptions: {
                 shouldUnregister: false,
