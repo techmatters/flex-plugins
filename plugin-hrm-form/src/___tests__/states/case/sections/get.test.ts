@@ -53,7 +53,7 @@ describe('getMostRecentSectionItem', () => {
   test('Empty array at specified property name - returns undefined', () => {
     expect(getMostRecentSectionItem('households')({ households: [] })).toBeUndefined();
   });
-  test('Array with unparseable createdAt dates at specified property name - throws', () => {
+  test('Array with unparseable createdAt dates at specified property name - uses remaining dates', () => {
     expect(
       getMostRecentSectionItem('households')({
         households: [
