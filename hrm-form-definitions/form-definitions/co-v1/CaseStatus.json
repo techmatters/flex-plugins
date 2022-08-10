@@ -4,7 +4,6 @@
     "label": "Abierto",
     "color": "green",
     "transitions": [
-      "inProgress",
       "closed"
     ]
   },
@@ -13,7 +12,7 @@
     "label": "Cerrado",
     "color": "red",
     "transitions": [
-      "inProgress"
+      "open"
     ]
   }
 }
