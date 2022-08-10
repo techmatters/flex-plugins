@@ -1,7 +1,8 @@
-import styled from 'react-emotion';
+import { styled } from '@twilio/flex-ui';
 import { Table, TableCell, TableRow, withStyles } from '@material-ui/core';
 
 import { Absolute, FontOpenSans, Flex } from '../HrmStyles';
+import HrmTheme from '../HrmTheme';
 
 export const CaseListContainer = styled(Absolute)`
   height: 100%;
@@ -18,8 +19,8 @@ export const CenteredContainer = styled(CaseListContainer)`
 CenteredContainer.displayName = 'CenteredContainer';
 
 export const TableContainer = styled(Flex)`
-  border-left: 15px solid ${props => props.theme.colors.base2};
-  border-right: 10px solid ${props => props.theme.colors.base2};
+  border-left: 15px solid ${HrmTheme.colors.base2};
+  border-right: 10px solid ${HrmTheme.colors.base2};
 `;
 TableContainer.displayName = 'TableContainer';
 
@@ -173,7 +174,7 @@ export const ButtonText = styled(FontOpenSans)<ButtonTextProps>`
 ButtonText.displayName = 'ButtonText';
 
 export const SomethingWentWrongText = styled(FontOpenSans)`
-  color: ${props => props.theme.colors.errorColor};
+  color: ${HrmTheme.colors.errorColor};
   font-size: 20px;
 `;
 SomethingWentWrongText.displayName = 'SomethingWentWrongText';

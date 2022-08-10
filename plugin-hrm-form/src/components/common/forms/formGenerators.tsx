@@ -174,12 +174,12 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                   aria-invalid={Boolean(error)}
                   aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
-                  innerRef={innerRef => {
+                  ref={ref => {
                     if (htmlElRef) {
-                      htmlElRef.current = innerRef;
+                      htmlElRef.current = ref;
                     }
 
-                    register(rules)(innerRef);
+                    register(rules)(ref);
                   }}
                   defaultValue={initialValue}
                 />
@@ -214,15 +214,15 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                   aria-invalid={Boolean(error)}
                   aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
-                  innerRef={innerRef => {
+                  ref={ref => {
                     if (htmlElRef) {
-                      htmlElRef.current = innerRef;
+                      htmlElRef.current = ref;
                     }
 
                     register({
                       ...rules,
                       pattern: { value: /^[0-9]+$/g, message: 'This field only accepts numeric input.' },
-                    })(innerRef);
+                    })(ref);
                   }}
                   defaultValue={initialValue}
                 />
@@ -257,15 +257,15 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                   aria-invalid={Boolean(error)}
                   aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
-                  innerRef={innerRef => {
+                  ref={ref => {
                     if (htmlElRef) {
-                      htmlElRef.current = innerRef;
+                      htmlElRef.current = ref;
                     }
 
                     register({
                       ...rules,
                       pattern: { value: /\S+@\S+\.\S+/, message: 'Entered value does not match email format' },
-                    })(innerRef);
+                    })(ref);
                   }}
                   defaultValue={initialValue}
                   type="email"
@@ -315,13 +315,13 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                           type="radio"
                           value={value}
                           onChange={updateCallback}
-                          innerRef={innerRef => {
+                          ref={ref => {
                             // If autofocus is pertinent, focus first radio input
                             if (index === 0 && htmlElRef) {
-                              htmlElRef.current = innerRef;
+                              htmlElRef.current = ref;
                             }
 
-                            register(rules)(innerRef);
+                            register(rules)(ref);
                           }}
                           checked={currentValue === value}
                         />
@@ -429,16 +429,16 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                               value={value}
                               onChange={updateCallback}
                               tabIndex={optionsTabIndexes[index]}
-                              innerRef={innerRef => {
+                              ref={ref => {
                                 // If autofocus is pertinent, focus first checkbox
                                 if (index === 0 && htmlElRef) {
-                                  htmlElRef.current = innerRef;
+                                  htmlElRef.current = ref;
                                 }
 
                                 // Add ref to optionsRefs array
-                                optionsRefs.current[index] = innerRef;
+                                optionsRefs.current[index] = ref;
 
-                                register(rules)(innerRef);
+                                register(rules)(ref);
                               }}
                               defaultChecked={initialValue.includes(value)}
                             />
@@ -483,12 +483,12 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                     aria-invalid={Boolean(error)}
                     aria-describedby={`${path}-error`}
                     onBlur={updateCallback}
-                    innerRef={innerRef => {
+                    ref={ref => {
                       if (htmlElRef) {
-                        htmlElRef.current = innerRef;
+                        htmlElRef.current = ref;
                       }
 
-                      register(rules)(innerRef);
+                      register(rules)(ref);
                     }}
                     defaultValue={initialValue}
                   >
@@ -558,12 +558,12 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                     aria-invalid={Boolean(error)}
                     aria-describedby={`${path}-error`}
                     onBlur={updateCallback}
-                    innerRef={innerRef => {
+                    ref={ref => {
                       if (htmlElRef) {
-                        htmlElRef.current = innerRef;
+                        htmlElRef.current = ref;
                       }
 
-                      register({ validate })(innerRef);
+                      register({ validate })(ref);
                     }}
                     disabled={disabled}
                     defaultValue={initialValue}
@@ -598,12 +598,12 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                       aria-invalid={Boolean(error)}
                       aria-describedby={`${path}-error`}
                       onChange={updateCallback}
-                      innerRef={innerRef => {
+                      ref={ref => {
                         if (htmlElRef) {
-                          htmlElRef.current = innerRef;
+                          htmlElRef.current = ref;
                         }
 
-                        register(rules)(innerRef);
+                        register(rules)(ref);
                       }}
                       defaultChecked={initialValue}
                     />
@@ -657,9 +657,9 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                         if (checked === true) setChecked(false);
                         if (checked === false) setChecked('mixed');
                       }}
-                      innerRef={innerRef => {
+                      ref={ref => {
                         if (htmlElRef) {
-                          htmlElRef.current = innerRef;
+                          htmlElRef.current = ref;
                         }
                       }}
                     />
@@ -698,12 +698,12 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                   aria-invalid={Boolean(error)}
                   aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
-                  innerRef={innerRef => {
+                  ref={ref => {
                     if (htmlElRef) {
-                      htmlElRef.current = innerRef;
+                      htmlElRef.current = ref;
                     }
 
-                    register(rules)(innerRef);
+                    register(rules)(ref);
                   }}
                   rows={def.rows ? def.rows : 10}
                   width={def.width}
@@ -741,12 +741,12 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                   aria-invalid={Boolean(error)}
                   aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
-                  innerRef={innerRef => {
+                  ref={ref => {
                     if (htmlElRef) {
-                      htmlElRef.current = innerRef;
+                      htmlElRef.current = ref;
                     }
 
-                    register(rules)(innerRef);
+                    register(rules)(ref);
                   }}
                   defaultValue={initialValue}
                 />
@@ -782,12 +782,12 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                   aria-invalid={Boolean(error)}
                   aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
-                  innerRef={innerRef => {
+                  ref={ref => {
                     if (htmlElRef) {
-                      htmlElRef.current = innerRef;
+                      htmlElRef.current = ref;
                     }
 
-                    register(rules)(innerRef);
+                    register(rules)(ref);
                   }}
                   defaultValue={initialValue}
                 />

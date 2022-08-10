@@ -1,6 +1,7 @@
 {
   "extends": [
-    "twilio-react"
+    "twilio-react",
+    "plugin:sonarjs/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -21,6 +22,13 @@
     "sonarjs/no-duplicate-string": "off",
     "no-use-before-define": "off",
     "react/prop-types": "off",
-    "react/display-name": "off"
+    "react/display-name": "off",
+    "react/require-default-props": "off",
+    "react/no-unused-prop-types": "off",
+    "react/default-props-match-prop-types": "off",
+    "react/no-multi-comp": "off",
+    "react/jsx-no-bind": "off",
+    "sonarjs/no-nested-template-literals": "off",
+    "sonar/unused-import": "off"
   }
 }

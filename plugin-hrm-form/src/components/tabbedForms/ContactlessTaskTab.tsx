@@ -4,12 +4,14 @@ import { connect, ConnectedProps } from 'react-redux';
 import { FieldError, useFormContext } from 'react-hook-form';
 import { isFuture } from 'date-fns';
 import { get } from 'lodash';
+import { useFlexSelector } from '@twilio/flex-ui';
 import type { DefinitionVersion } from 'hrm-form-definitions';
 
 import { createFormFromDefinition, disperseInputs } from '../common/forms/formGenerators';
 import { updateForm } from '../../states/contacts/actions';
 import { Container, ColumnarBlock, TwoColumnLayout, TabbedFormTabContainer } from '../../styles/HrmStyles';
 import { configurationBase, namespace, RootState } from '../../states';
+import { selectWorkerSid } from '../../states/selectors/flexSelectors';
 import type { TaskEntry } from '../../states/contacts/reducer';
 import { createContactlessTaskTabDefinition } from './ContactlessTaskTabDefinition';
 import { splitDate, splitTime } from '../../utils/helpers';
@@ -21,7 +23,7 @@ type OwnProps = {
   display: boolean;
   helplineInformation: DefinitionVersion['helplineInformation'];
   definition: DefinitionVersion['tabbedForms']['ContactlessTaskTab'];
-  initialValues: TaskEntry[keyof TaskEntry];
+  initialValues: TaskEntry['contactlessTask'];
   autoFocus: boolean;
 };
 
@@ -45,6 +47,8 @@ const ContactlessTaskTab: React.FC<Props> = ({
 
   const { getValues, register, setError, setValue, watch, errors } = useFormContext();
 
+  const workerSid = useFlexSelector(selectWorkerSid);
+
   const contactlessTaskForm = React.useMemo(() => {
     const updateCallBack = () => {
       const { isFutureAux, ...rest } = getValues().contactlessTask;
@@ -53,12 +57,15 @@ const ContactlessTaskTab: React.FC<Props> = ({
 
     const formDefinition = createContactlessTaskTabDefinition({ counselorsList, helplineInformation, definition });
 
-    const tab = createFormFromDefinition(formDefinition)(['contactlessTask'])(initialForm, firstElementRef)(
-      updateCallBack,
-    );
+    // If no createdOnBehalfOf comming from state, we want the current counselor to be the default
+    const createdOnBehalfOf = initialForm.createdOnBehalfOf || workerSid;
+    const init = { ...initialForm, createdOnBehalfOf };
+
+    const tab = createFormFromDefinition(formDefinition)(['contactlessTask'])(init, firstElementRef)(updateCallBack);
 
     return disperseInputs(5)(tab);
   }, [
+    workerSid,
     counselorsList,
     helplineInformation,
     definition,

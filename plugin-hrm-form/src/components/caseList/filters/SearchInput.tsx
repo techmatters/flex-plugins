@@ -30,7 +30,7 @@ const SearchInput: React.FC<Props> = ({ label, searchTerm, innerRef, onChangeSea
         <SearchIcon style={{ position: 'absolute', top: 10, left: 8, fontSize: '20px', opacity: '40%' }} />
         <MultiSelectSearchInput
           id="search-input"
-          innerRef={innerRef}
+          ref={innerRef}
           value={searchTerm}
           onChange={onChangeSearch}
           type="string"

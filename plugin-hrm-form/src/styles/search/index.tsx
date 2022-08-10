@@ -1,7 +1,6 @@
 import React from 'react';
-import styled from 'react-emotion';
 import { ButtonBase, Paper, Button, FormControlLabel, Switch, Collapse, withStyles } from '@material-ui/core';
-import { Tabs, TabsProps } from '@twilio/flex-ui';
+import { Tabs, TabsProps, styled } from '@twilio/flex-ui';
 import Folder from '@material-ui/icons/Folder';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import Link from '@material-ui/icons/Link';
@@ -9,6 +8,7 @@ import { ButtonProps } from '@material-ui/core/Button';
 import { TransitionProps } from '@material-ui/core/transitions/transition';
 
 import { Flex, Row, FontOpenSans, BottomButtonBar, TabbedFormsContainer } from '../HrmStyles';
+import HrmTheme from '../HrmTheme';
 
 // CaseViewer Styles
 export const CaseWrapper = styled('div')`
@@ -132,7 +132,7 @@ export const StyledLink = styled(({ onClick, ...rest }: StyledLinkProps) => (
   &&:hover {
     text-decoration: ${props => (props.underline ? 'underline' : 'none')};
     text-decoration-color: ${props => (props.underline ? '#1874e1' : 'transparent')};
-    background-color: ${props => (props.underline ? 'transparent' : props.theme.colors.hyperlinkHoverBackgroundColor)};
+    background-color: ${props => (props.underline ? 'transparent' : HrmTheme.colors.hyperlinkHoverBackgroundColor)};
   }
 
   &&:focus {
@@ -189,7 +189,7 @@ export const PrevNameText = styled(FontOpenSans)`
   color: #182b33;
 `;
 
-export const StyledTabs = styled((props: TabsProps) => <Tabs {...props} />)`
+export const StyledTabs = styled((props: Partial<TabsProps> & { children?: any }) => <Tabs {...props} />)`
   .Twilio-TabHeader-StateIndicator-Active {
     background-color: black;
   }
@@ -357,7 +357,7 @@ type CollapseProps = {
 };
 
 export const SectionCollapse = styled(
-  ({ expanded, ...rest }: CollapseProps & { timeout?: TransitionProps['timeout'] | 'auto' }) => (
+  ({ expanded, ...rest }: CollapseProps & { timeout?: TransitionProps['timeout'] | 'auto'; children?: any }) => (
     <Collapse in={expanded} {...rest} />
   ),
 )<CollapseProps>`
@@ -541,7 +541,7 @@ SearchTitle.displayName = 'SearchTitle';
 export const StandaloneSearchContainer = styled(TabbedFormsContainer)`
   max-width: 800px;
   width: 100%;
-  background-color: ${props => props.theme.colors.base2};
+  background-color: ${HrmTheme.colors.base2};
 `;
 StandaloneSearchContainer.displayName = 'StandaloneSearchContainer';
 

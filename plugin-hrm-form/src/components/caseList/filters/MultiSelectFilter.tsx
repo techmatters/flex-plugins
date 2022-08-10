@@ -187,9 +187,9 @@ const MultiSelectFilter: React.FC<Props> = ({
         type="button"
         name={name}
         onClick={handleClick}
-        innerRef={innerRef => {
-          filterButtonElement.current = innerRef;
-          register(innerRef);
+        ref={ref => {
+          filterButtonElement.current = ref;
+          register(ref as HTMLButtonElement & HTMLSelectElement);
         }}
       >
         {text}
@@ -227,11 +227,11 @@ const MultiSelectFilter: React.FC<Props> = ({
                         name={item.value}
                         type="checkbox"
                         defaultChecked={item.checked}
-                        innerRef={innerRef => {
+                        ref={ref => {
                           if (isFirstFocusableElement) {
-                            firstElement.current = innerRef;
+                            firstElement.current = ref;
                           }
-                          register(innerRef);
+                          register(ref);
                         }}
                         onKeyDown={isFirstFocusableElement ? handleShiftTabForFirstElement : null}
                       />
@@ -251,7 +251,7 @@ const MultiSelectFilter: React.FC<Props> = ({
                 type="submit"
                 name="applyButton"
                 onKeyDown={handleTabForLastElement}
-                innerRef={lastElement}
+                ref={lastElement}
               >
                 <Template code="CaseList-Filters-Apply" />
               </FiltersApplyButton>

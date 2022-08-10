@@ -12,7 +12,7 @@ import {
   getDefinitionVersion,
   postSurveyInit,
 } from '../services/ServerlessService';
-import { namespace, contactFormsBase, connectedCaseBase, configurationBase, dualWriteBase } from '../states';
+import { namespace, contactFormsBase, configurationBase, dualWriteBase } from '../states';
 import * as Actions from '../states/contacts/actions';
 import { populateCurrentDefinitionVersion, updateDefinitionVersion } from '../states/configuration/actions';
 import { changeRoute } from '../states/routing/actions';
@@ -42,20 +42,6 @@ export const loadCurrentDefinitionVersion = async () => {
  */
 const getStateContactForms = taskSid => {
   return Manager.getInstance().store.getState()[namespace][contactFormsBase].tasks[taskSid];
-};
-
-/**
- * Given a taskSid, retrieves the state of the connected case (stored in redux) for that task
- * This does not include temporaryCaseInfo
- * @param {string} taskSid
- */
-const getStateCaseForms = taskSid => {
-  return (
-    (Manager.getInstance().store.getState()[namespace][connectedCaseBase] &&
-      Manager.getInstance().store.getState()[namespace][connectedCaseBase].tasks[taskSid] &&
-      Manager.getInstance().store.getState()[namespace][connectedCaseBase].tasks[taskSid].connectedCase) ||
-    {}
-  );
 };
 
 /**

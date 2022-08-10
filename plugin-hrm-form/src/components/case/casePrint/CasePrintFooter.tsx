@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+/* eslint-disable dot-notation */
 import React from 'react';
 import { View, Text } from '@react-pdf/renderer';
 
@@ -10,7 +11,11 @@ type Props = OwnProps;
 
 const CasePrintFooter: React.FC<Props> = props => {
   return (
-    <Text style={styles.footer} render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`} fixed />
+    <Text
+      style={styles['footer']}
+      render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
+      fixed
+    />
   );
 };
 

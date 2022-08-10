@@ -242,9 +242,9 @@ const DateRangeFilter: React.FC<Props> = ({
         type="button"
         name={name}
         onClick={handleClick}
-        innerRef={innerRef => {
-          filterButtonElement.current = innerRef;
-          register(innerRef);
+        ref={ref => {
+          filterButtonElement.current = ref;
+          register(ref);
         }}
       >
         <Template code={labelKey} />
@@ -278,11 +278,11 @@ const DateRangeFilter: React.FC<Props> = ({
                           value={option}
                           name={name}
                           type="radio"
-                          innerRef={innerRef => {
+                          ref={ref => {
                             if (i === 0) {
-                              firstOptionElement.current = innerRef;
+                              firstOptionElement.current = ref;
                             }
-                            register(innerRef);
+                            register(ref);
                           }}
                         />
                         <Template code={filter.titleKey} {...(filter.titleParameters ?? {})} />
@@ -316,7 +316,7 @@ const DateRangeFilter: React.FC<Props> = ({
                   onChange={() => updateWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))}
                   onBlur={() => handleDateValidation()}
                   onFocus={() => resetDateValidation()}
-                  innerRef={register}
+                  ref={register}
                 />
               </Box>
               <span style={{ padding: '5px' }}>
@@ -340,7 +340,7 @@ const DateRangeFilter: React.FC<Props> = ({
                   onChange={() => updateWorkingCopy(formToDateFilter(name, optionsWithoutDividers, getValues()))}
                   onBlur={() => handleDateValidation()}
                   onFocus={() => resetDateValidation()}
-                  innerRef={register}
+                  ref={register}
                 />
               </Box>
             </Box>
@@ -362,9 +362,9 @@ const DateRangeFilter: React.FC<Props> = ({
               <FiltersApplyButton
                 type="submit"
                 name="applyButton"
-                innerRef={innerRef => {
-                  applyButtonElement.current = innerRef;
-                  register(innerRef);
+                ref={ref => {
+                  applyButtonElement.current = ref;
+                  register(ref);
                 }}
                 onKeyDown={handleTabForLastElement}
                 disabled={dateValidations.to.invalid || dateValidations.from.invalid}
