@@ -1,7 +1,9 @@
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { NoteEntry } from '../../../types/types';
-import { CaseSectionApi, CaseUpdater, getMostRecentSectionItem, getSectionItemById, upsertCaseList } from './api';
+import { CaseSectionApi, CaseUpdater} from './api';
+import { upsertCaseList } from './update';
+import { getMostRecentSectionItem, getSectionItemById } from './get';
 
 const noteSectionUpdater: CaseUpdater = upsertCaseList<NoteEntry>(
   ci => {
