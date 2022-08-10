@@ -1,5 +1,15 @@
 {
   "Te Guío": {
+    "Tipo de Conducta Sexual": {
+      "color": "#f148ef",
+      "subcategories": [
+        "Normal",
+        "Inapropiado",
+        "Problemático",
+        "Abusivo",
+        "Violento"
+      ]
+    },
     "Menores Desaparecidos": {
       "color": "#BBE3FF",
       "subcategories": [

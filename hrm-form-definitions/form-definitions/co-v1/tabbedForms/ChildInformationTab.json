@@ -19,48 +19,8 @@
         "label": ""
       },
       {
-        "value": "1",
-        "label": "1"
-      },
-      {
-        "value": "2",
-        "label": "2"
-      },
-      {
-        "value": "3",
-        "label": "3"
-      },
-      {
-        "value": "4",
-        "label": "4"
-      },
-      {
-        "value": "5",
-        "label": "5"
-      },
-      {
-        "value": "6",
-        "label": "6"
-      },
-      {
-        "value": "7",
-        "label": "7"
-      },
-      {
-        "value": "8",
-        "label": "8"
-      },
-      {
-        "value": "9",
-        "label": "9"
-      },
-      {
-        "value": "10",
-        "label": "10"
-      },
-      {
-        "value": "11",
-        "label": "11"
+        "value": "<12",
+        "label": "<12"
       },
       {
         "value": "12",
@@ -93,6 +53,14 @@
       {
         "value": ">18",
         "label": ">18"
+      },
+      {
+        "value": "No requerido",
+        "label": "No requerido"
+      },
+      {
+        "value": "Desconocido",
+        "label": "Desconocido"
       }
     ],
     "required": {
@@ -102,7 +70,7 @@
   },
   {
     "name": "idNumber",
-    "label": "Targeta de Identidad",
+    "label": "Tarjeta de Identidad",
     "type": "input"
   },
   {
@@ -126,6 +94,14 @@
       {
         "value": "No binario",
         "label": "No binario"
+      },
+      {
+        "value": "No requerido",
+        "label": "No requerido"
+      },
+      {
+        "value": "Desconocido",
+        "label": "Desconocido"
       }
     ],
     "required": {
@@ -137,7 +113,7 @@
     "name": "ethnicity",
     "label": "Etnia",
     "type": "select",
-    "unknownOption": "Desconocido",
+    "unknownOption": "",
     "options": [
       {
         "value": "",
@@ -4896,7 +4872,7 @@
     "type": "input"
   },
   {
-    "name": "gradeLevel",
+    "name": "livingSituation",
     "label": "Situación de Vivienda",
     "type": "select",
     "unknownOption": "Desconocido",
@@ -4949,24 +4925,83 @@
     "type": "input"
   },
   {
-    "name": "gradeLevel",
-    "label": "Nivel de Escuela",
+    "name": "schooling",
+    "label": "Escolaridad",
     "type": "select",
-    "unknownOption": "",
     "options": [
       {
         "value": "",
         "label": ""
       },
       {
-        "value": "Primaria (1°2°3°4°5°)",
-        "label": "Primaria (1°2°3°4°5°)"
+        "value": "Primaria",
+        "label": "Primaria"
       },
       {
-        "value": "Bachillerato (6°7°8°9°10°11°)",
-        "label": "Bachillerato (6°7°8°9°10°11°)"
+        "value": "Bachillerato",
+        "label": "Bachillerato"
       }
     ]
+  },
+  {
+    "name": "grade",
+    "label": "Grado",
+    "type": "dependent-select",
+    "dependsOn": "schooling",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "Primaria": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        },
+        {
+          "value": "5",
+          "label": "5"
+        }
+      ],
+      "Bachillerato": [
+        {
+          "value": "6",
+          "label": "6"
+        },
+        {
+          "value": "7",
+          "label": "7"
+        },
+        {
+          "value": "8",
+          "label": "8"
+        },
+        {
+          "value": "9",
+          "label": "9"
+        },
+        {
+          "value": "10",
+          "label": "10"
+        },
+        {
+          "value": "11",
+          "label": "11"
+        }
+      ]
+    }
   },
   {
     "name": "inConflictWithTheLaw",

@@ -53,6 +53,14 @@
       {
         "value": "Otro familiar",
         "label": "Otro familiar"
+      },
+      {
+        "value": "No requerido",
+        "label": "No requerido"
+      },
+      {
+        "value": "Desconocido",
+        "label": "Desconocido"
       }
     ],
     "required": {
