@@ -3,7 +3,7 @@ import { DefinitionVersion, FormDefinition } from 'hrm-form-definitions';
 import { CaseInfo, CaseItemEntry, EntryInfo } from '../../../types/types';
 import { CaseSectionApi, CaseUpdater } from './api';
 
-export const upsertCaseSectionList = (listProperty: string, entryProperty: string = listProperty) => (
+export const upsertCaseSectionItemUsingSectionName = (listProperty: string, entryProperty: string = listProperty) => (
   original: CaseInfo,
   temporaryInfo: CaseItemEntry,
 ) => {
@@ -22,7 +22,7 @@ export const upsertCaseSectionList = (listProperty: string, entryProperty: strin
   return original ? { ...original, [listProperty]: sectionList } : { [listProperty]: sectionList };
 };
 
-export const upsertCaseList = <T extends EntryInfo>(
+export const upsertCaseSectionItem = <T extends EntryInfo>(
   listGetter: (ci: CaseInfo) => T[] | undefined,
   caseItemToListItem: (caseItemEntry: CaseItemEntry) => T,
 ): CaseUpdater => (original: CaseInfo, temporaryInfo: CaseItemEntry, id?: string) => {
@@ -51,21 +51,19 @@ const createCopyForDifferentSection = (
   return { ...sourceItem, form: Object.fromEntries(targetItemEntries) };
 };
 
-type CopyCaseSectionParams = {
-  definition: DefinitionVersion;
-  original: CaseInfo;
-  fromApi: CaseSectionApi<unknown>;
-  fromId?: string;
-  toApi: CaseSectionApi<unknown>;
-};
-
-export const copyCaseSection = ({
+export const copyCaseSectionItem = ({
   definition,
   original,
   fromApi,
   fromId = undefined, // Last item in the list if not specified
   toApi,
-}: CopyCaseSectionParams) => {
+}: {
+  definition: DefinitionVersion;
+  original: CaseInfo;
+  fromApi: CaseSectionApi<unknown>;
+  fromId?: string;
+  toApi: CaseSectionApi<unknown>;
+}) => {
   const fromItem = fromId ? fromApi.getSectionItemById(original, fromId) : fromApi.getMostRecentSectionItem(original);
   if (!fromItem) {
     console.warn(

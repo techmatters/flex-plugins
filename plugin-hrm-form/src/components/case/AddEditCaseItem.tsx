@@ -50,7 +50,7 @@ import {
 import CloseCaseDialog from './CloseCaseDialog';
 import { CaseSectionApi } from '../../states/case/sections/api';
 import { lookupApi } from '../../states/case/sections/lookupApi';
-import { copyCaseSection } from '../../states/case/sections/update';
+import { copyCaseSectionItem } from '../../states/case/sections/update';
 
 type CaseItemPayload = { [key: string]: string | boolean };
 
@@ -196,7 +196,7 @@ const AddEditCaseItem: React.FC<Props> = ({
       formDefinition.forEach(fd => {
         // A preceding 'filter' call looks nicer but TS type narrowing isn't smart enough to work with that.
         if (fd.type === 'copy-to' && form[fd.name]) {
-          newInfo = copyCaseSection({
+          newInfo = copyCaseSectionItem({
             definition: definitionVersion,
             original: newInfo,
             fromApi: sectionApi,

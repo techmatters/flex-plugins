@@ -2,7 +2,7 @@ import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { CaseSectionApi } from './api';
 import { DocumentEntry } from '../../../types/types';
-import { upsertCaseSectionList } from './update';
+import { upsertCaseSectionItemUsingSectionName } from './update';
 import { getMostRecentSectionItem, getSectionItemById } from './get';
 
 export const documentSectionApi: CaseSectionApi<DocumentEntry> = {
@@ -11,7 +11,7 @@ export const documentSectionApi: CaseSectionApi<DocumentEntry> = {
     const { document, ...caseItemEntry } = { ...input, form: input.document };
     return caseItemEntry;
   },
-  upsertCaseSectionItemFromForm: upsertCaseSectionList('documents', 'document'),
+  upsertCaseSectionItemFromForm: upsertCaseSectionItemUsingSectionName('documents', 'document'),
   getSectionFormDefinition: (definitionVersions: DefinitionVersion) => definitionVersions.caseForms.DocumentForm,
   getSectionLayoutDefinition: (definitionVersions: DefinitionVersion) =>
     definitionVersions.layoutVersion.case.documents,

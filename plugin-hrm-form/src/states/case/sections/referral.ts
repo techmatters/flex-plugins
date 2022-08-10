@@ -2,10 +2,10 @@ import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { ReferralEntry } from '../../../types/types';
 import { CaseSectionApi, CaseUpdater } from './api';
-import { upsertCaseList } from './update';
+import { upsertCaseSectionItem } from './update';
 import { getMostRecentSectionItem, getSectionItemById } from './get';
 
-const referralSectionUpdater: CaseUpdater = upsertCaseList<ReferralEntry>(
+const referralSectionUpdater: CaseUpdater = upsertCaseSectionItem<ReferralEntry>(
   ci => {
     ci.referrals = ci.referrals ?? [];
     return ci.referrals;
