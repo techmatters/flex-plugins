@@ -14,49 +14,38 @@
     "type": "checkbox"
   },
   {
-    "name": "actionTaken",
-    "label": "Acción Tomada",
-    "type": "listbox-multiselect",
+    "name": "interventionLevel",
+    "label": "Nivel de intervención",
+    "type": "select",
+    "unknownOption": "",
     "options": [
       {
-        "value": "Intervenciones directas por la línea de ayuda",
-        "label": "Intervenciones directas por la línea de ayuda"
+        "value": "",
+        "label": ""
       },
       {
-        "value": "Recomendaciones de fuentes o recursos",
-        "label": "Recomendaciones de fuentes o recursos"
+        "value": "Atención en crisis ",
+        "label": "Atención en crisis "
       },
       {
-        "value": "Referencias a agencias de protección infantil",
-        "label": "Referencias a agencias de protección infantil"
+        "value": "Acompañamiento ",
+        "label": "Acompañamiento "
       },
       {
-        "value": "Referencias a profesionales generales de salud",
-        "label": "Referencias a profesionales generales de salud"
+        "value": "Orientación ",
+        "label": "Orientación "
       },
       {
-        "value": "Referencia a la policía",
-        "label": "Referencia a la policía"
+        "value": "Información ",
+        "label": "Información "
       },
       {
-        "value": "Referencias a servicios de salud mental",
-        "label": "Referencias a servicios de salud mental"
+        "value": "Psicoeducación ",
+        "label": "Psicoeducación "
       },
       {
-        "value": "Referencias a otras organizaciones",
-        "label": "Referencias a otras organizaciones"
-      },
-      {
-        "value": "Referencias a consejeros escolares",
-        "label": "Referencias a consejeros escolares"
-      },
-      {
-        "value": "Reportes de material de abuso sexual infantil",
-        "label": "Reportes de material de abuso sexual infantil"
-      },
-      {
-        "value": "Otro",
-        "label": "Otro"
+        "value": "Remisión ",
+        "label": "Remisión "
       }
     ]
   },
@@ -89,15 +78,15 @@
     ]
   },
   {
+    "name": "hasConsent",
+    "label": "¿Se recibió consentimiento para almacenar datos personales?",
+    "type": "mixed-checkbox"
+  },
+  {
     "name": "keepConfidential",
     "label": "¿Mantener confidencial?",
     "type": "mixed-checkbox",
     "initialChecked": true
-  },
-  {
-    "name": "hasConsent",
-    "label": "¿Se recibió consentimiento para almacenar datos personales?",
-    "type": "mixed-checkbox"
   },
   {
     "name": "mustCallBack",
