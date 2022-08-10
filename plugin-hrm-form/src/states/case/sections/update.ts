@@ -1,5 +1,6 @@
-import { CaseInfo, CaseItemEntry, EntryInfo } from '../../../types/types';
 import { DefinitionVersion, FormDefinition } from 'hrm-form-definitions';
+
+import { CaseInfo, CaseItemEntry, EntryInfo } from '../../../types/types';
 import { CaseSectionApi, CaseUpdater } from './api';
 
 export const upsertCaseSectionList = (listProperty: string, entryProperty: string = listProperty) => (
@@ -59,12 +60,12 @@ type CopyCaseSectionParams = {
 };
 
 export const copyCaseSection = ({
-                                  definition,
-                                  original,
-                                  fromApi,
-                                  fromId = undefined, // Last item in the list if not specified
-                                  toApi,
-                                }: CopyCaseSectionParams) => {
+  definition,
+  original,
+  fromApi,
+  fromId = undefined, // Last item in the list if not specified
+  toApi,
+}: CopyCaseSectionParams) => {
   const fromItem = fromId ? fromApi.getSectionItemById(original, fromId) : fromApi.getMostRecentSectionItem(original);
   if (!fromItem) {
     console.warn(

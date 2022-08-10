@@ -48,7 +48,7 @@ import {
   temporaryCaseInfoHistory,
 } from '../../states/case/types';
 import CloseCaseDialog from './CloseCaseDialog';
-import { CaseSectionApi} from '../../states/case/sections/api';
+import { CaseSectionApi } from '../../states/case/sections/api';
 import { lookupApi } from '../../states/case/sections/lookupApi';
 import { copyCaseSection } from '../../states/case/sections/update';
 

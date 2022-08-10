@@ -15,6 +15,7 @@ import ViewCaseItem, { ViewCaseItemProps } from '../../../components/case/ViewCa
 import { getDefinitionVersions } from '../../../HrmFormPlugin';
 import { CaseItemEntry, StandaloneITask } from '../../../types/types';
 import { CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
+import { householdSectionApi } from '../../../states/case/sections/household';
 
 expect.extend(toHaveNoViolations);
 const mockStore = configureMockStore([]);
@@ -100,9 +101,9 @@ describe('Test ViewHousehold', () => {
   beforeEach(async () => {
     ownProps = {
       exitItem,
+      definitionVersion: mockV1,
       task: task as StandaloneITask,
-      formDefinition: mockV1.caseForms.HouseholdForm,
-      itemType: 'Household',
+      sectionApi: householdSectionApi,
       routing: {
         route: 'tabbed-forms',
         subroute: NewCaseSubroutes.Household,

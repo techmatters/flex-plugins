@@ -1,15 +1,15 @@
 /* eslint-disable sonarjs/prefer-immediate-return */
 import { set } from 'lodash/fp';
 import { TaskHelper } from '@twilio/flex-ui';
-import type {
+import {
   CategoriesDefinition,
   CategoryEntry,
   DefinitionVersion,
   FormDefinition,
   FormItemDefinition,
+  isNonSaveable,
 } from 'hrm-form-definitions';
 
-import { isNonSaveable } from 'hrm-form-definitions';
 import { createNewTaskEntry, TaskEntry } from '../states/contacts/reducer';
 import { isNonDataCallType } from '../states/ValidationRules';
 import { getQueryParams } from './PaginationParams';

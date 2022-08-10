@@ -1,6 +1,6 @@
 import { DefinitionVersion } from 'hrm-form-definitions';
 
-import { CaseSectionApi} from './api';
+import { CaseSectionApi } from './api';
 import { PerpetratorEntry } from '../../../types/types';
 import { upsertCaseSectionList } from './update';
 import { getMostRecentSectionItem, getSectionItemById } from './get';

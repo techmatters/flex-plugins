@@ -1,7 +1,7 @@
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { ReferralEntry } from '../../../types/types';
-import { CaseSectionApi, CaseUpdater} from './api';
+import { CaseSectionApi, CaseUpdater } from './api';
 import { upsertCaseList } from './update';
 import { getMostRecentSectionItem, getSectionItemById } from './get';
 

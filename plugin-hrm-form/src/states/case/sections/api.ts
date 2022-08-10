@@ -13,4 +13,3 @@ export type CaseSectionApi<T> = {
   getSectionFormDefinition: (definitions: DefinitionVersion) => FormDefinition;
   getSectionLayoutDefinition: (definitions: DefinitionVersion) => LayoutDefinition;
 };
-

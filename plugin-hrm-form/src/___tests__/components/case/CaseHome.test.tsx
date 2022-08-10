@@ -34,11 +34,13 @@ const entry = {
 };
 
 const perpetratorEntry: PerpetratorEntry = {
+  id: 'PERPETRATOR_ID',
   perpetrator: entry,
   createdAt: '2020-06-29T22:26:00.208Z',
   twilioWorkerId: 'worker1',
 };
 const householdEntry: HouseholdEntry = {
+  id: 'HOUSEHOLD_ID',
   household: entry,
   createdAt: '2020-06-29T22:26:00.208Z',
   twilioWorkerId: 'worker1',
@@ -129,8 +131,8 @@ describe('useState mocked', () => {
       prevStatus: 'open',
       caseCounselor: '',
       currentCounselor: '',
-      openedDate: '2020-06-29T22:26:00.208Z',
-      lastUpdatedDate: '',
+      createdAt: '2020-06-29T22:26:00.208Z',
+      updatedAt: '',
       followUpDate: '',
       followUpPrintedDate: '',
       contact: {},
@@ -267,7 +269,7 @@ describe('useState mocked', () => {
 
     screen.getByTestId('Case-InformationRow-ViewButton').click();
 
-    const { household, ...caseItemEntry } = { ...householdEntry, form: householdEntry.household, id: null };
+    const { household, ...caseItemEntry } = { ...householdEntry, form: householdEntry.household };
 
     expect(store.dispatch).toHaveBeenCalledWith({
       value: {
@@ -294,7 +296,7 @@ describe('useState mocked', () => {
     const store = mockStore(initialState);
     store.dispatch = jest.fn();
 
-    const { perpetrator, ...caseItemEntry } = { ...perpetratorEntry, form: perpetratorEntry.perpetrator, id: null };
+    const { perpetrator, ...caseItemEntry } = { ...perpetratorEntry, form: perpetratorEntry.perpetrator };
     render(
       <StorelessThemeProvider themeConf={{}}>
         <Provider store={store}>
