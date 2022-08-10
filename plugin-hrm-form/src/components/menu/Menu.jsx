@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import RootRef from '@material-ui/core/RootRef';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 
 import { StyledPopper, StyledPaper, StyledMenuList } from '../../styles/menu';
@@ -18,9 +17,7 @@ const Menu = ({ open, anchorEl, children, onClickAway }) => (
   <StyledPopper open={open} anchorEl={anchorEl}>
     <StyledPaper>
       <ClickAwayListener onClickAway={preventWhenClickingAnchorEl(onClickAway, anchorEl)}>
-        <RootRef rootRef={rootRef => open && rootRef?.firstChild?.focus()}>
-          <StyledMenuList>{children}</StyledMenuList>
-        </RootRef>
+          <StyledMenuList innerRef={rootRef => open && rootRef?.firstChild?.focus()}>{children}</StyledMenuList>
       </ClickAwayListener>
     </StyledPaper>
   </StyledPopper>

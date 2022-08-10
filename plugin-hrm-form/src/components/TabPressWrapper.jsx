@@ -22,7 +22,6 @@
 import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
 import KeyboardEventHandler from 'react-keyboard-event-handler';
-import RootRef from '@material-ui/core/RootRef';
 
 import { isNullOrUndefined } from '../utils';
 
@@ -156,9 +155,13 @@ class TabPressWrapper extends Component {
       return element;
     });
 
-  addRef = (node, elementRef) => (
-    <RootRef rootRef={elementRef}>{React.cloneElement(node, { ref: elementRef })}</RootRef>
-  );
+  // addRef = (node, elementRef) => (
+  //   <RootRef rootRef={elementRef}>{React.cloneElement(node, { ref: elementRef })}</RootRef>
+  // );
+
+  addRef = (node, elementRef) => {
+    return React.cloneElement(node, { ref: elementRef });
+  };
 
   render() {
     const { childrenWithRef } = this.state;
