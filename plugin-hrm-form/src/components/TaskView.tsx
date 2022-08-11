@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { connect, ConnectedProps, useSelector } from 'react-redux';
 import { TaskHelper } from '@twilio/flex-ui';
 import { bindActionCreators } from 'redux';
 
@@ -9,6 +9,7 @@ import FormNotEditable from './FormNotEditable';
 import { RootState, namespace, contactFormsBase, searchContactsBase, routingBase, configurationBase } from '../states';
 import * as GeneralActions from '../states/actions';
 import { updateHelpline as updateHelplineAction } from '../states/contacts/actions';
+import { selectWorkerTasks } from '../states/selectors/flexSelectors';
 import { hasTaskControl } from '../utils/transfer';
 import type { DefinitionVersion } from '../states/types';
 import { CustomITask, isOfflineContactTask, isInMyBehalfITask } from '../types/types';
@@ -36,6 +37,8 @@ const TaskView: React.FC<Props> = props => {
     recreateContactState,
   } = props;
 
+  const tasks = useSelector(selectWorkerTasks);
+
   React.useEffect(() => {
     if (shouldRecreateState) {
       recreateContactState(currentDefinitionVersion)(task.taskSid);
@@ -45,9 +48,9 @@ const TaskView: React.FC<Props> = props => {
   // Force a re-render on unmount (temporary fix NoTaskView issue with Offline Contacts)
   React.useEffect(() => {
     return () => {
-      if (isOfflineContactTask(task)) reRenderAgentDesktop();
+      if (isOfflineContactTask(task) && tasks.size === 0) reRenderAgentDesktop();
     };
-  }, [task]);
+  }, [task, tasks.size]);
 
   const contactInitialized = Boolean(contactForm);
   const helpline = contactForm?.helpline;
