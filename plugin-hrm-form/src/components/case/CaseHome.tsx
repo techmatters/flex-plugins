@@ -28,6 +28,10 @@ import InformationRow from './InformationRow';
 import TimelineInformationRow from './TimelineInformationRow';
 import DocumentInformationRow from './DocumentInformationRow';
 import CloseCaseDialog from './CloseCaseDialog';
+import { incidentSectionApi } from '../../states/case/sections/incident';
+import { householdSectionApi } from '../../states/case/sections/household';
+import { perpetratorSectionApi } from '../../states/case/sections/perpetrator';
+import { documentSectionApi } from '../../states/case/sections/document';
 
 const splitFullName = (name: CaseDetailsName) => {
   if (name.firstName === 'Unknown' && name.lastName === 'Unknown') {
@@ -167,8 +171,7 @@ const CaseHome: React.FC<Props> = ({
     'form',
     NewCaseSubroutes.Household,
     households.map((h, index) => {
-      const { household, ...caseInfoItem } = { ...h, form: h.household, id: null };
-      return { ...caseInfoItem, index };
+      return { ...householdSectionApi.toForm(h), index };
     }),
   );
 
@@ -176,8 +179,7 @@ const CaseHome: React.FC<Props> = ({
     'form',
     NewCaseSubroutes.Perpetrator,
     perpetrators.map((p, index) => {
-      const { perpetrator, ...caseInfoItem } = { ...p, form: p.perpetrator, id: null };
-      return { ...caseInfoItem, index };
+      return { ...perpetratorSectionApi.toForm(p), index };
     }),
   );
 
@@ -185,7 +187,6 @@ const CaseHome: React.FC<Props> = ({
     return incidents.length ? (
       <>
         {incidents.map((item, index) => {
-          const { incident, ...caseItemEntry } = { ...item, form: item.incident, id: null };
           return (
             <TimelineInformationRow
               key={`incident-${index}`}
@@ -193,7 +194,7 @@ const CaseHome: React.FC<Props> = ({
                 onCaseItemActionClick<ViewTemporaryCaseInfo>(
                   NewCaseSubroutes.Incident,
                   CaseItemAction.View,
-                )({ ...caseItemEntry, index })
+                )(incidentSectionApi.toForm(item))
               }
               definition={caseForms.IncidentForm}
               values={item.incident}
@@ -209,7 +210,6 @@ const CaseHome: React.FC<Props> = ({
     return documents.length ? (
       <>
         {documents.map((item, index) => {
-          const { document, ...caseItemEntry } = { ...item, form: item.document, index };
           return (
             <DocumentInformationRow
               key={`document-${index}`}
@@ -218,7 +218,7 @@ const CaseHome: React.FC<Props> = ({
                 onCaseItemActionClick<ViewTemporaryCaseInfo>(
                   NewCaseSubroutes.Document,
                   CaseItemAction.View,
-                )(caseItemEntry)
+                )(documentSectionApi.toForm(item))
               }
             />
           );
