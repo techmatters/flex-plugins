@@ -28,7 +28,7 @@ import { CustomITask, StandaloneITask } from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
 import { CaseItemAction, isAppRoutesWithCaseAndAction, NewCaseSubroutes } from '../../states/routing/types';
 import CaseHome from './CaseHome';
-import AddEditCaseItem from './AddEditCaseItem';
+import AddEditCaseItem, { AddEditCaseItemProps } from './AddEditCaseItem';
 import ViewCaseItem from './ViewCaseItem';
 import documentUploadHandler from './documentUploadHandler';
 import { recordBackendError } from '../../fullStory';
@@ -41,6 +41,7 @@ import { perpetratorSectionApi } from '../../states/case/sections/perpetrator';
 import { householdSectionApi } from '../../states/case/sections/household';
 import { referralSectionApi } from '../../states/case/sections/referral';
 import { noteSectionApi } from '../../states/case/sections/note';
+import { CaseSectionApi } from '../../states/case/sections/api';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -303,119 +304,43 @@ const Case: React.FC<Props> = ({
       definitionVersion,
     };
 
+    const renderCaseItemPage = (
+      sectionApi: CaseSectionApi<unknown>,
+      editPermission: string,
+      extraAddEditProps: Partial<AddEditCaseItemProps> = {},
+    ) => {
+      if (action === CaseItemAction.View) {
+        return <ViewCaseItem {...addScreenProps} sectionApi={sectionApi} canEdit={() => can(editPermission)} />;
+      }
+      return (
+        <AddEditCaseItem
+          {...{
+            ...addScreenProps,
+            ...extraAddEditProps,
+            sectionApi,
+          }}
+        />
+      );
+    };
+
     switch (subroute) {
       case NewCaseSubroutes.Note:
-        if (action === CaseItemAction.View) {
-          return (
-            <ViewCaseItem
-              {...addScreenProps}
-              sectionApi={noteSectionApi}
-              canEdit={() => can(PermissionActions.EDIT_NOTE)}
-            />
-          );
-        }
-        return (
-          <AddEditCaseItem
-            {...{
-              ...addScreenProps,
-              sectionApi: noteSectionApi,
-            }}
-          />
-        );
+        return renderCaseItemPage(noteSectionApi, PermissionActions.EDIT_NOTE);
       case NewCaseSubroutes.Referral:
-        if (action === CaseItemAction.View) {
-          return (
-            <ViewCaseItem
-              {...addScreenProps}
-              sectionApi={referralSectionApi}
-              canEdit={() => can(PermissionActions.EDIT_REFERRAL)}
-            />
-          );
-        }
-        return (
-          <AddEditCaseItem
-            {...{
-              ...addScreenProps,
-              sectionApi: referralSectionApi,
-            }}
-          />
-        );
+        return renderCaseItemPage(referralSectionApi, PermissionActions.EDIT_REFERRAL);
       case NewCaseSubroutes.Household:
-        if (action === CaseItemAction.View) {
-          return (
-            <ViewCaseItem
-              {...addScreenProps}
-              sectionApi={householdSectionApi}
-              canEdit={() => can(PermissionActions.EDIT_HOUSEHOLD)}
-            />
-          );
-        }
-        return (
-          <AddEditCaseItem
-            {...{
-              ...addScreenProps,
-              sectionApi: householdSectionApi,
-            }}
-          />
-        );
+        return renderCaseItemPage(householdSectionApi, PermissionActions.EDIT_HOUSEHOLD);
       case NewCaseSubroutes.Perpetrator:
-        if (action === CaseItemAction.View) {
-          return (
-            <ViewCaseItem
-              {...addScreenProps}
-              sectionApi={perpetratorSectionApi}
-              canEdit={() => can(PermissionActions.EDIT_PERPETRATOR)}
-            />
-          );
-        }
-        return (
-          <AddEditCaseItem
-            {...{
-              ...addScreenProps,
-              sectionApi: perpetratorSectionApi,
-            }}
-          />
-        );
+        return renderCaseItemPage(perpetratorSectionApi, PermissionActions.EDIT_PERPETRATOR);
       case NewCaseSubroutes.Incident:
-        if (action === CaseItemAction.View) {
-          return (
-            <ViewCaseItem
-              {...addScreenProps}
-              sectionApi={incidentSectionApi}
-              canEdit={() => can(PermissionActions.EDIT_INCIDENT)}
-            />
-          );
-        }
-        return (
-          <AddEditCaseItem
-            {...{
-              ...addScreenProps,
-              sectionApi: incidentSectionApi,
-            }}
-          />
-        );
+        return renderCaseItemPage(incidentSectionApi, PermissionActions.EDIT_INCIDENT);
       case NewCaseSubroutes.Document:
-        if (action === CaseItemAction.View) {
-          return (
-            <ViewCaseItem
-              {...addScreenProps}
-              sectionApi={documentSectionApi}
-              canEdit={() => can(PermissionActions.EDIT_DOCUMENT)}
-            />
-          );
-        }
-        return (
-          <AddEditCaseItem
-            {...{
-              ...addScreenProps,
-              sectionApi: documentSectionApi,
-              customFormHandlers: documentUploadHandler,
-              reactHookFormOptions: {
-                shouldUnregister: false,
-              },
-            }}
-          />
-        );
+        return renderCaseItemPage(documentSectionApi, PermissionActions.EDIT_DOCUMENT, {
+          customFormHandlers: documentUploadHandler,
+          reactHookFormOptions: {
+            shouldUnregister: false,
+          },
+        });
       default:
       // Fall through to next switch for other routes without actions
     }

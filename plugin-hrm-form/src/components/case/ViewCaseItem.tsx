@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import Edit from '@material-ui/icons/Edit';
-import { DefinitionVersion, FormDefinition } from 'hrm-form-definitions';
+import { DefinitionVersion, isNonSaveable } from 'hrm-form-definitions';
 
 import { BottomButtonBar, Box, Container, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseLayout, FullWidthFormTextContainer } from '../../styles/case';
@@ -58,7 +58,7 @@ const ViewCaseItem: React.FC<Props> = ({
     temporaryCaseInfo,
     counselorsHash,
   );
-  const formDefinition = sectionApi.getSectionFormDefinition(definitionVersion);
+  const formDefinition = sectionApi.getSectionFormDefinition(definitionVersion).filter(fd => !isNonSaveable(fd));
   const { form } = temporaryCaseInfo.info;
 
   const onEditCaseItemClick = () => {

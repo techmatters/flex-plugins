@@ -167,6 +167,6 @@
     "label": "Also a perpetrator",
     "type": "copy-to",
     "target": "perpetrators",
-    "saved": false
+    "saveable": false
   }
 ]

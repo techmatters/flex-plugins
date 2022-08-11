@@ -40,7 +40,6 @@ import useFocus from '../../utils/useFocus';
 import { recordingErrorHandler } from '../../fullStory';
 import {
   AddTemporaryCaseInfo,
-  CaseUpdater,
   EditTemporaryCaseInfo,
   isAddTemporaryCaseInfo,
   isEditTemporaryCaseInfo,
@@ -98,7 +97,10 @@ const AddEditCaseItem: React.FC<Props> = ({
   const firstElementRef = useFocus();
 
   const { temporaryCaseInfo } = connectedCaseState;
-  const formDefinition = sectionApi.getSectionFormDefinition(definitionVersion);
+  const formDefinition = sectionApi
+    .getSectionFormDefinition(definitionVersion)
+    // If more 'when adding only' form item types are implemented, we should create a specific property, but there is only one so just check the type for now
+    .filter(fd => isAddTemporaryCaseInfo(temporaryCaseInfo) || fd.type !== 'copy-to');
   const layout = sectionApi.getSectionLayoutDefinition(definitionVersion);
 
   // Grab initial values in first render only. If getTemporaryFormContent(temporaryCaseInfo), cherrypick the values using formDefinition, if not build the object with getInitialValue
@@ -170,7 +172,8 @@ const AddEditCaseItem: React.FC<Props> = ({
 
   const save = async () => {
     const { info, id } = connectedCaseState.connectedCase;
-    const form = transformValues(formDefinition)(getTemporaryFormContent(temporaryCaseInfo));
+    const rawForm = getTemporaryFormContent(temporaryCaseInfo);
+    const form = transformValues(formDefinition)(rawForm);
     const now = new Date().toISOString();
     const { workerSid } = getConfig();
     let newInfo: CaseInfo;
@@ -195,7 +198,7 @@ const AddEditCaseItem: React.FC<Props> = ({
       newInfo = sectionApi.upsertCaseSectionItemFromForm(info, newItem);
       formDefinition.forEach(fd => {
         // A preceding 'filter' call looks nicer but TS type narrowing isn't smart enough to work with that.
-        if (fd.type === 'copy-to' && form[fd.name]) {
+        if (fd.type === 'copy-to' && rawForm[fd.name]) {
           newInfo = copyCaseSectionItem({
             definition: definitionVersion,
             original: newInfo,

@@ -201,6 +201,6 @@
     "label": "Also a household member",
     "type": "copy-to",
     "target": "households",
-    "saved": false
+    "saveable": false
   }
 ]
