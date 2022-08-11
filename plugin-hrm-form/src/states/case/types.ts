@@ -177,12 +177,6 @@ export type CaseDetails = {
   contacts: any[];
 };
 
-export type CaseUpdater = (
-  original: t.CaseInfo,
-  temporaryInfo: t.CaseItemEntry,
-  index: number | undefined,
-) => t.CaseInfo;
-
 export const temporaryCaseInfoHistory = (
   temporaryCaseInfo: EditTemporaryCaseInfo | ViewTemporaryCaseInfo,
   counselorsHash: Record<string, string>,
