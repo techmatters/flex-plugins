@@ -164,7 +164,7 @@
   },
   {
     "name": "copyToPerpetrator",
-    "label": "Also a perpetrator",
+    "label": "This household member is also a perpetrator",
     "type": "copy-to",
     "target": "perpetrators",
     "saveable": false

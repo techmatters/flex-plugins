@@ -198,7 +198,7 @@
   },
   {
     "name": "copyToHousehold",
-    "label": "Also a household member",
+    "label": "This perpetrator is also a household member",
     "type": "copy-to",
     "target": "households",
     "saveable": false
