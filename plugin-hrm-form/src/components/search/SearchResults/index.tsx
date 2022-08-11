@@ -40,7 +40,7 @@ import * as SearchActions from '../../../states/search/actions';
 import * as CaseActions from '../../../states/case/actions';
 import * as RoutingActions from '../../../states/routing/actions';
 import { SearchPages, SearchPagesType } from '../../../states/search/types';
-import { namespace, searchContactsBase, configurationBase } from '../../../states';
+import { namespace, searchContactsBase, configurationBase, contactFormsBase } from '../../../states';
 
 export const CONTACTS_PER_PAGE = 20;
 export const CASES_PER_PAGE = 20;
@@ -87,6 +87,7 @@ const SearchResults: React.FC<Props> = ({
   currentPage,
   showConnectIcon,
   counselorsHash,
+  isCallTypeCaller,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [currentContact, setCurrentContact] = useState(null);
@@ -187,6 +188,7 @@ const SearchResults: React.FC<Props> = ({
         contact={currentContact}
         handleConfirm={handleConfirmDialog}
         handleClose={handleCloseDialog}
+        isCallTypeCaller={isCallTypeCaller}
       />
       <ListContainer>
         <ScrollableList>
@@ -340,11 +342,13 @@ const mapStateToProps = (state, ownProps) => {
   const taskSearchState = searchContactsState.tasks[taskId];
   const isStandaloneSearch = taskId === standaloneTaskSid;
   const { counselors } = state[namespace][configurationBase];
+  const { isCallTypeCaller } = state[namespace][contactFormsBase];
 
   return {
     currentPage: taskSearchState.currentPage,
     showConnectIcon: !isStandaloneSearch,
     counselorsHash: counselors.hash,
+    isCallTypeCaller,
   };
 };
 
