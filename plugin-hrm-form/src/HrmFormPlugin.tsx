@@ -4,7 +4,7 @@ import SyncClient from 'twilio-sync';
 
 import './styles/global-overrides.css';
 import reducers, { namespace, configurationBase, RootState } from './states';
-import HrmTheme from './styles/HrmTheme';
+import HrmTheme, { overrides } from './styles/HrmTheme';
 import { transferModes } from './states/DomainConstants';
 import { initLocalization } from './utils/pluginHelpers';
 import * as ActionFunctions from './utils/setUpActions';
@@ -265,8 +265,11 @@ export default class HrmFormPlugin extends FlexPlugin {
     setUpComponents(setupObject);
     setUpActions(setupObject);
 
-    const managerConfiguration: any = {
-      colorTheme: HrmTheme,
+    const managerConfiguration = {
+      // colorTheme: HrmTheme,
+      theme: {
+        componentThemeOverrides: overrides,
+      },
     };
     manager.updateConfig(managerConfiguration);
 
