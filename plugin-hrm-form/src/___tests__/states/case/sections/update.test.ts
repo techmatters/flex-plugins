@@ -257,6 +257,202 @@ describe('copyCaseSection', () => {
       }),
     },
     {
+      description: 'Empty target list, item present in both definitions but types are mismatched - item not copied',
+      sourceDefinition: [...toFormDefinition(['a']), { name: 'b', type: 'mixed-checkbox', label: '' }],
+      targetDefinition: toFormDefinition(['a', 'b']),
+      originalCase: { ...testCase, households: [inputHousehold('NEW', { a: 'b', b: true })] },
+      expectedCase: o => ({
+        ...o,
+        perpetrators: [expectedPerpetrator('NEW', { a: 'b' })],
+      }),
+    },
+    {
+      description:
+        'Empty target list, list item present in both definitions and a valid option in the target is selected - item copied',
+      sourceDefinition: [
+        ...toFormDefinition(['a']),
+        {
+          name: 'b',
+          type: 'select',
+          label: '',
+          options: [
+            { value: 'val1', label: '' },
+            { value: 'val2', label: '' },
+          ],
+        },
+      ],
+      targetDefinition: [
+        ...toFormDefinition(['a']),
+        {
+          name: 'b',
+          type: 'select',
+          label: '',
+          options: [
+            { value: 'val1', label: '' },
+            { value: 'val2', label: '' },
+          ],
+        },
+      ],
+      originalCase: { ...testCase, households: [inputHousehold('NEW', { a: 'b', b: 'val2' })] },
+      expectedCase: o => ({
+        ...o,
+        perpetrators: [expectedPerpetrator('NEW', { a: 'b', b: 'val2' })],
+      }),
+    },
+    {
+      description:
+        'Empty target list, list item present in both definitions and an option not defined in the target is selected - item not copied',
+      sourceDefinition: [
+        ...toFormDefinition(['a']),
+        {
+          name: 'b',
+          type: 'select',
+          label: '',
+          options: [
+            { value: 'val1', label: '' },
+            { value: 'val2', label: '' },
+          ],
+        },
+      ],
+      targetDefinition: [
+        ...toFormDefinition(['a']),
+        {
+          name: 'b',
+          type: 'select',
+          label: '',
+          options: [
+            { value: 'val1', label: '' },
+            { value: 'val3', label: '' },
+          ],
+        },
+      ],
+      originalCase: { ...testCase, households: [inputHousehold('NEW', { a: 'b', b: 'val2' })] },
+      expectedCase: o => ({
+        ...o,
+        perpetrators: [expectedPerpetrator('NEW', { a: 'b' })],
+      }),
+    },
+    {
+      description:
+        'Empty target list, multi-select list item present in both definitions - only selection present in the target list are copied',
+      sourceDefinition: [
+        ...toFormDefinition(['a']),
+        {
+          name: 'b',
+          type: 'listbox-multiselect',
+          label: '',
+          options: [
+            { value: 'val1', label: '' },
+            { value: 'val2', label: '' },
+            { value: 'val3', label: '' },
+          ],
+        },
+      ],
+      targetDefinition: [
+        ...toFormDefinition(['a']),
+        {
+          name: 'b',
+          type: 'listbox-multiselect',
+          label: '',
+          options: [
+            { value: 'val1', label: '' },
+            { value: 'val3', label: '' },
+          ],
+        },
+      ],
+      originalCase: { ...testCase, households: [inputHousehold('NEW', { a: 'b', b: <any>['val1', 'val2'] })] },
+      expectedCase: o => ({
+        ...o,
+        perpetrators: [expectedPerpetrator('NEW', { a: 'b', b: <any>['val1'] })],
+      }),
+    },
+    {
+      description:
+        'Empty target list, dependent select list item present in both definitions, valid selection and dependent selection for target - item copied',
+      sourceDefinition: [
+        ...toFormDefinition(['a']),
+        {
+          name: 'b',
+          type: 'dependent-select',
+          label: '',
+          dependsOn: 'a',
+          defaultOption: { value: 'val1', label: '' },
+          options: {
+            dependedVal1: [
+              { value: 'val1', label: '' },
+              { value: 'val2', label: '' },
+            ],
+            dependedVal2: [{ value: 'val3', label: '' }],
+          },
+        },
+      ],
+      targetDefinition: [
+        ...toFormDefinition(['a']),
+        {
+          name: 'b',
+          type: 'dependent-select',
+          label: '',
+          dependsOn: 'a',
+          defaultOption: { value: 'val1', label: '' },
+          options: {
+            dependedVal1: [
+              { value: 'val1', label: '' },
+              { value: 'val2', label: '' },
+            ],
+            dependedVal2: [{ value: 'val3', label: '' }],
+          },
+        },
+      ],
+      originalCase: { ...testCase, households: [inputHousehold('NEW', { a: 'dependedVal1', b: 'val2' })] },
+      expectedCase: o => ({
+        ...o,
+        perpetrators: [expectedPerpetrator('NEW', { a: 'dependedVal1', b: 'val2' })],
+      }),
+    },
+    {
+      description:
+        'Empty target list, dependent select list item present in both definitions, value is valid option but invalid for depended selection on target - item not copied',
+      sourceDefinition: [
+        ...toFormDefinition(['a']),
+        {
+          name: 'b',
+          type: 'dependent-select',
+          label: '',
+          dependsOn: 'a',
+          defaultOption: { value: 'val1', label: '' },
+          options: {
+            dependedVal1: [
+              { value: 'val1', label: '' },
+              { value: 'val2', label: '' },
+            ],
+            dependedVal2: [{ value: 'val3', label: '' }],
+          },
+        },
+      ],
+      targetDefinition: [
+        ...toFormDefinition(['a']),
+        {
+          name: 'b',
+          type: 'dependent-select',
+          label: '',
+          dependsOn: 'a',
+          defaultOption: { value: 'val1', label: '' },
+          options: {
+            dependedVal1: [{ value: 'val1', label: '' }],
+            dependedVal2: [
+              { value: 'val2', label: '' },
+              { value: 'val3', label: '' },
+            ],
+          },
+        },
+      ],
+      originalCase: { ...testCase, households: [inputHousehold('NEW', { a: 'dependedVal1', b: 'val2' })] },
+      expectedCase: o => ({
+        ...o,
+        perpetrators: [expectedPerpetrator('NEW', { a: 'dependedVal1' })],
+      }),
+    },
+    {
       description:
         'Populated target list without matching ID, fully matched definitions - copied item appended to target list',
       sourceDefinition: toFormDefinition(['a', 'b']),
@@ -427,7 +623,7 @@ describe('copyCaseSection', () => {
         toApi: { ...perpetratorSectionApi, ...toApiOverrides },
         fromId,
       });
-      expect(result).toMatchObject(expectedCase(originalCase));
+      expect(result).toStrictEqual(expectedCase(originalCase));
     },
   );
 });
