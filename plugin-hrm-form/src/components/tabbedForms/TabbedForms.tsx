@@ -88,7 +88,7 @@ const TabbedForms: React.FC<Props> = ({
   currentDefinitionVersion,
   csamReportEnabled,
   editContactFormOpen,
-  buttonData,
+  isCallTypeCaller,
 }) => {
   const methods = useForm({
     shouldFocusError: false,
@@ -121,7 +121,7 @@ const TabbedForms: React.FC<Props> = ({
 
   const onSelectSearchResult = (searchResult: SearchContact) => {
     const selectedIsCaller = searchResult.details.callType === callTypes.caller;
-    if (isCallerType && selectedIsCaller && buttonData) {
+    if (isCallerType && selectedIsCaller && isCallTypeCaller) {
       const deTransformed = searchResultToContactForm(
         currentDefinitionVersion.tabbedForms.CallerInformationTab,
         searchResult.details.callerInformation,
@@ -315,8 +315,8 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const contactForm = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
   const editContactFormOpen = state[namespace][contactFormsBase].editingContact;
   const { currentDefinitionVersion } = state[namespace][configurationBase];
-  const { buttonData } = state[namespace][contactFormsBase];
-  return { routing, contactForm, currentDefinitionVersion, editContactFormOpen, buttonData };
+  const { isCallTypeCaller } = state[namespace][contactFormsBase];
+  return { routing, contactForm, currentDefinitionVersion, editContactFormOpen, isCallTypeCaller };
 };
 
 const connector = connect(mapStateToProps);

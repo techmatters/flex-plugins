@@ -54,7 +54,7 @@ export type TaskEntry = {
       expanded: { [key: string]: boolean };
     };
   };
-  buttonData: boolean;
+  isCallTypeCaller: boolean;
 };
 
 type ContactsState = {
@@ -64,7 +64,7 @@ type ContactsState = {
   existingContacts: ExistingContactsState;
   contactDetails: ContactDetailsState;
   editingContact: boolean;
-  buttonData: boolean;
+  isCallTypeCaller: boolean;
 };
 
 export const emptyCategories = [];
@@ -112,7 +112,7 @@ export const createNewTaskEntry = (definitions: DefinitionVersion) => (recreated
     categories: emptyCategories,
     csamReports: [],
     metadata,
-    buttonData: false,
+    isCallTypeCaller: false,
   };
 };
 
@@ -124,7 +124,7 @@ const initialState: ContactsState = {
     [DetailsContext.CONTACT_SEARCH]: { detailsExpanded: {} },
   },
   editingContact: false,
-  buttonData: false,
+  isCallTypeCaller: false,
 };
 
 // eslint-disable-next-line import/no-unused-modules,complexity
@@ -284,8 +284,8 @@ export function reduce(
         },
       };
     }
-    case t.CHECK_BUTTON_DATA: {
-      return { ...state, buttonData: action.buttonData };
+    case t.SET_CALL_TYPE: {
+      return { ...state, isCallTypeCaller: action.isCallTypeCaller };
     }
     case t.SET_EDITING_CONTACT: {
       return { ...state, editingContact: action.editing };

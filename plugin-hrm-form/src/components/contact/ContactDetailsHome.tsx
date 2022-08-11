@@ -183,6 +183,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
           buttonDataTestid="ContactDetails-Section-CallerInformation"
           handleOpenConnectDialog={handleOpenConnectDialog}
           showActionIcons={showActionIcons}
+          callType="caller"
         >
           {definitionVersion.tabbedForms.CallerInformationTab.map(e => (
             <SectionEntry
@@ -204,6 +205,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
           buttonDataTestid="ContactDetails-Section-ChildInformation"
           handleOpenConnectDialog={handleOpenConnectDialog}
           showActionIcons={showActionIcons}
+          callType="child"
         >
           {definitionVersion.tabbedForms.ChildInformationTab.map(e => (
             <SectionEntry

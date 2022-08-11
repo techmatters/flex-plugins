@@ -11,7 +11,7 @@ import {
   ContactDetailsIcon,
   SectionActionButton,
 } from '../../styles/search';
-import { checkButtonData } from '../../states/contacts/actions';
+import { setCallType } from '../../states/contacts/actions';
 
 const ArrowDownIcon = ContactDetailsIcon(ArrowDropDownTwoTone);
 const ArrowRightIcon = ContactDetailsIcon(ArrowRightTwoTone);
@@ -31,6 +31,7 @@ type OwnProps = {
   handleOpenConnectDialog?: (event: any) => void;
   showActionIcons?: boolean;
   task?: any;
+  callType?: string;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -48,12 +49,11 @@ const ContactDetailsSection: React.FC<Props> = ({
   handleOpenConnectDialog,
   showActionIcons,
   handleEditClick,
+  callType,
   ...props
 }) => {
-  const showCopyButton = () =>
-    buttonDataTestid === 'ContactDetails-Section-ChildInformation' ||
-    buttonDataTestid === 'ContactDetails-Section-CallerInformation';
-  const handleCopyInfo = () => props.checkButtonData(buttonDataTestid === 'ContactDetails-Section-CallerInformation');
+  const showCopyButton = () => callType === 'child' || callType === 'caller';
+  const handleSetCallType = () => props.setCallType(callType === 'caller');
 
   return (
     <>
@@ -74,7 +74,7 @@ const ContactDetailsSection: React.FC<Props> = ({
           <SectionActionButton
             onClick={e => {
               handleOpenConnectDialog(e);
-              handleCopyInfo();
+              handleSetCallType();
             }}
           >
             <LinkIcon style={{ fontSize: '18px', padding: '0 6px' }} />
@@ -100,7 +100,7 @@ const ContactDetailsSection: React.FC<Props> = ({
 ContactDetailsSection.displayName = 'ContactDetailsSection';
 
 const mapDispatchToProps = {
-  checkButtonData,
+  setCallType,
 };
 
 const connector = connect(null, mapDispatchToProps);

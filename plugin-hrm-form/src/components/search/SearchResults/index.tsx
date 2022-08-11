@@ -87,7 +87,7 @@ const SearchResults: React.FC<Props> = ({
   currentPage,
   showConnectIcon,
   counselorsHash,
-  buttonData,
+  isCallTypeCaller,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [currentContact, setCurrentContact] = useState(null);
@@ -188,7 +188,7 @@ const SearchResults: React.FC<Props> = ({
         contact={currentContact}
         handleConfirm={handleConfirmDialog}
         handleClose={handleCloseDialog}
-        buttonData={buttonData}
+        isCallTypeCaller={isCallTypeCaller}
       />
       <ListContainer>
         <ScrollableList>
@@ -342,13 +342,13 @@ const mapStateToProps = (state, ownProps) => {
   const taskSearchState = searchContactsState.tasks[taskId];
   const isStandaloneSearch = taskId === standaloneTaskSid;
   const { counselors } = state[namespace][configurationBase];
-  const { buttonData } = state[namespace][contactFormsBase];
+  const { isCallTypeCaller } = state[namespace][contactFormsBase];
 
   return {
     currentPage: taskSearchState.currentPage,
     showConnectIcon: !isStandaloneSearch,
     counselorsHash: counselors.hash,
-    buttonData,
+    isCallTypeCaller,
   };
 };
 

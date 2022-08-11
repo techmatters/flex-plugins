@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 
-import { namespace, contactFormsBase, RootState, searchContactsBase } from '../../../states';
+import { namespace, contactFormsBase, RootState } from '../../../states';
 import { Container } from '../../../styles/HrmStyles';
 import GeneralContactDetails from '../../contact/ContactDetails';
 import ConnectDialog from '../ConnectDialog';
@@ -24,9 +24,9 @@ type OwnProps = {
 };
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const editContactFormOpen = state[namespace][contactFormsBase].editingContact;
-  const { buttonData } = state[namespace][contactFormsBase];
+  const { isCallTypeCaller } = state[namespace][contactFormsBase];
 
-  return { editContactFormOpen, buttonData };
+  return { editContactFormOpen, isCallTypeCaller };
 };
 const mapDispatchToProps = {
   loadContactIntoState: loadContact,
@@ -45,7 +45,7 @@ const ContactDetails: React.FC<Props> = ({
   loadContactIntoState,
   releaseContactFromState,
   editContactFormOpen,
-  buttonData,
+  isCallTypeCaller,
 }: Props) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -82,7 +82,7 @@ const ContactDetails: React.FC<Props> = ({
         contact={contact}
         handleConfirm={handleConfirmDialog}
         handleClose={handleCloseDialog}
-        buttonData={buttonData}
+        isCallTypeCaller={isCallTypeCaller}
       />
 
       <div className={`${editContactFormOpen ? 'editingContact' : ''} hiddenWhenEditingContact`}>
