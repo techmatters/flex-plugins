@@ -717,13 +717,10 @@
     }
   },
   {
-    "name": "isFacilitator",
-    "label": "Is Facilitator",
-    "type": "checkbox"
-  },
-  {
-    "name": "isPerpetrator",
-    "label": "Is Perpetrator",
-    "type": "checkbox"
+    "name": "copyToPerpetrator",
+    "label": "This household member is also a perpetrator",
+    "type": "copy-to",
+    "target": "perpetrators",
+    "saveable": false
   }
 ]
