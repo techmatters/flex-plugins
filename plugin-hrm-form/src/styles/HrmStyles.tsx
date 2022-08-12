@@ -157,11 +157,11 @@ export const StyledInput = styled(Input)`
     width: 217px;
     height: 36px;
     border-radius: 4px;
-    background-color: ${HrmTheme.inputBackgroundColor};
+    background-color: ${HrmTheme.colors.inputBackgroundColor};
     border: none;
   }
   input:focus {
-    background-color: ${HrmTheme.inputBackgroundColor};
+    background-color: ${HrmTheme.colors.inputBackgroundColor};
     box-shadow: none;
     border: 1px solid rgba(0, 59, 129, 0.37);
   }
@@ -213,7 +213,7 @@ export const StyledSelect = styled(({ isPlaceholder = false, ...rest }: StyledSe
     height: 36px;
     line-height: 22px;
     border-radius: 4px;
-    background-color: ${HrmTheme.inputBackgroundColor};
+    background-color: ${HrmTheme.colors.inputBackgroundColor};
     border: none;
     color: ${({ isPlaceholder }) => (isPlaceholder ? 'darkgray' : 'currentColor')};
   }
@@ -228,7 +228,7 @@ export const StyledSelect = styled(({ isPlaceholder = false, ...rest }: StyledSe
       border-right-width: 1px;
     }
   }
-  background-color: ${HrmTheme.base1};
+  background-color: ${HrmTheme.colors.base1};
   color: ${/*
    * props =>
    * props.theme.calculated.lightTheme ? props.theme.colors.darkTextColor : props.theme.colors.lightTextColor
