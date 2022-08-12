@@ -64,7 +64,6 @@ export type EditCaseSummaryProps = {
   definitionVersion: DefinitionVersion;
   exitItem: () => void;
   routing: AppRoutesWithCaseAndAction;
-  itemType: string;
   applyTemporaryInfoToCase: CaseUpdater;
   customFormHandlers?: CustomHandlers;
   reactHookFormOptions?: Partial<{ shouldUnregister: boolean }>;
@@ -78,7 +77,6 @@ const EditCaseSummary: React.FC<Props> = ({
   counselorsHash,
   exitItem,
   connectedCaseState,
-  itemType,
   setConnectedCase,
   updateTempInfo,
   applyTemporaryInfoToCase,
@@ -182,7 +180,6 @@ const EditCaseSummary: React.FC<Props> = ({
     const form = transformValues(formDefinition)(getTemporaryFormContent(temporaryCaseInfo));
     const now = new Date().toISOString();
     const { workerSid } = getConfig();
-    let newInfo: CaseInfo;
     if (isEditTemporaryCaseInfo(temporaryCaseInfo)) {
       /*
        * Need to add these to the temporaryCaseInfo instance rather than straight to the applyTemporaryInfoToCase parameter.
@@ -195,7 +192,7 @@ const EditCaseSummary: React.FC<Props> = ({
       info.childIsAtRisk = temporaryCaseInfo.info.form.inImminentPhysicalDanger as boolean;
       status = temporaryCaseInfo.info.form.caseStatus as string;
 
-      newInfo = applyTemporaryInfoToCase(
+      const newInfo: CaseInfo = applyTemporaryInfoToCase(
         info,
         {
           ...temporaryCaseInfo.info,
@@ -224,7 +221,7 @@ const EditCaseSummary: React.FC<Props> = ({
   }
 
   const { strings } = getConfig();
-  const onError: SubmitErrorHandler<FieldValues> = recordingErrorHandler(`Case: Edit ${itemType}`, () => {
+  const onError: SubmitErrorHandler<FieldValues> = recordingErrorHandler(`Case: EditCaseSummary`, () => {
     window.alert(strings['Error-Form']);
     if (openDialog) setOpenDialog(false);
   });
@@ -244,7 +241,7 @@ const EditCaseSummary: React.FC<Props> = ({
       <CaseActionLayout>
         <CaseActionFormContainer>
           <ActionHeader
-            titleTemplate={`Case-Edit${itemType}`}
+            titleTemplate="Case-EditCaseSummary"
             onClickClose={checkForEdits}
             addingCounsellor={addingCounsellorName}
             added={added}
@@ -286,7 +283,7 @@ const EditCaseSummary: React.FC<Props> = ({
             roundCorners
             onClick={methods.handleSubmit(saveAndLeave, onError)}
           >
-            <Template code={`BottomBar-Save${itemType}`} />
+            <Template code="BottomBar-SaveCaseSummary" />
           </StyledNextStepButton>
         </BottomButtonBar>
       </CaseActionLayout>
