@@ -44,7 +44,7 @@ const ContactDetailsSection: React.FC<Props> = ({
 }) => {
   return (
     <>
-      <SectionTitleContainer>
+      <SectionTitleContainer data-testid="ContactDetails-Section">
         <SectionTitleButton
           buttonRef={buttonRef => {
             if (htmlElRef) {

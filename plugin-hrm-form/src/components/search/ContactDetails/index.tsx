@@ -72,7 +72,7 @@ const ContactDetails: React.FC<Props> = ({
   };
 
   return (
-    <Container removePadding={editContactFormOpen}>
+    <Container removePadding={editContactFormOpen} data-testid="ContactDetails">
       <ConnectDialog
         task={task}
         anchorEl={anchorEl}

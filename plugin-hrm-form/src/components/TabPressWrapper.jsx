@@ -155,9 +155,11 @@ class TabPressWrapper extends Component {
       return element;
     });
 
-  // addRef = (node, elementRef) => (
-  //   <RootRef rootRef={elementRef}>{React.cloneElement(node, { ref: elementRef })}</RootRef>
-  // );
+  /*
+   * addRef = (node, elementRef) => (
+   *   <RootRef rootRef={elementRef}>{React.cloneElement(node, { ref: elementRef })}</RootRef>
+   * );
+   */
 
   addRef = (node, elementRef) => {
     return React.cloneElement(node, { ref: elementRef });
