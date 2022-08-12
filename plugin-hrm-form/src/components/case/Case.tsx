@@ -467,7 +467,6 @@ const Case: React.FC<Props> = ({
           <EditCaseSummary
             {...{
               ...addScreenProps,
-              itemType: 'CaseSummary',
               applyTemporaryInfoToCase: updateCaseSectionListByIndex('caseSummary', 'caseSummary'),
               followUpDate,
               caseStatus: status,
