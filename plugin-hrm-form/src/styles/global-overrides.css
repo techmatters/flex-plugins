@@ -14,7 +14,6 @@ div.Twilio-MainHeader div.Twilio-Icon {
 div.Twilio-MainHeader button span {
     color: rgb(18, 28, 45);
 }
-/* Twilio-MainHeader-end */
 button.Twilio-TaskListFilter-TaskFilterButton {
     margin-right: 10px;
 }
@@ -23,6 +22,9 @@ button.Twilio-TaskListFilter-TaskFilterButton > div.Twilio-Icon-Filter {
 }
 button.Twilio-TaskListFilter-TaskFilterButton > div.Twilio-Icon-FilterUp {
     margin-left: auto;
+}
+div.Twilio-TaskListBaseItem::before {
+    width: 0;
 }
 button.Twilio-TaskCanvasHeader-EndButton {
     border-radius: 4px;
