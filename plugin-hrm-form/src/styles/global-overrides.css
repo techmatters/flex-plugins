@@ -8,6 +8,13 @@ div.Twilio-SideNav-Container {
 div.Twilio-MainHeader {
     margin-bottom: 5px;
 }
+div.Twilio-MainHeader div.Twilio-Icon {
+    color: rgb(18, 28, 45);
+}
+div.Twilio-MainHeader button span {
+    color: rgb(18, 28, 45);
+}
+/* Twilio-MainHeader-end */
 button.Twilio-TaskListFilter-TaskFilterButton {
     margin-right: 10px;
 }

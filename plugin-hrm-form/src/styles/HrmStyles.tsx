@@ -115,7 +115,7 @@ export const Container = styled('div')<ContainerProps>`
 Container.displayName = 'Container';
 
 export const ErrorText = styled('p')`
-  color: ${HrmTheme.errorColor};
+  color: ${HrmTheme.colors.errorColor};
   font-size: 10px;
   line-height: 1.5;
 `;
@@ -135,7 +135,7 @@ export const CategorySubtitleSection = styled('div')`
 CategorySubtitleSection.displayName = 'CategorySubtitleSection';
 
 export const CategoryRequiredText = styled('p')`
-  color: ${HrmTheme.darkTextColor};
+  color: ${HrmTheme.colors.darkTextColor};
   font-size: 12px;
   font-weight: 400;
   flex-grow: 1;
@@ -165,7 +165,7 @@ export const StyledInput = styled(Input)`
     box-shadow: none;
     border: 1px solid rgba(0, 59, 129, 0.37);
   }
-  background-color: ${HrmTheme.base1};
+  background-color: ${HrmTheme.colors.base1};
   color: ${/*
    * props =>
    * props.theme.calculated.lightTheme ? props.theme.colors.darkTextColor : props.theme.colors.lightTextColor
