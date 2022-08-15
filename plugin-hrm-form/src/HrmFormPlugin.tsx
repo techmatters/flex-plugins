@@ -141,7 +141,7 @@ const setUpTransferredTaskJanitor = async (setupObject: SetupObject) => {
       const task = Flex.TaskHelper.getTaskByTaskSid(args.value.attributes.transferMeta.originalReservation);
       TransferHelpers.takeTaskControl(task).then(async () => {
         await TransferHelpers.clearTransferMeta(task);
-      });
+      }); 
     }
   });
 };
