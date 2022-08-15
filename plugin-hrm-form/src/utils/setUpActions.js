@@ -18,7 +18,7 @@ import { populateCurrentDefinitionVersion, updateDefinitionVersion } from '../st
 import { changeRoute } from '../states/routing/actions';
 import { clearCustomGoodbyeMessage } from '../states/dualWrite/actions';
 import * as GeneralActions from '../states/actions';
-import { transferModes, channelTypes } from '../states/DomainConstants';
+import { transferModes, customChannelTypes } from '../states/DomainConstants';
 import * as TransferHelpers from './transfer';
 import { saveFormSharedState, loadFormSharedState } from './sharedState';
 import { prepopulateForm } from './prepopulateForm';
@@ -319,10 +319,7 @@ const removeContactForm = payload => {
  *
  * @param {import('../types/types').CustomITask} task
  */
-const isAseloCustomChannelTask = task =>
-  task.channelType === channelTypes.twitter ||
-  task.channelType === channelTypes.instagram ||
-  task.channelType === channelTypes.line;
+const isAseloCustomChannelTask = task => Object.values(customChannelTypes).includes(task.channelType);
 
 /**
  * @param {ReturnType<typeof getConfig> & { translateUI: (language: string) => Promise<void>; getMessage: (messageKey: string) => (language: string) => Promise<string>; }} setupObject
