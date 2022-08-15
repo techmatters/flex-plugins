@@ -1,1 +1,10 @@
-{}
+{
+  "label": "Helpline",
+  "helplines": [
+    {
+      "label": "Telefonul Copilului",
+      "value": "Telefonul Copilului",
+      "default": true
+    }
+  ]
+}
