@@ -37,6 +37,9 @@
     },
     "documents": {
       "splitFormAt": 1
+    },
+    "notes": {
+      "splitFormAt": 1
     }
   }
 }

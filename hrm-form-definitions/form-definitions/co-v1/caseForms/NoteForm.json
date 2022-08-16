@@ -1,5 +1,13 @@
 [
   {
+    "name": "note",
+    "label": "Nota",
+    "type": "textarea",
+    "placeholder": "Escriba su nota aquí...",
+    "rows": 20,
+    "width": 400
+  },
+  {
     "name": "¿Sintió el usuario que fue escuchado y apoyado?",
     "label": "¿Sintió el usuario que fue escuchado y apoyado?",
     "type": "select",
@@ -94,13 +102,5 @@
         "label": "4"
       }
     ]
-  },
-  {
-    "name": "note",
-    "label": "Nota",
-    "type": "textarea",
-    "placeholder": "Escriba aquí...",
-    "rows": 20,
-    "width": 500
   }
 ]
