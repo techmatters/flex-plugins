@@ -47,6 +47,7 @@ module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
   serverless_url = var.serverless_url
   helpline = "Telefonul Copilului Romania"
+  custom_target_workers = "1==1"
 }
 
 module studioFlow {
