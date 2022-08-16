@@ -33,7 +33,7 @@
   },
   {
     "label": "[Opción 2  NNA >14] ",
-    "text": "Perfecto, mi nombre es [Introducir nombre guía] pero me puedes decir [Introducir nombre que inspire más confianza. Por ejemplo, Ange]. Quiero que sepas que nuestra conversación será completamente confidencial, entre tú y yo. Sin embargo, como tú sabes, el tema de protección de datos es muy importante tanto para ti como para nosotros, por lo cual, debo preguntarte si aceptas los TÉRMINOS Y CONDICIONES DE NUESTRO SERVICIO (https://tinyurl.com/2tsdb9bb).\nResponde: Si / No. "
+    "text": "Perfecto, mi nombre es [Introducir nombre guía] pero me puedes decir [Introducir nombre que inspire más confianza. Por ejemplo, Ange]. Quiero  que  sepas  que  nuestra  conversación  será  completamente confidencial, entre tú y yo. Sin embargo, como tú sabes, el tema de protección de datos es muy  importante  tanto  para  ti  como  para  nosotros,  por  lo  cual,  debo  preguntarte  si  aceptas los TÉRMINOS Y CONDICIONES DE NUESTRO SERVICIO (https://tinyurl.com/2tsdb9bb).\nResponde: Sí/No. "
   },
   {
     "label": "[Opción 2  NNA >14 Datos] ",
@@ -56,11 +56,11 @@
     "text": "¿Te encuentras con tu mamá, papá u otro tutor legal? ¿Me podrías indicar su nombre?"
   },
   {
-    "label": "[Opción 2  NNA >14 Solicitud Comunicación Tutor] ",
+    "label": "[Opción 2  NNA <14 Solicitud Comunicación Tutor] ",
     "text": "Te pido por favor que me comuniques con [Nombre tutor legal del usuario].\nCuéntame ¿Ya se encuentra contigo? Sí/no "
   },
   {
-    "label": "[Opción 2  NNA >14 Comunicación Tutor] ",
+    "label": "[Opción 2  NNA <14 Comunicación Tutor] ",
     "text": "[Nombre tutor legal del usuario], para brindar la atención, necesito por favor que me brinde su nombre completo, tipo de identificación y número de identificación"
   },
   {
@@ -72,15 +72,15 @@
     "text": "Lo siento, en este caso, no puedo brindar el servicio.  "
   },
   {
-    "label": "[Opción 2  NNA >14 Consentimiento Tutor] ",
+    "label": "[Opción 2  NNA <14 Consentimiento Tutor] ",
     "text": "Ahora solicitamos que por favor, nos envíe un mensaje de voz con la siguiente información o una foto de esta información escrita a mano: \n CONSENTIMIENTO \nPor lo anterior, yo_____________________________________ identificado (a) con cédula de ciudadanía número_____________ de ___________actuando como representante legal del menor___________________________ identificado con tarjeta de identidad número_______________ doy mi consentimiento informado de forma libre, voluntaria y consciente, para la realización de teleorientación en salud, bajo las condiciones arriba mencionadas."
   },
   {
-    "label": "[Opción 2  NNA >14 Inicio tema] ",
+    "label": "[Opción 2  NNA <14 Inicio tema] ",
     "text": "Ahora que ya tenemos la autorización de [Nombre tutor legal del usuario] cuéntame, ¿de qué quieres que conversemos hoy? :)"
   },
   {
-    "label": "[Opción 2  NNA >14 Finalización conversación] ",
+    "label": "[Opción 2  NNA <14 Finalización conversación] ",
     "text": " ¡ME ENCANTÓ LEERTE! \nYa sabes, siempre estaremos aquí para asesorarte."
   },
   {
@@ -214,5 +214,21 @@
   {
     "label": "[ITS- Sexo anal]",
     "text": "Sí, al practicar sexo anal puedes contraer las mismas enfermedades que con el sexo vaginal e incluso más.\nSi tienes sexo anal sin protección es mayor el riesgo, ya que la zona anal es una zona menos elástica que la vagina y muy vascularizada, por lo que al romperse los capilares hay mayor riesgo que haya fisuras y por lo tanto sangrado. Estas fisuras pueden ser vías de ingreso de infecciones y además esta sangre puede infectar a la persona que está penetrando o actuar como caldo de cultivo para las infecciones. No está demás decir que al haber restos de heces se puede aumentar el riesgo de infecciones. Por esto es fundamental utilizar preservativo siempre. "
+  },
+  {
+    "label": "[Questionario 1 ¿Escuchado y Apoyado? ]",
+    "text": "¿Te sentiste escuchado/a y apoyado/a por el guía que te atendió?\nPor favor responde con el número que corresponda:\n1: Nahhh. Para nada.\n2. Un poco\n3. Sí\n4. Uffff. ¡Un montón! "
+  },
+  {
+    "label": "[Questionario 2 ¿Recomendaría el servicio? ]",
+    "text": "¿Recomendarías a alguien cercano a ti comunicarse con nosotros?\nResponde Sí/No"
+  },
+  {
+    "label": "[Questionario 3 ¿Repetiría el servicio? ]",
+    "text": "¿Volverías a comunicarte con nosotros?\nResponde Sí/No"
+  },
+  {
+    "label": "[Questionario 4  ¿Fue útil la información? ]",
+    "text": "¿Fue útil para ti la información que te brindamos?\nPor favor responde con el número que corresponda:\n1: Nahhh. Para nada.\n2. Un poco\n3. Sí\n4. Uffff. ¡Un montón! "
   }
 ]

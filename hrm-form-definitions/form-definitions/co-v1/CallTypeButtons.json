@@ -12,6 +12,12 @@
     "category": "data"
   },
   {
+    "name": "consentNotReceived",
+    "label": "Sin consentimiento",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
     "name": "silent",
     "label": "Sin respuesta",
     "type": "button",
@@ -32,12 +38,6 @@
   {
     "name": "thanks",
     "label": "Agradecimiento",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
-    "name": "questions",
-    "label": "Preguntas",
     "type": "button",
     "category": "non-data"
   },

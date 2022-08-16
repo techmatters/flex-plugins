@@ -1,5 +1,25 @@
 [
   {
+    "name": "Clase de Contacto",
+    "label": "Clase de Contacto",
+    "type": "select",
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Preguntas/Información",
+        "label": "Preguntas/Información"
+      },
+      {
+        "value": "Teleorientación",
+        "label": "Teleorientación"
+      }
+    ]
+  },
+  {
     "name": "firstName",
     "label": "Nombre",
     "type": "input"
@@ -142,6 +162,11 @@
     ]
   },
   {
+    "name": "phone1",
+    "label": "Teléfono",
+    "type": "input"
+  },
+  {
     "name": "streetAddress",
     "label": "Dirección",
     "type": "input"
@@ -149,11 +174,6 @@
   {
     "name": "neighborhood",
     "label": "Barrio",
-    "type": "input"
-  },
-  {
-    "name": "city",
-    "label": "Ciudad",
     "type": "input"
   },
   {
@@ -301,7 +321,7 @@
   },
   {
     "name": "district",
-    "label": "Municipio",
+    "label": "Ciudad/Municipio",
     "type": "dependent-select",
     "dependsOn": "province",
     "defaultOption": {
@@ -4862,11 +4882,6 @@
     }
   },
   {
-    "name": "otherProvince",
-    "label": "Otro Municipio",
-    "type": "input"
-  },
-  {
     "name": "otherCountry",
     "label": "Otro País",
     "type": "input"
@@ -4882,12 +4897,12 @@
         "label": ""
       },
       {
-        "value": "Familia de acogida",
-        "label": "Familia de acogida"
+        "value": "Hogar sustituto",
+        "label": "Hogar sustituto"
       },
       {
-        "value": "Casa de acogida/orfanato",
-        "label": "Casa de acogida/orfanato"
+        "value": "Institución de protección",
+        "label": "Institución de protección"
       },
       {
         "value": "Viviendo independiente",
@@ -5020,7 +5035,7 @@
   },
   {
     "name": "childOnTheMove",
-    "label": "Adolescente en movimiento",
+    "label": "Adolescente en desplazamiento",
     "type": "select",
     "unknownOption": "Desconocido",
     "options": [
@@ -5040,7 +5055,7 @@
   },
   {
     "name": "childWithDisability",
-    "label": "Adolescente con discapacidad",
+    "label": "Adolescente en situación de discapacidad",
     "type": "mixed-checkbox"
   }
 ]
