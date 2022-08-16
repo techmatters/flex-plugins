@@ -43,12 +43,20 @@
         "label": "Compañero/Compañera"
       },
       {
-        "value": "Otro adulto conocido por el adolescente",
-        "label": "Otro adulto conocido por el adolescente"
+        "value": "Amigo/Amiga",
+        "label": "Amigo/Amiga"
+      },
+      {
+        "value": "Otra persona conocida por el adolescente",
+        "label": "Otra persona conocida por el adolescente"
       },
       {
         "value": "Persona en posición de responsabilidad",
         "label": "Persona en posición de responsabilidad"
+      },
+      {
+        "value": "Persona desconocida",
+        "label": "Persona desconocida"
       },
       {
         "value": "Otro familiar",

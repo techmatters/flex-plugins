@@ -56,20 +56,20 @@
     "unknownOption": "",
     "options": [
       {
-        "value": "Boca a boca",
-        "label": "Boca a boca"
+        "value": "Voz a voz",
+        "label": "Voz a voz"
       },
       {
         "value": "Medios de comunicación",
         "label": "Medios de comunicación"
       },
       {
-        "value": "Amigo",
-        "label": "Amigo"
+        "value": "Amigo/a",
+        "label": "Amigo/a"
       },
       {
-        "value": "Escuela",
-        "label": "Escuela"
+        "value": "Institución Educativa",
+        "label": "Institución Educativa"
       },
       {
         "value": "Otros",
@@ -89,28 +89,99 @@
     "initialChecked": true
   },
   {
-    "name": "mustCallBack",
-    "label": "¿Es necesario que un guía devuelva la llamada?",
-    "type": "mixed-checkbox"
+    "name": "¿Sintió el usuario que fue escuchado y apoyado?",
+    "label": "¿Sintió el usuario que fue escuchado y apoyado?",
+    "type": "select",
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "1",
+        "label": "1"
+      },
+      {
+        "value": "2",
+        "label": "2"
+      },
+      {
+        "value": "3",
+        "label": "3"
+      },
+      {
+        "value": "4",
+        "label": "4"
+      }
+    ]
   },
   {
-    "name": "okForCaseWorkerToCall",
-    "label": "¿Está bien que el guía llame?",
-    "type": "mixed-checkbox"
+    "name": "¿Recomendaría el usuario el servicio a alguien más?",
+    "label": "¿Recomendaría el usuario el servicio a alguien más?",
+    "type": "select",
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Si",
+        "label": "Si"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ]
   },
   {
-    "name": "didYouDiscussRightsWithTheChild",
-    "label": "¿Se habló de derechos con el adolescente?",
-    "type": "mixed-checkbox"
+    "name": "¿Repetiría el usuario el uso del servicio?",
+    "label": "¿Repetiría el usuario el uso del servicio?",
+    "type": "select",
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Si",
+        "label": "Si"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ]
   },
   {
-    "name": "didTheChildFeelWeSolvedTheirProblem",
-    "label": "¿Sintió el adolescente que resolvió su problema?",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "wouldTheChildRecommendUsToAFriend",
-    "label": "¿Nos recomendaría el adolescente con algún amigo?",
-    "type": "mixed-checkbox"
+    "name": "¿Fue útil para el usuario la información provista?",
+    "label": "¿Fue útil para el usuario la información provista?",
+    "type": "select",
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "1",
+        "label": "1"
+      },
+      {
+        "value": "2",
+        "label": "2"
+      },
+      {
+        "value": "3",
+        "label": "3"
+      },
+      {
+        "value": "4",
+        "label": "4"
+      }
+    ]
   }
 ]
