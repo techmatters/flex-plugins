@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from '@twilio/flex-ui';
+import styled from '@emotion/styled';
 import { withStyles } from '@material-ui/core';
 import AttachFile from '@material-ui/icons/AttachFile';
 import CheckCircle from '@material-ui/icons/CheckCircle';

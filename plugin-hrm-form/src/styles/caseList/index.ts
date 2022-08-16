@@ -1,4 +1,4 @@
-import { styled } from '@twilio/flex-ui';
+import styled from '@emotion/styled';
 import { Table, TableCell, TableRow, withStyles } from '@material-ui/core';
 
 import { Absolute, FontOpenSans, Flex } from '../HrmStyles';

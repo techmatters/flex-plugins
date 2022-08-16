@@ -1,4 +1,4 @@
-import { styled } from '@twilio/flex-ui';
+import styled from '@emotion/styled';
 
 import { Flex } from '../HrmStyles';
 import HrmTheme from '../HrmTheme';

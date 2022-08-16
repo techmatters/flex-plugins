@@ -1,4 +1,4 @@
-import { styled } from '@twilio/flex-ui';
+import styled from '@emotion/styled';
 
 export const YellowBanner = styled('div')`
   display: flex;

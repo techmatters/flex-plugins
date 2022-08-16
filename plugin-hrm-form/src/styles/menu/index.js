@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from '@twilio/flex-ui';
+import styled from '@emotion/styled';
 import Popper from '@material-ui/core/Popper';
 import Paper from '@material-ui/core/Paper';
 import MenuList from '@material-ui/core/MenuList';

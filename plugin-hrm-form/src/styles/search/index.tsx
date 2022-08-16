@@ -1,6 +1,7 @@
 import React from 'react';
 import { ButtonBase, Paper, Button, FormControlLabel, Switch, Collapse, withStyles } from '@material-ui/core';
-import { Tabs, TabsProps, styled } from '@twilio/flex-ui';
+import { Tabs, TabsProps } from '@twilio/flex-ui';
+import styled from '@emotion/styled';
 import Folder from '@material-ui/icons/Folder';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import Link from '@material-ui/icons/Link';
@@ -308,8 +309,8 @@ export const TagMiddleDot = styled('div')<ColorProps>`
 // ContactDetails styles
 export const ContactDetailsIcon = icon => styled(icon)`
   color: #000000;
-  width: 50px;
-  height: 50px;
+  width: 24px;
+  height: 24px;
   font-size: 16px;
 `;
 

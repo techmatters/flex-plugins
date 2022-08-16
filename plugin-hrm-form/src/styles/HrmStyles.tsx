@@ -3,7 +3,8 @@ import React from 'react';
 import { ButtonBase, Input, Select, MenuItem, Tabs, Tab, withStyles, TableRow, TabProps } from '@material-ui/core';
 import type { ButtonBaseProps } from '@material-ui/core/ButtonBase';
 import AssignmentInd from '@material-ui/icons/AssignmentInd';
-import { Button, Icon, styled } from '@twilio/flex-ui';
+import { Button, Icon } from '@twilio/flex-ui';
+import styled from '@emotion/styled';
 import { getBackgroundWithHoverCSS } from '@twilio/flex-ui-core';
 
 import HrmTheme from './HrmTheme';

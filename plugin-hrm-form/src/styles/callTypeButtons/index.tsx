@@ -3,7 +3,8 @@ import '@emotion/core';
 import Dialog from '@material-ui/core/Dialog';
 import ClearIcon from '@material-ui/icons/Clear';
 import { IconButton } from '@material-ui/core';
-import { Button, styled } from '@twilio/flex-ui';
+import { Button } from '@twilio/flex-ui';
+import styled from '@emotion/styled';
 import { getBackgroundWithHoverCSS } from '@twilio/flex-ui-core';
 
 import HrmTheme from '../HrmTheme';

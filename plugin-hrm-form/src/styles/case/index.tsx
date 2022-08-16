@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button, IconButton, styled } from '@twilio/flex-ui';
+import { Button, IconButton } from '@twilio/flex-ui';
+import styled from '@emotion/styled';
 import { Typography, ButtonBase } from '@material-ui/core';
 
 import { FontOpenSans, FormInput, FormSelect, FormSelectWrapper, Row, Column } from '../HrmStyles';
