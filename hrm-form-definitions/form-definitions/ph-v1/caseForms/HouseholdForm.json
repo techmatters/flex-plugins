@@ -718,9 +718,28 @@
   },
   {
     "name": "copyToPerpetrator",
-    "label": "This household member is also a perpetrator",
+    "label": "This household member is also a perpetrator/facilitator",
     "type": "copy-to",
     "target": "perpetrators",
     "saveable": false
+  },
+  {
+    "name": "perpetratorType",
+    "label": "Perpetrator/Facilitator",
+    "type": "select",
+    "options": [
+      {
+        "value": "None",
+        "label": ""
+      },
+      {
+        "value": "perpetrator",
+        "label": "Perpetrator"
+      },
+      {
+        "value": "facilitator",
+        "label": "Facilitator"
+      }
+    ]
   }
 ]
