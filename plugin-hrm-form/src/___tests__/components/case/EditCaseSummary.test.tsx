@@ -3,33 +3,36 @@ import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
-import { StorelessThemeProvider, ThemeConfigProps } from '@twilio/flex-ui';
+import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersion, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../../states';
 import EditCaseSummary, { EditCaseSummaryProps } from '../../../components/case/EditCaseSummary';
 import { getDefinitionVersions } from '../../../HrmFormPlugin';
-import { updateCaseSectionListByIndex } from '../../../states/case/types';
 import { StandaloneITask } from '../../../types/types';
 import { CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
 
-let mockV1;
-
-beforeAll(async () => {
-  mockV1 = await loadDefinition(DefinitionVersionId.v1);
-  mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
-});
-
-jest.mock('../../../services/CaseService');
+let mockV1: DefinitionVersion;
 
 expect.extend(toHaveNoViolations);
-
 const mockStore = configureMockStore([]);
 
-const state1 = {
+const info = {
+  createdAt: '22-08-2022',
+  updatedAt: '22-08-2022',
+  updatedBy: 'worker1',
+  form: {
+    caseStatus: 'open',
+    date: '22-08-2022',
+    inImminentPhysicalDanger: false,
+    caseSummary: 'This is a summary',
+  },
+};
+
+const state = {
   [namespace]: {
     [configurationBase]: {
       counselors: {
@@ -50,7 +53,7 @@ const state1 = {
     [connectedCaseBase]: {
       tasks: {
         task1: {
-          temporaryCaseInfo: { screen: 'caseSummary', info: {} },
+          temporaryCaseInfo: { screen: 'caseSummary', info, action: CaseItemAction.Edit },
           connectedCase: {
             createdAt: 1593469560208,
             twilioWorkerId: 'worker1',
@@ -70,119 +73,31 @@ const state1 = {
     },
   },
 };
-const store1 = mockStore(state1);
-store1.dispatch = jest.fn();
+const store = mockStore(state);
+store.dispatch = jest.fn();
 
-const state2 = {
-  ...state1,
-  [namespace]: {
-    ...state1[namespace],
-    [connectedCaseBase]: {
-      tasks: {
-        task1: {
-          attributes: {
-            isContactlessTask: false,
-          },
-          taskSid: 'task1',
-          temporaryCaseInfo: { screen: 'caseSummary', info: {} },
-          connectedCase: {
-            createdAt: 1593469560208,
-            twilioWorkerId: 'worker1',
-            status: 'open',
-            info: null,
-          },
-        },
-      },
-    },
-    routing: {
-      route: 'new-case',
-      tasks: {
-        task1: {
-          route: 'new-case',
-        },
-      },
-    },
-  },
+const themeConf = {};
+
+const task = {
+  taskSid: 'task1',
 };
-const store2 = mockStore(state2);
-store2.dispatch = jest.fn();
-
-const state3 = {
-  [namespace]: {
-    ...state1[namespace],
-    [connectedCaseBase]: {
-      tasks: {
-        task1: {
-          temporaryCaseInfo: null,
-          connectedCase: {
-            createdAt: 1593469560208,
-            twilioWorkerId: 'worker1',
-            status: 'open',
-            info: null,
-          },
-        },
-      },
-    },
-    routing: {
-      route: 'new-case',
-      tasks: {
-        task1: {
-          route: 'new-case',
-        },
-      },
-    },
-  },
-};
-const store3 = mockStore(state3);
-store3.dispatch = jest.fn();
-
-const themeConf: ThemeConfigProps = {};
-
-const layout = {
-  splitFormAt: 3,
-};
-
-const formDefinition = [
-  {
-    name: 'caseStatus',
-    label: 'Case Status',
-    type: 'select',
-    options: [
-      { value: 'open', label: 'open' },
-      { value: 'closed', label: 'closed' },
-    ],
-  },
-  {
-    name: 'date',
-    type: 'date-input',
-    label: 'Follow Up Date',
-  },
-  {
-    name: 'inImminentPhysicalDanger',
-    label: 'Child is in imminent physical danger',
-    type: 'checkbox',
-  },
-  {
-    name: 'caseSummary',
-    label: 'Case Summary',
-    type: 'textarea',
-  },
-];
 
 describe('Test EditCaseSummary', () => {
   const exitItem = jest.fn();
   let ownProps: EditCaseSummaryProps;
+
+  beforeAll(async () => {
+    mockV1 = await loadDefinition(DefinitionVersionId.v1);
+    mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
+  });
+
   beforeEach(
     () =>
       (ownProps = {
-        task: state2[namespace][connectedCaseBase].tasks.task1 as StandaloneITask,
+        task: task as StandaloneITask,
         counselor: 'Someone',
         exitItem,
-        layout,
-        applyTemporaryInfoToCase: updateCaseSectionListByIndex('caseSummaries', 'caseSummary'),
-        formDefinition,
         definitionVersion: mockV1,
-        itemType: 'CaseSummary',
         routing: {
           route: 'tabbed-forms',
           subroute: NewCaseSubroutes.CaseSummary,
@@ -193,7 +108,7 @@ describe('Test EditCaseSummary', () => {
   test('Test close functionality', async () => {
     render(
       <StorelessThemeProvider themeConf={themeConf}>
-        <Provider store={store2}>
+        <Provider store={store}>
           <EditCaseSummary {...ownProps} />
         </Provider>
       </StorelessThemeProvider>,
@@ -217,7 +132,7 @@ describe('Test EditCaseSummary', () => {
   test('a11y', async () => {
     const wrapper = mount(
       <StorelessThemeProvider themeConf={themeConf}>
-        <Provider store={store2}>
+        <Provider store={store}>
           <EditCaseSummary {...ownProps} />
         </Provider>
       </StorelessThemeProvider>,
