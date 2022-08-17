@@ -117,7 +117,7 @@ export function reduce(state = initialState, action: CaseActionType | GeneralAct
             ...state.tasks[action.taskId],
             connectedCase: {
               ...state.tasks[action.taskId].connectedCase,
-              connectedContacts: state.tasks[action.taskId].connectedCase.connectedContacts.map(cc =>
+              connectedContacts: (state.tasks[action.taskId].connectedCase.connectedContacts ?? []).map(cc =>
                 cc.id === action.contact.id ? action.contact : cc,
               ),
             },
