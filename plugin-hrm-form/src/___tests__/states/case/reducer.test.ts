@@ -216,7 +216,7 @@ describe('test reducer', () => {
         }),
       ).toThrow();
     });
-    test('should throw if connected case has no connected contacts array', async () => {
+    test('should add empty connected contacts array if connected case has no connected contacts array', async () => {
       const startingState = {
         tasks: {
           task1: {
@@ -226,16 +226,25 @@ describe('test reducer', () => {
         },
       };
 
-      expect(() =>
-        reduce(startingState, {
-          type: UPDATE_CASE_CONTACT,
-          taskId: task.taskSid,
-          contact: {
-            id: 'AN ID',
-            b: 100,
+      const expected = {
+        tasks: {
+          task1: {
+            ...state.tasks.task1,
+            connectedCase: { ...connectedCase, connectedContacts: [] },
           },
-        }),
-      ).toThrow();
+        },
+      };
+
+      const result = reduce(startingState, {
+        type: UPDATE_CASE_CONTACT,
+        taskId: task.taskSid,
+        contact: {
+          id: 'AN ID',
+          b: 100,
+        },
+      });
+
+      expect(result).toStrictEqual(expected);
     });
     test('should throw if target taskId has no connected case', async () => {
       const startingState = {
