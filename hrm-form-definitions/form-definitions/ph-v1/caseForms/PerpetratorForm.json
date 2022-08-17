@@ -765,5 +765,12 @@
     "placeholder": "Type here to add note...",
     "rows": 10,
     "width": 500
+  },
+  {
+    "name": "copyToHousehold",
+    "label": "This perpetrator is also a household member",
+    "type": "copy-to",
+    "target": "households",
+    "saveable": false
   }
 ]
