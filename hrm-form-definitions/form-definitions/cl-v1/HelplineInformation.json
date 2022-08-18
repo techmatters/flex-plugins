@@ -2,7 +2,7 @@
   "label": "Helpline",
   "helplines": [
     {
-      "label": "Línea Libre Helpline",
+      "label": "Línea Libre",
       "value": "Línea Libre",
       "default": true,
       "manager": {
