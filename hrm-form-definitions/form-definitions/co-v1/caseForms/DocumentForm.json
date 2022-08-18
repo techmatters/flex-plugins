@@ -23,7 +23,7 @@
     "name": "fileName",
     "type": "file-upload",
     "label": "Archivo",
-    "description": "Accepted file formats: Word, PDFs, or JPGs.\nFile size not to exceed 5MB",
+    "description": "Formato  de archivos aceptados: Word, PDFs, o JPGs.\nTamaño de archivo no puede exceder 5MB",
     "required": {
       "value": true,
       "message": "RequiredFieldError"

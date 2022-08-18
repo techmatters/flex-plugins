@@ -6,37 +6,42 @@ export const defaultLanguage = 'en-US';
 const defaultTranslation = require(`../translations/${defaultLanguage}/flexUI.json`);
 const defaultMessages = require(`../translations/${defaultLanguage}/messages.json`);
 
-const ptBRTranslation = require(`../translations/pt-BR/flexUI.json`);
-const ptBRMessages = require(`../translations/pt-BR/messages.json`);
-
 const enINTranslation = require(`../translations/en-IN/flexUI.json`);
 const enINMessages = require(`../translations/en-IN/messages.json`);
 
-const esESTranslation = require(`../translations/es-ES/flexUI.json`);
-const esESMessages = require(`../translations/es-ES/messages.json`);
+const esCLTranslation = require(`../translations/es-CL/flexUI.json`);
+const esCLMessages = require(`../translations/es-CL/messages.json`);
 
 const esCOTranslation = require(`../translations/es-CO/flexUI.json`);
 const esCOMessages = require(`../translations/es-CO/messages.json`);
 
+const esESTranslation = require(`../translations/es-ES/flexUI.json`);
+const esESMessages = require(`../translations/es-ES/messages.json`);
+
 const huHUTranslation = require(`../translations/hu-HU/flexUI.json`);
 const huHUMessages = require(`../translations/hu-HU/messages.json`);
 
+const ptBRTranslation = require(`../translations/pt-BR/flexUI.json`);
+const ptBRMessages = require(`../translations/pt-BR/messages.json`);
+
 const bundledTranslations = {
   [defaultLanguage]: defaultTranslation,
-  'pt-BR': ptBRTranslation,
   'en-IN': enINTranslation,
-  'es-ES': esESTranslation,
+  'es-CL': esCLTranslation,
   'es-CO': esCOTranslation,
+  'es-ES': esESTranslation,
   'hu-HU': huHUTranslation,
+  'pt-BR': ptBRTranslation,
 };
 
 const bundledMessages = {
   [defaultLanguage]: defaultMessages,
-  'pt-BR': ptBRMessages,
   'en-IN': enINMessages,
-  'es-ES': esESMessages,
+  'es-CL': esCLMessages,
   'es-CO': esCOMessages,
+  'es-ES': esESMessages,
   'hu-HU': huHUTranslation,
+  'pt-BR': ptBRMessages,
 };
 
 const translationErrorMsg = 'Could not translate, using default';
