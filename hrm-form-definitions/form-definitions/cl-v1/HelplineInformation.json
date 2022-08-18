@@ -3,7 +3,7 @@
   "helplines": [
     {
       "label": "Línea Libre Helpline",
-      "value": "Línea Libre Helpline",
+      "value": "Línea Libre",
       "default": true,
       "manager": {
         "name": "Helpline Manager",
