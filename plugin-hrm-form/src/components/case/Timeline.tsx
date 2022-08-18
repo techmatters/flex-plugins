@@ -48,7 +48,7 @@ const Timeline: React.FC<Props> = props => {
   const handleViewNoteClick = (activity: NoteActivity) => {
     const { twilioWorkerId } = activity;
     const info: CaseItemEntry = {
-      id: null,
+      id: activity.id,
       form: { ...activity.note },
       twilioWorkerId,
       createdAt: parseISO(activity.date).toISOString(),
@@ -62,7 +62,7 @@ const Timeline: React.FC<Props> = props => {
   const handleViewReferralClick = (activity: ReferralActivity) => {
     const { twilioWorkerId } = activity;
     const info: CaseItemEntry = {
-      id: null,
+      id: activity.id,
       form: { ...activity.referral },
       twilioWorkerId,
       createdAt: parseISO(activity.createdAt).toISOString(),

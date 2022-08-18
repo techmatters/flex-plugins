@@ -25,13 +25,14 @@ const noteActivities = (counsellorNotes: NoteEntry[], previewFields: string[]): 
   (counsellorNotes || [])
     .map((n, originalIndex) => {
       try {
-        const { createdAt: date, updatedAt, updatedBy, twilioWorkerId, ...toCopy } = n;
+        const { id, createdAt: date, updatedAt, updatedBy, twilioWorkerId, ...toCopy } = n;
         const text =
           previewFields
             .map(pf => toCopy[pf])
             .filter(pv => pv)
             .join(', ') || '--';
         return {
+          id,
           updatedAt,
           updatedBy,
           text,
@@ -51,10 +52,11 @@ const noteActivities = (counsellorNotes: NoteEntry[], previewFields: string[]): 
 const referralActivities = (referrals: ReferralEntry[]): Activity[] =>
   (referrals || [])
     .map((referral, originalIndex) => {
-      const { createdAt, date, updatedAt, updatedBy, twilioWorkerId, ...toCopy } = referral;
+      const { id, createdAt, date, updatedAt, updatedBy, twilioWorkerId, ...toCopy } = referral;
       const { referredTo: text } = referral;
       try {
         return {
+          id,
           date,
           createdAt,
           twilioWorkerId,

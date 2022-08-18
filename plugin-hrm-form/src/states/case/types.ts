@@ -109,6 +109,7 @@ export type CaseActionType =
 export type Activity = NoteActivity | ReferralActivity | ConnectedCaseActivity;
 
 export type NoteActivity = {
+  id: string;
   date: string;
   type: string;
   text: string;
@@ -120,6 +121,7 @@ export type NoteActivity = {
 };
 
 export type ReferralActivity = {
+  id: string;
   date: string;
   createdAt: string;
   type: string;
