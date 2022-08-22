@@ -148,7 +148,7 @@ class SearchForm extends Component {
 
     return (
       <>
-        <Container>
+        <Container data-testid="SearchForm">
           <SearchTitle data-testid="Search-Title">
             <Template code="SearchContactsAndCases-Title" />
           </SearchTitle>
@@ -245,7 +245,7 @@ class SearchForm extends Component {
           )}
         </Container>
         <BottomButtonBar>
-          <StyledNextStepButton type="button" disabled={!isTouched} roundCorners={true} onClick={submitSearch}>
+          <StyledNextStepButton type="button" roundCorners={true} onClick={submitSearch}>
             <Template code="SearchForm-Button" />
           </StyledNextStepButton>
         </BottomButtonBar>

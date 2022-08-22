@@ -351,6 +351,7 @@ export const SectionActionButton = styled('button')`
     outline-color: black;
   }
 `;
+SectionActionButton.displayName = 'SectionActionButton'
 
 type CollapseProps = {
   expanded: boolean;

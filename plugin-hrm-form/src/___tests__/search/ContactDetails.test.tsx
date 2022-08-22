@@ -1,5 +1,6 @@
 import * as React from 'react';
-import renderer from 'react-test-renderer';
+import { render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom/extend-expect';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { callTypes, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
@@ -7,14 +8,11 @@ import { StorelessThemeProvider } from '@twilio/flex-ui';
 
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import ContactDetails from '../../components/search/ContactDetails';
-import ContactDetailsSection from '../../components/contact/ContactDetailsSection';
 import { channelTypes } from '../../states/DomainConstants';
 import { getDefinitionVersions } from '../../HrmFormPlugin';
 import { DetailsContext } from '../../states/contacts/contactDetails';
 
 const mockStore = configureMockStore([]);
-
-const themeConf = {};
 
 const contactOfType = type => ({
   contactId: 'TEST CONTACT ID',
@@ -138,12 +136,16 @@ beforeAll(async () => {
   });
 });
 
-test(`<ContactDetails> with contact of type ${callTypes.child}`, () => {
+afterEach(() => {
+  jest.clearAllMocks();
+});
+
+test(`<ContactDetails> with contact of type ${callTypes.child}`, async () => {
   const contact = contactOfType(callTypes.child);
   const store = mockStore(initialState(callTypes.child));
 
-  const wrapper = renderer.create(
-    <StorelessThemeProvider themeConf={themeConf}>
+  render(
+    <StorelessThemeProvider themeConf={{}}>
       <Provider store={store}>
         <ContactDetails
           contact={contact}
@@ -156,19 +158,20 @@ test(`<ContactDetails> with contact of type ${callTypes.child}`, () => {
         />
       </Provider>
     </StorelessThemeProvider>,
-  ).root;
-  const component = wrapper.findByType(ContactDetails);
-  const sections = component.findAllByType(ContactDetailsSection);
-  const sectionsCount = sections.length;
-  expect(sectionsCount).toEqual(4);
+  );
+
+  expect(screen.getByTestId('ContactDetails')).toBeInTheDocument();
+  expect(screen.queryByTestId('ContactDetails-Section-ChildInformation')).toBeInTheDocument();
+  expect(store.getActions().length).toBe(1);
+  expect(screen.getAllByTestId('ContactDetails-Section')).toHaveLength(4);
 });
 
-test(`<ContactDetails> with contact of type ${callTypes.caller}`, () => {
+test(`<ContactDetails> with contact of type ${callTypes.caller}`, async () => {
   const contact = contactOfType(callTypes.caller);
   const store = mockStore(initialState(callTypes.caller));
 
-  const wrapper = renderer.create(
-    <StorelessThemeProvider themeConf={themeConf}>
+  render(
+    <StorelessThemeProvider themeConf={{}}>
       <Provider store={store}>
         <ContactDetails
           contact={contact}
@@ -181,19 +184,19 @@ test(`<ContactDetails> with contact of type ${callTypes.caller}`, () => {
         />
       </Provider>
     </StorelessThemeProvider>,
-  ).root;
-  const component = wrapper.findByType(ContactDetails);
-  const sections = component.findAllByType(ContactDetailsSection);
-  const sectionsCount = sections.length;
-  expect(sectionsCount).toEqual(5);
+  );
+  expect(screen.getByTestId('ContactDetails')).toBeInTheDocument();
+  expect(screen.queryByTestId('ContactDetails-Section-ChildInformation')).toBeInTheDocument();
+  expect(store.getActions().length).toBe(1);
+  expect(screen.getAllByTestId('ContactDetails-Section')).toHaveLength(5);
 });
 
-test(`<ContactDetails> with a non data (standalone) contact`, () => {
+test(`<ContactDetails> with a non data (standalone) contact`, async () => {
   const contact = contactOfType('anything else');
   const store = mockStore(initialState('anything else'));
 
-  const wrapper = renderer.create(
-    <StorelessThemeProvider themeConf={themeConf}>
+  render(
+    <StorelessThemeProvider themeConf={{}}>
       <Provider store={store}>
         <ContactDetails
           contact={contact}
@@ -206,9 +209,8 @@ test(`<ContactDetails> with a non data (standalone) contact`, () => {
         />
       </Provider>
     </StorelessThemeProvider>,
-  ).root;
-  const component = wrapper.findByType(ContactDetails);
-  const sections = component.findAllByType(ContactDetailsSection);
-  const sectionsCount = sections.length;
-  expect(sectionsCount).toEqual(1);
+  );
+  expect(screen.getByTestId('ContactDetails')).toBeInTheDocument();
+  expect(store.getActions().length).toBe(1);
+  expect(screen.getAllByTestId('ContactDetails-Section')).toHaveLength(1);
 });

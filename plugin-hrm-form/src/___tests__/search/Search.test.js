@@ -1,15 +1,13 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import renderer from 'react-test-renderer';
+import { render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom/extend-expect';
 import configureMockStore from 'redux-mock-store';
 import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 
-import HrmTheme from '../../styles/HrmTheme';
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import Search from '../../components/search';
-import SearchForm from '../../components/search/SearchForm';
-import ContactDetails from '../../components/search/ContactDetails';
 import { SearchPages } from '../../states/search/types';
 import { channelTypes } from '../../states/DomainConstants';
 import { getDefinitionVersions } from '../../HrmFormPlugin';
@@ -17,10 +15,6 @@ import { DetailsContext } from '../../states/contacts/contactDetails';
 
 const mockStore = configureMockStore([]);
 let mockV1;
-
-const themeConf = {
-  colorTheme: HrmTheme,
-};
 
 jest.mock('../../services/ServerlessService', () => ({
   populateCounselors: async () => [],
@@ -97,7 +91,11 @@ beforeAll(async () => {
   mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
 });
 
-test('<Search> should display <SearchForm />', () => {
+afterEach(() => {
+  jest.clearAllMocks();
+});
+
+test('<Search> should display <SearchForm />', async () => {
   const currentPage = SearchPages.form;
   const searchFormValues = {
     firstName: 'Jill',
@@ -112,24 +110,23 @@ test('<Search> should display <SearchForm />', () => {
   const initialState = createState(task.taskSid, { currentPage, searchFormValues, detailsExpanded });
   const store = mockStore(initialState);
 
-  const wrapper = renderer.create(
-    <StorelessThemeProvider themeConf={themeConf}>
+  render(
+    <StorelessThemeProvider themeConf={{}}>
       <Provider store={store}>
         <Search task={task} handleSelectSearchResult={() => null} handleExpandDetailsSection={() => null} />
       </Provider>
     </StorelessThemeProvider>,
-  ).root;
+  );
 
-  const component = wrapper.findByType(Search);
+  expect(screen.getByTestId('SearchForm')).toBeInTheDocument();
+  expect(screen.queryByTestId('ContactDetails')).not.toBeInTheDocument();
 
-  expect(() => component.findByType(SearchForm)).not.toThrow();
-  expect(() => component.findByType(ContactDetails)).toThrow();
-
-  const valuesProps = component.findByType(SearchForm).props.values;
-  expect(valuesProps).toEqual(searchFormValues);
+  expect(screen.getAllByRole('textbox')).toHaveLength(5);
+  expect(screen.queryByRole('button', { name: 'Counsellor Name' })).toBeDefined();
+  expect(screen.getByDisplayValue('Jill')).toBeDefined();
 });
 
-test('<Search> should display <SearchForm /> with previous contacts checkbox', () => {
+test('<Search> should display <SearchForm /> with previous contacts checkbox', async () => {
   const currentPage = SearchPages.form;
   const searchFormValues = {
     firstName: 'Jill',
@@ -155,25 +152,22 @@ test('<Search> should display <SearchForm /> with previous contacts checkbox', (
   const initialState = createState(task.taskSid, { currentPage, searchFormValues, detailsExpanded, previousContacts });
   const store = mockStore(initialState);
 
-  const wrapper = renderer.create(
-    <StorelessThemeProvider themeConf={themeConf}>
+  render(
+    <StorelessThemeProvider themeConf={{}}>
       <Provider store={store}>
         <Search task={task} handleSelectSearchResult={() => null} handleExpandDetailsSection={() => null} />
       </Provider>
     </StorelessThemeProvider>,
-  ).root;
+  );
 
-  const component = wrapper.findByType(Search);
-
-  expect(() => component.findByType(SearchForm)).not.toThrow();
-  expect(() => component.findByProps({ 'data-testid': 'Search-PreviousContactsCheckbox' })).not.toThrow();
-  expect(() => component.findByType(ContactDetails)).toThrow();
-
-  const valuesProps = component.findByType(SearchForm).props.values;
-  expect(valuesProps).toEqual(searchFormValues);
+  expect(screen.queryByTestId('SearchForm')).toBeInTheDocument();
+  expect(screen.queryByTestId('ContactDetails')).not.toBeInTheDocument();
+  expect(screen.getAllByRole('textbox')).toHaveLength(5);
+  expect(screen.queryByRole('checkbox', { name: 'Search-PreviousContactsCheckbox' })).toBeDefined();
+  expect(screen.queryByRole('button', { name: 'Counsellor Name' })).toBeDefined();
 });
 
-test('<Search> should display <ContactDetails />', () => {
+test('<Search> should display <ContactDetails />', async () => {
   const currentPage = SearchPages.details;
   const currentContact = {
     contactId: 'TEST CONTACT ID',
@@ -255,19 +249,16 @@ test('<Search> should display <ContactDetails />', () => {
   const initialState = createState(task.taskSid, { currentPage, currentContact, detailsExpanded });
   const store = mockStore(initialState);
 
-  const wrapper = renderer.create(
-    <StorelessThemeProvider themeConf={themeConf}>
+  render(
+    <StorelessThemeProvider themeConf={{}}>
       <Provider store={store}>
         <Search task={task} handleSelectSearchResult={() => null} handleExpandDetailsSection={() => null} />
       </Provider>
     </StorelessThemeProvider>,
-  ).root;
+  );
 
-  const component = wrapper.findByType(Search);
-
-  expect(() => component.findByType(SearchForm)).toThrow();
-  expect(() => component.findByType(ContactDetails)).not.toThrow();
-
-  const contactProps = component.findByType(ContactDetails).props.contact;
-  expect(contactProps).toEqual(currentContact);
+  expect(screen.queryByTestId('ContactDetails')).toBeInTheDocument();
+  expect(screen.queryByTestId('SearchForm')).not.toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: 'SearchResultsIndex-BackToResults' })).toBeDefined();
+  expect(store.getActions().length).toBe(1);
 });
