@@ -1,5 +1,9 @@
 [
   {
+    "label": "[Presentación Guía]",
+    "text": "[Presentación Guía] Mi nombre es XXX pero me puedes decir XXX. Respecto a tu pregunta [Respuesta]"
+  },
+  {
     "label": "[Saludo y Presentación]",
     "text": "¡Hola, te damos la bienvenida a Te Guío! Esta es la línea de ayuda dedicada a adolescentes como tú, donde te escuchamos y orientamos en las inquietudes que puedes tener para lograr vivir una sexualidad saludable. Qué gusto que te contactes con nosotros.\nPara empezar, necesitamos que escribas únicamente el número de una de las siguientes opciones según tu caso:\n1. Tienes una duda o inquietud y deseas que la respondamos por este chat.\n2. Deseas tener una cita virtual y recibir una orientación personalizada."
   },
