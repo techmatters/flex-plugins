@@ -33,8 +33,6 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
 
     await page.viewClosePrintView();
 
-    await page.updateCaseSummary();
-
     await page.addCaseSection({
       sectionTypeId: 'note',
       items: {
