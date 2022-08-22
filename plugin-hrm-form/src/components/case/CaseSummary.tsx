@@ -4,7 +4,7 @@ import { Template } from '@twilio/flex-ui';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 
-import { CaseSectionFont, CaseSummaryTextArea } from '../../styles/case';
+import { CaseDetailsBorder, CaseSectionFont, CaseSummaryTextArea } from '../../styles/case';
 import { namespace, connectedCaseBase } from '../../states';
 import * as CaseActions from '../../states/case/actions';
 import { CaseState } from '../../states/case/reducer';
@@ -31,7 +31,7 @@ const CaseSummary: React.FC<Props> = ({ task, connectedCaseState, updateCaseInfo
   };
 
   return (
-    <>
+    <CaseDetailsBorder paddingBottom="0">
       <CaseSectionFont id="Case-CaseSummary-label">
         <Template code="Case-CaseSummarySection" />
       </CaseSectionFont>
@@ -45,7 +45,7 @@ const CaseSummary: React.FC<Props> = ({ task, connectedCaseState, updateCaseInfo
         onChange={e => handleOnChange(e.target.value)}
         readOnly={readonly}
       />
-    </>
+    </CaseDetailsBorder>
   );
 };
 

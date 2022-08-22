@@ -26,6 +26,7 @@ export enum DefinitionVersionId {
   ukrV1 = 'ukr-v1', // International Ukrainian Helpline v1
   thV1 = 'th-v1', // Childline Thailand v1
   clV1 = 'cl-v1', // Línea Libre Chile v1
+  zwV1 = 'zw-v1', // Childline Zimbabwe
   roV1 = 'ro-v1', // Telefonul Copilului Romania v1
 }
 

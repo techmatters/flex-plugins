@@ -14,12 +14,10 @@ import {
   DetailsHeaderCounselor,
   DetailsHeaderContainer,
   DetailsHeaderTextContainer,
-  DetailsHeaderChildAtRiskContainer,
-  ChildIsAtRiskWrapper,
   StyledPrintButton,
 } from '../../../styles/case';
-import { Flex, Box, FormCheckbox, FormLabel } from '../../../styles/HrmStyles';
-import { PermissionActions, PermissionActionType } from '../../../permissions';
+import { Flex, Box } from '../../../styles/HrmStyles';
+import { PermissionActionType } from '../../../permissions';
 
 type OwnProps = {
   caseId: string;
@@ -28,7 +26,6 @@ type OwnProps = {
   counselor: string;
   childIsAtRisk: boolean;
   handlePrintCase: () => void;
-  handleClickChildIsAtRisk: () => void;
   isOrphanedCase: boolean;
   can: (action: PermissionActionType) => boolean;
 };
@@ -38,14 +35,11 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
   childName,
   office,
   counselor,
-  childIsAtRisk,
   handlePrintCase,
-  handleClickChildIsAtRisk,
   isOrphanedCase,
   can,
 }) => {
   const { multipleOfficeSupport } = getConfig();
-  const canEditChildAtRisk = can(PermissionActions.EDIT_CHILD_IS_AT_RISK);
 
   return (
     <DetailsHeaderContainer>
@@ -75,25 +69,6 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
             />
           )}
         </Box>
-        <DetailsHeaderChildAtRiskContainer style={{ marginTop: 'auto', marginRight: 'auto' }}>
-          <FormLabel htmlFor="childIsAtRisk">
-            <ChildIsAtRiskWrapper style={{ height: 'auto' }}>
-              <Box marginRight="5px">
-                <FormCheckbox
-                  id="childIsAtRisk"
-                  data-testid="Case-ChildIsAtRisk-Checkbox"
-                  name="childIsAtRisk"
-                  type="checkbox"
-                  onChange={handleClickChildIsAtRisk}
-                  defaultChecked={Boolean(childIsAtRisk)}
-                  disabled={!canEditChildAtRisk}
-                  autoFocus={canEditChildAtRisk}
-                />
-              </Box>
-              <Template code="Case-ChildIsAtRisk" />
-            </ChildIsAtRiskWrapper>
-          </FormLabel>
-        </DetailsHeaderChildAtRiskContainer>
       </Flex>
     </DetailsHeaderContainer>
   );

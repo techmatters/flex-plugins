@@ -152,9 +152,6 @@ describe('useState mocked', () => {
     expect(screen.getByTestId('Case-DetailsHeaderCaseId').innerHTML).toContain('123');
     expect(screen.getByTestId('Case-DetailsHeaderChildName').innerHTML).toContain('first last');
     expect(screen.getByTestId('Case-DetailsHeaderCounselor').innerHTML).toContain('worker1 name');
-    expect(
-      within(screen.getByTestId('Case-Details_CaseStatus')).getByRole('option', { name: 'Open' }).selected,
-    ).toBeTruthy();
     expect(screen.getByTestId('Case-Details_DateOpened').value).toBe('6/29/2020');
     expect(screen.getByTestId('Case-Details_DateLastUpdated').value).toBe('—');
   });
@@ -177,9 +174,6 @@ describe('useState mocked', () => {
     expect(screen.getByTestId('Case-DetailsHeaderCaseId').innerHTML).toContain('123');
     expect(screen.getByTestId('Case-DetailsHeaderChildName').innerHTML).toContain('first last');
     expect(screen.getByTestId('Case-DetailsHeaderCounselor').innerHTML).toContain('worker1 name');
-    expect(
-      within(screen.getByTestId('Case-Details_CaseStatus')).getByRole('option', { name: 'Open' }).selected,
-    ).toBeTruthy();
     expect(screen.getByTestId('Case-Details_DateOpened').value).toBe('6/29/2020');
     expect(screen.getByTestId('Case-Details_DateLastUpdated').value).toBe('6/29/2020');
   });

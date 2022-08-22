@@ -60,11 +60,13 @@ export type CaseInfo = {
   referrals?: ReferralEntry[];
   incidents?: IncidentEntry[];
   documents?: DocumentEntry[];
+  caseSummary?: string;
   followUpDate?: string;
   childIsAtRisk?: boolean;
 };
 
 export type Case = {
+  accountSid: any;
   id: number;
   status: string;
   helpline: string;

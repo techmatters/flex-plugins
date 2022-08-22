@@ -35,6 +35,7 @@ import { recordBackendError } from '../../fullStory';
 import { completeTask, submitContactForm } from '../../services/formSubmissionHelpers';
 import { getPermissionsForCase, PermissionActions } from '../../permissions';
 import { CenteredContainer } from '../../styles/case';
+import EditCaseSummary from './EditCaseSummary';
 import { documentSectionApi } from '../../states/case/sections/document';
 import { incidentSectionApi } from '../../states/case/sections/incident';
 import { perpetratorSectionApi } from '../../states/case/sections/perpetrator';
@@ -339,6 +340,16 @@ const Case: React.FC<Props> = ({
             shouldUnregister: false,
           },
         });
+      case NewCaseSubroutes.CaseSummary:
+        return (
+          <EditCaseSummary
+            {...{
+              ...addScreenProps,
+              followUpDate,
+              caseStatus: status,
+            }}
+          />
+        );
       default:
       // Fall through to next switch for other routes without actions
     }
