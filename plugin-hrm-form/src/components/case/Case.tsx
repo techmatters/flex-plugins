@@ -265,8 +265,6 @@ const Case: React.FC<Props> = ({
     }
   };
 
-  const { caseForms } = definitionVersion;
-
   const caseDetails = {
     id: connectedCase.id,
     name,
