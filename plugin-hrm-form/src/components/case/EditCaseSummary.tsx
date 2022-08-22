@@ -85,10 +85,6 @@ const EditCaseSummary: React.FC<Props> = ({
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const firstElementRef = useFocus();
 
-  const layout = {
-    splitFormAt: 3,
-  };
-
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const formDefinition: FormDefinition = [
     {
@@ -154,18 +150,8 @@ const EditCaseSummary: React.FC<Props> = ({
       updateTempInfo(createUpdatedTemporaryFormContent(formValues), task.taskSid);
     };
     const generatedForm = createFormFromDefinition(formDefinition)([])(initialForm, firstElementRef)(updateCallBack);
-    if (layout.splitFormAt) return splitAt(layout.splitFormAt)(disperseInputs(7)(generatedForm));
-    return splitInHalf(disperseInputs(7)(generatedForm));
-  }, [
-    formDefinition,
-    initialForm,
-    firstElementRef,
-    layout.splitFormAt,
-    temporaryCaseInfo,
-    getValues,
-    updateTempInfo,
-    task.taskSid,
-  ]);
+    return splitAt(3)(disperseInputs(7)(generatedForm));
+  }, [formDefinition, initialForm, firstElementRef, temporaryCaseInfo, getValues, updateTempInfo, task.taskSid]);
 
   const save = async () => {
     const { info, id } = connectedCaseState.connectedCase;
