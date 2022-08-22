@@ -14,6 +14,8 @@ const createFakeCase = (info: CaseInfo, connectedContacts: any[] = []): Case => 
   twilioWorkerId: 'fake-worker',
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
+  categories: {},
+  childName: '',
 });
 
 let formDefinition;
@@ -32,6 +34,7 @@ describe('getActivitiesFromCase', () => {
     const fakeCase = createFakeCase({
       counsellorNotes: [
         {
+          id: 'NOTE_ID',
           twilioWorkerId: 'note-twilio-worker-id',
           createdAt,
           note: 'content',
@@ -41,6 +44,7 @@ describe('getActivitiesFromCase', () => {
 
     const activities = getActivitiesFromCase(fakeCase);
     const expectedActivity = {
+      id: 'NOTE_ID',
       originalIndex: 0,
       date: createdAt,
       type: 'note',
@@ -68,6 +72,7 @@ describe('getActivitiesFromCase', () => {
     const fakeCase = createFakeCase({
       counsellorNotes: [
         {
+          id: 'NOTE_ID',
           twilioWorkerId: 'note-twilio-worker-id',
           createdAt,
           customProperty1: 'customProperty1 content',
@@ -78,6 +83,7 @@ describe('getActivitiesFromCase', () => {
 
     const activities = getActivitiesFromCase(fakeCase);
     const expectedActivity = {
+      id: 'NOTE_ID',
       originalIndex: 0,
       date: createdAt,
       type: 'note',
@@ -112,6 +118,7 @@ describe('getActivitiesFromCase', () => {
     const fakeCase = createFakeCase({
       counsellorNotes: [
         {
+          id: 'NOTE_ID',
           twilioWorkerId: 'note-twilio-worker-id',
           createdAt,
           customProperty1: 'customProperty1 content',
@@ -123,6 +130,7 @@ describe('getActivitiesFromCase', () => {
 
     const activities = getActivitiesFromCase(fakeCase);
     const expectedActivity = {
+      id: 'NOTE_ID',
       originalIndex: 0,
       date: createdAt,
       type: 'note',
@@ -144,11 +152,13 @@ describe('getActivitiesFromCase', () => {
     const fakeCase = createFakeCase({
       counsellorNotes: [
         {
+          id: 'NOTE_ID_1',
           twilioWorkerId: 'note-twilio-worker-id',
           createdAt,
           note: 'content',
         },
         {
+          id: 'NOTE_ID_2',
           twilioWorkerId: 'note-twilio-worker-id',
           createdAt,
           note: 'moar content',
@@ -161,6 +171,7 @@ describe('getActivitiesFromCase', () => {
     const activities = getActivitiesFromCase(fakeCase);
     const expectedActivities = [
       {
+        id: 'NOTE_ID_1',
         originalIndex: 0,
         date: createdAt,
         type: 'note',
@@ -173,6 +184,7 @@ describe('getActivitiesFromCase', () => {
         updatedAt: undefined,
       },
       {
+        id: 'NOTE_ID_2',
         originalIndex: 1,
         date: createdAt,
         type: 'note',
@@ -191,6 +203,7 @@ describe('getActivitiesFromCase', () => {
 
   test('single referral added', async () => {
     const referral = {
+      id: 'REFERRAL_ID',
       date: '2020-12-15',
       referredTo: 'State Agency 1',
       comments: 'comment',
@@ -200,9 +213,10 @@ describe('getActivitiesFromCase', () => {
     const fakeCase = createFakeCase({
       referrals: [referral],
     });
-    const { createdAt: referralCreatedAt, twilioWorkerId, ...restOfReferral } = referral;
+    const { createdAt: referralCreatedAt, twilioWorkerId, id, ...restOfReferral } = referral;
     const activities = getActivitiesFromCase(fakeCase);
     const expectedActivity = {
+      id,
       originalIndex: 0,
       date: referral.date,
       createdAt,
@@ -293,6 +307,7 @@ describe('getActivitiesFromCase', () => {
     const contactCreatedAt = '2020-07-30 19:55:20';
     const noteCreatedAt = '2020-06-30 18:55:20';
     const referral = {
+      id: 'REFERRAL_ID',
       date: referralDate,
       referredTo: 'State Agency 1',
       comments: 'comment',
@@ -305,6 +320,7 @@ describe('getActivitiesFromCase', () => {
         referrals: [referral],
         counsellorNotes: [
           {
+            id: 'NOTE_ID',
             twilioWorkerId: 'note-adder',
             createdAt: noteCreatedAt,
             note: 'content',
@@ -328,10 +344,11 @@ describe('getActivitiesFromCase', () => {
     );
 
     const activities = getActivitiesFromCase(fakeCase);
-    const { createdAt: _createdAt, twilioWorkerId, ...restOfReferral } = referral;
+    const { createdAt: _createdAt, twilioWorkerId, id, ...restOfReferral } = referral;
 
     const expectedActivities = [
       {
+        id: 'NOTE_ID',
         originalIndex: 0,
         date: noteCreatedAt,
         type: 'note',
@@ -344,6 +361,7 @@ describe('getActivitiesFromCase', () => {
         updatedAt: undefined,
       },
       {
+        id: 'REFERRAL_ID',
         originalIndex: 0,
         date: referral.date,
         createdAt: referralCreatedAt,

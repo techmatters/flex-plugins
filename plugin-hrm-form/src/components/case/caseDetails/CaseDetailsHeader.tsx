@@ -60,7 +60,14 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
       </DetailsHeaderTextContainer>
       <Flex flexDirection="column" height="75px">
         <Box alignSelf="flex-end">
-          {!isOrphanedCase && <StyledPrintButton onClick={handlePrintCase} aria-label="Print" icon={<PrintIcon />} />}
+          {!isOrphanedCase && (
+            <StyledPrintButton
+              onClick={handlePrintCase}
+              aria-label="Print"
+              icon={<PrintIcon />}
+              data-testid="CasePrint-Button"
+            />
+          )}
         </Box>
       </Flex>
     </DetailsHeaderContainer>

@@ -60,6 +60,37 @@
     }
   },
   {
+    "name": "referralState",
+    "label": "Estado",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Apertura de caso ",
+        "label": "Apertura de caso "
+      },
+      {
+        "value": "En proceso ",
+        "label": "En proceso "
+      },
+      {
+        "value": "Proceso Culminado ",
+        "label": "Proceso Culminado "
+      },
+      {
+        "value": "Deserción o inasistencia ",
+        "label": "Deserción o inasistencia "
+      },
+      {
+        "value": "Info. y orientación",
+        "label": "Info. y orientación"
+      }
+    ]
+  },
+  {
     "name": "comments",
     "label": "Comentarios",
     "type": "textarea"

@@ -23,12 +23,12 @@ import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import * as ConfigActions from '../../states/configuration/actions';
 import ViewContact from './ViewContact';
-import { CaseDetailsName, updateCaseListByIndex, updateCaseSectionListByIndex } from '../../states/case/types';
-import { CustomITask, NoteEntry, ReferralEntry, StandaloneITask } from '../../types/types';
+import { CaseDetailsName } from '../../states/case/types';
+import { CustomITask, StandaloneITask } from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
 import { CaseItemAction, isAppRoutesWithCaseAndAction, NewCaseSubroutes } from '../../states/routing/types';
 import CaseHome from './CaseHome';
-import AddEditCaseItem from './AddEditCaseItem';
+import AddEditCaseItem, { AddEditCaseItemProps } from './AddEditCaseItem';
 import ViewCaseItem from './ViewCaseItem';
 import documentUploadHandler from './documentUploadHandler';
 import { recordBackendError } from '../../fullStory';
@@ -36,6 +36,13 @@ import { completeTask, submitContactForm } from '../../services/formSubmissionHe
 import { getPermissionsForCase, PermissionActions } from '../../permissions';
 import { CenteredContainer } from '../../styles/case';
 import EditCaseSummary from './EditCaseSummary';
+import { documentSectionApi } from '../../states/case/sections/document';
+import { incidentSectionApi } from '../../states/case/sections/incident';
+import { perpetratorSectionApi } from '../../states/case/sections/perpetrator';
+import { householdSectionApi } from '../../states/case/sections/household';
+import { referralSectionApi } from '../../states/case/sections/referral';
+import { noteSectionApi } from '../../states/case/sections/note';
+import { CaseSectionApi } from '../../states/case/sections/api';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -259,9 +266,6 @@ const Case: React.FC<Props> = ({
     }
   };
 
-  const { caseForms } = definitionVersion;
-  const caseLayouts = definitionVersion.layoutVersion.case;
-
   const caseDetails = {
     id: connectedCase.id,
     name,
@@ -299,169 +303,43 @@ const Case: React.FC<Props> = ({
       definitionVersion,
     };
 
+    const renderCaseItemPage = (
+      sectionApi: CaseSectionApi<unknown>,
+      editPermission: string,
+      extraAddEditProps: Partial<AddEditCaseItemProps> = {},
+    ) => {
+      if (action === CaseItemAction.View) {
+        return <ViewCaseItem {...addScreenProps} sectionApi={sectionApi} canEdit={() => can(editPermission)} />;
+      }
+      return (
+        <AddEditCaseItem
+          {...{
+            ...addScreenProps,
+            ...extraAddEditProps,
+            sectionApi,
+          }}
+        />
+      );
+    };
+
     switch (subroute) {
       case NewCaseSubroutes.Note:
-        if (action === CaseItemAction.View) {
-          return (
-            <ViewCaseItem
-              {...addScreenProps}
-              itemType="Note"
-              formDefinition={caseForms.NoteForm}
-              canEdit={() => can(PermissionActions.EDIT_NOTE)}
-            />
-          );
-        }
-        return (
-          <AddEditCaseItem
-            {...{
-              ...addScreenProps,
-              layout: {},
-              itemType: 'Note',
-              formDefinition: caseForms.NoteForm,
-            }}
-            applyTemporaryInfoToCase={updateCaseListByIndex<NoteEntry>(
-              ci => {
-                ci.counsellorNotes = ci.counsellorNotes ?? [];
-                return ci.counsellorNotes;
-              },
-              temp => {
-                const { form: noteForm, ...entryInfo } = temp;
-                return {
-                  ...noteForm,
-                  ...entryInfo,
-                };
-              },
-            )}
-          />
-        );
+        return renderCaseItemPage(noteSectionApi, PermissionActions.EDIT_NOTE);
       case NewCaseSubroutes.Referral:
-        if (action === CaseItemAction.View) {
-          return (
-            <ViewCaseItem
-              {...addScreenProps}
-              itemType="Referral"
-              formDefinition={caseForms.ReferralForm}
-              canEdit={() => can(PermissionActions.EDIT_REFERRAL)}
-            />
-          );
-        }
-        return (
-          <AddEditCaseItem
-            {...{
-              ...addScreenProps,
-              layout: {},
-              itemType: 'Referral',
-              formDefinition: caseForms.ReferralForm,
-            }}
-            applyTemporaryInfoToCase={updateCaseListByIndex<ReferralEntry>(
-              ci => {
-                ci.referrals = ci.referrals ?? [];
-                return ci.referrals;
-              },
-              temp => {
-                const { form: referralForm, ...entryInfo } = temp;
-                return {
-                  ...referralForm,
-                  referredTo: referralForm.referredTo as string,
-                  date: referralForm.date as string,
-                  ...entryInfo,
-                };
-              },
-            )}
-          />
-        );
+        return renderCaseItemPage(referralSectionApi, PermissionActions.EDIT_REFERRAL);
       case NewCaseSubroutes.Household:
-        if (action === CaseItemAction.View) {
-          return (
-            <ViewCaseItem
-              {...addScreenProps}
-              itemType="Household"
-              formDefinition={caseForms.HouseholdForm}
-              canEdit={() => can(PermissionActions.EDIT_HOUSEHOLD)}
-            />
-          );
-        }
-        return (
-          <AddEditCaseItem
-            {...{
-              ...addScreenProps,
-              layout: caseLayouts.households,
-              itemType: 'Household',
-              applyTemporaryInfoToCase: updateCaseSectionListByIndex('households', 'household'),
-              formDefinition: caseForms.HouseholdForm,
-            }}
-          />
-        );
+        return renderCaseItemPage(householdSectionApi, PermissionActions.EDIT_HOUSEHOLD);
       case NewCaseSubroutes.Perpetrator:
-        if (action === CaseItemAction.View) {
-          return (
-            <ViewCaseItem
-              {...addScreenProps}
-              itemType="Perpetrator"
-              formDefinition={caseForms.PerpetratorForm}
-              canEdit={() => can(PermissionActions.EDIT_PERPETRATOR)}
-            />
-          );
-        }
-        return (
-          <AddEditCaseItem
-            {...{
-              ...addScreenProps,
-              layout: caseLayouts.perpetrators,
-              itemType: 'Perpetrator',
-              applyTemporaryInfoToCase: updateCaseSectionListByIndex('perpetrators', 'perpetrator'),
-              formDefinition: caseForms.PerpetratorForm,
-            }}
-          />
-        );
+        return renderCaseItemPage(perpetratorSectionApi, PermissionActions.EDIT_PERPETRATOR);
       case NewCaseSubroutes.Incident:
-        if (action === CaseItemAction.View) {
-          return (
-            <ViewCaseItem
-              {...addScreenProps}
-              itemType="Incident"
-              formDefinition={caseForms.IncidentForm}
-              canEdit={() => can(PermissionActions.EDIT_INCIDENT)}
-            />
-          );
-        }
-        return (
-          <AddEditCaseItem
-            {...{
-              ...addScreenProps,
-              layout: caseLayouts.incidents,
-              itemType: 'Incident',
-              applyTemporaryInfoToCase: updateCaseSectionListByIndex('incidents', 'incident'),
-              formDefinition: caseForms.IncidentForm,
-            }}
-          />
-        );
+        return renderCaseItemPage(incidentSectionApi, PermissionActions.EDIT_INCIDENT);
       case NewCaseSubroutes.Document:
-        if (action === CaseItemAction.View) {
-          return (
-            <ViewCaseItem
-              {...addScreenProps}
-              itemType="Document"
-              formDefinition={caseForms.DocumentForm}
-              canEdit={() => can(PermissionActions.EDIT_DOCUMENT)}
-            />
-          );
-        }
-        return (
-          <AddEditCaseItem
-            {...{
-              ...addScreenProps,
-              layout: caseLayouts.documents,
-              itemType: 'Document',
-              applyTemporaryInfoToCase: updateCaseSectionListByIndex('documents', 'document'),
-              formDefinition: caseForms.DocumentForm,
-              customFormHandlers: documentUploadHandler,
-              reactHookFormOptions: {
-                shouldUnregister: false,
-              },
-            }}
-          />
-        );
+        return renderCaseItemPage(documentSectionApi, PermissionActions.EDIT_DOCUMENT, {
+          customFormHandlers: documentUploadHandler,
+          reactHookFormOptions: {
+            shouldUnregister: false,
+          },
+        });
       case NewCaseSubroutes.CaseSummary:
         return (
           <EditCaseSummary

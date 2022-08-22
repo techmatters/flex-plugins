@@ -14,6 +14,7 @@ export const RESTORE_ENTIRE_FORM = 'RESTORE_ENTIRE_FORM';
 export const UPDATE_HELPLINE = 'UPDATE_HELPLINE';
 export const ADD_CSAM_REPORT_ENTRY = 'contacts/ADD_CSAM_REPORT_ENTRY';
 export const SET_EDITING_CONTACT = 'SET_EDITING_CONTACT';
+export const SET_CALL_TYPE = 'SET_CALL_TYPE';
 
 type UpdateFormAction = {
   type: typeof UPDATE_FORM;
@@ -69,6 +70,8 @@ type SetEditingContact = {
   editing: boolean;
 };
 
+type CheckButtonDataAction = { type: typeof SET_CALL_TYPE; isCallTypeCaller: boolean };
+
 export type ContactsActionType =
   | UpdateFormAction
   | SaveEndMillisAction
@@ -78,4 +81,5 @@ export type ContactsActionType =
   | RestoreEntireFormAction
   | UpdateHelpline
   | AddCSAMReportEntry
-  | SetEditingContact;
+  | SetEditingContact
+  | CheckButtonDataAction;

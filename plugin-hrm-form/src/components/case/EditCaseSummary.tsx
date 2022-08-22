@@ -38,14 +38,13 @@ import { AppRoutesWithCaseAndAction } from '../../states/routing/types';
 import useFocus from '../../utils/useFocus';
 import { recordingErrorHandler } from '../../fullStory';
 import {
-  CaseUpdater,
   EditTemporaryCaseInfo,
   isEditTemporaryCaseInfo,
   TemporaryCaseInfo,
   temporaryCaseInfoHistory,
-  updateCaseSectionListByIndex,
 } from '../../states/case/types';
 import CloseCaseDialog from './CloseCaseDialog';
+import { upsertCaseSectionItemUsingSectionName } from '../../states/case/sections/update';
 
 type CaseItemPayload = { [key: string]: string | boolean };
 
@@ -170,17 +169,13 @@ const EditCaseSummary: React.FC<Props> = ({
     info.childIsAtRisk = temporaryCaseInfo.info.form.inImminentPhysicalDanger as boolean;
     status = temporaryCaseInfo.info.form.caseStatus as string;
 
-    const applyTemporaryInfoToCase = updateCaseSectionListByIndex('caseSummary', 'caseSummary');
+    const applyTemporaryInfoToCase = upsertCaseSectionItemUsingSectionName('caseSummary', 'caseSummary');
 
-    const newInfo: CaseInfo = applyTemporaryInfoToCase(
-      info,
-      {
-        ...temporaryCaseInfo.info,
-        form,
-        id: temporaryCaseInfo.info.id ?? uuidV4(),
-      },
-      temporaryCaseInfo.info.index,
-    );
+    const newInfo: CaseInfo = applyTemporaryInfoToCase(info, {
+      ...temporaryCaseInfo.info,
+      form,
+      id: temporaryCaseInfo.info.id ?? uuidV4(),
+    });
     const updatedCase = await updateCase(id, { status, info: newInfo });
     setConnectedCase(updatedCase, task.taskSid, connectedCaseState.caseHasBeenEdited);
   };

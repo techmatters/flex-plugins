@@ -1,8 +1,8 @@
 [
   {
     "name": "date",
-    "label": "Date",
     "type": "date-input",
+    "label": "Fecha",
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -10,7 +10,7 @@
   },
   {
     "name": "referredTo",
-    "label": "Referred To",
+    "label": "Derivado a",
     "type": "select",
     "options": [
       {
@@ -18,28 +18,16 @@
         "label": ""
       },
       {
-        "value": "Clinic",
-        "label": "Clinic"
-      },
-      {
         "value": "Hospital",
         "label": "Hospital"
       },
       {
-        "value": "Social Welfare",
-        "label": "Social Welfare"
+        "value": "Carabineros",
+        "label": "Carabineros"
       },
       {
-        "value": "Police",
-        "label": "Police"
-      },
-      {
-        "value": "Religious leader",
-        "label": "Religious leader"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
+        "value": "Otro",
+        "label": "Otro"
       }
     ],
     "required": {
@@ -48,8 +36,13 @@
     }
   },
   {
+    "name": "RUT",
+    "label": "RUT",
+    "type": "input"
+  },
+  {
     "name": "comments",
-    "label": "Comments",
+    "label": "Comentario",
     "type": "textarea"
   }
 ]

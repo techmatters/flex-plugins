@@ -1060,6 +1060,13 @@
       "type": "input"
     },
     {
+      "name": "copyToPerpetrator",
+      "label": "This household member is also a perpetrator",
+      "type": "copy-to",
+      "target": "perpetrators",
+      "saveable": false
+    },
+    {
       "name": "additionalInfo",
       "label": "Additional Information/Notes",
       "type": "input"

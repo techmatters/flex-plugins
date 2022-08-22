@@ -5,7 +5,7 @@ import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { FieldValues, FormProvider, SubmitErrorHandler, useForm } from 'react-hook-form';
-import type { DefinitionVersion, FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
+import type { DefinitionVersion } from 'hrm-form-definitions';
 import { isEqual } from 'lodash';
 
 import {
@@ -40,7 +40,6 @@ import useFocus from '../../utils/useFocus';
 import { recordingErrorHandler } from '../../fullStory';
 import {
   AddTemporaryCaseInfo,
-  CaseUpdater,
   EditTemporaryCaseInfo,
   isAddTemporaryCaseInfo,
   isEditTemporaryCaseInfo,
@@ -48,6 +47,9 @@ import {
   temporaryCaseInfoHistory,
 } from '../../states/case/types';
 import CloseCaseDialog from './CloseCaseDialog';
+import { CaseSectionApi } from '../../states/case/sections/api';
+import { lookupApi } from '../../states/case/sections/lookupApi';
+import { copyCaseSectionItem } from '../../states/case/sections/update';
 
 type CaseItemPayload = { [key: string]: string | boolean };
 
@@ -69,37 +71,37 @@ export type AddEditCaseItemProps = {
   definitionVersion: DefinitionVersion;
   exitItem: () => void;
   routing: AppRoutesWithCaseAndAction;
-  itemType: string;
-  formDefinition: FormDefinition;
-  layout: LayoutDefinition;
-  applyTemporaryInfoToCase: CaseUpdater;
   customFormHandlers?: CustomHandlers;
   reactHookFormOptions?: Partial<{ shouldUnregister: boolean }>;
+  sectionApi: CaseSectionApi<unknown>;
 };
 // eslint-disable-next-line no-use-before-define
 type Props = AddEditCaseItemProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
 const AddEditCaseItem: React.FC<Props> = ({
+  definitionVersion,
   task,
   counselor,
   counselorsHash,
   exitItem,
   connectedCaseState,
   routing,
-  itemType,
   setConnectedCase,
   updateTempInfo,
   changeRoute,
-  formDefinition,
-  layout,
-  applyTemporaryInfoToCase,
   customFormHandlers,
   reactHookFormOptions,
+  sectionApi,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const firstElementRef = useFocus();
 
   const { temporaryCaseInfo } = connectedCaseState;
+  const formDefinition = sectionApi
+    .getSectionFormDefinition(definitionVersion)
+    // If more 'when adding only' form item types are implemented, we should create a specific property, but there is only one so just check the type for now
+    .filter(fd => isAddTemporaryCaseInfo(temporaryCaseInfo) || fd.type !== 'copy-to');
+  const layout = sectionApi.getSectionLayoutDefinition(definitionVersion);
 
   // Grab initial values in first render only. If getTemporaryFormContent(temporaryCaseInfo), cherrypick the values using formDefinition, if not build the object with getInitialValue
   const [initialForm] = React.useState(() => {
@@ -170,7 +172,8 @@ const AddEditCaseItem: React.FC<Props> = ({
 
   const save = async () => {
     const { info, id } = connectedCaseState.connectedCase;
-    const form = transformValues(formDefinition)(getTemporaryFormContent(temporaryCaseInfo));
+    const rawForm = getTemporaryFormContent(temporaryCaseInfo);
+    const form = transformValues(formDefinition)(rawForm);
     const now = new Date().toISOString();
     const { workerSid } = getConfig();
     let newInfo: CaseInfo;
@@ -181,15 +184,10 @@ const AddEditCaseItem: React.FC<Props> = ({
        */
       temporaryCaseInfo.info.updatedAt = now;
       temporaryCaseInfo.info.updatedBy = workerSid;
-      newInfo = applyTemporaryInfoToCase(
-        info,
-        {
-          ...temporaryCaseInfo.info,
-          form,
-          id: temporaryCaseInfo.info.id ?? uuidV4(),
-        },
-        temporaryCaseInfo.info.index,
-      );
+      newInfo = sectionApi.upsertCaseSectionItemFromForm(info, {
+        ...temporaryCaseInfo.info,
+        form,
+      });
     } else {
       const newItem: CaseItemEntry = {
         form,
@@ -197,7 +195,18 @@ const AddEditCaseItem: React.FC<Props> = ({
         twilioWorkerId: workerSid,
         id: uuidV4(),
       };
-      newInfo = applyTemporaryInfoToCase(info, newItem, undefined);
+      newInfo = sectionApi.upsertCaseSectionItemFromForm(info, newItem);
+      formDefinition.forEach(fd => {
+        // A preceding 'filter' call looks nicer but TS type narrowing isn't smart enough to work with that.
+        if (fd.type === 'copy-to' && rawForm[fd.name]) {
+          newInfo = copyCaseSectionItem({
+            definition: definitionVersion,
+            original: newInfo,
+            fromApi: sectionApi,
+            toApi: lookupApi(fd.target),
+          });
+        }
+      });
     }
     const updatedCase = await updateCase(id, { info: newInfo });
     setConnectedCase(updatedCase, task.taskSid, connectedCaseState.caseHasBeenEdited);
@@ -229,7 +238,7 @@ const AddEditCaseItem: React.FC<Props> = ({
 
   const { strings } = getConfig();
   const onError: SubmitErrorHandler<FieldValues> = recordingErrorHandler(
-    routing.action === CaseItemAction.Edit ? `Case: Edit ${itemType}` : `Case: Add ${itemType}`,
+    routing.action === CaseItemAction.Edit ? `Case: Edit ${sectionApi.label}` : `Case: Add ${sectionApi.label}`,
     () => {
       window.alert(strings['Error-Form']);
       if (openDialog) setOpenDialog(false);
@@ -253,7 +262,9 @@ const AddEditCaseItem: React.FC<Props> = ({
       <CaseActionLayout>
         <CaseActionFormContainer>
           <ActionHeader
-            titleTemplate={routing.action === CaseItemAction.Edit ? `Case-Edit${itemType}` : `Case-Add${itemType}`}
+            titleTemplate={
+              routing.action === CaseItemAction.Edit ? `Case-Edit${sectionApi.label}` : `Case-Add${sectionApi.label}`
+            }
             onClickClose={checkForEdits}
             addingCounsellor={addingCounsellorName}
             added={added}
@@ -298,7 +309,7 @@ const AddEditCaseItem: React.FC<Props> = ({
                 roundCorners
                 onClick={methods.handleSubmit(saveAndStay, onError)}
               >
-                <Template code={`BottomBar-SaveAndAddAnother${itemType}`} />
+                <Template code={`BottomBar-SaveAndAddAnother${sectionApi.label}`} />
               </StyledNextStepButton>
             </Box>
           )}
@@ -307,7 +318,7 @@ const AddEditCaseItem: React.FC<Props> = ({
             roundCorners
             onClick={methods.handleSubmit(saveAndLeave, onError)}
           >
-            <Template code={`BottomBar-Save${itemType}`} />
+            <Template code={`BottomBar-Save${sectionApi.label}`} />
           </StyledNextStepButton>
         </BottomButtonBar>
       </CaseActionLayout>

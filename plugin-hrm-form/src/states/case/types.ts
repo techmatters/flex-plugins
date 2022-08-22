@@ -20,12 +20,10 @@ type ViewContact = {
   counselor: string;
 };
 
-type Indexable = { index: number };
-
 export type ViewTemporaryCaseInfo = {
   screen: CaseSectionSubroute;
   action: CaseItemAction.View;
-  info: t.CaseItemEntry & Indexable;
+  info: t.CaseItemEntry;
 };
 
 export function isViewTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is ViewTemporaryCaseInfo {
@@ -35,7 +33,7 @@ export function isViewTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is ViewTemp
 export type EditTemporaryCaseInfo = {
   screen: CaseSectionSubroute;
   action: CaseItemAction.Edit;
-  info: t.CaseItemEntry & Indexable;
+  info: t.CaseItemEntry;
   isEdited?: boolean;
 };
 
@@ -111,6 +109,7 @@ export type CaseActionType =
 export type Activity = NoteActivity | ReferralActivity | ConnectedCaseActivity;
 
 export type NoteActivity = {
+  id: string;
   date: string;
   type: string;
   text: string;
@@ -122,6 +121,7 @@ export type NoteActivity = {
 };
 
 export type ReferralActivity = {
+  id: string;
   date: string;
   createdAt: string;
   type: string;
@@ -177,45 +177,6 @@ export type CaseDetails = {
   version?: DefinitionVersionId;
   contact: any; // ToDo: change this
   contacts: any[];
-};
-
-export type CaseUpdater = (
-  original: t.CaseInfo,
-  temporaryInfo: t.CaseItemEntry,
-  index: number | undefined,
-) => t.CaseInfo;
-
-export const updateCaseSectionListByIndex = (
-  listProperty: string,
-  entryProperty: string = listProperty,
-): CaseUpdater => (original: t.CaseInfo, temporaryInfo: t.CaseItemEntry, index: number | undefined) => {
-  const sectionList = [...((original ?? {})[listProperty] ?? [])];
-  const { ...entry } = { ...temporaryInfo, [entryProperty]: temporaryInfo.form };
-  if (entryProperty !== 'form') {
-    delete entry.form;
-  }
-  if (typeof index === 'number') {
-    sectionList[index] = entry;
-  } else {
-    sectionList.push(entry);
-  }
-
-  return original ? { ...original, [listProperty]: sectionList } : { [listProperty]: sectionList };
-};
-
-export const updateCaseListByIndex = <T>(
-  listGetter: (ci: t.CaseInfo) => T[] | undefined,
-  caseItemToListItem: (caseItemEntry: t.CaseItemEntry) => T,
-): CaseUpdater => (original: t.CaseInfo, temporaryInfo: t.CaseItemEntry, index: number | undefined) => {
-  const copy = { ...original };
-  const sectionList = listGetter(copy);
-  const entry: T = caseItemToListItem(temporaryInfo);
-  if (typeof index === 'number') {
-    sectionList[index] = entry;
-  } else {
-    sectionList.push(entry);
-  }
-  return copy;
 };
 
 export const temporaryCaseInfoHistory = (

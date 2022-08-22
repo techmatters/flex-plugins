@@ -48,24 +48,21 @@ const Timeline: React.FC<Props> = props => {
   const handleViewNoteClick = (activity: NoteActivity) => {
     const { twilioWorkerId } = activity;
     const info: CaseItemEntry = {
-      id: null,
+      id: activity.id,
       form: { ...activity.note },
       twilioWorkerId,
       createdAt: parseISO(activity.date).toISOString(),
       updatedAt: activity.updatedAt ? parseISO(activity.updatedAt).toISOString() : undefined,
       updatedBy: activity.updatedBy,
     };
-    updateTempInfo(
-      { screen: NewCaseSubroutes.Note, action: CaseItemAction.View, info: { ...info, index: activity.originalIndex } },
-      taskSid,
-    );
+    updateTempInfo({ screen: NewCaseSubroutes.Note, action: CaseItemAction.View, info }, taskSid);
     changeRoute({ route, subroute: NewCaseSubroutes.Note, action: CaseItemAction.View }, taskSid);
   };
 
   const handleViewReferralClick = (activity: ReferralActivity) => {
     const { twilioWorkerId } = activity;
     const info: CaseItemEntry = {
-      id: null,
+      id: activity.id,
       form: { ...activity.referral },
       twilioWorkerId,
       createdAt: parseISO(activity.createdAt).toISOString(),
@@ -76,7 +73,7 @@ const Timeline: React.FC<Props> = props => {
       {
         screen: NewCaseSubroutes.Referral,
         action: CaseItemAction.View,
-        info: { ...info, index: activity.originalIndex },
+        info: { ...info },
       },
       taskSid,
     );
