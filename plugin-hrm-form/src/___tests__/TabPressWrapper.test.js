@@ -1,5 +1,8 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
+import { getByTestId, render } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import '@testing-library/jest-dom/extend-expect';
 
 import './mockStyled';
 import TabPressWrapper from '../components/TabPressWrapper';
@@ -12,173 +15,211 @@ const getLastElement = component => component.getInstance().lastElementRef.curre
  */
 
 test('<TabPressWrapper> with no children', () => {
-  const component = renderer.create(<TabPressWrapper />);
+  const { container } = render(<TabPressWrapper />);
 
-  const firstElement = getFirstElement(component);
-  const lastElement = getLastElement(component);
-
-  expect(firstElement).toBeNull();
-  expect(lastElement).toBeNull();
+  expect(container.getAttribute('tabIndex')).toBeNull();
 });
 
 test('<TabPressWrapper> with no children with tabIndex', () => {
-  const component = renderer.create(
+  const { container } = render(
     <TabPressWrapper>
-      <button id="noTabIndex1" type="button" />
-      <button id="noTabIndex2" type="button" />
+      <div id="noTabIndex1" data-testid="noTabIndex1" />
+      <div id="noTabIndex2" data-testid="noTabIndex2" />
     </TabPressWrapper>,
   );
 
-  const firstElement = getFirstElement(component);
-  const lastElement = getLastElement(component);
+  const firstElement = getByTestId(container, 'noTabIndex1');
+  userEvent.tab();
+  expect(firstElement).not.toHaveFocus();
+  expect(firstElement.getAttribute('tabIndex')).toBeNull();
 
-  expect(firstElement).toBeNull();
-  expect(lastElement).toBeNull();
+  const secondElement = getByTestId(container, 'noTabIndex2');
+  userEvent.tab();
+  expect(secondElement).not.toHaveFocus();
+  expect(secondElement.getAttribute('tabIndex')).toBeNull();
 });
 
 test('<TabPressWrapper> children with only one tabIndex', () => {
-  const component = renderer.create(
+  const { container } = render(
     <TabPressWrapper>
-      <button id="tabIndex1" type="button" tabIndex={1} />
+      <button id="tabIndex1" data-testid="tabbableButton" type="button" tabIndex={1} />
     </TabPressWrapper>,
   );
 
-  const firstElement = getFirstElement(component);
-  const lastElement = getLastElement(component);
-
-  expect(firstElement.props.id).toEqual('tabIndex1');
-  expect(lastElement).toBeNull();
+  const firstElement = getByTestId(container, 'tabbableButton');
+  userEvent.tab();
+  expect(firstElement).toHaveFocus();
 });
 
 test('<TabPressWrapper> children with tabIndexes: 1, 2 and 3', () => {
-  const component = renderer.create(
+  const { container } = render(
     <TabPressWrapper>
-      <button id="tabIndex1" type="button" tabIndex={1} />
-      <button id="tabIndex2" type="button" tabIndex={2} />
-      <button id="tabIndex3" type="button" tabIndex={3} />
+      <button id="tabIndex1" data-testid="tabIndex1" type="button" tabIndex={1} />
+      <button id="tabIndex2" data-testid="tabIndex2" type="button" tabIndex={2} />
+      <button id="tabIndex3" data-testid="tabIndex3" type="button" tabIndex={3} />
     </TabPressWrapper>,
   );
 
-  const firstElement = getFirstElement(component);
-  const lastElement = getLastElement(component);
+  const firstElement = getByTestId(container, 'tabIndex1');
+  userEvent.tab();
+  expect(firstElement).toHaveFocus();
 
-  expect(firstElement.props.id).toEqual('tabIndex1');
-  expect(lastElement.props.id).toEqual('tabIndex3');
+  const secondElement = getByTestId(container, 'tabIndex2');
+  userEvent.tab();
+  expect(secondElement).toHaveFocus();
+
+  const lastElement = getByTestId(container, 'tabIndex3');
+  userEvent.tab();
+  expect(lastElement).toHaveFocus();
 });
 
 test('<TabPressWrapper> not only first level children with tabIndexes: 1, 2 and 3', () => {
-  const component = renderer.create(
+  const { container } = render(
     <TabPressWrapper>
       <div>
-        <button id="tabIndex1" type="button" tabIndex={1} />
+        <button id="tabIndex1" data-testid="tabIndex1" type="button" tabIndex={1} />
       </div>
       <div>
         <div>
-          <button id="tabIndex2" type="button" tabIndex={2} />
+          <button id="tabIndex2" data-testid="tabIndex2" type="button" tabIndex={2} />
         </div>
       </div>
-      <button id="tabIndex3" type="button" tabIndex={3} />
+      <button id="tabIndex3" data-testid="tabIndex3" type="button" tabIndex={3} />
     </TabPressWrapper>,
   );
 
-  const firstElement = getFirstElement(component);
-  const lastElement = getLastElement(component);
+  const firstElement = getByTestId(container, 'tabIndex1');
+  userEvent.tab();
+  expect(firstElement).toHaveFocus();
 
-  expect(firstElement.props.id).toEqual('tabIndex1');
-  expect(lastElement.props.id).toEqual('tabIndex3');
+  const secondElement = getByTestId(container, 'tabIndex2');
+  userEvent.tab();
+  expect(secondElement).toHaveFocus();
+
+  const lastElement = getByTestId(container, 'tabIndex3');
+  userEvent.tab();
+  expect(lastElement).toHaveFocus();
 });
 
 test('<TabPressWrapper> children with tabIndexes: 1 and 3', () => {
-  const component = renderer.create(
+  const { container } = render(
     <TabPressWrapper>
-      <button id="tabIndex1" type="button" tabIndex={1} />
-      <button id="tabIndex3" type="button" tabIndex={3} />
+      <button id="tabIndex1" data-testid="tabIndex1" type="button" tabIndex={1} />
+      <button id="tabIndex3" data-testid="tabIndex3" type="button" tabIndex={3} />
     </TabPressWrapper>,
   );
 
-  const firstElement = getFirstElement(component);
-  const lastElement = getLastElement(component);
+  const firstElement = getByTestId(container, 'tabIndex1');
+  userEvent.tab();
+  expect(firstElement).toHaveFocus();
 
-  expect(firstElement.props.id).toEqual('tabIndex1');
-  expect(lastElement.props.id).toEqual('tabIndex3');
+  const secondElement = getByTestId(container, 'tabIndex3');
+  userEvent.tab();
+  expect(secondElement).toHaveFocus();
 });
 
 test('<TabPressWrapper> children with tabIndexes: 5 and 4', () => {
-  const component = renderer.create(
+  const { container } = render(
     <TabPressWrapper>
-      <button id="tabIndex5" type="button" tabIndex={5} />
-      <button id="tabIndex4" type="button" tabIndex={4} />
+      <button id="tabIndex5" data-testid="tabIndex5" type="button" tabIndex={5} />
+      <button id="tabIndex4" data-testid="tabIndex4" type="button" tabIndex={4} />
     </TabPressWrapper>,
   );
 
-  const firstElement = getFirstElement(component);
-  const lastElement = getLastElement(component);
+  const firstElement = getByTestId(container, 'tabIndex4');
+  userEvent.tab();
+  expect(firstElement).toHaveFocus();
 
-  expect(firstElement.props.id).toEqual('tabIndex4');
-  expect(lastElement.props.id).toEqual('tabIndex5');
+  const secondElement = getByTestId(container, 'tabIndex5');
+  userEvent.tab();
+  expect(secondElement).toHaveFocus();
 });
 
 test('<TabPressWrapper> children with tabIndexes: 1, 2 and 1', () => {
-  const component = renderer.create(
+  const { container } = render(
     <TabPressWrapper>
-      <button id="tabIndex1" type="button" tabIndex={1} />
-      <button id="tabIndex2" type="button" tabIndex={2} />
-      <button id="tabIndex1Again" type="button" tabIndex={1} />
+      <button id="tabIndex1" data-testid="tabIndex1" type="button" tabIndex={1} />
+      <button id="tabIndex2" data-testid="tabIndex2" type="button" tabIndex={2} />
+      <button id="tabIndex1Again" data-testid="tabIndex1Again" type="button" tabIndex={1} />
     </TabPressWrapper>,
   );
 
-  const firstElement = getFirstElement(component);
-  const lastElement = getLastElement(component);
+  const firstElement = getByTestId(container, 'tabIndex1');
+  userEvent.tab();
+  expect(firstElement).toHaveFocus();
 
-  expect(firstElement.props.id).toEqual('tabIndex1');
-  expect(lastElement.props.id).toEqual('tabIndex2');
+  const secondElement = getByTestId(container, 'tabIndex1Again');
+  userEvent.tab();
+  expect(secondElement).toHaveFocus();
+
+  const lastElement = getByTestId(container, 'tabIndex2');
+  userEvent.tab();
+  expect(lastElement).toHaveFocus();
 });
 
 test('<TabPressWrapper> children with tabIndexes: 1, 2 and 2', () => {
-  const component = renderer.create(
+  const { container } = render(
     <TabPressWrapper>
-      <button id="tabIndex1" type="button" tabIndex={1} />
-      <button id="tabIndex2" type="button" tabIndex={2} />
-      <button id="tabIndex2Again" type="button" tabIndex={2} />
+      <button id="tabIndex1" data-testid="tabIndex1" type="button" tabIndex={1} />
+      <button id="tabIndex2" data-testid="tabIndex2" type="button" tabIndex={2} />
+      <button id="tabIndex2Again" data-testid="tabIndex2Again" type="button" tabIndex={2} />
     </TabPressWrapper>,
   );
 
-  const firstElement = getFirstElement(component);
-  const lastElement = getLastElement(component);
+  const firstElement = getByTestId(container, 'tabIndex1');
+  userEvent.tab();
+  expect(firstElement).toHaveFocus();
 
-  expect(firstElement.props.id).toEqual('tabIndex1');
-  expect(lastElement.props.id).toEqual('tabIndex2Again');
+  const secondElement = getByTestId(container, 'tabIndex2');
+  userEvent.tab();
+  expect(secondElement).toHaveFocus();
+
+  const lastElement = getByTestId(container, 'tabIndex2Again');
+  userEvent.tab();
+  expect(lastElement).toHaveFocus();
 });
 
 test('<TabPressWrapper> complex children structure', () => {
-  const component = renderer.create(
+  const { container } = render(
     <TabPressWrapper>
       <div>
-        <button id="tabIndex7" type="button" tabIndex={7} />
+        <button id="tabIndex7" data-testid="tabIndex7" type="button" tabIndex={7} />
         <div />
         <button id="tabIndex6" type="button" tabIndex={6} />
         <button id="tabIndex3" type="button" tabIndex={3} />
       </div>
       <div>
         <button id="tabIndex3Again" type="button" tabIndex={3} />
-        <button id="tabIndex7Again" type="button" tabIndex={7} />
+        <button id="tabIndex7Again" data-testid="tabIndex7Again" type="button" tabIndex={7} />
         <button id="tabIndex6Again" type="button" tabIndex={6} />
       </div>
       <div>
         <div>
-          <button id="tabIndex2" type="button" tabIndex={2} />
+          <button id="tabIndex2" data-testid="tabIndex2" type="button" tabIndex={2} />
         </div>
       </div>
-      <button id="tabIndex2Again" type="button" tabIndex={2} />
+      <button id="tabIndex2Again" data-testid="tabIndex2Again" type="button" tabIndex={2} />
       <button id="tabIndex3AgainAgain" type="button" tabIndex={3} />
     </TabPressWrapper>,
   );
 
-  const firstElement = getFirstElement(component);
-  const lastElement = getLastElement(component);
+  const firstElement = getByTestId(container, 'tabIndex2');
+  userEvent.tab();
+  expect(firstElement).toHaveFocus();
 
-  expect(firstElement.props.id).toEqual('tabIndex2');
-  expect(lastElement.props.id).toEqual('tabIndex7Again');
+  const secondElement = getByTestId(container, 'tabIndex2Again');
+  userEvent.tab();
+  expect(secondElement).toHaveFocus();
+
+  const lastElement = getByTestId(container, 'tabIndex7Again');
+  userEvent.tab();
+  userEvent.tab();
+  userEvent.tab();
+  userEvent.tab();
+  userEvent.tab();
+  userEvent.tab();
+  userEvent.tab();
+  expect(lastElement).toHaveFocus();
 });
 
 /**
