@@ -89,9 +89,18 @@ const fromActionFunction = fun => async (payload, original) => {
 
 /**
  * Initializes an empty form (in redux store) for the task within payload
+ * 
+ * This gets set to the "beforeAcceptTask" action in HrmFormPlugin.tsx L220
+ * To do this properly, I should change the name of this
+ * 
  * @param {{ task: any }} payload
  */
 export const initializeContactForm = payload => {
+  console.log(`Payload for beforeAcceptTask: ${payload}`);
+  // number on dev
+  payload.conferenceOptions.From = "+12053089376";
+  console.log(`Payload after set: ${payload}`);
+
   const { currentDefinitionVersion } = Manager.getInstance().store.getState()[namespace][configurationBase];
 
   Manager.getInstance().store.dispatch(
