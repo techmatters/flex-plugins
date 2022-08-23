@@ -96,10 +96,10 @@ const fromActionFunction = fun => async (payload, original) => {
  * @param {{ task: any }} payload
  */
 export const initializeContactForm = payload => {
-  console.log(`Payload for beforeAcceptTask: ${payload}`);
-  // number on dev
-  payload.conferenceOptions.From = "+12053089376";
-  console.log(`Payload after set: ${payload}`);
+  console.log(`conferenceOptions.From before: ${payload.conferenceOptions.From}`);
+  // phone number on ZM STG
+  payload.conferenceOptions.From = "+19388884161";
+  console.log(`conferenceOptions.From after: ${payload.conferenceOptions.From}`);
 
   const { currentDefinitionVersion } = Manager.getInstance().store.getState()[namespace][configurationBase];
 
