@@ -31,10 +31,12 @@ export const caseList = (page: Page) => {
     caseSummaryTextarea: caseListPage.locator(
       `//textarea[@data-testid='Case-CaseSummary-TextArea']`,
     ),
+    caseStatus: caseListPage.locator(`//textarea[@data-testid='Case-Details_CaseStatus']`),
     casePrintButton: caseListPage.locator(`//button[@data-testid='CasePrint-Button']`),
     casePrintCloseButton: caseListPage.locator(`//button[@data-testid='CasePrint-CloseCross']`),
     caseCloseButton: caseListPage.locator(`//button[@data-testid='CaseHome-CloseButton']`),
-    updateCaseButton: caseListPage.locator(`//button[@data-testid='CaseHome-Update-Button']`),
+    updateCaseButton: caseListPage.locator(`//button[@data-testid='Case-EditCaseScreen-SaveItem']`),
+    caseEditButton: caseListPage.locator(`//button[@data-testid='Case-EditButton']`),
 
     //Case Section view
     formInput: (itemId: string) => caseListPage.locator(`input#${itemId}`),
@@ -111,7 +113,7 @@ export const caseList = (page: Page) => {
     await summaryTextArea.fill(`E2E Case Summary Test Edited on ${currentTime}`);
     const updateCaseButton = selectors.updateCaseButton;
     await updateCaseButton.waitFor({ state: 'visible' });
-    await expect(updateCaseButton).toContainText('Update');
+    await expect(updateCaseButton).toContainText('Save');
     await updateCaseButton.click();
 
     await expect(summaryTextArea).toContainText(`E2E Case Summary Test Edited on ${currentTime}`);
@@ -156,6 +158,15 @@ export const caseList = (page: Page) => {
     console.log('Closed Case');
   }
 
+  //Edit Case
+  async function editCase() {
+    const editCaseButton = selectors.caseEditButton;
+    await editCaseButton.waitFor({ state: 'visible' });
+    await expect(editCaseButton).toContainText('Edit');
+    await editCaseButton.click();
+    console.log('Edit Case');
+  }
+
   return {
     filterCases,
     openFirstCaseButton,
@@ -163,5 +174,6 @@ export const caseList = (page: Page) => {
     updateCaseSummary,
     addCaseSection,
     closeCase,
+    editCase,
   };
 };
