@@ -105,18 +105,10 @@ export const caseList = (page: Page) => {
 
   // Add/Update Summary
   async function updateCaseSummary() {
-    const summaryTextArea = selectors.caseSummaryTextarea;
-    await summaryTextArea.waitFor({ state: 'visible' });
-
-    const currentTime = new Date();
-
-    await summaryTextArea.fill(`E2E Case Summary Test Edited on ${currentTime}`);
     const updateCaseButton = selectors.updateCaseButton;
     await updateCaseButton.waitFor({ state: 'visible' });
     await expect(updateCaseButton).toContainText('Save');
     await updateCaseButton.click();
-
-    await expect(summaryTextArea).toContainText(`E2E Case Summary Test Edited on ${currentTime}`);
 
     console.log('Updated Case Summary');
   }
