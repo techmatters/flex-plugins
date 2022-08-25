@@ -33,8 +33,6 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
 
     await page.viewClosePrintView();
 
-    await page.editCase();
-
     await page.addCaseSection({
       sectionTypeId: 'note',
       items: {
@@ -56,5 +54,7 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
     });
 
     await page.closeCase();
+
+    await page.editCase();
   });
 });
