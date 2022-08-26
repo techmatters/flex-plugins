@@ -3,7 +3,7 @@ import { logPageTelemetry } from '../browser-logs';
 
 test('Plugin loads', async ({ page }) => {
   logPageTelemetry(page);
-  page.goto('/', { waitUntil: 'networkidle' });
+  page.goto('/agent-desktop', { waitUntil: 'networkidle' });
   const callsWaitingLabel = page.locator(
     "div.Twilio-AgentDesktopView-default div[data-testid='Childline-voice']",
   );
