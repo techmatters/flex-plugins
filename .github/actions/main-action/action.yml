@@ -20,6 +20,7 @@ inputs:
     description: 'Specifies if should send a Slack message at the end of successful run. Defaults to true'
     required: false
     default: true
+    type: boolean
 runs:
   using: "composite"
   steps:
@@ -122,7 +123,7 @@ runs:
       - name: Slack Aselo channel
         id: slack
         uses: slackapi/slack-github-action@v1.14.0
-        if: ${{ inputs.send-slack-message }}
+        if: ${{ inputs.send-slack-message == true }}
         with:
           channel-id: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
           slack-message: "`[FLEX]` Action ${{ github.workflow }} completed with SHA ${{ github.sha }}. Changelog is: ${{ github.event.inputs.changelog }} :rocket:."
