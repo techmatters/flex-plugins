@@ -7,7 +7,6 @@ import TagsAndCounselor from './TagsAndCounselor';
 import { contactType } from '../../../types';
 import { ContactWrapper } from '../../../styles/search';
 import { Flex } from '../../../styles/HrmStyles';
-import ConnectContact from './ConnectContact';
 
 const ContactPreview = ({ contact, handleOpenConnectDialog, handleViewDetails, showConnectIcon }) => {
   const { counselor } = contact;
