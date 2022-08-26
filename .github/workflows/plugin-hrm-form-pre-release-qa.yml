@@ -5,10 +5,13 @@ name: Pre-release QA
 # Controls when the action will run.
 on:
   workflow_dispatch:
-    # inputs:
-    #   changelog:
-    #     description: Release Changelog - Add a comment about the changes to be included in this release.
-    #     required: true
+    inputs:
+      tag-name:
+        description: Release tag name.
+        required: true
+      title:
+        description: Release Changelog - Add a comment about the changes to be included in this release.
+        required: true
 
 jobs:
   # This workflow contains a single job called "build"
@@ -33,6 +36,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+          send-slack-message: false
 
       # Build Playwright
       - name: Install e2e-tests dependencies
@@ -55,3 +59,14 @@ jobs:
         with:
           name: test-artifacts
           path: e2e-tests/test-results
+
+      # Create a pre-release
+      - uses: "marvinpinto/action-automatic-releases@v1.2.1"
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          automatic_release_tag: ${{ inputs.tag-name }}
+          prerelease: true
+          title: ${{ inputs.title }}
+          # files: |
+          #   LICENSE.txt
+          #   *.jar
