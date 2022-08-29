@@ -87,7 +87,7 @@ jobs:
       - uses: "marvinpinto/action-automatic-releases@v1.2.1"
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          automatic_release_tag: ${{ inputs.tag-prefix }}
+          automatic_release_tag: ${{ steps.generate_next_tag.outputs.generated-tag }}
           prerelease: true
           title: ${{ inputs.title }}
           # files: |
@@ -95,6 +95,14 @@ jobs:
           #   *.jar
         id: create_pre_release
 
+      ## TODO: Abstract all of this in a custom action reused across repos?
+      # Setup credentials to access AWS for parameters
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
       # Set env vars to send slack message
       - name: Set GITHUB_ACTIONS_SLACK_BOT_TOKEN
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
