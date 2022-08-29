@@ -6,7 +6,7 @@ name: Pre-release QA
 on:
   workflow_dispatch:
     inputs:
-      tag-name:
+      tag-prefix:
         description: Release tag name.
         required: true
       title:
