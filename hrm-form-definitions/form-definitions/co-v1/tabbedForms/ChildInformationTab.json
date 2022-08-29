@@ -17,7 +17,11 @@
         "value": "Teleorientación",
         "label": "Teleorientación"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "firstName",
@@ -5055,7 +5059,7 @@
   },
   {
     "name": "childWithDisability",
-    "label": "Adolescente en situación de discapacidad",
+    "label": "Adolescente en condición de discapacidad",
     "type": "mixed-checkbox"
   }
 ]
