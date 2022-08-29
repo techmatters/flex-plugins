@@ -63,7 +63,7 @@ jobs:
       # Get latest tag for this version
       - uses: oprypin/find-latest-tag@v1
         with:
-          repository: ${{ github.action_repository }} # This repo
+          repository: techmatters/flex-plugins # This repo
           # releases-only: false  # This repository doesn't use GitHub's "release" feature.
           prefix: "${{ inputs.tag-prefix }}-qa"
         id: latest_matching_tag
