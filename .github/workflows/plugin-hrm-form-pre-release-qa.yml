@@ -65,7 +65,7 @@ jobs:
         with:
           repository: ${{ github.action_repository }} # This repo
           # releases-only: false  # This repository doesn't use GitHub's "release" feature.
-          prefix: "${{ inputs.tag-prefix }}.qa"  # Other kinds of tags are irrelevant; also limit to major version 7.
+          prefix: "${{ inputs.tag-prefix }}-qa"
         id: latest_matching_tag
 
       - run: echo ${{ steps.latest_matching_tag.outputs.tag }}
