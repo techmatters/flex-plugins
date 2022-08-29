@@ -83,13 +83,35 @@ jobs:
 
       - run: echo ${{ steps.generate_next_tag.outputs.generated-tag }}
 
-      # # Create a pre-release
-      # - uses: "marvinpinto/action-automatic-releases@v1.2.1"
-      #   with:
-      #     repo_token: ${{ secrets.GITHUB_TOKEN }}
-      #     automatic_release_tag: ${{ inputs.tag-prefix }}
-      #     prerelease: true
-      #     title: ${{ inputs.title }}
-      #     # files: |
-      #     #   LICENSE.txt
-      #     #   *.jar
+      # Create a pre-release
+      - uses: "marvinpinto/action-automatic-releases@v1.2.1"
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          automatic_release_tag: ${{ inputs.tag-prefix }}
+          prerelease: true
+          title: ${{ inputs.title }}
+          # files: |
+          #   LICENSE.txt
+          #   *.jar
+        id: create_pre_release
+
+      # Set env vars to send slack message
+      - name: Set GITHUB_ACTIONS_SLACK_BOT_TOKEN
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
+          env_variable_name: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
+      - name: Set ASELO_DEPLOYS_CHANNEL_ID
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "ASELO_DEPLOYS_CHANNEL_ID"
+          env_variable_name: "ASELO_DEPLOYS_CHANNEL_ID"
+      # Send Slack notifying success
+      - name: Slack Aselo channel
+        id: slack
+        uses: slackapi/slack-github-action@v1.14.0
+        with:
+          channel-id: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
+          slack-message: "`[Flex]` Action ${{ github.workflow }} completed with SHA ${{ github.sha }}. Release tag is ${{ steps.create_pre_release.outputs.automatic_releases_tag }} :rocket:."
+        env:
+          SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
