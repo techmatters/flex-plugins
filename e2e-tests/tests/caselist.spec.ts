@@ -53,8 +53,14 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
       },
     });
 
-    await page.closeCase();
-
     await page.editCase();
+
+    await page.updateCaseSummary();
+
+    await page.closeEditCase();
+
+    await page.caseSummaryUpdate();
+
+    await page.closeCase();
   });
 });

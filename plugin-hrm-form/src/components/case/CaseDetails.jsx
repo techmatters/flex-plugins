@@ -150,6 +150,7 @@ const CaseDetails = ({
             <StyledCaseOverview
               id="Details_DateFollowUp"
               name="Details_DateFollowUp"
+              data-testid="Case-Details_DateFollowUp"
               color="#d8d8d8"
               disabled={true}
               defaultValue={followUpDate || '—'}
