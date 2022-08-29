@@ -1,0 +1,12 @@
+name: 'Generate next tag'
+description: 'Given a prefix and the latest tag, will generate the next iteration for it.'
+inputs:
+  prefix:
+    description: 'The prefix intended to use'
+    required: true
+  latest-matching-tag:
+    description: 'The latest tag for the above prefix'
+    required: false
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
