@@ -52,6 +52,7 @@ jobs:
       # - name: Run Playwright tests
       #   run: DEBUG=pw:api PLAYWRIGHT_BASEURL=${{secrets.PLAYWRIGHT_BASEURL_E2E}} PLAYWRIGHT_USER_USERNAME=${{secrets.PLAYWRIGHT_USER_USERNAME}} PLAYWRIGHT_USER_PASSWORD=${{secrets.PLAYWRIGHT_USER_PASSWORD}} TWILIO_ACCOUNT_SID=${{secrets.E2E_DEV_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{secrets.E2E_DEV_AUTH_TOKEN}} npx playwright test
       #   working-directory: ./e2e-tests
+      #   id: latest_matching_tag
 
       # # Upload artifacts
       # - uses: actions/upload-artifact@v2
@@ -60,15 +61,26 @@ jobs:
       #     name: test-artifacts
       #     path: e2e-tests/test-results
 
+      ## TODO: test if this is aborted if E2E tests fails
+
       # Get latest tag for this version
-      - uses: oprypin/find-latest-tag@v1
+      - name: Get latest tag
+        uses: oprypin/find-latest-tag@v1
         with:
           repository: techmatters/flex-plugins # This repo
           # releases-only: false  # This repository doesn't use GitHub's "release" feature.
           prefix: "${{ inputs.tag-prefix }}-qa"
         id: latest_matching_tag
 
-      - run: echo ${{ steps.latest_matching_tag.outputs.tag }}
+      # Generate next tag
+      - name: Generate next tag
+        uses: ./.github/actions/generate-next-tag
+        with:
+          prefix: "${{ inputs.tag-prefix }}-qa"
+          latest-matching-tag: ${{ steps.latest_matching_tag.outputs.tag }}
+        id: generate_next_tag
+
+      - run: echo ${{ steps.generate_next_tag.outputs.generated-tag }}
 
       # # Create a pre-release
       # - uses: "marvinpinto/action-automatic-releases@v1.2.1"
