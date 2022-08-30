@@ -98,7 +98,7 @@ locals {
     "flags": {
       "allow_concurrent_calls": true
     },
-    "description": "Twitter Flow"
+    "description": "Twitter Messaging Flow"
   }
   )
 }
