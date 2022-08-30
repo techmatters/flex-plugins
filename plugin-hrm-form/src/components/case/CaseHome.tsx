@@ -290,10 +290,10 @@ const CaseHome: React.FC<Props> = ({
             editCaseSummary={() => onEditCaseItemClick(NewCaseSubroutes.CaseSummary)}
           />
         </Box>
-        <Box margin="25px 25px 0 25px">
+        <Box margin="25px 0 0 25px">
           <CaseSummary task={task} readonly={true} />
         </Box>
-        <Box margin="0 25px">
+        <Box margin="25px 0 0 25px">
           <Timeline
             timelineActivities={timeline}
             contacts={caseDetails.contacts}
@@ -303,7 +303,7 @@ const CaseHome: React.FC<Props> = ({
             route={route}
           />
         </Box>
-        <Box margin="25px 25px 0 25px">
+        <Box margin="25px 0 0 25px">
           <CaseSection
             canAdd={() => can(PermissionActions.ADD_HOUSEHOLD)}
             onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.Household)}
@@ -312,7 +312,7 @@ const CaseHome: React.FC<Props> = ({
             {householdRows()}
           </CaseSection>
         </Box>
-        <Box margin="25px 25px 0 25px">
+        <Box margin="25px 0 0 25px">
           <CaseSection
             canAdd={() => can(PermissionActions.ADD_PERPETRATOR)}
             onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.Perpetrator)}
@@ -321,7 +321,7 @@ const CaseHome: React.FC<Props> = ({
             {perpetratorRows()}
           </CaseSection>
         </Box>
-        <Box margin="25px 25px 0 25px">
+        <Box margin="25px 0 0 25px">
           <CaseSection
             canAdd={() => can(PermissionActions.ADD_INCIDENT)}
             onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.Incident)}
@@ -331,7 +331,7 @@ const CaseHome: React.FC<Props> = ({
           </CaseSection>
         </Box>
         {featureFlags.enable_upload_documents && (
-          <Box margin="25px">
+          <Box margin="25px 0 0 25px">
             <CaseSection
               onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.Document)}
               canAdd={() => can(PermissionActions.ADD_DOCUMENT)}
