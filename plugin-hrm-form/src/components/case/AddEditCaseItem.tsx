@@ -161,7 +161,7 @@ const AddEditCaseItem: React.FC<Props> = ({
 
     return splitInHalf(disperseInputs(7)(generatedForm));
   }, [
-    createUpdatedTemporaryFormContent,
+    temporaryCaseInfo,
     formDefinition,
     initialForm,
     firstElementRef,

@@ -84,6 +84,7 @@ class SearchForm extends Component {
     return contactsCount > 0 || casesCount > 0;
   }
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   render() {
     const {
       firstName,
