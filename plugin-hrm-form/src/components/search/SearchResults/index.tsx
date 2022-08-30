@@ -33,26 +33,23 @@ import {
   BoldText,
   StyledCount,
 } from '../../../styles/search';
-import ConnectDialog from '../ConnectDialog';
 import Pagination from '../../Pagination';
 import SearchResultsBackButton from './SearchResultsBackButton';
 import * as SearchActions from '../../../states/search/actions';
 import * as CaseActions from '../../../states/case/actions';
 import * as RoutingActions from '../../../states/routing/actions';
 import { SearchPages, SearchPagesType } from '../../../states/search/types';
-import { namespace, searchContactsBase, configurationBase, contactFormsBase } from '../../../states';
+import { namespace, searchContactsBase, configurationBase } from '../../../states';
 
 export const CONTACTS_PER_PAGE = 20;
 export const CASES_PER_PAGE = 20;
 
 type OwnProps = {
   task: CustomITask;
-  currentIsCaller: boolean;
   searchContactsResults: SearchContactResult;
   searchCasesResults: SearchCaseResult;
   onlyDataContacts: boolean;
   closedCases: boolean;
-  handleSelectSearchResult?: (contact: SearchContact) => void;
   handleSearchContacts: (offset: number) => void;
   handleSearchCases: (offset: number) => void;
   toggleNonDataContacts: () => void;
@@ -69,12 +66,11 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof m
 
 const SearchResults: React.FC<Props> = ({
   task,
-  currentIsCaller,
+
   searchContactsResults,
   searchCasesResults,
   onlyDataContacts,
   closedCases,
-  handleSelectSearchResult,
   handleSearchContacts,
   handleSearchCases,
   toggleNonDataContacts,
@@ -83,28 +79,13 @@ const SearchResults: React.FC<Props> = ({
   handleViewDetails,
   changeSearchPage,
   setConnectedCase,
-  changeRoute,
   currentPage,
   showConnectIcon,
   counselorsHash,
-  isCallTypeCaller,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const [currentContact, setCurrentContact] = useState(null);
-  const [anchorEl, setAnchorEl] = useState(null);
   const [contactsPage, setContactsPage] = useState(0);
   const [casesPage, setCasesPage] = useState(0);
-
-  const handleCloseDialog = () => {
-    setCurrentContact(null);
-    setAnchorEl(null);
-  };
-
-  const handleConfirmDialog = () => {
-    if (handleSelectSearchResult) {
-      handleSelectSearchResult(currentContact);
-    }
-  };
 
   const handleContactsChangePage = newPage => {
     setContactsPage(newPage);
@@ -124,12 +105,6 @@ const SearchResults: React.FC<Props> = ({
   const handleToggleClosedCases = () => {
     setCasesPage(0);
     toggleClosedCases();
-  };
-
-  const handleOpenConnectDialog = contact => e => {
-    e.stopPropagation();
-    setAnchorEl(e.currentTarget);
-    setCurrentContact(contact);
   };
 
   const handleClickViewCase = currentCase => () => {
@@ -181,15 +156,6 @@ const SearchResults: React.FC<Props> = ({
           </div>
         </Row>
       </ResultsHeader>
-      <ConnectDialog
-        task={task}
-        anchorEl={anchorEl}
-        currentIsCaller={currentIsCaller}
-        contact={currentContact}
-        handleConfirm={handleConfirmDialog}
-        handleClose={handleCloseDialog}
-        isCallTypeCaller={isCallTypeCaller}
-      />
       <ListContainer>
         <ScrollableList>
           <StyledResultsContainer>
@@ -273,7 +239,6 @@ const SearchResults: React.FC<Props> = ({
                     showConnectIcon={showConnectIcon}
                     key={contact.contactId}
                     contact={contact}
-                    handleOpenConnectDialog={handleOpenConnectDialog(contact)}
                     handleViewDetails={() => handleViewDetails(contact)}
                   />
                 ))}
@@ -342,13 +307,11 @@ const mapStateToProps = (state, ownProps) => {
   const taskSearchState = searchContactsState.tasks[taskId];
   const isStandaloneSearch = taskId === standaloneTaskSid;
   const { counselors } = state[namespace][configurationBase];
-  const { isCallTypeCaller } = state[namespace][contactFormsBase];
 
   return {
     currentPage: taskSearchState.currentPage,
     showConnectIcon: !isStandaloneSearch,
     counselorsHash: counselors.hash,
-    isCallTypeCaller,
   };
 };
 
