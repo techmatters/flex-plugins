@@ -26,7 +26,12 @@ import ViewContact from './ViewContact';
 import { CaseDetailsName } from '../../states/case/types';
 import { CustomITask, StandaloneITask } from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
-import { CaseItemAction, isAppRoutesWithCaseAndAction, NewCaseSubroutes } from '../../states/routing/types';
+import {
+  CaseItemAction,
+  isAppRoutesWithCaseActionAndId,
+  isAppRoutesWithCaseAndAction,
+  NewCaseSubroutes,
+} from '../../states/routing/types';
 import CaseHome from './CaseHome';
 import AddEditCaseItem, { AddEditCaseItemProps } from './AddEditCaseItem';
 import ViewCaseItem from './ViewCaseItem';
@@ -291,8 +296,8 @@ const Case: React.FC<Props> = ({
     contact: firstConnectedContact,
     contacts: connectedCase?.connectedContacts ?? [],
   };
-  if (isAppRoutesWithCaseAndAction(routing)) {
-    const { action, subroute } = routing;
+  if (isAppRoutesWithCaseAndAction(routing) || isAppRoutesWithCaseActionAndId(routing)) {
+    const { subroute } = routing;
 
     const addScreenProps = {
       task,
@@ -308,18 +313,28 @@ const Case: React.FC<Props> = ({
       editPermission: string,
       extraAddEditProps: Partial<AddEditCaseItemProps> = {},
     ) => {
-      if (action === CaseItemAction.View) {
-        return <ViewCaseItem {...addScreenProps} sectionApi={sectionApi} canEdit={() => can(editPermission)} />;
+      if (routing.action === CaseItemAction.View && isAppRoutesWithCaseActionAndId(routing)) {
+        return (
+          <ViewCaseItem
+            {...addScreenProps}
+            routing={routing}
+            sectionApi={sectionApi}
+            canEdit={() => can(editPermission)}
+          />
+        );
+      } else if (isAppRoutesWithCaseAndAction(routing)) {
+        return (
+          <AddEditCaseItem
+            {...{
+              ...addScreenProps,
+              ...extraAddEditProps,
+              sectionApi,
+            }}
+            routing={routing}
+          />
+        );
       }
-      return (
-        <AddEditCaseItem
-          {...{
-            ...addScreenProps,
-            ...extraAddEditProps,
-            sectionApi,
-          }}
-        />
-      );
+      return null;
     };
 
     switch (subroute) {
@@ -341,15 +356,16 @@ const Case: React.FC<Props> = ({
           },
         });
       case NewCaseSubroutes.CaseSummary:
-        return (
+        return isAppRoutesWithCaseAndAction(routing) ? (
           <EditCaseSummary
             {...{
               ...addScreenProps,
               followUpDate,
               caseStatus: status,
             }}
+            routing={routing}
           />
-        );
+        ) : null;
       default:
       // Fall through to next switch for other routes without actions
     }

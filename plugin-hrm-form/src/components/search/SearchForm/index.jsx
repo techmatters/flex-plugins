@@ -215,7 +215,7 @@ class SearchForm extends Component {
                 name="office"
                 label={this.props.helplineInformation.label}
                 placeholder="--"
-                field={getField(helpline)}
+                field={getField(helpline ?? '')}
                 options={[{ label: '', value: '' }, ...helplineOptions]}
                 {...this.defaultEventHandlers('helpline')}
               />

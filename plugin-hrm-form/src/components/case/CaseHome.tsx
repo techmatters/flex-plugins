@@ -5,7 +5,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { CaseContainer } from '../../styles/case';
-import { BottomButtonBar, Box, StyledNextStepButton, FormOption } from '../../styles/HrmStyles';
+import { BottomButtonBar, Box, StyledNextStepButton } from '../../styles/HrmStyles';
 import CaseDetailsComponent from './CaseDetails';
 import Timeline from './Timeline';
 import CaseSection from './CaseSection';
@@ -14,21 +14,19 @@ import {
   AppRoutes,
   CaseItemAction,
   CaseSectionSubroute,
+  isAppRouteWithCase,
   NewCaseSubroutes,
-  AppRoutesWithCaseAndAction,
 } from '../../states/routing/types';
 import CaseSummary from './CaseSummary';
-import { contactFormsBase, namespace, RootState, routingBase, connectedCaseBase } from '../../states';
+import { connectedCaseBase, contactFormsBase, namespace, RootState, routingBase } from '../../states';
 import {
   Activity,
   CaseDetails,
   CaseDetailsName,
-  EditTemporaryCaseInfo,
   isEditTemporaryCaseInfo,
   TemporaryCaseInfo,
-  ViewTemporaryCaseInfo,
 } from '../../states/case/types';
-import { CustomITask, StandaloneITask } from '../../types/types';
+import { CustomITask, EntryInfo, StandaloneITask } from '../../types/types';
 import * as RoutingActions from '../../states/routing/actions';
 import * as CaseActions from '../../states/case/actions';
 import { getConfig } from '../../HrmFormPlugin';
@@ -37,10 +35,8 @@ import TimelineInformationRow from './TimelineInformationRow';
 import DocumentInformationRow from './DocumentInformationRow';
 import CloseCaseDialog from './CloseCaseDialog';
 import { CaseState } from '../../states/case/reducer';
-import { incidentSectionApi } from '../../states/case/sections/incident';
 import { householdSectionApi } from '../../states/case/sections/household';
 import { perpetratorSectionApi } from '../../states/case/sections/perpetrator';
-import { documentSectionApi } from '../../states/case/sections/document';
 
 const splitFullName = (name: CaseDetailsName) => {
   if (name.firstName === 'Unknown' && name.lastName === 'Unknown') {
@@ -95,17 +91,13 @@ const CaseHome: React.FC<Props> = ({
   const { connectedCase } = connectedCaseState;
   const summary = connectedCase.info?.summary || '';
 
-  if (routing.route === 'csam-report') return null; // narrow type before deconstructing
+  if (!isAppRouteWithCase(routing)) return null; // narrow type before deconstructing
   const { route } = routing;
 
   type CaseItemInfo<T extends TemporaryCaseInfo> = T['info']; // A bit redundant but looks cleaner than the anonymous subtype reference syntax
 
-  const onCaseItemActionClick = <T extends ViewTemporaryCaseInfo>(
-    targetSubroute: CaseSectionSubroute,
-    targetAction: T['action'],
-  ): ((entry: CaseItemInfo<T>) => void) => (entry: CaseItemInfo<T>) => {
-    updateTempInfo({ screen: targetSubroute, info: entry, action: targetAction }, task.taskSid);
-    changeRoute({ route, subroute: targetSubroute, action: targetAction } as AppRoutes, task.taskSid);
+  const onViewCaseItemClick = (targetSubroute: CaseSectionSubroute) => (id: string) => {
+    changeRoute({ route, subroute: targetSubroute, action: CaseItemAction.View, id } as AppRoutes, task.taskSid);
   };
 
   const onAddCaseItemClick = (targetSubroute: CaseSectionSubroute) => () => {
@@ -115,10 +107,6 @@ const CaseHome: React.FC<Props> = ({
 
   const onPrintCase = () => {
     changeRoute({ route, subroute: 'case-print-view' }, task.taskSid);
-  };
-
-  const onClickChildIsAtRisk = () => {
-    onInfoChange('childIsAtRisk', !caseDetails.childIsAtRisk);
   };
 
   const onCloseDialogSave = () => {
@@ -157,11 +145,7 @@ const CaseHome: React.FC<Props> = ({
   } = caseDetails;
   const fullName = splitFullName(name);
 
-  const itemRowRenderer = <TViewCaseInfo extends ViewTemporaryCaseInfo>(
-    itemTypeName: string,
-    viewSubroute: CaseSectionSubroute,
-    items: CaseItemInfo<TViewCaseInfo>[],
-  ) => {
+  const itemRowRenderer = (itemTypeName: string, viewSubroute: CaseSectionSubroute, items: EntryInfo[]) => {
     const itemRows = () => {
       return items.length ? (
         <>
@@ -169,7 +153,7 @@ const CaseHome: React.FC<Props> = ({
             <InformationRow
               key={`${itemTypeName}-${index}`}
               person={item[itemTypeName]}
-              onClickView={() => onCaseItemActionClick<TViewCaseInfo>(viewSubroute, CaseItemAction.View)(item)}
+              onClickView={() => onViewCaseItemClick(viewSubroute)(item.id)}
             />
           ))}
         </>
@@ -179,7 +163,7 @@ const CaseHome: React.FC<Props> = ({
     return itemRows;
   };
 
-  const householdRows = itemRowRenderer<ViewTemporaryCaseInfo>(
+  const householdRows = itemRowRenderer(
     'form',
     NewCaseSubroutes.Household,
     households.map((h, index) => {
@@ -187,7 +171,7 @@ const CaseHome: React.FC<Props> = ({
     }),
   );
 
-  const perpetratorRows = itemRowRenderer<ViewTemporaryCaseInfo>(
+  const perpetratorRows = itemRowRenderer(
     'form',
     NewCaseSubroutes.Perpetrator,
     perpetrators.map((p, index) => {
@@ -202,12 +186,7 @@ const CaseHome: React.FC<Props> = ({
           return (
             <TimelineInformationRow
               key={`incident-${index}`}
-              onClickView={() =>
-                onCaseItemActionClick<ViewTemporaryCaseInfo>(
-                  NewCaseSubroutes.Incident,
-                  CaseItemAction.View,
-                )(incidentSectionApi.toForm(item))
-              }
+              onClickView={() => onViewCaseItemClick(NewCaseSubroutes.Incident)(item.id)}
               definition={caseForms.IncidentForm}
               values={item.incident}
               layoutDefinition={caseLayouts.incidents}
@@ -226,12 +205,7 @@ const CaseHome: React.FC<Props> = ({
             <DocumentInformationRow
               key={`document-${index}`}
               documentEntry={item}
-              onClickView={() =>
-                onCaseItemActionClick<ViewTemporaryCaseInfo>(
-                  NewCaseSubroutes.Document,
-                  CaseItemAction.View,
-                )(documentSectionApi.toForm(item))
-              }
+              onClickView={() => onViewCaseItemClick(NewCaseSubroutes.Document)(item.id)}
             />
           );
         })}
@@ -240,7 +214,7 @@ const CaseHome: React.FC<Props> = ({
   };
 
   const onEditCaseItemClick = (targetSubroute: CaseSectionSubroute) => {
-    const summaryCaseInfo: EditTemporaryCaseInfo = {
+    temporaryCaseInfo = {
       action: CaseItemAction.Edit,
       info: {
         createdAt: connectedCase.createdAt,
@@ -257,7 +231,6 @@ const CaseHome: React.FC<Props> = ({
       },
       screen: 'caseSummary',
     };
-    temporaryCaseInfo = summaryCaseInfo;
     if (isEditTemporaryCaseInfo(temporaryCaseInfo)) {
       updateTempInfo(
         { screen: temporaryCaseInfo.screen, action: CaseItemAction.Edit, info: temporaryCaseInfo.info },
