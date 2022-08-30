@@ -17,8 +17,9 @@ import {
   CaseDetailsBorder,
   CaseSectionFont,
   StyledCaseOverview,
+  ViewButton,
 } from '../../styles/case';
-import { StyledNextStepButton, Box } from '../../styles/HrmStyles';
+import { Box } from '../../styles/HrmStyles';
 import { PermissionActions } from '../../permissions';
 import { getLocaleDateTime } from '../../utils/helpers';
 
@@ -56,7 +57,6 @@ const CaseDetails = ({
           office={office}
           handlePrintCase={handlePrintCase}
           isOrphanedCase={isOrphanedCase}
-          can={can}
         />
         <div style={{ paddingTop: '15px' }}>
           <CaseTags definitionVersion={definitionVersionName} categories={categories} />
@@ -70,9 +70,9 @@ const CaseDetails = ({
         </Box>
         {editButton && (
           <Box style={{ display: 'inline-block' }} alignSelf="flex-end" marginTop="-20px" marginRight="25px">
-            <StyledNextStepButton secondary roundCorners onClick={editCaseSummary} data-testid="Case-EditButton">
+            <ViewButton secondary roundCorners onClick={editCaseSummary} data-testid="Case-EditButton">
               <Template code="Case-EditButton" />
-            </StyledNextStepButton>
+            </ViewButton>
           </Box>
         )}
 
@@ -83,14 +83,13 @@ const CaseDetails = ({
                 <Template code="Case-CaseDetailsStatusLabel" />
               </label>
             </DetailDescription>
-            <StyledCaseOverview
+            <StyledInputField
               data-testid="Case-Details_CaseStatus"
               id="Details_CaseStatus"
               name="Details_CaseStatus"
               aria-labelledby="CaseDetailsStatusLabel"
               disabled={true}
               defaultValue={status === 'open' ? 'Open' : 'Closed'}
-              color={color}
             />
           </div>
           <div style={{ paddingRight: '20px' }}>
@@ -106,7 +105,7 @@ const CaseDetails = ({
               aria-labelledby="CaseDetailsStatusLabel"
               disabled={true}
               defaultValue={childIsAtRisk ? 'Yes' : 'No'}
-              color={childIsAtRisk ? 'red' : 'green'}
+              color={childIsAtRisk ? 'red' : '#d8d8d8'}
             />
           </div>
         </div>
@@ -150,6 +149,7 @@ const CaseDetails = ({
             <StyledCaseOverview
               id="Details_DateFollowUp"
               name="Details_DateFollowUp"
+              data-testid="Case-Details_DateFollowUp"
               color="#d8d8d8"
               disabled={true}
               defaultValue={followUpDate || '—'}
