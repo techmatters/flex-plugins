@@ -10,6 +10,7 @@ import { TimelineIconContainer } from '../../styles/case';
 import { channelTypes } from '../../states/DomainConstants';
 import TwitterIcon from '../common/icons/TwitterIcon';
 import InstagramIcon from '../common/icons/InstagramIcon';
+import LineIcon from '../common/icons/LineIcon';
 
 // eslint-disable-next-line react/display-name
 const getIcon = type => {
@@ -28,6 +29,8 @@ const getIcon = type => {
       return <TwitterIcon width="24px" height="24px" />;
     case channelTypes.instagram:
       return <InstagramIcon width="20px" height="20px" />;
+    case channelTypes.line:
+      return <LineIcon width="24px" height="24px" />;
     case 'note':
       return <NoteIcon style={{ opacity: 0.62, fontSize: '20px' }} />;
     case 'referral':

@@ -182,6 +182,7 @@ const MultiSelectFilter: React.FC<Props> = ({
   return (
     <div style={{ position: 'relative' }}>
       <MultiSelectButton
+        data-testid={`FilterBy-${text}-Button`}
         isOpened={isOpened}
         isActive={Boolean(selectedCount > 0)}
         type="button"
@@ -218,9 +219,12 @@ const MultiSelectFilter: React.FC<Props> = ({
               {defaultValues.map((item, i) => {
                 const hidden = !item.label.toLowerCase().includes(searchTerm.toLowerCase());
                 const isFirstFocusableElement = i === 0 && !searchable;
-
                 return (
-                  <MultiSelectListItem key={i} hidden={hidden}>
+                  <MultiSelectListItem
+                    key={i}
+                    hidden={hidden}
+                    data-testid={`${openedFilter.charAt(0).toUpperCase() + openedFilter.slice(1)}-${item.label}`}
+                  >
                     <FormLabel htmlFor={item.value} style={{ flexDirection: 'row' }}>
                       <FiltersCheckbox
                         id={item.value}
@@ -252,6 +256,7 @@ const MultiSelectFilter: React.FC<Props> = ({
                 name="applyButton"
                 onKeyDown={handleTabForLastElement}
                 innerRef={lastElement}
+                data-testid="Filter-Apply-Button"
               >
                 <Template code="CaseList-Filters-Apply" />
               </FiltersApplyButton>

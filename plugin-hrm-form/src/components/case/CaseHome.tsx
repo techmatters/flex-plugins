@@ -5,18 +5,26 @@ import { connect, ConnectedProps } from 'react-redux';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { CaseContainer } from '../../styles/case';
-import { BottomButtonBar, Box, StyledNextStepButton } from '../../styles/HrmStyles';
+import { BottomButtonBar, Box, StyledNextStepButton, FormOption } from '../../styles/HrmStyles';
 import CaseDetailsComponent from './CaseDetails';
 import Timeline from './Timeline';
 import CaseSection from './CaseSection';
 import { PermissionActions } from '../../permissions';
-import { AppRoutes, CaseItemAction, CaseSectionSubroute, NewCaseSubroutes } from '../../states/routing/types';
+import {
+  AppRoutes,
+  CaseItemAction,
+  CaseSectionSubroute,
+  NewCaseSubroutes,
+  AppRoutesWithCaseAndAction,
+} from '../../states/routing/types';
 import CaseSummary from './CaseSummary';
-import { contactFormsBase, namespace, RootState, routingBase } from '../../states';
+import { contactFormsBase, namespace, RootState, routingBase, connectedCaseBase } from '../../states';
 import {
   Activity,
   CaseDetails,
   CaseDetailsName,
+  EditTemporaryCaseInfo,
+  isEditTemporaryCaseInfo,
   TemporaryCaseInfo,
   ViewTemporaryCaseInfo,
 } from '../../states/case/types';
@@ -28,6 +36,11 @@ import InformationRow from './InformationRow';
 import TimelineInformationRow from './TimelineInformationRow';
 import DocumentInformationRow from './DocumentInformationRow';
 import CloseCaseDialog from './CloseCaseDialog';
+import { CaseState } from '../../states/case/reducer';
+import { incidentSectionApi } from '../../states/case/sections/incident';
+import { householdSectionApi } from '../../states/case/sections/household';
+import { perpetratorSectionApi } from '../../states/case/sections/perpetrator';
+import { documentSectionApi } from '../../states/case/sections/document';
 
 const splitFullName = (name: CaseDetailsName) => {
   if (name.firstName === 'Unknown' && name.lastName === 'Unknown') {
@@ -69,14 +82,18 @@ const CaseHome: React.FC<Props> = ({
   handleCancelNewCaseAndClose,
   handleUpdate,
   onInfoChange,
-  onStatusChange,
   timeline,
   caseDetails,
   can,
+  temporaryCaseInfo,
+  connectedCaseState,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [closeDialog, setCloseDialog] = useState(false);
 
   const { featureFlags } = getConfig();
+  const { connectedCase } = connectedCaseState;
+  const summary = connectedCase.info?.summary || '';
 
   if (routing.route === 'csam-report') return null; // narrow type before deconstructing
   const { route } = routing;
@@ -135,7 +152,6 @@ const CaseHome: React.FC<Props> = ({
     childIsAtRisk,
     caseCounselor,
     status,
-    prevStatus,
     followUpDate,
     version,
   } = caseDetails;
@@ -167,8 +183,7 @@ const CaseHome: React.FC<Props> = ({
     'form',
     NewCaseSubroutes.Household,
     households.map((h, index) => {
-      const { household, ...caseInfoItem } = { ...h, form: h.household, id: null };
-      return { ...caseInfoItem, index };
+      return { ...householdSectionApi.toForm(h), index };
     }),
   );
 
@@ -176,8 +191,7 @@ const CaseHome: React.FC<Props> = ({
     'form',
     NewCaseSubroutes.Perpetrator,
     perpetrators.map((p, index) => {
-      const { perpetrator, ...caseInfoItem } = { ...p, form: p.perpetrator, id: null };
-      return { ...caseInfoItem, index };
+      return { ...perpetratorSectionApi.toForm(p), index };
     }),
   );
 
@@ -185,7 +199,6 @@ const CaseHome: React.FC<Props> = ({
     return incidents.length ? (
       <>
         {incidents.map((item, index) => {
-          const { incident, ...caseItemEntry } = { ...item, form: item.incident, id: null };
           return (
             <TimelineInformationRow
               key={`incident-${index}`}
@@ -193,7 +206,7 @@ const CaseHome: React.FC<Props> = ({
                 onCaseItemActionClick<ViewTemporaryCaseInfo>(
                   NewCaseSubroutes.Incident,
                   CaseItemAction.View,
-                )({ ...caseItemEntry, index })
+                )(incidentSectionApi.toForm(item))
               }
               definition={caseForms.IncidentForm}
               values={item.incident}
@@ -209,7 +222,6 @@ const CaseHome: React.FC<Props> = ({
     return documents.length ? (
       <>
         {documents.map((item, index) => {
-          const { document, ...caseItemEntry } = { ...item, form: item.document, index };
           return (
             <DocumentInformationRow
               key={`document-${index}`}
@@ -218,13 +230,41 @@ const CaseHome: React.FC<Props> = ({
                 onCaseItemActionClick<ViewTemporaryCaseInfo>(
                   NewCaseSubroutes.Document,
                   CaseItemAction.View,
-                )(caseItemEntry)
+                )(documentSectionApi.toForm(item))
               }
             />
           );
         })}
       </>
     ) : null;
+  };
+
+  const onEditCaseItemClick = (targetSubroute: CaseSectionSubroute) => {
+    const summaryCaseInfo: EditTemporaryCaseInfo = {
+      action: CaseItemAction.Edit,
+      info: {
+        createdAt: connectedCase.createdAt,
+        updatedAt: connectedCase.updatedAt,
+        updatedBy: connectedCase.twilioWorkerId,
+        form: {
+          caseStatus: status,
+          date: followUpDate,
+          inImminentPhysicalDanger: childIsAtRisk === undefined ? false : childIsAtRisk,
+          caseSummary: summary,
+        },
+        id: null,
+        twilioWorkerId: connectedCase.twilioWorkerId,
+      },
+      screen: 'caseSummary',
+    };
+    temporaryCaseInfo = summaryCaseInfo;
+    if (isEditTemporaryCaseInfo(temporaryCaseInfo)) {
+      updateTempInfo(
+        { screen: temporaryCaseInfo.screen, action: CaseItemAction.Edit, info: temporaryCaseInfo.info },
+        task.taskSid,
+      );
+    }
+    changeRoute({ ...routing, subroute: targetSubroute, action: CaseItemAction.Edit } as AppRoutes, task.taskSid);
   };
 
   return (
@@ -235,7 +275,6 @@ const CaseHome: React.FC<Props> = ({
             caseId={id}
             name={fullName}
             status={status}
-            prevStatus={prevStatus}
             can={can}
             counselor={caseCounselor}
             categories={categories}
@@ -245,15 +284,16 @@ const CaseHome: React.FC<Props> = ({
             childIsAtRisk={childIsAtRisk}
             office={office?.label}
             handlePrintCase={onPrintCase}
-            handleInfoChange={onInfoChange}
-            handleStatusChange={onStatusChange}
-            handleClickChildIsAtRisk={onClickChildIsAtRisk}
             definitionVersion={definitionVersion}
             definitionVersionName={version}
             isOrphanedCase={!contact}
+            editCaseSummary={() => onEditCaseItemClick(NewCaseSubroutes.CaseSummary)}
           />
         </Box>
-        <Box marginLeft="25px" marginTop="25px">
+        <Box margin="25px 0 0 25px">
+          <CaseSummary task={task} readonly={true} />
+        </Box>
+        <Box margin="25px 0 0 25px">
           <Timeline
             timelineActivities={timeline}
             contacts={caseDetails.contacts}
@@ -263,7 +303,7 @@ const CaseHome: React.FC<Props> = ({
             route={route}
           />
         </Box>
-        <Box marginLeft="25px" marginTop="25px">
+        <Box margin="25px 0 0 25px">
           <CaseSection
             canAdd={() => can(PermissionActions.ADD_HOUSEHOLD)}
             onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.Household)}
@@ -272,7 +312,7 @@ const CaseHome: React.FC<Props> = ({
             {householdRows()}
           </CaseSection>
         </Box>
-        <Box marginLeft="25px" marginTop="25px">
+        <Box margin="25px 0 0 25px">
           <CaseSection
             canAdd={() => can(PermissionActions.ADD_PERPETRATOR)}
             onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.Perpetrator)}
@@ -281,7 +321,7 @@ const CaseHome: React.FC<Props> = ({
             {perpetratorRows()}
           </CaseSection>
         </Box>
-        <Box marginLeft="25px" marginTop="25px">
+        <Box margin="25px 0 0 25px">
           <CaseSection
             canAdd={() => can(PermissionActions.ADD_INCIDENT)}
             onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.Incident)}
@@ -291,7 +331,7 @@ const CaseHome: React.FC<Props> = ({
           </CaseSection>
         </Box>
         {featureFlags.enable_upload_documents && (
-          <Box marginLeft="25px" marginTop="25px">
+          <Box margin="25px 0 0 25px">
             <CaseSection
               onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.Document)}
               canAdd={() => can(PermissionActions.ADD_DOCUMENT)}
@@ -301,9 +341,6 @@ const CaseHome: React.FC<Props> = ({
             </CaseSection>
           </Box>
         )}
-        <Box marginLeft="25px" marginTop="25px">
-          <CaseSummary task={task} readonly={!can(PermissionActions.EDIT_CASE_SUMMARY)} />
-        </Box>
       </CaseContainer>
       <BottomButtonBar>
         {isCreating && (
@@ -341,9 +378,6 @@ const CaseHome: React.FC<Props> = ({
                 openDialog={closeDialog}
               />
             </Box>
-            <StyledNextStepButton disabled={!isEdited} roundCorners onClick={handleUpdate}>
-              <Template code="BottomBar-Update" />
-            </StyledNextStepButton>
           </>
         )}
       </BottomButtonBar>
@@ -353,14 +387,20 @@ const CaseHome: React.FC<Props> = ({
 
 CaseHome.displayName = 'CaseHome';
 
-const mapStateToProps = (state: RootState, ownProps: CaseHomeProps) => ({
-  form: state[namespace][contactFormsBase].tasks[ownProps.task.taskSid],
-  routing: state[namespace][routingBase].tasks[ownProps.task.taskSid],
-});
+const mapStateToProps = (state: RootState, ownProps: CaseHomeProps) => {
+  const form = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
+  const routing = state[namespace][routingBase].tasks[ownProps.task.taskSid];
+  const caseState: CaseState = state[namespace][connectedCaseBase];
+  const { temporaryCaseInfo } = caseState.tasks[ownProps.task.taskSid];
+  const connectedCaseState = caseState.tasks[ownProps.task.taskSid];
+
+  return { form, routing, temporaryCaseInfo, connectedCaseState };
+};
 
 const mapDispatchToProps = {
   changeRoute: RoutingActions.changeRoute,
   updateTempInfo: CaseActions.updateTempInfo,
+  setConnectedCase: CaseActions.setConnectedCase,
 };
 const connector = connect(mapStateToProps, mapDispatchToProps);
 const connected = connector(CaseHome);

@@ -88,7 +88,7 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
       <CLTableRow data-testid="CaseList-TableRow" onClick={handleClickViewCase(caseItem)}>
         <CLNumberCell>
           <CLCaseNumberContainer>
-            <CLCaseIDButton tabIndex={0} onClick={handleClickViewCase(caseItem)}>
+            <CLCaseIDButton tabIndex={0} onClick={handleClickViewCase(caseItem)} data-testid="CaseList-CaseID-Button">
               <HiddenText>
                 <Template code={statusString} />
                 <Template code="CaseList-THCase" />

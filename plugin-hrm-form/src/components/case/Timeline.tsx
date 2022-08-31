@@ -16,6 +16,7 @@ import {
   TimelineDate,
   TimelineText,
   TimelineCallTypeIcon,
+  CaseDetailsBorder,
 } from '../../styles/case';
 import { Box, Row } from '../../styles/HrmStyles';
 import CaseAddButton from './CaseAddButton';
@@ -48,24 +49,21 @@ const Timeline: React.FC<Props> = props => {
   const handleViewNoteClick = (activity: NoteActivity) => {
     const { twilioWorkerId } = activity;
     const info: CaseItemEntry = {
-      id: null,
+      id: activity.id,
       form: { ...activity.note },
       twilioWorkerId,
       createdAt: parseISO(activity.date).toISOString(),
       updatedAt: activity.updatedAt ? parseISO(activity.updatedAt).toISOString() : undefined,
       updatedBy: activity.updatedBy,
     };
-    updateTempInfo(
-      { screen: NewCaseSubroutes.Note, action: CaseItemAction.View, info: { ...info, index: activity.originalIndex } },
-      taskSid,
-    );
+    updateTempInfo({ screen: NewCaseSubroutes.Note, action: CaseItemAction.View, info }, taskSid);
     changeRoute({ route, subroute: NewCaseSubroutes.Note, action: CaseItemAction.View }, taskSid);
   };
 
   const handleViewReferralClick = (activity: ReferralActivity) => {
     const { twilioWorkerId } = activity;
     const info: CaseItemEntry = {
-      id: null,
+      id: activity.id,
       form: { ...activity.referral },
       twilioWorkerId,
       createdAt: parseISO(activity.createdAt).toISOString(),
@@ -76,7 +74,7 @@ const Timeline: React.FC<Props> = props => {
       {
         screen: NewCaseSubroutes.Referral,
         action: CaseItemAction.View,
-        info: { ...info, index: activity.originalIndex },
+        info: { ...info },
       },
       taskSid,
     );
@@ -134,55 +132,57 @@ const Timeline: React.FC<Props> = props => {
   };
 
   return (
-    <Box marginTop="25px">
-      <Dialog onClose={() => setMockedMessage(null)} open={Boolean(mockedMessage)}>
-        <DialogContent>{mockedMessage}</DialogContent>
-      </Dialog>
-      <Box marginBottom="10px">
-        <Row>
-          <CaseSectionFont id="Case-TimelineSection-label">
-            <Template code="Case-TimelineSection" />
-          </CaseSectionFont>
-          <Box marginLeft="auto">
-            <CaseAddButton
-              templateCode="Case-Note"
-              onClick={handleAddNoteClick}
-              disabled={!can(PermissionActions.ADD_NOTE)}
-            />
-            <CaseAddButton
-              templateCode="Case-Referral"
-              onClick={handleAddReferralClick}
-              disabled={!can(PermissionActions.ADD_REFERRAL)}
-              withDivider
-            />
-          </Box>
-        </Row>
-      </Box>
-      {timelineActivities &&
-        timelineActivities.length > 0 &&
-        timelineActivities.map((activity, index) => {
-          const date = parseISO(activity.date).toLocaleDateString(navigator.language);
-          return (
-            <TimelineRow key={index}>
-              <TimelineDate>{date}</TimelineDate>
-              <TimelineIcon type={isConnectedCaseActivity(activity) ? activity.channel : activity.type} />
-              {isConnectedCaseActivity(activity) && (
-                <TimelineCallTypeIcon>
-                  <CallTypeIcon callType={callType} fontSize="18px" />
-                </TimelineCallTypeIcon>
-              )}
-              <TimelineText>{activity?.text}</TimelineText>
-              <Box marginLeft="auto" marginRight="10px">
-                <Box marginLeft="auto" marginRight="10px">
-                  <ViewButton onClick={() => handleViewClick(activity)}>
-                    <Template code="Case-ViewButton" />
-                  </ViewButton>
+    <CaseDetailsBorder>
+      <Box marginTop="25px">
+        <Dialog onClose={() => setMockedMessage(null)} open={Boolean(mockedMessage)}>
+          <DialogContent>{mockedMessage}</DialogContent>
+        </Dialog>
+        <Box marginBottom="10px">
+          <Row>
+            <CaseSectionFont id="Case-TimelineSection-label">
+              <Template code="Case-TimelineSection" />
+            </CaseSectionFont>
+            <Box marginLeft="auto">
+              <CaseAddButton
+                templateCode="Case-Note"
+                onClick={handleAddNoteClick}
+                disabled={!can(PermissionActions.ADD_NOTE)}
+              />
+              <CaseAddButton
+                templateCode="Case-Referral"
+                onClick={handleAddReferralClick}
+                disabled={!can(PermissionActions.ADD_REFERRAL)}
+                withDivider
+              />
+            </Box>
+          </Row>
+        </Box>
+        {timelineActivities &&
+          timelineActivities.length > 0 &&
+          timelineActivities.map((activity, index) => {
+            const date = parseISO(activity.date).toLocaleDateString(navigator.language);
+            return (
+              <TimelineRow key={index}>
+                <TimelineDate>{date}</TimelineDate>
+                <TimelineIcon type={isConnectedCaseActivity(activity) ? activity.channel : activity.type} />
+                {isConnectedCaseActivity(activity) && (
+                  <TimelineCallTypeIcon>
+                    <CallTypeIcon callType={callType} fontSize="18px" />
+                  </TimelineCallTypeIcon>
+                )}
+                <TimelineText>{activity?.text}</TimelineText>
+                <Box marginLeft="auto" marginRight="5px">
+                  <Box marginLeft="auto" marginRight="5px">
+                    <ViewButton onClick={() => handleViewClick(activity)}>
+                      <Template code="Case-ViewButton" />
+                    </ViewButton>
+                  </Box>
                 </Box>
-              </Box>
-            </TimelineRow>
-          );
-        })}
-    </Box>
+              </TimelineRow>
+            );
+          })}
+      </Box>
+    </CaseDetailsBorder>
   );
 };
 

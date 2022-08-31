@@ -4,6 +4,15 @@ import { RegisterOptions } from 'react-hook-form';
 import { OneToOneConfigSpec, OneToManyConfigSpecs } from './insightsConfig';
 import { CallTypeKeys } from './callTypes';
 
+export enum CaseSectionApiName {
+  Notes = 'notes',
+  Households = 'households',
+  Perpetrators = 'perpetrators',
+  Incidents = 'incidents',
+  Referrals = 'referrals',
+  Documents = 'documents',
+}
+
 /**
  * Types used for customizable forms
  */
@@ -11,6 +20,13 @@ type ItemBase = {
   name: string;
   label: string;
 } & RegisterOptions;
+
+type NonSaveable = {
+  saveable: false;
+};
+
+export const isNonSaveable = (item: any): item is NonSaveable =>
+  typeof item.saveable === 'boolean' && !item.saveable;
 
 type InputDefinition = {
   type: 'input';
@@ -98,6 +114,13 @@ type CallTypeButtonInputDefinition = {
   category: 'data' | 'non-data';
 } & ItemBase;
 
+type CopyToDefinition = ItemBase &
+  NonSaveable & {
+    type: 'copy-to';
+    initialChecked: false;
+    target: CaseSectionApiName;
+  };
+
 export type FormItemDefinition =
   | InputDefinition
   | NumericInputDefinition
@@ -112,7 +135,8 @@ export type FormItemDefinition =
   | DateInputDefinition
   | TimeInputDefinition
   | FileUploadDefinition
-  | CallTypeButtonInputDefinition;
+  | CallTypeButtonInputDefinition
+  | CopyToDefinition;
 export type FormDefinition = FormItemDefinition[];
 
 export type CategoryEntry = { color: string; subcategories: string[] };

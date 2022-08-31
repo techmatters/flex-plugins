@@ -1,90 +1,238 @@
 [
   {
-    "label": "Saludo y Presentación",
-    "text": "¡Hola, te damos la bienvenida a Te Guío! Esta es la línea de ayuda dedicada a adolescentes como tú, donde te escuchamos y orientamos en las inquietudes que puedes tener para lograr vivir una sexualidad saludable. Qué gusto que te contactes con nosotros.\nPara empezar, necesitamos que escribas únicamente el número de una de las siguientes opciones según tu caso: \n1. Tienes una duda o inquietud y deseas que la respondamos por este chat. \n2. Deseas tener una cita virtual y recibir una orientación personalizada."
+    "label": "[Presentación Guía]",
+    "text": "[Presentación Guía] Mi nombre es [Nombre Guía] pero me puedes decir [Pseudónimo]. Respecto a tu pregunta [Respuesta]"
   },
   {
-    "label": "Escribe tu pregunta",
-    "text": "Por favor, escribe tu pregunta"
+    "label": "[Saludo y Presentación]",
+    "text": "¡Hola, te damos la bienvenida a Te Guío! Esta es la línea de ayuda dedicada a adolescentes como tú, donde te escuchamos y orientamos en las inquietudes que puedes tener para lograr vivir una sexualidad saludable. Qué gusto que te contactes con nosotros.\nPara empezar, necesitamos que escribas únicamente el número de una de las siguientes opciones según tu caso:\n1. Tienes una duda o inquietud y deseas que la respondamos por este chat.\n2. Deseas tener una cita virtual y recibir una orientación personalizada."
   },
   {
-    "label": "¡Qué buena pregunta!",
-    "text": "¡Qué buena pregunta! <RESPUESTA>"
+    "label": "[Opción 1 Pregunta inicial]  ",
+    "text": "Por favor, escribe tu pregunta."
   },
   {
-    "label": "¿respondimos tu pregunta?",
-    "text": "Cuéntanos, ¿respondimos tu pregunta?"
+    "label": "[Opción 1 Respuesta]  ",
+    "text": "¡Qué buena pregunta! [Se incluye luego la respuesta] "
   },
   {
-    "label": "Lo siento...explicanos mejor",
-    "text": "Lo siento. Por favor, explicanos mejor tu pregunta para poder ayudarte."
+    "label": "[Opción 1 Confirmación]  ",
+    "text": "Cuéntanos, ¿respondimos tu pregunta? "
   },
   {
-    "label": "Maravilloso...¿algo más?",
-    "text": "Maravilloso, ¿Hay algo más en lo que podamos ayudarte?"
+    "label": "[Opción 1 No confirmación] ",
+    "text": "Lo siento. Por favor, explicanos mejor tu pregunta para poder ayudarte. "
   },
   {
-    "label": "Gracias por contactarte...",
-    "text": "Gracias por contactarte con nosotros. Nos encantó leerte y ya sabes, siempre estaremos aquí para asesorarte."
+    "label": "[Opción 1 Sí confirmación y pregunta adicional] ",
+    "text": "Maravilloso, ¿Hay algo más en lo que podamos ayudarte? "
   },
   {
-    "label": "Escribe to otra pregunta",
-    "text": "Por favor escribe tu otra pregunta."
+    "label": "[Opción 1 Despedida] ",
+    "text": "Gracias por contactarte con nosotros. Nos encantó leerte y ya sabes, siempre estaremos aquí para asesorarte. "
   },
   {
-    "label": "Saludo y Asentimiento",
-    "text": "¡Muchas gracias! Para iniciar la atención con un profesional, nos gustaría saber ¿Cuántos años tienes?"
+    "label": "[Opción 2 Edad]  ",
+    "text": "¡Muchas gracias! Para iniciar la atención con un profesional, nos gustaría saber \n¿Cuántos años tienes? "
   },
   {
-    "label": "Política de Privacidad mayores de 14 años",
-    "text": "Perfecto, mi nombre es <NOMBRE GUÍA> pero me puedes decir <APODO>. Quiero que sepas que nuestra conversación será completamente confidencial, entre tú y yo. Sin embargo, como tú sabes, el tema de protección de datos es muy importante tanto para ti como para nosotros, por lo cual, debo preguntarte si aceptas los TÉRMINOS Y CONDICIONES DE NUESTRO SERVICIO ( https://tinyurl.com/2tsdb9bb ) Responde: Si / No"
+    "label": "[Opción 2  NNA >14] ",
+    "text": "Perfecto, mi nombre es [Introducir nombre guía] pero me puedes decir [Introducir nombre que inspire más confianza. Por ejemplo, Ange]. Quiero  que  sepas  que  nuestra  conversación  será  completamente confidencial, entre tú y yo. Sin embargo, como tú sabes, el tema de protección de datos es muy  importante  tanto  para  ti  como  para  nosotros,  por  lo  cual,  debo  preguntarte  si  aceptas los TÉRMINOS Y CONDICIONES DE NUESTRO SERVICIO (https://tinyurl.com/2tsdb9bb).\nResponde: Sí/No. "
   },
   {
-    "label": "¡Perfecto! Solicitud de Datos",
-    "text": "¡Perfecto! <NOMBRE ADOLESCENTE> ¿Estás de acuerdo en proporcionarme los siguientes datos?: \n-Tus nombres y apellidos.\n-Tu género (opcional): femenino/ masculino/ no binario.\n-Tu número de identificación.\n-Ciudad o municipio en el que te encuentras.\n-Dirección.\n-Número de celular.\n-Correo electrónico (si cuentas con uno).\n-EPS\nSi estás de acuerdo, nos ayudarías un montón al escribir estos datos en un solo mensaje."
+    "label": "[Opción 2  NNA >14 Datos] ",
+    "text": " ¡Perfecto! [Introducir nombre usuario] ¿Estás de acuerdo en proporcionarme los siguientes datos?: \n-Tus nombres y apellidos.\n-Tu género (opcional): femenino/ masculino/ no binario.\nTu número de identificación.\n-Ciudad o municipio en el que te encuentras.\n-Dirección.\n-Número de celular.\n-Correo electrónico (si cuentas con uno).\n-EPS\nSi estás de acuerdo, nos ayudarías un montón al escribir estos datos en un solo mensaje. "
   },
   {
-    "label": "Lo siento... no puedo servirte",
-    "text": "Lo siento, en este caso, no puedo brindarte el servicio."
+    "label": "[Opción 2  NNA >14 No Datos] ",
+    "text": "Lo siento, en este caso, no puedo brindarte el servicio.  "
   },
   {
-    "label": "Política de Privacidad menores de 14 años:",
-    "text": "Perfecto, para prestar este servicio, así como para recibir y tratar adecuadamente tu datos personales requerimos la autorización de tu padre o de tu madre.\nSi te encuentras en este momento con tu padre, tu madre o tu tutor legal, marca uno (1).\nSi no te encuentras en este momento con tu padre, tu madre o tu tutor legal, marca dos (2)."
+    "label": "[Opción 2  NNA <14  Datos] ",
+    "text": "Perfecto, para prestar este servicio, así como para recibir y tratar adecuadamente tu datos personales requerimos la autorización de tu padre o de tu madre.\nSi te encuentras en este momento con tu padre, tu madre o tu tutor legal, marca uno (1).\nSi no te encuentras en este momento con tu padre, tu madre o tu tutor legal, marca dos (2).   "
   },
   {
-    "label": "Lo siento... sin tutor",
-    "text": "Lo siento, en este caso, no puedo brindarte el servicio hasta conversar con tu mamá, papá o tutor legal"
+    "label": "[Opción 2  NNA <14 No Tutor] ",
+    "text": "Lo siento, en este caso, no puedo brindarte el servicio hasta conversar con tu mamá, papá o tutor legal.  "
   },
   {
-    "label": "¿Con quién te encuentras?",
-    "text": "¿Con quién te encuentras?"
+    "label": "[Opción 2  NNA <14 Tutor] ",
+    "text": "¿Te encuentras con tu mamá, papá u otro tutor legal? ¿Me podrías indicar su nombre?"
   },
   {
-    "label": "Comunícame con tutor",
-    "text": "Te pido por favor que me comuniques con <PERSONA A CARGO>. \nCuéntame ¿Ya se encuentra contigo? Si/No"
+    "label": "[Opción 2  NNA <14 Solicitud Comunicación Tutor] ",
+    "text": "Te pido por favor que me comuniques con [Nombre tutor legal del usuario].\nCuéntame ¿Ya se encuentra contigo? Sí/no "
   },
   {
-    "label": "Solicitud datos tutor",
-    "text": "Cuidador del menor de 14 años, para brindar la atención, necesito por favor que me brinde su nombre completo, tipo de identificación y número de identificación."
+    "label": "[Opción 2  NNA <14 Comunicación Tutor] ",
+    "text": "[Nombre tutor legal del usuario], para brindar la atención, necesito por favor que me brinde su nombre completo, tipo de identificación y número de identificación"
   },
   {
-    "label": "Terminos y Condiciones para el tutor",
-    "text": "Su hijo/hija se está comunicando con la Línea de Ayuda Te Guío que hace parte del Centro de Internet Seguro Viguías de la CORPORACIÓN COLOMBIANA DE PADRES Y MADRES RED PAPAZ – Red PaPaz que brinda servicio de teleorientación a menores de 18 años.\nPara prestar este servicio es necesario que acepte los Términos y condiciones del servicio. Acepta? Si/No"
+    "label": "[Opción 2  NNA <14 Términos y condiciones Tutor] ",
+    "text": "Su hijo/hija se está comunicando con la Línea de Ayuda Te Guío que hace parte del Centro de Internet Seguro Viguías de la CORPORACIÓN COLOMBIANA DE PADRES Y MADRES RED PAPAZ – Red PaPaz  que brinda servicio de teleorientación a menores de 18 años.\nPara prestar este servicio es necesario que acepte los Términos y condiciones del servicio (https://tinyurl.com/2tsdb9bb)."
   },
   {
-    "label": "Solicitud Consentimiento",
-    "text": "Ahora solicitamos que por favor a nuestro mail <MAIL> nos envíe una foto de esta información escrita a mano: \nCONSENTIMIENTO\nPor lo anterior, yo_____________________________________ identificado (a) con cédula de ciudadanía número_____________ de ___________actuando como representante legal del menor___________________________ identificado con tarjeta de identidad número_______________ doy mi consentimiento informado de forma libre, voluntaria y consciente, para la realización de teleorientación en salud, bajo las condiciones arriba mencionadas"
+    "label": "[Opción 2  NNA <14 No Términos y condiciones Tutor] ",
+    "text": "Lo siento, en este caso, no puedo brindar el servicio.  "
   },
   {
-    "label": "Tenemos autorización, cuéntame...",
-    "text": "Ahora que ya tenemos la autorización de XXX cuéntame, ¿de qué quieres que conversemos hoy?"
+    "label": "[Opción 2  NNA <14 Consentimiento Tutor] ",
+    "text": "Ahora solicitamos que por favor, nos envíe un mensaje de voz con la siguiente información o una foto de esta información escrita a mano: \n CONSENTIMIENTO \nPor lo anterior, yo_____________________________________ identificado (a) con cédula de ciudadanía número_____________ de ___________actuando como representante legal del menor___________________________ identificado con tarjeta de identidad número_______________ doy mi consentimiento informado de forma libre, voluntaria y consciente, para la realización de teleorientación en salud, bajo las condiciones arriba mencionadas."
   },
   {
-    "label": "Sin recepción de consentimiento",
-    "text": "Recuerda que no puedo brindar el servicio hasta contar con el consentimiento."
+    "label": "[Opción 2  NNA <14 Inicio tema] ",
+    "text": "Ahora que ya tenemos la autorización de [Nombre tutor legal del usuario] cuéntame, ¿de qué quieres que conversemos hoy? :)"
   },
   {
-    "label": "¡ME ENCANTÓ LEERTE!",
-    "text": ": ¡ME ENCANTÓ LEERTE!\nYa sabes, siempre estaremos aquí para asesorarte.."
+    "label": "[Opción 2  NNA <14 Finalización conversación] ",
+    "text": " ¡ME ENCANTÓ LEERTE! \nYa sabes, siempre estaremos aquí para asesorarte."
+  },
+  {
+    "label": "[RI- Me gusta alguien] ",
+    "text": "Puede que te dé mucho miedo decirle a otra persona que te gusta, pero esa es la única manera de saber si tú también le gustas al otro. Es importante tomar la iniciativa y saber que te pueden aceptar o rechazar.  "
+  },
+  {
+    "label": "[RI- Gusto mutuo] ",
+    "text": "A veces los \"flechazos\" son tan fuertes que solo puedes pensar en eso. Te obsesionas con cada cosa que dicen o hacen, tratando de averiguar si tú también les interesas. Estar interesado en alguien puede ser excitante, divertido y frustrante, todo al mismo tiempo. \nSi alguien coquetea contigo y te hace cumplidos, pueden ser señales de que le interesas. Puede que también hagan un esfuerzo para hablarte o estar cerca tuyo. Pero no lo sabrás con seguridad si la otra persona está interesada a menos de que le hables y le invites a salir. "
+  },
+  {
+    "label": "[RI- Salir con alguien] ",
+    "text": "Lo primero es que calmes tus nervios: respira, haz ejercicio, escucha música, habla con un amigo primero… ¡Lo que te sirva para relajarte! También ayuda pensar qué vas a decir con anticipación.\nTambién puedes preguntar sobre sus gustos, pasatiempos favoritos, música, deportes, películas, y comida.\nSeguramente los dos se sentirán más cómodos si hablan con un poco de privacidad. Encuentra un momento donde puedan hablar sin distracciones, en persona, por teléfono o en línea. Algunas personas prefieren llamar, textear o enviar mensajes en línea. Lo que resulte más cómodo estará bien.\nSi tú y la persona que te gusta tienen afinidad, puedes invitarla a hacer algo contigo,  como ir al cine , estudiar, ir a un partido o concierto, etc. También puedes proponer salir en grupo en vez de los dos solos. Esto puede sacarle un poco de presión a la situación y así los dos se sentirán cómodos.\nY otra cosa: a veces puedes sentir que hay reglas diferentes para mujeres y hombres en cuanto a salir con alguien e invitarlos a salir, pero esto no es verdad. Ya no estamos en los años 50 ¡Es 100% normal que cualquiera de los dos sea el que pregunte! "
+  },
+  {
+    "label": "[RI- Rechazo] ",
+    "text": "No hay forma de cambiarlo: no te vas a sentir bien si te rechazan. Pero a todos nos ha pasado en algún momento de nuestras vidas (de veras, A TODOS) y te sentirás mejor con el tiempo, ya lo verás.\nEl que te rechacen no quiere decir que hay algo malo contigo, simplemente significa que no eras el indicado para esa persona en particular. \nDate crédito por haberte animado a invitarlo/a a salir.\nEl ser rechazado duele pero es importante respetar los sentimientos del otro, así que no trates de hacerle cambiar de parecer ni presionarle para que salga contigo. No puedes hacer que la otra persona guste de ti y todos tenemos el derecho a decir “no”. Puede ser tentador el enojarte o tratarle mal, pero no lo hagas. Insultarle no mejorará nada ni hará que le caigas mejor, y puedes lastimarle. En vez de enojarte con ellos, puedes buscar el apoyo de tus amigos. "
+  },
+  {
+    "label": "[RI- Enamoramiento] ",
+    "text": "El sentir un \"flechazo\" o que alguien te atraiga fuertemente es de por sí intenso. Puede sentirse como que te estás enamorando. Pero el estar enamorado va más allá de una atracción y de querer estar con esta persona todo el tiempo. Amar significa querer a esa persona profundamente y que te importe su felicidad. Las personas demuestran su amor al estar disponibles para el otro, escucharlos, ayudarse mutuamente a crecer, hacer cosas que los hagan felices a los dos y ser pacientes y cariñosos entre sí. "
+  },
+  {
+    "label": "[RI- Claves relaciones amorosas] ",
+    "text": "Hay elementos claves que facilitan el tener una relación sana y beneficiosa para cada uno de sus miembros: respeto mutuo, comunicación y confianza.\nEs importante que te preguntes: ¿Respeta tu opinión y lo que sientes? ¿Tú respetas los de él o ella? Esto es imprescindible para que los límites no se pierdan en el otro, especialmente en esta etapa de la vida. Sus identidades no deberían cambiar al estar en pareja.\nLa comunicación es clave, hay que aprender a comunicar lo que sentimos/pensamos de manera clara y transparente. Esto no significa contarle todo lo que haces o piensas, sino crear un buen entendimiento entre ambos.\nPor último, la confianza también es esencial. Incluye confiar en el otro sin dejar de confiar primeramente en uno mismo. Si se mantienen estos elementos, sumados a sentimientos amorosos mutuos además de cariño, estaríamos hablando de una relación de pareja sana y positiva para cada uno. "
+  },
+  {
+    "label": "[RI- Celos] ",
+    "text": "Como cualquier otra respuesta emocional, los celos son normales. También es normal sentir miedo, angustia o rabia, es parte de nuestra experiencia humana.\nLos celos son producto de la incertidumbre y temor ante la posibilidad de perder algo que se considera como propio (por ejemplo, una pareja) pero ¡ojo!: las personas no son propiedad de nadie.\nMuchas veces escucharás que, en el amor, celar “un poco” a tu pareja es bueno, porque para algunas personas se trata de un signo de interés o aprecio. Sin embargo, en las relaciones el amor no se expresa a través del dominio ni el control, sino a través de confianza y la preocupación por el bienestar del otro. \nExperimentarás celos muchas veces a lo largo de tu vida, a todos nos ha pasado. Convérsalo con tu pareja, trata de ponerte en su lugar. Verás que las cosas mejoran. "
+  },
+  {
+    "label": "[S&P- Edad sexo] ",
+    "text": "En Colombia desde los 14 años puedes dar tu consentimiento para tener una relación sexual, es decir, que se considera que desde esta edad tienes la capacidad para decidir sobre tu sexualidad. A pesar de ello, te recomendamos que no solo te fijes en la edad sino que pienses en otros factores que también son importantes: ¿con quién lo vas a tener?, ¿te gusta?, ¿le gustas?, ¿dónde lo van a hacer?, ¿cómo se van a proteger?. Algunas personas tienen sexo por primera vez sintiéndose presionados por una pareja o por el grupo de amigos. \nSi este es tu caso, te recomiendo esperar a que sea por un genuino interés tuyo y de la otra persona. Puede ser una persona con quien tengas un vínculo amoroso (novia/o) o con quién te sientas en confianza (amigo/a).\nNo siempre será placentero, ya que la inexperiencia nos puede jugar malas pasadas pero, como muchas otras cosas en la vida, va mejorando con la práctica. "
+  },
+  {
+    "label": "[S&P- Primera relación sexual Cambio mujer] ",
+    "text": "Después de la primera relación sexual vaginal penetrativa, lo que puede cambiar en la mujer es el himen, una membrana que cubre sólo en forma parcial la entrada de la vagina y que no es rígida. Algunas mujeres tienen un desgarro que genera un sangrado; sin embargo, para otras mujeres puede que el himen se haya roto previamente o que sea muy elástico, por lo que no se producen cambios.\nSi bien no ocurren otros cambios físicos, puede haber variaciones en cómo se percibe el propio cuerpo luego de la experiencia sexual. Por ejemplo, algunas mujeres pueden sentirse más conscientes de la estimulación o percepción de su vagina luego de la primera penetración vaginal. Después de cualquier actividad sexual por primera vez, podemos sentir distinto nuestro cuerpo por haberlo experimentado de una forma diferente, pero eso no se traduce en cambios físicos concretos. "
+  },
+  {
+    "label": "[S&P- Masturbación] ",
+    "text": "El autoerotismo o masturbación es una manera más de vivir la sexualidad y de conocer tu cuerpo. Debemos recordar que la sexualidad comienza en cada uno y que es una decisión personal propia de compartirla con otro. Por lo tanto, el deseo o libido, impulsado a través de elementos hormonales, psicológicos y socioculturales, estimula que algunas personas disfruten y busquen el autoerotismo como una expresión más de su sexualidad. Así, estímulos sensoriales -como la vista, el tacto o el olfato- o estímulos internos -como las fantasías sexuales en nuestra imaginación- potencian el deseo y las ganas de iniciar una actividad sexual individual o compartida. "
+  },
+  {
+    "label": "[S&P- Beneficios masturbación] ",
+    "text": "La autoestimulación o masturbación genera muchos beneficios, ya que cualquier actividad sexual, individual o compartida, libera una serie de sustancias cerebrales que generan bienestar general, bajan la ansiedad y el estrés.\nAdemás, la autoestimulación te permite conocer tu cuerpo y tu respuesta sexual, aprendiendo cómo responde tu cuerpo a los distintos estímulos y así saber qué cosas te gustan y cuáles no. Esto facilita la actividad sexual compartida, ya que es mucho más fácil disfrutar con otro cuando sabes qué cosas te estimulan y generan placer, permitiendo que seas responsable de tu propio disfrute.\nAdemás, la masturbación alivia la tensión sexual, siendo una experiencia que proporciona autoconfianza en el desempeño sexual. Ahora bien, debes estar alerta si sientes que no puedes controlar tus impulsos de masturbarte o si lo haces en lugares que no son adecuados para ello."
+  },
+  {
+    "label": "[S&P- Pareja no consentimiento] ",
+    "text": "El identificar que \"no me siento bien con eso\" es la clave para saber cómo actuar. Nadie debería presionarnos, ni física ni emocionalmente, para hacer algo que no nos gusta. Nuestro cuerpo muchas veces es el primero en dar la señal de incomodidad. Lamentablemente, no siempre sabemos escuchar ese mensaje.\nSi estás en una relación de pareja, la comunicación es básica. Es importante poder conversar honestamente con tu pareja sobre distintos temas y la sexualidad es uno de ellos.\nSi identificas una señal de incomodidad con algo en particular, es importantísimo comunicarle esto a tu pareja. ¿Nuestra pareja respeta esta decisión? Esto es esencial: qué tanto nos escucha, entiende y respeta. Si la respuesta es positiva, entonces entenderá que no haremos lo que nos está pidiendo y lo comprenderá , pese a su deseo. En caso contrario, nos seguirá insistiendo sin ser capaz de entender nuestra decisión. Allí habría que preguntarse qué tan bien nos hace estar con esta pareja que no es capaz de ver nuestras necesidades ni entender nuestra opinión. "
+  },
+  {
+    "label": "[S&P- Realismo porno] ",
+    "text": "La mayor parte de los vídeos porno no son realistas. Son montajes audiovisuales con actores, directores, productores, maquilladores y, muchas veces, encargados de efectos especiales.\nEl resultado final se logra montando varias tomas para generar un único video y los actores son seleccionados porque tienen cuerpos y genitales particularmente grandes.\nExisten también videos pornográficos caseros en los que los protagonistas son personas comunes y la tecnología de producción es casera.\nEse tipo de pornografía suele ser más realista. Aun así, cualquier tipo de porno es diferente de las relaciones sexuales en las que nadie está grabando precisamente por la pérdida de espontaneidad que nos sucede a casi todos cuando sabemos que una cámara nos está grabando. \nOjo: grabar, difundir y/o tener vídeos de menores de edad teniendo relaciones sexuales es un delito aun cuando tú también seas menor de edad. Si recibes un vídeo de otros/otras jóvenes teniendo sexo, ¡bórralo! Por ley y por solidaridad"
+  },
+  {
+    "label": "[A&E Fertilidad] ",
+    "text": "El método del calendario no es seguro cuando eres adolescente, ya que se necesitan por lo menos seis meses de observación de las menstruaciones de la mujer para ahí tener claro cuándo una mujer podría estar más o menos fértil.\nComo pauta general, se considera que un ciclo dura 28 días y que el día 14 desde que te llega la menstruación es el día fértil. Normalmente se considera desde el día 11 hasta el día 17 como periodo fértil. Sin embargo, este ciclo es muy variable por cambios de ánimo, hormonales y otras razones, especialmente en la adolescencia, y no en todas las mujeres dura 28 días.\nDe 100 mujeres, 9 quedan embarazadas utilizando este tipo de método, aun cuando lo utilicen adecuadamente. Por esto tú y tu pareja deben cuidarse siempre. "
+  },
+  {
+    "label": "[A&E Métodos anticonceptivos] ",
+    "text": "Los métodos anticonceptivos tienen una alta protección siempre y cuando los uses como corresponden.\nAquí compartimos contigo una lista de los más utilizados según su riesgo de falla:\n- Implanon: 0,05%\n- Inyección 0,1%\n- Anticonceptivo oral 0,1%\n- Condón 2%\n- Coito interrumpido 4%.\nSe han realizado estudios al ser mal utilizados y su riesgo sube considerablemente, con excepción del Implanon que se mantiene en el cuerpo. La Inyección sube 3% y el Anticonceptivo Oral 6-8% (al olvidarse), el condón al 15%, y el coito interrumpido al 19% (al eyacular dentro).\nAlgunos efectos secundarios negativos que podrían generar los anticonceptivos son baja en el deseo sexual, náuseas matutinas, dolor en los senos en días cercanos a la menstruación, retención de líquido y ansiedad.\nLos efectos secundarios beneficiosos que pueden tener los métodos anticonceptivos son regularizar tu menstruación, hacer que tus menstruaciones sean menos dolorosas y abundantes, mejorar tu acné y disminuir el vello corporal.\nDebes tomar en cuenta que, si no usas ningún método anticonceptivo durante una relación sexual, tienes una probabilidad de quedar embarazada de un 85%. "
+  },
+  {
+    "label": "[A&E Acceso a métodos anticonceptivos] ",
+    "text": "El acceso va a depender de tu sistema de previsión de salud y también de las posibilidades económicas, ya que los rangos de precios son muy variables. No siempre el mejor anticonceptivo va a ser el más caro, ya que va a depender mucho de sus efectos y de cada organismo. Si tienes EPS o estás afiliado al SISBEN, puedes acceder a información y también tienes derecho de pedir que se te sean facilitados los métodos anticonceptivos que requieras (seas mujer u hombre) de forma gratuita.\nDe forma privada puedes acceder al centro de salud que te sea más conveniente para recibir orientación y luego comprar los métodos anticonceptivos en farmacias. También, puedes acceder a métodos anticonceptivos a través de Profamilia."
+  },
+  {
+    "label": "[A&E Condón Masculino] ",
+    "text": "Úsalo antes de cualquier contacto oral, vaginal o anal.\n1: Fíjate que el envase esté en buenas condiciones: fecha de vencimiento vigente y con aire en su interior. Es muy importante dónde lo guardas para su conservación.\n2: Mueve el condón en su interior hacia un costado y usa el prepicado para abrirlo sin pasar a llevar. Nunca utilices uñas, dientes o tijeras: lo podrías dañar.\n3: Verifica el lado correcto en el cual debes ponerlo.\n4: Sostenlo presionando la punta del condón mientras lo desenrollas, de modo que no quede aire en la cabeza del pene para evitar que reviente.\n5: Desenróllalo hasta la base del pene.\n6: Cuando termines de utilizarlo retira pronto el pene si hay penetración, porque puede disminuir su erección y así salirse el condón o gotear el semen.\n7: Retira el condón, hazle un nudo y verifica que no se haya roto. Envuélvelo en papel y bótalo a la basura.  "
+  },
+  {
+    "label": "[A&E Condón o no condón] ",
+    "text": "Varía de persona a persona la sensibilidad o el placer que se siente, para algunas es una sensación diferente y para otras no cambia tanto.\nSin embargo, la diferencia entre usar o no un preservativo es bastante grande. Te protege de infecciones tales como Sífilis, Gonorrea, VIH, Virus del Papiloma Humano, etc y tan importante como lo anterior es la protección de un embarazo no esperado.\nAsí, se sentirá por sobre todo diferente la seguridad que tendrás tú y tu pareja frente al acto sexual. Si desde la primera vez lo hacen con condón, será siempre igual de placentero. "
+  },
+  {
+    "label": "[A&E Condón femenino] ",
+    "text": "Es como una bolsa plástica, de material adecuado, suave, que se introduce en la vagina a manera de una manga tapando completamente el cuello del útero y quedando una parte por fuera cubriendo los genitales. Su uso es bastante cómodo, con una adecuada protección tanto para la prevención del embarazo como del contagio ITS. "
+  },
+  {
+    "label": "[A&E Pastillas] ",
+    "text": "Las pastillas anticonceptivas funcionan de diferentes formas dependiendo de cuáles estés tomando:\n- Espesan el moco cervical, lo que hace que el paso de los espermatozoides hacia el útero sea más complicado.\n- Evitan que el óvulo se libere y, si no hay óvulo, no puede haber embarazo.\n- Cambian el pH de la vagina, haciéndolo más ácido por lo que los espermatozoides se mueren.\nPara que el efecto sea el óptimo, debes tomarlas todos los días a la misma hora y no se te pueden olvidar por más de 12 hrs, ya que si se te olvidan el efecto de la pastilla disminuye, lo que se traduce en un mayor riesgo de embarazo. "
+  },
+  {
+    "label": "[A&E Riesgo por fallo de MA] ",
+    "text": "Si falla o se rompe el preservativo en una relación heterosexual, la primera sugerencia es que accedas lo más pronto posible a la anticoncepción de emergencia (o pastilla del día después) para prevenir un embarazo no deseado en la mujer, dado que los máximos niveles de efectividad están en las primeras 24 a 48 horas después de la relación.\nAhora, sea una relación heterosexual u homosexual, es importante que posterior a situaciones de riesgo tomes atención de que no aparezcan síntomas que puedan indicar una ITS, y además te realices exámenes de detección de infecciones, como el de la sífilis, hepatitis y VIH, ya que algunas infecciones no presentan síntomas. Estos exámenes deben ser realizados al menos 3 meses posterior a la situación de riesgo, lo que se llama “período de ventana”, ya que antes de eso los exámenes no detectan con total confiabilidad la presencia de infecciones. "
+  },
+  {
+    "label": "[A&E Pastilla del día después] ",
+    "text": "La pastilla del día después NO es abortiva. Funciona evitando la ovulación en caso de que no se haya producido, y es más efectiva mientras más pronto se tome después de la relación sexual.\nLos estudios demuestran que NO es eficaz si se toma después de la ovulación, pues NO impide que el óvulo fecundado se anide en el útero materno. De hecho la hormona que tiene la píldora es un “progestágeno”, el mismo tipo de hormonas que libera la placenta para mantener el embarazo dentro del útero. "
+  },
+  {
+    "label": "[A&E Riesgo coito interrumpido] ",
+    "text": "Sí hay riesgo, porque el hombre al excitarse secreta líquido preseminal cuya función es preparar la uretra para la salida del semen. Este líquido preseminal puede contener una cantidad variable de espermios (de 100 mil a un millón según algunos estudios), que potencialmente pueden ser fecundantes y dejar a una mujer embarazada.\nDe acuerdo a lo anterior existiría riesgo si es que hubo penetración, ya que antes de que haya ocurrido la eyaculación se han liberado espermios por el líquido preseminal. "
+  },
+  {
+    "label": "[A&E Embarazo en primera relación sexual] ",
+    "text": "Sí, el tener relaciones por primera vez no genera ninguna protección anticonceptiva, siendo posible quedar embarazada si es que ya comenzaste a menstruar. Del mismo modo, si estás con la regla igualmente puedes quedar embarazada.\nEs por esto que se recomienda que se utilice preservativo SIEMPRE, no sólo por el riesgo de un embarazo no deseado, sino que también para prevenir cualquier posible infección de transmisión sexual. "
+  },
+  {
+    "label": "[A&E Aborto] ",
+    "text": "Existen dos tipos de aborto:\n- Los espontáneos, que se producen sin que haya intervención de alguien y que se pueden dar por enfermedades de la madre, alteraciones graves en los bebés o a veces sin explicación aparente.\n-Los abortos inducidos o provocados, que se producen porque la madre o alguien interviene, pudiendo ser con uso de instrumentos o de medicamentos tomados por vía oral o usados dentro de la vagina.\nLos abortos provocados son muy riesgosos, pudiendo la mujer quedar infértil o incluso morir. Es importante aclarar que actualmente este tipo de aborto en Colombia es legal hasta la semana 24 de gestación.\n¿Qué hacer? Antes de llegar a un embarazo no planificado hay que prevenir con el uso de métodos anticonceptivos. En el caso de no usar, considera la “Pastilla del día después” que puedes pedir en cualquier centro de salud. Si tienes un embarazo no deseado lo ideal es contar con el apoyo de tu familia y recurrir a tu centro de salud a solicitar orientación. "
+  },
+  {
+    "label": "[ITS- Enfermedades] ",
+    "text": "Se pueden adquirir muchas enfermedades (Infecciones de Transmisión Sexual - ITS) a través del sexo (tanto oral como penetrativo), muy diversas unas de otras. Algunas de las más frecuentes son: VIH, Hepatitis B, Hepatitis C, Sífilis,Gonorrea, Condilomas, Clamidias, Micoplasma, Trichomonas, Ladillas o el Herpes.\nAlgunas son de fácil tratamiento y otras requieren de un proceso más complejo, lo que también depende de cuán avanzada pueda estar la infección en tu organismo.\nSi bien la mayoría tiene cura si es que son detectadas a tiempo, hay algunas como el VIH que no tiene ninguna cura probada, pero sí un tratamiento para evitar su avance. Es por esto que debes cuidarte siempre y hacerte exámenes de detección de infecciones regularmente. "
+  },
+  {
+    "label": "[ITS- VIH] ",
+    "text": "VIH es la sigla de “Virus de Inmunodeficiencia Humana” (HIV en inglés). También se le denomina así a la circunstancia de vivir con el virus sin que ello implique enfermedad. Si vives con VIH y estas con terapia controlándote regularmente, puedes tener una vida absolutamente normal.\nUna vía de transmisión es la sexual, debido a que el virus vive dentro de un tipo de células de la sangre, y éste acto involucra contacto íntimo de piel y mucosas con intercambio de fluidos que podrían contener el virus.\nEn Colombia la edad en que se reporta mayor número de casos de VIH es entre los 20 y 39 años, sin embargo ha aumentado la cantidad de adolescentes con el virus.\nPara saber si tienes VIH, debes realizarte un examen de detección en cualquier consultorio u hospital en forma gratuita; o en el sistema privado (EPS) realizar tu control anual de medicina preventiva. Por ley, el examen del VIH sólo se puede realizar de forma voluntaria. "
+  },
+  {
+    "label": "[ITS- VIH + Info] ",
+    "text": "El tener VIH (o más bien “vivir con VIH”) actualmente es una situación crónica de salud. Es decir, es una situación incurable en este momento, pero sí totalmente tratable y controlable con medicamentos que se deben tomar de por vida.\nEs importante saber que este tratamiento permite que se pueda vivir una vida absolutamente normal, sin ningún tipo de deterioro físico si se detecta a tiempo y se es responsable con los controles médicos.\nLas investigaciones actuales apuntan en primer lugar a desarrollar una vacuna para el VIH (prevención) y también en encontrar una terapia que elimine la condición de portador del virus (cura). "
+  },
+  {
+    "label": "[ITS- Sífilis]",
+    "text": "La Sífilis es una infección de transmisión sexual producida por una bacteria llamada Treponema Pallidum, que en sus primeras etapas no siempre tiene síntomas visibles, pero a veces se pueden detectar erupciones en la piel o lesiones en la zona genital, que no duelen. Sin embargo, de no ser tratada adecuada y oportunamente puede convertirse en una enfermedad altamente transmisible, que con el paso del tiempo atacará el sistema nervioso de la persona infectada.\nEsta enfermedad se puede detectar con un examen de sangre llamado “VDRL” y que puedes solicitar en tu sistema de salud. Si su detección se realiza a tiempo, puede ser curable y de fácil tratamiento. "
+  },
+  {
+    "label": "[ITS- Herpes]",
+    "text": "El Herpes es un tipo de ITS que se transmite a través de relaciones vaginales, orales o anales. El Herpes se manifiesta con pequeñas lesiones dolorosas. Estas lesiones se pueden manifestar en forma de ampollas entre 2 a 20 días luego del contacto sexual. Las lesiones pueden demorar alrededor de 10 a 14 días en desaparecer.\nLamentablemente esta ITS no tiene cura, por lo que si tienes Herpes genital existirán períodos donde aparentemente no tendrás ningún síntoma, pero luego debido a diversos factores como estrés o defensas bajas, las lesiones volverán a aparecer.\nExisten varios exámenes para detectar si lo que tienes es Herpes, los cuales se realizan en centros especializados de ITS donde se te puede remitir si existe la sospecha. El tratamiento principalmente es con un antiviral vía oral que busca disminuir el dolor, la duración de las lesiones y que no te aparezcan más. "
+  },
+  {
+    "label": "[ITS- Síntomas infección sexual] ",
+    "text": "Algunas ITS presentan síntomas, sin embargo hay otras que son asintomáticas, es decir son silenciosas y las puedes portar y transmitir sin saberlo.\nAlgunos síntomas que podrían ser indicio de una ITS pueden ser secreción uretral (líquido del pene), secreción vaginal, dolor uretral y/o genital, mal olor en la secreción genital, picazón, dolor al orinar, lesiones en la piel y mucosas (dentro de los genitales, ano o boca), ampollas y manchas en la zona genital o inflamación de ganglios.\nSi presentas alguno de estos síntomas, debes consultar con una matrona, médico o especialista para evaluar qué es y cómo tratarlo. "
+  },
+  {
+    "label": "[ITS- Sexo oral]",
+    "text": "Como toda práctica sexual, si no la realizas con algún método de protección como el condón, puedes contraer alguna Infección de Transmisión Sexual, como por ejemplo los Herpes genitales, VIH/SIDA, Gonorrea, Clamidia o Sífilis.\nTambién puede haber transmisión de Virus Papiloma Humano, que puede causar verrugas en la zona de la boca o incluso cáncer de garganta.\nExiste también la posibilidad de adquirir alguna infección gastrointestinal o la transmisión de Hepatitis A o B en caso de contacto de boca a ano.\nPor eso es importante que a pesar de que a través del sexo oral no hay posibilidad de embarazo, uses siempre condón o algún otro método adecuado para evitar el contraer o transmitir cualquiera de estas enfermedades.\nComo dato: No es recomendable el sexo oral luego de cepillarse los dientes o cuando tengas las encías lastimadas, ya que hay más riesgo de que queden fisuras y sangrado. "
+  },
+  {
+    "label": "[ITS- Sexo anal]",
+    "text": "Sí, al practicar sexo anal puedes contraer las mismas enfermedades que con el sexo vaginal e incluso más.\nSi tienes sexo anal sin protección es mayor el riesgo, ya que la zona anal es una zona menos elástica que la vagina y muy vascularizada, por lo que al romperse los capilares hay mayor riesgo que haya fisuras y por lo tanto sangrado. Estas fisuras pueden ser vías de ingreso de infecciones y además esta sangre puede infectar a la persona que está penetrando o actuar como caldo de cultivo para las infecciones. No está demás decir que al haber restos de heces se puede aumentar el riesgo de infecciones. Por esto es fundamental utilizar preservativo siempre. "
+  },
+  {
+    "label": "[Questionario 1 ¿Escuchado y Apoyado? ]",
+    "text": "¿Te sentiste escuchado/a y apoyado/a por el guía que te atendió?\nPor favor responde con el número que corresponda:\n1: Nahhh. Para nada.\n2. Un poco\n3. Sí\n4. Uffff. ¡Un montón! "
+  },
+  {
+    "label": "[Questionario 2 ¿Recomendaría el servicio? ]",
+    "text": "¿Recomendarías a alguien cercano a ti comunicarse con nosotros?\nResponde Sí/No"
+  },
+  {
+    "label": "[Questionario 3 ¿Repetiría el servicio? ]",
+    "text": "¿Volverías a comunicarte con nosotros?\nResponde Sí/No"
+  },
+  {
+    "label": "[Questionario 4  ¿Fue útil la información? ]",
+    "text": "¿Fue útil para ti la información que te brindamos?\nPor favor responde con el número que corresponda:\n1: Nahhh. Para nada.\n2. Un poco\n3. Sí\n4. Uffff. ¡Un montón! "
   }
 ]

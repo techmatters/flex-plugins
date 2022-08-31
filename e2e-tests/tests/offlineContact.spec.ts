@@ -11,10 +11,11 @@ test.describe.serial('Offline Contact (with Case)', () => {
     pluginPage = await browser.newPage();
     logPageTelemetry(pluginPage);
     console.log('Plugin page browser session launched.');
+
     await Promise.all([
       // Wait for this to be sure counsellors dropdown is populated
       pluginPage.waitForResponse('**/populateCounselors'),
-      pluginPage.goto('/', { waitUntil: 'networkidle', timeout: 120000 }),
+      pluginPage.goto('/agent-desktop', { waitUntil: 'networkidle', timeout: 120000 }),
     ]);
     console.log('Plugin page visited.');
   });

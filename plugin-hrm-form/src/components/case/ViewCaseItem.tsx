@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import Edit from '@material-ui/icons/Edit';
-import { FormDefinition } from 'hrm-form-definitions';
+import { DefinitionVersion, isNonSaveable } from 'hrm-form-definitions';
 
 import { BottomButtonBar, Box, Container, StyledNextStepButton } from '../../styles/HrmStyles';
 import { CaseLayout, FullWidthFormTextContainer } from '../../styles/case';
@@ -16,6 +16,7 @@ import { isViewTemporaryCaseInfo, temporaryCaseInfoHistory } from '../../states/
 import { AppRoutesWithCaseAndAction, CaseItemAction } from '../../states/routing/types';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
+import { CaseSectionApi } from '../../states/case/sections/api';
 
 const mapStateToProps = (state: RootState, ownProps: ViewCaseItemProps) => {
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
@@ -28,9 +29,9 @@ const mapStateToProps = (state: RootState, ownProps: ViewCaseItemProps) => {
 export type ViewCaseItemProps = {
   task: CustomITask | StandaloneITask;
   routing: AppRoutesWithCaseAndAction;
+  definitionVersion: DefinitionVersion;
   exitItem: () => void;
-  itemType: string;
-  formDefinition: FormDefinition;
+  sectionApi: CaseSectionApi<unknown>;
   includeAddedTime?: boolean;
   canEdit: () => boolean;
 };
@@ -46,8 +47,8 @@ const ViewCaseItem: React.FC<Props> = ({
   updateTempInfo,
   changeRoute,
   exitItem,
-  formDefinition,
-  itemType,
+  definitionVersion,
+  sectionApi,
   canEdit,
 }) => {
   if (!isViewTemporaryCaseInfo(temporaryCaseInfo))
@@ -57,7 +58,7 @@ const ViewCaseItem: React.FC<Props> = ({
     temporaryCaseInfo,
     counselorsHash,
   );
-
+  const formDefinition = sectionApi.getSectionFormDefinition(definitionVersion).filter(fd => !isNonSaveable(fd));
   const { form } = temporaryCaseInfo.info;
 
   const onEditCaseItemClick = () => {
@@ -72,7 +73,7 @@ const ViewCaseItem: React.FC<Props> = ({
     <CaseLayout>
       <Container>
         <ActionHeader
-          titleTemplate={`Case-View${itemType}`}
+          titleTemplate={`Case-View${sectionApi.label}`}
           onClickClose={exitItem}
           addingCounsellor={addingCounsellorName}
           added={added}

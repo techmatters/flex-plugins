@@ -12,9 +12,9 @@ import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../../states';
 import AddEditCaseItem, { AddEditCaseItemProps } from '../../../components/case/AddEditCaseItem';
 import { getDefinitionVersions } from '../../../HrmFormPlugin';
-import { updateCaseSectionListByIndex } from '../../../states/case/types';
 import { StandaloneITask } from '../../../types/types';
 import { CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
+import { householdSectionApi } from '../../../states/case/sections/household';
 
 let mockV1;
 
@@ -149,11 +149,8 @@ describe('Test AddHousehold', () => {
         task: state2[namespace][connectedCaseBase].tasks.task1 as StandaloneITask,
         counselor: 'Someone',
         exitItem,
-        layout: mockV1.layoutVersion.case.households,
-        applyTemporaryInfoToCase: updateCaseSectionListByIndex('households', 'household'),
-        formDefinition: mockV1.caseForms.HouseholdForm,
+        sectionApi: householdSectionApi,
         definitionVersion: mockV1,
-        itemType: 'Household',
         routing: {
           route: 'tabbed-forms',
           subroute: NewCaseSubroutes.Household,

@@ -22,13 +22,14 @@ test.describe.serial('Web chat caller', () => {
     pluginPage = await browser.newPage();
     logPageTelemetry(pluginPage);
     console.log('Plugin page browser session launched.');
-    await pluginPage.goto('/', { waitUntil: 'networkidle', timeout: 120000 });
+    await pluginPage.goto('/agent-desktop', { waitUntil: 'networkidle', timeout: 120000 });
     console.log('Plugin page visited.');
     chatPage = await webchat.open(browser);
     console.log('Webchat browser session launched.');
   });
 
   test.afterAll(async () => {
+    await statusIndicator(pluginPage)?.setStatus(WorkerStatus.OFFLINE);
     await Promise.all([
       chatPage?.close(),
       pluginPage?.close(),

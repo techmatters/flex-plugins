@@ -5,6 +5,7 @@ import { DefinitionVersionId, CallTypes } from 'hrm-form-definitions';
 import { DateFilterValue } from '../components/caseList/filters/dateFilters';
 
 export type EntryInfo = {
+  id: string;
   createdAt: string;
   updatedAt?: string;
   updatedBy?: string;
@@ -21,7 +22,7 @@ export type EntryInfo = {
 
 export type CaseItemFormValues = { [key: string]: string | boolean };
 
-export type CaseItemEntry = { form: CaseItemFormValues; id: string | undefined } & EntryInfo;
+export type CaseItemEntry = { form: CaseItemFormValues } & EntryInfo;
 
 export type Household = { [key: string]: string | boolean };
 
@@ -59,11 +60,13 @@ export type CaseInfo = {
   referrals?: ReferralEntry[];
   incidents?: IncidentEntry[];
   documents?: DocumentEntry[];
+  caseSummary?: string;
   followUpDate?: string;
   childIsAtRisk?: boolean;
 };
 
 export type Case = {
+  accountSid: any;
   id: number;
   status: string;
   helpline: string;

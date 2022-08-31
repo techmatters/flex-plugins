@@ -1,5 +1,6 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
+import { connect, ConnectedProps } from 'react-redux';
 import { ArrowDropDownTwoTone, ArrowRightTwoTone, Edit, Link } from '@material-ui/icons';
 
 import {
@@ -10,16 +11,18 @@ import {
   ContactDetailsIcon,
   SectionActionButton,
 } from '../../styles/search';
+import { setCallType } from '../../states/contacts/actions';
 
 const ArrowDownIcon = ContactDetailsIcon(ArrowDropDownTwoTone);
 const ArrowRightIcon = ContactDetailsIcon(ArrowRightTwoTone);
 const EditIcon = ContactDetailsIcon(Edit);
 const LinkIcon = ContactDetailsIcon(Link);
 
-type Props = {
+type OwnProps = {
   sectionTitle: string | JSX.Element;
   expanded: boolean;
   handleExpandClick: (event?: any) => void;
+  children: any;
   buttonDataTestid: string;
   hideIcon?: boolean;
   htmlElRef?: any;
@@ -27,7 +30,12 @@ type Props = {
   handleEditClick?: (event?: any) => void;
   handleOpenConnectDialog?: (event: any) => void;
   showActionIcons?: boolean;
+  task?: any;
+  callType?: string;
 };
+
+// eslint-disable-next-line no-use-before-define
+type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ContactDetailsSection: React.FC<Props> = ({
   sectionTitle,
@@ -41,7 +49,12 @@ const ContactDetailsSection: React.FC<Props> = ({
   handleOpenConnectDialog,
   showActionIcons,
   handleEditClick,
+  callType,
+  ...props
 }) => {
+  const showCopyButton = () => callType === 'child' || callType === 'caller';
+  const handleSetCallType = () => props.setCallType(callType === 'caller');
+
   return (
     <>
       <SectionTitleContainer>
@@ -57,8 +70,13 @@ const ContactDetailsSection: React.FC<Props> = ({
           {!hideIcon && (expanded ? <ArrowDownIcon /> : <ArrowRightIcon />)}
           <SectionTitleText>{sectionTitle}</SectionTitleText>
         </SectionTitleButton>
-        {showActionIcons && buttonDataTestid === 'ContactDetails-Section-ChildInformation' && (
-          <SectionActionButton onClick={handleOpenConnectDialog}>
+        {showActionIcons && showCopyButton && (
+          <SectionActionButton
+            onClick={e => {
+              handleOpenConnectDialog(e);
+              handleSetCallType();
+            }}
+          >
             <LinkIcon style={{ fontSize: '18px', padding: '0 6px' }} />
             <Template code="ContactCopyButton" />
           </SectionActionButton>
@@ -81,4 +99,10 @@ const ContactDetailsSection: React.FC<Props> = ({
 
 ContactDetailsSection.displayName = 'ContactDetailsSection';
 
-export default ContactDetailsSection;
+const mapDispatchToProps = {
+  setCallType,
+};
+
+const connector = connect(null, mapDispatchToProps);
+const connected = connector(ContactDetailsSection);
+export default connected;

@@ -1,5 +1,29 @@
 [
   {
+    "name": "Clase de Contacto",
+    "label": "Clase de Contacto",
+    "type": "select",
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Preguntas/Información",
+        "label": "Preguntas/Información"
+      },
+      {
+        "value": "Teleorientación",
+        "label": "Teleorientación"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
     "name": "firstName",
     "label": "Nombre",
     "type": "input"
@@ -19,48 +43,8 @@
         "label": ""
       },
       {
-        "value": "1",
-        "label": "1"
-      },
-      {
-        "value": "2",
-        "label": "2"
-      },
-      {
-        "value": "3",
-        "label": "3"
-      },
-      {
-        "value": "4",
-        "label": "4"
-      },
-      {
-        "value": "5",
-        "label": "5"
-      },
-      {
-        "value": "6",
-        "label": "6"
-      },
-      {
-        "value": "7",
-        "label": "7"
-      },
-      {
-        "value": "8",
-        "label": "8"
-      },
-      {
-        "value": "9",
-        "label": "9"
-      },
-      {
-        "value": "10",
-        "label": "10"
-      },
-      {
-        "value": "11",
-        "label": "11"
+        "value": "<12",
+        "label": "<12"
       },
       {
         "value": "12",
@@ -93,6 +77,14 @@
       {
         "value": ">18",
         "label": ">18"
+      },
+      {
+        "value": "No requerido",
+        "label": "No requerido"
+      },
+      {
+        "value": "Desconocido",
+        "label": "Desconocido"
       }
     ],
     "required": {
@@ -102,7 +94,7 @@
   },
   {
     "name": "idNumber",
-    "label": "Targeta de Identidad",
+    "label": "Tarjeta de Identidad",
     "type": "input"
   },
   {
@@ -126,6 +118,14 @@
       {
         "value": "No binario",
         "label": "No binario"
+      },
+      {
+        "value": "No requerido",
+        "label": "No requerido"
+      },
+      {
+        "value": "Desconocido",
+        "label": "Desconocido"
       }
     ],
     "required": {
@@ -137,7 +137,7 @@
     "name": "ethnicity",
     "label": "Etnia",
     "type": "select",
-    "unknownOption": "Desconocido",
+    "unknownOption": "",
     "options": [
       {
         "value": "",
@@ -166,6 +166,11 @@
     ]
   },
   {
+    "name": "phone1",
+    "label": "Teléfono",
+    "type": "input"
+  },
+  {
     "name": "streetAddress",
     "label": "Dirección",
     "type": "input"
@@ -173,11 +178,6 @@
   {
     "name": "neighborhood",
     "label": "Barrio",
-    "type": "input"
-  },
-  {
-    "name": "city",
-    "label": "Ciudad",
     "type": "input"
   },
   {
@@ -325,7 +325,7 @@
   },
   {
     "name": "district",
-    "label": "Municipio",
+    "label": "Ciudad/Municipio",
     "type": "dependent-select",
     "dependsOn": "province",
     "defaultOption": {
@@ -4886,17 +4886,12 @@
     }
   },
   {
-    "name": "otherProvince",
-    "label": "Otro Municipio",
-    "type": "input"
-  },
-  {
     "name": "otherCountry",
     "label": "Otro País",
     "type": "input"
   },
   {
-    "name": "gradeLevel",
+    "name": "livingSituation",
     "label": "Situación de Vivienda",
     "type": "select",
     "unknownOption": "Desconocido",
@@ -4906,12 +4901,12 @@
         "label": ""
       },
       {
-        "value": "Familia de acogida",
-        "label": "Familia de acogida"
+        "value": "Hogar sustituto",
+        "label": "Hogar sustituto"
       },
       {
-        "value": "Casa de acogida/orfanato",
-        "label": "Casa de acogida/orfanato"
+        "value": "Institución de protección",
+        "label": "Institución de protección"
       },
       {
         "value": "Viviendo independiente",
@@ -4949,24 +4944,83 @@
     "type": "input"
   },
   {
-    "name": "gradeLevel",
-    "label": "Nivel de Escuela",
+    "name": "schooling",
+    "label": "Escolaridad",
     "type": "select",
-    "unknownOption": "",
     "options": [
       {
         "value": "",
         "label": ""
       },
       {
-        "value": "Primaria (1°2°3°4°5°)",
-        "label": "Primaria (1°2°3°4°5°)"
+        "value": "Primaria",
+        "label": "Primaria"
       },
       {
-        "value": "Bachillerato (6°7°8°9°10°11°)",
-        "label": "Bachillerato (6°7°8°9°10°11°)"
+        "value": "Bachillerato",
+        "label": "Bachillerato"
       }
     ]
+  },
+  {
+    "name": "grade",
+    "label": "Grado",
+    "type": "dependent-select",
+    "dependsOn": "schooling",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "Primaria": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        },
+        {
+          "value": "5",
+          "label": "5"
+        }
+      ],
+      "Bachillerato": [
+        {
+          "value": "6",
+          "label": "6"
+        },
+        {
+          "value": "7",
+          "label": "7"
+        },
+        {
+          "value": "8",
+          "label": "8"
+        },
+        {
+          "value": "9",
+          "label": "9"
+        },
+        {
+          "value": "10",
+          "label": "10"
+        },
+        {
+          "value": "11",
+          "label": "11"
+        }
+      ]
+    }
   },
   {
     "name": "inConflictWithTheLaw",
@@ -4985,7 +5039,7 @@
   },
   {
     "name": "childOnTheMove",
-    "label": "Adolescente en movimiento",
+    "label": "Adolescente en desplazamiento",
     "type": "select",
     "unknownOption": "Desconocido",
     "options": [
@@ -5005,7 +5059,7 @@
   },
   {
     "name": "childWithDisability",
-    "label": "Adolescente con discapacidad",
+    "label": "Adolescente en condición de discapacidad",
     "type": "mixed-checkbox"
   }
 ]

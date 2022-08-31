@@ -32,6 +32,19 @@ PORT=3000 npm start
 
 When you make changes to your code, the browser window will be automatically refreshed.
 
+## Testing
+
+In order to test locally, you will need to run:
+
+```bash
+npm run test:jest
+```
+You don't need to worry about the path unless there's another test file with the exact same name. To run a specific test spec, you need to run:
+
+```bash
+npm run test:jest -- my-test.spec.ts
+```
+
 ## Deploy
 
 Once you are happy with your plugin, you have to bundle it in order to deploy it to Twilio Flex.

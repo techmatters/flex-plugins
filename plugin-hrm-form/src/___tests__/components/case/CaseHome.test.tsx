@@ -34,11 +34,13 @@ const entry = {
 };
 
 const perpetratorEntry: PerpetratorEntry = {
+  id: 'PERPETRATOR_ID',
   perpetrator: entry,
   createdAt: '2020-06-29T22:26:00.208Z',
   twilioWorkerId: 'worker1',
 };
 const householdEntry: HouseholdEntry = {
+  id: 'HOUSEHOLD_ID',
   household: entry,
   createdAt: '2020-06-29T22:26:00.208Z',
   twilioWorkerId: 'worker1',
@@ -129,8 +131,8 @@ describe('useState mocked', () => {
       prevStatus: 'open',
       caseCounselor: '',
       currentCounselor: '',
-      openedDate: '2020-06-29T22:26:00.208Z',
-      lastUpdatedDate: '',
+      createdAt: '2020-06-29T22:26:00.208Z',
+      updatedAt: '',
       followUpDate: '',
       followUpPrintedDate: '',
       contact: {},
@@ -267,7 +269,7 @@ describe('useState mocked', () => {
 
     screen.getByTestId('Case-InformationRow-ViewButton').click();
 
-    const { household, ...caseItemEntry } = { ...householdEntry, form: householdEntry.household, id: null };
+    const { household, ...caseItemEntry } = { ...householdEntry, form: householdEntry.household };
 
     expect(store.dispatch).toHaveBeenCalledWith({
       value: {
@@ -294,7 +296,7 @@ describe('useState mocked', () => {
     const store = mockStore(initialState);
     store.dispatch = jest.fn();
 
-    const { perpetrator, ...caseItemEntry } = { ...perpetratorEntry, form: perpetratorEntry.perpetrator, id: null };
+    const { perpetrator, ...caseItemEntry } = { ...perpetratorEntry, form: perpetratorEntry.perpetrator };
     render(
       <StorelessThemeProvider themeConf={{}}>
         <Provider store={store}>
@@ -326,7 +328,7 @@ describe('useState mocked', () => {
   });
 
   // CaseSummary still changes case in redux directly rather than delegating to top level component
-  test('edit case summary', async () => {
+  test('click edit case button', async () => {
     const store = mockStore(initialState);
     store.dispatch = jest.fn();
 
@@ -338,36 +340,16 @@ describe('useState mocked', () => {
       </StorelessThemeProvider>,
     );
 
-    const textarea = screen.getByTestId('Case-CaseSummary-TextArea');
-    fireEvent.change(textarea, { target: { value: 'Some summary' } });
-
-    const updateCaseCall = store.dispatch.mock.calls[0][0];
-    expect(updateCaseCall.type).toBe('UPDATE_CASE_INFO');
-    expect(updateCaseCall.taskId).toBe(ownProps.task.taskSid);
-    expect(updateCaseCall.info.summary).toBe('Some summary');
-  });
-
-  test('click child is at risk checkbox', async () => {
-    const store = mockStore(initialState);
-    store.dispatch = jest.fn();
-
-    render(
-      <StorelessThemeProvider themeConf={{}}>
-        <Provider store={store}>
-          <CaseHome {...ownProps} />
-        </Provider>
-      </StorelessThemeProvider>,
-    );
-
-    const checkbox = screen.getByTestId('Case-ChildIsAtRisk-Checkbox');
-    fireEvent.click(checkbox);
-    expect(ownProps.onInfoChange).toHaveBeenCalledWith('childIsAtRisk', true);
-    /*
-     *const updateCaseCall = store.dispatch.mock.calls[0][0];
-     *expect(updateCaseCall.type).toBe('UPDATE_CASE_INFO');
-     *expect(updateCaseCall.taskId).toBe(ownProps.task.taskSid);
-     *expect(updateCaseCall.info.childIsAtRisk).toBe(true);
-     */
+    screen.getByText('Case-EditButton').click();
+    expect(store.dispatch).toHaveBeenCalledWith({
+      routing: {
+        route: 'new-case',
+        subroute: NewCaseSubroutes.CaseSummary,
+        action: CaseItemAction.Edit,
+      },
+      taskId: 'task1',
+      type: 'CHANGE_ROUTE',
+    });
   });
 
   test('Click cancel button on new case', async () => {
