@@ -26,13 +26,7 @@ import { CaseState } from '../../states/case/reducer';
 import { transformValues } from '../../services/ContactService';
 import { getConfig } from '../../HrmFormPlugin';
 import { updateCase } from '../../services/CaseService';
-import {
-  createFormFromDefinition,
-  CustomHandlers,
-  disperseInputs,
-  splitAt,
-  splitInHalf,
-} from '../common/forms/formGenerators';
+import { createFormFromDefinition, disperseInputs, splitAt } from '../common/forms/formGenerators';
 import type { CaseInfo, CustomITask, StandaloneITask } from '../../types/types';
 import { AppRoutesWithCaseAndAction } from '../../states/routing/types';
 import useFocus from '../../utils/useFocus';
@@ -91,8 +85,8 @@ const EditCaseSummary: React.FC<Props> = ({
       label: 'Case Status',
       type: 'select',
       options: [
-        { value: 'open', label: 'open' },
-        { value: 'closed', label: 'closed' },
+        { value: 'open', label: 'Open' },
+        { value: 'closed', label: 'Closed' },
       ],
     },
     {
@@ -249,7 +243,7 @@ const EditCaseSummary: React.FC<Props> = ({
             />
           </Box>
           <StyledNextStepButton
-            data-testid="Case-AddEditItemScreen-SaveItem"
+            data-testid="Case-EditCaseScreen-SaveItem"
             roundCorners
             onClick={methods.handleSubmit(saveAndLeave, onError)}
           >

@@ -28,13 +28,14 @@ export const caseList = (page: Page) => {
     //Case Home view
     addSectionButton: (sectionTypeId: string) =>
       caseListPage.locator(`//button[@data-testid='Case-${sectionTypeId}-AddButton']`),
-    caseSummaryTextarea: caseListPage.locator(
-      `//textarea[@data-testid='Case-CaseSummary-TextArea']`,
-    ),
+    caseSummaryText: caseListPage.locator(`//textarea[@data-testid='Case-CaseSummary-TextArea']`),
+    caseSummaryTextArea: caseListPage.locator(`//textarea[@data-testid='caseSummary']`),
     casePrintButton: caseListPage.locator(`//button[@data-testid='CasePrint-Button']`),
     casePrintCloseButton: caseListPage.locator(`//button[@data-testid='CasePrint-CloseCross']`),
     caseCloseButton: caseListPage.locator(`//button[@data-testid='CaseHome-CloseButton']`),
-    updateCaseButton: caseListPage.locator(`//button[@data-testid='CaseHome-Update-Button']`),
+    caseEditCloseButton: caseListPage.locator(`//button[@data-testid='Case-CloseButton']`),
+    updateCaseButton: caseListPage.locator(`//button[@data-testid='Case-EditCaseScreen-SaveItem']`),
+    caseEditButton: caseListPage.locator(`//button[@data-testid='Case-EditButton']`),
 
     //Case Section view
     formInput: (itemId: string) => caseListPage.locator(`input#${itemId}`),
@@ -101,24 +102,6 @@ export const caseList = (page: Page) => {
     console.log('Close Case Print');
   }
 
-  // Add/Update Summary
-  async function updateCaseSummary() {
-    const summaryTextArea = selectors.caseSummaryTextarea;
-    await summaryTextArea.waitFor({ state: 'visible' });
-
-    const currentTime = new Date();
-
-    await summaryTextArea.fill(`E2E Case Summary Test Edited on ${currentTime}`);
-    const updateCaseButton = selectors.updateCaseButton;
-    await updateCaseButton.waitFor({ state: 'visible' });
-    await expect(updateCaseButton).toContainText('Update');
-    await updateCaseButton.click();
-
-    await expect(summaryTextArea).toContainText(`E2E Case Summary Test Edited on ${currentTime}`);
-
-    console.log('Updated Case Summary');
-  }
-
   async function fillSectionForm({ items }: CaseSectionForm) {
     for (let [itemId, value] of Object.entries(items)) {
       if (await selectors.formInput(itemId).count()) {
@@ -147,6 +130,46 @@ export const caseList = (page: Page) => {
     await saveItemButton.click();
   }
 
+  //Edit Case
+  async function editCase() {
+    const editCaseButton = selectors.caseEditButton;
+    await editCaseButton.waitFor({ state: 'visible' });
+    await expect(editCaseButton).toContainText('Edit');
+    await editCaseButton.click();
+    console.log('Edit Case');
+  }
+
+  const currentTime = new Date();
+
+  // Add/Update Summary
+  async function updateCaseSummary() {
+    const summaryTextArea = selectors.caseSummaryTextArea;
+    await summaryTextArea.waitFor({ state: 'visible' });
+    await summaryTextArea.fill(`E2E Case Summary Test Edited on ${currentTime}`);
+
+    const updateCaseButton = selectors.updateCaseButton;
+    await updateCaseButton.waitFor({ state: 'visible' });
+    await expect(updateCaseButton).toContainText('Save');
+    await updateCaseButton.click();
+
+    console.log('Updated Case Summary');
+  }
+
+  // Close Edit case
+  async function closeEditCase() {
+    const caseEditClose = selectors.caseEditCloseButton;
+    caseEditClose.waitFor({ state: 'visible' });
+    await expect(caseEditClose).toContainText('Cancel');
+    await caseEditClose.click();
+  }
+
+  // Verify case summary update
+  async function caseSummaryUpdate() {
+    const summaryText = selectors.caseSummaryText;
+    await summaryText.waitFor({ state: 'visible' });
+    await expect(summaryText).toContainText(`E2E Case Summary Test Edited on ${currentTime}`);
+  }
+
   //Close Case
   async function closeCase() {
     const closeCaseButton = selectors.caseCloseButton;
@@ -160,8 +183,11 @@ export const caseList = (page: Page) => {
     filterCases,
     openFirstCaseButton,
     viewClosePrintView,
-    updateCaseSummary,
     addCaseSection,
+    editCase,
+    updateCaseSummary,
+    closeEditCase,
+    caseSummaryUpdate,
     closeCase,
   };
 };

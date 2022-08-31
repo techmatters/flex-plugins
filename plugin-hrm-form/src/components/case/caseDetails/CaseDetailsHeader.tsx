@@ -24,10 +24,8 @@ type OwnProps = {
   childName: string;
   office: string;
   counselor: string;
-  childIsAtRisk: boolean;
   handlePrintCase: () => void;
   isOrphanedCase: boolean;
-  can: (action: PermissionActionType) => boolean;
 };
 
 const CaseDetailsHeader: React.FC<OwnProps> = ({
@@ -37,7 +35,6 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
   counselor,
   handlePrintCase,
   isOrphanedCase,
-  can,
 }) => {
   const { multipleOfficeSupport } = getConfig();
 

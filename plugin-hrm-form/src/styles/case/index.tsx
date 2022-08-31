@@ -329,7 +329,7 @@ export const StyledCaseOverview = styled('input')<StyledInputField>`
   height: 36px;
   color: ${props => (props.color ? props.color : '#000000')};
   background-color: ${props => props.theme.colors.inputBackgroundColor};
-  font-weight: 600;
+  font-weight: 520;
   padding-left: 10px !important;
   margin-top: 7px;
   border-radius: 5px;
@@ -368,10 +368,13 @@ EditContactContainer.displayName = 'EditContactContainer';
 
 type CaseDetailsBorderProps = {
   paddingBottom?: string;
+  sectionTypeId?: boolean;
+  marginBottom?: string;
 };
 
 export const CaseDetailsBorder = styled('div')<CaseDetailsBorderProps>`
-  border-bottom: 2px solid #e5e6e7;
+  border-bottom: ${props => (props.sectionTypeId ? 'none' : '2px solid #e5e6e7')};
   margin-right: 25px;
+  margin-bottom: ${props => (props.marginBottom ? props.marginBottom : '')};
   padding-bottom: ${props => (props.paddingBottom ? props.paddingBottom : '25px')};
 `;

@@ -34,4 +34,5 @@ const ConnectContact: React.FC<Props> = ({ callType, onOpenConnectDialog }) => {
 };
 ConnectContact.displayName = 'ConnectContact';
 
+// eslint-disable-next-line import/no-unused-modules
 export default ConnectContact;
