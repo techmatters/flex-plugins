@@ -31,7 +31,7 @@ const CaseSummary: React.FC<Props> = ({ task, connectedCaseState, updateCaseInfo
   };
 
   return (
-    <CaseDetailsBorder>
+    <CaseDetailsBorder marginBottom="-25px" paddingBottom="15px">
       <CaseSectionFont id="Case-CaseSummary-label">
         <Template code="Case-CaseSummarySection" />
       </CaseSectionFont>
