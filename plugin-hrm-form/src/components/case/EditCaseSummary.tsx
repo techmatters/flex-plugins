@@ -85,8 +85,8 @@ const EditCaseSummary: React.FC<Props> = ({
       label: 'Case Status',
       type: 'select',
       options: [
-        { value: 'open', label: 'open' },
-        { value: 'closed', label: 'closed' },
+        { value: 'open', label: 'Open' },
+        { value: 'closed', label: 'Closed' },
       ],
     },
     {
