@@ -78,3 +78,15 @@ variable "feature_flags" {
 variable "messaging_flow_contact_identity" {
   default = "+17752526377"
 }
+
+variable "twitter_channel" {
+  default = true
+  type = bool
+  description = "Enable or disable the Twitter Channel"
+}
+
+variable "instagram_channel" {
+  default = true
+  type = bool
+  description = "Enable or disable the Instagram Channel"
+}
