@@ -158,13 +158,13 @@ export const caseList = (page: Page) => {
   // Close Edit case
   async function closeEditCase() {
     const caseEditClose = selectors.caseEditCloseButton;
-    caseEditClose.waitFor({ state: 'visible' });
+    await caseEditClose.waitFor({ state: 'visible' });
     await expect(caseEditClose).toContainText('Cancel');
     await caseEditClose.click();
   }
 
   // Verify case summary update
-  async function caseSummaryUpdate() {
+  async function verifyCaseSummaryUpdated() {
     const summaryText = selectors.caseSummaryText;
     await summaryText.waitFor({ state: 'visible' });
     await expect(summaryText).toContainText(`E2E Case Summary Test Edited on ${currentTime}`);
@@ -187,7 +187,7 @@ export const caseList = (page: Page) => {
     editCase,
     updateCaseSummary,
     closeEditCase,
-    caseSummaryUpdate,
+    verifyCaseSummaryUpdated,
     closeCase,
   };
 };
