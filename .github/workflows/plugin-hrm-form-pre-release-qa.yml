@@ -1,3 +1,5 @@
+# Workflow to create a new pre-release with qa suffix
+
 name: Pre-release QA
 
 # Controls when the action will run.
@@ -8,7 +10,7 @@ on:
         description: Release tag name.
         required: true
       title:
-        description: Release Changelog - Add a comment about the changes to be included in this release.
+        description: Release title - The title that will be given to this pre-release.
         required: true
 
 jobs:
