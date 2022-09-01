@@ -106,7 +106,7 @@
   {
     "name": "gradeLevel",
     "label": "Osztály",
-    "type": "input",
+    "type": "input"
   },
   {
     "name": "livingSituation",
