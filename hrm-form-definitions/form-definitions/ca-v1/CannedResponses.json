@@ -1,1 +1,82 @@
-[]
+[
+    {
+        "label": "Hi, anybody there?",
+        "text": "Hi, anybody there?"
+    },
+    {
+        "label": "Hmm, are you still there? I am ready to chat when you are.",
+        "text": "Hmm, are you still there? I am ready to chat when you are."
+    },
+    {
+        "label": "Hmm, I'm not sure if it is the technology or not but no messages are coming through",
+        "text": "Hmm, I'm not sure if it is the technology or not but no messages are coming through"
+    },
+    {
+        "label": "It seems like maybe you are no longer there, I will wait a couple more minutes to be sure",
+        "text": "It seems like maybe you are no longer there, I will wait a couple more minutes to be sure"
+    },
+    {
+        "label": "It's not always easy to open up, if you are there but don't know where to start then maybe just give me a little thumbs up?",
+        "text": "It's not always easy to open up, if you are there but don't know where to start then maybe just give me a little thumbs up?"
+    },
+    {
+        "label": "Okay, I will have to disengage now but if you would still like to talk please come back to chat or call us any time",
+        "text": "Okay, I will have to disengage now but if you would still like to talk please come back to chat or call us any time"
+    },
+    {
+        "label": "Sadly, it seems like we have a connection issue :( I will have to sign off, but please clal or try chat again",
+        "text": "Sadly, it seems like we have a connection issue :( I will have to sign off, but please clal or try chat again"
+    },
+    {
+        "label": "Still there? I'd like to hear more about what's on your mind",
+        "text": "Still there? I'd like to hear more about what's on your mind"
+    },
+    {
+        "label": "Can you tell me a bit about what was happening right before you came on chat...what were you thinking and feeling?",
+        "text": "Can you tell me a bit about what was happening right before you came on chat...what were you thinking and feeling?"
+    },
+    {
+        "label": "Feelings can be hard to describe for sure - do you think you could pick a color, image or even a musical lyric that would help me undersatnd how you're feeling?",
+        "text": "Feelings can be hard to describe for sure - do you think you could pick a color, image or even a musical lyric that would help me undersatnd how you're feeling?"
+    },
+    {
+        "label": "One of the challenges of chatting with you is that I cannot see or hear how you're doing. How would you describe how you are feeling right now?",
+        "text": "One of the challenges of chatting with you is that I cannot see or hear how you're doing. How would you describe how you are feeling right now?"
+    },
+    {
+        "label": "What can you tell me about how things are for you in this moment?",
+        "text": "What can you tell me about how things are for you in this moment?"
+    },
+    {
+        "label": "You've mentioned that feeling a few times now..can you tell me more about it?",
+        "text": "You've mentioned that feeling a few times now..can you tell me more about it?"
+    },
+    {
+        "label": "How has it been to talk this out?",
+        "text": "How has it been to talk this out?"
+    },
+    {
+        "label": "We've been talking about this for some time now - I just wanted to check in..how are you doing now compared to the beginning of our chat?",
+        "text": "We've been talking about this for some time now - I just wanted to check in..how are you doing now compared to the beginning of our chat?"
+    },
+    {
+        "label": "I can tell that this situation is a struggle for you. Sometimes when people are dealing with similar struggles, they also have thoughts of suicide. Is that something you've thought about?",
+        "text": "I can tell that this situation is a struggle for you. Sometimes when people are dealing with similar struggles, they also have thoughts of suicide. Is that something you've thought about?"
+    },
+    {
+        "label": "Sometimes when people are dealing with [issue here] they may also have thoughts of hurting themselves. I just want to check in, have you had any of these thoughts?",
+        "text": "Sometimes when people are dealing with [issue here] they may also have thoughts of hurting themselves. I just want to check in, have you had any of these thoughts?"
+    },
+    {
+        "label": "With all of the [issue here] you are experiencing, I wanted to check in around your safety. Have you had any thoughts about suicide?",
+        "text": "With all of the [issue here] you are experiencing, I wanted to check in around your safety. Have you had any thoughts about suicide?"
+    },
+    {
+        "label": "We want to be sure that you know a counsellor would not disconnect without telling you first. But for sure, disconnection happens. If you are in crisis or if this is an emergency and you get disconnected, please call us or call 911",
+        "text": "We want to be sure that you know a counsellor would not disconnect without telling you first. But for sure, disconnection happens. If you are in crisis or if this is an emergency and you get disconnected, please call us or call 911"
+    },
+    {
+        "label": "Before we get any further, I want to pause for a second and make sure that you're aware that this is a confidential and anonymous service. However, if you give any identifying info AND you report you are in any emotional and/or physical danger, I would ",
+        "text": "Before we get any further, I want to pause for a second and make sure that you're aware that this is a confidential and anonymous service. However, if you give any identifying info AND you report you are in any emotional and/or physical danger, I would "
+    }
+]
