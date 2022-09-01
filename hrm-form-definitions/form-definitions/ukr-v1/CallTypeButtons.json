@@ -1,49 +1,31 @@
 [
     {
         "name": "child",
-        "label": "Child calling about self",
+        "label": "Gyerek megkereső saját ügyben",
         "type": "button",
         "category": "data"
     },
     {
         "name": "caller",
-        "label": "Someone calling about a child",
+        "label": "Valaki egy gyerek ügyében",
         "type": "button",
         "category": "data"
     },
     {
-        "name": "silent",
-        "label": "Silent",
+        "name": "joke",
+        "label": "Teszt, vicc",
         "type": "button",
         "category": "non-data"
     },
     {
         "name": "hangup",
-        "label": "Hang up",
+        "label": "Letette",
         "type": "button",
         "category": "non-data"
     },
     {
         "name": "abusive",
-        "label": "Abusive",
-        "type": "button",
-        "category": "non-data"
-    },
-    {
-        "name": "thanks",
-        "label": "Thank you",
-        "type": "button",
-        "category": "non-data"
-    },
-    {
-        "name": "questions",
-        "label": "Questions",
-        "type": "button",
-        "category": "non-data"
-    },
-    {
-        "name": "complaints",
-        "label": "Complaints",
+        "label": "Visszaélő",
         "type": "button",
         "category": "non-data"
     }
