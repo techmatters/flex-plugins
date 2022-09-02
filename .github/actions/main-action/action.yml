@@ -123,7 +123,7 @@ runs:
       - name: Slack Aselo channel
         id: slack
         uses: slackapi/slack-github-action@v1.14.0
-        if: ${{ inputs.send-slack-message == true }}
+        if: ${{ fromJSON(inputs.send-slack-message) == true }}
         with:
           channel-id: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
           slack-message: "`[FLEX]` Action ${{ github.workflow }} completed with SHA ${{ github.sha }}. Changelog is: ${{ github.event.inputs.changelog }} :rocket:."
