@@ -16,7 +16,6 @@ import {
   StyledInputField,
   CaseDetailsBorder,
   CaseSectionFont,
-  StyledCaseOverview,
   ViewButton,
 } from '../../styles/case';
 import { Box } from '../../styles/HrmStyles';
@@ -36,13 +35,11 @@ const CaseDetails = ({
   office,
   childIsAtRisk,
   handlePrintCase,
-  definitionVersion,
   definitionVersionName,
   isOrphanedCase,
   editCaseSummary,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const color = definitionVersion.caseStatus[status].color || '#000000';
   const formattedCreatedAt = getLocaleDateTime(createdAt);
   const formattedUpdatedAt = createdAt === updatedAt ? '—' : getLocaleDateTime(updatedAt);
   const editButton = can(PermissionActions.EDIT_CASE_SUMMARY);
@@ -99,7 +96,7 @@ const CaseDetails = ({
                 <Template code="Case-ChildIsAtRisk" />
               </label>
             </DetailDescription>
-            <StyledCaseOverview
+            <StyledInputField
               data-testid="Case-Details_ChildAtRisk"
               id="Details_ChildAtRisk"
               name="Details_ChildAtRisk"
@@ -147,11 +144,10 @@ const CaseDetails = ({
                 <Template code="Case-CaseDetailsFollowUpDate" />
               </label>
             </DetailDescription>
-            <StyledCaseOverview
+            <StyledInputField
               id="Details_DateFollowUp"
               name="Details_DateFollowUp"
               data-testid="Case-Details_DateFollowUp"
-              color="#d8d8d8"
               disabled={true}
               defaultValue={formatFollowUpDate === 'Invalid Date' ? '—' : formatFollowUpDate}
               aria-labelledby="CaseDetailsFollowUpDate"

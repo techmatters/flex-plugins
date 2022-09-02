@@ -305,13 +305,13 @@ export const StyledPrintButton = styled(IconButton)`
 StyledPrintButton.displayName = 'StyledPrintButton';
 
 type StyledInputField = {
-  color?: boolean;
+  color?: string;
 };
 
 export const StyledInputField = styled(FormInput)<StyledInputField>`
   width: 130px !important;
   height: 36px;
-  color: #000000;
+  color: ${props => (props.color ? props.color : '#000000')} !important;
   background-color: ${props => props.theme.colors.inputBackgroundColor};
   font-weight: 600;
   padding-left: 10px !important;
@@ -323,28 +323,6 @@ export const StyledInputField = styled(FormInput)<StyledInputField>`
 `;
 
 StyledInputField.displayName = 'StyledInputField';
-
-export const StyledCaseOverview = styled('input')<StyledInputField>`
-  width: 130px !important;
-  height: 36px;
-  color: ${props => (props.color ? props.color : '#000000')};
-  background-color: ${props => props.theme.colors.inputBackgroundColor};
-  font-weight: 520;
-  padding-left: 10px !important;
-  margin-top: 7px;
-  border-radius: 5px;
-  border: none;
-
-  ::-webkit-calendar-picker-indicator {
-    margin-left: 0;
-  }
-`;
-
-StyledCaseOverview.displayName = 'StyledCaseOverview';
-
-type FormSelectWrapperProps = {
-  disabled?: boolean;
-};
 
 export const CloseDialogText = styled('p')`
   font-size: 17px;
