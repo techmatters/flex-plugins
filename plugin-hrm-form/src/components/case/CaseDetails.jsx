@@ -16,9 +16,9 @@ import {
   StyledInputField,
   CaseDetailsBorder,
   CaseSectionFont,
-  StyledCaseOverview,
+  ViewButton,
 } from '../../styles/case';
-import { StyledNextStepButton, Box } from '../../styles/HrmStyles';
+import { Box } from '../../styles/HrmStyles';
 import { PermissionActions } from '../../permissions';
 import { getLocaleDateTime } from '../../utils/helpers';
 
@@ -35,16 +35,15 @@ const CaseDetails = ({
   office,
   childIsAtRisk,
   handlePrintCase,
-  definitionVersion,
   definitionVersionName,
   isOrphanedCase,
   editCaseSummary,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const color = definitionVersion.caseStatus[status].color || '#000000';
   const formattedCreatedAt = getLocaleDateTime(createdAt);
   const formattedUpdatedAt = createdAt === updatedAt ? '—' : getLocaleDateTime(updatedAt);
   const editButton = can(PermissionActions.EDIT_CASE_SUMMARY);
+  const formatFollowUpDate = getLocaleDateTime(followUpDate);
 
   return (
     <>
@@ -56,7 +55,6 @@ const CaseDetails = ({
           office={office}
           handlePrintCase={handlePrintCase}
           isOrphanedCase={isOrphanedCase}
-          can={can}
         />
         <div style={{ paddingTop: '15px' }}>
           <CaseTags definitionVersion={definitionVersionName} categories={categories} />
@@ -69,10 +67,10 @@ const CaseDetails = ({
           </CaseSectionFont>
         </Box>
         {editButton && (
-          <Box style={{ display: 'inline-block' }} alignSelf="flex-end" marginTop="-20px" marginRight="25px">
-            <StyledNextStepButton secondary roundCorners onClick={editCaseSummary} data-testid="Case-EditButton">
+          <Box style={{ display: 'inline-block' }} alignSelf="flex-end" marginTop="-20px" marginRight="50px">
+            <ViewButton secondary roundCorners onClick={editCaseSummary} data-testid="Case-EditButton">
               <Template code="Case-EditButton" />
-            </StyledNextStepButton>
+            </ViewButton>
           </Box>
         )}
 
@@ -83,14 +81,13 @@ const CaseDetails = ({
                 <Template code="Case-CaseDetailsStatusLabel" />
               </label>
             </DetailDescription>
-            <StyledCaseOverview
+            <StyledInputField
               data-testid="Case-Details_CaseStatus"
               id="Details_CaseStatus"
               name="Details_CaseStatus"
               aria-labelledby="CaseDetailsStatusLabel"
               disabled={true}
               defaultValue={status === 'open' ? 'Open' : 'Closed'}
-              color={color}
             />
           </div>
           <div style={{ paddingRight: '20px' }}>
@@ -99,14 +96,14 @@ const CaseDetails = ({
                 <Template code="Case-ChildIsAtRisk" />
               </label>
             </DetailDescription>
-            <StyledCaseOverview
+            <StyledInputField
               data-testid="Case-Details_ChildAtRisk"
               id="Details_ChildAtRisk"
               name="Details_ChildAtRisk"
               aria-labelledby="CaseDetailsStatusLabel"
               disabled={true}
               defaultValue={childIsAtRisk ? 'Yes' : 'No'}
-              color={childIsAtRisk ? 'red' : 'green'}
+              color={childIsAtRisk ? 'red' : '#d8d8d8'}
             />
           </div>
         </div>
@@ -147,12 +144,12 @@ const CaseDetails = ({
                 <Template code="Case-CaseDetailsFollowUpDate" />
               </label>
             </DetailDescription>
-            <StyledCaseOverview
+            <StyledInputField
               id="Details_DateFollowUp"
               name="Details_DateFollowUp"
-              color="#d8d8d8"
+              data-testid="Case-Details_DateFollowUp"
               disabled={true}
-              defaultValue={followUpDate || '—'}
+              defaultValue={formatFollowUpDate === 'Invalid Date' ? '—' : formatFollowUpDate}
               aria-labelledby="CaseDetailsFollowUpDate"
             />
           </div>

@@ -1,11 +1,10 @@
 /* eslint-disable react/prop-types */
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
 import { Box, Row } from '../../styles/HrmStyles';
 import { CaseSectionFont, TimelineRow, PlaceHolderText, CaseDetailsBorder } from '../../styles/case';
 import CaseAddButton from './CaseAddButton';
-import { PermissionActions, PermissionActionType } from '../../permissions';
 
 type OwnProps = {
   onClickAddItem: () => void;
@@ -16,7 +15,7 @@ type OwnProps = {
 
 const CaseSection: React.FC<OwnProps> = ({ onClickAddItem, canAdd, children, sectionTypeId }) => {
   return (
-    <CaseDetailsBorder>
+    <CaseDetailsBorder sectionTypeId={sectionTypeId === 'Document'}>
       <Box marginBottom="10px">
         <Row>
           <CaseSectionFont id={`Case-Add${sectionTypeId}Section-label`}>

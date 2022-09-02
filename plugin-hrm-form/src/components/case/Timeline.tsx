@@ -16,6 +16,7 @@ import {
   TimelineDate,
   TimelineText,
   TimelineCallTypeIcon,
+  CaseDetailsBorder,
 } from '../../styles/case';
 import { Box, Row } from '../../styles/HrmStyles';
 import CaseAddButton from './CaseAddButton';
@@ -131,55 +132,57 @@ const Timeline: React.FC<Props> = props => {
   };
 
   return (
-    <Box marginTop="25px">
-      <Dialog onClose={() => setMockedMessage(null)} open={Boolean(mockedMessage)}>
-        <DialogContent>{mockedMessage}</DialogContent>
-      </Dialog>
-      <Box marginBottom="10px">
-        <Row>
-          <CaseSectionFont id="Case-TimelineSection-label">
-            <Template code="Case-TimelineSection" />
-          </CaseSectionFont>
-          <Box marginLeft="auto">
-            <CaseAddButton
-              templateCode="Case-Note"
-              onClick={handleAddNoteClick}
-              disabled={!can(PermissionActions.ADD_NOTE)}
-            />
-            <CaseAddButton
-              templateCode="Case-Referral"
-              onClick={handleAddReferralClick}
-              disabled={!can(PermissionActions.ADD_REFERRAL)}
-              withDivider
-            />
-          </Box>
-        </Row>
-      </Box>
-      {timelineActivities &&
-        timelineActivities.length > 0 &&
-        timelineActivities.map((activity, index) => {
-          const date = parseISO(activity.date).toLocaleDateString(navigator.language);
-          return (
-            <TimelineRow key={index}>
-              <TimelineDate>{date}</TimelineDate>
-              <TimelineIcon type={isConnectedCaseActivity(activity) ? activity.channel : activity.type} />
-              {isConnectedCaseActivity(activity) && (
-                <TimelineCallTypeIcon>
-                  <CallTypeIcon callType={callType} fontSize="18px" />
-                </TimelineCallTypeIcon>
-              )}
-              <TimelineText>{activity?.text}</TimelineText>
-              <Box marginLeft="auto" marginRight="10px">
-                <Box marginLeft="auto" marginRight="10px">
-                  <ViewButton onClick={() => handleViewClick(activity)}>
-                    <Template code="Case-ViewButton" />
-                  </ViewButton>
+    <CaseDetailsBorder>
+      <Box marginTop="25px">
+        <Dialog onClose={() => setMockedMessage(null)} open={Boolean(mockedMessage)}>
+          <DialogContent>{mockedMessage}</DialogContent>
+        </Dialog>
+        <Box marginBottom="10px">
+          <Row>
+            <CaseSectionFont id="Case-TimelineSection-label">
+              <Template code="Case-TimelineSection" />
+            </CaseSectionFont>
+            <Box marginLeft="auto">
+              <CaseAddButton
+                templateCode="Case-Note"
+                onClick={handleAddNoteClick}
+                disabled={!can(PermissionActions.ADD_NOTE)}
+              />
+              <CaseAddButton
+                templateCode="Case-Referral"
+                onClick={handleAddReferralClick}
+                disabled={!can(PermissionActions.ADD_REFERRAL)}
+                withDivider
+              />
+            </Box>
+          </Row>
+        </Box>
+        {timelineActivities &&
+          timelineActivities.length > 0 &&
+          timelineActivities.map((activity, index) => {
+            const date = parseISO(activity.date).toLocaleDateString(navigator.language);
+            return (
+              <TimelineRow key={index}>
+                <TimelineDate>{date}</TimelineDate>
+                <TimelineIcon type={isConnectedCaseActivity(activity) ? activity.channel : activity.type} />
+                {isConnectedCaseActivity(activity) && (
+                  <TimelineCallTypeIcon>
+                    <CallTypeIcon callType={callType} fontSize="18px" />
+                  </TimelineCallTypeIcon>
+                )}
+                <TimelineText>{activity?.text}</TimelineText>
+                <Box marginLeft="auto" marginRight="5px">
+                  <Box marginLeft="auto" marginRight="5px">
+                    <ViewButton onClick={() => handleViewClick(activity)}>
+                      <Template code="Case-ViewButton" />
+                    </ViewButton>
+                  </Box>
                 </Box>
-              </Box>
-            </TimelineRow>
-          );
-        })}
-    </Box>
+              </TimelineRow>
+            );
+          })}
+      </Box>
+    </CaseDetailsBorder>
   );
 };
 
