@@ -33,8 +33,8 @@ jobs:
 
     steps:
       - name: Echo the result of deploy-dev
-        run: echo ${{ jobs.deploy-dev.result }}
+        run: echo ${{ deploy-dev.result }}
         shell: bash
       - name: Echo the result of deploy-e2e
-        run: echo ${{ jobs.deploy-e2e.result }}
+        run: echo ${{ deploy-e2e.result }}
         shell: bash
