@@ -32,9 +32,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Echo the result of deploy-dev
-        run: echo ${{ deploy-dev.result }}
-        shell: bash
-      - name: Echo the result of deploy-e2e
-        run: echo ${{ deploy-e2e.result }}
+      - name: Echo after
+        run: echo "Success!"
         shell: bash
