@@ -46,6 +46,7 @@ module "taskRouter" {
   source = "../terraform-modules/taskRouter/default"
   serverless_url = var.serverless_url
   helpline = var.helpline
+  custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", var.twilio_numbers))}]"
 }
 
 module studioFlow {
@@ -55,6 +56,19 @@ module studioFlow {
   default_task_channel_sid = module.taskRouter.default_task_channel_sid
   pre_survey_bot_sid = module.chatbots.pre_survey_bot_sid
 }
+
+module messengerChannel {
+  count =  var.messenger_channel ? 1 : 0
+  source = "../../../flex-plugins/twilio-iac/terraform-modules/channels/instagram"
+  master_workflow_sid = module.taskRouter.master_workflow_sid
+  chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
+  flex_chat_service_sid = module.services.flex_chat_service_sid
+  pre_survey_bot_sid = module.chatbots.pre_survey_bot_es_sid
+  target_task_name = var.target_task_name != "" ? var.target_task_name : "greeting"
+  short_helpline = var.short_helpline
+  short_environment = var.short_environment
+}
+
 
 module twitterChannel {
   count =  var.twitter_channel ? 1 : 0
