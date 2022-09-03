@@ -9,7 +9,7 @@ on:
 
 jobs:
   deploy-dev:
-    uses: techmatters/flex-plugins/.github/workflows/aselo_development.yml
+    uses: techmatters/flex-plugins/.github/workflows/aselo_development.yml@gian_poc_reusable_workflows
     secrets:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -21,7 +21,7 @@ jobs:
     # This will wait for the above job to complete https://docs.github.com/en/actions/using-jobs/using-jobs-in-a-workflow#example-requiring-successful-dependent-jobs
     needs: deploy-dev
 
-    uses: techmatters/flex-plugins/.github/workflows/end_to_end_development.yml
+    uses: techmatters/flex-plugins/.github/workflows/end_to_end_development.yml@gian_poc_reusable_workflows
     secrets:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
