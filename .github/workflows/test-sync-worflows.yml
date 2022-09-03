@@ -1,0 +1,43 @@
+name: Test sync workflow executions
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: This is dangerous! Are you sure you want to trigger this workflow? Type "Test sync workflow executions" to continue.
+        required: true
+
+jobs:
+  deploy-dev:
+    uses: techmatters/flex-plugins/.github/workflows/aselo_development.yml
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+      AS_DEV_ACCOUNT_SID: ${{ secrets.AS_DEV_ACCOUNT_SID }}
+      AS_DEV_AUTH_TOKEN: ${{ secrets.AS_DEV_AUTH_TOKEN }}
+
+  deploy-e2e: 
+    # This will wait for the above job to complete https://docs.github.com/en/actions/using-jobs/using-jobs-in-a-workflow#example-requiring-successful-dependent-jobs
+    needs: deploy-dev
+
+    uses: techmatters/flex-plugins/.github/workflows/end_to_end_development.yml
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+      E2E_DEV_ACCOUNT_SID: ${{ secrets.E2E_DEV_ACCOUNT_SID }}
+      E2E_DEV_AUTH_TOKEN: ${{ secrets.E2E_DEV_AUTH_TOKEN }}
+
+  do-something-after:
+    needs: [deploy-dev, deploy-e2e]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Echo the result of deploy-dev
+        runs: echo ${{ jobs.deploy-dev.result }}
+        shell: bash
+      - name: Echo the result of deploy-e2e
+        runs: echo ${{ jobs.deploy-e2e.result }}
+        shell: bash
