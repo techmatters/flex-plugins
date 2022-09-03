@@ -6,6 +6,9 @@ on:
       confirm:
         description: This is dangerous! Are you sure you want to trigger this workflow? Type "Test sync workflow executions" to continue.
         required: true
+      changelog:
+        description: Release Changelog - Add a comment about the changes to be included in this release.
+        required: true
 
 jobs:
   deploy-dev:
@@ -16,6 +19,8 @@ jobs:
       AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
       AS_DEV_ACCOUNT_SID: ${{ secrets.AS_DEV_ACCOUNT_SID }}
       AS_DEV_AUTH_TOKEN: ${{ secrets.AS_DEV_AUTH_TOKEN }}
+    with:
+      changelog: ${{ inputs.changelog }}
 
   deploy-e2e: 
     uses: techmatters/flex-plugins/.github/workflows/end_to_end_development.yml@gian_poc_reusable_workflows
@@ -25,6 +30,8 @@ jobs:
       AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
       E2E_DEV_ACCOUNT_SID: ${{ secrets.E2E_DEV_ACCOUNT_SID }}
       E2E_DEV_AUTH_TOKEN: ${{ secrets.E2E_DEV_AUTH_TOKEN }}
+    with:
+      changelog: ${{ inputs.changelog }}
 
   do-something-after:
     needs: [deploy-dev, deploy-e2e]
