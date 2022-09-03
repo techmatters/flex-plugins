@@ -39,7 +39,7 @@ variable "short_environment" {
 variable "definition_version" {
   description = "Key that determines which set of form definitions this helpline will use"
   type        = string
-  default = "co-v1"
+  default = "co-v2"
 }
 
 variable "permission_config" {
@@ -88,5 +88,5 @@ variable "custom_flex_messaging_flow_enabled" {
 variable "custom_task_routing_filter_expression" {
   description = "Setting this will override the default task routing filter expression, which is helpline=='<var.helpline>'"
   type = string
-  default = "channelType ==\"web\"  OR isContactlessTask == true OR twilioNumber == \"messenger:103574689075106\" OR  twilioNumber == \"twitter:1540032139563073538\"  OR channel_type ==\"twitter\""
+  default = "channelType ==\"web\"  OR isContactlessTask == true OR twilioNumber == \"messenger:103574689075106\" OR  twilioNumber == \"twitter:1540032139563073538\"  OR channel_type ==\"twitter\" OR twilioNumber==\"instagram:17841454586132629\""
 }
