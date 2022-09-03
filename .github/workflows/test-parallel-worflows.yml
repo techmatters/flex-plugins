@@ -1,4 +1,4 @@
-name: Test sync workflow executions
+name: Test parallel workflow executions
 
 on:
   workflow_dispatch:
