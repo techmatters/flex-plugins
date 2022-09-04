@@ -74,14 +74,14 @@ const referralActivities = (referrals: ReferralEntry[]): Activity[] =>
     })
     .filter(ra => ra);
 
-const connectedContactActivities = (caseContacts): Activity[] =>
+const connectedContactActivities = (caseContacts): ConnectedCaseActivity[] =>
   (caseContacts || [])
     .map((cc, originalIndex) => {
       try {
         const type = ActivityTypes.connectContact[cc.channel];
         const channel = type === ActivityTypes.connectContact.default ? cc.rawJson.contactlessTask.channel : type;
         return {
-          contactId: cc.id,
+          contactId: cc.id.toString(),
           date: cc.timeOfContact,
           createdAt: cc.createdAt,
           type,
@@ -89,6 +89,7 @@ const connectedContactActivities = (caseContacts): Activity[] =>
           twilioWorkerId: cc.twilioWorkerId,
           channel,
           originalIndex,
+          callType: cc.rawJson.callType,
         };
       } catch (err) {
         console.warn(`Error processing connected contact, excluding from data`, cc, err);
@@ -107,9 +108,13 @@ export const getActivitiesFromCase = (sourceCase: Case): Activity[] => {
   return [
     ...noteActivities(sourceCase.info.counsellorNotes ?? [], previewFields),
     ...referralActivities(sourceCase.info.referrals ?? []),
-    ...connectedContactActivities(sourceCase.connectedContacts ?? []),
   ];
 };
+
+export const getActivitiesFromContacts = (sourceContacts: any[]): Activity[] => {
+  return connectedContactActivities(sourceContacts);
+};
+
 /**
  * Sort activities from most recent to oldest.
  * @param activities Activities to sort

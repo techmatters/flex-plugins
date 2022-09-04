@@ -28,7 +28,6 @@ import { getConfig } from '../../HrmFormPlugin';
 import { updateCase } from '../../services/CaseService';
 import { createFormFromDefinition, disperseInputs, splitAt } from '../common/forms/formGenerators';
 import type { CaseInfo, CustomITask, StandaloneITask } from '../../types/types';
-import { AppRoutesWithCaseAndAction } from '../../states/routing/types';
 import useFocus from '../../utils/useFocus';
 import { recordingErrorHandler } from '../../fullStory';
 import {
@@ -54,7 +53,6 @@ export type EditCaseSummaryProps = {
   counselor: string;
   definitionVersion: DefinitionVersion;
   exitItem: () => void;
-  routing: AppRoutesWithCaseAndAction;
 };
 // eslint-disable-next-line no-use-before-define
 type Props = EditCaseSummaryProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;

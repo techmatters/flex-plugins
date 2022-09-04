@@ -43,9 +43,7 @@ export function isAddTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is AddTempor
   return tci && (<AddTemporaryCaseInfo>tci).action === CaseItemAction.Add;
 }
 
-export type ViewContactInfo = { screen: typeof NewCaseSubroutes.ViewContact; info: ViewContact };
-
-export type TemporaryCaseInfo = ViewContactInfo | AddTemporaryCaseInfo | EditTemporaryCaseInfo;
+export type TemporaryCaseInfo = AddTemporaryCaseInfo | EditTemporaryCaseInfo;
 
 type SetConnectedCaseAction = {
   type: typeof SET_CONNECTED_CASE;
@@ -125,7 +123,8 @@ export type ReferralActivity = {
 };
 
 export type ConnectedCaseActivity = {
-  contactId?: number;
+  callType: string;
+  contactId?: string;
   date: string;
   createdAt: string;
   type: string;

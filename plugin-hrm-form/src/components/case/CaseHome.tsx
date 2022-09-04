@@ -19,13 +19,7 @@ import {
 } from '../../states/routing/types';
 import CaseSummary from './CaseSummary';
 import { connectedCaseBase, contactFormsBase, namespace, RootState, routingBase } from '../../states';
-import {
-  Activity,
-  CaseDetails,
-  CaseDetailsName,
-  isEditTemporaryCaseInfo,
-  TemporaryCaseInfo,
-} from '../../states/case/types';
+import { Activity, CaseDetails, CaseDetailsName, EditTemporaryCaseInfo } from '../../states/case/types';
 import { CustomITask, EntryInfo, StandaloneITask } from '../../types/types';
 import * as RoutingActions from '../../states/routing/actions';
 import * as CaseActions from '../../states/case/actions';
@@ -33,7 +27,6 @@ import { getConfig } from '../../HrmFormPlugin';
 import InformationRow from './InformationRow';
 import TimelineInformationRow from './TimelineInformationRow';
 import DocumentInformationRow from './DocumentInformationRow';
-import CloseCaseDialog from './CloseCaseDialog';
 import { CaseState } from '../../states/case/reducer';
 import { householdSectionApi } from '../../states/case/sections/household';
 import { perpetratorSectionApi } from '../../states/case/sections/perpetrator';
@@ -55,10 +48,8 @@ export type CaseHomeProps = {
   handleSaveAndEnd: () => void;
   handleCancelNewCaseAndClose: () => void;
   handleUpdate: () => void;
-  onInfoChange: (field: string, value: string | boolean) => void;
   onStatusChange: (value: string | boolean) => void;
   can: (action: string) => boolean;
-  isEdited?: boolean;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -72,29 +63,23 @@ const CaseHome: React.FC<Props> = ({
   updateTempInfo,
   changeRoute,
   isCreating,
-  isEdited,
   handleClose,
   handleSaveAndEnd,
   handleCancelNewCaseAndClose,
-  handleUpdate,
-  onInfoChange,
   timeline,
   caseDetails,
   can,
-  temporaryCaseInfo,
   connectedCaseState,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [closeDialog, setCloseDialog] = useState(false);
 
+  if (!connectedCaseState || !routing || !isAppRouteWithCase(routing)) return null; // narrow type before deconstructing
+
   const { featureFlags } = getConfig();
   const { connectedCase } = connectedCaseState;
   const summary = connectedCase.info?.summary || '';
-
-  if (!isAppRouteWithCase(routing)) return null; // narrow type before deconstructing
   const { route } = routing;
-
-  type CaseItemInfo<T extends TemporaryCaseInfo> = T['info']; // A bit redundant but looks cleaner than the anonymous subtype reference syntax
 
   const onViewCaseItemClick = (targetSubroute: CaseSectionSubroute) => (id: string) => {
     changeRoute({ route, subroute: targetSubroute, action: CaseItemAction.View, id } as AppRoutes, task.taskSid);
@@ -107,17 +92,6 @@ const CaseHome: React.FC<Props> = ({
 
   const onPrintCase = () => {
     changeRoute({ route, subroute: 'case-print-view' }, task.taskSid);
-  };
-
-  const onCloseDialogSave = () => {
-    try {
-      handleUpdate();
-    } finally {
-      if (closeDialog === true) {
-        setCloseDialog(false);
-        handleClose();
-      }
-    }
   };
 
   // -- Date cannot be converted here since the date dropdown uses the yyyy-MM-dd format.
@@ -214,7 +188,7 @@ const CaseHome: React.FC<Props> = ({
   };
 
   const onEditCaseItemClick = (targetSubroute: CaseSectionSubroute) => {
-    temporaryCaseInfo = {
+    const temporaryCaseInfo: EditTemporaryCaseInfo = {
       action: CaseItemAction.Edit,
       info: {
         createdAt: connectedCase.createdAt,
@@ -231,12 +205,10 @@ const CaseHome: React.FC<Props> = ({
       },
       screen: 'caseSummary',
     };
-    if (isEditTemporaryCaseInfo(temporaryCaseInfo)) {
-      updateTempInfo(
-        { screen: temporaryCaseInfo.screen, action: CaseItemAction.Edit, info: temporaryCaseInfo.info },
-        task.taskSid,
-      );
-    }
+    updateTempInfo(
+      { screen: temporaryCaseInfo.screen, action: CaseItemAction.Edit, info: temporaryCaseInfo.info },
+      task.taskSid,
+    );
     changeRoute({ ...routing, subroute: targetSubroute, action: CaseItemAction.Edit } as AppRoutes, task.taskSid);
   };
 
@@ -267,14 +239,7 @@ const CaseHome: React.FC<Props> = ({
           <CaseSummary task={task} readonly={true} />
         </Box>
         <Box margin="25px 0 0 25px">
-          <Timeline
-            timelineActivities={timeline}
-            contacts={caseDetails.contacts}
-            taskSid={task.taskSid}
-            form={form}
-            can={can}
-            route={route}
-          />
+          <Timeline timelineActivities={timeline} taskSid={task.taskSid} form={form} can={can} route={route} />
         </Box>
         <Box margin="25px 0 0 25px">
           <CaseSection
@@ -336,20 +301,9 @@ const CaseHome: React.FC<Props> = ({
         {!isCreating && (
           <>
             <Box marginRight="15px">
-              <StyledNextStepButton
-                data-testid="CaseHome-CloseButton"
-                secondary
-                roundCorners
-                onClick={isEdited === true ? () => setCloseDialog(true) : handleClose}
-              >
+              <StyledNextStepButton data-testid="CaseHome-CloseButton" secondary roundCorners onClick={handleClose}>
                 <Template code="BottomBar-Close" />
               </StyledNextStepButton>
-              <CloseCaseDialog
-                setDialog={() => setCloseDialog(false)}
-                handleDontSaveClose={handleClose}
-                handleSaveUpdate={onCloseDialogSave}
-                openDialog={closeDialog}
-              />
             </Box>
           </>
         )}
@@ -364,10 +318,9 @@ const mapStateToProps = (state: RootState, ownProps: CaseHomeProps) => {
   const form = state[namespace][contactFormsBase].tasks[ownProps.task.taskSid];
   const routing = state[namespace][routingBase].tasks[ownProps.task.taskSid];
   const caseState: CaseState = state[namespace][connectedCaseBase];
-  const { temporaryCaseInfo } = caseState.tasks[ownProps.task.taskSid];
   const connectedCaseState = caseState.tasks[ownProps.task.taskSid];
 
-  return { form, routing, temporaryCaseInfo, connectedCaseState };
+  return { form, routing, connectedCaseState };
 };
 
 const mapDispatchToProps = {

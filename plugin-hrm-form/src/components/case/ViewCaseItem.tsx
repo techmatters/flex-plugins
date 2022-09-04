@@ -13,7 +13,7 @@ import SectionEntry from '../SectionEntry';
 import ActionHeader from './ActionHeader';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 import { caseItemHistory } from '../../states/case/types';
-import { AppRoutesWithCaseActionAndId, CaseItemAction } from '../../states/routing/types';
+import { ViewCaseSectionRoute, CaseItemAction } from '../../states/routing/types';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseSectionApi } from '../../states/case/sections/api';
@@ -28,7 +28,7 @@ const mapStateToProps = (state: RootState, ownProps: ViewCaseItemProps) => {
 
 export type ViewCaseItemProps = {
   task: CustomITask | StandaloneITask;
-  routing: AppRoutesWithCaseActionAndId;
+  routing: ViewCaseSectionRoute;
   definitionVersion: DefinitionVersion;
   exitItem: () => void;
   sectionApi: CaseSectionApi<unknown>;

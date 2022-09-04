@@ -35,7 +35,12 @@ import {
   splitInHalf,
 } from '../common/forms/formGenerators';
 import type { CaseInfo, CaseItemEntry, CustomITask, StandaloneITask } from '../../types/types';
-import { AppRoutesWithCaseAndAction, CaseItemAction } from '../../states/routing/types';
+import {
+  AddCaseSectionRoute,
+  CaseItemAction,
+  EditCaseSectionRoute,
+  isEditCaseSectionRoute,
+} from '../../states/routing/types';
 import useFocus from '../../utils/useFocus';
 import { recordingErrorHandler } from '../../fullStory';
 import {
@@ -92,7 +97,7 @@ export type AddEditCaseItemProps = {
   counselor: string;
   definitionVersion: DefinitionVersion;
   exitItem: () => void;
-  routing: AppRoutesWithCaseAndAction;
+  routing: AddCaseSectionRoute | EditCaseSectionRoute;
   customFormHandlers?: CustomHandlers;
   reactHookFormOptions?: Partial<{ shouldUnregister: boolean }>;
   sectionApi: CaseSectionApi<unknown>;
