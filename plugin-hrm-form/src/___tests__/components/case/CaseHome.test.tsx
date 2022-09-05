@@ -269,22 +269,12 @@ describe('useState mocked', () => {
 
     screen.getByTestId('Case-InformationRow-ViewButton').click();
 
-    const { household, ...caseItemEntry } = { ...householdEntry, form: householdEntry.household };
-
-    expect(store.dispatch).toHaveBeenCalledWith({
-      value: {
-        info: { ...caseItemEntry, index: 0 },
-        screen: NewCaseSubroutes.Household,
-        action: CaseItemAction.View,
-      },
-      taskId: 'task1',
-      type: UPDATE_TEMP_INFO,
-    });
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
         route: 'new-case',
         subroute: NewCaseSubroutes.Household,
         action: CaseItemAction.View,
+        id: 'HOUSEHOLD_ID',
       },
       taskId: 'task1',
       type: 'CHANGE_ROUTE',
@@ -296,7 +286,6 @@ describe('useState mocked', () => {
     const store = mockStore(initialState);
     store.dispatch = jest.fn();
 
-    const { perpetrator, ...caseItemEntry } = { ...perpetratorEntry, form: perpetratorEntry.perpetrator };
     render(
       <StorelessThemeProvider themeConf={{}}>
         <Provider store={store}>
@@ -308,19 +297,11 @@ describe('useState mocked', () => {
     screen.getByTestId('Case-InformationRow-ViewButton').click();
 
     expect(store.dispatch).toHaveBeenCalledWith({
-      value: {
-        info: { ...caseItemEntry, index: 0 },
-        screen: NewCaseSubroutes.Perpetrator,
-        action: CaseItemAction.View,
-      },
-      taskId: 'task1',
-      type: UPDATE_TEMP_INFO,
-    });
-    expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
         route: 'new-case',
         subroute: NewCaseSubroutes.Perpetrator,
         action: CaseItemAction.View,
+        id: 'PERPETRATOR_ID',
       },
       taskId: 'task1',
       type: 'CHANGE_ROUTE',

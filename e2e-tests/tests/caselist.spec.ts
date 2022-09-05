@@ -57,9 +57,7 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
 
     await page.updateCaseSummary();
 
-    await page.closeEditCase();
-
-    await page.caseSummaryUpdate();
+    await page.verifyCaseSummaryUpdated();
 
     await page.closeCase();
   });

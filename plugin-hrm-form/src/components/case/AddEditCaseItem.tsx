@@ -65,6 +65,28 @@ const getTemporaryFormContent = (temporaryCaseInfo: TemporaryCaseInfo): CaseItem
   return null;
 };
 
+const createUpdatedTemporaryFormContent = (
+  payload: CaseItemPayload,
+  initialForm: CaseItemPayload,
+  temporaryCaseInfo: TemporaryCaseInfo,
+): AddTemporaryCaseInfo | EditTemporaryCaseInfo => {
+  const isEdited = !isEqual(initialForm, payload);
+  if (isEditTemporaryCaseInfo(temporaryCaseInfo)) {
+    return {
+      ...temporaryCaseInfo,
+      info: { ...temporaryCaseInfo.info, form: payload },
+      isEdited: isEdited || temporaryCaseInfo.isEdited,
+    };
+  } else if (isAddTemporaryCaseInfo(temporaryCaseInfo)) {
+    return {
+      ...temporaryCaseInfo,
+      info: payload,
+      isEdited: isEdited || temporaryCaseInfo.isEdited,
+    };
+  }
+  throw new Error(UNSUPPORTED_TEMPORARY_INFO_TYPE_MESSAGE);
+};
+
 export type AddEditCaseItemProps = {
   task: CustomITask | StandaloneITask;
   counselor: string;
@@ -125,29 +147,9 @@ const AddEditCaseItem: React.FC<Props> = ({
   const { getValues } = methods;
 
   const [l, r] = React.useMemo(() => {
-    const createUpdatedTemporaryFormContent = (
-      payload: CaseItemPayload,
-    ): AddTemporaryCaseInfo | EditTemporaryCaseInfo => {
-      const isEdited = !isEqual(initialForm, payload);
-      if (isEditTemporaryCaseInfo(temporaryCaseInfo)) {
-        return {
-          ...temporaryCaseInfo,
-          info: { ...temporaryCaseInfo.info, form: payload },
-          isEdited,
-        };
-      } else if (isAddTemporaryCaseInfo(temporaryCaseInfo)) {
-        return {
-          ...temporaryCaseInfo,
-          info: payload,
-          isEdited,
-        };
-      }
-      throw new Error(UNSUPPORTED_TEMPORARY_INFO_TYPE_MESSAGE);
-    };
-
     const updateCallBack = () => {
       const formValues = getValues();
-      updateTempInfo(createUpdatedTemporaryFormContent(formValues), task.taskSid);
+      updateTempInfo(createUpdatedTemporaryFormContent(formValues, initialForm, temporaryCaseInfo), task.taskSid);
     };
 
     const generatedForm = createFormFromDefinition(formDefinition)([])(initialForm, firstElementRef)(
@@ -159,12 +161,12 @@ const AddEditCaseItem: React.FC<Props> = ({
 
     return splitInHalf(disperseInputs(7)(generatedForm));
   }, [
+    temporaryCaseInfo,
     formDefinition,
     initialForm,
     firstElementRef,
     customFormHandlers,
     layout.splitFormAt,
-    temporaryCaseInfo,
     getValues,
     updateTempInfo,
     task.taskSid,
@@ -212,10 +214,9 @@ const AddEditCaseItem: React.FC<Props> = ({
     setConnectedCase(updatedCase, task.taskSid, connectedCaseState.caseHasBeenEdited);
   };
 
-  async function close() {
+  function close() {
     if (isEditTemporaryCaseInfo(temporaryCaseInfo)) {
-      updateTempInfo({ ...temporaryCaseInfo, action: CaseItemAction.View }, task.taskSid);
-      changeRoute({ ...routing, action: CaseItemAction.View }, task.taskSid);
+      changeRoute({ ...routing, id: temporaryCaseInfo.info.id, action: CaseItemAction.View }, task.taskSid);
     } else {
       exitItem();
     }
@@ -270,13 +271,6 @@ const AddEditCaseItem: React.FC<Props> = ({
             added={added}
             updatingCounsellor={updatingCounsellorName}
             updated={updated}
-          />
-          <CloseCaseDialog
-            data-testid="CloseCase-Dialog"
-            openDialog={openDialog}
-            setDialog={() => setOpenDialog(false)}
-            handleDontSaveClose={close}
-            handleSaveUpdate={methods.handleSubmit(saveAndLeave, onError)}
           />
           <Container>
             <Box paddingBottom={`${BottomButtonBarHeight}px`}>

@@ -136,12 +136,14 @@ const SearchResults: React.FC<Props> = ({
           <div style={{ width: '300px' }}>
             <StyledTabs selectedTabName={currentPage} onTabSelected={tabSelected}>
               <TwilioTab
+                key="SearchResultsIndex-Contacts"
                 label={<Template code="SearchResultsIndex-Contacts" />}
                 uniqueName={SearchPages.resultsContacts}
               >
                 {[]}
               </TwilioTab>
               <TwilioTab
+                key="SearchResultsIndex-Cases"
                 label={
                   <StyledTabLabel>
                     <StyledFolderIcon />
