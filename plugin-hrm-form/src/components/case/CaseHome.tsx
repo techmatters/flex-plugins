@@ -257,7 +257,6 @@ const CaseHome: React.FC<Props> = ({
             childIsAtRisk={childIsAtRisk}
             office={office?.label}
             handlePrintCase={onPrintCase}
-            definitionVersion={definitionVersion}
             definitionVersionName={version}
             isOrphanedCase={!contact}
             editCaseSummary={() => onEditCaseItemClick(NewCaseSubroutes.CaseSummary)}
