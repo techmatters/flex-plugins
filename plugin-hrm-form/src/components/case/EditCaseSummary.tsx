@@ -94,7 +94,7 @@ const EditCaseSummary: React.FC<Props> = ({
     },
     {
       name: 'inImminentPhysicalDanger',
-      label: 'Child is in imminent physical danger',
+      label: 'Child is at risk',
       type: 'checkbox',
     },
     {
