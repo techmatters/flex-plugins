@@ -149,7 +149,6 @@ describe('useState mocked', () => {
       handleClose: jest.fn(),
       handleUpdate: jest.fn(),
       handleSaveAndEnd: jest.fn(),
-      onInfoChange: jest.fn(),
       onStatusChange: jest.fn(),
     };
   });
