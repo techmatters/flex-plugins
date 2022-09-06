@@ -1,0 +1,65 @@
+${
+  jsonencode(
+    {
+      "states": [
+      {
+        "transitions": [
+          {
+            "event": "incomingMessage",
+            "next": "attributes"
+          },
+          {
+            "event": "incomingCall"
+          },
+          {
+            "event": "incomingConversationMessage"
+          },
+          {
+            "event": "incomingRequest"
+          },
+          {
+            "event": "incomingParent"
+          }
+        ],
+        "type": "trigger",
+        "name": "Trigger",
+        "properties": {
+          "offset": {
+            "y": 0,
+            "x": 0
+          }
+        }
+      },
+      {
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue"
+          },
+          {
+            "event": "callFailure"
+          }
+        ],
+        "type": "send-to-flex",
+        "name": "attributes",
+        "properties": {
+          "attributes": channel_attributes,
+          "workflow":  master_workflow_sid,
+          "channel": chat_task_channel_sid,
+          "offset": {
+            "y": 250,
+            "x": 80
+          }
+        }
+      }
+      ],
+      "initial_state": "Trigger",
+      "flags": {
+        "allow_concurrent_calls": true
+      },
+      "description": flow_description
+    }
+    )
+  }
