@@ -82,7 +82,7 @@
     },
     {
         "name": "languageService",
-        "label": "If applicalbe, which Language Interpretation service was used",
+        "label": "If applicable, which Language Interpretation service was used",
         "type": "select",
         "options": [
           { "value": "Unknown", "label": "" },
