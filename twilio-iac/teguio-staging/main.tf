@@ -57,6 +57,16 @@ module studioFlow {
   pre_survey_bot_sid = module.chatbots.pre_survey_bot_sid
 }
 
+module webChannel {
+  count =  var.messenger_channel ? 1 : 0
+  source = "../../../flex-plugins/twilio-iac/terraform-modules/channels/web"
+  master_workflow_sid = module.taskRouter.master_workflow_sid
+  chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
+  flex_chat_service_sid = module.services.flex_chat_service_sid
+  pre_survey_bot_sid = module.chatbots.pre_survey_bot_sid
+  target_task_name = var.target_task_name != "" ? var.target_task_name : "greeting"
+}
+
 module messengerChannel {
   count =  var.messenger_channel ? 1 : 0
   source = "../../../flex-plugins/twilio-iac/terraform-modules/channels/instagram"
@@ -66,6 +76,16 @@ module messengerChannel {
   pre_survey_bot_sid = module.chatbots.pre_survey_bot_es_sid
   target_task_name = var.target_task_name != "" ? var.target_task_name : "greeting"
 
+}
+module whatsappChannel {
+  count =  var.whatsapp_channel ? 1 : 0
+  source = "../../../flex-plugins/twilio-iac/terraform-modules/channels/whatsapp"
+  master_workflow_sid = module.taskRouter.master_workflow_sid
+  chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
+  flex_chat_service_sid = module.services.flex_chat_service_sid
+  pre_survey_bot_sid = module.chatbots.pre_survey_bot_sid
+  target_task_name = var.target_task_name != "" ? var.target_task_name : "greeting"
+  whatsapp_contact_identity = var.whatsapp_contact_identity
 }
 
 module twitterChannel {
