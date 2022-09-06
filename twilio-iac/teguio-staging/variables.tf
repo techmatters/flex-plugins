@@ -85,46 +85,16 @@ variable "messaging_flow_contact_identity" {
   default = "+17752526377"
 }
 
-variable "web_channel" {
-  default = true
-  type = bool
-  description = "Enable or disable the Web Channel"
-}
-
-variable "messenger_channel" {
-  default = true
-  type = bool
-  description = "Enable or disable the Messenger Channel"
-}
-
 variable "messenger_contact_identity" {
   description = "Contact Identity for the messaging flow"
   type = string
   default = "messenger:103574689075106"
 }
 
-variable "whatsapp_channel" {
-  default = false
-  type = bool
-  description = "Enable or disable the WhatsApp Channel"
-}
-
 variable "whatsapp_contact_identity" {
   description = "Contact Identity for the messaging flow"
   type = string
   default = ""
-}
-
-variable "twitter_channel" {
-  default = true
-  type = bool
-  description = "Enable or disable the Twitter Channel"
-}
-
-variable "instagram_channel" {
-  default = true
-  type = bool
-  description = "Enable or disable the Instagram Channel"
 }
 
 variable "twilio_numbers" {

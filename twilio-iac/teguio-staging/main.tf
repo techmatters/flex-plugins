@@ -58,7 +58,7 @@ module studioFlow {
 }
 
 module webChannel {
-  count =  var.messenger_channel ? 1 : 0
+  count =  true ? 1 : 0
   source = "../../../flex-plugins/twilio-iac/terraform-modules/channels/web"
   master_workflow_sid = module.taskRouter.master_workflow_sid
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
@@ -68,7 +68,7 @@ module webChannel {
 }
 
 module messengerChannel {
-  count =  var.messenger_channel ? 1 : 0
+  count =  true ? 1 : 0
   source = "../../../flex-plugins/twilio-iac/terraform-modules/channels/instagram"
   master_workflow_sid = module.taskRouter.master_workflow_sid
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
@@ -78,7 +78,7 @@ module messengerChannel {
 
 }
 module whatsappChannel {
-  count =  var.whatsapp_channel ? 1 : 0
+  count =  false ? 1 : 0
   source = "../../../flex-plugins/twilio-iac/terraform-modules/channels/whatsapp"
   master_workflow_sid = module.taskRouter.master_workflow_sid
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
@@ -89,7 +89,7 @@ module whatsappChannel {
 }
 
 module twitterChannel {
-  count =  var.twitter_channel ? 1 : 0
+  count =  true ? 1 : 0
   source = "../../../flex-plugins/twilio-iac/terraform-modules/channels/twitter"
   master_workflow_sid = module.taskRouter.master_workflow_sid
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
@@ -99,7 +99,7 @@ module twitterChannel {
 }
 
 module instagramChannel {
-  count =  var.instagram_channel ? 1 : 0
+  count =  true ? 1 : 0
   source = "../../../flex-plugins/twilio-iac/terraform-modules/channels/instagram"
   master_workflow_sid = module.taskRouter.master_workflow_sid
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
