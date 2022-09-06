@@ -14,12 +14,25 @@ on:
         required: true
 
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+
+  build-and-deploy:
+    # TODO: remove branch tag (@gian_CHI-1262-p2)
+    uses: techmatters/flex-plugins/.github/workflows/end_to_end_development.yml@gian_CHI-1262-p2
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+      E2E_DEV_ACCOUNT_SID: ${{ secrets.E2E_DEV_ACCOUNT_SID }}
+      E2E_DEV_AUTH_TOKEN: ${{ secrets.E2E_DEV_AUTH_TOKEN }}
+    with:
+      changelog: "Deploying for pre-release ${{ inputs.tag-prefix }}: ${{ inputs.tag-prefix }} (commit ${{ github.sha }})"
+      send-slack-message: 'false'
+
+  run-e2e-tests:
+    needs: build-and-deploy
+
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
@@ -27,16 +40,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '14.x'
-      # Call main-action to compile and deploy
-      - name: Executing main-action
-        uses: ./.github/actions/main-action
-        with:
-          account-sid: ${{ secrets.E2E_DEV_ACCOUNT_SID }}
-          auth-token: ${{ secrets.E2E_DEV_AUTH_TOKEN }}
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
-          send-slack-message: 'false'
 
       # Build Playwright
       - name: Install e2e-tests dependencies
@@ -60,7 +63,18 @@ jobs:
           name: test-artifacts
           path: e2e-tests/test-results
 
-      ## TODO: test if this is aborted if E2E tests fails
+  generate-pre-release:
+    needs: run-e2e-tests
+
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
 
       # Get latest tag for this version
       - name: Get latest tag
