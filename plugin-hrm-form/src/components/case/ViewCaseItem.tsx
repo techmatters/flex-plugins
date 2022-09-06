@@ -58,8 +58,7 @@ const ViewCaseItem: React.FC<Props> = ({
 
   const onEditCaseItemClick = () => {
     updateTempInfo({ screen: routing.subroute, action: CaseItemAction.Edit, info: item }, task.taskSid);
-    const { id, ...routingWithoutId } = routing;
-    changeRoute({ ...routingWithoutId, action: CaseItemAction.Edit }, task.taskSid);
+    changeRoute({ ...routing, action: CaseItemAction.Edit }, task.taskSid);
   };
 
   return (

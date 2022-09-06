@@ -125,7 +125,7 @@ export const releaseContactReducer = (state: ExistingContactsState, action: Rele
       current.references.delete(action.reference);
       return [id, current];
     })
-    .filter(([, ecs]) => typeof ecs === 'object' && ecs.references.size < 1);
+    .filter(([, ecs]) => typeof ecs === 'object' && ecs.references.size > 0);
   return {
     ...omit(state, ...action.ids),
     ...Object.fromEntries(updateKvps),

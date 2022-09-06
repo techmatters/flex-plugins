@@ -1,21 +1,24 @@
 import { hrmServiceContactToSearchContact } from '../../../states/contacts/contactDetailsAdapter';
 import {
   clearDraft,
+  ContactDetailsRoute,
   createDraft,
   createDraftReducer,
   ExistingContactsState,
+  LOAD_CONTACT_ACTION,
   loadContact,
   loadContactReducer,
   loadRawContact,
+  loadRawContacts,
   releaseContact,
   releaseContactReducer,
+  releaseContacts,
   setCategoriesGridView,
   setCategoriesGridViewReducer,
   toggleCategoryExpanded,
   toggleCategoryExpandedReducer,
   updateDraft,
   updateDraftReducer,
-  ContactDetailsRoute, loadRawContacts,
 } from '../../../states/contacts/existingContacts';
 import { SearchContact } from '../../../types/types';
 
@@ -33,6 +36,7 @@ const baseContact: SearchContact = {
     channel: undefined,
     conversationDuration: undefined,
     createdBy: undefined,
+    taskId: undefined,
   },
   details: {
     callType: '',
@@ -40,6 +44,7 @@ const baseContact: SearchContact = {
     childInformation: { name: { firstName: 'Lorna', lastName: 'Ballantyne' } },
     callerInformation: { name: { firstName: 'Charlie', lastName: 'Ballantyne' } },
     contactlessTask: undefined,
+    conversationMedia: [],
   },
   csamReports: [],
 };
@@ -120,6 +125,36 @@ describe('loadContactReducer', () => {
       expect(newState[baseContact.contactId].references.size).toStrictEqual(1);
       expect(newState[baseContact.contactId].references.has('TEST_REFERENCE')).toBeTruthy();
     });
+    test('Multiple contacts in different states - applies rules to each contact separately', () => {
+      const changedContact = { ...baseContact, overview: { ...baseContact.overview, name: 'Charlotte Ballantyne' } };
+      const newState = loadContactReducer(
+        {
+          [baseContact.contactId]: {
+            savedContact: baseContact,
+            references: new Set(['TEST_REFERENCE']),
+            categories: { gridView: false, expanded: {} },
+          },
+          '666': {
+            savedContact: { ...baseContact, contactId: '666' },
+            references: new Set(['ANOTHER_TEST_REFERENCE']),
+            categories: { gridView: false, expanded: {} },
+          },
+        },
+        {
+          type: LOAD_CONTACT_ACTION,
+          reference: 'TEST_REFERENCE',
+          contacts: [changedContact, { ...changedContact, contactId: '666' }, { ...changedContact, contactId: '42' }],
+          replaceExisting: false,
+        },
+      );
+      expect(newState[baseContact.contactId].savedContact).toStrictEqual(baseContact);
+      expect([...newState[baseContact.contactId].references]).toStrictEqual(['TEST_REFERENCE']);
+      expect(newState['42'].savedContact).toStrictEqual({ ...changedContact, contactId: '42' });
+      expect([...newState['42'].references]).toStrictEqual(['TEST_REFERENCE']);
+      expect(newState['666'].savedContact).toStrictEqual({ ...baseContact, contactId: '666' });
+      expect([...newState['666'].references]).toMatchObject(['ANOTHER_TEST_REFERENCE', 'TEST_REFERENCE']);
+      expect(newState['666'].references.size).toEqual(2);
+    });
   });
 
   describe('replaceExisting set to true', () => {
@@ -183,6 +218,37 @@ describe('loadContactReducer', () => {
       expect(newState[baseContact.contactId].savedContact).toStrictEqual(changedContact);
       expect(newState[baseContact.contactId].references.size).toStrictEqual(1);
       expect(newState[baseContact.contactId].references.has('TEST_REFERENCE')).toBeTruthy();
+    });
+
+    test('Multiple contacts in different states - applies rules to each contact separately', () => {
+      const changedContact = { ...baseContact, overview: { ...baseContact.overview, name: 'Charlotte Ballantyne' } };
+      const newState = loadContactReducer(
+        {
+          [baseContact.contactId]: {
+            savedContact: baseContact,
+            references: new Set(['TEST_REFERENCE']),
+            categories: { gridView: false, expanded: {} },
+          },
+          '666': {
+            savedContact: { ...baseContact, contactId: '666' },
+            references: new Set(['ANOTHER_TEST_REFERENCE']),
+            categories: { gridView: false, expanded: {} },
+          },
+        },
+        {
+          type: LOAD_CONTACT_ACTION,
+          reference: 'TEST_REFERENCE',
+          contacts: [changedContact, { ...changedContact, contactId: '666' }, { ...changedContact, contactId: '42' }],
+          replaceExisting: true,
+        },
+      );
+      expect(newState[baseContact.contactId].savedContact).toStrictEqual(changedContact);
+      expect([...newState[baseContact.contactId].references]).toStrictEqual(['TEST_REFERENCE']);
+      expect(newState['42'].savedContact).toStrictEqual({ ...changedContact, contactId: '42' });
+      expect([...newState['42'].references]).toStrictEqual(['TEST_REFERENCE']);
+      expect(newState['666'].savedContact).toStrictEqual({ ...changedContact, contactId: '666' });
+      expect([...newState['666'].references]).toMatchObject(['ANOTHER_TEST_REFERENCE', 'TEST_REFERENCE']);
+      expect(newState['666'].references.size).toEqual(2);
     });
   });
 
@@ -272,6 +338,48 @@ describe('releaseContactReducer', () => {
       releaseContact(baseContact.contactId, 'ANYTHING'),
     );
     expect(newState[baseContact.contactId]).toBeUndefined();
+  });
+  test('Multiple contacts that are all present - removes references and removes contacts left with no references', () => {
+    const newState = releaseContactReducer(
+      {
+        [baseContact.contactId]: {
+          savedContact: baseContact,
+          references: new Set(['TEST_REFERENCE', 'ANOTHER_TEST_REFERENCE']),
+          categories: { gridView: false, expanded: {} },
+        },
+        '666': {
+          savedContact: { ...baseContact, contactId: '666' },
+          references: new Set(['TEST_REFERENCE']),
+          categories: { gridView: false, expanded: {} },
+        },
+      },
+      releaseContacts([baseContact.contactId, '666'], 'TEST_REFERENCE'),
+    );
+    expect(newState[baseContact.contactId].savedContact).toStrictEqual(baseContact);
+    expect(newState[baseContact.contactId].references.size).toStrictEqual(1);
+    expect(newState[baseContact.contactId].references.has('ANOTHER_TEST_REFERENCE')).toBeTruthy();
+    expect(newState['666']).toBeUndefined();
+  });
+  test('Multiple contacts that are not all present - removes references and removes contacts left with no references', () => {
+    const newState = releaseContactReducer(
+      {
+        [baseContact.contactId]: {
+          savedContact: baseContact,
+          references: new Set(['ANOTHER_TEST_REFERENCE']),
+          categories: { gridView: false, expanded: {} },
+        },
+        '666': {
+          savedContact: { ...baseContact, contactId: '666' },
+          references: new Set(['TEST_REFERENCE']),
+          categories: { gridView: false, expanded: {} },
+        },
+      },
+      releaseContacts([baseContact.contactId, '666', '42'], 'TEST_REFERENCE'),
+    );
+    expect(newState[baseContact.contactId].savedContact).toStrictEqual(baseContact);
+    expect(newState[baseContact.contactId].references.size).toStrictEqual(1);
+    expect(newState[baseContact.contactId].references.has('ANOTHER_TEST_REFERENCE')).toBeTruthy();
+    expect(newState['666']).toBeUndefined();
   });
 });
 
