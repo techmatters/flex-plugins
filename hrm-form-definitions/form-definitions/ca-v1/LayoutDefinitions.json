@@ -6,7 +6,9 @@
     "childInformation": {
       "splitFormAt": 8
     },
-    "caseInformation": {}
+    "caseInformation": {
+       "splitFormAt": 8
+    }
   },
   "case": {
     "households": {
