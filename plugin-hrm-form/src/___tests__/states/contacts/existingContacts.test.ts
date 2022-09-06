@@ -15,7 +15,7 @@ import {
   toggleCategoryExpandedReducer,
   updateDraft,
   updateDraftReducer,
-  ContactDetailsRoute,
+  ContactDetailsRoute, loadRawContacts,
 } from '../../../states/contacts/existingContacts';
 import { SearchContact } from '../../../types/types';
 
@@ -190,10 +190,25 @@ describe('loadContactReducer', () => {
     (<jest.Mock>hrmServiceContactToSearchContact).mockReturnValue(baseContact);
     const input = { id: baseContact.contactId, bleep: 'bloop' };
     const outAction = loadRawContact(input, 'TEST_REFERENCE');
-    expect(outAction.contact).toStrictEqual(baseContact);
-    expect(outAction.id).toStrictEqual(baseContact.contactId);
+    expect(outAction.contacts.length).toEqual(1);
+    expect(outAction.contacts[0]).toStrictEqual(baseContact);
     expect(outAction.reference).toEqual('TEST_REFERENCE');
     expect(hrmServiceContactToSearchContact).toHaveBeenCalledWith(input);
+  });
+
+  test('loadRawContacts - converts all contacts using hrmServiceContactToSearchContact before creating load contact action', () => {
+    (<jest.Mock>hrmServiceContactToSearchContact)
+      .mockReturnValueOnce(baseContact)
+      .mockReturnValueOnce({ ...baseContact, contactId: '42' });
+    const input1 = { id: baseContact.contactId, bleep: 'bloop' };
+    const input2 = { id: '42', bleep: 'bloop' };
+    const outAction = loadRawContacts([input1, input2], 'TEST_REFERENCE');
+    expect(outAction.contacts.length).toEqual(2);
+    expect(outAction.contacts[0]).toStrictEqual(baseContact);
+    expect(outAction.contacts[1]).toStrictEqual({ ...baseContact, contactId: '42' });
+    expect(outAction.reference).toEqual('TEST_REFERENCE');
+    expect(hrmServiceContactToSearchContact).toHaveBeenCalledWith(input1);
+    expect(hrmServiceContactToSearchContact).toHaveBeenCalledWith(input2);
   });
 });
 
