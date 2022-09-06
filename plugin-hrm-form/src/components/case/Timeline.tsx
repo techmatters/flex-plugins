@@ -47,38 +47,11 @@ const Timeline: React.FC<Props> = props => {
   const [mockedMessage, setMockedMessage] = useState(null);
 
   const handleViewNoteClick = (activity: NoteActivity) => {
-    const { twilioWorkerId } = activity;
-    const info: CaseItemEntry = {
-      id: activity.id,
-      form: { ...activity.note },
-      twilioWorkerId,
-      createdAt: parseISO(activity.date).toISOString(),
-      updatedAt: activity.updatedAt ? parseISO(activity.updatedAt).toISOString() : undefined,
-      updatedBy: activity.updatedBy,
-    };
-    updateTempInfo({ screen: NewCaseSubroutes.Note, action: CaseItemAction.View, info }, taskSid);
-    changeRoute({ route, subroute: NewCaseSubroutes.Note, action: CaseItemAction.View }, taskSid);
+    changeRoute({ route, subroute: NewCaseSubroutes.Note, action: CaseItemAction.View, id: activity.id }, taskSid);
   };
 
   const handleViewReferralClick = (activity: ReferralActivity) => {
-    const { twilioWorkerId } = activity;
-    const info: CaseItemEntry = {
-      id: activity.id,
-      form: { ...activity.referral },
-      twilioWorkerId,
-      createdAt: parseISO(activity.createdAt).toISOString(),
-      updatedAt: activity.updatedAt ? parseISO(activity.updatedAt).toISOString() : undefined,
-      updatedBy: activity.updatedBy,
-    };
-    updateTempInfo(
-      {
-        screen: NewCaseSubroutes.Referral,
-        action: CaseItemAction.View,
-        info: { ...info },
-      },
-      taskSid,
-    );
-    changeRoute({ route, subroute: NewCaseSubroutes.Referral, action: CaseItemAction.View }, taskSid);
+    changeRoute({ route, subroute: NewCaseSubroutes.Referral, action: CaseItemAction.View, id: activity.id }, taskSid);
   };
 
   const handleViewConnectedCaseActivityClick = activity => {
