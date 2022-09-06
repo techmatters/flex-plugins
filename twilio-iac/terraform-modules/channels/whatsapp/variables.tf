@@ -20,7 +20,7 @@ variable "target_task_name" {
   type        = string
 }
 
-variable "messenger_contact_identity" {
+variable "whatsapp_contact_identity" {
   description = "Contact Identity for the messaging flow"
   type = string
 }

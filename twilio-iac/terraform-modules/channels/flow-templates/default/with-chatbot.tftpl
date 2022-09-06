@@ -1,7 +1,9 @@
 ${
   jsonencode(
-
   {
+      "states": [
+
+        {
             "transitions": [
               {
                 "event": "incomingMessage",
@@ -72,7 +74,7 @@ ${
                   }
                 ],
                 "event": "match",
-                "next": "messenger_attributes"
+                "next": "attributes"
               }
             ],
             "type": "split-based-on",
@@ -98,7 +100,7 @@ ${
               }
             ],
             "type": "send-to-flex",
-            "name": "messenger_attributes",
+            "name": "attributes",
             "properties": {
               "attributes": channel_attributes,
               "workflow":  master_workflow_sid,
@@ -114,7 +116,7 @@ ${
         "flags": {
           "allow_concurrent_calls": true
         },
-        "description": "Messenger Messaging Flow"
+        "description": flow_description
       }
 
   )}

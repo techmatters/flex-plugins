@@ -65,10 +65,8 @@ module messengerChannel {
   flex_chat_service_sid = module.services.flex_chat_service_sid
   pre_survey_bot_sid = module.chatbots.pre_survey_bot_es_sid
   target_task_name = var.target_task_name != "" ? var.target_task_name : "greeting"
-  short_helpline = var.short_helpline
-  short_environment = var.short_environment
-}
 
+}
 
 module twitterChannel {
   count =  var.twitter_channel ? 1 : 0

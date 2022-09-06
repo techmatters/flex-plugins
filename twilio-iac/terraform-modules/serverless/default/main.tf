@@ -15,8 +15,8 @@ resource "twilio_serverless_services_v1" "serverless" {
 
 resource "twilio_serverless_services_environments_v1" "dev" {
   service_sid = twilio_serverless_services_v1.serverless.sid
-  unique_name = "dev"
-  domain_suffix = "dev"
+  unique_name = "dev1"
+  domain_suffix = "dev1"
 }
 
 resource "twilio_serverless_services_environments_v1" "production" {

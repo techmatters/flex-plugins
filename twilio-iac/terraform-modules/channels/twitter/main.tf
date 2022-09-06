@@ -8,99 +8,14 @@ terraform {
 }
 
 locals {
-  flow_definition = jsonencode(
-  {
-    "states": [
-      {
-        "transitions": [
-          {
-            "event": "incomingMessage",
-            "next": "Twitter"
-          },
-          {
-            "event": "incomingCall"
-          },
-          {
-            "event": "incomingConversationMessage"
-          },
-          {
-            "event": "incomingRequest"
-          },
-          {
-            "event": "incomingParent"
-          }
-        ],
-        "type": "trigger",
-        "name": "Trigger",
-        "properties": {
-          "offset": {
-            "y": 0,
-            "x": 0
-          }
-        }
-      },
-      {
-        "transitions": [
-          {
-            "event": "noMatch"
-          },
-          {
-            "conditions": [
-              {
-                "type": "equal_to",
-                "friendly_name": "If value equal_to twitter",
-                "arguments": [
-                  "{{trigger.message.ChannelAttributes.channel_type}}"
-                ],
-                "value": "twitter"
-              }
-            ],
-            "event": "match",
-            "next": "TwitterAttributes"
-          }
-        ],
-        "type": "split-based-on",
-        "name": "Twitter",
-        "properties": {
-          "input": "{{trigger.message.ChannelAttributes.channel_type}}",
-          "offset": {
-            "y": 210,
-            "x": 70
-          }
-        }
-      },
-      {
-        "transitions": [
-          {
-            "event": "callComplete"
-          },
-          {
-            "event": "failedToEnqueue"
-          },
-          {
-            "event": "callFailure"
-          }
-        ],
-        "type": "send-to-flex",
-        "name": "TwitterAttributes",
-        "properties": {
-          "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"twitterUserHandle\": \"{{trigger.message.ChannelAttributes.twitterUserHandle}}\",\"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\",\"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
-          "workflow":  var.master_workflow_sid,
-          "channel": var.chat_task_channel_sid,
-          "offset": {
-            "y": 480,
-            "x": 190
-          }
-        }
-      }
-    ],
-    "initial_state": "Trigger",
-    "flags": {
-      "allow_concurrent_calls": true
-    },
-    "description": "Twitter Messaging Flow"
-  }
-  )
+  flow_definition = var.custom_flow_definition !=""? var.custom_flow_definition : templatefile(
+    "${path.module}/../flow-templates/default/no-chatbot.tftpl",
+    {
+      master_workflow_sid = var.master_workflow_sid
+      chat_task_channel_sid = var.chat_task_channel_sid
+      channel_attributes = var.custom_channel_attributes != "" ? var.custom_channel_attributes : file("${path.module}/channel-attributes.tftpl")
+      flow_description = "Twitter Messaging Flow"
+    })
 }
 
   resource "twilio_studio_flows_v2" "twitter_messaging_flow" {

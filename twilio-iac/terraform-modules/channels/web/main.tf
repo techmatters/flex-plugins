@@ -15,23 +15,22 @@ locals {
       chat_task_channel_sid = var.chat_task_channel_sid
       pre_survey_bot_sid = var.pre_survey_bot_sid
       channel_attributes = var.custom_channel_attributes != "" ? var.custom_channel_attributes : file("${path.module}/channel-attributes.tftpl")
-      flow_description = "Messenger Messaging Flow"
+      flow_description = "Web Messaging Flow"
       target_task_name = var.target_task_name
     })
 }
 
-  resource "twilio_studio_flows_v2" "messenger_messaging_flow" {
-    friendly_name = "Messenger Messaging Flow"
+  resource "twilio_studio_flows_v2" "web_messaging_flow" {
+    friendly_name = "Web Messaging Flow"
     status = "published"
     definition = local.flow_definition
   }
 
-  resource "twilio_flex_flex_flows_v1" "messenger_flow" {
-    channel_type  = "facebook"
+  resource "twilio_flex_flex_flows_v1" "web_flow" {
+    channel_type  = "web"
     chat_service_sid = var.flex_chat_service_sid
-    friendly_name = "Flex Messenger Channel Flow"
+    friendly_name = "Flex Web Channel Flow"
     integration_type = "studio"
-    contact_identity = var.messenger_contact_identity
-    integration_flow_sid = twilio_studio_flows_v2.messenger_messaging_flow.sid
+    integration_flow_sid = twilio_studio_flows_v2.web_messaging_flow.sid
     enabled = true
   }

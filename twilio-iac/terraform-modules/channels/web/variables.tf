@@ -20,11 +20,6 @@ variable "target_task_name" {
   type        = string
 }
 
-variable "messenger_contact_identity" {
-  description = "Contact Identity for the messaging flow"
-  type = string
-}
-
 variable "master_workflow_sid" {
   description = "Internal Twilio resource SID provided by another module"
   type        = string
