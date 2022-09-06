@@ -25,6 +25,7 @@ on:
       changelog:
         description: Release Changelog - Add a comment about the changes to be included in this release.
         required: true
+        type: string
       send-slack-message:
         description: 'Specifies if should send a Slack message at the end of successful run. Defaults to true'
         required: false
