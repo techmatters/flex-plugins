@@ -587,5 +587,52 @@
     "name": "Newcomer",
     "label": "Newcomer (e.g., Arrived in Canada within 5 years or less)/Recent Immigrant/Refugee",
     "type": "mixed-checkbox"
-  }
+  },
+  {
+    "name": "upsetLevel",
+    "label": "On a scale of 1 to 7, how upset is the child?",
+    "type": "select",
+    "options": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "1",
+          "label": "1 - Not Very"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        },
+        {
+          "value": "5",
+          "label": "5"
+        },
+        {
+          "value": "6",
+          "label": "6"
+        },
+        {
+          "value": "7",
+          "label": "7 - Very"
+        },
+        {
+          "value": "Unknown",
+          "label": "Did not disclose/Did not ask"
+        }
+      ],
+      "required": {
+        "value": true,
+        "message": "RequiredFieldError"
+      }
+  }  
 ]
