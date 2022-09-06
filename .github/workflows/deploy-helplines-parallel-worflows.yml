@@ -1,4 +1,4 @@
-name: Test parallel workflow executions
+name: Helplines parallel workflow executions
 
 on:
   workflow_dispatch:
