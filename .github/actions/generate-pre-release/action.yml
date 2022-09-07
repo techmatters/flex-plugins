@@ -38,7 +38,8 @@ runs:
 
     # Generate next tag
     - name: Generate next tag
-      uses: ./.github/actions/generate-next-tag
+      # TODO: remove branch tag
+      uses: techmatters/flex-plugins/.github/actions/generate-pre-release@gian_CHI-1262-p2
       with:
         prefix: "${{ inputs.tag-prefix }}-${{ inputs.tag-suffix }}"
         latest-matching-tag: ${{ steps.latest_matching_tag.outputs.tag }}
