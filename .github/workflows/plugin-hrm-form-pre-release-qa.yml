@@ -16,8 +16,7 @@ on:
 jobs:
 
   build-and-deploy:
-    # TODO: remove branch tag
-    uses: techmatters/flex-plugins/.github/workflows/end_to_end_development.yml@gian_CHI-1262-p2
+    uses: techmatters/flex-plugins/.github/workflows/end_to_end_development.yml@master
     secrets:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
