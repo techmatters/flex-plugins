@@ -1,10 +1,3 @@
-/**
- * If changes are made to this file, it needs to be recompiled using @vercel/ncc (https://github.com/vercel/ncc).
- * 1) Install vercel/ncc by running this command in your terminal. npm i -g @vercel/ncc
- * 2) Compile your index.js file. ncc build index.js --license licenses.txt
- * For details see https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action#commit-tag-and-push-your-action-to-github 
-*/ 
-
 import { setOutput, setFailed } from '@actions/core';
 
 async function generateNextTag() {

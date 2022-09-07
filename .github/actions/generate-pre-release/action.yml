@@ -10,6 +10,9 @@ inputs:
   title:
     description: Release title - The title that will be given to this pre-release.
     required: true
+  repository:
+    required: true
+    description: The github repo to compare tags against. Tipically ${{ github.event.repository.name }}.
   repo_token: 
     description: A GitHub token to access the repo. Tipically secrets.GITHUB_TOKEN.
     required: true
@@ -30,14 +33,13 @@ runs:
     - name: Get latest tag
       uses: oprypin/find-latest-tag@v1
       with:
-        repository: techmatters/flex-plugins # This repo
+        repository: ${{ inputs.repository }}
         # releases-only: false
         prefix: "${{ inputs.tag-prefix }}-${{ inputs.tag-suffix }}"
       id: latest_matching_tag
       continue-on-error: true
 
     # Generate next tag
-
     - name: Generate next tag
       run: npm run generate-next-tag
       env:

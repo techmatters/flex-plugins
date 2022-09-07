@@ -16,7 +16,7 @@ on:
 jobs:
 
   build-and-deploy:
-    # TODO: remove branch tag (@gian_CHI-1262-p2)
+    # TODO: remove branch tag
     uses: techmatters/flex-plugins/.github/workflows/end_to_end_development.yml@gian_CHI-1262-p2
     secrets:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -78,6 +78,7 @@ jobs:
           tag-prefix: ${{ inputs.tag-prefix }}
           tag-suffix: 'qa'
           title: ${{ inputs.title }}
+          repository: ${{ github.event.repository.name }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
         id: create_pre_release
 
