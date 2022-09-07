@@ -1,4 +1,6 @@
-name: Helplines parallel workflow executions
+# This is a basic workflow to deploy Flex to all helpline staging environments
+
+name: Deploy Flex to all Helpline Staging Environments
 
 on:
   workflow_dispatch:

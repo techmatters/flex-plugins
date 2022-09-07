@@ -9,7 +9,7 @@ on:
       changelog:
         description: Release Changelog - Add a comment about the changes to be included in this release.
         required: true
-   workflow_call:
+  workflow_call:
     secrets: 
       AWS_ACCESS_KEY_ID:
         required: true
