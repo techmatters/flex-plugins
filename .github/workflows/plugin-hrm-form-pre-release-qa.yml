@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       tag-prefix:
-        description: Release tag name.
+        description: Release tag prefix (generally the version, e.g. v1.2.3).
         required: true
       title:
         description: Release title - The title that will be given to this pre-release.
