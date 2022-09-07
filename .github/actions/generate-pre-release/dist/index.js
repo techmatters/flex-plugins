@@ -2856,8 +2856,8 @@ __nccwpck_require__.r(__webpack_exports__);
 
 
 async function generateNextTag() {
-  const prefix = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('prefix', { required: true });
-  const latestTag = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('latest-matching-tag');
+  const prefix = process.env.PREFIX;
+  const latestTag = process.env.LATEST_MATCHING_TAG;
 
   // If no latest tag found, return this as the first iteration for this prefix
   if (!latestTag) {

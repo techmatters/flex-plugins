@@ -5,11 +5,11 @@
  * For details see https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action#commit-tag-and-push-your-action-to-github 
 */ 
 
-import { getInput, setOutput, setFailed } from '@actions/core';
+import { setOutput, setFailed } from '@actions/core';
 
 async function generateNextTag() {
-  const prefix = getInput('prefix', { required: true });
-  const latestTag = getInput('latest-matching-tag');
+  const prefix = process.env.PREFIX;
+  const latestTag = process.env.LATEST_MATCHING_TAG;
 
   // If no latest tag found, return this as the first iteration for this prefix
   if (!latestTag) {
