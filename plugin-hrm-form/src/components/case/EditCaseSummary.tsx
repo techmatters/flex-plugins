@@ -82,26 +82,26 @@ const EditCaseSummary: React.FC<Props> = ({
   const formDefinition: FormDefinition = [
     {
       name: 'caseStatus',
-      label: 'Case Status',
+      label: 'Case-CaseStatus',
       type: 'select',
       options: [
-        { value: 'open', label: 'open' },
-        { value: 'closed', label: 'closed' },
+        { value: 'open', label: 'Open' },
+        { value: 'closed', label: 'Closed' },
       ],
     },
     {
       name: 'date',
       type: 'date-input',
-      label: 'Follow Up Date',
+      label: 'Case-CaseDetailsFollowUpDate',
     },
     {
       name: 'inImminentPhysicalDanger',
-      label: 'Child is in imminent physical danger',
+      label: 'Case-ChildIsAtRisk',
       type: 'checkbox',
     },
     {
       name: 'caseSummary',
-      label: 'Case Summary',
+      label: 'SectionName-CaseSummary',
       type: 'textarea',
     },
   ];

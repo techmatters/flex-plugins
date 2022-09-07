@@ -36,6 +36,6 @@ export const noteSectionApi: CaseSectionApi<NoteEntry> = {
   getSectionFormDefinition: (definitionVersions: DefinitionVersion) => definitionVersions.caseForms.NoteForm,
   getSectionLayoutDefinition: (definitionVersions: DefinitionVersion) =>
     definitionVersions.layoutVersion.case.notes ?? {},
-  getMostRecentSectionItem: getMostRecentSectionItem('notes'),
-  getSectionItemById: getSectionItemById('notes'),
+  getMostRecentSectionItem: getMostRecentSectionItem('counsellorNotes'),
+  getSectionItemById: getSectionItemById('counsellorNotes'),
 };

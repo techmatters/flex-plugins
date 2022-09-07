@@ -84,6 +84,7 @@ class SearchForm extends Component {
     return contactsCount > 0 || casesCount > 0;
   }
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   render() {
     const {
       firstName,
@@ -215,7 +216,7 @@ class SearchForm extends Component {
                 name="office"
                 label={this.props.helplineInformation.label}
                 placeholder="--"
-                field={getField(helpline)}
+                field={getField(helpline ?? '')}
                 options={[{ label: '', value: '' }, ...helplineOptions]}
                 {...this.defaultEventHandlers('helpline')}
               />
