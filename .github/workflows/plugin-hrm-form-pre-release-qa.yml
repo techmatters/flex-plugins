@@ -15,56 +15,56 @@ on:
 
 jobs:
 
-  # build-and-deploy:
-  #   # TODO: remove branch tag (@gian_CHI-1262-p2)
-  #   uses: techmatters/flex-plugins/.github/workflows/end_to_end_development.yml@gian_CHI-1262-p2
-  #   secrets:
-  #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #     AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-  #     E2E_DEV_ACCOUNT_SID: ${{ secrets.E2E_DEV_ACCOUNT_SID }}
-  #     E2E_DEV_AUTH_TOKEN: ${{ secrets.E2E_DEV_AUTH_TOKEN }}
-  #   with:
-  #     changelog: "Deploying for pre-release ${{ inputs.tag-prefix }}: ${{ inputs.tag-prefix }} (commit ${{ github.sha }})"
-  #     send-slack-message: 'false'
+  build-and-deploy:
+    # TODO: remove branch tag (@gian_CHI-1262-p2)
+    uses: techmatters/flex-plugins/.github/workflows/end_to_end_development.yml@gian_CHI-1262-p2
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+      E2E_DEV_ACCOUNT_SID: ${{ secrets.E2E_DEV_ACCOUNT_SID }}
+      E2E_DEV_AUTH_TOKEN: ${{ secrets.E2E_DEV_AUTH_TOKEN }}
+    with:
+      changelog: "Deploying for pre-release ${{ inputs.tag-prefix }}: ${{ inputs.tag-prefix }} (commit ${{ github.sha }})"
+      send-slack-message: 'false'
 
-  # run-e2e-tests:
-  #   needs: build-and-deploy
+  run-e2e-tests:
+    needs: build-and-deploy
 
-  #   runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-  #     - uses: actions/checkout@v2
-  #     - name: Use Node.js
-  #       uses: actions/setup-node@v1
-  #       with:
-  #         node-version: '14.x'
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
 
-  #     # Build Playwright
-  #     - name: Install e2e-tests dependencies
-  #       run: npm install
-  #       working-directory: ./e2e-tests
-  #     - name: Setup dependencies for playwright/browsers
-  #       uses: microsoft/playwright-github-action@v1
-  #     - name: Install Playwright CLI
-  #       run: npx playwright install
-  #       working-directory: ./e2e-tests
+      # Build Playwright
+      - name: Install e2e-tests dependencies
+        run: npm install
+        working-directory: ./e2e-tests
+      - name: Setup dependencies for playwright/browsers
+        uses: microsoft/playwright-github-action@v1
+      - name: Install Playwright CLI
+        run: npx playwright install
+        working-directory: ./e2e-tests
 
-  #     # Run E2E tests against actual E2E Flex instance
-  #     - name: Run Playwright tests
-  #       run: DEBUG=pw:api PLAYWRIGHT_BASEURL=${{secrets.PLAYWRIGHT_BASEURL_E2E}} PLAYWRIGHT_USER_USERNAME=${{secrets.PLAYWRIGHT_USER_USERNAME}} PLAYWRIGHT_USER_PASSWORD=${{secrets.PLAYWRIGHT_USER_PASSWORD}} TWILIO_ACCOUNT_SID=${{secrets.E2E_DEV_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{secrets.E2E_DEV_AUTH_TOKEN}} npx playwright test
-  #       working-directory: ./e2e-tests
+      # Run E2E tests against actual E2E Flex instance
+      - name: Run Playwright tests
+        run: DEBUG=pw:api PLAYWRIGHT_BASEURL=${{secrets.PLAYWRIGHT_BASEURL_E2E}} PLAYWRIGHT_USER_USERNAME=${{secrets.PLAYWRIGHT_USER_USERNAME}} PLAYWRIGHT_USER_PASSWORD=${{secrets.PLAYWRIGHT_USER_PASSWORD}} TWILIO_ACCOUNT_SID=${{secrets.E2E_DEV_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{secrets.E2E_DEV_AUTH_TOKEN}} npx playwright test
+        working-directory: ./e2e-tests
 
-  #     # Upload artifacts
-  #     - uses: actions/upload-artifact@v2
-  #       if: ${{ always() }}
-  #       with:
-  #         name: test-artifacts
-  #         path: e2e-tests/test-results
+      # Upload artifacts
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: test-artifacts
+          path: e2e-tests/test-results
 
   generate-pre-release:
-    # needs: run-e2e-tests
+    needs: run-e2e-tests
 
     runs-on: ubuntu-latest
 
@@ -81,31 +81,13 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
         id: create_pre_release
 
-      ## TODO: Abstract all of this in a custom action reused across repos?
-      # Setup credentials to access AWS for parameters
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      # Send Slack notifying success
+      - name: Slack aselo-deploys channel
+        uses: ./.github/actions/notify-deploys
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
-      # Set env vars to send slack message
-      - name: Set GITHUB_ACTIONS_SLACK_BOT_TOKEN
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
-        with:
-          ssm_parameter: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
-          env_variable_name: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
-      - name: Set ASELO_DEPLOYS_CHANNEL_ID
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
-        with:
-          ssm_parameter: "ASELO_DEPLOYS_CHANNEL_ID"
-          env_variable_name: "ASELO_DEPLOYS_CHANNEL_ID"
-      # Send Slack notifying success
-      - name: Slack Aselo channel
-        id: slack
-        uses: slackapi/slack-github-action@v1.14.0
-        with:
-          channel-id: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
           slack-message: "`[Flex]` Action ${{ github.workflow }} completed with SHA ${{ github.sha }}. Release tag is ${{ steps.create_pre_release.outputs.generated-pre-release-tag }} :rocket:."
         env:
           SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
