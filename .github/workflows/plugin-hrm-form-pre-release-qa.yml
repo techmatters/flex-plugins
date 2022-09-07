@@ -1,6 +1,6 @@
 # Workflow to create a new pre-release with qa suffix
 
-name: Pre-release QA
+name: Create a QA candidate release
 
 # Controls when the action will run.
 on:
