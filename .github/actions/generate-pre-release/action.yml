@@ -38,7 +38,7 @@ runs:
 
     # Generate next tag
     - name: Generate next tag
-      run: node ${GITHUB_ACTION_PATH}/dist/generate-next-tag.js
+      run: node ${{ github.action_path }}/dist/generate-next-tag.js
       shell: bash
       env:
         PREFIX: "${{ inputs.tag-prefix }}-${{ inputs.tag-suffix }}"
