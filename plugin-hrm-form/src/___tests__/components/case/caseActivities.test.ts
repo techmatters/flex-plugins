@@ -3,7 +3,7 @@ import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 import { Case, CaseInfo } from '../../../types/types';
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import { getDefinitionVersions } from '../../../HrmFormPlugin';
-import { getActivitiesFromCase } from '../../../components/case/caseActivities';
+import { getActivitiesFromCase, getActivitiesFromContacts } from '../../../components/case/caseActivities';
 
 const createFakeCase = (info: CaseInfo, connectedContacts: any[] = []): Case => ({
   id: 0,
@@ -16,6 +16,7 @@ const createFakeCase = (info: CaseInfo, connectedContacts: any[] = []): Case => 
   updatedAt: new Date().toISOString(),
   categories: {},
   childName: '',
+  accountSid: 'x',
 });
 
 let formDefinition;
@@ -30,6 +31,14 @@ describe('getActivitiesFromCase', () => {
   beforeEach(async () => {
     mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, formDefinition);
   });
+
+  test('nothing added - empty array', async () => {
+    const fakeCase = createFakeCase({});
+
+    const activities = getActivitiesFromCase(fakeCase);
+    expect(activities).toStrictEqual([]);
+  });
+
   test('single note added', async () => {
     const fakeCase = createFakeCase({
       counsellorNotes: [
@@ -45,7 +54,6 @@ describe('getActivitiesFromCase', () => {
     const activities = getActivitiesFromCase(fakeCase);
     const expectedActivity = {
       id: 'NOTE_ID',
-      originalIndex: 0,
       date: createdAt,
       type: 'note',
       note: {
@@ -84,7 +92,6 @@ describe('getActivitiesFromCase', () => {
     const activities = getActivitiesFromCase(fakeCase);
     const expectedActivity = {
       id: 'NOTE_ID',
-      originalIndex: 0,
       date: createdAt,
       type: 'note',
       note: {
@@ -131,7 +138,6 @@ describe('getActivitiesFromCase', () => {
     const activities = getActivitiesFromCase(fakeCase);
     const expectedActivity = {
       id: 'NOTE_ID',
-      originalIndex: 0,
       date: createdAt,
       type: 'note',
       note: {
@@ -172,7 +178,6 @@ describe('getActivitiesFromCase', () => {
     const expectedActivities = [
       {
         id: 'NOTE_ID_1',
-        originalIndex: 0,
         date: createdAt,
         type: 'note',
         text: 'content',
@@ -185,7 +190,6 @@ describe('getActivitiesFromCase', () => {
       },
       {
         id: 'NOTE_ID_2',
-        originalIndex: 1,
         date: createdAt,
         type: 'note',
         note: {
@@ -217,7 +221,6 @@ describe('getActivitiesFromCase', () => {
     const activities = getActivitiesFromCase(fakeCase);
     const expectedActivity = {
       id,
-      originalIndex: 0,
       date: referral.date,
       createdAt,
       type: 'referral',
@@ -226,75 +229,6 @@ describe('getActivitiesFromCase', () => {
       twilioWorkerId,
       updatedBy: undefined,
       updatedAt: undefined,
-    };
-
-    expect(activities).toStrictEqual([expectedActivity]);
-  });
-
-  test('single facebook contact connected', async () => {
-    const timeOfContact = '2020-29-07 18:55:20';
-
-    const fakeCase = createFakeCase({}, [
-      {
-        id: 1,
-        channel: 'facebook',
-        timeOfContact,
-        createdAt,
-        twilioWorkerId: 'contact-adder',
-        rawJson: {
-          caseInformation: {
-            callSummary: 'Child summary',
-          },
-        },
-      },
-    ]);
-
-    const activities = getActivitiesFromCase(fakeCase);
-    const expectedActivity = {
-      originalIndex: 0,
-      contactId: 1,
-      date: timeOfContact,
-      createdAt,
-      type: 'facebook',
-      text: 'Child summary',
-      twilioWorkerId: 'contact-adder',
-      channel: 'facebook',
-    };
-
-    expect(activities).toStrictEqual([expectedActivity]);
-  });
-
-  test('single facebook contact (contactless task)', async () => {
-    const timeOfContact = '2021-01-07 10:00:00';
-
-    const fakeCase = createFakeCase({}, [
-      {
-        id: 1,
-        channel: 'default',
-        timeOfContact,
-        createdAt,
-        twilioWorkerId: 'contact-adder',
-        rawJson: {
-          caseInformation: {
-            callSummary: 'Child summary',
-          },
-          contactlessTask: {
-            channel: 'facebook',
-          },
-        },
-      },
-    ]);
-
-    const activities = getActivitiesFromCase(fakeCase);
-    const expectedActivity = {
-      originalIndex: 0,
-      contactId: 1,
-      date: timeOfContact,
-      createdAt,
-      type: 'default',
-      text: 'Child summary',
-      twilioWorkerId: 'contact-adder',
-      channel: 'facebook',
     };
 
     expect(activities).toStrictEqual([expectedActivity]);
@@ -349,7 +283,6 @@ describe('getActivitiesFromCase', () => {
     const expectedActivities = [
       {
         id: 'NOTE_ID',
-        originalIndex: 0,
         date: noteCreatedAt,
         type: 'note',
         note: {
@@ -362,7 +295,6 @@ describe('getActivitiesFromCase', () => {
       },
       {
         id: 'REFERRAL_ID',
-        originalIndex: 0,
         date: referral.date,
         createdAt: referralCreatedAt,
         type: 'referral',
@@ -372,9 +304,131 @@ describe('getActivitiesFromCase', () => {
         updatedBy: undefined,
         updatedAt: undefined,
       },
+    ];
+
+    expect(activities).toStrictEqual(expectedActivities);
+  });
+});
+
+describe('getActivitiesFromContacts', () => {
+  const createdAt = '2020-07-30 18:55:20';
+  const updatedAt = '2020-08-30 18:55:20';
+  beforeEach(async () => {
+    mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, formDefinition);
+  });
+
+  test('Empty array - returns empty array', () => {
+    expect(getActivitiesFromContacts([])).toStrictEqual([]);
+  });
+
+  test('single facebook contact', async () => {
+    const timeOfContact = '2020-29-07 18:55:20';
+
+    const activities = getActivitiesFromContacts([
       {
-        originalIndex: 0,
-        contactId: 1,
+        id: 1,
+        channel: 'facebook',
+        timeOfContact,
+        createdAt,
+        twilioWorkerId: 'contact-adder',
+        rawJson: {
+          caseInformation: {
+            callSummary: 'Child summary',
+          },
+        },
+      },
+    ]);
+
+    const expectedActivity = {
+      callType: undefined,
+      contactId: '1',
+      date: timeOfContact,
+      createdAt,
+      type: 'facebook',
+      text: 'Child summary',
+      twilioWorkerId: 'contact-adder',
+      channel: 'facebook',
+    };
+
+    expect(activities).toStrictEqual([expectedActivity]);
+  });
+
+  test('single facebook contact (contactless task)', async () => {
+    const timeOfContact = '2021-01-07 10:00:00';
+    const activities = getActivitiesFromContacts([
+      {
+        id: 1,
+        channel: 'default',
+        timeOfContact,
+        createdAt,
+        twilioWorkerId: 'contact-adder',
+        rawJson: {
+          callType: 'beep boop',
+          caseInformation: {
+            callSummary: 'Child summary',
+          },
+          contactlessTask: {
+            channel: 'facebook',
+          },
+        },
+      },
+    ]);
+    const expectedActivity = {
+      callType: 'beep boop',
+      contactId: '1',
+      date: timeOfContact,
+      createdAt,
+      type: 'default',
+      text: 'Child summary',
+      twilioWorkerId: 'contact-adder',
+      channel: 'facebook',
+    };
+
+    expect(activities).toStrictEqual([expectedActivity]);
+  });
+
+  test('Multiple contacts - creates an activity for each, returned in original order', async () => {
+    const timeOfContactlessContact = '2019-01-08 10:00:00';
+    const timeOfContact = '2019-01-07 10:00:00';
+    const contactCreatedAt = '2020-07-30 19:55:20';
+    const contactlessContactCreatedAt = '2020-06-30 18:55:20';
+
+    const activities = getActivitiesFromContacts([
+      {
+        id: 1,
+        channel: 'facebook',
+        timeOfContact,
+        createdAt: contactCreatedAt,
+        twilioWorkerId: 'contact-adder',
+        rawJson: {
+          callType: 'beep boop',
+          caseInformation: {
+            callSummary: 'Child summary',
+          },
+        },
+      },
+      {
+        id: 0,
+        channel: 'default',
+        timeOfContact: timeOfContactlessContact,
+        createdAt: contactlessContactCreatedAt,
+        twilioWorkerId: 'contact-adder',
+        rawJson: {
+          callType: 'boop beep',
+          caseInformation: {
+            callSummary: 'Child summary',
+          },
+          contactlessTask: {
+            channel: 'facebook',
+          },
+        },
+      },
+    ]);
+
+    const expectedActivities = [
+      {
+        callType: 'beep boop',
+        contactId: '1',
         date: timeOfContact,
         createdAt: contactCreatedAt,
         type: 'facebook',
@@ -382,8 +436,18 @@ describe('getActivitiesFromCase', () => {
         twilioWorkerId: 'contact-adder',
         channel: 'facebook',
       },
+      {
+        callType: 'boop beep',
+        contactId: '0',
+        date: timeOfContactlessContact,
+        createdAt: contactlessContactCreatedAt,
+        type: 'default',
+        text: 'Child summary',
+        twilioWorkerId: 'contact-adder',
+        channel: 'facebook',
+      },
     ];
 
-    expect(activities).toStrictEqual(expectedActivities);
+    expect(activities).toMatchObject(expectedActivities);
   });
 });

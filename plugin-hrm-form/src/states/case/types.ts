@@ -106,7 +106,6 @@ export type NoteActivity = {
   twilioWorkerId: string;
   updatedAt?: string;
   updatedBy?: string;
-  originalIndex: number;
 };
 
 export type ReferralActivity = {
@@ -119,7 +118,6 @@ export type ReferralActivity = {
   twilioWorkerId: string;
   updatedAt?: string;
   updatedBy?: string;
-  originalIndex: number;
 };
 
 export type ConnectedCaseActivity = {
@@ -131,7 +129,6 @@ export type ConnectedCaseActivity = {
   text: string;
   twilioWorkerId: string;
   channel: string;
-  originalIndex: number;
 };
 
 export type CaseDetailsName = {

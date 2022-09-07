@@ -167,7 +167,6 @@ const Case: React.FC<Props> = ({
           twilioWorkerId: workerSid,
           channel:
             task.channelType === 'default' ? newContact.rawJson.contactlessTask.channel.toString() : task.channelType,
-          originalIndex: 0,
           callType: newContact.rawJson.callType,
         };
 

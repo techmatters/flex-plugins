@@ -23,7 +23,7 @@ export const isConnectedCaseActivity = (activity): activity is ConnectedCaseActi
 
 const noteActivities = (counsellorNotes: NoteEntry[], previewFields: string[]): Activity[] =>
   (counsellorNotes || [])
-    .map((n, originalIndex) => {
+    .map((n) => {
       try {
         const { id, createdAt: date, updatedAt, updatedBy, twilioWorkerId, ...toCopy } = n;
         const text =
@@ -40,7 +40,6 @@ const noteActivities = (counsellorNotes: NoteEntry[], previewFields: string[]): 
           twilioWorkerId,
           type: ActivityTypes.addNote,
           note: toCopy,
-          originalIndex,
         };
       } catch (err) {
         console.warn(`Error processing referral, excluding from data`, n, err);
@@ -51,7 +50,7 @@ const noteActivities = (counsellorNotes: NoteEntry[], previewFields: string[]): 
 
 const referralActivities = (referrals: ReferralEntry[]): Activity[] =>
   (referrals || [])
-    .map((referral, originalIndex) => {
+    .map((referral) => {
       const { id, createdAt, date, updatedAt, updatedBy, twilioWorkerId, ...toCopy } = referral;
       const { referredTo: text } = referral;
       try {
@@ -65,7 +64,6 @@ const referralActivities = (referrals: ReferralEntry[]): Activity[] =>
           type: ActivityTypes.addReferral,
           text,
           referral: { date, ...toCopy },
-          originalIndex,
         };
       } catch (err) {
         console.warn(`Error processing referral, excluding from data`, referral, err);
@@ -76,7 +74,7 @@ const referralActivities = (referrals: ReferralEntry[]): Activity[] =>
 
 const connectedContactActivities = (caseContacts): ConnectedCaseActivity[] =>
   (caseContacts || [])
-    .map((cc, originalIndex) => {
+    .map((cc) => {
       try {
         const type = ActivityTypes.connectContact[cc.channel];
         const channel = type === ActivityTypes.connectContact.default ? cc.rawJson.contactlessTask.channel : type;
@@ -88,7 +86,6 @@ const connectedContactActivities = (caseContacts): ConnectedCaseActivity[] =>
           text: cc.rawJson.caseInformation.callSummary,
           twilioWorkerId: cc.twilioWorkerId,
           channel,
-          originalIndex,
           callType: cc.rawJson.callType,
         };
       } catch (err) {
