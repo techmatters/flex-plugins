@@ -71,41 +71,14 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      - name: Use Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: '14.x'
 
-      # Get latest tag for this version
-      - name: Get latest tag
-        uses: oprypin/find-latest-tag@v1
+      - name: Create pre release
+        uses: ./.github/actions/generate-pre-release
         with:
-          repository: techmatters/flex-plugins # This repo
-          # releases-only: false  # This repository doesn't use GitHub's "release" feature.
-          prefix: "${{ inputs.tag-prefix }}-qa"
-        id: latest_matching_tag
-        continue-on-error: true
-
-      # Generate next tag
-      - name: Generate next tag
-        uses: ./.github/actions/generate-next-tag
-        with:
-          prefix: "${{ inputs.tag-prefix }}-qa"
-          latest-matching-tag: ${{ steps.latest_matching_tag.outputs.tag }}
-        id: generate_next_tag
-
-      - run: echo ${{ steps.generate_next_tag.outputs.generated-tag }}
-
-      # Create a pre-release
-      - uses: "marvinpinto/action-automatic-releases@v1.2.1"
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          automatic_release_tag: ${{ steps.generate_next_tag.outputs.generated-tag }}
-          prerelease: true
+          tag-prefix: ${{ inputs.tag-prefix }}
+          tag-suffix: 'qa'
           title: ${{ inputs.title }}
-          # files: |
-          #   LICENSE.txt
-          #   *.jar
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
         id: create_pre_release
 
       ## TODO: Abstract all of this in a custom action reused across repos?
@@ -133,6 +106,6 @@ jobs:
         uses: slackapi/slack-github-action@v1.14.0
         with:
           channel-id: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
-          slack-message: "`[Flex]` Action ${{ github.workflow }} completed with SHA ${{ github.sha }}. Release tag is ${{ steps.create_pre_release.outputs.automatic_releases_tag }} :rocket:."
+          slack-message: "`[Flex]` Action ${{ github.workflow }} completed with SHA ${{ github.sha }}. Release tag is ${{ steps.create_pre_release.outputs.generated-pre-release-tag }} :rocket:."
         env:
           SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
