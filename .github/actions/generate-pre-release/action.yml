@@ -11,7 +11,7 @@ inputs:
     description: Release title - The title that will be given to this pre-release.
     required: true
   repo_token: 
-    description: A GitHub token to access the repo. Tipically ${{ secrets.GITHUB_TOKEN }}.
+    description: A GitHub token to access the repo. Tipically secrets.GITHUB_TOKEN.
     required: true
 outputs:
   generated-pre-release-tag:
@@ -45,6 +45,7 @@ runs:
       id: generate_next_tag
 
     - run: echo ${{ steps.generate_next_tag.outputs.generated-tag }}
+      shell: bash
 
     # Create a pre-release
     - name: Create a pre-release
