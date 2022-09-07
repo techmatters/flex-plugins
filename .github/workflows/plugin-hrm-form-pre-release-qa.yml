@@ -78,7 +78,7 @@ jobs:
           tag-prefix: ${{ inputs.tag-prefix }}
           tag-suffix: 'qa'
           title: ${{ inputs.title }}
-          repository: "${{ github.repository }}"
+          repository: ${{ github.repository }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
         id: create_pre_release
 

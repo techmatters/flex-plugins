@@ -12,7 +12,7 @@ inputs:
     required: true
   repository:
     required: true
-    description: The github repo to compare tags against. Tipically ${{ github.repository }}.
+    description: The github repo to compare tags against. Tipically github.repository.
   repo_token: 
     description: A GitHub token to access the repo. Tipically secrets.GITHUB_TOKEN.
     required: true
