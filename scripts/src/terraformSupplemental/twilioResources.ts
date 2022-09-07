@@ -7,7 +7,10 @@ import {
   createTwilioApiKeyAndSsmSecret,
   CreateTwilioApiKeyAndSsmSecretOptions,
 } from './createTwilioApiKeyAndSsmSecret';
-import updateFlexServiceConfiguration from './updateFlexServiceConfiguration';
+import {
+  updateFlexServiceConfiguration,
+  patchFeatureFlags,
+} from './updateFlexServiceConfiguration';
 import { generateChatbotResource } from './generateChatbotResource';
 
 config();
@@ -199,6 +202,33 @@ async function main() {
           );
         }
         await updateFlexServiceConfiguration(JSON.parse(jsonPayload));
+      },
+    )
+    .command(
+      'patch-feature-flags',
+      "GETs the current service configuration, updates the feature flags specified in the arguments (adding those that didn't exist previously)",
+      (argv) => {
+        argv.option('f', {
+          alias: 'flag',
+          describe:
+            'Used to set the feature flags you want. The value must take the form {flag_name}:{flag_set}, e.g. -f my_flag:true. Can be specified multiple times',
+          type: 'array',
+        });
+      },
+      async (argv) => {
+        const flagArgs = argv.flag;
+        if (!Array.isArray(flagArgs) || flagArgs.length < 1) {
+          throw new Error(
+            "Flex Service flags must be set using the -f / --flag argument in the form '-f {flag_name}:{flag_set}', e.g. -f my_flag:true",
+          );
+        }
+        const flagMap: Record<string, boolean> = Object.fromEntries(
+          flagArgs.map((fa) => {
+            const [flag, textSetting] = fa.split(':');
+            return [flag, textSetting.toLowerCase() === 'true'];
+          }),
+        );
+        await patchFeatureFlags(flagMap);
       },
     )
     .command(

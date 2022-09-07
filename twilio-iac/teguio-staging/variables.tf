@@ -75,6 +75,30 @@ variable "feature_flags" {
   }
 }
 
+variable "target_task_name" {
+  description = "Pre survey task that the studio flow should trigger"
+  type        = string
+  default = "execute_initial_flow"
+}
+
 variable "messaging_flow_contact_identity" {
   default = "+17752526377"
+}
+
+variable "messenger_contact_identity" {
+  description = "Contact Identity for the messaging flow"
+  type = string
+  default = "messenger:103574689075106"
+}
+
+variable "whatsapp_contact_identity" {
+  description = "Contact Identity for the messaging flow"
+  type = string
+  default = ""
+}
+
+variable "twilio_numbers" {
+  default = ["messenger:103574689075106","twitter:1540032139563073538","instagram:17841454586132629"]
+  type = list(string)
+  description = "List of Twilio Numbers"
 }

@@ -2,6 +2,7 @@ import { DefinitionVersionId, HelplineEntry } from 'hrm-form-definitions';
 
 import type * as t from '../../types/types';
 import { CaseItemAction, CaseSectionSubroute, NewCaseSubroutes } from '../routing/types';
+import { CaseItemEntry } from '../../types/types';
 
 // Action types
 export const SET_CONNECTED_CASE = 'SET_CONNECTED_CASE';
@@ -19,16 +20,6 @@ type ViewContact = {
   timeOfContact: string;
   counselor: string;
 };
-
-export type ViewTemporaryCaseInfo = {
-  screen: CaseSectionSubroute;
-  action: CaseItemAction.View;
-  info: t.CaseItemEntry;
-};
-
-export function isViewTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is ViewTemporaryCaseInfo {
-  return tci && (<ViewTemporaryCaseInfo>tci).action === CaseItemAction.View;
-}
 
 export type EditTemporaryCaseInfo = {
   screen: CaseSectionSubroute;
@@ -54,7 +45,7 @@ export function isAddTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is AddTempor
 
 export type ViewContactInfo = { screen: typeof NewCaseSubroutes.ViewContact; info: ViewContact };
 
-export type TemporaryCaseInfo = ViewContactInfo | ViewTemporaryCaseInfo | AddTemporaryCaseInfo | EditTemporaryCaseInfo;
+export type TemporaryCaseInfo = ViewContactInfo | AddTemporaryCaseInfo | EditTemporaryCaseInfo;
 
 type SetConnectedCaseAction = {
   type: typeof SET_CONNECTED_CASE;
@@ -180,14 +171,14 @@ export type CaseDetails = {
 };
 
 export const temporaryCaseInfoHistory = (
-  temporaryCaseInfo: EditTemporaryCaseInfo | ViewTemporaryCaseInfo,
+  temporaryCaseInfo: EditTemporaryCaseInfo,
   counselorsHash: Record<string, string>,
-) => {
-  const addingCounsellorName = counselorsHash[temporaryCaseInfo.info.twilioWorkerId] || 'Unknown';
-  const added = new Date(temporaryCaseInfo.info.createdAt);
-  const updatingCounsellorName = temporaryCaseInfo.info.updatedBy
-    ? counselorsHash[temporaryCaseInfo.info.updatedBy] || 'Unknown'
-    : undefined;
-  const updated = temporaryCaseInfo.info.updatedAt ? new Date(temporaryCaseInfo.info.updatedAt) : undefined;
+) => caseItemHistory(temporaryCaseInfo.info, counselorsHash);
+
+export const caseItemHistory = (info: CaseItemEntry, counselorsHash: Record<string, string>) => {
+  const addingCounsellorName = counselorsHash[info.twilioWorkerId] || 'Unknown';
+  const added = new Date(info.createdAt);
+  const updatingCounsellorName = info.updatedBy ? counselorsHash[info.updatedBy] || 'Unknown' : undefined;
+  const updated = info.updatedAt ? new Date(info.updatedAt) : undefined;
   return { addingCounsellorName, added, updatingCounsellorName, updated };
 };

@@ -12,8 +12,8 @@ import { CaseState } from '../../states/case/reducer';
 import SectionEntry from '../SectionEntry';
 import ActionHeader from './ActionHeader';
 import type { CustomITask, StandaloneITask } from '../../types/types';
-import { isViewTemporaryCaseInfo, temporaryCaseInfoHistory } from '../../states/case/types';
-import { AppRoutesWithCaseAndAction, CaseItemAction } from '../../states/routing/types';
+import { caseItemHistory } from '../../states/case/types';
+import { AppRoutesWithCaseActionAndId, CaseItemAction } from '../../states/routing/types';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseSectionApi } from '../../states/case/sections/api';
@@ -21,14 +21,14 @@ import { CaseSectionApi } from '../../states/case/sections/api';
 const mapStateToProps = (state: RootState, ownProps: ViewCaseItemProps) => {
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
   const caseState: CaseState = state[namespace][connectedCaseBase];
-  const { temporaryCaseInfo } = caseState.tasks[ownProps.task.taskSid];
+  const { connectedCase } = caseState.tasks[ownProps.task.taskSid];
 
-  return { counselorsHash, temporaryCaseInfo };
+  return { counselorsHash, connectedCase };
 };
 
 export type ViewCaseItemProps = {
   task: CustomITask | StandaloneITask;
-  routing: AppRoutesWithCaseAndAction;
+  routing: AppRoutesWithCaseActionAndId;
   definitionVersion: DefinitionVersion;
   exitItem: () => void;
   sectionApi: CaseSectionApi<unknown>;
@@ -43,30 +43,23 @@ const ViewCaseItem: React.FC<Props> = ({
   task,
   routing,
   counselorsHash,
-  temporaryCaseInfo,
   updateTempInfo,
   changeRoute,
   exitItem,
   definitionVersion,
   sectionApi,
+  connectedCase,
   canEdit,
 }) => {
-  if (!isViewTemporaryCaseInfo(temporaryCaseInfo))
-    throw new Error('This component only supports temporary case info of the ViewTemporaryCaseInfo type');
+  const item = sectionApi.toForm(sectionApi.getSectionItemById(connectedCase.info, routing.id));
 
-  const { addingCounsellorName, added, updatingCounsellorName, updated } = temporaryCaseInfoHistory(
-    temporaryCaseInfo,
-    counselorsHash,
-  );
+  const { addingCounsellorName, added, updatingCounsellorName, updated } = caseItemHistory(item, counselorsHash);
   const formDefinition = sectionApi.getSectionFormDefinition(definitionVersion).filter(fd => !isNonSaveable(fd));
-  const { form } = temporaryCaseInfo.info;
 
   const onEditCaseItemClick = () => {
-    updateTempInfo(
-      { screen: temporaryCaseInfo.screen, action: CaseItemAction.Edit, info: temporaryCaseInfo.info },
-      task.taskSid,
-    );
-    changeRoute({ ...routing, action: CaseItemAction.Edit }, task.taskSid);
+    updateTempInfo({ screen: routing.subroute, action: CaseItemAction.Edit, info: item }, task.taskSid);
+    const { id, ...routingWithoutId } = routing;
+    changeRoute({ ...routingWithoutId, action: CaseItemAction.Edit }, task.taskSid);
   };
 
   return (
@@ -82,7 +75,7 @@ const ViewCaseItem: React.FC<Props> = ({
         />
         {formDefinition.length === 1 && formDefinition[0].type === 'textarea' ? (
           <FullWidthFormTextContainer data-testid="Case-ViewCaseItemScreen-FullWidthTextArea">
-            {form[formDefinition[0].name]}
+            {item.form[formDefinition[0].name]}
           </FullWidthFormTextContainer>
         ) : (
           <Box paddingTop="10px">
@@ -91,7 +84,7 @@ const ViewCaseItem: React.FC<Props> = ({
                 <SectionEntry
                   key={`entry-${e.label}`}
                   description={<Template code={e.label} />}
-                  value={form[e.name]}
+                  value={item.form[e.name]}
                   definition={e}
                 />
               ))}
