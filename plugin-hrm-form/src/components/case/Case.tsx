@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types,complexity,sonarjs/cognitive-complexity */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 import { bindActionCreators } from 'redux';
@@ -16,14 +16,14 @@ import { getConfig } from '../../HrmFormPlugin';
 import { connectToCase, transformCategories } from '../../services/ContactService';
 import { cancelCase, updateCase } from '../../services/CaseService';
 import { getDefinitionVersion } from '../../services/ServerlessService';
-import { getActivitiesFromCase, getActivitiesFromContacts, sortActivities } from './caseActivities';
+import { getActivitiesFromCase, getActivitiesFromContacts, isNoteActivity, sortActivities } from './caseActivities';
 import { getDateFromNotSavedContact, getHelplineData } from './caseHelpers';
 import { getLocaleDateTime } from '../../utils/helpers';
 import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import * as ConfigActions from '../../states/configuration/actions';
 import ViewContact from './ViewContact';
-import { CaseDetailsName, ConnectedCaseActivity } from '../../states/case/types';
+import { Activity, CaseDetails, CaseDetailsName, ConnectedCaseActivity, NoteActivity } from '../../states/case/types';
 import { CustomITask, StandaloneITask, Case as CaseType } from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
 import {
@@ -78,20 +78,6 @@ const getFirstNameAndLastNameFromContact = (contact): CaseDetailsName => {
   };
 };
 
-const getFirstNameAndLastNameFromForm = (form): CaseDetailsName => {
-  if (form?.childInformation) {
-    const { firstName, lastName } = form.childInformation;
-    return {
-      firstName,
-      lastName,
-    };
-  }
-  return {
-    firstName: 'Unknown',
-    lastName: 'Unknown',
-  };
-};
-
 const newContactTemporaryId = (connectedCase: CaseType) => `__unsavedFromCase:${connectedCase?.id}`;
 
 const Case: React.FC<Props> = ({
@@ -116,10 +102,46 @@ const Case: React.FC<Props> = ({
   ...props
 }) => {
   const [loading, setLoading] = useState(false);
-  const [timeline, setTimeline] = useState([]);
   const [loadedContactIds, setLoadedContactIds] = useState([]);
-  const { connectedCase, prevStatus, caseHasBeenEdited } = props?.connectedCaseState ?? {};
+  const { connectedCase, prevStatus } = props?.connectedCaseState ?? {};
+  // This is to provide a stable dep for the useEffect that generates the timeline
   const savedContactsJson = JSON.stringify(savedContacts);
+
+  const timeline: Activity[] = useMemo(
+    () => {
+      /**
+       * Gets the activities timeline from current caseId
+       * If the case is just being created, adds the case's description as a new activity
+       */
+      if (!props.connectedCaseId) return [];
+
+      const timelineActivities = [
+        ...getActivitiesFromCase(props.connectedCaseState.connectedCase),
+        ...getActivitiesFromContacts(savedContacts ?? []),
+      ];
+
+      if (newContact && !isStandaloneITask(task)) {
+        const { workerSid } = getConfig();
+        const connectCaseActivity: ConnectedCaseActivity = {
+          contactId: newContact.id,
+          date: newContact.timeOfContact,
+          createdAt: new Date().toISOString(),
+          type: task.channelType,
+          text: newContact.rawJson.caseInformation.callSummary.toString(),
+          twilioWorkerId: workerSid,
+          channel:
+            task.channelType === 'default' ? newContact.rawJson.contactlessTask.channel.toString() : task.channelType,
+          callType: newContact.rawJson.callType,
+        };
+
+        timelineActivities.push(connectCaseActivity);
+      }
+      return sortActivities(timelineActivities);
+    },
+    // savedContacts is not present but savedContactsJson is
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [newContact, savedContactsJson, task, form, props.connectedCaseId, props.connectedCaseState?.connectedCase],
+  );
 
   useEffect(() => {
     if (!connectedCase) return;
@@ -142,53 +164,6 @@ const Case: React.FC<Props> = ({
       );
     }
   }, [connectedCase, form, loadContact, loadRawContacts, releaseContacts, task]);
-
-  useEffect(
-    () => {
-      /**
-       * Gets the activities timeline from current caseId
-       * If the case is just being created, adds the case's description as a new activity
-       */
-      const getTimeline = () => {
-        if (!props.connectedCaseId) return;
-
-        const timelineActivities = [
-          ...getActivitiesFromCase(props.connectedCaseState.connectedCase),
-          ...getActivitiesFromContacts(savedContacts ?? []),
-        ];
-
-        if (newContact && !isStandaloneITask(task)) {
-          const { workerSid } = getConfig();
-          const connectCaseActivity: ConnectedCaseActivity = {
-            contactId: newContact.id,
-            date: newContact.timeOfContact,
-            createdAt: new Date().toISOString(),
-            type: task.channelType,
-            text: newContact.rawJson.caseInformation.callSummary.toString(),
-            twilioWorkerId: workerSid,
-            channel:
-              task.channelType === 'default' ? newContact.rawJson.contactlessTask.channel.toString() : task.channelType,
-            callType: newContact.rawJson.callType,
-          };
-
-          timelineActivities.push(connectCaseActivity);
-        }
-        setTimeline(sortActivities(timelineActivities));
-      };
-
-      getTimeline();
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      newContact,
-      savedContactsJson,
-      task,
-      form,
-      props.connectedCaseId,
-      props.connectedCaseState?.connectedCase,
-      setLoading,
-    ],
-  );
 
   const version = props.connectedCaseState?.connectedCase.info.definitionVersion;
   const { updateDefinitionVersion, definitionVersions } = props;
@@ -253,7 +228,7 @@ const Case: React.FC<Props> = ({
   const documents = info && info.documents ? info.documents : [];
   const childIsAtRisk = Boolean(info && info.childIsAtRisk);
   const referrals = info?.referrals;
-  const notes = timeline.filter(x => x.type === 'note');
+  const notes: NoteActivity[] = timeline.filter(x => isNoteActivity(x)) as NoteActivity[];
   const summary = info?.summary;
   const definitionVersion = props.definitionVersions[version];
   const office = getHelplineData(connectedCase.helpline, definitionVersion.helplineInformation);
@@ -306,7 +281,7 @@ const Case: React.FC<Props> = ({
     }
   };
 
-  const caseDetails = {
+  const caseDetails: CaseDetails = {
     id: connectedCase.id,
     name,
     categories,

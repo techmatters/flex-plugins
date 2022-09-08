@@ -21,6 +21,12 @@ const ActivityTypes = {
 export const isConnectedCaseActivity = (activity): activity is ConnectedCaseActivity =>
   Boolean(ActivityTypes.connectContact[activity.type]);
 
+/**
+ * Returns true if the activity provided is a connected case activity (included in channelsAndDefault const object)
+ * @param activity Timeline Activity
+ */
+export const isNoteActivity = (activity): activity is ConnectedCaseActivity => activity.type === 'note';
+
 const noteActivities = (counsellorNotes: NoteEntry[], previewFields: string[]): Activity[] =>
   (counsellorNotes || [])
     .map(n => {
