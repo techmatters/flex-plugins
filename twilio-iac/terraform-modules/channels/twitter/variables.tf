@@ -1,13 +1,13 @@
 variable "custom_flow_definition" {
+  description = "Override the default flow by setting this"
   type = string
   default = ""
-  description = "Override the default flow by setting this"
 }
 
 variable "custom_channel_attributes" {
+  description = "Override the default channel attributes by setting this"
   type = string
   default = ""
-  description = "Override the default flow by setting this"
 }
 
 variable "master_workflow_sid" {

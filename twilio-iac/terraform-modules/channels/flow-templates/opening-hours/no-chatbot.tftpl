@@ -1,0 +1,199 @@
+${
+  jsonencode(
+  {
+      "states": [
+        {
+          "transitions": [
+            {
+              "event": "incomingMessage",
+              "next": "operating_hours"
+            },
+            {
+              "event": "incomingCall"
+            },
+            {
+              "event": "incomingConversationMessage"
+            },
+            {
+              "event": "incomingRequest"
+            },
+            {
+              "event": "incomingParent"
+            }
+          ],
+          "type": "trigger",
+          "name": "Trigger",
+          "properties": {
+            "offset": {
+              "y": 0,
+              "x": 0
+            }
+          }
+        },
+        {
+          "transitions": [
+            {
+              "event": "callComplete"
+            },
+            {
+              "event": "failedToEnqueue"
+            },
+            {
+              "event": "callFailure"
+            }
+          ],
+          "type": "send-to-flex",
+          "name": "attributes",
+          "properties": {
+            "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"twitterUserHandle\": \"{{trigger.message.ChannelAttributes.twitterUserHandle}}\",\"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\",\"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
+            "workflow": master_workflow_sid,
+            "channel": chat_task_channel_sid,
+            "offset": {
+              "y": 850,
+              "x": 860
+            }
+          }
+        },
+        {
+          "transitions": [
+            {
+              "event": "success",
+              "next": "check_office_state"
+            },
+            {
+              "event": "fail"
+            }
+          ],
+          "type": "run-function",
+          "name": "operating_hours",
+          "properties": {
+            "parameters": [
+              {
+                "key": "channel",
+                "value": channel
+              }
+            ],
+            "url": "${serverless_url}/operatingHours",
+            "environment_sid": serverless_environment_sid,
+            "offset": {
+              "y": 290,
+              "x": 180
+            },
+            "function_sid": serverless_function_sid,
+            "service_sid": serverless_service_sid
+          }
+        },
+        {
+          "transitions": [
+            {
+              "event": "noMatch",
+              "next": "closed"
+            },
+            {
+              "conditions": [
+                {
+                  "type": "contains",
+                  "friendly_name": "If value contains closed",
+                  "arguments": [
+                    "{{widgets.operating_hours.body}}"
+                  ],
+                  "value": "closed"
+                }
+              ],
+              "event": "match",
+              "next": "closed"
+            },
+            {
+              "conditions": [
+                {
+                  "type": "contains",
+                  "friendly_name": "If value contains holiday",
+                  "arguments": [
+                    "{{widgets.operating_hours.body}}"
+                  ],
+                  "value": "holiday"
+                }
+              ],
+              "event": "match",
+              "next": "holiday"
+            },
+            {
+              "conditions": [
+                {
+                  "type": "contains",
+                  "friendly_name": "If value contains open",
+                  "arguments": [
+                    "{{widgets.operating_hours.body}}"
+                  ],
+                  "value": "open"
+                }
+              ],
+              "event": "match",
+              "next": "attributes"
+            }
+          ],
+          "type": "split-based-on",
+          "name": "check_office_state",
+          "properties": {
+            "input": "{{widgets.operating_hours.body}}",
+            "offset": {
+              "y": 550,
+              "x": 190
+            }
+          }
+        },
+        {
+          "transitions": [
+            {
+              "event": "sent"
+            },
+            {
+              "event": "failed"
+            }
+          ],
+          "type": "send-message",
+          "name": "closed",
+          "properties": {
+            "body": "Lo sentimos, por el momento no estamos atendiendo. Vuelve a contactarnos en el siguiente día hábil de 8am a 5pm. ¡Saludos!",
+            "from": "{{flow.channel.address}}",
+            "service": "{{trigger.message.InstanceSid}}",
+            "to": "{{contact.channel.address}}",
+            "offset": {
+              "y": 860,
+              "x": -220
+            },
+            "channel": "{{trigger.message.ChannelSid}}"
+          }
+        },
+        {
+          "transitions": [
+            {
+              "event": "sent"
+            },
+            {
+              "event": "failed"
+            }
+          ],
+          "type": "send-message",
+          "name": "holiday",
+          "properties": {
+            "body": "Lo sentimos, no atendemos durante días festivos. Vuelve a contactarnos en el siguiente día hábil de 8am a 5pm. ¡Saludos!",
+            "from": "{{flow.channel.address}}",
+            "service": "{{trigger.message.InstanceSid}}",
+            "to": "{{contact.channel.address}}",
+            "offset": {
+              "y": 850,
+              "x": 380
+            },
+            "channel": "{{trigger.message.ChannelSid}}"
+          }
+        }
+      ],
+      "initial_state": "Trigger",
+      "flags": {
+        "allow_concurrent_calls": true
+      },
+      "description": flow_description
+    }
+    )
+  }

@@ -51,8 +51,8 @@ resource "twilio_autopilot_assistants_v1" "pre_survey_bot_es" {
   log_queries = true
 }
 
-resource "twilio_autopilot_assistants_tasks_v1" "pre_survey_bot_es_counsellor_handoff" {
-  unique_name   = "counsellor_handoff"
+resource "twilio_autopilot_assistants_tasks_v1" "pre_survey_bot_es_counselor_handoff" {
+  unique_name   = "counselor_handoff"
   assistant_sid = twilio_autopilot_assistants_v1.pre_survey_bot_es.sid
   actions = jsonencode({
     "actions" : [
@@ -152,7 +152,7 @@ resource "twilio_autopilot_assistants_tasks_v1" "pre_survey_bot_es_get_terms_app
                   ]
                 },
                 "max_attempts" : {
-                  "redirect" : "task://counsellor_handoff",
+                  "redirect" : "task://counselor_handoff",
                   "num_attempts" : 3
                 },
                 "allowed_values" : {
@@ -206,7 +206,7 @@ resource "twilio_autopilot_assistants_tasks_v1" "pre_survey_bot_es_get_is_with_c
                   ]
                 },
                 "max_attempts" : {
-                  "redirect" : "task://counsellor_handoff",
+                  "redirect" : "task://counselor_handoff",
                   "num_attempts" : 3
                 },
                 "allowed_values" : {
@@ -331,7 +331,7 @@ resource "twilio_autopilot_assistants_tasks_v1" "pre_survey_bot_es_get_counselin
                   ]
                 },
                 "max_attempts" : {
-                  "redirect" : "task://counsellor_handoff",
+                  "redirect" : "task://counselor_handoff",
                   "num_attempts" : 3
                 },
                 "allowed_values" : {
@@ -385,7 +385,7 @@ resource "twilio_autopilot_assistants_tasks_v1" "pre_survey_bot_es_get_contact_r
                   ]
                 },
                 "max_attempts" : {
-                  "redirect" : "task://counsellor_handoff",
+                  "redirect" : "task://counselor_handoff",
                   "num_attempts" : 3
                 },
                 "allowed_values" : {
@@ -419,25 +419,25 @@ resource "twilio_autopilot_assistants_tasks_v1" "pre_survey_bot_es_execute_initi
           "flowTree" : {
             "execute_initial_flow" : {
               "get_contact_reason" : {
-                "1" : "counsellor_handoff",
+                "1" : "counselor_handoff",
                 "2" : {
                   "get_counseling_type" : {
                     "1" : {
-                      "request_question_msg" : "counsellor_handoff"
+                      "request_question_msg" : "counselor_handoff"
                     },
                     "2" : {
                       "get_age_for_consent" : {
                         "<14" : {
                           "get_is_with_caregiver" : {
-                            "1" : "counsellor_handoff",
+                            "1" : "counselor_handoff",
                             "2" : "no_caregiver_msg",
-                            "3" : "counsellor_handoff"
+                            "3" : "counselor_handoff"
                           }
                         },
                         ">=14" : {
                           "get_terms_approval" : {
                             "1" : {
-                              "get_personal_data" : "counsellor_handoff"
+                              "get_personal_data" : "counselor_handoff"
                             },
                             "2" : "no_approval_msg"
                           }

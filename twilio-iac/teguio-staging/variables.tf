@@ -102,3 +102,33 @@ variable "twilio_numbers" {
   type = list(string)
   description = "List of Twilio Numbers"
 }
+
+variable "channel" {
+  description = "Name of the channel being configured"
+  default = ""
+  type        = string
+}
+
+variable "serverless_environment_sid" {
+  description = "Manually set variable after first apply"
+  default = "ZEdfa3b7ddc043f75d4bfa83f7044cd096"
+  type        = string
+}
+
+variable "serverless_function_sid" {
+  description = "Manually set variable after first apply"
+  default = "ZH5fcc5dee5089c176acd0bd24e7fa873e"
+  type        = string
+}
+
+variable "serverless_service_sid" {
+  description = "Manually set variable after first apply"
+  default = "ZSbf1bb881cc2e8db613ee6bca0e8e2c29"
+  type        = string
+}
+
+variable "custom_channel_attributes" {
+  description = "Override the default channel attributes by setting this"
+  type = string
+  default = ""
+}

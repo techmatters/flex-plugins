@@ -60,7 +60,7 @@ module studioFlow {
   default_task_channel_sid = module.taskRouter.default_task_channel_sid
   pre_survey_bot_sid = module.custom_chatbots.pre_survey_bot_es_sid
 }
-
+/*
 module webChannel {
   count =  true ? 1 : 0
   source = "../../../flex-plugins/twilio-iac/terraform-modules/channels/web"
@@ -91,17 +91,30 @@ module whatsappChannel {
   target_task_name = var.target_task_name != "" ? var.target_task_name : "greeting"
   whatsapp_contact_identity = var.whatsapp_contact_identity
 }
-
+*/
 module twitterChannel {
   count =  true ? 1 : 0
-  source = "../../../flex-plugins/twilio-iac/terraform-modules/channels/twitter"
+  source = "../terraform-modules/channels/twitter"
+  custom_flow_definition = templatefile(
+    "../terraform-modules/channels/flow-templates/opening-hours/no-chatbot.tftpl",
+    {
+      channel = "twitter"
+      serverless_url=var.serverless_url
+      serverless_environment_sid = var.serverless_environment_sid
+      serverless_function_sid = var.serverless_function_sid
+      serverless_service_sid = var.serverless_service_sid
+      master_workflow_sid = module.taskRouter.master_workflow_sid
+      chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
+      channel_attributes = var.custom_channel_attributes != "" ? var.custom_channel_attributes : file("../terraform-modules/channels/twitter/channel-attributes.tftpl")
+      flow_description = "Twitter Messaging Flow"
+    })
   master_workflow_sid = module.taskRouter.master_workflow_sid
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
   flex_chat_service_sid = module.services.flex_chat_service_sid
   short_helpline = var.short_helpline
   short_environment = var.short_environment
 }
-
+/*
 module instagramChannel {
   count =  true ? 1 : 0
   source = "../../../flex-plugins/twilio-iac/terraform-modules/channels/instagram"
@@ -111,7 +124,7 @@ module instagramChannel {
   short_helpline = var.short_helpline
   short_environment = var.short_environment
 }
-
+*/
 module flex {
   source = "../terraform-modules/flex/default"
   account_sid = var.account_sid
@@ -126,7 +139,6 @@ module flex {
   flex_chat_service_sid = module.services.flex_chat_service_sid
   messaging_studio_flow_sid = module.studioFlow.messaging_studio_flow_sid
   messaging_flow_contact_identity = var.messaging_flow_contact_identity
-  custom_flex_messaging_flow_enabled = var.custom_flex_messaging_flow_enabled
 }
 
 module survey {
