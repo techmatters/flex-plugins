@@ -17,9 +17,9 @@ on:
         required: true
       AWS_DEFAULT_REGION:
         required: true
-      ET_STG_ACCOUNT_SID:
+      STG_ACCOUNT_SID:
         required: true
-      ET_STG_AUTH_TOKEN:
+      STG_AUTH_TOKEN:
         required: true
     inputs:
       changelog:
