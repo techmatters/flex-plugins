@@ -1,4 +1,6 @@
-name: Helplines parallel workflow executions
+# This is a basic workflow to deploy Flex to all helpline staging environments
+
+name: Deploy Flex to all Helpline Staging Environments
 
 on:
   workflow_dispatch:
@@ -11,135 +13,19 @@ on:
         required: true
 
 jobs:
-  deploy-canada_staging:
-    uses: techmatters/flex-plugins/.github/workflows/canada_staging.yml@CHI-1258_workflow_to_deploy_flex_helpline_stg_env
+  deploy-helplines:
+    strategy:
+      fail-fast: false
+      matrix:
+        helplines: ['canada', 'cl_linealibre', 'ecpat_philippines', 'ethiopia', 'jamaica', 'malawi', 'rati', 'romania', 'safernet', 'south_africa', 'teguio_colombia', 'thailand', 'uk', 'ukraine', 'zambia', 'zimbabwe']
+        short_helplines: ['CA', 'CL', 'PH', 'ET', 'JM', 'MW', 'IN', 'RO', 'BR', 'ZA', 'CO', 'TH', 'UK', 'UKR', 'ZM', 'ZW']
+    uses: techmatters/flex-plugins/.github/workflows/${{ matrix.helplines }}_staging.yml@CHI-1258_workflow_to_deploy_flex_helpline_stg_env
     secrets:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-      CA_STG_ACCOUNT_SID: ${{ secrets.CA_STG_ACCOUNT_SID }}
-      CA_STG_AUTH_TOKEN: ${{ secrets.CA_STG_AUTH_TOKEN }}
-    with:
-      changelog: ${{ inputs.changelog }}
-
-  deploy-cl_linealibre_staging: 
-    uses: techmatters/flex-plugins/.github/workflows/cl_linealibre_staging.yml@CHI-1258_workflow_to_deploy_flex_helpline_stg_env
-    secrets:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-      CL_STG_ACCOUNT_SID: ${{ secrets.CL_STG_ACCOUNT_SID }}
-      CL_STG_AUTH_TOKEN: ${{ secrets.CL_STG_AUTH_TOKEN }}
-    with:
-      changelog: ${{ inputs.changelog }}
-
-  deploy-ecpat_philippines_staging: 
-    uses: techmatters/flex-plugins/.github/workflows/ecpat_philippines_staging.yml@CHI-1258_workflow_to_deploy_flex_helpline_stg_env
-    secrets:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-      PH_STG_ACCOUNT_SID: ${{ secrets.PH_STG_ACCOUNT_SID }}
-      PH_STG_AUTH_TOKEN: ${{ secrets.PH_STG_AUTH_TOKEN }}
-    with:
-      changelog: ${{ inputs.changelog }}
-
-  deploy-ethiopia_staging: 
-    uses: techmatters/flex-plugins/.github/workflows/ethiopia_staging.yml@CHI-1258_workflow_to_deploy_flex_helpline_stg_env
-    secrets:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-      ET_STG_ACCOUNT_SID: ${{ secrets.ET_STG_ACCOUNT_SID }}
-      ET_STG_AUTH_TOKEN: ${{ secrets.ET_STG_AUTH_TOKEN }}
-    with:
-      changelog: ${{ inputs.changelog }}
-  
-  deploy-jamaica_staging: 
-    uses: techmatters/flex-plugins/.github/workflows/jamaica_staging.yml@CHI-1258_workflow_to_deploy_flex_helpline_stg_env
-    secrets:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-      JM_STG_ACCOUNT_SID: ${{ secrets.JM_STG_ACCOUNT_SID }}
-      JM_STG_AUTH_TOKEN: ${{ secrets.JM_STG_AUTH_TOKEN }}
-    with:
-      changelog: ${{ inputs.changelog }}
-
-  deploy-malawi_staging: 
-    uses: techmatters/flex-plugins/.github/workflows/malawi_staging.yml@CHI-1258_workflow_to_deploy_flex_helpline_stg_env
-    secrets:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-      MW_STG_ACCOUNT_SID: ${{ secrets.MW_STG_ACCOUNT_SID }}
-      MW_STG_AUTH_TOKEN: ${{ secrets.MW_STG_AUTH_TOKEN }}
-    with:
-      changelog: ${{ inputs.changelog }}
-
-  deploy-rati_staging: 
-    uses: techmatters/flex-plugins/.github/workflows/rati_staging.yml@CHI-1258_workflow_to_deploy_flex_helpline_stg_env
-    secrets:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-      IN_STG_ACCOUNT_SID: ${{ secrets.IN_STG_ACCOUNT_SID }}
-      IN_STG_AUTH_TOKEN: ${{ secrets.IN_STG_AUTH_TOKEN }}
-    with:
-      changelog: ${{ inputs.changelog }}
-
-  deploy-romania_staging: 
-    uses: techmatters/flex-plugins/.github/workflows/romania_staging.yml@CHI-1258_workflow_to_deploy_flex_helpline_stg_env
-    secrets:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-      RO_STG_ACCOUNT_SID: ${{ secrets.RO_STG_ACCOUNT_SID }}
-      RO_STG_AUTH_TOKEN: ${{ secrets.RO_STG_AUTH_TOKEN }}
-    with:
-      changelog: ${{ inputs.changelog }}
-
-  deploy-safernet_staging: 
-    uses: techmatters/flex-plugins/.github/workflows/safernet_staging.yml@CHI-1258_workflow_to_deploy_flex_helpline_stg_env
-    secrets:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-      BR_STG_ACCOUNT_SID: ${{ secrets.BR_STG_ACCOUNT_SID }}
-      BR_STG_AUTH_TOKEN: ${{ secrets.BR_STG_AUTH_TOKEN }}
-    with:
-      changelog: ${{ inputs.changelog }}
-
-  deploy-south_africa_staging: 
-    uses: techmatters/flex-plugins/.github/workflows/south_africa_staging.yml@CHI-1258_workflow_to_deploy_flex_helpline_stg_env
-    secrets:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-      ZA_STG_ACCOUNT_SID: ${{ secrets.ZA_STG_ACCOUNT_SID }}
-      ZA_STG_AUTH_TOKEN: ${{ secrets.ZA_STG_AUTH_TOKEN }}
-    with:
-      changelog: ${{ inputs.changelog }}
-
-  deploy-teguio_colombia_staging: 
-    uses: techmatters/flex-plugins/.github/workflows/teguio_colombia_staging.yml@CHI-1258_workflow_to_deploy_flex_helpline_stg_env
-    secrets:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-      CO_STG_ACCOUNT_SID: ${{ secrets.CO_STG_ACCOUNT_SID }}
-      CO_STG_AUTH_TOKEN: ${{ secrets.CO_STG_AUTH_TOKEN }}
-    with:
-      changelog: ${{ inputs.changelog }}
-
-  deploy-thailand_staging: 
-    uses: techmatters/flex-plugins/.github/workflows/thailand_staging.yml@CHI-1258_workflow_to_deploy_flex_helpline_stg_env
-    secrets:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-      TH_STG_ACCOUNT_SID: ${{ secrets.TH_STG_ACCOUNT_SID }}
-      TH_STG_AUTH_TOKEN: ${{ secrets.TH_STG_AUTH_TOKEN }}
+      STG_ACCOUNT_SID: ${{ secrets.${{ matrix.short_helplines }}_STG_ACCOUNT_SID }}
+      STG_AUTH_TOKEN: ${{ secrets.${{ matrix.short_helplines }}_STG_AUTH_TOKEN }}
     with:
       changelog: ${{ inputs.changelog }}
 
@@ -154,52 +40,8 @@ jobs:
     with:
       changelog: ${{ inputs.changelog }}
 
-  deploy-uk_staging: 
-    uses: techmatters/flex-plugins/.github/workflows/uk_staging.yml@CHI-1258_workflow_to_deploy_flex_helpline_stg_env
-    secrets:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-      UK_STG_ACCOUNT_SID: ${{ secrets.UK_STG_ACCOUNT_SID }}
-      UK_STG_AUTH_TOKEN: ${{ secrets.UK_STG_AUTH_TOKEN }}
-    with:
-      changelog: ${{ inputs.changelog }}
-
-  deploy-ukraine_staging: 
-    uses: techmatters/flex-plugins/.github/workflows/ukraine_staging.yml@CHI-1258_workflow_to_deploy_flex_helpline_stg_env
-    secrets:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-      UKR_STG_ACCOUNT_SID: ${{ secrets.UKR_STG_ACCOUNT_SID }}
-      UKR_STG_AUTH_TOKEN: ${{ secrets.UKR_STG_AUTH_TOKEN }}
-    with:
-      changelog: ${{ inputs.changelog }}
-  
-  deploy-zambia_staging: 
-    uses: techmatters/flex-plugins/.github/workflows/zambia_staging.yml@CHI-1258_workflow_to_deploy_flex_helpline_stg_env
-    secrets:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-      ZM_STG_ACCOUNT_SID: ${{ secrets.ZM_STG_ACCOUNT_SID }}
-      ZM_STG_AUTH_TOKEN: ${{ secrets.ZM_STG_AUTH_TOKEN }}
-    with:
-      changelog: ${{ inputs.changelog }}
-
-  deploy-zimbabwe_staging: 
-    uses: techmatters/flex-plugins/.github/workflows/zimbabwe_staging.yml@CHI-1258_workflow_to_deploy_flex_helpline_stg_env
-    secrets:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-      ZW_STG_ACCOUNT_SID: ${{ secrets.ZW_STG_ACCOUNT_SID }}
-      ZW_STG_AUTH_TOKEN: ${{ secrets.ZW_STG_AUTH_TOKEN }}
-    with:
-      changelog: ${{ inputs.changelog }}
-
   do-something-after:
-    needs: [deploy-canada_staging, deploy-cl_linealibre_staging, deploy-ecpat_philippines_staging, deploy-ethiopia_staging, deploy-jamaica_staging, deploy-malawi_staging, deploy-rati_staging, deploy-romania_staging, deploy-safernet_staging, deploy-south_africa_staging, deploy-teguio_colombia_staging, deploy-thailand_staging, deploy-uk_staging_III, deploy-uk_staging, deploy-ukraine_staging, deploy-zambia_staging, deploy-zimbabwe_staging]
+    needs: [deploy-helplines, deploy-uk_staging_III]
 
     runs-on: ubuntu-latest
 
