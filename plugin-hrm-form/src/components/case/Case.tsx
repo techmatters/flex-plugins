@@ -143,48 +143,52 @@ const Case: React.FC<Props> = ({
     }
   }, [connectedCase, form, loadContact, loadRawContacts, releaseContacts, task]);
 
-  useEffect(() => {
-    /**
-     * Gets the activities timeline from current caseId
-     * If the case is just being created, adds the case's description as a new activity
-     */
-    const getTimeline = () => {
-      if (!props.connectedCaseId) return;
+  useEffect(
+    () => {
+      /**
+       * Gets the activities timeline from current caseId
+       * If the case is just being created, adds the case's description as a new activity
+       */
+      const getTimeline = () => {
+        if (!props.connectedCaseId) return;
 
-      const timelineActivities = [
-        ...getActivitiesFromCase(props.connectedCaseState.connectedCase),
-        ...getActivitiesFromContacts(savedContacts ?? []),
-      ];
+        const timelineActivities = [
+          ...getActivitiesFromCase(props.connectedCaseState.connectedCase),
+          ...getActivitiesFromContacts(savedContacts ?? []),
+        ];
 
-      if (newContact && !isStandaloneITask(task)) {
-        const { workerSid } = getConfig();
-        const connectCaseActivity: ConnectedCaseActivity = {
-          contactId: newContact.id,
-          date: newContact.timeOfContact,
-          createdAt: new Date().toISOString(),
-          type: task.channelType,
-          text: newContact.rawJson.caseInformation.callSummary.toString(),
-          twilioWorkerId: workerSid,
-          channel:
-            task.channelType === 'default' ? newContact.rawJson.contactlessTask.channel.toString() : task.channelType,
-          callType: newContact.rawJson.callType,
-        };
+        if (newContact && !isStandaloneITask(task)) {
+          const { workerSid } = getConfig();
+          const connectCaseActivity: ConnectedCaseActivity = {
+            contactId: newContact.id,
+            date: newContact.timeOfContact,
+            createdAt: new Date().toISOString(),
+            type: task.channelType,
+            text: newContact.rawJson.caseInformation.callSummary.toString(),
+            twilioWorkerId: workerSid,
+            channel:
+              task.channelType === 'default' ? newContact.rawJson.contactlessTask.channel.toString() : task.channelType,
+            callType: newContact.rawJson.callType,
+          };
 
-        timelineActivities.push(connectCaseActivity);
-      }
-      setTimeline(sortActivities(timelineActivities));
-    };
+          timelineActivities.push(connectCaseActivity);
+        }
+        setTimeline(sortActivities(timelineActivities));
+      };
 
-    getTimeline();
-  }, [
-    newContact,
-    savedContactsJson,
-    task,
-    form,
-    props.connectedCaseId,
-    props.connectedCaseState?.connectedCase,
-    setLoading,
-  ]);
+      getTimeline();
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      newContact,
+      savedContactsJson,
+      task,
+      form,
+      props.connectedCaseId,
+      props.connectedCaseState?.connectedCase,
+      setLoading,
+    ],
+  );
 
   const version = props.connectedCaseState?.connectedCase.info.definitionVersion;
   const { updateDefinitionVersion, definitionVersions } = props;

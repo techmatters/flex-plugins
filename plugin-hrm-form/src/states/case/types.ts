@@ -13,14 +13,6 @@ export const UPDATE_CASE_STATUS = 'UPDATE_CASE_STATUS';
 export const MARK_CASE_AS_UPDATED = 'MARK_CASE_AS_UPDATED';
 export const UPDATE_CASE_CONTACT = 'UPDATE_CASE_CONTACT';
 
-type ViewContact = {
-  contact?: any; // TODO: create Contact type
-  detailsExpanded: { [section: string]: boolean };
-  createdAt: string;
-  timeOfContact: string;
-  counselor: string;
-};
-
 export type EditTemporaryCaseInfo = {
   screen: CaseSectionSubroute;
   action: CaseItemAction.Edit;

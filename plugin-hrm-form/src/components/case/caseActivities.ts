@@ -23,7 +23,7 @@ export const isConnectedCaseActivity = (activity): activity is ConnectedCaseActi
 
 const noteActivities = (counsellorNotes: NoteEntry[], previewFields: string[]): Activity[] =>
   (counsellorNotes || [])
-    .map((n) => {
+    .map(n => {
       try {
         const { id, createdAt: date, updatedAt, updatedBy, twilioWorkerId, ...toCopy } = n;
         const text =
@@ -50,7 +50,7 @@ const noteActivities = (counsellorNotes: NoteEntry[], previewFields: string[]): 
 
 const referralActivities = (referrals: ReferralEntry[]): Activity[] =>
   (referrals || [])
-    .map((referral) => {
+    .map(referral => {
       const { id, createdAt, date, updatedAt, updatedBy, twilioWorkerId, ...toCopy } = referral;
       const { referredTo: text } = referral;
       try {
@@ -74,7 +74,7 @@ const referralActivities = (referrals: ReferralEntry[]): Activity[] =>
 
 const connectedContactActivities = (caseContacts): ConnectedCaseActivity[] =>
   (caseContacts || [])
-    .map((cc) => {
+    .map(cc => {
       try {
         const type = ActivityTypes.connectContact[cc.channel];
         const channel = type === ActivityTypes.connectContact.default ? cc.rawJson.contactlessTask.channel : type;
