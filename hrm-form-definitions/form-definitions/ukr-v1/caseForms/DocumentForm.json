@@ -8,7 +8,7 @@
   },
   {
     "name": "comments",
-    "label": "Hozzászólások",
+    "label": "Megjegyzés",
     "type": "textarea",
     "placeholder": "",
     "rows": 20,
