@@ -223,7 +223,7 @@
         "label": ">25"
       },
       {
-        "value": "Unknown",
+        "value": "Nem derült ki",
         "label": "Nem derült ki"
       }
     ],
@@ -235,6 +235,28 @@
   {
     "name": "language",
     "label": "Nyelv",
-    "type": "input"
+    "type": "select",
+    "options": [
+        {
+          "value": "Nem derült ki",
+          "label": ""
+        },        
+        {
+          "value": "Ukrán",
+          "label": "Ukrán"
+        },
+        {
+          "value": "Orosz",
+          "label": "Orosz"
+        },
+        {
+          "value": "Magyar",
+          "label": "Magyar"
+        },
+        {
+          "value": "Egyéb",
+          "label": "Egyéb"
+        }
+      ]
   }
 ]
