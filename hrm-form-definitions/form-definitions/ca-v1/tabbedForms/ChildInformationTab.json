@@ -584,11 +584,6 @@
     "type": "input"
   },
   {
-    "name": "Newcomer",
-    "label": "Newcomer (e.g., Arrived in Canada within 5 years or less)/Recent Immigrant/Refugee",
-    "type": "mixed-checkbox"
-  },
-  {
     "name": "upsetLevel",
     "label": "On a scale of 1 to 7, how upset is the child?",
     "type": "select",
@@ -634,5 +629,10 @@
         "value": true,
         "message": "RequiredFieldError"
       }
-  }  
+  },
+  {
+    "name": "Newcomer",
+    "label": "Newcomer (e.g., Arrived in Canada within 5 years or less)/Recent Immigrant/Refugee",
+    "type": "mixed-checkbox"
+  }
 ]
