@@ -62,7 +62,7 @@ export const loadRawContacts = (contacts: any[], reference: string, replaceExist
 export const refreshRawContact = (contact: any) => loadRawContact(contact, undefined, true);
 
 export const loadContactReducer = (state: ExistingContactsState, action: LoadContactAction) => {
-  const updateKvps = action.contacts
+  const updateEntries = action.contacts
     .filter(c => {
       return (
         (action.reference && !(state[c.contactId]?.references ?? new Set()).has(action.reference)) ||
@@ -88,7 +88,7 @@ export const loadContactReducer = (state: ExistingContactsState, action: LoadCon
     });
   return {
     ...state,
-    ...Object.fromEntries(updateKvps),
+    ...Object.fromEntries(updateEntries),
   };
 };
 
