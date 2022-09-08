@@ -1,133 +1,133 @@
 {
-    "Kék Vonal": {
-      "Szökés, csellengés, eltűnés": {
-        "color": "#BBE3FF",
-        "subcategories": [
-          "Gyermekrablás",
-          "Elveszett, vagy egyéb módon eltűnt",
-          "Szökés",
-          "Jogellenes elvitel",
-          "Azon gondolkodik, hogy elszökik",
-          "Egyéb - Szökés, csellengés, eltűnés"
-        ]
-      },
-      "Bántalmazás, erőszak": {
-        "color": "#F5A623",
-        "subcategories": [
-          "Kortárs bántalmazás",
-          "Gyerekházasság",
-          "Gazdasági célú szexuális kizsákmányolás (offline)",
-          "Gyerekmunka",
-          "Érzelmi bántalmazás",
-          "Elhanyagolás",
-          "Online szexuális abúzus",
-          "Online szexuális kizsákmányolás",
-          "Fizikai bántalmazás",
-          "Szexuális bántalmazás",
-          "Kapcsolati erőszak a családban",
-          "Egyéb - Bántalmazás, erőszak"
-        ]
-      },
-      "Lelki egészség": {
-        "color": "#F8E900",
-        "subcategories": [
-            "Függőségek",
-            "Magatartási problémák",
-            "Önértékelési probléma",
-            "Dühkezelési probléma",
-            "Félelem, szorongások",
-            "Általános lehangoltság",
-            "Étkezési zavarok",
-            "Önsértés",
-            "Traumás nehézségek",
-            "Öngyilkossági gondolatok, kísérlet",
-            "Veszteség, gyász",
-            "Már diagnosztizált pszichés, mentális problémák",
-            "Magány",
-            "Egyéb - Lelki egészség"
-        ]
-      },
-      "Testi egészség": {
-        "color": "#E86B6B",
-        "subcategories": [
-            "Általános egészségügyi problémák",
-            "Terhesség",
-            "Szexuális és reprodukciós egészség",
-            "Táplálkozás",
-            "Egyéb - Testi egészség"
-        ]
-      },
-      "Hozzáférés": {
-        "color": "#8055BA",
-        "subcategories": [
-            "Oktatás",
-            "Alapvető szükségletek",
-            "Egészségügyi szolgáltatások",
-            "Jogi szolgáltatások",
-            "Mentálhigiénés szolgáltatások",
-            "Szexuális egészségügyi szolgáltatások",
-            "Szociális szolgáltatások",
-            "Családsegítő és gyermekjóléti szolgáltatások",
-            "Egyéb - Hozzáférés"
-        ]
-      },
-      "Diszkrimináció, kirekesztés": {
-        "color": "#B971AF",
-        "subcategories": [
-            "Etnikai/nemzetiségi",
-            "Anyagi helyzet miatt",
-            "Nemi alapú",
-            "Gender, szexuális orientáció alapú",
-            "Egészségügyi",
-            "Vallási",
-            "Egyéb - Diszkrimináció, kirekesztés"
-        ]
-      },
-      "Családi kapcsolatok": {
-        "color": "#239613",
-        "subcategories": [
-            "Örökbefogadó, nevelőszülő, tágabb család",
-            "Kapcsolat a szülővel, gondviselővel",
-            "Családi kapcsolati problémák",
-            "Kapcsolat a testvér(ek)vel",
-            "Egyéb - Családi kapcsolatok"
-        ]
-      },
-      "Kortárs kapcsolatok": {
-        "color": "#9AD703",
-        "subcategories": [
-            "Probléma a barátokkal",
-            "Párkapcsolati probléma",
-            "Probléma az osztálytársakkal, beilleszkedési probléma",
-            "Egyéb - Kortárs kapcsolatok"
-        ]
-      },
-      "Oktatás": {
-        "color": "#55AFAF",
-        "subcategories": [
-            "Teljesítmény, jegyek",
-            "Probléma a tanárokkal, iskolával",
-            "Probléma a munkával",
-            "Egyéb - Oktatás"
-        ]
-      },
-      "Szexualitás": {
-        "color": "#506BA5",
-        "subcategories": [
-            "Szexuális orientáció, nemi identitás",
-            "Szexuális élet",
-            "Egyéb - Szexualitás"
-        ]
-      },
-      "Információs, nem konzultációs témák": {
-        "color": "#767777",
-        "subcategories": [
-            "Panasz a segélyvonallal kapcsolatban",
-            "Kérdés a Kék Vonalról",
-            "Kérdés egyéb szolgáltatásokról",
-            "Köszönet",
-            "Egyéb - Információs, nem konzultációs témák"
-        ]
-      }
+  "Kék Vonal": {
+    "Szökés, csellengés, eltűnés": {
+      "color": "#BBE3FF",
+      "subcategories": [
+        "Gyermekrablás",
+        "Elveszett, vagy egyéb módon eltűnt",
+        "Szökés",
+        "Jogellenes elvitel",
+        "Azon gondolkodik, hogy elszökik",
+        "Egyéb - Szökés, csellengés, eltűnés"
+      ]
+    },
+    "Bántalmazás, erőszak": {
+      "color": "#F5A623",
+      "subcategories": [
+        "Kortárs bántalmazás",
+        "Gyerekházasság",
+        "Gazdasági célú szexuális kizsákmányolás (offline)",
+        "Gyerekmunka",
+        "Érzelmi bántalmazás",
+        "Elhanyagolás",
+        "Online szexuális abúzus",
+        "Online szexuális kizsákmányolás",
+        "Fizikai bántalmazás",
+        "Szexuális bántalmazás",
+        "Kapcsolati erőszak a családban",
+        "Egyéb - Bántalmazás, erőszak"
+      ]
+    },
+    "Lelki egészség": {
+      "color": "#F8E900",
+      "subcategories": [
+        "Függőségek",
+        "Magatartási problémák",
+        "Önértékelési probléma",
+        "Dühkezelési probléma",
+        "Félelem, szorongások",
+        "Általános lehangoltság",
+        "Étkezési zavarok",
+        "Önsértés",
+        "Traumás nehézségek",
+        "Öngyilkossági gondolatok, kísérlet",
+        "Veszteség, gyász",
+        "Már diagnosztizált pszichés, mentális problémák",
+        "Magány",
+        "Egyéb - Lelki egészség"
+      ]
+    },
+    "Testi egészség": {
+      "color": "#E86B6B",
+      "subcategories": [
+        "Általános egészségügyi problémák",
+        "Terhesség",
+        "Szexuális és reprodukciós egészség",
+        "Táplálkozás",
+        "Egyéb - Testi egészség"
+      ]
+    },
+    "Hozzáférés": {
+      "color": "#8055BA",
+      "subcategories": [
+        "Oktatás",
+        "Alapvető szükségletek",
+        "Egészségügyi szolgáltatások",
+        "Jogi szolgáltatások",
+        "Mentálhigiénés szolgáltatások",
+        "Szexuális egészségügyi szolgáltatások",
+        "Szociális szolgáltatások",
+        "Családsegítő és gyermekjóléti szolgáltatások",
+        "Egyéb - Hozzáférés"
+      ]
+    },
+    "Diszkrimináció, kirekesztés": {
+      "color": "#B971AF",
+      "subcategories": [
+        "Etnikai/nemzetiségi",
+        "Anyagi helyzet miatt",
+        "Nemi alapú",
+        "Gender, szexuális orientáció alapú",
+        "Egészségügyi",
+        "Vallási",
+        "Egyéb - Diszkrimináció, kirekesztés"
+      ]
+    },
+    "Családi kapcsolatok": {
+      "color": "#239613",
+      "subcategories": [
+        "Örökbefogadó, nevelőszülő, tágabb család",
+        "Kapcsolat a szülővel, gondviselővel",
+        "Családi kapcsolati problémák",
+        "Kapcsolat a testvér(ek)vel",
+        "Egyéb - Családi kapcsolatok"
+      ]
+    },
+    "Kortárs kapcsolatok": {
+      "color": "#9AD703",
+      "subcategories": [
+        "Probléma a barátokkal",
+        "Párkapcsolati probléma",
+        "Probléma az osztálytársakkal, beilleszkedési probléma",
+        "Egyéb - Kortárs kapcsolatok"
+      ]
+    },
+    "Oktatás": {
+      "color": "#55AFAF",
+      "subcategories": [
+        "Teljesítmény, jegyek",
+        "Probléma a tanárokkal, iskolával",
+        "Probléma a munkával",
+        "Egyéb - Oktatás"
+      ]
+    },
+    "Szexualitás": {
+      "color": "#506BA5",
+      "subcategories": [
+        "Szexuális orientáció, nemi identitás",
+        "Szexuális élet",
+        "Egyéb - Szexualitás"
+      ]
+    },
+    "Információs, nem konzultációs témák": {
+      "color": "#767777",
+      "subcategories": [
+        "Panasz a segélyvonallal kapcsolatban",
+        "Kérdés a Kék Vonalról",
+        "Kérdés egyéb szolgáltatásokról",
+        "Köszönet",
+        "Egyéb - Információs, nem konzultációs témák"
+      ]
     }
+  }
 }
