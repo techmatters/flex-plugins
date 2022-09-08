@@ -19,13 +19,13 @@ jobs:
       matrix:
         helplines: ['canada']
         short_helplines: ['CA']
-    uses: techmatters/flex-plugins/.github/workflows/${{ matrix.helplines }}_staging.yml@CHI-1258_workflow_to_deploy_flex_helpline_stg_env
+    uses: techmatters/flex-plugins/.github/workflows/${{ strategy.matrix.helplines }}_staging.yml@CHI-1258_workflow_to_deploy_flex_helpline_stg_env
     secrets:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-      STG_ACCOUNT_SID: ${{ secrets.${{ matrix.short_helplines }}_STG_ACCOUNT_SID }}
-      STG_AUTH_TOKEN: ${{ secrets.${{ matrix.short_helplines }}_STG_AUTH_TOKEN }}
+      STG_ACCOUNT_SID: ${{ secrets.${{ strategy.matrix.short_helplines }}_STG_ACCOUNT_SID }}
+      STG_AUTH_TOKEN: ${{ secrets.${{ strategy.matrix.short_helplines }}_STG_AUTH_TOKEN }}
     with:
       changelog: ${{ inputs.changelog }}
 
