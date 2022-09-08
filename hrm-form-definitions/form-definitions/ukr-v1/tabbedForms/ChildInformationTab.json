@@ -13,7 +13,6 @@
     "name": "gender",
     "label": "Nem",
     "type": "select",
-    "unknownOption": "Nem derült ki",
     "options": [
       {
         "value": "",
@@ -30,6 +29,10 @@
       {
         "value": "Nem bináris",
         "label": "Nem bináris"
+      },
+      {
+        "value": "Nem derült ki",
+        "label": "Nem derült ki"
       }
     ],
     "required": {
@@ -153,6 +156,10 @@
       {
         "value": ">25",
         "label": ">25"
+      },
+      {
+        "value": "Nem derült ki",
+        "label": "Nem derült ki"
       }
     ],
     "required": {
