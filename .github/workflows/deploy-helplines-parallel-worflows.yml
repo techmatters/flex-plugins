@@ -21,7 +21,7 @@ jobs:
           - canada_staging.yml
         short_helplines: 
           - CA
-    uses: techmatters/flex-plugins/.github/workflows/${{ matrix.helplines }}@CHI-1258_workflow_to_deploy_flex_helpline_stg_env
+    uses: 'techmatters/flex-plugins/.github/workflows/canada_staging.yml@CHI-1258_workflow_to_deploy_flex_helpline_stg_env'
     secrets:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
