@@ -17,8 +17,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        helplines: ['canada']
-        short_helplines: ['CA']
+        helplines: [canada]
+        short_helplines: [CA]
     uses: techmatters/flex-plugins/.github/workflows/${{ strategy.matrix.helplines }}_staging.yml@CHI-1258_workflow_to_deploy_flex_helpline_stg_env
     secrets:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
