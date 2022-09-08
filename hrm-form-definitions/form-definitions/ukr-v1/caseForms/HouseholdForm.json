@@ -24,8 +24,7 @@
         { "value": "Idegen", "label": "Idegen" },
         { "value": "Felelős pozícióban lévő személy", "label": "Felelős pozícióban lévő személy" },
         { "value": "Egyéb", "label": "Egyéb" }
-      ],
-      "required": { "value": true, "message": "RequiredFieldError" }
+      ]
     },
     {
       "name": "streetAddress",
@@ -52,11 +51,13 @@
       "label": "Nem",
       "type": "select",
       "options": [
-        { "value": "Nem derült ki", "label": "" },
+        { "value": "", "label": "" },
         { "value": "Fiú", "label": "Fiú" },
         { "value": "Lány", "label": "Lány" },
-        { "value": "Nem bináris", "label": "Nem bináris" }
-      ]
+        { "value": "Nem bináris", "label": "Nem bináris" },
+        { "value": "Nem derült ki", "label": "Nem derült ki" }
+      ],
+      "required": { "value": true, "message": "RequiredFieldError" }
     },
     {
       "name": "age",
