@@ -2,57 +2,36 @@
   {
     "name": "date",
     "type": "date-input",
-    "label": "Date of Incident",
+    "label": "Időpont",
     "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
     "name": "duration",
-    "label": "Duration",
+    "label": "Időtartam",
     "type": "select",
     "options": [
       { "value": "", "label": "" },
-      { "value": "Ongoing", "label": "Ongoing" },
-      { "value": "Once Off", "label": "Once Off" },
-      { "value": "Other", "label": "Other" }
+      { "value": "Folyamatos", "label": "Folyamatos" },
+      { "value": "Egyszeri", "label": "Egyszeri" },
+      { "value": "Egyéb", "label": "Egyéb" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
     "name": "location",
-    "label": "Location",
+    "label": "Helyszín",
     "type": "select",
     "options": [
       { "value": "", "label": "" },
-      { "value": "HomeOwn", "label": "Home (own)" },
-      { "value": "HomeOther", "label": "Home (other)" },
-      { "value": "EducationalEstablishment", "label": "Educational establishment" },
-      { "value": "Institution", "label": "Institution" },
-      { "value": "Public place", "label": "Public place" },
+      { "value": "Otthon(saját)", "label": "Otthon(saját)" },
+      { "value": "Otthon (másé)", "label": "Otthon (másé)" },
+      { "value": "Oktatási intézmény", "label": "Oktatási intézmény" },
+      { "value": "Nyílvános hely", "label": "Nyílvános hely" },
       { "value": "Online", "label": "Online" },
-      { "value": "Other", "label": "Other" },
-      { "value": "Unknown", "label": "Unknown" }
+      { "value": "Egyéb", "label": "Egyéb" },
+      { "value": "Nem derült ki", "label": "Nem derült ki" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" }
-  },
-  {
-    "name": "isCaregiverAware",
-    "label": "Is caregiver aware?",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "incidentWitnessed",
-    "label": "Was the incident witnessed by anyone?",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "abuseReportedElsewhere",
-    "label": "Has abuse been reported elsewhere?",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "whereElseBeenReported",
-    "label": "Where else the incident has been reported?",
-    "type": "input"
   }
 ]
 
