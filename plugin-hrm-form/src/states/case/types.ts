@@ -13,14 +13,6 @@ export const UPDATE_CASE_STATUS = 'UPDATE_CASE_STATUS';
 export const MARK_CASE_AS_UPDATED = 'MARK_CASE_AS_UPDATED';
 export const UPDATE_CASE_CONTACT = 'UPDATE_CASE_CONTACT';
 
-type ViewContact = {
-  contact?: any; // TODO: create Contact type
-  detailsExpanded: { [section: string]: boolean };
-  createdAt: string;
-  timeOfContact: string;
-  counselor: string;
-};
-
 export type EditTemporaryCaseInfo = {
   screen: CaseSectionSubroute;
   action: CaseItemAction.Edit;
@@ -43,9 +35,7 @@ export function isAddTemporaryCaseInfo(tci: TemporaryCaseInfo): tci is AddTempor
   return tci && (<AddTemporaryCaseInfo>tci).action === CaseItemAction.Add;
 }
 
-export type ViewContactInfo = { screen: typeof NewCaseSubroutes.ViewContact; info: ViewContact };
-
-export type TemporaryCaseInfo = ViewContactInfo | AddTemporaryCaseInfo | EditTemporaryCaseInfo;
+export type TemporaryCaseInfo = AddTemporaryCaseInfo | EditTemporaryCaseInfo;
 
 type SetConnectedCaseAction = {
   type: typeof SET_CONNECTED_CASE;
@@ -108,7 +98,6 @@ export type NoteActivity = {
   twilioWorkerId: string;
   updatedAt?: string;
   updatedBy?: string;
-  originalIndex: number;
 };
 
 export type ReferralActivity = {
@@ -121,18 +110,17 @@ export type ReferralActivity = {
   twilioWorkerId: string;
   updatedAt?: string;
   updatedBy?: string;
-  originalIndex: number;
 };
 
 export type ConnectedCaseActivity = {
-  contactId?: number;
+  callType: string;
+  contactId?: string;
   date: string;
   createdAt: string;
   type: string;
   text: string;
   twilioWorkerId: string;
   channel: string;
-  originalIndex: number;
 };
 
 export type CaseDetailsName = {

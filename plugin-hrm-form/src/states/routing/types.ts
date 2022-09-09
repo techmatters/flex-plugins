@@ -19,14 +19,22 @@ export const NewCaseSectionSubroutes = {
   CaseSummary: 'caseSummary',
 } as const;
 
-export type CaseSectionSubroute = typeof NewCaseSectionSubroutes[keyof typeof NewCaseSectionSubroutes];
-
-export const NewCaseOtherSubroutes = {
-  ViewContact: 'view-contact',
+const OtherCaseRoutes = {
   CasePrintView: 'case-print-view',
+  ViewContact: 'view-contact',
 } as const;
 
-export const NewCaseSubroutes = Object.freeze(Object.assign(NewCaseOtherSubroutes, NewCaseSectionSubroutes));
+export type CaseSectionSubroute = typeof NewCaseSectionSubroutes[keyof typeof NewCaseSectionSubroutes];
+
+export type CaseViewContactRoute = CaseRoute & {
+  subroute?: typeof OtherCaseRoutes.ViewContact;
+  id: string;
+};
+
+export const NewCaseSubroutes = Object.freeze({
+  ...NewCaseSectionSubroutes,
+  ...OtherCaseRoutes,
+});
 
 export enum CaseItemAction {
   Add = 'add',
@@ -34,72 +42,65 @@ export enum CaseItemAction {
   View = 'view',
 }
 
-export type AppRoutesWithCaseAndAction = (
+type CaseRoute =
   | {
       route: 'tabbed-forms' | 'new-case';
       autoFocus?: boolean;
     }
   | {
       route: 'select-call-type';
-    }
-) & {
+    };
+
+type CaseSectionRoute = CaseRoute & {
   subroute?: CaseSectionSubroute;
-  action: CaseItemAction.Add | CaseItemAction.Edit;
 };
 
-export type AppRoutesWithCaseActionAndId = (
-  | {
-      route: 'tabbed-forms' | 'new-case';
-      autoFocus?: boolean;
-    }
-  | {
-      route: 'select-call-type';
-    }
-) & {
-  subroute?: CaseSectionSubroute;
+export type EditCaseSectionRoute = CaseSectionRoute & {
+  action: CaseItemAction.Edit;
+  id: string;
+};
+
+export type AddCaseSectionRoute = CaseSectionRoute & {
+  action: CaseItemAction.Add;
+};
+
+export type ViewCaseSectionRoute = CaseSectionRoute & {
   action: CaseItemAction.View;
   id: string;
 };
 
-export function isAppRoutesWithCaseAndAction(appRoute: AppRoutes): appRoute is AppRoutesWithCaseAndAction {
-  return (
-    Object.values(<any>NewCaseSectionSubroutes).includes(appRoute.subroute) &&
-    !(<AppRoutesWithCaseActionAndId>appRoute).id
-  );
+export function isAddCaseSectionRoute(appRoute: AppRoutes): appRoute is AddCaseSectionRoute {
+  return (<any>appRoute).action === CaseItemAction.Add;
 }
-export function isAppRoutesWithCaseActionAndId(appRoute: AppRoutes): appRoute is AppRoutesWithCaseActionAndId {
-  return (
-    Object.values(<any>NewCaseSectionSubroutes).includes(appRoute.subroute) &&
-    Boolean((<AppRoutesWithCaseActionAndId>appRoute).id)
-  );
+
+export function isViewCaseSectionRoute(appRoute: AppRoutes): appRoute is ViewCaseSectionRoute {
+  return (<any>appRoute).action === CaseItemAction.View;
+}
+
+export function isEditCaseSectionRoute(appRoute: AppRoutes): appRoute is EditCaseSectionRoute {
+  return (<any>appRoute).action === CaseItemAction.Edit;
+}
+
+export function isViewContactRoute(appRoute: AppRoutes): appRoute is CaseViewContactRoute {
+  return (<AppRoutes>appRoute).subroute === 'view-contact';
 }
 
 // Routes that may lead to Case screen (maybe we need an improvement here)
 export type AppRoutesWithCase =
   // TODO: enum the possible subroutes on each route
-  | AppRoutesWithCaseAndAction
-  | AppRoutesWithCaseActionAndId
+  | AddCaseSectionRoute
+  | EditCaseSectionRoute
+  | ViewCaseSectionRoute
+  | CaseViewContactRoute
+  | (CaseRoute & { subroute?: TabbedFormSubroutes | 'case-print-view' })
   | {
       route: 'tabbed-forms';
-      subroute?: TabbedFormSubroutes | typeof NewCaseOtherSubroutes[keyof typeof NewCaseOtherSubroutes];
+      subroute?: TabbedFormSubroutes;
       autoFocus?: boolean;
-    }
-  | {
-      route: 'new-case';
-      subroute?: typeof NewCaseOtherSubroutes[keyof typeof NewCaseOtherSubroutes];
-      autoFocus?: boolean;
-    }
-  | {
-      route: 'select-call-type';
-      subroute?: typeof NewCaseOtherSubroutes[keyof typeof NewCaseOtherSubroutes];
     };
 
 export function isAppRouteWithCase(appRoute: AppRoutes): appRoute is AppRoutesWithCase {
-  return ['tabbed-forms', 'new-case', 'select-call-type'].includes(appRoute.route);
-}
-
-export function isTabbedFormsRoute(appRoute: AppRoutes): appRoute is AppRoutesWithCase {
-  return ['tabbed-forms', 'new-case', 'select-call-type'].includes(appRoute.route);
+  return ['tabbed-forms', 'new-case', 'select-call-type'].includes(appRoute?.route);
 }
 
 export type CSAMReportRoute = {
