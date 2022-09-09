@@ -26,8 +26,8 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-      STG_ACCOUNT_SID: ${{ secrets.CA_STG_ACCOUNT_SID }}
-      STG_AUTH_TOKEN: ${{ secrets.CA_STG_AUTH_TOKEN }}
+      CA_STG_ACCOUNT_SID: ${{ secrets.CA_STG_ACCOUNT_SID }}
+      CA_STG_AUTH_TOKEN: ${{ secrets.CA_STG_AUTH_TOKEN }}
     with:
       changelog: ${{ inputs.changelog }}
 
