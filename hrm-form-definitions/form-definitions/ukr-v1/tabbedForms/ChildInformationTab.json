@@ -13,10 +13,10 @@
     "name": "gender",
     "label": "Nem",
     "type": "select",
-    "unknownOption": "Nem derült ki",
+    "unknownOption": "",
     "options": [
       {
-        "value": "Nem derült ki",
+        "value": "",
         "label": ""
       },
       {
@@ -45,51 +45,51 @@
     "name": "age",
     "label": "Életkor",
     "type": "select",
-    "unknownOption": "Nem derült ki",
+    "unknownOption": "",
     "options": [
       {
-        "value": "Nem derült ki",
+        "value": "",
         "label": ""
       },
       {
         "value": "00",
-        "label": "00"
+        "label": "0"
       },
       {
         "value": "01",
-        "label": "01"
+        "label": "1"
       },
       {
         "value": "02",
-        "label": "02"
+        "label": "2"
       },
       {
         "value": "03",
-        "label": "03"
+        "label": "3"
       },
       {
         "value": "04",
-        "label": "04"
+        "label": "4"
       },
       {
         "value": "05",
-        "label": "05"
+        "label": "5"
       },
       {
         "value": "06",
-        "label": "06"
+        "label": "6"
       },
       {
         "value": "07",
-        "label": "07"
+        "label": "7"
       },
       {
         "value": "08",
-        "label": "08"
+        "label": "8"
       },
       {
         "value": "09",
-        "label": "09"
+        "label": "9"
       },
       {
         "value": "10",
