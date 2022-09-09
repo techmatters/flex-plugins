@@ -18,32 +18,20 @@
     "category": "non-data"
   },
   {
-    "name": "blank",
-    "label": "Blank",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
-    "name": "joke",
-    "label": "Joke",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
-    "name": "hangup",
-    "label": "Hang up",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
-    "name": "wrongnumber",
+    "name": "wrongNumber",
     "label": "Wrong Number",
     "type": "button",
     "category": "non-data"
   },
   {
+    "name": "joke",
+    "label": "Prank",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
     "name": "abusive",
-    "label": "Abusive",
+    "label": "Harassment",
     "type": "button",
     "category": "non-data"
   }

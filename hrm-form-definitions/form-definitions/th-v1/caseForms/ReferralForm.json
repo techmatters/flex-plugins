@@ -1,12 +1,22 @@
 [
   {
     "name": "date",
-    "label": "Date",
     "type": "date-input",
+    "label": "Date",
     "required": {
       "value": true,
       "message": "RequiredFieldError"
     }
+  },
+  {
+    "name": "followUpDate",
+    "type": "date-input",
+    "label": "Follow Up Date"
+  },
+  {
+    "name": "responseDate",
+    "type": "date-input",
+    "label": "Response Date"
   },
   {
     "name": "referredTo",

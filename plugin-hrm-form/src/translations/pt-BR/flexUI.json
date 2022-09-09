@@ -439,5 +439,10 @@
 
   "BottomBar-SaveOnClose": "Salvar mudanças?",
   "BottomBar-DontSave": "Não Salvar",
-  "BottomBar-Save": "Sim, Salvar"
+  "BottomBar-Save": "Sim, Salvar",
+  "Case-EditCaseSummary": "Editar informações do caso",
+  "BottomBar-SaveCaseSummary": "Salvar",
+  "Case Status": "Status do caso",
+  "Case Summary": "Resumo do caso",
+  "Child is in imminent physical danger": "A criança está em risco"
 }

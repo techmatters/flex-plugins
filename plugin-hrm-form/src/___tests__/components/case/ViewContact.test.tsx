@@ -103,24 +103,8 @@ const contact: SearchContact = {
   csamReports: [],
 };
 
-const hrmServiceContact = {
-  id: 'TEST ID',
-  rawJson: {
-    childInformation: { name: {} },
-    caseInformation: {},
-  },
-};
-
 const counselorsHash = {
   'john-doe-hash': 'John Doe',
-};
-
-const detailsExpanded = {
-  [ContactDetailsSections.GENERAL_DETAILS]: true,
-  [ContactDetailsSections.CALLER_INFORMATION]: false,
-  [ContactDetailsSections.CHILD_INFORMATION]: false,
-  [ContactDetailsSections.ISSUE_CATEGORIZATION]: false,
-  [ContactDetailsSections.CONTACT_SUMMARY]: false,
 };
 
 describe('View Contact', () => {
@@ -151,13 +135,6 @@ describe('View Contact', () => {
             'task-id': {
               connectedCase: {},
               caseHasBeenEdited: false,
-              temporaryCaseInfo: {
-                screen: 'view-contact',
-                info: {
-                  detailsExpanded: {},
-                  contact: hrmServiceContact,
-                },
-              },
             },
           },
         },
@@ -185,7 +162,7 @@ describe('View Contact', () => {
     render(
       <Provider store={store}>
         <StorelessThemeProvider themeConf={themeConf}>
-          <ViewContact task={task as any} onClickClose={jest.fn()} />
+          <ViewContact contactId="TEST ID" task={task as any} onClickClose={jest.fn()} />
         </StorelessThemeProvider>
       </Provider>,
     );
@@ -202,7 +179,7 @@ describe('View Contact', () => {
     render(
       <Provider store={store}>
         <StorelessThemeProvider themeConf={themeConf}>
-          <ViewContact task={task as any} onClickClose={onClickClose} />
+          <ViewContact contactId="TEST ID" task={task as any} onClickClose={onClickClose} />
         </StorelessThemeProvider>
       </Provider>,
     );
@@ -220,7 +197,7 @@ describe('View Contact', () => {
     render(
       <Provider store={store}>
         <StorelessThemeProvider themeConf={themeConf}>
-          <ViewContact task={task as any} onClickClose={jest.fn()} />
+          <ViewContact contactId="TEST ID" task={task as any} onClickClose={jest.fn()} />
         </StorelessThemeProvider>
       </Provider>,
     );
@@ -241,7 +218,7 @@ describe('View Contact', () => {
     const wrapper = mount(
       <Provider store={store}>
         <StorelessThemeProvider themeConf={themeConf}>
-          <ViewContact task={task as any} onClickClose={jest.fn()} />
+          <ViewContact contactId="TEST ID" task={task as any} onClickClose={jest.fn()} />
         </StorelessThemeProvider>
       </Provider>,
     );

@@ -21,9 +21,15 @@ const ActivityTypes = {
 export const isConnectedCaseActivity = (activity): activity is ConnectedCaseActivity =>
   Boolean(ActivityTypes.connectContact[activity.type]);
 
+/**
+ * Returns true if the activity provided is a connected case activity (included in channelsAndDefault const object)
+ * @param activity Timeline Activity
+ */
+export const isNoteActivity = (activity): activity is ConnectedCaseActivity => activity.type === 'note';
+
 const noteActivities = (counsellorNotes: NoteEntry[], previewFields: string[]): Activity[] =>
   (counsellorNotes || [])
-    .map((n, originalIndex) => {
+    .map(n => {
       try {
         const { id, createdAt: date, updatedAt, updatedBy, twilioWorkerId, ...toCopy } = n;
         const text =
@@ -40,7 +46,6 @@ const noteActivities = (counsellorNotes: NoteEntry[], previewFields: string[]): 
           twilioWorkerId,
           type: ActivityTypes.addNote,
           note: toCopy,
-          originalIndex,
         };
       } catch (err) {
         console.warn(`Error processing referral, excluding from data`, n, err);
@@ -51,7 +56,7 @@ const noteActivities = (counsellorNotes: NoteEntry[], previewFields: string[]): 
 
 const referralActivities = (referrals: ReferralEntry[]): Activity[] =>
   (referrals || [])
-    .map((referral, originalIndex) => {
+    .map(referral => {
       const { id, createdAt, date, updatedAt, updatedBy, twilioWorkerId, ...toCopy } = referral;
       const { referredTo: text } = referral;
       try {
@@ -65,7 +70,6 @@ const referralActivities = (referrals: ReferralEntry[]): Activity[] =>
           type: ActivityTypes.addReferral,
           text,
           referral: { date, ...toCopy },
-          originalIndex,
         };
       } catch (err) {
         console.warn(`Error processing referral, excluding from data`, referral, err);
@@ -74,21 +78,21 @@ const referralActivities = (referrals: ReferralEntry[]): Activity[] =>
     })
     .filter(ra => ra);
 
-const connectedContactActivities = (caseContacts): Activity[] =>
+const connectedContactActivities = (caseContacts): ConnectedCaseActivity[] =>
   (caseContacts || [])
-    .map((cc, originalIndex) => {
+    .map(cc => {
       try {
         const type = ActivityTypes.connectContact[cc.channel];
         const channel = type === ActivityTypes.connectContact.default ? cc.rawJson.contactlessTask.channel : type;
         return {
-          contactId: cc.id,
+          contactId: cc.id.toString(),
           date: cc.timeOfContact,
           createdAt: cc.createdAt,
           type,
           text: cc.rawJson.caseInformation.callSummary,
           twilioWorkerId: cc.twilioWorkerId,
           channel,
-          originalIndex,
+          callType: cc.rawJson.callType,
         };
       } catch (err) {
         console.warn(`Error processing connected contact, excluding from data`, cc, err);
@@ -107,9 +111,13 @@ export const getActivitiesFromCase = (sourceCase: Case): Activity[] => {
   return [
     ...noteActivities(sourceCase.info.counsellorNotes ?? [], previewFields),
     ...referralActivities(sourceCase.info.referrals ?? []),
-    ...connectedContactActivities(sourceCase.connectedContacts ?? []),
   ];
 };
+
+export const getActivitiesFromContacts = (sourceContacts: any[]): Activity[] => {
+  return connectedContactActivities(sourceContacts);
+};
+
 /**
  * Sort activities from most recent to oldest.
  * @param activities Activities to sort

@@ -33,24 +33,28 @@ export const LOAD_CONTACT_ACTION = 'LOAD_CONTACT_ACTION';
 
 type LoadContactAction = {
   type: typeof LOAD_CONTACT_ACTION;
-  id: string;
-  contact: SearchContact;
+  contacts: SearchContact[];
   reference?: string;
   replaceExisting: boolean;
 };
 
 export const loadContact = (contact: SearchContact, reference, replaceExisting = false): LoadContactAction => ({
   type: LOAD_CONTACT_ACTION,
-  id: contact.contactId,
-  contact,
+  contacts: [contact],
   reference,
   replaceExisting,
 });
 
 export const loadRawContact = (contact: any, reference: string, replaceExisting = false): LoadContactAction => ({
   type: LOAD_CONTACT_ACTION,
-  id: contact.id,
-  contact: hrmServiceContactToSearchContact(contact),
+  contacts: [hrmServiceContactToSearchContact(contact)],
+  reference,
+  replaceExisting,
+});
+
+export const loadRawContacts = (contacts: any[], reference: string, replaceExisting = false): LoadContactAction => ({
+  type: LOAD_CONTACT_ACTION,
+  contacts: contacts.map(c => hrmServiceContactToSearchContact(c)),
   reference,
   replaceExisting,
 });
@@ -58,24 +62,33 @@ export const loadRawContact = (contact: any, reference: string, replaceExisting 
 export const refreshRawContact = (contact: any) => loadRawContact(contact, undefined, true);
 
 export const loadContactReducer = (state: ExistingContactsState, action: LoadContactAction) => {
-  const current = state[action.id] ?? { references: new Set() };
-  if ((!action.reference || current.references.has(action.reference)) && !action.replaceExisting) {
-    // If the contact is already referenced and we are not updating, it's a noop
-    return state;
-  }
-  const { draftContact, ...currentContact } = state[action.id] ?? {
-    categories: {
-      expanded: {},
-      gridView: false,
-    },
-  };
+  const updateEntries = action.contacts
+    .filter(c => {
+      return (
+        (action.reference && !(state[c.contactId]?.references ?? new Set()).has(action.reference)) ||
+        action.replaceExisting
+      );
+    })
+    .map(c => {
+      const current = state[c.contactId] ?? { references: new Set() };
+      const { draftContact, ...currentContact } = state[c.contactId] ?? {
+        categories: {
+          expanded: {},
+          gridView: false,
+        },
+      };
+      return [
+        c.contactId,
+        {
+          ...currentContact,
+          savedContact: action.replaceExisting || !current.references.size ? c : state[c.contactId].savedContact,
+          references: action.reference ? current.references.add(action.reference) : current.references,
+        },
+      ];
+    });
   return {
     ...state,
-    [action.id]: {
-      ...currentContact,
-      savedContact: action.replaceExisting || !current.references.size ? action.contact : state[action.id].savedContact,
-      references: action.reference ? current.references.add(action.reference) : current.references,
-    },
+    ...Object.fromEntries(updateEntries),
   };
 };
 
@@ -83,33 +96,39 @@ export const RELEASE_CONTACT_ACTION = 'RELEASE_CONTACT_ACTION';
 
 type ReleaseContactAction = {
   type: typeof RELEASE_CONTACT_ACTION;
-  id: string;
+  ids: string[];
   reference: string;
 };
 
 export const releaseContact = (id: string, reference: string): ReleaseContactAction => ({
   type: RELEASE_CONTACT_ACTION,
-  id,
+  ids: [id],
+  reference,
+});
+
+export const releaseContacts = (ids: string[], reference: string): ReleaseContactAction => ({
+  type: RELEASE_CONTACT_ACTION,
+  ids,
   reference,
 });
 
 export const releaseContactReducer = (state: ExistingContactsState, action: ReleaseContactAction) => {
-  const current = state[action.id];
-  if (!current) {
-    console.warn(
-      `Tried to release contact id ${action.id} but wasn't in the redux state. You should only release previously loaded contacts once`,
-    );
-    return state;
-  }
-  current.references.delete(action.reference);
-  if (current.references.size < 1) {
-    return omit(state, action.id);
-  }
+  const updateKvps = action.ids
+    .map(id => {
+      const current = state[id];
+      if (!current) {
+        console.warn(
+          `Tried to release contact id ${id} but wasn't in the redux state. You should only release previously loaded contacts once`,
+        );
+        return [id, undefined];
+      }
+      current.references.delete(action.reference);
+      return [id, current];
+    })
+    .filter(([, ecs]) => typeof ecs === 'object' && ecs.references.size > 0);
   return {
-    ...state,
-    [action.id]: {
-      ...current,
-    },
+    ...omit(state, ...action.ids),
+    ...Object.fromEntries(updateKvps),
   };
 };
 
