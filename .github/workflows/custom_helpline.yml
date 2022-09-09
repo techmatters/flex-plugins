@@ -19,8 +19,10 @@ on:
     inputs:
       helpline_code:
         required: true
+        type: string
       environment_code:
         required: true
+        type: string
       changelog:
         description: Release Changelog - Add a comment about the changes to be included in this release.
         required: true
