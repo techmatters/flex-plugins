@@ -13,6 +13,7 @@
     "name": "relationshipToChild",
     "label": "A megkereső kapcsolata a gyerekkel",
     "type": "select",
+    "unknownOption": "",
     "options": [
       {
         "value": "",
@@ -87,8 +88,8 @@
     "unknownOption": "Nem derült ki",
     "options": [
       {
-        "value": "",
-        "label": "Nem derült ki"
+        "value": "Nem derült ki",
+        "label": ""
       },
       {
         "value": "Fiú",
@@ -108,15 +109,15 @@
     "name": "age",
     "label": "Életkor",
     "type": "select",
-    "unknownOption": "Nem derült ki",
+    "unknownOption": "",
     "options": [
       {
         "value": "",
         "label": ""
       },
       {
-        "value": "Újszülött",
-        "label": "Újszülött"
+        "value": "00",
+        "label": "0"
       },
       {
         "value": "01",
@@ -236,27 +237,28 @@
     "name": "language",
     "label": "Nyelv",
     "type": "select",
+    "unknownOption": "Nem derült ki",
     "options": [
-        {
-          "value": "Nem derült ki",
-          "label": ""
-        },        
-        {
-          "value": "Ukrán",
-          "label": "Ukrán"
-        },
-        {
-          "value": "Orosz",
-          "label": "Orosz"
-        },
-        {
-          "value": "Magyar",
-          "label": "Magyar"
-        },
-        {
-          "value": "Egyéb",
-          "label": "Egyéb"
-        }
-      ]
+      {
+        "value": "Nem derült ki",
+        "label": ""
+      },
+      {
+        "value": "Ukrán",
+        "label": "Ukrán"
+      },
+      {
+        "value": "Orosz",
+        "label": "Orosz"
+      },
+      {
+        "value": "Magyar",
+        "label": "Magyar"
+      },
+      {
+        "value": "Egyéb",
+        "label": "Egyéb"
+      }
+    ]
   }
 ]

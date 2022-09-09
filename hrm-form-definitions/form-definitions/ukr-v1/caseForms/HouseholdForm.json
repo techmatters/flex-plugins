@@ -13,6 +13,7 @@
     "name": "relationshipToChild",
     "label": "A megkereső kapcsolata a gyerekkel",
     "type": "select",
+    "unknownOption": "Nem derült ki",
     "options": [
       {
         "value": "Nem derült ki",
@@ -80,6 +81,7 @@
     "name": "gender",
     "label": "Nem",
     "type": "select",
+    "unknownOption": "",
     "options": [
       {
         "value": "",
@@ -102,7 +104,7 @@
         "label": "Nem derült ki"
       }
     ],
-     "required": {
+    "required": {
       "value": true,
       "message": "RequiredFieldError"
     }
@@ -238,27 +240,28 @@
     "name": "language",
     "label": "Nyelv",
     "type": "select",
+    "unknownOption": "Nem derült ki",
     "options": [
-        {
-          "value": "Nem derült ki",
-          "label": ""
-        },        
-        {
-          "value": "Ukrán",
-          "label": "Ukrán"
-        },
-        {
-          "value": "Orosz",
-          "label": "Orosz"
-        },
-        {
-          "value": "Magyar",
-          "label": "Magyar"
-        },
-        {
-          "value": "Egyéb",
-          "label": "Egyéb"
-        }
-      ]
+      {
+        "value": "Nem derült ki",
+        "label": ""
+      },
+      {
+        "value": "Ukrán",
+        "label": "Ukrán"
+      },
+      {
+        "value": "Orosz",
+        "label": "Orosz"
+      },
+      {
+        "value": "Magyar",
+        "label": "Magyar"
+      },
+      {
+        "value": "Egyéb",
+        "label": "Egyéb"
+      }
+    ]
   }
 ]
