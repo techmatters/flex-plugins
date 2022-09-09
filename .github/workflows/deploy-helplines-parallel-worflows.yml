@@ -17,16 +17,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        helplines: ['canada', 'cl_linealibre', 'ecpat_philippines', 'ethiopia', 'jamaica', 'malawi', 'rati', 'romania', 'safernet', 'south_africa', 'teguio_colombia', 'thailand', 'uk', 'ukraine', 'zambia', 'zimbabwe']
         short_helplines: ['CA', 'CL', 'PH', 'ET', 'JM', 'MW', 'IN', 'RO', 'BR', 'ZA', 'CO', 'TH', 'UK', 'UKR', 'ZM', 'ZW']
-    uses: techmatters/flex-plugins/.github/workflows/${{ matrix.helplines }}_staging.yml@CHI-1258_workflow_to_deploy_flex_helpline_stg_env
-    secrets:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-      STG_ACCOUNT_SID: ${{ secrets.${{ matrix.short_helplines }}_STG_ACCOUNT_SID }}
-      STG_AUTH_TOKEN: ${{ secrets.${{ matrix.short_helplines }}_STG_AUTH_TOKEN }}
-    with:
+        environment_code: [STG]
+    uses: techmatters/flex-plugins/.github/workflows/custom_helpline.yml@CHI-1258_workflow_to_deploy_flex_helpline_stg_env
+    secrets: inherit
+    with: 
+      helpline_code: ${{ matrix.short_helplines }}
+      environment_code: ${{ matrix.environment_code }}
       changelog: ${{ inputs.changelog }}
 
   deploy-uk_staging_III: 
