@@ -21,7 +21,7 @@ jobs:
         environment_code: [STG]
     uses: techmatters/flex-plugins/.github/workflows/custom_helpline.yml@CHI-1258_workflow_to_deploy_flex_helpline_stg_env
     secrets: inherit
-    with: 
+    with:
       helpline_code: ${{ matrix.short_helplines }}
       environment_code: ${{ matrix.environment_code }}
       changelog: ${{ inputs.changelog }}

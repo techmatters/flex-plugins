@@ -21,7 +21,8 @@ on:
         required: true
       environment_code:
         required: true
-      description: Release Changelog - Add a comment about the changes to be included in this release.
+      changelog:
+        description: Release Changelog - Add a comment about the changes to be included in this release.
         required: true
         type: string
 
