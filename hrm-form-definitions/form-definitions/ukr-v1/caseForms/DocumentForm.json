@@ -2,13 +2,13 @@
   {
     "name": "fileName",
     "type": "file-upload",
-    "label": "Document",
-    "description": "Accepted file formats: Word, PDFs, or JPGs.\nFile size not to exceed 5MB",
+    "label": "Dokumentum",
+    "description": "Elfogadott fájlformátumok: Word, PDF vagy JPG.\nA fájl mérete nem haladhatja meg az 5 MB-ot",
     "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
     "name": "comments",
-    "label": "Comments",
+    "label": "Megjegyzés",
     "type": "textarea",
     "placeholder": "",
     "rows": 20,
