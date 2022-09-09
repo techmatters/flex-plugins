@@ -114,17 +114,30 @@ module twitterChannel {
   short_helpline = var.short_helpline
   short_environment = var.short_environment
 }
-/*
+
 module instagramChannel {
   count =  true ? 1 : 0
-  source = "../../../flex-plugins/twilio-iac/terraform-modules/channels/instagram"
+  source = "../terraform-modules/channels/instagram"
+  custom_flow_definition = templatefile(
+    "../terraform-modules/channels/flow-templates/opening-hours/no-chatbot.tftpl",
+    {
+      channel = "instagram"
+      serverless_url=var.serverless_url
+      serverless_environment_sid = var.serverless_environment_sid
+      serverless_function_sid = var.serverless_function_sid
+      serverless_service_sid = var.serverless_service_sid
+      master_workflow_sid = module.taskRouter.master_workflow_sid
+      chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
+      channel_attributes = var.custom_channel_attributes != "" ? var.custom_channel_attributes : file("../terraform-modules/channels/instagram/channel-attributes.tftpl")
+      flow_description = "Instagram Messaging Flow"
+    })
   master_workflow_sid = module.taskRouter.master_workflow_sid
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
   flex_chat_service_sid = module.services.flex_chat_service_sid
   short_helpline = var.short_helpline
   short_environment = var.short_environment
 }
-*/
+
 module flex {
   source = "../terraform-modules/flex/default"
   account_sid = var.account_sid
