@@ -5,7 +5,7 @@ variable "datadog_app_id" {}
 variable "datadog_access_token" {}
 
 variable "language" {
-  description = "Numeric AWS account ID used in ARNs"
+  description = "Language used by the helpline"
   type        = string
   default     = "es-CO"
 }
@@ -122,4 +122,7 @@ variable "custom_channel_attributes" {
   description = "Override the default channel attributes by setting this"
   type = string
   default = ""
+}
+variable "messaging_flow_contact_identity" {
+  default = "+17752526377"
 }

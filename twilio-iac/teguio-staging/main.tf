@@ -17,7 +17,7 @@ locals {
   strings= jsondecode(file("${path.module}/../translations/${var.language}/strings.json"))
   twilio_channels = {
     "facebook" = {"contact_identity" = "messenger:103574689075106" },
-    "webchat" = {"contact_identity" = "" }
+    "web" = {"contact_identity" = "" }
   }
   custom_channels=["twitter","instagram"]
 }
@@ -27,12 +27,7 @@ module "custom_chatbots" {
   source = "../terraform-modules/chatbots/te-guio-co"
   serverless_url = var.serverless_url
 }
-/*
-module "chatbots" {
-  source = "../terraform-modules/chatbots/default"
-  serverless_url = var.serverless_url
-}
-*/
+
 module "hrmServiceIntegration" {
   source = "../terraform-modules/hrmServiceIntegration/default"
   local_os = var.local_os
@@ -62,61 +57,9 @@ module "taskRouter" {
   custom_task_routing_filter_expression = "channelType ==\"web\"  OR isContactlessTask == true OR  twilioNumber IN [${join(", ", formatlist("'%s'", var.twilio_numbers))}]"
 }
 
-module studioFlow {
-  source = "../terraform-modules/studioFlow/default"
-  master_workflow_sid = module.taskRouter.master_workflow_sid
-  chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
-  default_task_channel_sid = module.taskRouter.default_task_channel_sid
-  pre_survey_bot_sid = module.custom_chatbots.pre_survey_bot_es_sid
-}
-/*
-module webChannel {
-  count =  true ? 1 : 0
-  source = "../../../flex-plugins/twilio-iac/terraform-modules/channels/web"
-  master_workflow_sid = module.taskRouter.master_workflow_sid
-  chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
-  flex_chat_service_sid = module.services.flex_chat_service_sid
-  pre_survey_bot_sid = module.chatbots.pre_survey_bot_sid
-  target_task_name = var.target_task_name != "" ? var.target_task_name : "greeting"
-}
-
-module messengerChannel {
-  count =  true ? 1 : 0
-  source = "../../../flex-plugins/twilio-iac/terraform-modules/channels/instagram"
-  master_workflow_sid = module.taskRouter.master_workflow_sid
-  chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
-  flex_chat_service_sid = module.services.flex_chat_service_sid
-  pre_survey_bot_sid = module.chatbots.pre_survey_bot_es_sid
-  target_task_name = var.target_task_name != "" ? var.target_task_name : "greeting"
-
-}
-module whatsappChannel {
-  count =  true ? 1 : 0
-  source = "../terraform-modules/channels/twitter"
-  custom_flow_definition = templatefile(
-    "../terraform-modules/channels/flow-templates/opening-hours/no-chatbot.tftpl",
-    {
-      channel = "whatsapp"
-      serverless_url=var.serverless_url
-      serverless_environment_sid = var.serverless_environment_sid
-      serverless_function_sid = var.serverless_function_sid
-      serverless_service_sid = var.serverless_service_sid
-      master_workflow_sid = module.taskRouter.master_workflow_sid
-      chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
-      channel_attributes = var.custom_channel_attributes != "" ? var.custom_channel_attributes : file("../terraform-modules/channels/twitter/channel-attributes.tftpl")
-      flow_description = "Twitter Messaging Flow"
-    })
-  master_workflow_sid = module.taskRouter.master_workflow_sid
-  chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
-  flex_chat_service_sid = module.services.flex_chat_service_sid
-  short_helpline = var.short_helpline
-  short_environment = var.short_environment
-}
-*/
 module twilioChannel {
-  //count =  length(local.custom_channels)
   for_each = local.twilio_channels
-  source = "../terraform-modules/channels/custom-channel"
+  source = "../terraform-modules/channels/twilio-channel"
   custom_flow_definition = templatefile(
     "../terraform-modules/channels/flow-templates/opening-hours/with-chatbot.tftpl",
     {
@@ -127,26 +70,25 @@ module twilioChannel {
       serverless_service_sid = var.serverless_service_sid
       master_workflow_sid = module.taskRouter.master_workflow_sid
       chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
-      channel_attributes = var.custom_channel_attributes != "" ? var.custom_channel_attributes : file("../terraform-modules/channels/custom-channel/channel-attributes/${each.key}-attributes.tftpl")
+      channel_attributes = var.custom_channel_attributes != "" ? var.custom_channel_attributes : file("../terraform-modules/channels/twilio-channel/channel-attributes/${each.key}-attributes.tftpl")
       flow_description = "${title(each.key)} Messaging Flow"
-      pre_survey_bot_sid = module.chatbots.pre_survey_bot_es_sid
+      pre_survey_bot_sid = module.custom_chatbots.pre_survey_bot_es_sid
       target_task_name = var.target_task_name
       operating_hours_holiday = local.strings.operating_hours_holiday
       operating_hours_closed = local.strings.operating_hours_closed
 
     })
-  contact_identity = each.value.contact_identity
+  channel_contact_identity = each.value.contact_identity
+  pre_survey_bot_sid = module.custom_chatbots.pre_survey_bot_es_sid
+  target_task_name = var.target_task_name
   channel_name = "${each.key}"
   master_workflow_sid = module.taskRouter.master_workflow_sid
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
   flex_chat_service_sid = module.services.flex_chat_service_sid
-  short_helpline = var.short_helpline
-  short_environment = var.short_environment
 }
 
 
 module customChannel {
-  //count =  length(local.custom_channels)
   for_each = toset(local.custom_channels)
   source = "../terraform-modules/channels/custom-channel"
   custom_flow_definition = templatefile(
@@ -173,62 +115,8 @@ module customChannel {
   short_environment = var.short_environment
 }
 
-
-
-/*
-module twitterChannel {
-  count =  true ? 1 : 0
-  source = "../terraform-modules/channels/twitter"
-  custom_flow_definition = templatefile(
-    "../terraform-modules/channels/flow-templates/opening-hours/no-chatbot.tftpl",
-    {
-      channel_name = "twitter"
-      serverless_url=var.serverless_url
-      serverless_environment_sid = var.serverless_environment_sid
-      serverless_function_sid = var.serverless_function_sid
-      serverless_service_sid = var.serverless_service_sid
-      master_workflow_sid = module.taskRouter.master_workflow_sid
-      chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
-      channel_attributes = var.custom_channel_attributes != "" ? var.custom_channel_attributes : file("../terraform-modules/channels/twitter/channel-attributes.tftpl")
-      flow_description = "Twitter Messaging Flow"
-      operating_hours_holiday = local.strings.operating_hours_holiday
-      operating_hours_closed = local.strings.operating_hours_closed
-
-    })
-  master_workflow_sid = module.taskRouter.master_workflow_sid
-  chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
-  flex_chat_service_sid = module.services.flex_chat_service_sid
-  short_helpline = var.short_helpline
-  short_environment = var.short_environment
-}
-
-module instagramChannel {
-  count =  true ? 1 : 0
-  source = "../terraform-modules/channels/instagram"
-  custom_flow_definition = templatefile(
-    "../terraform-modules/channels/flow-templates/opening-hours/no-chatbot.tftpl",
-    {
-      channel_name = "instagram"
-      serverless_url=var.serverless_url
-      serverless_environment_sid = var.serverless_environment_sid
-      serverless_function_sid = var.serverless_function_sid
-      serverless_service_sid = var.serverless_service_sid
-      master_workflow_sid = module.taskRouter.master_workflow_sid
-      chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
-      channel_attributes = var.custom_channel_attributes != "" ? var.custom_channel_attributes : file("../terraform-modules/channels/instagram/channel-attributes.tftpl")
-      flow_description = "Instagram Messaging Flow"
-      operating_hours_holiday = local.strings.operating_hours_holiday
-      operating_hours_closed = local.strings.operating_hours_closed
-    })
-  master_workflow_sid = module.taskRouter.master_workflow_sid
-  chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
-  flex_chat_service_sid = module.services.flex_chat_service_sid
-  short_helpline = var.short_helpline
-  short_environment = var.short_environment
-}
-*/
 module flex {
-  source = "../terraform-modules/flex/default"
+  source = "../terraform-modules/flex/service-configuration"
   account_sid = var.account_sid
   short_environment = var.short_environment
   operating_info_key = var.operating_info_key
@@ -238,9 +126,6 @@ module flex {
   hrm_url = "https://hrm-test.tl.techmatters.org"
   multi_office_support = var.multi_office
   feature_flags = var.feature_flags
-  flex_chat_service_sid = module.services.flex_chat_service_sid
-  messaging_studio_flow_sid = module.studioFlow.messaging_studio_flow_sid
-  messaging_flow_contact_identity = var.messaging_flow_contact_identity
 }
 
 module survey {
