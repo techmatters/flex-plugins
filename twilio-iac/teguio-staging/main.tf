@@ -22,7 +22,6 @@ locals {
   custom_channels=["twitter","instagram"]
 }
 
-
 module "custom_chatbots" {
   source = "../terraform-modules/chatbots/te-guio-co"
   serverless_url = var.serverless_url
@@ -86,7 +85,6 @@ module twilioChannel {
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
   flex_chat_service_sid = module.services.flex_chat_service_sid
 }
-
 
 module customChannel {
   for_each = toset(local.custom_channels)
