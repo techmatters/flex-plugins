@@ -4,6 +4,12 @@ variable "serverless_url" {}
 variable "datadog_app_id" {}
 variable "datadog_access_token" {}
 
+variable "language" {
+  description = "Numeric AWS account ID used in ARNs"
+  type        = string
+  default     = "es-CO"
+}
+
 variable "aws_account_id" {
   description = "Numeric AWS account ID used in ARNs"
   type        = string
@@ -81,21 +87,6 @@ variable "target_task_name" {
   default = "execute_initial_flow"
 }
 
-variable "messaging_flow_contact_identity" {
-  default = "+17752526377"
-}
-
-variable "messenger_contact_identity" {
-  description = "Contact Identity for the messaging flow"
-  type = string
-  default = "messenger:103574689075106"
-}
-
-variable "whatsapp_contact_identity" {
-  description = "Contact Identity for the messaging flow"
-  type = string
-  default = ""
-}
 
 variable "twilio_numbers" {
   default = ["messenger:103574689075106","twitter:1540032139563073538","instagram:17841454586132629"]

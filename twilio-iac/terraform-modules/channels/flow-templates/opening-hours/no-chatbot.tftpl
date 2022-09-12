@@ -45,7 +45,7 @@ ${
           "type": "send-to-flex",
           "name": "attributes",
           "properties": {
-            "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"twitterUserHandle\": \"{{trigger.message.ChannelAttributes.twitterUserHandle}}\",\"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\",\"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
+            "attributes": channel_attributes,
             "workflow": master_workflow_sid,
             "channel": chat_task_channel_sid,
             "offset": {
@@ -70,7 +70,7 @@ ${
             "parameters": [
               {
                 "key": "channel",
-                "value": channel
+                "value": channel_name
               }
             ],
             "url": "${serverless_url}/operatingHours",
@@ -154,7 +154,7 @@ ${
           "type": "send-message",
           "name": "closed",
           "properties": {
-            "body": "Lo sentimos, por el momento no estamos atendiendo. Vuelve a contactarnos en el siguiente día hábil de 8am a 5pm. ¡Saludos!",
+            "body": operating_hours_closed,
             "from": "{{flow.channel.address}}",
             "service": "{{trigger.message.InstanceSid}}",
             "to": "{{contact.channel.address}}",
@@ -177,7 +177,7 @@ ${
           "type": "send-message",
           "name": "holiday",
           "properties": {
-            "body": "Lo sentimos, no atendemos durante días festivos. Vuelve a contactarnos en el siguiente día hábil de 8am a 5pm. ¡Saludos!",
+            "body": operating_hours_holiday,
             "from": "{{flow.channel.address}}",
             "service": "{{trigger.message.InstanceSid}}",
             "to": "{{contact.channel.address}}",

@@ -13,6 +13,15 @@ terraform {
     encrypt        = true
   }
 }
+locals {
+  strings= jsondecode(file("${path.module}/../translations/${var.language}/strings.json"))
+  twilio_channels = {
+    "facebook" = {"contact_identity" = "messenger:103574689075106" },
+    "webchat" = {"contact_identity" = "" }
+  }
+  custom_channels=["twitter","instagram"]
+}
+
 
 module "custom_chatbots" {
   source = "../terraform-modules/chatbots/te-guio-co"
@@ -82,23 +91,12 @@ module messengerChannel {
 
 }
 module whatsappChannel {
-  count =  false ? 1 : 0
-  source = "../../../flex-plugins/twilio-iac/terraform-modules/channels/whatsapp"
-  master_workflow_sid = module.taskRouter.master_workflow_sid
-  chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
-  flex_chat_service_sid = module.services.flex_chat_service_sid
-  pre_survey_bot_sid = module.chatbots.pre_survey_bot_sid
-  target_task_name = var.target_task_name != "" ? var.target_task_name : "greeting"
-  whatsapp_contact_identity = var.whatsapp_contact_identity
-}
-*/
-module twitterChannel {
   count =  true ? 1 : 0
   source = "../terraform-modules/channels/twitter"
   custom_flow_definition = templatefile(
     "../terraform-modules/channels/flow-templates/opening-hours/no-chatbot.tftpl",
     {
-      channel = "twitter"
+      channel = "whatsapp"
       serverless_url=var.serverless_url
       serverless_environment_sid = var.serverless_environment_sid
       serverless_function_sid = var.serverless_function_sid
@@ -114,22 +112,88 @@ module twitterChannel {
   short_helpline = var.short_helpline
   short_environment = var.short_environment
 }
-
-module instagramChannel {
-  count =  true ? 1 : 0
-  source = "../terraform-modules/channels/instagram"
+*/
+module twilioChannel {
+  //count =  length(local.custom_channels)
+  for_each = local.twilio_channels
+  source = "../terraform-modules/channels/custom-channel"
   custom_flow_definition = templatefile(
-    "../terraform-modules/channels/flow-templates/opening-hours/no-chatbot.tftpl",
+    "../terraform-modules/channels/flow-templates/opening-hours/with-chatbot.tftpl",
     {
-      channel = "instagram"
+      channel_name = "${each.key}"
       serverless_url=var.serverless_url
       serverless_environment_sid = var.serverless_environment_sid
       serverless_function_sid = var.serverless_function_sid
       serverless_service_sid = var.serverless_service_sid
       master_workflow_sid = module.taskRouter.master_workflow_sid
       chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
-      channel_attributes = var.custom_channel_attributes != "" ? var.custom_channel_attributes : file("../terraform-modules/channels/instagram/channel-attributes.tftpl")
-      flow_description = "Instagram Messaging Flow"
+      channel_attributes = var.custom_channel_attributes != "" ? var.custom_channel_attributes : file("../terraform-modules/channels/custom-channel/channel-attributes/${each.key}-attributes.tftpl")
+      flow_description = "${title(each.key)} Messaging Flow"
+      pre_survey_bot_sid = module.chatbots.pre_survey_bot_es_sid
+      target_task_name = var.target_task_name
+      operating_hours_holiday = local.strings.operating_hours_holiday
+      operating_hours_closed = local.strings.operating_hours_closed
+
+    })
+  contact_identity = each.value.contact_identity
+  channel_name = "${each.key}"
+  master_workflow_sid = module.taskRouter.master_workflow_sid
+  chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
+  flex_chat_service_sid = module.services.flex_chat_service_sid
+  short_helpline = var.short_helpline
+  short_environment = var.short_environment
+}
+
+
+module customChannel {
+  //count =  length(local.custom_channels)
+  for_each = toset(local.custom_channels)
+  source = "../terraform-modules/channels/custom-channel"
+  custom_flow_definition = templatefile(
+    "../terraform-modules/channels/flow-templates/opening-hours/no-chatbot.tftpl",
+    {
+      channel_name = "${each.key}"
+      serverless_url=var.serverless_url
+      serverless_environment_sid = var.serverless_environment_sid
+      serverless_function_sid = var.serverless_function_sid
+      serverless_service_sid = var.serverless_service_sid
+      master_workflow_sid = module.taskRouter.master_workflow_sid
+      chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
+      channel_attributes = var.custom_channel_attributes != "" ? var.custom_channel_attributes : file("../terraform-modules/channels/custom-channel/channel-attributes/${each.key}-attributes.tftpl")
+      flow_description = "${title(each.key)} Messaging Flow"
+      operating_hours_holiday = local.strings.operating_hours_holiday
+      operating_hours_closed = local.strings.operating_hours_closed
+
+    })
+  channel_name = "${each.key}"
+  master_workflow_sid = module.taskRouter.master_workflow_sid
+  chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
+  flex_chat_service_sid = module.services.flex_chat_service_sid
+  short_helpline = var.short_helpline
+  short_environment = var.short_environment
+}
+
+
+
+/*
+module twitterChannel {
+  count =  true ? 1 : 0
+  source = "../terraform-modules/channels/twitter"
+  custom_flow_definition = templatefile(
+    "../terraform-modules/channels/flow-templates/opening-hours/no-chatbot.tftpl",
+    {
+      channel_name = "twitter"
+      serverless_url=var.serverless_url
+      serverless_environment_sid = var.serverless_environment_sid
+      serverless_function_sid = var.serverless_function_sid
+      serverless_service_sid = var.serverless_service_sid
+      master_workflow_sid = module.taskRouter.master_workflow_sid
+      chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
+      channel_attributes = var.custom_channel_attributes != "" ? var.custom_channel_attributes : file("../terraform-modules/channels/twitter/channel-attributes.tftpl")
+      flow_description = "Twitter Messaging Flow"
+      operating_hours_holiday = local.strings.operating_hours_holiday
+      operating_hours_closed = local.strings.operating_hours_closed
+
     })
   master_workflow_sid = module.taskRouter.master_workflow_sid
   chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
@@ -138,6 +202,31 @@ module instagramChannel {
   short_environment = var.short_environment
 }
 
+module instagramChannel {
+  count =  true ? 1 : 0
+  source = "../terraform-modules/channels/instagram"
+  custom_flow_definition = templatefile(
+    "../terraform-modules/channels/flow-templates/opening-hours/no-chatbot.tftpl",
+    {
+      channel_name = "instagram"
+      serverless_url=var.serverless_url
+      serverless_environment_sid = var.serverless_environment_sid
+      serverless_function_sid = var.serverless_function_sid
+      serverless_service_sid = var.serverless_service_sid
+      master_workflow_sid = module.taskRouter.master_workflow_sid
+      chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
+      channel_attributes = var.custom_channel_attributes != "" ? var.custom_channel_attributes : file("../terraform-modules/channels/instagram/channel-attributes.tftpl")
+      flow_description = "Instagram Messaging Flow"
+      operating_hours_holiday = local.strings.operating_hours_holiday
+      operating_hours_closed = local.strings.operating_hours_closed
+    })
+  master_workflow_sid = module.taskRouter.master_workflow_sid
+  chat_task_channel_sid = module.taskRouter.chat_task_channel_sid
+  flex_chat_service_sid = module.services.flex_chat_service_sid
+  short_helpline = var.short_helpline
+  short_environment = var.short_environment
+}
+*/
 module flex {
   source = "../terraform-modules/flex/default"
   account_sid = var.account_sid
