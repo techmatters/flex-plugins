@@ -55,17 +55,12 @@ resource "twilio_autopilot_assistants_tasks_v1" "pre_survey_bot_es_counselor_han
   unique_name   = "counselor_handoff"
   assistant_sid = twilio_autopilot_assistants_v1.pre_survey_bot_es.sid
   actions = jsonencode({
-    "actions" : [
-      {
-        "remember" : {
-          "handoffMessage" : "¡Muchas gracias! En un momento uno de nuestros guías te atenderá. Por fa espéranos..."
-        }
-      },
-      {
-        "redirect" : "https://test-not-yet-approved-2847.twil.io/counsellor-handoff"
-      }
-    ]
-  })
+	"actions": [
+		{
+			"say": "¡Muchas gracias! En un momento uno de nuestros guías te atenderá. Por fa espéranos..."
+		}
+	]
+})
 }
 
 resource "twilio_autopilot_assistants_tasks_v1" "pre_survey_bot_es_social_media_msg" {
