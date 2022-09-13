@@ -20,7 +20,7 @@ variable "target_task_name" {
   type        = string
 }
 
-variable "messenger_contact_identity" {
+variable "channel_contact_identity" {
   description = "Contact Identity for the messaging flow"
   type = string
 }
@@ -37,5 +37,10 @@ variable "chat_task_channel_sid" {
 
 variable "flex_chat_service_sid" {
   description = "Internal Twilio resource SID provided by another module"
+  type        = string
+}
+
+variable "channel_name" {
+  description = "Channel Name"
   type        = string
 }

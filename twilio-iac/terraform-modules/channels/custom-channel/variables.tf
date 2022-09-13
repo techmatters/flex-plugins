@@ -1,13 +1,13 @@
 variable "custom_flow_definition" {
+  description = "Override the default flow by setting this"
   type = string
   default = ""
-  description = "Override the default flow by setting this"
 }
 
 variable "custom_channel_attributes" {
+  description = "Override the default channel attributes by setting this"
   type = string
   default = ""
-  description = "Override the default flow by setting this"
 }
 
 variable "master_workflow_sid" {
@@ -25,11 +25,16 @@ variable "flex_chat_service_sid" {
   type        = string
 }
 
-variable "short_helpline" {
-  description = "Short (usually 2 letter) upper case code for helpline"
+variable "channel_name" {
+  description = "Channel Name"
   type        = string
 }
 variable "short_environment" {
   description = "Short upper case environment identifier, typically 'PROD', 'STG' or 'DEV'"
+  type        = string
+}
+
+variable "short_helpline" {
+  description = "Short (usually 2 letter) upper case code for helpline"
   type        = string
 }

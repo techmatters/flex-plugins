@@ -4,6 +4,12 @@ variable "serverless_url" {}
 variable "datadog_app_id" {}
 variable "datadog_access_token" {}
 
+variable "language" {
+  description = "Language used by the helpline"
+  type        = string
+  default     = "es-CO"
+}
+
 variable "aws_account_id" {
   description = "Numeric AWS account ID used in ARNs"
   type        = string
@@ -17,7 +23,7 @@ variable "local_os" {
 }
 
 variable "helpline" {
-  default = "Te Guio Colombia"
+  default = "Te Guío CO"
 }
 
 variable "short_helpline" {
@@ -39,7 +45,7 @@ variable "short_environment" {
 variable "definition_version" {
   description = "Key that determines which set of form definitions this helpline will use"
   type        = string
-  default = "co-v1"
+  default = "co-v2"
 }
 
 variable "permission_config" {
@@ -81,24 +87,42 @@ variable "target_task_name" {
   default = "execute_initial_flow"
 }
 
-variable "messaging_flow_contact_identity" {
-  default = "+17752526377"
-}
-
-variable "messenger_contact_identity" {
-  description = "Contact Identity for the messaging flow"
-  type = string
-  default = "messenger:103574689075106"
-}
-
-variable "whatsapp_contact_identity" {
-  description = "Contact Identity for the messaging flow"
-  type = string
-  default = ""
-}
 
 variable "twilio_numbers" {
   default = ["messenger:103574689075106","twitter:1540032139563073538","instagram:17841454586132629"]
   type = list(string)
   description = "List of Twilio Numbers"
+}
+
+variable "channel" {
+  description = "Name of the channel being configured"
+  default = ""
+  type        = string
+}
+
+variable "serverless_environment_sid" {
+  description = "Manually set variable after first apply"
+  default = "ZEdfa3b7ddc043f75d4bfa83f7044cd096"
+  type        = string
+}
+
+variable "serverless_function_sid" {
+  description = "Manually set variable after first apply"
+  default = "ZH5fcc5dee5089c176acd0bd24e7fa873e"
+  type        = string
+}
+
+variable "serverless_service_sid" {
+  description = "Manually set variable after first apply"
+  default = "ZSbf1bb881cc2e8db613ee6bca0e8e2c29"
+  type        = string
+}
+
+variable "custom_channel_attributes" {
+  description = "Override the default channel attributes by setting this"
+  type = string
+  default = ""
+}
+variable "messaging_flow_contact_identity" {
+  default = "+17752526377"
 }

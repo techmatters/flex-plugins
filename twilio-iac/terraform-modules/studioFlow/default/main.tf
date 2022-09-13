@@ -199,7 +199,7 @@ locals {
         "type": "send-to-flex",
         "name": "webAttributes",
         "properties": {
-          "attributes": "{\"ip\":\"{{trigger.message.ChannelAttributes.pre_engagement_data.ip}}\",\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"{{trigger.message.ChannelAttributes.pre_engagement_data.helpline}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
+          "attributes": "{\"ip\":\"{{trigger.message.ChannelAttributes.pre_engagement_data.ip}}\",\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"{{trigger.message.ChannelAttributes.pre_engagement_data.helpline}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"taskLanguage\": \"es-CO\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
           "workflow": var.master_workflow_sid,
           "channel": var.chat_task_channel_sid,
           "offset": {
@@ -295,3 +295,9 @@ resource "twilio_studio_flows_v2" "messaging_flow" {
   status = "published"
   definition = local.flow_definition
 }
+/*
+resource "twilio_studio_flows_v2" "twitter_messaging_flow" {
+  friendly_name = "Twitter Messaging Flow"
+  status = "published"
+  definition = local.twitter_messaging_flow_definition
+}*/

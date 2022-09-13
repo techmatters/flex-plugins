@@ -23,7 +23,7 @@ resource "twilio_taskrouter_workspaces_workflows_v1" "survey_workflow" {
       "filters": [
         {
           "filter_friendly_name": "Survey Filter",
-          "expression": var.custom_task_routing_filter_expression != "" ? var.custom_task_routing_filter_expression : "helpline=='${var.helpline}'",
+          "expression": var.custom_task_routing_filter_expression != "" ? var.custom_task_routing_filter_expression : "isSurveyTask==true",
           "targets": [
             {
               "expression": var.custom_task_routing_survey_queue_target_filter_expression,

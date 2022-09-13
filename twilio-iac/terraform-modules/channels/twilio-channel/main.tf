@@ -14,24 +14,24 @@ locals {
       master_workflow_sid = var.master_workflow_sid
       chat_task_channel_sid = var.chat_task_channel_sid
       pre_survey_bot_sid = var.pre_survey_bot_sid
-      channel_attributes = var.custom_channel_attributes != "" ? var.custom_channel_attributes : file("${path.module}/channel-attributes.tftpl")
-      flow_description = "Messenger Messaging Flow"
+      channel_attributes = var.custom_channel_attributes != "" ? var.custom_channel_attributes : file("${path.module}/channel-attributes/${var.channel_name}-attributes.tftpl")
+      flow_description = "${title(var.channel_name)} Messaging Flow"
       target_task_name = var.target_task_name
     })
 }
 
-  resource "twilio_studio_flows_v2" "messenger_messaging_flow" {
-    friendly_name = "Messenger Messaging Flow"
+  resource "twilio_studio_flows_v2" "channel_messaging_flow" {
+    friendly_name = "${title(var.channel_name)} Messaging Flow"
     status = "published"
     definition = local.flow_definition
   }
 
-  resource "twilio_flex_flex_flows_v1" "messenger_flow" {
-    channel_type  = "facebook"
+  resource "twilio_flex_flex_flows_v1" "channel_flow" {
+    channel_type  = "${var.channel_name}"
     chat_service_sid = var.flex_chat_service_sid
-    friendly_name = "Flex Messenger Channel Flow"
+    friendly_name = "Flex ${title(var.channel_name)} Channel Flow"
     integration_type = "studio"
-    contact_identity = var.messenger_contact_identity
-    integration_flow_sid = twilio_studio_flows_v2.messenger_messaging_flow.sid
+    contact_identity = var.channel_contact_identity
+    integration_flow_sid = twilio_studio_flows_v2.channel_messaging_flow.sid
     enabled = true
   }
