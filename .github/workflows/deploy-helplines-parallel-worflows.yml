@@ -28,12 +28,7 @@ jobs:
 
   deploy-uk_staging_III: 
     uses: techmatters/flex-plugins/.github/workflows/uk_staging_III.yml@CHI-1258_workflow_to_deploy_flex_helpline_stg_env
-    secrets:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-      UK_STG_III_ACCOUNT_SID: ${{ secrets.UK_STG_III_ACCOUNT_SID }}
-      UK_STG_III_AUTH_TOKEN: ${{ secrets.UK_STG_III_AUTH_TOKEN }}
+    secrets: inherit
     with:
       changelog: ${{ inputs.changelog }}
 
