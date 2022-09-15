@@ -21,7 +21,7 @@ jobs:
         environment_code: [STG]
     uses: techmatters/flex-plugins/.github/workflows/custom_helpline.yml@CHI-1258_workflow_to_deploy_flex_helpline_stg_env
     secrets: inherit
-    with: 
+    with:
       helpline_code: ${{ matrix.short_helplines }}
       environment_code: ${{ matrix.environment_code }}
       changelog: ${{ inputs.changelog }}
@@ -32,12 +32,16 @@ jobs:
     with:
       changelog: ${{ inputs.changelog }}
 
-  do-something-after:
-    needs: [deploy-helplines, deploy-uk_staging_III]
+  send-slack-message:
 
     runs-on: ubuntu-latest
 
     steps:
-      - name: Echo after
-        run: echo "Success!"
-        shell: bash
+      - name: Slack Aselo channel
+        id: slack
+        uses: slackapi/slack-github-action@v1.14.0
+        with:
+          channel-id: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
+          slack-message: "`All Flex Staging helplines successfully deployed :rocket:."
+        env:
+          SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
