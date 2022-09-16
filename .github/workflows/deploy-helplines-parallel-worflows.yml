@@ -53,6 +53,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
       # Setup credentials to access AWS for parameters
       - name: Slack Aselo channel
         uses: ./.github/actions/notify-deploys@CHI-1258_workflow_to_deploy_flex_helpline_stg_env
