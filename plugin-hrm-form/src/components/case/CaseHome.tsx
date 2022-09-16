@@ -72,8 +72,6 @@ const CaseHome: React.FC<Props> = ({
   connectedCaseState,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const [closeDialog, setCloseDialog] = useState(false);
-
   if (!connectedCaseState || !routing || !isAppRouteWithCase(routing)) return null; // narrow type before deconstructing
 
   const { featureFlags } = getConfig();

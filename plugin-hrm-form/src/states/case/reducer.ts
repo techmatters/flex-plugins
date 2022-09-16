@@ -1,26 +1,42 @@
 import { omit } from 'lodash';
+import { v4 as uuidV4 } from 'uuid';
 
-import { Case } from '../../types/types';
+import { Case, CaseItemEntry } from '../../types/types';
 import {
+  Activity,
   CaseActionType,
+  INIT_CASE_SECTION_WORKING_COPY,
   MARK_CASE_AS_UPDATED,
   REMOVE_CONNECTED_CASE,
   SET_CONNECTED_CASE,
   TemporaryCaseInfo,
   UPDATE_CASE_CONTACT,
   UPDATE_CASE_INFO,
+  UPDATE_CASE_SECTION_WORKING_COPY,
   UPDATE_CASE_STATUS,
   UPDATE_TEMP_INFO,
 } from './types';
 import { GeneralActionType, REMOVE_CONTACT_STATE } from '../types';
+import { getActivitiesFromCase } from '../../components/case/caseActivities';
+
+export type CaseWorkingCopy = {
+  sections: {
+    [section: string]: {
+      new?: CaseItemEntry;
+      existing: { [id: string]: CaseItemEntry };
+    };
+  };
+  summary?: CaseItemEntry;
+};
 
 export type CaseState = {
   tasks: {
     [taskId: string]: {
       connectedCase: Case;
       temporaryCaseInfo?: TemporaryCaseInfo;
-      caseHasBeenEdited: Boolean;
       prevStatus: string; // the status as it comes from the DB (required as it may be locally updated in connectedCase)
+      caseWorkingCopy: CaseWorkingCopy;
+      timelineActivities: Activity[];
     };
   };
 };
@@ -40,8 +56,9 @@ export function reduce(state = initialState, action: CaseActionType | GeneralAct
           [action.taskId]: {
             connectedCase: action.connectedCase,
             temporaryCaseInfo: null,
-            caseHasBeenEdited: action.caseHasBeenEdited,
             prevStatus: action.connectedCase.status,
+            caseWorkingCopy: { sections: {} },
+            timelineActivities: getActivitiesFromCase(action.connectedCase),
           },
         },
       };
@@ -67,7 +84,6 @@ export function reduce(state = initialState, action: CaseActionType | GeneralAct
             ...state.tasks[action.taskId],
             connectedCase: updatedCase,
             temporaryCaseInfo: null,
-            caseHasBeenEdited: true,
           },
         },
       };
@@ -83,6 +99,50 @@ export function reduce(state = initialState, action: CaseActionType | GeneralAct
           },
         },
       };
+    case UPDATE_CASE_SECTION_WORKING_COPY:
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...state.tasks[action.taskId],
+            caseWorkingCopy: action.api.updateWorkingCopy(
+              state.tasks[action.taskId]?.caseWorkingCopy,
+              action.sectionItem,
+              action.id,
+            ),
+          },
+        },
+      };
+    case INIT_CASE_SECTION_WORKING_COPY:
+      const item: CaseItemEntry = action.id
+        ? action.api.toForm(action.api.getSectionItemById(state.tasks[action.taskId].connectedCase.info, action.id))
+        : { id: uuidV4(), form: {}, createdAt: null, twilioWorkerId: null };
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...state.tasks[action.taskId],
+            caseWorkingCopy: action.api.updateWorkingCopy(state.tasks[action.taskId]?.caseWorkingCopy, item, action.id),
+          },
+        },
+      };
+    case INIT_CASE_SECTION_WORKING_COPY:
+      const caseWorkingCopy = state.tasks[action.taskId]?.caseWorkingCopy;
+      if (caseWorkingCopy) {
+        return {
+          ...state,
+          tasks: {
+            ...state.tasks,
+            [action.taskId]: {
+              ...state.tasks[action.taskId],
+              caseWorkingCopy
+            },
+          },
+        };
+      }
+      return state;
     case UPDATE_CASE_STATUS:
       const { connectedCase } = state.tasks[action.taskId];
       const updatedCase = { ...connectedCase, status: action.status };
@@ -93,7 +153,6 @@ export function reduce(state = initialState, action: CaseActionType | GeneralAct
           [action.taskId]: {
             ...state.tasks[action.taskId],
             connectedCase: updatedCase,
-            caseHasBeenEdited: true,
           },
         },
       };
@@ -104,7 +163,6 @@ export function reduce(state = initialState, action: CaseActionType | GeneralAct
           ...state.tasks,
           [action.taskId]: {
             ...state.tasks[action.taskId],
-            caseHasBeenEdited: false,
           },
         },
       };

@@ -1,6 +1,7 @@
 import { DefinitionVersion, FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 
 import { CaseInfo, CaseItemEntry } from '../../../types/types';
+import { CaseWorkingCopy } from '../reducer';
 
 export type CaseUpdater = (original: CaseInfo, temporaryInfo: CaseItemEntry) => CaseInfo;
 
@@ -12,4 +13,6 @@ export type CaseSectionApi<T> = {
   upsertCaseSectionItemFromForm: CaseUpdater;
   getSectionFormDefinition: (definitions: DefinitionVersion) => FormDefinition;
   getSectionLayoutDefinition: (definitions: DefinitionVersion) => LayoutDefinition;
+  getWorkingCopy: (caseInfo: CaseWorkingCopy, id?: string) => CaseItemEntry | undefined;
+  updateWorkingCopy: (caseInfo: CaseWorkingCopy, item: CaseItemEntry, id?: string) => CaseWorkingCopy;
 };

@@ -169,7 +169,7 @@ const EditCaseSummary: React.FC<Props> = ({
       id: temporaryCaseInfo.info.id ?? uuidV4(),
     });
     const updatedCase = await updateCase(id, { status, info: newInfo });
-    setConnectedCase(updatedCase, task.taskSid, connectedCaseState.caseHasBeenEdited);
+    setConnectedCase(updatedCase, task.taskSid);
   };
 
   const close = () => {

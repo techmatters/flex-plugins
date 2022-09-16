@@ -43,7 +43,6 @@ const ViewCaseItem: React.FC<Props> = ({
   task,
   routing,
   counselorsHash,
-  updateTempInfo,
   changeRoute,
   exitItem,
   definitionVersion,
@@ -57,7 +56,6 @@ const ViewCaseItem: React.FC<Props> = ({
   const formDefinition = sectionApi.getSectionFormDefinition(definitionVersion).filter(fd => !isNonSaveable(fd));
 
   const onEditCaseItemClick = () => {
-    updateTempInfo({ screen: routing.subroute, action: CaseItemAction.Edit, info: item }, task.taskSid);
     changeRoute({ ...routing, action: CaseItemAction.Edit }, task.taskSid);
   };
 

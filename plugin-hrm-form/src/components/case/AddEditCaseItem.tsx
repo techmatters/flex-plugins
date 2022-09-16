@@ -1,12 +1,13 @@
 /* eslint-disable react/jsx-max-depth */
 /* eslint-disable react/prop-types */
 import { v4 as uuidV4 } from 'uuid';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { FieldValues, FormProvider, SubmitErrorHandler, useForm } from 'react-hook-form';
 import type { DefinitionVersion } from 'hrm-form-definitions';
 import { isEqual } from 'lodash';
+import { bindActionCreators } from 'redux';
 
 import {
   BottomButtonBar,
@@ -21,7 +22,6 @@ import { CaseActionFormContainer, CaseActionLayout } from '../../styles/case';
 import ActionHeader from './ActionHeader';
 import { configurationBase, connectedCaseBase, namespace, RootState } from '../../states';
 import * as CaseActions from '../../states/case/actions';
-import * as RoutingActions from '../../states/routing/actions';
 import { CaseState } from '../../states/case/reducer';
 import { transformValues } from '../../services/ContactService';
 import { getConfig } from '../../HrmFormPlugin';
@@ -36,115 +36,81 @@ import {
 } from '../common/forms/formGenerators';
 import type { CaseInfo, CaseItemEntry, CustomITask, StandaloneITask } from '../../types/types';
 import {
-  AddCaseSectionRoute,
+  AddCaseSectionRoute, AppRoutes,
+  AppRoutesWithCase,
   CaseItemAction,
   EditCaseSectionRoute,
   isEditCaseSectionRoute,
 } from '../../states/routing/types';
 import useFocus from '../../utils/useFocus';
 import { recordingErrorHandler } from '../../fullStory';
-import {
-  AddTemporaryCaseInfo,
-  EditTemporaryCaseInfo,
-  isAddTemporaryCaseInfo,
-  isEditTemporaryCaseInfo,
-  TemporaryCaseInfo,
-  temporaryCaseInfoHistory,
-} from '../../states/case/types';
+import { caseItemHistory } from '../../states/case/types';
 import CloseCaseDialog from './CloseCaseDialog';
 import { CaseSectionApi } from '../../states/case/sections/api';
 import { lookupApi } from '../../states/case/sections/lookupApi';
 import { copyCaseSectionItem } from '../../states/case/sections/update';
-
-type CaseItemPayload = { [key: string]: string | boolean };
-
-const UNSUPPORTED_TEMPORARY_INFO_TYPE_MESSAGE =
-  'Only AddTemporaryCaseInfo and EditTemporaryCaseInfo temporary case data types are supported by this component.';
-
-const getTemporaryFormContent = (temporaryCaseInfo: TemporaryCaseInfo): CaseItemPayload | null => {
-  if (isEditTemporaryCaseInfo(temporaryCaseInfo)) {
-    return temporaryCaseInfo.info.form;
-  } else if (isAddTemporaryCaseInfo(temporaryCaseInfo)) {
-    return temporaryCaseInfo.info;
-  }
-  return null;
-};
-
-const createUpdatedTemporaryFormContent = (
-  payload: CaseItemPayload,
-  initialForm: CaseItemPayload,
-  temporaryCaseInfo: TemporaryCaseInfo,
-): AddTemporaryCaseInfo | EditTemporaryCaseInfo => {
-  const isEdited = !isEqual(initialForm, payload);
-  if (isEditTemporaryCaseInfo(temporaryCaseInfo)) {
-    return {
-      ...temporaryCaseInfo,
-      info: { ...temporaryCaseInfo.info, form: payload },
-      isEdited: isEdited || temporaryCaseInfo.isEdited,
-    };
-  } else if (isAddTemporaryCaseInfo(temporaryCaseInfo)) {
-    return {
-      ...temporaryCaseInfo,
-      info: payload,
-      isEdited: isEdited || temporaryCaseInfo.isEdited,
-    };
-  }
-  throw new Error(UNSUPPORTED_TEMPORARY_INFO_TYPE_MESSAGE);
-};
+import { changeRoute } from '../../states/routing/actions';
 
 export type AddEditCaseItemProps = {
   task: CustomITask | StandaloneITask;
   counselor: string;
   definitionVersion: DefinitionVersion;
-  exitItem: () => void;
   routing: AddCaseSectionRoute | EditCaseSectionRoute;
+  exitRoute: AppRoutes;
   customFormHandlers?: CustomHandlers;
   reactHookFormOptions?: Partial<{ shouldUnregister: boolean }>;
   sectionApi: CaseSectionApi<unknown>;
 };
 // eslint-disable-next-line no-use-before-define
-type Props = AddEditCaseItemProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+type Props = AddEditCaseItemProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 const AddEditCaseItem: React.FC<Props> = ({
   definitionVersion,
   task,
   counselor,
   counselorsHash,
-  exitItem,
-  connectedCaseState,
+  exitRoute,
+  connectedCase,
   routing,
+  updateCaseSectionWorkingCopy,
+  initialiseCaseSectionWorkingCopy,
+  closeActions,
   setConnectedCase,
-  updateTempInfo,
-  changeRoute,
   customFormHandlers,
   reactHookFormOptions,
   sectionApi,
+  workingCopy,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const firstElementRef = useFocus();
+  const { id } = isEditCaseSectionRoute(routing) ? routing : { id: undefined };
 
-  const { temporaryCaseInfo } = connectedCaseState;
+  useEffect(() => {
+    if (!workingCopy) {
+      initialiseCaseSectionWorkingCopy(task.taskSid, sectionApi, id);
+    }
+  }, [id, sectionApi, task.taskSid, workingCopy]);
+
   const formDefinition = sectionApi
     .getSectionFormDefinition(definitionVersion)
     // If more 'when adding only' form item types are implemented, we should create a specific property, but there is only one so just check the type for now
-    .filter(fd => isAddTemporaryCaseInfo(temporaryCaseInfo) || fd.type !== 'copy-to');
+    .filter(fd => !id || fd.type !== 'copy-to');
   const layout = sectionApi.getSectionLayoutDefinition(definitionVersion);
 
   // Grab initial values in first render only. If getTemporaryFormContent(temporaryCaseInfo), cherrypick the values using formDefinition, if not build the object with getInitialValue
-  const [initialForm] = React.useState(() => {
-    const initialTemporaryFormContent = getTemporaryFormContent(temporaryCaseInfo);
-
-    if (initialTemporaryFormContent)
+  const initialForm = React.useMemo(() => {
+    if (id && connectedCase) {
+      const { form } = sectionApi.toForm(sectionApi.getSectionItemById(connectedCase.info, id));
       return formDefinition.reduce(
         (accum, curr) => ({
           ...accum,
-          [curr.name]: initialTemporaryFormContent[curr.name],
+          [curr.name]: form[curr.name],
         }),
         {},
       );
-
+    }
     return formDefinition.reduce(createStateItem, {});
-  });
+  }, [connectedCase, formDefinition, id, sectionApi]);
 
   const methods = useForm(reactHookFormOptions);
   const [openDialog, setOpenDialog] = React.useState(false);
@@ -153,8 +119,8 @@ const AddEditCaseItem: React.FC<Props> = ({
 
   const [l, r] = React.useMemo(() => {
     const updateCallBack = () => {
-      const formValues = getValues();
-      updateTempInfo(createUpdatedTemporaryFormContent(formValues, initialForm, temporaryCaseInfo), task.taskSid);
+      const form = getValues();
+      updateCaseSectionWorkingCopy(task.taskSid, sectionApi, { ...workingCopy, form });
     };
 
     const generatedForm = createFormFromDefinition(formDefinition)([])(initialForm, firstElementRef)(
@@ -166,37 +132,38 @@ const AddEditCaseItem: React.FC<Props> = ({
 
     return splitInHalf(disperseInputs(7)(generatedForm));
   }, [
-    temporaryCaseInfo,
+    sectionApi,
+    workingCopy,
     formDefinition,
     initialForm,
     firstElementRef,
     customFormHandlers,
     layout.splitFormAt,
     getValues,
-    updateTempInfo,
     task.taskSid,
   ]);
 
+  if (!workingCopy) {
+    return null;
+  }
+
   const save = async () => {
-    const { info, id } = connectedCaseState.connectedCase;
-    const rawForm = getTemporaryFormContent(temporaryCaseInfo);
+    const { info, id } = connectedCase;
+    const rawForm = workingCopy.form;
     const form = transformValues(formDefinition)(rawForm);
     const now = new Date().toISOString();
     const { workerSid } = getConfig();
     let newInfo: CaseInfo;
-    if (isEditTemporaryCaseInfo(temporaryCaseInfo)) {
-      /*
-       * Need to add these to the temporaryCaseInfo instance rather than straight to the applyTemporaryInfoToCase parameter.
-       * This way changes are reflected when you go back to the view after an edit
-       */
-      temporaryCaseInfo.info.updatedAt = now;
-      temporaryCaseInfo.info.updatedBy = workerSid;
+    if (id) {
       newInfo = sectionApi.upsertCaseSectionItemFromForm(info, {
-        ...temporaryCaseInfo.info,
+        ...workingCopy,
         form,
+        updatedAt: now,
+        updatedBy: workerSid,
       });
     } else {
       const newItem: CaseItemEntry = {
+        ...workingCopy,
         form,
         createdAt: now,
         twilioWorkerId: workerSid,
@@ -216,30 +183,23 @@ const AddEditCaseItem: React.FC<Props> = ({
       });
     }
     const updatedCase = await updateCase(id, { info: newInfo });
-    setConnectedCase(updatedCase, task.taskSid, connectedCaseState.caseHasBeenEdited);
+    setConnectedCase(updatedCase, task.taskSid);
   };
 
   function close() {
-    if (isEditTemporaryCaseInfo(temporaryCaseInfo)) {
-      changeRoute({ ...routing, id: temporaryCaseInfo.info.id, action: CaseItemAction.View }, task.taskSid);
-    } else {
-      exitItem();
-    }
+    closeActions(exitRoute);
   }
 
   async function saveAndStay() {
     await save();
-    if (isAddTemporaryCaseInfo(temporaryCaseInfo)) {
-      const blankForm = formDefinition.reduce(createStateItem, {});
-      methods.reset(blankForm); // Resets the form.
-      updateTempInfo({ screen: temporaryCaseInfo.screen, info: null, action: CaseItemAction.Add }, task.taskSid);
-      changeRoute({ ...routing, action: CaseItemAction.Add }, task.taskSid);
-    }
+    const blankForm = formDefinition.reduce(createStateItem, {});
+    methods.reset(blankForm); // Resets the form.
+    closeActions({ ...routing, action: CaseItemAction.Add });
   }
 
   async function saveAndLeave() {
     await save();
-    close();
+    closeActions(exitRoute);
   }
 
   const { strings } = getConfig();
@@ -251,15 +211,12 @@ const AddEditCaseItem: React.FC<Props> = ({
     },
   );
 
-  const { added, addingCounsellorName, updated, updatingCounsellorName } = isEditTemporaryCaseInfo(temporaryCaseInfo)
-    ? temporaryCaseInfoHistory(temporaryCaseInfo, counselorsHash)
+  const { added, addingCounsellorName, updated, updatingCounsellorName } = id
+    ? caseItemHistory(workingCopy, counselorsHash)
     : { added: new Date(), addingCounsellorName: counselor, updated: undefined, updatingCounsellorName: undefined };
 
   const checkForEdits = () => {
-    if (
-      (isEditTemporaryCaseInfo(temporaryCaseInfo) || isAddTemporaryCaseInfo(temporaryCaseInfo)) &&
-      temporaryCaseInfo.isEdited
-    ) {
+    if (isEqual(getValues(), initialForm)) {
       setOpenDialog(true);
     } else close();
   };
@@ -327,19 +284,28 @@ const AddEditCaseItem: React.FC<Props> = ({
 
 AddEditCaseItem.displayName = 'AddEditCaseItem';
 
-const mapStateToProps = (state: RootState, ownProps: AddEditCaseItemProps) => {
+const mapStateToProps = (state: RootState, { task, routing, sectionApi }: AddEditCaseItemProps) => {
+  const id = isEditCaseSectionRoute(routing) ? routing.id : undefined;
   const counselorsHash = state[namespace][configurationBase].counselors.hash;
   const caseState: CaseState = state[namespace][connectedCaseBase]; // casting type as inference is not working for the store yet
-  const connectedCaseState = caseState.tasks[ownProps.task.taskSid];
+  const { connectedCase, caseWorkingCopy } = caseState.tasks[task.taskSid];
+  const workingCopy = sectionApi.getWorkingCopy(caseWorkingCopy, id);
 
-  return { connectedCaseState, counselorsHash };
+  return { connectedCase, counselorsHash, workingCopy };
 };
 
-const mapDispatchToProps = {
-  updateTempInfo: CaseActions.updateTempInfo,
-  updateCaseInfo: CaseActions.updateCaseInfo,
-  setConnectedCase: CaseActions.setConnectedCase,
-  changeRoute: RoutingActions.changeRoute,
+const mapDispatchToProps = (dispatch, props: AddEditCaseItemProps) => {
+  const { sectionApi, routing, task } = props;
+  const id = isEditCaseSectionRoute(routing) ? routing.id : undefined;
+  return {
+    setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
+    updateCaseSectionWorkingCopy: bindActionCreators(CaseActions.updateCaseSectionWorkingCopy, dispatch),
+    initialiseCaseSectionWorkingCopy: bindActionCreators(CaseActions.initialiseCaseSectionWorkingCopy, dispatch),
+    closeActions: route => {
+      dispatch(CaseActions.removeCaseSectionWorkingCopy(task.taskSid, sectionApi, id));
+      dispatch(changeRoute(route, task.taskSid));
+    },
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddEditCaseItem);

@@ -108,7 +108,7 @@ const SearchResults: React.FC<Props> = ({
   };
 
   const handleClickViewCase = currentCase => () => {
-    setConnectedCase(currentCase, task.taskSid, false);
+    setConnectedCase(currentCase, task.taskSid);
     changeSearchPage(SearchPages.case);
   };
 

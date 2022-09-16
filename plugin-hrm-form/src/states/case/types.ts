@@ -3,12 +3,16 @@ import { DefinitionVersionId, HelplineEntry } from 'hrm-form-definitions';
 import type * as t from '../../types/types';
 import { CaseItemAction, CaseSectionSubroute, NewCaseSubroutes } from '../routing/types';
 import { CaseItemEntry } from '../../types/types';
+import { CaseSectionApi } from './sections/api';
 
 // Action types
 export const SET_CONNECTED_CASE = 'SET_CONNECTED_CASE';
 export const REMOVE_CONNECTED_CASE = 'REMOVE_CONNECTED_CASE';
 export const UPDATE_CASE_INFO = 'UPDATE_CASE_INFO';
 export const UPDATE_TEMP_INFO = 'UPDATE_TEMP_INFO';
+export const UPDATE_CASE_SECTION_WORKING_COPY = 'UPDATE_CASE_SECTION_WORKING_COPY';
+export const INIT_CASE_SECTION_WORKING_COPY = 'INIT_CASE_SECTION_WORKING_COPY';
+export const REMOVE_CASE_SECTION_WORKING_COPY = 'REMOVE_CASE_SECTION_WORKING_COPY';
 export const UPDATE_CASE_STATUS = 'UPDATE_CASE_STATUS';
 export const MARK_CASE_AS_UPDATED = 'MARK_CASE_AS_UPDATED';
 export const UPDATE_CASE_CONTACT = 'UPDATE_CASE_CONTACT';
@@ -41,7 +45,6 @@ type SetConnectedCaseAction = {
   type: typeof SET_CONNECTED_CASE;
   connectedCase: t.Case;
   taskId: string;
-  caseHasBeenEdited: Boolean;
 };
 
 type RemoveConnectedCaseAction = {
@@ -59,6 +62,27 @@ type TemporaryCaseInfoAction = {
   type: typeof UPDATE_TEMP_INFO;
   value: TemporaryCaseInfo;
   taskId: string;
+};
+
+type UpdateCaseSectionWorkingCopyAction = {
+  type: typeof UPDATE_CASE_SECTION_WORKING_COPY;
+  taskId: string;
+  api: CaseSectionApi<unknown>;
+  id?: string;
+  sectionItem: CaseItemEntry;
+};
+
+type InitialiseCaseSectionWorkingCopyAction = {
+  type: typeof INIT_CASE_SECTION_WORKING_COPY;
+  taskId: string;
+  api: CaseSectionApi<unknown>;
+  id?: string;
+};
+
+type RemoveCaseSectionWorkingCopyAction = {
+  type: typeof REMOVE_CASE_SECTION_WORKING_COPY;
+  taskId: string;
+  id?: string;
 };
 
 type UpdateCasesStatusAction = {
@@ -83,9 +107,12 @@ export type CaseActionType =
   | RemoveConnectedCaseAction
   | UpdateCaseInfoAction
   | TemporaryCaseInfoAction
+  | UpdateCaseSectionWorkingCopyAction
+  | InitialiseCaseSectionWorkingCopyAction
   | UpdateCasesStatusAction
   | MarkCaseAsUpdated
-  | UpdateCaseContactAction;
+  | UpdateCaseContactAction
+  | RemoveCaseSectionWorkingCopyAction;
 
 export type Activity = NoteActivity | ReferralActivity | ConnectedCaseActivity;
 
