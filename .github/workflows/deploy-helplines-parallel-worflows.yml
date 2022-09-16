@@ -51,6 +51,8 @@ jobs:
     needs: [deploy-helplines, deploy-uk_staging_III]
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js
       # Setup credentials to access AWS for parameters
       - name: Slack Aselo channel
         uses: ./.github/actions/notify-deploys@CHI-1258_workflow_to_deploy_flex_helpline_stg_env
