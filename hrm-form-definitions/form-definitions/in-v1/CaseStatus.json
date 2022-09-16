@@ -1,17 +1,17 @@
 {
   "open": { 
     "value": "open", 
-    "label": "Open"
+    "label": "Open",
     "transitions": ["closed", "passive"] 
   },
   "passive": { 
     "value": "passive", 
-    "label": "Passive"
+    "label": "Passive",
     "transitions": ["closed", "open"] 
   },
   "closed": { 
     "value": "closed", 
-    "label": "Closed"
+    "label": "Closed",
     "transitions": ["open"] 
   }
 } 
